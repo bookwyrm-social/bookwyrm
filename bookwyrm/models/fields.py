@@ -224,8 +224,20 @@ class PrivacyField(ActivitypubFieldMixin, models.CharField):
         original = getattr(instance, self.name)
         to = data.to
         cc = data.cc
+
+        # we need to figure out who this is to get their followers link
+        for field in ["attributedTo", "owner", "actor"]:
+            if hasattr(data, field):
+                user_field = field
+                break
+        if not user_field:
+            raise ValidationError("No user field found for privacy", data)
+        user = activitypub.resolve_remote_id(getattr(data, user_field), model="User")
+
         if to == [self.public]:
             setattr(instance, self.name, "public")
+        elif to == [user.followers_url]:
+            setattr(instance, self.name, "followers")
         elif cc == []:
             setattr(instance, self.name, "direct")
         elif self.public in cc:
@@ -241,9 +253,7 @@ class PrivacyField(ActivitypubFieldMixin, models.CharField):
             mentions = [u.remote_id for u in instance.mention_users.all()]
         # this is a link to the followers list
         # pylint: disable=protected-access
-        followers = instance.user.__class__._meta.get_field(
-            "followers"
-        ).field_to_activity(instance.user.followers)
+        followers = instance.user.followers_url
         if instance.privacy == "public":
             activity["to"] = [self.public]
             activity["cc"] = [followers] + mentions

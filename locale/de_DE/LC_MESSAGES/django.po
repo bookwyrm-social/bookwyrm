@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-08-16 21:26+0000\n"
+"POT-Creation-Date: 2021-08-27 19:11+0000\n"
 "PO-Revision-Date: 2021-03-02 17:19-0800\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: English <LL@li.org>\n"
@@ -94,29 +94,29 @@ msgstr "%(value)s ist keine gültige remote_id"
 msgid "%(value)s is not a valid username"
 msgstr "%(value)s ist kein gültiger Username"
 
-#: bookwyrm/models/fields.py:174 bookwyrm/templates/layout.html:164
+#: bookwyrm/models/fields.py:181 bookwyrm/templates/layout.html:164
 msgid "username"
 msgstr "Username"
 
-#: bookwyrm/models/fields.py:179
+#: bookwyrm/models/fields.py:186
 msgid "A user with that username already exists."
 msgstr "Dieser Benutzename ist bereits vergeben."
 
-#: bookwyrm/settings.py:123
+#: bookwyrm/settings.py:124
 msgid "Home Timeline"
 msgstr ""
 
-#: bookwyrm/settings.py:123
+#: bookwyrm/settings.py:124
 msgid "Home"
 msgstr ""
 
-#: bookwyrm/settings.py:124
+#: bookwyrm/settings.py:125
 #, fuzzy
 #| msgid "Title"
 msgid "Books Timeline"
 msgstr "Titel"
 
-#: bookwyrm/settings.py:124 bookwyrm/templates/search/layout.html:21
+#: bookwyrm/settings.py:125 bookwyrm/templates/search/layout.html:21
 #: bookwyrm/templates/search/layout.html:42
 #: bookwyrm/templates/user/layout.html:81
 #, fuzzy
@@ -124,27 +124,27 @@ msgstr "Titel"
 msgid "Books"
 msgstr "Buch"
 
-#: bookwyrm/settings.py:170
+#: bookwyrm/settings.py:171
 msgid "English"
 msgstr "Englisch"
 
-#: bookwyrm/settings.py:171
+#: bookwyrm/settings.py:172
 msgid "German"
 msgstr "Deutsch"
 
-#: bookwyrm/settings.py:172
+#: bookwyrm/settings.py:173
 msgid "Spanish"
 msgstr "Spanisch"
 
-#: bookwyrm/settings.py:173
+#: bookwyrm/settings.py:174
 msgid "French"
 msgstr "Französisch"
 
-#: bookwyrm/settings.py:174
+#: bookwyrm/settings.py:175
 msgid "Simplified Chinese"
 msgstr "Vereinfachtes Chinesisch"
 
-#: bookwyrm/settings.py:175
+#: bookwyrm/settings.py:176
 msgid "Traditional Chinese"
 msgstr ""
 
@@ -239,7 +239,7 @@ msgid "Last edited by:"
 msgstr "Zuletzt bearbeitet von:"
 
 #: bookwyrm/templates/author/edit_author.html:31
-#: bookwyrm/templates/book/edit_book.html:117
+#: bookwyrm/templates/book/edit_book.html:124
 msgid "Metadata"
 msgstr "Metadaten"
 
@@ -251,9 +251,9 @@ msgid "Name:"
 msgstr ""
 
 #: bookwyrm/templates/author/edit_author.html:43
-#: bookwyrm/templates/book/edit_book.html:162
-#: bookwyrm/templates/book/edit_book.html:171
-#: bookwyrm/templates/book/edit_book.html:214
+#: bookwyrm/templates/book/edit_book.html:169
+#: bookwyrm/templates/book/edit_book.html:178
+#: bookwyrm/templates/book/edit_book.html:221
 #, fuzzy
 #| msgid "Separate multiple publishers with commas."
 msgid "Separate multiple values with commas."
@@ -284,7 +284,7 @@ msgid "Openlibrary key:"
 msgstr ""
 
 #: bookwyrm/templates/author/edit_author.html:89
-#: bookwyrm/templates/book/edit_book.html:293
+#: bookwyrm/templates/book/edit_book.html:300
 #, fuzzy
 #| msgid "View on OpenLibrary"
 msgid "Inventaire ID:"
@@ -300,8 +300,9 @@ msgstr ""
 
 #: bookwyrm/templates/author/edit_author.html:116
 #: bookwyrm/templates/book/book.html:141
-#: bookwyrm/templates/book/edit_book.html:321
-#: bookwyrm/templates/book/readthrough.html:77
+#: bookwyrm/templates/book/edit_book.html:328
+#: bookwyrm/templates/book/readthrough.html:76
+#: bookwyrm/templates/lists/bookmark_button.html:15
 #: bookwyrm/templates/lists/form.html:42
 #: bookwyrm/templates/preferences/edit_user.html:78
 #: bookwyrm/templates/settings/announcement_form.html:69
@@ -317,8 +318,8 @@ msgstr "Speichern"
 #: bookwyrm/templates/author/edit_author.html:117
 #: bookwyrm/templates/book/book.html:142 bookwyrm/templates/book/book.html:191
 #: bookwyrm/templates/book/cover_modal.html:32
-#: bookwyrm/templates/book/edit_book.html:322
-#: bookwyrm/templates/book/readthrough.html:78
+#: bookwyrm/templates/book/edit_book.html:329
+#: bookwyrm/templates/book/readthrough.html:77
 #: bookwyrm/templates/moderation/report_modal.html:34
 #: bookwyrm/templates/settings/federated_server.html:99
 #: bookwyrm/templates/snippets/delete_readthrough_modal.html:17
@@ -361,7 +362,7 @@ msgid "Add Description"
 msgstr "Beschreibung hinzufügen"
 
 #: bookwyrm/templates/book/book.html:137
-#: bookwyrm/templates/book/edit_book.html:136
+#: bookwyrm/templates/book/edit_book.html:143
 #: bookwyrm/templates/lists/form.html:12
 msgid "Description:"
 msgstr "Beschreibung:"
@@ -457,24 +458,24 @@ msgid "ISBN:"
 msgstr ""
 
 #: bookwyrm/templates/book/book_identifiers.html:14
-#: bookwyrm/templates/book/edit_book.html:301
+#: bookwyrm/templates/book/edit_book.html:308
 msgid "OCLC Number:"
 msgstr "OCLC Nummer:"
 
 #: bookwyrm/templates/book/book_identifiers.html:21
-#: bookwyrm/templates/book/edit_book.html:309
+#: bookwyrm/templates/book/edit_book.html:316
 msgid "ASIN:"
 msgstr ""
 
 #: bookwyrm/templates/book/cover_modal.html:17
-#: bookwyrm/templates/book/edit_book.html:229
+#: bookwyrm/templates/book/edit_book.html:236
 #, fuzzy
 #| msgid "Add cover"
 msgid "Upload cover:"
 msgstr "Cover hinzufügen"
 
 #: bookwyrm/templates/book/cover_modal.html:23
-#: bookwyrm/templates/book/edit_book.html:235
+#: bookwyrm/templates/book/edit_book.html:242
 msgid "Load cover from url:"
 msgstr "Cover von URL laden:"
 
@@ -492,144 +493,144 @@ msgstr "Editionen von  %(book_title)s"
 msgid "Add Book"
 msgstr "Bücher hinzufügen"
 
-#: bookwyrm/templates/book/edit_book.html:54
+#: bookwyrm/templates/book/edit_book.html:61
 msgid "Confirm Book Info"
 msgstr "Buchinfo bestätigen"
 
-#: bookwyrm/templates/book/edit_book.html:62
+#: bookwyrm/templates/book/edit_book.html:69
 #, python-format
 msgid "Is \"%(name)s\" an existing author?"
 msgstr "Existiert \"%(name)s\" bereits als Autor:in?"
 
-#: bookwyrm/templates/book/edit_book.html:71
+#: bookwyrm/templates/book/edit_book.html:78
 #, fuzzy, python-format
 #| msgid "Start \"<em>%(book_title)s</em>\""
 msgid "Author of <em>%(book_title)s</em>"
 msgstr "\"<em>%(book_title)s</em>\" beginnen"
 
-#: bookwyrm/templates/book/edit_book.html:75
+#: bookwyrm/templates/book/edit_book.html:82
 msgid "This is a new author"
 msgstr "Neue:r Autor:in"
 
-#: bookwyrm/templates/book/edit_book.html:82
+#: bookwyrm/templates/book/edit_book.html:89
 #, python-format
 msgid "Creating a new author: %(name)s"
 msgstr "Neu als Autor:in erstellen: %(name)s"
 
-#: bookwyrm/templates/book/edit_book.html:89
+#: bookwyrm/templates/book/edit_book.html:96
 msgid "Is this an edition of an existing work?"
 msgstr "Ist das eine Edition eines vorhandenen Werkes?"
 
-#: bookwyrm/templates/book/edit_book.html:97
+#: bookwyrm/templates/book/edit_book.html:104
 msgid "This is a new work"
 msgstr "Dies ist ein neues Werk."
 
-#: bookwyrm/templates/book/edit_book.html:104
+#: bookwyrm/templates/book/edit_book.html:111
 #: bookwyrm/templates/password_reset.html:30
 msgid "Confirm"
 msgstr "Bestätigen"
 
-#: bookwyrm/templates/book/edit_book.html:106
+#: bookwyrm/templates/book/edit_book.html:113
 #: bookwyrm/templates/feed/status.html:8
 msgid "Back"
 msgstr "Zurück"
 
-#: bookwyrm/templates/book/edit_book.html:120
+#: bookwyrm/templates/book/edit_book.html:127
 #: bookwyrm/templates/snippets/create_status/review.html:18
 msgid "Title:"
 msgstr "Titel:"
 
-#: bookwyrm/templates/book/edit_book.html:128
+#: bookwyrm/templates/book/edit_book.html:135
 msgid "Subtitle:"
 msgstr "Untertitel:"
 
-#: bookwyrm/templates/book/edit_book.html:144
+#: bookwyrm/templates/book/edit_book.html:151
 msgid "Series:"
 msgstr "Serie:"
 
-#: bookwyrm/templates/book/edit_book.html:152
+#: bookwyrm/templates/book/edit_book.html:159
 msgid "Series number:"
 msgstr "Seriennummer:"
 
-#: bookwyrm/templates/book/edit_book.html:160
+#: bookwyrm/templates/book/edit_book.html:167
 #, fuzzy
 #| msgid "Pages:"
 msgid "Languages:"
 msgstr "Seiten:"
 
-#: bookwyrm/templates/book/edit_book.html:169
+#: bookwyrm/templates/book/edit_book.html:176
 #, fuzzy
 #| msgid "Published"
 msgid "Publisher:"
 msgstr "Veröffentlicht"
 
-#: bookwyrm/templates/book/edit_book.html:178
+#: bookwyrm/templates/book/edit_book.html:185
 msgid "First published date:"
 msgstr "Erstveröffentlichungsdatum:"
 
-#: bookwyrm/templates/book/edit_book.html:186
+#: bookwyrm/templates/book/edit_book.html:193
 msgid "Published date:"
 msgstr "Veröffentlichungsdatum:"
 
-#: bookwyrm/templates/book/edit_book.html:195
+#: bookwyrm/templates/book/edit_book.html:202
 #, fuzzy
 #| msgid "Author"
 msgid "Authors"
 msgstr "Autor*in"
 
-#: bookwyrm/templates/book/edit_book.html:202
+#: bookwyrm/templates/book/edit_book.html:209
 #, fuzzy, python-format
 #| msgid "Lists: %(username)s"
 msgid "Remove %(name)s"
 msgstr "Listen: %(username)s"
 
-#: bookwyrm/templates/book/edit_book.html:205
+#: bookwyrm/templates/book/edit_book.html:212
 #, fuzzy, python-format
 #| msgid "Lists: %(username)s"
 msgid "Author page for %(name)s"
 msgstr "Listen: %(username)s"
 
-#: bookwyrm/templates/book/edit_book.html:212
+#: bookwyrm/templates/book/edit_book.html:219
 #, fuzzy
 #| msgid "Edit Author"
 msgid "Add Authors:"
 msgstr "Autor*in editieren"
 
-#: bookwyrm/templates/book/edit_book.html:213
+#: bookwyrm/templates/book/edit_book.html:220
 msgid "John Doe, Jane Smith"
 msgstr ""
 
-#: bookwyrm/templates/book/edit_book.html:220
+#: bookwyrm/templates/book/edit_book.html:227
 #: bookwyrm/templates/user/shelf/shelf.html:78
 msgid "Cover"
 msgstr ""
 
-#: bookwyrm/templates/book/edit_book.html:248
+#: bookwyrm/templates/book/edit_book.html:255
 msgid "Physical Properties"
 msgstr "Physikalische Eigenschaften"
 
-#: bookwyrm/templates/book/edit_book.html:250
+#: bookwyrm/templates/book/edit_book.html:257
 #: bookwyrm/templates/book/format_filter.html:5
 msgid "Format:"
 msgstr ""
 
-#: bookwyrm/templates/book/edit_book.html:258
+#: bookwyrm/templates/book/edit_book.html:265
 msgid "Pages:"
 msgstr "Seiten:"
 
-#: bookwyrm/templates/book/edit_book.html:267
+#: bookwyrm/templates/book/edit_book.html:274
 msgid "Book Identifiers"
 msgstr "Buchidentifikatoren"
 
-#: bookwyrm/templates/book/edit_book.html:269
+#: bookwyrm/templates/book/edit_book.html:276
 msgid "ISBN 13:"
 msgstr ""
 
-#: bookwyrm/templates/book/edit_book.html:277
+#: bookwyrm/templates/book/edit_book.html:284
 msgid "ISBN 10:"
 msgstr ""
 
-#: bookwyrm/templates/book/edit_book.html:285
+#: bookwyrm/templates/book/edit_book.html:292
 msgid "Openlibrary ID:"
 msgstr ""
 
@@ -697,30 +698,36 @@ msgstr "bewertet"
 msgid "Progress Updates:"
 msgstr "Fortschrittsupdates:"
 
-#: bookwyrm/templates/book/readthrough.html:14
+#: bookwyrm/templates/book/readthrough.html:13
 msgid "finished"
 msgstr "Abgeschlossen"
 
-#: bookwyrm/templates/book/readthrough.html:25
+#: bookwyrm/templates/book/readthrough.html:24
 msgid "Show all updates"
 msgstr "Zeige alle Updates"
 
-#: bookwyrm/templates/book/readthrough.html:41
+#: bookwyrm/templates/book/readthrough.html:40
 msgid "Delete this progress update"
 msgstr "Dieses Fortschrittsupdate löschen"
 
-#: bookwyrm/templates/book/readthrough.html:52
+#: bookwyrm/templates/book/readthrough.html:51
 msgid "started"
 msgstr "Angefangen"
 
-#: bookwyrm/templates/book/readthrough.html:59
-#: bookwyrm/templates/book/readthrough.html:73
+#: bookwyrm/templates/book/readthrough.html:58
+#: bookwyrm/templates/book/readthrough.html:72
 msgid "Edit read dates"
 msgstr "Lesedaten bearbeiten"
 
-#: bookwyrm/templates/book/readthrough.html:63
+#: bookwyrm/templates/book/readthrough.html:62
 msgid "Delete these read dates"
 msgstr "Diese Lesedaten löschen"
+
+#: bookwyrm/templates/book/search_filter.html:5
+#, fuzzy
+#| msgid "Search Results"
+msgid "Search editions"
+msgstr "Suchergebnisse"
 
 #: bookwyrm/templates/components/inline_form.html:8
 #: bookwyrm/templates/components/modal.html:11
@@ -1064,22 +1071,22 @@ msgid "There are no books here right now! Try searching for a book to get starte
 msgstr "Hier sind noch keine Bücher! Versuche nach Büchern zu suchen um loszulegen"
 
 #: bookwyrm/templates/feed/layout.html:25
-#: bookwyrm/templates/user/shelf/shelf.html:29
+#: bookwyrm/templates/user/shelf/shelf.html:31
 #, fuzzy
 #| msgid "Read"
 msgid "To Read"
 msgstr "Auf der Leseliste"
 
 #: bookwyrm/templates/feed/layout.html:26
-#: bookwyrm/templates/user/shelf/shelf.html:29
+#: bookwyrm/templates/user/shelf/shelf.html:31
 #, fuzzy
 #| msgid "Start reading"
 msgid "Currently Reading"
 msgstr "Gerade lesend"
 
 #: bookwyrm/templates/feed/layout.html:27
-#: bookwyrm/templates/snippets/shelve_button/shelve_button_options.html:16
-#: bookwyrm/templates/user/shelf/shelf.html:29
+#: bookwyrm/templates/snippets/shelve_button/shelve_button_options.html:17
+#: bookwyrm/templates/user/shelf/shelf.html:31
 msgid "Read"
 msgstr "Gelesen"
 
@@ -1092,6 +1099,10 @@ msgstr "%(year)s Leseziel"
 #: bookwyrm/templates/feed/suggested_users.html:3
 #: bookwyrm/templates/get_started/users.html:6
 msgid "Who to follow"
+msgstr ""
+
+#: bookwyrm/templates/feed/suggested_users.html:5
+msgid "View directory"
 msgstr ""
 
 #: bookwyrm/templates/get_started/book_preview.html:6
@@ -1112,7 +1123,6 @@ msgid "Search for a book"
 msgstr "Nach einem Buch suchen"
 
 #: bookwyrm/templates/get_started/books.html:11
-#: bookwyrm/templates/isbn_search_results.html:17
 #, python-format
 msgid "No books found for \"%(query)s\""
 msgstr "Keine Bücher für \"%(query)s\" gefunden"
@@ -1274,7 +1284,7 @@ msgid "%(username)s's %(year)s Books"
 msgstr "%(username)ss %(year)s Bücher"
 
 #: bookwyrm/templates/import.html:5 bookwyrm/templates/import.html:9
-#: bookwyrm/templates/user/shelf/shelf.html:40
+#: bookwyrm/templates/user/shelf/shelf.html:42
 msgid "Import Books"
 msgstr "Bücher importieren"
 
@@ -1328,7 +1338,7 @@ msgstr "Import gestartet:"
 msgid "Import completed:"
 msgstr "Import abgeschlossen:"
 
-#: bookwyrm/templates/import_status.html:25
+#: bookwyrm/templates/import_status.html:24
 msgid "TASK FAILED"
 msgstr "AUFGABE GESCHEITERT"
 
@@ -1404,19 +1414,6 @@ msgstr "Zugiff verweigert"
 #: bookwyrm/templates/invite.html:22
 msgid "Sorry! This invite code is no longer valid."
 msgstr "Sorry! Dieser Einladecode ist mehr gültig."
-
-#: bookwyrm/templates/isbn_search_results.html:4
-msgid "Search Results"
-msgstr "Suchergebnisse"
-
-#: bookwyrm/templates/isbn_search_results.html:9
-#, python-format
-msgid "Search Results for \"%(query)s\""
-msgstr "Suchergebnisse für \"%(query)s\""
-
-#: bookwyrm/templates/isbn_search_results.html:14
-msgid "Matching Books"
-msgstr "Passende Bücher"
 
 #: bookwyrm/templates/landing/about.html:7
 #, python-format
@@ -1562,6 +1559,10 @@ msgstr "%(site_name)s auf <a href=\"%(support_link)s\" target=\"_blank\">%(suppo
 #: bookwyrm/templates/layout.html:237
 msgid "BookWyrm's source code is freely available. You can contribute or report issues on <a href=\"https://github.com/mouse-reeve/bookwyrm\">GitHub</a>."
 msgstr "BookWyrm ist open source Software. Du kannst dich auf <a href=\"https://github.com/mouse-reeve/bookwyrm\">GitHub</a> beteiligen oder etwas melden."
+
+#: bookwyrm/templates/lists/bookmark_button.html:30
+msgid "Un-save"
+msgstr ""
 
 #: bookwyrm/templates/lists/create_form.html:5
 #: bookwyrm/templates/lists/lists.html:20
@@ -1715,9 +1716,27 @@ msgstr "Keine passenden Bücher zu \"%(query)s\" gefunden"
 msgid "Suggest"
 msgstr "Vorschlagen"
 
+#: bookwyrm/templates/lists/list_items.html:15
+#, fuzzy
+#| msgid "Save"
+msgid "Saved"
+msgstr "Speichern"
+
 #: bookwyrm/templates/lists/lists.html:14 bookwyrm/templates/user/lists.html:9
 msgid "Your Lists"
 msgstr "Deine Listen"
+
+#: bookwyrm/templates/lists/lists.html:35
+#, fuzzy
+#| msgid "Lists"
+msgid "All Lists"
+msgstr "Listen"
+
+#: bookwyrm/templates/lists/lists.html:39
+#, fuzzy
+#| msgid "Create List"
+msgid "Saved Lists"
+msgstr "Liste erstellen"
 
 #: bookwyrm/templates/login.html:4
 msgid "Login"
@@ -2232,31 +2251,31 @@ msgstr "Aktivität"
 msgid "Create Announcement"
 msgstr "Ankündigungen"
 
-#: bookwyrm/templates/settings/announcements.html:22
+#: bookwyrm/templates/settings/announcements.html:21
 #, fuzzy
 #| msgid "Added:"
 msgid "Date added"
 msgstr "Hinzugefügt:"
 
-#: bookwyrm/templates/settings/announcements.html:26
+#: bookwyrm/templates/settings/announcements.html:25
 #, fuzzy
 #| msgid "reviewed"
 msgid "Preview"
 msgstr "bewertete"
 
-#: bookwyrm/templates/settings/announcements.html:30
+#: bookwyrm/templates/settings/announcements.html:29
 #, fuzzy
 #| msgid "Started"
 msgid "Start date"
 msgstr "Gestartet"
 
-#: bookwyrm/templates/settings/announcements.html:34
+#: bookwyrm/templates/settings/announcements.html:33
 #, fuzzy
 #| msgid "Edit read dates"
 msgid "End date"
 msgstr "Lesedaten bearbeiten"
 
-#: bookwyrm/templates/settings/announcements.html:38
+#: bookwyrm/templates/settings/announcements.html:37
 #: bookwyrm/templates/settings/federation.html:30
 #: bookwyrm/templates/settings/manage_invite_requests.html:44
 #: bookwyrm/templates/settings/status_filter.html:5
@@ -2264,13 +2283,13 @@ msgstr "Lesedaten bearbeiten"
 msgid "Status"
 msgstr ""
 
-#: bookwyrm/templates/settings/announcements.html:48
+#: bookwyrm/templates/settings/announcements.html:47
 #, fuzzy
 #| msgid "Activity"
 msgid "active"
 msgstr "Aktivität"
 
-#: bookwyrm/templates/settings/announcements.html:48
+#: bookwyrm/templates/settings/announcements.html:47
 #, fuzzy
 #| msgid "Activity"
 msgid "inactive"
@@ -2666,7 +2685,7 @@ msgid_plural "and %(remainder_count_display)s others"
 msgstr[0] ""
 msgstr[1] ""
 
-#: bookwyrm/templates/snippets/book_cover.html:32
+#: bookwyrm/templates/snippets/book_cover.html:61
 #, fuzzy
 #| msgid "Add cover"
 msgid "No cover"
@@ -2803,13 +2822,13 @@ msgstr "Diese Lesedaten löschen?"
 msgid "You are deleting this readthrough and its %(count)s associated progress updates."
 msgstr "Du löscht diesen Leseforschritt und %(count)s zugehörige Fortschrittsupdates."
 
-#: bookwyrm/templates/snippets/fav_button.html:10
-#: bookwyrm/templates/snippets/fav_button.html:12
+#: bookwyrm/templates/snippets/fav_button.html:16
+#: bookwyrm/templates/snippets/fav_button.html:17
 msgid "Like"
 msgstr ""
 
-#: bookwyrm/templates/snippets/fav_button.html:18
-#: bookwyrm/templates/snippets/fav_button.html:19
+#: bookwyrm/templates/snippets/fav_button.html:30
+#: bookwyrm/templates/snippets/fav_button.html:31
 #, fuzzy
 #| msgid "Un-like status"
 msgid "Un-like"
@@ -3021,7 +3040,7 @@ msgid "(Optional)"
 msgstr ""
 
 #: bookwyrm/templates/snippets/reading_modals/progress_update_modal.html:5
-#: bookwyrm/templates/snippets/shelve_button/shelve_button_options.html:45
+#: bookwyrm/templates/snippets/shelve_button/shelve_button_options.html:47
 #, fuzzy
 #| msgid "Progress"
 msgid "Update progress"
@@ -3069,15 +3088,15 @@ msgstr "Mehr Regale"
 msgid "Start reading"
 msgstr "Zu lesen beginnen"
 
-#: bookwyrm/templates/snippets/shelve_button/shelve_button_options.html:19
+#: bookwyrm/templates/snippets/shelve_button/shelve_button_options.html:21
 msgid "Finish reading"
 msgstr "Lesen abschließen"
 
-#: bookwyrm/templates/snippets/shelve_button/shelve_button_options.html:25
+#: bookwyrm/templates/snippets/shelve_button/shelve_button_options.html:27
 msgid "Want to read"
 msgstr "Auf Leseliste setzen"
 
-#: bookwyrm/templates/snippets/shelve_button/shelve_button_options.html:57
+#: bookwyrm/templates/snippets/shelve_button/shelve_button_options.html:59
 #, fuzzy, python-format
 #| msgid "Lists: %(username)s"
 msgid "Remove from %(name)s"
@@ -3273,13 +3292,13 @@ msgstr "Regal bearbeiten"
 msgid "Update shelf"
 msgstr "Regal aktualisieren"
 
-#: bookwyrm/templates/user/shelf/shelf.html:25 bookwyrm/views/shelf.py:56
+#: bookwyrm/templates/user/shelf/shelf.html:27 bookwyrm/views/shelf.py:56
 #, fuzzy
 #| msgid "books"
 msgid "All books"
 msgstr "Bücher"
 
-#: bookwyrm/templates/user/shelf/shelf.html:38
+#: bookwyrm/templates/user/shelf/shelf.html:40
 msgid "Create shelf"
 msgstr "Regal erstellen"
 
@@ -3453,11 +3472,11 @@ msgstr ""
 msgid "Access level:"
 msgstr ""
 
-#: bookwyrm/templates/widgets/clearable_file_input_with_warning.html:22
+#: bookwyrm/templates/widgets/clearable_file_input_with_warning.html:28
 msgid "File exceeds maximum size: 10MB"
 msgstr ""
 
-#: bookwyrm/templatetags/utilities.py:30
+#: bookwyrm/templatetags/utilities.py:31
 #, python-format
 msgid "%(title)s: %(subtitle)s"
 msgstr ""
@@ -3487,6 +3506,12 @@ msgstr ""
 #, python-brace-format
 msgid "Status updates from {obj.display_name}"
 msgstr ""
+
+#~ msgid "Search Results for \"%(query)s\""
+#~ msgstr "Suchergebnisse für \"%(query)s\""
+
+#~ msgid "Matching Books"
+#~ msgstr "Passende Bücher"
 
 #, fuzzy
 #~| msgid "Federated Servers"
