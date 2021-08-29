@@ -25,3 +25,4 @@ class Person(TestCase):
         self.assertEqual(user.username, "mouse@example.com")
         self.assertEqual(user.remote_id, "https://example.com/user/mouse")
         self.assertFalse(user.local)
+        self.assertEqual(user.followers_url, "https://example.com/user/mouse/followers")

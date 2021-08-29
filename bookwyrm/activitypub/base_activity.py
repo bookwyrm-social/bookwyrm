@@ -275,6 +275,8 @@ def resolve_remote_id(
 ):
     """take a remote_id and return an instance, creating if necessary"""
     if model:  # a bonus check we can do if we already know the model
+        if isinstance(model, str):
+            model = apps.get_model(f"bookwyrm.{model}", require_ready=True)
         result = model.find_existing_by_remote_id(remote_id)
         if result and not refresh:
             return result if not get_activity else result.to_activity_dataclass()
