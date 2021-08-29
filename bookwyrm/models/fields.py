@@ -228,7 +228,7 @@ class PrivacyField(ActivitypubFieldMixin, models.CharField):
         # we need to figure out who this is to get their followers link
         for field in ["attributedTo", "owner", "actor"]:
             if hasattr(data, field):
-                user_field = getattr(data, field)
+                user_field = field
                 break
         if not user_field:
             raise ValidationError("No user field found for privacy", data)
