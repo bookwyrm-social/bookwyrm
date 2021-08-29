@@ -5,9 +5,9 @@ import django.db.models.expressions
 
 
 def normalize_readthrough_dates(app_registry, schema_editor):
-    """bih"""
+    """Find any invalid dates and reset them"""
     db_alias = schema_editor.connection.alias
-    app_registry.get_model("bookwyrm", "Readthrough").objects.using(db_alias).filter(
+    app_registry.get_model("bookwyrm", "ReadThrough").objects.using(db_alias).filter(
         start_date__gt=models.F("finish_date")
     ).update(start_date=models.F("finish_date"))
 
