@@ -109,17 +109,17 @@
                                 {% trans 'Settings' %}
                             </a>
                         </li>
-                        {% if perms.bookwyrm.create_invites or perms.moderate_users %}
+                        {% if perms.bookwyrm.create_invites or perms.moderate_user %}
                         <li class="navbar-divider" role="presentation"></li>
                         {% endif %}
-                        {% if perms.bookwyrm.create_invites %}
+                        {% if perms.bookwyrm.create_invites and not site.allow_registration %}
                         <li>
                             <a href="{% url 'settings-invite-requests' %}" class="navbar-item">
                                 {% trans 'Invites' %}
                             </a>
                         </li>
                         {% endif %}
-                        {% if perms.bookwyrm.moderate_users %}
+                        {% if perms.bookwyrm.moderate_user %}
                         <li>
                             <a href="{% url 'settings-users' %}" class="navbar-item">
                                 {% trans 'Admin' %}

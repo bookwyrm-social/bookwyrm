@@ -13,7 +13,7 @@ from bookwyrm.settings import PAGE_LENGTH
 # pylint: disable= no-self-use
 @method_decorator(login_required, name="dispatch")
 @method_decorator(
-    permission_required("bookwyrm.moderate_users", raise_exception=True),
+    permission_required("bookwyrm.moderate_user", raise_exception=True),
     name="dispatch",
 )
 class UserAdminList(View):
