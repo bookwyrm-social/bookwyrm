@@ -226,7 +226,12 @@ class PrivacyField(ActivitypubFieldMixin, models.CharField):
         cc = data.cc
 
         # we need to figure out who this is to get their followers link
-        user_field = "attributedTo" if hasattr(data, "attributedTo") else "owner"
+        for field in ["attributedTo", "owner", "actor"]:
+            if hasattr(data, field):
+                user_field = getattr(data, field)
+                break
+        if not user_field:
+            raise ValidationError("No user field found for privacy", data)
         user = activitypub.resolve_remote_id(getattr(data, user_field), model="User")
 
         if to == [self.public]:
