@@ -248,9 +248,7 @@ class PrivacyField(ActivitypubFieldMixin, models.CharField):
             mentions = [u.remote_id for u in instance.mention_users.all()]
         # this is a link to the followers list
         # pylint: disable=protected-access
-        followers = instance.user.__class__._meta.get_field(
-            "followers"
-        ).field_to_activity(instance.user.followers)
+        followers = instance.user.followers_url
         if instance.privacy == "public":
             activity["to"] = [self.public]
             activity["cc"] = [followers] + mentions
