@@ -275,11 +275,12 @@ class User(OrderedCollectionPageMixin, AbstractUser):
             return
 
         # populate fields for local users
-        self.remote_id = "{:s}/user/{:s}".format(site_link(), self.localname)
-        self.followers_url = "{:s}/followers".format(self.remote_id)
-        self.inbox = "{:s}/inbox".format(self.remote_id)
-        self.shared_inbox = "{:s}/inbox".format(site_link())
-        self.outbox = "{:s}/outbox".format(self.remote_id)
+        link = site_link()
+        self.remote_id = f"{link}/user/{self.localname}"
+        self.followers_url = f"{self.remote_id}/followers"
+        self.inbox = f"{self.remote_id}/inbox"
+        self.shared_inbox = f"{link}/inbox"
+        self.outbox = f"{self.remote_id}/outbox"
 
         # an id needs to be set before we can proceed with related models
         super().save(*args, **kwargs)
