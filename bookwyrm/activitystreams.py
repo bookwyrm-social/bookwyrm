@@ -360,7 +360,8 @@ def populate_streams_on_account_create(sender, instance, created, *args, **kwarg
     if not created or not instance.local:
         return
 
-    populate_streams_task.delay(instance.id)
+    for stream in streams.values():
+        populate_stream_task.delay(stream, instance.id)
 
 
 @receiver(signals.pre_save, sender=models.ShelfBook)
@@ -393,28 +394,6 @@ def remove_statuses_on_shelve(sender, instance, *args, **kwargs):
     BooksStream().remove_book_statuses(instance.user, instance.book)
 
 
-@receiver(signals.pre_save, sender=models.ShelfBook)
-# pylint: disable=unused-argument
-def add_statuses_on_shelve(sender, instance, *args, **kwargs):
-    """update books stream when user shelves a book"""
-    if not instance.user.local:
-        return
-    book = None
-    if hasattr(instance, "book"):
-        book = instance.book
-    elif instance.mention_books.exists():
-        book = instance.mention_books.first()
-    if not book:
-        return
-
-    # check if the book is already on the user's shelves
-    editions = book.parent_work.editions.all()
-    if models.ShelfBook.objects.filter(user=instance.user, book__in=editions).exists():
-        return
-
-    BooksStream().add_book_statuses(instance.user, book)
-
-
 @receiver(signals.post_delete, sender=models.ShelfBook)
 # pylint: disable=unused-argument
 def remove_statuses_on_unshelve(sender, instance, *args, **kwargs):
@@ -438,16 +417,6 @@ def remove_statuses_on_unshelve(sender, instance, *args, **kwargs):
 
 
 # ---- TASKS
-
-# TODO: merge conflict: reconcile these tasks
-
-@app.task
-def populate_streams_task(user_id):
-    """create a user's streams"""
-    user = models.User.objects.get(id=user_id)
-    for stream in streams.values():
-        stream.populate_streams(user)
-
 
 @app.task
 def populate_stream_task(stream, user_id):
