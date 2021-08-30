@@ -373,20 +373,14 @@ def add_statuses_on_shelve(sender, instance, *args, **kwargs):
     """update books stream when user shelves a book"""
     if not instance.user.local:
         return
-    book = None
-    if hasattr(instance, "book"):
-        book = instance.book
-    elif instance.mention_books.exists():
-        book = instance.mention_books.first()
-    if not book:
-        return
+    book = instance.book
 
     # check if the book is already on the user's shelves
     editions = book.parent_work.editions.all()
     if models.ShelfBook.objects.filter(user=instance.user, book__in=editions).exists():
         return
 
-    BooksStream().add_book_statuses(instance.user, book)
+    add_book_statuses_task.delay(instance.user.id, book.id)
 
 
 @receiver(signals.post_delete, sender=models.ShelfBook)
@@ -396,22 +390,33 @@ def remove_statuses_on_unshelve(sender, instance, *args, **kwargs):
     if not instance.user.local:
         return
 
-    book = None
-    if hasattr(instance, "book"):
-        book = instance.book
-    elif instance.mention_books.exists():
-        book = instance.mention_books.first()
-    if not book:
-        return
+    book = instance.book
+
     # check if the book is actually unshelved, not just moved
     editions = book.parent_work.editions.all()
     if models.ShelfBook.objects.filter(user=instance.user, book__in=editions).exists():
         return
 
-    BooksStream().remove_book_statuses(instance.user, instance.book)
+    remove_book_statuses_task.delay(instance.user.id, book.id)
 
 
 # ---- TASKS
+
+
+@app.task
+def add_book_statuses_task(user_id, book_id):
+    """add statuses related to a book on shelve"""
+    user = models.User.objects.get(id=user_id)
+    book = models.Edition.objects.get(id=book_id)
+    BooksStream().add_book_statuses(user, book)
+
+
+@app.task
+def remove_book_statuses_task(user_id, book_id):
+    """remove statuses about a book from a user's books feed"""
+    user = models.User.objects.get(id=user_id)
+    book = models.Edition.objects.get(id=book_id)
+    BooksStream().remove_book_statuses(user, book)
 
 
 @app.task
