@@ -4,7 +4,7 @@
 {% if book %}
     {% with book=book %}
         <a href="{{ book.local_path }}">
-            {% include 'snippets/book_cover.html' with cover_class='is-w-l-mobile is-w-auto align to-b to-l' %}
+            {% include 'snippets/book_cover.html' with cover_class='is-w-l-mobile is-w-auto align to-b to-l' size='xxlarge' %}
         </a>
 
         {% include 'snippets/stars.html' with rating=book|rating:request.user %}

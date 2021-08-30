@@ -1,0 +1,15 @@
+{% extends 'snippets/reading_modals/layout.html' %}
+{% load i18n %}
+{% load utilities %}
+
+{% block modal-title %}
+{% blocktrans trimmed with book_title=book|book_title %}
+Want to Read "<em>{{ book_title }}</em>"
+{% endblocktrans %}
+{% endblock %}
+
+{% block modal-form-open %}
+<form name="shelve" action="{% url 'reading-status' 'want' book.id %}" method="post">
+<input type="hidden" name="reading_status" value="to-read">
+{% csrf_token %}
+{% endblock %}

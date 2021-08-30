@@ -1,7 +1,7 @@
 {% load i18n %}
 <div class="columns is-mobile is-gapless">
     <div class="column is-cover">
-        {% include 'snippets/book_cover.html' with book=result cover_class='is-w-xs is-h-xs' img_path=false %}
+        {% include 'snippets/book_cover.html' with book=result cover_class='is-w-xs is-h-xs' external_path=True %}
     </div>
 
     <div class="column is-10 ml-3">
@@ -10,7 +10,7 @@
                 <a
                     href="{{ result.view_link|default:result.key }}"
                     {% if remote_result %}
-                        rel=”noopener”
+                        rel="noopener"
                         target="_blank"
                     {% endif %}
                 >{{ result.title }}</a>

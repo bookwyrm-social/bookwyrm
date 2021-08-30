@@ -106,8 +106,10 @@ class ActivityObject:
                 value = field.default
             setattr(self, field.name, value)
 
-    # pylint: disable=too-many-locals,too-many-branches
-    def to_model(self, model=None, instance=None, allow_create=True, save=True):
+    # pylint: disable=too-many-locals,too-many-branches,too-many-arguments
+    def to_model(
+        self, model=None, instance=None, allow_create=True, save=True, overwrite=True
+    ):
         """convert from an activity to a model instance"""
         model = model or get_model_from_type(self.type)
 
@@ -129,9 +131,12 @@ class ActivityObject:
 
         # keep track of what we've changed
         update_fields = []
+        # sets field on the model using the activity value
         for field in instance.simple_fields:
             try:
-                changed = field.set_field_from_activity(instance, self)
+                changed = field.set_field_from_activity(
+                    instance, self, overwrite=overwrite
+                )
                 if changed:
                     update_fields.append(field.name)
             except AttributeError as e:
@@ -140,7 +145,9 @@ class ActivityObject:
         # image fields have to be set after other fields because they can save
         # too early and jank up users
         for field in instance.image_fields:
-            changed = field.set_field_from_activity(instance, self, save=save)
+            changed = field.set_field_from_activity(
+                instance, self, save=save, overwrite=overwrite
+            )
             if changed:
                 update_fields.append(field.name)
 
@@ -268,6 +275,8 @@ def resolve_remote_id(
 ):
     """take a remote_id and return an instance, creating if necessary"""
     if model:  # a bonus check we can do if we already know the model
+        if isinstance(model, str):
+            model = apps.get_model(f"bookwyrm.{model}", require_ready=True)
         result = model.find_existing_by_remote_id(remote_id)
         if result and not refresh:
             return result if not get_activity else result.to_activity_dataclass()

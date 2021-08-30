@@ -303,6 +303,19 @@ class StatusViews(TestCase):
             '<a href="%s">openlibrary.org/search'
             "?q=arkady+strugatsky&mode=everything</a>" % url,
         )
+        url = "https://tech.lgbt/@bookwyrm"
+        self.assertEqual(
+            views.status.format_links(url), '<a href="%s">tech.lgbt/@bookwyrm</a>' % url
+        )
+        url = "https://users.speakeasy.net/~lion/nb/book.pdf"
+        self.assertEqual(
+            views.status.format_links(url),
+            '<a href="%s">users.speakeasy.net/~lion/nb/book.pdf</a>' % url,
+        )
+        url = "https://pkm.one/#/page/The%20Book%20which%20launched%20a%201000%20Note%20taking%20apps"
+        self.assertEqual(
+            views.status.format_links(url), '<a href="%s">%s</a>' % (url, url[8:])
+        )
 
     def test_to_markdown(self, *_):
         """this is mostly handled in other places, but nonetheless"""

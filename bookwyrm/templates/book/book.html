@@ -62,7 +62,7 @@
 
     <div class="columns">
         <div class="column is-one-fifth">
-            {% include 'snippets/book_cover.html' with book=book cover_class='is-h-m-mobile' %}
+            {% include 'snippets/book_cover.html' with size='xxlarge' size_mobile='medium' book=book cover_class='is-h-m-mobile' %}
             {% include 'snippets/rate_action.html' with user=request.user book=book %}
 
             <div class="mb-3">
@@ -134,7 +134,7 @@
                     <form name="add-description" method="POST" action="/add-description/{{ book.id }}">
                         {% csrf_token %}
                         <p class="fields is-grouped">
-                            <label class="label"for="id_description_{{ book.id }}">{% trans "Description:" %}</label>
+                            <label class="label" for="id_description_{{ book.id }}">{% trans "Description:" %}</label>
                             <textarea name="description" cols="None" rows="None" class="textarea" id="id_description_{{ book.id }}"></textarea>
                         </p>
                         <div class="field">

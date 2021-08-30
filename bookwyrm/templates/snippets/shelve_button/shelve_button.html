@@ -19,13 +19,13 @@
     {% endif %}
 </div>
 
-{% include 'snippets/shelve_button/want_to_read_modal.html' with book=active_shelf.book controls_text="want_to_read" controls_uid=uuid %}
+{% include 'snippets/reading_modals/want_to_read_modal.html' with book=active_shelf.book controls_text="want_to_read" controls_uid=uuid %}
 
-{% include 'snippets/shelve_button/start_reading_modal.html' with book=active_shelf.book controls_text="start_reading" controls_uid=uuid %}
+{% include 'snippets/reading_modals/start_reading_modal.html' with book=active_shelf.book controls_text="start_reading" controls_uid=uuid %}
 
-{% include 'snippets/shelve_button/finish_reading_modal.html' with book=active_shelf.book controls_text="finish_reading" controls_uid=uuid readthrough=readthrough %}
+{% include 'snippets/reading_modals/finish_reading_modal.html' with book=active_shelf.book controls_text="finish_reading" controls_uid=uuid readthrough=readthrough %}
 
-{% include 'snippets/shelve_button/progress_update_modal.html' with book=active_shelf_book.book controls_text="progress_update" controls_uid=uuid readthrough=readthrough %}
+{% include 'snippets/reading_modals/progress_update_modal.html' with book=active_shelf_book.book controls_text="progress_update" controls_uid=uuid readthrough=readthrough %}
 
 {% endwith %}
 {% endif %}

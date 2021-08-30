@@ -82,9 +82,9 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     preview_image = models.ImageField(
         upload_to="previews/avatars/", blank=True, null=True
     )
-    followers = fields.ManyToManyField(
+    followers_url = fields.CharField(max_length=255, activitypub_field="followers")
+    followers = models.ManyToManyField(
         "self",
-        link_only=True,
         symmetrical=False,
         through="UserFollows",
         through_fields=("user_object", "user_subject"),
@@ -103,6 +103,9 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         through="UserBlocks",
         through_fields=("user_subject", "user_object"),
         related_name="blocked_by",
+    )
+    saved_lists = models.ManyToManyField(
+        "List", symmetrical=False, related_name="saved_lists"
     )
     favorites = models.ManyToManyField(
         "Status",
@@ -225,7 +228,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
 
     def to_followers_activity(self, **kwargs):
         """activitypub followers list"""
-        remote_id = "%s/followers" % self.remote_id
+        remote_id = self.followers_url
         return self.to_ordered_collection(
             self.followers.order_by("-updated_date").all(),
             remote_id=remote_id,
@@ -272,10 +275,12 @@ class User(OrderedCollectionPageMixin, AbstractUser):
             return
 
         # populate fields for local users
-        self.remote_id = "%s/user/%s" % (site_link(), self.localname)
-        self.inbox = "%s/inbox" % self.remote_id
-        self.shared_inbox = "%s/inbox" % site_link()
-        self.outbox = "%s/outbox" % self.remote_id
+        link = site_link()
+        self.remote_id = f"{link}/user/{self.localname}"
+        self.followers_url = f"{self.remote_id}/followers"
+        self.inbox = f"{self.remote_id}/inbox"
+        self.shared_inbox = f"{link}/inbox"
+        self.outbox = f"{self.remote_id}/outbox"
 
         # an id needs to be set before we can proceed with related models
         super().save(*args, **kwargs)

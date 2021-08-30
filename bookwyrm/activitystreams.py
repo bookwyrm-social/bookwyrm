@@ -24,14 +24,15 @@ class ActivityStream(RedisStore):
         """statuses are sorted by date published"""
         return obj.published_date.timestamp()
 
-    def add_status(self, status):
+    def add_status(self, status, increment_unread=False):
         """add a status to users' feeds"""
         # the pipeline contains all the add-to-stream activities
         pipeline = self.add_object_to_related_stores(status, execute=False)
 
-        for user in self.get_audience(status):
-            # add to the unread status count
-            pipeline.incr(self.unread_id(user))
+        if increment_unread:
+            for user in self.get_audience(status):
+                # add to the unread status count
+                pipeline.incr(self.unread_id(user))
 
         # and go!
         pipeline.execute()
@@ -262,12 +263,14 @@ def add_status_on_create(sender, instance, created, *args, **kwargs):
         return
 
     # when creating new things, gotta wait on the transaction
-    transaction.on_commit(lambda: add_status_on_create_command(sender, instance))
+    transaction.on_commit(
+        lambda: add_status_on_create_command(sender, instance, created)
+    )
 
 
-def add_status_on_create_command(sender, instance):
+def add_status_on_create_command(sender, instance, created):
     """runs this code only after the database commit completes"""
-    add_status_task.delay(instance.id)
+    add_status_task.delay(instance.id, increment_unread_unread=created)
 
     if sender != models.Boost:
         return
@@ -440,11 +443,11 @@ def remove_status_task(status_ids):
 
 
 @app.task
-def add_status_task(status_id):
+def add_status_task(status_id, increment_unread=False):
     """remove a status from any stream it might be in"""
     status = models.Status.objects.get(id=status_id)
     for stream in streams.values():
-        stream.add_status(status)
+        stream.add_status(status, increment_unread=increment_unread)
 
 
 @app.task
