@@ -184,7 +184,7 @@ def format_links(content):
 
 
 def _wrapped(text):
-    """check if a line of text is wrapped in parentheses, square brackets or curly brackets. return wrapped status"""
+    """check if a line of text is wrapped"""
     wrappers = [("(", ")"), ("[", "]"), ("{", "}")]
     for wrapper in wrappers:
         if text[0] == wrapper[0] and text[-1] == wrapper[-1]:
