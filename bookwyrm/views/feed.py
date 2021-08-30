@@ -96,13 +96,9 @@ class Status(View):
         try:
             user = get_user_from_username(request.user, username)
             status = models.Status.objects.select_subclasses().get(
-                id=status_id, deleted=False
+                user=user, id=status_id, deleted=False
             )
         except (ValueError, models.Status.DoesNotExist):
-            return HttpResponseNotFound()
-
-        # the url should have the poster's username in it
-        if user != status.user:
             return HttpResponseNotFound()
 
         # make sure the user is authorized to see the status

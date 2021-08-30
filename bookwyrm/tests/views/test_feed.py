@@ -82,6 +82,27 @@ class FeedViews(TestCase):
 
         self.assertEqual(result.status_code, 404)
 
+    def test_status_page_not_found_wrong_user(self, *_):
+        """there are so many views, this just makes sure it LOADS"""
+        view = views.Status.as_view()
+        another_user = models.User.objects.create_user(
+            "rat@local.com",
+            "rat@rat.rat",
+            "password",
+            local=True,
+            localname="rat",
+        )
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+            status = models.Status.objects.create(content="hi", user=another_user)
+
+        request = self.factory.get("")
+        request.user = self.local_user
+        with patch("bookwyrm.views.feed.is_api_request") as is_api:
+            is_api.return_value = False
+            result = view(request, "mouse", status.id)
+
+        self.assertEqual(result.status_code, 404)
+
     def test_status_page_with_image(self, *_):
         """there are so many views, this just makes sure it LOADS"""
         view = views.Status.as_view()
