@@ -1,5 +1,7 @@
 """ what are we here for if not for posting """
 import re
+from urllib.parse import urlparse
+
 from django.contrib.auth.decorators import login_required
 from django.core.validators import URLValidator
 from django.core.exceptions import ValidationError
@@ -8,10 +10,8 @@ from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
 from django.views import View
+
 from markdown import markdown
-
-from urllib.parse import urlparse
-
 from bookwyrm import forms, models
 from bookwyrm.sanitize_html import InputHtmlParser
 from bookwyrm.settings import DOMAIN
@@ -153,7 +153,6 @@ def find_mentions(content):
 
 def format_links(content):
     """detect and format links"""
-    v = URLValidator()
     formatted_content = ""
     for potential_link in content.split():
         try:
@@ -187,8 +186,8 @@ def format_links(content):
 def _wrapped(text):
     """check if a line of text is wrapped in parentheses, square brackets or curly brackets. return wrapped status"""
     wrappers = [("(", ")"), ("[", "]"), ("{", "}")]
-    for w in wrappers:
-        if text[0] == w[0] and text[-1] == w[-1]:
+    for wrapper in wrappers:
+        if text[0] == wrapper[0] and text[-1] == wrapper[-1]:
             return True
     return False
 
