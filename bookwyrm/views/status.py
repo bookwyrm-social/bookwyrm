@@ -1,12 +1,17 @@
 """ what are we here for if not for posting """
 import re
 from django.contrib.auth.decorators import login_required
+from django.core.validators import URLValidator
+from django.core.exceptions import ValidationError
 from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
+from django.utils.html import urlize
 from django.views import View
 from markdown import markdown
+
+from urllib.parse import urlparse
 
 from bookwyrm import forms, models
 from bookwyrm.sanitize_html import InputHtmlParser
@@ -149,12 +154,43 @@ def find_mentions(content):
 
 def format_links(content):
     """detect and format links"""
-    return re.sub(
-        r'([^(href=")]|^|\()(https?:\/\/(%s([\w\.\-_\/+&\?=:;,@#])*))' % regex.DOMAIN,
-        r'\g<1><a href="\g<2>">\g<3></a>',
-        content,
-    )
+    v = URLValidator()
+    formatted_content = ""
+    for potential_link in content.split():
+        try:
+            # raises an error on anything that's not a valid 
+            URLValidator(potential_link)
+        except (ValidationError, UnicodeError):
+            formatted_content += potential_link + " "
+            continue
+        wrapped = _wrapped(potential_link)
+        if wrapped:
+            wrapper_close = potential_link[-1]
+            formatted_content += potential_link[0] 
+            potential_link = potential_link[1:-1]
 
+        # so we can use everything but the scheme in the presentation of the link
+        url = urlparse(potential_link)
+        link = url.netloc + url.path + url.params
+        if url.query != "":
+            link += "?" + url.query 
+        if url.fragment != "":
+            link += "#" + url.fragment
+
+        formatted_content += '<a href="%s">%s</a>' % (potential_link, link)
+
+        if wrapped:
+            formatted_content += wrapper_close 
+
+    return formatted_content
+
+def _wrapped(text):
+    """ check if a line of text is wrapped in parentheses, square brackets or curly brackets. return wrapped status """
+    wrappers = [("(", ")"), ("[","]"), ("{", "}")]
+    for w in wrappers:
+        if text[0] == w[0] and text[-1] == w[-1]:
+            return True 
+    return False
 
 def to_markdown(content):
     """catch links and convert to markdown"""
