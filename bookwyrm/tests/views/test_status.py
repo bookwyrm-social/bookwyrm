@@ -307,14 +307,14 @@ class StatusViews(TestCase):
         self.assertEqual(
             views.status.format_links(url), '<a href="%s">tech.lgbt/@bookwyrm</a>' % url
         )
-        url = "users.speakeasy.net/~lion/nb/book.pdf"
+        url = "https://users.speakeasy.net/~lion/nb/book.pdf"
         self.assertEqual(
             views.status.format_links(url),
             '<a href="%s">users.speakeasy.net/~lion/nb/book.pdf</a>' % url,
         )
-        url = "pkm.one/#/page/The%20Book%20which%20launched%20a%201000%20Note%20taking%20apps"
+        url = "https://pkm.one/#/page/The%20Book%20which%20launched%20a%201000%20Note%20taking%20apps"
         self.assertEqual(
-            views.status.format_links(url), '<a href="%s">%s</a>' % (url, url)
+            views.status.format_links(url), '<a href="%s">%s</a>' % (url, url[8:])
         )
 
     def test_to_markdown(self, *_):
