@@ -2,7 +2,7 @@
 {% load utilities %}
 {% spaceless %}
 
-{% if book.authors %}
+{% if book.authors.exists %}
 {% blocktrans trimmed with path=book.local_path title=book|book_title %}
 <a href="{{ path }}">{{ title }}</a> by
 {% endblocktrans %}

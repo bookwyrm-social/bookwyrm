@@ -43,7 +43,7 @@
                 </p>
             {% endif %}
 
-            {% if book.authors %}
+            {% if book.authors.exists %}
                 <div class="subtitle">
                     {% trans "by" %} {% include 'snippets/authors.html' with book=book %}
                 </div>
