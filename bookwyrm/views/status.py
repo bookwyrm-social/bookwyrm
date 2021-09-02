@@ -155,9 +155,11 @@ def format_links(content):
     """detect and format links"""
     validator = URLValidator()
     formatted_content = ""
-    split_content = content.split(" ")
+    split_content = re.split(r"(\s+)", content)
 
-    for index, potential_link in enumerate(split_content):
+    for potential_link in split_content:
+        if not potential_link:
+            continue
         wrapped = _wrapped(potential_link)
         if wrapped:
             wrapper_close = potential_link[-1]
@@ -182,8 +184,6 @@ def format_links(content):
 
         if wrapped:
             formatted_content += wrapper_close
-        if index < len(split_content) - 1:
-            formatted_content += " "
 
     return formatted_content
 

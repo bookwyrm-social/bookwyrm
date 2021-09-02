@@ -56,7 +56,7 @@ def truncatepath(value, arg):
 @register.simple_tag(takes_context=False)
 def get_book_cover_thumbnail(book, size="medium", ext="jpg"):
     """Returns a book thumbnail at the specified size and extension,
-       with fallback if needed"""
+    with fallback if needed"""
     if size == "":
         size = "medium"
     try:
