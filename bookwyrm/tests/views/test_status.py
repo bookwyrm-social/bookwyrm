@@ -281,7 +281,7 @@ class StatusViews(TestCase):
             ("@nutria@%s" % DOMAIN, user),
         )
 
-    def test_format_links(self, *_):
+    def test_format_links_simple_url(self, *_):
         """find and format urls into a tags"""
         url = "http://www.fish.com/"
         self.assertEqual(
@@ -291,6 +291,27 @@ class StatusViews(TestCase):
             views.status.format_links("(%s)" % url),
             '(<a href="%s">www.fish.com/</a>)' % url,
         )
+
+    def test_format_links_paragraph_break(self, *_):
+        """find and format urls into a tags"""
+        url = """okay
+
+http://www.fish.com/"""
+        self.assertEqual(
+            views.status.format_links(url),
+            'okay\n\n<a href="http://www.fish.com/">www.fish.com/</a>',
+        )
+
+    def test_format_links_parens(self, *_):
+        """find and format urls into a tags"""
+        url = "http://www.fish.com/"
+        self.assertEqual(
+            views.status.format_links("(%s)" % url),
+            '(<a href="%s">www.fish.com/</a>)' % url,
+        )
+
+    def test_format_links_special_chars(self, *_):
+        """find and format urls into a tags"""
         url = "https://archive.org/details/dli.granth.72113/page/n25/mode/2up"
         self.assertEqual(
             views.status.format_links(url),
