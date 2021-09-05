@@ -31,6 +31,7 @@ class ReadingStatus(View):
         }.get(status)
         if not template:
             return HttpResponseNotFound()
+        # redirect if we're already on this shelf
         return TemplateResponse(request, f"reading_progress/{template}", {"book": book})
 
     def post(self, request, status, book_id):
@@ -58,11 +59,15 @@ class ReadingStatus(View):
             )
             .first()
         )
+
+        referer = request.headers.get("Referer", "/")
+        if "reading-status" in referer:
+            referer = "/"
         if current_status_shelfbook is not None:
             if current_status_shelfbook.shelf.identifier != desired_shelf.identifier:
                 current_status_shelfbook.delete()
             else:  # It already was on the shelf
-                return redirect(request.headers.get("Referer", "/"))
+                return redirect(referer)
 
         models.ShelfBook.objects.create(
             book=book, shelf=desired_shelf, user=request.user
@@ -87,8 +92,7 @@ class ReadingStatus(View):
             else:
                 privacy = request.POST.get("privacy")
                 handle_reading_status(request.user, desired_shelf, book, privacy)
-
-        return redirect(request.headers.get("Referer", "/"))
+        return redirect(referer)
 
 
 @login_required
