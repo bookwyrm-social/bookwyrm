@@ -101,6 +101,8 @@ class QuotationForm(CustomForm):
             "content_warning",
             "sensitive",
             "privacy",
+            "position",
+            "position_mode",
         ]
 
 

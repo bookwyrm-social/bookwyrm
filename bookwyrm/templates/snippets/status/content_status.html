@@ -2,6 +2,7 @@
 {% load markdown %}
 {% load i18n %}
 {% load static %}
+{% load humanize %}
 
 {% with status_type=status.status_type %}
 <div
@@ -95,7 +96,16 @@
                     <div class="quote block">
                         <blockquote dir="auto" class="content mb-2">{{ status.quote|safe }}</blockquote>
 
-                        <p> &mdash; {% include 'snippets/book_titleby.html' with book=status.book %}</p>
+                        <p>
+                            &mdash; {% include 'snippets/book_titleby.html' with book=status.book %}
+                            {% if status.position %}
+                                {% if status.position_mode == 'PG' %}
+                                    {% blocktrans with page=status.position|intcomma %}(Page {{ page }}){% endblocktrans %}
+                                {% else %}
+                                    {% blocktrans with percent=status.position %}({{ percent }}%){% endblocktrans %}
+                                {% endif %}
+                            {% endif %}
+                        </p>
                     </div>
                 {% endif %}
 
