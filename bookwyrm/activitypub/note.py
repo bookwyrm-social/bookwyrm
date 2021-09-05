@@ -70,6 +70,8 @@ class Quotation(Comment):
     """a quote and commentary on a book"""
 
     quote: str
+    position: int = None
+    positionMode: str = None
     type: str = "Quotation"
 
 
