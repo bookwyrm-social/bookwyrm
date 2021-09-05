@@ -24,6 +24,10 @@ server {
 #     listen 443 ssl http2;
 #
 #     server_name your-domain.com;
+
+#     if ($host != "you-domain.com") {
+#         return 301 $scheme://your-domain.com$request_uri;
+#     }
 #
 #     # SSL code
 #     ssl_certificate /etc/nginx/ssl/live/your-domain.com/fullchain.pem;

@@ -290,6 +290,16 @@ class Quotation(BookStatus):
     """like a review but without a rating and transient"""
 
     quote = fields.HtmlField()
+    position = models.IntegerField(
+        validators=[MinValueValidator(0)], null=True, blank=True
+    )
+    position_mode = models.CharField(
+        max_length=3,
+        choices=ProgressMode.choices,
+        default=ProgressMode.PAGE,
+        null=True,
+        blank=True,
+    )
 
     @property
     def pure_content(self):

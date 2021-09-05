@@ -11,8 +11,6 @@ draft: the content of an existing Status object to be edited (used in delete and
 uuid: a unique identifier used to make html "id" attributes unique and clarify javascript controls
 {% endcomment %}
 
-{% with type="review" %}
-
 {% block pre_content_additions %}
     <div class="field">
         <label class="label" for="id_name_{{ book.id }}">{% trans "Title:" %}</label>
@@ -31,5 +29,3 @@ uuid: a unique identifier used to make html "id" attributes unique and clarify j
 {% block content_label %}
     {% trans "Review:" %}
 {% endblock %}
-
-{% endwith %}
