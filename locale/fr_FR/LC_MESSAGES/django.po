@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.1.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-05 21:43+0000\n"
+"POT-Creation-Date: 2021-09-05 23:09+0000\n"
 "PO-Revision-Date: 2021-04-05 12:44+0100\n"
 "Last-Translator: Fabien Basmaison <contact@arkhi.org>\n"
 "Language-Team: Mouse Reeve <LL@li.org>\n"
@@ -18,59 +18,59 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: bookwyrm/forms.py:233
+#: bookwyrm/forms.py:235
 msgid "A user with this email already exists."
 msgstr "Cet email est déjà associé à un compte."
 
-#: bookwyrm/forms.py:247
+#: bookwyrm/forms.py:249
 msgid "One Day"
 msgstr "Un jour"
 
-#: bookwyrm/forms.py:248
+#: bookwyrm/forms.py:250
 msgid "One Week"
 msgstr "Une semaine"
 
-#: bookwyrm/forms.py:249
+#: bookwyrm/forms.py:251
 msgid "One Month"
 msgstr "Un mois"
 
-#: bookwyrm/forms.py:250
+#: bookwyrm/forms.py:252
 msgid "Does Not Expire"
 msgstr "Sans expiration"
 
-#: bookwyrm/forms.py:255
+#: bookwyrm/forms.py:257
 #, python-format
 msgid "%(count)d uses"
 msgstr "%(count)d utilisations"
 
-#: bookwyrm/forms.py:258
+#: bookwyrm/forms.py:260
 msgid "Unlimited"
 msgstr "Sans limite"
 
-#: bookwyrm/forms.py:308
+#: bookwyrm/forms.py:310
 msgid "List Order"
 msgstr "Ordre de la liste"
 
-#: bookwyrm/forms.py:309
+#: bookwyrm/forms.py:311
 msgid "Book Title"
 msgstr "Titre du livre"
 
-#: bookwyrm/forms.py:310
-#: bookwyrm/templates/snippets/create_status/review.html:25
+#: bookwyrm/forms.py:312
+#: bookwyrm/templates/snippets/create_status/review.html:23
 #: bookwyrm/templates/user/shelf/shelf.html:117
 #: bookwyrm/templates/user/shelf/shelf.html:148
 msgid "Rating"
 msgstr "Note"
 
-#: bookwyrm/forms.py:312 bookwyrm/templates/lists/list.html:107
+#: bookwyrm/forms.py:314 bookwyrm/templates/lists/list.html:107
 msgid "Sort By"
 msgstr "Trier par"
 
-#: bookwyrm/forms.py:316
+#: bookwyrm/forms.py:318
 msgid "Ascending"
 msgstr "Ordre croissant"
 
-#: bookwyrm/forms.py:317
+#: bookwyrm/forms.py:319
 msgid "Descending"
 msgstr "Ordre décroissant"
 
@@ -495,7 +495,7 @@ msgid "Back"
 msgstr "Retour"
 
 #: bookwyrm/templates/book/edit_book.html:127
-#: bookwyrm/templates/snippets/create_status/review.html:18
+#: bookwyrm/templates/snippets/create_status/review.html:16
 msgid "Title:"
 msgstr "Titre :"
 
@@ -2494,19 +2494,19 @@ msgstr ""
 msgid "Progress:"
 msgstr "Progression :"
 
-#: bookwyrm/templates/snippets/create_status/comment.html:34
+#: bookwyrm/templates/snippets/create_status/comment.html:47
 #: bookwyrm/templates/snippets/reading_modals/progress_update_modal.html:30
 #: bookwyrm/templates/snippets/readthrough_form.html:22
 msgid "pages"
 msgstr "pages"
 
-#: bookwyrm/templates/snippets/create_status/comment.html:35
+#: bookwyrm/templates/snippets/create_status/comment.html:53
 #: bookwyrm/templates/snippets/reading_modals/progress_update_modal.html:31
 #: bookwyrm/templates/snippets/readthrough_form.html:23
 msgid "percent"
 msgstr "pourcent"
 
-#: bookwyrm/templates/snippets/create_status/comment.html:41
+#: bookwyrm/templates/snippets/create_status/comment.html:60
 #: bookwyrm/templates/snippets/reading_modals/progress_update_modal.html:36
 #, python-format
 msgid "of %(pages)s pages"
@@ -2551,23 +2551,41 @@ msgstr "Privé"
 msgid "Post"
 msgstr "Publier"
 
-#: bookwyrm/templates/snippets/create_status/quotation.html:19
+#: bookwyrm/templates/snippets/create_status/quotation.html:17
 msgid "Quote:"
 msgstr "Citation :"
 
-#: bookwyrm/templates/snippets/create_status/quotation.html:27
+#: bookwyrm/templates/snippets/create_status/quotation.html:25
 #, fuzzy, python-format
 #| msgid "Edit \"%(book_title)s\""
 msgid "An excerpt from '%(book_title)s'"
 msgstr "Modifier « %(book_title)s »"
 
-#: bookwyrm/templates/snippets/create_status/review.html:20
+#: bookwyrm/templates/snippets/create_status/quotation.html:31
+#, fuzzy
+#| msgid "Description:"
+msgid "Position:"
+msgstr "Description :"
+
+#: bookwyrm/templates/snippets/create_status/quotation.html:40
+#, fuzzy
+#| msgid "pages"
+msgid "On page:"
+msgstr "pages"
+
+#: bookwyrm/templates/snippets/create_status/quotation.html:46
+#, fuzzy
+#| msgid "percent"
+msgid "At percent:"
+msgstr "pourcent"
+
+#: bookwyrm/templates/snippets/create_status/review.html:18
 #, fuzzy, python-format
 #| msgid "Editions of %(book_title)s"
 msgid "Your review of '%(book_title)s'"
 msgstr "Éditions de %(book_title)s"
 
-#: bookwyrm/templates/snippets/create_status/review.html:32
+#: bookwyrm/templates/snippets/create_status/review.html:30
 msgid "Review:"
 msgstr "Critique :"
 
@@ -2844,17 +2862,29 @@ msgstr "Je veux le lire"
 msgid "Remove from %(name)s"
 msgstr "Retirer de %(name)s"
 
-#: bookwyrm/templates/snippets/status/content_status.html:72
+#: bookwyrm/templates/snippets/status/content_status.html:73
 #: bookwyrm/templates/snippets/trimmed_text.html:17
 msgid "Show more"
 msgstr "Déplier"
 
-#: bookwyrm/templates/snippets/status/content_status.html:87
+#: bookwyrm/templates/snippets/status/content_status.html:88
 #: bookwyrm/templates/snippets/trimmed_text.html:34
 msgid "Show less"
 msgstr "Replier"
 
-#: bookwyrm/templates/snippets/status/content_status.html:117
+#: bookwyrm/templates/snippets/status/content_status.html:103
+#, fuzzy, python-format
+#| msgid "page %(page)s"
+msgid "(Page %(page)s)"
+msgstr "page %(page)s"
+
+#: bookwyrm/templates/snippets/status/content_status.html:105
+#, fuzzy, python-format
+#| msgid "%(percent)s%% complete!"
+msgid "(%(percent)s%%)"
+msgstr "%(percent)s%% terminé !"
+
+#: bookwyrm/templates/snippets/status/content_status.html:127
 msgid "Open image in new window"
 msgstr "Ouvrir l’image dans une nouvelle fenêtre"
 
