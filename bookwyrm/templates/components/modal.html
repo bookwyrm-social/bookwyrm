@@ -14,7 +14,11 @@
             <h2 class="modal-card-title is-flex-shrink-1" id="modal_card_title_{{ controls_text }}_{{ controls_uid }}">
                 {% block modal-title %}{% endblock %}
             </h2>
-            {% include 'snippets/toggle/toggle_button.html' with label=label class="delete" nonbutton=True %}
+            {% if static %}
+                <a href="/" class="delete">{{ label }}</a>
+            {% else %}
+                {% include 'snippets/toggle/toggle_button.html' with label=label class="delete" nonbutton=True %}
+            {% endif %}
         </header>
         {% block modal-form-open %}{% endblock %}
         {% if not no_body %}
@@ -27,6 +31,10 @@
         </footer>
         {% block modal-form-close %}{% endblock %}
     </div>
-    {% include 'snippets/toggle/toggle_button.html' with label=label class="modal-close is-large" nonbutton=True %}
+    {% if static %}
+        <a href="/" class="modal-close is-large">{{ label }}</a>
+    {% else %}
+        {% include 'snippets/toggle/toggle_button.html' with label=label class="modal-close is-large" nonbutton=True %}
+    {% endif %}
 </div>
 
