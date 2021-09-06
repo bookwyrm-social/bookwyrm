@@ -69,20 +69,21 @@ class ListActionViews(TestCase):
 
     def test_delete_list(self):
         """delete an entire list"""
-        models.ListItem.objects.create(
-            book_list=self.list,
-            user=self.local_user,
-            book=self.book,
-            approved=True,
-            order=1,
-        )
-        models.ListItem.objects.create(
-            book_list=self.list,
-            user=self.local_user,
-            book=self.book_two,
-            approved=False,
-            order=2,
-        )
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+            models.ListItem.objects.create(
+                book_list=self.list,
+                user=self.local_user,
+                book=self.book,
+                approved=True,
+                order=1,
+            )
+            models.ListItem.objects.create(
+                book_list=self.list,
+                user=self.local_user,
+                book=self.book_two,
+                approved=False,
+                order=2,
+            )
         request = self.factory.post("")
         request.user = self.local_user
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay") as mock:
