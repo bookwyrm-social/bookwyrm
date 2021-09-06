@@ -16,6 +16,7 @@ class Discover(View):
 
     def get(self, request):
         """tiled book activity page"""
+        # all activities in the "federated" feed associated with a book
         activities = (
             activitystreams.streams["local"]
             .get_activity_stream(request.user)
@@ -29,13 +30,19 @@ class Discover(View):
 
         large_activities = Paginator(
             activities.filter(mention_books__isnull=True)
-            .exclude(content=None, quotation__quote=None)
-            .exclude(content=""),
+            # exclude statuses with no user-provided content for large panels
+            .exclude(
+                Q(Q(content="") | Q(content__isnull=True)) & Q(quotation__isnull=True),
+            ),
             6,
         )
         small_activities = Paginator(
             activities.filter(
-                Q(mention_books__isnull=False) | Q(content=None) | Q(content="")
+                Q(mention_books__isnull=False)
+                | Q(
+                    Q(Q(content="") | Q(content__isnull=True))
+                    & Q(quotation__isnull=True),
+                )
             ),
             4,
         )
