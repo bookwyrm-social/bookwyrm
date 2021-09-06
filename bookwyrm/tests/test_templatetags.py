@@ -22,7 +22,9 @@ class TemplateTags(TestCase):
 
     def setUp(self):
         """create some filler objects"""
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
+            "bookwyrm.activitystreams.populate_stream_task.delay"
+        ):
             self.user = models.User.objects.create_user(
                 "mouse@example.com",
                 "mouse@mouse.mouse",

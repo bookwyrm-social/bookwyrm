@@ -30,7 +30,9 @@ class GoodreadsImport(TestCase):
         self.importer = GoodreadsImporter()
         datafile = pathlib.Path(__file__).parent.joinpath("../data/goodreads.csv")
         self.csv = open(datafile, "r", encoding=self.importer.encoding)
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
+            "bookwyrm.activitystreams.populate_stream_task.delay"
+        ):
             self.user = models.User.objects.create_user(
                 "mouse", "mouse@mouse.mouse", "password", local=True
             )

@@ -31,7 +31,9 @@ class LibrarythingImport(TestCase):
 
         # Librarything generates latin encoded exports...
         self.csv = open(datafile, "r", encoding=self.importer.encoding)
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
+            "bookwyrm.activitystreams.populate_stream_task.delay"
+        ):
             self.user = models.User.objects.create_user(
                 "mmai", "mmai@mmai.mmai", "password", local=True
             )

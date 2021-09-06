@@ -17,7 +17,9 @@ class UserViews(TestCase):
     def setUp(self):
         """we need basic test data and mocks"""
         self.factory = RequestFactory()
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
+            "bookwyrm.activitystreams.populate_stream_task.delay"
+        ):
             self.local_user = models.User.objects.create_user(
                 "mouse@local.com",
                 "mouse@mouse.mouse",
@@ -32,7 +34,9 @@ class UserViews(TestCase):
             title="test", parent_work=models.Work.objects.create(title="test work")
         )
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-            with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
+            with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
+                "bookwyrm.activitystreams.populate_stream_task.delay"
+            ):
                 models.ShelfBook.objects.create(
                     book=self.book,
                     user=self.local_user,

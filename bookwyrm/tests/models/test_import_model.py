@@ -59,7 +59,9 @@ class ImportJob(TestCase):
         unknown_read_data["Exclusive Shelf"] = "read"
         unknown_read_data["Date Read"] = ""
 
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
+            "bookwyrm.activitystreams.populate_stream_task.delay"
+        ):
             user = models.User.objects.create_user(
                 "mouse", "mouse@mouse.mouse", "mouseword", local=True, localname="mouse"
             )
