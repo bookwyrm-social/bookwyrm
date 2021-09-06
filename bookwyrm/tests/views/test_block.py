@@ -59,7 +59,7 @@ class BlockViews(TestCase):
 
         request = self.factory.post("")
         request.user = self.local_user
-        with patch("bookwyrm.activitystreams.ActivityStream.remove_user_statuses"):
+        with patch("bookwyrm.activitystreams.remove_user_statuses_task.delay"):
             view(request, self.remote_user.id)
         block = models.UserBlocks.objects.get()
         self.assertEqual(block.user_subject, self.local_user)
@@ -74,7 +74,7 @@ class BlockViews(TestCase):
         request = self.factory.post("")
         request.user = self.local_user
 
-        with patch("bookwyrm.activitystreams.ActivityStream.add_user_statuses"):
+        with patch("bookwyrm.activitystreams.add_user_statuses_task.delay"):
             views.block.unblock(request, self.remote_user.id)
 
         self.assertFalse(models.UserBlocks.objects.exists())

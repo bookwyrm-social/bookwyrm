@@ -10,6 +10,7 @@ from django.test.client import RequestFactory
 from bookwyrm import models, views
 
 
+@patch("bookwyrm.activitystreams.add_user_statuses_task.delay")
 class FollowViews(TestCase):
     """follows"""
 
@@ -52,7 +53,7 @@ class FollowViews(TestCase):
             parent_work=self.work,
         )
 
-    def test_handle_follow_remote(self):
+    def test_handle_follow_remote(self, _):
         """send a follow request"""
         request = self.factory.post("", {"user": self.remote_user.username})
         request.user = self.local_user
@@ -67,7 +68,7 @@ class FollowViews(TestCase):
         self.assertEqual(rel.user_object, self.remote_user)
         self.assertEqual(rel.status, "follow_request")
 
-    def test_handle_follow_local_manually_approves(self):
+    def test_handle_follow_local_manually_approves(self, _):
         """send a follow request"""
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
@@ -93,7 +94,7 @@ class FollowViews(TestCase):
         self.assertEqual(rel.user_object, rat)
         self.assertEqual(rel.status, "follow_request")
 
-    def test_handle_follow_local(self):
+    def test_handle_follow_local(self, _):
         """send a follow request"""
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
@@ -119,7 +120,8 @@ class FollowViews(TestCase):
         self.assertEqual(rel.user_object, rat)
         self.assertEqual(rel.status, "follows")
 
-    def test_handle_unfollow(self):
+    @patch("bookwyrm.activitystreams.remove_user_statuses_task.delay")
+    def test_handle_unfollow(self, *_):
         """send an unfollow"""
         request = self.factory.post("", {"user": self.remote_user.username})
         request.user = self.local_user
@@ -133,7 +135,7 @@ class FollowViews(TestCase):
 
         self.assertEqual(self.remote_user.followers.count(), 0)
 
-    def test_handle_accept(self):
+    def test_handle_accept(self, _):
         """accept a follow request"""
         self.local_user.manually_approves_followers = True
         self.local_user.save(
@@ -152,7 +154,7 @@ class FollowViews(TestCase):
         # follow relationship should exist
         self.assertEqual(self.local_user.followers.first(), self.remote_user)
 
-    def test_handle_reject(self):
+    def test_handle_reject(self, _):
         """reject a follow request"""
         self.local_user.manually_approves_followers = True
         self.local_user.save(

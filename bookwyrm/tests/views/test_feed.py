@@ -172,14 +172,15 @@ class FeedViews(TestCase):
         result.render()
         self.assertEqual(result.status_code, 200)
 
+    @patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
+    @patch("bookwyrm.activitystreams.add_book_statuses_task.delay")
     def test_get_suggested_book(self, *_):
         """gets books the ~*~ algorithm ~*~ thinks you want to post about"""
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-            models.ShelfBook.objects.create(
-                book=self.book,
-                user=self.local_user,
-                shelf=self.local_user.shelf_set.get(identifier="reading"),
-            )
+        models.ShelfBook.objects.create(
+            book=self.book,
+            user=self.local_user,
+            shelf=self.local_user.shelf_set.get(identifier="reading"),
+        )
         suggestions = views.feed.get_suggested_books(self.local_user)
         self.assertEqual(suggestions[0]["name"], "Currently Reading")
         self.assertEqual(suggestions[0]["books"][0], self.book)

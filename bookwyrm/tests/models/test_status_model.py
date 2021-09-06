@@ -16,7 +16,7 @@ from bookwyrm import activitypub, models, settings
 # pylint: disable=too-many-public-methods
 @patch("bookwyrm.models.Status.broadcast")
 @patch("bookwyrm.activitystreams.add_status_task.delay")
-@patch("bookwyrm.activitystreams.ActivityStream.remove_object_from_related_stores")
+@patch("bookwyrm.activitystreams.remove_status_task.delay")
 class Status(TestCase):
     """lotta types of statuses"""
 
@@ -120,15 +120,12 @@ class Status(TestCase):
 
     def test_status_to_activity_tombstone(self, *_):
         """subclass of the base model version with a "pure" serializer"""
-        with patch(
-            "bookwyrm.activitystreams.ActivityStream.remove_object_from_related_stores"
-        ):
-            status = models.Status.objects.create(
-                content="test content",
-                user=self.local_user,
-                deleted=True,
-                deleted_date=timezone.now(),
-            )
+        status = models.Status.objects.create(
+            content="test content",
+            user=self.local_user,
+            deleted=True,
+            deleted_date=timezone.now(),
+        )
         activity = status.to_activity()
         self.assertEqual(activity["id"], status.remote_id)
         self.assertEqual(activity["type"], "Tombstone")

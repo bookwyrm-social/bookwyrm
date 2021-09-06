@@ -8,7 +8,7 @@ from bookwyrm import models, views
 
 
 @patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
-@patch("bookwyrm.activitystreams.remove_object_from_related_stores")
+@patch("bookwyrm.activitystreams.remove_status_task.delay")
 class InteractionViews(TestCase):
     """viewing and creating statuses"""
 
@@ -173,17 +173,12 @@ class InteractionViews(TestCase):
         request.user = self.remote_user
         status = models.Status.objects.create(user=self.local_user, content="hi")
 
-        with patch(
-            "bookwyrm.activitystreams.ActivityStream.remove_object_from_related_stores"
-        ):
-            views.Boost.as_view()(request, status.id)
+        views.Boost.as_view()(request, status.id)
 
         self.assertEqual(models.Boost.objects.count(), 1)
         self.assertEqual(models.Notification.objects.count(), 1)
-        with patch(
-            "bookwyrm.activitystreams.ActivityStream.remove_object_from_related_stores"
-        ) as redis_mock:
-            view(request, status.id)
-            self.assertTrue(redis_mock.called)
+
+        view(request, status.id)
+
         self.assertEqual(models.Boost.objects.count(), 0)
         self.assertEqual(models.Notification.objects.count(), 0)
