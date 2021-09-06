@@ -12,6 +12,7 @@ from bookwyrm.suggested_users import suggested_users, get_annotated_users
 @patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
 @patch("bookwyrm.activitystreams.add_status_task.delay")
 @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
+@patch("bookwyrm.activitystreams.populate_stream_task.delay")
 @patch("bookwyrm.suggested_users.rerank_user_task.delay")
 @patch("bookwyrm.suggested_users.remove_user_task.delay")
 class SuggestedUsers(TestCase):

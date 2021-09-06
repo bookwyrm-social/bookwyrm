@@ -14,6 +14,7 @@ from bookwyrm.settings import DOMAIN
 
 # pylint: disable=too-many-public-methods
 @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
+@patch("bookwyrm.activitystreams.populate_stream_task.delay")
 class AuthenticationViews(TestCase):
     """login and password management"""
 

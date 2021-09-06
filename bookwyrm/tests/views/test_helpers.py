@@ -13,6 +13,7 @@ from bookwyrm.settings import USER_AGENT
 
 @patch("bookwyrm.activitystreams.add_status_task.delay")
 @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
+@patch("bookwyrm.activitystreams.populate_stream_task.delay")
 @patch("bookwyrm.suggested_users.rerank_user_task.delay")
 class ViewsHelpers(TestCase):
     """viewing and creating statuses"""

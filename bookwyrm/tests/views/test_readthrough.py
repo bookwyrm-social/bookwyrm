@@ -8,6 +8,7 @@ from bookwyrm import models
 
 
 @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
+@patch("bookwyrm.activitystreams.populate_stream_task.delay")
 @patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
 class ReadThrough(TestCase):
     """readthrough tests"""

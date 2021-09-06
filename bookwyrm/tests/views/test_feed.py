@@ -17,6 +17,7 @@ from bookwyrm.activitypub import ActivitypubResponse
 @patch("bookwyrm.activitystreams.ActivityStream.get_activity_stream")
 @patch("bookwyrm.activitystreams.add_status_task.delay")
 @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
+@patch("bookwyrm.activitystreams.populate_stream_task.delay")
 @patch("bookwyrm.suggested_users.remove_user_task.delay")
 class FeedViews(TestCase):
     """activity feed, statuses, dms"""

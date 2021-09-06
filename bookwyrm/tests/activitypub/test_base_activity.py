@@ -23,6 +23,7 @@ from bookwyrm import models
 @patch("bookwyrm.suggested_users.rerank_user_task.delay")
 @patch("bookwyrm.suggested_users.remove_user_task.delay")
 @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
+@patch("bookwyrm.activitystreams.populate_stream_task.delay")
 class BaseActivity(TestCase):
     """the super class for model-linked activitypub dataclasses"""
 
