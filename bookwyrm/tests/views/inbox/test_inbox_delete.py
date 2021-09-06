@@ -40,14 +40,6 @@ class InboxActivities(TestCase):
                 remote_id="https://example.com/status/1",
             )
 
-        self.create_json = {
-            "id": "hi",
-            "type": "Create",
-            "actor": "hi",
-            "to": ["https://www.w3.org/ns/activitystreams#public"],
-            "cc": ["https://example.com/user/mouse/followers"],
-            "object": {},
-        }
         models.SiteSettings.objects.create()
 
     def test_delete_status(self):
@@ -137,3 +129,30 @@ class InboxActivities(TestCase):
         # nothing happens.
         views.inbox.activity_task(activity)
         self.assertEqual(models.User.objects.filter(is_active=True).count(), 2)
+
+    def test_delete_list(self):
+        """delete a list"""
+        book_list = models.List.objects.create(
+            name="test list",
+            user=self.remote_user,
+            remote_id="https://example.com/list/1",
+        )
+        activity = {
+            "@context": "https://www.w3.org/ns/activitystreams",
+            "id": "https://example.com/users/test-user#delete",
+            "type": "Delete",
+            "actor": "https://example.com/users/test-user",
+            "to": ["https://www.w3.org/ns/activitystreams#Public"],
+            "object": {
+                "id": book_list.remote_id,
+                "owner": self.remote_user.remote_id,
+                "type": "BookList",
+                "totalItems": 0,
+                "first": "",
+                "name": "test list",
+                "to": [],
+                "cc": [],
+            },
+        }
+        views.inbox.activity_task(activity)
+        self.assertFalse(models.List.objects.exists())

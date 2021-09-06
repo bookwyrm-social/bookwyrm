@@ -3,6 +3,7 @@ from typing import Optional
 from urllib.parse import urlencode
 
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator
 from django.db import IntegrityError, transaction
 from django.db.models import Avg, Count, DecimalField, Q, Max
@@ -258,6 +259,20 @@ def unsave_list(request, list_id):
     book_list = get_object_or_404(models.List, id=list_id)
     request.user.saved_lists.remove(book_list)
     return redirect("list", list_id)
+
+
+@require_POST
+@login_required
+def delete_list(request, list_id):
+    """delete a list"""
+    book_list = get_object_or_404(models.List, id=list_id)
+
+    # only the owner or a moderator can delete a list
+    if book_list.user != request.user and not request.user.has_perm("moderate_post"):
+        raise PermissionDenied
+
+    book_list.delete()
+    return redirect("lists")
 
 
 @require_POST
