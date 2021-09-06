@@ -272,16 +272,8 @@ def add_status_on_create_command(sender, instance, created):
     """runs this code only after the database commit completes"""
     add_status_task.delay(instance.id, increment_unread_unread=created)
 
-    if sender != models.Boost:
-        return
-    # remove the original post and other, earlier boosts
-    boosted = instance.boost.boosted_status
-    old_versions = models.Boost.objects.filter(
-        boosted_status__id=boosted.id,
-        created_date__lt=instance.created_date,
-    ).values_list("id", flat=True)
-    remove_status_task.delay(boosted.id)
-    remove_status_task.delay(old_versions)
+    if sender == models.Boost:
+        handle_boost_task.delay(instance.id)
 
 
 @receiver(signals.post_delete, sender=models.Boost)
@@ -466,3 +458,21 @@ def add_user_statuses_task(viewer_id, user_id, stream_list=None):
     user = models.User.objects.get(id=user_id)
     for stream in stream_list:
         stream.add_user_statuses(viewer, user)
+
+
+@app.task
+def handle_boost_task(boost_id):
+    """remove the original post and other, earlier boosts"""
+    instance = models.Status.objects.get(id=boost_id)
+    boosted = instance.boost.boosted_status.id
+
+    old_versions = models.Boost.objects.filter(
+        boosted_status__id=boosted.id,
+        created_date__lt=instance.created_date,
+    ).values_list("id", flat=True)
+
+    for stream in streams.values():
+        audience = stream.get_stores_for_object(instance)
+        stream.remove_object_from_related_stores(boosted, stores=audience)
+        for status in old_versions:
+            stream.remove_object_from_related_stores(status, stores=audience)
