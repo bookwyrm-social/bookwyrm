@@ -369,6 +369,16 @@ class OrderedCollectionMixin(OrderedCollectionPageMixin):
         if self.user.local and broadcast:
             self.broadcast(activity, self.user)
 
+    def to_delete_activity(self, user):
+        """notice of deletion"""
+        return activitypub.Delete(
+            id=self.remote_id + "/activity",
+            actor=user.remote_id,
+            to=["%s/followers" % user.remote_id],
+            cc=["https://www.w3.org/ns/activitystreams#Public"],
+            object=self.remote_id,
+        ).serialize()
+
 
 class CollectionItemMixin(ActivitypubMixin):
     """for items that are part of an (Ordered)Collection"""
