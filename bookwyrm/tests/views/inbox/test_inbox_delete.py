@@ -142,7 +142,7 @@ class InboxActivities(TestCase):
             "type": "Delete",
             "actor": "https://example.com/users/test-user",
             "to": ["https://www.w3.org/ns/activitystreams#Public"],
-            "object": book_list.remote_id,
+            "object": {"id": book_list.remote_id, "type": "List"}
         }
         views.inbox.activity_task(activity)
         self.assertFalse(models.List.objects.exists())

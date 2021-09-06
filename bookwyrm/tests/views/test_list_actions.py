@@ -90,7 +90,7 @@ class ListActionViews(TestCase):
         activity = json.loads(mock.call_args[0][1])
         self.assertEqual(activity["type"], "Delete")
         self.assertEqual(activity["actor"], self.local_user.remote_id)
-        self.assertEqual(activity["object"], self.list.remote_id)
+        self.assertEqual(activity["object"]["id"], self.list.remote_id)
 
         self.assertEqual(mock.call_count, 1)
         self.assertFalse(models.List.objects.exists())
