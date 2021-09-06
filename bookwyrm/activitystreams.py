@@ -270,7 +270,7 @@ def add_status_on_create(sender, instance, created, *args, **kwargs):
 
 def add_status_on_create_command(sender, instance, created):
     """runs this code only after the database commit completes"""
-    add_status_task.delay(instance.id, increment_unread_unread=created)
+    add_status_task.delay(instance.id, increment_unread=created)
 
     if sender == models.Boost:
         handle_boost_task.delay(instance.id)
