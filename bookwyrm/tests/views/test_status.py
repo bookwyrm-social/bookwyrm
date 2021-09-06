@@ -378,7 +378,7 @@ class StatusViews(TestCase):
         status.refresh_from_db()
         self.assertFalse(status.deleted)
 
-    def test_handle_delete_status_moderator(self, mock, _):
+    def test_handle_delete_status_moderator(self, mock, *_):
         """marks a status as deleted"""
         view = views.DeleteStatus.as_view()
         with patch("bookwyrm.activitystreams.add_status_task.delay"):

@@ -38,7 +38,7 @@ class AuthenticationViews(TestCase):
             id=1, require_confirm_email=False
         )
 
-    def test_login_get(self, _):
+    def test_login_get(self, *_):
         """there are so many views, this just makes sure it LOADS"""
         login = views.Login.as_view()
         request = self.factory.get("")
@@ -54,7 +54,7 @@ class AuthenticationViews(TestCase):
         self.assertEqual(result.url, "/")
         self.assertEqual(result.status_code, 302)
 
-    def test_login_post_localname(self, _):
+    def test_login_post_localname(self, *_):
         """there are so many views, this just makes sure it LOADS"""
         view = views.Login.as_view()
         form = forms.LoginForm()
@@ -68,7 +68,7 @@ class AuthenticationViews(TestCase):
         self.assertEqual(result.url, "/")
         self.assertEqual(result.status_code, 302)
 
-    def test_login_post_username(self, _):
+    def test_login_post_username(self, *_):
         """there are so many views, this just makes sure it LOADS"""
         view = views.Login.as_view()
         form = forms.LoginForm()
@@ -82,7 +82,7 @@ class AuthenticationViews(TestCase):
         self.assertEqual(result.url, "/")
         self.assertEqual(result.status_code, 302)
 
-    def test_login_post_email(self, _):
+    def test_login_post_email(self, *_):
         """there are so many views, this just makes sure it LOADS"""
         view = views.Login.as_view()
         form = forms.LoginForm()
@@ -96,7 +96,7 @@ class AuthenticationViews(TestCase):
         self.assertEqual(result.url, "/")
         self.assertEqual(result.status_code, 302)
 
-    def test_login_post_invalid_credentials(self, _):
+    def test_login_post_invalid_credentials(self, *_):
         """there are so many views, this just makes sure it LOADS"""
         view = views.Login.as_view()
         form = forms.LoginForm()
@@ -114,7 +114,7 @@ class AuthenticationViews(TestCase):
             "Username or password are incorrect",
         )
 
-    def test_register(self, _):
+    def test_register(self, *_):
         """create a user"""
         view = views.Register.as_view()
         self.assertEqual(models.User.objects.count(), 1)
@@ -162,7 +162,7 @@ class AuthenticationViews(TestCase):
         self.assertEqual(nutria.deactivation_reason, "pending")
         self.assertIsNotNone(nutria.confirmation_code)
 
-    def test_register_trailing_space(self, _):
+    def test_register_trailing_space(self, *_):
         """django handles this so weirdly"""
         view = views.Register.as_view()
         request = self.factory.post(
@@ -178,7 +178,7 @@ class AuthenticationViews(TestCase):
         self.assertEqual(nutria.localname, "nutria")
         self.assertEqual(nutria.local, True)
 
-    def test_register_invalid_email(self, _):
+    def test_register_invalid_email(self, *_):
         """gotta have an email"""
         view = views.Register.as_view()
         self.assertEqual(models.User.objects.count(), 1)
@@ -189,7 +189,7 @@ class AuthenticationViews(TestCase):
         self.assertEqual(models.User.objects.count(), 1)
         response.render()
 
-    def test_register_invalid_username(self, _):
+    def test_register_invalid_username(self, *_):
         """gotta have an email"""
         view = views.Register.as_view()
         self.assertEqual(models.User.objects.count(), 1)
@@ -217,7 +217,7 @@ class AuthenticationViews(TestCase):
         self.assertEqual(models.User.objects.count(), 1)
         response.render()
 
-    def test_register_closed_instance(self, _):
+    def test_register_closed_instance(self, *_):
         """you can't just register"""
         view = views.Register.as_view()
         self.settings.allow_registration = False
@@ -229,7 +229,7 @@ class AuthenticationViews(TestCase):
         with self.assertRaises(PermissionDenied):
             view(request)
 
-    def test_register_invite(self, _):
+    def test_register_invite(self, *_):
         """you can't just register"""
         view = views.Register.as_view()
         self.settings.allow_registration = False
@@ -282,7 +282,7 @@ class AuthenticationViews(TestCase):
             response = view(request)
         self.assertEqual(models.User.objects.count(), 2)
 
-    def test_confirm_email_code_get(self, _):
+    def test_confirm_email_code_get(self, *_):
         """there are so many views, this just makes sure it LOADS"""
         self.settings.require_confirm_email = True
         self.settings.save()
@@ -311,7 +311,7 @@ class AuthenticationViews(TestCase):
         self.assertEqual(result.url, "/")
         self.assertEqual(result.status_code, 302)
 
-    def test_confirm_email_code_get_invalid_code(self, _):
+    def test_confirm_email_code_get_invalid_code(self, *_):
         """there are so many views, this just makes sure it LOADS"""
         self.settings.require_confirm_email = True
         self.settings.save()
@@ -334,7 +334,7 @@ class AuthenticationViews(TestCase):
         self.assertFalse(self.local_user.is_active)
         self.assertEqual(self.local_user.deactivation_reason, "pending")
 
-    def test_confirm_email_get(self, _):
+    def test_confirm_email_get(self, *_):
         """there are so many views, this just makes sure it LOADS"""
         self.settings.require_confirm_email = True
         self.settings.save()

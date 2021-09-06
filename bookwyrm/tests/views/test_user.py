@@ -103,8 +103,8 @@ class UserViews(TestCase):
         self.assertEqual(result.status_code, 200)
 
     @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
-@patch("bookwyrm.activitystreams.populate_stream_task.delay")
-    def test_followers_page_blocked(self, _):
+    @patch("bookwyrm.activitystreams.populate_stream_task.delay")
+    def test_followers_page_blocked(self, *_):
         """there are so many views, this just makes sure it LOADS"""
         view = views.Followers.as_view()
         request = self.factory.get("")

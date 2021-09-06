@@ -57,7 +57,7 @@ class LibrarythingImport(TestCase):
             parent_work=work,
         )
 
-    def test_create_job(self, _):
+    def test_create_job(self, *_):
         """creates the import job entry and checks csv"""
         import_job = self.importer.create_job(self.user, self.csv, False, "public")
         self.assertEqual(import_job.user, self.user)
@@ -73,7 +73,7 @@ class LibrarythingImport(TestCase):
         self.assertEqual(import_items[2].index, 2)
         self.assertEqual(import_items[2].data["Book Id"], "5015399")
 
-    def test_create_retry_job(self, _):
+    def test_create_retry_job(self, *_):
         """trying again with items that didn't import"""
         import_job = self.importer.create_job(self.user, self.csv, False, "unlisted")
         import_items = models.ImportItem.objects.filter(job=import_job).all()[:2]
@@ -92,7 +92,7 @@ class LibrarythingImport(TestCase):
         self.assertEqual(retry_items[1].data["Book Id"], "5015319")
 
     @responses.activate
-    def test_import_data(self, _):
+    def test_import_data(self, *_):
         """resolve entry"""
         import_job = self.importer.create_job(self.user, self.csv, False, "unlisted")
         book = models.Edition.objects.create(title="Test Book")
@@ -107,7 +107,7 @@ class LibrarythingImport(TestCase):
         import_item = models.ImportItem.objects.get(job=import_job, index=0)
         self.assertEqual(import_item.book.id, book.id)
 
-    def test_handle_imported_book(self, _):
+    def test_handle_imported_book(self, *_):
         """librarything import added a book, this adds related connections"""
         shelf = self.user.shelf_set.filter(identifier="read").first()
         self.assertIsNone(shelf.books.first())
@@ -137,7 +137,7 @@ class LibrarythingImport(TestCase):
         self.assertEqual(readthrough.start_date, make_date(2007, 4, 16))
         self.assertEqual(readthrough.finish_date, make_date(2007, 5, 8))
 
-    def test_handle_imported_book_already_shelved(self, _):
+    def test_handle_imported_book_already_shelved(self, *_):
         """librarything import added a book, this adds related connections"""
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
             shelf = self.user.shelf_set.filter(identifier="to-read").first()
@@ -169,7 +169,7 @@ class LibrarythingImport(TestCase):
         self.assertEqual(readthrough.start_date, make_date(2007, 4, 16))
         self.assertEqual(readthrough.finish_date, make_date(2007, 5, 8))
 
-    def test_handle_import_twice(self, _):
+    def test_handle_import_twice(self, *_):
         """re-importing books"""
         shelf = self.user.shelf_set.filter(identifier="read").first()
         import_job = models.ImportJob.objects.create(user=self.user)
@@ -222,7 +222,7 @@ class LibrarythingImport(TestCase):
         self.assertEqual(review.published_date, make_date(2007, 5, 8))
         self.assertEqual(review.privacy, "unlisted")
 
-    def test_handle_imported_book_reviews_disabled(self, _):
+    def test_handle_imported_book_reviews_disabled(self, *_):
         """librarything review import"""
         import_job = models.ImportJob.objects.create(user=self.user)
         datafile = pathlib.Path(__file__).parent.joinpath("../data/librarything.tsv")

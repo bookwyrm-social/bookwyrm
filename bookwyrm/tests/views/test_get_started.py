@@ -7,6 +7,7 @@ from django.test.client import RequestFactory
 from bookwyrm import forms, models, views
 
 
+@patch("bookwyrm.activitystreams.populate_stream_task.delay")
 class GetStartedViews(TestCase):
     """helping new users get oriented"""
 
@@ -46,7 +47,6 @@ class GetStartedViews(TestCase):
         self.assertEqual(result.status_code, 200)
 
     @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
-@patch("bookwyrm.activitystreams.populate_stream_task.delay")
     @patch("bookwyrm.suggested_users.rerank_user_task.delay")
     def test_profile_view_post(self, *_):
         """save basic user details"""
@@ -91,7 +91,6 @@ class GetStartedViews(TestCase):
         self.assertEqual(result.status_code, 200)
 
     @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
-@patch("bookwyrm.activitystreams.populate_stream_task.delay")
     def test_books_view_post(self, _):
         """shelve some books"""
         view = views.GetStartedBooks.as_view()
