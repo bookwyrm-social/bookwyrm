@@ -206,7 +206,7 @@ class ModelFields(TestCase):
         self.assertEqual(model_instance.privacy_field, "followers")
 
     @patch("bookwyrm.models.activitypub_mixin.ObjectMixin.broadcast")
-    @patch("bookwyrm.activitystreams.ActivityStream.add_status")
+    @patch("bookwyrm.activitystreams.add_status_task.delay")
     def test_privacy_field_set_activity_from_field(self, *_):
         """translate between to/cc fields and privacy"""
         user = User.objects.create_user(

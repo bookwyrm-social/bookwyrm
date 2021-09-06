@@ -33,7 +33,7 @@ class InboxActivities(TestCase):
                 inbox="https://example.com/users/rat/inbox",
                 outbox="https://example.com/users/rat/outbox",
             )
-        with patch("bookwyrm.activitystreams.ActivityStream.add_status"):
+        with patch("bookwyrm.activitystreams.add_status_task.delay"):
             self.status = models.Status.objects.create(
                 user=self.remote_user,
                 content="Test status",

@@ -35,7 +35,7 @@ class InboxActivities(TestCase):
             )
 
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-            with patch("bookwyrm.activitystreams.ActivityStream.add_status"):
+            with patch("bookwyrm.activitystreams.add_status_task.delay"):
                 self.status = models.Status.objects.create(
                     user=self.local_user,
                     content="Test status",
@@ -53,7 +53,7 @@ class InboxActivities(TestCase):
 
         models.SiteSettings.objects.create()
 
-    @patch("bookwyrm.activitystreams.ActivityStream.add_status")
+    @patch("bookwyrm.activitystreams.add_status_task.delay")
     @patch("bookwyrm.activitystreams.ActivityStream.remove_object_from_related_stores")
     def test_boost(self, redis_mock, _):
         """boost a status"""
@@ -84,7 +84,7 @@ class InboxActivities(TestCase):
         self.assertEqual(notification.related_status, self.status)
 
     @responses.activate
-    @patch("bookwyrm.activitystreams.ActivityStream.add_status")
+    @patch("bookwyrm.activitystreams.add_status_task.delay")
     @patch("bookwyrm.activitystreams.ActivityStream.remove_object_from_related_stores")
     def test_boost_remote_status(self, redis_mock, _):
         """boost a status from a remote server"""
@@ -141,7 +141,7 @@ class InboxActivities(TestCase):
             content="hi",
             user=self.remote_user,
         )
-        with patch("bookwyrm.activitystreams.ActivityStream.add_status"):
+        with patch("bookwyrm.activitystreams.add_status_task.delay"):
             status.save(broadcast=False)
         activity = {
             "type": "Announce",
@@ -158,7 +158,7 @@ class InboxActivities(TestCase):
         views.inbox.activity_task(activity)
         self.assertEqual(models.Boost.objects.count(), 0)
 
-    @patch("bookwyrm.activitystreams.ActivityStream.add_status")
+    @patch("bookwyrm.activitystreams.add_status_task.delay")
     @patch("bookwyrm.activitystreams.ActivityStream.remove_object_from_related_stores")
     def test_unboost(self, *_):
         """undo a boost"""

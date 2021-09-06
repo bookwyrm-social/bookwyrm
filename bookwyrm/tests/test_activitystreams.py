@@ -5,7 +5,7 @@ from bookwyrm import activitystreams, models
 
 
 @patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
-@patch("bookwyrm.activitystreams.ActivityStream.add_status")
+@patch("bookwyrm.activitystreams.add_status_task.delay")
 @patch("bookwyrm.activitystreams.BooksStream.add_book_statuses")
 @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
 # pylint: disable=too-many-public-methods

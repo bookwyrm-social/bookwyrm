@@ -59,7 +59,7 @@ class StatusViews(TestCase):
         request = self.factory.post("", form.data)
         request.user = self.local_user
 
-        with patch("bookwyrm.activitystreams.ActivityStream.add_status") as redis_mock:
+        with patch("bookwyrm.activitystreams.add_status_task.delay") as redis_mock:
             view(request, "comment")
             self.assertTrue(redis_mock.called)
 
@@ -74,7 +74,7 @@ class StatusViews(TestCase):
         user = models.User.objects.create_user(
             "rat", "rat@rat.com", "password", local=True
         )
-        with patch("bookwyrm.activitystreams.ActivityStream.add_status"):
+        with patch("bookwyrm.activitystreams.add_status_task.delay"):
             parent = models.Status.objects.create(
                 content="parent status", user=self.local_user
             )
@@ -89,7 +89,7 @@ class StatusViews(TestCase):
         request = self.factory.post("", form.data)
         request.user = user
 
-        with patch("bookwyrm.activitystreams.ActivityStream.add_status") as redis_mock:
+        with patch("bookwyrm.activitystreams.add_status_task.delay") as redis_mock:
             view(request, "reply")
             self.assertTrue(redis_mock.called)
 
@@ -119,7 +119,7 @@ class StatusViews(TestCase):
         request = self.factory.post("", form.data)
         request.user = self.local_user
 
-        with patch("bookwyrm.activitystreams.ActivityStream.add_status") as redis_mock:
+        with patch("bookwyrm.activitystreams.add_status_task.delay") as redis_mock:
             view(request, "comment")
             self.assertTrue(redis_mock.called)
 
@@ -147,7 +147,7 @@ class StatusViews(TestCase):
         request = self.factory.post("", form.data)
         request.user = self.local_user
 
-        with patch("bookwyrm.activitystreams.ActivityStream.add_status") as redis_mock:
+        with patch("bookwyrm.activitystreams.add_status_task.delay") as redis_mock:
             view(request, "comment")
             self.assertTrue(redis_mock.called)
         status = models.Status.objects.get()
@@ -163,7 +163,7 @@ class StatusViews(TestCase):
         request = self.factory.post("", form.data)
         request.user = user
 
-        with patch("bookwyrm.activitystreams.ActivityStream.add_status") as redis_mock:
+        with patch("bookwyrm.activitystreams.add_status_task.delay") as redis_mock:
             view(request, "reply")
             self.assertTrue(redis_mock.called)
 
@@ -179,7 +179,7 @@ class StatusViews(TestCase):
         view = views.DeleteAndRedraft.as_view()
         request = self.factory.post("")
         request.user = self.local_user
-        with patch("bookwyrm.activitystreams.ActivityStream.add_status"):
+        with patch("bookwyrm.activitystreams.add_status_task.delay"):
             status = models.Comment.objects.create(
                 content="hi", book=self.book, user=self.local_user
             )
@@ -200,7 +200,7 @@ class StatusViews(TestCase):
         view = views.DeleteAndRedraft.as_view()
         request = self.factory.post("")
         request.user = self.local_user
-        with patch("bookwyrm.activitystreams.ActivityStream.add_status"):
+        with patch("bookwyrm.activitystreams.add_status_task.delay"):
             status = models.ReviewRating.objects.create(
                 book=self.book, rating=2.0, user=self.local_user
             )
@@ -220,7 +220,7 @@ class StatusViews(TestCase):
         view = views.DeleteAndRedraft.as_view()
         request = self.factory.post("")
         request.user = self.local_user
-        with patch("bookwyrm.activitystreams.ActivityStream.add_status"):
+        with patch("bookwyrm.activitystreams.add_status_task.delay"):
             status = models.GeneratedNote.objects.create(
                 content="hi", user=self.local_user
             )
@@ -344,7 +344,7 @@ class StatusViews(TestCase):
     def test_handle_delete_status(self, mock, *_):
         """marks a status as deleted"""
         view = views.DeleteStatus.as_view()
-        with patch("bookwyrm.activitystreams.ActivityStream.add_status"):
+        with patch("bookwyrm.activitystreams.add_status_task.delay"):
             status = models.Status.objects.create(user=self.local_user, content="hi")
         self.assertFalse(status.deleted)
         request = self.factory.post("")
@@ -364,7 +364,7 @@ class StatusViews(TestCase):
     def test_handle_delete_status_permission_denied(self, *_):
         """marks a status as deleted"""
         view = views.DeleteStatus.as_view()
-        with patch("bookwyrm.activitystreams.ActivityStream.add_status"):
+        with patch("bookwyrm.activitystreams.add_status_task.delay"):
             status = models.Status.objects.create(user=self.local_user, content="hi")
         self.assertFalse(status.deleted)
         request = self.factory.post("")
@@ -378,7 +378,7 @@ class StatusViews(TestCase):
     def test_handle_delete_status_moderator(self, mock, _):
         """marks a status as deleted"""
         view = views.DeleteStatus.as_view()
-        with patch("bookwyrm.activitystreams.ActivityStream.add_status"):
+        with patch("bookwyrm.activitystreams.add_status_task.delay"):
             status = models.Status.objects.create(user=self.local_user, content="hi")
         self.assertFalse(status.deleted)
         request = self.factory.post("")

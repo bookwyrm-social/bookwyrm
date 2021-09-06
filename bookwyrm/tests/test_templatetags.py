@@ -15,7 +15,7 @@ from bookwyrm.templatetags import (
 )
 
 
-@patch("bookwyrm.activitystreams.ActivityStream.add_status")
+@patch("bookwyrm.activitystreams.add_status_task.delay")
 @patch("bookwyrm.activitystreams.ActivityStream.remove_object_from_related_stores")
 class TemplateTags(TestCase):
     """lotta different things here"""

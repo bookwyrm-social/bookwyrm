@@ -8,7 +8,7 @@ from bookwyrm import models, views
 
 
 @patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
-@patch("bookwyrm.activitystreams.ActivityStream.remove_object_from_related_stores")
+@patch("bookwyrm.activitystreams.remove_object_from_related_stores")
 class InteractionViews(TestCase):
     """viewing and creating statuses"""
 
@@ -47,7 +47,7 @@ class InteractionViews(TestCase):
         view = views.Favorite.as_view()
         request = self.factory.post("")
         request.user = self.remote_user
-        with patch("bookwyrm.activitystreams.ActivityStream.add_status"):
+        with patch("bookwyrm.activitystreams.add_status_task.delay"):
             status = models.Status.objects.create(user=self.local_user, content="hi")
 
             view(request, status.id)
@@ -65,7 +65,7 @@ class InteractionViews(TestCase):
         view = views.Unfavorite.as_view()
         request = self.factory.post("")
         request.user = self.remote_user
-        with patch("bookwyrm.activitystreams.ActivityStream.add_status"):
+        with patch("bookwyrm.activitystreams.add_status_task.delay"):
             status = models.Status.objects.create(user=self.local_user, content="hi")
             views.Favorite.as_view()(request, status.id)
 
@@ -82,7 +82,7 @@ class InteractionViews(TestCase):
         view = views.Boost.as_view()
         request = self.factory.post("")
         request.user = self.remote_user
-        with patch("bookwyrm.activitystreams.ActivityStream.add_status"):
+        with patch("bookwyrm.activitystreams.add_status_task.delay"):
             status = models.Status.objects.create(user=self.local_user, content="hi")
 
             view(request, status.id)
@@ -104,7 +104,7 @@ class InteractionViews(TestCase):
         view = views.Boost.as_view()
         request = self.factory.post("")
         request.user = self.local_user
-        with patch("bookwyrm.activitystreams.ActivityStream.add_status"):
+        with patch("bookwyrm.activitystreams.add_status_task.delay"):
             status = models.Status.objects.create(user=self.local_user, content="hi")
 
             with patch(
@@ -128,7 +128,7 @@ class InteractionViews(TestCase):
         view = views.Boost.as_view()
         request = self.factory.post("")
         request.user = self.local_user
-        with patch("bookwyrm.activitystreams.ActivityStream.add_status"):
+        with patch("bookwyrm.activitystreams.add_status_task.delay"):
             status = models.Status.objects.create(
                 user=self.local_user, content="hi", privacy="unlisted"
             )
@@ -143,7 +143,7 @@ class InteractionViews(TestCase):
         view = views.Boost.as_view()
         request = self.factory.post("")
         request.user = self.local_user
-        with patch("bookwyrm.activitystreams.ActivityStream.add_status"):
+        with patch("bookwyrm.activitystreams.add_status_task.delay"):
             status = models.Status.objects.create(
                 user=self.local_user, content="hi", privacy="followers"
             )
@@ -156,14 +156,14 @@ class InteractionViews(TestCase):
         view = views.Boost.as_view()
         request = self.factory.post("")
         request.user = self.local_user
-        with patch("bookwyrm.activitystreams.ActivityStream.add_status"):
+        with patch("bookwyrm.activitystreams.add_status_task.delay"):
             status = models.Status.objects.create(user=self.local_user, content="hi")
 
             view(request, status.id)
             view(request, status.id)
         self.assertEqual(models.Boost.objects.count(), 1)
 
-    @patch("bookwyrm.activitystreams.ActivityStream.add_status")
+    @patch("bookwyrm.activitystreams.add_status_task.delay")
     def test_unboost(self, *_):
         """undo a boost"""
         view = views.Unboost.as_view()

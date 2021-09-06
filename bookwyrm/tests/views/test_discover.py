@@ -1,7 +1,6 @@
 """ test for app action functionality """
 from unittest.mock import patch
 from django.contrib.auth.models import AnonymousUser
-from django.template.response import TemplateResponse
 from django.test import TestCase
 from django.test.client import RequestFactory
 
@@ -41,7 +40,7 @@ class DiscoverViews(TestCase):
         result.render()
 
     @patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
-    @patch("bookwyrm.activitystreams.ActivityStream.add_status")
+    @patch("bookwyrm.activitystreams.add_status_task.delay")
     def test_discover_page(self, *_):
         """there are so many views, this just makes sure it LOADS"""
         view = views.Discover.as_view()

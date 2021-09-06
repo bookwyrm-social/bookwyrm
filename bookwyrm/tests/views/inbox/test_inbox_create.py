@@ -47,7 +47,7 @@ class InboxCreate(TestCase):
         }
         models.SiteSettings.objects.create()
 
-    @patch("bookwyrm.activitystreams.ActivityStream.add_status")
+    @patch("bookwyrm.activitystreams.add_status_task.delay")
     def test_create_status(self, *_):
         """the "it justs works" mode"""
         datafile = pathlib.Path(__file__).parent.joinpath(
@@ -61,7 +61,7 @@ class InboxCreate(TestCase):
         activity = self.create_json
         activity["object"] = status_data
 
-        with patch("bookwyrm.activitystreams.ActivityStream.add_status") as redis_mock:
+        with patch("bookwyrm.activitystreams.add_status_task.delay") as redis_mock:
             views.inbox.activity_task(activity)
             self.assertTrue(redis_mock.called)
 
@@ -77,7 +77,7 @@ class InboxCreate(TestCase):
         views.inbox.activity_task(activity)
         self.assertEqual(models.Status.objects.count(), 1)
 
-    @patch("bookwyrm.activitystreams.ActivityStream.add_status")
+    @patch("bookwyrm.activitystreams.add_status_task.delay")
     def test_create_comment_with_reading_status(self, *_):
         """the "it justs works" mode"""
         datafile = pathlib.Path(__file__).parent.joinpath("../../data/ap_comment.json")
@@ -90,7 +90,7 @@ class InboxCreate(TestCase):
         activity = self.create_json
         activity["object"] = status_data
 
-        with patch("bookwyrm.activitystreams.ActivityStream.add_status") as redis_mock:
+        with patch("bookwyrm.activitystreams.add_status_task.delay") as redis_mock:
             views.inbox.activity_task(activity)
             self.assertTrue(redis_mock.called)
 
@@ -115,7 +115,7 @@ class InboxCreate(TestCase):
         activity = self.create_json
         activity["object"] = status_data
 
-        with patch("bookwyrm.activitystreams.ActivityStream.add_status") as redis_mock:
+        with patch("bookwyrm.activitystreams.add_status_task.delay") as redis_mock:
             views.inbox.activity_task(activity)
             self.assertTrue(redis_mock.called)
         status = models.Status.objects.last()
@@ -128,7 +128,7 @@ class InboxCreate(TestCase):
 
     def test_create_status_remote_note_with_reply(self, _):
         """should only create it under the right circumstances"""
-        with patch("bookwyrm.activitystreams.ActivityStream.add_status"):
+        with patch("bookwyrm.activitystreams.add_status_task.delay"):
             parent_status = models.Status.objects.create(
                 user=self.local_user,
                 content="Test status",
@@ -145,7 +145,7 @@ class InboxCreate(TestCase):
         activity = self.create_json
         activity["object"] = status_data
 
-        with patch("bookwyrm.activitystreams.ActivityStream.add_status") as redis_mock:
+        with patch("bookwyrm.activitystreams.add_status_task.delay") as redis_mock:
             views.inbox.activity_task(activity)
             self.assertTrue(redis_mock.called)
         status = models.Status.objects.last()
@@ -184,7 +184,7 @@ class InboxCreate(TestCase):
             "rating": 3,
             "@context": "https://www.w3.org/ns/activitystreams",
         }
-        with patch("bookwyrm.activitystreams.ActivityStream.add_status") as redis_mock:
+        with patch("bookwyrm.activitystreams.add_status_task.delay") as redis_mock:
             views.inbox.activity_task(activity)
             self.assertTrue(redis_mock.called)
         rating = models.ReviewRating.objects.first()

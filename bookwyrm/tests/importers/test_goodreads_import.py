@@ -215,7 +215,7 @@ class GoodreadsImport(TestCase):
         self.assertEqual(readthrough.start_date, make_date(2020, 10, 21))
         self.assertEqual(readthrough.finish_date, make_date(2020, 10, 25))
 
-    @patch("bookwyrm.activitystreams.ActivityStream.add_status")
+    @patch("bookwyrm.activitystreams.add_status_task.delay")
     def test_handle_imported_book_review(self, *_):
         """goodreads review import"""
         import_job = models.ImportJob.objects.create(user=self.user)
@@ -237,7 +237,7 @@ class GoodreadsImport(TestCase):
         self.assertEqual(review.published_date, make_date(2019, 7, 8))
         self.assertEqual(review.privacy, "unlisted")
 
-    @patch("bookwyrm.activitystreams.ActivityStream.add_status")
+    @patch("bookwyrm.activitystreams.add_status_task.delay")
     def test_handle_imported_book_rating(self, *_):
         """goodreads rating import"""
         import_job = models.ImportJob.objects.create(user=self.user)

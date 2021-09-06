@@ -197,7 +197,7 @@ class LibrarythingImport(TestCase):
         self.assertEqual(readthrough.start_date, make_date(2007, 4, 16))
         self.assertEqual(readthrough.finish_date, make_date(2007, 5, 8))
 
-    @patch("bookwyrm.activitystreams.ActivityStream.add_status")
+    @patch("bookwyrm.activitystreams.add_status_task.delay")
     def test_handle_imported_book_review(self, *_):
         """librarything review import"""
         import_job = models.ImportJob.objects.create(user=self.user)

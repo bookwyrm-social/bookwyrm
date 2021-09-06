@@ -8,7 +8,7 @@ from bookwyrm.views import rss_feed
 
 @patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
 @patch("bookwyrm.activitystreams.ActivityStream.get_activity_stream")
-@patch("bookwyrm.activitystreams.ActivityStream.add_status")
+@patch("bookwyrm.activitystreams.add_status_task.delay")
 class RssFeedView(TestCase):
     """rss feed behaves as expected"""
 
