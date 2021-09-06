@@ -51,7 +51,7 @@ class UserAdminViews(TestCase):
         self.assertEqual(result.status_code, 200)
 
     @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
-@patch("bookwyrm.activitystreams.populate_stream_task.delay")
+    @patch("bookwyrm.activitystreams.populate_stream_task.delay")
     @patch("bookwyrm.suggested_users.remove_user_task.delay")
     def test_user_admin_page_post(self, *_):
         """set the user's group"""

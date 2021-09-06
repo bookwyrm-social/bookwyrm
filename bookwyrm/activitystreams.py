@@ -464,7 +464,7 @@ def add_user_statuses_task(viewer_id, user_id, stream_list=None):
 def handle_boost_task(boost_id):
     """remove the original post and other, earlier boosts"""
     instance = models.Status.objects.get(id=boost_id)
-    boosted = instance.boost.boosted_status.id
+    boosted = instance.boost.boosted_status
 
     old_versions = models.Boost.objects.filter(
         boosted_status__id=boosted.id,

@@ -32,7 +32,7 @@ class DirectoryViews(TestCase):
         self.anonymous_user.is_authenticated = False
 
     @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
-@patch("bookwyrm.activitystreams.populate_stream_task.delay")
+    @patch("bookwyrm.activitystreams.populate_stream_task.delay")
     @patch("bookwyrm.suggested_users.rerank_user_task.delay")
     def test_directory_page(self, *_):
         """there are so many views, this just makes sure it LOADS"""
