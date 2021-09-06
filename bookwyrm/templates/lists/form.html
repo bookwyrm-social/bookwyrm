@@ -3,7 +3,7 @@
 <input type="hidden" name="user" value="{{ request.user.id }}">
 
 <div class="columns">
-    <div class="column">
+    <div class="column is-two-thirds">
         <div class="field">
             <label class="label" for="id_name">{% trans "Name:" %}</label>
             {{ list_form.name }}
@@ -34,12 +34,19 @@
         </fieldset>
     </div>
 </div>
-<div class="field has-addons">
-    <div class="control">
-        {% include 'snippets/privacy_select.html' with current=list.privacy %}
+<div class="columns is-mobile">
+    <div class="column">
+        <div class="field has-addons">
+            <div class="control">
+                {% include 'snippets/privacy_select.html' with current=list.privacy %}
+            </div>
+            <div class="control">
+                <button type="submit" class="button is-primary">{% trans "Save" %}</button>
+            </div>
+        </div>
     </div>
-    <div class="control">
-        <button type="submit" class="button is-primary">{% trans "Save" %}</button>
+    <div class="column is-narrow">
+        {% trans "Delete list" as button_text %}
+        {% include 'snippets/toggle/toggle_button.html' with class="is-danger" text=button_text icon_with_text="x" controls_text="delete_list" controls_uid=list.id focus="modal_title_delete_list" %}
     </div>
 </div>
-
