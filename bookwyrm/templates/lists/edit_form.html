@@ -9,4 +9,5 @@
 <form name="edit-list" method="post" action="{% url 'list' list.id %}">
     {% include 'lists/form.html' %}
 </form>
+{% include "lists/delete_list_modal.html" with controls_text="delete_list" controls_uid=list.id %}
 {% endblock %}

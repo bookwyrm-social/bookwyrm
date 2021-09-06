@@ -362,6 +362,13 @@ class OrderedCollectionMixin(OrderedCollectionPageMixin):
             self.collection_queryset, **kwargs
         ).serialize()
 
+    def delete(self, *args, broadcast=True, **kwargs):
+        """Delete the object"""
+        activity = self.to_delete_activity(self.user)
+        super().delete(*args, **kwargs)
+        if self.user.local and broadcast:
+            self.broadcast(activity, self.user)
+
 
 class CollectionItemMixin(ActivitypubMixin):
     """for items that are part of an (Ordered)Collection"""
