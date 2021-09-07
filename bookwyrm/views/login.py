@@ -32,7 +32,7 @@ class Login(View):
         return TemplateResponse(request, "login.html", data)
 
     @sensitive_variables("password")
-    @sensitive_post_parameters("password")
+    @method_decorator(sensitive_post_parameters("password"))
     def post(self, request):
         """authentication action"""
         if request.user.is_authenticated:
