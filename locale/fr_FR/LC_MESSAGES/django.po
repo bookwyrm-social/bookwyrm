@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.1.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-05 23:09+0000\n"
+"POT-Creation-Date: 2021-09-07 16:12+0000\n"
 "PO-Revision-Date: 2021-04-05 12:44+0100\n"
 "Last-Translator: Fabien Basmaison <contact@arkhi.org>\n"
 "Language-Team: Mouse Reeve <LL@li.org>\n"
@@ -18,59 +18,85 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: bookwyrm/forms.py:235
+#: bookwyrm/forms.py:195
+#, fuzzy
+#| msgid "Add books"
+msgid "Audiobook"
+msgstr "Ajoutez des livres"
+
+#: bookwyrm/forms.py:196
+#, fuzzy
+#| msgid "Book"
+msgid "eBook"
+msgstr "Livre"
+
+#: bookwyrm/forms.py:197
+msgid "Graphic novel"
+msgstr ""
+
+#: bookwyrm/forms.py:198
+#, fuzzy
+#| msgid "Add cover"
+msgid "Hardcover"
+msgstr "Ajouter une couverture"
+
+#: bookwyrm/forms.py:199
+msgid "Paperback"
+msgstr ""
+
+#: bookwyrm/forms.py:246
 msgid "A user with this email already exists."
 msgstr "Cet email est déjà associé à un compte."
 
-#: bookwyrm/forms.py:249
+#: bookwyrm/forms.py:260
 msgid "One Day"
 msgstr "Un jour"
 
-#: bookwyrm/forms.py:250
+#: bookwyrm/forms.py:261
 msgid "One Week"
 msgstr "Une semaine"
 
-#: bookwyrm/forms.py:251
+#: bookwyrm/forms.py:262
 msgid "One Month"
 msgstr "Un mois"
 
-#: bookwyrm/forms.py:252
+#: bookwyrm/forms.py:263
 msgid "Does Not Expire"
 msgstr "Sans expiration"
 
-#: bookwyrm/forms.py:257
+#: bookwyrm/forms.py:268
 #, python-format
 msgid "%(count)d uses"
 msgstr "%(count)d utilisations"
 
-#: bookwyrm/forms.py:260
+#: bookwyrm/forms.py:271
 msgid "Unlimited"
 msgstr "Sans limite"
 
-#: bookwyrm/forms.py:310
+#: bookwyrm/forms.py:321
 msgid "List Order"
 msgstr "Ordre de la liste"
 
-#: bookwyrm/forms.py:311
+#: bookwyrm/forms.py:322
 msgid "Book Title"
 msgstr "Titre du livre"
 
-#: bookwyrm/forms.py:312
+#: bookwyrm/forms.py:323
 #: bookwyrm/templates/snippets/create_status/review.html:23
 #: bookwyrm/templates/user/shelf/shelf.html:117
 #: bookwyrm/templates/user/shelf/shelf.html:148
 msgid "Rating"
 msgstr "Note"
 
-#: bookwyrm/forms.py:314 bookwyrm/templates/lists/list.html:107
+#: bookwyrm/forms.py:325 bookwyrm/templates/lists/list.html:107
 msgid "Sort By"
 msgstr "Trier par"
 
-#: bookwyrm/forms.py:318
+#: bookwyrm/forms.py:329
 msgid "Ascending"
 msgstr "Ordre croissant"
 
-#: bookwyrm/forms.py:319
+#: bookwyrm/forms.py:330
 msgid "Descending"
 msgstr "Ordre décroissant"
 
@@ -266,7 +292,7 @@ msgid "Openlibrary key:"
 msgstr "Clé Openlibrary :"
 
 #: bookwyrm/templates/author/edit_author.html:89
-#: bookwyrm/templates/book/edit_book.html:300
+#: bookwyrm/templates/book/edit_book.html:315
 msgid "Inventaire ID:"
 msgstr "Identifiant Inventaire :"
 
@@ -280,10 +306,10 @@ msgstr "Clé Goodreads :"
 
 #: bookwyrm/templates/author/edit_author.html:116
 #: bookwyrm/templates/book/book.html:140
-#: bookwyrm/templates/book/edit_book.html:328
+#: bookwyrm/templates/book/edit_book.html:343
 #: bookwyrm/templates/book/readthrough.html:76
 #: bookwyrm/templates/lists/bookmark_button.html:15
-#: bookwyrm/templates/lists/form.html:42
+#: bookwyrm/templates/lists/form.html:44
 #: bookwyrm/templates/preferences/edit_user.html:78
 #: bookwyrm/templates/settings/announcement_form.html:69
 #: bookwyrm/templates/settings/edit_server.html:68
@@ -298,8 +324,9 @@ msgstr "Enregistrer"
 #: bookwyrm/templates/author/edit_author.html:117
 #: bookwyrm/templates/book/book.html:141 bookwyrm/templates/book/book.html:190
 #: bookwyrm/templates/book/cover_modal.html:32
-#: bookwyrm/templates/book/edit_book.html:329
+#: bookwyrm/templates/book/edit_book.html:344
 #: bookwyrm/templates/book/readthrough.html:77
+#: bookwyrm/templates/lists/delete_list_modal.html:17
 #: bookwyrm/templates/moderation/report_modal.html:34
 #: bookwyrm/templates/settings/federated_server.html:99
 #: bookwyrm/templates/snippets/delete_readthrough_modal.html:17
@@ -423,12 +450,12 @@ msgid "ISBN:"
 msgstr "ISBN :"
 
 #: bookwyrm/templates/book/book_identifiers.html:14
-#: bookwyrm/templates/book/edit_book.html:308
+#: bookwyrm/templates/book/edit_book.html:323
 msgid "OCLC Number:"
 msgstr "Numéro OCLC :"
 
 #: bookwyrm/templates/book/book_identifiers.html:21
-#: bookwyrm/templates/book/edit_book.html:316
+#: bookwyrm/templates/book/edit_book.html:331
 msgid "ASIN:"
 msgstr "ASIN :"
 
@@ -558,28 +585,34 @@ msgstr "Couverture"
 msgid "Physical Properties"
 msgstr "Propriétés physiques"
 
-#: bookwyrm/templates/book/edit_book.html:257
+#: bookwyrm/templates/book/edit_book.html:259
 #: bookwyrm/templates/book/format_filter.html:5
 msgid "Format:"
 msgstr "Format :"
 
-#: bookwyrm/templates/book/edit_book.html:265
+#: bookwyrm/templates/book/edit_book.html:270
+#, fuzzy
+#| msgid "User details"
+msgid "Format details:"
+msgstr "Détails du compte"
+
+#: bookwyrm/templates/book/edit_book.html:280
 msgid "Pages:"
 msgstr "Pages :"
 
-#: bookwyrm/templates/book/edit_book.html:274
+#: bookwyrm/templates/book/edit_book.html:289
 msgid "Book Identifiers"
 msgstr "Identifiants du livre"
 
-#: bookwyrm/templates/book/edit_book.html:276
+#: bookwyrm/templates/book/edit_book.html:291
 msgid "ISBN 13:"
 msgstr "ISBN 13 :"
 
-#: bookwyrm/templates/book/edit_book.html:284
+#: bookwyrm/templates/book/edit_book.html:299
 msgid "ISBN 10:"
 msgstr "ISBN 10 :"
 
-#: bookwyrm/templates/book/edit_book.html:292
+#: bookwyrm/templates/book/edit_book.html:307
 msgid "Openlibrary ID:"
 msgstr "Identifiant Openlibrary :"
 
@@ -707,6 +740,7 @@ msgid "Sorry! We couldn't find that code."
 msgstr "Pardon ! Nous ne reconnaissons pas ce code."
 
 #: bookwyrm/templates/confirm_email/confirm_email.html:19
+#: bookwyrm/templates/user_admin/user_info.html:100
 msgid "Confirmation code:"
 msgstr "Code de confirmation :"
 
@@ -1495,8 +1529,27 @@ msgstr "Approuver"
 msgid "Discard"
 msgstr "Rejeter"
 
+#: bookwyrm/templates/lists/delete_list_modal.html:4
+#, fuzzy
+#| msgid "Delete this progress update"
+msgid "Delete this list?"
+msgstr "Supprimer cette mise à jour"
+
+#: bookwyrm/templates/lists/delete_list_modal.html:7
+#, fuzzy
+#| msgid "This shelf is empty."
+msgid "This action cannot be un-done"
+msgstr "Cette étagère est vide"
+
+#: bookwyrm/templates/lists/delete_list_modal.html:15
+#: bookwyrm/templates/settings/announcement.html:20
+#: bookwyrm/templates/snippets/delete_readthrough_modal.html:15
+#: bookwyrm/templates/snippets/follow_request_buttons.html:12
+msgid "Delete"
+msgstr "Supprimer"
+
 #: bookwyrm/templates/lists/edit_form.html:5
-#: bookwyrm/templates/lists/list_layout.html:16
+#: bookwyrm/templates/lists/layout.html:16
 msgid "Edit List"
 msgstr "Modifier la liste"
 
@@ -1530,6 +1583,12 @@ msgstr "Ouverte"
 #: bookwyrm/templates/lists/form.html:32
 msgid "Anyone can add books to this list"
 msgstr "N’importe qui peut suggérer des livres"
+
+#: bookwyrm/templates/lists/form.html:49
+#, fuzzy
+#| msgid "Delete status"
+msgid "Delete list"
+msgstr "Supprimer le statut"
 
 #: bookwyrm/templates/lists/list.html:20
 msgid "You successfully suggested a book for this list!"
@@ -1930,6 +1989,7 @@ msgid "Account"
 msgstr "Compte"
 
 #: bookwyrm/templates/preferences/layout.html:15
+#: bookwyrm/templates/user_admin/user_info.html:7
 msgid "Profile"
 msgstr "Profil"
 
@@ -2053,12 +2113,6 @@ msgstr "Retour à la liste"
 msgid "Edit Announcement"
 msgstr "Modifier l’annonce"
 
-#: bookwyrm/templates/settings/announcement.html:20
-#: bookwyrm/templates/snippets/delete_readthrough_modal.html:15
-#: bookwyrm/templates/snippets/follow_request_buttons.html:12
-msgid "Delete"
-msgstr "Supprimer"
-
 #: bookwyrm/templates/settings/announcement.html:35
 msgid "Visible:"
 msgstr "Visible :"
@@ -2109,6 +2163,7 @@ msgstr "Date de fin"
 #: bookwyrm/templates/settings/manage_invite_requests.html:44
 #: bookwyrm/templates/settings/status_filter.html:5
 #: bookwyrm/templates/user_admin/user_admin.html:34
+#: bookwyrm/templates/user_admin/user_info.html:20
 msgid "Status"
 msgstr "Statut"
 
@@ -2146,7 +2201,7 @@ msgstr "Instance :"
 
 #: bookwyrm/templates/settings/edit_server.html:37
 #: bookwyrm/templates/settings/federated_server.html:31
-#: bookwyrm/templates/user_admin/user_info.html:34
+#: bookwyrm/templates/user_admin/user_info.html:125
 msgid "Status:"
 msgstr "Statut :"
 
@@ -2161,13 +2216,13 @@ msgstr "Bloqué"
 
 #: bookwyrm/templates/settings/edit_server.html:48
 #: bookwyrm/templates/settings/federated_server.html:23
-#: bookwyrm/templates/user_admin/user_info.html:26
+#: bookwyrm/templates/user_admin/user_info.html:117
 msgid "Software:"
 msgstr "Logiciel :"
 
 #: bookwyrm/templates/settings/edit_server.html:55
 #: bookwyrm/templates/settings/federated_server.html:27
-#: bookwyrm/templates/user_admin/user_info.html:30
+#: bookwyrm/templates/user_admin/user_info.html:121
 msgid "Version:"
 msgstr "Description :"
 
@@ -2194,6 +2249,7 @@ msgid "View all"
 msgstr "Voir tous"
 
 #: bookwyrm/templates/settings/federated_server.html:50
+#: bookwyrm/templates/user_admin/user_info.html:59
 msgid "Reports:"
 msgstr "Signalements :"
 
@@ -2210,7 +2266,7 @@ msgid "Blocked by us:"
 msgstr "Bloqués par nous :"
 
 #: bookwyrm/templates/settings/federated_server.html:82
-#: bookwyrm/templates/user_admin/user_info.html:39
+#: bookwyrm/templates/user_admin/user_info.html:130
 msgid "Notes"
 msgstr "Remarques"
 
@@ -3159,7 +3215,7 @@ msgstr[1] "%(mutuals_display)s abonné(e)s que vous suivez"
 msgid "No followers you follow"
 msgstr "compte que vous suivez"
 
-#: bookwyrm/templates/user_admin/user.html:9
+#: bookwyrm/templates/user_admin/user.html:8
 msgid "Back to users"
 msgstr "Retour aux comptes"
 
@@ -3186,31 +3242,85 @@ msgid "Remote instance"
 msgstr "Instance distante"
 
 #: bookwyrm/templates/user_admin/user_admin.html:47
+#: bookwyrm/templates/user_admin/user_info.html:24
 msgid "Active"
 msgstr "Actif"
 
 #: bookwyrm/templates/user_admin/user_admin.html:47
+#: bookwyrm/templates/user_admin/user_info.html:28
 msgid "Inactive"
 msgstr "Inactif"
 
 #: bookwyrm/templates/user_admin/user_admin.html:52
-#: bookwyrm/templates/user_admin/user_info.html:49
+#: bookwyrm/templates/user_admin/user_info.html:140
 msgid "Not set"
 msgstr "Non défini"
 
-#: bookwyrm/templates/user_admin/user_info.html:5
-msgid "User details"
-msgstr "Détails du compte"
-
-#: bookwyrm/templates/user_admin/user_info.html:14
+#: bookwyrm/templates/user_admin/user_info.html:16
 msgid "View user profile"
 msgstr "Voir le profil"
 
-#: bookwyrm/templates/user_admin/user_info.html:20
+#: bookwyrm/templates/user_admin/user_info.html:36
+msgid "Local"
+msgstr "Local"
+
+#: bookwyrm/templates/user_admin/user_info.html:38
+#, fuzzy
+#| msgid "Remove"
+msgid "Remote"
+msgstr "Retirer"
+
+#: bookwyrm/templates/user_admin/user_info.html:47
+msgid "User details"
+msgstr "Détails du compte"
+
+#: bookwyrm/templates/user_admin/user_info.html:52
+#, fuzzy
+#| msgid "Email"
+msgid "Email:"
+msgstr "Email"
+
+#: bookwyrm/templates/user_admin/user_info.html:64
+#, fuzzy
+#| msgid "Directory"
+msgid "(View reports)"
+msgstr "Répertoire"
+
+#: bookwyrm/templates/user_admin/user_info.html:72
+#, fuzzy
+#| msgid "Blocked by us:"
+msgid "Blocked by count:"
+msgstr "Bloqués par nous :"
+
+#: bookwyrm/templates/user_admin/user_info.html:77
+#, fuzzy
+#| msgid "last active"
+msgid "Last active date:"
+msgstr "dernière activité"
+
+#: bookwyrm/templates/user_admin/user_info.html:82
+#, fuzzy
+#| msgid "Manually approve followers:"
+msgid "Manually approved followers:"
+msgstr "Autoriser les abonnements manuellement :"
+
+#: bookwyrm/templates/user_admin/user_info.html:87
+#, fuzzy
+#| msgid "Discard"
+msgid "Discoverable:"
+msgstr "Rejeter"
+
+#: bookwyrm/templates/user_admin/user_info.html:93
+#, fuzzy
+#| msgid "Deactivate user"
+msgid "Deactivation reason:"
+msgstr "Désactiver le compte"
+
+#: bookwyrm/templates/user_admin/user_info.html:111
 msgid "Instance details"
 msgstr "Détails de l’instance"
 
-#: bookwyrm/templates/user_admin/user_info.html:46
+#: bookwyrm/templates/user_admin/user_info.html:137
 msgid "View instance"
 msgstr "Voir l’instance"
 
@@ -3273,9 +3383,6 @@ msgstr ""
 #~ msgid "Federated Timeline"
 #~ msgstr "Fil d’actualité des instances fédérées"
 
-#~ msgid "Local"
-#~ msgstr "Local"
-
 #, fuzzy
 #~| msgid "BookWyrm users"
 #~ msgid "BookWyrm\\"
@@ -3330,11 +3437,6 @@ msgstr ""
 #~| msgid "%(value)s is not a valid remote_id"
 #~ msgid "Value %(value)r is not a valid choice."
 #~ msgstr "%(value)s n’est pas une remote_id valide."
-
-#, fuzzy
-#~| msgid "This shelf is empty."
-#~ msgid "This field cannot be null."
-#~ msgstr "Cette étagère est vide"
 
 #, fuzzy
 #~| msgid "A user with this email already exists."
@@ -3554,9 +3656,6 @@ msgstr ""
 
 #~ msgid "by %(author)s"
 #~ msgstr "par %(author)s"
-
-#~ msgid "Deactivate user"
-#~ msgstr "Désactiver le compte"
 
 #~ msgid "Reactivate user"
 #~ msgstr "Réactiver le compte"

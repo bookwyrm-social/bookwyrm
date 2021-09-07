@@ -5,6 +5,7 @@ from django.contrib.postgres.search import SearchVectorField
 from django.contrib.postgres.indexes import GinIndex
 from django.db import models
 from django.dispatch import receiver
+from django.utils.translation import gettext_lazy as _
 from model_utils import FieldTracker
 from model_utils.managers import InheritanceManager
 from imagekit.models import ImageSpecField
@@ -225,10 +226,13 @@ class Work(OrderedCollectionPageMixin, Book):
 
 
 # https://schema.org/BookFormatType
-FormatChoices = models.TextChoices(
-    "FormatChoices",
-    "AudiobookFormat EBook GraphicNovel Hardcover Paperback",
-)
+FormatChoices = [
+    ("AudiobookFormat", _("Audiobook")),
+    ("EBook", _("eBook")),
+    ("GraphicNovel", _("Graphic novel")),
+    ("Hardcover", _("Hardcover")),
+    ("Paperback", _("Paperback")),
+]
 
 
 class Edition(Book):
@@ -249,7 +253,7 @@ class Edition(Book):
     )
     pages = fields.IntegerField(blank=True, null=True)
     physical_format = fields.CharField(
-        max_length=255, choices=FormatChoices.choices, null=True, blank=True
+        max_length=255, choices=FormatChoices, null=True, blank=True
     )
     physical_format_detail = fields.CharField(max_length=255, blank=True, null=True)
     publishers = fields.ArrayField(
