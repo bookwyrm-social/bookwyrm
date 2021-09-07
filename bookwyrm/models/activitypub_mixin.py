@@ -502,7 +502,7 @@ def unfurl_related_field(related_field, sort_field=None):
     return related_field.remote_id
 
 
-@app.task
+@app.task(queue="medium_priority")
 def broadcast_task(sender_id, activity, recipients):
     """the celery task for broadcast"""
     user_model = apps.get_model("bookwyrm.User", require_ready=True)

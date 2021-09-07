@@ -61,7 +61,7 @@ class Importer:
         job.save()
 
 
-@app.task
+@app.task(priority="low_priority")
 def import_data(source, job_id):
     """does the actual lookup work in a celery task"""
     job = ImportJob.objects.get(id=job_id)

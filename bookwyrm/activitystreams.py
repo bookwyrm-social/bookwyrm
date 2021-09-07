@@ -395,7 +395,7 @@ def remove_statuses_on_unshelve(sender, instance, *args, **kwargs):
 # ---- TASKS
 
 
-@app.task
+@app.task(priority="low_priority")
 def add_book_statuses_task(user_id, book_id):
     """add statuses related to a book on shelve"""
     user = models.User.objects.get(id=user_id)
@@ -403,7 +403,7 @@ def add_book_statuses_task(user_id, book_id):
     BooksStream().add_book_statuses(user, book)
 
 
-@app.task
+@app.task(priority="low_priority")
 def remove_book_statuses_task(user_id, book_id):
     """remove statuses about a book from a user's books feed"""
     user = models.User.objects.get(id=user_id)
@@ -411,7 +411,7 @@ def remove_book_statuses_task(user_id, book_id):
     BooksStream().remove_book_statuses(user, book)
 
 
-@app.task
+@app.task(priority="medium_priority")
 def populate_stream_task(stream, user_id):
     """background task for populating an empty activitystream"""
     user = models.User.objects.get(id=user_id)
@@ -419,7 +419,7 @@ def populate_stream_task(stream, user_id):
     stream.populate_streams(user)
 
 
-@app.task
+@app.task(priority="medium_priority")
 def remove_status_task(status_ids):
     """remove a status from any stream it might be in"""
     # this can take an id or a list of ids
@@ -432,7 +432,7 @@ def remove_status_task(status_ids):
             stream.remove_object_from_related_stores(status)
 
 
-@app.task
+@app.task(priority="medium_priority")
 def add_status_task(status_id, increment_unread=False):
     """remove a status from any stream it might be in"""
     status = models.Status.objects.get(id=status_id)
@@ -440,7 +440,7 @@ def add_status_task(status_id, increment_unread=False):
         stream.add_status(status, increment_unread=increment_unread)
 
 
-@app.task
+@app.task(priority="medium_priority")
 def remove_user_statuses_task(viewer_id, user_id, stream_list=None):
     """remove all statuses by a user from a viewer's stream"""
     stream_list = [streams[s] for s in stream_list] if stream_list else streams.values()
@@ -450,9 +450,9 @@ def remove_user_statuses_task(viewer_id, user_id, stream_list=None):
         stream.remove_user_statuses(viewer, user)
 
 
-@app.task
+@app.task(priority="medium_priority")
 def add_user_statuses_task(viewer_id, user_id, stream_list=None):
-    """remove all statuses by a user from a viewer's stream"""
+    """add all statuses by a user to a viewer's stream"""
     stream_list = [streams[s] for s in stream_list] if stream_list else streams.values()
     viewer = models.User.objects.get(id=viewer_id)
     user = models.User.objects.get(id=user_id)
@@ -460,7 +460,7 @@ def add_user_statuses_task(viewer_id, user_id, stream_list=None):
         stream.add_user_statuses(viewer, user)
 
 
-@app.task
+@app.task(priority="medium_priority")
 def handle_boost_task(boost_id):
     """remove the original post and other, earlier boosts"""
     instance = models.Status.objects.get(id=boost_id)
