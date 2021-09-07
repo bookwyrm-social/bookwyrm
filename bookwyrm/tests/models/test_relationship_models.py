@@ -6,6 +6,7 @@ from django.test import TestCase
 from bookwyrm import models
 
 
+@patch("bookwyrm.activitystreams.add_user_statuses_task.delay")
 class Relationship(TestCase):
     """following, blocking, stuff like that"""
 
@@ -21,14 +22,16 @@ class Relationship(TestCase):
                 inbox="https://example.com/users/rat/inbox",
                 outbox="https://example.com/users/rat/outbox",
             )
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
+            "bookwyrm.activitystreams.populate_stream_task.delay"
+        ):
             self.local_user = models.User.objects.create_user(
                 "mouse", "mouse@mouse.com", "mouseword", local=True, localname="mouse"
             )
         self.local_user.remote_id = "http://local.com/user/mouse"
         self.local_user.save(broadcast=False, update_fields=["remote_id"])
 
-    def test_user_follows_from_request(self):
+    def test_user_follows_from_request(self, _):
         """convert a follow request into a follow"""
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay") as mock:
             request = models.UserFollowRequest.objects.create(
@@ -49,7 +52,7 @@ class Relationship(TestCase):
         self.assertEqual(rel.user_subject, self.local_user)
         self.assertEqual(rel.user_object, self.remote_user)
 
-    def test_user_follows_from_request_custom_remote_id(self):
+    def test_user_follows_from_request_custom_remote_id(self, _):
         """store a specific remote id for a relationship provided by remote"""
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
             request = models.UserFollowRequest.objects.create(
@@ -67,7 +70,7 @@ class Relationship(TestCase):
         self.assertEqual(rel.user_object, self.remote_user)
 
     @patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
-    def test_follow_request_activity(self, broadcast_mock):
+    def test_follow_request_activity(self, broadcast_mock, _):
         """accept a request and make it a relationship"""
         models.UserFollowRequest.objects.create(
             user_subject=self.local_user,
@@ -79,7 +82,7 @@ class Relationship(TestCase):
         self.assertEqual(activity["type"], "Follow")
 
     @patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
-    def test_follow_request_accept(self, broadcast_mock):
+    def test_follow_request_accept(self, broadcast_mock, _):
         """accept a request and make it a relationship"""
         self.local_user.manually_approves_followers = True
         self.local_user.save(
@@ -105,7 +108,7 @@ class Relationship(TestCase):
         self.assertEqual(rel.user_object, self.local_user)
 
     @patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
-    def test_follow_request_reject(self, broadcast_mock):
+    def test_follow_request_reject(self, broadcast_mock, _):
         """accept a request and make it a relationship"""
         self.local_user.manually_approves_followers = True
         self.local_user.save(

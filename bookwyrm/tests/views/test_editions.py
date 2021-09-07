@@ -15,7 +15,9 @@ class BookViews(TestCase):
     def setUp(self):
         """we need basic test data and mocks"""
         self.factory = RequestFactory()
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
+            "bookwyrm.activitystreams.populate_stream_task.delay"
+        ):
             self.local_user = models.User.objects.create_user(
                 "mouse@local.com",
                 "mouse@mouse.com",
@@ -101,7 +103,9 @@ class BookViews(TestCase):
         self.assertEqual(result.status_code, 200)
 
     @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
-    def test_switch_edition(self, _):
+    @patch("bookwyrm.activitystreams.populate_stream_task.delay")
+    @patch("bookwyrm.activitystreams.add_book_statuses_task.delay")
+    def test_switch_edition(self, *_):
         """updates user's relationships to a book"""
         work = models.Work.objects.create(title="test work")
         edition1 = models.Edition.objects.create(title="first ed", parent_work=work)

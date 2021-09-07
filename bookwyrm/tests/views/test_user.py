@@ -17,7 +17,9 @@ class UserViews(TestCase):
     def setUp(self):
         """we need basic test data and mocks"""
         self.factory = RequestFactory()
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
+            "bookwyrm.activitystreams.populate_stream_task.delay"
+        ):
             self.local_user = models.User.objects.create_user(
                 "mouse@local.com",
                 "mouse@mouse.mouse",
@@ -31,13 +33,14 @@ class UserViews(TestCase):
         self.book = models.Edition.objects.create(
             title="test", parent_work=models.Work.objects.create(title="test work")
         )
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-            with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
-                models.ShelfBook.objects.create(
-                    book=self.book,
-                    user=self.local_user,
-                    shelf=self.local_user.shelf_set.first(),
-                )
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"), patch(
+            "bookwyrm.suggested_users.rerank_suggestions_task.delay"
+        ), patch("bookwyrm.activitystreams.add_book_statuses_task.delay"):
+            models.ShelfBook.objects.create(
+                book=self.book,
+                user=self.local_user,
+                shelf=self.local_user.shelf_set.first(),
+            )
 
         models.SiteSettings.objects.create()
         self.anonymous_user = AnonymousUser
@@ -99,7 +102,8 @@ class UserViews(TestCase):
         self.assertEqual(result.status_code, 200)
 
     @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
-    def test_followers_page_blocked(self, _):
+    @patch("bookwyrm.activitystreams.populate_stream_task.delay")
+    def test_followers_page_blocked(self, *_):
         """there are so many views, this just makes sure it LOADS"""
         view = views.Followers.as_view()
         request = self.factory.get("")

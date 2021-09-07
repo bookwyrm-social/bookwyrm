@@ -8,19 +8,24 @@ from bookwyrm import models, settings
 
 # pylint: disable=unused-argument
 @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
+@patch("bookwyrm.activitystreams.populate_stream_task.delay")
+@patch("bookwyrm.activitystreams.add_book_statuses_task.delay")
+@patch("bookwyrm.activitystreams.remove_book_statuses_task.delay")
 class Shelf(TestCase):
     """some activitypub oddness ahead"""
 
     def setUp(self):
         """look, a shelf"""
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
+            "bookwyrm.activitystreams.populate_stream_task.delay"
+        ):
             self.local_user = models.User.objects.create_user(
                 "mouse", "mouse@mouse.mouse", "mouseword", local=True, localname="mouse"
             )
         work = models.Work.objects.create(title="Test Work")
         self.book = models.Edition.objects.create(title="test book", parent_work=work)
 
-    def test_remote_id(self, _):
+    def test_remote_id(self, *_):
         """shelves use custom remote ids"""
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
             shelf = models.Shelf.objects.create(
@@ -29,7 +34,7 @@ class Shelf(TestCase):
         expected_id = "https://%s/user/mouse/books/test-shelf" % settings.DOMAIN
         self.assertEqual(shelf.get_remote_id(), expected_id)
 
-    def test_to_activity(self, _):
+    def test_to_activity(self, *_):
         """jsonify it"""
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
             shelf = models.Shelf.objects.create(
@@ -43,7 +48,7 @@ class Shelf(TestCase):
         self.assertEqual(activity_json["name"], "Test Shelf")
         self.assertEqual(activity_json["owner"], self.local_user.remote_id)
 
-    def test_create_update_shelf(self, _):
+    def test_create_update_shelf(self, *_):
         """create and broadcast shelf creation"""
 
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay") as mock:
@@ -64,7 +69,7 @@ class Shelf(TestCase):
         self.assertEqual(activity["object"]["name"], "arthur russel")
         self.assertEqual(shelf.name, "arthur russel")
 
-    def test_shelve(self, _):
+    def test_shelve(self, *_):
         """create and broadcast shelf creation"""
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
             shelf = models.Shelf.objects.create(

@@ -15,8 +15,9 @@ from bookwyrm.activitypub import ActivitypubResponse
 
 
 @patch("bookwyrm.activitystreams.ActivityStream.get_activity_stream")
-@patch("bookwyrm.activitystreams.ActivityStream.add_status")
+@patch("bookwyrm.activitystreams.add_status_task.delay")
 @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
+@patch("bookwyrm.activitystreams.populate_stream_task.delay")
 @patch("bookwyrm.suggested_users.remove_user_task.delay")
 class FeedViews(TestCase):
     """activity feed, statuses, dms"""
@@ -24,7 +25,9 @@ class FeedViews(TestCase):
     def setUp(self):
         """we need basic test data and mocks"""
         self.factory = RequestFactory()
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
+            "bookwyrm.activitystreams.populate_stream_task.delay"
+        ):
             self.local_user = models.User.objects.create_user(
                 "mouse@local.com",
                 "mouse@mouse.mouse",
@@ -169,14 +172,15 @@ class FeedViews(TestCase):
         result.render()
         self.assertEqual(result.status_code, 200)
 
+    @patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
+    @patch("bookwyrm.activitystreams.add_book_statuses_task.delay")
     def test_get_suggested_book(self, *_):
         """gets books the ~*~ algorithm ~*~ thinks you want to post about"""
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-            models.ShelfBook.objects.create(
-                book=self.book,
-                user=self.local_user,
-                shelf=self.local_user.shelf_set.get(identifier="reading"),
-            )
+        models.ShelfBook.objects.create(
+            book=self.book,
+            user=self.local_user,
+            shelf=self.local_user.shelf_set.get(identifier="reading"),
+        )
         suggestions = views.feed.get_suggested_books(self.local_user)
         self.assertEqual(suggestions[0]["name"], "Currently Reading")
         self.assertEqual(suggestions[0]["books"][0], self.book)

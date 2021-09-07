@@ -8,12 +8,14 @@ from bookwyrm.views import rss_feed
 
 @patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
 @patch("bookwyrm.activitystreams.ActivityStream.get_activity_stream")
-@patch("bookwyrm.activitystreams.ActivityStream.add_status")
+@patch("bookwyrm.activitystreams.add_status_task.delay")
 class RssFeedView(TestCase):
     """rss feed behaves as expected"""
 
     def setUp(self):
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
+            "bookwyrm.activitystreams.populate_stream_task.delay"
+        ):
             self.local_user = models.User.objects.create_user(
                 "rss_user", "rss@test.rss", "password", local=True
             )
