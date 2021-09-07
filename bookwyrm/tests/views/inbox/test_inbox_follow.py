@@ -183,7 +183,8 @@ class InboxRelationships(TestCase):
         views.inbox.activity_task(activity)
         self.assertIsNone(self.local_user.followers.first())
 
-    def test_follow_accept(self):
+    @patch("bookwyrm.activitystreams.add_user_statuses_task.delay")
+    def test_follow_accept(self, _):
         """a remote user approved a follow request from local"""
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
             rel = models.UserFollowRequest.objects.create(

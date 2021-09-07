@@ -12,6 +12,8 @@ from bookwyrm.activitypub import ActivitypubResponse
 @patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
 @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
 @patch("bookwyrm.activitystreams.populate_stream_task.delay")
+@patch("bookwyrm.activitystreams.add_book_statuses_task.delay")
+@patch("bookwyrm.activitystreams.remove_book_statuses_task.delay")
 class ShelfViews(TestCase):
     """tag views"""
 

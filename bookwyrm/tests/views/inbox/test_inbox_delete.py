@@ -1,4 +1,4 @@
-""" tests incoming activities"""
+"""tests incoming activities"""
 from datetime import datetime
 from unittest.mock import patch
 
@@ -63,9 +63,7 @@ class InboxActivities(TestCase):
             "actor": self.remote_user.remote_id,
             "object": {"id": self.status.remote_id, "type": "Tombstone"},
         }
-        with patch(
-            "bookwyrm.activitystreams.ActivityStream.remove_object_from_related_stores"
-        ) as redis_mock:
+        with patch("bookwyrm.activitystreams.remove_status_task.delay") as redis_mock:
             views.inbox.activity_task(activity)
             self.assertTrue(redis_mock.called)
         # deletion doens't remove the status, it turns it into a tombstone
@@ -94,9 +92,7 @@ class InboxActivities(TestCase):
             "actor": self.remote_user.remote_id,
             "object": {"id": self.status.remote_id, "type": "Tombstone"},
         }
-        with patch(
-            "bookwyrm.activitystreams.ActivityStream.remove_object_from_related_stores"
-        ) as redis_mock:
+        with patch("bookwyrm.activitystreams.remove_status_task.delay") as redis_mock:
             views.inbox.activity_task(activity)
             self.assertTrue(redis_mock.called)
         # deletion doens't remove the status, it turns it into a tombstone

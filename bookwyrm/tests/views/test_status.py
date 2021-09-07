@@ -63,9 +63,7 @@ class StatusViews(TestCase):
         request = self.factory.post("", form.data)
         request.user = self.local_user
 
-        with patch("bookwyrm.activitystreams.add_status_task.delay") as redis_mock:
-            view(request, "comment")
-            self.assertTrue(redis_mock.called)
+        view(request, "comment")
 
         status = models.Comment.objects.get()
         self.assertEqual(status.content, "<p>hi</p>")
@@ -78,10 +76,9 @@ class StatusViews(TestCase):
         user = models.User.objects.create_user(
             "rat", "rat@rat.com", "password", local=True
         )
-        with patch("bookwyrm.activitystreams.add_status_task.delay"):
-            parent = models.Status.objects.create(
-                content="parent status", user=self.local_user
-            )
+        parent = models.Status.objects.create(
+            content="parent status", user=self.local_user
+        )
         form = forms.ReplyForm(
             {
                 "content": "hi",
@@ -93,9 +90,7 @@ class StatusViews(TestCase):
         request = self.factory.post("", form.data)
         request.user = user
 
-        with patch("bookwyrm.activitystreams.add_status_task.delay") as redis_mock:
-            view(request, "reply")
-            self.assertTrue(redis_mock.called)
+        view(request, "reply")
 
         status = models.Status.objects.get(user=user)
         self.assertEqual(status.content, "<p>hi</p>")
@@ -123,9 +118,7 @@ class StatusViews(TestCase):
         request = self.factory.post("", form.data)
         request.user = self.local_user
 
-        with patch("bookwyrm.activitystreams.add_status_task.delay") as redis_mock:
-            view(request, "comment")
-            self.assertTrue(redis_mock.called)
+        view(request, "comment")
 
         status = models.Status.objects.get()
         self.assertEqual(list(status.mention_users.all()), [user])
@@ -151,9 +144,7 @@ class StatusViews(TestCase):
         request = self.factory.post("", form.data)
         request.user = self.local_user
 
-        with patch("bookwyrm.activitystreams.add_status_task.delay") as redis_mock:
-            view(request, "comment")
-            self.assertTrue(redis_mock.called)
+        view(request, "comment")
         status = models.Status.objects.get()
 
         form = forms.ReplyForm(
@@ -167,9 +158,7 @@ class StatusViews(TestCase):
         request = self.factory.post("", form.data)
         request.user = user
 
-        with patch("bookwyrm.activitystreams.add_status_task.delay") as redis_mock:
-            view(request, "reply")
-            self.assertTrue(redis_mock.called)
+        view(request, "reply")
 
         reply = models.Status.replies(status).first()
         self.assertEqual(reply.content, "<p>right</p>")
@@ -183,14 +172,11 @@ class StatusViews(TestCase):
         view = views.DeleteAndRedraft.as_view()
         request = self.factory.post("")
         request.user = self.local_user
-        with patch("bookwyrm.activitystreams.add_status_task.delay"):
-            status = models.Comment.objects.create(
-                content="hi", book=self.book, user=self.local_user
-            )
+        status = models.Comment.objects.create(
+            content="hi", book=self.book, user=self.local_user
+        )
 
-        with patch(
-            "bookwyrm.activitystreams.ActivityStream.remove_object_from_related_stores"
-        ) as mock:
+        with patch("bookwyrm.activitystreams.remove_status_task.delay") as mock:
             result = view(request, status.id)
             self.assertTrue(mock.called)
         result.render()
@@ -209,9 +195,7 @@ class StatusViews(TestCase):
                 book=self.book, rating=2.0, user=self.local_user
             )
 
-        with patch(
-            "bookwyrm.activitystreams.ActivityStream.remove_object_from_related_stores"
-        ) as mock:
+        with patch("bookwyrm.activitystreams.remove_status_task.delay") as mock:
             result = view(request, status.id)
             self.assertFalse(mock.called)
         self.assertEqual(result.status_code, 400)
@@ -229,9 +213,7 @@ class StatusViews(TestCase):
                 content="hi", user=self.local_user
             )
 
-        with patch(
-            "bookwyrm.activitystreams.ActivityStream.remove_object_from_related_stores"
-        ) as mock:
+        with patch("bookwyrm.activitystreams.remove_status_task.delay") as mock:
             result = view(request, status.id)
             self.assertFalse(mock.called)
         self.assertEqual(result.status_code, 400)
@@ -354,9 +336,7 @@ class StatusViews(TestCase):
         request = self.factory.post("")
         request.user = self.local_user
 
-        with patch(
-            "bookwyrm.activitystreams.ActivityStream.remove_object_from_related_stores"
-        ) as redis_mock:
+        with patch("bookwyrm.activitystreams.remove_status_task.delay") as redis_mock:
             view(request, status.id)
             self.assertTrue(redis_mock.called)
         activity = json.loads(mock.call_args_list[1][0][1])
@@ -389,9 +369,7 @@ class StatusViews(TestCase):
         request.user = self.remote_user
         request.user.is_superuser = True
 
-        with patch(
-            "bookwyrm.activitystreams.ActivityStream.remove_object_from_related_stores"
-        ) as redis_mock:
+        with patch("bookwyrm.activitystreams.remove_status_task.delay") as redis_mock:
             view(request, status.id)
             self.assertTrue(redis_mock.called)
         activity = json.loads(mock.call_args_list[1][0][1])

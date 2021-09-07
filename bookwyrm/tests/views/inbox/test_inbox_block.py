@@ -56,7 +56,7 @@ class InboxBlock(TestCase):
         }
 
         with patch(
-            "bookwyrm.activitystreams.ActivityStream.remove_user_statuses"
+            "bookwyrm.activitystreams.remove_user_statuses_task.delay"
         ) as redis_mock:
             views.inbox.activity_task(activity)
             self.assertTrue(redis_mock.called)
@@ -94,7 +94,7 @@ class InboxBlock(TestCase):
             },
         }
         with patch(
-            "bookwyrm.activitystreams.ActivityStream.add_user_statuses"
+            "bookwyrm.activitystreams.add_user_statuses_task.delay"
         ) as redis_mock:
             views.inbox.activity_task(activity)
             self.assertTrue(redis_mock.called)
