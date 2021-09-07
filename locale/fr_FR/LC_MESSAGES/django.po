@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.1.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-07 16:12+0000\n"
+"POT-Creation-Date: 2021-09-07 19:50+0000\n"
 "PO-Revision-Date: 2021-04-05 12:44+0100\n"
 "Last-Translator: Fabien Basmaison <contact@arkhi.org>\n"
 "Language-Team: Mouse Reeve <LL@li.org>\n"
@@ -18,87 +18,87 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: bookwyrm/forms.py:195
-#, fuzzy
-#| msgid "Add books"
-msgid "Audiobook"
-msgstr "Ajoutez des livres"
-
-#: bookwyrm/forms.py:196
-#, fuzzy
-#| msgid "Book"
-msgid "eBook"
-msgstr "Livre"
-
-#: bookwyrm/forms.py:197
-msgid "Graphic novel"
-msgstr ""
-
-#: bookwyrm/forms.py:198
-#, fuzzy
-#| msgid "Add cover"
-msgid "Hardcover"
-msgstr "Ajouter une couverture"
-
-#: bookwyrm/forms.py:199
-msgid "Paperback"
-msgstr ""
-
-#: bookwyrm/forms.py:246
+#: bookwyrm/forms.py:235
 msgid "A user with this email already exists."
 msgstr "Cet email est déjà associé à un compte."
 
-#: bookwyrm/forms.py:260
+#: bookwyrm/forms.py:249
 msgid "One Day"
 msgstr "Un jour"
 
-#: bookwyrm/forms.py:261
+#: bookwyrm/forms.py:250
 msgid "One Week"
 msgstr "Une semaine"
 
-#: bookwyrm/forms.py:262
+#: bookwyrm/forms.py:251
 msgid "One Month"
 msgstr "Un mois"
 
-#: bookwyrm/forms.py:263
+#: bookwyrm/forms.py:252
 msgid "Does Not Expire"
 msgstr "Sans expiration"
 
-#: bookwyrm/forms.py:268
+#: bookwyrm/forms.py:257
 #, python-format
 msgid "%(count)d uses"
 msgstr "%(count)d utilisations"
 
-#: bookwyrm/forms.py:271
+#: bookwyrm/forms.py:260
 msgid "Unlimited"
 msgstr "Sans limite"
 
-#: bookwyrm/forms.py:321
+#: bookwyrm/forms.py:310
 msgid "List Order"
 msgstr "Ordre de la liste"
 
-#: bookwyrm/forms.py:322
+#: bookwyrm/forms.py:311
 msgid "Book Title"
 msgstr "Titre du livre"
 
-#: bookwyrm/forms.py:323
+#: bookwyrm/forms.py:312
 #: bookwyrm/templates/snippets/create_status/review.html:23
 #: bookwyrm/templates/user/shelf/shelf.html:117
 #: bookwyrm/templates/user/shelf/shelf.html:148
 msgid "Rating"
 msgstr "Note"
 
-#: bookwyrm/forms.py:325 bookwyrm/templates/lists/list.html:107
+#: bookwyrm/forms.py:314 bookwyrm/templates/lists/list.html:107
 msgid "Sort By"
 msgstr "Trier par"
 
-#: bookwyrm/forms.py:329
+#: bookwyrm/forms.py:318
 msgid "Ascending"
 msgstr "Ordre croissant"
 
-#: bookwyrm/forms.py:330
+#: bookwyrm/forms.py:319
 msgid "Descending"
 msgstr "Ordre décroissant"
+
+#: bookwyrm/models/book.py:230
+#, fuzzy
+#| msgid "Add books"
+msgid "Audiobook"
+msgstr "Ajoutez des livres"
+
+#: bookwyrm/models/book.py:231
+#, fuzzy
+#| msgid "Book"
+msgid "eBook"
+msgstr "Livre"
+
+#: bookwyrm/models/book.py:232
+msgid "Graphic novel"
+msgstr ""
+
+#: bookwyrm/models/book.py:233
+#, fuzzy
+#| msgid "Add cover"
+msgid "Hardcover"
+msgstr "Ajouter une couverture"
+
+#: bookwyrm/models/book.py:234
+msgid "Paperback"
+msgstr ""
 
 #: bookwyrm/models/fields.py:27
 #, python-format
