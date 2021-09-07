@@ -10,21 +10,7 @@ CELERY_RESULT_BACKEND = "redis://:{}@redis_broker:{}/0".format(
     requests.utils.quote(env("REDIS_BROKER_PASSWORD", "")), env("REDIS_BROKER_PORT")
 )
 
-CELERY_TASK_ROUTES = ([
-    # high - should really happen ASAP
-    ("bookwyrm.emailing.*", {"queue": "high_priority"}),
-    # medium - should really happen
-    ("bookwyrm.activitypub.base_activity.*", {"queue": "medium_priority"}),
-    ("bookwyrm.views.inbox.*", {"queue": "medium_priority"}),
-    ("bookwyrm.broadcast.*", {"queue": "medium_priority"}),
-    ("bookwyrm.activitystreams.*", {"queue": "medium_priority"}),
-    # low - no rush
-    ("bookwyrm.connectors.abstract_connector.*", {"queue": "low_priority"}),
-    ("bookwyrm.goodreads_import.*", {"queue": "low_priority"}),
-    ("bookwyrm.models.user.*", {"queue": "low_priority"}),
-    ("bookwyrm.suggested_users.*", {"queue": "low_priority"}),
-    ("bookwyrm.preview_images.*", {"queue": "low_priority"}),
-])
+CELERY_DEFAULT_QUEUE="low_priority"
 
 CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
