@@ -24,7 +24,8 @@ class Activitystreams(TestCase):
             )
         work = models.Work.objects.create(title="test work")
         self.book = models.Edition.objects.create(title="test book", parent_work=work)
-        self.status = models.Status.objects.create(content="hi", user=self.local_user)
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+            self.status = models.Status.objects.create(content="hi", user=self.local_user)
 
     def test_add_book_statuses_task(self):
         """statuses related to a book"""
@@ -120,6 +121,7 @@ class Activitystreams(TestCase):
 
     @patch("bookwyrm.activitystreams.LocalStream.remove_object_from_related_stores")
     @patch("bookwyrm.activitystreams.BooksStream.remove_object_from_related_stores")
+    @patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
     def test_boost_to_another_timeline(self, *_):
         """add a boost and deduplicate the boosted status on the timeline"""
         status = models.Status.objects.create(user=self.local_user, content="hi")
@@ -142,6 +144,7 @@ class Activitystreams(TestCase):
 
     @patch("bookwyrm.activitystreams.LocalStream.remove_object_from_related_stores")
     @patch("bookwyrm.activitystreams.BooksStream.remove_object_from_related_stores")
+    @patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
     def test_boost_to_following_timeline(self, *_):
         """add a boost and deduplicate the boosted status on the timeline"""
         self.local_user.following.add(self.another_user)
@@ -167,6 +170,7 @@ class Activitystreams(TestCase):
 
     @patch("bookwyrm.activitystreams.LocalStream.remove_object_from_related_stores")
     @patch("bookwyrm.activitystreams.BooksStream.remove_object_from_related_stores")
+    @patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
     def test_boost_to_same_timeline(self, *_):
         """add a boost and deduplicate the boosted status on the timeline"""
         status = models.Status.objects.create(user=self.local_user, content="hi")
