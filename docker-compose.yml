@@ -63,7 +63,7 @@ services:
     build: .
     networks:
       - main
-    command: celery -A celerywyrm worker -l info
+    command: celery -A celerywyrm worker -l info -Q high_priority,medium_priority,low_priority
     volumes:
       - .:/app
       - static_volume:/app/static

@@ -3,7 +3,7 @@ from __future__ import absolute_import, unicode_literals
 import os
 
 from celery import Celery
-from . import settings
+from . import settings # pylint: disable=unused-import
 
 
 # set the default Django settings module for the 'celery' program.
