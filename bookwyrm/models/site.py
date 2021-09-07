@@ -1,8 +1,6 @@
 """ the particulars for this instance of BookWyrm """
-import base64
 import datetime
 
-from Crypto import Random
 from django.db import models, IntegrityError
 from django.dispatch import receiver
 from django.utils import timezone
@@ -10,7 +8,7 @@ from model_utils import FieldTracker
 
 from bookwyrm.preview_images import generate_site_preview_image_task
 from bookwyrm.settings import DOMAIN, ENABLE_PREVIEW_IMAGES
-from .base_model import BookWyrmModel
+from .base_model import BookWyrmModel, new_access_code
 from .user import User
 
 
@@ -33,6 +31,7 @@ class SiteSettings(models.Model):
     # registration
     allow_registration = models.BooleanField(default=True)
     allow_invite_requests = models.BooleanField(default=True)
+    require_confirm_email = models.BooleanField(default=True)
 
     # images
     logo = models.ImageField(upload_to="logos/", null=True, blank=True)
@@ -59,11 +58,6 @@ class SiteSettings(models.Model):
             default_settings = SiteSettings(id=1)
             default_settings.save()
             return default_settings
-
-
-def new_access_code():
-    """the identifier for a user invite"""
-    return base64.b32encode(Random.get_random_bytes(5)).decode("ascii")
 
 
 class SiteInvite(models.Model):

@@ -54,7 +54,7 @@
         {% endif %}
         {% for invite in invites %}
         <tr>
-            <td><a href="{{ invite.link }}">{{ invite.link }}</td>
+            <td><a href="{{ invite.link }}">{{ invite.link }}</a></td>
             <td>{{ invite.expiry|naturaltime }}</td>
             <td>{{ invite.use_limit }}</td>
             <td>{{ invite.times_used }}</td>

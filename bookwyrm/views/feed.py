@@ -23,10 +23,12 @@ class Feed(View):
 
     def get(self, request, tab):
         """user's homepage with activity feed"""
-        if not tab in STREAMS:
-            tab = "home"
+        tab = [s for s in STREAMS if s["key"] == tab]
+        tab = tab[0] if tab else STREAMS[0]
 
-        activities = activitystreams.streams[tab].get_activity_stream(request.user)
+        activities = activitystreams.streams[tab["key"]].get_activity_stream(
+            request.user
+        )
         paginated = Paginator(activities, PAGE_LENGTH)
 
         suggestions = suggested_users.get_suggestions(request.user)
@@ -38,8 +40,9 @@ class Feed(View):
                 "activities": paginated.get_page(request.GET.get("page")),
                 "suggested_users": suggestions,
                 "tab": tab,
+                "streams": STREAMS,
                 "goal_form": forms.GoalForm(),
-                "path": "/%s" % tab,
+                "path": "/%s" % tab["key"],
             },
         }
         return TemplateResponse(request, "feed/feed.html", data)
@@ -93,13 +96,9 @@ class Status(View):
         try:
             user = get_user_from_username(request.user, username)
             status = models.Status.objects.select_subclasses().get(
-                id=status_id, deleted=False
+                user=user, id=status_id, deleted=False
             )
         except (ValueError, models.Status.DoesNotExist):
-            return HttpResponseNotFound()
-
-        # the url should have the poster's username in it
-        if user != status.user:
             return HttpResponseNotFound()
 
         # make sure the user is authorized to see the status

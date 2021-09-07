@@ -1,7 +1,8 @@
 """ progress in a book """
-from django.db import models
-from django.utils import timezone
 from django.core import validators
+from django.db import models
+from django.db.models import F, Q
+from django.utils import timezone
 
 from .base_model import BookWyrmModel
 
@@ -40,6 +41,16 @@ class ReadThrough(BookWyrmModel):
                 user=self.user, progress=self.progress, mode=self.progress_mode
             )
         return None
+
+    class Meta:
+        """Don't let readthroughs end before they start"""
+
+        constraints = [
+            models.CheckConstraint(
+                check=Q(finish_date__gte=F("start_date")), name="chronology"
+            )
+        ]
+        ordering = ("-start_date",)
 
 
 class ProgressUpdate(BookWyrmModel):

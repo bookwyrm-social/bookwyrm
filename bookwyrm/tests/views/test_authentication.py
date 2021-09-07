@@ -8,21 +8,24 @@ from django.template.response import TemplateResponse
 from django.test import TestCase
 from django.test.client import RequestFactory
 
-from bookwyrm import models, views
+from bookwyrm import forms, models, views
 from bookwyrm.settings import DOMAIN
 
 
 # pylint: disable=too-many-public-methods
 @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
+@patch("bookwyrm.activitystreams.populate_stream_task.delay")
 class AuthenticationViews(TestCase):
     """login and password management"""
 
     def setUp(self):
         """we need basic test data and mocks"""
         self.factory = RequestFactory()
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
+            "bookwyrm.activitystreams.populate_stream_task.delay"
+        ):
             self.local_user = models.User.objects.create_user(
-                "mouse@local.com",
+                "mouse@your.domain.here",
                 "mouse@mouse.com",
                 "password",
                 local=True,
@@ -31,9 +34,11 @@ class AuthenticationViews(TestCase):
         self.anonymous_user = AnonymousUser
         self.anonymous_user.is_authenticated = False
 
-        self.settings = models.SiteSettings.objects.create(id=1)
+        self.settings = models.SiteSettings.objects.create(
+            id=1, require_confirm_email=False
+        )
 
-    def test_login_get(self, _):
+    def test_login_get(self, *_):
         """there are so many views, this just makes sure it LOADS"""
         login = views.Login.as_view()
         request = self.factory.get("")
@@ -49,7 +54,67 @@ class AuthenticationViews(TestCase):
         self.assertEqual(result.url, "/")
         self.assertEqual(result.status_code, 302)
 
-    def test_register(self, _):
+    def test_login_post_localname(self, *_):
+        """there are so many views, this just makes sure it LOADS"""
+        view = views.Login.as_view()
+        form = forms.LoginForm()
+        form.data["localname"] = "mouse@mouse.com"
+        form.data["password"] = "password"
+        request = self.factory.post("", form.data)
+        request.user = self.anonymous_user
+
+        with patch("bookwyrm.views.authentication.login"):
+            result = view(request)
+        self.assertEqual(result.url, "/")
+        self.assertEqual(result.status_code, 302)
+
+    def test_login_post_username(self, *_):
+        """there are so many views, this just makes sure it LOADS"""
+        view = views.Login.as_view()
+        form = forms.LoginForm()
+        form.data["localname"] = "mouse@your.domain.here"
+        form.data["password"] = "password"
+        request = self.factory.post("", form.data)
+        request.user = self.anonymous_user
+
+        with patch("bookwyrm.views.authentication.login"):
+            result = view(request)
+        self.assertEqual(result.url, "/")
+        self.assertEqual(result.status_code, 302)
+
+    def test_login_post_email(self, *_):
+        """there are so many views, this just makes sure it LOADS"""
+        view = views.Login.as_view()
+        form = forms.LoginForm()
+        form.data["localname"] = "mouse"
+        form.data["password"] = "password"
+        request = self.factory.post("", form.data)
+        request.user = self.anonymous_user
+
+        with patch("bookwyrm.views.authentication.login"):
+            result = view(request)
+        self.assertEqual(result.url, "/")
+        self.assertEqual(result.status_code, 302)
+
+    def test_login_post_invalid_credentials(self, *_):
+        """there are so many views, this just makes sure it LOADS"""
+        view = views.Login.as_view()
+        form = forms.LoginForm()
+        form.data["localname"] = "mouse"
+        form.data["password"] = "passsword1"
+        request = self.factory.post("", form.data)
+        request.user = self.anonymous_user
+
+        with patch("bookwyrm.views.authentication.login"):
+            result = view(request)
+        result.render()
+        self.assertEqual(result.status_code, 200)
+        self.assertEqual(
+            result.context_data["login_form"].non_field_errors,
+            "Username or password are incorrect",
+        )
+
+    def test_register(self, *_):
         """create a user"""
         view = views.Register.as_view()
         self.assertEqual(models.User.objects.count(), 1)
@@ -70,7 +135,34 @@ class AuthenticationViews(TestCase):
         self.assertEqual(nutria.localname, "nutria-user.user_nutria")
         self.assertEqual(nutria.local, True)
 
-    def test_register_trailing_space(self, _):
+    @patch("bookwyrm.emailing.send_email.delay")
+    def test_register_email_confirm(self, *_):
+        """create a user"""
+        self.settings.require_confirm_email = True
+        self.settings.save()
+
+        view = views.Register.as_view()
+        self.assertEqual(models.User.objects.count(), 1)
+        request = self.factory.post(
+            "register/",
+            {
+                "localname": "nutria",
+                "password": "mouseword",
+                "email": "aa@bb.cccc",
+            },
+        )
+        with patch("bookwyrm.views.authentication.login"):
+            response = view(request)
+        self.assertEqual(response.status_code, 302)
+        nutria = models.User.objects.get(localname="nutria")
+        self.assertEqual(nutria.username, "nutria@%s" % DOMAIN)
+        self.assertEqual(nutria.local, True)
+
+        self.assertFalse(nutria.is_active)
+        self.assertEqual(nutria.deactivation_reason, "pending")
+        self.assertIsNotNone(nutria.confirmation_code)
+
+    def test_register_trailing_space(self, *_):
         """django handles this so weirdly"""
         view = views.Register.as_view()
         request = self.factory.post(
@@ -86,7 +178,7 @@ class AuthenticationViews(TestCase):
         self.assertEqual(nutria.localname, "nutria")
         self.assertEqual(nutria.local, True)
 
-    def test_register_invalid_email(self, _):
+    def test_register_invalid_email(self, *_):
         """gotta have an email"""
         view = views.Register.as_view()
         self.assertEqual(models.User.objects.count(), 1)
@@ -97,7 +189,7 @@ class AuthenticationViews(TestCase):
         self.assertEqual(models.User.objects.count(), 1)
         response.render()
 
-    def test_register_invalid_username(self, _):
+    def test_register_invalid_username(self, *_):
         """gotta have an email"""
         view = views.Register.as_view()
         self.assertEqual(models.User.objects.count(), 1)
@@ -125,7 +217,7 @@ class AuthenticationViews(TestCase):
         self.assertEqual(models.User.objects.count(), 1)
         response.render()
 
-    def test_register_closed_instance(self, _):
+    def test_register_closed_instance(self, *_):
         """you can't just register"""
         view = views.Register.as_view()
         self.settings.allow_registration = False
@@ -137,7 +229,7 @@ class AuthenticationViews(TestCase):
         with self.assertRaises(PermissionDenied):
             view(request)
 
-    def test_register_invite(self, _):
+    def test_register_invite(self, *_):
         """you can't just register"""
         view = views.Register.as_view()
         self.settings.allow_registration = False
@@ -189,3 +281,74 @@ class AuthenticationViews(TestCase):
         with self.assertRaises(Http404):
             response = view(request)
         self.assertEqual(models.User.objects.count(), 2)
+
+    def test_confirm_email_code_get(self, *_):
+        """there are so many views, this just makes sure it LOADS"""
+        self.settings.require_confirm_email = True
+        self.settings.save()
+
+        self.local_user.is_active = False
+        self.local_user.deactivation_reason = "pending"
+        self.local_user.confirmation_code = "12345"
+        self.local_user.save(
+            broadcast=False,
+            update_fields=["is_active", "deactivation_reason", "confirmation_code"],
+        )
+        view = views.ConfirmEmailCode.as_view()
+        request = self.factory.get("")
+        request.user = self.anonymous_user
+
+        result = view(request, "12345")
+        self.assertEqual(result.url, "/login/confirmed")
+        self.assertEqual(result.status_code, 302)
+
+        self.local_user.refresh_from_db()
+        self.assertTrue(self.local_user.is_active)
+        self.assertIsNone(self.local_user.deactivation_reason)
+
+        request.user = self.local_user
+        result = view(request, "12345")
+        self.assertEqual(result.url, "/")
+        self.assertEqual(result.status_code, 302)
+
+    def test_confirm_email_code_get_invalid_code(self, *_):
+        """there are so many views, this just makes sure it LOADS"""
+        self.settings.require_confirm_email = True
+        self.settings.save()
+
+        self.local_user.is_active = False
+        self.local_user.deactivation_reason = "pending"
+        self.local_user.confirmation_code = "12345"
+        self.local_user.save(
+            broadcast=False,
+            update_fields=["is_active", "deactivation_reason", "confirmation_code"],
+        )
+        view = views.ConfirmEmailCode.as_view()
+        request = self.factory.get("")
+        request.user = self.anonymous_user
+
+        result = view(request, "abcde")
+        self.assertIsInstance(result, TemplateResponse)
+        result.render()
+        self.assertEqual(result.status_code, 200)
+        self.assertFalse(self.local_user.is_active)
+        self.assertEqual(self.local_user.deactivation_reason, "pending")
+
+    def test_confirm_email_get(self, *_):
+        """there are so many views, this just makes sure it LOADS"""
+        self.settings.require_confirm_email = True
+        self.settings.save()
+
+        login = views.ConfirmEmail.as_view()
+        request = self.factory.get("")
+        request.user = self.anonymous_user
+
+        result = login(request)
+        self.assertIsInstance(result, TemplateResponse)
+        result.render()
+        self.assertEqual(result.status_code, 200)
+
+        request.user = self.local_user
+        result = login(request)
+        self.assertEqual(result.url, "/")
+        self.assertEqual(result.status_code, 302)

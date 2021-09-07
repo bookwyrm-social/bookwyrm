@@ -12,7 +12,7 @@
 <div class="field">
     <label class="label" for="id_email_register">{% trans "Email address:" %}</label>
     <div class="control">
-        <input type="email" name="email" maxlength="254" class="input" id="id_email_register" value="{% if register_form.email.value %}{{ register_form.email.value }}{% endif %}">
+        <input type="email" name="email" maxlength="254" class="input" id="id_email_register" value="{% if register_form.email.value %}{{ register_form.email.value }}{% endif %}" required>
     {% for error in register_form.email.errors %}
     <p class="help is-danger">{{ error | escape }}</p>
     {% endfor %}

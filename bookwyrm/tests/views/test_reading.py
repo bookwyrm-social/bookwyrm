@@ -8,15 +8,19 @@ from django.utils import timezone
 from bookwyrm import models, views
 
 
-@patch("bookwyrm.activitystreams.ActivityStream.add_status")
+@patch("bookwyrm.activitystreams.add_status_task.delay")
 @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
+@patch("bookwyrm.activitystreams.populate_stream_task.delay")
+@patch("bookwyrm.activitystreams.add_book_statuses_task.delay")
 class ReadingViews(TestCase):
     """viewing and creating statuses"""
 
     def setUp(self):
         """we need basic test data and mocks"""
         self.factory = RequestFactory()
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
+            "bookwyrm.activitystreams.populate_stream_task.delay"
+        ):
             self.local_user = models.User.objects.create_user(
                 "mouse@local.com",
                 "mouse@mouse.com",
@@ -73,7 +77,9 @@ class ReadingViews(TestCase):
         self.assertEqual(readthrough.user, self.local_user)
         self.assertEqual(readthrough.book, self.book)
 
-    def test_start_reading_reshelf(self, *_):
+    @patch("bookwyrm.activitystreams.add_book_statuses_task.delay")
+    @patch("bookwyrm.activitystreams.remove_book_statuses_task.delay")
+    def test_start_reading_reshelve(self, *_):
         """begin a book"""
         to_read_shelf = self.local_user.shelf_set.get(identifier=models.Shelf.TO_READ)
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
@@ -107,7 +113,7 @@ class ReadingViews(TestCase):
             {
                 "post-status": True,
                 "privacy": "followers",
-                "finish_date": "2020-01-07",
+                "finish_date": timezone.now().isoformat(),
                 "id": readthrough.id,
             },
         )

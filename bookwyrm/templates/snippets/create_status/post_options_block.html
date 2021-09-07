@@ -1,0 +1,22 @@
+{% load i18n %}
+<div class="columns mt-1">
+    <div class="field has-addons column">
+        {% include "snippets/create_status/content_warning_toggle.html" %}
+        <div class="control">
+        {% if type == 'direct' %}
+            <input type="hidden" name="privacy" value="direct">
+            <button type="button" class="button" aria-label="Privacy" disabled>{% trans "Private" %}</button>
+        {% else %}
+            {% if draft %}
+            {% include 'snippets/privacy_select.html' with current=draft.privacy %}
+            {% else %}
+            {% include 'snippets/privacy_select.html' with current=reply_parent.privacy %}
+            {% endif %}
+        {% endif %}
+        </div>
+    </div>
+    <div class="column is-narrow">
+        <button class="button is-link" type="submit">{% trans "Post" %}</button>
+    </div>
+</div>
+

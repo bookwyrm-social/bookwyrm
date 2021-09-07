@@ -20,7 +20,7 @@ def webfinger(request):
 
     username = resource.replace("acct:", "")
     try:
-        user = models.User.objects.get(username=username)
+        user = models.User.objects.get(username__iexact=username)
     except models.User.DoesNotExist:
         return HttpResponseNotFound("No account found")
 

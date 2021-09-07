@@ -12,7 +12,7 @@ from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.http import require_POST
 
-from bookwyrm import models
+from bookwyrm import forms, models
 from .helpers import get_edition, handle_reading_status
 
 
@@ -31,6 +31,7 @@ class ReadingStatus(View):
         }.get(status)
         if not template:
             return HttpResponseNotFound()
+        # redirect if we're already on this shelf
         return TemplateResponse(request, f"reading_progress/{template}", {"book": book})
 
     def post(self, request, status, book_id):
@@ -58,11 +59,15 @@ class ReadingStatus(View):
             )
             .first()
         )
+
+        referer = request.headers.get("Referer", "/")
+        if "reading-status" in referer:
+            referer = "/"
         if current_status_shelfbook is not None:
             if current_status_shelfbook.shelf.identifier != desired_shelf.identifier:
                 current_status_shelfbook.delete()
             else:  # It already was on the shelf
-                return redirect(request.headers.get("Referer", "/"))
+                return redirect(referer)
 
         models.ShelfBook.objects.create(
             book=book, shelf=desired_shelf, user=request.user
@@ -76,10 +81,18 @@ class ReadingStatus(View):
 
         # post about it (if you want)
         if request.POST.get("post-status"):
-            privacy = request.POST.get("privacy")
-            handle_reading_status(request.user, desired_shelf, book, privacy)
-
-        return redirect(request.headers.get("Referer", "/"))
+            # is it a comment?
+            if request.POST.get("content"):
+                form = forms.CommentForm(request.POST)
+                if form.is_valid():
+                    form.save()
+                else:
+                    # uh oh
+                    raise Exception(form.errors)
+            else:
+                privacy = request.POST.get("privacy")
+                handle_reading_status(request.user, desired_shelf, book, privacy)
+        return redirect(referer)
 
 
 @login_required

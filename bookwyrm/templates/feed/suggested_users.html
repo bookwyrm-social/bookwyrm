@@ -2,5 +2,5 @@
 <section class="block">
     <h2 class="title is-5">{% trans "Who to follow" %}</h2>
     {% include 'snippets/suggested_users.html' with suggested_users=suggested_users %}
-    <a class="help" href="{% url 'directory' %}">View directory <span class="icon icon-arrow-right"></a>
+    <a class="help" href="{% url 'directory' %}">{% trans "View directory" %} <span class="icon icon-arrow-right"></span></a>
 </section>

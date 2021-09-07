@@ -23,6 +23,14 @@ def email_data():
     }
 
 
+def email_confirmation_email(user):
+    """newly registered users confirm email address"""
+    data = email_data()
+    data["confirmation_code"] = user.confirmation_code
+    data["confirmation_link"] = user.confirmation_link
+    send_email.delay(user.email, *format_email("confirm", data))
+
+
 def invite_email(invite_request):
     """send out an invite code"""
     data = email_data()

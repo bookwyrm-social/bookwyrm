@@ -19,7 +19,7 @@
         itemtype="https://schema.org/Thing"
     ><span
         itemprop="name"
-        >{{ author.name }}<span></a>{% if not forloop.last %}, {% elif remainder_count > 0 %}, {% blocktrans trimmed count counter=remainder_count %}
+        >{{ author.name }}</span></a>{% if not forloop.last %}, {% elif remainder_count > 0 %}, {% blocktrans trimmed count counter=remainder_count %}
 and {{ remainder_count_display }} other
 {% plural %}
 and {{ remainder_count_display }} others

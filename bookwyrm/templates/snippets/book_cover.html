@@ -2,41 +2,67 @@
 
 {% load i18n %}
 {% load static %}
+{% load imagekit %}
+{% load utilities %}
 
-<figure
-    class="
-        cover-container
-        {{ cover_class }}
-
-        {% if not book.cover %}
-            no-cover
-        {% endif %}
-    "
-
-    {% if book.alt_text %}
-        title="{{ book.alt_text }}"
-    {% endif %}
->
-    <img
-        class="book-cover"
-
-        {% if book.cover %}
-            src="{% if img_path is None %}{% get_media_prefix %}{% else %}{{ img_path }}{% endif %}{{ book.cover }}"
-            itemprop="thumbnailUrl"
-
-            {% if book.alt_text %}
-                alt="{{ book.alt_text }}"
-            {% endif %}
+{% if book.cover %}
+    <picture class="cover-container {{ cover_class }}">
+        {% if external_path %}
+            <img
+                class="book-cover"
+                src="{{ book.cover }}"
+                itemprop="thumbnailUrl"
+                alt="{{ book.alt_text|default:'' }}"
+            >
         {% else %}
+
+            {% if thumbnail_generation_enabled %}
+
+                {% if size_mobile %}
+                    <source
+                        media="(max-width: 768px)"
+                        type="image/webp"
+                        srcset="{% get_book_cover_thumbnail book=book size=size_mobile ext='webp' %}"
+                    />
+                    <source
+                        media="(max-width: 768px)"
+                        type="image/jpg"
+                        srcset="{% get_book_cover_thumbnail book=book size=size_mobile ext='jpg' %}"
+                    />
+                {% endif %}
+
+                <source
+                    type="image/webp"
+                    srcset="{% get_book_cover_thumbnail book=book size=size ext='webp' %}"
+                />
+                <source
+                    type="image/jpg"
+                    srcset="{% get_book_cover_thumbnail book=book size=size ext='jpg' %}"
+                />
+
+            {% endif %}
+
+            <img
+                alt="{{ book.alt_text|default:'' }}"
+                class="book-cover"
+                itemprop="thumbnailUrl"
+                src="{% if img_path is None %}{% get_media_prefix %}{% else %}{{ img_path }}{% endif %}{{ book.cover }}"
+            >
+
+        {% endif %}
+    </picture>
+{% endif %}
+
+{% if not book.cover and book.alt_text %}
+    <figure class="cover-container no-cover {{ cover_class }}">
+        <img
+            class="book-cover"
             src="{% static "images/no_cover.jpg" %}"
             alt="{% trans "No cover" %}"
-        {% endif %}
-    >
-
-    {% if not book.cover and book.alt_text %}
-        <figcaption class="cover_caption">
+        >
+        <figcaption class="cover-caption">
             <p>{{ book.alt_text }}</p>
         </figcaption>
-    {% endif %}
-</figure>
+    </figure>
+{% endif %}
 {% endspaceless %}

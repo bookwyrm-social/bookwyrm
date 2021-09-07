@@ -19,7 +19,7 @@ class SuggestedUsers(RedisStore):
 
     def get_rank(self, obj):
         """get computed rank"""
-        return obj.mutuals + (1.0 - (1.0 / (obj.shared_books + 1)))
+        return obj.mutuals  # + (1.0 - (1.0 / (obj.shared_books + 1)))
 
     def store_id(self, user):  # pylint: disable=no-self-use
         """the key used to store this user's recs"""
@@ -31,7 +31,7 @@ class SuggestedUsers(RedisStore):
         """calculate mutuals count and shared books count from rank"""
         return {
             "mutuals": math.floor(rank),
-            "shared_books": int(1 / (-1 * (rank % 1 - 1))) - 1,
+            # "shared_books": int(1 / (-1 * (rank % 1 - 1))) - 1,
         }
 
     def get_objects_for_store(self, store):
@@ -95,7 +95,7 @@ class SuggestedUsers(RedisStore):
                 logger.exception(err)
                 continue
             user.mutuals = counts["mutuals"]
-            user.shared_books = counts["shared_books"]
+            # user.shared_books = counts["shared_books"]
             results.append(user)
         return results
 
@@ -115,16 +115,16 @@ def get_annotated_users(viewer, *args, **kwargs):
                 ),
                 distinct=True,
             ),
-            shared_books=Count(
-                "shelfbook",
-                filter=Q(
-                    ~Q(id=viewer.id),
-                    shelfbook__book__parent_work__in=[
-                        s.book.parent_work for s in viewer.shelfbook_set.all()
-                    ],
-                ),
-                distinct=True,
-            ),
+            #             shared_books=Count(
+            #                 "shelfbook",
+            #                 filter=Q(
+            #                     ~Q(id=viewer.id),
+            #                     shelfbook__book__parent_work__in=[
+            #                         s.book.parent_work for s in viewer.shelfbook_set.all()
+            #                     ],
+            #                 ),
+            #                 distinct=True,
+            #             ),
         )
     )
 
@@ -162,18 +162,18 @@ def update_suggestions_on_unfollow(sender, instance, **kwargs):
         rerank_user_task.delay(instance.user_object.id, update_only=False)
 
 
-@receiver(signals.post_save, sender=models.ShelfBook)
-@receiver(signals.post_delete, sender=models.ShelfBook)
-# pylint: disable=unused-argument
-def update_rank_on_shelving(sender, instance, *args, **kwargs):
-    """when a user shelves or unshelves a book, re-compute their rank"""
-    # if it's a local user, re-calculate who is rec'ed to them
-    if instance.user.local:
-        rerank_suggestions_task.delay(instance.user.id)
-
-    # if the user is discoverable, update their rankings
-    if instance.user.discoverable:
-        rerank_user_task.delay(instance.user.id)
+# @receiver(signals.post_save, sender=models.ShelfBook)
+# @receiver(signals.post_delete, sender=models.ShelfBook)
+# # pylint: disable=unused-argument
+# def update_rank_on_shelving(sender, instance, *args, **kwargs):
+#     """when a user shelves or unshelves a book, re-compute their rank"""
+#     # if it's a local user, re-calculate who is rec'ed to them
+#     if instance.user.local:
+#         rerank_suggestions_task.delay(instance.user.id)
+#
+#     # if the user is discoverable, update their rankings
+#     if instance.user.discoverable:
+#         rerank_user_task.delay(instance.user.id)
 
 
 @receiver(signals.post_save, sender=models.User)

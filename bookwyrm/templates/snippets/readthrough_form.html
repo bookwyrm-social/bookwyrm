@@ -3,19 +3,19 @@
 <input type="hidden" name="id" value="{{ readthrough.id }}">
 <input type="hidden" name="book" value="{{ book.id }}">
 <div class="field">
-    <label class="label" tabindex="0" id="add-readthrough-focus" for="id_start_date-{{ readthrough.id }}">
+    <label class="label" tabindex="0" id="add_readthrough_focus_{{ readthrough.id }}" for="id_start_date_{{ readthrough.id }}">
         {% trans "Started reading" %}
     </label>
-    <input type="date" name="start_date" class="input" id="id_start_date-{{ readthrough.id }}" value="{{ readthrough.start_date | date:"Y-m-d" }}">
+    <input type="date" name="start_date" class="input" id="id_start_date_{{ readthrough.id }}" value="{{ readthrough.start_date | date:"Y-m-d" }}">
 </div>
 {# Only show progress for editing existing readthroughs #}
 {% if readthrough.id and not readthrough.finish_date %}
-<label class="label" for="id_progress-{{ readthrough.id }}">
+<label class="label" for="id_progress_{{ readthrough.id }}">
     {% trans "Progress" %}
 </label>
 <div class="field has-addons">
     <div class="control">
-        <input type="number" name="progress" class="input" id="id_progress-{{ readthrough.id }}" value="{{ readthrough.progress }}">
+        <input type="number" name="progress" class="input" id="id_progress_{{ readthrough.id }}" value="{{ readthrough.progress }}">
     </div>
     <div class="control select">
         <select name="progress_mode" aria-label="Progress mode">
@@ -26,8 +26,8 @@
 </div>
 {% endif %}
 <div class="field">
-    <label class="label" for="id_finish_date-{{ readthrough.id }}">
+    <label class="label" for="id_finish_date_{{ readthrough.id }}">
         {% trans "Finished reading" %}
     </label>
-    <input type="date" name="finish_date" class="input" id="id_finish_date-{{ readthrough.id }}" value="{{ readthrough.finish_date | date:"Y-m-d" }}">
+    <input type="date" name="finish_date" class="input" id="id_finish_date_{{ readthrough.id }}" value="{{ readthrough.finish_date | date:"Y-m-d" }}">
 </div>

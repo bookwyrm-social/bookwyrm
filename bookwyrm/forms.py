@@ -86,6 +86,7 @@ class CommentForm(CustomForm):
             "privacy",
             "progress",
             "progress_mode",
+            "reading_status",
         ]
 
 
@@ -100,6 +101,8 @@ class QuotationForm(CustomForm):
             "content_warning",
             "sensitive",
             "privacy",
+            "position",
+            "position_mode",
         ]
 
 

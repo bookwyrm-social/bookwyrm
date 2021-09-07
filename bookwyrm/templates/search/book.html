@@ -28,14 +28,14 @@
             </div>
             <div class="column is-narrow">
                 {% trans "Open" as button_text %}
-                {% include 'snippets/toggle/open_button.html' with text=button_text controls_text="more-results-panel" controls_uid=result_set.connector.identifier class="is-small" icon_with_text="arrow-down" pressed=forloop.first %}
+                {% include 'snippets/toggle/open_button.html' with text=button_text controls_text="more_results_panel" controls_uid=result_set.connector.identifier class="is-small" icon_with_text="arrow-down" pressed=forloop.first %}
                 {% trans "Close" as button_text %}
-                {% include 'snippets/toggle/close_button.html' with text=button_text controls_text="more-results-panel" controls_uid=result_set.connector.identifier class="is-small" icon_with_text="arrow-up" pressed=forloop.first %}
+                {% include 'snippets/toggle/close_button.html' with text=button_text controls_text="more_results_panel" controls_uid=result_set.connector.identifier class="is-small" icon_with_text="arrow-up" pressed=forloop.first %}
             </div>
         </header>
         {% endif %}
 
-        <div class="box has-background-white is-shadowless{% if not forloop.first %} is-hidden{% endif %}" id="more-results-panel-{{ result_set.connector.identifier }}">
+        <div class="box has-background-white is-shadowless{% if not forloop.first %} is-hidden{% endif %}" id="more_results_panel_{{ result_set.connector.identifier }}">
             <div class="is-flex is-flex-direction-row-reverse">
                 <div>
                 </div>

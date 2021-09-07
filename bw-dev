@@ -121,10 +121,13 @@ case "$CMD" in
         makeitblack
         ;;
     populate_streams)
-        runweb python manage.py populate_streams
+        runweb python manage.py populate_streams $@
         ;;
     populate_suggestions)
         runweb python manage.py populate_suggestions
+        ;;
+    generate_thumbnails)
+        runweb python manage.py generateimages
         ;;
     generate_preview_images)
         runweb python manage.py generate_preview_images $@
@@ -169,8 +172,9 @@ case "$CMD" in
         echo "    build"
         echo "    clean"
         echo "    black"
-        echo "    populate_streams"
+        echo "    populate_streams [--stream=<stream name>]"
         echo "    populate_suggestions"
+        echo "    generate_thumbnails"
         echo "    generate_preview_images [--all]"
         echo "    copy_media_to_s3"
         echo "    set_cors_to_s3 [cors file]"

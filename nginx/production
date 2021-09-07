@@ -25,6 +25,12 @@ server {
 #
 #     server_name your-domain.com;
 #
+#     client_max_body_size 3M;
+#
+#     if ($host != "you-domain.com") {
+#         return 301 $scheme://your-domain.com$request_uri;
+#     }
+#
 #     # SSL code
 #     ssl_certificate /etc/nginx/ssl/live/your-domain.com/fullchain.pem;
 #     ssl_certificate_key /etc/nginx/ssl/live/your-domain.com/privkey.pem;

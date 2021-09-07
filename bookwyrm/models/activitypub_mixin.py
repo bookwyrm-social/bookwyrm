@@ -7,7 +7,7 @@ import operator
 import logging
 from uuid import uuid4
 import requests
-from requests.exceptions import HTTPError, SSLError
+from requests.exceptions import RequestException
 
 from Crypto.PublicKey import RSA
 from Crypto.Signature import pkcs1_15
@@ -43,7 +43,7 @@ class ActivitypubMixin:
     reverse_unfurl = False
 
     def __init__(self, *args, **kwargs):
-        """collect some info on model fields"""
+        """collect some info on model fields for later use"""
         self.image_fields = []
         self.many_to_many_fields = []
         self.simple_fields = []  # "simple"
@@ -362,6 +362,13 @@ class OrderedCollectionMixin(OrderedCollectionPageMixin):
             self.collection_queryset, **kwargs
         ).serialize()
 
+    def delete(self, *args, broadcast=True, **kwargs):
+        """Delete the object"""
+        activity = self.to_delete_activity(self.user)
+        super().delete(*args, **kwargs)
+        if self.user.local and broadcast:
+            self.broadcast(activity, self.user)
+
 
 class CollectionItemMixin(ActivitypubMixin):
     """for items that are part of an (Ordered)Collection"""
@@ -503,7 +510,7 @@ def broadcast_task(sender_id, activity, recipients):
     for recipient in recipients:
         try:
             sign_and_send(sender, activity, recipient)
-        except (HTTPError, SSLError, requests.exceptions.ConnectionError):
+        except RequestException:
             pass
 
 

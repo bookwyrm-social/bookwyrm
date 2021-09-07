@@ -31,8 +31,8 @@
         {% spaceless %}
         <div class="column box has-background-white-bis content preserve-whitespace">
             {{ user.summary|to_markdown|safe }}
-        {% endspaceless %}
         </div>
+        {% endspaceless %}
         {% endif %}
     </div>
     {% if not is_self and request.user.is_authenticated %}

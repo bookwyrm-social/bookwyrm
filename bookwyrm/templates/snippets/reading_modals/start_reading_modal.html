@@ -1,0 +1,24 @@
+{% extends 'snippets/reading_modals/layout.html' %}
+{% load i18n %}
+{% load utilities %}
+
+{% block modal-title %}
+{% blocktrans trimmed with book_title=book|book_title %}
+Start "<em>{{ book_title }}</em>"
+{% endblocktrans %}
+{% endblock %}
+
+{% block modal-form-open %}
+<form name="start-reading" action="{% url 'reading-status' 'start' book.id %}" method="post">
+<input type="hidden" name="reading_status" value="reading">
+{% csrf_token %}
+{% endblock %}
+
+{% block reading-dates %}
+<div class="field">
+    <label class="label" for="start_id_start_date_{{ uuid }}">
+        {% trans "Started reading" %}
+    </label>
+    <input type="date" name="start_date" class="input" id="start_id_start_date_{{ uuid }}" value="{% now "Y-m-d" %}">
+</div>
+{% endblock %}

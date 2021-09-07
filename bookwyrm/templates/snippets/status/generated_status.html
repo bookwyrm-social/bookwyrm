@@ -8,7 +8,7 @@
     {% with book=status.book|default:status.mention_books.first %}
         <div class="columns is-mobile is-gapless">
             <a class="column is-cover is-narrow" href="{{ book.local_path }}">
-                {% include 'snippets/book_cover.html' with book=book cover_class='is-h-xs is-h-s-tablet' %}
+                {% include 'snippets/book_cover.html' with book=book cover_class='is-h-xs is-h-s-tablet' size='small' size_mobile='xsmall' %}
             </a>
 
             <div class="column ml-3">

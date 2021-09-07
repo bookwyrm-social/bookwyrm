@@ -35,7 +35,7 @@
             {% for book in shelf.books %}
             <div class="control">
                 <a href="{{ book.local_path }}">
-                {% include 'snippets/book_cover.html' with book=book cover_class='is-h-m is-h-s-mobile' %}
+                {% include 'snippets/book_cover.html' with book=book cover_class='is-h-m is-h-s-mobile' size_mobile='small' size='medium' %}
                 </a>
             </div>
             {% endfor %}
@@ -65,13 +65,13 @@
         </div>
     </div>
     {% for activity in activities %}
-    <div class="block" id="feed-{{ activity.id }}">
+    <div class="block" id="feed_{{ activity.id }}">
         {% include 'snippets/status/status.html' with status=activity %}
     </div>
     {% endfor %}
     {% if not activities %}
     <div class="block">
-        <p>{% trans "No activities yet!" %}</a>
+        <p>{% trans "No activities yet!" %}</p>
     </div>
     {% endif %}
 

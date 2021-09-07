@@ -16,7 +16,9 @@ class UserViews(TestCase):
     def setUp(self):
         """we need basic test data and mocks"""
         self.factory = RequestFactory()
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
+            "bookwyrm.activitystreams.populate_stream_task.delay"
+        ):
             self.local_user = models.User.objects.create_user(
                 "mouse@local.com",
                 "mouse@mouse.mouse",
@@ -44,6 +46,16 @@ class UserViews(TestCase):
     def test_webfinger(self):
         """there are so many views, this just makes sure it LOADS"""
         request = self.factory.get("", {"resource": "acct:mouse@local.com"})
+        request.user = self.anonymous_user
+
+        result = views.webfinger(request)
+        self.assertIsInstance(result, JsonResponse)
+        data = json.loads(result.getvalue())
+        self.assertEqual(data["subject"], "acct:mouse@local.com")
+
+    def test_webfinger_case_sensitivty(self):
+        """ensure that webfinger queries are not case sensitive"""
+        request = self.factory.get("", {"resource": "acct:MoUsE@local.com"})
         request.user = self.anonymous_user
 
         result = views.webfinger(request)

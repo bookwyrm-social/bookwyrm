@@ -71,7 +71,7 @@ class Connector(AbstractConnector):
         # flatten the data so that images, uri, and claims are on the same level
         return {
             **data.get("claims", {}),
-            **{k: data.get(k) for k in ["uri", "image", "labels", "sitelinks"]},
+            **{k: data.get(k) for k in ["uri", "image", "labels", "sitelinks", "type"]},
         }
 
     def search(self, query, min_confidence=None):  # pylint: disable=arguments-differ
@@ -145,8 +145,8 @@ class Connector(AbstractConnector):
     def get_edition_from_work_data(self, data):
         data = self.load_edition_data(data.get("uri"))
         try:
-            uri = data["uris"][0]
-        except KeyError:
+            uri = data.get("uris", [])[0]
+        except IndexError:
             raise ConnectorException("Invalid book data")
         return self.get_book_data(self.get_remote_id(uri))
 

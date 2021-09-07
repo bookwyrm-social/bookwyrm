@@ -170,9 +170,9 @@ class InviteRequest(View):
         data = {
             "request_form": form,
             "request_received": received,
-            "books": helpers.get_discover_books(),
+            "books": helpers.get_landing_books(),
         }
-        return TemplateResponse(request, "discover/discover.html", data)
+        return TemplateResponse(request, "landing/landing.html", data)
 
 
 @require_POST

@@ -11,8 +11,13 @@
             {% if login_form.non_field_errors %}
             <p class="notification is-danger">{{ login_form.non_field_errors }}</p>
             {% endif %}
+
+            {% if show_confirmed_email %}
+            <p class="notification is-success">{% trans "Success! Email address confirmed." %}</p>
+            {% endif %}
             <form name="login" method="post" action="/login">
                 {% csrf_token %}
+                {% if show_confirmed_email %}<input type="hidden" name="first_login" value="true">{% endif %}
                 <div class="field">
                     <label class="label" for="id_localname">{% trans "Username:" %}</label>
                     <div class="control">

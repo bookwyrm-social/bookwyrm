@@ -7,7 +7,7 @@
     {% if classes %}{{classes}}{% endif%}
 ">
     <input
-        id="{{ type|slugify }}-{{ book.id }}-no-rating"
+        id="{{ type|slugify }}_{{ book.id }}_no_rating"
         class="is-sr-only"
         type="radio"
         name="rating"
@@ -15,13 +15,13 @@
         {% if default_rating == 0 or not default_rating %}checked{% endif %}
     >
 
-    <label class="is-sr-only" for="{{ type|slugify }}-{{ book.id }}-no-rating">
+    <label class="is-sr-only" for="{{ type|slugify }}_{{ book.id }}_no_rating">
         {% trans "No rating" %}
     </label>
 
     {% for i in '12345'|make_list %}
         <input
-            id="{{ type|slugify }}-book{{ book.id }}-star-{{ forloop.counter }}"
+            id="{{ type|slugify }}_book{{ book.id }}_star_{{ forloop.counter }}"
             class="is-sr-only"
             type="radio"
             name="rating"
@@ -38,7 +38,7 @@
                 icon-star-empty
                 {% endif %}
             "
-            for="{{ type|slugify }}-book{{ book.id }}-star-{{ forloop.counter }}"
+            for="{{ type|slugify }}_book{{ book.id }}_star_{{ forloop.counter }}"
         >
             <span class="is-sr-only">
                 {% blocktranslate trimmed count rating=forloop.counter %}

@@ -33,11 +33,11 @@
                                     <li class="{% if active_book == book.id|stringformat:'d' %}is-active{% elif not active_book and shelf_counter == 1 and forloop.first %}is-active{% endif %}">
                                         <a
                                             href="{{ request.path }}?book={{ book.id }}"
-                                            id="tab-book-{{ book.id }}"
+                                            id="tab_book_{{ book.id }}"
                                             role="tab"
                                             aria-label="{{ book.title }}"
                                             aria-selected="{% if active_book == book.id|stringformat:'d' %}true{% elif shelf_counter == 1 and forloop.first %}true{% else %}false{% endif %}"
-                                            aria-controls="book-{{ book.id }}">
+                                            aria-controls="book_{{ book.id }}">
                                             {% include 'snippets/book_cover.html' with book=book cover_class='is-h-m' %}
                                         </a>
                                     </li>
@@ -56,9 +56,9 @@
                 <div
                     class="suggested-tabs card"
                     role="tabpanel"
-                    id="book-{{ book.id }}"
+                    id="book_{{ book.id }}"
                     {% if active_book and active_book == book.id|stringformat:'d' %}{% elif not active_book and shelf_counter == 1 and forloop.first %}{% else %} hidden{% endif %}
-                    aria-labelledby="tab-book-{{ book.id }}">
+                    aria-labelledby="tab_book_{{ book.id }}">
 
                     <div class="card-header">
                         <div class="card-header-title">
