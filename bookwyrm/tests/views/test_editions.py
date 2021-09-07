@@ -104,6 +104,7 @@ class BookViews(TestCase):
 
     @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
     @patch("bookwyrm.activitystreams.populate_stream_task.delay")
+    @patch("bookwyrm.activitystreams.add_book_statuses_task.delay")
     def test_switch_edition(self, *_):
         """updates user's relationships to a book"""
         work = models.Work.objects.create(title="test work")

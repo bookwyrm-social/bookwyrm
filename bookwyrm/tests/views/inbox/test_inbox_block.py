@@ -69,6 +69,7 @@ class InboxBlock(TestCase):
         self.assertFalse(models.UserFollows.objects.exists())
         self.assertFalse(models.UserFollowRequest.objects.exists())
 
+    @patch("bookwyrm.activitystreams.remove_user_statuses_task.delay")
     def test_handle_unblock(self):
         """unblock a user"""
         self.remote_user.blocks.add(self.local_user)

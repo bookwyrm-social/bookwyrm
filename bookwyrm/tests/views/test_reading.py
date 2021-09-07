@@ -77,7 +77,8 @@ class ReadingViews(TestCase):
         self.assertEqual(readthrough.user, self.local_user)
         self.assertEqual(readthrough.book, self.book)
 
-    def test_start_reading_reshelf(self, *_):
+    @patch("bookwyrm.activitystreams.add_book_statuses_task.delay")
+    def test_start_reading_reshelve(self, *_):
         """begin a book"""
         to_read_shelf = self.local_user.shelf_set.get(identifier=models.Shelf.TO_READ)
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
