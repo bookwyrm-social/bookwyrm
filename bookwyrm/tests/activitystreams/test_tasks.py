@@ -25,7 +25,9 @@ class Activitystreams(TestCase):
         work = models.Work.objects.create(title="test work")
         self.book = models.Edition.objects.create(title="test book", parent_work=work)
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-            self.status = models.Status.objects.create(content="hi", user=self.local_user)
+            self.status = models.Status.objects.create(
+                content="hi", user=self.local_user
+            )
 
     def test_add_book_statuses_task(self):
         """statuses related to a book"""

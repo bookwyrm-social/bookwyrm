@@ -33,7 +33,6 @@ class Activitystreams(TestCase):
         work = models.Work.objects.create(title="test work")
         self.book = models.Edition.objects.create(title="test book", parent_work=work)
 
-
     def test_get_statuses_for_user_books(self, *_):
         """create a stream for a user"""
         alt_book = models.Edition.objects.create(

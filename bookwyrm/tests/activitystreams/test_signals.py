@@ -29,7 +29,6 @@ class ActivitystreamsSignals(TestCase):
         work = models.Work.objects.create(title="test work")
         self.book = models.Edition.objects.create(title="test book", parent_work=work)
 
-
     def test_add_status_on_create_ignore(self, _):
         """a new statuses has entered"""
         activitystreams.add_status_on_create(models.User, self.local_user, False)
@@ -65,5 +64,5 @@ class ActivitystreamsSignals(TestCase):
             )
         self.assertEqual(mock.call_count, 3)
         args = mock.call_args[0]
-        self.assertEqual(args[0], "home")
+        self.assertEqual(args[0], "books")
         self.assertEqual(args[1], self.local_user.id)
