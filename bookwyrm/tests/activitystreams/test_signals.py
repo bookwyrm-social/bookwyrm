@@ -59,7 +59,7 @@ class ActivitystreamsSignals(TestCase):
 
     def test_populate_streams_on_account_create(self, _):
         """create streams for a user"""
-        with patch("bookwyrm.activitystreams.populate_stream_task") as mock:
+        with patch("bookwyrm.activitystreams.populate_stream_task.delay") as mock:
             activitystreams.populate_streams_on_account_create(
                 models.User, self.local_user, True
             )
