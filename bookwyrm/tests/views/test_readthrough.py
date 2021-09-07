@@ -36,7 +36,7 @@ class ReadThrough(TestCase):
             self.client.force_login(self.user)
 
     @patch("bookwyrm.activitystreams.remove_user_statuses_task.delay")
-    def test_create_basic_readthrough(self, delay_mock, *_):
+    def test_create_basic_readthrough(self, *_):
         """A basic readthrough doesn't create a progress update"""
         self.assertEqual(self.edition.readthrough_set.count(), 0)
 
@@ -55,10 +55,9 @@ class ReadThrough(TestCase):
         )
         self.assertEqual(readthroughs[0].progress, None)
         self.assertEqual(readthroughs[0].finish_date, None)
-        self.assertEqual(delay_mock.call_count, 1)
 
     @patch("bookwyrm.activitystreams.remove_user_statuses_task.delay")
-    def test_create_progress_readthrough(self, delay_mock, *_):
+    def test_create_progress_readthrough(self, *_):
         """a readthrough with progress"""
         self.assertEqual(self.edition.readthrough_set.count(), 0)
 
@@ -93,8 +92,6 @@ class ReadThrough(TestCase):
         self.assertEqual(progress_updates[0].progress, 100)
 
         # Edit doesn't publish anything
-        self.assertEqual(delay_mock.call_count, 1)
-
         self.client.post(
             "/delete-readthrough",
             {
