@@ -57,7 +57,7 @@ class ActivitystreamsSignals(TestCase):
         args = mock.call_args[0]
         self.assertEqual(args[0], status.id)
 
-    def test_populate_streams_on_account_create(self):
+    def test_populate_streams_on_account_create(self, _):
         """create streams for a user"""
         with patch("bookwyrm.activitystreams.populate_stream_task") as mock:
             activitystreams.populate_streams_on_account_create(
