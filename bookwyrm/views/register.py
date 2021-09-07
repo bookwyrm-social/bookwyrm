@@ -3,8 +3,9 @@ from django.contrib.auth import login
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
-from django.views.decorators.http import require_POST
 from django.views import View
+from django.views.decorators.http import require_POST
+from django.views.decorators.debug import sensitive_variables, sensitive_post_parameters
 
 from bookwyrm import emailing, forms, models
 from bookwyrm.settings import DOMAIN
@@ -14,6 +15,8 @@ from bookwyrm.settings import DOMAIN
 class Register(View):
     """register a user"""
 
+    @sensitive_variables("password")
+    @sensitive_post_parameters("password")
     def post(self, request):
         """join the server"""
         settings = models.SiteSettings.get()

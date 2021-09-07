@@ -6,8 +6,9 @@ from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
-from django.views.decorators.csrf import csrf_exempt
 from django.views import View
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.debug import sensitive_variables, sensitive_post_parameters
 
 from bookwyrm import forms, models
 from bookwyrm.settings import DOMAIN
@@ -30,6 +31,8 @@ class Login(View):
         }
         return TemplateResponse(request, "login.html", data)
 
+    @sensitive_variables("password")
+    @sensitive_post_parameters("password")
     def post(self, request):
         """authentication action"""
         if request.user.is_authenticated:
