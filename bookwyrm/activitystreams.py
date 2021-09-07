@@ -355,7 +355,7 @@ def populate_streams_on_account_create(sender, instance, created, *args, **kwarg
     if not created or not instance.local:
         return
 
-    for stream in streams.values():
+    for stream in streams:
         populate_stream_task.delay(stream, instance.id)
 
 
