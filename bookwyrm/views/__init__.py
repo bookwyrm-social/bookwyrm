@@ -1,7 +1,5 @@
 """ make sure all our nice views are available """
 from .announcements import Announcements, Announcement, delete_announcement
-from .authentication import Login, Register, Logout
-from .authentication import ConfirmEmail, ConfirmEmailCode, resend_link
 from .author import Author, EditAuthor
 from .block import Block, unblock
 from .books import Book, EditBook, ConfirmEditBook
@@ -28,11 +26,13 @@ from .landing import About, Home, Landing
 from .list import Lists, SavedLists, List, Curate, UserLists
 from .list import save_list, unsave_list
 from .list import delete_list
+from .login import Login, Logout
 from .notifications import Notifications
 from .outbox import Outbox
 from .reading import edit_readthrough, create_readthrough
 from .reading import delete_readthrough, delete_progressupdate
 from .reading import ReadingStatus
+from .register import Register, ConfirmEmail, ConfirmEmailCode, resend_link
 from .reports import Report, Reports, make_report, resolve_report, suspend_user
 from .rss_feed import RssFeed
 from .password import PasswordResetRequest, PasswordReset, ChangePassword
