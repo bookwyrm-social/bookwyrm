@@ -14,7 +14,9 @@ class InboxUpdate(TestCase):
 
     def setUp(self):
         """basic user and book data"""
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
+            "bookwyrm.activitystreams.populate_stream_task.delay"
+        ):
             self.local_user = models.User.objects.create_user(
                 "mouse@example.com",
                 "mouse@mouse.com",
@@ -81,7 +83,8 @@ class InboxUpdate(TestCase):
         self.assertEqual(book_list.remote_id, "https://example.com/list/22")
 
     @patch("bookwyrm.suggested_users.rerank_user_task.delay")
-    def test_update_user(self, _):
+    @patch("bookwyrm.activitystreams.add_user_statuses_task.delay")
+    def test_update_user(self, *_):
         """update an existing user"""
         models.UserFollows.objects.create(
             user_subject=self.local_user,

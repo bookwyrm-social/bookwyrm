@@ -5,16 +5,19 @@ from bookwyrm import activitystreams, models
 
 
 @patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
-@patch("bookwyrm.activitystreams.ActivityStream.add_status")
-@patch("bookwyrm.activitystreams.BooksStream.add_book_statuses")
+@patch("bookwyrm.activitystreams.add_status_task.delay")
+@patch("bookwyrm.activitystreams.add_book_statuses_task.delay")
 @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
+@patch("bookwyrm.activitystreams.populate_stream_task.delay")
 # pylint: disable=too-many-public-methods
 class Activitystreams(TestCase):
     """using redis to build activity streams"""
 
     def setUp(self):
         """use a test csv"""
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
+            "bookwyrm.activitystreams.populate_stream_task.delay"
+        ):
             self.local_user = models.User.objects.create_user(
                 "mouse", "mouse@mouse.mouse", "password", local=True, localname="mouse"
             )
@@ -293,9 +296,7 @@ class Activitystreams(TestCase):
     def test_boost_to_another_timeline(self, *_):
         """add a boost and deduplicate the boosted status on the timeline"""
         status = models.Status.objects.create(user=self.local_user, content="hi")
-        with patch(
-            "bookwyrm.activitystreams.HomeStream.remove_object_from_related_stores"
-        ):
+        with patch("bookwyrm.activitystreams.handle_boost_task.delay"):
             boost = models.Boost.objects.create(
                 boosted_status=status,
                 user=self.another_user,
@@ -303,7 +304,8 @@ class Activitystreams(TestCase):
         with patch(
             "bookwyrm.activitystreams.HomeStream.remove_object_from_related_stores"
         ) as mock:
-            activitystreams.add_status_on_create(models.Boost, boost, True)
+            activitystreams.handle_boost_task(boost.id)
+
         self.assertTrue(mock.called)
         call_args = mock.call_args
         self.assertEqual(call_args[0][0], status)
@@ -317,9 +319,7 @@ class Activitystreams(TestCase):
         """add a boost and deduplicate the boosted status on the timeline"""
         self.local_user.following.add(self.another_user)
         status = models.Status.objects.create(user=self.local_user, content="hi")
-        with patch(
-            "bookwyrm.activitystreams.HomeStream.remove_object_from_related_stores"
-        ):
+        with patch("bookwyrm.activitystreams.handle_boost_task.delay"):
             boost = models.Boost.objects.create(
                 boosted_status=status,
                 user=self.another_user,
@@ -327,7 +327,7 @@ class Activitystreams(TestCase):
         with patch(
             "bookwyrm.activitystreams.HomeStream.remove_object_from_related_stores"
         ) as mock:
-            activitystreams.add_status_on_create(models.Boost, boost, True)
+            activitystreams.handle_boost_task(boost.id)
         self.assertTrue(mock.called)
         call_args = mock.call_args
         self.assertEqual(call_args[0][0], status)
@@ -343,9 +343,7 @@ class Activitystreams(TestCase):
     def test_boost_to_same_timeline(self, *_):
         """add a boost and deduplicate the boosted status on the timeline"""
         status = models.Status.objects.create(user=self.local_user, content="hi")
-        with patch(
-            "bookwyrm.activitystreams.HomeStream.remove_object_from_related_stores"
-        ):
+        with patch("bookwyrm.activitystreams.handle_boost_task.delay"):
             boost = models.Boost.objects.create(
                 boosted_status=status,
                 user=self.local_user,
@@ -353,7 +351,7 @@ class Activitystreams(TestCase):
         with patch(
             "bookwyrm.activitystreams.HomeStream.remove_object_from_related_stores"
         ) as mock:
-            activitystreams.add_status_on_create(models.Boost, boost, True)
+            activitystreams.handle_boost_task(boost.id)
         self.assertTrue(mock.called)
         call_args = mock.call_args
         self.assertEqual(call_args[0][0], status)

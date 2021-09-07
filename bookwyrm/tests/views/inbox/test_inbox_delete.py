@@ -1,4 +1,4 @@
-""" tests incoming activities"""
+"""tests incoming activities"""
 from datetime import datetime
 from unittest.mock import patch
 
@@ -13,7 +13,9 @@ class InboxActivities(TestCase):
 
     def setUp(self):
         """basic user and book data"""
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
+            "bookwyrm.activitystreams.populate_stream_task.delay"
+        ):
             self.local_user = models.User.objects.create_user(
                 "mouse@example.com",
                 "mouse@mouse.com",
@@ -33,7 +35,7 @@ class InboxActivities(TestCase):
                 inbox="https://example.com/users/rat/inbox",
                 outbox="https://example.com/users/rat/outbox",
             )
-        with patch("bookwyrm.activitystreams.ActivityStream.add_status"):
+        with patch("bookwyrm.activitystreams.add_status_task.delay"):
             self.status = models.Status.objects.create(
                 user=self.remote_user,
                 content="Test status",
@@ -53,9 +55,7 @@ class InboxActivities(TestCase):
             "actor": self.remote_user.remote_id,
             "object": {"id": self.status.remote_id, "type": "Tombstone"},
         }
-        with patch(
-            "bookwyrm.activitystreams.ActivityStream.remove_object_from_related_stores"
-        ) as redis_mock:
+        with patch("bookwyrm.activitystreams.remove_status_task.delay") as redis_mock:
             views.inbox.activity_task(activity)
             self.assertTrue(redis_mock.called)
         # deletion doens't remove the status, it turns it into a tombstone
@@ -84,9 +84,7 @@ class InboxActivities(TestCase):
             "actor": self.remote_user.remote_id,
             "object": {"id": self.status.remote_id, "type": "Tombstone"},
         }
-        with patch(
-            "bookwyrm.activitystreams.ActivityStream.remove_object_from_related_stores"
-        ) as redis_mock:
+        with patch("bookwyrm.activitystreams.remove_status_task.delay") as redis_mock:
             views.inbox.activity_task(activity)
             self.assertTrue(redis_mock.called)
         # deletion doens't remove the status, it turns it into a tombstone

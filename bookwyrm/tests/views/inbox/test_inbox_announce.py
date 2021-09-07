@@ -13,7 +13,9 @@ class InboxActivities(TestCase):
 
     def setUp(self):
         """basic user and book data"""
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
+            "bookwyrm.activitystreams.populate_stream_task.delay"
+        ):
             self.local_user = models.User.objects.create_user(
                 "mouse@example.com",
                 "mouse@mouse.com",
@@ -35,7 +37,7 @@ class InboxActivities(TestCase):
             )
 
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-            with patch("bookwyrm.activitystreams.ActivityStream.add_status"):
+            with patch("bookwyrm.activitystreams.add_status_task.delay"):
                 self.status = models.Status.objects.create(
                     user=self.local_user,
                     content="Test status",
@@ -53,9 +55,8 @@ class InboxActivities(TestCase):
 
         models.SiteSettings.objects.create()
 
-    @patch("bookwyrm.activitystreams.ActivityStream.add_status")
-    @patch("bookwyrm.activitystreams.ActivityStream.remove_object_from_related_stores")
-    def test_boost(self, redis_mock, _):
+    @patch("bookwyrm.activitystreams.handle_boost_task.delay")
+    def test_boost(self, _):
         """boost a status"""
         self.assertEqual(models.Notification.objects.count(), 0)
         activity = {
@@ -71,9 +72,6 @@ class InboxActivities(TestCase):
             discarder.return_value = False
             views.inbox.activity_task(activity)
 
-        # boost added to redis activitystreams
-        self.assertTrue(redis_mock.called)
-
         # boost created of correct status
         boost = models.Boost.objects.get()
         self.assertEqual(boost.boosted_status, self.status)
@@ -84,9 +82,8 @@ class InboxActivities(TestCase):
         self.assertEqual(notification.related_status, self.status)
 
     @responses.activate
-    @patch("bookwyrm.activitystreams.ActivityStream.add_status")
-    @patch("bookwyrm.activitystreams.ActivityStream.remove_object_from_related_stores")
-    def test_boost_remote_status(self, redis_mock, _):
+    @patch("bookwyrm.activitystreams.handle_boost_task.delay")
+    def test_boost_remote_status(self, _):
         """boost a status from a remote server"""
         work = models.Work.objects.create(title="work title")
         book = models.Edition.objects.create(
@@ -127,7 +124,6 @@ class InboxActivities(TestCase):
         with patch("bookwyrm.models.status.Status.ignore_activity") as discarder:
             discarder.return_value = False
             views.inbox.activity_task(activity)
-            self.assertTrue(redis_mock.called)
 
         boost = models.Boost.objects.get()
         self.assertEqual(boost.boosted_status.remote_id, "https://remote.com/status/1")
@@ -141,7 +137,7 @@ class InboxActivities(TestCase):
             content="hi",
             user=self.remote_user,
         )
-        with patch("bookwyrm.activitystreams.ActivityStream.add_status"):
+        with patch("bookwyrm.activitystreams.add_status_task.delay"):
             status.save(broadcast=False)
         activity = {
             "type": "Announce",
@@ -158,8 +154,9 @@ class InboxActivities(TestCase):
         views.inbox.activity_task(activity)
         self.assertEqual(models.Boost.objects.count(), 0)
 
-    @patch("bookwyrm.activitystreams.ActivityStream.add_status")
-    @patch("bookwyrm.activitystreams.ActivityStream.remove_object_from_related_stores")
+    @patch("bookwyrm.activitystreams.add_status_task.delay")
+    @patch("bookwyrm.activitystreams.handle_boost_task.delay")
+    @patch("bookwyrm.activitystreams.remove_status_task.delay")
     def test_unboost(self, *_):
         """undo a boost"""
         boost = models.Boost.objects.create(

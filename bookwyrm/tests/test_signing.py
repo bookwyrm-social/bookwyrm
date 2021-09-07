@@ -37,7 +37,9 @@ class Signature(TestCase):
 
     def setUp(self):
         """create users and test data"""
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
+            "bookwyrm.activitystreams.populate_stream_task.delay"
+        ):
             self.mouse = models.User.objects.create_user(
                 "mouse@%s" % DOMAIN,
                 "mouse@example.com",

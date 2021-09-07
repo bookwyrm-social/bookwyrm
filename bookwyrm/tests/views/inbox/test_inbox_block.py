@@ -12,7 +12,9 @@ class InboxBlock(TestCase):
 
     def setUp(self):
         """basic user and book data"""
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
+            "bookwyrm.activitystreams.populate_stream_task.delay"
+        ):
             self.local_user = models.User.objects.create_user(
                 "mouse@example.com",
                 "mouse@mouse.com",
@@ -54,7 +56,7 @@ class InboxBlock(TestCase):
         }
 
         with patch(
-            "bookwyrm.activitystreams.ActivityStream.remove_user_statuses"
+            "bookwyrm.activitystreams.remove_user_statuses_task.delay"
         ) as redis_mock:
             views.inbox.activity_task(activity)
             self.assertTrue(redis_mock.called)
@@ -67,7 +69,8 @@ class InboxBlock(TestCase):
         self.assertFalse(models.UserFollows.objects.exists())
         self.assertFalse(models.UserFollowRequest.objects.exists())
 
-    def test_handle_unblock(self):
+    @patch("bookwyrm.activitystreams.remove_user_statuses_task.delay")
+    def test_handle_unblock(self, _):
         """unblock a user"""
         self.remote_user.blocks.add(self.local_user)
 
@@ -92,7 +95,7 @@ class InboxBlock(TestCase):
             },
         }
         with patch(
-            "bookwyrm.activitystreams.ActivityStream.add_user_statuses"
+            "bookwyrm.activitystreams.add_user_statuses_task.delay"
         ) as redis_mock:
             views.inbox.activity_task(activity)
             self.assertTrue(redis_mock.called)
