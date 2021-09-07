@@ -63,7 +63,7 @@ class AuthenticationViews(TestCase):
         request = self.factory.post("", form.data)
         request.user = self.anonymous_user
 
-        with patch("bookwyrm.views.authentication.login"):
+        with patch("bookwyrm.views.login.login"):
             result = view(request)
         self.assertEqual(result.url, "/")
         self.assertEqual(result.status_code, 302)
@@ -77,7 +77,7 @@ class AuthenticationViews(TestCase):
         request = self.factory.post("", form.data)
         request.user = self.anonymous_user
 
-        with patch("bookwyrm.views.authentication.login"):
+        with patch("bookwyrm.views.login.login"):
             result = view(request)
         self.assertEqual(result.url, "/")
         self.assertEqual(result.status_code, 302)
@@ -91,7 +91,7 @@ class AuthenticationViews(TestCase):
         request = self.factory.post("", form.data)
         request.user = self.anonymous_user
 
-        with patch("bookwyrm.views.authentication.login"):
+        with patch("bookwyrm.views.login.login"):
             result = view(request)
         self.assertEqual(result.url, "/")
         self.assertEqual(result.status_code, 302)
@@ -105,7 +105,7 @@ class AuthenticationViews(TestCase):
         request = self.factory.post("", form.data)
         request.user = self.anonymous_user
 
-        with patch("bookwyrm.views.authentication.login"):
+        with patch("bookwyrm.views.login.login"):
             result = view(request)
         result.render()
         self.assertEqual(result.status_code, 200)
@@ -126,7 +126,7 @@ class AuthenticationViews(TestCase):
                 "email": "aa@bb.cccc",
             },
         )
-        with patch("bookwyrm.views.authentication.login"):
+        with patch("bookwyrm.views.login.login"):
             response = view(request)
         self.assertEqual(models.User.objects.count(), 2)
         self.assertEqual(response.status_code, 302)
@@ -151,7 +151,7 @@ class AuthenticationViews(TestCase):
                 "email": "aa@bb.cccc",
             },
         )
-        with patch("bookwyrm.views.authentication.login"):
+        with patch("bookwyrm.views.login.login"):
             response = view(request)
         self.assertEqual(response.status_code, 302)
         nutria = models.User.objects.get(localname="nutria")
@@ -169,7 +169,7 @@ class AuthenticationViews(TestCase):
             "register/",
             {"localname": "nutria ", "password": "mouseword", "email": "aa@bb.ccc"},
         )
-        with patch("bookwyrm.views.authentication.login"):
+        with patch("bookwyrm.views.login.login"):
             response = view(request)
         self.assertEqual(models.User.objects.count(), 2)
         self.assertEqual(response.status_code, 302)
@@ -248,7 +248,7 @@ class AuthenticationViews(TestCase):
                 "invite_code": "testcode",
             },
         )
-        with patch("bookwyrm.views.authentication.login"):
+        with patch("bookwyrm.views.login.login"):
             response = view(request)
         self.assertEqual(models.User.objects.count(), 2)
         self.assertEqual(response.status_code, 302)
