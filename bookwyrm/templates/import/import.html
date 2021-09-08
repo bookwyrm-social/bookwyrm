@@ -12,9 +12,14 @@
 
         <div class="columns">
         <div class="column is-half">
-            <label class="label" for="source">
-                {% trans "Data source:" %}
-            </label>
+
+            <div class="field">
+                <label class="label is-pulled-left" for="source">
+                    {% trans "Data source:" %}
+                </label>
+                {% include 'import/tooltip.html' with controls_text="goodreads-tooltip" %}
+            </div>
+
             <div class="select block">
                 <select name="source" id="source">
                     <option value="GoodReads" {% if current == 'GoodReads' %}selected{% endif %}>
