@@ -40,7 +40,7 @@
 <div class="block">
     <h2 class="title is-4">{% trans "Failed to load" %}</h2>
     {% if not job.retry %}
-    <form name="retry" action="/import/{{ job.id }}" method="post">
+    <form name="retry" action="/import/{{ job.id }}" method="post" class="box">
         {% csrf_token %}
 
         {% with failed_count=failed_items|length %}
