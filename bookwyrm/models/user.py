@@ -425,7 +425,7 @@ class AnnualGoal(BookWyrmModel):
         }
 
 
-@app.task(priority="low_priority")
+@app.task(queue="low_priority")
 def set_remote_server(user_id):
     """figure out the user's remote server in the background"""
     user = User.objects.get(id=user_id)
@@ -464,7 +464,7 @@ def get_or_create_remote_server(domain):
     return server
 
 
-@app.task(priority="low_priority")
+@app.task(queue="low_priority")
 def get_remote_reviews(outbox):
     """ingest reviews by a new remote bookwyrm user"""
     outbox_page = outbox + "?page=true&type=Review"
