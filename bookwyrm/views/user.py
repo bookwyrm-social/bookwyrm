@@ -1,8 +1,11 @@
 """ non-interactive pages """
+from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
+from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.views import View
+from django.views.decorators.http import require_POST
 
 from bookwyrm import models
 from bookwyrm.activitypub import ActivitypubResponse
@@ -118,3 +121,12 @@ class Following(View):
             "follow_list": paginated.get_page(request.GET.get("page")),
         }
         return TemplateResponse(request, "user/relationships/following.html", data)
+
+
+@require_POST
+@login_required
+def hide_suggestions(request):
+    """not everyone wants user suggestions"""
+    request.user.show_suggested_users = False
+    request.user.save(broadcast=False, update_fields=["show_suggested_users"])
+    return redirect(request.headers.get("Referer", "/"))
