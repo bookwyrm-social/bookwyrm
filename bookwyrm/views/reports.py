@@ -77,7 +77,20 @@ class Report(View):
 def suspend_user(_, user_id):
     """mark an account as inactive"""
     user = get_object_or_404(models.User, id=user_id)
-    user.is_active = not user.is_active
+    user.is_active = False
+    user.deactivation_reason = "moderator_suspension"
+    # this isn't a full deletion, so we don't want to tell the world
+    user.save(broadcast=False)
+    return redirect("settings-user", user.id)
+
+
+@login_required
+@permission_required("bookwyrm_moderate_user")
+def unsuspend_user(_, user_id):
+    """mark an account as inactive"""
+    user = get_object_or_404(models.User, id=user_id)
+    user.is_active = True
+    user.deactivation_reason = None
     # this isn't a full deletion, so we don't want to tell the world
     user.save(broadcast=False)
     return redirect("settings-user", user.id)
