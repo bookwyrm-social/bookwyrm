@@ -1,8 +1,11 @@
 {% load i18n %}
 
-<aside class="notification is-hidden transition-y" data-hide="hide_tooltip_{{ controls_text }}">
-    <button class="delete set-display" type="button" data-id="hide_tooltip_{{ controls_text }}">
-        {% trans "Close" %}
-    </button>
+{% trans "Help" as button_text %}
+{% include 'snippets/toggle/open_button.html' with text=button_text class="ml-2 is-rounded is-small" icon="heart" controls_text=controls_text controls_uid=controls_uid %}
+
+<aside class="notification is-hidden transition-y is-pulled-left mb-2" id="{{ controls_text }}{% if controls_uid %}-{{ controls_uid }}{% endif %}">
+    {% trans "Close" as button_text %}
+    {% include 'snippets/toggle/close_button.html' with label=button_text class="delete" nonbutton=True controls_text=controls_text controls_uid=controls_uid %}
+
     {% block tooltip_content %}{% endblock %}
 </aside>
