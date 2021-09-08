@@ -97,6 +97,26 @@ def unsuspend_user(_, user_id):
 
 
 @login_required
+@permission_required("bookwyrm_moderate_user")
+def moderator_delete_user(request, user_id):
+    """permanently delete a user"""
+    user = get_object_or_404(models.User, id=user_id)
+    form = forms.DeleteUserForm(request.POST, instance=user)
+
+    moderator = models.User.objects.get(id=request.user.id)
+    # check the moderator's password
+    if form.is_valid() and moderator.check_password(form.cleaned_data["password"]):
+        user.deactivation_reason = "moderator_deletion"
+        user.delete()
+        return redirect("settings-user", user.id)
+
+    form.errors["password"] = ["Invalid password"]
+
+    data = {"user": user, "group_form": forms.UserGroupForm(), "form": form}
+    return TemplateResponse(request, "user_admin/user.html", data)
+
+
+@login_required
 @permission_required("bookwyrm_moderate_post")
 def resolve_report(_, report_id):
     """mark a report as (un)resolved"""

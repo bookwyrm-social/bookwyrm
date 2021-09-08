@@ -55,7 +55,6 @@ class DeleteUser(View):
     def post(self, request):
         """les get fancy with images"""
         form = forms.DeleteUserForm(request.POST, instance=request.user)
-        form.is_valid()
         # idk why but I couldn't get check_password to work on request.user
         user = models.User.objects.get(id=request.user.id)
         if form.is_valid() and user.check_password(form.cleaned_data["password"]):
