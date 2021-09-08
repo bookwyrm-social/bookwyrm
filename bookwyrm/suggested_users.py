@@ -210,14 +210,17 @@ def update_user(sender, instance, created, update_fields=None, **kwargs):
 @receiver(signals.post_save, sender=models.FederatedServer)
 def domain_level_update(sender, instance, created, update_fields=None, **kwargs):
     """remove users on a domain block"""
-    if not update_fields or "status" not in update_fields:
+    if (
+        not update_fields
+        or "status" not in update_fields
+        or instance.application_type != "bookwyrm"
+    ):
         return
 
-    userset = instance.user_set.values_list("id", flat=True)
     if instance.status == "blocked":
-        bulk_remove_users_task.delay(userset)
+        bulk_remove_instance_task.delay(instance.id)
         return
-    bulk_add_users_task.delay(userset)
+    bulk_add_instance_task.delay(instance.id)
 
 
 # ------------------- TASKS
@@ -251,14 +254,14 @@ def remove_suggestion_task(user_id, suggested_user_id):
 
 
 @app.task(queue="low_priority")
-def bulk_remove_users_task(user_ids):
+def bulk_remove_instance_task(instance_id):
     """remove a bunch of users from recs"""
-    for user in models.User.objects.filter(id__in=user_ids):
+    for user in models.User.objects.filter(federated_server__id=instance_id):
         suggested_users.remove_object_from_related_stores(user)
 
 
 @app.task(queue="low_priority")
-def bulk_add_users_task(user_ids):
+def bulk_add_instance_task(instance_id):
     """remove a bunch of users from recs"""
-    for user in models.User.objects.filter(id__in=user_ids):
+    for user in models.User.objects.filter(federated_server__id=instance_id):
         suggested_users.rerank_obj(user, update_only=False)
