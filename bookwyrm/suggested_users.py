@@ -43,7 +43,6 @@ class SuggestedUsers(RedisStore):
             ~Q(id=user.id),
             ~Q(followers=user),
             ~Q(follower_requests=user),
-            bookwyrm_user=True,
         )
 
     def get_stores_for_object(self, obj):
@@ -103,7 +102,9 @@ class SuggestedUsers(RedisStore):
 def get_annotated_users(viewer, *args, **kwargs):
     """Users, annotated with things they have in common"""
     return (
-        models.User.objects.filter(discoverable=True, is_active=True, *args, **kwargs)
+        models.User.objects.filter(
+            discoverable=True, is_active=True, bookwyrm_user=True, *args, **kwargs
+        )
         .exclude(Q(id__in=viewer.blocks.all()) | Q(blocks=viewer))
         .annotate(
             mutuals=Count(
@@ -178,13 +179,19 @@ def update_suggestions_on_unfollow(sender, instance, **kwargs):
 
 @receiver(signals.post_save, sender=models.User)
 # pylint: disable=unused-argument, too-many-arguments
-def add_new_user(sender, instance, created, update_fields=None, **kwargs):
-    """a new user, wow how cool"""
+def updated_user(sender, instance, created, update_fields=None, **kwargs):
+    """an updated user, neat"""
     # a new user is found, create suggestions for them
     if created and instance.local:
         rerank_suggestions_task.delay(instance.id)
 
+    # we know what fields were updated and discoverability didn't change
     if update_fields and not "discoverable" in update_fields:
+        return
+
+    # deleted the user
+    if not instance.is_active:
+        remove_user_task.delay(instance.id)
         return
 
     # this happens on every save, not just when discoverability changes, annoyingly
