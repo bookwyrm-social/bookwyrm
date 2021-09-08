@@ -274,30 +274,46 @@ class User(OrderedCollectionPageMixin, AbstractUser):
             transaction.on_commit(lambda: set_remote_server.delay(self.id))
             return
 
-        # populate fields for local users
-        link = site_link()
-        self.remote_id = f"{link}/user/{self.localname}"
-        self.followers_url = f"{self.remote_id}/followers"
-        self.inbox = f"{self.remote_id}/inbox"
-        self.shared_inbox = f"{link}/inbox"
-        self.outbox = f"{self.remote_id}/outbox"
+        with transaction.atomic():
+            # populate fields for local users
+            link = site_link()
+            self.remote_id = f"{link}/user/{self.localname}"
+            self.followers_url = f"{self.remote_id}/followers"
+            self.inbox = f"{self.remote_id}/inbox"
+            self.shared_inbox = f"{link}/inbox"
+            self.outbox = f"{self.remote_id}/outbox"
 
-        # an id needs to be set before we can proceed with related models
+            # an id needs to be set before we can proceed with related models
+            super().save(*args, **kwargs)
+
+            # make users editors by default
+            try:
+                self.groups.add(Group.objects.get(name="editor"))
+            except Group.DoesNotExist:
+                # this should only happen in tests
+                pass
+
+            # create keys and shelves for new local users
+            self.key_pair = KeyPair.objects.create(
+                remote_id=f"{self.remote_id}/#main-key"
+            )
+            self.save(broadcast=False, update_fields=["key_pair"])
+
+            self.create_shelves()
+
+    def delete(self, *args, **kwargs):
+        """deactivate rather than delete a user"""
+        self.is_active = False
+        # skip the logic in this class's save()
         super().save(*args, **kwargs)
 
-        # make users editors by default
-        try:
-            self.groups.add(Group.objects.get(name="editor"))
-        except Group.DoesNotExist:
-            # this should only happen in tests
-            pass
+    @property
+    def local_path(self):
+        """this model doesn't inherit bookwyrm model, so here we are"""
+        return "/user/%s" % (self.localname or self.username)
 
-        # create keys and shelves for new local users
-        self.key_pair = KeyPair.objects.create(
-            remote_id="%s/#main-key" % self.remote_id
-        )
-        self.save(broadcast=False, update_fields=["key_pair"])
-
+    def create_shelves(self):
+        """default shelves for a new user"""
         shelves = [
             {
                 "name": "To Read",
@@ -320,17 +336,6 @@ class User(OrderedCollectionPageMixin, AbstractUser):
                 user=self,
                 editable=False,
             ).save(broadcast=False)
-
-    def delete(self, *args, **kwargs):
-        """deactivate rather than delete a user"""
-        self.is_active = False
-        # skip the logic in this class's save()
-        super().save(*args, **kwargs)
-
-    @property
-    def local_path(self):
-        """this model doesn't inherit bookwyrm model, so here we are"""
-        return "/user/%s" % (self.localname or self.username)
 
 
 class KeyPair(ActivitypubMixin, BookWyrmModel):
@@ -420,7 +425,7 @@ class AnnualGoal(BookWyrmModel):
         }
 
 
-@app.task
+@app.task(queue="low_priority")
 def set_remote_server(user_id):
     """figure out the user's remote server in the background"""
     user = User.objects.get(id=user_id)
@@ -459,7 +464,7 @@ def get_or_create_remote_server(domain):
     return server
 
 
-@app.task
+@app.task(queue="low_priority")
 def get_remote_reviews(outbox):
     """ingest reviews by a new remote bookwyrm user"""
     outbox_page = outbox + "?page=true&type=Review"

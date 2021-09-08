@@ -83,7 +83,7 @@ class Invite(View):
         }
         return TemplateResponse(request, "invite.html", data)
 
-    # post handling is in views.authentication.Register
+    # post handling is in views.register.Register
 
 
 class ManageInviteRequests(View):
