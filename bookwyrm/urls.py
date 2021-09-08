@@ -215,6 +215,7 @@ urlpatterns = [
         views.Following.as_view(),
         name="user-following",
     ),
+    re_path(r"^hide-suggestions/?$", views.hide_suggestions, name="hide-suggestions"),
     # lists
     re_path(r"%s/lists/?$" % USER_PATH, views.UserLists.as_view(), name="user-lists"),
     re_path(r"^list/?$", views.Lists.as_view(), name="lists"),

@@ -4,6 +4,7 @@ import re
 from django.contrib.postgres.search import SearchVectorField
 from django.contrib.postgres.indexes import GinIndex
 from django.db import models
+from django.db import transaction
 from django.dispatch import receiver
 from model_utils import FieldTracker
 from model_utils.managers import InheritanceManager
@@ -361,4 +362,6 @@ def preview_image(instance, *args, **kwargs):
         changed_fields = instance.field_tracker.changed()
 
     if len(changed_fields) > 0:
-        generate_edition_preview_image_task.delay(instance.id)
+        transaction.on_commit(
+            lambda: generate_edition_preview_image_task.delay(instance.id)
+        )

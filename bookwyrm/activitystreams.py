@@ -469,7 +469,7 @@ def handle_boost_task(boost_id):
     old_versions = models.Boost.objects.filter(
         boosted_status__id=boosted.id,
         created_date__lt=instance.created_date,
-    ).values_list("id", flat=True)
+    )
 
     for stream in streams.values():
         audience = stream.get_stores_for_object(instance)

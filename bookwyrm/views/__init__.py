@@ -43,6 +43,6 @@ from .shelf import shelve, unshelve
 from .site import Site
 from .status import CreateStatus, DeleteStatus, DeleteAndRedraft
 from .updates import get_notification_count, get_unread_status_count
-from .user import User, Followers, Following
+from .user import User, Followers, Following, hide_suggestions
 from .user_admin import UserAdmin, UserAdminList
 from .wellknown import *
