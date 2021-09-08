@@ -207,6 +207,19 @@ def update_user(sender, instance, created, update_fields=None, **kwargs):
         remove_user_task.delay(instance.id)
 
 
+@receiver(signals.post_save, sender=models.FederatedServer)
+def domain_level_update(sender, instance, created, update_fields=None, **kwargs):
+    """remove users on a domain block"""
+    if not update_fields or "status" not in update_fields:
+        return
+
+    userset = instance.user_set.values_list("id", flat=True)
+    if instance.status == "blocked":
+        bulk_remove_users_task.delay(userset)
+        return
+    bulk_add_users_task.delay(userset)
+
+
 # ------------------- TASKS
 
 
@@ -235,3 +248,17 @@ def remove_suggestion_task(user_id, suggested_user_id):
     """remove a specific user from a specific user's suggestions"""
     suggested_user = models.User.objects.get(id=suggested_user_id)
     suggested_users.remove_suggestion(user_id, suggested_user)
+
+
+@app.task(queue="low_priority")
+def bulk_remove_users_task(user_ids):
+    """remove a bunch of users from recs"""
+    for user in models.User.objects.filter(id__in=user_ids):
+        suggested_users.remove_object_from_related_stores(user)
+
+
+@app.task(queue="low_priority")
+def bulk_add_users_task(user_ids):
+    """remove a bunch of users from recs"""
+    for user in models.User.objects.filter(id__in=user_ids):
+        suggested_users.rerank_obj(user, update_only=False)
