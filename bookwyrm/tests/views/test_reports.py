@@ -134,6 +134,6 @@ class ReportViews(TestCase):
         self.assertFalse(self.rat.is_active)
 
         # re-activate
-        views.suspend_user(request, self.rat.id)
+        views.unsuspend_user(request, self.rat.id)
         self.rat.refresh_from_db()
         self.assertTrue(self.rat.is_active)
