@@ -22,3 +22,17 @@ class EmailBlocklist(View):
             "form": forms.EmailBlocklistForm(),
         }
         return TemplateResponse(request, "settings/email_blocklist.html", data)
+
+    def post(self, request):
+        """create a new domain block"""
+        form = forms.EmailBlocklistForm(request.POST)
+        data = {
+            "domains": models.EmailBlocklist.objects.order_by("-created_date").all(),
+            "form": form,
+        }
+        if not form.is_valid():
+            return TemplateResponse(request, "settings/email_blocklist.html", data)
+        form.save()
+
+        data["form"] = forms.EmailBlocklistForm()
+        return TemplateResponse(request, "settings/email_blocklist.html", data)

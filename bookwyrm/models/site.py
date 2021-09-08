@@ -127,12 +127,17 @@ class EmailBlocklist(models.Model):
     """blocked email addresses"""
 
     created_date = models.DateTimeField(auto_now_add=True)
-    domain = models.CharField(max_length=255)
+    domain = models.CharField(max_length=255, unique=True)
+
+    class Meta:
+        """default sorting"""
+
+        ordering = ("-created_date",)
 
     @property
     def users(self):
         """find the users associated with this address"""
-        User.objects.filter(email__endswith=f"@{self.domain}")
+        return User.objects.filter(email__endswith=f"@{self.domain}")
 
 
 # pylint: disable=unused-argument
