@@ -45,11 +45,14 @@
             </a>
         </td>
         <td>
-            {% trans "Delete" as button_text %}
-            <button class="button">
-                <span class="icon icon-x" title="{{ button_text }}" aria-hidden="true"></span>
-                <span class="is-hidden-mobile">{{ button_text }}</span>
-            </button>
+            <form name="remove-{{ domain.id }}" action="{% url 'settings-email-blocks-delete' domain.id %}" method="post">
+                {% csrf_token %}
+                {% trans "Delete" as button_text %}
+                <button class="button" type="submit">
+                    <span class="icon icon-x" title="{{ button_text }}" aria-hidden="true"></span>
+                    <span class="is-hidden-mobile">{{ button_text }}</span>
+                </button>
+            </form>
         </td>
     </tr>
     {% endfor %}

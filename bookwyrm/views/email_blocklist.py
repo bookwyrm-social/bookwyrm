@@ -1,5 +1,6 @@
 """ moderation via flagged posts and users """
 from django.contrib.auth.decorators import login_required, permission_required
+from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
 from django.views import View
@@ -23,8 +24,11 @@ class EmailBlocklist(View):
         }
         return TemplateResponse(request, "settings/email_blocklist.html", data)
 
-    def post(self, request):
+    def post(self, request, domain_id=None):
         """create a new domain block"""
+        if domain_id:
+            return self.delete(request, domain_id)
+
         form = forms.EmailBlocklistForm(request.POST)
         data = {
             "domains": models.EmailBlocklist.objects.order_by("-created_date").all(),
@@ -36,3 +40,10 @@ class EmailBlocklist(View):
 
         data["form"] = forms.EmailBlocklistForm()
         return TemplateResponse(request, "settings/email_blocklist.html", data)
+
+    # pylint: disable=unused-argument
+    def delete(self, request, domain_id):
+        """remove a domain block"""
+        domain = get_object_or_404(models.EmailBlocklist, id=domain_id)
+        domain.delete()
+        return redirect("settings-email-blocks")
