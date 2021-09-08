@@ -22,7 +22,7 @@
     {% blocktrans with tab_key=tab.key %}load <span data-poll="stream/{{ tab_key }}">0</span> unread status(es){% endblocktrans %}
 </a>
 
-{% if request.user.show_goal and not goal and tab.key == streams.first.key %}
+{% if request.user.show_goal and not goal and tab.key == 'home' %}
 {% now 'Y' as year %}
 <section class="block">
     {% include 'snippets/goal_card.html' with year=year %}
