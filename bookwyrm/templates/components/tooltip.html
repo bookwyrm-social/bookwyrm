@@ -1,0 +1,8 @@
+{% load i18n %}
+
+<aside class="notification is-hidden transition-y" data-hide="hide_tooltip_{{ controls_text }}">
+    <button class="delete set-display" type="button" data-id="hide_tooltip_{{ controls_text }}">
+        {% trans "Close" %}
+    </button>
+    {% block tooltip_content %}{% endblock %}
+</aside>
