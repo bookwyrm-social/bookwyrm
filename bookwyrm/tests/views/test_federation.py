@@ -80,7 +80,9 @@ class FederationViews(TestCase):
         request.user = self.local_user
         request.user.is_superuser = True
 
-        view(request, server.id)
+        with patch("bookwyrm.suggested_users.bulk_remove_instance_task.delay") as mock:
+            view(request, server.id)
+        self.assertEqual(mock.call_count, 1)
 
         server.refresh_from_db()
         self.remote_user.refresh_from_db()
@@ -118,7 +120,11 @@ class FederationViews(TestCase):
         request.user = self.local_user
         request.user.is_superuser = True
 
-        views.federation.unblock_server(request, server.id)
+        with patch("bookwyrm.suggested_users.bulk_add_instance_task.delay") as mock:
+            views.federation.unblock_server(request, server.id)
+        self.assertEqual(mock.call_count, 1)
+        self.assertEqual(mock.call_args[0][0], server.id)
+
         server.refresh_from_db()
         self.remote_user.refresh_from_db()
         self.assertEqual(server.status, "federated")
