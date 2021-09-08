@@ -96,7 +96,7 @@ body {
     @see https://www.youtube.com/watch?v=9xXBYcWgCHA */
 .shelf-option:disabled > *::after {
     font-family: "icomoon"; /* stylelint-disable font-family-no-missing-generic-family-keyword */
-    content: "\e918";
+    content: "\e919"; /* icon-check */
     margin-left: 0.5em;
 }
 
@@ -167,21 +167,21 @@ body {
 
 /* All stars are visually filled by default. */
 .form-rate-stars .icon::before {
-    content: '\e9d9';
+    content: '\e9d9'; /* icon-star-full */
 }
 
 /* Icons directly following inputs that follow the checked input are emptied. */
 .form-rate-stars input:checked ~ input + .icon::before {
-    content: '\e9d7';
+    content: '\e9d7'; /* icon-star-empty */
 }
 
 /* When a label is hovered, repeat the fill-all-then-empty-following pattern. */
 .form-rate-stars:hover .icon.icon::before {
-    content: '\e9d9';
+    content: '\e9d9'; /* icon-star-full */
 }
 
 .form-rate-stars .icon:hover ~ .icon::before {
-    content: '\e9d7';
+    content: '\e9d7'; /* icon-star-empty */
 }
 
 /** Book covers
@@ -292,13 +292,13 @@ body {
 }
 
 .quote > blockquote::before {
-    content: "\e906";
+    content: "\e907"; /* icon-quote-open */
     top: 0;
     left: 0;
 }
 
 .quote > blockquote::after {
-    content: "\e905";
+    content: "\e906"; /* icon-quote-close */
     right: 0;
 }
 
