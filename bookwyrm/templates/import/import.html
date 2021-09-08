@@ -28,7 +28,7 @@
                     </option>
                 </select>
             </div>
-            {% include 'components/tooltip.html' with controls_text="goodreads-tooltip" %}
+            {% include 'import/tooltip.html' with controls_text="goodreads-tooltip" %}
             <div class="field">
                 <label class="label" for="id_csv_file">{% trans "Data file:" %}</label>
                 {{ import_form.csv_file }}
