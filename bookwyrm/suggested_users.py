@@ -85,10 +85,12 @@ class SuggestedUsers(RedisStore):
         values = self.get_store(self.store_id(user), withscores=True)
         results = []
         # annotate users with mutuals and shared book counts
-        for user_id, rank in values[:5]:
+        for user_id, rank in values:
             counts = self.get_counts_from_rank(rank)
             try:
-                user = models.User.objects.get(id=user_id)
+                user = models.User.objects.get(
+                    id=user_id, is_active=True, bookwyrm_user=True
+                )
             except models.User.DoesNotExist as err:
                 # if this happens, the suggestions are janked way up
                 logger.exception(err)
@@ -96,6 +98,8 @@ class SuggestedUsers(RedisStore):
             user.mutuals = counts["mutuals"]
             # user.shared_books = counts["shared_books"]
             results.append(user)
+            if len(results) >= 5:
+                break
         return results
 
 
@@ -179,14 +183,16 @@ def update_suggestions_on_unfollow(sender, instance, **kwargs):
 
 @receiver(signals.post_save, sender=models.User)
 # pylint: disable=unused-argument, too-many-arguments
-def updated_user(sender, instance, created, update_fields=None, **kwargs):
+def update_user(sender, instance, created, update_fields=None, **kwargs):
     """an updated user, neat"""
     # a new user is found, create suggestions for them
     if created and instance.local:
         rerank_suggestions_task.delay(instance.id)
 
     # we know what fields were updated and discoverability didn't change
-    if update_fields and not "discoverable" in update_fields:
+    if not instance.bookwyrm_user or (
+        update_fields and not "discoverable" in update_fields
+    ):
         return
 
     # deleted the user
@@ -199,6 +205,9 @@ def updated_user(sender, instance, created, update_fields=None, **kwargs):
         rerank_user_task.delay(instance.id, update_only=False)
     elif not created:
         remove_user_task.delay(instance.id)
+
+
+# ------------------- TASKS
 
 
 @app.task(queue="low_priority")
