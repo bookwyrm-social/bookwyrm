@@ -141,6 +141,7 @@ urlpatterns = [
         r"^invite-request/?$", views.InviteRequest.as_view(), name="invite-request"
     ),
     re_path(r"^invite/(?P<code>[A-Za-z0-9]+)/?$", views.Invite.as_view()),
+    re_path(r"^settings/email-blocklist/?$", views.EmailBlocklist.as_view(), name="settings-email-blocks"),
     # moderation
     re_path(r"^settings/reports/?$", views.Reports.as_view(), name="settings-reports"),
     re_path(
