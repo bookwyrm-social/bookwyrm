@@ -10,6 +10,8 @@ CELERY_RESULT_BACKEND = "redis://:{}@redis_broker:{}/0".format(
     requests.utils.quote(env("REDIS_BROKER_PASSWORD", "")), env("REDIS_BROKER_PORT")
 )
 
+CELERY_DEFAULT_QUEUE = "low_priority"
+
 CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_SERIALIZER = "json"

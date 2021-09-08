@@ -194,27 +194,27 @@ def add_new_user(sender, instance, created, update_fields=None, **kwargs):
         remove_user_task.delay(instance.id)
 
 
-@app.task
+@app.task(queue="low_priority")
 def rerank_suggestions_task(user_id):
     """do the hard work in celery"""
     suggested_users.rerank_user_suggestions(user_id)
 
 
-@app.task
+@app.task(queue="low_priority")
 def rerank_user_task(user_id, update_only=False):
     """do the hard work in celery"""
     user = models.User.objects.get(id=user_id)
     suggested_users.rerank_obj(user, update_only=update_only)
 
 
-@app.task
+@app.task(queue="low_priority")
 def remove_user_task(user_id):
     """do the hard work in celery"""
     user = models.User.objects.get(id=user_id)
     suggested_users.remove_object_from_related_stores(user)
 
 
-@app.task
+@app.task(queue="medium_priority")
 def remove_suggestion_task(user_id, suggested_user_id):
     """remove a specific user from a specific user's suggestions"""
     suggested_user = models.User.objects.get(id=suggested_user_id)

@@ -93,7 +93,7 @@ def is_blocked_activity(activity_json):
     return models.FederatedServer.is_blocked(actor)
 
 
-@app.task
+@app.task(queue="medium_priority")
 def activity_task(activity_json):
     """do something with this json we think is legit"""
     # lets see if the activitypub module can make sense of this json
