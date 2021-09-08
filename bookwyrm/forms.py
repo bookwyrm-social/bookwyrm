@@ -299,6 +299,12 @@ class ReportForm(CustomForm):
         fields = ["user", "reporter", "statuses", "note"]
 
 
+class EmailBlocklistForm(CustomForm):
+    class Meta:
+        model = models.EmailBlocklist
+        fields = ["domain"]
+
+
 class ServerForm(CustomForm):
     class Meta:
         model = models.FederatedServer

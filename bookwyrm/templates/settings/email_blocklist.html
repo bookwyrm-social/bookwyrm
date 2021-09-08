@@ -5,13 +5,18 @@
 {% block header %}{% trans "Email Blocklist" %}{% endblock %}
 
 {% block edit-button %}
-<a href="{% url 'settings-import-blocklist' %}">
-    <span class="icon icon-plus" title="{% trans 'Add domain' %}" aria-hidden="True"></span>
-    <span class="is-hidden-mobile">{% trans "Add domain" %}</span>
+{% trans "Add domain" as button_text %}
+{% include 'snippets/toggle/open_button.html' with controls_text="add_domain" icon_with_text="plus" text=button_text focus="add_domain_header" %}
 </a>
 {% endblock %}
 
 {% block panel %}
+{% include 'settings/domain_form.html' with controls_text="add_domain" class="block" %}
+
+<p class="notification block">
+    {% trans "When someone tries to register with an email from this domain, no account will be created. The registration process will appear to have worked." %}
+</p>
+
 <table class="table is-striped">
     <tr>
         {% url 'settings-federation' as url %}
@@ -23,8 +28,9 @@
             {% trans "Options" %}
         </th>
     </tr>
+    {% for domain in domains %}
     <tr>
-        <td>gmail.com</td>
+        <td>{{ domain.domain }}</td>
         <td>
             {% trans "Delete" as button_text %}
             <button class="button">
@@ -33,6 +39,7 @@
             </button>
         </td>
     </tr>
+    {% endfor %}
 </table>
 
 {% include 'snippets/pagination.html' with page=servers path=request.path %}
