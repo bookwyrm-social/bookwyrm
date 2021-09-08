@@ -61,7 +61,7 @@ class EmailBlocklistViews(TestCase):
         domain = models.EmailBlocklist.objects.create(domain="gmail.com")
 
         view = views.EmailBlocklist.as_view()
-        request = self.factory.post(f"/settings/email-blocklist/{domain.id}/delete")
+        request = self.factory.post("", domain_id=domain.id)
         request.user = self.local_user
         request.user.is_superuser = True
 
