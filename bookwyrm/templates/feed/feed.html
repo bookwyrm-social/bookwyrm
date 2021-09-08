@@ -22,7 +22,7 @@
     {% blocktrans with tab_key=tab.key %}load <span data-poll="stream/{{ tab_key }}">0</span> unread status(es){% endblocktrans %}
 </a>
 
-{% if request.user.show_goal and not goal and tab.key == streams.first.key %}
+{% if request.user.show_goal and not goal and tab.key == 'home' %}
 {% now 'Y' as year %}
 <section class="block">
     {% include 'snippets/goal_card.html' with year=year %}
@@ -37,7 +37,7 @@
 <div class="block content">
     <p>{% trans "There aren't any activities right now! Try following a user to get started" %}</p>
 
-    {% if suggested_users %}
+    {% if request.user.show_suggested_users and suggested_users %}
     {# suggested users for when things are very lonely #}
     {% include 'feed/suggested_users.html' with suggested_users=suggested_users %}
     {% endif %}
@@ -46,7 +46,7 @@
 
 {% for activity in activities %}
 
-{% if not activities.number > 1 and forloop.counter0 == 2 and suggested_users %}
+{% if request.user.show_suggested_users and not activities.number > 1 and forloop.counter0 == 2 and suggested_users %}
 {# suggested users on the first page, two statuses down #}
 {% include 'feed/suggested_users.html' with suggested_users=suggested_users %}
 {% endif %}

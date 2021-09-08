@@ -1,6 +1,15 @@
 {% load i18n %}
 <section class="block">
-    <h2 class="title is-5">{% trans "Who to follow" %}</h2>
+    <header class="columns">
+        <div class="column">
+            <h2 class="title is-5">{% trans "Who to follow" %}</h2>
+        </div>
+        <form class="column is-narrow" action="{% url 'hide-suggestions' %}" method="POST">
+            {% csrf_token %}
+            {% trans "Don't show suggested users" as button_text %}
+            <button type="submit" class="delete" title="{{ button_text }}">{{ button_text }}</button>
+        </form>
+    </header>
     {% include 'snippets/suggested_users.html' with suggested_users=suggested_users %}
     <a class="help" href="{% url 'directory' %}">{% trans "View directory" %} <span class="icon icon-arrow-right"></span></a>
 </section>

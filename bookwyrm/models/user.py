@@ -122,8 +122,12 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     updated_date = models.DateTimeField(auto_now=True)
     last_active_date = models.DateTimeField(default=timezone.now)
     manually_approves_followers = fields.BooleanField(default=False)
+
+    # options to turn features on and off
     show_goal = models.BooleanField(default=True)
+    show_suggested_users = models.BooleanField(default=True)
     discoverable = fields.BooleanField(default=False)
+
     preferred_timezone = models.CharField(
         choices=[(str(tz), str(tz)) for tz in pytz.all_timezones],
         default=str(pytz.utc),
