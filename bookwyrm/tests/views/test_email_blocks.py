@@ -55,3 +55,21 @@ class EmailBlocklistViews(TestCase):
         self.assertTrue(
             models.EmailBlocklist.objects.filter(domain="gmail.com").exists()
         )
+
+    def test_blocklist_page_delete(self):
+        """there are so many views, this just makes sure it LOADS"""
+        domain = models.EmailBlocklist.objects.create(domain="gmail.com")
+
+        view = views.EmailBlocklist.as_view()
+        request = self.factory.post(f"/settings/email-blocklist/{domain.id}/delete")
+        request.user = self.local_user
+        request.user.is_superuser = True
+
+        result = view(request)
+
+        self.assertIsInstance(result, TemplateResponse)
+        self.assertEqual(result.status_code, 302)
+
+        self.assertFalse(
+            models.EmailBlocklist.objects.filter(domain="gmail.com").exists()
+        )
