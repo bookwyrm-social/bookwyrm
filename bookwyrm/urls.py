@@ -164,6 +164,16 @@ urlpatterns = [
         name="settings-report-suspend",
     ),
     re_path(
+        r"^settings/reports/(?P<user_id>\d+)/unsuspend/?$",
+        views.unsuspend_user,
+        name="settings-report-unsuspend",
+    ),
+    re_path(
+        r"^settings/reports/(?P<user_id>\d+)/delete/?$",
+        views.moderator_delete_user,
+        name="settings-delete-user",
+    ),
+    re_path(
         r"^settings/reports/(?P<report_id>\d+)/resolve/?$",
         views.resolve_report,
         name="settings-report-resolve",
