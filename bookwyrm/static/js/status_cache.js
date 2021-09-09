@@ -4,8 +4,15 @@ let StatusCache = new class {
     constructor() {
         document.querySelectorAll('[data-cache-draft]')
             .forEach(t => t.addEventListener('change', this.updateDraft.bind(this)));
+
         document.querySelectorAll('[data-cache-draft]')
             .forEach(t => this.populateDraft(t));
+
+        document.querySelectorAll('.submit-status')
+            .forEach(button => button.addEventListener(
+                'submit',
+                this.submitStatus.bind(this))
+            );
     }
 
     /**
@@ -34,6 +41,27 @@ let StatusCache = new class {
         let value = window.localStorage.getItem(key);
 
         node.value = value;
+    }
+
+    /**
+     * Post a status with ajax
+     *
+     * @param  {Event} event
+     * @return {undefined}
+     */
+    submitStatus(event) {
+        event.preventDefault();
+
+        const bookwyrm = this;
+        const form = event.currentTarget;
+
+        this.ajaxPost(form).catch(error => {
+            // @todo Display a notification in the UI instead.
+            console.warn('Request failed:', error);
+        });
+
+        // Clear form data
+        form.reset();
     }
 }();
 
