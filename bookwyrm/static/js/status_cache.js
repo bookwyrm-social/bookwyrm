@@ -79,7 +79,13 @@ let StatusCache = new class {
             modal.getElementsByClassName("modal-close")[0].click();
         }
 
-        // Update buttons
+        // Close reply panel
+        let reply = form.closest(".reply-panel");
+        if (!!reply) {
+            document.querySelector("[data-controls=" + reply.id + "]").click();
+        }
+
+        // Update shelve buttons
     }
 }();
 
