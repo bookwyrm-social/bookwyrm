@@ -61,13 +61,11 @@ class EmailBlocklistViews(TestCase):
         domain = models.EmailBlocklist.objects.create(domain="gmail.com")
 
         view = views.EmailBlocklist.as_view()
-        request = self.factory.post("", domain_id=domain.id)
+        request = self.factory.post("")
         request.user = self.local_user
         request.user.is_superuser = True
 
-        result = view(request)
-
-        self.assertIsInstance(result, TemplateResponse)
+        result = view(request, domain_id=domain.id)
         self.assertEqual(result.status_code, 302)
 
         self.assertFalse(
