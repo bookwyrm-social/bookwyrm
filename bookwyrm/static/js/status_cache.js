@@ -74,6 +74,12 @@ let StatusCache = new class {
             .forEach(node => window.localStorage.removeItem(node.dataset.cacheDraft));
 
         // Close modals
+        let modal = form.closest(".modal.is-active");
+        if (!!modal) {
+            modal.getElementsByClassName("modal-close")[0].click();
+        }
+
+        // Update buttons
     }
 }();
 
