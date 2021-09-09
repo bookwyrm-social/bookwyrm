@@ -40,6 +40,7 @@ from .reports import (
     resolve_report,
     suspend_user,
     unsuspend_user,
+    moderator_delete_user,
 )
 from .rss_feed import RssFeed
 from .password import PasswordResetRequest, PasswordReset, ChangePassword

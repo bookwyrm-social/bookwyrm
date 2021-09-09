@@ -1,5 +1,6 @@
 """ moderation via flagged posts and users """
 from django.contrib.auth.decorators import login_required, permission_required
+from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
@@ -101,6 +102,11 @@ def unsuspend_user(_, user_id):
 def moderator_delete_user(request, user_id):
     """permanently delete a user"""
     user = get_object_or_404(models.User, id=user_id)
+
+    # we can't delete users on other instances
+    if not user.local:
+        raise PermissionDenied
+
     form = forms.DeleteUserForm(request.POST, instance=user)
 
     moderator = models.User.objects.get(id=request.user.id)
