@@ -22,6 +22,12 @@ let BookWyrm = new class {
                 this.interact.bind(this))
             );
 
+        document.querySelectorAll('.submit-status')
+            .forEach(button => button.addEventListener(
+                'submit',
+                this.submitStatus.bind(this))
+            );
+
         document.querySelectorAll('.hidden-form input')
             .forEach(button => button.addEventListener(
                 'change',
@@ -290,6 +296,27 @@ let BookWyrm = new class {
             // @todo Display a notification in the UI instead.
             console.warn('Request failed:', error);
         });
+    }
+
+    /**
+     * Post a status with ajax
+     *
+     * @param  {Event} event
+     * @return {undefined}
+     */
+    submitStatus(event) {
+        event.preventDefault();
+
+        const bookwyrm = this;
+        const form = event.currentTarget;
+
+        this.ajaxPost(form).catch(error => {
+            // @todo Display a notification in the UI instead.
+            console.warn('Request failed:', error);
+        });
+
+        // Clear form data
+        form.reset();
     }
 
     /**
