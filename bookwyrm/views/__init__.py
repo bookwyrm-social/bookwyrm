@@ -8,6 +8,7 @@ from .directory import Directory
 from .discover import Discover
 from .edit_user import EditUser, DeleteUser
 from .editions import Editions, switch_edition
+from .email_blocklist import EmailBlocklist
 from .federation import Federation, FederatedServer
 from .federation import AddFederatedServer, ImportServerBlocklist
 from .federation import block_server, unblock_server
