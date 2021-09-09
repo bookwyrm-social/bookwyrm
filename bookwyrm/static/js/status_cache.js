@@ -1,4 +1,5 @@
 /* exported StatusCache */
+/* globals BookWyrm */
 
 let StatusCache = new class {
     constructor() {
@@ -25,6 +26,10 @@ let StatusCache = new class {
         // Used in set reading goal
         let key = event.target.dataset.cacheDraft;
         let value = event.target.value;
+        if (!value) {
+            window.localStorage.removeItem(key);
+            return;
+        }
 
         window.localStorage.setItem(key, value);
     }
@@ -39,6 +44,9 @@ let StatusCache = new class {
         // Used in set reading goal
         let key = node.dataset.cacheDraft;
         let value = window.localStorage.getItem(key);
+        if (!value) {
+            return;
+        }
 
         node.value = value;
     }
@@ -51,17 +59,21 @@ let StatusCache = new class {
      */
     submitStatus(event) {
         event.preventDefault();
-
-        const bookwyrm = this;
         const form = event.currentTarget;
 
-        this.ajaxPost(form).catch(error => {
+        BookWyrm.ajaxPost(form).catch(error => {
             // @todo Display a notification in the UI instead.
             console.warn('Request failed:', error);
         });
 
         // Clear form data
         form.reset();
+
+        // Clear localstorage
+        form.querySelectorAll('[data-cache-draft]')
+            .forEach(node => window.localStorage.removeItem(node.dataset.cacheDraft));
+
+        // Close modals
     }
 }();
 
