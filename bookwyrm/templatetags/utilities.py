@@ -36,9 +36,9 @@ def get_title(book, too_short=5):
 
 
 @register.simple_tag(takes_context=False)
-def comparison_bool(str1, str2):
-    """idk why I need to write a tag for this, it reutrns a bool"""
-    return str1 == str2
+def comparison_bool(str1, str2, boolean=True):
+    """idk why I need to write a tag for this, it returns a bool"""
+    return boolean and str1 == str2
 
 
 @register.filter(is_safe=True)

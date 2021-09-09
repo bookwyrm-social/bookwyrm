@@ -57,7 +57,7 @@ let StatusCache = new class {
     /**
      * Post a status with ajax
      *
-     * @param  {Event} event
+     * @param  {} event
      * @return {undefined}
      */
     submitStatus(event) {
@@ -81,6 +81,11 @@ let StatusCache = new class {
 
         if (modal) {
             modal.getElementsByClassName("modal-close")[0].click();
+
+            // Update shelve buttons
+            document.querySelectorAll("[data-shelve-button-book='" + form.book.value +"']")
+                .forEach(button => this.cycleShelveButtons(button, form.reading_status.value));
+            return;
         }
 
         // Close reply panel
@@ -89,8 +94,30 @@ let StatusCache = new class {
         if (reply) {
             document.querySelector("[data-controls=" + reply.id + "]").click();
         }
+    }
 
-        // Update shelve buttons
+    /**
+     * Change which buttons are available for a shelf
+     *
+     * @param  {Object} html button dom element
+     * @param  {String} the identifier of the selected shelf
+     * @return {undefined}
+     */
+    cycleShelveButtons(button, identifier) {
+        // pressed button
+        let shelf = button.querySelector("[data-shelf-identifier='" + identifier + "']");
+
+        // set all buttons to hidden
+        button.querySelectorAll("[data-shelf-identifier]")
+            .forEach(item => BookWyrm.addRemoveClass(item, "is-hidden", true));
+
+        // button that should be visible now
+        let next = button.querySelector("[data-shelf-identifier=" + shelf.dataset.shelfNext + "]");
+
+        // show the desired button
+        BookWyrm.addRemoveClass(next, "is-hidden", false);
+
+        // dropdown buttons
     }
 }();
 
