@@ -106,18 +106,33 @@ let StatusCache = new class {
     cycleShelveButtons(button, identifier) {
         // pressed button
         let shelf = button.querySelector("[data-shelf-identifier='" + identifier + "']");
+        let next_identifier = shelf.dataset.shelfNext;
 
         // set all buttons to hidden
         button.querySelectorAll("[data-shelf-identifier]")
             .forEach(item => BookWyrm.addRemoveClass(item, "is-hidden", true));
 
         // button that should be visible now
-        let next = button.querySelector("[data-shelf-identifier=" + shelf.dataset.shelfNext + "]");
+        let next = button.querySelector("[data-shelf-identifier=" + next_identifier + "]");
 
         // show the desired button
         BookWyrm.addRemoveClass(next, "is-hidden", false);
 
-        // dropdown buttons
+        // ------ update the dropdown buttons
+        // remove existing hidden class
+        button.querySelectorAll("[data-shelf-dropdown-identifier]")
+            .forEach(item => BookWyrm.addRemoveClass(item, "is-hidden", false));
+
+        // remove existing disabled states
+        button.querySelectorAll("[data-shelf-dropdown-identifier] button")
+            .forEach(item => item.disabled = false);
+
+        // disable the current state
+        button.querySelector("[data-shelf-dropdown-identifier=" + identifier + "] button").disabled = true;
+        // hide the option that's shown as the main button
+        let main_button = button.querySelector("[data-shelf-dropdown-identifier=" + next_identifier + "]");
+        BookWyrm.addRemoveClass(main_button, "is-hidden", true);
+
     }
 }();
 
