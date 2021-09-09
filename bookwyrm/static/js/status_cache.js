@@ -26,8 +26,10 @@ let StatusCache = new class {
         // Used in set reading goal
         let key = event.target.dataset.cacheDraft;
         let value = event.target.value;
+
         if (!value) {
             window.localStorage.removeItem(key);
+
             return;
         }
 
@@ -44,6 +46,7 @@ let StatusCache = new class {
         // Used in set reading goal
         let key = node.dataset.cacheDraft;
         let value = window.localStorage.getItem(key);
+
         if (!value) {
             return;
         }
@@ -75,13 +78,15 @@ let StatusCache = new class {
 
         // Close modals
         let modal = form.closest(".modal.is-active");
-        if (!!modal) {
+
+        if (modal) {
             modal.getElementsByClassName("modal-close")[0].click();
         }
 
         // Close reply panel
         let reply = form.closest(".reply-panel");
-        if (!!reply) {
+
+        if (reply) {
             document.querySelector("[data-controls=" + reply.id + "]").click();
         }
 
