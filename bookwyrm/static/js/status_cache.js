@@ -1,5 +1,4 @@
 /* exported StatusCache */
-/* globals BookWyrm */
 
 let StatusCache = new class {
     constructor() {
