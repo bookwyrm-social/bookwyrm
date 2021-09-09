@@ -1,0 +1,20 @@
+{% extends "components/inline_form.html" %}
+{% load i18n %}
+
+{% block header %}
+{% trans "Permanently delete user" %}
+{% endblock %}
+
+{% block form %}
+<form name="delete-user" action="{% url 'settings-delete-user' user.id %}" method="post">
+    {% csrf_token %}
+    <div class="field">
+        <label class="label" for="id_password">{% trans "Confirm password:" %}</label>
+        <input class="input {% if form.password.errors %}is-danger{% endif %}" type="password" name="password" id="id_password" required>
+        {% for error in form.password.errors %}
+        <p class="help is-danger">{{ error | escape }}</p>
+        {% endfor %}
+    </div>
+    <button type="submit" class="button is-danger">{% trans "Delete Account" %}</button>
+</form>
+{% endblock %}

@@ -141,6 +141,16 @@ urlpatterns = [
         r"^invite-request/?$", views.InviteRequest.as_view(), name="invite-request"
     ),
     re_path(r"^invite/(?P<code>[A-Za-z0-9]+)/?$", views.Invite.as_view()),
+    re_path(
+        r"^settings/email-blocklist/?$",
+        views.EmailBlocklist.as_view(),
+        name="settings-email-blocks",
+    ),
+    re_path(
+        r"^settings/email-blocks/(?P<domain_id>\d+)/delete/?$",
+        views.EmailBlocklist.as_view(),
+        name="settings-email-blocks-delete",
+    ),
     # moderation
     re_path(r"^settings/reports/?$", views.Reports.as_view(), name="settings-reports"),
     re_path(
@@ -152,6 +162,16 @@ urlpatterns = [
         r"^settings/reports/(?P<user_id>\d+)/suspend/?$",
         views.suspend_user,
         name="settings-report-suspend",
+    ),
+    re_path(
+        r"^settings/reports/(?P<user_id>\d+)/unsuspend/?$",
+        views.unsuspend_user,
+        name="settings-report-unsuspend",
+    ),
+    re_path(
+        r"^settings/reports/(?P<user_id>\d+)/delete/?$",
+        views.moderator_delete_user,
+        name="settings-delete-user",
     ),
     re_path(
         r"^settings/reports/(?P<report_id>\d+)/resolve/?$",

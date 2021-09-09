@@ -42,6 +42,12 @@ class Register(View):
         email = form.data["email"]
         password = form.data["password"]
 
+        # make sure the email isn't blocked as spam
+        email_domain = email.split("@")[-1]
+        if models.EmailBlocklist.objects.filter(domain=email_domain).exists():
+            # treat this like a successful registration, but don't do anything
+            return redirect("confirm-email")
+
         # check localname and email uniqueness
         if models.User.objects.filter(localname=localname).first():
             form.errors["localname"] = ["User with this username already exists"]
