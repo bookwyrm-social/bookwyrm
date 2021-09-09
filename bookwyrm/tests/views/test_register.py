@@ -153,6 +153,30 @@ class RegisterViews(TestCase):
         with self.assertRaises(PermissionDenied):
             view(request)
 
+    def test_register_blocked_domain(self, *_):
+        """you can't register with a blocked domain"""
+        view = views.Register.as_view()
+        models.EmailBlocklist.objects.create(domain="gmail.com")
+
+        # one that fails
+        request = self.factory.post(
+            "register/",
+            {"localname": "nutria ", "password": "mouseword", "email": "aa@gmail.com"},
+        )
+        result = view(request)
+        self.assertEqual(result.status_code, 302)
+        self.assertFalse(models.User.objects.filter(email="aa@gmail.com").exists())
+
+        # one that succeeds
+        request = self.factory.post(
+            "register/",
+            {"localname": "nutria ", "password": "mouseword", "email": "aa@bleep.com"},
+        )
+        with patch("bookwyrm.views.register.login"):
+            result = view(request)
+        self.assertEqual(result.status_code, 302)
+        self.assertTrue(models.User.objects.filter(email="aa@bleep.com").exists())
+
     def test_register_invite(self, *_):
         """you can't just register"""
         view = views.Register.as_view()

@@ -13,6 +13,7 @@ DeactivationReason = models.TextChoices(
     [
         "pending",
         "self_deletion",
+        "moderator_suspension",
         "moderator_deletion",
         "domain_block",
     ],

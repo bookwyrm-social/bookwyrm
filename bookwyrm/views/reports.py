@@ -1,5 +1,6 @@
 """ moderation via flagged posts and users """
 from django.contrib.auth.decorators import login_required, permission_required
+from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
@@ -77,10 +78,48 @@ class Report(View):
 def suspend_user(_, user_id):
     """mark an account as inactive"""
     user = get_object_or_404(models.User, id=user_id)
-    user.is_active = not user.is_active
+    user.is_active = False
+    user.deactivation_reason = "moderator_suspension"
     # this isn't a full deletion, so we don't want to tell the world
     user.save(broadcast=False)
     return redirect("settings-user", user.id)
+
+
+@login_required
+@permission_required("bookwyrm_moderate_user")
+def unsuspend_user(_, user_id):
+    """mark an account as inactive"""
+    user = get_object_or_404(models.User, id=user_id)
+    user.is_active = True
+    user.deactivation_reason = None
+    # this isn't a full deletion, so we don't want to tell the world
+    user.save(broadcast=False)
+    return redirect("settings-user", user.id)
+
+
+@login_required
+@permission_required("bookwyrm_moderate_user")
+def moderator_delete_user(request, user_id):
+    """permanently delete a user"""
+    user = get_object_or_404(models.User, id=user_id)
+
+    # we can't delete users on other instances
+    if not user.local:
+        raise PermissionDenied
+
+    form = forms.DeleteUserForm(request.POST, instance=user)
+
+    moderator = models.User.objects.get(id=request.user.id)
+    # check the moderator's password
+    if form.is_valid() and moderator.check_password(form.cleaned_data["password"]):
+        user.deactivation_reason = "moderator_deletion"
+        user.delete()
+        return redirect("settings-user", user.id)
+
+    form.errors["password"] = ["Invalid password"]
+
+    data = {"user": user, "group_form": forms.UserGroupForm(), "form": form}
+    return TemplateResponse(request, "user_admin/user.html", data)
 
 
 @login_required

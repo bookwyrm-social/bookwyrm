@@ -8,6 +8,7 @@ from .directory import Directory
 from .discover import Discover
 from .edit_user import EditUser, DeleteUser
 from .editions import Editions, switch_edition
+from .email_blocklist import EmailBlocklist
 from .federation import Federation, FederatedServer
 from .federation import AddFederatedServer, ImportServerBlocklist
 from .federation import block_server, unblock_server
@@ -33,7 +34,15 @@ from .reading import edit_readthrough, create_readthrough
 from .reading import delete_readthrough, delete_progressupdate
 from .reading import ReadingStatus
 from .register import Register, ConfirmEmail, ConfirmEmailCode, resend_link
-from .reports import Report, Reports, make_report, resolve_report, suspend_user
+from .reports import (
+    Report,
+    Reports,
+    make_report,
+    resolve_report,
+    suspend_user,
+    unsuspend_user,
+    moderator_delete_user,
+)
 from .rss_feed import RssFeed
 from .password import PasswordResetRequest, PasswordReset, ChangePassword
 from .search import Search
