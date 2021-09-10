@@ -1,5 +1,6 @@
 {% spaceless %}
 {% load i18n %}
+{% load stars %}
 
 <div class="
     field is-grouped
@@ -24,7 +25,7 @@
             class="is-sr-only"
             for="{{ type|slugify }}_book{{ book.id }}_star_{{ forloop.counter0 }}_half"
         >
-                {% blocktranslate trimmed count rating=forloop.counter0 with half_rating=forloop.counter0|add:""|add:"0.5" %}
+                {% blocktranslate trimmed count rating=forloop.counter0 with half_rating=forloop.counter0|half_star %}
                     {{ half_rating }} star
                 {% plural %}
                     {{ half_rating }} stars
