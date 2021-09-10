@@ -41,7 +41,7 @@ class CreateStatus(View):
             return HttpResponseBadRequest()
         if not form.is_valid():
             if is_api_request(request):
-                return HttpResponse(status_code=500)
+                return HttpResponse(status=500)
             return redirect(request.headers.get("Referer", "/"))
 
         status = form.save(commit=False)
