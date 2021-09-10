@@ -5,7 +5,7 @@ from urllib.parse import urlparse
 from django.contrib.auth.decorators import login_required
 from django.core.validators import URLValidator
 from django.core.exceptions import ValidationError
-from django.http import HttpResponseBadRequest
+from django.http import HttpResponse, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
@@ -16,7 +16,7 @@ from bookwyrm import forms, models
 from bookwyrm.sanitize_html import InputHtmlParser
 from bookwyrm.settings import DOMAIN
 from bookwyrm.utils import regex
-from .helpers import handle_remote_webfinger
+from .helpers import handle_remote_webfinger, is_api_request
 from .reading import edit_readthrough
 
 
@@ -26,7 +26,7 @@ class CreateStatus(View):
     """the view for *posting*"""
 
     def get(self, request, status_type):  # pylint: disable=unused-argument
-        """compose view (used for delete-and-redraft"""
+        """compose view (used for delete-and-redraft)"""
         book = get_object_or_404(models.Edition, id=request.GET.get("book"))
         data = {"book": book}
         return TemplateResponse(request, "compose.html", data)
@@ -40,6 +40,8 @@ class CreateStatus(View):
         except AttributeError:
             return HttpResponseBadRequest()
         if not form.is_valid():
+            if is_api_request(request):
+                return HttpResponse(status_code=500)
             return redirect(request.headers.get("Referer", "/"))
 
         status = form.save(commit=False)
@@ -79,6 +81,8 @@ class CreateStatus(View):
         # update a readthorugh, if needed
         edit_readthrough(request)
 
+        if is_api_request(request):
+            return HttpResponse()
         return redirect("/")
 
 
