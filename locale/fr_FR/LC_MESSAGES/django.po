@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.1.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-10 18:00+0000\n"
+"POT-Creation-Date: 2021-09-10 18:24+0000\n"
 "PO-Revision-Date: 2021-04-05 12:44+0100\n"
 "Last-Translator: Fabien Basmaison <contact@arkhi.org>\n"
 "Language-Team: Mouse Reeve <LL@li.org>\n"
@@ -92,47 +92,47 @@ msgstr "nom du compte :"
 msgid "A user with that username already exists."
 msgstr "Ce nom est déjà associé à un compte."
 
-#: bookwyrm/settings.py:113
+#: bookwyrm/settings.py:115
 msgid "Home Timeline"
 msgstr "Mon fil d’actualité"
 
-#: bookwyrm/settings.py:113
+#: bookwyrm/settings.py:115
 msgid "Home"
 msgstr "Accueil"
 
-#: bookwyrm/settings.py:114
+#: bookwyrm/settings.py:116
 #, fuzzy
 #| msgid "Book Title"
 msgid "Books Timeline"
 msgstr "Titre du livre"
 
-#: bookwyrm/settings.py:114 bookwyrm/templates/search/layout.html:21
+#: bookwyrm/settings.py:116 bookwyrm/templates/search/layout.html:21
 #: bookwyrm/templates/search/layout.html:42
 #: bookwyrm/templates/user/layout.html:81
 msgid "Books"
 msgstr "Livres"
 
-#: bookwyrm/settings.py:160
+#: bookwyrm/settings.py:162
 msgid "English"
 msgstr "English"
 
-#: bookwyrm/settings.py:161
+#: bookwyrm/settings.py:163
 msgid "German"
 msgstr "Deutsch"
 
-#: bookwyrm/settings.py:162
+#: bookwyrm/settings.py:164
 msgid "Spanish"
 msgstr "Español"
 
-#: bookwyrm/settings.py:163
+#: bookwyrm/settings.py:165
 msgid "French"
 msgstr "Français"
 
-#: bookwyrm/settings.py:164
+#: bookwyrm/settings.py:166
 msgid "Simplified Chinese"
 msgstr "简化字"
 
-#: bookwyrm/settings.py:165
+#: bookwyrm/settings.py:167
 #, fuzzy
 #| msgid "Additional info:"
 msgid "Traditional Chinese"
@@ -1946,7 +1946,7 @@ msgstr "Nouveau mot de passe :"
 #: bookwyrm/templates/preferences/delete_user.html:7
 #: bookwyrm/templates/preferences/delete_user.html:26
 #: bookwyrm/templates/preferences/layout.html:23
-#: bookwyrm/templates/user_admin/delete_user_form.html:18
+#: bookwyrm/templates/user_admin/delete_user_form.html:23
 #, fuzzy
 #| msgid "Create an Account"
 msgid "Delete Account"
@@ -3297,6 +3297,11 @@ msgid "Permanently delete user"
 msgstr ""
 
 #: bookwyrm/templates/user_admin/delete_user_form.html:12
+#, python-format
+msgid "Are you sure you want to delete <strong>%(username)s</strong>'s account? This action cannot be undone. To proceed, please enter your password to confirm deletion."
+msgstr ""
+
+#: bookwyrm/templates/user_admin/delete_user_form.html:17
 #, fuzzy
 #| msgid "Confirm password:"
 msgid "Your password:"
