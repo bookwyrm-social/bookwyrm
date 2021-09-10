@@ -210,6 +210,11 @@
     </div>
 </div>
 
+<div role="region" aria-live="polite" id="live-messages">
+    <p id="status-success-message" class="live-message is-sr-only is-hidden">{% trans "Successfully posted status" %}</p>
+    <p id="status-error-message" class="live-message notification is-danger p-3 pr-5 pl-5 is-hidden">{% trans "Error posting status" %}</p>
+</div>
+
 <footer class="footer">
     <div class="container">
         <div class="columns">
@@ -249,8 +254,11 @@
 <script>
     var csrf_token = '{{ csrf_token }}';
 </script>
-<script src="{% static "js/bookwyrm.js" %}"></script>
-<script src="{% static "js/localstorage.js" %}"></script>
+
+<script src="{% static "js/bookwyrm.js" %}?v={{ js_cache }}"></script>
+<script src="{% static "js/localstorage.js" %}?v={{ js_cache }}"></script>
+<script src="{% static "js/status_cache.js" %}?v={{ js_cache }}"></script>
+
 {% block scripts %}{% endblock %}
 </body>
 </html>

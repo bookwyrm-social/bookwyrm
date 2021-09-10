@@ -2,33 +2,43 @@
 {% load utilities %}
 {% load i18n %}
 
-{% for shelf in shelves %}
-{% comparison_bool shelf.identifier active_shelf.shelf.identifier as is_current %}
-{% if dropdown %}<li role="menuitem" class="dropdown-item p-0">{% endif %}
-    <div class="{% if not dropdown and active_shelf.shelf.identifier|next_shelf != shelf.identifier %}is-hidden{% endif %}">
-    {% if shelf.identifier == 'reading' %}{% if not dropdown or active_shelf.shelf.identifier|next_shelf != shelf.identifier %}
+{% with next_shelf_identifier=active_shelf.shelf.identifier|next_shelf %}
 
-        {% trans "Start reading" as button_text %}
-        {% url 'reading-status' 'start' book.id as fallback_url %}
-        {% include 'snippets/toggle/toggle_button.html' with class=class text=button_text controls_text="start_reading" controls_uid=button_uuid focus="modal_title_start_reading" disabled=is_current fallback_url=fallback_url %}
-
-    {% endif %}{% elif shelf.identifier == 'read' and active_shelf.shelf.identifier == 'read' %}{% if not dropdown or active_shelf.shelf.identifier|next_shelf != shelf.identifier %}
+<div
+    class="{% if next_shelf_identifier != 'complete' %}is-hidden{% endif %}"
+    data-shelf-identifier="complete"
+>
     <button type="button" class="button {{ class }}" disabled>
         <span>{% trans "Read" %}</span>
     </button>
-    {% endif %}{% elif shelf.identifier == 'read' %}{% if not dropdown or active_shelf.shelf.identifier|next_shelf != shelf.identifier %}
+</div>
 
-        {% trans "Finish reading" as button_text %}
-        {% url 'reading-status' 'finish' book.id as fallback_url %}
-        {% include 'snippets/toggle/toggle_button.html' with class=class text=button_text controls_text="finish_reading" controls_uid=button_uuid focus="modal_title_finish_reading" disabled=is_current fallback_url=fallback_url %}
+{% for shelf in shelves %}
+    <div
+        class="{% if next_shelf_identifier != shelf.identifier %}is-hidden{% endif %}"
+        data-shelf-identifier="{{ shelf.identifier }}"
+        data-shelf-next="{{ shelf.identifier|next_shelf }}"
+    >
+    {% if shelf.identifier == 'reading' %}
 
-    {% endif %}{% elif shelf.identifier == 'to-read' %}{% if not dropdown or active_shelf.shelf.identifier|next_shelf != shelf.identifier %}
+            {% trans "Start reading" as button_text %}
+            {% url 'reading-status' 'start' book.id as fallback_url %}
+            {% include 'snippets/toggle/toggle_button.html' with class=class text=button_text controls_text="start_reading" controls_uid=button_uuid focus="modal_title_start_reading" fallback_url=fallback_url %}
 
-        {% trans "Want to read" as button_text %}
-        {% url 'reading-status' 'want' book.id as fallback_url %}
-        {% include 'snippets/toggle/toggle_button.html' with class=class text=button_text controls_text="want_to_read" controls_uid=button_uuid focus="modal_title_want_to_read" disabled=is_current fallback_url=fallback_url %}
+    {% elif shelf.identifier == 'read' %}
 
-    {% endif %}{% elif shelf.editable %}
+            {% trans "Finish reading" as button_text %}
+            {% url 'reading-status' 'finish' book.id as fallback_url %}
+            {% include 'snippets/toggle/toggle_button.html' with class=class text=button_text controls_text="finish_reading" controls_uid=button_uuid focus="modal_title_finish_reading" fallback_url=fallback_url %}
+
+    {% elif shelf.identifier == 'to-read' %}
+
+            {% trans "Want to read" as button_text %}
+            {% url 'reading-status' 'want' book.id as fallback_url %}
+            {% include 'snippets/toggle/toggle_button.html' with class=class text=button_text controls_text="want_to_read" controls_uid=button_uuid focus="modal_title_want_to_read" fallback_url=fallback_url %}
+
+    {% elif shelf.editable %}
+
         <form name="shelve" action="/shelve/" method="post">
             {% csrf_token %}
             <input type="hidden" name="book" value="{{ active_shelf.book.id }}">
@@ -36,30 +46,9 @@
                 <span>{{ shelf.name }}</span>
             </button>
         </form>
+
     {% endif %}
     </div>
-{% if dropdown %}</li>{% endif %}
 {% endfor %}
-{% if dropdown %}
 
-{% if readthrough and active_shelf.shelf.identifier != 'read' %}
-<li role="menuitem" class="dropdown-item p-0">
-    {% trans "Update progress" as button_text %}
-    {% include 'snippets/toggle/toggle_button.html' with class=class text=button_text controls_text="progress_update" controls_uid=button_uuid focus="modal_title_progress_update" %}
-</li>
-{% endif %}
-
-{% if active_shelf.shelf %}
-<li role="menuitem" class="dropdown-item p-0">
-    <form  name="shelve" action="/unshelve/" method="post">
-        {% csrf_token %}
-        <input type="hidden" name="book" value="{{ active_shelf.book.id }}">
-        <input type="hidden" name="shelf" value="{{ active_shelf.shelf.id }}">
-        <button class="button is-fullwidth is-small{% if dropdown %} is-radiusless{% endif %} is-danger is-light" type="submit">
-            {% blocktrans with name=active_shelf.shelf.name %}Remove from {{ name }}{% endblocktrans %}
-        </button>
-    </form>
-</li>
-{% endif %}
-
-{% endif %}
+{% endwith %}
