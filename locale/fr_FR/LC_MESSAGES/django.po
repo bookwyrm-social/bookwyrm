@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.1.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-10 18:24+0000\n"
+"POT-Creation-Date: 2021-09-10 22:50+0000\n"
 "PO-Revision-Date: 2021-04-05 12:44+0100\n"
 "Last-Translator: Fabien Basmaison <contact@arkhi.org>\n"
 "Language-Team: Mouse Reeve <LL@li.org>\n"
@@ -288,7 +288,7 @@ msgstr "Clé Goodreads :"
 #: bookwyrm/templates/settings/announcement_form.html:69
 #: bookwyrm/templates/settings/edit_server.html:68
 #: bookwyrm/templates/settings/federated_server.html:98
-#: bookwyrm/templates/settings/site.html:108
+#: bookwyrm/templates/settings/site.html:113
 #: bookwyrm/templates/snippets/reading_modals/layout.html:16
 #: bookwyrm/templates/snippets/reading_modals/progress_update_modal.html:42
 #: bookwyrm/templates/user_admin/user_moderation_actions.html:64
@@ -2370,17 +2370,17 @@ msgid "Instance Info"
 msgstr "Information sur l’instance"
 
 #: bookwyrm/templates/settings/layout.html:69
-#: bookwyrm/templates/settings/site.html:39
+#: bookwyrm/templates/settings/site.html:44
 msgid "Images"
 msgstr "Images"
 
 #: bookwyrm/templates/settings/layout.html:70
-#: bookwyrm/templates/settings/site.html:59
+#: bookwyrm/templates/settings/site.html:64
 msgid "Footer Content"
 msgstr "Contenu du pied de page"
 
 #: bookwyrm/templates/settings/layout.html:71
-#: bookwyrm/templates/settings/site.html:81
+#: bookwyrm/templates/settings/site.html:86
 msgid "Registration"
 msgstr "Inscription"
 
@@ -2520,58 +2520,68 @@ msgid "Instance description:"
 msgstr "Description de l’instance :"
 
 #: bookwyrm/templates/settings/site.html:27
+#, fuzzy
+#| msgid "Description:"
+msgid "Short description:"
+msgstr "Description :"
+
+#: bookwyrm/templates/settings/site.html:28
+msgid "Used when the instance is previewed on joinbookwyrm.com. Does not support html or markdown."
+msgstr ""
+
+#: bookwyrm/templates/settings/site.html:32
 msgid "Code of conduct:"
 msgstr "Code de conduite :"
 
-#: bookwyrm/templates/settings/site.html:31
+#: bookwyrm/templates/settings/site.html:36
 msgid "Privacy Policy:"
 msgstr "Politique de vie privée :"
 
-#: bookwyrm/templates/settings/site.html:42
+#: bookwyrm/templates/settings/site.html:47
 msgid "Logo:"
 msgstr "Logo :"
 
-#: bookwyrm/templates/settings/site.html:46
+#: bookwyrm/templates/settings/site.html:51
 msgid "Logo small:"
 msgstr "Logo réduit :"
 
-#: bookwyrm/templates/settings/site.html:50
+#: bookwyrm/templates/settings/site.html:55
 msgid "Favicon:"
 msgstr "Favicon :"
 
-#: bookwyrm/templates/settings/site.html:61
+#: bookwyrm/templates/settings/site.html:66
 msgid "Support link:"
 msgstr "URL pour soutenir l’instance :"
 
-#: bookwyrm/templates/settings/site.html:65
+#: bookwyrm/templates/settings/site.html:70
 msgid "Support title:"
 msgstr "Titre pour soutenir l’instance :"
 
-#: bookwyrm/templates/settings/site.html:69
+#: bookwyrm/templates/settings/site.html:74
 msgid "Admin email:"
 msgstr "Email de l’administrateur :"
 
-#: bookwyrm/templates/settings/site.html:73
+#: bookwyrm/templates/settings/site.html:78
 msgid "Additional info:"
 msgstr "Infos supplémentaires :"
 
-#: bookwyrm/templates/settings/site.html:85
+#: bookwyrm/templates/settings/site.html:90
 msgid "Allow registration"
 msgstr "Autoriser les inscriptions"
 
-#: bookwyrm/templates/settings/site.html:91
+#: bookwyrm/templates/settings/site.html:96
 msgid "Allow invite requests"
 msgstr "Autoriser les demandes d’invitation"
 
-#: bookwyrm/templates/settings/site.html:97
+#: bookwyrm/templates/settings/site.html:102
 msgid "Require users to confirm email address"
 msgstr "Demander aux utilisateurs et utilisatrices de confirmer leur adresse email"
 
-#: bookwyrm/templates/settings/site.html:99
+#: bookwyrm/templates/settings/site.html:104
 msgid "(Recommended if registration is open)"
 msgstr "(Recommandé si les inscriptions sont ouvertes)"
 
-#: bookwyrm/templates/settings/site.html:102
+#: bookwyrm/templates/settings/site.html:107
 msgid "Registration closed text:"
 msgstr "Texte affiché lorsque les inscriptions sont closes :"
 
@@ -2782,12 +2792,21 @@ msgstr "Se désabonner"
 msgid "Accept"
 msgstr "Accepter"
 
-#: bookwyrm/templates/snippets/form_rate_stars.html:19
+#: bookwyrm/templates/snippets/form_rate_stars.html:20
 #: bookwyrm/templates/snippets/stars.html:13
 msgid "No rating"
 msgstr "Aucune note"
 
-#: bookwyrm/templates/snippets/form_rate_stars.html:44
+#: bookwyrm/templates/snippets/form_rate_stars.html:28
+#, fuzzy, python-format
+#| msgid "%(rating)s star"
+#| msgid_plural "%(rating)s stars"
+msgid "%(half_rating)s star"
+msgid_plural "%(half_rating)s stars"
+msgstr[0] "%(rating)s étoile"
+msgstr[1] "%(rating)s étoiles"
+
+#: bookwyrm/templates/snippets/form_rate_stars.html:64
 #: bookwyrm/templates/snippets/stars.html:7
 #, python-format
 msgid "%(rating)s star"

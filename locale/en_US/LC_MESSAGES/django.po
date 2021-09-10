@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-10 18:24+0000\n"
+"POT-Creation-Date: 2021-09-10 22:50+0000\n"
 "PO-Revision-Date: 2021-02-28 17:19-0800\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: English <LL@li.org>\n"
@@ -284,7 +284,7 @@ msgstr ""
 #: bookwyrm/templates/settings/announcement_form.html:69
 #: bookwyrm/templates/settings/edit_server.html:68
 #: bookwyrm/templates/settings/federated_server.html:98
-#: bookwyrm/templates/settings/site.html:108
+#: bookwyrm/templates/settings/site.html:113
 #: bookwyrm/templates/snippets/reading_modals/layout.html:16
 #: bookwyrm/templates/snippets/reading_modals/progress_update_modal.html:42
 #: bookwyrm/templates/user_admin/user_moderation_actions.html:64
@@ -2309,17 +2309,17 @@ msgid "Instance Info"
 msgstr ""
 
 #: bookwyrm/templates/settings/layout.html:69
-#: bookwyrm/templates/settings/site.html:39
+#: bookwyrm/templates/settings/site.html:44
 msgid "Images"
 msgstr ""
 
 #: bookwyrm/templates/settings/layout.html:70
-#: bookwyrm/templates/settings/site.html:59
+#: bookwyrm/templates/settings/site.html:64
 msgid "Footer Content"
 msgstr ""
 
 #: bookwyrm/templates/settings/layout.html:71
-#: bookwyrm/templates/settings/site.html:81
+#: bookwyrm/templates/settings/site.html:86
 msgid "Registration"
 msgstr ""
 
@@ -2459,58 +2459,66 @@ msgid "Instance description:"
 msgstr ""
 
 #: bookwyrm/templates/settings/site.html:27
+msgid "Short description:"
+msgstr ""
+
+#: bookwyrm/templates/settings/site.html:28
+msgid "Used when the instance is previewed on joinbookwyrm.com. Does not support html or markdown."
+msgstr ""
+
+#: bookwyrm/templates/settings/site.html:32
 msgid "Code of conduct:"
 msgstr ""
 
-#: bookwyrm/templates/settings/site.html:31
+#: bookwyrm/templates/settings/site.html:36
 msgid "Privacy Policy:"
 msgstr ""
 
-#: bookwyrm/templates/settings/site.html:42
+#: bookwyrm/templates/settings/site.html:47
 msgid "Logo:"
 msgstr ""
 
-#: bookwyrm/templates/settings/site.html:46
+#: bookwyrm/templates/settings/site.html:51
 msgid "Logo small:"
 msgstr ""
 
-#: bookwyrm/templates/settings/site.html:50
+#: bookwyrm/templates/settings/site.html:55
 msgid "Favicon:"
 msgstr ""
 
-#: bookwyrm/templates/settings/site.html:61
+#: bookwyrm/templates/settings/site.html:66
 msgid "Support link:"
 msgstr ""
 
-#: bookwyrm/templates/settings/site.html:65
+#: bookwyrm/templates/settings/site.html:70
 msgid "Support title:"
 msgstr ""
 
-#: bookwyrm/templates/settings/site.html:69
+#: bookwyrm/templates/settings/site.html:74
 msgid "Admin email:"
 msgstr ""
 
-#: bookwyrm/templates/settings/site.html:73
+#: bookwyrm/templates/settings/site.html:78
 msgid "Additional info:"
 msgstr ""
 
-#: bookwyrm/templates/settings/site.html:85
+#: bookwyrm/templates/settings/site.html:90
 msgid "Allow registration"
 msgstr ""
 
-#: bookwyrm/templates/settings/site.html:91
+#: bookwyrm/templates/settings/site.html:96
 msgid "Allow invite requests"
 msgstr ""
 
-#: bookwyrm/templates/settings/site.html:97
+#: bookwyrm/templates/settings/site.html:102
 msgid "Require users to confirm email address"
 msgstr ""
 
-#: bookwyrm/templates/settings/site.html:99
+#: bookwyrm/templates/settings/site.html:104
 msgid "(Recommended if registration is open)"
 msgstr ""
 
-#: bookwyrm/templates/settings/site.html:102
+#: bookwyrm/templates/settings/site.html:107
 msgid "Registration closed text:"
 msgstr ""
 
@@ -2710,12 +2718,19 @@ msgstr ""
 msgid "Accept"
 msgstr ""
 
-#: bookwyrm/templates/snippets/form_rate_stars.html:19
+#: bookwyrm/templates/snippets/form_rate_stars.html:20
 #: bookwyrm/templates/snippets/stars.html:13
 msgid "No rating"
 msgstr ""
 
-#: bookwyrm/templates/snippets/form_rate_stars.html:44
+#: bookwyrm/templates/snippets/form_rate_stars.html:28
+#, python-format
+msgid "%(half_rating)s star"
+msgid_plural "%(half_rating)s stars"
+msgstr[0] ""
+msgstr[1] ""
+
+#: bookwyrm/templates/snippets/form_rate_stars.html:64
 #: bookwyrm/templates/snippets/stars.html:7
 #, python-format
 msgid "%(rating)s star"

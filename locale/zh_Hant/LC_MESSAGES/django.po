@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-10 18:24+0000\n"
+"POT-Creation-Date: 2021-09-10 22:50+0000\n"
 "PO-Revision-Date: 2021-06-30 10:36+0000\n"
 "Last-Translator: Grace Cheng <chengracecwy@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -290,7 +290,7 @@ msgstr "Goodreads key:"
 #: bookwyrm/templates/settings/announcement_form.html:69
 #: bookwyrm/templates/settings/edit_server.html:68
 #: bookwyrm/templates/settings/federated_server.html:98
-#: bookwyrm/templates/settings/site.html:108
+#: bookwyrm/templates/settings/site.html:113
 #: bookwyrm/templates/snippets/reading_modals/layout.html:16
 #: bookwyrm/templates/snippets/reading_modals/progress_update_modal.html:42
 #: bookwyrm/templates/user_admin/user_moderation_actions.html:64
@@ -2378,17 +2378,17 @@ msgid "Instance Info"
 msgstr "實例資訊"
 
 #: bookwyrm/templates/settings/layout.html:69
-#: bookwyrm/templates/settings/site.html:39
+#: bookwyrm/templates/settings/site.html:44
 msgid "Images"
 msgstr "圖片"
 
 #: bookwyrm/templates/settings/layout.html:70
-#: bookwyrm/templates/settings/site.html:59
+#: bookwyrm/templates/settings/site.html:64
 msgid "Footer Content"
 msgstr "頁尾內容"
 
 #: bookwyrm/templates/settings/layout.html:71
-#: bookwyrm/templates/settings/site.html:81
+#: bookwyrm/templates/settings/site.html:86
 msgid "Registration"
 msgstr "註冊"
 
@@ -2528,62 +2528,72 @@ msgid "Instance description:"
 msgstr "實例描述:"
 
 #: bookwyrm/templates/settings/site.html:27
+#, fuzzy
+#| msgid "Description:"
+msgid "Short description:"
+msgstr "描述:"
+
+#: bookwyrm/templates/settings/site.html:28
+msgid "Used when the instance is previewed on joinbookwyrm.com. Does not support html or markdown."
+msgstr ""
+
+#: bookwyrm/templates/settings/site.html:32
 msgid "Code of conduct:"
 msgstr "行為準則:"
 
-#: bookwyrm/templates/settings/site.html:31
+#: bookwyrm/templates/settings/site.html:36
 msgid "Privacy Policy:"
 msgstr "隱私政策:"
 
-#: bookwyrm/templates/settings/site.html:42
+#: bookwyrm/templates/settings/site.html:47
 msgid "Logo:"
 msgstr "圖示:"
 
-#: bookwyrm/templates/settings/site.html:46
+#: bookwyrm/templates/settings/site.html:51
 msgid "Logo small:"
 msgstr "小號圖示:"
 
-#: bookwyrm/templates/settings/site.html:50
+#: bookwyrm/templates/settings/site.html:55
 msgid "Favicon:"
 msgstr "Favicon:"
 
-#: bookwyrm/templates/settings/site.html:61
+#: bookwyrm/templates/settings/site.html:66
 msgid "Support link:"
 msgstr "支援連結:"
 
-#: bookwyrm/templates/settings/site.html:65
+#: bookwyrm/templates/settings/site.html:70
 msgid "Support title:"
 msgstr "支援標題:"
 
-#: bookwyrm/templates/settings/site.html:69
+#: bookwyrm/templates/settings/site.html:74
 msgid "Admin email:"
 msgstr "管理員郵件:"
 
-#: bookwyrm/templates/settings/site.html:73
+#: bookwyrm/templates/settings/site.html:78
 msgid "Additional info:"
 msgstr "附加資訊:"
 
-#: bookwyrm/templates/settings/site.html:85
+#: bookwyrm/templates/settings/site.html:90
 #, fuzzy
 #| msgid "Allow registration:"
 msgid "Allow registration"
 msgstr "允許註冊:"
 
-#: bookwyrm/templates/settings/site.html:91
+#: bookwyrm/templates/settings/site.html:96
 #, fuzzy
 #| msgid "Allow invite requests:"
 msgid "Allow invite requests"
 msgstr "允許請求邀請:"
 
-#: bookwyrm/templates/settings/site.html:97
+#: bookwyrm/templates/settings/site.html:102
 msgid "Require users to confirm email address"
 msgstr ""
 
-#: bookwyrm/templates/settings/site.html:99
+#: bookwyrm/templates/settings/site.html:104
 msgid "(Recommended if registration is open)"
 msgstr ""
 
-#: bookwyrm/templates/settings/site.html:102
+#: bookwyrm/templates/settings/site.html:107
 msgid "Registration closed text:"
 msgstr "註冊關閉文字:"
 
@@ -2793,12 +2803,20 @@ msgstr "取消關注"
 msgid "Accept"
 msgstr "接受"
 
-#: bookwyrm/templates/snippets/form_rate_stars.html:19
+#: bookwyrm/templates/snippets/form_rate_stars.html:20
 #: bookwyrm/templates/snippets/stars.html:13
 msgid "No rating"
 msgstr "沒有評價"
 
-#: bookwyrm/templates/snippets/form_rate_stars.html:44
+#: bookwyrm/templates/snippets/form_rate_stars.html:28
+#, fuzzy, python-format
+#| msgid "%(rating)s star"
+#| msgid_plural "%(rating)s stars"
+msgid "%(half_rating)s star"
+msgid_plural "%(half_rating)s stars"
+msgstr[0] "%(rating)s 星"
+
+#: bookwyrm/templates/snippets/form_rate_stars.html:64
 #: bookwyrm/templates/snippets/stars.html:7
 #, python-format
 msgid "%(rating)s star"
