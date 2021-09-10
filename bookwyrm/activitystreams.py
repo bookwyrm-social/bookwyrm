@@ -432,9 +432,9 @@ def remove_status_task(status_ids):
             stream.remove_object_from_related_stores(status)
 
 
-@app.task(queue="medium_priority")
+@app.task(queue="high_priority")
 def add_status_task(status_id, increment_unread=False):
-    """remove a status from any stream it might be in"""
+    """add a status to any stream it should be in"""
     status = models.Status.objects.get(id=status_id)
     for stream in streams.values():
         stream.add_status(status, increment_unread=increment_unread)
