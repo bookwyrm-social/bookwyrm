@@ -186,13 +186,11 @@ body {
 }
 
 /* Icons directly following inputs that follow the checked input are emptied. */
-/* stylelint-disable no-descending-specificity */
 .form-rate-stars input:checked ~ input + .icon::before {
     content: '\e9d7'; /* icon-star-empty */
 }
 
 /* Icons directly following inputs that follow the checked input are emptied. */
-/* stylelint-disable no-descending-specificity */
 .form-rate-stars input:checked ~ input + .icon::before {
     content: '\e9d7'; /* icon-star-empty */
 }
@@ -202,7 +200,6 @@ body {
     content: '\e9d9' !important; /* icon-star-full */
 }
 
-/* stylelint-disable no-descending-specificity */
 .form-rate-stars .icon:hover ~ .icon::before {
     content: '\e9d7' !important; /* icon-star-empty */
 }
