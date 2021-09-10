@@ -63,12 +63,28 @@ let StatusCache = new class {
     submitStatus(event) {
         event.preventDefault();
         const form = event.currentTarget;
+        const trigger = event.submitter;
 
-        BookWyrm.ajaxPost(form).catch(error => {
+        BookWyrm.addRemoveClass(form, 'is-processing', true);
+        trigger.setAttribute('disabled', null);
+
+        BookWyrm.ajaxPost(form).finally(() => {
+            // Change icon to remove ongoing activity on the current UI.
+            // Enable back the element used to submit the form.
+            BookWyrm.addRemoveClass(form, 'is-processing', false);
+            trigger.removeAttribute('disabled');
+        })
+        .then(this.submitStatusSuccess.bind(this, form))
+        .catch(error => {
             // @todo Display a notification in the UI instead.
+            //       For now, the absence of change will be enough.
             console.warn('Request failed:', error);
-        });
 
+            BookWyrm.addRemoveClass(form, 'has-error', form.className.indexOf('is-hidden') == -1);
+        });
+    }
+
+    submitStatusSuccess(form) {
         // Clear form data
         form.reset();
 
