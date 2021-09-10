@@ -81,14 +81,35 @@ let StatusCache = new class {
             this.submitStatusSuccess(form);
         })
         .catch(error => {
-            // @todo Display a notification in the UI instead.
-            //       For now, the absence of change will be enough.
-            console.log('Request failed:', error);
-
-            BookWyrm.addRemoveClass(form, 'has-error', form.className.indexOf('is-hidden') == -1);
+            this.announceMessage('status-error-message');
         });
     }
 
+    /**
+     * Show a message in the live region
+     *
+     * @param  {String} the id of the message dom element
+     * @return {undefined}
+     */
+    announceMessage(message_id) {
+        const element = document.getElementById(message_id);
+        let copy = element.cloneNode(true)
+
+        copy.id = null;
+        element.insertAdjacentElement('beforebegin', copy);
+
+        BookWyrm.addRemoveClass(copy, 'is-hidden', false);
+        setTimeout(function() {
+            copy.remove()
+        }, 10000, copy);
+    }
+
+    /**
+     * Success state for a posted status
+     *
+     * @param  {Object} the html form that was submitted
+     * @return {undefined}
+     */
     submitStatusSuccess(form) {
         // Clear form data
         form.reset();
@@ -116,6 +137,8 @@ let StatusCache = new class {
         if (reply) {
             document.querySelector("[data-controls=" + reply.id + "]").click();
         }
+
+        this.announceMessage('status-success-message');
     }
 
     /**
