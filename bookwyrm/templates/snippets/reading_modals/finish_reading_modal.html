@@ -9,7 +9,7 @@ Finish "<em>{{ book_title }}</em>"
 {% endblock %}
 
 {% block modal-form-open %}
-<form name="finish-reading" action="{% url 'reading-status' 'finish' book.id %}" method="post">
+<form name="finish-reading" action="{% url 'reading-status' 'finish' book.id %}" method="post" class="submit-status">
 {% csrf_token %}
 <input type="hidden" name="reading_status" value="read">
 {% endblock %}

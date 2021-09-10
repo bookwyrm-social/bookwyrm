@@ -14,7 +14,7 @@ reply_parent: the Status object this post will be in reply to, if applicable
 
 {% block form_open %}
 {# default form tag syntax, can be overriddden #}
-<form class="is-flex-grow-1" name="{{ type }}" action="/post/{{ type }}" method="post" id="tab_{{ type }}_{{ book.id }}{{ reply_parent.id }}">
+<form class="is-flex-grow-1 submit-status" name="{{ type }}" action="/post/{{ type }}" method="post" id="tab_{{ type }}_{{ book.id }}{{ reply_parent.id }}">
 {% endblock %}
 
     {% csrf_token %}

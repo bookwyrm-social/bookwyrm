@@ -5,7 +5,7 @@ import dateutil.tz
 from dateutil.parser import ParserError
 
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseBadRequest, HttpResponseNotFound
+from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseNotFound
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
@@ -13,7 +13,7 @@ from django.views import View
 from django.views.decorators.http import require_POST
 
 from bookwyrm import forms, models
-from .helpers import get_edition, handle_reading_status
+from .helpers import get_edition, handle_reading_status, is_api_request
 
 
 @method_decorator(login_required, name="dispatch")
@@ -61,8 +61,7 @@ class ReadingStatus(View):
         )
 
         referer = request.headers.get("Referer", "/")
-        if "reading-status" in referer:
-            referer = "/"
+        referer = "/" if "reading-status" in referer else referer
         if current_status_shelfbook is not None:
             if current_status_shelfbook.shelf.identifier != desired_shelf.identifier:
                 current_status_shelfbook.delete()
@@ -92,6 +91,9 @@ class ReadingStatus(View):
             else:
                 privacy = request.POST.get("privacy")
                 handle_reading_status(request.user, desired_shelf, book, privacy)
+
+        if is_api_request(request):
+            return HttpResponse()
         return redirect(referer)
 
 
