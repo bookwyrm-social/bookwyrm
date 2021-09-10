@@ -20,7 +20,7 @@ class SiteSettings(models.Model):
         max_length=150, default="Social Reading and Reviewing"
     )
     instance_description = models.TextField(default="This instance has no description.")
-    instance_short_description = models.TextField(blank=True, null=True)
+    instance_short_description = models.CharField(max_length=255, blank=True, null=True)
 
     # about page
     registration_closed_text = models.TextField(

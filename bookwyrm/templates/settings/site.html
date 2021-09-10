@@ -24,6 +24,11 @@
             {{ site_form.instance_description }}
         </div>
         <div class="field">
+            <label class="label mb-0" for="id_short_description">{% trans "Short description:" %}</label>
+            <p class="help">{% trans "Used when the instance is previewed on joinbookwyrm.com. Does not support html or markdown." %}</p>
+            {{ site_form.instance_short_description }}
+        </div>
+        <div class="field">
             <label class="label" for="id_code_of_conduct">{% trans "Code of conduct:" %}</label>
             {{ site_form.code_of_conduct }}
         </div>
