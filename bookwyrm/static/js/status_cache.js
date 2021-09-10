@@ -63,12 +63,54 @@ let StatusCache = new class {
     submitStatus(event) {
         event.preventDefault();
         const form = event.currentTarget;
+        const trigger = event.submitter;
 
-        BookWyrm.ajaxPost(form).catch(error => {
-            // @todo Display a notification in the UI instead.
-            console.warn('Request failed:', error);
+        BookWyrm.addRemoveClass(form, 'is-processing', true);
+        trigger.setAttribute('disabled', null);
+
+        BookWyrm.ajaxPost(form).finally(() => {
+            // Change icon to remove ongoing activity on the current UI.
+            // Enable back the element used to submit the form.
+            BookWyrm.addRemoveClass(form, 'is-processing', false);
+            trigger.removeAttribute('disabled');
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error();
+            }
+            this.submitStatusSuccess(form);
+        })
+        .catch(error => {
+            this.announceMessage('status-error-message');
         });
+    }
 
+    /**
+     * Show a message in the live region
+     *
+     * @param  {String} the id of the message dom element
+     * @return {undefined}
+     */
+    announceMessage(message_id) {
+        const element = document.getElementById(message_id);
+        let copy = element.cloneNode(true)
+
+        copy.id = null;
+        element.insertAdjacentElement('beforebegin', copy);
+
+        BookWyrm.addRemoveClass(copy, 'is-hidden', false);
+        setTimeout(function() {
+            copy.remove()
+        }, 10000, copy);
+    }
+
+    /**
+     * Success state for a posted status
+     *
+     * @param  {Object} the html form that was submitted
+     * @return {undefined}
+     */
+    submitStatusSuccess(form) {
         // Clear form data
         form.reset();
 
@@ -95,6 +137,8 @@ let StatusCache = new class {
         if (reply) {
             document.querySelector("[data-controls=" + reply.id + "]").click();
         }
+
+        this.announceMessage('status-success-message');
     }
 
     /**
