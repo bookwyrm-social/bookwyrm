@@ -127,12 +127,25 @@ let StatusCache = new class {
         button.querySelectorAll("[data-shelf-dropdown-identifier] button")
             .forEach(item => item.disabled = false);
 
+        next_identifier = next_identifier == 'complete' ? 'read' : next_identifier;
         // disable the current state
         button.querySelector("[data-shelf-dropdown-identifier=" + identifier + "] button").disabled = true;
-        // hide the option that's shown as the main button
+
         let main_button = button.querySelector("[data-shelf-dropdown-identifier=" + next_identifier + "]");
+
+        // hide the option that's shown as the main button
         BookWyrm.addRemoveClass(main_button, "is-hidden", true);
 
+        // just hide the other two menu options, idk what to do with them
+        button.querySelectorAll("[data-extra-options]")
+            .forEach(item => BookWyrm.addRemoveClass(item, "is-hidden", true));
+
+        // close menu
+        let menu = button.querySelector(".dropdown-trigger[aria-expanded=true]");
+
+        if (menu) {
+            menu.click();
+        }
     }
 }();
 
