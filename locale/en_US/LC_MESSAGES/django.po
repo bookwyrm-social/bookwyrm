@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-10 18:00+0000\n"
+"POT-Creation-Date: 2021-09-10 18:24+0000\n"
 "PO-Revision-Date: 2021-02-28 17:19-0800\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: English <LL@li.org>\n"
@@ -92,45 +92,45 @@ msgstr ""
 msgid "A user with that username already exists."
 msgstr ""
 
-#: bookwyrm/settings.py:113
+#: bookwyrm/settings.py:115
 msgid "Home Timeline"
 msgstr ""
 
-#: bookwyrm/settings.py:113
+#: bookwyrm/settings.py:115
 msgid "Home"
 msgstr ""
 
-#: bookwyrm/settings.py:114
+#: bookwyrm/settings.py:116
 msgid "Books Timeline"
 msgstr ""
 
-#: bookwyrm/settings.py:114 bookwyrm/templates/search/layout.html:21
+#: bookwyrm/settings.py:116 bookwyrm/templates/search/layout.html:21
 #: bookwyrm/templates/search/layout.html:42
 #: bookwyrm/templates/user/layout.html:81
 msgid "Books"
 msgstr ""
 
-#: bookwyrm/settings.py:160
+#: bookwyrm/settings.py:162
 msgid "English"
 msgstr ""
 
-#: bookwyrm/settings.py:161
+#: bookwyrm/settings.py:163
 msgid "German"
 msgstr ""
 
-#: bookwyrm/settings.py:162
+#: bookwyrm/settings.py:164
 msgid "Spanish"
 msgstr ""
 
-#: bookwyrm/settings.py:163
+#: bookwyrm/settings.py:165
 msgid "French"
 msgstr ""
 
-#: bookwyrm/settings.py:164
+#: bookwyrm/settings.py:166
 msgid "Simplified Chinese"
 msgstr ""
 
-#: bookwyrm/settings.py:165
+#: bookwyrm/settings.py:167
 msgid "Traditional Chinese"
 msgstr ""
 
@@ -1909,7 +1909,7 @@ msgstr ""
 #: bookwyrm/templates/preferences/delete_user.html:7
 #: bookwyrm/templates/preferences/delete_user.html:26
 #: bookwyrm/templates/preferences/layout.html:23
-#: bookwyrm/templates/user_admin/delete_user_form.html:18
+#: bookwyrm/templates/user_admin/delete_user_form.html:23
 msgid "Delete Account"
 msgstr ""
 
@@ -3209,6 +3209,11 @@ msgid "Permanently delete user"
 msgstr ""
 
 #: bookwyrm/templates/user_admin/delete_user_form.html:12
+#, python-format
+msgid "Are you sure you want to delete <strong>%(username)s</strong>'s account? This action cannot be undone. To proceed, please enter your password to confirm deletion."
+msgstr ""
+
+#: bookwyrm/templates/user_admin/delete_user_form.html:17
 msgid "Your password:"
 msgstr ""
 
