@@ -80,7 +80,8 @@ let StatusCache = new class {
             }
             this.submitStatusSuccess(form);
         })
-        .catch(_ => {
+        .catch(error => {
+            console.warn(error);
             this.announceMessage('status-error-message');
         });
     }
