@@ -190,11 +190,6 @@ body {
     content: '\e9d7'; /* icon-star-empty */
 }
 
-/* Icons directly following inputs that follow the checked input are emptied. */
-.form-rate-stars input:checked ~ input + .icon::before {
-    content: '\e9d7'; /* icon-star-empty */
-}
-
 /* When a label is hovered, repeat the fill-all-then-empty-following pattern. */
 .form-rate-stars:hover .icon.icon::before {
     content: '\e9d9' !important; /* icon-star-full */
