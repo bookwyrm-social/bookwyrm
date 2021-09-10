@@ -85,6 +85,7 @@ let StatusCache = new class {
             // Update shelve buttons
             document.querySelectorAll("[data-shelve-button-book='" + form.book.value +"']")
                 .forEach(button => this.cycleShelveButtons(button, form.reading_status.value));
+
             return;
         }
 
@@ -104,43 +105,48 @@ let StatusCache = new class {
      * @return {undefined}
      */
     cycleShelveButtons(button, identifier) {
-        // pressed button
+        // Pressed button
         let shelf = button.querySelector("[data-shelf-identifier='" + identifier + "']");
         let next_identifier = shelf.dataset.shelfNext;
 
-        // set all buttons to hidden
+        // Set all buttons to hidden
         button.querySelectorAll("[data-shelf-identifier]")
             .forEach(item => BookWyrm.addRemoveClass(item, "is-hidden", true));
 
-        // button that should be visible now
+        // Button that should be visible now
         let next = button.querySelector("[data-shelf-identifier=" + next_identifier + "]");
 
-        // show the desired button
+        // Show the desired button
         BookWyrm.addRemoveClass(next, "is-hidden", false);
 
         // ------ update the dropdown buttons
-        // remove existing hidden class
+        // Remove existing hidden class
         button.querySelectorAll("[data-shelf-dropdown-identifier]")
             .forEach(item => BookWyrm.addRemoveClass(item, "is-hidden", false));
 
-        // remove existing disabled states
+        // Remove existing disabled states
         button.querySelectorAll("[data-shelf-dropdown-identifier] button")
             .forEach(item => item.disabled = false);
 
         next_identifier = next_identifier == 'complete' ? 'read' : next_identifier;
-        // disable the current state
-        button.querySelector("[data-shelf-dropdown-identifier=" + identifier + "] button").disabled = true;
 
-        let main_button = button.querySelector("[data-shelf-dropdown-identifier=" + next_identifier + "]");
+        // Disable the current state
+        button.querySelector(
+            "[data-shelf-dropdown-identifier=" + identifier + "] button"
+        ).disabled = true;
 
-        // hide the option that's shown as the main button
+        let main_button = button.querySelector(
+            "[data-shelf-dropdown-identifier=" + next_identifier + "]"
+        );
+
+        // Hide the option that's shown as the main button
         BookWyrm.addRemoveClass(main_button, "is-hidden", true);
 
-        // just hide the other two menu options, idk what to do with them
+        // Just hide the other two menu options, idk what to do with them
         button.querySelectorAll("[data-extra-options]")
             .forEach(item => BookWyrm.addRemoveClass(item, "is-hidden", true));
 
-        // close menu
+        // Close menu
         let menu = button.querySelector(".dropdown-trigger[aria-expanded=true]");
 
         if (menu) {
