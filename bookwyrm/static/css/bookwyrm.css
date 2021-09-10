@@ -170,6 +170,21 @@ body {
     content: '\e9d9'; /* icon-star-full */
 }
 
+
+/* Icons directly following half star inputs are marked as half */
+.form-rate-stars input.half:checked ~ .icon::before {
+    content: '\e9d8'; /* icon-star-half */
+}
+
+/* Icons directly following half check inputs that follow the checked input are emptied. */
+.form-rate-stars input.half:checked + input + .icon ~ .icon::before {
+    content: '\e9d7'; /* icon-star-empty */
+}
+
+/* Icons directly following inputs that follow the checked input are emptied. */
+.form-rate-stars input:checked ~ input + .icon::before {
+    content: '\e9d7'; /* icon-star-empty */
+}
 /* Icons directly following inputs that follow the checked input are emptied. */
 .form-rate-stars input:checked ~ input + .icon::before {
     content: '\e9d7'; /* icon-star-empty */
