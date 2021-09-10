@@ -14,6 +14,9 @@ let StatusCache = new class {
                 'submit',
                 this.submitStatus.bind(this))
             );
+
+        document.querySelectorAll('.form-rate-stars label.icon')
+            .forEach(button => button.addEventListener('click', this.toggleStar.bind(this)));
     }
 
     /**
@@ -196,6 +199,25 @@ let StatusCache = new class {
 
         if (menu) {
             menu.click();
+        }
+    }
+
+    /**
+     * Reveal half-stars
+     *
+     * @param  {Event} event
+     * @return {undefined}
+     */
+    toggleStar(event) {
+        const label = event.currentTarget;
+        let wholeStar = document.getElementById(label.getAttribute("for"));
+
+        if (wholeStar.checked) {
+            event.preventDefault();
+            let halfStar = document.getElementById(label.dataset.forHalf);
+
+            wholeStar.checked = null;
+            halfStar.checked = "checked";
         }
     }
 }();
