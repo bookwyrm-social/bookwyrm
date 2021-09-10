@@ -80,7 +80,7 @@ let StatusCache = new class {
             }
             this.submitStatusSuccess(form);
         })
-        .catch(error => {
+        .catch(_ => {
             this.announceMessage('status-error-message');
         });
     }
@@ -93,14 +93,14 @@ let StatusCache = new class {
      */
     announceMessage(message_id) {
         const element = document.getElementById(message_id);
-        let copy = element.cloneNode(true)
+        let copy = element.cloneNode(true);
 
         copy.id = null;
         element.insertAdjacentElement('beforebegin', copy);
 
         BookWyrm.addRemoveClass(copy, 'is-hidden', false);
         setTimeout(function() {
-            copy.remove()
+            copy.remove();
         }, 10000, copy);
     }
 
