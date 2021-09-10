@@ -74,11 +74,16 @@ let StatusCache = new class {
             BookWyrm.addRemoveClass(form, 'is-processing', false);
             trigger.removeAttribute('disabled');
         })
-        .then(this.submitStatusSuccess.bind(this, form))
+        .then(response => {
+            if (!response.ok) {
+                throw new Error();
+            }
+            this.submitStatusSuccess(form);
+        })
         .catch(error => {
             // @todo Display a notification in the UI instead.
             //       For now, the absence of change will be enough.
-            console.warn('Request failed:', error);
+            console.log('Request failed:', error);
 
             BookWyrm.addRemoveClass(form, 'has-error', form.className.indexOf('is-hidden') == -1);
         });
