@@ -15,4 +15,5 @@ def site_settings(request):  # pylint: disable=unused-argument
         "media_full_url": settings.MEDIA_FULL_URL,
         "preview_images_enabled": settings.ENABLE_PREVIEW_IMAGES,
         "request_protocol": request_protocol,
+        "js_cache": settings.JS_CACHE,
     }
