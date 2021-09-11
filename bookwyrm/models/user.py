@@ -270,6 +270,11 @@ class User(OrderedCollectionPageMixin, AbstractUser):
 
         # this user already exists, no need to populate fields
         if not created:
+            if self.is_active:
+                self.deactivation_date = None
+            elif not self.deactivation_date:
+                self.deactivation_date = timezone.now()
+
             super().save(*args, **kwargs)
             return
 
