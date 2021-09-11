@@ -1,4 +1,5 @@
 """ access the activity streams stored in redis """
+from datetime import datetime, timedelta
 from django.dispatch import receiver
 from django.db import transaction
 from django.db.models import signals, Q
@@ -436,6 +437,10 @@ def remove_status_task(status_ids):
 def add_status_task(status_id, increment_unread=False):
     """add a status to any stream it should be in"""
     status = models.Status.objects.get(id=status_id)
+    # we don't want to tick the unread count for csv import statuses, idk how better
+    # to check than just to see if the states is more than a few days old
+    if status.created_date < datetime.now() - timedelta(days=2):
+        increment_unread = False
     for stream in streams.values():
         stream.add_status(status, increment_unread=increment_unread)
 
