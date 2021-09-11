@@ -16,7 +16,7 @@ from django.views.decorators.http import require_POST
 
 from bookwyrm import emailing, forms, models
 from bookwyrm.settings import PAGE_LENGTH
-from . import helpers
+from bookwyrm.views import helpers
 
 
 # pylint: disable= no-self-use
