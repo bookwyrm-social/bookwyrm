@@ -125,6 +125,12 @@ class StatusForm(CustomForm):
         fields = ["user", "content", "content_warning", "sensitive", "privacy"]
 
 
+class DirectForm(CustomForm):
+    class Meta:
+        model = models.Status
+        fields = ["user", "content", "content_warning", "sensitive", "privacy"]
+
+
 class EditUserForm(CustomForm):
     class Meta:
         model = models.User
