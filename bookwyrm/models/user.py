@@ -105,7 +105,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         related_name="blocked_by",
     )
     saved_lists = models.ManyToManyField(
-        "List", symmetrical=False, related_name="saved_lists"
+        "List", symmetrical=False, related_name="saved_lists", blank=True
     )
     favorites = models.ManyToManyField(
         "Status",
@@ -136,6 +136,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     deactivation_reason = models.CharField(
         max_length=255, choices=DeactivationReason.choices, null=True, blank=True
     )
+    deactivation_date = models.DateTimeField(null=True, blank=True)
     confirmation_code = models.CharField(max_length=32, default=new_access_code)
 
     name_field = "username"
