@@ -27,7 +27,7 @@
             <p class="notification is-warning">
                 {% trans "Inactive" %}
                 {% if user.deactivation_reason %}
-                ({{ user.deactivation_reason }})
+                <span class="help">({% trans user.get_deactivation_reason_display %})</span>
                 {% endif %}
             </p>
             {% endif %}
