@@ -19,7 +19,7 @@
 <div class="block columns">
     <nav class="menu column is-one-quarter">
         <h2 class="menu-label">
-            {% url 'dashboard' as url %}
+            {% url 'settings-dashboard' as url %}
             <a
                 href="{{ url }}"
                 {% if url in request.path %} class="is-active" aria-selected="true"{% endif %}
