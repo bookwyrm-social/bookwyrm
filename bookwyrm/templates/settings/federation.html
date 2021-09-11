@@ -33,7 +33,12 @@
     <tr>
         <td><a href="{% url 'settings-federated-server' server.id %}">{{ server.server_name }}</a></td>
         <td>{{ server.created_date }}</td>
-        <td>{{ server.application_type }} ({{ server.application_version }})</td>
+        <td>
+        {% if server.application_type %}
+            {{ server.application_type }}
+            {% if server.application_version %}({{ server.application_version }}){% endif %}
+        {% endif %}
+        </td>
         <td>{{ server.get_status_display }}</td>
     </tr>
     {% endfor %}
