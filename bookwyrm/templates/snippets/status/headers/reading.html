@@ -1,9 +1,8 @@
 {% spaceless %}
 {% load i18n %}
 {% load utilities %}
+{% load status_display %}
 
-{% with book=status.mention_books.first %}
+{% load_book status as book %}
 {% blocktrans with book_path=book.remote_id book=book|book_title %}started reading <a href="{{ book_path }}">{{ book }}</a>{% endblocktrans %}
-{% endwith %}
-
 {% endspaceless %}

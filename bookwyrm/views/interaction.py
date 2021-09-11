@@ -1,12 +1,13 @@
 """ boosts and favs """
 from django.db import IntegrityError
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseBadRequest, HttpResponseNotFound
+from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseNotFound
 from django.shortcuts import redirect
 from django.utils.decorators import method_decorator
 from django.views import View
 
 from bookwyrm import models
+from .helpers import is_api_request
 
 
 # pylint: disable= no-self-use
@@ -23,6 +24,8 @@ class Favorite(View):
             # you already fav'ed that
             return HttpResponseBadRequest()
 
+        if is_api_request(request):
+            return HttpResponse()
         return redirect(request.headers.get("Referer", "/"))
 
 
@@ -40,6 +43,8 @@ class Unfavorite(View):
             return HttpResponseNotFound()
 
         favorite.delete()
+        if is_api_request(request):
+            return HttpResponse()
         return redirect(request.headers.get("Referer", "/"))
 
 
@@ -65,6 +70,8 @@ class Boost(View):
             privacy=status.privacy,
             user=request.user,
         )
+        if is_api_request(request):
+            return HttpResponse()
         return redirect(request.headers.get("Referer", "/"))
 
 
@@ -80,4 +87,6 @@ class Unboost(View):
         ).first()
 
         boost.delete()
+        if is_api_request(request):
+            return HttpResponse()
         return redirect(request.headers.get("Referer", "/"))

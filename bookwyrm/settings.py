@@ -13,16 +13,7 @@ VERSION = "0.0.1"
 PAGE_LENGTH = env("PAGE_LENGTH", 15)
 DEFAULT_LANGUAGE = env("DEFAULT_LANGUAGE", "English")
 
-# celery
-CELERY_BROKER = "redis://:{}@redis_broker:{}/0".format(
-    requests.utils.quote(env("REDIS_BROKER_PASSWORD", "")), env("REDIS_BROKER_PORT")
-)
-CELERY_RESULT_BACKEND = "redis://:{}@redis_broker:{}/0".format(
-    requests.utils.quote(env("REDIS_BROKER_PASSWORD", "")), env("REDIS_BROKER_PORT")
-)
-CELERY_ACCEPT_CONTENT = ["application/json"]
-CELERY_TASK_SERIALIZER = "json"
-CELERY_RESULT_SERIALIZER = "json"
+JS_CACHE = "19447742"
 
 # email
 EMAIL_BACKEND = env("EMAIL_BACKEND", "django.core.mail.backends.smtp.EmailBackend")
@@ -75,6 +66,7 @@ INSTALLED_APPS = [
     "django_rename_app",
     "bookwyrm",
     "celery",
+    "imagekit",
     "storages",
 ]
 
@@ -191,6 +183,9 @@ USER_AGENT = "%s (BookWyrm/%s; +https://%s/)" % (
     DOMAIN,
 )
 
+# Imagekit generated thumbnails
+ENABLE_THUMBNAIL_GENERATION = env.bool("ENABLE_THUMBNAIL_GENERATION", False)
+IMAGEKIT_CACHEFILE_DIR = "thumbnails"
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/

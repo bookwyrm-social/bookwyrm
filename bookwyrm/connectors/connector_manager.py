@@ -119,7 +119,7 @@ def get_or_create_connector(remote_id):
     return load_connector(connector_info)
 
 
-@app.task
+@app.task(queue="low_priority")
 def load_more_data(connector_id, book_id):
     """background the work of getting all 10,000 editions of LoTR"""
     connector_info = models.Connector.objects.get(id=connector_id)

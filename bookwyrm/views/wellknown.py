@@ -8,7 +8,7 @@ from django.utils import timezone
 from django.views.decorators.http import require_GET
 
 from bookwyrm import models
-from bookwyrm.settings import DOMAIN, VERSION
+from bookwyrm.settings import DOMAIN, VERSION, MEDIA_FULL_URL
 
 
 @require_GET
@@ -20,7 +20,7 @@ def webfinger(request):
 
     username = resource.replace("acct:", "")
     try:
-        user = models.User.objects.get(username=username)
+        user = models.User.objects.get(username__iexact=username)
     except models.User.DoesNotExist:
         return HttpResponseNotFound("No account found")
 
@@ -95,21 +95,24 @@ def instance_info(_):
     status_count = models.Status.objects.filter(user__local=True).count()
 
     site = models.SiteSettings.get()
+    logo_path = site.logo_small or "images/logo-small.png"
+    logo = f"{MEDIA_FULL_URL}{logo_path}"
     return JsonResponse(
         {
             "uri": DOMAIN,
             "title": site.name,
-            "short_description": "",
+            "short_description": site.instance_short_description,
             "description": site.instance_description,
-            "version": "0.0.1",
+            "version": VERSION,
             "stats": {
                 "user_count": user_count,
                 "status_count": status_count,
             },
-            "thumbnail": "https://%s/static/images/logo.png" % DOMAIN,
+            "thumbnail": logo,
             "languages": ["en"],
             "registrations": site.allow_registration,
             "approval_required": False,
+            "email": site.admin_email,
         }
     )
 

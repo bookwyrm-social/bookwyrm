@@ -13,7 +13,9 @@ class BaseModel(TestCase):
 
     def setUp(self):
         """shared data"""
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
+            "bookwyrm.activitystreams.populate_stream_task.delay"
+        ):
             self.local_user = models.User.objects.create_user(
                 "mouse", "mouse@mouse.com", "mouseword", local=True, localname="mouse"
             )
@@ -62,7 +64,7 @@ class BaseModel(TestCase):
         base_model.set_remote_id(None, instance, False)
         self.assertIsNone(instance.remote_id)
 
-    @patch("bookwyrm.activitystreams.ActivityStream.add_status")
+    @patch("bookwyrm.activitystreams.add_status_task.delay")
     def test_object_visible_to_user(self, _):
         """does a user have permission to view an object"""
         obj = models.Status.objects.create(
@@ -91,7 +93,7 @@ class BaseModel(TestCase):
         obj.mention_users.add(self.local_user)
         self.assertTrue(obj.visible_to_user(self.local_user))
 
-    @patch("bookwyrm.activitystreams.ActivityStream.add_status")
+    @patch("bookwyrm.activitystreams.add_status_task.delay")
     def test_object_visible_to_user_follower(self, _):
         """what you can see if you follow a user"""
         self.remote_user.followers.add(self.local_user)
@@ -111,7 +113,7 @@ class BaseModel(TestCase):
         obj.mention_users.add(self.local_user)
         self.assertTrue(obj.visible_to_user(self.local_user))
 
-    @patch("bookwyrm.activitystreams.ActivityStream.add_status")
+    @patch("bookwyrm.activitystreams.add_status_task.delay")
     def test_object_visible_to_user_blocked(self, _):
         """you can't see it if they block you"""
         self.remote_user.blocks.add(self.local_user)

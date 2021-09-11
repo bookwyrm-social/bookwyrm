@@ -188,6 +188,7 @@ class ImportItem(models.Model):
         if start_date and start_date is not None and not self.date_read:
             return [ReadThrough(start_date=start_date)]
         if self.date_read:
+            start_date = start_date if start_date < self.date_read else None
             return [
                 ReadThrough(
                     start_date=start_date,

@@ -5,13 +5,17 @@ from django.test import TestCase
 import responses
 
 from bookwyrm import models
-from bookwyrm.settings import DOMAIN
+from bookwyrm.settings import USE_HTTPS, DOMAIN
 
 # pylint: disable=missing-class-docstring
 # pylint: disable=missing-function-docstring
 class User(TestCase):
+    protocol = "https://" if USE_HTTPS else "http://"
+
     def setUp(self):
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
+            "bookwyrm.activitystreams.populate_stream_task.delay"
+        ):
             self.user = models.User.objects.create_user(
                 "mouse@%s" % DOMAIN,
                 "mouse@mouse.mouse",
@@ -24,13 +28,14 @@ class User(TestCase):
 
     def test_computed_fields(self):
         """username instead of id here"""
-        expected_id = "https://%s/user/mouse" % DOMAIN
+        expected_id = f"{self.protocol}{DOMAIN}/user/mouse"
         self.assertEqual(self.user.remote_id, expected_id)
-        self.assertEqual(self.user.username, "mouse@%s" % DOMAIN)
+        self.assertEqual(self.user.username, f"mouse@{DOMAIN}")
         self.assertEqual(self.user.localname, "mouse")
-        self.assertEqual(self.user.shared_inbox, "https://%s/inbox" % DOMAIN)
-        self.assertEqual(self.user.inbox, "%s/inbox" % expected_id)
-        self.assertEqual(self.user.outbox, "%s/outbox" % expected_id)
+        self.assertEqual(self.user.shared_inbox, f"{self.protocol}{DOMAIN}/inbox")
+        self.assertEqual(self.user.inbox, f"{expected_id}/inbox")
+        self.assertEqual(self.user.outbox, f"{expected_id}/outbox")
+        self.assertEqual(self.user.followers_url, f"{expected_id}/followers")
         self.assertIsNotNone(self.user.key_pair.private_key)
         self.assertIsNotNone(self.user.key_pair.public_key)
 

@@ -86,6 +86,7 @@ class CommentForm(CustomForm):
             "privacy",
             "progress",
             "progress_mode",
+            "reading_status",
         ]
 
 
@@ -100,6 +101,8 @@ class QuotationForm(CustomForm):
             "content_warning",
             "sensitive",
             "privacy",
+            "position",
+            "position_mode",
         ]
 
 
@@ -131,6 +134,7 @@ class EditUserForm(CustomForm):
             "email",
             "summary",
             "show_goal",
+            "show_suggested_users",
             "manually_approves_followers",
             "default_post_privacy",
             "discoverable",
@@ -293,6 +297,12 @@ class ReportForm(CustomForm):
     class Meta:
         model = models.Report
         fields = ["user", "reporter", "statuses", "note"]
+
+
+class EmailBlocklistForm(CustomForm):
+    class Meta:
+        model = models.EmailBlocklist
+        fields = ["domain"]
 
 
 class ServerForm(CustomForm):

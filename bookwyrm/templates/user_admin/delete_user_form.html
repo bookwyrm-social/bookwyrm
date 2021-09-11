@@ -1,0 +1,25 @@
+{% extends "components/inline_form.html" %}
+{% load i18n %}
+
+{% block header %}
+{% trans "Permanently delete user" %}
+{% endblock %}
+
+{% block form %}
+<form name="delete-user" action="{% url 'settings-delete-user' user.id %}" method="post">
+    {% csrf_token %}
+    <p>
+        {% blocktrans trimmed with username=user.localname %}
+        Are you sure you want to delete <strong>{{ username}}</strong>'s account? This action cannot be undone. To proceed, please enter your password to confirm deletion.
+        {% endblocktrans %}
+    </p>
+    <div class="field">
+        <label class="label" for="id_password">{% trans "Your password:" %}</label>
+        <input class="input {% if form.password.errors %}is-danger{% endif %}" type="password" name="password" id="id_password" required>
+        {% for error in form.password.errors %}
+        <p class="help is-danger">{{ error | escape }}</p>
+        {% endfor %}
+    </div>
+    <button type="submit" class="button is-danger">{% trans "Delete Account" %}</button>
+</form>
+{% endblock %}

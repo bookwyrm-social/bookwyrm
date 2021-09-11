@@ -4,15 +4,27 @@
 
 {% with status.id|uuid as uuid %}
 {% with request.user|liked:status as liked %}
-<form name="favorite" action="/favorite/{{ status.id }}" method="POST" class="interaction fav_{{ status.id }}_{{ uuid }} {% if liked %}is-hidden{% endif %}" data-id="fav_{{ status.id }}_{{ uuid }}">
+<form
+    name="favorite"
+    action="{% url 'fav' status.id %}"
+    method="POST"
+    class="interaction fav_{{ status.id }}_{{ uuid }} {% if liked %}is-hidden{% endif %}"
+    data-id="fav_{{ status.id }}_{{ uuid }}"
+>
     {% csrf_token %}
     <button class="button is-small is-light is-transparent" type="submit">
-        <span class="icon icon-heart m-0-mobile" title="{% trans 'Like' %}">
-        </span>
+        <span class="icon icon-heart m-0-mobile" title="{% trans 'Like' %}"></span>
         <span class="is-sr-only-mobile">{% trans "Like" %}</span>
     </button>
 </form>
-<form name="unfavorite" action="/unfavorite/{{ status.id }}" method="POST" class="interaction fav_{{ status.id }}_{{ uuid }} active {% if not liked %}is-hidden{% endif %}" data-id="fav_{{ status.id }}_{{ uuid }}">
+
+<form
+    name="unfavorite"
+    action="{% url 'unfav' status.id %}"
+    method="POST"
+    class="interaction fav_{{ status.id }}_{{ uuid }} active {% if not liked %}is-hidden{% endif %}"
+    data-id="fav_{{ status.id }}_{{ uuid }}"
+>
     {% csrf_token %}
     <button class="button is-light is-transparent is-small" type="submit">
         <span class="icon icon-heart has-text-primary m-0-mobile" title="{% trans 'Un-like' %}"></span>

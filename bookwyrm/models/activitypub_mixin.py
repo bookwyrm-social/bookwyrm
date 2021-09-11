@@ -362,6 +362,13 @@ class OrderedCollectionMixin(OrderedCollectionPageMixin):
             self.collection_queryset, **kwargs
         ).serialize()
 
+    def delete(self, *args, broadcast=True, **kwargs):
+        """Delete the object"""
+        activity = self.to_delete_activity(self.user)
+        super().delete(*args, **kwargs)
+        if self.user.local and broadcast:
+            self.broadcast(activity, self.user)
+
 
 class CollectionItemMixin(ActivitypubMixin):
     """for items that are part of an (Ordered)Collection"""
@@ -495,7 +502,7 @@ def unfurl_related_field(related_field, sort_field=None):
     return related_field.remote_id
 
 
-@app.task
+@app.task(queue="medium_priority")
 def broadcast_task(sender_id, activity, recipients):
     """the celery task for broadcast"""
     user_model = apps.get_model("bookwyrm.User", require_ready=True)

@@ -1,5 +1,6 @@
 """ access the activity streams stored in redis """
 from django.dispatch import receiver
+from django.db import transaction
 from django.db.models import signals, Q
 
 from bookwyrm import models
@@ -23,14 +24,15 @@ class ActivityStream(RedisStore):
         """statuses are sorted by date published"""
         return obj.published_date.timestamp()
 
-    def add_status(self, status):
+    def add_status(self, status, increment_unread=False):
         """add a status to users' feeds"""
         # the pipeline contains all the add-to-stream activities
         pipeline = self.add_object_to_related_stores(status, execute=False)
 
-        for user in self.get_audience(status):
-            # add to the unread status count
-            pipeline.incr(self.unread_id(user))
+        if increment_unread:
+            for user in self.get_audience(status):
+                # add to the unread status count
+                pipeline.incr(self.unread_id(user))
 
         # and go!
         pipeline.execute()
@@ -257,37 +259,31 @@ def add_status_on_create(sender, instance, created, *args, **kwargs):
         return
 
     if instance.deleted:
-        for stream in streams.values():
-            stream.remove_object_from_related_stores(instance)
+        remove_status_task.delay(instance.id)
         return
 
-    for stream in streams.values():
-        stream.add_status(instance)
-
-    if sender != models.Boost:
-        return
-    # remove the original post and other, earlier boosts
-    boosted = instance.boost.boosted_status
-    old_versions = models.Boost.objects.filter(
-        boosted_status__id=boosted.id,
-        created_date__lt=instance.created_date,
+    # when creating new things, gotta wait on the transaction
+    transaction.on_commit(
+        lambda: add_status_on_create_command(sender, instance, created)
     )
-    for stream in streams.values():
-        stream.remove_object_from_related_stores(boosted)
-        for status in old_versions:
-            stream.remove_object_from_related_stores(status)
+
+
+def add_status_on_create_command(sender, instance, created):
+    """runs this code only after the database commit completes"""
+    add_status_task.delay(instance.id, increment_unread=created)
+
+    if sender == models.Boost:
+        handle_boost_task.delay(instance.id)
 
 
 @receiver(signals.post_delete, sender=models.Boost)
 # pylint: disable=unused-argument
 def remove_boost_on_delete(sender, instance, *args, **kwargs):
     """boosts are deleted"""
-    # we're only interested in new statuses
-    for stream in streams.values():
-        # remove the boost
-        stream.remove_object_from_related_stores(instance)
-        # re-add the original status
-        stream.add_status(instance.boosted_status)
+    # remove the boost
+    remove_status_task.delay(instance.id)
+    # re-add the original status
+    add_status_task.delay(instance.boosted_status.id)
 
 
 @receiver(signals.post_save, sender=models.UserFollows)
@@ -296,7 +292,9 @@ def add_statuses_on_follow(sender, instance, created, *args, **kwargs):
     """add a newly followed user's statuses to feeds"""
     if not created or not instance.user_subject.local:
         return
-    HomeStream().add_user_statuses(instance.user_subject, instance.user_object)
+    add_user_statuses_task.delay(
+        instance.user_subject.id, instance.user_object.id, stream_list=["home"]
+    )
 
 
 @receiver(signals.post_delete, sender=models.UserFollows)
@@ -305,7 +303,9 @@ def remove_statuses_on_unfollow(sender, instance, *args, **kwargs):
     """remove statuses from a feed on unfollow"""
     if not instance.user_subject.local:
         return
-    HomeStream().remove_user_statuses(instance.user_subject, instance.user_object)
+    remove_user_statuses_task.delay(
+        instance.user_subject.id, instance.user_object.id, stream_list=["home"]
+    )
 
 
 @receiver(signals.post_save, sender=models.UserBlocks)
@@ -314,13 +314,15 @@ def remove_statuses_on_block(sender, instance, *args, **kwargs):
     """remove statuses from all feeds on block"""
     # blocks apply ot all feeds
     if instance.user_subject.local:
-        for stream in streams.values():
-            stream.remove_user_statuses(instance.user_subject, instance.user_object)
+        remove_user_statuses_task.delay(
+            instance.user_subject.id, instance.user_object.id
+        )
 
     # and in both directions
     if instance.user_object.local:
-        for stream in streams.values():
-            stream.remove_user_statuses(instance.user_object, instance.user_subject)
+        remove_user_statuses_task.delay(
+            instance.user_object.id, instance.user_subject.id
+        )
 
 
 @receiver(signals.post_delete, sender=models.UserBlocks)
@@ -328,15 +330,22 @@ def remove_statuses_on_block(sender, instance, *args, **kwargs):
 def add_statuses_on_unblock(sender, instance, *args, **kwargs):
     """remove statuses from all feeds on block"""
     public_streams = [v for (k, v) in streams.items() if k != "home"]
+
     # add statuses back to streams with statuses from anyone
     if instance.user_subject.local:
-        for stream in public_streams:
-            stream.add_user_statuses(instance.user_subject, instance.user_object)
+        add_user_statuses_task.delay(
+            instance.user_subject.id,
+            instance.user_object.id,
+            stream_list=public_streams,
+        )
 
     # add statuses back to streams with statuses from anyone
     if instance.user_object.local:
-        for stream in public_streams:
-            stream.add_user_statuses(instance.user_object, instance.user_subject)
+        add_user_statuses_task.delay(
+            instance.user_object.id,
+            instance.user_subject.id,
+            stream_list=public_streams,
+        )
 
 
 @receiver(signals.post_save, sender=models.User)
@@ -346,8 +355,8 @@ def populate_streams_on_account_create(sender, instance, created, *args, **kwarg
     if not created or not instance.local:
         return
 
-    for stream in streams.values():
-        stream.populate_streams(instance)
+    for stream in streams:
+        populate_stream_task.delay(stream, instance.id)
 
 
 @receiver(signals.pre_save, sender=models.ShelfBook)
@@ -356,20 +365,14 @@ def add_statuses_on_shelve(sender, instance, *args, **kwargs):
     """update books stream when user shelves a book"""
     if not instance.user.local:
         return
-    book = None
-    if hasattr(instance, "book"):
-        book = instance.book
-    elif instance.mention_books.exists():
-        book = instance.mention_books.first()
-    if not book:
-        return
+    book = instance.book
 
     # check if the book is already on the user's shelves
     editions = book.parent_work.editions.all()
     if models.ShelfBook.objects.filter(user=instance.user, book__in=editions).exists():
         return
 
-    BooksStream().add_book_statuses(instance.user, book)
+    add_book_statuses_task.delay(instance.user.id, book.id)
 
 
 @receiver(signals.post_delete, sender=models.ShelfBook)
@@ -379,24 +382,97 @@ def remove_statuses_on_unshelve(sender, instance, *args, **kwargs):
     if not instance.user.local:
         return
 
-    book = None
-    if hasattr(instance, "book"):
-        book = instance.book
-    elif instance.mention_books.exists():
-        book = instance.mention_books.first()
-    if not book:
-        return
+    book = instance.book
+
     # check if the book is actually unshelved, not just moved
     editions = book.parent_work.editions.all()
     if models.ShelfBook.objects.filter(user=instance.user, book__in=editions).exists():
         return
 
-    BooksStream().remove_book_statuses(instance.user, instance.book)
+    remove_book_statuses_task.delay(instance.user.id, book.id)
 
 
-@app.task
+# ---- TASKS
+
+
+@app.task(queue="low_priority")
+def add_book_statuses_task(user_id, book_id):
+    """add statuses related to a book on shelve"""
+    user = models.User.objects.get(id=user_id)
+    book = models.Edition.objects.get(id=book_id)
+    BooksStream().add_book_statuses(user, book)
+
+
+@app.task(queue="low_priority")
+def remove_book_statuses_task(user_id, book_id):
+    """remove statuses about a book from a user's books feed"""
+    user = models.User.objects.get(id=user_id)
+    book = models.Edition.objects.get(id=book_id)
+    BooksStream().remove_book_statuses(user, book)
+
+
+@app.task(queue="medium_priority")
 def populate_stream_task(stream, user_id):
     """background task for populating an empty activitystream"""
     user = models.User.objects.get(id=user_id)
     stream = streams[stream]
     stream.populate_streams(user)
+
+
+@app.task(queue="medium_priority")
+def remove_status_task(status_ids):
+    """remove a status from any stream it might be in"""
+    # this can take an id or a list of ids
+    if not isinstance(status_ids, list):
+        status_ids = [status_ids]
+    statuses = models.Status.objects.filter(id__in=status_ids)
+
+    for stream in streams.values():
+        for status in statuses:
+            stream.remove_object_from_related_stores(status)
+
+
+@app.task(queue="high_priority")
+def add_status_task(status_id, increment_unread=False):
+    """add a status to any stream it should be in"""
+    status = models.Status.objects.get(id=status_id)
+    for stream in streams.values():
+        stream.add_status(status, increment_unread=increment_unread)
+
+
+@app.task(queue="medium_priority")
+def remove_user_statuses_task(viewer_id, user_id, stream_list=None):
+    """remove all statuses by a user from a viewer's stream"""
+    stream_list = [streams[s] for s in stream_list] if stream_list else streams.values()
+    viewer = models.User.objects.get(id=viewer_id)
+    user = models.User.objects.get(id=user_id)
+    for stream in stream_list:
+        stream.remove_user_statuses(viewer, user)
+
+
+@app.task(queue="medium_priority")
+def add_user_statuses_task(viewer_id, user_id, stream_list=None):
+    """add all statuses by a user to a viewer's stream"""
+    stream_list = [streams[s] for s in stream_list] if stream_list else streams.values()
+    viewer = models.User.objects.get(id=viewer_id)
+    user = models.User.objects.get(id=user_id)
+    for stream in stream_list:
+        stream.add_user_statuses(viewer, user)
+
+
+@app.task(queue="medium_priority")
+def handle_boost_task(boost_id):
+    """remove the original post and other, earlier boosts"""
+    instance = models.Status.objects.get(id=boost_id)
+    boosted = instance.boost.boosted_status
+
+    old_versions = models.Boost.objects.filter(
+        boosted_status__id=boosted.id,
+        created_date__lt=instance.created_date,
+    )
+
+    for stream in streams.values():
+        audience = stream.get_stores_for_object(instance)
+        stream.remove_object_from_related_stores(boosted, stores=audience)
+        for status in old_versions:
+            stream.remove_object_from_related_stores(status, stores=audience)

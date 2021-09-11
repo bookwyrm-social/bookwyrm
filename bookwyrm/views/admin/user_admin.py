@@ -13,7 +13,7 @@ from bookwyrm.settings import PAGE_LENGTH
 # pylint: disable= no-self-use
 @method_decorator(login_required, name="dispatch")
 @method_decorator(
-    permission_required("bookwyrm.moderate_users", raise_exception=True),
+    permission_required("bookwyrm.moderate_user", raise_exception=True),
     name="dispatch",
 )
 class UserAdminList(View):
@@ -30,6 +30,12 @@ class UserAdminList(View):
         username = request.GET.get("username")
         if username:
             filters["username__icontains"] = username
+        scope = request.GET.get("scope")
+        if scope and scope == "local":
+            filters["local"] = True
+        email = request.GET.get("email")
+        if email:
+            filters["email__endswith"] = email
 
         users = models.User.objects.filter(**filters)
 

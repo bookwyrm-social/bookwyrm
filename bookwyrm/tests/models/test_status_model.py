@@ -15,14 +15,16 @@ from bookwyrm import activitypub, models, settings
 
 # pylint: disable=too-many-public-methods
 @patch("bookwyrm.models.Status.broadcast")
-@patch("bookwyrm.activitystreams.ActivityStream.add_status")
-@patch("bookwyrm.activitystreams.ActivityStream.remove_object_from_related_stores")
+@patch("bookwyrm.activitystreams.add_status_task.delay")
+@patch("bookwyrm.activitystreams.remove_status_task.delay")
 class Status(TestCase):
     """lotta types of statuses"""
 
     def setUp(self):
         """useful things for creating a status"""
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
+            "bookwyrm.activitystreams.populate_stream_task.delay"
+        ):
             self.local_user = models.User.objects.create_user(
                 "mouse", "mouse@mouse.mouse", "mouseword", local=True, localname="mouse"
             )
@@ -118,15 +120,12 @@ class Status(TestCase):
 
     def test_status_to_activity_tombstone(self, *_):
         """subclass of the base model version with a "pure" serializer"""
-        with patch(
-            "bookwyrm.activitystreams.ActivityStream.remove_object_from_related_stores"
-        ):
-            status = models.Status.objects.create(
-                content="test content",
-                user=self.local_user,
-                deleted=True,
-                deleted_date=timezone.now(),
-            )
+        status = models.Status.objects.create(
+            content="test content",
+            user=self.local_user,
+            deleted=True,
+            deleted_date=timezone.now(),
+        )
         activity = status.to_activity()
         self.assertEqual(activity["id"], status.remote_id)
         self.assertEqual(activity["type"], "Tombstone")

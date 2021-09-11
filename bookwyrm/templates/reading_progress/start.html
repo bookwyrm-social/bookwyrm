@@ -9,6 +9,6 @@ Start "{{ book_title }}"
 
 {% block content %}
 
-{% include "snippets/reading_modals/start_reading_modal.html" with book=book active=True %}
+{% include "snippets/reading_modals/start_reading_modal.html" with book=book active=True static=True %}
 
 {% endblock %}

@@ -11,8 +11,6 @@ draft: the content of an existing Status object to be edited (used in delete and
 uuid: a unique identifier used to make html "id" attributes unique and clarify javascript controls
 {% endcomment %}
 
-{% with type="quotation" %}
-
 {% block pre_content_additions %}
     <div class="field">
         <label class="label" for="id_quote_{{ book.id }}_{{ type }}">
@@ -26,9 +24,48 @@ uuid: a unique identifier used to make html "id" attributes unique and clarify j
                 id="id_quote_{{ book.id }}_{{ type }}"
                 placeholder="{% blocktrans with book_title=book.title %}An excerpt from '{{ book_title }}'{% endblocktrans %}"
                 required
+                data-cache-draft="id_quote_{{ book.id }}_{{ type }}"
             >{{ draft.quote|default:'' }}</textarea>
         </div>
     </div>
+    <div class="field">
+        <label class="label" for="position_{{ uuid }}">{% trans "Position:" %}</label>
+        <div class="field has-addons mb-0">
+            <div class="control">
+                <div class="select">
+                    <select
+                        name="position_mode"
+                        aria-label="Position mode"
+                        data-cache-draft="id_position_mode_{{ book.id }}_{{ type }}"
+                    >
+                        <option
+                            value="PG"
+                            {% if draft.position_mode == 'PG' or not draft %}selected{% endif %}
+                        >
+                            {% trans "On page:" %}
+                        </option>
+                        <option
+                            value="PCT"
+                            {% if draft.position_mode == 'PCT' %}selected{% endif %}
+                        >
+                            {% trans "At percent:" %}
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <div class="control">
+                <input
+                    aria-label="{% if draft.position_mode == 'PG' %}Page{% else %}Percent{% endif %}"
+                    class="input"
+                    type="number"
+                    min="0"
+                    name="position"
+                    size="3"
+                    value="{% firstof draft.position '' %}"
+                    id="position_{{ uuid }}"
+                    data-cache-draft="id_position_{{ book.id }}_{{ type }}"
+                >
+            </div>
+        </div>
+    </div>
 {% endblock %}
-
-{% endwith %}

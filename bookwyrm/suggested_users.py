@@ -86,10 +86,12 @@ class SuggestedUsers(RedisStore):
         values = self.get_store(self.store_id(user), withscores=True)
         results = []
         # annotate users with mutuals and shared book counts
-        for user_id, rank in values[:5]:
+        for user_id, rank in values:
             counts = self.get_counts_from_rank(rank)
             try:
-                user = models.User.objects.get(id=user_id)
+                user = models.User.objects.get(
+                    id=user_id, is_active=True, bookwyrm_user=True
+                )
             except models.User.DoesNotExist as err:
                 # if this happens, the suggestions are janked way up
                 logger.exception(err)
@@ -97,6 +99,8 @@ class SuggestedUsers(RedisStore):
             user.mutuals = counts["mutuals"]
             # user.shared_books = counts["shared_books"]
             results.append(user)
+            if len(results) >= 5:
+                break
         return results
 
 
@@ -178,13 +182,21 @@ def update_suggestions_on_unfollow(sender, instance, **kwargs):
 
 @receiver(signals.post_save, sender=models.User)
 # pylint: disable=unused-argument, too-many-arguments
-def add_new_user(sender, instance, created, update_fields=None, **kwargs):
-    """a new user, wow how cool"""
+def update_user(sender, instance, created, update_fields=None, **kwargs):
+    """an updated user, neat"""
     # a new user is found, create suggestions for them
     if created and instance.local:
         rerank_suggestions_task.delay(instance.id)
 
-    if update_fields and not "discoverable" in update_fields:
+    # we know what fields were updated and discoverability didn't change
+    if not instance.bookwyrm_user or (
+        update_fields and not "discoverable" in update_fields
+    ):
+        return
+
+    # deleted the user
+    if not created and not instance.is_active:
+        remove_user_task.delay(instance.id)
         return
 
     # this happens on every save, not just when discoverability changes, annoyingly
@@ -194,28 +206,61 @@ def add_new_user(sender, instance, created, update_fields=None, **kwargs):
         remove_user_task.delay(instance.id)
 
 
-@app.task
+@receiver(signals.post_save, sender=models.FederatedServer)
+def domain_level_update(sender, instance, created, update_fields=None, **kwargs):
+    """remove users on a domain block"""
+    if (
+        not update_fields
+        or "status" not in update_fields
+        or instance.application_type != "bookwyrm"
+    ):
+        return
+
+    if instance.status == "blocked":
+        bulk_remove_instance_task.delay(instance.id)
+        return
+    bulk_add_instance_task.delay(instance.id)
+
+
+# ------------------- TASKS
+
+
+@app.task(queue="low_priority")
 def rerank_suggestions_task(user_id):
     """do the hard work in celery"""
     suggested_users.rerank_user_suggestions(user_id)
 
 
-@app.task
+@app.task(queue="low_priority")
 def rerank_user_task(user_id, update_only=False):
     """do the hard work in celery"""
     user = models.User.objects.get(id=user_id)
     suggested_users.rerank_obj(user, update_only=update_only)
 
 
-@app.task
+@app.task(queue="low_priority")
 def remove_user_task(user_id):
     """do the hard work in celery"""
     user = models.User.objects.get(id=user_id)
     suggested_users.remove_object_from_related_stores(user)
 
 
-@app.task
+@app.task(queue="medium_priority")
 def remove_suggestion_task(user_id, suggested_user_id):
     """remove a specific user from a specific user's suggestions"""
     suggested_user = models.User.objects.get(id=suggested_user_id)
     suggested_users.remove_suggestion(user_id, suggested_user)
+
+
+@app.task(queue="low_priority")
+def bulk_remove_instance_task(instance_id):
+    """remove a bunch of users from recs"""
+    for user in models.User.objects.filter(federated_server__id=instance_id):
+        suggested_users.remove_object_from_related_stores(user)
+
+
+@app.task(queue="low_priority")
+def bulk_add_instance_task(instance_id):
+    """remove a bunch of users from recs"""
+    for user in models.User.objects.filter(federated_server__id=instance_id):
+        suggested_users.rerank_obj(user, update_only=False)

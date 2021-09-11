@@ -3,6 +3,7 @@ import json
 from unittest.mock import patch
 
 from django.contrib.auth.models import AnonymousUser
+from django.core.exceptions import PermissionDenied
 from django.test import TestCase
 from django.test.client import RequestFactory
 
@@ -15,7 +16,9 @@ class ListActionViews(TestCase):
     def setUp(self):
         """we need basic test data and mocks"""
         self.factory = RequestFactory()
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
+            "bookwyrm.activitystreams.populate_stream_task.delay"
+        ):
             self.local_user = models.User.objects.create_user(
                 "mouse@local.com",
                 "mouse@mouse.com",
@@ -65,6 +68,44 @@ class ListActionViews(TestCase):
         self.anonymous_user = AnonymousUser
         self.anonymous_user.is_authenticated = False
         models.SiteSettings.objects.create()
+
+    def test_delete_list(self):
+        """delete an entire list"""
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+            models.ListItem.objects.create(
+                book_list=self.list,
+                user=self.local_user,
+                book=self.book,
+                approved=True,
+                order=1,
+            )
+            models.ListItem.objects.create(
+                book_list=self.list,
+                user=self.local_user,
+                book=self.book_two,
+                approved=False,
+                order=2,
+            )
+        request = self.factory.post("")
+        request.user = self.local_user
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay") as mock:
+            views.delete_list(request, self.list.id)
+        activity = json.loads(mock.call_args[0][1])
+        self.assertEqual(activity["type"], "Delete")
+        self.assertEqual(activity["actor"], self.local_user.remote_id)
+        self.assertEqual(activity["object"]["id"], self.list.remote_id)
+        self.assertEqual(activity["object"]["type"], "BookList")
+
+        self.assertEqual(mock.call_count, 1)
+        self.assertFalse(models.List.objects.exists())
+        self.assertFalse(models.ListItem.objects.exists())
+
+    def test_delete_list_permission_denied(self):
+        """delete an entire list"""
+        request = self.factory.post("")
+        request.user = self.rat
+        with self.assertRaises(PermissionDenied):
+            views.delete_list(request, self.list.id)
 
     def test_curate_approve(self):
         """approve a pending item"""

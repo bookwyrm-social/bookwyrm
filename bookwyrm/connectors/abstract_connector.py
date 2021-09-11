@@ -139,7 +139,7 @@ class AbstractConnector(AbstractMinimalConnector):
                 **dict_from_mappings(work_data, self.book_mappings)
             )
             # this will dedupe automatically
-            work = work_activity.to_model(model=models.Work)
+            work = work_activity.to_model(model=models.Work, overwrite=False)
             for author in self.get_authors_from_data(work_data):
                 work.authors.add(author)
 
@@ -156,7 +156,7 @@ class AbstractConnector(AbstractMinimalConnector):
         mapped_data = dict_from_mappings(edition_data, self.book_mappings)
         mapped_data["work"] = work.remote_id
         edition_activity = activitypub.Edition(**mapped_data)
-        edition = edition_activity.to_model(model=models.Edition)
+        edition = edition_activity.to_model(model=models.Edition, overwrite=False)
         edition.connector = self.connector
         edition.save()
 
@@ -182,7 +182,7 @@ class AbstractConnector(AbstractMinimalConnector):
             return None
 
         # this will dedupe
-        return activity.to_model(model=models.Author)
+        return activity.to_model(model=models.Author, overwrite=False)
 
     @abstractmethod
     def is_work_data(self, data):

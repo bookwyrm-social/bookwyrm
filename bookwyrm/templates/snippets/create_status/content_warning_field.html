@@ -8,5 +8,7 @@
         class="input"
         id="id_content_warning_{{ uuid }}"
         placeholder="{% trans 'Spoilers ahead!' %}"
-        value="{% firstof draft.content_warning parent_status.content_warning '' %}">
+        value="{% firstof draft.content_warning parent_status.content_warning '' %}"
+        data-cache-draft="id_content_warning_{{ book.id }}_{{ type }}"
+    >
 </div>

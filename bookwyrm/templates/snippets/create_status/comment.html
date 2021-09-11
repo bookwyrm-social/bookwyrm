@@ -26,13 +26,37 @@ uuid: a unique identifier used to make html "id" attributes unique and clarify j
             <label class="label" for="progress_{{ uuid }}">{% trans "Progress:" %}</label>
             <div class="field has-addons mb-0">
                 <div class="control">
-                    <input aria-label="{% if draft.progress_mode == 'PG' or readthrough.progress_mode == 'PG' %}Current page{% else %}Percent read{% endif %}" class="input" type="number" min="0" name="progress" size="3" value="{% firstof draft.progress readthrough.progress '' %}" id="progress_{{ uuid }}">
+                    <input
+                        aria-label="{% if draft.progress_mode == 'PG' or readthrough.progress_mode == 'PG' %}Current page{% else %}Percent read{% endif %}"
+                        class="input"
+                        type="number"
+                        min="0"
+                        name="progress"
+                        size="3"
+                        value="{% firstof draft.progress readthrough.progress '' %}"
+                        id="progress_{{ uuid }}"
+                        data-cache-draft="id_progress_comment_{{ book.id }}"
+                    >
                 </div>
                 <div class="control">
                     <div class="select">
-                        <select name="progress_mode" aria-label="Progress mode">
-                            <option value="PG" {% if draft.progress_mode == 'PG' or readthrough.progress_mode == 'PG' %}selected{% endif %}>{% trans "pages" %}</option>
-                            <option value="PCT" {% if draft.progress_mode == 'PCT' or readthrough.progress_mode == 'PCT' %}selected{% endif %}>{% trans "percent" %}</option>
+                        <select
+                            name="progress_mode"
+                            aria-label="Progress mode"
+                            data-cache-draft="id_progress_mode_comment_{{ book.id }}"
+                        >
+                            <option
+                                value="PG"
+                                {% if draft.progress_mode == 'PG' or readthrough.progress_mode == 'PG' %}selected{% endif %}
+                            >
+                                {% trans "pages" %}
+                            </option>
+                            <option
+                                value="PCT"
+                                {% if draft.progress_mode == 'PCT' or readthrough.progress_mode == 'PCT' %}selected{% endif %}
+                            >
+                                {% trans "percent" %}
+                            </option>
                         </select>
                     </div>
                 </div>

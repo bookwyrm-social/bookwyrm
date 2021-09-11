@@ -20,6 +20,7 @@ class SiteSettings(models.Model):
         max_length=150, default="Social Reading and Reviewing"
     )
     instance_description = models.TextField(default="This instance has no description.")
+    instance_short_description = models.CharField(max_length=255, blank=True, null=True)
 
     # about page
     registration_closed_text = models.TextField(
@@ -121,6 +122,23 @@ class PasswordReset(models.Model):
     def link(self):
         """formats the invite link"""
         return "https://{}/password-reset/{}".format(DOMAIN, self.code)
+
+
+class EmailBlocklist(models.Model):
+    """blocked email addresses"""
+
+    created_date = models.DateTimeField(auto_now_add=True)
+    domain = models.CharField(max_length=255, unique=True)
+
+    class Meta:
+        """default sorting"""
+
+        ordering = ("-created_date",)
+
+    @property
+    def users(self):
+        """find the users associated with this address"""
+        return User.objects.filter(email__endswith=f"@{self.domain}")
 
 
 # pylint: disable=unused-argument

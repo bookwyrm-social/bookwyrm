@@ -1,18 +1,22 @@
 """ what are we here for if not for posting """
 import re
+from urllib.parse import urlparse
+
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseBadRequest
+from django.core.validators import URLValidator
+from django.core.exceptions import ValidationError
+from django.http import HttpResponse, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
 from django.views import View
-from markdown import markdown
 
+from markdown import markdown
 from bookwyrm import forms, models
 from bookwyrm.sanitize_html import InputHtmlParser
 from bookwyrm.settings import DOMAIN
 from bookwyrm.utils import regex
-from .helpers import handle_remote_webfinger
+from .helpers import handle_remote_webfinger, is_api_request
 from .reading import edit_readthrough
 
 
@@ -22,7 +26,7 @@ class CreateStatus(View):
     """the view for *posting*"""
 
     def get(self, request, status_type):  # pylint: disable=unused-argument
-        """compose view (used for delete-and-redraft"""
+        """compose view (used for delete-and-redraft)"""
         book = get_object_or_404(models.Edition, id=request.GET.get("book"))
         data = {"book": book}
         return TemplateResponse(request, "compose.html", data)
@@ -36,6 +40,8 @@ class CreateStatus(View):
         except AttributeError:
             return HttpResponseBadRequest()
         if not form.is_valid():
+            if is_api_request(request):
+                return HttpResponse(status=500)
             return redirect(request.headers.get("Referer", "/"))
 
         status = form.save(commit=False)
@@ -75,6 +81,8 @@ class CreateStatus(View):
         # update a readthorugh, if needed
         edit_readthrough(request)
 
+        if is_api_request(request):
+            return HttpResponse()
         return redirect("/")
 
 
@@ -149,17 +157,54 @@ def find_mentions(content):
 
 def format_links(content):
     """detect and format links"""
-    return re.sub(
-        r'([^(href=")]|^|\()(https?:\/\/(%s([\w\.\-_\/+&\?=:;,@#])*))' % regex.DOMAIN,
-        r'\g<1><a href="\g<2>">\g<3></a>',
-        content,
-    )
+    validator = URLValidator()
+    formatted_content = ""
+    split_content = re.split(r"(\s+)", content)
+
+    for potential_link in split_content:
+        if not potential_link:
+            continue
+        wrapped = _wrapped(potential_link)
+        if wrapped:
+            wrapper_close = potential_link[-1]
+            formatted_content += potential_link[0]
+            potential_link = potential_link[1:-1]
+
+        try:
+            # raises an error on anything that's not a valid link
+            validator(potential_link)
+
+            # use everything but the scheme in the presentation of the link
+            url = urlparse(potential_link)
+            link = url.netloc + url.path + url.params
+            if url.query != "":
+                link += "?" + url.query
+            if url.fragment != "":
+                link += "#" + url.fragment
+
+            formatted_content += '<a href="%s">%s</a>' % (potential_link, link)
+        except (ValidationError, UnicodeError):
+            formatted_content += potential_link
+
+        if wrapped:
+            formatted_content += wrapper_close
+
+    return formatted_content
+
+
+def _wrapped(text):
+    """check if a line of text is wrapped"""
+    wrappers = [("(", ")"), ("[", "]"), ("{", "}")]
+    for wrapper in wrappers:
+        if text[0] == wrapper[0] and text[-1] == wrapper[-1]:
+            return True
+    return False
 
 
 def to_markdown(content):
     """catch links and convert to markdown"""
-    content = markdown(content)
     content = format_links(content)
+    content = markdown(content)
     # sanitize resulting html
     sanitizer = InputHtmlParser()
     sanitizer.feed(content)

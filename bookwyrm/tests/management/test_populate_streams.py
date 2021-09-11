@@ -12,7 +12,9 @@ class Activitystreams(TestCase):
 
     def setUp(self):
         """we need some stuff"""
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
+            "bookwyrm.activitystreams.populate_stream_task.delay"
+        ):
             self.local_user = models.User.objects.create_user(
                 "mouse", "mouse@mouse.mouse", "password", local=True, localname="mouse"
             )
@@ -37,7 +39,7 @@ class Activitystreams(TestCase):
 
     def test_populate_streams(self, _):
         """make sure the function on the redis manager gets called"""
-        with patch("bookwyrm.activitystreams.ActivityStream.add_status"):
+        with patch("bookwyrm.activitystreams.add_status_task.delay"):
             models.Comment.objects.create(
                 user=self.local_user, content="hi", book=self.book
             )

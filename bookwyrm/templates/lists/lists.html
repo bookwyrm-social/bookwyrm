@@ -27,6 +27,21 @@
     {% include 'lists/create_form.html' with controls_text="create_list" %}
 </div>
 
+{% if request.user.is_authenticated %}
+<nav class="tabs">
+    <ul>
+        {% url 'lists' as url %}
+        <li{% if request.path in url %} class="is-active"{% endif %}>
+            <a href="{{ url }}">{% trans "All Lists" %}</a>
+        </li>
+        {% url 'saved-lists' as url %}
+        <li{% if url in request.path %} class="is-active"{% endif %}>
+            <a href="{{ url }}">{% trans "Saved Lists" %}</a>
+        </li>
+    </ul>
+</nav>
+{% endif %}
+
 {% if lists %}
 <section class="block">
     {% include 'lists/list_items.html' with lists=lists %}
