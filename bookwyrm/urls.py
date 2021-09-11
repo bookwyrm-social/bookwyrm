@@ -65,6 +65,7 @@ urlpatterns = [
         r"^password-reset/(?P<code>[A-Za-z0-9]+)/?$", views.PasswordReset.as_view()
     ),
     # admin
+    re_path(r"^settings/dashboard/?$", views.Dashboard.as_view(), name="dashboard"),
     re_path(r"^settings/site-settings/?$", views.Site.as_view(), name="settings-site"),
     re_path(
         r"^settings/announcements/?$",
