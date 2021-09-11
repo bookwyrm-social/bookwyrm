@@ -33,9 +33,13 @@ class Federation(View):
         servers = servers.order_by(sort)
 
         paginated = Paginator(servers, PAGE_LENGTH)
+        page = paginated.get_page(request.GET.get("page"))
 
         data = {
-            "servers": paginated.get_page(request.GET.get("page")),
+            "servers": page,
+            "page_range": paginated.get_elided_page_range(
+                page.number, on_each_side=2, on_ends=1
+            ),
             "sort": sort,
             "form": forms.ServerForm(),
         }
