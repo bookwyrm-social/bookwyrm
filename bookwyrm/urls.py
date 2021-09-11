@@ -65,6 +65,9 @@ urlpatterns = [
         r"^password-reset/(?P<code>[A-Za-z0-9]+)/?$", views.PasswordReset.as_view()
     ),
     # admin
+    re_path(
+        r"^settings/dashboard/?$", views.Dashboard.as_view(), name="settings-dashboard"
+    ),
     re_path(r"^settings/site-settings/?$", views.Site.as_view(), name="settings-site"),
     re_path(
         r"^settings/announcements/?$",
@@ -83,7 +86,7 @@ urlpatterns = [
     ),
     re_path(
         r"^settings/email-preview/?$",
-        views.site.email_preview,
+        views.admin.site.email_preview,
         name="settings-email-preview",
     ),
     re_path(
@@ -106,12 +109,12 @@ urlpatterns = [
     ),
     re_path(
         r"^settings/federation/(?P<server>\d+)/block?$",
-        views.federation.block_server,
+        views.block_server,
         name="settings-federated-server-block",
     ),
     re_path(
         r"^settings/federation/(?P<server>\d+)/unblock?$",
-        views.federation.unblock_server,
+        views.unblock_server,
         name="settings-federated-server-unblock",
     ),
     re_path(
