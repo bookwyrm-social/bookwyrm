@@ -22,9 +22,9 @@ from bookwyrm.settings import PAGE_LENGTH
 class Federation(View):
     """what servers do we federate with"""
 
-    def get(self, request):
+    def get(self, request, status="federated"):
         """list of servers"""
-        servers = models.FederatedServer.objects
+        servers = models.FederatedServer.objects.filter(status=status)
 
         sort = request.GET.get("sort")
         sort_fields = ["created_date", "application_type", "server_name"]

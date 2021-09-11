@@ -98,7 +98,7 @@ urlpatterns = [
         name="settings-user",
     ),
     re_path(
-        r"^settings/federation/?$",
+        r"^settings/federation/(?P<status>(federated|blocked))?/?$",
         views.Federation.as_view(),
         name="settings-federation",
     ),

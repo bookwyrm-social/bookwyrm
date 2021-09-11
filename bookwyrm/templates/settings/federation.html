@@ -12,6 +12,19 @@
 {% endblock %}
 
 {% block panel %}
+<div class="tabs">
+    <ul>
+        {% url 'settings-federation' status='federated' as url %}
+        <li {% if request.path in url %}class="is-active" aria-current="page"{% endif %}>
+            <a href="{{ url }}">{% trans "Federated" %}</a>
+        </li>
+        {% url 'settings-federation' status='blocked' as url %}
+        <li {% if url in request.path %}class="is-active" aria-current="page"{% endif %}>
+            <a href="{{ url }}">{% trans "Blocked" %}</a>
+        </li>
+    </ul>
+</div>
+
 <table class="table is-striped">
     <tr>
         {% url 'settings-federation' as url %}
