@@ -1,0 +1,26 @@
+{% load i18n %}
+<script>
+const status_labels = [{% for label in status_stats.labels %}"{{ label }}",{% endfor %}];
+const status_data = {
+    labels: status_labels,
+    datasets: [{
+        label: '{% trans "Statuses posted" %}',
+        backgroundColor: 'rgb(255, 99, 132)',
+        borderColor: 'rgb(255, 99, 132)',
+        data: {{ status_stats.total }},
+    }]
+};
+// === include 'setup' then 'config' above ===
+
+const status_config = {
+    type: 'bar',
+    data: status_data,
+    options: {}
+};
+
+var statusStats = new Chart(
+    document.getElementById('status_stats'),
+    status_config
+);
+</script>
+

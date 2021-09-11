@@ -75,7 +75,7 @@ class FederationViews(TestCase):
 
         self.assertEqual(server.status, "federated")
 
-        view = views.federation.block_server
+        view = views.block_server
         request = self.factory.post("")
         request.user = self.local_user
         request.user.is_superuser = True
@@ -121,7 +121,7 @@ class FederationViews(TestCase):
         request.user.is_superuser = True
 
         with patch("bookwyrm.suggested_users.bulk_add_instance_task.delay") as mock:
-            views.federation.unblock_server(request, server.id)
+            views.unblock_server(request, server.id)
         self.assertEqual(mock.call_count, 1)
         self.assertEqual(mock.call_args[0][0], server.id)
 
