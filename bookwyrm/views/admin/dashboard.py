@@ -1,5 +1,6 @@
 """ instance overview """
 from datetime import timedelta
+from dateutil.parser import parse
 
 from django.contrib.auth.decorators import login_required, permission_required
 from django.template.response import TemplateResponse
@@ -21,43 +22,55 @@ class Dashboard(View):
 
     def get(self, request):
         """list of users"""
-        buckets = 6
-        bucket_size = 1  # days
+        interval = int(request.GET.get("days", 1))
         now = timezone.now()
 
         user_queryset = models.User.objects.filter(local=True, is_active=True)
-
         user_stats = {"labels": [], "total": [], "active": []}
-        interval_end = now - timedelta(days=buckets * bucket_size)
-        while interval_end < timezone.now():
+
+        status_queryset = models.Status.objects.filter(user__local=True, deleted=False)
+        status_stats = {"labels": [], "total": []}
+
+        start = request.GET.get("start")
+        if start:
+            start = timezone.make_aware(parse(start))
+        else:
+            start = now - timedelta(days=6 * interval)
+
+        end = request.GET.get("end")
+        end = timezone.make_aware(parse(end)) if end else now
+
+        interval_start = start
+        interval_end = interval_start + timedelta(days=interval)
+        while interval_end <= end:
             user_stats["total"].append(
-                user_queryset.filter(created_date__day__lte=interval_end.day).count()
+                user_queryset.filter(created_date__lte=interval_end).count()
             )
             user_stats["active"].append(
                 user_queryset.filter(
                     last_active_date__gt=interval_end - timedelta(days=31),
-                    created_date__day__lte=interval_end.day,
+                    created_date__lte=interval_end,
                 ).count()
             )
             user_stats["labels"].append(interval_end.strftime("%b %d"))
-            interval_end += timedelta(days=bucket_size)
 
-        status_queryset = models.Status.objects.filter(user__local=True, deleted=False)
-        status_stats = {"labels": [], "total": []}
-        interval_start = now - timedelta(days=buckets * bucket_size)
-        interval_end = interval_start + timedelta(days=bucket_size)
-        while interval_end < timezone.now():
             status_stats["total"].append(
                 status_queryset.filter(
-                    created_date__day__gt=interval_start.day,
-                    created_date__day__lte=interval_end.day,
+                    created_date__gt=interval_start,
+                    created_date__lte=interval_end,
                 ).count()
             )
             status_stats["labels"].append(interval_end.strftime("%b %d"))
             interval_start = interval_end
-            interval_end += timedelta(days=bucket_size)
+            if interval_end >= end:
+                break
+            interval_end += timedelta(days=interval)
+            interval_end = interval_end if interval_end < end else end
 
         data = {
+            "start": start.strftime("%Y-%m-%d"),
+            "end": end.strftime("%Y-%m-%d"),
+            "interval": interval,
             "users": user_queryset.count(),
             "active_users": user_queryset.filter(
                 last_active_date__gte=now - timedelta(days=31)
