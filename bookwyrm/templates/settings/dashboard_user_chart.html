@@ -1,0 +1,29 @@
+{% load i18n %}
+<script>
+const labels = [{% for label in user_stats.labels %}"{{ label }}",{% endfor %}];
+const data = {
+    labels: labels,
+    datasets: [{
+        label: '{% trans "Total" %}',
+        backgroundColor: 'rgb(255, 99, 132)',
+        borderColor: 'rgb(255, 99, 132)',
+        data: {{ user_stats.total }},
+    }, {
+        label: '{% trans "Active this month" %}',
+        backgroundColor: 'rgb(75, 192, 192)',
+        borderColor: 'rgb(75, 192, 192)',
+        data: {{ user_stats.active }},
+    }]
+};
+
+const config = {
+    type: 'line',
+    data: data,
+    options: {}
+};
+
+var userStats = new Chart(
+    document.getElementById('user_stats'),
+    config
+);
+</script>

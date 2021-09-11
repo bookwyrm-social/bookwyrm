@@ -77,63 +77,10 @@
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js@3.5.1/dist/chart.min.js"></script>
-<script>
-const labels = [{% for label in user_stats.labels %}"{{ label }}",{% endfor %}];
-const data = {
-    labels: labels,
-    datasets: [{
-        label: '{% trans "Total" %}',
-        backgroundColor: 'rgb(255, 99, 132)',
-        borderColor: 'rgb(255, 99, 132)',
-        data: {{ user_stats.total }},
-    }, {
-        label: '{% trans "Active this month" %}',
-        backgroundColor: 'rgb(75, 192, 192)',
-        borderColor: 'rgb(75, 192, 192)',
-        data: {{ user_stats.active }},
-    }]
-};
-// === include 'setup' then 'config' above ===
-
-const config = {
-    type: 'line',
-    data: data,
-    options: {}
-};
-
-var userStats = new Chart(
-    document.getElementById('user_stats'),
-    config
-);
-</script>
-
-<script>
-const status_labels = [{% for label in status_stats.labels %}"{{ label }}",{% endfor %}];
-const status_data = {
-    labels: status_labels,
-    datasets: [{
-        label: '{% trans "Statuses posted" %}',
-        backgroundColor: 'rgb(255, 99, 132)',
-        borderColor: 'rgb(255, 99, 132)',
-        data: {{ status_stats.total }},
-    }]
-};
-// === include 'setup' then 'config' above ===
-
-const status_config = {
-    type: 'bar',
-    data: status_data,
-    options: {}
-};
-
-var statusStats = new Chart(
-    document.getElementById('status_stats'),
-    status_config
-);
-</script>
 {% endblock %}
 
 {% block scripts %}
-<script src="{% static 'js/vendor/chart.min.js' %}?v={{ js_cache }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.5.1/dist/chart.min.js"></script>
+{% include 'settings/dashboard_user_chart.html' %}
+{% include 'settings/dashboard_status_chart.html' %}
 {% endblock %}
