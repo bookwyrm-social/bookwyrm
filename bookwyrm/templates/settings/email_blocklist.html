@@ -22,10 +22,9 @@
     <tr>
         {% url 'settings-federation' as url %}
         <th>
-            {% trans "Domain" as text %}
-            {% include 'snippets/table-sort-header.html' with field="server_name" sort=sort text=text %}
+            {% trans "Domain" %}
         </th>
-        <th></th>
+        <th>{% trans "Users" %}</th>
         <th>
             {% trans "Options" %}
         </th>
