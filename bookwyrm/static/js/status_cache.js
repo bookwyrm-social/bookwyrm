@@ -64,9 +64,19 @@ let StatusCache = new class {
      * @return {undefined}
      */
     submitStatus(event) {
-        event.preventDefault();
         const form = event.currentTarget;
-        const trigger = event.submitter;
+        let trigger = event.submitter;
+
+        // Safari doesn't understand "submitter"
+        if (!trigger) {
+            trigger = event.currentTarget.querySelector("button[type=submit]");
+        }
+        // this allows the form to submit in the old fashioned way if there's a problem
+        if (!trigger || !form) {
+            return;
+        }
+
+        event.preventDefault();
 
         BookWyrm.addRemoveClass(form, 'is-processing', true);
         trigger.setAttribute('disabled', null);
