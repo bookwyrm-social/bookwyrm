@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-11 20:58+0000\n"
+"POT-Creation-Date: 2021-09-12 17:16+0000\n"
 "PO-Revision-Date: 2021-02-28 17:19-0800\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: English <LL@li.org>\n"
@@ -74,6 +74,14 @@ msgstr ""
 msgid "Descending"
 msgstr ""
 
+#: bookwyrm/importers/importer.py:75
+msgid "Error loading book"
+msgstr ""
+
+#: bookwyrm/importers/importer.py:88
+msgid "Could not find a match for book"
+msgstr ""
+
 #: bookwyrm/models/base_model.py:13
 msgid "Pending"
 msgstr ""
@@ -96,12 +104,14 @@ msgstr ""
 
 #: bookwyrm/models/federated_server.py:11
 #: bookwyrm/templates/settings/edit_server.html:40
+#: bookwyrm/templates/settings/federation.html:19
 msgid "Federated"
 msgstr ""
 
 #: bookwyrm/models/federated_server.py:12
 #: bookwyrm/templates/settings/edit_server.html:41
 #: bookwyrm/templates/settings/federated_server.html:10
+#: bookwyrm/templates/settings/federation.html:23
 msgid "Blocked"
 msgstr ""
 
@@ -1544,7 +1554,7 @@ msgstr ""
 
 #: bookwyrm/templates/lists/delete_list_modal.html:15
 #: bookwyrm/templates/settings/announcement.html:20
-#: bookwyrm/templates/settings/email_blocklist.html:50
+#: bookwyrm/templates/settings/email_blocklist.html:49
 #: bookwyrm/templates/snippets/delete_readthrough_modal.html:15
 #: bookwyrm/templates/snippets/follow_request_buttons.html:12
 msgid "Delete"
@@ -2029,6 +2039,8 @@ msgstr ""
 
 #: bookwyrm/templates/search/layout.html:23
 #: bookwyrm/templates/search/layout.html:46
+#: bookwyrm/templates/settings/email_blocklist.html:27
+#: bookwyrm/templates/settings/federation.html:44
 #: bookwyrm/templates/settings/layout.html:34
 #: bookwyrm/templates/user_admin/user_admin.html:3
 #: bookwyrm/templates/user_admin/user_admin.html:10
@@ -2107,24 +2119,25 @@ msgstr ""
 msgid "Announcements"
 msgstr ""
 
-#: bookwyrm/templates/settings/announcements.html:21
+#: bookwyrm/templates/settings/announcements.html:22
+#: bookwyrm/templates/settings/federation.html:36
 msgid "Date added"
 msgstr ""
 
-#: bookwyrm/templates/settings/announcements.html:25
+#: bookwyrm/templates/settings/announcements.html:26
 msgid "Preview"
 msgstr ""
 
-#: bookwyrm/templates/settings/announcements.html:29
+#: bookwyrm/templates/settings/announcements.html:30
 msgid "Start date"
 msgstr ""
 
-#: bookwyrm/templates/settings/announcements.html:33
+#: bookwyrm/templates/settings/announcements.html:34
 msgid "End date"
 msgstr ""
 
-#: bookwyrm/templates/settings/announcements.html:37
-#: bookwyrm/templates/settings/federation.html:30
+#: bookwyrm/templates/settings/announcements.html:38
+#: bookwyrm/templates/settings/federation.html:46
 #: bookwyrm/templates/settings/manage_invite_requests.html:44
 #: bookwyrm/templates/settings/status_filter.html:5
 #: bookwyrm/templates/user_admin/user_admin.html:34
@@ -2132,12 +2145,16 @@ msgstr ""
 msgid "Status"
 msgstr ""
 
-#: bookwyrm/templates/settings/announcements.html:47
+#: bookwyrm/templates/settings/announcements.html:48
 msgid "active"
 msgstr ""
 
-#: bookwyrm/templates/settings/announcements.html:47
+#: bookwyrm/templates/settings/announcements.html:48
 msgid "inactive"
+msgstr ""
+
+#: bookwyrm/templates/settings/announcements.html:54
+msgid "No announcements found."
 msgstr ""
 
 #: bookwyrm/templates/settings/dashboard.html:6
@@ -2278,11 +2295,11 @@ msgstr ""
 msgid "Domain"
 msgstr ""
 
-#: bookwyrm/templates/settings/email_blocklist.html:30
+#: bookwyrm/templates/settings/email_blocklist.html:29
 msgid "Options"
 msgstr ""
 
-#: bookwyrm/templates/settings/email_blocklist.html:39
+#: bookwyrm/templates/settings/email_blocklist.html:38
 #, python-format
 msgid "%(display_count)s user"
 msgid_plural "%(display_count)s users"
@@ -2362,16 +2379,12 @@ msgstr ""
 msgid "Federated Instances"
 msgstr ""
 
-#: bookwyrm/templates/settings/federation.html:19
+#: bookwyrm/templates/settings/federation.html:32
 #: bookwyrm/templates/user_admin/server_filter.html:5
 msgid "Instance name"
 msgstr ""
 
-#: bookwyrm/templates/settings/federation.html:23
-msgid "Date federated"
-msgstr ""
-
-#: bookwyrm/templates/settings/federation.html:27
+#: bookwyrm/templates/settings/federation.html:40
 msgid "Software"
 msgstr ""
 
