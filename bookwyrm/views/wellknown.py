@@ -95,7 +95,7 @@ def instance_info(_):
     status_count = models.Status.objects.filter(user__local=True, deleted=False).count()
 
     site = models.SiteSettings.get()
-    logo_path = site.logo_small or "images/logo-small.png"
+    logo_path = site.logo or "images/logo.png"
     logo = f"{MEDIA_FULL_URL}{logo_path}"
     return JsonResponse(
         {
@@ -120,8 +120,8 @@ def instance_info(_):
 @require_GET
 def peers(_):
     """list of federated servers this instance connects with"""
-    names = models.FederatedServer.objects.values_list(
-        "server_name", flat=True, status="federated"
+    names = models.FederatedServer.objects.filter(status="federated").values_list(
+        "server_name", flat=True
     )
     return JsonResponse(list(names), safe=False)
 

@@ -134,7 +134,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         max_length=255,
     )
     deactivation_reason = models.CharField(
-        max_length=255, choices=DeactivationReason.choices, null=True, blank=True
+        max_length=255, choices=DeactivationReason, null=True, blank=True
     )
     deactivation_date = models.DateTimeField(null=True, blank=True)
     confirmation_code = models.CharField(max_length=32, default=new_access_code)

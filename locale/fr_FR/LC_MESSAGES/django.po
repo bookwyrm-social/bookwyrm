@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.1.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-10 22:50+0000\n"
+"POT-Creation-Date: 2021-09-11 20:58+0000\n"
 "PO-Revision-Date: 2021-04-05 12:44+0100\n"
 "Last-Translator: Fabien Basmaison <contact@arkhi.org>\n"
 "Language-Team: Mouse Reeve <LL@li.org>\n"
@@ -18,61 +18,100 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: bookwyrm/forms.py:236
+#: bookwyrm/forms.py:242
 msgid "A user with this email already exists."
 msgstr "Cet email est déjà associé à un compte."
 
-#: bookwyrm/forms.py:250
+#: bookwyrm/forms.py:256
 msgid "One Day"
 msgstr "Un jour"
 
-#: bookwyrm/forms.py:251
+#: bookwyrm/forms.py:257
 msgid "One Week"
 msgstr "Une semaine"
 
-#: bookwyrm/forms.py:252
+#: bookwyrm/forms.py:258
 msgid "One Month"
 msgstr "Un mois"
 
-#: bookwyrm/forms.py:253
+#: bookwyrm/forms.py:259
 msgid "Does Not Expire"
 msgstr "Sans expiration"
 
-#: bookwyrm/forms.py:258
+#: bookwyrm/forms.py:264
 #, python-format
 msgid "%(count)d uses"
 msgstr "%(count)d utilisations"
 
-#: bookwyrm/forms.py:261
+#: bookwyrm/forms.py:267
 msgid "Unlimited"
 msgstr "Sans limite"
 
-#: bookwyrm/forms.py:317
+#: bookwyrm/forms.py:323
 msgid "List Order"
 msgstr "Ordre de la liste"
 
-#: bookwyrm/forms.py:318
+#: bookwyrm/forms.py:324
 msgid "Book Title"
 msgstr "Titre du livre"
 
-#: bookwyrm/forms.py:319
+#: bookwyrm/forms.py:325
 #: bookwyrm/templates/snippets/create_status/review.html:33
 #: bookwyrm/templates/user/shelf/shelf.html:117
 #: bookwyrm/templates/user/shelf/shelf.html:148
 msgid "Rating"
 msgstr "Note"
 
-#: bookwyrm/forms.py:321 bookwyrm/templates/lists/list.html:107
+#: bookwyrm/forms.py:327 bookwyrm/templates/lists/list.html:107
 msgid "Sort By"
 msgstr "Trier par"
 
-#: bookwyrm/forms.py:325
+#: bookwyrm/forms.py:331
 msgid "Ascending"
 msgstr "Ordre croissant"
 
-#: bookwyrm/forms.py:326
+#: bookwyrm/forms.py:332
 msgid "Descending"
 msgstr "Ordre décroissant"
+
+#: bookwyrm/models/base_model.py:13
+#, fuzzy
+#| msgid "Ascending"
+msgid "Pending"
+msgstr "Ordre croissant"
+
+#: bookwyrm/models/base_model.py:14
+msgid "Self deletion"
+msgstr ""
+
+#: bookwyrm/models/base_model.py:15
+#, fuzzy
+#| msgid "Moderator Comments"
+msgid "Moderator suspension"
+msgstr "Commentaires de l’équipe de modération"
+
+#: bookwyrm/models/base_model.py:16
+#, fuzzy
+#| msgid "List curation:"
+msgid "Moderator deletion"
+msgstr "Modération de la liste :"
+
+#: bookwyrm/models/base_model.py:17
+#, fuzzy
+#| msgid "Un-block"
+msgid "Domain block"
+msgstr "Débloquer"
+
+#: bookwyrm/models/federated_server.py:11
+#: bookwyrm/templates/settings/edit_server.html:40
+msgid "Federated"
+msgstr "Fédéré"
+
+#: bookwyrm/models/federated_server.py:12
+#: bookwyrm/templates/settings/edit_server.html:41
+#: bookwyrm/templates/settings/federated_server.html:10
+msgid "Blocked"
+msgstr "Bloqué"
 
 #: bookwyrm/models/fields.py:27
 #, python-format
@@ -721,6 +760,7 @@ msgstr "Code de confirmation :"
 #: bookwyrm/templates/confirm_email/confirm_email.html:25
 #: bookwyrm/templates/landing/landing_layout.html:70
 #: bookwyrm/templates/moderation/report_modal.html:33
+#: bookwyrm/templates/settings/dashboard.html:93
 msgid "Submit"
 msgstr "Valider"
 
@@ -1407,7 +1447,7 @@ msgid "Settings"
 msgstr "Paramètres"
 
 #: bookwyrm/templates/layout.html:118
-#: bookwyrm/templates/settings/layout.html:33
+#: bookwyrm/templates/settings/layout.html:40
 #: bookwyrm/templates/settings/manage_invite_requests.html:15
 #: bookwyrm/templates/settings/manage_invites.html:3
 #: bookwyrm/templates/settings/manage_invites.html:15
@@ -1766,7 +1806,7 @@ msgstr "Signalements : %(instance_name)s"
 
 #: bookwyrm/templates/moderation/reports.html:8
 #: bookwyrm/templates/moderation/reports.html:17
-#: bookwyrm/templates/settings/layout.html:48
+#: bookwyrm/templates/settings/layout.html:55
 msgid "Reports"
 msgstr "Signalements"
 
@@ -2045,7 +2085,7 @@ msgstr "Type de recherche"
 
 #: bookwyrm/templates/search/layout.html:23
 #: bookwyrm/templates/search/layout.html:46
-#: bookwyrm/templates/settings/layout.html:27
+#: bookwyrm/templates/settings/layout.html:34
 #: bookwyrm/templates/user_admin/user_admin.html:3
 #: bookwyrm/templates/user_admin/user_admin.html:10
 msgid "Users"
@@ -2085,11 +2125,13 @@ msgstr "Faux"
 
 #: bookwyrm/templates/settings/announcement.html:47
 #: bookwyrm/templates/settings/announcement_form.html:40
+#: bookwyrm/templates/settings/dashboard.html:71
 msgid "Start date:"
 msgstr "Date de début :"
 
 #: bookwyrm/templates/settings/announcement.html:54
 #: bookwyrm/templates/settings/announcement_form.html:49
+#: bookwyrm/templates/settings/dashboard.html:77
 msgid "End date:"
 msgstr "Date de fin :"
 
@@ -2123,7 +2165,7 @@ msgstr "Date de fin :"
 
 #: bookwyrm/templates/settings/announcements.html:3
 #: bookwyrm/templates/settings/announcements.html:5
-#: bookwyrm/templates/settings/layout.html:61
+#: bookwyrm/templates/settings/layout.html:68
 msgid "Announcements"
 msgstr "Annonces"
 
@@ -2159,6 +2201,91 @@ msgstr "active"
 #: bookwyrm/templates/settings/announcements.html:47
 msgid "inactive"
 msgstr "inactive"
+
+#: bookwyrm/templates/settings/dashboard.html:6
+#: bookwyrm/templates/settings/dashboard.html:8
+#: bookwyrm/templates/settings/layout.html:26
+msgid "Dashboard"
+msgstr ""
+
+#: bookwyrm/templates/settings/dashboard.html:15
+#, fuzzy
+#| msgid "Local users"
+msgid "Total users"
+msgstr "Comptes locaux"
+
+#: bookwyrm/templates/settings/dashboard.html:21
+#: bookwyrm/templates/settings/dashboard_user_chart.html:12
+msgid "Active this month"
+msgstr ""
+
+#: bookwyrm/templates/settings/dashboard.html:27
+#, fuzzy
+#| msgid "Status"
+msgid "Statuses"
+msgstr "Statut"
+
+#: bookwyrm/templates/settings/dashboard.html:33
+msgid "Works"
+msgstr ""
+
+#: bookwyrm/templates/settings/dashboard.html:43
+#, fuzzy, python-format
+#| msgid "%(count)d uses"
+msgid "%(display_count)s open report"
+msgid_plural "%(display_count)s open reports"
+msgstr[0] "%(count)d utilisations"
+msgstr[1] "%(count)d utilisations"
+
+#: bookwyrm/templates/settings/dashboard.html:54
+#, fuzzy, python-format
+#| msgid "%(count)d uses"
+msgid "%(display_count)s invite request"
+msgid_plural "%(display_count)s invite requests"
+msgstr[0] "%(count)d utilisations"
+msgstr[1] "%(count)d utilisations"
+
+#: bookwyrm/templates/settings/dashboard.html:65
+#, fuzzy
+#| msgid "User Activity"
+msgid "Instance Activity"
+msgstr "Activité du compte"
+
+#: bookwyrm/templates/settings/dashboard.html:83
+msgid "Interval:"
+msgstr ""
+
+#: bookwyrm/templates/settings/dashboard.html:86
+msgid "Days"
+msgstr ""
+
+#: bookwyrm/templates/settings/dashboard.html:87
+#, fuzzy
+#| msgid "One Week"
+msgid "Weeks"
+msgstr "Une semaine"
+
+#: bookwyrm/templates/settings/dashboard.html:100
+#, fuzzy
+#| msgid "User Activity"
+msgid "User signup activity"
+msgstr "Activité du compte"
+
+#: bookwyrm/templates/settings/dashboard.html:106
+#, fuzzy
+#| msgid "User Activity"
+msgid "Status activity"
+msgstr "Activité du compte"
+
+#: bookwyrm/templates/settings/dashboard_status_chart.html:7
+#, fuzzy
+#| msgid "No statuses reported"
+msgid "Statuses posted"
+msgstr "Aucun statut signalé"
+
+#: bookwyrm/templates/settings/dashboard_user_chart.html:7
+msgid "Total"
+msgstr ""
 
 #: bookwyrm/templates/settings/domain_form.html:5
 #: bookwyrm/templates/settings/email_blocklist.html:10
@@ -2199,15 +2326,6 @@ msgstr "Instance :"
 msgid "Status:"
 msgstr "Statut :"
 
-#: bookwyrm/templates/settings/edit_server.html:40
-msgid "Federated"
-msgstr "Fédéré"
-
-#: bookwyrm/templates/settings/edit_server.html:41
-#: bookwyrm/templates/settings/federated_server.html:10
-msgid "Blocked"
-msgstr "Bloqué"
-
 #: bookwyrm/templates/settings/edit_server.html:48
 #: bookwyrm/templates/settings/federated_server.html:23
 #: bookwyrm/templates/user_admin/user_info.html:117
@@ -2226,7 +2344,7 @@ msgstr "Remarques :"
 
 #: bookwyrm/templates/settings/email_blocklist.html:5
 #: bookwyrm/templates/settings/email_blocklist.html:7
-#: bookwyrm/templates/settings/layout.html:52
+#: bookwyrm/templates/settings/layout.html:59
 #, fuzzy
 #| msgid "Import Blocklist"
 msgid "Email Blocklist"
@@ -2323,7 +2441,7 @@ msgstr "Tous les comptes de cette instance seront réactivés."
 
 #: bookwyrm/templates/settings/federation.html:3
 #: bookwyrm/templates/settings/federation.html:5
-#: bookwyrm/templates/settings/layout.html:38
+#: bookwyrm/templates/settings/layout.html:45
 msgid "Federated Instances"
 msgstr "Instances fédérées"
 
@@ -2344,42 +2462,42 @@ msgstr "Logiciel"
 msgid "Administration"
 msgstr "Administration"
 
-#: bookwyrm/templates/settings/layout.html:22
+#: bookwyrm/templates/settings/layout.html:29
 msgid "Manage Users"
 msgstr "Gérer les comptes"
 
-#: bookwyrm/templates/settings/layout.html:44
+#: bookwyrm/templates/settings/layout.html:51
 #, fuzzy
 #| msgid "List curation:"
 msgid "Moderation"
 msgstr "Modération de la liste :"
 
-#: bookwyrm/templates/settings/layout.html:57
+#: bookwyrm/templates/settings/layout.html:64
 msgid "Instance Settings"
 msgstr "Paramètres de l’instance"
 
-#: bookwyrm/templates/settings/layout.html:65
+#: bookwyrm/templates/settings/layout.html:72
 #: bookwyrm/templates/settings/site.html:4
 #: bookwyrm/templates/settings/site.html:6
 msgid "Site Settings"
 msgstr "Paramètres du site"
 
-#: bookwyrm/templates/settings/layout.html:68
+#: bookwyrm/templates/settings/layout.html:75
 #: bookwyrm/templates/settings/site.html:13
 msgid "Instance Info"
 msgstr "Information sur l’instance"
 
-#: bookwyrm/templates/settings/layout.html:69
+#: bookwyrm/templates/settings/layout.html:76
 #: bookwyrm/templates/settings/site.html:44
 msgid "Images"
 msgstr "Images"
 
-#: bookwyrm/templates/settings/layout.html:70
+#: bookwyrm/templates/settings/layout.html:77
 #: bookwyrm/templates/settings/site.html:64
 msgid "Footer Content"
 msgstr "Contenu du pied de page"
 
-#: bookwyrm/templates/settings/layout.html:71
+#: bookwyrm/templates/settings/layout.html:78
 #: bookwyrm/templates/settings/site.html:86
 msgid "Registration"
 msgstr "Inscription"

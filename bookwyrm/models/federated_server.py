@@ -1,16 +1,16 @@
 """ connections to external ActivityPub servers """
 from urllib.parse import urlparse
+
 from django.apps import apps
 from django.db import models
+from django.utils.translation import gettext_lazy as _
+
 from .base_model import BookWyrmModel
 
-FederationStatus = models.TextChoices(
-    "Status",
-    [
-        "federated",
-        "blocked",
-    ],
-)
+FederationStatus = [
+    ("federated", _("Federated")),
+    ("blocked", _("Blocked")),
+]
 
 
 class FederatedServer(BookWyrmModel):
@@ -18,7 +18,7 @@ class FederatedServer(BookWyrmModel):
 
     server_name = models.CharField(max_length=255, unique=True)
     status = models.CharField(
-        max_length=255, default="federated", choices=FederationStatus.choices
+        max_length=255, default="federated", choices=FederationStatus
     )
     # is it mastodon, bookwyrm, etc
     application_type = models.CharField(max_length=255, null=True, blank=True)
