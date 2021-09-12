@@ -71,7 +71,9 @@ let StatusCache = new class {
         if (!trigger) {
             trigger = event.currentTarget.querySelector("button[type=submit]");
         }
-        // this allows the form to submit in the old fashioned way if there's a problem
+
+        // This allows the form to submit in the old fashioned way if there's a problem
+
         if (!trigger || !form) {
             return;
         }
