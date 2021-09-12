@@ -33,12 +33,15 @@
             {% include 'snippets/table-sort-header.html' with field="server_name" sort=sort text=text %}
         </th>
         <th>
-            {% trans "Date federated" as text %}
+            {% trans "Date added" as text %}
             {% include 'snippets/table-sort-header.html' with field="created_date" sort=sort text=text %}
         </th>
         <th>
             {% trans "Software" as text %}
             {% include 'snippets/table-sort-header.html' with field="application_type" sort=sort text=text %}
+        </th>
+        <th>
+            {% trans "Users" %}
         </th>
         <th>{% trans "Status" %}</th>
     </tr>
@@ -52,6 +55,7 @@
             {% if server.application_version %}({{ server.application_version }}){% endif %}
         {% endif %}
         </td>
+        <td>{{ server.user_set.count }}</td>
         <td>{{ server.get_status_display }}</td>
     </tr>
     {% endfor %}
