@@ -3,21 +3,19 @@ import base64
 from Crypto import Random
 from django.db import models
 from django.dispatch import receiver
+from django.utils.translation import gettext_lazy as _
 
 from bookwyrm.settings import DOMAIN
 from .fields import RemoteIdField
 
 
-DeactivationReason = models.TextChoices(
-    "DeactivationReason",
-    [
-        "pending",
-        "self_deletion",
-        "moderator_suspension",
-        "moderator_deletion",
-        "domain_block",
-    ],
-)
+DeactivationReason = [
+    ("pending", _("Pending")),
+    ("self_deletion", _("Self deletion")),
+    ("moderator_suspension", _("Moderator suspension")),
+    ("moderator_deletion", _("Moderator deletion")),
+    ("domain_block", _("Domain block")),
+]
 
 
 def new_access_code():
