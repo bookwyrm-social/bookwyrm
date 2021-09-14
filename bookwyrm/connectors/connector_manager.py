@@ -55,7 +55,7 @@ def search(query, min_confidence=0.1, return_first=False):
             # if we found anything, return it
             return result_set[0]
 
-        if result_set or connector.local:
+        if result_set:
             results.append(
                 {
                     "connector": connector,
@@ -69,20 +69,6 @@ def search(query, min_confidence=0.1, return_first=False):
         return None
 
     return results
-
-
-def local_search(query, min_confidence=0.1, raw=False, filters=None):
-    """only look at local search results"""
-    connector = load_connector(models.Connector.objects.get(local=True))
-    return connector.search(
-        query, min_confidence=min_confidence, raw=raw, filters=filters
-    )
-
-
-def isbn_local_search(query, raw=False):
-    """only look at local search results"""
-    connector = load_connector(models.Connector.objects.get(local=True))
-    return connector.isbn_search(query, raw=raw)
 
 
 def first_search_result(query, min_confidence=0.1):

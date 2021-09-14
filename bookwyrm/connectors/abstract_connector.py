@@ -31,7 +31,6 @@ class AbstractMinimalConnector(ABC):
             "isbn_search_url",
             "name",
             "identifier",
-            "local",
         ]
         for field in self_fields:
             setattr(self, field, getattr(info, field))

@@ -9,10 +9,8 @@
             <strong>
                 <a
                     href="{{ result.view_link|default:result.key }}"
-                    {% if remote_result %}
-                        rel="noopener"
-                        target="_blank"
-                    {% endif %}
+                    rel="noopener"
+                    target="_blank"
                 >{{ result.title }}</a>
             </strong>
         </p>
@@ -26,16 +24,14 @@
             {% endif %}
         </p>
 
-        {% if remote_result %}
-            <form class="mt-1" action="/resolve-book" method="post">
-                {% csrf_token %}
+        <form class="mt-1" action="/resolve-book" method="post">
+            {% csrf_token %}
 
-                <input type="hidden" name="remote_id" value="{{ result.key }}">
+            <input type="hidden" name="remote_id" value="{{ result.key }}">
 
-                <button type="submit" class="button is-small is-link">
-                    {% trans "Import book" %}
-                </button>
-            </form>
-        {% endif %}
+            <button type="submit" class="button is-small is-link">
+                {% trans "Import book" %}
+            </button>
+        </form>
     </div>
 </div>

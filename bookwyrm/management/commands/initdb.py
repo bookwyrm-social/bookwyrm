@@ -74,19 +74,6 @@ def init_permissions():
 def init_connectors():
     """access book data sources"""
     Connector.objects.create(
-        identifier=DOMAIN,
-        name="Local",
-        local=True,
-        connector_file="self_connector",
-        base_url="https://%s" % DOMAIN,
-        books_url="https://%s/book" % DOMAIN,
-        covers_url="https://%s/images/" % DOMAIN,
-        search_url="https://%s/search?q=" % DOMAIN,
-        isbn_search_url="https://%s/isbn/" % DOMAIN,
-        priority=1,
-    )
-
-    Connector.objects.create(
         identifier="bookwyrm.social",
         name="BookWyrm dot Social",
         connector_file="bookwyrm_connector",
