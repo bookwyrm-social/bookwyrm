@@ -80,9 +80,7 @@ class Views(TestCase):
         datafile = pathlib.Path(__file__).parent.joinpath("../data/ol_search.json")
         search_data = json.loads(datafile.read_bytes())
         responses.add(
-            responses.GET,
-            "https://example.com/search?q=Test%20Book",
-            json=search_data
+            responses.GET, "https://example.com/search?q=Test%20Book", json=search_data
         )
 
         request = self.factory.get("", {"q": "Test Book", "remote": True})
@@ -93,12 +91,10 @@ class Views(TestCase):
         self.assertIsInstance(response, TemplateResponse)
         response.render()
         connector_results = response.context_data["results"]
-        self.assertEqual(
-            connector_results[0]["results"][0].title, "Test Book"
-        )
+        self.assertEqual(connector_results[0]["results"][0].title, "Test Book")
         self.assertEqual(
             connector_results[1]["results"][0].title,
-            "This Is How You Lose the Time War"
+            "This Is How You Lose the Time War",
         )
 
     def test_search_users(self):
