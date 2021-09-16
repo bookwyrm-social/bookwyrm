@@ -25,7 +25,6 @@ class ConnectorManager(TestCase):
         self.connector = models.Connector.objects.create(
             identifier="test_connector",
             priority=1,
-            local=True,
             connector_file="self_connector",
             base_url="http://test.com/",
             books_url="http://test.com/",
@@ -36,7 +35,6 @@ class ConnectorManager(TestCase):
         self.remote_connector = models.Connector.objects.create(
             identifier="test_connector_remote",
             priority=1,
-            local=False,
             connector_file="bookwyrm_connector",
             base_url="http://fake.ciom/",
             books_url="http://fake.ciom/",

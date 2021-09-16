@@ -30,7 +30,7 @@ class GetStartedViews(TestCase):
             remote_id="https://example.com/book/1",
         )
         models.Connector.objects.create(
-            identifier="self", connector_file="self_connector", local=True
+            identifier="self", connector_file="self_connector"
         )
         models.SiteSettings.objects.create()
 

@@ -16,7 +16,6 @@ class SelfConnector(TestCase):
         models.Connector.objects.create(
             identifier=DOMAIN,
             name="Local",
-            local=True,
             connector_file="self_connector",
             base_url="https://%s" % DOMAIN,
             books_url="https://%s/book" % DOMAIN,
