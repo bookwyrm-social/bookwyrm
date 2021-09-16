@@ -4,8 +4,8 @@ import pathlib
 from django.test import TestCase
 
 from bookwyrm import models
+from bookwyrm.book_search import SearchResult
 from bookwyrm.connectors.bookwyrm_connector import Connector
-from bookwyrm.connectors.abstract_connector import SearchResult
 
 
 class BookWyrmConnector(TestCase):

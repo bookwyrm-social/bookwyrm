@@ -7,11 +7,11 @@ from django.test import TestCase
 import responses
 
 from bookwyrm import models
+from bookwyrm.book_search import SearchResult
 from bookwyrm.connectors.openlibrary import Connector
 from bookwyrm.connectors.openlibrary import ignore_edition
 from bookwyrm.connectors.openlibrary import get_languages, get_description
 from bookwyrm.connectors.openlibrary import pick_default_edition, get_openlibrary_key
-from bookwyrm.connectors.abstract_connector import SearchResult
 from bookwyrm.connectors.connector_manager import ConnectorException
 
 
