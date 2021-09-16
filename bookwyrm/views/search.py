@@ -10,7 +10,7 @@ from django.views import View
 
 from bookwyrm import models
 from bookwyrm.connectors import connector_manager
-from bookwyrm.book_search import search
+from bookwyrm.book_search import search, format_search_result
 from bookwyrm.settings import PAGE_LENGTH
 from bookwyrm.utils import regex
 from .helpers import is_api_request, privacy_filter
@@ -33,7 +33,9 @@ class Search(View):
         if is_api_request(request):
             # only return local book results via json so we don't cascade
             book_results = search(query, min_confidence=min_confidence)
-            return JsonResponse([r.json() for r in book_results], safe=False)
+            return JsonResponse(
+                [format_search_result(r) for r in book_results], safe=False
+            )
 
         if query and not search_type:
             search_type = "user" if "@" in query else "book"
