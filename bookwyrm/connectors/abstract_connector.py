@@ -1,6 +1,5 @@
 """ functionality outline for a book data connector """
 from abc import ABC, abstractmethod
-from dataclasses import asdict, dataclass
 import logging
 
 from django.db import transaction
@@ -266,31 +265,6 @@ def get_image(url, timeout=10):
     if not resp.ok:
         return None
     return resp
-
-
-@dataclass
-class SearchResult:
-    """standardized search result object"""
-
-    title: str
-    key: str
-    connector: object
-    view_link: str = None
-    author: str = None
-    year: str = None
-    cover: str = None
-    confidence: int = 1
-
-    def __repr__(self):
-        return "<SearchResult key={!r} title={!r} author={!r}>".format(
-            self.key, self.title, self.author
-        )
-
-    def json(self):
-        """serialize a connector for json response"""
-        serialized = asdict(self)
-        del serialized["connector"]
-        return serialized
 
 
 class Mapping:

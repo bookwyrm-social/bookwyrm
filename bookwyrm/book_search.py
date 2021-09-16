@@ -1,4 +1,5 @@
 """ using a bookwyrm instance as a source of book data """
+from dataclasses import asdict, dataclass
 from functools import reduce
 import operator
 
@@ -6,7 +7,6 @@ from django.contrib.postgres.search import SearchRank, SearchQuery
 from django.db.models import OuterRef, Subquery, F, Q
 
 from bookwyrm import models
-from bookwyrm.connectors.abstract_connector import SearchResult
 from bookwyrm.settings import MEDIA_FULL_URL
 
 
@@ -128,3 +128,28 @@ def search_title_author(query, min_confidence, *filters, return_first=False):
             return result
         results.append(result)
     return results
+
+
+@dataclass
+class SearchResult:
+    """standardized search result object"""
+
+    title: str
+    key: str
+    connector: object
+    view_link: str = None
+    author: str = None
+    year: str = None
+    cover: str = None
+    confidence: int = 1
+
+    def __repr__(self):
+        return "<SearchResult key={!r} title={!r} author={!r}>".format(
+            self.key, self.title, self.author
+        )
+
+    def json(self):
+        """serialize a connector for json response"""
+        serialized = asdict(self)
+        del serialized["connector"]
+        return serialized
