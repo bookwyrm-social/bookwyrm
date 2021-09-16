@@ -24,5 +24,5 @@ jobs:
         pip install pylint
     - name: Analysing the code with pylint
       run: |
-        pylint bookwyrm/ --ignore=migrations,tests --disable=E1101,E1135,E1136,R0903,R0901,R0902,W0707,W0511,W0406,R0401,R0801
+        pylint bookwyrm/ --ignore=migrations,tests --disable=E1101,E1135,E1136,R0903,R0901,R0902,W0707,W0511,W0406,R0401,R0801,C0209
 
