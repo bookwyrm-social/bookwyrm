@@ -35,7 +35,7 @@ class IsbnViews(TestCase):
             parent_work=self.work,
         )
         models.Connector.objects.create(
-            identifier="self", connector_file="self_connector", local=True
+            identifier="self", connector_file="self_connector"
         )
         models.SiteSettings.objects.create()
 

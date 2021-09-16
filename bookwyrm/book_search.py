@@ -114,7 +114,7 @@ def search_title_author(query, min_confidence, *filters, return_first=False):
     editions_of_work = results.values("parent_work__id").values_list("parent_work__id")
 
     # filter out multiple editions of the same work
-    results = []
+    list_results = []
     for work_id in set(editions_of_work):
         editions = results.filter(parent_work=work_id)
         default = editions.order_by("-edition_rank").first()
@@ -126,8 +126,8 @@ def search_title_author(query, min_confidence, *filters, return_first=False):
             result = editions.first()
         if return_first:
             return result
-        results.append(result)
-    return results
+        list_results.append(result)
+    return list_results
 
 
 @dataclass
