@@ -16,9 +16,8 @@ from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.http import require_POST
 
-from bookwyrm import forms, models
+from bookwyrm import book_search, forms, models
 from bookwyrm.activitypub import ActivitypubResponse
-from bookwyrm.connectors import connector_manager
 from bookwyrm.settings import PAGE_LENGTH
 from .helpers import is_api_request, privacy_filter
 from .helpers import get_user_from_username
@@ -150,9 +149,8 @@ class List(View):
 
         if query and request.user.is_authenticated:
             # search for books
-            suggestions = connector_manager.local_search(
+            suggestions = book_search.search(
                 query,
-                raw=True,
                 filters=[~Q(parent_work__editions__in=book_list.books.all())],
             )
         elif request.user.is_authenticated:
