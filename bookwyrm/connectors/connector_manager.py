@@ -10,7 +10,7 @@ from django.db.models import signals
 
 from requests import HTTPError
 
-from bookwyrm import models
+from bookwyrm import book_search, models
 from bookwyrm.tasks import app
 
 logger = logging.getLogger(__name__)
@@ -73,6 +73,11 @@ def search(query, min_confidence=0.1, return_first=False):
 
 def first_search_result(query, min_confidence=0.1):
     """search until you find a result that fits"""
+    # try local search first
+    result = book_search.search(query, min_confidence=min_confidence, return_first=True)
+    if result:
+        return result
+    # otherwise, try remote endpoints
     return search(query, min_confidence=min_confidence, return_first=True) or None
 
 

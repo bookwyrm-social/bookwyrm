@@ -11,16 +11,18 @@ from bookwyrm.settings import MEDIA_FULL_URL
 
 
 # pylint: disable=arguments-differ
-def search(query, min_confidence=0, filters=None):
+def search(query, min_confidence=0, filters=None, return_first=False):
     """search your local database"""
     filters = filters or []
     if not query:
         return []
     # first, try searching unqiue identifiers
-    results = search_identifiers(query, *filters)
+    results = search_identifiers(query, *filters, return_first=return_first)
     if not results:
         # then try searching title/author
-        results = search_title_author(query, min_confidence, *filters)
+        results = search_title_author(
+            query, min_confidence, *filters, return_first=return_first
+        )
     return results
 
 
@@ -68,7 +70,7 @@ def format_search_result(search_result):
     ).json()
 
 
-def search_identifiers(query, *filters):
+def search_identifiers(query, *filters, return_first=False):
     """tries remote_id, isbn; defined as dedupe fields on the model"""
     # pylint: disable=W0212
     or_filters = [
@@ -87,15 +89,18 @@ def search_identifiers(query, *filters):
     default_editions = models.Edition.objects.filter(
         parent_work=OuterRef("parent_work")
     ).order_by("-edition_rank")
-    return (
+    results = (
         results.annotate(default_id=Subquery(default_editions.values("id")[:1])).filter(
             default_id=F("id")
         )
         or results
     )
+    if return_first:
+        return results.first()
+    return results
 
 
-def search_title_author(query, min_confidence, *filters):
+def search_title_author(query, min_confidence, *filters, return_first=False):
     """searches for title and author"""
     query = SearchQuery(query, config="simple") | SearchQuery(query, config="english")
     results = (
@@ -109,12 +114,17 @@ def search_title_author(query, min_confidence, *filters):
     editions_of_work = results.values("parent_work__id").values_list("parent_work__id")
 
     # filter out multiple editions of the same work
+    results = []
     for work_id in set(editions_of_work):
         editions = results.filter(parent_work=work_id)
         default = editions.order_by("-edition_rank").first()
         default_rank = default.rank if default else 0
         # if mutliple books have the top rank, pick the default edition
         if default_rank == editions.first().rank:
-            yield default
+            result = default
         else:
-            yield editions.first()
+            result = editions.first()
+        if return_first:
+            return result
+        results.append(result)
+    return results
