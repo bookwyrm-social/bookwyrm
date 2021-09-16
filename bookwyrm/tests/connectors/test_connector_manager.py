@@ -96,12 +96,6 @@ class ConnectorManager(TestCase):
         self.assertEqual(len(results[0]["results"]), 1)
         self.assertEqual(results[0]["results"][0].title, "Example Edition")
 
-    def test_local_search(self):
-        """search only the local database"""
-        results = connector_manager.local_search("Example")
-        self.assertEqual(len(results), 1)
-        self.assertEqual(results[0].title, "Example Edition")
-
     def test_first_search_result(self):
         """only get one search result"""
         result = connector_manager.first_search_result("Example")
