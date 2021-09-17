@@ -124,23 +124,6 @@ class PasswordReset(models.Model):
         return "https://{}/password-reset/{}".format(DOMAIN, self.code)
 
 
-class EmailBlocklist(models.Model):
-    """blocked email addresses"""
-
-    created_date = models.DateTimeField(auto_now_add=True)
-    domain = models.CharField(max_length=255, unique=True)
-
-    class Meta:
-        """default sorting"""
-
-        ordering = ("-created_date",)
-
-    @property
-    def users(self):
-        """find the users associated with this address"""
-        return User.objects.filter(email__endswith=f"@{self.domain}")
-
-
 # pylint: disable=unused-argument
 @receiver(models.signals.post_save, sender=SiteSettings)
 def preview_image(instance, *args, **kwargs):
