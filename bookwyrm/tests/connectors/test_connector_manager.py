@@ -5,7 +5,6 @@ import responses
 from bookwyrm import models
 from bookwyrm.connectors import connector_manager
 from bookwyrm.connectors.bookwyrm_connector import Connector as BookWyrmConnector
-from bookwyrm.connectors.self_connector import Connector as SelfConnector
 
 
 class ConnectorManager(TestCase):
@@ -20,16 +19,6 @@ class ConnectorManager(TestCase):
         )
         self.edition = models.Edition.objects.create(
             title="Another Edition", parent_work=self.work, isbn_10="1111111111"
-        )
-
-        self.connector = models.Connector.objects.create(
-            identifier="test_connector",
-            priority=1,
-            connector_file="self_connector",
-            base_url="http://test.com/",
-            books_url="http://test.com/",
-            covers_url="http://test.com/",
-            isbn_search_url="http://test.com/isbn/",
         )
 
         self.remote_connector = models.Connector.objects.create(
@@ -57,9 +46,8 @@ class ConnectorManager(TestCase):
     def test_get_connectors(self):
         """load all connectors"""
         connectors = list(connector_manager.get_connectors())
-        self.assertEqual(len(connectors), 2)
-        self.assertIsInstance(connectors[0], SelfConnector)
-        self.assertIsInstance(connectors[1], BookWyrmConnector)
+        self.assertEqual(len(connectors), 1)
+        self.assertIsInstance(connectors[0], BookWyrmConnector)
 
     @responses.activate
     def test_search(self):
@@ -71,7 +59,6 @@ class ConnectorManager(TestCase):
         )
         results = connector_manager.search("Example")
         self.assertEqual(len(results), 1)
-        self.assertIsInstance(results[0]["connector"], SelfConnector)
         self.assertEqual(len(results[0]["results"]), 1)
         self.assertEqual(results[0]["results"][0].title, "Example Edition")
 
@@ -90,7 +77,6 @@ class ConnectorManager(TestCase):
         )
         results = connector_manager.search("0000000000")
         self.assertEqual(len(results), 1)
-        self.assertIsInstance(results[0]["connector"], SelfConnector)
         self.assertEqual(len(results[0]["results"]), 1)
         self.assertEqual(results[0]["results"][0].title, "Example Edition")
 
@@ -117,6 +103,5 @@ class ConnectorManager(TestCase):
 
     def test_load_connector(self):
         """load a connector object from the database entry"""
-        connector = connector_manager.load_connector(self.connector)
-        self.assertIsInstance(connector, SelfConnector)
-        self.assertEqual(connector.identifier, "test_connector")
+        connector = connector_manager.load_connector(self.remote_connector)
+        self.assertEqual(connector.identifier, "test_connector_remote")
