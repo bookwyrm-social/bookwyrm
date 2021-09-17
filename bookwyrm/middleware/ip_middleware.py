@@ -11,6 +11,6 @@ class IPBlocklistMiddleware:
 
     def __call__(self, request):
         address = request.META.get("REMOTE_ADDR")
-        if models.IPBlockList.objects.filter(address=address).exists():
+        if models.IPBlocklist.objects.filter(address=address).exists():
             raise Http404()
         return self.get_response(request)

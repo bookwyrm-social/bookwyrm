@@ -8,7 +8,7 @@
 {% block form %}
 <form name="add-domain" method="post" action="{% url 'settings-email-blocks' %}">
     {% csrf_token %}
-    <label class="label" for="id_event_date">{% trans "Domain:" %}</label>
+    <label class="label" for="id_domain">{% trans "Domain:" %}</label>
     <div class="field has-addons">
         <div class="control">
             <div class="button is-disabled">@</div>

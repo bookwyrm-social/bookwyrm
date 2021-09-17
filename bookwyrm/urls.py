@@ -154,6 +154,16 @@ urlpatterns = [
         views.EmailBlocklist.as_view(),
         name="settings-email-blocks-delete",
     ),
+    re_path(
+        r"^settings/ip-blocklist/?$",
+        views.IPBlocklist.as_view(),
+        name="settings-ip-blocks",
+    ),
+    re_path(
+        r"^settings/ip-blocks/(?P<block_id>\d+)/delete/?$",
+        views.IPBlocklist.as_view(),
+        name="settings-ip-blocks-delete",
+    ),
     # moderation
     re_path(r"^settings/reports/?$", views.Reports.as_view(), name="settings-reports"),
     re_path(
