@@ -5,6 +5,7 @@ from .admin.federation import Federation, FederatedServer
 from .admin.federation import AddFederatedServer, ImportServerBlocklist
 from .admin.federation import block_server, unblock_server
 from .admin.email_blocklist import EmailBlocklist
+from .admin.ip_blocklist import IPBlocklist
 from .admin.invite import ManageInvites, Invite, InviteRequest
 from .admin.invite import ManageInviteRequests, ignore_invite_request
 from .admin.reports import (

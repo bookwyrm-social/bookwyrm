@@ -311,6 +311,12 @@ class EmailBlocklistForm(CustomForm):
         fields = ["domain"]
 
 
+class IPBlocklistForm(CustomForm):
+    class Meta:
+        model = models.IPBlocklist
+        fields = ["address"]
+
+
 class ServerForm(CustomForm):
     class Meta:
         model = models.FederatedServer

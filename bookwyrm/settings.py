@@ -77,7 +77,8 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
-    "bookwyrm.timezone_middleware.TimezoneMiddleware",
+    "bookwyrm.middleware.TimezoneMiddleware",
+    "bookwyrm.middleware.IPBlocklistMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]

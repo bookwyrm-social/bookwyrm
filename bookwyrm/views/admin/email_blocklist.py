@@ -1,4 +1,4 @@
-""" moderation via flagged posts and users """
+""" Manage email blocklist"""
 from django.contrib.auth.decorators import login_required, permission_required
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
@@ -14,7 +14,7 @@ from bookwyrm import forms, models
     name="dispatch",
 )
 class EmailBlocklist(View):
-    """Block users by email address"""
+    """Block registration by email address"""
 
     def get(self, request):
         """view and compose blocks"""

@@ -58,6 +58,10 @@
                 {% url 'settings-email-blocks' as url %}
                 <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Email Blocklist" %}</a>
             </li>
+            <li>
+                {% url 'settings-ip-blocks' as url %}
+                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "IP Address Blocklist" %}</a>
+            </li>
         </ul>
         {% endif %}
         {% if perms.bookwyrm.edit_instance_settings %}
