@@ -198,9 +198,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     def to_outbox(self, filter_type=None, **kwargs):
         """an ordered collection of statuses"""
         if filter_type:
-            filter_class = apps.get_model(
-                f"bookwyrm.{filter_type}", require_ready=True
-            )
+            filter_class = apps.get_model(f"bookwyrm.{filter_type}", require_ready=True)
             if not issubclass(filter_class, Status):
                 raise TypeError(
                     "filter_status_class must be a subclass of models.Status"

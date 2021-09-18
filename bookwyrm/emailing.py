@@ -48,18 +48,12 @@ def password_reset_email(reset_code):
 
 def format_email(email_name, data):
     """render the email templates"""
-    subject = (
-        get_template(f"email/{email_name}/subject.html").render(data).strip()
-    )
+    subject = get_template(f"email/{email_name}/subject.html").render(data).strip()
     html_content = (
-        get_template(f"email/{email_name}/html_content.html")
-        .render(data)
-        .strip()
+        get_template(f"email/{email_name}/html_content.html").render(data).strip()
     )
     text_content = (
-        get_template(f"email/{email_name}/text_content.html")
-        .render(data)
-        .strip()
+        get_template(f"email/{email_name}/text_content.html").render(data).strip()
     )
     return (subject, html_content, text_content)
 

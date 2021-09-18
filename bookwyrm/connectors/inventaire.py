@@ -87,11 +87,7 @@ class Connector(AbstractConnector):
 
     def format_search_result(self, search_result):
         images = search_result.get("image")
-        cover = (
-            f"{self.covers_url}/img/entities/{images[0]}"
-            if images
-            else None
-        )
+        cover = f"{self.covers_url}/img/entities/{images[0]}" if images else None
         # a deeply messy translation of inventaire's scores
         confidence = float(search_result.get("_score", 0.1))
         confidence = 0.1 if confidence < 150 else 0.999
@@ -131,9 +127,7 @@ class Connector(AbstractConnector):
 
     def load_edition_data(self, work_uri):
         """get a list of editions for a work"""
-        url = (
-            f"{self.books_url}?action=reverse-claims&property=wdt:P629&value={work_uri}&sort=true"
-        )
+        url = f"{self.books_url}?action=reverse-claims&property=wdt:P629&value={work_uri}&sort=true"
         return get_data(url)
 
     def get_edition_from_work_data(self, data):

@@ -181,7 +181,7 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
             self.replies(self),
             remote_id=f"{self.remote_id}/replies",
             collection_only=True,
-            **kwargs
+            **kwargs,
         ).serialize()
 
     def to_activity_dataclass(self, pure=False):  # pylint: disable=arguments-differ

@@ -23,7 +23,9 @@ EMAIL_HOST_USER = env("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
 EMAIL_USE_TLS = env.bool("EMAIL_USE_TLS", True)
 EMAIL_USE_SSL = env.bool("EMAIL_USE_SSL", False)
-DEFAULT_FROM_EMAIL = "admin@{:s}".format(env("DOMAIN"))  # pylint: disable=consider-using-f-string
+DEFAULT_FROM_EMAIL = "admin@{:s}".format(
+    env("DOMAIN")
+)  # pylint: disable=consider-using-f-string
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

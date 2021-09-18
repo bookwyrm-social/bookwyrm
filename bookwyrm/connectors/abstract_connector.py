@@ -222,9 +222,7 @@ def get_data(url, params=None, timeout=10):
     """wrapper for request.get"""
     # check if the url is blocked
     if models.FederatedServer.is_blocked(url):
-        raise ConnectorException(
-            f"Attempting to load data from blocked url: {url}"
-        )
+        raise ConnectorException(f"Attempting to load data from blocked url: {url}")
 
     try:
         resp = requests.get(

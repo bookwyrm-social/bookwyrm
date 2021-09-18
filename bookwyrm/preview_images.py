@@ -413,7 +413,7 @@ def generate_user_preview_image_task(user_id):
 
     texts = {
         "text_one": user.display_name,
-        "text_three": "@{user.localname}@{settings.DOMAIN}"
+        "text_three": "@{user.localname}@{settings.DOMAIN}",
     }
 
     if user.avatar:
