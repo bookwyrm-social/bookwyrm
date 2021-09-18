@@ -315,7 +315,8 @@ def save_and_cleanup(image, instance=None):
     """Save and close the file"""
     if not isinstance(instance, (models.Book, models.User, models.SiteSettings)):
         return False
-    file_name = "%s-%s.jpg" % (str(instance.id), str(uuid4()))
+    uuid = uuid4()
+    file_name = f"{instance.id}-{uuid}.jpg"
     image_buffer = BytesIO()
 
     try:
@@ -412,7 +413,7 @@ def generate_user_preview_image_task(user_id):
 
     texts = {
         "text_one": user.display_name,
-        "text_three": "@{}@{}".format(user.localname, settings.DOMAIN),
+        "text_three": "@{user.localname}@{settings.DOMAIN}"
     }
 
     if user.avatar:
