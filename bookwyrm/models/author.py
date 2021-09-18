@@ -35,7 +35,7 @@ class Author(BookDataModel):
 
     def get_remote_id(self):
         """editions and works both use "book" instead of model_name"""
-        return "https://%s/author/%s" % (DOMAIN, self.id)
+        return f"https://{DOMAIN}/author/{self.id}"
 
     activity_serializer = activitypub.Author
 

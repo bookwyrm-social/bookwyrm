@@ -42,7 +42,7 @@ class Feed(View):
                 "tab": tab,
                 "streams": STREAMS,
                 "goal_form": forms.GoalForm(),
-                "path": "/%s" % tab["key"],
+                "path": f"/{tab['key']}",
             },
         }
         return TemplateResponse(request, "feed/feed.html", data)

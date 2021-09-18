@@ -68,7 +68,7 @@ class Import(View):
 
             importer.start_import(job)
 
-            return redirect("/import/%d" % job.id)
+            return redirect(f"/import/{job.id}")
         return HttpResponseBadRequest()
 
 
@@ -112,4 +112,4 @@ class ImportStatus(View):
             items,
         )
         importer.start_import(job)
-        return redirect("/import/%d" % job.id)
+        return redirect(f"/import/{job.id}")

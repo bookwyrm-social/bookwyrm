@@ -266,7 +266,7 @@ class ObjectMixin(ActivitypubMixin):
             signed_message = signer.sign(SHA256.new(content.encode("utf8")))
 
             signature = activitypub.Signature(
-                creator="%s#main-key" % user.remote_id,
+                creator=f"{user.remote_id}#main-key",
                 created=activity_object.published,
                 signatureValue=b64encode(signed_message).decode("utf8"),
             )
@@ -285,16 +285,16 @@ class ObjectMixin(ActivitypubMixin):
         return activitypub.Delete(
             id=self.remote_id + "/activity",
             actor=user.remote_id,
-            to=["%s/followers" % user.remote_id],
+            to=[f"{user.remote_id}/followers"],
             cc=["https://www.w3.org/ns/activitystreams#Public"],
             object=self,
         ).serialize()
 
     def to_update_activity(self, user):
         """wrapper for Updates to an activity"""
-        activity_id = "%s#update/%s" % (self.remote_id, uuid4())
+        uuid = uuid4()
         return activitypub.Update(
-            id=activity_id,
+            id=f"{self.remote_id}#update/{uuid}",
             actor=user.remote_id,
             to=["https://www.w3.org/ns/activitystreams#Public"],
             object=self,
@@ -337,8 +337,8 @@ class OrderedCollectionPageMixin(ObjectMixin):
         paginated = Paginator(queryset, PAGE_LENGTH)
         # add computed fields specific to orderd collections
         activity["totalItems"] = paginated.count
-        activity["first"] = "%s?page=1" % remote_id
-        activity["last"] = "%s?page=%d" % (remote_id, paginated.num_pages)
+        activity["first"] = f"{remote_id}?page=1"
+        activity["last"] = f"{remote_id}?page={paginated.num_pages}"
 
         return serializer(**activity)
 
@@ -420,7 +420,7 @@ class CollectionItemMixin(ActivitypubMixin):
         """AP for shelving a book"""
         collection_field = getattr(self, self.collection_field)
         return activitypub.Add(
-            id="{:s}#add".format(collection_field.remote_id),
+            id=f"{collection_field.remote_id}#add",
             actor=user.remote_id,
             object=self.to_activity_dataclass(),
             target=collection_field.remote_id,
@@ -430,7 +430,7 @@ class CollectionItemMixin(ActivitypubMixin):
         """AP for un-shelving a book"""
         collection_field = getattr(self, self.collection_field)
         return activitypub.Remove(
-            id="{:s}#remove".format(collection_field.remote_id),
+            id=f"{collection_field.remote_id}#remove",
             actor=user.remote_id,
             object=self.to_activity_dataclass(),
             target=collection_field.remote_id,
@@ -458,7 +458,7 @@ class ActivityMixin(ActivitypubMixin):
         """undo an action"""
         user = self.user if hasattr(self, "user") else self.user_subject
         return activitypub.Undo(
-            id="%s#undo" % self.remote_id,
+            id=f"{self.remote_id}#undo",
             actor=user.remote_id,
             object=self,
         ).serialize()
@@ -555,11 +555,11 @@ def to_ordered_collection_page(
 
     prev_page = next_page = None
     if activity_page.has_next():
-        next_page = "%s?page=%d" % (remote_id, activity_page.next_page_number())
+        next_page = f"{remote_id}?page={activity_page.next_page_number()}"
     if activity_page.has_previous():
-        prev_page = "%s?page=%d" % (remote_id, activity_page.previous_page_number())
+        prev_page = f"{remote_id}?page=%d{activity_page.previous_page_number()}"
     return activitypub.OrderedCollectionPage(
-        id="%s?page=%s" % (remote_id, page),
+        id=f"{remote_id}?page={page}",
         partOf=remote_id,
         orderedItems=items,
         next=next_page,

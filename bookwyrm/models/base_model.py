@@ -32,11 +32,11 @@ class BookWyrmModel(models.Model):
 
     def get_remote_id(self):
         """generate a url that resolves to the local object"""
-        base_path = "https://%s" % DOMAIN
+        base_path = f"https://{DOMAIN}"
         if hasattr(self, "user"):
-            base_path = "%s%s" % (base_path, self.user.local_path)
+            base_path = f"{base_path}{self.user.local_path}"
         model_name = type(self).__name__.lower()
-        return "%s/%s/%d" % (base_path, model_name, self.id)
+        return f"{base_path}/{model_name}/{self.id}"
 
     class Meta:
         """this is just here to provide default fields for other models"""
@@ -46,7 +46,7 @@ class BookWyrmModel(models.Model):
     @property
     def local_path(self):
         """how to link to this object in the local app"""
-        return self.get_remote_id().replace("https://%s" % DOMAIN, "")
+        return self.get_remote_id().replace(f"https://{DOMAIN}", "")
 
     def visible_to_user(self, viewer):
         """is a user authorized to view an object?"""

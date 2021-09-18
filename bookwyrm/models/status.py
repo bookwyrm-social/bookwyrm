@@ -179,7 +179,7 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         """helper function for loading AP serialized replies to a status"""
         return self.to_ordered_collection(
             self.replies(self),
-            remote_id="%s/replies" % self.remote_id,
+            remote_id=f"{self.remote_id}/replies",
             collection_only=True,
             **kwargs
         ).serialize()
@@ -226,10 +226,10 @@ class GeneratedNote(Status):
         """indicate the book in question for mastodon (or w/e) users"""
         message = self.content
         books = ", ".join(
-            '<a href="%s">"%s"</a>' % (book.remote_id, book.title)
+            f'<a href="{book.remote_id}">"{book.title}"</a>'
             for book in self.mention_books.all()
         )
-        return "%s %s %s" % (self.user.display_name, message, books)
+        return f"{self.user.display_name} {message} {books}"
 
     activity_serializer = activitypub.GeneratedNote
     pure_type = "Note"
@@ -277,11 +277,7 @@ class Comment(BookStatus):
     @property
     def pure_content(self):
         """indicate the book in question for mastodon (or w/e) users"""
-        return '%s<p>(comment on <a href="%s">"%s"</a>)</p>' % (
-            self.content,
-            self.book.remote_id,
-            self.book.title,
-        )
+        return f'{self.content}<p>(comment on <a href="{self.book.remote_id}">"{self.book.title}"</a>)</p>'
 
     activity_serializer = activitypub.Comment
 
@@ -306,12 +302,7 @@ class Quotation(BookStatus):
         """indicate the book in question for mastodon (or w/e) users"""
         quote = re.sub(r"^<p>", '<p>"', self.quote)
         quote = re.sub(r"</p>$", '"</p>', quote)
-        return '%s <p>-- <a href="%s">"%s"</a></p>%s' % (
-            quote,
-            self.book.remote_id,
-            self.book.title,
-            self.content,
-        )
+        return f'{quote} <p>-- <a href="{self.book.remote_id}">"{self.book.title}"</a></p>{self.content}'
 
     activity_serializer = activitypub.Quotation
 

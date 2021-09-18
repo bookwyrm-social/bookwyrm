@@ -79,7 +79,7 @@ def save_user_form(form):
 
         # set the name to a hash
         extension = form.files["avatar"].name.split(".")[-1]
-        filename = "%s.%s" % (uuid4(), extension)
+        filename = f"{uuid4()}.{extension}"
         user.avatar.save(filename, image, save=False)
     user.save()
     return user

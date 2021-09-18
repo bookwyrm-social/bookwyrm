@@ -322,7 +322,7 @@ def add_book(request):
     path = reverse("list", args=[book_list.id])
     params = request.GET.copy()
     params["updated"] = True
-    return redirect("{:s}?{:s}".format(path, urlencode(params)))
+    return redirect(f"{path}?{urlencode(params)}")
 
 
 @require_POST
@@ -396,7 +396,7 @@ def set_book_position(request, list_item_id):
 def increment_order_in_reverse(
     book_list_id: int, start: int, end: Optional[int] = None
 ):
-    """increase the order nu,ber for every item in a list"""
+    """increase the order number for every item in a list"""
     try:
         book_list = models.List.objects.get(id=book_list_id)
     except models.List.DoesNotExist:

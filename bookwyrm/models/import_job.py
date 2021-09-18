@@ -198,7 +198,9 @@ class ImportItem(models.Model):
         return []
 
     def __repr__(self):
+        # pylint: disable=consider-using-f-string
         return "<{!r}Item {!r}>".format(self.data["import_source"], self.data["Title"])
 
     def __str__(self):
+        # pylint: disable=consider-using-f-string
         return "{} by {}".format(self.data["Title"], self.data["Author"])
