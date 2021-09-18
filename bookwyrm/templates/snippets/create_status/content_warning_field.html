@@ -1,11 +1,11 @@
 {% load i18n %}
 <div
     class="field{% if not parent_status.content_warning and not draft.content_warning %} is-hidden{% endif %}"
-    id="spoilers_{{ uuid }}"
+    id="spoilers_{{ uuid }}{{ local_uuid }}"
 >
     <label
         class="label"
-        for="id_content_warning_{{ uuid }}"
+        for="id_content_warning_{{ uuid }}{{ local_uuid }}"
     >
         {% trans "Content warning:" %}
     </label>
@@ -14,7 +14,7 @@
         name="content_warning"
         maxlength="255"
         class="input"
-        id="id_content_warning_{{ uuid }}"
+        id="id_content_warning_{{ uuid }}{{ local_uuid }}"
         placeholder="{% trans 'Spoilers ahead!' %}"
         value="{% firstof draft.content_warning parent_status.content_warning '' %}"
         data-cache-draft="id_content_warning_{{ book.id }}_{{ type }}"
