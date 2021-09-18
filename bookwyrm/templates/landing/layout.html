@@ -60,7 +60,7 @@
                         {% trans "Thank you! Your request has been received." %}
                     </p>
                 {% else %}
-                <p>{{ site.invite_request_text }}<p>
+                    <p>{{ site.invite_request_text }}<p>
                     <form name="invite-request" action="{% url 'invite-request' %}" method="post">
                         {% csrf_token %}
                         <div class="block">
