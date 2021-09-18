@@ -1,6 +1,6 @@
 {% load i18n %}
 <div
-    class="field{% if not parent_status.content_warning and not draft.content_warning %} is-hidden{% endif %}"
+    class="field{% if not reply_parent.content_warning and not draft.content_warning %} is-hidden{% endif %}"
     id="spoilers_{{ uuid }}{{ local_uuid }}"
 >
     <label
@@ -16,7 +16,7 @@
         class="input"
         id="id_content_warning_{{ uuid }}{{ local_uuid }}"
         placeholder="{% trans 'Spoilers ahead!' %}"
-        value="{% firstof draft.content_warning parent_status.content_warning '' %}"
+        value="{% firstof draft.content_warning reply_parent.content_warning '' %}"
         data-cache-draft="id_content_warning_{{ book.id }}_{{ type }}"
     >
 </div>
