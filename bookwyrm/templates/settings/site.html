@@ -107,6 +107,13 @@
             <label class="label" for="id_registration_closed_text">{% trans "Registration closed text:" %}</label>
             {{ site_form.registration_closed_text }}
         </div>
+        <div class="field">
+            <label class="label" for="id_invite_request_text">{% trans "Invite request text:" %}</label>
+            {{ site_form.invite_request_text }}
+            {% for error in site_form.invite_request_text.errors %}
+            <p class="help is-danger">{{ error|escape }}</p>
+            {% endfor %}
+        </div>
     </section>
 
     <footer class="block">
