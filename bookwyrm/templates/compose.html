@@ -27,7 +27,7 @@
         {% if not draft %}
         {% include 'snippets/create_status.html' %}
         {% else %}
-        {% include 'snippets/create_status/status.html' %}
+        {% include 'snippets/create_status/status.html' with no_script=True %}
         {% endif %}
     </div>
 </div>
