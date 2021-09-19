@@ -67,9 +67,12 @@
             {% endif %}
 
             {% if status.content_warning %}
-                <div class="notification pt-2 pb-2 is-clearfix is-warning is-light">
-                    <p class="is-pulled-left">
-                        <strong>{% trans "Content warning:" %}</strong>
+                <div class="notification p-2 is-clearfix is-warning is-light">
+                    <p class="is-pulled-left is-flex">
+                        {% trans "Content warning" as text %}
+                        <span class="icon icon-warning" title="{{ text }}">
+                            <span class="is-sr-only">{{ text }}</span>
+                        </span>
                         {{ status.content_warning }}
                     </p>
 
