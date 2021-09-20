@@ -20,8 +20,8 @@ status_types = [
     "generatednote",
 ]
 
-status_types_string = "|".join(status_types)
-STATUS_PATH = rf"{USER_PATH}/({status_types_string})/(?P<status_id>\d+)"
+STATUS_TYPES_STRING = "|".join(status_types)
+STATUS_PATH = rf"{USER_PATH}/({STATUS_TYPES_STRING})/(?P<status_id>\d+)"
 
 BOOK_PATH = r"^book/(?P<book_id>\d+)"
 

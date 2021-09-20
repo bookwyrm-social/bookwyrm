@@ -174,7 +174,7 @@ class EditBook(View):
             # check if this is an edition of an existing work
             author_text = book.author_text if book else add_author
             data["book_matches"] = connector_manager.local_search(
-                "%s %s" % (form.cleaned_data.get("title"), author_text),
+                f'{form.cleaned_data.get("title")} {author_text}',
                 min_confidence=0.5,
                 raw=True,
             )[:5]
@@ -212,7 +212,7 @@ class EditBook(View):
             if image:
                 book.cover.save(*image, save=False)
         book.save()
-        return redirect("/book/%s" % book.id)
+        return redirect(f"/book/{book.id}")
 
 
 @method_decorator(login_required, name="dispatch")
@@ -238,14 +238,14 @@ class ConfirmEditBook(View):
 
             # get or create author as needed
             for i in range(int(request.POST.get("author-match-count", 0))):
-                match = request.POST.get("author_match-%d" % i)
+                match = request.POST.get(f"author_match-{i}")
                 if not match:
                     return HttpResponseBadRequest()
                 try:
                     # if it's an int, it's an ID
                     match = int(match)
                     author = get_object_or_404(
-                        models.Author, id=request.POST["author_match-%d" % i]
+                        models.Author, id=request.POST[f"author_match-{i}"]
                     )
                 except ValueError:
                     # otherwise it's a name
@@ -267,7 +267,7 @@ class ConfirmEditBook(View):
             for author_id in request.POST.getlist("remove_authors"):
                 book.authors.remove(author_id)
 
-        return redirect("/book/%s" % book.id)
+        return redirect(f"/book/{book.id}")
 
 
 @login_required
@@ -283,7 +283,7 @@ def upload_cover(request, book_id):
         if image:
             book.cover.save(*image)
 
-        return redirect("{:s}?cover_error=True".format(book.local_path))
+        return redirect(f"{book.local_path}?cover_error=True")
 
     form = forms.CoverForm(request.POST, request.FILES, instance=book)
     if not form.is_valid() or not form.files.get("cover"):

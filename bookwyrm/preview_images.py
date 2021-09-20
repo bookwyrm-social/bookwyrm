@@ -220,6 +220,7 @@ def generate_default_inner_img():
 
 
 # pylint: disable=too-many-locals
+# pylint: disable=too-many-statements
 def generate_preview_image(
     texts=None, picture=None, rating=None, show_instance_layer=True
 ):
@@ -237,7 +238,8 @@ def generate_preview_image(
 
     # Color
     if BG_COLOR in ["use_dominant_color_light", "use_dominant_color_dark"]:
-        image_bg_color = "rgb(%s, %s, %s)" % dominant_color
+        red, green, blue = dominant_color
+        image_bg_color = f"rgb({red}, {green}, {blue})"
 
         # Adjust color
         image_bg_color_rgb = [x / 255.0 for x in ImageColor.getrgb(image_bg_color)]

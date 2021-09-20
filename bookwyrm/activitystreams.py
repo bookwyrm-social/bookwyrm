@@ -20,9 +20,8 @@ class ActivityStream(RedisStore):
 
     def unread_id(self, user):
         """the redis key for this user's unread count for this stream"""
-        return "{}-unread".format(
-            self.stream_id(user)
-        )  # pylint: disable=consider-using-f-string
+        stream_id = self.stream_id(user)
+        return f"{stream_id}-unread"
 
     def get_rank(self, obj):  # pylint: disable=no-self-use
         """statuses are sorted by date published"""

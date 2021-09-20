@@ -277,7 +277,10 @@ class Comment(BookStatus):
     @property
     def pure_content(self):
         """indicate the book in question for mastodon (or w/e) users"""
-        return f'{self.content}<p>(comment on <a href="{self.book.remote_id}">"{self.book.title}"</a>)</p>'
+        return (
+            f'{self.content}<p>(comment on <a href="{self.book.remote_id}">'
+            '"{self.book.title}"</a>)</p>'
+        )
 
     activity_serializer = activitypub.Comment
 
@@ -302,7 +305,10 @@ class Quotation(BookStatus):
         """indicate the book in question for mastodon (or w/e) users"""
         quote = re.sub(r"^<p>", '<p>"', self.quote)
         quote = re.sub(r"</p>$", '"</p>', quote)
-        return f'{quote} <p>-- <a href="{self.book.remote_id}">"{self.book.title}"</a></p>{self.content}'
+        return (
+            f'{quote} <p>-- <a href="{self.book.remote_id}">'
+            '"{self.book.title}"</a></p>{self.content}'
+        )
 
     activity_serializer = activitypub.Quotation
 
