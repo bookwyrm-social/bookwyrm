@@ -59,8 +59,18 @@ class User(View):
                 request.user,
                 user.status_set.select_subclasses(),
             )
-            .select_related("reply_parent")
-            .prefetch_related("mention_books", "mention_users")
+            .select_related(
+                "user",
+                "reply_parent",
+                "review__book",
+                "comment__book",
+                "quotation__book",
+            )
+            .prefetch_related(
+                "mention_books",
+                "mention_users",
+                "attachments",
+            )
         )
 
         paginated = Paginator(activities, PAGE_LENGTH)
