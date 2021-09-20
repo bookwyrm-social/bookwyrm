@@ -77,7 +77,7 @@ def privacy_filter(viewer, queryset, privacy_levels=None, following_only=False):
     elif "followers" in privacy_levels:
         queryset = queryset.exclude(
             ~Q(  # user isn't following and it isn't their own status
-                Q(user__in=viewer.following.all()) | Q(user=viewer)
+                Q(user__followers=viewer) | Q(user=viewer)
             ),
             privacy="followers",  # and the status is followers only
         )

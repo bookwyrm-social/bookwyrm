@@ -24,7 +24,13 @@ class SiteSettings(models.Model):
 
     # about page
     registration_closed_text = models.TextField(
-        default="Contact an administrator to get an invite"
+        default="We aren't taking new users at this time. You can find an open "
+        'instance at <a href="https://joinbookwyrm.com/instances">'
+        "joinbookwyrm.com/instances</a>."
+    )
+    invite_request_text = models.TextField(
+        default="If your request is approved, you will receive an email with a "
+        "registration link."
     )
     code_of_conduct = models.TextField(default="Add a code of conduct here.")
     privacy_policy = models.TextField(default="Add a privacy policy here.")
