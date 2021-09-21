@@ -127,7 +127,7 @@ class PasswordReset(models.Model):
     @property
     def link(self):
         """formats the invite link"""
-        return "https://{DOMAIN}/password-reset/{self.code}"
+        return f"https://{DOMAIN}/password-reset/{self.code}"
 
 
 # pylint: disable=unused-argument
