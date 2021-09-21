@@ -279,7 +279,7 @@ class Comment(BookStatus):
         """indicate the book in question for mastodon (or w/e) users"""
         return (
             f'{self.content}<p>(comment on <a href="{self.book.remote_id}">'
-            '"{self.book.title}"</a>)</p>'
+            f'"{self.book.title}"</a>)</p>'
         )
 
     activity_serializer = activitypub.Comment
@@ -307,7 +307,7 @@ class Quotation(BookStatus):
         quote = re.sub(r"</p>$", '"</p>', quote)
         return (
             f'{quote} <p>-- <a href="{self.book.remote_id}">'
-            '"{self.book.title}"</a></p>{self.content}'
+            f'"{self.book.title}"</a></p>{self.content}'
         )
 
     activity_serializer = activitypub.Quotation

@@ -36,7 +36,7 @@ class SiteModels(TestCase):
 
     def test_site_settings_present(self):
         """load site settings"""
-        models.SiteSettings.objects.create(name="Fish Town")
+        models.SiteSettings.objects.create(id=1, name="Fish Town")
         result = models.SiteSettings.get()
         self.assertEqual(result.id, 1)
         self.assertEqual(result.name, "Fish Town")
