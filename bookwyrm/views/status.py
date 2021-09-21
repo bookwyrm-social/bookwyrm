@@ -36,7 +36,7 @@ class CreateStatus(View):
         status_type = status_type[0].upper() + status_type[1:]
 
         try:
-            form = getattr(forms, "%sForm" % status_type)(request.POST)
+            form = getattr(forms, f"{status_type}Form")(request.POST)
         except AttributeError:
             return HttpResponseBadRequest()
         if not form.is_valid():
@@ -58,8 +58,8 @@ class CreateStatus(View):
 
             # turn the mention into a link
             content = re.sub(
-                r"%s([^@]|$)" % mention_text,
-                r'<a href="%s">%s</a>\g<1>' % (mention_user.remote_id, mention_text),
+                rf"{mention_text}([^@]|$)",
+                rf'<a href="{mention_user.remote_id}">{mention_text}</a>\g<1>',
                 content,
             )
         # add reply parent to mentions
@@ -182,7 +182,7 @@ def format_links(content):
             if url.fragment != "":
                 link += "#" + url.fragment
 
-            formatted_content += '<a href="%s">%s</a>' % (potential_link, link)
+            formatted_content += f'<a href="{potential_link}">{link}</a>'
         except (ValidationError, UnicodeError):
             formatted_content += potential_link
 

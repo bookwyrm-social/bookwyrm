@@ -71,7 +71,7 @@ def is_blocked_user_agent(request):
     user_agent = request.headers.get("User-Agent")
     if not user_agent:
         return False
-    url = re.search(r"https?://{:s}/?".format(regex.DOMAIN), user_agent)
+    url = re.search(rf"https?://{regex.DOMAIN}/?", user_agent)
     if not url:
         return False
     url = url.group()

@@ -59,7 +59,7 @@ class Connector(AbstractConnector):
 
     def get_remote_id(self, value):
         """convert an id/uri into a url"""
-        return "{:s}?action=by-uris&uris={:s}".format(self.books_url, value)
+        return f"{self.books_url}?action=by-uris&uris={value}"
 
     def get_book_data(self, remote_id):
         data = get_data(remote_id)
@@ -87,11 +87,7 @@ class Connector(AbstractConnector):
 
     def format_search_result(self, search_result):
         images = search_result.get("image")
-        cover = (
-            "{:s}/img/entities/{:s}".format(self.covers_url, images[0])
-            if images
-            else None
-        )
+        cover = f"{self.covers_url}/img/entities/{images[0]}" if images else None
         # a deeply messy translation of inventaire's scores
         confidence = float(search_result.get("_score", 0.1))
         confidence = 0.1 if confidence < 150 else 0.999
@@ -99,9 +95,7 @@ class Connector(AbstractConnector):
             title=search_result.get("label"),
             key=self.get_remote_id(search_result.get("uri")),
             author=search_result.get("description"),
-            view_link="{:s}/entity/{:s}".format(
-                self.base_url, search_result.get("uri")
-            ),
+            view_link=f"{self.base_url}/entity/{search_result.get('uri')}",
             cover=cover,
             confidence=confidence,
             connector=self,
@@ -123,9 +117,7 @@ class Connector(AbstractConnector):
             title=title[0],
             key=self.get_remote_id(search_result.get("uri")),
             author=search_result.get("description"),
-            view_link="{:s}/entity/{:s}".format(
-                self.base_url, search_result.get("uri")
-            ),
+            view_link=f"{self.base_url}/entity/{search_result.get('uri')}",
             cover=self.get_cover_url(search_result.get("image")),
             connector=self,
         )
@@ -135,11 +127,7 @@ class Connector(AbstractConnector):
 
     def load_edition_data(self, work_uri):
         """get a list of editions for a work"""
-        url = (
-            "{:s}?action=reverse-claims&property=wdt:P629&value={:s}&sort=true".format(
-                self.books_url, work_uri
-            )
-        )
+        url = f"{self.books_url}?action=reverse-claims&property=wdt:P629&value={work_uri}&sort=true"
         return get_data(url)
 
     def get_edition_from_work_data(self, data):
@@ -195,7 +183,7 @@ class Connector(AbstractConnector):
         # cover may or may not be an absolute url already
         if re.match(r"^http", cover_id):
             return cover_id
-        return "%s%s" % (self.covers_url, cover_id)
+        return f"{self.covers_url}{cover_id}"
 
     def resolve_keys(self, keys):
         """cool, it's "wd:Q3156592" now what the heck does that mean"""
@@ -213,9 +201,7 @@ class Connector(AbstractConnector):
         link = links.get("enwiki")
         if not link:
             return ""
-        url = "{:s}/api/data?action=wp-extract&lang=en&title={:s}".format(
-            self.base_url, link
-        )
+        url = f"{self.base_url}/api/data?action=wp-extract&lang=en&title={link}"
         try:
             data = get_data(url)
         except ConnectorException:

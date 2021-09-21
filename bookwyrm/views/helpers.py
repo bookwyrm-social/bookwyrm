@@ -113,7 +113,7 @@ def handle_remote_webfinger(query):
     try:
         user = models.User.objects.get(username__iexact=query)
     except models.User.DoesNotExist:
-        url = "https://%s/.well-known/webfinger?resource=acct:%s" % (domain, query)
+        url = f"https://{domain}/.well-known/webfinger?resource=acct:{query}"
         try:
             data = get_data(url)
         except (ConnectorException, HTTPError):

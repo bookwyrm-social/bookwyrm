@@ -26,7 +26,7 @@ def webfinger(request):
 
     return JsonResponse(
         {
-            "subject": "acct:%s" % (user.username),
+            "subject": f"acct:{user.username}",
             "links": [
                 {
                     "rel": "self",
@@ -46,7 +46,7 @@ def nodeinfo_pointer(_):
             "links": [
                 {
                     "rel": "http://nodeinfo.diaspora.software/ns/schema/2.0",
-                    "href": "https://%s/nodeinfo/2.0" % DOMAIN,
+                    "href": f"https://{DOMAIN}/nodeinfo/2.0",
                 }
             ]
         }

@@ -96,4 +96,4 @@ def switch_edition(request):
         readthrough.book = new_edition
         readthrough.save()
 
-    return redirect("/book/%d" % new_edition.id)
+    return redirect(f"/book/{new_edition.id}")

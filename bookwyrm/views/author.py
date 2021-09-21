@@ -55,4 +55,4 @@ class EditAuthor(View):
             return TemplateResponse(request, "author/edit_author.html", data)
         author = form.save()
 
-        return redirect("/author/%s" % author.id)
+        return redirect(f"/author/{author.id}")
