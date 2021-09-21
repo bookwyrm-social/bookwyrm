@@ -68,7 +68,7 @@ class Register(View):
                 return TemplateResponse(request, "invite.html", data)
             return TemplateResponse(request, "login.html", data)
 
-        username = "%s@%s" % (localname, DOMAIN)
+        username = f"{localname}@{DOMAIN}"
         user = models.User.objects.create_user(
             username,
             email,

@@ -48,7 +48,7 @@ class InputHtmlParser(HTMLParser):  # pylint: disable=abstract-method
             return
 
         self.tag_stack = self.tag_stack[:-1]
-        self.output.append(("tag", "</%s>" % tag))
+        self.output.append(("tag", f"</{tag}>"))
 
     def handle_data(self, data):
         """extract the answer, if we're in an answer tag"""

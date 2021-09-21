@@ -56,7 +56,7 @@ class ActivitypubFieldMixin:
         activitypub_field=None,
         activitypub_wrapper=None,
         deduplication_field=False,
-        **kwargs
+        **kwargs,
     ):
         self.deduplication_field = deduplication_field
         if activitypub_wrapper:
@@ -308,7 +308,7 @@ class ManyToManyField(ActivitypubFieldMixin, models.ManyToManyField):
 
     def field_to_activity(self, value):
         if self.link_only:
-            return "%s/%s" % (value.instance.remote_id, self.name)
+            return f"{value.instance.remote_id}/{self.name}"
         return [i.remote_id for i in value.all()]
 
     def field_from_activity(self, value):
@@ -388,7 +388,7 @@ def image_serializer(value, alt):
     else:
         return None
     if not url[:4] == "http":
-        url = "https://{:s}{:s}".format(DOMAIN, url)
+        url = f"https://{DOMAIN}{url}"
     return activitypub.Document(url=url, name=alt)
 
 
@@ -448,7 +448,7 @@ class ImageField(ActivitypubFieldMixin, models.ImageField):
 
         image_content = ContentFile(response.content)
         extension = imghdr.what(None, image_content.read()) or ""
-        image_name = "{:s}.{:s}".format(str(uuid4()), extension)
+        image_name = f"{uuid4()}.{extension}"
         return [image_name, image_content]
 
     def formfield(self, **kwargs):

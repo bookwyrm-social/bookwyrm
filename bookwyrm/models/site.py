@@ -87,7 +87,7 @@ class SiteInvite(models.Model):
     @property
     def link(self):
         """formats the invite link"""
-        return "https://{}/invite/{}".format(DOMAIN, self.code)
+        return f"https://{DOMAIN}/invite/{self.code}"
 
 
 class InviteRequest(BookWyrmModel):
@@ -127,7 +127,7 @@ class PasswordReset(models.Model):
     @property
     def link(self):
         """formats the invite link"""
-        return "https://{}/password-reset/{}".format(DOMAIN, self.code)
+        return f"https://{DOMAIN}/password-reset/{self.code}"
 
 
 # pylint: disable=unused-argument

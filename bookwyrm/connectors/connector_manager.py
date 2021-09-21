@@ -109,10 +109,10 @@ def get_or_create_connector(remote_id):
         connector_info = models.Connector.objects.create(
             identifier=identifier,
             connector_file="bookwyrm_connector",
-            base_url="https://%s" % identifier,
-            books_url="https://%s/book" % identifier,
-            covers_url="https://%s/images/covers" % identifier,
-            search_url="https://%s/search?q=" % identifier,
+            base_url=f"https://{identifier}",
+            books_url=f"https://{identifier}/book",
+            covers_url=f"https://{identifier}/images/covers",
+            search_url=f"https://{identifier}/search?q=",
             priority=2,
         )
 
@@ -131,7 +131,7 @@ def load_more_data(connector_id, book_id):
 def load_connector(connector_info):
     """instantiate the connector class"""
     connector = importlib.import_module(
-        "bookwyrm.connectors.%s" % connector_info.connector_file
+        f"bookwyrm.connectors.{connector_info.connector_file}"
     )
     return connector.Connector(connector_info.identifier)
 
@@ -141,4 +141,4 @@ def load_connector(connector_info):
 def create_connector(sender, instance, created, *args, **kwargs):
     """create a connector to an external bookwyrm server"""
     if instance.application_type == "bookwyrm":
-        get_or_create_connector("https://{:s}".format(instance.server_name))
+        get_or_create_connector(f"https://{instance.server_name}")

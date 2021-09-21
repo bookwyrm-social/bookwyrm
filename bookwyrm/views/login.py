@@ -46,7 +46,7 @@ class Login(View):
             except models.User.DoesNotExist:  # maybe it's a full username?
                 username = localname
         else:
-            username = "%s@%s" % (localname, DOMAIN)
+            username = f"{localname}@{DOMAIN}"
         password = login_form.data["password"]
 
         # perform authentication

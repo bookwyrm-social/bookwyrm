@@ -37,7 +37,12 @@
             <form class="navbar-item column" action="/search/">
                 <div class="field has-addons">
                     <div class="control">
-                        <input aria-label="{% trans 'Search for a book or user' %}" id="search_input" class="input" type="text" name="q" placeholder="{% trans 'Search for a book or user' %}" value="{{ query }}">
+                        {% if user.is_authenticated %}
+                            {% trans "Search for a book, user, or list" as search_placeholder %}
+                        {% else %}
+                            {% trans "Search for a book" as search_placeholder %}
+                        {% endif %}
+                        <input aria-label="{{ search_placeholder }}" id="search_input" class="input" type="text" name="q" placeholder="{{ search_placeholder }}" value="{{ query }}">
                     </div>
                     <div class="control">
                         <button class="button" type="submit">

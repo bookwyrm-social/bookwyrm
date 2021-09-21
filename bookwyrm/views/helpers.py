@@ -77,7 +77,7 @@ def privacy_filter(viewer, queryset, privacy_levels=None, following_only=False):
     elif "followers" in privacy_levels:
         queryset = queryset.exclude(
             ~Q(  # user isn't following and it isn't their own status
-                Q(user__in=viewer.following.all()) | Q(user=viewer)
+                Q(user__followers=viewer) | Q(user=viewer)
             ),
             privacy="followers",  # and the status is followers only
         )
@@ -113,7 +113,7 @@ def handle_remote_webfinger(query):
     try:
         user = models.User.objects.get(username__iexact=query)
     except models.User.DoesNotExist:
-        url = "https://%s/.well-known/webfinger?resource=acct:%s" % (domain, query)
+        url = f"https://{domain}/.well-known/webfinger?resource=acct:{query}"
         try:
             data = get_data(url)
         except (ConnectorException, HTTPError):

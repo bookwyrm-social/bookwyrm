@@ -45,8 +45,10 @@
             </div>
         </div>
     </div>
+    {% if list.id %}
     <div class="column is-narrow">
         {% trans "Delete list" as button_text %}
         {% include 'snippets/toggle/toggle_button.html' with class="is-danger" text=button_text icon_with_text="x" controls_text="delete_list" controls_uid=list.id focus="modal_title_delete_list" %}
     </div>
+    {% endif %}
 </div>

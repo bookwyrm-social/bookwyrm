@@ -220,6 +220,7 @@ def generate_default_inner_img():
 
 
 # pylint: disable=too-many-locals
+# pylint: disable=too-many-statements
 def generate_preview_image(
     texts=None, picture=None, rating=None, show_instance_layer=True
 ):
@@ -237,7 +238,8 @@ def generate_preview_image(
 
     # Color
     if BG_COLOR in ["use_dominant_color_light", "use_dominant_color_dark"]:
-        image_bg_color = "rgb(%s, %s, %s)" % dominant_color
+        red, green, blue = dominant_color
+        image_bg_color = f"rgb({red}, {green}, {blue})"
 
         # Adjust color
         image_bg_color_rgb = [x / 255.0 for x in ImageColor.getrgb(image_bg_color)]
@@ -315,7 +317,8 @@ def save_and_cleanup(image, instance=None):
     """Save and close the file"""
     if not isinstance(instance, (models.Book, models.User, models.SiteSettings)):
         return False
-    file_name = "%s-%s.jpg" % (str(instance.id), str(uuid4()))
+    uuid = uuid4()
+    file_name = f"{instance.id}-{uuid}.jpg"
     image_buffer = BytesIO()
 
     try:
@@ -412,7 +415,7 @@ def generate_user_preview_image_task(user_id):
 
     texts = {
         "text_one": user.display_name,
-        "text_three": "@{}@{}".format(user.localname, settings.DOMAIN),
+        "text_three": f"@{user.localname}@{settings.DOMAIN}",
     }
 
     if user.avatar:

@@ -38,7 +38,7 @@ class PasswordResetRequest(View):
         # create a new reset code
         code = models.PasswordReset.objects.create(user=user)
         password_reset_email(code)
-        data = {"message": _("A password reset link sent to %s" % email)}
+        data = {"message": _(f"A password reset link sent to {email}")}
         return TemplateResponse(request, "password_reset_request.html", data)
 
 
