@@ -31,6 +31,9 @@ class ReadThrough(BookWyrmModel):
     def save(self, *args, **kwargs):
         """update user active time"""
         self.user.update_active_date()
+        # an active readthrough must have an unset finish date
+        if self.finish_date:
+            self.is_active = False
         super().save(*args, **kwargs)
 
     def create_update(self):
