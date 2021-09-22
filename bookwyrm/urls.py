@@ -291,7 +291,7 @@ urlpatterns = [
     re_path(r"^unshelve/?$", views.unshelve),
     # goals
     re_path(
-        rf"{USER_PATH}/goal/(?P<year>\d{4})/?$",
+        rf"{LOCAL_USER_PATH}/goal/(?P<year>\d+)/?$",
         views.Goal.as_view(),
         name="user-goal",
     ),
