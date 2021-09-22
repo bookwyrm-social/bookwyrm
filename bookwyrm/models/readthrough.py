@@ -2,7 +2,6 @@
 from django.core import validators
 from django.db import models
 from django.db.models import F, Q
-from django.utils import timezone
 
 from .base_model import BookWyrmModel
 
@@ -30,8 +29,7 @@ class ReadThrough(BookWyrmModel):
 
     def save(self, *args, **kwargs):
         """update user active time"""
-        self.user.last_active_date = timezone.now()
-        self.user.save(broadcast=False, update_fields=["last_active_date"])
+        self.user.update_active_date()
         super().save(*args, **kwargs)
 
     def create_update(self):
@@ -65,6 +63,5 @@ class ProgressUpdate(BookWyrmModel):
 
     def save(self, *args, **kwargs):
         """update user active time"""
-        self.user.last_active_date = timezone.now()
-        self.user.save(broadcast=False, update_fields=["last_active_date"])
+        self.user.update_active_date()
         super().save(*args, **kwargs)

@@ -195,6 +195,11 @@ class User(OrderedCollectionPageMixin, AbstractUser):
             queryset = queryset.exclude(blocks=viewer)
         return queryset
 
+    def update_active_date(self):
+        """this user is here! they are doing things!"""
+        self.last_active_date = timezone.now()
+        self.save(broadcast=False, update_fields=["last_active_date"])
+
     def to_outbox(self, filter_type=None, **kwargs):
         """an ordered collection of statuses"""
         if filter_type:

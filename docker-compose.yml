@@ -34,8 +34,6 @@ services:
       - backups:/backups
     networks:
       - main
-    ports:
-      - 5432:5432
   web:
     build: .
     env_file: .env
