@@ -1,7 +1,6 @@
 """ like/fav/star a status """
 from django.apps import apps
 from django.db import models
-from django.utils import timezone
 
 from bookwyrm import activitypub
 from .activitypub_mixin import ActivityMixin
@@ -29,8 +28,7 @@ class Favorite(ActivityMixin, BookWyrmModel):
 
     def save(self, *args, **kwargs):
         """update user active time"""
-        self.user.last_active_date = timezone.now()
-        self.user.save(broadcast=False, update_fields=["last_active_date"])
+        self.user.update_active_date()
         super().save(*args, **kwargs)
 
         if self.status.user.local and self.status.user != self.user:
