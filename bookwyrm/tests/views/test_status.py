@@ -101,7 +101,7 @@ class StatusViews(TestCase):
         """@mention a user in a post"""
         view = views.CreateStatus.as_view()
         user = models.User.objects.create_user(
-            "rat@%s" % DOMAIN,
+            f"rat@{DOMAIN}",
             "rat@rat.com",
             "password",
             local=True,
@@ -124,7 +124,7 @@ class StatusViews(TestCase):
         self.assertEqual(list(status.mention_users.all()), [user])
         self.assertEqual(models.Notification.objects.get().user, user)
         self.assertEqual(
-            status.content, '<p>hi <a href="%s">@rat</a></p>' % user.remote_id
+            status.content, f'<p>hi <a href="{user.remote_id}">@rat</a></p>'
         )
 
     def test_handle_status_reply_with_mentions(self, *_):
@@ -224,13 +224,13 @@ class StatusViews(TestCase):
     def test_find_mentions(self, *_):
         """detect and look up @ mentions of users"""
         user = models.User.objects.create_user(
-            "nutria@%s" % DOMAIN,
+            f"nutria@{DOMAIN}",
             "nutria@nutria.com",
             "password",
             local=True,
             localname="nutria",
         )
-        self.assertEqual(user.username, "nutria@%s" % DOMAIN)
+        self.assertEqual(user.username, f"nutria@{DOMAIN}")
 
         self.assertEqual(
             list(views.status.find_mentions("@nutria"))[0], ("@nutria", user)
@@ -263,19 +263,19 @@ class StatusViews(TestCase):
             self.assertEqual(list(views.status.find_mentions("@beep@beep.com")), [])
 
         self.assertEqual(
-            list(views.status.find_mentions("@nutria@%s" % DOMAIN))[0],
-            ("@nutria@%s" % DOMAIN, user),
+            list(views.status.find_mentions(f"@nutria@{DOMAIN}"))[0],
+            (f"@nutria@{DOMAIN}", user),
         )
 
     def test_format_links_simple_url(self, *_):
         """find and format urls into a tags"""
         url = "http://www.fish.com/"
         self.assertEqual(
-            views.status.format_links(url), '<a href="%s">www.fish.com/</a>' % url
+            views.status.format_links(url), f'<a href="{url}">www.fish.com/</a>'
         )
         self.assertEqual(
-            views.status.format_links("(%s)" % url),
-            '(<a href="%s">www.fish.com/</a>)' % url,
+            views.status.format_links(f"({url})"),
+            f'(<a href="{url}">www.fish.com/</a>)',
         )
 
     def test_format_links_paragraph_break(self, *_):
@@ -292,8 +292,8 @@ http://www.fish.com/"""
         """find and format urls into a tags"""
         url = "http://www.fish.com/"
         self.assertEqual(
-            views.status.format_links("(%s)" % url),
-            '(<a href="%s">www.fish.com/</a>)' % url,
+            views.status.format_links(f"({url})"),
+            f'(<a href="{url}">www.fish.com/</a>)',
         )
 
     def test_format_links_special_chars(self, *_):
@@ -301,27 +301,27 @@ http://www.fish.com/"""
         url = "https://archive.org/details/dli.granth.72113/page/n25/mode/2up"
         self.assertEqual(
             views.status.format_links(url),
-            '<a href="%s">'
-            "archive.org/details/dli.granth.72113/page/n25/mode/2up</a>" % url,
+            f'<a href="{url}">'
+            "archive.org/details/dli.granth.72113/page/n25/mode/2up</a>",
         )
         url = "https://openlibrary.org/search?q=arkady+strugatsky&mode=everything"
         self.assertEqual(
             views.status.format_links(url),
-            '<a href="%s">openlibrary.org/search'
-            "?q=arkady+strugatsky&mode=everything</a>" % url,
+            f'<a href="{url}">openlibrary.org/search'
+            "?q=arkady+strugatsky&mode=everything</a>",
         )
         url = "https://tech.lgbt/@bookwyrm"
         self.assertEqual(
-            views.status.format_links(url), '<a href="%s">tech.lgbt/@bookwyrm</a>' % url
+            views.status.format_links(url), f'<a href="{url}">tech.lgbt/@bookwyrm</a>'
         )
         url = "https://users.speakeasy.net/~lion/nb/book.pdf"
         self.assertEqual(
             views.status.format_links(url),
-            '<a href="%s">users.speakeasy.net/~lion/nb/book.pdf</a>' % url,
+            f'<a href="{url}">users.speakeasy.net/~lion/nb/book.pdf</a>',
         )
-        url = "https://pkm.one/#/page/The%20Book%20which%20launched%20a%201000%20Note%20taking%20apps"
+        url = "https://pkm.one/#/page/The%20Book%20launched%20a%201000%20Note%20apps"
         self.assertEqual(
-            views.status.format_links(url), '<a href="%s">%s</a>' % (url, url[8:])
+            views.status.format_links(url), f'<a href="{url}">{url[8:]}</a>'
         )
 
     def test_to_markdown(self, *_):
