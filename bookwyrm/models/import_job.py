@@ -2,7 +2,6 @@
 import re
 import dateutil.parser
 
-from django.apps import apps
 from django.db import models
 from django.utils import timezone
 
