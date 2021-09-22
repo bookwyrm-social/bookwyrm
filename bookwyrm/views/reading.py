@@ -193,11 +193,11 @@ def create_readthrough(request):
     """can't use the form because the dates are too finnicky"""
     book = get_object_or_404(models.Edition, id=request.POST.get("book"))
 
-    start_date = (
-        load_date_in_user_tz_as_utc(request.POST.get("start_date"), request.user),
+    start_date = load_date_in_user_tz_as_utc(
+        request.POST.get("start_date"), request.user
     )
-    finish_date = (
-        load_date_in_user_tz_as_utc(request.POST.get("finish_date"), request.user),
+    finish_date = load_date_in_user_tz_as_utc(
+        request.POST.get("finish_date"), request.user
     )
     models.ReadThrough.objects.create(
         user=request.user,
