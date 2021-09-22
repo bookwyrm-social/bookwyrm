@@ -92,7 +92,7 @@
             >
                 {% if status.quote %}
                     <div class="quote block">
-                        <blockquote dir="auto" class="content mb-2">{{ status.quote|safe }}</blockquote>
+                        <blockquote dir="auto" class="content mb-2 preserve-whitespace">{{ status.quote|safe }}</blockquote>
 
                         <p>
                             &mdash; {% include 'snippets/book_titleby.html' with book=status.book %}
