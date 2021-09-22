@@ -85,10 +85,13 @@ def notify_on_unfav(sender, instance, *args, **kwargs):
     ).delete()
 
 
-@receiver(models.signals.post_save, sender=Status)
+@receiver(models.signals.post_save)
 # pylint: disable=unused-argument
 def notify_user_on_mention(sender, instance, *args, **kwargs):
     """creating and deleting statuses with @ mentions and replies"""
+    if not issubclass(sender, Status):
+        return
+
     if instance.deleted:
         Notification.objects.filter(related_status=instance).delete()
         return
