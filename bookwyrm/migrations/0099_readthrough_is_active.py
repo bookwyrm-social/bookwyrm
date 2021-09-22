@@ -3,6 +3,19 @@
 from django.db import migrations, models
 
 
+def set_active_readthrough(apps, schema_editor):
+    """best-guess for deactivation date"""
+    db_alias = schema_editor.connection.alias
+    apps.get_model("bookwyrm", "ReadThrough").objects.using(db_alias).filter(
+        start_date__isnull=False,
+        finish_date__isnull=True,
+    ).update(is_active=True)
+
+
+def reverse_func(apps, schema_editor):
+    """noop"""
+
+
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -14,5 +27,11 @@ class Migration(migrations.Migration):
             model_name="readthrough",
             name="is_active",
             field=models.BooleanField(default=False),
+        ),
+        migrations.RunPython(set_active_readthrough, reverse_func),
+        migrations.AlterField(
+            model_name="readthrough",
+            name="is_active",
+            field=models.BooleanField(default=True),
         ),
     ]
