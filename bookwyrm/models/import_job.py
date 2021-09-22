@@ -50,19 +50,6 @@ class ImportJob(models.Model):
     )
     retry = models.BooleanField(default=False)
 
-    def save(self, *args, **kwargs):
-        """save and notify"""
-        super().save(*args, **kwargs)
-        if self.complete:
-            notification_model = apps.get_model(
-                "bookwyrm.Notification", require_ready=True
-            )
-            notification_model.objects.create(
-                user=self.user,
-                notification_type="IMPORT",
-                related_import=self,
-            )
-
 
 class ImportItem(models.Model):
     """a single line of a csv being imported"""
