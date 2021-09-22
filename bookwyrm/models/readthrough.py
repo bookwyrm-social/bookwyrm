@@ -27,6 +27,7 @@ class ReadThrough(BookWyrmModel):
     )
     start_date = models.DateTimeField(blank=True, null=True)
     finish_date = models.DateTimeField(blank=True, null=True)
+    is_active = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
         """update user active time"""
