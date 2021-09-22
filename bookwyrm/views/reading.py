@@ -56,14 +56,12 @@ class ReadingStatus(View):
         )
 
         # gets the first shelf that indicates a reading status, or None
-        current_status_shelfbook = next(
-            iter(
-                s
-                for s in book.current_shelves
-                if s.shelf.identifier in models.Shelf.READ_STATUS_IDENTIFIERS
-            ),
-            None,
-        )
+        shelves = [
+            s
+            for s in book.current_shelves
+            if s.shelf.identifier in models.Shelf.READ_STATUS_IDENTIFIERS
+        ]
+        current_status_shelfbook = shelves[0] if shelves else None
 
         # checking the referer prevents redirecting back to the modal page
         referer = request.headers.get("Referer", "/")
