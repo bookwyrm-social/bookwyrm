@@ -1,4 +1,5 @@
 """ non-interactive pages """
+from bookwyrm.models.group import GroupMember
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.shortcuts import redirect
@@ -132,6 +133,22 @@ class Following(View):
         }
         return TemplateResponse(request, "user/relationships/following.html", data)
 
+class Groups(View):
+    """list of user's groups view"""
+
+    def get(self, request, username):
+        """list of groups"""
+        user = get_user_from_username(request.user, username)
+
+        paginated = Paginator(
+            GroupMember.objects.filter(user=user)
+        )
+        data = {
+            "user": user,
+            "is_self": request.user.id == user.id,
+            "group_list": paginated.get_page(request.GET.get("page")),
+        }
+        return TemplateResponse(request, "user/groups.html", data)
 
 @require_POST
 @login_required
