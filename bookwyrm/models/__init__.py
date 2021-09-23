@@ -21,6 +21,8 @@ from .relationship import UserFollows, UserFollowRequest, UserBlocks
 from .report import Report, ReportComment
 from .federated_server import FederatedServer
 
+from .group import Group, GroupList, GroupMember
+
 from .import_job import ImportJob, ImportItem
 
 from .site import SiteSettings, SiteInvite
