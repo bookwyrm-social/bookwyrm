@@ -5,7 +5,7 @@ from urllib.parse import urlparse
 from django.contrib.auth.decorators import login_required
 from django.core.validators import URLValidator
 from django.core.exceptions import ValidationError
-from django.http import HttpResponse, HttpResponseBadRequest
+from django.http import HttpResponse, HttpResponseBadRequest, Http404
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
@@ -79,7 +79,10 @@ class CreateStatus(View):
         status.save(created=True)
 
         # update a readthorugh, if needed
-        edit_readthrough(request)
+        try:
+            edit_readthrough(request)
+        except Http404:
+            pass
 
         if is_api_request(request):
             return HttpResponse()
