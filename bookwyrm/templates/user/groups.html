@@ -1,0 +1,42 @@
+{% extends 'user/layout.html' %}
+{% load i18n %}
+
+{% block header %}
+<div class="columns is-mobile">
+    <div class="column">
+        <h1 class="title">
+            {% if is_self %}
+            {% trans "Your Groups" %}
+            {% else %}
+            {% blocktrans with username=user.display_name %}Groups: {{ username }}{% endblocktrans %}
+            {% endif %}
+        </h1>
+    </div>
+    {% if is_self %}
+    <div class="column is-narrow">
+        {% trans "Create group" as button_text %}
+        {% include 'snippets/toggle/open_button.html' with controls_text="create_group" icon_with_text="plus" text=button_text %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+
+{% block panel %}
+<section class="block">
+    <form name="create-group" method="post" action="{% url 'groups' %}" class="box is-hidden" id="create_group">
+        <header class="columns">
+            <h3 class="title column">{% trans "Create group" %}</h3>
+            <div class="column is-narrow">
+                {% include 'snippets/toggle/toggle_button.html' with controls_text="create_group" label="close" class="delete" nonbutton=True %}
+            </div>
+        </header>
+        {% include 'groups/form.html' %}
+    </form>
+
+    <!-- {% include 'lists/list_items.html' with lists=lists %} -->
+</section>
+<div>
+    <!-- {% include 'snippets/pagination.html' with page=user_groups path=path %} -->
+</div>
+{% endblock %}
