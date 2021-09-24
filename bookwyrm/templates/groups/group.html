@@ -1,0 +1,34 @@
+{% extends 'groups/layout.html' %}
+{% load i18n %}
+{% load bookwyrm_tags %}
+{% load markdown %}
+
+{% block panel %}
+
+<div class="columns mt-3">
+    <section class="column is-three-quarters">
+        {% if request.GET.updated %}
+        <div class="notification is-primary">
+            {% trans "You successfully added a user to this group!" %}
+        </div>
+        {% endif %}
+
+        {% if not members.object_list.exists %}
+        <p>{% trans "This group has no members" %}</p>
+        {% else %}
+        <ol start="{{ members.start_index }}" class="ordered-list">
+        {% for member in members %}
+            <li class="block mb-5">
+                <div class="card">
+                  <p>member.username</p>
+                </div>
+                </div>
+            </li>
+        {% endfor %}
+        </ol>
+        {% endif %}
+        {% include "snippets/pagination.html" with page=items %}
+    </section>
+
+</div>
+{% endblock %}
