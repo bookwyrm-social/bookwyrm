@@ -59,8 +59,9 @@ class UserGroups(View):
     def get(self, request, username):
         """display a group"""
         user = get_user_from_username(request.user, username)
-        groups = models.GroupMember.objects.filter(user=user)
-        groups = privacy_filter(request.user, groups)
+        # groups = models.GroupMember.objects.filter(user=user)
+        groups = models.Group.objects.filter(members=request.user) 
+        # groups = privacy_filter(request.user, groups)
         paginated = Paginator(groups, 12)
 
         data = {
