@@ -34,9 +34,9 @@
         {% include 'groups/form.html' %}
     </form>
 
-    <!-- {% include 'lists/list_items.html' with lists=lists %} -->
+    {% include 'groups/group_items.html' with groups=groups %}
 </section>
 <div>
-    <!-- {% include 'snippets/pagination.html' with page=user_groups path=path %} -->
+    {% include 'snippets/pagination.html' with page=user_groups path=path %}
 </div>
 {% endblock %}

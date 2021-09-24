@@ -6,7 +6,8 @@
 {% endblock %}
 
 {% block form %}
-    <form name="create-group" method="post" action="{% url 'user-groups' %}">
+<form name="create-list" method="post" action="{% url 'lists' %}">
     {% include 'group/form.html' %}
 </form>
 {% endblock %}
+
