@@ -1,0 +1,6 @@
+{% load i18n %}
+{% spaceless %}
+
+{% blocktrans with username=group.manager.display_name path=group.manager.local_path %}Managed by <a href="{{ path }}">{{ username }}</a>{% endblocktrans %}
+
+{% endspaceless %}

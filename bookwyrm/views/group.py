@@ -25,32 +25,32 @@ from .helpers import get_user_from_username
 class Group(View):
     """group page"""
 
-    def get(self, request):
+    def get(self, request, group_id):
         """display a group"""
 
-        groups = models.Group.objects.query(members__contains=request.user) 
-        groups = privacy_filter(
-            request.user, groups, privacy_levels=["public", "followers"]
-        )
+        group = models.Group.objects.get(id=group_id) 
+        # groups = privacy_filter(
+        #     request.user, groups, privacy_levels=["public", "followers"]
+        # )
 
-        paginated = Paginator(groups, 12)
+
         data = {
-            "lists": paginated.get_page(request.GET.get("page")),
+            "group": group,
             "list_form": forms.GroupForm(),
             "path": "/group",
         }
         return TemplateResponse(request, "groups/group.html", data)
 
-    @method_decorator(login_required, name="dispatch")
-    # pylint: disable=unused-argument
-    def post(self, request):
-        """create a book_list"""
-        form = forms.ListForm(request.POST)
-        if not form.is_valid():
-            return redirect("lists")
-        book_list = form.save()
+    # @method_decorator(login_required, name="dispatch")
+    # # pylint: disable=unused-argument
+    # def post(self, request):
+    #     """create a book_list"""
+    #     form = forms.ListForm(request.POST)
+    #     if not form.is_valid():
+    #         return redirect("lists")
+    #     book_list = form.save()
 
-        return redirect(book_list.local_path)
+    #     return redirect(book_list.local_path)
 
 @method_decorator(login_required, name="dispatch")
 class UserGroups(View):
@@ -60,7 +60,7 @@ class UserGroups(View):
         """display a group"""
         user = get_user_from_username(request.user, username)
         # groups = models.GroupMember.objects.filter(user=user)
-        groups = models.Group.objects.filter(members=request.user) 
+        groups = models.Group.objects.filter(members=user) 
         # groups = privacy_filter(request.user, groups)
         paginated = Paginator(groups, 12)
 
@@ -69,6 +69,18 @@ class UserGroups(View):
             "is_self": request.user.id == user.id,
             "groups": paginated.get_page(request.GET.get("page")),
             "group_form": forms.GroupForm(),
-            "path": user.local_path + "/groups",
+            "path": user.local_path + "/group",
         }
         return TemplateResponse(request, "user/groups.html", data)
+
+@login_required
+@require_POST
+def create_group(request):
+    """user groups"""
+    form = forms.GroupForm(request.POST)
+    if not form.is_valid():
+        print("invalid!")
+        return redirect(request.headers.get("Referer", "/"))
+
+    group = form.save()
+    return redirect(group.local_path)
