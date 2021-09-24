@@ -41,17 +41,6 @@ class Group(View):
         }
         return TemplateResponse(request, "groups/group.html", data)
 
-    # @method_decorator(login_required, name="dispatch")
-    # # pylint: disable=unused-argument
-    # def post(self, request):
-    #     """create a book_list"""
-    #     form = forms.ListForm(request.POST)
-    #     if not form.is_valid():
-    #         return redirect("lists")
-    #     book_list = form.save()
-
-    #     return redirect(book_list.local_path)
-
 @method_decorator(login_required, name="dispatch")
 class UserGroups(View):
     """a user's groups page"""
@@ -59,9 +48,7 @@ class UserGroups(View):
     def get(self, request, username):
         """display a group"""
         user = get_user_from_username(request.user, username)
-        # groups = models.GroupMember.objects.filter(user=user)
         groups = models.Group.objects.filter(members=user) 
-        # groups = privacy_filter(request.user, groups)
         paginated = Paginator(groups, 12)
 
         data = {
@@ -83,4 +70,6 @@ def create_group(request):
         return redirect(request.headers.get("Referer", "/"))
 
     group = form.save()
+    # TODO: add user as group member
+    models.GroupMember.objects.create(group=group, user=request.user)
     return redirect(group.local_path)

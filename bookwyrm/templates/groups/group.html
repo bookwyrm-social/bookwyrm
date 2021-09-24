@@ -13,19 +13,34 @@
         </div>
         {% endif %}
 
-        {% if not members.object_list.exists %}
+        {% if not group.members.exists %}
         <p>{% trans "This group has no members" %}</p>
         {% else %}
-        <ol start="{{ members.start_index }}" class="ordered-list">
-        {% for member in members %}
+        <h2 class="heading">Group Members</h2>
+        <ul start="{{ members.start_index }}" class="ordered-list">
+        {% for member in group.members.all %}
             <li class="block mb-5">
+              <div class="column is-one-third">
+                  {% include 'directory/user_card.html' %}
+              </div>
+            </li>
+        {% endfor %}
+        </ul>
+        {% endif %}
+        {% if not group.lists.exists %}
+        <p>{% trans "This group has no lists" %}</p>
+        {% else %}
+        <h2 class="heading">Lists</h2>
+        <ul start="{{ lists.start_index }}" class="ordered-list">
+        {% for list in group.lists.all %}
+            <li class="block mb-5">
+              <!-- TODO: make these proper list cards -->
                 <div class="card">
-                  <p>member.username</p>
-                </div>
+                  <a href={{ member.local_path }}>{{ list.name }}</a>
                 </div>
             </li>
         {% endfor %}
-        </ol>
+        </ul>
         {% endif %}
         {% include "snippets/pagination.html" with page=items %}
     </section>
