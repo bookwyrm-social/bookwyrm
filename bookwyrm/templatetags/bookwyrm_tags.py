@@ -1,7 +1,6 @@
 """ template filters """
 from django import template
 from django.db.models import Avg
-from django.utils.safestring import mark_safe
 
 from bookwyrm import models, views
 
@@ -99,15 +98,3 @@ def mutuals_count(context, user):
     if not viewer.is_authenticated:
         return None
     return user.followers.filter(followers=viewer).count()
-
-@register.simple_tag(takes_context=True)
-def identify_manager(context):
-    """boolean for whether user is group manager"""
-    group = context['group']
-    member = context['member']
-    snippet =  mark_safe('')
-
-    if group.manager == member:
-        snippet = mark_safe('<span class="icon icon-star-full" title="Manager"><span class="is-sr-only">Manager</span></span>')
-
-    return snippet

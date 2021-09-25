@@ -38,6 +38,11 @@
           <span title="{{ member.display_name }}" class="is-block is-6 has-text-weight-bold">{{ member.display_name|truncatechars:10 }}</span>
           <span title="@{{ member|username }}" class="is-block pb-3">@{{ member|username|truncatechars:8 }}</span>
       </a>
+      {% if group.manager == member %}
+      <span class="icon icon-star-full" title="Manager">
+        <span class="is-sr-only">Manager</span>
+      </span>
+      {% endif %}
       {% include 'snippets/add_to_group_button.html' with user=member minimal=True %}
       {% if member.mutuals %}
       <p class="help">
@@ -59,7 +64,6 @@
           {% trans "Follows you" %}
       </p>
       {% endif %}
-      {% identify_manager %}
     </div>
     {% endfor %}
   </div>
