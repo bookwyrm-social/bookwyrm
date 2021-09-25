@@ -5,20 +5,17 @@ from urllib.parse import urlencode
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator
-from django.db import IntegrityError, transaction
-from django.db.models import Avg, Count, DecimalField, Q, Max
-from django.db.models.functions import Coalesce
 from django.http import HttpResponseNotFound, HttpResponseBadRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
-from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.http import require_POST
+from django.contrib.postgres.search import TrigramSimilarity
+from django.db.models.functions import Greatest
 
 from bookwyrm import forms, models
-from bookwyrm.connectors import connector_manager
-from bookwyrm.settings import PAGE_LENGTH
+from bookwyrm.suggested_users import suggested_users
 from .helpers import privacy_filter
 from .helpers import get_user_from_username
 
@@ -60,6 +57,39 @@ class UserGroups(View):
         }
         return TemplateResponse(request, "user/groups.html", data)
 
+@method_decorator(login_required, name="dispatch")
+class FindAndAddUsers(View):
+    """find friends to add to your group"""
+    """this is taken from the Get Started friend finder"""
+
+    def get(self, request, group_id):
+        """basic profile info"""
+        query = request.GET.get("query")
+        user_results = (
+            models.User.viewer_aware_objects(request.user)
+            .annotate(
+                similarity=Greatest(
+                    TrigramSimilarity("username", query),
+                    TrigramSimilarity("localname", query),
+                )
+            )
+            .filter(
+                similarity__gt=0.5,
+            )
+            .order_by("-similarity")[:5]
+        )
+        data = {"no_results": not user_results}
+
+        if user_results.count() < 5:
+            user_results = list(user_results) + suggested_users.get_suggestions(
+                request.user
+            )
+
+        data["suggested_users"] = user_results
+        data["group"] = get_object_or_404(models.Group, id=group_id)
+        data["query"] = query
+        return TemplateResponse(request, "groups/find_users.html", data)
+
 @login_required
 @require_POST
 def create_group(request):
@@ -70,6 +100,6 @@ def create_group(request):
         return redirect(request.headers.get("Referer", "/"))
 
     group = form.save()
-    # TODO: add user as group member
+    # add the creator as a group member
     models.GroupMember.objects.create(group=group, user=request.user)
     return redirect(group.local_path)
