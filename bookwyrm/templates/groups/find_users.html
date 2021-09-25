@@ -1,0 +1,6 @@
+{% extends 'groups/group.html' %}
+
+{% block panel %}
+<h1 class="title">Add users to <a href="{{ group.local_path }}">{{ group.name }}</a></h1>
+  {% include 'groups/suggested_users.html' with suggested_users=suggested_users query=query %}
+{% endblock %}

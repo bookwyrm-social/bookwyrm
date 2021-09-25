@@ -7,30 +7,13 @@
 
 <div class="columns mt-3">
     <section class="column is-three-quarters">
-        {% if request.GET.updated %}
-        <div class="notification is-primary">
-            {% trans "You successfully added a user to this group!" %}
-        </div>
-        {% endif %}
 
-        {% if not group.members.exists %}
-        <p>{% trans "This group has no members" %}</p>
-        {% else %}
-        <h2 class="heading">Group Members</h2>
-        <ul start="{{ members.start_index }}" class="ordered-list">
-        {% for member in group.members.all %}
-            <li class="block mb-5">
-              <div class="column is-one-third">
-                  {% include 'directory/user_card.html' %}
-              </div>
-            </li>
-        {% endfor %}
-        </ul>
-        {% endif %}
+        {% include "groups/users.html" %}
+
+        <h2 class="heading">Lists</h2>
         {% if not group.lists.exists %}
         <p>{% trans "This group has no lists" %}</p>
         {% else %}
-        <h2 class="heading">Lists</h2>
         <ul start="{{ lists.start_index }}" class="ordered-list">
         {% for list in group.lists.all %}
             <li class="block mb-5">

@@ -1,0 +1,47 @@
+{% load i18n %}
+{% if request.user == user or not request.user.is_authenticated %}
+<!-- TODO: blocking is irrelevant here, but ...is it? -->
+{% elif user in request.user.blocks.all %}
+{% include 'snippets/block_button.html' with blocks=True %}
+{% else %}
+
+<div class="field{% if not minimal %} has-addons{% else %} mb-0{% endif %}">
+    <div class="control">
+      <!-- TODO: make this "add-to-group" -->
+        <form action="{% url 'follow' %}" method="POST" class="interaction follow_{{ user.id }} {% if request.user in user.followers.all or request.user in user.follower_requests.all %}is-hidden{%endif %}" data-id="follow_{{ user.id }}">
+            {% csrf_token %}
+            <input type="hidden" name="user" value="{{ user.username }}">
+            <button class="button is-small{% if not minimal %} is-link{% endif %}" type="submit">
+                {% if show_username %}
+                {% blocktrans with username=user.localname %}Follow @{{ username }}{% endblocktrans %}
+                {% else %}
+                {% trans "Follow" %}
+                {% endif %}
+            </button>
+        </form>
+        <!-- TODO: make this "remove-from-group" -->
+        <form action="{% url 'unfollow' %}" method="POST" class="interaction follow_{{ user.id }} {% if not request.user in user.followers.all and not request.user in user.follower_requests.all %}is-hidden{%endif %}" data-id="follow_{{ user.id }}">
+            {% csrf_token %}
+            <input type="hidden" name="user" value="{{ user.username }}">
+            {% if user.manually_approves_followers and request.user not in user.followers.all %}
+            <button class="button is-small is-danger is-light" type="submit">
+                {% trans "Undo follow request" %}
+            </button>
+            {% else %}
+            <button class="button is-small is-danger is-light" type="submit">
+                {% if show_username %}
+                {% blocktrans with username=user.localname %}Unfollow @{{ username }}{% endblocktrans %}
+                {% else %}
+                {% trans "Unfollow" %}
+                {% endif %}
+            </button>
+            {% endif %}
+        </form>
+    </div>
+    {% if not minimal %}
+    <div class="control">
+        {% include 'snippets/user_options.html' with user=user class="is-small" %}
+    </div>
+    {% endif %}
+</div>
+{% endif %}
