@@ -43,3 +43,10 @@ class GroupMember(models.Model):
 
     group = models.ForeignKey("Group", on_delete=models.CASCADE)
     user = models.ForeignKey("User", on_delete=models.CASCADE)
+
+    class Meta:
+        constraints = [
+          models.UniqueConstraint(
+            fields=["group", "user"], name="unique_member"
+          )
+        ]

@@ -1,11 +1,8 @@
 """group views"""
-from typing import Optional
-from urllib.parse import urlencode
-
 from django.contrib.auth.decorators import login_required
-from django.core.exceptions import PermissionDenied
+from django.db import IntegrityError
 from django.core.paginator import Paginator
-from django.http import HttpResponseNotFound, HttpResponseBadRequest, HttpResponse
+from django.http import HttpResponseNotFound, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
@@ -16,7 +13,7 @@ from django.db.models.functions import Greatest
 
 from bookwyrm import forms, models
 from bookwyrm.suggested_users import suggested_users
-from .helpers import privacy_filter
+from .helpers import privacy_filter # TODO:
 from .helpers import get_user_from_username
 
 class Group(View):
@@ -58,9 +55,9 @@ class UserGroups(View):
         return TemplateResponse(request, "user/groups.html", data)
 
 @method_decorator(login_required, name="dispatch")
-class FindAndAddUsers(View):
+class FindUsers(View):
     """find friends to add to your group"""
-    """this is taken from the Get Started friend finder"""
+    """this is mostly taken from the Get Started friend finder"""
 
     def get(self, request, group_id):
         """basic profile info"""
@@ -103,3 +100,63 @@ def create_group(request):
     # add the creator as a group member
     models.GroupMember.objects.create(group=group, user=request.user)
     return redirect(group.local_path)
+
+@require_POST
+@login_required
+def add_member(request):
+    """add a member to the group"""
+
+    # TODO: if groups become AP values we need something like get_group_from_group_fullname
+    # group = get_object_or_404(models.Group, id=request.POST.get("group"))
+    group = models.Group.objects.get(id=request.POST["group"])
+    if not group:
+        return HttpResponseBadRequest()
+
+    user = get_user_from_username(request.user, request.POST["user"])
+    if not user:
+        return HttpResponseBadRequest()
+
+    if not group.manager == request.user:
+        return HttpResponseBadRequest()
+
+    try:
+        models.GroupMember.objects.create(
+          group=group,
+          user=user
+        )
+
+    except IntegrityError:
+        print("no integrity")
+        pass
+
+    # TODO: how do we return and update AJAX data?
+    return redirect(user.local_path)
+
+@require_POST
+@login_required
+def remove_member(request):
+    """remove a member from the group"""
+
+    # TODO: if groups become AP values we need something like get_group_from_group_fullname
+    # group = get_object_or_404(models.Group, id=request.POST.get("group"))
+    group = models.Group.objects.get(id=request.POST["group"])
+    if not group:
+        return HttpResponseBadRequest()
+
+    user = get_user_from_username(request.user, request.POST["user"])
+    if not user:
+        return HttpResponseBadRequest()
+
+    if not group.manager == request.user:
+        return HttpResponseBadRequest()
+
+    try:
+        membership = models.GroupMember.objects.get(group=group,user=user)
+        membership.delete()
+
+    except IntegrityError:
+        print("no integrity")
+        pass
+
+    # TODO: how do we return and update AJAX data?
+    return redirect(user.local_path)
