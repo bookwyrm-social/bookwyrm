@@ -255,7 +255,7 @@ urlpatterns = [
     re_path(rf"{USER_PATH}/groups/?$", views.UserGroups.as_view(), name="user-groups"),
     re_path(r"^create-group/?$", views.create_group, name="create-group"),
     re_path(r"^group/(?P<group_id>\d+)(.json)?/?$", views.Group.as_view(), name="group"),
-    re_path(r"^group/(?P<group_id>\d+)/find-users/?$", views.FindAndAddUsers.as_view(), name="group-find-users"),
+    re_path(r"^group/(?P<group_id>\d+)/add-users/?$", views.FindAndAddUsers.as_view(), name="group-find-users"),
     # lists
     re_path(rf"{USER_PATH}/lists/?$", views.UserLists.as_view(), name="user-lists"),
     re_path(r"^list/?$", views.Lists.as_view(), name="lists"),

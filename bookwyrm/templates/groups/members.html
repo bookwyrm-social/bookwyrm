@@ -1,0 +1,65 @@
+{% load i18n %}
+{% load utilities %}
+{% load humanize %}
+<!-- TODO: do we need this? -->
+{% if request.GET.updated %}
+<div class="notification is-primary">
+    {% trans "You successfully added a user to this group!" %}
+</div>
+{% endif %}
+
+<h2 class="heading">Group Members</h2>
+<p class="subtitle is-6">{% trans "Members can add and remove books on your group's book lists" %}</p>
+
+{% block panel %}
+<div class="block">
+    <form class="field has-addons" method="get" action="{% url 'group-find-users' group.id %}">
+        <div class="control">
+            <input type="text" name="query" value="{{ request.GET.query }}" class="input" placeholder="{% trans 'Search to add a user' %}" aria-label="{% trans 'Search to add a user' %}">
+        </div>
+        <div class="control">
+            <button class="button" type="submit">
+                <span class="icon icon-search" title="{% trans 'Search' %}">
+                    <span class="is-sr-only">{% trans "Search" %}</span>
+                </span>
+            </button>
+        </div>
+    </form>
+    {% include 'snippets/suggested_users.html' with suggested_users=suggested_users %}
+</div>
+{% endblock %}
+
+<ul start="{{ members.start_index }}" class="ordered-list">
+{% for member in group.members.all %}
+<div class="column is-flex is-flex-grow-0">
+  <div class="box has-text-centered is-shadowless has-background-white-bis m-0">
+      <a href="{{ user.local_path }}" class="has-text-black">
+          {% include 'snippets/avatar.html' with user=user large=True %}
+          <span title="{{ user.display_name }}" class="is-block is-6 has-text-weight-bold">{{ user.display_name|truncatechars:10 }}</span>
+          <span title="@{{ user|username }}" class="is-block pb-3">@{{ user|username|truncatechars:8 }}</span>
+      </a>
+      {% include 'snippets/add_to_group_button.html' with user=user minimal=True %}
+      {% if user.mutuals %}
+      <p class="help">
+          {% blocktrans trimmed with mutuals=user.mutuals|intcomma count counter=user.mutuals %}
+          {{ mutuals }} follower you follow
+          {% plural %}
+          {{ mutuals }} followers you follow{% endblocktrans %}
+      </p>
+      {% elif user.shared_books %}
+      <p class="help">
+          {% blocktrans trimmed with shared_books=user.shared_books|intcomma count counter=user.shared_books %}
+          {{ shared_books }} book on your shelves
+          {% plural %}
+          {{ shared_books }} books on your shelves
+          {% endblocktrans %}
+      </p>
+      {% elif request.user in user.following.all %}
+      <p class="help">
+          {% trans "Follows you" %}
+      </p>
+      {% endif %}
+  </div>
+</div>
+{% endfor %}
+</ul>
