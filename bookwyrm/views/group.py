@@ -47,7 +47,7 @@ class UserGroups(View):
 
         data = {
             "user": user,
-            "is_self": request.user.id == user.id,
+            "is_self": request.user.id == user.id, # CHECK is this relevant here?
             "groups": paginated.get_page(request.GET.get("page")),
             "group_form": forms.GroupForm(),
             "path": user.local_path + "/group",
@@ -82,9 +82,12 @@ class FindUsers(View):
                 request.user
             )
 
+        group = get_object_or_404(models.Group, id=group_id)
+
         data["suggested_users"] = user_results
-        data["group"] = get_object_or_404(models.Group, id=group_id)
+        data["group"] = group
         data["query"] = query
+        data["requestor_is_manager"] = request.user == group.manager
         return TemplateResponse(request, "groups/find_users.html", data)
 
 @login_required
@@ -129,7 +132,6 @@ def add_member(request):
         print("no integrity")
         pass
 
-    # TODO: how do we return and update AJAX data?
     return redirect(user.local_path)
 
 @require_POST
@@ -158,5 +160,4 @@ def remove_member(request):
         print("no integrity")
         pass
 
-    # TODO: how do we return and update AJAX data?
     return redirect(user.local_path)
