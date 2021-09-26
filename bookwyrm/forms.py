@@ -293,7 +293,7 @@ class AnnouncementForm(CustomForm):
 class ListForm(CustomForm):
     class Meta:
         model = models.List
-        fields = ["user", "name", "description", "curation", "privacy"]
+        fields = ["user", "name", "description", "curation", "privacy", "group"]
 
 class GroupForm(CustomForm):
     class Meta:
