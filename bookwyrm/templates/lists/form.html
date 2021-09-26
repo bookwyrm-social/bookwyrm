@@ -37,20 +37,16 @@
               <input type="radio" name="curation" value="group"{% if list.curation == 'group' %} checked{% endif %}> {% trans "Group" %}
               <p class="help mb-2">{% trans "Group members can add to and remove from this list" %}</p>
           </label>
-
           <!-- TODO: add a list picker on-select for group lists -->
-
-          <!-- TODO: change the submission url -->
-          <!-- <form name="list-add" method="post" action="{% url 'list-add-book' %}"> -->
             {% if user_groups %}
               {% csrf_token %}
               <label class="label" for="id_group">{% trans "Select Group" %}</label>
               <div class="field has-addons">
                   <div class="select control">
                       <select name="group" id="id_group">
-                          <option value="{{ group.id }}" disabled selected></option>
+                          <option value="">Select a list</option>
                           {% for group in user_groups %}
-                          <option value="{{ group.id }}">{{ group.name }}</option>
+                          <option value="{{ group.id }}" {% if list.group.id == group.id %} selected{% endif %}>{{ group.name }}</option>
                           {% endfor %}
                       </select>
                   </div>

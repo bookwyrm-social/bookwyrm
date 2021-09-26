@@ -62,10 +62,6 @@ class Lists(View):
     def post(self, request):
         """create a book_list"""
         form = forms.ListForm(request.POST)
-        # TODO: here we need to take the value of the group (the group.id)
-        # and fetch the actual group to add to the DB
-        # but only if curation type is 'group' other wise the value of
-        # group is None
         if not form.is_valid():
             return redirect("lists")
         book_list = form.save()
@@ -208,6 +204,9 @@ class List(View):
         if not form.is_valid():
             return redirect("list", book_list.id)
         book_list = form.save()
+        if not book_list.curation == "group":
+            book_list.group = None
+            book_list.save()
         return redirect(book_list.local_path)
 
 
