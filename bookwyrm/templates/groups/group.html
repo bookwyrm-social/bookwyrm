@@ -11,15 +11,13 @@
         {% include "groups/members.html" %}
 
         <h2 class="heading">Lists</h2>
-        {% if not group.lists.exists %}
+        {% if not lists %}
         <p>{% trans "This group has no lists" %}</p>
         {% else %}
-        <ul start="{{ lists.start_index }}" class="ordered-list">
-        {% for list in group.lists.all %}
-            <li class="block mb-5">
+
               <div class="columns is-multiline">
                 {% for list in lists %}
-                <div class="column is-one-quarter">
+                <div class="column is-one-third">
                     <div class="card is-stretchable">
                         <header class="card-header">
                             <h4 class="card-header-title">
@@ -55,9 +53,8 @@
                 </div>
                 {% endfor %}
             </div>
-            </li>
-        {% endfor %}
-        </ul>
+
+
         {% endif %}
         {% include "snippets/pagination.html" with page=items %}
     </section>
