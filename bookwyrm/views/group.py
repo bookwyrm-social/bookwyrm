@@ -26,10 +26,11 @@ class Group(View):
         # groups = privacy_filter(
         #     request.user, groups, privacy_levels=["public", "followers"]
         # )
-
+        lists = models.List.objects.filter(group=group).order_by("-updated_date")
 
         data = {
             "group": group,
+            "lists": lists,
             "list_form": forms.GroupForm(),
             "path": "/group",
         }
@@ -129,7 +130,6 @@ def add_member(request):
         )
 
     except IntegrityError:
-        print("no integrity")
         pass
 
     return redirect(user.local_path)

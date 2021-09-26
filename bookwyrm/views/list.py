@@ -46,9 +46,12 @@ class Lists(View):
             request.user, lists, privacy_levels=["public", "followers"]
         )
 
+        user_groups = models.Group.objects.filter(members=request.user).order_by("-updated_date")
+
         paginated = Paginator(lists, 12)
         data = {
             "lists": paginated.get_page(request.GET.get("page")),
+            "user_groups": user_groups,
             "list_form": forms.ListForm(),
             "path": "/list",
         }
@@ -59,6 +62,10 @@ class Lists(View):
     def post(self, request):
         """create a book_list"""
         form = forms.ListForm(request.POST)
+        # TODO: here we need to take the value of the group (the group.id)
+        # and fetch the actual group to add to the DB
+        # but only if curation type is 'group' other wise the value of
+        # group is None
         if not form.is_valid():
             return redirect("lists")
         book_list = form.save()
@@ -93,12 +100,14 @@ class UserLists(View):
         user = get_user_from_username(request.user, username)
         lists = models.List.objects.filter(user=user)
         lists = privacy_filter(request.user, lists)
+        user_groups = models.Group.objects.filter(members=request.user).order_by("-updated_date")
         paginated = Paginator(lists, 12)
 
         data = {
             "user": user,
             "is_self": request.user.id == user.id,
             "lists": paginated.get_page(request.GET.get("page")),
+            "user_groups": user_groups,
             "list_form": forms.ListForm(),
             "path": user.local_path + "/lists",
         }
@@ -171,6 +180,7 @@ class List(View):
                     ).order_by("-updated_date")
                 ][: 5 - len(suggestions)]
 
+        user_groups = models.Group.objects.filter(members=request.user).order_by("-updated_date")
         page = paginated.get_page(request.GET.get("page"))
         data = {
             "list": book_list,
@@ -185,6 +195,7 @@ class List(View):
             "sort_form": forms.SortListForm(
                 {"direction": direction, "sort_by": sort_by}
             ),
+            "user_groups": user_groups
         }
         return TemplateResponse(request, "lists/list.html", data)
 
