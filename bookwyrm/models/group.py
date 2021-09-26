@@ -16,14 +16,6 @@ class Group(BookWyrmModel):
         "User", on_delete=models.PROTECT)
     description = fields.TextField(blank=True, null=True)
     privacy = fields.PrivacyField()
-
-    lists = models.ManyToManyField(
-        "List",
-        symmetrical=False,
-        through="GroupList",
-        through_fields=("group", "book_list"),
-    )
-
     members = models.ManyToManyField(
         "User",
         symmetrical=False,
@@ -31,12 +23,6 @@ class Group(BookWyrmModel):
         through_fields=("group", "user"),
         related_name="members"
     )
-
-class GroupList(BookWyrmModel):
-    """Lists that group members can edit"""
-
-    group = models.ForeignKey("Group", on_delete=models.CASCADE)
-    book_list = models.ForeignKey("List", on_delete=models.CASCADE)
 
 class GroupMember(models.Model):
     """Users who are members of a group"""

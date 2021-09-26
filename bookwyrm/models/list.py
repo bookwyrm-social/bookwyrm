@@ -1,4 +1,5 @@
 """ make a list of books!! """
+from dataclasses import field
 from django.apps import apps
 from django.db import models
 from django.utils import timezone
@@ -16,6 +17,7 @@ CurationType = models.TextChoices(
         "closed",
         "open",
         "curated",
+        "group"
     ],
 )
 
@@ -31,6 +33,11 @@ class List(OrderedCollectionMixin, BookWyrmModel):
     privacy = fields.PrivacyField()
     curation = fields.CharField(
         max_length=255, default="closed", choices=CurationType.choices
+    )
+    group = models.ForeignKey(
+        "Group",
+        on_delete=models.CASCADE,
+        null=True
     )
     books = models.ManyToManyField(
         "Edition",
