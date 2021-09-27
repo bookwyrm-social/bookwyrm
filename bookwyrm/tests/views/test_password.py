@@ -50,6 +50,7 @@ class PasswordViews(TestCase):
         resp.render()
 
         request = self.factory.post("", {"email": "mouse@mouse.com"})
+        request.user = self.anonymous_user
         with patch("bookwyrm.emailing.send_email.delay"):
             resp = view(request)
         resp.render()
