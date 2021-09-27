@@ -66,7 +66,8 @@
                             <p>{% blocktrans with username=item.user.display_name user_path=item.user.local_path %}Added by <a href="{{ user_path }}">{{ username }}</a>{% endblocktrans %}</p>
                             </div>
                         </div>
-                        {% if list.user == request.user or list.curation == 'open' and item.user == request.user %}
+                        {% if list.user != request.user %}
+                        {% if list.curation == 'open' and item.user == request.user %}
                         <div class="card-footer-item">
                             <form name="set-position" method="post" action="{% url 'list-set-book-position' item.id %}">
                                 <div class="field has-addons mb-0">
@@ -88,6 +89,7 @@
                             <input type="hidden" name="item" value="{{ item.id }}">
                             <button type="submit" class="button is-small is-danger">{% trans "Remove" %}</button>
                         </form>
+                        {% endif %}
                         {% endif %}
                     </div>
                 </div>
