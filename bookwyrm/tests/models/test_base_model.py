@@ -81,13 +81,13 @@ class BaseModel(TestCase):
         obj = models.Status.objects.create(
             content="hi", user=self.remote_user, privacy="followers"
         )
-        with self.assertRaise(Http404):
+        with self.assertRaises(Http404):
             obj.raise_visible_to_user(self.local_user)
 
         obj = models.Status.objects.create(
             content="hi", user=self.remote_user, privacy="direct"
         )
-        with self.assertRaise(Http404):
+        with self.assertRaises(Http404):
             obj.raise_visible_to_user(self.local_user)
 
         obj = models.Status.objects.create(
@@ -108,7 +108,7 @@ class BaseModel(TestCase):
         obj = models.Status.objects.create(
             content="hi", user=self.remote_user, privacy="direct"
         )
-        with self.assertRaise(Http404):
+        with self.assertRaises(Http404):
             obj.raise_visible_to_user(self.local_user)
 
         obj = models.Status.objects.create(
@@ -124,11 +124,11 @@ class BaseModel(TestCase):
         obj = models.Status.objects.create(
             content="hi", user=self.remote_user, privacy="public"
         )
-        with self.assertRaise(Http404):
+        with self.assertRaises(Http404):
             obj.raise_visible_to_user(self.local_user)
 
         obj = models.Shelf.objects.create(
             name="test", user=self.remote_user, privacy="unlisted"
         )
-        with self.assertRaise(Http404):
+        with self.assertRaises(Http404):
             obj.raise_visible_to_user(self.local_user)
