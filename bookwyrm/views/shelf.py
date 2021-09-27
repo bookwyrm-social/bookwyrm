@@ -49,7 +49,7 @@ class Shelf(View):
             FakeShelf = namedtuple(
                 "Shelf", ("identifier", "name", "user", "books", "privacy")
             )
-            books = models.Edition.objects.filter(
+            books = models.Edition.viewer_aware_objects(request.user).filter(
                 # privacy is ensured because the shelves are already filtered above
                 shelfbook__shelf__in=shelves.all()
             ).distinct()
