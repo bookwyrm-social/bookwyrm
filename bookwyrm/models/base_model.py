@@ -77,8 +77,17 @@ class BookWyrmModel(models.Model):
             ):
                 return True
 
-# TODO: if privacy is direct and the object is a group and viewer is a member of the group
-# then return True
+        # you can see groups of which you are a member
+        if hasattr(self, "members") and viewer in self.members.all():
+            return True
+
+        # you can see objects which have a group of which you are a member
+        if hasattr(self, "group"):
+            if (
+                hasattr(self.group, "members")
+                and viewer in self.group.members.all()
+            ):
+                return True
 
         return False
 

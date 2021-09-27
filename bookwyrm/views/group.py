@@ -13,7 +13,7 @@ from django.db.models.functions import Greatest
 
 from bookwyrm import forms, models
 from bookwyrm.suggested_users import suggested_users
-from .helpers import privacy_filter # TODO:
+from .helpers import privacy_filter
 from .helpers import get_user_from_username
 from bookwyrm.settings import DOMAIN
 
@@ -23,10 +23,7 @@ class Group(View):
     def get(self, request, group_id):
         """display a group"""
 
-        # TODO: use get_or_404?
-        # TODO: what is the difference between privacy filter and visible to user?
-        # get_object_or_404(models.Group, id=group_id)
-        group = models.Group.objects.get(id=group_id) 
+        group = get_object_or_404(models.Group, id=group_id)
         lists = models.List.objects.filter(group=group).order_by("-updated_date")
         lists = privacy_filter(request.user, lists)
 
@@ -43,7 +40,6 @@ class Group(View):
         return TemplateResponse(request, "groups/group.html", data)
 
     @method_decorator(login_required, name="dispatch")
-    # pylint: disable=unused-argument
     def post(self, request, group_id):
         """edit a group"""
         user_group = get_object_or_404(models.Group, id=group_id)
@@ -61,7 +57,7 @@ class UserGroups(View):
         """display a group"""
         user = get_user_from_username(request.user, username)
         groups = models.Group.objects.filter(members=user).order_by("-updated_date")
-        groups = privacy_filter(request.user, groups)
+        # groups = privacy_filter(request.user, groups)
         paginated = Paginator(groups, 12)
 
         data = {
@@ -127,8 +123,7 @@ def add_member(request):
     """add a member to the group"""
 
     # TODO: if groups become AP values we need something like get_group_from_group_fullname
-    # group = get_object_or_404(models.Group, id=request.POST.get("group"))
-    group = models.Group.objects.get(id=request.POST["group"])
+    group = get_object_or_404(models.Group, id=request.POST.get("group"))
     if not group:
         return HttpResponseBadRequest()
 
