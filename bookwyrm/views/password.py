@@ -27,7 +27,9 @@ class PasswordResetRequest(View):
         """create a password reset token"""
         email = request.POST.get("email")
         try:
-            user = models.User.objects.get(email=email, email__isnull=False)
+            user = models.User.viewer_aware_objects(request.user).get(
+                email=email, email__isnull=False
+            )
         except models.User.DoesNotExist:
             data = {"error": _("No user with that email address was found.")}
             return TemplateResponse(request, "password_reset_request.html", data)
