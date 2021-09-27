@@ -24,7 +24,7 @@ class Block(View):
         models.UserBlocks.objects.create(
             user_subject=request.user, user_object=to_block
         )
-        return redirect("/preferences/block")
+        return redirect("prefs-block")
 
 
 @require_POST
@@ -40,4 +40,4 @@ def unblock(request, user_id):
     except models.UserBlocks.DoesNotExist:
         return HttpResponseNotFound()
     block.delete()
-    return redirect("/preferences/block")
+    return redirect("prefs-block")

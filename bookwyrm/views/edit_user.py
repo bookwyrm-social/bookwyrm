@@ -34,9 +34,9 @@ class EditUser(View):
             data = {"form": form, "user": request.user}
             return TemplateResponse(request, "preferences/edit_user.html", data)
 
-        user = save_user_form(form)
+        save_user_form(form)
 
-        return redirect(user.local_path)
+        return redirect("user-feed", request.user.localname)
 
 
 # pylint: disable=no-self-use

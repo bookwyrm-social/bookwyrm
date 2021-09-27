@@ -97,9 +97,9 @@ class ChangePassword(View):
         confirm_password = request.POST.get("confirm-password")
 
         if new_password != confirm_password:
-            return redirect("preferences/password")
+            return redirect("prefs-password")
 
         request.user.set_password(new_password)
         request.user.save(broadcast=False, update_fields=["password"])
         login(request, request.user)
-        return redirect(request.user.local_path)
+        return redirect("user-feed", request.user.localname)

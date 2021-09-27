@@ -29,4 +29,4 @@ class Notifications(View):
     def post(self, request):
         """permanently delete notification for user"""
         request.user.notification_set.filter(read=True).delete()
-        return redirect("/notifications")
+        return redirect("notifications")
