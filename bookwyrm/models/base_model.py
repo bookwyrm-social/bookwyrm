@@ -106,7 +106,6 @@ class BookWyrmModel(models.Model):
         raise PermissionDenied()
 
 
-
 @receiver(models.signals.post_save)
 # pylint: disable=unused-argument
 def set_remote_id(sender, instance, created, *args, **kwargs):

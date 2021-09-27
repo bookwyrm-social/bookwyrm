@@ -45,8 +45,8 @@ class ReadingStatus(View):
         if not identifier:
             return HttpResponseBadRequest()
 
-        desired_shelf = get_object_or_404(models.Shelf,
-            identifier=identifier, user=request.user
+        desired_shelf = get_object_or_404(
+            models.Shelf, identifier=identifier, user=request.user
         )
 
         book = (

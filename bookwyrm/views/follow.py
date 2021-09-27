@@ -77,8 +77,8 @@ def delete_follow_request(request):
     username = request.POST["user"]
     requester = get_user_from_username(request.user, username)
 
-    follow_request = get_object_or_404(models.UserFollowRequest,
-        user_subject=requester, user_object=request.user
+    follow_request = get_object_or_404(
+        models.UserFollowRequest, user_subject=requester, user_object=request.user
     )
     follow_request.raise_not_deletable(request.user)
 

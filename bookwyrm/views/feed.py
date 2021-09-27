@@ -95,8 +95,11 @@ class Status(View):
     def get(self, request, username, status_id):
         """display a particular status (and replies, etc)"""
         user = get_user_from_username(request.user, username)
-        status = get_object_or_404(models.Status.objects.select_subclasses(),
-            user=user, id=status_id, deleted=False
+        status = get_object_or_404(
+            models.Status.objects.select_subclasses(),
+            user=user,
+            id=status_id,
+            deleted=False,
         )
         # make sure the user is authorized to see the status
         status.raise_visible_to_user(request.user)

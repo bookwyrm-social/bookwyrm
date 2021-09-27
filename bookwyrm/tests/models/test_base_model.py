@@ -56,9 +56,7 @@ class BaseModel(TestCase):
         instance = models.Work.objects.create(title="work title")
         instance.remote_id = None
         base_model.set_remote_id(None, instance, True)
-        self.assertEqual(
-            instance.remote_id, f"https://{DOMAIN}/book/{instance.id}"
-        )
+        self.assertEqual(instance.remote_id, f"https://{DOMAIN}/book/{instance.id}")
 
         # shouldn't set remote_id if it's not created
         instance.remote_id = None

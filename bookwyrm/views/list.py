@@ -352,9 +352,7 @@ def set_book_position(request, list_item_id):
     try:
         int_position = int(request.POST.get("position"))
     except ValueError:
-        return HttpResponseBadRequest(
-            "bad value for position. should be an integer"
-        )
+        return HttpResponseBadRequest("bad value for position. should be an integer")
 
     if int_position < 1:
         return HttpResponseBadRequest("position cannot be less than 1")
@@ -363,9 +361,9 @@ def set_book_position(request, list_item_id):
 
     # the max position to which a book may be set is the highest order for
     # books which are approved
-    order_max = book_list.listitem_set.filter(approved=True).aggregate(
-        Max("order")
-    )["order__max"]
+    order_max = book_list.listitem_set.filter(approved=True).aggregate(Max("order"))[
+        "order__max"
+    ]
 
     int_position = min(int_position, order_max)
 

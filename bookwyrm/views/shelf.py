@@ -147,12 +147,12 @@ def shelve(request):
     # first we need to remove from the specified shelf
     change_from_current_identifier = request.POST.get("change-shelf-from")
     if not change_from_current_identifier:
-        #find the shelfbook obj and delete it
+        # find the shelfbook obj and delete it
         get_object_or_404(
             models.ShelfBook,
             book=book,
             user=request.user,
-            shelf__identifier=change_from_current_identifier
+            shelf__identifier=change_from_current_identifier,
         ).delete()
 
     # A book can be on multiple shelves, but only on one read status shelf at a time
