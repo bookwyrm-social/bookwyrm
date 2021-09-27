@@ -1,9 +1,8 @@
 {% load i18n %}
 {% csrf_token %}
 <input type="hidden" name="user" value="{{ request.user.id }}">
-{{ group_form.non_field_errors }}
-<div class="columns">
 
+<div class="columns">
     <div class="column is-two-thirds">
         <input type="hidden" name="user" value="{{ request.user.id }}" />
         <input type="hidden" name="privacy" value="public" />
