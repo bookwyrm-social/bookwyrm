@@ -31,9 +31,9 @@ class Shelf(View):
         is_self = user == request.user
 
         if is_self:
-            shelves = user.shelf_set
+            shelves = user.shelf_set.all()
         else:
-            shelves = privacy_filter(request.user, user.shelf_set)
+            shelves = privacy_filter(request.user, user.shelf_set).all()
 
         # get the shelf and make sure the logged in user should be able to see it
         if shelf_identifier:
@@ -53,7 +53,7 @@ class Shelf(View):
                 models.Edition.viewer_aware_objects(request.user)
                 .filter(
                     # privacy is ensured because the shelves are already filtered above
-                    shelfbook__shelf__in=shelves.all()
+                    shelfbook__shelf__in=shelves
                 )
                 .distinct()
             )
@@ -86,7 +86,7 @@ class Shelf(View):
         data = {
             "user": user,
             "is_self": is_self,
-            "shelves": shelves.all(),
+            "shelves": shelves,
             "shelf": shelf,
             "books": page,
             "page_range": paginated.get_elided_page_range(
