@@ -24,6 +24,10 @@ class Group(BookWyrmModel):
         related_name="members"
     )
 
+    def get_remote_id(self):
+        """don't want the user to be in there in this case"""
+        return f"https://{DOMAIN}/group/{self.id}"
+
 class GroupMember(models.Model):
     """Users who are members of a group"""
 
