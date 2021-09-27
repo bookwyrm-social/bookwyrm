@@ -85,7 +85,7 @@ def active_shelf(context, book):
 def latest_read_through(book, user):
     """the most recent read activity"""
     return (
-        models.ReadThrough.objects.filter(user=user, book=book)
+        models.ReadThrough.objects.filter(user=user, book=book, is_active=True)
         .order_by("-start_date")
         .first()
     )

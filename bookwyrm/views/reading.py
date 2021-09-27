@@ -5,6 +5,7 @@ import dateutil.tz
 from dateutil.parser import ParserError
 
 from django.contrib.auth.decorators import login_required
+from django.db import transaction
 from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseNotFound
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
@@ -35,7 +36,7 @@ class ReadingStatus(View):
         return TemplateResponse(request, f"reading_progress/{template}", {"book": book})
 
     def post(self, request, status, book_id):
-        """desire a book"""
+        """Change the state of a book by shelving it and adding reading dates"""
         identifier = {
             "want": models.Shelf.TO_READ,
             "start": models.Shelf.READING,
@@ -48,18 +49,21 @@ class ReadingStatus(View):
             identifier=identifier, user=request.user
         ).first()
 
-        book = get_edition(book_id)
-
-        current_status_shelfbook = (
-            models.ShelfBook.objects.select_related("shelf")
-            .filter(
-                shelf__identifier__in=models.Shelf.READ_STATUS_IDENTIFIERS,
-                user=request.user,
-                book=book,
-            )
-            .first()
+        book = (
+            models.Edition.viewer_aware_objects(request.user)
+            .prefetch_related("shelfbook_set__shelf")
+            .get(id=book_id)
         )
 
+        # gets the first shelf that indicates a reading status, or None
+        shelves = [
+            s
+            for s in book.current_shelves
+            if s.shelf.identifier in models.Shelf.READ_STATUS_IDENTIFIERS
+        ]
+        current_status_shelfbook = shelves[0] if shelves else None
+
+        # checking the referer prevents redirecting back to the modal page
         referer = request.headers.get("Referer", "/")
         referer = "/" if "reading-status" in referer else referer
         if current_status_shelfbook is not None:
@@ -72,11 +76,13 @@ class ReadingStatus(View):
             book=book, shelf=desired_shelf, user=request.user
         )
 
-        if desired_shelf.identifier != models.Shelf.TO_READ:
-            # update or create a readthrough
-            readthrough = update_readthrough(request, book=book)
-            if readthrough:
-                readthrough.save()
+        update_readthrough_on_shelve(
+            request.user,
+            book,
+            desired_shelf.identifier,
+            start_date=request.POST.get("start_date"),
+            finish_date=request.POST.get("finish_date"),
+        )
 
         # post about it (if you want)
         if request.POST.get("post-status"):
@@ -97,17 +103,67 @@ class ReadingStatus(View):
         return redirect(referer)
 
 
+@transaction.atomic
+def update_readthrough_on_shelve(
+    user, annotated_book, status, start_date=None, finish_date=None
+):
+    """update the current readthrough for a book when it is re-shelved"""
+    # there *should* only be one of current active readthrough, but it's a list
+    active_readthrough = next(iter(annotated_book.active_readthroughs), None)
+
+    # deactivate all existing active readthroughs
+    for readthrough in annotated_book.active_readthroughs:
+        readthrough.is_active = False
+        readthrough.save()
+
+    # if the state is want-to-read, deactivating existing readthroughs is all we need
+    if status == models.Shelf.TO_READ:
+        return
+
+    # if we're starting a book, we need a fresh clean active readthrough
+    if status == models.Shelf.READING or not active_readthrough:
+        active_readthrough = models.ReadThrough.objects.create(
+            user=user, book=annotated_book
+        )
+    # santiize and set dates
+    active_readthrough.start_date = load_date_in_user_tz_as_utc(start_date, user)
+    # if the finish date is set, the readthrough will be automatically set as inactive
+    active_readthrough.finish_date = load_date_in_user_tz_as_utc(finish_date, user)
+
+    active_readthrough.save()
+
+
 @login_required
 @require_POST
 def edit_readthrough(request):
     """can't use the form because the dates are too finnicky"""
-    readthrough = update_readthrough(request, create=False)
-    if not readthrough:
-        return HttpResponseNotFound()
+    readthrough = get_object_or_404(models.ReadThrough, id=request.POST.get("id"))
 
     # don't let people edit other people's data
     if request.user != readthrough.user:
         return HttpResponseBadRequest()
+
+    readthrough.start_date = load_date_in_user_tz_as_utc(
+        request.POST.get("start_date"), request.user
+    )
+    readthrough.finish_date = load_date_in_user_tz_as_utc(
+        request.POST.get("finish_date"), request.user
+    )
+
+    progress = request.POST.get("progress")
+    try:
+        progress = int(progress)
+        readthrough.progress = progress
+    except (ValueError, TypeError):
+        pass
+
+    progress_mode = request.POST.get("progress_mode")
+    try:
+        progress_mode = models.ProgressMode(progress_mode)
+        readthrough.progress_mode = progress_mode
+    except ValueError:
+        pass
+
     readthrough.save()
 
     # record the progress update individually
@@ -136,73 +192,32 @@ def delete_readthrough(request):
 def create_readthrough(request):
     """can't use the form because the dates are too finnicky"""
     book = get_object_or_404(models.Edition, id=request.POST.get("book"))
-    readthrough = update_readthrough(request, create=True, book=book)
-    if not readthrough:
-        return redirect(book.local_path)
-    readthrough.save()
-    return redirect(request.headers.get("Referer", "/"))
+
+    start_date = load_date_in_user_tz_as_utc(
+        request.POST.get("start_date"), request.user
+    )
+    finish_date = load_date_in_user_tz_as_utc(
+        request.POST.get("finish_date"), request.user
+    )
+    models.ReadThrough.objects.create(
+        user=request.user,
+        book=book,
+        start_date=start_date,
+        finish_date=finish_date,
+    )
+    return redirect("book", book.id)
 
 
 def load_date_in_user_tz_as_utc(date_str: str, user: models.User) -> datetime:
     """ensures that data is stored consistently in the UTC timezone"""
-    user_tz = dateutil.tz.gettz(user.preferred_timezone)
-    start_date = dateutil.parser.parse(date_str, ignoretz=True)
-    return start_date.replace(tzinfo=user_tz).astimezone(dateutil.tz.UTC)
-
-
-def update_readthrough(request, book=None, create=True):
-    """updates but does not save dates on a readthrough"""
-    try:
-        read_id = request.POST.get("id")
-        if not read_id:
-            raise models.ReadThrough.DoesNotExist
-        readthrough = models.ReadThrough.objects.get(id=read_id)
-    except models.ReadThrough.DoesNotExist:
-        if not create or not book:
-            return None
-        readthrough = models.ReadThrough(
-            user=request.user,
-            book=book,
-        )
-
-    start_date = request.POST.get("start_date")
-    if start_date:
-        try:
-            readthrough.start_date = load_date_in_user_tz_as_utc(
-                start_date, request.user
-            )
-        except ParserError:
-            pass
-
-    finish_date = request.POST.get("finish_date")
-    if finish_date:
-        try:
-            readthrough.finish_date = load_date_in_user_tz_as_utc(
-                finish_date, request.user
-            )
-        except ParserError:
-            pass
-
-    progress = request.POST.get("progress")
-    if progress:
-        try:
-            progress = int(progress)
-            readthrough.progress = progress
-        except ValueError:
-            pass
-
-    progress_mode = request.POST.get("progress_mode")
-    if progress_mode:
-        try:
-            progress_mode = models.ProgressMode(progress_mode)
-            readthrough.progress_mode = progress_mode
-        except ValueError:
-            pass
-
-    if not readthrough.start_date and not readthrough.finish_date:
+    if not date_str:
         return None
-
-    return readthrough
+    user_tz = dateutil.tz.gettz(user.preferred_timezone)
+    date = dateutil.parser.parse(date_str, ignoretz=True)
+    try:
+        return date.replace(tzinfo=user_tz).astimezone(dateutil.tz.UTC)
+    except ParserError:
+        return None
 
 
 @login_required
