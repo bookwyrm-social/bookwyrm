@@ -185,6 +185,8 @@ class EditBook(View):
             data["confirm_mode"] = True
             # this isn't preserved because it isn't part of the form obj
             data["remove_authors"] = request.POST.getlist("remove_authors")
+            data["cover_url"] = request.POST.get("cover-url")
+
             # make sure the dates are passed in as datetime, they're currently a string
             # QueryDicts are immutable, we need to copy
             formcopy = data["form"].data.copy()
@@ -261,11 +263,19 @@ class ConfirmEditBook(View):
                     work = models.Work.objects.create(title=form.cleaned_data["title"])
                     work.authors.set(book.authors.all())
                 book.parent_work = work
-                # we don't tell the world when creating a book
-                book.save(broadcast=False)
 
             for author_id in request.POST.getlist("remove_authors"):
                 book.authors.remove(author_id)
+
+            # import cover, if requested
+            url = request.POST.get("cover-url")
+            if url:
+                image = set_cover_from_url(url)
+                if image:
+                    book.cover.save(*image, save=False)
+
+            # we don't tell the world when creating a book
+            book.save(broadcast=False)
 
         return redirect(f"/book/{book.id}")
 
