@@ -18,45 +18,45 @@
         <fieldset class="field">
             <legend class="label">{% trans "List curation:" %}</legend>
 
-            <label class="field">
+            <label class="field" data-hides="list_group_selector">
                 <input type="radio" name="curation" value="closed"{% if not list or list.curation == 'closed' %} checked{% endif %}> {% trans "Closed" %}
                 <p class="help mb-2">{% trans "Only you can add and remove books to this list" %}</p>
             </label>
 
-            <label class="field">
+            <label class="field" data-hides="list_group_selector">
                 <input type="radio" name="curation" value="curated"{% if list.curation == 'curated' %} checked{% endif %}> {% trans "Curated" %}
                 <p class="help mb-2">{% trans "Anyone can suggest books, subject to your approval" %}</p>
             </label>
 
-            <label class="field">
+            <label class="field" data-hides="list_group_selector">
                 <input type="radio" name="curation" value="open"{% if list.curation == 'open' %} checked{% endif %}> {% trans "Open" %}
                 <p class="help mb-2">{% trans "Anyone can add books to this list" %}</p>
             </label>
 
-            <label class="field">
-              <input type="radio" name="curation" value="group"{% if list.curation == 'group' %} checked{% endif %}> {% trans "Group" %}
-              <p class="help mb-2">{% trans "Group members can add to and remove from this list" %}</p>
-          </label>
-          <!-- TODO: add a list picker on-select for group lists -->
-            {% if user_groups %}
-              {% csrf_token %}
-              <label class="label" for="id_group">{% trans "Select Group" %}</label>
-              <div class="field has-addons">
-                  <div class="select control">
-                      <select name="group" id="id_group">
-                          <option value="">Select a list</option>
-                          {% for group in user_groups %}
-                          <option value="{{ group.id }}" {% if list.group.id == group.id %} selected{% endif %}>{{ group.name }}</option>
-                          {% endfor %}
-                      </select>
-                  </div>
-              </div>
-              {% else %}
-              {% with user|username as username %}
-              {% url 'user-groups' user|username as url %}
-              <div>{% trans "You must create a " %}<a href="{{ url }}">{% trans "Group" %}</a>{% trans " before you can create Group lists!" %}</div>
-              {% endwith %}
+            <label class="field hidden-form">
+                <input type="radio" name="curation" value="group"{% if list.curation == 'group' %} checked{% endif %} > {% trans "Group" %}
+                <p class="help mb-2">{% trans "Group members can add to and remove from this list" %}</p>
+                <fieldset class="{% if list.curation != 'group' %}is-hidden{% endif %}" id="list_group_selector">
+                  {% if user_groups %}
+                <label class="label" for="id_group" id="group">{% trans "Select Group" %}</label>
+                <div class="field has-addons">
+                    <div class="select control">
+                        <select name="group" id="id_group">
+                            <option value="" disabled {% if not list.group %} selected{% endif %}>{% trans "Select a list" %}</option>
+                            {% for group in user_groups %}
+                            <option value="{{ group.id }}" {% if list.group.id == group.id %} selected{% endif %}>{{ group.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                {% else %}
+                {% with user|username as username %}
+                {% url 'user-groups' user|username as url %}
+                <div>{% trans "You must create a " %}<a href="{{ url }}">{% trans "Group" %}</a>{% trans " before you can create Group lists!" %}</div>
+                {% endwith %}
+              </fieldset>
               {% endif %}
+            </label>
         </fieldset>
     </div>
 </div>
