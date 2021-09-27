@@ -177,6 +177,7 @@ class List(View):
                 ][: 5 - len(suggestions)]
 
         user_groups = models.Group.objects.filter(members=request.user).order_by("-updated_date")
+        is_group_member = book_list.group in user_groups
         page = paginated.get_page(request.GET.get("page"))
         data = {
             "list": book_list,
@@ -191,7 +192,8 @@ class List(View):
             "sort_form": forms.SortListForm(
                 {"direction": direction, "sort_by": sort_by}
             ),
-            "user_groups": user_groups
+            "user_groups": user_groups,
+            "is_group_member": is_group_member
         }
         return TemplateResponse(request, "lists/list.html", data)
 
@@ -292,13 +294,17 @@ def delete_list(request, list_id):
 def add_book(request):
     """put a book on a list"""
     book_list = get_object_or_404(models.List, id=request.POST.get("list"))
+    is_group_member = False
+    if book_list.curation == "group":
+        user_groups = models.Group.objects.filter(members=request.user).order_by("-updated_date")
+        is_group_member = book_list.group in user_groups
     if not book_list.visible_to_user(request.user):
         return HttpResponseNotFound()
 
     book = get_object_or_404(models.Edition, id=request.POST.get("book"))
     # do you have permission to add to the list?
     try:
-        if request.user == book_list.user or book_list.curation == "open":
+        if request.user == book_list.user or is_group_member or book_list.curation == "open":
             # add the book at the latest order of approved books, before pending books
             order_max = (
                 book_list.listitem_set.filter(approved=True).aggregate(Max("order"))[

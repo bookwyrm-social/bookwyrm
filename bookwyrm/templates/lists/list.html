@@ -123,7 +123,7 @@
         </form>
     {% if request.user.is_authenticated and not list.curation == 'closed' or request.user == list.user %}
         <h2 class="title is-5 mt-6">
-            {% if list.curation == 'open' or request.user == list.user %}
+            {% if list.curation == 'open' or request.user == list.user or is_group_member %}
                 {% trans "Add Books" %}
             {% else %}
                 {% trans "Suggest Books" %}
@@ -176,7 +176,7 @@
                             {% csrf_token %}
                             <input type="hidden" name="book" value="{{ book.id }}">
                             <input type="hidden" name="list" value="{{ list.id }}">
-                            <button type="submit" class="button is-small is-link">{% if list.curation == 'open' or request.user == list.user %}{% trans "Add" %}{% else %}{% trans "Suggest" %}{% endif %}</button>
+                            <button type="submit" class="button is-small is-link">{% if list.curation == 'open' or request.user == list.user or is_group_member %}{% trans "Add" %}{% else %}{% trans "Suggest" %}{% endif %}</button>
                         </form>
                     </div>
                 </div>
