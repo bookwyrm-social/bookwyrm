@@ -1,6 +1,8 @@
 """ base model with default fields """
 import base64
 from Crypto import Random
+
+from django.core.exceptions import PermissionDenied
 from django.db import models
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
@@ -77,6 +79,31 @@ class BookWyrmModel(models.Model):
             ):
                 return True
         return False
+
+    def raise_not_editable(self, viewer):
+        """does this user have permission to edit this object? liable to be overwritten
+        by models that inherit this base model class"""
+        if not hasattr(self, "user"):
+            return
+
+        # generally moderators shouldn't be able to edit other people's stuff
+        if self.user == viewer:
+            return
+
+        raise PermissionDenied
+
+    def raise_not_deletable(self, viewer):
+        """does this user have permission to delete this object? liable to be
+        overwritten by models that inherit this base model class"""
+        if not hasattr(self, "user"):
+            return
+
+        # but generally moderators can delete other people's stuff
+        if self.user == viewer or viewer.has_perm("moderate_post"):
+            return
+
+        raise PermissionDenied
+
 
 
 @receiver(models.signals.post_save)
