@@ -32,7 +32,7 @@ from .follow import follow, unfollow
 from .follow import accept_follow_request, delete_follow_request
 from .get_started import GetStartedBooks, GetStartedProfile, GetStartedUsers
 from .goal import Goal, hide_goal
-from .group import Group, UserGroups, FindUsers, create_group, add_member, remove_member
+from .group import Group, UserGroups, FindUsers, add_member, remove_member
 from .import_data import Import, ImportStatus
 from .inbox import Inbox
 from .interaction import Favorite, Unfavorite, Boost, Unboost

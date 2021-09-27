@@ -15,6 +15,7 @@ from bookwyrm import forms, models
 from bookwyrm.suggested_users import suggested_users
 from .helpers import privacy_filter # TODO:
 from .helpers import get_user_from_username
+from bookwyrm.settings import DOMAIN
 
 class Group(View):
     """group page"""
@@ -23,11 +24,8 @@ class Group(View):
         """display a group"""
 
         group = models.Group.objects.get(id=group_id) 
-        # groups = privacy_filter(
-        #     request.user, groups, privacy_levels=["public", "followers"]
-        # )
         lists = models.List.objects.filter(group=group).order_by("-updated_date")
-
+        lists = privacy_filter(request.user, lists)
         data = {
             "group": group,
             "lists": lists,
@@ -35,6 +33,17 @@ class Group(View):
             "path": "/group",
         }
         return TemplateResponse(request, "groups/group.html", data)
+
+    @method_decorator(login_required, name="dispatch")
+    # pylint: disable=unused-argument
+    def post(self, request, group_id):
+        """edit a group"""
+        user_group = get_object_or_404(models.Group, id=group_id)
+        form = forms.GroupForm(request.POST, instance=user_group)
+        if not form.is_valid():
+            return redirect("group", user_group.id)
+        user_group = form.save()
+        return redirect("group", user_group.id) 
 
 @method_decorator(login_required, name="dispatch")
 class UserGroups(View):
@@ -44,6 +53,7 @@ class UserGroups(View):
         """display a group"""
         user = get_user_from_username(request.user, username)
         groups = models.Group.objects.filter(members=user).order_by("-updated_date")
+        groups = privacy_filter(request.user, groups)
         paginated = Paginator(groups, 12)
 
         data = {
@@ -54,6 +64,19 @@ class UserGroups(View):
             "path": user.local_path + "/group",
         }
         return TemplateResponse(request, "user/groups.html", data)
+
+    @method_decorator(login_required, name="dispatch")
+    # pylint: disable=unused-argument
+    def post(self, request, username):
+        """create a user group"""
+        user = get_user_from_username(request.user, username)
+        form = forms.GroupForm(request.POST)
+        if not form.is_valid():
+            return redirect("user-groups")
+        group = form.save()
+        # add the creator as a group member
+        models.GroupMember.objects.create(group=group, user=request.user)
+        return redirect("group", group.id)
 
 @method_decorator(login_required, name="dispatch")
 class FindUsers(View):
@@ -88,22 +111,8 @@ class FindUsers(View):
         data["suggested_users"] = user_results
         data["group"] = group
         data["query"] = query
-        data["requestor_is_manager"] = request.user == group.manager
+        data["requestor_is_manager"] = request.user == group.user
         return TemplateResponse(request, "groups/find_users.html", data)
-
-@login_required
-@require_POST
-def create_group(request):
-    """user groups"""
-    form = forms.GroupForm(request.POST)
-    if not form.is_valid():
-        print("invalid!")
-        return redirect(request.headers.get("Referer", "/"))
-
-    group = form.save()
-    # add the creator as a group member
-    models.GroupMember.objects.create(group=group, user=request.user)
-    return redirect(group.local_path)
 
 @require_POST
 @login_required
@@ -120,7 +129,7 @@ def add_member(request):
     if not user:
         return HttpResponseBadRequest()
 
-    if not group.manager == request.user:
+    if not group.user == request.user:
         return HttpResponseBadRequest()
 
     try:
@@ -149,7 +158,7 @@ def remove_member(request):
     if not user:
         return HttpResponseBadRequest()
 
-    if not group.manager == request.user:
+    if not group.user == request.user:
         return HttpResponseBadRequest()
 
     try:
