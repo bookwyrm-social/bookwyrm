@@ -83,6 +83,7 @@ class User(View):
         data = {
             "user": user,
             "is_self": is_self,
+            "has_groups": models.GroupMember.objects.filter(user=user).exists(),
             "shelves": shelf_preview,
             "shelf_count": shelves.count(),
             "activities": paginated.get_page(request.GET.get("page", 1)),

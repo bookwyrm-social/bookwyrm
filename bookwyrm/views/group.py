@@ -23,9 +23,17 @@ class Group(View):
     def get(self, request, group_id):
         """display a group"""
 
+        # TODO: use get_or_404?
+        # TODO: what is the difference between privacy filter and visible to user?
+        # get_object_or_404(models.Group, id=group_id)
         group = models.Group.objects.get(id=group_id) 
         lists = models.List.objects.filter(group=group).order_by("-updated_date")
         lists = privacy_filter(request.user, lists)
+
+        # don't show groups to users who shouldn't see them
+        if not group.visible_to_user(request.user):
+            return HttpResponseNotFound()
+
         data = {
             "group": group,
             "lists": lists,
@@ -58,7 +66,7 @@ class UserGroups(View):
 
         data = {
             "user": user,
-            "is_self": request.user.id == user.id, # CHECK is this relevant here?
+            "has_groups": models.GroupMember.objects.filter(user=user).exists(),
             "groups": paginated.get_page(request.GET.get("page")),
             "group_form": forms.GroupForm(),
             "path": user.local_path + "/group",
