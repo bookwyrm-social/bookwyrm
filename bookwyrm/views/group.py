@@ -69,10 +69,9 @@ class UserGroups(View):
     # pylint: disable=unused-argument
     def post(self, request, username):
         """create a user group"""
-        user = get_user_from_username(request.user, username)
         form = forms.GroupForm(request.POST)
         if not form.is_valid():
-            return redirect("user-groups")
+            return redirect(request.user.local_path + "groups")
         group = form.save()
         # add the creator as a group member
         models.GroupMember.objects.create(group=group, user=request.user)
