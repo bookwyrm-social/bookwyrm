@@ -87,6 +87,9 @@ def active_shelf(context, book):
 @register.simple_tag(takes_context=False)
 def latest_read_through(book, user):
     """the most recent read activity"""
+    if hasattr(book, "active_readthroughs"):
+        return book.active_readthroughs[0] if len(book.active_readthroughs) else None
+
     return (
         models.ReadThrough.objects.filter(user=user, book=book, is_active=True)
         .order_by("-start_date")
