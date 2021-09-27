@@ -31,6 +31,7 @@ class Announcements(View):
             "end_date",
             "active",
         ]
+        # pylint: disable=consider-using-f-string
         if sort in sort_fields + ["-{:s}".format(f) for f in sort_fields]:
             announcements = announcements.order_by(sort)
         data = {
