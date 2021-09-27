@@ -10,10 +10,10 @@
                 <h4 class="card-header-title">
                     <a href="/group/{{ group.id }}">{{ group.name }}</a> <span class="subtitle">{% include 'snippets/privacy-icons.html' with item=group %}</span>
                 </h4>
-                {% if request.user.is_authenticated and request.user|saved:list %}
+                {% if group.user == user %}
                 <div class="card-header-icon">
-                    {% trans "Saved" as text %}
-                    <span class="icon icon-bookmark has-text-grey" title="{{ text }}">
+                    {% trans "Manager" as text %}
+                    <span class="icon icon-star-full has-text-grey" title="{{ text }}">
                         <span class="is-sr-only">{{ text }}</span>
                     </span>
                 </div>
