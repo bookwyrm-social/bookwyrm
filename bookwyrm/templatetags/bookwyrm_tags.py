@@ -70,7 +70,6 @@ def related_status(notification):
 @register.simple_tag(takes_context=True)
 def active_shelf(context, book):
     """check what shelf a user has a book on, if any"""
-    print(hasattr(book, "current_shelves"))
     if hasattr(book, "current_shelves"):
         return book.current_shelves[0] if len(book.current_shelves) else {"book": book}
 
