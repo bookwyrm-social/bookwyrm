@@ -4,69 +4,65 @@
 {% block title %}{% trans "Login" %}{% endblock %}
 
 {% block content %}
-<div class="columns">
-    <div class="column">
-        <div class="box">
-            <h1 class="title">{% trans "Log in" %}</h1>
-            {% if login_form.non_field_errors %}
-            <p class="notification is-danger">{{ login_form.non_field_errors }}</p>
-            {% endif %}
+<h1 class="title">{% trans "Log in" %}</h1>
+<div class="columns is-multiline">
+    <div class="column is-half">
+        {% if login_form.non_field_errors %}
+        <p class="notification is-danger">{{ login_form.non_field_errors }}</p>
+        {% endif %}
 
-            {% if show_confirmed_email %}
-            <p class="notification is-success">{% trans "Success! Email address confirmed." %}</p>
-            {% endif %}
-            <form name="login" method="post" action="/login">
-                {% csrf_token %}
-                {% if show_confirmed_email %}<input type="hidden" name="first_login" value="true">{% endif %}
-                <div class="field">
-                    <label class="label" for="id_localname">{% trans "Username:" %}</label>
-                    <div class="control">
-                        {{ login_form.localname }}
-                    </div>
+        {% if show_confirmed_email %}
+        <p class="notification is-success">{% trans "Success! Email address confirmed." %}</p>
+        {% endif %}
+        <form name="login" method="post" action="/login">
+            {% csrf_token %}
+            {% if show_confirmed_email %}<input type="hidden" name="first_login" value="true">{% endif %}
+            <div class="field">
+                <label class="label" for="id_localname">{% trans "Username:" %}</label>
+                <div class="control">
+                    {{ login_form.localname }}
                 </div>
-                <div class="field">
-                    <label class="label" for="id_password">{% trans "Password:" %}</label>
-                    <div class="control">
-                        {{ login_form.password }}
-                    </div>
-                    {% for error in login_form.password.errors %}
-                    <p class="help is-danger">{{ error | escape }}</p>
-                    {% endfor %}
+            </div>
+            <div class="field">
+                <label class="label" for="id_password">{% trans "Password:" %}</label>
+                <div class="control">
+                    {{ login_form.password }}
                 </div>
-                <div class="field is-grouped">
-                    <div class="control">
-                        <button class="button is-primary" type="submit">{% trans "Log in" %}</button>
-                    </div>
-                    <div class="control">
-                        <small><a href="{% url 'password-reset' %}">{% trans "Forgot your password?" %}</a></small>
-                    </div>
+                {% for error in login_form.password.errors %}
+                <p class="help is-danger">{{ error | escape }}</p>
+                {% endfor %}
+            </div>
+            <div class="field is-grouped">
+                <div class="control">
+                    <button class="button is-primary" type="submit">{% trans "Log in" %}</button>
                 </div>
-            </form>
-        </div>
+                <div class="control">
+                    <small><a href="{% url 'password-reset' %}">{% trans "Forgot your password?" %}</a></small>
+                </div>
+            </div>
+        </form>
     </div>
 
-    <div class="column">
+    {% if site.allow_registration %}
+    <div class="column is-half">
         <div class="box has-background-primary-light">
-            {% if site.allow_registration %}
             <h2 class="title">{% trans "Create an Account" %}</h2>
             <form name="register" method="post" action="/register">
                 {% include 'snippets/register_form.html' %}
             </form>
-            {% else %}
-            <h2 class="title">{% trans "This instance is closed" %}</h2>
-            <p>{% trans "Contact an administrator to get an invite" %}</p>
-            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="column">
+        <div class="box">
+            {% include 'snippets/about.html' %}
+
+            <p class="block">
+            <a href="{% url 'about' %}">{% trans "More about this site" %}</a>
+            </p>
         </div>
     </div>
 </div>
 
-<div class="block">
-    <div class="box">
-        {% include 'snippets/about.html' %}
-
-        <p class="block">
-        <a href="{% url 'about' %}">{% trans "More about this site" %}</a>
-        </p>
-    </div>
-</div>
 {% endblock %}

@@ -71,7 +71,7 @@ def is_blocked_user_agent(request):
     user_agent = request.headers.get("User-Agent")
     if not user_agent:
         return False
-    url = re.search(r"https?://{:s}/?".format(regex.DOMAIN), user_agent)
+    url = re.search(rf"https?://{regex.DOMAIN}/?", user_agent)
     if not url:
         return False
     url = url.group()
@@ -93,7 +93,7 @@ def is_blocked_activity(activity_json):
     return models.FederatedServer.is_blocked(actor)
 
 
-@app.task
+@app.task(queue="medium_priority")
 def activity_task(activity_json):
     """do something with this json we think is legit"""
     # lets see if the activitypub module can make sense of this json

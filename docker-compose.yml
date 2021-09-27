@@ -20,8 +20,6 @@ services:
       - pgdata:/var/lib/postgresql/data
     networks:
       - main
-    ports:
-      - 5432:5432
   web:
     build: .
     env_file: .env
@@ -63,7 +61,7 @@ services:
     build: .
     networks:
       - main
-    command: celery -A celerywyrm worker -l info
+    command: celery -A celerywyrm worker -l info -Q high_priority,medium_priority,low_priority
     volumes:
       - .:/app
       - static_volume:/app/static

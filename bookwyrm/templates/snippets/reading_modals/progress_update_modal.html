@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block modal-form-open %}
-<form action="{% url 'edit-readthrough' %}" method="POST">
+<form action="{% url 'edit-readthrough' %}" method="POST" class="submit-status">
 {% endblock %}
 
 {% block modal-body %}
@@ -23,7 +23,8 @@
                 min="0"
                 name="progress"
                 size="3"
-                value="{{ readthrough.progress|default:'' }}">
+                value="{{ readthrough.progress|default:'' }}"
+            >
         </div>
         <div class="control select">
             <select name="progress_mode" aria-label="Progress mode">

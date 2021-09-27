@@ -35,11 +35,16 @@ uuid: a unique identifier used to make html "id" attributes unique and clarify j
                         size="3"
                         value="{% firstof draft.progress readthrough.progress '' %}"
                         id="progress_{{ uuid }}"
+                        data-cache-draft="id_progress_comment_{{ book.id }}"
                     >
                 </div>
                 <div class="control">
                     <div class="select">
-                        <select name="progress_mode" aria-label="Progress mode">
+                        <select
+                            name="progress_mode"
+                            aria-label="Progress mode"
+                            data-cache-draft="id_progress_mode_comment_{{ book.id }}"
+                        >
                             <option
                                 value="PG"
                                 {% if draft.progress_mode == 'PG' or readthrough.progress_mode == 'PG' %}selected{% endif %}

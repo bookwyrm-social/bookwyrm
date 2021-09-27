@@ -4,6 +4,7 @@ import re
 from django.contrib.postgres.search import SearchVectorField
 from django.contrib.postgres.indexes import GinIndex
 from django.db import models
+from django.db import transaction
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 from model_utils import FieldTracker
@@ -164,9 +165,9 @@ class Book(BookDataModel):
     @property
     def alt_text(self):
         """image alt test"""
-        text = "%s" % self.title
+        text = self.title
         if self.edition_info:
-            text += " (%s)" % self.edition_info
+            text += f" ({self.edition_info})"
         return text
 
     def save(self, *args, **kwargs):
@@ -177,9 +178,10 @@ class Book(BookDataModel):
 
     def get_remote_id(self):
         """editions and works both use "book" instead of model_name"""
-        return "https://%s/book/%d" % (DOMAIN, self.id)
+        return f"https://{DOMAIN}/book/{self.id}"
 
     def __repr__(self):
+        # pylint: disable=consider-using-f-string
         return "<{} key={!r} title={!r}>".format(
             self.__class__,
             self.openlibrary_key,
@@ -216,7 +218,7 @@ class Work(OrderedCollectionPageMixin, Book):
         """an ordered collection of editions"""
         return self.to_ordered_collection(
             self.editions.order_by("-edition_rank").all(),
-            remote_id="%s/editions" % self.remote_id,
+            remote_id=f"{self.remote_id}/editions",
             **kwargs,
         )
 
@@ -375,4 +377,6 @@ def preview_image(instance, *args, **kwargs):
         changed_fields = instance.field_tracker.changed()
 
     if len(changed_fields) > 0:
-        generate_edition_preview_image_task.delay(instance.id)
+        transaction.on_commit(
+            lambda: generate_edition_preview_image_task.delay(instance.id)
+        )

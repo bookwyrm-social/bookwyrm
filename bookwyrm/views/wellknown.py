@@ -8,7 +8,7 @@ from django.utils import timezone
 from django.views.decorators.http import require_GET
 
 from bookwyrm import models
-from bookwyrm.settings import DOMAIN, VERSION
+from bookwyrm.settings import DOMAIN, VERSION, MEDIA_FULL_URL
 
 
 @require_GET
@@ -26,7 +26,7 @@ def webfinger(request):
 
     return JsonResponse(
         {
-            "subject": "acct:%s" % (user.username),
+            "subject": f"acct:{user.username}",
             "links": [
                 {
                     "rel": "self",
@@ -46,7 +46,7 @@ def nodeinfo_pointer(_):
             "links": [
                 {
                     "rel": "http://nodeinfo.diaspora.software/ns/schema/2.0",
-                    "href": "https://%s/nodeinfo/2.0" % DOMAIN,
+                    "href": f"https://{DOMAIN}/nodeinfo/2.0",
                 }
             ]
         }
@@ -56,17 +56,17 @@ def nodeinfo_pointer(_):
 @require_GET
 def nodeinfo(_):
     """basic info about the server"""
-    status_count = models.Status.objects.filter(user__local=True).count()
-    user_count = models.User.objects.filter(local=True).count()
+    status_count = models.Status.objects.filter(user__local=True, deleted=False).count()
+    user_count = models.User.objects.filter(is_active=True, local=True).count()
 
     month_ago = timezone.now() - relativedelta(months=1)
     last_month_count = models.User.objects.filter(
-        local=True, last_active_date__gt=month_ago
+        is_active=True, local=True, last_active_date__gt=month_ago
     ).count()
 
     six_months_ago = timezone.now() - relativedelta(months=6)
     six_month_count = models.User.objects.filter(
-        local=True, last_active_date__gt=six_months_ago
+        is_active=True, local=True, last_active_date__gt=six_months_ago
     ).count()
 
     site = models.SiteSettings.get()
@@ -91,25 +91,28 @@ def nodeinfo(_):
 @require_GET
 def instance_info(_):
     """let's talk about your cool unique instance"""
-    user_count = models.User.objects.filter(local=True).count()
-    status_count = models.Status.objects.filter(user__local=True).count()
+    user_count = models.User.objects.filter(is_active=True, local=True).count()
+    status_count = models.Status.objects.filter(user__local=True, deleted=False).count()
 
     site = models.SiteSettings.get()
+    logo_path = site.logo or "images/logo.png"
+    logo = f"{MEDIA_FULL_URL}{logo_path}"
     return JsonResponse(
         {
             "uri": DOMAIN,
             "title": site.name,
-            "short_description": "",
+            "short_description": site.instance_short_description,
             "description": site.instance_description,
-            "version": "0.0.1",
+            "version": VERSION,
             "stats": {
                 "user_count": user_count,
                 "status_count": status_count,
             },
-            "thumbnail": "https://%s/static/images/logo.png" % DOMAIN,
+            "thumbnail": logo,
             "languages": ["en"],
             "registrations": site.allow_registration,
-            "approval_required": False,
+            "approval_required": site.allow_registration and site.allow_invite_requests,
+            "email": site.admin_email,
         }
     )
 
@@ -117,7 +120,9 @@ def instance_info(_):
 @require_GET
 def peers(_):
     """list of federated servers this instance connects with"""
-    names = models.FederatedServer.objects.values_list("server_name", flat=True)
+    names = models.FederatedServer.objects.filter(status="federated").values_list(
+        "server_name", flat=True
+    )
     return JsonResponse(list(names), safe=False)
 
 

@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html lang="{% get_lang %}">
 <head>
-    <title>{% block title %}BookWyrm{% endblock %} | {{ site.name }}</title>
+    <title>{% block title %}BookWyrm{% endblock %} - {{ site.name }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="{% static "css/vendor/bulma.min.css" %}">
     <link rel="stylesheet" href="{% static "css/vendor/icons.css" %}">
@@ -17,8 +17,8 @@
     {% else %}
     <meta name="twitter:card" content="summary">
     {% endif %}
-    <meta name="twitter:title" content="{% if title %}{{ title }} | {% endif %}{{ site.name }}">
-    <meta name="og:title" content="{% if title %}{{ title }} | {% endif %}{{ site.name }}">
+    <meta name="twitter:title" content="{% if title %}{{ title }} - {% endif %}{{ site.name }}">
+    <meta name="og:title" content="{% if title %}{{ title }} - {% endif %}{{ site.name }}">
     <meta name="twitter:description" content="{{ site.instance_tagline }}">
     <meta name="og:description" content="{{ site.instance_tagline }}">
 
@@ -37,7 +37,12 @@
             <form class="navbar-item column" action="/search/">
                 <div class="field has-addons">
                     <div class="control">
-                        <input aria-label="{% trans 'Search for a book or user' %}" id="search_input" class="input" type="text" name="q" placeholder="{% trans 'Search for a book or user' %}" value="{{ query }}">
+                        {% if user.is_authenticated %}
+                            {% trans "Search for a book, user, or list" as search_placeholder %}
+                        {% else %}
+                            {% trans "Search for a book" as search_placeholder %}
+                        {% endif %}
+                        <input aria-label="{{ search_placeholder }}" id="search_input" class="input" type="text" name="q" placeholder="{{ search_placeholder }}" value="{{ query }}">
                     </div>
                     <div class="control">
                         <button class="button" type="submit">
@@ -121,7 +126,7 @@
                         {% endif %}
                         {% if perms.bookwyrm.moderate_user %}
                         <li>
-                            <a href="{% url 'settings-users' %}" class="navbar-item">
+                            <a href="{% url 'settings-dashboard' %}" class="navbar-item">
                                 {% trans 'Admin' %}
                             </a>
                         </li>
@@ -210,6 +215,11 @@
     </div>
 </div>
 
+<div role="region" aria-live="polite" id="live-messages">
+    <p id="status-success-message" class="live-message is-sr-only is-hidden">{% trans "Successfully posted status" %}</p>
+    <p id="status-error-message" class="live-message notification is-danger p-3 pr-5 pl-5 is-hidden">{% trans "Error posting status" %}</p>
+</div>
+
 <footer class="footer">
     <div class="container">
         <div class="columns">
@@ -249,8 +259,11 @@
 <script>
     var csrf_token = '{{ csrf_token }}';
 </script>
-<script src="{% static "js/bookwyrm.js" %}"></script>
-<script src="{% static "js/localstorage.js" %}"></script>
+
+<script src="{% static "js/bookwyrm.js" %}?v={{ js_cache }}"></script>
+<script src="{% static "js/localstorage.js" %}?v={{ js_cache }}"></script>
+<script src="{% static "js/status_cache.js" %}?v={{ js_cache }}"></script>
+
 {% block scripts %}{% endblock %}
 </body>
 </html>

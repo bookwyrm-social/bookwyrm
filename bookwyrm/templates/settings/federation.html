@@ -1,4 +1,4 @@
-{% extends 'settings/admin_layout.html' %}
+{% extends 'settings/layout.html' %}
 {% load i18n %}
 {% block title %}{% trans "Federated Instances" %}{% endblock %}
 
@@ -12,6 +12,19 @@
 {% endblock %}
 
 {% block panel %}
+<div class="tabs">
+    <ul>
+        {% url 'settings-federation' status='federated' as url %}
+        <li {% if request.path in url %}class="is-active" aria-current="page"{% endif %}>
+            <a href="{{ url }}">{% trans "Federated" %}</a>
+        </li>
+        {% url 'settings-federation' status='blocked' as url %}
+        <li {% if url in request.path %}class="is-active" aria-current="page"{% endif %}>
+            <a href="{{ url }}">{% trans "Blocked" %}</a>
+        </li>
+    </ul>
+</div>
+
 <table class="table is-striped">
     <tr>
         {% url 'settings-federation' as url %}
@@ -20,12 +33,15 @@
             {% include 'snippets/table-sort-header.html' with field="server_name" sort=sort text=text %}
         </th>
         <th>
-            {% trans "Date federated" as text %}
+            {% trans "Date added" as text %}
             {% include 'snippets/table-sort-header.html' with field="created_date" sort=sort text=text %}
         </th>
         <th>
             {% trans "Software" as text %}
             {% include 'snippets/table-sort-header.html' with field="application_type" sort=sort text=text %}
+        </th>
+        <th>
+            {% trans "Users" %}
         </th>
         <th>{% trans "Status" %}</th>
     </tr>
@@ -33,8 +49,14 @@
     <tr>
         <td><a href="{% url 'settings-federated-server' server.id %}">{{ server.server_name }}</a></td>
         <td>{{ server.created_date }}</td>
-        <td>{{ server.application_type }} ({{ server.application_version }})</td>
-        <td>{{ server.status }}</td>
+        <td>
+        {% if server.application_type %}
+            {{ server.application_type }}
+            {% if server.application_version %}({{ server.application_version }}){% endif %}
+        {% endif %}
+        </td>
+        <td>{{ server.user_set.count }}</td>
+        <td>{{ server.get_status_display }}</td>
     </tr>
     {% endfor %}
 </table>

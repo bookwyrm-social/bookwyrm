@@ -179,5 +179,5 @@ class TemplateTags(TestCase):
         """self progress helper"""
         self.assertEqual(bookwyrm_tags.get_next_shelf("to-read"), "reading")
         self.assertEqual(bookwyrm_tags.get_next_shelf("reading"), "read")
-        self.assertEqual(bookwyrm_tags.get_next_shelf("read"), "read")
+        self.assertEqual(bookwyrm_tags.get_next_shelf("read"), "complete")
         self.assertEqual(bookwyrm_tags.get_next_shelf("blooooga"), "to-read")

@@ -71,7 +71,7 @@ class Connector(AbstractConnector):
     def format_search_result(self, search_result):
         cover = None
         if search_result.cover:
-            cover = "%s%s" % (self.covers_url, search_result.cover)
+            cover = f"{self.covers_url}{search_result.cover}"
 
         return SearchResult(
             title=search_result.title,

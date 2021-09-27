@@ -12,7 +12,7 @@ register = template.Library()
 def get_rating(book, user):
     """get the overall rating of a book"""
     queryset = views.helpers.privacy_filter(
-        user, models.Review.objects.filter(book__in=book.parent_work.editions.all())
+        user, models.Review.objects.filter(book__parent_work__editions=book)
     )
     return queryset.aggregate(Avg("rating"))["rating__avg"]
 
@@ -49,7 +49,7 @@ def get_next_shelf(current_shelf):
     if current_shelf == "reading":
         return "read"
     if current_shelf == "read":
-        return "read"
+        return "complete"
     return "to-read"
 
 
@@ -73,7 +73,7 @@ def active_shelf(context, book):
     shelf = (
         models.ShelfBook.objects.filter(
             shelf__user=context["request"].user,
-            book__in=book.parent_work.editions.all(),
+            book__parent_work__editions=book,
         )
         .select_related("book", "shelf")
         .first()
@@ -97,4 +97,4 @@ def mutuals_count(context, user):
     viewer = context["request"].user
     if not viewer.is_authenticated:
         return None
-    return user.followers.filter(id__in=viewer.following.all()).count()
+    return user.followers.filter(followers=viewer).count()

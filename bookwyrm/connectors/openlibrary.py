@@ -71,7 +71,7 @@ class Connector(AbstractConnector):
             key = data["key"]
         except KeyError:
             raise ConnectorException("Invalid book data")
-        return "%s%s" % (self.books_url, key)
+        return f"{self.books_url}{key}"
 
     def is_work_data(self, data):
         return bool(re.match(r"^[\/\w]+OL\d+W$", data["key"]))
@@ -81,7 +81,7 @@ class Connector(AbstractConnector):
             key = data["key"]
         except KeyError:
             raise ConnectorException("Invalid book data")
-        url = "%s%s/editions" % (self.books_url, key)
+        url = f"{self.books_url}{key}/editions"
         data = self.get_book_data(url)
         edition = pick_default_edition(data["entries"])
         if not edition:
@@ -93,7 +93,7 @@ class Connector(AbstractConnector):
             key = data["works"][0]["key"]
         except (IndexError, KeyError):
             raise ConnectorException("No work found for edition")
-        url = "%s%s" % (self.books_url, key)
+        url = f"{self.books_url}{key}"
         return self.get_book_data(url)
 
     def get_authors_from_data(self, data):
@@ -102,7 +102,7 @@ class Connector(AbstractConnector):
             author_blob = author_blob.get("author", author_blob)
             # this id is "/authors/OL1234567A"
             author_id = author_blob["key"]
-            url = "%s%s" % (self.base_url, author_id)
+            url = f"{self.base_url}{author_id}"
             author = self.get_or_create_author(url)
             if not author:
                 continue
@@ -113,8 +113,8 @@ class Connector(AbstractConnector):
         if not cover_blob:
             return None
         cover_id = cover_blob[0]
-        image_name = "%s-%s.jpg" % (cover_id, size)
-        return "%s/b/id/%s" % (self.covers_url, image_name)
+        image_name = f"{cover_id}-{size}.jpg"
+        return f"{self.covers_url}/b/id/{image_name}"
 
     def parse_search_data(self, data):
         return data.get("docs")
@@ -152,7 +152,7 @@ class Connector(AbstractConnector):
 
     def load_edition_data(self, olkey):
         """query openlibrary for editions of a work"""
-        url = "%s/works/%s/editions" % (self.books_url, olkey)
+        url = f"{self.books_url}/works/{olkey}/editions"
         return self.get_book_data(url)
 
     def expand_book_data(self, book):

@@ -10,7 +10,7 @@ from django.test.client import RequestFactory
 from bookwyrm import models, views
 
 
-class UserViews(TestCase):
+class WellknownViews(TestCase):
     """view user and edit profile"""
 
     def setUp(self):
@@ -95,3 +95,22 @@ class UserViews(TestCase):
         self.assertIsInstance(result, JsonResponse)
         self.assertEqual(data["stats"]["user_count"], 2)
         self.assertEqual(models.User.objects.count(), 3)
+
+    def test_peers(self):
+        """who's federating with whom"""
+        models.FederatedServer.objects.create(
+            server_name="test.server",
+            status="federated",
+        )
+        models.FederatedServer.objects.create(
+            server_name="another.test.server",
+            status="blocked",
+        )
+        request = self.factory.get("")
+        request.user = self.anonymous_user
+
+        result = views.peers(request)
+        data = json.loads(result.getvalue())
+        self.assertIsInstance(result, JsonResponse)
+        self.assertEqual(len(data), 1)
+        self.assertEqual(data[0], "test.server")

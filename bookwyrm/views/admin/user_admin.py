@@ -33,6 +33,9 @@ class UserAdminList(View):
         scope = request.GET.get("scope")
         if scope and scope == "local":
             filters["local"] = True
+        email = request.GET.get("email")
+        if email:
+            filters["email__endswith"] = email
 
         users = models.User.objects.filter(**filters)
 

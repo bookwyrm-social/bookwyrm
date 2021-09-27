@@ -9,7 +9,7 @@ Want to Read "<em>{{ book_title }}</em>"
 {% endblock %}
 
 {% block modal-form-open %}
-<form name="shelve" action="{% url 'reading-status' 'want' book.id %}" method="post">
+<form name="shelve" action="{% url 'reading-status' 'want' book.id %}" method="post" class="submit-status">
 <input type="hidden" name="reading_status" value="to-read">
 {% csrf_token %}
 {% endblock %}

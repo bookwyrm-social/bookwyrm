@@ -22,20 +22,24 @@ from bookwyrm.settings import PAGE_LENGTH
 class Federation(View):
     """what servers do we federate with"""
 
-    def get(self, request):
+    def get(self, request, status="federated"):
         """list of servers"""
-        servers = models.FederatedServer.objects
+        servers = models.FederatedServer.objects.filter(status=status)
 
         sort = request.GET.get("sort")
         sort_fields = ["created_date", "application_type", "server_name"]
         if not sort in sort_fields + ["-{:s}".format(f) for f in sort_fields]:
-            sort = "created_date"
+            sort = "-created_date"
         servers = servers.order_by(sort)
 
         paginated = Paginator(servers, PAGE_LENGTH)
+        page = paginated.get_page(request.GET.get("page"))
 
         data = {
-            "servers": paginated.get_page(request.GET.get("page")),
+            "servers": page,
+            "page_range": paginated.get_elided_page_range(
+                page.number, on_each_side=2, on_ends=1
+            ),
             "sort": sort,
             "form": forms.ServerForm(),
         }

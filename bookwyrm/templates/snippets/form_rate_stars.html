@@ -1,5 +1,6 @@
 {% spaceless %}
 {% load i18n %}
+{% load stars %}
 
 <div class="
     field is-grouped
@@ -20,6 +21,24 @@
     </label>
 
     {% for i in '12345'|make_list %}
+        <label
+            class="is-sr-only"
+            for="{{ type|slugify }}_book{{ book.id }}_star_{{ forloop.counter0 }}_half"
+        >
+                {% blocktranslate trimmed count rating=forloop.counter0 with half_rating=forloop.counter0|half_star %}
+                    {{ half_rating }} star
+                {% plural %}
+                    {{ half_rating }} stars
+                {% endblocktranslate %}
+        </label>
+        <input
+            id="{{ type|slugify }}_book{{ book.id }}_star_{{ forloop.counter0 }}_half"
+            class="is-sr-only half"
+            type="radio"
+            name="rating"
+            value="{{ forloop.counter0 }}.5"
+            {% if default_rating == forloop.counter %}checked{% endif %}
+        />
         <input
             id="{{ type|slugify }}_book{{ book.id }}_star_{{ forloop.counter }}"
             class="is-sr-only"
@@ -39,6 +58,7 @@
                 {% endif %}
             "
             for="{{ type|slugify }}_book{{ book.id }}_star_{{ forloop.counter }}"
+            data-for-half="{{ type|slugify }}_book{{ book.id }}_star_{{ forloop.counter0 }}_half"
         >
             <span class="is-sr-only">
                 {% blocktranslate trimmed count rating=forloop.counter %}

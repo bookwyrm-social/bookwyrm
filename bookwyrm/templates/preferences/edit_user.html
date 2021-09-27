@@ -43,9 +43,19 @@
     </div>
     <div class="block">
         <label class="checkbox label" for="id_show_goal">
-            {% trans "Show set reading goal prompt in feed:" %}
+            {% trans "Show reading goal prompt in feed:" %}
             {{ form.show_goal }}
         </label>
+        <label class="checkbox label" for="id_show_goal">
+            {% trans "Show suggested users:" %}
+            {{ form.show_suggested_users }}
+        </label>
+        <label class="checkbox label" for="id_discoverable">
+            {% trans "Show this account in suggested users:" %}
+            {{ form.discoverable }}
+        </label>
+        {% url 'directory' as path %}
+        <p class="help">{% blocktrans %}Your account will show up in the <a href="{{ path }}">directory</a>, and may be recommended to other BookWyrm users.{% endblocktrans %}</p>
     </div>
     <div class="block">
         <label class="checkbox label" for="id_manually_approves_followers">
@@ -60,14 +70,6 @@
         <div class="select">
             {{ form.default_post_privacy }}
         </div>
-    </div>
-    <div class="block">
-        <label class="checkbox label" for="id_discoverable">
-            {% trans "Show this account in suggested users:" %}
-            {{ form.discoverable }}
-        </label>
-        {% url 'directory' as path %}
-        <p class="help">{% blocktrans %}Your account will show up in the <a href="{{ path }}">directory</a>, and may be recommended to other BookWyrm users.{% endblocktrans %}</p>
     </div>
     <div class="block">
         <label class="label" for="id_preferred_timezone">{% trans "Preferred Timezone: " %}</label>

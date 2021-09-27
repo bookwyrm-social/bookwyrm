@@ -63,7 +63,7 @@ class Search(View):
                 data["results"] = paginated
                 data["remote"] = search_remote
 
-        return TemplateResponse(request, "search/{:s}.html".format(search_type), data)
+        return TemplateResponse(request, f"search/{search_type}.html", data)
 
 
 def book_search(query, _, min_confidence, search_remote=False):

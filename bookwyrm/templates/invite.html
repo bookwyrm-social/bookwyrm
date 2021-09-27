@@ -5,11 +5,11 @@
 
 {% block content %}
 
+<h1 class="title">{% trans "Create an Account" %}</h1>
 <div class="columns">
     <div class="column">
         <div class="block">
             {% if valid %}
-            <h1 class="title">{% trans "Create an Account" %}</h1>
             <div>
                 <form name="register" method="post" action="/register">
                     <input type=hidden name="invite_code" value="{{ invite.code }}">
@@ -25,7 +25,7 @@
         </div>
     </div>
     <div class="column">
-        <div class="block">
+        <div class="box">
             {% include 'snippets/about.html' %}
         </div>
     </div>

@@ -8,14 +8,14 @@ from django.template.response import TemplateResponse
 from django.test import TestCase
 from django.test.client import RequestFactory
 
-from bookwyrm import forms, models, views
+from bookwyrm import models, views
 from bookwyrm.settings import DOMAIN
 
 
 # pylint: disable=too-many-public-methods
 @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
 @patch("bookwyrm.activitystreams.populate_stream_task.delay")
-class AuthenticationViews(TestCase):
+class RegisterViews(TestCase):
     """login and password management"""
 
     def setUp(self):
@@ -38,82 +38,6 @@ class AuthenticationViews(TestCase):
             id=1, require_confirm_email=False
         )
 
-    def test_login_get(self, *_):
-        """there are so many views, this just makes sure it LOADS"""
-        login = views.Login.as_view()
-        request = self.factory.get("")
-        request.user = self.anonymous_user
-
-        result = login(request)
-        self.assertIsInstance(result, TemplateResponse)
-        result.render()
-        self.assertEqual(result.status_code, 200)
-
-        request.user = self.local_user
-        result = login(request)
-        self.assertEqual(result.url, "/")
-        self.assertEqual(result.status_code, 302)
-
-    def test_login_post_localname(self, *_):
-        """there are so many views, this just makes sure it LOADS"""
-        view = views.Login.as_view()
-        form = forms.LoginForm()
-        form.data["localname"] = "mouse@mouse.com"
-        form.data["password"] = "password"
-        request = self.factory.post("", form.data)
-        request.user = self.anonymous_user
-
-        with patch("bookwyrm.views.authentication.login"):
-            result = view(request)
-        self.assertEqual(result.url, "/")
-        self.assertEqual(result.status_code, 302)
-
-    def test_login_post_username(self, *_):
-        """there are so many views, this just makes sure it LOADS"""
-        view = views.Login.as_view()
-        form = forms.LoginForm()
-        form.data["localname"] = "mouse@your.domain.here"
-        form.data["password"] = "password"
-        request = self.factory.post("", form.data)
-        request.user = self.anonymous_user
-
-        with patch("bookwyrm.views.authentication.login"):
-            result = view(request)
-        self.assertEqual(result.url, "/")
-        self.assertEqual(result.status_code, 302)
-
-    def test_login_post_email(self, *_):
-        """there are so many views, this just makes sure it LOADS"""
-        view = views.Login.as_view()
-        form = forms.LoginForm()
-        form.data["localname"] = "mouse"
-        form.data["password"] = "password"
-        request = self.factory.post("", form.data)
-        request.user = self.anonymous_user
-
-        with patch("bookwyrm.views.authentication.login"):
-            result = view(request)
-        self.assertEqual(result.url, "/")
-        self.assertEqual(result.status_code, 302)
-
-    def test_login_post_invalid_credentials(self, *_):
-        """there are so many views, this just makes sure it LOADS"""
-        view = views.Login.as_view()
-        form = forms.LoginForm()
-        form.data["localname"] = "mouse"
-        form.data["password"] = "passsword1"
-        request = self.factory.post("", form.data)
-        request.user = self.anonymous_user
-
-        with patch("bookwyrm.views.authentication.login"):
-            result = view(request)
-        result.render()
-        self.assertEqual(result.status_code, 200)
-        self.assertEqual(
-            result.context_data["login_form"].non_field_errors,
-            "Username or password are incorrect",
-        )
-
     def test_register(self, *_):
         """create a user"""
         view = views.Register.as_view()
@@ -126,7 +50,7 @@ class AuthenticationViews(TestCase):
                 "email": "aa@bb.cccc",
             },
         )
-        with patch("bookwyrm.views.authentication.login"):
+        with patch("bookwyrm.views.register.login"):
             response = view(request)
         self.assertEqual(models.User.objects.count(), 2)
         self.assertEqual(response.status_code, 302)
@@ -151,7 +75,7 @@ class AuthenticationViews(TestCase):
                 "email": "aa@bb.cccc",
             },
         )
-        with patch("bookwyrm.views.authentication.login"):
+        with patch("bookwyrm.views.register.login"):
             response = view(request)
         self.assertEqual(response.status_code, 302)
         nutria = models.User.objects.get(localname="nutria")
@@ -169,7 +93,7 @@ class AuthenticationViews(TestCase):
             "register/",
             {"localname": "nutria ", "password": "mouseword", "email": "aa@bb.ccc"},
         )
-        with patch("bookwyrm.views.authentication.login"):
+        with patch("bookwyrm.views.register.login"):
             response = view(request)
         self.assertEqual(models.User.objects.count(), 2)
         self.assertEqual(response.status_code, 302)
@@ -229,6 +153,30 @@ class AuthenticationViews(TestCase):
         with self.assertRaises(PermissionDenied):
             view(request)
 
+    def test_register_blocked_domain(self, *_):
+        """you can't register with a blocked domain"""
+        view = views.Register.as_view()
+        models.EmailBlocklist.objects.create(domain="gmail.com")
+
+        # one that fails
+        request = self.factory.post(
+            "register/",
+            {"localname": "nutria ", "password": "mouseword", "email": "aa@gmail.com"},
+        )
+        result = view(request)
+        self.assertEqual(result.status_code, 302)
+        self.assertFalse(models.User.objects.filter(email="aa@gmail.com").exists())
+
+        # one that succeeds
+        request = self.factory.post(
+            "register/",
+            {"localname": "nutria ", "password": "mouseword", "email": "aa@bleep.com"},
+        )
+        with patch("bookwyrm.views.register.login"):
+            result = view(request)
+        self.assertEqual(result.status_code, 302)
+        self.assertTrue(models.User.objects.filter(email="aa@bleep.com").exists())
+
     def test_register_invite(self, *_):
         """you can't just register"""
         view = views.Register.as_view()
@@ -248,7 +196,7 @@ class AuthenticationViews(TestCase):
                 "invite_code": "testcode",
             },
         )
-        with patch("bookwyrm.views.authentication.login"):
+        with patch("bookwyrm.views.register.login"):
             response = view(request)
         self.assertEqual(models.User.objects.count(), 2)
         self.assertEqual(response.status_code, 302)

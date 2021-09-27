@@ -1,7 +1,9 @@
 """ access the activity streams stored in redis """
+from datetime import timedelta
 from django.dispatch import receiver
 from django.db import transaction
 from django.db.models import signals, Q
+from django.utils import timezone
 
 from bookwyrm import models
 from bookwyrm.redis_store import RedisStore, r
@@ -14,11 +16,12 @@ class ActivityStream(RedisStore):
 
     def stream_id(self, user):
         """the redis key for this user's instance of this stream"""
-        return "{}-{}".format(user.id, self.key)
+        return f"{user.id}-{self.key}"
 
     def unread_id(self, user):
         """the redis key for this user's unread count for this stream"""
-        return "{}-unread".format(self.stream_id(user))
+        stream_id = self.stream_id(user)
+        return f"{stream_id}-unread"
 
     def get_rank(self, obj):  # pylint: disable=no-self-use
         """statuses are sorted by date published"""
@@ -355,7 +358,7 @@ def populate_streams_on_account_create(sender, instance, created, *args, **kwarg
     if not created or not instance.local:
         return
 
-    for stream in streams.values():
+    for stream in streams:
         populate_stream_task.delay(stream, instance.id)
 
 
@@ -395,7 +398,7 @@ def remove_statuses_on_unshelve(sender, instance, *args, **kwargs):
 # ---- TASKS
 
 
-@app.task
+@app.task(queue="low_priority")
 def add_book_statuses_task(user_id, book_id):
     """add statuses related to a book on shelve"""
     user = models.User.objects.get(id=user_id)
@@ -403,7 +406,7 @@ def add_book_statuses_task(user_id, book_id):
     BooksStream().add_book_statuses(user, book)
 
 
-@app.task
+@app.task(queue="low_priority")
 def remove_book_statuses_task(user_id, book_id):
     """remove statuses about a book from a user's books feed"""
     user = models.User.objects.get(id=user_id)
@@ -411,7 +414,7 @@ def remove_book_statuses_task(user_id, book_id):
     BooksStream().remove_book_statuses(user, book)
 
 
-@app.task
+@app.task(queue="medium_priority")
 def populate_stream_task(stream, user_id):
     """background task for populating an empty activitystream"""
     user = models.User.objects.get(id=user_id)
@@ -419,7 +422,7 @@ def populate_stream_task(stream, user_id):
     stream.populate_streams(user)
 
 
-@app.task
+@app.task(queue="medium_priority")
 def remove_status_task(status_ids):
     """remove a status from any stream it might be in"""
     # this can take an id or a list of ids
@@ -432,15 +435,19 @@ def remove_status_task(status_ids):
             stream.remove_object_from_related_stores(status)
 
 
-@app.task
+@app.task(queue="high_priority")
 def add_status_task(status_id, increment_unread=False):
-    """remove a status from any stream it might be in"""
+    """add a status to any stream it should be in"""
     status = models.Status.objects.get(id=status_id)
+    # we don't want to tick the unread count for csv import statuses, idk how better
+    # to check than just to see if the states is more than a few days old
+    if status.created_date < timezone.now() - timedelta(days=2):
+        increment_unread = False
     for stream in streams.values():
         stream.add_status(status, increment_unread=increment_unread)
 
 
-@app.task
+@app.task(queue="medium_priority")
 def remove_user_statuses_task(viewer_id, user_id, stream_list=None):
     """remove all statuses by a user from a viewer's stream"""
     stream_list = [streams[s] for s in stream_list] if stream_list else streams.values()
@@ -450,9 +457,9 @@ def remove_user_statuses_task(viewer_id, user_id, stream_list=None):
         stream.remove_user_statuses(viewer, user)
 
 
-@app.task
+@app.task(queue="medium_priority")
 def add_user_statuses_task(viewer_id, user_id, stream_list=None):
-    """remove all statuses by a user from a viewer's stream"""
+    """add all statuses by a user to a viewer's stream"""
     stream_list = [streams[s] for s in stream_list] if stream_list else streams.values()
     viewer = models.User.objects.get(id=viewer_id)
     user = models.User.objects.get(id=user_id)
@@ -460,7 +467,7 @@ def add_user_statuses_task(viewer_id, user_id, stream_list=None):
         stream.add_user_statuses(viewer, user)
 
 
-@app.task
+@app.task(queue="medium_priority")
 def handle_boost_task(boost_id):
     """remove the original post and other, earlier boosts"""
     instance = models.Status.objects.get(id=boost_id)
@@ -469,7 +476,7 @@ def handle_boost_task(boost_id):
     old_versions = models.Boost.objects.filter(
         boosted_status__id=boosted.id,
         created_date__lt=instance.created_date,
-    ).values_list("id", flat=True)
+    )
 
     for stream in streams.values():
         audience = stream.get_stores_for_object(instance)

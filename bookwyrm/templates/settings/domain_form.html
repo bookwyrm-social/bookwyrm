@@ -1,0 +1,30 @@
+{% extends 'components/inline_form.html' %}
+{% load i18n %}
+
+{% block header %}
+{% trans "Add domain" %}
+{% endblock %}
+
+{% block form %}
+<form name="add-domain" method="post" action="{% url 'settings-email-blocks' %}">
+    {% csrf_token %}
+    <label class="label" for="id_domain">{% trans "Domain:" %}</label>
+    <div class="field has-addons">
+        <div class="control">
+            <div class="button is-disabled">@</div>
+        </div>
+        <div class="control">
+            {{ form.domain }}
+        </div>
+    </div>
+    {% for error in form.domain.errors %}
+    <p class="help is-danger">{{ error | escape }}</p>
+    {% endfor %}
+
+    <div class="field">
+        <div class="control">
+            <button type="submit" class="button is-primary">{% trans "Add" %}</button>
+        </div>
+    </div>
+</form>
+{% endblock %}

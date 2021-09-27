@@ -15,14 +15,15 @@
         </p>
     </header>
 
+    {% with tile_classes="tile is-child box has-background-white-ter is-clipped" %}
     <div class="tile is-ancestor">
         <div class="tile is-6 is-parent">
-            <div class="tile is-child box has-background-white-ter">
+            <div class="{{ tile_classes }}">
                 {% include 'discover/large-book.html' with status=large_activities.0 %}
             </div>
         </div>
         <div class="tile is-6 is-parent">
-            <div class="tile is-child box has-background-white-ter">
+            <div class="{{ tile_classes }}">
                 {% include 'discover/large-book.html' with status=large_activities.1 %}
             </div>
         </div>
@@ -31,18 +32,18 @@
     <div class="tile is-ancestor">
         <div class="tile is-vertical is-6">
             <div class="tile is-parent">
-                <div class="tile is-child box has-background-white-ter">
+                <div class="{{ tile_classes }}">
                     {% include 'discover/large-book.html' with status=large_activities.2 %}
                 </div>
             </div>
             <div class="tile">
                 <div class="tile is-parent is-6">
-                    <div class="tile is-child box has-background-white-ter">
+                    <div class="{{ tile_classes }}">
                         {% include 'discover/small-book.html' with status=small_activities.0 %}
                     </div>
                 </div>
                 <div class="tile is-parent is-6">
-                    <div class="tile is-child box has-background-white-ter">
+                    <div class="{{ tile_classes }}">
                         {% include 'discover/small-book.html' with status=small_activities.1 %}
                     </div>
                 </div>
@@ -51,18 +52,18 @@
         <div class="tile is-vertical is-6">
             <div class="tile">
                 <div class="tile is-parent is-6">
-                    <div class="tile is-child box has-background-white-ter">
+                    <div class="{{ tile_classes }}">
                         {% include 'discover/small-book.html' with status=small_activities.2 %}
                     </div>
                 </div>
                 <div class="tile is-parent is-6">
-                    <div class="tile is-child box has-background-white-ter">
+                    <div class="{{ tile_classes }}">
                         {% include 'discover/small-book.html' with status=small_activities.3 %}
                     </div>
                 </div>
             </div>
             <div class="tile is-parent">
-                <div class="tile is-child box has-background-white-ter">
+                <div class="{{ tile_classes }}">
                     {% include 'discover/large-book.html' with status=large_activities.3 %}
                 </div>
             </div>
@@ -71,16 +72,17 @@
 
     <div class="tile is-ancestor">
         <div class="tile is-6 is-parent">
-            <div class="tile is-child box has-background-white-ter">
+            <div class="{{ tile_classes }}">
                 {% include 'discover/large-book.html' with status=large_activities.4 %}
             </div>
         </div>
         <div class="tile is-6 is-parent">
-            <div class="tile is-child box has-background-white-ter">
+            <div class="{{ tile_classes }}">
                 {% include 'discover/large-book.html' with status=large_activities.5 %}
             </div>
         </div>
     </div>
+    {% endwith %}
 </section>
 
 <div class="block">

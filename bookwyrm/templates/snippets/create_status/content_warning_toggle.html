@@ -1,8 +1,17 @@
 {% load i18n %}
 
 <div class="control">
-    <input type="checkbox" class="is-hidden" name="sensitive" id="id_show_spoilers_{{ uuid }}" {% if draft.content_warning or status.content_warning %}checked{% endif %} aria-hidden="true">
+    <input
+        type="checkbox"
+        class="is-hidden"
+        name="sensitive"
+        id="id_show_spoilers_{{ uuid }}{{ local_uuid }}"
+        {% if draft.content_warning or status.content_warning %}checked{% endif %}
+        aria-hidden="true"
+        data-cache-draft="id_sensitive_{{ book.id }}_{{ type }}{{ reply_parent.id }}"
+    >
     {% trans "Include spoiler alert" as button_text %}
     {% firstof draft.content_warning status.content_warning as pressed %}
-    {% include 'snippets/toggle/toggle_button.html' with text=button_text icon="warning is-size-4" controls_text="spoilers" controls_uid=uuid focus="id_content_warning" checkbox="id_show_spoilers" class="toggle-button" pressed=pressed %}
+    {% firstof local_uuid '' as local_uuid %}
+    {% include 'snippets/toggle/toggle_button.html' with text=button_text icon="warning is-size-4" controls_text="spoilers" controls_uid=uuid|add:local_uuid focus="id_content_warning" checkbox="id_show_spoilers" class="toggle-button" pressed=pressed %}
 </div>

@@ -28,7 +28,7 @@ class Import(View):
         """load import page"""
         return TemplateResponse(
             request,
-            "import.html",
+            "import/import.html",
             {
                 "import_form": forms.ImportForm(),
                 "jobs": models.ImportJob.objects.filter(user=request.user).order_by(
@@ -68,7 +68,7 @@ class Import(View):
 
             importer.start_import(job)
 
-            return redirect("/import/%d" % job.id)
+            return redirect(f"/import/{job.id}")
         return HttpResponseBadRequest()
 
 
@@ -94,7 +94,7 @@ class ImportStatus(View):
         items = [i for i in items if not i.fail_reason]
         return TemplateResponse(
             request,
-            "import_status.html",
+            "import/import_status.html",
             {"job": job, "items": items, "failed_items": failed_items, "task": task},
         )
 
@@ -112,4 +112,4 @@ class ImportStatus(View):
             items,
         )
         importer.start_import(job)
-        return redirect("/import/%d" % job.id)
+        return redirect(f"/import/{job.id}")
