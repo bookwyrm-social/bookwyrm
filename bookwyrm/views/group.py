@@ -84,7 +84,7 @@ class UserGroups(View):
 @method_decorator(login_required, name="dispatch")
 class FindUsers(View):
     """find friends to add to your group"""
-    """this is mostly taken from the Get Started friend finder"""
+    """this is mostly borrowed from the Get Started friend finder"""
 
     def get(self, request, group_id):
         """basic profile info"""
@@ -99,6 +99,7 @@ class FindUsers(View):
             )
             .filter(
                 similarity__gt=0.5,
+                local=True
             )
             .order_by("-similarity")[:5]
         )

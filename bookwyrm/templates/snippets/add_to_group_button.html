@@ -1,6 +1,5 @@
 {% load i18n %}
 {% if request.user == user or not request.user == group.user or not request.user.is_authenticated %}
-<!-- TODO: blocking is irrelevant here, but ...is it? -->
 {% elif user in request.user.blocks.all %}
 {% include 'snippets/block_button.html' with blocks=True %}
 {% else %}
@@ -11,6 +10,7 @@
             {% csrf_token %}
             <input type="hidden" name="group" value="{{ group.id }}">
             <input type="hidden" name="user" value="{{ user.username }}">
+            {% if user.local %}
             <button class="button is-small{% if not minimal %} is-link{% endif %}" type="submit">
                 {% if show_username %}
                 {% blocktrans with username=user.localname %}Add @{{ username }}{% endblocktrans %}
@@ -18,6 +18,10 @@
                 {% trans "Add" %}
                 {% endif %}
             </button>
+            {% else %}
+            <!-- TODO: This is an incredibly ugly hack until group are AP enabled -->
+            <span><em>Remote User</em></span>
+            {% endif %}
         </form>
         <form action="{% url 'remove-group-member' %}" method="POST" class="interaction add_{{ user.id }} {% if user not in group.members.all %}is-hidden{%endif %}" data-id="add_{{ user.id }}">
             {% csrf_token %}
