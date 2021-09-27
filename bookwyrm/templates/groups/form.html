@@ -5,7 +5,7 @@
 <div class="columns">
 
     <div class="column is-two-thirds">
-        <input type="hidden" name="manager" value="{{ request.user.id }}" />
+        <input type="hidden" name="user" value="{{ request.user.id }}" />
         <input type="hidden" name="privacy" value="public" />
         <div class="field">
             <label class="label" for="id_name">{% trans "Group Name:" %}</label>
@@ -20,9 +20,9 @@
 <div class="columns is-mobile">
     <div class="column">
         <div class="field has-addons">
-            <!-- <div class="control">
+            <div class="control">
                 {% include 'snippets/privacy_select.html' with current=group.privacy %}
-            </div> -->
+            </div>
             <div class="control">
                 <button type="submit" class="button is-primary">{% trans "Save" %}</button>
             </div>

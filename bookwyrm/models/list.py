@@ -36,9 +36,10 @@ class List(OrderedCollectionMixin, BookWyrmModel):
     )
     group = models.ForeignKey(
         "Group",
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
         default=None,
-        blank=True
+        blank=True,
+        null=True,
     )
     books = models.ManyToManyField(
         "Edition",

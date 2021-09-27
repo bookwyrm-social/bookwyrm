@@ -76,6 +76,10 @@ class BookWyrmModel(models.Model):
                 and self.mention_users.filter(id=viewer.id).first()
             ):
                 return True
+
+# TODO: if privacy is direct and the object is a group and viewer is a member of the group
+# then return True
+
         return False
 
 

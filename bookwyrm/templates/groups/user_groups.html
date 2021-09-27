@@ -8,7 +8,7 @@
         <div class="card is-stretchable">
             <header class="card-header">
                 <h4 class="card-header-title">
-                    <a href="{{ group.local_path }}">{{ group.name }}</a> <span class="subtitle">{% include 'snippets/privacy-icons.html' with item=group %}</span>
+                    <a href="/group/{{ group.id }}">{{ group.name }}</a> <span class="subtitle">{% include 'snippets/privacy-icons.html' with item=group %}</span>
                 </h4>
                 {% if request.user.is_authenticated and request.user|saved:list %}
                 <div class="card-header-icon">

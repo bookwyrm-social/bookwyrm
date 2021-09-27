@@ -24,7 +24,7 @@
 
 {% block panel %}
 <section class="block">
-    <form name="create-group" method="post" action="{% url 'create-group' %}" class="box is-hidden" id="create_group">
+    <form name="create-group" method="post" action="{% url 'user-groups' request.user.username %}" class="box is-hidden" id="create_group">
         <header class="columns">
             <h3 class="title column">{% trans "Create group" %}</h3>
             <div class="column is-narrow">

@@ -12,7 +12,7 @@ class Group(BookWyrmModel):
     """A group of users"""
 
     name = fields.CharField(max_length=100)
-    manager = fields.ForeignKey(
+    user = fields.ForeignKey(
         "User", on_delete=models.PROTECT)
     description = fields.TextField(blank=True, null=True)
     privacy = fields.PrivacyField()
