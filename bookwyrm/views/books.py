@@ -38,18 +38,16 @@ class Book(View):
 
         user_statuses = user_statuses if request.user.is_authenticated else False
 
-        try:
-            book = models.Edition.viewer_aware_objects(request.user).filter(id=book_id)
-        except models.Edition.DoesNotExist:
-            book = (
-                models.Edition.viewer_aware_objects(request.user)
-                .filter(
-                    parent_work__id=book_id,
-                )
-                .order_by("-edition_rank")
-            )
-        book = book.select_related("parent_work").prefetch_related("authors")
-        book = book.first()
+        # it's safe to use this OR because edition and work and subclasses of the same
+        # table, so they never have clashing IDs
+        book = (
+            models.Edition.viewer_aware_objects(request.user)
+            .filter(Q(id=book_id) | Q(parent_work__id=book_id))
+            .order_by("-edition_rank")
+            .select_related("parent_work")
+            .prefetch_related("authors")
+            .first()
+        )
 
         if not book or not book.parent_work:
             raise Http404
