@@ -43,6 +43,7 @@ class PasswordViews(TestCase):
     def test_password_reset_request_post(self):
         """send 'em an email"""
         request = self.factory.post("", {"email": "aa@bb.ccc"})
+        request.user = self.anonymous_user
         view = views.PasswordResetRequest.as_view()
         resp = view(request)
         self.assertEqual(resp.status_code, 200)
