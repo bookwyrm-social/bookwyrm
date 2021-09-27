@@ -5,6 +5,7 @@ from Crypto import Random
 from django.core.exceptions import PermissionDenied
 from django.db import models
 from django.dispatch import receiver
+from django.http import Http404
 from django.utils.translation import gettext_lazy as _
 
 from bookwyrm.settings import DOMAIN
@@ -50,26 +51,26 @@ class BookWyrmModel(models.Model):
         """how to link to this object in the local app"""
         return self.get_remote_id().replace(f"https://{DOMAIN}", "")
 
-    def visible_to_user(self, viewer):
+    def raise_visible_to_user(self, viewer):
         """is a user authorized to view an object?"""
         # make sure this is an object with privacy owned by a user
         if not hasattr(self, "user") or not hasattr(self, "privacy"):
-            return None
+            return
 
         # viewer can't see it if the object's owner blocked them
         if viewer in self.user.blocks.all():
-            return False
+            raise Http404()
 
         # you can see your own posts and any public or unlisted posts
         if viewer == self.user or self.privacy in ["public", "unlisted"]:
-            return True
+            return
 
         # you can see the followers only posts of people you follow
         if (
             self.privacy == "followers"
             and self.user.followers.filter(id=viewer.id).first()
         ):
-            return True
+            return
 
         # you can see dms you are tagged in
         if hasattr(self, "mention_users"):
@@ -77,8 +78,8 @@ class BookWyrmModel(models.Model):
                 self.privacy == "direct"
                 and self.mention_users.filter(id=viewer.id).first()
             ):
-                return True
-        return False
+                return
+        raise Http404()
 
     def raise_not_editable(self, viewer):
         """does this user have permission to edit this object? liable to be overwritten
@@ -90,7 +91,7 @@ class BookWyrmModel(models.Model):
         if self.user == viewer:
             return
 
-        raise PermissionDenied
+        raise PermissionDenied()
 
     def raise_not_deletable(self, viewer):
         """does this user have permission to delete this object? liable to be
@@ -102,7 +103,7 @@ class BookWyrmModel(models.Model):
         if self.user == viewer or viewer.has_perm("moderate_post"):
             return
 
-        raise PermissionDenied
+        raise PermissionDenied()
 
 
 
