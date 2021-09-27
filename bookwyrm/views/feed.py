@@ -168,9 +168,11 @@ def get_suggested_books(user, max_books=5):
         shelf_preview = {
             "name": shelf.name,
             "identifier": shelf.identifier,
-            "books": shelf.books.order_by("shelfbook").prefetch_related("authors")[
-                :limit
-            ],
+            "books": models.Edition.viewer_aware_objects(user)
+            .filter(
+                shelfbook__shelf=shelf,
+            )
+            .prefetch_related("authors")[:limit],
         }
         suggested_books.append(shelf_preview)
         book_count += len(shelf_preview["books"])
