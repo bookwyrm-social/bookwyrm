@@ -29,7 +29,7 @@ class Group(View):
         data = {
             "group": group,
             "lists": lists,
-            "list_form": forms.GroupForm(),
+            "group_form": forms.GroupForm(instance=group),
             "path": "/group",
         }
         return TemplateResponse(request, "groups/group.html", data)
