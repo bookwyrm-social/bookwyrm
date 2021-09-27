@@ -98,8 +98,7 @@ class DeleteStatus(View):
         status = get_object_or_404(models.Status, id=status_id)
 
         # don't let people delete other people's statuses
-        if status.user != request.user and not request.user.has_perm("moderate_post"):
-            return HttpResponseBadRequest()
+        status.raise_not_deletable(request.user)
 
         # perform deletion
         status.delete()
@@ -115,12 +114,8 @@ class DeleteAndRedraft(View):
         status = get_object_or_404(
             models.Status.objects.select_subclasses(), id=status_id
         )
-        if isinstance(status, (models.GeneratedNote, models.ReviewRating)):
-            return HttpResponseBadRequest()
-
         # don't let people redraft other people's statuses
-        if status.user != request.user:
-            return HttpResponseBadRequest()
+        status.raise_not_editable(request.user)
 
         status_type = status.status_type.lower()
         if status.reply_parent:
