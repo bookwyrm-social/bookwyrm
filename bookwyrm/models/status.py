@@ -193,8 +193,7 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         # first, the standard raise
         super().raise_not_editable(viewer)
         if isinstance(self, (GeneratedNote, ReviewRating)):
-            raise PermissionDenied
-
+            raise PermissionDenied()
 
 
 class GeneratedNote(Status):

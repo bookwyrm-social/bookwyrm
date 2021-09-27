@@ -276,7 +276,7 @@ urlpatterns = [
     # User books
     re_path(rf"{USER_PATH}/books/?$", views.Shelf.as_view(), name="user-shelves"),
     re_path(
-        rf"^{USER_PATH}/(helf|books)/(?P<shelf_identifier>[\w-]+)(.json)?/?$",
+        rf"^{USER_PATH}/(shelf|books)/(?P<shelf_identifier>[\w-]+)(.json)?/?$",
         views.Shelf.as_view(),
         name="shelf",
     ),
