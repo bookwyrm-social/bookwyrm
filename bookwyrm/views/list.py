@@ -7,7 +7,7 @@ from django.core.paginator import Paginator
 from django.db import IntegrityError, transaction
 from django.db.models import Avg, Count, DecimalField, Q, Max
 from django.db.models.functions import Coalesce
-from django.http import HttpResponseNotFound, HttpResponseBadRequest, HttpResponse
+from django.http import HttpResponseBadRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
@@ -110,8 +110,7 @@ class List(View):
     def get(self, request, list_id):
         """display a book list"""
         book_list = get_object_or_404(models.List, id=list_id)
-        if not book_list.visible_to_user(request.user):
-            return HttpResponseNotFound()
+        book_list.raise_visible_to_user(request.user)
 
         if is_api_request(request):
             return ActivitypubResponse(book_list.to_activity(**request.GET))
@@ -192,6 +191,8 @@ class List(View):
     def post(self, request, list_id):
         """edit a list"""
         book_list = get_object_or_404(models.List, id=list_id)
+        book_list.raise_not_editable(request.user)
+
         form = forms.ListForm(request.POST, instance=book_list)
         if not form.is_valid():
             return redirect("list", book_list.id)
@@ -206,9 +207,7 @@ class Curate(View):
     def get(self, request, list_id):
         """display a pending list"""
         book_list = get_object_or_404(models.List, id=list_id)
-        if not book_list.user == request.user:
-            # only the creater can curate the list
-            return HttpResponseNotFound()
+        book_list.raise_not_editable(request.user)
 
         data = {
             "list": book_list,
@@ -222,6 +221,8 @@ class Curate(View):
     def post(self, request, list_id):
         """edit a book_list"""
         book_list = get_object_or_404(models.List, id=list_id)
+        book_list.raise_not_editable(request.user)
+
         suggestion = get_object_or_404(models.ListItem, id=request.POST.get("item"))
         approved = request.POST.get("approved") == "true"
         if approved:
@@ -269,7 +270,7 @@ def delete_list(request, list_id):
     book_list = get_object_or_404(models.List, id=list_id)
 
     # only the owner or a moderator can delete a list
-    book_list.raise_not_editable(request.user)
+    book_list.raise_not_deletable(request.user)
 
     book_list.delete()
     return redirect("lists")
@@ -280,8 +281,7 @@ def delete_list(request, list_id):
 def add_book(request):
     """put a book on a list"""
     book_list = get_object_or_404(models.List, id=request.POST.get("list"))
-    if not book_list.visible_to_user(request.user):
-        return HttpResponseNotFound()
+    book_list.raise_visible_to_user(request.user)
 
     book = get_object_or_404(models.Edition, id=request.POST.get("book"))
     # do you have permission to add to the list?

@@ -1,6 +1,5 @@
 """ views for actions you can take in the application """
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseNotFound
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
@@ -32,12 +31,10 @@ class Block(View):
 def unblock(request, user_id):
     """undo a block"""
     to_unblock = get_object_or_404(models.User, id=user_id)
-    try:
-        block = models.UserBlocks.objects.get(
-            user_subject=request.user,
-            user_object=to_unblock,
-        )
-    except models.UserBlocks.DoesNotExist:
-        return HttpResponseNotFound()
+    block = get_object_or_404(
+        models.UserBlocks,
+        user_subject=request.user,
+        user_object=to_unblock,
+    )
     block.delete()
     return redirect("prefs-block")

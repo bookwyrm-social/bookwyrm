@@ -45,9 +45,9 @@ class ReadingStatus(View):
         if not identifier:
             return HttpResponseBadRequest()
 
-        desired_shelf = models.Shelf.objects.filter(
+        desired_shelf = get_object_or_404(models.Shelf,
             identifier=identifier, user=request.user
-        ).first()
+        )
 
         book = (
             models.Edition.viewer_aware_objects(request.user)
@@ -138,10 +138,7 @@ def update_readthrough_on_shelve(
 def edit_readthrough(request):
     """can't use the form because the dates are too finnicky"""
     readthrough = get_object_or_404(models.ReadThrough, id=request.POST.get("id"))
-
-    # don't let people edit other people's data
-    if request.user != readthrough.user:
-        return HttpResponseBadRequest()
+    readthrough.raise_not_editable(request.user)
 
     readthrough.start_date = load_date_in_user_tz_as_utc(
         request.POST.get("start_date"), request.user
@@ -178,10 +175,7 @@ def edit_readthrough(request):
 def delete_readthrough(request):
     """remove a readthrough"""
     readthrough = get_object_or_404(models.ReadThrough, id=request.POST.get("id"))
-
-    # don't let people edit other people's data
-    if request.user != readthrough.user:
-        return HttpResponseBadRequest()
+    readthrough.raise_not_deletable(request.user)
 
     readthrough.delete()
     return redirect(request.headers.get("Referer", "/"))
@@ -225,10 +219,7 @@ def load_date_in_user_tz_as_utc(date_str: str, user: models.User) -> datetime:
 def delete_progressupdate(request):
     """remove a progress update"""
     update = get_object_or_404(models.ProgressUpdate, id=request.POST.get("id"))
-
-    # don't let people edit other people's data
-    if request.user != update.user:
-        return HttpResponseBadRequest()
+    update.raise_not_deletable(request.user)
 
     update.delete()
     return redirect(request.headers.get("Referer", "/"))

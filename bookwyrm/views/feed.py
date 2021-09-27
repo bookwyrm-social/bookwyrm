@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.http import HttpResponseNotFound, Http404
+from django.shortcuts import get_object_or_404
 from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
@@ -93,17 +94,12 @@ class Status(View):
 
     def get(self, request, username, status_id):
         """display a particular status (and replies, etc)"""
-        try:
-            user = get_user_from_username(request.user, username)
-            status = models.Status.objects.select_subclasses().get(
-                user=user, id=status_id, deleted=False
-            )
-        except (ValueError, models.Status.DoesNotExist):
-            return HttpResponseNotFound()
-
+        user = get_user_from_username(request.user, username)
+        status = get_object_or_404(models.Status.objects.select_subclasses(),
+            user=user, id=status_id, deleted=False
+        )
         # make sure the user is authorized to see the status
-        if not status.visible_to_user(request.user):
-            return HttpResponseNotFound()
+        status.raise_visible_to_user(request.user)
 
         if is_api_request(request):
             return ActivitypubResponse(
@@ -133,6 +129,7 @@ class Replies(View):
         status = models.Status.objects.get(id=status_id)
         if status.user.localname != username:
             return HttpResponseNotFound()
+        status.raise_visible_to_user(request.user)
 
         return ActivitypubResponse(status.to_replies(**request.GET))
 
