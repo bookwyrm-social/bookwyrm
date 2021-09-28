@@ -1,5 +1,7 @@
 """ test for app action functionality """
 from unittest.mock import patch
+from tidylib import tidy_document
+
 from django.contrib.auth.models import Group
 from django.template.response import TemplateResponse
 from django.test import TestCase
@@ -34,7 +36,10 @@ class UserAdminViews(TestCase):
         request.user.is_superuser = True
         result = view(request)
         self.assertIsInstance(result, TemplateResponse)
-        result.render()
+        html = result.render()
+        _, errors = tidy_document(html.content)
+        if errors:
+            raise Exception(errors)
         self.assertEqual(result.status_code, 200)
 
     def test_user_admin_page(self):
@@ -47,7 +52,10 @@ class UserAdminViews(TestCase):
         result = view(request, self.local_user.id)
 
         self.assertIsInstance(result, TemplateResponse)
-        result.render()
+        html = result.render()
+        _, errors = tidy_document(html.content)
+        if errors:
+            raise Exception(errors)
         self.assertEqual(result.status_code, 200)
 
     @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
@@ -69,7 +77,10 @@ class UserAdminViews(TestCase):
             result = view(request, self.local_user.id)
 
         self.assertIsInstance(result, TemplateResponse)
-        result.render()
+        html = result.render()
+        _, errors = tidy_document(html.content)
+        if errors:
+            raise Exception(errors)
 
         self.assertEqual(
             list(self.local_user.groups.values_list("name", flat=True)), ["editor"]

@@ -1,5 +1,7 @@
 """ test for app action functionality """
 from unittest.mock import patch
+from tidylib import tidy_document
+
 from django.template.response import TemplateResponse
 from django.test import TestCase
 from django.test.client import RequestFactory
@@ -44,7 +46,10 @@ class BlockViews(TestCase):
         request.user = self.local_user
         result = view(request)
         self.assertIsInstance(result, TemplateResponse)
-        result.render()
+        html = result.render()
+        _, errors = tidy_document(html.content)
+        if errors:
+            raise Exception(errors)
         self.assertEqual(result.status_code, 200)
 
     def test_block_post(self, _):

@@ -1,6 +1,8 @@
 """ test for app action functionality """
 import json
 from unittest.mock import patch
+from tidylib import tidy_document
+
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.template.response import TemplateResponse
 from django.test import TestCase
@@ -46,7 +48,10 @@ class FederationViews(TestCase):
         request.user.is_superuser = True
         result = view(request)
         self.assertIsInstance(result, TemplateResponse)
-        result.render()
+        html = result.render()
+        _, errors = tidy_document(html.content)
+        if errors:
+            raise Exception(errors)
         self.assertEqual(result.status_code, 200)
 
     def test_server_page(self):
@@ -59,7 +64,10 @@ class FederationViews(TestCase):
 
         result = view(request, server.id)
         self.assertIsInstance(result, TemplateResponse)
-        result.render()
+        html = result.render()
+        _, errors = tidy_document(html.content)
+        if errors:
+            raise Exception(errors)
         self.assertEqual(result.status_code, 200)
 
     def test_server_page_block(self):
@@ -148,7 +156,10 @@ class FederationViews(TestCase):
 
         result = view(request)
         self.assertIsInstance(result, TemplateResponse)
-        result.render()
+        html = result.render()
+        _, errors = tidy_document(html.content)
+        if errors:
+            raise Exception(errors)
         self.assertEqual(result.status_code, 200)
 
     def test_add_view_post_create(self):
