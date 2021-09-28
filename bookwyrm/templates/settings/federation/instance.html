@@ -19,18 +19,14 @@
         <h2 class="title is-4">{% trans "Details" %}</h2>
         <div class="box is-flex-grow-1 content">
             <dl>
-                <div class="is-flex">
-                    <dt>{% trans "Software:" %}</dt>
-                    <dd>{{ server.application_type }}</dd>
-                </div>
-                <div class="is-flex">
-                    <dt>{% trans "Version:" %}</dt>
-                    <dd>{{ server.application_version }}</dd>
-                </div>
-                <div class="is-flex">
-                    <dt>{% trans "Status:" %}</dt>
-                    <dd>{{ server.get_status_display }}</dd>
-                </div>
+                <dt class="is-pulled-left mr-5">{% trans "Software:" %}</dt>
+                <dd>{{ server.application_type }}</dd>
+
+                <dt class="is-pulled-left mr-5">{% trans "Version:" %}</dt>
+                <dd>{{ server.application_version }}</dd>
+
+                <dt class="is-pulled-left mr-5">{% trans "Status:" %}</dt>
+                <dd>{{ server.get_status_display }}</dd>
             </dl>
         </div>
     </section>
@@ -39,38 +35,32 @@
         <h2 class="title is-4">{% trans "Activity" %}</h2>
         <div class="box is-flex-grow-1 content">
             <dl>
-                <div class="is-flex">
-                    <dt>{% trans "Users:" %}</dt>
-                    <dd>
-                        {{ users.count }}
-                        {% if server.user_set.count %}(<a href="{% url 'settings-users' %}?server={{ server.server_name }}">{% trans "View all" %}</a>){% endif %}
-                    </dd>
-                </div>
-                <div class="is-flex">
-                    <dt>{% trans "Reports:" %}</dt>
-                    <dd>
-                        {{ reports.count }}
-                        {% if reports.count %}(<a href="{% url 'settings-reports' %}?server={{ server.server_name }}">{% trans "View all" %}</a>){% endif %}
-                    </dd>
-                </div>
-                <div class="is-flex">
-                    <dt>{% trans "Followed by us:" %}</dt>
-                    <dd>
-                        {{ followed_by_us.count }}
-                    </dd>
-                </div>
-                <div class="is-flex">
-                    <dt>{% trans "Followed by them:" %}</dt>
-                    <dd>
-                        {{ followed_by_them.count }}
-                    </dd>
-                </div>
-                <div class="is-flex">
-                    <dt>{% trans "Blocked by us:" %}</dt>
-                    <dd>
-                        {{ blocked_by_us.count }}
-                    </dd>
-                </div>
+                <dt class="is-pulled-left mr-5">{% trans "Users:" %}</dt>
+                <dd>
+                    {{ users.count }}
+                    {% if server.user_set.count %}(<a href="{% url 'settings-users' %}?server={{ server.server_name }}">{% trans "View all" %}</a>){% endif %}
+                </dd>
+
+                <dt class="is-pulled-left mr-5">{% trans "Reports:" %}</dt>
+                <dd>
+                    {{ reports.count }}
+                    {% if reports.count %}(<a href="{% url 'settings-reports' %}?server={{ server.server_name }}">{% trans "View all" %}</a>){% endif %}
+                </dd>
+
+                <dt class="is-pulled-left mr-5">{% trans "Followed by us:" %}</dt>
+                <dd>
+                    {{ followed_by_us.count }}
+                </dd>
+
+                <dt class="is-pulled-left mr-5">{% trans "Followed by them:" %}</dt>
+                <dd>
+                    {{ followed_by_them.count }}
+                </dd>
+
+                <dt class="is-pulled-left mr-5">{% trans "Blocked by us:" %}</dt>
+                <dd>
+                    {{ blocked_by_us.count }}
+                </dd>
             </dl>
         </div>
     </section>
@@ -86,14 +76,13 @@
             {% include 'snippets/toggle/open_button.html' with text=button_text icon_with_text="pencil" controls_text="edit_notes" %}
         </div>
     </header>
-    {% if server.notes %}
-    <div class="box" id="hide_edit_notes">{{ server.notes|to_markdown|safe }}</div>
-    {% endif %}
+    {% trans "<em>No notes</em>" as null_text %}
+    <div class="box" id="hide_edit_notes">{{ server.notes|to_markdown|default:null_text|safe }}</div>
     <form class="box is-hidden" method="POST" action="{% url 'settings-federated-server' server.id %}" id="edit_notes">
         {% csrf_token %}
         <p>
             <label class="is-sr-only" for="id_notes">Notes:</label>
-            <textarea name="notes" cols="None" rows="None" class="textarea" id="id_notes">{{ server.notes|default:"" }}</textarea>
+            <textarea name="notes" cols="40" rows="5" class="textarea" id="id_notes">{{ server.notes|default:"" }}</textarea>
         </p>
         <button type="submit" class="button is-primary">{% trans "Save" %}</button>
         {% trans "Cancel" as button_text %}

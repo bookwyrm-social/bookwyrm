@@ -51,13 +51,16 @@ class FederationViews(TestCase):
         html = result.render()
         _, errors = tidy_document(
             html.content,
-            options={"drop-empty-elements": False, "drop-proprietary-attributes": False}
+            options={
+                "drop-empty-elements": False,
+                "warn-proprietary-attributes": False,
+            },
         )
         if errors:
             raise Exception(errors)
         self.assertEqual(result.status_code, 200)
 
-    def test_server_page(self):
+    def test_instance_page(self):
         """there are so many views, this just makes sure it LOADS"""
         server = models.FederatedServer.objects.create(server_name="hi.there.com")
         view = views.FederatedServer.as_view()
@@ -68,7 +71,7 @@ class FederationViews(TestCase):
         result = view(request, server.id)
         self.assertIsInstance(result, TemplateResponse)
         html = result.render()
-        _, errors = tidy_document(html.content)
+        _, errors = tidy_document(html.content, options={"drop-empty-elements": False})
         if errors:
             raise Exception(errors)
         self.assertEqual(result.status_code, 200)
