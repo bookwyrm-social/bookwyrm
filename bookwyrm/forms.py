@@ -101,6 +101,8 @@ class QuotationForm(CustomForm):
             "content_warning",
             "sensitive",
             "privacy",
+            "position",
+            "position_mode",
         ]
 
 
@@ -123,6 +125,12 @@ class StatusForm(CustomForm):
         fields = ["user", "content", "content_warning", "sensitive", "privacy"]
 
 
+class DirectForm(CustomForm):
+    class Meta:
+        model = models.Status
+        fields = ["user", "content", "content_warning", "sensitive", "privacy"]
+
+
 class EditUserForm(CustomForm):
     class Meta:
         model = models.User
@@ -132,6 +140,7 @@ class EditUserForm(CustomForm):
             "email",
             "summary",
             "show_goal",
+            "show_suggested_users",
             "manually_approves_followers",
             "default_post_privacy",
             "discoverable",
@@ -219,7 +228,7 @@ class ExpiryWidget(widgets.Select):
         elif selected_string == "forever":
             return None
         else:
-            return selected_string  # "This will raise
+            return selected_string  # This will raise
 
         return timezone.now() + interval
 
@@ -251,10 +260,7 @@ class CreateInviteForm(CustomForm):
                 ]
             ),
             "use_limit": widgets.Select(
-                choices=[
-                    (i, _("%(count)d uses" % {"count": i}))
-                    for i in [1, 5, 10, 25, 50, 100]
-                ]
+                choices=[(i, _(f"{i} uses")) for i in [1, 5, 10, 25, 50, 100]]
                 + [(None, _("Unlimited"))]
             ),
         }
@@ -294,6 +300,18 @@ class ReportForm(CustomForm):
     class Meta:
         model = models.Report
         fields = ["user", "reporter", "statuses", "note"]
+
+
+class EmailBlocklistForm(CustomForm):
+    class Meta:
+        model = models.EmailBlocklist
+        fields = ["domain"]
+
+
+class IPBlocklistForm(CustomForm):
+    class Meta:
+        model = models.IPBlocklist
+        fields = ["address"]
 
 
 class ServerForm(CustomForm):

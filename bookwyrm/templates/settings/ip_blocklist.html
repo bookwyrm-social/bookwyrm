@@ -1,0 +1,47 @@
+{% extends 'settings/layout.html' %}
+{% load i18n %}
+{% load humanize %}
+
+{% block title %}{% trans "IP Address Blocklist" %}{% endblock %}
+
+{% block header %}{% trans "IP Address Blocklist" %}{% endblock %}
+
+{% block edit-button %}
+{% trans "Add IP address" as button_text %}
+{% include 'snippets/toggle/open_button.html' with controls_text="add_address" icon_with_text="plus" text=button_text focus="add_address_header" %}
+{% endblock %}
+
+{% block panel %}
+{% include 'settings/ip_address_form.html' with controls_text="add_address" class="block" %}
+
+<p class="notification block">
+    {% trans "Any traffic from this IP address will get a 404 response when trying to access any part of the application." %}
+</p>
+
+<table class="table is-striped is-fullwidth">
+    <tr>
+        <th>
+            {% trans "Address" %}
+        </th>
+        <th>
+            {% trans "Options" %}
+        </th>
+    </tr>
+    {% for address in addresses %}
+    <tr>
+        <td>{{ address.address }}</td>
+        <td>
+            <form name="remove-{{ address.id }}" action="{% url 'settings-ip-blocks-delete' address.id %}" method="post">
+                {% csrf_token %}
+                {% trans "Delete" as button_text %}
+                <button class="button" type="submit">
+                    <span class="icon icon-x" title="{{ button_text }}" aria-hidden="true"></span>
+                    <span class="is-hidden-mobile">{{ button_text }}</span>
+                </button>
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% endblock %}

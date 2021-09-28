@@ -1,4 +1,4 @@
-{% extends 'settings/admin_layout.html' %}
+{% extends 'settings/layout.html' %}
 {% load i18n %}
 {% load markdown %}
 
@@ -29,7 +29,7 @@
                 </div>
                 <div class="is-flex">
                     <dt>{% trans "Status:" %}</dt>
-                    <dd>{{ server.status }}</dd>
+                    <dd>{{ server.get_status_display }}</dd>
                 </div>
             </dl>
         </div>

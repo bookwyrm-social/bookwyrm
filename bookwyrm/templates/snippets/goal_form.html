@@ -1,5 +1,5 @@
 {% load i18n %}
-<form method="post" name="goal" action="{{ request.user.local_path }}/goal/{{ year }}">
+<form method="post" name="goal" action="{% url 'user-goal' request.user.localname year %}">
     {% csrf_token %}
     <input type="hidden" name="year" value="{% if goal %}{{ goal.year }}{% else %}{{ year }}{% endif %}">
     <input type="hidden" name="user" value="{{ request.user.id }}">

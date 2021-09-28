@@ -1,0 +1,11 @@
+{% load i18n %}
+
+{% trans "Help" as button_text %}
+{% include 'snippets/toggle/open_button.html' with text=button_text class="ml-3 is-rounded is-small is-white p-0 pb-1" icon="question-circle is-size-6" controls_text=controls_text controls_uid=controls_uid %}
+
+<aside class="tooltip notification is-hidden transition-y is-pulled-left mb-2" id="{{ controls_text }}{% if controls_uid %}-{{ controls_uid }}{% endif %}">
+    {% trans "Close" as button_text %}
+    {% include 'snippets/toggle/close_button.html' with label=button_text class="delete" nonbutton=True controls_text=controls_text controls_uid=controls_uid %}
+
+    {% block tooltip_content %}{% endblock %}
+</aside>

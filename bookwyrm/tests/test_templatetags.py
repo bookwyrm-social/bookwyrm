@@ -15,14 +15,16 @@ from bookwyrm.templatetags import (
 )
 
 
-@patch("bookwyrm.activitystreams.ActivityStream.add_status")
-@patch("bookwyrm.activitystreams.ActivityStream.remove_object_from_related_stores")
+@patch("bookwyrm.activitystreams.add_status_task.delay")
+@patch("bookwyrm.activitystreams.remove_status_task.delay")
 class TemplateTags(TestCase):
     """lotta different things here"""
 
     def setUp(self):
         """create some filler objects"""
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
+            "bookwyrm.activitystreams.populate_stream_task.delay"
+        ):
             self.user = models.User.objects.create_user(
                 "mouse@example.com",
                 "mouse@mouse.mouse",
@@ -73,15 +75,12 @@ class TemplateTags(TestCase):
         second_child = models.Status.objects.create(
             reply_parent=parent, user=self.user, content="hi"
         )
-        with patch(
-            "bookwyrm.activitystreams.ActivityStream.remove_object_from_related_stores"
-        ):
-            third_child = models.Status.objects.create(
-                reply_parent=parent,
-                user=self.user,
-                deleted=True,
-                deleted_date=timezone.now(),
-            )
+        third_child = models.Status.objects.create(
+            reply_parent=parent,
+            user=self.user,
+            deleted=True,
+            deleted_date=timezone.now(),
+        )
 
         replies = status_display.get_replies(parent)
         self.assertEqual(len(replies), 2)
@@ -180,5 +179,5 @@ class TemplateTags(TestCase):
         """self progress helper"""
         self.assertEqual(bookwyrm_tags.get_next_shelf("to-read"), "reading")
         self.assertEqual(bookwyrm_tags.get_next_shelf("reading"), "read")
-        self.assertEqual(bookwyrm_tags.get_next_shelf("read"), "read")
+        self.assertEqual(bookwyrm_tags.get_next_shelf("read"), "complete")
         self.assertEqual(bookwyrm_tags.get_next_shelf("blooooga"), "to-read")

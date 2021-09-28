@@ -1,4 +1,4 @@
-{% extends 'settings/admin_layout.html' %}
+{% extends 'settings/layout.html' %}
 {% load i18n %}
 
 {% block title %}{% trans "Site Settings" %}{% endblock %}
@@ -22,6 +22,11 @@
         <div class="field">
             <label class="label" for="id_instance_description">{% trans "Instance description:" %}</label>
             {{ site_form.instance_description }}
+        </div>
+        <div class="field">
+            <label class="label mb-0" for="id_short_description">{% trans "Short description:" %}</label>
+            <p class="help">{% trans "Used when the instance is previewed on joinbookwyrm.com. Does not support html or markdown." %}</p>
+            {{ site_form.instance_short_description }}
         </div>
         <div class="field">
             <label class="label" for="id_code_of_conduct">{% trans "Code of conduct:" %}</label>
@@ -101,6 +106,13 @@
         <div class="field">
             <label class="label" for="id_registration_closed_text">{% trans "Registration closed text:" %}</label>
             {{ site_form.registration_closed_text }}
+        </div>
+        <div class="field">
+            <label class="label" for="id_invite_request_text">{% trans "Invite request text:" %}</label>
+            {{ site_form.invite_request_text }}
+            {% for error in site_form.invite_request_text.errors %}
+            <p class="help is-danger">{{ error|escape }}</p>
+            {% endfor %}
         </div>
     </section>
 

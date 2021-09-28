@@ -1,8 +1,10 @@
 {% load i18n %}
 {% load markdown %}
+{% load humanize %}
+
 <div class="block columns">
     <div class="column is-flex is-flex-direction-column">
-        <h4 class="title is-4">{% trans "User details" %}</h4>
+        <h4 class="title is-4">{% trans "Profile" %}</h4>
         <div class="box is-flex-grow-1">
             {% include 'user/user_preview.html' with user=user %}
             {% if user.summary %}
@@ -14,6 +16,95 @@
             <p class="mt-2"><a href="{{ user.local_path }}">{% trans "View user profile" %}</a></p>
         </div>
     </div>
+    <div class="column is-flex is-flex-direction-column is-4">
+        <h4 class="title is-4">{% trans "Status" %}</h4>
+        <div class="box is-flex-grow-1 has-text-weight-bold">
+            {% if user.is_active %}
+            <p class="notification is-success">
+                {% trans "Active" %}
+            </p>
+            {% else %}
+            <p class="notification is-warning">
+                {% trans "Inactive" %}
+                {% if user.deactivation_reason %}
+                <span class="help">({% trans user.get_deactivation_reason_display %})</span>
+                {% endif %}
+            </p>
+            {% endif %}
+            <p class="notification">
+                {% if user.local %}
+                {% trans "Local" %}
+                {% else %}
+                {% trans "Remote" %}
+                {% endif %}
+            </p>
+        </div>
+    </div>
+</div>
+
+<div class="block columns">
+    <div class="column is-flex is-flex-direction-column">
+        <h4 class="title is-4">{% trans "User details" %}</h4>
+        <div class="box content is-flex-grow-1">
+            <dl>
+                {% if user.local %}
+                <div class="is-flex">
+                    <dt>{% trans "Email:" %}</dt>
+                    <dd>{{ user.email }}</dd>
+                </div>
+                {% endif %}
+
+                {% with report_count=user.report_set.count %}
+                <div class="is-flex">
+                    <dt>{% trans "Reports:" %}</dt>
+                    <dd>
+                        {{ report_count|intcomma }}
+                        {% if report_count > 0 %}
+                        <a href="{% url 'settings-reports' %}?username={{ user.username }}">
+                            {% trans "(View reports)" %}
+                        </a>
+                        {% endif %}
+                    </dd>
+                </div>
+                {% endwith %}
+
+                <div class="is-flex">
+                    <dt>{% trans "Blocked by count:" %}</dt>
+                    <dd>{{ user.blocked_by.count }}</dd>
+                </div>
+
+                <div class="is-flex">
+                    <dt>{% trans "Last active date:" %}</dt>
+                    <dd>{{ user.last_active_date }}</dd>
+                </div>
+
+                <div class="is-flex">
+                    <dt>{% trans "Manually approved followers:" %}</dt>
+                    <dd>{{ user.manually_approves_followers }}</dd>
+                </div>
+
+                <div class="is-flex">
+                    <dt>{% trans "Discoverable:" %}</dt>
+                    <dd>{{ user.discoverable }}</dd>
+                </div>
+
+                {% if not user.is_active %}
+                <div class="is-flex">
+                    <dt>{% trans "Deactivation reason:" %}</dt>
+                    <dd>{{ user.deactivation_reason }}</dd>
+                </div>
+                {% endif %}
+
+                {% if not user.is_active and user.deactivation_reason == "pending" %}
+                <div class="is-flex">
+                    <dt>{% trans "Confirmation code:" %}</dt>
+                    <dd>{{ user.confirmation_code }}</dd>
+                </div>
+                {% endif %}
+            </dl>
+        </div>
+    </div>
+
     {% if not user.local %}
     {% with server=user.federated_server %}
     <div class="column is-half is-flex is-flex-direction-column">

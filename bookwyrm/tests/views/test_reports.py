@@ -1,4 +1,5 @@
 """ test for app action functionality """
+import json
 from unittest.mock import patch
 from django.template.response import TemplateResponse
 from django.test import TestCase
@@ -13,7 +14,9 @@ class ReportViews(TestCase):
     def setUp(self):
         """we need basic test data and mocks"""
         self.factory = RequestFactory()
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
+            "bookwyrm.activitystreams.populate_stream_task.delay"
+        ):
             self.local_user = models.User.objects.create_user(
                 "mouse@local.com",
                 "mouse@mouse.mouse",
@@ -117,6 +120,7 @@ class ReportViews(TestCase):
         self.assertFalse(report.resolved)
 
     @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
+    @patch("bookwyrm.activitystreams.populate_stream_task.delay")
     @patch("bookwyrm.suggested_users.remove_user_task.delay")
     def test_suspend_user(self, *_):
         """toggle whether a user is able to log in"""
@@ -131,6 +135,26 @@ class ReportViews(TestCase):
         self.assertFalse(self.rat.is_active)
 
         # re-activate
-        views.suspend_user(request, self.rat.id)
+        views.unsuspend_user(request, self.rat.id)
         self.rat.refresh_from_db()
         self.assertTrue(self.rat.is_active)
+
+    @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
+    @patch("bookwyrm.suggested_users.remove_user_task.delay")
+    def test_delete_user(self, *_):
+        """toggle whether a user is able to log in"""
+        self.assertTrue(self.rat.is_active)
+        request = self.factory.post("", {"password": "password"})
+        request.user = self.local_user
+        request.user.is_superuser = True
+
+        # de-activate
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay") as mock:
+            views.moderator_delete_user(request, self.rat.id)
+        self.assertEqual(mock.call_count, 1)
+        activity = json.loads(mock.call_args[0][1])
+        self.assertEqual(activity["type"], "Delete")
+
+        self.rat.refresh_from_db()
+        self.assertFalse(self.rat.is_active)
+        self.assertEqual(self.rat.deactivation_reason, "moderator_deletion")

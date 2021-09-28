@@ -1,6 +1,6 @@
 {% load i18n %}
 <div class="block content">
-    {% if not user.is_active and user.deactivation_reason == "self_deletion" %}
+    {% if not user.is_active and user.deactivation_reason == "self_deletion" or user.deactivation_reason == "moderator_deletion" %}
     <div class="notification is-danger">
         {% trans "Permanently deleted" %}
     </div>
@@ -8,18 +8,37 @@
     <h3>{% trans "Actions" %}</h3>
 
     <div class="is-flex">
+        {% if user.is_active %}
         <p class="mr-1">
             <a class="button" href="{% url 'direct-messages-user' user.username %}">{% trans "Send direct message" %}</a>
         </p>
-        <form name="suspend" method="post" action="{% url 'settings-report-suspend' user.id  %}">
+        {% endif %}
+
+        {% if user.is_active or user.deactivation_reason == "pending" %}
+        <form name="suspend" method="post" action="{% url 'settings-report-suspend' user.id  %}" class="mr-1">
             {% csrf_token %}
-            {% if user.is_active %}
             <button type="submit" class="button is-danger is-light">{% trans "Suspend user" %}</button>
-            {% else %}
-            <button class="button">{% trans "Un-suspend user" %}</button>
-            {% endif %}
         </form>
+        {% else %}
+        <form name="unsuspend" method="post" action="{% url 'settings-report-unsuspend' user.id  %}" class="mr-1">
+            {% csrf_token %}
+            <button class="button">{% trans "Un-suspend user" %}</button>
+        </form>
+        {% endif %}
+
+        {% if user.local %}
+        <div>
+            {% trans "Permanently delete user" as button_text %}
+            {% include "snippets/toggle/open_button.html" with controls_text="delete_user" text=button_text class="is-danger is-light" %}
+        </div>
+        {% endif %}
     </div>
+
+    {% if user.local %}
+    <div>
+        {% include "user_admin/delete_user_form.html" with controls_text="delete_user" class="mt-2 mb-2" %}
+    </div>
+    {% endif %}
 
     {% if user.local %}
     <div>

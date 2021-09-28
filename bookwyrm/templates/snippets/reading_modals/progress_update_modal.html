@@ -6,8 +6,7 @@
 {% endblock %}
 
 {% block modal-form-open %}
-<form action="{% url 'edit-readthrough' %}" method="POST">
-{% csrf_token %}
+<form action="{% url 'edit-readthrough' %}" method="POST" class="submit-status">
 {% endblock %}
 
 {% block reading-dates %}

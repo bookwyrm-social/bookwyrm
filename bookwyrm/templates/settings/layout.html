@@ -18,25 +18,49 @@
 
 <div class="block columns">
     <nav class="menu column is-one-quarter">
+        <h2 class="menu-label">
+            {% url 'settings-dashboard' as url %}
+            <a
+                href="{{ url }}"
+                {% if url in request.path %} class="is-active" aria-selected="true"{% endif %}
+            >{% trans "Dashboard" %}</a>
+        </h2>
         {% if perms.bookwyrm.create_invites %}
         <h2 class="menu-label">{% trans "Manage Users" %}</h2>
         <ul class="menu-list">
+            {% if perms.bookwyrm.moderate_user %}
             <li>
                 {% url 'settings-users' as url %}
                 <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Users" %}</a>
             </li>
+            {% endif %}
             <li>
                 {% url 'settings-invite-requests' as url %}
                 {% url 'settings-invites' as alt_url %}
                 <a href="{{ url }}"{% if url in request.path or request.path in alt_url %} class="is-active" aria-selected="true"{% endif %}>{% trans "Invites" %}</a>
             </li>
+            {% if perms.bookwyrm.control_federation %}
+            <li>
+                {% url 'settings-federation' as url %}
+                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Federated Instances" %}</a>
+            </li>
+            {% endif %}
+        </ul>
+        {% endif %}
+        {% if perms.bookwyrm.moderate_user %}
+        <h2 class="menu-label">{% trans "Moderation" %}</h2>
+        <ul class="menu-list">
             <li>
                 {% url 'settings-reports' as url %}
                 <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Reports" %}</a>
             </li>
             <li>
-                {% url 'settings-federation' as url %}
-                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Federated Instances" %}</a>
+                {% url 'settings-email-blocks' as url %}
+                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Email Blocklist" %}</a>
+            </li>
+            <li>
+                {% url 'settings-ip-blocks' as url %}
+                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "IP Address Blocklist" %}</a>
             </li>
         </ul>
         {% endif %}

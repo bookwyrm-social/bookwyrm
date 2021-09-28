@@ -301,7 +301,10 @@ let BookWyrm = new class {
     ajaxPost(form) {
         return fetch(form.action, {
             method : "POST",
-            body: new FormData(form)
+            body: new FormData(form),
+            headers: {
+                'Accept': 'application/json',
+            }
         });
     }
 

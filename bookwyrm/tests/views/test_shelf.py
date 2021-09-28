@@ -11,13 +11,18 @@ from bookwyrm.activitypub import ActivitypubResponse
 
 @patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
 @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
+@patch("bookwyrm.activitystreams.populate_stream_task.delay")
+@patch("bookwyrm.activitystreams.add_book_statuses_task.delay")
+@patch("bookwyrm.activitystreams.remove_book_statuses_task.delay")
 class ShelfViews(TestCase):
     """tag views"""
 
     def setUp(self):
         """we need basic test data and mocks"""
         self.factory = RequestFactory()
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
+            "bookwyrm.activitystreams.populate_stream_task.delay"
+        ):
             self.local_user = models.User.objects.create_user(
                 "mouse@local.com",
                 "mouse@mouse.com",
@@ -100,7 +105,7 @@ class ShelfViews(TestCase):
         shelf.refresh_from_db()
 
         self.assertEqual(shelf.name, "cool name")
-        self.assertEqual(shelf.identifier, "testshelf-%d" % shelf.id)
+        self.assertEqual(shelf.identifier, f"testshelf-{shelf.id}")
 
     def test_edit_shelf_name_not_editable(self, *_):
         """can't change the name of an non-editable shelf"""

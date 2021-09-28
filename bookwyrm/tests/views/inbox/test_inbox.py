@@ -3,6 +3,7 @@ import json
 import pathlib
 from unittest.mock import patch
 
+from django.core.exceptions import PermissionDenied
 from django.http import HttpResponseNotAllowed, HttpResponseNotFound
 from django.test import TestCase, Client
 from django.test.client import RequestFactory
@@ -19,7 +20,9 @@ class Inbox(TestCase):
         self.client = Client()
         self.factory = RequestFactory()
 
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
+            "bookwyrm.activitystreams.populate_stream_task.delay"
+        ):
             local_user = models.User.objects.create_user(
                 "mouse@example.com",
                 "mouse@mouse.com",
@@ -128,22 +131,24 @@ class Inbox(TestCase):
             "",
             HTTP_USER_AGENT="http.rb/4.4.1 (Mastodon/3.3.0; +https://mastodon.social/)",
         )
-        self.assertFalse(views.inbox.is_blocked_user_agent(request))
+        self.assertIsNone(views.inbox.raise_is_blocked_user_agent(request))
 
         models.FederatedServer.objects.create(
             server_name="mastodon.social", status="blocked"
         )
-        self.assertTrue(views.inbox.is_blocked_user_agent(request))
+        with self.assertRaises(PermissionDenied):
+            views.inbox.raise_is_blocked_user_agent(request)
 
     def test_is_blocked_activity(self):
         """check for blocked servers"""
         activity = {"actor": "https://mastodon.social/user/whaatever/else"}
-        self.assertFalse(views.inbox.is_blocked_activity(activity))
+        self.assertIsNone(views.inbox.raise_is_blocked_activity(activity))
 
         models.FederatedServer.objects.create(
             server_name="mastodon.social", status="blocked"
         )
-        self.assertTrue(views.inbox.is_blocked_activity(activity))
+        with self.assertRaises(PermissionDenied):
+            views.inbox.raise_is_blocked_activity(activity)
 
     @patch("bookwyrm.suggested_users.remove_user_task.delay")
     def test_create_by_deactivated_user(self, _):
@@ -155,11 +160,11 @@ class Inbox(TestCase):
         activity = self.create_json
         activity["actor"] = self.remote_user.remote_id
         activity["object"] = status_data
+        activity["type"] = "Create"
 
-        with patch("bookwyrm.views.inbox.has_valid_signature") as mock_valid:
-            mock_valid.return_value = True
-
-            result = self.client.post(
-                "/inbox", json.dumps(activity), content_type="application/json"
-            )
-        self.assertEqual(result.status_code, 403)
+        response = self.client.post(
+            "/inbox",
+            json.dumps(activity),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 403)

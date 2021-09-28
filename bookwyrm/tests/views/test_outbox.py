@@ -18,7 +18,9 @@ class OutboxView(TestCase):
     def setUp(self):
         """we'll need some data"""
         self.factory = RequestFactory()
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
+            "bookwyrm.activitystreams.populate_stream_task.delay"
+        ):
             self.local_user = models.User.objects.create_user(
                 "mouse@local.com",
                 "mouse@mouse.com",
@@ -56,7 +58,7 @@ class OutboxView(TestCase):
 
     def test_outbox_privacy(self, _):
         """don't show dms et cetera in outbox"""
-        with patch("bookwyrm.activitystreams.ActivityStream.add_status"):
+        with patch("bookwyrm.activitystreams.add_status_task.delay"):
             models.Status.objects.create(
                 content="PRIVATE!!", user=self.local_user, privacy="direct"
             )
@@ -79,7 +81,7 @@ class OutboxView(TestCase):
 
     def test_outbox_filter(self, _):
         """if we only care about reviews, only get reviews"""
-        with patch("bookwyrm.activitystreams.ActivityStream.add_status"):
+        with patch("bookwyrm.activitystreams.add_status_task.delay"):
             models.Review.objects.create(
                 content="look at this",
                 name="hi",
@@ -105,7 +107,7 @@ class OutboxView(TestCase):
 
     def test_outbox_bookwyrm_request_true(self, _):
         """should differentiate between bookwyrm and outside requests"""
-        with patch("bookwyrm.activitystreams.ActivityStream.add_status"):
+        with patch("bookwyrm.activitystreams.add_status_task.delay"):
             models.Review.objects.create(
                 name="hi",
                 content="look at this",
@@ -123,7 +125,7 @@ class OutboxView(TestCase):
 
     def test_outbox_bookwyrm_request_false(self, _):
         """should differentiate between bookwyrm and outside requests"""
-        with patch("bookwyrm.activitystreams.ActivityStream.add_status"):
+        with patch("bookwyrm.activitystreams.add_status_task.delay"):
             models.Review.objects.create(
                 name="hi",
                 content="look at this",

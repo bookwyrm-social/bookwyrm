@@ -19,16 +19,19 @@ from bookwyrm.activitypub import ActivitySerializerError
 from bookwyrm import models
 
 
-@patch("bookwyrm.activitystreams.ActivityStream.add_status")
+@patch("bookwyrm.activitystreams.add_status_task.delay")
 @patch("bookwyrm.suggested_users.rerank_user_task.delay")
 @patch("bookwyrm.suggested_users.remove_user_task.delay")
 @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
+@patch("bookwyrm.activitystreams.populate_stream_task.delay")
 class BaseActivity(TestCase):
     """the super class for model-linked activitypub dataclasses"""
 
     def setUp(self):
         """we're probably going to re-use this so why copy/paste"""
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
+            "bookwyrm.activitystreams.populate_stream_task.delay"
+        ):
             self.user = models.User.objects.create_user(
                 "mouse", "mouse@mouse.mouse", "mouseword", local=True, localname="mouse"
             )

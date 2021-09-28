@@ -1,14 +1,16 @@
-{% extends 'settings/admin_layout.html' %}
+{% extends 'settings/layout.html' %}
 {% load i18n %}
 
 {% block title %}{{ user.username }}{% endblock %}
-{% block header %}{{ user.username }}{% endblock %}
+{% block header %}
+{{ user.username }}
+<p class="help has-text-weight-normal">
+    <a href="{% url 'settings-users' %}">{% trans "Back to users" %}</a>
+</p>
+
+{% endblock %}
 
 {% block panel %}
-<div class="block">
-    <a href="{% url 'settings-users' %}">{% trans "Back to users" %}</a>
-</div>
-
 {% include 'user_admin/user_info.html' with user=user %}
 
 {% include 'user_admin/user_moderation_actions.html' with user=user %}

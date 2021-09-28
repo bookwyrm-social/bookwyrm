@@ -1,22 +1,24 @@
 """ base model with default fields """
 import base64
 from Crypto import Random
+
+from django.core.exceptions import PermissionDenied
 from django.db import models
 from django.dispatch import receiver
+from django.http import Http404
+from django.utils.translation import gettext_lazy as _
 
 from bookwyrm.settings import DOMAIN
 from .fields import RemoteIdField
 
 
-DeactivationReason = models.TextChoices(
-    "DeactivationReason",
-    [
-        "pending",
-        "self_deletion",
-        "moderator_deletion",
-        "domain_block",
-    ],
-)
+DeactivationReason = [
+    ("pending", _("Pending")),
+    ("self_deletion", _("Self deletion")),
+    ("moderator_suspension", _("Moderator suspension")),
+    ("moderator_deletion", _("Moderator deletion")),
+    ("domain_block", _("Domain block")),
+]
 
 
 def new_access_code():
@@ -33,11 +35,11 @@ class BookWyrmModel(models.Model):
 
     def get_remote_id(self):
         """generate a url that resolves to the local object"""
-        base_path = "https://%s" % DOMAIN
+        base_path = f"https://{DOMAIN}"
         if hasattr(self, "user"):
-            base_path = "%s%s" % (base_path, self.user.local_path)
+            base_path = f"{base_path}{self.user.local_path}"
         model_name = type(self).__name__.lower()
-        return "%s/%s/%d" % (base_path, model_name, self.id)
+        return f"{base_path}/{model_name}/{self.id}"
 
     class Meta:
         """this is just here to provide default fields for other models"""
@@ -47,28 +49,28 @@ class BookWyrmModel(models.Model):
     @property
     def local_path(self):
         """how to link to this object in the local app"""
-        return self.get_remote_id().replace("https://%s" % DOMAIN, "")
+        return self.get_remote_id().replace(f"https://{DOMAIN}", "")
 
-    def visible_to_user(self, viewer):
+    def raise_visible_to_user(self, viewer):
         """is a user authorized to view an object?"""
         # make sure this is an object with privacy owned by a user
         if not hasattr(self, "user") or not hasattr(self, "privacy"):
-            return None
+            return
 
         # viewer can't see it if the object's owner blocked them
         if viewer in self.user.blocks.all():
-            return False
+            raise Http404()
 
         # you can see your own posts and any public or unlisted posts
         if viewer == self.user or self.privacy in ["public", "unlisted"]:
-            return True
+            return
 
         # you can see the followers only posts of people you follow
         if (
             self.privacy == "followers"
             and self.user.followers.filter(id=viewer.id).first()
         ):
-            return True
+            return
 
         # you can see dms you are tagged in
         if hasattr(self, "mention_users"):
@@ -76,8 +78,32 @@ class BookWyrmModel(models.Model):
                 self.privacy == "direct"
                 and self.mention_users.filter(id=viewer.id).first()
             ):
-                return True
-        return False
+                return
+        raise Http404()
+
+    def raise_not_editable(self, viewer):
+        """does this user have permission to edit this object? liable to be overwritten
+        by models that inherit this base model class"""
+        if not hasattr(self, "user"):
+            return
+
+        # generally moderators shouldn't be able to edit other people's stuff
+        if self.user == viewer:
+            return
+
+        raise PermissionDenied()
+
+    def raise_not_deletable(self, viewer):
+        """does this user have permission to delete this object? liable to be
+        overwritten by models that inherit this base model class"""
+        if not hasattr(self, "user"):
+            return
+
+        # but generally moderators can delete other people's stuff
+        if self.user == viewer or viewer.has_perm("moderate_post"):
+            return
+
+        raise PermissionDenied()
 
 
 @receiver(models.signals.post_save)

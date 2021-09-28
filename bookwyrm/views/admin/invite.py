@@ -16,7 +16,7 @@ from django.views.decorators.http import require_POST
 
 from bookwyrm import emailing, forms, models
 from bookwyrm.settings import PAGE_LENGTH
-from . import helpers
+from bookwyrm.views import helpers
 
 
 # pylint: disable= no-self-use
@@ -51,7 +51,7 @@ class ManageInvites(View):
         """creates an invite database entry"""
         form = forms.CreateInviteForm(request.POST)
         if not form.is_valid():
-            return HttpResponseBadRequest("ERRORS : %s" % (form.errors,))
+            return HttpResponseBadRequest(f"ERRORS: {form.errors}")
 
         invite = form.save(commit=False)
         invite.user = request.user
@@ -83,7 +83,7 @@ class Invite(View):
         }
         return TemplateResponse(request, "invite.html", data)
 
-    # post handling is in views.authentication.Register
+    # post handling is in views.register.Register
 
 
 class ManageInviteRequests(View):
@@ -98,6 +98,7 @@ class ManageInviteRequests(View):
             "invite__times_used",
             "invite__invitees__created_date",
         ]
+        # pylint: disable=consider-using-f-string
         if not sort in sort_fields + ["-{:s}".format(f) for f in sort_fields]:
             sort = "-created_date"
 
@@ -149,6 +150,7 @@ class ManageInviteRequests(View):
             )
             invite_request.save()
         emailing.invite_email(invite_request)
+        # pylint: disable=consider-using-f-string
         return redirect(
             "{:s}?{:s}".format(
                 reverse("settings-invite-requests"), urlencode(request.GET.dict())

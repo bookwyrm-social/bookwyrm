@@ -34,9 +34,9 @@ class EditUser(View):
             data = {"form": form, "user": request.user}
             return TemplateResponse(request, "preferences/edit_user.html", data)
 
-        user = save_user_form(form)
+        save_user_form(form)
 
-        return redirect(user.local_path)
+        return redirect("user-feed", request.user.localname)
 
 
 # pylint: disable=no-self-use
@@ -55,7 +55,6 @@ class DeleteUser(View):
     def post(self, request):
         """les get fancy with images"""
         form = forms.DeleteUserForm(request.POST, instance=request.user)
-        form.is_valid()
         # idk why but I couldn't get check_password to work on request.user
         user = models.User.objects.get(id=request.user.id)
         if form.is_valid() and user.check_password(form.cleaned_data["password"]):
@@ -80,7 +79,7 @@ def save_user_form(form):
 
         # set the name to a hash
         extension = form.files["avatar"].name.split(".")[-1]
-        filename = "%s.%s" % (uuid4(), extension)
+        filename = f"{uuid4()}.{extension}"
         user.avatar.save(filename, image, save=False)
     user.save()
     return user

@@ -1,5 +1,6 @@
 """ puttin' books on shelves """
 import re
+from django.core.exceptions import PermissionDenied
 from django.db import models
 from django.utils import timezone
 
@@ -44,7 +45,7 @@ class Shelf(OrderedCollectionMixin, BookWyrmModel):
     def get_identifier(self):
         """custom-shelf-123 for the url"""
         slug = re.sub(r"[^\w]", "", self.name).lower()
-        return "{:s}-{:d}".format(slug, self.id)
+        return f"{slug}-{self.id}"
 
     @property
     def collection_queryset(self):
@@ -55,7 +56,13 @@ class Shelf(OrderedCollectionMixin, BookWyrmModel):
         """shelf identifier instead of id"""
         base_path = self.user.remote_id
         identifier = self.identifier or self.get_identifier()
-        return "%s/books/%s" % (base_path, identifier)
+        return f"{base_path}/books/{identifier}"
+
+    def raise_not_deletable(self, viewer):
+        """don't let anyone delete a default shelf"""
+        super().raise_not_deletable(viewer)
+        if not self.editable:
+            raise PermissionDenied()
 
     class Meta:
         """user/shelf unqiueness"""

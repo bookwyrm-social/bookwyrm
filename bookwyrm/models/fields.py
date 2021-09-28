@@ -56,7 +56,7 @@ class ActivitypubFieldMixin:
         activitypub_field=None,
         activitypub_wrapper=None,
         deduplication_field=False,
-        **kwargs
+        **kwargs,
     ):
         self.deduplication_field = deduplication_field
         if activitypub_wrapper:
@@ -224,8 +224,20 @@ class PrivacyField(ActivitypubFieldMixin, models.CharField):
         original = getattr(instance, self.name)
         to = data.to
         cc = data.cc
+
+        # we need to figure out who this is to get their followers link
+        for field in ["attributedTo", "owner", "actor"]:
+            if hasattr(data, field):
+                user_field = field
+                break
+        if not user_field:
+            raise ValidationError("No user field found for privacy", data)
+        user = activitypub.resolve_remote_id(getattr(data, user_field), model="User")
+
         if to == [self.public]:
             setattr(instance, self.name, "public")
+        elif to == [user.followers_url]:
+            setattr(instance, self.name, "followers")
         elif cc == []:
             setattr(instance, self.name, "direct")
         elif self.public in cc:
@@ -241,9 +253,7 @@ class PrivacyField(ActivitypubFieldMixin, models.CharField):
             mentions = [u.remote_id for u in instance.mention_users.all()]
         # this is a link to the followers list
         # pylint: disable=protected-access
-        followers = instance.user.__class__._meta.get_field(
-            "followers"
-        ).field_to_activity(instance.user.followers)
+        followers = instance.user.followers_url
         if instance.privacy == "public":
             activity["to"] = [self.public]
             activity["cc"] = [followers] + mentions
@@ -298,7 +308,7 @@ class ManyToManyField(ActivitypubFieldMixin, models.ManyToManyField):
 
     def field_to_activity(self, value):
         if self.link_only:
-            return "%s/%s" % (value.instance.remote_id, self.name)
+            return f"{value.instance.remote_id}/{self.name}"
         return [i.remote_id for i in value.all()]
 
     def field_from_activity(self, value):
@@ -378,7 +388,7 @@ def image_serializer(value, alt):
     else:
         return None
     if not url[:4] == "http":
-        url = "https://{:s}{:s}".format(DOMAIN, url)
+        url = f"https://{DOMAIN}{url}"
     return activitypub.Document(url=url, name=alt)
 
 
@@ -438,7 +448,7 @@ class ImageField(ActivitypubFieldMixin, models.ImageField):
 
         image_content = ContentFile(response.content)
         extension = imghdr.what(None, image_content.read()) or ""
-        image_name = "{:s}.{:s}".format(str(uuid4()), extension)
+        image_name = f"{uuid4()}.{extension}"
         return [image_name, image_content]
 
     def formfield(self, **kwargs):

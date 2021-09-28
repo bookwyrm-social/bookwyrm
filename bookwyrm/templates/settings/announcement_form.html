@@ -13,21 +13,21 @@
 {% csrf_token %}
 <input type="hidden" name="user" value="{{ request.user.id }}">
 <p>
-    <label class="label" for="id_preview">Preview:</label>
+    <label class="label" for="id_preview">{% trans "Preview:" %}</label>
     {{ form.preview }}
     {% for error in form.preview.errors %}
     <p class="help is-danger">{{ error | escape }}</p>
     {% endfor %}
 </p>
 <p>
-    <label class="label" for="id_content">Content:</label>
+    <label class="label" for="id_content">{% trans "Content:" %}</label>
     {{ form.content }}
     {% for error in form.content.errors %}
     <p class="help is-danger">{{ error | escape }}</p>
     {% endfor %}
 </p>
 <p>
-    <label class="label" for="id_event_date">Event date:</label>
+    <label class="label" for="id_event_date">{% trans "Event date:" %}</label>
     <input type="date" name="event_date" value="{{ form.event_date.value|date:'Y-m-d' }}" class="input" id="id_event_date">
     {% for error in form.event_date.errors %}
     <p class="help is-danger">{{ error | escape }}</p>
@@ -37,7 +37,7 @@
 <div class="columns">
     <div class="column">
         <p>
-            <label class="label" for="id_start_date">Start date:</label>
+            <label class="label" for="id_start_date">{% trans "Start date:" %}</label>
             <input type="date" name="start_date" class="input" value="{{ form.start_date.value|date:'Y-m-d' }}" id="id_start_date">
             {% for error in form.start_date.errors %}
             <p class="help is-danger">{{ error | escape }}</p>
@@ -46,7 +46,7 @@
     </div>
     <div class="column">
         <p>
-            <label class="label" for="id_end_date">End date:</label>
+            <label class="label" for="id_end_date">{% trans "End date:" %}</label>
             <input type="date" name="end_date" class="input" id="id_end_date" value="{{ form.end_date.value|date:'Y-m-d' }}">
             {% for error in form.end_date.errors %}
             <p class="help is-danger">{{ error | escape }}</p>
@@ -55,7 +55,7 @@
     </div>
     <div class="column is-narrow">
         <p>
-            <label class="label" for="id_active">Active:</label>
+            <label class="label" for="id_active">{% trans "Active:" %}</label>
             {{ form.active }}
             {% for error in form.active.errors %}
             <p class="help is-danger">{{ error | escape }}</p>

@@ -4,7 +4,6 @@
 {% load humanize %}
 {% load utilities %}
 {% load static %}
-{% load layout %}
 
 {% block title %}{{ book|book_title }}{% endblock %}
 
@@ -43,7 +42,7 @@
                 </p>
             {% endif %}
 
-            {% if book.authors %}
+            {% if book.authors.exists %}
                 <div class="subtitle">
                     {% trans "by" %} {% include 'snippets/authors.html' with book=book %}
                 </div>
@@ -326,5 +325,5 @@
 {% endblock %}
 
 {% block scripts %}
-<script src="{% static "js/vendor/tabs.js" %}"></script>
+<script src="{% static "js/vendor/tabs.js" %}?v={{ js_cache }}"></script>
 {% endblock %}

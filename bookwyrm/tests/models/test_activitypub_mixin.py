@@ -20,14 +20,16 @@ from bookwyrm.settings import PAGE_LENGTH
 
 
 # pylint: disable=invalid-name
-@patch("bookwyrm.activitystreams.ActivityStream.add_status")
+@patch("bookwyrm.activitystreams.add_status_task.delay")
 @patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
 class ActivitypubMixins(TestCase):
     """functionality shared across models"""
 
     def setUp(self):
         """shared data"""
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
+            "bookwyrm.activitystreams.populate_stream_task.delay"
+        ):
             self.local_user = models.User.objects.create_user(
                 "mouse", "mouse@mouse.com", "mouseword", local=True, localname="mouse"
             )

@@ -20,6 +20,7 @@ from bookwyrm.preview_images import (
 
 # pylint: disable=unused-argument
 # pylint: disable=missing-function-docstring
+# pylint: disable=consider-using-with
 class PreviewImages(TestCase):
     """every response to a get request, html or json"""
 
@@ -29,7 +30,9 @@ class PreviewImages(TestCase):
         avatar_file = pathlib.Path(__file__).parent.joinpath(
             "../static/images/no_cover.jpg"
         )
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
+            "bookwyrm.activitystreams.populate_stream_task.delay"
+        ):
             self.local_user = models.User.objects.create_user(
                 "possum@local.com",
                 "possum@possum.possum",
@@ -118,3 +121,11 @@ class PreviewImages(TestCase):
         self.assertEqual(
             self.local_user.preview_image.height, settings.PREVIEW_IMG_HEIGHT
         )
+
+    def test_generate_user_preview_images_task(self, *args, **kwargs):
+        """test task's external calls"""
+        with patch("bookwyrm.preview_images.generate_preview_image") as generate_mock:
+            generate_user_preview_image_task(self.local_user.id)
+        args = generate_mock.call_args.kwargs
+        self.assertEqual(args["texts"]["text_one"], "possum")
+        self.assertEqual(args["texts"]["text_three"], f"@possum@{settings.DOMAIN}")

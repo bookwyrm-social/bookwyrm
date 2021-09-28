@@ -3,7 +3,8 @@ import re
 
 from django.contrib.postgres.search import SearchVectorField
 from django.contrib.postgres.indexes import GinIndex
-from django.db import models
+from django.db import models, transaction
+from django.db.models import Prefetch
 from django.dispatch import receiver
 from model_utils import FieldTracker
 from model_utils.managers import InheritanceManager
@@ -163,9 +164,9 @@ class Book(BookDataModel):
     @property
     def alt_text(self):
         """image alt test"""
-        text = "%s" % self.title
+        text = self.title
         if self.edition_info:
-            text += " (%s)" % self.edition_info
+            text += f" ({self.edition_info})"
         return text
 
     def save(self, *args, **kwargs):
@@ -176,9 +177,10 @@ class Book(BookDataModel):
 
     def get_remote_id(self):
         """editions and works both use "book" instead of model_name"""
-        return "https://%s/book/%d" % (DOMAIN, self.id)
+        return f"https://{DOMAIN}/book/{self.id}"
 
     def __repr__(self):
+        # pylint: disable=consider-using-f-string
         return "<{} key={!r} title={!r}>".format(
             self.__class__,
             self.openlibrary_key,
@@ -215,7 +217,7 @@ class Work(OrderedCollectionPageMixin, Book):
         """an ordered collection of editions"""
         return self.to_ordered_collection(
             self.editions.order_by("-edition_rank").all(),
-            remote_id="%s/editions" % self.remote_id,
+            remote_id=f"{self.remote_id}/editions",
             **kwargs,
         )
 
@@ -305,6 +307,27 @@ class Edition(Book):
 
         return super().save(*args, **kwargs)
 
+    @classmethod
+    def viewer_aware_objects(cls, viewer):
+        """annotate a book query with metadata related to the user"""
+        queryset = cls.objects
+        if not viewer or not viewer.is_authenticated:
+            return queryset
+
+        queryset = queryset.prefetch_related(
+            Prefetch(
+                "shelfbook_set",
+                queryset=viewer.shelfbook_set.all(),
+                to_attr="current_shelves",
+            ),
+            Prefetch(
+                "readthrough_set",
+                queryset=viewer.readthrough_set.filter(is_active=True).all(),
+                to_attr="active_readthroughs",
+            ),
+        )
+        return queryset
+
 
 def isbn_10_to_13(isbn_10):
     """convert an isbn 10 into an isbn 13"""
@@ -361,4 +384,6 @@ def preview_image(instance, *args, **kwargs):
         changed_fields = instance.field_tracker.changed()
 
     if len(changed_fields) > 0:
-        generate_edition_preview_image_task.delay(instance.id)
+        transaction.on_commit(
+            lambda: generate_edition_preview_image_task.delay(instance.id)
+        )

@@ -10,10 +10,11 @@ draft: an existing Status object that is providing default values for input fiel
 {% endcomment %}
 <textarea
     name="content"
-    class="textarea"
+    class="textarea save-draft"
+    data-cache-draft="id_content_{{ type }}_{{ book.id }}{{ reply_parent.id }}"
     id="id_content_{{ type }}_{{ book.id }}{{ reply_parent.id }}"
     placeholder="{{ placeholder }}"
     aria-label="{% if reply_parent %}{% trans 'Reply' %}{% else %}{% trans 'Content' %}{% endif %}"
-    {% if not optional and type != "quotation" %}required{% endif %}
+    {% if not optional and type != "quotation" and type != "review" %}required{% endif %}
 >{% if reply_parent %}{{ reply_parent|mentions:request.user }}{% endif %}{% if mention %}@{{ mention|username }} {% endif %}{{ draft.content|default:'' }}</textarea>
 

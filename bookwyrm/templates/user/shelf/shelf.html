@@ -24,11 +24,26 @@
         <div class="tabs">
             <ul>
             <li class="{% if shelf.identifier == 'all' %}is-active{% endif %}">
-                <a href="{% url 'user-shelves' user|username %}"{% if shelf.identifier == 'all' %} aria-current="page"{% endif %}>{% trans "All books" %}</a>
+                <a href="{% url 'user-shelves' user|username %}"{% if shelf.identifier == 'all' %} aria-current="page"{% endif %}>
+                    {% trans "All books" %}
+                </a>
             </li>
             {% for shelf_tab in shelves %}
             <li class="{% if shelf_tab.identifier == shelf.identifier %}is-active{% endif %}">
-                <a href="{{ shelf_tab.local_path }}"{% if shelf_tab.identifier == shelf.identifier %} aria-current="page"{% endif %}>{% if shelf_tab.identifier == 'to-read' %}{% trans "To Read" %}{% elif shelf_tab.identifier == 'reading' %}{% trans "Currently Reading" %}{% elif shelf_tab.identifier == 'read' %}{% trans "Read" %}{% else %}{{ shelf_tab.name }}{% endif %}</a>
+                <a
+                    href="{{ shelf_tab.local_path }}"
+                    {% if shelf_tab.identifier == shelf.identifier %} aria-current="page"{% endif %}
+                >
+                    {% if shelf_tab.identifier == 'to-read' %}
+                        {% trans "To Read" %}
+                    {% elif shelf_tab.identifier == 'reading' %}
+                        {% trans "Currently Reading" %}
+                    {% elif shelf_tab.identifier == 'read' %}
+                        {% trans "Read" %}
+                    {% else %}
+                        {{ shelf_tab.name }}
+                    {% endif %}
+                </a>
             </li>
             {% endfor %}
             </ul>
@@ -55,6 +70,23 @@
             <span class="subtitle">
                 {% include 'snippets/privacy-icons.html' with item=shelf %}
             </span>
+            {% with count=books.paginator.count %}
+            {% if count %}
+            <p class="help">
+                {% blocktrans trimmed count counter=count with formatted_count=count|intcomma %}
+                    {{ formatted_count }} book
+                {% plural %}
+                    {{ formatted_count }} books
+                {% endblocktrans %}
+
+                {% if books.has_other_pages %}
+                    {% blocktrans trimmed with start=books.start_index end=books.end_index %}
+                    (showing {{ start }}-{{ end }})
+                    {% endblocktrans %}
+                {% endif %}
+            </p>
+            {% endif %}
+            {% endwith %}
         </h2>
     </div>
     {% if is_self and shelf.id %}
