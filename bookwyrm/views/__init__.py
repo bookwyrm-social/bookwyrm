@@ -25,10 +25,10 @@ from .admin.user_admin import UserAdmin, UserAdminList
 from .preferences.change_password import ChangePassword
 from .preferences.edit_user import EditUser
 from .preferences.delete_user import DeleteUser
+from .preferences.block import Block, unblock
 
 # misc views
 from .author import Author, EditAuthor
-from .block import Block, unblock
 from .books import Book, EditBook, ConfirmEditBook
 from .books import upload_cover, add_description, resolve_book
 from .directory import Directory
