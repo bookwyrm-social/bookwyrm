@@ -3,6 +3,7 @@ import json
 import pathlib
 from unittest.mock import patch
 from PIL import Image
+from tidylib import tidy_document
 
 from django.contrib.auth.models import AnonymousUser
 from django.contrib.sessions.middleware import SessionMiddleware
@@ -59,7 +60,10 @@ class EditUserViews(TestCase):
         request.user = self.local_user
         result = view(request)
         self.assertIsInstance(result, TemplateResponse)
-        result.render()
+        html = result.render()
+        _, errors = tidy_document(html.content)
+        if errors:
+            raise Exception(errors)
         self.assertEqual(result.status_code, 200)
 
     def test_edit_user(self, _):
@@ -93,6 +97,7 @@ class EditUserViews(TestCase):
         image_file = pathlib.Path(__file__).parent.joinpath(
             "../../static/images/no_cover.jpg"
         )
+        # pylint: disable=consider-using-with
         form.data["avatar"] = SimpleUploadedFile(
             image_file, open(image_file, "rb").read(), content_type="image/jpeg"
         )
