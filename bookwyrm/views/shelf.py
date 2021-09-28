@@ -90,7 +90,7 @@ class Shelf(View):
             ),
         }
 
-        return TemplateResponse(request, "user/shelf/shelf.html", data)
+        return TemplateResponse(request, "shelf/shelf.html", data)
 
     @method_decorator(login_required, name="dispatch")
     # pylint: disable=unused-argument

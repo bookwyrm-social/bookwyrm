@@ -5,7 +5,7 @@
 {% load i18n %}
 
 {% block title %}
-{% include 'user/shelf/books_header.html' %}
+{% include 'user/books_header.html' %}
 {% endblock %}
 
 {% block opengraph_images %}
@@ -15,7 +15,7 @@
 {% block content %}
 <header class="block">
     <h1 class="title">
-        {% include 'user/shelf/books_header.html' %}
+        {% include 'user/books_header.html' %}
     </h1>
 </header>
 
@@ -60,7 +60,7 @@
 </div>
 
 <div class="block">
-    {% include 'user/shelf/create_shelf_form.html' with controls_text='create_shelf_form' %}
+    {% include 'shelf/create_shelf_form.html' with controls_text='create_shelf_form' %}
 </div>
 
 <div class="block columns is-mobile">
@@ -98,7 +98,7 @@
 </div>
 
 <div class="block">
-    {% include 'user/shelf/edit_shelf_form.html' with controls_text="edit_shelf_form" %}
+    {% include 'shelf/edit_shelf_form.html' with controls_text="edit_shelf_form" %}
 </div>
 
 <div class="block">
@@ -167,7 +167,7 @@
             </tbody>
         </table>
         {% else %}
-        <p>{% trans "This shelf is empty." %}</p>
+        <p><em>{% trans "This shelf is empty." %}</em></p>
         {% if shelf.id and shelf.editable %}
         <form name="delete-shelf" action="/delete-shelf/{{ shelf.id }}" method="post">
             {% csrf_token %}
