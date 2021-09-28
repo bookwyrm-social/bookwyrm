@@ -127,6 +127,19 @@ class EditUserViews(TestCase):
         image_result = Image.open(result)
         self.assertEqual(image_result.size, (120, 120))
 
+    def test_change_password_page(self, _):
+        """there are so many views, this just makes sure it LOADS"""
+        view = views.ChangePassword.as_view()
+        request = self.factory.get("")
+        request.user = self.local_user
+        result = view(request)
+        self.assertIsInstance(result, TemplateResponse)
+        html = result.render()
+        _, errors = tidy_document(html.content)
+        if errors:
+            raise Exception(errors)
+        self.assertEqual(result.status_code, 200)
+
     def test_delete_user_page(self, _):
         """there are so many views, this just makes sure it LOADS"""
         view = views.DeleteUser.as_view()
@@ -134,7 +147,10 @@ class EditUserViews(TestCase):
         request.user = self.local_user
         result = view(request)
         self.assertIsInstance(result, TemplateResponse)
-        result.render()
+        html = result.render()
+        _, errors = tidy_document(html.content)
+        if errors:
+            raise Exception(errors)
         self.assertEqual(result.status_code, 200)
 
     @patch("bookwyrm.suggested_users.rerank_suggestions_task")
