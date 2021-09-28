@@ -268,7 +268,7 @@ class CreateInviteForm(CustomForm):
 class ShelfForm(CustomForm):
     class Meta:
         model = models.Shelf
-        fields = ["user", "name", "privacy"]
+        fields = ["user", "name", "privacy", "description"]
 
 
 class GoalForm(CustomForm):

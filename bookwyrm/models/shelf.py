@@ -21,6 +21,7 @@ class Shelf(OrderedCollectionMixin, BookWyrmModel):
 
     name = fields.CharField(max_length=100)
     identifier = models.CharField(max_length=100)
+    description = models.TextField(blank=True, null=True, max_length=500)
     user = fields.ForeignKey(
         "User", on_delete=models.PROTECT, activitypub_field="owner"
     )
