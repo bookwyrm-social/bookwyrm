@@ -67,27 +67,27 @@
     <form method="get" action="{% url 'settings-dashboard' %}" class="notification has-background-white-bis">
         <div class="is-flex is-align-items-flex-end">
             <div class="ml-1 mr-1">
-                <label class="label">
+                <label class="label" for="id_start">
                     {% trans "Start date:" %}
-                    <input class="input" type="date" name="start" value="{{ start }}">
                 </label>
+                <input class="input" type="date" name="start" value="{{ start }}" id="id_start">
             </div>
             <div class="ml-1 mr-1">
-                <label class="label">
+                <label class="label" for="id_end">
                     {% trans "End date:" %}
-                    <input class="input" type="date" name="end" value="{{ end }}">
                 </label>
+                <input class="input" type="date" name="end" value="{{ end }}" id="id_end">
             </div>
             <div class="ml-1 mr-1">
-                <label class="label">
+                <label class="label" for="id_interval">
                     {% trans "Interval:" %}
-                    <div class="select">
-                        <select name="days">
-                            <option value="1" {% if interval == 1 %}selected{% endif %}>{% trans "Days" %}</option>
-                            <option value="7" {% if interval == 7 %}selected{% endif %}>{% trans "Weeks" %}</option>
-                        </select>
-                    </div>
                 </label>
+                <div class="select">
+                    <select name="days" id="id_interval">
+                        <option value="1" {% if interval == 1 %}selected{% endif %}>{% trans "Days" %}</option>
+                        <option value="7" {% if interval == 7 %}selected{% endif %}>{% trans "Weeks" %}</option>
+                    </select>
+                </div>
             </div>
             <div class="ml-1 mr-1">
                 <button class="button is-link" type="submit">{% trans "Submit" %}</button>
