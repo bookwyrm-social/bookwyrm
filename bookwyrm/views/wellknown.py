@@ -138,4 +138,6 @@ def opensearch(request):
     site = models.SiteSettings.get()
     logo_path = site.favicon or "images/favicon.png"
     logo = f"{MEDIA_FULL_URL}{logo_path}"
-    return TemplateResponse(request, "opensearch.xml", {"image": logo, "DOMAIN": DOMAIN})
+    return TemplateResponse(
+        request, "opensearch.xml", {"image": logo, "DOMAIN": DOMAIN}
+    )
