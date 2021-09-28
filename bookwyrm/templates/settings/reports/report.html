@@ -14,9 +14,9 @@
     {% include 'settings/reports/report_preview.html' with report=report %}
 </div>
 
-{% include 'user_admin/user_info.html' with user=report.user %}
+{% include 'settings/users/user_info.html' with user=report.user %}
 
-{% include 'user_admin/user_moderation_actions.html' with user=report.user %}
+{% include 'settings/users/user_moderation_actions.html' with user=report.user %}
 
 <div class="block">
     <h3 class="title is-4">{% trans "Moderator Comments" %}</h3>
