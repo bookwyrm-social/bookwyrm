@@ -61,5 +61,11 @@
     {% endfor %}
 </table>
 
+{% if not servers %}
+<div class="block">
+    <em>{% trans "No instances found." %}</em>
+</div>
+{% endif %}
+
 {% include 'snippets/pagination.html' with page=servers path=request.path %}
 {% endblock %}
