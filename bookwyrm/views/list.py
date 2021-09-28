@@ -329,11 +329,11 @@ def add_book(request):
 @login_required
 def remove_book(request, list_id):
     """remove a book from a list"""
-    with transaction.atomic():
-        book_list = get_object_or_404(models.List, id=list_id)
-        item = get_object_or_404(models.ListItem, id=request.POST.get("item"))
-        item.raise_not_deletable(request.user)
+    book_list = get_object_or_404(models.List, id=list_id)
+    item = get_object_or_404(models.ListItem, id=request.POST.get("item"))
+    item.raise_not_deletable(request.user)
 
+    with transaction.atomic():
         deleted_order = item.order
         item.delete()
         normalize_book_list_ordering(book_list.id, start=deleted_order)
@@ -348,7 +348,7 @@ def set_book_position(request, list_item_id):
     special care with the unique ordering per list.
     """
     list_item = get_object_or_404(models.ListItem, id=list_item_id)
-    list_item.list.raise_not_editable(request.user)
+    list_item.book_list.raise_not_editable(request.user)
     try:
         int_position = int(request.POST.get("position"))
     except ValueError:
