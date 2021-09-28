@@ -31,7 +31,8 @@ class Goal(View):
         if not goal and year != timezone.now().year:
             return redirect("user-goal", username, current_year)
 
-        goal.raise_visible_to_user(request.user)
+        if goal:
+            goal.raise_visible_to_user(request.user)
 
         data = {
             "goal_form": forms.GoalForm(instance=goal),
