@@ -20,10 +20,12 @@ from .admin.reports import (
 )
 from .admin.site import Site
 from .admin.user_admin import UserAdmin, UserAdminList
+
 # user preferences
 from .preferences.change_password import ChangePassword
 from .preferences.edit_user import EditUser
 from .preferences.delete_user import DeleteUser
+
 # misc views
 from .author import Author, EditAuthor
 from .block import Block, unblock
