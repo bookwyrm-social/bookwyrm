@@ -12,7 +12,7 @@
 {% endblock %}
 
 {% block panel %}
-{% include 'settings/ip_address_form.html' with controls_text="add_address" class="block" %}
+{% include 'settings/ip_blocklist/ip_address_form.html' with controls_text="add_address" class="block" %}
 
 <p class="notification block">
     {% trans "Any traffic from this IP address will get a 404 response when trying to access any part of the application." %}

@@ -26,7 +26,7 @@
 {% block panel %}
 
 <form name="edit-announcement" method="post" action="{% url 'settings-announcements' announcement.id %}" class="block">
-    {% include 'settings/announcement_form.html' with controls_text="edit_announcement" %}
+    {% include 'settings/announcements/announcement_form.html' with controls_text="edit_announcement" %}
 </form>
 
 <div class="block content">
