@@ -7,8 +7,10 @@
 
 {% block modal-form-open %}
 <form action="{% url 'edit-readthrough' %}" method="POST" class="submit-status">
+{% csrf_token %}
 {% endblock %}
 
 {% block reading-dates %}
+<label for="id_progress_{{ readthrough.id }}" class="label">{% trans "Progress:" %}</label>
 {% include "snippets/progress_field.html" with progress_required=True %}
 {% endblock %}
