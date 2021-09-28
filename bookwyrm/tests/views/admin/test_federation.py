@@ -49,7 +49,10 @@ class FederationViews(TestCase):
         result = view(request)
         self.assertIsInstance(result, TemplateResponse)
         html = result.render()
-        _, errors = tidy_document(html.content)
+        _, errors = tidy_document(
+            html.content,
+            options={"drop-empty-elements": False, "drop-proprietary-attributes": False}
+        )
         if errors:
             raise Exception(errors)
         self.assertEqual(result.status_code, 200)
@@ -180,6 +183,7 @@ class FederationViews(TestCase):
         self.assertEqual(server.application_type, "coolsoft")
         self.assertEqual(server.status, "blocked")
 
+    # pylint: disable=consider-using-with
     def test_import_blocklist(self):
         """load a json file with a list of servers to block"""
         server = models.FederatedServer.objects.create(server_name="hi.there.com")
@@ -191,7 +195,7 @@ class FederationViews(TestCase):
             {"instance": "hi.there.com", "url": "https://explanation.url"},  # existing
             {"a": "b"},  # invalid
         ]
-        json.dump(data, open("file.json", "w"))
+        json.dump(data, open("file.json", "w"))  # pylint: disable=unspecified-encoding
 
         view = views.ImportServerBlocklist.as_view()
         request = self.factory.post(

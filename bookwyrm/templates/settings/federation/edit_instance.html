@@ -68,7 +68,7 @@
     </div>
     <div class="field">
         <label class="label" for="id_notes">{% trans "Notes:" %}</label>
-        <textarea name="notes" cols="None" rows="None" class="textarea" id="id_notes">{{ form.notes.value|default:'' }}</textarea>
+        <textarea name="notes" cols="40" rows="5" class="textarea" id="id_notes">{{ form.notes.value|default:'' }}</textarea>
     </div>
 
     <button type="submit" class="button is-primary">{% trans "Save" %}</button>
