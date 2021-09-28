@@ -10,6 +10,8 @@
     <link rel="stylesheet" href="{% static "css/vendor/icons.css" %}">
     <link rel="stylesheet" href="{% static "css/bookwyrm.css" %}">
 
+    <link rel="search" type="application/opensearchdescription+xml" href="{% url 'opensearch' %}" title="{% blocktrans with site_name=site.name %}{{ site_name }} search{% endblocktrans %}" />
+
     <link rel="shortcut icon" type="image/x-icon" href="{% if site.favicon %}{% get_media_prefix %}{{ site.favicon }}{% else %}{% static "images/favicon.ico" %}{% endif %}">
 
     {% if preview_images_enabled is True %}
@@ -34,7 +36,7 @@
             <a class="navbar-item" href="/">
                 <img class="image logo" src="{% if site.logo_small %}{% get_media_prefix %}{{ site.logo_small }}{% else %}{% static "images/logo-small.png" %}{% endif %}" alt="Home page">
             </a>
-            <form class="navbar-item column" action="/search/">
+            <form class="navbar-item column" action="{% url 'search' %}">
                 <div class="field has-addons">
                     <div class="control">
                         {% if user.is_authenticated %}

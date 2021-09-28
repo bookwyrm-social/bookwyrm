@@ -128,3 +128,14 @@ def peers(_):
 def host_meta(request):
     """meta of the host"""
     return TemplateResponse(request, "host_meta.xml", {"DOMAIN": DOMAIN})
+
+
+@require_GET
+def opensearch(request):
+    """Open Search xml spec"""
+    site = models.SiteSettings.get()
+    logo_path = site.favicon or "images/favicon.png"
+    logo = f"{MEDIA_FULL_URL}{logo_path}"
+    return TemplateResponse(
+        request, "opensearch.xml", {"image": logo, "DOMAIN": DOMAIN}
+    )

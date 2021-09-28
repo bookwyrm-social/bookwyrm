@@ -43,6 +43,7 @@ urlpatterns = [
     re_path(r"^nodeinfo/2\.0/?$", views.nodeinfo),
     re_path(r"^api/v1/instance/?$", views.instance_info),
     re_path(r"^api/v1/instance/peers/?$", views.peers),
+    re_path(r"^opensearch.xml$", views.opensearch, name="opensearch"),
     # polling updates
     re_path("^api/updates/notifications/?$", views.get_notification_count),
     re_path("^api/updates/stream/(?P<stream>[a-z]+)/?$", views.get_unread_status_count),
