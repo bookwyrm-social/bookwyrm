@@ -568,5 +568,6 @@ class ListActionViews(TestCase):
         )
         request.user = self.rat
 
-        views.list.remove_book(request, self.list.id)
+        with self.assertRaises(PermissionDenied):
+            views.list.remove_book(request, self.list.id)
         self.assertTrue(self.list.listitem_set.exists())
