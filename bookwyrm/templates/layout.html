@@ -117,7 +117,7 @@
                             </a>
                         </li>
                         {% if perms.bookwyrm.create_invites or perms.moderate_user %}
-                        <li class="navbar-divider" role="presentation"></li>
+                        <li class="navbar-divider" role="presentation">&nbsp;</li>
                         {% endif %}
                         {% if perms.bookwyrm.create_invites and not site.allow_registration %}
                         <li>
@@ -133,7 +133,7 @@
                             </a>
                         </li>
                         {% endif %}
-                        <li class="navbar-divider" role="presentation"></li>
+                        <li class="navbar-divider" role="presentation">&nbsp;</li>
                         <li>
                             <a href="{% url 'logout' %}" class="navbar-item">
                                 {% trans 'Log out' %}
