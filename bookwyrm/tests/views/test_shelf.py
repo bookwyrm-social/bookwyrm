@@ -105,7 +105,7 @@ class ShelfViews(TestCase):
         shelf.refresh_from_db()
 
         self.assertEqual(shelf.name, "cool name")
-        self.assertEqual(shelf.identifier, "testshelf-%d" % shelf.id)
+        self.assertEqual(shelf.identifier, f"testshelf-{shelf.id}")
 
     def test_edit_shelf_name_not_editable(self, *_):
         """can't change the name of an non-editable shelf"""

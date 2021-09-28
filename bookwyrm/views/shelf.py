@@ -146,7 +146,7 @@ def shelve(request):
 
     # first we need to remove from the specified shelf
     change_from_current_identifier = request.POST.get("change-shelf-from")
-    if not change_from_current_identifier:
+    if change_from_current_identifier:
         # find the shelfbook obj and delete it
         get_object_or_404(
             models.ShelfBook,
