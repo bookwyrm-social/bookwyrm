@@ -45,7 +45,7 @@ class ManageInvites(View):
             ),
             "form": forms.CreateInviteForm(),
         }
-        return TemplateResponse(request, "settings/manage_invites.html", data)
+        return TemplateResponse(request, "settings/invites/manage_invites.html", data)
 
     def post(self, request):
         """creates an invite database entry"""
@@ -64,7 +64,7 @@ class ManageInvites(View):
             PAGE_LENGTH,
         )
         data = {"invites": paginated.page(1), "form": form}
-        return TemplateResponse(request, "settings/manage_invites.html", data)
+        return TemplateResponse(request, "settings/invites/manage_invites.html", data)
 
 
 class Invite(View):
@@ -135,7 +135,9 @@ class ManageInviteRequests(View):
             ),
             "sort": sort,
         }
-        return TemplateResponse(request, "settings/manage_invite_requests.html", data)
+        return TemplateResponse(
+            request, "settings/invites/manage_invite_requests.html", data
+        )
 
     def post(self, request):
         """send out an invite"""

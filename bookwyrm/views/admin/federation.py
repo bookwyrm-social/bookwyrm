@@ -44,7 +44,7 @@ class Federation(View):
             "sort": sort,
             "form": forms.ServerForm(),
         }
-        return TemplateResponse(request, "settings/federation.html", data)
+        return TemplateResponse(request, "settings/federation/instance_list.html", data)
 
 
 class AddFederatedServer(View):
@@ -53,14 +53,16 @@ class AddFederatedServer(View):
     def get(self, request):
         """add server form"""
         data = {"form": forms.ServerForm()}
-        return TemplateResponse(request, "settings/edit_server.html", data)
+        return TemplateResponse(request, "settings/federation/edit_instance.html", data)
 
     def post(self, request):
         """add a server from the admin panel"""
         form = forms.ServerForm(request.POST)
         if not form.is_valid():
             data = {"form": form}
-            return TemplateResponse(request, "settings/edit_server.html", data)
+            return TemplateResponse(
+                request, "settings/federation/edit_instance.html", data
+            )
         server = form.save()
         return redirect("settings-federated-server", server.id)
 
@@ -75,7 +77,7 @@ class ImportServerBlocklist(View):
 
     def get(self, request):
         """add server form"""
-        return TemplateResponse(request, "settings/server_blocklist.html")
+        return TemplateResponse(request, "settings/federation/instance_blocklist.html")
 
     def post(self, request):
         """add a server from the admin panel"""
@@ -98,7 +100,9 @@ class ImportServerBlocklist(View):
                 server.block()
             success_count += 1
         data = {"failed": failed, "succeeded": success_count}
-        return TemplateResponse(request, "settings/server_blocklist.html", data)
+        return TemplateResponse(
+            request, "settings/federation/instance_blocklist.html", data
+        )
 
 
 @method_decorator(login_required, name="dispatch")
@@ -123,7 +127,7 @@ class FederatedServer(View):
                 user_subject__in=users.all()
             ),
         }
-        return TemplateResponse(request, "settings/federated_server.html", data)
+        return TemplateResponse(request, "settings/federation/instance.html", data)
 
     def post(self, request, server):  # pylint: disable=unused-argument
         """update note"""
