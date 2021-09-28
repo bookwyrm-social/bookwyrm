@@ -1,6 +1,7 @@
 """ test for app action functionality """
 import json
 from unittest.mock import patch
+from django.core.exceptions import PermissionDenied
 from django.test import TestCase
 from django.test.client import RequestFactory
 
@@ -196,9 +197,9 @@ class StatusViews(TestCase):
             )
 
         with patch("bookwyrm.activitystreams.remove_status_task.delay") as mock:
-            result = view(request, status.id)
+            with self.assertRaises(PermissionDenied):
+                view(request, status.id)
             self.assertFalse(mock.called)
-        self.assertEqual(result.status_code, 400)
 
         status.refresh_from_db()
         self.assertFalse(status.deleted)
@@ -214,9 +215,9 @@ class StatusViews(TestCase):
             )
 
         with patch("bookwyrm.activitystreams.remove_status_task.delay") as mock:
-            result = view(request, status.id)
+            with self.assertRaises(PermissionDenied):
+                view(request, status.id)
             self.assertFalse(mock.called)
-        self.assertEqual(result.status_code, 400)
 
         status.refresh_from_db()
         self.assertFalse(status.deleted)
@@ -375,7 +376,8 @@ http://www.fish.com/"""
         request = self.factory.post("")
         request.user = self.remote_user
 
-        view(request, status.id)
+        with self.assertRaises(PermissionDenied):
+            view(request, status.id)
 
         status.refresh_from_db()
         self.assertFalse(status.deleted)

@@ -105,7 +105,7 @@ def moderator_delete_user(request, user_id):
 
     # we can't delete users on other instances
     if not user.local:
-        raise PermissionDenied
+        raise PermissionDenied()
 
     form = forms.DeleteUserForm(request.POST, instance=user)
 

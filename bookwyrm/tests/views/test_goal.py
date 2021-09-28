@@ -3,6 +3,7 @@ from unittest.mock import patch
 from django.utils import timezone
 
 from django.contrib.auth.models import AnonymousUser
+from django.http import Http404
 from django.template.response import TemplateResponse
 from django.test import TestCase
 from django.test.client import RequestFactory
@@ -103,8 +104,8 @@ class GoalViews(TestCase):
         request = self.factory.get("")
         request.user = self.rat
 
-        result = view(request, self.local_user.localname, self.year)
-        self.assertEqual(result.status_code, 404)
+        with self.assertRaises(Http404):
+            view(request, self.local_user.localname, self.year)
 
     @patch("bookwyrm.activitystreams.add_status_task.delay")
     def test_create_goal(self, _):

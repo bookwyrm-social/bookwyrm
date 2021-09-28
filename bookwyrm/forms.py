@@ -228,7 +228,7 @@ class ExpiryWidget(widgets.Select):
         elif selected_string == "forever":
             return None
         else:
-            return selected_string  # "This will raise
+            return selected_string  # This will raise
 
         return timezone.now() + interval
 

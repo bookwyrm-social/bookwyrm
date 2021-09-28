@@ -54,9 +54,9 @@ class PasswordReset(View):
         try:
             reset_code = models.PasswordReset.objects.get(code=code)
             if not reset_code.valid():
-                raise PermissionDenied
+                raise PermissionDenied()
         except models.PasswordReset.DoesNotExist:
-            raise PermissionDenied
+            raise PermissionDenied()
 
         return TemplateResponse(request, "password_reset.html", {"code": code})
 

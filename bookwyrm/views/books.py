@@ -50,7 +50,7 @@ class Book(View):
         )
 
         if not book or not book.parent_work:
-            raise Http404
+            raise Http404()
 
         # all reviews for all editions of the book
         reviews = privacy_filter(

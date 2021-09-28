@@ -29,11 +29,11 @@ class Register(View):
             invite_code = request.POST.get("invite_code")
 
             if not invite_code:
-                raise PermissionDenied
+                raise PermissionDenied()
 
             invite = get_object_or_404(models.SiteInvite, code=invite_code)
             if not invite.valid():
-                raise PermissionDenied
+                raise PermissionDenied()
         else:
             invite = None
 

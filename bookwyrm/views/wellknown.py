@@ -3,6 +3,7 @@
 from dateutil.relativedelta import relativedelta
 from django.http import HttpResponseNotFound
 from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
 from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.views.decorators.http import require_GET
@@ -19,10 +20,7 @@ def webfinger(request):
         return HttpResponseNotFound()
 
     username = resource.replace("acct:", "")
-    try:
-        user = models.User.objects.get(username__iexact=username)
-    except models.User.DoesNotExist:
-        return HttpResponseNotFound("No account found")
+    user = get_object_or_404(models.User, username__iexact=username)
 
     return JsonResponse(
         {
