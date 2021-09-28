@@ -95,33 +95,3 @@ class PasswordViews(TestCase):
         resp = view(request, code.code)
         resp.render()
         self.assertTrue(models.PasswordReset.objects.exists())
-
-    def test_password_change_get(self):
-        """there are so many views, this just makes sure it LOADS"""
-        view = views.ChangePassword.as_view()
-        request = self.factory.get("")
-        request.user = self.local_user
-
-        result = view(request)
-        self.assertIsInstance(result, TemplateResponse)
-        result.render()
-        self.assertEqual(result.status_code, 200)
-
-    def test_password_change(self):
-        """change password"""
-        view = views.ChangePassword.as_view()
-        password_hash = self.local_user.password
-        request = self.factory.post("", {"password": "hi", "confirm-password": "hi"})
-        request.user = self.local_user
-        with patch("bookwyrm.views.password.login"):
-            view(request)
-        self.assertNotEqual(self.local_user.password, password_hash)
-
-    def test_password_change_mismatch(self):
-        """change password"""
-        view = views.ChangePassword.as_view()
-        password_hash = self.local_user.password
-        request = self.factory.post("", {"password": "hi", "confirm-password": "hihi"})
-        request.user = self.local_user
-        view(request)
-        self.assertEqual(self.local_user.password, password_hash)
