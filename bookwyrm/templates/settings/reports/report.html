@@ -3,12 +3,13 @@
 {% load humanize %}
 
 {% block title %}{% blocktrans with report_id=report.id username=report.user.username %}Report #{{ report_id }}: {{ username }}{% endblocktrans %}{% endblock %}
-{% block header %}{% blocktrans with report_id=report.id username=report.user.username %}Report #{{ report_id }}: {{ username }}{% endblocktrans %}{% endblock %}
+
+{% block header %}
+{% blocktrans with report_id=report.id username=report.user.username %}Report #{{ report_id }}: {{ username }}{% endblocktrans %}
+<a href="{% url 'settings-reports' %}" class="has-text-weight-normal help">{% trans "Back to reports" %}</a>
+{% endblock %}
 
 {% block panel %}
-<div class="block">
-    <a href="{% url 'settings-reports' %}">{% trans "Back to reports" %}</a>
-</div>
 
 <div class="block">
     {% include 'settings/reports/report_preview.html' with report=report %}
