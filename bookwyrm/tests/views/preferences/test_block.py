@@ -75,6 +75,6 @@ class BlockViews(TestCase):
         request.user = self.local_user
 
         with patch("bookwyrm.activitystreams.add_user_statuses_task.delay"):
-            views.block.unblock(request, self.remote_user.id)
+            views.unblock(request, self.remote_user.id)
 
         self.assertFalse(models.UserBlocks.objects.exists())
