@@ -57,5 +57,9 @@
     {% endfor %}
 </table>
 
+{% if not domains.exists %}
+<p><em>No email domains currenly blocked.</em></p>
+{% endif %}
+
 {% endblock %}
 
