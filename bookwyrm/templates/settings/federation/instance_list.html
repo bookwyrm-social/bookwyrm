@@ -59,13 +59,11 @@
         <td>{{ server.get_status_display }}</td>
     </tr>
     {% endfor %}
+    {% if not servers %}
+    <tr><td colspan="5"><em>{% trans "No instances found" %}</em></td></tr>
+    {% endif %}
 </table>
 
-{% if not servers %}
-<div class="block">
-    <em>{% trans "No instances found." %}</em>
-</div>
-{% endif %}
 
 {% include 'snippets/pagination.html' with page=servers path=request.path %}
 {% endblock %}

@@ -42,9 +42,9 @@
         </td>
     </tr>
     {% endfor %}
+    {% if not addresses.exists %}
+    <tr><td colspan="2"><em>{% trans "No IP addresses currently blocked" %}</em></td></tr>
+    {% endif %}
 </table>
-{% if not addresses.exists %}
-<p><em>{% trans "No IP addresses currently blocked." %}</em></p>
-{% endif %}
 
 {% endblock %}

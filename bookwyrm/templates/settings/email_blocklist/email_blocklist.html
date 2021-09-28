@@ -55,11 +55,11 @@
         </td>
     </tr>
     {% endfor %}
+    {% if not domains.exists %}
+    <tr><td colspan="5"><em>{% trans "No email domains currently blocked" %}</em></td></tr>
+    {% endif %}
 </table>
 
-{% if not domains.exists %}
-<p><em>No email domains currenly blocked.</em></p>
-{% endif %}
 
 {% endblock %}
 

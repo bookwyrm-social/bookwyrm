@@ -47,7 +47,7 @@
             <th>{% trans "Action" %}</th>
         </tr>
         {% if not requests %}
-        <tr><td colspan="4">{% trans "No requests" %}</td></tr>
+        <tr><td colspan="5"><em>{% trans "No requests" %}</em></td></tr>
         {% endif %}
         {% for req in requests %}
         <tr>
