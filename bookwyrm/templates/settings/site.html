@@ -5,6 +5,15 @@
 
 {% block header %}{% trans "Site Settings" %}{% endblock %}
 
+{% block site-subtabs %}
+<ul class="menu-list">
+    <li><a href="#instance-info">{% trans "Instance Info" %}</a></li>
+    <li><a href="#images">{% trans "Images" %}</a></li>
+    <li><a href="#footer">{% trans "Footer Content" %}</a></li>
+    <li><a href="#registration">{% trans "Registration" %}</a></li>
+</ul>
+{% endblock %}
+
 {% block panel %}
 
 <form action="{% url 'settings-site' %}" method="POST" class="content" enctype="multipart/form-data">
