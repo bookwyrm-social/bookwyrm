@@ -41,7 +41,7 @@ class Goal(View):
             "year": year,
             "is_self": request.user == user,
         }
-        return TemplateResponse(request, "goal.html", data)
+        return TemplateResponse(request, "user/goal.html", data)
 
     def post(self, request, username, year):
         """update or create an annual goal"""
@@ -58,7 +58,7 @@ class Goal(View):
                 "goal": goal,
                 "year": year,
             }
-            return TemplateResponse(request, "goal.html", data)
+            return TemplateResponse(request, "user/goal.html", data)
         goal = form.save()
 
         if request.POST.get("post-status"):

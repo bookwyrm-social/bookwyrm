@@ -1,6 +1,8 @@
 """ test for app action functionality """
 import json
 from unittest.mock import patch
+from tidylib import tidy_document
+
 from django.template.response import TemplateResponse
 from django.test import TestCase
 from django.test.client import RequestFactory
@@ -53,7 +55,16 @@ class ShelfViews(TestCase):
             is_api.return_value = False
             result = view(request, self.local_user.username, shelf.identifier)
         self.assertIsInstance(result, TemplateResponse)
-        result.render()
+        html = result.render()
+        _, errors = tidy_document(
+            html.content,
+            options={
+                "drop-empty-elements": False,
+                "warn-proprietary-attributes": False,
+            },
+        )
+        if errors:
+            raise Exception(errors)
         self.assertEqual(result.status_code, 200)
 
         with patch("bookwyrm.views.shelf.is_api_request") as is_api:
