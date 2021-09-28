@@ -67,40 +67,6 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
 
         ordering = ("-published_date",)
 
-    def save(self, *args, **kwargs):
-        """save and notify"""
-        super().save(*args, **kwargs)
-
-        notification_model = apps.get_model("bookwyrm.Notification", require_ready=True)
-
-        if self.deleted:
-            notification_model.objects.filter(related_status=self).delete()
-            return
-
-        if (
-            self.reply_parent
-            and self.reply_parent.user != self.user
-            and self.reply_parent.user.local
-        ):
-            notification_model.objects.create(
-                user=self.reply_parent.user,
-                notification_type="REPLY",
-                related_user=self.user,
-                related_status=self,
-            )
-        for mention_user in self.mention_users.all():
-            # avoid double-notifying about this status
-            if not mention_user.local or (
-                self.reply_parent and mention_user == self.reply_parent.user
-            ):
-                continue
-            notification_model.objects.create(
-                user=mention_user,
-                notification_type="MENTION",
-                related_user=self.user,
-                related_status=self,
-            )
-
     def delete(self, *args, **kwargs):  # pylint: disable=unused-argument
         """ "delete" a status"""
         if hasattr(self, "boosted_status"):
@@ -108,6 +74,10 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
             super().delete(*args, **kwargs)
             return
         self.deleted = True
+        # clear user content
+        self.content = None
+        if hasattr(self, "quotation"):
+            self.quotation = None  # pylint: disable=attribute-defined-outside-init
         self.deleted_date = timezone.now()
         self.save()
 
@@ -179,9 +149,9 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         """helper function for loading AP serialized replies to a status"""
         return self.to_ordered_collection(
             self.replies(self),
-            remote_id="%s/replies" % self.remote_id,
+            remote_id=f"{self.remote_id}/replies",
             collection_only=True,
-            **kwargs
+            **kwargs,
         ).serialize()
 
     def to_activity_dataclass(self, pure=False):  # pylint: disable=arguments-differ
@@ -226,10 +196,10 @@ class GeneratedNote(Status):
         """indicate the book in question for mastodon (or w/e) users"""
         message = self.content
         books = ", ".join(
-            '<a href="%s">"%s"</a>' % (book.remote_id, book.title)
+            f'<a href="{book.remote_id}">"{book.title}"</a>'
             for book in self.mention_books.all()
         )
-        return "%s %s %s" % (self.user.display_name, message, books)
+        return f"{self.user.display_name} {message} {books}"
 
     activity_serializer = activitypub.GeneratedNote
     pure_type = "Note"
@@ -277,10 +247,9 @@ class Comment(BookStatus):
     @property
     def pure_content(self):
         """indicate the book in question for mastodon (or w/e) users"""
-        return '%s<p>(comment on <a href="%s">"%s"</a>)</p>' % (
-            self.content,
-            self.book.remote_id,
-            self.book.title,
+        return (
+            f'{self.content}<p>(comment on <a href="{self.book.remote_id}">'
+            f'"{self.book.title}"</a>)</p>'
         )
 
     activity_serializer = activitypub.Comment
@@ -306,11 +275,9 @@ class Quotation(BookStatus):
         """indicate the book in question for mastodon (or w/e) users"""
         quote = re.sub(r"^<p>", '<p>"', self.quote)
         quote = re.sub(r"</p>$", '"</p>', quote)
-        return '%s <p>-- <a href="%s">"%s"</a></p>%s' % (
-            quote,
-            self.book.remote_id,
-            self.book.title,
-            self.content,
+        return (
+            f'{quote} <p>-- <a href="{self.book.remote_id}">'
+            f'"{self.book.title}"</a></p>{self.content}'
         )
 
     activity_serializer = activitypub.Quotation
@@ -389,27 +356,6 @@ class Boost(ActivityMixin, Status):
             return
 
         super().save(*args, **kwargs)
-        if not self.boosted_status.user.local or self.boosted_status.user == self.user:
-            return
-
-        notification_model = apps.get_model("bookwyrm.Notification", require_ready=True)
-        notification_model.objects.create(
-            user=self.boosted_status.user,
-            related_status=self.boosted_status,
-            related_user=self.user,
-            notification_type="BOOST",
-        )
-
-    def delete(self, *args, **kwargs):
-        """delete and un-notify"""
-        notification_model = apps.get_model("bookwyrm.Notification", require_ready=True)
-        notification_model.objects.filter(
-            user=self.boosted_status.user,
-            related_status=self.boosted_status,
-            related_user=self.user,
-            notification_type="BOOST",
-        ).delete()
-        super().delete(*args, **kwargs)
 
     def __init__(self, *args, **kwargs):
         """the user field is "actor" here instead of "attributedTo" """
@@ -421,10 +367,6 @@ class Boost(ActivityMixin, Status):
         self.many_to_many_fields = []
         self.image_fields = []
         self.deserialize_reverse_fields = []
-
-    # This constraint can't work as it would cross tables.
-    # class Meta:
-    #     unique_together = ('user', 'boosted_status')
 
 
 # pylint: disable=unused-argument

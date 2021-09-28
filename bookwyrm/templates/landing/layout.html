@@ -40,38 +40,41 @@
     <div class="tile is-5 is-parent">
         {% if not request.user.is_authenticated %}
         <div class="tile is-child box has-background-primary-light content">
+            <h2 class="title">
+                {% if site.allow_registration %}
+                    {% blocktrans with name=site.name %}Join {{ name }}{% endblocktrans %}
+                {% elif site.allow_invite_requests %}
+                    {% trans "Request an Invitation" %}
+                {% else %}
+                    {% blocktrans with name=site.name%}{{ name}} registration is closed{% endblocktrans %}
+                {% endif %}
+            </h2>
+
             {% if site.allow_registration %}
-            <h2 class="title">{% blocktrans with name=site.name %}Join {{ name }}{% endblocktrans %}</h2>
-            <form name="register" method="post" action="/register">
-                {% include 'snippets/register_form.html' %}
-            </form>
-
+                <form name="register" method="post" action="/register">
+                    {% include 'snippets/register_form.html' %}
+                </form>
+            {% elif site.allow_invite_requests %}
+                {% if request_received %}
+                    <p>
+                        {% trans "Thank you! Your request has been received." %}
+                    </p>
+                {% else %}
+                    <p>{{ site.invite_request_text }}</p>
+                    <form name="invite-request" action="{% url 'invite-request' %}" method="post">
+                        {% csrf_token %}
+                        <div class="block">
+                            <label for="id_request_email" class="label">{% trans "Email address:" %}</label>
+                            <input type="email" name="email" maxlength="255" class="input" required="" id="id_request_email">
+                            {% for error in request_form.email.errors %}
+                            <p class="help is-danger">{{ error|escape }}</p>
+                            {% endfor %}
+                        </div>
+                        <button type="submit" class="button is-link">{% trans "Submit" %}</button>
+                    </form>
+                {% endif %}
             {% else %}
-
-            <h2 class="title">{% trans "This instance is closed" %}</h2>
-            <p>{{ site.registration_closed_text|safe}}</p>
-
-            {% if site.allow_invite_requests %}
-            {% if request_received %}
-            <p>
-                {% trans "Thank you! Your request has been received." %}
-            </p>
-            {% else %}
-            <h3>{% trans "Request an Invitation" %}</h3>
-            <form name="invite-request" action="{% url 'invite-request' %}" method="post">
-                {% csrf_token %}
-                <div class="block">
-                    <label for="id_request_email" class="label">{% trans "Email address:" %}</label>
-                    <input type="email" name="email" maxlength="255" class="input" required="" id="id_request_email">
-                    {% for error in request_form.email.errors %}
-                    <p class="help is-danger">{{ error|escape }}</p>
-                    {% endfor %}
-                </div>
-                <button type="submit" class="button is-link">{% trans "Submit" %}</button>
-            </form>
-            {% endif %}
-            {% endif %}
-
+                <p>{{ site.registration_closed_text|safe}}</p>
             {% endif %}
         </div>
         {% else %}

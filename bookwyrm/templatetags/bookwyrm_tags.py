@@ -12,7 +12,7 @@ register = template.Library()
 def get_rating(book, user):
     """get the overall rating of a book"""
     queryset = views.helpers.privacy_filter(
-        user, models.Review.objects.filter(book__in=book.parent_work.editions.all())
+        user, models.Review.objects.filter(book__parent_work__editions=book)
     )
     return queryset.aggregate(Avg("rating"))["rating__avg"]
 
@@ -70,10 +70,13 @@ def related_status(notification):
 @register.simple_tag(takes_context=True)
 def active_shelf(context, book):
     """check what shelf a user has a book on, if any"""
+    if hasattr(book, "current_shelves"):
+        return book.current_shelves[0] if len(book.current_shelves) else {"book": book}
+
     shelf = (
         models.ShelfBook.objects.filter(
             shelf__user=context["request"].user,
-            book__in=book.parent_work.editions.all(),
+            book__parent_work__editions=book,
         )
         .select_related("book", "shelf")
         .first()
@@ -84,8 +87,11 @@ def active_shelf(context, book):
 @register.simple_tag(takes_context=False)
 def latest_read_through(book, user):
     """the most recent read activity"""
+    if hasattr(book, "active_readthroughs"):
+        return book.active_readthroughs[0] if len(book.active_readthroughs) else None
+
     return (
-        models.ReadThrough.objects.filter(user=user, book=book)
+        models.ReadThrough.objects.filter(user=user, book=book, is_active=True)
         .order_by("-start_date")
         .first()
     )
@@ -97,4 +103,4 @@ def mutuals_count(context, user):
     viewer = context["request"].user
     if not viewer.is_authenticated:
         return None
-    return user.followers.filter(id__in=viewer.following.all()).count()
+    return user.followers.filter(followers=viewer).count()

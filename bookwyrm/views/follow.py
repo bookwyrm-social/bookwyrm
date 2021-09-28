@@ -86,4 +86,4 @@ def delete_follow_request(request):
         return HttpResponseBadRequest()
 
     follow_request.delete()
-    return redirect("/user/%s" % request.user.localname)
+    return redirect(f"/user/{request.user.localname}")

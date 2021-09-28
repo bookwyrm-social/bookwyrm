@@ -43,7 +43,7 @@ class AbstractMinimalConnector(ABC):
             params["min_confidence"] = min_confidence
 
         data = self.get_search_data(
-            "%s%s" % (self.search_url, query),
+            f"{self.search_url}{query}",
             params=params,
             timeout=timeout,
         )
@@ -57,7 +57,7 @@ class AbstractMinimalConnector(ABC):
         """isbn search"""
         params = {}
         data = self.get_search_data(
-            "%s%s" % (self.isbn_search_url, query),
+            f"{self.isbn_search_url}{query}",
             params=params,
         )
         results = []
@@ -131,7 +131,7 @@ class AbstractConnector(AbstractMinimalConnector):
                 work_data = data
 
         if not work_data or not edition_data:
-            raise ConnectorException("Unable to load book data: %s" % remote_id)
+            raise ConnectorException(f"Unable to load book data: {remote_id}")
 
         with transaction.atomic():
             # create activitypub object
@@ -222,9 +222,7 @@ def get_data(url, params=None, timeout=10):
     """wrapper for request.get"""
     # check if the url is blocked
     if models.FederatedServer.is_blocked(url):
-        raise ConnectorException(
-            "Attempting to load data from blocked url: {:s}".format(url)
-        )
+        raise ConnectorException(f"Attempting to load data from blocked url: {url}")
 
     try:
         resp = requests.get(
@@ -283,6 +281,7 @@ class SearchResult:
     confidence: int = 1
 
     def __repr__(self):
+        # pylint: disable=consider-using-f-string
         return "<SearchResult key={!r} title={!r} author={!r}>".format(
             self.key, self.title, self.author
         )

@@ -105,7 +105,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         related_name="blocked_by",
     )
     saved_lists = models.ManyToManyField(
-        "List", symmetrical=False, related_name="saved_lists"
+        "List", symmetrical=False, related_name="saved_lists", blank=True
     )
     favorites = models.ManyToManyField(
         "Status",
@@ -134,8 +134,9 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         max_length=255,
     )
     deactivation_reason = models.CharField(
-        max_length=255, choices=DeactivationReason.choices, null=True, blank=True
+        max_length=255, choices=DeactivationReason, null=True, blank=True
     )
+    deactivation_date = models.DateTimeField(null=True, blank=True)
     confirmation_code = models.CharField(max_length=32, default=new_access_code)
 
     name_field = "username"
@@ -151,12 +152,13 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     @property
     def following_link(self):
         """just how to find out the following info"""
-        return "{:s}/following".format(self.remote_id)
+        return f"{self.remote_id}/following"
 
     @property
     def alt_text(self):
         """alt text with username"""
-        return "avatar for %s" % (self.localname or self.username)
+        # pylint: disable=consider-using-f-string
+        return "avatar for {:s}".format(self.localname or self.username)
 
     @property
     def display_name(self):
@@ -193,12 +195,15 @@ class User(OrderedCollectionPageMixin, AbstractUser):
             queryset = queryset.exclude(blocks=viewer)
         return queryset
 
+    def update_active_date(self):
+        """this user is here! they are doing things!"""
+        self.last_active_date = timezone.now()
+        self.save(broadcast=False, update_fields=["last_active_date"])
+
     def to_outbox(self, filter_type=None, **kwargs):
         """an ordered collection of statuses"""
         if filter_type:
-            filter_class = apps.get_model(
-                "bookwyrm.%s" % filter_type, require_ready=True
-            )
+            filter_class = apps.get_model(f"bookwyrm.{filter_type}", require_ready=True)
             if not issubclass(filter_class, Status):
                 raise TypeError(
                     "filter_status_class must be a subclass of models.Status"
@@ -222,7 +227,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
 
     def to_following_activity(self, **kwargs):
         """activitypub following list"""
-        remote_id = "%s/following" % self.remote_id
+        remote_id = f"{self.remote_id}/following"
         return self.to_ordered_collection(
             self.following.order_by("-updated_date").all(),
             remote_id=remote_id,
@@ -265,10 +270,15 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         if not self.local and not re.match(regex.FULL_USERNAME, self.username):
             # generate a username that uses the domain (webfinger format)
             actor_parts = urlparse(self.remote_id)
-            self.username = "%s@%s" % (self.username, actor_parts.netloc)
+            self.username = f"{self.username}@{actor_parts.netloc}"
 
         # this user already exists, no need to populate fields
         if not created:
+            if self.is_active:
+                self.deactivation_date = None
+            elif not self.deactivation_date:
+                self.deactivation_date = timezone.now()
+
             super().save(*args, **kwargs)
             return
 
@@ -314,7 +324,8 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     @property
     def local_path(self):
         """this model doesn't inherit bookwyrm model, so here we are"""
-        return "/user/%s" % (self.localname or self.username)
+        # pylint: disable=consider-using-f-string
+        return "/user/{:s}".format(self.localname or self.username)
 
     def create_shelves(self):
         """default shelves for a new user"""
@@ -355,7 +366,7 @@ class KeyPair(ActivitypubMixin, BookWyrmModel):
 
     def get_remote_id(self):
         # self.owner is set by the OneToOneField on User
-        return "%s/#main-key" % self.owner.remote_id
+        return f"{self.owner.remote_id}/#main-key"
 
     def save(self, *args, **kwargs):
         """create a key pair"""
@@ -392,7 +403,7 @@ class AnnualGoal(BookWyrmModel):
 
     def get_remote_id(self):
         """put the year in the path"""
-        return "{:s}/goal/{:d}".format(self.user.remote_id, self.year)
+        return f"{self.user.remote_id}/goal/{self.year}"
 
     @property
     def books(self):
@@ -448,7 +459,7 @@ def get_or_create_remote_server(domain):
         pass
 
     try:
-        data = get_data("https://%s/.well-known/nodeinfo" % domain)
+        data = get_data(f"https://{domain}/.well-known/nodeinfo")
         try:
             nodeinfo_url = data.get("links")[0].get("href")
         except (TypeError, KeyError):

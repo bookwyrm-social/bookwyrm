@@ -16,6 +16,10 @@ from bookwyrm.settings import DOMAIN
 class Register(View):
     """register a user"""
 
+    def get(self, request):  # pylint: disable=unused-argument
+        """whether or not you're logged in, just go to the home view"""
+        return redirect("/")
+
     @sensitive_variables("password")
     @method_decorator(sensitive_post_parameters("password"))
     def post(self, request):
@@ -64,7 +68,7 @@ class Register(View):
                 return TemplateResponse(request, "invite.html", data)
             return TemplateResponse(request, "login.html", data)
 
-        username = "%s@%s" % (localname, DOMAIN)
+        username = f"{localname}@{DOMAIN}"
         user = models.User.objects.create_user(
             username,
             email,

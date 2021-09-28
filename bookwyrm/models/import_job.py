@@ -2,7 +2,6 @@
 import re
 import dateutil.parser
 
-from django.apps import apps
 from django.db import models
 from django.utils import timezone
 
@@ -50,19 +49,6 @@ class ImportJob(models.Model):
     )
     retry = models.BooleanField(default=False)
 
-    def save(self, *args, **kwargs):
-        """save and notify"""
-        super().save(*args, **kwargs)
-        if self.complete:
-            notification_model = apps.get_model(
-                "bookwyrm.Notification", require_ready=True
-            )
-            notification_model.objects.create(
-                user=self.user,
-                notification_type="IMPORT",
-                related_import=self,
-            )
-
 
 class ImportItem(models.Model):
     """a single line of a csv being imported"""
@@ -71,6 +57,13 @@ class ImportItem(models.Model):
     index = models.IntegerField()
     data = models.JSONField()
     book = models.ForeignKey(Book, on_delete=models.SET_NULL, null=True, blank=True)
+    book_guess = models.ForeignKey(
+        Book,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="book_guess",
+    )
     fail_reason = models.TextField(null=True)
 
     def resolve(self):
@@ -78,9 +71,13 @@ class ImportItem(models.Model):
         if self.isbn:
             self.book = self.get_book_from_isbn()
         else:
-            # don't fall back on title/author search is isbn is present.
+            # don't fall back on title/author search if isbn is present.
             # you're too likely to mismatch
-            self.book = self.get_book_from_title_author()
+            book, confidence = self.get_book_from_title_author()
+            if confidence > 0.999:
+                self.book = book
+            else:
+                self.book_guess = book
 
     def get_book_from_isbn(self):
         """search by isbn"""
@@ -96,12 +93,15 @@ class ImportItem(models.Model):
         """search by title and author"""
         search_term = construct_search_term(self.title, self.author)
         search_result = connector_manager.first_search_result(
-            search_term, min_confidence=0.999
+            search_term, min_confidence=0.1
         )
         if search_result:
             # raises ConnectorException
-            return search_result.connector.get_or_create_book(search_result.key)
-        return None
+            return (
+                search_result.connector.get_or_create_book(search_result.key),
+                search_result.confidence,
+            )
+        return None, 0
 
     @property
     def title(self):
@@ -184,7 +184,9 @@ class ImportItem(models.Model):
         return []
 
     def __repr__(self):
+        # pylint: disable=consider-using-f-string
         return "<{!r}Item {!r}>".format(self.data["import_source"], self.data["Title"])
 
     def __str__(self):
+        # pylint: disable=consider-using-f-string
         return "{} by {}".format(self.data["Title"], self.data["Author"])

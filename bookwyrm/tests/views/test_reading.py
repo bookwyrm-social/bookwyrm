@@ -113,6 +113,7 @@ class ReadingViews(TestCase):
             {
                 "post-status": True,
                 "privacy": "followers",
+                "start_date": readthrough.start_date,
                 "finish_date": timezone.now().isoformat(),
                 "id": readthrough.id,
             },

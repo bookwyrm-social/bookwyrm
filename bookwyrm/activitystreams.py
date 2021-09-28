@@ -1,7 +1,9 @@
 """ access the activity streams stored in redis """
+from datetime import timedelta
 from django.dispatch import receiver
 from django.db import transaction
 from django.db.models import signals, Q
+from django.utils import timezone
 
 from bookwyrm import models
 from bookwyrm.redis_store import RedisStore, r
@@ -14,11 +16,12 @@ class ActivityStream(RedisStore):
 
     def stream_id(self, user):
         """the redis key for this user's instance of this stream"""
-        return "{}-{}".format(user.id, self.key)
+        return f"{user.id}-{self.key}"
 
     def unread_id(self, user):
         """the redis key for this user's unread count for this stream"""
-        return "{}-unread".format(self.stream_id(user))
+        stream_id = self.stream_id(user)
+        return f"{stream_id}-unread"
 
     def get_rank(self, obj):  # pylint: disable=no-self-use
         """statuses are sorted by date published"""
@@ -436,6 +439,10 @@ def remove_status_task(status_ids):
 def add_status_task(status_id, increment_unread=False):
     """add a status to any stream it should be in"""
     status = models.Status.objects.get(id=status_id)
+    # we don't want to tick the unread count for csv import statuses, idk how better
+    # to check than just to see if the states is more than a few days old
+    if status.created_date < timezone.now() - timedelta(days=2):
+        increment_unread = False
     for stream in streams.values():
         stream.add_status(status, increment_unread=increment_unread)
 

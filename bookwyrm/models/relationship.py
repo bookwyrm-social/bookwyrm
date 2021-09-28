@@ -53,7 +53,7 @@ class UserRelationship(BookWyrmModel):
     def get_remote_id(self):
         """use shelf identifier in remote_id"""
         base_path = self.user_subject.remote_id
-        return "%s#follows/%d" % (base_path, self.id)
+        return f"{base_path}#follows/{self.id}"
 
 
 class UserFollows(ActivityMixin, UserRelationship):
@@ -144,7 +144,8 @@ class UserFollowRequest(ActivitypubMixin, UserRelationship):
         """get id for sending an accept or reject of a local user"""
 
         base_path = self.user_object.remote_id
-        return "%s#%s/%d" % (base_path, status, self.id or 0)
+        status_id = self.id or 0
+        return f"{base_path}#{status}/{status_id}"
 
     def accept(self, broadcast_only=False):
         """turn this request into the real deal"""

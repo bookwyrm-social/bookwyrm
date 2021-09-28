@@ -1,0 +1,120 @@
+{% extends 'settings/layout.html' %}
+{% load i18n %}
+{% load humanize %}
+{% load static %}
+
+{% block title %}{% trans "Dashboard" %}{% endblock %}
+
+{% block header %}{% trans "Dashboard" %}{% endblock %}
+
+{% block panel %}
+
+<div class="columns block has-text-centered">
+    <div class="column is-3">
+        <div class="notification">
+            <h3>{% trans "Total users" %}</h3>
+            <p class="title is-5">{{ users|intcomma }}</p>
+        </div>
+    </div>
+    <div class="column is-3">
+        <div class="notification">
+            <h3>{% trans "Active this month" %}</h3>
+            <p class="title is-5">{{ active_users|intcomma }}</p>
+        </div>
+    </div>
+    <div class="column is-3">
+        <div class="notification">
+            <h3>{% trans "Statuses" %}</h3>
+            <p class="title is-5">{{ statuses|intcomma }}</p>
+        </div>
+    </div>
+    <div class="column is-3">
+        <div class="notification">
+            <h3>{% trans "Works" %}</h3>
+            <p class="title is-5">{{ works|intcomma }}</p>
+        </div>
+    </div>
+</div>
+
+<div class="columns block is-multiline">
+    {% if reports %}
+    <div class="column">
+        <a href="{% url 'settings-reports' %}" class="notification is-warning is-block">
+            {% blocktrans trimmed count counter=reports with display_count=reports|intcomma %}
+            {{ display_count }} open report
+            {% plural %}
+            {{ display_count }} open reports
+            {% endblocktrans %}
+        </a>
+    </div>
+    {% endif %}
+    {% if not site.allow_registration and site.allow_invite_requests and invite_requests %}
+    <div class="column">
+        <a href="{% url 'settings-invite-requests' %}" class="notification is-block is-success is-light">
+            {% blocktrans trimmed count counter=invite_requests with display_count=invite_requests|intcomma %}
+            {{ display_count }} invite request
+            {% plural %}
+            {{ display_count }} invite requests
+            {% endblocktrans %}
+        </a>
+    </div>
+    {% endif %}
+</div>
+
+<div class="block content">
+    <h2>{% trans "Instance Activity" %}</h2>
+
+    <form method="get" action="{% url 'settings-dashboard' %}" class="notification has-background-white-bis">
+        <div class="is-flex is-align-items-flex-end">
+            <div class="ml-1 mr-1">
+                <label class="label">
+                    {% trans "Start date:" %}
+                    <input class="input" type="date" name="start" value="{{ start }}">
+                </label>
+            </div>
+            <div class="ml-1 mr-1">
+                <label class="label">
+                    {% trans "End date:" %}
+                    <input class="input" type="date" name="end" value="{{ end }}">
+                </label>
+            </div>
+            <div class="ml-1 mr-1">
+                <label class="label">
+                    {% trans "Interval:" %}
+                    <div class="select">
+                        <select name="days">
+                            <option value="1" {% if interval == 1 %}selected{% endif %}>{% trans "Days" %}</option>
+                            <option value="7" {% if interval == 7 %}selected{% endif %}>{% trans "Weeks" %}</option>
+                        </select>
+                    </div>
+                </label>
+            </div>
+            <div class="ml-1 mr-1">
+                <button class="button is-link" type="submit">{% trans "Submit" %}</button>
+            </div>
+        </div>
+    </form>
+
+    <div class="columns">
+        <div class="column">
+            <h3>{% trans "User signup activity" %}</h3>
+            <div class="box">
+                <canvas id="user_stats"></canvas>
+            </div>
+        </div>
+        <div class="column">
+            <h3>{% trans "Status activity" %}</h3>
+            <div class="box">
+                <canvas id="status_stats"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.5.1/dist/chart.min.js"></script>
+{% include 'settings/dashboard_user_chart.html' %}
+{% include 'settings/dashboard_status_chart.html' %}
+{% endblock %}

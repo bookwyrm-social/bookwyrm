@@ -47,6 +47,7 @@ class UserAdminList(View):
             "federated_server__server_name",
             "is_active",
         ]
+        # pylint: disable=consider-using-f-string
         if sort in sort_fields + ["-{:s}".format(f) for f in sort_fields]:
             users = users.order_by(sort)
 

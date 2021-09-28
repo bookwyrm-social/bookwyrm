@@ -9,6 +9,7 @@ import responses
 from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.http import Http404
 from django.template.response import TemplateResponse
 from django.test import TestCase
 from django.test.client import RequestFactory
@@ -133,8 +134,8 @@ class BookViews(TestCase):
         request.user = self.local_user
         with patch("bookwyrm.views.books.is_api_request") as is_api:
             is_api.return_value = False
-            result = view(request, 0)
-        self.assertEqual(result.status_code, 404)
+            with self.assertRaises(Http404):
+                view(request, 0)
 
     def test_book_page_work_id(self):
         """there are so many views, this just makes sure it LOADS"""
