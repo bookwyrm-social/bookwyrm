@@ -21,7 +21,7 @@ class Group(BookWyrmModel):
         symmetrical=False,
         through="GroupMember",
         through_fields=("group", "user"),
-        related_name="members"
+        related_name="bookwyrm_groups"
     )
 
     def get_remote_id(self):

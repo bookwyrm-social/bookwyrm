@@ -1,4 +1,5 @@
 """group views"""
+from django.apps import apps
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 from django.core.paginator import Paginator
@@ -62,8 +63,6 @@ class UserGroups(View):
 
         data = {
             "user": user,
-            "has_groups": models.GroupMember.objects.filter(user=user).exists(),
-            "groups": paginated.get_page(request.GET.get("page")),
             "group_form": forms.GroupForm(),
             "path": user.local_path + "/group",
         }
@@ -144,6 +143,21 @@ def add_member(request):
     except IntegrityError:
         pass
 
+# TODO: actually this needs to be associated with the user ACCEPTING AN INVITE!!! DOH!
+
+    """create a notification too"""
+    # notify all team members when a user is added to the group
+    model = apps.get_model("bookwyrm.Notification", require_ready=True)
+    for team_member in group.members.all():
+        if team_member.local and team_member != request.user:
+            model.objects.create(
+                user=team_member,
+                related_user=request.user,
+                related_group_member=user,
+                related_group=group,
+                notification_type="ADD",
+            )
+
     return redirect(user.local_path)
 
 @require_POST
@@ -151,8 +165,12 @@ def add_member(request):
 def remove_member(request):
     """remove a member from the group"""
 
+    # TODO: send notification to user telling them they have been removed
+    # TODO: remove yourself from a group!!!! (except owner)
+    # FUTURE TODO: transfer ownership of group
+
     # TODO: if groups become AP values we need something like get_group_from_group_fullname
-    # group = get_object_or_404(models.Group, id=request.POST.get("group"))
+    # group = get_object_or_404(models.Group, id=request.POST.get("group")) # NOTE: does this not work?
     group = models.Group.objects.get(id=request.POST["group"])
     if not group:
         return HttpResponseBadRequest()

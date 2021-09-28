@@ -75,7 +75,7 @@
             <a href="{{ url }}">{% trans "Lists" %}</a>
         </li>
         {% endif %}
-        {% if is_self or has_groups %}
+        {% if is_self or user.bookwyrm_groups %}
         {% url 'user-groups' user|username as url %}
         <li{% if url in request.path %} class="is-active"{% endif %}>
             <a href="{{ url }}">{% trans "Groups" %}</a>
