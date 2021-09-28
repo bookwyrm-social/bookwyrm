@@ -135,4 +135,7 @@ def host_meta(request):
 @require_GET
 def opensearch(request):
     """Open Search xml spec"""
-    return TemplateResponse(request, "opensearch.xml")
+    site = models.SiteSettings.get()
+    logo_path = site.favicon or "images/favicon.png"
+    logo = f"{MEDIA_FULL_URL}{logo_path}"
+    return TemplateResponse(request, "opensearch.xml", {"image": logo, "DOMAIN": DOMAIN})
