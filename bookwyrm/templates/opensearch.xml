@@ -1,11 +1,23 @@
 {% load i18n %}
 {% load static %}
 <?xml version="1.0" encoding="UTF-8"?>
-<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/" xmlns:moz="http://www.mozilla.org/2006/browser/search/">
+<OpenSearchDescription
+    xmlns="http://a9.com/-/spec/opensearch/1.1/"
+    xmlns
+    moz="http://www.mozilla.org/2006/browser/search/"
+>
     <ShortName>BW</ShortName>
-    <Description>{% blocktrans with site_name=site.name %}{{ site_name }} search{% endblocktrans %}</Description>
+    <Description>{% blocktrans trimmed with site_name=site.name %}
+        {{ site_name }} search
+    {% endblocktrans %}</Description>
     <InputEncoding>UTF-8</InputEncoding>
-    <Image width="16" height="16" type="image/x-icon">{% if site.favicon %}{% get_media_prefix %}{{ site.favicon }}{% else %}{% static "images/favicon.ico" %}{% endif %}</Image>
+    <Image
+        width="16"
+        height="16"
+        type="image/x-icon"
+    >{% if site.favicon %}
+        {% get_media_prefix %}{{ site.favicon }}{% else %}{% static "images/favicon.ico" %}
+    {% endif %}</Image>
     <Url type="text/html" template="{% url 'search' %}">
         <Param name="q" value="{searchTerms}"/>
     </Url>

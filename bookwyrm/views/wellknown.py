@@ -131,6 +131,7 @@ def host_meta(request):
     """meta of the host"""
     return TemplateResponse(request, "host_meta.xml", {"DOMAIN": DOMAIN})
 
+
 @require_GET
 def opensearch(request):
     """Open Search xml spec"""
