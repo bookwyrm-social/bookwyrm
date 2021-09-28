@@ -13,7 +13,7 @@ from django.views import View
 from bookwyrm import forms, models
 from bookwyrm.connectors import connector_manager
 from bookwyrm.suggested_users import suggested_users
-from .edit_user import save_user_form
+from .preferences.edit_user import save_user_form
 
 
 # pylint: disable= no-self-use
