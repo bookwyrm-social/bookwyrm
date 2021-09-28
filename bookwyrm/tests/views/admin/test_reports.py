@@ -45,7 +45,13 @@ class ReportViews(TestCase):
         result = view(request)
         self.assertIsInstance(result, TemplateResponse)
         html = result.render()
-        _, errors = tidy_document(html.content)
+        _, errors = tidy_document(
+            html.content,
+            options={
+                "drop-empty-elements": False,
+                "warn-proprietary-attributes": False,
+            },
+        )
         if errors:
             raise Exception(errors)
         self.assertEqual(result.status_code, 200)
@@ -61,7 +67,13 @@ class ReportViews(TestCase):
         result = view(request)
         self.assertIsInstance(result, TemplateResponse)
         html = result.render()
-        _, errors = tidy_document(html.content)
+        _, errors = tidy_document(
+            html.content,
+            options={
+                "drop-empty-elements": False,
+                "warn-proprietary-attributes": False,
+            },
+        )
         if errors:
             raise Exception(errors)
         self.assertEqual(result.status_code, 200)
@@ -78,7 +90,7 @@ class ReportViews(TestCase):
 
         self.assertIsInstance(result, TemplateResponse)
         html = result.render()
-        _, errors = tidy_document(html.content)
+        _, errors = tidy_document(html.content, options={"drop-empty-elements": False})
         if errors:
             raise Exception(errors)
         self.assertEqual(result.status_code, 200)
