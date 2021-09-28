@@ -47,7 +47,7 @@ class ChangePasswordViews(TestCase):
         password_hash = self.local_user.password
         request = self.factory.post("", {"password": "hi", "confirm-password": "hi"})
         request.user = self.local_user
-        with patch("bookwyrm.views.password.login"):
+        with patch("bookwyrm.views.preferences.change_password.login"):
             view(request)
         self.assertNotEqual(self.local_user.password, password_hash)
 

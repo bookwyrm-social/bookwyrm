@@ -93,7 +93,7 @@ class EditUserViews(TestCase):
         form.data["default_post_privacy"] = "public"
         form.data["preferred_timezone"] = "UTC"
         image_file = pathlib.Path(__file__).parent.joinpath(
-            "../../static/images/no_cover.jpg"
+            "../../../static/images/no_cover.jpg"
         )
         # pylint: disable=consider-using-with
         form.data["avatar"] = SimpleUploadedFile(
@@ -116,7 +116,7 @@ class EditUserViews(TestCase):
     def test_crop_avatar(self, _):
         """reduce that image size"""
         image_file = pathlib.Path(__file__).parent.joinpath(
-            "../../static/images/no_cover.jpg"
+            "../../../static/images/no_cover.jpg"
         )
         image = Image.open(image_file)
 
