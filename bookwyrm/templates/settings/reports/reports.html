@@ -30,7 +30,7 @@
     </ul>
 </div>
 
-{% include 'user_admin/user_admin_filters.html' %}
+{% include 'settings/users/user_admin_filters.html' %}
 
 <div class="block">
     {% if not reports %}
@@ -39,7 +39,7 @@
 
     {% for report in reports %}
     <div class="block">
-        {% include 'moderation/report_preview.html' with report=report %}
+        {% include 'settings/reports/report_preview.html' with report=report %}
     </div>
     {% endfor %}
 </div>

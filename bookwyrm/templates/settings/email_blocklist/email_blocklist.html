@@ -12,7 +12,7 @@
 {% endblock %}
 
 {% block panel %}
-{% include 'settings/domain_form.html' with controls_text="add_domain" class="block" %}
+{% include 'settings/email_blocklist/domain_form.html' with controls_text="add_domain" class="block" %}
 
 <p class="notification block">
     {% trans "When someone tries to register with an email from this domain, no account will be created. The registration process will appear to have worked." %}
@@ -55,7 +55,11 @@
         </td>
     </tr>
     {% endfor %}
+    {% if not domains.exists %}
+    <tr><td colspan="5"><em>{% trans "No email domains currently blocked" %}</em></td></tr>
+    {% endif %}
 </table>
+
 
 {% endblock %}
 

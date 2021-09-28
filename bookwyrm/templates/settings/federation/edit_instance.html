@@ -33,6 +33,8 @@
                 <p class="help is-danger">{{ error | escape }}</p>
                 {% endfor %}
             </div>
+        </div>
+        <div class="column is-half">
             <div class="field">
                 <label class="label" for="id_status">{% trans "Status:" %}</label>
                 <div class="select">
@@ -43,6 +45,8 @@
                 </div>
             </div>
         </div>
+    </div>
+    <div class="columns">
         <div class="column is-half">
             <div class="field">
                 <label class="label" for="id_application_type">{% trans "Software:" %}</label>
@@ -51,6 +55,8 @@
                 <p class="help is-danger">{{ error | escape }}</p>
                 {% endfor %}
             </div>
+        </div>
+        <div class="column is-half">
             <div class="field">
                 <label class="label" for="id_application_version">{% trans "Version:" %}</label>
                 <input type="text" name="application_version" maxlength="255" class="input" id="id_application_version" value="{{ form.application_version.value|default:'' }}">
@@ -62,7 +68,7 @@
     </div>
     <div class="field">
         <label class="label" for="id_notes">{% trans "Notes:" %}</label>
-        <textarea name="notes" cols="None" rows="None" class="textarea" id="id_notes">{{ form.notes.value|default:'' }}</textarea>
+        <textarea name="notes" cols="40" rows="5" class="textarea" id="id_notes">{{ form.notes.value|default:'' }}</textarea>
     </div>
 
     <button type="submit" class="button is-primary">{% trans "Save" %}</button>

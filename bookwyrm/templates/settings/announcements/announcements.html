@@ -11,7 +11,7 @@
 
 {% block panel %}
 <form name="create-announcement" method="post" action="{% url 'settings-announcements' %}" class="block">
-    {% include 'settings/announcement_form.html' with controls_text="create_announcement" %}
+    {% include 'settings/announcements/announcement_form.html' with controls_text="create_announcement" %}
 </form>
 
 <div class="block">
@@ -48,11 +48,10 @@
             <td>{% if announcement.active %}{% trans "active" %}{% else %}{% trans "inactive" %}{% endif %}</td>
         </tr>
         {% endfor %}
+        {% if not announcements %}
+        <tr><td colspan="5"><em>{% trans "No announcements found" %}</em></td></tr>
+        {% endif %}
     </table>
-
-    {% if not announcements %}
-    <p><em>{% trans "No announcements found." %}</em></p>
-    {% endif %}
 </div>
 
 {% include 'snippets/pagination.html' with page=announcements path=request.path %}

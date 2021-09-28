@@ -1,6 +1,8 @@
 """ test for app action functionality """
 import json
 from unittest.mock import patch
+from tidylib import tidy_document
+
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.template.response import TemplateResponse
 from django.test import TestCase
@@ -46,10 +48,19 @@ class FederationViews(TestCase):
         request.user.is_superuser = True
         result = view(request)
         self.assertIsInstance(result, TemplateResponse)
-        result.render()
+        html = result.render()
+        _, errors = tidy_document(
+            html.content,
+            options={
+                "drop-empty-elements": False,
+                "warn-proprietary-attributes": False,
+            },
+        )
+        if errors:
+            raise Exception(errors)
         self.assertEqual(result.status_code, 200)
 
-    def test_server_page(self):
+    def test_instance_page(self):
         """there are so many views, this just makes sure it LOADS"""
         server = models.FederatedServer.objects.create(server_name="hi.there.com")
         view = views.FederatedServer.as_view()
@@ -59,7 +70,10 @@ class FederationViews(TestCase):
 
         result = view(request, server.id)
         self.assertIsInstance(result, TemplateResponse)
-        result.render()
+        html = result.render()
+        _, errors = tidy_document(html.content, options={"drop-empty-elements": False})
+        if errors:
+            raise Exception(errors)
         self.assertEqual(result.status_code, 200)
 
     def test_server_page_block(self):
@@ -148,7 +162,10 @@ class FederationViews(TestCase):
 
         result = view(request)
         self.assertIsInstance(result, TemplateResponse)
-        result.render()
+        html = result.render()
+        _, errors = tidy_document(html.content)
+        if errors:
+            raise Exception(errors)
         self.assertEqual(result.status_code, 200)
 
     def test_add_view_post_create(self):
@@ -169,6 +186,7 @@ class FederationViews(TestCase):
         self.assertEqual(server.application_type, "coolsoft")
         self.assertEqual(server.status, "blocked")
 
+    # pylint: disable=consider-using-with
     def test_import_blocklist(self):
         """load a json file with a list of servers to block"""
         server = models.FederatedServer.objects.create(server_name="hi.there.com")
@@ -180,7 +198,7 @@ class FederationViews(TestCase):
             {"instance": "hi.there.com", "url": "https://explanation.url"},  # existing
             {"a": "b"},  # invalid
         ]
-        json.dump(data, open("file.json", "w"))
+        json.dump(data, open("file.json", "w"))  # pylint: disable=unspecified-encoding
 
         view = views.ImportServerBlocklist.as_view()
         request = self.factory.post(

@@ -85,4 +85,4 @@ class Dashboard(View):
             "user_stats": user_stats,
             "status_stats": status_stats,
         }
-        return TemplateResponse(request, "settings/dashboard.html", data)
+        return TemplateResponse(request, "settings/dashboard/dashboard.html", data)
