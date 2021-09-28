@@ -1,0 +1,25 @@
+{% load i18n %}
+{% csrf_token %}
+<input type="hidden" name="user" value="{{ request.user.id }}">
+
+{% if editable %}
+<div class="field">
+    <label class="label" for="id_name">{% trans "Name:" %}</label>
+    {{ form.name }}
+</div>
+{% else %}
+<input type="hidden" name="name" required="true" value="{{ shelf.name }}">
+{% endif %}
+
+<div class="field">
+    <label class="label" for="id_description">{% trans "Description:" %}</label>
+    {{ form.description }}
+</div>
+<div class="field has-addons">
+    <div class="control">
+        {% include 'snippets/privacy_select.html' with current=privacy %}
+    </div>
+    <div class="control">
+        <button class="button is-primary" type="submit">{% trans "Save" %}</button>
+    </div>
+</div>
