@@ -14,7 +14,7 @@ from django.views.decorators.http import require_POST
 from bookwyrm import models
 from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.settings import PAGE_LENGTH
-from .helpers import is_api_request
+from bookwyrm.views.helpers import is_api_request
 
 
 # pylint: disable=no-self-use
