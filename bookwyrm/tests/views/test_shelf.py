@@ -34,13 +34,6 @@ class ShelfViews(TestCase):
                 localname="mouse",
                 remote_id="https://example.com/users/mouse",
             )
-            self.rat = models.User.objects.create_user(
-                "rat@local.com",
-                "rat@mouse.mouse",
-                "password",
-                local=True,
-                localname="rat",
-            )
         self.work = models.Work.objects.create(title="Test Work")
         self.book = models.Edition.objects.create(
             title="Example Edition",
@@ -246,8 +239,18 @@ class ShelfViews(TestCase):
 
     def test_delete_shelf_unauthorized(self, *_):
         """delete a brand new custom shelf"""
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
+            "bookwyrm.activitystreams.populate_stream_task.delay"
+        ):
+            rat = models.User.objects.create_user(
+                "rat@local.com",
+                "rat@mouse.mouse",
+                "password",
+                local=True,
+                localname="rat",
+            )
         request = self.factory.post("")
-        request.user = self.rat
+        request.user = rat
 
         with self.assertRaises(PermissionDenied):
             views.delete_shelf(request, self.shelf.id)
