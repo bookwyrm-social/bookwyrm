@@ -251,12 +251,27 @@
 
             <div class="block">
                 <h2 class="title is-4">{% trans "Physical Properties" %}</h2>
-                <div class="field">
-                    <label class="label" for="id_physical_format">{% trans "Format:" %}</label>
-                    {{ form.physical_format }}
-                    {% for error in form.physical_format.errors %}
-                    <p class="help is-danger">{{ error | escape }}</p>
-                    {% endfor %}
+                <div class="columns">
+                    <div class="column is-one-third">
+                        <div class="field">
+                            <label class="label" for="id_physical_format">{% trans "Format:" %}</label>
+                            <div class="select">
+                                {{ form.physical_format }}
+                            </div>
+                            {% for error in form.physical_format.errors %}
+                            <p class="help is-danger">{{ error | escape }}</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="column">
+                        <div class="field">
+                            <label class="label" for="id_physical_format_detail">{% trans "Format details:" %}</label>
+                            {{ form.physical_format_detail }}
+                            {% for error in form.physical_format_detail.errors %}
+                            <p class="help is-danger">{{ error | escape }}</p>
+                            {% endfor %}
+                        </div>
+                    </div>
                 </div>
 
                 <div class="field">

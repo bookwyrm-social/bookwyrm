@@ -8,7 +8,7 @@ from .connector_manager import ConnectorException
 
 
 class Connector(AbstractConnector):
-    """instantiate a connector for OL"""
+    """instantiate a connector for inventaire"""
 
     def __init__(self, identifier):
         super().__init__(identifier)
