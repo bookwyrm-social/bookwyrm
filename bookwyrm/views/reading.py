@@ -167,6 +167,8 @@ def edit_readthrough(request):
     # use default now for date field
     readthrough.create_update()
 
+    if is_api_request(request):
+        return HttpResponse()
     return redirect(request.headers.get("Referer", "/"))
 
 

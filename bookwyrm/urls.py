@@ -371,6 +371,11 @@ urlpatterns = [
     re_path(r"^delete-progressupdate/?$", views.delete_progressupdate),
     # shelve actions
     re_path(
+        r"^reading-status/update/(?P<book_id>\d+)/?$",
+        views.update_progress,
+        name="reading-status-update",
+    ),
+    re_path(
         r"^reading-status/(?P<status>want|start|finish)/(?P<book_id>\d+)/?$",
         views.ReadingStatus.as_view(),
         name="reading-status",

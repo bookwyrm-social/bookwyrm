@@ -36,8 +36,10 @@ def get_title(book, too_short=5):
 
 
 @register.simple_tag(takes_context=False)
-def comparison_bool(str1, str2):
+def comparison_bool(str1, str2, reverse=False):
     """idk why I need to write a tag for this, it returns a bool"""
+    if reverse:
+        return str1 != str2
     return str1 == str2
 
 
