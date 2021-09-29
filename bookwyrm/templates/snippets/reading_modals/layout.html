@@ -23,8 +23,7 @@
 <div id="reading_content_{{ local_uuid }}_{{ uuid }}">
     <hr aria-hidden="true">
     <fieldset id="reading_content_fieldset_{{ local_uuid }}_{{ uuid }}">
-        {% comparison_bool controls_text "progress_update" True as optional %}
-        {% include "snippets/reading_modals/form.html" with optional=optional %}
+        {% block form %}{% endblock %}
     </fieldset>
 </div>
 {% endwith %}

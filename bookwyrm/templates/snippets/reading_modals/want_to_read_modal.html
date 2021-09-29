@@ -13,3 +13,7 @@ Want to Read "<em>{{ book_title }}</em>"
 <input type="hidden" name="reading_status" value="to-read">
 {% csrf_token %}
 {% endblock %}
+
+{% block form %}
+{% include "snippets/reading_modals/form.html" with optional=True type="want_modal" %}
+{% endblock %}
