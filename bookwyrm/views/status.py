@@ -138,7 +138,7 @@ class DeleteAndRedraft(View):
 
 @login_required
 @require_POST
-def update_progress(request, book_id):
+def update_progress(request, book_id):  # pylint: disable=unused-argument
     """Either it's just a progress update, or it's a comment with a progress update"""
     if request.POST.get("post-status"):
         return CreateStatus.as_view()(request, "comment")
