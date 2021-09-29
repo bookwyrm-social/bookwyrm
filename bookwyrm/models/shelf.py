@@ -64,6 +64,8 @@ class Shelf(OrderedCollectionMixin, BookWyrmModel):
         super().raise_not_deletable(viewer)
         if not self.editable:
             raise PermissionDenied()
+        if self.shelfbook_set.exists():
+            raise PermissionDenied()
 
     class Meta:
         """user/shelf unqiueness"""

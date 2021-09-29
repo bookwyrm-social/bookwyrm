@@ -3,11 +3,12 @@ import json
 from unittest.mock import patch
 from tidylib import tidy_document
 
+from django.core.exceptions import PermissionDenied
 from django.template.response import TemplateResponse
 from django.test import TestCase
 from django.test.client import RequestFactory
 
-from bookwyrm import models, views
+from bookwyrm import forms, models, views
 from bookwyrm.activitypub import ActivitypubResponse
 
 
@@ -32,6 +33,13 @@ class ShelfViews(TestCase):
                 local=True,
                 localname="mouse",
                 remote_id="https://example.com/users/mouse",
+            )
+            self.rat = models.User.objects.create_user(
+                "rat@local.com",
+                "rat@mouse.mouse",
+                "password",
+                local=True,
+                localname="rat",
             )
         self.work = models.Work.objects.create(title="Test Work")
         self.book = models.Edition.objects.create(
@@ -133,7 +141,7 @@ class ShelfViews(TestCase):
 
         self.assertEqual(shelf.name, "To Read")
 
-    def test_handle_shelve(self, *_):
+    def test_shelve(self, *_):
         """shelve a book"""
         request = self.factory.post(
             "", {"book": self.book.id, "shelf": self.shelf.identifier}
@@ -151,7 +159,7 @@ class ShelfViews(TestCase):
         # make sure the book is on the shelf
         self.assertEqual(self.shelf.books.get(), self.book)
 
-    def test_handle_shelve_to_read(self, *_):
+    def test_shelve_to_read(self, *_):
         """special behavior for the to-read shelf"""
         shelf = models.Shelf.objects.get(identifier="to-read")
         request = self.factory.post(
@@ -164,7 +172,7 @@ class ShelfViews(TestCase):
         # make sure the book is on the shelf
         self.assertEqual(shelf.books.get(), self.book)
 
-    def test_handle_shelve_reading(self, *_):
+    def test_shelve_reading(self, *_):
         """special behavior for the reading shelf"""
         shelf = models.Shelf.objects.get(identifier="reading")
         request = self.factory.post(
@@ -177,7 +185,7 @@ class ShelfViews(TestCase):
         # make sure the book is on the shelf
         self.assertEqual(shelf.books.get(), self.book)
 
-    def test_handle_shelve_read(self, *_):
+    def test_shelve_read(self, *_):
         """special behavior for the read shelf"""
         shelf = models.Shelf.objects.get(identifier="read")
         request = self.factory.post(
@@ -190,7 +198,7 @@ class ShelfViews(TestCase):
         # make sure the book is on the shelf
         self.assertEqual(shelf.books.get(), self.book)
 
-    def test_handle_unshelve(self, *_):
+    def test_unshelve(self, *_):
         """remove a book from a shelf"""
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
             models.ShelfBook.objects.create(
@@ -208,3 +216,65 @@ class ShelfViews(TestCase):
         self.assertEqual(activity["type"], "Remove")
         self.assertEqual(activity["object"]["id"], item.remote_id)
         self.assertEqual(self.shelf.books.count(), 0)
+
+    def test_create_shelf(self, *_):
+        """a brand new custom shelf"""
+        form = forms.ShelfForm()
+        form.data["user"] = self.local_user.id
+        form.data["name"] = "new shelf name"
+        form.data["description"] = "desc"
+        form.data["privacy"] = "unlisted"
+        request = self.factory.post("", form.data)
+        request.user = self.local_user
+
+        views.create_shelf(request)
+
+        shelf = models.Shelf.objects.get(name="new shelf name")
+        self.assertEqual(shelf.privacy, "unlisted")
+        self.assertEqual(shelf.description, "desc")
+        self.assertEqual(shelf.user, self.local_user)
+
+    def test_delete_shelf(self, *_):
+        """delete a brand new custom shelf"""
+        request = self.factory.post("")
+        request.user = self.local_user
+        shelf_id = self.shelf.id
+
+        views.delete_shelf(request, shelf_id)
+
+        self.assertFalse(models.Shelf.objects.filter(id=shelf_id).exists())
+
+    def test_delete_shelf_unauthorized(self, *_):
+        """delete a brand new custom shelf"""
+        request = self.factory.post("")
+        request.user = self.rat
+
+        with self.assertRaises(PermissionDenied):
+            views.delete_shelf(request, self.shelf.id)
+
+        self.assertTrue(models.Shelf.objects.filter(id=self.shelf.id).exists())
+
+    def test_delete_shelf_has_book(self, *_):
+        """delete a brand new custom shelf"""
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+            models.ShelfBook.objects.create(
+                book=self.book, user=self.local_user, shelf=self.shelf
+            )
+        request = self.factory.post("")
+        request.user = self.local_user
+
+        with self.assertRaises(PermissionDenied):
+            views.delete_shelf(request, self.shelf.id)
+
+        self.assertTrue(models.Shelf.objects.filter(id=self.shelf.id).exists())
+
+    def test_delete_shelf_not_editable(self, *_):
+        """delete a brand new custom shelf"""
+        shelf = self.local_user.shelfset.first()
+        request = self.factory.post("")
+        request.user = self.local_user
+
+        with self.assertRaises(PermissionDenied):
+            views.delete_shelf(request, shelf.id)
+
+        self.assertTrue(models.Shelf.objects.filter(id=shelf.id).exists())

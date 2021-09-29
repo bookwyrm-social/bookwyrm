@@ -130,7 +130,7 @@ def create_shelf(request):
 def delete_shelf(request, shelf_id):
     """user generated shelves"""
     shelf = get_object_or_404(models.Shelf, id=shelf_id)
-    shelf.raise_not_deletable()
+    shelf.raise_not_deletable(request.user)
 
     shelf.delete()
     return redirect("user-shelves", request.user.localname)
