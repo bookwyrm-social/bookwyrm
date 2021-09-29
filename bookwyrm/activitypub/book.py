@@ -39,7 +39,6 @@ class Book(BookData):
     publishedDate: str = ""
 
     cover: Document = None
-    type: str = "Book"
 
 
 # pylint: disable=invalid-name
@@ -57,8 +56,6 @@ class Edition(Book):
     publishers: List[str] = field(default_factory=lambda: [])
     editionRank: int = 0
 
-    type: str = "Edition"
-
 
 # pylint: disable=invalid-name
 @dataclass(init=False)
@@ -67,7 +64,6 @@ class Work(Book):
 
     lccn: str = ""
     editions: List[str] = field(default_factory=lambda: [])
-    type: str = "Work"
 
 
 # pylint: disable=invalid-name
@@ -84,4 +80,3 @@ class Author(BookData):
     aliases: List[str] = field(default_factory=lambda: [])
     bio: str = ""
     wikipediaLink: str = ""
-    type: str = "Author"

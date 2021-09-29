@@ -9,12 +9,9 @@ class Document(ActivityObject):
 
     url: str
     name: str = ""
-    type: str = "Document"
     id: str = None
 
 
 @dataclass(init=False)
 class Image(Document):
     """an image"""
-
-    type: str = "Image"

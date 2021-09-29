@@ -11,8 +11,6 @@ from .image import Document
 class Tombstone(ActivityObject):
     """the placeholder for a deleted status"""
 
-    type: str = "Tombstone"
-
     def to_model(self, *args, **kwargs):  # pylint: disable=unused-argument
         """this should never really get serialized, just searched for"""
         model = apps.get_model("bookwyrm.Status")
@@ -35,7 +33,6 @@ class Note(ActivityObject):
     tag: List[Link] = field(default_factory=lambda: [])
     attachment: List[Document] = field(default_factory=lambda: [])
     sensitive: bool = False
-    type: str = "Note"
 
 
 @dataclass(init=False)
@@ -43,14 +40,11 @@ class Article(Note):
     """what's an article except a note with more fields"""
 
     name: str
-    type: str = "Article"
 
 
 @dataclass(init=False)
 class GeneratedNote(Note):
     """just a re-typed note"""
-
-    type: str = "GeneratedNote"
 
 
 # pylint: disable=invalid-name
@@ -62,7 +56,6 @@ class Comment(Note):
     readingStatus: str = None
     progress: int = None
     progressMode: str = None
-    type: str = "Comment"
 
 
 @dataclass(init=False)
@@ -72,7 +65,6 @@ class Quotation(Comment):
     quote: str
     position: int = None
     positionMode: str = None
-    type: str = "Quotation"
 
 
 @dataclass(init=False)
@@ -81,7 +73,6 @@ class Review(Comment):
 
     name: str = None
     rating: int = None
-    type: str = "Review"
 
 
 @dataclass(init=False)
@@ -91,4 +82,3 @@ class Rating(Comment):
     rating: int
     content: str = None
     name: str = None  # not used, but the model inherits from Review
-    type: str = "Rating"

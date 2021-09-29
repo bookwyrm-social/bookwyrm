@@ -30,7 +30,6 @@ class Create(Verb):
     to: List[str]
     cc: List[str] = field(default_factory=lambda: [])
     signature: Signature = None
-    type: str = "Create"
 
 
 # pylint: disable=invalid-name
@@ -40,7 +39,6 @@ class Delete(Verb):
 
     to: List[str]
     cc: List[str] = field(default_factory=lambda: [])
-    type: str = "Delete"
 
     def action(self):
         """find and delete the activity object"""
@@ -65,7 +63,6 @@ class Update(Verb):
     """Update activity"""
 
     to: List[str]
-    type: str = "Update"
 
     def action(self):
         """update a model instance from the dataclass"""
@@ -76,8 +73,6 @@ class Update(Verb):
 @dataclass(init=False)
 class Undo(Verb):
     """Undo an activity"""
-
-    type: str = "Undo"
 
     def action(self):
         """find and remove the activity object"""
@@ -109,7 +104,6 @@ class Follow(Verb):
     """Follow activity"""
 
     object: str
-    type: str = "Follow"
 
     def action(self):
         """relationship save"""
@@ -121,7 +115,6 @@ class Block(Verb):
     """Block activity"""
 
     object: str
-    type: str = "Block"
 
     def action(self):
         """relationship save"""
@@ -133,7 +126,6 @@ class Accept(Verb):
     """Accept activity"""
 
     object: Follow
-    type: str = "Accept"
 
     def action(self):
         """find and remove the activity object"""
@@ -146,7 +138,6 @@ class Reject(Verb):
     """Reject activity"""
 
     object: Follow
-    type: str = "Reject"
 
     def action(self):
         """find and remove the activity object"""
@@ -160,7 +151,6 @@ class Add(Verb):
 
     target: ActivityObject
     object: CollectionItem
-    type: str = "Add"
 
     def action(self):
         """figure out the target to assign the item to a collection"""
@@ -174,8 +164,6 @@ class Add(Verb):
 class Remove(Add):
     """Remove activity"""
 
-    type: str = "Remove"
-
     def action(self):
         """find and remove the activity object"""
         obj = self.object.to_model(save=False, allow_create=False)
@@ -188,7 +176,6 @@ class Like(Verb):
     """a user faving an object"""
 
     object: str
-    type: str = "Like"
 
     def action(self):
         """like"""
@@ -204,7 +191,6 @@ class Announce(Verb):
     to: List[str] = field(default_factory=lambda: [])
     cc: List[str] = field(default_factory=lambda: [])
     object: str
-    type: str = "Announce"
 
     def action(self):
         """boost"""

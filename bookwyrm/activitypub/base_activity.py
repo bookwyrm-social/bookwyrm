@@ -26,14 +26,11 @@ class Link:
 
     href: str
     name: str
-    type: str = "Link"
 
 
 @dataclass
 class Mention(Link):
     """a subtype of Link for mentioning an actor"""
-
-    type: str = "Mention"
 
 
 @dataclass

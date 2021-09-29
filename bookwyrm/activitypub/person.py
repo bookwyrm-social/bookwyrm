@@ -13,7 +13,6 @@ class PublicKey(ActivityObject):
 
     owner: str
     publicKeyPem: str
-    type: str = "PublicKey"
 
 
 # pylint: disable=invalid-name
@@ -34,4 +33,3 @@ class Person(ActivityObject):
     bookwyrmUser: bool = False
     manuallyApprovesFollowers: str = False
     discoverable: str = False
-    type: str = "Person"
