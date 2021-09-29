@@ -138,7 +138,7 @@ class EditBook(View):
             if not book.description:
                 book.description = book.parent_work.description
         data = {"book": book, "form": forms.EditionForm(instance=book)}
-        return TemplateResponse(request, "book/edit_book.html", data)
+        return TemplateResponse(request, "book/edit/edit_book.html", data)
 
     def post(self, request, book_id=None):
         """edit a book cool"""
@@ -148,7 +148,7 @@ class EditBook(View):
 
         data = {"book": book, "form": form}
         if not form.is_valid():
-            return TemplateResponse(request, "book/edit_book.html", data)
+            return TemplateResponse(request, "book/edit/edit_book.html", data)
 
         add_author = request.POST.get("add_author")
         # we're adding an author through a free text field
@@ -207,7 +207,7 @@ class EditBook(View):
             except (MultiValueDictKeyError, ValueError):
                 pass
             data["form"].data = formcopy
-            return TemplateResponse(request, "book/edit_book.html", data)
+            return TemplateResponse(request, "book/edit/edit_book.html", data)
 
         remove_authors = request.POST.getlist("remove_authors")
         for author_id in remove_authors:
@@ -238,7 +238,7 @@ class ConfirmEditBook(View):
 
         data = {"book": book, "form": form}
         if not form.is_valid():
-            return TemplateResponse(request, "book/edit_book.html", data)
+            return TemplateResponse(request, "book/edit/edit_book.html", data)
 
         with transaction.atomic():
             # save book

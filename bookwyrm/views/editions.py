@@ -66,7 +66,7 @@ class Editions(View):
                 e.physical_format.lower() for e in editions if e.physical_format
             ),
         }
-        return TemplateResponse(request, "book/editions.html", data)
+        return TemplateResponse(request, "book/editions/editions.html", data)
 
 
 @login_required
