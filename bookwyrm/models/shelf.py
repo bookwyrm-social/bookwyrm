@@ -21,6 +21,7 @@ class Shelf(OrderedCollectionMixin, BookWyrmModel):
 
     name = fields.CharField(max_length=100)
     identifier = models.CharField(max_length=100)
+    description = models.TextField(blank=True, null=True, max_length=500)
     user = fields.ForeignKey(
         "User", on_delete=models.PROTECT, activitypub_field="owner"
     )
@@ -52,6 +53,11 @@ class Shelf(OrderedCollectionMixin, BookWyrmModel):
         """list of books for this shelf, overrides OrderedCollectionMixin"""
         return self.books.order_by("shelfbook")
 
+    @property
+    def deletable(self):
+        """can the shelf be safely deleted?"""
+        return self.editable and not self.shelfbook_set.exists()
+
     def get_remote_id(self):
         """shelf identifier instead of id"""
         base_path = self.user.remote_id
@@ -61,7 +67,7 @@ class Shelf(OrderedCollectionMixin, BookWyrmModel):
     def raise_not_deletable(self, viewer):
         """don't let anyone delete a default shelf"""
         super().raise_not_deletable(viewer)
-        if not self.editable:
+        if not self.deletable:
             raise PermissionDenied()
 
     class Meta:

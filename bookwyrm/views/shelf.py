@@ -85,12 +85,14 @@ class Shelf(View):
             "shelves": shelves,
             "shelf": shelf,
             "books": page,
+            "edit_form": forms.ShelfForm(instance=shelf if shelf_identifier else None),
+            "create_form": forms.ShelfForm(),
             "page_range": paginated.get_elided_page_range(
                 page.number, on_each_side=2, on_ends=1
             ),
         }
 
-        return TemplateResponse(request, "user/shelf/shelf.html", data)
+        return TemplateResponse(request, "shelf/shelf.html", data)
 
     @method_decorator(login_required, name="dispatch")
     # pylint: disable=unused-argument
@@ -128,7 +130,7 @@ def create_shelf(request):
 def delete_shelf(request, shelf_id):
     """user generated shelves"""
     shelf = get_object_or_404(models.Shelf, id=shelf_id)
-    shelf.raise_not_deletable()
+    shelf.raise_not_deletable(request.user)
 
     shelf.delete()
     return redirect("user-shelves", request.user.localname)
