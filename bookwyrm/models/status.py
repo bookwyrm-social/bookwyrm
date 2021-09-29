@@ -3,6 +3,7 @@ from dataclasses import MISSING
 import re
 
 from django.apps import apps
+from django.core.exceptions import PermissionDenied
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.dispatch import receiver
@@ -186,6 +187,13 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
     def to_activity(self, pure=False):  # pylint: disable=arguments-differ
         """json serialized activitypub class"""
         return self.to_activity_dataclass(pure=pure).serialize()
+
+    def raise_not_editable(self, viewer):
+        """certain types of status aren't editable"""
+        # first, the standard raise
+        super().raise_not_editable(viewer)
+        if isinstance(self, (GeneratedNote, ReviewRating)):
+            raise PermissionDenied()
 
 
 class GeneratedNote(Status):

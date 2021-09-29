@@ -1,0 +1,28 @@
+{% load i18n %}
+{% load utilities %}
+{% with 0|uuid as uuid %}
+{% csrf_token %}
+<input type="hidden" name="user" value="{{ request.user.id }}">
+
+{% if editable %}
+<div class="field">
+    <label class="label" for="id_name">{% trans "Name:" %}</label>
+    <input type="text" name="name" value="{{ form.name.value|default:'' }}" maxlength="100" class="input" required="" id="id_name">
+</div>
+{% else %}
+<input type="hidden" name="name" required="true" value="{{ shelf.name }}">
+{% endif %}
+
+<div class="field">
+    <label class="label" for="id_description_{{ uuid }}">{% trans "Description:" %}</label>
+    <textarea name="description" cols="40" rows="5" maxlength="500" class="textarea" id="id_description_{{ uuid }}">{{ form.description.value|default:'' }}</textarea>
+</div>
+<div class="field has-addons">
+    <div class="control">
+        {% include 'snippets/privacy_select.html' with current=privacy %}
+    </div>
+    <div class="control">
+        <button class="button is-primary" type="submit">{% trans "Save" %}</button>
+    </div>
+</div>
+{% endwith %}

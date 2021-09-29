@@ -5,6 +5,7 @@ import pathlib
 
 from PIL import Image
 from django.core.files.base import ContentFile
+from django.http import Http404
 from django.template.response import TemplateResponse
 from django.test import TestCase
 from django.test.client import RequestFactory
@@ -81,9 +82,8 @@ class FeedViews(TestCase):
         request.user = self.local_user
         with patch("bookwyrm.views.feed.is_api_request") as is_api:
             is_api.return_value = False
-            result = view(request, "mouse", 12345)
-
-        self.assertEqual(result.status_code, 404)
+            with self.assertRaises(Http404):
+                view(request, "mouse", 12345)
 
     def test_status_page_not_found_wrong_user(self, *_):
         """there are so many views, this just makes sure it LOADS"""
@@ -102,9 +102,8 @@ class FeedViews(TestCase):
         request.user = self.local_user
         with patch("bookwyrm.views.feed.is_api_request") as is_api:
             is_api.return_value = False
-            result = view(request, "mouse", status.id)
-
-        self.assertEqual(result.status_code, 404)
+            with self.assertRaises(Http404):
+                view(request, "mouse", status.id)
 
     def test_status_page_with_image(self, *_):
         """there are so many views, this just makes sure it LOADS"""

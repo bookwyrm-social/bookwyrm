@@ -1,0 +1,13 @@
+{% extends 'components/inline_form.html' %}
+{% load i18n %}
+
+{% block header %}
+{% trans "Create Shelf" %}
+{% endblock %}
+
+{% block form %}
+<form name="create-shelf" action="{% url 'shelf-create' %}" method="post">
+    {% include "shelf/form.html" with editable=shelf.editable form=create_form %}
+</form>
+{% endblock %}
+

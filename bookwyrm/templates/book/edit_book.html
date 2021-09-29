@@ -236,14 +236,12 @@
                             <label class="label" for="id_cover">{% trans "Upload cover:" %}</label>
                             {{ form.cover }}
                         </div>
-                        {% if book %}
                         <div class="field">
                             <label class="label" for="id_cover_url">
                                 {% trans "Load cover from url:" %}
                             </label>
-                            <input class="input" name="cover-url" id="id_cover_url">
+                            <input class="input" name="cover-url" id="id_cover_url" type="url" value="{{ cover_url|default:'' }}">
                         </div>
-                        {% endif %}
                         {% for error in form.cover.errors %}
                         <p class="help is-danger">{{ error | escape }}</p>
                         {% endfor %}

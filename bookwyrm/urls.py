@@ -43,6 +43,7 @@ urlpatterns = [
     re_path(r"^nodeinfo/2\.0/?$", views.nodeinfo),
     re_path(r"^api/v1/instance/?$", views.instance_info),
     re_path(r"^api/v1/instance/peers/?$", views.peers),
+    re_path(r"^opensearch.xml$", views.opensearch, name="opensearch"),
     # polling updates
     re_path("^api/updates/notifications/?$", views.get_notification_count),
     re_path("^api/updates/stream/(?P<stream>[a-z]+)/?$", views.get_unread_status_count),
@@ -56,7 +57,7 @@ urlpatterns = [
         views.ConfirmEmailCode.as_view(),
         name="confirm-email-code",
     ),
-    re_path(r"resend-link", views.resend_link, name="resend-link"),
+    re_path(r"^resend-link/?$", views.resend_link, name="resend-link"),
     re_path(r"^logout/?$", views.Logout.as_view(), name="logout"),
     re_path(
         r"^password-reset/?$",
@@ -276,7 +277,7 @@ urlpatterns = [
     # User books
     re_path(rf"{USER_PATH}/books/?$", views.Shelf.as_view(), name="user-shelves"),
     re_path(
-        rf"^{USER_PATH}/(helf|books)/(?P<shelf_identifier>[\w-]+)(.json)?/?$",
+        rf"^{USER_PATH}/(shelf|books)/(?P<shelf_identifier>[\w-]+)(.json)?/?$",
         views.Shelf.as_view(),
         name="shelf",
     ),
@@ -369,6 +370,11 @@ urlpatterns = [
     re_path(r"^create-readthrough/?$", views.create_readthrough),
     re_path(r"^delete-progressupdate/?$", views.delete_progressupdate),
     # shelve actions
+    re_path(
+        r"^reading-status/update/(?P<book_id>\d+)/?$",
+        views.update_progress,
+        name="reading-status-update",
+    ),
     re_path(
         r"^reading-status/(?P<status>want|start|finish)/(?P<book_id>\d+)/?$",
         views.ReadingStatus.as_view(),

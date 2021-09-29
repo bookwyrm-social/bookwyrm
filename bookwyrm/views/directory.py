@@ -25,10 +25,10 @@ class Directory(View):
 
         users = suggested_users.get_annotated_users(request.user, **filters)
         sort = request.GET.get("sort")
-        if sort == "recent":
-            users = users.order_by("-last_active_date")
-        else:
+        if sort == "suggested":
             users = users.order_by("-mutuals", "-last_active_date")
+        else:
+            users = users.order_by("-last_active_date")
 
         paginated = Paginator(users, 12)
 

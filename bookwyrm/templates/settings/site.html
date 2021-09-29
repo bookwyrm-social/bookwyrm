@@ -5,36 +5,46 @@
 
 {% block header %}{% trans "Site Settings" %}{% endblock %}
 
-{% block panel %}
+{% block site-subtabs %}
+<ul class="menu-list">
+    <li><a href="#instance-info">{% trans "Instance Info" %}</a></li>
+    <li><a href="#images">{% trans "Images" %}</a></li>
+    <li><a href="#footer">{% trans "Footer Content" %}</a></li>
+    <li><a href="#registration">{% trans "Registration" %}</a></li>
+</ul>
+{% endblock %}
 
+{% block panel %}
 <form action="{% url 'settings-site' %}" method="POST" class="content" enctype="multipart/form-data">
     {% csrf_token %}
     <section class="block" id="instance_info">
         <h2 class="title is-4">{% trans "Instance Info" %}</h2>
-        <div class="field">
-            <label class="label" for="id_name">{% trans "Instance Name:" %}</label>
-            {{ site_form.name }}
-        </div>
-        <div class="field">
-            <label class="label" for="id_instance_tagline">{% trans "Tagline:" %}</label>
-            {{ site_form.instance_tagline }}
-        </div>
-        <div class="field">
-            <label class="label" for="id_instance_description">{% trans "Instance description:" %}</label>
-            {{ site_form.instance_description }}
-        </div>
-        <div class="field">
-            <label class="label mb-0" for="id_short_description">{% trans "Short description:" %}</label>
-            <p class="help">{% trans "Used when the instance is previewed on joinbookwyrm.com. Does not support html or markdown." %}</p>
-            {{ site_form.instance_short_description }}
-        </div>
-        <div class="field">
-            <label class="label" for="id_code_of_conduct">{% trans "Code of conduct:" %}</label>
-            {{ site_form.code_of_conduct }}
-        </div>
-        <div class="field">
-            <label class="label" for="id_privacy_policy">{% trans "Privacy Policy:" %}</label>
-            {{ site_form.privacy_policy }}
+        <div class="box">
+            <div class="field">
+                <label class="label" for="id_name">{% trans "Instance Name:" %}</label>
+                {{ site_form.name }}
+            </div>
+            <div class="field">
+                <label class="label" for="id_instance_tagline">{% trans "Tagline:" %}</label>
+                {{ site_form.instance_tagline }}
+            </div>
+            <div class="field">
+                <label class="label" for="id_instance_description">{% trans "Instance description:" %}</label>
+                {{ site_form.instance_description }}
+            </div>
+            <div class="field">
+                <label class="label mb-0" for="id_short_description">{% trans "Short description:" %}</label>
+                <p class="help">{% trans "Used when the instance is previewed on joinbookwyrm.com. Does not support html or markdown." %}</p>
+                {{ site_form.instance_short_description }}
+            </div>
+            <div class="field">
+                <label class="label" for="id_code_of_conduct">{% trans "Code of conduct:" %}</label>
+                {{ site_form.code_of_conduct }}
+            </div>
+            <div class="field">
+                <label class="label" for="id_privacy_policy">{% trans "Privacy Policy:" %}</label>
+                {{ site_form.privacy_policy }}
+            </div>
         </div>
     </section>
 
@@ -42,16 +52,16 @@
 
     <section class="block" id="images">
         <h2 class="title is-4">{% trans "Images" %}</h2>
-        <div class="columns">
-            <div class="column">
+        <div class="box is-flex">
+            <div>
                 <label class="label" for="id_logo">{% trans "Logo:" %}</label>
                 {{ site_form.logo }}
             </div>
-            <div class="column">
+            <div>
                 <label class="label" for="id_logo_small">{% trans "Logo small:" %}</label>
                 {{ site_form.logo_small }}
             </div>
-            <div class="column">
+            <div>
                 <label class="label" for="id_favicon">{% trans "Favicon:" %}</label>
                 {{ site_form.favicon }}
             </div>
@@ -62,21 +72,23 @@
 
     <section class="block" id="footer">
         <h2 class="title is-4">{% trans "Footer Content" %}</h2>
-        <div class="field">
-            <label class="label" for="id_support_link">{% trans "Support link:" %}</label>
-            <input type="text" name="support_link" maxlength="255" class="input" id="id_support_link" placeholder="https://www.patreon.com/bookwyrm"{% if site.support_link %} value="{{ site.support_link  }}"{% endif %}>
-        </div>
-        <div class="field">
-            <label class="label" for="id_support_title">{% trans "Support title:" %}</label>
-            <input type="text" name="support_title" maxlength="100" class="input" id="id_support_title" placeholder="Patreon"{% if site.support_title %} value="{{ site.support_title }}"{% endif %}>
-        </div>
-        <div class="field">
-            <label class="label" for="id_admin_email">{% trans "Admin email:" %}</label>
-            {{ site_form.admin_email }}
-        </div>
-        <div class="field">
-            <label class="label" for="id_footer_item">{% trans "Additional info:" %}</label>
-            {{ site_form.footer_item }}
+        <div class="box">
+            <div class="field">
+                <label class="label" for="id_support_link">{% trans "Support link:" %}</label>
+                <input type="text" name="support_link" maxlength="255" class="input" id="id_support_link" placeholder="https://www.patreon.com/bookwyrm"{% if site.support_link %} value="{{ site.support_link  }}"{% endif %}>
+            </div>
+            <div class="field">
+                <label class="label" for="id_support_title">{% trans "Support title:" %}</label>
+                <input type="text" name="support_title" maxlength="100" class="input" id="id_support_title" placeholder="Patreon"{% if site.support_title %} value="{{ site.support_title }}"{% endif %}>
+            </div>
+            <div class="field">
+                <label class="label" for="id_admin_email">{% trans "Admin email:" %}</label>
+                {{ site_form.admin_email }}
+            </div>
+            <div class="field">
+                <label class="label" for="id_footer_item">{% trans "Additional info:" %}</label>
+                {{ site_form.footer_item }}
+            </div>
         </div>
     </section>
 
@@ -84,35 +96,37 @@
 
     <section class="block" id="registration">
         <h2 class="title is-4">{% trans "Registration" %}</h2>
-        <div class="field">
-            <label class="label" for="id_allow_registration">
-                {{ site_form.allow_registration }}
-                {% trans "Allow registration" %}
-            </label>
-        </div>
-        <div class="field">
-            <label class="label" for="id_allow_invite_requests">
-                {{ site_form.allow_invite_requests }}
-                {% trans "Allow invite requests" %}
-            </label>
-        </div>
-        <div class="field">
-            <label class="label mb-0" for="id_allow_invite_requests">
-                {{ site_form.require_confirm_email }}
-                {% trans "Require users to confirm email address" %}
-            </label>
-            <p class="help">{% trans "(Recommended if registration is open)" %}</p>
-        </div>
-        <div class="field">
-            <label class="label" for="id_registration_closed_text">{% trans "Registration closed text:" %}</label>
-            {{ site_form.registration_closed_text }}
-        </div>
-        <div class="field">
-            <label class="label" for="id_invite_request_text">{% trans "Invite request text:" %}</label>
-            {{ site_form.invite_request_text }}
-            {% for error in site_form.invite_request_text.errors %}
-            <p class="help is-danger">{{ error|escape }}</p>
-            {% endfor %}
+        <div class="box">
+            <div class="field">
+                <label class="label" for="id_allow_registration">
+                    {{ site_form.allow_registration }}
+                    {% trans "Allow registration" %}
+                </label>
+            </div>
+            <div class="field">
+                <label class="label" for="id_allow_invite_requests">
+                    {{ site_form.allow_invite_requests }}
+                    {% trans "Allow invite requests" %}
+                </label>
+            </div>
+            <div class="field">
+                <label class="label mb-0" for="id_require_confirm_email">
+                    {{ site_form.require_confirm_email }}
+                    {% trans "Require users to confirm email address" %}
+                </label>
+                <p class="help">{% trans "(Recommended if registration is open)" %}</p>
+            </div>
+            <div class="field">
+                <label class="label" for="id_registration_closed_text">{% trans "Registration closed text:" %}</label>
+                {{ site_form.registration_closed_text }}
+            </div>
+            <div class="field">
+                <label class="label" for="id_invite_request_text">{% trans "Invite request text:" %}</label>
+                {{ site_form.invite_request_text }}
+                {% for error in site_form.invite_request_text.errors %}
+                <p class="help is-danger">{{ error|escape }}</p>
+                {% endfor %}
+            </div>
         </div>
     </section>
 

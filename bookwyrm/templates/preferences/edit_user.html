@@ -7,76 +7,114 @@
 {% trans "Edit Profile" %}
 {% endblock %}
 
+{% block profile-tabs %}
+<ul class="menu-list">
+    <li><a href="#profile">{% trans "Profile" %}</a></li>
+    <li><a href="#display-preferences">{% trans "Display preferences" %}</a></li>
+    <li><a href="#privacy">{% trans "Privacy" %}</a></li>
+</ul>
+{% endblock %}
+
 {% block panel %}
 {% if form.non_field_errors %}
 <p class="notification is-danger">{{ form.non_field_errors }}</p>
 {% endif %}
 <form name="edit-profile" action="{% url 'prefs-profile' %}" method="post" enctype="multipart/form-data">
     {% csrf_token %}
-    <div class="block">
-        <label class="label" for="id_avatar">{% trans "Avatar:" %}</label>
-        {{ form.avatar }}
-        {% for error in form.avatar.errors %}
-        <p class="help is-danger">{{ error | escape }}</p>
-        {% endfor %}
-    </div>
-    <div class="block">
-        <label class="label" for="id_name">{% trans "Display name:" %}</label>
-        {{ form.name }}
-        {% for error in form.name.errors %}
-        <p class="help is-danger">{{ error | escape }}</p>
-        {% endfor %}
-    </div>
-    <div class="block">
-        <label class="label" for="id_summary">{% trans "Summary:" %}</label>
-        {{ form.summary }}
-        {% for error in form.summary.errors %}
-        <p class="help is-danger">{{ error | escape }}</p>
-        {% endfor %}
-    </div>
-    <div class="block">
-        <label class="label" for="id_email">{% trans "Email address:" %}</label>
-        {{ form.email }}
-        {% for error in form.email.errors %}
-        <p class="help is-danger">{{ error | escape }}</p>
-        {% endfor %}
-    </div>
-    <div class="block">
-        <label class="checkbox label" for="id_show_goal">
-            {% trans "Show reading goal prompt in feed:" %}
-            {{ form.show_goal }}
-        </label>
-        <label class="checkbox label" for="id_show_goal">
-            {% trans "Show suggested users:" %}
-            {{ form.show_suggested_users }}
-        </label>
-        <label class="checkbox label" for="id_discoverable">
-            {% trans "Show this account in suggested users:" %}
-            {{ form.discoverable }}
-        </label>
-        {% url 'directory' as path %}
-        <p class="help">{% blocktrans %}Your account will show up in the <a href="{{ path }}">directory</a>, and may be recommended to other BookWyrm users.{% endblocktrans %}</p>
-    </div>
-    <div class="block">
-        <label class="checkbox label" for="id_manually_approves_followers">
-            {% trans "Manually approve followers:" %}
-            {{ form.manually_approves_followers }}
-        </label>
-    </div>
-    <div class="block">
-        <label class="label" for="id_default_post_privacy">
-            {% trans "Default post privacy:" %}
-        </label>
-        <div class="select">
-            {{ form.default_post_privacy }}
+    <section class="block" id="profile">
+        <h2 class="title is-4">{% trans "Profile" %}</h2>
+        <div class="box">
+            <label class="label" for="id_avatar">{% trans "Avatar:" %}</label>
+            <div class="field columns is-mobile">
+                {% if request.user.avatar %}
+                <div class="column is-narrow">
+                    {% include 'snippets/avatar.html' with user=request.user large=True %}
+                </div>
+                {% endif %}
+                <div class="column">
+                    {{ form.avatar }}
+                    {% for error in form.avatar.errors %}
+                    <p class="help is-danger">{{ error | escape }}</p>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="field">
+                <label class="label" for="id_name">{% trans "Display name:" %}</label>
+                {{ form.name }}
+                {% for error in form.name.errors %}
+                <p class="help is-danger">{{ error | escape }}</p>
+                {% endfor %}
+            </div>
+            <div class="field">
+                <label class="label" for="id_summary">{% trans "Summary:" %}</label>
+                {{ form.summary }}
+                {% for error in form.summary.errors %}
+                <p class="help is-danger">{{ error | escape }}</p>
+                {% endfor %}
+            </div>
+            <div class="field">
+                <label class="label" for="id_email">{% trans "Email address:" %}</label>
+                {{ form.email }}
+                {% for error in form.email.errors %}
+                <p class="help is-danger">{{ error | escape }}</p>
+                {% endfor %}
+            </div>
         </div>
-    </div>
-    <div class="block">
-        <label class="label" for="id_preferred_timezone">{% trans "Preferred Timezone: " %}</label>
-        <div class="select">
-            {{ form.preferred_timezone }}
+    </section>
+
+    <hr aria-hidden="true">
+
+    <section class="block" id="display-preferences">
+        <h2 class="title is-4">{% trans "Display preferences" %}</h2>
+        <div class="box">
+            <div class="field">
+                <label class="checkbox label" for="id_show_goal">
+                    {% trans "Show reading goal prompt in feed:" %}
+                    {{ form.show_goal }}
+                </label>
+                <label class="checkbox label" for="id_show_suggested_users">
+                    {% trans "Show suggested users:" %}
+                    {{ form.show_suggested_users }}
+                </label>
+                <label class="checkbox label" for="id_discoverable">
+                    {% trans "Show this account in suggested users:" %}
+                    {{ form.discoverable }}
+                </label>
+                {% url 'directory' as path %}
+                <p class="help">
+                    {% blocktrans %}Your account will show up in the <a href="{{ path }}">directory</a>, and may be recommended to other BookWyrm users.{% endblocktrans %}
+                </p>
+            </div>
+            <div class="field">
+                <label class="label" for="id_preferred_timezone">{% trans "Preferred Timezone: " %}</label>
+                <div class="select">
+                    {{ form.preferred_timezone }}
+                </div>
+            </div>
         </div>
-    </div>
-    <div class="block"><button class="button is-primary" type="submit">{% trans "Save" %}</button></div>
+    </section>
+
+    <hr aria-hidden="true">
+
+    <section class="block" id="privacy">
+        <h2 class="title is-4">{% trans "Privacy" %}</h2>
+        <div class="box">
+            <div class="field">
+                <label class="checkbox label" for="id_manually_approves_followers">
+                    {% trans "Manually approve followers:" %}
+                    {{ form.manually_approves_followers }}
+                </label>
+            </div>
+            <div class="field">
+                <label class="label" for="id_default_post_privacy">
+                    {% trans "Default post privacy:" %}
+                </label>
+                <div class="select">
+                    {{ form.default_post_privacy }}
+                </div>
+            </div>
+        </div>
+    </section>
+    <div class="field"><button class="button is-primary" type="submit">{% trans "Save" %}</button></div>
 </form>
 {% endblock %}

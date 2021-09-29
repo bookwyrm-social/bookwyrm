@@ -31,8 +31,8 @@ class Goal(View):
         if not goal and year != timezone.now().year:
             return redirect("user-goal", username, current_year)
 
-        if goal and not goal.visible_to_user(request.user):
-            return HttpResponseNotFound()
+        if goal:
+            goal.raise_visible_to_user(request.user)
 
         data = {
             "goal_form": forms.GoalForm(instance=goal),
@@ -41,16 +41,16 @@ class Goal(View):
             "year": year,
             "is_self": request.user == user,
         }
-        return TemplateResponse(request, "goal.html", data)
+        return TemplateResponse(request, "user/goal.html", data)
 
     def post(self, request, username, year):
         """update or create an annual goal"""
-        user = get_user_from_username(request.user, username)
-        if user != request.user:
-            return HttpResponseNotFound()
-
         year = int(year)
-        goal = models.AnnualGoal.objects.filter(year=year, user=request.user).first()
+        user = get_user_from_username(request.user, username)
+        goal = models.AnnualGoal.objects.filter(year=year, user=user).first()
+        if goal:
+            goal.raise_not_editable(request.user)
+
         form = forms.GoalForm(request.POST, instance=goal)
         if not form.is_valid():
             data = {
@@ -58,15 +58,15 @@ class Goal(View):
                 "goal": goal,
                 "year": year,
             }
-            return TemplateResponse(request, "goal.html", data)
+            return TemplateResponse(request, "user/goal.html", data)
         goal = form.save()
 
         if request.POST.get("post-status"):
-            # create status, if appropraite
+            # create status, if appropriate
             template = get_template("snippets/generated_status/goal.html")
             create_generated_note(
                 request.user,
-                template.render({"goal": goal, "user": request.user}).strip(),
+                template.render({"goal": goal, "user": user}).strip(),
                 privacy=goal.privacy,
             )
 
@@ -78,5 +78,5 @@ class Goal(View):
 def hide_goal(request):
     """don't keep bugging people to set a goal"""
     request.user.show_goal = False
-    request.user.save(broadcast=False)
+    request.user.save(broadcast=False, update_fields=["show_goal"])
     return redirect(request.headers.get("Referer", "/"))

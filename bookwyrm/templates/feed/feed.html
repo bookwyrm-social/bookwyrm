@@ -25,7 +25,7 @@
 {% if request.user.show_goal and not goal and tab.key == 'home' %}
 {% now 'Y' as year %}
 <section class="block">
-    {% include 'snippets/goal_card.html' with year=year %}
+    {% include 'feed/goal_card.html' with year=year %}
     <hr>
 </section>
 {% endif %}

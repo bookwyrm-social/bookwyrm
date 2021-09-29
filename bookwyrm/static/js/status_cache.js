@@ -141,8 +141,10 @@ let StatusCache = new class {
             modal.getElementsByClassName("modal-close")[0].click();
 
             // Update shelve buttons
-            document.querySelectorAll("[data-shelve-button-book='" + form.book.value +"']")
-                .forEach(button => this.cycleShelveButtons(button, form.reading_status.value));
+            if (form.reading_status) {
+                document.querySelectorAll("[data-shelve-button-book='" + form.book.value +"']")
+                    .forEach(button => this.cycleShelveButtons(button, form.reading_status.value));
+            }
 
             return;
         }
