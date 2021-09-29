@@ -27,7 +27,7 @@ def reverse(app_registry, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bookwyrm', '0100_shelf_description'),
+        ("bookwyrm", "0100_shelf_description"),
     ]
 
     operations = [

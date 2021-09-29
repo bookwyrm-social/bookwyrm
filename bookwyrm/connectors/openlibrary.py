@@ -43,8 +43,16 @@ class Connector(AbstractConnector):
             ),
             Mapping("publishedDate", remote_field="publish_date"),
             Mapping("pages", remote_field="number_of_pages"),
-            Mapping("physicalFormat", remote_field="physical_format", formatter=infer_physical_format),
-            Mapping("physicalFormatDetail", remote_field="physical_format", formatter=unique_physical_format),
+            Mapping(
+                "physicalFormat",
+                remote_field="physical_format",
+                formatter=infer_physical_format,
+            ),
+            Mapping(
+                "physicalFormatDetail",
+                remote_field="physical_format",
+                formatter=unique_physical_format,
+            ),
             Mapping("publishers"),
         ]
 

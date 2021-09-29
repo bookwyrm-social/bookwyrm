@@ -314,8 +314,9 @@ class Mapping:
         except:  # pylint: disable=bare-except
             return None
 
+
 def infer_physical_format(format_text):
-    """ try to figure out what the standardized format is from the free value """
+    """try to figure out what the standardized format is from the free value"""
     format_text = format_text.lower()
     if format_text in format_mappings:
         # try a direct match
@@ -327,8 +328,9 @@ def infer_physical_format(format_text):
             return None
         return matches[0]
 
+
 def unique_physical_format(format_text):
-    """ only store the format if it isn't diretly in the format mappings"""
+    """only store the format if it isn't diretly in the format mappings"""
     format_text = format_text.lower()
     if format_text in format_mappings:
         # try a direct match, so saving this would be redundant
