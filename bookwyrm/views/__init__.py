@@ -59,7 +59,7 @@ from .search import Search
 from .shelf import Shelf
 from .shelf import create_shelf, delete_shelf
 from .shelf import shelve, unshelve
-from .status import CreateStatus, DeleteStatus, DeleteAndRedraft
+from .status import CreateStatus, DeleteStatus, DeleteAndRedraft, update_progress
 from .updates import get_notification_count, get_unread_status_count
 from .user import User, Followers, Following, hide_suggestions
 from .wellknown import *

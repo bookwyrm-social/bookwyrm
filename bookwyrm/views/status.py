@@ -10,6 +10,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
 from django.views import View
+from django.views.decorators.http import require_POST
 
 from markdown import markdown
 from bookwyrm import forms, models
@@ -133,6 +134,15 @@ class DeleteAndRedraft(View):
         # perform deletion
         status.delete()
         return TemplateResponse(request, "compose.html", data)
+
+
+@login_required
+@require_POST
+def update_progress(request, book_id):
+    """Either it's just a progress update, or it's a comment with a progress update"""
+    if request.POST.get("post-status"):
+        return CreateStatus.as_view()(request, "comment")
+    return edit_readthrough(request)
 
 
 def find_mentions(content):

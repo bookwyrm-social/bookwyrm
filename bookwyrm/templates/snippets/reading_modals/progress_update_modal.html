@@ -6,8 +6,9 @@
 {% endblock %}
 
 {% block modal-form-open %}
-<form action="{% url 'edit-readthrough' %}" method="POST" class="submit-status">
+<form name="reading-progress" action="{% url 'reading-status-update' book.id %}" method="POST" class="submit-status">
 {% csrf_token %}
+<input type="hidden" name="id" value="{{ readthrough.id }}">
 {% endblock %}
 
 {% block reading-dates %}
