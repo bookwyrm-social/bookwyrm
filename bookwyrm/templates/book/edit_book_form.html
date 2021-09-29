@@ -1,0 +1,249 @@
+{% load i18n %}
+
+{% if form.non_field_errors %}
+<div class="block">
+    <p class="notification is-danger">{{ form.non_field_errors }}</p>
+</div>
+{% endif %}
+
+{% csrf_token %}
+
+<input type="hidden" name="last_edited_by" value="{{ request.user.id }}">
+<div class="columns">
+    <div class="column is-half">
+        <section class="block">
+            <h2 class="title is-4">{% trans "Metadata" %}</h2>
+            <div class="box">
+                <div class="field">
+                    <label class="label" for="id_title">{% trans "Title:" %}</label>
+                    <input type="text" name="title" value="{{ form.title.value|default:'' }}" maxlength="255" class="input" required="" id="id_title">
+                    {% for error in form.title.errors %}
+                    <p class="help is-danger">{{ error | escape }}</p>
+                    {% endfor %}
+                </div>
+
+                <div class="field">
+                    <label class="label" for="id_subtitle">{% trans "Subtitle:" %}</label>
+                    <input type="text" name="subtitle" value="{{ form.subtitle.value|default:'' }}" maxlength="255" class="input" id="id_subtitle">
+                    {% for error in form.subtitle.errors %}
+                    <p class="help is-danger">{{ error | escape }}</p>
+                    {% endfor %}
+                </div>
+
+                <div class="field">
+                    <label class="label" for="id_description">{% trans "Description:" %}</label>
+                    {{ form.description }}
+                    {% for error in form.description.errors %}
+                    <p class="help is-danger">{{ error | escape }}</p>
+                    {% endfor %}
+                </div>
+
+                <div class="columns">
+                    <div class="column is-two-thirds">
+                        <div class="field">
+                            <label class="label" for="id_series">{% trans "Series:" %}</label>
+                            <input type="text" class="input" name="series" id="id_series" value="{{ form.series.value|default:'' }}">
+                            {% for error in form.series.errors %}
+                            <p class="help is-danger">{{ error | escape }}</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="column is-one-third">
+                        <div class="field">
+                            <label class="label" for="id_series_number">{% trans "Series number:" %}</label>
+                            {{ form.series_number }}
+                            {% for error in form.series_number.errors %}
+                            <p class="help is-danger">{{ error | escape }}</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label class="label" for="id_languages">{% trans "Languages:" %}</label>
+                    {{ form.languages }}
+                    <span class="help">{% trans "Separate multiple values with commas." %}</span>
+                    {% for error in form.languages.errors %}
+                    <p class="help is-danger">{{ error | escape }}</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+
+        <section class="block">
+            <h2 class="title is-4">{% trans "Publication" %}</h2>
+            <div class="box">
+                <div class="field">
+                    <label class="label" for="id_publishers">{% trans "Publisher:" %}</label>
+                    {{ form.publishers }}
+                    <span class="help">{% trans "Separate multiple values with commas." %}</span>
+                    {% for error in form.publishers.errors %}
+                    <p class="help is-danger">{{ error | escape }}</p>
+                    {% endfor %}
+                </div>
+
+                <div class="field">
+                    <label class="label" for="id_first_published_date">{% trans "First published date:" %}</label>
+                    <input type="date" name="first_published_date" class="input" id="id_first_published_date"{% if form.first_published_date.value %} value="{{ form.first_published_date.value|date:'Y-m-d' }}"{% endif %}>
+                    {% for error in form.first_published_date.errors %}
+                    <p class="help is-danger">{{ error | escape }}</p>
+                    {% endfor %}
+                </div>
+
+                <div class="field">
+                    <label class="label" for="id_published_date">{% trans "Published date:" %}</label>
+                    <input type="date" name="published_date" class="input" id="id_published_date"{% if form.published_date.value %} value="{{ form.published_date.value|date:'Y-m-d'}}"{% endif %}>
+                    {% for error in form.published_date.errors %}
+                    <p class="help is-danger">{{ error | escape }}</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+
+        <section class="block">
+            <h2 class="title is-4">{% trans "Authors" %}</h2>
+            <div class="box">
+                {% if book.authors.exists %}
+                <fieldset>
+                    {% for author in book.authors.all %}
+                    <div class="is-flex is-justify-content-space-between">
+                        <label class="label mb-2">
+                            <input type="checkbox" name="remove_authors" value="{{ author.id }}" {% if author.id|stringformat:"i" in remove_authors %}checked{% endif %}>
+                            {% blocktrans with name=author.name %}Remove {{ name }}{% endblocktrans %}
+                        </label>
+                        <p class="help">
+                            <a href="{{ author.local_path }}">{% blocktrans with name=author.name %}Author page for {{ name }}{% endblocktrans %}</a>
+                        </p>
+                    </div>
+                    {% endfor %}
+                </fieldset>
+                {% endif %}
+                <div class="field">
+                    <label class="label" for="id_add_author">{% trans "Add Authors:" %}</label>
+                    <input class="input" type="text" name="add_author" id="id_add_author" placeholder="{% trans 'John Doe, Jane Smith' %}" value="{{ add_author }}" {% if confirm_mode %}readonly{% endif %}>
+                    <span class="help">{% trans "Separate multiple values with commas." %}</span>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div class="column is-half">
+        <section class="block">
+            <h2 class="title is-4">{% trans "Cover" %}</h2>
+            <div class="box">
+                <div class="columns">
+                    {% if book.cover %}
+                    <div class="column is-3 is-cover">
+                        {% include 'snippets/book_cover.html' with book=book cover_class='is-h-xl-mobile is-w-auto-tablet' size_mobile='xlarge' size='large' %}
+                    </div>
+                    {% endif %}
+
+                    <div class="column">
+                        <div class="field">
+                            <label class="label" for="id_cover">{% trans "Upload cover:" %}</label>
+                            {{ form.cover }}
+                        </div>
+                        <div class="field">
+                            <label class="label" for="id_cover_url">
+                                {% trans "Load cover from url:" %}
+                            </label>
+                            <input class="input" name="cover-url" id="id_cover_url" type="url" value="{{ cover_url|default:'' }}">
+                        </div>
+                        {% for error in form.cover.errors %}
+                        <p class="help is-danger">{{ error | escape }}</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="block">
+            <h2 class="title is-4">{% trans "Physical Properties" %}</h2>
+            <div class="box">
+                <div class="columns">
+                    <div class="column is-one-third">
+                        <div class="field">
+                            <label class="label" for="id_physical_format">{% trans "Format:" %}</label>
+                            <div class="select">
+                                {{ form.physical_format }}
+                            </div>
+                            {% for error in form.physical_format.errors %}
+                            <p class="help is-danger">{{ error | escape }}</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="column">
+                        <div class="field">
+                            <label class="label" for="id_physical_format_detail">{% trans "Format details:" %}</label>
+                            {{ form.physical_format_detail }}
+                            {% for error in form.physical_format_detail.errors %}
+                            <p class="help is-danger">{{ error | escape }}</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label class="label" for="id_pages">{% trans "Pages:" %}</label>
+                    {{ form.pages }}
+                    {% for error in form.pages.errors %}
+                    <p class="help is-danger">{{ error | escape }}</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+
+        <section class="block">
+            <h2 class="title is-4">{% trans "Book Identifiers" %}</h2>
+            <div class="box">
+                <div class="field">
+                    <label class="label" for="id_isbn_13">{% trans "ISBN 13:" %}</label>
+                    {{ form.isbn_13 }}
+                    {% for error in form.isbn_13.errors %}
+                    <p class="help is-danger">{{ error | escape }}</p>
+                    {% endfor %}
+                </div>
+
+                <div class="field">
+                    <label class="label" for="id_isbn_10">{% trans "ISBN 10:" %}</label>
+                    {{ form.isbn_10 }}
+                    {% for error in form.isbn_10.errors %}
+                    <p class="help is-danger">{{ error | escape }}</p>
+                    {% endfor %}
+                </div>
+
+                <div class="field">
+                    <label class="label" for="id_openlibrary_key">{% trans "Openlibrary ID:" %}</label>
+                    {{ form.openlibrary_key }}
+                    {% for error in form.openlibrary_key.errors %}
+                    <p class="help is-danger">{{ error | escape }}</p>
+                    {% endfor %}
+                </div>
+
+                <div class="field">
+                    <label class="label" for="id_inventaire_id">{% trans "Inventaire ID:" %}</label>
+                    {{ form.inventaire_id }}
+                    {% for error in form.inventaire_id.errors %}
+                    <p class="help is-danger">{{ error | escape }}</p>
+                    {% endfor %}
+                </div>
+
+                <div class="field">
+                    <label class="label" for="id_oclc_number">{% trans "OCLC Number:" %}</label>
+                    {{ form.oclc_number }}
+                    {% for error in form.oclc_number.errors %}
+                    <p class="help is-danger">{{ error | escape }}</p>
+                    {% endfor %}
+                </div>
+
+                <div class="field">
+                    <label class="label" for="id_asin">{% trans "ASIN:" %}</label>
+                    {{ form.asin }}
+                    {% for error in form.ASIN.errors %}
+                    <p class="help is-danger">{{ error | escape }}</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
