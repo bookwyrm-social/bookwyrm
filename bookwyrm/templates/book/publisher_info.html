@@ -4,13 +4,15 @@
 {% load humanize %}
 
 <p>
-    {% with format=book.physical_format pages=book.pages %}
+    {% firstof book.physical_format_detail book.physical_format as format %}
+    {% firstof book.physical_format book.physical_format_detail as format_property %}
+    {% with pages=book.pages %}
         {% if format %}
             {% comment %}
                 @todo The bookFormat property is limited to a list of values whereas the book edition is free text.
                 @see https://schema.org/bookFormat
             {% endcomment %}
-            <meta itemprop="bookFormat" content="{{ format }}">
+            <meta itemprop="bookFormat" content="{{ format_property }}">
         {% endif %}
 
         {% if pages %}
