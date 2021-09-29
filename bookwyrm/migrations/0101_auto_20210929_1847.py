@@ -75,7 +75,7 @@ def reverse(app_registry, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("bookwyrm", "0076_preview_images"),
+        ('bookwyrm', '0100_shelf_description'),
     ]
 
     operations = [
@@ -90,9 +90,9 @@ class Migration(migrations.Migration):
             field=bookwyrm.models.fields.CharField(
                 blank=True,
                 choices=[
-                    ("AudiobookFormat", "Audiobookformat"),
-                    ("EBook", "Ebook"),
-                    ("GraphicNovel", "Graphicnovel"),
+                    ("AudiobookFormat", "Audiobook"),
+                    ("EBook", "eBook"),
+                    ("GraphicNovel", "Graphic novel"),
                     ("Hardcover", "Hardcover"),
                     ("Paperback", "Paperback"),
                 ],
