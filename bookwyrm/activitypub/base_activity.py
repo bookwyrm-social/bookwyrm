@@ -77,6 +77,8 @@ class ActivityObject:
         """this lets you pass in an object with fields that aren't in the
         dataclass, which it ignores. Any field in the dataclass is required or
         has a default value"""
+        # set the type field to the class name if it isn't provided
+        kwargs["type"] = kwargs.get("type") or self.__class__.__name__
         for field in fields(self):
             try:
                 value = kwargs[field.name]
