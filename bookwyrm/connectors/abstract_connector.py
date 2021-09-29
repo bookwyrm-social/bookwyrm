@@ -9,6 +9,7 @@ from requests.exceptions import RequestException
 
 from bookwyrm import activitypub, models, settings
 from .connector_manager import load_more_data, ConnectorException
+from .format_mappings import format_mappings
 
 
 logger = logging.getLogger(__name__)
@@ -312,3 +313,16 @@ class Mapping:
             return self.formatter(value)
         except:  # pylint: disable=bare-except
             return None
+
+def infer_physical_format(format_text):
+    """ try to figure out what the standardized format is from the free value """
+    format_text = format_text.lower()
+    if format_text in format_mappings:
+        # try a direct match
+        return format_mappings[format_text]
+    else:
+        # failing that, try substring
+        matches = [v for k, v in format_mappings.items() if k in format_text]
+        if not matches:
+            return None
+        return matches[0]

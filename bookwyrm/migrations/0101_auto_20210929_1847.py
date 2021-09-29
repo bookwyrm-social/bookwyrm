@@ -2,6 +2,7 @@
 
 from django.db import migrations
 import bookwyrm
+from bookwyrm.connectors.abstract_connector import infer_physical_format
 
 
 def infer_format(app_registry, schema_editor):
@@ -13,59 +14,10 @@ def infer_format(app_registry, schema_editor):
         .objects.using(db_alias)
         .filter(physical_format_detail__isnull=False)
     )
-    mappings = {
-        "paperback": "Paperback",
-        "soft": "Paperback",
-        "pamphlet": "Paperback",
-        "peperback": "Paperback",
-        "tapa blanda": "Paperback",
-        "turtleback": "Paperback",
-        "pocket": "Paperback",
-        "spiral": "Paperback",
-        "ring": "Paperback",
-        "平装": "Paperback",
-        "简装": "Paperback",
-        "hardcover": "Hardcover",
-        "hardcocer": "Hardcover",
-        "hardover": "Hardcover",
-        "hardback": "Hardcover",
-        "library": "Hardcover",
-        "tapa dura": "Hardcover",
-        "leather": "Hardcover",
-        "clothbound": "Hardcover",
-        "精装": "Hardcover",
-        "ebook": "EBook",
-        "e-book": "EBook",
-        "digital": "EBook",
-        "computer file": "EBook",
-        "epub": "EBook",
-        "online": "EBook",
-        "pdf": "EBook",
-        "elektronische": "EBook",
-        "electronic": "EBook",
-        "audiobook": "AudiobookFormat",
-        "audio": "AudiobookFormat",
-        "cd": "AudiobookFormat",
-        "dvd": "AudiobookFormat",
-        "mp3": "AudiobookFormat",
-        "cassette": "AudiobookFormat",
-        "kindle": "AudiobookFormat",
-        "talking": "AudiobookFormat",
-        "sound": "AudiobookFormat",
-        "comic": "GraphicNovel",
-        "graphic": "GraphicNovel",
-    }
     for edition in editions:
         free_format = edition.physical_format_detail.lower()
-        if free_format in mappings:
-            edition.physical_format = mappings[free_format]
-            edition.save()
-        else:
-            matches = [v for k, v in mappings.items() if k in free_format]
-            if not matches:
-                continue
-            edition.physical_format = matches[0]
-            edition.save()
+        edition.physical_format = infer_physical_format(free_format)
+        edition.save()
 
 
 def reverse(app_registry, schema_editor):
