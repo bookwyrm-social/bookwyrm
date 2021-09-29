@@ -3,8 +3,8 @@ import re
 
 from django.contrib.postgres.search import SearchVectorField
 from django.contrib.postgres.indexes import GinIndex
-from django.db import models
-from django.db import transaction
+from django.db import models, transaction
+from django.db.models import Prefetch
 from django.dispatch import receiver
 from model_utils import FieldTracker
 from model_utils.managers import InheritanceManager
@@ -306,6 +306,27 @@ class Edition(Book):
         self.edition_rank = self.get_rank()
 
         return super().save(*args, **kwargs)
+
+    @classmethod
+    def viewer_aware_objects(cls, viewer):
+        """annotate a book query with metadata related to the user"""
+        queryset = cls.objects
+        if not viewer or not viewer.is_authenticated:
+            return queryset
+
+        queryset = queryset.prefetch_related(
+            Prefetch(
+                "shelfbook_set",
+                queryset=viewer.shelfbook_set.all(),
+                to_attr="current_shelves",
+            ),
+            Prefetch(
+                "readthrough_set",
+                queryset=viewer.readthrough_set.filter(is_active=True).all(),
+                to_attr="active_readthroughs",
+            ),
+        )
+        return queryset
 
 
 def isbn_10_to_13(isbn_10):

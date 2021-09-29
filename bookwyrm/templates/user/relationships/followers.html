@@ -9,6 +9,6 @@
 
 {% block nullstate %}
 <div>
-    {% blocktrans with username=user.display_name %}{{ username }} has no followers{% endblocktrans %}
+    <em>{% blocktrans with username=user.display_name %}{{ username }} has no followers{% endblocktrans %}</em>
 </div>
 {% endblock %}

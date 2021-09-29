@@ -10,6 +10,8 @@
     <link rel="stylesheet" href="{% static "css/vendor/icons.css" %}">
     <link rel="stylesheet" href="{% static "css/bookwyrm.css" %}">
 
+    <link rel="search" type="application/opensearchdescription+xml" href="{% url 'opensearch' %}" title="{% blocktrans with site_name=site.name %}{{ site_name }} search{% endblocktrans %}" />
+
     <link rel="shortcut icon" type="image/x-icon" href="{% if site.favicon %}{% get_media_prefix %}{{ site.favicon }}{% else %}{% static "images/favicon.ico" %}{% endif %}">
 
     {% if preview_images_enabled is True %}
@@ -34,7 +36,7 @@
             <a class="navbar-item" href="/">
                 <img class="image logo" src="{% if site.logo_small %}{% get_media_prefix %}{{ site.logo_small }}{% else %}{% static "images/logo-small.png" %}{% endif %}" alt="Home page">
             </a>
-            <form class="navbar-item column" action="/search/">
+            <form class="navbar-item column" action="{% url 'search' %}">
                 <div class="field has-addons">
                     <div class="control">
                         {% if user.is_authenticated %}
@@ -115,7 +117,7 @@
                             </a>
                         </li>
                         {% if perms.bookwyrm.create_invites or perms.moderate_user %}
-                        <li class="navbar-divider" role="presentation"></li>
+                        <li class="navbar-divider" role="presentation">&nbsp;</li>
                         {% endif %}
                         {% if perms.bookwyrm.create_invites and not site.allow_registration %}
                         <li>
@@ -131,7 +133,7 @@
                             </a>
                         </li>
                         {% endif %}
-                        <li class="navbar-divider" role="presentation"></li>
+                        <li class="navbar-divider" role="presentation">&nbsp;</li>
                         <li>
                             <a href="{% url 'logout' %}" class="navbar-item">
                                 {% trans 'Log out' %}

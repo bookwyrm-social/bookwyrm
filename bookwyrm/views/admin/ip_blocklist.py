@@ -22,7 +22,9 @@ class IPBlocklist(View):
             "addresses": models.IPBlocklist.objects.all(),
             "form": forms.IPBlocklistForm(),
         }
-        return TemplateResponse(request, "settings/ip_blocklist.html", data)
+        return TemplateResponse(
+            request, "settings/ip_blocklist/ip_blocklist.html", data
+        )
 
     def post(self, request, block_id=None):
         """create a new ip address block"""
@@ -35,11 +37,15 @@ class IPBlocklist(View):
             "form": form,
         }
         if not form.is_valid():
-            return TemplateResponse(request, "settings/ip_blocklist.html", data)
+            return TemplateResponse(
+                request, "settings/ip_blocklist/ip_blocklist.html", data
+            )
         form.save()
 
         data["form"] = forms.IPBlocklistForm()
-        return TemplateResponse(request, "settings/ip_blocklist.html", data)
+        return TemplateResponse(
+            request, "settings/ip_blocklist/ip_blocklist.html", data
+        )
 
     # pylint: disable=unused-argument
     def delete(self, request, domain_id):

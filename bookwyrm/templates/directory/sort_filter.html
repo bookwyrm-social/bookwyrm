@@ -5,8 +5,8 @@
 <label class="label" for="id_sort">{% trans "Order by" %}</label>
 <div class="select">
     <select name="sort" id="id_sort">
-        <option value="suggested" {% if not request.GET.sort or request.GET.sort == "suggested" %}checked{% endif %}>{% trans "Suggested" %}</option>
-        <option value="recent" {% if request.GET.sort == "suggested" %}checked{% endif %}>{% trans "Recently active" %}</option>
+        <option value="recent" {% if request.GET.sort == "recent" %}selected{% endif %}>{% trans "Recently active" %}</option>
+        <option value="suggested" {% if request.GET.sort == "suggested" %}selected{% endif %}>{% trans "Suggested" %}</option>
     </select>
 </div>
 {% endblock %}

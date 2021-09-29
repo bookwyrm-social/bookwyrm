@@ -11,6 +11,7 @@ Finish "<em>{{ book_title }}</em>"
 {% block modal-form-open %}
 <form name="finish-reading" action="{% url 'reading-status' 'finish' book.id %}" method="post" class="submit-status">
 {% csrf_token %}
+<input type="hidden" name="id" value="{{ readthrough.id }}">
 <input type="hidden" name="reading_status" value="read">
 {% endblock %}
 

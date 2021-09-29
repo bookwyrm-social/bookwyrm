@@ -3,12 +3,11 @@ from typing import Optional
 from urllib.parse import urlencode
 
 from django.contrib.auth.decorators import login_required
-from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator
 from django.db import IntegrityError, transaction
 from django.db.models import Avg, Count, DecimalField, Q, Max
 from django.db.models.functions import Coalesce
-from django.http import HttpResponseNotFound, HttpResponseBadRequest, HttpResponse
+from django.http import HttpResponseBadRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
@@ -111,8 +110,7 @@ class List(View):
     def get(self, request, list_id):
         """display a book list"""
         book_list = get_object_or_404(models.List, id=list_id)
-        if not book_list.visible_to_user(request.user):
-            return HttpResponseNotFound()
+        book_list.raise_visible_to_user(request.user)
 
         if is_api_request(request):
             return ActivitypubResponse(book_list.to_activity(**request.GET))
@@ -193,6 +191,8 @@ class List(View):
     def post(self, request, list_id):
         """edit a list"""
         book_list = get_object_or_404(models.List, id=list_id)
+        book_list.raise_not_editable(request.user)
+
         form = forms.ListForm(request.POST, instance=book_list)
         if not form.is_valid():
             return redirect("list", book_list.id)
@@ -207,9 +207,7 @@ class Curate(View):
     def get(self, request, list_id):
         """display a pending list"""
         book_list = get_object_or_404(models.List, id=list_id)
-        if not book_list.user == request.user:
-            # only the creater can curate the list
-            return HttpResponseNotFound()
+        book_list.raise_not_editable(request.user)
 
         data = {
             "list": book_list,
@@ -223,6 +221,8 @@ class Curate(View):
     def post(self, request, list_id):
         """edit a book_list"""
         book_list = get_object_or_404(models.List, id=list_id)
+        book_list.raise_not_editable(request.user)
+
         suggestion = get_object_or_404(models.ListItem, id=request.POST.get("item"))
         approved = request.POST.get("approved") == "true"
         if approved:
@@ -270,8 +270,7 @@ def delete_list(request, list_id):
     book_list = get_object_or_404(models.List, id=list_id)
 
     # only the owner or a moderator can delete a list
-    if book_list.user != request.user and not request.user.has_perm("moderate_post"):
-        raise PermissionDenied
+    book_list.raise_not_deletable(request.user)
 
     book_list.delete()
     return redirect("lists")
@@ -282,8 +281,7 @@ def delete_list(request, list_id):
 def add_book(request):
     """put a book on a list"""
     book_list = get_object_or_404(models.List, id=request.POST.get("list"))
-    if not book_list.visible_to_user(request.user):
-        return HttpResponseNotFound()
+    book_list.raise_visible_to_user(request.user)
 
     book = get_object_or_404(models.Edition, id=request.POST.get("book"))
     # do you have permission to add to the list?
@@ -331,16 +329,14 @@ def add_book(request):
 @login_required
 def remove_book(request, list_id):
     """remove a book from a list"""
+    book_list = get_object_or_404(models.List, id=list_id)
+    item = get_object_or_404(models.ListItem, id=request.POST.get("item"))
+    item.raise_not_deletable(request.user)
+
     with transaction.atomic():
-        book_list = get_object_or_404(models.List, id=list_id)
-        item = get_object_or_404(models.ListItem, id=request.POST.get("item"))
-
-        if not book_list.user == request.user and not item.user == request.user:
-            return HttpResponseNotFound()
-
         deleted_order = item.order
         item.delete()
-    normalize_book_list_ordering(book_list.id, start=deleted_order)
+        normalize_book_list_ordering(book_list.id, start=deleted_order)
     return redirect("list", list_id)
 
 
@@ -351,34 +347,32 @@ def set_book_position(request, list_item_id):
     Action for when the list user manually specifies a list position, takes
     special care with the unique ordering per list.
     """
+    list_item = get_object_or_404(models.ListItem, id=list_item_id)
+    list_item.book_list.raise_not_editable(request.user)
+    try:
+        int_position = int(request.POST.get("position"))
+    except ValueError:
+        return HttpResponseBadRequest("bad value for position. should be an integer")
+
+    if int_position < 1:
+        return HttpResponseBadRequest("position cannot be less than 1")
+
+    book_list = list_item.book_list
+
+    # the max position to which a book may be set is the highest order for
+    # books which are approved
+    order_max = book_list.listitem_set.filter(approved=True).aggregate(Max("order"))[
+        "order__max"
+    ]
+
+    int_position = min(int_position, order_max)
+
+    original_order = list_item.order
+    if original_order == int_position:
+        # no change
+        return HttpResponse(status=204)
+
     with transaction.atomic():
-        list_item = get_object_or_404(models.ListItem, id=list_item_id)
-        try:
-            int_position = int(request.POST.get("position"))
-        except ValueError:
-            return HttpResponseBadRequest(
-                "bad value for position. should be an integer"
-            )
-
-        if int_position < 1:
-            return HttpResponseBadRequest("position cannot be less than 1")
-
-        book_list = list_item.book_list
-
-        # the max position to which a book may be set is the highest order for
-        # books which are approved
-        order_max = book_list.listitem_set.filter(approved=True).aggregate(
-            Max("order")
-        )["order__max"]
-
-        int_position = min(int_position, order_max)
-
-        if request.user not in (book_list.user, list_item.user):
-            return HttpResponseNotFound()
-
-        original_order = list_item.order
-        if original_order == int_position:
-            return HttpResponse(status=204)
         if original_order > int_position:
             list_item.order = -1
             list_item.save()

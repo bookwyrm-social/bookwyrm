@@ -41,9 +41,9 @@ def email_preview(request):
     """for development, renders and example email template"""
     template = request.GET.get("email")
     data = emailing.email_data()
-    data["subject_path"] = "email/{}/subject.html".format(template)
-    data["html_content_path"] = "email/{}/html_content.html".format(template)
-    data["text_content_path"] = "email/{}/text_content.html".format(template)
+    data["subject_path"] = f"email/{template}/subject.html"
+    data["html_content_path"] = f"email/{template}/html_content.html"
+    data["text_content_path"] = f"email/{template}/text_content.html"
     data["reset_link"] = "https://example.com/link"
     data["invite_link"] = "https://example.com/link"
     data["confirmation_link"] = "https://example.com/link"

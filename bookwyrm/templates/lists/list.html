@@ -66,14 +66,14 @@
                             <p>{% blocktrans with username=item.user.display_name user_path=item.user.local_path %}Added by <a href="{{ user_path }}">{{ username }}</a>{% endblocktrans %}</p>
                             </div>
                         </div>
-                        {% if list.user == request.user or list.curation == 'open' and item.user == request.user %}
+                        {% if list.user == request.user %}
                         <div class="card-footer-item">
                             <form name="set-position" method="post" action="{% url 'list-set-book-position' item.id %}">
+                                {% csrf_token %}
                                 <div class="field has-addons mb-0">
                                     <div class="control">
                                         <label for="input-list-position" class="button is-transparent is-small">{% trans "List position" %}</label>
                                     </div>
-                                    {% csrf_token %}
                                     <div class="control">
                                         <input id="input_list_position" class="input is-small" type="number" min="1" name="position" value="{{ item.order }}">
                                     </div>
@@ -83,7 +83,9 @@
                                 </div>
                             </form>
                         </div>
-                        <form name="add-book" method="post" action="{% url 'list-remove-book' list.id %}" class="card-footer-item">
+                        {% endif %}
+                        {% if list.user == request.user or list.curation == 'open' and item.user == request.user %}
+                        <form name="remove-book" method="post" action="{% url 'list-remove-book' list.id %}" class="card-footer-item">
                             {% csrf_token %}
                             <input type="hidden" name="item" value="{{ item.id }}">
                             <button type="submit" class="button is-small is-danger">{% trans "Remove" %}</button>

@@ -9,6 +9,7 @@ import responses
 from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.http import Http404
 from django.template.response import TemplateResponse
 from django.test import TestCase
 from django.test.client import RequestFactory
@@ -133,8 +134,8 @@ class BookViews(TestCase):
         request.user = self.local_user
         with patch("bookwyrm.views.books.is_api_request") as is_api:
             is_api.return_value = False
-            result = view(request, 0)
-        self.assertEqual(result.status_code, 404)
+            with self.assertRaises(Http404):
+                view(request, 0)
 
     def test_book_page_work_id(self):
         """there are so many views, this just makes sure it LOADS"""
@@ -282,6 +283,46 @@ class BookViews(TestCase):
         self.assertEqual(book.authors.first().name, "Sappho")
         self.assertEqual(book.authors.first(), book.parent_work.authors.first())
 
+    def _setup_cover_url(self):
+        cover_url = "http://example.com"
+        image_file = pathlib.Path(__file__).parent.joinpath(
+            "../../static/images/default_avi.jpg"
+        )
+        image = Image.open(image_file)
+        output = BytesIO()
+        image.save(output, format=image.format)
+        responses.add(
+            responses.GET,
+            cover_url,
+            body=output.getvalue(),
+            status=200,
+        )
+        return cover_url
+
+    @responses.activate
+    def test_create_book_upload_cover_url(self):
+        """create an entirely new book and work with cover url"""
+        self.assertFalse(self.book.cover)
+        view = views.ConfirmEditBook.as_view()
+        self.local_user.groups.add(self.group)
+        cover_url = self._setup_cover_url()
+
+        form = forms.EditionForm()
+        form.data["title"] = "New Title"
+        form.data["last_edited_by"] = self.local_user.id
+        form.data["cover-url"] = cover_url
+        request = self.factory.post("", form.data)
+        request.user = self.local_user
+
+        with patch(
+            "bookwyrm.models.activitypub_mixin.broadcast_task.delay"
+        ) as delay_mock:
+            views.upload_cover(request, self.book.id)
+            self.assertEqual(delay_mock.call_count, 1)
+
+        self.book.refresh_from_db()
+        self.assertTrue(self.book.cover)
+
     def test_upload_cover_file(self):
         """add a cover via file upload"""
         self.assertFalse(self.book.cover)
@@ -310,21 +351,8 @@ class BookViews(TestCase):
     def test_upload_cover_url(self):
         """add a cover via url"""
         self.assertFalse(self.book.cover)
-        image_file = pathlib.Path(__file__).parent.joinpath(
-            "../../static/images/default_avi.jpg"
-        )
-        image = Image.open(image_file)
-        output = BytesIO()
-        image.save(output, format=image.format)
-        responses.add(
-            responses.GET,
-            "http://example.com",
-            body=output.getvalue(),
-            status=200,
-        )
-
         form = forms.CoverForm(instance=self.book)
-        form.data["cover-url"] = "http://example.com"
+        form.data["cover-url"] = self._setup_cover_url()
 
         request = self.factory.post("", form.data)
         request.user = self.local_user
