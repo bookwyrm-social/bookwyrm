@@ -12,7 +12,8 @@
         <ul class="menu-list">
             <li>
                 {% url 'prefs-profile' as url %}
-                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Profile" %}</a>
+                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Edit Profile" %}</a>
+                {% block profile-tabs %}{% endblock %}
             </li>
             <li>
                 {% url 'prefs-password' as url %}

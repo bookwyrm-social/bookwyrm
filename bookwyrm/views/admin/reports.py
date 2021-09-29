@@ -40,7 +40,7 @@ class Reports(View):
             "server": server,
             "reports": models.Report.objects.filter(**filters),
         }
-        return TemplateResponse(request, "moderation/reports.html", data)
+        return TemplateResponse(request, "settings/reports/reports.html", data)
 
 
 @method_decorator(login_required, name="dispatch")
@@ -60,7 +60,7 @@ class Report(View):
         data = {
             "report": get_object_or_404(models.Report, id=report_id),
         }
-        return TemplateResponse(request, "moderation/report.html", data)
+        return TemplateResponse(request, "settings/reports/report.html", data)
 
     def post(self, request, report_id):
         """comment on a report"""

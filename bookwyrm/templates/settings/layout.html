@@ -74,14 +74,7 @@
             <li>
                 {% url 'settings-site' as url %}
                 <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Site Settings" %}</a>
-                {% if url in request.path %}
-                <ul class="emnu-list">
-                    <li><a href="{{ url }}#instance-info">{% trans "Instance Info" %}</a></li>
-                    <li><a href="{{ url }}#images">{% trans "Images" %}</a></li>
-                    <li><a href="{{ url }}#footer">{% trans "Footer Content" %}</a></li>
-                    <li><a href="{{ url }}#registration">{% trans "Registration" %}</a></li>
-                </ul>
-                {% endif %}
+                {% block site-subtabs %}{% endblock %}
             </li>
         </ul>
         {% endif %}

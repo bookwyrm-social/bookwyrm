@@ -57,7 +57,7 @@ class UserAdminList(View):
             "sort": sort,
             "server": server,
         }
-        return TemplateResponse(request, "user_admin/user_admin.html", data)
+        return TemplateResponse(request, "settings/users/user_admin.html", data)
 
 
 @method_decorator(login_required, name="dispatch")
@@ -72,7 +72,7 @@ class UserAdmin(View):
         """user view"""
         user = get_object_or_404(models.User, id=user)
         data = {"user": user, "group_form": forms.UserGroupForm()}
-        return TemplateResponse(request, "user_admin/user.html", data)
+        return TemplateResponse(request, "settings/users/user.html", data)
 
     def post(self, request, user):
         """update user group"""
@@ -81,4 +81,4 @@ class UserAdmin(View):
         if form.is_valid():
             form.save()
         data = {"user": user, "group_form": form}
-        return TemplateResponse(request, "user_admin/user.html", data)
+        return TemplateResponse(request, "settings/users/user.html", data)
