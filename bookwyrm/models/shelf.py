@@ -55,6 +55,7 @@ class Shelf(OrderedCollectionMixin, BookWyrmModel):
 
     @property
     def deletable(self):
+        """can the shelf be safely deleted?"""
         return self.editable and not self.shelfbook_set.exists()
 
     def get_remote_id(self):
