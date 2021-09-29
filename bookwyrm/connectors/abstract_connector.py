@@ -321,12 +321,11 @@ def infer_physical_format(format_text):
     if format_text in format_mappings:
         # try a direct match
         return format_mappings[format_text]
-    else:
-        # failing that, try substring
-        matches = [v for k, v in format_mappings.items() if k in format_text]
-        if not matches:
-            return None
-        return matches[0]
+    # failing that, try substring
+    matches = [v for k, v in format_mappings.items() if k in format_text]
+    if not matches:
+        return None
+    return matches[0]
 
 
 def unique_physical_format(format_text):
