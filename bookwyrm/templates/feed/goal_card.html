@@ -7,13 +7,8 @@
 </h3>
 {% endblock %}
 
-
 {% block card-content %}
-<div class="content">
-    <p>{% blocktrans %}Set a goal for how many books you'll finish reading in {{ year }}, and track your progress throughout the year.{% endblocktrans %}</p>
-
-    {% include 'snippets/goal_form.html' %}
-</div>
+{% include 'snippets/goal_form.html' %}
 {% endblock %}
 
 {% block card-footer %}

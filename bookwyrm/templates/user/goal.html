@@ -1,5 +1,6 @@
 {% extends 'user/layout.html' %}
 {% load i18n %}
+{% load utilities %}
 
 {% block header %}
 <div class="columns is-mobile">
@@ -19,20 +20,8 @@
 <section class="block">
     {% now 'Y' as current_year %}
     {% if user == request.user and year|add:0 == current_year|add:0 %}
-    <div class="block">
-        <section class="card {% if goal %}is-hidden{% endif %}" id="show_edit_goal">
-            <header class="card-header">
-                <h2 class="card-header-title has-background-primary has-text-white" tabindex="0" id="edit_form_header">
-                    <span class="icon icon-book is-size-3 mr-2" aria-hidden="true"></span> {% blocktrans %}{{ year }} Reading Goal{% endblocktrans %}
-                </h2>
-            </header>
-            <section class="card-content content">
-                <p>{% blocktrans %}Set a goal for how many books you'll finish reading in {{ year }}, and track your progress throughout the year.{% endblocktrans %}</p>
-
-                {% include 'snippets/goal_form.html' with goal=goal year=year %}
-            </section>
-        </section>
-    </div>
+    {% comparison_bool goal None as visible %}
+    {% include 'user/goal_form.html' with goal=goal year=year visible=visible controls_text="show_edit_goal" class="block" %}
     {% endif %}
 
     {% if not goal and user != request.user %}
