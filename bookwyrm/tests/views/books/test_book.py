@@ -2,6 +2,7 @@
 from io import BytesIO
 import pathlib
 from unittest.mock import patch
+from tidylib import tidy_document
 
 from PIL import Image
 import responses
@@ -63,14 +64,23 @@ class BookViews(TestCase):
         )
         request = self.factory.get("")
         request.user = self.local_user
-        with patch("bookwyrm.views.books.is_api_request") as is_api:
+        with patch("bookwyrm.views.books.books.is_api_request") as is_api:
             is_api.return_value = False
             result = view(request, self.book.id)
         self.assertIsInstance(result, TemplateResponse)
-        result.render()
+        html = result.render()
+        _, errors = tidy_document(
+            html.content,
+            options={
+                "drop-empty-elements": False,
+                "warn-proprietary-attributes": False,
+            },
+        )
+        if errors:
+            raise Exception(errors)
         self.assertEqual(result.status_code, 200)
 
-        with patch("bookwyrm.views.books.is_api_request") as is_api:
+        with patch("bookwyrm.views.books.books.is_api_request") as is_api:
             is_api.return_value = True
             result = view(request, self.book.id)
         self.assertIsInstance(result, ActivitypubResponse)
@@ -103,27 +113,54 @@ class BookViews(TestCase):
 
         request = self.factory.get("")
         request.user = self.local_user
-        with patch("bookwyrm.views.books.is_api_request") as is_api:
+        with patch("bookwyrm.views.books.books.is_api_request") as is_api:
             is_api.return_value = False
             result = view(request, self.book.id, user_statuses="review")
         self.assertIsInstance(result, TemplateResponse)
-        result.render()
+        html = result.render()
+        _, errors = tidy_document(
+            html.content,
+            options={
+                "drop-empty-elements": False,
+                "warn-proprietary-attributes": False,
+            },
+        )
+        if errors:
+            raise Exception(errors)
         self.assertEqual(result.status_code, 200)
         self.assertEqual(result.context_data["statuses"].object_list[0], review)
 
-        with patch("bookwyrm.views.books.is_api_request") as is_api:
+        with patch("bookwyrm.views.books.books.is_api_request") as is_api:
             is_api.return_value = False
             result = view(request, self.book.id, user_statuses="comment")
         self.assertIsInstance(result, TemplateResponse)
-        result.render()
+        html = result.render()
+        _, errors = tidy_document(
+            html.content,
+            ptions={
+                "drop-empty-elements": False,
+                "warn-proprietary-attributes": False,
+            },
+        )
+        if errors:
+            raise Exception(errors)
         self.assertEqual(result.status_code, 200)
         self.assertEqual(result.context_data["statuses"].object_list[0], comment)
 
-        with patch("bookwyrm.views.books.is_api_request") as is_api:
+        with patch("bookwyrm.views.books.books.is_api_request") as is_api:
             is_api.return_value = False
             result = view(request, self.book.id, user_statuses="quotation")
         self.assertIsInstance(result, TemplateResponse)
-        result.render()
+        html = result.render()
+        _, errors = tidy_document(
+            html.content,
+            options={
+                "drop-empty-elements": False,
+                "warn-proprietary-attributes": False,
+            },
+        )
+        if errors:
+            raise Exception(errors)
         self.assertEqual(result.status_code, 200)
         self.assertEqual(result.context_data["statuses"].object_list[0], quote)
 
@@ -132,7 +169,7 @@ class BookViews(TestCase):
         view = views.Book.as_view()
         request = self.factory.get("")
         request.user = self.local_user
-        with patch("bookwyrm.views.books.is_api_request") as is_api:
+        with patch("bookwyrm.views.books.books.is_api_request") as is_api:
             is_api.return_value = False
             with self.assertRaises(Http404):
                 view(request, 0)
@@ -142,10 +179,19 @@ class BookViews(TestCase):
         view = views.Book.as_view()
         request = self.factory.get("")
         request.user = self.local_user
-        with patch("bookwyrm.views.books.is_api_request") as is_api:
+        with patch("bookwyrm.views.books.books.is_api_request") as is_api:
             is_api.return_value = False
             result = view(request, self.work.id)
-        result.render()
+        html = result.render()
+        _, errors = tidy_document(
+            html.content,
+            options={
+                "drop-empty-elements": False,
+                "warn-proprietary-attributes": False,
+            },
+        )
+        if errors:
+            raise Exception(errors)
         self.assertEqual(result.status_code, 200)
         self.assertEqual(result.context_data["book"], self.book)
 
@@ -157,7 +203,16 @@ class BookViews(TestCase):
         request.user.is_superuser = True
         result = view(request, self.book.id)
         self.assertIsInstance(result, TemplateResponse)
-        result.render()
+        html = result.render()
+        _, errors = tidy_document(
+            html.content,
+            options={
+                "drop-empty-elements": False,
+                "warn-proprietary-attributes": False,
+            },
+        )
+        if errors:
+            raise Exception(errors)
         self.assertEqual(result.status_code, 200)
 
     def test_edit_book(self):
@@ -188,7 +243,16 @@ class BookViews(TestCase):
         request.user = self.local_user
 
         result = view(request, self.book.id)
-        result.render()
+        html = result.render()
+        _, errors = tidy_document(
+            html.content,
+            options={
+                "drop-empty-elements": False,
+                "warn-proprietary-attributes": False,
+            },
+        )
+        if errors:
+            raise Exception(errors)
 
         # the changes haven't been saved yet
         self.book.refresh_from_db()
@@ -283,7 +347,8 @@ class BookViews(TestCase):
         self.assertEqual(book.authors.first().name, "Sappho")
         self.assertEqual(book.authors.first(), book.parent_work.authors.first())
 
-    def _setup_cover_url(self):
+    def _setup_cover_url(self):  # pylint: disable=no-self-use
+        """creates cover url mock"""
         cover_url = "http://example.com"
         image_file = pathlib.Path(__file__).parent.joinpath(
             "../../static/images/default_avi.jpg"
@@ -303,7 +368,6 @@ class BookViews(TestCase):
     def test_create_book_upload_cover_url(self):
         """create an entirely new book and work with cover url"""
         self.assertFalse(self.book.cover)
-        view = views.ConfirmEditBook.as_view()
         self.local_user.groups.add(self.group)
         cover_url = self._setup_cover_url()
 
@@ -331,6 +395,7 @@ class BookViews(TestCase):
         )
 
         form = forms.CoverForm(instance=self.book)
+        # pylint: disable=consider-using-with
         form.data["cover"] = SimpleUploadedFile(
             image_file, open(image_file, "rb").read(), content_type="image/jpeg"
         )
