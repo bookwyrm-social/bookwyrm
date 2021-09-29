@@ -1,4 +1,7 @@
 {% load i18n %}
+<div class="content">
+    <p>{% blocktrans %}Set a goal for how many books you'll finish reading in {{ year }}, and track your progress throughout the year.{% endblocktrans %}</p>
+
 <form method="post" name="goal" action="{% url 'user-goal' request.user.localname year %}">
     {% csrf_token %}
     <input type="hidden" name="year" value="{% if goal %}{{ goal.year }}{% else %}{{ year }}{% endif %}">
