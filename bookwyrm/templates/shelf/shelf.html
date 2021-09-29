@@ -91,8 +91,20 @@
     </div>
     {% if is_self and shelf.id %}
     <div class="column is-narrow">
-        {% trans "Edit shelf" as button_text %}
-        {% include 'snippets/toggle/open_button.html' with text=button_text icon_with_text="pencil" controls_text="edit_shelf_form" focus="edit_shelf_form_header" %}
+        <div class="is-flex">
+            {% trans "Edit shelf" as button_text %}
+            {% include 'snippets/toggle/open_button.html' with text=button_text icon_with_text="pencil" controls_text="edit_shelf_form" focus="edit_shelf_form_header" %}
+
+            {% if shelf.deletable %}
+            <form class="ml-1" name="delete-shelf" action="/delete-shelf/{{ shelf.id }}" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="user" value="{{ request.user.id }}">
+                <button class="button is-danger is-light" type="submit">
+                    {% trans "Delete shelf" %}
+                </button>
+            </form>
+            {% endif %}
+        </div>
     </div>
     {% endif %}
 </div>
@@ -168,16 +180,6 @@
         </table>
         {% else %}
         <p><em>{% trans "This shelf is empty." %}</em></p>
-        {% if shelf.id and shelf.editable %}
-        <form name="delete-shelf" action="/delete-shelf/{{ shelf.id }}" method="post">
-            {% csrf_token %}
-            <input type="hidden" name="user" value="{{ request.user.id }}">
-            <button class="button is-danger is-light" type="submit">
-                {% trans "Delete shelf" %}
-            </button>
-        </form>
-        {% endif %}
-
         {% endif %}
 
     </div>

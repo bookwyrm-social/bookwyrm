@@ -53,6 +53,10 @@ class Shelf(OrderedCollectionMixin, BookWyrmModel):
         """list of books for this shelf, overrides OrderedCollectionMixin"""
         return self.books.order_by("shelfbook")
 
+    @property
+    def deletable(self):
+        return self.editable and not self.shelfbook_set.exists()
+
     def get_remote_id(self):
         """shelf identifier instead of id"""
         base_path = self.user.remote_id
@@ -62,9 +66,7 @@ class Shelf(OrderedCollectionMixin, BookWyrmModel):
     def raise_not_deletable(self, viewer):
         """don't let anyone delete a default shelf"""
         super().raise_not_deletable(viewer)
-        if not self.editable:
-            raise PermissionDenied()
-        if self.shelfbook_set.exists():
+        if not self.deletable:
             raise PermissionDenied()
 
     class Meta:

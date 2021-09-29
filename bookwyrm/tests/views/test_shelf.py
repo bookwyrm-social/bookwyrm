@@ -270,7 +270,8 @@ class ShelfViews(TestCase):
 
     def test_delete_shelf_not_editable(self, *_):
         """delete a brand new custom shelf"""
-        shelf = self.local_user.shelfset.first()
+        shelf = self.local_user.shelf_set.first()
+        self.assertFalse(shelf.editable)
         request = self.factory.post("")
         request.user = self.local_user
 
