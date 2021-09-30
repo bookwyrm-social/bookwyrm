@@ -14,7 +14,7 @@ class ConnectorManager(TestCase):
         """we'll need some books and a connector info entry"""
         self.work = models.Work.objects.create(title="Example Work")
 
-        self.edition = models.Edition.objects.create(
+        models.Edition.objects.create(
             title="Example Edition", parent_work=self.work, isbn_10="0000000000"
         )
         self.edition = models.Edition.objects.create(

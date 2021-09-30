@@ -3,7 +3,6 @@ from django.test import TestCase
 import responses
 
 from bookwyrm import models
-from bookwyrm.book_search import SearchResult
 from bookwyrm.connectors import abstract_connector
 from bookwyrm.connectors.abstract_connector import Mapping
 
@@ -93,19 +92,6 @@ class AbstractConnector(TestCase):
         )
         results = self.test_connector.isbn_search("123456")
         self.assertEqual(len(results), 10)
-
-    def test_search_result(self):
-        """a class that stores info about a search result"""
-        result = SearchResult(
-            title="Title",
-            key="https://example.com/book/1",
-            author="Author Name",
-            year="1850",
-            connector=self.test_connector,
-        )
-        # there's really not much to test here, it's just a dataclass
-        self.assertEqual(result.confidence, 1)
-        self.assertEqual(result.title, "Title")
 
     def test_create_mapping(self):
         """maps remote fields for book data to bookwyrm activitypub fields"""
