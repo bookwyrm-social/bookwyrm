@@ -7,9 +7,8 @@ from bookwyrm.settings import DOMAIN
 def remove_self_connector(app_registry, schema_editor):
     """set the new phsyical format field based on existing format data"""
     db_alias = schema_editor.connection.alias
-
     app_registry.get_model("bookwyrm", "Connector").objects.using(db_alias).filter(
-        local=True
+        connector_file="self_connector"
     ).delete()
 
 
@@ -39,8 +38,4 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.RunPython(remove_self_connector, reverse),
-        migrations.RemoveField(
-            model_name="connector",
-            name="local",
-        ),
     ]
