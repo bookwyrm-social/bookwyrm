@@ -144,6 +144,7 @@ class SearchResult:
     confidence: int = 1
 
     def __repr__(self):
+        # pylint: disable=consider-using-f-string
         return "<SearchResult key={!r} title={!r} author={!r}>".format(
             self.key, self.title, self.author
         )
