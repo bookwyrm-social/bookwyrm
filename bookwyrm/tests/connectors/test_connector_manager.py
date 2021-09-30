@@ -50,17 +50,18 @@ class ConnectorManager(TestCase):
         self.assertIsInstance(connectors[0], BookWyrmConnector)
 
     @responses.activate
-    def test_search(self):
+    def test_search_plaintext(self):
         """search all connectors"""
         responses.add(
             responses.GET,
             "http://fake.ciom/search/Example?min_confidence=0.1",
-            json={},
+            json=[{"title": "Hello", "key": "https://www.example.com/search/1"}],
         )
         results = connector_manager.search("Example")
         self.assertEqual(len(results), 1)
         self.assertEqual(len(results[0]["results"]), 1)
-        self.assertEqual(results[0]["results"][0].title, "Example Edition")
+        self.assertEqual(results[0]["connector"].identifier, "test_connector_remote")
+        self.assertEqual(results[0]["results"][0].title, "Hello")
 
     def test_search_empty_query(self):
         """don't panic on empty queries"""
@@ -73,12 +74,13 @@ class ConnectorManager(TestCase):
         responses.add(
             responses.GET,
             "http://fake.ciom/isbn/0000000000",
-            json={},
+            json=[{"title": "Hello", "key": "https://www.example.com/search/1"}],
         )
         results = connector_manager.search("0000000000")
         self.assertEqual(len(results), 1)
         self.assertEqual(len(results[0]["results"]), 1)
-        self.assertEqual(results[0]["results"][0].title, "Example Edition")
+        self.assertEqual(results[0]["connector"].identifier, "test_connector_remote")
+        self.assertEqual(results[0]["results"][0].title, "Hello")
 
     def test_first_search_result(self):
         """only get one search result"""

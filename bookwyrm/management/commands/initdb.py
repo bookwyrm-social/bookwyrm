@@ -4,7 +4,6 @@ from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
 
 from bookwyrm.models import Connector, FederatedServer, SiteSettings, User
-from bookwyrm.settings import DOMAIN
 
 
 def init_groups():
