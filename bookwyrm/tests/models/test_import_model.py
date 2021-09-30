@@ -9,8 +9,8 @@ from django.test import TestCase
 import responses
 
 from bookwyrm import models
+from bookwyrm.book_search import SearchResult
 from bookwyrm.connectors import connector_manager
-from bookwyrm.connectors.abstract_connector import SearchResult
 
 
 class ImportJob(TestCase):
