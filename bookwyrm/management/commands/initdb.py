@@ -4,7 +4,6 @@ from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
 
 from bookwyrm.models import Connector, FederatedServer, SiteSettings, User
-from bookwyrm.settings import DOMAIN
 
 
 def init_groups():
@@ -73,19 +72,6 @@ def init_permissions():
 
 def init_connectors():
     """access book data sources"""
-    Connector.objects.create(
-        identifier=DOMAIN,
-        name="Local",
-        local=True,
-        connector_file="self_connector",
-        base_url="https://%s" % DOMAIN,
-        books_url="https://%s/book" % DOMAIN,
-        covers_url="https://%s/images/" % DOMAIN,
-        search_url="https://%s/search?q=" % DOMAIN,
-        isbn_search_url="https://%s/isbn/" % DOMAIN,
-        priority=1,
-    )
-
     Connector.objects.create(
         identifier="bookwyrm.social",
         name="BookWyrm dot Social",

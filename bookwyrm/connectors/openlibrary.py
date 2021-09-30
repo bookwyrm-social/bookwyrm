@@ -2,7 +2,8 @@
 import re
 
 from bookwyrm import models
-from .abstract_connector import AbstractConnector, SearchResult, Mapping
+from bookwyrm.book_search import SearchResult
+from .abstract_connector import AbstractConnector, Mapping
 from .abstract_connector import get_data, infer_physical_format, unique_physical_format
 from .connector_manager import ConnectorException
 from .openlibrary_languages import languages

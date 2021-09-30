@@ -12,7 +12,6 @@ import responses
 from bookwyrm import models
 from bookwyrm.importers import GoodreadsImporter
 from bookwyrm.importers.importer import import_data, handle_imported_book
-from bookwyrm.settings import DOMAIN
 
 
 def make_date(*args):
@@ -39,17 +38,6 @@ class GoodreadsImport(TestCase):
                 "mouse", "mouse@mouse.mouse", "password", local=True
             )
 
-        models.Connector.objects.create(
-            identifier=DOMAIN,
-            name="Local",
-            local=True,
-            connector_file="self_connector",
-            base_url="https://%s" % DOMAIN,
-            books_url="https://%s/book" % DOMAIN,
-            covers_url="https://%s/images/covers" % DOMAIN,
-            search_url="https://%s/search?q=" % DOMAIN,
-            priority=1,
-        )
         work = models.Work.objects.create(title="Test Work")
         self.book = models.Edition.objects.create(
             title="Example Edition",
@@ -125,7 +113,7 @@ class GoodreadsImport(TestCase):
 
         import_job = models.ImportJob.objects.create(user=self.user)
         datafile = pathlib.Path(__file__).parent.joinpath("../data/goodreads.csv")
-        csv_file = open(datafile, "r")
+        csv_file = open(datafile, "r")  # pylint: disable=unspecified-encoding
         for index, entry in enumerate(list(csv.DictReader(csv_file))):
             entry = self.importer.parse_fields(entry)
             import_item = models.ImportItem.objects.create(
@@ -162,7 +150,7 @@ class GoodreadsImport(TestCase):
 
         import_job = models.ImportJob.objects.create(user=self.user)
         datafile = pathlib.Path(__file__).parent.joinpath("../data/goodreads.csv")
-        csv_file = open(datafile, "r")
+        csv_file = open(datafile, "r")  # pylint: disable=unspecified-encoding
         for index, entry in enumerate(list(csv.DictReader(csv_file))):
             entry = self.importer.parse_fields(entry)
             import_item = models.ImportItem.objects.create(
@@ -192,7 +180,7 @@ class GoodreadsImport(TestCase):
         shelf = self.user.shelf_set.filter(identifier="read").first()
         import_job = models.ImportJob.objects.create(user=self.user)
         datafile = pathlib.Path(__file__).parent.joinpath("../data/goodreads.csv")
-        csv_file = open(datafile, "r")
+        csv_file = open(datafile, "r")  # pylint: disable=unspecified-encoding
         for index, entry in enumerate(list(csv.DictReader(csv_file))):
             entry = self.importer.parse_fields(entry)
             import_item = models.ImportItem.objects.create(
@@ -224,7 +212,7 @@ class GoodreadsImport(TestCase):
         """goodreads review import"""
         import_job = models.ImportJob.objects.create(user=self.user)
         datafile = pathlib.Path(__file__).parent.joinpath("../data/goodreads.csv")
-        csv_file = open(datafile, "r")
+        csv_file = open(datafile, "r")  # pylint: disable=unspecified-encoding
         entry = list(csv.DictReader(csv_file))[2]
         entry = self.importer.parse_fields(entry)
         import_item = models.ImportItem.objects.create(
@@ -248,7 +236,7 @@ class GoodreadsImport(TestCase):
         datafile = pathlib.Path(__file__).parent.joinpath(
             "../data/goodreads-rating.csv"
         )
-        csv_file = open(datafile, "r")
+        csv_file = open(datafile, "r")  # pylint: disable=unspecified-encoding
         entry = list(csv.DictReader(csv_file))[2]
         entry = self.importer.parse_fields(entry)
         import_item = models.ImportItem.objects.create(
@@ -269,7 +257,7 @@ class GoodreadsImport(TestCase):
         """goodreads review import"""
         import_job = models.ImportJob.objects.create(user=self.user)
         datafile = pathlib.Path(__file__).parent.joinpath("../data/goodreads.csv")
-        csv_file = open(datafile, "r")
+        csv_file = open(datafile, "r")  # pylint: disable=unspecified-encoding
         entry = list(csv.DictReader(csv_file))[2]
         entry = self.importer.parse_fields(entry)
         import_item = models.ImportItem.objects.create(

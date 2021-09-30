@@ -14,7 +14,6 @@ class Connector(BookWyrmModel):
     identifier = models.CharField(max_length=255, unique=True)
     priority = models.IntegerField(default=2)
     name = models.CharField(max_length=255, null=True, blank=True)
-    local = models.BooleanField(default=False)
     connector_file = models.CharField(max_length=255, choices=ConnectorFiles.choices)
     api_key = models.CharField(max_length=255, null=True, blank=True)
     active = models.BooleanField(default=True)

@@ -8,7 +8,24 @@
 <ul class="block">
 {% for result in local_results.results %}
     <li class="pd-4 mb-5">
-        {% include 'snippets/search_result_text.html' with result=result %}
+        <div class="columns is-mobile is-gapless">
+            <div class="column is-cover">
+                {% include 'snippets/book_cover.html' with book=result cover_class='is-w-xs is-h-xs' %}
+            </div>
+
+            <div class="column is-10 ml-3">
+                <p>
+                    <strong>
+                        {% include "snippets/book_titleby.html" with book=result %}
+                    </strong>
+                </p>
+                <p>
+                    {% if result.first_published_date or result.published_date %}
+                        ({% firstof result.first_published_date.year result.published_date.year %})
+                    {% endif %}
+                </p>
+            </div>
+        </div>
     </li>
 {% endfor %}
 </ul>
@@ -43,7 +60,33 @@
                 <ul class="is-flex-grow-1">
                     {% for result in result_set.results %}
                         <li class="mb-5">
-                            {% include 'snippets/search_result_text.html' with result=result remote_result=True %}
+                            <div class="columns is-mobile is-gapless">
+                                <div class="columns is-mobile is-gapless">
+                                    {% include 'snippets/book_cover.html' with book=result cover_class='is-w-xs is-h-xs' external_path=True %}
+                                </div>
+                                <div class="column is-10 ml-3">
+                                    <p>
+                                        <strong>
+                                            <a
+                                                href="{{ result.view_link|default:result.key }}"
+                                                rel="noopener"
+                                                target="_blank"
+                                            >{{ result.title }}</a>
+                                        </strong>
+                                    </p>
+                                    <p>
+                                        {{ result.author }}
+                                        {% if result.year %}({{ result.year }}){% endif %}
+                                    </p>
+                                    <form class="mt-1" action="/resolve-book" method="post">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="remote_id" value="{{ result.key }}">
+                                        <button type="submit" class="button is-small is-link">
+                                            {% trans "Import book" %}
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
                         </li>
                     {% endfor %}
                 </ul>

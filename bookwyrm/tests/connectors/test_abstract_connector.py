@@ -119,12 +119,10 @@ class AbstractConnector(TestCase):
     @responses.activate
     def test_get_or_create_author(self):
         """load an author"""
-        self.connector.author_mappings = (
-            [  # pylint: disable=attribute-defined-outside-init
-                Mapping("id"),
-                Mapping("name"),
-            ]
-        )
+        self.connector.author_mappings = [  # pylint: disable=attribute-defined-outside-init  # pylint: disable=attribute-defined-outside-init
+            Mapping("id"),
+            Mapping("name"),
+        ]
 
         responses.add(
             responses.GET,

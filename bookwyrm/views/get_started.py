@@ -10,8 +10,7 @@ from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
 from django.views import View
 
-from bookwyrm import forms, models
-from bookwyrm.connectors import connector_manager
+from bookwyrm import book_search, forms, models
 from bookwyrm.suggested_users import suggested_users
 from .preferences.edit_user import save_user_form
 
@@ -54,7 +53,7 @@ class GetStartedBooks(View):
         query = request.GET.get("query")
         book_results = popular_books = []
         if query:
-            book_results = connector_manager.local_search(query, raw=True)[:5]
+            book_results = book_search.search(query)[:5]
         if len(book_results) < 5:
             popular_books = (
                 models.Edition.objects.exclude(
