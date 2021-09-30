@@ -29,8 +29,7 @@ class CustomForm(ModelForm):
                 input_type = visible.field.widget.input_type
             if isinstance(visible.field.widget, Textarea):
                 input_type = "textarea"
-                visible.field.widget.attrs["cols"] = None
-                visible.field.widget.attrs["rows"] = None
+                visible.field.widget.attrs["rows"] = 5
             visible.field.widget.attrs["class"] = css_classes[input_type]
 
 
@@ -228,7 +227,7 @@ class ExpiryWidget(widgets.Select):
         elif selected_string == "forever":
             return None
         else:
-            return selected_string  # "This will raise
+            return selected_string  # This will raise
 
         return timezone.now() + interval
 
@@ -260,10 +259,7 @@ class CreateInviteForm(CustomForm):
                 ]
             ),
             "use_limit": widgets.Select(
-                choices=[
-                    (i, _("%(count)d uses" % {"count": i}))
-                    for i in [1, 5, 10, 25, 50, 100]
-                ]
+                choices=[(i, _(f"{i} uses")) for i in [1, 5, 10, 25, 50, 100]]
                 + [(None, _("Unlimited"))]
             ),
         }
@@ -272,7 +268,7 @@ class CreateInviteForm(CustomForm):
 class ShelfForm(CustomForm):
     class Meta:
         model = models.Shelf
-        fields = ["user", "name", "privacy"]
+        fields = ["user", "name", "privacy", "description"]
 
 
 class GoalForm(CustomForm):
@@ -309,6 +305,12 @@ class EmailBlocklistForm(CustomForm):
     class Meta:
         model = models.EmailBlocklist
         fields = ["domain"]
+
+
+class IPBlocklistForm(CustomForm):
+    class Meta:
+        model = models.IPBlocklist
+        fields = ["address"]
 
 
 class ServerForm(CustomForm):

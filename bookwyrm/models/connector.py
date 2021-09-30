@@ -28,7 +28,4 @@ class Connector(BookWyrmModel):
     isbn_search_url = models.CharField(max_length=255, null=True, blank=True)
 
     def __str__(self):
-        return "{} ({})".format(
-            self.identifier,
-            self.id,
-        )
+        return f"{self.identifier} ({self.id})"

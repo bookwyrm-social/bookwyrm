@@ -68,7 +68,7 @@ class Import(View):
 
             importer.start_import(job)
 
-            return redirect("/import/%d" % job.id)
+            return redirect(f"/import/{job.id}")
         return HttpResponseBadRequest()
 
 
@@ -80,7 +80,7 @@ class ImportStatus(View):
         """status of an import job"""
         job = get_object_or_404(models.ImportJob, id=job_id)
         if job.user != request.user:
-            raise PermissionDenied
+            raise PermissionDenied()
 
         try:
             task = app.AsyncResult(job.task_id)
@@ -112,4 +112,4 @@ class ImportStatus(View):
             items,
         )
         importer.start_import(job)
-        return redirect("/import/%d" % job.id)
+        return redirect(f"/import/{job.id}")

@@ -3,7 +3,6 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
-from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
 from django.views import View
@@ -46,7 +45,7 @@ class Login(View):
             except models.User.DoesNotExist:  # maybe it's a full username?
                 username = localname
         else:
-            username = "%s@%s" % (localname, DOMAIN)
+            username = f"{localname}@{DOMAIN}"
         password = login_form.data["password"]
 
         # perform authentication
@@ -54,8 +53,7 @@ class Login(View):
         if user is not None:
             # successful login
             login(request, user)
-            user.last_active_date = timezone.now()
-            user.save(broadcast=False, update_fields=["last_active_date"])
+            user.update_active_date()
             if request.POST.get("first_login"):
                 return redirect("get-started-profile")
             return redirect(request.GET.get("next", "/"))

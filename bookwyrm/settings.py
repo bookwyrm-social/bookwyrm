@@ -13,7 +13,7 @@ VERSION = "0.0.1"
 PAGE_LENGTH = env("PAGE_LENGTH", 15)
 DEFAULT_LANGUAGE = env("DEFAULT_LANGUAGE", "English")
 
-JS_CACHE = "e5832a26"
+JS_CACHE = "e2bc0653"
 
 # email
 EMAIL_BACKEND = env("EMAIL_BACKEND", "django.core.mail.backends.smtp.EmailBackend")
@@ -23,7 +23,7 @@ EMAIL_HOST_USER = env("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
 EMAIL_USE_TLS = env.bool("EMAIL_USE_TLS", True)
 EMAIL_USE_SSL = env.bool("EMAIL_USE_SSL", False)
-DEFAULT_FROM_EMAIL = "admin@{:s}".format(env("DOMAIN"))
+DEFAULT_FROM_EMAIL = f"admin@{DOMAIN}"
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -77,7 +77,8 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
-    "bookwyrm.timezone_middleware.TimezoneMiddleware",
+    "bookwyrm.middleware.TimezoneMiddleware",
+    "bookwyrm.middleware.IPBlocklistMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
@@ -126,7 +127,7 @@ DATABASES = {
         "USER": env("POSTGRES_USER", "fedireads"),
         "PASSWORD": env("POSTGRES_PASSWORD", "fedireads"),
         "HOST": env("POSTGRES_HOST", ""),
-        "PORT": env("POSTGRES_PORT", 5432),
+        "PORT": env("PGPORT", 5432),
     },
 }
 
@@ -177,11 +178,8 @@ USE_L10N = True
 USE_TZ = True
 
 
-USER_AGENT = "%s (BookWyrm/%s; +https://%s/)" % (
-    requests.utils.default_user_agent(),
-    VERSION,
-    DOMAIN,
-)
+agent = requests.utils.default_user_agent()
+USER_AGENT = f"{agent} (BookWyrm/{VERSION}; +https://{DOMAIN}/)"
 
 # Imagekit generated thumbnails
 ENABLE_THUMBNAIL_GENERATION = env.bool("ENABLE_THUMBNAIL_GENERATION", False)
@@ -212,11 +210,11 @@ if USE_S3:
     AWS_S3_OBJECT_PARAMETERS = {"CacheControl": "max-age=86400"}
     # S3 Static settings
     STATIC_LOCATION = "static"
-    STATIC_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, STATIC_LOCATION)
+    STATIC_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{STATIC_LOCATION}/"
     STATICFILES_STORAGE = "bookwyrm.storage_backends.StaticStorage"
     # S3 Media settings
     MEDIA_LOCATION = "images"
-    MEDIA_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, MEDIA_LOCATION)
+    MEDIA_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{MEDIA_LOCATION}/"
     MEDIA_FULL_URL = MEDIA_URL
     DEFAULT_FILE_STORAGE = "bookwyrm.storage_backends.ImagesStorage"
     # I don't know if it's used, but the site crashes without it
@@ -226,5 +224,5 @@ else:
     STATIC_URL = "/static/"
     STATIC_ROOT = os.path.join(BASE_DIR, env("STATIC_ROOT", "static"))
     MEDIA_URL = "/images/"
-    MEDIA_FULL_URL = "%s://%s%s" % (PROTOCOL, DOMAIN, MEDIA_URL)
+    MEDIA_FULL_URL = f"{PROTOCOL}://{DOMAIN}{MEDIA_URL}"
     MEDIA_ROOT = os.path.join(BASE_DIR, env("MEDIA_ROOT", "images"))

@@ -3,6 +3,7 @@
 from dateutil.relativedelta import relativedelta
 from django.http import HttpResponseNotFound
 from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
 from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.views.decorators.http import require_GET
@@ -19,14 +20,11 @@ def webfinger(request):
         return HttpResponseNotFound()
 
     username = resource.replace("acct:", "")
-    try:
-        user = models.User.objects.get(username__iexact=username)
-    except models.User.DoesNotExist:
-        return HttpResponseNotFound("No account found")
+    user = get_object_or_404(models.User, username__iexact=username)
 
     return JsonResponse(
         {
-            "subject": "acct:%s" % (user.username),
+            "subject": f"acct:{user.username}",
             "links": [
                 {
                     "rel": "self",
@@ -46,7 +44,7 @@ def nodeinfo_pointer(_):
             "links": [
                 {
                     "rel": "http://nodeinfo.diaspora.software/ns/schema/2.0",
-                    "href": "https://%s/nodeinfo/2.0" % DOMAIN,
+                    "href": f"https://{DOMAIN}/nodeinfo/2.0",
                 }
             ]
         }
@@ -130,3 +128,14 @@ def peers(_):
 def host_meta(request):
     """meta of the host"""
     return TemplateResponse(request, "host_meta.xml", {"DOMAIN": DOMAIN})
+
+
+@require_GET
+def opensearch(request):
+    """Open Search xml spec"""
+    site = models.SiteSettings.get()
+    logo_path = site.favicon or "images/favicon.png"
+    logo = f"{MEDIA_FULL_URL}{logo_path}"
+    return TemplateResponse(
+        request, "opensearch.xml", {"image": logo, "DOMAIN": DOMAIN}
+    )

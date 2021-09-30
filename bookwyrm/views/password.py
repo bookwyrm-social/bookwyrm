@@ -1,10 +1,8 @@
 """ class views for password management """
 from django.contrib.auth import login
-from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
-from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
 from django.views import View
 
@@ -27,7 +25,9 @@ class PasswordResetRequest(View):
         """create a password reset token"""
         email = request.POST.get("email")
         try:
-            user = models.User.objects.get(email=email, email__isnull=False)
+            user = models.User.viewer_aware_objects(request.user).get(
+                email=email, email__isnull=False
+            )
         except models.User.DoesNotExist:
             data = {"error": _("No user with that email address was found.")}
             return TemplateResponse(request, "password_reset_request.html", data)
@@ -38,7 +38,7 @@ class PasswordResetRequest(View):
         # create a new reset code
         code = models.PasswordReset.objects.create(user=user)
         password_reset_email(code)
-        data = {"message": _("A password reset link sent to %s" % email)}
+        data = {"message": _(f"A password reset link sent to {email}")}
         return TemplateResponse(request, "password_reset_request.html", data)
 
 
@@ -52,9 +52,9 @@ class PasswordReset(View):
         try:
             reset_code = models.PasswordReset.objects.get(code=code)
             if not reset_code.valid():
-                raise PermissionDenied
+                raise PermissionDenied()
         except models.PasswordReset.DoesNotExist:
-            raise PermissionDenied
+            raise PermissionDenied()
 
         return TemplateResponse(request, "password_reset.html", {"code": code})
 
@@ -80,26 +80,3 @@ class PasswordReset(View):
         login(request, user)
         reset_code.delete()
         return redirect("/")
-
-
-@method_decorator(login_required, name="dispatch")
-class ChangePassword(View):
-    """change password as logged in user"""
-
-    def get(self, request):
-        """change password page"""
-        data = {"user": request.user}
-        return TemplateResponse(request, "preferences/change_password.html", data)
-
-    def post(self, request):
-        """allow a user to change their password"""
-        new_password = request.POST.get("password")
-        confirm_password = request.POST.get("confirm-password")
-
-        if new_password != confirm_password:
-            return redirect("preferences/password")
-
-        request.user.set_password(new_password)
-        request.user.save(broadcast=False, update_fields=["password"])
-        login(request, request.user)
-        return redirect(request.user.local_path)

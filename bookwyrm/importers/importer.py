@@ -127,6 +127,7 @@ def handle_imported_book(source, user, item, include_reviews, privacy):
         # but "now" is a bad guess
         published_date_guess = item.date_read or item.date_added
         if item.review:
+            # pylint: disable=consider-using-f-string
             review_title = (
                 "Review of {!r} on {!r}".format(
                     item.book.title,

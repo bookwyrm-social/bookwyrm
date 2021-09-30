@@ -1,6 +1,7 @@
 """ non-interactive pages """
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
+from django.http import Http404
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.utils import timezone
@@ -59,16 +60,30 @@ class User(View):
                 request.user,
                 user.status_set.select_subclasses(),
             )
-            .select_related("reply_parent")
-            .prefetch_related("mention_books", "mention_users")
+            .select_related(
+                "user",
+                "reply_parent",
+                "review__book",
+                "comment__book",
+                "quotation__book",
+            )
+            .prefetch_related(
+                "mention_books",
+                "mention_users",
+                "attachments",
+            )
         )
 
         paginated = Paginator(activities, PAGE_LENGTH)
         goal = models.AnnualGoal.objects.filter(
             user=user, year=timezone.now().year
         ).first()
-        if goal and not goal.visible_to_user(request.user):
-            goal = None
+        if goal:
+            try:
+                goal.raise_visible_to_user(request.user)
+            except Http404:
+                goal = None
+
         data = {
             "user": user,
             "is_self": is_self,

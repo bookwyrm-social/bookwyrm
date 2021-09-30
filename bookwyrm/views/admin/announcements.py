@@ -31,6 +31,7 @@ class Announcements(View):
             "end_date",
             "active",
         ]
+        # pylint: disable=consider-using-f-string
         if sort in sort_fields + ["-{:s}".format(f) for f in sort_fields]:
             announcements = announcements.order_by(sort)
         data = {
@@ -40,7 +41,9 @@ class Announcements(View):
             "form": forms.AnnouncementForm(),
             "sort": sort,
         }
-        return TemplateResponse(request, "settings/announcements.html", data)
+        return TemplateResponse(
+            request, "settings/announcements/announcements.html", data
+        )
 
     def post(self, request):
         """edit the site settings"""
@@ -55,7 +58,9 @@ class Announcements(View):
             ).get_page(request.GET.get("page")),
             "form": form,
         }
-        return TemplateResponse(request, "settings/announcements.html", data)
+        return TemplateResponse(
+            request, "settings/announcements/announcements.html", data
+        )
 
 
 @method_decorator(login_required, name="dispatch")
@@ -73,7 +78,9 @@ class Announcement(View):
             "announcement": announcement,
             "form": forms.AnnouncementForm(instance=announcement),
         }
-        return TemplateResponse(request, "settings/announcement.html", data)
+        return TemplateResponse(
+            request, "settings/announcements/announcement.html", data
+        )
 
     def post(self, request, announcement_id):
         """edit announcement"""
@@ -86,7 +93,9 @@ class Announcement(View):
             "announcement": announcement,
             "form": form,
         }
-        return TemplateResponse(request, "settings/announcement.html", data)
+        return TemplateResponse(
+            request, "settings/announcements/announcement.html", data
+        )
 
 
 @login_required

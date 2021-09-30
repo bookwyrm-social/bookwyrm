@@ -4,11 +4,13 @@
 <!DOCTYPE html>
 <html lang="{% get_lang %}">
 <head>
-    <title>{% block title %}BookWyrm{% endblock %} | {{ site.name }}</title>
+    <title>{% block title %}BookWyrm{% endblock %} - {{ site.name }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="{% static "css/vendor/bulma.min.css" %}">
     <link rel="stylesheet" href="{% static "css/vendor/icons.css" %}">
     <link rel="stylesheet" href="{% static "css/bookwyrm.css" %}">
+
+    <link rel="search" type="application/opensearchdescription+xml" href="{% url 'opensearch' %}" title="{% blocktrans with site_name=site.name %}{{ site_name }} search{% endblocktrans %}" />
 
     <link rel="shortcut icon" type="image/x-icon" href="{% if site.favicon %}{% get_media_prefix %}{{ site.favicon }}{% else %}{% static "images/favicon.ico" %}{% endif %}">
 
@@ -17,8 +19,8 @@
     {% else %}
     <meta name="twitter:card" content="summary">
     {% endif %}
-    <meta name="twitter:title" content="{% if title %}{{ title }} | {% endif %}{{ site.name }}">
-    <meta name="og:title" content="{% if title %}{{ title }} | {% endif %}{{ site.name }}">
+    <meta name="twitter:title" content="{% if title %}{{ title }} - {% endif %}{{ site.name }}">
+    <meta name="og:title" content="{% if title %}{{ title }} - {% endif %}{{ site.name }}">
     <meta name="twitter:description" content="{{ site.instance_tagline }}">
     <meta name="og:description" content="{{ site.instance_tagline }}">
 
@@ -34,10 +36,15 @@
             <a class="navbar-item" href="/">
                 <img class="image logo" src="{% if site.logo_small %}{% get_media_prefix %}{{ site.logo_small }}{% else %}{% static "images/logo-small.png" %}{% endif %}" alt="Home page">
             </a>
-            <form class="navbar-item column" action="/search/">
+            <form class="navbar-item column" action="{% url 'search' %}">
                 <div class="field has-addons">
                     <div class="control">
-                        <input aria-label="{% trans 'Search for a book or user' %}" id="search_input" class="input" type="text" name="q" placeholder="{% trans 'Search for a book or user' %}" value="{{ query }}">
+                        {% if user.is_authenticated %}
+                            {% trans "Search for a book, user, or list" as search_placeholder %}
+                        {% else %}
+                            {% trans "Search for a book" as search_placeholder %}
+                        {% endif %}
+                        <input aria-label="{{ search_placeholder }}" id="search_input" class="input" type="text" name="q" placeholder="{{ search_placeholder }}" value="{{ query }}">
                     </div>
                     <div class="control">
                         <button class="button" type="submit">
@@ -110,7 +117,7 @@
                             </a>
                         </li>
                         {% if perms.bookwyrm.create_invites or perms.moderate_user %}
-                        <li class="navbar-divider" role="presentation"></li>
+                        <li class="navbar-divider" role="presentation">&nbsp;</li>
                         {% endif %}
                         {% if perms.bookwyrm.create_invites and not site.allow_registration %}
                         <li>
@@ -126,7 +133,7 @@
                             </a>
                         </li>
                         {% endif %}
-                        <li class="navbar-divider" role="presentation"></li>
+                        <li class="navbar-divider" role="presentation">&nbsp;</li>
                         <li>
                             <a href="{% url 'logout' %}" class="navbar-item">
                                 {% trans 'Log out' %}

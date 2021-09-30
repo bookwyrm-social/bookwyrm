@@ -67,12 +67,18 @@
             {% endif %}
 
             {% if status.content_warning %}
-                <div>
-                    <p>{{ status.content_warning }}</p>
+                <div class="notification p-2 is-clearfix is-warning is-light">
+                    <p class="is-pulled-left is-flex">
+                        {% trans "Content warning" as text %}
+                        <span class="icon icon-warning" title="{{ text }}">
+                            <span class="is-sr-only">{{ text }}</span>
+                        </span>
+                        {{ status.content_warning }}
+                    </p>
 
-                    {% trans "Show more" as button_text %}
+                    {% trans "Show status" as button_text %}
 
-                    {% with text=button_text class="is-small" controls_text="show_status_cw" controls_uid=status.id %}
+                    {% with text=button_text class="is-small is-pulled-right" icon_with_text="arrow-down" controls_text="show_status_cw" controls_uid=status.id %}
                         {% include 'snippets/toggle/open_button.html' %}
                     {% endwith %}
                 </div>
@@ -84,17 +90,9 @@
                     class="is-hidden"
                 {% endif %}
             >
-                {% if status.content_warning %}
-                    {% trans "Show less" as button_text %}
-
-                    {% with text=button_text class="is-small" controls_text="show_status_cw" controls_uid=status.id %}
-                        {% include 'snippets/toggle/close_button.html' %}
-                    {% endwith %}
-                {% endif %}
-
                 {% if status.quote %}
                     <div class="quote block">
-                        <blockquote dir="auto" class="content mb-2">{{ status.quote|safe }}</blockquote>
+                        <blockquote dir="auto" class="content mb-2 preserve-whitespace">{{ status.quote|safe }}</blockquote>
 
                         <p>
                             &mdash; {% include 'snippets/book_titleby.html' with book=status.book %}
@@ -140,6 +138,14 @@
                             {% endfor %}
                         </div>
                     </div>
+                {% endif %}
+
+                {% if status.content_warning %}
+                    {% trans "Hide status" as button_text %}
+
+                    {% with text=button_text class="is-small" controls_text="show_status_cw" controls_uid=status.id icon_with_text="arrow-up" %}
+                        {% include 'snippets/toggle/close_button.html' %}
+                    {% endwith %}
                 {% endif %}
             </div>
         </article>

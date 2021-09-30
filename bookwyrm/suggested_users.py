@@ -24,8 +24,8 @@ class SuggestedUsers(RedisStore):
     def store_id(self, user):  # pylint: disable=no-self-use
         """the key used to store this user's recs"""
         if isinstance(user, int):
-            return "{:d}-suggestions".format(user)
-        return "{:d}-suggestions".format(user.id)
+            return f"{user}-suggestions"
+        return f"{user.id}-suggestions"
 
     def get_counts_from_rank(self, rank):  # pylint: disable=no-self-use
         """calculate mutuals count and shared books count from rank"""

@@ -1,5 +1,5 @@
 {% load i18n %}
-<section class="card is-hidden {{ class }}" id="{{ controls_text }}{% if controls_uid %}-{{ controls_uid }}{% endif %}">
+<section class="card {% if not visible %}is-hidden {% endif %}{{ class }}" id="{{ controls_text }}{% if controls_uid %}-{{ controls_uid }}{% endif %}">
     <header class="card-header has-background-white-ter">
         <h2 class="card-header-title" tabindex="0" id="{{ controls_text }}{% if controls_uid %}-{{ controls_uid }}{% endif %}_header">
             {% block header %}{% endblock %}

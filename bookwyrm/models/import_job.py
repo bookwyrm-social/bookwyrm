@@ -2,7 +2,6 @@
 import re
 import dateutil.parser
 
-from django.apps import apps
 from django.db import models
 from django.utils import timezone
 
@@ -49,19 +48,6 @@ class ImportJob(models.Model):
         max_length=255, default="public", choices=PrivacyLevels.choices
     )
     retry = models.BooleanField(default=False)
-
-    def save(self, *args, **kwargs):
-        """save and notify"""
-        super().save(*args, **kwargs)
-        if self.complete:
-            notification_model = apps.get_model(
-                "bookwyrm.Notification", require_ready=True
-            )
-            notification_model.objects.create(
-                user=self.user,
-                notification_type="IMPORT",
-                related_import=self,
-            )
 
 
 class ImportItem(models.Model):
@@ -198,7 +184,9 @@ class ImportItem(models.Model):
         return []
 
     def __repr__(self):
+        # pylint: disable=consider-using-f-string
         return "<{!r}Item {!r}>".format(self.data["import_source"], self.data["Title"])
 
     def __str__(self):
+        # pylint: disable=consider-using-f-string
         return "{} by {}".format(self.data["Title"], self.data["Author"])

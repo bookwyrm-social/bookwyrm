@@ -8,6 +8,7 @@ from requests.exceptions import RequestException
 
 from bookwyrm import activitypub, models, settings
 from .connector_manager import load_more_data, ConnectorException
+from .format_mappings import format_mappings
 
 
 logger = logging.getLogger(__name__)
@@ -41,7 +42,7 @@ class AbstractMinimalConnector(ABC):
             params["min_confidence"] = min_confidence
 
         data = self.get_search_data(
-            "%s%s" % (self.search_url, query),
+            f"{self.search_url}{query}",
             params=params,
             timeout=timeout,
         )
@@ -55,7 +56,7 @@ class AbstractMinimalConnector(ABC):
         """isbn search"""
         params = {}
         data = self.get_search_data(
-            "%s%s" % (self.isbn_search_url, query),
+            f"{self.isbn_search_url}{query}",
             params=params,
         )
         results = []
@@ -129,7 +130,7 @@ class AbstractConnector(AbstractMinimalConnector):
                 work_data = data
 
         if not work_data or not edition_data:
-            raise ConnectorException("Unable to load book data: %s" % remote_id)
+            raise ConnectorException(f"Unable to load book data: {remote_id}")
 
         with transaction.atomic():
             # create activitypub object
@@ -220,9 +221,7 @@ def get_data(url, params=None, timeout=10):
     """wrapper for request.get"""
     # check if the url is blocked
     if models.FederatedServer.is_blocked(url):
-        raise ConnectorException(
-            "Attempting to load data from blocked url: {:s}".format(url)
-        )
+        raise ConnectorException(f"Attempting to load data from blocked url: {url}")
 
     try:
         resp = requests.get(
@@ -286,3 +285,25 @@ class Mapping:
             return self.formatter(value)
         except:  # pylint: disable=bare-except
             return None
+
+
+def infer_physical_format(format_text):
+    """try to figure out what the standardized format is from the free value"""
+    format_text = format_text.lower()
+    if format_text in format_mappings:
+        # try a direct match
+        return format_mappings[format_text]
+    # failing that, try substring
+    matches = [v for k, v in format_mappings.items() if k in format_text]
+    if not matches:
+        return None
+    return matches[0]
+
+
+def unique_physical_format(format_text):
+    """only store the format if it isn't diretly in the format mappings"""
+    format_text = format_text.lower()
+    if format_text in format_mappings:
+        # try a direct match, so saving this would be redundant
+        return None
+    return format_text

@@ -8,7 +8,7 @@ from django.core.files.base import ContentFile
 from django.core.paginator import Paginator
 from django.db import transaction
 from django.db.models import Avg, Q
-from django.http import HttpResponseBadRequest, HttpResponseNotFound
+from django.http import HttpResponseBadRequest, Http404
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.utils.datastructures import MultiValueDictKeyError
@@ -30,25 +30,31 @@ class Book(View):
 
     def get(self, request, book_id, user_statuses=False):
         """info about a book"""
-        user_statuses = user_statuses if request.user.is_authenticated else False
-        try:
-            book = models.Book.objects.select_subclasses().get(id=book_id)
-        except models.Book.DoesNotExist:
-            return HttpResponseNotFound()
-
         if is_api_request(request):
+            book = get_object_or_404(
+                models.Book.objects.select_subclasses(), id=book_id
+            )
             return ActivitypubResponse(book.to_activity())
 
-        if isinstance(book, models.Work):
-            book = book.default_edition
+        user_statuses = user_statuses if request.user.is_authenticated else False
+
+        # it's safe to use this OR because edition and work and subclasses of the same
+        # table, so they never have clashing IDs
+        book = (
+            models.Edition.viewer_aware_objects(request.user)
+            .filter(Q(id=book_id) | Q(parent_work__id=book_id))
+            .order_by("-edition_rank")
+            .select_related("parent_work")
+            .prefetch_related("authors")
+            .first()
+        )
+
         if not book or not book.parent_work:
-            return HttpResponseNotFound()
+            raise Http404()
 
-        work = book.parent_work
-
-        # all reviews for the book
+        # all reviews for all editions of the book
         reviews = privacy_filter(
-            request.user, models.Review.objects.filter(book__in=work.editions.all())
+            request.user, models.Review.objects.filter(book__parent_work__editions=book)
         )
 
         # the reviews to show
@@ -174,7 +180,7 @@ class EditBook(View):
             # check if this is an edition of an existing work
             author_text = book.author_text if book else add_author
             data["book_matches"] = connector_manager.local_search(
-                "%s %s" % (form.cleaned_data.get("title"), author_text),
+                f'{form.cleaned_data.get("title")} {author_text}',
                 min_confidence=0.5,
                 raw=True,
             )[:5]
@@ -185,6 +191,8 @@ class EditBook(View):
             data["confirm_mode"] = True
             # this isn't preserved because it isn't part of the form obj
             data["remove_authors"] = request.POST.getlist("remove_authors")
+            data["cover_url"] = request.POST.get("cover-url")
+
             # make sure the dates are passed in as datetime, they're currently a string
             # QueryDicts are immutable, we need to copy
             formcopy = data["form"].data.copy()
@@ -212,7 +220,7 @@ class EditBook(View):
             if image:
                 book.cover.save(*image, save=False)
         book.save()
-        return redirect("/book/%s" % book.id)
+        return redirect(f"/book/{book.id}")
 
 
 @method_decorator(login_required, name="dispatch")
@@ -238,14 +246,14 @@ class ConfirmEditBook(View):
 
             # get or create author as needed
             for i in range(int(request.POST.get("author-match-count", 0))):
-                match = request.POST.get("author_match-%d" % i)
+                match = request.POST.get(f"author_match-{i}")
                 if not match:
                     return HttpResponseBadRequest()
                 try:
                     # if it's an int, it's an ID
                     match = int(match)
                     author = get_object_or_404(
-                        models.Author, id=request.POST["author_match-%d" % i]
+                        models.Author, id=request.POST[f"author_match-{i}"]
                     )
                 except ValueError:
                     # otherwise it's a name
@@ -261,13 +269,21 @@ class ConfirmEditBook(View):
                     work = models.Work.objects.create(title=form.cleaned_data["title"])
                     work.authors.set(book.authors.all())
                 book.parent_work = work
-                # we don't tell the world when creating a book
-                book.save(broadcast=False)
 
             for author_id in request.POST.getlist("remove_authors"):
                 book.authors.remove(author_id)
 
-        return redirect("/book/%s" % book.id)
+            # import cover, if requested
+            url = request.POST.get("cover-url")
+            if url:
+                image = set_cover_from_url(url)
+                if image:
+                    book.cover.save(*image, save=False)
+
+            # we don't tell the world when creating a book
+            book.save(broadcast=False)
+
+        return redirect(f"/book/{book.id}")
 
 
 @login_required
@@ -283,7 +299,7 @@ def upload_cover(request, book_id):
         if image:
             book.cover.save(*image)
 
-        return redirect("{:s}?cover_error=True".format(book.local_path))
+        return redirect(f"{book.local_path}?cover_error=True")
 
     form = forms.CoverForm(request.POST, request.FILES, instance=book)
     if not form.is_valid() or not form.files.get("cover"):

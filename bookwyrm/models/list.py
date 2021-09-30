@@ -42,7 +42,7 @@ class List(OrderedCollectionMixin, BookWyrmModel):
 
     def get_remote_id(self):
         """don't want the user to be in there in this case"""
-        return "https://%s/list/%d" % (DOMAIN, self.id)
+        return f"https://{DOMAIN}/list/{self.id}"
 
     @property
     def collection_queryset(self):
@@ -91,6 +91,12 @@ class ListItem(CollectionItemMixin, BookWyrmModel):
                 related_list_item=self,
                 notification_type="ADD",
             )
+
+    def raise_not_deletable(self, viewer):
+        """the associated user OR the list owner can delete"""
+        if self.book_list.user == viewer:
+            return
+        super().raise_not_deletable(viewer)
 
     class Meta:
         """A book may only be placed into a list once,
