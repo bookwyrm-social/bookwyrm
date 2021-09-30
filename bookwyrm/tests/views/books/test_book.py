@@ -77,7 +77,11 @@ class BookViews(TestCase):
             },
         )
         # idk how else to filter out these unescape amp errs
-        errors = "\n".join(e for e in errors.split("\n") if "&book" not in e)
+        errors = "\n".join(
+            e
+            for e in errors.split("\n")
+            if "&book" not in e and "id and name attribute" not in e
+        )
         if errors:
             raise Exception(errors)
         self.assertEqual(result.status_code, 200)
@@ -126,6 +130,11 @@ class BookViews(TestCase):
                 "drop-empty-elements": False,
                 "warn-proprietary-attributes": False,
             },
+        )
+        errors = "\n".join(
+            e
+            for e in errors.split("\n")
+            if "&book" not in e and "id and name attribute" not in e
         )
         if errors:
             raise Exception(errors)
