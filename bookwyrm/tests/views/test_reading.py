@@ -245,3 +245,42 @@ class ReadingViews(TestCase):
         self.assertEqual(readthrough.finish_date.day, 7)
         self.assertEqual(readthrough.book, self.book)
         self.assertEqual(readthrough.user, self.local_user)
+
+    def test_update_progress_comment(self, *_):
+        """update progress with commentary"""
+        readthrough = models.ReadThrough.objects.create(
+            user=self.local_user, start_date=timezone.now(), book=self.book
+        )
+        request = self.factory.post(
+            "",
+            {
+                "post-status": True,
+                "privacy": "followers",
+                "start_date": "2020-01-05",
+                "content": "hello hello",
+                "book": self.book.id,
+                "mention_books": self.book.id,
+                "user": self.local_user.id,
+                "id": readthrough.id,
+                "progress": 23,
+                "progress_mode": "PCT",
+            },
+        )
+        request.user = self.local_user
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+            views.update_progress(request, self.book.id)
+
+        status = models.Comment.objects.get()
+        self.assertEqual(status.user, self.local_user)
+        self.assertEqual(status.book, self.book)
+        self.assertFalse(status.mention_books.exists())
+        self.assertEqual(status.privacy, "followers")
+        self.assertEqual(status.content, "<p>hello hello</p>")
+        self.assertIsNone(status.reading_status)
+        self.assertEqual(status.progress, 23)
+        self.assertEqual(status.progress_mode, "PCT")
+
+        self.assertIsNotNone(readthrough.start_date)
+        self.assertIsNone(readthrough.finish_date)
+        self.assertEqual(readthrough.user, self.local_user)
+        self.assertEqual(readthrough.book, self.book)
