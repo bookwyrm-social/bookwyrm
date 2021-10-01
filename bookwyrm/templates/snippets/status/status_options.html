@@ -11,7 +11,7 @@
 {% if status.user == request.user %}
 {# things you can do to your own statuses #}
 <li role="menuitem" class="dropdown-item p-0">
-    <form name="delete-{{ status.id }}" action="/delete-status/{{ status.id }}" method="post">
+    <form name="delete-{{ status.id|uuid }}" action="/delete-status/{{ status.id }}" method="post">
         {% csrf_token %}
         <button class="button is-radiusless is-danger is-light is-fullwidth is-small" type="submit">
             {% trans "Delete status" %}
