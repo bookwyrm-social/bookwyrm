@@ -15,21 +15,15 @@
     </h1>
     {% if book %}
     <dl>
-        <div class="is-flex">
-            <dt class="has-text-weight-semibold">{% trans "Added:" %}</dt>
-            <dd class="ml-2">{{ book.created_date | naturaltime }}</dd>
-        </div>
+        <dt class="is-pulled-left mr-5 has-text-weight-semibold">{% trans "Added:" %}</dt>
+        <dd class="ml-2">{{ book.created_date | naturaltime }}</dd>
 
-        <div class="is-flex">
-            <dt class="has-text-weight-semibold">{% trans "Updated:" %}</dt>
-            <dd class="ml-2">{{ book.updated_date | naturaltime }}</dd>
-        </div>
+        <dt class="is-pulled-left mr-5 has-text-weight-semibold">{% trans "Updated:" %}</dt>
+        <dd class="ml-2">{{ book.updated_date | naturaltime }}</dd>
 
         {% if book.last_edited_by %}
-        <div class="is-flex">
-            <dt class="has-text-weight-semibold">{% trans "Last edited by:" %}</dt>
-            <dd class="ml-2"><a href="{{ book.last_edited_by.remote_id }}">{{ book.last_edited_by.display_name }}</a></dd>
-        </div>
+        <dt class="is-pulled-left mr-5 has-text-weight-semibold">{% trans "Last edited by:" %}</dt>
+        <dd class="ml-2"><a href="{{ book.last_edited_by.remote_id }}">{{ book.last_edited_by.display_name }}</a></dd>
         {% endif %}
 
     </dl>
