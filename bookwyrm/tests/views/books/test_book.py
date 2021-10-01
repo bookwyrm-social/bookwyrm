@@ -2,8 +2,8 @@
 from io import BytesIO
 import pathlib
 from unittest.mock import patch
-
 from PIL import Image
+
 import responses
 
 from django.contrib.auth.models import Group, Permission
@@ -152,180 +152,6 @@ class BookViews(TestCase):
         self.assertEqual(result.status_code, 200)
         self.assertEqual(result.context_data["book"], self.book)
 
-    def test_edit_book_page(self):
-        """there are so many views, this just makes sure it LOADS"""
-        view = views.EditBook.as_view()
-        request = self.factory.get("")
-        request.user = self.local_user
-        request.user.is_superuser = True
-        result = view(request, self.book.id)
-        self.assertIsInstance(result, TemplateResponse)
-        validate_html(result.render())
-        self.assertEqual(result.status_code, 200)
-
-    def test_edit_book(self):
-        """lets a user edit a book"""
-        view = views.EditBook.as_view()
-        self.local_user.groups.add(self.group)
-        form = forms.EditionForm(instance=self.book)
-        form.data["title"] = "New Title"
-        form.data["last_edited_by"] = self.local_user.id
-        request = self.factory.post("", form.data)
-        request.user = self.local_user
-
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-            view(request, self.book.id)
-
-        self.book.refresh_from_db()
-        self.assertEqual(self.book.title, "New Title")
-
-    def test_edit_book_add_author(self):
-        """lets a user edit a book with new authors"""
-        view = views.EditBook.as_view()
-        self.local_user.groups.add(self.group)
-        form = forms.EditionForm(instance=self.book)
-        form.data["title"] = "New Title"
-        form.data["last_edited_by"] = self.local_user.id
-        form.data["add_author"] = "Sappho"
-        request = self.factory.post("", form.data)
-        request.user = self.local_user
-
-        result = view(request, self.book.id)
-        validate_html(result.render())
-
-        # the changes haven't been saved yet
-        self.book.refresh_from_db()
-        self.assertEqual(self.book.title, "Example Edition")
-
-    def test_edit_book_add_new_author_confirm(self):
-        """lets a user edit a book confirmed with new authors"""
-        view = views.ConfirmEditBook.as_view()
-        self.local_user.groups.add(self.group)
-        form = forms.EditionForm(instance=self.book)
-        form.data["title"] = "New Title"
-        form.data["last_edited_by"] = self.local_user.id
-        form.data["author-match-count"] = 1
-        form.data["author_match-0"] = "Sappho"
-        request = self.factory.post("", form.data)
-        request.user = self.local_user
-
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-            view(request, self.book.id)
-
-        self.book.refresh_from_db()
-        self.assertEqual(self.book.title, "New Title")
-        self.assertEqual(self.book.authors.first().name, "Sappho")
-
-    def test_edit_book_remove_author(self):
-        """remove an author from a book"""
-        author = models.Author.objects.create(name="Sappho")
-        self.book.authors.add(author)
-        form = forms.EditionForm(instance=self.book)
-        view = views.EditBook.as_view()
-        self.local_user.groups.add(self.group)
-        form = forms.EditionForm(instance=self.book)
-        form.data["title"] = "New Title"
-        form.data["last_edited_by"] = self.local_user.id
-        form.data["remove_authors"] = [author.id]
-        request = self.factory.post("", form.data)
-        request.user = self.local_user
-
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-            view(request, self.book.id)
-        self.book.refresh_from_db()
-        self.assertEqual(self.book.title, "New Title")
-        self.assertFalse(self.book.authors.exists())
-
-    def test_create_book(self):
-        """create an entirely new book and work"""
-        view = views.ConfirmEditBook.as_view()
-        self.local_user.groups.add(self.group)
-        form = forms.EditionForm()
-        form.data["title"] = "New Title"
-        form.data["last_edited_by"] = self.local_user.id
-        request = self.factory.post("", form.data)
-        request.user = self.local_user
-
-        view(request)
-
-        book = models.Edition.objects.get(title="New Title")
-        self.assertEqual(book.parent_work.title, "New Title")
-
-    def test_create_book_existing_work(self):
-        """create an entirely new book and work"""
-        view = views.ConfirmEditBook.as_view()
-        self.local_user.groups.add(self.group)
-        form = forms.EditionForm()
-        form.data["title"] = "New Title"
-        form.data["parent_work"] = self.work.id
-        form.data["last_edited_by"] = self.local_user.id
-        request = self.factory.post("", form.data)
-        request.user = self.local_user
-
-        view(request)
-
-        book = models.Edition.objects.get(title="New Title")
-        self.assertEqual(book.parent_work, self.work)
-
-    def test_create_book_with_author(self):
-        """create an entirely new book and work"""
-        view = views.ConfirmEditBook.as_view()
-        self.local_user.groups.add(self.group)
-        form = forms.EditionForm()
-        form.data["title"] = "New Title"
-        form.data["author-match-count"] = "1"
-        form.data["author_match-0"] = "Sappho"
-        form.data["last_edited_by"] = self.local_user.id
-        request = self.factory.post("", form.data)
-        request.user = self.local_user
-
-        view(request)
-
-        book = models.Edition.objects.get(title="New Title")
-        self.assertEqual(book.parent_work.title, "New Title")
-        self.assertEqual(book.authors.first().name, "Sappho")
-        self.assertEqual(book.authors.first(), book.parent_work.authors.first())
-
-    def _setup_cover_url(self):  # pylint: disable=no-self-use
-        """creates cover url mock"""
-        cover_url = "http://example.com"
-        image_file = pathlib.Path(__file__).parent.joinpath(
-            "../../../static/images/default_avi.jpg"
-        )
-        image = Image.open(image_file)
-        output = BytesIO()
-        image.save(output, format=image.format)
-        responses.add(
-            responses.GET,
-            cover_url,
-            body=output.getvalue(),
-            status=200,
-        )
-        return cover_url
-
-    @responses.activate
-    def test_create_book_upload_cover_url(self):
-        """create an entirely new book and work with cover url"""
-        self.assertFalse(self.book.cover)
-        self.local_user.groups.add(self.group)
-        cover_url = self._setup_cover_url()
-
-        form = forms.EditionForm()
-        form.data["title"] = "New Title"
-        form.data["last_edited_by"] = self.local_user.id
-        form.data["cover-url"] = cover_url
-        request = self.factory.post("", form.data)
-        request.user = self.local_user
-
-        with patch(
-            "bookwyrm.models.activitypub_mixin.broadcast_task.delay"
-        ) as delay_mock:
-            views.upload_cover(request, self.book.id)
-            self.assertEqual(delay_mock.call_count, 1)
-
-        self.book.refresh_from_db()
-        self.assertTrue(self.book.cover)
-
     def test_upload_cover_file(self):
         """add a cover via file upload"""
         self.assertFalse(self.book.cover)
@@ -356,7 +182,7 @@ class BookViews(TestCase):
         """add a cover via url"""
         self.assertFalse(self.book.cover)
         form = forms.CoverForm(instance=self.book)
-        form.data["cover-url"] = self._setup_cover_url()
+        form.data["cover-url"] = _setup_cover_url()
 
         request = self.factory.post("", form.data)
         request.user = self.local_user
@@ -382,3 +208,21 @@ class BookViews(TestCase):
         self.book.refresh_from_db()
         self.assertEqual(self.book.description, "new description hi")
         self.assertEqual(self.book.last_edited_by, self.local_user)
+
+
+def _setup_cover_url():
+    """creates cover url mock"""
+    cover_url = "http://example.com"
+    image_file = pathlib.Path(__file__).parent.joinpath(
+        "../../../static/images/default_avi.jpg"
+    )
+    image = Image.open(image_file)
+    output = BytesIO()
+    image.save(output, format=image.format)
+    responses.add(
+        responses.GET,
+        cover_url,
+        body=output.getvalue(),
+        status=200,
+    )
+    return cover_url

@@ -41,7 +41,7 @@ class BookViews(TestCase):
         """there are so many views, this just makes sure it LOADS"""
         view = views.Editions.as_view()
         request = self.factory.get("")
-        with patch("bookwyrm.views.editions.is_api_request") as is_api:
+        with patch("bookwyrm.views.books.editions.is_api_request") as is_api:
             is_api.return_value = False
             result = view(request, self.work.id)
         self.assertIsInstance(result, TemplateResponse)
