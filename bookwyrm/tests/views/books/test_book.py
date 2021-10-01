@@ -153,6 +153,11 @@ class BookViews(TestCase):
                 "warn-proprietary-attributes": False,
             },
         )
+        errors = "\n".join(
+            e
+            for e in errors.split("\n")
+            if "&book" not in e and "id and name attribute" not in e
+        )
         if errors:
             raise Exception(errors)
         self.assertEqual(result.status_code, 200)
@@ -169,6 +174,11 @@ class BookViews(TestCase):
                 "drop-empty-elements": False,
                 "warn-proprietary-attributes": False,
             },
+        )
+        errors = "\n".join(
+            e
+            for e in errors.split("\n")
+            if "&book" not in e and "id and name attribute" not in e
         )
         if errors:
             raise Exception(errors)
@@ -201,6 +211,11 @@ class BookViews(TestCase):
                 "warn-proprietary-attributes": False,
             },
         )
+        errors = "\n".join(
+            e
+            for e in errors.split("\n")
+            if "&book" not in e and "id and name attribute" not in e
+        )
         if errors:
             raise Exception(errors)
         self.assertEqual(result.status_code, 200)
@@ -221,6 +236,11 @@ class BookViews(TestCase):
                 "drop-empty-elements": False,
                 "warn-proprietary-attributes": False,
             },
+        )
+        errors = "\n".join(
+            e
+            for e in errors.split("\n")
+            if "&book" not in e and "id and name attribute" not in e
         )
         if errors:
             raise Exception(errors)
@@ -362,7 +382,7 @@ class BookViews(TestCase):
         """creates cover url mock"""
         cover_url = "http://example.com"
         image_file = pathlib.Path(__file__).parent.joinpath(
-            "../../static/images/default_avi.jpg"
+            "../../../static/images/default_avi.jpg"
         )
         image = Image.open(image_file)
         output = BytesIO()
@@ -402,7 +422,7 @@ class BookViews(TestCase):
         """add a cover via file upload"""
         self.assertFalse(self.book.cover)
         image_file = pathlib.Path(__file__).parent.joinpath(
-            "../../static/images/default_avi.jpg"
+            "../../../static/images/default_avi.jpg"
         )
 
         form = forms.CoverForm(instance=self.book)
