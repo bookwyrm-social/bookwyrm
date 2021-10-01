@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-29 18:32+0000\n"
+"POT-Creation-Date: 2021-10-02 01:08+0000\n"
 "PO-Revision-Date: 2021-03-19 11:49+0800\n"
 "Last-Translator: Reese Porter <reesedporter@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -116,17 +116,17 @@ msgstr "Libro"
 
 #: bookwyrm/models/book.py:234
 msgid "Graphic novel"
-msgstr ""
+msgstr "Novela gráfica"
 
 #: bookwyrm/models/book.py:235
 #, fuzzy
 #| msgid "Add cover"
 msgid "Hardcover"
-msgstr "Agregar portada"
+msgstr "Tapa dura"
 
 #: bookwyrm/models/book.py:236
 msgid "Paperback"
-msgstr ""
+msgstr "Tapa blanda"
 
 #: bookwyrm/models/federated_server.py:11
 #: bookwyrm/templates/settings/federation/edit_instance.html:42
@@ -670,37 +670,37 @@ msgstr "Cualquier"
 msgid "Language:"
 msgstr "Idioma:"
 
-#: bookwyrm/templates/book/publisher_info.html:22
+#: bookwyrm/templates/book/publisher_info.html:24
 #, python-format
 msgid "%(format)s"
 msgstr "%(format)s"
 
-#: bookwyrm/templates/book/publisher_info.html:24
+#: bookwyrm/templates/book/publisher_info.html:26
 #, python-format
 msgid "%(format)s, %(pages)s pages"
 msgstr "%(format)s, %(pages)s páginas"
 
-#: bookwyrm/templates/book/publisher_info.html:26
+#: bookwyrm/templates/book/publisher_info.html:28
 #, python-format
 msgid "%(pages)s pages"
 msgstr "%(pages)s páginas"
 
-#: bookwyrm/templates/book/publisher_info.html:38
+#: bookwyrm/templates/book/publisher_info.html:40
 #, python-format
 msgid "%(languages)s language"
 msgstr "idioma %(languages)s"
 
-#: bookwyrm/templates/book/publisher_info.html:64
+#: bookwyrm/templates/book/publisher_info.html:66
 #, python-format
 msgid "Published %(date)s by %(publisher)s."
 msgstr "Publicado %(date)s por %(publisher)s."
 
-#: bookwyrm/templates/book/publisher_info.html:66
+#: bookwyrm/templates/book/publisher_info.html:68
 #, python-format
 msgid "Published %(date)s"
 msgstr "Publicado %(date)s"
 
-#: bookwyrm/templates/book/publisher_info.html:68
+#: bookwyrm/templates/book/publisher_info.html:70
 #, python-format
 msgid "Published by %(publisher)s."
 msgstr "Publicado por %(publisher)s."
@@ -748,7 +748,7 @@ msgstr "Buscar ediciones"
 #: bookwyrm/templates/feed/layout.html:71
 #: bookwyrm/templates/get_started/layout.html:20
 #: bookwyrm/templates/get_started/layout.html:53
-#: bookwyrm/templates/search/book.html:32
+#: bookwyrm/templates/search/book.html:49
 #: bookwyrm/templates/snippets/announcement.html:18
 msgid "Close"
 msgstr "Cerrar"
@@ -1600,7 +1600,7 @@ msgstr "De comisariado"
 msgid "Anyone can suggest books, subject to your approval"
 msgstr "Cualquier usuario puede sugerir libros, en cuanto lo hayas aprobado"
 
-#: bookwyrm/templates/lists/form.html:31 bookwyrm/templates/search/book.html:30
+#: bookwyrm/templates/lists/form.html:31 bookwyrm/templates/search/book.html:47
 #: bookwyrm/templates/settings/reports/reports.html:25
 #: bookwyrm/templates/snippets/announcement.html:16
 msgid "Open"
@@ -1956,15 +1956,19 @@ msgstr "Empezar \"%(book_title)s\""
 msgid "Want to Read \"%(book_title)s\""
 msgstr "Quiero leer \"%(book_title)s\""
 
-#: bookwyrm/templates/search/book.html:64
+#: bookwyrm/templates/search/book.html:85
+msgid "Import book"
+msgstr "Importar libro"
+
+#: bookwyrm/templates/search/book.html:107
 msgid "Load results from other catalogues"
 msgstr "Cargar resultados de otros catálogos"
 
-#: bookwyrm/templates/search/book.html:68
+#: bookwyrm/templates/search/book.html:111
 msgid "Manually add book"
 msgstr "Agregar libro a mano"
 
-#: bookwyrm/templates/search/book.html:73
+#: bookwyrm/templates/search/book.html:116
 msgid "Log in to import or add books."
 msgstr "Iniciar una sesión para importar o agregar libros"
 
@@ -2300,7 +2304,7 @@ msgstr "Editar"
 
 #: bookwyrm/templates/settings/federation/instance.html:79
 msgid "<em>No notes</em>"
-msgstr ""
+msgstr "<em>Sin notas</em>"
 
 #: bookwyrm/templates/settings/federation/instance.html:94
 #: bookwyrm/templates/settings/users/user_moderation_actions.html:8
@@ -2478,7 +2482,7 @@ msgstr "Dirección IP"
 
 #: bookwyrm/templates/settings/ip_blocklist/ip_address_form.html:11
 msgid "Use IP address blocks with caution, and consider using blocks only temporarily, as IP addresses are often shared or change hands. If you block your own IP, you will not be able to access this page."
-msgstr ""
+msgstr "Use los bloqueos de dirección IP con cuidado, y considere usar los bloqueos solo temporalmente, ya que las direcciones IP a menudo son compartidas o cambian de dueños. Si bloqueas tu propia IP, no serás capaz de acceder a esta página"
 
 #: bookwyrm/templates/settings/ip_blocklist/ip_address_form.html:18
 #, fuzzy
@@ -2496,7 +2500,7 @@ msgstr "Importar lista de bloqueo"
 
 #: bookwyrm/templates/settings/ip_blocklist/ip_blocklist.html:18
 msgid "Any traffic from this IP address will get a 404 response when trying to access any part of the application."
-msgstr ""
+msgstr "Cualquier tráfico desde esta dirección IP obtendrá una respuesta 404 cuando trate de acceder cualquier parte de la aplicación"
 
 #: bookwyrm/templates/settings/ip_blocklist/ip_blocklist.html:24
 #, fuzzy
@@ -2512,7 +2516,7 @@ msgstr "No hay ningún usuario bloqueado actualmente."
 
 #: bookwyrm/templates/settings/ip_blocklist/ip_tooltip.html:6
 msgid "You can block IP ranges using CIDR syntax."
-msgstr ""
+msgstr "Puedes bloquear rangos de IP usando la sintaxis CIDR."
 
 #: bookwyrm/templates/settings/layout.html:4
 msgid "Administration"
@@ -3289,10 +3293,6 @@ msgstr "Este informe se enviará a los moderadores de %(site_name)s para la revi
 #: bookwyrm/templates/snippets/report_modal.html:24
 msgid "More info about this report:"
 msgstr "Más información sobre este informe:"
-
-#: bookwyrm/templates/snippets/search_result_text.html:36
-msgid "Import book"
-msgstr "Importar libro"
 
 #: bookwyrm/templates/snippets/shelf_selector.html:4
 msgid "Move book"
