@@ -1,11 +1,11 @@
 """ test for app action functionality """
 from unittest.mock import patch
-from tidylib import tidy_document
 from django.template.response import TemplateResponse
 from django.test import TestCase
 from django.test.client import RequestFactory
 
 from bookwyrm import models, views
+from bookwyrm.tests.validate_html import validate_html
 
 
 class IPBlocklistViews(TestCase):
@@ -37,8 +37,5 @@ class IPBlocklistViews(TestCase):
         result = view(request)
 
         self.assertIsInstance(result, TemplateResponse)
-        html = result.render()
-        _, errors = tidy_document(html.content, options={"drop-empty-elements": False})
-        if errors:
-            raise Exception(errors)
+        validate_html(result.render())
         self.assertEqual(result.status_code, 200)

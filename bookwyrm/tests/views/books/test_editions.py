@@ -1,6 +1,5 @@
 """ test for app action functionality """
 from unittest.mock import patch
-from tidylib import tidy_document
 
 from django.template.response import TemplateResponse
 from django.test import TestCase
@@ -8,6 +7,7 @@ from django.test.client import RequestFactory
 
 from bookwyrm import models, views
 from bookwyrm.activitypub import ActivitypubResponse
+from bookwyrm.tests.validate_html import validate_html
 
 
 class BookViews(TestCase):
@@ -45,16 +45,7 @@ class BookViews(TestCase):
             is_api.return_value = False
             result = view(request, self.work.id)
         self.assertIsInstance(result, TemplateResponse)
-        html = result.render()
-        _, errors = tidy_document(
-            html.content,
-            options={
-                "drop-empty-elements": False,
-                "warn-proprietary-attributes": False,
-            },
-        )
-        if errors:
-            raise Exception(errors)
+        validate_html(result.render())
         self.assertEqual(result.status_code, 200)
         self.assertTrue("paperback" in result.context_data["formats"])
 
@@ -71,16 +62,7 @@ class BookViews(TestCase):
             is_api.return_value = False
             result = view(request, self.work.id)
         self.assertIsInstance(result, TemplateResponse)
-        html = result.render()
-        _, errors = tidy_document(
-            html.content,
-            options={
-                "drop-empty-elements": False,
-                "warn-proprietary-attributes": False,
-            },
-        )
-        if errors:
-            raise Exception(errors)
+        validate_html(result.render())
         self.assertEqual(result.status_code, 200)
         self.assertEqual(len(result.context_data["editions"].object_list), 2)
         self.assertEqual(len(result.context_data["formats"]), 2)
@@ -91,16 +73,7 @@ class BookViews(TestCase):
         with patch("bookwyrm.views.editions.is_api_request") as is_api:
             is_api.return_value = False
             result = view(request, self.work.id)
-        html = result.render()
-        _, errors = tidy_document(
-            html.content,
-            options={
-                "drop-empty-elements": False,
-                "warn-proprietary-attributes": False,
-            },
-        )
-        if errors:
-            raise Exception(errors)
+        validate_html(result.render())
         self.assertEqual(result.status_code, 200)
         self.assertEqual(len(result.context_data["editions"].object_list), 1)
 
@@ -108,16 +81,7 @@ class BookViews(TestCase):
         with patch("bookwyrm.views.editions.is_api_request") as is_api:
             is_api.return_value = False
             result = view(request, self.work.id)
-        html = result.render()
-        _, errors = tidy_document(
-            html.content,
-            options={
-                "drop-empty-elements": False,
-                "warn-proprietary-attributes": False,
-            },
-        )
-        if errors:
-            raise Exception(errors)
+        validate_html(result.render())
         self.assertEqual(result.status_code, 200)
         self.assertEqual(len(result.context_data["editions"].object_list), 1)
 
@@ -125,16 +89,7 @@ class BookViews(TestCase):
         with patch("bookwyrm.views.editions.is_api_request") as is_api:
             is_api.return_value = False
             result = view(request, self.work.id)
-        html = result.render()
-        _, errors = tidy_document(
-            html.content,
-            options={
-                "drop-empty-elements": False,
-                "warn-proprietary-attributes": False,
-            },
-        )
-        if errors:
-            raise Exception(errors)
+        validate_html(result.render())
         self.assertEqual(result.status_code, 200)
         self.assertEqual(len(result.context_data["editions"].object_list), 1)
 

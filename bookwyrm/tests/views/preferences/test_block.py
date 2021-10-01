@@ -1,12 +1,12 @@
 """ test for app action functionality """
 from unittest.mock import patch
-from tidylib import tidy_document
 
 from django.template.response import TemplateResponse
 from django.test import TestCase
 from django.test.client import RequestFactory
 
 from bookwyrm import models, views
+from bookwyrm.tests.validate_html import validate_html
 
 
 @patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
@@ -46,10 +46,7 @@ class BlockViews(TestCase):
         request.user = self.local_user
         result = view(request)
         self.assertIsInstance(result, TemplateResponse)
-        html = result.render()
-        _, errors = tidy_document(html.content)
-        if errors:
-            raise Exception(errors)
+        validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
     def test_block_post(self, _):

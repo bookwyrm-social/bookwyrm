@@ -1,7 +1,6 @@
 """ test for app action functionality """
 import json
 from unittest.mock import patch
-from tidylib import tidy_document
 
 from django.core.exceptions import PermissionDenied
 from django.template.response import TemplateResponse
@@ -10,6 +9,7 @@ from django.test.client import RequestFactory
 
 from bookwyrm import forms, models, views
 from bookwyrm.activitypub import ActivitypubResponse
+from bookwyrm.tests.validate_html import validate_html
 
 
 @patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
@@ -56,16 +56,7 @@ class ShelfViews(TestCase):
             is_api.return_value = False
             result = view(request, self.local_user.username, shelf.identifier)
         self.assertIsInstance(result, TemplateResponse)
-        html = result.render()
-        _, errors = tidy_document(
-            html.content,
-            options={
-                "drop-empty-elements": False,
-                "warn-proprietary-attributes": False,
-            },
-        )
-        if errors:
-            raise Exception(errors)
+        validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
         with patch("bookwyrm.views.shelf.is_api_request") as is_api:

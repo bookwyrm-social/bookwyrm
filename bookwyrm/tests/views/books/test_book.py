@@ -2,7 +2,6 @@
 from io import BytesIO
 import pathlib
 from unittest.mock import patch
-from tidylib import tidy_document
 
 from PIL import Image
 import responses
@@ -18,6 +17,7 @@ from django.utils import timezone
 
 from bookwyrm import forms, models, views
 from bookwyrm.activitypub import ActivitypubResponse
+from bookwyrm.tests.validate_html import validate_html
 
 
 class BookViews(TestCase):
@@ -68,22 +68,8 @@ class BookViews(TestCase):
             is_api.return_value = False
             result = view(request, self.book.id)
         self.assertIsInstance(result, TemplateResponse)
-        html = result.render()
-        _, errors = tidy_document(
-            html.content,
-            options={
-                "drop-empty-elements": False,
-                "warn-proprietary-attributes": False,
-            },
-        )
-        # idk how else to filter out these unescape amp errs
-        errors = "\n".join(
-            e
-            for e in errors.split("\n")
-            if "&book" not in e and "id and name attribute" not in e
-        )
-        if errors:
-            raise Exception(errors)
+        validate_html(result.render())
+
         self.assertEqual(result.status_code, 200)
 
         with patch("bookwyrm.views.books.books.is_api_request") as is_api:
@@ -123,21 +109,8 @@ class BookViews(TestCase):
             is_api.return_value = False
             result = view(request, self.book.id, user_statuses="review")
         self.assertIsInstance(result, TemplateResponse)
-        html = result.render()
-        _, errors = tidy_document(
-            html.content,
-            options={
-                "drop-empty-elements": False,
-                "warn-proprietary-attributes": False,
-            },
-        )
-        errors = "\n".join(
-            e
-            for e in errors.split("\n")
-            if "&book" not in e and "id and name attribute" not in e
-        )
-        if errors:
-            raise Exception(errors)
+        validate_html(result.render())
+
         self.assertEqual(result.status_code, 200)
         self.assertEqual(result.context_data["statuses"].object_list[0], review)
 
@@ -145,21 +118,7 @@ class BookViews(TestCase):
             is_api.return_value = False
             result = view(request, self.book.id, user_statuses="comment")
         self.assertIsInstance(result, TemplateResponse)
-        html = result.render()
-        _, errors = tidy_document(
-            html.content,
-            options={
-                "drop-empty-elements": False,
-                "warn-proprietary-attributes": False,
-            },
-        )
-        errors = "\n".join(
-            e
-            for e in errors.split("\n")
-            if "&book" not in e and "id and name attribute" not in e
-        )
-        if errors:
-            raise Exception(errors)
+        validate_html(result.render())
         self.assertEqual(result.status_code, 200)
         self.assertEqual(result.context_data["statuses"].object_list[0], comment)
 
@@ -167,21 +126,7 @@ class BookViews(TestCase):
             is_api.return_value = False
             result = view(request, self.book.id, user_statuses="quotation")
         self.assertIsInstance(result, TemplateResponse)
-        html = result.render()
-        _, errors = tidy_document(
-            html.content,
-            options={
-                "drop-empty-elements": False,
-                "warn-proprietary-attributes": False,
-            },
-        )
-        errors = "\n".join(
-            e
-            for e in errors.split("\n")
-            if "&book" not in e and "id and name attribute" not in e
-        )
-        if errors:
-            raise Exception(errors)
+        validate_html(result.render())
         self.assertEqual(result.status_code, 200)
         self.assertEqual(result.context_data["statuses"].object_list[0], quote)
 
@@ -203,21 +148,7 @@ class BookViews(TestCase):
         with patch("bookwyrm.views.books.books.is_api_request") as is_api:
             is_api.return_value = False
             result = view(request, self.work.id)
-        html = result.render()
-        _, errors = tidy_document(
-            html.content,
-            options={
-                "drop-empty-elements": False,
-                "warn-proprietary-attributes": False,
-            },
-        )
-        errors = "\n".join(
-            e
-            for e in errors.split("\n")
-            if "&book" not in e and "id and name attribute" not in e
-        )
-        if errors:
-            raise Exception(errors)
+        validate_html(result.render())
         self.assertEqual(result.status_code, 200)
         self.assertEqual(result.context_data["book"], self.book)
 
@@ -229,21 +160,7 @@ class BookViews(TestCase):
         request.user.is_superuser = True
         result = view(request, self.book.id)
         self.assertIsInstance(result, TemplateResponse)
-        html = result.render()
-        _, errors = tidy_document(
-            html.content,
-            options={
-                "drop-empty-elements": False,
-                "warn-proprietary-attributes": False,
-            },
-        )
-        errors = "\n".join(
-            e
-            for e in errors.split("\n")
-            if "&book" not in e and "id and name attribute" not in e
-        )
-        if errors:
-            raise Exception(errors)
+        validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
     def test_edit_book(self):
@@ -274,16 +191,7 @@ class BookViews(TestCase):
         request.user = self.local_user
 
         result = view(request, self.book.id)
-        html = result.render()
-        _, errors = tidy_document(
-            html.content,
-            options={
-                "drop-empty-elements": False,
-                "warn-proprietary-attributes": False,
-            },
-        )
-        if errors:
-            raise Exception(errors)
+        validate_html(result.render())
 
         # the changes haven't been saved yet
         self.book.refresh_from_db()
