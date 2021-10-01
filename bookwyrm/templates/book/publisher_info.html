@@ -7,15 +7,16 @@
 {% firstof book.physical_format book.physical_format_detail as format_property %}
 {% with pages=book.pages %}
 {% if format or pages %}
+
+{% if format_property %}
+<meta itemprop="bookFormat" content="{{ format_property }}">
+{% endif %}
+
+{% if pages %}
+<meta itemprop="numberOfPages" content="{{ pages }}">
+{% endif %}
+
 <p>
-    {% if format_property %}
-        <meta itemprop="bookFormat" content="{{ format_property }}">
-    {% endif %}
-
-    {% if pages %}
-        <meta itemprop="numberOfPages" content="{{ pages }}">
-    {% endif %}
-
     {% if format and not pages %}
         {% blocktrans %}{{ format }}{% endblocktrans %}
     {% elif format and pages %}
@@ -41,13 +42,13 @@
 
 {% with date=book.published_date|naturalday publisher=book.publishers|join:', ' %}
 {% if date or book.first_published_date or book.publishers %}
+{% if date or book.first_published_date %}
+    <meta
+        itemprop="datePublished"
+        content="{{ book.first_published_date|default:book.published_date|date:'Y-m-d' }}"
+    >
+{% endif %}
 <p>
-    {% if date or book.first_published_date %}
-        <meta
-            itemprop="datePublished"
-            content="{{ book.first_published_date|default:book.published_date|date:'Y-m-d' }}"
-        >
-    {% endif %}
 
     {% comment %}
         @todo The publisher property needs to be an Organization or a Person. We’ll be using Thing which is the more generic ancestor.

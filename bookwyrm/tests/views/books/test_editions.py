@@ -45,7 +45,7 @@ class BookViews(TestCase):
             is_api.return_value = False
             result = view(request, self.work.id)
         self.assertIsInstance(result, TemplateResponse)
-        #validate_html(result.render())
+        validate_html(result.render())
         self.assertEqual(result.status_code, 200)
         self.assertTrue("paperback" in result.context_data["formats"])
 

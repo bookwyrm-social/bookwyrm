@@ -47,7 +47,6 @@ class EditBookViews(TestCase):
 
         models.SiteSettings.objects.create()
 
-
     def test_edit_book_page(self):
         """there are so many views, this just makes sure it LOADS"""
         view = views.EditBook.as_view()
