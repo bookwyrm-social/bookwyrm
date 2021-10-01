@@ -51,8 +51,7 @@ from .list import save_list, unsave_list, delete_list
 from .login import Login, Logout
 from .notifications import Notifications
 from .outbox import Outbox
-from .reading import edit_readthrough, create_readthrough
-from .reading import delete_readthrough, delete_progressupdate
+from .reading import create_readthrough, delete_readthrough, delete_progressupdate
 from .reading import ReadingStatus
 from .register import Register, ConfirmEmail, ConfirmEmailCode, resend_link
 from .rss_feed import RssFeed
@@ -62,6 +61,7 @@ from .shelf import Shelf
 from .shelf import create_shelf, delete_shelf
 from .shelf import shelve, unshelve
 from .status import CreateStatus, DeleteStatus, DeleteAndRedraft, update_progress
+from .status import edit_readthrough
 from .updates import get_notification_count, get_unread_status_count
 from .user import User, Followers, Following, hide_suggestions
 from .wellknown import *

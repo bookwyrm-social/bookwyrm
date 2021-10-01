@@ -1,5 +1,10 @@
 """ helper functions used in various views """
 import re
+from datetime import datetime
+import dateutil.parser
+import dateutil.tz
+from dateutil.parser import ParserError
+
 from requests import HTTPError
 from django.core.exceptions import FieldError
 from django.db.models import Q
@@ -180,3 +185,15 @@ def get_landing_books():
             .order_by("-review__published_date")[:6]
         )
     )
+
+
+def load_date_in_user_tz_as_utc(date_str: str, user: models.User) -> datetime:
+    """ensures that data is stored consistently in the UTC timezone"""
+    if not date_str:
+        return None
+    user_tz = dateutil.tz.gettz(user.preferred_timezone)
+    date = dateutil.parser.parse(date_str, ignoretz=True)
+    try:
+        return date.replace(tzinfo=user_tz).astimezone(dateutil.tz.UTC)
+    except ParserError:
+        return None
