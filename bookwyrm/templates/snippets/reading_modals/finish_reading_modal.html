@@ -35,3 +35,7 @@ Finish "<em>{{ book_title }}</em>"
     </div>
 </div>
 {% endblock %}
+
+{% block form %}
+{% include "snippets/reading_modals/form.html" with optional=True type="finish_modal" %}
+{% endblock %}

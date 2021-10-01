@@ -1,6 +1,10 @@
 {% load i18n %}
 <div class="content">
-    <p>{% blocktrans %}Set a goal for how many books you'll finish reading in {{ year }}, and track your progress throughout the year.{% endblocktrans %}</p>
+    <p>
+        {% blocktrans trimmed %}
+        Set a goal for how many books you'll finish reading in {{ year }}, and track your progress throughout the year.
+        {% endblocktrans %}
+    </p>
 
     <form method="post" name="goal" action="{% url 'user-goal' request.user.localname year %}">
         {% csrf_token %}
@@ -20,7 +24,7 @@
 
             <div class="column">
                 <label class="label" for="privacy_{{ goal.id }}">{% trans "Goal privacy:" %}</label>
-                {% include 'snippets/privacy_select.html' with no_label=True current=goal.privacy uuid=goal.id %}
+                {% include 'snippets/privacy_select.html' with no_label=True current=goal.privacy privacy_uuid=goal.id %}
             </div>
         </div>
 

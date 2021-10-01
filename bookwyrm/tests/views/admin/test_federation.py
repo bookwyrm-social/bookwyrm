@@ -1,7 +1,6 @@
 """ test for app action functionality """
 import json
 from unittest.mock import patch
-from tidylib import tidy_document
 
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.template.response import TemplateResponse
@@ -9,6 +8,7 @@ from django.test import TestCase
 from django.test.client import RequestFactory
 
 from bookwyrm import forms, models, views
+from bookwyrm.tests.validate_html import validate_html
 
 
 class FederationViews(TestCase):
@@ -48,16 +48,7 @@ class FederationViews(TestCase):
         request.user.is_superuser = True
         result = view(request)
         self.assertIsInstance(result, TemplateResponse)
-        html = result.render()
-        _, errors = tidy_document(
-            html.content,
-            options={
-                "drop-empty-elements": False,
-                "warn-proprietary-attributes": False,
-            },
-        )
-        if errors:
-            raise Exception(errors)
+        validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
     def test_instance_page(self):
@@ -70,10 +61,7 @@ class FederationViews(TestCase):
 
         result = view(request, server.id)
         self.assertIsInstance(result, TemplateResponse)
-        html = result.render()
-        _, errors = tidy_document(html.content, options={"drop-empty-elements": False})
-        if errors:
-            raise Exception(errors)
+        validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
     def test_server_page_block(self):
@@ -162,10 +150,7 @@ class FederationViews(TestCase):
 
         result = view(request)
         self.assertIsInstance(result, TemplateResponse)
-        html = result.render()
-        _, errors = tidy_document(html.content)
-        if errors:
-            raise Exception(errors)
+        validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
     def test_add_view_post_create(self):

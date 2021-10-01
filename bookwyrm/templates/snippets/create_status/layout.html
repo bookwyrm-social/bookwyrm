@@ -19,7 +19,7 @@ reply_parent: the Status object this post will be in reply to, if applicable
     name="{{ type }}"
     action="/post/{{ type }}"
     method="post"
-    id="tab_{{ type }}_{{ book.id }}{{ reply_parent.id }}"
+    id="form_{{ type }}_{{ book.id }}{{ reply_parent.id }}"
 >
 {% endblock %}
 
@@ -36,7 +36,7 @@ reply_parent: the Status object this post will be in reply to, if applicable
     {# fields that go between the content warnings and the content field (ie, quote) #}
     {% block pre_content_additions %}{% endblock %}
 
-    <label class="label" for="id_content_{{ type }}_{{ book.id }}{{ reply_parent.id }}">
+    <label class="label" for="id_content_{{ type }}_{{ book.id }}{{ reply_parent.id }}{{ uuid }}">
         {% block content_label %}
             {% trans "Comment:" %}
         {% endblock %}

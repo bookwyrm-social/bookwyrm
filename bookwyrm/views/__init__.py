@@ -27,13 +27,15 @@ from .preferences.edit_user import EditUser
 from .preferences.delete_user import DeleteUser
 from .preferences.block import Block, unblock
 
+# books
+from .books.books import Book, upload_cover, add_description, resolve_book
+from .books.edit_book import EditBook, ConfirmEditBook
+from .books.editions import Editions, switch_edition
+
 # misc views
 from .author import Author, EditAuthor
-from .books import Book, EditBook, ConfirmEditBook
-from .books import upload_cover, add_description, resolve_book
 from .directory import Directory
 from .discover import Discover
-from .editions import Editions, switch_edition
 from .feed import DirectMessage, Feed, Replies, Status
 from .follow import follow, unfollow
 from .follow import accept_follow_request, delete_follow_request

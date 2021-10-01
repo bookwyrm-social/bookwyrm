@@ -1,6 +1,5 @@
 """ test for app action functionality """
 from unittest.mock import patch
-from tidylib import tidy_document
 
 from django.contrib.auth.models import AnonymousUser
 from django.http.response import Http404
@@ -10,6 +9,7 @@ from django.test.client import RequestFactory
 
 from bookwyrm import models, views
 from bookwyrm.activitypub import ActivitypubResponse
+from bookwyrm.tests.validate_html import validate_html
 
 
 class UserViews(TestCase):
@@ -56,16 +56,7 @@ class UserViews(TestCase):
             is_api.return_value = False
             result = view(request, "mouse")
         self.assertIsInstance(result, TemplateResponse)
-        html = result.render()
-        _, errors = tidy_document(
-            html.content,
-            options={
-                "drop-empty-elements": False,
-                "warn-proprietary-attributes": False,
-            },
-        )
-        if errors:
-            raise Exception(errors)
+        validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
         request.user = self.anonymous_user
@@ -73,16 +64,7 @@ class UserViews(TestCase):
             is_api.return_value = False
             result = view(request, "mouse")
         self.assertIsInstance(result, TemplateResponse)
-        html = result.render()
-        _, errors = tidy_document(
-            html.content,
-            options={
-                "drop-empty-elements": False,
-                "warn-proprietary-attributes": False,
-            },
-        )
-        if errors:
-            raise Exception(errors)
+        validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
         with patch("bookwyrm.views.user.is_api_request") as is_api:
@@ -111,16 +93,7 @@ class UserViews(TestCase):
             is_api.return_value = False
             result = view(request, "mouse")
         self.assertIsInstance(result, TemplateResponse)
-        html = result.render()
-        _, errors = tidy_document(
-            html.content,
-            options={
-                "drop-empty-elements": False,
-                "warn-proprietary-attributes": False,
-            },
-        )
-        if errors:
-            raise Exception(errors)
+        validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
         with patch("bookwyrm.views.user.is_api_request") as is_api:
@@ -151,16 +124,7 @@ class UserViews(TestCase):
             is_api.return_value = False
             result = view(request, "mouse")
         self.assertIsInstance(result, TemplateResponse)
-        html = result.render()
-        _, errors = tidy_document(
-            html.content,
-            options={
-                "drop-empty-elements": False,
-                "warn-proprietary-attributes": False,
-            },
-        )
-        if errors:
-            raise Exception(errors)
+        validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
         with patch("bookwyrm.views.user.is_api_request") as is_api:

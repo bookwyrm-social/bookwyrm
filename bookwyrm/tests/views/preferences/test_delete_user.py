@@ -1,7 +1,6 @@
 """ test for app action functionality """
 import json
 from unittest.mock import patch
-from tidylib import tidy_document
 
 from django.contrib.sessions.middleware import SessionMiddleware
 from django.template.response import TemplateResponse
@@ -9,6 +8,7 @@ from django.test import TestCase
 from django.test.client import RequestFactory
 
 from bookwyrm import forms, models, views
+from bookwyrm.tests.validate_html import validate_html
 
 
 @patch("bookwyrm.suggested_users.remove_user_task.delay")
@@ -53,10 +53,7 @@ class DeleteUserViews(TestCase):
         request.user = self.local_user
         result = view(request)
         self.assertIsInstance(result, TemplateResponse)
-        html = result.render()
-        _, errors = tidy_document(html.content)
-        if errors:
-            raise Exception(errors)
+        validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
     @patch("bookwyrm.suggested_users.rerank_suggestions_task")

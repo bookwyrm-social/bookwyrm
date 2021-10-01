@@ -10,7 +10,7 @@
 </div>
 {# Only show progress for editing existing readthroughs #}
 {% if readthrough.id and not readthrough.finish_date %}
-<label class="label" for="id_progress_{{ readthrough.id }}">
+<label class="label" for="id_progress_{{ readthrough.id }}{{ controls_uid }}">
     {% trans "Progress" %}
 </label>
 {% include "snippets/progress_field.html" %}

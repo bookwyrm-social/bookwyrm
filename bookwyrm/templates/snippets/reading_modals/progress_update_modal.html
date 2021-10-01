@@ -12,6 +12,10 @@
 {% endblock %}
 
 {% block reading-dates %}
-<label for="id_progress_{{ readthrough.id }}" class="label">{% trans "Progress:" %}</label>
+<label for="id_progress_{{ readthrough.id }}{{ controls_uid }}" class="label">{% trans "Progress:" %}</label>
 {% include "snippets/progress_field.html" with progress_required=True %}
+{% endblock %}
+
+{% block form %}
+{% include "snippets/reading_modals/form.html" with optional=False type="update_modal" %}
 {% endblock %}
