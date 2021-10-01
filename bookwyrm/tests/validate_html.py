@@ -1,8 +1,9 @@
 """ html validation on rendered templates """
 from tidylib import tidy_document
 
+
 def validate_html(html):
-    """ run tidy on html """
+    """run tidy on html"""
     _, errors = tidy_document(
         html.content,
         options={

@@ -7,6 +7,7 @@ from django.test.client import RequestFactory
 from bookwyrm import models, views
 from bookwyrm.tests.validate_html import validate_html
 
+
 class DashboardViews(TestCase):
     """every response to a get request, html or json"""
 
