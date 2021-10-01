@@ -3,7 +3,10 @@
 {% load utilities %}
 
 {% block card-header %}
-<div class="card-header-title has-background-white-ter is-block">
+<div
+    class="card-header-title has-background-white-ter is-block"
+    {% if main %}id="anchor-{{ status.id }}"{% endif %}
+>
     {% include 'snippets/status/header.html' with status=status %}
 </div>
 {% endblock %}
