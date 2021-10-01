@@ -76,6 +76,10 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
 
         super().save(*args, **kwargs)
 
+        if not self.reply_parent:
+            self.thread_id = self.id
+        super().save(broadcast=False, update_fields=["thread_id"])
+
     def delete(self, *args, **kwargs):  # pylint: disable=unused-argument
         """ "delete" a status"""
         if hasattr(self, "boosted_status"):

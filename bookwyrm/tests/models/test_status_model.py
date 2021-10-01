@@ -14,6 +14,7 @@ from bookwyrm import activitypub, models, settings
 
 
 # pylint: disable=too-many-public-methods
+# pylint: disable=line-too-long
 @patch("bookwyrm.models.Status.broadcast")
 @patch("bookwyrm.activitystreams.add_status_task.delay")
 @patch("bookwyrm.activitystreams.remove_status_task.delay")
@@ -58,22 +59,31 @@ class Status(TestCase):
 
     def test_replies(self, *_):
         """get a list of replies"""
-        parent = models.Status.objects.create(content="hi", user=self.local_user)
-        child = models.Status.objects.create(
+        parent = models.Status(content="hi", user=self.local_user)
+        parent.save(broadcast=False)
+        child = models.Status(
             content="hello", reply_parent=parent, user=self.local_user
         )
-        models.Review.objects.create(
+        child.save(broadcast=False)
+        sibling = models.Review(
             content="hey", reply_parent=parent, user=self.local_user, book=self.book
         )
-        models.Status.objects.create(
+        sibling.save(broadcast=False)
+        grandchild = models.Status(
             content="hi hello", reply_parent=child, user=self.local_user
         )
+        grandchild.save(broadcast=False)
 
         replies = models.Status.replies(parent)
         self.assertEqual(replies.count(), 2)
         self.assertEqual(replies.first(), child)
         # should select subclasses
         self.assertIsInstance(replies.last(), models.Review)
+
+        self.assertEqual(parent.thread_id, parent.id)
+        self.assertEqual(child.thread_id, parent.id)
+        self.assertEqual(sibling.thread_id, parent.id)
+        self.assertEqual(grandchild.thread_id, parent.id)
 
     def test_status_type(self, *_):
         """class name"""
