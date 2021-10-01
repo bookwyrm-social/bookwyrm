@@ -1,5 +1,4 @@
 {% load status_display %}
-<div class="block">
 
 {% with depth=depth|add:1 %}
     {% if depth <= max_depth and status.reply_parent and direction <= 0 %}
@@ -8,7 +7,9 @@
         {% endwith %}
     {% endif %}
 
-{% include 'snippets/status/status.html' with status=status main=is_root %}
+<div{% if is_root %} class="block mt-5"{% endif %}>
+    {% include 'snippets/status/status.html' with status=status main=is_root %}
+</div>
 
 {% if depth <= max_depth and direction >= 0 %}
     {% for reply in status|replies  %}
@@ -18,5 +19,3 @@
     {% endfor %}
 {% endif %}
 {% endwith %}
-
-</div>
