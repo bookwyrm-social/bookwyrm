@@ -20,24 +20,8 @@
         <span class="is-sr-only">Manager</span>
       </span>
       {% endif %}
-      <!-- TODO: change this to a remove_from_group button -->
-      {% include 'snippets/add_to_group_button.html' with user=member group=group minimal=True %}
-      {% if member.mutuals %}
-      <p class="help">
-          {% blocktrans trimmed with mutuals=member.mutuals|intcomma count counter=member.mutuals %}
-          {{ mutuals }} follower you follow
-          {% plural %}
-          {{ mutuals }} followers you follow{% endblocktrans %}
-      </p>
-      {% elif member.shared_books %}
-      <p class="help">
-          {% blocktrans trimmed with shared_books=member.shared_books|intcomma count counter=member.shared_books %}
-          {{ shared_books }} book on your shelves
-          {% plural %}
-          {{ shared_books }} books on your shelves
-          {% endblocktrans %}
-      </p>
-      {% elif request.user in member.following.all %}
+      {% include 'snippets/remove_from_group_button.html' with user=member group=group minimal=True %}
+      {% if request.user in member.following.all %}
       <p class="help">
           {% trans "Follows you" %}
       </p>
