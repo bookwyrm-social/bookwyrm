@@ -3,6 +3,14 @@
 {% load i18n %}
 {% load utilities %}
 
+{% block primary_link %}{% spaceless %}
+{% if notification.related_list_item.approved %}
+    {{ notification.related_list_item.book_list.local_path }}
+{% else %}
+    {% url 'list-curate' notification.related_list_item.book_list.id %}
+{% endif %}
+{% endspaceless %}{% endblock %}
+
 {% block icon %}
 <span class="icon icon-plus"></span>
 {% endblock %}

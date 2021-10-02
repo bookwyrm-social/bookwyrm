@@ -3,6 +3,10 @@
 {% load i18n %}
 {% load utilities %}
 
+{% block primary_link %}{% spaceless %}
+    {{ notification.related_status.local_path }}
+{% endspaceless %}{% endblock %}
+
 {% block icon %}
 <span class="icon icon-boost"></span>
 {% endblock %}

@@ -1,5 +1,6 @@
 {% extends 'layout.html' %}
 {% load i18n %}
+{% load static %}
 
 {% block title %}{% trans "Notifications" %}{% endblock %}
 
@@ -44,4 +45,8 @@
     <p>{% trans "You're all caught up!" %}</p>
     {% endif %}
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static "js/block_href.js" %}?v={{ js_cache }}"></script>
 {% endblock %}
