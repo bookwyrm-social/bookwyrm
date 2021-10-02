@@ -91,9 +91,9 @@ class ListItem(CollectionItemMixin, BookWyrmModel):
         self.book_list.save(broadcast=False)
 
         list_owner = self.book_list.user
+        model = apps.get_model("bookwyrm.Notification", require_ready=True)
         # create a notification if somoene ELSE added to a local user's list
         if created and list_owner.local and list_owner != self.user:
-            model = apps.get_model("bookwyrm.Notification", require_ready=True)
             model.objects.create(
                 user=list_owner,
                 related_user=self.user,
@@ -101,9 +101,15 @@ class ListItem(CollectionItemMixin, BookWyrmModel):
                 notification_type="ADD",
             )
 
-        # TODO: send a notification to all team members except the one who added the book
-        # for team curated lists
-
+        if self.book_list.group:
+            for membership in self.book_list.group.memberships.all():
+                if membership.user != self.user:
+                    model.objects.create(
+                        user=membership.user,
+                        related_user=self.user,
+                        related_list_item=self,
+                        notification_type="ADD"
+            )
     class Meta:
         """A book may only be placed into a list once,
         and each order in the list may be used only once"""
