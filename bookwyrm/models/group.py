@@ -132,11 +132,11 @@ class GroupMemberInvitation(models.Model):
 
         with transaction.atomic():
             BookwyrmGroupMember.from_request(self)
-            self.delete()
 
             # let the other members know about it
             model = apps.get_model("bookwyrm.Notification", require_ready=True)
-            for member in self.group.members.all:
+            for membership in self.group.memberships.all():
+                member = membership.user 
                 if member != self.user:
                     model.objects.create(
                         user=member,
