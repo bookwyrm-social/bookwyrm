@@ -189,6 +189,9 @@ def remove_member(request):
             membership = models.GroupMember.objects.get(group=group,user=user)
             membership.delete()
 
+            # remove this user's group-curated lists from the group
+            models.List.objects.filter(group=group,user=user).update(group=None,curation="closed")
+
         except IntegrityError:
             pass
 
