@@ -110,12 +110,12 @@ class Status(View):
             )
 
         visible_thread = privacy_filter(
-            request.user,
-            models.Status.objects.filter(thread_id=status.thread_id)
+            request.user, models.Status.objects.filter(thread_id=status.thread_id)
         ).values_list("id", flat=True)
         visible_thread = list(visible_thread)
 
-        children = models.Status.objects.select_subclasses().raw("""
+        children = models.Status.objects.select_subclasses().raw(
+            """
             WITH RECURSIVE get_thread(depth, id, path) AS (
 
                 SELECT 1, st.id, ARRAY[st.id]
@@ -132,8 +132,9 @@ class Status(View):
             )
 
             SELECT * FROM get_thread ORDER BY path;
-        """, params=[status.id, visible_thread, visible_thread])
-
+        """,
+            params=[status.id, visible_thread, visible_thread],
+        )
 
         data = {
             **feed_page_data(request.user),
