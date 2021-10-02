@@ -194,7 +194,7 @@ def remove_member(request):
 
         memberships = models.GroupMember.objects.filter(group=group)
         model = apps.get_model("bookwyrm.Notification", require_ready=True)
-        notification_type = "LEAVE" if "self_removal" in request.POST and request.POST["self_removal"] else "REMOVE"
+        notification_type = "LEAVE" if user == request.user else "REMOVE"
         # let the other members know about it
         for membership in memberships:
             member = membership.user 

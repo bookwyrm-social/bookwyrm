@@ -2,6 +2,7 @@
 {% load utilities %}
 {% load humanize %}
 {% load bookwyrm_tags %}
+{% load bookwyrm_group_tags %}
 
 <h2 class="title is-5">Group Members</h2>
 <p class="subtitle is-6">{% trans "Members can add and remove books on a group's book lists" %}</p>
@@ -30,3 +31,18 @@
     {% endwith %}
     {% endfor %}
   </div>
+
+{% if group.user != request.user and group|is_member:request.user %}
+<form action="{% url 'remove-group-member' %}" method="POST" class="my-4">
+    {% csrf_token %}
+    <input type="hidden" name="group" value="{{ group.id }}">
+    <input type="hidden" name="user" value="{{ user.username }}">
+    <button class="button is-small is-danger is-light" type="submit">
+      {% if show_username %}
+      {% blocktrans with username=user.localname %}Remove @{{ username }}{% endblocktrans %}
+      {% else %}
+      {% trans "Remove self from group" %}
+      {% endif %}
+  </button>
+</form>
+{% endif %}
