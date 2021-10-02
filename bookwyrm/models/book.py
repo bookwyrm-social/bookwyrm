@@ -3,9 +3,10 @@ import re
 
 from django.contrib.postgres.search import SearchVectorField
 from django.contrib.postgres.indexes import GinIndex
-from django.db import models
-from django.db import transaction
+from django.db import models, transaction
+from django.db.models import Prefetch
 from django.dispatch import receiver
+from django.utils.translation import gettext_lazy as _
 from model_utils import FieldTracker
 from model_utils.managers import InheritanceManager
 from imagekit.models import ImageSpecField
@@ -226,6 +227,16 @@ class Work(OrderedCollectionPageMixin, Book):
     deserialize_reverse_fields = [("editions", "editions")]
 
 
+# https://schema.org/BookFormatType
+FormatChoices = [
+    ("AudiobookFormat", _("Audiobook")),
+    ("EBook", _("eBook")),
+    ("GraphicNovel", _("Graphic novel")),
+    ("Hardcover", _("Hardcover")),
+    ("Paperback", _("Paperback")),
+]
+
+
 class Edition(Book):
     """an edition of a book"""
 
@@ -243,7 +254,10 @@ class Edition(Book):
         max_length=255, blank=True, null=True, deduplication_field=True
     )
     pages = fields.IntegerField(blank=True, null=True)
-    physical_format = fields.CharField(max_length=255, blank=True, null=True)
+    physical_format = fields.CharField(
+        max_length=255, choices=FormatChoices, null=True, blank=True
+    )
+    physical_format_detail = fields.CharField(max_length=255, blank=True, null=True)
     publishers = fields.ArrayField(
         models.CharField(max_length=255), blank=True, default=list
     )
@@ -306,6 +320,27 @@ class Edition(Book):
         self.edition_rank = self.get_rank()
 
         return super().save(*args, **kwargs)
+
+    @classmethod
+    def viewer_aware_objects(cls, viewer):
+        """annotate a book query with metadata related to the user"""
+        queryset = cls.objects
+        if not viewer or not viewer.is_authenticated:
+            return queryset
+
+        queryset = queryset.prefetch_related(
+            Prefetch(
+                "shelfbook_set",
+                queryset=viewer.shelfbook_set.all(),
+                to_attr="current_shelves",
+            ),
+            Prefetch(
+                "readthrough_set",
+                queryset=viewer.readthrough_set.filter(is_active=True).all(),
+                to_attr="active_readthroughs",
+            ),
+        )
+        return queryset
 
 
 def isbn_10_to_13(isbn_10):

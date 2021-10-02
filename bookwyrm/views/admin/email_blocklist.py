@@ -22,7 +22,9 @@ class EmailBlocklist(View):
             "domains": models.EmailBlocklist.objects.order_by("-created_date").all(),
             "form": forms.EmailBlocklistForm(),
         }
-        return TemplateResponse(request, "settings/email_blocklist.html", data)
+        return TemplateResponse(
+            request, "settings/email_blocklist/email_blocklist.html", data
+        )
 
     def post(self, request, domain_id=None):
         """create a new domain block"""
@@ -35,11 +37,15 @@ class EmailBlocklist(View):
             "form": form,
         }
         if not form.is_valid():
-            return TemplateResponse(request, "settings/email_blocklist.html", data)
+            return TemplateResponse(
+                request, "settings/email_blocklist/email_blocklist.html", data
+            )
         form.save()
 
         data["form"] = forms.EmailBlocklistForm()
-        return TemplateResponse(request, "settings/email_blocklist.html", data)
+        return TemplateResponse(
+            request, "settings/email_blocklist/email_blocklist.html", data
+        )
 
     # pylint: disable=unused-argument
     def delete(self, request, domain_id):

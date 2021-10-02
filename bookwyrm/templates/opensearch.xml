@@ -1,0 +1,16 @@
+{% load i18n %}{% load static %}<?xml version="1.0" encoding="UTF-8"?>
+<OpenSearchDescription
+    xmlns="http://a9.com/-/spec/opensearch/1.1/"
+    xmlns:moz="http://www.mozilla.org/2006/browser/search/"
+>
+    <ShortName>BW</ShortName>
+    <Description>{% blocktrans trimmed with site_name=site.name %}
+        {{ site_name }} search
+    {% endblocktrans %}</Description>
+    <Image width="16" height="16" type="image/x-icon">{{ image }}</Image>
+    <Url
+        type="text/html"
+        method="get"
+        template="https://{{ DOMAIN }}{% url 'search' %}?q={searchTerms}"
+    />
+</OpenSearchDescription>

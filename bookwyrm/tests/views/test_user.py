@@ -9,6 +9,7 @@ from django.test.client import RequestFactory
 
 from bookwyrm import models, views
 from bookwyrm.activitypub import ActivitypubResponse
+from bookwyrm.tests.validate_html import validate_html
 
 
 class UserViews(TestCase):
@@ -55,7 +56,7 @@ class UserViews(TestCase):
             is_api.return_value = False
             result = view(request, "mouse")
         self.assertIsInstance(result, TemplateResponse)
-        result.render()
+        validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
         request.user = self.anonymous_user
@@ -63,7 +64,7 @@ class UserViews(TestCase):
             is_api.return_value = False
             result = view(request, "mouse")
         self.assertIsInstance(result, TemplateResponse)
-        result.render()
+        validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
         with patch("bookwyrm.views.user.is_api_request") as is_api:
@@ -92,7 +93,7 @@ class UserViews(TestCase):
             is_api.return_value = False
             result = view(request, "mouse")
         self.assertIsInstance(result, TemplateResponse)
-        result.render()
+        validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
         with patch("bookwyrm.views.user.is_api_request") as is_api:
@@ -123,7 +124,7 @@ class UserViews(TestCase):
             is_api.return_value = False
             result = view(request, "mouse")
         self.assertIsInstance(result, TemplateResponse)
-        result.render()
+        validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
         with patch("bookwyrm.views.user.is_api_request") as is_api:

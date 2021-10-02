@@ -1,8 +1,7 @@
 """ views for actions you can take in the application """
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
-from django.http import HttpResponseBadRequest
-from django.shortcuts import redirect
+from django.shortcuts import get_object_or_404, redirect
 from django.views.decorators.http import require_POST
 
 from bookwyrm import models
@@ -78,12 +77,10 @@ def delete_follow_request(request):
     username = request.POST["user"]
     requester = get_user_from_username(request.user, username)
 
-    try:
-        follow_request = models.UserFollowRequest.objects.get(
-            user_subject=requester, user_object=request.user
-        )
-    except models.UserFollowRequest.DoesNotExist:
-        return HttpResponseBadRequest()
+    follow_request = get_object_or_404(
+        models.UserFollowRequest, user_subject=requester, user_object=request.user
+    )
+    follow_request.raise_not_deletable(request.user)
 
     follow_request.delete()
     return redirect(f"/user/{request.user.localname}")

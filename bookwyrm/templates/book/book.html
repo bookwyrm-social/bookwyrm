@@ -203,7 +203,9 @@
             <hr aria-hidden="true">
 
             <section class="box">
+                {% with 0|uuid as controls_uid %}
                 {% include 'snippets/create_status.html' with book=book hide_cover=True %}
+                {% endwith %}
             </section>
             {% endif %}
             <div class="block" id="reviews">

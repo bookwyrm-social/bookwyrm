@@ -1,13 +1,15 @@
 """ test for app action functionality """
 from unittest.mock import patch
-from django.utils import timezone
 
 from django.contrib.auth.models import AnonymousUser
+from django.http import Http404
 from django.template.response import TemplateResponse
 from django.test import TestCase
 from django.test.client import RequestFactory
+from django.utils import timezone
 
 from bookwyrm import models, views
+from bookwyrm.tests.validate_html import validate_html
 
 
 class GoalViews(TestCase):
@@ -60,7 +62,7 @@ class GoalViews(TestCase):
         request.user = self.local_user
 
         result = view(request, self.local_user.localname, self.year)
-        result.render()
+        validate_html(result.render())
         self.assertIsInstance(result, TemplateResponse)
 
     def test_goal_page_anonymous(self):
@@ -91,7 +93,7 @@ class GoalViews(TestCase):
         request.user = self.rat
 
         result = view(request, self.local_user.localname, timezone.now().year)
-        result.render()
+        validate_html(result.render())
         self.assertIsInstance(result, TemplateResponse)
 
     def test_goal_page_private(self):
@@ -103,8 +105,8 @@ class GoalViews(TestCase):
         request = self.factory.get("")
         request.user = self.rat
 
-        result = view(request, self.local_user.localname, self.year)
-        self.assertEqual(result.status_code, 404)
+        with self.assertRaises(Http404):
+            view(request, self.local_user.localname, self.year)
 
     @patch("bookwyrm.activitystreams.add_status_task.delay")
     def test_create_goal(self, _):

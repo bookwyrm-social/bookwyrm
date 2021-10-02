@@ -13,16 +13,21 @@
         {% trans "Post to feed" %}
     </label>
     <div class="is-hidden" id="hide_reading_content_{{ local_uuid }}_{{ uuid }}">
-        <button class="button is-link" type="submit">{% trans "Save" %}</button>
+        <button class="button is-link" type="submit">
+            <span class="icon icon-spinner" aria-hidden="true"></span>
+            <span>{% trans "Save" %}</span>
+        </button>
     </div>
 </div>
 
 <div id="reading_content_{{ local_uuid }}_{{ uuid }}">
     <hr aria-hidden="true">
     <fieldset id="reading_content_fieldset_{{ local_uuid }}_{{ uuid }}">
-        {% include "snippets/reading_modals/form.html" with optional=True %}
+        {% block form %}{% endblock %}
     </fieldset>
 </div>
 {% endwith %}
 
 {% endblock %}
+
+{% block modal-form-close %}</form>{% endblock %}

@@ -5,16 +5,14 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.postgres.search import TrigramSimilarity
 from django.db.models.functions import Greatest
 from django.db.models import Count, Q
-from django.http import HttpResponseNotFound
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
 from django.views import View
 
-from bookwyrm import forms, models
-from bookwyrm.connectors import connector_manager
+from bookwyrm import book_search, forms, models
 from bookwyrm.suggested_users import suggested_users
-from .edit_user import save_user_form
+from .preferences.edit_user import save_user_form
 
 
 # pylint: disable= no-self-use
@@ -55,7 +53,7 @@ class GetStartedBooks(View):
         query = request.GET.get("query")
         book_results = popular_books = []
         if query:
-            book_results = connector_manager.local_search(query, raw=True)[:5]
+            book_results = book_search.search(query)[:5]
         if len(book_results) < 5:
             popular_books = (
                 models.Edition.objects.exclude(
@@ -91,9 +89,8 @@ class GetStartedBooks(View):
         for (book_id, shelf_id) in shelve_actions:
             book = get_object_or_404(models.Edition, id=book_id)
             shelf = get_object_or_404(models.Shelf, id=shelf_id)
-            if shelf.user != request.user:
-                # hmmmmm
-                return HttpResponseNotFound()
+            shelf.raise_not_editable(request.user)
+
             models.ShelfBook.objects.create(book=book, shelf=shelf, user=request.user)
         return redirect(self.next_view)
 

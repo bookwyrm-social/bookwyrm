@@ -1,36 +1,40 @@
 {% load i18n %}
-<form method="post" name="goal" action="{% url 'user-goal' request.user.localname year %}">
-    {% csrf_token %}
-    <input type="hidden" name="year" value="{% if goal %}{{ goal.year }}{% else %}{{ year }}{% endif %}">
-    <input type="hidden" name="user" value="{{ request.user.id }}">
+<div class="content">
+    <p>
+        {% blocktrans trimmed %}
+        Set a goal for how many books you'll finish reading in {{ year }}, and track your progress throughout the year.
+        {% endblocktrans %}
+    </p>
 
-    <div class="columns">
-        <div class="column">
-            <label class="label" for="id_goal">{% trans "Reading goal:" %}</label>
-            <div class="field has-addons">
-                <div class="control">
-                    <input type="number" class="input" name="goal" min="1" id="id_goal" value="{% if goal %}{{ goal.goal }}{% else %}12{% endif %}">
+    <form method="post" name="goal" action="{% url 'user-goal' request.user.localname year %}">
+        {% csrf_token %}
+        <input type="hidden" name="year" value="{% if goal %}{{ goal.year }}{% else %}{{ year }}{% endif %}">
+        <input type="hidden" name="user" value="{{ request.user.id }}">
+
+        <div class="columns">
+            <div class="column">
+                <label class="label" for="id_goal">{% trans "Reading goal:" %}</label>
+                <div class="field has-addons">
+                    <div class="control">
+                        <input type="number" class="input" name="goal" min="1" id="id_goal" value="{% if goal %}{{ goal.goal }}{% else %}12{% endif %}">
+                    </div>
+                    <p class="button is-static" aria-hidden="true">{% trans "books" %}</p>
                 </div>
-                <p class="button is-static" aria-hidden="true">{% trans "books" %}</p>
+            </div>
+
+            <div class="column">
+                <label class="label" for="privacy_{{ goal.id }}">{% trans "Goal privacy:" %}</label>
+                {% include 'snippets/privacy_select.html' with no_label=True current=goal.privacy privacy_uuid=goal.id %}
             </div>
         </div>
 
-        <div class="column">
-            <label class="label"><p class="mb-2">{% trans "Goal privacy:" %}</p>
-                {% include 'snippets/privacy_select.html' with no_label=True current=goal.privacy %}
-            </label>
-        </div>
-    </div>
-    <label for="post_status" class="label">
-        <input type="checkbox" name="post-status" id="post_status" class="checkbox" checked>
-        {% trans "Post to feed" %}
-    </label>
+        <label for="post_status" class="label">
+            <input type="checkbox" name="post-status" id="post_status" class="checkbox" checked>
+            {% trans "Post to feed" %}
+        </label>
 
-    <p>
-        <button type="submit" class="button is-link">{% trans "Set goal" %}</button>
-        {% if goal %}
-        {% trans "Cancel" as button_text %}
-        {% include 'snippets/toggle/close_button.html' with text=button_text controls_text="show_edit_goal" %}
-        {% endif %}
-    </p>
-</form>
+        <div class="field">
+            <button type="submit" class="button is-link">{% trans "Set goal" %}</button>
+        </div>
+    </form>
+</div>

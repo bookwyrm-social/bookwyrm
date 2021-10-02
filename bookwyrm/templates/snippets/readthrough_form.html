@@ -10,20 +10,10 @@
 </div>
 {# Only show progress for editing existing readthroughs #}
 {% if readthrough.id and not readthrough.finish_date %}
-<label class="label" for="id_progress_{{ readthrough.id }}">
+<label class="label" for="id_progress_{{ readthrough.id }}{{ controls_uid }}">
     {% trans "Progress" %}
 </label>
-<div class="field has-addons">
-    <div class="control">
-        <input type="number" name="progress" class="input" id="id_progress_{{ readthrough.id }}" value="{{ readthrough.progress }}">
-    </div>
-    <div class="control select">
-        <select name="progress_mode" aria-label="Progress mode">
-            <option value="PG" {% if readthrough.progress_mode == 'PG' %}selected{% endif %}>{% trans "pages" %}</option>
-            <option value="PCT" {% if readthrough.progress_mode == 'PCT' %}selected{% endif %}>{% trans "percent" %}</option>
-        </select>
-    </div>
-</div>
+{% include "snippets/progress_field.html" %}
 {% endif %}
 <div class="field">
     <label class="label" for="id_finish_date_{{ readthrough.id }}">

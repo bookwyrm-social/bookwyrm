@@ -1,0 +1,116 @@
+{% extends 'layout.html' %}
+{% load i18n %}
+{% load humanize %}
+
+{% block title %}{% if book %}{% blocktrans with book_title=book.title %}Edit "{{ book_title }}"{% endblocktrans %}{% else %}{% trans "Add Book" %}{% endif %}{% endblock %}
+
+{% block content %}
+<header class="block">
+    <h1 class="title level-left">
+        {% if book %}
+        {% blocktrans with book_title=book.title %}Edit "{{ book_title }}"{% endblocktrans %}
+        {% else %}
+        {% trans "Add Book" %}
+        {% endif %}
+    </h1>
+    {% if book %}
+    <dl>
+        <dt class="is-pulled-left mr-5 has-text-weight-semibold">{% trans "Added:" %}</dt>
+        <dd class="ml-2">{{ book.created_date | naturaltime }}</dd>
+
+        <dt class="is-pulled-left mr-5 has-text-weight-semibold">{% trans "Updated:" %}</dt>
+        <dd class="ml-2">{{ book.updated_date | naturaltime }}</dd>
+
+        {% if book.last_edited_by %}
+        <dt class="is-pulled-left mr-5 has-text-weight-semibold">{% trans "Last edited by:" %}</dt>
+        <dd class="ml-2"><a href="{{ book.last_edited_by.remote_id }}">{{ book.last_edited_by.display_name }}</a></dd>
+        {% endif %}
+
+    </dl>
+    {% endif %}
+</header>
+
+<form
+    class="block"
+    {% if book %}
+        name="edit-book"
+        action="{{ book.local_path }}/{% if confirm_mode %}confirm{% else %}edit{% endif %}"
+    {% else %}
+        name="create-book"
+        action="/create-book{% if confirm_mode %}/confirm{% endif %}"
+    {% endif %}
+    method="post"
+    enctype="multipart/form-data"
+>
+    {% if confirm_mode %}
+        <div class="box">
+            <h2 class="title is-4">{% trans "Confirm Book Info" %}</h2>
+            <div class="columns mb-4">
+                {% if author_matches %}
+                <input type="hidden" name="author-match-count" value="{{ author_matches|length }}">
+                <div class="column is-half">
+                    {% for author in author_matches %}
+                    <fieldset>
+                        <legend class="title is-5 mb-1">
+                            {% blocktrans with name=author.name %}Is "{{ name }}" an existing author?{% endblocktrans %}
+                        </legend>
+                        {% with forloop.counter0 as counter %}
+                        {% for match in author.matches %}
+                        <label class="label mb-2">
+                            <input type="radio" name="author_match-{{ counter }}" value="{{ match.id }}" required>
+                            {{ match.name }}
+                        </label>
+                        <p class="help">
+                            <a href="{{ match.local_path }}" target="_blank">{% blocktrans with book_title=match.book_set.first.title %}Author of <em>{{ book_title }}</em>{% endblocktrans %}</a>
+                        </p>
+                        {% endfor %}
+                        <label class="label">
+                            <input type="radio" name="author_match-{{ counter }}" value="{{ author.name }}" required> {% trans "This is a new author" %}
+                        </label>
+                        {% endwith %}
+                    </fieldset>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="column is-half">{% blocktrans with name=add_author %}Creating a new author: {{ name }}{% endblocktrans %}</p>
+                {% endif %}
+
+                {% if not book %}
+                <div class="column is-half">
+                    <fieldset>
+                        <legend class="title is-5 mb-1">
+                            {% trans "Is this an edition of an existing work?" %}
+                        </legend>
+                        {% for match in book_matches %}
+                        <label class="label">
+                            <input type="radio" name="parent_work" value="{{ match.parent_work.id }}"> {{ match.parent_work.title }}
+                        </label>
+                        {% endfor %}
+                        <label>
+                            <input type="radio" name="parent_work" value="0" required> {% trans "This is a new work" %}
+                        </label>
+                    </fieldset>
+                </div>
+                {% endif %}
+            </div>
+
+            <button class="button is-primary" type="submit">{% trans "Confirm" %}</button>
+            <a href="#" class="button" data-back>
+                <span>{% trans "Back" %}</span>
+            </a>
+        </div>
+
+        <hr class="block">
+    {% endif %}
+
+    {% include "book/edit/edit_book_form.html" %}
+
+    {% if not confirm_mode %}
+    <div class="block">
+        <button class="button is-primary" type="submit">{% trans "Save" %}</button>
+        <a class="button" href="{{ book.local_path }}">{% trans "Cancel" %}</a>
+    </div>
+    {% endif %}
+</form>
+
+{% endblock %}

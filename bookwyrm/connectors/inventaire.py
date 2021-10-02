@@ -2,13 +2,14 @@
 import re
 
 from bookwyrm import models
-from .abstract_connector import AbstractConnector, SearchResult, Mapping
+from bookwyrm.book_search import SearchResult
+from .abstract_connector import AbstractConnector, Mapping
 from .abstract_connector import get_data
 from .connector_manager import ConnectorException
 
 
 class Connector(AbstractConnector):
-    """instantiate a connector for OL"""
+    """instantiate a connector for inventaire"""
 
     def __init__(self, identifier):
         super().__init__(identifier)

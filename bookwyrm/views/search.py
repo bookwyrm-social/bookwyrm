@@ -10,6 +10,7 @@ from django.views import View
 
 from bookwyrm import models
 from bookwyrm.connectors import connector_manager
+from bookwyrm.book_search import search, format_search_result
 from bookwyrm.settings import PAGE_LENGTH
 from bookwyrm.utils import regex
 from .helpers import is_api_request, privacy_filter
@@ -31,10 +32,10 @@ class Search(View):
 
         if is_api_request(request):
             # only return local book results via json so we don't cascade
-            book_results = connector_manager.local_search(
-                query, min_confidence=min_confidence
+            book_results = search(query, min_confidence=min_confidence)
+            return JsonResponse(
+                [format_search_result(r) for r in book_results], safe=False
             )
-            return JsonResponse([r.json() for r in book_results], safe=False)
 
         if query and not search_type:
             search_type = "user" if "@" in query else "book"
@@ -69,13 +70,13 @@ class Search(View):
 def book_search(query, _, min_confidence, search_remote=False):
     """the real business is elsewhere"""
     # try a local-only search
-    if not search_remote:
-        results = connector_manager.local_search(query, min_confidence=min_confidence)
-        if results:
-            # gret, we found something
-            return [{"results": results}], False
-    # if there weere no local results, or the request was for remote, search all sources
-    return connector_manager.search(query, min_confidence=min_confidence), True
+    results = [{"results": search(query, min_confidence=min_confidence)}]
+    if results and not search_remote:
+        return results, False
+
+    # if there were no local results, or the request was for remote, search all sources
+    results += connector_manager.search(query, min_confidence=min_confidence)
+    return results, True
 
 
 def user_search(query, viewer, *_):

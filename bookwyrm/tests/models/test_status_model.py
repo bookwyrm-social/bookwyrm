@@ -14,6 +14,7 @@ from bookwyrm import activitypub, models, settings
 
 
 # pylint: disable=too-many-public-methods
+# pylint: disable=line-too-long
 @patch("bookwyrm.models.Status.broadcast")
 @patch("bookwyrm.activitystreams.add_status_task.delay")
 @patch("bookwyrm.activitystreams.remove_status_task.delay")
@@ -52,28 +53,37 @@ class Status(TestCase):
     def test_status_generated_fields(self, *_):
         """setting remote id"""
         status = models.Status.objects.create(content="bleh", user=self.local_user)
-        expected_id = "https://%s/user/mouse/status/%d" % (settings.DOMAIN, status.id)
+        expected_id = f"https://{settings.DOMAIN}/user/mouse/status/{status.id}"
         self.assertEqual(status.remote_id, expected_id)
         self.assertEqual(status.privacy, "public")
 
     def test_replies(self, *_):
         """get a list of replies"""
-        parent = models.Status.objects.create(content="hi", user=self.local_user)
-        child = models.Status.objects.create(
+        parent = models.Status(content="hi", user=self.local_user)
+        parent.save(broadcast=False)
+        child = models.Status(
             content="hello", reply_parent=parent, user=self.local_user
         )
-        models.Review.objects.create(
+        child.save(broadcast=False)
+        sibling = models.Review(
             content="hey", reply_parent=parent, user=self.local_user, book=self.book
         )
-        models.Status.objects.create(
+        sibling.save(broadcast=False)
+        grandchild = models.Status(
             content="hi hello", reply_parent=child, user=self.local_user
         )
+        grandchild.save(broadcast=False)
 
         replies = models.Status.replies(parent)
         self.assertEqual(replies.count(), 2)
         self.assertEqual(replies.first(), child)
         # should select subclasses
         self.assertIsInstance(replies.last(), models.Review)
+
+        self.assertEqual(parent.thread_id, parent.id)
+        self.assertEqual(child.thread_id, parent.id)
+        self.assertEqual(sibling.thread_id, parent.id)
+        self.assertEqual(grandchild.thread_id, parent.id)
 
     def test_status_type(self, *_):
         """class name"""
@@ -104,7 +114,7 @@ class Status(TestCase):
         )
 
         replies = parent.to_replies()
-        self.assertEqual(replies["id"], "%s/replies" % parent.remote_id)
+        self.assertEqual(replies["id"], f"{parent.remote_id}/replies")
         self.assertEqual(replies["totalItems"], 2)
 
     def test_status_to_activity(self, *_):
@@ -168,7 +178,7 @@ class Status(TestCase):
         self.assertEqual(activity["id"], status.remote_id)
         self.assertEqual(
             activity["content"],
-            'mouse test content <a href="%s">"Test Edition"</a>' % self.book.remote_id,
+            f'mouse test content <a href="{self.book.remote_id}">"Test Edition"</a>',
         )
         self.assertEqual(len(activity["tag"]), 2)
         self.assertEqual(activity["type"], "Note")
@@ -177,7 +187,7 @@ class Status(TestCase):
         self.assertEqual(activity["attachment"][0].type, "Document")
         self.assertEqual(
             activity["attachment"][0].url,
-            "https://%s%s" % (settings.DOMAIN, self.book.cover.url),
+            f"https://{settings.DOMAIN}{self.book.cover.url}",
         )
         self.assertEqual(activity["attachment"][0].name, "Test Edition")
 
@@ -202,13 +212,12 @@ class Status(TestCase):
         self.assertEqual(activity["type"], "Note")
         self.assertEqual(
             activity["content"],
-            'test content<p>(comment on <a href="%s">"Test Edition"</a>)</p>'
-            % self.book.remote_id,
+            f'test content<p>(comment on <a href="{self.book.remote_id}">"Test Edition"</a>)</p>',
         )
         self.assertEqual(activity["attachment"][0].type, "Document")
         self.assertEqual(
             activity["attachment"][0].url,
-            "https://%s%s" % (settings.DOMAIN, self.book.cover.url),
+            f"https://{settings.DOMAIN}{self.book.cover.url}",
         )
         self.assertEqual(activity["attachment"][0].name, "Test Edition")
 
@@ -240,13 +249,12 @@ class Status(TestCase):
         self.assertEqual(activity["type"], "Note")
         self.assertEqual(
             activity["content"],
-            'a sickening sense <p>-- <a href="%s">"Test Edition"</a></p>'
-            "test content" % self.book.remote_id,
+            f'a sickening sense <p>-- <a href="{self.book.remote_id}">"Test Edition"</a></p>test content',
         )
         self.assertEqual(activity["attachment"][0].type, "Document")
         self.assertEqual(
             activity["attachment"][0].url,
-            "https://%s%s" % (settings.DOMAIN, self.book.cover.url),
+            f"https://{settings.DOMAIN}{self.book.cover.url}",
         )
         self.assertEqual(activity["attachment"][0].name, "Test Edition")
 
@@ -281,13 +289,13 @@ class Status(TestCase):
         self.assertEqual(activity["type"], "Article")
         self.assertEqual(
             activity["name"],
-            'Review of "%s" (3 stars): Review\'s name' % self.book.title,
+            f'Review of "{self.book.title}" (3 stars): Review\'s name',
         )
         self.assertEqual(activity["content"], "test content")
         self.assertEqual(activity["attachment"][0].type, "Document")
         self.assertEqual(
             activity["attachment"][0].url,
-            "https://%s%s" % (settings.DOMAIN, self.book.cover.url),
+            f"https://{settings.DOMAIN}{self.book.cover.url}",
         )
         self.assertEqual(activity["attachment"][0].name, "Test Edition")
 
@@ -303,13 +311,13 @@ class Status(TestCase):
         self.assertEqual(activity["id"], status.remote_id)
         self.assertEqual(activity["type"], "Article")
         self.assertEqual(
-            activity["name"], 'Review of "%s": Review name' % self.book.title
+            activity["name"], f'Review of "{self.book.title}": Review name'
         )
         self.assertEqual(activity["content"], "test content")
         self.assertEqual(activity["attachment"][0].type, "Document")
         self.assertEqual(
             activity["attachment"][0].url,
-            "https://%s%s" % (settings.DOMAIN, self.book.cover.url),
+            f"https://{settings.DOMAIN}{self.book.cover.url}",
         )
         self.assertEqual(activity["attachment"][0].name, "Test Edition")
 
@@ -325,13 +333,12 @@ class Status(TestCase):
         self.assertEqual(activity["type"], "Note")
         self.assertEqual(
             activity["content"],
-            'rated <em><a href="%s">%s</a></em>: 3 stars'
-            % (self.book.remote_id, self.book.title),
+            f'rated <em><a href="{self.book.remote_id}">{self.book.title}</a></em>: 3 stars',
         )
         self.assertEqual(activity["attachment"][0].type, "Document")
         self.assertEqual(
             activity["attachment"][0].url,
-            "https://%s%s" % (settings.DOMAIN, self.book.cover.url),
+            f"https://{settings.DOMAIN}{self.book.cover.url}",
         )
         self.assertEqual(activity["attachment"][0].name, "Test Edition")
 

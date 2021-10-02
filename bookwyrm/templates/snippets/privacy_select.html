@@ -1,7 +1,7 @@
 {% load i18n %}
 {% load utilities %}
 <div class="select {{ class }}">
-    {% with 0|uuid as uuid %}
+    {% firstof privacy_uuid 0|uuid as uuid %}
     {% if not no_label %}
     <label class="is-sr-only" for="privacy_{{ uuid }}">{% trans "Post privacy" %}</label>
     {% endif %}
@@ -20,6 +20,5 @@
             {% trans "Private" %}
         </option>
     </select>
-    {% endwith %}
 </div>
 

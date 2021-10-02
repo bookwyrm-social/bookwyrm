@@ -5,7 +5,6 @@ import responses
 from bookwyrm import models
 from bookwyrm.connectors import connector_manager
 from bookwyrm.connectors.bookwyrm_connector import Connector as BookWyrmConnector
-from bookwyrm.connectors.self_connector import Connector as SelfConnector
 
 
 class ConnectorManager(TestCase):
@@ -15,28 +14,16 @@ class ConnectorManager(TestCase):
         """we'll need some books and a connector info entry"""
         self.work = models.Work.objects.create(title="Example Work")
 
-        self.edition = models.Edition.objects.create(
+        models.Edition.objects.create(
             title="Example Edition", parent_work=self.work, isbn_10="0000000000"
         )
         self.edition = models.Edition.objects.create(
             title="Another Edition", parent_work=self.work, isbn_10="1111111111"
         )
 
-        self.connector = models.Connector.objects.create(
-            identifier="test_connector",
-            priority=1,
-            local=True,
-            connector_file="self_connector",
-            base_url="http://test.com/",
-            books_url="http://test.com/",
-            covers_url="http://test.com/",
-            isbn_search_url="http://test.com/isbn/",
-        )
-
         self.remote_connector = models.Connector.objects.create(
             identifier="test_connector_remote",
             priority=1,
-            local=False,
             connector_file="bookwyrm_connector",
             base_url="http://fake.ciom/",
             books_url="http://fake.ciom/",
@@ -59,23 +46,22 @@ class ConnectorManager(TestCase):
     def test_get_connectors(self):
         """load all connectors"""
         connectors = list(connector_manager.get_connectors())
-        self.assertEqual(len(connectors), 2)
-        self.assertIsInstance(connectors[0], SelfConnector)
-        self.assertIsInstance(connectors[1], BookWyrmConnector)
+        self.assertEqual(len(connectors), 1)
+        self.assertIsInstance(connectors[0], BookWyrmConnector)
 
     @responses.activate
-    def test_search(self):
+    def test_search_plaintext(self):
         """search all connectors"""
         responses.add(
             responses.GET,
             "http://fake.ciom/search/Example?min_confidence=0.1",
-            json={},
+            json=[{"title": "Hello", "key": "https://www.example.com/search/1"}],
         )
         results = connector_manager.search("Example")
         self.assertEqual(len(results), 1)
-        self.assertIsInstance(results[0]["connector"], SelfConnector)
         self.assertEqual(len(results[0]["results"]), 1)
-        self.assertEqual(results[0]["results"][0].title, "Example Edition")
+        self.assertEqual(results[0]["connector"].identifier, "test_connector_remote")
+        self.assertEqual(results[0]["results"][0].title, "Hello")
 
     def test_search_empty_query(self):
         """don't panic on empty queries"""
@@ -88,19 +74,13 @@ class ConnectorManager(TestCase):
         responses.add(
             responses.GET,
             "http://fake.ciom/isbn/0000000000",
-            json={},
+            json=[{"title": "Hello", "key": "https://www.example.com/search/1"}],
         )
         results = connector_manager.search("0000000000")
         self.assertEqual(len(results), 1)
-        self.assertIsInstance(results[0]["connector"], SelfConnector)
         self.assertEqual(len(results[0]["results"]), 1)
-        self.assertEqual(results[0]["results"][0].title, "Example Edition")
-
-    def test_local_search(self):
-        """search only the local database"""
-        results = connector_manager.local_search("Example")
-        self.assertEqual(len(results), 1)
-        self.assertEqual(results[0].title, "Example Edition")
+        self.assertEqual(results[0]["connector"].identifier, "test_connector_remote")
+        self.assertEqual(results[0]["results"][0].title, "Hello")
 
     def test_first_search_result(self):
         """only get one search result"""
@@ -125,6 +105,5 @@ class ConnectorManager(TestCase):
 
     def test_load_connector(self):
         """load a connector object from the database entry"""
-        connector = connector_manager.load_connector(self.connector)
-        self.assertIsInstance(connector, SelfConnector)
-        self.assertEqual(connector.identifier, "test_connector")
+        connector = connector_manager.load_connector(self.remote_connector)
+        self.assertEqual(connector.identifier, "test_connector_remote")

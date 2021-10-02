@@ -1,5 +1,6 @@
 """ test for app action functionality """
 import json
+import pathlib
 from unittest.mock import patch
 
 from django.contrib.auth.models import AnonymousUser
@@ -7,9 +8,9 @@ from django.http import JsonResponse
 from django.template.response import TemplateResponse
 from django.test import TestCase
 from django.test.client import RequestFactory
+import responses
 
 from bookwyrm import models, views
-from bookwyrm.connectors import abstract_connector
 from bookwyrm.settings import DOMAIN
 
 
@@ -36,15 +37,11 @@ class Views(TestCase):
             remote_id="https://example.com/book/1",
             parent_work=self.work,
         )
-        models.Connector.objects.create(
-            identifier="self", connector_file="self_connector", local=True
-        )
         models.SiteSettings.objects.create()
 
     def test_search_json_response(self):
         """searches local data only and returns book data in json format"""
         view = views.Search.as_view()
-        # we need a connector for this, sorry
         request = self.factory.get("", {"q": "Test Book"})
         with patch("bookwyrm.views.search.is_api_request") as is_api:
             is_api.return_value = True
@@ -67,27 +64,10 @@ class Views(TestCase):
         self.assertIsInstance(response, TemplateResponse)
         response.render()
 
+    @responses.activate
     def test_search_books(self):
         """searches remote connectors"""
         view = views.Search.as_view()
-
-        class TestConnector(abstract_connector.AbstractMinimalConnector):
-            """nothing added here"""
-
-            def format_search_result(self, search_result):
-                pass
-
-            def get_or_create_book(self, remote_id):
-                pass
-
-            def parse_search_data(self, data):
-                pass
-
-            def format_isbn_search_result(self, search_result):
-                return search_result
-
-            def parse_isbn_search_data(self, data):
-                return data
 
         models.Connector.objects.create(
             identifier="example.com",
@@ -97,26 +77,25 @@ class Views(TestCase):
             covers_url="https://example.com/covers",
             search_url="https://example.com/search?q=",
         )
-        connector = TestConnector("example.com")
-
-        search_result = abstract_connector.SearchResult(
-            key="http://www.example.com/book/1",
-            title="Gideon the Ninth",
-            author="Tamsyn Muir",
-            year="2019",
-            connector=connector,
+        datafile = pathlib.Path(__file__).parent.joinpath("../data/ol_search.json")
+        search_data = json.loads(datafile.read_bytes())
+        responses.add(
+            responses.GET, "https://example.com/search?q=Test%20Book", json=search_data
         )
 
         request = self.factory.get("", {"q": "Test Book", "remote": True})
         request.user = self.local_user
         with patch("bookwyrm.views.search.is_api_request") as is_api:
             is_api.return_value = False
-            with patch("bookwyrm.connectors.connector_manager.search") as manager:
-                manager.return_value = [search_result]
-                response = view(request)
+            response = view(request)
         self.assertIsInstance(response, TemplateResponse)
         response.render()
-        self.assertEqual(response.context_data["results"][0].title, "Gideon the Ninth")
+        connector_results = response.context_data["results"]
+        self.assertEqual(connector_results[0]["results"][0].title, "Test Book")
+        self.assertEqual(
+            connector_results[1]["results"][0].title,
+            "This Is How You Lose the Time War",
+        )
 
     def test_search_users(self):
         """searches remote connectors"""

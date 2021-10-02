@@ -8,7 +8,7 @@
     {% trans "Local users" %}
 </label>
 <label class="is-block">
-    <input type="radio" class="radio" name="scope" value="federated" {% if not request.GET.sort or request.GET.scope == "federated" %}checked{% endif %}>
+    <input type="radio" class="radio" name="scope" value="federated" {% if request.GET.scope == "federated" %}checked{% endif %}>
     {% trans "Federated community" %}
 </label>
 {% endblock %}

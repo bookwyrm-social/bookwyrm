@@ -11,6 +11,7 @@ Finish "<em>{{ book_title }}</em>"
 {% block modal-form-open %}
 <form name="finish-reading" action="{% url 'reading-status' 'finish' book.id %}" method="post" class="submit-status">
 {% csrf_token %}
+<input type="hidden" name="id" value="{{ readthrough.id }}">
 <input type="hidden" name="reading_status" value="read">
 {% endblock %}
 
@@ -33,4 +34,8 @@ Finish "<em>{{ book_title }}</em>"
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block form %}
+{% include "snippets/reading_modals/form.html" with optional=True type="finish_modal" %}
 {% endblock %}

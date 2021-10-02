@@ -101,6 +101,7 @@ class ListItem(CollectionItemMixin, BookWyrmModel):
                 notification_type="ADD",
             )
 
+<<<<<<< HEAD
         if self.book_list.group:
             for membership in self.book_list.group.memberships.all():
                 if membership.user != self.user:
@@ -110,6 +111,14 @@ class ListItem(CollectionItemMixin, BookWyrmModel):
                         related_list_item=self,
                         notification_type="ADD"
             )
+=======
+    def raise_not_deletable(self, viewer):
+        """the associated user OR the list owner can delete"""
+        if self.book_list.user == viewer:
+            return
+        super().raise_not_deletable(viewer)
+
+>>>>>>> main
     class Meta:
         """A book may only be placed into a list once,
         and each order in the list may be used only once"""

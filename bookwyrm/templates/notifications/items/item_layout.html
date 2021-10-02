@@ -1,0 +1,29 @@
+{% load humanize %}
+{% load bookwyrm_tags %}
+{% related_status notification as related_status %}
+<div class="notification is-clickable {% if notification.id in unread %} is-primary{% endif %}" data-href="{% block primary_link %}{% endblock %}">
+    <div class="columns is-mobile">
+        <div class="column is-narrow is-size-3 {% if notification.id in unread%}has-text-white{% else %}has-text-grey{% endif %}">
+            {% block icon %}{% endblock %}
+        </div>
+        <div class="column is-clipped">
+            <div class="block">
+                <p>
+                    {% if notification.related_user %}
+                        <a href="{{ notification.related_user.local_path }}">
+                            {% include 'snippets/avatar.html' with user=notification.related_user %}
+                            {{ notification.related_user.display_name }}
+                        </a>
+                    {% endif %}
+                    {% block description %}{% endblock %}
+                </p>
+            </div>
+            {% if related_status %}
+            <div class="block">
+                {% block preview %}{% endblock %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+

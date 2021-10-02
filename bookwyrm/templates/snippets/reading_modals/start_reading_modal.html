@@ -22,3 +22,7 @@ Start "<em>{{ book_title }}</em>"
     <input type="date" name="start_date" class="input" id="start_id_start_date_{{ uuid }}" value="{% now "Y-m-d" %}">
 </div>
 {% endblock %}
+
+{% block form %}
+{% include "snippets/reading_modals/form.html" with optional=True type="start_modal" %}
+{% endblock %}

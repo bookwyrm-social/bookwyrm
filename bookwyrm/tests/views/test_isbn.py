@@ -34,9 +34,6 @@ class IsbnViews(TestCase):
             remote_id="https://example.com/book/1",
             parent_work=self.work,
         )
-        models.Connector.objects.create(
-            identifier="self", connector_file="self_connector", local=True
-        )
         models.SiteSettings.objects.create()
 
     def test_isbn_json_response(self):
@@ -51,4 +48,4 @@ class IsbnViews(TestCase):
         data = json.loads(response.content)
         self.assertEqual(len(data), 1)
         self.assertEqual(data[0]["title"], "Test Book")
-        self.assertEqual(data[0]["key"], "https://%s/book/%d" % (DOMAIN, self.book.id))
+        self.assertEqual(data[0]["key"], f"https://{DOMAIN}/book/{self.book.id}")

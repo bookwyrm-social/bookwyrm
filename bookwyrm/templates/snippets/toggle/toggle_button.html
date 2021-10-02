@@ -1,5 +1,6 @@
+{% load utilities %}
 {% if fallback_url %}
-<form name="fallback-form-{{ controls_uuid}}" method="GET" action="{{ fallback_url }}">
+<form name="fallback_form_{{ 0|uuid }}" method="GET" action="{{ fallback_url }}">
 {% endif %}
 <button
     {% if not fallback_url %}

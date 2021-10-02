@@ -1,0 +1,13 @@
+{% extends 'components/inline_form.html' %}
+{% load i18n %}
+
+{% block header %}
+{% trans "Edit Shelf" %}
+{% endblock %}
+
+{% block form %}
+<form name="edit-shelf" action="{{ shelf.local_path }}" method="post">
+    {% include "shelf/form.html" with editable=shelf.editable form=edit_form privacy=shelf.privacy %}
+</form>
+{% endblock %}
+
