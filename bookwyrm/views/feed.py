@@ -109,24 +109,31 @@ class Status(View):
                 status.to_activity(pure=not is_bookwyrm_request(request))
             )
 
+        visible_thread = privacy_filter(
+            request.user,
+            models.Status.objects.filter(thread_id=status.thread_id)
+        ).values_list("id", flat=True)
+        visible_thread = list(visible_thread)
+
         children = models.Status.objects.select_subclasses().raw("""
             WITH RECURSIVE get_thread(depth, id, path) AS (
 
                 SELECT 1, st.id, ARRAY[st.id]
                 FROM bookwyrm_status st
-                WHERE reply_parent_id = '%s'
+                WHERE reply_parent_id = '%s' AND id = ANY(%s)
 
                 UNION
 
                 SELECT (gt.depth + 1), st.id, path || st.id
                 FROM get_thread gt, bookwyrm_status st
 
-                WHERE st.reply_parent_id = gt.id AND depth < 5
+                WHERE st.reply_parent_id = gt.id AND depth < 5 AND st.id = ANY(%s)
 
             )
 
             SELECT * FROM get_thread ORDER BY path;
-        """, params=[status.id])
+        """, params=[status.id, visible_thread, visible_thread])
+
 
         data = {
             **feed_page_data(request.user),
