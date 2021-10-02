@@ -3,7 +3,6 @@
 # This file is distributed under the same license as the BookWyrm package.
 # Mouse Reeve <mousereeve@riseup.net>, 2021
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: 0.0.1\n"
@@ -39,10 +38,8 @@ msgid "Does Not Expire"
 msgstr "Nunca se vence"
 
 #: bookwyrm/forms.py:262
-#, fuzzy, python-brace-format
-#| msgid "Max uses"
 msgid "{i} uses"
-msgstr "Número máximo de usos"
+msgstr "{i} usos"
 
 #: bookwyrm/forms.py:263
 msgid "Unlimited"
@@ -103,24 +100,18 @@ msgid "Domain block"
 msgstr "Bloqueo de dominio"
 
 #: bookwyrm/models/book.py:232
-#, fuzzy
-#| msgid "Add books"
 msgid "Audiobook"
-msgstr "Agregar libros"
+msgstr "Audio libro"
 
 #: bookwyrm/models/book.py:233
-#, fuzzy
-#| msgid "Book"
 msgid "eBook"
-msgstr "Libro"
+msgstr "Libro electrónico"
 
 #: bookwyrm/models/book.py:234
 msgid "Graphic novel"
 msgstr "Novela gráfica"
 
 #: bookwyrm/models/book.py:235
-#, fuzzy
-#| msgid "Add cover"
 msgid "Hardcover"
 msgstr "Tapa dura"
 
@@ -626,10 +617,8 @@ msgid "Format:"
 msgstr "Formato:"
 
 #: bookwyrm/templates/book/edit_book.html:268
-#, fuzzy
-#| msgid "User details"
 msgid "Format details:"
-msgstr "Detalles"
+msgstr "Detalles del formato"
 
 #: bookwyrm/templates/book/edit_book.html:278
 msgid "Pages:"
@@ -1400,10 +1389,8 @@ msgid "Request an Invitation"
 msgstr "Solicitar una invitación"
 
 #: bookwyrm/templates/landing/layout.html:49
-#, fuzzy, python-format
-#| msgid "(Recommended if registration is open)"
 msgid "%(name)s registration is closed"
-msgstr "(Recomendado si la registración es abierta)"
+msgstr "El registro de %(name) está cerrado"
 
 #: bookwyrm/templates/landing/layout.html:60
 msgid "Thank you! Your request has been received."
@@ -1414,16 +1401,12 @@ msgid "Your Account"
 msgstr "Tu cuenta"
 
 #: bookwyrm/templates/layout.html:13
-#, fuzzy, python-format
-#| msgid "About %(site_name)s"
 msgid "%(site_name)s search"
-msgstr "Sobre %(site_name)s"
+msgstr "Busqueda en %(site_name)s"
 
 #: bookwyrm/templates/layout.html:43
-#, fuzzy
-#| msgid "Search for a book or user"
 msgid "Search for a book, user, or list"
-msgstr "Buscar un libro o un usuario"
+msgstr "Buscar un libro o un usuario o una lista"
 
 #: bookwyrm/templates/layout.html:61 bookwyrm/templates/layout.html:62
 msgid "Main navigation menu"
@@ -1900,17 +1883,13 @@ msgstr "Perfil"
 
 #: bookwyrm/templates/preferences/edit_user.html:13
 #: bookwyrm/templates/preferences/edit_user.html:68
-#, fuzzy
-#| msgid "Email preference"
 msgid "Display preferences"
-msgstr "Preferencia de correo electrónico"
+msgstr "Preferencias de visualización"
 
 #: bookwyrm/templates/preferences/edit_user.html:14
 #: bookwyrm/templates/preferences/edit_user.html:100
-#, fuzzy
-#| msgid "Post privacy"
 msgid "Privacy"
-msgstr "Privacidad de publicación"
+msgstr "Privacidad"
 
 #: bookwyrm/templates/preferences/edit_user.html:72
 msgid "Show reading goal prompt in feed:"
@@ -2097,8 +2076,6 @@ msgid "inactive"
 msgstr "inactivo"
 
 #: bookwyrm/templates/settings/announcements/announcements.html:52
-#, fuzzy
-#| msgid "No announcements found."
 msgid "No announcements found"
 msgstr "No se encontró ningun anuncio."
 
@@ -2207,10 +2184,8 @@ msgstr[0] "%(display_count)s usuario"
 msgstr[1] "%(display_count)s usuarios"
 
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:59
-#, fuzzy
-#| msgid "No users currently blocked."
 msgid "No email domains currently blocked"
-msgstr "No hay ningún usuario bloqueado actualmente."
+msgstr "No hay dominios de correo electrónico bloqueados actualmente"
 
 #: bookwyrm/templates/settings/federation/edit_instance.html:3
 #: bookwyrm/templates/settings/federation/edit_instance.html:6
@@ -2362,8 +2337,6 @@ msgid "Software"
 msgstr "Software"
 
 #: bookwyrm/templates/settings/federation/instance_list.html:63
-#, fuzzy
-#| msgid "No announcements found."
 msgid "No instances found"
 msgstr "No se encontró ningun anuncio."
 
@@ -2475,44 +2448,34 @@ msgstr "No invitaciónes activas"
 
 #: bookwyrm/templates/settings/ip_blocklist/ip_address_form.html:5
 #: bookwyrm/templates/settings/ip_blocklist/ip_blocklist.html:10
-#, fuzzy
-#| msgid "IP address"
 msgid "Add IP address"
-msgstr "Dirección IP"
+msgstr "Agregar dirección IP"
 
 #: bookwyrm/templates/settings/ip_blocklist/ip_address_form.html:11
 msgid "Use IP address blocks with caution, and consider using blocks only temporarily, as IP addresses are often shared or change hands. If you block your own IP, you will not be able to access this page."
 msgstr "Use los bloqueos de dirección IP con cuidado, y considere usar los bloqueos solo temporalmente, ya que las direcciones IP a menudo son compartidas o cambian de dueños. Si bloqueas tu propia IP, no serás capaz de acceder a esta página"
 
 #: bookwyrm/templates/settings/ip_blocklist/ip_address_form.html:18
-#, fuzzy
-#| msgid "IP address"
 msgid "IP Address:"
 msgstr "Dirección IP"
 
 #: bookwyrm/templates/settings/ip_blocklist/ip_blocklist.html:5
 #: bookwyrm/templates/settings/ip_blocklist/ip_blocklist.html:7
 #: bookwyrm/templates/settings/layout.html:63
-#, fuzzy
-#| msgid "Import Blocklist"
 msgid "IP Address Blocklist"
-msgstr "Importar lista de bloqueo"
+msgstr "Lista de direcciones IP bloqueadas"
 
 #: bookwyrm/templates/settings/ip_blocklist/ip_blocklist.html:18
 msgid "Any traffic from this IP address will get a 404 response when trying to access any part of the application."
 msgstr "Cualquier tráfico desde esta dirección IP obtendrá una respuesta 404 cuando trate de acceder cualquier parte de la aplicación"
 
 #: bookwyrm/templates/settings/ip_blocklist/ip_blocklist.html:24
-#, fuzzy
-#| msgid "IP address"
 msgid "Address"
-msgstr "Dirección IP"
+msgstr "Dirección"
 
 #: bookwyrm/templates/settings/ip_blocklist/ip_blocklist.html:46
-#, fuzzy
-#| msgid "No users currently blocked."
 msgid "No IP addresses currently blocked"
-msgstr "No hay ningún usuario bloqueado actualmente."
+msgstr "No hay ningúna dirección IP bloqueada actualmente."
 
 #: bookwyrm/templates/settings/ip_blocklist/ip_tooltip.html:6
 msgid "You can block IP ranges using CIDR syntax."
@@ -2710,10 +2673,8 @@ msgid "Registration closed text:"
 msgstr "Texto de registración cerrada:"
 
 #: bookwyrm/templates/settings/site.html:124
-#, fuzzy
-#| msgid "Invite Requests"
 msgid "Invite request text:"
-msgstr "Solicitudes de invitación"
+msgstr "Texto de solicitud de invitación:"
 
 #: bookwyrm/templates/settings/users/delete_user_form.html:5
 #: bookwyrm/templates/settings/users/user_moderation_actions.html:31
@@ -2974,10 +2935,8 @@ msgid "Content"
 msgstr "Contenido"
 
 #: bookwyrm/templates/snippets/create_status/content_warning_field.html:10
-#, fuzzy
-#| msgid "Content:"
 msgid "Content warning:"
-msgstr "Contenido:"
+msgstr "Advertencia de contenido:"
 
 #: bookwyrm/templates/snippets/create_status/content_warning_field.html:18
 msgid "Spoilers ahead!"
@@ -3322,14 +3281,10 @@ msgid "Finish reading"
 msgstr "Terminar de leer"
 
 #: bookwyrm/templates/snippets/status/content_status.html:72
-#, fuzzy
-#| msgid "Content:"
 msgid "Content warning"
-msgstr "Contenido:"
+msgstr "Advertencia de contenido:"
 
 #: bookwyrm/templates/snippets/status/content_status.html:79
-#, fuzzy
-#| msgid "View status"
 msgid "Show status"
 msgstr "Ver status"
 
@@ -3348,10 +3303,8 @@ msgid "Open image in new window"
 msgstr "Abrir imagen en una nueva ventana"
 
 #: bookwyrm/templates/snippets/status/content_status.html:144
-#, fuzzy
-#| msgid "Like status"
 msgid "Hide status"
-msgstr "Me gusta status"
+msgstr "Ocultar status"
 
 #: bookwyrm/templates/snippets/status/headers/comment.html:2
 #, python-format
@@ -3600,10 +3553,8 @@ msgid "No user with that email address was found."
 msgstr "No se pudo encontrar un usuario con esa dirección de correo electrónico."
 
 #: bookwyrm/views/password.py:41
-#, fuzzy, python-brace-format
-#| msgid "A password reset link sent to %s"
 msgid "A password reset link sent to {email}"
-msgstr "Un enlace para reestablecer tu contraseña se enviará a %s"
+msgstr "Un enlace para reestablecer tu contraseña se envió a {email}"
 
 #: bookwyrm/views/rss_feed.py:34
 #, python-brace-format
@@ -3766,8 +3717,6 @@ msgstr "Actualizaciones de status de {obj.display_name}"
 #~ msgid "This field cannot be blank."
 #~ msgstr "Este campo no puede ser vacio."
 
-#, fuzzy
-#~| msgid "%(model_name)s with this %(field_label)s already exists."
 #~ msgid "%(model_name)s with this %(field_label)s already exists."
 #~ msgstr "Ya existe %(model_name)s con este %(field_labels)s."
 
