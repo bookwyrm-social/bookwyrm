@@ -78,7 +78,7 @@ class BookWyrmModel(models.Model):
                 return True
 
         # you can see groups of which you are a member
-        if hasattr(self, "members") and viewer in self.members.all():
+        if hasattr(self, "memberships") and self.memberships.filter(user=viewer).exists():
             return True
 
         # you can see objects which have a group of which you are a member
