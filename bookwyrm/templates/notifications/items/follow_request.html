@@ -1,0 +1,15 @@
+{% extends 'notifications/items/item_layout.html' %}
+
+{% load i18n %}
+{% load utilities %}
+
+{% block icon %}
+<span class="icon icon-local"></span>
+{% endblock %}
+
+{% block description %}
+    {% trans "sent you a follow request" %}
+    <div class="row shrink">
+        {% include 'snippets/follow_request_buttons.html' with user=notification.related_user %}
+    </div>
+{% endblock %}

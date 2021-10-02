@@ -1,0 +1,62 @@
+{% extends 'notifications/items/item_layout.html' %}
+
+{% load i18n %}
+{% load utilities %}
+
+{% block primary_link %}{% spaceless %}
+    {{ notification.related_status.local_path }}
+{% endspaceless %}{% endblock %}
+
+{% block icon %}
+<span class="icon icon-comment"></span>
+{% endblock %}
+
+
+{% block description %}
+    {% with related_status.book|book_title as book_title %}
+    {% with related_status.local_path as related_path %}
+
+    {% if related_status.status_type == 'Review' %}
+    {% blocktrans trimmed %}
+
+        mentioned you in a <a href="{{ related_path }}">review of <em>{{ book_title }}</em></a>
+
+    {% endblocktrans %}
+    {% elif related_status.status_type == 'Comment' %}
+    {% blocktrans trimmed %}
+
+        mentioned you in a <a href="{{ related_path }}">comment on <em>{{ book_title }}</em></a>
+
+    {% endblocktrans %}
+    {% elif related_status.status_type == 'Quotation' %}
+    {% blocktrans trimmed %}
+
+        mentioned you in a <a href="{{ related_path }}">quote from <em>{{ book_title }}</em></a>
+
+    {% endblocktrans %}
+    {% else %}
+    {% blocktrans trimmed %}
+
+        mentioned you in a <a href="{{ related_path }}">status</a>
+
+    {% endblocktrans %}
+    {% endif %}
+
+    {% endwith %}
+    {% endwith %}
+{% endblock %}
+
+
+{% block preview %}
+<div class="notification py-2 {% if notification.id in unread %}is-primary is-light{% else %}has-background-white has-text-black{% endif %}">
+    <div class="columns">
+        <div class="column is-clipped">
+            {% include 'snippets/status_preview.html' with status=related_status %}
+        </div>
+        <div class="column is-narrow has-text-black">
+            {{ related_status.published_date|timesince }}
+            {% include 'snippets/privacy-icons.html' with item=related_status %}
+        </div>
+    </div>
+</div>
+{% endblock %}
