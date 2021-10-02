@@ -26,7 +26,7 @@ class Group(View):
 
         group = get_object_or_404(models.Group, id=group_id)
         lists = models.List.objects.filter(group=group).order_by("-updated_date")
-        lists = privacy_filter(request.user, lists)
+        # lists = privacy_filter(request.user, lists)
 
         # don't show groups to users who shouldn't see them
         if not group.visible_to_user(request.user):
