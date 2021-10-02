@@ -1,7 +1,5 @@
 {% extends 'layout.html' %}
 {% load i18n %}
-{% load bookwyrm_tags %}
-{% load humanize %}
 
 {% block title %}{% trans "Notifications" %}{% endblock %}
 
@@ -34,7 +32,7 @@
 
 <div class="block">
     {% for notification in notifications %}
-    {% include 'notifications/notification_item.html' %}
+    {% include 'notifications/item.html' %}
     {% endfor %}
 
     {% if not notifications %}

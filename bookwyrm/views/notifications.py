@@ -24,7 +24,7 @@ class Notifications(View):
             "unread": unread,
         }
         notifications.update(read=True)
-        return TemplateResponse(request, "notifications/notifications.html", data)
+        return TemplateResponse(request, "notifications/notifications_page.html", data)
 
     def post(self, request):
         """permanently delete notification for user"""
