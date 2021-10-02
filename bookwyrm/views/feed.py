@@ -109,10 +109,30 @@ class Status(View):
                 status.to_activity(pure=not is_bookwyrm_request(request))
             )
 
+        children = models.Status.objects.select_subclasses().raw("""
+            WITH RECURSIVE get_thread(depth, id, path) AS (
+
+                SELECT 1, st.id, ARRAY[st.id]
+                FROM bookwyrm_status st
+                WHERE reply_parent_id = '%s'
+
+                UNION
+
+                SELECT (gt.depth + 1), st.id, path || st.id
+                FROM get_thread gt, bookwyrm_status st
+
+                WHERE st.reply_parent_id = gt.id AND depth < 5
+
+            )
+
+            SELECT * FROM get_thread ORDER BY path;
+        """, params=[status.id])
+
         data = {
             **feed_page_data(request.user),
             **{
                 "status": status,
+                "children": children,
             },
         }
         return TemplateResponse(request, "feed/status.html", data)

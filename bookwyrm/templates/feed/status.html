@@ -9,7 +9,19 @@
     </a>
 </header>
 
-{% include 'feed/thread.html' with status=status depth=0 max_depth=6 is_root=True direction=0 %}
+<div class="thread-parent is-relative block">
+    <div class="thread">
+        <div class="is-main block">
+            {% include 'snippets/status/status.html' with status=status main=True %}
+        </div>
+
+        {% for child in children %}
+        <div class="block">
+            {% include 'snippets/status/status.html' with status=child %}
+        </div>
+        {% endfor %}
+    </div>
+</div>
 
 {% endblock %}
 
