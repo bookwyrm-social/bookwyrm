@@ -45,13 +45,9 @@ class Lists(View):
         lists = privacy_filter(
             request.user, lists, privacy_levels=["public", "followers"]
         )
-
-        user_groups = models.Group.objects.filter(members=request.user).order_by("-updated_date")
-
         paginated = Paginator(lists, 12)
         data = {
             "lists": paginated.get_page(request.GET.get("page")),
-            "user_groups": user_groups,
             "list_form": forms.ListForm(),
             "path": "/list",
         }
@@ -96,14 +92,12 @@ class UserLists(View):
         user = get_user_from_username(request.user, username)
         lists = models.List.objects.filter(user=user)
         lists = privacy_filter(request.user, lists)
-        user_groups = models.Group.objects.filter(members=request.user).order_by("-updated_date")
         paginated = Paginator(lists, 12)
 
         data = {
             "user": user,
             "is_self": request.user.id == user.id,
             "lists": paginated.get_page(request.GET.get("page")),
-            "user_groups": user_groups,
             "list_form": forms.ListForm(),
             "path": user.local_path + "/lists",
         }
@@ -176,8 +170,6 @@ class List(View):
                     ).order_by("-updated_date")
                 ][: 5 - len(suggestions)]
 
-        user_groups = models.Group.objects.filter(members=request.user).order_by("-updated_date")
-        is_group_member = book_list.group in user_groups
         page = paginated.get_page(request.GET.get("page"))
         data = {
             "list": book_list,
@@ -191,9 +183,7 @@ class List(View):
             "query": query or "",
             "sort_form": forms.SortListForm(
                 {"direction": direction, "sort_by": sort_by}
-            ),
-            "user_groups": user_groups,
-            "is_group_member": is_group_member
+            )
         }
         return TemplateResponse(request, "lists/list.html", data)
 
@@ -296,8 +286,7 @@ def add_book(request):
     book_list = get_object_or_404(models.List, id=request.POST.get("list"))
     is_group_member = False
     if book_list.curation == "group":
-        user_groups = models.Group.objects.filter(members=request.user).order_by("-updated_date")
-        is_group_member = book_list.group in user_groups
+        is_group_member = models.GroupMember.objects.filter(group=book_list.group, user=request.user).exists()
     if not book_list.visible_to_user(request.user):
         return HttpResponseNotFound()
 
@@ -350,8 +339,8 @@ def remove_book(request, list_id):
     with transaction.atomic():
         book_list = get_object_or_404(models.List, id=list_id)
         item = get_object_or_404(models.ListItem, id=request.POST.get("item"))
-
-        if not book_list.user == request.user and not item.user == request.user:
+        is_group_member = models.GroupMember.objects.filter(group=book_list.group, user=request.user).exists()
+        if not book_list.user == request.user and not item.user == request.user and not is_group_member:
             return HttpResponseNotFound()
 
         deleted_order = item.order
