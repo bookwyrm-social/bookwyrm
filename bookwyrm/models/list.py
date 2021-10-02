@@ -35,7 +35,7 @@ class List(OrderedCollectionMixin, BookWyrmModel):
         max_length=255, default="closed", choices=CurationType.choices
     )
     group = models.ForeignKey(
-        "BookwyrmGroup",
+        "Group",
         on_delete=models.PROTECT,
         default=None,
         blank=True,

@@ -10,13 +10,13 @@ register = template.Library()
 def has_groups(user):
     """whether or not the user has a pending invitation to join this group"""
 
-    return models.BookwyrmGroupMember.objects.filter(user=user).exists()
+    return models.GroupMember.objects.filter(user=user).exists()
 
 @register.filter(name="is_member")
 def is_member(group, user):
     """whether or not the user is a member of this group"""
 
-    return models.BookwyrmGroupMember.objects.filter(group=group,user=user).exists()
+    return models.GroupMember.objects.filter(group=group,user=user).exists()
 
 @register.filter(name="is_invited")
 def is_invited(group, user):

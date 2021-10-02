@@ -253,7 +253,7 @@ urlpatterns = [
     re_path(r"^hide-suggestions/?$", views.hide_suggestions, name="hide-suggestions"),
     # groups
     re_path(rf"{USER_PATH}/groups/?$", views.UserGroups.as_view(), name="user-groups"),
-    re_path(r"^group/(?P<group_id>\d+)(.json)?/?$", views.BookwyrmGroup.as_view(), name="group"),
+    re_path(r"^group/(?P<group_id>\d+)(.json)?/?$", views.Group.as_view(), name="group"),
     re_path(r"^group/(?P<group_id>\d+)/add-users/?$", views.FindUsers.as_view(), name="group-find-users"),
     re_path(r"^add-group-member/?$", views.invite_member, name="invite-group-member"),
     re_path(r"^remove-group-member/?$", views.remove_member, name="remove-group-member"),

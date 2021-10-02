@@ -140,7 +140,7 @@ class Groups(View):
         user = get_user_from_username(request.user, username)
 
         paginated = Paginator(
-            models.BookwyrmGroup.memberships.filter(user=user)
+            models.Group.memberships.filter(user=user)
         )
         data = {
             "user": user,

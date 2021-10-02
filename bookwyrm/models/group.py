@@ -8,7 +8,7 @@ from . import fields
 from .relationship import UserBlocks
 # from .user import User
 
-class BookwyrmGroup(BookWyrmModel):
+class Group(BookWyrmModel):
     """A group of users"""
 
     name = fields.CharField(max_length=100)
@@ -17,12 +17,12 @@ class BookwyrmGroup(BookWyrmModel):
     description = fields.TextField(blank=True, null=True)
     privacy = fields.PrivacyField()
 
-class BookwyrmGroupMember(models.Model):
+class GroupMember(models.Model):
     """Users who are members of a group"""
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
     group = models.ForeignKey(
-        "BookwyrmGroup", 
+        "Group", 
         on_delete=models.CASCADE,
         related_name="memberships"
     )
@@ -53,7 +53,7 @@ class BookwyrmGroupMember(models.Model):
             )
         ).exists():
             raise IntegrityError()
-        # accepts and requests are handled by the BookwyrmGroupInvitation model
+        # accepts and requests are handled by the GroupInvitation model
         super().save(*args, **kwargs)
 
     @classmethod
@@ -74,7 +74,7 @@ class GroupMemberInvitation(models.Model):
     """adding a user to a group requires manual confirmation"""
     created_date = models.DateTimeField(auto_now_add=True)
     group = models.ForeignKey(
-        "BookwyrmGroup", 
+        "Group", 
         on_delete=models.CASCADE,
         related_name="user_invitations"
     )
@@ -94,7 +94,7 @@ class GroupMemberInvitation(models.Model):
         """make sure the membership doesn't already exist"""
         # if there's an invitation for a membership that already exists, accept it
         # without changing the local database state
-        if BookwyrmGroupMember.objects.filter(
+        if GroupMember.objects.filter(
             user=self.user,
             group=self.group
         ).exists():
@@ -131,7 +131,7 @@ class GroupMemberInvitation(models.Model):
         """turn this request into the real deal"""
 
         with transaction.atomic():
-            BookwyrmGroupMember.from_request(self)
+            GroupMember.from_request(self)
 
             model = apps.get_model("bookwyrm.Notification", require_ready=True)
             # tell the group owner 

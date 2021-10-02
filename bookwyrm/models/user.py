@@ -143,11 +143,6 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     property_fields = [("following_link", "following")]
     field_tracker = FieldTracker(fields=["name", "avatar"])
 
-    # @property
-    # def bookwyrm_groups(self):
-    #     group_ids = bookwyrm_group_membership.values_list("user", flat=True)
-    #     return BookwyrmGroup.objects.in_bulk(group_ids).values()
-
     @property
     def confirmation_link(self):
         """helper for generating confirmation links"""

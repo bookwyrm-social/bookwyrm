@@ -23,7 +23,7 @@ class Notification(BookWyrmModel):
         "User", on_delete=models.CASCADE, null=True, related_name="related_group_member"
     )
     related_group = models.ForeignKey(
-        "BookwyrmGroup", on_delete=models.CASCADE, null=True, related_name="notifications"
+        "Group", on_delete=models.CASCADE, null=True, related_name="notifications"
     )
     related_status = models.ForeignKey("Status", on_delete=models.CASCADE, null=True)
     related_import = models.ForeignKey("ImportJob", on_delete=models.CASCADE, null=True)

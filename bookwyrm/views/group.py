@@ -18,13 +18,13 @@ from .helpers import privacy_filter
 from .helpers import get_user_from_username
 from bookwyrm.settings import DOMAIN
 
-class BookwyrmGroup(View):
+class Group(View):
     """group page"""
 
     def get(self, request, group_id):
         """display a group"""
 
-        group = get_object_or_404(models.BookwyrmGroup, id=group_id)
+        group = get_object_or_404(models.Group, id=group_id)
         lists = models.List.objects.filter(group=group).order_by("-updated_date")
         lists = privacy_filter(request.user, lists)
 
@@ -43,7 +43,7 @@ class BookwyrmGroup(View):
     @method_decorator(login_required, name="dispatch")
     def post(self, request, group_id):
         """edit a group"""
-        user_group = get_object_or_404(models.BookwyrmGroup, id=group_id)
+        user_group = get_object_or_404(models.Group, id=group_id)
         form = forms.GroupForm(request.POST, instance=user_group)
         if not form.is_valid():
             return redirect("group", user_group.id)
@@ -57,7 +57,7 @@ class UserGroups(View):
     def get(self, request, username):
         """display a group"""
         user = get_user_from_username(request.user, username)
-        memberships = models.BookwyrmGroupMember.objects.filter(user=user).all()
+        memberships = models.GroupMember.objects.filter(user=user).all()
         paginated = Paginator(memberships, 12)
 
         data = {
@@ -78,7 +78,7 @@ class UserGroups(View):
             return redirect(request.user.local_path + "groups")
         group = form.save()
         # add the creator as a group member
-        models.BookwyrmGroupMember.objects.create(group=group, user=request.user)
+        models.GroupMember.objects.create(group=group, user=request.user)
         return redirect("group", group.id)
 
 @method_decorator(login_required, name="dispatch")
@@ -89,7 +89,7 @@ class FindUsers(View):
     def get(self, request, group_id):
         """basic profile info"""
         query = request.GET.get("query")
-        group = models.BookwyrmGroup.objects.get(id=group_id)
+        group = models.Group.objects.get(id=group_id)
         user_results = (
             models.User.viewer_aware_objects(request.user)
             .exclude(memberships__in=group.memberships.all()) # don't suggest users who are already members
@@ -112,7 +112,7 @@ class FindUsers(View):
                 request.user
             )
 
-        group = get_object_or_404(models.BookwyrmGroup, id=group_id)
+        group = get_object_or_404(models.Group, id=group_id)
 
         if not group:
             return HttpResponseBadRequest()
@@ -133,7 +133,7 @@ class FindUsers(View):
 def invite_member(request):
     """invite a member to the group"""
 
-    group = get_object_or_404(models.BookwyrmGroup, id=request.POST.get("group"))
+    group = get_object_or_404(models.Group, id=request.POST.get("group"))
     if not group:
         return HttpResponseBadRequest()
 
@@ -160,7 +160,7 @@ def invite_member(request):
 def remove_member(request):
     """remove a member from the group"""
 
-    group = get_object_or_404(models.BookwyrmGroup, id=request.POST.get("group"))
+    group = get_object_or_404(models.Group, id=request.POST.get("group"))
     if not group:
         return HttpResponseBadRequest()
 
@@ -168,7 +168,7 @@ def remove_member(request):
     if not user:
         return HttpResponseBadRequest()
 
-    is_member = models.BookwyrmGroupMember.objects.filter(group=group,user=user).exists()
+    is_member = models.GroupMember.objects.filter(group=group,user=user).exists()
     is_invited = models.GroupMemberInvitation.objects.filter(group=group,user=user).exists()
 
     if is_invited:
@@ -186,13 +186,13 @@ def remove_member(request):
     if is_member:
 
         try:
-            membership = models.BookwyrmGroupMember.objects.get(group=group,user=user)
+            membership = models.GroupMember.objects.get(group=group,user=user)
             membership.delete()
 
         except IntegrityError:
             pass
 
-        memberships = models.BookwyrmGroupMember.objects.filter(group=group)
+        memberships = models.GroupMember.objects.filter(group=group)
         model = apps.get_model("bookwyrm.Notification", require_ready=True)
         notification_type = "LEAVE" if "self_removal" in request.POST and request.POST["self_removal"] else "REMOVE"
         # let the other members know about it
@@ -221,7 +221,7 @@ def remove_member(request):
 def accept_membership(request):
     """accept an invitation to join a group"""
 
-    group = models.BookwyrmGroup.objects.get(id=request.POST["group"])
+    group = models.Group.objects.get(id=request.POST["group"])
     if not group:
         return HttpResponseBadRequest()
 
@@ -242,7 +242,7 @@ def accept_membership(request):
 def reject_membership(request):
     """reject an invitation to join a group"""
 
-    group = models.BookwyrmGroup.objects.get(id=request.POST["group"])
+    group = models.Group.objects.get(id=request.POST["group"])
     if not group:
         return HttpResponseBadRequest()
 
