@@ -1,5 +1,4 @@
 """ non-interactive pages """
-from bookwyrm.models.group import GroupMember
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.shortcuts import redirect
@@ -83,7 +82,6 @@ class User(View):
         data = {
             "user": user,
             "is_self": is_self,
-            "has_groups": models.GroupMember.objects.filter(user=user).exists(),
             "shelves": shelf_preview,
             "shelf_count": shelves.count(),
             "activities": paginated.get_page(request.GET.get("page", 1)),
@@ -142,7 +140,7 @@ class Groups(View):
         user = get_user_from_username(request.user, username)
 
         paginated = Paginator(
-            GroupMember.objects.filter(user=user)
+            models.BookwyrmGroup.memberships.filter(user=user)
         )
         data = {
             "user": user,

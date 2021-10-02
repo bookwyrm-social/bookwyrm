@@ -297,7 +297,7 @@ class ListForm(CustomForm):
 
 class GroupForm(CustomForm):
     class Meta:
-        model = models.Group
+        model = models.BookwyrmGroup
         fields = ["user", "privacy", "name", "description"]
 
 class ReportForm(CustomForm):

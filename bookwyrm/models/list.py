@@ -35,7 +35,7 @@ class List(OrderedCollectionMixin, BookWyrmModel):
         max_length=255, default="closed", choices=CurationType.choices
     )
     group = models.ForeignKey(
-        "Group",
+        "BookwyrmGroup",
         on_delete=models.PROTECT,
         default=None,
         blank=True,
@@ -100,6 +100,9 @@ class ListItem(CollectionItemMixin, BookWyrmModel):
                 related_list_item=self,
                 notification_type="ADD",
             )
+
+        # TODO: send a notification to all team members except the one who added the book
+        # for team curated lists
 
     class Meta:
         """A book may only be placed into a list once,

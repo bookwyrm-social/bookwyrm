@@ -18,13 +18,13 @@ from .helpers import privacy_filter
 from .helpers import get_user_from_username
 from bookwyrm.settings import DOMAIN
 
-class Group(View):
+class BookwyrmGroup(View):
     """group page"""
 
     def get(self, request, group_id):
         """display a group"""
 
-        group = get_object_or_404(models.Group, id=group_id)
+        group = get_object_or_404(models.BookwyrmGroup, id=group_id)
         lists = models.List.objects.filter(group=group).order_by("-updated_date")
         lists = privacy_filter(request.user, lists)
 
@@ -43,7 +43,7 @@ class Group(View):
     @method_decorator(login_required, name="dispatch")
     def post(self, request, group_id):
         """edit a group"""
-        user_group = get_object_or_404(models.Group, id=group_id)
+        user_group = get_object_or_404(models.BookwyrmGroup, id=group_id)
         form = forms.GroupForm(request.POST, instance=user_group)
         if not form.is_valid():
             return redirect("group", user_group.id)
@@ -57,11 +57,12 @@ class UserGroups(View):
     def get(self, request, username):
         """display a group"""
         user = get_user_from_username(request.user, username)
-        groups = models.Group.objects.filter(members=user).order_by("-updated_date")
-        # groups = privacy_filter(request.user, groups)
+        groups = user.bookwyrmgroup_set.all() # follow the relationship backwards, nice
         paginated = Paginator(groups, 12)
 
         data = {
+            "groups": paginated.get_page(request.GET.get("page")),
+            "is_self": request.user.id == user.id,
             "user": user,
             "group_form": forms.GroupForm(),
             "path": user.local_path + "/group",
@@ -77,7 +78,7 @@ class UserGroups(View):
             return redirect(request.user.local_path + "groups")
         group = form.save()
         # add the creator as a group member
-        models.GroupMember.objects.create(group=group, user=request.user)
+        models.BookwyrmGroupMember.objects.create(group=group, user=request.user)
         return redirect("group", group.id)
 
 @method_decorator(login_required, name="dispatch")
@@ -109,21 +110,22 @@ class FindUsers(View):
                 request.user
             )
 
-        group = get_object_or_404(models.Group, id=group_id)
+        group = get_object_or_404(models.BookwyrmGroup, id=group_id)
 
-        data["suggested_users"] = user_results
-        data["group"] = group
-        data["query"] = query
-        data["requestor_is_manager"] = request.user == group.user
+        data = {
+          "suggested_users": user_results,
+          "group": group,
+          "query": query,
+          "requestor_is_manager": request.user == group.user
+        }
         return TemplateResponse(request, "groups/find_users.html", data)
 
 @require_POST
 @login_required
-def add_member(request):
-    """add a member to the group"""
+def invite_member(request):
+    """invite a member to the group"""
 
-    # TODO: if groups become AP values we need something like get_group_from_group_fullname
-    group = get_object_or_404(models.Group, id=request.POST.get("group"))
+    group = get_object_or_404(models.BookwyrmGroup, id=request.POST.get("group"))
     if not group:
         return HttpResponseBadRequest()
 
@@ -135,28 +137,42 @@ def add_member(request):
         return HttpResponseBadRequest()
 
     try:
-        models.GroupMember.objects.create(
-          group=group,
-          user=user
-        )
+        models.GroupMemberInvitation.objects.create(
+          user=user, 
+          group=group
+          )
 
     except IntegrityError:
         pass
 
-# TODO: actually this needs to be associated with the user ACCEPTING AN INVITE!!! DOH!
+    return redirect(user.local_path)
 
-    """create a notification too"""
-    # notify all team members when a user is added to the group
-    model = apps.get_model("bookwyrm.Notification", require_ready=True)
-    for team_member in group.members.all():
-        if team_member.local and team_member != request.user:
-            model.objects.create(
-                user=team_member,
-                related_user=request.user,
-                related_group_member=user,
-                related_group=group,
-                notification_type="ADD",
-            )
+@require_POST
+@login_required
+def uninvite_member(request):
+    """invite a member to the group"""
+
+    group = get_object_or_404(models.BookwyrmGroup, id=request.POST.get("group"))
+    if not group:
+        return HttpResponseBadRequest()
+
+    user = get_user_from_username(request.user, request.POST["user"])
+    if not user:
+        return HttpResponseBadRequest()
+
+    if not group.user == request.user:
+        return HttpResponseBadRequest()
+
+    try:
+        invitation = models.GroupMemberInvitation.objects.get(
+          user=user, 
+          group=group
+          )
+
+        invitation.reject()
+
+    except IntegrityError:
+        pass
 
     return redirect(user.local_path)
 
@@ -168,10 +184,11 @@ def remove_member(request):
     # TODO: send notification to user telling them they have been removed
     # TODO: remove yourself from a group!!!! (except owner)
     # FUTURE TODO: transfer ownership of group
+    # THIS LOGIC SHOULD BE IN MODEL
 
     # TODO: if groups become AP values we need something like get_group_from_group_fullname
     # group = get_object_or_404(models.Group, id=request.POST.get("group")) # NOTE: does this not work?
-    group = models.Group.objects.get(id=request.POST["group"])
+    group = models.BookwyrmGroup.objects.get(id=request.POST["group"])
     if not group:
         return HttpResponseBadRequest()
 
@@ -183,11 +200,52 @@ def remove_member(request):
         return HttpResponseBadRequest()
 
     try:
-        membership = models.GroupMember.objects.get(group=group,user=user)
+        membership = models.BookwyrmGroupMember.objects.get(group=group,user=user) # BUG: wrong
         membership.delete()
 
     except IntegrityError:
-        print("no integrity")
         pass
 
     return redirect(user.local_path)
+
+@require_POST
+@login_required
+def accept_membership(request):
+    """accept an invitation to join a group"""
+
+    group = models.BookwyrmGroup.objects.get(id=request.POST["group"])
+    if not group:
+        return HttpResponseBadRequest()
+
+    invite = models.GroupMemberInvitation.objects.get(group=group,user=request.user)
+    if not invite:
+        return HttpResponseBadRequest()
+
+    try:
+        invite.accept()
+
+    except IntegrityError:
+        pass
+
+    return redirect(request.user.local_path)
+
+@require_POST
+@login_required
+def reject_membership(request):
+    """reject an invitation to join a group"""
+
+    group = models.BookwyrmGroup.objects.get(id=request.POST["group"])
+    if not group:
+        return HttpResponseBadRequest()
+
+    invite = models.GroupMemberInvitation.objects.get(group=group,user=request.user)
+    if not invite:
+        return HttpResponseBadRequest()
+
+    try:
+        invite.reject()
+
+    except IntegrityError:
+        pass
+
+    return redirect(request.user.local_path)
