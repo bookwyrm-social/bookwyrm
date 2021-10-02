@@ -494,11 +494,13 @@ ol.ordered-list li::before {
 
 /* Threads
  ******************************************************************************/
+
 .thread .is-main .card {
     box-shadow: 0 0.5em 1em -0.125em rgb(50 115 220 / 35%), 0 0 0 1px rgb(50 115 220 / 2%);
 }
-.thread:after {
-    content:"";
+
+.thread::after {
+    content: "";
     position: absolute;
     z-index: -1;
     top: 0;
