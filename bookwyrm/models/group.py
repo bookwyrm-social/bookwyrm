@@ -133,21 +133,27 @@ class GroupMemberInvitation(models.Model):
         with transaction.atomic():
             BookwyrmGroupMember.from_request(self)
 
-            # let the other members know about it
             model = apps.get_model("bookwyrm.Notification", require_ready=True)
+            # tell the group owner 
+            model.objects.create(
+                user=self.group.user,
+                related_user=self.user,
+                related_group=self.group,
+                notification_type="ACCEPT",
+            )
+
+            # let the other members know about it
             for membership in self.group.memberships.all():
                 member = membership.user 
-                if member != self.user:
+                if member != self.user and member != self.group.user:
                     model.objects.create(
                         user=member,
                         related_user=self.user,
                         related_group=self.group,
-                        notification_type="ACCEPT",
+                        notification_type="JOIN",
                     )
 
     def reject(self):
         """generate a Reject for this membership request"""
 
         self.delete()
-
-        # TODO: send notification

@@ -42,7 +42,7 @@
                 <span class="icon icon-comment"></span>
                 {% elif notification.notification_type == 'REPLY' %}
                 <span class="icon icon-comments"></span>
-                {% elif notification.notification_type == 'FOLLOW' or notification.notification_type == 'FOLLOW_REQUEST' or notification.notification_type == 'INVITE' or notification.notification_type == 'ACCEPT' %}
+                {% elif notification.notification_type == 'FOLLOW' or notification.notification_type == 'FOLLOW_REQUEST' or notification.notification_type == 'INVITE' or notification.notification_type == 'ACCEPT' or notification.notification_type == 'JOIN' or notification.notification_type == 'LEAVE' or notification.notification_type == 'REMOVE'%}
                 <span class="icon icon-local"></span>
                 {% elif notification.notification_type == 'BOOST' %}
                 <span class="icon icon-boost"></span>
@@ -131,9 +131,25 @@
                                 {% endif %}
                             {% elif notification.notification_type == 'ACCEPT' %}
                                 {% if notification.related_group %}
-                                {% blocktrans with group_name=notification.related_group.name group_path=notification.related_group.local_path %} accepted an invitation to join your group "<a href="{{ group_path }}">{{ group_name }}</a>"{% endblocktrans %}
+                                {% blocktrans with group_name=notification.related_group.name group_path=notification.related_group.local_path %} accepted your invitation to join group "<a href="{{ group_path }}">{{ group_name }}</a>"{% endblocktrans %}
+                                {% endif %}
+                            {% elif notification.notification_type == 'JOIN' %}
+                                {% if notification.related_group %}
+                                {% blocktrans with group_name=notification.related_group.name group_path=notification.related_group.local_path %} has joined your group "<a href="{{ group_path }}">{{ group_name }}</a>"{% endblocktrans %}
+                                {% endif %}
+                            {% elif notification.notification_type == 'LEAVE' %}
+                                {% if notification.related_group %}
+                                {% blocktrans with group_name=notification.related_group.name group_path=notification.related_group.local_path %} has left your group "<a href="{{ group_path }}">{{ group_name }}</a>"{% endblocktrans %}
+                                {% endif %}
+                            {% elif notification.notification_type == 'REMOVE' %}
+                                {% if notification.related_group %}
+                                {% blocktrans with group_name=notification.related_group.name group_path=notification.related_group.local_path %} has been removed from your group "<a href="{{ group_path }}">{{ group_name }}</a>"{% endblocktrans %}
                                 {% endif %}
                             {% endif %}
+                        {% elif notification.notification_type == 'REMOVE' and notification.related_group %}
+                            {% blocktrans with group_name=notification.related_group.name group_path=notification.related_group.local_path %}
+                            You have been removed from the "<a href="{{ group_path }}">{{ group_name }}</a> group"
+                            {% endblocktrans %}
                         {% elif notification.related_import %}
                         {% url 'import-status' notification.related_import.id as url %}
                         {% blocktrans %}Your <a href="{{ url }}">import</a> completed.{% endblocktrans %}

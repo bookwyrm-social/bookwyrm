@@ -158,7 +158,7 @@ def invite_member(request):
 @require_POST
 @login_required
 def remove_member(request):
-    """invite a member to the group"""
+    """remove a member from the group"""
 
     group = get_object_or_404(models.BookwyrmGroup, id=request.POST.get("group"))
     if not group:
@@ -192,18 +192,27 @@ def remove_member(request):
         except IntegrityError:
             pass
 
-        # let the other members know about it
+        memberships = models.BookwyrmGroupMember.objects.filter(group=group)
         model = apps.get_model("bookwyrm.Notification", require_ready=True)
-        memberships = models.BookwyrmGroupMember.objects.get(group=group)
+        notification_type = "LEAVE" if "self_removal" in request.POST and request.POST["self_removal"] else "REMOVE"
+        # let the other members know about it
         for membership in memberships:
             member = membership.user 
             if member != request.user:
                 model.objects.create(
                     user=member,
-                    related_user=request.user,
-                    related_group=request.group,
-                    notification_type="REMOVE",
+                    related_user=user,
+                    related_group=group,
+                    notification_type=notification_type,
                 )
+
+        # let the user (now ex-member) know as well, if they were removed
+        if notification_type == "REMOVE":
+            model.objects.create(
+                user=user,
+                related_group=group,
+                notification_type=notification_type,
+            )
 
     return redirect(user.local_path)
 

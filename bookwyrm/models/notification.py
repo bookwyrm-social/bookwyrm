@@ -7,7 +7,7 @@ from . import Boost, Favorite, ImportJob, Report, Status, User
 
 NotificationType = models.TextChoices(
     "NotificationType",
-    "FAVORITE REPLY MENTION TAG FOLLOW FOLLOW_REQUEST BOOST IMPORT ADD REPORT INVITE ACCEPT",
+    "FAVORITE REPLY MENTION TAG FOLLOW FOLLOW_REQUEST BOOST IMPORT ADD REPORT INVITE ACCEPT JOIN LEAVE REMOVE",
 )
 
 
