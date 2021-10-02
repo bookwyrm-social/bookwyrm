@@ -24,22 +24,22 @@
             <span><em>Remote User</em></span>
             {% endif %}
         </form>
-        <form action="{% url 'uninvite-group-member' %}" method="POST" class="interaction add_{{ user.id }} {% if not group|is_member:user or not group|is_invited:user %}is-hidden{% endif %}" data-id="add_{{ user.id }}">
+        <form action="{% url 'remove-group-member' %}" method="POST" class="interaction add_{{ user.id }} {% if not group|is_member:user and not group|is_invited:user %}is-hidden{% endif %}" data-id="add_{{ user.id }}">
             {% csrf_token %}
             <input type="hidden" name="group" value="{{ group.id }}">
             <input type="hidden" name="user" value="{{ user.username }}">
-            {% if group|is_invited:user %}
+            {% if not group|is_member:user %}
             <button class="button is-small is-danger is-light" type="submit">
                 {% trans "Undo Invitation" %}
             </button>
             {% else %}
             <button class="button is-small is-danger is-light" type="submit">
-                {% if show_username %}
-                {% blocktrans with username=user.localname %}Remove @{{ username }}{% endblocktrans %}
-                {% else %}
-                {% trans "Remove" %}
-                {% endif %}
-            </button>
+              {% if show_username %}
+              {% blocktrans with username=user.localname %}Remove @{{ username }}{% endblocktrans %}
+              {% else %}
+              {% trans "Remove" %}
+              {% endif %}
+          </button>
             {% endif %}
         </form>
     </div>

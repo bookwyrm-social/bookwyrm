@@ -42,7 +42,7 @@
                 <span class="icon icon-comment"></span>
                 {% elif notification.notification_type == 'REPLY' %}
                 <span class="icon icon-comments"></span>
-                {% elif notification.notification_type == 'FOLLOW' or notification.notification_type == 'FOLLOW_REQUEST' %}
+                {% elif notification.notification_type == 'FOLLOW' or notification.notification_type == 'FOLLOW_REQUEST' or notification.notification_type == 'INVITE' or notification.notification_type == 'ACCEPT' %}
                 <span class="icon icon-local"></span>
                 {% elif notification.notification_type == 'BOOST' %}
                 <span class="icon icon-boost"></span>
@@ -121,6 +121,17 @@
                                 {% blocktrans with book_path=notification.related_list_item.book.local_path book_title=notification.related_list_item.book.title list_path=notification.related_list_item.book_list.local_path list_name=notification.related_list_item.book_list.name %} added <em><a href="{{ book_path }}">{{ book_title }}</a></em> to your list "<a href="{{ list_path }}">{{ list_name }}</a>"{% endblocktrans %}
                                 {% else %}
                                 {% blocktrans with book_path=notification.related_list_item.book.local_path book_title=notification.related_list_item.book.title list_path=notification.related_list_item.book_list.local_path list_name=notification.related_list_item.book_list.name %} suggested adding <em><a href="{{ book_path }}">{{ book_title }}</a></em> to your list "<a href="{{ list_path }}/curate">{{ list_name }}</a>"{% endblocktrans %}
+                                {% endif %}
+                            {% elif notification.notification_type == 'INVITE' %}
+                                {% if notification.related_group %}
+                                {% blocktrans with group_name=notification.related_group.name group_path=notification.related_group.local_path %} invited you to join the group <a href="{{ group_path }}">{{ group_name }}</a> {% endblocktrans %}
+                                <div class="row shrink">
+                                    {% include 'snippets/join_invitation_buttons.html' with group=notification.related_group %}
+                                </div>
+                                {% endif %}
+                            {% elif notification.notification_type == 'ACCEPT' %}
+                                {% if notification.related_group %}
+                                {% blocktrans with group_name=notification.related_group.name group_path=notification.related_group.local_path %} accepted an invitation to join your group "<a href="{{ group_path }}">{{ group_name }}</a>"{% endblocktrans %}
                                 {% endif %}
                             {% endif %}
                         {% elif notification.related_import %}

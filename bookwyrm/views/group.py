@@ -57,11 +57,11 @@ class UserGroups(View):
     def get(self, request, username):
         """display a group"""
         user = get_user_from_username(request.user, username)
-        groups = user.bookwyrmgroup_set.all() # follow the relationship backwards, nice
-        paginated = Paginator(groups, 12)
+        memberships = models.BookwyrmGroupMember.objects.filter(user=user).all()
+        paginated = Paginator(memberships, 12)
 
         data = {
-            "groups": paginated.get_page(request.GET.get("page")),
+            "memberships": paginated.get_page(request.GET.get("page")),
             "is_self": request.user.id == user.id,
             "user": user,
             "group_form": forms.GroupForm(),
@@ -89,8 +89,10 @@ class FindUsers(View):
     def get(self, request, group_id):
         """basic profile info"""
         query = request.GET.get("query")
+        group = models.BookwyrmGroup.objects.get(id=group_id)
         user_results = (
             models.User.viewer_aware_objects(request.user)
+            .exclude(memberships__in=group.memberships.all()) # don't suggest users who are already members
             .annotate(
                 similarity=Greatest(
                     TrigramSimilarity("username", query),
@@ -149,7 +151,7 @@ def invite_member(request):
 
 @require_POST
 @login_required
-def uninvite_member(request):
+def remove_member(request):
     """invite a member to the group"""
 
     group = get_object_or_404(models.BookwyrmGroup, id=request.POST.get("group"))
@@ -160,51 +162,31 @@ def uninvite_member(request):
     if not user:
         return HttpResponseBadRequest()
 
-    if not group.user == request.user:
-        return HttpResponseBadRequest()
+    is_member = models.BookwyrmGroupMember.objects.filter(group=group,user=user).exists()
+    is_invited = models.GroupMemberInvitation.objects.filter(group=group,user=user).exists()
 
-    try:
-        invitation = models.GroupMemberInvitation.objects.get(
-          user=user, 
-          group=group
-          )
+    if is_invited:
+        try:
+            invitation = models.GroupMemberInvitation.objects.get(
+              user=user, 
+              group=group
+              )
 
-        invitation.reject()
+            invitation.reject()
 
-    except IntegrityError:
-        pass
+        except IntegrityError:
+            pass
 
-    return redirect(user.local_path)
+    if is_member:
 
-@require_POST
-@login_required
-def remove_member(request):
-    """remove a member from the group"""
+        try:
+            membership = models.BookwyrmGroupMember.objects.get(group=group,user=user)
+            membership.delete()
 
-    # TODO: send notification to user telling them they have been removed
-    # TODO: remove yourself from a group!!!! (except owner)
-    # FUTURE TODO: transfer ownership of group
-    # THIS LOGIC SHOULD BE IN MODEL
+        except IntegrityError:
+            pass
 
-    # TODO: if groups become AP values we need something like get_group_from_group_fullname
-    # group = get_object_or_404(models.Group, id=request.POST.get("group")) # NOTE: does this not work?
-    group = models.BookwyrmGroup.objects.get(id=request.POST["group"])
-    if not group:
-        return HttpResponseBadRequest()
-
-    user = get_user_from_username(request.user, request.POST["user"])
-    if not user:
-        return HttpResponseBadRequest()
-
-    if not group.user == request.user:
-        return HttpResponseBadRequest()
-
-    try:
-        membership = models.BookwyrmGroupMember.objects.get(group=group,user=user) # BUG: wrong
-        membership.delete()
-
-    except IntegrityError:
-        pass
+        # TODO: should send notification to all members including the now ex-member that they have been removed.
 
     return redirect(user.local_path)
 
@@ -227,7 +209,7 @@ def accept_membership(request):
     except IntegrityError:
         pass
 
-    return redirect(request.user.local_path)
+    return redirect(group.local_path)
 
 @require_POST
 @login_required

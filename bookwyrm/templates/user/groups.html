@@ -24,7 +24,7 @@
 
 {% block panel %}
 <section class="block">
-    <form name="create-group" method="post" action="{% url 'user-groups' request.user.name %}" class="box is-hidden" id="create_group">
+    <form name="create-group" method="post" action="{% url 'user-groups' request.user.username %}" class="box is-hidden" id="create_group">
         <header class="columns">
             <h3 class="title column">{% trans "Create group" %}</h3>
             <div class="column is-narrow">
@@ -34,9 +34,9 @@
         {% include 'groups/form.html' %}
     </form>
 
-    {% include 'groups/user_groups.html' %}
+    {% include 'groups/user_groups.html' with memberships=memberships %}
 </section>
 <div>
-    {% include 'snippets/pagination.html' with page=user_groups path=path %}
+    {% include 'snippets/pagination.html' with page=user.memberships path=path %}
 </div>
 {% endblock %}

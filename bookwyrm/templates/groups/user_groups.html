@@ -3,7 +3,8 @@
 {% load interaction %}
 
 <div class="columns is-multiline">
-    {% for group in groups %}
+    {% for membership in memberships %}
+    {% with group=membership.group %}
     <div class="column is-one-quarter">
         <div class="card is-stretchable">
             <header class="card-header">
@@ -31,5 +32,6 @@
             </div>
         </div>
     </div>
+    {% endwith %}
     {% endfor %}
 </div>

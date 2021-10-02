@@ -20,6 +20,7 @@
         <span class="is-sr-only">Manager</span>
       </span>
       {% endif %}
+      <!-- TODO: change this to a remove_from_group button -->
       {% include 'snippets/add_to_group_button.html' with user=member group=group minimal=True %}
       {% if member.mutuals %}
       <p class="help">
