@@ -256,8 +256,7 @@ urlpatterns = [
     re_path(r"^group/(?P<group_id>\d+)(.json)?/?$", views.BookwyrmGroup.as_view(), name="group"),
     re_path(r"^group/(?P<group_id>\d+)/add-users/?$", views.FindUsers.as_view(), name="group-find-users"),
     re_path(r"^add-group-member/?$", views.invite_member, name="invite-group-member"),
-    re_path(r"^add-group-member/?$", views.uninvite_member, name="uninvite-group-member"),
-    re_path(r"^add-group-member/?$", views.uninvite_member, name="uninvite-group-member"),
+    re_path(r"^remove-group-member/?$", views.remove_member, name="remove-group-member"),
     re_path(r"^accept-group-invitation/?$", views.accept_membership, name="accept-group-invitation"),
     re_path(r"^reject-group-invitation/?$", views.reject_membership, name="reject-group-invitation"),
     # lists
