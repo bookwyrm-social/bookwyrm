@@ -57,6 +57,7 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         on_delete=models.PROTECT,
         activitypub_field="inReplyTo",
     )
+    thread_id = models.IntegerField(blank=True, null=True)
     objects = InheritanceManager()
 
     activity_serializer = activitypub.Note
@@ -67,6 +68,17 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         """default sorting"""
 
         ordering = ("-published_date",)
+
+    def save(self, *args, **kwargs):
+        """save and notify"""
+        if self.reply_parent:
+            self.thread_id = self.reply_parent.thread_id or self.reply_parent.id
+
+        super().save(*args, **kwargs)
+
+        if not self.reply_parent:
+            self.thread_id = self.id
+        super().save(broadcast=False, update_fields=["thread_id"])
 
     def delete(self, *args, **kwargs):  # pylint: disable=unused-argument
         """ "delete" a status"""

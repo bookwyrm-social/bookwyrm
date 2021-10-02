@@ -492,6 +492,23 @@ ol.ordered-list li::before {
     }
 }
 
+/* Threads
+ ******************************************************************************/
+
+.thread .is-main .card {
+    box-shadow: 0 0.5em 1em -0.125em rgb(50 115 220 / 35%), 0 0 0 1px rgb(50 115 220 / 2%);
+}
+
+.thread::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    top: 0;
+    bottom: 0;
+    left: 2.5em;
+    border-left: 2px solid #e0e0e0;
+}
+
 /* Dimensions
  * @todo These could be in rem.
  ******************************************************************************/

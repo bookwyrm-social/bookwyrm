@@ -72,6 +72,7 @@ class InboxCreate(TestCase):
         self.assertEqual(status.quote, "quote body")
         self.assertEqual(status.content, "commentary")
         self.assertEqual(status.user, self.local_user)
+        self.assertEqual(status.thread_id, status.id)
 
         # while we're here, lets ensure we avoid dupes
         views.inbox.activity_task(activity)
@@ -144,6 +145,7 @@ class InboxCreate(TestCase):
         status = models.Status.objects.last()
         self.assertEqual(status.content, "test content in note")
         self.assertEqual(status.reply_parent, parent_status)
+        self.assertEqual(status.thread_id, parent_status.id)
         self.assertTrue(models.Notification.objects.filter(user=self.local_user))
         self.assertEqual(models.Notification.objects.get().notification_type, "REPLY")
 
