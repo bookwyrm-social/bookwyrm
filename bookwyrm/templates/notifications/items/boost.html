@@ -1,10 +1,10 @@
-{% extends 'notifications/item_layout.html' %}
+{% extends 'notifications/items/item_layout.html' %}
 
 {% load i18n %}
 {% load utilities %}
 
 {% block icon %}
-<span class="icon icon-heart"></span>
+<span class="icon icon-boost"></span>
 {% endblock %}
 
 {% block description %}
@@ -14,25 +14,25 @@
     {% if related_status.status_type == 'Review' %}
     {% blocktrans trimmed %}
 
-    favorited your <a href="{{ related_path }}">review of <em>{{ book_title }}</em></a>
+    boosted your <a href="{{ related_path }}">review of <em>{{ book_title }}</em></a>
 
     {% endblocktrans %}
     {% elif related_status.status_type == 'Comment' %}
     {% blocktrans trimmed %}
 
-    favorited your <a href="{{ related_path }}">comment on<em>{{ book_title }}</em></a>
+    boosted your <a href="{{ related_path }}">comment on<em>{{ book_title }}</em></a>
 
     {% endblocktrans %}
     {% elif related_status.status_type == 'Quotation' %}
     {% blocktrans trimmed %}
 
-    favorited your <a href="{{ related_path }}">quote from <em>{{ book_title }}</em></a>
+    boosted your <a href="{{ related_path }}">quote from <em>{{ book_title }}</em></a>
 
     {% endblocktrans %}
     {% else %}
     {% blocktrans trimmed %}
 
-    favorited your <a href="{{ related_path }}">status</a>
+    boosted your <a href="{{ related_path }}">status</a>
 
     {% endblocktrans %}
     {% endif %}

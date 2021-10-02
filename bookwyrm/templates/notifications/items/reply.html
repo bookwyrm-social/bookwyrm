@@ -1,47 +1,50 @@
-{% extends 'notifications/item_layout.html' %}
+{% extends 'notifications/items/item_layout.html' %}
 
 {% load i18n %}
 {% load utilities %}
 
 
 {% block icon %}
-<span class="icon icon-comment"></span>
+<span class="icon icon-comments"></span>
 {% endblock %}
 
 
 {% block description %}
-    {% with related_status.book|book_title as book_title %}
+    {% with related_status.reply_parent.book|book_title as book_title %}
     {% with related_status.local_path as related_path %}
+    {% with related_status.reply_parent.local_path as parent_path %}
 
-    {% if related_status.status_type == 'Review' %}
+    {% if related_status.reply_parent.status_type == 'Review' %}
     {% blocktrans trimmed %}
 
-        mentioned you in a <a href="{{ related_path }}">review of <em>{{ book_title }}</em></a>
+    <a href="{{ related_path }}">replied</a> to your <a href="{{ parent_path }}">review of <em>{{ book_title }}</em></a>
 
     {% endblocktrans %}
-    {% elif related_status.status_type == 'Comment' %}
+    {% elif related_status.reply_parent.status_type == 'Comment' %}
     {% blocktrans trimmed %}
 
-        mentioned you in a <a href="{{ related_path }}">comment on <em>{{ book_title }}</em></a>
+    <a href="{{ related_path }}">replied</a> to your <a href="{{ parent_path }}">comment on <em>{{ book_title }}</em></a>
 
     {% endblocktrans %}
-    {% elif related_status.status_type == 'Quotation' %}
+    {% elif related_status.reply_parent.status_type == 'Quotation' %}
     {% blocktrans trimmed %}
 
-        mentioned you in a <a href="{{ related_path }}">quote from <em>{{ book_title }}</em></a>
+    <a href="{{ related_path }}">replied</a> to your <a href="{{ parent_path }}">quote from <em>{{ book_title }}</em></a>
 
     {% endblocktrans %}
     {% else %}
     {% blocktrans trimmed %}
 
-        mentioned you in a <a href="{{ related_path }}">status</a>
+    <a href="{{ related_path }}">replied</a> to your <a href="{{ parent_path }}">status</a>
 
     {% endblocktrans %}
     {% endif %}
 
     {% endwith %}
     {% endwith %}
+    {% endwith %}
 {% endblock %}
+
 
 
 {% block preview %}
