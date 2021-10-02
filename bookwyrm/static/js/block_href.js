@@ -1,5 +1,4 @@
 /* exported BlockHref */
-/* globals BookWyrm */
 
 let BlockHref = new class {
     constructor() {
