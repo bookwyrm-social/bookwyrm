@@ -1,4 +1,5 @@
 {% load i18n %}
+{% load bookwyrm_group_tags %}
 {% if request.user == user or not request.user == group.user or not request.user.is_authenticated %}
 {% elif user in request.user.blocks.all %}
 {% include 'snippets/block_button.html' with blocks=True %}
@@ -6,30 +7,30 @@
 
 <div class="field{% if not minimal %} has-addons{% else %} mb-0{% endif %}">
     <div class="control">
-        <form action="{% url 'add-group-member' %}" method="POST" class="interaction add_{{ user.id }} {% if user in group.members.all %}is-hidden{%endif %}" data-id="add_{{ user.id }}">
+        <form action="{% url 'invite-group-member' %}" method="POST" class="interaction add_{{ user.id }} {% if group|is_member:user or group|is_invited:user %}is-hidden{%endif %}" data-id="add_{{ user.id }}">
             {% csrf_token %}
             <input type="hidden" name="group" value="{{ group.id }}">
             <input type="hidden" name="user" value="{{ user.username }}">
             {% if user.local %}
             <button class="button is-small{% if not minimal %} is-link{% endif %}" type="submit">
                 {% if show_username %}
-                {% blocktrans with username=user.localname %}Add @{{ username }}{% endblocktrans %}
+                {% blocktrans with username=user.localname %}Invite @{{ username }}{% endblocktrans %}
                 {% else %}
-                {% trans "Add" %}
+                {% trans "Invite" %}
                 {% endif %}
             </button>
             {% else %}
-            <!-- TODO: This is an incredibly ugly hack until group are AP enabled -->
+            <!-- TODO: This is an incredibly ugly hack until groups are AP enabled -->
             <span><em>Remote User</em></span>
             {% endif %}
         </form>
-        <form action="{% url 'remove-group-member' %}" method="POST" class="interaction add_{{ user.id }} {% if user not in group.members.all %}is-hidden{%endif %}" data-id="add_{{ user.id }}">
+        <form action="{% url 'uninvite-group-member' %}" method="POST" class="interaction add_{{ user.id }} {% if not group|is_member:user or not group|is_invited:user %}is-hidden{% endif %}" data-id="add_{{ user.id }}">
             {% csrf_token %}
             <input type="hidden" name="group" value="{{ group.id }}">
             <input type="hidden" name="user" value="{{ user.username }}">
-            {% if user.manually_approves_followers and request.user not in user.followers.all %}
+            {% if group|is_invited:user %}
             <button class="button is-small is-danger is-light" type="submit">
-                {% trans "Undo follow request" %}
+                {% trans "Undo Invitation" %}
             </button>
             {% else %}
             <button class="button is-small is-danger is-light" type="submit">
@@ -42,10 +43,5 @@
             {% endif %}
         </form>
     </div>
-    {% if not minimal %}
-    <div class="control">
-        {% include 'snippets/user_options.html' with user=user class="is-small" %}
-    </div>
-    {% endif %}
 </div>
 {% endif %}

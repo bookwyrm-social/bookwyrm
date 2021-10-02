@@ -7,7 +7,8 @@
 <p class="subtitle is-6">{% trans "Members can add and remove books on your group's book lists" %}</p>
 
 <div class="column is-flex is-flex-grow-0">
-  {% for member in group.members.all %}
+  {% for membership in group.memberships.all %}
+  {% with member=membership.user %}
   <div class="box has-text-centered is-shadowless has-background-white-bis my-0 mx-2">
       <a href="{{ member.local_path }}" class="has-text-black">
           {% include 'snippets/avatar.html' with user=member large=True %}
@@ -19,7 +20,7 @@
         <span class="is-sr-only">Manager</span>
       </span>
       {% endif %}
-      {% include 'snippets/add_to_group_button.html' with user=member minimal=True %}
+      {% include 'snippets/add_to_group_button.html' with user=member group=group minimal=True %}
       {% if member.mutuals %}
       <p class="help">
           {% blocktrans trimmed with mutuals=member.mutuals|intcomma count counter=member.mutuals %}
@@ -41,5 +42,6 @@
       </p>
       {% endif %}
     </div>
+    {% endwith %}
     {% endfor %}
   </div>

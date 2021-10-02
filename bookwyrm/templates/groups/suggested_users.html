@@ -12,7 +12,7 @@
                 <span title="{{ user.display_name }}" class="is-block is-6 has-text-weight-bold">{{ user.display_name|truncatechars:10 }}</span>
                 <span title="@{{ user|username }}" class="is-block pb-3">@{{ user|username|truncatechars:8 }}</span>
             </a>
-            {% include 'snippets/add_to_group_button.html' with user=user minimal=True %}
+            {% include 'snippets/add_to_group_button.html' with user=user group=group minimal=True %}
             {% if user.mutuals %}
             <p class="help">
                 {% blocktrans trimmed with mutuals=user.mutuals|intcomma count counter=user.mutuals %}

@@ -22,9 +22,6 @@
 
 {% block panel %}
 {% if user.bookwyrm_user %}
-{% for group in user.bookwyrm_groups.all %}
-<div>{{ group.name }}</div>
-{% endfor %}
 <div class="block">
     <h2 class="title">
         {% include 'user/shelf/books_header.html' %}
