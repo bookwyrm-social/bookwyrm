@@ -108,7 +108,7 @@ class FindUsers(View):
         data = {"no_results": not user_results}
 
         if user_results.count() < 5:
-            user_results = list(user_results) + suggested_users.get_suggestions(
+            user_results = list(user_results) + suggested_users.get_group_suggestions(
                 request.user
             )
 
