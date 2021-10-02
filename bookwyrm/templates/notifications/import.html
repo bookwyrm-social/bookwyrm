@@ -1,0 +1,12 @@
+{% extends 'notifications/item_layout.html' %}
+
+{% load i18n %}
+
+{% block icon %}
+<span class="icon icon-list"></span>
+{% endblock %}
+
+{% block description %}
+    {% url 'import-status' notification.related_import.id as url %}
+    {% blocktrans %}Your <a href="{{ url }}">import</a> completed.{% endblocktrans %}
+{% endblock %}

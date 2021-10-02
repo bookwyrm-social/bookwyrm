@@ -1,0 +1,35 @@
+{% extends 'notifications/item_layout.html' %}
+
+{% load i18n %}
+{% load utilities %}
+
+{% block icon %}
+<span class="icon icon-plus"></span>
+{% endblock %}
+
+{% block description %}
+{% with book_path=notification.related_list_item.book.local_path %}
+{% with book_title=notification.related_list_item.book|book_title %}
+{% with list_path=notification.related_list_item.book_list.local_path %}
+{% with list_name=notification.related_list_item.book_list.name %}
+
+    {% if notification.related_list_item.approved %}
+    {% blocktrans trimmed %}
+
+    added <em><a href="{{ book_path }}">{{ book_title }}</a></em> to your list "<a href="{{ list_path }}">{{ list_name }}</a>"
+
+    {% endblocktrans %}
+    {% else %}
+    {% blocktrans trimmed %}
+
+    suggested adding <em><a href="{{ book_path }}">{{ book_title }}</a></em> to your list "<a href="{{ list_path }}/curate">{{ list_name }}</a>"
+
+    {% endblocktrans %}
+    {% endif %}
+
+{% endwith %}
+{% endwith %}
+{% endwith %}
+{% endwith %}
+{% endblock %}
+

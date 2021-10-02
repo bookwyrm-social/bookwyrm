@@ -1,0 +1,12 @@
+{% extends 'notifications/item_layout.html' %}
+
+{% load i18n %}
+
+{% block icon %}
+<span class="icon icon-warning"></span>
+{% endblock %}
+
+{% block description %}
+    {% url 'settings-report' notification.related_report.id as path %}
+    {% blocktrans %}A new <a href="{{ path }}">report</a> needs moderation.{% endblocktrans %}
+{% endblock %}
