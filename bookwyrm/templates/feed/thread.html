@@ -1,5 +1,7 @@
 {% load status_display %}
 
+<div class="thread-parent is-relative block">
+<div class="thread">
 {% with depth=depth|add:1 %}
     {% if depth <= max_depth and status.reply_parent and direction <= 0 %}
         {% with direction=-1 %}
@@ -7,7 +9,7 @@
         {% endwith %}
     {% endif %}
 
-<div{% if is_root %} class="block mt-5"{% endif %}>
+<div{% if is_root %} class="block mt-5 is-main"{% endif %}>
     {% include 'snippets/status/status.html' with status=status main=is_root %}
 </div>
 
@@ -19,3 +21,5 @@
     {% endfor %}
 {% endif %}
 {% endwith %}
+</div>
+</div>
