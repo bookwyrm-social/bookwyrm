@@ -3,7 +3,6 @@
 {% load humanize %}
 
 {% if suggested_users %}
-<div class="columns is-mobile scroll-x mb-0">
     {% for user in suggested_users %}
     <div class="column is-flex is-flex-grow-0">
         <div class="box has-text-centered is-shadowless has-background-white-bis m-0">
@@ -37,7 +36,7 @@
     </div>
     {% endfor %}
     {% else %}
-    No potential members found for "{{ query }}"
+    <div >
+      No potential members found for "{{ query }}"
+    </div>
 {% endif %}
-</div>
-

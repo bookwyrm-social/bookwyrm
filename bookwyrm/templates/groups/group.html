@@ -61,6 +61,7 @@
         {% include "snippets/pagination.html" with page=items %}
     </section>
 
+    {% if group.user == request.user %}
     <section class="column is-one-quarter">
       <div class="block">
           <h2 class="title is-5">Find new members</h2>
@@ -78,6 +79,7 @@
           </form>
       </div>
     </section>
+    {% endif %}
 
 </div>
 {% endblock %}

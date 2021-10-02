@@ -114,6 +114,12 @@ class FindUsers(View):
 
         group = get_object_or_404(models.BookwyrmGroup, id=group_id)
 
+        if not group:
+            return HttpResponseBadRequest()
+
+        if not group.user == request.user:
+            return HttpResponseBadRequest()
+
         data = {
           "suggested_users": user_results,
           "group": group,
@@ -186,7 +192,18 @@ def remove_member(request):
         except IntegrityError:
             pass
 
-        # TODO: should send notification to all members including the now ex-member that they have been removed.
+        # let the other members know about it
+        model = apps.get_model("bookwyrm.Notification", require_ready=True)
+        memberships = models.BookwyrmGroupMember.objects.get(group=group)
+        for membership in memberships:
+            member = membership.user 
+            if member != request.user:
+                model.objects.create(
+                    user=member,
+                    related_user=request.user,
+                    related_group=request.group,
+                    notification_type="REMOVE",
+                )
 
     return redirect(user.local_path)
 
