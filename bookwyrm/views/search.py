@@ -67,11 +67,11 @@ class Search(View):
         return TemplateResponse(request, f"search/{search_type}.html", data)
 
 
-def book_search(query, _, min_confidence, search_remote=False):
+def book_search(query, user, min_confidence, search_remote=False):
     """the real business is elsewhere"""
     # try a local-only search
     results = [{"results": search(query, min_confidence=min_confidence)}]
-    if results and not search_remote:
+    if not user.is_authenticated or (results[0]["results"] and not search_remote):
         return results, False
 
     # if there were no local results, or the request was for remote, search all sources
@@ -101,7 +101,7 @@ def user_search(query, viewer, *_):
         .filter(
             similarity__gt=0.5,
         )
-        .order_by("-similarity")[:10]
+        .order_by("-similarity")
     ), None
 
 
@@ -122,5 +122,5 @@ def list_search(query, viewer, *_):
         .filter(
             similarity__gt=0.1,
         )
-        .order_by("-similarity")[:10]
+        .order_by("-similarity")
     ), None

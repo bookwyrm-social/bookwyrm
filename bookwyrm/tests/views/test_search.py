@@ -51,7 +51,7 @@ class Views(TestCase):
         data = json.loads(response.content)
         self.assertEqual(len(data), 1)
         self.assertEqual(data[0]["title"], "Test Book")
-        self.assertEqual(data[0]["key"], "https://%s/book/%d" % (DOMAIN, self.book.id))
+        self.assertEqual(data[0]["key"], f"https://{DOMAIN}/book/{self.book.id}")
 
     def test_search_no_query(self):
         """just the search page"""
@@ -91,11 +91,26 @@ class Views(TestCase):
         self.assertIsInstance(response, TemplateResponse)
         response.render()
         connector_results = response.context_data["results"]
+        self.assertEqual(len(connector_results), 2)
         self.assertEqual(connector_results[0]["results"][0].title, "Test Book")
         self.assertEqual(
             connector_results[1]["results"][0].title,
             "This Is How You Lose the Time War",
         )
+
+        # don't search remote
+        request = self.factory.get("", {"q": "Test Book", "remote": True})
+        anonymous_user = AnonymousUser
+        anonymous_user.is_authenticated = False
+        request.user = anonymous_user
+        with patch("bookwyrm.views.search.is_api_request") as is_api:
+            is_api.return_value = False
+            response = view(request)
+        self.assertIsInstance(response, TemplateResponse)
+        response.render()
+        connector_results = response.context_data["results"]
+        self.assertEqual(len(connector_results), 1)
+        self.assertEqual(connector_results[0]["results"][0].title, "Test Book")
 
     def test_search_users(self):
         """searches remote connectors"""

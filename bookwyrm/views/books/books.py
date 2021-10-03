@@ -172,6 +172,7 @@ def add_description(request, book_id):
     return redirect("book", book.id)
 
 
+@login_required
 @require_POST
 def resolve_book(request):
     """figure out the local path to a book from a remote_id"""

@@ -331,8 +331,15 @@ def remove_statuses_on_block(sender, instance, *args, **kwargs):
 @receiver(signals.post_delete, sender=models.UserBlocks)
 # pylint: disable=unused-argument
 def add_statuses_on_unblock(sender, instance, *args, **kwargs):
-    """remove statuses from all feeds on block"""
-    public_streams = [v for (k, v) in streams.items() if k != "home"]
+    """add statuses back to all feeds on unblock"""
+    # make sure there isn't a block in the other direction
+    if models.UserBlocks.objects.filter(
+        user_subject=instance.user_object,
+        user_object=instance.user_subject,
+    ).exists():
+        return
+
+    public_streams = [k for (k, v) in streams.items() if k != "home"]
 
     # add statuses back to streams with statuses from anyone
     if instance.user_subject.local:
