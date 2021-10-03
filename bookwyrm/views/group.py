@@ -56,7 +56,7 @@ class UserGroups(View):
     def get(self, request, username):
         """display a group"""
         user = get_user_from_username(request.user, username)
-        memberships = models.GroupMember.objects.filter(user=user).all()
+        memberships = models.GroupMember.objects.filter(user=user).all().order_by("-updated_date")
         paginated = Paginator(memberships, 12)
 
         data = {
