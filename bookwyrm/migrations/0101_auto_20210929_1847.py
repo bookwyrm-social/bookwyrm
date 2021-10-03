@@ -17,7 +17,7 @@ def infer_format(app_registry, schema_editor):
     for edition in editions:
         free_format = edition.physical_format_detail.lower()
         edition.physical_format = infer_physical_format(free_format)
-        edition.save()
+        edition.save(broadcast=False, update_fields=["physical_format"])
 
 
 def reverse(app_registry, schema_editor):
