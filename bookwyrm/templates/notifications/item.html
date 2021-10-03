@@ -17,4 +17,14 @@
     {% include 'notifications/items/add.html' %}
 {% elif notification.notification_type == 'REPORT' %}
     {% include 'notifications/items/report.html' %}
+{% elif notification.notification_type == 'INVITE' %}
+    {% include 'notifications/items/invite.html' %}
+{% elif notification.notification_type == 'ACCEPT' %}
+    {% include 'notifications/items/accept.html' %}
+{% elif notification.notification_type == 'JOIN' %}
+    {% include 'notifications/items/join.html' %}
+{% elif notification.notification_type == 'LEAVE' %}
+    {% include 'notifications/items/leave.html' %}
+{% elif notification.notification_type == 'REMOVE' %}
+    {% include 'notifications/items/remove.html' %}
 {% endif %}
