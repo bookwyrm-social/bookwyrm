@@ -1,4 +1,5 @@
 """ make a list of books!! """
+from bookwyrm.models.group import GroupMember
 from dataclasses import field
 from django.apps import apps
 from django.db import models
@@ -9,7 +10,7 @@ from bookwyrm.settings import DOMAIN
 from .activitypub_mixin import CollectionItemMixin, OrderedCollectionMixin
 from .base_model import BookWyrmModel
 from . import fields
-
+from .group import GroupMember
 
 CurationType = models.TextChoices(
     "Curation",
@@ -115,7 +116,7 @@ class ListItem(CollectionItemMixin, BookWyrmModel):
         if self.book_list.user == viewer:
             return
         # group members can delete items in group lists
-        is_group_member = models.GroupMember.objects.filter(group=self.book_list.group, user=viewer).exists()
+        is_group_member = GroupMember.objects.filter(group=self.book_list.group, user=viewer).exists()
         if is_group_member:
             return
         super().raise_not_deletable(viewer)

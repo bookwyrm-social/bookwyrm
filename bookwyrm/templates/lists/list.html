@@ -85,7 +85,7 @@
                             </form>
                         </div>
                         {% endif %}
-                        {% if list.user == request.user or list.curation == 'open' and item.user == request.user %}
+                        {% if list.user == request.user or list.curation == 'open' and item.user == request.user or list.group|is_member:request.user %}
                         <form name="remove-book" method="post" action="{% url 'list-remove-book' list.id %}" class="card-footer-item">
                             {% csrf_token %}
                             <input type="hidden" name="item" value="{{ item.id }}">
