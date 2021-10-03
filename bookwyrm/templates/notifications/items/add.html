@@ -1,0 +1,42 @@
+{% extends 'notifications/items/item_layout.html' %}
+
+{% load i18n %}
+{% load utilities %}
+
+{% block primary_link %}{% spaceless %}
+{% if notification.related_list_item.approved %}
+    {{ notification.related_list_item.book_list.local_path }}
+{% else %}
+    {% url 'list-curate' notification.related_list_item.book_list.id %}
+{% endif %}
+{% endspaceless %}{% endblock %}
+
+{% block icon %}
+<span class="icon icon-plus"></span>
+{% endblock %}
+
+{% block description %}
+{% with book_path=notification.related_list_item.book.local_path %}
+{% with book_title=notification.related_list_item.book|book_title %}
+{% with list_name=notification.related_list_item.book_list.name %}
+
+    {% if notification.related_list_item.approved %}
+    {% blocktrans trimmed with list_path=notification.related_list_item.book_list.local_path %}
+
+    added <em><a href="{{ book_path }}">{{ book_title }}</a></em> to your list "<a href="{{ list_path }}">{{ list_name }}</a>"
+
+    {% endblocktrans %}
+    {% else %}
+    {% url 'list-curate' notification.related_list_item.book_list.id as list_path %}
+    {% blocktrans trimmed with list_path=list_path %}
+
+    suggested adding <em><a href="{{ book_path }}">{{ book_title }}</a></em> to your list "<a href="{{ list_path }}">{{ list_name }}</a>"
+
+    {% endblocktrans %}
+    {% endif %}
+
+{% endwith %}
+{% endwith %}
+{% endwith %}
+{% endblock %}
+

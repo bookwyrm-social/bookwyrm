@@ -29,9 +29,6 @@ class GetStartedViews(TestCase):
             title="Example Edition",
             remote_id="https://example.com/book/1",
         )
-        models.Connector.objects.create(
-            identifier="self", connector_file="self_connector", local=True
-        )
         models.SiteSettings.objects.create()
 
     def test_profile_view(self, *_):

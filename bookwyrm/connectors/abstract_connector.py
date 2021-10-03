@@ -1,6 +1,5 @@
 """ functionality outline for a book data connector """
 from abc import ABC, abstractmethod
-from dataclasses import asdict, dataclass
 import logging
 
 from django.db import transaction
@@ -9,6 +8,7 @@ from requests.exceptions import RequestException
 
 from bookwyrm import activitypub, models, settings
 from .connector_manager import load_more_data, ConnectorException
+from .format_mappings import format_mappings
 
 
 logger = logging.getLogger(__name__)
@@ -31,7 +31,6 @@ class AbstractMinimalConnector(ABC):
             "isbn_search_url",
             "name",
             "identifier",
-            "local",
         ]
         for field in self_fields:
             setattr(self, field, getattr(info, field))
@@ -267,32 +266,6 @@ def get_image(url, timeout=10):
     return resp
 
 
-@dataclass
-class SearchResult:
-    """standardized search result object"""
-
-    title: str
-    key: str
-    connector: object
-    view_link: str = None
-    author: str = None
-    year: str = None
-    cover: str = None
-    confidence: int = 1
-
-    def __repr__(self):
-        # pylint: disable=consider-using-f-string
-        return "<SearchResult key={!r} title={!r} author={!r}>".format(
-            self.key, self.title, self.author
-        )
-
-    def json(self):
-        """serialize a connector for json response"""
-        serialized = asdict(self)
-        del serialized["connector"]
-        return serialized
-
-
 class Mapping:
     """associate a local database field with a field in an external dataset"""
 
@@ -312,3 +285,25 @@ class Mapping:
             return self.formatter(value)
         except:  # pylint: disable=bare-except
             return None
+
+
+def infer_physical_format(format_text):
+    """try to figure out what the standardized format is from the free value"""
+    format_text = format_text.lower()
+    if format_text in format_mappings:
+        # try a direct match
+        return format_mappings[format_text]
+    # failing that, try substring
+    matches = [v for k, v in format_mappings.items() if k in format_text]
+    if not matches:
+        return None
+    return matches[0]
+
+
+def unique_physical_format(format_text):
+    """only store the format if it isn't diretly in the format mappings"""
+    format_text = format_text.lower()
+    if format_text in format_mappings:
+        # try a direct match, so saving this would be redundant
+        return None
+    return format_text

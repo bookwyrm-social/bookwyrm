@@ -1,0 +1,17 @@
+{% extends 'notifications/items/item_layout.html' %}
+
+{% load i18n %}
+{% load utilities %}
+
+{% block primary_link %}{% spaceless %}
+    {{ notification.related_user.local_path }}
+{% endspaceless %}{% endblock %}
+
+{% block icon %}
+<span class="icon icon-local"></span>
+{% endblock %}
+
+{% block description %}
+    {% trans "followed you" %}
+    {% include 'snippets/follow_button.html' with user=notification.related_user %}
+{% endblock %}

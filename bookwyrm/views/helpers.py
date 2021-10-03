@@ -1,5 +1,10 @@
 """ helper functions used in various views """
 import re
+from datetime import datetime
+import dateutil.parser
+import dateutil.tz
+from dateutil.parser import ParserError
+
 from requests import HTTPError
 from django.core.exceptions import FieldError
 from django.db.models import Q
@@ -32,7 +37,9 @@ def get_user_from_username(viewer, username):
 
 def is_api_request(request):
     """check whether a request is asking for html or data"""
-    return "json" in request.headers.get("Accept", "") or request.path[-5:] == ".json"
+    return "json" in request.headers.get("Accept", "") or re.match(
+        r".*\.json/?$", request.path
+    )
 
 
 def is_bookwyrm_request(request):
@@ -178,3 +185,15 @@ def get_landing_books():
             .order_by("-review__published_date")[:6]
         )
     )
+
+
+def load_date_in_user_tz_as_utc(date_str: str, user: models.User) -> datetime:
+    """ensures that data is stored consistently in the UTC timezone"""
+    if not date_str:
+        return None
+    user_tz = dateutil.tz.gettz(user.preferred_timezone)
+    date = dateutil.parser.parse(date_str, ignoretz=True)
+    try:
+        return date.replace(tzinfo=user_tz).astimezone(dateutil.tz.UTC)
+    except ParserError:
+        return None

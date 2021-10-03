@@ -1,0 +1,20 @@
+{# load the right template #}
+{% if notification.notification_type == 'MENTION' %}
+    {% include 'notifications/items/mention.html' %}
+{% elif notification.notification_type == 'REPLY' %}
+    {% include 'notifications/items/reply.html' %}
+{% elif notification.notification_type == 'BOOST' %}
+    {% include 'notifications/items/boost.html' %}
+{% elif notification.notification_type == 'FAVORITE' %}
+    {% include 'notifications/items/fav.html' %}
+{% elif notification.notification_type == 'FOLLOW' %}
+    {% include 'notifications/items/follow.html' %}
+{% elif notification.notification_type == 'FOLLOW_REQUEST' %}
+    {% include 'notifications/items/follow_request.html' %}
+{% elif notification.notification_type == 'IMPORT' %}
+    {% include 'notifications/items/import.html' %}
+{% elif notification.notification_type == 'ADD' %}
+    {% include 'notifications/items/add.html' %}
+{% elif notification.notification_type == 'REPORT' %}
+    {% include 'notifications/items/report.html' %}
+{% endif %}

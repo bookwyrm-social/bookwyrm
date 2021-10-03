@@ -1,9 +1,4 @@
 """ the good stuff! the books! """
-from datetime import datetime
-import dateutil.parser
-import dateutil.tz
-from dateutil.parser import ParserError
-
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
 from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseNotFound
@@ -13,8 +8,10 @@ from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.http import require_POST
 
-from bookwyrm import forms, models
+from bookwyrm import models
+from .status import CreateStatus
 from .helpers import get_edition, handle_reading_status, is_api_request
+from .helpers import load_date_in_user_tz_as_utc
 
 
 @method_decorator(login_required, name="dispatch")
@@ -88,15 +85,9 @@ class ReadingStatus(View):
         if request.POST.get("post-status"):
             # is it a comment?
             if request.POST.get("content"):
-                form = forms.CommentForm(request.POST)
-                if form.is_valid():
-                    form.save()
-                else:
-                    # uh oh
-                    raise Exception(form.errors)
-            else:
-                privacy = request.POST.get("privacy")
-                handle_reading_status(request.user, desired_shelf, book, privacy)
+                return CreateStatus.as_view()(request, "comment")
+            privacy = request.POST.get("privacy")
+            handle_reading_status(request.user, desired_shelf, book, privacy)
 
         if is_api_request(request):
             return HttpResponse()
@@ -135,45 +126,6 @@ def update_readthrough_on_shelve(
 
 @login_required
 @require_POST
-def edit_readthrough(request):
-    """can't use the form because the dates are too finnicky"""
-    readthrough = get_object_or_404(models.ReadThrough, id=request.POST.get("id"))
-    readthrough.raise_not_editable(request.user)
-
-    readthrough.start_date = load_date_in_user_tz_as_utc(
-        request.POST.get("start_date"), request.user
-    )
-    readthrough.finish_date = load_date_in_user_tz_as_utc(
-        request.POST.get("finish_date"), request.user
-    )
-
-    progress = request.POST.get("progress")
-    try:
-        progress = int(progress)
-        readthrough.progress = progress
-    except (ValueError, TypeError):
-        pass
-
-    progress_mode = request.POST.get("progress_mode")
-    try:
-        progress_mode = models.ProgressMode(progress_mode)
-        readthrough.progress_mode = progress_mode
-    except ValueError:
-        pass
-
-    readthrough.save()
-
-    # record the progress update individually
-    # use default now for date field
-    readthrough.create_update()
-
-    if is_api_request(request):
-        return HttpResponse()
-    return redirect(request.headers.get("Referer", "/"))
-
-
-@login_required
-@require_POST
 def delete_readthrough(request):
     """remove a readthrough"""
     readthrough = get_object_or_404(models.ReadThrough, id=request.POST.get("id"))
@@ -202,18 +154,6 @@ def create_readthrough(request):
         finish_date=finish_date,
     )
     return redirect("book", book.id)
-
-
-def load_date_in_user_tz_as_utc(date_str: str, user: models.User) -> datetime:
-    """ensures that data is stored consistently in the UTC timezone"""
-    if not date_str:
-        return None
-    user_tz = dateutil.tz.gettz(user.preferred_timezone)
-    date = dateutil.parser.parse(date_str, ignoretz=True)
-    try:
-        return date.replace(tzinfo=user_tz).astimezone(dateutil.tz.UTC)
-    except ParserError:
-        return None
 
 
 @login_required

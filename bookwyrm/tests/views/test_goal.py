@@ -1,6 +1,5 @@
 """ test for app action functionality """
 from unittest.mock import patch
-from tidylib import tidy_document
 
 from django.contrib.auth.models import AnonymousUser
 from django.http import Http404
@@ -10,6 +9,7 @@ from django.test.client import RequestFactory
 from django.utils import timezone
 
 from bookwyrm import models, views
+from bookwyrm.tests.validate_html import validate_html
 
 
 class GoalViews(TestCase):
@@ -62,16 +62,7 @@ class GoalViews(TestCase):
         request.user = self.local_user
 
         result = view(request, self.local_user.localname, self.year)
-        html = result.render()
-        _, errors = tidy_document(
-            html.content,
-            options={
-                "drop-empty-elements": False,
-                "warn-proprietary-attributes": False,
-            },
-        )
-        if errors:
-            raise Exception(errors)
+        validate_html(result.render())
         self.assertIsInstance(result, TemplateResponse)
 
     def test_goal_page_anonymous(self):
@@ -102,16 +93,7 @@ class GoalViews(TestCase):
         request.user = self.rat
 
         result = view(request, self.local_user.localname, timezone.now().year)
-        html = result.render()
-        _, errors = tidy_document(
-            html.content,
-            options={
-                "drop-empty-elements": False,
-                "warn-proprietary-attributes": False,
-            },
-        )
-        if errors:
-            raise Exception(errors)
+        validate_html(result.render())
         self.assertIsInstance(result, TemplateResponse)
 
     def test_goal_page_private(self):

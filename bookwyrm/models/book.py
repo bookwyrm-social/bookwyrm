@@ -6,6 +6,7 @@ from django.contrib.postgres.indexes import GinIndex
 from django.db import models, transaction
 from django.db.models import Prefetch
 from django.dispatch import receiver
+from django.utils.translation import gettext_lazy as _
 from model_utils import FieldTracker
 from model_utils.managers import InheritanceManager
 from imagekit.models import ImageSpecField
@@ -226,6 +227,16 @@ class Work(OrderedCollectionPageMixin, Book):
     deserialize_reverse_fields = [("editions", "editions")]
 
 
+# https://schema.org/BookFormatType
+FormatChoices = [
+    ("AudiobookFormat", _("Audiobook")),
+    ("EBook", _("eBook")),
+    ("GraphicNovel", _("Graphic novel")),
+    ("Hardcover", _("Hardcover")),
+    ("Paperback", _("Paperback")),
+]
+
+
 class Edition(Book):
     """an edition of a book"""
 
@@ -243,7 +254,10 @@ class Edition(Book):
         max_length=255, blank=True, null=True, deduplication_field=True
     )
     pages = fields.IntegerField(blank=True, null=True)
-    physical_format = fields.CharField(max_length=255, blank=True, null=True)
+    physical_format = fields.CharField(
+        max_length=255, choices=FormatChoices, null=True, blank=True
+    )
+    physical_format_detail = fields.CharField(max_length=255, blank=True, null=True)
     publishers = fields.ArrayField(
         models.CharField(max_length=255), blank=True, default=list
     )

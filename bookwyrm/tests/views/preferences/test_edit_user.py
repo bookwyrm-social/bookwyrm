@@ -2,7 +2,6 @@
 import pathlib
 from unittest.mock import patch
 from PIL import Image
-from tidylib import tidy_document
 
 from django.contrib.auth.models import AnonymousUser
 from django.core.files.base import ContentFile
@@ -12,6 +11,7 @@ from django.test import TestCase
 from django.test.client import RequestFactory
 
 from bookwyrm import forms, models, views
+from bookwyrm.tests.validate_html import validate_html
 
 
 @patch("bookwyrm.suggested_users.remove_user_task.delay")
@@ -58,10 +58,7 @@ class EditUserViews(TestCase):
         request.user = self.local_user
         result = view(request)
         self.assertIsInstance(result, TemplateResponse)
-        html = result.render()
-        _, errors = tidy_document(html.content)
-        if errors:
-            raise Exception(errors)
+        validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
     def test_edit_user(self, _):

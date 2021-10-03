@@ -11,7 +11,6 @@ import responses
 from bookwyrm import models
 from bookwyrm.importers import LibrarythingImporter
 from bookwyrm.importers.importer import import_data, handle_imported_book
-from bookwyrm.settings import DOMAIN
 
 
 def make_date(*args):
@@ -39,18 +38,6 @@ class LibrarythingImport(TestCase):
             self.user = models.User.objects.create_user(
                 "mmai", "mmai@mmai.mmai", "password", local=True
             )
-
-        models.Connector.objects.create(
-            identifier=DOMAIN,
-            name="Local",
-            local=True,
-            connector_file="self_connector",
-            base_url="https://%s" % DOMAIN,
-            books_url="https://%s/book" % DOMAIN,
-            covers_url="https://%s/images/covers" % DOMAIN,
-            search_url="https://%s/search?q=" % DOMAIN,
-            priority=1,
-        )
         work = models.Work.objects.create(title="Test Work")
         self.book = models.Edition.objects.create(
             title="Example Edition",
