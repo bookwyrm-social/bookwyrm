@@ -1,5 +1,6 @@
 {% extends 'feed/layout.html' %}
 {% load i18n %}
+{% load bookwyrm_tags %}
 
 {% block panel %}
 <header class="block">
@@ -12,13 +13,13 @@
 <div class="thread-parent is-relative block">
     <div class="thread">
         {% for parent in ancestors %}
-        {% if parent %}
+        {% if parent.id %}
         <div class="block">
-            {% include 'snippets/status/status.html' with status=parent %}
+            {% include 'snippets/status/status.html' with status=parent|load_subclass %}
         </div>
         {% endif %}
         {% endfor %}
-        <div class="is-main block">
+        <div class="is-main block" id="anchor-{{ status.id }}">
             {% include 'snippets/status/status.html' with status=status main=True %}
         </div>
 

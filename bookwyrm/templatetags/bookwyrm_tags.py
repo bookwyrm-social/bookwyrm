@@ -53,18 +53,24 @@ def get_next_shelf(current_shelf):
     return "to-read"
 
 
+@register.filter(name="load_subclass")
+def load_subclass(status):
+    """sometimes you didn't select_subclass"""
+    if hasattr(status, "quotation"):
+        return status.quotation
+    if hasattr(status, "review"):
+        return status.review
+    if hasattr(status, "comment"):
+        return status.comment
+    return status
+
+
 @register.simple_tag(takes_context=False)
 def related_status(notification):
     """for notifications"""
     if not notification.related_status:
         return None
-    if hasattr(notification.related_status, "quotation"):
-        return notification.related_status.quotation
-    if hasattr(notification.related_status, "review"):
-        return notification.related_status.review
-    if hasattr(notification.related_status, "comment"):
-        return notification.related_status.comment
-    return notification.related_status
+    return load_subclass(notification.related_status)
 
 
 @register.simple_tag(takes_context=True)
