@@ -114,6 +114,27 @@ class Status(View):
         ).values_list("id", flat=True)
         visible_thread = list(visible_thread)
 
+        ancestors = models.Status.objects.select_subclasses().raw(
+            """
+            WITH RECURSIVE get_thread(depth, id, path) AS (
+
+                SELECT 1, st.id, ARRAY[st.id]
+                FROM bookwyrm_status st
+                WHERE id = '%s' AND id = ANY(%s)
+
+                UNION
+
+                SELECT (gt.depth + 1), st.reply_parent_id, path || st.id
+                FROM get_thread gt, bookwyrm_status st
+
+                WHERE st.id = gt.id AND depth < 5 AND st.id = ANY(%s)
+
+            )
+
+            SELECT * FROM get_thread ORDER BY path DESC;
+        """,
+            params=[status.reply_parent_id or 0, visible_thread, visible_thread],
+        )
         children = models.Status.objects.select_subclasses().raw(
             """
             WITH RECURSIVE get_thread(depth, id, path) AS (
@@ -141,6 +162,7 @@ class Status(View):
             **{
                 "status": status,
                 "children": children,
+                "ancestors": ancestors,
             },
         }
         return TemplateResponse(request, "feed/status.html", data)

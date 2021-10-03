@@ -11,6 +11,13 @@
 
 <div class="thread-parent is-relative block">
     <div class="thread">
+        {% for parent in ancestors %}
+        {% if parent %}
+        <div class="block">
+            {% include 'snippets/status/status.html' with status=parent %}
+        </div>
+        {% endif %}
+        {% endfor %}
         <div class="is-main block">
             {% include 'snippets/status/status.html' with status=status main=True %}
         </div>
