@@ -101,7 +101,7 @@ def user_search(query, viewer, *_):
         .filter(
             similarity__gt=0.5,
         )
-        .order_by("-similarity")[:10]
+        .order_by("-similarity")
     ), None
 
 
@@ -122,5 +122,5 @@ def list_search(query, viewer, *_):
         .filter(
             similarity__gt=0.1,
         )
-        .order_by("-similarity")[:10]
+        .order_by("-similarity")
     ), None
