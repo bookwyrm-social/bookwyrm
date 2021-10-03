@@ -10,8 +10,7 @@ from django.utils.datastructures import MultiValueDictKeyError
 from django.utils.decorators import method_decorator
 from django.views import View
 
-from bookwyrm import forms, models
-from bookwyrm.connectors import connector_manager
+from bookwyrm import book_search, forms, models
 from bookwyrm.views.helpers import get_edition
 from .books import set_cover_from_url
 
@@ -73,10 +72,9 @@ class EditBook(View):
         if not book:
             # check if this is an edition of an existing work
             author_text = book.author_text if book else add_author
-            data["book_matches"] = connector_manager.local_search(
+            data["book_matches"] = book_search.search(
                 f'{form.cleaned_data.get("title")} {author_text}',
                 min_confidence=0.5,
-                raw=True,
             )[:5]
 
         # either of the above cases requires additional confirmation
