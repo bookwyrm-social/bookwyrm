@@ -71,7 +71,7 @@ def book_search(query, user, min_confidence, search_remote=False):
     """the real business is elsewhere"""
     # try a local-only search
     results = [{"results": search(query, min_confidence=min_confidence)}]
-    if not user.is_authenticated or (results and not search_remote):
+    if not user.is_authenticated or (results[0]["results"] and not search_remote):
         return results, False
 
     # if there were no local results, or the request was for remote, search all sources
