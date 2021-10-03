@@ -341,11 +341,6 @@ def remove_book(request, list_id):
     book_list = get_object_or_404(models.List, id=list_id)
     item = get_object_or_404(models.ListItem, id=request.POST.get("item"))
 
-        # TODO: put this logiv into raise_not_deletable
-        # is_group_member = models.GroupMember.objects.filter(group=book_list.group, user=request.user).exists()
-        # if not book_list.user == request.user and not item.user == request.user and not is_group_member:
-        #     return HttpResponseNotFound()
-
     item.raise_not_deletable(request.user)
 
     with transaction.atomic():
