@@ -29,8 +29,7 @@ class Group(View):
         # lists = privacy_filter(request.user, lists)
 
         # don't show groups to users who shouldn't see them
-        if not group.visible_to_user(request.user):
-            return HttpResponseNotFound()
+        group.raise_visible_to_user(request.user)
 
         data = {
             "group": group,
