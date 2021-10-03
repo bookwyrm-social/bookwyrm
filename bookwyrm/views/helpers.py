@@ -61,8 +61,7 @@ def privacy_filter(viewer, queryset, privacy_levels=None, following_only=False):
 
     # exclude blocks from both directions
     if not viewer.is_anonymous:
-        blocked = models.User.objects.filter(id__in=viewer.blocks.all()).all()
-        queryset = queryset.exclude(Q(user__in=blocked) | Q(user__blocks=viewer))
+        queryset = queryset.exclude(Q(user__blocked_by=viewer) | Q(user__blocks=viewer))
 
     # you can't see followers only or direct messages if you're not logged in
     if viewer.is_anonymous:
@@ -75,7 +74,7 @@ def privacy_filter(viewer, queryset, privacy_levels=None, following_only=False):
     if following_only:
         queryset = queryset.exclude(
             ~Q(  # remove everythign except
-                Q(user__in=viewer.following.all())
+                Q(user__followers=viewer)
                 | Q(user=viewer)  # user following
                 | Q(mention_users=viewer)  # is self  # mentions user
             ),
