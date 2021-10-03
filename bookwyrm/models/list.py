@@ -64,6 +64,16 @@ class List(OrderedCollectionMixin, BookWyrmModel):
 
         ordering = ("-updated_date",)
 
+    def raise_not_editable(self, viewer):
+        """the associated user OR the list owner can edit"""
+        print("raising not editable")
+        if self.user == viewer:
+            return
+        # group members can edit items in group lists
+        is_group_member = GroupMember.objects.filter(group=self.group, user=viewer).exists()
+        if is_group_member:
+            return
+        super().raise_not_editable(viewer)
 
 class ListItem(CollectionItemMixin, BookWyrmModel):
     """ok"""
