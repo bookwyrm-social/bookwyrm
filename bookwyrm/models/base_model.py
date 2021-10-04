@@ -79,14 +79,14 @@ class BookWyrmModel(models.Model):
                 and self.mention_users.filter(id=viewer.id).first()
             ):
 
-                return True
+                return
 
         # you can see groups of which you are a member
         if (
             hasattr(self, "memberships")
             and self.memberships.filter(user=viewer).exists()
         ):
-            return True
+            return
 
         # you can see objects which have a group of which you are a member
         if hasattr(self, "group"):
@@ -94,7 +94,7 @@ class BookWyrmModel(models.Model):
                 hasattr(self.group, "memberships")
                 and self.group.memberships.filter(user=viewer).exists()
             ):
-                return True
+                return
 
         raise Http404()
 
