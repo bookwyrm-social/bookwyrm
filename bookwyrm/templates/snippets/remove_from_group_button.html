@@ -13,12 +13,12 @@
             <input type="hidden" name="group" value="{{ group.id }}">
             <input type="hidden" name="user" value="{{ user.username }}">
             <button class="button is-small" type="submit">
-              {% if show_username %}
-              {% blocktrans with username=user.localname %}Remove @{{ username }}{% endblocktrans %}
-              {% else %}
-              {% trans "Remove" %}
-              {% endif %}
-          </button>
+                {% if show_username %}
+                    {% blocktrans with username=user.localname %}Remove @{{ username }}{% endblocktrans %}
+                {% else %}
+                    {% trans "Remove" %}
+                {% endif %}
+            </button>
         </form>
     </div>
 </div>

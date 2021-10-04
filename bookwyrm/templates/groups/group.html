@@ -11,7 +11,7 @@
         {% block searchresults %}
         {% endblock %}
         <div class="mb-2">
-          {% include "groups/members.html"  with group=group %}
+            {% include "groups/members.html"  with group=group %}
         </div>
 
         <h2 class="title is-5">Lists</h2>
@@ -20,42 +20,42 @@
         {% else %}
 
         <div class="columns is-multiline">
-          {% for list in lists %}
-          <div class="column is-one-third">
-              <div class="card is-stretchable">
-                  <header class="card-header">
-                      <h4 class="card-header-title">
-                          <a href="{{ list.local_path }}">{{ list.name }}</a> <span class="subtitle">{% include 'snippets/privacy-icons.html' with item=list %}</span>
-                      </h4>
-                  </header>
-      
-                  {% with list_books=list.listitem_set.all|slice:5 %}
-                      {% if list_books %}
-                          <div class="card-image columns is-mobile is-gapless is-clipped">
-                              {% for book in list_books %}
-                                  <a class="column is-cover" href="{{ book.book.local_path }}">
-                                      {% include 'snippets/book_cover.html' with book=book.book cover_class='is-h-s' size='small' aria='show' %}
-                                  </a>
-                              {% endfor %}
-                          </div>
-                      {% endif %}
-                  {% endwith %}
-      
-                  <div class="card-content is-flex-grow-0">
-                      <div class="is-clipped" {% if list.description %}title="{{ list.description }}"{% endif %}>
-                      {% if list.description %}
-                          {{ list.description|to_markdown|safe|truncatechars_html:30 }}
-                      {% else %}
-                      &nbsp;
-                      {% endif %}
-                      </div>
-                      <p class="subtitle help">
-                          {% include 'lists/created_text.html' with list=list %}
-                      </p>
-                  </div>
-              </div>
-          </div>
-          {% endfor %}
+            {% for list in lists %}
+            <div class="column is-one-third">
+                <div class="card is-stretchable">
+                    <header class="card-header">
+                        <h4 class="card-header-title">
+                            <a href="{{ list.local_path }}">{{ list.name }}</a> <span class="subtitle">{% include 'snippets/privacy-icons.html' with item=list %}</span>
+                        </h4>
+                    </header>
+        
+                    {% with list_books=list.listitem_set.all|slice:5 %}
+                        {% if list_books %}
+                            <div class="card-image columns is-mobile is-gapless is-clipped">
+                                {% for book in list_books %}
+                                    <a class="column is-cover" href="{{ book.book.local_path }}">
+                                        {% include 'snippets/book_cover.html' with book=book.book cover_class='is-h-s' size='small' aria='show' %}
+                                    </a>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    {% endwith %}
+        
+                    <div class="card-content is-flex-grow-0">
+                        <div class="is-clipped" {% if list.description %}title="{{ list.description }}"{% endif %}>
+                        {% if list.description %}
+                            {{ list.description|to_markdown|safe|truncatechars_html:30 }}
+                        {% else %}
+                        &nbsp;
+                        {% endif %}
+                        </div>
+                        <p class="subtitle help">
+                            {% include 'lists/created_text.html' with list=list %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
         </div>
 
         {% endif %}

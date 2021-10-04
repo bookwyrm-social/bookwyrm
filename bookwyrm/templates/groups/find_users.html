@@ -1,8 +1,8 @@
 {% extends 'groups/group.html' %}
 
 {% block searchresults %}
-<h2 class="title is-5">
-    Add new members!
-</h2>
-  {% include 'groups/suggested_users.html' with suggested_users=suggested_users query=query %}
+    <h2 class="title is-5">
+        Add new members!
+    </h2>
+    {% include 'groups/suggested_users.html' with suggested_users=suggested_users query=query %}
 {% endblock %}
