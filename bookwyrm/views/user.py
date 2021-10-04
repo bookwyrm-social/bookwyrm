@@ -145,7 +145,9 @@ class Groups(View):
         """list of groups"""
         user = get_user_from_username(request.user, username)
 
-        paginated = Paginator(models.Group.memberships.filter(user=user))
+        paginated = Paginator(
+          models.Group.memberships.filter(user=user).order_by("-created_date"), PAGE_LENGTH
+        )
         data = {
             "user": user,
             "is_self": request.user.id == user.id,
