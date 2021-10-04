@@ -35,7 +35,7 @@ class RedisStore(ABC):
 
     def remove_object_from_related_stores(self, obj, stores=None):
         """remove an object from all stores"""
-        stores = stores or self.get_stores_for_object(obj)
+        stores = self.get_stores_for_object(obj) if stores is None else stores
         pipeline = r.pipeline()
         for store in stores:
             pipeline.zrem(store, -1, obj.id)
