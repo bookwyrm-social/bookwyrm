@@ -87,7 +87,7 @@ class GroupMemberInvitation(models.Model):
             models.UniqueConstraint(fields=["group", "user"], name="unique_invitation")
         ]
 
-    def save(self, *args, **kwargs):  # pylint: disable=arguments-differ
+    def save(self, *args, **kwargs):
         """make sure the membership doesn't already exist"""
         # if there's an invitation for a membership that already exists, accept it
         # without changing the local database state
