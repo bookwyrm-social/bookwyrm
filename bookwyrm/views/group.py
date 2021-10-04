@@ -89,7 +89,7 @@ class UserGroups(View):
 class FindUsers(View):
     """find friends to add to your group"""
 
-    #this is mostly borrowed from the Get Started friend finder
+    # this is mostly borrowed from the Get Started friend finder
 
     def get(self, request, group_id):
         """basic profile info"""
