@@ -480,12 +480,14 @@ def handle_boost_task(boost_id):
     instance = models.Status.objects.get(id=boost_id)
     boosted = instance.boost.boosted_status
 
+    # previous boosts of this status
     old_versions = models.Boost.objects.filter(
         boosted_status__id=boosted.id,
         created_date__lt=instance.created_date,
     )
 
     for stream in streams.values():
+        # people who should see the boost (not people who see the original status)
         audience = stream.get_stores_for_object(instance)
         stream.remove_object_from_related_stores(boosted, stores=audience)
         for status in old_versions:

@@ -125,7 +125,7 @@ class Activitystreams(TestCase):
     @patch("bookwyrm.activitystreams.BooksStream.remove_object_from_related_stores")
     @patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
     def test_boost_to_another_timeline(self, *_):
-        """add a boost and deduplicate the boosted status on the timeline"""
+        """boost from a non-follower doesn't remove original status from feed"""
         status = models.Status.objects.create(user=self.local_user, content="hi")
         with patch("bookwyrm.activitystreams.handle_boost_task.delay"):
             boost = models.Boost.objects.create(
@@ -138,6 +138,7 @@ class Activitystreams(TestCase):
             activitystreams.handle_boost_task(boost.id)
 
         self.assertTrue(mock.called)
+        self.assertEqual(mock.call_count, 1)
         call_args = mock.call_args
         self.assertEqual(call_args[0][0], status)
         self.assertEqual(
