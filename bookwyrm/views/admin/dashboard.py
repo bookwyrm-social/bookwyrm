@@ -46,41 +46,43 @@ class Dashboard(View):
                 "active": lambda q, s, e: q.filter(
                     Q(is_active=True) | Q(deactivation_date__gt=e),
                     created_date__lte=e,
-                ).filter(
+                )
+                .filter(
                     last_active_date__gt=e - timedelta(days=31),
-                ).count()
-            }
+                )
+                .count(),
+            },
         )
 
         status_queryset = models.Status.objects.filter(user__local=True, deleted=False)
         status_chart = Chart(
             queryset=status_queryset,
-            queries = {
+            queries={
                 "total": lambda q, s, e: q.filter(
                     created_date__gt=s,
                     created_date__lte=e,
                 ).count()
-            }
+            },
         )
 
         register_chart = Chart(
             queryset=user_queryset,
-            queries = {
+            queries={
                 "total": lambda q, s, e: q.filter(
                     created_date__gt=s,
                     created_date__lte=e,
                 ).count()
-            }
+            },
         )
 
         works_chart = Chart(
             queryset=models.Work.objects,
-            queries = {
+            queries={
                 "total": lambda q, s, e: q.filter(
                     created_date__gt=s,
                     created_date__lte=e,
                 ).count()
-            }
+            },
         )
 
         data = {
@@ -106,14 +108,14 @@ class Dashboard(View):
 
 
 class Chart:
-    """ Data for a chart """
+    """Data for a chart"""
 
     def __init__(self, queryset, queries: dict):
         self.queryset = queryset
         self.queries = queries
 
     def get_chart(self, start, end, interval):
-        """ load the data for the chart given a time scale and interval """
+        """load the data for the chart given a time scale and interval"""
         interval_start = start
         interval_end = interval_start + timedelta(days=interval)
 
