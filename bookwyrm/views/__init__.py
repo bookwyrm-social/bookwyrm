@@ -41,7 +41,15 @@ from .follow import follow, unfollow
 from .follow import accept_follow_request, delete_follow_request
 from .get_started import GetStartedBooks, GetStartedProfile, GetStartedUsers
 from .goal import Goal, hide_goal
-from .group import Group, UserGroups, FindUsers, invite_member, remove_member,  accept_membership, reject_membership
+from .group import (
+    Group,
+    UserGroups,
+    FindUsers,
+    invite_member,
+    remove_member,
+    accept_membership,
+    reject_membership,
+)
 from .import_data import Import, ImportStatus
 from .inbox import Inbox
 from .interaction import Favorite, Unfavorite, Boost, Unboost

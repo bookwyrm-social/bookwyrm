@@ -14,12 +14,7 @@ from .group import GroupMember
 
 CurationType = models.TextChoices(
     "Curation",
-    [
-        "closed",
-        "open",
-        "curated",
-        "group"
-    ],
+    ["closed", "open", "curated", "group"],
 )
 
 
@@ -70,10 +65,13 @@ class List(OrderedCollectionMixin, BookWyrmModel):
         if self.user == viewer:
             return
         # group members can edit items in group lists
-        is_group_member = GroupMember.objects.filter(group=self.group, user=viewer).exists()
+        is_group_member = GroupMember.objects.filter(
+            group=self.group, user=viewer
+        ).exists()
         if is_group_member:
             return
         super().raise_not_editable(viewer)
+
 
 class ListItem(CollectionItemMixin, BookWyrmModel):
     """ok"""
@@ -119,14 +117,17 @@ class ListItem(CollectionItemMixin, BookWyrmModel):
                         user=membership.user,
                         related_user=self.user,
                         related_list_item=self,
-                        notification_type="ADD"
-            )
+                        notification_type="ADD",
+                    )
+
     def raise_not_deletable(self, viewer):
         """the associated user OR the list owner can delete"""
         if self.book_list.user == viewer:
             return
         # group members can delete items in group lists
-        is_group_member = GroupMember.objects.filter(group=self.book_list.group, user=viewer).exists()
+        is_group_member = GroupMember.objects.filter(
+            group=self.book_list.group, user=viewer
+        ).exists()
         if is_group_member:
             return
         super().raise_not_deletable(viewer)

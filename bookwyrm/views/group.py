@@ -18,6 +18,7 @@ from .helpers import privacy_filter
 from .helpers import get_user_from_username
 from bookwyrm.settings import DOMAIN
 
+
 class Group(View):
     """group page"""
 
@@ -47,7 +48,8 @@ class Group(View):
         if not form.is_valid():
             return redirect("group", user_group.id)
         user_group = form.save()
-        return redirect("group", user_group.id) 
+        return redirect("group", user_group.id)
+
 
 @method_decorator(login_required, name="dispatch")
 class UserGroups(View):
@@ -56,7 +58,9 @@ class UserGroups(View):
     def get(self, request, username):
         """display a group"""
         user = get_user_from_username(request.user, username)
-        memberships = models.GroupMember.objects.filter(user=user).all().order_by("-updated_date")
+        memberships = (
+            models.GroupMember.objects.filter(user=user).all().order_by("-updated_date")
+        )
         paginated = Paginator(memberships, 12)
 
         data = {
@@ -80,10 +84,12 @@ class UserGroups(View):
         models.GroupMember.objects.create(group=group, user=request.user)
         return redirect("group", group.id)
 
+
 @method_decorator(login_required, name="dispatch")
 class FindUsers(View):
     """find friends to add to your group"""
-    """this is mostly borrowed from the Get Started friend finder"""
+
+    #this is mostly borrowed from the Get Started friend finder
 
     def get(self, request, group_id):
         """basic profile info"""
@@ -91,25 +97,23 @@ class FindUsers(View):
         group = models.Group.objects.get(id=group_id)
         user_results = (
             models.User.viewer_aware_objects(request.user)
-            .exclude(memberships__in=group.memberships.all()) # don't suggest users who are already members
+            .exclude(
+                memberships__in=group.memberships.all()
+            )  # don't suggest users who are already members
             .annotate(
                 similarity=Greatest(
                     TrigramSimilarity("username", query),
                     TrigramSimilarity("localname", query),
                 )
             )
-            .filter(
-                similarity__gt=0.5,
-                local=True
-            )
+            .filter(similarity__gt=0.5, local=True)
             .order_by("-similarity")[:5]
         )
         data = {"no_results": not user_results}
 
         if user_results.count() < 5:
             user_results = list(user_results) + suggested_users.get_suggestions(
-                request.user,
-                local=True
+                request.user, local=True
             )
 
         group = get_object_or_404(models.Group, id=group_id)
@@ -121,12 +125,13 @@ class FindUsers(View):
             return HttpResponseBadRequest()
 
         data = {
-          "suggested_users": user_results,
-          "group": group,
-          "query": query,
-          "requestor_is_manager": request.user == group.user
+            "suggested_users": user_results,
+            "group": group,
+            "query": query,
+            "requestor_is_manager": request.user == group.user,
         }
         return TemplateResponse(request, "groups/find_users.html", data)
+
 
 @require_POST
 @login_required
@@ -145,15 +150,13 @@ def invite_member(request):
         return HttpResponseBadRequest()
 
     try:
-        models.GroupMemberInvitation.objects.create(
-          user=user, 
-          group=group
-          )
+        models.GroupMemberInvitation.objects.create(user=user, group=group)
 
     except IntegrityError:
         pass
 
     return redirect(user.local_path)
+
 
 @require_POST
 @login_required
@@ -168,15 +171,16 @@ def remove_member(request):
     if not user:
         return HttpResponseBadRequest()
 
-    is_member = models.GroupMember.objects.filter(group=group,user=user).exists()
-    is_invited = models.GroupMemberInvitation.objects.filter(group=group,user=user).exists()
+    is_member = models.GroupMember.objects.filter(group=group, user=user).exists()
+    is_invited = models.GroupMemberInvitation.objects.filter(
+        group=group, user=user
+    ).exists()
 
     if is_invited:
         try:
             invitation = models.GroupMemberInvitation.objects.get(
-              user=user, 
-              group=group
-              )
+                user=user, group=group
+            )
 
             invitation.reject()
 
@@ -186,11 +190,13 @@ def remove_member(request):
     if is_member:
 
         try:
-            membership = models.GroupMember.objects.get(group=group,user=user)
+            membership = models.GroupMember.objects.get(group=group, user=user)
             membership.delete()
 
             # remove this user's group-curated lists from the group
-            models.List.objects.filter(group=group,user=user).update(group=None,curation="closed")
+            models.List.objects.filter(group=group, user=user).update(
+                group=None, curation="closed"
+            )
 
         except IntegrityError:
             pass
@@ -200,7 +206,7 @@ def remove_member(request):
         notification_type = "LEAVE" if user == request.user else "REMOVE"
         # let the other members know about it
         for membership in memberships:
-            member = membership.user 
+            member = membership.user
             if member != request.user:
                 model.objects.create(
                     user=member,
@@ -219,6 +225,7 @@ def remove_member(request):
 
     return redirect(user.local_path)
 
+
 @require_POST
 @login_required
 def accept_membership(request):
@@ -228,7 +235,7 @@ def accept_membership(request):
     if not group:
         return HttpResponseBadRequest()
 
-    invite = models.GroupMemberInvitation.objects.get(group=group,user=request.user)
+    invite = models.GroupMemberInvitation.objects.get(group=group, user=request.user)
     if not invite:
         return HttpResponseBadRequest()
 
@@ -240,6 +247,7 @@ def accept_membership(request):
 
     return redirect(group.local_path)
 
+
 @require_POST
 @login_required
 def reject_membership(request):
@@ -249,7 +257,7 @@ def reject_membership(request):
     if not group:
         return HttpResponseBadRequest()
 
-    invite = models.GroupMemberInvitation.objects.get(group=group,user=request.user)
+    invite = models.GroupMemberInvitation.objects.get(group=group, user=request.user)
     if not invite:
         return HttpResponseBadRequest()
 

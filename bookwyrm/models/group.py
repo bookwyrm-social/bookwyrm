@@ -6,14 +6,15 @@ from bookwyrm.settings import DOMAIN
 from .base_model import BookWyrmModel
 from . import fields
 from .relationship import UserBlocks
+
 # from .user import User
+
 
 class Group(BookWyrmModel):
     """A group of users"""
 
     name = fields.CharField(max_length=100)
-    user = fields.ForeignKey(
-        "User", on_delete=models.PROTECT)
+    user = fields.ForeignKey("User", on_delete=models.PROTECT)
     description = fields.TextField(blank=True, null=True)
     privacy = fields.PrivacyField()
 
@@ -21,26 +22,22 @@ class Group(BookWyrmModel):
         """don't want the user to be in there in this case"""
         return f"https://{DOMAIN}/group/{self.id}"
 
+
 class GroupMember(models.Model):
     """Users who are members of a group"""
+
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
     group = models.ForeignKey(
-        "Group", 
-        on_delete=models.CASCADE,
-        related_name="memberships"
+        "Group", on_delete=models.CASCADE, related_name="memberships"
     )
     user = models.ForeignKey(
-        "User", 
-        on_delete=models.CASCADE,
-        related_name="memberships"
-        )
+        "User", on_delete=models.CASCADE, related_name="memberships"
+    )
 
     class Meta:
         constraints = [
-          models.UniqueConstraint(
-            fields=["group", "user"], name="unique_membership"
-          )
+            models.UniqueConstraint(fields=["group", "user"], name="unique_membership")
         ]
 
     def save(self, *args, **kwargs):
@@ -76,32 +73,25 @@ class GroupMember(models.Model):
 
 class GroupMemberInvitation(models.Model):
     """adding a user to a group requires manual confirmation"""
+
     created_date = models.DateTimeField(auto_now_add=True)
     group = models.ForeignKey(
-        "Group", 
-        on_delete=models.CASCADE,
-        related_name="user_invitations"
+        "Group", on_delete=models.CASCADE, related_name="user_invitations"
     )
     user = models.ForeignKey(
-        "User", 
-        on_delete=models.CASCADE,
-        related_name="group_invitations"
-        )
+        "User", on_delete=models.CASCADE, related_name="group_invitations"
+    )
 
     class Meta:
         constraints = [
-          models.UniqueConstraint(
-            fields=["group", "user"], name="unique_invitation"
-          )
+            models.UniqueConstraint(fields=["group", "user"], name="unique_invitation")
         ]
+
     def save(self, *args, **kwargs):  # pylint: disable=arguments-differ
         """make sure the membership doesn't already exist"""
         # if there's an invitation for a membership that already exists, accept it
         # without changing the local database state
-        if GroupMember.objects.filter(
-            user=self.user,
-            group=self.group
-        ).exists():
+        if GroupMember.objects.filter(user=self.user, group=self.group).exists():
             self.accept()
             return
 
@@ -138,7 +128,7 @@ class GroupMemberInvitation(models.Model):
             GroupMember.from_request(self)
 
             model = apps.get_model("bookwyrm.Notification", require_ready=True)
-            # tell the group owner 
+            # tell the group owner
             model.objects.create(
                 user=self.group.user,
                 related_user=self.user,
@@ -148,7 +138,7 @@ class GroupMemberInvitation(models.Model):
 
             # let the other members know about it
             for membership in self.group.memberships.all():
-                member = membership.user 
+                member = membership.user
                 if member != self.user and member != self.group.user:
                     model.objects.create(
                         user=member,

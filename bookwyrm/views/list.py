@@ -183,7 +183,7 @@ class List(View):
             "query": query or "",
             "sort_form": forms.SortListForm(
                 {"direction": direction, "sort_by": sort_by}
-            )
+            ),
         }
         return TemplateResponse(request, "lists/list.html", data)
 
@@ -287,14 +287,20 @@ def add_book(request):
     book_list = get_object_or_404(models.List, id=request.POST.get("list"))
     is_group_member = False
     if book_list.curation == "group":
-        is_group_member = models.GroupMember.objects.filter(group=book_list.group, user=request.user).exists()
+        is_group_member = models.GroupMember.objects.filter(
+            group=book_list.group, user=request.user
+        ).exists()
 
     book_list.raise_visible_to_user(request.user)
 
     book = get_object_or_404(models.Edition, id=request.POST.get("book"))
     # do you have permission to add to the list?
     try:
-        if request.user == book_list.user or is_group_member or book_list.curation == "open":
+        if (
+            request.user == book_list.user
+            or is_group_member
+            or book_list.curation == "open"
+        ):
             # add the book at the latest order of approved books, before pending books
             order_max = (
                 book_list.listitem_set.filter(approved=True).aggregate(Max("order"))[

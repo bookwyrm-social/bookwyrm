@@ -294,10 +294,12 @@ class ListForm(CustomForm):
         model = models.List
         fields = ["user", "name", "description", "curation", "privacy", "group"]
 
+
 class GroupForm(CustomForm):
     class Meta:
         model = models.Group
         fields = ["user", "privacy", "name", "description"]
+
 
 class ReportForm(CustomForm):
     class Meta:
