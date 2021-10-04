@@ -141,7 +141,7 @@ class Activitystreams(TestCase):
         call_args = mock.call_args
         self.assertEqual(call_args[0][0], status)
         self.assertEqual(
-            call_args[1]["stores"], ["{:d}-home".format(self.another_user.id)]
+            call_args[1]["stores"], [f"{self.another_user.id}-home"]
         )
 
     @patch("bookwyrm.activitystreams.LocalStream.remove_object_from_related_stores")
@@ -164,10 +164,10 @@ class Activitystreams(TestCase):
         call_args = mock.call_args
         self.assertEqual(call_args[0][0], status)
         self.assertTrue(
-            "{:d}-home".format(self.another_user.id) in call_args[1]["stores"]
+            f"{self.another_user.id}-home" in call_args[1]["stores"]
         )
         self.assertTrue(
-            "{:d}-home".format(self.local_user.id) in call_args[1]["stores"]
+            f"{self.local_user.id}-home" in call_args[1]["stores"]
         )
 
     @patch("bookwyrm.activitystreams.LocalStream.remove_object_from_related_stores")
@@ -189,5 +189,5 @@ class Activitystreams(TestCase):
         call_args = mock.call_args
         self.assertEqual(call_args[0][0], status)
         self.assertEqual(
-            call_args[1]["stores"], ["{:d}-home".format(self.local_user.id)]
+            call_args[1]["stores"], [f"{self.local_user.id}-home"]
         )
