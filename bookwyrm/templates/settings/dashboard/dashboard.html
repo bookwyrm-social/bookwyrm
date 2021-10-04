@@ -103,15 +103,21 @@
             </div>
         </div>
         <div class="column is-half">
+            <h3>{% trans "User signup activity" %}</h3>
+            <div class="box">
+                <canvas id="register_stats"></canvas>
+            </div>
+        </div>
+        <div class="column is-half">
             <h3>{% trans "Status activity" %}</h3>
             <div class="box">
                 <canvas id="status_stats"></canvas>
             </div>
         </div>
         <div class="column is-half">
-            <h3>{% trans "User signup activity" %}</h3>
+            <h3>{% trans "Works created" %}</h3>
             <div class="box">
-                <canvas id="register_stats"></canvas>
+                <canvas id="works_stats"></canvas>
             </div>
         </div>
     </div>
@@ -124,4 +130,5 @@
 {% include 'settings/dashboard/user_chart.html' %}
 {% include 'settings/dashboard/status_chart.html' %}
 {% include 'settings/dashboard/registration_chart.html' %}
+{% include 'settings/dashboard/works_chart.html' %}
 {% endblock %}

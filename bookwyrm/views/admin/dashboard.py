@@ -73,6 +73,16 @@ class Dashboard(View):
             }
         )
 
+        works_chart = Chart(
+            queryset=models.Work.objects,
+            queries = {
+                "total": lambda q, s, e: q.filter(
+                    created_date__gt=s,
+                    created_date__lte=e,
+                ).count()
+            }
+        )
+
         data = {
             "start": start.strftime("%Y-%m-%d"),
             "end": end.strftime("%Y-%m-%d"),
@@ -90,6 +100,7 @@ class Dashboard(View):
             "user_stats": user_chart.get_chart(start, end, interval),
             "status_stats": status_chart.get_chart(start, end, interval),
             "register_stats": register_chart.get_chart(start, end, interval),
+            "works_stats": works_chart.get_chart(start, end, interval),
         }
         return TemplateResponse(request, "settings/dashboard/dashboard.html", data)
 

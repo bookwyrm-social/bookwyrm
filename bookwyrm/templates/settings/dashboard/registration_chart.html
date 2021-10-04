@@ -8,8 +8,8 @@ var registerStats = new Chart(
             labels: [{% for label in register_stats.labels %}"{{ label }}",{% endfor %}],
             datasets: [{
                 label: '{% trans "Registrations" %}',
-                backgroundColor: 'rgb(75, 192, 192)',
-                borderColor: 'rgb(75, 192, 192)',
+                backgroundColor: 'hsl(171, 100%, 41%)',
+                borderColor: 'hsl(171, 100%, 41%)',
                 data: {{ register_stats.total }},
             }]
         },

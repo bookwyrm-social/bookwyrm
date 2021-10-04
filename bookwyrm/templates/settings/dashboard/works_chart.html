@@ -1,0 +1,21 @@
+{% load i18n %}
+<script>
+
+var worksStats = new Chart(
+    document.getElementById('works_stats'),
+    {
+        type: 'bar',
+        data: {
+            labels: [{% for label in works_stats.labels %}"{{ label }}",{% endfor %}],
+            datasets: [{
+                label: '{% trans "Works" %}',
+                backgroundColor: 'hsl(204, 86%, 53%)',
+                borderColor: 'hsl(204, 86%, 53%)',
+                data: {{ works_stats.total }},
+            }]
+        },
+        options: {}
+    }
+);
+</script>
+
