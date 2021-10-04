@@ -81,7 +81,7 @@ class SuggestedUsers(RedisStore):
         """take a user out of someone's suggestions"""
         self.bulk_remove_objects_from_store([suggested_user], self.store_id(user))
 
-    def get_suggestions(self, user):
+    def get_suggestions(self, user, **filters):
         """get suggestions"""
         values = self.get_store(self.store_id(user), withscores=True)
         results = []
@@ -97,34 +97,15 @@ class SuggestedUsers(RedisStore):
                 logger.exception(err)
                 continue
             user.mutuals = counts["mutuals"]
-            # user.shared_books = counts["shared_books"]
-            results.append(user)
-            if len(results) >= 5:
-                break
-        return results
-
-    def get_group_suggestions(self, user):
-        """get suggestions for new group members"""
-        values = self.get_store(self.store_id(user), withscores=True)
-        results = []
-        # annotate users with mutuals and shared book counts
-        for user_id, rank in values:
-            counts = self.get_counts_from_rank(rank)
-            try:
-                user = models.User.objects.get(
-                    id=user_id, is_active=True, bookwyrm_user=True
-                )
-            except models.User.DoesNotExist as err:
-                # if this happens, the suggestions are janked way up
-                logger.exception(err)
-                continue
-            user.mutuals = counts["mutuals"]
-            # only suggest local users until Groups are ActivityPub compliant
-            if user.local:
+            if filters.local:
+                if user.local:
+                    results.append(user)
+            else:
                 results.append(user)
             if len(results) >= 5:
                 break
         return results
+
 
 def get_annotated_users(viewer, *args, **kwargs):
     """Users, annotated with things they have in common"""
