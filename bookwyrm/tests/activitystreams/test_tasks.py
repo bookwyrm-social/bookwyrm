@@ -22,6 +22,16 @@ class Activitystreams(TestCase):
                 local=True,
                 localname="nutria",
             )
+        with patch("bookwyrm.models.user.set_remote_server.delay"):
+            self.remote_user = models.User.objects.create_user(
+                "rat",
+                "rat@rat.com",
+                "ratword",
+                local=False,
+                remote_id="https://example.com/users/rat",
+                inbox="https://example.com/users/rat/inbox",
+                outbox="https://example.com/users/rat/outbox",
+            )
         work = models.Work.objects.create(title="test work")
         self.book = models.Edition.objects.create(title="test book", parent_work=work)
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
@@ -125,7 +135,7 @@ class Activitystreams(TestCase):
     @patch("bookwyrm.activitystreams.BooksStream.remove_object_from_related_stores")
     @patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
     def test_boost_to_another_timeline(self, *_):
-        """add a boost and deduplicate the boosted status on the timeline"""
+        """boost from a non-follower doesn't remove original status from feed"""
         status = models.Status.objects.create(user=self.local_user, content="hi")
         with patch("bookwyrm.activitystreams.handle_boost_task.delay"):
             boost = models.Boost.objects.create(
@@ -138,11 +148,32 @@ class Activitystreams(TestCase):
             activitystreams.handle_boost_task(boost.id)
 
         self.assertTrue(mock.called)
+        self.assertEqual(mock.call_count, 1)
         call_args = mock.call_args
         self.assertEqual(call_args[0][0], status)
-        self.assertEqual(
-            call_args[1]["stores"], ["{:d}-home".format(self.another_user.id)]
-        )
+        self.assertEqual(call_args[1]["stores"], [f"{self.another_user.id}-home"])
+
+    @patch("bookwyrm.activitystreams.LocalStream.remove_object_from_related_stores")
+    @patch("bookwyrm.activitystreams.BooksStream.remove_object_from_related_stores")
+    @patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
+    def test_boost_to_another_timeline_remote(self, *_):
+        """boost from a remote non-follower doesn't remove original status from feed"""
+        status = models.Status.objects.create(user=self.local_user, content="hi")
+        with patch("bookwyrm.activitystreams.handle_boost_task.delay"):
+            boost = models.Boost.objects.create(
+                boosted_status=status,
+                user=self.remote_user,
+            )
+        with patch(
+            "bookwyrm.activitystreams.HomeStream.remove_object_from_related_stores"
+        ) as mock:
+            activitystreams.handle_boost_task(boost.id)
+
+        self.assertTrue(mock.called)
+        self.assertEqual(mock.call_count, 1)
+        call_args = mock.call_args
+        self.assertEqual(call_args[0][0], status)
+        self.assertEqual(call_args[1]["stores"], [])
 
     @patch("bookwyrm.activitystreams.LocalStream.remove_object_from_related_stores")
     @patch("bookwyrm.activitystreams.BooksStream.remove_object_from_related_stores")
@@ -163,12 +194,8 @@ class Activitystreams(TestCase):
         self.assertTrue(mock.called)
         call_args = mock.call_args
         self.assertEqual(call_args[0][0], status)
-        self.assertTrue(
-            "{:d}-home".format(self.another_user.id) in call_args[1]["stores"]
-        )
-        self.assertTrue(
-            "{:d}-home".format(self.local_user.id) in call_args[1]["stores"]
-        )
+        self.assertTrue(f"{self.another_user.id}-home" in call_args[1]["stores"])
+        self.assertTrue(f"{self.local_user.id}-home" in call_args[1]["stores"])
 
     @patch("bookwyrm.activitystreams.LocalStream.remove_object_from_related_stores")
     @patch("bookwyrm.activitystreams.BooksStream.remove_object_from_related_stores")
@@ -188,6 +215,4 @@ class Activitystreams(TestCase):
         self.assertTrue(mock.called)
         call_args = mock.call_args
         self.assertEqual(call_args[0][0], status)
-        self.assertEqual(
-            call_args[1]["stores"], ["{:d}-home".format(self.local_user.id)]
-        )
+        self.assertEqual(call_args[1]["stores"], [f"{self.local_user.id}-home"])
