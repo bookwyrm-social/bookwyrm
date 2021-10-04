@@ -48,6 +48,7 @@ from .isbn import Isbn
 from .landing import About, Home, Landing
 from .list import Lists, SavedLists, List, Curate, UserLists
 from .list import save_list, unsave_list, delete_list
+from .link import Link, FileLink
 from .login import Login, Logout
 from .notifications import Notifications
 from .outbox import Outbox

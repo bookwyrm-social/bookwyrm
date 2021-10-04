@@ -44,6 +44,7 @@ class BookDataModel(ObjectMixin, BookWyrmModel):
     bnf_id = fields.CharField(  # Bibliothèque nationale de France
         max_length=255, blank=True, null=True, deduplication_field=True
     )
+    links = fields.ManyToManyField("Link")
     search_vector = SearchVectorField(null=True)
 
     last_edited_by = fields.ForeignKey(
@@ -104,6 +105,7 @@ class Book(BookDataModel):
 
     objects = InheritanceManager()
     field_tracker = FieldTracker(fields=["authors", "title", "subtitle", "cover"])
+    file_links = fields.ManyToManyField("FileLink")
 
     if ENABLE_THUMBNAIL_GENERATION:
         cover_bw_book_xsmall_webp = ImageSpecField(
