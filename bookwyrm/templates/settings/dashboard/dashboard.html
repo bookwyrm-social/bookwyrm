@@ -9,26 +9,26 @@
 
 {% block panel %}
 
-<div class="columns block has-text-centered">
-    <div class="column is-3">
+<div class="columns block has-text-centered is-mobile is-multiline">
+    <div class="column is-3-desktop is-6-mobile">
         <div class="notification">
             <h3>{% trans "Total users" %}</h3>
             <p class="title is-5">{{ users|intcomma }}</p>
         </div>
     </div>
-    <div class="column is-3">
+    <div class="column is-3-desktop is-6-mobile">
         <div class="notification">
             <h3>{% trans "Active this month" %}</h3>
             <p class="title is-5">{{ active_users|intcomma }}</p>
         </div>
     </div>
-    <div class="column is-3">
+    <div class="column is-3-desktop is-6-mobile">
         <div class="notification">
             <h3>{% trans "Statuses" %}</h3>
             <p class="title is-5">{{ statuses|intcomma }}</p>
         </div>
     </div>
-    <div class="column is-3">
+    <div class="column is-3-desktop is-6-mobile">
         <div class="notification">
             <h3>{% trans "Works" %}</h3>
             <p class="title is-5">{{ works|intcomma }}</p>
@@ -64,7 +64,7 @@
 <div class="block content">
     <h2>{% trans "Instance Activity" %}</h2>
 
-    <form method="get" action="{% url 'settings-dashboard' %}" class="notification has-background-white-bis">
+    <form method="get" action="{% url 'settings-dashboard' %}" class="notification has-background-white-bis scroll-x">
         <div class="is-flex is-align-items-flex-end">
             <div class="ml-1 mr-1">
                 <label class="label" for="id_start">
@@ -95,17 +95,29 @@
         </div>
     </form>
 
-    <div class="columns">
-        <div class="column">
-            <h3>{% trans "User signup activity" %}</h3>
+    <div class="columns is-multiline">
+        <div class="column is-half">
+            <h3>{% trans "Total users" %}</h3>
             <div class="box">
                 <canvas id="user_stats"></canvas>
             </div>
         </div>
-        <div class="column">
+        <div class="column is-half">
+            <h3>{% trans "User signup activity" %}</h3>
+            <div class="box">
+                <canvas id="register_stats"></canvas>
+            </div>
+        </div>
+        <div class="column is-half">
             <h3>{% trans "Status activity" %}</h3>
             <div class="box">
                 <canvas id="status_stats"></canvas>
+            </div>
+        </div>
+        <div class="column is-half">
+            <h3>{% trans "Works created" %}</h3>
+            <div class="box">
+                <canvas id="works_stats"></canvas>
             </div>
         </div>
     </div>
@@ -115,6 +127,8 @@
 
 {% block scripts %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js@3.5.1/dist/chart.min.js"></script>
-{% include 'settings/dashboard/dashboard_user_chart.html' %}
-{% include 'settings/dashboard/dashboard_status_chart.html' %}
+{% include 'settings/dashboard/user_chart.html' %}
+{% include 'settings/dashboard/status_chart.html' %}
+{% include 'settings/dashboard/registration_chart.html' %}
+{% include 'settings/dashboard/works_chart.html' %}
 {% endblock %}
