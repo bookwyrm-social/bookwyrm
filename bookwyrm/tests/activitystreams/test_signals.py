@@ -16,6 +16,9 @@ class ActivitystreamsSignals(TestCase):
             self.local_user = models.User.objects.create_user(
                 "mouse", "mouse@mouse.mouse", "password", local=True, localname="mouse"
             )
+            self.another_user = models.User.objects.create_user(
+                "fish", "fish@fish.fish", "password", local=True, localname="fish"
+            )
         with patch("bookwyrm.models.user.set_remote_server.delay"):
             self.remote_user = models.User.objects.create_user(
                 "rat",
@@ -66,3 +69,49 @@ class ActivitystreamsSignals(TestCase):
         args = mock.call_args[0]
         self.assertEqual(args[0], "books")
         self.assertEqual(args[1], self.local_user.id)
+
+    def test_remove_statuses_on_block(self, _):
+        """don't show statuses from blocked users"""
+        with patch("bookwyrm.activitystreams.remove_user_statuses_task.delay") as mock:
+            models.UserBlocks.objects.create(
+                user_subject=self.local_user,
+                user_object=self.remote_user,
+            )
+
+        args = mock.call_args[0]
+        self.assertEqual(args[0], self.local_user.id)
+        self.assertEqual(args[1], self.remote_user.id)
+
+    def test_add_statuses_on_unblock(self, _):
+        """re-add statuses on unblock"""
+        with patch("bookwyrm.activitystreams.remove_user_statuses_task.delay"):
+            block = models.UserBlocks.objects.create(
+                user_subject=self.local_user,
+                user_object=self.remote_user,
+            )
+
+        with patch("bookwyrm.activitystreams.add_user_statuses_task.delay") as mock:
+            block.delete()
+
+        args = mock.call_args[0]
+        kwargs = mock.call_args.kwargs
+        self.assertEqual(args[0], self.local_user.id)
+        self.assertEqual(args[1], self.remote_user.id)
+        self.assertEqual(kwargs["stream_list"], ["local", "books"])
+
+    def test_add_statuses_on_unblock_reciprocal_block(self, _):
+        """re-add statuses on unblock"""
+        with patch("bookwyrm.activitystreams.remove_user_statuses_task.delay"):
+            block = models.UserBlocks.objects.create(
+                user_subject=self.local_user,
+                user_object=self.remote_user,
+            )
+            block = models.UserBlocks.objects.create(
+                user_subject=self.remote_user,
+                user_object=self.local_user,
+            )
+
+        with patch("bookwyrm.activitystreams.add_user_statuses_task.delay") as mock:
+            block.delete()
+
+        self.assertEqual(mock.call_count, 0)
