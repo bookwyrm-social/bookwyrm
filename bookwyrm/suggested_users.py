@@ -148,6 +148,17 @@ def update_suggestions_on_follow(sender, instance, created, *args, **kwargs):
     rerank_user_task.delay(instance.user_object.id, update_only=False)
 
 
+@receiver(signals.post_save, sender=models.UserFollowRequest)
+# pylint: disable=unused-argument
+def update_suggestions_on_follow_request(sender, instance, created, *args, **kwargs):
+    """remove a follow from the recs and update the ranks"""
+    if not created or not instance.user_object.discoverable:
+        return
+
+    if instance.user_subject.local:
+        remove_suggestion_task.delay(instance.user_subject.id, instance.user_object.id)
+
+
 @receiver(signals.post_save, sender=models.UserBlocks)
 # pylint: disable=unused-argument
 def update_suggestions_on_block(sender, instance, *args, **kwargs):
