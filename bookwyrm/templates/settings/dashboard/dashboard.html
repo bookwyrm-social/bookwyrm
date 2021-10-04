@@ -95,9 +95,9 @@
         </div>
     </form>
 
-    <div class="columns">
+    <div class="columns is-multiline">
         <div class="column">
-            <h3>{% trans "User signup activity" %}</h3>
+            <h3>{% trans "Total users" %}</h3>
             <div class="box">
                 <canvas id="user_stats"></canvas>
             </div>
@@ -108,6 +108,12 @@
                 <canvas id="status_stats"></canvas>
             </div>
         </div>
+        <div class="column">
+            <h3>{% trans "User signup activity" %}</h3>
+            <div class="box">
+                <canvas id="user_stats"></canvas>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -115,6 +121,7 @@
 
 {% block scripts %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js@3.5.1/dist/chart.min.js"></script>
-{% include 'settings/dashboard/dashboard_user_chart.html' %}
-{% include 'settings/dashboard/dashboard_status_chart.html' %}
+{% include 'settings/dashboard/user_chart.html' %}
+{% include 'settings/dashboard/status_chart.html' %}
+{% include 'settings/dashboard/registration_chart.html' %}
 {% endblock %}

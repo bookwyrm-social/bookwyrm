@@ -1,0 +1,24 @@
+{% load i18n %}
+<script>
+const labels = [{% for label in registration_stats.labels %}"{{ label }}",{% endfor %}];
+const data = {
+    labels: labels,
+    datasets: [{
+        label: '{% trans "Active this month" %}',
+        backgroundColor: 'rgb(75, 192, 192)',
+        borderColor: 'rgb(75, 192, 192)',
+        data: {{ register_stats.total }},
+    }]
+};
+
+const config = {
+    type: 'line',
+    data: data,
+    options: {}
+};
+
+var userStats = new Chart(
+    document.getElementById('user_stats'),
+    config
+);
+</script>
