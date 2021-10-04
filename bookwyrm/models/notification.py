@@ -4,7 +4,7 @@ from django.dispatch import receiver
 from .base_model import BookWyrmModel
 from . import Boost, Favorite, ImportJob, Report, Status, User
 
-
+# pylint: disable=line-too-long
 NotificationType = models.TextChoices(
     "NotificationType",
     "FAVORITE REPLY MENTION TAG FOLLOW FOLLOW_REQUEST BOOST IMPORT ADD REPORT INVITE ACCEPT JOIN LEAVE REMOVE",
