@@ -141,7 +141,7 @@ class GroupMemberInvitation(models.Model):
             # let the other members know about it
             for membership in self.group.memberships.all():
                 member = membership.user
-                if member != self.user and member != self.group.user:
+                if member not in (self.user, self.group.user):
                     model.objects.create(
                         user=member,
                         related_user=self.user,
