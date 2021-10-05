@@ -38,10 +38,7 @@ class GroupViews(TestCase):
             )
 
             self.testgroup = models.Group.objects.create(
-              id=999,
-              name="Test Group",
-              user=self.local_user,
-              privacy="public"
+                id=999, name="Test Group", user=self.local_user, privacy="public"
             )
             self.membership = models.GroupMember.objects.create(
                 group=self.testgroup, user=self.local_user
@@ -83,11 +80,11 @@ class GroupViews(TestCase):
         """edit a "group" database entry"""
         view = views.Group.as_view()
         view.post(
-          group_id=999,
-          name="Test Group",
-          user=self.local_user,
-          privacy="public",
-          description="Test description",
+            group_id=999,
+            name="Test Group",
+            user=self.local_user,
+            privacy="public",
+            description="Test description",
         )
 
         self.assertEqual("Test description", self.testgroup.description)

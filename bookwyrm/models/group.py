@@ -37,6 +37,7 @@ class GroupMember(models.Model):
 
     class Meta:
         """Users can only have one membership per group"""
+
         constraints = [
             models.UniqueConstraint(fields=["group", "user"], name="unique_membership")
         ]
@@ -85,6 +86,7 @@ class GroupMemberInvitation(models.Model):
 
     class Meta:
         """Users can only have one outstanding invitation per group"""
+
         constraints = [
             models.UniqueConstraint(fields=["group", "user"], name="unique_invitation")
         ]
