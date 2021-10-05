@@ -3,7 +3,7 @@ from django.apps import apps
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 from django.core.paginator import Paginator
-from django.http import HttpResponseNotFound, HttpResponseBadRequest
+from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
@@ -14,11 +14,9 @@ from django.db.models.functions import Greatest
 
 from bookwyrm import forms, models
 from bookwyrm.suggested_users import suggested_users
-from .helpers import privacy_filter
 from .helpers import get_user_from_username
-from bookwyrm.settings import DOMAIN
 
-
+# pylint: disable=no-self-use
 class Group(View):
     """group page"""
 
@@ -94,7 +92,14 @@ class FindUsers(View):
     def get(self, request, group_id):
         """basic profile info"""
         query = request.GET.get("query")
-        group = models.Group.objects.get(id=group_id)
+        group = get_object_or_404(models.Group, id=group_id)
+
+        if not group:
+            return HttpResponseBadRequest()
+
+        if not group.user == request.user:
+            return HttpResponseBadRequest()
+
         user_results = (
             models.User.viewer_aware_objects(request.user)
             .exclude(
@@ -115,14 +120,6 @@ class FindUsers(View):
             user_results = list(user_results) + suggested_users.get_suggestions(
                 request.user, local=True
             )
-
-        group = get_object_or_404(models.Group, id=group_id)
-
-        if not group:
-            return HttpResponseBadRequest()
-
-        if not group.user == request.user:
-            return HttpResponseBadRequest()
 
         data = {
             "suggested_users": user_results,
