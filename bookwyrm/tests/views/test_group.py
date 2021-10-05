@@ -37,7 +37,6 @@ class GroupViews(TestCase):
                 outbox="https://example.com/users/rat/outbox",
             )
 
-        with patch():
             self.testgroup = models.Group.objects.create(
               id=999,
               name="Test Group",
@@ -83,7 +82,7 @@ class GroupViews(TestCase):
     def test_group_post(self, _):
         """edit a "group" database entry"""
         view = views.Group.as_view()
-        self.factory.post(
+        view.post(
           group_id=999,
           name="Test Group",
           user=self.local_user,
