@@ -134,8 +134,10 @@ let BookWyrm = new class {
         let trigger = event.currentTarget;
         let hidden = trigger.closest('.hidden-form').querySelectorAll('.is-hidden')[0];
 
-        // if the form has already been revealed, there is no '.is-hidden' element
-        // so this doesn't really work as a toggle
+        /**
+         * if the form has already been revealed, there is no '.is-hidden' element
+         * so this doesn't really work as a toggle 
+         */
 
         if (hidden) {
           this.addRemoveClass(hidden, 'is-hidden', !hidden);
