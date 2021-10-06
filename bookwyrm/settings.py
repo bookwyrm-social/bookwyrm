@@ -167,6 +167,7 @@ LANGUAGES = [
     ("fr-fr", _("French")),
     ("zh-hans", _("Simplified Chinese")),
     ("zh-hant", _("Traditional Chinese")),
+    ("en-oulipo", _("Oulipo (Anglais)")),
 ]
 
 
