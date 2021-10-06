@@ -167,12 +167,7 @@ class BookWyrmModel(models.Model):
     @classmethod
     def direct_filter(cls, queryset, viewer):
         """Override-able filter for "direct" privacy level"""
-        try:
-            return queryset.exclude(
-                ~Q(Q(user=viewer) | Q(mention_users=viewer)), privacy="direct"
-            )
-        except FieldError:
-            return queryset.exclude(~Q(user=viewer), privacy="direct")
+        return queryset.exclude(~Q(user=viewer), privacy="direct")
 
 
 @receiver(models.signals.post_save)

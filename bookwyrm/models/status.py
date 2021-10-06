@@ -207,6 +207,13 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         if isinstance(self, (GeneratedNote, ReviewRating)):
             raise PermissionDenied()
 
+    @classmethod
+    def direct_filter(cls, queryset, viewer):
+        """Override-able filter for "direct" privacy level"""
+        return queryset.exclude(
+            ~Q(Q(user=viewer) | Q(mention_users=viewer)), privacy="direct"
+        )
+
 
 class GeneratedNote(Status):
     """these are app-generated messages about user activity"""
