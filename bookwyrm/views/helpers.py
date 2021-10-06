@@ -6,8 +6,6 @@ import dateutil.tz
 from dateutil.parser import ParserError
 
 from requests import HTTPError
-from django.core.exceptions import FieldError
-from django.db.models import Q
 from django.http import Http404
 
 from bookwyrm import activitypub, models
@@ -48,56 +46,6 @@ def is_bookwyrm_request(request):
     if user_agent is None or re.search(regex.BOOKWYRM_USER_AGENT, user_agent) is None:
         return False
     return True
-
-
-def privacy_filter(viewer, queryset, privacy_levels=None, following_only=False):
-    """filter objects that have "user" and "privacy" fields"""
-    privacy_levels = privacy_levels or ["public", "unlisted", "followers", "direct"]
-    # if there'd a deleted field, exclude deleted items
-    try:
-        queryset = queryset.filter(deleted=False)
-    except FieldError:
-        pass
-
-    # exclude blocks from both directions
-    if not viewer.is_anonymous:
-        queryset = queryset.exclude(Q(user__blocked_by=viewer) | Q(user__blocks=viewer))
-
-    # you can't see followers only or direct messages if you're not logged in
-    if viewer.is_anonymous:
-        privacy_levels = [p for p in privacy_levels if not p in ["followers", "direct"]]
-
-    # filter to only privided privacy levels
-    queryset = queryset.filter(privacy__in=privacy_levels)
-
-    # only include statuses the user follows
-    if following_only:
-        queryset = queryset.exclude(
-            ~Q(  # remove everythign except
-                Q(user__followers=viewer)
-                | Q(user=viewer)  # user following
-                | Q(mention_users=viewer)  # is self  # mentions user
-            ),
-        )
-    # exclude followers-only statuses the user doesn't follow
-    elif "followers" in privacy_levels:
-        queryset = queryset.exclude(
-            ~Q(  # user isn't following and it isn't their own status
-                Q(user__followers=viewer) | Q(user=viewer)
-            ),
-            privacy="followers",  # and the status is followers only
-        )
-
-    # exclude direct messages not intended for the user
-    if "direct" in privacy_levels:
-        try:
-            queryset = queryset.exclude(
-                ~Q(Q(user=viewer) | Q(mention_users=viewer)), privacy="direct"
-            )
-        except FieldError:
-            queryset = queryset.exclude(~Q(user=viewer), privacy="direct")
-
-    return queryset
 
 
 def handle_remote_webfinger(query):
