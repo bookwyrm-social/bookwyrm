@@ -105,6 +105,9 @@ case "$CMD" in
     collectstatic)
         runweb python manage.py collectstatic --no-input
         ;;
+    add_locale)
+        runweb django-admin makemessages --no-wrap --ignore=venv -l $@
+        ;;
     makemessages)
         runweb django-admin makemessages --no-wrap --ignore=venv --all $@
         ;;
@@ -167,7 +170,8 @@ case "$CMD" in
         echo "    test [path]"
         echo "    pytest [path]"
         echo "    collectstatic"
-        echo "    makemessages [locale]"
+        echo "    add_locale [locale]"
+        echo "    makemessages"
         echo "    compilemessages [locale]"
         echo "    build"
         echo "    clean"
