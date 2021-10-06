@@ -119,14 +119,13 @@ class BookWyrmModel(models.Model):
             privacy_levels = [
                 p for p in privacy_levels if not p in ["followers", "direct"]
             ]
-
-        # exclude blocks from both directions
-        if not viewer.is_anonymous:
+        else:
+            # exclude blocks from both directions
             queryset = queryset.exclude(
                 Q(user__blocked_by=viewer) | Q(user__blocks=viewer)
             )
 
-        # filter to only privided privacy levels
+        # filter to only provided privacy levels
         queryset = queryset.filter(privacy__in=privacy_levels)
 
         if "followers" in privacy_levels:
