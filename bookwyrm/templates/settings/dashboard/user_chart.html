@@ -1,0 +1,25 @@
+{% load i18n %}
+<script>
+
+var userStats = new Chart(
+    document.getElementById('user_stats'),
+    {
+        type: 'line',
+        data: {
+            labels: [{% for label in user_stats.labels %}"{{ label }}",{% endfor %}],
+            datasets: [{
+                label: '{% trans "Total" %}',
+                backgroundColor: 'hsl(217, 71%, 53%)',
+                borderColor: 'hsl(217, 71%, 53%)',
+                data: {{ user_stats.total }},
+            }, {
+                label: '{% trans "Active this month" %}',
+                backgroundColor: 'hsl(171, 100%, 41%)',
+                borderColor: 'hsl(171, 100%, 41%)',
+                data: {{ user_stats.active }},
+            }]
+        },
+        options: {}
+    }
+);
+</script>
