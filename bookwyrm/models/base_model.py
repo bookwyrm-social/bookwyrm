@@ -107,7 +107,7 @@ class BookWyrmModel(models.Model):
         raise PermissionDenied()
 
     @classmethod
-    def privacy_filter(cls, viewer, privacy_levels=None, following_only=False):
+    def privacy_filter(cls, viewer, privacy_levels=None):
         """filter objects that have "user" and "privacy" fields"""
         queryset = cls.objects
         if hasattr(queryset, "select_subclasses"):
@@ -135,17 +135,7 @@ class BookWyrmModel(models.Model):
         # filter to only privided privacy levels
         queryset = queryset.filter(privacy__in=privacy_levels)
 
-        # only include statuses the user follows
-        if following_only:
-            queryset = queryset.exclude(
-                ~Q(  # remove everythign except
-                    Q(user__followers=viewer)
-                    | Q(user=viewer)  # user following
-                    | Q(mention_users=viewer)  # is self  # mentions user
-                ),
-            )
-        # exclude followers-only statuses the user doesn't follow
-        elif "followers" in privacy_levels:
+        if "followers" in privacy_levels:
             queryset = cls.followers_filter(queryset, viewer)
 
         # exclude direct messages not intended for the user

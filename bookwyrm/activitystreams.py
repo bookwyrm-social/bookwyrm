@@ -140,7 +140,12 @@ class HomeStream(ActivityStream):
         return models.Status.privacy_filter(
             user,
             privacy_levels=["public", "unlisted", "followers"],
-            following_only=True,
+        ).exclude(
+            ~Q(  # remove everything except
+                Q(user__followers=user)  # user following
+                | Q(user=user)  # is self
+                | Q(mention_users=user)  # mentions user
+            ),
         )
 
 
