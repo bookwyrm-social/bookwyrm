@@ -17,7 +17,7 @@ from bookwyrm.connectors import get_data, ConnectorException
 from bookwyrm.models.shelf import Shelf
 from bookwyrm.models.status import Status, Review
 from bookwyrm.preview_images import generate_user_preview_image_task
-from bookwyrm.settings import DOMAIN, ENABLE_PREVIEW_IMAGES, USE_HTTPS
+from bookwyrm.settings import DOMAIN, ENABLE_PREVIEW_IMAGES, USE_HTTPS, LANGUAGES
 from bookwyrm.signatures import create_key_pair
 from bookwyrm.tasks import app
 from bookwyrm.utils import regex
@@ -131,6 +131,12 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     preferred_timezone = models.CharField(
         choices=[(str(tz), str(tz)) for tz in pytz.all_timezones],
         default=str(pytz.utc),
+        max_length=255,
+    )
+    preferred_language = models.CharField(
+        choices=LANGUAGES,
+        null=True,
+        blank=True,
         max_length=255,
     )
     deactivation_reason = models.CharField(
