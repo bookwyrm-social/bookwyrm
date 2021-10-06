@@ -30,6 +30,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 LOCALE_PATHS = [
     os.path.join(BASE_DIR, "locale"),
 ]
+LANGUAGE_COOKIE_NAME = env.str("LANGUAGE_COOKIE_NAME", "django_language")
 
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
