@@ -107,9 +107,7 @@ class BookWyrmModel(models.Model):
         raise PermissionDenied()
 
     @classmethod
-    def privacy_filter(
-        cls, viewer, privacy_levels=None, following_only=False, **filters
-    ):
+    def privacy_filter(cls, viewer, privacy_levels=None, following_only=False):
         """filter objects that have "user" and "privacy" fields"""
         queryset = cls.objects
         if hasattr(queryset, "select_subclasses"):
