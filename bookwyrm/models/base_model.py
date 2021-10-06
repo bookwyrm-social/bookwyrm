@@ -2,7 +2,7 @@
 import base64
 from Crypto import Random
 
-from django.core.exceptions import PermissionDenied, FieldError
+from django.core.exceptions import PermissionDenied
 from django.db import models
 from django.db.models import Q
 from django.dispatch import receiver
@@ -119,12 +119,6 @@ class BookWyrmModel(models.Model):
             privacy_levels = [
                 p for p in privacy_levels if not p in ["followers", "direct"]
             ]
-
-        # if there's a deleted field, exclude deleted items
-        try:
-            queryset = queryset.filter(deleted=False)
-        except FieldError:
-            pass
 
         # exclude blocks from both directions
         if not viewer.is_anonymous:
