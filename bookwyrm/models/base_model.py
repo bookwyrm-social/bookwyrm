@@ -114,7 +114,13 @@ class BookWyrmModel(models.Model):
             queryset = queryset.select_subclasses()
 
         privacy_levels = privacy_levels or ["public", "unlisted", "followers", "direct"]
-        # if there'd a deleted field, exclude deleted items
+        # you can't see followers only or direct messages if you're not logged in
+        if viewer.is_anonymous:
+            privacy_levels = [
+                p for p in privacy_levels if not p in ["followers", "direct"]
+            ]
+
+        # if there's a deleted field, exclude deleted items
         try:
             queryset = queryset.filter(deleted=False)
         except FieldError:
@@ -125,12 +131,6 @@ class BookWyrmModel(models.Model):
             queryset = queryset.exclude(
                 Q(user__blocked_by=viewer) | Q(user__blocks=viewer)
             )
-
-        # you can't see followers only or direct messages if you're not logged in
-        if viewer.is_anonymous:
-            privacy_levels = [
-                p for p in privacy_levels if not p in ["followers", "direct"]
-            ]
 
         # filter to only privided privacy levels
         queryset = queryset.filter(privacy__in=privacy_levels)
