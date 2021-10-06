@@ -1593,9 +1593,10 @@ msgstr "De comisariado"
 msgid "Anyone can suggest books, subject to your approval"
 msgstr "Cualquier usuario puede sugerir libros, en cuanto lo hayas aprobado"
 
-#: bookwyrm/templates/lists/form.html:31 bookwyrm/templates/search/book.html:47
-#: bookwyrm/templates/settings/reports/reports.html:25
-#: bookwyrm/templates/snippets/announcement.html:16
+#: bookwyrm/templates/lists/form.html:31
+#, fuzzy
+#| msgid "Open"
+msgctxt "curation type"
 msgid "Open"
 msgstr "Abierto"
 
@@ -1947,6 +1948,12 @@ msgstr "Empezar \"%(book_title)s\""
 #, python-format
 msgid "Want to Read \"%(book_title)s\""
 msgstr "Quiero leer \"%(book_title)s\""
+
+#: bookwyrm/templates/search/book.html:47
+#: bookwyrm/templates/settings/reports/reports.html:25
+#: bookwyrm/templates/snippets/announcement.html:16
+msgid "Open"
+msgstr "Abierto"
 
 #: bookwyrm/templates/search/book.html:85
 msgid "Import book"

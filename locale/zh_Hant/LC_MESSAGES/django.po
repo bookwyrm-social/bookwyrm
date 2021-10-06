@@ -1653,9 +1653,10 @@ msgstr "管理"
 msgid "Anyone can suggest books, subject to your approval"
 msgstr "任何人都可以推薦書目、主題，但須經你的批准。"
 
-#: bookwyrm/templates/lists/form.html:31 bookwyrm/templates/search/book.html:47
-#: bookwyrm/templates/settings/reports/reports.html:25
-#: bookwyrm/templates/snippets/announcement.html:16
+#: bookwyrm/templates/lists/form.html:31
+#, fuzzy
+#| msgid "Open"
+msgctxt "curation type"
 msgid "Open"
 msgstr "開放"
 
@@ -2030,6 +2031,12 @@ msgstr "編輯 \"%(book_title)s\""
 #| msgid "Want to Read \"<em>%(book_title)s</em>\""
 msgid "Want to Read \"%(book_title)s\""
 msgstr "想要閱讀 \"<em>%(book_title)s</em>\""
+
+#: bookwyrm/templates/search/book.html:47
+#: bookwyrm/templates/settings/reports/reports.html:25
+#: bookwyrm/templates/snippets/announcement.html:16
+msgid "Open"
+msgstr "開放"
 
 #: bookwyrm/templates/search/book.html:85
 msgid "Import book"

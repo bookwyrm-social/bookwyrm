@@ -1644,9 +1644,10 @@ msgstr "Modérée"
 msgid "Anyone can suggest books, subject to your approval"
 msgstr "N’importe qui peut suggérer des livres, soumis à votre approbation"
 
-#: bookwyrm/templates/lists/form.html:31 bookwyrm/templates/search/book.html:47
-#: bookwyrm/templates/settings/reports/reports.html:25
-#: bookwyrm/templates/snippets/announcement.html:16
+#: bookwyrm/templates/lists/form.html:31
+#, fuzzy
+#| msgid "Open"
+msgctxt "curation type"
 msgid "Open"
 msgstr "Ouverte"
 
@@ -2021,6 +2022,12 @@ msgstr "Modifier « %(book_title)s »"
 #| msgid "Want to Read \"<em>%(book_title)s</em>\""
 msgid "Want to Read \"%(book_title)s\""
 msgstr "Ajouter « <em>%(book_title)s</em> » aux envies de lecture"
+
+#: bookwyrm/templates/search/book.html:47
+#: bookwyrm/templates/settings/reports/reports.html:25
+#: bookwyrm/templates/snippets/announcement.html:16
+msgid "Open"
+msgstr "Ouverte"
 
 #: bookwyrm/templates/search/book.html:85
 msgid "Import book"

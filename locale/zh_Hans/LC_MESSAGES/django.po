@@ -1624,9 +1624,10 @@ msgstr "策展"
 msgid "Anyone can suggest books, subject to your approval"
 msgstr "任何人都可以推荐书目、主题让你批准"
 
-#: bookwyrm/templates/lists/form.html:31 bookwyrm/templates/search/book.html:47
-#: bookwyrm/templates/settings/reports/reports.html:25
-#: bookwyrm/templates/snippets/announcement.html:16
+#: bookwyrm/templates/lists/form.html:31
+#, fuzzy
+#| msgid "Open"
+msgctxt "curation type"
 msgid "Open"
 msgstr "开放"
 
@@ -1994,6 +1995,12 @@ msgstr "开始《%(book_title)s》"
 #, python-format
 msgid "Want to Read \"%(book_title)s\""
 msgstr "想要阅读《%(book_title)s》"
+
+#: bookwyrm/templates/search/book.html:47
+#: bookwyrm/templates/settings/reports/reports.html:25
+#: bookwyrm/templates/snippets/announcement.html:16
+msgid "Open"
+msgstr "开放"
 
 #: bookwyrm/templates/search/book.html:85
 msgid "Import book"
