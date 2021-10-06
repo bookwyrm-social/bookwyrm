@@ -17,7 +17,6 @@ from bookwyrm import forms, models
 from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.settings import PAGE_LENGTH
 from .helpers import is_api_request, get_user_from_username
-from .helpers import privacy_filter
 
 
 # pylint: disable=no-self-use
@@ -33,7 +32,7 @@ class Shelf(View):
         if is_self:
             shelves = user.shelf_set.all()
         else:
-            shelves = privacy_filter(request.user, user.shelf_set).all()
+            shelves = models.Shelf.privacy_filter(request.user).filter(user=user).all()
 
         # get the shelf and make sure the logged in user should be able to see it
         if shelf_identifier:
@@ -58,15 +57,16 @@ class Shelf(View):
         if is_api_request(request):
             return ActivitypubResponse(shelf.to_activity(**request.GET))
 
-        reviews = models.Review.objects.filter(
+        reviews = models.Review.objects
+        if not is_self:
+            reviews = models.Review.privacy_filter(request.user)
+
+        reviews = reviews.filter(
             user=user,
             rating__isnull=False,
             book__id=OuterRef("id"),
             deleted=False,
         ).order_by("-published_date")
-
-        if not is_self:
-            reviews = privacy_filter(request.user, reviews)
 
         books = books.annotate(
             rating=Subquery(reviews.values("rating")[:1]),

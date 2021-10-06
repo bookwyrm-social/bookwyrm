@@ -13,7 +13,7 @@ from bookwyrm.connectors import connector_manager
 from bookwyrm.book_search import search, format_search_result
 from bookwyrm.settings import PAGE_LENGTH
 from bookwyrm.utils import regex
-from .helpers import is_api_request, privacy_filter
+from .helpers import is_api_request
 from .helpers import handle_remote_webfinger
 
 
@@ -108,9 +108,8 @@ def user_search(query, viewer, *_):
 def list_search(query, viewer, *_):
     """any relevent lists?"""
     return (
-        privacy_filter(
+        models.List.privacy_filter(
             viewer,
-            models.List.objects,
             privacy_levels=["public", "followers"],
         )
         .annotate(
