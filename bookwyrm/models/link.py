@@ -3,6 +3,7 @@ from .activitypub_mixin import CollectionItemMixin
 from .base_model import BookWyrmModel
 from . import fields
 
+
 class Link(CollectionItemMixin, BookWyrmModel):
     """a link to a website"""
 

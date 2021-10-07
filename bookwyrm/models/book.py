@@ -105,7 +105,7 @@ class Book(BookDataModel):
 
     objects = InheritanceManager()
     field_tracker = FieldTracker(fields=["authors", "title", "subtitle", "cover"])
-    file_links = fields.ManyToManyField("FileLink")
+    file_links = fields.ManyToManyField("FileLink", related_name="editions")
 
     if ENABLE_THUMBNAIL_GENERATION:
         cover_bw_book_xsmall_webp = ImageSpecField(

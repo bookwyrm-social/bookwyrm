@@ -195,6 +195,8 @@ class EditionForm(CustomForm):
             "shelves",
             "connector",
             "search_vector",
+            "links",
+            "file_links",
         ]
 
 
@@ -207,6 +209,7 @@ class AuthorForm(CustomForm):
             "created_date",
             "updated_date",
             "search_vector",
+            "links",
         ]
 
 
