@@ -8,7 +8,6 @@ from django.utils import timezone
 from bookwyrm import models
 from bookwyrm.redis_store import RedisStore, r
 from bookwyrm.tasks import app
-from bookwyrm.views.helpers import privacy_filter
 
 
 class ActivityStream(RedisStore):
@@ -43,7 +42,7 @@ class ActivityStream(RedisStore):
     def add_user_statuses(self, viewer, user):
         """add a user's statuses to another user's feed"""
         # only add the statuses that the viewer should be able to see (ie, not dms)
-        statuses = privacy_filter(viewer, user.status_set.all())
+        statuses = models.Status.privacy_filter(viewer).filter(user=user)
         self.bulk_add_objects_to_store(statuses, self.stream_id(viewer))
 
     def remove_user_statuses(self, viewer, user):
@@ -113,9 +112,8 @@ class ActivityStream(RedisStore):
 
     def get_statuses_for_user(self, user):  # pylint: disable=no-self-use
         """given a user, what statuses should they see on this stream"""
-        return privacy_filter(
+        return models.Status.privacy_filter(
             user,
-            models.Status.objects.select_subclasses(),
             privacy_levels=["public", "unlisted", "followers"],
         )
 
@@ -139,11 +137,15 @@ class HomeStream(ActivityStream):
         ).distinct()
 
     def get_statuses_for_user(self, user):
-        return privacy_filter(
+        return models.Status.privacy_filter(
             user,
-            models.Status.objects.select_subclasses(),
             privacy_levels=["public", "unlisted", "followers"],
-            following_only=True,
+        ).exclude(
+            ~Q(  # remove everything except
+                Q(user__followers=user)  # user following
+                | Q(user=user)  # is self
+                | Q(mention_users=user)  # mentions user
+            ),
         )
 
 
@@ -160,11 +162,10 @@ class LocalStream(ActivityStream):
 
     def get_statuses_for_user(self, user):
         # all public statuses by a local user
-        return privacy_filter(
+        return models.Status.privacy_filter(
             user,
-            models.Status.objects.select_subclasses().filter(user__local=True),
             privacy_levels=["public"],
-        )
+        ).filter(user__local=True)
 
 
 class BooksStream(ActivityStream):
@@ -197,50 +198,53 @@ class BooksStream(ActivityStream):
         books = user.shelfbook_set.values_list(
             "book__parent_work__id", flat=True
         ).distinct()
-        return privacy_filter(
-            user,
-            models.Status.objects.select_subclasses()
+        return (
+            models.Status.privacy_filter(
+                user,
+                privacy_levels=["public"],
+            )
             .filter(
                 Q(comment__book__parent_work__id__in=books)
                 | Q(quotation__book__parent_work__id__in=books)
                 | Q(review__book__parent_work__id__in=books)
                 | Q(mention_books__parent_work__id__in=books)
             )
-            .distinct(),
-            privacy_levels=["public"],
+            .distinct()
         )
 
     def add_book_statuses(self, user, book):
         """add statuses about a book to a user's feed"""
         work = book.parent_work
-        statuses = privacy_filter(
-            user,
-            models.Status.objects.select_subclasses()
+        statuses = (
+            models.Status.privacy_filter(
+                user,
+                privacy_levels=["public"],
+            )
             .filter(
                 Q(comment__book__parent_work=work)
                 | Q(quotation__book__parent_work=work)
                 | Q(review__book__parent_work=work)
                 | Q(mention_books__parent_work=work)
             )
-            .distinct(),
-            privacy_levels=["public"],
+            .distinct()
         )
         self.bulk_add_objects_to_store(statuses, self.stream_id(user))
 
     def remove_book_statuses(self, user, book):
         """add statuses about a book to a user's feed"""
         work = book.parent_work
-        statuses = privacy_filter(
-            user,
-            models.Status.objects.select_subclasses()
+        statuses = (
+            models.Status.privacy_filter(
+                user,
+                privacy_levels=["public"],
+            )
             .filter(
                 Q(comment__book__parent_work=work)
                 | Q(quotation__book__parent_work=work)
                 | Q(review__book__parent_work=work)
                 | Q(mention_books__parent_work=work)
             )
-            .distinct(),
-            privacy_levels=["public"],
+            .distinct()
         )
         self.bulk_remove_objects_from_store(statuses, self.stream_id(user))
 

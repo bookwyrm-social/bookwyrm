@@ -16,7 +16,7 @@ from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.connectors import connector_manager
 from bookwyrm.connectors.abstract_connector import get_image
 from bookwyrm.settings import PAGE_LENGTH
-from bookwyrm.views.helpers import is_api_request, privacy_filter
+from bookwyrm.views.helpers import is_api_request
 
 
 # pylint: disable=no-self-use
@@ -48,8 +48,8 @@ class Book(View):
             raise Http404()
 
         # all reviews for all editions of the book
-        reviews = privacy_filter(
-            request.user, models.Review.objects.filter(book__parent_work__editions=book)
+        reviews = models.Review.privacy_filter(request.user).filter(
+            book__parent_work__editions=book
         )
 
         # the reviews to show
@@ -66,12 +66,9 @@ class Book(View):
         queryset = queryset.select_related("user").order_by("-published_date")
         paginated = Paginator(queryset, PAGE_LENGTH)
 
-        lists = privacy_filter(
-            request.user,
-            models.List.objects.filter(
-                listitem__approved=True,
-                listitem__book__in=book.parent_work.editions.all(),
-            ),
+        lists = models.List.privacy_filter(request.user,).filter(
+            listitem__approved=True,
+            listitem__book__in=book.parent_work.editions.all(),
         )
         data = {
             "book": book,

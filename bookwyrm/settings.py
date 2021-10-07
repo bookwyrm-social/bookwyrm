@@ -30,6 +30,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 LOCALE_PATHS = [
     os.path.join(BASE_DIR, "locale"),
 ]
+LANGUAGE_COOKIE_NAME = env.str("LANGUAGE_COOKIE_NAME", "django_language")
 
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
@@ -161,11 +162,11 @@ AUTH_PASSWORD_VALIDATORS = [
 LANGUAGE_CODE = "en-us"
 LANGUAGES = [
     ("en-us", _("English")),
-    ("de-de", _("German")),
-    ("es", _("Spanish")),
-    ("fr-fr", _("French")),
-    ("zh-hans", _("Simplified Chinese")),
-    ("zh-hant", _("Traditional Chinese")),
+    ("de-de", _("Deutsch (German)")),  # German
+    ("es", _("Español (Spanish)")),  # Spanish
+    ("fr-fr", _("Français (French)")),  # French
+    ("zh-hans", _("简体中文 (Simplified Chinese)")),  # Simplified Chinese
+    ("zh-hant", _("繁體中文 (Traditional Chinese)")),  # Traditional Chinese
 ]
 
 
@@ -210,12 +211,13 @@ if USE_S3:
     AWS_S3_OBJECT_PARAMETERS = {"CacheControl": "max-age=86400"}
     # S3 Static settings
     STATIC_LOCATION = "static"
-    STATIC_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{STATIC_LOCATION}/"
+    STATIC_URL = f"{PROTOCOL}://{AWS_S3_CUSTOM_DOMAIN}/{STATIC_LOCATION}/"
     STATICFILES_STORAGE = "bookwyrm.storage_backends.StaticStorage"
     # S3 Media settings
     MEDIA_LOCATION = "images"
-    MEDIA_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{MEDIA_LOCATION}/"
+    MEDIA_URL = f"{PROTOCOL}://{AWS_S3_CUSTOM_DOMAIN}/{MEDIA_LOCATION}/"
     MEDIA_FULL_URL = MEDIA_URL
+    STATIC_FULL_URL = STATIC_URL
     DEFAULT_FILE_STORAGE = "bookwyrm.storage_backends.ImagesStorage"
     # I don't know if it's used, but the site crashes without it
     STATIC_ROOT = os.path.join(BASE_DIR, env("STATIC_ROOT", "static"))
@@ -225,4 +227,5 @@ else:
     STATIC_ROOT = os.path.join(BASE_DIR, env("STATIC_ROOT", "static"))
     MEDIA_URL = "/images/"
     MEDIA_FULL_URL = f"{PROTOCOL}://{DOMAIN}{MEDIA_URL}"
+    STATIC_FULL_URL = f"{PROTOCOL}://{DOMAIN}{STATIC_URL}"
     MEDIA_ROOT = os.path.join(BASE_DIR, env("MEDIA_ROOT", "images"))
