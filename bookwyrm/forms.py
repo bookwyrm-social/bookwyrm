@@ -144,6 +144,7 @@ class EditUserForm(CustomForm):
             "default_post_privacy",
             "discoverable",
             "preferred_timezone",
+            "preferred_language",
         ]
         help_texts = {f: None for f in fields}
 

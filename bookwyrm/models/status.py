@@ -6,6 +6,7 @@ from django.apps import apps
 from django.core.exceptions import PermissionDenied
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+from django.db.models import Q
 from django.dispatch import receiver
 from django.template.loader import get_template
 from django.utils import timezone
@@ -206,6 +207,18 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         super().raise_not_editable(viewer)
         if isinstance(self, (GeneratedNote, ReviewRating)):
             raise PermissionDenied()
+
+    @classmethod
+    def privacy_filter(cls, viewer, privacy_levels=None):
+        queryset = super().privacy_filter(viewer, privacy_levels=privacy_levels)
+        return queryset.filter(deleted=False)
+
+    @classmethod
+    def direct_filter(cls, queryset, viewer):
+        """Overridden filter for "direct" privacy level"""
+        return queryset.exclude(
+            ~Q(Q(user=viewer) | Q(mention_users=viewer)), privacy="direct"
+        )
 
 
 class GeneratedNote(Status):

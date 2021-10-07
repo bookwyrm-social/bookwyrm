@@ -11,6 +11,7 @@ from django.views.decorators.debug import sensitive_variables, sensitive_post_pa
 
 from bookwyrm import forms, models
 from bookwyrm.settings import DOMAIN
+from bookwyrm.views.helpers import set_language
 
 
 # pylint: disable=no-self-use
@@ -55,8 +56,8 @@ class Login(View):
             login(request, user)
             user.update_active_date()
             if request.POST.get("first_login"):
-                return redirect("get-started-profile")
-            return redirect(request.GET.get("next", "/"))
+                return set_language(user, redirect("get-started-profile"))
+            return set_language(user, redirect(request.GET.get("next", "/")))
 
         # maybe the user is pending email confirmation
         if models.User.objects.filter(
