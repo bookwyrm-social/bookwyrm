@@ -28,7 +28,7 @@
             </label>
 
             <label class="field">
-                <input type="radio" name="curation" value="open"{% if list.curation == 'open' %} checked{% endif %}> {% trans "Open" %}
+                <input type="radio" name="curation" value="open"{% if list.curation == 'open' %} checked{% endif %}> {% trans "Open" context "curation type"  %}
                 <p class="help mb-2">{% trans "Anyone can add books to this list" %}</p>
             </label>
         </fieldset>

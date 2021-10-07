@@ -162,11 +162,11 @@ AUTH_PASSWORD_VALIDATORS = [
 LANGUAGE_CODE = "en-us"
 LANGUAGES = [
     ("en-us", _("English")),
-    ("de-de", _("German")),
-    ("es", _("Spanish")),
-    ("fr-fr", _("French")),
-    ("zh-hans", _("Simplified Chinese")),
-    ("zh-hant", _("Traditional Chinese")),
+    ("de-de", _("Deutsch (German)")),
+    ("es", _("Español (Spanish)")),
+    ("fr-fr", _("Français (French)")),
+    ("zh-hans", _("简体中文 (Simplified Chinese)")),
+    ("zh-hant", _("繁體中文 (Traditional Chinese)")),
     ("en-oulipo", _("Oulipo (Anglais)")),
 ]
 
