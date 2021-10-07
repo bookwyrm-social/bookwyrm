@@ -1,11 +1,12 @@
 """ test for app action functionality """
 from unittest.mock import patch
+from django.contrib.auth import decorators
 
 from django.template.response import TemplateResponse
 from django.test import TestCase
 from django.test.client import RequestFactory
 
-from bookwyrm import models, views
+from bookwyrm import models, views, forms
 from bookwyrm.tests.validate_html import validate_html
 
 
@@ -51,7 +52,7 @@ class GroupViews(TestCase):
         view = views.Group.as_view()
         request = self.factory.get("")
         request.user = self.local_user
-        result = view(request)
+        result = view(request, group_id=999)
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
@@ -61,7 +62,7 @@ class GroupViews(TestCase):
         view = views.UserGroups.as_view()
         request = self.factory.get("")
         request.user = self.local_user
-        result = view(request)
+        result = view(request, username="mouse@local.com")
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
@@ -71,20 +72,25 @@ class GroupViews(TestCase):
         view = views.FindUsers.as_view()
         request = self.factory.get("")
         request.user = self.local_user
-        result = view(request)
+        result = view(request,group_id=999)
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
     def test_group_post(self, _):
-        """edit a "group" database entry"""
-        view = views.Group.as_view()
-        view.post(
-            group_id=999,
-            name="Test Group",
-            user=self.local_user,
-            privacy="public",
-            description="Test description",
-        )
+        """test editing a "group" database entry"""
 
-        self.assertEqual("Test description", self.testgroup.description)
+        view = views.Group.as_view()
+        group_fields = {
+            "name": "Updated Group",
+            "privacy": "private",
+            "description": "Test description",
+            "user": self.local_user
+        }
+        request = self.factory.post("", group_fields)
+        request.user = self.local_user
+
+        result = view(request, group_id=999)
+        self.assertEqual(result.status_code, 302)
+
+        # TODO: test group was updated.
