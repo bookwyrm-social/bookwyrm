@@ -3,10 +3,10 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-10-06 23:57+0000\n"
-"PO-Revision-Date: 2021-10-07 04:22\n"
-"Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
+"PO-Revision-Date: 2021-10-07 04:21\n"
+"Last-Translator: Fabien Basmaison <contact@arkhi.org>\n"
 "Language-Team: Spanish\n"
-"Language: es\n"
+"Language: es_ES\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -14,8 +14,8 @@ msgstr ""
 "X-Crowdin-Project: bookwyrm\n"
 "X-Crowdin-Project-ID: 479239\n"
 "X-Crowdin-Language: es-ES\n"
-"X-Crowdin-File: /[bookwyrm-social.bookwyrm] main/locale/en_US/LC_MESSAGES/django.po\n"
-"X-Crowdin-File-ID: 1553\n"
+"X-Crowdin-File: /[bookwyrm-social.bookwyrm] main/locale/fr_FR/LC_MESSAGES/django.po\n"
+"X-Crowdin-File-ID: 1557\n"
 
 #: bookwyrm/forms.py:242
 msgid "A user with this email already exists."
@@ -38,7 +38,7 @@ msgid "Does Not Expire"
 msgstr ""
 
 #: bookwyrm/forms.py:263
-#, python-brace-format
+#| msgid "Max uses"
 msgid "{i} uses"
 msgstr ""
 
@@ -81,6 +81,7 @@ msgid "Could not find a match for book"
 msgstr ""
 
 #: bookwyrm/models/base_model.py:17
+#| msgid "Ascending"
 msgid "Pending"
 msgstr ""
 
@@ -89,22 +90,27 @@ msgid "Self deletion"
 msgstr ""
 
 #: bookwyrm/models/base_model.py:19
+#| msgid "Moderator Comments"
 msgid "Moderator suspension"
 msgstr ""
 
 #: bookwyrm/models/base_model.py:20
+#| msgid "List curation:"
 msgid "Moderator deletion"
 msgstr ""
 
 #: bookwyrm/models/base_model.py:21
+#| msgid "Un-block"
 msgid "Domain block"
 msgstr ""
 
 #: bookwyrm/models/book.py:232
+#| msgid "Add books"
 msgid "Audiobook"
 msgstr ""
 
 #: bookwyrm/models/book.py:233
+#| msgid "Book"
 msgid "eBook"
 msgstr ""
 
@@ -113,6 +119,7 @@ msgid "Graphic novel"
 msgstr ""
 
 #: bookwyrm/models/book.py:235
+#| msgid "Add cover"
 msgid "Hardcover"
 msgstr ""
 
@@ -160,6 +167,7 @@ msgid "Home"
 msgstr ""
 
 #: bookwyrm/settings.py:118
+#| msgid "Book Title"
 msgid "Books Timeline"
 msgstr ""
 
@@ -570,6 +578,7 @@ msgid "Languages:"
 msgstr ""
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:74
+#| msgid "Public"
 msgid "Publication"
 msgstr ""
 
@@ -622,6 +631,7 @@ msgid "Format:"
 msgstr ""
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:177
+#| msgid "User details"
 msgid "Format details:"
 msgstr ""
 
@@ -666,6 +676,7 @@ msgid "Language:"
 msgstr ""
 
 #: bookwyrm/templates/book/editions/search_filter.html:5
+#| msgid "Search Results"
 msgid "Search editions"
 msgstr ""
 
@@ -853,6 +864,7 @@ msgstr ""
 #: bookwyrm/templates/directory/user_card.html:18
 #: bookwyrm/templates/user/user_preview.html:16
 #: bookwyrm/templates/user/user_preview.html:17
+#| msgid "Your Account"
 msgid "Locked account"
 msgstr ""
 
@@ -891,6 +903,7 @@ msgstr ""
 #: bookwyrm/templates/discover/discover.html:4
 #: bookwyrm/templates/discover/discover.html:10
 #: bookwyrm/templates/layout.html:78
+#| msgid "Discard"
 msgid "Discover"
 msgstr ""
 
@@ -921,6 +934,7 @@ msgstr ""
 
 #: bookwyrm/templates/discover/large-book.html:68
 #: bookwyrm/templates/discover/small-book.html:52
+#| msgid "Like status"
 msgid "View status"
 msgstr ""
 
@@ -1029,7 +1043,7 @@ msgid "You have no messages right now."
 msgstr ""
 
 #: bookwyrm/templates/feed/feed.html:22
-#, python-format
+#| msgid "load <span data-poll=\"stream/%(tab)s\">0</span> unread status(es)"
 msgid "load <span data-poll=\"stream/%(tab_key)s\">0</span> unread status(es)"
 msgstr ""
 
@@ -1085,10 +1099,12 @@ msgid "Who to follow"
 msgstr ""
 
 #: bookwyrm/templates/feed/suggested_users.html:9
+#| msgid "Show this account in suggested users:"
 msgid "Don't show suggested users"
 msgstr ""
 
 #: bookwyrm/templates/feed/suggested_users.html:14
+#| msgid "Directory"
 msgid "View directory"
 msgstr ""
 
@@ -1264,6 +1280,7 @@ msgid "Import Status"
 msgstr ""
 
 #: bookwyrm/templates/import/import_status.html:11
+#| msgid "Back to reports"
 msgid "Back to imports"
 msgstr ""
 
@@ -1314,6 +1331,7 @@ msgid "Successfully imported"
 msgstr ""
 
 #: bookwyrm/templates/import/import_status.html:114
+#| msgid "Import still in progress."
 msgid "Import Progress"
 msgstr ""
 
@@ -1395,7 +1413,7 @@ msgid "Request an Invitation"
 msgstr ""
 
 #: bookwyrm/templates/landing/layout.html:49
-#, python-format
+#| msgid "(Recommended if registration is open)"
 msgid "%(name)s registration is closed"
 msgstr ""
 
@@ -1408,11 +1426,12 @@ msgid "Your Account"
 msgstr ""
 
 #: bookwyrm/templates/layout.html:13
-#, python-format
+#| msgid "About %(site_name)s"
 msgid "%(site_name)s search"
 msgstr ""
 
 #: bookwyrm/templates/layout.html:43
+#| msgid "Search for a book or user"
 msgid "Search for a book, user, or list"
 msgstr ""
 
@@ -1478,10 +1497,12 @@ msgid "Join"
 msgstr ""
 
 #: bookwyrm/templates/layout.html:221
+#| msgid "Successfully imported"
 msgid "Successfully posted status"
 msgstr ""
 
 #: bookwyrm/templates/layout.html:222
+#| msgid "Boost status"
 msgid "Error posting status"
 msgstr ""
 
@@ -1550,10 +1571,12 @@ msgid "Discard"
 msgstr ""
 
 #: bookwyrm/templates/lists/delete_list_modal.html:4
+#| msgid "Delete this progress update"
 msgid "Delete this list?"
 msgstr ""
 
 #: bookwyrm/templates/lists/delete_list_modal.html:7
+#| msgid "This shelf is empty."
 msgid "This action cannot be un-done"
 msgstr ""
 
@@ -1592,6 +1615,7 @@ msgid "Anyone can suggest books, subject to your approval"
 msgstr ""
 
 #: bookwyrm/templates/lists/form.html:31
+#| msgid "Open"
 msgctxt "curation type"
 msgid "Open"
 msgstr ""
@@ -1601,6 +1625,7 @@ msgid "Anyone can add books to this list"
 msgstr ""
 
 #: bookwyrm/templates/lists/form.html:50
+#| msgid "Delete status"
 msgid "Delete list"
 msgstr ""
 
@@ -1669,6 +1694,7 @@ msgid "Suggest"
 msgstr ""
 
 #: bookwyrm/templates/lists/list_items.html:15
+#| msgid "Save"
 msgid "Saved"
 msgstr ""
 
@@ -1677,10 +1703,12 @@ msgid "Your Lists"
 msgstr ""
 
 #: bookwyrm/templates/lists/lists.html:35
+#| msgid "Lists"
 msgid "All Lists"
 msgstr ""
 
 #: bookwyrm/templates/lists/lists.html:39
+#| msgid "Create List"
 msgid "Saved Lists"
 msgstr ""
 
@@ -1702,12 +1730,12 @@ msgid "More about this site"
 msgstr ""
 
 #: bookwyrm/templates/notifications/items/add.html:24
-#, python-format
+#| msgid " added <em><a href=\"%(book_path)s\">%(book_title)s</a></em> to your list \"<a href=\"%(list_path)s\">%(list_name)s</a>\""
 msgid "added <em><a href=\"%(book_path)s\">%(book_title)s</a></em> to your list \"<a href=\"%(list_path)s\">%(list_name)s</a>\""
 msgstr ""
 
 #: bookwyrm/templates/notifications/items/add.html:31
-#, python-format
+#| msgid " suggested adding <em><a href=\"%(book_path)s\">%(book_title)s</a></em> to your list \"<a href=\"%(list_path)s/curate\">%(list_name)s</a>\""
 msgid "suggested adding <em><a href=\"%(book_path)s\">%(book_title)s</a></em> to your list \"<a href=\"%(list_path)s\">%(list_name)s</a>\""
 msgstr ""
 
@@ -1737,7 +1765,7 @@ msgid "favorited your <a href=\"%(related_path)s\">review of <em>%(book_title)s<
 msgstr ""
 
 #: bookwyrm/templates/notifications/items/fav.html:25
-#, python-format
+#| msgid "favorited your <a href=\"%(related_path)s\">comment on <em>%(book_title)s</em></a>"
 msgid "favorited your <a href=\"%(related_path)s\">comment on<em>%(book_title)s</em></a>"
 msgstr ""
 
@@ -1865,6 +1893,7 @@ msgstr ""
 #: bookwyrm/templates/preferences/delete_user.html:26
 #: bookwyrm/templates/preferences/layout.html:24
 #: bookwyrm/templates/settings/users/delete_user_form.html:23
+#| msgid "Create an Account"
 msgid "Delete Account"
 msgstr ""
 
@@ -1890,19 +1919,23 @@ msgstr ""
 
 #: bookwyrm/templates/preferences/edit_user.html:13
 #: bookwyrm/templates/preferences/edit_user.html:68
+#| msgid "Email preference"
 msgid "Display preferences"
 msgstr ""
 
 #: bookwyrm/templates/preferences/edit_user.html:14
 #: bookwyrm/templates/preferences/edit_user.html:106
+#| msgid "Post privacy"
 msgid "Privacy"
 msgstr ""
 
 #: bookwyrm/templates/preferences/edit_user.html:72
+#| msgid "Show set reading goal prompt in feed:"
 msgid "Show reading goal prompt in feed:"
 msgstr ""
 
 #: bookwyrm/templates/preferences/edit_user.html:76
+#| msgid "Show this account in suggested users:"
 msgid "Show suggested users:"
 msgstr ""
 
@@ -1916,6 +1949,7 @@ msgid "Preferred Timezone: "
 msgstr ""
 
 #: bookwyrm/templates/preferences/edit_user.html:116
+#| msgid "Post privacy"
 msgid "Default post privacy:"
 msgstr ""
 
@@ -1928,17 +1962,17 @@ msgid "Relationships"
 msgstr ""
 
 #: bookwyrm/templates/reading_progress/finish.html:5
-#, python-format
+#| msgid "Finish \"<em>%(book_title)s</em>\""
 msgid "Finish \"%(book_title)s\""
 msgstr ""
 
 #: bookwyrm/templates/reading_progress/start.html:5
-#, python-format
+#| msgid "Edit \"%(book_title)s\""
 msgid "Start \"%(book_title)s\""
 msgstr ""
 
 #: bookwyrm/templates/reading_progress/want.html:5
-#, python-format
+#| msgid "Want to Read \"<em>%(book_title)s</em>\""
 msgid "Want to Read \"%(book_title)s\""
 msgstr ""
 
@@ -2037,14 +2071,17 @@ msgid "Create Announcement"
 msgstr ""
 
 #: bookwyrm/templates/settings/announcements/announcement_form.html:16
+#| msgid "Preview"
 msgid "Preview:"
 msgstr ""
 
 #: bookwyrm/templates/settings/announcements/announcement_form.html:23
+#| msgid "Content"
 msgid "Content:"
 msgstr ""
 
 #: bookwyrm/templates/settings/announcements/announcement_form.html:30
+#| msgid "End date:"
 msgid "Event date:"
 msgstr ""
 
@@ -2089,6 +2126,7 @@ msgid "inactive"
 msgstr ""
 
 #: bookwyrm/templates/settings/announcements/announcements.html:52
+#| msgid "Announcements"
 msgid "No announcements found"
 msgstr ""
 
@@ -2100,6 +2138,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:15
 #: bookwyrm/templates/settings/dashboard/dashboard.html:100
+#| msgid "Local users"
 msgid "Total users"
 msgstr ""
 
@@ -2109,6 +2148,7 @@ msgid "Active this month"
 msgstr ""
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:27
+#| msgid "Status"
 msgid "Statuses"
 msgstr ""
 
@@ -2118,20 +2158,21 @@ msgid "Works"
 msgstr ""
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:43
-#, python-format
+#| msgid "%(count)d uses"
 msgid "%(display_count)s open report"
 msgid_plural "%(display_count)s open reports"
 msgstr[0] ""
 msgstr[1] ""
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:54
-#, python-format
+#| msgid "%(count)d uses"
 msgid "%(display_count)s invite request"
 msgid_plural "%(display_count)s invite requests"
 msgstr[0] ""
 msgstr[1] ""
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:65
+#| msgid "User Activity"
 msgid "Instance Activity"
 msgstr ""
 
@@ -2144,14 +2185,17 @@ msgid "Days"
 msgstr ""
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:88
+#| msgid "One Week"
 msgid "Weeks"
 msgstr ""
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:106
+#| msgid "User Activity"
 msgid "User signup activity"
 msgstr ""
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:112
+#| msgid "User Activity"
 msgid "Status activity"
 msgstr ""
 
@@ -2160,10 +2204,12 @@ msgid "Works created"
 msgstr ""
 
 #: bookwyrm/templates/settings/dashboard/registration_chart.html:10
+#| msgid "Registration"
 msgid "Registrations"
 msgstr ""
 
 #: bookwyrm/templates/settings/dashboard/status_chart.html:11
+#| msgid "No statuses reported"
 msgid "Statuses posted"
 msgstr ""
 
@@ -2183,6 +2229,7 @@ msgstr ""
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:5
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:7
 #: bookwyrm/templates/settings/layout.html:59
+#| msgid "Import Blocklist"
 msgid "Email Blocklist"
 msgstr ""
 
@@ -2196,17 +2243,19 @@ msgstr ""
 
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:29
 #: bookwyrm/templates/settings/ip_blocklist/ip_blocklist.html:27
+#| msgid "Actions"
 msgid "Options"
 msgstr ""
 
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:38
-#, python-format
+#| msgid "%(count)d uses"
 msgid "%(display_count)s user"
 msgid_plural "%(display_count)s users"
 msgstr[0] ""
 msgstr[1] ""
 
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:59
+#| msgid "No users currently blocked."
 msgid "No email domains currently blocked"
 msgstr ""
 
@@ -2360,6 +2409,7 @@ msgid "Software"
 msgstr ""
 
 #: bookwyrm/templates/settings/federation/instance_list.html:63
+#| msgid "Announcements"
 msgid "No instances found"
 msgstr ""
 
@@ -2471,6 +2521,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/ip_blocklist/ip_address_form.html:5
 #: bookwyrm/templates/settings/ip_blocklist/ip_blocklist.html:10
+#| msgid "Email address:"
 msgid "Add IP address"
 msgstr ""
 
@@ -2479,12 +2530,14 @@ msgid "Use IP address blocks with caution, and consider using blocks only tempor
 msgstr ""
 
 #: bookwyrm/templates/settings/ip_blocklist/ip_address_form.html:18
+#| msgid "Email address:"
 msgid "IP Address:"
 msgstr ""
 
 #: bookwyrm/templates/settings/ip_blocklist/ip_blocklist.html:5
 #: bookwyrm/templates/settings/ip_blocklist/ip_blocklist.html:7
 #: bookwyrm/templates/settings/layout.html:63
+#| msgid "Import Blocklist"
 msgid "IP Address Blocklist"
 msgstr ""
 
@@ -2493,10 +2546,12 @@ msgid "Any traffic from this IP address will get a 404 response when trying to a
 msgstr ""
 
 #: bookwyrm/templates/settings/ip_blocklist/ip_blocklist.html:24
+#| msgid "Email address:"
 msgid "Address"
 msgstr ""
 
 #: bookwyrm/templates/settings/ip_blocklist/ip_blocklist.html:46
+#| msgid "No users currently blocked."
 msgid "No IP addresses currently blocked"
 msgstr ""
 
@@ -2513,6 +2568,7 @@ msgid "Manage Users"
 msgstr ""
 
 #: bookwyrm/templates/settings/layout.html:51
+#| msgid "List curation:"
 msgid "Moderation"
 msgstr ""
 
@@ -2632,6 +2688,7 @@ msgid "Instance description:"
 msgstr ""
 
 #: bookwyrm/templates/settings/site.html:36
+#| msgid "Description:"
 msgid "Short description:"
 msgstr ""
 
@@ -2696,6 +2753,7 @@ msgid "Registration closed text:"
 msgstr ""
 
 #: bookwyrm/templates/settings/site.html:124
+#| msgid "Invite Requests"
 msgid "Invite request text:"
 msgstr ""
 
@@ -2710,6 +2768,7 @@ msgid "Are you sure you want to delete <strong>%(username)s</strong>'s account? 
 msgstr ""
 
 #: bookwyrm/templates/settings/users/delete_user_form.html:17
+#| msgid "Confirm password:"
 msgid "Your password:"
 msgstr ""
 
@@ -2763,6 +2822,7 @@ msgid "Local"
 msgstr ""
 
 #: bookwyrm/templates/settings/users/user_info.html:38
+#| msgid "Remove"
 msgid "Remote"
 msgstr ""
 
@@ -2771,30 +2831,37 @@ msgid "User details"
 msgstr ""
 
 #: bookwyrm/templates/settings/users/user_info.html:51
+#| msgid "Email"
 msgid "Email:"
 msgstr ""
 
 #: bookwyrm/templates/settings/users/user_info.html:61
+#| msgid "Directory"
 msgid "(View reports)"
 msgstr ""
 
 #: bookwyrm/templates/settings/users/user_info.html:67
+#| msgid "Blocked by us:"
 msgid "Blocked by count:"
 msgstr ""
 
 #: bookwyrm/templates/settings/users/user_info.html:70
+#| msgid "last active"
 msgid "Last active date:"
 msgstr ""
 
 #: bookwyrm/templates/settings/users/user_info.html:73
+#| msgid "Manually approve followers:"
 msgid "Manually approved followers:"
 msgstr ""
 
 #: bookwyrm/templates/settings/users/user_info.html:76
+#| msgid "Discard"
 msgid "Discoverable:"
 msgstr ""
 
 #: bookwyrm/templates/settings/users/user_info.html:80
+#| msgid "Deactivate user"
 msgid "Deactivation reason:"
 msgstr ""
 
@@ -2900,7 +2967,7 @@ msgid "No cover"
 msgstr ""
 
 #: bookwyrm/templates/snippets/book_titleby.html:6
-#, python-format
+#| msgid "<a href=\"%(path)s\">%(title)s</a> by "
 msgid "<a href=\"%(path)s\">%(title)s</a> by"
 msgstr ""
 
@@ -2958,6 +3025,7 @@ msgid "Content"
 msgstr ""
 
 #: bookwyrm/templates/snippets/create_status/content_warning_field.html:10
+#| msgid "Content"
 msgid "Content warning:"
 msgstr ""
 
@@ -2990,24 +3058,27 @@ msgid "Quote:"
 msgstr ""
 
 #: bookwyrm/templates/snippets/create_status/quotation.html:25
-#, python-format
+#| msgid "Edit \"%(book_title)s\""
 msgid "An excerpt from '%(book_title)s'"
 msgstr ""
 
 #: bookwyrm/templates/snippets/create_status/quotation.html:32
+#| msgid "Description:"
 msgid "Position:"
 msgstr ""
 
 #: bookwyrm/templates/snippets/create_status/quotation.html:45
+#| msgid "pages"
 msgid "On page:"
 msgstr ""
 
 #: bookwyrm/templates/snippets/create_status/quotation.html:51
+#| msgid "percent"
 msgid "At percent:"
 msgstr ""
 
 #: bookwyrm/templates/snippets/create_status/review.html:25
-#, python-format
+#| msgid "Editions of %(book_title)s"
 msgid "Your review of '%(book_title)s'"
 msgstr ""
 
@@ -3051,7 +3122,7 @@ msgid "Clear filters"
 msgstr ""
 
 #: bookwyrm/templates/snippets/follow_button.html:14
-#, python-format
+#| msgid "Report @%(username)s"
 msgid "Follow @%(username)s"
 msgstr ""
 
@@ -3064,7 +3135,7 @@ msgid "Undo follow request"
 msgstr ""
 
 #: bookwyrm/templates/snippets/follow_button.html:30
-#, python-format
+#| msgid "Report @%(username)s"
 msgid "Unfollow @%(username)s"
 msgstr ""
 
@@ -3082,7 +3153,8 @@ msgid "No rating"
 msgstr ""
 
 #: bookwyrm/templates/snippets/form_rate_stars.html:28
-#, python-format
+#| msgid "%(rating)s star"
+#| msgid_plural "%(rating)s stars"
 msgid "%(half_rating)s star"
 msgid_plural "%(half_rating)s stars"
 msgstr[0] ""
@@ -3104,7 +3176,8 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: bookwyrm/templates/snippets/generated_status/rating.html:3
-#, python-format
+#| msgid "Rated <em><a href=\"%(path)s\">%(title)s</a></em>: %(display_rating)s star"
+#| msgid_plural "Rated <em><a href=\"%(path)s\">%(title)s</a></em>: %(display_rating)s stars"
 msgid "rated <em><a href=\"%(path)s\">%(title)s</a></em>: %(display_rating)s star"
 msgid_plural "rated <em><a href=\"%(path)s\">%(title)s</a></em>: %(display_rating)s stars"
 msgstr[0] ""
@@ -3304,20 +3377,22 @@ msgid "Finish reading"
 msgstr ""
 
 #: bookwyrm/templates/snippets/status/content_status.html:72
+#| msgid "Content"
 msgid "Content warning"
 msgstr ""
 
 #: bookwyrm/templates/snippets/status/content_status.html:79
+#| msgid "Like status"
 msgid "Show status"
 msgstr ""
 
 #: bookwyrm/templates/snippets/status/content_status.html:101
-#, python-format
+#| msgid "page %(page)s"
 msgid "(Page %(page)s)"
 msgstr ""
 
 #: bookwyrm/templates/snippets/status/content_status.html:103
-#, python-format
+#| msgid "%(percent)s%% complete!"
 msgid "(%(percent)s%%)"
 msgstr ""
 
@@ -3326,11 +3401,12 @@ msgid "Open image in new window"
 msgstr ""
 
 #: bookwyrm/templates/snippets/status/content_status.html:144
+#| msgid "Like status"
 msgid "Hide status"
 msgstr ""
 
 #: bookwyrm/templates/snippets/status/headers/comment.html:2
-#, python-format
+#| msgid "Editions of <a href=\"%(work_path)s\">\"%(work_title)s\"</a>"
 msgid "commented on <a href=\"%(book_path)s\">%(book)s</a>"
 msgstr ""
 
@@ -3340,32 +3416,32 @@ msgid "replied to <a href=\"%(user_path)s\">%(username)s</a>'s <a href=\"%(statu
 msgstr ""
 
 #: bookwyrm/templates/snippets/status/headers/quotation.html:2
-#, python-format
+#| msgid "Reported by <a href=\"%(path)s\">%(username)s</a>"
 msgid "quoted <a href=\"%(book_path)s\">%(book)s</a>"
 msgstr ""
 
 #: bookwyrm/templates/snippets/status/headers/rating.html:3
-#, python-format
+#| msgid "Created by <a href=\"%(path)s\">%(username)s</a>"
 msgid "rated <a href=\"%(book_path)s\">%(book)s</a>:"
 msgstr ""
 
 #: bookwyrm/templates/snippets/status/headers/read.html:7
-#, python-format
+#| msgid "Editions of <a href=\"%(work_path)s\">\"%(work_title)s\"</a>"
 msgid "finished reading <a href=\"%(book_path)s\">%(book)s</a>"
 msgstr ""
 
 #: bookwyrm/templates/snippets/status/headers/reading.html:7
-#, python-format
+#| msgid "Created by <a href=\"%(path)s\">%(username)s</a>"
 msgid "started reading <a href=\"%(book_path)s\">%(book)s</a>"
 msgstr ""
 
 #: bookwyrm/templates/snippets/status/headers/review.html:3
-#, python-format
+#| msgid "Created by <a href=\"%(path)s\">%(username)s</a>"
 msgid "reviewed <a href=\"%(book_path)s\">%(book)s</a>"
 msgstr ""
 
 #: bookwyrm/templates/snippets/status/headers/to_read.html:7
-#, python-format
+#| msgid "replied to <a href=\"%(user_path)s\">%(username)s's</a> <a href=\"%(status_path)s\">quote</a>"
 msgid "<a href=\"%(user_path)s\">%(username)s</a> wants to read <a href=\"%(book_path)s\">%(book)s</a>"
 msgstr ""
 
@@ -3413,6 +3489,7 @@ msgstr[1] ""
 
 #: bookwyrm/templates/snippets/suggested_users.html:31
 #: bookwyrm/templates/user/user_preview.html:36
+#| msgid "followed you"
 msgid "Follows you"
 msgstr ""
 
@@ -3551,6 +3628,8 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: bookwyrm/templates/user/user_preview.html:38
+#| msgid "follower you follow"
+#| msgid_plural "followers you follow"
 msgid "No followers you follow"
 msgstr ""
 
@@ -3584,4 +3663,402 @@ msgstr ""
 #, python-brace-format
 msgid "Status updates from {obj.display_name}"
 msgstr ""
+
+#~ msgid "Update shelf"
+#~ msgstr "Mettre l’étagère à jour"
+
+#~ msgid "%(count)d uses"
+#~ msgstr "%(count)d utilisations"
+
+#~ msgid "This instance is closed"
+#~ msgstr "Cette instance est fermée"
+
+#~ msgid "Contact an administrator to get an invite"
+#~ msgstr "Contacter un administrateur pour obtenir une invitation"
+
+#~ msgid "Spoiler alert:"
+#~ msgstr "Alerte Spoiler :"
+
+#~ msgid "Date federated"
+#~ msgstr "Date de fédération"
+
+#~ msgid "Search Results for \"%(query)s\""
+#~ msgstr "Résultats de recherche pour « %(query)s »"
+
+#~ msgid "Matching Books"
+#~ msgstr "Livres correspondants"
+
+#~ msgid "Local Timeline"
+#~ msgstr "Fil d’actualité local"
+
+#~ msgid "Federated Timeline"
+#~ msgstr "Fil d’actualité des instances fédérées"
+
+#, fuzzy
+#~| msgid "BookWyrm users"
+#~ msgid "BookWyrm\\"
+#~ msgstr "Comptes BookWyrm"
+
+#, fuzzy
+#~| msgid "Show more"
+#~ msgid "Show"
+#~ msgstr "Déplier"
+
+#, fuzzy
+#~| msgid "All messages"
+#~ msgid "Messages"
+#~ msgstr "Tous les messages"
+
+#, fuzzy
+#~| msgid "Email address:"
+#~ msgid "Enter a valid URL."
+#~ msgstr "Adresse email :"
+
+#, fuzzy
+#~| msgid "Email address:"
+#~ msgid "Enter a valid integer."
+#~ msgstr "Adresse email :"
+
+#, fuzzy
+#~| msgid "Email address:"
+#~ msgid "Enter a valid IPv4 address."
+#~ msgstr "Adresse email :"
+
+#, fuzzy
+#~| msgid "Email address:"
+#~ msgid "Enter a valid IPv6 address."
+#~ msgstr "Adresse email :"
+
+#, fuzzy
+#~| msgid "Email address:"
+#~ msgid "Enter a valid IPv4 or IPv6 address."
+#~ msgstr "Adresse email :"
+
+#, fuzzy
+#~| msgid "Series number:"
+#~ msgid "Enter a number."
+#~ msgstr "Numéro dans la série :"
+
+#, fuzzy
+#~| msgid "A user with this email already exists."
+#~ msgid "%(model_name)s with this %(field_labels)s already exists."
+#~ msgstr "Cet email est déjà associé à un compte."
+
+#, fuzzy
+#~| msgid "%(value)s is not a valid remote_id"
+#~ msgid "Value %(value)r is not a valid choice."
+#~ msgstr "%(value)s n’est pas une remote_id valide."
+
+#, fuzzy
+#~| msgid "A user with this email already exists."
+#~ msgid "%(model_name)s with this %(field_label)s already exists."
+#~ msgstr "Cet email est déjà associé à un compte."
+
+#, fuzzy
+#~| msgid "No active invites"
+#~ msgid "Comma-separated integers"
+#~ msgstr "Aucune invitation active"
+
+#, fuzzy
+#~| msgid "Series number:"
+#~ msgid "Decimal number"
+#~ msgstr "Numéro dans la série :"
+
+#, fuzzy
+#~| msgid "Email address:"
+#~ msgid "Email address"
+#~ msgstr "Adresse email :"
+
+#, fuzzy
+#~| msgid "No active invites"
+#~ msgid "Big (8 byte) integer"
+#~ msgstr "Aucune invitation active"
+
+#, fuzzy
+#~| msgid "Email address:"
+#~ msgid "IPv4 address"
+#~ msgstr "Adresse email :"
+
+#, fuzzy
+#~| msgid "No active invites"
+#~ msgid "Positive integer"
+#~ msgstr "Aucune invitation active"
+
+#, fuzzy
+#~| msgid "No active invites"
+#~ msgid "Positive small integer"
+#~ msgstr "Aucune invitation active"
+
+#, fuzzy
+#~| msgid "%(value)s is not a valid username"
+#~ msgid "“%(value)s” is not a valid UUID."
+#~ msgstr "%(value)s n’est pas un nom de compte valide."
+
+#, fuzzy
+#~| msgid "Images"
+#~ msgid "Image"
+#~ msgstr "Images"
+
+#, fuzzy
+#~| msgid "Relationships"
+#~ msgid "One-to-one relationship"
+#~ msgstr "Relations"
+
+#, fuzzy
+#~| msgid "Relationships"
+#~ msgid "%(from)s-%(to)s relationship"
+#~ msgstr "Relations"
+
+#, fuzzy
+#~| msgid "Relationships"
+#~ msgid "%(from)s-%(to)s relationships"
+#~ msgstr "Relations"
+
+#, fuzzy
+#~| msgid "Relationships"
+#~ msgid "Many-to-many relationship"
+#~ msgstr "Relations"
+
+#, fuzzy
+#~| msgid "This shelf is empty."
+#~ msgid "This field is required."
+#~ msgstr "Cette étagère est vide"
+
+#, fuzzy
+#~| msgid "Series number:"
+#~ msgid "Enter a whole number."
+#~ msgstr "Numéro dans la série :"
+
+#, fuzzy
+#~| msgid "Email address:"
+#~ msgid "Enter a valid date."
+#~ msgstr "Adresse email :"
+
+#, fuzzy
+#~| msgid "Email address:"
+#~ msgid "Enter a valid time."
+#~ msgstr "Adresse email :"
+
+#, fuzzy
+#~| msgid "Email address:"
+#~ msgid "Enter a valid date/time."
+#~ msgstr "Adresse email :"
+
+#, fuzzy
+#~| msgid "Email address:"
+#~ msgid "Enter a valid duration."
+#~ msgstr "Adresse email :"
+
+#, fuzzy
+#~| msgid "This shelf is empty."
+#~ msgid "The submitted file is empty."
+#~ msgstr "Cette étagère est vide"
+
+#, fuzzy
+#~| msgid "Email address:"
+#~ msgid "Enter a list of values."
+#~ msgstr "Adresse email :"
+
+#, fuzzy
+#~| msgid "Email address:"
+#~ msgid "Enter a valid UUID."
+#~ msgstr "Adresse email :"
+
+#, fuzzy
+#~| msgid "Order by"
+#~ msgid "Order"
+#~ msgstr "Trier par"
+
+#, fuzzy
+#~| msgid "%(value)s is not a valid username"
+#~ msgid "“%(pk)s” is not a valid value."
+#~ msgstr "%(value)s n’est pas un nom de compte valide."
+
+#, fuzzy
+#~| msgid "Started reading"
+#~ msgid "Currently"
+#~ msgstr "Commencer la lecture"
+
+#, fuzzy
+#~| msgid "Change shelf"
+#~ msgid "Change"
+#~ msgstr "Changer d’étagère"
+
+#, fuzzy
+#~| msgid "Status"
+#~ msgid "Sat"
+#~ msgstr "Statut"
+
+#, fuzzy
+#~| msgid "Search"
+#~ msgid "March"
+#~ msgstr "Chercher"
+
+#, fuzzy
+#~| msgid "Series number:"
+#~ msgid "September"
+#~ msgstr "Numéro dans la série :"
+
+#, fuzzy
+#~| msgid "Series number:"
+#~ msgid "December"
+#~ msgstr "Numéro dans la série :"
+
+#, fuzzy
+#~| msgid "Search"
+#~ msgctxt "abbrev. month"
+#~ msgid "March"
+#~ msgstr "Chercher"
+
+#, fuzzy
+#~| msgid "Search"
+#~ msgctxt "alt. month"
+#~ msgid "March"
+#~ msgstr "Chercher"
+
+#, fuzzy
+#~| msgid "Series number:"
+#~ msgctxt "alt. month"
+#~ msgid "September"
+#~ msgstr "Numéro dans la série :"
+
+#, fuzzy
+#~| msgid "Series number:"
+#~ msgctxt "alt. month"
+#~ msgid "December"
+#~ msgstr "Numéro dans la série :"
+
+#, fuzzy
+#~| msgid "Email address:"
+#~ msgid "This is not a valid IPv6 address."
+#~ msgstr "Adresse email :"
+
+#, fuzzy
+#~| msgid "No books found matching the query \"%(query)s\""
+#~ msgid "No %(verbose_name)s found matching the query"
+#~ msgstr "Aucun livre trouvé pour la requête « %(query)s »"
+
+#, fuzzy
+#~| msgid "Community"
+#~ msgid "Django Community"
+#~ msgstr "Communauté"
+
+#~ msgid "Didn't find what you were looking for?"
+#~ msgstr "Vous n’avez pas trouvé ce que vous cherchiez ?"
+
+#~ msgid "Hide results from other catalogues"
+#~ msgstr "Masquer les résultats d’autres catalogues"
+
+#~ msgid "Matching Users"
+#~ msgstr "Comptes correspondants"
+
+#~ msgid "Set a reading goal for %(year)s"
+#~ msgstr "Définir un défi lecture pour %(year)s"
+
+#~ msgid "by %(author)s"
+#~ msgstr "par %(author)s"
+
+#~ msgid "Reactivate user"
+#~ msgstr "Réactiver le compte"
+
+#~ msgid "replied to <a href=\"%(user_path)s\">%(username)s's</a> <a href=\"%(status_path)s\">review</a>"
+#~ msgstr "a répondu à la <a href=\"%(status_path)s\">critique</a> de <a href=\"%(user_path)s\">%(username)s</a>"
+
+#~ msgid "replied to <a href=\"%(user_path)s\">%(username)s's</a> <a href=\"%(status_path)s\">comment</a>"
+#~ msgstr "a répondu au <a href=\"%(status_path)s\">commentaire</a> de <a href=\"%(user_path)s\">%(username)s</a>"
+
+#~ msgid "Remove tag"
+#~ msgstr "Supprimer le tag"
+
+#~ msgid "Add tag"
+#~ msgstr "Ajouter un tag"
+
+#~ msgid "Books tagged \"%(tag.name)s\""
+#~ msgstr "Livres tagués « %(tag.name)s »"
+
+#, fuzzy
+#~| msgid "Started"
+#~ msgid "Getting Started"
+#~ msgstr "Commencé"
+
+#, fuzzy
+#~| msgid "No users found for \"%(query)s\""
+#~ msgid "No users were found for \"%(query)s\""
+#~ msgstr "Aucun compte trouvé pour « %(query)s »"
+
+#~ msgid "Tags"
+#~ msgstr "Tags"
+
+#~ msgid "Your lists"
+#~ msgstr "Vos listes"
+
+#, fuzzy
+#~| msgid "See all %(size)s"
+#~ msgid "See all %(size)s lists"
+#~ msgstr "Voir les %(size)s"
+
+#~ msgid "Recent Lists"
+#~ msgstr "Listes récentes"
+
+#~ msgid "Published"
+#~ msgstr "Publié"
+
+#~ msgid "External links"
+#~ msgstr "Liens externes"
+
+#~ msgid "OpenLibrary"
+#~ msgstr "OpenLibrary"
+
+#~ msgid "Change shelf"
+#~ msgstr "Changer d’étagère"
+
+#~ msgid "Unshelve"
+#~ msgstr "Enlever de l’étagère"
+
+#~ msgid "Your Shelves"
+#~ msgstr "Vos étagères"
+
+#~ msgid "%(username)s: Shelves"
+#~ msgstr "%(username)s : Étagères"
+
+#~ msgid "Shelves"
+#~ msgstr "Étagères"
+
+#~ msgid "See all %(shelf_count)s shelves"
+#~ msgstr "Voir les %(shelf_count)s étagères"
+
+#~ msgid "Send follow request"
+#~ msgstr "Envoyer une demande d’abonnement"
+
+#~ msgid "Site Configuration"
+#~ msgstr "Configuration du site"
+
+#~ msgid "Follow request already sent."
+#~ msgstr "Demande d’abonnement déjà envoyée"
+
+#~ msgid "Created and curated by"
+#~ msgstr "Créée et modérée par"
+
+#~ msgid "Created by"
+#~ msgstr "Créée par"
+
+#~ msgid "Create New Shelf"
+#~ msgstr "Créer une nouvelle étagère"
+
+#, fuzzy
+#~| msgid "Create list"
+#~ msgid "Create new list"
+#~ msgstr "Créer une nouvelle liste"
+
+#~ msgid "Added by"
+#~ msgstr "Ajouté par"
+
+#~ msgid "suggested adding"
+#~ msgstr "a suggéré l’ajout de"
+
+#~ msgid "Change password"
+#~ msgstr "Changer le mot de passe"
+
+#~ msgid "%(year)s reading goal"
+#~ msgstr "Défi lecture pour %(year)s"
 
