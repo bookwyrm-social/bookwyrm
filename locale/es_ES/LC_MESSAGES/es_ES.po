@@ -4,7 +4,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-10-06 23:57+0000\n"
 "PO-Revision-Date: 2021-10-07 04:21\n"
-"Last-Translator: Fabien Basmaison <contact@arkhi.org>\n"
+"Last-Translator: Grace Cheng <chengracecwy@gmail.com>\n"
 "Language-Team: Spanish\n"
 "Language: es_ES\n"
 "MIME-Version: 1.0\n"
@@ -14,8 +14,8 @@ msgstr ""
 "X-Crowdin-Project: bookwyrm\n"
 "X-Crowdin-Project-ID: 479239\n"
 "X-Crowdin-Language: es-ES\n"
-"X-Crowdin-File: /[bookwyrm-social.bookwyrm] main/locale/fr_FR/LC_MESSAGES/django.po\n"
-"X-Crowdin-File-ID: 1557\n"
+"X-Crowdin-File: /[bookwyrm-social.bookwyrm] main/locale/zh_Hant/LC_MESSAGES/django.po\n"
+"X-Crowdin-File-ID: 1561\n"
 
 #: bookwyrm/forms.py:242
 msgid "A user with this email already exists."
@@ -95,7 +95,7 @@ msgid "Moderator suspension"
 msgstr ""
 
 #: bookwyrm/models/base_model.py:20
-#| msgid "List curation:"
+#| msgid "Mentions"
 msgid "Moderator deletion"
 msgstr ""
 
@@ -254,6 +254,7 @@ msgid "View on Inventaire"
 msgstr ""
 
 #: bookwyrm/templates/author/author.html:85
+#| msgid "View on OpenLibrary"
 msgid "View on LibraryThing"
 msgstr ""
 
@@ -599,12 +600,12 @@ msgid "Authors"
 msgstr ""
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:112
-#, python-format
+#| msgid "Remove from %(name)s"
 msgid "Remove %(name)s"
 msgstr ""
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:115
-#, python-format
+#| msgid "Remove from %(name)s"
 msgid "Author page for %(name)s"
 msgstr ""
 
@@ -768,10 +769,12 @@ msgid "Compose status"
 msgstr ""
 
 #: bookwyrm/templates/confirm_email/confirm_email.html:4
+#| msgid "Confirm"
 msgid "Confirm email"
 msgstr ""
 
 #: bookwyrm/templates/confirm_email/confirm_email.html:7
+#| msgid "Email address:"
 msgid "Confirm your email address"
 msgstr ""
 
@@ -785,6 +788,7 @@ msgstr ""
 
 #: bookwyrm/templates/confirm_email/confirm_email.html:19
 #: bookwyrm/templates/settings/users/user_info.html:85
+#| msgid "Confirm password:"
 msgid "Confirmation code:"
 msgstr ""
 
@@ -812,6 +816,7 @@ msgid "Email address:"
 msgstr ""
 
 #: bookwyrm/templates/confirm_email/resend_form.html:17
+#| msgid "Re-send invite"
 msgid "Resend link"
 msgstr ""
 
@@ -945,6 +950,7 @@ msgid "One last step before you join %(site_name)s! Please confirm your email ad
 msgstr ""
 
 #: bookwyrm/templates/email/confirm/html_content.html:11
+#| msgid "Confirm"
 msgid "Confirm Email"
 msgstr ""
 
@@ -1413,7 +1419,7 @@ msgid "Request an Invitation"
 msgstr ""
 
 #: bookwyrm/templates/landing/layout.html:49
-#| msgid "(Recommended if registration is open)"
+#| msgid "Registration closed text:"
 msgid "%(name)s registration is closed"
 msgstr ""
 
@@ -1576,7 +1582,6 @@ msgid "Delete this list?"
 msgstr ""
 
 #: bookwyrm/templates/lists/delete_list_modal.html:7
-#| msgid "This shelf is empty."
 msgid "This action cannot be un-done"
 msgstr ""
 
@@ -2521,7 +2526,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/ip_blocklist/ip_address_form.html:5
 #: bookwyrm/templates/settings/ip_blocklist/ip_blocklist.html:10
-#| msgid "Email address:"
+#| msgid "Add read dates"
 msgid "Add IP address"
 msgstr ""
 
@@ -2546,7 +2551,6 @@ msgid "Any traffic from this IP address will get a 404 response when trying to a
 msgstr ""
 
 #: bookwyrm/templates/settings/ip_blocklist/ip_blocklist.html:24
-#| msgid "Email address:"
 msgid "Address"
 msgstr ""
 
@@ -2568,7 +2572,7 @@ msgid "Manage Users"
 msgstr ""
 
 #: bookwyrm/templates/settings/layout.html:51
-#| msgid "List curation:"
+#| msgid "Mentions"
 msgid "Moderation"
 msgstr ""
 
@@ -2733,10 +2737,12 @@ msgid "Additional info:"
 msgstr ""
 
 #: bookwyrm/templates/settings/site.html:103
+#| msgid "Allow registration:"
 msgid "Allow registration"
 msgstr ""
 
 #: bookwyrm/templates/settings/site.html:109
+#| msgid "Allow invite requests:"
 msgid "Allow invite requests"
 msgstr ""
 
@@ -2861,7 +2867,6 @@ msgid "Discoverable:"
 msgstr ""
 
 #: bookwyrm/templates/settings/users/user_info.html:80
-#| msgid "Deactivate user"
 msgid "Deactivation reason:"
 msgstr ""
 
@@ -3416,7 +3421,7 @@ msgid "replied to <a href=\"%(user_path)s\">%(username)s</a>'s <a href=\"%(statu
 msgstr ""
 
 #: bookwyrm/templates/snippets/status/headers/quotation.html:2
-#| msgid "Reported by <a href=\"%(path)s\">%(username)s</a>"
+#| msgid "Remove <a href=\"%(path)s\">%(name)s</a>"
 msgid "quoted <a href=\"%(book_path)s\">%(book)s</a>"
 msgstr ""
 
@@ -3436,12 +3441,12 @@ msgid "started reading <a href=\"%(book_path)s\">%(book)s</a>"
 msgstr ""
 
 #: bookwyrm/templates/snippets/status/headers/review.html:3
-#| msgid "Created by <a href=\"%(path)s\">%(username)s</a>"
+#| msgid "Remove <a href=\"%(path)s\">%(name)s</a>"
 msgid "reviewed <a href=\"%(book_path)s\">%(book)s</a>"
 msgstr ""
 
 #: bookwyrm/templates/snippets/status/headers/to_read.html:7
-#| msgid "replied to <a href=\"%(user_path)s\">%(username)s's</a> <a href=\"%(status_path)s\">quote</a>"
+#| msgid "replied to <a href=\"%(user_path)s\">%(username)s's</a> <a href=\"%(status_path)s\">status</a>"
 msgid "<a href=\"%(user_path)s\">%(username)s</a> wants to read <a href=\"%(book_path)s\">%(book)s</a>"
 msgstr ""
 
@@ -3665,400 +3670,32 @@ msgid "Status updates from {obj.display_name}"
 msgstr ""
 
 #~ msgid "Update shelf"
-#~ msgstr "Mettre l’étagère à jour"
+#~ msgstr "更新書架"
 
 #~ msgid "%(count)d uses"
-#~ msgstr "%(count)d utilisations"
+#~ msgstr "%(count)d 次使用"
 
 #~ msgid "This instance is closed"
-#~ msgstr "Cette instance est fermée"
+#~ msgstr "本實例不開放。"
 
 #~ msgid "Contact an administrator to get an invite"
-#~ msgstr "Contacter un administrateur pour obtenir une invitation"
+#~ msgstr "聯絡管理員以取得邀請"
 
 #~ msgid "Spoiler alert:"
-#~ msgstr "Alerte Spoiler :"
+#~ msgstr "劇透警告:"
 
 #~ msgid "Date federated"
-#~ msgstr "Date de fédération"
+#~ msgstr "跨站日期"
 
 #~ msgid "Search Results for \"%(query)s\""
-#~ msgstr "Résultats de recherche pour « %(query)s »"
+#~ msgstr "\"%(query)s\" 的搜尋結果"
 
 #~ msgid "Matching Books"
-#~ msgstr "Livres correspondants"
+#~ msgstr "匹配的書目"
 
 #~ msgid "Local Timeline"
-#~ msgstr "Fil d’actualité local"
+#~ msgstr "本地時間線"
 
 #~ msgid "Federated Timeline"
-#~ msgstr "Fil d’actualité des instances fédérées"
-
-#, fuzzy
-#~| msgid "BookWyrm users"
-#~ msgid "BookWyrm\\"
-#~ msgstr "Comptes BookWyrm"
-
-#, fuzzy
-#~| msgid "Show more"
-#~ msgid "Show"
-#~ msgstr "Déplier"
-
-#, fuzzy
-#~| msgid "All messages"
-#~ msgid "Messages"
-#~ msgstr "Tous les messages"
-
-#, fuzzy
-#~| msgid "Email address:"
-#~ msgid "Enter a valid URL."
-#~ msgstr "Adresse email :"
-
-#, fuzzy
-#~| msgid "Email address:"
-#~ msgid "Enter a valid integer."
-#~ msgstr "Adresse email :"
-
-#, fuzzy
-#~| msgid "Email address:"
-#~ msgid "Enter a valid IPv4 address."
-#~ msgstr "Adresse email :"
-
-#, fuzzy
-#~| msgid "Email address:"
-#~ msgid "Enter a valid IPv6 address."
-#~ msgstr "Adresse email :"
-
-#, fuzzy
-#~| msgid "Email address:"
-#~ msgid "Enter a valid IPv4 or IPv6 address."
-#~ msgstr "Adresse email :"
-
-#, fuzzy
-#~| msgid "Series number:"
-#~ msgid "Enter a number."
-#~ msgstr "Numéro dans la série :"
-
-#, fuzzy
-#~| msgid "A user with this email already exists."
-#~ msgid "%(model_name)s with this %(field_labels)s already exists."
-#~ msgstr "Cet email est déjà associé à un compte."
-
-#, fuzzy
-#~| msgid "%(value)s is not a valid remote_id"
-#~ msgid "Value %(value)r is not a valid choice."
-#~ msgstr "%(value)s n’est pas une remote_id valide."
-
-#, fuzzy
-#~| msgid "A user with this email already exists."
-#~ msgid "%(model_name)s with this %(field_label)s already exists."
-#~ msgstr "Cet email est déjà associé à un compte."
-
-#, fuzzy
-#~| msgid "No active invites"
-#~ msgid "Comma-separated integers"
-#~ msgstr "Aucune invitation active"
-
-#, fuzzy
-#~| msgid "Series number:"
-#~ msgid "Decimal number"
-#~ msgstr "Numéro dans la série :"
-
-#, fuzzy
-#~| msgid "Email address:"
-#~ msgid "Email address"
-#~ msgstr "Adresse email :"
-
-#, fuzzy
-#~| msgid "No active invites"
-#~ msgid "Big (8 byte) integer"
-#~ msgstr "Aucune invitation active"
-
-#, fuzzy
-#~| msgid "Email address:"
-#~ msgid "IPv4 address"
-#~ msgstr "Adresse email :"
-
-#, fuzzy
-#~| msgid "No active invites"
-#~ msgid "Positive integer"
-#~ msgstr "Aucune invitation active"
-
-#, fuzzy
-#~| msgid "No active invites"
-#~ msgid "Positive small integer"
-#~ msgstr "Aucune invitation active"
-
-#, fuzzy
-#~| msgid "%(value)s is not a valid username"
-#~ msgid "“%(value)s” is not a valid UUID."
-#~ msgstr "%(value)s n’est pas un nom de compte valide."
-
-#, fuzzy
-#~| msgid "Images"
-#~ msgid "Image"
-#~ msgstr "Images"
-
-#, fuzzy
-#~| msgid "Relationships"
-#~ msgid "One-to-one relationship"
-#~ msgstr "Relations"
-
-#, fuzzy
-#~| msgid "Relationships"
-#~ msgid "%(from)s-%(to)s relationship"
-#~ msgstr "Relations"
-
-#, fuzzy
-#~| msgid "Relationships"
-#~ msgid "%(from)s-%(to)s relationships"
-#~ msgstr "Relations"
-
-#, fuzzy
-#~| msgid "Relationships"
-#~ msgid "Many-to-many relationship"
-#~ msgstr "Relations"
-
-#, fuzzy
-#~| msgid "This shelf is empty."
-#~ msgid "This field is required."
-#~ msgstr "Cette étagère est vide"
-
-#, fuzzy
-#~| msgid "Series number:"
-#~ msgid "Enter a whole number."
-#~ msgstr "Numéro dans la série :"
-
-#, fuzzy
-#~| msgid "Email address:"
-#~ msgid "Enter a valid date."
-#~ msgstr "Adresse email :"
-
-#, fuzzy
-#~| msgid "Email address:"
-#~ msgid "Enter a valid time."
-#~ msgstr "Adresse email :"
-
-#, fuzzy
-#~| msgid "Email address:"
-#~ msgid "Enter a valid date/time."
-#~ msgstr "Adresse email :"
-
-#, fuzzy
-#~| msgid "Email address:"
-#~ msgid "Enter a valid duration."
-#~ msgstr "Adresse email :"
-
-#, fuzzy
-#~| msgid "This shelf is empty."
-#~ msgid "The submitted file is empty."
-#~ msgstr "Cette étagère est vide"
-
-#, fuzzy
-#~| msgid "Email address:"
-#~ msgid "Enter a list of values."
-#~ msgstr "Adresse email :"
-
-#, fuzzy
-#~| msgid "Email address:"
-#~ msgid "Enter a valid UUID."
-#~ msgstr "Adresse email :"
-
-#, fuzzy
-#~| msgid "Order by"
-#~ msgid "Order"
-#~ msgstr "Trier par"
-
-#, fuzzy
-#~| msgid "%(value)s is not a valid username"
-#~ msgid "“%(pk)s” is not a valid value."
-#~ msgstr "%(value)s n’est pas un nom de compte valide."
-
-#, fuzzy
-#~| msgid "Started reading"
-#~ msgid "Currently"
-#~ msgstr "Commencer la lecture"
-
-#, fuzzy
-#~| msgid "Change shelf"
-#~ msgid "Change"
-#~ msgstr "Changer d’étagère"
-
-#, fuzzy
-#~| msgid "Status"
-#~ msgid "Sat"
-#~ msgstr "Statut"
-
-#, fuzzy
-#~| msgid "Search"
-#~ msgid "March"
-#~ msgstr "Chercher"
-
-#, fuzzy
-#~| msgid "Series number:"
-#~ msgid "September"
-#~ msgstr "Numéro dans la série :"
-
-#, fuzzy
-#~| msgid "Series number:"
-#~ msgid "December"
-#~ msgstr "Numéro dans la série :"
-
-#, fuzzy
-#~| msgid "Search"
-#~ msgctxt "abbrev. month"
-#~ msgid "March"
-#~ msgstr "Chercher"
-
-#, fuzzy
-#~| msgid "Search"
-#~ msgctxt "alt. month"
-#~ msgid "March"
-#~ msgstr "Chercher"
-
-#, fuzzy
-#~| msgid "Series number:"
-#~ msgctxt "alt. month"
-#~ msgid "September"
-#~ msgstr "Numéro dans la série :"
-
-#, fuzzy
-#~| msgid "Series number:"
-#~ msgctxt "alt. month"
-#~ msgid "December"
-#~ msgstr "Numéro dans la série :"
-
-#, fuzzy
-#~| msgid "Email address:"
-#~ msgid "This is not a valid IPv6 address."
-#~ msgstr "Adresse email :"
-
-#, fuzzy
-#~| msgid "No books found matching the query \"%(query)s\""
-#~ msgid "No %(verbose_name)s found matching the query"
-#~ msgstr "Aucun livre trouvé pour la requête « %(query)s »"
-
-#, fuzzy
-#~| msgid "Community"
-#~ msgid "Django Community"
-#~ msgstr "Communauté"
-
-#~ msgid "Didn't find what you were looking for?"
-#~ msgstr "Vous n’avez pas trouvé ce que vous cherchiez ?"
-
-#~ msgid "Hide results from other catalogues"
-#~ msgstr "Masquer les résultats d’autres catalogues"
-
-#~ msgid "Matching Users"
-#~ msgstr "Comptes correspondants"
-
-#~ msgid "Set a reading goal for %(year)s"
-#~ msgstr "Définir un défi lecture pour %(year)s"
-
-#~ msgid "by %(author)s"
-#~ msgstr "par %(author)s"
-
-#~ msgid "Reactivate user"
-#~ msgstr "Réactiver le compte"
-
-#~ msgid "replied to <a href=\"%(user_path)s\">%(username)s's</a> <a href=\"%(status_path)s\">review</a>"
-#~ msgstr "a répondu à la <a href=\"%(status_path)s\">critique</a> de <a href=\"%(user_path)s\">%(username)s</a>"
-
-#~ msgid "replied to <a href=\"%(user_path)s\">%(username)s's</a> <a href=\"%(status_path)s\">comment</a>"
-#~ msgstr "a répondu au <a href=\"%(status_path)s\">commentaire</a> de <a href=\"%(user_path)s\">%(username)s</a>"
-
-#~ msgid "Remove tag"
-#~ msgstr "Supprimer le tag"
-
-#~ msgid "Add tag"
-#~ msgstr "Ajouter un tag"
-
-#~ msgid "Books tagged \"%(tag.name)s\""
-#~ msgstr "Livres tagués « %(tag.name)s »"
-
-#, fuzzy
-#~| msgid "Started"
-#~ msgid "Getting Started"
-#~ msgstr "Commencé"
-
-#, fuzzy
-#~| msgid "No users found for \"%(query)s\""
-#~ msgid "No users were found for \"%(query)s\""
-#~ msgstr "Aucun compte trouvé pour « %(query)s »"
-
-#~ msgid "Tags"
-#~ msgstr "Tags"
-
-#~ msgid "Your lists"
-#~ msgstr "Vos listes"
-
-#, fuzzy
-#~| msgid "See all %(size)s"
-#~ msgid "See all %(size)s lists"
-#~ msgstr "Voir les %(size)s"
-
-#~ msgid "Recent Lists"
-#~ msgstr "Listes récentes"
-
-#~ msgid "Published"
-#~ msgstr "Publié"
-
-#~ msgid "External links"
-#~ msgstr "Liens externes"
-
-#~ msgid "OpenLibrary"
-#~ msgstr "OpenLibrary"
-
-#~ msgid "Change shelf"
-#~ msgstr "Changer d’étagère"
-
-#~ msgid "Unshelve"
-#~ msgstr "Enlever de l’étagère"
-
-#~ msgid "Your Shelves"
-#~ msgstr "Vos étagères"
-
-#~ msgid "%(username)s: Shelves"
-#~ msgstr "%(username)s : Étagères"
-
-#~ msgid "Shelves"
-#~ msgstr "Étagères"
-
-#~ msgid "See all %(shelf_count)s shelves"
-#~ msgstr "Voir les %(shelf_count)s étagères"
-
-#~ msgid "Send follow request"
-#~ msgstr "Envoyer une demande d’abonnement"
-
-#~ msgid "Site Configuration"
-#~ msgstr "Configuration du site"
-
-#~ msgid "Follow request already sent."
-#~ msgstr "Demande d’abonnement déjà envoyée"
-
-#~ msgid "Created and curated by"
-#~ msgstr "Créée et modérée par"
-
-#~ msgid "Created by"
-#~ msgstr "Créée par"
-
-#~ msgid "Create New Shelf"
-#~ msgstr "Créer une nouvelle étagère"
-
-#, fuzzy
-#~| msgid "Create list"
-#~ msgid "Create new list"
-#~ msgstr "Créer une nouvelle liste"
-
-#~ msgid "Added by"
-#~ msgstr "Ajouté par"
-
-#~ msgid "suggested adding"
-#~ msgstr "a suggéré l’ajout de"
-
-#~ msgid "Change password"
-#~ msgstr "Changer le mot de passe"
-
-#~ msgid "%(year)s reading goal"
-#~ msgstr "Défi lecture pour %(year)s"
+#~ msgstr "跨站時間線"
 
