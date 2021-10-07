@@ -4,9 +4,9 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-10-06 23:57+0000\n"
 "PO-Revision-Date: 2021-10-07 04:21\n"
-"Last-Translator: Fabien Basmaison <contact@arkhi.org>\n"
+"Last-Translator: Reese Porter <reesedporter@gmail.com>\n"
 "Language-Team: Chinese Traditional\n"
-"Language: zh_TW\n"
+"Language: zh\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -14,8 +14,8 @@ msgstr ""
 "X-Crowdin-Project: bookwyrm\n"
 "X-Crowdin-Project-ID: 479239\n"
 "X-Crowdin-Language: zh-TW\n"
-"X-Crowdin-File: /[bookwyrm-social.bookwyrm] main/locale/fr_FR/LC_MESSAGES/django.po\n"
-"X-Crowdin-File-ID: 1557\n"
+"X-Crowdin-File: /[bookwyrm-social.bookwyrm] main/locale/es/LC_MESSAGES/django.po\n"
+"X-Crowdin-File-ID: 1555\n"
 
 #: bookwyrm/forms.py:242
 msgid "A user with this email already exists."
@@ -38,7 +38,7 @@ msgid "Does Not Expire"
 msgstr ""
 
 #: bookwyrm/forms.py:263
-#| msgid "Max uses"
+#, python-brace-format
 msgid "{i} uses"
 msgstr ""
 
@@ -81,7 +81,6 @@ msgid "Could not find a match for book"
 msgstr ""
 
 #: bookwyrm/models/base_model.py:17
-#| msgid "Ascending"
 msgid "Pending"
 msgstr ""
 
@@ -90,27 +89,22 @@ msgid "Self deletion"
 msgstr ""
 
 #: bookwyrm/models/base_model.py:19
-#| msgid "Moderator Comments"
 msgid "Moderator suspension"
 msgstr ""
 
 #: bookwyrm/models/base_model.py:20
-#| msgid "List curation:"
 msgid "Moderator deletion"
 msgstr ""
 
 #: bookwyrm/models/base_model.py:21
-#| msgid "Un-block"
 msgid "Domain block"
 msgstr ""
 
 #: bookwyrm/models/book.py:232
-#| msgid "Add books"
 msgid "Audiobook"
 msgstr ""
 
 #: bookwyrm/models/book.py:233
-#| msgid "Book"
 msgid "eBook"
 msgstr ""
 
@@ -119,7 +113,6 @@ msgid "Graphic novel"
 msgstr ""
 
 #: bookwyrm/models/book.py:235
-#| msgid "Add cover"
 msgid "Hardcover"
 msgstr ""
 
@@ -167,7 +160,6 @@ msgid "Home"
 msgstr ""
 
 #: bookwyrm/settings.py:118
-#| msgid "Book Title"
 msgid "Books Timeline"
 msgstr ""
 
@@ -630,7 +622,6 @@ msgid "Format:"
 msgstr ""
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:177
-#| msgid "User details"
 msgid "Format details:"
 msgstr ""
 
@@ -675,7 +666,6 @@ msgid "Language:"
 msgstr ""
 
 #: bookwyrm/templates/book/editions/search_filter.html:5
-#| msgid "Search Results"
 msgid "Search editions"
 msgstr ""
 
@@ -863,7 +853,6 @@ msgstr ""
 #: bookwyrm/templates/directory/user_card.html:18
 #: bookwyrm/templates/user/user_preview.html:16
 #: bookwyrm/templates/user/user_preview.html:17
-#| msgid "Your Account"
 msgid "Locked account"
 msgstr ""
 
@@ -900,7 +889,6 @@ msgstr ""
 #: bookwyrm/templates/discover/discover.html:4
 #: bookwyrm/templates/discover/discover.html:10
 #: bookwyrm/templates/layout.html:78
-#| msgid "Discard"
 msgid "Discover"
 msgstr ""
 
@@ -931,7 +919,6 @@ msgstr ""
 
 #: bookwyrm/templates/discover/large-book.html:68
 #: bookwyrm/templates/discover/small-book.html:52
-#| msgid "Like status"
 msgid "View status"
 msgstr ""
 
@@ -1040,7 +1027,7 @@ msgid "You have no messages right now."
 msgstr ""
 
 #: bookwyrm/templates/feed/feed.html:22
-#| msgid "load <span data-poll=\"stream/%(tab)s\">0</span> unread status(es)"
+#, python-format
 msgid "load <span data-poll=\"stream/%(tab_key)s\">0</span> unread status(es)"
 msgstr ""
 
@@ -1096,12 +1083,10 @@ msgid "Who to follow"
 msgstr ""
 
 #: bookwyrm/templates/feed/suggested_users.html:9
-#| msgid "Show this account in suggested users:"
 msgid "Don't show suggested users"
 msgstr ""
 
 #: bookwyrm/templates/feed/suggested_users.html:14
-#| msgid "Directory"
 msgid "View directory"
 msgstr ""
 
@@ -1277,7 +1262,6 @@ msgid "Import Status"
 msgstr ""
 
 #: bookwyrm/templates/import/import_status.html:11
-#| msgid "Back to reports"
 msgid "Back to imports"
 msgstr ""
 
@@ -1328,7 +1312,6 @@ msgid "Successfully imported"
 msgstr ""
 
 #: bookwyrm/templates/import/import_status.html:114
-#| msgid "Import still in progress."
 msgid "Import Progress"
 msgstr ""
 
@@ -1410,7 +1393,7 @@ msgid "Request an Invitation"
 msgstr ""
 
 #: bookwyrm/templates/landing/layout.html:49
-#| msgid "(Recommended if registration is open)"
+#, python-format
 msgid "%(name)s registration is closed"
 msgstr ""
 
@@ -1423,12 +1406,11 @@ msgid "Your Account"
 msgstr ""
 
 #: bookwyrm/templates/layout.html:13
-#| msgid "About %(site_name)s"
+#, python-format
 msgid "%(site_name)s search"
 msgstr ""
 
 #: bookwyrm/templates/layout.html:43
-#| msgid "Search for a book or user"
 msgid "Search for a book, user, or list"
 msgstr ""
 
@@ -1494,12 +1476,10 @@ msgid "Join"
 msgstr ""
 
 #: bookwyrm/templates/layout.html:221
-#| msgid "Successfully imported"
 msgid "Successfully posted status"
 msgstr ""
 
 #: bookwyrm/templates/layout.html:222
-#| msgid "Boost status"
 msgid "Error posting status"
 msgstr ""
 
@@ -1568,12 +1548,10 @@ msgid "Discard"
 msgstr ""
 
 #: bookwyrm/templates/lists/delete_list_modal.html:4
-#| msgid "Delete this progress update"
 msgid "Delete this list?"
 msgstr ""
 
 #: bookwyrm/templates/lists/delete_list_modal.html:7
-#| msgid "This shelf is empty."
 msgid "This action cannot be un-done"
 msgstr ""
 
@@ -1622,7 +1600,6 @@ msgid "Anyone can add books to this list"
 msgstr ""
 
 #: bookwyrm/templates/lists/form.html:50
-#| msgid "Delete status"
 msgid "Delete list"
 msgstr ""
 
@@ -1691,7 +1668,6 @@ msgid "Suggest"
 msgstr ""
 
 #: bookwyrm/templates/lists/list_items.html:15
-#| msgid "Save"
 msgid "Saved"
 msgstr ""
 
@@ -1700,12 +1676,10 @@ msgid "Your Lists"
 msgstr ""
 
 #: bookwyrm/templates/lists/lists.html:35
-#| msgid "Lists"
 msgid "All Lists"
 msgstr ""
 
 #: bookwyrm/templates/lists/lists.html:39
-#| msgid "Create List"
 msgid "Saved Lists"
 msgstr ""
 
@@ -1890,7 +1864,6 @@ msgstr ""
 #: bookwyrm/templates/preferences/delete_user.html:26
 #: bookwyrm/templates/preferences/layout.html:24
 #: bookwyrm/templates/settings/users/delete_user_form.html:23
-#| msgid "Create an Account"
 msgid "Delete Account"
 msgstr ""
 
@@ -1916,23 +1889,19 @@ msgstr ""
 
 #: bookwyrm/templates/preferences/edit_user.html:13
 #: bookwyrm/templates/preferences/edit_user.html:68
-#| msgid "Email preference"
 msgid "Display preferences"
 msgstr ""
 
 #: bookwyrm/templates/preferences/edit_user.html:14
 #: bookwyrm/templates/preferences/edit_user.html:106
-#| msgid "Post privacy"
 msgid "Privacy"
 msgstr ""
 
 #: bookwyrm/templates/preferences/edit_user.html:72
-#| msgid "Show set reading goal prompt in feed:"
 msgid "Show reading goal prompt in feed:"
 msgstr ""
 
 #: bookwyrm/templates/preferences/edit_user.html:76
-#| msgid "Show this account in suggested users:"
 msgid "Show suggested users:"
 msgstr ""
 
@@ -1946,7 +1915,6 @@ msgid "Preferred Timezone: "
 msgstr ""
 
 #: bookwyrm/templates/preferences/edit_user.html:116
-#| msgid "Post privacy"
 msgid "Default post privacy:"
 msgstr ""
 
@@ -1959,17 +1927,17 @@ msgid "Relationships"
 msgstr ""
 
 #: bookwyrm/templates/reading_progress/finish.html:5
-#| msgid "Finish \"<em>%(book_title)s</em>\""
+#, python-format
 msgid "Finish \"%(book_title)s\""
 msgstr ""
 
 #: bookwyrm/templates/reading_progress/start.html:5
-#| msgid "Edit \"%(book_title)s\""
+#, python-format
 msgid "Start \"%(book_title)s\""
 msgstr ""
 
 #: bookwyrm/templates/reading_progress/want.html:5
-#| msgid "Want to Read \"<em>%(book_title)s</em>\""
+#, python-format
 msgid "Want to Read \"%(book_title)s\""
 msgstr ""
 
@@ -2068,17 +2036,14 @@ msgid "Create Announcement"
 msgstr ""
 
 #: bookwyrm/templates/settings/announcements/announcement_form.html:16
-#| msgid "Preview"
 msgid "Preview:"
 msgstr ""
 
 #: bookwyrm/templates/settings/announcements/announcement_form.html:23
-#| msgid "Content"
 msgid "Content:"
 msgstr ""
 
 #: bookwyrm/templates/settings/announcements/announcement_form.html:30
-#| msgid "End date:"
 msgid "Event date:"
 msgstr ""
 
@@ -2123,7 +2088,6 @@ msgid "inactive"
 msgstr ""
 
 #: bookwyrm/templates/settings/announcements/announcements.html:52
-#| msgid "Announcements"
 msgid "No announcements found"
 msgstr ""
 
@@ -2135,7 +2099,6 @@ msgstr ""
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:15
 #: bookwyrm/templates/settings/dashboard/dashboard.html:100
-#| msgid "Local users"
 msgid "Total users"
 msgstr ""
 
@@ -2145,7 +2108,6 @@ msgid "Active this month"
 msgstr ""
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:27
-#| msgid "Status"
 msgid "Statuses"
 msgstr ""
 
@@ -2155,19 +2117,18 @@ msgid "Works"
 msgstr ""
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:43
-#| msgid "%(count)d uses"
+#, python-format
 msgid "%(display_count)s open report"
 msgid_plural "%(display_count)s open reports"
 msgstr[0] ""
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:54
-#| msgid "%(count)d uses"
+#, python-format
 msgid "%(display_count)s invite request"
 msgid_plural "%(display_count)s invite requests"
 msgstr[0] ""
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:65
-#| msgid "User Activity"
 msgid "Instance Activity"
 msgstr ""
 
@@ -2180,17 +2141,14 @@ msgid "Days"
 msgstr ""
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:88
-#| msgid "One Week"
 msgid "Weeks"
 msgstr ""
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:106
-#| msgid "User Activity"
 msgid "User signup activity"
 msgstr ""
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:112
-#| msgid "User Activity"
 msgid "Status activity"
 msgstr ""
 
@@ -2204,7 +2162,6 @@ msgid "Registrations"
 msgstr ""
 
 #: bookwyrm/templates/settings/dashboard/status_chart.html:11
-#| msgid "No statuses reported"
 msgid "Statuses posted"
 msgstr ""
 
@@ -2224,7 +2181,6 @@ msgstr ""
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:5
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:7
 #: bookwyrm/templates/settings/layout.html:59
-#| msgid "Import Blocklist"
 msgid "Email Blocklist"
 msgstr ""
 
@@ -2238,18 +2194,16 @@ msgstr ""
 
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:29
 #: bookwyrm/templates/settings/ip_blocklist/ip_blocklist.html:27
-#| msgid "Actions"
 msgid "Options"
 msgstr ""
 
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:38
-#| msgid "%(count)d uses"
+#, python-format
 msgid "%(display_count)s user"
 msgid_plural "%(display_count)s users"
 msgstr[0] ""
 
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:59
-#| msgid "No users currently blocked."
 msgid "No email domains currently blocked"
 msgstr ""
 
@@ -2403,7 +2357,6 @@ msgid "Software"
 msgstr ""
 
 #: bookwyrm/templates/settings/federation/instance_list.html:63
-#| msgid "Announcements"
 msgid "No instances found"
 msgstr ""
 
@@ -2515,7 +2468,6 @@ msgstr ""
 
 #: bookwyrm/templates/settings/ip_blocklist/ip_address_form.html:5
 #: bookwyrm/templates/settings/ip_blocklist/ip_blocklist.html:10
-#| msgid "Email address:"
 msgid "Add IP address"
 msgstr ""
 
@@ -2524,14 +2476,12 @@ msgid "Use IP address blocks with caution, and consider using blocks only tempor
 msgstr ""
 
 #: bookwyrm/templates/settings/ip_blocklist/ip_address_form.html:18
-#| msgid "Email address:"
 msgid "IP Address:"
 msgstr ""
 
 #: bookwyrm/templates/settings/ip_blocklist/ip_blocklist.html:5
 #: bookwyrm/templates/settings/ip_blocklist/ip_blocklist.html:7
 #: bookwyrm/templates/settings/layout.html:63
-#| msgid "Import Blocklist"
 msgid "IP Address Blocklist"
 msgstr ""
 
@@ -2540,12 +2490,10 @@ msgid "Any traffic from this IP address will get a 404 response when trying to a
 msgstr ""
 
 #: bookwyrm/templates/settings/ip_blocklist/ip_blocklist.html:24
-#| msgid "Email address:"
 msgid "Address"
 msgstr ""
 
 #: bookwyrm/templates/settings/ip_blocklist/ip_blocklist.html:46
-#| msgid "No users currently blocked."
 msgid "No IP addresses currently blocked"
 msgstr ""
 
@@ -2562,7 +2510,6 @@ msgid "Manage Users"
 msgstr ""
 
 #: bookwyrm/templates/settings/layout.html:51
-#| msgid "List curation:"
 msgid "Moderation"
 msgstr ""
 
@@ -2682,7 +2629,6 @@ msgid "Instance description:"
 msgstr ""
 
 #: bookwyrm/templates/settings/site.html:36
-#| msgid "Description:"
 msgid "Short description:"
 msgstr ""
 
@@ -2747,7 +2693,6 @@ msgid "Registration closed text:"
 msgstr ""
 
 #: bookwyrm/templates/settings/site.html:124
-#| msgid "Invite Requests"
 msgid "Invite request text:"
 msgstr ""
 
@@ -2762,7 +2707,6 @@ msgid "Are you sure you want to delete <strong>%(username)s</strong>'s account? 
 msgstr ""
 
 #: bookwyrm/templates/settings/users/delete_user_form.html:17
-#| msgid "Confirm password:"
 msgid "Your password:"
 msgstr ""
 
@@ -2816,7 +2760,6 @@ msgid "Local"
 msgstr ""
 
 #: bookwyrm/templates/settings/users/user_info.html:38
-#| msgid "Remove"
 msgid "Remote"
 msgstr ""
 
@@ -2825,37 +2768,30 @@ msgid "User details"
 msgstr ""
 
 #: bookwyrm/templates/settings/users/user_info.html:51
-#| msgid "Email"
 msgid "Email:"
 msgstr ""
 
 #: bookwyrm/templates/settings/users/user_info.html:61
-#| msgid "Directory"
 msgid "(View reports)"
 msgstr ""
 
 #: bookwyrm/templates/settings/users/user_info.html:67
-#| msgid "Blocked by us:"
 msgid "Blocked by count:"
 msgstr ""
 
 #: bookwyrm/templates/settings/users/user_info.html:70
-#| msgid "last active"
 msgid "Last active date:"
 msgstr ""
 
 #: bookwyrm/templates/settings/users/user_info.html:73
-#| msgid "Manually approve followers:"
 msgid "Manually approved followers:"
 msgstr ""
 
 #: bookwyrm/templates/settings/users/user_info.html:76
-#| msgid "Discard"
 msgid "Discoverable:"
 msgstr ""
 
 #: bookwyrm/templates/settings/users/user_info.html:80
-#| msgid "Deactivate user"
 msgid "Deactivation reason:"
 msgstr ""
 
@@ -2959,7 +2895,7 @@ msgid "No cover"
 msgstr ""
 
 #: bookwyrm/templates/snippets/book_titleby.html:6
-#| msgid "<a href=\"%(path)s\">%(title)s</a> by "
+#, python-format
 msgid "<a href=\"%(path)s\">%(title)s</a> by"
 msgstr ""
 
@@ -3017,7 +2953,6 @@ msgid "Content"
 msgstr ""
 
 #: bookwyrm/templates/snippets/create_status/content_warning_field.html:10
-#| msgid "Content"
 msgid "Content warning:"
 msgstr ""
 
@@ -3050,27 +2985,24 @@ msgid "Quote:"
 msgstr ""
 
 #: bookwyrm/templates/snippets/create_status/quotation.html:25
-#| msgid "Edit \"%(book_title)s\""
+#, python-format
 msgid "An excerpt from '%(book_title)s'"
 msgstr ""
 
 #: bookwyrm/templates/snippets/create_status/quotation.html:32
-#| msgid "Description:"
 msgid "Position:"
 msgstr ""
 
 #: bookwyrm/templates/snippets/create_status/quotation.html:45
-#| msgid "pages"
 msgid "On page:"
 msgstr ""
 
 #: bookwyrm/templates/snippets/create_status/quotation.html:51
-#| msgid "percent"
 msgid "At percent:"
 msgstr ""
 
 #: bookwyrm/templates/snippets/create_status/review.html:25
-#| msgid "Editions of %(book_title)s"
+#, python-format
 msgid "Your review of '%(book_title)s'"
 msgstr ""
 
@@ -3114,7 +3046,7 @@ msgid "Clear filters"
 msgstr ""
 
 #: bookwyrm/templates/snippets/follow_button.html:14
-#| msgid "Report @%(username)s"
+#, python-format
 msgid "Follow @%(username)s"
 msgstr ""
 
@@ -3127,7 +3059,7 @@ msgid "Undo follow request"
 msgstr ""
 
 #: bookwyrm/templates/snippets/follow_button.html:30
-#| msgid "Report @%(username)s"
+#, python-format
 msgid "Unfollow @%(username)s"
 msgstr ""
 
@@ -3145,8 +3077,7 @@ msgid "No rating"
 msgstr ""
 
 #: bookwyrm/templates/snippets/form_rate_stars.html:28
-#| msgid "%(rating)s star"
-#| msgid_plural "%(rating)s stars"
+#, python-format
 msgid "%(half_rating)s star"
 msgid_plural "%(half_rating)s stars"
 msgstr[0] ""
@@ -3165,8 +3096,7 @@ msgid_plural "set a goal to read %(counter)s books in %(year)s"
 msgstr[0] ""
 
 #: bookwyrm/templates/snippets/generated_status/rating.html:3
-#| msgid "Rated <em><a href=\"%(path)s\">%(title)s</a></em>: %(display_rating)s star"
-#| msgid_plural "Rated <em><a href=\"%(path)s\">%(title)s</a></em>: %(display_rating)s stars"
+#, python-format
 msgid "rated <em><a href=\"%(path)s\">%(title)s</a></em>: %(display_rating)s star"
 msgid_plural "rated <em><a href=\"%(path)s\">%(title)s</a></em>: %(display_rating)s stars"
 msgstr[0] ""
@@ -3364,22 +3294,20 @@ msgid "Finish reading"
 msgstr ""
 
 #: bookwyrm/templates/snippets/status/content_status.html:72
-#| msgid "Content"
 msgid "Content warning"
 msgstr ""
 
 #: bookwyrm/templates/snippets/status/content_status.html:79
-#| msgid "Like status"
 msgid "Show status"
 msgstr ""
 
 #: bookwyrm/templates/snippets/status/content_status.html:101
-#| msgid "page %(page)s"
+#, python-format
 msgid "(Page %(page)s)"
 msgstr ""
 
 #: bookwyrm/templates/snippets/status/content_status.html:103
-#| msgid "%(percent)s%% complete!"
+#, python-format
 msgid "(%(percent)s%%)"
 msgstr ""
 
@@ -3388,12 +3316,11 @@ msgid "Open image in new window"
 msgstr ""
 
 #: bookwyrm/templates/snippets/status/content_status.html:144
-#| msgid "Like status"
 msgid "Hide status"
 msgstr ""
 
 #: bookwyrm/templates/snippets/status/headers/comment.html:2
-#| msgid "Editions of <a href=\"%(work_path)s\">\"%(work_title)s\"</a>"
+#, python-format
 msgid "commented on <a href=\"%(book_path)s\">%(book)s</a>"
 msgstr ""
 
@@ -3403,32 +3330,32 @@ msgid "replied to <a href=\"%(user_path)s\">%(username)s</a>'s <a href=\"%(statu
 msgstr ""
 
 #: bookwyrm/templates/snippets/status/headers/quotation.html:2
-#| msgid "Reported by <a href=\"%(path)s\">%(username)s</a>"
+#, python-format
 msgid "quoted <a href=\"%(book_path)s\">%(book)s</a>"
 msgstr ""
 
 #: bookwyrm/templates/snippets/status/headers/rating.html:3
-#| msgid "Created by <a href=\"%(path)s\">%(username)s</a>"
+#, python-format
 msgid "rated <a href=\"%(book_path)s\">%(book)s</a>:"
 msgstr ""
 
 #: bookwyrm/templates/snippets/status/headers/read.html:7
-#| msgid "Editions of <a href=\"%(work_path)s\">\"%(work_title)s\"</a>"
+#, python-format
 msgid "finished reading <a href=\"%(book_path)s\">%(book)s</a>"
 msgstr ""
 
 #: bookwyrm/templates/snippets/status/headers/reading.html:7
-#| msgid "Created by <a href=\"%(path)s\">%(username)s</a>"
+#, python-format
 msgid "started reading <a href=\"%(book_path)s\">%(book)s</a>"
 msgstr ""
 
 #: bookwyrm/templates/snippets/status/headers/review.html:3
-#| msgid "Created by <a href=\"%(path)s\">%(username)s</a>"
+#, python-format
 msgid "reviewed <a href=\"%(book_path)s\">%(book)s</a>"
 msgstr ""
 
 #: bookwyrm/templates/snippets/status/headers/to_read.html:7
-#| msgid "replied to <a href=\"%(user_path)s\">%(username)s's</a> <a href=\"%(status_path)s\">quote</a>"
+#, python-format
 msgid "<a href=\"%(user_path)s\">%(username)s</a> wants to read <a href=\"%(book_path)s\">%(book)s</a>"
 msgstr ""
 
@@ -3474,7 +3401,6 @@ msgstr[0] ""
 
 #: bookwyrm/templates/snippets/suggested_users.html:31
 #: bookwyrm/templates/user/user_preview.html:36
-#| msgid "followed you"
 msgid "Follows you"
 msgstr ""
 
@@ -3611,8 +3537,6 @@ msgid_plural "%(mutuals_display)s followers you follow"
 msgstr[0] ""
 
 #: bookwyrm/templates/user/user_preview.html:38
-#| msgid "follower you follow"
-#| msgid_plural "followers you follow"
 msgid "No followers you follow"
 msgstr ""
 
@@ -3647,401 +3571,1019 @@ msgstr ""
 msgid "Status updates from {obj.display_name}"
 msgstr ""
 
+#~ msgid "German"
+#~ msgstr "Aléman"
+
+#~ msgid "Spanish"
+#~ msgstr "Español"
+
+#~ msgid "French"
+#~ msgstr "Francés"
+
 #~ msgid "Update shelf"
-#~ msgstr "Mettre l’étagère à jour"
+#~ msgstr "Actualizar estante"
 
 #~ msgid "%(count)d uses"
-#~ msgstr "%(count)d utilisations"
+#~ msgstr "%(count)d usos"
 
 #~ msgid "This instance is closed"
-#~ msgstr "Cette instance est fermée"
+#~ msgstr "Esta instancia está cerrada."
 
 #~ msgid "Contact an administrator to get an invite"
-#~ msgstr "Contacter un administrateur pour obtenir une invitation"
+#~ msgstr "Contactar a unx administradorx para recibir una invitación"
 
 #~ msgid "Spoiler alert:"
-#~ msgstr "Alerte Spoiler :"
+#~ msgstr "Alerta de spoiler:"
 
 #~ msgid "Date federated"
-#~ msgstr "Date de fédération"
+#~ msgstr "Fecha de federalización"
 
 #~ msgid "Search Results for \"%(query)s\""
-#~ msgstr "Résultats de recherche pour « %(query)s »"
+#~ msgstr "Resultados de búsqueda por \"%(query)s\""
 
 #~ msgid "Matching Books"
-#~ msgstr "Livres correspondants"
+#~ msgstr "Libros correspondientes"
 
 #~ msgid "Local Timeline"
-#~ msgstr "Fil d’actualité local"
+#~ msgstr "Línea temporal local"
 
 #~ msgid "Federated Timeline"
-#~ msgstr "Fil d’actualité des instances fédérées"
+#~ msgstr "Línea temporal federalizado"
+
+#~ msgid "Federated Servers"
+#~ msgstr "Servidores federalizados"
+
+#~ msgid "Server name"
+#~ msgstr "Nombre de servidor"
+
+#~ msgid "Add server"
+#~ msgstr "Agregar servidor"
+
+#~ msgid "Remote server"
+#~ msgstr "Quitar servidor"
 
 #, fuzzy
 #~| msgid "BookWyrm users"
 #~ msgid "BookWyrm\\"
-#~ msgstr "Comptes BookWyrm"
+#~ msgstr "Usuarios de BookWyrm"
 
 #, fuzzy
 #~| msgid "Show more"
 #~ msgid "Show"
-#~ msgstr "Déplier"
+#~ msgstr "Mostrar más"
 
-#, fuzzy
-#~| msgid "All messages"
+#~ msgid "ambiguous option: %(option)s could match %(matches)s"
+#~ msgstr "opción ambiguo: %(option)s pudiera coincidir con %(matches)s"
+
 #~ msgid "Messages"
-#~ msgstr "Tous les messages"
+#~ msgstr "Mensajes"
 
-#, fuzzy
-#~| msgid "Email address:"
+#~ msgid "Site Maps"
+#~ msgstr "Mapas de sitio"
+
+#~ msgid "Static Files"
+#~ msgstr "Archivos estáticos"
+
+#~ msgid "Syndication"
+#~ msgstr "Sindicación"
+
+#~ msgid "That page number is not an integer"
+#~ msgstr "Ese numero de pagina no es un entero"
+
+#~ msgid "That page number is less than 1"
+#~ msgstr "Ese numero de pagina es menos que uno"
+
+#~ msgid "That page contains no results"
+#~ msgstr "Esa pagina no contiene resultados"
+
 #~ msgid "Enter a valid URL."
-#~ msgstr "Adresse email :"
+#~ msgstr "Ingrese una URL válida."
 
-#, fuzzy
-#~| msgid "Email address:"
 #~ msgid "Enter a valid integer."
-#~ msgstr "Adresse email :"
+#~ msgstr "Ingrese un entero válido."
 
-#, fuzzy
-#~| msgid "Email address:"
+#~ msgid "Enter a valid “slug” consisting of letters, numbers, underscores or hyphens."
+#~ msgstr "Ingrese un “slug” válido que consiste de letras, numeros, guiones bajos, o guiones"
+
+#~ msgid "Enter a valid “slug” consisting of Unicode letters, numbers, underscores, or hyphens."
+#~ msgstr "Ingrese un “slug” válido que consiste de letras Unicode, numeros, guiones bajos, o guiones"
+
 #~ msgid "Enter a valid IPv4 address."
-#~ msgstr "Adresse email :"
+#~ msgstr "Ingrese una dirección IPv4 válida."
 
-#, fuzzy
-#~| msgid "Email address:"
 #~ msgid "Enter a valid IPv6 address."
-#~ msgstr "Adresse email :"
+#~ msgstr "Ingrese una dirección IPv6 válida."
 
-#, fuzzy
-#~| msgid "Email address:"
 #~ msgid "Enter a valid IPv4 or IPv6 address."
-#~ msgstr "Adresse email :"
+#~ msgstr "Ingrese una dirección IPv4 o IPv6 válida."
 
-#, fuzzy
-#~| msgid "Series number:"
+#~ msgid "Enter only digits separated by commas."
+#~ msgstr "Ingrese solo digitos separados por comas."
+
+#~ msgid "Ensure this value is %(limit_value)s (it is %(show_value)s)."
+#~ msgstr "Asegura que este valor es %(limit_value)s (es %(show_value)s)."
+
+#~ msgid "Ensure this value is less than or equal to %(limit_value)s."
+#~ msgstr "Asegura que este valor es menor que o iguala a %(limit_value)s."
+
+#~ msgid "Ensure this value is greater than or equal to %(limit_value)s."
+#~ msgstr "Asegura que este valor es más que o que iguala a %(limit_value)s."
+
+#~ msgid "Ensure this value has at least %(limit_value)d character (it has %(show_value)d)."
+#~ msgid_plural "Ensure this value has at least %(limit_value)d characters (it has %(show_value)d)."
+#~ msgstr[0] "Verifica que este valor tiene por lo menos %(limit_value)d carácter. (Tiene %(show_value)d).)"
+#~ msgstr[1] "Verifica que este valor tiene por lo menos %(limit_value)d caracteres. (Tiene %(show_value)d).)"
+
+#~ msgid "Ensure this value has at most %(limit_value)d character (it has %(show_value)d)."
+#~ msgid_plural "Ensure this value has at most %(limit_value)d characters (it has %(show_value)d)."
+#~ msgstr[0] "Verifica que este valor tiene a lo sumo %(limit_value)d carácter. (Tiene %(show_value)d).)"
+#~ msgstr[1] "Verifica que este valor tiene a lo sumo %(limit_value)d caracteres. (Tiene %(show_value)d).)"
+
 #~ msgid "Enter a number."
-#~ msgstr "Numéro dans la série :"
+#~ msgstr "Ingrese un número."
 
-#, fuzzy
-#~| msgid "A user with this email already exists."
+#~ msgid "Ensure that there are no more than %(max)s digit in total."
+#~ msgid_plural "Ensure that there are no more than %(max)s digits in total."
+#~ msgstr[0] "Verifica que no hay más que %(max)s digito en total."
+#~ msgstr[1] "Verifica que no hay más que %(max)s digitos en total."
+
+#                         is 
+#~ msgid "Ensure that there are no more than %(max)s decimal place."
+#~ msgid_plural "Ensure that there are no more than %(max)s decimal places."
+#~ msgstr[0] "Verifica que no hay más que %(max)s cifra decimal."
+#~ msgstr[1] "Verifica que no hay más que %(max)s cifras decimales."
+
+#~ msgid "Ensure that there are no more than %(max)s digit before the decimal point."
+#~ msgid_plural "Ensure that there are no more than %(max)s digits before the decimal point."
+#~ msgstr[0] "Verifica que no hay más que %(max)s digito antes de la coma decimal."
+#~ msgstr[1] "Verifica que no hay más que %(max)s digitos antes de la coma decimal."
+
+#~ msgid "File extension “%(extension)s” is not allowed. Allowed extensions are: %(allowed_extensions)s."
+#~ msgstr "No se permite la extensión de archivo “%(extension)s”. Extensiones permitidas son: %(allowed_extensions)s."
+
+#~ msgid "Null characters are not allowed."
+#~ msgstr "No se permiten caracteres nulos"
+
+#~ msgid "and"
+#~ msgstr "y"
+
 #~ msgid "%(model_name)s with this %(field_labels)s already exists."
-#~ msgstr "Cet email est déjà associé à un compte."
+#~ msgstr "Ya existe %(model_name)s con este %(field_labels)s."
 
-#, fuzzy
-#~| msgid "%(value)s is not a valid remote_id"
 #~ msgid "Value %(value)r is not a valid choice."
-#~ msgstr "%(value)s n’est pas une remote_id valide."
+#~ msgstr "El valor %(value)s no es una opción válida."
 
-#, fuzzy
-#~| msgid "A user with this email already exists."
+#~ msgid "This field cannot be blank."
+#~ msgstr "Este campo no puede ser vacio."
+
 #~ msgid "%(model_name)s with this %(field_label)s already exists."
-#~ msgstr "Cet email est déjà associé à un compte."
+#~ msgstr "Ya existe %(model_name)s con este %(field_labels)s."
 
-#, fuzzy
-#~| msgid "No active invites"
+#~ msgid "%(field_label)s must be unique for %(date_field_label)s %(lookup_type)s."
+#~ msgstr "%(field_label)s deben ser unicos por %(date_field_label)s %(lookup_type)s."
+
+#~ msgid "Field of type: %(field_type)s"
+#~ msgstr "Campo de tipo: %(field_type)s"
+
+#~ msgid "“%(value)s” value must be either True or False."
+#~ msgstr "“%(value)s” valor debe ser o verdadero o falso."
+
+#~ msgid "“%(value)s” value must be either True, False, or None."
+#~ msgstr "%(value)s” valor debe ser o True, False, o None."
+
+#~ msgid "Boolean (Either True or False)"
+#~ msgstr "Booleano (O True O False)"
+
+#~ msgid "String (up to %(max_length)s)"
+#~ msgstr "Cadena (máximo de %(max_length)s caracteres)"
+
 #~ msgid "Comma-separated integers"
-#~ msgstr "Aucune invitation active"
+#~ msgstr "Enteros separados por comas"
 
-#, fuzzy
-#~| msgid "Series number:"
+#~ msgid "“%(value)s” value has an invalid date format. It must be in YYYY-MM-DD format."
+#~ msgstr "“%(value)s” valor tiene un formato de fecha inválido. Hay que estar de formato YYYY-MM-DD."
+
+#~ msgid "“%(value)s” value has the correct format (YYYY-MM-DD) but it is an invalid date."
+#~ msgstr "“%(value)s” valor tiene el formato correcto (YYYY-MM-DD) pero la fecha es invalida."
+
+#~ msgid "Date (without time)"
+#~ msgstr "Fecha (sin la hora)"
+
+#~ msgid "“%(value)s” value has an invalid format. It must be in YYYY-MM-DD HH:MM[:ss[.uuuuuu]][TZ] format."
+#~ msgstr "“%(value)s” valor tiene un formato invalido. Debe estar en formato YYYY-MM-DD HH:MM[:ss[.uuuuuu]][TZ]."
+
+#~ msgid "“%(value)s” value has the correct format (YYYY-MM-DD HH:MM[:ss[.uuuuuu]][TZ]) but it is an invalid date/time."
+#~ msgstr "“%(value)s” valor tiene el formato correcto (YYYY-MM-DD HH:MM[:ss[.uuuuuu]][TZ]) pero es una fecha/hora invalida."
+
+#~ msgid "Date (with time)"
+#~ msgstr "Fecha (con la hora)"
+
+#~ msgid "“%(value)s” value must be a decimal number."
+#~ msgstr "El valor de “%(value)s” debe ser un número decimal."
+
 #~ msgid "Decimal number"
-#~ msgstr "Numéro dans la série :"
+#~ msgstr "Número decimal"
 
-#, fuzzy
-#~| msgid "Email address:"
+#~ msgid "“%(value)s” value has an invalid format. It must be in [DD] [[HH:]MM:]ss[.uuuuuu] format."
+#~ msgstr "“%(value)s” valor tiene un formato invalido. Debe estar en formato [DD] [[HH:]MM:]ss[.uuuuuu]."
+
 #~ msgid "Email address"
-#~ msgstr "Adresse email :"
+#~ msgstr "Dirección de correo electrónico"
 
-#, fuzzy
-#~| msgid "No active invites"
+#~ msgid "File path"
+#~ msgstr "Ruta de archivo"
+
+#~ msgid "“%(value)s” value must be a float."
+#~ msgstr "%(value)s no es un usuario válido"
+
+#~ msgid "Floating point number"
+#~ msgstr "Número de coma flotante"
+
+#~ msgid "“%(value)s” value must be an integer."
+#~ msgstr "“%(value)s” valor debe ser un entero."
+
 #~ msgid "Big (8 byte) integer"
-#~ msgstr "Aucune invitation active"
+#~ msgstr "Entero grande (8 byte)"
 
-#, fuzzy
-#~| msgid "Email address:"
 #~ msgid "IPv4 address"
-#~ msgstr "Adresse email :"
+#~ msgstr "Dirección IPv4"
 
-#, fuzzy
-#~| msgid "No active invites"
+#~ msgid "“%(value)s” value must be either None, True or False."
+#~ msgstr "Valor “%(value)s” debe ser o None, True, o False."
+
+#~ msgid "Boolean (Either True, False or None)"
+#~ msgstr "Booleano (O True, Falso, o None)"
+
 #~ msgid "Positive integer"
-#~ msgstr "Aucune invitation active"
+#~ msgstr "Entero positivo"
 
-#, fuzzy
-#~| msgid "No active invites"
 #~ msgid "Positive small integer"
-#~ msgstr "Aucune invitation active"
+#~ msgstr "Entero positivo pequeño "
 
-#, fuzzy
-#~| msgid "%(value)s is not a valid username"
+#~ msgid "Slug (up to %(max_length)s)"
+#~ msgstr "Slug (máximo de %(max_length)s)"
+
+#~ msgid "Small integer"
+#~ msgstr "Entero pequeño"
+
+#~ msgid "Text"
+#~ msgstr "Texto"
+
+#~ msgid "“%(value)s” value has an invalid format. It must be in HH:MM[:ss[.uuuuuu]] format."
+#~ msgstr "“%(value)s” valor tiene un formato invalido. Debe estar en formato HH:MM[:ss[.uuuuuu]]."
+
+#~ msgid "“%(value)s” value has the correct format (HH:MM[:ss[.uuuuuu]]) but it is an invalid time."
+#~ msgstr "“%(value)s” valor tiene el formato correcto (HH:MM[:ss[.uuuuuu]]) pero es una hora invalida."
+
+#~ msgid "Time"
+#~ msgstr "Tiempo"
+
+#~ msgid "URL"
+#~ msgstr "URL"
+
+#~ msgid "Raw binary data"
+#~ msgstr "Datos binarios sin procesar"
+
 #~ msgid "“%(value)s” is not a valid UUID."
-#~ msgstr "%(value)s n’est pas un nom de compte valide."
+#~ msgstr "%(value)s no es una UUID válida."
 
-#, fuzzy
-#~| msgid "Images"
+#~ msgid "Universally unique identifier"
+#~ msgstr "Identificador universalmente único"
+
+#~ msgid "File"
+#~ msgstr "Archivo"
+
 #~ msgid "Image"
-#~ msgstr "Images"
+#~ msgstr "Imágen"
 
-#, fuzzy
-#~| msgid "Relationships"
+#~ msgid "%(model)s instance with %(field)s %(value)r does not exist."
+#~ msgstr "%(model)s instancia con %(field)s %(value)r no existe."
+
+#~ msgid "Foreign Key (type determined by related field)"
+#~ msgstr "Clave externa (tipo determinado por campo relacionado)"
+
 #~ msgid "One-to-one relationship"
-#~ msgstr "Relations"
+#~ msgstr "Relación uno-a-uno"
 
-#, fuzzy
-#~| msgid "Relationships"
 #~ msgid "%(from)s-%(to)s relationship"
-#~ msgstr "Relations"
+#~ msgstr "relación %(from)s-%(to)s"
 
-#, fuzzy
-#~| msgid "Relationships"
 #~ msgid "%(from)s-%(to)s relationships"
-#~ msgstr "Relations"
+#~ msgstr "relaciones %(from)s-%(to)s"
 
-#, fuzzy
-#~| msgid "Relationships"
 #~ msgid "Many-to-many relationship"
-#~ msgstr "Relations"
+#~ msgstr "Relaciones mucho-a-mucho"
 
-#, fuzzy
-#~| msgid "This shelf is empty."
 #~ msgid "This field is required."
-#~ msgstr "Cette étagère est vide"
+#~ msgstr "Este campo es requerido."
 
-#, fuzzy
-#~| msgid "Series number:"
 #~ msgid "Enter a whole number."
-#~ msgstr "Numéro dans la série :"
+#~ msgstr "Ingrese un número entero."
 
-#, fuzzy
-#~| msgid "Email address:"
 #~ msgid "Enter a valid date."
-#~ msgstr "Adresse email :"
+#~ msgstr "Ingrese una fecha válida."
 
-#, fuzzy
-#~| msgid "Email address:"
 #~ msgid "Enter a valid time."
-#~ msgstr "Adresse email :"
+#~ msgstr "Ingrese una hora válida."
 
-#, fuzzy
-#~| msgid "Email address:"
 #~ msgid "Enter a valid date/time."
-#~ msgstr "Adresse email :"
+#~ msgstr "Ingrese una fecha/hora válida."
 
-#, fuzzy
-#~| msgid "Email address:"
 #~ msgid "Enter a valid duration."
-#~ msgstr "Adresse email :"
+#~ msgstr "Ingrese una duración válida."
 
-#, fuzzy
-#~| msgid "This shelf is empty."
+#~ msgid "The number of days must be between {min_days} and {max_days}."
+#~ msgstr "El número de dias debe ser entre {min_days} y {max_days}."
+
+#~ msgid "No file was submitted. Check the encoding type on the form."
+#~ msgstr "No se aceptó ningun archivo. Verfica el tipo de codificación en el formulario."
+
+#~ msgid "No file was submitted."
+#~ msgstr "No se aceptó ningun archivo."
+
 #~ msgid "The submitted file is empty."
-#~ msgstr "Cette étagère est vide"
+#~ msgstr "El archivo enviado está vacio."
 
-#, fuzzy
-#~| msgid "Email address:"
+#~ msgid "Ensure this filename has at most %(max)d character (it has %(length)d)."
+#~ msgid_plural "Ensure this filename has at most %(max)d characters (it has %(length)d)."
+#~ msgstr[0] "Verifica que este nombre de archivo no tiene más que %(max)d carácter. (Tiene %(length)d)."
+#~ msgstr[1] "Verifica que este nombre de archivo no tiene más que %(max)d caracteres. (Tiene %(length)d)."
+
+#~ msgid "Please either submit a file or check the clear checkbox, not both."
+#~ msgstr "Por favor, o envia un archivo o marca la casilla vacia, no los dos."
+
+#~ msgid "Upload a valid image. The file you uploaded was either not an image or a corrupted image."
+#~ msgstr "Subir una imagen válida. El archivo que subiste o no fue imagen o fue corrupto."
+
+#~ msgid "Select a valid choice. %(value)s is not one of the available choices."
+#~ msgstr "Selecciona una opción válida. %(value)s no es una de las opciones disponibles."
+
 #~ msgid "Enter a list of values."
-#~ msgstr "Adresse email :"
+#~ msgstr "Ingrese una lista de valores."
 
-#, fuzzy
-#~| msgid "Email address:"
+#~ msgid "Enter a complete value."
+#~ msgstr "Ingresa un valor completo."
+
 #~ msgid "Enter a valid UUID."
-#~ msgstr "Adresse email :"
+#~ msgstr "Ingrese una UUID válida."
 
+#~ msgid ":"
+#~ msgstr ":"
+
+#~ msgid "(Hidden field %(name)s) %(error)s"
+#~ msgstr "(Campo oculto %(name)s) %(error)s"
+
+#~ msgid "ManagementForm data is missing or has been tampered with"
+#~ msgstr "Datos de ManagementForm está ausento o ha sido corrompido"
+
+#~ msgid "Please submit %d or fewer forms."
+#~ msgid_plural "Please submit %d or fewer forms."
+#~ msgstr[0] "Por favor, enviar %d o menos formularios."
+#~ msgstr[1] "Por favor, enviar %d o menos formularios."
+
+#~ msgid "Please submit %d or more forms."
+#~ msgid_plural "Please submit %d or more forms."
+#~ msgstr[0] "Por favor, enviar %d o más formularios."
+#~ msgstr[1] "Por favor, enviar %d o más formularios."
+
+# TODO cc @mouse is this a verb or noun
 #, fuzzy
-#~| msgid "Order by"
 #~ msgid "Order"
-#~ msgstr "Trier par"
+#~ msgstr "Pedir"
 
-#, fuzzy
-#~| msgid "%(value)s is not a valid username"
+# if verb 
+# msgstr "Pedido" # if noun
+#~ msgid "Please correct the duplicate data for %(field)s."
+#~ msgstr "Por favor corrige los datos duplicados en %(field)s."
+
+#~ msgid "Please correct the duplicate data for %(field)s, which must be unique."
+#~ msgstr "Por favor corrige los datos duplicados en %(field)s, los cuales deben ser unicos."
+
+#~ msgid "Please correct the duplicate data for %(field_name)s which must be unique for the %(lookup)s in %(date_field)s."
+#~ msgstr "Por favor corrige los datos duplicados en %(field_name)s los cuales deben ser unicos por el %(lookup)s en %(date_field)s."
+
+#~ msgid "Please correct the duplicate values below."
+#~ msgstr "Por favor corrige los valores duplicados a continuación."
+
+#~ msgid "The inline value did not match the parent instance."
+#~ msgstr "El valor en línea no empareja la instancia progenitor."
+
+#~ msgid "Select a valid choice. That choice is not one of the available choices."
+#~ msgstr "Selecciona una opción válida. Esa opción no es una de las opciones disponibles."
+
 #~ msgid "“%(pk)s” is not a valid value."
-#~ msgstr "%(value)s n’est pas un nom de compte valide."
+#~ msgstr "“%(pk)s” no es un valor válido."
 
-#, fuzzy
-#~| msgid "Started reading"
+#~ msgid "%(datetime)s couldn’t be interpreted in time zone %(current_timezone)s; it may be ambiguous or it may not exist."
+#~ msgstr "%(datetime)s no se pudo interpretar en la zona horaria %(current_timezone)s; puede ser ambiguo o puede que no exista."
+
+#~ msgid "Clear"
+#~ msgstr "Borrar"
+
 #~ msgid "Currently"
-#~ msgstr "Commencer la lecture"
+#~ msgstr "Actualmente"
 
-#, fuzzy
-#~| msgid "Change shelf"
 #~ msgid "Change"
-#~ msgstr "Changer d’étagère"
+#~ msgstr "Cambiar"
 
-#, fuzzy
-#~| msgid "Status"
+#~ msgid "Unknown"
+#~ msgstr "Desconocido"
+
+#~ msgid "Yes"
+#~ msgstr "Sí"
+
+#~ msgid "No"
+#~ msgstr "No"
+
+#~ msgid "yes,no,maybe"
+#~ msgstr "sí,no,quizás"
+
+#~ msgid "%(size)d byte"
+#~ msgid_plural "%(size)d bytes"
+#~ msgstr[0] "%(size)d byte"
+#~ msgstr[1] "%(size)d bytes"
+
+#~ msgid "%s KB"
+#~ msgstr "%s KB"
+
+#~ msgid "%s MB"
+#~ msgstr "%s MB"
+
+#~ msgid "%s GB"
+#~ msgstr "%s GB"
+
+#~ msgid "%s TB"
+#~ msgstr "%s TB"
+
+#~ msgid "%s PB"
+#~ msgstr "%s PB"
+
+#~ msgid "p.m."
+#~ msgstr "p.m."
+
+#~ msgid "a.m."
+#~ msgstr "a.m."
+
+#~ msgid "PM"
+#~ msgstr "PM"
+
+#~ msgid "AM"
+#~ msgstr "AM"
+
+#~ msgid "midnight"
+#~ msgstr "medianoche"
+
+#~ msgid "noon"
+#~ msgstr "mediodia"
+
+#~ msgid "Monday"
+#~ msgstr "Lunes"
+
+#~ msgid "Tuesday"
+#~ msgstr "Martes"
+
+#~ msgid "Wednesday"
+#~ msgstr "Miercoles"
+
+#~ msgid "Thursday"
+#~ msgstr "Jueves"
+
+#~ msgid "Friday"
+#~ msgstr "Viernes"
+
+#~ msgid "Saturday"
+#~ msgstr "Sábado"
+
+#~ msgid "Sunday"
+#~ msgstr "Domino"
+
+#~ msgid "Mon"
+#~ msgstr "Lun"
+
+#~ msgid "Tue"
+#~ msgstr "Mar"
+
+#~ msgid "Wed"
+#~ msgstr "Mie"
+
+#~ msgid "Thu"
+#~ msgstr "Jue"
+
+#~ msgid "Fri"
+#~ msgstr "Vie"
+
 #~ msgid "Sat"
-#~ msgstr "Statut"
+#~ msgstr "Sáb"
 
-#, fuzzy
-#~| msgid "Search"
+#~ msgid "Sun"
+#~ msgstr "Dom"
+
+#~ msgid "January"
+#~ msgstr "Enero"
+
+#~ msgid "February"
+#~ msgstr "Febrero"
+
 #~ msgid "March"
-#~ msgstr "Chercher"
+#~ msgstr "Marzo"
 
-#, fuzzy
-#~| msgid "Series number:"
+#~ msgid "April"
+#~ msgstr "Abril"
+
+#~ msgid "May"
+#~ msgstr "Mayo"
+
+#~ msgid "June"
+#~ msgstr "Junio"
+
+#~ msgid "July"
+#~ msgstr "Julio"
+
+#~ msgid "August"
+#~ msgstr "Agosto"
+
 #~ msgid "September"
-#~ msgstr "Numéro dans la série :"
+#~ msgstr "Septiembre"
 
-#, fuzzy
-#~| msgid "Series number:"
+#~ msgid "October"
+#~ msgstr "Octubre"
+
+#~ msgid "November"
+#~ msgstr "Noviembre"
+
 #~ msgid "December"
-#~ msgstr "Numéro dans la série :"
+#~ msgstr "Diciembre"
 
-#, fuzzy
-#~| msgid "Search"
+#~ msgid "jan"
+#~ msgstr "ene"
+
+#~ msgid "feb"
+#~ msgstr "feb"
+
+#~ msgid "mar"
+#~ msgstr "mar"
+
+#~ msgid "apr"
+#~ msgstr "abr"
+
+#~ msgid "may"
+#~ msgstr "may"
+
+#~ msgid "jun"
+#~ msgstr "jun"
+
+#~ msgid "jul"
+#~ msgstr "jul"
+
+#~ msgid "aug"
+#~ msgstr "ago"
+
+#~ msgid "sep"
+#~ msgstr "sep"
+
+#~ msgid "oct"
+#~ msgstr "oct"
+
+#~ msgid "nov"
+#~ msgstr "nov"
+
+#~ msgid "dec"
+#~ msgstr "dic"
+
+#~ msgctxt "abbrev. month"
+#~ msgid "Jan."
+#~ msgstr "en."
+
+#~ msgctxt "abbrev. month"
+#~ msgid "Feb."
+#~ msgstr "feb."
+
 #~ msgctxt "abbrev. month"
 #~ msgid "March"
-#~ msgstr "Chercher"
+#~ msgstr "mzo."
 
-#, fuzzy
-#~| msgid "Search"
+#~ msgctxt "abbrev. month"
+#~ msgid "April"
+#~ msgstr "abr."
+
+#~ msgctxt "abbrev. month"
+#~ msgid "May"
+#~ msgstr "my."
+
+#~ msgctxt "abbrev. month"
+#~ msgid "June"
+#~ msgstr "jun."
+
+#~ msgctxt "abbrev. month"
+#~ msgid "July"
+#~ msgstr "jul."
+
+#~ msgctxt "abbrev. month"
+#~ msgid "Aug."
+#~ msgstr "agto."
+
+#~ msgctxt "abbrev. month"
+#~ msgid "Sept."
+#~ msgstr "set."
+
+#~ msgctxt "abbrev. month"
+#~ msgid "Oct."
+#~ msgstr "oct."
+
+#~ msgctxt "abbrev. month"
+#~ msgid "Nov."
+#~ msgstr "nov."
+
+#~ msgctxt "abbrev. month"
+#~ msgid "Dec."
+#~ msgstr "dic."
+
+#~ msgctxt "alt. month"
+#~ msgid "January"
+#~ msgstr "Enero"
+
+#~ msgctxt "alt. month"
+#~ msgid "February"
+#~ msgstr "Febrero"
+
 #~ msgctxt "alt. month"
 #~ msgid "March"
-#~ msgstr "Chercher"
+#~ msgstr "Marzo"
 
-#, fuzzy
-#~| msgid "Series number:"
+#~ msgctxt "alt. month"
+#~ msgid "April"
+#~ msgstr "Abril"
+
+#~ msgctxt "alt. month"
+#~ msgid "May"
+#~ msgstr "Mayo"
+
+#~ msgctxt "alt. month"
+#~ msgid "June"
+#~ msgstr "Junio"
+
+#~ msgctxt "alt. month"
+#~ msgid "July"
+#~ msgstr "Julio"
+
+#~ msgctxt "alt. month"
+#~ msgid "August"
+#~ msgstr "Agosto"
+
 #~ msgctxt "alt. month"
 #~ msgid "September"
-#~ msgstr "Numéro dans la série :"
+#~ msgstr "Septiembre"
 
-#, fuzzy
-#~| msgid "Series number:"
+#~ msgctxt "alt. month"
+#~ msgid "October"
+#~ msgstr "Octubre"
+
+#~ msgctxt "alt. month"
+#~ msgid "November"
+#~ msgstr "Noviembre"
+
 #~ msgctxt "alt. month"
 #~ msgid "December"
-#~ msgstr "Numéro dans la série :"
+#~ msgstr "Diciembre"
 
-#, fuzzy
-#~| msgid "Email address:"
 #~ msgid "This is not a valid IPv6 address."
-#~ msgstr "Adresse email :"
+#~ msgstr "Esta no es una dirección IPv6 válida."
+
+#~ msgctxt "String to return when truncating text"
+#~ msgid "%(truncated_text)s…"
+#~ msgstr "%(truncated_text)s…"
+
+#~ msgid "or"
+#~ msgstr "o"
+
+#~ msgid ", "
+#~ msgstr ", "
+
+#~ msgid "%d year"
+#~ msgid_plural "%d years"
+#~ msgstr[0] "%d año"
+#~ msgstr[1] "%d años"
+
+#~ msgid "%d month"
+#~ msgid_plural "%d months"
+#~ msgstr[0] "%d mes"
+#~ msgstr[1] "%d meses"
+
+#~ msgid "%d week"
+#~ msgid_plural "%d weeks"
+#~ msgstr[0] "%d semana"
+#~ msgstr[1] "%d semanas"
+
+#~ msgid "%d day"
+#~ msgid_plural "%d days"
+#~ msgstr[0] "%d día"
+#~ msgstr[1] "%d días"
+
+#~ msgid "%d hour"
+#~ msgid_plural "%d hours"
+#~ msgstr[0] "%d hora"
+#~ msgstr[1] "%d horas"
+
+#~ msgid "%d minute"
+#~ msgid_plural "%d minutes"
+#~ msgstr[0] "%d minuto"
+#~ msgstr[1] "%d minutos"
 
 #, fuzzy
-#~| msgid "No books found matching the query \"%(query)s\""
+#~| msgid "%d minute"
+#~| msgid_plural "%d minutes"
+#~ msgid "0 minutes"
+#~ msgstr "%d minuto"
+
+#~ msgid "Forbidden"
+#~ msgstr "Prohibido"
+
+#~ msgid "CSRF verification failed. Request aborted."
+#~ msgstr "Se falló la verificación CSRF. Se abortó la solicitud."
+
+#~ msgid "You are seeing this message because this HTTPS site requires a “Referer header” to be sent by your Web browser, but none was sent. This header is required for security reasons, to ensure that your browser is not being hijacked by third parties."
+#~ msgstr "Estás viendo este mensaje porque este sitio HTTPS requiere que tu navegador Web envie un “Referer header”, pero no se la envió. Esta cabecedera se requiere por razones de seguridad, para asegurar que tu navegador no sea secuestrado por terceros."
+
+#~ msgid "If you have configured your browser to disable “Referer” headers, please re-enable them, at least for this site, or for HTTPS connections, or for “same-origin” requests."
+#~ msgstr "Si has configurado su navegador para deshabilitar las cabecederas “Referer”, vuelva a habilitarlos, al menos para este sitio, o para conexiones HTTPS, o para solicitudes del “same-origin”. "
+
+#~ msgid "If you are using the <meta name=\"referrer\" content=\"no-referrer\"> tag or including the “Referrer-Policy: no-referrer” header, please remove them. The CSRF protection requires the “Referer” header to do strict referer checking. If you’re concerned about privacy, use alternatives like <a rel=\"noreferrer\" …> for links to third-party sites."
+#~ msgstr "Si estás usando la eqtigueta <meta name=\"referrer\" content=\"no-referrer\"> o estás incluyendo la cabecedera “Referrer-Policy: no-referrer”, quitalas por favor. La protección CSRF require la cabecedera “Referer” para hacer verficación “strict referer“. Si te preocupa la privacidad, utiliza alternativas como <a rel=\"noreferrer\" …>  para sitios de terceros."
+
+#~ msgid "You are seeing this message because this site requires a CSRF cookie when submitting forms. This cookie is required for security reasons, to ensure that your browser is not being hijacked by third parties."
+#~ msgstr "Estás viendo este mensaje porque este sitio requiere un cookie CSRF cuando se envie formularios. Este cookie se requiere por razones de seguridad, para asegurar que tu navegador no sea secuestrado por terceros."
+
+#~ msgid "If you have configured your browser to disable cookies, please re-enable them, at least for this site, or for “same-origin” requests."
+#~ msgstr "Si has configurado su navegador para deshabilitar los cookies, vuelva a habilitarlos, al menos para este sitio, o para conexiones HTTPS, o para solicitudes del “same-origin”. "
+
+#~ msgid "More information is available with DEBUG=True."
+#~ msgstr "Más información es disponible con DEBUG=True."
+
+#~ msgid "No year specified"
+#~ msgstr "Ningun año fue especificado"
+
+#~ msgid "Date out of range"
+#~ msgstr "Fecha fuera de rango"
+
+#~ msgid "No month specified"
+#~ msgstr "Ningun mes fue especificado"
+
+#~ msgid "No day specified"
+#~ msgstr "Ningun día fue especificado"
+
+#~ msgid "No week specified"
+#~ msgstr "Ninguna semana fue especificado"
+
+#~ msgid "No %(verbose_name_plural)s available"
+#~ msgstr "No %(verbose_name_plural)s disponible"
+
+#~ msgid "Future %(verbose_name_plural)s not available because %(class_name)s.allow_future is False."
+#~ msgstr "%(verbose_name_plural)s del futuro no está disponible porque %(class_name)s.allow_future es False."
+
+#~ msgid "Invalid date string “%(datestr)s” given format “%(format)s”"
+#~ msgstr "Cadena de fecha invalida “%(datestr)s” dado el formato “%(format)s”"
+
 #~ msgid "No %(verbose_name)s found matching the query"
-#~ msgstr "Aucun livre trouvé pour la requête « %(query)s »"
+#~ msgstr "No se encontró ningún %(verbose_name)s correspondiente a la búsqueda"
 
-#, fuzzy
-#~| msgid "Community"
+#~ msgid "Page is not “last”, nor can it be converted to an int."
+#~ msgstr "Página no es “last”, ni puede ser convertido en un int."
+
+#~ msgid "Invalid page (%(page_number)s): %(message)s"
+#~ msgstr "Página invalida (%(page_number)s): %(message)s"
+
+#~ msgid "Empty list and “%(class_name)s.allow_empty” is False."
+#~ msgstr "Lista vacia y “%(class_name)s.allow_empty” es False."
+
+#~ msgid "Directory indexes are not allowed here."
+#~ msgstr "Indices directorios no se permiten aquí."
+
+#~ msgid "“%(path)s” does not exist"
+#~ msgstr "“%(path)s” no existe"
+
+#~ msgid "Index of %(directory)s"
+#~ msgstr "Indice de %(directory)s"
+
+#~ msgid "Django: the Web framework for perfectionists with deadlines."
+#~ msgstr "Django: el estructura Web para perfeccionistas con fechas límites."
+
+#~ msgid "View <a href=\"https://docs.djangoproject.com/en/%(version)s/releases/\" target=\"_blank\" rel=\"noopener\">release notes</a> for Django %(version)s"
+#~ msgstr "Ver <a href=\"https://docs.djangoproject.com/en/%(version)s/releases/\" target=\"_blank\" rel=\"noopener\">notas de lanzamiento</a> por Django %(version)s"
+
+#~ msgid "The install worked successfully! Congratulations!"
+#~ msgstr "¡La instalación fue exitoso! ¡Felicidades!"
+
+#~ msgid "You are seeing this page because <a href=\"https://docs.djangoproject.com/en/%(version)s/ref/settings/#debug\" target=\"_blank\" rel=\"noopener\">DEBUG=True</a> is in your settings file and you have not configured any URLs."
+#~ msgstr "Estás viendo esta pagina porque <a href=\"https://docs.djangoproject.com/en/%(version)s/ref/settings/#debug\" target=\"_blank\" rel=\"noopener\">DEBUG=True</a> está en tu archivo de configuración y no has configurado ningún URL."
+
+#~ msgid "Django Documentation"
+#~ msgstr "Documentación de Django"
+
+#~ msgid "Topics, references, &amp; how-to’s"
+#~ msgstr "Tópicos, referencias, &amp; instrucciones paso-a-paso"
+
+#~ msgid "Tutorial: A Polling App"
+#~ msgstr "Tutorial: Una aplicación polling"
+
+#~ msgid "Get started with Django"
+#~ msgstr "Empezar con Django"
+
 #~ msgid "Django Community"
-#~ msgstr "Communauté"
+#~ msgstr "Comunidad Django"
+
+#~ msgid "Connect, get help, or contribute"
+#~ msgstr "Conectarse, encontrar ayuda, o contribuir"
+
+#~ msgid "Attempting to connect to qpid with SASL mechanism %s"
+#~ msgstr "Intentando conectar con qpid con mecanismo SASL %s"
+
+#~ msgid "Connected to qpid with SASL mechanism %s"
+#~ msgstr "Conectado con qpid con mecanismo SASL %s"
+
+#~ msgid "Unable to connect to qpid with SASL mechanism %s"
+#~ msgstr "No se pudo conectar con qpid con mecanismo SASL %s"
+
+#~ msgid "1 second ago"
+#~ msgstr "Hace 1 segundo"
+
+#~ msgid "1 minute ago"
+#~ msgstr "Hace 1 minuto"
+
+#~ msgid "1 hour ago"
+#~ msgstr "Hace 1 hora"
+
+#~ msgid "%(time)s"
+#~ msgstr "%(time)s"
+
+#~ msgid "yesterday"
+#~ msgstr "ayer"
+
+# TODO cc @mouse this could be grammatically incorrect if the time said 1 o'clock
+# a working clock is broken twice a day!
+#~ msgid "yesterday at %(time)s"
+#~ msgstr "ayer a las %(time)s"
+
+#~ msgid "%(weekday)s"
+#~ msgstr "%(weekday)s"
+
+# TODO cc @mouse this could be grammatically incorrect if the time said 1 o'clock
+# a working clock is broken twice a day!
+#~ msgid "%(weekday)s at %(time)s"
+#~ msgstr "%(weekday)s a las %(time)s"
+
+#~ msgid "%(month_name)s %(day)s"
+#~ msgstr "%(day)s %(month_name)s"
+
+# TODO cc @mouse this could be grammatically incorrect if the time said 1 o'clock
+# a working clock is broken twice a day!
+#~ msgid "%(month_name)s %(day)s at %(time)s"
+#~ msgstr "%(day)s %(month_name)s a las %(time)s"
+
+#~ msgid "%(month_name)s %(day)s, %(year)s"
+#~ msgstr "%(day)s %(month_name)s, %(year)s"
+
+# TODO cc @mouse this could be grammatically incorrect if the time said 1 o'clock
+# a working clock is broken twice a day!
+#~ msgid "%(month_name)s %(day)s, %(year)s at %(time)s"
+#~ msgstr "%(day)s %(month_name)s, %(year)s a las %(time)s"
+
+#~ msgid "%(weekday)s, %(month_name)s %(day)s"
+#~ msgstr "%(weekday)s, %(day)s %(month_name)s"
+
+#~ msgid "%(commas)s and %(last)s"
+#~ msgstr "%(commas)s y %(last)s"
+
+#~ msgctxt "law"
+#~ msgid "right"
+#~ msgstr "justo"
+
+#~ msgctxt "good"
+#~ msgid "right"
+#~ msgstr "correcto"
+
+#~ msgctxt "organization"
+#~ msgid "club"
+#~ msgstr "club"
+
+#~ msgctxt "stick"
+#~ msgid "club"
+#~ msgstr "garrote"
 
 #~ msgid "Didn't find what you were looking for?"
-#~ msgstr "Vous n’avez pas trouvé ce que vous cherchiez ?"
+#~ msgstr "¿No encontraste lo que buscabas?"
 
 #~ msgid "Hide results from other catalogues"
-#~ msgstr "Masquer les résultats d’autres catalogues"
+#~ msgstr "Ocultar resultados de otros catálogos"
 
 #~ msgid "Matching Users"
-#~ msgstr "Comptes correspondants"
+#~ msgstr "Usuarios correspondientes"
 
 #~ msgid "Set a reading goal for %(year)s"
-#~ msgstr "Définir un défi lecture pour %(year)s"
+#~ msgstr "Establecer una meta de lectura para %(year)s"
 
 #~ msgid "by %(author)s"
-#~ msgstr "par %(author)s"
-
-#~ msgid "Reactivate user"
-#~ msgstr "Réactiver le compte"
+#~ msgstr "por %(author)s"
 
 #~ msgid "replied to <a href=\"%(user_path)s\">%(username)s's</a> <a href=\"%(status_path)s\">review</a>"
-#~ msgstr "a répondu à la <a href=\"%(status_path)s\">critique</a> de <a href=\"%(user_path)s\">%(username)s</a>"
+#~ msgstr "respondió a la <a href=\"%(status_path)s\">reseña</a> de <a href=\"%(user_path)s\">%(username)s</a> "
 
 #~ msgid "replied to <a href=\"%(user_path)s\">%(username)s's</a> <a href=\"%(status_path)s\">comment</a>"
-#~ msgstr "a répondu au <a href=\"%(status_path)s\">commentaire</a> de <a href=\"%(user_path)s\">%(username)s</a>"
+#~ msgstr "respondió al <a href=\"%(status_path)s\">comentario</a> de <a href=\"%(user_path)s\">%(username)s</a> "
 
 #~ msgid "Remove tag"
-#~ msgstr "Supprimer le tag"
+#~ msgstr "Eliminar etiqueta"
 
 #~ msgid "Add tag"
-#~ msgstr "Ajouter un tag"
+#~ msgstr "Agregar etiqueta"
 
 #~ msgid "Books tagged \"%(tag.name)s\""
-#~ msgstr "Livres tagués « %(tag.name)s »"
+#~ msgstr "Libros etiquetados con \"%(tag.name)s\""
+
+#~ msgid "Reactivate user"
+#~ msgstr "Reactivar usuario"
+
+#~ msgid "Positive big integer"
+#~ msgstr "Entero positivo grande"
+
+#~ msgid "A JSON object"
+#~ msgstr "Un objeto JSON"
+
+#~ msgid "Value must be valid JSON."
+#~ msgstr "Valor debe ser JSON válido."
+
+#~ msgid "Enter a valid JSON."
+#~ msgstr "Ingrese una JSON válida."
 
 #, fuzzy
 #~| msgid "Started"
 #~ msgid "Getting Started"
-#~ msgstr "Commencé"
+#~ msgstr "Empezado"
 
 #, fuzzy
 #~| msgid "No users found for \"%(query)s\""
 #~ msgid "No users were found for \"%(query)s\""
-#~ msgstr "Aucun compte trouvé pour « %(query)s »"
+#~ msgstr "No se encontró ningún usuario correspondiente a \"%(query)s\""
 
 #~ msgid "Tags"
-#~ msgstr "Tags"
+#~ msgstr "Etiquetas"
 
 #~ msgid "Your lists"
-#~ msgstr "Vos listes"
+#~ msgstr "Tus listas"
 
-#, fuzzy
-#~| msgid "See all %(size)s"
 #~ msgid "See all %(size)s lists"
-#~ msgstr "Voir les %(size)s"
+#~ msgstr "Ver las %(size)s listas"
 
 #~ msgid "Recent Lists"
-#~ msgstr "Listes récentes"
+#~ msgstr "Listas recientes"
 
 #~ msgid "Published"
-#~ msgstr "Publié"
+#~ msgstr "Publicado"
 
 #~ msgid "External links"
-#~ msgstr "Liens externes"
+#~ msgstr "Enlaces externos"
 
 #~ msgid "OpenLibrary"
 #~ msgstr "OpenLibrary"
 
 #~ msgid "Change shelf"
-#~ msgstr "Changer d’étagère"
+#~ msgstr "Cambiar estante"
 
 #~ msgid "Unshelve"
-#~ msgstr "Enlever de l’étagère"
+#~ msgstr "Retirar del estante"
 
 #~ msgid "Your Shelves"
-#~ msgstr "Vos étagères"
+#~ msgstr "Tus estantes"
 
 #~ msgid "%(username)s: Shelves"
-#~ msgstr "%(username)s : Étagères"
+#~ msgstr "%(username)s: Estantes"
 
 #~ msgid "Shelves"
-#~ msgstr "Étagères"
+#~ msgstr "Estantes"
 
 #~ msgid "See all %(shelf_count)s shelves"
-#~ msgstr "Voir les %(shelf_count)s étagères"
+#~ msgstr "Ver los %(shelf_count)s estantes"
 
 #~ msgid "Send follow request"
-#~ msgstr "Envoyer une demande d’abonnement"
+#~ msgstr "Envia solicitud de seguidor"
 
 #~ msgid "Site Configuration"
-#~ msgstr "Configuration du site"
+#~ msgstr "Configuracion de sitio"
 
 #~ msgid "Follow request already sent."
-#~ msgstr "Demande d’abonnement déjà envoyée"
+#~ msgstr "Solicitud de seguidor ya se ha enviado."
 
 #~ msgid "Created and curated by"
-#~ msgstr "Créée et modérée par"
+#~ msgstr "Creado y comisariado por"
 
 #~ msgid "Created by"
-#~ msgstr "Créée par"
-
-#~ msgid "Create New Shelf"
-#~ msgstr "Créer une nouvelle étagère"
-
-#, fuzzy
-#~| msgid "Create list"
-#~ msgid "Create new list"
-#~ msgstr "Créer une nouvelle liste"
+#~ msgstr "Creado por"
 
 #~ msgid "Added by"
-#~ msgstr "Ajouté par"
+#~ msgstr "Agregado por"
 
-#~ msgid "suggested adding"
-#~ msgstr "a suggéré l’ajout de"
+#~ msgid "Create New Shelf"
+#~ msgstr "Crear nuevo estante"
 
-#~ msgid "Change password"
-#~ msgstr "Changer le mot de passe"
-
-#~ msgid "%(year)s reading goal"
-#~ msgstr "Défi lecture pour %(year)s"
+#~ msgid "Create new list"
+#~ msgstr "Crear nueva lista"
 
