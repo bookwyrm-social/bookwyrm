@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-10-06 23:57+0000\n"
-"PO-Revision-Date: 2021-10-08 05:40\n"
+"PO-Revision-Date: 2021-10-08 07:01\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: German\n"
 "Language: de\n"
@@ -90,11 +90,11 @@ msgstr "Selbstlöschung"
 
 #: bookwyrm/models/base_model.py:19
 msgid "Moderator suspension"
-msgstr ""
+msgstr "Moderator suspendieren"
 
 #: bookwyrm/models/base_model.py:20
 msgid "Moderator deletion"
-msgstr ""
+msgstr "Moderatoren löschen"
 
 #: bookwyrm/models/base_model.py:21
 msgid "Domain block"
@@ -378,7 +378,7 @@ msgstr "Cover hinzufügen"
 
 #: bookwyrm/templates/book/book.html:77
 msgid "Failed to load cover"
-msgstr ""
+msgstr "Fehler beim Laden des Covers"
 
 #: bookwyrm/templates/book/book.html:117
 #, python-format
@@ -400,17 +400,17 @@ msgstr "Beschreibung:"
 #: bookwyrm/templates/book/book.html:150
 #, python-format
 msgid "<a href=\"%(path)s/editions\">%(count)s editions</a>"
-msgstr ""
+msgstr "<a href=\"%(path)s/editions\">%(count)s Editionen</a>"
 
 #: bookwyrm/templates/book/book.html:158
 #, python-format
 msgid "This edition is on your <a href=\"%(path)s\">%(shelf_name)s</a> shelf."
-msgstr ""
+msgstr "Diese Ausgabe befindet sich in Ihrem <a href=\"%(path)s\">%(shelf_name)s</a> Regal."
 
 #: bookwyrm/templates/book/book.html:164
 #, python-format
 msgid "A <a href=\"%(book_path)s\">different edition</a> of this book is on your <a href=\"%(shelf_path)s\">%(shelf_name)s</a> shelf."
-msgstr ""
+msgstr "Eine <a href=\"%(book_path)s\">andere Ausgabe</a> dieses Buches befindet sich in Ihrem <a href=\"%(shelf_path)s\">%(shelf_name)s</a> Regal."
 
 #: bookwyrm/templates/book/book.html:175
 msgid "Your reading activity"
@@ -430,19 +430,19 @@ msgstr "Du hast keine Leseaktivität für dieses Buch."
 
 #: bookwyrm/templates/book/book.html:218
 msgid "Reviews"
-msgstr ""
+msgstr "Rezensionen"
 
 #: bookwyrm/templates/book/book.html:223
 msgid "Your reviews"
-msgstr ""
+msgstr "Deine Rezensionen"
 
 #: bookwyrm/templates/book/book.html:229
 msgid "Your comments"
-msgstr ""
+msgstr "Deine Kommentare"
 
 #: bookwyrm/templates/book/book.html:235
 msgid "Your quotes"
-msgstr ""
+msgstr "Deine Zitate"
 
 #: bookwyrm/templates/book/book.html:271
 msgid "Subjects"
@@ -462,7 +462,7 @@ msgstr "Listen"
 
 #: bookwyrm/templates/book/book.html:305
 msgid "Add to list"
-msgstr ""
+msgstr "Zur Liste hinzufügen"
 
 #: bookwyrm/templates/book/book.html:315
 #: bookwyrm/templates/book/cover_modal.html:31
@@ -474,7 +474,7 @@ msgstr "Hinzufügen"
 
 #: bookwyrm/templates/book/book_identifiers.html:8
 msgid "ISBN:"
-msgstr ""
+msgstr "ISBN:"
 
 #: bookwyrm/templates/book/book_identifiers.html:15
 #: bookwyrm/templates/book/edit/edit_book_form.html:232
@@ -484,12 +484,12 @@ msgstr "OCLC Nummer:"
 #: bookwyrm/templates/book/book_identifiers.html:22
 #: bookwyrm/templates/book/edit/edit_book_form.html:240
 msgid "ASIN:"
-msgstr ""
+msgstr "ASIN:"
 
 #: bookwyrm/templates/book/cover_modal.html:17
 #: bookwyrm/templates/book/edit/edit_book_form.html:143
 msgid "Upload cover:"
-msgstr ""
+msgstr "Titelbild hochladen:"
 
 #: bookwyrm/templates/book/cover_modal.html:23
 #: bookwyrm/templates/book/edit/edit_book_form.html:148
@@ -500,12 +500,12 @@ msgstr "Cover von URL laden:"
 #: bookwyrm/templates/book/edit/edit_book.html:11
 #, python-format
 msgid "Edit \"%(book_title)s\""
-msgstr ""
+msgstr "\"%(book_title)s \" bearbeiten"
 
 #: bookwyrm/templates/book/edit/edit_book.html:5
 #: bookwyrm/templates/book/edit/edit_book.html:13
 msgid "Add Book"
-msgstr ""
+msgstr "Buch hinzufügen"
 
 #: bookwyrm/templates/book/edit/edit_book.html:47
 msgid "Confirm Book Info"
@@ -519,7 +519,7 @@ msgstr "Existiert \"%(name)s\" bereits als Autor:in?"
 #: bookwyrm/templates/book/edit/edit_book.html:64
 #, python-format
 msgid "Author of <em>%(book_title)s</em>"
-msgstr ""
+msgstr "Autor von <em>%(book_title)s</em>"
 
 #: bookwyrm/templates/book/edit/edit_book.html:68
 msgid "This is a new author"
@@ -567,15 +567,15 @@ msgstr "Seriennummer:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:63
 msgid "Languages:"
-msgstr ""
+msgstr "Sprachen:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:74
 msgid "Publication"
-msgstr ""
+msgstr "Veröffentlichung"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:77
 msgid "Publisher:"
-msgstr ""
+msgstr "Verlag:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:86
 msgid "First published date:"
@@ -587,21 +587,21 @@ msgstr "Veröffentlichungsdatum:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:104
 msgid "Authors"
-msgstr ""
+msgstr "Autoren"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:112
 #, python-format
 msgid "Remove %(name)s"
-msgstr ""
+msgstr "%(name)s entfernen"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:115
 #, python-format
 msgid "Author page for %(name)s"
-msgstr ""
+msgstr "Autorenseite für %(name)s"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:122
 msgid "Add Authors:"
-msgstr ""
+msgstr "Autoren hinzufügen:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:123
 msgid "John Doe, Jane Smith"
@@ -610,7 +610,7 @@ msgstr "Max Mustermann, Maria Musterfrau"
 #: bookwyrm/templates/book/edit/edit_book_form.html:132
 #: bookwyrm/templates/shelf/shelf.html:127
 msgid "Cover"
-msgstr ""
+msgstr "Einband"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:161
 msgid "Physical Properties"
@@ -619,11 +619,11 @@ msgstr "Physikalische Eigenschaften"
 #: bookwyrm/templates/book/edit/edit_book_form.html:166
 #: bookwyrm/templates/book/editions/format_filter.html:5
 msgid "Format:"
-msgstr ""
+msgstr "Format:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:177
 msgid "Format details:"
-msgstr ""
+msgstr "Formatdetails:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:187
 msgid "Pages:"
@@ -635,15 +635,15 @@ msgstr "Buchidentifikatoren"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:200
 msgid "ISBN 13:"
-msgstr ""
+msgstr "ISBN 13:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:208
 msgid "ISBN 10:"
-msgstr ""
+msgstr "ISBN 10:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:216
 msgid "Openlibrary ID:"
-msgstr ""
+msgstr "OpenLibrary ID:"
 
 #: bookwyrm/templates/book/editions/editions.html:4
 #, python-format
@@ -667,12 +667,12 @@ msgstr "Sprache"
 
 #: bookwyrm/templates/book/editions/search_filter.html:5
 msgid "Search editions"
-msgstr ""
+msgstr "Ausgaben suchen"
 
 #: bookwyrm/templates/book/publisher_info.html:21
 #, python-format
 msgid "%(format)s"
-msgstr ""
+msgstr "Formate: %(format)s"
 
 #: bookwyrm/templates/book/publisher_info.html:23
 #, python-format
@@ -687,7 +687,7 @@ msgstr "%(pages)s Seiten"
 #: bookwyrm/templates/book/publisher_info.html:38
 #, python-format
 msgid "%(languages)s language"
-msgstr ""
+msgstr "%(languages)s Sprache"
 
 #: bookwyrm/templates/book/publisher_info.html:65
 #, python-format
@@ -697,7 +697,7 @@ msgstr "Am %(date)s von %(publisher)s veröffentlicht."
 #: bookwyrm/templates/book/publisher_info.html:67
 #, python-format
 msgid "Published %(date)s"
-msgstr ""
+msgstr "Erscheinungsdatum %(date)s"
 
 #: bookwyrm/templates/book/publisher_info.html:69
 #, python-format
@@ -754,15 +754,15 @@ msgstr "Hilfe"
 
 #: bookwyrm/templates/compose.html:5 bookwyrm/templates/compose.html:8
 msgid "Compose status"
-msgstr ""
+msgstr "Status verfassen"
 
 #: bookwyrm/templates/confirm_email/confirm_email.html:4
 msgid "Confirm email"
-msgstr ""
+msgstr "E-Mail bestätigen"
 
 #: bookwyrm/templates/confirm_email/confirm_email.html:7
 msgid "Confirm your email address"
-msgstr ""
+msgstr "Bestätigen Sie Ihre E-Mail-Adresse"
 
 #: bookwyrm/templates/confirm_email/confirm_email.html:13
 msgid "A confirmation code has been sent to the email address you used to register your account."
@@ -775,7 +775,7 @@ msgstr "Sorry! Dieser Code ist uns nicht bekannt."
 #: bookwyrm/templates/confirm_email/confirm_email.html:19
 #: bookwyrm/templates/settings/users/user_info.html:85
 msgid "Confirmation code:"
-msgstr ""
+msgstr "Bestätigungscode:"
 
 #: bookwyrm/templates/confirm_email/confirm_email.html:25
 #: bookwyrm/templates/landing/layout.html:73
@@ -806,15 +806,15 @@ msgstr "Link erneut senden"
 
 #: bookwyrm/templates/directory/community_filter.html:5
 msgid "Community"
-msgstr ""
+msgstr "Gemeinschaft"
 
 #: bookwyrm/templates/directory/community_filter.html:8
 msgid "Local users"
-msgstr ""
+msgstr "Lokale Benutzer"
 
 #: bookwyrm/templates/directory/community_filter.html:12
 msgid "Federated community"
-msgstr ""
+msgstr "Föderierte Gemeinschaft"
 
 #: bookwyrm/templates/directory/directory.html:4
 #: bookwyrm/templates/directory/directory.html:9
@@ -829,7 +829,7 @@ msgstr "Mach dein Profil entdeckbar für andere User"
 #: bookwyrm/templates/directory/directory.html:24
 #, python-format
 msgid "You can opt-out at any time in your <a href=\"%(path)s\">profile settings.</a>"
-msgstr ""
+msgstr "Du kannst dich jederzeit in deinen <a href=\"%(path)s\">Profileinstellungen abmelden.</a>"
 
 #: bookwyrm/templates/directory/directory.html:29
 #: bookwyrm/templates/feed/goal_card.html:17
@@ -847,19 +847,19 @@ msgstr "Zuletzt aktiv"
 
 #: bookwyrm/templates/directory/sort_filter.html:9
 msgid "Suggested"
-msgstr ""
+msgstr "Empfohlen"
 
 #: bookwyrm/templates/directory/user_card.html:17
 #: bookwyrm/templates/directory/user_card.html:18
 #: bookwyrm/templates/user/user_preview.html:16
 #: bookwyrm/templates/user/user_preview.html:17
 msgid "Locked account"
-msgstr ""
+msgstr "Gesperrter Account"
 
 #: bookwyrm/templates/directory/user_card.html:40
 msgid "follower you follow"
 msgid_plural "followers you follow"
-msgstr[0] ""
+msgstr[0] "gegenseitige Follower"
 msgstr[1] ""
 
 #: bookwyrm/templates/directory/user_card.html:47
