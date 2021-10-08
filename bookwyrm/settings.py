@@ -30,6 +30,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 LOCALE_PATHS = [
     os.path.join(BASE_DIR, "locale"),
 ]
+LANGUAGE_COOKIE_NAME = env.str("LANGUAGE_COOKIE_NAME", "django_language")
 
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
@@ -161,11 +162,11 @@ AUTH_PASSWORD_VALIDATORS = [
 LANGUAGE_CODE = "en-us"
 LANGUAGES = [
     ("en-us", _("English")),
-    ("de-de", _("German")),
-    ("es", _("Spanish")),
-    ("fr-fr", _("French")),
-    ("zh-hans", _("Simplified Chinese")),
-    ("zh-hant", _("Traditional Chinese")),
+    ("de-de", _("Deutsch (German)")),  # German
+    ("es", _("Español (Spanish)")),  # Spanish
+    ("fr-fr", _("Français (French)")),  # French
+    ("zh-hans", _("简体中文 (Simplified Chinese)")),  # Simplified Chinese
+    ("zh-hant", _("繁體中文 (Traditional Chinese)")),  # Traditional Chinese
 ]
 
 

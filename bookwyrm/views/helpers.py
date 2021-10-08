@@ -7,8 +7,9 @@ from dateutil.parser import ParserError
 
 from requests import HTTPError
 from django.http import Http404
+from django.utils import translation
 
-from bookwyrm import activitypub, models
+from bookwyrm import activitypub, models, settings
 from bookwyrm.connectors import ConnectorException, get_data
 from bookwyrm.status import create_generated_note
 from bookwyrm.utils import regex
@@ -144,3 +145,11 @@ def load_date_in_user_tz_as_utc(date_str: str, user: models.User) -> datetime:
         return date.replace(tzinfo=user_tz).astimezone(dateutil.tz.UTC)
     except ParserError:
         return None
+
+
+def set_language(user, response):
+    """Updates a user's language"""
+    if user.preferred_language:
+        translation.activate(user.preferred_language)
+    response.set_cookie(settings.LANGUAGE_COOKIE_NAME, user.preferred_language)
+    return response
