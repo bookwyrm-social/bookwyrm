@@ -93,4 +93,4 @@ class GroupViews(TestCase):
         result = view(request, group_id=999)
         self.assertEqual(result.status_code, 302)
 
-        # TODO: test group was updated.
+        # TODO: test that group was updated.
