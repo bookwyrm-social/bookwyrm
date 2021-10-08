@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-10-06 23:57+0000\n"
-"PO-Revision-Date: 2021-10-08 00:03\n"
+"PO-Revision-Date: 2021-10-08 05:40\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: German\n"
 "Language: de\n"
@@ -19,7 +19,7 @@ msgstr ""
 
 #: bookwyrm/forms.py:242
 msgid "A user with this email already exists."
-msgstr ""
+msgstr "Es existiert bereits ein Account mit dieser E-Mail-Adresse."
 
 #: bookwyrm/forms.py:256
 msgid "One Day"
@@ -40,11 +40,11 @@ msgstr "Läuft nicht aus"
 #: bookwyrm/forms.py:263
 #, python-brace-format
 msgid "{i} uses"
-msgstr ""
+msgstr "{i}-mal verwendbar"
 
 #: bookwyrm/forms.py:264
 msgid "Unlimited"
-msgstr ""
+msgstr "Unbegrenzt"
 
 #: bookwyrm/forms.py:326
 msgid "List Order"
@@ -52,13 +52,13 @@ msgstr "Reihenfolge der Liste"
 
 #: bookwyrm/forms.py:327
 msgid "Book Title"
-msgstr ""
+msgstr "Buchtitel"
 
 #: bookwyrm/forms.py:328 bookwyrm/templates/shelf/shelf.html:134
 #: bookwyrm/templates/shelf/shelf.html:165
 #: bookwyrm/templates/snippets/create_status/review.html:33
 msgid "Rating"
-msgstr ""
+msgstr "Bewertung"
 
 #: bookwyrm/forms.py:330 bookwyrm/templates/lists/list.html:109
 msgid "Sort By"
@@ -66,27 +66,27 @@ msgstr "Sortieren nach"
 
 #: bookwyrm/forms.py:334
 msgid "Ascending"
-msgstr ""
+msgstr "Aufsteigend"
 
 #: bookwyrm/forms.py:335
 msgid "Descending"
-msgstr ""
+msgstr "Absteigend"
 
 #: bookwyrm/importers/importer.py:75
 msgid "Error loading book"
-msgstr ""
+msgstr "Fehler beim Laden des Buches"
 
 #: bookwyrm/importers/importer.py:88
 msgid "Could not find a match for book"
-msgstr ""
+msgstr "Keine Übereinstimmung für das Buch gefunden"
 
 #: bookwyrm/models/base_model.py:17
 msgid "Pending"
-msgstr ""
+msgstr "Ausstehend"
 
 #: bookwyrm/models/base_model.py:18
 msgid "Self deletion"
-msgstr ""
+msgstr "Selbstlöschung"
 
 #: bookwyrm/models/base_model.py:19
 msgid "Moderator suspension"
@@ -98,27 +98,27 @@ msgstr ""
 
 #: bookwyrm/models/base_model.py:21
 msgid "Domain block"
-msgstr ""
+msgstr "Domainsperrung"
 
 #: bookwyrm/models/book.py:232
 msgid "Audiobook"
-msgstr ""
+msgstr "Hörbuch"
 
 #: bookwyrm/models/book.py:233
 msgid "eBook"
-msgstr ""
+msgstr "E-Book"
 
 #: bookwyrm/models/book.py:234
 msgid "Graphic novel"
-msgstr ""
+msgstr "Graphic Novel"
 
 #: bookwyrm/models/book.py:235
 msgid "Hardcover"
-msgstr ""
+msgstr "Hardcover"
 
 #: bookwyrm/models/book.py:236
 msgid "Paperback"
-msgstr ""
+msgstr "Taschenbuch"
 
 #: bookwyrm/models/federated_server.py:11
 #: bookwyrm/templates/settings/federation/edit_instance.html:42
@@ -131,7 +131,7 @@ msgstr "Föderiert"
 #: bookwyrm/templates/settings/federation/instance.html:10
 #: bookwyrm/templates/settings/federation/instance_list.html:23
 msgid "Blocked"
-msgstr ""
+msgstr "Blockiert"
 
 #: bookwyrm/models/fields.py:27
 #, python-format
@@ -153,21 +153,21 @@ msgstr "Dieser Benutzename ist bereits vergeben."
 
 #: bookwyrm/settings.py:117
 msgid "Home Timeline"
-msgstr ""
+msgstr "Home-Zeitachse"
 
 #: bookwyrm/settings.py:117
 msgid "Home"
-msgstr ""
+msgstr "Startseite"
 
 #: bookwyrm/settings.py:118
 msgid "Books Timeline"
-msgstr ""
+msgstr "Bücher-Zeitachse"
 
 #: bookwyrm/settings.py:118 bookwyrm/templates/search/layout.html:21
 #: bookwyrm/templates/search/layout.html:42
 #: bookwyrm/templates/user/layout.html:81
 msgid "Books"
-msgstr ""
+msgstr "Bücher"
 
 #: bookwyrm/settings.py:164
 msgid "English"
@@ -191,7 +191,7 @@ msgstr "简体中文 (Vereinfachtes Chinesisch)"
 
 #: bookwyrm/settings.py:169
 msgid "繁體中文 (Traditional Chinese)"
-msgstr ""
+msgstr "繁體中文 (Chinesisch, traditionell)"
 
 #: bookwyrm/templates/404.html:4 bookwyrm/templates/404.html:8
 msgid "Not Found"
@@ -207,7 +207,7 @@ msgstr "Ups!"
 
 #: bookwyrm/templates/500.html:8
 msgid "Server Error"
-msgstr ""
+msgstr "Serverfehler"
 
 #: bookwyrm/templates/500.html:9
 msgid "Something went wrong! Sorry about that."
@@ -221,7 +221,7 @@ msgstr "Autor*in editieren"
 #: bookwyrm/templates/author/author.html:34
 #: bookwyrm/templates/author/edit_author.html:41
 msgid "Aliases:"
-msgstr ""
+msgstr "Alternative Namen:"
 
 #: bookwyrm/templates/author/author.html:45
 msgid "Born:"
@@ -233,7 +233,7 @@ msgstr "Gestorben"
 
 #: bookwyrm/templates/author/author.html:61
 msgid "Wikipedia"
-msgstr ""
+msgstr "Wikipedia"
 
 #: bookwyrm/templates/author/author.html:69
 #: bookwyrm/templates/book/book.html:94
@@ -243,11 +243,11 @@ msgstr "In OpenLibrary ansehen"
 #: bookwyrm/templates/author/author.html:77
 #: bookwyrm/templates/book/book.html:97
 msgid "View on Inventaire"
-msgstr ""
+msgstr "Auf Inventaire anzeigen"
 
 #: bookwyrm/templates/author/author.html:85
 msgid "View on LibraryThing"
-msgstr ""
+msgstr "Auf LibraryThing anzeigen"
 
 #: bookwyrm/templates/author/author.html:93
 msgid "View on Goodreads"
@@ -260,7 +260,7 @@ msgstr "Bücher von %(name)s"
 
 #: bookwyrm/templates/author/edit_author.html:5
 msgid "Edit Author:"
-msgstr ""
+msgstr "Autor*in bearbeiten:"
 
 #: bookwyrm/templates/author/edit_author.html:13
 #: bookwyrm/templates/book/edit/edit_book.html:18
@@ -285,14 +285,14 @@ msgstr "Metadaten"
 #: bookwyrm/templates/author/edit_author.html:33
 #: bookwyrm/templates/lists/form.html:8 bookwyrm/templates/shelf/form.html:9
 msgid "Name:"
-msgstr ""
+msgstr "Name:"
 
 #: bookwyrm/templates/author/edit_author.html:43
 #: bookwyrm/templates/book/edit/edit_book_form.html:65
 #: bookwyrm/templates/book/edit/edit_book_form.html:79
 #: bookwyrm/templates/book/edit/edit_book_form.html:124
 msgid "Separate multiple values with commas."
-msgstr ""
+msgstr "Geben Sie mehrere Werte durch Kommas getrennt ein."
 
 #: bookwyrm/templates/author/edit_author.html:50
 msgid "Bio:"
