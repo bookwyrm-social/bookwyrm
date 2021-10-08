@@ -7,9 +7,6 @@ from .base_model import BookWyrmModel
 from . import fields
 from .relationship import UserBlocks
 
-# from .user import User
-
-
 class Group(BookWyrmModel):
     """A group of users"""
 
