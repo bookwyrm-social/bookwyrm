@@ -1,7 +1,7 @@
 {% load i18n %}
 {% if rating %}
 
-{% blocktrans with book_title=book.title|safe display_rating=rating|floatformat:"0" review_title=name|safe count counter=rating %}Review of "{{ book_title }}" ({{ display_rating }} star): {{ review_title }}{% plural %}Review of "{{ book_title }}" ({{ display_rating }} stars): {{ review_title }}{% endblocktrans %}
+{% blocktrans with book_title=book.title|safe display_rating=rating|floatformat:"-1" review_title=name|safe count counter=rating %}Review of "{{ book_title }}" ({{ display_rating }} star): {{ review_title }}{% plural %}Review of "{{ book_title }}" ({{ display_rating }} stars): {{ review_title }}{% endblocktrans %}
 
 {% else %}
 

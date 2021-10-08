@@ -1,6 +1,6 @@
 {% load i18n %}{% load humanize %}{% load utilities %}
 
-{% blocktrans trimmed with title=book|book_title path=book.remote_id display_rating=rating|floatformat:"0" count counter=rating|add:0 %}
+{% blocktrans trimmed with title=book|book_title path=book.remote_id display_rating=rating|floatformat:"-1" count counter=rating|add:0 %}
 rated <em><a href="{{ path }}">{{ title }}</a></em>: {{ display_rating }} star
 {% plural %}
 rated <em><a href="{{ path }}">{{ title }}</a></em>: {{ display_rating }} stars

@@ -4,7 +4,8 @@ from django.contrib.syndication.views import Feed
 from django.template.loader import get_template
 from django.utils.translation import gettext_lazy as _
 
-from .helpers import get_user_from_username, privacy_filter
+from bookwyrm import models
+from .helpers import get_user_from_username
 
 # pylint: disable=no-self-use, unused-argument
 class RssFeed(Feed):
@@ -35,11 +36,10 @@ class RssFeed(Feed):
 
     def items(self, obj):
         """the user's activity feed"""
-        return privacy_filter(
+        return models.Status.privacy_filter(
             obj,
-            obj.status_set.select_subclasses(),
             privacy_levels=["public", "unlisted"],
-        )
+        ).filter(user=obj)
 
     def item_link(self, item):
         """link to the status"""

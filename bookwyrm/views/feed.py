@@ -13,7 +13,7 @@ from bookwyrm import activitystreams, forms, models
 from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.settings import PAGE_LENGTH, STREAMS
 from bookwyrm.suggested_users import suggested_users
-from .helpers import get_user_from_username, privacy_filter
+from .helpers import get_user_from_username
 from .helpers import is_api_request, is_bookwyrm_request
 
 
@@ -56,11 +56,15 @@ class DirectMessage(View):
     def get(self, request, username=None):
         """like a feed but for dms only"""
         # remove fancy subclasses of status, keep just good ol' notes
-        queryset = models.Status.objects.filter(
-            review__isnull=True,
-            comment__isnull=True,
-            quotation__isnull=True,
-            generatednote__isnull=True,
+        activities = (
+            models.Status.privacy_filter(request.user, privacy_levels=["direct"])
+            .filter(
+                review__isnull=True,
+                comment__isnull=True,
+                quotation__isnull=True,
+                generatednote__isnull=True,
+            )
+            .order_by("-published_date")
         )
 
         user = None
@@ -70,11 +74,7 @@ class DirectMessage(View):
             except Http404:
                 pass
         if user:
-            queryset = queryset.filter(Q(user=user) | Q(mention_users=user))
-
-        activities = privacy_filter(
-            request.user, queryset, privacy_levels=["direct"]
-        ).order_by("-published_date")
+            activities = activities.filter(Q(user=user) | Q(mention_users=user))
 
         paginated = Paginator(activities, PAGE_LENGTH)
         data = {
@@ -109,9 +109,11 @@ class Status(View):
                 status.to_activity(pure=not is_bookwyrm_request(request))
             )
 
-        visible_thread = privacy_filter(
-            request.user, models.Status.objects.filter(thread_id=status.thread_id)
-        ).values_list("id", flat=True)
+        visible_thread = (
+            models.Status.privacy_filter(request.user)
+            .filter(thread_id=status.thread_id)
+            .values_list("id", flat=True)
+        )
         visible_thread = list(visible_thread)
 
         ancestors = models.Status.objects.select_subclasses().raw(

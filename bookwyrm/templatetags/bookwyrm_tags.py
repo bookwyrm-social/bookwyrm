@@ -2,7 +2,7 @@
 from django import template
 from django.db.models import Avg
 
-from bookwyrm import models, views
+from bookwyrm import models
 
 
 register = template.Library()
@@ -11,8 +11,8 @@ register = template.Library()
 @register.filter(name="rating")
 def get_rating(book, user):
     """get the overall rating of a book"""
-    queryset = views.helpers.privacy_filter(
-        user, models.Review.objects.filter(book__parent_work__editions=book)
+    queryset = models.Review.privacy_filter(user).filter(
+        book__parent_work__editions=book
     )
     return queryset.aggregate(Avg("rating"))["rating__avg"]
 

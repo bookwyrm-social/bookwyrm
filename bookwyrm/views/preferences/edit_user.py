@@ -11,6 +11,7 @@ from django.utils.decorators import method_decorator
 from django.views import View
 
 from bookwyrm import forms
+from bookwyrm.views.helpers import set_language
 
 
 # pylint: disable=no-self-use
@@ -33,9 +34,9 @@ class EditUser(View):
             data = {"form": form, "user": request.user}
             return TemplateResponse(request, "preferences/edit_user.html", data)
 
-        save_user_form(form)
+        user = save_user_form(form)
 
-        return redirect("user-feed", request.user.localname)
+        return set_language(user, redirect("user-feed", request.user.localname))
 
 
 def save_user_form(form):

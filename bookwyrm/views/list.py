@@ -18,7 +18,7 @@ from django.views.decorators.http import require_POST
 from bookwyrm import book_search, forms, models
 from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.settings import PAGE_LENGTH
-from .helpers import is_api_request, privacy_filter
+from .helpers import is_api_request
 from .helpers import get_user_from_username
 
 
@@ -30,18 +30,15 @@ class Lists(View):
         """display a book list"""
         # hide lists with no approved books
         lists = (
-            models.List.objects.annotate(
-                item_count=Count("listitem", filter=Q(listitem__approved=True))
+            models.List.privacy_filter(
+                request.user, privacy_levels=["public", "followers"]
             )
+            .annotate(item_count=Count("listitem", filter=Q(listitem__approved=True)))
             .filter(item_count__gt=0)
             .select_related("user")
             .prefetch_related("listitem_set")
             .order_by("-updated_date")
             .distinct()
-        )
-
-        lists = privacy_filter(
-            request.user, lists, privacy_levels=["public", "followers"]
         )
         paginated = Paginator(lists, 12)
         data = {
@@ -92,8 +89,7 @@ class UserLists(View):
     def get(self, request, username):
         """display a book list"""
         user = get_user_from_username(request.user, username)
-        lists = models.List.objects.filter(user=user)
-        lists = privacy_filter(request.user, lists)
+        lists = models.List.privacy_filter(request.user).filter(user=user)
         paginated = Paginator(lists, 12)
 
         data = {

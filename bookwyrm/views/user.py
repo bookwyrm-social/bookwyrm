@@ -12,7 +12,6 @@ from bookwyrm import models
 from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.settings import PAGE_LENGTH
 from .helpers import get_user_from_username, is_api_request
-from .helpers import privacy_filter
 
 
 # pylint: disable=no-self-use
@@ -56,10 +55,10 @@ class User(View):
 
         # user's posts
         activities = (
-            privacy_filter(
+            models.Status.privacy_filter(
                 request.user,
-                user.status_set.select_subclasses(),
             )
+            .filter(user=user)
             .select_related(
                 "user",
                 "reply_parent",
