@@ -7,6 +7,7 @@ from .base_model import BookWyrmModel
 from . import fields
 from .relationship import UserBlocks
 
+
 class Group(BookWyrmModel):
     """A group of users"""
 
@@ -35,6 +36,7 @@ class Group(BookWyrmModel):
         """Override filter for "direct" privacy level to allow group members to see the existence of groups and group lists"""
 
         return queryset.exclude(~Q(memberships__user=viewer), privacy="direct")
+
 
 class GroupMember(models.Model):
     """Users who are members of a group"""

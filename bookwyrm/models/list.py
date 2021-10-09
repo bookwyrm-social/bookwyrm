@@ -79,7 +79,9 @@ class List(OrderedCollectionMixin, BookWyrmModel):
 
         return queryset.exclude(
             ~Q(  # user isn't following and it isn't their own status and they are not a group member
-                Q(user__followers=viewer) | Q(user=viewer) | Q(group__memberships__user=viewer)
+                Q(user__followers=viewer)
+                | Q(user=viewer)
+                | Q(group__memberships__user=viewer)
             ),
             privacy="followers",  # and the status (of the list) is followers only
         )
@@ -89,10 +91,10 @@ class List(OrderedCollectionMixin, BookWyrmModel):
         """Override filter for "direct" privacy level to allow group members to see the existence of group lists"""
 
         return queryset.exclude(
-          ~Q( # user not self and not in the group if this is a group list
-              Q(user=viewer) | Q(group__memberships__user=viewer)
-          ), 
-          privacy="direct"
+            ~Q(  # user not self and not in the group if this is a group list
+                Q(user=viewer) | Q(group__memberships__user=viewer)
+            ),
+            privacy="direct",
         )
 
     @classmethod

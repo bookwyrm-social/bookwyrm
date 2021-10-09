@@ -72,7 +72,7 @@ class GroupViews(TestCase):
         view = views.FindUsers.as_view()
         request = self.factory.get("")
         request.user = self.local_user
-        result = view(request,group_id=999)
+        result = view(request, group_id=999)
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
@@ -85,7 +85,7 @@ class GroupViews(TestCase):
             "name": "Updated Group",
             "privacy": "private",
             "description": "Test description",
-            "user": self.local_user
+            "user": self.local_user,
         }
         request = self.factory.post("", group_fields)
         request.user = self.local_user

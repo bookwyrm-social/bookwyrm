@@ -25,7 +25,11 @@ class Group(View):
 
         group = get_object_or_404(models.Group, id=group_id)
         group.raise_visible_to_user(request.user)
-        lists = models.List.privacy_filter(request.user).filter(group=group).order_by("-updated_date")
+        lists = (
+            models.List.privacy_filter(request.user)
+            .filter(group=group)
+            .order_by("-updated_date")
+        )
 
         data = {
             "group": group,
@@ -53,7 +57,11 @@ class UserGroups(View):
     def get(self, request, username):
         """display a group"""
         user = get_user_from_username(request.user, username)
-        groups = models.Group.privacy_filter(request.user).filter(memberships__user=user).order_by("-updated_date")
+        groups = (
+            models.Group.privacy_filter(request.user)
+            .filter(memberships__user=user)
+            .order_by("-updated_date")
+        )
         paginated = Paginator(groups, 12)
 
         data = {
@@ -164,7 +172,7 @@ def remove_member(request):
         return HttpResponseBadRequest()
 
     # you can't be removed from your own group
-    if request.POST["user"]== group.user:
+    if request.POST["user"] == group.user:
         return HttpResponseBadRequest()
 
     is_member = models.GroupMember.objects.filter(group=group, user=user).exists()
