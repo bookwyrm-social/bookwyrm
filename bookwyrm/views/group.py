@@ -163,6 +163,10 @@ def remove_member(request):
     if not user:
         return HttpResponseBadRequest()
 
+    # you can't be removed from your own group
+    if request.POST["user"]== group.user:
+        return HttpResponseBadRequest()
+
     is_member = models.GroupMember.objects.filter(group=group, user=user).exists()
     is_invited = models.GroupMemberInvitation.objects.filter(
         group=group, user=user
@@ -182,13 +186,8 @@ def remove_member(request):
     if is_member:
 
         try:
-            membership = models.GroupMember.objects.get(group=group, user=user)
-            membership.delete()
-
-            # remove this user's group-curated lists from the group
-            models.List.objects.filter(group=group, user=user).update(
-                group=None, curation="closed"
-            )
+            models.List.remove_from_group(group.user, user)
+            models.GroupMember.remove(group.user, user)
 
         except IntegrityError:
             pass

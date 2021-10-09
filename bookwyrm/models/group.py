@@ -85,6 +85,15 @@ class GroupMember(models.Model):
             group=join_request.group,
         )
 
+    @classmethod
+    def remove(cls, owner, user):
+        """remove a user from a group"""
+
+        memberships = cls.objects.filter(group__user=owner, user=user).all()
+        for m in memberships:
+            # remove this user
+            m.delete()
+
 
 class GroupMemberInvitation(models.Model):
     """adding a user to a group requires manual confirmation"""
