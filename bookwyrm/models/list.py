@@ -1,6 +1,7 @@
 """ make a list of books!! """
 from django.apps import apps
 from django.db import models
+from django.db.models import Q
 from django.utils import timezone
 
 from bookwyrm import activitypub
@@ -71,6 +72,22 @@ class List(OrderedCollectionMixin, BookWyrmModel):
             return
         super().raise_not_editable(viewer)
 
+    @classmethod
+    def followers_filter(cls, queryset, viewer):
+        """Override filter for "followers" privacy level to allow non-following group members to see the existence of group lists"""
+
+        return queryset.exclude(
+            ~Q(  # user isn't following and it isn't their own status and they are not a group member
+                Q(user__followers=viewer) | Q(user=viewer) | Q(group__memberships__user=viewer)
+            ),
+            privacy="followers",  # and the status (of the list) is followers only
+        )
+
+    @classmethod
+    def direct_filter(cls, queryset, viewer):
+        """Override filter for "direct" privacy level to allow group members to see the existence of group lists"""
+
+        return queryset.exclude(~Q(group__memberships__user=viewer), privacy="direct")
 
 class ListItem(CollectionItemMixin, BookWyrmModel):
     """ok"""

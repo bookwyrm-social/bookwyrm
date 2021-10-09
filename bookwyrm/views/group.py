@@ -24,11 +24,8 @@ class Group(View):
         """display a group"""
 
         group = get_object_or_404(models.Group, id=group_id)
-        lists = models.List.objects.filter(group=group).order_by("-updated_date")
-        # lists = privacy_filter(request.user, lists)
-
-        # don't show groups to users who shouldn't see them
         group.raise_visible_to_user(request.user)
+        lists = models.List.privacy_filter(request.user).filter(group=group).order_by("-updated_date")
 
         data = {
             "group": group,
@@ -56,13 +53,11 @@ class UserGroups(View):
     def get(self, request, username):
         """display a group"""
         user = get_user_from_username(request.user, username)
-        memberships = (
-            models.GroupMember.objects.filter(user=user).all().order_by("-updated_date")
-        )
-        paginated = Paginator(memberships, 12)
+        groups = models.Group.privacy_filter(request.user).filter(memberships__user=user).order_by("-updated_date")
+        paginated = Paginator(groups, 12)
 
         data = {
-            "memberships": paginated.get_page(request.GET.get("page")),
+            "groups": paginated.get_page(request.GET.get("page")),
             "is_self": request.user.id == user.id,
             "user": user,
             "group_form": forms.GroupForm(),

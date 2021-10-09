@@ -19,6 +19,22 @@ class Group(BookWyrmModel):
         """don't want the user to be in there in this case"""
         return f"https://{DOMAIN}/group/{self.id}"
 
+    @classmethod
+    def followers_filter(cls, queryset, viewer):
+        """Override filter for "followers" privacy level to allow non-following group members to see the existence of groups and group lists"""
+
+        return queryset.exclude(
+            ~Q(  # user isn't following and it isn't their own status and they are not a group member
+                Q(user__followers=viewer) | Q(user=viewer) | Q(memberships__user=viewer)
+            ),
+            privacy="followers",  # and the status of the group is followers only
+        )
+
+    @classmethod
+    def direct_filter(cls, queryset, viewer):
+        """Override filter for "direct" privacy level to allow group members to see the existence of groups and group lists"""
+
+        return queryset.exclude(~Q(memberships__user=viewer), privacy="direct")
 
 class GroupMember(models.Model):
     """Users who are members of a group"""
