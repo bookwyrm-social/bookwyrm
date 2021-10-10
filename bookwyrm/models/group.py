@@ -22,10 +22,11 @@ class Group(BookWyrmModel):
 
     @classmethod
     def followers_filter(cls, queryset, viewer):
-        """Override filter for "followers" privacy level to allow non-following group members to see the existence of groups and group lists"""
+        """Override filter for "followers" privacy level to allow non-following
+        group members to see the existence of groups and group lists"""
 
         return queryset.exclude(
-            ~Q(  # user isn't following and it isn't their own status and they are not a group member
+            ~Q(  # user is not a group member
                 Q(user__followers=viewer) | Q(user=viewer) | Q(memberships__user=viewer)
             ),
             privacy="followers",  # and the status of the group is followers only
@@ -33,7 +34,8 @@ class Group(BookWyrmModel):
 
     @classmethod
     def direct_filter(cls, queryset, viewer):
-        """Override filter for "direct" privacy level to allow group members to see the existence of groups and group lists"""
+        """Override filter for "direct" privacy level to allow group members
+        to see the existence of groups and group lists"""
 
         return queryset.exclude(~Q(memberships__user=viewer), privacy="direct")
 
@@ -92,9 +94,8 @@ class GroupMember(models.Model):
         """remove a user from a group"""
 
         memberships = cls.objects.filter(group__user=owner, user=user).all()
-        for m in memberships:
-            # remove this user
-            m.delete()
+        for member in memberships:
+            member.delete()
 
 
 class GroupMemberInvitation(models.Model):

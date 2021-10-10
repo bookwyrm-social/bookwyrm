@@ -2,7 +2,6 @@
 from django.apps import apps
 from django.db import models
 from django.db.models import Q
-from django.db.models.fields import NullBooleanField
 from django.utils import timezone
 
 from bookwyrm import activitypub
@@ -74,10 +73,11 @@ class List(OrderedCollectionMixin, BookWyrmModel):
 
     @classmethod
     def followers_filter(cls, queryset, viewer):
-        """Override filter for "followers" privacy level to allow non-following group members to see the existence of group lists"""
+        """Override filter for "followers" privacy level to allow non-following
+        group members to see the existence of group lists"""
 
         return queryset.exclude(
-            ~Q(  # user isn't following and it isn't their own status and they are not a group member
+            ~Q(  # user isn't following or group member
                 Q(user__followers=viewer)
                 | Q(user=viewer)
                 | Q(group__memberships__user=viewer)
@@ -87,7 +87,8 @@ class List(OrderedCollectionMixin, BookWyrmModel):
 
     @classmethod
     def direct_filter(cls, queryset, viewer):
-        """Override filter for "direct" privacy level to allow group members to see the existence of group lists"""
+        """Override filter for "direct" privacy level to allow
+        group members to see the existence of group lists"""
 
         return queryset.exclude(
             ~Q(  # user not self and not in the group if this is a group list
@@ -101,9 +102,10 @@ class List(OrderedCollectionMixin, BookWyrmModel):
         """remove a list from a group"""
 
         memberships = GroupMember.objects.filter(group__user=owner, user=user).all()
-        for m in memberships:
+
+        for membership in memberships:
             # remove this user's group-curated lists from the group
-            cls.objects.filter(group=m.group, user=m.user).update(
+            cls.objects.filter(group=membership.group, user=membership.user).update(
                 group=None, curation="closed"
             )
 

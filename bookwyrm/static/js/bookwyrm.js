@@ -126,8 +126,7 @@ let BookWyrm = new class {
 
     /**
      * Show form.
-     * If the form has already been revealed, there is no '.is-hidden' element
-     * so this doesn't work as a toggle - use hideForm to hide it again
+     * 
      * @param  {Event} event
      * @return {undefined}
      */
