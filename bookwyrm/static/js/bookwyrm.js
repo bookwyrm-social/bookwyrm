@@ -134,7 +134,7 @@ let BookWyrm = new class {
         let trigger = event.currentTarget;
         let hidden = trigger.closest('.hidden-form').querySelectorAll('.is-hidden')[0];
         if (hidden) {
-          this.addRemoveClass(hidden, 'is-hidden', !hidden);
+            this.addRemoveClass(hidden, 'is-hidden', !hidden);
         }
     }
 
@@ -150,7 +150,7 @@ let BookWyrm = new class {
         let visible = document.getElementById(targetId)
 
         this.addRemoveClass(visible, 'is-hidden', true);
-  }
+    }
 
     /**
      * Execute actions on targets based on triggers.
