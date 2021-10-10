@@ -62,7 +62,6 @@ class List(OrderedCollectionMixin, BookWyrmModel):
 
     def raise_not_editable(self, viewer):
         """the associated user OR the list owner can edit"""
-        print("raising not editable")
         if self.user == viewer:
             return
         # group members can edit items in group lists
