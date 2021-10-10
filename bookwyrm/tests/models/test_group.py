@@ -21,32 +21,40 @@ class Group(TestCase):
         )
 
         self.badger = models.User.objects.create_user(
-            "badger", "badger@badger.badger", "badgerword", local=True, localname="badger"
+            "badger",
+            "badger@badger.badger",
+            "badgerword",
+            local=True,
+            localname="badger",
         )
 
         self.capybara = models.User.objects.create_user(
-            "capybara", "capybara@capybara.capybara", "capybaraword", local=True, localname="capybara"
+            "capybara",
+            "capybara@capybara.capybara",
+            "capybaraword",
+            local=True,
+            localname="capybara",
         )
 
         self.public_group = models.Group.objects.create(
-            name="Public Group", 
+            name="Public Group",
             description="Initial description",
-            user=self.owner_user, 
-            privacy="public"
+            user=self.owner_user,
+            privacy="public",
         )
 
         self.private_group = models.Group.objects.create(
-            name="Private Group", 
+            name="Private Group",
             description="Top secret",
-            user=self.owner_user, 
-            privacy="direct"
+            user=self.owner_user,
+            privacy="direct",
         )
 
         self.followers_only_group = models.Group.objects.create(
-            name="Followers Group", 
+            name="Followers Group",
             description="No strangers",
-            user=self.owner_user, 
-            privacy="followers"
+            user=self.owner_user,
+            privacy="followers",
         )
 
         self.followers_list = models.List.objects.create(
@@ -54,7 +62,7 @@ class Group(TestCase):
             curation="group",
             privacy="followers",
             group=self.public_group,
-            user=self.owner_user
+            user=self.owner_user,
         )
 
         self.private_list = models.List.objects.create(
@@ -62,18 +70,14 @@ class Group(TestCase):
             privacy="direct",
             curation="group",
             group=self.public_group,
-            user=self.owner_user
+            user=self.owner_user,
         )
 
-        models.GroupMember.objects.create(
-            group=self.private_group, user=self.badger
-        )
+        models.GroupMember.objects.create(group=self.private_group, user=self.badger)
         models.GroupMember.objects.create(
             group=self.followers_only_group, user=self.badger
         )
-        models.GroupMember.objects.create(
-            group=self.public_group, user=self.capybara
-        )
+        models.GroupMember.objects.create(group=self.public_group, user=self.capybara)
 
     def test_group_members_can_see_followers_only_groups(self, _):
         """follower-only group should not be excluded from group listings for group members viewing"""
@@ -103,7 +107,7 @@ class Group(TestCase):
         self.assertFalse(self.followers_list in rat_lists)
         self.assertFalse(self.followers_list in badger_lists)
         self.assertTrue(self.followers_list in capybara_lists)
-        
+
     def test_group_members_can_see_private_lists(self, _):
         """private group booklists should not be excluded from group booklist listing for group members"""
 
