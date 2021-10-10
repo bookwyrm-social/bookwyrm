@@ -39,7 +39,10 @@ class GroupViews(TestCase):
             )
 
             self.testgroup = models.Group.objects.create(
-                id=999, name="Test Group", user=self.local_user, privacy="public"
+                name="Test Group", 
+                description="Initial description",
+                user=self.local_user, 
+                privacy="public"
             )
             self.membership = models.GroupMember.objects.create(
                 group=self.testgroup, user=self.local_user
@@ -52,7 +55,7 @@ class GroupViews(TestCase):
         view = views.Group.as_view()
         request = self.factory.get("")
         request.user = self.local_user
-        result = view(request, group_id=999)
+        result = view(request, group_id=self.testgroup.id)
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
@@ -72,25 +75,50 @@ class GroupViews(TestCase):
         view = views.FindUsers.as_view()
         request = self.factory.get("")
         request.user = self.local_user
-        result = view(request, group_id=999)
+        result = view(request, group_id=self.testgroup.id)
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
-    def test_group_post(self, _):
+    def test_group_create(self, _):
+        """create group view"""
+        view = views.UserGroups.as_view()
+        request = self.factory.post(
+            "",
+            {
+                "name": "A group",
+                "description": "wowzers",
+                "privacy": "unlisted",
+                "user": self.local_user.id,
+            },
+        )
+        request.user = self.local_user
+        result = view(request, "username")
+
+        self.assertEqual(result.status_code, 302)
+        new_group = models.Group.objects.filter(name="A group").get()
+        self.assertEqual(new_group.description, "wowzers")
+        self.assertEqual(new_group.privacy, "unlisted")
+        self.assertTrue(models.GroupMember.objects.filter(group=new_group, user=self.local_user).exists())
+
+    def test_group_edit(self, _):
         """test editing a "group" database entry"""
 
         view = views.Group.as_view()
-        group_fields = {
-            "name": "Updated Group",
-            "privacy": "private",
-            "description": "Test description",
-            "user": self.local_user,
-        }
-        request = self.factory.post("", group_fields)
+        request = self.factory.post(
+          "",
+          {
+              "name": "Updated Group name",
+              "description": "wow",
+              "privacy": "direct",
+              "user": self.local_user.id,
+          }
+        )
         request.user = self.local_user
 
-        result = view(request, group_id=999)
+        result = view(request, group_id=self.testgroup.id)
         self.assertEqual(result.status_code, 302)
-
-        # TODO: test that group was updated.
+        self.testgroup.refresh_from_db()
+        self.assertEqual(self.testgroup.name, "Updated Group name")
+        self.assertEqual(self.testgroup.description, "wow")
+        self.assertEqual(self.testgroup.privacy, "direct")
