@@ -133,6 +133,7 @@ let BookWyrm = new class {
     revealForm(event) {
         let trigger = event.currentTarget;
         let hidden = trigger.closest('.hidden-form').querySelectorAll('.is-hidden')[0];
+
         if (hidden) {
             this.addRemoveClass(hidden, 'is-hidden', !hidden);
         }
