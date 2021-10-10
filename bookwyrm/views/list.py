@@ -58,8 +58,7 @@ class Lists(View):
         book_list = form.save()
         # list should not have a group if it is not group curated
         if not book_list.curation == "group":
-            book_list.group = None
-            book_list.save()
+            models.List.objects.filter(id=book_list.id).update(group=None)
 
         return redirect(book_list.local_path)
 
@@ -184,7 +183,6 @@ class List(View):
         return TemplateResponse(request, "lists/list.html", data)
 
     @method_decorator(login_required, name="dispatch")
-    # pylint: disable=unused-argument
     def post(self, request, list_id):
         """edit a list"""
         book_list = get_object_or_404(models.List, id=list_id)
@@ -195,8 +193,7 @@ class List(View):
             return redirect("list", book_list.id)
         book_list = form.save()
         if not book_list.curation == "group":
-            book_list.group = None
-            book_list.save()
+            models.List.objects.filter(id=book_list.id).update(group=None)
         return redirect(book_list.local_path)
 
 
