@@ -2,7 +2,7 @@
 from collections import namedtuple
 
 from django.db import IntegrityError, transaction
-from django.db.models import OuterRef, Subquery, F
+from django.db.models import OuterRef, Subquery, F, Prefetch
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.http import HttpResponseBadRequest
@@ -68,16 +68,42 @@ class Shelf(View):
             deleted=False,
         ).order_by("-published_date")
 
+        reading = models.ReadThrough.objects
+        if not is_self:
+            reading = models.ReadThrough.privacy_filter(request.user)
+
+        reading = reading.filter(user=user, book__id=OuterRef("id")).order_by("-start_date")
+
         books = books.annotate(
             rating=Subquery(reviews.values("rating")[:1]),
             shelved_date=F("shelfbook__shelved_date"),
-        ).prefetch_related("authors")
-
-        paginated = Paginator(
-            books.order_by("-shelfbook__updated_date"),
-            PAGE_LENGTH,
+            start_date=Subquery(reading.values("start_date")),
+            finish_date=Subquery(reading.values("finish_date")),
+            author=F("authors__name"),
         )
 
+        sort_fields = [
+            "title",
+            "author",
+            "shelved_date",
+            "start_date",
+            "finish_date",
+            "rating",
+        ]
+
+        sort = request.GET.get("sort")
+
+        if sort in sort_fields:
+            books = books.order_by(sort)
+        elif sort and sort[1:] in sort_fields:
+            books = books.order_by(F(sort[1:]).desc(nulls_last=True))
+        else:
+            books = books.order_by("-shelved_date")
+
+        paginated = Paginator(
+            books,
+            PAGE_LENGTH,
+        )
         page = paginated.get_page(request.GET.get("page"))
         data = {
             "user": user,
@@ -87,6 +113,7 @@ class Shelf(View):
             "books": page,
             "edit_form": forms.ShelfForm(instance=shelf if shelf_identifier else None),
             "create_form": forms.ShelfForm(),
+            "sort": sort,
             "page_range": paginated.get_elided_page_range(
                 page.number, on_each_side=2, on_ends=1
             ),
