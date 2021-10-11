@@ -165,7 +165,7 @@ LANGUAGES = [
     ("de-de", _("Deutsch (German)")),
     ("es", _("Español (Spanish)")),
     ("fr-fr", _("Français (French)")),
-    ("pt-br", _("Português - Brasil (Brazilian Portugues)")),
+    ("pt-br", _("Português - Brasil (Brazilian Portuguese)")),
     ("zh-hans", _("简体中文 (Simplified Chinese)")),
     ("zh-hant", _("繁體中文 (Traditional Chinese)")),
 ]
