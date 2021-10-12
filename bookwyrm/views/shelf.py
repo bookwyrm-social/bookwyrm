@@ -72,7 +72,9 @@ class Shelf(View):
         if not is_self:
             reading = models.ReadThrough.privacy_filter(request.user)
 
-        reading = reading.filter(user=user, book__id=OuterRef("id")).order_by("-start_date")
+        reading = reading.filter(user=user, book__id=OuterRef("id")).order_by(
+            "-start_date"
+        )
 
         books = books.annotate(
             rating=Subquery(reviews.values("rating")[:1]),
