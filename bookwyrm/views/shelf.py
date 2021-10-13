@@ -84,23 +84,7 @@ class Shelf(View):
             author=F("authors__name"),
         )
 
-        sort_fields = [
-            "title",
-            "author",
-            "shelved_date",
-            "start_date",
-            "finish_date",
-            "rating",
-        ]
-
-        sort = request.GET.get("sort")
-
-        if sort in sort_fields:
-            books = books.order_by(sort)
-        elif sort and sort[1:] in sort_fields:
-            books = books.order_by(F(sort[1:]).desc(nulls_last=True))
-        else:
-            books = books.order_by("-shelved_date")
+        books = sort_books(books, request.GET.get("sort"))
 
         paginated = Paginator(
             books,
@@ -115,13 +99,15 @@ class Shelf(View):
             "books": page,
             "edit_form": forms.ShelfForm(instance=shelf if shelf_identifier else None),
             "create_form": forms.ShelfForm(),
-            "sort": sort,
+            "sort": request.GET.get("sort"),
             "page_range": paginated.get_elided_page_range(
                 page.number, on_each_side=2, on_ends=1
             ),
         }
 
         return TemplateResponse(request, "shelf/shelf.html", data)
+
+
 
     @method_decorator(login_required, name="dispatch")
     # pylint: disable=unused-argument
@@ -152,7 +138,6 @@ def create_shelf(request):
 
     shelf = form.save()
     return redirect(shelf.local_path)
-
 
 @login_required
 @require_POST
@@ -236,3 +221,23 @@ def unshelve(request):
 
     shelf_book.delete()
     return redirect(request.headers.get("Referer", "/"))
+
+
+def sort_books(books, sort):
+    """Books in shelf sorting"""
+    sort_fields = [
+        "title",
+        "author",
+        "shelved_date",
+        "start_date",
+        "finish_date",
+        "rating",
+    ]
+
+    if sort in sort_fields:
+        books = books.order_by(sort)
+    elif sort and sort[1:] in sort_fields:
+        books = books.order_by(F(sort[1:]).desc(nulls_last=True))
+    else:
+        books = books.order_by("-shelved_date")
+    return books
