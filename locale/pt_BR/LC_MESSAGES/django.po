@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-10-06 23:57+0000\n"
-"PO-Revision-Date: 2021-10-11 16:27\n"
+"PO-Revision-Date: 2021-10-13 16:42\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Portuguese, Brazilian\n"
 "Language: pt\n"
@@ -35,7 +35,7 @@ msgstr "Um Mês"
 
 #: bookwyrm/forms.py:259
 msgid "Does Not Expire"
-msgstr "Não Expira"
+msgstr "Não expira"
 
 #: bookwyrm/forms.py:263
 #, python-brace-format
@@ -171,7 +171,7 @@ msgstr "Livros"
 
 #: bookwyrm/settings.py:164
 msgid "English"
-msgstr "Inglês"
+msgstr "English (Inglês)"
 
 #: bookwyrm/settings.py:165
 msgid "Deutsch (German)"
@@ -754,7 +754,7 @@ msgstr "Ajuda"
 
 #: bookwyrm/templates/compose.html:5 bookwyrm/templates/compose.html:8
 msgid "Compose status"
-msgstr "Escrever status"
+msgstr "Escrever publicação"
 
 #: bookwyrm/templates/confirm_email/confirm_email.html:4
 msgid "Confirm email"
@@ -859,13 +859,13 @@ msgstr "Conta bloqueada"
 #: bookwyrm/templates/directory/user_card.html:40
 msgid "follower you follow"
 msgid_plural "followers you follow"
-msgstr[0] ""
+msgstr[0] "seguidor que você segue"
 msgstr[1] "seguidores que você segue"
 
 #: bookwyrm/templates/directory/user_card.html:47
 msgid "book on your shelves"
 msgid_plural "books on your shelves"
-msgstr[0] ""
+msgstr[0] "livro em suas estantes"
 msgstr[1] "livros em suas estantes"
 
 #: bookwyrm/templates/directory/user_card.html:55
@@ -922,7 +922,7 @@ msgstr "citou"
 #: bookwyrm/templates/discover/large-book.html:68
 #: bookwyrm/templates/discover/small-book.html:52
 msgid "View status"
-msgstr "Ver status"
+msgstr "Ver publicação"
 
 #: bookwyrm/templates/email/confirm/html_content.html:6
 #: bookwyrm/templates/email/confirm/text_content.html:4
@@ -1031,7 +1031,7 @@ msgstr "Você não tem mensagens."
 #: bookwyrm/templates/feed/feed.html:22
 #, python-format
 msgid "load <span data-poll=\"stream/%(tab_key)s\">0</span> unread status(es)"
-msgstr "carregar <span data-poll=\"stream/%(tab_key)s\">0</span> status não lido(s)"
+msgstr "carregar <span data-poll=\"stream/%(tab_key)s\">0</span> publicações não lida(s)"
 
 #: bookwyrm/templates/feed/feed.html:38
 msgid "There aren't any activities right now! Try following a user to get started"
@@ -1479,11 +1479,11 @@ msgstr "Registrar"
 
 #: bookwyrm/templates/layout.html:221
 msgid "Successfully posted status"
-msgstr "Status publicado"
+msgstr "Publicação feita com sucesso"
 
 #: bookwyrm/templates/layout.html:222
 msgid "Error posting status"
-msgstr "Erro ao publicar status"
+msgstr "Erro ao publicar"
 
 #: bookwyrm/templates/layout.html:230
 msgid "About this instance"
@@ -1729,7 +1729,7 @@ msgstr "compartilhou sua <a href=\"%(related_path)s\">citação de <em>%(book_ti
 #: bookwyrm/templates/notifications/items/boost.html:37
 #, python-format
 msgid "boosted your <a href=\"%(related_path)s\">status</a>"
-msgstr "compartilhou seu <a href=\"%(related_path)s\">status</a>"
+msgstr "compartilhou sua <a href=\"%(related_path)s\">publicação</a>"
 
 #: bookwyrm/templates/notifications/items/fav.html:19
 #, python-format
@@ -1749,7 +1749,7 @@ msgstr "curtiu sua <a href=\"%(related_path)s\">citação de <em>%(book_title)s<
 #: bookwyrm/templates/notifications/items/fav.html:37
 #, python-format
 msgid "favorited your <a href=\"%(related_path)s\">status</a>"
-msgstr "curtiu seu <a href=\"%(related_path)s\">status</a>"
+msgstr "curtiu sua <a href=\"%(related_path)s\">publicação</a>"
 
 #: bookwyrm/templates/notifications/items/follow.html:15
 msgid "followed you"
@@ -1782,7 +1782,7 @@ msgstr "te mencionou em uma <a href=\"%(related_path)s\">citação de <em>%(book
 #: bookwyrm/templates/notifications/items/mention.html:38
 #, python-format
 msgid "mentioned you in a <a href=\"%(related_path)s\">status</a>"
-msgstr "te mencionou em um <a href=\"%(related_path)s\">status</a>"
+msgstr "te mencionou em uma <a href=\"%(related_path)s\">publicação</a>"
 
 #: bookwyrm/templates/notifications/items/reply.html:21
 #, python-format
@@ -1802,7 +1802,7 @@ msgstr "<a href=\"%(related_path)s\">respondeu</a> à sua <a href=\"%(parent_pat
 #: bookwyrm/templates/notifications/items/reply.html:39
 #, python-format
 msgid "<a href=\"%(related_path)s\">replied</a> to your <a href=\"%(parent_path)s\">status</a>"
-msgstr "<a href=\"%(related_path)s\">respondeu</a> ao seu <a href=\"%(parent_path)s\">status</a>"
+msgstr "<a href=\"%(related_path)s\">respondeu</a> à sua <a href=\"%(parent_path)s\">publicação</a>"
 
 #: bookwyrm/templates/notifications/items/report.html:15
 #, python-format
@@ -1917,7 +1917,7 @@ msgstr "Fuso horário preferido: "
 
 #: bookwyrm/templates/preferences/edit_user.html:116
 msgid "Default post privacy:"
-msgstr "Privacidade de status padrão:"
+msgstr "Privacidade padrão das publicações:"
 
 #: bookwyrm/templates/preferences/layout.html:11
 msgid "Account"
@@ -2078,7 +2078,7 @@ msgstr "Data final"
 #: bookwyrm/templates/settings/users/user_admin.html:34
 #: bookwyrm/templates/settings/users/user_info.html:20
 msgid "Status"
-msgstr "Status"
+msgstr "Publicação"
 
 #: bookwyrm/templates/settings/announcements/announcements.html:48
 msgid "active"
@@ -2110,7 +2110,7 @@ msgstr "Ativo neste mês"
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:27
 msgid "Statuses"
-msgstr "Statuses"
+msgstr "Publicações"
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:33
 #: bookwyrm/templates/settings/dashboard/works_chart.html:11
@@ -2165,7 +2165,7 @@ msgstr "Cadastros"
 
 #: bookwyrm/templates/settings/dashboard/status_chart.html:11
 msgid "Statuses posted"
-msgstr "Status publicados"
+msgstr "Publicações feitas"
 
 #: bookwyrm/templates/settings/dashboard/user_chart.html:11
 msgid "Total"
@@ -2554,15 +2554,15 @@ msgstr "Comentário"
 
 #: bookwyrm/templates/settings/reports/report.html:46
 msgid "Reported statuses"
-msgstr "Statuses denunciados"
+msgstr "Publicações denunciadas"
 
 #: bookwyrm/templates/settings/reports/report.html:48
 msgid "No statuses reported"
-msgstr "Nenhum status denunciado"
+msgstr "Nenhuma publicação denunciada"
 
 #: bookwyrm/templates/settings/reports/report.html:54
 msgid "Status has been deleted"
-msgstr "O status foi excluído"
+msgstr "A publicação foi excluída"
 
 #: bookwyrm/templates/settings/reports/report_preview.html:13
 msgid "No notes provided"
@@ -3125,7 +3125,7 @@ msgstr "Resenha de \"%(book_title)s\": %(review_title)s"
 #: bookwyrm/templates/snippets/goal_form.html:4
 #, python-format
 msgid "Set a goal for how many books you'll finish reading in %(year)s, and track your progress throughout the year."
-msgstr "Defina uma meta de quantos livros você terminará de ler em %(year)s e acompanhe seu progresso ao longo do ano."
+msgstr "Defina uma meta de quantos livros você lerá em %(year)s e acompanhe seu progresso ao longo do ano."
 
 #: bookwyrm/templates/snippets/goal_form.html:16
 msgid "Reading goal:"
@@ -3199,7 +3199,7 @@ msgstr "Apenas seguidores"
 
 #: bookwyrm/templates/snippets/privacy_select.html:6
 msgid "Post privacy"
-msgstr "Privacidade do status"
+msgstr "Privacidade da publicação"
 
 #: bookwyrm/templates/snippets/privacy_select.html:17
 #: bookwyrm/templates/user/relationships/followers.html:6
@@ -3309,7 +3309,7 @@ msgstr "Aviso de conteúdo"
 
 #: bookwyrm/templates/snippets/status/content_status.html:79
 msgid "Show status"
-msgstr "Mostrar status"
+msgstr "Mostrar publicação"
 
 #: bookwyrm/templates/snippets/status/content_status.html:101
 #, python-format
@@ -3327,7 +3327,7 @@ msgstr "Abrir imagem em nova janela"
 
 #: bookwyrm/templates/snippets/status/content_status.html:144
 msgid "Hide status"
-msgstr "Esconder status"
+msgstr "Esconder publicação"
 
 #: bookwyrm/templates/snippets/status/headers/comment.html:2
 #, python-format
@@ -3337,7 +3337,7 @@ msgstr "comentou sobre <a href=\"%(book_path)s\">%(book)s</a>"
 #: bookwyrm/templates/snippets/status/headers/note.html:15
 #, python-format
 msgid "replied to <a href=\"%(user_path)s\">%(username)s</a>'s <a href=\"%(status_path)s\">status</a>"
-msgstr "respondeu ao <a href=\"%(status_path)s\">status</a> de <a href=\"%(user_path)s\">%(username)s</a>"
+msgstr "respondeu à <a href=\"%(status_path)s\">publicação</a> de <a href=\"%(user_path)s\">%(username)s</a>"
 
 #: bookwyrm/templates/snippets/status/headers/quotation.html:2
 #, python-format
@@ -3372,17 +3372,17 @@ msgstr "<a href=\"%(user_path)s\">%(username)s</a> quer ler <a href=\"%(book_pat
 #: bookwyrm/templates/snippets/status/layout.html:24
 #: bookwyrm/templates/snippets/status/status_options.html:17
 msgid "Delete status"
-msgstr "Excluir status"
+msgstr "Excluir publicação"
 
 #: bookwyrm/templates/snippets/status/layout.html:56
 #: bookwyrm/templates/snippets/status/layout.html:57
 msgid "Boost status"
-msgstr "Compartilhar status"
+msgstr "Compartilhar publicação"
 
 #: bookwyrm/templates/snippets/status/layout.html:60
 #: bookwyrm/templates/snippets/status/layout.html:61
 msgid "Like status"
-msgstr "Curtir status"
+msgstr "Curtir publicação"
 
 #: bookwyrm/templates/snippets/status/status.html:10
 msgid "boosted"
@@ -3583,5 +3583,5 @@ msgstr "Um link para redefinição da senha foi enviado para {email}"
 #: bookwyrm/views/rss_feed.py:35
 #, python-brace-format
 msgid "Status updates from {obj.display_name}"
-msgstr "Atualizações de status de {obj.display_name}"
+msgstr "Novas publicações de {obj.display_name}"
 
