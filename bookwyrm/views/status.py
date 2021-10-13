@@ -27,13 +27,13 @@ class CreateStatus(View):
     """the view for *posting*"""
 
     def get(self, request, status_type):  # pylint: disable=unused-argument
-        """compose view (used for delete-and-redraft)"""
+        """compose view (used for editing)"""
         book = get_object_or_404(models.Edition, id=request.GET.get("book"))
         data = {"book": book}
         return TemplateResponse(request, "compose.html", data)
 
     def post(self, request, status_type):
-        """create  status of whatever type"""
+        """create status of whatever type"""
         status_type = status_type[0].upper() + status_type[1:]
 
         try:
@@ -104,36 +104,6 @@ class DeleteStatus(View):
         # perform deletion
         status.delete()
         return redirect(request.headers.get("Referer", "/"))
-
-
-@method_decorator(login_required, name="dispatch")
-class DeleteAndRedraft(View):
-    """delete a status but let the user re-create it"""
-
-    def post(self, request, status_id):
-        """delete and tombstone a status"""
-        status = get_object_or_404(
-            models.Status.objects.select_subclasses(), id=status_id
-        )
-        # don't let people redraft other people's statuses
-        status.raise_not_editable(request.user)
-
-        status_type = status.status_type.lower()
-        if status.reply_parent:
-            status_type = "reply"
-
-        data = {
-            "draft": status,
-            "type": status_type,
-        }
-        if hasattr(status, "book"):
-            data["book"] = status.book
-        elif status.mention_books:
-            data["book"] = status.mention_books.first()
-
-        # perform deletion
-        status.delete()
-        return TemplateResponse(request, "compose.html", data)
 
 
 @login_required

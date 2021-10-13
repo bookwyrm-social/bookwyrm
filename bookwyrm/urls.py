@@ -330,11 +330,6 @@ urlpatterns = [
         views.DeleteStatus.as_view(),
         name="delete-status",
     ),
-    re_path(
-        r"^redraft-status/(?P<status_id>\d+)/?$",
-        views.DeleteAndRedraft.as_view(),
-        name="redraft",
-    ),
     # interact
     re_path(r"^favorite/(?P<status_id>\d+)/?$", views.Favorite.as_view(), name="fav"),
     re_path(
