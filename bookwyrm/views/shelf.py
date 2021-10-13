@@ -90,6 +90,7 @@ class Shelf(View):
             books,
             PAGE_LENGTH,
         )
+        
         page = paginated.get_page(request.GET.get("page"))
         data = {
             "user": user,
@@ -106,8 +107,6 @@ class Shelf(View):
         }
 
         return TemplateResponse(request, "shelf/shelf.html", data)
-
-
 
     @method_decorator(login_required, name="dispatch")
     # pylint: disable=unused-argument
@@ -138,6 +137,7 @@ def create_shelf(request):
 
     shelf = form.save()
     return redirect(shelf.local_path)
+
 
 @login_required
 @require_POST
