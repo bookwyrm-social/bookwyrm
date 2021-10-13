@@ -2,7 +2,7 @@
 from collections import namedtuple
 
 from django.db import IntegrityError, transaction
-from django.db.models import OuterRef, Subquery, F, Prefetch
+from django.db.models import OuterRef, Subquery, F
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.http import HttpResponseBadRequest
