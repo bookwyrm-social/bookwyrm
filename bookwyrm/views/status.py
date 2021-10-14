@@ -28,11 +28,13 @@ class EditStatus(View):
 
     def get(self, request, status_id):  # pylint: disable=unused-argument
         """load the edit panel"""
-        status = get_object_or_404(models.Status.select_subclasses(), id=status_id)
+        status = get_object_or_404(models.Status.objects.select_subclasses(), id=status_id)
         status.raise_not_editable(request.user)
 
         data = {
-            "status": status,
+            "type": status.status_type.lower(),
+            "book": getattr(status, "book", None),
+            "draft": status,
         }
         return TemplateResponse(request, "compose.html", data)
 
