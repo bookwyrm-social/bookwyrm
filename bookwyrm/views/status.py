@@ -28,7 +28,9 @@ class EditStatus(View):
 
     def get(self, request, status_id):  # pylint: disable=unused-argument
         """load the edit panel"""
-        status = get_object_or_404(models.Status.objects.select_subclasses(), id=status_id)
+        status = get_object_or_404(
+            models.Status.objects.select_subclasses(), id=status_id
+        )
         status.raise_not_editable(request.user)
 
         data = {
@@ -42,7 +44,6 @@ class EditStatus(View):
         """save an edited status"""
         status = get_object_or_404(models.Status.select_subclasses(), id=status_id)
         status.raise_not_editable(request.user)
-
 
 
 # pylint: disable= no-self-use
