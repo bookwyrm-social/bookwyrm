@@ -17,7 +17,7 @@ reply_parent: the Status object this post will be in reply to, if applicable
 <form
     class="is-flex-grow-1{% if not no_script %} submit-status{% endif %}"
     name="{{ type }}"
-    action="/post/{{ type }}"
+    action="{% url "create-status" type %}"
     method="post"
     id="form_{{ type }}_{{ book.id }}{{ reply_parent.id }}"
 >
