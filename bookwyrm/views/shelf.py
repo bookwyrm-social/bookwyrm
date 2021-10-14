@@ -68,16 +68,30 @@ class Shelf(View):
             deleted=False,
         ).order_by("-published_date")
 
+        reading = models.ReadThrough.objects
+
+        reading = reading.filter(user=user, book__id=OuterRef("id")).order_by(
+            "start_date"
+        )
+
         books = books.annotate(
             rating=Subquery(reviews.values("rating")[:1]),
             shelved_date=F("shelfbook__shelved_date"),
+            start_date=Subquery(reading.values("start_date")[:1]),
+            finish_date=Subquery(reading.values("finish_date")[:1]),
+            author=Subquery(
+                models.Book.objects.filter(id=OuterRef("id")).values("authors__name")[
+                    :1
+                ]
+            ),
         ).prefetch_related("authors")
 
+        books = sort_books(books, request.GET.get("sort"))
+
         paginated = Paginator(
-            books.order_by("-shelfbook__updated_date"),
+            books,
             PAGE_LENGTH,
         )
-
         page = paginated.get_page(request.GET.get("page"))
         data = {
             "user": user,
@@ -87,6 +101,7 @@ class Shelf(View):
             "books": page,
             "edit_form": forms.ShelfForm(instance=shelf if shelf_identifier else None),
             "create_form": forms.ShelfForm(),
+            "sort": request.GET.get("sort"),
             "page_range": paginated.get_elided_page_range(
                 page.number, on_each_side=2, on_ends=1
             ),
@@ -207,3 +222,23 @@ def unshelve(request):
 
     shelf_book.delete()
     return redirect(request.headers.get("Referer", "/"))
+
+
+def sort_books(books, sort):
+    """Books in shelf sorting"""
+    sort_fields = [
+        "title",
+        "author",
+        "shelved_date",
+        "start_date",
+        "finish_date",
+        "rating",
+    ]
+
+    if sort in sort_fields:
+        books = books.order_by(sort)
+    elif sort and sort[1:] in sort_fields:
+        books = books.order_by(F(sort[1:]).desc(nulls_last=True))
+    else:
+        books = books.order_by("-shelved_date")
+    return books

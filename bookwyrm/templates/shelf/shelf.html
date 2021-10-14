@@ -124,14 +124,16 @@
         <table class="table is-striped is-fullwidth is-mobile">
             <thead>
                 <tr>
-                    <th>{% trans "Cover" %}</th>
-                    <th>{% trans "Title" %}</th>
-                    <th>{% trans "Author" %}</th>
-                    <th>{% trans "Shelved" %}</th>
-                    <th>{% trans "Started" %}</th>
-                    <th>{% trans "Finished" %}</th>
+                    <th>{% trans "Cover"%}</th>
+                    <th>{% trans "Title"  as text %}{% include 'snippets/table-sort-header.html' with field="title" sort=sort text=text %}</th>
+                    <th>{% trans "Author"  as text %}{% include 'snippets/table-sort-header.html' with field="author" sort=sort text=text %}</th>
                     {% if request.user.is_authenticated %}
-                    <th>{% trans "Rating" %}</th>
+                        {% if is_self %}
+                    <th>{% trans "Shelved"  as text %}{% include 'snippets/table-sort-header.html' with field="shelved_date" sort=sort text=text %}</th>
+                    <th>{% trans "Started"  as text %}{% include 'snippets/table-sort-header.html' with field="start_date" sort=sort text=text %}</th>
+                    <th>{% trans "Finished"  as text %}{% include 'snippets/table-sort-header.html' with field="finish_date" sort=sort text=text %}</th>
+                        {% endif %}
+                    <th>{% trans "Rating" as text %}{% include 'snippets/table-sort-header.html' with field="rating" sort=sort text=text %}</th>
                     {% endif %}
                     {% if shelf.user == request.user %}
                     <th aria-hidden="true"></th>
@@ -151,17 +153,18 @@
                     <td data-title="{% trans "Author" %}">
                         {% include 'snippets/authors.html' %}
                     </td>
+                    {% if request.user.is_authenticated %}
+                        {% if is_self %}
                     <td data-title="{% trans "Shelved" %}">
                         {{ book.shelved_date|naturalday }}
                     </td>
-                    {% latest_read_through book user as read_through %}
                     <td data-title="{% trans "Started" %}">
-                        {{ read_through.start_date|naturalday|default_if_none:""}}
+                        {{ book.start_date|naturalday|default_if_none:""}}
                     </td>
                     <td data-title="{% trans "Finished" %}">
-                        {{ read_through.finish_date|naturalday|default_if_none:""}}
+                        {{ book.finish_date|naturalday|default_if_none:""}}
                     </td>
-                    {% if request.user.is_authenticated %}
+                        {% endif %}
                     <td data-title="{% trans "Rating" %}">
                         {% include 'snippets/stars.html' with rating=book.rating %}
                     </td>
