@@ -69,20 +69,22 @@ class Shelf(View):
         ).order_by("-published_date")
 
         reading = models.ReadThrough.objects
-        if not is_self:
-            reading = models.ReadThrough.privacy_filter(request.user)
 
         reading = reading.filter(user=user, book__id=OuterRef("id")).order_by(
-            "-start_date"
+            "start_date"
         )
 
         books = books.annotate(
             rating=Subquery(reviews.values("rating")[:1]),
             shelved_date=F("shelfbook__shelved_date"),
-            start_date=Subquery(reading.values("start_date")),
-            finish_date=Subquery(reading.values("finish_date")),
-            author=F("authors__name"),
-        )
+            start_date=Subquery(reading.values("start_date")[:1]),
+            finish_date=Subquery(reading.values("finish_date")[:1]),
+            author=Subquery(
+                models.Book.objects.filter(id=OuterRef("id")).values("authors__name")[
+                    :1
+                ]
+            ),
+        ).prefetch_related("authors")
 
         books = sort_books(books, request.GET.get("sort"))
 

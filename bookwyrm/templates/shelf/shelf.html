@@ -127,10 +127,12 @@
                     <th>{% trans "Cover"%}</th>
                     <th>{% trans "Title"  as text %}{% include 'snippets/table-sort-header.html' with field="title" sort=sort text=text %}</th>
                     <th>{% trans "Author"  as text %}{% include 'snippets/table-sort-header.html' with field="author" sort=sort text=text %}</th>
+                    {% if request.user.is_authenticated %}
+                        {% if is_self %}
                     <th>{% trans "Shelved"  as text %}{% include 'snippets/table-sort-header.html' with field="shelved_date" sort=sort text=text %}</th>
                     <th>{% trans "Started"  as text %}{% include 'snippets/table-sort-header.html' with field="start_date" sort=sort text=text %}</th>
                     <th>{% trans "Finished"  as text %}{% include 'snippets/table-sort-header.html' with field="finish_date" sort=sort text=text %}</th>
-                    {% if request.user.is_authenticated %}
+                        {% endif %}
                     <th>{% trans "Rating" as text %}{% include 'snippets/table-sort-header.html' with field="rating" sort=sort text=text %}</th>
                     {% endif %}
                     {% if shelf.user == request.user %}
@@ -151,6 +153,8 @@
                     <td data-title="{% trans "Author" %}">
                         {% include 'snippets/authors.html' %}
                     </td>
+                    {% if request.user.is_authenticated %}
+                        {% if is_self %}
                     <td data-title="{% trans "Shelved" %}">
                         {{ book.shelved_date|naturalday }}
                     </td>
@@ -160,7 +164,7 @@
                     <td data-title="{% trans "Finished" %}">
                         {{ book.finish_date|naturalday|default_if_none:""}}
                     </td>
-                    {% if request.user.is_authenticated %}
+                        {% endif %}
                     <td data-title="{% trans "Rating" %}">
                         {% include 'snippets/stars.html' with rating=book.rating %}
                     </td>
