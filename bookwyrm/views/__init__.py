@@ -60,7 +60,7 @@ from .search import Search
 from .shelf import Shelf
 from .shelf import create_shelf, delete_shelf
 from .shelf import shelve, unshelve
-from .status import CreateStatus, DeleteStatus, update_progress
+from .status import CreateStatus, EditStatus, DeleteStatus, update_progress
 from .status import edit_readthrough
 from .updates import get_notification_count, get_unread_status_count
 from .user import User, Followers, Following, hide_suggestions

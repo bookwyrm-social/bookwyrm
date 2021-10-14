@@ -23,11 +23,33 @@ from .helpers import load_date_in_user_tz_as_utc
 
 # pylint: disable= no-self-use
 @method_decorator(login_required, name="dispatch")
+class EditStatus(View):
+    """the view for *posting*"""
+
+    def get(self, request, status_id):  # pylint: disable=unused-argument
+        """load the edit panel"""
+        status = get_object_or_404(models.Status.select_subclasses(), id=status_id)
+        status.raise_not_editable(request.user)
+
+        data = {
+            "status": status,
+        }
+        return TemplateResponse(request, "compose.html", data)
+
+    def post(self, request, status_id):
+        """save an edited status"""
+        status = get_object_or_404(models.Status.select_subclasses(), id=status_id)
+        status.raise_not_editable(request.user)
+
+
+
+# pylint: disable= no-self-use
+@method_decorator(login_required, name="dispatch")
 class CreateStatus(View):
     """the view for *posting*"""
 
     def get(self, request, status_type):  # pylint: disable=unused-argument
-        """compose view (used for editing)"""
+        """compose view (...not used?)"""
         book = get_object_or_404(models.Edition, id=request.GET.get("book"))
         data = {"book": book}
         return TemplateResponse(request, "compose.html", data)

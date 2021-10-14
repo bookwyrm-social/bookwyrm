@@ -315,6 +315,7 @@ urlpatterns = [
     re_path(
         rf"{STATUS_PATH}/replies(.json)?/?$", views.Replies.as_view(), name="replies"
     ),
+    re_path(r"^edit/(?P<status_id>\d+)/?$", views.EditStatus.as_view(), name="edit-status"),
     re_path(
         r"^post/?$",
         views.CreateStatus.as_view(),

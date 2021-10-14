@@ -20,7 +20,7 @@
 </li>
 {% if status.status_type != 'GeneratedNote' and status.status_type != 'Rating' %}
 <li role="menuitem" class="dropdown-item p-0">
-    <form class="" name="edit-{{ status.id }}" action="{% url 'create-status' status.id %}" method="post">
+    <form class="" name="edit-{{ status.id }}" action="{% url 'edit-status' status.id %}" method="post">
         {% csrf_token %}
         <button class="button is-radiusless is-fullwidth is-small" type="submit">
             {% trans "Edit" %}
