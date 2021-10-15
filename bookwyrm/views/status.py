@@ -76,6 +76,11 @@ class CreateStatus(View):
             return redirect(request.headers.get("Referer", "/"))
 
         status = form.save(commit=False)
+        # save the plain, unformatted version of the status for future editing
+        status.raw_content = status.content
+        if hasattr(status, "quote"):
+            status.raw_quote = status.quote
+
         if not status.sensitive and status.content_warning:
             # the cw text field remains populated when you click "remove"
             status.content_warning = None

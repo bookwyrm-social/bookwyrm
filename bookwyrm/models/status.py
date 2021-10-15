@@ -31,6 +31,7 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         "User", on_delete=models.PROTECT, activitypub_field="attributedTo"
     )
     content = fields.HtmlField(blank=True, null=True)
+    raw_content = fields.HtmlField(blank=True, null=True)
     mention_users = fields.TagField("User", related_name="mention_user")
     mention_books = fields.TagField("Edition", related_name="mention_book")
     local = models.BooleanField(default=True)
@@ -293,6 +294,7 @@ class Quotation(BookStatus):
     """like a review but without a rating and transient"""
 
     quote = fields.HtmlField()
+    raw_quote = fields.HtmlField(blank=True, null=True)
     position = models.IntegerField(
         validators=[MinValueValidator(0)], null=True, blank=True
     )
