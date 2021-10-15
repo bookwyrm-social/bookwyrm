@@ -7,6 +7,7 @@ from django.test.client import RequestFactory
 
 from bookwyrm import forms, models, views
 from bookwyrm.settings import DOMAIN
+from bookwyrm.tests.validate_html import validate_html
 
 
 # pylint: disable=invalid-name
@@ -70,6 +71,7 @@ class StatusViews(TestCase):
         self.assertEqual(status.content, "<p>hi</p>")
         self.assertEqual(status.user, self.local_user)
         self.assertEqual(status.book, self.book)
+        self.assertIsNone(status.edited_date)
 
     def test_handle_status_reply(self, *_):
         """create a status in reply to an existing status"""
@@ -167,60 +169,6 @@ class StatusViews(TestCase):
         # the mentioned user in the parent post is only included if @'ed
         self.assertFalse(self.remote_user in reply.mention_users.all())
         self.assertTrue(self.local_user in reply.mention_users.all())
-
-    def test_delete_and_redraft(self, *_):
-        """delete and re-draft a status"""
-        view = views.DeleteAndRedraft.as_view()
-        request = self.factory.post("")
-        request.user = self.local_user
-        status = models.Comment.objects.create(
-            content="hi", book=self.book, user=self.local_user
-        )
-
-        with patch("bookwyrm.activitystreams.remove_status_task.delay") as mock:
-            result = view(request, status.id)
-            self.assertTrue(mock.called)
-        result.render()
-
-        # make sure it was deleted
-        status.refresh_from_db()
-        self.assertTrue(status.deleted)
-
-    def test_delete_and_redraft_invalid_status_type_rating(self, *_):
-        """you can't redraft generated statuses"""
-        view = views.DeleteAndRedraft.as_view()
-        request = self.factory.post("")
-        request.user = self.local_user
-        with patch("bookwyrm.activitystreams.add_status_task.delay"):
-            status = models.ReviewRating.objects.create(
-                book=self.book, rating=2.0, user=self.local_user
-            )
-
-        with patch("bookwyrm.activitystreams.remove_status_task.delay") as mock:
-            with self.assertRaises(PermissionDenied):
-                view(request, status.id)
-            self.assertFalse(mock.called)
-
-        status.refresh_from_db()
-        self.assertFalse(status.deleted)
-
-    def test_delete_and_redraft_invalid_status_type_generated_note(self, *_):
-        """you can't redraft generated statuses"""
-        view = views.DeleteAndRedraft.as_view()
-        request = self.factory.post("")
-        request.user = self.local_user
-        with patch("bookwyrm.activitystreams.add_status_task.delay"):
-            status = models.GeneratedNote.objects.create(
-                content="hi", user=self.local_user
-            )
-
-        with patch("bookwyrm.activitystreams.remove_status_task.delay") as mock:
-            with self.assertRaises(PermissionDenied):
-                view(request, status.id)
-            self.assertFalse(mock.called)
-
-        status.refresh_from_db()
-        self.assertFalse(status.deleted)
 
     def test_find_mentions(self, *_):
         """detect and look up @ mentions of users"""
@@ -400,3 +348,75 @@ http://www.fish.com/"""
         self.assertEqual(activity["object"]["type"], "Tombstone")
         status.refresh_from_db()
         self.assertTrue(status.deleted)
+
+    def test_edit_status_get(self, *_):
+        """load the edit status view"""
+        view = views.EditStatus.as_view()
+        status = models.Comment.objects.create(
+            content="status", user=self.local_user, book=self.book
+        )
+
+        request = self.factory.get("")
+        request.user = self.local_user
+        result = view(request, status.id)
+        validate_html(result.render())
+        self.assertEqual(result.status_code, 200)
+
+    def test_edit_status_get_reply(self, *_):
+        """load the edit status view"""
+        view = views.EditStatus.as_view()
+        parent = models.Comment.objects.create(
+            content="parent status", user=self.local_user, book=self.book
+        )
+        status = models.Status.objects.create(
+            content="reply", user=self.local_user, reply_parent=parent
+        )
+
+        request = self.factory.get("")
+        request.user = self.local_user
+        result = view(request, status.id)
+        validate_html(result.render())
+        self.assertEqual(result.status_code, 200)
+
+    def test_create_status_edit_success(self, mock, *_):
+        """update an existing status"""
+        status = models.Status.objects.create(content="status", user=self.local_user)
+        self.assertIsNone(status.edited_date)
+        view = views.CreateStatus.as_view()
+        form = forms.CommentForm(
+            {
+                "content": "hi",
+                "user": self.local_user.id,
+                "book": self.book.id,
+                "privacy": "public",
+            }
+        )
+        request = self.factory.post("", form.data)
+        request.user = self.local_user
+
+        view(request, "comment", existing_status_id=status.id)
+        activity = json.loads(mock.call_args_list[1][0][1])
+        self.assertEqual(activity["type"], "Update")
+        self.assertEqual(activity["object"]["id"], status.remote_id)
+
+        status.refresh_from_db()
+        self.assertEqual(status.content, "<p>hi</p>")
+        self.assertIsNotNone(status.edited_date)
+
+    def test_create_status_edit_permission_denied(self, *_):
+        """update an existing status"""
+        status = models.Status.objects.create(content="status", user=self.local_user)
+        view = views.CreateStatus.as_view()
+        form = forms.CommentForm(
+            {
+                "content": "hi",
+                "user": self.local_user.id,
+                "book": self.book.id,
+                "privacy": "public",
+            }
+        )
+        request = self.factory.post("", form.data)
+        request.user = self.remote_user
+
+        with self.assertRaises(PermissionDenied):
+            view(request, "comment", existing_status_id=status.id)

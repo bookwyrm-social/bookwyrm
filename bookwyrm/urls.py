@@ -316,6 +316,9 @@ urlpatterns = [
         rf"{STATUS_PATH}/replies(.json)?/?$", views.Replies.as_view(), name="replies"
     ),
     re_path(
+        r"^edit/(?P<status_id>\d+)/?$", views.EditStatus.as_view(), name="edit-status"
+    ),
+    re_path(
         r"^post/?$",
         views.CreateStatus.as_view(),
         name="create-status",
@@ -326,14 +329,14 @@ urlpatterns = [
         name="create-status",
     ),
     re_path(
+        r"^post/(?P<status_type>\w+)/(?P<existing_status_id>\d+)/?$",
+        views.CreateStatus.as_view(),
+        name="create-status",
+    ),
+    re_path(
         r"^delete-status/(?P<status_id>\d+)/?$",
         views.DeleteStatus.as_view(),
         name="delete-status",
-    ),
-    re_path(
-        r"^redraft-status/(?P<status_id>\d+)/?$",
-        views.DeleteAndRedraft.as_view(),
-        name="redraft",
     ),
     # interact
     re_path(r"^favorite/(?P<status_id>\d+)/?$", views.Favorite.as_view(), name="fav"),
