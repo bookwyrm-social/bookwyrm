@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-10-15 21:13+0000\n"
+"POT-Creation-Date: 2021-10-15 22:03+0000\n"
 "PO-Revision-Date: 2021-10-08 00:03\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Chinese Simplified\n"
@@ -751,8 +751,10 @@ msgid "Help"
 msgstr ""
 
 #: bookwyrm/templates/compose.html:5 bookwyrm/templates/compose.html:8
-msgid "Compose status"
-msgstr "撰写状态"
+#, fuzzy
+#| msgid "View status"
+msgid "Edit status"
+msgstr "浏览状态"
 
 #: bookwyrm/templates/confirm_email/confirm_email.html:4
 msgid "Confirm email"
@@ -2925,22 +2927,22 @@ msgstr "引用"
 msgid "Some thoughts on the book"
 msgstr "对书的一些看法"
 
-#: bookwyrm/templates/snippets/create_status/comment.html:26
+#: bookwyrm/templates/snippets/create_status/comment.html:27
 #: bookwyrm/templates/snippets/reading_modals/progress_update_modal.html:15
 msgid "Progress:"
 msgstr "进度:"
 
-#: bookwyrm/templates/snippets/create_status/comment.html:52
+#: bookwyrm/templates/snippets/create_status/comment.html:53
 #: bookwyrm/templates/snippets/progress_field.html:18
 msgid "pages"
 msgstr "页数"
 
-#: bookwyrm/templates/snippets/create_status/comment.html:58
+#: bookwyrm/templates/snippets/create_status/comment.html:59
 #: bookwyrm/templates/snippets/progress_field.html:23
 msgid "percent"
 msgstr "百分比"
 
-#: bookwyrm/templates/snippets/create_status/comment.html:65
+#: bookwyrm/templates/snippets/create_status/comment.html:66
 #, python-format
 msgid "of %(pages)s pages"
 msgstr "全书 %(pages)s 页"
@@ -2968,7 +2970,7 @@ msgstr "前有剧透！"
 msgid "Include spoiler alert"
 msgstr "加入剧透警告"
 
-#: bookwyrm/templates/snippets/create_status/layout.html:45
+#: bookwyrm/templates/snippets/create_status/layout.html:48
 #: bookwyrm/templates/snippets/reading_modals/form.html:7
 msgid "Comment:"
 msgstr "评论:"
@@ -3576,6 +3578,9 @@ msgstr "密码重置连接已发送给 {email}"
 #, python-brace-format
 msgid "Status updates from {obj.display_name}"
 msgstr ""
+
+#~ msgid "Compose status"
+#~ msgstr "撰写状态"
 
 #~ msgid "%(format)s"
 #~ msgstr "%(format)s"

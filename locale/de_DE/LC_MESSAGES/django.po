@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-10-15 21:13+0000\n"
+"POT-Creation-Date: 2021-10-15 22:03+0000\n"
 "PO-Revision-Date: 2021-10-13 13:32\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: German\n"
@@ -752,8 +752,10 @@ msgid "Help"
 msgstr "Hilfe"
 
 #: bookwyrm/templates/compose.html:5 bookwyrm/templates/compose.html:8
-msgid "Compose status"
-msgstr "Status verfassen"
+#, fuzzy
+#| msgid "View status"
+msgid "Edit status"
+msgstr "Status ansehen"
 
 #: bookwyrm/templates/confirm_email/confirm_email.html:4
 msgid "Confirm email"
@@ -2935,22 +2937,22 @@ msgstr "Zitieren"
 msgid "Some thoughts on the book"
 msgstr "Ein paar Gedanken zum Buch"
 
-#: bookwyrm/templates/snippets/create_status/comment.html:26
+#: bookwyrm/templates/snippets/create_status/comment.html:27
 #: bookwyrm/templates/snippets/reading_modals/progress_update_modal.html:15
 msgid "Progress:"
 msgstr "Fortschritt:"
 
-#: bookwyrm/templates/snippets/create_status/comment.html:52
+#: bookwyrm/templates/snippets/create_status/comment.html:53
 #: bookwyrm/templates/snippets/progress_field.html:18
 msgid "pages"
 msgstr "Seiten"
 
-#: bookwyrm/templates/snippets/create_status/comment.html:58
+#: bookwyrm/templates/snippets/create_status/comment.html:59
 #: bookwyrm/templates/snippets/progress_field.html:23
 msgid "percent"
 msgstr "Prozent"
 
-#: bookwyrm/templates/snippets/create_status/comment.html:65
+#: bookwyrm/templates/snippets/create_status/comment.html:66
 #, python-format
 msgid "of %(pages)s pages"
 msgstr "von %(pages)s Seiten"
@@ -2978,7 +2980,7 @@ msgstr "Spoileralarm!"
 msgid "Include spoiler alert"
 msgstr "Spoileralarm aktivieren"
 
-#: bookwyrm/templates/snippets/create_status/layout.html:45
+#: bookwyrm/templates/snippets/create_status/layout.html:48
 #: bookwyrm/templates/snippets/reading_modals/form.html:7
 msgid "Comment:"
 msgstr "Kommentar:"
@@ -3595,6 +3597,9 @@ msgstr "Ein Passwortwiederherstellungslinl wurde zu {email} gesendet"
 #, python-brace-format
 msgid "Status updates from {obj.display_name}"
 msgstr "Status updates von {obj.display_name}"
+
+#~ msgid "Compose status"
+#~ msgstr "Status verfassen"
 
 #~ msgid "%(format)s"
 #~ msgstr "Formate: %(format)s"
