@@ -19,9 +19,6 @@ class Notification(BookWyrmModel):
     related_user = models.ForeignKey(
         "User", on_delete=models.CASCADE, null=True, related_name="related_user"
     )
-    related_group_member = models.ForeignKey(
-        "User", on_delete=models.CASCADE, null=True, related_name="related_group_member"
-    )
     related_group = models.ForeignKey(
         "Group", on_delete=models.CASCADE, null=True, related_name="notifications"
     )
@@ -43,7 +40,6 @@ class Notification(BookWyrmModel):
             user=self.user,
             related_book=self.related_book,
             related_user=self.related_user,
-            related_group_member=self.related_group_member,
             related_group=self.related_group,
             related_status=self.related_status,
             related_import=self.related_import,
