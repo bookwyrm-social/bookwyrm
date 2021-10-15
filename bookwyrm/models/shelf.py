@@ -6,11 +6,11 @@ from django.utils import timezone
 
 from bookwyrm import activitypub
 from .activitypub_mixin import CollectionItemMixin, OrderedCollectionMixin
-from .base_model import BookWyrmModel
+from .base_model import BookWyrmModel, ObjectModel
 from . import fields
 
 
-class Shelf(OrderedCollectionMixin, BookWyrmModel):
+class Shelf(OrderedCollectionMixin, ObjectModel):
     """a list of books owned by a user"""
 
     TO_READ = "to-read"
@@ -26,7 +26,6 @@ class Shelf(OrderedCollectionMixin, BookWyrmModel):
         "User", on_delete=models.PROTECT, activitypub_field="owner"
     )
     editable = models.BooleanField(default=True)
-    privacy = fields.PrivacyField()
     books = models.ManyToManyField(
         "Edition",
         symmetrical=False,

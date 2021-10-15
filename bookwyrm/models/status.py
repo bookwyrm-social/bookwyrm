@@ -18,13 +18,13 @@ from bookwyrm.preview_images import generate_edition_preview_image_task
 from bookwyrm.settings import ENABLE_PREVIEW_IMAGES
 from .activitypub_mixin import ActivitypubMixin, ActivityMixin
 from .activitypub_mixin import OrderedCollectionPageMixin
-from .base_model import BookWyrmModel
+from .base_model import ObjectModel
 from .fields import image_serializer
 from .readthrough import ProgressMode
 from . import fields
 
 
-class Status(OrderedCollectionPageMixin, BookWyrmModel):
+class Status(OrderedCollectionPageMixin, ObjectModel):
     """any post, like a reply to a review, etc"""
 
     user = fields.ForeignKey(
@@ -38,7 +38,6 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
     content_warning = fields.CharField(
         max_length=500, blank=True, null=True, activitypub_field="summary"
     )
-    privacy = fields.PrivacyField(max_length=255)
     sensitive = fields.BooleanField(default=False)
     # created date is different than publish date because of federated posts
     published_date = fields.DateTimeField(

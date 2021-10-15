@@ -6,7 +6,7 @@ from django.utils import timezone
 from bookwyrm import activitypub
 from bookwyrm.settings import DOMAIN
 from .activitypub_mixin import CollectionItemMixin, OrderedCollectionMixin
-from .base_model import BookWyrmModel
+from .base_model import BookWyrmModel, ObjectModel
 from . import fields
 
 
@@ -20,7 +20,7 @@ CurationType = models.TextChoices(
 )
 
 
-class List(OrderedCollectionMixin, BookWyrmModel):
+class List(OrderedCollectionMixin, ObjectModel):
     """a list of books"""
 
     name = fields.CharField(max_length=100)
@@ -28,7 +28,6 @@ class List(OrderedCollectionMixin, BookWyrmModel):
         "User", on_delete=models.PROTECT, activitypub_field="owner"
     )
     description = fields.TextField(blank=True, null=True, activitypub_field="summary")
-    privacy = fields.PrivacyField()
     curation = fields.CharField(
         max_length=255, default="closed", choices=CurationType.choices
     )

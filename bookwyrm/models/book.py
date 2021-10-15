@@ -21,11 +21,11 @@ from bookwyrm.settings import (
 )
 
 from .activitypub_mixin import OrderedCollectionPageMixin, ObjectMixin
-from .base_model import BookWyrmModel
+from .base_model import ActorModel
 from . import fields
 
 
-class BookDataModel(ObjectMixin, BookWyrmModel):
+class BookDataModel(ObjectMixin, ActorModel):
     """fields shared between editable book data (books, works, authors)"""
 
     origin_id = models.CharField(max_length=255, null=True, blank=True)
