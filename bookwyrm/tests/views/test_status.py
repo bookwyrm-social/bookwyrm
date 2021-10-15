@@ -68,6 +68,7 @@ class StatusViews(TestCase):
         view(request, "comment")
 
         status = models.Comment.objects.get()
+        self.assertEqual(status.raw_content, "hi")
         self.assertEqual(status.content, "<p>hi</p>")
         self.assertEqual(status.user, self.local_user)
         self.assertEqual(status.book, self.book)
