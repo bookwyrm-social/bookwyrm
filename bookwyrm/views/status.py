@@ -33,8 +33,9 @@ class EditStatus(View):
         )
         status.raise_not_editable(request.user)
 
+        status_type = "reply" if status.reply_parent else status.status_type.lower()
         data = {
-            "type": status.status_type.lower(),
+            "type": status_type,
             "book": getattr(status, "book", None),
             "draft": status,
         }
