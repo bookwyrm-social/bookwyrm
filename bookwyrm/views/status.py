@@ -8,6 +8,7 @@ from django.core.exceptions import ValidationError
 from django.http import HttpResponse, HttpResponseBadRequest, Http404
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
+from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.http import require_POST
@@ -62,7 +63,7 @@ class CreateStatus(View):
                 models.Status.objects.select_subclasses(), id=existing_status_id
             )
             existing_status.raise_not_editable(request.user)
-            existing_status.edited = True
+            existing_status.edited_date = timezone.now()
 
         status_type = status_type[0].upper() + status_type[1:]
 

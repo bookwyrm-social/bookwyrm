@@ -381,6 +381,7 @@ http://www.fish.com/"""
     def test_create_status_edit_success(self, mock, *_):
         """update an existing status"""
         status = models.Status.objects.create(content="status", user=self.local_user)
+        self.assertIsNone(status.edited_date)
         view = views.CreateStatus.as_view()
         form = forms.CommentForm(
             {
@@ -400,7 +401,7 @@ http://www.fish.com/"""
 
         status.refresh_from_db()
         self.assertEqual(status.content, "<p>hi</p>")
-        self.assertTrue(status.edited)
+        self.assertIsNotNone(status.edited_date)
 
     def test_create_status_edit_permission_denied(self, *_):
         """update an existing status"""

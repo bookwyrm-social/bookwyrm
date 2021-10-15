@@ -180,6 +180,7 @@ class InboxUpdate(TestCase):
         datafile = pathlib.Path(__file__).parent.joinpath("../../data/ap_note.json")
         status_data = json.loads(datafile.read_bytes())
         status_data["id"] = status.remote_id
+        status_data["updated"] = "2021-12-13T05:09:29Z"
 
         activity = self.update_json
         activity["object"] = status_data
@@ -189,4 +190,6 @@ class InboxUpdate(TestCase):
 
         status.refresh_from_db()
         self.assertEqual(status.content, "test content in note")
-        self.assertTrue(status.edited)
+        self.assertEqual(status.edited_date.year, 2021)
+        self.assertEqual(status.edited_date.month, 12)
+        self.assertEqual(status.edited_date.day, 13)
