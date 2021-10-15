@@ -15,6 +15,7 @@ uuid: a unique identifier used to make html "id" attributes unique and clarify j
 {% trans "Some thoughts on the book" as placeholder %}
 
 {% block post_content_additions %}
+    {% if not draft.reading_status %}
     {# Supplemental fields #}
     <div>
         {% active_shelf book as active_shelf %}
@@ -68,6 +69,7 @@ uuid: a unique identifier used to make html "id" attributes unique and clarify j
         {% endwith %}
         {% endif %}
     </div>
+    {% endif %}
 {% endblock %}
 
 {% endwith %}
