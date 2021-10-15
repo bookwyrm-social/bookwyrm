@@ -8,6 +8,7 @@ from django.core.exceptions import ValidationError
 from django.http import HttpResponse, HttpResponseBadRequest, Http404
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
+from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.http import require_POST
@@ -33,8 +34,9 @@ class EditStatus(View):
         )
         status.raise_not_editable(request.user)
 
+        status_type = "reply" if status.reply_parent else status.status_type.lower()
         data = {
-            "type": status.status_type.lower(),
+            "type": status_type,
             "book": getattr(status, "book", None),
             "draft": status,
         }
@@ -54,13 +56,14 @@ class CreateStatus(View):
 
     def post(self, request, status_type, existing_status_id=None):
         """create status of whatever type"""
+        created = not existing_status_id
         existing_status = None
         if existing_status_id:
             existing_status = get_object_or_404(
                 models.Status.objects.select_subclasses(), id=existing_status_id
             )
             existing_status.raise_not_editable(request.user)
-            existing_status.edited = True
+            existing_status.edited_date = timezone.now()
 
         status_type = status_type[0].upper() + status_type[1:]
 
@@ -112,7 +115,7 @@ class CreateStatus(View):
         if hasattr(status, "quote"):
             status.quote = to_markdown(status.quote)
 
-        status.save(created=True)
+        status.save(created=created)
 
         # update a readthorugh, if needed
         try:

@@ -509,6 +509,20 @@ ol.ordered-list li::before {
     border-left: 2px solid #e0e0e0;
 }
 
+/* Breadcrumbs
+ ******************************************************************************/
+
+.breadcrumb li:first-child * {
+    padding-left: 0;
+}
+
+.breadcrumb li > * {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    padding: 0 0.75em;
+}
+
 /* Dimensions
  * @todo These could be in rem.
  ******************************************************************************/
