@@ -3,11 +3,13 @@ from unittest.mock import patch
 from io import BytesIO
 import pathlib
 
-from PIL import Image
+from django.http import Http404
 from django.core.files.base import ContentFile
 from django.db import IntegrityError
+from django.contrib.auth.models import AnonymousUser
 from django.test import TestCase
 from django.utils import timezone
+from PIL import Image
 import responses
 
 from bookwyrm import activitypub, models, settings
@@ -49,6 +51,9 @@ class Status(TestCase):
         with patch("bookwyrm.models.Status.broadcast"):
             image.save(output, format=image.format)
             self.book.cover.save("test.jpg", ContentFile(output.getvalue()))
+
+        self.anonymous_user = AnonymousUser
+        self.anonymous_user.is_authenticated = False
 
     def test_status_generated_fields(self, *_):
         """setting remote id"""
@@ -460,3 +465,60 @@ class Status(TestCase):
         responses.add(responses.GET, "http://fish.com/nothing", status=404)
 
         self.assertTrue(models.Status.ignore_activity(activity))
+
+    def test_raise_visible_to_user_public(self, *_):
+        """privacy settings"""
+        status = models.Status.objects.create(
+            content="bleh", user=self.local_user, privacy="public"
+        )
+        self.assertIsNone(status.raise_visible_to_user(self.remote_user))
+        self.assertIsNone(status.raise_visible_to_user(self.local_user))
+        self.assertIsNone(status.raise_visible_to_user(self.anonymous_user))
+
+    def test_raise_visible_to_user_unlisted(self, *_):
+        """privacy settings"""
+        status = models.Status.objects.create(
+            content="bleh", user=self.local_user, privacy="unlisted"
+        )
+        self.assertIsNone(status.raise_visible_to_user(self.remote_user))
+        self.assertIsNone(status.raise_visible_to_user(self.local_user))
+        self.assertIsNone(status.raise_visible_to_user(self.anonymous_user))
+
+    @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
+    def test_raise_visible_to_user_followers(self, *_):
+        """privacy settings"""
+        status = models.Status.objects.create(
+            content="bleh", user=self.local_user, privacy="followers"
+        )
+        status.raise_visible_to_user(self.local_user)
+        with self.assertRaises(Http404):
+            status.raise_visible_to_user(self.remote_user)
+        with self.assertRaises(Http404):
+            status.raise_visible_to_user(self.anonymous_user)
+
+        self.local_user.followers.add(self.remote_user)
+        self.assertIsNone(status.raise_visible_to_user(self.remote_user))
+
+    def test_raise_visible_to_user_followers_mentioned(self, *_):
+        """privacy settings"""
+        status = models.Status.objects.create(
+            content="bleh", user=self.local_user, privacy="followers"
+        )
+        status.mention_users.set([self.remote_user])
+        self.assertIsNone(status.raise_visible_to_user(self.remote_user))
+
+    @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
+    def test_raise_visible_to_user_direct(self, *_):
+        """privacy settings"""
+        status = models.Status.objects.create(
+            content="bleh", user=self.local_user, privacy="direct"
+        )
+        status.raise_visible_to_user(self.local_user)
+        with self.assertRaises(Http404):
+            status.raise_visible_to_user(self.remote_user)
+        with self.assertRaises(Http404):
+            status.raise_visible_to_user(self.anonymous_user)
+
+        # mentioned user
+        status.mention_users.set([self.remote_user])
+        self.assertIsNone(status.raise_visible_to_user(self.remote_user))
