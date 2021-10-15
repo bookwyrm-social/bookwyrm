@@ -51,7 +51,7 @@ class StatusViews(TestCase):
         )
         models.SiteSettings.objects.create()
 
-    def test_create_status(self, *_):
+    def test_create_status_comment(self, *_):
         """create a status"""
         view = views.CreateStatus.as_view()
         form = forms.CommentForm(
@@ -378,7 +378,7 @@ http://www.fish.com/"""
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
-    def test_create_status_edit_success(self, mock, *_):
+    def test_edit_status_success(self, mock, *_):
         """update an existing status"""
         status = models.Status.objects.create(content="status", user=self.local_user)
         self.assertIsNone(status.edited_date)
@@ -403,7 +403,7 @@ http://www.fish.com/"""
         self.assertEqual(status.content, "<p>hi</p>")
         self.assertIsNotNone(status.edited_date)
 
-    def test_create_status_edit_permission_denied(self, *_):
+    def test_edit_status_permission_denied(self, *_):
         """update an existing status"""
         status = models.Status.objects.create(content="status", user=self.local_user)
         view = views.CreateStatus.as_view()
