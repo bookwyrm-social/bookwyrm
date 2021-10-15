@@ -1,0 +1,26 @@
+{% load i18n %}
+{% load utilities %}
+
+{% with user_path=status.user.local_path username=status.user.display_name book_path=status.book.local_poth book_title=book|book_title %}
+
+{% if status.status_type == 'GeneratedNote' %}
+    {{ status.content|safe }}
+{% elif status.status_type == 'Rating' %}
+    {% blocktrans trimmed %}
+    <a href="{{ user_path}}">{{ username }}</a> rated <a href="{{ book_path }}">{{ book_title }}</a>
+    {% endblocktrans %}
+{% elif status.status_type == 'Review' %}
+    {% blocktrans trimmed %}
+    <a href="{{ user_path}}">{{ username }}</a> reviewed <a href="{{ book_path }}">{{ book_title }}</a>
+    {% endblocktrans %}
+{% elif status.status_type == 'Comment' %}
+    {% blocktrans trimmed %}
+    <a href="{{ user_path}}">{{ username }}</a> commented on <a href="{{ book_path }}">{{ book_title }}</a>
+    {% endblocktrans %}
+{% elif status.status_type == 'Quotation' %}
+    {% blocktrans trimmed %}
+    <a href="{{ user_path}}">{{ username }}</a> quoted <a href="{{ book_path }}">{{ book_title }}</a>
+    {% endblocktrans %}
+{% endif %}
+
+{% endwith %}
