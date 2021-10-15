@@ -71,7 +71,7 @@ class StatusViews(TestCase):
         self.assertEqual(status.content, "<p>hi</p>")
         self.assertEqual(status.user, self.local_user)
         self.assertEqual(status.book, self.book)
-        self.assertFalse(status.edited)
+        self.assertIsNone(status.edited_date)
 
     def test_handle_status_reply(self, *_):
         """create a status in reply to an existing status"""
