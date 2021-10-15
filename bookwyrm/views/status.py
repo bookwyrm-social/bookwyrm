@@ -40,11 +40,6 @@ class EditStatus(View):
         }
         return TemplateResponse(request, "compose.html", data)
 
-    def post(self, request, status_id):
-        """save an edited status"""
-        status = get_object_or_404(models.Status.select_subclasses(), id=status_id)
-        status.raise_not_editable(request.user)
-
 
 # pylint: disable= no-self-use
 @method_decorator(login_required, name="dispatch")
@@ -57,12 +52,20 @@ class CreateStatus(View):
         data = {"book": book}
         return TemplateResponse(request, "compose.html", data)
 
-    def post(self, request, status_type):
+    def post(self, request, status_type, existing_status_id=None):
         """create status of whatever type"""
+        if existing_status_id:
+            existing_status = get_object_or_404(
+                models.Status.select_subclasses(), id=existing_status_id
+            )
+            existing_status.raise_not_editable(request.user)
+
         status_type = status_type[0].upper() + status_type[1:]
 
         try:
-            form = getattr(forms, f"{status_type}Form")(request.POST)
+            form = getattr(forms, f"{status_type}Form")(
+                request.POST, instance=existing_status
+            )
         except AttributeError:
             return HttpResponseBadRequest()
         if not form.is_valid():

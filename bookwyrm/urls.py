@@ -329,6 +329,11 @@ urlpatterns = [
         name="create-status",
     ),
     re_path(
+        r"^post/(?P<status_type>\w+)/(?P<existing_status_id>\d+)/?$",
+        views.CreateStatus.as_view(),
+        name="create-status",
+    ),
+    re_path(
         r"^delete-status/(?P<status_id>\d+)/?$",
         views.DeleteStatus.as_view(),
         name="delete-status",
