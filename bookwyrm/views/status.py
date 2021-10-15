@@ -60,6 +60,7 @@ class CreateStatus(View):
                 models.Status.objects.select_subclasses(), id=existing_status_id
             )
             existing_status.raise_not_editable(request.user)
+            existing_status.edited = True
 
         status_type = status_type[0].upper() + status_type[1:]
 
