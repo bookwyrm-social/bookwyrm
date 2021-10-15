@@ -43,6 +43,7 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
     published_date = fields.DateTimeField(
         default=timezone.now, activitypub_field="published"
     )
+    edited = models.BooleanField(default=False)
     deleted = models.BooleanField(default=False)
     deleted_date = models.DateTimeField(blank=True, null=True)
     favorites = models.ManyToManyField(
