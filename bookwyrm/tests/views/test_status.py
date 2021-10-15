@@ -7,6 +7,7 @@ from django.test.client import RequestFactory
 
 from bookwyrm import forms, models, views
 from bookwyrm.settings import DOMAIN
+from bookwyrm.tests.validate_html import validate_html
 
 
 # pylint: disable=invalid-name
@@ -70,6 +71,7 @@ class StatusViews(TestCase):
         self.assertEqual(status.content, "<p>hi</p>")
         self.assertEqual(status.user, self.local_user)
         self.assertEqual(status.book, self.book)
+        self.assertFalse(status.edited)
 
     def test_handle_status_reply(self, *_):
         """create a status in reply to an existing status"""
@@ -346,3 +348,71 @@ http://www.fish.com/"""
         self.assertEqual(activity["object"]["type"], "Tombstone")
         status.refresh_from_db()
         self.assertTrue(status.deleted)
+
+    def test_edit_status_get(self, *_):
+        """load the edit status view"""
+        view = views.EditStatus.as_view()
+        status = models.Comment.objects.create(
+            content="status", user=self.local_user, book=self.book
+        )
+
+        request = self.factory.get("")
+        request.user = self.local_user
+        result = view(request, status.id)
+        validate_html(result.render())
+        self.assertEqual(result.status_code, 200)
+
+    def test_edit_status_get_reply(self, *_):
+        """load the edit status view"""
+        view = views.EditStatus.as_view()
+        parent = models.Comment.objects.create(
+            content="parent status", user=self.local_user, book=self.book
+        )
+        status = models.Status.objects.create(
+            content="reply", user=self.local_user, reply_parent=parent
+        )
+
+        request = self.factory.get("")
+        request.user = self.local_user
+        result = view(request, status.id)
+        validate_html(result.render())
+        self.assertEqual(result.status_code, 200)
+
+    def test_create_status_edit(self, *_):
+        """update an existing status"""
+        status = models.Status.objects.create(content="status", user=self.local_user)
+        view = views.CreateStatus.as_view()
+        form = forms.CommentForm(
+            {
+                "content": "hi",
+                "user": self.local_user.id,
+                "book": self.book.id,
+                "privacy": "public",
+            }
+        )
+        request = self.factory.post("", form.data)
+        request.user = self.local_user
+
+        view(request, "comment", existing_status_id=status.id)
+
+        status.refresh_from_db()
+        self.assertEqual(status.content, "<p>hi</p>")
+        self.assertTrue(status.edited)
+
+    def test_create_status_edit_permission_denied(self, *_):
+        """update an existing status"""
+        status = models.Status.objects.create(content="status", user=self.local_user)
+        view = views.CreateStatus.as_view()
+        form = forms.CommentForm(
+            {
+                "content": "hi",
+                "user": self.local_user.id,
+                "book": self.book.id,
+                "privacy": "public",
+            }
+        )
+        request = self.factory.post("", form.data)
+        request.user = self.remote_user
+
+        with self.assertRaises(PermissionDenied):
+            view(request, "comment", existing_status_id=status.id)
