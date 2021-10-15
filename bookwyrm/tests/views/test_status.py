@@ -51,7 +51,7 @@ class StatusViews(TestCase):
         )
         models.SiteSettings.objects.create()
 
-    def test_handle_status(self, *_):
+    def test_create_status_comment(self, *_):
         """create a status"""
         view = views.CreateStatus.as_view()
         form = forms.CommentForm(
@@ -68,12 +68,13 @@ class StatusViews(TestCase):
         view(request, "comment")
 
         status = models.Comment.objects.get()
+        self.assertEqual(status.raw_content, "hi")
         self.assertEqual(status.content, "<p>hi</p>")
         self.assertEqual(status.user, self.local_user)
         self.assertEqual(status.book, self.book)
         self.assertIsNone(status.edited_date)
 
-    def test_handle_status_reply(self, *_):
+    def test_create_status_reply(self, *_):
         """create a status in reply to an existing status"""
         view = views.CreateStatus.as_view()
         user = models.User.objects.create_user(
@@ -100,7 +101,7 @@ class StatusViews(TestCase):
         self.assertEqual(status.user, user)
         self.assertEqual(models.Notification.objects.get().user, self.local_user)
 
-    def test_handle_status_mentions(self, *_):
+    def test_create_status_mentions(self, *_):
         """@mention a user in a post"""
         view = views.CreateStatus.as_view()
         user = models.User.objects.create_user(
@@ -130,7 +131,7 @@ class StatusViews(TestCase):
             status.content, f'<p>hi <a href="{user.remote_id}">@rat</a></p>'
         )
 
-    def test_handle_status_reply_with_mentions(self, *_):
+    def test_create_status_reply_with_mentions(self, *_):
         """reply to a post with an @mention'ed user"""
         view = views.CreateStatus.as_view()
         user = models.User.objects.create_user(
@@ -297,7 +298,7 @@ http://www.fish.com/"""
         result = views.status.to_markdown(text)
         self.assertEqual(result, '<p><a href="http://fish.com">hi</a> ' "is rad</p>")
 
-    def test_handle_delete_status(self, mock, *_):
+    def test_delete_status(self, mock, *_):
         """marks a status as deleted"""
         view = views.DeleteStatus.as_view()
         with patch("bookwyrm.activitystreams.add_status_task.delay"):
@@ -315,7 +316,7 @@ http://www.fish.com/"""
         status.refresh_from_db()
         self.assertTrue(status.deleted)
 
-    def test_handle_delete_status_permission_denied(self, *_):
+    def test_delete_status_permission_denied(self, *_):
         """marks a status as deleted"""
         view = views.DeleteStatus.as_view()
         with patch("bookwyrm.activitystreams.add_status_task.delay"):
@@ -330,7 +331,7 @@ http://www.fish.com/"""
         status.refresh_from_db()
         self.assertFalse(status.deleted)
 
-    def test_handle_delete_status_moderator(self, mock, *_):
+    def test_delete_status_moderator(self, mock, *_):
         """marks a status as deleted"""
         view = views.DeleteStatus.as_view()
         with patch("bookwyrm.activitystreams.add_status_task.delay"):
@@ -378,7 +379,7 @@ http://www.fish.com/"""
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
-    def test_create_status_edit_success(self, mock, *_):
+    def test_edit_status_success(self, mock, *_):
         """update an existing status"""
         status = models.Status.objects.create(content="status", user=self.local_user)
         self.assertIsNone(status.edited_date)
@@ -403,7 +404,7 @@ http://www.fish.com/"""
         self.assertEqual(status.content, "<p>hi</p>")
         self.assertIsNotNone(status.edited_date)
 
-    def test_create_status_edit_permission_denied(self, *_):
+    def test_edit_status_permission_denied(self, *_):
         """update an existing status"""
         status = models.Status.objects.create(content="status", user=self.local_user)
         view = views.CreateStatus.as_view()

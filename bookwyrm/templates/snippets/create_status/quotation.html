@@ -25,7 +25,7 @@ uuid: a unique identifier used to make html "id" attributes unique and clarify j
                 placeholder="{% blocktrans with book_title=book.title %}An excerpt from '{{ book_title }}'{% endblocktrans %}"
                 required
                 {% if not draft %}data-cache-draft="id_quote_{{ book.id }}_{{ type }}"{% endif %}
-            >{{ draft.quote|default:'' }}</textarea>
+            >{% firstof draft.raw_quote draft.quote '' %}</textarea>
         </div>
     </div>
     <div class="field">
