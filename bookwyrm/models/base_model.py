@@ -69,17 +69,13 @@ class BookWyrmModel(models.Model):
         # you can see the followers only posts of people you follow
         if self.privacy == "followers" and (
             self.user.followers.filter(id=viewer.id).first()
-            or (
-                hasattr(self, "mention_users")
-                and self.mention_users.filter(id=viewer.id)
-            )
         ):
             return
 
         # you can see dms you are tagged in
         if hasattr(self, "mention_users"):
             if (
-                self.privacy == "direct"
+                self.privacy in ["direct", "followers"]
                 and self.mention_users.filter(id=viewer.id).first()
             ):
                 return

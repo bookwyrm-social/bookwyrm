@@ -220,6 +220,16 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
             ~Q(Q(user=viewer) | Q(mention_users=viewer)), privacy="direct"
         )
 
+    @classmethod
+    def followers_filter(cls, queryset, viewer):
+        """Override-able filter for "followers" privacy level"""
+        return queryset.exclude(
+            ~Q(  # not yourself, a follower, or someone who is tagged
+                Q(user__followers=viewer) | Q(user=viewer) | Q(mention_users=viewer)
+            ),
+            privacy="followers",  # and the status is followers only
+        )
+
 
 class GeneratedNote(Status):
     """these are app-generated messages about user activity"""
