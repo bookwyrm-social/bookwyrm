@@ -81,7 +81,7 @@ class SuggestedUsers(RedisStore):
         """take a user out of someone's suggestions"""
         self.bulk_remove_objects_from_store([suggested_user], self.store_id(user))
 
-    def get_suggestions(self, user, **filters):
+    def get_suggestions(self, user, local=False):
         """get suggestions"""
         values = self.get_store(self.store_id(user), withscores=True)
         results = []
@@ -97,10 +97,7 @@ class SuggestedUsers(RedisStore):
                 logger.exception(err)
                 continue
             user.mutuals = counts["mutuals"]
-            if filters.local:
-                if user.local:
-                    results.append(user)
-            else:
+            if (local and user.local) or not local:
                 results.append(user)
             if len(results) >= 5:
                 break
