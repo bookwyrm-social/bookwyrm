@@ -56,7 +56,7 @@ class CreateStatus(View):
         """create status of whatever type"""
         if existing_status_id:
             existing_status = get_object_or_404(
-                models.Status.select_subclasses(), id=existing_status_id
+                models.Status.objects.select_subclasses(), id=existing_status_id
             )
             existing_status.raise_not_editable(request.user)
 
