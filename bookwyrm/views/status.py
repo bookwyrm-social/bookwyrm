@@ -54,6 +54,7 @@ class CreateStatus(View):
 
     def post(self, request, status_type, existing_status_id=None):
         """create status of whatever type"""
+        existing_status = None
         if existing_status_id:
             existing_status = get_object_or_404(
                 models.Status.objects.select_subclasses(), id=existing_status_id
