@@ -24,8 +24,8 @@ uuid: a unique identifier used to make html "id" attributes unique and clarify j
                 id="id_quote_{{ book.id }}_{{ type }}"
                 placeholder="{% blocktrans with book_title=book.title %}An excerpt from '{{ book_title }}'{% endblocktrans %}"
                 required
-                data-cache-draft="id_quote_{{ book.id }}_{{ type }}"
-            >{{ draft.quote|default:'' }}</textarea>
+                {% if not draft %}data-cache-draft="id_quote_{{ book.id }}_{{ type }}"{% endif %}
+            >{% firstof draft.raw_quote draft.quote '' %}</textarea>
         </div>
     </div>
     <div class="field">
@@ -36,7 +36,7 @@ uuid: a unique identifier used to make html "id" attributes unique and clarify j
                     <select
                         name="position_mode"
                         aria-label="Position mode"
-                        data-cache-draft="id_position_mode_{{ book.id }}_{{ type }}"
+                        {% if not draft %}data-cache-draft="id_position_mode_{{ book.id }}_{{ type }}"{% endif %}
                     >
                         <option
                             value="PG"
@@ -63,7 +63,7 @@ uuid: a unique identifier used to make html "id" attributes unique and clarify j
                     size="3"
                     value="{% firstof draft.position '' %}"
                     id="position_{{ uuid }}"
-                    data-cache-draft="id_position_{{ book.id }}_{{ type }}"
+                    {% if not draft %}data-cache-draft="id_position_{{ book.id }}_{{ type }}"{% endif %}
                 >
             </div>
         </div>

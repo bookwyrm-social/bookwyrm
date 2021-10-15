@@ -20,12 +20,9 @@
 </li>
 {% if status.status_type != 'GeneratedNote' and status.status_type != 'Rating' %}
 <li role="menuitem" class="dropdown-item p-0">
-    <form class="" name="delete-{{ status.id }}" action="{% url 'redraft' status.id %}" method="post">
-        {% csrf_token %}
-        <button class="button is-radiusless is-danger is-light is-fullwidth is-small" type="submit">
-            {% trans "Delete & re-draft" %}
-        </button>
-    </form>
+    <a href="{% url 'edit-status' status.id %}" class="button is-radiusless is-fullwidth is-small" type="submit">
+        {% trans "Edit" %}
+    </a>
 </li>
 {% endif %}
 {% else %}

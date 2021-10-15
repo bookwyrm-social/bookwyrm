@@ -67,7 +67,7 @@
 {% endblock %}
 
 {% block card-bonus %}
-{% if request.user.is_authenticated and not moderation_mode %}
+{% if request.user.is_authenticated and not moderation_mode and not no_interact %}
 {% with status.id|uuid as uuid %}
 <section class="reply-panel is-hidden" id="show_comment_{{ status.id }}">
     <div class="card-footer">

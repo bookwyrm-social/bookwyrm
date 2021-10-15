@@ -8,6 +8,7 @@ from django.core.exceptions import ValidationError
 from django.http import HttpResponse, HttpResponseBadRequest, Http404
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
+from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.http import require_POST
@@ -23,21 +24,53 @@ from .helpers import load_date_in_user_tz_as_utc
 
 # pylint: disable= no-self-use
 @method_decorator(login_required, name="dispatch")
+class EditStatus(View):
+    """the view for *posting*"""
+
+    def get(self, request, status_id):  # pylint: disable=unused-argument
+        """load the edit panel"""
+        status = get_object_or_404(
+            models.Status.objects.select_subclasses(), id=status_id
+        )
+        status.raise_not_editable(request.user)
+
+        status_type = "reply" if status.reply_parent else status.status_type.lower()
+        data = {
+            "type": status_type,
+            "book": getattr(status, "book", None),
+            "draft": status,
+        }
+        return TemplateResponse(request, "compose.html", data)
+
+
+# pylint: disable= no-self-use
+@method_decorator(login_required, name="dispatch")
 class CreateStatus(View):
     """the view for *posting*"""
 
     def get(self, request, status_type):  # pylint: disable=unused-argument
-        """compose view (used for delete-and-redraft)"""
+        """compose view (...not used?)"""
         book = get_object_or_404(models.Edition, id=request.GET.get("book"))
         data = {"book": book}
         return TemplateResponse(request, "compose.html", data)
 
-    def post(self, request, status_type):
-        """create  status of whatever type"""
+    def post(self, request, status_type, existing_status_id=None):
+        """create status of whatever type"""
+        created = not existing_status_id
+        existing_status = None
+        if existing_status_id:
+            existing_status = get_object_or_404(
+                models.Status.objects.select_subclasses(), id=existing_status_id
+            )
+            existing_status.raise_not_editable(request.user)
+            existing_status.edited_date = timezone.now()
+
         status_type = status_type[0].upper() + status_type[1:]
 
         try:
-            form = getattr(forms, f"{status_type}Form")(request.POST)
+            form = getattr(forms, f"{status_type}Form")(
+                request.POST, instance=existing_status
+            )
         except AttributeError:
             return HttpResponseBadRequest()
         if not form.is_valid():
@@ -46,6 +79,11 @@ class CreateStatus(View):
             return redirect(request.headers.get("Referer", "/"))
 
         status = form.save(commit=False)
+        # save the plain, unformatted version of the status for future editing
+        status.raw_content = status.content
+        if hasattr(status, "quote"):
+            status.raw_quote = status.quote
+
         if not status.sensitive and status.content_warning:
             # the cw text field remains populated when you click "remove"
             status.content_warning = None
@@ -77,7 +115,7 @@ class CreateStatus(View):
         if hasattr(status, "quote"):
             status.quote = to_markdown(status.quote)
 
-        status.save(created=True)
+        status.save(created=created)
 
         # update a readthorugh, if needed
         try:
@@ -104,36 +142,6 @@ class DeleteStatus(View):
         # perform deletion
         status.delete()
         return redirect(request.headers.get("Referer", "/"))
-
-
-@method_decorator(login_required, name="dispatch")
-class DeleteAndRedraft(View):
-    """delete a status but let the user re-create it"""
-
-    def post(self, request, status_id):
-        """delete and tombstone a status"""
-        status = get_object_or_404(
-            models.Status.objects.select_subclasses(), id=status_id
-        )
-        # don't let people redraft other people's statuses
-        status.raise_not_editable(request.user)
-
-        status_type = status.status_type.lower()
-        if status.reply_parent:
-            status_type = "reply"
-
-        data = {
-            "draft": status,
-            "type": status_type,
-        }
-        if hasattr(status, "book"):
-            data["book"] = status.book
-        elif status.mention_books:
-            data["book"] = status.mention_books.first()
-
-        # perform deletion
-        status.delete()
-        return TemplateResponse(request, "compose.html", data)
 
 
 @login_required

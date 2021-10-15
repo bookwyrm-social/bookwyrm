@@ -31,18 +31,38 @@
 
             {% include "snippets/status/header_content.html" %}
         </h3>
-        <p class="is-size-7 is-flex is-align-items-center">
-            <a href="{{ status.remote_id }}{% if status.user.local %}#anchor-{{ status.id }}{% endif %}">{{ status.published_date|published_date }}</a>
-            {% if status.progress %}
-            <span class="ml-1">
-            {% if status.progress_mode == 'PG' %}
-                ({% include 'snippets/page_text.html' with page=status.progress total_pages=status.book.pages %})
-            {% else %}
-                ({{ status.progress }}%)
-            {% endif %}
-            </span>
-            {% endif %}
-            {% include 'snippets/privacy-icons.html' with item=status %}
-        </p>
+        <div class="breadcrumb has-dot-separator is-small">
+            <ul class="is-flex is-align-items-center">
+                <li>
+                    <a href="{{ status.remote_id }}{% if status.user.local %}#anchor-{{ status.id }}{% endif %}">
+                        {{ status.published_date|published_date }}
+                    </a>
+                </li>
+
+                {% if status.edited_date %}
+                <li>
+                    <span>
+                    {% blocktrans with date=status.edited_date|published_date %}edited {{ date }}{% endblocktrans %}
+                    </span>
+                </li>
+                {% endif %}
+
+                {% if status.progress %}
+                <li class="ml-1">
+                    <span>
+                        {% if status.progress_mode == 'PG' %}
+                            {% include 'snippets/page_text.html' with page=status.progress total_pages=status.book.pages %}
+                        {% else %}
+                            {{ status.progress }}%
+                        {% endif %}
+                    </span>
+                </li>
+                {% endif %}
+
+                <li>
+                {% include 'snippets/privacy-icons.html' with item=status %}
+                </li>
+            </ul>
+        </div>
     </div>
 </div>

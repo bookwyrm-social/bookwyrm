@@ -1,7 +1,19 @@
+{% spaceless %}
+
 {% load humanize %}
 {% load i18n %}
+
 {% if total_pages %}
-{% blocktrans with page=page|intcomma total_pages=total_pages|intcomma %}page {{ page }} of {{ total_pages }}{% endblocktrans %}
+
+{% blocktrans trimmed with page=page|intcomma total_pages=total_pages|intcomma %}
+page {{ page }} of {{ total_pages }}
+{% endblocktrans %}
+
 {% else %}
-{% blocktrans with page=page|intcomma %}page {{ page }}{% endblocktrans %}
+
+{% blocktrans trimmed with page=page|intcomma %}
+page {{ page }}
+{% endblocktrans %}
+
 {% endif %}
+{% endspaceless %}
