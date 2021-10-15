@@ -7,7 +7,7 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("bookwyrm", "0109_status_edited"),
+        ("bookwyrm", "0109_status_edited_date"),
     ]
 
     operations = [
