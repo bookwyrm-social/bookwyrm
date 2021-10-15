@@ -168,60 +168,6 @@ class StatusViews(TestCase):
         self.assertFalse(self.remote_user in reply.mention_users.all())
         self.assertTrue(self.local_user in reply.mention_users.all())
 
-    def test_delete_and_redraft(self, *_):
-        """delete and re-draft a status"""
-        view = views.DeleteAndRedraft.as_view()
-        request = self.factory.post("")
-        request.user = self.local_user
-        status = models.Comment.objects.create(
-            content="hi", book=self.book, user=self.local_user
-        )
-
-        with patch("bookwyrm.activitystreams.remove_status_task.delay") as mock:
-            result = view(request, status.id)
-            self.assertTrue(mock.called)
-        result.render()
-
-        # make sure it was deleted
-        status.refresh_from_db()
-        self.assertTrue(status.deleted)
-
-    def test_delete_and_redraft_invalid_status_type_rating(self, *_):
-        """you can't redraft generated statuses"""
-        view = views.DeleteAndRedraft.as_view()
-        request = self.factory.post("")
-        request.user = self.local_user
-        with patch("bookwyrm.activitystreams.add_status_task.delay"):
-            status = models.ReviewRating.objects.create(
-                book=self.book, rating=2.0, user=self.local_user
-            )
-
-        with patch("bookwyrm.activitystreams.remove_status_task.delay") as mock:
-            with self.assertRaises(PermissionDenied):
-                view(request, status.id)
-            self.assertFalse(mock.called)
-
-        status.refresh_from_db()
-        self.assertFalse(status.deleted)
-
-    def test_delete_and_redraft_invalid_status_type_generated_note(self, *_):
-        """you can't redraft generated statuses"""
-        view = views.DeleteAndRedraft.as_view()
-        request = self.factory.post("")
-        request.user = self.local_user
-        with patch("bookwyrm.activitystreams.add_status_task.delay"):
-            status = models.GeneratedNote.objects.create(
-                content="hi", user=self.local_user
-            )
-
-        with patch("bookwyrm.activitystreams.remove_status_task.delay") as mock:
-            with self.assertRaises(PermissionDenied):
-                view(request, status.id)
-            self.assertFalse(mock.called)
-
-        status.refresh_from_db()
-        self.assertFalse(status.deleted)
-
     def test_find_mentions(self, *_):
         """detect and look up @ mentions of users"""
         user = models.User.objects.create_user(
