@@ -101,14 +101,9 @@ class List(OrderedCollectionMixin, BookWyrmModel):
     def remove_from_group(cls, owner, user):
         """remove a list from a group"""
 
-        memberships = GroupMember.objects.filter(group__user=owner, user=user).all()
-
-        for membership in memberships:
-            # remove this user's group-curated lists from the group
-            cls.objects.filter(group=membership.group, user=membership.user).update(
+        cls.objects.filter(group__user=owner, user=user).all().update(
                 group=None, curation="closed"
             )
-
 
 class ListItem(CollectionItemMixin, BookWyrmModel):
     """ok"""
