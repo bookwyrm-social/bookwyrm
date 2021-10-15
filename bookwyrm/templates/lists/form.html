@@ -37,7 +37,7 @@
                 <input type="radio" name="curation" value="group"{% if list.curation == 'group' %} checked{% endif %} > {% trans "Group" %}
                 <p class="help mb-2">{% trans "Group members can add to and remove from this list" %}</p>
                 <fieldset class="{% if list.curation != 'group' %}is-hidden{% endif %}" id="list_group_selector">
-                {% if user.memberships %}
+                {% if user.memberships.exists %}
                     <label class="label" for="id_group" id="group">{% trans "Select Group" %}</label>
                     <div class="field has-addons">
                         <div class="select control">

@@ -12,7 +12,7 @@
 {% endblock %}
 
 {% block description %}
-{% blocktrans with group_name=notification.related_group.name group_path=notification.related_group.local_path %} 
+{% blocktrans trimmed with group_name=notification.related_group.name group_path=notification.related_group.local_path %} 
 invited you to join the group <a href="{{ group_path }}">{{ group_name }}</a>
 {% endblocktrans %}
 <div class="row shrink">

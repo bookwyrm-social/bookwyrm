@@ -1,8 +1,9 @@
 {% extends 'groups/group.html' %}
+{% load i18n %}
 
 {% block searchresults %}
     <h2 class="title is-5">
-        Add new members!
+        {% trans "Add new members!" %}
     </h2>
     {% include 'groups/suggested_users.html' with suggested_users=suggested_users query=query %}
 {% endblock %}
