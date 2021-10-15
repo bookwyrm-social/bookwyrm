@@ -378,7 +378,7 @@ http://www.fish.com/"""
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
-    def test_create_status_edit(self, *_):
+    def test_create_status_edit_success(self, mock, *_):
         """update an existing status"""
         status = models.Status.objects.create(content="status", user=self.local_user)
         view = views.CreateStatus.as_view()
@@ -394,6 +394,9 @@ http://www.fish.com/"""
         request.user = self.local_user
 
         view(request, "comment", existing_status_id=status.id)
+        activity = json.loads(mock.call_args_list[1][0][1])
+        self.assertEqual(activity["type"], "Update")
+        self.assertEqual(activity["object"]["id"], status.remote_id)
 
         status.refresh_from_db()
         self.assertEqual(status.content, "<p>hi</p>")

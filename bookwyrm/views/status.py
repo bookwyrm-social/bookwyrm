@@ -55,6 +55,7 @@ class CreateStatus(View):
 
     def post(self, request, status_type, existing_status_id=None):
         """create status of whatever type"""
+        created = not existing_status_id
         existing_status = None
         if existing_status_id:
             existing_status = get_object_or_404(
@@ -108,7 +109,7 @@ class CreateStatus(View):
         if hasattr(status, "quote"):
             status.quote = to_markdown(status.quote)
 
-        status.save(created=True)
+        status.save(created=created)
 
         # update a readthorugh, if needed
         try:
