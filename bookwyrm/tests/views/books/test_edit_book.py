@@ -58,6 +58,17 @@ class EditBookViews(TestCase):
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
+    def test_edit_book_create_page(self):
+        """there are so many views, this just makes sure it LOADS"""
+        view = views.EditBook.as_view()
+        request = self.factory.get("")
+        request.user = self.local_user
+        request.user.is_superuser = True
+        result = view(request)
+        self.assertIsInstance(result, TemplateResponse)
+        validate_html(result.render())
+        self.assertEqual(result.status_code, 200)
+
     def test_edit_book(self):
         """lets a user edit a book"""
         view = views.EditBook.as_view()
