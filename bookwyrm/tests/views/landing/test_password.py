@@ -51,13 +51,13 @@ class PasswordViews(TestCase):
         view = views.PasswordResetRequest.as_view()
         resp = view(request)
         self.assertEqual(resp.status_code, 200)
-        resp.render()
+        validate_html(resp.render())
 
         request = self.factory.post("", {"email": "mouse@mouse.com"})
         request.user = self.anonymous_user
         with patch("bookwyrm.emailing.send_email.delay"):
             resp = view(request)
-        resp.render()
+        validate_html(resp.render())
 
         self.assertEqual(models.PasswordReset.objects.get().user, self.local_user)
 
@@ -116,7 +116,7 @@ class PasswordViews(TestCase):
         models.PasswordReset.objects.create(user=self.local_user)
         request = self.factory.post("", {"password": "hi", "confirm-password": "hi"})
         resp = view(request, "jhgdkfjgdf")
-        resp.render()
+        validate_html(resp.render())
         self.assertTrue(models.PasswordReset.objects.exists())
 
     def test_password_reset_mismatch(self):
@@ -125,5 +125,5 @@ class PasswordViews(TestCase):
         code = models.PasswordReset.objects.create(user=self.local_user)
         request = self.factory.post("", {"password": "hi", "confirm-password": "hihi"})
         resp = view(request, code.code)
-        resp.render()
+        validate_html(resp.render())
         self.assertTrue(models.PasswordReset.objects.exists())
