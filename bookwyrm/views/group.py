@@ -284,4 +284,3 @@ def reject_membership(request):
         pass
 
     return redirect(request.user.local_path)
-

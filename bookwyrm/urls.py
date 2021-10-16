@@ -258,7 +258,9 @@ urlpatterns = [
     re_path(
         r"^group/(?P<group_id>\d+)(.json)?/?$", views.Group.as_view(), name="group"
     ),
-    re_path(r"^group/delete/(?P<group_id>\d+)/?$", views.delete_group, name="delete-group"),
+    re_path(
+        r"^group/delete/(?P<group_id>\d+)/?$", views.delete_group, name="delete-group"
+    ),
     re_path(
         r"^group/(?P<group_id>\d+)/add-users/?$",
         views.FindUsers.as_view(),
