@@ -27,16 +27,6 @@ class GroupViews(TestCase):
                 local=True,
                 localname="mouse",
             )
-        with patch("bookwyrm.models.user.set_remote_server.delay"):
-            self.remote_user = models.User.objects.create_user(
-                "rat",
-                "rat@rat.com",
-                "ratword",
-                local=False,
-                remote_id="https://example.com/users/rat",
-                inbox="https://example.com/users/rat/inbox",
-                outbox="https://example.com/users/rat/outbox",
-            )
 
             self.testgroup = models.Group.objects.create(
                 name="Test Group",
@@ -70,7 +60,8 @@ class GroupViews(TestCase):
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
-    def test_findusers_get(self, _):
+    @patch("bookwyrm.suggested_users.SuggestedUsers.get_suggestions")
+    def test_findusers_get(self, *_):
         """there are so many views, this just makes sure it LOADS"""
         view = views.FindUsers.as_view()
         request = self.factory.get("")

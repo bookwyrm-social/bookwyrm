@@ -69,22 +69,6 @@ class Group(TestCase):
             privacy="followers",
         )
 
-        self.followers_list = models.List.objects.create(
-            name="Followers List",
-            curation="group",
-            privacy="followers",
-            group=self.public_group,
-            user=self.owner_user,
-        )
-
-        self.private_list = models.List.objects.create(
-            name="Private List",
-            privacy="direct",
-            curation="group",
-            group=self.public_group,
-            user=self.owner_user,
-        )
-
         models.GroupMember.objects.create(group=self.private_group, user=self.badger)
         models.GroupMember.objects.create(
             group=self.followers_only_group, user=self.badger
@@ -112,21 +96,40 @@ class Group(TestCase):
     def test_group_members_can_see_followers_only_lists(self, _):
         """follower-only group booklists should not be excluded from group booklist listing for group members who do not follower list owner"""
 
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+            followers_list = models.List.objects.create(
+                name="Followers List",
+                curation="group",
+                privacy="followers",
+                group=self.public_group,
+                user=self.owner_user,
+            )
+
         rat_lists = models.List.privacy_filter(self.rat).all()
         badger_lists = models.List.privacy_filter(self.badger).all()
         capybara_lists = models.List.privacy_filter(self.capybara).all()
 
-        self.assertFalse(self.followers_list in rat_lists)
-        self.assertFalse(self.followers_list in badger_lists)
-        self.assertTrue(self.followers_list in capybara_lists)
+        self.assertFalse(followers_list in rat_lists)
+        self.assertFalse(followers_list in badger_lists)
+        self.assertTrue(followers_list in capybara_lists)
 
     def test_group_members_can_see_private_lists(self, _):
         """private group booklists should not be excluded from group booklist listing for group members"""
 
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+
+            private_list = models.List.objects.create(
+                name="Private List",
+                privacy="direct",
+                curation="group",
+                group=self.public_group,
+                user=self.owner_user,
+            )
+
         rat_lists = models.List.privacy_filter(self.rat).all()
         badger_lists = models.List.privacy_filter(self.badger).all()
         capybara_lists = models.List.privacy_filter(self.capybara).all()
 
-        self.assertFalse(self.private_list in rat_lists)
-        self.assertFalse(self.private_list in badger_lists)
-        self.assertTrue(self.private_list in capybara_lists)
+        self.assertFalse(private_list in rat_lists)
+        self.assertFalse(private_list in badger_lists)
+        self.assertTrue(private_list in capybara_lists)
