@@ -1,10 +1,13 @@
 """ test for app action functionality """
+from datetime import timedelta
 from unittest.mock import patch
 
 from django.contrib.auth.models import AnonymousUser
+from django.core.exceptions import PermissionDenied
 from django.template.response import TemplateResponse
 from django.test import TestCase
 from django.test.client import RequestFactory
+from django.utils import timezone
 
 from bookwyrm import models, views
 from bookwyrm.tests.validate_html import validate_html
@@ -68,6 +71,35 @@ class PasswordViews(TestCase):
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
+
+    def test_password_reset_nonexistant_code(self):
+        """there are so many views, this just makes sure it LOADS"""
+        view = views.PasswordReset.as_view()
+        request = self.factory.get("")
+        request.user = self.anonymous_user
+        with self.assertRaises(PermissionDenied):
+            view(request, "beep")
+
+    def test_password_reset_invalid_code(self):
+        """there are so many views, this just makes sure it LOADS"""
+        view = views.PasswordReset.as_view()
+        code = models.PasswordReset.objects.create(
+            user=self.local_user,
+            expiry=timezone.now() - timedelta(days=2)
+        )
+        request = self.factory.get("")
+        request.user = self.anonymous_user
+        with self.assertRaises(PermissionDenied):
+            view(request, code.code)
+
+    def test_password_reset_logged_in(self):
+        """redirect logged in users"""
+        view = views.PasswordReset.as_view()
+        code = models.PasswordReset.objects.create(user=self.local_user)
+        request = self.factory.get("")
+        request.user = self.local_user
+        result = view(request, code.code)
+        self.assertEqual(result.status_code, 302)
 
     def test_password_reset_post(self):
         """reset from code"""
