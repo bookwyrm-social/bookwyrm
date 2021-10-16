@@ -32,6 +32,12 @@ from .books.books import Book, upload_cover, add_description, resolve_book
 from .books.edit_book import EditBook, ConfirmEditBook
 from .books.editions import Editions, switch_edition
 
+# landing
+from .landing.landing import About, Home, Landing
+from .landing.login import Login, Logout
+from .landing.register import Register, ConfirmEmail, ConfirmEmailCode, resend_link
+from .landing.password import PasswordResetRequest, PasswordReset
+
 # misc views
 from .author import Author, EditAuthor
 from .directory import Directory
@@ -45,17 +51,13 @@ from .import_data import Import, ImportStatus
 from .inbox import Inbox
 from .interaction import Favorite, Unfavorite, Boost, Unboost
 from .isbn import Isbn
-from .landing import About, Home, Landing
 from .list import Lists, SavedLists, List, Curate, UserLists
 from .list import save_list, unsave_list, delete_list
-from .login import Login, Logout
 from .notifications import Notifications
 from .outbox import Outbox
 from .reading import create_readthrough, delete_readthrough, delete_progressupdate
 from .reading import ReadingStatus
-from .register import Register, ConfirmEmail, ConfirmEmailCode, resend_link
 from .rss_feed import RssFeed
-from .password import PasswordResetRequest, PasswordReset
 from .search import Search
 from .shelf import Shelf
 from .shelf import create_shelf, delete_shelf
