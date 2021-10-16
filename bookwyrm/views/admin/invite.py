@@ -81,7 +81,7 @@ class Invite(View):
             "invite": invite,
             "valid": invite.valid() if invite else True,
         }
-        return TemplateResponse(request, "invite.html", data)
+        return TemplateResponse(request, "landing/invite.html", data)
 
     # post handling is in views.register.Register
 
