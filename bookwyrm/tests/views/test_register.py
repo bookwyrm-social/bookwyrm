@@ -10,6 +10,7 @@ from django.test.client import RequestFactory
 
 from bookwyrm import models, views
 from bookwyrm.settings import DOMAIN
+from bookwyrm.tests.validate_html import validate_html
 
 
 # pylint: disable=too-many-public-methods
@@ -55,7 +56,7 @@ class RegisterViews(TestCase):
         self.assertEqual(models.User.objects.count(), 2)
         self.assertEqual(response.status_code, 302)
         nutria = models.User.objects.last()
-        self.assertEqual(nutria.username, "nutria-user.user_nutria@%s" % DOMAIN)
+        self.assertEqual(nutria.username, f"nutria-user.user_nutria@{DOMAIN}")
         self.assertEqual(nutria.localname, "nutria-user.user_nutria")
         self.assertEqual(nutria.local, True)
 
@@ -79,7 +80,7 @@ class RegisterViews(TestCase):
             response = view(request)
         self.assertEqual(response.status_code, 302)
         nutria = models.User.objects.get(localname="nutria")
-        self.assertEqual(nutria.username, "nutria@%s" % DOMAIN)
+        self.assertEqual(nutria.username, f"nutria@{DOMAIN}")
         self.assertEqual(nutria.local, True)
 
         self.assertFalse(nutria.is_active)
@@ -98,7 +99,7 @@ class RegisterViews(TestCase):
         self.assertEqual(models.User.objects.count(), 2)
         self.assertEqual(response.status_code, 302)
         nutria = models.User.objects.last()
-        self.assertEqual(nutria.username, "nutria@%s" % DOMAIN)
+        self.assertEqual(nutria.username, f"nutria@{DOMAIN}")
         self.assertEqual(nutria.localname, "nutria")
         self.assertEqual(nutria.local, True)
 
@@ -277,7 +278,7 @@ class RegisterViews(TestCase):
 
         result = view(request, "abcde")
         self.assertIsInstance(result, TemplateResponse)
-        result.render()
+        validate_html(result.render())
         self.assertEqual(result.status_code, 200)
         self.assertFalse(self.local_user.is_active)
         self.assertEqual(self.local_user.deactivation_reason, "pending")
@@ -293,7 +294,7 @@ class RegisterViews(TestCase):
 
         result = login(request)
         self.assertIsInstance(result, TemplateResponse)
-        result.render()
+        validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
         request.user = self.local_user
