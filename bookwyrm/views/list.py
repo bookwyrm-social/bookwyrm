@@ -58,7 +58,8 @@ class Lists(View):
         book_list = form.save()
         # list should not have a group if it is not group curated
         if not book_list.curation == "group":
-            models.List.objects.filter(id=book_list.id).update(group=None)
+            book_list.group = None
+            book_list.save(broadcast=False)
 
         return redirect(book_list.local_path)
 
@@ -193,7 +194,9 @@ class List(View):
             return redirect("list", book_list.id)
         book_list = form.save()
         if not book_list.curation == "group":
-            models.List.objects.filter(id=book_list.id).update(group=None)
+            book_list.group = None
+            book_list.save(broadcast=False)
+
         return redirect(book_list.local_path)
 
 
