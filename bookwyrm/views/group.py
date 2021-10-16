@@ -94,7 +94,7 @@ class FindUsers(View):
 
     def get(self, request, group_id):
         """basic profile info"""
-        query = request.GET.get("query")
+        user_query = request.GET.get("user_query")
         group = get_object_or_404(models.Group, id=group_id)
 
         if not group:
@@ -110,8 +110,8 @@ class FindUsers(View):
             )  # don't suggest users who are already members
             .annotate(
                 similarity=Greatest(
-                    TrigramSimilarity("username", query),
-                    TrigramSimilarity("localname", query),
+                    TrigramSimilarity("username", user_query),
+                    TrigramSimilarity("localname", user_query),
                 )
             )
             .filter(similarity__gt=0.5, local=True)
@@ -127,7 +127,8 @@ class FindUsers(View):
         data = {
             "suggested_users": user_results,
             "group": group,
-            "query": query,
+            "group_form": forms.GroupForm(instance=group),
+            "user_query": user_query,
             "requestor_is_manager": request.user == group.user,
         }
         return TemplateResponse(request, "groups/find_users.html", data)
@@ -222,7 +223,7 @@ def remove_member(request):
                 notification_type=notification_type,
             )
 
-    return redirect(user.local_path)
+    return redirect(group.local_path)
 
 
 @require_POST
