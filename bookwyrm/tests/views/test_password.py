@@ -84,8 +84,7 @@ class PasswordViews(TestCase):
         """there are so many views, this just makes sure it LOADS"""
         view = views.PasswordReset.as_view()
         code = models.PasswordReset.objects.create(
-            user=self.local_user,
-            expiry=timezone.now() - timedelta(days=2)
+            user=self.local_user, expiry=timezone.now() - timedelta(days=2)
         )
         request = self.factory.get("")
         request.user = self.anonymous_user
