@@ -121,6 +121,18 @@ class RegisterViews(TestCase):
         self.assertEqual(models.User.objects.count(), 1)
         validate_html(response.render())
 
+    def test_register_username_in_use(self, *_):
+        """that username is taken"""
+        view = views.Register.as_view()
+        self.assertEqual(models.User.objects.count(), 1)
+        request = self.factory.post(
+            "register/",
+            {"localname": "mouse", "password": "mouseword", "email": "aa@bb.ccc"},
+        )
+        response = view(request)
+        self.assertEqual(models.User.objects.count(), 1)
+        validate_html(response.render())
+
     def test_register_invalid_username(self, *_):
         """gotta have an email"""
         view = views.Register.as_view()
