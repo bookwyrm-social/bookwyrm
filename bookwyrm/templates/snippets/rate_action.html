@@ -3,7 +3,7 @@
 {% if request.user.is_authenticated %}
 <span class="is-sr-only">{% trans "Leave a rating" %}</span>
 <div class="block">
-    <form class="hidden-form" name="rate" action="/post/rating" method="POST">
+    <form class="hidden-form" name="rate" action="{% url 'create-status' 'rating' %}" method="POST">
         {% csrf_token %}
         <input type="hidden" name="user" value="{{ request.user.id }}">
         <input type="hidden" name="book" value="{{ book.id }}">

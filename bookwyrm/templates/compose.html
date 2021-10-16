@@ -2,10 +2,10 @@
 {% load i18n %}
 {% load utilities %}
 
-{% block title %}{% trans "Compose status" %}{% endblock %}
+{% block title %}{% trans "Edit status" %}{% endblock %}
 {% block content %}
 <header class="block content">
-    <h1>{% trans "Compose status" %}</h1>
+    <h1>{% trans "Edit status" %}</h1>
 </header>
 
 {% with 0|uuid as uuid %}
@@ -22,6 +22,10 @@
     <div class="column">
         {% if draft.reply_parent %}
         {% include 'snippets/status/status.html' with status=draft.reply_parent no_interact=True %}
+        {% else %}
+        <div class="block">
+            {% include "snippets/status/header.html" with status=draft %}
+        </div>
         {% endif %}
 
         {% if not draft %}

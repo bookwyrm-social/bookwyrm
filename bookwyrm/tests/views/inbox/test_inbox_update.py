@@ -37,9 +37,9 @@ class InboxUpdate(TestCase):
                 outbox="https://example.com/users/rat/outbox",
             )
 
-        self.create_json = {
+        self.update_json = {
             "id": "hi",
-            "type": "Create",
+            "type": "Update",
             "actor": "hi",
             "to": ["https://www.w3.org/ns/activitystreams#public"],
             "cc": ["https://example.com/user/mouse/followers"],
@@ -54,26 +54,20 @@ class InboxUpdate(TestCase):
             book_list = models.List.objects.create(
                 name="hi", remote_id="https://example.com/list/22", user=self.local_user
             )
-        activity = {
-            "type": "Update",
-            "to": [],
-            "cc": [],
-            "actor": "hi",
-            "id": "sdkjf",
-            "object": {
-                "id": "https://example.com/list/22",
-                "type": "BookList",
-                "totalItems": 1,
-                "first": "https://example.com/list/22?page=1",
-                "last": "https://example.com/list/22?page=1",
-                "name": "Test List",
-                "owner": "https://example.com/user/mouse",
-                "to": ["https://www.w3.org/ns/activitystreams#Public"],
-                "cc": ["https://example.com/user/mouse/followers"],
-                "summary": "summary text",
-                "curation": "curated",
-                "@context": "https://www.w3.org/ns/activitystreams",
-            },
+        activity = self.update_json
+        activity["object"] = {
+            "id": "https://example.com/list/22",
+            "type": "BookList",
+            "totalItems": 1,
+            "first": "https://example.com/list/22?page=1",
+            "last": "https://example.com/list/22?page=1",
+            "name": "Test List",
+            "owner": "https://example.com/user/mouse",
+            "to": ["https://www.w3.org/ns/activitystreams#Public"],
+            "cc": ["https://example.com/user/mouse/followers"],
+            "summary": "summary text",
+            "curation": "curated",
+            "@context": "https://www.w3.org/ns/activitystreams",
         }
         views.inbox.activity_task(activity)
         book_list.refresh_from_db()
@@ -176,3 +170,26 @@ class InboxUpdate(TestCase):
             )
         book = models.Work.objects.get(id=book.id)
         self.assertEqual(book.title, "Piranesi")
+
+    @patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
+    @patch("bookwyrm.activitystreams.add_status_task.delay")
+    def test_update_status(self, *_):
+        """edit a status"""
+        status = models.Status.objects.create(user=self.remote_user, content="hi")
+
+        datafile = pathlib.Path(__file__).parent.joinpath("../../data/ap_note.json")
+        status_data = json.loads(datafile.read_bytes())
+        status_data["id"] = status.remote_id
+        status_data["updated"] = "2021-12-13T05:09:29Z"
+
+        activity = self.update_json
+        activity["object"] = status_data
+
+        with patch("bookwyrm.activitypub.base_activity.set_related_field.delay"):
+            views.inbox.activity_task(activity)
+
+        status.refresh_from_db()
+        self.assertEqual(status.content, "test content in note")
+        self.assertEqual(status.edited_date.year, 2021)
+        self.assertEqual(status.edited_date.month, 12)
+        self.assertEqual(status.edited_date.day, 13)

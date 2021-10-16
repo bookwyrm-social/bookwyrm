@@ -9,6 +9,7 @@ from django.test.client import RequestFactory
 
 from bookwyrm import forms, models, views
 from bookwyrm.activitypub import ActivitypubResponse
+from bookwyrm.tests.validate_html import validate_html
 
 
 class AuthorViews(TestCase):
@@ -54,7 +55,7 @@ class AuthorViews(TestCase):
             is_api.return_value = False
             result = view(request, author.id)
         self.assertIsInstance(result, TemplateResponse)
-        result.render()
+        validate_html(result.render())
         self.assertEqual(result.status_code, 200)
         self.assertEqual(result.status_code, 200)
 
@@ -75,7 +76,7 @@ class AuthorViews(TestCase):
 
         result = view(request, author.id)
         self.assertIsInstance(result, TemplateResponse)
-        result.render()
+        validate_html(result.render())
         self.assertEqual(result.status_code, 200)
         self.assertEqual(result.status_code, 200)
 

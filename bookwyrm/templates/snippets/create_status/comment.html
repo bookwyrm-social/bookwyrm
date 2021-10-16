@@ -15,6 +15,7 @@ uuid: a unique identifier used to make html "id" attributes unique and clarify j
 {% trans "Some thoughts on the book" as placeholder %}
 
 {% block post_content_additions %}
+    {% if not draft.reading_status %}
     {# Supplemental fields #}
     <div>
         {% active_shelf book as active_shelf %}
@@ -35,7 +36,7 @@ uuid: a unique identifier used to make html "id" attributes unique and clarify j
                         size="3"
                         value="{% firstof draft.progress readthrough.progress '' %}"
                         id="progress_{{ uuid }}"
-                        data-cache-draft="id_progress_comment_{{ book.id }}"
+                        {% if not draft %}data-cache-draft="id_progress_comment_{{ book.id }}"{% endif %}
                     >
                 </div>
                 <div class="control">
@@ -43,7 +44,7 @@ uuid: a unique identifier used to make html "id" attributes unique and clarify j
                         <select
                             name="progress_mode"
                             aria-label="Progress mode"
-                            data-cache-draft="id_progress_mode_comment_{{ book.id }}"
+                            {% if not draft %}data-cache-draft="id_progress_mode_comment_{{ book.id }}"{% endif %}
                         >
                             <option
                                 value="PG"
@@ -68,6 +69,7 @@ uuid: a unique identifier used to make html "id" attributes unique and clarify j
         {% endwith %}
         {% endif %}
     </div>
+    {% endif %}
 {% endblock %}
 
 {% endwith %}

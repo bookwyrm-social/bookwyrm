@@ -35,6 +35,7 @@ class Note(ActivityObject):
     tag: List[Link] = field(default_factory=lambda: [])
     attachment: List[Document] = field(default_factory=lambda: [])
     sensitive: bool = False
+    updated: str = None
     type: str = "Note"
 
 
