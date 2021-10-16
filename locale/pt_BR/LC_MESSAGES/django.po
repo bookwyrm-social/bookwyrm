@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-10-06 23:57+0000\n"
-"PO-Revision-Date: 2021-10-13 16:42\n"
+"PO-Revision-Date: 2021-10-16 01:47\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Portuguese, Brazilian\n"
 "Language: pt\n"
@@ -937,7 +937,7 @@ msgstr "Confirmar email"
 #: bookwyrm/templates/email/confirm/html_content.html:15
 #, python-format
 msgid "Or enter the code \"<code>%(confirmation_code)s</code>\" at login."
-msgstr "Ou insira o código \"<code>%(confirmation_code)s</code>\" ao fazer login."
+msgstr "Ou insira o código \"<code>%(confirmation_code)s</code>\" quando entrar."
 
 #: bookwyrm/templates/email/confirm/subject.html:2
 msgid "Please confirm your email"
@@ -946,7 +946,7 @@ msgstr "Por favor, confirme seu email"
 #: bookwyrm/templates/email/confirm/text_content.html:10
 #, python-format
 msgid "Or enter the code \"%(confirmation_code)s\" at login."
-msgstr "Ou insira o código \"%(confirmation_code)s\" ao fazer login."
+msgstr "Ou insira o código \"%(confirmation_code)s\" quando entrar."
 
 #: bookwyrm/templates/email/html_layout.html:15
 #: bookwyrm/templates/email/text_layout.html:2
@@ -990,7 +990,7 @@ msgstr "Saiba mais sobre esta instância:"
 #: bookwyrm/templates/email/password_reset/text_content.html:4
 #, python-format
 msgid "You requested to reset your %(site_name)s password. Click the link below to set a new password and log in to your account."
-msgstr "Você solicitou a redefinição de sua senha no %(site_name)s. Clique no link abaixo para definir uma nova senha e fazer login."
+msgstr "Você solicitou a redefinição de sua senha no %(site_name)s. Clique no link abaixo para definir uma nova senha e entrar no site."
 
 #: bookwyrm/templates/email/password_reset/html_content.html:9
 #: bookwyrm/templates/password_reset.html:4
@@ -1422,7 +1422,7 @@ msgstr "Menu de navegação principal"
 
 #: bookwyrm/templates/layout.html:72
 msgid "Feed"
-msgstr "Feed"
+msgstr "Novidades"
 
 #: bookwyrm/templates/layout.html:106
 msgid "Your Books"
@@ -1466,12 +1466,12 @@ msgstr "senha"
 
 #: bookwyrm/templates/layout.html:176 bookwyrm/templates/login.html:40
 msgid "Forgot your password?"
-msgstr "Esqueceu a senha?"
+msgstr "Esqueceu sua senha?"
 
 #: bookwyrm/templates/layout.html:179 bookwyrm/templates/login.html:7
 #: bookwyrm/templates/login.html:37
 msgid "Log in"
-msgstr "Fazer login"
+msgstr "Entrar"
 
 #: bookwyrm/templates/layout.html:187
 msgid "Join"
@@ -1900,7 +1900,7 @@ msgstr "Privacidade"
 
 #: bookwyrm/templates/preferences/edit_user.html:72
 msgid "Show reading goal prompt in feed:"
-msgstr "Mostrar sugestão de meta de leitura no feed:"
+msgstr "Mostrar sugestão de meta de leitura:"
 
 #: bookwyrm/templates/preferences/edit_user.html:76
 msgid "Show suggested users:"
@@ -1962,7 +1962,7 @@ msgstr "Adicionar livro manualmente"
 
 #: bookwyrm/templates/search/book.html:116
 msgid "Log in to import or add books."
-msgstr "Faça login para importar ou adicionar livros."
+msgstr "Entre para importar ou adicionar livros."
 
 #: bookwyrm/templates/search/layout.html:16
 msgid "Search query"
@@ -2550,7 +2550,7 @@ msgstr "Comentários da moderação"
 #: bookwyrm/templates/settings/reports/report.html:41
 #: bookwyrm/templates/snippets/create_status.html:28
 msgid "Comment"
-msgstr "Comentário"
+msgstr "Comentar"
 
 #: bookwyrm/templates/settings/reports/report.html:46
 msgid "Reported statuses"
@@ -3142,7 +3142,7 @@ msgstr "Privacidade da meta:"
 #: bookwyrm/templates/snippets/goal_form.html:33
 #: bookwyrm/templates/snippets/reading_modals/layout.html:13
 msgid "Post to feed"
-msgstr "Publicar no feed"
+msgstr "Publicar"
 
 #: bookwyrm/templates/snippets/goal_form.html:37
 msgid "Set goal"
@@ -3151,7 +3151,7 @@ msgstr "Definir meta"
 #: bookwyrm/templates/snippets/goal_progress.html:9
 #, python-format
 msgid "%(percent)s%% complete!"
-msgstr "%(percent)s%% completo!"
+msgstr "%(percent)s%% lá!"
 
 #: bookwyrm/templates/snippets/goal_progress.html:12
 #, python-format
@@ -3256,7 +3256,7 @@ msgstr "Progresso"
 
 #: bookwyrm/templates/snippets/register_form.html:32
 msgid "Sign Up"
-msgstr "Se cadastrar"
+msgstr "Cadastrar"
 
 #: bookwyrm/templates/snippets/report_button.html:6
 msgid "Report"
