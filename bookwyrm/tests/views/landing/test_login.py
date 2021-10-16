@@ -58,7 +58,7 @@ class LoginViews(TestCase):
         request = self.factory.post("", form.data)
         request.user = self.anonymous_user
 
-        with patch("bookwyrm.views.login.login"):
+        with patch("bookwyrm.views.landing.login.login"):
             result = view(request)
         self.assertEqual(result.url, "/")
         self.assertEqual(result.status_code, 302)
@@ -72,7 +72,7 @@ class LoginViews(TestCase):
         request = self.factory.post("", form.data)
         request.user = self.anonymous_user
 
-        with patch("bookwyrm.views.login.login"):
+        with patch("bookwyrm.views.landing.login.login"):
             result = view(request)
         self.assertEqual(result.url, "/")
         self.assertEqual(result.status_code, 302)
@@ -86,7 +86,7 @@ class LoginViews(TestCase):
         request = self.factory.post("", form.data)
         request.user = self.anonymous_user
 
-        with patch("bookwyrm.views.login.login"):
+        with patch("bookwyrm.views.landing.login.login"):
             result = view(request)
         self.assertEqual(result.url, "/")
         self.assertEqual(result.status_code, 302)
@@ -100,7 +100,7 @@ class LoginViews(TestCase):
         request = self.factory.post("", form.data)
         request.user = self.anonymous_user
 
-        with patch("bookwyrm.views.login.login"):
+        with patch("bookwyrm.views.landing.login.login"):
             result = view(request)
         result.render()
         self.assertEqual(result.status_code, 200)

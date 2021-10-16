@@ -105,7 +105,7 @@ class PasswordViews(TestCase):
         view = views.PasswordReset.as_view()
         code = models.PasswordReset.objects.create(user=self.local_user)
         request = self.factory.post("", {"password": "hi", "confirm-password": "hi"})
-        with patch("bookwyrm.views.password.login"):
+        with patch("bookwyrm.views.landing.password.login"):
             resp = view(request, code.code)
         self.assertEqual(resp.status_code, 302)
         self.assertFalse(models.PasswordReset.objects.exists())

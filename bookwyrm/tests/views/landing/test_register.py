@@ -58,7 +58,7 @@ class RegisterViews(TestCase):
                 "email": "aa@bb.cccc",
             },
         )
-        with patch("bookwyrm.views.register.login"):
+        with patch("bookwyrm.views.landing.register.login"):
             response = view(request)
         self.assertEqual(models.User.objects.count(), 2)
         self.assertEqual(response.status_code, 302)
@@ -83,7 +83,7 @@ class RegisterViews(TestCase):
                 "email": "aa@bb.cccc",
             },
         )
-        with patch("bookwyrm.views.register.login"):
+        with patch("bookwyrm.views.landing.register.login"):
             response = view(request)
         self.assertEqual(response.status_code, 302)
         nutria = models.User.objects.get(localname="nutria")
@@ -101,7 +101,7 @@ class RegisterViews(TestCase):
             "register/",
             {"localname": "nutria ", "password": "mouseword", "email": "aa@bb.ccc"},
         )
-        with patch("bookwyrm.views.register.login"):
+        with patch("bookwyrm.views.landing.register.login"):
             response = view(request)
         self.assertEqual(models.User.objects.count(), 2)
         self.assertEqual(response.status_code, 302)
@@ -140,7 +140,7 @@ class RegisterViews(TestCase):
                 "invite_code": "testcode",
             },
         )
-        with patch("bookwyrm.views.register.login"):
+        with patch("bookwyrm.views.landing.register.login"):
             response = view(request)
         response = view(request)
         validate_html(response.render())
@@ -216,7 +216,7 @@ class RegisterViews(TestCase):
             "register/",
             {"localname": "nutria ", "password": "mouseword", "email": "aa@bleep.com"},
         )
-        with patch("bookwyrm.views.register.login"):
+        with patch("bookwyrm.views.landing.register.login"):
             result = view(request)
         self.assertEqual(result.status_code, 302)
         self.assertTrue(models.User.objects.filter(email="aa@bleep.com").exists())
@@ -240,7 +240,7 @@ class RegisterViews(TestCase):
                 "invite_code": "testcode",
             },
         )
-        with patch("bookwyrm.views.register.login"):
+        with patch("bookwyrm.views.landing.register.login"):
             response = view(request)
         self.assertEqual(models.User.objects.count(), 2)
         self.assertEqual(response.status_code, 302)
