@@ -102,8 +102,8 @@ class List(OrderedCollectionMixin, BookWyrmModel):
         """remove a list from a group"""
 
         cls.objects.filter(group__user=owner, user=user).all().update(
-                group=None, curation="closed"
-            )
+            group=None, curation="closed"
+        )
 
 
 class ListItem(CollectionItemMixin, BookWyrmModel):
