@@ -13,7 +13,7 @@
             <input type="hidden" name="group" value="{{ group.id }}">
             <input type="hidden" name="user" value="{{ user.username }}">
             <button id="submit_button" class="button is-small is-danger is-light is-hidden" type="submit" data-id="member_{{ member.id }}">
-              {% blocktrans with username=user.localname %} Confirm {% endblocktrans %}
+                {% blocktrans with username=user.localname %} Confirm {% endblocktrans %}
             </button>
             <button id="hide_submit_button" data-controls="submit_button" class="button is-small" type="button" aria-pressed="false">
                 {% blocktrans with username=user.localname %} Remove {% endblocktrans %}
