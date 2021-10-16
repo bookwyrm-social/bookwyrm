@@ -227,7 +227,7 @@
         <div class="columns">
             <div class="column is-one-fifth">
                 <p>
-                <a href="{% url 'about' %}">{% trans "About this instance" %}</a>
+                <a href="{% url 'about' %}">{% blocktrans with site_name=site.name %}About {{ site_name }}{% endblocktrans %}</a>
                 </p>
                 {% if site.admin_email %}
                 <p>

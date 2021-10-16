@@ -1,4 +1,4 @@
-""" handle reading a csv from an external service, defaults are from GoodReads """
+""" handle reading a csv from an external service, defaults are from Goodreads """
 import csv
 import logging
 

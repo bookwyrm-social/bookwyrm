@@ -5,6 +5,6 @@
 
 {{ invite_link }}
 
-{% trans "Learn more about this instance:" %} https://{{ domain }}{% url 'about' %}
+{% blocktrans %}Learn more about {{ site_name }}:{% endblocktrans %} https://{{ domain }}{% url 'about' %}
 
 {% endblock %}

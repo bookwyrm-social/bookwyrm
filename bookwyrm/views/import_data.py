@@ -51,7 +51,7 @@ class Import(View):
             elif source == "Storygraph":
                 importer = StorygraphImporter()
             else:
-                # Default : GoodReads
+                # Default : Goodreads
                 importer = GoodreadsImporter()
 
             try:
