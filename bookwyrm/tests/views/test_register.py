@@ -121,6 +121,30 @@ class RegisterViews(TestCase):
         self.assertEqual(models.User.objects.count(), 1)
         validate_html(response.render())
 
+    def test_register_error_and_invite(self, *_):
+        """redirect to the invite page"""
+        view = views.Register.as_view()
+        self.settings.allow_registration = False
+        self.settings.save()
+        models.SiteInvite.objects.create(
+            code="testcode", user=self.local_user, use_limit=1
+        )
+        self.assertEqual(models.SiteInvite.objects.get().times_used, 0)
+
+        request = self.factory.post(
+            "register/",
+            {
+                "localname": "nutria",
+                "password": "mouseword",
+                "email": "",
+                "invite_code": "testcode",
+            },
+        )
+        with patch("bookwyrm.views.register.login"):
+            response = view(request)
+        response = view(request)
+        validate_html(response.render())
+
     def test_register_username_in_use(self, *_):
         """that username is taken"""
         view = views.Register.as_view()
@@ -320,3 +344,25 @@ class RegisterViews(TestCase):
         result = login(request)
         self.assertEqual(result.url, "/")
         self.assertEqual(result.status_code, 302)
+
+    def test_confirm_email_post(self, *_):
+        """ send the email """
+        self.settings.require_confirm_email = True
+        self.settings.save()
+        view = views.ConfirmEmail.as_view()
+        models.SiteInvite.objects.create(
+            code="testcode", user=self.local_user, use_limit=1
+        )
+        request = self.factory.post("", {"code": "testcode"})
+        request.user = self.anonymous_user
+
+        result = view(request)
+        validate_html(result.render())
+
+    def test_resend_link(self, *_):
+        """ try again """
+        request = self.factory.post("", {"email": "mouse@mouse.com"})
+        request.user = self.anonymous_user
+        with patch("bookwyrm.emailing.send_email.delay") as mock:
+            views.resend_link(request)
+        self.assertEqual(mock.call_count, 1)
