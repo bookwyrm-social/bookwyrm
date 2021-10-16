@@ -39,6 +39,13 @@ class RegisterViews(TestCase):
             id=1, require_confirm_email=False
         )
 
+    def test_get_redirect(self, *_):
+        """there's no dedicated registration page"""
+        view = views.Register.as_view()
+        request = self.factory.get("register/")
+        response = view(request)
+        self.assertEqual(response.status_code, 302)
+
     def test_register(self, *_):
         """create a user"""
         view = views.Register.as_view()
@@ -112,7 +119,7 @@ class RegisterViews(TestCase):
         )
         response = view(request)
         self.assertEqual(models.User.objects.count(), 1)
-        response.render()
+        validate_html(response.render())
 
     def test_register_invalid_username(self, *_):
         """gotta have an email"""
@@ -124,7 +131,7 @@ class RegisterViews(TestCase):
         )
         response = view(request)
         self.assertEqual(models.User.objects.count(), 1)
-        response.render()
+        validate_html(response.render())
 
         request = self.factory.post(
             "register/",
@@ -132,7 +139,7 @@ class RegisterViews(TestCase):
         )
         response = view(request)
         self.assertEqual(models.User.objects.count(), 1)
-        response.render()
+        validate_html(response.render())
 
         request = self.factory.post(
             "register/",
@@ -140,7 +147,7 @@ class RegisterViews(TestCase):
         )
         response = view(request)
         self.assertEqual(models.User.objects.count(), 1)
-        response.render()
+        validate_html(response.render())
 
     def test_register_closed_instance(self, *_):
         """you can't just register"""
