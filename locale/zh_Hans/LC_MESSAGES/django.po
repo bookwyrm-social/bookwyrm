@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-10-06 23:57+0000\n"
-"PO-Revision-Date: 2021-10-08 00:03\n"
+"PO-Revision-Date: 2021-10-16 13:36\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Chinese Simplified\n"
 "Language: zh\n"
@@ -82,7 +82,7 @@ msgstr ""
 
 #: bookwyrm/models/base_model.py:17
 msgid "Pending"
-msgstr ""
+msgstr "待处理"
 
 #: bookwyrm/models/base_model.py:18
 msgid "Self deletion"
@@ -90,11 +90,11 @@ msgstr ""
 
 #: bookwyrm/models/base_model.py:19
 msgid "Moderator suspension"
-msgstr ""
+msgstr "仲裁员停用"
 
 #: bookwyrm/models/base_model.py:20
 msgid "Moderator deletion"
-msgstr ""
+msgstr "仲裁员删除"
 
 #: bookwyrm/models/base_model.py:21
 msgid "Domain block"
@@ -118,7 +118,7 @@ msgstr ""
 
 #: bookwyrm/models/book.py:236
 msgid "Paperback"
-msgstr ""
+msgstr "平装"
 
 #: bookwyrm/models/federated_server.py:11
 #: bookwyrm/templates/settings/federation/edit_instance.html:42
@@ -666,7 +666,7 @@ msgstr "语言:"
 
 #: bookwyrm/templates/book/editions/search_filter.html:5
 msgid "Search editions"
-msgstr ""
+msgstr "搜索版本"
 
 #: bookwyrm/templates/book/publisher_info.html:21
 #, python-format
@@ -1087,7 +1087,7 @@ msgstr ""
 
 #: bookwyrm/templates/feed/suggested_users.html:14
 msgid "View directory"
-msgstr ""
+msgstr "查看目录"
 
 #: bookwyrm/templates/get_started/book_preview.html:6
 #, python-format
@@ -1336,7 +1336,7 @@ msgstr "已导入"
 
 #: bookwyrm/templates/import/tooltip.html:6
 msgid "You can download your GoodReads data from the <a href=\"https://www.goodreads.com/review/import\" target=\"_blank\" rel=\"noopener\">Import/Export page</a> of your GoodReads account."
-msgstr ""
+msgstr "你可以从 <a href=\"https://www.goodreads.com/review/import\" target=\"_blank\" rel=\"noopener\">Import/Export page</a> 下载你的 GoodReads 帐号的数据。"
 
 #: bookwyrm/templates/invite.html:4 bookwyrm/templates/invite.html:8
 #: bookwyrm/templates/login.html:49
@@ -1394,7 +1394,7 @@ msgstr "请求邀请"
 #: bookwyrm/templates/landing/layout.html:49
 #, python-format
 msgid "%(name)s registration is closed"
-msgstr ""
+msgstr "%(name)s 注册已关闭"
 
 #: bookwyrm/templates/landing/layout.html:60
 msgid "Thank you! Your request has been received."
@@ -1407,7 +1407,7 @@ msgstr "你的帐号"
 #: bookwyrm/templates/layout.html:13
 #, python-format
 msgid "%(site_name)s search"
-msgstr ""
+msgstr "%(site_name)s 搜索"
 
 #: bookwyrm/templates/layout.html:43
 msgid "Search for a book, user, or list"
@@ -1476,7 +1476,7 @@ msgstr "加入"
 
 #: bookwyrm/templates/layout.html:221
 msgid "Successfully posted status"
-msgstr ""
+msgstr "成功发布的状态"
 
 #: bookwyrm/templates/layout.html:222
 msgid "Error posting status"
@@ -1505,7 +1505,7 @@ msgstr "BookWyrm 是开源软件。你可以在 <a href=\"https://github.com/mou
 
 #: bookwyrm/templates/lists/bookmark_button.html:30
 msgid "Un-save"
-msgstr ""
+msgstr "取消保存"
 
 #: bookwyrm/templates/lists/create_form.html:5
 #: bookwyrm/templates/lists/lists.html:20
@@ -1552,7 +1552,7 @@ msgstr ""
 
 #: bookwyrm/templates/lists/delete_list_modal.html:7
 msgid "This action cannot be un-done"
-msgstr ""
+msgstr "此操作无法被撤销"
 
 #: bookwyrm/templates/lists/delete_list_modal.html:15
 #: bookwyrm/templates/settings/announcements/announcement.html:20
@@ -1591,7 +1591,7 @@ msgstr "任何人都可以推荐书目、主题让你批准"
 #: bookwyrm/templates/lists/form.html:31
 msgctxt "curation type"
 msgid "Open"
-msgstr ""
+msgstr "开放"
 
 #: bookwyrm/templates/lists/form.html:32
 msgid "Anyone can add books to this list"
@@ -1667,7 +1667,7 @@ msgstr "推荐"
 
 #: bookwyrm/templates/lists/list_items.html:15
 msgid "Saved"
-msgstr ""
+msgstr "已保存"
 
 #: bookwyrm/templates/lists/lists.html:14 bookwyrm/templates/user/lists.html:9
 msgid "Your Lists"
@@ -1675,11 +1675,11 @@ msgstr "你的列表"
 
 #: bookwyrm/templates/lists/lists.html:35
 msgid "All Lists"
-msgstr ""
+msgstr "所有列表"
 
 #: bookwyrm/templates/lists/lists.html:39
 msgid "Saved Lists"
-msgstr ""
+msgstr "保存的列表"
 
 #: bookwyrm/templates/login.html:4
 msgid "Login"
@@ -1901,7 +1901,7 @@ msgstr ""
 
 #: bookwyrm/templates/preferences/edit_user.html:76
 msgid "Show suggested users:"
-msgstr ""
+msgstr "显示推荐用户:"
 
 #: bookwyrm/templates/preferences/edit_user.html:85
 #, python-format
@@ -2087,7 +2087,7 @@ msgstr "停用"
 
 #: bookwyrm/templates/settings/announcements/announcements.html:52
 msgid "No announcements found"
-msgstr ""
+msgstr "未找到公告"
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:6
 #: bookwyrm/templates/settings/dashboard/dashboard.html:8
@@ -2098,7 +2098,7 @@ msgstr ""
 #: bookwyrm/templates/settings/dashboard/dashboard.html:15
 #: bookwyrm/templates/settings/dashboard/dashboard.html:100
 msgid "Total users"
-msgstr ""
+msgstr "用户总数"
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:21
 #: bookwyrm/templates/settings/dashboard/user_chart.html:16
@@ -2107,24 +2107,24 @@ msgstr ""
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:27
 msgid "Statuses"
-msgstr ""
+msgstr "状态"
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:33
 #: bookwyrm/templates/settings/dashboard/works_chart.html:11
 msgid "Works"
-msgstr ""
+msgstr "作品"
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:43
 #, python-format
 msgid "%(display_count)s open report"
 msgid_plural "%(display_count)s open reports"
-msgstr[0] ""
+msgstr[0] "%(display_count)s 条待处理报告"
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:54
 #, python-format
 msgid "%(display_count)s invite request"
 msgid_plural "%(display_count)s invite requests"
-msgstr[0] ""
+msgstr[0] "%(display_count)s 条邀请请求"
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:65
 msgid "Instance Activity"
@@ -2132,7 +2132,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:83
 msgid "Interval:"
-msgstr ""
+msgstr "区段:"
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:87
 msgid "Days"
@@ -2140,19 +2140,19 @@ msgstr ""
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:88
 msgid "Weeks"
-msgstr ""
+msgstr "周"
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:106
 msgid "User signup activity"
-msgstr ""
+msgstr "用户注册活动"
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:112
 msgid "Status activity"
-msgstr ""
+msgstr "状态动态"
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:118
 msgid "Works created"
-msgstr ""
+msgstr "创建的作品"
 
 #: bookwyrm/templates/settings/dashboard/registration_chart.html:10
 msgid "Registrations"
@@ -2160,11 +2160,11 @@ msgstr ""
 
 #: bookwyrm/templates/settings/dashboard/status_chart.html:11
 msgid "Statuses posted"
-msgstr ""
+msgstr "发布的状态"
 
 #: bookwyrm/templates/settings/dashboard/user_chart.html:11
 msgid "Total"
-msgstr ""
+msgstr "总数"
 
 #: bookwyrm/templates/settings/email_blocklist/domain_form.html:5
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:10
@@ -2183,7 +2183,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:18
 msgid "When someone tries to register with an email from this domain, no account will be created. The registration process will appear to have worked."
-msgstr ""
+msgstr "当有人试图使用此域名的电子邮件注册时，帐户将不会被创建，但注册过程看起来会像是成功了的样子。"
 
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:25
 msgid "Domain"
@@ -2192,17 +2192,17 @@ msgstr ""
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:29
 #: bookwyrm/templates/settings/ip_blocklist/ip_blocklist.html:27
 msgid "Options"
-msgstr ""
+msgstr "选项"
 
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:38
 #, python-format
 msgid "%(display_count)s user"
 msgid_plural "%(display_count)s users"
-msgstr[0] ""
+msgstr[0] "%(display_count)s 名用户"
 
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:59
 msgid "No email domains currently blocked"
-msgstr ""
+msgstr "目前没有屏蔽邮件域名"
 
 #: bookwyrm/templates/settings/federation/edit_instance.html:3
 #: bookwyrm/templates/settings/federation/edit_instance.html:6
@@ -2355,7 +2355,7 @@ msgstr "软件"
 
 #: bookwyrm/templates/settings/federation/instance_list.html:63
 msgid "No instances found"
-msgstr ""
+msgstr "未找到实例"
 
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:4
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:11
@@ -2470,17 +2470,17 @@ msgstr ""
 
 #: bookwyrm/templates/settings/ip_blocklist/ip_address_form.html:11
 msgid "Use IP address blocks with caution, and consider using blocks only temporarily, as IP addresses are often shared or change hands. If you block your own IP, you will not be able to access this page."
-msgstr ""
+msgstr "请谨慎使用 IP 地址屏蔽，并尽可能只使用暂时的屏蔽，因为 IP 地址常常被共享或变更。 如果您屏蔽了自己的 IP，您将无法访问此页面。"
 
 #: bookwyrm/templates/settings/ip_blocklist/ip_address_form.html:18
 msgid "IP Address:"
-msgstr ""
+msgstr "IP 地址:"
 
 #: bookwyrm/templates/settings/ip_blocklist/ip_blocklist.html:5
 #: bookwyrm/templates/settings/ip_blocklist/ip_blocklist.html:7
 #: bookwyrm/templates/settings/layout.html:63
 msgid "IP Address Blocklist"
-msgstr ""
+msgstr "IP 地址屏蔽列表"
 
 #: bookwyrm/templates/settings/ip_blocklist/ip_blocklist.html:18
 msgid "Any traffic from this IP address will get a 404 response when trying to access any part of the application."
@@ -2492,11 +2492,11 @@ msgstr ""
 
 #: bookwyrm/templates/settings/ip_blocklist/ip_blocklist.html:46
 msgid "No IP addresses currently blocked"
-msgstr ""
+msgstr "目前没有屏蔽 IP 地址"
 
 #: bookwyrm/templates/settings/ip_blocklist/ip_tooltip.html:6
 msgid "You can block IP ranges using CIDR syntax."
-msgstr ""
+msgstr "你可以使用 CIDR 语法来进行 IP 段的屏蔽。"
 
 #: bookwyrm/templates/settings/layout.html:4
 msgid "Administration"
@@ -2508,7 +2508,7 @@ msgstr "管理用户"
 
 #: bookwyrm/templates/settings/layout.html:51
 msgid "Moderation"
-msgstr ""
+msgstr "仲裁"
 
 #: bookwyrm/templates/settings/layout.html:55
 #: bookwyrm/templates/settings/reports/reports.html:8
@@ -2631,7 +2631,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/site.html:37
 msgid "Used when the instance is previewed on joinbookwyrm.com. Does not support html or markdown."
-msgstr ""
+msgstr "在 joinbookwyrm.com 上预览实例时使用。不支持 html 或 markdown。"
 
 #: bookwyrm/templates/settings/site.html:41
 msgid "Code of conduct:"
@@ -2691,12 +2691,12 @@ msgstr "注册关闭文字:"
 
 #: bookwyrm/templates/settings/site.html:124
 msgid "Invite request text:"
-msgstr ""
+msgstr "邀请请求文本:"
 
 #: bookwyrm/templates/settings/users/delete_user_form.html:5
 #: bookwyrm/templates/settings/users/user_moderation_actions.html:31
 msgid "Permanently delete user"
-msgstr ""
+msgstr "永久删除用户"
 
 #: bookwyrm/templates/settings/users/delete_user_form.html:12
 #, python-format
@@ -2705,7 +2705,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/users/delete_user_form.html:17
 msgid "Your password:"
-msgstr ""
+msgstr "你的密码:"
 
 #: bookwyrm/templates/settings/users/user.html:7
 msgid "Back to users"
@@ -2778,11 +2778,11 @@ msgstr ""
 
 #: bookwyrm/templates/settings/users/user_info.html:70
 msgid "Last active date:"
-msgstr ""
+msgstr "最后活跃日期:"
 
 #: bookwyrm/templates/settings/users/user_info.html:73
 msgid "Manually approved followers:"
-msgstr ""
+msgstr "手动批准关注者:"
 
 #: bookwyrm/templates/settings/users/user_info.html:76
 msgid "Discoverable:"
@@ -2842,7 +2842,7 @@ msgstr "创建书架"
 #, python-format
 msgid "%(formatted_count)s book"
 msgid_plural "%(formatted_count)s books"
-msgstr[0] ""
+msgstr[0] "%(formatted_count)s 本书籍"
 
 #: bookwyrm/templates/shelf/shelf.html:84
 #, python-format
@@ -2992,7 +2992,7 @@ msgstr ""
 
 #: bookwyrm/templates/snippets/create_status/quotation.html:45
 msgid "On page:"
-msgstr ""
+msgstr "页码:"
 
 #: bookwyrm/templates/snippets/create_status/quotation.html:51
 msgid "At percent:"
@@ -3077,7 +3077,7 @@ msgstr "没有评价"
 #, python-format
 msgid "%(half_rating)s star"
 msgid_plural "%(half_rating)s stars"
-msgstr[0] ""
+msgstr[0] "%(half_rating)s 星"
 
 #: bookwyrm/templates/snippets/form_rate_stars.html:64
 #: bookwyrm/templates/snippets/stars.html:7
@@ -3220,7 +3220,7 @@ msgstr "已完成阅读"
 
 #: bookwyrm/templates/snippets/reading_modals/form.html:9
 msgid "(Optional)"
-msgstr ""
+msgstr "(可选)"
 
 #: bookwyrm/templates/snippets/reading_modals/progress_update_modal.html:5
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_dropdown_options.html:50
@@ -3296,17 +3296,17 @@ msgstr ""
 
 #: bookwyrm/templates/snippets/status/content_status.html:79
 msgid "Show status"
-msgstr ""
+msgstr "显示状态"
 
 #: bookwyrm/templates/snippets/status/content_status.html:101
 #, python-format
 msgid "(Page %(page)s)"
-msgstr ""
+msgstr "（第 %(page)s 页）"
 
 #: bookwyrm/templates/snippets/status/content_status.html:103
 #, python-format
 msgid "(%(percent)s%%)"
-msgstr ""
+msgstr "（%(percent)s%%）"
 
 #: bookwyrm/templates/snippets/status/content_status.html:125
 msgid "Open image in new window"
@@ -3566,5 +3566,5 @@ msgstr "密码重置连接已发送给 {email}"
 #: bookwyrm/views/rss_feed.py:35
 #, python-brace-format
 msgid "Status updates from {obj.display_name}"
-msgstr ""
+msgstr "{obj.display_name} 的状态更新"
 
