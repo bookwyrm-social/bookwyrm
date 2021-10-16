@@ -32,7 +32,7 @@ class List(OrderedCollectionMixin, BookWyrmModel):
     )
     group = models.ForeignKey(
         "Group",
-        on_delete=models.PROTECT,
+        on_delete=models.SET_NULL,
         default=None,
         blank=True,
         null=True,

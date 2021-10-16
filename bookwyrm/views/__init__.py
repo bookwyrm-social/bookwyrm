@@ -45,6 +45,7 @@ from .group import (
     Group,
     UserGroups,
     FindUsers,
+    delete_group,
     invite_member,
     remove_member,
     accept_membership,

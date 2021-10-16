@@ -79,7 +79,7 @@ class UserGroups(View):
         """create a user group"""
         form = forms.GroupForm(request.POST)
         if not form.is_valid():
-            return redirect(request.user.local_path + "groups")
+            return redirect(request.user.local_path + "/groups")
         group = form.save()
         # add the creator as a group member
         models.GroupMember.objects.create(group=group, user=request.user)
@@ -132,6 +132,22 @@ class FindUsers(View):
             "requestor_is_manager": request.user == group.user,
         }
         return TemplateResponse(request, "groups/find_users.html", data)
+
+
+@require_POST
+@login_required
+def delete_group(request, group_id):
+    """delete a group"""
+    group = get_object_or_404(models.Group, id=group_id)
+
+    # only the owner can delete a group
+    group.raise_not_deletable(request.user)
+
+    # deal with any group lists
+    models.List.objects.filter(group=group).update(curation="closed", group=None)
+
+    group.delete()
+    return redirect(request.user.local_path + "/groups")
 
 
 @require_POST
@@ -268,3 +284,4 @@ def reject_membership(request):
         pass
 
     return redirect(request.user.local_path)
+
