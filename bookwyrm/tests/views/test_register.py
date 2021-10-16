@@ -346,7 +346,7 @@ class RegisterViews(TestCase):
         self.assertEqual(result.status_code, 302)
 
     def test_confirm_email_post(self, *_):
-        """ send the email """
+        """send the email"""
         self.settings.require_confirm_email = True
         self.settings.save()
         view = views.ConfirmEmail.as_view()
@@ -360,7 +360,7 @@ class RegisterViews(TestCase):
         validate_html(result.render())
 
     def test_resend_link(self, *_):
-        """ try again """
+        """try again"""
         request = self.factory.post("", {"email": "mouse@mouse.com"})
         request.user = self.anonymous_user
         with patch("bookwyrm.emailing.send_email.delay") as mock:
