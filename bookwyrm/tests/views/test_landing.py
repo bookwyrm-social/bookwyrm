@@ -7,6 +7,7 @@ from django.test.client import RequestFactory
 
 from bookwyrm import models
 from bookwyrm import views
+from bookwyrm.tests.validate_html import validate_html
 
 
 class LandingViews(TestCase):
@@ -38,13 +39,13 @@ class LandingViews(TestCase):
         with patch("bookwyrm.activitystreams.ActivityStream.get_activity_stream"):
             result = view(request)
         self.assertEqual(result.status_code, 200)
-        result.render()
+        validate_html(result.render())
 
         request.user = self.anonymous_user
         result = view(request)
         self.assertIsInstance(result, TemplateResponse)
         self.assertEqual(result.status_code, 200)
-        result.render()
+        validate_html(result.render())
 
     def test_about_page(self):
         """there are so many views, this just makes sure it LOADS"""
@@ -53,7 +54,7 @@ class LandingViews(TestCase):
         request.user = self.local_user
         result = view(request)
         self.assertIsInstance(result, TemplateResponse)
-        result.render()
+        validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
     def test_landing(self):

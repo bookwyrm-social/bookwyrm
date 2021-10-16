@@ -7,6 +7,7 @@ from django.test import TestCase
 from django.test.client import RequestFactory
 
 from bookwyrm import models, views
+from bookwyrm.tests.validate_html import validate_html
 
 
 class PasswordViews(TestCase):
@@ -37,7 +38,7 @@ class PasswordViews(TestCase):
 
         result = view(request)
         self.assertIsInstance(result, TemplateResponse)
-        result.render()
+        validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
     def test_password_reset_request_post(self):
@@ -65,7 +66,7 @@ class PasswordViews(TestCase):
         request.user = self.anonymous_user
         result = view(request, code.code)
         self.assertIsInstance(result, TemplateResponse)
-        result.render()
+        validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
     def test_password_reset_post(self):
