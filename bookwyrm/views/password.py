@@ -18,7 +18,7 @@ class PasswordResetRequest(View):
         """password reset page"""
         return TemplateResponse(
             request,
-            "password_reset_request.html",
+            "landing/password_reset_request.html",
         )
 
     def post(self, request):
@@ -30,7 +30,9 @@ class PasswordResetRequest(View):
             )
         except models.User.DoesNotExist:
             data = {"error": _("No user with that email address was found.")}
-            return TemplateResponse(request, "password_reset_request.html", data)
+            return TemplateResponse(
+                request, "landing/password_reset_request.html", data
+            )
 
         # remove any existing password reset cods for this user
         models.PasswordReset.objects.filter(user=user).all().delete()
@@ -39,7 +41,7 @@ class PasswordResetRequest(View):
         code = models.PasswordReset.objects.create(user=user)
         password_reset_email(code)
         data = {"message": _(f"A password reset link was sent to {email}")}
-        return TemplateResponse(request, "password_reset_request.html", data)
+        return TemplateResponse(request, "landing/password_reset_request.html", data)
 
 
 class PasswordReset(View):
@@ -56,7 +58,7 @@ class PasswordReset(View):
         except models.PasswordReset.DoesNotExist:
             raise PermissionDenied()
 
-        return TemplateResponse(request, "password_reset.html", {"code": code})
+        return TemplateResponse(request, "landing/password_reset.html", {"code": code})
 
     def post(self, request, code):
         """allow a user to change their password through an emailed token"""
@@ -64,7 +66,7 @@ class PasswordReset(View):
             reset_code = models.PasswordReset.objects.get(code=code)
         except models.PasswordReset.DoesNotExist:
             data = {"errors": ["Invalid password reset link"]}
-            return TemplateResponse(request, "password_reset.html", data)
+            return TemplateResponse(request, "landing/password_reset.html", data)
 
         user = reset_code.user
 
@@ -73,7 +75,7 @@ class PasswordReset(View):
 
         if new_password != confirm_password:
             data = {"errors": ["Passwords do not match"]}
-            return TemplateResponse(request, "password_reset.html", data)
+            return TemplateResponse(request, "landing/password_reset.html", data)
 
         user.set_password(new_password)
         user.save(broadcast=False, update_fields=["password"])
