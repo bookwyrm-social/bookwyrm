@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-10-15 22:03+0000\n"
-"PO-Revision-Date: 2021-10-16 14:36\n"
+"PO-Revision-Date: 2021-10-16 15:36\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Portuguese, Brazilian\n"
 "Language: pt\n"
@@ -187,7 +187,7 @@ msgstr "Français (Francês)"
 
 #: bookwyrm/settings.py:169
 msgid "Português - Brasil (Brazilian Portuguese)"
-msgstr ""
+msgstr "Português - Brasil (Brazilian Portuguese)"
 
 #: bookwyrm/settings.py:170
 msgid "简体中文 (Simplified Chinese)"
@@ -753,7 +753,7 @@ msgstr "Ajuda"
 
 #: bookwyrm/templates/compose.html:5 bookwyrm/templates/compose.html:8
 msgid "Edit status"
-msgstr ""
+msgstr "Editar publicação"
 
 #: bookwyrm/templates/confirm_email/confirm_email.html:4
 msgid "Confirm email"
@@ -890,22 +890,22 @@ msgstr "Todos os usuários conhecidos"
 #: bookwyrm/templates/discover/card-header.html:9
 #, python-format
 msgid "<a href=\"%(user_path)s\">%(username)s</a> rated <a href=\"%(book_path)s\">%(book_title)s</a>"
-msgstr ""
+msgstr "<a href=\"%(user_path)s\">%(username)s</a> avaliou <a href=\"%(book_path)s\">%(book_title)s</a>"
 
 #: bookwyrm/templates/discover/card-header.html:13
 #, python-format
 msgid "<a href=\"%(user_path)s\">%(username)s</a> reviewed <a href=\"%(book_path)s\">%(book_title)s</a>"
-msgstr ""
+msgstr "<a href=\"%(user_path)s\">%(username)s</a> resenhou <a href=\"%(book_path)s\">%(book_title)s</a>"
 
 #: bookwyrm/templates/discover/card-header.html:17
 #, python-format
 msgid "<a href=\"%(user_path)s\">%(username)s</a> commented on <a href=\"%(book_path)s\">%(book_title)s</a>"
-msgstr ""
+msgstr "<a href=\"%(user_path)s\">%(username)s</a> comentou sobre <a href=\"%(book_path)s\">%(book_title)s</a>"
 
 #: bookwyrm/templates/discover/card-header.html:21
 #, python-format
 msgid "<a href=\"%(user_path)s\">%(username)s</a> quoted <a href=\"%(book_path)s\">%(book_title)s</a>"
-msgstr ""
+msgstr "<a href=\"%(user_path)s\">%(username)s</a> citou <a href=\"%(book_path)s\">%(book_title)s</a>"
 
 #: bookwyrm/templates/discover/discover.html:4
 #: bookwyrm/templates/discover/discover.html:10
@@ -974,7 +974,7 @@ msgstr "Inscreva-se"
 #: bookwyrm/templates/email/invite/html_content.html:15
 #, python-format
 msgid "Learn more <a href=\"https://%(domain)s%(about_path)s\">about %(site_name)s</a>."
-msgstr ""
+msgstr "Saiba mais <a href=\"https://%(domain)s%(about_path)s\">sobre %(site_name)s</a>."
 
 #: bookwyrm/templates/email/invite/text_content.html:4
 #, python-format
@@ -984,7 +984,7 @@ msgstr "Você recebeu um convite para juntar-se a %(site_name)s! Clique no link 
 #: bookwyrm/templates/email/invite/text_content.html:8
 #, python-format
 msgid "Learn more about %(site_name)s:"
-msgstr ""
+msgstr "Saiba mais sobre %(site_name)s:"
 
 #: bookwyrm/templates/email/password_reset/html_content.html:6
 #: bookwyrm/templates/email/password_reset/text_content.html:4
@@ -1339,7 +1339,7 @@ msgstr "Importado"
 
 #: bookwyrm/templates/import/tooltip.html:6
 msgid "You can download your Goodreads data from the <a href=\"https://www.goodreads.com/review/import\" target=\"_blank\" rel=\"noopener\">Import/Export page</a> of your Goodreads account."
-msgstr ""
+msgstr "Você pode baixar seus dados do Goodreads na <a href=\"https://www.goodreads.com/review/import\" target=\"_blank\" rel=\"noopener\">página de Importar/Exportar</a> da sua conta."
 
 #: bookwyrm/templates/invite.html:4 bookwyrm/templates/invite.html:8
 #: bookwyrm/templates/login.html:49
@@ -1730,22 +1730,22 @@ msgstr "compartilhou sua <a href=\"%(related_path)s\">publicação</a>"
 #: bookwyrm/templates/notifications/items/fav.html:19
 #, python-format
 msgid "liked your <a href=\"%(related_path)s\">review of <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "curtiu sua <a href=\"%(related_path)s\">resenha de <em>%(book_title)s</em></a>"
 
 #: bookwyrm/templates/notifications/items/fav.html:25
 #, python-format
 msgid "liked your <a href=\"%(related_path)s\">comment on<em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "curtiu seu <a href=\"%(related_path)s\">comentário sobre <em>%(book_title)s</em></a>"
 
 #: bookwyrm/templates/notifications/items/fav.html:31
 #, python-format
 msgid "liked your <a href=\"%(related_path)s\">quote from <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "curtiu sua <a href=\"%(related_path)s\">citação de <em>%(book_title)s</em></a>"
 
 #: bookwyrm/templates/notifications/items/fav.html:37
 #, python-format
 msgid "liked your <a href=\"%(related_path)s\">status</a>"
-msgstr ""
+msgstr "curtiu sua <a href=\"%(related_path)s\">publicação</a>"
 
 #: bookwyrm/templates/notifications/items/follow.html:15
 msgid "followed you"
@@ -2111,7 +2111,7 @@ msgstr "Publicações"
 #: bookwyrm/templates/settings/dashboard/dashboard.html:33
 #: bookwyrm/templates/settings/dashboard/works_chart.html:11
 msgid "Works"
-msgstr ""
+msgstr "Obras"
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:43
 #, python-format
@@ -2153,7 +2153,7 @@ msgstr "Publicações"
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:118
 msgid "Works created"
-msgstr ""
+msgstr "Obras criadas"
 
 #: bookwyrm/templates/settings/dashboard/registration_chart.html:10
 msgid "Registrations"
@@ -2634,7 +2634,7 @@ msgstr "Descrição curta:"
 
 #: bookwyrm/templates/settings/site.html:37
 msgid "Used when the instance is previewed on joinbookwyrm.com. Does not support HTML or Markdown."
-msgstr ""
+msgstr "Mostrado quando a instância é vista em joinbookwyrm.com. Não é compatível com HTML ou Markdown."
 
 #: bookwyrm/templates/settings/site.html:41
 msgid "Code of conduct:"
@@ -3329,7 +3329,7 @@ msgstr "Esconder publicação"
 #: bookwyrm/templates/snippets/status/header.html:45
 #, python-format
 msgid "edited %(date)s"
-msgstr ""
+msgstr "editado em %(date)s"
 
 #: bookwyrm/templates/snippets/status/headers/comment.html:2
 #, python-format
