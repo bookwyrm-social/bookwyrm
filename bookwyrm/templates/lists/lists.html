@@ -22,10 +22,11 @@
     </div>
     {% endif %}
 </header>
-
+{% if request.user.is_authenticated %}
 <div class="block">
     {% include 'lists/create_form.html' with controls_text="create_list" %}
 </div>
+{% endif %}
 
 {% if request.user.is_authenticated %}
 <nav class="tabs">

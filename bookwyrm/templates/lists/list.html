@@ -1,6 +1,7 @@
 {% extends 'lists/layout.html' %}
 {% load i18n %}
 {% load bookwyrm_tags %}
+{% load bookwyrm_group_tags %}
 {% load markdown %}
 
 {% block panel %}
@@ -16,7 +17,7 @@
     <section class="column is-three-quarters">
         {% if request.GET.updated %}
         <div class="notification is-primary">
-            {% if list.curation != "open" and request.user != list.user %}
+            {% if list.curation != "open" and request.user != list.user and not list.group|is_member:request.user %}
             {% trans "You successfully suggested a book for this list!" %}
             {% else %}
             {% trans "You successfully added a book to this list!" %}
@@ -66,7 +67,7 @@
                             <p>{% blocktrans with username=item.user.display_name user_path=item.user.local_path %}Added by <a href="{{ user_path }}">{{ username }}</a>{% endblocktrans %}</p>
                             </div>
                         </div>
-                        {% if list.user == request.user %}
+                        {% if list.user == request.user or list.group|is_member:request.user %}
                         <div class="card-footer-item">
                             <form name="set-position" method="post" action="{% url 'list-set-book-position' item.id %}">
                                 {% csrf_token %}
@@ -84,7 +85,7 @@
                             </form>
                         </div>
                         {% endif %}
-                        {% if list.user == request.user or list.curation == 'open' and item.user == request.user %}
+                        {% if list.user == request.user or list.curation == 'open' and item.user == request.user or list.group|is_member:request.user %}
                         <form name="remove-book" method="post" action="{% url 'list-remove-book' list.id %}" class="card-footer-item">
                             {% csrf_token %}
                             <input type="hidden" name="item" value="{{ item.id }}">
@@ -125,7 +126,7 @@
         </form>
     {% if request.user.is_authenticated and not list.curation == 'closed' or request.user == list.user %}
         <h2 class="title is-5 mt-6">
-            {% if list.curation == 'open' or request.user == list.user %}
+            {% if list.curation == 'open' or request.user == list.user or list.group|is_member:request.user %}
                 {% trans "Add Books" %}
             {% else %}
                 {% trans "Suggest Books" %}
@@ -178,7 +179,7 @@
                             {% csrf_token %}
                             <input type="hidden" name="book" value="{{ book.id }}">
                             <input type="hidden" name="list" value="{{ list.id }}">
-                            <button type="submit" class="button is-small is-link">{% if list.curation == 'open' or request.user == list.user %}{% trans "Add" %}{% else %}{% trans "Suggest" %}{% endif %}</button>
+                            <button type="submit" class="button is-small is-link">{% if list.curation == 'open' or request.user == list.user or list.group|is_member:request.user %}{% trans "Add" %}{% else %}{% trans "Suggest" %}{% endif %}</button>
                         </form>
                     </div>
                 </div>

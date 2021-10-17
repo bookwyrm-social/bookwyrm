@@ -1,0 +1,13 @@
+{% extends 'components/inline_form.html' %}
+{% load i18n %}
+
+{% block header %}
+{% trans "Edit Group" %}
+{% endblock %}
+
+{% block form %}
+<form name="edit-group" method="post" action="{% url 'group' group.id %}">
+    {% include 'groups/form.html' %}
+</form>
+{% include "groups/delete_group_modal.html" with controls_text="delete_group" controls_uid=group.id %}
+{% endblock %}

@@ -1,5 +1,6 @@
 {% load i18n %}
 {% csrf_token %}
+{% load utilities %}
 <input type="hidden" name="user" value="{{ request.user.id }}">
 
 <div class="columns">
@@ -17,19 +18,49 @@
         <fieldset class="field">
             <legend class="label">{% trans "List curation:" %}</legend>
 
-            <label class="field">
+            <label class="field" data-hides="list_group_selector">
                 <input type="radio" name="curation" value="closed"{% if not list or list.curation == 'closed' %} checked{% endif %}> {% trans "Closed" %}
                 <p class="help mb-2">{% trans "Only you can add and remove books to this list" %}</p>
             </label>
 
-            <label class="field">
+            <label class="field" data-hides="list_group_selector">
                 <input type="radio" name="curation" value="curated"{% if list.curation == 'curated' %} checked{% endif %}> {% trans "Curated" %}
                 <p class="help mb-2">{% trans "Anyone can suggest books, subject to your approval" %}</p>
             </label>
 
-            <label class="field">
+            <label class="field" data-hides="list_group_selector">
                 <input type="radio" name="curation" value="open"{% if list.curation == 'open' %} checked{% endif %}> {% trans "Open" context "curation type"  %}
                 <p class="help mb-2">{% trans "Anyone can add books to this list" %}</p>
+            </label>
+
+            <label class="field hidden-form">
+                <input type="radio" name="curation" value="group"{% if list.curation == 'group' %} checked{% endif %} > {% trans "Group" %}
+                <p class="help mb-2">{% trans "Group members can add to and remove from this list" %}</p>
+                <fieldset class="{% if list.curation != 'group' %}is-hidden{% endif %}" id="list_group_selector">
+                {% if user.memberships.exists %}
+                    <label class="label" for="id_group" id="group">{% trans "Select Group" %}</label>
+                    <div class="field has-addons">
+                        <div class="select control">
+                            <select name="group" id="id_group">
+                                <option value="" disabled {% if not list.group %} selected{% endif %}>{% trans "Select a group" %}</option>
+                                {% for membership in user.memberships.all %}
+                                <option value="{{ membership.group.id }}" {% if list.group.id == membership.group.id %} selected{% endif %}>{{ membership.group.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                {% else %}
+                    {% with user|username as username %}
+                    {% url 'user-groups' user|username as url %}
+                    <div>
+                        <p>{% trans "You don't have any Groups yet!" %}</p>
+                        <p>
+                            <a class="help has-text-weight-normal" href="{{ url }}">{% trans "Create a Group" %}</a>
+                        </p>
+                    </div>
+                    {% endwith %}
+                {% endif %}
+                </fieldset>
             </label>
         </fieldset>
     </div>

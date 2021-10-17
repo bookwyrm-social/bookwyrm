@@ -40,7 +40,6 @@ class Lists(View):
             .order_by("-updated_date")
             .distinct()
         )
-
         paginated = Paginator(lists, 12)
         data = {
             "lists": paginated.get_page(request.GET.get("page")),
@@ -57,6 +56,10 @@ class Lists(View):
         if not form.is_valid():
             return redirect("lists")
         book_list = form.save()
+        # list should not have a group if it is not group curated
+        if not book_list.curation == "group":
+            book_list.group = None
+            book_list.save(broadcast=False)
 
         return redirect(book_list.local_path)
 
@@ -181,7 +184,6 @@ class List(View):
         return TemplateResponse(request, "lists/list.html", data)
 
     @method_decorator(login_required, name="dispatch")
-    # pylint: disable=unused-argument
     def post(self, request, list_id):
         """edit a list"""
         book_list = get_object_or_404(models.List, id=list_id)
@@ -191,6 +193,10 @@ class List(View):
         if not form.is_valid():
             return redirect("list", book_list.id)
         book_list = form.save()
+        if not book_list.curation == "group":
+            book_list.group = None
+            book_list.save(broadcast=False)
+
         return redirect(book_list.local_path)
 
 
@@ -275,12 +281,22 @@ def delete_list(request, list_id):
 def add_book(request):
     """put a book on a list"""
     book_list = get_object_or_404(models.List, id=request.POST.get("list"))
+    is_group_member = False
+    if book_list.curation == "group":
+        is_group_member = models.GroupMember.objects.filter(
+            group=book_list.group, user=request.user
+        ).exists()
+
     book_list.raise_visible_to_user(request.user)
 
     book = get_object_or_404(models.Edition, id=request.POST.get("book"))
     # do you have permission to add to the list?
     try:
-        if request.user == book_list.user or book_list.curation == "open":
+        if (
+            request.user == book_list.user
+            or is_group_member
+            or book_list.curation == "open"
+        ):
             # add the book at the latest order of approved books, before pending books
             order_max = (
                 book_list.listitem_set.filter(approved=True).aggregate(Max("order"))[
@@ -323,14 +339,17 @@ def add_book(request):
 @login_required
 def remove_book(request, list_id):
     """remove a book from a list"""
+
     book_list = get_object_or_404(models.List, id=list_id)
     item = get_object_or_404(models.ListItem, id=request.POST.get("item"))
+
     item.raise_not_deletable(request.user)
 
     with transaction.atomic():
         deleted_order = item.order
         item.delete()
         normalize_book_list_ordering(book_list.id, start=deleted_order)
+
     return redirect("list", list_id)
 
 
