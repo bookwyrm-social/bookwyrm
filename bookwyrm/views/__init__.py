@@ -47,6 +47,7 @@ from .shelf.shelf_actions import shelve, unshelve
 from .author import Author, EditAuthor
 from .directory import Directory
 from .discover import Discover
+from .export import export_user_book_data
 from .feed import DirectMessage, Feed, Replies, Status
 from .follow import follow, unfollow
 from .follow import accept_follow_request, delete_follow_request
