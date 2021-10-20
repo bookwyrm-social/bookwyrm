@@ -109,11 +109,12 @@ class ShelfActionViews(TestCase):
         shelf = models.Shelf.objects.get(identifier="read")
 
         request = self.factory.post(
-            "", {
+            "",
+            {
                 "book": self.book.id,
                 "shelf": shelf.identifier,
                 "change-shelf-from": previous_shelf.identifier,
-            }
+            },
         )
         request.user = self.local_user
 
