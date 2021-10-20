@@ -2,6 +2,7 @@
 import json
 from unittest.mock import patch
 
+from django.contrib.auth.models import AnonymousUser
 from django.core.exceptions import PermissionDenied
 from django.template.response import TemplateResponse
 from django.test import TestCase
@@ -46,6 +47,46 @@ class ShelfViews(TestCase):
             )
         models.SiteSettings.objects.create()
 
+        self.anonymous_user = AnonymousUser
+        self.anonymous_user.is_authenticated = False
+
+    def test_shelf_page_all_books(self, *_):
+        """there are so many views, this just makes sure it LOADS"""
+        view = views.Shelf.as_view()
+        request = self.factory.get("")
+        request.user = self.local_user
+        with patch("bookwyrm.views.shelf.shelf.is_api_request") as is_api:
+            is_api.return_value = False
+            result = view(request, self.local_user.username)
+        self.assertIsInstance(result, TemplateResponse)
+        validate_html(result.render())
+        self.assertEqual(result.status_code, 200)
+
+    def test_shelf_page_all_books_anonymous(self, *_):
+        """there are so many views, this just makes sure it LOADS"""
+        view = views.Shelf.as_view()
+        request = self.factory.get("")
+        request.user = self.anonymous_user
+        with patch("bookwyrm.views.shelf.shelf.is_api_request") as is_api:
+            is_api.return_value = False
+            result = view(request, self.local_user.username)
+        self.assertIsInstance(result, TemplateResponse)
+        validate_html(result.render())
+        self.assertEqual(result.status_code, 200)
+
+    def test_shelf_page_sorted(self, *_):
+        """there are so many views, this just makes sure it LOADS"""
+        view = views.Shelf.as_view()
+        shelf = self.local_user.shelf_set.first()
+        request = self.factory.get("", {"sort": "author"})
+        request.user = self.local_user
+        with patch("bookwyrm.views.shelf.shelf.is_api_request") as is_api:
+            is_api.return_value = False
+            result = view(request, self.local_user.username, shelf.identifier)
+        self.assertIsInstance(result, TemplateResponse)
+        validate_html(result.render())
+        self.assertEqual(result.status_code, 200)
+
     def test_shelf_page(self, *_):
         """there are so many views, this just makes sure it LOADS"""
         view = views.Shelf.as_view()
@@ -59,7 +100,7 @@ class ShelfViews(TestCase):
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
-        with patch("bookwyrm.views.shelf.is_api_request") as is_api:
+        with patch("bookwyrm.views.shelf.shelf.is_api_request") as is_api:
             is_api.return_value = True
             result = view(request, self.local_user.username, shelf.identifier)
         self.assertIsInstance(result, ActivitypubResponse)
@@ -67,7 +108,7 @@ class ShelfViews(TestCase):
 
         request = self.factory.get("/?page=1")
         request.user = self.local_user
-        with patch("bookwyrm.views.shelf.is_api_request") as is_api:
+        with patch("bookwyrm.views.shelf.shelf.is_api_request") as is_api:
             is_api.return_value = True
             result = view(request, self.local_user.username, shelf.identifier)
         self.assertIsInstance(result, ActivitypubResponse)
