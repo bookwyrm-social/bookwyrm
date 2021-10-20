@@ -92,7 +92,7 @@ def shelve(request):
 @login_required
 @require_POST
 def unshelve(request):
-    """put a on a user's shelf"""
+    """remove a book from a user's shelf"""
     book = get_object_or_404(models.Edition, id=request.POST.get("book"))
     shelf_book = get_object_or_404(
         models.ShelfBook, book=book, shelf__id=request.POST["shelf"]
