@@ -40,8 +40,8 @@ from .landing.password import PasswordResetRequest, PasswordReset
 
 # shelves
 from .shelf.shelf import Shelf
-from .shelf.shelf import create_shelf, delete_shelf
-from .shelf.shelf import shelve, unshelve
+from .shelf.shelf_actions import create_shelf, delete_shelf
+from .shelf.shelf_actions import shelve, unshelve
 
 # misc views
 from .author import Author, EditAuthor
