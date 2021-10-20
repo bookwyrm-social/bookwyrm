@@ -26,21 +26,21 @@ def make_signature(sender, destination, date, digest):
     """uses a private key to sign an outgoing message"""
     inbox_parts = urlparse(destination)
     signature_headers = [
-        "(request-target): post %s" % inbox_parts.path,
-        "host: %s" % inbox_parts.netloc,
-        "date: %s" % date,
-        "digest: %s" % digest,
+        f"(request-target): post {inbox_parts.path}",
+        f"host: {inbox_parts.netloc}",
+        f"date: {date}",
+        f"digest: {digest}",
     ]
     message_to_sign = "\n".join(signature_headers)
     signer = pkcs1_15.new(RSA.import_key(sender.key_pair.private_key))
     signed_message = signer.sign(SHA256.new(message_to_sign.encode("utf8")))
     signature = {
-        "keyId": "%s#main-key" % sender.remote_id,
+        "keyId": f"{sender.remote_id}#main-key",
         "algorithm": "rsa-sha256",
         "headers": "(request-target) host date digest",
         "signature": b64encode(signed_message).decode("utf8"),
     }
-    return ",".join('%s="%s"' % (k, v) for (k, v) in signature.items())
+    return ",".join(f'{k}="{v}"' for (k, v) in signature.items())
 
 
 def make_digest(data):
@@ -58,7 +58,7 @@ def verify_digest(request):
     elif algorithm == "SHA-512":
         hash_function = hashlib.sha512
     else:
-        raise ValueError("Unsupported hash function: {}".format(algorithm))
+        raise ValueError(f"Unsupported hash function: {algorithm}")
 
     expected = hash_function(request.body).digest()
     if b64decode(digest) != expected:
@@ -95,18 +95,18 @@ class Signature:
     def verify(self, public_key, request):
         """verify rsa signature"""
         if http_date_age(request.headers["date"]) > MAX_SIGNATURE_AGE:
-            raise ValueError("Request too old: %s" % (request.headers["date"],))
+            raise ValueError(f"Request too old: {request.headers['date']}")
         public_key = RSA.import_key(public_key)
 
         comparison_string = []
         for signed_header_name in self.headers.split(" "):
             if signed_header_name == "(request-target)":
-                comparison_string.append("(request-target): post %s" % request.path)
+                comparison_string.append(f"(request-target): post {request.path}")
             else:
                 if signed_header_name == "digest":
                     verify_digest(request)
                 comparison_string.append(
-                    "%s: %s" % (signed_header_name, request.headers[signed_header_name])
+                    f"{signed_header_name}: {request.headers[signed_header_name]}"
                 )
         comparison_string = "\n".join(comparison_string)
 

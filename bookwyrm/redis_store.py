@@ -33,10 +33,11 @@ class RedisStore(ABC):
         # and go!
         return pipeline.execute()
 
-    def remove_object_from_related_stores(self, obj):
+    def remove_object_from_related_stores(self, obj, stores=None):
         """remove an object from all stores"""
+        stores = self.get_stores_for_object(obj) if stores is None else stores
         pipeline = r.pipeline()
-        for store in self.get_stores_for_object(obj):
+        for store in stores:
             pipeline.zrem(store, -1, obj.id)
         pipeline.execute()
 
@@ -50,15 +51,15 @@ class RedisStore(ABC):
         pipeline.execute()
 
     def bulk_remove_objects_from_store(self, objs, store):
-        """remoev a list of objects from a given store"""
+        """remove a list of objects from a given store"""
         pipeline = r.pipeline()
         for obj in objs[: self.max_length]:
             pipeline.zrem(store, -1, obj.id)
         pipeline.execute()
 
-    def get_store(self, store):  # pylint: disable=no-self-use
+    def get_store(self, store, **kwargs):  # pylint: disable=no-self-use
         """load the values in a store"""
-        return r.zrevrange(store, 0, -1)
+        return r.zrevrange(store, 0, -1, **kwargs)
 
     def populate_store(self, store):
         """go from zero to a store"""

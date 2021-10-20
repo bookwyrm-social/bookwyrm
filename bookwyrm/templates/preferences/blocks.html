@@ -9,7 +9,7 @@
 
 {% block panel %}
 {% if not request.user.blocks.exists %}
-<p>{% trans "No users currently blocked." %}</p>
+<p><em>{% trans "No users currently blocked." %}</em></p>
 {% else %}
 <ul>
 {% for user in request.user.blocks.all %}

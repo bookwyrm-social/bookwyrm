@@ -7,7 +7,11 @@ from django.utils import timezone
 from bookwyrm import models
 
 
+@patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
+@patch("bookwyrm.activitystreams.populate_stream_task.delay")
 @patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
+@patch("bookwyrm.activitystreams.add_book_statuses_task.delay")
+@patch("bookwyrm.activitystreams.remove_book_statuses_task.delay")
 class ReadThrough(TestCase):
     """readthrough tests"""
 
@@ -21,14 +25,18 @@ class ReadThrough(TestCase):
             title="Example Edition", parent_work=self.work
         )
 
-        self.user = models.User.objects.create_user(
-            "cinco", "cinco@example.com", "seissiete", local=True, localname="cinco"
-        )
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
+            "bookwyrm.activitystreams.populate_stream_task.delay"
+        ):
+            self.user = models.User.objects.create_user(
+                "cinco", "cinco@example.com", "seissiete", local=True, localname="cinco"
+            )
 
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
             self.client.force_login(self.user)
 
-    def test_create_basic_readthrough(self, delay_mock):
+    @patch("bookwyrm.activitystreams.remove_user_statuses_task.delay")
+    def test_create_basic_readthrough(self, *_):
         """A basic readthrough doesn't create a progress update"""
         self.assertEqual(self.edition.readthrough_set.count(), 0)
 
@@ -47,9 +55,9 @@ class ReadThrough(TestCase):
         )
         self.assertEqual(readthroughs[0].progress, None)
         self.assertEqual(readthroughs[0].finish_date, None)
-        self.assertEqual(delay_mock.call_count, 1)
 
-    def test_create_progress_readthrough(self, delay_mock):
+    @patch("bookwyrm.activitystreams.remove_user_statuses_task.delay")
+    def test_create_progress_readthrough(self, *_):
         """a readthrough with progress"""
         self.assertEqual(self.edition.readthrough_set.count(), 0)
 
@@ -84,8 +92,6 @@ class ReadThrough(TestCase):
         self.assertEqual(progress_updates[0].progress, 100)
 
         # Edit doesn't publish anything
-        self.assertEqual(delay_mock.call_count, 1)
-
         self.client.post(
             "/delete-readthrough",
             {

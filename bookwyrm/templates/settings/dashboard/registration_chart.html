@@ -1,0 +1,19 @@
+{% load i18n %}
+<script>
+var registerStats = new Chart(
+    document.getElementById('register_stats'),
+    {
+        type: 'bar',
+        data: {
+            labels: [{% for label in register_stats.labels %}"{{ label }}",{% endfor %}],
+            datasets: [{
+                label: '{% trans "Registrations" %}',
+                backgroundColor: 'hsl(171, 100%, 41%)',
+                borderColor: 'hsl(171, 100%, 41%)',
+                data: {{ register_stats.total }},
+            }]
+        },
+        options: {}
+    }
+);
+</script>

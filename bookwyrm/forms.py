@@ -29,8 +29,7 @@ class CustomForm(ModelForm):
                 input_type = visible.field.widget.input_type
             if isinstance(visible.field.widget, Textarea):
                 input_type = "textarea"
-                visible.field.widget.attrs["cols"] = None
-                visible.field.widget.attrs["rows"] = None
+                visible.field.widget.attrs["rows"] = 5
             visible.field.widget.attrs["class"] = css_classes[input_type]
 
 
@@ -86,6 +85,7 @@ class CommentForm(CustomForm):
             "privacy",
             "progress",
             "progress_mode",
+            "reading_status",
         ]
 
 
@@ -100,6 +100,8 @@ class QuotationForm(CustomForm):
             "content_warning",
             "sensitive",
             "privacy",
+            "position",
+            "position_mode",
         ]
 
 
@@ -122,6 +124,12 @@ class StatusForm(CustomForm):
         fields = ["user", "content", "content_warning", "sensitive", "privacy"]
 
 
+class DirectForm(CustomForm):
+    class Meta:
+        model = models.Status
+        fields = ["user", "content", "content_warning", "sensitive", "privacy"]
+
+
 class EditUserForm(CustomForm):
     class Meta:
         model = models.User
@@ -131,9 +139,12 @@ class EditUserForm(CustomForm):
             "email",
             "summary",
             "show_goal",
+            "show_suggested_users",
             "manually_approves_followers",
+            "default_post_privacy",
             "discoverable",
             "preferred_timezone",
+            "preferred_language",
         ]
         help_texts = {f: None for f in fields}
 
@@ -217,7 +228,7 @@ class ExpiryWidget(widgets.Select):
         elif selected_string == "forever":
             return None
         else:
-            return selected_string  # "This will raise
+            return selected_string  # This will raise
 
         return timezone.now() + interval
 
@@ -249,10 +260,7 @@ class CreateInviteForm(CustomForm):
                 ]
             ),
             "use_limit": widgets.Select(
-                choices=[
-                    (i, _("%(count)d uses" % {"count": i}))
-                    for i in [1, 5, 10, 25, 50, 100]
-                ]
+                choices=[(i, _(f"{i} uses")) for i in [1, 5, 10, 25, 50, 100]]
                 + [(None, _("Unlimited"))]
             ),
         }
@@ -261,7 +269,7 @@ class CreateInviteForm(CustomForm):
 class ShelfForm(CustomForm):
     class Meta:
         model = models.Shelf
-        fields = ["user", "name", "privacy"]
+        fields = ["user", "name", "privacy", "description"]
 
 
 class GoalForm(CustomForm):
@@ -285,13 +293,31 @@ class AnnouncementForm(CustomForm):
 class ListForm(CustomForm):
     class Meta:
         model = models.List
-        fields = ["user", "name", "description", "curation", "privacy"]
+        fields = ["user", "name", "description", "curation", "privacy", "group"]
+
+
+class GroupForm(CustomForm):
+    class Meta:
+        model = models.Group
+        fields = ["user", "privacy", "name", "description"]
 
 
 class ReportForm(CustomForm):
     class Meta:
         model = models.Report
         fields = ["user", "reporter", "statuses", "note"]
+
+
+class EmailBlocklistForm(CustomForm):
+    class Meta:
+        model = models.EmailBlocklist
+        fields = ["domain"]
+
+
+class IPBlocklistForm(CustomForm):
+    class Meta:
+        model = models.IPBlocklist
+        fields = ["address"]
 
 
 class ServerForm(CustomForm):

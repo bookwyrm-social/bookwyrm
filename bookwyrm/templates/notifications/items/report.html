@@ -1,0 +1,16 @@
+{% extends 'notifications/items/item_layout.html' %}
+
+{% load i18n %}
+
+{% block primary_link %}{% spaceless %}
+    {% url 'settings-report' notification.related_report.id %}
+{% endspaceless %}{% endblock %}
+
+{% block icon %}
+<span class="icon icon-warning"></span>
+{% endblock %}
+
+{% block description %}
+    {% url 'settings-report' notification.related_report.id as path %}
+    {% blocktrans %}A new <a href="{{ path }}">report</a> needs moderation.{% endblocktrans %}
+{% endblock %}

@@ -12,6 +12,6 @@
 <p>
     {% url 'code-of-conduct' as coc_path %}
     {% url 'about' as about_path %}
-    {% blocktrans %}Learn more <a href="https://{{ domain }}{{ about_path }}">about this instance</a>.{% endblocktrans %}
+    {% blocktrans %}Learn more <a href="https://{{ domain }}{{ about_path }}">about {{ site_name }}</a>.{% endblocktrans %}
 </p>
 {% endblock %}

@@ -13,15 +13,18 @@ class InboxRelationships(TestCase):
 
     def setUp(self):
         """basic user and book data"""
-        self.local_user = models.User.objects.create_user(
-            "mouse@example.com",
-            "mouse@mouse.com",
-            "mouseword",
-            local=True,
-            localname="mouse",
-        )
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
+            "bookwyrm.activitystreams.populate_stream_task.delay"
+        ):
+            self.local_user = models.User.objects.create_user(
+                "mouse@example.com",
+                "mouse@mouse.com",
+                "mouseword",
+                local=True,
+                localname="mouse",
+            )
         self.local_user.remote_id = "https://example.com/user/mouse"
-        self.local_user.save(broadcast=False)
+        self.local_user.save(broadcast=False, update_fields=["remote_id"])
         with patch("bookwyrm.models.user.set_remote_server.delay"):
             self.remote_user = models.User.objects.create_user(
                 "rat",
@@ -102,7 +105,9 @@ class InboxRelationships(TestCase):
         }
 
         self.local_user.manually_approves_followers = True
-        self.local_user.save(broadcast=False)
+        self.local_user.save(
+            broadcast=False, update_fields=["manually_approves_followers"]
+        )
 
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
             views.inbox.activity_task(activity)
@@ -124,7 +129,9 @@ class InboxRelationships(TestCase):
     def test_undo_follow_request(self):
         """the requester cancels a follow request"""
         self.local_user.manually_approves_followers = True
-        self.local_user.save(broadcast=False)
+        self.local_user.save(
+            broadcast=False, update_fields=["manually_approves_followers"]
+        )
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
             request = models.UserFollowRequest.objects.create(
                 user_subject=self.remote_user, user_object=self.local_user
@@ -176,7 +183,8 @@ class InboxRelationships(TestCase):
         views.inbox.activity_task(activity)
         self.assertIsNone(self.local_user.followers.first())
 
-    def test_follow_accept(self):
+    @patch("bookwyrm.activitystreams.add_user_statuses_task.delay")
+    def test_follow_accept(self, _):
         """a remote user approved a follow request from local"""
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
             rel = models.UserFollowRequest.objects.create(

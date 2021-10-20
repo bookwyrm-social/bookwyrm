@@ -12,15 +12,18 @@ class InboxActivities(TestCase):
 
     def setUp(self):
         """basic user and book data"""
-        self.local_user = models.User.objects.create_user(
-            "mouse@example.com",
-            "mouse@mouse.com",
-            "mouseword",
-            local=True,
-            localname="mouse",
-        )
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
+            "bookwyrm.activitystreams.populate_stream_task.delay"
+        ):
+            self.local_user = models.User.objects.create_user(
+                "mouse@example.com",
+                "mouse@mouse.com",
+                "mouseword",
+                local=True,
+                localname="mouse",
+            )
         self.local_user.remote_id = "https://example.com/user/mouse"
-        self.local_user.save(broadcast=False)
+        self.local_user.save(broadcast=False, update_fields=["remote_id"])
         with patch("bookwyrm.models.user.set_remote_server.delay"):
             self.remote_user = models.User.objects.create_user(
                 "rat",
@@ -33,7 +36,7 @@ class InboxActivities(TestCase):
             )
 
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-            with patch("bookwyrm.activitystreams.ActivityStream.add_status"):
+            with patch("bookwyrm.activitystreams.add_status_task.delay"):
                 self.status = models.Status.objects.create(
                     user=self.local_user,
                     content="Test status",

@@ -54,6 +54,7 @@ class Edition(Book):
     asin: str = ""
     pages: int = None
     physicalFormat: str = ""
+    physicalFormatDetail: str = ""
     publishers: List[str] = field(default_factory=lambda: [])
     editionRank: int = 0
 

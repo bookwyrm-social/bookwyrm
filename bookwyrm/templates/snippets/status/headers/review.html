@@ -1,0 +1,3 @@
+{% load i18n %}{% load utilities %}
+
+{% blocktrans with book_path=status.book.local_path book=status.book|book_title %}reviewed <a href="{{ book_path }}">{{ book }}</a>{% endblocktrans %}

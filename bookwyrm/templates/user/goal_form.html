@@ -1,0 +1,12 @@
+{% extends 'components/inline_form.html' %}
+{% load i18n %}
+
+{% block header %}
+<span class="icon icon-book is-size-3 mr-2" aria-hidden="true"></span>
+{% blocktrans %}{{ year }} Reading Goal{% endblocktrans %}
+{% endblock %}
+
+{% block form %}
+{% include "snippets/goal_form.html" %}
+{% endblock %}
+

@@ -28,6 +28,12 @@ let BookWyrm = new class {
                 this.revealForm.bind(this))
             );
 
+        document.querySelectorAll('[data-hides]')
+            .forEach(button => button.addEventListener(
+                'change',
+                this.hideForm.bind(this))
+            );
+
         document.querySelectorAll('[data-back]')
             .forEach(button => button.addEventListener(
                 'click',
@@ -119,8 +125,8 @@ let BookWyrm = new class {
     }
 
     /**
-     * Toggle form.
-     *
+     * Show form.
+     * 
      * @param  {Event} event
      * @return {undefined}
      */
@@ -128,7 +134,23 @@ let BookWyrm = new class {
         let trigger = event.currentTarget;
         let hidden = trigger.closest('.hidden-form').querySelectorAll('.is-hidden')[0];
 
-        this.addRemoveClass(hidden, 'is-hidden', !hidden);
+        if (hidden) {
+            this.addRemoveClass(hidden, 'is-hidden', !hidden);
+        }
+    }
+
+    /**
+     * Hide form.
+     *
+     * @param  {Event} event
+     * @return {undefined}
+     */
+    hideForm(event) {
+        let trigger = event.currentTarget;
+        let targetId = trigger.dataset.hides
+        let visible = document.getElementById(targetId)
+
+        this.addRemoveClass(visible, 'is-hidden', true);
     }
 
     /**
@@ -138,8 +160,11 @@ let BookWyrm = new class {
      * @return {undefined}
      */
     toggleAction(event) {
-        event.preventDefault();
         let trigger = event.currentTarget;
+
+        if (!trigger.dataset.allowDefault || event.currentTarget == event.target) {
+            event.preventDefault();
+        }
         let pressed = trigger.getAttribute('aria-pressed') === 'false';
         let targetId = trigger.dataset.controls;
 
@@ -164,7 +189,7 @@ let BookWyrm = new class {
         }
 
         // Show/hide container.
-        let container = document.getElementById('hide-' + targetId);
+        let container = document.getElementById('hide_' + targetId);
 
         if (container) {
             this.toggleContainer(container, pressed);
@@ -175,6 +200,13 @@ let BookWyrm = new class {
 
         if (checkbox) {
             this.toggleCheckbox(checkbox, pressed);
+        }
+
+        // Toggle form disabled, if appropriate
+        let disable = trigger.dataset.disables;
+
+        if (disable) {
+            this.toggleDisabled(disable, !pressed);
         }
 
         // Set focus, if appropriate.
@@ -217,14 +249,25 @@ let BookWyrm = new class {
     }
 
     /**
-     * Check or uncheck a checbox.
+     * Check or uncheck a checkbox.
      *
-     * @param  {object}  checkbox - DOM node
+     * @param  {string}  checkbox - id of the checkbox
      * @param  {boolean} pressed  - Is the trigger pressed?
      * @return {undefined}
      */
     toggleCheckbox(checkbox, pressed) {
         document.getElementById(checkbox).checked = !!pressed;
+    }
+
+    /**
+     * Enable or disable a form element or fieldset
+     *
+     * @param  {string}  form_element - id of the element
+     * @param  {boolean} pressed  - Is the trigger pressed?
+     * @return {undefined}
+     */
+    toggleDisabled(form_element, pressed) {
+        document.getElementById(form_element).disabled = !!pressed;
     }
 
     /**
@@ -280,7 +323,10 @@ let BookWyrm = new class {
     ajaxPost(form) {
         return fetch(form.action, {
             method : "POST",
-            body: new FormData(form)
+            body: new FormData(form),
+            headers: {
+                'Accept': 'application/json',
+            }
         });
     }
 

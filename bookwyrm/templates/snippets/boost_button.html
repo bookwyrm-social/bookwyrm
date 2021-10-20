@@ -8,8 +8,8 @@
     name="boost"
     action="/boost/{{ status.id }}"
     method="post"
-    class="interaction boost-{{ status.id }}-{{ uuid }} {% if boosted %}is-hidden{% endif %}"
-    data-id="boost-{{ status.id }}-{{ uuid }}"
+    class="interaction boost_{{ status.id }}_{{ uuid }}{% if boosted %} is-hidden{% endif %}"
+    data-id="boost_{{ status.id }}_{{ uuid }}"
 >
     {% csrf_token %}
     <button
@@ -25,8 +25,8 @@
     name="unboost"
     action="/unboost/{{ status.id }}"
     method="post"
-    class="interaction boost-{{ status.id }}-{{ uuid }} active {% if not boosted %}is-hidden{% endif %}"
-    data-id="boost-{{ status.id }}-{{ uuid }}"
+    class="interaction boost_{{ status.id }}_{{ uuid }} active {% if not boosted %}is-hidden{% endif %}"
+    data-id="boost_{{ status.id }}_{{ uuid }}"
 >
     {% csrf_token %}
     <button class="button is-small is-light is-transparent" type="submit">

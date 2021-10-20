@@ -1,4 +1,4 @@
-""" tests incoming activities"""
+"""tests incoming activities"""
 from datetime import datetime
 from unittest.mock import patch
 
@@ -13,15 +13,18 @@ class InboxActivities(TestCase):
 
     def setUp(self):
         """basic user and book data"""
-        self.local_user = models.User.objects.create_user(
-            "mouse@example.com",
-            "mouse@mouse.com",
-            "mouseword",
-            local=True,
-            localname="mouse",
-        )
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
+            "bookwyrm.activitystreams.populate_stream_task.delay"
+        ):
+            self.local_user = models.User.objects.create_user(
+                "mouse@example.com",
+                "mouse@mouse.com",
+                "mouseword",
+                local=True,
+                localname="mouse",
+            )
         self.local_user.remote_id = "https://example.com/user/mouse"
-        self.local_user.save(broadcast=False)
+        self.local_user.save(broadcast=False, update_fields=["remote_id"])
         with patch("bookwyrm.models.user.set_remote_server.delay"):
             self.remote_user = models.User.objects.create_user(
                 "rat",
@@ -32,21 +35,13 @@ class InboxActivities(TestCase):
                 inbox="https://example.com/users/rat/inbox",
                 outbox="https://example.com/users/rat/outbox",
             )
-        with patch("bookwyrm.activitystreams.ActivityStream.add_status"):
+        with patch("bookwyrm.activitystreams.add_status_task.delay"):
             self.status = models.Status.objects.create(
                 user=self.remote_user,
                 content="Test status",
                 remote_id="https://example.com/status/1",
             )
 
-        self.create_json = {
-            "id": "hi",
-            "type": "Create",
-            "actor": "hi",
-            "to": ["https://www.w3.org/ns/activitystreams#public"],
-            "cc": ["https://example.com/user/mouse/followers"],
-            "object": {},
-        }
         models.SiteSettings.objects.create()
 
     def test_delete_status(self):
@@ -60,9 +55,7 @@ class InboxActivities(TestCase):
             "actor": self.remote_user.remote_id,
             "object": {"id": self.status.remote_id, "type": "Tombstone"},
         }
-        with patch(
-            "bookwyrm.activitystreams.ActivityStream.remove_object_from_related_stores"
-        ) as redis_mock:
+        with patch("bookwyrm.activitystreams.remove_status_task.delay") as redis_mock:
             views.inbox.activity_task(activity)
             self.assertTrue(redis_mock.called)
         # deletion doens't remove the status, it turns it into a tombstone
@@ -91,9 +84,7 @@ class InboxActivities(TestCase):
             "actor": self.remote_user.remote_id,
             "object": {"id": self.status.remote_id, "type": "Tombstone"},
         }
-        with patch(
-            "bookwyrm.activitystreams.ActivityStream.remove_object_from_related_stores"
-        ) as redis_mock:
+        with patch("bookwyrm.activitystreams.remove_status_task.delay") as redis_mock:
             views.inbox.activity_task(activity)
             self.assertTrue(redis_mock.called)
         # deletion doens't remove the status, it turns it into a tombstone
@@ -105,7 +96,8 @@ class InboxActivities(TestCase):
         self.assertEqual(models.Notification.objects.count(), 1)
         self.assertEqual(models.Notification.objects.get(), notif)
 
-    def test_delete_user(self):
+    @patch("bookwyrm.suggested_users.remove_user_task.delay")
+    def test_delete_user(self, _):
         """delete a user"""
         self.assertTrue(models.User.objects.get(username="rat@example.com").is_active)
         activity = {
@@ -135,3 +127,30 @@ class InboxActivities(TestCase):
         # nothing happens.
         views.inbox.activity_task(activity)
         self.assertEqual(models.User.objects.filter(is_active=True).count(), 2)
+
+    def test_delete_list(self):
+        """delete a list"""
+        book_list = models.List.objects.create(
+            name="test list",
+            user=self.remote_user,
+            remote_id="https://example.com/list/1",
+        )
+        activity = {
+            "@context": "https://www.w3.org/ns/activitystreams",
+            "id": "https://example.com/users/test-user#delete",
+            "type": "Delete",
+            "actor": "https://example.com/users/test-user",
+            "to": ["https://www.w3.org/ns/activitystreams#Public"],
+            "object": {
+                "id": book_list.remote_id,
+                "owner": self.remote_user.remote_id,
+                "type": "BookList",
+                "totalItems": 0,
+                "first": "",
+                "name": "test list",
+                "to": [],
+                "cc": [],
+            },
+        }
+        views.inbox.activity_task(activity)
+        self.assertFalse(models.List.objects.exists())

@@ -1,6 +1,5 @@
 """ functionality outline for a book data connector """
 from abc import ABC, abstractmethod
-from dataclasses import asdict, dataclass
 import logging
 
 from django.db import transaction
@@ -9,6 +8,7 @@ from requests.exceptions import RequestException
 
 from bookwyrm import activitypub, models, settings
 from .connector_manager import load_more_data, ConnectorException
+from .format_mappings import format_mappings
 
 
 logger = logging.getLogger(__name__)
@@ -31,7 +31,6 @@ class AbstractMinimalConnector(ABC):
             "isbn_search_url",
             "name",
             "identifier",
-            "local",
         ]
         for field in self_fields:
             setattr(self, field, getattr(info, field))
@@ -43,7 +42,7 @@ class AbstractMinimalConnector(ABC):
             params["min_confidence"] = min_confidence
 
         data = self.get_search_data(
-            "%s%s" % (self.search_url, query),
+            f"{self.search_url}{query}",
             params=params,
             timeout=timeout,
         )
@@ -57,7 +56,7 @@ class AbstractMinimalConnector(ABC):
         """isbn search"""
         params = {}
         data = self.get_search_data(
-            "%s%s" % (self.isbn_search_url, query),
+            f"{self.isbn_search_url}{query}",
             params=params,
         )
         results = []
@@ -131,7 +130,7 @@ class AbstractConnector(AbstractMinimalConnector):
                 work_data = data
 
         if not work_data or not edition_data:
-            raise ConnectorException("Unable to load book data: %s" % remote_id)
+            raise ConnectorException(f"Unable to load book data: {remote_id}")
 
         with transaction.atomic():
             # create activitypub object
@@ -139,7 +138,7 @@ class AbstractConnector(AbstractMinimalConnector):
                 **dict_from_mappings(work_data, self.book_mappings)
             )
             # this will dedupe automatically
-            work = work_activity.to_model(model=models.Work)
+            work = work_activity.to_model(model=models.Work, overwrite=False)
             for author in self.get_authors_from_data(work_data):
                 work.authors.add(author)
 
@@ -156,7 +155,7 @@ class AbstractConnector(AbstractMinimalConnector):
         mapped_data = dict_from_mappings(edition_data, self.book_mappings)
         mapped_data["work"] = work.remote_id
         edition_activity = activitypub.Edition(**mapped_data)
-        edition = edition_activity.to_model(model=models.Edition)
+        edition = edition_activity.to_model(model=models.Edition, overwrite=False)
         edition.connector = self.connector
         edition.save()
 
@@ -182,7 +181,7 @@ class AbstractConnector(AbstractMinimalConnector):
             return None
 
         # this will dedupe
-        return activity.to_model(model=models.Author)
+        return activity.to_model(model=models.Author, overwrite=False)
 
     @abstractmethod
     def is_work_data(self, data):
@@ -222,9 +221,7 @@ def get_data(url, params=None, timeout=10):
     """wrapper for request.get"""
     # check if the url is blocked
     if models.FederatedServer.is_blocked(url):
-        raise ConnectorException(
-            "Attempting to load data from blocked url: {:s}".format(url)
-        )
+        raise ConnectorException(f"Attempting to load data from blocked url: {url}")
 
     try:
         resp = requests.get(
@@ -269,31 +266,6 @@ def get_image(url, timeout=10):
     return resp
 
 
-@dataclass
-class SearchResult:
-    """standardized search result object"""
-
-    title: str
-    key: str
-    connector: object
-    view_link: str = None
-    author: str = None
-    year: str = None
-    cover: str = None
-    confidence: int = 1
-
-    def __repr__(self):
-        return "<SearchResult key={!r} title={!r} author={!r}>".format(
-            self.key, self.title, self.author
-        )
-
-    def json(self):
-        """serialize a connector for json response"""
-        serialized = asdict(self)
-        del serialized["connector"]
-        return serialized
-
-
 class Mapping:
     """associate a local database field with a field in an external dataset"""
 
@@ -313,3 +285,25 @@ class Mapping:
             return self.formatter(value)
         except:  # pylint: disable=bare-except
             return None
+
+
+def infer_physical_format(format_text):
+    """try to figure out what the standardized format is from the free value"""
+    format_text = format_text.lower()
+    if format_text in format_mappings:
+        # try a direct match
+        return format_mappings[format_text]
+    # failing that, try substring
+    matches = [v for k, v in format_mappings.items() if k in format_text]
+    if not matches:
+        return None
+    return matches[0]
+
+
+def unique_physical_format(format_text):
+    """only store the format if it isn't diretly in the format mappings"""
+    format_text = format_text.lower()
+    if format_text in format_mappings:
+        # try a direct match, so saving this would be redundant
+        return None
+    return format_text

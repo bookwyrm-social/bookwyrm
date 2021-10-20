@@ -1,14 +1,17 @@
 """ non-interactive pages """
+from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
+from django.http import Http404
+from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.views import View
+from django.views.decorators.http import require_POST
 
 from bookwyrm import models
 from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.settings import PAGE_LENGTH
 from .helpers import get_user_from_username, is_api_request
-from .helpers import privacy_filter
 
 
 # pylint: disable=no-self-use
@@ -52,20 +55,34 @@ class User(View):
 
         # user's posts
         activities = (
-            privacy_filter(
+            models.Status.privacy_filter(
                 request.user,
-                user.status_set.select_subclasses(),
             )
-            .select_related("reply_parent")
-            .prefetch_related("mention_books", "mention_users")
+            .filter(user=user)
+            .select_related(
+                "user",
+                "reply_parent",
+                "review__book",
+                "comment__book",
+                "quotation__book",
+            )
+            .prefetch_related(
+                "mention_books",
+                "mention_users",
+                "attachments",
+            )
         )
 
         paginated = Paginator(activities, PAGE_LENGTH)
         goal = models.AnnualGoal.objects.filter(
             user=user, year=timezone.now().year
         ).first()
-        if goal and not goal.visible_to_user(request.user):
-            goal = None
+        if goal:
+            try:
+                goal.raise_visible_to_user(request.user)
+            except Http404:
+                goal = None
+
         data = {
             "user": user,
             "is_self": is_self,
@@ -118,3 +135,31 @@ class Following(View):
             "follow_list": paginated.get_page(request.GET.get("page")),
         }
         return TemplateResponse(request, "user/relationships/following.html", data)
+
+
+class Groups(View):
+    """list of user's groups view"""
+
+    def get(self, request, username):
+        """list of groups"""
+        user = get_user_from_username(request.user, username)
+
+        paginated = Paginator(
+            models.Group.memberships.filter(user=user).order_by("-created_date"),
+            PAGE_LENGTH,
+        )
+        data = {
+            "user": user,
+            "is_self": request.user.id == user.id,
+            "group_list": paginated.get_page(request.GET.get("page")),
+        }
+        return TemplateResponse(request, "user/groups.html", data)
+
+
+@require_POST
+@login_required
+def hide_suggestions(request):
+    """not everyone wants user suggestions"""
+    request.user.show_suggested_users = False
+    request.user.save(broadcast=False, update_fields=["show_suggested_users"])
+    return redirect(request.headers.get("Referer", "/"))

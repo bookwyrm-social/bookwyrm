@@ -9,6 +9,7 @@ from django.test.client import RequestFactory
 
 from bookwyrm import forms, models, views
 from bookwyrm.activitypub import ActivitypubResponse
+from bookwyrm.tests.validate_html import validate_html
 
 
 class AuthorViews(TestCase):
@@ -17,14 +18,17 @@ class AuthorViews(TestCase):
     def setUp(self):
         """we need basic test data and mocks"""
         self.factory = RequestFactory()
-        self.local_user = models.User.objects.create_user(
-            "mouse@local.com",
-            "mouse@mouse.com",
-            "mouseword",
-            local=True,
-            localname="mouse",
-            remote_id="https://example.com/users/mouse",
-        )
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
+            "bookwyrm.activitystreams.populate_stream_task.delay"
+        ):
+            self.local_user = models.User.objects.create_user(
+                "mouse@local.com",
+                "mouse@mouse.com",
+                "mouseword",
+                local=True,
+                localname="mouse",
+                remote_id="https://example.com/users/mouse",
+            )
         self.group = Group.objects.create(name="editor")
         self.group.permissions.add(
             Permission.objects.create(
@@ -51,7 +55,7 @@ class AuthorViews(TestCase):
             is_api.return_value = False
             result = view(request, author.id)
         self.assertIsInstance(result, TemplateResponse)
-        result.render()
+        validate_html(result.render())
         self.assertEqual(result.status_code, 200)
         self.assertEqual(result.status_code, 200)
 
@@ -72,7 +76,7 @@ class AuthorViews(TestCase):
 
         result = view(request, author.id)
         self.assertIsInstance(result, TemplateResponse)
-        result.render()
+        validate_html(result.render())
         self.assertEqual(result.status_code, 200)
         self.assertEqual(result.status_code, 200)
 

@@ -1,0 +1,34 @@
+{% load i18n %}
+{% load bookwyrm_group_tags %}
+{% if request.user == user or not request.user == group.user or not request.user.is_authenticated %}
+{% elif user in request.user.blocks.all %}
+{% include 'snippets/block_button.html' with blocks=True %}
+{% else %}
+
+<div class="field mb-0">
+    <div class="control">
+        <form action="{% url 'invite-group-member' %}" method="POST" class="interaction add_{{ user.id }} {% if group|is_member:user or group|is_invited:user %}is-hidden{%endif %}" data-id="add_{{ user.id }}">
+            {% csrf_token %}
+            <input type="hidden" name="group" value="{{ group.id }}">
+            <input type="hidden" name="user" value="{{ user.username }}">
+            <button class="button is-small" type="submit">
+                {% trans "Invite" %}
+            </button>
+        </form>
+        <form action="{% url 'remove-group-member' %}" method="POST" class="interaction add_{{ user.id }} {% if not group|is_member:user and not group|is_invited:user %}is-hidden{% endif %}" data-id="add_{{ user.id }}">
+            {% csrf_token %}
+            <input type="hidden" name="group" value="{{ group.id }}">
+            <input type="hidden" name="user" value="{{ user.username }}">
+            {% if not group|is_member:user %}
+            <button class="button is-small is-danger is-light" type="submit">
+                {% trans "Uninvite" %}
+            </button>
+            {% else %}
+            <button class="button is-small is-danger is-light" type="submit">
+                {% blocktrans with username=user.localname %}Remove @{{ username }}{% endblocktrans %}
+            </button>
+            {% endif %}
+        </form>
+    </div>
+</div>
+{% endif %}

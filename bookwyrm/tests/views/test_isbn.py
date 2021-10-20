@@ -16,23 +16,23 @@ class IsbnViews(TestCase):
     def setUp(self):
         """we need basic test data and mocks"""
         self.factory = RequestFactory()
-        self.local_user = models.User.objects.create_user(
-            "mouse@local.com",
-            "mouse@mouse.com",
-            "mouseword",
-            local=True,
-            localname="mouse",
-            remote_id="https://example.com/users/mouse",
-        )
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
+            "bookwyrm.activitystreams.populate_stream_task.delay"
+        ):
+            self.local_user = models.User.objects.create_user(
+                "mouse@local.com",
+                "mouse@mouse.com",
+                "mouseword",
+                local=True,
+                localname="mouse",
+                remote_id="https://example.com/users/mouse",
+            )
         self.work = models.Work.objects.create(title="Test Work")
         self.book = models.Edition.objects.create(
             title="Test Book",
             isbn_13="1234567890123",
             remote_id="https://example.com/book/1",
             parent_work=self.work,
-        )
-        models.Connector.objects.create(
-            identifier="self", connector_file="self_connector", local=True
         )
         models.SiteSettings.objects.create()
 
@@ -48,4 +48,4 @@ class IsbnViews(TestCase):
         data = json.loads(response.content)
         self.assertEqual(len(data), 1)
         self.assertEqual(data[0]["title"], "Test Book")
-        self.assertEqual(data[0]["key"], "https://%s/book/%d" % (DOMAIN, self.book.id))
+        self.assertEqual(data[0]["key"], f"https://{DOMAIN}/book/{self.book.id}")

@@ -3,4 +3,4 @@ from .settings import CONNECTORS
 from .abstract_connector import ConnectorException
 from .abstract_connector import get_data, get_image
 
-from .connector_manager import search, local_search, first_search_result
+from .connector_manager import search, first_search_result

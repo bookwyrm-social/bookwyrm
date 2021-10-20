@@ -14,15 +14,18 @@ class InboxUpdate(TestCase):
 
     def setUp(self):
         """basic user and book data"""
-        self.local_user = models.User.objects.create_user(
-            "mouse@example.com",
-            "mouse@mouse.com",
-            "mouseword",
-            local=True,
-            localname="mouse",
-        )
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
+            "bookwyrm.activitystreams.populate_stream_task.delay"
+        ):
+            self.local_user = models.User.objects.create_user(
+                "mouse@example.com",
+                "mouse@mouse.com",
+                "mouseword",
+                local=True,
+                localname="mouse",
+            )
         self.local_user.remote_id = "https://example.com/user/mouse"
-        self.local_user.save(broadcast=False)
+        self.local_user.save(broadcast=False, update_fields=["remote_id"])
         with patch("bookwyrm.models.user.set_remote_server.delay"):
             self.remote_user = models.User.objects.create_user(
                 "rat",
@@ -34,9 +37,9 @@ class InboxUpdate(TestCase):
                 outbox="https://example.com/users/rat/outbox",
             )
 
-        self.create_json = {
+        self.update_json = {
             "id": "hi",
-            "type": "Create",
+            "type": "Update",
             "actor": "hi",
             "to": ["https://www.w3.org/ns/activitystreams#public"],
             "cc": ["https://example.com/user/mouse/followers"],
@@ -51,26 +54,20 @@ class InboxUpdate(TestCase):
             book_list = models.List.objects.create(
                 name="hi", remote_id="https://example.com/list/22", user=self.local_user
             )
-        activity = {
-            "type": "Update",
-            "to": [],
-            "cc": [],
-            "actor": "hi",
-            "id": "sdkjf",
-            "object": {
-                "id": "https://example.com/list/22",
-                "type": "BookList",
-                "totalItems": 1,
-                "first": "https://example.com/list/22?page=1",
-                "last": "https://example.com/list/22?page=1",
-                "name": "Test List",
-                "owner": "https://example.com/user/mouse",
-                "to": ["https://www.w3.org/ns/activitystreams#Public"],
-                "cc": ["https://example.com/user/mouse/followers"],
-                "summary": "summary text",
-                "curation": "curated",
-                "@context": "https://www.w3.org/ns/activitystreams",
-            },
+        activity = self.update_json
+        activity["object"] = {
+            "id": "https://example.com/list/22",
+            "type": "BookList",
+            "totalItems": 1,
+            "first": "https://example.com/list/22?page=1",
+            "last": "https://example.com/list/22?page=1",
+            "name": "Test List",
+            "owner": "https://example.com/user/mouse",
+            "to": ["https://www.w3.org/ns/activitystreams#Public"],
+            "cc": ["https://example.com/user/mouse/followers"],
+            "summary": "summary text",
+            "curation": "curated",
+            "@context": "https://www.w3.org/ns/activitystreams",
         }
         views.inbox.activity_task(activity)
         book_list.refresh_from_db()
@@ -79,7 +76,9 @@ class InboxUpdate(TestCase):
         self.assertEqual(book_list.description, "summary text")
         self.assertEqual(book_list.remote_id, "https://example.com/list/22")
 
-    def test_update_user(self):
+    @patch("bookwyrm.suggested_users.rerank_user_task.delay")
+    @patch("bookwyrm.activitystreams.add_user_statuses_task.delay")
+    def test_update_user(self, *_):
         """update an existing user"""
         models.UserFollows.objects.create(
             user_subject=self.local_user,
@@ -171,3 +170,26 @@ class InboxUpdate(TestCase):
             )
         book = models.Work.objects.get(id=book.id)
         self.assertEqual(book.title, "Piranesi")
+
+    @patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
+    @patch("bookwyrm.activitystreams.add_status_task.delay")
+    def test_update_status(self, *_):
+        """edit a status"""
+        status = models.Status.objects.create(user=self.remote_user, content="hi")
+
+        datafile = pathlib.Path(__file__).parent.joinpath("../../data/ap_note.json")
+        status_data = json.loads(datafile.read_bytes())
+        status_data["id"] = status.remote_id
+        status_data["updated"] = "2021-12-13T05:09:29Z"
+
+        activity = self.update_json
+        activity["object"] = status_data
+
+        with patch("bookwyrm.activitypub.base_activity.set_related_field.delay"):
+            views.inbox.activity_task(activity)
+
+        status.refresh_from_db()
+        self.assertEqual(status.content, "test content in note")
+        self.assertEqual(status.edited_date.year, 2021)
+        self.assertEqual(status.edited_date.month, 12)
+        self.assertEqual(status.edited_date.day, 13)

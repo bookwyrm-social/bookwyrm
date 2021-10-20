@@ -48,7 +48,7 @@ class Signature:
 
 
 def naive_parse(activity_objects, activity_json, serializer=None):
-    """this navigates circular import issues"""
+    """this navigates circular import issues by looking up models' serializers"""
     if not serializer:
         if activity_json.get("publicKeyPem"):
             # ugh
@@ -101,12 +101,15 @@ class ActivityObject:
             except KeyError:
                 if field.default == MISSING and field.default_factory == MISSING:
                     raise ActivitySerializerError(
-                        "Missing required field: %s" % field.name
+                        f"Missing required field: {field.name}"
                     )
                 value = field.default
             setattr(self, field.name, value)
 
-    def to_model(self, model=None, instance=None, allow_create=True, save=True):
+    # pylint: disable=too-many-locals,too-many-branches,too-many-arguments
+    def to_model(
+        self, model=None, instance=None, allow_create=True, save=True, overwrite=True
+    ):
         """convert from an activity to a model instance"""
         model = model or get_model_from_type(self.type)
 
@@ -126,27 +129,41 @@ class ActivityObject:
             return None
         instance = instance or model()
 
+        # keep track of what we've changed
+        update_fields = []
+        # sets field on the model using the activity value
         for field in instance.simple_fields:
             try:
-                field.set_field_from_activity(instance, self)
+                changed = field.set_field_from_activity(
+                    instance, self, overwrite=overwrite
+                )
+                if changed:
+                    update_fields.append(field.name)
             except AttributeError as e:
                 raise ActivitySerializerError(e)
 
         # image fields have to be set after other fields because they can save
         # too early and jank up users
         for field in instance.image_fields:
-            field.set_field_from_activity(instance, self, save=save)
+            changed = field.set_field_from_activity(
+                instance, self, save=save, overwrite=overwrite
+            )
+            if changed:
+                update_fields.append(field.name)
 
         if not save:
             return instance
 
         with transaction.atomic():
+            # can't force an update on fields unless the object already exists in the db
+            if not instance.id:
+                update_fields = None
             # we can't set many to many and reverse fields on an unsaved object
             try:
                 try:
-                    instance.save(broadcast=False)
+                    instance.save(broadcast=False, update_fields=update_fields)
                 except TypeError:
-                    instance.save()
+                    instance.save(update_fields=update_fields)
             except IntegrityError as e:
                 raise ActivitySerializerError(e)
 
@@ -196,14 +213,14 @@ class ActivityObject:
         return data
 
 
-@app.task
+@app.task(queue="medium_priority")
 @transaction.atomic
 def set_related_field(
     model_name, origin_model_name, related_field_name, related_remote_id, data
 ):
     """load reverse related fields (editions, attachments) without blocking"""
-    model = apps.get_model("bookwyrm.%s" % model_name, require_ready=True)
-    origin_model = apps.get_model("bookwyrm.%s" % origin_model_name, require_ready=True)
+    model = apps.get_model(f"bookwyrm.{model_name}", require_ready=True)
+    origin_model = apps.get_model(f"bookwyrm.{origin_model_name}", require_ready=True)
 
     with transaction.atomic():
         if isinstance(data, str):
@@ -217,7 +234,7 @@ def set_related_field(
         # this must exist because it's the object that triggered this function
         instance = origin_model.find_existing_by_remote_id(related_remote_id)
         if not instance:
-            raise ValueError("Invalid related remote id: %s" % related_remote_id)
+            raise ValueError(f"Invalid related remote id: {related_remote_id}")
 
         # set the origin's remote id on the activity so it will be there when
         # the model instance is created
@@ -248,7 +265,7 @@ def get_model_from_type(activity_type):
     ]
     if not model:
         raise ActivitySerializerError(
-            'No model found for activity type "%s"' % activity_type
+            f'No model found for activity type "{activity_type}"'
         )
     return model[0]
 
@@ -258,6 +275,8 @@ def resolve_remote_id(
 ):
     """take a remote_id and return an instance, creating if necessary"""
     if model:  # a bonus check we can do if we already know the model
+        if isinstance(model, str):
+            model = apps.get_model(f"bookwyrm.{model}", require_ready=True)
         result = model.find_existing_by_remote_id(remote_id)
         if result and not refresh:
             return result if not get_activity else result.to_activity_dataclass()
@@ -267,7 +286,7 @@ def resolve_remote_id(
         data = get_data(remote_id)
     except ConnectorException:
         raise ActivitySerializerError(
-            "Could not connect to host for remote_id in: %s" % (remote_id)
+            f"Could not connect to host for remote_id: {remote_id}"
         )
     # determine the model implicitly, if not provided
     # or if it's a model with subclasses like Status, check again

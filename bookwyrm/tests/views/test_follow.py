@@ -10,20 +10,24 @@ from django.test.client import RequestFactory
 from bookwyrm import models, views
 
 
-class BookViews(TestCase):
-    """books books books"""
+@patch("bookwyrm.activitystreams.add_user_statuses_task.delay")
+class FollowViews(TestCase):
+    """follows"""
 
     def setUp(self):
         """we need basic test data and mocks"""
         self.factory = RequestFactory()
-        self.local_user = models.User.objects.create_user(
-            "mouse@local.com",
-            "mouse@mouse.com",
-            "mouseword",
-            local=True,
-            localname="mouse",
-            remote_id="https://example.com/users/mouse",
-        )
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
+            "bookwyrm.activitystreams.populate_stream_task.delay"
+        ):
+            self.local_user = models.User.objects.create_user(
+                "mouse@local.com",
+                "mouse@mouse.com",
+                "mouseword",
+                local=True,
+                localname="mouse",
+                remote_id="https://example.com/users/mouse",
+            )
         with patch("bookwyrm.models.user.set_remote_server"):
             self.remote_user = models.User.objects.create_user(
                 "rat",
@@ -49,7 +53,7 @@ class BookViews(TestCase):
             parent_work=self.work,
         )
 
-    def test_handle_follow_remote(self):
+    def test_handle_follow_remote(self, _):
         """send a follow request"""
         request = self.factory.post("", {"user": self.remote_user.username})
         request.user = self.local_user
@@ -64,17 +68,20 @@ class BookViews(TestCase):
         self.assertEqual(rel.user_object, self.remote_user)
         self.assertEqual(rel.status, "follow_request")
 
-    def test_handle_follow_local_manually_approves(self):
+    def test_handle_follow_local_manually_approves(self, _):
         """send a follow request"""
-        rat = models.User.objects.create_user(
-            "rat@local.com",
-            "rat@rat.com",
-            "ratword",
-            local=True,
-            localname="rat",
-            remote_id="https://example.com/users/rat",
-            manually_approves_followers=True,
-        )
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
+            "bookwyrm.activitystreams.populate_stream_task.delay"
+        ):
+            rat = models.User.objects.create_user(
+                "rat@local.com",
+                "rat@rat.com",
+                "ratword",
+                local=True,
+                localname="rat",
+                remote_id="https://example.com/users/rat",
+                manually_approves_followers=True,
+            )
         request = self.factory.post("", {"user": rat})
         request.user = self.local_user
         self.assertEqual(models.UserFollowRequest.objects.count(), 0)
@@ -87,16 +94,19 @@ class BookViews(TestCase):
         self.assertEqual(rel.user_object, rat)
         self.assertEqual(rel.status, "follow_request")
 
-    def test_handle_follow_local(self):
+    def test_handle_follow_local(self, _):
         """send a follow request"""
-        rat = models.User.objects.create_user(
-            "rat@local.com",
-            "rat@rat.com",
-            "ratword",
-            local=True,
-            localname="rat",
-            remote_id="https://example.com/users/rat",
-        )
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
+            "bookwyrm.activitystreams.populate_stream_task.delay"
+        ):
+            rat = models.User.objects.create_user(
+                "rat@local.com",
+                "rat@rat.com",
+                "ratword",
+                local=True,
+                localname="rat",
+                remote_id="https://example.com/users/rat",
+            )
         request = self.factory.post("", {"user": rat})
         request.user = self.local_user
         self.assertEqual(models.UserFollowRequest.objects.count(), 0)
@@ -110,7 +120,8 @@ class BookViews(TestCase):
         self.assertEqual(rel.user_object, rat)
         self.assertEqual(rel.status, "follows")
 
-    def test_handle_unfollow(self):
+    @patch("bookwyrm.activitystreams.remove_user_statuses_task.delay")
+    def test_handle_unfollow(self, *_):
         """send an unfollow"""
         request = self.factory.post("", {"user": self.remote_user.username})
         request.user = self.local_user
@@ -124,10 +135,12 @@ class BookViews(TestCase):
 
         self.assertEqual(self.remote_user.followers.count(), 0)
 
-    def test_handle_accept(self):
+    def test_handle_accept(self, _):
         """accept a follow request"""
         self.local_user.manually_approves_followers = True
-        self.local_user.save(broadcast=False)
+        self.local_user.save(
+            broadcast=False, update_fields=["manually_approves_followers"]
+        )
         request = self.factory.post("", {"user": self.remote_user.username})
         request.user = self.local_user
         rel = models.UserFollowRequest.objects.create(
@@ -141,10 +154,12 @@ class BookViews(TestCase):
         # follow relationship should exist
         self.assertEqual(self.local_user.followers.first(), self.remote_user)
 
-    def test_handle_reject(self):
+    def test_handle_reject(self, _):
         """reject a follow request"""
         self.local_user.manually_approves_followers = True
-        self.local_user.save(broadcast=False)
+        self.local_user.save(
+            broadcast=False, update_fields=["manually_approves_followers"]
+        )
         request = self.factory.post("", {"user": self.remote_user.username})
         request.user = self.local_user
         rel = models.UserFollowRequest.objects.create(

@@ -9,8 +9,8 @@ from django.test import TestCase
 import responses
 
 from bookwyrm import models
+from bookwyrm.book_search import SearchResult
 from bookwyrm.connectors import connector_manager
-from bookwyrm.connectors.abstract_connector import SearchResult
 
 
 class ImportJob(TestCase):
@@ -59,9 +59,12 @@ class ImportJob(TestCase):
         unknown_read_data["Exclusive Shelf"] = "read"
         unknown_read_data["Date Read"] = ""
 
-        user = models.User.objects.create_user(
-            "mouse", "mouse@mouse.mouse", "mouseword", local=True, localname="mouse"
-        )
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
+            "bookwyrm.activitystreams.populate_stream_task.delay"
+        ):
+            user = models.User.objects.create_user(
+                "mouse", "mouse@mouse.mouse", "mouseword", local=True, localname="mouse"
+            )
         job = models.ImportJob.objects.create(user=user)
         self.item_1 = models.ImportItem.objects.create(
             job=job, index=1, data=currently_reading_data

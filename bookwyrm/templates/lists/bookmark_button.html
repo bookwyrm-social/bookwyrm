@@ -1,0 +1,39 @@
+{% load i18n %}
+{% load interaction %}
+
+{% if request.user.is_authenticated %}
+
+{% with request.user|saved:list as saved %}
+<form
+    name="save-{{ list.id }}"
+    action="{% url 'list-save' list.id %}"
+    method="POST"
+    class="interaction save_{{ list.id }} {% if saved %}is-hidden{% endif %}"
+    data-id="save_{{ list.id }}"
+>
+    {% csrf_token %}
+    {% trans "Save" as text %}
+    <button class="button" type="submit">
+        <span class="icon icon-bookmark m-0-mobile" title="{{ text }}"></span>
+        <span class="is-sr-only-mobile">{{ text }}</span>
+    </button>
+</form>
+
+<form
+    name="unsave-{{ list.id }}"
+    action="{% url 'list-unsave' list.id %}"
+    method="POST"
+    class="interaction save_{{ list.id }} active {% if not saved %}is-hidden{% endif %}"
+    data-id="save_{{ list.id }}"
+>
+    {% csrf_token %}
+    {% trans "Un-save" as text %}
+    <button class="button" type="submit">
+        <span class="icon icon-bookmark m-0-mobile has-text-primary" title="{{ text }}"></span>
+        <span class="is-sr-only-mobile">{{ text }}</span>
+    </button>
+</form>
+{% endwith %}
+
+{% endif %}
+

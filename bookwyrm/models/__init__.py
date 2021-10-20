@@ -14,7 +14,6 @@ from .status import Review, ReviewRating
 from .status import Boost
 from .attachment import Image
 from .favorite import Favorite
-from .notification import Notification
 from .readthrough import ReadThrough, ProgressUpdate, ProgressMode
 
 from .user import User, KeyPair, AnnualGoal
@@ -22,10 +21,16 @@ from .relationship import UserFollows, UserFollowRequest, UserBlocks
 from .report import Report, ReportComment
 from .federated_server import FederatedServer
 
+from .group import Group, GroupMember, GroupMemberInvitation
+
 from .import_job import ImportJob, ImportItem
 
-from .site import SiteSettings, SiteInvite, PasswordReset, InviteRequest
+from .site import SiteSettings, SiteInvite
+from .site import PasswordReset, InviteRequest
 from .announcement import Announcement
+from .antispam import EmailBlocklist, IPBlocklist
+
+from .notification import Notification
 
 cls_members = inspect.getmembers(sys.modules[__name__], inspect.isclass)
 activity_models = {

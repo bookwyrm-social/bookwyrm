@@ -1,6 +1,7 @@
 """ using another bookwyrm instance as a source of book data """
 from bookwyrm import activitypub, models
-from .abstract_connector import AbstractMinimalConnector, SearchResult
+from bookwyrm.book_search import SearchResult
+from .abstract_connector import AbstractMinimalConnector
 
 
 class Connector(AbstractMinimalConnector):

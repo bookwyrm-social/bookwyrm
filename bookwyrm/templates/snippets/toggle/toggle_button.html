@@ -1,5 +1,6 @@
+{% load utilities %}
 {% if fallback_url %}
-<form name="fallback-form-{{ controls_uuid}}" method="GET" action="{{ fallback_url }}">
+<form name="fallback_form_{{ 0|uuid }}" method="GET" action="{{ fallback_url }}">
 {% endif %}
 <button
     {% if not fallback_url %}
@@ -8,9 +9,9 @@
         type="submit"
     {% endif %}
     class="{% if not nonbutton %}button {% endif %}{{ class }}{% if button_type %} {{ button_type }}{% endif %}"
-    data-controls="{{ controls_text }}{% if controls_uid %}-{{ controls_uid }}{% endif %}"
-    {% if focus %}data-focus-target="{{ focus }}{% if controls_uid %}-{{ controls_uid }}{% endif %}"{% endif %}
-    {% if checkbox %}data-controls-checkbox="{{ checkbox }}{% if controls_uid %}-{{ controls_uid }}{% endif %}"{% endif %}
+    data-controls="{{ controls_text }}{% if controls_uid %}_{{ controls_uid }}{% endif %}"
+    {% if focus %}data-focus-target="{{ focus }}{% if controls_uid %}_{{ controls_uid }}{% endif %}"{% endif %}
+    {% if checkbox %}data-controls-checkbox="{{ checkbox }}{% if controls_uid %}_{{ controls_uid }}{% endif %}"{% endif %}
     {% if label %}aria-label="{{ label }}"{% endif %}
     aria-pressed="{% if pressed %}true{% else %}false{% endif %}"
     {% if disabled %}disabled{% endif %}

@@ -10,7 +10,7 @@ from django.db.models import signals
 
 from requests import HTTPError
 
-from bookwyrm import models
+from bookwyrm import book_search, models
 from bookwyrm.tasks import app
 
 logger = logging.getLogger(__name__)
@@ -55,7 +55,7 @@ def search(query, min_confidence=0.1, return_first=False):
             # if we found anything, return it
             return result_set[0]
 
-        if result_set or connector.local:
+        if result_set:
             results.append(
                 {
                     "connector": connector,
@@ -71,22 +71,13 @@ def search(query, min_confidence=0.1, return_first=False):
     return results
 
 
-def local_search(query, min_confidence=0.1, raw=False, filters=None):
-    """only look at local search results"""
-    connector = load_connector(models.Connector.objects.get(local=True))
-    return connector.search(
-        query, min_confidence=min_confidence, raw=raw, filters=filters
-    )
-
-
-def isbn_local_search(query, raw=False):
-    """only look at local search results"""
-    connector = load_connector(models.Connector.objects.get(local=True))
-    return connector.isbn_search(query, raw=raw)
-
-
 def first_search_result(query, min_confidence=0.1):
     """search until you find a result that fits"""
+    # try local search first
+    result = book_search.search(query, min_confidence=min_confidence, return_first=True)
+    if result:
+        return result
+    # otherwise, try remote endpoints
     return search(query, min_confidence=min_confidence, return_first=True) or None
 
 
@@ -109,17 +100,17 @@ def get_or_create_connector(remote_id):
         connector_info = models.Connector.objects.create(
             identifier=identifier,
             connector_file="bookwyrm_connector",
-            base_url="https://%s" % identifier,
-            books_url="https://%s/book" % identifier,
-            covers_url="https://%s/images/covers" % identifier,
-            search_url="https://%s/search?q=" % identifier,
+            base_url=f"https://{identifier}",
+            books_url=f"https://{identifier}/book",
+            covers_url=f"https://{identifier}/images/covers",
+            search_url=f"https://{identifier}/search?q=",
             priority=2,
         )
 
     return load_connector(connector_info)
 
 
-@app.task
+@app.task(queue="low_priority")
 def load_more_data(connector_id, book_id):
     """background the work of getting all 10,000 editions of LoTR"""
     connector_info = models.Connector.objects.get(id=connector_id)
@@ -131,7 +122,7 @@ def load_more_data(connector_id, book_id):
 def load_connector(connector_info):
     """instantiate the connector class"""
     connector = importlib.import_module(
-        "bookwyrm.connectors.%s" % connector_info.connector_file
+        f"bookwyrm.connectors.{connector_info.connector_file}"
     )
     return connector.Connector(connector_info.identifier)
 
@@ -141,4 +132,4 @@ def load_connector(connector_info):
 def create_connector(sender, instance, created, *args, **kwargs):
     """create a connector to an external bookwyrm server"""
     if instance.application_type == "bookwyrm":
-        get_or_create_connector("https://{:s}".format(instance.server_name))
+        get_or_create_connector(f"https://{instance.server_name}")

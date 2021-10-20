@@ -10,9 +10,10 @@ from django.views import View
 
 from bookwyrm import models
 from bookwyrm.connectors import connector_manager
+from bookwyrm.book_search import search, format_search_result
 from bookwyrm.settings import PAGE_LENGTH
 from bookwyrm.utils import regex
-from .helpers import is_api_request, privacy_filter
+from .helpers import is_api_request
 from .helpers import handle_remote_webfinger
 
 
@@ -31,10 +32,10 @@ class Search(View):
 
         if is_api_request(request):
             # only return local book results via json so we don't cascade
-            book_results = connector_manager.local_search(
-                query, min_confidence=min_confidence
+            book_results = search(query, min_confidence=min_confidence)
+            return JsonResponse(
+                [format_search_result(r) for r in book_results], safe=False
             )
-            return JsonResponse([r.json() for r in book_results], safe=False)
 
         if query and not search_type:
             search_type = "user" if "@" in query else "book"
@@ -63,19 +64,19 @@ class Search(View):
                 data["results"] = paginated
                 data["remote"] = search_remote
 
-        return TemplateResponse(request, "search/{:s}.html".format(search_type), data)
+        return TemplateResponse(request, f"search/{search_type}.html", data)
 
 
-def book_search(query, _, min_confidence, search_remote=False):
+def book_search(query, user, min_confidence, search_remote=False):
     """the real business is elsewhere"""
     # try a local-only search
-    if not search_remote:
-        results = connector_manager.local_search(query, min_confidence=min_confidence)
-        if results:
-            # gret, we found something
-            return [{"results": results}], False
-    # if there weere no local results, or the request was for remote, search all sources
-    return connector_manager.search(query, min_confidence=min_confidence), True
+    results = [{"results": search(query, min_confidence=min_confidence)}]
+    if not user.is_authenticated or (results[0]["results"] and not search_remote):
+        return results, False
+
+    # if there were no local results, or the request was for remote, search all sources
+    results += connector_manager.search(query, min_confidence=min_confidence)
+    return results, True
 
 
 def user_search(query, viewer, *_):
@@ -100,16 +101,15 @@ def user_search(query, viewer, *_):
         .filter(
             similarity__gt=0.5,
         )
-        .order_by("-similarity")[:10]
+        .order_by("-similarity")
     ), None
 
 
 def list_search(query, viewer, *_):
     """any relevent lists?"""
     return (
-        privacy_filter(
+        models.List.privacy_filter(
             viewer,
-            models.List.objects,
             privacy_levels=["public", "followers"],
         )
         .annotate(
@@ -121,5 +121,5 @@ def list_search(query, viewer, *_):
         .filter(
             similarity__gt=0.1,
         )
-        .order_by("-similarity")[:10]
+        .order_by("-similarity")
     ), None

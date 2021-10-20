@@ -171,3 +171,15 @@ class Inventaire(TestCase):
         }
         self.assertEqual(get_language_code(options), "there")
         self.assertIsNone(get_language_code({}))
+
+    @responses.activate
+    def test_get_description(self):
+        """extract a wikipedia excerpt"""
+        responses.add(
+            responses.GET,
+            "https://inventaire.io/api/data?action=wp-extract&lang=en&title=test_path",
+            json={"extract": "hi hi"},
+        )
+
+        extract = self.connector.get_description({"enwiki": "test_path"})
+        self.assertEqual(extract, "hi hi")

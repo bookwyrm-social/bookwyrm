@@ -1,19 +1,46 @@
 """ what are we here for if not for posting """
 import re
+from urllib.parse import urlparse
+
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseBadRequest
+from django.core.validators import URLValidator
+from django.core.exceptions import ValidationError
+from django.http import HttpResponse, HttpResponseBadRequest, Http404
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
+from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views import View
-from markdown import markdown
+from django.views.decorators.http import require_POST
 
+from markdown import markdown
 from bookwyrm import forms, models
 from bookwyrm.sanitize_html import InputHtmlParser
 from bookwyrm.settings import DOMAIN
 from bookwyrm.utils import regex
-from .helpers import handle_remote_webfinger
-from .reading import edit_readthrough
+from .helpers import handle_remote_webfinger, is_api_request
+from .helpers import load_date_in_user_tz_as_utc
+
+
+# pylint: disable= no-self-use
+@method_decorator(login_required, name="dispatch")
+class EditStatus(View):
+    """the view for *posting*"""
+
+    def get(self, request, status_id):  # pylint: disable=unused-argument
+        """load the edit panel"""
+        status = get_object_or_404(
+            models.Status.objects.select_subclasses(), id=status_id
+        )
+        status.raise_not_editable(request.user)
+
+        status_type = "reply" if status.reply_parent else status.status_type.lower()
+        data = {
+            "type": status_type,
+            "book": getattr(status, "book", None),
+            "draft": status,
+        }
+        return TemplateResponse(request, "compose.html", data)
 
 
 # pylint: disable= no-self-use
@@ -22,23 +49,41 @@ class CreateStatus(View):
     """the view for *posting*"""
 
     def get(self, request, status_type):  # pylint: disable=unused-argument
-        """compose view (used for delete-and-redraft"""
+        """compose view (...not used?)"""
         book = get_object_or_404(models.Edition, id=request.GET.get("book"))
         data = {"book": book}
         return TemplateResponse(request, "compose.html", data)
 
-    def post(self, request, status_type):
-        """create  status of whatever type"""
+    def post(self, request, status_type, existing_status_id=None):
+        """create status of whatever type"""
+        created = not existing_status_id
+        existing_status = None
+        if existing_status_id:
+            existing_status = get_object_or_404(
+                models.Status.objects.select_subclasses(), id=existing_status_id
+            )
+            existing_status.raise_not_editable(request.user)
+            existing_status.edited_date = timezone.now()
+
         status_type = status_type[0].upper() + status_type[1:]
 
         try:
-            form = getattr(forms, "%sForm" % status_type)(request.POST)
+            form = getattr(forms, f"{status_type}Form")(
+                request.POST, instance=existing_status
+            )
         except AttributeError:
             return HttpResponseBadRequest()
         if not form.is_valid():
+            if is_api_request(request):
+                return HttpResponse(status=500)
             return redirect(request.headers.get("Referer", "/"))
 
         status = form.save(commit=False)
+        # save the plain, unformatted version of the status for future editing
+        status.raw_content = status.content
+        if hasattr(status, "quote"):
+            status.raw_quote = status.quote
+
         if not status.sensitive and status.content_warning:
             # the cw text field remains populated when you click "remove"
             status.content_warning = None
@@ -52,8 +97,8 @@ class CreateStatus(View):
 
             # turn the mention into a link
             content = re.sub(
-                r"%s([^@]|$)" % mention_text,
-                r'<a href="%s">%s</a>\g<1>' % (mention_user.remote_id, mention_text),
+                rf"{mention_text}([^@]|$)",
+                rf'<a href="{mention_user.remote_id}">{mention_text}</a>\g<1>',
                 content,
             )
         # add reply parent to mentions
@@ -70,11 +115,16 @@ class CreateStatus(View):
         if hasattr(status, "quote"):
             status.quote = to_markdown(status.quote)
 
-        status.save(created=True)
+        status.save(created=created)
 
         # update a readthorugh, if needed
-        edit_readthrough(request)
+        try:
+            edit_readthrough(request)
+        except Http404:
+            pass
 
+        if is_api_request(request):
+            return HttpResponse()
         return redirect("/")
 
 
@@ -87,46 +137,59 @@ class DeleteStatus(View):
         status = get_object_or_404(models.Status, id=status_id)
 
         # don't let people delete other people's statuses
-        if status.user != request.user and not request.user.has_perm("moderate_post"):
-            return HttpResponseBadRequest()
+        status.raise_not_deletable(request.user)
 
         # perform deletion
         status.delete()
         return redirect(request.headers.get("Referer", "/"))
 
 
-@method_decorator(login_required, name="dispatch")
-class DeleteAndRedraft(View):
-    """delete a status but let the user re-create it"""
+@login_required
+@require_POST
+def update_progress(request, book_id):  # pylint: disable=unused-argument
+    """Either it's just a progress update, or it's a comment with a progress update"""
+    if request.POST.get("post-status"):
+        return CreateStatus.as_view()(request, "comment")
+    return edit_readthrough(request)
 
-    def post(self, request, status_id):
-        """delete and tombstone a status"""
-        status = get_object_or_404(
-            models.Status.objects.select_subclasses(), id=status_id
-        )
-        if isinstance(status, (models.GeneratedNote, models.ReviewRating)):
-            return HttpResponseBadRequest()
 
-        # don't let people redraft other people's statuses
-        if status.user != request.user:
-            return HttpResponseBadRequest()
+@login_required
+@require_POST
+def edit_readthrough(request):
+    """can't use the form because the dates are too finnicky"""
+    readthrough = get_object_or_404(models.ReadThrough, id=request.POST.get("id"))
+    readthrough.raise_not_editable(request.user)
 
-        status_type = status.status_type.lower()
-        if status.reply_parent:
-            status_type = "reply"
+    readthrough.start_date = load_date_in_user_tz_as_utc(
+        request.POST.get("start_date"), request.user
+    )
+    readthrough.finish_date = load_date_in_user_tz_as_utc(
+        request.POST.get("finish_date"), request.user
+    )
 
-        data = {
-            "draft": status,
-            "type": status_type,
-        }
-        if hasattr(status, "book"):
-            data["book"] = status.book
-        elif status.mention_books:
-            data["book"] = status.mention_books.first()
+    progress = request.POST.get("progress")
+    try:
+        progress = int(progress)
+        readthrough.progress = progress
+    except (ValueError, TypeError):
+        pass
 
-        # perform deletion
-        status.delete()
-        return TemplateResponse(request, "compose.html", data)
+    progress_mode = request.POST.get("progress_mode")
+    try:
+        progress_mode = models.ProgressMode(progress_mode)
+        readthrough.progress_mode = progress_mode
+    except ValueError:
+        pass
+
+    readthrough.save()
+
+    # record the progress update individually
+    # use default now for date field
+    readthrough.create_update()
+
+    if is_api_request(request):
+        return HttpResponse()
+    return redirect(request.headers.get("Referer", "/"))
 
 
 def find_mentions(content):
@@ -149,17 +212,54 @@ def find_mentions(content):
 
 def format_links(content):
     """detect and format links"""
-    return re.sub(
-        r'([^(href=")]|^|\()(https?:\/\/(%s([\w\.\-_\/+&\?=:;,@#])*))' % regex.DOMAIN,
-        r'\g<1><a href="\g<2>">\g<3></a>',
-        content,
-    )
+    validator = URLValidator()
+    formatted_content = ""
+    split_content = re.split(r"(\s+)", content)
+
+    for potential_link in split_content:
+        if not potential_link:
+            continue
+        wrapped = _wrapped(potential_link)
+        if wrapped:
+            wrapper_close = potential_link[-1]
+            formatted_content += potential_link[0]
+            potential_link = potential_link[1:-1]
+
+        try:
+            # raises an error on anything that's not a valid link
+            validator(potential_link)
+
+            # use everything but the scheme in the presentation of the link
+            url = urlparse(potential_link)
+            link = url.netloc + url.path + url.params
+            if url.query != "":
+                link += "?" + url.query
+            if url.fragment != "":
+                link += "#" + url.fragment
+
+            formatted_content += f'<a href="{potential_link}">{link}</a>'
+        except (ValidationError, UnicodeError):
+            formatted_content += potential_link
+
+        if wrapped:
+            formatted_content += wrapper_close
+
+    return formatted_content
+
+
+def _wrapped(text):
+    """check if a line of text is wrapped"""
+    wrappers = [("(", ")"), ("[", "]"), ("{", "}")]
+    for wrapper in wrappers:
+        if text[0] == wrapper[0] and text[-1] == wrapper[-1]:
+            return True
+    return False
 
 
 def to_markdown(content):
     """catch links and convert to markdown"""
-    content = markdown(content)
     content = format_links(content)
+    content = markdown(content)
     # sanitize resulting html
     sanitizer = InputHtmlParser()
     sanitizer.feed(content)

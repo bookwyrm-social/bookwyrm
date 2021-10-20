@@ -13,7 +13,20 @@ class Notifications(View):
 
     def get(self, request, notification_type=None):
         """people are interacting with you, get hyped"""
-        notifications = request.user.notification_set.all().order_by("-created_date")
+        notifications = (
+            request.user.notification_set.all()
+            .order_by("-created_date")
+            .select_related(
+                "related_status",
+                "related_status__reply_parent",
+                "related_import",
+                "related_report",
+                "related_user",
+                "related_book",
+                "related_list_item",
+                "related_list_item__book",
+            )
+        )
         if notification_type == "mentions":
             notifications = notifications.filter(
                 notification_type__in=["REPLY", "MENTION", "TAG"]
@@ -24,9 +37,9 @@ class Notifications(View):
             "unread": unread,
         }
         notifications.update(read=True)
-        return TemplateResponse(request, "notifications.html", data)
+        return TemplateResponse(request, "notifications/notifications_page.html", data)
 
     def post(self, request):
         """permanently delete notification for user"""
         request.user.notification_set.filter(read=True).delete()
-        return redirect("/notifications")
+        return redirect("notifications")

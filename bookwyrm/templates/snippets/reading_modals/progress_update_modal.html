@@ -1,0 +1,21 @@
+{% extends 'snippets/reading_modals/layout.html' %}
+{% load i18n %}
+
+{% block modal-title %}
+{% trans "Update progress" %}
+{% endblock %}
+
+{% block modal-form-open %}
+<form name="reading-progress" action="{% url 'reading-status-update' book.id %}" method="POST" class="submit-status">
+{% csrf_token %}
+<input type="hidden" name="id" value="{{ readthrough.id }}">
+{% endblock %}
+
+{% block reading-dates %}
+<label for="id_progress_{{ readthrough.id }}{{ controls_uid }}" class="label">{% trans "Progress:" %}</label>
+{% include "snippets/progress_field.html" with progress_required=True %}
+{% endblock %}
+
+{% block form %}
+{% include "snippets/reading_modals/form.html" with optional=False type="update_modal" %}
+{% endblock %}

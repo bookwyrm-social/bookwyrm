@@ -3,28 +3,34 @@ from unittest.mock import patch
 from io import BytesIO
 import pathlib
 
-from PIL import Image
+from django.http import Http404
 from django.core.files.base import ContentFile
 from django.db import IntegrityError
+from django.contrib.auth.models import AnonymousUser
 from django.test import TestCase
 from django.utils import timezone
+from PIL import Image
 import responses
 
 from bookwyrm import activitypub, models, settings
 
 
 # pylint: disable=too-many-public-methods
+# pylint: disable=line-too-long
 @patch("bookwyrm.models.Status.broadcast")
-@patch("bookwyrm.activitystreams.ActivityStream.add_status")
-@patch("bookwyrm.activitystreams.ActivityStream.remove_object_from_related_stores")
+@patch("bookwyrm.activitystreams.add_status_task.delay")
+@patch("bookwyrm.activitystreams.remove_status_task.delay")
 class Status(TestCase):
     """lotta types of statuses"""
 
     def setUp(self):
         """useful things for creating a status"""
-        self.local_user = models.User.objects.create_user(
-            "mouse", "mouse@mouse.mouse", "mouseword", local=True, localname="mouse"
-        )
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
+            "bookwyrm.activitystreams.populate_stream_task.delay"
+        ):
+            self.local_user = models.User.objects.create_user(
+                "mouse", "mouse@mouse.mouse", "mouseword", local=True, localname="mouse"
+            )
         with patch("bookwyrm.models.user.set_remote_server.delay"):
             self.remote_user = models.User.objects.create_user(
                 "rat",
@@ -46,31 +52,43 @@ class Status(TestCase):
             image.save(output, format=image.format)
             self.book.cover.save("test.jpg", ContentFile(output.getvalue()))
 
+        self.anonymous_user = AnonymousUser
+        self.anonymous_user.is_authenticated = False
+
     def test_status_generated_fields(self, *_):
         """setting remote id"""
         status = models.Status.objects.create(content="bleh", user=self.local_user)
-        expected_id = "https://%s/user/mouse/status/%d" % (settings.DOMAIN, status.id)
+        expected_id = f"https://{settings.DOMAIN}/user/mouse/status/{status.id}"
         self.assertEqual(status.remote_id, expected_id)
         self.assertEqual(status.privacy, "public")
 
     def test_replies(self, *_):
         """get a list of replies"""
-        parent = models.Status.objects.create(content="hi", user=self.local_user)
-        child = models.Status.objects.create(
+        parent = models.Status(content="hi", user=self.local_user)
+        parent.save(broadcast=False)
+        child = models.Status(
             content="hello", reply_parent=parent, user=self.local_user
         )
-        models.Review.objects.create(
+        child.save(broadcast=False)
+        sibling = models.Review(
             content="hey", reply_parent=parent, user=self.local_user, book=self.book
         )
-        models.Status.objects.create(
+        sibling.save(broadcast=False)
+        grandchild = models.Status(
             content="hi hello", reply_parent=child, user=self.local_user
         )
+        grandchild.save(broadcast=False)
 
         replies = models.Status.replies(parent)
         self.assertEqual(replies.count(), 2)
         self.assertEqual(replies.first(), child)
         # should select subclasses
         self.assertIsInstance(replies.last(), models.Review)
+
+        self.assertEqual(parent.thread_id, parent.id)
+        self.assertEqual(child.thread_id, parent.id)
+        self.assertEqual(sibling.thread_id, parent.id)
+        self.assertEqual(grandchild.thread_id, parent.id)
 
     def test_status_type(self, *_):
         """class name"""
@@ -101,7 +119,7 @@ class Status(TestCase):
         )
 
         replies = parent.to_replies()
-        self.assertEqual(replies["id"], "%s/replies" % parent.remote_id)
+        self.assertEqual(replies["id"], f"{parent.remote_id}/replies")
         self.assertEqual(replies["totalItems"], 2)
 
     def test_status_to_activity(self, *_):
@@ -117,15 +135,12 @@ class Status(TestCase):
 
     def test_status_to_activity_tombstone(self, *_):
         """subclass of the base model version with a "pure" serializer"""
-        with patch(
-            "bookwyrm.activitystreams.ActivityStream.remove_object_from_related_stores"
-        ):
-            status = models.Status.objects.create(
-                content="test content",
-                user=self.local_user,
-                deleted=True,
-                deleted_date=timezone.now(),
-            )
+        status = models.Status.objects.create(
+            content="test content",
+            user=self.local_user,
+            deleted=True,
+            deleted_date=timezone.now(),
+        )
         activity = status.to_activity()
         self.assertEqual(activity["id"], status.remote_id)
         self.assertEqual(activity["type"], "Tombstone")
@@ -168,7 +183,7 @@ class Status(TestCase):
         self.assertEqual(activity["id"], status.remote_id)
         self.assertEqual(
             activity["content"],
-            'mouse test content <a href="%s">"Test Edition"</a>' % self.book.remote_id,
+            f'mouse test content <a href="{self.book.remote_id}">"Test Edition"</a>',
         )
         self.assertEqual(len(activity["tag"]), 2)
         self.assertEqual(activity["type"], "Note")
@@ -177,7 +192,7 @@ class Status(TestCase):
         self.assertEqual(activity["attachment"][0].type, "Document")
         self.assertEqual(
             activity["attachment"][0].url,
-            "https://%s%s" % (settings.MEDIA_FULL_URL, self.book.cover.url),
+            f"https://{settings.MEDIA_FULL_URL}{self.book.cover.url}",
         )
         self.assertEqual(activity["attachment"][0].name, "Test Edition")
 
@@ -202,13 +217,12 @@ class Status(TestCase):
         self.assertEqual(activity["type"], "Note")
         self.assertEqual(
             activity["content"],
-            'test content<p>(comment on <a href="%s">"Test Edition"</a>)</p>'
-            % self.book.remote_id,
+            f'test content<p>(comment on <a href="{self.book.remote_id}">"Test Edition"</a>)</p>',
         )
         self.assertEqual(activity["attachment"][0].type, "Document")
         self.assertEqual(
             activity["attachment"][0].url,
-            "https://%s%s" % (settings.MEDIA_FULL_URL, self.book.cover.url),
+            f"https://{settings.MEDIA_FULL_URL}{self.book.cover.url}",
         )
         self.assertEqual(activity["attachment"][0].name, "Test Edition")
 
@@ -240,13 +254,12 @@ class Status(TestCase):
         self.assertEqual(activity["type"], "Note")
         self.assertEqual(
             activity["content"],
-            'a sickening sense <p>-- <a href="%s">"Test Edition"</a></p>'
-            "test content" % self.book.remote_id,
+            f'a sickening sense <p>-- <a href="{self.book.remote_id}">"Test Edition"</a></p>test content',
         )
         self.assertEqual(activity["attachment"][0].type, "Document")
         self.assertEqual(
             activity["attachment"][0].url,
-            "https://%s%s" % (settings.MEDIA_FULL_URL, self.book.cover.url),
+            "https://{settings.MEDIA_FULL_URL}{self.book.cover.url}",
         )
         self.assertEqual(activity["attachment"][0].name, "Test Edition")
 
@@ -281,13 +294,13 @@ class Status(TestCase):
         self.assertEqual(activity["type"], "Article")
         self.assertEqual(
             activity["name"],
-            'Review of "%s" (3 stars): Review\'s name' % self.book.title,
+            f'Review of "{self.book.title}" (3 stars): Review\'s name',
         )
         self.assertEqual(activity["content"], "test content")
         self.assertEqual(activity["attachment"][0].type, "Document")
         self.assertEqual(
             activity["attachment"][0].url,
-            "https://%s%s" % (settings.MEDIA_FULL_URL, self.book.cover.url),
+            f"https://{settings.MEDIA_FULL_URL}{self.book.cover.url}",
         )
         self.assertEqual(activity["attachment"][0].name, "Test Edition")
 
@@ -303,13 +316,13 @@ class Status(TestCase):
         self.assertEqual(activity["id"], status.remote_id)
         self.assertEqual(activity["type"], "Article")
         self.assertEqual(
-            activity["name"], 'Review of "%s": Review name' % self.book.title
+            activity["name"], f'Review of "{self.book.title}": Review name'
         )
         self.assertEqual(activity["content"], "test content")
         self.assertEqual(activity["attachment"][0].type, "Document")
         self.assertEqual(
             activity["attachment"][0].url,
-            "https://%s%s" % (settings.MEDIA_FULL_URL, self.book.cover.url),
+            f"https://{settings.MEDIA_FULL_URL}{self.book.cover.url}",
         )
         self.assertEqual(activity["attachment"][0].name, "Test Edition")
 
@@ -325,13 +338,12 @@ class Status(TestCase):
         self.assertEqual(activity["type"], "Note")
         self.assertEqual(
             activity["content"],
-            'Rated <em><a href="%s">%s</a></em>: 3 stars'
-            % (self.book.remote_id, self.book.title),
+            f'rated <em><a href="{self.book.remote_id}">{self.book.title}</a></em>: 3 stars',
         )
         self.assertEqual(activity["attachment"][0].type, "Document")
         self.assertEqual(
             activity["attachment"][0].url,
-            "https://%s%s" % (settings.MEDIA_FULL_URL, self.book.cover.url),
+            f"https://{settings.MEDIA_FULL_URL}{self.book.cover.url}",
         )
         self.assertEqual(activity["attachment"][0].name, "Test Edition")
 
@@ -453,3 +465,60 @@ class Status(TestCase):
         responses.add(responses.GET, "http://fish.com/nothing", status=404)
 
         self.assertTrue(models.Status.ignore_activity(activity))
+
+    def test_raise_visible_to_user_public(self, *_):
+        """privacy settings"""
+        status = models.Status.objects.create(
+            content="bleh", user=self.local_user, privacy="public"
+        )
+        self.assertIsNone(status.raise_visible_to_user(self.remote_user))
+        self.assertIsNone(status.raise_visible_to_user(self.local_user))
+        self.assertIsNone(status.raise_visible_to_user(self.anonymous_user))
+
+    def test_raise_visible_to_user_unlisted(self, *_):
+        """privacy settings"""
+        status = models.Status.objects.create(
+            content="bleh", user=self.local_user, privacy="unlisted"
+        )
+        self.assertIsNone(status.raise_visible_to_user(self.remote_user))
+        self.assertIsNone(status.raise_visible_to_user(self.local_user))
+        self.assertIsNone(status.raise_visible_to_user(self.anonymous_user))
+
+    @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
+    def test_raise_visible_to_user_followers(self, *_):
+        """privacy settings"""
+        status = models.Status.objects.create(
+            content="bleh", user=self.local_user, privacy="followers"
+        )
+        status.raise_visible_to_user(self.local_user)
+        with self.assertRaises(Http404):
+            status.raise_visible_to_user(self.remote_user)
+        with self.assertRaises(Http404):
+            status.raise_visible_to_user(self.anonymous_user)
+
+        self.local_user.followers.add(self.remote_user)
+        self.assertIsNone(status.raise_visible_to_user(self.remote_user))
+
+    def test_raise_visible_to_user_followers_mentioned(self, *_):
+        """privacy settings"""
+        status = models.Status.objects.create(
+            content="bleh", user=self.local_user, privacy="followers"
+        )
+        status.mention_users.set([self.remote_user])
+        self.assertIsNone(status.raise_visible_to_user(self.remote_user))
+
+    @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
+    def test_raise_visible_to_user_direct(self, *_):
+        """privacy settings"""
+        status = models.Status.objects.create(
+            content="bleh", user=self.local_user, privacy="direct"
+        )
+        status.raise_visible_to_user(self.local_user)
+        with self.assertRaises(Http404):
+            status.raise_visible_to_user(self.remote_user)
+        with self.assertRaises(Http404):
+            status.raise_visible_to_user(self.anonymous_user)
+
+        # mentioned user
+        status.mention_users.set([self.remote_user])
+        self.assertIsNone(status.raise_visible_to_user(self.remote_user))

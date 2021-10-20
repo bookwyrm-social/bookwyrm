@@ -1,8 +1,6 @@
 """ the particulars for this instance of BookWyrm """
-import base64
 import datetime
 
-from Crypto import Random
 from django.db import models, IntegrityError
 from django.dispatch import receiver
 from django.utils import timezone
@@ -10,7 +8,7 @@ from model_utils import FieldTracker
 
 from bookwyrm.preview_images import generate_site_preview_image_task
 from bookwyrm.settings import DOMAIN, ENABLE_PREVIEW_IMAGES
-from .base_model import BookWyrmModel
+from .base_model import BookWyrmModel, new_access_code
 from .user import User
 
 
@@ -22,10 +20,17 @@ class SiteSettings(models.Model):
         max_length=150, default="Social Reading and Reviewing"
     )
     instance_description = models.TextField(default="This instance has no description.")
+    instance_short_description = models.CharField(max_length=255, blank=True, null=True)
 
     # about page
     registration_closed_text = models.TextField(
-        default="Contact an administrator to get an invite"
+        default="We aren't taking new users at this time. You can find an open "
+        'instance at <a href="https://joinbookwyrm.com/instances">'
+        "joinbookwyrm.com/instances</a>."
+    )
+    invite_request_text = models.TextField(
+        default="If your request is approved, you will receive an email with a "
+        "registration link."
     )
     code_of_conduct = models.TextField(default="Add a code of conduct here.")
     privacy_policy = models.TextField(default="Add a privacy policy here.")
@@ -33,6 +38,7 @@ class SiteSettings(models.Model):
     # registration
     allow_registration = models.BooleanField(default=True)
     allow_invite_requests = models.BooleanField(default=True)
+    require_confirm_email = models.BooleanField(default=True)
 
     # images
     logo = models.ImageField(upload_to="logos/", null=True, blank=True)
@@ -61,11 +67,6 @@ class SiteSettings(models.Model):
             return default_settings
 
 
-def new_access_code():
-    """the identifier for a user invite"""
-    return base64.b32encode(Random.get_random_bytes(5)).decode("ascii")
-
-
 class SiteInvite(models.Model):
     """gives someone access to create an account on the instance"""
 
@@ -86,7 +87,7 @@ class SiteInvite(models.Model):
     @property
     def link(self):
         """formats the invite link"""
-        return "https://{}/invite/{}".format(DOMAIN, self.code)
+        return f"https://{DOMAIN}/invite/{self.code}"
 
 
 class InviteRequest(BookWyrmModel):
@@ -126,7 +127,7 @@ class PasswordReset(models.Model):
     @property
     def link(self):
         """formats the invite link"""
-        return "https://{}/password-reset/{}".format(DOMAIN, self.code)
+        return f"https://{DOMAIN}/password-reset/{self.code}"
 
 
 # pylint: disable=unused-argument

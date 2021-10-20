@@ -10,7 +10,14 @@
         </a>
     </div>
     <div class="media-content">
-        <p>{% if user.name %}{{ user.name }}{% else %}{{ user.localname }}{% endif %}</p>
+        <p>
+            {% if user.name %}{{ user.name }}{% else %}{{ user.localname }}{% endif %}
+            {% if user.manually_approves_followers %}
+            <span class="icon icon-lock is-size-7" title="{% trans 'Locked account' %}">
+                <span class="is-sr-only">{% trans "Locked account" %}</span>
+            </span>
+            {% endif %}
+        </p>
         <p><a href="{{ user.remote_id }}">{{ user.username }}</a></p>
         <p>{% blocktrans with date=user.created_date|naturaltime %}Joined {{ date }}{% endblocktrans %}</p>
         <p>
@@ -23,7 +30,13 @@
 
             {% mutuals_count user as mutuals %}
             <a href="{% url 'user-followers' user|username %}">
+            {% if mutuals %}
                 {% blocktrans with mutuals_display=mutuals|intcomma count counter=mutuals %}{{ mutuals_display }} follower you follow{% plural %}{{ mutuals_display }} followers you follow{% endblocktrans %}
+            {% elif request.user in user.following.all %}
+            {% trans "Follows you" %}
+            {% else %}
+            {% trans "No followers you follow" %}
+            {% endif %}
             </a>
 
             {% endif %}

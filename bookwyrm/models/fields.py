@@ -58,7 +58,7 @@ class ActivitypubFieldMixin:
         activitypub_field=None,
         activitypub_wrapper=None,
         deduplication_field=False,
-        **kwargs
+        **kwargs,
     ):
         self.deduplication_field = deduplication_field
         if activitypub_wrapper:
@@ -68,8 +68,8 @@ class ActivitypubFieldMixin:
             self.activitypub_field = activitypub_field
         super().__init__(*args, **kwargs)
 
-    def set_field_from_activity(self, instance, data):
-        """helper function for assinging a value to the field"""
+    def set_field_from_activity(self, instance, data, overwrite=True):
+        """helper function for assinging a value to the field. Returns if changed"""
         try:
             value = getattr(data, self.get_activitypub_field())
         except AttributeError:
@@ -79,8 +79,21 @@ class ActivitypubFieldMixin:
             value = getattr(data, "actor")
         formatted = self.field_from_activity(value)
         if formatted is None or formatted is MISSING or formatted == {}:
-            return
+            return False
+
+        current_value = (
+            getattr(instance, self.name) if hasattr(instance, self.name) else None
+        )
+        # if we're not in overwrite mode, only continue updating the field if its unset
+        if current_value and not overwrite:
+            return False
+
+        # the field is unchanged
+        if current_value == formatted:
+            return False
+
         setattr(instance, self.name, formatted)
+        return True
 
     def set_activity_from_field(self, activity, instance):
         """update the json object"""
@@ -206,17 +219,34 @@ class PrivacyField(ActivitypubFieldMixin, models.CharField):
         )
 
     # pylint: disable=invalid-name
-    def set_field_from_activity(self, instance, data):
+    def set_field_from_activity(self, instance, data, overwrite=True):
+        if not overwrite:
+            return False
+
+        original = getattr(instance, self.name)
         to = data.to
         cc = data.cc
+
+        # we need to figure out who this is to get their followers link
+        for field in ["attributedTo", "owner", "actor"]:
+            if hasattr(data, field):
+                user_field = field
+                break
+        if not user_field:
+            raise ValidationError("No user field found for privacy", data)
+        user = activitypub.resolve_remote_id(getattr(data, user_field), model="User")
+
         if to == [self.public]:
             setattr(instance, self.name, "public")
+        elif to == [user.followers_url]:
+            setattr(instance, self.name, "followers")
         elif cc == []:
             setattr(instance, self.name, "direct")
         elif self.public in cc:
             setattr(instance, self.name, "unlisted")
         else:
             setattr(instance, self.name, "followers")
+        return original == getattr(instance, self.name)
 
     def set_activity_from_field(self, activity, instance):
         # explicitly to anyone mentioned (statuses only)
@@ -225,9 +255,7 @@ class PrivacyField(ActivitypubFieldMixin, models.CharField):
             mentions = [u.remote_id for u in instance.mention_users.all()]
         # this is a link to the followers list
         # pylint: disable=protected-access
-        followers = instance.user.__class__._meta.get_field(
-            "followers"
-        ).field_to_activity(instance.user.followers)
+        followers = instance.user.followers_url
         if instance.privacy == "public":
             activity["to"] = [self.public]
             activity["cc"] = [followers] + mentions
@@ -267,18 +295,22 @@ class ManyToManyField(ActivitypubFieldMixin, models.ManyToManyField):
         self.link_only = link_only
         super().__init__(*args, **kwargs)
 
-    def set_field_from_activity(self, instance, data):
+    def set_field_from_activity(self, instance, data, overwrite=True):
         """helper function for assinging a value to the field"""
+        if not overwrite and getattr(instance, self.name).exists():
+            return False
+
         value = getattr(data, self.get_activitypub_field())
         formatted = self.field_from_activity(value)
         if formatted is None or formatted is MISSING:
-            return
+            return False
         getattr(instance, self.name).set(formatted)
         instance.save(broadcast=False)
+        return True
 
     def field_to_activity(self, value):
         if self.link_only:
-            return "%s/%s" % (value.instance.remote_id, self.name)
+            return f"{value.instance.remote_id}/{self.name}"
         return [i.remote_id for i in value.all()]
 
     def field_from_activity(self, value):
@@ -368,13 +400,18 @@ class ImageField(ActivitypubFieldMixin, models.ImageField):
         super().__init__(*args, **kwargs)
 
     # pylint: disable=arguments-differ
-    def set_field_from_activity(self, instance, data, save=True):
+    def set_field_from_activity(self, instance, data, save=True, overwrite=True):
         """helper function for assinging a value to the field"""
         value = getattr(data, self.get_activitypub_field())
         formatted = self.field_from_activity(value)
         if formatted is None or formatted is MISSING:
-            return
+            return False
+
+        if not overwrite and hasattr(instance, self.name):
+            return False
+
         getattr(instance, self.name).save(*formatted, save=save)
+        return True
 
     def set_activity_from_field(self, activity, instance):
         value = getattr(instance, self.name)
@@ -412,7 +449,7 @@ class ImageField(ActivitypubFieldMixin, models.ImageField):
 
         image_content = ContentFile(response.content)
         extension = imghdr.what(None, image_content.read()) or ""
-        image_name = "{:s}.{:s}".format(str(uuid4()), extension)
+        image_name = f"{uuid4()}.{extension}"
         return [image_name, image_content]
 
     def formfield(self, **kwargs):

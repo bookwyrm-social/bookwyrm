@@ -11,7 +11,7 @@ def email_data():
     """fields every email needs"""
     site = models.SiteSettings.objects.get()
     if site.logo_small:
-        logo_path = "/images/{}".format(site.logo_small.url)
+        logo_path = f"/images/{site.logo_small.url}"
     else:
         logo_path = "/static/images/logo-small.png"
 
@@ -21,6 +21,14 @@ def email_data():
         "domain": DOMAIN,
         "user": None,
     }
+
+
+def email_confirmation_email(user):
+    """newly registered users confirm email address"""
+    data = email_data()
+    data["confirmation_code"] = user.confirmation_code
+    data["confirmation_link"] = user.confirmation_link
+    send_email.delay(user.email, *format_email("confirm", data))
 
 
 def invite_email(invite_request):
@@ -40,23 +48,17 @@ def password_reset_email(reset_code):
 
 def format_email(email_name, data):
     """render the email templates"""
-    subject = (
-        get_template("email/{}/subject.html".format(email_name)).render(data).strip()
-    )
+    subject = get_template(f"email/{email_name}/subject.html").render(data).strip()
     html_content = (
-        get_template("email/{}/html_content.html".format(email_name))
-        .render(data)
-        .strip()
+        get_template(f"email/{email_name}/html_content.html").render(data).strip()
     )
     text_content = (
-        get_template("email/{}/text_content.html".format(email_name))
-        .render(data)
-        .strip()
+        get_template(f"email/{email_name}/text_content.html").render(data).strip()
     )
     return (subject, html_content, text_content)
 
 
-@app.task
+@app.task(queue="high_priority")
 def send_email(recipient, subject, html_content, text_content):
     """use a task to send the email"""
     email = EmailMultiAlternatives(

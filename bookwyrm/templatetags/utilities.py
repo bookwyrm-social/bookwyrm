@@ -3,6 +3,7 @@ import os
 from uuid import uuid4
 from django import template
 from django.utils.translation import gettext_lazy as _
+from django.templatetags.static import static
 
 
 register = template.Library()
@@ -11,7 +12,7 @@ register = template.Library()
 @register.filter(name="uuid")
 def get_uuid(identifier):
     """for avoiding clashing ids when there are many forms"""
-    return "%s%s" % (identifier, uuid4())
+    return f"{identifier}{uuid4()}"
 
 
 @register.filter(name="username")
@@ -35,8 +36,10 @@ def get_title(book, too_short=5):
 
 
 @register.simple_tag(takes_context=False)
-def comparison_bool(str1, str2):
-    """idk why I need to write a tag for this, it reutrns a bool"""
+def comparison_bool(str1, str2, reverse=False):
+    """idk why I need to write a tag for this, it returns a bool"""
+    if reverse:
+        return str1 != str2
     return str1 == str2
 
 
@@ -49,4 +52,17 @@ def truncatepath(value, arg):
         length = int(arg)
     except ValueError:  # invalid literal for int()
         return path_list[-1]  # Fail silently.
-    return "%s/…%s" % (path_list[0], path_list[-1][-length:])
+    return f"{path_list[0]}/…{path_list[-1][-length:]}"
+
+
+@register.simple_tag(takes_context=False)
+def get_book_cover_thumbnail(book, size="medium", ext="jpg"):
+    """Returns a book thumbnail at the specified size and extension,
+    with fallback if needed"""
+    if size == "":
+        size = "medium"
+    try:
+        cover_thumbnail = getattr(book, f"cover_bw_book_{size}_{ext}")
+        return cover_thumbnail.url
+    except OSError:
+        return static("images/no_cover.jpg")

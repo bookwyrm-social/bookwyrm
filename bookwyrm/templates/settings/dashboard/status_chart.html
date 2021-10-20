@@ -1,0 +1,21 @@
+{% load i18n %}
+<script>
+
+var statusStats = new Chart(
+    document.getElementById('status_stats'),
+    {
+        type: 'bar',
+        data: {
+        labels: [{% for label in status_stats.labels %}"{{ label }}",{% endfor %}],
+        datasets: [{
+                label: '{% trans "Statuses posted" %}',
+                backgroundColor: 'hsl(141, 71%, 48%)',
+                borderColor: 'hsl(141, 71%, 48%)',
+                data: {{ status_stats.total }},
+            }]
+        },
+        options: {}
+    },
+);
+</script>
+

@@ -1,5 +1,6 @@
 """ testing models """
 from unittest.mock import patch
+from django.http import Http404
 from django.test import TestCase
 
 from bookwyrm import models
@@ -13,9 +14,12 @@ class BaseModel(TestCase):
 
     def setUp(self):
         """shared data"""
-        self.local_user = models.User.objects.create_user(
-            "mouse", "mouse@mouse.com", "mouseword", local=True, localname="mouse"
-        )
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
+            "bookwyrm.activitystreams.populate_stream_task.delay"
+        ):
+            self.local_user = models.User.objects.create_user(
+                "mouse", "mouse@mouse.com", "mouseword", local=True, localname="mouse"
+            )
         with patch("bookwyrm.models.user.set_remote_server.delay"):
             self.remote_user = models.User.objects.create_user(
                 "rat",
@@ -36,14 +40,14 @@ class BaseModel(TestCase):
         """these should be generated"""
         self.test_model.id = 1
         expected = self.test_model.get_remote_id()
-        self.assertEqual(expected, "https://%s/bookwyrmtestmodel/1" % DOMAIN)
+        self.assertEqual(expected, f"https://{DOMAIN}/bookwyrmtestmodel/1")
 
     def test_remote_id_with_user(self):
         """format of remote id when there's a user object"""
         self.test_model.user = self.local_user
         self.test_model.id = 1
         expected = self.test_model.get_remote_id()
-        self.assertEqual(expected, "https://%s/user/mouse/bookwyrmtestmodel/1" % DOMAIN)
+        self.assertEqual(expected, f"https://{DOMAIN}/user/mouse/bookwyrmtestmodel/1")
 
     def test_set_remote_id(self):
         """this function sets remote ids after creation"""
@@ -52,74 +56,77 @@ class BaseModel(TestCase):
         instance = models.Work.objects.create(title="work title")
         instance.remote_id = None
         base_model.set_remote_id(None, instance, True)
-        self.assertEqual(
-            instance.remote_id, "https://%s/book/%d" % (DOMAIN, instance.id)
-        )
+        self.assertEqual(instance.remote_id, f"https://{DOMAIN}/book/{instance.id}")
 
         # shouldn't set remote_id if it's not created
         instance.remote_id = None
         base_model.set_remote_id(None, instance, False)
         self.assertIsNone(instance.remote_id)
 
-    @patch("bookwyrm.activitystreams.ActivityStream.add_status")
+    @patch("bookwyrm.activitystreams.add_status_task.delay")
     def test_object_visible_to_user(self, _):
         """does a user have permission to view an object"""
         obj = models.Status.objects.create(
             content="hi", user=self.remote_user, privacy="public"
         )
-        self.assertTrue(obj.visible_to_user(self.local_user))
+        self.assertIsNone(obj.raise_visible_to_user(self.local_user))
 
         obj = models.Shelf.objects.create(
             name="test", user=self.remote_user, privacy="unlisted"
         )
-        self.assertTrue(obj.visible_to_user(self.local_user))
+        self.assertIsNone(obj.raise_visible_to_user(self.local_user))
 
         obj = models.Status.objects.create(
             content="hi", user=self.remote_user, privacy="followers"
         )
-        self.assertFalse(obj.visible_to_user(self.local_user))
+        with self.assertRaises(Http404):
+            obj.raise_visible_to_user(self.local_user)
 
         obj = models.Status.objects.create(
             content="hi", user=self.remote_user, privacy="direct"
         )
-        self.assertFalse(obj.visible_to_user(self.local_user))
+        with self.assertRaises(Http404):
+            obj.raise_visible_to_user(self.local_user)
 
         obj = models.Status.objects.create(
             content="hi", user=self.remote_user, privacy="direct"
         )
         obj.mention_users.add(self.local_user)
-        self.assertTrue(obj.visible_to_user(self.local_user))
+        self.assertIsNone(obj.raise_visible_to_user(self.local_user))
 
-    @patch("bookwyrm.activitystreams.ActivityStream.add_status")
+    @patch("bookwyrm.activitystreams.add_status_task.delay")
     def test_object_visible_to_user_follower(self, _):
         """what you can see if you follow a user"""
         self.remote_user.followers.add(self.local_user)
         obj = models.Status.objects.create(
             content="hi", user=self.remote_user, privacy="followers"
         )
-        self.assertTrue(obj.visible_to_user(self.local_user))
+        self.assertIsNone(obj.raise_visible_to_user(self.local_user))
 
         obj = models.Status.objects.create(
             content="hi", user=self.remote_user, privacy="direct"
         )
-        self.assertFalse(obj.visible_to_user(self.local_user))
+        with self.assertRaises(Http404):
+            obj.raise_visible_to_user(self.local_user)
 
         obj = models.Status.objects.create(
             content="hi", user=self.remote_user, privacy="direct"
         )
         obj.mention_users.add(self.local_user)
-        self.assertTrue(obj.visible_to_user(self.local_user))
+        self.assertIsNone(obj.raise_visible_to_user(self.local_user))
 
-    @patch("bookwyrm.activitystreams.ActivityStream.add_status")
+    @patch("bookwyrm.activitystreams.add_status_task.delay")
     def test_object_visible_to_user_blocked(self, _):
         """you can't see it if they block you"""
         self.remote_user.blocks.add(self.local_user)
         obj = models.Status.objects.create(
             content="hi", user=self.remote_user, privacy="public"
         )
-        self.assertFalse(obj.visible_to_user(self.local_user))
+        with self.assertRaises(Http404):
+            obj.raise_visible_to_user(self.local_user)
 
         obj = models.Shelf.objects.create(
             name="test", user=self.remote_user, privacy="unlisted"
         )
-        self.assertFalse(obj.visible_to_user(self.local_user))
+        with self.assertRaises(Http404):
+            obj.raise_visible_to_user(self.local_user)

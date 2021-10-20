@@ -1,9 +1,11 @@
 """ isbn search view """
+from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.template.response import TemplateResponse
 from django.views import View
 
-from bookwyrm.connectors import connector_manager
+from bookwyrm import book_search
+from bookwyrm.settings import PAGE_LENGTH
 from .helpers import is_api_request
 
 # pylint: disable= no-self-use
@@ -12,13 +14,19 @@ class Isbn(View):
 
     def get(self, request, isbn):
         """info about a book"""
-        book_results = connector_manager.isbn_local_search(isbn)
+        book_results = book_search.isbn_search(isbn)
 
         if is_api_request(request):
-            return JsonResponse([r.json() for r in book_results], safe=False)
+            return JsonResponse(
+                [book_search.format_search_result(r) for r in book_results], safe=False
+            )
 
+        paginated = Paginator(book_results, PAGE_LENGTH).get_page(
+            request.GET.get("page")
+        )
         data = {
-            "results": book_results,
+            "results": [{"results": paginated}],
             "query": isbn,
+            "type": "book",
         }
-        return TemplateResponse(request, "isbn_search_results.html", data)
+        return TemplateResponse(request, "search/book.html", data)
