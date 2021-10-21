@@ -34,7 +34,7 @@ class Author(View):
             )
             .annotate(default_id=Subquery(default_editions.values("id")[:1]))
             .filter(default_id=F("id"))
-        )
+        ).prefetch_related("authors")
 
         paginated = Paginator(books, PAGE_LENGTH)
         page = paginated.get_page(request.GET.get("page"))
