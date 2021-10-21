@@ -61,7 +61,6 @@ class AuthorViews(TestCase):
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
-        self.assertEqual(result.status_code, 200)
 
     def test_author_page_logged_out(self):
         """there are so many views, this just makes sure it LOADS"""
@@ -74,7 +73,6 @@ class AuthorViews(TestCase):
             result = view(request, author.id)
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
-        self.assertEqual(result.status_code, 200)
         self.assertEqual(result.status_code, 200)
 
     def test_author_page_api_response(self):
@@ -100,7 +98,6 @@ class AuthorViews(TestCase):
         result = view(request, author.id)
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
-        self.assertEqual(result.status_code, 200)
         self.assertEqual(result.status_code, 200)
 
     def test_edit_author(self):
