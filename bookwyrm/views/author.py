@@ -29,9 +29,8 @@ class Author(View):
         ).order_by("-edition_rank")
 
         books = (
-            models.Edition.viewer_aware_objects(request.user).filter(
-                Q(authors=author) | Q(parent_work__authors=author)
-            )
+            models.Edition.viewer_aware_objects(request.user)
+            .filter(Q(authors=author) | Q(parent_work__authors=author))
             .annotate(default_id=Subquery(default_editions.values("id")[:1]))
             .filter(default_id=F("id"))
         ).prefetch_related("authors")
