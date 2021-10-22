@@ -38,6 +38,11 @@ from .landing.login import Login, Logout
 from .landing.register import Register, ConfirmEmail, ConfirmEmailCode, resend_link
 from .landing.password import PasswordResetRequest, PasswordReset
 
+# shelves
+from .shelf.shelf import Shelf
+from .shelf.shelf_actions import create_shelf, delete_shelf
+from .shelf.shelf_actions import shelve, unshelve
+
 # misc views
 from .author import Author, EditAuthor
 from .directory import Directory
@@ -69,9 +74,6 @@ from .reading import create_readthrough, delete_readthrough, delete_progressupda
 from .reading import ReadingStatus
 from .rss_feed import RssFeed
 from .search import Search
-from .shelf import Shelf
-from .shelf import create_shelf, delete_shelf
-from .shelf import shelve, unshelve
 from .status import CreateStatus, EditStatus, DeleteStatus, update_progress
 from .status import edit_readthrough
 from .updates import get_notification_count, get_unread_status_count

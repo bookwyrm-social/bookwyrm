@@ -19,45 +19,58 @@
     </h1>
 </header>
 
-<div class="block columns">
-    <div class="column">
+<nav class="block columns is-mobile scroll-x">
+    <div class="column pr-0">
         <div class="tabs">
             <ul>
-            <li class="{% if shelf.identifier == 'all' %}is-active{% endif %}">
-                <a href="{% url 'user-shelves' user|username %}"{% if shelf.identifier == 'all' %} aria-current="page"{% endif %}>
-                    {% trans "All books" %}
-                </a>
-            </li>
-            {% for shelf_tab in shelves %}
-            <li class="{% if shelf_tab.identifier == shelf.identifier %}is-active{% endif %}">
-                <a
-                    href="{{ shelf_tab.local_path }}"
-                    {% if shelf_tab.identifier == shelf.identifier %} aria-current="page"{% endif %}
-                >
-                    {% if shelf_tab.identifier == 'to-read' %}
-                        {% trans "To Read" %}
-                    {% elif shelf_tab.identifier == 'reading' %}
-                        {% trans "Currently Reading" %}
-                    {% elif shelf_tab.identifier == 'read' %}
-                        {% trans "Read" %}
-                    {% else %}
-                        {{ shelf_tab.name }}
-                    {% endif %}
-                </a>
-            </li>
-            {% endfor %}
+                <li class="{% if shelf.identifier == 'all' %}is-active{% endif %}">
+                    <a href="{% url 'user-shelves' user|username %}"{% if shelf.identifier == 'all' %} aria-current="page"{% endif %}>
+                        {% trans "All books" %}
+                    </a>
+                </li>
+                {% for shelf_tab in shelves %}
+                <li class="{% if shelf_tab.identifier == shelf.identifier %}is-active{% endif %}">
+                    <a
+                        href="{{ shelf_tab.local_path }}"
+                        {% if shelf_tab.identifier == shelf.identifier %} aria-current="page"{% endif %}
+                    >
+                        {% if shelf_tab.identifier == 'to-read' %}
+                            {% trans "To Read" %}
+                        {% elif shelf_tab.identifier == 'reading' %}
+                            {% trans "Currently Reading" %}
+                        {% elif shelf_tab.identifier == 'read' %}
+                            {% trans "Read" %}
+                        {% else %}
+                            {{ shelf_tab.name }}
+                        {% endif %}
+                    </a>
+                </li>
+                {% endfor %}
+
             </ul>
         </div>
     </div>
 
     {% if is_self %}
+    <div class="column is-narrow pl-0">
+        <div class="tabs">
+            <ul>
+                <li>
+                    <a href="{% url 'import' %}">
+                        <span class="icon icon-list" aria-hidden="true"></span>
+                        <span>{% trans "Import Books" %}</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
     <div class="column is-narrow">
         {% trans "Create shelf" as button_text %}
         {% include 'snippets/toggle/open_button.html' with text=button_text icon_with_text="plus" controls_text="create_shelf_form" focus="create_shelf_form_header" %}
-        <a class="button" href="{% url 'import' %}">{% trans "Import Books" %}</a>
     </div>
     {% endif %}
-</div>
+</nav>
 
 <div class="block">
     {% include 'shelf/create_shelf_form.html' with controls_text='create_shelf_form' %}
