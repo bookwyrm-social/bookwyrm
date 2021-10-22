@@ -27,4 +27,10 @@
     {% include 'notifications/items/leave.html' %}
 {% elif notification.notification_type == 'REMOVE' %}
     {% include 'notifications/items/remove.html' %}
+{% elif notification.notification_type == 'GROUP_PRIVACY' %}
+    {% include 'notifications/items/update.html' %}
+{% elif notification.notification_type == 'GROUP_NAME' %}
+    {% include 'notifications/items/update.html' %}
+{% elif notification.notification_type == 'GROUP_DESCRIPTION' %}
+    {% include 'notifications/items/update.html' %}
 {% endif %}
