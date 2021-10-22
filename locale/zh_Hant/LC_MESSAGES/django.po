@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-10-15 22:03+0000\n"
-"PO-Revision-Date: 2021-10-08 00:03\n"
+"PO-Revision-Date: 2021-10-16 14:36\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Chinese Traditional\n"
 "Language: zh\n"
@@ -751,10 +751,8 @@ msgid "Help"
 msgstr ""
 
 #: bookwyrm/templates/compose.html:5 bookwyrm/templates/compose.html:8
-#, fuzzy
-#| msgid "Like status"
 msgid "Edit status"
-msgstr "喜歡狀態"
+msgstr ""
 
 #: bookwyrm/templates/confirm_email/confirm_email.html:4
 msgid "Confirm email"
@@ -887,28 +885,24 @@ msgid "All known users"
 msgstr "所有已知使用者"
 
 #: bookwyrm/templates/discover/card-header.html:9
-#, fuzzy, python-format
-#| msgid "replied to <a href=\"%(user_path)s\">%(username)s</a>'s <a href=\"%(status_path)s\">status</a>"
+#, python-format
 msgid "<a href=\"%(user_path)s\">%(username)s</a> rated <a href=\"%(book_path)s\">%(book_title)s</a>"
-msgstr "回覆了 <a href=\"%(user_path)s\">%(username)s</a> 的 <a href=\"%(status_path)s\">狀態</a>"
+msgstr ""
 
 #: bookwyrm/templates/discover/card-header.html:13
-#, fuzzy, python-format
-#| msgid "replied to <a href=\"%(user_path)s\">%(username)s</a>'s <a href=\"%(status_path)s\">status</a>"
+#, python-format
 msgid "<a href=\"%(user_path)s\">%(username)s</a> reviewed <a href=\"%(book_path)s\">%(book_title)s</a>"
-msgstr "回覆了 <a href=\"%(user_path)s\">%(username)s</a> 的 <a href=\"%(status_path)s\">狀態</a>"
+msgstr ""
 
 #: bookwyrm/templates/discover/card-header.html:17
-#, fuzzy, python-format
-#| msgid "replied to <a href=\"%(user_path)s\">%(username)s</a>'s <a href=\"%(status_path)s\">status</a>"
+#, python-format
 msgid "<a href=\"%(user_path)s\">%(username)s</a> commented on <a href=\"%(book_path)s\">%(book_title)s</a>"
-msgstr "回覆了 <a href=\"%(user_path)s\">%(username)s</a> 的 <a href=\"%(status_path)s\">狀態</a>"
+msgstr ""
 
 #: bookwyrm/templates/discover/card-header.html:21
-#, fuzzy, python-format
-#| msgid "replied to <a href=\"%(user_path)s\">%(username)s</a>'s <a href=\"%(status_path)s\">status</a>"
+#, python-format
 msgid "<a href=\"%(user_path)s\">%(username)s</a> quoted <a href=\"%(book_path)s\">%(book_title)s</a>"
-msgstr "回覆了 <a href=\"%(user_path)s\">%(username)s</a> 的 <a href=\"%(status_path)s\">狀態</a>"
+msgstr ""
 
 #: bookwyrm/templates/discover/discover.html:4
 #: bookwyrm/templates/discover/discover.html:10
@@ -975,10 +969,9 @@ msgid "Join Now"
 msgstr "立即加入"
 
 #: bookwyrm/templates/email/invite/html_content.html:15
-#, fuzzy, python-format
-#| msgid "Learn more <a href=\"https://%(domain)s%(about_path)s\">about this instance</a>."
+#, python-format
 msgid "Learn more <a href=\"https://%(domain)s%(about_path)s\">about %(site_name)s</a>."
-msgstr "瞭解更多 <a href=\"https://%(domain)s%(about_path)s\">有關本實例的資訊</a>。"
+msgstr ""
 
 #: bookwyrm/templates/email/invite/text_content.html:4
 #, python-format
@@ -986,10 +979,9 @@ msgid "You're invited to join %(site_name)s! Click the link below to create an a
 msgstr "你受邀請加入 %(site_name)s！點選下面的連結來建立帳號。"
 
 #: bookwyrm/templates/email/invite/text_content.html:8
-#, fuzzy, python-format
-#| msgid "Learn more about this instance:"
+#, python-format
 msgid "Learn more about %(site_name)s:"
-msgstr "瞭解更多有關本實例的資訊:"
+msgstr ""
 
 #: bookwyrm/templates/email/password_reset/html_content.html:6
 #: bookwyrm/templates/email/password_reset/text_content.html:4
@@ -1733,28 +1725,24 @@ msgid "boosted your <a href=\"%(related_path)s\">status</a>"
 msgstr "轉發了你的 <a href=\"%(related_path)s\">狀態</a>"
 
 #: bookwyrm/templates/notifications/items/fav.html:19
-#, fuzzy, python-format
-#| msgid "favorited your <a href=\"%(related_path)s\">review of <em>%(book_title)s</em></a>"
+#, python-format
 msgid "liked your <a href=\"%(related_path)s\">review of <em>%(book_title)s</em></a>"
-msgstr "喜歡了你 <a href=\"%(related_path)s\">對 <em>%(book_title)s</em> 的書評</a>"
+msgstr ""
 
 #: bookwyrm/templates/notifications/items/fav.html:25
-#, fuzzy, python-format
-#| msgid "boosted your <a href=\"%(related_path)s\">comment on<em>%(book_title)s</em></a>"
+#, python-format
 msgid "liked your <a href=\"%(related_path)s\">comment on<em>%(book_title)s</em></a>"
-msgstr "轉發了你的 <a href=\"%(related_path)s\">對 <em>%(book_title)s</em> 的評論</a>"
+msgstr ""
 
 #: bookwyrm/templates/notifications/items/fav.html:31
-#, fuzzy, python-format
-#| msgid "favorited your <a href=\"%(related_path)s\">quote from <em>%(book_title)s</em></a>"
+#, python-format
 msgid "liked your <a href=\"%(related_path)s\">quote from <em>%(book_title)s</em></a>"
-msgstr "喜歡了你 <a href=\"%(related_path)s\">來自 <em>%(book_title)s</em> 的引用</a>"
+msgstr ""
 
 #: bookwyrm/templates/notifications/items/fav.html:37
-#, fuzzy, python-format
-#| msgid "favorited your <a href=\"%(related_path)s\">status</a>"
+#, python-format
 msgid "liked your <a href=\"%(related_path)s\">status</a>"
-msgstr "喜歡了你的 <a href=\"%(related_path)s\">狀態</a>"
+msgstr ""
 
 #: bookwyrm/templates/notifications/items/follow.html:15
 msgid "followed you"
@@ -3326,10 +3314,9 @@ msgid "Hide status"
 msgstr ""
 
 #: bookwyrm/templates/snippets/status/header.html:45
-#, fuzzy, python-format
-#| msgid "Joined %(date)s"
+#, python-format
 msgid "edited %(date)s"
-msgstr "在 %(date)s 加入"
+msgstr ""
 
 #: bookwyrm/templates/snippets/status/headers/comment.html:2
 #, python-format
@@ -3579,26 +3566,3 @@ msgstr "密碼重置連結已傳送給 {email}"
 msgid "Status updates from {obj.display_name}"
 msgstr ""
 
-#~ msgid "Compose status"
-#~ msgstr "撰寫狀態"
-
-#~ msgid "%(format)s"
-#~ msgstr "%(format)s"
-
-#~ msgid "rated"
-#~ msgstr "評價了"
-
-#~ msgid "reviewed"
-#~ msgstr "寫了書評給"
-
-#~ msgid "commented on"
-#~ msgstr "評論了"
-
-#~ msgid "quoted"
-#~ msgstr "引用了"
-
-#~ msgid "About this instance"
-#~ msgstr "關於本實例"
-
-#~ msgid "Delete & re-draft"
-#~ msgstr "刪除並重新起草"
