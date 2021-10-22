@@ -4,7 +4,6 @@
 <div class="columns">
     <div class="column is-two-thirds">
         <input type="hidden" name="user" value="{{ request.user.id }}" />
-        <input type="hidden" name="privacy" value="public" />
         <div class="field">
             <label class="label" for="id_name">{% trans "Group Name:" %}</label>
             {{ group_form.name }}
