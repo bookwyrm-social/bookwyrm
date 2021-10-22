@@ -75,15 +75,6 @@ class Group(TestCase):
         )
         models.GroupMember.objects.create(group=self.public_group, user=self.capybara)
 
-    def test_group_members_can_see_followers_only_groups(self, _):
-        """follower-only group should not be excluded from group listings for group members viewing"""
-
-        rat_groups = models.Group.privacy_filter(self.rat).all()
-        badger_groups = models.Group.privacy_filter(self.badger).all()
-
-        self.assertFalse(self.followers_only_group in rat_groups)
-        self.assertTrue(self.followers_only_group in badger_groups)
-
     def test_group_members_can_see_private_groups(self, _):
         """direct privacy group should not be excluded from group listings for group members viewing"""
 

@@ -1,0 +1,21 @@
+{% load i18n %}
+{% load utilities %}
+<div class="select {{ class }}">
+    {% firstof privacy_uuid 0|uuid as uuid %}
+    {% if not no_label %}
+    <label class="is-sr-only" for="privacy_{{ uuid }}">{% trans "Post privacy" %}</label>
+    {% endif %}
+    {% firstof current user.default_post_privacy "public" as privacy %}
+    <select name="privacy" id="privacy_{{ uuid }}">
+        <option value="public" {% if privacy == 'public' %}selected{% endif %}>
+            {% trans "Public" %}
+        </option>
+        <option value="unlisted" {% if privacy == 'unlisted' %}selected{% endif %}>
+            {% trans "Unlisted" %}
+        </option>
+        <option value="direct" {% if privacy == 'direct' %}selected{% endif %}>
+            {% trans "Private" %}
+        </option>
+    </select>
+</div>
+

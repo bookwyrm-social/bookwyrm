@@ -47,6 +47,31 @@ class Group(View):
         if not form.is_valid():
             return redirect("group", user_group.id)
         user_group = form.save()
+
+        # let the other members know something about the group changed
+        memberships = models.GroupMember.objects.filter(group=user_group)
+        model = apps.get_model("bookwyrm.Notification", require_ready=True)
+        for field in form.changed_data:
+            notification_type = (
+                "GROUP_PRIVACY"
+                if field == "privacy"
+                else "GROUP_NAME"
+                if field == "name"
+                else "GROUP_DESCRIPTION"
+                if field == "description"
+                else None
+            )
+            if notification_type:
+                for membership in memberships:
+                    member = membership.user
+                    if member != request.user:
+                        model.objects.create(
+                            user=member,
+                            related_user=request.user,
+                            related_group=user_group,
+                            notification_type=notification_type,
+                        )
+
         return redirect("group", user_group.id)
 
 

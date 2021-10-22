@@ -23,7 +23,7 @@ class Group(BookWyrmModel):
     @classmethod
     def followers_filter(cls, queryset, viewer):
         """Override filter for "followers" privacy level to allow non-following
-        group members to see the existence of groups and group lists"""
+        group members to see the existence of group-curated lists"""
 
         return queryset.exclude(
             ~Q(  # user is not a group member
