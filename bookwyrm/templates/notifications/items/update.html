@@ -20,7 +20,7 @@
         {% blocktrans with group_name=notification.related_group.name group_path=notification.related_group.local_path %}
         has changed the name of <a href="{{ group_path }}">{{ group_name }}</a>
         {% endblocktrans %}
-      {% else %}
+    {% else %}
         {% blocktrans with group_name=notification.related_group.name group_path=notification.related_group.local_path %}
         has changed the description of <a href="{{ group_path }}">{{ group_name }}</a>
         {% endblocktrans %}
