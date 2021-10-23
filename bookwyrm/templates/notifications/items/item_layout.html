@@ -1,4 +1,3 @@
-{% load humanize %}
 {% load bookwyrm_tags %}
 {% related_status notification as related_status %}
 <div class="notification is-clickable {% if notification.id in unread %} is-primary{% endif %}" data-href="{% block primary_link %}{% endblock %}">
@@ -10,10 +9,8 @@
             <div class="block">
                 <p>
                     {% if notification.related_user %}
-                        <a href="{{ notification.related_user.local_path }}">
-                            {% include 'snippets/avatar.html' with user=notification.related_user %}
-                            {{ notification.related_user.display_name }}
-                        </a>
+                        <a href="{{ notification.related_user.local_path }}">{% include 'snippets/avatar.html' with user=notification.related_user %}
+                            {{ notification.related_user.display_name }}</a>
                     {% endif %}
                     {% block description %}{% endblock %}
                 </p>

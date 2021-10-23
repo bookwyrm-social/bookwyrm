@@ -13,7 +13,7 @@
 
 {% block description %}
 
-{% blocktrans with group_name=notification.related_group.name group_path=notification.related_group.local_path %}
+{% blocktrans trimmed with group_name=notification.related_group.name group_path=notification.related_group.local_path %}
 has joined your group "<a href="{{ group_path }}">{{ group_name }}</a>"
 {% endblocktrans %}
 

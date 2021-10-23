@@ -13,15 +13,15 @@
 
 {% block description %}
     {% if notification.notification_type == 'GROUP_PRIVACY' %}
-        {% blocktrans with group_name=notification.related_group.name group_path=notification.related_group.local_path %}
+        {% blocktrans trimmed with group_name=notification.related_group.name group_path=notification.related_group.local_path %}
         has changed the privacy level for <a href="{{ group_path }}">{{ group_name }}</a>
         {% endblocktrans %}
     {% elif notification.notification_type == 'GROUP_NAME' %}
-        {% blocktrans with group_name=notification.related_group.name group_path=notification.related_group.local_path %}
+        {% blocktrans trimmed with group_name=notification.related_group.name group_path=notification.related_group.local_path %}
         has changed the name of <a href="{{ group_path }}">{{ group_name }}</a>
         {% endblocktrans %}
     {% else %}
-        {% blocktrans with group_name=notification.related_group.name group_path=notification.related_group.local_path %}
+        {% blocktrans trimmed with group_name=notification.related_group.name group_path=notification.related_group.local_path %}
         has changed the description of <a href="{{ group_path }}">{{ group_name }}</a>
         {% endblocktrans %}
     {% endif %}
