@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-10-22 17:47+0000\n"
-"PO-Revision-Date: 2021-10-22 18:34\n"
+"PO-Revision-Date: 2021-10-23 09:51\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: German\n"
 "Language: de\n"
@@ -19,7 +19,7 @@ msgstr ""
 
 #: bookwyrm/forms.py:242
 msgid "A user with this email already exists."
-msgstr "Es existiert bereits ein Account mit dieser E-Mail-Adresse."
+msgstr "Es existiert bereits ein Benutzer*inkonto mit dieser E-Mail-Adresse."
 
 #: bookwyrm/forms.py:256
 msgid "One Day"
@@ -161,7 +161,7 @@ msgstr "Startseite"
 
 #: bookwyrm/settings.py:119
 msgid "Books Timeline"
-msgstr "Bücher-Zeitachse"
+msgstr "Bücher-Zeitleiste"
 
 #: bookwyrm/settings.py:119 bookwyrm/templates/search/layout.html:21
 #: bookwyrm/templates/search/layout.html:42
@@ -507,7 +507,7 @@ msgstr "Cover von URL laden:"
 #: bookwyrm/templates/book/edit/edit_book.html:11
 #, python-format
 msgid "Edit \"%(book_title)s\""
-msgstr "\"%(book_title)s \" bearbeiten"
+msgstr "„%(book_title)s“ bearbeiten"
 
 #: bookwyrm/templates/book/edit/edit_book.html:5
 #: bookwyrm/templates/book/edit/edit_book.html:13
@@ -925,7 +925,7 @@ msgstr "Schau, was in der %(site_name)s Community neu ist"
 #: bookwyrm/templates/discover/large-book.html:52
 #: bookwyrm/templates/discover/small-book.html:36
 msgid "View status"
-msgstr "Status ansehen"
+msgstr "Status anzeigen"
 
 #: bookwyrm/templates/email/confirm/html_content.html:6
 #: bookwyrm/templates/email/confirm/text_content.html:4
@@ -1012,7 +1012,7 @@ msgstr "Falls du dein Passwort gar nicht zurücksetzen wolltest, kannst du diese
 #: bookwyrm/templates/email/password_reset/subject.html:2
 #, python-format
 msgid "Reset your %(site_name)s password"
-msgstr "Dein Passwort für %(site_name)s zurücksetzen"
+msgstr "Passwort für %(site_name)s zurücksetzen"
 
 #: bookwyrm/templates/feed/direct_messages.html:8
 #, python-format
@@ -1230,16 +1230,16 @@ msgstr "Keine Nutzer*innen für \"%(query)s\" gefunden"
 
 #: bookwyrm/templates/groups/create_form.html:5
 msgid "Create Group"
-msgstr ""
+msgstr "Gruppe erstellen"
 
 #: bookwyrm/templates/groups/created_text.html:4
 #, python-format
 msgid "Managed by <a href=\"%(path)s\">%(username)s</a>"
-msgstr ""
+msgstr "Administriert von <a href=\"%(path)s\">%(username)s</a>"
 
 #: bookwyrm/templates/groups/delete_group_modal.html:4
 msgid "Delete this group?"
-msgstr ""
+msgstr "Diese Gruppe löschen?"
 
 #: bookwyrm/templates/groups/delete_group_modal.html:7
 #: bookwyrm/templates/lists/delete_list_modal.html:7
@@ -1259,43 +1259,43 @@ msgstr "Löschen"
 
 #: bookwyrm/templates/groups/edit_form.html:5
 msgid "Edit Group"
-msgstr ""
+msgstr "Gruppe bearbeiten"
 
 #: bookwyrm/templates/groups/find_users.html:6
 msgid "Add new members!"
-msgstr ""
+msgstr "Mitglieder hinzufügen!"
 
 #: bookwyrm/templates/groups/form.html:8
 msgid "Group Name:"
-msgstr ""
+msgstr "Gruppenname:"
 
 #: bookwyrm/templates/groups/form.html:12
 msgid "Group Description:"
-msgstr ""
+msgstr "Gruppenbeschreibung:"
 
 #: bookwyrm/templates/groups/form.html:30
 msgid "Delete group"
-msgstr ""
+msgstr "Gruppe löschen"
 
 #: bookwyrm/templates/groups/group.html:15
 msgid "Search to add a user"
-msgstr ""
+msgstr "Hinzuzufügende*n Benutzer*in suchen"
 
 #: bookwyrm/templates/groups/group.html:36
 msgid "This group has no lists"
-msgstr ""
+msgstr "Diese Gruppe enthält keine Listen"
 
 #: bookwyrm/templates/groups/layout.html:16
 msgid "Edit group"
-msgstr ""
+msgstr "Gruppe bearbeiten"
 
 #: bookwyrm/templates/groups/members.html:8
 msgid "Members can add and remove books on a group's book lists"
-msgstr ""
+msgstr "Mitglieder können Bücher in den Buchlisten einer Gruppe hinzufügen und entfernen"
 
 #: bookwyrm/templates/groups/members.html:19
 msgid "Leave group"
-msgstr ""
+msgstr "Gruppe verlassen"
 
 #: bookwyrm/templates/groups/members.html:41
 #: bookwyrm/templates/groups/suggested_users.html:32
@@ -1322,7 +1322,7 @@ msgstr[1] "%(shared_books)s Bücher in deinen Regalen"
 
 #: bookwyrm/templates/groups/user_groups.html:15
 msgid "Manager"
-msgstr ""
+msgstr "Gruppenadministrator*in"
 
 #: bookwyrm/templates/import/import.html:5
 #: bookwyrm/templates/import/import.html:9
@@ -1648,7 +1648,7 @@ msgstr "Liste erstellen"
 #: bookwyrm/templates/lists/created_text.html:5
 #, python-format
 msgid "Created by <a href=\"%(userpath)s\">%(username)s</a> and managed by <a href=\"%(grouppath)s\">%(groupname)s</a>"
-msgstr ""
+msgstr "Erstellt von <a href=\"%(userpath)s\">%(username)s</a> und administriert von <a href=\"%(grouppath)s\">%(groupname)s</a>"
 
 #: bookwyrm/templates/lists/created_text.html:7
 #, python-format
@@ -1724,27 +1724,27 @@ msgstr "Alle können Bücher hinzufügen"
 
 #: bookwyrm/templates/lists/form.html:37
 msgid "Group"
-msgstr ""
+msgstr "Gruppe"
 
 #: bookwyrm/templates/lists/form.html:38
 msgid "Group members can add to and remove from this list"
-msgstr ""
+msgstr "Gruppenmitglieder können Bücher zu dieser Liste hinzufügen und von dieser entfernen"
 
 #: bookwyrm/templates/lists/form.html:41
 msgid "Select Group"
-msgstr ""
+msgstr "Gruppe auswählen"
 
 #: bookwyrm/templates/lists/form.html:45
 msgid "Select a group"
-msgstr ""
+msgstr "Eine Gruppe auswählen"
 
 #: bookwyrm/templates/lists/form.html:56
 msgid "You don't have any Groups yet!"
-msgstr ""
+msgstr "Du hast noch keine Gruppen!"
 
 #: bookwyrm/templates/lists/form.html:58
 msgid "Create a Group"
-msgstr ""
+msgstr "Gruppe erstellen"
 
 #: bookwyrm/templates/lists/form.html:81
 msgid "Delete list"
@@ -1756,7 +1756,7 @@ msgstr "Du hast erfolgreich ein Buch für diese Liste vorgeschlagen!"
 
 #: bookwyrm/templates/lists/list.html:23
 msgid "You successfully added a book to this list!"
-msgstr "Du hast erfolgreich ein Buch zu dieser Liste hinzugefügt!"
+msgstr "Du hast ein Buch zu dieser Liste hinzugefügt!"
 
 #: bookwyrm/templates/lists/list.html:29
 msgid "This list is currently empty"
@@ -1835,12 +1835,14 @@ msgstr "Gespeicherte Listen"
 msgid "\n"
 "    accepted your invitation to join group \"<a href=\"%(group_path)s\">%(group_name)s</a>\"\n"
 "    "
-msgstr ""
+msgstr "\n"
+"    hat deine Einladung akzeptiert, der Gruppe „<a href=\"%(group_path)s\">%(group_name)s</a>“ beizutreten\n"
+"    "
 
 #: bookwyrm/templates/notifications/items/add.html:24
 #, python-format
 msgid "added <em><a href=\"%(book_path)s\">%(book_title)s</a></em> to your list \"<a href=\"%(list_path)s\">%(list_name)s</a>\""
-msgstr "<em><a href=\"%(book_path)s\">%(book_title)s</a></em> zu deiner Liste \"<a href=\"%(list_path)s\">%(list_name)s</a>\" hinzugefügt"
+msgstr "<em><a href=\"%(book_path)s\">%(book_title)s</a></em> zu deiner Liste „<a href=\"%(list_path)s\">%(list_name)s</a>“ hinzugefügt"
 
 #: bookwyrm/templates/notifications/items/add.html:31
 #, python-format
@@ -1903,20 +1905,23 @@ msgstr "Dein <a href=\"%(url)s\">Import</a> ist fertig."
 #: bookwyrm/templates/notifications/items/invite.html:15
 #, python-format
 msgid "invited you to join the group <a href=\"%(group_path)s\">%(group_name)s</a>"
-msgstr ""
+msgstr "hat dich eingeladen, der Gruppe <a href=\"%(group_path)s\">%(group_name)s</a> beizutreten"
 
 #: bookwyrm/templates/notifications/items/join.html:16
 #, python-format
 msgid "\n"
 "has joined your group \"<a href=\"%(group_path)s\">%(group_name)s</a>\"\n"
-msgstr ""
+msgstr "\n"
+"ist deiner Gruppe „<a href=\"%(group_path)s\">%(group_name)s</a>“ beigetreten\n"
 
 #: bookwyrm/templates/notifications/items/leave.html:16
 #, python-format
 msgid "\n"
 "    has left your group \"<a href=\"%(group_path)s\">%(group_name)s</a>\"\n"
 "    "
-msgstr ""
+msgstr "\n"
+"    hat deine Gruppe „<a href=\"%(group_path)s\">%(group_name)s</a>“ verlassen\n"
+"    "
 
 #: bookwyrm/templates/notifications/items/mention.html:20
 #, python-format
@@ -1942,14 +1947,17 @@ msgstr "hat dich in einem <a href=\"%(related_path)s\">Status</a> erwähnt"
 #, python-format
 msgid " \n"
 "has been removed from your group \"<a href=\"%(group_path)s\">%(group_name)s</a>\"\n"
-msgstr ""
+msgstr " \n"
+"wurde aus deiner Gruppe „<a href=\"%(group_path)s\">%(group_name)s</a>“ entfernt\n"
 
 #: bookwyrm/templates/notifications/items/remove.html:23
 #, python-format
 msgid "\n"
 "    You have been removed from the \"<a href=\"%(group_path)s\">%(group_name)s</a> group\"\n"
 "    "
-msgstr ""
+msgstr "\n"
+"    Du wurdest aus der Gruppe „<a href=\"%(group_path)s\">%(group_name)s</a>“ entfernt\n"
+"    "
 
 #: bookwyrm/templates/notifications/items/reply.html:21
 #, python-format
@@ -1981,21 +1989,27 @@ msgstr "Eine neue <a href=\"%(path)s\">Meldung</a> muss moderiert werden."
 msgid "\n"
 "        has changed the privacy level for <a href=\"%(group_path)s\">%(group_name)s</a>\n"
 "        "
-msgstr ""
+msgstr "\n"
+"        hat die Sichtbarkeit von <a href=\"%(group_path)s\">%(group_name)s</a>\n"
+"        geändert        "
 
 #: bookwyrm/templates/notifications/items/update.html:20
 #, python-format
 msgid "\n"
 "        has changed the name of <a href=\"%(group_path)s\">%(group_name)s</a>\n"
 "        "
-msgstr ""
+msgstr "\n"
+"        hat den Namen von <a href=\"%(group_path)s\">%(group_name)s</a>\n"
+"        geändert        "
 
 #: bookwyrm/templates/notifications/items/update.html:24
 #, python-format
 msgid "\n"
 "        has changed the description of <a href=\"%(group_path)s\">%(group_name)s</a>\n"
 "        "
-msgstr ""
+msgstr "\n"
+"        hat die Beschreibung von <a href=\"%(group_path)s\">%(group_name)s</a>\n"
+"        geändert        "
 
 #: bookwyrm/templates/notifications/notifications_page.html:18
 msgid "Delete notifications"
@@ -2074,7 +2088,7 @@ msgstr "Privatsphäre"
 
 #: bookwyrm/templates/preferences/edit_user.html:72
 msgid "Show reading goal prompt in feed:"
-msgstr "Zeige Leseziel-Abfrage im Feed:"
+msgstr "Frage Leseziel im Feed ab:"
 
 #: bookwyrm/templates/preferences/edit_user.html:76
 msgid "Show suggested users:"
@@ -2104,17 +2118,17 @@ msgstr "Beziehungen"
 #: bookwyrm/templates/reading_progress/finish.html:5
 #, python-format
 msgid "Finish \"%(book_title)s\""
-msgstr "\"%(book_title)s\" abschließen"
+msgstr "„%(book_title)s“ abschließen"
 
 #: bookwyrm/templates/reading_progress/start.html:5
 #, python-format
 msgid "Start \"%(book_title)s\""
-msgstr "\"%(book_title)s\" beginnen"
+msgstr "„%(book_title)s“ beginnen"
 
 #: bookwyrm/templates/reading_progress/want.html:5
 #, python-format
 msgid "Want to Read \"%(book_title)s\""
-msgstr "\"%(book_title)s\" auf Leseliste setzen"
+msgstr "„%(book_title)s“ auf Leseliste setzen"
 
 #: bookwyrm/templates/search/book.html:47
 #: bookwyrm/templates/settings/reports/reports.html:25
@@ -3060,21 +3074,21 @@ msgstr "Dieses Regal ist leer."
 
 #: bookwyrm/templates/snippets/add_to_group_button.html:15
 msgid "Invite"
-msgstr ""
+msgstr "Einladen"
 
 #: bookwyrm/templates/snippets/add_to_group_button.html:24
 msgid "Uninvite"
-msgstr ""
+msgstr "Einladung stornieren"
 
 #: bookwyrm/templates/snippets/add_to_group_button.html:28
 #, python-format
 msgid "Remove @%(username)s"
-msgstr ""
+msgstr "@%(username)s entfernen"
 
 #: bookwyrm/templates/snippets/announcement.html:31
 #, python-format
 msgid "Posted by <a href=\"%(user_path)s\">%(username)s</a>"
-msgstr "Von <a href=\"%(user_path)s\">%(username)s</a> veröffentlicht"
+msgstr "Veröffentlicht von <a href=\"%(user_path)s\">%(username)s</a>"
 
 #: bookwyrm/templates/snippets/authors.html:22
 #, python-format
@@ -3453,11 +3467,11 @@ msgstr "Registrieren"
 
 #: bookwyrm/templates/snippets/remove_from_group_button.html:16
 msgid " Confirm "
-msgstr ""
+msgstr " Bestätigen "
 
 #: bookwyrm/templates/snippets/remove_from_group_button.html:19
 msgid " Remove "
-msgstr ""
+msgstr " Entfernen "
 
 #: bookwyrm/templates/snippets/report_button.html:6
 msgid "Report"
@@ -3650,16 +3664,16 @@ msgstr "%(username)ss %(year)s Bücher"
 
 #: bookwyrm/templates/user/groups.html:9
 msgid "Your Groups"
-msgstr ""
+msgstr "Deine Gruppen"
 
 #: bookwyrm/templates/user/groups.html:11
 #, python-format
 msgid "Groups: %(username)s"
-msgstr ""
+msgstr "Gruppen: %(username)s"
 
 #: bookwyrm/templates/user/groups.html:17
 msgid "Create group"
-msgstr ""
+msgstr "Gruppe erstellen"
 
 #: bookwyrm/templates/user/layout.html:19 bookwyrm/templates/user/user.html:10
 msgid "User Profile"
@@ -3675,7 +3689,7 @@ msgstr "Leseziel"
 
 #: bookwyrm/templates/user/layout.html:76
 msgid "Groups"
-msgstr ""
+msgstr "Gruppen"
 
 #: bookwyrm/templates/user/lists.html:11
 #, python-format
