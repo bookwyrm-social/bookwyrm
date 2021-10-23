@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-10-22 17:47+0000\n"
+"POT-Creation-Date: 2021-10-23 14:06+0000\n"
 "PO-Revision-Date: 2021-02-28 17:19-0800\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: English <LL@li.org>\n"
@@ -1321,6 +1321,11 @@ msgid_plural "%(shared_books)s books on your shelves"
 msgstr[0] ""
 msgstr[1] ""
 
+#: bookwyrm/templates/groups/suggested_users.html:40
+#, python-format
+msgid "No potential members found for \"%(user_query)s\""
+msgstr ""
+
 #: bookwyrm/templates/groups/user_groups.html:15
 msgid "Manager"
 msgstr ""
@@ -1833,10 +1838,7 @@ msgstr ""
 
 #: bookwyrm/templates/notifications/items/accept.html:16
 #, python-format
-msgid ""
-"\n"
-"    accepted your invitation to join group \"<a href=\"%(group_path)s\">%(group_name)s</a>\"\n"
-"    "
+msgid "accepted your invitation to join group \"<a href=\"%(group_path)s\">%(group_name)s</a>\""
 msgstr ""
 
 #: bookwyrm/templates/notifications/items/add.html:24
@@ -1876,7 +1878,7 @@ msgstr ""
 
 #: bookwyrm/templates/notifications/items/fav.html:25
 #, python-format
-msgid "liked your <a href=\"%(related_path)s\">comment on<em>%(book_title)s</em></a>"
+msgid "liked your <a href=\"%(related_path)s\">comment on <em>%(book_title)s</em></a>"
 msgstr ""
 
 #: bookwyrm/templates/notifications/items/fav.html:31
@@ -1909,17 +1911,12 @@ msgstr ""
 
 #: bookwyrm/templates/notifications/items/join.html:16
 #, python-format
-msgid ""
-"\n"
-"has joined your group \"<a href=\"%(group_path)s\">%(group_name)s</a>\"\n"
+msgid "has joined your group \"<a href=\"%(group_path)s\">%(group_name)s</a>\""
 msgstr ""
 
 #: bookwyrm/templates/notifications/items/leave.html:16
 #, python-format
-msgid ""
-"\n"
-"    has left your group \"<a href=\"%(group_path)s\">%(group_name)s</a>\"\n"
-"    "
+msgid "has left your group \"<a href=\"%(group_path)s\">%(group_name)s</a>\""
 msgstr ""
 
 #: bookwyrm/templates/notifications/items/mention.html:20
@@ -1944,17 +1941,12 @@ msgstr ""
 
 #: bookwyrm/templates/notifications/items/remove.html:17
 #, python-format
-msgid ""
-" \n"
-"has been removed from your group \"<a href=\"%(group_path)s\">%(group_name)s</a>\"\n"
+msgid "has been removed from your group \"<a href=\"%(group_path)s\">%(group_name)s</a>\""
 msgstr ""
 
 #: bookwyrm/templates/notifications/items/remove.html:23
 #, python-format
-msgid ""
-"\n"
-"    You have been removed from the \"<a href=\"%(group_path)s\">%(group_name)s</a> group\"\n"
-"    "
+msgid "You have been removed from the \"<a href=\"%(group_path)s\">%(group_name)s</a> group\""
 msgstr ""
 
 #: bookwyrm/templates/notifications/items/reply.html:21
@@ -1984,26 +1976,17 @@ msgstr ""
 
 #: bookwyrm/templates/notifications/items/update.html:16
 #, python-format
-msgid ""
-"\n"
-"        has changed the privacy level for <a href=\"%(group_path)s\">%(group_name)s</a>\n"
-"        "
+msgid "has changed the privacy level for <a href=\"%(group_path)s\">%(group_name)s</a>"
 msgstr ""
 
 #: bookwyrm/templates/notifications/items/update.html:20
 #, python-format
-msgid ""
-"\n"
-"        has changed the name of <a href=\"%(group_path)s\">%(group_name)s</a>\n"
-"        "
+msgid "has changed the name of <a href=\"%(group_path)s\">%(group_name)s</a>"
 msgstr ""
 
 #: bookwyrm/templates/notifications/items/update.html:24
 #, python-format
-msgid ""
-"\n"
-"        has changed the description of <a href=\"%(group_path)s\">%(group_name)s</a>\n"
-"        "
+msgid "has changed the description of <a href=\"%(group_path)s\">%(group_name)s</a>"
 msgstr ""
 
 #: bookwyrm/templates/notifications/notifications_page.html:18
