@@ -21,7 +21,7 @@
 {% else %}
 
     {% blocktrans trimmed with group_name=notification.related_group.name group_path=notification.related_group.local_path %}
-    You have been removed from the "<a href="{{ group_path }}">{{ group_name }}</a> group"
+    You have been removed from the "<a href="{{ group_path }}">{{ group_name }}</a>" group
     {% endblocktrans %}
 
 {% endif %}
