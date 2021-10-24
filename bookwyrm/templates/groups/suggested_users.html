@@ -36,7 +36,11 @@
         {% endfor %}
     </div>
     {% else %}
-    <p>No potential members found for "{{ user_query }}"</p>
+    <p>
+        {% blocktrans trimmed %}
+        No potential members found for "{{ user_query }}"
+        {% endblocktrans %}
+    </p>
     <br/>
 
 {% endif %}
