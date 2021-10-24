@@ -227,10 +227,10 @@ def get_data(url, params=None, timeout=10):
         resp = requests.get(
             url,
             params=params,
-            headers={
+            headers={ 
                 "Accept": ("application/activity+json,"
-                           " application/ld+json; profile=\"https://www.w3.org/ns/activitystreams\","
-                           " application/json; charset=utf-8"),
+				" application/ld+json; profile=\"https://www.w3.org/ns/activitystreams\","
+				" application/json; charset=utf-8"),
                 "User-Agent": settings.USER_AGENT,
             },
             timeout=timeout,
