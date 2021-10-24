@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-10-22 17:47+0000\n"
-"PO-Revision-Date: 2021-10-23 16:18\n"
+"POT-Creation-Date: 2021-10-24 14:09+0000\n"
+"PO-Revision-Date: 2021-10-24 18:36\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: German\n"
 "Language: de\n"
@@ -548,6 +548,7 @@ msgstr "Dies ist ein neues Werk."
 #: bookwyrm/templates/book/edit/edit_book.html:97
 #: bookwyrm/templates/groups/members.html:16
 #: bookwyrm/templates/landing/password_reset.html:30
+#: bookwyrm/templates/snippets/remove_from_group_button.html:16
 msgid "Confirm"
 msgstr "Bestätigen"
 
@@ -1320,6 +1321,11 @@ msgid_plural "%(shared_books)s books on your shelves"
 msgstr[0] "%(shared_books)s Buch in deinen Regalen"
 msgstr[1] "%(shared_books)s Bücher in deinen Regalen"
 
+#: bookwyrm/templates/groups/suggested_users.html:40
+#, python-format
+msgid "No potential members found for \"%(user_query)s\""
+msgstr ""
+
 #: bookwyrm/templates/groups/user_groups.html:15
 msgid "Manager"
 msgstr "Gruppenadministrator*in"
@@ -1776,6 +1782,7 @@ msgid "Set"
 msgstr "Übernehmen"
 
 #: bookwyrm/templates/lists/list.html:92
+#: bookwyrm/templates/snippets/remove_from_group_button.html:19
 #: bookwyrm/templates/snippets/shelf_selector.html:26
 msgid "Remove"
 msgstr "Entfernen"
@@ -1832,12 +1839,8 @@ msgstr "Gespeicherte Listen"
 
 #: bookwyrm/templates/notifications/items/accept.html:16
 #, python-format
-msgid "\n"
-"    accepted your invitation to join group \"<a href=\"%(group_path)s\">%(group_name)s</a>\"\n"
-"    "
-msgstr "\n"
-"    hat deine Einladung akzeptiert, der Gruppe „<a href=\"%(group_path)s\">%(group_name)s</a>“ beizutreten\n"
-"    "
+msgid "accepted your invitation to join group \"<a href=\"%(group_path)s\">%(group_name)s</a>\""
+msgstr ""
 
 #: bookwyrm/templates/notifications/items/add.html:24
 #, python-format
@@ -1876,8 +1879,8 @@ msgstr "hat deine <a href=\"%(related_path)s\">Besprechung von <em>%(book_title)
 
 #: bookwyrm/templates/notifications/items/fav.html:25
 #, python-format
-msgid "liked your <a href=\"%(related_path)s\">comment on<em>%(book_title)s</em></a>"
-msgstr "hat deinen <a href=\"%(related_path)s\">Kommentar zu <em>%(book_title)s</em> favorisiert</a>"
+msgid "liked your <a href=\"%(related_path)s\">comment on <em>%(book_title)s</em></a>"
+msgstr ""
 
 #: bookwyrm/templates/notifications/items/fav.html:31
 #, python-format
@@ -1904,24 +1907,18 @@ msgstr "Dein <a href=\"%(url)s\">Import</a> ist fertig."
 
 #: bookwyrm/templates/notifications/items/invite.html:15
 #, python-format
-msgid "invited you to join the group <a href=\"%(group_path)s\">%(group_name)s</a>"
-msgstr "hat dich eingeladen, der Gruppe <a href=\"%(group_path)s\">%(group_name)s</a> beizutreten"
+msgid "invited you to join the group \"<a href=\"%(group_path)s\">%(group_name)s</a>\""
+msgstr ""
 
 #: bookwyrm/templates/notifications/items/join.html:16
 #, python-format
-msgid "\n"
-"has joined your group \"<a href=\"%(group_path)s\">%(group_name)s</a>\"\n"
-msgstr "\n"
-"ist deiner Gruppe „<a href=\"%(group_path)s\">%(group_name)s</a>“ beigetreten\n"
+msgid "has joined your group \"<a href=\"%(group_path)s\">%(group_name)s</a>\""
+msgstr ""
 
 #: bookwyrm/templates/notifications/items/leave.html:16
 #, python-format
-msgid "\n"
-"    has left your group \"<a href=\"%(group_path)s\">%(group_name)s</a>\"\n"
-"    "
-msgstr "\n"
-"    hat deine Gruppe „<a href=\"%(group_path)s\">%(group_name)s</a>“ verlassen\n"
-"    "
+msgid "has left your group \"<a href=\"%(group_path)s\">%(group_name)s</a>\""
+msgstr ""
 
 #: bookwyrm/templates/notifications/items/mention.html:20
 #, python-format
@@ -1945,19 +1942,13 @@ msgstr "hat dich in einem <a href=\"%(related_path)s\">Status</a> erwähnt"
 
 #: bookwyrm/templates/notifications/items/remove.html:17
 #, python-format
-msgid " \n"
-"has been removed from your group \"<a href=\"%(group_path)s\">%(group_name)s</a>\"\n"
-msgstr " \n"
-"wurde aus deiner Gruppe „<a href=\"%(group_path)s\">%(group_name)s</a>“ entfernt\n"
+msgid "has been removed from your group \"<a href=\"%(group_path)s\">%(group_name)s</a>\""
+msgstr ""
 
 #: bookwyrm/templates/notifications/items/remove.html:23
 #, python-format
-msgid "\n"
-"    You have been removed from the \"<a href=\"%(group_path)s\">%(group_name)s</a> group\"\n"
-"    "
-msgstr "\n"
-"    Du wurdest aus der Gruppe „<a href=\"%(group_path)s\">%(group_name)s</a>“ entfernt\n"
-"    "
+msgid "You have been removed from the \"<a href=\"%(group_path)s\">%(group_name)s</a>\" group"
+msgstr ""
 
 #: bookwyrm/templates/notifications/items/reply.html:21
 #, python-format
@@ -1986,30 +1977,18 @@ msgstr "Eine neue <a href=\"%(path)s\">Meldung</a> muss moderiert werden."
 
 #: bookwyrm/templates/notifications/items/update.html:16
 #, python-format
-msgid "\n"
-"        has changed the privacy level for <a href=\"%(group_path)s\">%(group_name)s</a>\n"
-"        "
-msgstr "\n"
-"        hat die Sichtbarkeit von <a href=\"%(group_path)s\">%(group_name)s</a>\n"
-"        geändert        "
+msgid "has changed the privacy level for <a href=\"%(group_path)s\">%(group_name)s</a>"
+msgstr ""
 
 #: bookwyrm/templates/notifications/items/update.html:20
 #, python-format
-msgid "\n"
-"        has changed the name of <a href=\"%(group_path)s\">%(group_name)s</a>\n"
-"        "
-msgstr "\n"
-"        hat den Namen von <a href=\"%(group_path)s\">%(group_name)s</a>\n"
-"        geändert        "
+msgid "has changed the name of <a href=\"%(group_path)s\">%(group_name)s</a>"
+msgstr ""
 
 #: bookwyrm/templates/notifications/items/update.html:24
 #, python-format
-msgid "\n"
-"        has changed the description of <a href=\"%(group_path)s\">%(group_name)s</a>\n"
-"        "
-msgstr "\n"
-"        hat die Beschreibung von <a href=\"%(group_path)s\">%(group_name)s</a>\n"
-"        geändert        "
+msgid "has changed the description of <a href=\"%(group_path)s\">%(group_name)s</a>"
+msgstr ""
 
 #: bookwyrm/templates/notifications/notifications_page.html:18
 msgid "Delete notifications"
@@ -3464,14 +3443,6 @@ msgstr "Fortschritt"
 #: bookwyrm/templates/snippets/register_form.html:32
 msgid "Sign Up"
 msgstr "Registrieren"
-
-#: bookwyrm/templates/snippets/remove_from_group_button.html:16
-msgid " Confirm "
-msgstr " Bestätigen "
-
-#: bookwyrm/templates/snippets/remove_from_group_button.html:19
-msgid " Remove "
-msgstr " Entfernen "
 
 #: bookwyrm/templates/snippets/report_button.html:6
 msgid "Report"
