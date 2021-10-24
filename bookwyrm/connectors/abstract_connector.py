@@ -228,7 +228,9 @@ def get_data(url, params=None, timeout=10):
             url,
             params=params,
             headers={
-                "Accept": "application/json; charset=utf-8",
+                "Accept": ("application/activity+json,"
+                           " application/ld+json; profile=\"https://www.w3.org/ns/activitystreams\","
+                           " application/json; charset=utf-8"),
                 "User-Agent": settings.USER_AGENT,
             },
             timeout=timeout,
