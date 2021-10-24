@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-10-24 14:09+0000\n"
-"PO-Revision-Date: 2021-10-24 18:36\n"
+"PO-Revision-Date: 2021-10-24 19:59\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Basque\n"
 "Language: eu\n"
@@ -722,11 +722,11 @@ msgstr "amaituta"
 
 #: bookwyrm/templates/book/readthrough.html:24
 msgid "Show all updates"
-msgstr "Erakutsi eguneratze guztiak"
+msgstr "Eguneratze guztiak erakutsi"
 
 #: bookwyrm/templates/book/readthrough.html:40
 msgid "Delete this progress update"
-msgstr "Aurrerapenaren eguneratze hori ezabatu"
+msgstr "Aurrerapen eguneratze hau ezabatu"
 
 #: bookwyrm/templates/book/readthrough.html:51
 msgid "started"
@@ -739,7 +739,7 @@ msgstr "Irakurketa-datak editatu"
 
 #: bookwyrm/templates/book/readthrough.html:62
 msgid "Delete these read dates"
-msgstr "Irakurketa-data horiek ezabatu"
+msgstr "Irakurketa-data houek ezabatu"
 
 #: bookwyrm/templates/components/inline_form.html:8
 #: bookwyrm/templates/components/modal.html:11
@@ -758,28 +758,28 @@ msgstr "Laguntza"
 
 #: bookwyrm/templates/compose.html:5 bookwyrm/templates/compose.html:8
 msgid "Edit status"
-msgstr "Editatu egoera"
+msgstr "Egoera editatu"
 
 #: bookwyrm/templates/confirm_email/confirm_email.html:4
 msgid "Confirm email"
-msgstr "Baieztatu helbide elektronikoa"
+msgstr "Eposta berretsi"
 
 #: bookwyrm/templates/confirm_email/confirm_email.html:7
 msgid "Confirm your email address"
-msgstr "Berretsi zure helbide elektronikoa"
+msgstr "Zure helbide elektronikoa berretsi"
 
 #: bookwyrm/templates/confirm_email/confirm_email.html:13
 msgid "A confirmation code has been sent to the email address you used to register your account."
-msgstr "Berrespen-kode bat bidali da zure kontua erregistratzeko erabili zenuen helbide elektronikora."
+msgstr "Zure kontua erregistratzeko erabili zenuen epostara berrespen kodea bidali da."
 
 #: bookwyrm/templates/confirm_email/confirm_email.html:15
 msgid "Sorry! We couldn't find that code."
-msgstr "Sentitzen dugu! Ezin izan dugu kode hori aurkitu."
+msgstr "Barkatu! Ezin izan dugu kode hori aurkitu."
 
 #: bookwyrm/templates/confirm_email/confirm_email.html:19
 #: bookwyrm/templates/settings/users/user_info.html:85
 msgid "Confirmation code:"
-msgstr "Código de confirmación:"
+msgstr "Berrespen-kodea:"
 
 #: bookwyrm/templates/confirm_email/confirm_email.html:25
 #: bookwyrm/templates/landing/layout.html:73
@@ -790,7 +790,7 @@ msgstr "Bidali"
 
 #: bookwyrm/templates/confirm_email/confirm_email.html:32
 msgid "Can't find your code?"
-msgstr "Ez duzu zure kodea aurkitzen?"
+msgstr "Ezin duzu zure kodea aurkitu?"
 
 #: bookwyrm/templates/confirm_email/resend_form.html:4
 msgid "Resend confirmation link"
@@ -802,11 +802,11 @@ msgstr "Birbidali baieztapen esteka"
 #: bookwyrm/templates/preferences/edit_user.html:56
 #: bookwyrm/templates/snippets/register_form.html:13
 msgid "Email address:"
-msgstr "Helbide elektronikoa:"
+msgstr "Eposta helbidea:"
 
 #: bookwyrm/templates/confirm_email/resend_form.html:17
 msgid "Resend link"
-msgstr "Birbidali esteka"
+msgstr "Esteka birbidali"
 
 #: bookwyrm/templates/directory/community_filter.html:5
 msgid "Community"
@@ -828,7 +828,7 @@ msgstr "Direktorioa"
 
 #: bookwyrm/templates/directory/directory.html:17
 msgid "Make your profile discoverable to other BookWyrm users."
-msgstr "Aukera eman BookWyrmeko beste erabiltzaile batzuek zure profila ezagut dezaten."
+msgstr "Egin zure profila ikusgai BookWyrm-eko beste erabiltzaile batzuentzako."
 
 #: bookwyrm/templates/directory/directory.html:24
 #, python-format
@@ -900,102 +900,102 @@ msgstr "<a href=\"%(user_path)s\">%(username)s</a> sailkatu du <a href=\"%(book_
 #: bookwyrm/templates/discover/card-header.html:13
 #, python-format
 msgid "<a href=\"%(user_path)s\">%(username)s</a> reviewed <a href=\"%(book_path)s\">%(book_title)s</a>"
-msgstr ""
+msgstr "<a href=\"%(user_path)s\">%(username)s</a> puntuatu du <a href=\"%(book_path)s\">%(book_title)s</a>"
 
 #: bookwyrm/templates/discover/card-header.html:17
 #, python-format
 msgid "<a href=\"%(user_path)s\">%(username)s</a> commented on <a href=\"%(book_path)s\">%(book_title)s</a>"
-msgstr ""
+msgstr "<a href=\"%(user_path)s\">%(username)s</a> komentatu du hemen: <a href=\"%(book_path)s\">%(book_title)s</a>"
 
 #: bookwyrm/templates/discover/card-header.html:21
 #, python-format
 msgid "<a href=\"%(user_path)s\">%(username)s</a> quoted <a href=\"%(book_path)s\">%(book_title)s</a>"
-msgstr ""
+msgstr "<a href=\"%(user_path)s\">%(username)s</a> aipatu du <a href=\"%(book_path)s\">%(book_title)s</a>"
 
 #: bookwyrm/templates/discover/discover.html:4
 #: bookwyrm/templates/discover/discover.html:10
 #: bookwyrm/templates/layout.html:78
 msgid "Discover"
-msgstr ""
+msgstr "Deskubritu"
 
 #: bookwyrm/templates/discover/discover.html:12
 #, python-format
 msgid "See what's new in the local %(site_name)s community"
-msgstr ""
+msgstr "Ikus tokiko komunitatearen %(site_name)s nobedadeak"
 
 #: bookwyrm/templates/discover/large-book.html:52
 #: bookwyrm/templates/discover/small-book.html:36
 msgid "View status"
-msgstr ""
+msgstr "Ikusi egoera"
 
 #: bookwyrm/templates/email/confirm/html_content.html:6
 #: bookwyrm/templates/email/confirm/text_content.html:4
 #, python-format
 msgid "One last step before you join %(site_name)s! Please confirm your email address by clicking the link below:"
-msgstr ""
+msgstr "Azken urratsa, %(site_name)s-ekin bat egin aurretik! Berretsi zure helbide elektronikoa esteka honetan klik eginez:"
 
 #: bookwyrm/templates/email/confirm/html_content.html:11
 msgid "Confirm Email"
-msgstr ""
+msgstr "Baieztatu helbide elektronikoa"
 
 #: bookwyrm/templates/email/confirm/html_content.html:15
 #, python-format
 msgid "Or enter the code \"<code>%(confirmation_code)s</code>\" at login."
-msgstr ""
+msgstr "Edo sartu \"<code>%(confirmation_code)s</code>\" kodea saioa hastean."
 
 #: bookwyrm/templates/email/confirm/subject.html:2
 msgid "Please confirm your email"
-msgstr ""
+msgstr "Mesedez, baieztatu zure helbide elektronikoa"
 
 #: bookwyrm/templates/email/confirm/text_content.html:10
 #, python-format
 msgid "Or enter the code \"%(confirmation_code)s\" at login."
-msgstr ""
+msgstr "Edo sartu \"%(confirmation_code)s\" kodea saioa hastean."
 
 #: bookwyrm/templates/email/html_layout.html:15
 #: bookwyrm/templates/email/text_layout.html:2
 msgid "Hi there,"
-msgstr ""
+msgstr "Kaixo!"
 
 #: bookwyrm/templates/email/html_layout.html:21
 #, python-format
 msgid "BookWyrm hosted on <a style=\"color: #3273dc;\" href=\"https://%(domain)s\">%(site_name)s</a>"
-msgstr ""
+msgstr "BookWyrm <a style=\"color: #3273dc;\" href=\"https://%(domain)s\">%(site_name)s</a> ostatu hartu du"
 
 #: bookwyrm/templates/email/html_layout.html:23
 msgid "Email preference"
-msgstr ""
+msgstr "Posta elektronikoaren lehentasuna"
 
 #: bookwyrm/templates/email/invite/html_content.html:6
 #: bookwyrm/templates/email/invite/subject.html:2
 #, python-format
 msgid "You're invited to join %(site_name)s!"
-msgstr ""
+msgstr "%(site_name)s bat egitera gonbidatuta zaude!"
 
 #: bookwyrm/templates/email/invite/html_content.html:9
 msgid "Join Now"
-msgstr ""
+msgstr "Parte hartu"
 
 #: bookwyrm/templates/email/invite/html_content.html:15
 #, python-format
 msgid "Learn more <a href=\"https://%(domain)s%(about_path)s\">about %(site_name)s</a>."
-msgstr ""
+msgstr "Informazio gehiago <a href=\"https://%(domain)s%(about_path)s\"> honi buruz %(site_name)s</a>."
 
 #: bookwyrm/templates/email/invite/text_content.html:4
 #, python-format
 msgid "You're invited to join %(site_name)s! Click the link below to create an account."
-msgstr ""
+msgstr "%(site_name)s bat egitera gonbidatuta zaude! Egin klik hurrengo estekan kontu bat sortzeko."
 
 #: bookwyrm/templates/email/invite/text_content.html:8
 #, python-format
 msgid "Learn more about %(site_name)s:"
-msgstr ""
+msgstr "Informazio gehiago %(site_name)s buruz:"
 
 #: bookwyrm/templates/email/password_reset/html_content.html:6
 #: bookwyrm/templates/email/password_reset/text_content.html:4
 #, python-format
 msgid "You requested to reset your %(site_name)s password. Click the link below to set a new password and log in to your account."
-msgstr ""
+msgstr "Zure %(site_name)s pasahitza berrezartzeko eskatu duzu. Egin klik esteka honetan pasahitz berri bat ezartzeko eta zure kontuan saioa hasteko."
 
 #: bookwyrm/templates/email/password_reset/html_content.html:9
 #: bookwyrm/templates/landing/password_reset.html:4
@@ -1003,17 +1003,17 @@ msgstr ""
 #: bookwyrm/templates/landing/password_reset_request.html:4
 #: bookwyrm/templates/landing/password_reset_request.html:10
 msgid "Reset Password"
-msgstr ""
+msgstr "Berrezarri pasahitza"
 
 #: bookwyrm/templates/email/password_reset/html_content.html:13
 #: bookwyrm/templates/email/password_reset/text_content.html:8
 msgid "If you didn't request to reset your password, you can ignore this email."
-msgstr ""
+msgstr "Zure pasahitza berrezartzeko eskatu ez baduzu, mezu elektroniko hau alde batera utz dezakezu."
 
 #: bookwyrm/templates/email/password_reset/subject.html:2
 #, python-format
 msgid "Reset your %(site_name)s password"
-msgstr ""
+msgstr "Jarri zure pasahitza %(site_name)s-tik"
 
 #: bookwyrm/templates/feed/direct_messages.html:8
 #, python-format
