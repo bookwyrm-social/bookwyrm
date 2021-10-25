@@ -28,6 +28,12 @@ let BookWyrm = new class {
                 this.revealForm.bind(this))
             );
 
+        document.querySelectorAll('[data-hides]')
+            .forEach(button => button.addEventListener(
+                'change',
+                this.hideForm.bind(this))
+            );
+
         document.querySelectorAll('[data-back]')
             .forEach(button => button.addEventListener(
                 'click',
@@ -119,8 +125,8 @@ let BookWyrm = new class {
     }
 
     /**
-     * Toggle form.
-     *
+     * Show form.
+     * 
      * @param  {Event} event
      * @return {undefined}
      */
@@ -128,7 +134,23 @@ let BookWyrm = new class {
         let trigger = event.currentTarget;
         let hidden = trigger.closest('.hidden-form').querySelectorAll('.is-hidden')[0];
 
-        this.addRemoveClass(hidden, 'is-hidden', !hidden);
+        if (hidden) {
+            this.addRemoveClass(hidden, 'is-hidden', !hidden);
+        }
+    }
+
+    /**
+     * Hide form.
+     *
+     * @param  {Event} event
+     * @return {undefined}
+     */
+    hideForm(event) {
+        let trigger = event.currentTarget;
+        let targetId = trigger.dataset.hides
+        let visible = document.getElementById(targetId)
+
+        this.addRemoveClass(visible, 'is-hidden', true);
     }
 
     /**
@@ -227,7 +249,7 @@ let BookWyrm = new class {
     }
 
     /**
-     * Check or uncheck a checbox.
+     * Check or uncheck a checkbox.
      *
      * @param  {string}  checkbox - id of the checkbox
      * @param  {boolean} pressed  - Is the trigger pressed?

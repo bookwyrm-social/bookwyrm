@@ -65,8 +65,8 @@ class Register(View):
                 "valid": invite.valid() if invite else True,
             }
             if invite:
-                return TemplateResponse(request, "invite.html", data)
-            return TemplateResponse(request, "login.html", data)
+                return TemplateResponse(request, "landing/invite.html", data)
+            return TemplateResponse(request, "landing/login.html", data)
 
         username = f"{localname}@{DOMAIN}"
         user = models.User.objects.create_user(

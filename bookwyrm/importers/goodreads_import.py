@@ -3,10 +3,10 @@ from . import Importer
 
 
 class GoodreadsImporter(Importer):
-    """GoodReads is the default importer, thus Importer follows its structure.
+    """Goodreads is the default importer, thus Importer follows its structure.
     For a more complete example of overriding see librarything_import.py"""
 
-    service = "GoodReads"
+    service = "Goodreads"
 
     def parse_fields(self, entry):
         """handle the specific fields in goodreads csvs"""

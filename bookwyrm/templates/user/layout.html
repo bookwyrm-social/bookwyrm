@@ -4,6 +4,7 @@
 {% load utilities %}
 {% load markdown %}
 {% load layout %}
+{% load bookwyrm_group_tags %}
 
 {% block title %}{{ user.display_name }}{% endblock %}
 
@@ -67,6 +68,12 @@
         {% url 'user-goal' user|username year as url %}
         <li{% if url in request.path %} class="is-active"{% endif %}>
             <a href="{{ url }}">{% trans "Reading Goal" %}</a>
+        </li>
+        {% endif %}
+        {% if is_self or user|has_groups %}
+        {% url 'user-groups' user|username as url %}
+        <li{% if url in request.path %} class="is-active"{% endif %}>
+            <a href="{{ url }}">{% trans "Groups" %}</a>
         </li>
         {% endif %}
         {% if is_self or user.list_set.exists %}

@@ -1,0 +1,24 @@
+{% load i18n %}
+{% load bookwyrm_group_tags %}
+{% if request.user == user or not request.user == group.user or not request.user.is_authenticated %}
+{% else %}
+{% if user in request.user.blocks.all %}
+{% include 'snippets/block_button.html' with blocks=True %}
+<br/>
+{% endif %}
+<div class="fieldmb-0">
+    <div class="control">
+        <form action="{% url 'remove-group-member' %}" method="POST" class="has-text-centered">
+            {% csrf_token %}
+            <input type="hidden" name="group" value="{{ group.id }}">
+            <input type="hidden" name="user" value="{{ user.username }}">
+            <button id="submit_button" class="button is-small is-danger is-light is-hidden" type="submit" data-id="member_{{ member.id }}">
+                {% trans "Confirm" %}
+            </button>
+            <button id="hide_submit_button" data-controls="submit_button" class="button is-small" type="button" aria-pressed="false">
+                {% trans "Remove" %}
+            </button>
+        </form>
+    </div>
+</div>
+{% endif %}

@@ -8,6 +8,7 @@ from django.test.client import RequestFactory
 
 from bookwyrm import forms, models
 from bookwyrm import views
+from bookwyrm.tests.validate_html import validate_html
 
 
 class InviteViews(TestCase):
@@ -40,7 +41,7 @@ class InviteViews(TestCase):
             invite.return_value = True
             result = view(request, "hi")
         self.assertIsInstance(result, TemplateResponse)
-        result.render()
+        validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
     def test_manage_invites(self):
@@ -51,7 +52,7 @@ class InviteViews(TestCase):
         request.user.is_superuser = True
         result = view(request)
         self.assertIsInstance(result, TemplateResponse)
-        result.render()
+        validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
     def test_manage_invites_post(self):
@@ -67,7 +68,7 @@ class InviteViews(TestCase):
         result = view(request)
 
         self.assertIsInstance(result, TemplateResponse)
-        result.render()
+        validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
         invite = models.SiteInvite.objects.get()
@@ -83,7 +84,7 @@ class InviteViews(TestCase):
         request = self.factory.post("", form.data)
 
         result = view(request)
-        result.render()
+        validate_html(result.render())
 
         req = models.InviteRequest.objects.get()
         self.assertEqual(req.email, "new@user.email")
@@ -97,7 +98,7 @@ class InviteViews(TestCase):
         request = self.factory.post("", form.data)
 
         result = view(request)
-        result.render()
+        validate_html(result.render())
 
         # no request created
         self.assertFalse(models.InviteRequest.objects.exists())
@@ -110,14 +111,14 @@ class InviteViews(TestCase):
         request.user.is_superuser = True
         result = view(request)
         self.assertIsInstance(result, TemplateResponse)
-        result.render()
+        validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
         # now with data
         models.InviteRequest.objects.create(email="fish@example.com")
         result = view(request)
         self.assertIsInstance(result, TemplateResponse)
-        result.render()
+        validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
     def test_manage_invite_requests_send(self):

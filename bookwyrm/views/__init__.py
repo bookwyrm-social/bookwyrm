@@ -32,6 +32,17 @@ from .books.books import Book, upload_cover, add_description, resolve_book
 from .books.edit_book import EditBook, ConfirmEditBook
 from .books.editions import Editions, switch_edition
 
+# landing
+from .landing.landing import About, Home, Landing
+from .landing.login import Login, Logout
+from .landing.register import Register, ConfirmEmail, ConfirmEmailCode, resend_link
+from .landing.password import PasswordResetRequest, PasswordReset
+
+# shelves
+from .shelf.shelf import Shelf
+from .shelf.shelf_actions import create_shelf, delete_shelf
+from .shelf.shelf_actions import shelve, unshelve
+
 # misc views
 from .author import Author, EditAuthor
 from .directory import Directory
@@ -41,25 +52,28 @@ from .follow import follow, unfollow
 from .follow import accept_follow_request, delete_follow_request
 from .get_started import GetStartedBooks, GetStartedProfile, GetStartedUsers
 from .goal import Goal, hide_goal
+from .group import (
+    Group,
+    UserGroups,
+    FindUsers,
+    delete_group,
+    invite_member,
+    remove_member,
+    accept_membership,
+    reject_membership,
+)
 from .import_data import Import, ImportStatus
 from .inbox import Inbox
 from .interaction import Favorite, Unfavorite, Boost, Unboost
 from .isbn import Isbn
-from .landing import About, Home, Landing
 from .list import Lists, SavedLists, List, Curate, UserLists
 from .list import save_list, unsave_list, delete_list
-from .login import Login, Logout
 from .notifications import Notifications
 from .outbox import Outbox
 from .reading import create_readthrough, delete_readthrough, delete_progressupdate
 from .reading import ReadingStatus
-from .register import Register, ConfirmEmail, ConfirmEmailCode, resend_link
 from .rss_feed import RssFeed
-from .password import PasswordResetRequest, PasswordReset
 from .search import Search
-from .shelf import Shelf
-from .shelf import create_shelf, delete_shelf
-from .shelf import shelve, unshelve
 from .status import CreateStatus, EditStatus, DeleteStatus, update_progress
 from .status import edit_readthrough
 from .updates import get_notification_count, get_unread_status_count

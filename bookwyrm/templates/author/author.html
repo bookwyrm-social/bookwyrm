@@ -110,8 +110,14 @@
     {% for book in books %}
         <div class="column is-one-fifth">
             {% include 'landing/small-book.html' with book=book %}
+            {% include 'snippets/shelve_button/shelve_button.html' with book=book %}
         </div>
     {% endfor %}
     </div>
 </div>
+
+<div>
+    {% include 'snippets/pagination.html' with page=books %}
+</div>
+
 {% endblock %}

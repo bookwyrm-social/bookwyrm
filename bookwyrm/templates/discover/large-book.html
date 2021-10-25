@@ -36,23 +36,7 @@
                 </figure>
                 <div class="media-content">
                     <h3 class="title is-6">
-                        <a href="{{ status.user.local_path }}">
-                            <span>{{ status.user.display_name }}</span>
-                        </a>
-
-                        {% if status.status_type == 'GeneratedNote' %}
-                            {{ status.content|safe }}
-                        {% elif status.status_type == 'Rating' %}
-                            {% trans "rated" %}
-                        {% elif status.status_type == 'Review' %}
-                            {% trans "reviewed" %}
-                        {% elif status.status_type == 'Comment' %}
-                            {% trans "commented on" %}
-                        {% elif status.status_type == 'Quotation' %}
-                            {% trans "quoted" %}
-                        {% endif %}
-
-                        <a href="{{ book.local_path }}">{{ book.title }}</a>
+                        {% include "discover/card-header.html" %}
                     </h3>
                 </div>
             </div>

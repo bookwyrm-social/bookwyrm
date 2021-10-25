@@ -17,4 +17,20 @@
     {% include 'notifications/items/add.html' %}
 {% elif notification.notification_type == 'REPORT' %}
     {% include 'notifications/items/report.html' %}
+{% elif notification.notification_type == 'INVITE' %}
+    {% include 'notifications/items/invite.html' %}
+{% elif notification.notification_type == 'ACCEPT' %}
+    {% include 'notifications/items/accept.html' %}
+{% elif notification.notification_type == 'JOIN' %}
+    {% include 'notifications/items/join.html' %}
+{% elif notification.notification_type == 'LEAVE' %}
+    {% include 'notifications/items/leave.html' %}
+{% elif notification.notification_type == 'REMOVE' %}
+    {% include 'notifications/items/remove.html' %}
+{% elif notification.notification_type == 'GROUP_PRIVACY' %}
+    {% include 'notifications/items/update.html' %}
+{% elif notification.notification_type == 'GROUP_NAME' %}
+    {% include 'notifications/items/update.html' %}
+{% elif notification.notification_type == 'GROUP_DESCRIPTION' %}
+    {% include 'notifications/items/update.html' %}
 {% endif %}

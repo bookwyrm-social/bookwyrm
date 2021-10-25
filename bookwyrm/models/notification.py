@@ -4,10 +4,10 @@ from django.dispatch import receiver
 from .base_model import BookWyrmModel
 from . import Boost, Favorite, ImportJob, Report, Status, User
 
-
+# pylint: disable=line-too-long
 NotificationType = models.TextChoices(
     "NotificationType",
-    "FAVORITE REPLY MENTION TAG FOLLOW FOLLOW_REQUEST BOOST IMPORT ADD REPORT",
+    "FAVORITE REPLY MENTION TAG FOLLOW FOLLOW_REQUEST BOOST IMPORT ADD REPORT INVITE ACCEPT JOIN LEAVE REMOVE GROUP_PRIVACY GROUP_NAME GROUP_DESCRIPTION",
 )
 
 
@@ -18,6 +18,9 @@ class Notification(BookWyrmModel):
     related_book = models.ForeignKey("Edition", on_delete=models.CASCADE, null=True)
     related_user = models.ForeignKey(
         "User", on_delete=models.CASCADE, null=True, related_name="related_user"
+    )
+    related_group = models.ForeignKey(
+        "Group", on_delete=models.CASCADE, null=True, related_name="notifications"
     )
     related_status = models.ForeignKey("Status", on_delete=models.CASCADE, null=True)
     related_import = models.ForeignKey("ImportJob", on_delete=models.CASCADE, null=True)
@@ -37,6 +40,7 @@ class Notification(BookWyrmModel):
             user=self.user,
             related_book=self.related_book,
             related_user=self.related_user,
+            related_group=self.related_group,
             related_status=self.related_status,
             related_import=self.related_import,
             related_list_item=self.related_list_item,

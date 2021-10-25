@@ -12,7 +12,9 @@
     <div>
         <p>{% trans "Added:" %} {{ author.created_date | naturaltime }}</p>
         <p>{% trans "Updated:" %} {{ author.updated_date | naturaltime }}</p>
+        {% if author.last_edited_by %}
         <p>{% trans "Last edited by:" %} <a href="{{ author.last_edited_by.remote_id }}">{{ author.last_edited_by.display_name }}</a></p>
+        {% endif %}
     </div>
 </header>
 

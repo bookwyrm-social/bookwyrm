@@ -1,0 +1,34 @@
+{% load i18n %}
+{% csrf_token %}
+
+<div class="columns">
+    <div class="column is-two-thirds">
+        <input type="hidden" name="user" value="{{ request.user.id }}" />
+        <div class="field">
+            <label class="label" for="id_name">{% trans "Group Name:" %}</label>
+            {{ group_form.name }}
+        </div>
+        <div class="field">
+            <label class="label" for="id_description">{% trans "Group Description:" %}</label>
+            {{ group_form.description }}
+        </div>
+    </div>
+</div>
+<div class="columns is-mobile">
+    <div class="column">
+        <div class="field has-addons">
+            <div class="control">
+                {% include 'snippets/privacy_select_no_followers.html' with current=group.privacy %}
+            </div>
+            <div class="control">
+                <button type="submit" class="button is-primary">{% trans "Save" %}</button>
+            </div>
+        </div>
+    </div>
+    {% if group.id %}
+    <div class="column is-narrow">
+        {% trans "Delete group" as button_text %}
+        {% include 'snippets/toggle/toggle_button.html' with class="is-danger" text=button_text icon_with_text="x" controls_text="delete_group" controls_uid=group.id focus="modal_title_delete_group" %}
+    </div>
+    {% endif %}
+</div>

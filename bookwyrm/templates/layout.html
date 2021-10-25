@@ -171,7 +171,7 @@
                                         <input type="text" name="localname" maxlength="150" class="input" required="" id="id_localname" placeholder="{% trans 'username' %}">
                                     </div>
                                     <div class="column">
-                                        <label class="is-sr-only" for="id_password">{% trans "Username:" %}</label>
+                                        <label class="is-sr-only" for="id_password">{% trans "Password:" %}</label>
                                         <input type="password" name="password" maxlength="128" class="input" required="" id="id_password" placeholder="{% trans 'password' %}">
                                         <p class="help"><a href="{% url 'password-reset' %}">{% trans "Forgot your password?" %}</a></p>
                                     </div>
@@ -227,7 +227,7 @@
         <div class="columns">
             <div class="column is-one-fifth">
                 <p>
-                <a href="{% url 'about' %}">{% trans "About this instance" %}</a>
+                <a href="{% url 'about' %}">{% blocktrans with site_name=site.name %}About {{ site_name }}{% endblocktrans %}</a>
                 </p>
                 {% if site.admin_email %}
                 <p>

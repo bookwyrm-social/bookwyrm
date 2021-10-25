@@ -137,6 +137,25 @@ class Following(View):
         return TemplateResponse(request, "user/relationships/following.html", data)
 
 
+class Groups(View):
+    """list of user's groups view"""
+
+    def get(self, request, username):
+        """list of groups"""
+        user = get_user_from_username(request.user, username)
+
+        paginated = Paginator(
+            models.Group.memberships.filter(user=user).order_by("-created_date"),
+            PAGE_LENGTH,
+        )
+        data = {
+            "user": user,
+            "is_self": request.user.id == user.id,
+            "group_list": paginated.get_page(request.GET.get("page")),
+        }
+        return TemplateResponse(request, "user/groups.html", data)
+
+
 @require_POST
 @login_required
 def hide_suggestions(request):

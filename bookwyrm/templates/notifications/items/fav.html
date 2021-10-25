@@ -18,25 +18,25 @@
     {% if related_status.status_type == 'Review' %}
     {% blocktrans trimmed %}
 
-    favorited your <a href="{{ related_path }}">review of <em>{{ book_title }}</em></a>
+    liked your <a href="{{ related_path }}">review of <em>{{ book_title }}</em></a>
 
     {% endblocktrans %}
     {% elif related_status.status_type == 'Comment' %}
     {% blocktrans trimmed %}
 
-    favorited your <a href="{{ related_path }}">comment on<em>{{ book_title }}</em></a>
+    liked your <a href="{{ related_path }}">comment on <em>{{ book_title }}</em></a>
 
     {% endblocktrans %}
     {% elif related_status.status_type == 'Quotation' %}
     {% blocktrans trimmed %}
 
-    favorited your <a href="{{ related_path }}">quote from <em>{{ book_title }}</em></a>
+    liked your <a href="{{ related_path }}">quote from <em>{{ book_title }}</em></a>
 
     {% endblocktrans %}
     {% else %}
     {% blocktrans trimmed %}
 
-    favorited your <a href="{{ related_path }}">status</a>
+    liked your <a href="{{ related_path }}">status</a>
 
     {% endblocktrans %}
     {% endif %}

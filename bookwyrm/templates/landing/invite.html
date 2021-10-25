@@ -12,7 +12,7 @@
             {% if valid %}
             <div>
                 <form name="register" method="post" action="/register">
-                    <input type=hidden name="invite_code" value="{{ invite.code }}">
+                    <input type="hidden" name="invite_code" value="{{ invite.code }}">
                     {% include 'snippets/register_form.html' %}
                 </form>
             </div>
