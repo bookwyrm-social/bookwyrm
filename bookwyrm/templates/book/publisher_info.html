@@ -3,7 +3,7 @@
 {% load i18n %}
 {% load humanize %}
 
-{% firstof book.physical_format_detail book.physical_format as format %}
+{% firstof book.physical_format_detail book.get_physical_format_display as format %}
 {% firstof book.physical_format book.physical_format_detail as format_property %}
 {% with pages=book.pages %}
 {% if format or pages %}
@@ -18,7 +18,7 @@
 
 <p>
     {% if format and not pages %}
-        {% blocktrans %}{{ format }}{% endblocktrans %}
+        {{ format }}
     {% elif format and pages %}
         {% blocktrans %}{{ format }}, {{ pages }} pages{% endblocktrans %}
     {% elif pages %}

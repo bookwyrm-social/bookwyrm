@@ -1,0 +1,37 @@
+{% extends 'user/layout.html' %}
+{% load i18n %}
+
+{% block header %}
+<div class="columns is-mobile">
+    <div class="column">
+        <h1 class="title">
+            {% if is_self %}
+            {% trans "Your Groups" %}
+            {% else %}
+            {% blocktrans with username=user.display_name %}Groups: {{ username }}{% endblocktrans %}
+            {% endif %}
+        </h1>
+    </div>
+    {% if is_self %}
+    <div class="column is-narrow">
+        {% trans "Create group" as button_text %}
+        {% include 'snippets/toggle/open_button.html' with controls_text="create_group" icon_with_text="plus" text=button_text %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+
+{% block panel %}
+<section class="block">
+
+    <div class="block">
+        {% include 'groups/create_form.html' with controls_text="create_group" %}
+    </div>
+
+    {% include 'groups/user_groups.html' with memberships=memberships %}
+</section>
+<div>
+    {% include 'snippets/pagination.html' with page=user.memberships path=path %}
+</div>
+{% endblock %}

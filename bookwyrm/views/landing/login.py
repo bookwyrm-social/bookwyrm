@@ -29,7 +29,7 @@ class Login(View):
             "login_form": forms.LoginForm(),
             "register_form": forms.RegisterForm(),
         }
-        return TemplateResponse(request, "login.html", data)
+        return TemplateResponse(request, "landing/login.html", data)
 
     @sensitive_variables("password")
     @method_decorator(sensitive_post_parameters("password"))
@@ -69,7 +69,7 @@ class Login(View):
         login_form.non_field_errors = _("Username or password are incorrect")
         register_form = forms.RegisterForm()
         data = {"login_form": login_form, "register_form": register_form}
-        return TemplateResponse(request, "login.html", data)
+        return TemplateResponse(request, "landing/login.html", data)
 
 
 @method_decorator(login_required, name="dispatch")

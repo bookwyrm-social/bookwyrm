@@ -1,0 +1,29 @@
+{% extends 'notifications/items/item_layout.html' %}
+
+{% load i18n %}
+{% load utilities %}
+
+{% block primary_link %}{% spaceless %}
+    {{ notification.related_group.local_path }}
+{% endspaceless %}{% endblock %}
+
+{% block icon %}
+    <span class="icon icon-local"></span>
+{% endblock %}
+
+{% block description %}
+{% if notification.related_user %}
+
+    {% blocktrans trimmed with group_name=notification.related_group.name group_path=notification.related_group.local_path %}
+    has been removed from your group "<a href="{{ group_path }}">{{ group_name }}</a>"
+    {% endblocktrans %}
+
+{% else %}
+
+    {% blocktrans trimmed with group_name=notification.related_group.name group_path=notification.related_group.local_path %}
+    You have been removed from the "<a href="{{ group_path }}">{{ group_name }}</a>" group
+    {% endblocktrans %}
+
+{% endif %}
+{% endblock %}
+

@@ -7,6 +7,7 @@ from django.test import TestCase
 from django.test.client import RequestFactory
 
 from bookwyrm import forms, models, views
+from bookwyrm.tests.validate_html import validate_html
 
 
 # pylint: disable=too-many-public-methods
@@ -41,7 +42,7 @@ class LoginViews(TestCase):
 
         result = login(request)
         self.assertIsInstance(result, TemplateResponse)
-        result.render()
+        validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
         request.user = self.local_user
@@ -58,7 +59,7 @@ class LoginViews(TestCase):
         request = self.factory.post("", form.data)
         request.user = self.anonymous_user
 
-        with patch("bookwyrm.views.login.login"):
+        with patch("bookwyrm.views.landing.login.login"):
             result = view(request)
         self.assertEqual(result.url, "/")
         self.assertEqual(result.status_code, 302)
@@ -72,7 +73,7 @@ class LoginViews(TestCase):
         request = self.factory.post("", form.data)
         request.user = self.anonymous_user
 
-        with patch("bookwyrm.views.login.login"):
+        with patch("bookwyrm.views.landing.login.login"):
             result = view(request)
         self.assertEqual(result.url, "/")
         self.assertEqual(result.status_code, 302)
@@ -86,7 +87,7 @@ class LoginViews(TestCase):
         request = self.factory.post("", form.data)
         request.user = self.anonymous_user
 
-        with patch("bookwyrm.views.login.login"):
+        with patch("bookwyrm.views.landing.login.login"):
             result = view(request)
         self.assertEqual(result.url, "/")
         self.assertEqual(result.status_code, 302)
@@ -100,9 +101,9 @@ class LoginViews(TestCase):
         request = self.factory.post("", form.data)
         request.user = self.anonymous_user
 
-        with patch("bookwyrm.views.login.login"):
+        with patch("bookwyrm.views.landing.login.login"):
             result = view(request)
-        result.render()
+        validate_html(result.render())
         self.assertEqual(result.status_code, 200)
         self.assertEqual(
             result.context_data["login_form"].non_field_errors,

@@ -10,6 +10,7 @@ from django.test.client import RequestFactory
 
 from bookwyrm import models, views
 from bookwyrm.settings import DOMAIN
+from bookwyrm.tests.validate_html import validate_html
 
 
 # pylint: disable=too-many-public-methods
@@ -38,6 +39,13 @@ class RegisterViews(TestCase):
             id=1, require_confirm_email=False
         )
 
+    def test_get_redirect(self, *_):
+        """there's no dedicated registration page"""
+        view = views.Register.as_view()
+        request = self.factory.get("register/")
+        response = view(request)
+        self.assertEqual(response.status_code, 302)
+
     def test_register(self, *_):
         """create a user"""
         view = views.Register.as_view()
@@ -50,12 +58,12 @@ class RegisterViews(TestCase):
                 "email": "aa@bb.cccc",
             },
         )
-        with patch("bookwyrm.views.register.login"):
+        with patch("bookwyrm.views.landing.register.login"):
             response = view(request)
         self.assertEqual(models.User.objects.count(), 2)
         self.assertEqual(response.status_code, 302)
         nutria = models.User.objects.last()
-        self.assertEqual(nutria.username, "nutria-user.user_nutria@%s" % DOMAIN)
+        self.assertEqual(nutria.username, f"nutria-user.user_nutria@{DOMAIN}")
         self.assertEqual(nutria.localname, "nutria-user.user_nutria")
         self.assertEqual(nutria.local, True)
 
@@ -75,11 +83,11 @@ class RegisterViews(TestCase):
                 "email": "aa@bb.cccc",
             },
         )
-        with patch("bookwyrm.views.register.login"):
+        with patch("bookwyrm.views.landing.register.login"):
             response = view(request)
         self.assertEqual(response.status_code, 302)
         nutria = models.User.objects.get(localname="nutria")
-        self.assertEqual(nutria.username, "nutria@%s" % DOMAIN)
+        self.assertEqual(nutria.username, f"nutria@{DOMAIN}")
         self.assertEqual(nutria.local, True)
 
         self.assertFalse(nutria.is_active)
@@ -93,12 +101,12 @@ class RegisterViews(TestCase):
             "register/",
             {"localname": "nutria ", "password": "mouseword", "email": "aa@bb.ccc"},
         )
-        with patch("bookwyrm.views.register.login"):
+        with patch("bookwyrm.views.landing.register.login"):
             response = view(request)
         self.assertEqual(models.User.objects.count(), 2)
         self.assertEqual(response.status_code, 302)
         nutria = models.User.objects.last()
-        self.assertEqual(nutria.username, "nutria@%s" % DOMAIN)
+        self.assertEqual(nutria.username, f"nutria@{DOMAIN}")
         self.assertEqual(nutria.localname, "nutria")
         self.assertEqual(nutria.local, True)
 
@@ -111,7 +119,43 @@ class RegisterViews(TestCase):
         )
         response = view(request)
         self.assertEqual(models.User.objects.count(), 1)
-        response.render()
+        validate_html(response.render())
+
+    def test_register_error_and_invite(self, *_):
+        """redirect to the invite page"""
+        view = views.Register.as_view()
+        self.settings.allow_registration = False
+        self.settings.save()
+        models.SiteInvite.objects.create(
+            code="testcode", user=self.local_user, use_limit=1
+        )
+        self.assertEqual(models.SiteInvite.objects.get().times_used, 0)
+
+        request = self.factory.post(
+            "register/",
+            {
+                "localname": "nutria",
+                "password": "mouseword",
+                "email": "",
+                "invite_code": "testcode",
+            },
+        )
+        with patch("bookwyrm.views.landing.register.login"):
+            response = view(request)
+        response = view(request)
+        validate_html(response.render())
+
+    def test_register_username_in_use(self, *_):
+        """that username is taken"""
+        view = views.Register.as_view()
+        self.assertEqual(models.User.objects.count(), 1)
+        request = self.factory.post(
+            "register/",
+            {"localname": "mouse", "password": "mouseword", "email": "aa@bb.ccc"},
+        )
+        response = view(request)
+        self.assertEqual(models.User.objects.count(), 1)
+        validate_html(response.render())
 
     def test_register_invalid_username(self, *_):
         """gotta have an email"""
@@ -123,7 +167,7 @@ class RegisterViews(TestCase):
         )
         response = view(request)
         self.assertEqual(models.User.objects.count(), 1)
-        response.render()
+        validate_html(response.render())
 
         request = self.factory.post(
             "register/",
@@ -131,7 +175,7 @@ class RegisterViews(TestCase):
         )
         response = view(request)
         self.assertEqual(models.User.objects.count(), 1)
-        response.render()
+        validate_html(response.render())
 
         request = self.factory.post(
             "register/",
@@ -139,7 +183,7 @@ class RegisterViews(TestCase):
         )
         response = view(request)
         self.assertEqual(models.User.objects.count(), 1)
-        response.render()
+        validate_html(response.render())
 
     def test_register_closed_instance(self, *_):
         """you can't just register"""
@@ -172,7 +216,7 @@ class RegisterViews(TestCase):
             "register/",
             {"localname": "nutria ", "password": "mouseword", "email": "aa@bleep.com"},
         )
-        with patch("bookwyrm.views.register.login"):
+        with patch("bookwyrm.views.landing.register.login"):
             result = view(request)
         self.assertEqual(result.status_code, 302)
         self.assertTrue(models.User.objects.filter(email="aa@bleep.com").exists())
@@ -196,7 +240,7 @@ class RegisterViews(TestCase):
                 "invite_code": "testcode",
             },
         )
-        with patch("bookwyrm.views.register.login"):
+        with patch("bookwyrm.views.landing.register.login"):
             response = view(request)
         self.assertEqual(models.User.objects.count(), 2)
         self.assertEqual(response.status_code, 302)
@@ -277,7 +321,7 @@ class RegisterViews(TestCase):
 
         result = view(request, "abcde")
         self.assertIsInstance(result, TemplateResponse)
-        result.render()
+        validate_html(result.render())
         self.assertEqual(result.status_code, 200)
         self.assertFalse(self.local_user.is_active)
         self.assertEqual(self.local_user.deactivation_reason, "pending")
@@ -293,10 +337,32 @@ class RegisterViews(TestCase):
 
         result = login(request)
         self.assertIsInstance(result, TemplateResponse)
-        result.render()
+        validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
         request.user = self.local_user
         result = login(request)
         self.assertEqual(result.url, "/")
         self.assertEqual(result.status_code, 302)
+
+    def test_confirm_email_post(self, *_):
+        """send the email"""
+        self.settings.require_confirm_email = True
+        self.settings.save()
+        view = views.ConfirmEmail.as_view()
+        models.SiteInvite.objects.create(
+            code="testcode", user=self.local_user, use_limit=1
+        )
+        request = self.factory.post("", {"code": "testcode"})
+        request.user = self.anonymous_user
+
+        result = view(request)
+        validate_html(result.render())
+
+    def test_resend_link(self, *_):
+        """try again"""
+        request = self.factory.post("", {"email": "mouse@mouse.com"})
+        request.user = self.anonymous_user
+        with patch("bookwyrm.emailing.send_email.delay") as mock:
+            views.resend_link(request)
+        self.assertEqual(mock.call_count, 1)

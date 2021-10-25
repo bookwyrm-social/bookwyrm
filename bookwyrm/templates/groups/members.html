@@ -1,0 +1,47 @@
+{% load i18n %}
+{% load utilities %}
+{% load humanize %}
+{% load bookwyrm_tags %}
+{% load bookwyrm_group_tags %}
+
+<h2 class="title is-5">Group Members</h2>
+<p class="subtitle is-6">{% trans "Members can add and remove books on a group's book lists" %}</p>
+
+{% if group.user != request.user and group|is_member:request.user %}
+<form action="{% url 'remove-group-member' %}" method="POST" class="my-4">
+    {% csrf_token %}
+    <input type="hidden" name="group" value="{{ group.id }}">
+    <input type="hidden" name="user" value="{{ user.username }}">
+    <button id="remove_self_button" class="button is-small is-danger is-light is-hidden" type="submit">
+        {% trans "Confirm" %}
+    </button>
+    <button id="hide_remove_self_button" data-controls="remove_self_button" class="button is-small" type="button" aria-pressed="false">
+        {% trans "Leave group" %}
+    </button>
+</form>
+{% endif %}
+
+<div class="is-multiline is-flex is-flex-grow-0 is-flex-wrap-wrap">
+    {% for membership in group.memberships.all %}
+    {% with member=membership.user %}
+    <div class="box has-text-centered is-shadowless has-background-white-bis my-2 mx-2 member_{{ member.id }}">
+        <a href="{{ member.local_path }}" class="has-text-black">
+            {% include 'snippets/avatar.html' with user=member large=True %}
+            <span title="{{ member.display_name }}" class="is-block is-6 has-text-weight-bold">{{ member.display_name|truncatechars:10 }}</span>
+            <span title="@{{ member|username }}" class="is-block pb-3">@{{ member|username|truncatechars:8 }}</span>
+        </a>
+        {% if group.user == member %}
+        <span class="icon icon-star-full" title="Manager">
+            <span class="is-sr-only">Manager</span>
+        </span>
+        {% endif %}
+        {% include 'snippets/remove_from_group_button.html' with user=member group=group %}
+        {% if request.user in member.following.all %}
+        <p class="help">
+            {% trans "Follows you" %}
+        </p>
+        {% endif %}
+    </div>
+    {% endwith %}
+    {% endfor %}
+</div>

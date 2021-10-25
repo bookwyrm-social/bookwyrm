@@ -78,7 +78,24 @@ class BookWyrmModel(models.Model):
                 self.privacy in ["direct", "followers"]
                 and self.mention_users.filter(id=viewer.id).first()
             ):
+
                 return
+
+        # you can see groups of which you are a member
+        if (
+            hasattr(self, "memberships")
+            and self.memberships.filter(user=viewer).exists()
+        ):
+            return
+
+        # you can see objects which have a group of which you are a member
+        if hasattr(self, "group"):
+            if (
+                hasattr(self.group, "memberships")
+                and self.group.memberships.filter(user=viewer).exists()
+            ):
+                return
+
         raise Http404()
 
     def raise_not_editable(self, viewer):

@@ -1,0 +1,12 @@
+{% extends 'components/inline_form.html' %}
+{% load i18n %}
+
+{% block header %}
+{% trans "Create Group" %}
+{% endblock %}
+
+{% block form %}
+<form name="create-group" method="post" action="{% url 'user-groups' request.user.username %}">
+    {% include 'groups/form.html' with group_form=group_form %}
+</form>
+{% endblock %}
