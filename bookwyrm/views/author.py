@@ -35,7 +35,7 @@ class Author(View):
             .filter(default_id=F("id"))
             .order_by("-first_published_date", "-published_date", "-created_date")
             .prefetch_related("authors")
-        )
+        ).distinct()
 
         paginated = Paginator(books, PAGE_LENGTH)
         page = paginated.get_page(request.GET.get("page"))
