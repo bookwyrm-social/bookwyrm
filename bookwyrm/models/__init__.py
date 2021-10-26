@@ -16,7 +16,8 @@ from .attachment import Image
 from .favorite import Favorite
 from .readthrough import ReadThrough, ProgressUpdate, ProgressMode
 
-from .user import User, KeyPair, AnnualGoal
+from .actor import KeyPair
+from .user import User, AnnualGoal
 from .relationship import UserFollows, UserFollowRequest, UserBlocks
 from .report import Report, ReportComment
 from .federated_server import FederatedServer
