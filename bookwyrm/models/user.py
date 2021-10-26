@@ -1,6 +1,6 @@
 """ database schema for user data """
-import re
 from urllib.parse import urlparse
+import re
 
 from django.apps import apps
 from django.contrib.auth.models import AbstractUser, Group
@@ -13,18 +13,15 @@ from model_utils import FieldTracker
 import pytz
 
 from bookwyrm import activitypub
-from bookwyrm.connectors import get_data, ConnectorException
 from bookwyrm.models.shelf import Shelf
 from bookwyrm.models.status import Status, Review
 from bookwyrm.preview_images import generate_user_preview_image_task
 from bookwyrm.settings import DOMAIN, ENABLE_PREVIEW_IMAGES, USE_HTTPS, LANGUAGES
-from bookwyrm.signatures import create_key_pair
-from bookwyrm.tasks import app
 from bookwyrm.utils import regex
-from .activitypub_mixin import OrderedCollectionPageMixin, ActivitypubMixin
+from .activitypub_mixin import OrderedCollectionPageMixin
 from .base_model import BookWyrmModel, DeactivationReason, new_access_code
-from .federated_server import FederatedServer
-from . import fields, Review
+from .actor import ActorModel
+from . import fields
 
 
 def site_link():
@@ -33,36 +30,12 @@ def site_link():
     return f"{protocol}://{DOMAIN}"
 
 
-class User(OrderedCollectionPageMixin, AbstractUser):
+class User(OrderedCollectionPageMixin, AbstractUser, ActorModel):
     """a user who wants to read books"""
 
     username = fields.UsernameField()
     email = models.EmailField(unique=True, null=True)
 
-    key_pair = fields.OneToOneField(
-        "KeyPair",
-        on_delete=models.CASCADE,
-        blank=True,
-        null=True,
-        activitypub_field="publicKey",
-        related_name="owner",
-    )
-    inbox = fields.RemoteIdField(unique=True)
-    shared_inbox = fields.RemoteIdField(
-        activitypub_field="sharedInbox",
-        activitypub_wrapper="endpoints",
-        deduplication_field=False,
-        null=True,
-    )
-    federated_server = models.ForeignKey(
-        "FederatedServer",
-        on_delete=models.PROTECT,
-        null=True,
-        blank=True,
-    )
-    outbox = fields.RemoteIdField(unique=True, null=True)
-    summary = fields.HtmlField(null=True, blank=True)
-    local = models.BooleanField(default=False)
     bookwyrm_user = fields.BooleanField(default=True)
     localname = CICharField(
         max_length=255,
@@ -114,19 +87,14 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         through_fields=("user", "status"),
         related_name="favorite_statuses",
     )
-    default_post_privacy = models.CharField(
-        max_length=255, default="public", choices=fields.PrivacyLevels.choices
-    )
     remote_id = fields.RemoteIdField(null=True, unique=True, activitypub_field="id")
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
     last_active_date = models.DateTimeField(default=timezone.now)
-    manually_approves_followers = fields.BooleanField(default=False)
 
     # options to turn features on and off
     show_goal = models.BooleanField(default=True)
     show_suggested_users = models.BooleanField(default=True)
-    discoverable = fields.BooleanField(default=False)
 
     preferred_timezone = models.CharField(
         choices=[(str(tz), str(tz)) for tz in pytz.all_timezones],
@@ -146,7 +114,6 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     confirmation_code = models.CharField(max_length=32, default=new_access_code)
 
     name_field = "username"
-    property_fields = [("following_link", "following")]
     field_tracker = FieldTracker(fields=["name", "avatar"])
 
     @property
@@ -192,14 +159,6 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         ).exists()
 
     activity_serializer = activitypub.Person
-
-    @classmethod
-    def viewer_aware_objects(cls, viewer):
-        """the user queryset filtered for the context of the logged in user"""
-        queryset = cls.objects.filter(is_active=True)
-        if viewer and viewer.is_authenticated:
-            queryset = queryset.exclude(blocks=viewer)
-        return queryset
 
     def update_active_date(self):
         """this user is here! they are doing things!"""
@@ -288,21 +247,10 @@ class User(OrderedCollectionPageMixin, AbstractUser):
             super().save(*args, **kwargs)
             return
 
-        # this is a new remote user, we need to set their remote server field
-        if not self.local:
-            super().save(*args, **kwargs)
-            transaction.on_commit(lambda: set_remote_server.delay(self.id))
-            return
-
         with transaction.atomic():
             # populate fields for local users
             link = site_link()
             self.remote_id = f"{link}/user/{self.localname}"
-            self.followers_url = f"{self.remote_id}/followers"
-            self.inbox = f"{self.remote_id}/inbox"
-            self.shared_inbox = f"{link}/inbox"
-            self.outbox = f"{self.remote_id}/outbox"
-
             # an id needs to be set before we can proceed with related models
             super().save(*args, **kwargs)
 
@@ -312,12 +260,6 @@ class User(OrderedCollectionPageMixin, AbstractUser):
             except Group.DoesNotExist:
                 # this should only happen in tests
                 pass
-
-            # create keys and shelves for new local users
-            self.key_pair = KeyPair.objects.create(
-                remote_id=f"{self.remote_id}/#main-key"
-            )
-            self.save(broadcast=False, update_fields=["key_pair"])
 
             self.create_shelves()
 
@@ -357,39 +299,6 @@ class User(OrderedCollectionPageMixin, AbstractUser):
                 user=self,
                 editable=False,
             ).save(broadcast=False)
-
-
-class KeyPair(ActivitypubMixin, BookWyrmModel):
-    """public and private keys for a user"""
-
-    private_key = models.TextField(blank=True, null=True)
-    public_key = fields.TextField(
-        blank=True, null=True, activitypub_field="publicKeyPem"
-    )
-
-    activity_serializer = activitypub.PublicKey
-    serialize_reverse_fields = [("owner", "owner", "id")]
-
-    def get_remote_id(self):
-        # self.owner is set by the OneToOneField on User
-        return f"{self.owner.remote_id}/#main-key"
-
-    def save(self, *args, **kwargs):
-        """create a key pair"""
-        # no broadcasting happening here
-        if "broadcast" in kwargs:
-            del kwargs["broadcast"]
-        if not self.public_key:
-            self.private_key, self.public_key = create_key_pair()
-        return super().save(*args, **kwargs)
-
-    def to_activity(self, **kwargs):
-        """override default AP serializer to add context object
-        idk if this is the best way to go about this"""
-        activity_object = super().to_activity(**kwargs)
-        del activity_object["@context"]
-        del activity_object["type"]
-        return activity_object
 
 
 class AnnualGoal(BookWyrmModel):
@@ -444,58 +353,6 @@ class AnnualGoal(BookWyrmModel):
             "count": count,
             "percent": int(float(count / self.goal) * 100),
         }
-
-
-@app.task(queue="low_priority")
-def set_remote_server(user_id):
-    """figure out the user's remote server in the background"""
-    user = User.objects.get(id=user_id)
-    actor_parts = urlparse(user.remote_id)
-    user.federated_server = get_or_create_remote_server(actor_parts.netloc)
-    user.save(broadcast=False, update_fields=["federated_server"])
-    if user.bookwyrm_user and user.outbox:
-        get_remote_reviews.delay(user.outbox)
-
-
-def get_or_create_remote_server(domain):
-    """get info on a remote server"""
-    try:
-        return FederatedServer.objects.get(server_name=domain)
-    except FederatedServer.DoesNotExist:
-        pass
-
-    try:
-        data = get_data(f"https://{domain}/.well-known/nodeinfo")
-        try:
-            nodeinfo_url = data.get("links")[0].get("href")
-        except (TypeError, KeyError):
-            raise ConnectorException()
-
-        data = get_data(nodeinfo_url)
-        application_type = data.get("software", {}).get("name")
-        application_version = data.get("software", {}).get("version")
-    except ConnectorException:
-        application_type = application_version = None
-
-    server = FederatedServer.objects.create(
-        server_name=domain,
-        application_type=application_type,
-        application_version=application_version,
-    )
-    return server
-
-
-@app.task(queue="low_priority")
-def get_remote_reviews(outbox):
-    """ingest reviews by a new remote bookwyrm user"""
-    outbox_page = outbox + "?page=true&type=Review"
-    data = get_data(outbox_page)
-
-    # TODO: pagination?
-    for activity in data["orderedItems"]:
-        if not activity["type"] == "Review":
-            continue
-        activitypub.Review(**activity).to_model()
 
 
 # pylint: disable=unused-argument
