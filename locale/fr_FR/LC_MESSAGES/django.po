@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-10-24 14:09+0000\n"
-"PO-Revision-Date: 2021-10-25 21:02\n"
+"PO-Revision-Date: 2021-10-26 17:51\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: French\n"
 "Language: fr\n"
@@ -118,7 +118,7 @@ msgstr "Couverture rigide"
 
 #: bookwyrm/models/book.py:236
 msgid "Paperback"
-msgstr ""
+msgstr "Couverture souple"
 
 #: bookwyrm/models/federated_server.py:11
 #: bookwyrm/templates/settings/federation/edit_instance.html:42
@@ -161,7 +161,7 @@ msgstr "Accueil"
 
 #: bookwyrm/settings.py:119
 msgid "Books Timeline"
-msgstr ""
+msgstr "Actualité de mes livres"
 
 #: bookwyrm/settings.py:119 bookwyrm/templates/search/layout.html:21
 #: bookwyrm/templates/search/layout.html:42
@@ -979,7 +979,7 @@ msgstr "S’enregistrer maintenant"
 #: bookwyrm/templates/email/invite/html_content.html:15
 #, python-format
 msgid "Learn more <a href=\"https://%(domain)s%(about_path)s\">about %(site_name)s</a>."
-msgstr ""
+msgstr "En savoir plus <a href=\"https://%(domain)s%(about_path)s\">sur %(site_name)s</a>."
 
 #: bookwyrm/templates/email/invite/text_content.html:4
 #, python-format
@@ -1231,7 +1231,7 @@ msgstr "Aucun compte trouvé pour « %(query)s »"
 
 #: bookwyrm/templates/groups/create_form.html:5
 msgid "Create Group"
-msgstr "Créer un groupe"
+msgstr "Créer un Groupe"
 
 #: bookwyrm/templates/groups/created_text.html:4
 #, python-format
@@ -1260,7 +1260,7 @@ msgstr "Supprimer"
 
 #: bookwyrm/templates/groups/edit_form.html:5
 msgid "Edit Group"
-msgstr "Modifier le groupe"
+msgstr "Modifier le Groupe"
 
 #: bookwyrm/templates/groups/find_users.html:6
 msgid "Add new members!"
@@ -1738,7 +1738,7 @@ msgstr "Les membres du groupe peuvent ajouter et supprimer des livres de cette l
 
 #: bookwyrm/templates/lists/form.html:41
 msgid "Select Group"
-msgstr ""
+msgstr "Sélectionner un Groupe"
 
 #: bookwyrm/templates/lists/form.html:45
 msgid "Select a group"
@@ -1750,7 +1750,7 @@ msgstr "Vous n'avez pas encore de Groupe !"
 
 #: bookwyrm/templates/lists/form.html:58
 msgid "Create a Group"
-msgstr ""
+msgstr "Créer un Groupe"
 
 #: bookwyrm/templates/lists/form.html:81
 msgid "Delete list"
@@ -2067,7 +2067,7 @@ msgstr "Confidentialité"
 
 #: bookwyrm/templates/preferences/edit_user.html:72
 msgid "Show reading goal prompt in feed:"
-msgstr ""
+msgstr "Afficher l'invite d'objectif de lecture dans le fil d'actualité :"
 
 #: bookwyrm/templates/preferences/edit_user.html:76
 msgid "Show suggested users:"
@@ -2107,7 +2107,7 @@ msgstr "Commencer \"%(book_title)s\""
 #: bookwyrm/templates/reading_progress/want.html:5
 #, python-format
 msgid "Want to Read \"%(book_title)s\""
-msgstr ""
+msgstr "Je veux lire \"%(book_title)s\""
 
 #: bookwyrm/templates/search/book.html:47
 #: bookwyrm/templates/settings/reports/reports.html:25
@@ -2257,7 +2257,7 @@ msgstr "inactive"
 
 #: bookwyrm/templates/settings/announcements/announcements.html:52
 msgid "No announcements found"
-msgstr ""
+msgstr "Aucune annonce trouvée"
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:6
 #: bookwyrm/templates/settings/dashboard/dashboard.html:8
@@ -2268,7 +2268,7 @@ msgstr ""
 #: bookwyrm/templates/settings/dashboard/dashboard.html:15
 #: bookwyrm/templates/settings/dashboard/dashboard.html:100
 msgid "Total users"
-msgstr ""
+msgstr "Nombre total d'utilisateurs·rices"
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:21
 #: bookwyrm/templates/settings/dashboard/user_chart.html:16
@@ -2295,8 +2295,8 @@ msgstr[1] ""
 #, python-format
 msgid "%(display_count)s invite request"
 msgid_plural "%(display_count)s invite requests"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(display_count)s demande d'invitation"
+msgstr[1] "%(display_count)s demandes d'invitation"
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:65
 msgid "Instance Activity"
@@ -2304,7 +2304,7 @@ msgstr "Activité de l'instance"
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:83
 msgid "Interval:"
-msgstr ""
+msgstr "Intervalle :"
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:87
 msgid "Days"
@@ -2336,7 +2336,7 @@ msgstr "Statuts publiés"
 
 #: bookwyrm/templates/settings/dashboard/user_chart.html:11
 msgid "Total"
-msgstr ""
+msgstr "Total"
 
 #: bookwyrm/templates/settings/email_blocklist/domain_form.html:5
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:10
@@ -2359,7 +2359,7 @@ msgstr "Quand quelqu'un essaiera de s'inscrire avec un e-mail de ce domaine, auc
 
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:25
 msgid "Domain"
-msgstr ""
+msgstr "Domaine"
 
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:29
 #: bookwyrm/templates/settings/ip_blocklist/ip_blocklist.html:27
@@ -2470,7 +2470,7 @@ msgstr "Modifier"
 
 #: bookwyrm/templates/settings/federation/instance.html:79
 msgid "<em>No notes</em>"
-msgstr ""
+msgstr "<em>Aucune note</em>"
 
 #: bookwyrm/templates/settings/federation/instance.html:94
 #: bookwyrm/templates/settings/users/user_moderation_actions.html:8
@@ -2805,7 +2805,7 @@ msgstr "Description courte :"
 
 #: bookwyrm/templates/settings/site.html:37
 msgid "Used when the instance is previewed on joinbookwyrm.com. Does not support HTML or Markdown."
-msgstr ""
+msgstr "Utilisé lorsque l'instance est prévisualisée sur joinbookwyrm.com. Ne prend pas en charge l'HTML ou le Markdown."
 
 #: bookwyrm/templates/settings/site.html:41
 msgid "Code of conduct:"
@@ -3083,7 +3083,7 @@ msgstr "Pas de couverture"
 #: bookwyrm/templates/snippets/book_titleby.html:6
 #, python-format
 msgid "<a href=\"%(path)s\">%(title)s</a> by"
-msgstr ""
+msgstr "<a href=\"%(path)s\">%(title)s</a> de"
 
 #: bookwyrm/templates/snippets/boost_button.html:20
 #: bookwyrm/templates/snippets/boost_button.html:21
@@ -3140,7 +3140,7 @@ msgstr "Contenu"
 
 #: bookwyrm/templates/snippets/create_status/content_warning_field.html:10
 msgid "Content warning:"
-msgstr ""
+msgstr "Avertissement sur le contenu :"
 
 #: bookwyrm/templates/snippets/create_status/content_warning_field.html:18
 msgid "Spoilers ahead!"
@@ -3178,7 +3178,7 @@ msgstr "Un extrait de '%(book_title)s'"
 
 #: bookwyrm/templates/snippets/create_status/quotation.html:32
 msgid "Position:"
-msgstr ""
+msgstr "Emplacement :"
 
 #: bookwyrm/templates/snippets/create_status/quotation.html:45
 msgid "On page:"
@@ -3491,11 +3491,11 @@ msgstr "Terminer la lecture"
 
 #: bookwyrm/templates/snippets/status/content_status.html:72
 msgid "Content warning"
-msgstr ""
+msgstr "Avertissement sur le contenu"
 
 #: bookwyrm/templates/snippets/status/content_status.html:79
 msgid "Show status"
-msgstr ""
+msgstr "Afficher le statut"
 
 #: bookwyrm/templates/snippets/status/content_status.html:101
 #, python-format
@@ -3518,7 +3518,7 @@ msgstr "Masquer le statut"
 #: bookwyrm/templates/snippets/status/header.html:45
 #, python-format
 msgid "edited %(date)s"
-msgstr ""
+msgstr "modifié le %(date)s"
 
 #: bookwyrm/templates/snippets/status/headers/comment.html:2
 #, python-format
