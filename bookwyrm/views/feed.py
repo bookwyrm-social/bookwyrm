@@ -224,7 +224,7 @@ def get_suggested_books(user, max_books=5):
             .filter(
                 shelfbook__shelf=shelf,
             )
-            .order_by('-shelfbook__shelved_date')
+            .order_by("-shelfbook__shelved_date")
             .prefetch_related("authors")[:limit],
         }
         suggested_books.append(shelf_preview)
