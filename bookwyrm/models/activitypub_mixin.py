@@ -97,7 +97,10 @@ class ActivitypubMixin:
         filters = []
         # grabs all the data from the model to create django queryset filters
         for field in cls._meta.get_fields():
-            if getattr(field, "deduplication_field", False):
+            if (
+                not hasattr(field, "deduplication_field")
+                or not field.deduplication_field
+            ):
                 continue
 
             value = data.get(field.get_activitypub_field())
