@@ -425,6 +425,10 @@ class ImageField(ActivitypubFieldMixin, models.ImageField):
 
     def field_to_activity(self, value, alt=None):
         url = self.get_absolute_url(value)
+
+        if not url:
+            return None
+
         return activitypub.Document(url=url, name=alt)
 
     def field_from_activity(self, value):
@@ -465,7 +469,7 @@ class ImageField(ActivitypubFieldMixin, models.ImageField):
     def get_absolute_url(self, value):
         """returns an absolute URL for the image"""
         name = getattr(value, "name")
-        if name is None:
+        if not name:
             return None
 
         url = filepath_to_uri(name)
