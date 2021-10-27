@@ -389,6 +389,10 @@ def image_serializer(value, alt):
         url = value.url
     else:
         return None
+    if url is not None:
+        url = url.lstrip("/")
+    url = urljoin(MEDIA_FULL_URL, url)
+
     return activitypub.Document(url=url, name=alt)
 
 

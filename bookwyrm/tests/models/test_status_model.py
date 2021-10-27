@@ -2,6 +2,7 @@
 from unittest.mock import patch
 from io import BytesIO
 import pathlib
+from urllib.parse import urljoin
 
 from django.http import Http404
 from django.core.files.base import ContentFile
@@ -192,7 +193,7 @@ class Status(TestCase):
         self.assertEqual(activity["attachment"][0].type, "Document")
         self.assertEqual(
             activity["attachment"][0].url,
-            f"https://{settings.MEDIA_FULL_URL}{self.book.cover.url}",
+            urljoin(settings.MEDIA_FULL_URL, self.book.cover.url.lstrip("/")),
         )
         self.assertEqual(activity["attachment"][0].name, "Test Edition")
 
@@ -222,7 +223,7 @@ class Status(TestCase):
         self.assertEqual(activity["attachment"][0].type, "Document")
         self.assertEqual(
             activity["attachment"][0].url,
-            f"https://{settings.MEDIA_FULL_URL}{self.book.cover.url}",
+            urljoin(settings.MEDIA_FULL_URL,self.book.cover.url.lstrip("/")),
         )
         self.assertEqual(activity["attachment"][0].name, "Test Edition")
 
@@ -259,7 +260,7 @@ class Status(TestCase):
         self.assertEqual(activity["attachment"][0].type, "Document")
         self.assertEqual(
             activity["attachment"][0].url,
-            "https://{settings.MEDIA_FULL_URL}{self.book.cover.url}",
+            urljoin(settings.MEDIA_FULL_URL, self.book.cover.url.lstrip("/")),
         )
         self.assertEqual(activity["attachment"][0].name, "Test Edition")
 
@@ -300,7 +301,7 @@ class Status(TestCase):
         self.assertEqual(activity["attachment"][0].type, "Document")
         self.assertEqual(
             activity["attachment"][0].url,
-            f"https://{settings.MEDIA_FULL_URL}{self.book.cover.url}",
+            urljoin(settings.MEDIA_FULL_URL, self.book.cover.url.lstrip("/"))
         )
         self.assertEqual(activity["attachment"][0].name, "Test Edition")
 
@@ -322,7 +323,7 @@ class Status(TestCase):
         self.assertEqual(activity["attachment"][0].type, "Document")
         self.assertEqual(
             activity["attachment"][0].url,
-            f"https://{settings.MEDIA_FULL_URL}{self.book.cover.url}",
+            urljoin(settings.MEDIA_FULL_URL, self.book.cover.url.lstrip("/")),
         )
         self.assertEqual(activity["attachment"][0].name, "Test Edition")
 
@@ -343,7 +344,7 @@ class Status(TestCase):
         self.assertEqual(activity["attachment"][0].type, "Document")
         self.assertEqual(
             activity["attachment"][0].url,
-            f"https://{settings.MEDIA_FULL_URL}{self.book.cover.url}",
+            urljoin(settings.MEDIA_FULL_URL, self.book.cover.url.lstrip("/")),
         )
         self.assertEqual(activity["attachment"][0].name, "Test Edition")
 
