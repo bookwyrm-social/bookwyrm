@@ -104,9 +104,7 @@ class Connector(AbstractConnector):
 
     def parse_isbn_search_data(self, data):
         """got some daaaata"""
-        results = data.get("entities")
-        if not results:
-            return []
+        results = data.get("entities", [])
         return list(results.values())
 
     def format_isbn_search_result(self, search_result):
@@ -128,6 +126,7 @@ class Connector(AbstractConnector):
 
     def load_edition_data(self, work_uri):
         """get a list of editions for a work"""
+        # pylint: disable=line-too-long
         url = f"{self.books_url}?action=reverse-claims&property=wdt:P629&value={work_uri}&sort=true"
         return get_data(url)
 
