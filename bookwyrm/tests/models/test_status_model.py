@@ -223,7 +223,7 @@ class Status(TestCase):
         self.assertEqual(activity["attachment"][0].type, "Document")
         self.assertEqual(
             activity["attachment"][0].url,
-            urljoin(settings.MEDIA_FULL_URL,self.book.cover.url.lstrip("/")),
+            urljoin(settings.MEDIA_FULL_URL, self.book.cover.url.lstrip("/")),
         )
         self.assertEqual(activity["attachment"][0].name, "Test Edition")
 
@@ -301,7 +301,7 @@ class Status(TestCase):
         self.assertEqual(activity["attachment"][0].type, "Document")
         self.assertEqual(
             activity["attachment"][0].url,
-            urljoin(settings.MEDIA_FULL_URL, self.book.cover.url.lstrip("/"))
+            urljoin(settings.MEDIA_FULL_URL, self.book.cover.url.lstrip("/")),
         )
         self.assertEqual(activity["attachment"][0].name, "Test Edition")
 
