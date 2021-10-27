@@ -17,7 +17,7 @@ class User(TestCase):
             "bookwyrm.activitystreams.populate_stream_task.delay"
         ):
             self.user = models.User.objects.create_user(
-                "mouse@%s" % DOMAIN,
+                f"mouse@{DOMAIN}",
                 "mouse@mouse.mouse",
                 "mouseword",
                 local=True,
@@ -40,7 +40,7 @@ class User(TestCase):
         self.assertIsNotNone(self.user.key_pair.public_key)
 
     def test_remote_user(self):
-        with patch("bookwyrm.models.user.set_remote_server.delay"):
+        with patch("bookwyrm.models.actor.set_remote_server.delay"):
             user = models.User.objects.create_user(
                 "rat",
                 "rat@rat.rat",
@@ -98,7 +98,7 @@ class User(TestCase):
             server_name=DOMAIN, application_type="test type", application_version=3
         )
 
-        models.user.set_remote_server(self.user.id)
+        models.actor.set_remote_server(self.user.id)
         self.user.refresh_from_db()
 
         self.assertEqual(self.user.federated_server, server)
@@ -107,7 +107,7 @@ class User(TestCase):
     def test_get_or_create_remote_server(self):
         responses.add(
             responses.GET,
-            "https://%s/.well-known/nodeinfo" % DOMAIN,
+            f"https://{DOMAIN}/.well-known/nodeinfo",
             json={"links": [{"href": "http://www.example.com"}, {}]},
         )
         responses.add(
@@ -116,7 +116,7 @@ class User(TestCase):
             json={"software": {"name": "hi", "version": "2"}},
         )
 
-        server = models.user.get_or_create_remote_server(DOMAIN)
+        server = models.actor.get_or_create_remote_server(DOMAIN)
         self.assertEqual(server.server_name, DOMAIN)
         self.assertEqual(server.application_type, "hi")
         self.assertEqual(server.application_version, "2")
@@ -124,10 +124,10 @@ class User(TestCase):
     @responses.activate
     def test_get_or_create_remote_server_no_wellknown(self):
         responses.add(
-            responses.GET, "https://%s/.well-known/nodeinfo" % DOMAIN, status=404
+            responses.GET, f"https://{DOMAIN}/.well-known/nodeinfo", status=404
         )
 
-        server = models.user.get_or_create_remote_server(DOMAIN)
+        server = models.actor.get_or_create_remote_server(DOMAIN)
         self.assertEqual(server.server_name, DOMAIN)
         self.assertIsNone(server.application_type)
         self.assertIsNone(server.application_version)
@@ -136,12 +136,12 @@ class User(TestCase):
     def test_get_or_create_remote_server_no_links(self):
         responses.add(
             responses.GET,
-            "https://%s/.well-known/nodeinfo" % DOMAIN,
+            f"https://{DOMAIN}/.well-known/nodeinfo",
             json={"links": [{"href": "http://www.example.com"}, {}]},
         )
         responses.add(responses.GET, "http://www.example.com", status=404)
 
-        server = models.user.get_or_create_remote_server(DOMAIN)
+        server = models.actor.get_or_create_remote_server(DOMAIN)
         self.assertEqual(server.server_name, DOMAIN)
         self.assertIsNone(server.application_type)
         self.assertIsNone(server.application_version)
@@ -150,12 +150,12 @@ class User(TestCase):
     def test_get_or_create_remote_server_unknown_format(self):
         responses.add(
             responses.GET,
-            "https://%s/.well-known/nodeinfo" % DOMAIN,
+            f"https://{DOMAIN}/.well-known/nodeinfo",
             json={"links": [{"href": "http://www.example.com"}, {}]},
         )
         responses.add(responses.GET, "http://www.example.com", json={"fish": "salmon"})
 
-        server = models.user.get_or_create_remote_server(DOMAIN)
+        server = models.actor.get_or_create_remote_server(DOMAIN)
         self.assertEqual(server.server_name, DOMAIN)
         self.assertIsNone(server.application_type)
         self.assertIsNone(server.application_version)

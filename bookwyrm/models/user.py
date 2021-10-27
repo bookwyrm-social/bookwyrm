@@ -43,6 +43,12 @@ class User(OrderedCollectionPageMixin, AbstractUser, ActorModel):
         unique=True,
         validators=[fields.validate_localname],
     )
+    shared_inbox = fields.RemoteIdField(
+        activitypub_field="sharedInbox",
+        activitypub_wrapper="endpoints",
+        deduplication_field=False,
+        null=True,
+    )
     # name is your display name, which you can change at will
     name = fields.CharField(max_length=100, null=True, blank=True)
     avatar = fields.ImageField(
@@ -231,14 +237,17 @@ class User(OrderedCollectionPageMixin, AbstractUser, ActorModel):
 
     def save(self, *args, **kwargs):
         """populate fields for new local users"""
+        print('hi')
         created = not bool(self.id)
+        print('created', created)
         if not self.local and not re.match(regex.FULL_USERNAME, self.username):
-            # generate a username that uses the domain (webfinger format)
+            # parse out the username that uses the domain (webfinger format)
             actor_parts = urlparse(self.remote_id)
             self.username = f"{self.username}@{actor_parts.netloc}"
 
         # this user already exists, no need to populate fields
         if not created:
+            # make sure the deactivation state is correct in case it was updated
             if self.is_active:
                 self.deactivation_date = None
             elif not self.deactivation_date:
@@ -250,8 +259,11 @@ class User(OrderedCollectionPageMixin, AbstractUser, ActorModel):
         with transaction.atomic():
             # populate fields for local users
             link = site_link()
+            print('link', link)
             self.remote_id = f"{link}/user/{self.localname}"
+            self.shared_inbox = f"{link}/inbox"
             # an id needs to be set before we can proceed with related models
+            print('heading to the parent')
             super().save(*args, **kwargs)
 
             # make users editors by default

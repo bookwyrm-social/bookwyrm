@@ -28,12 +28,6 @@ class ActorModel(BookWyrmModel):
         blank=True,
     )
     inbox = fields.RemoteIdField(unique=True)
-    shared_inbox = fields.RemoteIdField(
-        activitypub_field="sharedInbox",
-        activitypub_wrapper="endpoints",
-        deduplication_field=False,
-        null=True,
-    )
     local = models.BooleanField(default=False)
     discoverable = fields.BooleanField(default=False)
     default_post_privacy = models.CharField(
@@ -53,7 +47,9 @@ class ActorModel(BookWyrmModel):
 
     def save(self, *args, **kwargs):
         """set fields"""
+        print('at the parent')
         created = not bool(self.id)
+        print('parent created', created)
         if not created:
             super().save(*args, **kwargs)
             return
@@ -62,9 +58,12 @@ class ActorModel(BookWyrmModel):
             # this is a new remote obj, we need to set their remote server field
             if not self.local:
                 super().save(*args, **kwargs)
-                # TODO transaction.on_commit(lambda: set_remote_server.delay(self.id))
+                transaction.on_commit(lambda: set_remote_server.delay(self.id))
                 return
 
+            self.followers_url = f"{self.remote_id}/followers"
+            self.inbox = f"{self.remote_id}/inbox"
+            self.outbox = f"{self.remote_id}/outbox"
             super().save(*args, **kwargs)
 
             # create keys and shelves for new local users
