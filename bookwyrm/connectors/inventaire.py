@@ -104,7 +104,9 @@ class Connector(AbstractConnector):
 
     def parse_isbn_search_data(self, data):
         """got some daaaata"""
-        results = data.get("entities", [])
+        results = data.get("entities")
+        if not results:
+            return []
         return list(results.values())
 
     def format_isbn_search_result(self, search_result):
