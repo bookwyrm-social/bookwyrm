@@ -47,9 +47,7 @@ class ActorModel(BookWyrmModel):
 
     def save(self, *args, **kwargs):
         """set fields"""
-        print('at the parent')
         created = not bool(self.id)
-        print('parent created', created)
         if not created:
             super().save(*args, **kwargs)
             return

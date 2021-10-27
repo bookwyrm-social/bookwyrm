@@ -237,9 +237,7 @@ class User(OrderedCollectionPageMixin, AbstractUser, ActorModel):
 
     def save(self, *args, **kwargs):
         """populate fields for new local users"""
-        print('hi')
         created = not bool(self.id)
-        print('created', created)
         if not self.local and not re.match(regex.FULL_USERNAME, self.username):
             # parse out the username that uses the domain (webfinger format)
             actor_parts = urlparse(self.remote_id)
@@ -259,11 +257,9 @@ class User(OrderedCollectionPageMixin, AbstractUser, ActorModel):
         with transaction.atomic():
             # populate fields for local users
             link = site_link()
-            print('link', link)
             self.remote_id = f"{link}/user/{self.localname}"
             self.shared_inbox = f"{link}/inbox"
             # an id needs to be set before we can proceed with related models
-            print('heading to the parent')
             super().save(*args, **kwargs)
 
             # make users editors by default
