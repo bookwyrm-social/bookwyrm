@@ -2,7 +2,7 @@
 import csv
 
 from django.contrib.auth.decorators import login_required
-from django.db.models import F, Q
+from django.db.models import Q
 from django.http import StreamingHttpResponse
 from django.views.decorators.http import require_GET
 
@@ -49,7 +49,7 @@ def export_user_book_data(request):
 
 def csv_row_generator(books):
     """generate a csv entry for the user's book"""
-    deduplication_fields = [
+    deduplication_fields = [  # pylint: disable=protected-access
         f.name
         for f in models.Edition._meta.get_fields()
         if getattr(f, "deduplication_field", False)
