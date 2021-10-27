@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-10-24 14:09+0000\n"
-"PO-Revision-Date: 2021-10-27 15:01\n"
+"PO-Revision-Date: 2021-10-27 16:14\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: French\n"
 "Language: fr\n"
@@ -98,7 +98,7 @@ msgstr "Suppression du modérateur"
 
 #: bookwyrm/models/base_model.py:21
 msgid "Domain block"
-msgstr ""
+msgstr "Bloc de domaine"
 
 #: bookwyrm/models/book.py:232
 msgid "Audiobook"
@@ -2316,11 +2316,11 @@ msgstr "Semaines"
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:106
 msgid "User signup activity"
-msgstr ""
+msgstr "Nouvelles inscriptions"
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:112
 msgid "Status activity"
-msgstr ""
+msgstr "Nouveaux statuts"
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:118
 msgid "Works created"
@@ -2341,17 +2341,17 @@ msgstr "Total"
 #: bookwyrm/templates/settings/email_blocklist/domain_form.html:5
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:10
 msgid "Add domain"
-msgstr ""
+msgstr "Ajouter un domaine"
 
 #: bookwyrm/templates/settings/email_blocklist/domain_form.html:11
 msgid "Domain:"
-msgstr ""
+msgstr "Domaine :"
 
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:5
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:7
 #: bookwyrm/templates/settings/layout.html:59
 msgid "Email Blocklist"
-msgstr ""
+msgstr "Liste des e-mails bloqués"
 
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:18
 msgid "When someone tries to register with an email from this domain, no account will be created. The registration process will appear to have worked."
@@ -2370,12 +2370,12 @@ msgstr "Options"
 #, python-format
 msgid "%(display_count)s user"
 msgid_plural "%(display_count)s users"
-msgstr[0] "%(display_count)s utilisateur"
-msgstr[1] "%(display_count)s utilisateurs"
+msgstr[0] "%(display_count)s utilisateur·rice"
+msgstr[1] "%(display_count)s utilisateurs·rices"
 
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:59
 msgid "No email domains currently blocked"
-msgstr ""
+msgstr "Aucun domaine de messagerie n’est actuellement bloqué"
 
 #: bookwyrm/templates/settings/federation/edit_instance.html:3
 #: bookwyrm/templates/settings/federation/edit_instance.html:6
@@ -2670,7 +2670,7 @@ msgstr "Aucune adresse IP n'est actuellement bloquée"
 
 #: bookwyrm/templates/settings/ip_blocklist/ip_tooltip.html:6
 msgid "You can block IP ranges using CIDR syntax."
-msgstr ""
+msgstr "Vous pouvez bloquer des plages d'adresses IP en utilisant la syntaxe CIDR."
 
 #: bookwyrm/templates/settings/layout.html:4
 msgid "Administration"
@@ -2932,7 +2932,7 @@ msgstr "Local"
 
 #: bookwyrm/templates/settings/users/user_info.html:38
 msgid "Remote"
-msgstr ""
+msgstr "Distant·e"
 
 #: bookwyrm/templates/settings/users/user_info.html:47
 msgid "User details"
@@ -2960,7 +2960,7 @@ msgstr "Abonné(e)s approuvés manuellement :"
 
 #: bookwyrm/templates/settings/users/user_info.html:76
 msgid "Discoverable:"
-msgstr ""
+msgstr "Visible publiquement :"
 
 #: bookwyrm/templates/settings/users/user_info.html:80
 msgid "Deactivation reason:"
@@ -3022,7 +3022,7 @@ msgstr[1] "%(formatted_count)s livres"
 #: bookwyrm/templates/shelf/shelf.html:97
 #, python-format
 msgid "(showing %(start)s-%(end)s)"
-msgstr ""
+msgstr "(affichage de %(start)s-%(end)s)"
 
 #: bookwyrm/templates/shelf/shelf.html:109
 msgid "Edit shelf"
@@ -3186,7 +3186,7 @@ msgstr "À la page :"
 
 #: bookwyrm/templates/snippets/create_status/quotation.html:51
 msgid "At percent:"
-msgstr ""
+msgstr "Au pourcentage :"
 
 #: bookwyrm/templates/snippets/create_status/review.html:25
 #, python-format
@@ -3768,5 +3768,5 @@ msgstr "Un lien de réinitialisation a été envoyé à {email}."
 #: bookwyrm/views/rss_feed.py:35
 #, python-brace-format
 msgid "Status updates from {obj.display_name}"
-msgstr ""
+msgstr "Mises à jour de statut de {obj.display_name}"
 
