@@ -13,7 +13,7 @@ from django.views import View
 from bookwyrm import book_search, forms, models
 from bookwyrm.views.helpers import get_edition
 from .books import set_cover_from_url
-
+from bookwyrm.utils.isni import find_authors_by_name
 
 # pylint: disable=no-self-use
 @method_decorator(login_required, name="dispatch")
@@ -48,6 +48,7 @@ class EditBook(View):
         if add_author:
             data["add_author"] = add_author
             data["author_matches"] = []
+            data["isni_matches"] = []
             for author in add_author.split(","):
                 if not author:
                     continue
@@ -65,6 +66,9 @@ class EditBook(View):
                             .filter(rank__gt=0.4)
                             .order_by("-rank")[:5]
                         ),
+                        "isni_matches": find_authors_by_name(
+                            author
+                        ),  # find matches from ISNI API
                     }
                 )
 

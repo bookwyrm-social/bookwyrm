@@ -50,6 +50,24 @@
                 <input type="hidden" name="author-match-count" value="{{ author_matches|length }}">
                 <div class="column is-half">
                     {% for author in author_matches %}
+                    {% if author.isni_matches %}
+                    <fieldset>
+                        <legend class="title is-5 mb-1">
+                            {% blocktrans with name=author.name %}Is "{{ name }}" one of these?{% endblocktrans %}
+                        </legend>
+                        {% with forloop.counter0 as counter %}
+                        {% for match in author.isni_matches %}
+                        <label class="label mb-2">
+                            <input type="radio" name="author_match-{{ counter }}" value="{{ match.id }}" required>
+                            {{ match.name }}
+                            <span class="help">
+                                <a href="{{ match.uri }}" target="_blank"><em>{{ match.description }}</em></a>
+                            </span>
+                          </label>
+                        {% endfor %}
+                        {% endwith %}
+                    </fieldset>
+                    {% endif %}
                     <fieldset>
                         <legend class="title is-5 mb-1">
                             {% blocktrans with name=author.name %}Is "{{ name }}" an existing author?{% endblocktrans %}
