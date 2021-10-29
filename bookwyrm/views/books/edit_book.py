@@ -11,9 +11,9 @@ from django.utils.decorators import method_decorator
 from django.views import View
 
 from bookwyrm import book_search, forms, models
+from bookwyrm.utils.isni import find_authors_by_name
 from bookwyrm.views.helpers import get_edition
 from .books import set_cover_from_url
-from bookwyrm.utils.isni import find_authors_by_name
 
 # pylint: disable=no-self-use
 @method_decorator(login_required, name="dispatch")

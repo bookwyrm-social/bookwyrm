@@ -1,42 +1,43 @@
-import requests
+"""ISNI author checking utilities"""
 import xml.etree.ElementTree as ET
-from xml.etree.ElementTree import XMLParser
+import requests
 
 # get data
-base_string = "http://isni.oclc.org/sru/?query=pica.na+%3D+%22"
-suffix_string = "%22&version=1.1&operation=searchRetrieve&recordSchema=isni-b&maximumRecords=10&startRecord=1&recordPacking=xml&sortKeys=RLV%2Cpica%2C0%2C%2C"
+BASE_STRING = "http://isni.oclc.org/sru/?query=pica.na+%3D+%22"
+SUFFIX_STRING = "%22&version=1.1&operation=searchRetrieve&recordSchema=isni-b&maximumRecords=10&startRecord=1&recordPacking=xml&sortKeys=RLV%2Cpica%2C0%2C%2C"
 
 
 def url_stringify(string):
+    """replace spaces for url encoding"""
     return string.replace(" ", "+")
 
 
 def find_authors_by_name(names):
-
+    """Query the ISNI database for an author"""
     names = url_stringify(names)
-    query = base_string + names + suffix_string
-    r = requests.get(query)
+    query = BASE_STRING + names + SUFFIX_STRING
+    result = requests.get(query)
     # the OCLC ISNI server asserts the payload is encoded
     # in latin1, but we know better
-    r.encoding = "utf-8"
-    payload = r.text
+    result.encoding = "utf-8"
+    payload = result.text
     # parse xml
     root = ET.fromstring(payload)
 
     # build list of possible authors
     possible_authors = []
-    for el in root.iter("responseRecord"):
+    for element in root.iter("responseRecord"):
 
-        author = dict()
-        author["uri"] = el.find(".//isniURI").text
+        author = {}
+        author["uri"] = element.find(".//isniURI").text
         # NOTE: this will often be incorrect, some naming systems list "surname" before personal name
-        personal_name = el.find(".//forename/..")
+        personal_name = element.find(".//forename/..")
         forename = personal_name.find(".//forename")
         surname = personal_name.find(".//surname")
         author["name"] = surname.text
         if personal_name:
             author["name"] = forename.text + " " + surname.text
-            author["description"] = el.find(".//nameTitle").text
+            author["description"] = element.find(".//nameTitle").text
 
             possible_authors.append(author)
 
