@@ -1,5 +1,6 @@
 import requests
 import xml.etree.ElementTree as ET
+from xml.etree.ElementTree import XMLParser
 
 # get data
 base_string = "http://isni.oclc.org/sru/?query=pica.na+%3D+%22"
@@ -15,8 +16,11 @@ def find_authors_by_name(names):
     names = url_stringify(names)
     query = base_string + names + suffix_string
     r = requests.get(query)
-    # parse xml
+    # the OCLC ISNI server asserts the payload is encoded
+    # in latin1, but we know better
+    r.encoding = "utf-8"
     payload = r.text
+    # parse xml
     root = ET.fromstring(payload)
 
     # build list of possible authors
