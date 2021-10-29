@@ -4,6 +4,7 @@ import requests
 
 # get data
 BASE_STRING = "http://isni.oclc.org/sru/?query=pica.na+%3D+%22"
+#pylint: disable=line-too-long
 SUFFIX_STRING = "%22&version=1.1&operation=searchRetrieve&recordSchema=isni-b&maximumRecords=10&startRecord=1&recordPacking=xml&sortKeys=RLV%2Cpica%2C0%2C%2C"
 
 
@@ -30,14 +31,16 @@ def find_authors_by_name(names):
 
         author = {}
         author["uri"] = element.find(".//isniURI").text
-        # NOTE: this will often be incorrect, some naming systems list "surname" before personal name
+        # NOTE: this will often be incorrect, many naming systems 
+        # list "surname" before personal name
         personal_name = element.find(".//forename/..")
-        forename = personal_name.find(".//forename")
-        surname = personal_name.find(".//surname")
-        author["name"] = surname.text
+        description = element.find(".//nameTitle")
         if personal_name:
+            forename = personal_name.find(".//forename")
+            surname = personal_name.find(".//surname")
             author["name"] = forename.text + " " + surname.text
-            author["description"] = element.find(".//nameTitle").text
+            if description is not None:
+                author["description"] = description.text
 
             possible_authors.append(author)
 
