@@ -1,8 +1,8 @@
 """ISNI author checking utilities"""
 import xml.etree.ElementTree as ET
 import requests
-
 from bookwyrm.settings import BASE_DIR
+
 
 def url_stringify(string):
     """replace spaces for url encoding"""
@@ -10,20 +10,21 @@ def url_stringify(string):
     # TODO: this is very lazy and incomplete
     return string.replace(" ", "+")
 
-def request_isni_data(search_index, search_term, maxRecords=10):
+
+def request_isni_data(search_index, search_term, maxRecords=5):
     """Request data from the ISNI API"""
 
     search_string = url_stringify(search_term)
     query_parts = [
-        "http://isni.oclc.org/sru/?query=", 
+        "http://isni.oclc.org/sru/?query=",
         search_index,
         "+%3D+%22",
         search_string,
         "%22&version=1.1&operation=searchRetrieve&recordSchema=isni-b",
         "&maximumRecords=",
         str(maxRecords),
-        "&startRecord=1&recordPacking=xml&sortKeys=RLV%2Cpica%2C0%2C%2C"
-        ]
+        "&startRecord=1&recordPacking=xml&sortKeys=RLV%2Cpica%2C0%2C%2C",
+    ]
     query_url = "".join(query_parts)
     result = requests.get(query_url)
     # the OCLC ISNI server asserts the payload is encoded
@@ -31,16 +32,18 @@ def request_isni_data(search_index, search_term, maxRecords=10):
     result.encoding = "utf-8"
     return result.text
 
+
 def make_name_string(element):
     """create a string of form 'personal_name surname'"""
 
-    # NOTE: this will often be incorrect, many naming systems 
+    # NOTE: this will often be incorrect, many naming systems
     # list "surname" before personal name
     forename = element.find(".//forename")
     surname = element.find(".//surname")
     if forename is not None:
-        return "".join([forename.text," ",surname.text])
+        return "".join([forename.text, " ", surname.text])
     return surname.text
+
 
 def get_other_identifier(element, code):
     """Get other identifiers associated with an author from their ISNI record"""
@@ -48,12 +51,13 @@ def get_other_identifier(element, code):
     identifiers = element.findall(".//otherIdentifierOfIdentity")
     for section_head in identifiers:
         if (
-            section_head.find(".//type") is not None 
+            section_head.find(".//type") is not None
             and section_head.find(".//type").text == code
-            and section_head.find(".//identifier") is not None 
+            and section_head.find(".//identifier") is not None
         ):
             return section_head.find(".//identifier").text
-    return 
+    return
+
 
 def get_external_information_uri(element, match_string):
     """Get URLs associated with an author from their ISNI record"""
@@ -61,12 +65,10 @@ def get_external_information_uri(element, match_string):
     sources = element.findall(".//externalInformation")
     for source in sources:
         uri = source.find(".//URI")
-        if (
-            uri is not None
-            and uri.text.find(match_string) is not None
-            ):
-                return uri.text
+        if uri is not None and uri.text.find(match_string) is not None:
+            return uri.text
     return
+
 
 def find_authors_by_name(name_string):
     """Query the ISNI database for possible author matches by name"""
@@ -94,6 +96,7 @@ def find_authors_by_name(name_string):
 
     return possible_authors
 
+
 def get_author_isni_data(isni):
 
     payload = request_isni_data("pica.isn", isni)
@@ -110,9 +113,9 @@ def get_author_isni_data(isni):
     author["viaf_id"] = get_other_identifier(element, "viaf")
     author["wikipedia_link"] = get_external_information_uri(element, "Wikipedia")
     author["bio"] = bio.text if bio is not None else ""
-    author["aliases"] = [] # CHECK can we send a list for this?
+    author["aliases"] = []
     aliases = element.findall(".//personalNameVariant")
     for entry in aliases:
-        author["aliases"].append( make_name_string(entry) )
+        author["aliases"].append(make_name_string(entry))
 
     return author

@@ -57,22 +57,32 @@ class EditBook(View):
                     "aliases", weight="B"
                 )
 
+                author_matches = (
+                    models.Author.objects.annotate(search=vector)
+                    .annotate(rank=SearchRank(vector, author))
+                    .filter(rank__gt=0.4)
+                    .order_by("-rank")[:5]
+                )
+
+                isni_authors = find_authors_by_name(
+                    author
+                )  # find matches from ISNI API
+
+                # do not show isni results for authors we already have in the DB
+                exists = [
+                    i
+                    for i in isni_authors
+                    for a in author_matches
+                    if i["isni"] == a.isni
+                ]
+                isni_matches = list(filter(lambda x: x not in exists, isni_authors))
                 data["author_matches"].append(
                     {
                         "name": author.strip(),
-                        "matches": (
-                            models.Author.objects.annotate(search=vector)
-                            .annotate(rank=SearchRank(vector, author))
-                            .filter(rank__gt=0.4)
-                            .order_by("-rank")[:5]
-                        ),
-                        "isni_matches": find_authors_by_name(
-                            author
-                        ),  # find matches from ISNI API
+                        "matches": author_matches,
+                        "isni_matches": isni_matches,
                     }
                 )
-                # TODO: check if an isni record matches an existing record
-                # to bring these two records together
 
         # we're creating a new book
         if not book:
@@ -157,7 +167,8 @@ class ConfirmEditBook(View):
                     # otherwise it's a name with or without isni id
                     isni = request.POST.get(f"isni_match-{i}")
                     author_data = (
-                        get_author_isni_data(isni) if isni is not None 
+                        get_author_isni_data(isni)
+                        if isni is not None
                         else {"name": match}
                     )
                     author = models.Author.objects.create(**author_data)
