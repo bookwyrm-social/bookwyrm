@@ -75,11 +75,14 @@ class EditBook(View):
                     for a in author_matches
                     if i["isni"] == a.isni
                 ]
+
                 isni_matches = list(filter(lambda x: x not in exists, isni_authors))
+
                 data["author_matches"].append(
                     {
                         "name": author.strip(),
                         "matches": author_matches,
+                        "existing_isnis": exists,
                         "isni_matches": isni_matches,
                     }
                 )

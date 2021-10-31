@@ -1,5 +1,6 @@
 """ template filters for really common utilities """
 import os
+from functools import reduce
 from uuid import uuid4
 from django import template
 from django.utils.translation import gettext_lazy as _
@@ -66,3 +67,14 @@ def get_book_cover_thumbnail(book, size="medium", ext="jpg"):
         return cover_thumbnail.url
     except OSError:
         return static("images/no_cover.jpg")
+
+
+@register.filter(name="get_isni_bio")
+def get_isni_bio(existing, author):
+    """Returns the isni bio string if an existing author has an isni listed"""
+    if len(existing) == 0:
+        return ""
+    match = reduce(
+        (lambda a: a if a.hasattr("bio") and author.isni == a.isni else ""), existing
+    )
+    return match["bio"]
