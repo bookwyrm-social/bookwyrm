@@ -1,7 +1,6 @@
 """ISNI author checking utilities"""
 import xml.etree.ElementTree as ET
 import requests
-from bookwyrm.settings import BASE_DIR
 
 
 def url_stringify(string):
@@ -11,7 +10,7 @@ def url_stringify(string):
     return string.replace(" ", "+")
 
 
-def request_isni_data(search_index, search_term, maxRecords=5):
+def request_isni_data(search_index, search_term, max_records=5):
     """Request data from the ISNI API"""
 
     search_string = url_stringify(search_term)
@@ -22,7 +21,7 @@ def request_isni_data(search_index, search_term, maxRecords=5):
         search_string,
         "%22&version=1.1&operation=searchRetrieve&recordSchema=isni-b",
         "&maximumRecords=",
-        str(maxRecords),
+        str(max_records),
         "&startRecord=1&recordPacking=xml&sortKeys=RLV%2Cpica%2C0%2C%2C",
     ]
     query_url = "".join(query_parts)
@@ -56,7 +55,7 @@ def get_other_identifier(element, code):
             and section_head.find(".//identifier") is not None
         ):
             return section_head.find(".//identifier").text
-    return
+    return ""
 
 
 def get_external_information_uri(element, match_string):
@@ -67,7 +66,7 @@ def get_external_information_uri(element, match_string):
         uri = source.find(".//URI")
         if uri is not None and uri.text.find(match_string) is not None:
             return uri.text
-    return
+    return ""
 
 
 def find_authors_by_name(name_string):
@@ -98,6 +97,7 @@ def find_authors_by_name(name_string):
 
 
 def get_author_isni_data(isni):
+    """Find data to populate a new author record from their ISNI"""
 
     payload = request_isni_data("pica.isn", isni)
     # parse xml
