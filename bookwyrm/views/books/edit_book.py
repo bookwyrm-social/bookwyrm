@@ -33,7 +33,7 @@ class EditBook(View):
         data = {"book": book, "form": forms.EditionForm(instance=book)}
         return TemplateResponse(request, "book/edit/edit_book.html", data)
 
-    # pylint: disable=too-many-variables
+    # pylint: disable=too-many-locals
     def post(self, request, book_id=None):
         """edit a book cool"""
         # returns None if no match is found
