@@ -1,6 +1,5 @@
 """ template filters for really common utilities """
 import os
-from functools import reduce
 from uuid import uuid4
 from django import template
 from django.utils.translation import gettext_lazy as _
@@ -77,5 +76,5 @@ def get_isni_bio(existing, author):
     for value in existing:
         if "bio" in value and author.isni == value["isni"]:
             return value["bio"]
-    
+
     return ""
