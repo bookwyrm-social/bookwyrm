@@ -122,6 +122,7 @@ def get_author_isni_data(isni):
 
 
 def build_author_dict(match_value):
+    """Build dict with basic author details from ISNI or author name"""
 
     # if it is an isni value get the data
     if match_value.startswith("isni_match_"):

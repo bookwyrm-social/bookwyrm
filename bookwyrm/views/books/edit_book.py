@@ -33,6 +33,7 @@ class EditBook(View):
         data = {"book": book, "form": forms.EditionForm(instance=book)}
         return TemplateResponse(request, "book/edit/edit_book.html", data)
 
+    # pylint: disable=too-many-variables
     def post(self, request, book_id=None):
         """edit a book cool"""
         # returns None if no match is found
@@ -76,6 +77,7 @@ class EditBook(View):
                     if i["isni"] == a.isni
                 ]
 
+                # pylint: disable=cell-var-from-loop
                 isni_matches = list(filter(lambda x: x not in exists, isni_authors))
 
                 data["author_matches"].append(
