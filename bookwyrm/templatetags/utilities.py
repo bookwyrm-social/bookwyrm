@@ -74,7 +74,8 @@ def get_isni_bio(existing, author):
     """Returns the isni bio string if an existing author has an isni listed"""
     if len(existing) == 0:
         return ""
-    match = reduce(
-        (lambda a: a if a.hasattr("bio") and author.isni == a.isni else ""), existing
-    )
-    return match["bio"]
+    for value in existing:
+        if "bio" in value and author.isni == value["isni"]:
+            return value["bio"]
+    
+    return ""

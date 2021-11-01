@@ -119,3 +119,12 @@ def get_author_isni_data(isni):
         author["aliases"].append(make_name_string(entry))
 
     return author
+
+def build_author_dict(match_value):
+
+    # if it is an isni value get the data
+    if match_value.startswith("isni_match_"):
+        isni = match_value.replace("isni_match_", "")
+        return get_author_isni_data(isni)
+    # otherwise it's a name string
+    return  {"name": match_value}
