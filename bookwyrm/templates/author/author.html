@@ -63,6 +63,14 @@
             </p>
             {% endif %}
 
+            {% if author.isni %}
+            <p class="my-1">
+                <a itemprop="sameAs" href="https://isni.org/isni/{{ author.isni }}" rel="noopener" target="_blank">
+                    {% trans "View ISNI record" %}
+                </a>
+            </p>
+            {% endif %}
+
             {% if author.openlibrary_key %}
             <p class="my-1">
                 <a itemprop="sameAs" href="https://openlibrary.org/authors/{{ author.openlibrary_key }}" target="_blank" rel="noopener">
