@@ -1,5 +1,6 @@
 """ the good stuff! the books! """
 from dateutil.parser import parse as dateparse
+from re import sub
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.postgres.search import SearchRank, SearchVector
 from django.db import transaction
@@ -74,7 +75,7 @@ class EditBook(View):
                     i
                     for i in isni_authors
                     for a in author_matches
-                    if i["isni"] == a.isni
+                    if sub("\D","",str(i["isni"])) == sub("\D","",str(a.isni))
                 ]
 
                 # pylint: disable=cell-var-from-loop

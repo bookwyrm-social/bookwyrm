@@ -2,6 +2,7 @@
 {% load i18n %}
 {% load markdown %}
 {% load humanize %}
+{% load utilities %}
 
 {% block title %}{{ author.name }}{% endblock %}
 
@@ -65,7 +66,7 @@
 
             {% if author.isni %}
             <p class="my-1">
-                <a itemprop="sameAs" href="https://isni.org/isni/{{ author.isni }}" rel="noopener" target="_blank">
+                <a itemprop="sameAs" href="https://isni.org/isni/{{ author.isni|remove_spaces }}" rel="noopener" target="_blank">
                     {% trans "View ISNI record" %}
                 </a>
             </p>

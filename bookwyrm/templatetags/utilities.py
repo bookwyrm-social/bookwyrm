@@ -1,8 +1,10 @@
 """ template filters for really common utilities """
 import os
+import re
 from uuid import uuid4
 from django import template
 from django.utils.translation import gettext_lazy as _
+from django.template.defaultfilters import stringfilter
 from django.templatetags.static import static
 
 
@@ -71,10 +73,17 @@ def get_book_cover_thumbnail(book, size="medium", ext="jpg"):
 @register.filter(name="get_isni_bio")
 def get_isni_bio(existing, author):
     """Returns the isni bio string if an existing author has an isni listed"""
+    auth_isni = re.sub("\D","",str(author.isni))
     if len(existing) == 0:
         return ""
     for value in existing:
-        if "bio" in value and author.isni == value["isni"]:
+        if "bio" in value and auth_isni == re.sub("\D","",str(value["isni"])):
             return value["bio"]
 
     return ""
+
+@register.filter(name="remove_spaces")
+@stringfilter
+def remove_spaces(arg):
+    """Removes spaces from argument passed in"""
+    return re.sub("\s","",str(arg))
