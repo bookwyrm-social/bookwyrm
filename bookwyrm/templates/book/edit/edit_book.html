@@ -78,6 +78,7 @@
                         <p class="help ml-5">
                             {{ author.existing_isnis|get_isni_bio:match }}
                         </p>
+                        {{ author.existing_isnis|get_isni:match }}
                         {% endfor %}
                         <label class="label mt-2">
                             <input type="radio" name="author_match-{{ counter }}" value="{{ author.name }}" required> {% trans "This is a new author" %}

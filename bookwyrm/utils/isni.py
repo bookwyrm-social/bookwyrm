@@ -117,7 +117,8 @@ def get_author_isni_data(isni):
     aliases = element.findall(".//personalNameVariant")
     for entry in aliases:
         author["aliases"].append(make_name_string(entry))
-
+    # dedupe aliases
+    author["aliases"] = list(set(author["aliases"]))
     return author
 
 
@@ -130,3 +131,22 @@ def build_author_dict(match_value):
         return get_author_isni_data(isni)
     # otherwise it's a name string
     return {"name": match_value}
+
+
+def augment_author_metadata(author, isni):
+    """Update any missing author fields from ISNI data"""
+    isni_data = get_author_isni_data(isni)
+    author.viaf_id = (
+        isni_data["viaf_id"] if len(author.viaf_id) == 0 else author.viaf_id
+    )
+    author.wikipedia_link = (
+        isni_data["wikipedia_link"]
+        if len(author.wikipedia_link) == 0
+        else author.wikipedia_link
+    )
+    author.bio = isni_data["bio"] if len(author.bio) == 0 else author.bio
+    aliases = set(isni_data["aliases"])
+    for x in author.aliases:
+        aliases.add(x)
+    author.aliases = list(aliases)
+    author.save()

@@ -12,7 +12,11 @@ from django.utils.decorators import method_decorator
 from django.views import View
 
 from bookwyrm import book_search, forms, models
-from bookwyrm.utils.isni import find_authors_by_name, build_author_dict
+from bookwyrm.utils.isni import (
+    find_authors_by_name,
+    build_author_dict,
+    augment_author_metadata,
+)
 from bookwyrm.views.helpers import get_edition
 from .books import set_cover_from_url
 
@@ -169,6 +173,10 @@ class ConfirmEditBook(View):
                     author = get_object_or_404(
                         models.Author, id=request.POST[f"author_match-{i}"]
                     )
+                    # update author metadata if the ISNI record is more complete
+                    isni = request.POST.get(f"isni-for-{match}", None)
+                    if isni is not None:
+                        augment_author_metadata(author, isni)
                 except ValueError:
                     # otherwise it's a name with or without isni id
                     author_data = build_author_dict(match)

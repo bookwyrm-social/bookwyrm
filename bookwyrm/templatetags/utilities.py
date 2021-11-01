@@ -3,6 +3,7 @@ import os
 import re
 from uuid import uuid4
 from django import template
+from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 from django.template.defaultfilters import stringfilter
 from django.templatetags.static import static
@@ -80,6 +81,21 @@ def get_isni_bio(existing, author):
         if "bio" in value and auth_isni == re.sub(r"\D", "", str(value["isni"])):
             return value["bio"]
 
+    return ""
+
+
+@register.filter(name="get_isni", needs_autoescape=True)
+def get_isni(existing, author, autoescape=True):
+    """Returns the isni ID if an existing author has an ISNI listing"""
+    auth_isni = re.sub(r"\D", "", str(author.isni))
+    if len(existing) == 0:
+        return ""
+    for value in existing:
+        if "isni" in value and auth_isni == re.sub(r"\D", "", str(value["isni"])):
+            isni = value["isni"]
+            return mark_safe(
+                f'<input type="text" name="isni-for-{author.id}" value="{isni}" hidden>'
+            )
     return ""
 
 
