@@ -148,6 +148,7 @@ class EditBook(View):
 class ConfirmEditBook(View):
     """confirm edits to a book"""
 
+    # pylint: disable=too-many-locals
     def post(self, request, book_id=None):
         """edit a book cool"""
         # returns None if no match is found

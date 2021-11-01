@@ -84,6 +84,7 @@ def get_isni_bio(existing, author):
     return ""
 
 
+# pylint: disable=unused-argument
 @register.filter(name="get_isni", needs_autoescape=True)
 def get_isni(existing, author, autoescape=True):
     """Returns the isni ID if an existing author has an ISNI listing"""

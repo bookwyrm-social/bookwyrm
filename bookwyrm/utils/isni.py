@@ -146,7 +146,7 @@ def augment_author_metadata(author, isni):
     )
     author.bio = isni_data["bio"] if len(author.bio) == 0 else author.bio
     aliases = set(isni_data["aliases"])
-    for x in author.aliases:
-        aliases.add(x)
+    for alias in author.aliases:
+        aliases.add(alias)
     author.aliases = list(aliases)
     author.save()
