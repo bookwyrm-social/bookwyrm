@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-10-24 14:09+0000\n"
-"PO-Revision-Date: 2021-11-03 08:12\n"
+"PO-Revision-Date: 2021-11-05 06:56\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Galician\n"
 "Language: gl\n"
@@ -1928,17 +1928,17 @@ msgstr "mencionoute nunha <a href=\"%(related_path)s\">recensión sobre <em>%(bo
 #: bookwyrm/templates/notifications/items/mention.html:26
 #, python-format
 msgid "mentioned you in a <a href=\"%(related_path)s\">comment on <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "mencionoute nun <a href=\"%(related_path)s\">comentario para <em>%(book_title)s</em></a>"
 
 #: bookwyrm/templates/notifications/items/mention.html:32
 #, python-format
 msgid "mentioned you in a <a href=\"%(related_path)s\">quote from <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "mencionoute nunha <a href=\"%(related_path)s\">cita en <em>%(book_title)s</em></a>"
 
 #: bookwyrm/templates/notifications/items/mention.html:38
 #, python-format
 msgid "mentioned you in a <a href=\"%(related_path)s\">status</a>"
-msgstr ""
+msgstr "mencionoute nun <a href=\"%(related_path)s\">estado</a>"
 
 #: bookwyrm/templates/notifications/items/remove.html:17
 #, python-format
@@ -1992,40 +1992,40 @@ msgstr ""
 
 #: bookwyrm/templates/notifications/notifications_page.html:18
 msgid "Delete notifications"
-msgstr ""
+msgstr "Eliminar notificacións"
 
 #: bookwyrm/templates/notifications/notifications_page.html:29
 msgid "All"
-msgstr ""
+msgstr "Todas"
 
 #: bookwyrm/templates/notifications/notifications_page.html:33
 msgid "Mentions"
-msgstr ""
+msgstr "Mencións"
 
 #: bookwyrm/templates/notifications/notifications_page.html:45
 msgid "You're all caught up!"
-msgstr ""
+msgstr "Estás ao día!"
 
 #: bookwyrm/templates/preferences/blocks.html:4
 #: bookwyrm/templates/preferences/blocks.html:7
 #: bookwyrm/templates/preferences/layout.html:31
 msgid "Blocked Users"
-msgstr ""
+msgstr "Usuarias bloqueadas"
 
 #: bookwyrm/templates/preferences/blocks.html:12
 msgid "No users currently blocked."
-msgstr ""
+msgstr "Non tes usuarias bloqueadas."
 
 #: bookwyrm/templates/preferences/change_password.html:4
 #: bookwyrm/templates/preferences/change_password.html:7
 #: bookwyrm/templates/preferences/change_password.html:21
 #: bookwyrm/templates/preferences/layout.html:20
 msgid "Change Password"
-msgstr ""
+msgstr "Cambiar contrasinal"
 
 #: bookwyrm/templates/preferences/change_password.html:14
 msgid "New password:"
-msgstr ""
+msgstr "Novo contrasinal:"
 
 #: bookwyrm/templates/preferences/delete_user.html:4
 #: bookwyrm/templates/preferences/delete_user.html:7
@@ -2033,50 +2033,50 @@ msgstr ""
 #: bookwyrm/templates/preferences/layout.html:24
 #: bookwyrm/templates/settings/users/delete_user_form.html:23
 msgid "Delete Account"
-msgstr ""
+msgstr "Eliminar conta"
 
 #: bookwyrm/templates/preferences/delete_user.html:12
 msgid "Permanently delete account"
-msgstr ""
+msgstr "Eliminar a conta de xeito definitivo"
 
 #: bookwyrm/templates/preferences/delete_user.html:14
 msgid "Deleting your account cannot be undone. The username will not be available to register in the future."
-msgstr ""
+msgstr "Se eliminas a conta non haberá volta atrás. O nome de usuaria non estará dispoñible para rexistro no futuro."
 
 #: bookwyrm/templates/preferences/edit_user.html:4
 #: bookwyrm/templates/preferences/edit_user.html:7
 #: bookwyrm/templates/preferences/layout.html:15
 msgid "Edit Profile"
-msgstr ""
+msgstr "Editar perfil"
 
 #: bookwyrm/templates/preferences/edit_user.html:12
 #: bookwyrm/templates/preferences/edit_user.html:25
 #: bookwyrm/templates/settings/users/user_info.html:7
 msgid "Profile"
-msgstr ""
+msgstr "Perfil"
 
 #: bookwyrm/templates/preferences/edit_user.html:13
 #: bookwyrm/templates/preferences/edit_user.html:68
 msgid "Display preferences"
-msgstr ""
+msgstr "Preferencias da interface"
 
 #: bookwyrm/templates/preferences/edit_user.html:14
 #: bookwyrm/templates/preferences/edit_user.html:106
 msgid "Privacy"
-msgstr ""
+msgstr "Privacidade"
 
 #: bookwyrm/templates/preferences/edit_user.html:72
 msgid "Show reading goal prompt in feed:"
-msgstr ""
+msgstr "Mostrar obxectivo de lectura na fonte:"
 
 #: bookwyrm/templates/preferences/edit_user.html:76
 msgid "Show suggested users:"
-msgstr ""
+msgstr "Mostrar en usuarias suxeridas:"
 
 #: bookwyrm/templates/preferences/edit_user.html:85
 #, python-format
 msgid "Your account will show up in the <a href=\"%(path)s\">directory</a>, and may be recommended to other BookWyrm users."
-msgstr ""
+msgstr "A túa conta aparecerá no <a href=\"%(path)s\">directorio</a>, e podería ser recomendada a outras usuarias de BookWyrm."
 
 #: bookwyrm/templates/preferences/edit_user.html:89
 msgid "Preferred Timezone: "
@@ -2375,7 +2375,7 @@ msgstr[1] "%(display_count)s usuarias"
 
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:59
 msgid "No email domains currently blocked"
-msgstr ""
+msgstr "Non tes dominios de email bloqueados"
 
 #: bookwyrm/templates/settings/federation/edit_instance.html:3
 #: bookwyrm/templates/settings/federation/edit_instance.html:6
@@ -2385,88 +2385,88 @@ msgstr ""
 #: bookwyrm/templates/settings/federation/instance_list.html:9
 #: bookwyrm/templates/settings/federation/instance_list.html:10
 msgid "Add instance"
-msgstr ""
+msgstr "Engadir instancia"
 
 #: bookwyrm/templates/settings/federation/edit_instance.html:7
 #: bookwyrm/templates/settings/federation/instance_blocklist.html:7
 msgid "Back to instance list"
-msgstr ""
+msgstr "Volver á lista de instancias"
 
 #: bookwyrm/templates/settings/federation/edit_instance.html:16
 #: bookwyrm/templates/settings/federation/instance_blocklist.html:16
 msgid "Import block list"
-msgstr ""
+msgstr "Importar lista de bloqueo"
 
 #: bookwyrm/templates/settings/federation/edit_instance.html:30
 msgid "Instance:"
-msgstr ""
+msgstr "Instancia:"
 
 #: bookwyrm/templates/settings/federation/edit_instance.html:39
 #: bookwyrm/templates/settings/federation/instance.html:28
 #: bookwyrm/templates/settings/users/user_info.html:106
 msgid "Status:"
-msgstr ""
+msgstr "Estado:"
 
 #: bookwyrm/templates/settings/federation/edit_instance.html:52
 #: bookwyrm/templates/settings/federation/instance.html:22
 #: bookwyrm/templates/settings/users/user_info.html:100
 msgid "Software:"
-msgstr ""
+msgstr "Software:"
 
 #: bookwyrm/templates/settings/federation/edit_instance.html:61
 #: bookwyrm/templates/settings/federation/instance.html:25
 #: bookwyrm/templates/settings/users/user_info.html:103
 msgid "Version:"
-msgstr ""
+msgstr "Versión:"
 
 #: bookwyrm/templates/settings/federation/edit_instance.html:70
 msgid "Notes:"
-msgstr ""
+msgstr "Notas:"
 
 #: bookwyrm/templates/settings/federation/instance.html:19
 msgid "Details"
-msgstr ""
+msgstr "Detalles"
 
 #: bookwyrm/templates/settings/federation/instance.html:35
 #: bookwyrm/templates/user/layout.html:64
 msgid "Activity"
-msgstr ""
+msgstr "Actividade"
 
 #: bookwyrm/templates/settings/federation/instance.html:38
 msgid "Users:"
-msgstr ""
+msgstr "Usuarias:"
 
 #: bookwyrm/templates/settings/federation/instance.html:41
 #: bookwyrm/templates/settings/federation/instance.html:47
 msgid "View all"
-msgstr ""
+msgstr "Ver todo"
 
 #: bookwyrm/templates/settings/federation/instance.html:44
 #: bookwyrm/templates/settings/users/user_info.html:56
 msgid "Reports:"
-msgstr ""
+msgstr "Denuncias:"
 
 #: bookwyrm/templates/settings/federation/instance.html:50
 msgid "Followed by us:"
-msgstr ""
+msgstr "Seguidas por nós:"
 
 #: bookwyrm/templates/settings/federation/instance.html:55
 msgid "Followed by them:"
-msgstr ""
+msgstr "Somos seguidas por:"
 
 #: bookwyrm/templates/settings/federation/instance.html:60
 msgid "Blocked by us:"
-msgstr ""
+msgstr "Temos bloquedas:"
 
 #: bookwyrm/templates/settings/federation/instance.html:72
 #: bookwyrm/templates/settings/users/user_info.html:110
 msgid "Notes"
-msgstr ""
+msgstr "Notas"
 
 #: bookwyrm/templates/settings/federation/instance.html:75
 #: bookwyrm/templates/snippets/status/status_options.html:24
 msgid "Edit"
-msgstr ""
+msgstr "Editar"
 
 #: bookwyrm/templates/settings/federation/instance.html:79
 msgid "<em>No notes</em>"
@@ -2775,73 +2775,73 @@ msgstr ""
 #: bookwyrm/templates/settings/site.html:11
 #: bookwyrm/templates/settings/site.html:54
 msgid "Images"
-msgstr ""
+msgstr "Imaxes"
 
 #: bookwyrm/templates/settings/site.html:12
 #: bookwyrm/templates/settings/site.html:74
 msgid "Footer Content"
-msgstr ""
+msgstr "Contido web do pé"
 
 #: bookwyrm/templates/settings/site.html:13
 #: bookwyrm/templates/settings/site.html:98
 msgid "Registration"
-msgstr ""
+msgstr "Rexistro"
 
 #: bookwyrm/templates/settings/site.html:24
 msgid "Instance Name:"
-msgstr ""
+msgstr "Nome da instancia:"
 
 #: bookwyrm/templates/settings/site.html:28
 msgid "Tagline:"
-msgstr ""
+msgstr "Lema:"
 
 #: bookwyrm/templates/settings/site.html:32
 msgid "Instance description:"
-msgstr ""
+msgstr "Descrición da instancia:"
 
 #: bookwyrm/templates/settings/site.html:36
 msgid "Short description:"
-msgstr ""
+msgstr "Descrición curta:"
 
 #: bookwyrm/templates/settings/site.html:37
 msgid "Used when the instance is previewed on joinbookwyrm.com. Does not support HTML or Markdown."
-msgstr ""
+msgstr "Utilizado na vista previa da instancia en joinbookwyrm.com. Non admite HTML ou Markdown."
 
 #: bookwyrm/templates/settings/site.html:41
 msgid "Code of conduct:"
-msgstr ""
+msgstr "Código de conduta:"
 
 #: bookwyrm/templates/settings/site.html:45
 msgid "Privacy Policy:"
-msgstr ""
+msgstr "Política de privacidade:"
 
 #: bookwyrm/templates/settings/site.html:57
 msgid "Logo:"
-msgstr ""
+msgstr "Logo:"
 
 #: bookwyrm/templates/settings/site.html:61
 msgid "Logo small:"
-msgstr ""
+msgstr "Logo pequeno:"
 
 #: bookwyrm/templates/settings/site.html:65
 msgid "Favicon:"
-msgstr ""
+msgstr "Favicon:"
 
 #: bookwyrm/templates/settings/site.html:77
 msgid "Support link:"
-msgstr ""
+msgstr "Ligazón de axuda:"
 
 #: bookwyrm/templates/settings/site.html:81
 msgid "Support title:"
-msgstr ""
+msgstr "Título de axuda:"
 
 #: bookwyrm/templates/settings/site.html:85
 msgid "Admin email:"
-msgstr ""
+msgstr "Email de Admin:"
 
 #: bookwyrm/templates/settings/site.html:89
 msgid "Additional info:"
-msgstr ""
+msgstr "Info adicional:"
 
 #: bookwyrm/templates/settings/site.html:103
 msgid "Allow registration"
