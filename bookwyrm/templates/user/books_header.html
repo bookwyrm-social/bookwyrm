@@ -1,6 +1,16 @@
 {% load i18n %}
 {% if is_self %}
+{% if shelfname == 'to-read' %}
+{% trans "To Read" %}
+{% elif shelfname == 'reading' %}
+{% trans "Currently Reading" %}
+{% elif shelfname == 'read' %}
+{% trans "Read" %}
+{% elif shelfname == 'all' %}
 {% trans "Your books" %}
+{% else %}
+{{ shelfname }}
+{% endif %}
 {% else %}
 {% blocktrans with username=user.display_name %}{{ username }}'s books{% endblocktrans %}
 {% endif %}
