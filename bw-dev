@@ -61,7 +61,7 @@ case "$CMD" in
     up)
         docker-compose up --build "$@"
         ;;
-    run)
+    service_ports_web)
         docker-compose run --rm --service-ports web
         ;;
     initdb)
@@ -149,7 +149,7 @@ case "$CMD" in
         set +x # No need to echo echo
         echo "Unrecognised command. Try:"
         echo "    up [container]"
-        echo "    run"
+        echo "    service_ports_web"
         echo "    initdb"
         echo "    resetdb"
         echo "    makemigrations [migration]"
