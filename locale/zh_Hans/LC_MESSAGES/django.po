@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-10-24 14:09+0000\n"
-"PO-Revision-Date: 2021-10-24 18:36\n"
+"PO-Revision-Date: 2021-11-07 03:06\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Chinese Simplified\n"
 "Language: zh\n"
@@ -114,7 +114,7 @@ msgstr "图像小说"
 
 #: bookwyrm/models/book.py:235
 msgid "Hardcover"
-msgstr "硬封面"
+msgstr "精装"
 
 #: bookwyrm/models/book.py:236
 msgid "Paperback"
@@ -187,7 +187,7 @@ msgstr "Français（法语）"
 
 #: bookwyrm/settings.py:169
 msgid "Português - Brasil (Brazilian Portuguese)"
-msgstr ""
+msgstr "葡萄牙语-巴西（巴西的葡语）"
 
 #: bookwyrm/settings.py:170
 msgid "简体中文 (Simplified Chinese)"
@@ -757,7 +757,7 @@ msgstr "帮助"
 
 #: bookwyrm/templates/compose.html:5 bookwyrm/templates/compose.html:8
 msgid "Edit status"
-msgstr ""
+msgstr "设置状态"
 
 #: bookwyrm/templates/confirm_email/confirm_email.html:4
 msgid "Confirm email"
@@ -892,22 +892,22 @@ msgstr "所有已知用户"
 #: bookwyrm/templates/discover/card-header.html:9
 #, python-format
 msgid "<a href=\"%(user_path)s\">%(username)s</a> rated <a href=\"%(book_path)s\">%(book_title)s</a>"
-msgstr ""
+msgstr "<a href=\"%(user_path)s\">%(username)s</a> 对 <a href=\"%(book_path)s\">%(book_title)s</a> 留下了评分"
 
 #: bookwyrm/templates/discover/card-header.html:13
 #, python-format
 msgid "<a href=\"%(user_path)s\">%(username)s</a> reviewed <a href=\"%(book_path)s\">%(book_title)s</a>"
-msgstr ""
+msgstr "<a href=\"%(user_path)s\">%(username)s</a> 已评价 <a href=\"%(book_path)s\">%(book_title)s</a>"
 
 #: bookwyrm/templates/discover/card-header.html:17
 #, python-format
 msgid "<a href=\"%(user_path)s\">%(username)s</a> commented on <a href=\"%(book_path)s\">%(book_title)s</a>"
-msgstr ""
+msgstr "<a href=\"%(user_path)s\">%(username)s</a> 评论了 <a href=\"%(book_path)s\">%(book_title)s</a>"
 
 #: bookwyrm/templates/discover/card-header.html:21
 #, python-format
 msgid "<a href=\"%(user_path)s\">%(username)s</a> quoted <a href=\"%(book_path)s\">%(book_title)s</a>"
-msgstr ""
+msgstr "<a href=\"%(user_path)s\">%(username)s</a> 引用了 <a href=\"%(book_path)s\">%(book_title)s</a>"
 
 #: bookwyrm/templates/discover/discover.html:4
 #: bookwyrm/templates/discover/discover.html:10
@@ -976,7 +976,7 @@ msgstr "立即加入"
 #: bookwyrm/templates/email/invite/html_content.html:15
 #, python-format
 msgid "Learn more <a href=\"https://%(domain)s%(about_path)s\">about %(site_name)s</a>."
-msgstr ""
+msgstr "了解更多 <a href=\"https://%(domain)s%(about_path)s\">关于 %(site_name)s</a>"
 
 #: bookwyrm/templates/email/invite/text_content.html:4
 #, python-format
@@ -986,7 +986,7 @@ msgstr "你受邀请加入 %(site_name)s！点击下面的连接来创建帐号�
 #: bookwyrm/templates/email/invite/text_content.html:8
 #, python-format
 msgid "Learn more about %(site_name)s:"
-msgstr ""
+msgstr "进一步了解 %(site_name)s"
 
 #: bookwyrm/templates/email/password_reset/html_content.html:6
 #: bookwyrm/templates/email/password_reset/text_content.html:4
@@ -1228,16 +1228,16 @@ msgstr "没有找到 \"%(query)s\" 的用户"
 
 #: bookwyrm/templates/groups/create_form.html:5
 msgid "Create Group"
-msgstr ""
+msgstr "创建群组"
 
 #: bookwyrm/templates/groups/created_text.html:4
 #, python-format
 msgid "Managed by <a href=\"%(path)s\">%(username)s</a>"
-msgstr ""
+msgstr "由 <a href=\"%(path)s\">%(username)s</a> 创建并策展"
 
 #: bookwyrm/templates/groups/delete_group_modal.html:4
 msgid "Delete this group?"
-msgstr ""
+msgstr "删除该群组"
 
 #: bookwyrm/templates/groups/delete_group_modal.html:7
 #: bookwyrm/templates/lists/delete_list_modal.html:7
@@ -1257,43 +1257,43 @@ msgstr "删除"
 
 #: bookwyrm/templates/groups/edit_form.html:5
 msgid "Edit Group"
-msgstr ""
+msgstr "编辑群组"
 
 #: bookwyrm/templates/groups/find_users.html:6
 msgid "Add new members!"
-msgstr ""
+msgstr "添加新成员"
 
 #: bookwyrm/templates/groups/form.html:8
 msgid "Group Name:"
-msgstr ""
+msgstr "群组名称"
 
 #: bookwyrm/templates/groups/form.html:12
 msgid "Group Description:"
-msgstr ""
+msgstr "群组描述"
 
 #: bookwyrm/templates/groups/form.html:30
 msgid "Delete group"
-msgstr ""
+msgstr "删除群组"
 
 #: bookwyrm/templates/groups/group.html:15
 msgid "Search to add a user"
-msgstr ""
+msgstr "搜索或添加用户"
 
 #: bookwyrm/templates/groups/group.html:36
 msgid "This group has no lists"
-msgstr ""
+msgstr "这个群组没有任何列表"
 
 #: bookwyrm/templates/groups/layout.html:16
 msgid "Edit group"
-msgstr ""
+msgstr "编辑群组"
 
 #: bookwyrm/templates/groups/members.html:8
 msgid "Members can add and remove books on a group's book lists"
-msgstr ""
+msgstr "会员可以在群组的书籍列表中添加和删除书"
 
 #: bookwyrm/templates/groups/members.html:19
 msgid "Leave group"
-msgstr ""
+msgstr "退出群组"
 
 #: bookwyrm/templates/groups/members.html:41
 #: bookwyrm/templates/groups/suggested_users.html:32
@@ -1323,7 +1323,7 @@ msgstr ""
 
 #: bookwyrm/templates/groups/user_groups.html:15
 msgid "Manager"
-msgstr ""
+msgstr "管理员"
 
 #: bookwyrm/templates/import/import.html:5
 #: bookwyrm/templates/import/import.html:9
@@ -1441,7 +1441,7 @@ msgstr "已导入"
 
 #: bookwyrm/templates/import/tooltip.html:6
 msgid "You can download your Goodreads data from the <a href=\"https://www.goodreads.com/review/import\" target=\"_blank\" rel=\"noopener\">Import/Export page</a> of your Goodreads account."
-msgstr ""
+msgstr "您可以从 <a href=\"https://www.goodreads.com/review/import\" target=\"_blank\" rel=\"noopener\">导入/导出页面</a> 下载或导出您的 Goodread 数据。"
 
 #: bookwyrm/templates/landing/about.html:7 bookwyrm/templates/layout.html:230
 #, python-format
@@ -1649,7 +1649,7 @@ msgstr "创建列表"
 #: bookwyrm/templates/lists/created_text.html:5
 #, python-format
 msgid "Created by <a href=\"%(userpath)s\">%(username)s</a> and managed by <a href=\"%(grouppath)s\">%(groupname)s</a>"
-msgstr ""
+msgstr "由 <a href=\"%(userpath)s\">%(username)s</a> 创建，由 <a href=\"%(grouppath)s\">%(groupname)s</a> 管理"
 
 #: bookwyrm/templates/lists/created_text.html:7
 #, python-format
@@ -1725,7 +1725,7 @@ msgstr "任何人都可以向此列表中添加书目"
 
 #: bookwyrm/templates/lists/form.html:37
 msgid "Group"
-msgstr ""
+msgstr "组（Group）"
 
 #: bookwyrm/templates/lists/form.html:38
 msgid "Group members can add to and remove from this list"
@@ -1733,19 +1733,19 @@ msgstr ""
 
 #: bookwyrm/templates/lists/form.html:41
 msgid "Select Group"
-msgstr ""
+msgstr "选择群组"
 
 #: bookwyrm/templates/lists/form.html:45
 msgid "Select a group"
-msgstr ""
+msgstr "选择一个组"
 
 #: bookwyrm/templates/lists/form.html:56
 msgid "You don't have any Groups yet!"
-msgstr ""
+msgstr "您目前尚未拥有任何群组！"
 
 #: bookwyrm/templates/lists/form.html:58
 msgid "Create a Group"
-msgstr ""
+msgstr "创建一个群组"
 
 #: bookwyrm/templates/lists/form.html:81
 msgid "Delete list"
@@ -1835,7 +1835,7 @@ msgstr "保存的列表"
 #: bookwyrm/templates/notifications/items/accept.html:16
 #, python-format
 msgid "accepted your invitation to join group \"<a href=\"%(group_path)s\">%(group_name)s</a>\""
-msgstr ""
+msgstr "接受了您的邀请，加入 \"<a href=\"%(group_path)s\">%(group_name)s</a>\" 群组"
 
 #: bookwyrm/templates/notifications/items/add.html:24
 #, python-format
@@ -1870,17 +1870,17 @@ msgstr "转发了你的 <a href=\"%(related_path)s\">状态</a>"
 #: bookwyrm/templates/notifications/items/fav.html:19
 #, python-format
 msgid "liked your <a href=\"%(related_path)s\">review of <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "喜欢了你 <a href=\"%(related_path)s\">对 <em>%(book_title)s</em> 的书评</a>"
 
 #: bookwyrm/templates/notifications/items/fav.html:25
 #, python-format
 msgid "liked your <a href=\"%(related_path)s\">comment on <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "喜欢了你的 <a href=\"%(related_path)s\">对 <em>%(book_title)s</em> 的评论</a>"
 
 #: bookwyrm/templates/notifications/items/fav.html:31
 #, python-format
 msgid "liked your <a href=\"%(related_path)s\">quote from <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "喜欢了你对 <a href=\"%(related_path)s\">对 <em>%(book_title)s</em> 的引用</a>"
 
 #: bookwyrm/templates/notifications/items/fav.html:37
 #, python-format
@@ -2797,7 +2797,7 @@ msgstr "简要描述:"
 
 #: bookwyrm/templates/settings/site.html:37
 msgid "Used when the instance is previewed on joinbookwyrm.com. Does not support HTML or Markdown."
-msgstr ""
+msgstr "在 joinbookwyrm.com 上预览实例时使用。不支持 HTML 或 Markdown。"
 
 #: bookwyrm/templates/settings/site.html:41
 msgid "Code of conduct:"
@@ -3044,16 +3044,16 @@ msgstr "此书架是空的。"
 
 #: bookwyrm/templates/snippets/add_to_group_button.html:15
 msgid "Invite"
-msgstr ""
+msgstr "邀请"
 
 #: bookwyrm/templates/snippets/add_to_group_button.html:24
 msgid "Uninvite"
-msgstr ""
+msgstr "移除邀请"
 
 #: bookwyrm/templates/snippets/add_to_group_button.html:28
 #, python-format
 msgid "Remove @%(username)s"
-msgstr ""
+msgstr "移除 @%(username)s"
 
 #: bookwyrm/templates/snippets/announcement.html:31
 #, python-format
@@ -3503,7 +3503,7 @@ msgstr "隐藏状态"
 #: bookwyrm/templates/snippets/status/header.html:45
 #, python-format
 msgid "edited %(date)s"
-msgstr ""
+msgstr "在 %(date)s 已编辑"
 
 #: bookwyrm/templates/snippets/status/headers/comment.html:2
 #, python-format
@@ -3620,16 +3620,16 @@ msgstr "%(username)s 在 %(year)s 的书目"
 
 #: bookwyrm/templates/user/groups.html:9
 msgid "Your Groups"
-msgstr ""
+msgstr "您的群组"
 
 #: bookwyrm/templates/user/groups.html:11
 #, python-format
 msgid "Groups: %(username)s"
-msgstr ""
+msgstr "群组: %(username)s"
 
 #: bookwyrm/templates/user/groups.html:17
 msgid "Create group"
-msgstr ""
+msgstr "创建群组"
 
 #: bookwyrm/templates/user/layout.html:19 bookwyrm/templates/user/user.html:10
 msgid "User Profile"
@@ -3645,7 +3645,7 @@ msgstr "阅读目标"
 
 #: bookwyrm/templates/user/layout.html:76
 msgid "Groups"
-msgstr ""
+msgstr "群组"
 
 #: bookwyrm/templates/user/lists.html:11
 #, python-format
