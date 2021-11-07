@@ -96,9 +96,6 @@ case "$CMD" in
     restart_celery)
         docker-compose restart celery_worker
         ;;
-    test)
-        runweb coverage run --source='.' --omit="*/test*,celerywyrm*,bookwyrm/migrations/*" manage.py test "$@"
-        ;;
     pytest)
         execweb pytest --no-cov-on-fail "$@"
         ;;
@@ -161,7 +158,6 @@ case "$CMD" in
         echo "    shell"
         echo "    dbshell"
         echo "    restart_celery"
-        echo "    test [path]"
         echo "    pytest [path]"
         echo "    collectstatic"
         echo "    add_locale [locale]"
