@@ -10,14 +10,6 @@ from bookwyrm.models import ReadThrough, User, Book
 from .fields import PrivacyLevels
 
 
-# Mapping goodreads -> bookwyrm shelf titles.
-GOODREADS_SHELVES = {
-    "read": "read",
-    "currently-reading": "reading",
-    "to-read": "to-read",
-}
-
-
 def unquote_string(text):
     """resolve csv quote weirdness"""
     match = re.match(r'="([^"]*)"', text)
@@ -106,56 +98,56 @@ class ImportItem(models.Model):
     @property
     def title(self):
         """get the book title"""
-        return self.data["Title"]
+        return self.data["title"]
 
     @property
     def author(self):
-        """get the book title"""
-        return self.data["Author"]
+        """get the book's authors"""
+        return self.data["authors"]
 
     @property
     def isbn(self):
         """pulls out the isbn13 field from the csv line data"""
-        return unquote_string(self.data["ISBN13"])
+        return unquote_string(self.data["isbn_13"])
 
     @property
     def shelf(self):
         """the goodreads shelf field"""
-        if self.data["Exclusive Shelf"]:
-            return GOODREADS_SHELVES.get(self.data["Exclusive Shelf"])
-        return None
+        return self.data.get("shelf")
 
     @property
     def review(self):
         """a user-written review, to be imported with the book data"""
-        return self.data["My Review"]
+        return self.data["review_body"]
 
     @property
     def rating(self):
         """x/5 star rating for a book"""
-        if self.data.get("My Rating", None):
-            return int(self.data["My Rating"])
+        if self.data.get("rating"):
+            return float(self.data["rating"])
         return None
 
     @property
     def date_added(self):
         """when the book was added to this dataset"""
-        if self.data["Date Added"]:
-            return timezone.make_aware(dateutil.parser.parse(self.data["Date Added"]))
+        if self.data.get("date_added"):
+            return timezone.make_aware(dateutil.parser.parse(self.data["date_added"]))
         return None
 
     @property
     def date_started(self):
         """when the book was started"""
-        if "Date Started" in self.data and self.data["Date Started"]:
-            return timezone.make_aware(dateutil.parser.parse(self.data["Date Started"]))
+        if self.data.get("date_started"):
+            return timezone.make_aware(dateutil.parser.parse(self.data["date_started"]))
         return None
 
     @property
     def date_read(self):
         """the date a book was completed"""
-        if self.data["Date Read"]:
-            return timezone.make_aware(dateutil.parser.parse(self.data["Date Read"]))
+        if self.data.get("date_finished"):
+            return timezone.make_aware(
+                dateutil.parser.parse(self.data["date_finished"])
+            )
         return None
 
     @property
@@ -185,8 +177,8 @@ class ImportItem(models.Model):
 
     def __repr__(self):
         # pylint: disable=consider-using-f-string
-        return "<{!r}Item {!r}>".format(self.data["import_source"], self.data["Title"])
+        return "<{!r}Item {!r}>".format(self.data["import_source"], self.data["title"])
 
     def __str__(self):
         # pylint: disable=consider-using-f-string
-        return "{} by {}".format(self.data["Title"], self.data["Author"])
+        return "{} by {}".format(self.data["title"], self.data["authors"])
