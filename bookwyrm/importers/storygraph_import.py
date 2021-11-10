@@ -21,7 +21,7 @@ class StorygraphImporter(Importer):
         data["ISBN13"] = entry["ISBN"]
         data["My Review"] = entry["Review"]
         if entry["Star Rating"]:
-            data["My Rating"] = math.ceil(float(entry["Star Rating"]))
+            data["My Rating"] = float(entry["Star Rating"])
         else:
             data["My Rating"] = ""
 
