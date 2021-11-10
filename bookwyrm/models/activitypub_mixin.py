@@ -225,10 +225,9 @@ class ObjectMixin(ActivitypubMixin):
                     self.broadcast(pure_activity, user, software="other")
                     # set bookwyrm so that that type is also sent
                     software = "bookwyrm"
-                if software == "bookwyrm":
-                    # sends to BW only if we just did a pure version for masto
-                    activity = self.to_create_activity(user)
-                    self.broadcast(activity, user, software=software)
+                # sends to BW only if we just did a pure version for masto
+                activity = self.to_create_activity(user)
+                self.broadcast(activity, user, software=software)
             except AttributeError:
                 # janky as heck, this catches the mutliple inheritence chain
                 # for boosts and ignores this auxilliary broadcast
