@@ -22,6 +22,7 @@ from bookwyrm.activitypub.base_activity import ActivityObject
 from bookwyrm.models import fields, User, Status
 from bookwyrm.models.base_model import BookWyrmModel
 from bookwyrm.models.activitypub_mixin import ActivitypubMixin
+from bookwyrm.settings import DOMAIN
 
 # pylint: disable=too-many-public-methods
 @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
@@ -424,20 +425,17 @@ class ModelFields(TestCase):
         image.save(output, format=image.format)
         user.avatar.save("test.jpg", ContentFile(output.getvalue()))
 
-        output = fields.image_serializer(user.avatar, alt="alt text")
+        instance = fields.ImageField()
+
+        output = instance.field_to_activity(user.avatar)
         self.assertIsNotNone(
             re.match(
-                r".*\.jpg",
+                fr"https:\/\/{DOMAIN}\/.*\.jpg",
                 output.url,
             )
         )
-        self.assertEqual(output.name, "alt text")
+        self.assertEqual(output.name, "")
         self.assertEqual(output.type, "Document")
-
-        instance = fields.ImageField()
-
-        output = fields.image_serializer(user.avatar, alt=None)
-        self.assertEqual(instance.field_to_activity(user.avatar), output)
 
         responses.add(
             responses.GET,
@@ -452,7 +450,7 @@ class ModelFields(TestCase):
     def test_image_serialize(self, *_):
         """make sure we're creating sensible image paths"""
         ValueMock = namedtuple("ValueMock", ("url"))
-        value_mock = ValueMock("/images/fish.jpg")
+        value_mock = ValueMock("https://your.domain.here/images/fish.jpg")
         result = fields.image_serializer(value_mock, "hello")
         self.assertEqual(result.type, "Document")
         self.assertEqual(result.url, "https://your.domain.here/images/fish.jpg")
