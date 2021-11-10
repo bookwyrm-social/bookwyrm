@@ -1,6 +1,5 @@
 """ handle reading a csv from librarything """
 import re
-import math
 
 from . import Importer
 
