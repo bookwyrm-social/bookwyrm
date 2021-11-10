@@ -189,7 +189,11 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
             if hasattr(activity, "name"):
                 activity.name = self.pure_name
             activity.type = self.pure_type
-            covers = [b.to_activity().get("cover") for b in [getattr(self, "book", None)] + list(self.mention_books.all()) if b]
+            covers = [
+                b.to_activity().get("cover")
+                for b in [getattr(self, "book", None)] + list(self.mention_books.all())
+                if b
+            ]
             activity.attachment = covers
         return activity
 
