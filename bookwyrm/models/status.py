@@ -190,9 +190,22 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
                 activity.name = self.pure_name
             activity.type = self.pure_type
             books = [getattr(self, "book", None)] + list(self.mention_books.all())
-            covers = [
-                b.to_activity().get("cover") for b in books if b
-            ]
+            if len(books) == 1 and books[0].preview_image:
+                covers = [
+                    activitypub.Document(
+                        url=fields.get_absolute_url(books[0].preview_image),
+                        name=books[0].alt_text,
+                    )
+                ]
+            else:
+                covers = [
+                    activitypub.Document(
+                        url=fields.get_absolute_url(b.cover),
+                        name=b.alt_text,
+                    )
+                    for b in books
+                    if b and b.cover
+                ]
             activity.attachment = covers
         return activity
 
