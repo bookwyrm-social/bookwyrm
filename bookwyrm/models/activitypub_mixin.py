@@ -220,7 +220,7 @@ class ObjectMixin(ActivitypubMixin):
 
             try:
                 # do we have a "pure" activitypub version of this for mastodon?
-                if not software == "bookwyrm" and hasattr(self, "pure_content"):
+                if software != "bookwyrm" and hasattr(self, "pure_content"):
                     pure_activity = self.to_create_activity(user, pure=True)
                     self.broadcast(pure_activity, user, software="other")
                     # set bookwyrm so that that type is also sent
