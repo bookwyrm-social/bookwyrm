@@ -447,15 +447,6 @@ class ModelFields(TestCase):
         self.assertIsInstance(loaded_image, list)
         self.assertIsInstance(loaded_image[1], ContentFile)
 
-    def test_image_serialize(self, *_):
-        """make sure we're creating sensible image paths"""
-        ValueMock = namedtuple("ValueMock", ("url"))
-        value_mock = ValueMock("https://your.domain.here/images/fish.jpg")
-        result = fields.image_serializer(value_mock, "hello")
-        self.assertEqual(result.type, "Document")
-        self.assertEqual(result.url, "https://your.domain.here/images/fish.jpg")
-        self.assertEqual(result.name, "hello")
-
     def test_datetime_field(self, *_):
         """this one is pretty simple, it just has to use isoformat"""
         instance = fields.DateTimeField()

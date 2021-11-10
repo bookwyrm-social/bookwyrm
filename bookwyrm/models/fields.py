@@ -383,19 +383,6 @@ class CustomImageField(DjangoImageField):
     widget = ClearableFileInputWithWarning
 
 
-def image_serializer(value, alt):
-    """helper for serializing images"""
-    if value and hasattr(value, "url"):
-        url = value.url
-    else:
-        return None
-    if url is not None:
-        url = url.lstrip("/")
-    url = urljoin(MEDIA_FULL_URL, url)
-
-    return activitypub.Document(url=url, name=alt)
-
-
 class ImageField(ActivitypubFieldMixin, models.ImageField):
     """activitypub-aware image field"""
 
