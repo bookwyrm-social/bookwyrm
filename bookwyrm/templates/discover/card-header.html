@@ -1,7 +1,7 @@
 {% load i18n %}
 {% load utilities %}
 
-{% with user_path=status.user.local_path username=status.user.display_name book_path=status.book.local_poth book_title=book|book_title %}
+{% with user_path=status.user.local_path username=status.user.display_name book_path=book.local_path book_title=book|book_title %}
 
 {% if status.status_type == 'GeneratedNote' %}
     {% if status.content == 'wants to read' %}
