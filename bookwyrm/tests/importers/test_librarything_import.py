@@ -157,37 +157,6 @@ class LibrarythingImport(TestCase):
         self.assertEqual(readthrough.start_date, make_date(2007, 4, 16))
         self.assertEqual(readthrough.finish_date, make_date(2007, 5, 8))
 
-    def test_handle_import_twice(self, *_):
-        """re-importing books"""
-        shelf = self.user.shelf_set.filter(identifier="read").first()
-        import_job = models.ImportJob.objects.create(user=self.user)
-        datafile = pathlib.Path(__file__).parent.joinpath("../data/librarything.tsv")
-        csv_file = open(datafile, "r", encoding=self.importer.encoding)
-        for index, entry in enumerate(
-            list(csv.DictReader(csv_file, delimiter=self.importer.delimiter))
-        ):
-            entry = self.importer.parse_fields(entry)
-            import_item = models.ImportItem.objects.create(
-                job_id=import_job.id, index=index, data=entry, book=self.book
-            )
-            break
-
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-            handle_imported_book(
-                self.importer.service, self.user, import_item, False, "public"
-            )
-            handle_imported_book(
-                self.importer.service, self.user, import_item, False, "public"
-            )
-
-        shelf.refresh_from_db()
-        self.assertEqual(shelf.books.first(), self.book)
-
-        readthrough = models.ReadThrough.objects.get(user=self.user)
-        self.assertEqual(readthrough.book, self.book)
-        self.assertEqual(readthrough.start_date, make_date(2007, 4, 16))
-        self.assertEqual(readthrough.finish_date, make_date(2007, 5, 8))
-
     @patch("bookwyrm.activitystreams.add_status_task.delay")
     def test_handle_imported_book_review(self, *_):
         """librarything review import"""
@@ -209,22 +178,3 @@ class LibrarythingImport(TestCase):
         self.assertEqual(review.rating, 5)
         self.assertEqual(review.published_date, make_date(2007, 5, 8))
         self.assertEqual(review.privacy, "unlisted")
-
-    def test_handle_imported_book_reviews_disabled(self, *_):
-        """librarything review import"""
-        import_job = models.ImportJob.objects.create(user=self.user)
-        datafile = pathlib.Path(__file__).parent.joinpath("../data/librarything.tsv")
-        csv_file = open(datafile, "r", encoding=self.importer.encoding)
-        entry = list(csv.DictReader(csv_file, delimiter=self.importer.delimiter))[2]
-        entry = self.importer.parse_fields(entry)
-        import_item = models.ImportItem.objects.create(
-            job_id=import_job.id, index=0, data=entry, book=self.book
-        )
-
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-            handle_imported_book(
-                self.importer.service, self.user, import_item, False, "unlisted"
-            )
-        self.assertFalse(
-            models.Review.objects.filter(book=self.book, user=self.user).exists()
-        )

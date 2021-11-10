@@ -136,7 +136,7 @@ def handle_imported_book(source, user, item, include_reviews, privacy):
                 if item.review
                 else ""
             )
-            models.Review.objects.create(
+            review = models.Review(
                 user=user,
                 book=item.book,
                 name=review_title,
@@ -147,10 +147,12 @@ def handle_imported_book(source, user, item, include_reviews, privacy):
             )
         else:
             # just a rating
-            models.ReviewRating.objects.create(
+            review = models.ReviewRating(
                 user=user,
                 book=item.book,
                 rating=item.rating,
                 published_date=published_date_guess,
                 privacy=privacy,
             )
+        # only broadcast this review to other bookwyrm instances
+        review.save(software="bookwyrm")

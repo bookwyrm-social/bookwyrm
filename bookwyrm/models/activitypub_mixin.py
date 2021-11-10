@@ -195,7 +195,7 @@ class ActivitypubMixin:
 class ObjectMixin(ActivitypubMixin):
     """add this mixin for object models that are AP serializable"""
 
-    def save(self, *args, created=None, **kwargs):
+    def save(self, *args, created=None, software=None, **kwargs):
         """broadcast created/updated/deleted objects as appropriate"""
         broadcast = kwargs.get("broadcast", True)
         # this bonus kwarg would cause an error in the base save method
@@ -219,11 +219,11 @@ class ObjectMixin(ActivitypubMixin):
                 return
 
             try:
-                software = None
                 # do we have a "pure" activitypub version of this for mastodon?
-                if hasattr(self, "pure_content"):
+                if software != "bookwyrm" and hasattr(self, "pure_content"):
                     pure_activity = self.to_create_activity(user, pure=True)
                     self.broadcast(pure_activity, user, software="other")
+                    # set bookwyrm so that that type is also sent
                     software = "bookwyrm"
                 # sends to BW only if we just did a pure version for masto
                 activity = self.to_create_activity(user)
@@ -241,8 +241,7 @@ class ObjectMixin(ActivitypubMixin):
             if isinstance(self, user_model):
                 user = self
             # book data tracks last editor
-            elif hasattr(self, "last_edited_by"):
-                user = self.last_edited_by
+            user = user or getattr(self, "last_edited_by", None)
         # again, if we don't know the user or they're remote, don't bother
         if not user or not user.local:
             return

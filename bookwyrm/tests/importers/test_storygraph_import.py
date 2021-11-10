@@ -8,7 +8,7 @@ import pytz
 from django.test import TestCase
 
 from bookwyrm import models
-from bookwyrm.importers import GoodreadsImporter
+from bookwyrm.importers import StorygraphImporter
 from bookwyrm.importers.importer import handle_imported_book
 
 
@@ -21,13 +21,13 @@ def make_date(*args):
 @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
 @patch("bookwyrm.activitystreams.populate_stream_task.delay")
 @patch("bookwyrm.activitystreams.add_book_statuses_task.delay")
-class GoodreadsImport(TestCase):
-    """importing from goodreads csv"""
+class StorygraphImport(TestCase):
+    """importing from storygraph csv"""
 
     def setUp(self):
         """use a test csv"""
-        self.importer = GoodreadsImporter()
-        datafile = pathlib.Path(__file__).parent.joinpath("../data/goodreads.csv")
+        self.importer = StorygraphImporter()
+        datafile = pathlib.Path(__file__).parent.joinpath("../data/storygraph.csv")
         self.csv = open(datafile, "r", encoding=self.importer.encoding)
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
@@ -48,13 +48,12 @@ class GoodreadsImport(TestCase):
         import_job = self.importer.create_job(self.user, self.csv, False, "public")
 
         import_items = models.ImportItem.objects.filter(job=import_job).all()
-        self.assertEqual(len(import_items), 3)
+        self.assertEqual(len(import_items), 2)
         self.assertEqual(import_items[0].index, 0)
-        self.assertEqual(import_items[0].data["Book Id"], "42036538")
+        self.assertEqual(import_items[0].data["Title"], "Always Coming Home")
         self.assertEqual(import_items[1].index, 1)
-        self.assertEqual(import_items[1].data["Book Id"], "52691223")
-        self.assertEqual(import_items[2].index, 2)
-        self.assertEqual(import_items[2].data["Book Id"], "28694510")
+        self.assertEqual(import_items[1].data["Title"], "Subprime Attention Crisis")
+        self.assertEqual(import_items[1].data["My Rating"], 5.0)
 
     def test_create_retry_job(self, *_):
         """trying again with items that didn't import"""
@@ -70,17 +69,17 @@ class GoodreadsImport(TestCase):
         retry_items = models.ImportItem.objects.filter(job=retry).all()
         self.assertEqual(len(retry_items), 2)
         self.assertEqual(retry_items[0].index, 0)
-        self.assertEqual(retry_items[0].data["Book Id"], "42036538")
+        self.assertEqual(retry_items[0].data["Title"], "Always Coming Home")
         self.assertEqual(retry_items[1].index, 1)
-        self.assertEqual(retry_items[1].data["Book Id"], "52691223")
+        self.assertEqual(retry_items[1].data["Title"], "Subprime Attention Crisis")
 
     def test_handle_imported_book(self, *_):
-        """goodreads import added a book, this adds related connections"""
-        shelf = self.user.shelf_set.filter(identifier="read").first()
+        """storygraph import added a book, this adds related connections"""
+        shelf = self.user.shelf_set.filter(identifier="to-read").first()
         self.assertIsNone(shelf.books.first())
 
         import_job = models.ImportJob.objects.create(user=self.user)
-        datafile = pathlib.Path(__file__).parent.joinpath("../data/goodreads.csv")
+        datafile = pathlib.Path(__file__).parent.joinpath("../data/storygraph.csv")
         csv_file = open(datafile, "r")  # pylint: disable=unspecified-encoding
         for index, entry in enumerate(list(csv.DictReader(csv_file))):
             entry = self.importer.parse_fields(entry)
@@ -97,45 +96,16 @@ class GoodreadsImport(TestCase):
         shelf.refresh_from_db()
         self.assertEqual(shelf.books.first(), self.book)
         self.assertEqual(
-            shelf.shelfbook_set.first().shelved_date, make_date(2020, 10, 21)
+            shelf.shelfbook_set.first().shelved_date, make_date(2021, 5, 10)
         )
-
-        readthrough = models.ReadThrough.objects.get(user=self.user)
-        self.assertEqual(readthrough.book, self.book)
-        self.assertEqual(readthrough.start_date, make_date(2020, 10, 21))
-        self.assertEqual(readthrough.finish_date, make_date(2020, 10, 25))
-
-    @patch("bookwyrm.activitystreams.add_status_task.delay")
-    def test_handle_imported_book_review(self, *_):
-        """goodreads review import"""
-        import_job = models.ImportJob.objects.create(user=self.user)
-        datafile = pathlib.Path(__file__).parent.joinpath("../data/goodreads.csv")
-        csv_file = open(datafile, "r")  # pylint: disable=unspecified-encoding
-        entry = list(csv.DictReader(csv_file))[2]
-        entry = self.importer.parse_fields(entry)
-        import_item = models.ImportItem.objects.create(
-            job_id=import_job.id, index=0, data=entry, book=self.book
-        )
-
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-            handle_imported_book(
-                self.importer.service, self.user, import_item, True, "unlisted"
-            )
-        review = models.Review.objects.get(book=self.book, user=self.user)
-        self.assertEqual(review.content, "mixed feelings")
-        self.assertEqual(review.rating, 2)
-        self.assertEqual(review.published_date, make_date(2019, 7, 8))
-        self.assertEqual(review.privacy, "unlisted")
 
     @patch("bookwyrm.activitystreams.add_status_task.delay")
     def test_handle_imported_book_rating(self, *_):
-        """goodreads rating import"""
+        """storygraph rating import"""
         import_job = models.ImportJob.objects.create(user=self.user)
-        datafile = pathlib.Path(__file__).parent.joinpath(
-            "../data/goodreads-rating.csv"
-        )
+        datafile = pathlib.Path(__file__).parent.joinpath("../data/storygraph.csv")
         csv_file = open(datafile, "r")  # pylint: disable=unspecified-encoding
-        entry = list(csv.DictReader(csv_file))[2]
+        entry = list(csv.DictReader(csv_file))[1]
         entry = self.importer.parse_fields(entry)
         import_item = models.ImportItem.objects.create(
             job_id=import_job.id, index=0, data=entry, book=self.book
@@ -147,6 +117,6 @@ class GoodreadsImport(TestCase):
             )
         review = models.ReviewRating.objects.get(book=self.book, user=self.user)
         self.assertIsInstance(review, models.ReviewRating)
-        self.assertEqual(review.rating, 2)
-        self.assertEqual(review.published_date, make_date(2019, 7, 8))
+        self.assertEqual(review.rating, 5.0)
+        self.assertEqual(review.published_date, make_date(2021, 5, 10))
         self.assertEqual(review.privacy, "unlisted")
