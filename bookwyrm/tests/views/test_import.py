@@ -41,7 +41,7 @@ class ImportViews(TestCase):
     def test_import_status(self):
         """there are so many views, this just makes sure it LOADS"""
         view = views.ImportStatus.as_view()
-        import_job = models.ImportJob.objects.create(user=self.local_user)
+        import_job = models.ImportJob.objects.create(user=self.local_user, mappings={})
         request = self.factory.get("")
         request.user = self.local_user
         with patch("bookwyrm.tasks.app.AsyncResult") as async_result:
@@ -55,7 +55,7 @@ class ImportViews(TestCase):
         """retry failed items"""
         view = views.Import.as_view()
         form = forms.ImportForm()
-        form.data["source"] = "LibraryThing"
+        form.data["source"] = "Goodreads"
         form.data["privacy"] = "public"
         form.data["include_reviews"] = False
         csv_file = pathlib.Path(__file__).parent.joinpath("../data/goodreads.csv")
@@ -79,7 +79,7 @@ class ImportViews(TestCase):
         """retry failed items"""
         view = views.ImportStatus.as_view()
         import_job = models.ImportJob.objects.create(
-            user=self.local_user, privacy="unlisted"
+            user=self.local_user, privacy="unlisted", mappings={}
         )
         request = self.factory.post("")
         request.user = self.local_user
