@@ -383,19 +383,6 @@ class CustomImageField(DjangoImageField):
     widget = ClearableFileInputWithWarning
 
 
-def image_serializer(value, alt):
-    """helper for serializing images"""
-    if value and hasattr(value, "url"):
-        url = value.url
-    else:
-        return None
-    if url is not None:
-        url = url.lstrip("/")
-    url = urljoin(MEDIA_FULL_URL, url)
-
-    return activitypub.Document(url=url, name=alt)
-
-
 class ImageField(ActivitypubFieldMixin, models.ImageField):
     """activitypub-aware image field"""
 
@@ -428,7 +415,7 @@ class ImageField(ActivitypubFieldMixin, models.ImageField):
         activity[key] = formatted
 
     def field_to_activity(self, value, alt=None):
-        url = self.get_absolute_url(value)
+        url = get_absolute_url(value)
 
         if not url:
             return None
@@ -469,19 +456,19 @@ class ImageField(ActivitypubFieldMixin, models.ImageField):
             }
         )
 
-    # pylint: disable=no-self-use
-    def get_absolute_url(self, value):
-        """returns an absolute URL for the image"""
-        name = getattr(value, "name")
-        if not name:
-            return None
 
-        url = filepath_to_uri(name)
-        if url is not None:
-            url = url.lstrip("/")
-        url = urljoin(MEDIA_FULL_URL, url)
+def get_absolute_url(value):
+    """returns an absolute URL for the image"""
+    name = getattr(value, "name")
+    if not name:
+        return None
 
-        return url
+    url = filepath_to_uri(name)
+    if url is not None:
+        url = url.lstrip("/")
+    url = urljoin(MEDIA_FULL_URL, url)
+
+    return url
 
 
 class DateTimeField(ActivitypubFieldMixin, models.DateTimeField):

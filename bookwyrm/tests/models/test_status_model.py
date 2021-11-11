@@ -2,7 +2,7 @@
 from unittest.mock import patch
 from io import BytesIO
 import pathlib
-from urllib.parse import urljoin
+import re
 
 from django.http import Http404
 from django.core.files.base import ContentFile
@@ -191,9 +191,11 @@ class Status(TestCase):
         self.assertEqual(activity["sensitive"], False)
         self.assertIsInstance(activity["attachment"], list)
         self.assertEqual(activity["attachment"][0].type, "Document")
-        self.assertEqual(
-            activity["attachment"][0].url,
-            urljoin(settings.MEDIA_FULL_URL, self.book.cover.url.lstrip("/")),
+        self.assertTrue(
+            re.match(
+                r"https:\/\/your.domain.here\/images\/covers\/test_[A-z0-9]+.jpg",
+                activity["attachment"][0].url,
+            )
         )
         self.assertEqual(activity["attachment"][0].name, "Test Edition")
 
@@ -221,9 +223,11 @@ class Status(TestCase):
             f'test content<p>(comment on <a href="{self.book.remote_id}">"Test Edition"</a>)</p>',
         )
         self.assertEqual(activity["attachment"][0].type, "Document")
-        self.assertEqual(
-            activity["attachment"][0].url,
-            urljoin(settings.MEDIA_FULL_URL, self.book.cover.url.lstrip("/")),
+        self.assertTrue(
+            re.match(
+                r"https:\/\/your.domain.here\/images\/covers\/test_[A-z0-9]+.jpg",
+                activity["attachment"][0].url,
+            )
         )
         self.assertEqual(activity["attachment"][0].name, "Test Edition")
 
@@ -258,9 +262,11 @@ class Status(TestCase):
             f'a sickening sense <p>-- <a href="{self.book.remote_id}">"Test Edition"</a></p>test content',
         )
         self.assertEqual(activity["attachment"][0].type, "Document")
-        self.assertEqual(
-            activity["attachment"][0].url,
-            urljoin(settings.MEDIA_FULL_URL, self.book.cover.url.lstrip("/")),
+        self.assertTrue(
+            re.match(
+                r"https:\/\/your.domain.here\/images\/covers\/test_[A-z0-9]+.jpg",
+                activity["attachment"][0].url,
+            )
         )
         self.assertEqual(activity["attachment"][0].name, "Test Edition")
 
@@ -299,9 +305,11 @@ class Status(TestCase):
         )
         self.assertEqual(activity["content"], "test content")
         self.assertEqual(activity["attachment"][0].type, "Document")
-        self.assertEqual(
-            activity["attachment"][0].url,
-            urljoin(settings.MEDIA_FULL_URL, self.book.cover.url.lstrip("/")),
+        self.assertTrue(
+            re.match(
+                r"https:\/\/your.domain.here\/images\/covers\/test_[A-z0-9]+.jpg",
+                activity["attachment"][0].url,
+            )
         )
         self.assertEqual(activity["attachment"][0].name, "Test Edition")
 
@@ -321,9 +329,11 @@ class Status(TestCase):
         )
         self.assertEqual(activity["content"], "test content")
         self.assertEqual(activity["attachment"][0].type, "Document")
-        self.assertEqual(
-            activity["attachment"][0].url,
-            urljoin(settings.MEDIA_FULL_URL, self.book.cover.url.lstrip("/")),
+        self.assertTrue(
+            re.match(
+                r"https:\/\/your.domain.here\/images\/covers\/test_[A-z0-9]+.jpg",
+                activity["attachment"][0].url,
+            )
         )
         self.assertEqual(activity["attachment"][0].name, "Test Edition")
 
@@ -342,9 +352,11 @@ class Status(TestCase):
             f'rated <em><a href="{self.book.remote_id}">{self.book.title}</a></em>: 3 stars',
         )
         self.assertEqual(activity["attachment"][0].type, "Document")
-        self.assertEqual(
-            activity["attachment"][0].url,
-            urljoin(settings.MEDIA_FULL_URL, self.book.cover.url.lstrip("/")),
+        self.assertTrue(
+            re.match(
+                r"https:\/\/your.domain.here\/images\/covers\/test_[A-z0-9]+.jpg",
+                activity["attachment"][0].url,
+            )
         )
         self.assertEqual(activity["attachment"][0].name, "Test Edition")
 
