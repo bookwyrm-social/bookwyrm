@@ -172,6 +172,6 @@ class LibrarythingImport(TestCase):
             )
         review = models.Review.objects.get(book=self.book, user=self.local_user)
         self.assertEqual(review.content, "chef d'oeuvre")
-        self.assertEqual(review.rating, 5)
+        self.assertEqual(review.rating, 4.5)
         self.assertEqual(review.published_date, make_date(2007, 5, 8))
         self.assertEqual(review.privacy, "unlisted")

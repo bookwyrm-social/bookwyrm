@@ -17,3 +17,10 @@ class LibrarythingImporter(Importer):
             date = normalized[date_field]
             normalized[date_field] = re.sub(r"\[|\]", "", date)
         return normalized
+
+    def get_shelf(self, normalized_row):
+        if normalized_row["date_finished"]:
+            return "read"
+        if normalized_row["date_started"]:
+            return "reading"
+        return "to-read"

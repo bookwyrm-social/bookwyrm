@@ -36,6 +36,11 @@ class Importer:
         "date_finished": ["date finished", "last date read", "date read", "finished"],
     }
     date_fields = ["date_added", "date_started", "date_finished"]
+    shelf_mapping_guesses = {
+        "to-read": ["to-read"],
+        "read": ["read"],
+        "reading": ["currently-reading", "reading"],
+    }
 
     def create_job(self, user, csv_file, include_reviews, privacy):
         """check over a csv and creates a database entry for the job"""
@@ -66,7 +71,14 @@ class Importer:
     def create_item(self, job, index, data):
         """creates and saves an import item"""
         normalized = self.normalize_row(data, job.mappings)
+        normalized["shelf"] = self.get_shelf(normalized)
         ImportItem(job=job, index=index, data=data, normalized_data=normalized).save()
+
+    def get_shelf(self, normalized_row):
+        """determine which shelf to use"""
+        shelf_name = normalized_row["shelf"]
+        shelf = [s for (s, gs) in self.shelf_mapping_guesses if shelf_name in gs]
+        return shelf[0] if shelf else None
 
     def normalize_row(self, entry, mappings):  # pylint: disable=no-self-use
         """use the dataclass to create the formatted row of data"""
