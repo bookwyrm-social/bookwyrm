@@ -32,7 +32,7 @@ class StorygraphImport(TestCase):
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
         ):
-            self.user = models.User.objects.create_user(
+            self.local_user = models.User.objects.create_user(
                 "mouse", "mouse@mouse.mouse", "password", local=True
             )
 
@@ -45,7 +45,9 @@ class StorygraphImport(TestCase):
 
     def test_create_job(self, *_):
         """creates the import job entry and checks csv"""
-        import_job = self.importer.create_job(self.user, self.csv, False, "public")
+        import_job = self.importer.create_job(
+            self.local_user, self.csv, False, "public"
+        )
 
         import_items = models.ImportItem.objects.filter(job=import_job).all()
         self.assertEqual(len(import_items), 2)
@@ -57,12 +59,16 @@ class StorygraphImport(TestCase):
 
     def test_create_retry_job(self, *_):
         """trying again with items that didn't import"""
-        import_job = self.importer.create_job(self.user, self.csv, False, "unlisted")
+        import_job = self.importer.create_job(
+            self.local_user, self.csv, False, "unlisted"
+        )
         import_items = models.ImportItem.objects.filter(job=import_job).all()[:2]
 
-        retry = self.importer.create_retry_job(self.user, import_job, import_items)
+        retry = self.importer.create_retry_job(
+            self.local_user, import_job, import_items
+        )
         self.assertNotEqual(import_job, retry)
-        self.assertEqual(retry.user, self.user)
+        self.assertEqual(retry.user, self.local_user)
         self.assertEqual(retry.include_reviews, False)
         self.assertEqual(retry.privacy, "unlisted")
 
@@ -75,22 +81,19 @@ class StorygraphImport(TestCase):
 
     def test_handle_imported_book(self, *_):
         """storygraph import added a book, this adds related connections"""
-        shelf = self.user.shelf_set.filter(identifier="to-read").first()
+        shelf = self.local_user.shelf_set.filter(identifier="to-read").first()
         self.assertIsNone(shelf.books.first())
 
-        import_job = models.ImportJob.objects.create(user=self.user)
-        datafile = pathlib.Path(__file__).parent.joinpath("../data/storygraph.csv")
-        csv_file = open(datafile, "r")  # pylint: disable=unspecified-encoding
-        for index, entry in enumerate(list(csv.DictReader(csv_file))):
-            entry = self.importer.parse_fields(entry)
-            import_item = models.ImportItem.objects.create(
-                job_id=import_job.id, index=index, data=entry, book=self.book
-            )
-            break
+        import_job = self.importer.create_job(
+            self.local_user, self.csv, False, "public"
+        )
+        import_item = import_job.items.first()
+        import_item.book = self.book
+        import_item.save()
 
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
             handle_imported_book(
-                self.importer.service, self.user, import_item, False, "public"
+                self.importer.service, self.local_user, import_item, False, "public"
             )
 
         shelf.refresh_from_db()
@@ -102,20 +105,18 @@ class StorygraphImport(TestCase):
     @patch("bookwyrm.activitystreams.add_status_task.delay")
     def test_handle_imported_book_rating(self, *_):
         """storygraph rating import"""
-        import_job = models.ImportJob.objects.create(user=self.user)
-        datafile = pathlib.Path(__file__).parent.joinpath("../data/storygraph.csv")
-        csv_file = open(datafile, "r")  # pylint: disable=unspecified-encoding
-        entry = list(csv.DictReader(csv_file))[1]
-        entry = self.importer.parse_fields(entry)
-        import_item = models.ImportItem.objects.create(
-            job_id=import_job.id, index=0, data=entry, book=self.book
+        import_job = self.importer.create_job(
+            self.local_user, self.csv, False, "public"
         )
+        import_item = import_job.items.filter(index=1).first()
+        import_item.book = self.book
+        import_item.save()
 
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
             handle_imported_book(
-                self.importer.service, self.user, import_item, True, "unlisted"
+                self.importer.service, self.local_user, import_item, True, "unlisted"
             )
-        review = models.ReviewRating.objects.get(book=self.book, user=self.user)
+        review = models.ReviewRating.objects.get(book=self.book, user=self.local_user)
         self.assertIsInstance(review, models.ReviewRating)
         self.assertEqual(review.rating, 5.0)
         self.assertEqual(review.published_date, make_date(2021, 5, 10))

@@ -28,8 +28,8 @@ class Importer:
         "isbn_13": ["isbn13", "isbn"],
         "isbn_10": ["isbn10", "isbn"],
         "shelf": ["shelf", "exclusive shelf", "read status"],
-        "review_name": [],
-        "review_body": ["my review"],
+        "review_name": ["review name"],
+        "review_body": ["my review", "review"],
         "rating": ["my rating", "rating", "star rating"],
         "date_added": ["date added", "entry date", "added"],
         "date_started": ["date started", "started"],
@@ -48,7 +48,6 @@ class Importer:
         )
 
         for index, entry in rows:
-            print(index, entry)
             self.create_item(job, index, entry)
         return job
 
@@ -65,7 +64,6 @@ class Importer:
 
     def create_item(self, job, index, data):
         """creates and saves an import item"""
-        print(data)
         normalized = self.normalize_row(data, job.mappings)
         ImportItem(job=job, index=index, data=data, normalized_data=normalized).save()
 
