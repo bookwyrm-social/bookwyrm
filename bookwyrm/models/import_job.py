@@ -35,6 +35,7 @@ class ImportJob(models.Model):
     created_date = models.DateTimeField(default=timezone.now)
     task_id = models.CharField(max_length=100, null=True)
     include_reviews = models.BooleanField(default=True)
+    mappings = models.JSONField()
     complete = models.BooleanField(default=False)
     privacy = models.CharField(
         max_length=255, default="public", choices=PrivacyLevels.choices
@@ -48,6 +49,7 @@ class ImportItem(models.Model):
     job = models.ForeignKey(ImportJob, on_delete=models.CASCADE, related_name="items")
     index = models.IntegerField()
     data = models.JSONField()
+    normalized_data = models.JSONField()
     book = models.ForeignKey(Book, on_delete=models.SET_NULL, null=True, blank=True)
     book_guess = models.ForeignKey(
         Book,
@@ -98,55 +100,59 @@ class ImportItem(models.Model):
     @property
     def title(self):
         """get the book title"""
-        return self.data["title"]
+        return self.normalized_data["title"]
 
     @property
     def author(self):
         """get the book's authors"""
-        return self.data["authors"]
+        return self.normalized_data["authors"]
 
     @property
     def isbn(self):
         """pulls out the isbn13 field from the csv line data"""
-        return unquote_string(self.data["isbn_13"])
+        return unquote_string(self.normalized_data["isbn_13"])
 
     @property
     def shelf(self):
         """the goodreads shelf field"""
-        return self.data.get("shelf")
+        return self.normalized_data.get("shelf")
 
     @property
     def review(self):
         """a user-written review, to be imported with the book data"""
-        return self.data["review_body"]
+        return self.normalized_data["review_body"]
 
     @property
     def rating(self):
         """x/5 star rating for a book"""
-        if self.data.get("rating"):
-            return float(self.data["rating"])
+        if self.normalized_data.get("rating"):
+            return float(self.normalized_data["rating"])
         return None
 
     @property
     def date_added(self):
         """when the book was added to this dataset"""
-        if self.data.get("date_added"):
-            return timezone.make_aware(dateutil.parser.parse(self.data["date_added"]))
+        if self.normalized_data.get("date_added"):
+            return timezone.make_aware(
+                dateutil.parser.parse(self.normalized_data["date_added"])
+            )
         return None
 
     @property
     def date_started(self):
         """when the book was started"""
-        if self.data.get("date_started"):
-            return timezone.make_aware(dateutil.parser.parse(self.data["date_started"]))
+        if self.normalized_data.get("date_started"):
+            return timezone.make_aware(
+                dateutil.parser.parse(self.normalized_data["date_started"])
+            )
         return None
 
     @property
     def date_read(self):
         """the date a book was completed"""
-        if self.data.get("date_finished"):
+        if self.normalized_data.get("date_finished"):
             return timezone.make_aware(
-                dateutil.parser.parse(self.data["date_finished"])
+                dateutil.parser.parse(self.normalized_data["date_finished"])
             )
         return None
 
@@ -177,8 +183,12 @@ class ImportItem(models.Model):
 
     def __repr__(self):
         # pylint: disable=consider-using-f-string
-        return "<{!r}Item {!r}>".format(self.data["import_source"], self.data["title"])
+        return "<{!r}Item {!r}>".format(
+            self.normalized_data["import_source"], self.normalized_data["title"]
+        )
 
     def __str__(self):
         # pylint: disable=consider-using-f-string
-        return "{} by {}".format(self.data["title"], self.data["authors"])
+        return "{} by {}".format(
+            self.normalized_data["title"], self.normalized_data["authors"]
+        )

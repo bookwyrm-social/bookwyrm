@@ -7,10 +7,3 @@ class GoodreadsImporter(Importer):
     For a more complete example of overriding see librarything_import.py"""
 
     service = "Goodreads"
-
-    def parse_fields(self, entry):
-        """handle the specific fields in goodreads csvs"""
-        entry.update({"import_source": self.service})
-        # add missing 'Date Started' field
-        entry.update({"Date Started": None})
-        return entry

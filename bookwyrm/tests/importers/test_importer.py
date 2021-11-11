@@ -1,6 +1,5 @@
 """ testing import """
 from collections import namedtuple
-import csv
 import pathlib
 from unittest.mock import patch
 import datetime
@@ -29,26 +28,7 @@ class GenericImporter(TestCase):
     def setUp(self):
         """use a test csv"""
 
-        class TestImporter(Importer):
-            """basic importer"""
-
-            mandatory_fields = ["title", "author"]
-
-            def parse_fields(self, entry):
-                return {
-                    "id": entry["id"],
-                    "Title": entry["title"],
-                    "Author": entry["author"],
-                    "ISBN13": entry["ISBN"],
-                    "Star Rating": entry["rating"],
-                    "My Rating": entry["rating"],
-                    "My Review": entry["review"],
-                    "Exclusive Shelf": entry["shelf"],
-                    "Date Added": entry["added"],
-                    "Date Read": None,
-                }
-
-        self.importer = TestImporter()
+        self.importer = Importer()
         datafile = pathlib.Path(__file__).parent.joinpath("../data/generic.csv")
         self.csv = open(datafile, "r", encoding=self.importer.encoding)
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
@@ -77,13 +57,24 @@ class GenericImporter(TestCase):
         import_items = models.ImportItem.objects.filter(job=import_job).all()
         self.assertEqual(len(import_items), 4)
         self.assertEqual(import_items[0].index, 0)
-        self.assertEqual(import_items[0].data["id"], "38")
+        self.assertEqual(import_items[0].normalized_data["id"], "38")
+        self.assertEqual(import_items[0].normalized_data["title"], "Gideon the Ninth")
+        self.assertEqual(import_items[0].normalized_data["authors"], "Tamsyn Muir")
+        self.assertEqual(import_items[0].normalized_data["isbn_13"], "9781250313195")
+        self.assertIsNone(import_items[0].normalized_data["isbn_10"])
+        self.assertEqual(import_items[0].normalized_data["shelf"], "read")
+
         self.assertEqual(import_items[1].index, 1)
-        self.assertEqual(import_items[1].data["id"], "48")
+        self.assertEqual(import_items[1].normalized_data["id"], "48")
+        self.assertEqual(import_items[1].normalized_data["title"], "Harrow the Ninth")
+
         self.assertEqual(import_items[2].index, 2)
-        self.assertEqual(import_items[2].data["id"], "23")
+        self.assertEqual(import_items[2].normalized_data["id"], "23")
+        self.assertEqual(import_items[2].normalized_data["title"], "Subcutanean")
+
         self.assertEqual(import_items[3].index, 3)
-        self.assertEqual(import_items[3].data["id"], "10")
+        self.assertEqual(import_items[3].normalized_data["id"], "10")
+        self.assertEqual(import_items[3].normalized_data["title"], "Patisserie at Home")
 
     def test_create_retry_job(self, *_):
         """trying again with items that didn't import"""
@@ -103,9 +94,9 @@ class GenericImporter(TestCase):
         retry_items = models.ImportItem.objects.filter(job=retry).all()
         self.assertEqual(len(retry_items), 2)
         self.assertEqual(retry_items[0].index, 0)
-        self.assertEqual(retry_items[0].data["id"], "38")
+        self.assertEqual(retry_items[0].normalized_data["id"], "38")
         self.assertEqual(retry_items[1].index, 1)
-        self.assertEqual(retry_items[1].data["id"], "48")
+        self.assertEqual(retry_items[1].normalized_data["id"], "48")
 
     def test_start_import(self, *_):
         """check that a task was created"""
@@ -143,15 +134,12 @@ class GenericImporter(TestCase):
         shelf = self.local_user.shelf_set.filter(identifier="read").first()
         self.assertIsNone(shelf.books.first())
 
-        import_job = models.ImportJob.objects.create(user=self.local_user)
-        datafile = pathlib.Path(__file__).parent.joinpath("../data/generic.csv")
-        csv_file = open(datafile, "r")  # pylint: disable=unspecified-encoding
-        for index, entry in enumerate(list(csv.DictReader(csv_file))):
-            entry = self.importer.parse_fields(entry)
-            import_item = models.ImportItem.objects.create(
-                job_id=import_job.id, index=index, data=entry, book=self.book
-            )
-            break
+        import_job = self.importer.create_job(
+            self.local_user, self.csv, False, "public"
+        )
+        import_item = import_job.items.first()
+        import_item.book = self.book
+        import_item.save()
 
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
             handle_imported_book(
@@ -172,15 +160,12 @@ class GenericImporter(TestCase):
                 shelved_date=make_date(2020, 2, 2),
             )
 
-        import_job = models.ImportJob.objects.create(user=self.local_user)
-        datafile = pathlib.Path(__file__).parent.joinpath("../data/generic.csv")
-        csv_file = open(datafile, "r")  # pylint: disable=unspecified-encoding
-        for index, entry in enumerate(list(csv.DictReader(csv_file))):
-            entry = self.importer.parse_fields(entry)
-            import_item = models.ImportItem.objects.create(
-                job_id=import_job.id, index=index, data=entry, book=self.book
-            )
-            break
+        import_job = self.importer.create_job(
+            self.local_user, self.csv, False, "unlisted"
+        )
+        import_item = import_job.items.first()
+        import_item.book = self.book
+        import_item.save()
 
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
             handle_imported_book(
@@ -199,15 +184,12 @@ class GenericImporter(TestCase):
     def test_handle_import_twice(self, *_):
         """re-importing books"""
         shelf = self.local_user.shelf_set.filter(identifier="read").first()
-        import_job = models.ImportJob.objects.create(user=self.local_user)
-        datafile = pathlib.Path(__file__).parent.joinpath("../data/generic.csv")
-        csv_file = open(datafile, "r")  # pylint: disable=unspecified-encoding
-        for index, entry in enumerate(list(csv.DictReader(csv_file))):
-            entry = self.importer.parse_fields(entry)
-            import_item = models.ImportItem.objects.create(
-                job_id=import_job.id, index=index, data=entry, book=self.book
-            )
-            break
+        import_job = self.importer.create_job(
+            self.local_user, self.csv, False, "public"
+        )
+        import_item = import_job.items.first()
+        import_item.book = self.book
+        import_item.save()
 
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
             handle_imported_book(
@@ -219,18 +201,15 @@ class GenericImporter(TestCase):
 
         shelf.refresh_from_db()
         self.assertEqual(shelf.books.first(), self.book)
+        self.assertEqual(models.ReadThrough.objects.count(), 1)
 
     @patch("bookwyrm.activitystreams.add_status_task.delay")
     def test_handle_imported_book_review(self, *_):
         """review import"""
-        import_job = models.ImportJob.objects.create(user=self.local_user)
-        datafile = pathlib.Path(__file__).parent.joinpath("../data/generic.csv")
-        csv_file = open(datafile, "r")  # pylint: disable=unspecified-encoding
-        entry = list(csv.DictReader(csv_file))[3]
-        entry = self.importer.parse_fields(entry)
-        import_item = models.ImportItem.objects.create(
-            job_id=import_job.id, index=0, data=entry, book=self.book
-        )
+        import_job = self.importer.create_job(self.local_user, self.csv, True, "public")
+        import_item = import_job.items.filter(index=3).first()
+        import_item.book = self.book
+        import_item.save()
 
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
             with patch("bookwyrm.models.Status.broadcast") as broadcast_mock:
@@ -251,14 +230,12 @@ class GenericImporter(TestCase):
     @patch("bookwyrm.activitystreams.add_status_task.delay")
     def test_handle_imported_book_rating(self, *_):
         """rating import"""
-        import_job = models.ImportJob.objects.create(user=self.local_user)
-        datafile = pathlib.Path(__file__).parent.joinpath("../data/generic.csv")
-        csv_file = open(datafile, "r")  # pylint: disable=unspecified-encoding
-        entry = list(csv.DictReader(csv_file))[1]
-        entry = self.importer.parse_fields(entry)
-        import_item = models.ImportItem.objects.create(
-            job_id=import_job.id, index=0, data=entry, book=self.book
+        import_job = self.importer.create_job(
+            self.local_user, self.csv, False, "public"
         )
+        import_item = import_job.items.filter(index=1).first()
+        import_item.book = self.book
+        import_item.save()
 
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
             handle_imported_book(
@@ -271,14 +248,12 @@ class GenericImporter(TestCase):
 
     def test_handle_imported_book_reviews_disabled(self, *_):
         """review import"""
-        import_job = models.ImportJob.objects.create(user=self.local_user)
-        datafile = pathlib.Path(__file__).parent.joinpath("../data/generic.csv")
-        csv_file = open(datafile, "r")  # pylint: disable=unspecified-encoding
-        entry = list(csv.DictReader(csv_file))[2]
-        entry = self.importer.parse_fields(entry)
-        import_item = models.ImportItem.objects.create(
-            job_id=import_job.id, index=0, data=entry, book=self.book
+        import_job = self.importer.create_job(
+            self.local_user, self.csv, False, "unlisted"
         )
+        import_item = import_job.items.filter(index=3).first()
+        import_item.book = self.book
+        import_item.save()
 
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
             handle_imported_book(
