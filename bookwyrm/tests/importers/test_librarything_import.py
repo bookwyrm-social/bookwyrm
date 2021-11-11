@@ -1,5 +1,4 @@
 """ testing import """
-import csv
 import pathlib
 from unittest.mock import patch
 import datetime
