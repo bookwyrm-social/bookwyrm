@@ -10,18 +10,17 @@
     <h1 class="title">{% trans "Import Status" %}</h1>
     <a href="{% url 'import' %}" class="has-text-weight-normal help subtitle is-link">{% trans "Back to imports" %}</a>
 
+    {% if task.failed %}
+    <div class="notification is-danger">{% trans "TASK FAILED" %}</div>
+    {% endif %}
+
     <dl>
-        <div class="is-flex">
-            <dt class="has-text-weight-medium">{% trans "Import started:" %}</dt>
-            <dd class="ml-2">{{ job.created_date | naturaltime }}</dd>
-        </div>
+        <dt class="is-pulled-left mr-5">{% trans "Import started:" %}</dt>
+        <dd>{{ job.created_date | naturaltime }}</dd>
+
         {% if job.complete %}
-        <div class="is-flex">
-            <dt class="has-text-weight-medium">{% trans "Import completed:" %}</dt>
-            <dd class="ml-2">{{ task.date_done | naturaltime }}</dd>
-        </div>
-        {% elif task.failed %}
-        <div class="notification is-danger">{% trans "TASK FAILED" %}</div>
+        <dt class="is-pulled-left mr-5">{% trans "Import completed:" %}</dt>
+        <dd>{{ task.date_done | naturaltime }}</dd>
         {% endif %}
     </dl>
 </div>
