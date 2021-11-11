@@ -5,6 +5,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.template.response import TemplateResponse
 from django.test import TestCase
 from django.test.client import RequestFactory
+from bookwyrm.tests.validate_html import validate_html
 
 from bookwyrm import forms, models, views
 
@@ -34,7 +35,7 @@ class ImportViews(TestCase):
         request.user = self.local_user
         result = view(request)
         self.assertIsInstance(result, TemplateResponse)
-        result.render()
+        validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
     def test_import_status(self):
@@ -47,7 +48,7 @@ class ImportViews(TestCase):
             async_result.return_value = []
             result = view(request, import_job.id)
         self.assertIsInstance(result, TemplateResponse)
-        result.render()
+        validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
     def test_start_import(self):
@@ -58,7 +59,9 @@ class ImportViews(TestCase):
         form.data["privacy"] = "public"
         form.data["include_reviews"] = False
         csv_file = pathlib.Path(__file__).parent.joinpath("../data/goodreads.csv")
-        form.data["csv_file"] = SimpleUploadedFile(
+        form.data[
+            "csv_file"
+        ] = SimpleUploadedFile(  # pylint: disable=consider-using-with
             csv_file, open(csv_file, "rb").read(), content_type="text/csv"
         )
 
