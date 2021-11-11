@@ -61,7 +61,7 @@ case "$CMD" in
     up)
         docker-compose up --build "$@"
         ;;
-    run)
+    service_ports_web)
         docker-compose run --rm --service-ports web
         ;;
     initdb)
@@ -95,9 +95,6 @@ case "$CMD" in
         ;;
     restart_celery)
         docker-compose restart celery_worker
-        ;;
-    test)
-        runweb coverage run --source='.' --omit="*/test*,celerywyrm*,bookwyrm/migrations/*" manage.py test "$@"
         ;;
     pytest)
         execweb pytest --no-cov-on-fail "$@"
@@ -148,14 +145,11 @@ case "$CMD" in
     runweb)
         runweb "$@"
         ;;
-    rundb)
-        rundb "$@"
-        ;;
     *)
         set +x # No need to echo echo
         echo "Unrecognised command. Try:"
         echo "    up [container]"
-        echo "    run"
+        echo "    service_ports_web"
         echo "    initdb"
         echo "    resetdb"
         echo "    makemigrations [migration]"
@@ -164,10 +158,8 @@ case "$CMD" in
         echo "    shell"
         echo "    dbshell"
         echo "    restart_celery"
-        echo "    test [path]"
         echo "    pytest [path]"
         echo "    collectstatic"
-        echo "    add_locale [locale]"
         echo "    makemessages"
         echo "    compilemessages [locale]"
         echo "    build"
@@ -180,6 +172,5 @@ case "$CMD" in
         echo "    copy_media_to_s3"
         echo "    set_cors_to_s3 [cors file]"
         echo "    runweb [command]"
-        echo "    rundb [command]"
         ;;
 esac
