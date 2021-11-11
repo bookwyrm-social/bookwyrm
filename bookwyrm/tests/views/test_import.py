@@ -61,7 +61,8 @@ class ImportViews(TestCase):
         csv_file = pathlib.Path(__file__).parent.joinpath("../data/goodreads.csv")
         form.data[
             "csv_file"
-        ] = SimpleUploadedFile(  # pylint: disable=consider-using-with
+        ] = SimpleUploadedFile(
+            # pylint: disable=consider-using-with
             csv_file, open(csv_file, "rb").read(), content_type="text/csv"
         )
 
