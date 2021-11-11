@@ -10,7 +10,8 @@ import responses
 
 from bookwyrm import models
 from bookwyrm.importers import Importer
-from bookwyrm.importers.importer import import_data, handle_imported_book
+from bookwyrm.importers.importer import start_import_task, import_item_task
+from bookwyrm.importers.importer import handle_imported_book
 
 
 def make_date(*args):
@@ -105,29 +106,40 @@ class GenericImporter(TestCase):
         )
         MockTask = namedtuple("Task", ("id"))
         mock_task = MockTask(7)
-        with patch("bookwyrm.importers.importer.import_data.delay") as start:
+        with patch("bookwyrm.importers.importer.start_import_task.delay") as start:
             start.return_value = mock_task
             self.importer.start_import(import_job)
         import_job.refresh_from_db()
         self.assertEqual(import_job.task_id, "7")
 
     @responses.activate
-    def test_import_data(self, *_):
+    def test_start_import_task(self, *_):
         """resolve entry"""
         import_job = self.importer.create_job(
             self.local_user, self.csv, False, "unlisted"
         )
-        book = models.Edition.objects.create(title="Test Book")
 
+        with patch("bookwyrm.importers.importer.import_item_task.delay") as mock:
+            start_import_task(self.importer.service, import_job.id)
+
+        self.assertEqual(mock.call_count, 4)
+
+    @responses.activate
+    def test_import_item_task(self, *_):
+        """resolve entry"""
+        import_job = self.importer.create_job(
+            self.local_user, self.csv, False, "unlisted"
+        )
+
+        import_item = models.ImportItem.objects.get(job=import_job, index=0)
         with patch(
             "bookwyrm.models.import_job.ImportItem.get_book_from_isbn"
         ) as resolve:
-            resolve.return_value = book
-            with patch("bookwyrm.importers.importer.handle_imported_book"):
-                import_data(self.importer.service, import_job.id)
+            resolve.return_value = self.book
+            import_item_task(self.importer.service, import_item.id)
+        import_item.refresh_from_db()
 
-        import_item = models.ImportItem.objects.get(job=import_job, index=0)
-        self.assertEqual(import_item.book.id, book.id)
+        self.assertEqual(import_item.book.id, self.book.id)
 
     def test_handle_imported_book(self, *_):
         """import added a book, this adds related connections"""

@@ -112,14 +112,14 @@ def start_import_task(source, job_id):
     """trigger the child tasks for each row"""
     job = ImportJob.objects.get(id=job_id)
     # these are sub-tasks so that one big task doesn't use up all the memory in celery
-    for item in job.items.values("id").all():
-        import_item_task.delay(source, item.id)
+    for item in job.items.values_list("id", flat=True).all():
+        import_item_task.delay(source, item)
 
 
 @app.task(queue="low_priority")
 def import_item_task(source, item_id):
     """resolve a row into a book"""
-    item = models.ImportItem.objets.get(id=item_id)
+    item = models.ImportItem.objects.get(id=item_id)
     try:
         item.resolve()
     except Exception as err:  # pylint: disable=broad-except
