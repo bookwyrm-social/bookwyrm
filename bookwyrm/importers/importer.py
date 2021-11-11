@@ -35,6 +35,7 @@ class Importer:
         "date_started": ["date started", "started"],
         "date_finished": ["date finished", "last date read", "date read", "finished"],
     }
+    date_fields = ["date_added", "date_started", "date_finished"]
 
     def create_job(self, user, csv_file, include_reviews, privacy):
         """check over a csv and creates a database entry for the job"""
