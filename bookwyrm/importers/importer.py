@@ -77,7 +77,9 @@ class Importer:
     def get_shelf(self, normalized_row):
         """determine which shelf to use"""
         shelf_name = normalized_row["shelf"]
-        shelf = [s for (s, gs) in self.shelf_mapping_guesses if shelf_name in gs]
+        shelf = [
+            s for (s, gs) in self.shelf_mapping_guesses.items() if shelf_name in gs
+        ]
         return shelf[0] if shelf else None
 
     def normalize_row(self, entry, mappings):  # pylint: disable=no-self-use
