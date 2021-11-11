@@ -1,6 +1,5 @@
 """ handle reading a csv from an external service, defaults are from Goodreads """
 import csv
-from dataclasses import dataclass
 import logging
 
 from django.utils import timezone
@@ -202,23 +201,3 @@ def handle_imported_book(source, user, item, include_reviews, privacy):
             )
         # only broadcast this review to other bookwyrm instances
         review.save(software="bookwyrm")
-
-
-@dataclass
-class ImportEntry:
-    """data extracted from a line in a csv"""
-
-    title: str
-    authors: str = None
-    isbn_13: str = None
-    isbn_10: str = None
-    shelf: str = None
-    review_name: str = None
-    review_rating: float = None
-    review_body: str = None
-    review_cw: str = None
-    rating: float = None
-    date_added: str = None
-    date_started: str = None
-    date_finished: str = None
-    import_source: str = "Unknown"
