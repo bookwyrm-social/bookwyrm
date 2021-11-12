@@ -12,12 +12,12 @@
     <div class="notification content">
         <p>
             {% trans "Re-trying an import can fix missing items in cases such as:" %}
-            <ul>
-                <li>{% trans "The book has been added to the instance since this import" %}</li>
-                <li>{% trans "A transient error or timeout caused the external data source to be unavailable." %}</li>
-                <li>{% trans "BookWyrm has been updated since this import with a bug fix" %}</li>
-            </ul>
         </p>
+        <ul>
+            <li>{% trans "The book has been added to the instance since this import" %}</li>
+            <li>{% trans "A transient error or timeout caused the external data source to be unavailable." %}</li>
+            <li>{% trans "BookWyrm has been updated since this import with a bug fix" %}</li>
+        </ul>
         <p>
         {% trans "Contact your admin or <a href='https://github.com/bookwyrm-social/bookwyrm/issues'>open an issue</a> if you are seeing unexpected failed items." %}
         </p>
