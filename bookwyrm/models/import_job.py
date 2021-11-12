@@ -94,6 +94,8 @@ class ImportItem(models.Model):
             search_term, min_confidence=0.1
         )
         if search_result:
+            if isinstance(search_result, Edition):
+                return (search_result, 1)
             # raises ConnectorException
             return (
                 search_result.connector.get_or_create_book(search_result.key),
