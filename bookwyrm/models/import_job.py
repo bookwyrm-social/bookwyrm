@@ -6,7 +6,7 @@ from django.db import models
 from django.utils import timezone
 
 from bookwyrm.connectors import connector_manager
-from bookwyrm.models import ReadThrough, User, Book
+from bookwyrm.models import ReadThrough, User, Book, Edition
 from .fields import PrivacyLevels
 
 
@@ -79,6 +79,10 @@ class ImportItem(models.Model):
             self.isbn, min_confidence=0.999
         )
         if search_result:
+            # it's already in the right format
+            if isinstance(search_result, Edition):
+                return search_result
+            # it's just a search result, book needs to be created
             # raises ConnectorException
             return search_result.connector.get_or_create_book(search_result.key)
         return None
@@ -183,9 +187,7 @@ class ImportItem(models.Model):
 
     def __repr__(self):
         # pylint: disable=consider-using-f-string
-        return "<{!r}Item {!r}>".format(
-            self.normalized_data["import_source"], self.normalized_data["title"]
-        )
+        return "<{!r}Item {!r}>".format(self.index, self.normalized_data["title"])
 
     def __str__(self):
         # pylint: disable=consider-using-f-string
