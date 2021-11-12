@@ -10,7 +10,7 @@ from bookwyrm.activitypub import ActivitySerializerError
 
 
 # pylint: disable=too-many-public-methods
-@patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
+@patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
 @patch("bookwyrm.activitystreams.add_book_statuses_task.delay")
 class InboxCreate(TestCase):
     """readthrough tests"""

@@ -67,7 +67,7 @@ class UserAdminViews(TestCase):
         request.user = self.local_user
         request.user.is_superuser = True
 
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             result = view(request, self.local_user.id)
 
         self.assertIsInstance(result, TemplateResponse)

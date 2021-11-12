@@ -61,7 +61,7 @@ class ListViews(TestCase):
             parent_work=work_four,
         )
 
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             self.list = models.List.objects.create(
                 name="Test List", user=self.local_user
             )
@@ -73,7 +73,7 @@ class ListViews(TestCase):
     def test_lists_page(self):
         """there are so many views, this just makes sure it LOADS"""
         view = views.Lists.as_view()
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             models.List.objects.create(name="Public list", user=self.local_user)
             models.List.objects.create(
                 name="Private list", privacy="direct", user=self.local_user
@@ -96,7 +96,7 @@ class ListViews(TestCase):
     def test_saved_lists_page(self):
         """there are so many views, this just makes sure it LOADS"""
         view = views.SavedLists.as_view()
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             booklist = models.List.objects.create(
                 name="Public list", user=self.local_user
             )
@@ -116,7 +116,7 @@ class ListViews(TestCase):
     def test_saved_lists_page_empty(self):
         """there are so many views, this just makes sure it LOADS"""
         view = views.SavedLists.as_view()
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             models.List.objects.create(name="Public list", user=self.local_user)
             models.List.objects.create(
                 name="Private list", privacy="direct", user=self.local_user
@@ -153,11 +153,13 @@ class ListViews(TestCase):
             },
         )
         request.user = self.local_user
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay") as mock:
+        with patch(
+            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+        ) as mock:
             result = view(request)
 
         self.assertEqual(mock.call_count, 1)
-        activity = json.loads(mock.call_args[0][1])
+        activity = json.loads(mock.call_args[1]["args"][1])
         self.assertEqual(activity["type"], "Create")
         self.assertEqual(activity["actor"], self.local_user.remote_id)
 
@@ -172,7 +174,7 @@ class ListViews(TestCase):
         view = views.List.as_view()
         request = self.factory.get("")
         request.user = self.local_user
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             models.ListItem.objects.create(
                 book_list=self.list,
                 user=self.local_user,
@@ -191,7 +193,7 @@ class ListViews(TestCase):
     def test_list_page_sorted(self):
         """there are so many views, this just makes sure it LOADS"""
         view = views.List.as_view()
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             for (i, book) in enumerate([self.book, self.book_two, self.book_three]):
                 models.ListItem.objects.create(
                     book_list=self.list,
@@ -253,7 +255,7 @@ class ListViews(TestCase):
     def test_list_page_logged_out(self):
         """there are so many views, this just makes sure it LOADS"""
         view = views.List.as_view()
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             models.ListItem.objects.create(
                 book_list=self.list,
                 user=self.local_user,
@@ -276,7 +278,7 @@ class ListViews(TestCase):
         view = views.List.as_view()
         request = self.factory.get("")
         request.user = self.local_user
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             models.ListItem.objects.create(
                 book_list=self.list,
                 user=self.local_user,
@@ -320,11 +322,13 @@ class ListViews(TestCase):
         )
         request.user = self.local_user
 
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay") as mock:
+        with patch(
+            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+        ) as mock:
             result = view(request, self.list.id)
 
         self.assertEqual(mock.call_count, 1)
-        activity = json.loads(mock.call_args[0][1])
+        activity = json.loads(mock.call_args[1]["args"][1])
         self.assertEqual(activity["type"], "Update")
         self.assertEqual(activity["actor"], self.local_user.remote_id)
         self.assertEqual(activity["object"]["id"], self.list.remote_id)
@@ -340,7 +344,7 @@ class ListViews(TestCase):
     def test_curate_page(self):
         """there are so many views, this just makes sure it LOADS"""
         view = views.Curate.as_view()
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             models.List.objects.create(name="Public list", user=self.local_user)
             models.List.objects.create(
                 name="Private list", privacy="direct", user=self.local_user
@@ -360,7 +364,7 @@ class ListViews(TestCase):
     def test_user_lists_page(self):
         """there are so many views, this just makes sure it LOADS"""
         view = views.UserLists.as_view()
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             models.List.objects.create(name="Public list", user=self.local_user)
             models.List.objects.create(
                 name="Private list", privacy="direct", user=self.local_user

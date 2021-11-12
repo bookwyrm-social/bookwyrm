@@ -91,7 +91,7 @@ class GoodreadsImport(TestCase):
         import_item.book = self.book
         import_item.save()
 
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             handle_imported_book(
                 self.importer.service, self.local_user, import_item, False, "public"
             )
@@ -115,7 +115,7 @@ class GoodreadsImport(TestCase):
         import_item.book = self.book
         import_item.save()
 
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             handle_imported_book(
                 self.importer.service, self.local_user, import_item, True, "unlisted"
             )
@@ -135,7 +135,7 @@ class GoodreadsImport(TestCase):
         import_item.book = self.book
         import_item.save()
 
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             handle_imported_book(
                 self.importer.service, self.local_user, import_item, True, "unlisted"
             )

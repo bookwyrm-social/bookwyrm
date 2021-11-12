@@ -114,7 +114,7 @@ class LibrarythingImport(TestCase):
         import_item.book = self.book
         import_item.save()
 
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             handle_imported_book(
                 self.importer.service, self.local_user, import_item, False, "public"
             )
@@ -129,7 +129,7 @@ class LibrarythingImport(TestCase):
 
     def test_handle_imported_book_already_shelved(self, *_):
         """librarything import added a book, this adds related connections"""
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             shelf = self.local_user.shelf_set.filter(identifier="to-read").first()
             models.ShelfBook.objects.create(
                 shelf=shelf, user=self.local_user, book=self.book
@@ -142,7 +142,7 @@ class LibrarythingImport(TestCase):
         import_item.book = self.book
         import_item.save()
 
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             handle_imported_book(
                 self.importer.service, self.local_user, import_item, False, "public"
             )
@@ -166,7 +166,7 @@ class LibrarythingImport(TestCase):
         import_item.book = self.book
         import_item.save()
 
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             handle_imported_book(
                 self.importer.service, self.local_user, import_item, True, "unlisted"
             )

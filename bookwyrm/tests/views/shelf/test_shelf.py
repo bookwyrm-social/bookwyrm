@@ -11,7 +11,7 @@ from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.tests.validate_html import validate_html
 
 
-@patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
+@patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
 @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
 @patch("bookwyrm.activitystreams.populate_stream_task.delay")
 @patch("bookwyrm.activitystreams.add_book_statuses_task.delay")
@@ -39,7 +39,7 @@ class ShelfViews(TestCase):
             remote_id="https://example.com/book/1",
             parent_work=self.work,
         )
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             self.shelf = models.Shelf.objects.create(
                 name="Test Shelf", identifier="test-shelf", user=self.local_user
             )
@@ -142,7 +142,7 @@ class ShelfViews(TestCase):
             "", {"privacy": "public", "user": self.local_user.id, "name": "cool name"}
         )
         request.user = self.local_user
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             view(request, request.user.username, shelf.identifier)
         shelf.refresh_from_db()
 
@@ -159,7 +159,7 @@ class ShelfViews(TestCase):
             "", {"privacy": "public", "user": self.local_user.id, "name": "cool name"}
         )
         request.user = self.local_user
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             view(request, request.user.username, shelf.identifier)
 
         self.assertEqual(shelf.name, "To Read")

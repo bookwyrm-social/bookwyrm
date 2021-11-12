@@ -4,7 +4,7 @@ from django.test import TestCase
 from bookwyrm import activitystreams, models
 
 
-@patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
+@patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
 class ActivitystreamsSignals(TestCase):
     """using redis to build activity streams"""
 

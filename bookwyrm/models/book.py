@@ -66,9 +66,10 @@ class BookDataModel(ObjectMixin, BookWyrmModel):
             self.remote_id = None
         return super().save(*args, **kwargs)
 
-    def broadcast(self, activity, sender, software="bookwyrm"):
+    # pylint: disable=arguments-differ
+    def broadcast(self, activity, sender, software="bookwyrm", **kwargs):
         """only send book data updates to other bookwyrm instances"""
-        super().broadcast(activity, sender, software=software)
+        super().broadcast(activity, sender, software=software, **kwargs)
 
 
 class Book(BookDataModel):
