@@ -123,10 +123,9 @@ def import_item_task(source, item_id):
     try:
         item.resolve()
     except Exception as err:  # pylint: disable=broad-except
-        logger.exception(err)
         item.fail_reason = _("Error loading book")
         item.save()
-        return
+        raise err
 
     if item.book:
         job = item.job
