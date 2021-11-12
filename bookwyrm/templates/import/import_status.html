@@ -6,116 +6,42 @@
 {% block title %}{% trans "Import Status" %}{% endblock %}
 
 {% block content %}{% spaceless %}
-<div class="block">
+<header class="block">
     <h1 class="title">{% trans "Import Status" %}</h1>
     <a href="{% url 'import' %}" class="has-text-weight-normal help subtitle is-link">{% trans "Back to imports" %}</a>
 
-    {% if task.failed %}
-    <div class="notification is-danger">{% trans "TASK FAILED" %}</div>
+    <div class="block">
+        <dl>
+            <dt class="is-pulled-left mr-5">{% trans "Import started:" %}</dt>
+            <dd>{{ job.created_date | naturaltime }}</dd>
+        </dl>
+    </div>
+
+    {% if not complete %}
+    <div class="box is-processing">
+        <div class="block">
+            <span class="icon icon-spinner is-pulled-left" aria-hidden="true"></span>
+            <span>{% trans "In progress" %}</span>
+            <span class="is-pulled-right">
+                <a href="" class="button is-small">{% trans "Refresh" %}</a>
+            </span>
+        </div>
+        <div class="is-flex">
+            <progress class="progress is-success is-medium mr-2" value="{{ percent }}" max="100">{{ percent }}%</progress>
+            <span>{{ percent }}%</span>
+        </div>
+    </div>
     {% endif %}
-
-    <dl>
-        <dt class="is-pulled-left mr-5">{% trans "Import started:" %}</dt>
-        <dd>{{ job.created_date | naturaltime }}</dd>
-
-        {% if job.complete %}
-        <dt class="is-pulled-left mr-5">{% trans "Import completed:" %}</dt>
-        <dd>{{ task.date_done | naturaltime }}</dd>
-        {% endif %}
-    </dl>
-</div>
+</header>
 
 <div class="block">
-    {% if not job.complete %}
-    <p>
-        {% trans "Import still in progress." %}
-        <br/>
-        {% trans "(Hit reload to update!)" %}
-    </p>
-    {% endif %}
-</div>
-
-{% if failed_items %}
-<div class="block">
-    <h2 class="title is-4">{% trans "Failed to load" %}</h2>
-    {% if not job.retry %}
-    <form name="retry" action="/import/{{ job.id }}" method="post" class="box">
-        {% csrf_token %}
-
-        {% with failed_count=failed_items|length %}
-            {% if failed_count > 10 %}
-                <p class="block">
-                    <a href="#select-all-failed-imports">
-                        {% blocktrans %}Jump to the bottom of the list to select the {{ failed_count }} items which failed to import.{% endblocktrans %}
-                    </a>
-                </p>
-            {% endif %}
-        {% endwith %}
-
-        <fieldset id="failed_imports">
-            <ul>
-            {% for item in failed_items %}
-                <li class="mb-2 is-flex is-align-items-start">
-                    <input class="checkbox mt-1" type="checkbox" name="import_item" value="{{ item.id }}" id="import_item_{{ item.id }}">
-                    <label class="ml-1" for="import-item-{{ item.id }}">
-                        {% blocktrans with index=item.index title=item.data.Title author=item.data.Author %}Line {{ index }}: <strong>{{ title }}</strong> by {{ author }}{% endblocktrans %}
-                        <br/>
-                        {{ item.fail_reason }}.
-                    </label>
-                </li>
-            {% endfor %}
-            </ul>
-        </fieldset>
-
-        <fieldset class="mt-3">
-            <a name="select-all-failed-imports"></a>
-
-            <label class="label is-inline">
-                <input
-                    id="toggle-all-checkboxes-failed-imports"
-                    class="checkbox"
-                    type="checkbox"
-                    data-action="toggle-all"
-                    data-target="failed_imports"
-                />
-                {% trans "Select all" %}
-            </label>
-
-            <button class="button is-block mt-3" type="submit">{% trans "Retry items" %}</button>
-        </fieldset>
-    </form>
-
-    <hr>
-
-    {% else %}
-    <ul>
-        {% for item in failed_items %}
-        <li class="pb-1">
-            <p>
-                Line {{ item.index }}:
-                <strong>{{ item.data.Title }}</strong> by
-                {{ item.data.Author }}
-            </p>
-            <p>
-                {{ item.fail_reason }}.
-            </p>
-        </li>
-        {% endfor %}
-    </ul>
-    {% endif %}
-</div>
-{% endif %}
-
-<div class="block">
-    {% if job.complete %}
-    <h2 class="title is-4">{% trans "Successfully imported" %}</h2>
-    {% else %}
-    <h2 class="title is-4">{% trans "Import Progress" %}</h2>
-    {% endif %}
+    <h2 class="title is-4">
+        {% trans "Your Import" %}
+    </h2>
     <table class="table">
         <tr>
             <th>
-                {% trans "Book" %}
+                {% trans "Row" %}
             </th>
             <th>
                 {% trans "Title" %}
@@ -124,16 +50,16 @@
                 {% trans "Author" %}
             </th>
             <th>
+                {% trans "Book" %}
+            </th>
+            <th>
+                {% trans "Status" %}
             </th>
         </tr>
         {% for item in items %}
         <tr>
             <td>
-                {% if item.book %}
-                <a href="{{ item.book.local_path }}">
-                {% include 'snippets/book_cover.html' with book=item.book cover_class='is-h-s' size='small' %}
-                </a>
-                {% endif %}
+                {{ item.index }}
             </td>
             <td>
                 {{ item.data.Title }}
@@ -143,14 +69,33 @@
             </td>
             <td>
                 {% if item.book %}
-                <span class="icon icon-check">
-                    <span class="is-sr-only">{% trans "Imported" %}</span>
+                <a href="{{ item.book.local_path }}">
+                {% include 'snippets/book_cover.html' with book=item.book cover_class='is-h-s' size='small' %}
+                </a>
+                {% endif %}
+            </td>
+            <td>
+                {% if item.book %}
+                <span class="icon icon-check has-text-success" aria-hidden="true"></span>
+                <span class="is-sr-only-mobile">{% trans "Imported" %}</span>
+
+                {% elif item.fail_reason %}
+                <span class="icon icon-x has-text-danger" aria-hidden="true"></span>
+                <span class="is-sr-only-mobile">
+                    {{ item.fail_reason }}
                 </span>
+                {% else %}
+                <span class="icon icon-dots-three" aria-hidden="true"></span>
+                <span class="is-sr-only-mobile">{% trans "Pending" %}</span>
                 {% endif %}
             </td>
         </tr>
         {% endfor %}
     </table>
+</div>
+
+<div>
+    {% include 'snippets/pagination.html' with page=items %}
 </div>
 {% endspaceless %}{% endblock %}
 

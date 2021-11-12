@@ -1,8 +1,10 @@
 """ import books from another app """
 from io import TextIOWrapper
+import math
 
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
+from django.core.paginator import Paginator
 from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
@@ -17,7 +19,7 @@ from bookwyrm.importers import (
     GoodreadsImporter,
     StorygraphImporter,
 )
-from bookwyrm.tasks import app
+from bookwyrm.settings import PAGE_LENGTH
 
 # pylint: disable= no-self-use
 @method_decorator(login_required, name="dispatch")
@@ -82,21 +84,25 @@ class ImportStatus(View):
         if job.user != request.user:
             raise PermissionDenied()
 
-        try:
-            task = app.AsyncResult(job.task_id)
-            # triggers attribute error if the task won't load
-            task.status  # pylint: disable=pointless-statement
-        except (ValueError, AttributeError):
-            task = None
+        items = job.items.order_by("index")
+        pending_items = items.filter(fail_reason__isnull=True, book__isnull=True)
+        item_count = items.count() or 1
 
-        items = job.items.order_by("index").all()
-        failed_items = [i for i in items if i.fail_reason]
-        items = [i for i in items if not i.fail_reason]
-        return TemplateResponse(
-            request,
-            "import/import_status.html",
-            {"job": job, "items": items, "failed_items": failed_items, "task": task},
-        )
+        paginated = Paginator(items, PAGE_LENGTH)
+        page = paginated.get_page(request.GET.get("page"))
+        data = {
+            "job": job,
+            "items": page,
+            "page_range": paginated.get_elided_page_range(
+                page.number, on_each_side=2, on_ends=1
+            ),
+            "complete": not pending_items.exists(),
+            "percent": math.floor(  # pylint: disable=c-extension-no-member
+                (item_count - pending_items.count()) / item_count * 100
+            ),
+        }
+
+        return TemplateResponse(request, "import/import_status.html", data)
 
     def post(self, request, job_id):
         """retry lines from an import"""

@@ -33,7 +33,7 @@ class ImportJob(models.Model):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     created_date = models.DateTimeField(default=timezone.now)
-    task_id = models.CharField(max_length=100, null=True)
+    task_id = models.CharField(max_length=100, null=True)  # TODO: deprecated
     include_reviews = models.BooleanField(default=True)
     mappings = models.JSONField()
     complete = models.BooleanField(default=False)
