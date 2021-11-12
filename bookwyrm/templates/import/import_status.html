@@ -7,7 +7,11 @@
 
 {% block content %}{% spaceless %}
 <header class="block">
+    {% if job.retry %}
+    <h1 class="title">{% trans "Retry Status" %}</h1>
+    {% else %}
     <h1 class="title">{% trans "Import Status" %}</h1>
+    {% endif %}
     <a href="{% url 'import' %}" class="has-text-weight-normal help subtitle is-link">{% trans "Back to imports" %}</a>
 
     <div class="block">
@@ -33,7 +37,7 @@
     </div>
     {% endif %}
 
-    {% if complete and fail_count %}
+    {% if complete and fail_count and not job.retry %}
     <div class="notification is-warning">
         {% blocktrans trimmed count counter=fail_count with display_counter=fail_count|intcomma %}
             {{ display_counter }} item failed to import.
