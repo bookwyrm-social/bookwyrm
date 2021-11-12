@@ -1,5 +1,4 @@
 """ testing import """
-import csv
 import pathlib
 from unittest.mock import patch
 import datetime
@@ -58,30 +57,6 @@ class StorygraphImport(TestCase):
             import_items[1].normalized_data["title"], "Subprime Attention Crisis"
         )
         self.assertEqual(import_items[1].normalized_data["rating"], "5.0")
-
-    def test_create_retry_job(self, *_):
-        """trying again with items that didn't import"""
-        import_job = self.importer.create_job(
-            self.local_user, self.csv, False, "unlisted"
-        )
-        import_items = models.ImportItem.objects.filter(job=import_job).all()[:2]
-
-        retry = self.importer.create_retry_job(
-            self.local_user, import_job, import_items
-        )
-        self.assertNotEqual(import_job, retry)
-        self.assertEqual(retry.user, self.local_user)
-        self.assertEqual(retry.include_reviews, False)
-        self.assertEqual(retry.privacy, "unlisted")
-
-        retry_items = models.ImportItem.objects.filter(job=retry).all()
-        self.assertEqual(len(retry_items), 2)
-        self.assertEqual(retry_items[0].index, 0)
-        self.assertEqual(retry_items[0].normalized_data["title"], "Always Coming Home")
-        self.assertEqual(retry_items[1].index, 1)
-        self.assertEqual(
-            retry_items[1].normalized_data["title"], "Subprime Attention Crisis"
-        )
 
     def test_handle_imported_book(self, *_):
         """storygraph import added a book, this adds related connections"""
