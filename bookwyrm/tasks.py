@@ -9,3 +9,8 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "celerywyrm.settings")
 app = Celery(
     "tasks", broker=settings.CELERY_BROKER_URL, backend=settings.CELERY_RESULT_BACKEND
 )
+
+# priorities
+LOW = "low_priority"
+MEDIUM = "medium_priority"
+HIGH = "high_priority"
