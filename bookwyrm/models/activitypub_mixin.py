@@ -126,12 +126,15 @@ class ActivitypubMixin:
         # there OUGHT to be only one match
         return match.first()
 
-    def broadcast(self, activity, sender, software=None):
+    def broadcast(self, activity, sender, software=None, queue="medium_priority"):
         """send out an activity"""
-        broadcast_task.delay(
-            sender.id,
-            json.dumps(activity, cls=activitypub.ActivityEncoder),
-            self.get_recipients(software=software),
+        broadcast_task.apply_async(
+            args=(
+                sender.id,
+                json.dumps(activity, cls=activitypub.ActivityEncoder),
+                self.get_recipients(software=software),
+            ),
+            queue=queue,
         )
 
     def get_recipients(self, software=None):
@@ -374,9 +377,9 @@ class CollectionItemMixin(ActivitypubMixin):
 
     activity_serializer = activitypub.CollectionItem
 
-    def broadcast(self, activity, sender, software="bookwyrm"):
+    def broadcast(self, activity, sender, software="bookwyrm", queue="medium_priority"):
         """only send book collection updates to other bookwyrm instances"""
-        super().broadcast(activity, sender, software=software)
+        super().broadcast(activity, sender, software=software, queue=queue)
 
     @property
     def privacy(self):
@@ -406,7 +409,7 @@ class CollectionItemMixin(ActivitypubMixin):
 
         # adding an obj to the collection
         activity = self.to_add_activity(self.user)
-        self.broadcast(activity, self.user)
+        self.broadcast(activity, self.user, queue="low_priority")
 
     def delete(self, *args, broadcast=True, **kwargs):
         """broadcast a remove activity"""
