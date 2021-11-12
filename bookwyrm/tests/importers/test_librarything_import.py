@@ -9,7 +9,7 @@ import responses
 
 from bookwyrm import models
 from bookwyrm.importers import LibrarythingImporter
-from bookwyrm.importers.importer import import_data, handle_imported_book
+from bookwyrm.importers.importer import start_import_task, handle_imported_book
 
 
 def make_date(*args):
@@ -85,7 +85,7 @@ class LibrarythingImport(TestCase):
         self.assertEqual(retry_items[1].data["Book Id"], "5015319")
 
     @responses.activate
-    def test_import_data(self, *_):
+    def test_start_import_task(self, *_):
         """resolve entry"""
         import_job = self.importer.create_job(
             self.local_user, self.csv, False, "unlisted"
@@ -97,7 +97,7 @@ class LibrarythingImport(TestCase):
         ) as resolve:
             resolve.return_value = book
             with patch("bookwyrm.importers.importer.handle_imported_book"):
-                import_data(self.importer.service, import_job.id)
+                start_import_task(self.importer.service, import_job.id)
 
         import_item = models.ImportItem.objects.get(job=import_job, index=0)
         self.assertEqual(import_item.book.id, book.id)

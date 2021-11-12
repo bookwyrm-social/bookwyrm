@@ -151,9 +151,9 @@ def handle_imported_book(source, user, item, include_reviews, privacy):
     if item.shelf and not existing_shelf:
         desired_shelf = models.Shelf.objects.get(identifier=item.shelf, user=user)
         shelved_date = item.date_added or timezone.now()
-        models.ShelfBook.objects.create(
+        models.ShelfBook(
             book=item.book, shelf=desired_shelf, user=user, shelved_date=shelved_date
-        )
+        ).save(priority=LOW)
 
     for read in item.reads:
         # check for an existing readthrough with the same dates

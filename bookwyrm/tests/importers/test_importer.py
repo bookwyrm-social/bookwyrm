@@ -136,7 +136,13 @@ class GenericImporter(TestCase):
             "bookwyrm.models.import_job.ImportItem.get_book_from_isbn"
         ) as resolve:
             resolve.return_value = self.book
-            import_item_task(self.importer.service, import_item.id)
+
+            with patch(
+                "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+            ) as mock:
+                import_item_task(self.importer.service, import_item.id)
+                kwargs = mock.call_args.kwargs
+        self.assertEqual(kwargs["queue"], "low_priority")
         import_item.refresh_from_db()
 
         self.assertEqual(import_item.book.id, self.book.id)
@@ -153,7 +159,7 @@ class GenericImporter(TestCase):
         import_item.book = self.book
         import_item.save()
 
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             handle_imported_book(
                 self.importer.service, self.local_user, import_item, False, "public"
             )
@@ -163,7 +169,7 @@ class GenericImporter(TestCase):
 
     def test_handle_imported_book_already_shelved(self, *_):
         """import added a book, this adds related connections"""
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             shelf = self.local_user.shelf_set.filter(identifier="to-read").first()
             models.ShelfBook.objects.create(
                 shelf=shelf,
@@ -179,7 +185,7 @@ class GenericImporter(TestCase):
         import_item.book = self.book
         import_item.save()
 
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             handle_imported_book(
                 self.importer.service, self.local_user, import_item, False, "public"
             )
@@ -203,7 +209,7 @@ class GenericImporter(TestCase):
         import_item.book = self.book
         import_item.save()
 
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             handle_imported_book(
                 self.importer.service, self.local_user, import_item, False, "public"
             )
@@ -223,7 +229,7 @@ class GenericImporter(TestCase):
         import_item.book = self.book
         import_item.save()
 
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             with patch("bookwyrm.models.Status.broadcast") as broadcast_mock:
                 handle_imported_book(
                     self.importer.service,
@@ -249,7 +255,7 @@ class GenericImporter(TestCase):
         import_item.book = self.book
         import_item.save()
 
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             handle_imported_book(
                 self.importer.service, self.local_user, import_item, True, "unlisted"
             )
@@ -267,7 +273,7 @@ class GenericImporter(TestCase):
         import_item.book = self.book
         import_item.save()
 
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             handle_imported_book(
                 self.importer.service, self.local_user, import_item, False, "unlisted"
             )

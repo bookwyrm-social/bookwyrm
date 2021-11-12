@@ -277,12 +277,12 @@ def add_status_on_create(sender, instance, created, *args, **kwargs):
 
 def add_status_on_create_command(sender, instance, created):
     """runs this code only after the database commit completes"""
-    priority=HIGH
+    priority = HIGH
     # check if this is an old status, de-prioritize if so
     # (this will happen if federation is very slow, or, more expectedly, on csv import)
     one_day = 60 * 60 * 24
     if (instance.created_date - instance.published_date).seconds > one_day:
-        priority=LOW
+        priority = LOW
 
     add_status_task.apply_async(
         args=(instance.id,),
