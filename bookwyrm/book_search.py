@@ -128,7 +128,7 @@ def search_title_author(query, min_confidence, *filters, return_first=False):
             result = editions.first()
 
         if return_first:
-            return result[0]
+            return result
         list_results.append(result)
     return list_results
 
