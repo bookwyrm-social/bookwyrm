@@ -93,7 +93,12 @@ class ImportStatus(View):
         data = {
             "job": job,
             "items": page,
-            "fail_count": items.filter(fail_reason__isnull=False).count(),
+            "manual_review_count": items.filter(
+                fail_reason__isnull=False, book_guess__isnull=False, book__isnull=True
+            ).count(),
+            "fail_count": items.filter(
+                fail_reason__isnull=False, book_guess__isnull=True
+            ).count(),
             "page_range": paginated.get_elided_page_range(
                 page.number, on_each_side=2, on_ends=1
             ),
@@ -116,7 +121,9 @@ class ImportTroubleshoot(View):
         if job.user != request.user:
             raise PermissionDenied()
 
-        items = job.items.order_by("index").filter(fail_reason__isnull=False)
+        items = job.items.order_by("index").filter(
+            fail_reason__isnull=False, book_guess__isnull=False
+        )
 
         paginated = Paginator(items, PAGE_LENGTH)
         page = paginated.get_page(request.GET.get("page"))

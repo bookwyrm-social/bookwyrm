@@ -37,6 +37,16 @@
     </div>
     {% endif %}
 
+    {% if manual_review_count %}
+    <div class="notification">
+        {% blocktrans trimmed count counter=manual_review_count with display_counter=manual_review_count|intcomma %}
+            {{ display_counter }} item needs manual review.
+            {% plural %}
+            {{ display_counter }} items need manual review.
+        {% endblocktrans %}
+    </div>
+    {% endif %}
+
     {% if complete and fail_count and not job.retry %}
     <div class="notification is-warning">
         {% blocktrans trimmed count counter=fail_count with display_counter=fail_count|intcomma %}
