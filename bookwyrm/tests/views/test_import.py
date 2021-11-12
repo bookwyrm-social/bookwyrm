@@ -51,6 +51,19 @@ class ImportViews(TestCase):
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
+    def test_import_troubleshoot_get(self):
+        """there are so many views, this just makes sure it LOADS"""
+        view = views.ImportTroubleshoot.as_view()
+        import_job = models.ImportJob.objects.create(user=self.local_user, mappings={})
+        request = self.factory.get("")
+        request.user = self.local_user
+        with patch("bookwyrm.tasks.app.AsyncResult") as async_result:
+            async_result.return_value = []
+            result = view(request, import_job.id)
+        self.assertIsInstance(result, TemplateResponse)
+        validate_html(result.render())
+        self.assertEqual(result.status_code, 200)
+
     def test_start_import(self):
         """retry failed items"""
         view = views.Import.as_view()
@@ -77,7 +90,7 @@ class ImportViews(TestCase):
 
     def test_retry_import(self):
         """retry failed items"""
-        view = views.ImportStatus.as_view()
+        view = views.ImportTroubleshoot.as_view()
         import_job = models.ImportJob.objects.create(
             user=self.local_user, privacy="unlisted", mappings={}
         )
