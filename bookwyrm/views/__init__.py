@@ -44,7 +44,9 @@ from .shelf.shelf_actions import create_shelf, delete_shelf
 from .shelf.shelf_actions import shelve, unshelve
 
 # csv import
-from .imports.import_data import Import, ImportStatus, ImportTroubleshoot
+from .imports.import_data import Import
+from .imports.import_status import ImportStatus
+from .imports.troubelshoot import  ImportTroubleshoot
 
 # misc views
 from .author import Author, EditAuthor
