@@ -84,24 +84,6 @@ class LibrarythingImport(TestCase):
         self.assertEqual(retry_items[1].index, 1)
         self.assertEqual(retry_items[1].data["Book Id"], "5015319")
 
-    @responses.activate
-    def test_start_import_task(self, *_):
-        """resolve entry"""
-        import_job = self.importer.create_job(
-            self.local_user, self.csv, False, "unlisted"
-        )
-        book = models.Edition.objects.create(title="Test Book")
-
-        with patch(
-            "bookwyrm.models.import_job.ImportItem.get_book_from_isbn"
-        ) as resolve:
-            resolve.return_value = book
-            with patch("bookwyrm.importers.importer.handle_imported_book"):
-                start_import_task(self.importer.service, import_job.id)
-
-        import_item = models.ImportItem.objects.get(job=import_job, index=0)
-        self.assertEqual(import_item.book.id, book.id)
-
     def test_handle_imported_book(self, *_):
         """librarything import added a book, this adds related connections"""
         shelf = self.local_user.shelf_set.filter(identifier="read").first()
