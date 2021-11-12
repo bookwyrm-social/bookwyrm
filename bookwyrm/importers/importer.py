@@ -7,7 +7,7 @@ from django.utils.translation import gettext_lazy as _
 
 from bookwyrm import models
 from bookwyrm.models import ImportJob, ImportItem
-from bookwyrm.tasks import app
+from bookwyrm.tasks import app, LOW
 
 logger = logging.getLogger(__name__)
 
@@ -201,4 +201,4 @@ def handle_imported_book(source, user, item, include_reviews, privacy):
                 privacy=privacy,
             )
         # only broadcast this review to other bookwyrm instances
-        review.save(software="bookwyrm")
+        review.save(software="bookwyrm", priority=LOW)
