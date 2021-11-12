@@ -238,6 +238,7 @@ urlpatterns = [
     # imports
     re_path(r"^import/?$", views.Import.as_view(), name="import"),
     re_path(r"^import/(\d+)/?$", views.ImportStatus.as_view(), name="import-status"),
+    re_path(r"^import/(\d+)/failed/?$", views.ImportTroubleshoot.as_view(), name="import-troubleshoot"),
     # users
     re_path(rf"{USER_PATH}\.json$", views.User.as_view()),
     re_path(rf"{USER_PATH}/?$", views.User.as_view(), name="user-feed"),

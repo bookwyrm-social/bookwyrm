@@ -32,12 +32,28 @@
         </div>
     </div>
     {% endif %}
+
+    {% if complete and fail_count %}
+    <div class="notification is-warning">
+        {% blocktrans trimmed count counter=fail_count with display_counter=fail_count|intcomma %}
+            {{ display_counter }} item failed to import.
+            {% plural %}
+            {{ display_counter }} items failed to import.
+        {% endblocktrans %}
+        <a href="{% url 'import-troubleshoot' job.id %}">
+            {% trans "View and troubleshoot failed items." %}
+        </a>
+    </div>
+    {% endif %}
 </header>
 
 <div class="block">
     <h2 class="title is-4">
+        {% block page_title %}
         {% trans "Your Import" %}
+        {% endblock %}
     </h2>
+    {% block actions %}{% endblock %}
     <table class="table">
         <tr>
             <th>

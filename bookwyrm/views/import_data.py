@@ -93,6 +93,7 @@ class ImportStatus(View):
         data = {
             "job": job,
             "items": page,
+            "fail_count": items.filter(fail_reason__isnull=False).count(),
             "page_range": paginated.get_elided_page_range(
                 page.number, on_each_side=2, on_ends=1
             ),
@@ -104,12 +105,36 @@ class ImportStatus(View):
 
         return TemplateResponse(request, "import/import_status.html", data)
 
+
+@method_decorator(login_required, name="dispatch")
+class ImportTroubleshoot(View):
+    """problems items in an existing import"""
+
+    def get(self, request, job_id):
+        """status of an import job"""
+        job = get_object_or_404(models.ImportJob, id=job_id)
+        if job.user != request.user:
+            raise PermissionDenied()
+
+        items = job.items.order_by("index").filter(fail_reason__isnull=False)
+
+        paginated = Paginator(items, PAGE_LENGTH)
+        page = paginated.get_page(request.GET.get("page"))
+        data = {
+            "job": job,
+            "items": page,
+            "page_range": paginated.get_elided_page_range(
+                page.number, on_each_side=2, on_ends=1
+            ),
+            "complete": True,
+        }
+
+        return TemplateResponse(request, "import/troubleshoot.html", data)
+
     def post(self, request, job_id):
         """retry lines from an import"""
         job = get_object_or_404(models.ImportJob, id=job_id)
-        items = []
-        for item in request.POST.getlist("import_item"):
-            items.append(get_object_or_404(models.ImportItem, id=item))
+        items = job.items.filter(fail_reason__isnull=False)
 
         importer = Importer()
         job = importer.create_retry_job(

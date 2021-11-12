@@ -62,7 +62,7 @@ from .group import (
     accept_membership,
     reject_membership,
 )
-from .import_data import Import, ImportStatus
+from .import_data import Import, ImportStatus, ImportTroubleshoot
 from .inbox import Inbox
 from .interaction import Favorite, Unfavorite, Boost, Unboost
 from .isbn import Isbn
