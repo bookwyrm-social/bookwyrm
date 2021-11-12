@@ -67,6 +67,9 @@
                 {% trans "Title" %}
             </th>
             <th>
+                {% trans "ISBN" %}
+            </th>
+            <th>
                 {% trans "Author" %}
             </th>
             <th>
@@ -82,10 +85,13 @@
                 {{ item.index }}
             </td>
             <td>
-                {{ item.data.Title }}
+                {{ item.normalized_data.title }}
             </td>
             <td>
-                {{ item.data.Author }}
+                {{ item.isbn }}
+            </td>
+            <td>
+                {{ item.normalized_data.authors }}
             </td>
             <td>
                 {% if item.book %}
