@@ -19,9 +19,6 @@
 {% endblock %}
 
 {% block import_cols_headers %}
-    <th>
-        {% trans "Actions" %}
-    </th>
 {% endblock %}
 
 {% block index_col %}
@@ -31,30 +28,11 @@
 {% endblock %}
 
 {% block import_cols  %}
-    <td>
-        <div class="content is-flex">
-            <form class="pr-2" name="approve-{{ item.id }}" method="POST" action="{% url 'import-approve' job.id item.id %}">
-                {% csrf_token %}
-                <button type="submit" class="button is-success">
-                    <span class="icon icon-check" aria-hidden="true"></span>
-                    <span class="is-sr-only-mobile">{% trans "Approve" %}</span>
-                </button>
-            </form>
-
-            <form name="delete-{{ item.id }}" method="POST" action="{% url 'import-delete' job.id item.id %}">
-                {% csrf_token %}
-                <button type="submit" class="button is-danger is-light is-outlined">
-                    <span class="icon icon-x" aria-hidden="true"></span>
-                    <span class="is-sr-only-mobile">{% trans "Delete" %}</span>
-                </button>
-            </form>
-        </div>
-    </td>
 {% endblock %}
 
 {% block action_row %}
 <tr>
-    <td colspan="6">
+    <td colspan="5">
         <div class="columns is-mobile">
             {% with guess=item.book_guess %}
             <div class="column is-narrow">
@@ -64,6 +42,23 @@
             </div>
             <div class="column">
                 {% include 'snippets/book_titleby.html' with book=guess %}
+                <div class="content is-flex">
+                    <form class="pr-2" name="approve-{{ item.id }}" method="POST" action="{% url 'import-approve' job.id item.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="button is-success">
+                            <span class="icon icon-check m-0-mobile" aria-hidden="true"></span>
+                            <span class="is-sr-only-mobile">{% trans "Approve" %}</span>
+                        </button>
+                    </form>
+
+                    <form name="delete-{{ item.id }}" method="POST" action="{% url 'import-delete' job.id item.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="button is-danger is-light is-outlined">
+                            <span class="icon icon-x m-0-mobile" aria-hidden="true"></span>
+                            <span class="is-sr-only-mobile">{% trans "Delete" %}</span>
+                        </button>
+                    </form>
+                </div>
             </div>
             {% endwith %}
         </div>
