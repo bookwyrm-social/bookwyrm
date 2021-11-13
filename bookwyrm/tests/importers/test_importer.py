@@ -120,7 +120,7 @@ class GenericImporter(TestCase):
         )
 
         with patch("bookwyrm.importers.importer.import_item_task.delay") as mock:
-            start_import_task(self.importer.service, import_job.id)
+            start_import_task(import_job.id)
 
         self.assertEqual(mock.call_count, 4)
 

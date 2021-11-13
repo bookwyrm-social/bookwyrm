@@ -101,9 +101,9 @@ class Importer:
             self.create_item(job, item.index, item.data)
         return job
 
-    def start_import(self, job):
+    def start_import(self, job):  # pylint: disable=no-self-use
         """initalizes a csv import job"""
-        result = start_import_task.delay(self.service, job.id)
+        result = start_import_task.delay(job.id)
         job.task_id = result.id
         job.save()
 
