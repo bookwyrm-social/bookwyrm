@@ -60,6 +60,9 @@ class ImportItem(models.Model):
         related_name="book_guess",
     )
     fail_reason = models.TextField(null=True)
+    linked_review = models.ForeignKey(
+        "Review", on_delete=models.SET_NULL, null=True, blank=True
+    )
 
     def resolve(self):
         """try various ways to lookup a book"""
