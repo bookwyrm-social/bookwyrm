@@ -58,7 +58,7 @@ class ImportViews(TestCase):
         form.data["source"] = "Goodreads"
         form.data["privacy"] = "public"
         form.data["include_reviews"] = False
-        csv_file = pathlib.Path(__file__).parent.joinpath("../data/goodreads.csv")
+        csv_file = pathlib.Path(__file__).parent.joinpath("../../data/goodreads.csv")
         form.data["csv_file"] = SimpleUploadedFile(
             # pylint: disable=consider-using-with
             csv_file,
