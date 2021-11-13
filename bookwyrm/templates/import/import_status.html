@@ -70,7 +70,6 @@
     </h2>
     {% block actions %}{% endblock %}
     <table class="table">
-        {% block table_headers %}
         <tr>
             <th>
                 {% trans "Row" %}
@@ -85,22 +84,27 @@
                 {% trans "Author" %}
             </th>
             <th>
+                {% trans "Shelf" %}
+            </th>
+            <th>
                 {% trans "Review" %}
             </th>
+            {% block import_cols_headers %}
             <th>
                 {% trans "Book" %}
             </th>
             <th>
                 {% trans "Status" %}
             </th>
+            {% endblock %}
         </tr>
-        {% endblock %}
         {% for item in items %}
-        {% block table_row %}
         <tr>
+            {% block index_col %}
             <td>
                 {{ item.index }}
             </td>
+            {% endblock %}
             <td>
                 {{ item.normalized_data.title }}
             </td>
@@ -111,9 +115,13 @@
                 {{ item.normalized_data.authors }}
             </td>
             <td>
+                {{ item.normalized_data.shelf }}
+            </td>
+            <td>
                 <p>{% include 'snippets/stars.html' with rating=item.rating %}</p>
                 <p>{{ item.review|truncatechars:100 }}</p>
             </td>
+            {% block import_cols %}
             <td>
                 {% if item.book %}
                 <a href="{{ item.book.local_path }}">
@@ -136,8 +144,9 @@
                 <span class="is-sr-only-mobile">{% trans "Pending" %}</span>
                 {% endif %}
             </td>
+            {% endblock %}
         </tr>
-        {% endblock %}
+        {% block action_row %}{% endblock %}
         {% endfor %}
     </table>
 </div>
