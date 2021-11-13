@@ -52,9 +52,22 @@
     <td>
         {{ item.normalized_data.authors }}
     </td>
-    <td>
-        <button type="submit" class="button is-success">{% trans "Approve" %}</button>
-        <button type="submit" class="button is-danger is-light is-outlined">{% trans "Delete" %}</button>
+    <td class="content is-flex">
+        <form class="pr-2" name="approve-{{ item.id }}" method="POST" action="{% url 'import-approve' job.id item.id %}">
+            {% csrf_token %}
+            <button type="submit" class="button is-success">
+                <span class="icon icon-check" aria-hidden="true"></span>
+                <span class="is-sr-only-mobile">{% trans "Approve" %}</span>
+            </button>
+        </form>
+
+        <form name="delete-{{ item.id }}" method="POST" action="{% url 'import-delete' job.id item.id %}">
+            {% csrf_token %}
+            <button type="submit" class="button is-danger is-light is-outlined">
+                <span class="icon icon-x" aria-hidden="true"></span>
+                <span class="is-sr-only-mobile">{% trans "Delete" %}</span>
+            </button>
+        </form>
     </td>
 </tr>
 <tr>

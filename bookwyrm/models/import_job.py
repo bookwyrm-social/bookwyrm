@@ -37,6 +37,7 @@ class ImportJob(models.Model):
     include_reviews = models.BooleanField(default=True)
     mappings = models.JSONField()
     complete = models.BooleanField(default=False)
+    source = models.CharField(max_length=100)
     privacy = models.CharField(
         max_length=255, default="public", choices=PrivacyLevels.choices
     )
@@ -62,6 +63,11 @@ class ImportItem(models.Model):
 
     def resolve(self):
         """try various ways to lookup a book"""
+        # we might be calling this after manually adding the book,
+        # so no need to do searches
+        if self.book:
+            return
+
         if self.isbn:
             self.book = self.get_book_from_isbn()
         else:

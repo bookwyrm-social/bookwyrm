@@ -47,7 +47,11 @@ from .shelf.shelf_actions import shelve, unshelve
 from .imports.import_data import Import
 from .imports.import_status import ImportStatus
 from .imports.troubleshoot import ImportTroubleshoot
-from .imports.manually_review import ImportManualReview
+from .imports.manually_review import (
+    ImportManualReview,
+    approve_import_item,
+    delete_import_item,
+)
 
 # misc views
 from .author import Author, EditAuthor

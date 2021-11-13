@@ -40,10 +40,11 @@
     {% if manual_review_count %}
     <div class="notification">
         {% blocktrans trimmed count counter=manual_review_count with display_counter=manual_review_count|intcomma %}
-            {{ display_counter }} item needs manual review.
+            {{ display_counter }} item needs manual approval.
             {% plural %}
-            {{ display_counter }} items need manual review.
+            {{ display_counter }} items need manual approval.
         {% endblocktrans %}
+        <a href="{% url 'import-review' job.id %}">{% trans "Review items" %}</a>
     </div>
     {% endif %}
 
@@ -55,7 +56,7 @@
             {{ display_counter }} items failed to import.
         {% endblocktrans %}
         <a href="{% url 'import-troubleshoot' job.id %}">
-            {% trans "View and troubleshoot failed items." %}
+            {% trans "View and troubleshoot failed items" %}
         </a>
     </div>
     {% endif %}

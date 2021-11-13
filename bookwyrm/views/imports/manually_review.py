@@ -2,12 +2,14 @@
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
 from django.views import View
+from django.views.decorators.http import require_POST
 
 from bookwyrm import models
+from bookwyrm.importers.importer import import_item_task
 from bookwyrm.settings import PAGE_LENGTH
 
 # pylint: disable= no-self-use
@@ -37,3 +39,33 @@ class ImportManualReview(View):
         }
 
         return TemplateResponse(request, "import/manual_review.html", data)
+
+
+@login_required
+@require_POST
+# pylint: disable=unused-argument
+def approve_import_item(request, job_id, item_id):
+    """we guessed right"""
+    item = get_object_or_404(
+        models.ImportItem, id=item_id, job__id=job_id, book_guess__isnull=False
+    )
+    item.fail_reason = None
+    item.book = item.book_guess
+    item.save()
+
+    # the good stuff - actually import the data
+    import_item_task.delay(item.id)
+    return redirect("import-review", job_id)
+
+
+@login_required
+@require_POST
+# pylint: disable=unused-argument
+def delete_import_item(request, job_id, item_id):
+    """we guessed right"""
+    item = get_object_or_404(
+        models.ImportItem, id=item_id, job__id=job_id, book_guess__isnull=False
+    )
+    item.book_guess = None
+    item.save()
+    return redirect("import-review", job_id)

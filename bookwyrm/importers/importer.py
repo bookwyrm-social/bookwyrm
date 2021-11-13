@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 class Importer:
     """Generic class for csv data import from an outside service"""
 
-    service = "Unknown"
+    service = "Import"
     delimiter = ","
     encoding = "UTF-8"
 
@@ -50,6 +50,7 @@ class Importer:
             include_reviews=include_reviews,
             privacy=privacy,
             mappings=self.create_row_mappings(csv_reader.fieldnames),
+            source=self.service,
         )
 
         for index, entry in rows:
@@ -108,16 +109,16 @@ class Importer:
 
 
 @app.task(queue="low_priority")
-def start_import_task(source, job_id):
+def start_import_task(job_id):
     """trigger the child tasks for each row"""
     job = ImportJob.objects.get(id=job_id)
     # these are sub-tasks so that one big task doesn't use up all the memory in celery
     for item in job.items.values_list("id", flat=True).all():
-        import_item_task.delay(source, item)
+        import_item_task.delay(item)
 
 
 @app.task(queue="low_priority")
-def import_item_task(source, item_id):
+def import_item_task(item_id):
     """resolve a row into a book"""
     item = models.ImportItem.objects.get(id=item_id)
     try:
@@ -128,17 +129,18 @@ def import_item_task(source, item_id):
         raise err
 
     if item.book:
-        job = item.job
         # shelves book and handles reviews
-        handle_imported_book(source, job.user, item, job.include_reviews, job.privacy)
+        handle_imported_book(item)
     else:
         item.fail_reason = _("Could not find a match for book")
 
     item.save()
 
 
-def handle_imported_book(source, user, item, include_reviews, privacy):
+def handle_imported_book(item):
     """process a csv and then post about it"""
+    job = item.job
+    user = job.user
     if isinstance(item.book, models.Work):
         item.book = item.book.default_edition
     if not item.book:
@@ -167,7 +169,7 @@ def handle_imported_book(source, user, item, include_reviews, privacy):
         read.user = user
         read.save()
 
-    if include_reviews and (item.rating or item.review):
+    if job.include_reviews and (item.rating or item.review):
         # we don't know the publication date of the review,
         # but "now" is a bad guess
         published_date_guess = item.date_read or item.date_added
@@ -176,7 +178,7 @@ def handle_imported_book(source, user, item, include_reviews, privacy):
             review_title = (
                 "Review of {!r} on {!r}".format(
                     item.book.title,
-                    source,
+                    job.source,
                 )
                 if item.review
                 else ""
@@ -188,7 +190,7 @@ def handle_imported_book(source, user, item, include_reviews, privacy):
                 content=item.review,
                 rating=item.rating,
                 published_date=published_date_guess,
-                privacy=privacy,
+                privacy=job.privacy,
             )
         else:
             # just a rating
@@ -197,7 +199,7 @@ def handle_imported_book(source, user, item, include_reviews, privacy):
                 book=item.book,
                 rating=item.rating,
                 published_date=published_date_guess,
-                privacy=privacy,
+                privacy=job.privacy,
             )
         # only broadcast this review to other bookwyrm instances
         review.save(software="bookwyrm", priority=LOW)
