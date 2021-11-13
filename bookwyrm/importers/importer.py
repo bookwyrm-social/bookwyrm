@@ -145,6 +145,8 @@ def handle_imported_book(item):
         item.book = item.book.default_edition
     if not item.book:
         return
+    if not isinstance(item.book, models.Edition):
+        item.book = item.book.edition
 
     existing_shelf = models.ShelfBook.objects.filter(book=item.book, user=user).exists()
 
