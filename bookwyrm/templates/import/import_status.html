@@ -85,6 +85,9 @@
                 {% trans "Author" %}
             </th>
             <th>
+                {% trans "Review" %}
+            </th>
+            <th>
                 {% trans "Book" %}
             </th>
             <th>
@@ -106,6 +109,10 @@
             </td>
             <td>
                 {{ item.normalized_data.authors }}
+            </td>
+            <td>
+                <p>{% include 'snippets/stars.html' with rating=item.rating %}</p>
+                <p>{{ item.review|truncatechars:100 }}</p>
             </td>
             <td>
                 {% if item.book %}

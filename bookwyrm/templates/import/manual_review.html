@@ -33,6 +33,9 @@
         {% trans "Author" %}
     </th>
     <th>
+        {% trans "Review" %}
+    </th>
+    <th>
         {% trans "Actions" %}
     </th>
 </tr>
@@ -52,22 +55,28 @@
     <td>
         {{ item.normalized_data.authors }}
     </td>
-    <td class="content is-flex">
-        <form class="pr-2" name="approve-{{ item.id }}" method="POST" action="{% url 'import-approve' job.id item.id %}">
-            {% csrf_token %}
-            <button type="submit" class="button is-success">
-                <span class="icon icon-check" aria-hidden="true"></span>
-                <span class="is-sr-only-mobile">{% trans "Approve" %}</span>
-            </button>
-        </form>
+    <td>
+        <p>{% include 'snippets/stars.html' with rating=item.rating %}</p>
+        <p>{{ item.review|truncatechars:100 }}</p>
+    </td>
+    <td>
+        <div class="content is-flex">
+            <form class="pr-2" name="approve-{{ item.id }}" method="POST" action="{% url 'import-approve' job.id item.id %}">
+                {% csrf_token %}
+                <button type="submit" class="button is-success">
+                    <span class="icon icon-check" aria-hidden="true"></span>
+                    <span class="is-sr-only-mobile">{% trans "Approve" %}</span>
+                </button>
+            </form>
 
-        <form name="delete-{{ item.id }}" method="POST" action="{% url 'import-delete' job.id item.id %}">
-            {% csrf_token %}
-            <button type="submit" class="button is-danger is-light is-outlined">
-                <span class="icon icon-x" aria-hidden="true"></span>
-                <span class="is-sr-only-mobile">{% trans "Delete" %}</span>
-            </button>
-        </form>
+            <form name="delete-{{ item.id }}" method="POST" action="{% url 'import-delete' job.id item.id %}">
+                {% csrf_token %}
+                <button type="submit" class="button is-danger is-light is-outlined">
+                    <span class="icon icon-x" aria-hidden="true"></span>
+                    <span class="is-sr-only-mobile">{% trans "Delete" %}</span>
+                </button>
+            </form>
+        </div>
     </td>
 </tr>
 <tr>
