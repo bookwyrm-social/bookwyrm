@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-10-24 14:09+0000\n"
-"PO-Revision-Date: 2021-11-13 19:34\n"
+"PO-Revision-Date: 2021-11-13 20:19\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Lithuanian\n"
 "Language: lt\n"
@@ -816,7 +816,7 @@ msgstr "Bendruomenė"
 
 #: bookwyrm/templates/directory/community_filter.html:8
 msgid "Local users"
-msgstr "Vietiniai naudotojai"
+msgstr "Vietiniai nariai"
 
 #: bookwyrm/templates/directory/community_filter.html:12
 msgid "Federated community"
@@ -826,11 +826,11 @@ msgstr "Sujungta bendruomenė"
 #: bookwyrm/templates/directory/directory.html:9
 #: bookwyrm/templates/layout.html:101
 msgid "Directory"
-msgstr "Katalogas"
+msgstr "Bendruomenė"
 
 #: bookwyrm/templates/directory/directory.html:17
 msgid "Make your profile discoverable to other BookWyrm users."
-msgstr "Savo paskyrą leiskite atrasti kitiems „BookWyrm“ naudotojams."
+msgstr "Savo paskyrą leiskite atrasti kitiems „BookWyrm“ nariems."
 
 #: bookwyrm/templates/directory/directory.html:24
 #, python-format
@@ -892,11 +892,11 @@ msgstr "Naudotojo tipas"
 
 #: bookwyrm/templates/directory/user_type_filter.html:8
 msgid "BookWyrm users"
-msgstr "„BookWyrm“ naudotojai"
+msgstr "„BookWyrm“ nariai"
 
 #: bookwyrm/templates/directory/user_type_filter.html:12
 msgid "All known users"
-msgstr "Visi žinomi naudotojai"
+msgstr "Visi žinomi nariai"
 
 #: bookwyrm/templates/discover/card-header.html:9
 #, python-format
@@ -1046,7 +1046,7 @@ msgstr "įkelti <span data-poll=\"stream/%(tab_key)s\">0</span> neperskaitytų b
 
 #: bookwyrm/templates/feed/feed.html:38
 msgid "There aren't any activities right now! Try following a user to get started"
-msgstr "Šiuo metu veiklų nėra. Norėdami pradėti, pradėkite sekti naudotoją"
+msgstr "Šiuo metu įrašų nėra. Norėdami matyti, sekite narį."
 
 #: bookwyrm/templates/feed/goal_card.html:6
 #: bookwyrm/templates/feed/layout.html:90
@@ -1071,7 +1071,7 @@ msgstr "Jūsų knygos"
 
 #: bookwyrm/templates/feed/layout.html:14
 msgid "There are no books here right now! Try searching for a book to get started"
-msgstr "Šiuo metu knygų čia nėra. Norėdami pradėti, suraskite knygą"
+msgstr "Knygų neturite. Raskite knygą ir pradėkite."
 
 #: bookwyrm/templates/feed/layout.html:25
 #: bookwyrm/templates/shelf/shelf.html:38
@@ -1220,11 +1220,11 @@ msgstr "Noriu tvirtinti sekėjus:"
 #: bookwyrm/templates/get_started/profile.html:48
 #: bookwyrm/templates/preferences/edit_user.html:80
 msgid "Show this account in suggested users:"
-msgstr "Šią paskyrą rodyti prie siūlomų naudotojų:"
+msgstr "Paskyrą įtraukti į siūlomus narius:"
 
 #: bookwyrm/templates/get_started/profile.html:52
 msgid "Your account will show up in the directory, and may be recommended to other BookWyrm users."
-msgstr "Jūsų paskyra atsiras kataloge ir gali būti rekomenduota kitiems „BookWyrm“ naudotojams."
+msgstr "Jūsų paskyra atsiras kataloge ir gali būti rekomenduota kitiems „BookWyrm“ nariams."
 
 #: bookwyrm/templates/get_started/users.html:11
 msgid "Search for a user"
@@ -2020,11 +2020,11 @@ msgstr "Viską peržiūrėjote!"
 #: bookwyrm/templates/preferences/blocks.html:7
 #: bookwyrm/templates/preferences/layout.html:31
 msgid "Blocked Users"
-msgstr "Blokuoti naudotojai"
+msgstr "Blokuoti nariai"
 
 #: bookwyrm/templates/preferences/blocks.html:12
 msgid "No users currently blocked."
-msgstr "Jokie vartotojai neblokuojami."
+msgstr "Blokuotų narių nėra."
 
 #: bookwyrm/templates/preferences/change_password.html:4
 #: bookwyrm/templates/preferences/change_password.html:7
@@ -2081,12 +2081,12 @@ msgstr "Rodyti skaitymo tikslą sienoje:"
 
 #: bookwyrm/templates/preferences/edit_user.html:76
 msgid "Show suggested users:"
-msgstr "Rodyti siūlomus vartotojus:"
+msgstr "Rodyti siūlomus narius:"
 
 #: bookwyrm/templates/preferences/edit_user.html:85
 #, python-format
 msgid "Your account will show up in the <a href=\"%(path)s\">directory</a>, and may be recommended to other BookWyrm users."
-msgstr "Jūsų paskyra atsiras <a href=\"%(path)s\"> kataloge </a> ir gali būti rekomenduota kitiems „BookWyrm“ naudotojams."
+msgstr "Jūsų paskyra atsiras <a href=\"%(path)s\"> kataloge </a> ir gali būti rekomenduota kitiems „BookWyrm“ nariams."
 
 #: bookwyrm/templates/preferences/edit_user.html:89
 msgid "Preferred Timezone: "
@@ -2157,7 +2157,7 @@ msgstr "Paieškos tipas"
 #: bookwyrm/templates/settings/users/user_admin.html:3
 #: bookwyrm/templates/settings/users/user_admin.html:10
 msgid "Users"
-msgstr "Naudotojai"
+msgstr "Nariai"
 
 #: bookwyrm/templates/search/layout.html:58
 #, python-format
@@ -2384,10 +2384,10 @@ msgstr "Parinktys"
 #, python-format
 msgid "%(display_count)s user"
 msgid_plural "%(display_count)s users"
-msgstr[0] "%(display_count)s naudotojas"
-msgstr[1] "%(display_count)s naudotojai"
-msgstr[2] "%(display_count)s naudotojų"
-msgstr[3] "%(display_count)s naudotojai"
+msgstr[0] "%(display_count)s narys"
+msgstr[1] "%(display_count)s nariai"
+msgstr[2] "%(display_count)s narių"
+msgstr[3] "%(display_count)s nariai"
 
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:59
 msgid "No email domains currently blocked"
@@ -2450,7 +2450,7 @@ msgstr "Veikla"
 
 #: bookwyrm/templates/settings/federation/instance.html:38
 msgid "Users:"
-msgstr "Naudotojai:"
+msgstr "Nariai:"
 
 #: bookwyrm/templates/settings/federation/instance.html:41
 #: bookwyrm/templates/settings/federation/instance.html:47
@@ -2500,7 +2500,7 @@ msgstr "Blokuoti"
 
 #: bookwyrm/templates/settings/federation/instance.html:99
 msgid "All users from this instance will be deactivated."
-msgstr "Visi šio serverio naudotojai bus deaktyvuoti."
+msgstr "Visi šio serverio nariai bus deaktyvuoti."
 
 #: bookwyrm/templates/settings/federation/instance.html:104
 #: bookwyrm/templates/snippets/block_button.html:10
@@ -2509,7 +2509,7 @@ msgstr "Atblokuoti"
 
 #: bookwyrm/templates/settings/federation/instance.html:105
 msgid "All users from this instance will be re-activated."
-msgstr "Visi šio serverio naudotojai bus vėl aktyvuoti."
+msgstr "Visi šio serverio nariai bus vėl aktyvuoti."
 
 #: bookwyrm/templates/settings/federation/instance_blocklist.html:6
 msgid "Import Blocklist"
@@ -2686,7 +2686,7 @@ msgstr "Šiuo metu neblokuojamas joks IP adresas"
 
 #: bookwyrm/templates/settings/ip_blocklist/ip_tooltip.html:6
 msgid "You can block IP ranges using CIDR syntax."
-msgstr "IP intervalus galite blokuoti naudodami CIDR sintaksę."
+msgstr "IP rėžius galite blokuoti naudodami CIDR sintaksę."
 
 #: bookwyrm/templates/settings/layout.html:4
 msgid "Administration"
@@ -2861,7 +2861,7 @@ msgstr "Papildoma informacija:"
 
 #: bookwyrm/templates/settings/site.html:103
 msgid "Allow registration"
-msgstr "Leisti registruotia"
+msgstr "Leisti registruotis"
 
 #: bookwyrm/templates/settings/site.html:109
 msgid "Allow invite requests"
@@ -3006,7 +3006,7 @@ msgstr "Laikinai išjungti vartotoją"
 
 #: bookwyrm/templates/settings/users/user_moderation_actions.html:25
 msgid "Un-suspend user"
-msgstr "Atblokuoti naudotoją"
+msgstr "Atblokuoti narį"
 
 #: bookwyrm/templates/settings/users/user_moderation_actions.html:47
 msgid "Access level:"
@@ -3108,12 +3108,12 @@ msgstr "<a href=\"%(path)s\">%(title)s</a>"
 #: bookwyrm/templates/snippets/boost_button.html:20
 #: bookwyrm/templates/snippets/boost_button.html:21
 msgid "Boost"
-msgstr "Pagreitinti"
+msgstr "Populiarinti"
 
 #: bookwyrm/templates/snippets/boost_button.html:33
 #: bookwyrm/templates/snippets/boost_button.html:34
 msgid "Un-boost"
-msgstr "Sumažinti greitį"
+msgstr "Nepopuliarinti"
 
 #: bookwyrm/templates/snippets/create_status.html:17
 msgid "Review"
@@ -3307,10 +3307,10 @@ msgstr[3] "%(rating)s žvaigždučių"
 #, python-format
 msgid "set a goal to read %(counter)s book in %(year)s"
 msgid_plural "set a goal to read %(counter)s books in %(year)s"
-msgstr[0] "nustatyti tikslą perskaityti %(counter)s knygą %(year)s m."
-msgstr[1] "nustatyti tikslą perskaityti %(counter)s knygas %(year)s m."
-msgstr[2] "nustatyti tikslą perskaityti %(counter)s knygų %(year)s m."
-msgstr[3] "nustatyti tikslą perskaityti %(counter)s knygas %(year)s m."
+msgstr[0] "nustatė tikslą perskaityti %(counter)s knygą %(year)s m."
+msgstr[1] "nustatė tikslą perskaityti %(counter)s knygas %(year)s m."
+msgstr[2] "nustatė tikslą perskaityti %(counter)s knygų %(year)s m."
+msgstr[3] "nustatė tikslą perskaityti %(counter)s knygas %(year)s m."
 
 #: bookwyrm/templates/snippets/generated_status/rating.html:3
 #, python-format
@@ -3593,7 +3593,7 @@ msgstr "<a href=\"%(user_path)s\">%(username)s</a> nori perskaityti <a href=\"%(
 #: bookwyrm/templates/snippets/status/layout.html:24
 #: bookwyrm/templates/snippets/status/status_options.html:17
 msgid "Delete status"
-msgstr "Ištrinti būseną"
+msgstr "Ištrinti įrašą"
 
 #: bookwyrm/templates/snippets/status/layout.html:56
 #: bookwyrm/templates/snippets/status/layout.html:57
@@ -3739,7 +3739,7 @@ msgstr "RSS srautas"
 
 #: bookwyrm/templates/user/user.html:74
 msgid "No activities yet!"
-msgstr "Veiklų dar nėra"
+msgstr "Įrašų dar nėra"
 
 #: bookwyrm/templates/user/user_preview.html:22
 #, python-format
@@ -3792,7 +3792,7 @@ msgstr "Naudotojo vardas arba slaptažodis neteisingi"
 
 #: bookwyrm/views/landing/password.py:32
 msgid "No user with that email address was found."
-msgstr "Šiuo el. pašto adresu nerastas nei vienas naudotojas."
+msgstr "Šiuo el. pašto adresu nerastas nei vienas narys."
 
 #: bookwyrm/views/landing/password.py:43
 #, python-brace-format
