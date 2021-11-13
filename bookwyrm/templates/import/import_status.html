@@ -7,12 +7,32 @@
 
 {% block content %}{% spaceless %}
 <header class="block">
-    {% if job.retry %}
-    <h1 class="title">{% trans "Retry Status" %}</h1>
-    {% else %}
-    <h1 class="title">{% trans "Import Status" %}</h1>
-    {% endif %}
-    <a href="{% url 'import' %}" class="has-text-weight-normal help subtitle is-link">{% trans "Back to imports" %}</a>
+    <h1 class="title">
+        {% block page_title %}
+        {% if job.retry %}
+            {% trans "Retry Status" %}
+        {% else %}
+            {% trans "Import Status" %}
+        {% endif %}
+        {% endblock %}
+    </h1>
+
+    <nav class="breadcrumb subtitle" aria-label="breadcrumbs">
+        <ul>
+            <li><a href="{% url 'import' %}">{% trans "Imports" %}</a></li>
+            {% url 'import-status' job.id as path %}
+            <li{% if request.path in path %} class="is-active"{% endif %}>
+                <a href="{{ path }}" {% if request.path in path %}aria-current="page"{% endif %}>
+                    {% if job.retry %}
+                    {% trans "Retry Status" %}
+                    {% else %}
+                    {% trans "Import Status" %}
+                    {% endif %}
+                </a>
+            </li>
+            {% block breadcrumbs %}{% endblock %}
+        </ul>
+    </nav>
 
     <div class="block">
         <dl>
@@ -63,11 +83,6 @@
 </header>
 
 <div class="block">
-    <h2 class="title is-4">
-        {% block page_title %}
-        {% trans "Your Import" %}
-        {% endblock %}
-    </h2>
     {% block actions %}{% endblock %}
     <div class="table-container">
         <table class="table is-striped">
