@@ -83,7 +83,7 @@ class StorygraphImport(TestCase):
     def test_handle_imported_book_rating(self, *_):
         """storygraph rating import"""
         import_job = self.importer.create_job(
-            self.local_user, self.csv, False, "public"
+            self.local_user, self.csv, True, "unlisted"
         )
         import_item = import_job.items.filter(index=1).first()
         import_item.book = self.book

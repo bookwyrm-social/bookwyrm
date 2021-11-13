@@ -108,7 +108,9 @@ class GoodreadsImport(TestCase):
     @patch("bookwyrm.activitystreams.add_status_task.delay")
     def test_handle_imported_book_review(self, *_):
         """goodreads review import"""
-        import_job = self.importer.create_job(self.local_user, self.csv, True, "public")
+        import_job = self.importer.create_job(
+            self.local_user, self.csv, True, "unlisted"
+        )
         import_item = import_job.items.get(index=2)
         import_item.book = self.book
         import_item.save()
@@ -126,7 +128,7 @@ class GoodreadsImport(TestCase):
     def test_handle_imported_book_rating(self, *_):
         """goodreads rating import"""
         import_job = self.importer.create_job(
-            self.local_user, self.csv, False, "public"
+            self.local_user, self.csv, True, "unlisted"
         )
         import_item = import_job.items.filter(index=0).first()
         import_item.book = self.book
