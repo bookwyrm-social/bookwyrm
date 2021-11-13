@@ -25,7 +25,7 @@ class Importer:
         ("title", ["title"]),
         ("authors", ["author", "authors", "primary author"]),
         ("isbn_10", ["isbn10", "isbn"]),
-        ("isbn_13", ["isbn13", "isbn"]),
+        ("isbn_13", ["isbn13", "isbn", "isbns"]),
         ("shelf", ["shelf", "exclusive shelf", "read status"]),
         ("review_name", ["review name"]),
         ("review_body", ["my review", "review"]),

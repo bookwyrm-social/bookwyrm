@@ -56,6 +56,9 @@ class LibrarythingImport(TestCase):
         self.assertEqual(len(import_items), 3)
         self.assertEqual(import_items[0].index, 0)
         self.assertEqual(import_items[0].data["Book Id"], "5498194")
+        self.assertEqual(import_items[0].normalized_data["isbn_13"], "9782070291342")
+        self.assertEqual(import_items[0].normalized_data["isbn_10"], "2070291340")
+
         self.assertEqual(import_items[1].index, 1)
         self.assertEqual(import_items[1].data["Book Id"], "5015319")
         self.assertEqual(import_items[2].index, 2)

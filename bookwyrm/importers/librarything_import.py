@@ -12,10 +12,12 @@ class LibrarythingImporter(Importer):
 
     def normalize_row(self, entry, mappings):  # pylint: disable=no-self-use
         """use the dataclass to create the formatted row of data"""
-        normalized = {k: entry.get(v) for k, v in mappings.items()}
-        for date_field in self.date_fields:
-            date = normalized[date_field]
-            normalized[date_field] = re.sub(r"\[|\]", "", date)
+        remove_brackets = lambda v: re.sub(r"\[|\]", "", v) if v else None
+        normalized = {
+            k: remove_brackets(entry.get(v)) for k, v in mappings.items()
+        }
+        isbn_13 = normalized["isbn_13"].split(', ')
+        normalized["isbn_13"] = isbn_13[1] if len(isbn_13) > 0 else None
         return normalized
 
     def get_shelf(self, normalized_row):
