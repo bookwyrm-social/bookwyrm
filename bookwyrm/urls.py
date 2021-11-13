@@ -243,6 +243,11 @@ urlpatterns = [
         views.ImportTroubleshoot.as_view(),
         name="import-troubleshoot",
     ),
+    re_path(
+        r"^import/(\d+)/review/?$",
+        views.ImportManualReview.as_view(),
+        name="import-review",
+    ),
     # users
     re_path(rf"{USER_PATH}\.json$", views.User.as_view()),
     re_path(rf"{USER_PATH}/?$", views.User.as_view(), name="user-feed"),

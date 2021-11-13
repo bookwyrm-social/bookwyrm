@@ -1,19 +1,18 @@
-""" import books from another app """
+""" verify books we're unsure about """
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
 from django.views import View
 
 from bookwyrm import models
-from bookwyrm.importers import Importer
 from bookwyrm.settings import PAGE_LENGTH
 
 # pylint: disable= no-self-use
 @method_decorator(login_required, name="dispatch")
-class ImportTroubleshoot(View):
+class ImportManualReview(View):
     """problems items in an existing import"""
 
     def get(self, request, job_id):
@@ -23,7 +22,7 @@ class ImportTroubleshoot(View):
             raise PermissionDenied()
 
         items = job.items.order_by("index").filter(
-            fail_reason__isnull=False, book_guess__isnull=True
+            book__isnull=True, book_guess__isnull=False
         )
 
         paginated = Paginator(items, PAGE_LENGTH)
@@ -37,18 +36,4 @@ class ImportTroubleshoot(View):
             "complete": True,
         }
 
-        return TemplateResponse(request, "import/troubleshoot.html", data)
-
-    def post(self, request, job_id):
-        """retry lines from an import"""
-        job = get_object_or_404(models.ImportJob, id=job_id)
-        items = job.items.filter(fail_reason__isnull=False)
-
-        importer = Importer()
-        job = importer.create_retry_job(
-            request.user,
-            job,
-            items,
-        )
-        importer.start_import(job)
-        return redirect(f"/import/{job.id}")
+        return TemplateResponse(request, "import/manual_review.html", data)

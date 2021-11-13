@@ -69,6 +69,7 @@
     </h2>
     {% block actions %}{% endblock %}
     <table class="table">
+        {% block table_headers %}
         <tr>
             <th>
                 {% trans "Row" %}
@@ -89,7 +90,9 @@
                 {% trans "Status" %}
             </th>
         </tr>
+        {% endblock %}
         {% for item in items %}
+        {% block table_row %}
         <tr>
             <td>
                 {{ item.index }}
@@ -126,6 +129,7 @@
                 {% endif %}
             </td>
         </tr>
+        {% endblock %}
         {% endfor %}
     </table>
 </div>

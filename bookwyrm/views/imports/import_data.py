@@ -10,7 +10,11 @@ from django.utils.translation import gettext_lazy as _
 from django.views import View
 
 from bookwyrm import forms, models
-from bookwyrm.importers import LibrarythingImporter, GoodreadsImporter, StorygraphImporter
+from bookwyrm.importers import (
+    LibrarythingImporter,
+    GoodreadsImporter,
+    StorygraphImporter,
+)
 
 # pylint: disable= no-self-use
 @method_decorator(login_required, name="dispatch")
