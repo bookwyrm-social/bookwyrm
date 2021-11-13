@@ -58,6 +58,11 @@ class LibrarythingImport(TestCase):
         self.assertEqual(import_items[0].data["Book Id"], "5498194")
         self.assertEqual(import_items[0].normalized_data["isbn_13"], "9782070291342")
         self.assertEqual(import_items[0].normalized_data["isbn_10"], "2070291340")
+        self.assertEqual(import_items[0].normalized_data["title"], "Marelle")
+        self.assertEqual(import_items[0].normalized_data["authors"], "Cortazar, Julio")
+        self.assertEqual(import_items[0].normalized_data["date_added"], "2006-08-09")
+        self.assertEqual(import_items[0].normalized_data["date_started"], "2007-04-16")
+        self.assertEqual(import_items[0].normalized_data["date_finished"], "2007-05-08")
 
         self.assertEqual(import_items[1].index, 1)
         self.assertEqual(import_items[1].data["Book Id"], "5015319")
