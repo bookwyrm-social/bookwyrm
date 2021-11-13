@@ -125,7 +125,7 @@
                     {{ item.normalized_data.title }}
                 </td>
                 <td>
-                    {{ item.isbn }}
+                    {{ item.isbn|default:'' }}
                 </td>
                 <td>
                     {{ item.normalized_data.authors }}

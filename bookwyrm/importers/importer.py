@@ -20,20 +20,20 @@ class Importer:
     encoding = "UTF-8"
 
     # these are from Goodreads
-    row_mappings_guesses = {
-        "id": ["id", "book id"],
-        "title": ["title"],
-        "authors": ["author", "authors", "primary author"],
-        "isbn_13": ["isbn13", "isbn"],
-        "isbn_10": ["isbn10", "isbn"],
-        "shelf": ["shelf", "exclusive shelf", "read status"],
-        "review_name": ["review name"],
-        "review_body": ["my review", "review"],
-        "rating": ["my rating", "rating", "star rating"],
-        "date_added": ["date added", "entry date", "added"],
-        "date_started": ["date started", "started"],
-        "date_finished": ["date finished", "last date read", "date read", "finished"],
-    }
+    row_mappings_guesses = [
+        ("id", ["id", "book id"]),
+        ("title", ["title"]),
+        ("authors", ["author", "authors", "primary author"]),
+        ("isbn_10", ["isbn10", "isbn"]),
+        ("isbn_13", ["isbn13", "isbn"]),
+        ("shelf", ["shelf", "exclusive shelf", "read status"]),
+        ("review_name", ["review name"]),
+        ("review_body", ["my review", "review"]),
+        ("rating", ["my rating", "rating", "star rating"]),
+        ("date_added", ["date added", "entry date", "added"]),
+        ("date_started", ["date started", "started"]),
+        ("date_finished", ["date finished", "last date read", "date read", "finished"]),
+    ]
     date_fields = ["date_added", "date_started", "date_finished"]
     shelf_mapping_guesses = {
         "to-read": ["to-read"],
@@ -60,7 +60,7 @@ class Importer:
     def create_row_mappings(self, headers):
         """guess what the headers mean"""
         mappings = {}
-        for (key, guesses) in self.row_mappings_guesses.items():
+        for (key, guesses) in self.row_mappings_guesses:
             value = [h for h in headers if h.lower() in guesses]
             value = value[0] if len(value) else None
             if value:

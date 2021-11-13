@@ -12,6 +12,8 @@ from .fields import PrivacyLevels
 
 def unquote_string(text):
     """resolve csv quote weirdness"""
+    if not text:
+        return None
     match = re.match(r'="([^"]*)"', text)
     if match:
         return match.group(1)
@@ -122,7 +124,7 @@ class ImportItem(models.Model):
     @property
     def isbn(self):
         """pulls out the isbn13 field from the csv line data"""
-        return unquote_string(self.normalized_data["isbn_13"])
+        return unquote_string(self.normalized_data["isbn_13"]) or unquote_string(self.normalized_data["isbn_10"])
 
     @property
     def shelf(self):
