@@ -5,11 +5,10 @@ import datetime
 import pytz
 
 from django.test import TestCase
-import responses
 
 from bookwyrm import models
 from bookwyrm.importers import LibrarythingImporter
-from bookwyrm.importers.importer import start_import_task, handle_imported_book
+from bookwyrm.importers.importer import handle_imported_book
 
 
 def make_date(*args):
@@ -97,9 +96,7 @@ class LibrarythingImport(TestCase):
         import_item.save()
 
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
-            handle_imported_book(
-                self.importer.service, self.local_user, import_item, False, "public"
-            )
+            handle_imported_book(import_item)
 
         shelf.refresh_from_db()
         self.assertEqual(shelf.books.first(), self.book)
@@ -125,9 +122,7 @@ class LibrarythingImport(TestCase):
         import_item.save()
 
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
-            handle_imported_book(
-                self.importer.service, self.local_user, import_item, False, "public"
-            )
+            handle_imported_book(import_item)
 
         shelf.refresh_from_db()
         self.assertEqual(shelf.books.first(), self.book)
@@ -149,9 +144,8 @@ class LibrarythingImport(TestCase):
         import_item.save()
 
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
-            handle_imported_book(
-                self.importer.service, self.local_user, import_item, True, "unlisted"
-            )
+            handle_imported_book(import_item)
+
         review = models.Review.objects.get(book=self.book, user=self.local_user)
         self.assertEqual(review.content, "chef d'oeuvre")
         self.assertEqual(review.rating, 4.5)

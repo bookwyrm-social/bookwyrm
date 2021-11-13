@@ -92,9 +92,7 @@ class GoodreadsImport(TestCase):
         import_item.save()
 
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
-            handle_imported_book(
-                self.importer.service, self.local_user, import_item, False, "public"
-            )
+            handle_imported_book(import_item)
 
         shelf.refresh_from_db()
         self.assertEqual(shelf.books.first(), self.book)
@@ -116,9 +114,8 @@ class GoodreadsImport(TestCase):
         import_item.save()
 
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
-            handle_imported_book(
-                self.importer.service, self.local_user, import_item, True, "unlisted"
-            )
+            handle_imported_book(import_item)
+
         review = models.Review.objects.get(book=self.book, user=self.local_user)
         self.assertEqual(review.content, "mixed feelings")
         self.assertEqual(review.rating, 2)
@@ -136,9 +133,8 @@ class GoodreadsImport(TestCase):
         import_item.save()
 
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
-            handle_imported_book(
-                self.importer.service, self.local_user, import_item, True, "unlisted"
-            )
+            handle_imported_book(import_item)
+
         review = models.ReviewRating.objects.get(book=self.book, user=self.local_user)
         self.assertIsInstance(review, models.ReviewRating)
         self.assertEqual(review.rating, 3)
