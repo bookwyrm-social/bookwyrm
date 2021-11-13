@@ -51,6 +51,7 @@ def approve_import_item(request, job_id, item_id):
     )
     item.fail_reason = None
     item.book = item.book_guess
+    item.book_guess = None
     item.save()
 
     # the good stuff - actually import the data
