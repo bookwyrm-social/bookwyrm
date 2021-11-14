@@ -35,9 +35,9 @@ class ImportJob(models.Model):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     created_date = models.DateTimeField(default=timezone.now)
+    updated_date = models.DateTimeField(default=timezone.now)
     include_reviews = models.BooleanField(default=True)
     mappings = models.JSONField()
-    updated_date = models.DateTimeField(default=timezone.now)
     complete = models.BooleanField(default=False)
     source = models.CharField(max_length=100)
     privacy = models.CharField(

@@ -243,6 +243,11 @@ urlpatterns = [
         name="import-status",
     ),
     re_path(
+        r"^import/(?P<job_id>\d+)/retry/(?P<item_id>\d+)/?$",
+        views.ImportStatus.as_view(),
+        name="import-item-retry",
+    ),
+    re_path(
         r"^import/(?P<job_id>\d+)/failed/?$",
         views.ImportTroubleshoot.as_view(),
         name="import-troubleshoot",

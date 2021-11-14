@@ -41,7 +41,7 @@
         </dl>
     </div>
 
-    {% if not complete %}
+    {% if not job.complete %}
     <div class="box is-processing">
         <div class="block">
             <span class="icon icon-spinner is-pulled-left" aria-hidden="true"></span>
@@ -167,8 +167,17 @@
                         {% endif %}
                     </span>
                     {% else %}
-                    <span class="icon icon-dots-three" aria-hidden="true"></span>
-                    <span class="is-sr-only-mobile">{% trans "Pending" %}</span>
+                    <div class="is-flex">
+                        <span class="icon icon-dots-three" aria-hidden="true"></span>
+                        <span class="is-sr-only-mobile">{% trans "Pending" %}</span>
+                        {# retry option if an item appears to be hanging #}
+                        {% if job.created_date != job.updated_date and inactive_time > 0.24 %}
+                        <form class="ml-2" method="POST" action="{% url 'import-item-retry' job.id item.id %}" name="retry-{{ item.id }}">
+                            {% csrf_token %}
+                            <button class="button is-danger is-outlined is-small">{% trans "Retry" %}</button>
+                        </form>
+                        {% endif %}
+                    </div>
                     {% endif %}
                 </td>
                 {% endblock %}
