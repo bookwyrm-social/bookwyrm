@@ -201,12 +201,17 @@ class EditionForm(CustomForm):
 class AuthorForm(CustomForm):
     class Meta:
         model = models.Author
-        exclude = [
-            "remote_id",
-            "origin_id",
-            "created_date",
-            "updated_date",
-            "search_vector",
+        fields = [
+            "last_edited_by",
+            "name",
+            "aliases",
+            "bio",
+            "wikipedia_link",
+            "born",
+            "died",
+            "openlibrary_key",
+            "librarything_key",
+            "goodreads_key",
         ]
 
 
