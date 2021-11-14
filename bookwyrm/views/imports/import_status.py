@@ -9,8 +9,10 @@ from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views import View
+from django.views.decorators.http import require_POST
 
 from bookwyrm import models
+from bookwyrm.importers import GoodreadsImporter
 from bookwyrm.importers.importer import import_item_task
 from bookwyrm.settings import PAGE_LENGTH
 
@@ -47,14 +49,26 @@ class ImportStatus(View):
             ),
             # hours since last import item update
             "inactive_time": (job.updated_date - timezone.now()).seconds / 60 / 60,
+            "legacy": not job.mappings,
         }
 
         return TemplateResponse(request, "import/import_status.html", data)
 
-    def post(self, request, job_id, item_id):
-        """retry an item"""
-        item = get_object_or_404(
-            models.ImportItem, id=item_id, job__id=job_id, job__user=request.user
-        )
-        import_item_task.delay(item.id)
+    def post(self, request, job_id):
+        """bring a legacy import into the latest format"""
+        job = get_object_or_404(models.ImportJob, id=job_id)
+        if job.user != request.user:
+            raise PermissionDenied()
+        GoodreadsImporter().update_legacy_job(job)
         return redirect("import-status", job_id)
+
+
+@login_required
+@require_POST
+def retry_item(request, job_id, item_id):
+    """retry an item"""
+    item = get_object_or_404(
+        models.ImportItem, id=item_id, job__id=job_id, job__user=request.user
+    )
+    import_item_task.delay(item.id)
+    return redirect("import-status", job_id)

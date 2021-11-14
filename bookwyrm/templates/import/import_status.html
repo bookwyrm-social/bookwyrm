@@ -57,7 +57,7 @@
     </div>
     {% endif %}
 
-    {% if manual_review_count %}
+    {% if manual_review_count and not legacy %}
     <div class="notification">
         {% blocktrans trimmed count counter=manual_review_count with display_counter=manual_review_count|intcomma %}
             {{ display_counter }} item needs manual approval.
@@ -68,7 +68,7 @@
     </div>
     {% endif %}
 
-    {% if complete and fail_count and not job.retry %}
+    {% if job.complete and fail_count and not job.retry and not legacy %}
     <div class="notification is-warning">
         {% blocktrans trimmed count counter=fail_count with display_counter=fail_count|intcomma %}
             {{ display_counter }} item failed to import.
@@ -114,6 +114,15 @@
                 </th>
                 {% endblock %}
             </tr>
+            {% if legacy %}
+            <tr>
+                <td colspan="8">
+                    <p>
+                        <em>{% trans "Import preview unavailable." %}</em>
+                    </p>
+                </td>
+            </tr>
+            {% else %}
             {% for item in items %}
             <tr>
                 {% block index_col %}
@@ -171,7 +180,7 @@
                         <span class="icon icon-dots-three" aria-hidden="true"></span>
                         <span class="is-sr-only-mobile">{% trans "Pending" %}</span>
                         {# retry option if an item appears to be hanging #}
-                        {% if job.created_date != job.updated_date and inactive_time > 0.24 %}
+                        {% if job.created_date != job.updated_date and inactive_time > 24 %}
                         <form class="ml-2" method="POST" action="{% url 'import-item-retry' job.id item.id %}" name="retry-{{ item.id }}">
                             {% csrf_token %}
                             <button class="button is-danger is-outlined is-small">{% trans "Retry" %}</button>
@@ -184,13 +193,27 @@
             </tr>
             {% block action_row %}{% endblock %}
             {% endfor %}
+            {% endif %}
         </table>
     </div>
+    {% if legacy %}
+    <div class="content">
+        <form name="update-import" method="POST" action="{% url 'import-status' job.id %}">
+            {% csrf_token %}
+            <p>
+                {% trans "This import is in an old format that is no longer supported. If you would like to troubleshoot missing items from this import, click the button below to update the import format." %}
+            </p>
+            <button class="button">{% trans "Update import" %}</button>
+        </form>
+    </div>
+    {% endif %}
 </div>
 
+{% if not legacy %}
 <div>
     {% include 'snippets/pagination.html' with page=items %}
 </div>
+{% endif %}
 {% endspaceless %}{% endblock %}
 
 {% block scripts %}

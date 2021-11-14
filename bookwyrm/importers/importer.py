@@ -57,6 +57,20 @@ class Importer:
             self.create_item(job, index, entry)
         return job
 
+    def update_legacy_job(self, job):
+        """patch up a job that was in the old format"""
+        items = job.items
+        headers = list(items.first().data.keys())
+        job.mappings = self.create_row_mappings(headers)
+        job.updated_date = timezone.now()
+        job.save()
+
+        for item in items.all():
+            normalized = self.normalize_row(item.data, job.mappings)
+            normalized["shelf"] = self.get_shelf(normalized)
+            item.normalized_data = normalized
+            item.save()
+
     def create_row_mappings(self, headers):
         """guess what the headers mean"""
         mappings = {}

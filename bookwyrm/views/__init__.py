@@ -45,7 +45,7 @@ from .shelf.shelf_actions import shelve, unshelve
 
 # csv import
 from .imports.import_data import Import
-from .imports.import_status import ImportStatus
+from .imports.import_status import ImportStatus, retry_item
 from .imports.troubleshoot import ImportTroubleshoot
 from .imports.manually_review import (
     ImportManualReview,
