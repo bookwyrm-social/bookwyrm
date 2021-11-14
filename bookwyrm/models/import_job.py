@@ -127,7 +127,9 @@ class ImportItem(models.Model):
     @property
     def isbn(self):
         """pulls out the isbn13 field from the csv line data"""
-        return unquote_string(self.normalized_data["isbn_13"]) or unquote_string(self.normalized_data["isbn_10"])
+        return unquote_string(self.normalized_data["isbn_13"]) or unquote_string(
+            self.normalized_data["isbn_10"]
+        )
 
     @property
     def shelf(self):
@@ -200,7 +202,7 @@ class ImportItem(models.Model):
 
     def __repr__(self):
         # pylint: disable=consider-using-f-string
-        return "<{!r}Item {!r}>".format(self.index, self.normalized_data["title"])
+        return "<{!r} Item {!r}>".format(self.index, self.normalized_data["title"])
 
     def __str__(self):
         # pylint: disable=consider-using-f-string
