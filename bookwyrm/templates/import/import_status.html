@@ -134,8 +134,15 @@
                     {{ item.normalized_data.shelf }}
                 </td>
                 <td>
+                    {% if item.rating %}
                     <p>{% include 'snippets/stars.html' with rating=item.rating %}</p>
+                    {% endif %}
+                    {% if item.review %}
                     <p>{{ item.review|truncatechars:100 }}</p>
+                    {% endif %}
+                    {% if item.linked_review %}
+                    <a href="{{ item.linked_review.remote_id }}" target="_blank">{% trans "View imported review" %}</a>
+                    {% endif %}
                 </td>
                 {% block import_cols %}
                 <td>

@@ -233,6 +233,9 @@ class GenericImporter(TestCase):
         self.assertEqual(review.rating, 2.0)
         self.assertEqual(review.privacy, "unlisted")
 
+        import_item.refresh_from_db()
+        self.assertEqual(import_item.linked_review, review)
+
     @patch("bookwyrm.activitystreams.add_status_task.delay")
     def test_handle_imported_book_rating(self, *_):
         """rating import"""
@@ -249,6 +252,9 @@ class GenericImporter(TestCase):
         self.assertIsInstance(review, models.ReviewRating)
         self.assertEqual(review.rating, 3.0)
         self.assertEqual(review.privacy, "unlisted")
+
+        import_item.refresh_from_db()
+        self.assertEqual(import_item.linked_review.id, review.id)
 
     def test_handle_imported_book_reviews_disabled(self, *_):
         """review import"""
