@@ -1,5 +1,4 @@
 """ testing import """
-from collections import namedtuple
 import pathlib
 from unittest.mock import patch
 import datetime
@@ -104,13 +103,9 @@ class GenericImporter(TestCase):
         import_job = self.importer.create_job(
             self.local_user, self.csv, False, "unlisted"
         )
-        MockTask = namedtuple("Task", ("id"))
-        mock_task = MockTask(7)
-        with patch("bookwyrm.importers.importer.start_import_task.delay") as start:
-            start.return_value = mock_task
+        with patch("bookwyrm.importers.importer.start_import_task.delay") as mock:
             self.importer.start_import(import_job)
-        import_job.refresh_from_db()
-        self.assertEqual(import_job.task_id, "7")
+        self.assertEqual(mock.call_count, 1)
 
     @responses.activate
     def test_start_import_task(self, *_):
@@ -150,28 +145,25 @@ class GenericImporter(TestCase):
         import_job = self.importer.create_job(
             self.local_user, self.csv, False, "unlisted"
         )
-        item = import_job.items[0]
-        item.update_job()
-        self.assertFalse(
-            models.Notification.objects.filter(
-                user=self.local_user,
-                related_import=import_job,
-                notification_type="IMPORT",
-            ).exists()
-        )
+        items = import_job.items.all()
+        for item in items[:3]:
+            item.fail_reason = "hello"
+            item.save()
+            item.update_job()
+            self.assertFalse(
+                models.Notification.objects.filter(
+                    user=self.local_user,
+                    related_import=import_job,
+                    notification_type="IMPORT",
+                ).exists()
+            )
 
-        item = import_job.items[1]
+        item = items[3]
+        item.fail_reason = "hello"
+        item.save()
         item.update_job()
-        self.assertFalse(
-            models.Notification.objects.filter(
-                user=self.local_user,
-                related_import=import_job,
-                notification_type="IMPORT",
-            ).exists()
-        )
-
-        item = import_job.items[2]
-        item.update_job()
+        import_job.refresh_from_db()
+        self.assertTrue(import_job.complete)
         self.assertTrue(
             models.Notification.objects.filter(
                 user=self.local_user,
