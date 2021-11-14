@@ -181,40 +181,42 @@ def handle_imported_book(item):
                 item.book.title,
                 job.source,
             )
-            existing = models.Review.objects.filter(
+            review = models.Review.objects.filter(
                 user=user,
                 book=item.book,
                 name=review_title,
                 rating=item.rating,
                 published_date=published_date_guess,
             ).first()
-
-            review = existing or models.Review(
-                user=user,
-                book=item.book,
-                name=review_title,
-                content=item.review,
-                rating=item.rating,
-                published_date=published_date_guess,
-                privacy=job.privacy,
-            )
+            if not review:
+                review = models.Review(
+                    user=user,
+                    book=item.book,
+                    name=review_title,
+                    content=item.review,
+                    rating=item.rating,
+                    published_date=published_date_guess,
+                    privacy=job.privacy,
+                )
+                review.save(software="bookwyrm", priority=LOW)
         else:
             # just a rating
-            existing = models.ReviewRating.objects.filter(
+            review = models.ReviewRating.objects.filter(
                 user=user,
                 book=item.book,
                 published_date=published_date_guess,
                 rating=item.rating,
             ).first()
-            review = existing or models.ReviewRating(
-                user=user,
-                book=item.book,
-                rating=item.rating,
-                published_date=published_date_guess,
-                privacy=job.privacy,
-            )
+            if not review:
+                review = models.ReviewRating(
+                    user=user,
+                    book=item.book,
+                    rating=item.rating,
+                    published_date=published_date_guess,
+                    privacy=job.privacy,
+                )
+                review.save(software="bookwyrm", priority=LOW)
 
         # only broadcast this review to other bookwyrm instances
-        review.save(software="bookwyrm", priority=LOW)
         item.linked_review = review
-        item.save()
+    item.save()

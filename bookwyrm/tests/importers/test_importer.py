@@ -256,6 +256,55 @@ class GenericImporter(TestCase):
         import_item.refresh_from_db()
         self.assertEqual(import_item.linked_review.id, review.id)
 
+    @patch("bookwyrm.activitystreams.add_status_task.delay")
+    def test_handle_imported_book_rating_duplicate_with_link(self, *_):
+        """rating import twice"""
+        import_job = self.importer.create_job(
+            self.local_user, self.csv, True, "unlisted"
+        )
+        import_item = import_job.items.filter(index=1).first()
+        import_item.book = self.book
+        import_item.save()
+
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
+            handle_imported_book(import_item)
+            handle_imported_book(import_item)
+
+        review = models.ReviewRating.objects.get(book=self.book, user=self.local_user)
+        self.assertIsInstance(review, models.ReviewRating)
+        self.assertEqual(review.rating, 3.0)
+        self.assertEqual(review.privacy, "unlisted")
+
+        import_item.refresh_from_db()
+        self.assertEqual(import_item.linked_review.id, review.id)
+
+    @patch("bookwyrm.activitystreams.add_status_task.delay")
+    def test_handle_imported_book_rating_duplicate_without_link(self, *_):
+        """rating import twice"""
+        import_job = self.importer.create_job(
+            self.local_user, self.csv, True, "unlisted"
+        )
+        import_item = import_job.items.filter(index=1).first()
+        import_item.book = self.book
+        import_item.save()
+
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
+            handle_imported_book(import_item)
+        import_item.refresh_from_db()
+        import_item.linked_review = None
+        import_item.save()
+
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
+            handle_imported_book(import_item)
+
+        review = models.ReviewRating.objects.get(book=self.book, user=self.local_user)
+        self.assertIsInstance(review, models.ReviewRating)
+        self.assertEqual(review.rating, 3.0)
+        self.assertEqual(review.privacy, "unlisted")
+
+        import_item.refresh_from_db()
+        self.assertEqual(import_item.linked_review.id, review.id)
+
     def test_handle_imported_book_reviews_disabled(self, *_):
         """review import"""
         import_job = self.importer.create_job(
