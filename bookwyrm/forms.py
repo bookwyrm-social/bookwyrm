@@ -210,6 +210,7 @@ class AuthorForm(CustomForm):
             "born",
             "died",
             "openlibrary_key",
+            "inventaire_id",
             "librarything_key",
             "goodreads_key",
         ]
