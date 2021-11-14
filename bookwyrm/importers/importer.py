@@ -126,6 +126,7 @@ def import_item_task(item_id):
     except Exception as err:  # pylint: disable=broad-except
         item.fail_reason = _("Error loading book")
         item.save()
+        item.update_job()
         raise err
 
     if item.book:
@@ -135,6 +136,7 @@ def import_item_task(item_id):
         item.fail_reason = _("Could not find a match for book")
 
     item.save()
+    item.update_job()
 
 
 def handle_imported_book(item):
@@ -144,6 +146,8 @@ def handle_imported_book(item):
     if isinstance(item.book, models.Work):
         item.book = item.book.default_edition
     if not item.book:
+        item.fail_reason = _("Error loading book")
+        item.save()
         return
     if not isinstance(item.book, models.Edition):
         item.book = item.book.edition

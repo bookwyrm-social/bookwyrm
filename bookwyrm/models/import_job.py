@@ -35,10 +35,10 @@ class ImportJob(models.Model):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     created_date = models.DateTimeField(default=timezone.now)
-    task_id = models.CharField(max_length=100, null=True)  # TODO: deprecated
     include_reviews = models.BooleanField(default=True)
     mappings = models.JSONField()
-    complete = models.BooleanField(default=False)
+    updated_date = models.DateTimeField(default=timezone.now)
+    completed_count = models.IntegerField(default=0)
     source = models.CharField(max_length=100)
     privacy = models.CharField(
         max_length=255, default="public", choices=PrivacyLevels.choices
@@ -65,6 +65,12 @@ class ImportItem(models.Model):
     linked_review = models.ForeignKey(
         "Review", on_delete=models.SET_NULL, null=True, blank=True
     )
+
+    def update_job(self):
+        """this user is here! they are doing things!"""
+        self.job.completed_count += 1
+        self.job.updated_date = timezone.now()
+        self.job.save()
 
     def resolve(self):
         """try various ways to lookup a book"""
