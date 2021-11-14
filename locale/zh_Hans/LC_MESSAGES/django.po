@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-10-24 14:09+0000\n"
-"PO-Revision-Date: 2021-11-07 04:05\n"
+"PO-Revision-Date: 2021-11-14 12:17\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Chinese Simplified\n"
 "Language: zh\n"
@@ -757,7 +757,7 @@ msgstr "帮助"
 
 #: bookwyrm/templates/compose.html:5 bookwyrm/templates/compose.html:8
 msgid "Edit status"
-msgstr "设置状态"
+msgstr "编辑状态"
 
 #: bookwyrm/templates/confirm_email/confirm_email.html:4
 msgid "Confirm email"
@@ -1233,11 +1233,11 @@ msgstr "创建群组"
 #: bookwyrm/templates/groups/created_text.html:4
 #, python-format
 msgid "Managed by <a href=\"%(path)s\">%(username)s</a>"
-msgstr "由 <a href=\"%(path)s\">%(username)s</a> 创建并策展"
+msgstr "由 <a href=\"%(path)s\">%(username)s</a> 管理"
 
 #: bookwyrm/templates/groups/delete_group_modal.html:4
 msgid "Delete this group?"
-msgstr "删除该群组"
+msgstr "删除该群组？"
 
 #: bookwyrm/templates/groups/delete_group_modal.html:7
 #: bookwyrm/templates/lists/delete_list_modal.html:7
@@ -1261,11 +1261,11 @@ msgstr "编辑群组"
 
 #: bookwyrm/templates/groups/find_users.html:6
 msgid "Add new members!"
-msgstr "添加新成员"
+msgstr "添加新成员！"
 
 #: bookwyrm/templates/groups/form.html:8
 msgid "Group Name:"
-msgstr "群组名称"
+msgstr "群组名称:"
 
 #: bookwyrm/templates/groups/form.html:12
 msgid "Group Description:"
@@ -1289,7 +1289,7 @@ msgstr "编辑群组"
 
 #: bookwyrm/templates/groups/members.html:8
 msgid "Members can add and remove books on a group's book lists"
-msgstr "会员可以在群组的书籍列表中添加和删除书"
+msgstr "成员可以在群组的书籍列表中添加和删除书籍"
 
 #: bookwyrm/templates/groups/members.html:19
 msgid "Leave group"
@@ -1737,7 +1737,7 @@ msgstr "选择群组"
 
 #: bookwyrm/templates/lists/form.html:45
 msgid "Select a group"
-msgstr "选择一个组"
+msgstr "选择一个群组"
 
 #: bookwyrm/templates/lists/form.html:56
 msgid "You don't have any Groups yet!"
@@ -1835,7 +1835,7 @@ msgstr "保存的列表"
 #: bookwyrm/templates/notifications/items/accept.html:16
 #, python-format
 msgid "accepted your invitation to join group \"<a href=\"%(group_path)s\">%(group_name)s</a>\""
-msgstr "接受了您的邀请，加入 \"<a href=\"%(group_path)s\">%(group_name)s</a>\" 群组"
+msgstr "接受了您的邀请，加入了 \"<a href=\"%(group_path)s\">%(group_name)s</a>\" 群组"
 
 #: bookwyrm/templates/notifications/items/add.html:24
 #, python-format
@@ -1880,7 +1880,7 @@ msgstr "喜欢了你的 <a href=\"%(related_path)s\">对 <em>%(book_title)s</em>
 #: bookwyrm/templates/notifications/items/fav.html:31
 #, python-format
 msgid "liked your <a href=\"%(related_path)s\">quote from <em>%(book_title)s</em></a>"
-msgstr "喜欢了你对 <a href=\"%(related_path)s\">对 <em>%(book_title)s</em> 的引用</a>"
+msgstr "喜欢了你的 <a href=\"%(related_path)s\">对 <em>%(book_title)s</em> 的引用</a>"
 
 #: bookwyrm/templates/notifications/items/fav.html:37
 #, python-format
@@ -1908,12 +1908,12 @@ msgstr "邀请您加入群组 \"<a href=\"%(group_path)s\">%(group_name)s</a>\""
 #: bookwyrm/templates/notifications/items/join.html:16
 #, python-format
 msgid "has joined your group \"<a href=\"%(group_path)s\">%(group_name)s</a>\""
-msgstr "已加入您的群組 \"<a href=\"%(group_path)s\">%(group_name)s</a>\""
+msgstr "已加入您的群组 \"<a href=\"%(group_path)s\">%(group_name)s</a>\""
 
 #: bookwyrm/templates/notifications/items/leave.html:16
 #, python-format
 msgid "has left your group \"<a href=\"%(group_path)s\">%(group_name)s</a>\""
-msgstr "退出了了您的群组 \"<a href=\"%(group_path)s\">%(group_name)s</a>\""
+msgstr "退出了您的群组 \"<a href=\"%(group_path)s\">%(group_name)s</a>\""
 
 #: bookwyrm/templates/notifications/items/mention.html:20
 #, python-format
@@ -1938,7 +1938,7 @@ msgstr "在 <a href=\"%(related_path)s\">状态</a> 中提到了你"
 #: bookwyrm/templates/notifications/items/remove.html:17
 #, python-format
 msgid "has been removed from your group \"<a href=\"%(group_path)s\">%(group_name)s</a>\""
-msgstr "已经从您的群组中将 \"<a href=\"%(group_path)s\">%(group_name)s</a>\" 移除"
+msgstr "已被从您的 \"<a href=\"%(group_path)s\">%(group_name)s</a>\" 群组中移出"
 
 #: bookwyrm/templates/notifications/items/remove.html:23
 #, python-format
@@ -1973,17 +1973,17 @@ msgstr "有新的 <a href=\"%(path)s\">报告</a> 需要仲裁。"
 #: bookwyrm/templates/notifications/items/update.html:16
 #, python-format
 msgid "has changed the privacy level for <a href=\"%(group_path)s\">%(group_name)s</a>"
-msgstr "更改了 <a href=\"%(group_path)s\">%(group_name)s的隐私级别</a>"
+msgstr "更改了 <a href=\"%(group_path)s\">%(group_name)s</a> 的隐私级别"
 
 #: bookwyrm/templates/notifications/items/update.html:20
 #, python-format
 msgid "has changed the name of <a href=\"%(group_path)s\">%(group_name)s</a>"
-msgstr "更改了 <a href=\"%(group_path)s\">%(group_name)s的名称</a>"
+msgstr "更改了 <a href=\"%(group_path)s\">%(group_name)s</a> 的名称"
 
 #: bookwyrm/templates/notifications/items/update.html:24
 #, python-format
 msgid "has changed the description of <a href=\"%(group_path)s\">%(group_name)s</a>"
-msgstr "更改了 <a href=\"%(group_path)s\">%(group_name)s的描述</a>"
+msgstr "更改了 <a href=\"%(group_path)s\">%(group_name)s</a> 的描述"
 
 #: bookwyrm/templates/notifications/notifications_page.html:18
 msgid "Delete notifications"
