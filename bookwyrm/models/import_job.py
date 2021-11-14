@@ -131,18 +131,18 @@ class ImportItem(models.Model):
     @property
     def title(self):
         """get the book title"""
-        return self.normalized_data["title"]
+        return self.normalized_data.get("title")
 
     @property
     def author(self):
         """get the book's authors"""
-        return self.normalized_data["authors"]
+        return self.normalized_data.get("authors")
 
     @property
     def isbn(self):
         """pulls out the isbn13 field from the csv line data"""
-        return unquote_string(self.normalized_data["isbn_13"]) or unquote_string(
-            self.normalized_data["isbn_10"]
+        return unquote_string(self.normalized_data.get("isbn_13")) or unquote_string(
+            self.normalized_data.get("isbn_10")
         )
 
     @property
@@ -153,13 +153,13 @@ class ImportItem(models.Model):
     @property
     def review(self):
         """a user-written review, to be imported with the book data"""
-        return self.normalized_data["review_body"]
+        return self.normalized_data.get("review_body")
 
     @property
     def rating(self):
         """x/5 star rating for a book"""
         if self.normalized_data.get("rating"):
-            return float(self.normalized_data["rating"])
+            return float(self.normalized_data.get("rating"))
         return None
 
     @property
@@ -167,7 +167,7 @@ class ImportItem(models.Model):
         """when the book was added to this dataset"""
         if self.normalized_data.get("date_added"):
             return timezone.make_aware(
-                dateutil.parser.parse(self.normalized_data["date_added"])
+                dateutil.parser.parse(self.normalized_data.get("date_added"))
             )
         return None
 
@@ -176,7 +176,7 @@ class ImportItem(models.Model):
         """when the book was started"""
         if self.normalized_data.get("date_started"):
             return timezone.make_aware(
-                dateutil.parser.parse(self.normalized_data["date_started"])
+                dateutil.parser.parse(self.normalized_data.get("date_started"))
             )
         return None
 
@@ -185,7 +185,7 @@ class ImportItem(models.Model):
         """the date a book was completed"""
         if self.normalized_data.get("date_finished"):
             return timezone.make_aware(
-                dateutil.parser.parse(self.normalized_data["date_finished"])
+                dateutil.parser.parse(self.normalized_data.get("date_finished"))
             )
         return None
 
@@ -218,10 +218,10 @@ class ImportItem(models.Model):
 
     def __repr__(self):
         # pylint: disable=consider-using-f-string
-        return "<{!r} Item {!r}>".format(self.index, self.normalized_data["title"])
+        return "<{!r} Item {!r}>".format(self.index, self.normalized_data.get("title"))
 
     def __str__(self):
         # pylint: disable=consider-using-f-string
         return "{} by {}".format(
-            self.normalized_data["title"], self.normalized_data["authors"]
+            self.normalized_data.get("title"), self.normalized_data.get("authors")
         )
