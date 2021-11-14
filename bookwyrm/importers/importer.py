@@ -171,21 +171,25 @@ def handle_imported_book(item):
         read.user = user
         read.save()
 
-    if job.include_reviews and (item.rating or item.review):
+    if job.include_reviews and (item.rating or item.review) and not item.linked_review:
         # we don't know the publication date of the review,
         # but "now" is a bad guess
         published_date_guess = item.date_read or item.date_added
         if item.review:
             # pylint: disable=consider-using-f-string
-            review_title = (
-                "Review of {!r} on {!r}".format(
-                    item.book.title,
-                    job.source,
-                )
-                if item.review
-                else ""
+            review_title = "Review of {!r} on {!r}".format(
+                item.book.title,
+                job.source,
             )
-            review = models.Review(
+            existing = models.Review.objects.filter(
+                user=user,
+                book=item.book,
+                name=review_title,
+                rating=item.rating,
+                published_date=published_date_guess,
+            ).first()
+
+            review = existing or models.Review(
                 user=user,
                 book=item.book,
                 name=review_title,
@@ -196,13 +200,20 @@ def handle_imported_book(item):
             )
         else:
             # just a rating
-            review = models.ReviewRating(
+            existing = models.ReviewRating.objects.filter(
+                user=user,
+                book=item.book,
+                published_date=published_date_guess,
+                rating=item.rating,
+            ).first()
+            review = existing or models.ReviewRating(
                 user=user,
                 book=item.book,
                 rating=item.rating,
                 published_date=published_date_guess,
                 privacy=job.privacy,
             )
+
         # only broadcast this review to other bookwyrm instances
         review.save(software="bookwyrm", priority=LOW)
         item.linked_review = review
