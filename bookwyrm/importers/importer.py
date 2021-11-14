@@ -205,3 +205,5 @@ def handle_imported_book(item):
             )
         # only broadcast this review to other bookwyrm instances
         review.save(software="bookwyrm", priority=LOW)
+        item.linked_review = review
+        item.save()
