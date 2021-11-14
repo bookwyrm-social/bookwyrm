@@ -145,7 +145,40 @@ class GenericImporter(TestCase):
         self.assertEqual(kwargs["queue"], "low_priority")
         import_item.refresh_from_db()
 
-        self.assertEqual(import_item.book.id, self.book.id)
+    def test_complete_job(self, *_):
+        """test notification"""
+        import_job = self.importer.create_job(
+            self.local_user, self.csv, False, "unlisted"
+        )
+        item = import_job.items[0]
+        item.update_job()
+        self.assertFalse(
+            models.Notification.objects.filter(
+                user=self.local_user,
+                related_import=import_job,
+                notification_type="IMPORT",
+            ).exists()
+        )
+
+        item = import_job.items[1]
+        item.update_job()
+        self.assertFalse(
+            models.Notification.objects.filter(
+                user=self.local_user,
+                related_import=import_job,
+                notification_type="IMPORT",
+            ).exists()
+        )
+
+        item = import_job.items[2]
+        item.update_job()
+        self.assertTrue(
+            models.Notification.objects.filter(
+                user=self.local_user,
+                related_import=import_job,
+                notification_type="IMPORT",
+            ).exists()
+        )
 
     def test_handle_imported_book(self, *_):
         """import added a book, this adds related connections"""

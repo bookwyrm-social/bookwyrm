@@ -38,12 +38,17 @@ class ImportJob(models.Model):
     include_reviews = models.BooleanField(default=True)
     mappings = models.JSONField()
     updated_date = models.DateTimeField(default=timezone.now)
-    completed_count = models.IntegerField(default=0)
+    complete = models.BooleanField(default=False)
     source = models.CharField(max_length=100)
     privacy = models.CharField(
         max_length=255, default="public", choices=PrivacyLevels.choices
     )
     retry = models.BooleanField(default=False)
+
+    @property
+    def pending_items(self):
+        """items that haven't been processed yet"""
+        return self.items.filter(fail_reason__isnull=True, book__isnull=True)
 
 
 class ImportItem(models.Model):
@@ -67,10 +72,13 @@ class ImportItem(models.Model):
     )
 
     def update_job(self):
-        """this user is here! they are doing things!"""
-        self.job.completed_count += 1
-        self.job.updated_date = timezone.now()
-        self.job.save()
+        """let the job know when the items get work done"""
+        job = self.job
+        job.updated_date = timezone.now()
+        job.save()
+        if not job.pending_items.exists() and not job.complete:
+            job.complete = True
+            job.save(update_fields=["complete"])
 
     def resolve(self):
         """try various ways to lookup a book"""

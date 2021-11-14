@@ -24,7 +24,6 @@ class ImportStatus(View):
             raise PermissionDenied()
 
         items = job.items.order_by("index")
-        pending_items = items.filter(fail_reason__isnull=True, book__isnull=True)
         item_count = items.count() or 1
 
         paginated = Paginator(items, PAGE_LENGTH)
@@ -41,9 +40,9 @@ class ImportStatus(View):
             "page_range": paginated.get_elided_page_range(
                 page.number, on_each_side=2, on_ends=1
             ),
-            "complete": not pending_items.exists(),
+            "complete": not job.pending_items.exists(),
             "percent": math.floor(  # pylint: disable=c-extension-no-member
-                (item_count - pending_items.count()) / item_count * 100
+                (item_count - job.pending_items.count()) / item_count * 100
             ),
         }
 
