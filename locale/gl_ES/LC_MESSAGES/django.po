@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-10-24 14:09+0000\n"
-"PO-Revision-Date: 2021-11-05 08:01\n"
+"POT-Creation-Date: 2021-11-14 15:08+0000\n"
+"PO-Revision-Date: 2021-11-15 18:03\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Galician\n"
 "Language: gl\n"
@@ -72,15 +72,16 @@ msgstr "Ascendente"
 msgid "Descending"
 msgstr "Descendente"
 
-#: bookwyrm/importers/importer.py:75
+#: bookwyrm/importers/importer.py:127
 msgid "Error loading book"
 msgstr "Erro ao cargar o libro"
 
-#: bookwyrm/importers/importer.py:88
+#: bookwyrm/importers/importer.py:135
 msgid "Could not find a match for book"
 msgstr "Non se atopan coincidencias para o libro"
 
 #: bookwyrm/models/base_model.py:17
+#: bookwyrm/templates/import/import_status.html:171
 msgid "Pending"
 msgstr "Pendente"
 
@@ -100,23 +101,23 @@ msgstr "Eliminado pola moderación"
 msgid "Domain block"
 msgstr "Bloqueo de dominio"
 
-#: bookwyrm/models/book.py:232
+#: bookwyrm/models/book.py:233
 msgid "Audiobook"
 msgstr "Audiolibro"
 
-#: bookwyrm/models/book.py:233
+#: bookwyrm/models/book.py:234
 msgid "eBook"
 msgstr "eBook"
 
-#: bookwyrm/models/book.py:234
+#: bookwyrm/models/book.py:235
 msgid "Graphic novel"
 msgstr "Novela gráfica"
 
-#: bookwyrm/models/book.py:235
+#: bookwyrm/models/book.py:236
 msgid "Hardcover"
 msgstr "Portada dura"
 
-#: bookwyrm/models/book.py:236
+#: bookwyrm/models/book.py:237
 msgid "Paperback"
 msgstr "En rústica"
 
@@ -133,21 +134,21 @@ msgstr "Federado"
 msgid "Blocked"
 msgstr "Bloqueado"
 
-#: bookwyrm/models/fields.py:27
+#: bookwyrm/models/fields.py:29
 #, python-format
 msgid "%(value)s is not a valid remote_id"
 msgstr "%(value)s non é un remote_id válido"
 
-#: bookwyrm/models/fields.py:36 bookwyrm/models/fields.py:45
+#: bookwyrm/models/fields.py:38 bookwyrm/models/fields.py:47
 #, python-format
 msgid "%(value)s is not a valid username"
 msgstr "%(value)s non é un nome de usuaria válido"
 
-#: bookwyrm/models/fields.py:181 bookwyrm/templates/layout.html:171
+#: bookwyrm/models/fields.py:183 bookwyrm/templates/layout.html:171
 msgid "username"
 msgstr "nome de usuaria"
 
-#: bookwyrm/models/fields.py:186
+#: bookwyrm/models/fields.py:188
 msgid "A user with that username already exists."
 msgstr "Xa existe unha usuaria con ese nome."
 
@@ -892,22 +893,37 @@ msgstr "Usuarias BookWyrm"
 msgid "All known users"
 msgstr "Tódalas usuarias coñecidas"
 
-#: bookwyrm/templates/discover/card-header.html:9
+#: bookwyrm/templates/discover/card-header.html:8
+#, python-format
+msgid "<a href=\"%(user_path)s\">%(username)s</a> wants to read <a href=\"%(book_path)s\">%(book_title)s</a>"
+msgstr ""
+
+#: bookwyrm/templates/discover/card-header.html:13
+#, python-format
+msgid "<a href=\"%(user_path)s\">%(username)s</a> finished reading <a href=\"%(book_path)s\">%(book_title)s</a>"
+msgstr ""
+
+#: bookwyrm/templates/discover/card-header.html:18
+#, python-format
+msgid "<a href=\"%(user_path)s\">%(username)s</a> started reading <a href=\"%(book_path)s\">%(book_title)s</a>"
+msgstr ""
+
+#: bookwyrm/templates/discover/card-header.html:23
 #, python-format
 msgid "<a href=\"%(user_path)s\">%(username)s</a> rated <a href=\"%(book_path)s\">%(book_title)s</a>"
 msgstr "<a href=\"%(user_path)s\">%(username)s</a> valorou <a href=\"%(book_path)s\">%(book_title)s</a>"
 
-#: bookwyrm/templates/discover/card-header.html:13
+#: bookwyrm/templates/discover/card-header.html:27
 #, python-format
 msgid "<a href=\"%(user_path)s\">%(username)s</a> reviewed <a href=\"%(book_path)s\">%(book_title)s</a>"
 msgstr "<a href=\"%(user_path)s\">%(username)s</a> fixo a recensión de <a href=\"%(book_path)s\">%(book_title)s</a>"
 
-#: bookwyrm/templates/discover/card-header.html:17
+#: bookwyrm/templates/discover/card-header.html:31
 #, python-format
 msgid "<a href=\"%(user_path)s\">%(username)s</a> commented on <a href=\"%(book_path)s\">%(book_title)s</a>"
 msgstr "<a href=\"%(user_path)s\">%(username)s</a> comentou <a href=\"%(book_path)s\">%(book_title)s</a>"
 
-#: bookwyrm/templates/discover/card-header.html:21
+#: bookwyrm/templates/discover/card-header.html:35
 #, python-format
 msgid "<a href=\"%(user_path)s\">%(username)s</a> quoted <a href=\"%(book_path)s\">%(book_title)s</a>"
 msgstr "<a href=\"%(user_path)s\">%(username)s</a> citou <a href=\"%(book_path)s\">%(book_title)s</a>"
@@ -1058,9 +1074,8 @@ msgstr "Podes establecer ou cambiar un obxectivo de lectura en calquera momento 
 msgid "Updates"
 msgstr "Actualizacións"
 
-#: bookwyrm/templates/feed/layout.html:12
-#: bookwyrm/templates/user/books_header.html:3
-msgid "Your books"
+#: bookwyrm/templates/feed/layout.html:12 bookwyrm/templates/layout.html:106
+msgid "Your Books"
 msgstr "Os teus libros"
 
 #: bookwyrm/templates/feed/layout.html:14
@@ -1069,11 +1084,13 @@ msgstr "Aínda non tes libros! Busca algún co que comezar"
 
 #: bookwyrm/templates/feed/layout.html:25
 #: bookwyrm/templates/shelf/shelf.html:38
+#: bookwyrm/templates/user/books_header.html:4
 msgid "To Read"
 msgstr "Pendentes"
 
 #: bookwyrm/templates/feed/layout.html:26
 #: bookwyrm/templates/shelf/shelf.html:40
+#: bookwyrm/templates/user/books_header.html:6
 msgid "Currently Reading"
 msgstr "Lectura actual"
 
@@ -1081,6 +1098,7 @@ msgstr "Lectura actual"
 #: bookwyrm/templates/shelf/shelf.html:42
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_dropdown_options.html:23
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_options.html:12
+#: bookwyrm/templates/user/books_header.html:8
 msgid "Read"
 msgstr "Lido"
 
@@ -1366,87 +1384,160 @@ msgid "No recent imports"
 msgstr "Sen importacións recentes"
 
 #: bookwyrm/templates/import/import_status.html:6
-#: bookwyrm/templates/import/import_status.html:10
+#: bookwyrm/templates/import/import_status.html:15
+#: bookwyrm/templates/import/import_status.html:29
 msgid "Import Status"
 msgstr "Estado da importación"
 
-#: bookwyrm/templates/import/import_status.html:11
-msgid "Back to imports"
-msgstr "Volver a importacións"
+#: bookwyrm/templates/import/import_status.html:13
+#: bookwyrm/templates/import/import_status.html:27
+msgid "Retry Status"
+msgstr ""
 
-#: bookwyrm/templates/import/import_status.html:15
+#: bookwyrm/templates/import/import_status.html:22
+msgid "Imports"
+msgstr ""
+
+#: bookwyrm/templates/import/import_status.html:39
 msgid "Import started:"
 msgstr "Importación iniciada:"
 
-#: bookwyrm/templates/import/import_status.html:20
-msgid "Import completed:"
-msgstr "Importación completa:"
-
-#: bookwyrm/templates/import/import_status.html:24
-msgid "TASK FAILED"
-msgstr "FALLOU A TAREFA"
-
-#: bookwyrm/templates/import/import_status.html:32
-msgid "Import still in progress."
-msgstr "Importación en marcha."
-
-#: bookwyrm/templates/import/import_status.html:34
-msgid "(Hit reload to update!)"
-msgstr "(Preme en recargar para actualizar!)"
-
-#: bookwyrm/templates/import/import_status.html:41
-msgid "Failed to load"
-msgstr "Fallou a carga"
+#: bookwyrm/templates/import/import_status.html:48
+msgid "In progress"
+msgstr ""
 
 #: bookwyrm/templates/import/import_status.html:50
-#, python-format
-msgid "Jump to the bottom of the list to select the %(failed_count)s items which failed to import."
-msgstr "Vai ao final da lista para elexir os %(failed_count)s elementos para os que fallou a importación."
+msgid "Refresh"
+msgstr ""
 
 #: bookwyrm/templates/import/import_status.html:62
 #, python-format
-msgid "Line %(index)s: <strong>%(title)s</strong> by %(author)s"
-msgstr "Liña %(index)s: <strong>%(title)s</strong> por %(author)s"
+msgid "%(display_counter)s item needs manual approval."
+msgid_plural "%(display_counter)s items need manual approval."
+msgstr[0] ""
+msgstr[1] ""
 
-#: bookwyrm/templates/import/import_status.html:82
-msgid "Select all"
-msgstr "Elexir todo"
+#: bookwyrm/templates/import/import_status.html:67
+#: bookwyrm/templates/import/manual_review.html:8
+msgid "Review items"
+msgstr ""
 
-#: bookwyrm/templates/import/import_status.html:85
-msgid "Retry items"
-msgstr "Volver a intentar"
+#: bookwyrm/templates/import/import_status.html:73
+#, python-format
+msgid "%(display_counter)s item failed to import."
+msgid_plural "%(display_counter)s items failed to import."
+msgstr[0] ""
+msgstr[1] ""
 
-#: bookwyrm/templates/import/import_status.html:112
-msgid "Successfully imported"
-msgstr "Importados correctamente"
+#: bookwyrm/templates/import/import_status.html:79
+msgid "View and troubleshoot failed items"
+msgstr ""
 
-#: bookwyrm/templates/import/import_status.html:114
-msgid "Import Progress"
-msgstr "Progreso da importación"
+#: bookwyrm/templates/import/import_status.html:91
+msgid "Row"
+msgstr ""
 
-#: bookwyrm/templates/import/import_status.html:119
-msgid "Book"
-msgstr "Libro"
-
-#: bookwyrm/templates/import/import_status.html:122
+#: bookwyrm/templates/import/import_status.html:94
 #: bookwyrm/templates/shelf/shelf.html:141
 #: bookwyrm/templates/shelf/shelf.html:163
 msgid "Title"
 msgstr "Título"
 
-#: bookwyrm/templates/import/import_status.html:125
+#: bookwyrm/templates/import/import_status.html:97
+msgid "ISBN"
+msgstr ""
+
+#: bookwyrm/templates/import/import_status.html:100
 #: bookwyrm/templates/shelf/shelf.html:142
 #: bookwyrm/templates/shelf/shelf.html:166
 msgid "Author"
 msgstr "Autor"
 
-#: bookwyrm/templates/import/import_status.html:148
+#: bookwyrm/templates/import/import_status.html:103
+msgid "Shelf"
+msgstr ""
+
+#: bookwyrm/templates/import/import_status.html:106
+#: bookwyrm/templates/import/manual_review.html:13
+#: bookwyrm/templates/snippets/create_status.html:17
+msgid "Review"
+msgstr ""
+
+#: bookwyrm/templates/import/import_status.html:110
+msgid "Book"
+msgstr "Libro"
+
+#: bookwyrm/templates/import/import_status.html:113
+#: bookwyrm/templates/settings/announcements/announcements.html:38
+#: bookwyrm/templates/settings/federation/instance_list.html:46
+#: bookwyrm/templates/settings/invites/manage_invite_requests.html:44
+#: bookwyrm/templates/settings/invites/status_filter.html:5
+#: bookwyrm/templates/settings/users/user_admin.html:34
+#: bookwyrm/templates/settings/users/user_info.html:20
+msgid "Status"
+msgstr "Estado"
+
+#: bookwyrm/templates/import/import_status.html:144
+msgid "View imported review"
+msgstr ""
+
+#: bookwyrm/templates/import/import_status.html:158
 msgid "Imported"
 msgstr "Importado"
+
+#: bookwyrm/templates/import/import_status.html:164
+msgid "Needs manual review"
+msgstr ""
+
+#: bookwyrm/templates/import/manual_review.html:5
+#: bookwyrm/templates/import/troubleshoot.html:4
+msgid "Import Troubleshooting"
+msgstr ""
+
+#: bookwyrm/templates/import/manual_review.html:21
+msgid "Approving a suggestion will permanently add the suggested book to your shelves and associate your reading dates, reviews, and ratings with that book."
+msgstr ""
+
+#: bookwyrm/templates/import/manual_review.html:56
+#: bookwyrm/templates/lists/curate.html:57
+msgid "Approve"
+msgstr "Admitir"
+
+#: bookwyrm/templates/import/manual_review.html:64
+msgid "Reject"
+msgstr ""
 
 #: bookwyrm/templates/import/tooltip.html:6
 msgid "You can download your Goodreads data from the <a href=\"https://www.goodreads.com/review/import\" target=\"_blank\" rel=\"noopener\">Import/Export page</a> of your Goodreads account."
 msgstr "Podes descargar os teus datos en Goodreads desde a <a href=\"https://www.goodreads.com/review/import\" target=\"_blank\" rel=\"noopener\">páxina de Importación/Exportación</a> na túa conta Goodreads."
+
+#: bookwyrm/templates/import/troubleshoot.html:7
+msgid "Failed items"
+msgstr ""
+
+#: bookwyrm/templates/import/troubleshoot.html:12
+msgid "Troubleshooting"
+msgstr ""
+
+#: bookwyrm/templates/import/troubleshoot.html:20
+msgid "Re-trying an import can fix missing items in cases such as:"
+msgstr ""
+
+#: bookwyrm/templates/import/troubleshoot.html:23
+msgid "The book has been added to the instance since this import"
+msgstr ""
+
+#: bookwyrm/templates/import/troubleshoot.html:24
+msgid "A transient error or timeout caused the external data source to be unavailable."
+msgstr ""
+
+#: bookwyrm/templates/import/troubleshoot.html:25
+msgid "BookWyrm has been updated since this import with a bug fix"
+msgstr ""
+
+#: bookwyrm/templates/import/troubleshoot.html:28
+msgid "Contact your admin or <a href='https://github.com/bookwyrm-social/bookwyrm/issues'>open an issue</a> if you are seeing unexpected failed items."
+msgstr ""
 
 #: bookwyrm/templates/landing/about.html:7 bookwyrm/templates/layout.html:230
 #, python-format
@@ -1579,10 +1670,6 @@ msgstr "Menú principal de navegación"
 msgid "Feed"
 msgstr "Fonte"
 
-#: bookwyrm/templates/layout.html:106
-msgid "Your Books"
-msgstr "Os teus libros"
-
 #: bookwyrm/templates/layout.html:116
 msgid "Settings"
 msgstr "Axustes"
@@ -1681,10 +1768,6 @@ msgstr "Remataches!"
 #: bookwyrm/templates/lists/curate.html:45
 msgid "Suggested by"
 msgstr "Suxerido por"
-
-#: bookwyrm/templates/lists/curate.html:57
-msgid "Approve"
-msgstr "Admitir"
 
 #: bookwyrm/templates/lists/curate.html:63
 msgid "Discard"
@@ -2237,15 +2320,6 @@ msgstr "Data de inicio"
 #: bookwyrm/templates/settings/announcements/announcements.html:34
 msgid "End date"
 msgstr "Data de fin"
-
-#: bookwyrm/templates/settings/announcements/announcements.html:38
-#: bookwyrm/templates/settings/federation/instance_list.html:46
-#: bookwyrm/templates/settings/invites/manage_invite_requests.html:44
-#: bookwyrm/templates/settings/invites/status_filter.html:5
-#: bookwyrm/templates/settings/users/user_admin.html:34
-#: bookwyrm/templates/settings/users/user_info.html:20
-msgid "Status"
-msgstr "Estado"
 
 #: bookwyrm/templates/settings/announcements/announcements.html:48
 msgid "active"
@@ -3095,10 +3169,6 @@ msgstr ""
 msgid "Un-boost"
 msgstr ""
 
-#: bookwyrm/templates/snippets/create_status.html:17
-msgid "Review"
-msgstr ""
-
 #: bookwyrm/templates/snippets/create_status.html:39
 msgid "Quote"
 msgstr ""
@@ -3525,7 +3595,7 @@ msgstr ""
 msgid "commented on <a href=\"%(book_path)s\">%(book)s</a>"
 msgstr ""
 
-#: bookwyrm/templates/snippets/status/headers/note.html:15
+#: bookwyrm/templates/snippets/status/headers/note.html:8
 #, python-format
 msgid "replied to <a href=\"%(user_path)s\">%(username)s</a>'s <a href=\"%(status_path)s\">status</a>"
 msgstr ""
@@ -3604,7 +3674,11 @@ msgstr ""
 msgid "Show less"
 msgstr ""
 
-#: bookwyrm/templates/user/books_header.html:5
+#: bookwyrm/templates/user/books_header.html:10
+msgid "Your books"
+msgstr "Os teus libros"
+
+#: bookwyrm/templates/user/books_header.html:15
 #, python-format
 msgid "%(username)s's books"
 msgstr ""
@@ -3748,7 +3822,7 @@ msgstr ""
 msgid "%(title)s: %(subtitle)s"
 msgstr ""
 
-#: bookwyrm/views/import_data.py:67
+#: bookwyrm/views/imports/import_data.py:64
 msgid "Not a valid csv file"
 msgstr ""
 
