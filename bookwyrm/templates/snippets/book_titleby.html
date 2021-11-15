@@ -5,11 +5,9 @@
 {% if book.authors.exists %}
 {% blocktrans trimmed with path=book.local_path title=book|book_title %}
 <a href="{{ path }}">{{ title }}</a> by
-{% endblocktrans %}
-{% include 'snippets/authors.html' with book=book limit=3 %}
+{% endblocktrans %}&nbsp;{% include 'snippets/authors.html' with book=book limit=3 %}
 
 {% else %}
 <a href="{{ book.local_path }}">{{ book|book_title }}</a>
 {% endif %}
-
 {% endspaceless %}

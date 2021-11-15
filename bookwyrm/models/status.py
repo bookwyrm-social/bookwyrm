@@ -189,8 +189,10 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
             if hasattr(activity, "name"):
                 activity.name = self.pure_name
             activity.type = self.pure_type
-            books = [getattr(self, "book", None)] + list(self.mention_books.all())
-            if len(books) == 1 and books[0].preview_image:
+            book = getattr(self, "book", None)
+            books = [book] if book else []
+            books += list(self.mention_books.all())
+            if len(books) == 1 and getattr(books[0], "preview_image", None):
                 covers = [
                     activitypub.Document(
                         url=fields.get_absolute_url(books[0].preview_image),
