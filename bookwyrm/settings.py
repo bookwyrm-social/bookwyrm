@@ -166,6 +166,7 @@ LANGUAGES = [
     ("de-de", _("Deutsch (German)")),
     ("es-es", _("Español (Spanish)")),
     ("fr-fr", _("Français (French)")),
+    ("lt-lt", _("lietuvių (Lithuanian)")),
     ("pt-br", _("Português - Brasil (Brazilian Portuguese)")),
     ("zh-hans", _("简体中文 (Simplified Chinese)")),
     ("zh-hant", _("繁體中文 (Traditional Chinese)")),
