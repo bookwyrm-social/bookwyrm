@@ -111,7 +111,7 @@ class BookViews(TestCase):
         work = models.Work.objects.create(title="test work")
         edition1 = models.Edition.objects.create(title="first ed", parent_work=work)
         edition2 = models.Edition.objects.create(title="second ed", parent_work=work)
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             shelf = models.Shelf.objects.create(name="Test Shelf", user=self.local_user)
             models.ShelfBook.objects.create(
                 book=edition1,
@@ -124,7 +124,7 @@ class BookViews(TestCase):
         self.assertEqual(models.ReadThrough.objects.get().book, edition1)
         request = self.factory.post("", {"edition": edition2.id})
         request.user = self.local_user
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             views.switch_edition(request)
 
         self.assertEqual(models.ShelfBook.objects.get().book, edition2)

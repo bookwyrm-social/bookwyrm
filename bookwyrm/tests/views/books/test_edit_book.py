@@ -79,7 +79,7 @@ class EditBookViews(TestCase):
         request = self.factory.post("", form.data)
         request.user = self.local_user
 
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             view(request, self.book.id)
 
         self.book.refresh_from_db()
@@ -115,7 +115,7 @@ class EditBookViews(TestCase):
         request = self.factory.post("", form.data)
         request.user = self.local_user
 
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             view(request, self.book.id)
 
         self.book.refresh_from_db()
@@ -136,7 +136,7 @@ class EditBookViews(TestCase):
         request = self.factory.post("", form.data)
         request.user = self.local_user
 
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             view(request, self.book.id)
         self.book.refresh_from_db()
         self.assertEqual(self.book.title, "New Title")
@@ -207,7 +207,7 @@ class EditBookViews(TestCase):
         request.user = self.local_user
 
         with patch(
-            "bookwyrm.models.activitypub_mixin.broadcast_task.delay"
+            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
         ) as delay_mock:
             views.upload_cover(request, self.book.id)
             self.assertEqual(delay_mock.call_count, 1)

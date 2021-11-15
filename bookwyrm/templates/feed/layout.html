@@ -9,7 +9,7 @@
     {% if user.is_authenticated %}
     <div class="column is-one-third">
         <section class="block">
-            <h2 class="title is-4">{% trans "Your books" %}</h2>
+            <h2 class="title is-4">{% trans "Your Books" %}</h2>
             {% if not suggested_books %}
             <p>{% trans "There are no books here right now! Try searching for a book to get started" %}</p>
             {% else %}

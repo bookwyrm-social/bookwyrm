@@ -18,83 +18,68 @@ class ImportJob(TestCase):
 
     def setUp(self):
         """data is from a goodreads export of The Raven Tower"""
-        read_data = {
-            "Book Id": 39395857,
-            "Title": "The Raven Tower",
-            "Author": "Ann Leckie",
-            "Author l-f": "Leckie, Ann",
-            "Additional Authors": "",
-            "ISBN": '="0356506991"',
-            "ISBN13": '="9780356506999"',
-            "My Rating": 0,
-            "Average Rating": 4.06,
-            "Publisher": "Orbit",
-            "Binding": "Hardcover",
-            "Number of Pages": 416,
-            "Year Published": 2019,
-            "Original Publication Year": 2019,
-            "Date Read": "2019/04/12",
-            "Date Added": "2019/04/09",
-            "Bookshelves": "",
-            "Bookshelves with positions": "",
-            "Exclusive Shelf": "read",
-            "My Review": "",
-            "Spoiler": "",
-            "Private Notes": "",
-            "Read Count": 1,
-            "Recommended For": "",
-            "Recommended By": "",
-            "Owned Copies": 0,
-            "Original Purchase Date": "",
-            "Original Purchase Location": "",
-            "Condition": "",
-            "Condition Description": "",
-            "BCID": "",
-        }
-        currently_reading_data = read_data.copy()
-        currently_reading_data["Exclusive Shelf"] = "currently-reading"
-        currently_reading_data["Date Read"] = ""
-
-        unknown_read_data = currently_reading_data.copy()
-        unknown_read_data["Exclusive Shelf"] = "read"
-        unknown_read_data["Date Read"] = ""
-
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
         ):
-            user = models.User.objects.create_user(
-                "mouse", "mouse@mouse.mouse", "mouseword", local=True, localname="mouse"
+            self.local_user = models.User.objects.create_user(
+                "mouse", "mouse@mouse.mouse", "password", local=True
             )
-        job = models.ImportJob.objects.create(user=user)
-        self.item_1 = models.ImportItem.objects.create(
-            job=job, index=1, data=currently_reading_data
-        )
-        self.item_2 = models.ImportItem.objects.create(job=job, index=2, data=read_data)
-        self.item_3 = models.ImportItem.objects.create(
-            job=job, index=3, data=unknown_read_data
-        )
+        self.job = models.ImportJob.objects.create(user=self.local_user, mappings={})
 
     def test_isbn(self):
         """it unquotes the isbn13 field from data"""
-        expected = "9780356506999"
-        item = models.ImportItem.objects.get(index=1)
-        self.assertEqual(item.isbn, expected)
+        item = models.ImportItem.objects.create(
+            index=1,
+            job=self.job,
+            data={},
+            normalized_data={
+                "isbn_13": '="9780356506999"',
+            },
+        )
+        self.assertEqual(item.isbn, "9780356506999")
 
     def test_shelf(self):
         """converts to the local shelf typology"""
-        expected = "reading"
-        self.assertEqual(self.item_1.shelf, expected)
+        item = models.ImportItem.objects.create(
+            index=1,
+            job=self.job,
+            data={},
+            normalized_data={
+                "isbn_13": '="9780356506999"',
+                "shelf": "reading",
+            },
+        )
+        self.assertEqual(item.shelf, "reading")
 
     def test_date_added(self):
         """converts to the local shelf typology"""
         expected = datetime.datetime(2019, 4, 9, 0, 0, tzinfo=timezone.utc)
-        item = models.ImportItem.objects.get(index=1)
+        item = models.ImportItem.objects.create(
+            index=1,
+            job=self.job,
+            data={},
+            normalized_data={
+                "isbn_13": '="9780356506999"',
+                "shelf": "reading",
+                "date_added": "2019/04/09",
+            },
+        )
         self.assertEqual(item.date_added, expected)
 
     def test_date_read(self):
         """converts to the local shelf typology"""
         expected = datetime.datetime(2019, 4, 12, 0, 0, tzinfo=timezone.utc)
-        item = models.ImportItem.objects.get(index=2)
+        item = models.ImportItem.objects.create(
+            index=1,
+            job=self.job,
+            data={},
+            normalized_data={
+                "isbn_13": '="9780356506999"',
+                "shelf": "reading",
+                "date_added": "2019/04/09",
+                "date_finished": "2019/04/12",
+            },
+        )
         self.assertEqual(item.date_read, expected)
 
     def test_currently_reading_reads(self):
@@ -104,31 +89,66 @@ class ImportJob(TestCase):
                 start_date=datetime.datetime(2019, 4, 9, 0, 0, tzinfo=timezone.utc)
             )
         ]
-        actual = models.ImportItem.objects.get(index=1)
-        self.assertEqual(actual.reads[0].start_date, expected[0].start_date)
-        self.assertEqual(actual.reads[0].finish_date, expected[0].finish_date)
+        item = models.ImportItem.objects.create(
+            index=1,
+            job=self.job,
+            data={},
+            normalized_data={
+                "isbn_13": '="9780356506999"',
+                "shelf": "reading",
+                "date_added": "2019/04/09",
+            },
+        )
+        self.assertEqual(item.reads[0].start_date, expected[0].start_date)
+        self.assertIsNone(item.reads[0].finish_date)
 
     def test_read_reads(self):
         """infer read dates where available"""
-        actual = self.item_2
+        item = models.ImportItem.objects.create(
+            index=1,
+            job=self.job,
+            data={},
+            normalized_data={
+                "isbn_13": '="9780356506999"',
+                "shelf": "reading",
+                "date_added": "2019/04/09",
+                "date_finished": "2019/04/12",
+            },
+        )
         self.assertEqual(
-            actual.reads[0].start_date,
+            item.reads[0].start_date,
             datetime.datetime(2019, 4, 9, 0, 0, tzinfo=timezone.utc),
         )
         self.assertEqual(
-            actual.reads[0].finish_date,
+            item.reads[0].finish_date,
             datetime.datetime(2019, 4, 12, 0, 0, tzinfo=timezone.utc),
         )
 
     def test_unread_reads(self):
         """handle books with no read dates"""
         expected = []
-        actual = models.ImportItem.objects.get(index=3)
-        self.assertEqual(actual.reads, expected)
+        item = models.ImportItem.objects.create(
+            index=1,
+            job=self.job,
+            data={},
+            normalized_data={
+                "isbn_13": '="9780356506999"',
+                "shelf": "reading",
+            },
+        )
+        self.assertEqual(item.reads, expected)
 
     @responses.activate
     def test_get_book_from_isbn(self):
         """search and load books by isbn (9780356506999)"""
+        item = models.ImportItem.objects.create(
+            index=1,
+            job=self.job,
+            data={},
+            normalized_data={
+                "isbn_13": '="9780356506999"',
+            },
+        )
         connector_info = models.Connector.objects.create(
             identifier="openlibrary.org",
             name="OpenLibrary",
@@ -177,6 +197,6 @@ class ImportJob(TestCase):
                 with patch(
                     "bookwyrm.connectors.openlibrary.Connector." "get_authors_from_data"
                 ):
-                    book = self.item_1.get_book_from_isbn()
+                    book = item.get_book_from_isbn()
 
         self.assertEqual(book.title, "Sabriel")

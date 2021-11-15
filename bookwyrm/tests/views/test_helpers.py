@@ -55,7 +55,7 @@ class ViewsHelpers(TestCase):
         datafile = pathlib.Path(__file__).parent.joinpath("../data/ap_user.json")
         self.userdata = json.loads(datafile.read_bytes())
         del self.userdata["icon"]
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             self.shelf = models.Shelf.objects.create(
                 name="Test Shelf", identifier="test-shelf", user=self.local_user
             )
@@ -166,7 +166,7 @@ class ViewsHelpers(TestCase):
     def test_handle_reading_status_to_read(self, *_):
         """posts shelve activities"""
         shelf = self.local_user.shelf_set.get(identifier="to-read")
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             views.helpers.handle_reading_status(
                 self.local_user, shelf, self.book, "public"
             )
@@ -178,7 +178,7 @@ class ViewsHelpers(TestCase):
     def test_handle_reading_status_reading(self, *_):
         """posts shelve activities"""
         shelf = self.local_user.shelf_set.get(identifier="reading")
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             views.helpers.handle_reading_status(
                 self.local_user, shelf, self.book, "public"
             )
@@ -190,7 +190,7 @@ class ViewsHelpers(TestCase):
     def test_handle_reading_status_read(self, *_):
         """posts shelve activities"""
         shelf = self.local_user.shelf_set.get(identifier="read")
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             views.helpers.handle_reading_status(
                 self.local_user, shelf, self.book, "public"
             )
@@ -201,7 +201,7 @@ class ViewsHelpers(TestCase):
 
     def test_handle_reading_status_other(self, *_):
         """posts shelve activities"""
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             views.helpers.handle_reading_status(
                 self.local_user, self.shelf, self.book, "public"
             )

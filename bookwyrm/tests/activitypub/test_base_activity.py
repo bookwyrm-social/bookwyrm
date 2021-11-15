@@ -146,7 +146,7 @@ class BaseActivity(TestCase):
             self.user.avatar.file  # pylint: disable=pointless-statement
 
         # this would trigger a broadcast because it's a local user
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             activity.to_model(model=models.User, instance=self.user)
         self.assertIsNotNone(self.user.avatar.file)
         self.assertEqual(self.user.name, "New Name")
@@ -154,7 +154,7 @@ class BaseActivity(TestCase):
 
     def test_to_model_many_to_many(self, *_):
         """annoying that these all need special handling"""
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             status = models.Status.objects.create(
                 content="test status",
                 user=self.user,
@@ -186,7 +186,7 @@ class BaseActivity(TestCase):
     def test_to_model_one_to_many(self, *_):
         """these are reversed relationships, where the secondary object
         keys the primary object but not vice versa"""
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             status = models.Status.objects.create(
                 content="test status",
                 user=self.user,
@@ -224,7 +224,7 @@ class BaseActivity(TestCase):
     @responses.activate
     def test_set_related_field(self, *_):
         """celery task to add back-references to created objects"""
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             status = models.Status.objects.create(
                 content="test status",
                 user=self.user,

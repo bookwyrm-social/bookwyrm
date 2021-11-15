@@ -5,7 +5,7 @@ from django.test import TestCase
 from bookwyrm import models, settings
 
 
-@patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
+@patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
 class List(TestCase):
     """some activitypub oddness ahead"""
 
@@ -22,7 +22,7 @@ class List(TestCase):
 
     def test_remote_id(self, _):
         """shelves use custom remote ids"""
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             book_list = models.List.objects.create(
                 name="Test List", user=self.local_user
             )
@@ -31,7 +31,7 @@ class List(TestCase):
 
     def test_to_activity(self, _):
         """jsonify it"""
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             book_list = models.List.objects.create(
                 name="Test List", user=self.local_user
             )
@@ -45,7 +45,7 @@ class List(TestCase):
 
     def test_list_item(self, _):
         """a list entry"""
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             book_list = models.List.objects.create(
                 name="Test List", user=self.local_user, privacy="unlisted"
             )
@@ -63,7 +63,7 @@ class List(TestCase):
 
     def test_list_item_pending(self, _):
         """a list entry"""
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             book_list = models.List.objects.create(
                 name="Test List", user=self.local_user
             )

@@ -5,7 +5,7 @@ from django.test import TestCase
 from bookwyrm import models, settings
 
 
-@patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
+@patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
 class Group(TestCase):
     """some activitypub oddness ahead"""
 
@@ -87,7 +87,7 @@ class Group(TestCase):
     def test_group_members_can_see_followers_only_lists(self, _):
         """follower-only group booklists should not be excluded from group booklist listing for group members who do not follower list owner"""
 
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             followers_list = models.List.objects.create(
                 name="Followers List",
                 curation="group",
@@ -107,7 +107,7 @@ class Group(TestCase):
     def test_group_members_can_see_private_lists(self, _):
         """private group booklists should not be excluded from group booklist listing for group members"""
 
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
 
             private_list = models.List.objects.create(
                 name="Private List",

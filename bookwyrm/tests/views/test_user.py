@@ -34,9 +34,11 @@ class UserViews(TestCase):
         self.book = models.Edition.objects.create(
             title="test", parent_work=models.Work.objects.create(title="test work")
         )
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"), patch(
-            "bookwyrm.suggested_users.rerank_suggestions_task.delay"
-        ), patch("bookwyrm.activitystreams.add_book_statuses_task.delay"):
+        with patch(
+            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+        ), patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
+            "bookwyrm.activitystreams.add_book_statuses_task.delay"
+        ):
             models.ShelfBook.objects.create(
                 book=self.book,
                 user=self.local_user,

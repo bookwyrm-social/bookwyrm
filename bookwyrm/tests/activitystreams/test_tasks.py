@@ -34,7 +34,7 @@ class Activitystreams(TestCase):
             )
         work = models.Work.objects.create(title="test work")
         self.book = models.Edition.objects.create(title="test book", parent_work=work)
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             self.status = models.Status.objects.create(
                 content="hi", user=self.local_user
             )
@@ -133,7 +133,7 @@ class Activitystreams(TestCase):
 
     @patch("bookwyrm.activitystreams.LocalStream.remove_object_from_related_stores")
     @patch("bookwyrm.activitystreams.BooksStream.remove_object_from_related_stores")
-    @patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
+    @patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
     def test_boost_to_another_timeline(self, *_):
         """boost from a non-follower doesn't remove original status from feed"""
         status = models.Status.objects.create(user=self.local_user, content="hi")
@@ -155,7 +155,7 @@ class Activitystreams(TestCase):
 
     @patch("bookwyrm.activitystreams.LocalStream.remove_object_from_related_stores")
     @patch("bookwyrm.activitystreams.BooksStream.remove_object_from_related_stores")
-    @patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
+    @patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
     def test_boost_to_another_timeline_remote(self, *_):
         """boost from a remote non-follower doesn't remove original status from feed"""
         status = models.Status.objects.create(user=self.local_user, content="hi")
@@ -177,7 +177,7 @@ class Activitystreams(TestCase):
 
     @patch("bookwyrm.activitystreams.LocalStream.remove_object_from_related_stores")
     @patch("bookwyrm.activitystreams.BooksStream.remove_object_from_related_stores")
-    @patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
+    @patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
     def test_boost_to_following_timeline(self, *_):
         """add a boost and deduplicate the boosted status on the timeline"""
         self.local_user.following.add(self.another_user)
@@ -199,7 +199,7 @@ class Activitystreams(TestCase):
 
     @patch("bookwyrm.activitystreams.LocalStream.remove_object_from_related_stores")
     @patch("bookwyrm.activitystreams.BooksStream.remove_object_from_related_stores")
-    @patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
+    @patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
     def test_boost_to_same_timeline(self, *_):
         """add a boost and deduplicate the boosted status on the timeline"""
         status = models.Status.objects.create(user=self.local_user, content="hi")

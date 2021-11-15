@@ -44,7 +44,7 @@ class TemplateTags(TestCase):
 
     def test_get_user_rating(self, *_):
         """get a user's most recent rating of a book"""
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             models.Review.objects.create(user=self.user, book=self.book, rating=3)
         self.assertEqual(bookwyrm_tags.get_user_rating(self.book, self.user), 3)
 
@@ -63,7 +63,7 @@ class TemplateTags(TestCase):
             utilities.get_user_identifier(self.remote_user), "rat@example.com"
         )
 
-    @patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
+    @patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
     def test_get_replies(self, *_):
         """direct replies to a status"""
         parent = models.Review.objects.create(
@@ -90,7 +90,7 @@ class TemplateTags(TestCase):
 
     def test_get_parent(self, *_):
         """get the reply parent of a status"""
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             parent = models.Review.objects.create(
                 user=self.user, book=self.book, content="hi"
             )
@@ -107,7 +107,7 @@ class TemplateTags(TestCase):
         status = models.Review.objects.create(user=self.remote_user, book=self.book)
 
         self.assertFalse(interaction.get_user_liked(self.user, status))
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             models.Favorite.objects.create(user=self.user, status=status)
         self.assertTrue(interaction.get_user_liked(self.user, status))
 
@@ -116,13 +116,13 @@ class TemplateTags(TestCase):
         status = models.Review.objects.create(user=self.remote_user, book=self.book)
 
         self.assertFalse(interaction.get_user_boosted(self.user, status))
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             models.Boost.objects.create(user=self.user, boosted_status=status)
         self.assertTrue(interaction.get_user_boosted(self.user, status))
 
     def test_get_boosted(self, *_):
         """load a boosted status"""
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             status = models.Review.objects.create(user=self.remote_user, book=self.book)
             boost = models.Boost.objects.create(user=self.user, boosted_status=status)
         boosted = status_display.get_boosted(boost)
@@ -166,7 +166,7 @@ class TemplateTags(TestCase):
 
     def test_related_status(self, *_):
         """gets the subclass model for a notification status"""
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             status = models.Status.objects.create(content="hi", user=self.user)
         notification = models.Notification.objects.create(
             user=self.user, notification_type="MENTION", related_status=status

@@ -151,10 +151,12 @@ class ReportViews(TestCase):
         request.user.is_superuser = True
 
         # de-activate
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay") as mock:
+        with patch(
+            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+        ) as mock:
             views.moderator_delete_user(request, self.rat.id)
         self.assertEqual(mock.call_count, 1)
-        activity = json.loads(mock.call_args[0][1])
+        activity = json.loads(mock.call_args[1]["args"][1])
         self.assertEqual(activity["type"], "Delete")
 
         self.rat.refresh_from_db()

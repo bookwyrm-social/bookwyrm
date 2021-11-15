@@ -21,7 +21,7 @@ from bookwyrm.settings import PAGE_LENGTH
 
 # pylint: disable=invalid-name
 @patch("bookwyrm.activitystreams.add_status_task.delay")
-@patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
+@patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
 class ActivitypubMixins(TestCase):
     """functionality shared across models"""
 
