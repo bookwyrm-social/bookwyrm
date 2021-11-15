@@ -46,8 +46,10 @@
                     {% include 'snippets/book_cover.html' with book=guess cover_class='is-h-s' size='small' %}
                 </a>
             </div>
-            <div class="column">
-                {% include 'snippets/book_titleby.html' with book=guess %}
+            <div class="column content">
+                <p>
+                    {% include 'snippets/book_titleby.html' with book=guess %}
+                </p>
                 <div class="content is-flex">
                     <form class="pr-2" name="approve-{{ item.id }}" method="POST" action="{% url 'import-approve' job.id item.id %}">
                         {% csrf_token %}
