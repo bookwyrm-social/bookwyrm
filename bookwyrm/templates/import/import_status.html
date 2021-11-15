@@ -51,7 +51,7 @@
             </span>
         </div>
         <div class="is-flex">
-            <progress class="progress is-success is-medium mr-2" value="{{ percent }}" max="100">{{ percent }}%</progress>
+            <progress role="progressbar" class="progress is-success is-medium mr-2" value="{{ complete_count }}" max="{{ item_count }}" aria-min="0" aria-valuenow="{{ complete_count }}" aria-valuemax="{{ item_count }}"">{{ percent }} %</progress>
             <span>{{ percent }}%</span>
         </div>
     </div>
