@@ -41,6 +41,17 @@ def get_book_description(book):
     return book.description or book.parent_work.description
 
 
+@register.filter(name="is_shelf_type")
+def shelf_type(current_shelf, shelf_type):
+    """is this shelf a readthrough shelf?"""
+    readthrough = current_shelf in ["to-read", "reading", "read"]
+    if shelf_type == "readthrough" and readthrough == True:
+        return True
+    if shelf_type == "custom" and readthrough == False:
+        return True
+    return False
+
+
 @register.filter(name="next_shelf")
 def get_next_shelf(current_shelf):
     """shelf you'd use to update reading progress"""
