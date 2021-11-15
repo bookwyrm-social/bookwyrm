@@ -165,12 +165,12 @@ class User(TestCase):
         """deactivate a user"""
         self.assertTrue(self.user.is_active)
         with patch(
-            "bookwyrm.models.activitypub_mixin.broadcast_task.delay"
+            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
         ) as broadcast_mock:
             self.user.delete()
 
         self.assertEqual(broadcast_mock.call_count, 1)
-        activity = json.loads(broadcast_mock.call_args[0][1])
+        activity = json.loads(broadcast_mock.call_args[1]["args"][1])
         self.assertEqual(activity["type"], "Delete")
         self.assertEqual(activity["object"], self.user.remote_id)
         self.assertFalse(self.user.is_active)

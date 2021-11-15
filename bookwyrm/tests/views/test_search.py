@@ -139,7 +139,7 @@ class Views(TestCase):
 
     def test_search_lists(self):
         """searches remote connectors"""
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             booklist = models.List.objects.create(
                 user=self.local_user, name="test list"
             )

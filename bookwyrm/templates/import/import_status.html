@@ -6,153 +6,223 @@
 {% block title %}{% trans "Import Status" %}{% endblock %}
 
 {% block content %}{% spaceless %}
-<div class="block">
-    <h1 class="title">{% trans "Import Status" %}</h1>
-    <a href="{% url 'import' %}" class="has-text-weight-normal help subtitle is-link">{% trans "Back to imports" %}</a>
-
-    <dl>
-        <div class="is-flex">
-            <dt class="has-text-weight-medium">{% trans "Import started:" %}</dt>
-            <dd class="ml-2">{{ job.created_date | naturaltime }}</dd>
-        </div>
-        {% if job.complete %}
-        <div class="is-flex">
-            <dt class="has-text-weight-medium">{% trans "Import completed:" %}</dt>
-            <dd class="ml-2">{{ task.date_done | naturaltime }}</dd>
-        </div>
-        {% elif task.failed %}
-        <div class="notification is-danger">{% trans "TASK FAILED" %}</div>
+<header class="block">
+    <h1 class="title">
+        {% block page_title %}
+        {% if job.retry %}
+            {% trans "Retry Status" %}
+        {% else %}
+            {% trans "Import Status" %}
         {% endif %}
-    </dl>
-</div>
+        {% endblock %}
+    </h1>
 
-<div class="block">
+    <nav class="breadcrumb subtitle" aria-label="breadcrumbs">
+        <ul>
+            <li><a href="{% url 'import' %}">{% trans "Imports" %}</a></li>
+            {% url 'import-status' job.id as path %}
+            <li{% if request.path in path %} class="is-active"{% endif %}>
+                <a href="{{ path }}" {% if request.path in path %}aria-current="page"{% endif %}>
+                    {% if job.retry %}
+                    {% trans "Retry Status" %}
+                    {% else %}
+                    {% trans "Import Status" %}
+                    {% endif %}
+                </a>
+            </li>
+            {% block breadcrumbs %}{% endblock %}
+        </ul>
+    </nav>
+
+    <div class="block">
+        <dl>
+            <dt class="is-pulled-left mr-5">{% trans "Import started:" %}</dt>
+            <dd>{{ job.created_date | naturaltime }}</dd>
+        </dl>
+    </div>
+
     {% if not job.complete %}
-    <p>
-        {% trans "Import still in progress." %}
-        <br/>
-        {% trans "(Hit reload to update!)" %}
-    </p>
+    <div class="box is-processing">
+        <div class="block">
+            <span class="icon icon-spinner is-pulled-left" aria-hidden="true"></span>
+            <span>{% trans "In progress" %}</span>
+            <span class="is-pulled-right">
+                <a href="#" class="button is-small">{% trans "Refresh" %}</a>
+            </span>
+        </div>
+        <div class="is-flex">
+            <progress
+                class="progress is-success is-medium mr-2"
+                role="progressbar"
+                aria-min="0"
+                value="{{ complete_count }}"
+                aria-valuenow="{{ complete_count }}"
+                max="{{ item_count }}"
+                aria-valuemax="{{ item_count }}">
+                {{ percent }} %
+            </progress>
+            <span>{{ percent }}%</span>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if manual_review_count and not legacy %}
+    <div class="notification">
+        {% blocktrans trimmed count counter=manual_review_count with display_counter=manual_review_count|intcomma %}
+            {{ display_counter }} item needs manual approval.
+            {% plural %}
+            {{ display_counter }} items need manual approval.
+        {% endblocktrans %}
+        <a href="{% url 'import-review' job.id %}">{% trans "Review items" %}</a>
+    </div>
+    {% endif %}
+
+    {% if job.complete and fail_count and not job.retry and not legacy %}
+    <div class="notification is-warning">
+        {% blocktrans trimmed count counter=fail_count with display_counter=fail_count|intcomma %}
+            {{ display_counter }} item failed to import.
+            {% plural %}
+            {{ display_counter }} items failed to import.
+        {% endblocktrans %}
+        <a href="{% url 'import-troubleshoot' job.id %}">
+            {% trans "View and troubleshoot failed items" %}
+        </a>
+    </div>
+    {% endif %}
+</header>
+
+<div class="block">
+    {% block actions %}{% endblock %}
+    <div class="table-container">
+        <table class="table is-striped">
+            <tr>
+                <th>
+                    {% trans "Row" %}
+                </th>
+                <th>
+                    {% trans "Title" %}
+                </th>
+                <th>
+                    {% trans "ISBN" %}
+                </th>
+                <th>
+                    {% trans "Author" %}
+                </th>
+                <th>
+                    {% trans "Shelf" %}
+                </th>
+                <th>
+                    {% trans "Review" %}
+                </th>
+                {% block import_cols_headers %}
+                <th>
+                    {% trans "Book" %}
+                </th>
+                <th>
+                    {% trans "Status" %}
+                </th>
+                {% endblock %}
+            </tr>
+            {% if legacy %}
+            <tr>
+                <td colspan="8">
+                    <p>
+                        <em>{% trans "Import preview unavailable." %}</em>
+                    </p>
+                </td>
+            </tr>
+            {% else %}
+            {% for item in items %}
+            <tr>
+                {% block index_col %}
+                <td>
+                    {{ item.index }}
+                </td>
+                {% endblock %}
+                <td>
+                    {{ item.normalized_data.title }}
+                </td>
+                <td>
+                    {{ item.isbn|default:'' }}
+                </td>
+                <td>
+                    {{ item.normalized_data.authors }}
+                </td>
+                <td>
+                    {{ item.normalized_data.shelf }}
+                </td>
+                <td>
+                    {% if item.rating %}
+                    <p>{% include 'snippets/stars.html' with rating=item.rating %}</p>
+                    {% endif %}
+                    {% if item.review %}
+                    <p>{{ item.review|truncatechars:100 }}</p>
+                    {% endif %}
+                    {% if item.linked_review %}
+                    <a href="{{ item.linked_review.remote_id }}" target="_blank">{% trans "View imported review" %}</a>
+                    {% endif %}
+                </td>
+                {% block import_cols %}
+                <td>
+                    {% if item.book %}
+                    <a href="{{ item.book.local_path }}">
+                    {% include 'snippets/book_cover.html' with book=item.book cover_class='is-h-s' size='small' %}
+                    </a>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if item.book %}
+                    <span class="icon icon-check" aria-hidden="true"></span>
+                    <span class="is-sr-only-mobile">{% trans "Imported" %}</span>
+
+                    {% elif item.fail_reason %}
+                    <span class="icon icon-x has-text-danger" aria-hidden="true"></span>
+                    <span class="is-sr-only-mobile">
+                        {% if item.book_guess %}
+                        {% trans "Needs manual review" %}
+                        {% else %}
+                        {{ item.fail_reason }}
+                        {% endif %}
+                    </span>
+                    {% else %}
+                    <div class="is-flex">
+                        <span class="icon icon-dots-three" aria-hidden="true"></span>
+                        <span class="is-sr-only-mobile">{% trans "Pending" %}</span>
+                        {# retry option if an item appears to be hanging #}
+                        {% if job.created_date != job.updated_date and inactive_time > 24 %}
+                        <form class="ml-2" method="POST" action="{% url 'import-item-retry' job.id item.id %}" name="retry-{{ item.id }}">
+                            {% csrf_token %}
+                            <button class="button is-danger is-outlined is-small">{% trans "Retry" %}</button>
+                        </form>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                </td>
+                {% endblock %}
+            </tr>
+            {% block action_row %}{% endblock %}
+            {% endfor %}
+            {% endif %}
+        </table>
+    </div>
+    {% if legacy %}
+    <div class="content">
+        <form name="update-import" method="POST" action="{% url 'import-status' job.id %}">
+            {% csrf_token %}
+            <p>
+                {% trans "This import is in an old format that is no longer supported. If you would like to troubleshoot missing items from this import, click the button below to update the import format." %}
+            </p>
+            <button class="button">{% trans "Update import" %}</button>
+        </form>
+    </div>
     {% endif %}
 </div>
 
-{% if failed_items %}
-<div class="block">
-    <h2 class="title is-4">{% trans "Failed to load" %}</h2>
-    {% if not job.retry %}
-    <form name="retry" action="/import/{{ job.id }}" method="post" class="box">
-        {% csrf_token %}
-
-        {% with failed_count=failed_items|length %}
-            {% if failed_count > 10 %}
-                <p class="block">
-                    <a href="#select-all-failed-imports">
-                        {% blocktrans %}Jump to the bottom of the list to select the {{ failed_count }} items which failed to import.{% endblocktrans %}
-                    </a>
-                </p>
-            {% endif %}
-        {% endwith %}
-
-        <fieldset id="failed_imports">
-            <ul>
-            {% for item in failed_items %}
-                <li class="mb-2 is-flex is-align-items-start">
-                    <input class="checkbox mt-1" type="checkbox" name="import_item" value="{{ item.id }}" id="import_item_{{ item.id }}">
-                    <label class="ml-1" for="import-item-{{ item.id }}">
-                        {% blocktrans with index=item.index title=item.data.Title author=item.data.Author %}Line {{ index }}: <strong>{{ title }}</strong> by {{ author }}{% endblocktrans %}
-                        <br/>
-                        {{ item.fail_reason }}.
-                    </label>
-                </li>
-            {% endfor %}
-            </ul>
-        </fieldset>
-
-        <fieldset class="mt-3">
-            <a name="select-all-failed-imports"></a>
-
-            <label class="label is-inline">
-                <input
-                    id="toggle-all-checkboxes-failed-imports"
-                    class="checkbox"
-                    type="checkbox"
-                    data-action="toggle-all"
-                    data-target="failed_imports"
-                />
-                {% trans "Select all" %}
-            </label>
-
-            <button class="button is-block mt-3" type="submit">{% trans "Retry items" %}</button>
-        </fieldset>
-    </form>
-
-    <hr>
-
-    {% else %}
-    <ul>
-        {% for item in failed_items %}
-        <li class="pb-1">
-            <p>
-                Line {{ item.index }}:
-                <strong>{{ item.data.Title }}</strong> by
-                {{ item.data.Author }}
-            </p>
-            <p>
-                {{ item.fail_reason }}.
-            </p>
-        </li>
-        {% endfor %}
-    </ul>
-    {% endif %}
+{% if not legacy %}
+<div>
+    {% include 'snippets/pagination.html' with page=items %}
 </div>
 {% endif %}
-
-<div class="block">
-    {% if job.complete %}
-    <h2 class="title is-4">{% trans "Successfully imported" %}</h2>
-    {% else %}
-    <h2 class="title is-4">{% trans "Import Progress" %}</h2>
-    {% endif %}
-    <table class="table">
-        <tr>
-            <th>
-                {% trans "Book" %}
-            </th>
-            <th>
-                {% trans "Title" %}
-            </th>
-            <th>
-                {% trans "Author" %}
-            </th>
-            <th>
-            </th>
-        </tr>
-        {% for item in items %}
-        <tr>
-            <td>
-                {% if item.book %}
-                <a href="{{ item.book.local_path }}">
-                {% include 'snippets/book_cover.html' with book=item.book cover_class='is-h-s' size='small' %}
-                </a>
-                {% endif %}
-            </td>
-            <td>
-                {{ item.data.Title }}
-            </td>
-            <td>
-                {{ item.data.Author }}
-            </td>
-            <td>
-                {% if item.book %}
-                <span class="icon icon-check">
-                    <span class="is-sr-only">{% trans "Imported" %}</span>
-                </span>
-                {% endif %}
-            </td>
-        </tr>
-        {% endfor %}
-    </table>
-</div>
 {% endspaceless %}{% endblock %}
 
 {% block scripts %}

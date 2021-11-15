@@ -54,9 +54,6 @@ case "$CMD" in
     up)
         docker-compose up --build "$@"
         ;;
-    run)
-        docker-compose run --rm --service-ports web
-        ;;
     initdb)
         initdb
         ;;
@@ -116,14 +113,10 @@ case "$CMD" in
     runweb)
         runweb "$@"
         ;;
-    rundb)
-        rundb "$@"
-        ;;
     *)
         set +x # No need to echo echo
         echo "Unrecognised command. Try:"
         echo "    up [container]"
-        echo "    run"
         echo "    initdb"
         echo "    makemigrations [migration]"
         echo "    migrate [migration]"
@@ -141,6 +134,5 @@ case "$CMD" in
         echo "    copy_media_to_s3"
         echo "    set_cors_to_s3 [cors file]"
         echo "    runweb [command]"
-        echo "    rundb [command]"
         ;;
 esac

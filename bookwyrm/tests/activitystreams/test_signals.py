@@ -4,7 +4,7 @@ from django.test import TestCase
 from bookwyrm import activitystreams, models
 
 
-@patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
+@patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
 class ActivitystreamsSignals(TestCase):
     """using redis to build activity streams"""
 
@@ -53,11 +53,12 @@ class ActivitystreamsSignals(TestCase):
         status = models.Status.objects.create(
             user=self.remote_user, content="hi", privacy="public"
         )
-        with patch("bookwyrm.activitystreams.add_status_task.delay") as mock:
+        with patch("bookwyrm.activitystreams.add_status_task.apply_async") as mock:
             activitystreams.add_status_on_create_command(models.Status, status, False)
         self.assertEqual(mock.call_count, 1)
-        args = mock.call_args[0]
-        self.assertEqual(args[0], status.id)
+        args = mock.call_args[1]
+        self.assertEqual(args["args"][0], status.id)
+        self.assertEqual(args["queue"], "high_priority")
 
     def test_populate_streams_on_account_create(self, _):
         """create streams for a user"""

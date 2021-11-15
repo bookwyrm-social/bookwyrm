@@ -33,11 +33,13 @@ class Relationship(TestCase):
 
     def test_user_follows_from_request(self, _):
         """convert a follow request into a follow"""
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay") as mock:
+        with patch(
+            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+        ) as mock:
             request = models.UserFollowRequest.objects.create(
                 user_subject=self.local_user, user_object=self.remote_user
             )
-        activity = json.loads(mock.call_args[0][1])
+        activity = json.loads(mock.call_args[1]["args"][1])
         self.assertEqual(activity["type"], "Follow")
         self.assertEqual(
             request.remote_id, "http://local.com/user/mouse#follows/%d" % request.id
@@ -54,7 +56,7 @@ class Relationship(TestCase):
 
     def test_user_follows_from_request_custom_remote_id(self, _):
         """store a specific remote id for a relationship provided by remote"""
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             request = models.UserFollowRequest.objects.create(
                 user_subject=self.local_user,
                 user_object=self.remote_user,
@@ -69,19 +71,19 @@ class Relationship(TestCase):
         self.assertEqual(rel.user_subject, self.local_user)
         self.assertEqual(rel.user_object, self.remote_user)
 
-    @patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
+    @patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
     def test_follow_request_activity(self, broadcast_mock, _):
         """accept a request and make it a relationship"""
         models.UserFollowRequest.objects.create(
             user_subject=self.local_user,
             user_object=self.remote_user,
         )
-        activity = json.loads(broadcast_mock.call_args[0][1])
+        activity = json.loads(broadcast_mock.call_args[1]["args"][1])
         self.assertEqual(activity["actor"], self.local_user.remote_id)
         self.assertEqual(activity["object"], self.remote_user.remote_id)
         self.assertEqual(activity["type"], "Follow")
 
-    @patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
+    @patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
     def test_follow_request_accept(self, broadcast_mock, _):
         """accept a request and make it a relationship"""
         self.local_user.manually_approves_followers = True
@@ -96,7 +98,7 @@ class Relationship(TestCase):
         )
         request.accept()
 
-        activity = json.loads(broadcast_mock.call_args[0][1])
+        activity = json.loads(broadcast_mock.call_args[1]["args"][1])
         self.assertEqual(activity["type"], "Accept")
         self.assertEqual(activity["actor"], self.local_user.remote_id)
         self.assertEqual(activity["object"]["id"], "https://www.hi.com/")
@@ -107,7 +109,7 @@ class Relationship(TestCase):
         self.assertEqual(rel.user_subject, self.remote_user)
         self.assertEqual(rel.user_object, self.local_user)
 
-    @patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
+    @patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
     def test_follow_request_reject(self, broadcast_mock, _):
         """accept a request and make it a relationship"""
         self.local_user.manually_approves_followers = True
@@ -120,7 +122,7 @@ class Relationship(TestCase):
         )
         request.reject()
 
-        activity = json.loads(broadcast_mock.call_args[0][1])
+        activity = json.loads(broadcast_mock.call_args[1]["args"][1])
         self.assertEqual(activity["type"], "Reject")
         self.assertEqual(activity["actor"], self.local_user.remote_id)
         self.assertEqual(activity["object"]["id"], request.remote_id)
