@@ -42,12 +42,12 @@ def get_book_description(book):
 
 
 @register.filter(name="is_shelf_type")
-def shelf_type(current_shelf, shelf_type):
+def is_shelf_type(current_shelf, shelf_type):
     """is this shelf a readthrough shelf?"""
     readthrough = current_shelf in ["to-read", "reading", "read"]
-    if shelf_type == "readthrough" and readthrough == True:
+    if shelf_type == "readthrough" and bool(readthrough):
         return True
-    if shelf_type == "custom" and readthrough == False:
+    if shelf_type == "custom" and not readthrough:
         return True
     return False
 
