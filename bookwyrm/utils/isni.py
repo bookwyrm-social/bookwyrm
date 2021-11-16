@@ -2,19 +2,20 @@
 import xml.etree.ElementTree as ET
 import requests
 
+
 def request_isni_data(search_index, search_term, max_records=5):
     """Request data from the ISNI API"""
 
     search_string = f'{search_index}="{search_term}"'
     query_params = {
-      "query" : search_string,
-      "version" : "1.1",
-      "operation" : "searchRetrieve",
-      "recordSchema" : "isni-b",
-      "maximumRecords" : max_records,
-      "startRecord" : "1",
-      "recordPacking" : "xml",
-      "sortKeys" : "RLV,pica,0,,"
+        "query": search_string,
+        "version": "1.1",
+        "operation": "searchRetrieve",
+        "recordSchema": "isni-b",
+        "maximumRecords": max_records,
+        "startRecord": "1",
+        "recordPacking": "xml",
+        "sortKeys": "RLV,pica,0,,",
     }
     result = requests.get("http://isni.oclc.org/sru/", params=query_params)
     # the OCLC ISNI server asserts the payload is encoded
