@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-10-24 14:09+0000\n"
-"PO-Revision-Date: 2021-10-24 18:36\n"
+"POT-Creation-Date: 2021-11-14 15:08+0000\n"
+"PO-Revision-Date: 2021-11-15 18:02\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Chinese Traditional\n"
 "Language: zh\n"
@@ -72,15 +72,16 @@ msgstr "升序"
 msgid "Descending"
 msgstr "降序"
 
-#: bookwyrm/importers/importer.py:75
+#: bookwyrm/importers/importer.py:127
 msgid "Error loading book"
 msgstr ""
 
-#: bookwyrm/importers/importer.py:88
+#: bookwyrm/importers/importer.py:135
 msgid "Could not find a match for book"
 msgstr ""
 
 #: bookwyrm/models/base_model.py:17
+#: bookwyrm/templates/import/import_status.html:171
 msgid "Pending"
 msgstr ""
 
@@ -100,23 +101,23 @@ msgstr ""
 msgid "Domain block"
 msgstr ""
 
-#: bookwyrm/models/book.py:232
+#: bookwyrm/models/book.py:233
 msgid "Audiobook"
 msgstr ""
 
-#: bookwyrm/models/book.py:233
+#: bookwyrm/models/book.py:234
 msgid "eBook"
 msgstr ""
 
-#: bookwyrm/models/book.py:234
+#: bookwyrm/models/book.py:235
 msgid "Graphic novel"
 msgstr ""
 
-#: bookwyrm/models/book.py:235
+#: bookwyrm/models/book.py:236
 msgid "Hardcover"
 msgstr ""
 
-#: bookwyrm/models/book.py:236
+#: bookwyrm/models/book.py:237
 msgid "Paperback"
 msgstr ""
 
@@ -133,21 +134,21 @@ msgstr "跨站"
 msgid "Blocked"
 msgstr "已封鎖"
 
-#: bookwyrm/models/fields.py:27
+#: bookwyrm/models/fields.py:29
 #, python-format
 msgid "%(value)s is not a valid remote_id"
 msgstr "%(value)s 不是有效的 remote_id"
 
-#: bookwyrm/models/fields.py:36 bookwyrm/models/fields.py:45
+#: bookwyrm/models/fields.py:38 bookwyrm/models/fields.py:47
 #, python-format
 msgid "%(value)s is not a valid username"
 msgstr "%(value)s 不是有效的使用者名稱"
 
-#: bookwyrm/models/fields.py:181 bookwyrm/templates/layout.html:171
+#: bookwyrm/models/fields.py:183 bookwyrm/templates/layout.html:171
 msgid "username"
 msgstr "使用者名稱"
 
-#: bookwyrm/models/fields.py:186
+#: bookwyrm/models/fields.py:188
 msgid "A user with that username already exists."
 msgstr "已經存在使用該名稱的使用者。"
 
@@ -889,22 +890,37 @@ msgstr "BookWyrm 使用者"
 msgid "All known users"
 msgstr "所有已知使用者"
 
-#: bookwyrm/templates/discover/card-header.html:9
+#: bookwyrm/templates/discover/card-header.html:8
 #, python-format
-msgid "<a href=\"%(user_path)s\">%(username)s</a> rated <a href=\"%(book_path)s\">%(book_title)s</a>"
+msgid "<a href=\"%(user_path)s\">%(username)s</a> wants to read <a href=\"%(book_path)s\">%(book_title)s</a>"
 msgstr ""
 
 #: bookwyrm/templates/discover/card-header.html:13
 #, python-format
+msgid "<a href=\"%(user_path)s\">%(username)s</a> finished reading <a href=\"%(book_path)s\">%(book_title)s</a>"
+msgstr ""
+
+#: bookwyrm/templates/discover/card-header.html:18
+#, python-format
+msgid "<a href=\"%(user_path)s\">%(username)s</a> started reading <a href=\"%(book_path)s\">%(book_title)s</a>"
+msgstr ""
+
+#: bookwyrm/templates/discover/card-header.html:23
+#, python-format
+msgid "<a href=\"%(user_path)s\">%(username)s</a> rated <a href=\"%(book_path)s\">%(book_title)s</a>"
+msgstr ""
+
+#: bookwyrm/templates/discover/card-header.html:27
+#, python-format
 msgid "<a href=\"%(user_path)s\">%(username)s</a> reviewed <a href=\"%(book_path)s\">%(book_title)s</a>"
 msgstr ""
 
-#: bookwyrm/templates/discover/card-header.html:17
+#: bookwyrm/templates/discover/card-header.html:31
 #, python-format
 msgid "<a href=\"%(user_path)s\">%(username)s</a> commented on <a href=\"%(book_path)s\">%(book_title)s</a>"
 msgstr ""
 
-#: bookwyrm/templates/discover/card-header.html:21
+#: bookwyrm/templates/discover/card-header.html:35
 #, python-format
 msgid "<a href=\"%(user_path)s\">%(username)s</a> quoted <a href=\"%(book_path)s\">%(book_title)s</a>"
 msgstr ""
@@ -1055,9 +1071,8 @@ msgstr "你可以在任何時候從你的<a href=\"%(path)s\">使用者資料頁
 msgid "Updates"
 msgstr "更新"
 
-#: bookwyrm/templates/feed/layout.html:12
-#: bookwyrm/templates/user/books_header.html:3
-msgid "Your books"
+#: bookwyrm/templates/feed/layout.html:12 bookwyrm/templates/layout.html:106
+msgid "Your Books"
 msgstr "你的書目"
 
 #: bookwyrm/templates/feed/layout.html:14
@@ -1066,11 +1081,13 @@ msgstr "現在這裡還沒有任何書目！嘗試著從搜尋某本書開始吧
 
 #: bookwyrm/templates/feed/layout.html:25
 #: bookwyrm/templates/shelf/shelf.html:38
+#: bookwyrm/templates/user/books_header.html:4
 msgid "To Read"
 msgstr "想讀"
 
 #: bookwyrm/templates/feed/layout.html:26
 #: bookwyrm/templates/shelf/shelf.html:40
+#: bookwyrm/templates/user/books_header.html:6
 msgid "Currently Reading"
 msgstr "在讀"
 
@@ -1078,6 +1095,7 @@ msgstr "在讀"
 #: bookwyrm/templates/shelf/shelf.html:42
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_dropdown_options.html:23
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_options.html:12
+#: bookwyrm/templates/user/books_header.html:8
 msgid "Read"
 msgstr "讀過"
 
@@ -1361,86 +1379,157 @@ msgid "No recent imports"
 msgstr "無最近的匯入"
 
 #: bookwyrm/templates/import/import_status.html:6
-#: bookwyrm/templates/import/import_status.html:10
+#: bookwyrm/templates/import/import_status.html:15
+#: bookwyrm/templates/import/import_status.html:29
 msgid "Import Status"
 msgstr "匯入狀態"
 
-#: bookwyrm/templates/import/import_status.html:11
-msgid "Back to imports"
+#: bookwyrm/templates/import/import_status.html:13
+#: bookwyrm/templates/import/import_status.html:27
+msgid "Retry Status"
 msgstr ""
 
-#: bookwyrm/templates/import/import_status.html:15
+#: bookwyrm/templates/import/import_status.html:22
+msgid "Imports"
+msgstr ""
+
+#: bookwyrm/templates/import/import_status.html:39
 msgid "Import started:"
 msgstr "匯入開始:"
 
-#: bookwyrm/templates/import/import_status.html:20
-msgid "Import completed:"
-msgstr "匯入完成:"
-
-#: bookwyrm/templates/import/import_status.html:24
-msgid "TASK FAILED"
-msgstr "任務失敗"
-
-#: bookwyrm/templates/import/import_status.html:32
-msgid "Import still in progress."
-msgstr "還在匯入中。"
-
-#: bookwyrm/templates/import/import_status.html:34
-msgid "(Hit reload to update!)"
-msgstr "（按下重新載入來更新！）"
-
-#: bookwyrm/templates/import/import_status.html:41
-msgid "Failed to load"
-msgstr "載入失敗"
+#: bookwyrm/templates/import/import_status.html:48
+msgid "In progress"
+msgstr ""
 
 #: bookwyrm/templates/import/import_status.html:50
-#, python-format
-msgid "Jump to the bottom of the list to select the %(failed_count)s items which failed to import."
-msgstr "跳轉至列表底部來選取 %(failed_count)s 個匯入失敗的項目。"
+msgid "Refresh"
+msgstr ""
 
 #: bookwyrm/templates/import/import_status.html:62
 #, python-format
-msgid "Line %(index)s: <strong>%(title)s</strong> by %(author)s"
+msgid "%(display_counter)s item needs manual approval."
+msgid_plural "%(display_counter)s items need manual approval."
+msgstr[0] ""
+
+#: bookwyrm/templates/import/import_status.html:67
+#: bookwyrm/templates/import/manual_review.html:8
+msgid "Review items"
 msgstr ""
 
-#: bookwyrm/templates/import/import_status.html:82
-msgid "Select all"
-msgstr "全選"
+#: bookwyrm/templates/import/import_status.html:73
+#, python-format
+msgid "%(display_counter)s item failed to import."
+msgid_plural "%(display_counter)s items failed to import."
+msgstr[0] ""
 
-#: bookwyrm/templates/import/import_status.html:85
-msgid "Retry items"
-msgstr "重試項目"
-
-#: bookwyrm/templates/import/import_status.html:112
-msgid "Successfully imported"
-msgstr "成功匯入了"
-
-#: bookwyrm/templates/import/import_status.html:114
-msgid "Import Progress"
+#: bookwyrm/templates/import/import_status.html:79
+msgid "View and troubleshoot failed items"
 msgstr ""
 
-#: bookwyrm/templates/import/import_status.html:119
-msgid "Book"
-msgstr "書目"
+#: bookwyrm/templates/import/import_status.html:91
+msgid "Row"
+msgstr ""
 
-#: bookwyrm/templates/import/import_status.html:122
+#: bookwyrm/templates/import/import_status.html:94
 #: bookwyrm/templates/shelf/shelf.html:141
 #: bookwyrm/templates/shelf/shelf.html:163
 msgid "Title"
 msgstr "標題"
 
-#: bookwyrm/templates/import/import_status.html:125
+#: bookwyrm/templates/import/import_status.html:97
+msgid "ISBN"
+msgstr ""
+
+#: bookwyrm/templates/import/import_status.html:100
 #: bookwyrm/templates/shelf/shelf.html:142
 #: bookwyrm/templates/shelf/shelf.html:166
 msgid "Author"
 msgstr "作者"
 
-#: bookwyrm/templates/import/import_status.html:148
+#: bookwyrm/templates/import/import_status.html:103
+msgid "Shelf"
+msgstr ""
+
+#: bookwyrm/templates/import/import_status.html:106
+#: bookwyrm/templates/import/manual_review.html:13
+#: bookwyrm/templates/snippets/create_status.html:17
+msgid "Review"
+msgstr "書評"
+
+#: bookwyrm/templates/import/import_status.html:110
+msgid "Book"
+msgstr "書目"
+
+#: bookwyrm/templates/import/import_status.html:113
+#: bookwyrm/templates/settings/announcements/announcements.html:38
+#: bookwyrm/templates/settings/federation/instance_list.html:46
+#: bookwyrm/templates/settings/invites/manage_invite_requests.html:44
+#: bookwyrm/templates/settings/invites/status_filter.html:5
+#: bookwyrm/templates/settings/users/user_admin.html:34
+#: bookwyrm/templates/settings/users/user_info.html:20
+msgid "Status"
+msgstr "狀態"
+
+#: bookwyrm/templates/import/import_status.html:144
+msgid "View imported review"
+msgstr ""
+
+#: bookwyrm/templates/import/import_status.html:158
 msgid "Imported"
 msgstr "已匯入"
 
+#: bookwyrm/templates/import/import_status.html:164
+msgid "Needs manual review"
+msgstr ""
+
+#: bookwyrm/templates/import/manual_review.html:5
+#: bookwyrm/templates/import/troubleshoot.html:4
+msgid "Import Troubleshooting"
+msgstr ""
+
+#: bookwyrm/templates/import/manual_review.html:21
+msgid "Approving a suggestion will permanently add the suggested book to your shelves and associate your reading dates, reviews, and ratings with that book."
+msgstr ""
+
+#: bookwyrm/templates/import/manual_review.html:56
+#: bookwyrm/templates/lists/curate.html:57
+msgid "Approve"
+msgstr "批准"
+
+#: bookwyrm/templates/import/manual_review.html:64
+msgid "Reject"
+msgstr ""
+
 #: bookwyrm/templates/import/tooltip.html:6
 msgid "You can download your Goodreads data from the <a href=\"https://www.goodreads.com/review/import\" target=\"_blank\" rel=\"noopener\">Import/Export page</a> of your Goodreads account."
+msgstr ""
+
+#: bookwyrm/templates/import/troubleshoot.html:7
+msgid "Failed items"
+msgstr ""
+
+#: bookwyrm/templates/import/troubleshoot.html:12
+msgid "Troubleshooting"
+msgstr ""
+
+#: bookwyrm/templates/import/troubleshoot.html:20
+msgid "Re-trying an import can fix missing items in cases such as:"
+msgstr ""
+
+#: bookwyrm/templates/import/troubleshoot.html:23
+msgid "The book has been added to the instance since this import"
+msgstr ""
+
+#: bookwyrm/templates/import/troubleshoot.html:24
+msgid "A transient error or timeout caused the external data source to be unavailable."
+msgstr ""
+
+#: bookwyrm/templates/import/troubleshoot.html:25
+msgid "BookWyrm has been updated since this import with a bug fix"
+msgstr ""
+
+#: bookwyrm/templates/import/troubleshoot.html:28
+msgid "Contact your admin or <a href='https://github.com/bookwyrm-social/bookwyrm/issues'>open an issue</a> if you are seeing unexpected failed items."
 msgstr ""
 
 #: bookwyrm/templates/landing/about.html:7 bookwyrm/templates/layout.html:230
@@ -1574,10 +1663,6 @@ msgstr "主導航選單"
 msgid "Feed"
 msgstr "動態"
 
-#: bookwyrm/templates/layout.html:106
-msgid "Your Books"
-msgstr "你的書目"
-
 #: bookwyrm/templates/layout.html:116
 msgid "Settings"
 msgstr "設定"
@@ -1676,10 +1761,6 @@ msgstr "都弄好了！"
 #: bookwyrm/templates/lists/curate.html:45
 msgid "Suggested by"
 msgstr "推薦來自"
-
-#: bookwyrm/templates/lists/curate.html:57
-msgid "Approve"
-msgstr "批准"
 
 #: bookwyrm/templates/lists/curate.html:63
 msgid "Discard"
@@ -2232,15 +2313,6 @@ msgstr "開始日期"
 #: bookwyrm/templates/settings/announcements/announcements.html:34
 msgid "End date"
 msgstr "結束日期"
-
-#: bookwyrm/templates/settings/announcements/announcements.html:38
-#: bookwyrm/templates/settings/federation/instance_list.html:46
-#: bookwyrm/templates/settings/invites/manage_invite_requests.html:44
-#: bookwyrm/templates/settings/invites/status_filter.html:5
-#: bookwyrm/templates/settings/users/user_admin.html:34
-#: bookwyrm/templates/settings/users/user_info.html:20
-msgid "Status"
-msgstr "狀態"
 
 #: bookwyrm/templates/settings/announcements/announcements.html:48
 msgid "active"
@@ -3085,10 +3157,6 @@ msgstr "轉發"
 msgid "Un-boost"
 msgstr "取消轉發"
 
-#: bookwyrm/templates/snippets/create_status.html:17
-msgid "Review"
-msgstr "書評"
-
 #: bookwyrm/templates/snippets/create_status.html:39
 msgid "Quote"
 msgstr "引用"
@@ -3510,7 +3578,7 @@ msgstr ""
 msgid "commented on <a href=\"%(book_path)s\">%(book)s</a>"
 msgstr ""
 
-#: bookwyrm/templates/snippets/status/headers/note.html:15
+#: bookwyrm/templates/snippets/status/headers/note.html:8
 #, python-format
 msgid "replied to <a href=\"%(user_path)s\">%(username)s</a>'s <a href=\"%(status_path)s\">status</a>"
 msgstr "回覆了 <a href=\"%(user_path)s\">%(username)s</a> 的 <a href=\"%(status_path)s\">狀態</a>"
@@ -3589,7 +3657,11 @@ msgstr "顯示更多"
 msgid "Show less"
 msgstr "顯示更少"
 
-#: bookwyrm/templates/user/books_header.html:5
+#: bookwyrm/templates/user/books_header.html:10
+msgid "Your books"
+msgstr "你的書目"
+
+#: bookwyrm/templates/user/books_header.html:15
 #, python-format
 msgid "%(username)s's books"
 msgstr "%(username)s 的書目"
@@ -3731,7 +3803,7 @@ msgstr "檔案超過了最大大小: 10MB"
 msgid "%(title)s: %(subtitle)s"
 msgstr ""
 
-#: bookwyrm/views/import_data.py:67
+#: bookwyrm/views/imports/import_data.py:64
 msgid "Not a valid csv file"
 msgstr "不是有效的 csv 檔案"
 
