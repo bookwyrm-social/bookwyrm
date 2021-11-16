@@ -2,30 +2,21 @@
 import xml.etree.ElementTree as ET
 import requests
 
-
-def url_stringify(string):
-    """replace spaces for url encoding"""
-
-    # TODO: this is very lazy and incomplete
-    return string.replace(" ", "+")
-
-
 def request_isni_data(search_index, search_term, max_records=5):
     """Request data from the ISNI API"""
 
-    search_string = url_stringify(search_term)
-    query_parts = [
-        "http://isni.oclc.org/sru/?query=",
-        search_index,
-        "+%3D+%22",
-        search_string,
-        "%22&version=1.1&operation=searchRetrieve&recordSchema=isni-b",
-        "&maximumRecords=",
-        str(max_records),
-        "&startRecord=1&recordPacking=xml&sortKeys=RLV%2Cpica%2C0%2C%2C",
-    ]
-    query_url = "".join(query_parts)
-    result = requests.get(query_url)
+    search_string = f'{search_index}="{search_term}"'
+    query_params = {
+      "query" : search_string,
+      "version" : "1.1",
+      "operation" : "searchRetrieve",
+      "recordSchema" : "isni-b",
+      "maximumRecords" : max_records,
+      "startRecord" : "1",
+      "recordPacking" : "xml",
+      "sortKeys" : "RLV,pica,0,,"
+    }
+    result = requests.get("http://isni.oclc.org/sru/", params=query_params)
     # the OCLC ISNI server asserts the payload is encoded
     # in latin1, but we know better
     result.encoding = "utf-8"
