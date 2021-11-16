@@ -3,7 +3,7 @@ from unittest.mock import patch
 from django.test import TestCase
 
 from bookwyrm import models
-from bookwyrm.management.commands.populate_streams import populate_streams
+from bookwyrm.management.commands.populate_lists_streams import populate_lists_streams
 
 
 @patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
@@ -27,7 +27,7 @@ class Activitystreams(TestCase):
             )
             models.User.objects.create_user(
                 "gerbil",
-                "gerbil@gerbil.gerbil",
+                "gerbil@nutria.nutria",
                 "password",
                 local=True,
                 localname="gerbil",
@@ -47,16 +47,8 @@ class Activitystreams(TestCase):
 
     def test_populate_streams(self, _):
         """make sure the function on the redis manager gets called"""
-        with patch("bookwyrm.activitystreams.add_status_task.delay"):
-            models.Comment.objects.create(
-                user=self.local_user, content="hi", book=self.book
-            )
-
         with patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ) as redis_mock, patch(
             "bookwyrm.lists_stream.populate_lists_stream_task.delay"
         ) as list_mock:
-            populate_streams()
-        self.assertEqual(redis_mock.call_count, 6)  # 2 users x 3 streams
+            populate_lists_streams()
         self.assertEqual(list_mock.call_count, 2)  # 2 users
