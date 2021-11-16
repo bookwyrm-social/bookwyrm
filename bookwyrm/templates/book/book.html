@@ -161,12 +161,12 @@
                 {% for shelf in user_shelfbooks %}
                     <li class="box">
                         {% blocktrans with path=shelf.shelf.local_path shelf_name=shelf.shelf.name %}<a href="{{ path }}">{{ shelf_name }}</a>{% endblocktrans %}
-                        {% if shelf.shelf.identifier|is_shelf_type:"readthrough" %}
-                            {% include 'snippets/shelve_button/shelve_button.html' %}
+                        {% if shelf.shelf.editable %}
+                        <div class="mb-3">
+                            {% include 'snippets/shelf_selector.html' with current=shelf.shelf class="is-small" %}
+                        </div>
                         {% else %}
-                            <div class="mb-3">
-                                {% include 'snippets/shelf_selector.html' with current=shelf.shelf class="is-small" %}
-                            </div>
+                        {% include 'snippets/shelve_button/shelve_button.html' %}
                         {% endif %}
                     </li>
                 {% endfor %}
