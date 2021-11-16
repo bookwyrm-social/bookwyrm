@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-11-14 15:08+0000\n"
-"PO-Revision-Date: 2021-11-15 22:27\n"
+"PO-Revision-Date: 2021-11-16 19:26\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: French\n"
 "Language: fr\n"
@@ -1404,30 +1404,30 @@ msgstr "Début de l’importation :"
 
 #: bookwyrm/templates/import/import_status.html:48
 msgid "In progress"
-msgstr ""
+msgstr "En cours de traitement"
 
 #: bookwyrm/templates/import/import_status.html:50
 msgid "Refresh"
-msgstr ""
+msgstr "Actualiser"
 
 #: bookwyrm/templates/import/import_status.html:62
 #, python-format
 msgid "%(display_counter)s item needs manual approval."
 msgid_plural "%(display_counter)s items need manual approval."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(display_counter)s élément a besoin d'être approuvé manuellement."
+msgstr[1] "%(display_counter)s éléments ont besoin d'être approuvés manuellement."
 
 #: bookwyrm/templates/import/import_status.html:67
 #: bookwyrm/templates/import/manual_review.html:8
 msgid "Review items"
-msgstr ""
+msgstr "Vérifier les éléments"
 
 #: bookwyrm/templates/import/import_status.html:73
 #, python-format
 msgid "%(display_counter)s item failed to import."
 msgid_plural "%(display_counter)s items failed to import."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(display_counter)s élément n'a pas pu être importé."
+msgstr[1] "%(display_counter)s éléments n'ont pas pu être importés."
 
 #: bookwyrm/templates/import/import_status.html:79
 msgid "View and troubleshoot failed items"
@@ -1445,7 +1445,7 @@ msgstr "Titre"
 
 #: bookwyrm/templates/import/import_status.html:97
 msgid "ISBN"
-msgstr ""
+msgstr "ISBN"
 
 #: bookwyrm/templates/import/import_status.html:100
 #: bookwyrm/templates/shelf/shelf.html:142
@@ -1455,7 +1455,7 @@ msgstr "Auteur/autrice"
 
 #: bookwyrm/templates/import/import_status.html:103
 msgid "Shelf"
-msgstr ""
+msgstr "Étagère"
 
 #: bookwyrm/templates/import/import_status.html:106
 #: bookwyrm/templates/import/manual_review.html:13
@@ -1487,7 +1487,7 @@ msgstr "Importé"
 
 #: bookwyrm/templates/import/import_status.html:164
 msgid "Needs manual review"
-msgstr ""
+msgstr "Nécessite une vérification manuelle"
 
 #: bookwyrm/templates/import/manual_review.html:5
 #: bookwyrm/templates/import/troubleshoot.html:4
@@ -1496,7 +1496,7 @@ msgstr ""
 
 #: bookwyrm/templates/import/manual_review.html:21
 msgid "Approving a suggestion will permanently add the suggested book to your shelves and associate your reading dates, reviews, and ratings with that book."
-msgstr ""
+msgstr "Approuver une suggestion ajoutera définitivement le livre suggéré à vos étagères et associera vos dates, critiques et notes de lecture à ce livre."
 
 #: bookwyrm/templates/import/manual_review.html:56
 #: bookwyrm/templates/lists/curate.html:57
@@ -1505,7 +1505,7 @@ msgstr "Approuver"
 
 #: bookwyrm/templates/import/manual_review.html:64
 msgid "Reject"
-msgstr ""
+msgstr "Rejeter"
 
 #: bookwyrm/templates/import/tooltip.html:6
 msgid "You can download your Goodreads data from the <a href=\"https://www.goodreads.com/review/import\" target=\"_blank\" rel=\"noopener\">Import/Export page</a> of your Goodreads account."
@@ -1513,7 +1513,7 @@ msgstr "Vous pouvez télécharger vos données GoodReads depuis la page <a href=
 
 #: bookwyrm/templates/import/troubleshoot.html:7
 msgid "Failed items"
-msgstr ""
+msgstr "Éléments dont l'import a échoué"
 
 #: bookwyrm/templates/import/troubleshoot.html:12
 msgid "Troubleshooting"
@@ -1521,19 +1521,19 @@ msgstr ""
 
 #: bookwyrm/templates/import/troubleshoot.html:20
 msgid "Re-trying an import can fix missing items in cases such as:"
-msgstr ""
+msgstr "Une nouvelle tentative d'importation peut corriger les éléments manquants dans les cas suivants :"
 
 #: bookwyrm/templates/import/troubleshoot.html:23
 msgid "The book has been added to the instance since this import"
-msgstr ""
+msgstr "Le livre a été ajouté à l'instance depuis cette importation"
 
 #: bookwyrm/templates/import/troubleshoot.html:24
 msgid "A transient error or timeout caused the external data source to be unavailable."
-msgstr ""
+msgstr "Une erreur momentanée ou un timeout a rendu la source de données externe indisponible."
 
 #: bookwyrm/templates/import/troubleshoot.html:25
 msgid "BookWyrm has been updated since this import with a bug fix"
-msgstr ""
+msgstr "BookWyrm a été mis à jour depuis cette importation avec une correction de bug"
 
 #: bookwyrm/templates/import/troubleshoot.html:28
 msgid "Contact your admin or <a href='https://github.com/bookwyrm-social/bookwyrm/issues'>open an issue</a> if you are seeing unexpected failed items."
