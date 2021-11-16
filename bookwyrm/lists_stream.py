@@ -1,7 +1,7 @@
 """ access the activity streams stored in redis """
 from django.dispatch import receiver
 from django.db import transaction
-from django.db.models import signals, Q
+from django.db.models import signals, Count, Q
 
 from bookwyrm import models
 from bookwyrm.redis_store import RedisStore
@@ -41,11 +41,13 @@ class ListsStream(RedisStore):
         lists = self.get_store(self.stream_id(user))
         return (
             models.List.objects.filter(id__in=lists)
-            .select_related(
-                "user",
-            )
+            .annotate(item_count=Count("listitem", filter=Q(listitem__approved=True)))
+            # hide lists with no approved books
+            .filter(item_count__gt=0)
+            .select_related("user")
             .prefetch_related("listitem_set")
             .order_by("-updated_date")
+            .distinct()
         )
 
     def populate_streams(self, user):

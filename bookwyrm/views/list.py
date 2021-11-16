@@ -5,7 +5,7 @@ from urllib.parse import urlencode
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db import IntegrityError, transaction
-from django.db.models import Avg, Count, DecimalField, Q, Max
+from django.db.models import Avg, DecimalField, Q, Max
 from django.db.models.functions import Coalesce
 from django.http import HttpResponseBadRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect
@@ -17,6 +17,7 @@ from django.views.decorators.http import require_POST
 
 from bookwyrm import book_search, forms, models
 from bookwyrm.activitypub import ActivitypubResponse
+from bookwyrm.lists_stream import ListsStream
 from bookwyrm.settings import PAGE_LENGTH
 from .helpers import is_api_request
 from .helpers import get_user_from_username
@@ -28,18 +29,7 @@ class Lists(View):
 
     def get(self, request):
         """display a book list"""
-        # hide lists with no approved books
-        lists = (
-            models.List.privacy_filter(
-                request.user, privacy_levels=["public", "followers"]
-            )
-            .annotate(item_count=Count("listitem", filter=Q(listitem__approved=True)))
-            .filter(item_count__gt=0)
-            .select_related("user")
-            .prefetch_related("listitem_set")
-            .order_by("-updated_date")
-            .distinct()
-        )
+        lists = ListsStream().get_activity_stream(request.user)
         paginated = Paginator(lists, 12)
         data = {
             "lists": paginated.get_page(request.GET.get("page")),
