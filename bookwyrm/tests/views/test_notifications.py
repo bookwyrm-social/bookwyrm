@@ -25,7 +25,7 @@ class NotificationViews(TestCase):
                 local=True,
                 localname="mouse",
             )
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             self.status = models.Status.objects.create(
                 content="hi",
                 user=self.local_user,

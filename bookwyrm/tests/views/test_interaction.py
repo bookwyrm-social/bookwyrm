@@ -7,7 +7,7 @@ from django.test.client import RequestFactory
 from bookwyrm import models, views
 
 
-@patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
+@patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
 @patch("bookwyrm.activitystreams.remove_status_task.delay")
 class InteractionViews(TestCase):
     """viewing and creating statuses"""
@@ -74,7 +74,7 @@ class InteractionViews(TestCase):
         self.assertEqual(models.Favorite.objects.count(), 1)
         self.assertEqual(models.Notification.objects.count(), 1)
 
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             view(request, status.id)
         self.assertEqual(models.Favorite.objects.count(), 0)
         self.assertEqual(models.Notification.objects.count(), 0)
@@ -110,12 +110,12 @@ class InteractionViews(TestCase):
             status = models.Status.objects.create(user=self.local_user, content="hi")
 
             with patch(
-                "bookwyrm.models.activitypub_mixin.broadcast_task.delay"
+                "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
             ) as broadcast_mock:
                 view(request, status.id)
 
         self.assertEqual(broadcast_mock.call_count, 1)
-        activity = json.loads(broadcast_mock.call_args[0][1])
+        activity = json.loads(broadcast_mock.call_args[1]["args"][1])
         self.assertEqual(activity["type"], "Announce")
 
         boost = models.Boost.objects.get()

@@ -1,6 +1,7 @@
 """ non-interactive pages """
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
+from django.db.models import Q, Count
 from django.http import Http404
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
@@ -105,9 +106,8 @@ class Followers(View):
         if is_api_request(request):
             return ActivitypubResponse(user.to_followers_activity(**request.GET))
 
-        paginated = Paginator(
-            user.followers.order_by("-created_date").all(), PAGE_LENGTH
-        )
+        followers = annotate_if_follows(request.user, user.followers)
+        paginated = Paginator(followers.all(), PAGE_LENGTH)
         data = {
             "user": user,
             "is_self": request.user.id == user.id,
@@ -126,15 +126,24 @@ class Following(View):
         if is_api_request(request):
             return ActivitypubResponse(user.to_following_activity(**request.GET))
 
-        paginated = Paginator(
-            user.following.order_by("-created_date").all(), PAGE_LENGTH
-        )
+        following = annotate_if_follows(request.user, user.following)
+        paginated = Paginator(following.all(), PAGE_LENGTH)
         data = {
             "user": user,
             "is_self": request.user.id == user.id,
             "follow_list": paginated.get_page(request.GET.get("page")),
         }
         return TemplateResponse(request, "user/relationships/following.html", data)
+
+
+def annotate_if_follows(user, queryset):
+    """Sort a list of users by if you follow them"""
+    if not user.is_authenticated:
+        return queryset.order_by("-created_date")
+
+    return queryset.annotate(
+        request_user_follows=Count("followers", filter=Q(followers=user))
+    ).order_by("-request_user_follows", "-created_date")
 
 
 class Groups(View):

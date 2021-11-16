@@ -10,7 +10,7 @@ from bookwyrm import models, views, forms
 from bookwyrm.tests.validate_html import validate_html
 
 
-@patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
+@patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
 class GroupViews(TestCase):
     """view group and edit details"""
 

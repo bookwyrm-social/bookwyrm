@@ -9,7 +9,7 @@ from bookwyrm import models
 from bookwyrm.suggested_users import suggested_users, get_annotated_users
 
 
-@patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
+@patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
 @patch("bookwyrm.activitystreams.add_status_task.delay")
 @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
 @patch("bookwyrm.activitystreams.populate_stream_task.delay")
@@ -168,7 +168,7 @@ class SuggestedUsers(TestCase):
             remote_id="https://example.com/book/1",
             parent_work=work,
         )
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             # 1 shared follow
             self.local_user.following.add(user_2)
             user_1.followers.add(user_2)
@@ -213,7 +213,7 @@ class SuggestedUsers(TestCase):
             user.following.add(user_1)
             user.followers.add(self.local_user)
 
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             for i in range(3):
                 book = models.Edition.objects.create(
                     title=i,

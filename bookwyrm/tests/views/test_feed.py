@@ -57,7 +57,7 @@ class FeedViews(TestCase):
     def test_status_page(self, *_):
         """there are so many views, this just makes sure it LOADS"""
         view = views.Status.as_view()
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             status = models.Status.objects.create(content="hi", user=self.local_user)
         request = self.factory.get("")
         request.user = self.local_user
@@ -95,7 +95,7 @@ class FeedViews(TestCase):
             local=True,
             localname="rat",
         )
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             status = models.Status.objects.create(content="hi", user=another_user)
 
         request = self.factory.get("")
@@ -115,7 +115,7 @@ class FeedViews(TestCase):
         image = Image.open(image_file)
         output = BytesIO()
         image.save(output, format=image.format)
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             status = models.Review.objects.create(
                 content="hi",
                 user=self.local_user,
@@ -144,7 +144,7 @@ class FeedViews(TestCase):
     def test_replies_page(self, *_):
         """there are so many views, this just makes sure it LOADS"""
         view = views.Replies.as_view()
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             status = models.Status.objects.create(content="hi", user=self.local_user)
         request = self.factory.get("")
         request.user = self.local_user
@@ -171,7 +171,7 @@ class FeedViews(TestCase):
         result.render()
         self.assertEqual(result.status_code, 200)
 
-    @patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
+    @patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
     @patch("bookwyrm.activitystreams.add_book_statuses_task.delay")
     def test_get_suggested_book(self, *_):
         """gets books the ~*~ algorithm ~*~ thinks you want to post about"""

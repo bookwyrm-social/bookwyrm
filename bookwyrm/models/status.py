@@ -19,7 +19,6 @@ from bookwyrm.settings import ENABLE_PREVIEW_IMAGES
 from .activitypub_mixin import ActivitypubMixin, ActivityMixin
 from .activitypub_mixin import OrderedCollectionPageMixin
 from .base_model import BookWyrmModel
-from .fields import image_serializer
 from .readthrough import ProgressMode
 from . import fields
 
@@ -190,15 +189,26 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
             if hasattr(activity, "name"):
                 activity.name = self.pure_name
             activity.type = self.pure_type
-            activity.attachment = [
-                image_serializer(b.cover, b.alt_text)
-                for b in self.mention_books.all()[:4]
-                if b.cover
-            ]
-            if hasattr(self, "book") and self.book.cover:
-                activity.attachment.append(
-                    image_serializer(self.book.cover, self.book.alt_text)
-                )
+            book = getattr(self, "book", None)
+            books = [book] if book else []
+            books += list(self.mention_books.all())
+            if len(books) == 1 and getattr(books[0], "preview_image", None):
+                covers = [
+                    activitypub.Document(
+                        url=fields.get_absolute_url(books[0].preview_image),
+                        name=books[0].alt_text,
+                    )
+                ]
+            else:
+                covers = [
+                    activitypub.Document(
+                        url=fields.get_absolute_url(b.cover),
+                        name=b.alt_text,
+                    )
+                    for b in books
+                    if b and b.cover
+                ]
+            activity.attachment = covers
         return activity
 
     def to_activity(self, pure=False):  # pylint: disable=arguments-differ

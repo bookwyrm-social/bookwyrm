@@ -50,7 +50,7 @@ class InboxUpdate(TestCase):
 
     def test_update_list(self):
         """a new list"""
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             book_list = models.List.objects.create(
                 name="hi", remote_id="https://example.com/list/22", user=self.local_user
             )
@@ -171,7 +171,7 @@ class InboxUpdate(TestCase):
         book = models.Work.objects.get(id=book.id)
         self.assertEqual(book.title, "Piranesi")
 
-    @patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
+    @patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
     @patch("bookwyrm.activitystreams.add_status_task.delay")
     def test_update_status(self, *_):
         """edit a status"""
