@@ -67,7 +67,7 @@ class Connector(AbstractConnector):
         extracted = list(data.get("entities").values())
         try:
             data = extracted[0]
-        except KeyError:
+        except (KeyError, IndexError):
             raise ConnectorException("Invalid book data")
         # flatten the data so that images, uri, and claims are on the same level
         return {

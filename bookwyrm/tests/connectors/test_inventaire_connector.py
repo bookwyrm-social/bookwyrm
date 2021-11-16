@@ -269,10 +269,14 @@ class Inventaire(TestCase):
             responses.GET,
             "https://inventaire.io/?action=by-uris&uris=hello",
         )
-        data = {"wdt:P629": "hello"}
-        self.connector.get_work_from_edition_data(data)
+        data = {"wdt:P629": ["hello"]}
+        with patch("bookwyrm.connectors.inventaire.Connector.get_book_data") as mock:
+            self.connector.get_work_from_edition_data(data)
+        self.assertEqual(mock.call_count, 1)
+        args = mock.call_args[0]
+        self.assertEqual(args[0], "https://inventaire.io?action=by-uris&uris=hello")
 
-        data = {"wdt:P629": None}
+        data = {"wdt:P629": [None]}
         with self.assertRaises(ConnectorException):
             self.connector.get_work_from_edition_data(data)
 
