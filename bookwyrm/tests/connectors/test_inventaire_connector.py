@@ -1,11 +1,14 @@
 """ testing book data connectors """
 import json
 import pathlib
+from unittest.mock import patch
+
 from django.test import TestCase
 import responses
 
 from bookwyrm import models
 from bookwyrm.connectors.inventaire import Connector, get_language_code
+from bookwyrm.connectors.connector_manager import ConnectorException
 
 
 class Inventaire(TestCase):
@@ -47,6 +50,44 @@ class Inventaire(TestCase):
         result = self.connector.get_book_data("https://test.url/ok")
         self.assertEqual(result["wdt:P31"], ["wd:Q3331189"])
         self.assertEqual(result["uri"], "isbn:9780375757853")
+
+    @responses.activate
+    def test_get_book_data_invalid(self):
+        """error if there isn't any entity data"""
+        responses.add(
+            responses.GET,
+            "https://test.url/ok",
+            json={
+                "entities": {},
+                "redirects": {},
+            },
+        )
+
+        with self.assertRaises(ConnectorException):
+            self.connector.get_book_data("https://test.url/ok")
+
+    @responses.activate
+    def test_search(self):
+        """min confidence filtering"""
+        responses.add(
+            responses.GET,
+            "https://inventaire.io/search?q=hi",
+            json={
+                "results": [
+                    {
+                        "_score": 200,
+                        "label": "hello",
+                    },
+                    {
+                        "_score": 100,
+                        "label": "hi",
+                    },
+                ],
+            },
+        )
+        results = self.connector.search("hi", min_confidence=0.5)
+        self.assertEqual(len(results), 1)
+        self.assertEqual(results[0].title, "hello")
 
     def test_format_search_result(self):
         """json to search result objs"""
@@ -156,6 +197,88 @@ class Inventaire(TestCase):
             formatted.cover,
             "https://covers.inventaire.io/img/entities/12345",
         )
+
+    def test_isbn_search_empty(self):
+        """another search type"""
+        search_results = {}
+        results = self.connector.parse_isbn_search_data(search_results)
+        self.assertEqual(results, [])
+
+    def test_isbn_search_no_title(self):
+        """another search type"""
+        search_file = pathlib.Path(__file__).parent.joinpath(
+            "../data/inventaire_isbn_search.json"
+        )
+        search_results = json.loads(search_file.read_bytes())
+        search_results["entities"]["isbn:9782290349229"]["claims"]["wdt:P1476"] = None
+
+        result = self.connector.format_isbn_search_result(
+            search_results.get("entities")
+        )
+        self.assertIsNone(result)
+
+    def test_is_work_data(self):
+        """is it a work"""
+        work_file = pathlib.Path(__file__).parent.joinpath(
+            "../data/inventaire_work.json"
+        )
+        work_data = json.loads(work_file.read_bytes())
+        with patch("bookwyrm.connectors.inventaire.get_data") as get_data_mock:
+            get_data_mock.return_value = work_data
+            formatted = self.connector.get_book_data("hi")
+        self.assertTrue(self.connector.is_work_data(formatted))
+
+        edition_file = pathlib.Path(__file__).parent.joinpath(
+            "../data/inventaire_edition.json"
+        )
+        edition_data = json.loads(edition_file.read_bytes())
+        with patch("bookwyrm.connectors.inventaire.get_data") as get_data_mock:
+            get_data_mock.return_value = edition_data
+            formatted = self.connector.get_book_data("hi")
+        self.assertFalse(self.connector.is_work_data(formatted))
+
+    @responses.activate
+    def test_get_edition_from_work_data(self):
+        """load edition"""
+        responses.add(
+            responses.GET,
+            "https://inventaire.io/?action=by-uris&uris=hello",
+            json={"entities": {}},
+        )
+        data = {"uri": "blah"}
+        with patch(
+            "bookwyrm.connectors.inventaire.Connector.load_edition_data"
+        ) as loader_mock, patch(
+            "bookwyrm.connectors.inventaire.Connector.get_book_data"
+        ) as getter_mock:
+            loader_mock.return_value = {"uris": ["hello"]}
+            self.connector.get_edition_from_work_data(data)
+        self.assertTrue(getter_mock.called)
+
+        with patch(
+            "bookwyrm.connectors.inventaire.Connector.load_edition_data"
+        ) as loader_mock:
+            loader_mock.return_value = {"uris": []}
+            with self.assertRaises(ConnectorException):
+                self.connector.get_edition_from_work_data(data)
+
+    @responses.activate
+    def test_get_work_from_edition_data(self):
+        """load work"""
+        responses.add(
+            responses.GET,
+            "https://inventaire.io/?action=by-uris&uris=hello",
+        )
+        data = {"wdt:P629": ["hello"]}
+        with patch("bookwyrm.connectors.inventaire.Connector.get_book_data") as mock:
+            self.connector.get_work_from_edition_data(data)
+        self.assertEqual(mock.call_count, 1)
+        args = mock.call_args[0]
+        self.assertEqual(args[0], "https://inventaire.io?action=by-uris&uris=hello")
+
+        data = {"wdt:P629": [None]}
+        with self.assertRaises(ConnectorException):
+            self.connector.get_work_from_edition_data(data)
 
     def test_get_language_code(self):
         """get english or whatever is in reach"""

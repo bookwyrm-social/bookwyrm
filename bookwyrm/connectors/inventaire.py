@@ -67,7 +67,7 @@ class Connector(AbstractConnector):
         extracted = list(data.get("entities").values())
         try:
             data = extracted[0]
-        except KeyError:
+        except (KeyError, IndexError):
             raise ConnectorException("Invalid book data")
         # flatten the data so that images, uri, and claims are on the same level
         return {
@@ -128,6 +128,7 @@ class Connector(AbstractConnector):
 
     def load_edition_data(self, work_uri):
         """get a list of editions for a work"""
+        # pylint: disable=line-too-long
         url = f"{self.books_url}?action=reverse-claims&property=wdt:P629&value={work_uri}&sort=true"
         return get_data(url)
 
