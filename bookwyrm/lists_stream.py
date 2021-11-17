@@ -5,7 +5,7 @@ from django.db.models import signals, Count, Q
 
 from bookwyrm import models
 from bookwyrm.redis_store import RedisStore
-from bookwyrm.tasks import app, LOW, MEDIUM, HIGH
+from bookwyrm.tasks import app, MEDIUM, HIGH
 
 
 class ListsStream(RedisStore):
@@ -98,31 +98,22 @@ class ListsStream(RedisStore):
 # pylint: disable=unused-argument
 def add_list_on_create(sender, instance, created, *args, **kwargs):
     """add newly created lists to activity feeds"""
+    if not created:
+        return
     # when creating new things, gotta wait on the transaction
-    transaction.on_commit(lambda: add_list_on_create_command(instance, created))
+    transaction.on_commit(lambda: add_list_on_create_command(instance))
 
 
 @receiver(signals.pre_delete, sender=models.List)
 # pylint: disable=unused-argument
-def remove_list_on_delete(sender, instance, created, *args, **kwargs):
+def remove_list_on_delete(sender, instance, *args, **kwargs):
     """add newly created lists to activity feeds"""
     remove_list_task.delay(instance.id)
 
 
-def add_list_on_create_command(instance, created):
+def add_list_on_create_command(instance):
     """runs this code only after the database commit completes"""
-    priority = HIGH
-    # check if this is an old list, de-prioritize if so
-    # (this will happen if federation is very slow, or, more expectedly, on csv import)
-    one_day = 60 * 60 * 24
-    if (instance.created_date - instance.published_date).seconds > one_day:
-        priority = LOW
-
-    add_list_task.apply_async(
-        args=(instance.id,),
-        kwargs={"increment_unread": created},
-        queue=priority,
-    )
+    add_list_task.delay(instance.id)
 
 
 @receiver(signals.post_save, sender=models.UserFollows)
@@ -188,17 +179,17 @@ def add_lists_on_unblock(sender, instance, *args, **kwargs):
 
 @receiver(signals.post_save, sender=models.User)
 # pylint: disable=unused-argument
-def populate_streams_on_account_create(sender, instance, created, *args, **kwargs):
+def populate_lists_on_account_create(sender, instance, created, *args, **kwargs):
     """build a user's feeds when they join"""
     if not created or not instance.local:
         return
 
-    populate_lists_stream_task.delay(instance.id)
+    populate_lists_task.delay(instance.id)
 
 
 # ---- TASKS
 @app.task(queue=MEDIUM)
-def populate_lists_stream_task(user_id):
+def populate_lists_task(user_id):
     """background task for populating an empty activitystream"""
     user = models.User.objects.get(id=user_id)
     ListsStream().populate_streams(user)

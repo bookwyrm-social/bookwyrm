@@ -1,11 +1,11 @@
-""" testing activitystreams """
+""" testing lists_stream """
 from unittest.mock import patch
 from django.test import TestCase
-from bookwyrm import activitystreams, models
+from bookwyrm import lists_stream, models
 
 
 @patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
-class ActivitystreamsSignals(TestCase):
+class ListsStreamSignals(TestCase):
     """using redis to build activity streams"""
 
     def setUp(self):
@@ -29,51 +29,41 @@ class ActivitystreamsSignals(TestCase):
                 inbox="https://example.com/users/rat/inbox",
                 outbox="https://example.com/users/rat/outbox",
             )
-        work = models.Work.objects.create(title="test work")
-        self.book = models.Edition.objects.create(title="test book", parent_work=work)
 
-    def test_add_status_on_create_ignore(self, _):
-        """a new statuses has entered"""
-        activitystreams.add_status_on_create(models.User, self.local_user, False)
-
-    def test_add_status_on_create_deleted(self, _):
-        """a new statuses has entered"""
-        with patch("bookwyrm.activitystreams.remove_status_task.delay"):
-            status = models.Status.objects.create(
-                user=self.remote_user, content="hi", privacy="public", deleted=True
-            )
-        with patch("bookwyrm.activitystreams.remove_status_task.delay") as mock:
-            activitystreams.add_status_on_create(models.Status, status, False)
+    def test_add_list_on_create(self, _):
+        """a new lists has entered"""
+        book_list = models.List.objects.create(
+            user=self.remote_user, name="hi", privacy="public"
+        )
+        with patch("bookwyrm.lists_stream.add_list_task.delay") as mock:
+            lists_stream.add_list_on_create_command(book_list)
         self.assertEqual(mock.call_count, 1)
         args = mock.call_args[0]
-        self.assertEqual(args[0], status.id)
+        self.assertEqual(args[0], book_list.id)
 
-    def test_add_status_on_create_created(self, _):
-        """a new statuses has entered"""
-        status = models.Status.objects.create(
-            user=self.remote_user, content="hi", privacy="public"
+    def test_remove_list_on_delete(self, _):
+        """delete a list"""
+        book_list = models.List.objects.create(
+            user=self.remote_user, name="hi", privacy="public"
         )
-        with patch("bookwyrm.activitystreams.add_status_task.apply_async") as mock:
-            activitystreams.add_status_on_create_command(models.Status, status, False)
-        self.assertEqual(mock.call_count, 1)
-        args = mock.call_args[1]
-        self.assertEqual(args["args"][0], status.id)
-        self.assertEqual(args["queue"], "high_priority")
+        with patch("bookwyrm.lists_stream.remove_list_task.delay") as mock:
+            lists_stream.remove_list_on_delete(models.List, book_list)
+        args = mock.call_args[0]
+        self.assertEqual(args[0], book_list.id)
 
-    def test_populate_streams_on_account_create(self, _):
+    def test_populate_lists_on_account_create(self, _):
         """create streams for a user"""
-        with patch("bookwyrm.activitystreams.populate_stream_task.delay") as mock:
-            activitystreams.populate_streams_on_account_create(
+        with patch("bookwyrm.lists_stream.populate_lists_task.delay") as mock:
+            lists_stream.populate_lists_on_account_create(
                 models.User, self.local_user, True
             )
-        self.assertEqual(mock.call_count, 3)
+        self.assertEqual(mock.call_count, 1)
         args = mock.call_args[0]
-        self.assertEqual(args[0], "books")
-        self.assertEqual(args[1], self.local_user.id)
+        self.assertEqual(args[0], self.local_user.id)
 
-    def test_remove_statuses_on_block(self, _):
-        """don't show statuses from blocked users"""
-        with patch("bookwyrm.activitystreams.remove_user_statuses_task.delay") as mock:
+    def test_remove_lists_on_block(self, _):
+        """don't show lists from blocked users"""
+        with patch("bookwyrm.lists_stream.remove_user_lists_task.delay") as mock:
             models.UserBlocks.objects.create(
                 user_subject=self.local_user,
                 user_object=self.remote_user,
@@ -83,26 +73,24 @@ class ActivitystreamsSignals(TestCase):
         self.assertEqual(args[0], self.local_user.id)
         self.assertEqual(args[1], self.remote_user.id)
 
-    def test_add_statuses_on_unblock(self, _):
-        """re-add statuses on unblock"""
-        with patch("bookwyrm.activitystreams.remove_user_statuses_task.delay"):
+    def test_add_lists_on_unblock(self, _):
+        """re-add lists on unblock"""
+        with patch("bookwyrm.lists_stream.remove_user_lists_task.delay"):
             block = models.UserBlocks.objects.create(
                 user_subject=self.local_user,
                 user_object=self.remote_user,
             )
 
-        with patch("bookwyrm.activitystreams.add_user_statuses_task.delay") as mock:
+        with patch("bookwyrm.lists_stream.add_user_lists_task.delay") as mock:
             block.delete()
 
         args = mock.call_args[0]
-        kwargs = mock.call_args.kwargs
         self.assertEqual(args[0], self.local_user.id)
         self.assertEqual(args[1], self.remote_user.id)
-        self.assertEqual(kwargs["stream_list"], ["local", "books"])
 
-    def test_add_statuses_on_unblock_reciprocal_block(self, _):
-        """re-add statuses on unblock"""
-        with patch("bookwyrm.activitystreams.remove_user_statuses_task.delay"):
+    def test_add_lists_on_unblock_reciprocal_block(self, _):
+        """dont' re-add lists on unblock if there's a block the other way"""
+        with patch("bookwyrm.lists_stream.remove_user_lists_task.delay"):
             block = models.UserBlocks.objects.create(
                 user_subject=self.local_user,
                 user_object=self.remote_user,
@@ -112,7 +100,7 @@ class ActivitystreamsSignals(TestCase):
                 user_object=self.local_user,
             )
 
-        with patch("bookwyrm.activitystreams.add_user_statuses_task.delay") as mock:
+        with patch("bookwyrm.lists_stream.add_user_lists_task.delay") as mock:
             block.delete()
 
-        self.assertEqual(mock.call_count, 0)
+        self.assertFalse(mock.called)
