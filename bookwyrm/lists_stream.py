@@ -69,7 +69,7 @@ class ListsStream(RedisStore):
         # only visible to the poster and mentioned users
         if book_list.privacy == "direct":
             audience = audience.filter(
-                Q(id=list.user.id)  # if the user is the post's author
+                Q(id=book_list.user.id)  # if the user is the post's author
             )
         # only visible to the poster's followers and tagged users
         elif book_list.privacy == "followers":
@@ -98,16 +98,15 @@ class ListsStream(RedisStore):
 # pylint: disable=unused-argument
 def add_list_on_create(sender, instance, created, *args, **kwargs):
     """add newly created lists to activity feeds"""
-    # we're only interested in new lists
-    if not issubclass(sender, models.List):
-        return
-
-    if instance.deleted:
-        remove_list_task.delay(instance.id)
-        return
-
     # when creating new things, gotta wait on the transaction
     transaction.on_commit(lambda: add_list_on_create_command(instance, created))
+
+
+@receiver(signals.pre_delete, sender=models.List)
+# pylint: disable=unused-argument
+def remove_list_on_delete(sender, instance, created, *args, **kwargs):
+    """add newly created lists to activity feeds"""
+    remove_list_task.delay(instance.id)
 
 
 def add_list_on_create_command(instance, created):
