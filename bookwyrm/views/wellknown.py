@@ -108,7 +108,8 @@ def instance_info(_):
             "thumbnail": logo,
             "languages": ["en"],
             "registrations": site.allow_registration,
-            "approval_required": site.allow_registration and site.allow_invite_requests,
+            "approval_required": not site.allow_registration
+            and site.allow_invite_requests,
             "email": site.admin_email,
         }
     )
