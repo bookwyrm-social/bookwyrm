@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-11-14 15:08+0000\n"
-"PO-Revision-Date: 2021-11-16 00:36\n"
+"POT-Creation-Date: 2021-11-17 18:03+0000\n"
+"PO-Revision-Date: 2021-11-17 18:42\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Portuguese, Brazilian\n"
 "Language: pt\n"
@@ -17,71 +17,71 @@ msgstr ""
 "X-Crowdin-File: /[bookwyrm-social.bookwyrm] main/locale/en_US/LC_MESSAGES/django.po\n"
 "X-Crowdin-File-ID: 1553\n"
 
-#: bookwyrm/forms.py:242
+#: bookwyrm/forms.py:248
 msgid "A user with this email already exists."
 msgstr "Já existe um usuário com este endereço de e-mail."
 
-#: bookwyrm/forms.py:256
+#: bookwyrm/forms.py:262
 msgid "One Day"
 msgstr "Um dia"
 
-#: bookwyrm/forms.py:257
+#: bookwyrm/forms.py:263
 msgid "One Week"
 msgstr "Uma semana"
 
-#: bookwyrm/forms.py:258
+#: bookwyrm/forms.py:264
 msgid "One Month"
 msgstr "Um mês"
 
-#: bookwyrm/forms.py:259
+#: bookwyrm/forms.py:265
 msgid "Does Not Expire"
 msgstr "Não expira"
 
-#: bookwyrm/forms.py:263
+#: bookwyrm/forms.py:269
 #, python-brace-format
 msgid "{i} uses"
 msgstr "{i} usos"
 
-#: bookwyrm/forms.py:264
+#: bookwyrm/forms.py:270
 msgid "Unlimited"
 msgstr "Ilimitado"
 
-#: bookwyrm/forms.py:332
+#: bookwyrm/forms.py:338
 msgid "List Order"
 msgstr "Ordem de inserção"
 
-#: bookwyrm/forms.py:333
+#: bookwyrm/forms.py:339
 msgid "Book Title"
 msgstr "Título do livro"
 
-#: bookwyrm/forms.py:334 bookwyrm/templates/shelf/shelf.html:149
+#: bookwyrm/forms.py:340 bookwyrm/templates/shelf/shelf.html:149
 #: bookwyrm/templates/shelf/shelf.html:181
 #: bookwyrm/templates/snippets/create_status/review.html:33
 msgid "Rating"
 msgstr "Avaliação"
 
-#: bookwyrm/forms.py:336 bookwyrm/templates/lists/list.html:110
+#: bookwyrm/forms.py:342 bookwyrm/templates/lists/list.html:110
 msgid "Sort By"
 msgstr "Organizar por"
 
-#: bookwyrm/forms.py:340
+#: bookwyrm/forms.py:346
 msgid "Ascending"
 msgstr "Crescente"
 
-#: bookwyrm/forms.py:341
+#: bookwyrm/forms.py:347
 msgid "Descending"
 msgstr "Decrescente"
 
-#: bookwyrm/importers/importer.py:127
+#: bookwyrm/importers/importer.py:141 bookwyrm/importers/importer.py:163
 msgid "Error loading book"
 msgstr "Erro ao carregar livro"
 
-#: bookwyrm/importers/importer.py:135
+#: bookwyrm/importers/importer.py:150
 msgid "Could not find a match for book"
 msgstr "Não foi possível encontrar o livro"
 
 #: bookwyrm/models/base_model.py:17
-#: bookwyrm/templates/import/import_status.html:171
+#: bookwyrm/templates/import/import_status.html:190
 msgid "Pending"
 msgstr "Pendente"
 
@@ -183,18 +183,26 @@ msgid "Español (Spanish)"
 msgstr "Español (Espanhol)"
 
 #: bookwyrm/settings.py:168
+msgid "Galego (Galician)"
+msgstr ""
+
+#: bookwyrm/settings.py:169
 msgid "Français (French)"
 msgstr "Français (Francês)"
 
-#: bookwyrm/settings.py:169
+#: bookwyrm/settings.py:170
+msgid "Lietuvių (Lithuanian)"
+msgstr ""
+
+#: bookwyrm/settings.py:171
 msgid "Português - Brasil (Brazilian Portuguese)"
 msgstr "Português - Brasil (Brazilian Portuguese)"
 
-#: bookwyrm/settings.py:170
+#: bookwyrm/settings.py:172
 msgid "简体中文 (Simplified Chinese)"
 msgstr "简体中文 (Chinês simplificado)"
 
-#: bookwyrm/settings.py:171
+#: bookwyrm/settings.py:173
 msgid "繁體中文 (Traditional Chinese)"
 msgstr "繁體中文 (Chinês tradicional)"
 
@@ -1410,64 +1418,64 @@ msgstr "Em curso"
 msgid "Refresh"
 msgstr "Atualizar"
 
-#: bookwyrm/templates/import/import_status.html:62
+#: bookwyrm/templates/import/import_status.html:71
 #, python-format
 msgid "%(display_counter)s item needs manual approval."
 msgid_plural "%(display_counter)s items need manual approval."
 msgstr[0] "%(display_counter)s item precisa de aprovação manual."
 msgstr[1] "%(display_counter)s itens precisam de aprovação manual."
 
-#: bookwyrm/templates/import/import_status.html:67
+#: bookwyrm/templates/import/import_status.html:76
 #: bookwyrm/templates/import/manual_review.html:8
 msgid "Review items"
 msgstr "Revisar itens"
 
-#: bookwyrm/templates/import/import_status.html:73
+#: bookwyrm/templates/import/import_status.html:82
 #, python-format
 msgid "%(display_counter)s item failed to import."
 msgid_plural "%(display_counter)s items failed to import."
 msgstr[0] "Falha ao importar %(display_counter)s item."
 msgstr[1] "Falha ao importar %(display_counter)s itens."
 
-#: bookwyrm/templates/import/import_status.html:79
+#: bookwyrm/templates/import/import_status.html:88
 msgid "View and troubleshoot failed items"
 msgstr "Ver e solucionar importações fracassadas"
 
-#: bookwyrm/templates/import/import_status.html:91
+#: bookwyrm/templates/import/import_status.html:100
 msgid "Row"
 msgstr "Linha"
 
-#: bookwyrm/templates/import/import_status.html:94
+#: bookwyrm/templates/import/import_status.html:103
 #: bookwyrm/templates/shelf/shelf.html:141
 #: bookwyrm/templates/shelf/shelf.html:163
 msgid "Title"
 msgstr "Título"
 
-#: bookwyrm/templates/import/import_status.html:97
+#: bookwyrm/templates/import/import_status.html:106
 msgid "ISBN"
 msgstr "ISBN"
 
-#: bookwyrm/templates/import/import_status.html:100
+#: bookwyrm/templates/import/import_status.html:109
 #: bookwyrm/templates/shelf/shelf.html:142
 #: bookwyrm/templates/shelf/shelf.html:166
 msgid "Author"
 msgstr "Autor"
 
-#: bookwyrm/templates/import/import_status.html:103
+#: bookwyrm/templates/import/import_status.html:112
 msgid "Shelf"
 msgstr "Estante"
 
-#: bookwyrm/templates/import/import_status.html:106
+#: bookwyrm/templates/import/import_status.html:115
 #: bookwyrm/templates/import/manual_review.html:13
 #: bookwyrm/templates/snippets/create_status.html:17
 msgid "Review"
 msgstr "Resenhar"
 
-#: bookwyrm/templates/import/import_status.html:110
+#: bookwyrm/templates/import/import_status.html:119
 msgid "Book"
 msgstr "Livro"
 
-#: bookwyrm/templates/import/import_status.html:113
+#: bookwyrm/templates/import/import_status.html:122
 #: bookwyrm/templates/settings/announcements/announcements.html:38
 #: bookwyrm/templates/settings/federation/instance_list.html:46
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:44
@@ -1477,17 +1485,33 @@ msgstr "Livro"
 msgid "Status"
 msgstr "Publicação"
 
-#: bookwyrm/templates/import/import_status.html:144
+#: bookwyrm/templates/import/import_status.html:130
+msgid "Import preview unavailable."
+msgstr ""
+
+#: bookwyrm/templates/import/import_status.html:162
 msgid "View imported review"
 msgstr "Visualizar resenha importada"
 
-#: bookwyrm/templates/import/import_status.html:158
+#: bookwyrm/templates/import/import_status.html:176
 msgid "Imported"
 msgstr "Importado"
 
-#: bookwyrm/templates/import/import_status.html:164
+#: bookwyrm/templates/import/import_status.html:182
 msgid "Needs manual review"
 msgstr "Precisa de resenha manual"
+
+#: bookwyrm/templates/import/import_status.html:195
+msgid "Retry"
+msgstr ""
+
+#: bookwyrm/templates/import/import_status.html:213
+msgid "This import is in an old format that is no longer supported. If you would like to troubleshoot missing items from this import, click the button below to update the import format."
+msgstr ""
+
+#: bookwyrm/templates/import/import_status.html:215
+msgid "Update import"
+msgstr ""
 
 #: bookwyrm/templates/import/manual_review.html:5
 #: bookwyrm/templates/import/troubleshoot.html:4
@@ -1498,12 +1522,12 @@ msgstr "Solução de problemas de importação"
 msgid "Approving a suggestion will permanently add the suggested book to your shelves and associate your reading dates, reviews, and ratings with that book."
 msgstr "Aprovar uma sugestão adicionará permanentemente o livro sugerido às suas estantes e associará suas datas de leitura, resenhas e avaliações aos do livro."
 
-#: bookwyrm/templates/import/manual_review.html:56
+#: bookwyrm/templates/import/manual_review.html:58
 #: bookwyrm/templates/lists/curate.html:57
 msgid "Approve"
 msgstr "Aprovar"
 
-#: bookwyrm/templates/import/manual_review.html:64
+#: bookwyrm/templates/import/manual_review.html:66
 msgid "Reject"
 msgstr "Rejeitar"
 
