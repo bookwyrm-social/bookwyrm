@@ -1,5 +1,6 @@
 """ the particulars for this instance of BookWyrm """
 import datetime
+from urllib.parse import urljoin
 
 from django.db import models, IntegrityError
 from django.dispatch import receiver
@@ -7,9 +8,10 @@ from django.utils import timezone
 from model_utils import FieldTracker
 
 from bookwyrm.preview_images import generate_site_preview_image_task
-from bookwyrm.settings import DOMAIN, ENABLE_PREVIEW_IMAGES
+from bookwyrm.settings import DOMAIN, ENABLE_PREVIEW_IMAGES, STATIC_FULL_URL
 from .base_model import BookWyrmModel, new_access_code
 from .user import User
+from .fields import get_absolute_url
 
 
 class SiteSettings(models.Model):
@@ -65,6 +67,13 @@ class SiteSettings(models.Model):
             default_settings = SiteSettings(id=1)
             default_settings.save()
             return default_settings
+
+    @property
+    def logo_small_url(self):
+        """ helper to build the lgoo url """
+        if self.logo_small:
+            return get_absolute_url(self.logo_small)
+        return urljoin(STATIC_FULL_URL, "images/logo-small.png")
 
 
 class SiteInvite(models.Model):
