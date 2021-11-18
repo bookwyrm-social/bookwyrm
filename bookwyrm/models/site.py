@@ -69,11 +69,26 @@ class SiteSettings(models.Model):
             return default_settings
 
     @property
+    def logo_url(self):
+        """helper to build the logo url"""
+        return self.get_url("logo", "images/logo.png")
+
+    @property
     def logo_small_url(self):
-        """ helper to build the lgoo url """
-        if self.logo_small:
-            return get_absolute_url(self.logo_small)
-        return urljoin(STATIC_FULL_URL, "images/logo-small.png")
+        """helper to build the logo url"""
+        return self.get_url("logo_small", "images/logo-small.png")
+
+    @property
+    def favicon_url(self):
+        """helper to build the logo url"""
+        return self.get_url("favicon", "images/favicon.png")
+
+    def get_url(self, field, default_path):
+        """get a media url or a default static path"""
+        uploaded = getattr(self, field, None)
+        if uploaded:
+            return get_absolute_url(uploaded)
+        return urljoin(STATIC_FULL_URL, default_path)
 
 
 class SiteInvite(models.Model):
