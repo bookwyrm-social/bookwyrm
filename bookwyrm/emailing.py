@@ -48,7 +48,7 @@ def moderation_report_email(report):
     data["reportee"] = report.user.localname or report.user.username
     data["report_link"] = report.remote_id
 
-    for admin in models.User.objects.filter(permissions="moderate_user"):
+    for admin in models.User.objects.filter(groups__name="moderator"):
         data["user"] = admin.display_name
         send_email.delay(admin.email, *format_email("moderation_report", data))
 
