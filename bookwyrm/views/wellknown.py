@@ -9,7 +9,7 @@ from django.utils import timezone
 from django.views.decorators.http import require_GET
 
 from bookwyrm import models
-from bookwyrm.settings import DOMAIN, VERSION, MEDIA_FULL_URL, STATIC_FULL_URL
+from bookwyrm.settings import DOMAIN, VERSION
 
 
 @require_GET
@@ -93,7 +93,7 @@ def instance_info(_):
     status_count = models.Status.objects.filter(user__local=True, deleted=False).count()
 
     site = models.SiteSettings.get()
-    logo = get_image_url(site.logo, "logo.png")
+    logo = site.logo_url
     return JsonResponse(
         {
             "uri": DOMAIN,
@@ -134,14 +134,7 @@ def host_meta(request):
 def opensearch(request):
     """Open Search xml spec"""
     site = models.SiteSettings.get()
-    image = get_image_url(site.favicon, "favicon.png")
+    image = site.favicon_url
     return TemplateResponse(
         request, "opensearch.xml", {"image": image, "DOMAIN": DOMAIN}
     )
-
-
-def get_image_url(obj, fallback):
-    """helper for loading the full path to an image"""
-    if obj:
-        return f"{MEDIA_FULL_URL}{obj}"
-    return f"{STATIC_FULL_URL}images/{fallback}"
