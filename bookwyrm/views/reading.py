@@ -86,15 +86,19 @@ class ReadingStatus(View):
         if request.POST.get("post-status"):
             # is it a comment?
             if request.POST.get("content"):
-                # BUG: there is a problem posting statuses for finishing
-                # check whether it existed before.
+                # BUG: there is a problem posting statuses with comments (doesn't force reload)
+                # there is a DIFFERENT problem *updating* read statuses/comments
                 return CreateStatus.as_view()(request, "comment")
             privacy = request.POST.get("privacy")
             handle_reading_status(request.user, desired_shelf, book, privacy)
 
+        # if the request includes a "shelf" value we are using the 'move' button
         if bool(request.POST.get("shelf")): 
-            if current_status_shelfbook is None:
+            # unshelve the existing shelf
+            this_shelf = request.POST.get("shelf")
+            if int(this_shelf) not in [1,2,3]:
                 return unshelve(request, referer=referer, book_id=book_id)
+            # don't try to unshelve a read status shelf: it has already been deleted.
             return HttpResponse(headers={"forceReload" : "true"}) 
 
         if is_api_request(request):
