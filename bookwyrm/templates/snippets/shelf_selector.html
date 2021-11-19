@@ -12,13 +12,7 @@
 {% with book.id|uuid as uuid %}
 {% active_shelf book as active_shelf %}
 {% for shelf in user_shelves %}
-<!--  TODO: 
-      #1 work out logic to both trigger the relevant modal for reading status ✅
-      #2 AND REMOVE FROM CURRENT SHELF ✅
-      #3 AND TRIGGER RELOAD even when readthrough shelf ✅
 
-      #4 disable if book is shelved on this shelf
--->
 {% if shelf.editable %}
 <li role="menuitem" class="dropdown-item p-0">
     <form name="shelve" action="/shelve/" method="post">
@@ -26,10 +20,11 @@
         <input type="hidden" name="book" value="{{ book.id }}">
         <input type="hidden" name="change-shelf-from" value="{{ current.identifier }}">
         <input type="hidden" name="shelf" value="{{ shelf.identifier }}">
-        <button class="button is-fullwidth is-small shelf-option is-radiusless is-white" type="submit" {% if shelf.identifier == current.identifier %}disabled{% endif %}><span>{{ shelf.name }}</span></button>
+        <button class="button is-fullwidth is-small shelf-option is-radiusless is-white" type="submit" {% if shelf in book.shelf_set.all %} disabled {% endif %}><span>{{ shelf.name }}</span></button>
     </form>
 </li>
 {% else%}
+{% comparison_bool shelf.identifier active_shelf.shelf.identifier as is_current %}
 {% with button_class="is-fullwidth is-small shelf-option is-radiusless is-white" %}
 <li role="menuitem" class="dropdown-item p-0">
 {% if shelf.identifier == 'reading' %}
