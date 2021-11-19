@@ -1,6 +1,7 @@
 {% extends 'components/dropdown.html' %}
 {% load i18n %}
 {% load bookwyrm_tags %}
+{% load utilities %}
 
 {% block dropdown-trigger %}
 <span>{% trans "Move book" %}</span>
@@ -8,7 +9,16 @@
 {% endblock %}
 
 {% block dropdown-list %}
+{% with book.id|uuid as uuid %}
+{% active_shelf book as active_shelf %}
 {% for shelf in user_shelves %}
+<!--  TODO: 
+      #1 work out logic to both trigger the relevant modal for reading status ✅
+      #2 AND REMOVE FROM CURRENT SHELF ✅
+      #3 AND TRIGGER RELOAD even when readthrough shelf ✅
+
+      #4 disable if book is shelved on this shelf
+-->
 {% if shelf.editable %}
 <li role="menuitem" class="dropdown-item p-0">
     <form name="shelve" action="/shelve/" method="post">
@@ -19,6 +29,31 @@
         <button class="button is-fullwidth is-small shelf-option is-radiusless is-white" type="submit" {% if shelf.identifier == current.identifier %}disabled{% endif %}><span>{{ shelf.name }}</span></button>
     </form>
 </li>
+{% else%}
+{% with button_class="is-fullwidth is-small shelf-option is-radiusless is-white" %}
+<li role="menuitem" class="dropdown-item p-0">
+{% if shelf.identifier == 'reading' %}
+
+{% trans "Start reading" as button_text %}
+{% url 'reading-status' 'start' book.id as fallback_url %}
+{% include 'snippets/toggle/toggle_button.html' with class=button_class text=button_text controls_text="start_reading" controls_uid=uuid focus="modal_title_start_reading" disabled=is_current fallback_url=fallback_url %}
+
+
+{% elif shelf.identifier == 'read' %}
+
+{% trans "Read" as button_text %}
+{% url 'reading-status' 'finish' book.id as fallback_url %}
+{% include 'snippets/toggle/toggle_button.html' with class=button_class text=button_text controls_text="finish_reading" controls_uid=uuid focus="modal_title_finish_reading" disabled=is_current fallback_url=fallback_url %}
+
+{% elif shelf.identifier == 'to-read' %}
+
+{% trans "Want to read" as button_text %}
+{% url 'reading-status' 'want' book.id as fallback_url %}
+{% include 'snippets/toggle/toggle_button.html' with class=button_class text=button_text controls_text="want_to_read" controls_uid=uuid focus="modal_title_want_to_read" disabled=is_current fallback_url=fallback_url %}
+
+{% endif %}
+</li>
+{% endwith %}
 {% endif %}
 {% endfor %}
 <li class="navbar-divider" role="separator"></li>
@@ -30,4 +65,14 @@
         <button class="button is-fullwidth is-small is-radiusless is-danger is-light" type="submit">{% trans "Remove" %}</button>
     </form>
 </li>
+
+{% include 'snippets/reading_modals/want_to_read_modal.html' with book=active_shelf.book controls_text="want_to_read" controls_uid=uuid move_from=current.id %}
+
+{% include 'snippets/reading_modals/start_reading_modal.html' with book=active_shelf.book controls_text="start_reading" controls_uid=uuid move_from=current.id %}
+
+{% include 'snippets/reading_modals/finish_reading_modal.html' with book=active_shelf.book controls_text="finish_reading" controls_uid=uuid  move_from=current.id readthrough=readthrough %}
+
+{% include 'snippets/reading_modals/progress_update_modal.html' with book=active_shelf.book controls_text="progress_update" controls_uid=uuid move_from=current.id readthrough=readthrough %}
+
+{% endwith %}
 {% endblock %}

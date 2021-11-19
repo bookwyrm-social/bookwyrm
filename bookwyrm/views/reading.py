@@ -9,6 +9,7 @@ from django.views import View
 from django.views.decorators.http import require_POST
 
 from bookwyrm import models
+from bookwyrm.views.shelf.shelf_actions import unshelve
 from .status import CreateStatus
 from .helpers import get_edition, handle_reading_status, is_api_request
 from .helpers import load_date_in_user_tz_as_utc
@@ -85,12 +86,20 @@ class ReadingStatus(View):
         if request.POST.get("post-status"):
             # is it a comment?
             if request.POST.get("content"):
+                # BUG: there is a problem posting statuses for finishing
+                # check whether it existed before.
                 return CreateStatus.as_view()(request, "comment")
             privacy = request.POST.get("privacy")
             handle_reading_status(request.user, desired_shelf, book, privacy)
 
+        if bool(request.POST.get("shelf")): 
+            if current_status_shelfbook is None:
+                return unshelve(request, referer=referer, book_id=book_id)
+            return HttpResponse(headers={"forceReload" : "true"}) 
+
         if is_api_request(request):
             return HttpResponse()
+
         return redirect(referer)
 
 
