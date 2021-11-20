@@ -325,7 +325,7 @@ def save_and_cleanup(image, instance=None):
         except ValueError:
             file_name = None
 
-        if not file_name or file_name == '':
+        if not file_name or file_name == "":
             uuid = uuid4()
             file_name = f"{instance.id}-{uuid}.jpg"
 
