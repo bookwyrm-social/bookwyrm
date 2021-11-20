@@ -91,17 +91,18 @@ class ReadingStatus(View):
             handle_reading_status(request.user, desired_shelf, book, privacy)
 
         # if the request includes a "shelf" value we are using the 'move' button
-        if bool(request.POST.get("shelf")): 
+        if bool(request.POST.get("shelf")):
             # unshelve the existing shelf
             this_shelf = request.POST.get("shelf")
             if (
-                bool(current_status_shelfbook) and 
-                int(this_shelf) != int(current_status_shelfbook.shelf.id) and
-                current_status_shelfbook.shelf.identifier != desired_shelf.identifier
-                ):
+                bool(current_status_shelfbook)
+                and int(this_shelf) != int(current_status_shelfbook.shelf.id)
+                and current_status_shelfbook.shelf.identifier
+                != desired_shelf.identifier
+            ):
                 return unshelve(request, referer=referer, book_id=book_id)
             # don't try to unshelve a read status shelf: it has already been deleted.
-            return HttpResponse(headers={"forceReload" : "true"}) 
+            return HttpResponse(headers={"forceReload": "true"})
 
         if is_api_request(request):
             return HttpResponse()

@@ -102,5 +102,5 @@ def unshelve(request, referer=None, book_id=False):
     shelf_book.raise_not_deletable(request.user)
     shelf_book.delete()
     if bool(referer):
-        return HttpResponse(headers={"forceReload" : "true"}) 
+        return HttpResponse(headers={"forceReload": "true"})
     return redirect(request.headers.get("Referer", "/"))
