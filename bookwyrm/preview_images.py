@@ -11,6 +11,7 @@ from PIL import Image, ImageDraw, ImageFont, ImageOps, ImageColor
 
 from django.core.files.base import ContentFile
 from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.core.files.storage import default_storage
 from django.db.models import Avg
 
 from bookwyrm import models, settings
@@ -324,6 +325,10 @@ def save_and_cleanup(image, instance=None):
         except ValueError:
             uuid = uuid4()
             file_name = f"{instance.id}-{uuid}.jpg"
+
+        # Clean up old file before saving
+        if file_name and default_storage.exists(file_name):
+            default_storage.delete(file_name)
 
         # Save
         image.save(image_buffer, format="jpeg", quality=75)
