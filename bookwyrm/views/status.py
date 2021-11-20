@@ -117,11 +117,15 @@ class CreateStatus(View):
 
         status.save(created=created)
 
-        # update a readthorugh, if needed
+        # update a readthrough, if needed
         try:
             edit_readthrough(request)
         except Http404:
             pass
+
+        # force page reload if this was triggered from 'move' button
+        if bool(request.POST.get("shelf")):
+            return HttpResponse(headers={"forceReload" : "true"}) 
 
         if is_api_request(request):
             return HttpResponse()
@@ -157,6 +161,8 @@ def update_progress(request, book_id):  # pylint: disable=unused-argument
 @require_POST
 def edit_readthrough(request):
     """can't use the form because the dates are too finnicky"""
+    # BUG when triggering finish reading with comments and no previous readthroughs
+    # this will 404
     readthrough = get_object_or_404(models.ReadThrough, id=request.POST.get("id"))
     readthrough.raise_not_editable(request.user)
 
