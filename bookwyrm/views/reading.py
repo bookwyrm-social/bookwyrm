@@ -17,6 +17,7 @@ from .helpers import load_date_in_user_tz_as_utc
 
 @method_decorator(login_required, name="dispatch")
 # pylint: disable=no-self-use
+# pylint: disable=too-many-return-statements
 class ReadingStatus(View):
     """consider reading a book"""
 

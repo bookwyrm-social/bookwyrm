@@ -54,6 +54,7 @@ class CreateStatus(View):
         data = {"book": book}
         return TemplateResponse(request, "compose.html", data)
 
+    # pylint: disable=too-many-branches
     def post(self, request, status_type, existing_status_id=None):
         """create status of whatever type"""
         created = not existing_status_id

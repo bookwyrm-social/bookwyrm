@@ -93,8 +93,10 @@ let StatusCache = new class {
             if (response.headers.get("forceReload")) {
                 BookWyrm.addRemoveClass(form, 'is-processing', true);
                 trigger.setAttribute('disabled', null);
+
                 return location.reload();
             }
+
             if (!response.ok) {
                 throw new Error();
             }

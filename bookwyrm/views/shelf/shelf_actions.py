@@ -94,8 +94,8 @@ def shelve(request):
 @require_POST
 def unshelve(request, referer=None, book_id=False):
     """remove a book from a user's shelf"""
-    id = book_id if book_id else request.POST.get("book")
-    book = get_object_or_404(models.Edition, id=id)
+    identity = book_id if book_id else request.POST.get("book")
+    book = get_object_or_404(models.Edition, id=identity)
     shelf_book = get_object_or_404(
         models.ShelfBook, book=book, shelf__id=request.POST["shelf"]
     )
