@@ -86,8 +86,6 @@ class ReadingStatus(View):
         if request.POST.get("post-status"):
             # is it a comment?
             if request.POST.get("content"):
-                # BUG: there is a problem posting statuses with comments (doesn't force reload)
-                # there is a DIFFERENT problem *updating* read statuses/comments
                 return CreateStatus.as_view()(request, "comment")
             privacy = request.POST.get("privacy")
             handle_reading_status(request.user, desired_shelf, book, privacy)

@@ -118,10 +118,11 @@ class CreateStatus(View):
         status.save(created=created)
 
         # update a readthrough, if needed
-        try:
-            edit_readthrough(request)
-        except Http404:
-            pass
+        if bool(request.POST.get("id")):
+            try:
+                edit_readthrough(request)
+            except Http404:
+                pass
 
         # force page reload if this was triggered from 'move' button
         if bool(request.POST.get("shelf")):
