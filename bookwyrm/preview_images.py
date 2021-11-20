@@ -316,13 +316,13 @@ def save_and_cleanup(image, instance=None):
     """Save and close the file"""
     if not isinstance(instance, (models.Book, models.User, models.SiteSettings)):
         return False
-    uuid = uuid4()
     image_buffer = BytesIO()
 
     try:
         try:
             file_name = instance.preview_image.name
         except ValueError:
+            uuid = uuid4()
             file_name = f"{instance.id}-{uuid}.jpg"
 
         # Save
