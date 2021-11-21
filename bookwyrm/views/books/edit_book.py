@@ -43,12 +43,12 @@ class EditBook(View):
         if not form.is_valid():
             return TemplateResponse(request, "book/edit/edit_book.html", data)
 
-        add_author = request.POST.get("add_author")
+        add_author = request.POST.getlist("add_author")
         # we're adding an author through a free text field
         if add_author:
             data["add_author"] = add_author
             data["author_matches"] = []
-            for author in add_author.split(","):
+            for author in add_author:
                 if not author:
                     continue
                 # check for existing authors
