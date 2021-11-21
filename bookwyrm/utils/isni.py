@@ -178,7 +178,7 @@ def augment_author_metadata(author, isni):
     # we DO want to overwrite aliases because we're adding them to the 
     # existing aliases and ISNI will usually have more.
     # We need to dedupe because ISNI records often have lots of dupe aliases
-    aliases = set(isni_author["aliases"])
+    aliases = set(isni_author.aliases)
     for alias in author.aliases:
         aliases.add(alias)
     author.aliases = list(aliases)
