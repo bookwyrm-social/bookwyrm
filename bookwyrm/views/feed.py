@@ -11,6 +11,7 @@ from django.views import View
 
 from bookwyrm import activitystreams, forms, models
 from bookwyrm.activitypub import ActivitypubResponse
+from bookwyrm.models import User
 from bookwyrm.settings import PAGE_LENGTH, STREAMS
 from bookwyrm.suggested_users import suggested_users
 from .helpers import get_user_from_username
@@ -22,7 +23,16 @@ from .helpers import is_api_request, is_bookwyrm_request
 class Feed(View):
     """activity stream"""
 
-    def get(self, request, tab):
+    def post(self, request, tab):
+        settings_saved = False
+        form = forms.FeedStatusTypes(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            settings_saved = True
+
+        return self.get(request, tab, settings_saved)
+
+    def get(self, request, tab, settings_saved=False):
         """user's homepage with activity feed"""
         tab = [s for s in STREAMS if s["key"] == tab]
         tab = tab[0] if tab else STREAMS[0]
@@ -30,7 +40,11 @@ class Feed(View):
         activities = activitystreams.streams[tab["key"]].get_activity_stream(
             request.user
         )
-        paginated = Paginator(activities, PAGE_LENGTH)
+        filtered_activities = filter_stream_by_status_type(
+            activities,
+            allowed_types=request.user.feed_status_types,
+        )
+        paginated = Paginator(filtered_activities, PAGE_LENGTH)
 
         suggestions = suggested_users.get_suggestions(request.user)
 
@@ -43,6 +57,10 @@ class Feed(View):
                 "tab": tab,
                 "streams": STREAMS,
                 "goal_form": forms.GoalForm(),
+                "feed_status_types_form": forms.FeedStatusTypes(
+                    instance=request.user,
+                ),
+                "settings_saved": settings_saved,
                 "path": f"/{tab['key']}",
             },
         }
@@ -230,3 +248,16 @@ def get_suggested_books(user, max_books=5):
         suggested_books.append(shelf_preview)
         book_count += len(shelf_preview["books"])
     return suggested_books
+
+
+def filter_stream_by_status_type(activities, allowed_types=[]):
+    if "review" not in allowed_types:
+        activities = activities.filter(Q(review__isnull=True))
+    if "comment" not in allowed_types:
+        activities = activities.filter(Q(comment__isnull=True))
+    if "quotation" not in allowed_types:
+        activities = activities.filter(Q(quotation__isnull=True))
+    if "everything" not in allowed_types:
+        activities = activities.filter(Q(generatednote__isnull=True))
+
+    return activities

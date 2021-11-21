@@ -16,6 +16,27 @@
     </ul>
 </div>
 
+
+<details class="mb-5" {% if settings_saved %}open{% endif %}>
+    <summary>
+        <span class="has-text-weight-bold">What to display?</span>
+        {% if settings_saved %}
+            <span class="tag is-success is-light ml-2">Saved!</span>
+        {% endif %}
+    </summary>
+    <form class="level" method="post" action="/{{ tab.key }}">
+        {% csrf_token %}
+        <div class="level-left">
+            {{ feed_status_types_form }}
+        </div>
+        <div class="level-right">
+            <button class="button is-small is-primary is-outlined" type="submit">
+                Submit
+            </button>
+        </div>
+    </form>
+</details>
+
 {# announcements and system messages #}
 {% if not activities.number > 1 %}
 <a href="{{ request.path }}" class="transition-y is-hidden notification is-primary is-block" data-poll-wrapper>

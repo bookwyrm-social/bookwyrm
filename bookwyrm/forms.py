@@ -174,6 +174,29 @@ class UserGroupForm(CustomForm):
         fields = ["groups"]
 
 
+class CheckboxSelectMultipleHorizontal(widgets.CheckboxSelectMultiple):
+    template_name = "widgets/checkbox_select_horizontal.html"
+    option_template_name = "widgets/checkbox_select_horizontal_option.html"
+
+
+class FeedStatusTypes(CustomForm):
+    class Meta:
+        model = models.User
+        fields = ["feed_status_types"]
+        help_texts = {f: None for f in fields}
+        labels = {"feed_status_types": ""}
+        widgets = {
+            "feed_status_types": CheckboxSelectMultipleHorizontal(
+                choices=[
+                    ("review", _("Reviews")),
+                    ("comment", _("Comments")),
+                    ("quotation", _("Quotations")),
+                    ("everything", _("Everything else")),
+                ],
+            ),
+        }
+
+
 class CoverForm(CustomForm):
     class Meta:
         model = models.Book

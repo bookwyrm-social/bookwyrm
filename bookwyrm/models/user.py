@@ -4,7 +4,7 @@ from urllib.parse import urlparse
 
 from django.apps import apps
 from django.contrib.auth.models import AbstractUser, Group
-from django.contrib.postgres.fields import CICharField
+from django.contrib.postgres.fields import ArrayField, CICharField
 from django.core.validators import MinValueValidator
 from django.dispatch import receiver
 from django.db import models, transaction
@@ -127,6 +127,13 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     show_goal = models.BooleanField(default=True)
     show_suggested_users = models.BooleanField(default=True)
     discoverable = fields.BooleanField(default=False)
+
+    # feed options
+    feed_status_types = ArrayField(
+        models.CharField(max_length=10, blank=False),
+        size=8,
+        default=list(["review", "comment", "quotation", "everything"]),
+    )
 
     preferred_timezone = models.CharField(
         choices=[(str(tz), str(tz)) for tz in pytz.all_timezones],
