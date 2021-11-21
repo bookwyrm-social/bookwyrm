@@ -1,9 +1,6 @@
 """ISNI author checking utilities"""
-from typing import Set
 import xml.etree.ElementTree as ET
 import requests
-
-from django.utils.safestring import mark_safe
 
 from bookwyrm import activitypub, models
 
@@ -86,7 +83,7 @@ def get_external_information_uri(element, match_string):
     return ""
 
 
-def find_authors_by_name(name_string):
+def find_authors_by_name(name_string, description=False):
     """Query the ISNI database for possible author matches by name"""
 
     payload = request_isni_data("pica.na", name_string)
@@ -102,23 +99,25 @@ def find_authors_by_name(name_string):
         if not personal_name:
             continue
 
-        author = {}
-        author["author"] = get_author_from_isni(element.find(".//isniUnformatted").text)
-        titles = element.findall(".//title")
-        if titles:
-            title_element = [e for e in titles if not e.text.replace('@', '').isnumeric()][0]
-        title = (
-          title_element.text.replace('@', '')
-          if titles is not None
-          and title_element is not None
-          and len(title_element.text) > 4
-          else None
-        )
-        author["description"] = (
-          mark_safe(f"Author of <em>{title}</em>") if title is not None
-          else bio.text if bio is not None
-          else "More information at isni.org"
-        )
+        author = get_author_from_isni(element.find(".//isniUnformatted").text)
+
+        if bool(description):
+            titles = element.findall(".//title")
+            if titles:
+                # some of the "titles" in ISNI are a little ...iffy
+                title_element = [e for e in titles if not e.text.replace('@', '').isnumeric()][0]
+            title = (
+              title_element.text.replace('@', '')
+              if titles is not None
+              and title_element is not None
+              and len(title_element.text) > 4
+              else None
+            )
+            author.bio = (
+              title if title is not None
+              else bio.text if bio is not None
+              else "More information at isni.org"
+            )
 
         possible_authors.append(author)
 
@@ -151,10 +150,10 @@ def get_author_from_isni(isni):
       id=element.find(".//isniURI").text,
       name=name,
       isni=isni,
-      viaf_id=viaf,
+      viafId=viaf,
       aliases=aliases,
       bio=bio,
-      wikipedia_link=wikipedia
+      wikipediaLink=wikipedia
     )
 
     return author
@@ -163,12 +162,10 @@ def build_author_from_isni(match_value):
     """Build dict with basic author details from ISNI or author name"""
 
     # if it is an isni value get the data
-    if match_value.startswith("isni_match_"):
-        isni = match_value.replace("isni_match_", "")
-        print("returning author dict")
+    if match_value.startswith("https://isni.org/isni/"):
+        isni = match_value.replace("https://isni.org/isni/", "")
         return { "author": get_author_from_isni(isni) }
     # otherwise it's a name string
-    print("returning empty dict")
     return {}
 
 
@@ -180,7 +177,7 @@ def augment_author_metadata(author, isni):
 
     # we DO want to overwrite aliases because we're adding them to the 
     # existing aliases and ISNI will usually have more.
-    # We need to dedupe because ISNI has lots of dupe aliases
+    # We need to dedupe because ISNI records often have lots of dupe aliases
     aliases = set(isni_author["aliases"])
     for alias in author.aliases:
         aliases.add(alias)

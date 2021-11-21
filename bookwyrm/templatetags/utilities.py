@@ -78,8 +78,8 @@ def get_isni_bio(existing, author):
     if len(existing) == 0:
         return ""
     for value in existing:
-        if "bio" in value and auth_isni == re.sub(r"\D", "", str(value["isni"])):
-            return value["bio"]
+        if hasattr(value, "bio") and auth_isni == re.sub(r"\D", "", str(value.isni)):
+            return mark_safe(f"Author of <em>{value.bio}</em>")
 
     return ""
 
@@ -92,8 +92,8 @@ def get_isni(existing, author, autoescape=True):
     if len(existing) == 0:
         return ""
     for value in existing:
-        if "isni" in value and auth_isni == re.sub(r"\D", "", str(value["isni"])):
-            isni = value["isni"]
+        if hasattr(value, "isni")and auth_isni == re.sub(r"\D", "", str(value.isni)):
+            isni = value.isni
             return mark_safe(
                 f'<input type="text" name="isni-for-{author.id}" value="{isni}" hidden>'
             )

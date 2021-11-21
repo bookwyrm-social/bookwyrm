@@ -72,26 +72,28 @@ class EditBook(View):
                 )
 
                 isni_authors = find_authors_by_name(
-                    author
+                    author,
+                    description=True
                 )  # find matches from ISNI API
 
-                # do not show isni results for authors we already have in the DB
+                # dedupe isni authors we already have in the DB
                 exists = [
                     i
                     for i in isni_authors
                     for a in author_matches
-                    if sub(r"\D", "", str(i["author"].isni)) == sub(r"\D", "", str(a.isni))
+                    if sub(r"\D", "", str(i.isni)) == sub(r"\D", "", str(a.isni))
                 ]
 
                 # pylint: disable=cell-var-from-loop
-                isni_matches = list(filter(lambda x: x not in exists, isni_authors))
+                matches = list(filter(lambda x: x not in exists, isni_authors))
+                # combine existing and isni authors
+                matches.extend(author_matches)
 
                 data["author_matches"].append(
                     {
                         "name": author.strip(),
-                        "matches": author_matches,
+                        "matches": matches,
                         "existing_isnis": exists,
-                        "isni_matches": isni_matches,
                     }
                 )
 
@@ -181,16 +183,19 @@ class ConfirmEditBook(View):
                         augment_author_metadata(author, isni)
                 except ValueError:
                     # otherwise it's a new author
-                    # with isni id
                     isni_match = request.POST.get(f"author_match-{i}")
                     author_object = build_author_from_isni(isni_match)
+                    # with author data class from isni id
                     if "author" in author_object:
+                        # TESTING 
+                        skeleton = models.Author.objects.create(name=author_object["author"].name)
                         author = author_object["author"].to_model(
                           model=models.Author, 
-                          overwrite=False
+                          overwrite=True,
+                          instance=skeleton
                         )
                     else:
-                        # or it's a name
+                        # or it's just a name
                         author = models.Author.objects.create(name=match)
                 book.authors.add(author)
 
