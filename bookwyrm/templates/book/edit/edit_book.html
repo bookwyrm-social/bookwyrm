@@ -59,11 +59,11 @@
                         {% if author.isni_matches %}
                         {% for isni_match in author.isni_matches %}
                         <label class="label mt-2">
-                            <input type="radio" name="author_match-{{ counter }}" value="isni_match_{{ isni_match.isni }}" required>
-                            {{ isni_match.name }}
+                            <input type="radio" name="author_match-{{ counter }}" value="isni_match_{{ isni_match.author.isni }}" required>
+                            {{ isni_match.author.name }}
                         </label>
                         <p class="help ml-5 mb-2">
-                            <a href="{{ isni_match.uri }}" target="_blank" rel="noopener noreferrer">{{ isni_match.bio }}</a>
+                            <a href="{{ isni_match.author.id }}" target="_blank" rel="noopener noreferrer">{{ isni_match.description }}</a>
                         </p>
                         {% endfor %}
                         {% endif %}

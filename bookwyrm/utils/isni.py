@@ -1,7 +1,11 @@
 """ISNI author checking utilities"""
+from typing import Set
 import xml.etree.ElementTree as ET
 import requests
 
+from django.utils.safestring import mark_safe
+
+from bookwyrm import activitypub, models
 
 def request_isni_data(search_index, search_term, max_records=5):
     """Request data from the ISNI API"""
@@ -17,7 +21,11 @@ def request_isni_data(search_index, search_term, max_records=5):
         "recordPacking": "xml",
         "sortKeys": "RLV,pica,0,,",
     }
-    result = requests.get("http://isni.oclc.org/sru/", params=query_params)
+    result = requests.get(
+      "http://isni.oclc.org/sru/", 
+      params=query_params,
+      timeout=10
+      )
     # the OCLC ISNI server asserts the payload is encoded
     # in latin1, but we know better
     result.encoding = "utf-8"
@@ -47,6 +55,18 @@ def get_other_identifier(element, code):
             and section_head.find(".//identifier") is not None
         ):
             return section_head.find(".//identifier").text
+
+    # if we can't find it in otherIdentifierOfIdentity,
+    # try sources
+    for source in element.findall(".//sources"):
+        code_of_source = source.find(".//codeOfSource")
+        if (
+            code_of_source is not None 
+            and code_of_source.text == code.upper()
+            or code_of_source.text == code.lower()
+            ):
+            return source.find(".//sourceIdentifier").text
+
     return ""
 
 
@@ -55,8 +75,13 @@ def get_external_information_uri(element, match_string):
 
     sources = element.findall(".//externalInformation")
     for source in sources:
+        information = source.find(".//information")
         uri = source.find(".//URI")
-        if uri is not None and uri.text.find(match_string) is not None:
+        if (
+          uri is not None 
+          and information is not None
+          and information.text.lower() == match_string.lower()
+          ):
             return uri.text
     return ""
 
@@ -78,17 +103,29 @@ def find_authors_by_name(name_string):
             continue
 
         author = {}
-        author["isni"] = element.find(".//isniUnformatted").text
-        author["uri"] = element.find(".//isniURI").text
-        author["name"] = make_name_string(personal_name)
-        if bio is not None:
-            author["bio"] = bio.text
+        author["author"] = get_author_from_isni(element.find(".//isniUnformatted").text)
+        titles = element.findall(".//title")
+        if titles:
+            title_element = [e for e in titles if not e.text.replace('@', '').isnumeric()][0]
+        title = (
+          title_element.text.replace('@', '')
+          if titles is not None
+          and title_element is not None
+          and len(title_element.text) > 4
+          else None
+        )
+        author["description"] = (
+          mark_safe(f"Author of <em>{title}</em>") if title is not None
+          else bio.text if bio is not None
+          else "More information at isni.org"
+        )
+
         possible_authors.append(author)
 
     return possible_authors
 
 
-def get_author_isni_data(isni):
+def get_author_from_isni(isni):
     """Find data to populate a new author record from their ISNI"""
 
     payload = request_isni_data("pica.isn", isni)
@@ -97,48 +134,57 @@ def get_author_isni_data(isni):
     # there should only be a single responseRecord
     # but let's use the first one just in case
     element = root.find(".//responseRecord")
-    personal_name = element.find(".//forename/..")
+    name = make_name_string(element.find(".//forename/.."))
+    viaf = get_other_identifier(element, "viaf")
+    # use a set to dedupe aliases in ISNI
+    aliases = set()
+    aliases_element = element.findall(".//personalNameVariant")
+    for entry in aliases_element:
+        aliases.add(make_name_string(entry))
+    # aliases needs to be list not set
+    aliases = list(aliases)
     bio = element.find(".//nameTitle")
-    author = {}
-    author["isni"] = isni
-    author["name"] = make_name_string(personal_name)
-    author["viaf_id"] = get_other_identifier(element, "viaf")
-    author["wikipedia_link"] = get_external_information_uri(element, "Wikipedia")
-    author["bio"] = bio.text if bio is not None else ""
-    author["aliases"] = []
-    aliases = element.findall(".//personalNameVariant")
-    for entry in aliases:
-        author["aliases"].append(make_name_string(entry))
-    # dedupe aliases
-    author["aliases"] = list(set(author["aliases"]))
+    bio = bio.text if bio is not None else ""
+    wikipedia = get_external_information_uri(element, "Wikipedia")
+
+    author = activitypub.Author(
+      id=element.find(".//isniURI").text,
+      name=name,
+      isni=isni,
+      viaf_id=viaf,
+      aliases=aliases,
+      bio=bio,
+      wikipedia_link=wikipedia
+    )
+
     return author
 
-
-def build_author_dict(match_value):
+def build_author_from_isni(match_value):
     """Build dict with basic author details from ISNI or author name"""
 
     # if it is an isni value get the data
     if match_value.startswith("isni_match_"):
         isni = match_value.replace("isni_match_", "")
-        return get_author_isni_data(isni)
+        print("returning author dict")
+        return { "author": get_author_from_isni(isni) }
     # otherwise it's a name string
-    return {"name": match_value}
+    print("returning empty dict")
+    return {}
 
 
 def augment_author_metadata(author, isni):
     """Update any missing author fields from ISNI data"""
-    isni_data = get_author_isni_data(isni)
-    author.viaf_id = (
-        isni_data["viaf_id"] if len(author.viaf_id) == 0 else author.viaf_id
-    )
-    author.wikipedia_link = (
-        isni_data["wikipedia_link"]
-        if len(author.wikipedia_link) == 0
-        else author.wikipedia_link
-    )
-    author.bio = isni_data["bio"] if len(author.bio) == 0 else author.bio
-    aliases = set(isni_data["aliases"])
+
+    isni_author = get_author_from_isni(isni)
+    isni_author.to_model(model=models.Author, instance=author, overwrite=False)
+
+    # we DO want to overwrite aliases because we're adding them to the 
+    # existing aliases and ISNI will usually have more.
+    # We need to dedupe because ISNI has lots of dupe aliases
+    aliases = set(isni_author["aliases"])
     for alias in author.aliases:
         aliases.add(alias)
     author.aliases = list(aliases)
     author.save()
+
+    return

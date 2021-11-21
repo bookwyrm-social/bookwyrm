@@ -12,9 +12,10 @@ from django.utils.decorators import method_decorator
 from django.views import View
 
 from bookwyrm import book_search, forms, models
+# from bookwyrm.activitypub.base_activity import ActivityObject
 from bookwyrm.utils.isni import (
     find_authors_by_name,
-    build_author_dict,
+    build_author_from_isni,
     augment_author_metadata,
 )
 from bookwyrm.views.helpers import get_edition
@@ -79,7 +80,7 @@ class EditBook(View):
                     i
                     for i in isni_authors
                     for a in author_matches
-                    if sub(r"\D", "", str(i["isni"])) == sub(r"\D", "", str(a.isni))
+                    if sub(r"\D", "", str(i["author"].isni)) == sub(r"\D", "", str(a.isni))
                 ]
 
                 # pylint: disable=cell-var-from-loop
@@ -179,9 +180,18 @@ class ConfirmEditBook(View):
                     if isni is not None:
                         augment_author_metadata(author, isni)
                 except ValueError:
-                    # otherwise it's a name with or without isni id
-                    author_data = build_author_dict(match)
-                    author = models.Author.objects.create(**author_data)
+                    # otherwise it's a new author
+                    # with isni id
+                    isni_match = request.POST.get(f"author_match-{i}")
+                    author_object = build_author_from_isni(isni_match)
+                    if "author" in author_object:
+                        author = author_object["author"].to_model(
+                          model=models.Author, 
+                          overwrite=False
+                        )
+                    else:
+                        # or it's a name
+                        author = models.Author.objects.create(name=match)
                 book.authors.add(author)
 
             # create work, if needed
