@@ -117,6 +117,7 @@ MAX_STREAM_LENGTH = int(env("MAX_STREAM_LENGTH", 200))
 STREAMS = [
     {"key": "home", "name": _("Home Timeline"), "shortname": _("Home")},
     {"key": "books", "name": _("Books Timeline"), "shortname": _("Books")},
+    {"key": "reviews", "name": _("Reviews Timeline"), "shortname": _("Reviews")},
 ]
 
 # Database

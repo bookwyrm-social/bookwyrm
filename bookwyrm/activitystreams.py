@@ -249,11 +249,44 @@ class BooksStream(ActivityStream):
         self.bulk_remove_objects_from_store(statuses, self.stream_id(user))
 
 
+class ReviewsStream(ActivityStream):
+    """reviews and comments from users you follow"""
+
+    key = "reviews"
+
+    def get_audience(self, status):
+        audience = super().get_audience(status)
+        if not audience:
+            return []
+        return audience.filter(
+            Q(id=status.user.id)  # if the user is the post's author
+            | Q(following=status.user)  # if the user is following the author
+        ).distinct()
+
+    def get_statuses_for_user(self, user):
+        return (
+            models.Status.privacy_filter(
+                user,
+                privacy_levels=["public", "unlisted", "followers"],
+            )
+            .exclude(
+                ~Q(  # remove everything except
+                    Q(user__followers=user)  # user following
+                    | Q(user=user)  # is self
+                    | Q(mention_users=user)  # mentions user
+                ),
+                Q(),
+            )
+            .filter(Q(review__isnull=False) | Q(comment__isnull=False))
+        )
+
+
 # determine which streams are enabled in settings.py
 streams = {
     "home": HomeStream(),
     "local": LocalStream(),
     "books": BooksStream(),
+    "reviews": ReviewsStream(),
 }
 
 
