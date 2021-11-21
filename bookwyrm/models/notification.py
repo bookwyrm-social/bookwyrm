@@ -157,9 +157,12 @@ def notify_user_on_unboost(sender, instance, *args, **kwargs):
 
 @receiver(models.signals.post_save, sender=ImportJob)
 # pylint: disable=unused-argument
-def notify_user_on_import_complete(sender, instance, *args, **kwargs):
+def notify_user_on_import_complete(
+    sender, instance, *args, update_fields=None, **kwargs
+):
     """we imported your books! aren't you proud of us"""
-    if not instance.complete:
+    update_fields = update_fields or []
+    if not instance.complete or "complete" not in update_fields:
         return
     Notification.objects.create(
         user=instance.user,

@@ -111,7 +111,7 @@ class AuthorViews(TestCase):
         request = self.factory.post("", form.data)
         request.user = self.local_user
 
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             view(request, author.id)
         author.refresh_from_db()
         self.assertEqual(author.name, "New Name")

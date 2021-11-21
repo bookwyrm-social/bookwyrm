@@ -40,7 +40,7 @@ class InboxBlock(TestCase):
     def test_handle_blocks(self):
         """create a "block" database entry from an activity"""
         self.local_user.followers.add(self.remote_user)
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             models.UserFollowRequest.objects.create(
                 user_subject=self.local_user, user_object=self.remote_user
             )

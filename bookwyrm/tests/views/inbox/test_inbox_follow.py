@@ -49,10 +49,12 @@ class InboxRelationships(TestCase):
         }
 
         self.assertFalse(models.UserFollowRequest.objects.exists())
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay") as mock:
+        with patch(
+            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+        ) as mock:
             views.inbox.activity_task(activity)
             self.assertEqual(mock.call_count, 1)
-            response_activity = json.loads(mock.call_args[0][1])
+            response_activity = json.loads(mock.call_args[1]["args"][1])
             self.assertEqual(response_activity["type"], "Accept")
 
         # notification created
@@ -77,17 +79,19 @@ class InboxRelationships(TestCase):
             "object": "https://example.com/user/mouse",
         }
 
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             views.inbox.activity_task(activity)
 
         # the follow relationship should exist
         follow = models.UserFollows.objects.get(user_object=self.local_user)
         self.assertEqual(follow.user_subject, self.remote_user)
 
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay") as mock:
+        with patch(
+            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+        ) as mock:
             views.inbox.activity_task(activity)
             self.assertEqual(mock.call_count, 1)
-            response_activity = json.loads(mock.call_args[0][1])
+            response_activity = json.loads(mock.call_args[1]["args"][1])
             self.assertEqual(response_activity["type"], "Accept")
 
         # the follow relationship should STILL exist
@@ -109,7 +113,7 @@ class InboxRelationships(TestCase):
             broadcast=False, update_fields=["manually_approves_followers"]
         )
 
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             views.inbox.activity_task(activity)
 
         # notification created
@@ -132,7 +136,7 @@ class InboxRelationships(TestCase):
         self.local_user.save(
             broadcast=False, update_fields=["manually_approves_followers"]
         )
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             request = models.UserFollowRequest.objects.create(
                 user_subject=self.remote_user, user_object=self.local_user
             )
@@ -160,7 +164,7 @@ class InboxRelationships(TestCase):
 
     def test_unfollow(self):
         """remove a relationship"""
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             rel = models.UserFollows.objects.create(
                 user_subject=self.remote_user, user_object=self.local_user
             )
@@ -186,7 +190,7 @@ class InboxRelationships(TestCase):
     @patch("bookwyrm.activitystreams.add_user_statuses_task.delay")
     def test_follow_accept(self, _):
         """a remote user approved a follow request from local"""
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             rel = models.UserFollowRequest.objects.create(
                 user_subject=self.local_user, user_object=self.remote_user
             )
@@ -217,7 +221,7 @@ class InboxRelationships(TestCase):
 
     def test_follow_reject(self):
         """turn down a follow request"""
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             rel = models.UserFollowRequest.objects.create(
                 user_subject=self.local_user, user_object=self.remote_user
             )

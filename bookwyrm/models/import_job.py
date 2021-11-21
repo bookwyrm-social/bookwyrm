@@ -6,20 +6,14 @@ from django.db import models
 from django.utils import timezone
 
 from bookwyrm.connectors import connector_manager
-from bookwyrm.models import ReadThrough, User, Book
+from bookwyrm.models import ReadThrough, User, Book, Edition
 from .fields import PrivacyLevels
-
-
-# Mapping goodreads -> bookwyrm shelf titles.
-GOODREADS_SHELVES = {
-    "read": "read",
-    "currently-reading": "reading",
-    "to-read": "to-read",
-}
 
 
 def unquote_string(text):
     """resolve csv quote weirdness"""
+    if not text:
+        return None
     match = re.match(r'="([^"]*)"', text)
     if match:
         return match.group(1)
@@ -41,13 +35,20 @@ class ImportJob(models.Model):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     created_date = models.DateTimeField(default=timezone.now)
-    task_id = models.CharField(max_length=100, null=True)
+    updated_date = models.DateTimeField(default=timezone.now)
     include_reviews = models.BooleanField(default=True)
+    mappings = models.JSONField()
     complete = models.BooleanField(default=False)
+    source = models.CharField(max_length=100)
     privacy = models.CharField(
         max_length=255, default="public", choices=PrivacyLevels.choices
     )
     retry = models.BooleanField(default=False)
+
+    @property
+    def pending_items(self):
+        """items that haven't been processed yet"""
+        return self.items.filter(fail_reason__isnull=True, book__isnull=True)
 
 
 class ImportItem(models.Model):
@@ -56,6 +57,7 @@ class ImportItem(models.Model):
     job = models.ForeignKey(ImportJob, on_delete=models.CASCADE, related_name="items")
     index = models.IntegerField()
     data = models.JSONField()
+    normalized_data = models.JSONField()
     book = models.ForeignKey(Book, on_delete=models.SET_NULL, null=True, blank=True)
     book_guess = models.ForeignKey(
         Book,
@@ -65,9 +67,26 @@ class ImportItem(models.Model):
         related_name="book_guess",
     )
     fail_reason = models.TextField(null=True)
+    linked_review = models.ForeignKey(
+        "Review", on_delete=models.SET_NULL, null=True, blank=True
+    )
+
+    def update_job(self):
+        """let the job know when the items get work done"""
+        job = self.job
+        job.updated_date = timezone.now()
+        job.save()
+        if not job.pending_items.exists() and not job.complete:
+            job.complete = True
+            job.save(update_fields=["complete"])
 
     def resolve(self):
         """try various ways to lookup a book"""
+        # we might be calling this after manually adding the book,
+        # so no need to do searches
+        if self.book:
+            return
+
         if self.isbn:
             self.book = self.get_book_from_isbn()
         else:
@@ -85,6 +104,10 @@ class ImportItem(models.Model):
             self.isbn, min_confidence=0.999
         )
         if search_result:
+            # it's already in the right format
+            if isinstance(search_result, Edition):
+                return search_result
+            # it's just a search result, book needs to be created
             # raises ConnectorException
             return search_result.connector.get_or_create_book(search_result.key)
         return None
@@ -96,6 +119,8 @@ class ImportItem(models.Model):
             search_term, min_confidence=0.1
         )
         if search_result:
+            if isinstance(search_result, Edition):
+                return (search_result, 1)
             # raises ConnectorException
             return (
                 search_result.connector.get_or_create_book(search_result.key),
@@ -106,56 +131,62 @@ class ImportItem(models.Model):
     @property
     def title(self):
         """get the book title"""
-        return self.data["Title"]
+        return self.normalized_data.get("title")
 
     @property
     def author(self):
-        """get the book title"""
-        return self.data["Author"]
+        """get the book's authors"""
+        return self.normalized_data.get("authors")
 
     @property
     def isbn(self):
         """pulls out the isbn13 field from the csv line data"""
-        return unquote_string(self.data["ISBN13"])
+        return unquote_string(self.normalized_data.get("isbn_13")) or unquote_string(
+            self.normalized_data.get("isbn_10")
+        )
 
     @property
     def shelf(self):
         """the goodreads shelf field"""
-        if self.data["Exclusive Shelf"]:
-            return GOODREADS_SHELVES.get(self.data["Exclusive Shelf"])
-        return None
+        return self.normalized_data.get("shelf")
 
     @property
     def review(self):
         """a user-written review, to be imported with the book data"""
-        return self.data["My Review"]
+        return self.normalized_data.get("review_body")
 
     @property
     def rating(self):
         """x/5 star rating for a book"""
-        if self.data.get("My Rating", None):
-            return int(self.data["My Rating"])
+        if self.normalized_data.get("rating"):
+            return float(self.normalized_data.get("rating"))
         return None
 
     @property
     def date_added(self):
         """when the book was added to this dataset"""
-        if self.data["Date Added"]:
-            return timezone.make_aware(dateutil.parser.parse(self.data["Date Added"]))
+        if self.normalized_data.get("date_added"):
+            return timezone.make_aware(
+                dateutil.parser.parse(self.normalized_data.get("date_added"))
+            )
         return None
 
     @property
     def date_started(self):
         """when the book was started"""
-        if "Date Started" in self.data and self.data["Date Started"]:
-            return timezone.make_aware(dateutil.parser.parse(self.data["Date Started"]))
+        if self.normalized_data.get("date_started"):
+            return timezone.make_aware(
+                dateutil.parser.parse(self.normalized_data.get("date_started"))
+            )
         return None
 
     @property
     def date_read(self):
         """the date a book was completed"""
-        if self.data["Date Read"]:
-            return timezone.make_aware(dateutil.parser.parse(self.data["Date Read"]))
+        if self.normalized_data.get("date_finished"):
+            return timezone.make_aware(
+                dateutil.parser.parse(self.normalized_data.get("date_finished"))
+            )
         return None
 
     @property
@@ -174,7 +205,9 @@ class ImportItem(models.Model):
         if start_date and start_date is not None and not self.date_read:
             return [ReadThrough(start_date=start_date)]
         if self.date_read:
-            start_date = start_date if start_date < self.date_read else None
+            start_date = (
+                start_date if start_date and start_date < self.date_read else None
+            )
             return [
                 ReadThrough(
                     start_date=start_date,
@@ -185,8 +218,10 @@ class ImportItem(models.Model):
 
     def __repr__(self):
         # pylint: disable=consider-using-f-string
-        return "<{!r}Item {!r}>".format(self.data["import_source"], self.data["Title"])
+        return "<{!r} Item {!r}>".format(self.index, self.normalized_data.get("title"))
 
     def __str__(self):
         # pylint: disable=consider-using-f-string
-        return "{} by {}".format(self.data["Title"], self.data["Author"])
+        return "{} by {}".format(
+            self.normalized_data.get("title"), self.normalized_data.get("authors")
+        )

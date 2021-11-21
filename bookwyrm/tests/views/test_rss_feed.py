@@ -6,7 +6,7 @@ from bookwyrm import models
 from bookwyrm.views import rss_feed
 
 
-@patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
+@patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
 @patch("bookwyrm.activitystreams.ActivityStream.get_activity_stream")
 @patch("bookwyrm.activitystreams.add_status_task.delay")
 class RssFeedView(TestCase):

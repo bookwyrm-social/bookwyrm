@@ -57,11 +57,23 @@ class BookSearch(TestCase):
         self.assertEqual(len(results), 1)
         self.assertEqual(results[0], self.second_edition)
 
+    def test_search_identifiers_return_first(self):
+        """search by unique identifiers"""
+        result = book_search.search_identifiers("hello", return_first=True)
+        self.assertEqual(result, self.second_edition)
+
     def test_search_title_author(self):
         """search by unique identifiers"""
         results = book_search.search_title_author("Another", min_confidence=0)
         self.assertEqual(len(results), 1)
         self.assertEqual(results[0], self.second_edition)
+
+    def test_search_title_author_return_first(self):
+        """search by unique identifiers"""
+        results = book_search.search_title_author(
+            "Another", min_confidence=0, return_first=True
+        )
+        self.assertEqual(results, self.second_edition)
 
     def test_format_search_result(self):
         """format a search result"""

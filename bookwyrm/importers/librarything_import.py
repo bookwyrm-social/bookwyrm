@@ -1,7 +1,5 @@
-""" handle reading a csv from librarything """
+""" handle reading a tsv from librarything """
 import re
-import math
-
 from . import Importer
 
 
@@ -11,32 +9,18 @@ class LibrarythingImporter(Importer):
     service = "LibraryThing"
     delimiter = "\t"
     encoding = "ISO-8859-1"
-    # mandatory_fields : fields matching the book title and author
-    mandatory_fields = ["Title", "Primary Author"]
 
-    def parse_fields(self, entry):
-        """custom parsing for librarything"""
-        data = {}
-        data["import_source"] = self.service
-        data["Book Id"] = entry["Book Id"]
-        data["Title"] = entry["Title"]
-        data["Author"] = entry["Primary Author"]
-        data["ISBN13"] = entry["ISBN"]
-        data["My Review"] = entry["Review"]
-        if entry["Rating"]:
-            data["My Rating"] = math.ceil(float(entry["Rating"]))
-        else:
-            data["My Rating"] = ""
-        data["Date Added"] = re.sub(r"\[|\]", "", entry["Entry Date"])
-        data["Date Started"] = re.sub(r"\[|\]", "", entry["Date Started"])
-        data["Date Read"] = re.sub(r"\[|\]", "", entry["Date Read"])
+    def normalize_row(self, entry, mappings):  # pylint: disable=no-self-use
+        """use the dataclass to create the formatted row of data"""
+        remove_brackets = lambda v: re.sub(r"\[|\]", "", v) if v else None
+        normalized = {k: remove_brackets(entry.get(v)) for k, v in mappings.items()}
+        isbn_13 = normalized["isbn_13"].split(", ")
+        normalized["isbn_13"] = isbn_13[1] if len(isbn_13) > 0 else None
+        return normalized
 
-        data["Exclusive Shelf"] = None
-        if data["Date Read"]:
-            data["Exclusive Shelf"] = "read"
-        elif data["Date Started"]:
-            data["Exclusive Shelf"] = "reading"
-        else:
-            data["Exclusive Shelf"] = "to-read"
-
-        return data
+    def get_shelf(self, normalized_row):
+        if normalized_row["date_finished"]:
+            return "read"
+        if normalized_row["date_started"]:
+            return "reading"
+        return "to-read"

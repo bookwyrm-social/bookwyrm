@@ -123,7 +123,7 @@ class GoalViews(TestCase):
             },
         )
         request.user = self.local_user
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             view(request, self.local_user.localname, self.year)
 
         goal = models.AnnualGoal.objects.get()

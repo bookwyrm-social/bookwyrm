@@ -48,4 +48,7 @@ def email_preview(request):
     data["invite_link"] = "https://example.com/link"
     data["confirmation_link"] = "https://example.com/link"
     data["confirmation_code"] = "AKJHKDGKJSDFG"
+    data["reporter"] = "ConcernedUser"
+    data["reportee"] = "UserName"
+    data["report_link"] = "https://example.com/link"
     return TemplateResponse(request, "email/preview.html", data)

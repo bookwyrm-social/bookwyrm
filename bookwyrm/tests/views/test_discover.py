@@ -41,7 +41,7 @@ class DiscoverViews(TestCase):
         self.assertEqual(result.status_code, 200)
         result.render()
 
-    @patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
+    @patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
     @patch("bookwyrm.activitystreams.add_status_task.delay")
     def test_discover_page(self, *_):
         """there are so many views, this just makes sure it LOADS"""

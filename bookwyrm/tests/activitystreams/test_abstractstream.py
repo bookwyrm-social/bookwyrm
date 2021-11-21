@@ -4,7 +4,7 @@ from django.test import TestCase
 from bookwyrm import activitystreams, models
 
 
-@patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
+@patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
 @patch("bookwyrm.activitystreams.add_status_task.delay")
 @patch("bookwyrm.activitystreams.add_book_statuses_task.delay")
 @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")

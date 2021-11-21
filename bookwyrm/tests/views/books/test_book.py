@@ -78,7 +78,7 @@ class BookViews(TestCase):
         self.assertIsInstance(result, ActivitypubResponse)
         self.assertEqual(result.status_code, 200)
 
-    @patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
+    @patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
     @patch("bookwyrm.activitystreams.add_status_task.delay")
     def test_book_page_statuses(self, *_):
         """there are so many views, this just makes sure it LOADS"""
@@ -169,7 +169,7 @@ class BookViews(TestCase):
         request.user = self.local_user
 
         with patch(
-            "bookwyrm.models.activitypub_mixin.broadcast_task.delay"
+            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
         ) as delay_mock:
             views.upload_cover(request, self.book.id)
             self.assertEqual(delay_mock.call_count, 1)
@@ -188,7 +188,7 @@ class BookViews(TestCase):
         request.user = self.local_user
 
         with patch(
-            "bookwyrm.models.activitypub_mixin.broadcast_task.delay"
+            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
         ) as delay_mock:
             views.upload_cover(request, self.book.id)
             self.assertEqual(delay_mock.call_count, 1)
@@ -202,7 +202,7 @@ class BookViews(TestCase):
         request = self.factory.post("", {"description": "new description hi"})
         request.user = self.local_user
 
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             views.add_description(request, self.book.id)
 
         self.book.refresh_from_db()

@@ -20,7 +20,7 @@ from django.utils.http import http_date
 from bookwyrm import activitypub
 from bookwyrm.settings import USER_AGENT, PAGE_LENGTH
 from bookwyrm.signatures import make_signature, make_digest
-from bookwyrm.tasks import app
+from bookwyrm.tasks import app, MEDIUM
 from bookwyrm.models.fields import ImageField, ManyToManyField
 
 logger = logging.getLogger(__name__)
@@ -28,7 +28,6 @@ logger = logging.getLogger(__name__)
 # circular import errors so I gave up. I'm sure it could be done though!
 
 PropertyField = namedtuple("PropertyField", ("set_activity_from_field"))
-
 
 # pylint: disable=invalid-name
 def set_activity_from_property_field(activity, obj, field):
@@ -126,12 +125,15 @@ class ActivitypubMixin:
         # there OUGHT to be only one match
         return match.first()
 
-    def broadcast(self, activity, sender, software=None):
+    def broadcast(self, activity, sender, software=None, queue=MEDIUM):
         """send out an activity"""
-        broadcast_task.delay(
-            sender.id,
-            json.dumps(activity, cls=activitypub.ActivityEncoder),
-            self.get_recipients(software=software),
+        broadcast_task.apply_async(
+            args=(
+                sender.id,
+                json.dumps(activity, cls=activitypub.ActivityEncoder),
+                self.get_recipients(software=software),
+            ),
+            queue=queue,
         )
 
     def get_recipients(self, software=None):
@@ -195,7 +197,7 @@ class ActivitypubMixin:
 class ObjectMixin(ActivitypubMixin):
     """add this mixin for object models that are AP serializable"""
 
-    def save(self, *args, created=None, **kwargs):
+    def save(self, *args, created=None, software=None, priority=MEDIUM, **kwargs):
         """broadcast created/updated/deleted objects as appropriate"""
         broadcast = kwargs.get("broadcast", True)
         # this bonus kwarg would cause an error in the base save method
@@ -219,15 +221,17 @@ class ObjectMixin(ActivitypubMixin):
                 return
 
             try:
-                software = None
                 # do we have a "pure" activitypub version of this for mastodon?
-                if hasattr(self, "pure_content"):
+                if software != "bookwyrm" and hasattr(self, "pure_content"):
                     pure_activity = self.to_create_activity(user, pure=True)
-                    self.broadcast(pure_activity, user, software="other")
+                    self.broadcast(
+                        pure_activity, user, software="other", queue=priority
+                    )
+                    # set bookwyrm so that that type is also sent
                     software = "bookwyrm"
                 # sends to BW only if we just did a pure version for masto
                 activity = self.to_create_activity(user)
-                self.broadcast(activity, user, software=software)
+                self.broadcast(activity, user, software=software, queue=priority)
             except AttributeError:
                 # janky as heck, this catches the mutliple inheritence chain
                 # for boosts and ignores this auxilliary broadcast
@@ -241,8 +245,7 @@ class ObjectMixin(ActivitypubMixin):
             if isinstance(self, user_model):
                 user = self
             # book data tracks last editor
-            elif hasattr(self, "last_edited_by"):
-                user = self.last_edited_by
+            user = user or getattr(self, "last_edited_by", None)
         # again, if we don't know the user or they're remote, don't bother
         if not user or not user.local:
             return
@@ -252,7 +255,7 @@ class ObjectMixin(ActivitypubMixin):
             activity = self.to_delete_activity(user)
         else:
             activity = self.to_update_activity(user)
-        self.broadcast(activity, user)
+        self.broadcast(activity, user, queue=priority)
 
     def to_create_activity(self, user, **kwargs):
         """returns the object wrapped in a Create activity"""
@@ -375,9 +378,9 @@ class CollectionItemMixin(ActivitypubMixin):
 
     activity_serializer = activitypub.CollectionItem
 
-    def broadcast(self, activity, sender, software="bookwyrm"):
+    def broadcast(self, activity, sender, software="bookwyrm", queue=MEDIUM):
         """only send book collection updates to other bookwyrm instances"""
-        super().broadcast(activity, sender, software=software)
+        super().broadcast(activity, sender, software=software, queue=queue)
 
     @property
     def privacy(self):
@@ -396,7 +399,7 @@ class CollectionItemMixin(ActivitypubMixin):
             return []
         return [collection_field.user]
 
-    def save(self, *args, broadcast=True, **kwargs):
+    def save(self, *args, broadcast=True, priority=MEDIUM, **kwargs):
         """broadcast updated"""
         # first off, we want to save normally no matter what
         super().save(*args, **kwargs)
@@ -407,7 +410,7 @@ class CollectionItemMixin(ActivitypubMixin):
 
         # adding an obj to the collection
         activity = self.to_add_activity(self.user)
-        self.broadcast(activity, self.user)
+        self.broadcast(activity, self.user, queue=priority)
 
     def delete(self, *args, broadcast=True, **kwargs):
         """broadcast a remove activity"""
@@ -440,12 +443,12 @@ class CollectionItemMixin(ActivitypubMixin):
 class ActivityMixin(ActivitypubMixin):
     """add this mixin for models that are AP serializable"""
 
-    def save(self, *args, broadcast=True, **kwargs):
+    def save(self, *args, broadcast=True, priority=MEDIUM, **kwargs):
         """broadcast activity"""
         super().save(*args, **kwargs)
         user = self.user if hasattr(self, "user") else self.user_subject
         if broadcast and user.local:
-            self.broadcast(self.to_activity(), user)
+            self.broadcast(self.to_activity(), user, queue=priority)
 
     def delete(self, *args, broadcast=True, **kwargs):
         """nevermind, undo that activity"""
@@ -502,7 +505,7 @@ def unfurl_related_field(related_field, sort_field=None):
     return related_field.remote_id
 
 
-@app.task(queue="medium_priority")
+@app.task(queue=MEDIUM)
 def broadcast_task(sender_id, activity, recipients):
     """the celery task for broadcast"""
     user_model = apps.get_model("bookwyrm.User", require_ready=True)

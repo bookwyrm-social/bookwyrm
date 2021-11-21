@@ -61,7 +61,7 @@ case "$CMD" in
     up)
         docker-compose up --build "$@"
         ;;
-    run)
+    service_ports_web)
         docker-compose run --rm --service-ports web
         ;;
     initdb)
@@ -96,9 +96,6 @@ case "$CMD" in
     restart_celery)
         docker-compose restart celery_worker
         ;;
-    test)
-        runweb coverage run --source='.' --omit="*/test*,celerywyrm*,bookwyrm/migrations/*" manage.py test "$@"
-        ;;
     pytest)
         execweb pytest --no-cov-on-fail "$@"
         ;;
@@ -110,6 +107,18 @@ case "$CMD" in
         ;;
     compilemessages)
         runweb django-admin compilemessages --ignore venv $@
+        ;;
+    update_locales)
+        git fetch origin l10n_main:l10n_main
+        git checkout l10n_main locale/de_DE
+        git checkout l10n_main locale/es_ES
+        git checkout l10n_main locale/fr_FR
+        git checkout l10n_main locale/gl_ES
+        git checkout l10n_main locale/lt_LT
+        git checkout l10n_main locale/pt_BR
+        git checkout l10n_main locale/zh_Hans
+        git checkout l10n_main locale/zh_Hant
+        runweb django-admin compilemessages --ignore venv
         ;;
     build)
         docker-compose build
@@ -148,14 +157,11 @@ case "$CMD" in
     runweb)
         runweb "$@"
         ;;
-    rundb)
-        rundb "$@"
-        ;;
     *)
         set +x # No need to echo echo
         echo "Unrecognised command. Try:"
         echo "    up [container]"
-        echo "    run"
+        echo "    service_ports_web"
         echo "    initdb"
         echo "    resetdb"
         echo "    makemigrations [migration]"
@@ -164,12 +170,11 @@ case "$CMD" in
         echo "    shell"
         echo "    dbshell"
         echo "    restart_celery"
-        echo "    test [path]"
         echo "    pytest [path]"
         echo "    collectstatic"
-        echo "    add_locale [locale]"
         echo "    makemessages"
         echo "    compilemessages [locale]"
+        echo "    update_locales"
         echo "    build"
         echo "    clean"
         echo "    black"
@@ -180,6 +185,5 @@ case "$CMD" in
         echo "    copy_media_to_s3"
         echo "    set_cors_to_s3 [cors file]"
         echo "    runweb [command]"
-        echo "    rundb [command]"
         ;;
 esac
