@@ -46,4 +46,4 @@ class Activitystreams(TestCase):
 
         with patch("bookwyrm.activitystreams.populate_stream_task.delay") as redis_mock:
             populate_streams()
-        self.assertEqual(redis_mock.call_count, 6)  # 2 users x 3 streams
+        self.assertEqual(redis_mock.call_count, 8)  # 2 users x 4 streams
