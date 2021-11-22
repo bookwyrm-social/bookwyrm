@@ -255,10 +255,10 @@ def get_suggested_books(user, max_books=5):
 
 
 def filter_stream_by_status_type(activities, allowed_types=None):
+    """filter out activities based on types"""
     if not allowed_types:
         allowed_types = []
 
-    """filter out activities based on types"""
     if "review" not in allowed_types:
         activities = activities.filter(Q(review__isnull=True))
     if "comment" not in allowed_types:
