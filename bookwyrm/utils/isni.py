@@ -92,32 +92,34 @@ def find_authors_by_name(name_string, description=False):
     # build list of possible authors
     possible_authors = []
     for element in root.iter("responseRecord"):
-
         personal_name = element.find(".//forename/..")
-        bio = element.find(".//nameTitle")
-
         if not personal_name:
             continue
 
         author = get_author_from_isni(element.find(".//isniUnformatted").text)
 
         if bool(description):
-            titles = element.findall(".//title")
-            if titles:
-                # some of the "titles" in ISNI are a little ...iffy
-                title_element = [e for e in titles if not e.text.replace('@', '').isnumeric()][0]
-            title = (
-              title_element.text.replace('@', '')
-              if titles is not None
-              and title_element is not None
-              and len(title_element.text) > 4
-              else None
-            )
-            author.bio = (
-              title if title is not None
-              else bio.text if bio is not None
-              else "More information at isni.org"
-            )
+
+            titles = []
+            # prefer title records from LoC+ coop, Australia, Ireland, or Singapore
+            # in that order
+            for source in ["LCNACO", "NLA", "N6I", "NLB"]:
+                for parent in element.findall(f'.//titleOfWork/[@source="{source}"]'):
+                    titles.append(parent.find(".//title"))
+                for parent in element.findall(f'.//titleOfWork[@subsource="{source}"]'):
+                    titles.append(parent.find(".//title"))
+            # otherwise just grab the first title listing
+            titles.append(element.find(".//title"))
+
+            if titles is not None:
+                # some of the "titles" in ISNI are a little ...iffy 
+                # '@' is used by ISNI/OCLC to index the starting point ignoring stop words 
+                # (e.g. "The @Government of no one")
+                title_elements = [e for e in titles if not e.text.replace('@', '').isnumeric()]
+                if len(title_elements):
+                    author.bio = title_elements[0].text.replace('@', '')
+                else:
+                    author.bio = None
 
         possible_authors.append(author)
 

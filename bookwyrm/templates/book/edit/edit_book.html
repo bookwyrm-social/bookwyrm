@@ -66,7 +66,7 @@
                             {% if book_title %}
                             <a href="{{ match.local_path }}" target="_blank">{% trans "Author of " %}<em>{{ book_title }}</em></a>
                             {% else %} 
-                            <a href="{{ match.id }}" target="_blank">{% trans "Author of " %}<em>{{ alt_title }}</em></a>
+                            <a href="{{ match.id }}" target="_blank">{% if alt_title %}{% trans "Author of " %}<em>{{ alt_title }}</em>{% else %} {% trans "Find more information at isni.org" %}{% endif %}</a>
                             {% endif %}
                             {% endwith %}
                         </p>
