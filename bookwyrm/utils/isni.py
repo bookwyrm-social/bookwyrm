@@ -54,10 +54,7 @@ def get_other_identifier(element, code):
     # try sources
     for source in element.findall(".//sources"):
         code_of_source = source.find(".//codeOfSource")
-        if (
-            code_of_source is not None
-            and code_of_source.text.lower() == code.lower()
-        ):
+        if code_of_source is not None and code_of_source.text.lower() == code.lower():
             return source.find(".//sourceIdentifier").text
 
     return ""
@@ -184,5 +181,3 @@ def augment_author_metadata(author, isni):
         aliases.add(alias)
     author.aliases = list(aliases)
     author.save()
-
-    return
