@@ -16,22 +16,35 @@
     </ul>
 </div>
 
-
+{# feed settings #}
 <details class="mb-5" {% if settings_saved %}open{% endif %}>
     <summary>
-        <span class="has-text-weight-bold">What to display?</span>
+        <span class="has-text-weight-bold">
+            {{ _("Feed settings") }}
+        </span>
         {% if settings_saved %}
-            <span class="tag is-success is-light ml-2">Saved!</span>
+            <span class="tag is-success is-light ml-2">{{ _("Saved!") }}</span>
         {% endif %}
     </summary>
-    <form class="level" method="post" action="/{{ tab.key }}">
+    <form class="level is-align-items-flex-end" method="post" action="/{{ tab.key }}#feed">
         {% csrf_token %}
+
         <div class="level-left">
-            {{ feed_status_types_form }}
+            <div class="field">
+                <div class="control">
+                    <label class="label mt-2 mb-1">Status types</label>
+                    {% for name, value in feed_status_types_options %}
+                    <label class="mr-2">
+                        <input type="checkbox" name="feed_status_types" value="{{ name }}" {% if name in user.feed_status_types %}checked=""{% endif %}/>
+                        {{ value }}
+                    </label>
+                    {% endfor %}
+                </div>
+            </div>
         </div>
         <div class="level-right">
             <button class="button is-small is-primary is-outlined" type="submit">
-                Submit
+                {{ _("Save settings") }}
             </button>
         </div>
     </form>
@@ -56,7 +69,7 @@
 {# activity feed #}
 {% if not activities %}
 <div class="block content">
-    <p>{% trans "There aren't any activities right now! Try following a user to get started" %}</p>
+    <p>{% trans "There aren't any activities right now! Try following a user to get started" %}{% if user.feed_status_types|length < 4 %}{% trans ", or enable more status types" %}{% endif %}</p>
 
     {% if request.user.show_suggested_users and suggested_users %}
     {# suggested users for when things are very lonely #}

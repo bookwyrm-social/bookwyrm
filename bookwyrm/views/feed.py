@@ -7,6 +7,7 @@ from django.shortcuts import get_object_or_404
 from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
+from django.utils.translation import gettext_lazy as _
 from django.views import View
 
 from bookwyrm import activitystreams, forms, models
@@ -25,7 +26,7 @@ class Feed(View):
     def post(self, request, tab):
         """save feed settings form, with a silent validation fail"""
         settings_saved = False
-        form = forms.FeedStatusTypes(request.POST, instance=request.user)
+        form = forms.FeedStatusTypesForm(request.POST, instance=request.user)
         if form.is_valid():
             form.save()
             settings_saved = True
@@ -57,9 +58,12 @@ class Feed(View):
                 "tab": tab,
                 "streams": STREAMS,
                 "goal_form": forms.GoalForm(),
-                "feed_status_types_form": forms.FeedStatusTypes(
-                    instance=request.user,
-                ),
+                "feed_status_types_options": [
+                    ("review", _("Reviews")),
+                    ("comment", _("Comments")),
+                    ("quotation", _("Quotations")),
+                    ("everything", _("Everything else")),
+                ],
                 "settings_saved": settings_saved,
                 "path": f"/{tab['key']}",
             },
