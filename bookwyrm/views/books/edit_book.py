@@ -12,6 +12,7 @@ from django.utils.decorators import method_decorator
 from django.views import View
 
 from bookwyrm import book_search, forms, models
+
 # from bookwyrm.activitypub.base_activity import ActivityObject
 from bookwyrm.utils.isni import (
     find_authors_by_name,
@@ -72,8 +73,7 @@ class EditBook(View):
                 )
 
                 isni_authors = find_authors_by_name(
-                    author,
-                    description=True
+                    author, description=True
                 )  # find matches from ISNI API
 
                 # dedupe isni authors we already have in the DB
@@ -187,12 +187,11 @@ class ConfirmEditBook(View):
                     author_object = build_author_from_isni(isni_match)
                     # with author data class from isni id
                     if "author" in author_object:
-                        # TESTING 
-                        skeleton = models.Author.objects.create(name=author_object["author"].name)
+                        skeleton = models.Author.objects.create(
+                            name=author_object["author"].name
+                        )
                         author = author_object["author"].to_model(
-                          model=models.Author, 
-                          overwrite=True,
-                          instance=skeleton
+                            model=models.Author, overwrite=True, instance=skeleton
                         )
                     else:
                         # or it's just a name

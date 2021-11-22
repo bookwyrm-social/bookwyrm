@@ -4,6 +4,7 @@ import requests
 
 from bookwyrm import activitypub, models
 
+
 def request_isni_data(search_index, search_term, max_records=5):
     """Request data from the ISNI API"""
 
@@ -18,11 +19,7 @@ def request_isni_data(search_index, search_term, max_records=5):
         "recordPacking": "xml",
         "sortKeys": "RLV,pica,0,,",
     }
-    result = requests.get(
-      "http://isni.oclc.org/sru/", 
-      params=query_params,
-      timeout=10
-      )
+    result = requests.get("http://isni.oclc.org/sru/", params=query_params, timeout=10)
     # the OCLC ISNI server asserts the payload is encoded
     # in latin1, but we know better
     result.encoding = "utf-8"
@@ -58,10 +55,9 @@ def get_other_identifier(element, code):
     for source in element.findall(".//sources"):
         code_of_source = source.find(".//codeOfSource")
         if (
-            code_of_source is not None 
-            and code_of_source.text == code.upper()
-            or code_of_source.text == code.lower()
-            ):
+            code_of_source is not None
+            and code_of_source.text.lower() == code.lower()
+        ):
             return source.find(".//sourceIdentifier").text
 
     return ""
@@ -75,10 +71,10 @@ def get_external_information_uri(element, match_string):
         information = source.find(".//information")
         uri = source.find(".//URI")
         if (
-          uri is not None 
-          and information is not None
-          and information.text.lower() == match_string.lower()
-          ):
+            uri is not None
+            and information is not None
+            and information.text.lower() == match_string.lower()
+        ):
             return uri.text
     return ""
 
@@ -112,12 +108,14 @@ def find_authors_by_name(name_string, description=False):
             titles.append(element.find(".//title"))
 
             if titles is not None:
-                # some of the "titles" in ISNI are a little ...iffy 
-                # '@' is used by ISNI/OCLC to index the starting point ignoring stop words 
+                # some of the "titles" in ISNI are a little ...iffy
+                # '@' is used by ISNI/OCLC to index the starting point ignoring stop words
                 # (e.g. "The @Government of no one")
-                title_elements = [e for e in titles if not e.text.replace('@', '').isnumeric()]
+                title_elements = [
+                    e for e in titles if not e.text.replace("@", "").isnumeric()
+                ]
                 if len(title_elements):
-                    author.bio = title_elements[0].text.replace('@', '')
+                    author.bio = title_elements[0].text.replace("@", "")
                 else:
                     author.bio = None
 
@@ -149,24 +147,25 @@ def get_author_from_isni(isni):
     wikipedia = get_external_information_uri(element, "Wikipedia")
 
     author = activitypub.Author(
-      id=element.find(".//isniURI").text,
-      name=name,
-      isni=isni,
-      viafId=viaf,
-      aliases=aliases,
-      bio=bio,
-      wikipediaLink=wikipedia
+        id=element.find(".//isniURI").text,
+        name=name,
+        isni=isni,
+        viafId=viaf,
+        aliases=aliases,
+        bio=bio,
+        wikipediaLink=wikipedia,
     )
 
     return author
 
+
 def build_author_from_isni(match_value):
-    """Build dict with basic author details from ISNI or author name"""
+    """Build basic author class object from ISNI URL"""
 
     # if it is an isni value get the data
     if match_value.startswith("https://isni.org/isni/"):
         isni = match_value.replace("https://isni.org/isni/", "")
-        return { "author": get_author_from_isni(isni) }
+        return {"author": get_author_from_isni(isni)}
     # otherwise it's a name string
     return {}
 
@@ -177,7 +176,7 @@ def augment_author_metadata(author, isni):
     isni_author = get_author_from_isni(isni)
     isni_author.to_model(model=models.Author, instance=author, overwrite=False)
 
-    # we DO want to overwrite aliases because we're adding them to the 
+    # we DO want to overwrite aliases because we're adding them to the
     # existing aliases and ISNI will usually have more.
     # We need to dedupe because ISNI records often have lots of dupe aliases
     aliases = set(isni_author.aliases)

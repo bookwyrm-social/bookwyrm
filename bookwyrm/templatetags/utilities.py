@@ -92,7 +92,7 @@ def get_isni(existing, author, autoescape=True):
     if len(existing) == 0:
         return ""
     for value in existing:
-        if hasattr(value, "isni")and auth_isni == re.sub(r"\D", "", str(value.isni)):
+        if hasattr(value, "isni") and auth_isni == re.sub(r"\D", "", str(value.isni)):
             isni = value.isni
             return mark_safe(
                 f'<input type="text" name="isni-for-{author.id}" value="{isni}" hidden>'
