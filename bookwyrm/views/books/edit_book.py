@@ -1,4 +1,5 @@
 """ the good stuff! the books! """
+from re import sub
 from dateutil.parser import parse as dateparse
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.postgres.search import SearchRank, SearchVector
@@ -11,9 +12,15 @@ from django.utils.decorators import method_decorator
 from django.views import View
 
 from bookwyrm import book_search, forms, models
+
+# from bookwyrm.activitypub.base_activity import ActivityObject
+from bookwyrm.utils.isni import (
+    find_authors_by_name,
+    build_author_from_isni,
+    augment_author_metadata,
+)
 from bookwyrm.views.helpers import get_edition
 from .books import set_cover_from_url
-
 
 # pylint: disable=no-self-use
 @method_decorator(login_required, name="dispatch")
@@ -33,6 +40,7 @@ class EditBook(View):
         data = {"book": book, "form": forms.EditionForm(instance=book)}
         return TemplateResponse(request, "book/edit/edit_book.html", data)
 
+    # pylint: disable=too-many-locals
     def post(self, request, book_id=None):
         """edit a book cool"""
         # returns None if no match is found
@@ -48,6 +56,7 @@ class EditBook(View):
         if add_author:
             data["add_author"] = add_author
             data["author_matches"] = []
+            data["isni_matches"] = []
             for author in add_author.split(","):
                 if not author:
                     continue
@@ -56,15 +65,35 @@ class EditBook(View):
                     "aliases", weight="B"
                 )
 
+                author_matches = (
+                    models.Author.objects.annotate(search=vector)
+                    .annotate(rank=SearchRank(vector, author))
+                    .filter(rank__gt=0.4)
+                    .order_by("-rank")[:5]
+                )
+
+                isni_authors = find_authors_by_name(
+                    author, description=True
+                )  # find matches from ISNI API
+
+                # dedupe isni authors we already have in the DB
+                exists = [
+                    i
+                    for i in isni_authors
+                    for a in author_matches
+                    if sub(r"\D", "", str(i.isni)) == sub(r"\D", "", str(a.isni))
+                ]
+
+                # pylint: disable=cell-var-from-loop
+                matches = list(filter(lambda x: x not in exists, isni_authors))
+                # combine existing and isni authors
+                matches.extend(author_matches)
+
                 data["author_matches"].append(
                     {
                         "name": author.strip(),
-                        "matches": (
-                            models.Author.objects.annotate(search=vector)
-                            .annotate(rank=SearchRank(vector, author))
-                            .filter(rank__gt=0.4)
-                            .order_by("-rank")[:5]
-                        ),
+                        "matches": matches,
+                        "existing_isnis": exists,
                     }
                 )
 
@@ -122,6 +151,8 @@ class EditBook(View):
 class ConfirmEditBook(View):
     """confirm edits to a book"""
 
+    # pylint: disable=too-many-locals
+    # pylint: disable=too-many-branches
     def post(self, request, book_id=None):
         """edit a book cool"""
         # returns None if no match is found
@@ -147,9 +178,25 @@ class ConfirmEditBook(View):
                     author = get_object_or_404(
                         models.Author, id=request.POST[f"author_match-{i}"]
                     )
+                    # update author metadata if the ISNI record is more complete
+                    isni = request.POST.get(f"isni-for-{match}", None)
+                    if isni is not None:
+                        augment_author_metadata(author, isni)
                 except ValueError:
-                    # otherwise it's a name
-                    author = models.Author.objects.create(name=match)
+                    # otherwise it's a new author
+                    isni_match = request.POST.get(f"author_match-{i}")
+                    author_object = build_author_from_isni(isni_match)
+                    # with author data class from isni id
+                    if "author" in author_object:
+                        skeleton = models.Author.objects.create(
+                            name=author_object["author"].name
+                        )
+                        author = author_object["author"].to_model(
+                            model=models.Author, overwrite=True, instance=skeleton
+                        )
+                    else:
+                        # or it's just a name
+                        author = models.Author.objects.create(name=match)
                 book.authors.add(author)
 
             # create work, if needed

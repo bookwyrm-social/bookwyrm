@@ -27,7 +27,7 @@ class Author(BookDataModel):
     # idk probably other keys would be useful here?
     born = fields.DateTimeField(blank=True, null=True)
     died = fields.DateTimeField(blank=True, null=True)
-    name = fields.CharField(max_length=255, deduplication_field=True)
+    name = fields.CharField(max_length=255)
     aliases = fields.ArrayField(
         models.CharField(max_length=255), blank=True, default=list
     )
