@@ -1,6 +1,7 @@
 {% extends 'layout.html' %}
 {% load i18n %}
 {% load humanize %}
+{% load utilities %}
 
 {% block title %}{% if book %}{% blocktrans with book_title=book.title %}Edit "{{ book_title }}"{% endblocktrans %}{% else %}{% trans "Add Book" %}{% endif %}{% endblock %}
 
@@ -52,19 +53,29 @@
                     {% for author in author_matches %}
                     <fieldset>
                         <legend class="title is-5 mb-1">
-                            {% blocktrans with name=author.name %}Is "{{ name }}" an existing author?{% endblocktrans %}
+                            {% blocktrans with name=author.name %}Is "{{ name }}" one of these authors?{% endblocktrans %}
                         </legend>
                         {% with forloop.counter0 as counter %}
                         {% for match in author.matches %}
-                        <label class="label mb-2">
+                        <label class="label">
                             <input type="radio" name="author_match-{{ counter }}" value="{{ match.id }}" required>
                             {{ match.name }}
                         </label>
-                        <p class="help">
-                            <a href="{{ match.local_path }}" target="_blank">{% blocktrans with book_title=match.book_set.first.title %}Author of <em>{{ book_title }}</em>{% endblocktrans %}</a>
+                        <p class="help ml-5 mb-2">
+                            {% with book_title=match.book_set.first.title alt_title=match.bio %}
+                            {% if book_title %}
+                            <a href="{{ match.local_path }}" target="_blank">{% trans "Author of " %}<em>{{ book_title }}</em></a>
+                            {% else %} 
+                            <a href="{{ match.id }}" target="_blank">{% if alt_title %}{% trans "Author of " %}<em>{{ alt_title }}</em>{% else %} {% trans "Find more information at isni.org" %}{% endif %}</a>
+                            {% endif %}
+                            {% endwith %}
                         </p>
+                        <p class="help ml-5">
+                            {{ author.existing_isnis|get_isni_bio:match }}
+                        </p>
+                        {{ author.existing_isnis|get_isni:match }}
                         {% endfor %}
-                        <label class="label">
+                        <label class="label mt-2">
                             <input type="radio" name="author_match-{{ counter }}" value="{{ author.name }}" required> {% trans "This is a new author" %}
                         </label>
                         {% endwith %}
