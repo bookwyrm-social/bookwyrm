@@ -317,15 +317,21 @@ def save_and_cleanup(image, instance=None):
     """Save and close the file"""
     if not isinstance(instance, (models.Book, models.User, models.SiteSettings)):
         return False
-    uuid = uuid4()
-    file_name = f"{instance.id}-{uuid}.jpg"
     image_buffer = BytesIO()
 
     try:
         try:
-            old_path = instance.preview_image.name
+            file_name = instance.preview_image.name
         except ValueError:
-            old_path = None
+            file_name = None
+
+        if not file_name or file_name == "":
+            uuid = uuid4()
+            file_name = f"{instance.id}-{uuid}.jpg"
+
+        # Clean up old file before saving
+        if file_name and default_storage.exists(file_name):
+            default_storage.delete(file_name)
 
         # Save
         image.save(image_buffer, format="jpeg", quality=75)
@@ -344,10 +350,6 @@ def save_and_cleanup(image, instance=None):
             instance.save(broadcast=False, update_fields=["preview_image"])
         else:
             instance.save(update_fields=["preview_image"])
-
-        # Clean up old file after saving
-        if old_path and default_storage.exists(old_path):
-            default_storage.delete(old_path)
 
     finally:
         image_buffer.close()
