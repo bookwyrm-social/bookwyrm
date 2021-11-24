@@ -113,9 +113,42 @@ let BookWyrm = new class {
      * @return {undefined}
      */
     updateCountElement(counter, data) {
+        let count = data.count;
+        const count_by_type = data.count_by_type;
         const currentCount = counter.innerText;
-        const count = data.count;
         const hasMentions = data.has_mentions;
+        const allowedStatusTypesEl = document.getElementById('unread-notifications-wrapper');
+
+        // If we're on the right counter element
+        if (counter.closest('[data-poll-wrapper]').contains(allowedStatusTypesEl)) {
+            const allowedStatusTypes = JSON.parse(allowedStatusTypesEl.textContent);
+
+            // For keys in common between allowedStatusTypes and count_by_type
+            // This concerns 'review', 'quotation', 'comment'
+            count = allowedStatusTypes.reduce(function(prev, currentKey) {
+                const currentValue = count_by_type[currentKey] | 0;
+                return prev + currentValue;
+            }, 0);
+
+            // Add all the "other" in count_by_type if 'everything' is allowed
+            if (allowedStatusTypes.includes('everything')) {
+                // Clone count_by_type with 0 for reviews/quotations/comments
+                const count_by_everything_else = Object.assign(
+                    {},
+                    count_by_type,
+                    {review: 0, quotation: 0, comment: 0}
+                );
+
+                count = Object.keys(count_by_everything_else).reduce(
+                    function(prev, currentKey) {
+                        const currentValue =
+                            count_by_everything_else[currentKey] | 0
+                        return prev + currentValue;
+                    },
+                    count
+                );
+            }
+        }
 
         if (count != currentCount) {
             this.addRemoveClass(counter.closest('[data-poll-wrapper]'), 'is-hidden', count < 1);

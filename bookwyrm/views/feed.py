@@ -59,6 +59,7 @@ class Feed(View):
                 "streams": STREAMS,
                 "goal_form": forms.GoalForm(),
                 "feed_status_types_options": FeedFilterChoices,
+                "allowed_status_types": request.user.feed_status_types,
                 "settings_saved": settings_saved,
                 "path": f"/{tab['key']}",
             },
