@@ -162,7 +162,7 @@
                     <li class="box">
                         {% blocktrans with path=shelf.shelf.local_path shelf_name=shelf.shelf.name %}<a href="{{ path }}">{{ shelf_name }}</a>{% endblocktrans %}
                         <div class="mb-3">
-                            {% include 'snippets/shelf_selector.html' with current=shelf.shelf class="is-small" readthrough=readthrough %}
+                            {% include 'snippets/shelf_selector.html' with shelf=shelf.shelf class="is-small" readthrough=readthrough %}
                         </div>
                     </li>
                 {% endfor %}
