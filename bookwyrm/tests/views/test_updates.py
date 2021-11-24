@@ -50,8 +50,12 @@ class UpdateViews(TestCase):
         request = self.factory.get("")
         request.user = self.local_user
 
-        with patch("bookwyrm.activitystreams.ActivityStream.get_unread_count") as mock_count:
-            with patch("bookwyrm.activitystreams.ActivityStream.get_unread_count_by_status_type") as mock_count_by_status:
+        with patch(
+            "bookwyrm.activitystreams.ActivityStream.get_unread_count"
+        ) as mock_count:
+            with patch(
+                "bookwyrm.activitystreams.ActivityStream.get_unread_count_by_status_type"
+            ) as mock_count_by_status:
                 mock_count.return_value = 3
                 mock_count_by_status.return_value = {"review": 5}
                 result = views.get_unread_status_count(request, "home")
