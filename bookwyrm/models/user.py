@@ -37,6 +37,7 @@ FeedFilterChoices = [
 
 
 def get_feed_filter_choices():
+    """return a list of filter choice keys"""
     return [f[0] for f in FeedFilterChoices]
 
 
