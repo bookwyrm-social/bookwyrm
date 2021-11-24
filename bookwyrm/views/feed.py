@@ -14,7 +14,7 @@ from bookwyrm.models.user import FeedFilterChoices
 from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.settings import PAGE_LENGTH, STREAMS
 from bookwyrm.suggested_users import suggested_users
-from .helpers import get_user_from_username
+from .helpers import filter_stream_by_status_type, get_user_from_username
 from .helpers import is_api_request, is_bookwyrm_request
 
 
@@ -247,29 +247,3 @@ def get_suggested_books(user, max_books=5):
         suggested_books.append(shelf_preview)
         book_count += len(shelf_preview["books"])
     return suggested_books
-
-
-def filter_stream_by_status_type(activities, allowed_types=None):
-    """filter out activities based on types"""
-    if not allowed_types:
-        allowed_types = []
-
-    if "review" not in allowed_types:
-        activities = activities.filter(
-            Q(review__isnull=True) | Q(boost__boosted_status__review__isnull=True)
-        )
-    if "comment" not in allowed_types:
-        activities = activities.filter(
-            Q(comment__isnull=True) | Q(boost__boosted_status__comment__isnull=True)
-        )
-    if "quotation" not in allowed_types:
-        activities = activities.filter(
-            Q(quotation__isnull=True) | Q(boost__boosted_status__quotation__isnull=True)
-        )
-    if "everything" not in allowed_types:
-        activities = activities.filter(
-            Q(generatednote__isnull=True)
-            | Q(boost__boosted_status__generatednote__isnull=True)
-        )
-
-    return activities
