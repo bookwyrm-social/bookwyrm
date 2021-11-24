@@ -127,6 +127,7 @@ let BookWyrm = new class {
             // This concerns 'review', 'quotation', 'comment'
             count = allowedStatusTypes.reduce(function(prev, currentKey) {
                 const currentValue = count_by_type[currentKey] | 0;
+
                 return prev + currentValue;
             }, 0);
 
@@ -143,6 +144,7 @@ let BookWyrm = new class {
                     function(prev, currentKey) {
                         const currentValue =
                             count_by_everything_else[currentKey] | 0
+
                         return prev + currentValue;
                     },
                     count
