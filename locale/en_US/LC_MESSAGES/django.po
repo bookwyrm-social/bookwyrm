@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-11-22 18:23+0000\n"
+"POT-Creation-Date: 2021-11-24 10:57+0000\n"
 "PO-Revision-Date: 2021-02-28 17:19-0800\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: English <LL@li.org>\n"
@@ -18,75 +18,58 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: bookwyrm/forms.py:186 bookwyrm/templates/book/book.html:218
-#: bookwyrm/views/feed.py:62
-msgid "Reviews"
-msgstr ""
-
-#: bookwyrm/forms.py:187 bookwyrm/views/feed.py:63
-msgid "Comments"
-msgstr ""
-
-#: bookwyrm/forms.py:188 bookwyrm/views/feed.py:64
-msgid "Quotations"
-msgstr ""
-
-#: bookwyrm/forms.py:189 bookwyrm/views/feed.py:65
-msgid "Everything else"
-msgstr ""
-
-#: bookwyrm/forms.py:266
+#: bookwyrm/forms.py:262
 msgid "A user with this email already exists."
 msgstr ""
 
-#: bookwyrm/forms.py:280
+#: bookwyrm/forms.py:276
 msgid "One Day"
 msgstr ""
 
-#: bookwyrm/forms.py:281
+#: bookwyrm/forms.py:277
 msgid "One Week"
 msgstr ""
 
-#: bookwyrm/forms.py:282
+#: bookwyrm/forms.py:278
 msgid "One Month"
 msgstr ""
 
-#: bookwyrm/forms.py:283
+#: bookwyrm/forms.py:279
 msgid "Does Not Expire"
 msgstr ""
 
-#: bookwyrm/forms.py:287
+#: bookwyrm/forms.py:283
 #, python-brace-format
 msgid "{i} uses"
 msgstr ""
 
-#: bookwyrm/forms.py:288
+#: bookwyrm/forms.py:284
 msgid "Unlimited"
 msgstr ""
 
-#: bookwyrm/forms.py:356
+#: bookwyrm/forms.py:352
 msgid "List Order"
 msgstr ""
 
-#: bookwyrm/forms.py:357
+#: bookwyrm/forms.py:353
 msgid "Book Title"
 msgstr ""
 
-#: bookwyrm/forms.py:358 bookwyrm/templates/shelf/shelf.html:149
+#: bookwyrm/forms.py:354 bookwyrm/templates/shelf/shelf.html:149
 #: bookwyrm/templates/shelf/shelf.html:181
 #: bookwyrm/templates/snippets/create_status/review.html:33
 msgid "Rating"
 msgstr ""
 
-#: bookwyrm/forms.py:360 bookwyrm/templates/lists/list.html:110
+#: bookwyrm/forms.py:356 bookwyrm/templates/lists/list.html:110
 msgid "Sort By"
 msgstr ""
 
-#: bookwyrm/forms.py:364
+#: bookwyrm/forms.py:360
 msgid "Ascending"
 msgstr ""
 
-#: bookwyrm/forms.py:365
+#: bookwyrm/forms.py:361
 msgid "Descending"
 msgstr ""
 
@@ -168,6 +151,22 @@ msgstr ""
 
 #: bookwyrm/models/fields.py:188
 msgid "A user with that username already exists."
+msgstr ""
+
+#: bookwyrm/models/user.py:32 bookwyrm/templates/book/book.html:218
+msgid "Reviews"
+msgstr ""
+
+#: bookwyrm/models/user.py:33
+msgid "Comments"
+msgstr ""
+
+#: bookwyrm/models/user.py:34
+msgid "Quotations"
+msgstr ""
+
+#: bookwyrm/models/user.py:35
+msgid "Everything else"
 msgstr ""
 
 #: bookwyrm/settings.py:118
@@ -1108,8 +1107,8 @@ msgstr ""
 msgid "There aren't any activities right now! Try following a user to get started"
 msgstr ""
 
-#: bookwyrm/templates/feed/feed.html:72
-msgid ", or enable more status types"
+#: bookwyrm/templates/feed/feed.html:73
+msgid "Alternatively, you can try enabling more status types"
 msgstr ""
 
 #: bookwyrm/templates/feed/goal_card.html:6

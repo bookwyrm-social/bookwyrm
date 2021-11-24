@@ -9,6 +9,7 @@ from django.core.validators import MinValueValidator
 from django.dispatch import receiver
 from django.db import models, transaction
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 from model_utils import FieldTracker
 import pytz
 
@@ -25,6 +26,18 @@ from .activitypub_mixin import OrderedCollectionPageMixin, ActivitypubMixin
 from .base_model import BookWyrmModel, DeactivationReason, new_access_code
 from .federated_server import FederatedServer
 from . import fields, Review
+
+
+FeedFilterChoices = [
+    ("review", _("Reviews")),
+    ("comment", _("Comments")),
+    ("quotation", _("Quotations")),
+    ("everything", _("Everything else")),
+]
+
+
+def get_feed_filter_choices():
+    return [f[0] for f in FeedFilterChoices]
 
 
 def site_link():
@@ -130,9 +143,9 @@ class User(OrderedCollectionPageMixin, AbstractUser):
 
     # feed options
     feed_status_types = ArrayField(
-        models.CharField(max_length=10, blank=False),
+        models.CharField(max_length=10, blank=False, choices=FeedFilterChoices),
         size=8,
-        default=list(["review", "comment", "quotation", "everything"]),
+        default=get_feed_filter_choices,
     )
 
     preferred_timezone = models.CharField(

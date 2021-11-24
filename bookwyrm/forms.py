@@ -9,6 +9,7 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from bookwyrm import models
+from bookwyrm.models.user import FeedFilterChoices
 
 
 class CustomForm(ModelForm):
@@ -179,15 +180,9 @@ class FeedStatusTypesForm(CustomForm):
         model = models.User
         fields = ["feed_status_types"]
         help_texts = {f: None for f in fields}
-        labels = {"feed_status_types": ""}
         widgets = {
             "feed_status_types": widgets.CheckboxSelectMultiple(
-                choices=[
-                    ("review", _("Reviews")),
-                    ("comment", _("Comments")),
-                    ("quotation", _("Quotations")),
-                    ("everything", _("Everything else")),
-                ],
+                choices=FeedFilterChoices,
             ),
         }
 

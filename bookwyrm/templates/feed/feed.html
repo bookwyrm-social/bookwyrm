@@ -42,7 +42,7 @@
                 </div>
             </div>
         </div>
-        <div class="level-right">
+        <div class="level-right control">
             <button class="button is-small is-primary is-outlined" type="submit">
                 {{ _("Save settings") }}
             </button>
@@ -69,7 +69,8 @@
 {# activity feed #}
 {% if not activities %}
 <div class="block content">
-    <p>{% trans "There aren't any activities right now! Try following a user to get started" %}{% if user.feed_status_types|length < 4 %}{% trans ", or enable more status types" %}{% endif %}</p>
+    <p>{% trans "There aren't any activities right now! Try following a user to get started" %}</p>
+    <p>{% if user.feed_status_types|length < 4 %}{% trans "Alternatively, you can try enabling more status types" %}{% endif %}</p>
 
     {% if request.user.show_suggested_users and suggested_users %}
     {# suggested users for when things are very lonely #}
