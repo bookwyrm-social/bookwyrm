@@ -102,8 +102,6 @@ class ReadingStatus(View):
                 != desired_shelf.identifier
             ):
                 return unshelve(request, referer=referer, book_id=book_id)
-            # don't try to unshelve a read status shelf: it has already been deleted.
-            return HttpResponse(headers={"forceReload": "true"})
 
         if is_api_request(request):
             return HttpResponse()

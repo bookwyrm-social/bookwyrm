@@ -125,10 +125,6 @@ class CreateStatus(View):
             except Http404:
                 pass
 
-        # force page reload if this was triggered from 'move' button
-        if bool(request.POST.get("shelf")):
-            return HttpResponse(headers={"forceReload": "true"})
-
         if is_api_request(request):
             return HttpResponse()
         return redirect("/")
