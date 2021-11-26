@@ -1,7 +1,6 @@
 """ shelf views """
 from django.db import IntegrityError, transaction
 from django.contrib.auth.decorators import login_required
-from django.http.response import HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.views.decorators.http import require_POST
 
@@ -92,7 +91,7 @@ def shelve(request):
 
 @login_required
 @require_POST
-def unshelve(request, referer=None, book_id=False):
+def unshelve(request, book_id=False):
     """remove a book from a user's shelf"""
     identity = book_id if book_id else request.POST.get("book")
     book = get_object_or_404(models.Edition, id=identity)
