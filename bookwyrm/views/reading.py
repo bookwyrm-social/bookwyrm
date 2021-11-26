@@ -101,7 +101,7 @@ class ReadingStatus(View):
                 and current_status_shelfbook.shelf.identifier
                 != desired_shelf.identifier
             ):
-                return unshelve(request, referer=referer, book_id=book_id)
+                return unshelve(request, book_id=book_id)
 
         if is_api_request(request):
             return HttpResponse()
