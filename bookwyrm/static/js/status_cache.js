@@ -74,7 +74,7 @@ let StatusCache = new class {
 
         // This allows the form to submit in the old fashioned way if there's a problem
 
-        if (!trigger || !form || response.headers.get("forceReload")) {
+        if (!trigger || !form) {
             return;
         }
 
@@ -90,7 +90,6 @@ let StatusCache = new class {
             trigger.removeAttribute('disabled');
         })
         .then(response => {
-
             if (!response.ok) {
                 throw new Error();
             }
