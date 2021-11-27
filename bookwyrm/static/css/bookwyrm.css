@@ -25,8 +25,24 @@ body {
     overflow-x: auto;
 }
 
+.modal-card:focus {
+    outline-style: auto;
+}
+.modal-card:focus:not(:focus-visible) {
+    outline-style: initial;
+}
+.modal-card:focus-visible {
+    outline-style: auto;
+}
+
 .modal-card.is-fullwidth {
     min-width: 75% !important;
+}
+
+@media only screen and (min-width: 769px) {
+    .modal-card.is-thin {
+        width: 350px !important;
+    }
 }
 
 .modal-card-body {

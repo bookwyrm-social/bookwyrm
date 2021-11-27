@@ -45,6 +45,12 @@ let BookWyrm = new class {
                 'change',
                 this.disableIfTooLarge.bind(this)
             ));
+
+        document.querySelectorAll('button[data-modal-open]')
+            .forEach(node => node.addEventListener(
+                'click',
+                this.handleModalButton.bind(this)
+            ));
     }
 
     /**
@@ -368,4 +374,72 @@ let BookWyrm = new class {
             );
         }
     }
+
+    handleModalButton(element) {
+        const modalButton = element.currentTarget;
+        const targetModalId = modalButton.dataset.modalOpen;
+        const htmlElement = document.querySelector('html');
+
+        // Helper functions
+        function handleModalOpen(modalElement) {
+            htmlElement.classList.add('is-clipped');
+            modalElement.classList.add('is-active');
+            modalElement.getElementsByClassName('modal-card')[0].focus();
+
+            const closeButtons = modalElement.querySelectorAll("[data-modal-close]");
+            closeButtons.forEach((button) => {
+                button.addEventListener(
+                'click',
+                function() { handleModalClose(modalElement) },
+                );
+            });
+
+            document.addEventListener(
+                'keydown',
+                function(event) {
+                    if (event.key === 'Escape') {
+                        handleModalClose(modalElement);
+                    }
+                },
+            );
+
+            modalElement.addEventListener('keydown', handleFocusTrap)
+        }
+
+        function handleModalClose(modalElement) {
+            modalElement.removeEventListener('keydown', handleFocusTrap)
+            htmlElement.classList.remove('is-clipped');
+            modalElement.classList.remove('is-active');
+            modalButton.focus();
+        }
+
+        function handleFocusTrap(event) {
+            const focusableEls = event.currentTarget.querySelectorAll('a[href]:not([disabled]), button:not([disabled]), textarea:not([disabled]), input[type="text"]:not([disabled]), input[type="radio"]:not([disabled]), input[type="checkbox"]:not([disabled]), select:not([disabled])');
+            const firstFocusableEl = focusableEls[0];  
+            const lastFocusableEl = focusableEls[focusableEls.length - 1];
+
+            if (event.key !== 'Tab') { 
+                return; 
+            }
+
+            if (event.shiftKey ) /* shift + tab */ {
+                if (document.activeElement === firstFocusableEl) {
+                    lastFocusableEl.focus();
+                    event.preventDefault();
+                }
+            } else /* tab */ {
+                if (document.activeElement === lastFocusableEl) {
+                    firstFocusableEl.focus();
+                    event.preventDefault();
+                }
+            }
+        }
+
+        const modal = document.getElementById(targetModalId);
+        if (modal) {
+            // Open the modal
+            handleModalOpen(modal);
+        }
+    }
+
 }();
