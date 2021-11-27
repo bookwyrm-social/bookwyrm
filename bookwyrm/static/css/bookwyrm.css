@@ -8,6 +8,11 @@ body {
     flex-direction: column;
 }
 
+/* Better accessibility for keyboard users */
+*:focus-visible {
+    outline-style: auto !important;
+}
+
 .image {
     overflow: hidden;
 }
