@@ -3,15 +3,30 @@
 {% load utilities %}
 {% load markdown %}
 
-{% if error or not request.user.is_authenticated %}
-    {% include 'ostatus/ostatus_error.html' %}
+{% block title %}
+{% if not request.user.is_authenticated %}
+{% trans "Log in to " %}
+{% elif error %}
+{% trans "Error following from " %}
 {% else %}
+{% trans "Follow from " %}
+{% endif %}
+{% endblock %}
 
-{% block title %}{% trans "Follow from " %}{% endblock %}
-
-{% block heading %}Follow from {{ site.name }}{% endblock %}
+{% block heading %}
+{% if not request.user.is_authenticated %}
+{% trans "Let's log in first..." %}
+{% elif error %}
+{% trans 'Uh oh...' %} 
+{% else %}
+{% blocktrans %}Follow from {{ site.name }}{% endblocktrans %}
+{% endif %}
+{% endblock %}
 
 {% block content %}
+{% if error or not request.user.is_authenticated %}
+    {% include 'ostatus/ostatus_error.html' with error=error user=user account=account %}
+{% else %}
 <div class="block card">
     <div class="card-content">
         <div class="media">
@@ -43,6 +58,5 @@
         </div>
     </div>
 </div>
-{% endblock %}
-
 {% endif %}
+{% endblock %}

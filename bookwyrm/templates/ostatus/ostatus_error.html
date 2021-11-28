@@ -1,23 +1,4 @@
-{% extends 'ostatus/template.html' %}
 {% load i18n %}
-{% load utilities %}
-{% load markdown %}
-
-{% block title %}
-{% if not request.user.is_authenticated %}
-{% trans "Log in to " %}
-{% else %}
-{% trans "Error following from " %}
-{% endif %}
-{% endblock %}
-
-{% block heading %}
-{% if not request.user.is_authenticated %}
-Let's log in first...
-{% else %}
-Uh oh... 
-{% endif %}
-{% endblock %}
 
 {% block content %}
 <div class="block">
