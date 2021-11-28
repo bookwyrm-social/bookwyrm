@@ -148,5 +148,8 @@ def remote_follow(request):
     """direct user to follow from remote account using ostatus subscribe protocol"""
     remote_user = request.POST.get("remote_user")
     template = subscribe_remote_webfinger(remote_user)
+    if template is None:
+        data = {"account": remote_user, "user": None, "error": "remote_subscribe"}
+        return TemplateResponse(request, "ostatus/subscribe.html", data)
     url = template.replace("{uri}", request.POST.get("user"))
     return redirect(url)

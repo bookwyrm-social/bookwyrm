@@ -33,6 +33,11 @@
         <p>{% blocktrans %}Something went wrong trying to follow <strong>{{ account }}</strong>{% endblocktrans %}</p>
         <p>{% trans 'Check you have the correct username before trying again.' %}</p>
     </div>
+    {% elif error == 'remote_subscribe' %}
+    <div class="notification is-warning has-text-centered">
+        <p>{% blocktrans %}Something went wrong trying to follow from <strong>{{ account }}</strong>{% endblocktrans %}</p>
+        <p>{% trans 'Check you have the correct username before trying again.' %}</p>
+    </div>
     {% elif error == 'is_blocked' %}
     <div class="notification is-danger has-text-centered">
         <p>{% blocktrans %}You have blocked <strong>{{ account }}</strong>{% endblocktrans %}</p>
