@@ -8,7 +8,7 @@ from django.template.response import TemplateResponse
 from django.views.decorators.http import require_POST
 
 from bookwyrm import models
-from .helpers import get_user_from_username, handle_remote_webfinger
+from .helpers import get_user_from_username, handle_remote_webfinger, subscribe_remote_webfinger
 
 
 @login_required
@@ -134,33 +134,35 @@ def ostatus_follow_success(request):
     }
     return TemplateResponse(request, "ostatus/success.html", data)
 
-@login_required
-@require_POST
-def remote_follow(request):
-    """complete an incoming remote follow request"""
+def remote_follow_page(request):
+    """Display remote follow page"""
 
     # this is triggered from remote follow form
     # attempt the follow request
     # on success [[return success page]]
     # on fail return [[ostatus_error]]
+    user = get_user_from_username(request.user, request.GET.get("user"))
+    data = {
+        "user": user
+    }
+    return TemplateResponse(request, "ostatus/remote_follow.html", data)
 
+@require_POST
+def remote_follow(request):
+    """direct user to follow from remote account using ostatus subscribe protocol"""
+    remote_user = request.POST.get("remote_user")
+    template = subscribe_remote_webfinger(remote_user)
+    url = template.replace("{uri}", request.POST.get("user"))
+    return redirect(url)
 
 """
 REQUEST TO FOLLOW FROM REMOTE ACCOUNT
 1. click remote follow button [default checked option to open new window]
 2. popup new small window
-3. enter user acct to follow from (user@domain.tld) and submit form 
-5. GET {base_url}/.well-known/webfinger/?resource=acct:{user@domain.tld}
-6. parse json for links 
-6.1 rel="http://ostatus.org/schema/1.0/subscribe" and return 'template'
-6.2 rel="self" and return href
-7. replace '{uri}' in the returned string with self.href
-8. GET the URI at 6.1
+
 
 REQUEST TO FOLLOW FROM LOCAL ACCOUNT
-1. receive request to /ostatus_subscribe?acct={uri}
-2. check user is logged in and present confirmation screen (remote_follow_request)
-3. On confirmation, 3. parse user into info needed for a normal follow
-4. send follow request, on 200 response display success else display error (remote_follow)
+
+4. send follow request, on 200 response display success else display error 
 5. Include button inviting to close window
 """

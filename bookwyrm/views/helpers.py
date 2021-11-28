@@ -84,6 +84,33 @@ def handle_remote_webfinger(query):
                     return None
     return user
 
+def subscribe_remote_webfinger(query):
+    """get subscribe template from other servers"""
+    template = None
+
+    # usernames could be @user@domain or user@domain
+    if not query:
+        return None
+
+    if query[0] == "@":
+        query = query[1:]
+
+    try:
+        domain = query.split("@")[1]
+    except IndexError:
+        return None
+
+    url = f"https://{domain}/.well-known/webfinger?resource=acct:{query}"
+    try:
+        data = get_data(url)
+    except (ConnectorException, HTTPError):
+        return None
+
+    for link in data.get("links"):
+        if link.get("rel") == "http://ostatus.org/schema/1.0/subscribe":
+            template = link["template"]
+
+    return template
 
 def get_edition(book_id):
     """look up a book in the db and return an edition"""
