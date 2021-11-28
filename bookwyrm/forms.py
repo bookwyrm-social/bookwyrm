@@ -9,6 +9,7 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from bookwyrm import models
+from bookwyrm.models.fields import ClearableFileInputWithWarning
 
 
 class CustomForm(ModelForm):
@@ -147,6 +148,23 @@ class EditUserForm(CustomForm):
             "preferred_language",
         ]
         help_texts = {f: None for f in fields}
+        widgets = {
+            "avatar": ClearableFileInputWithWarning(
+                attrs={'aria-describedby': "desc_avatar"}
+            ),
+            "name": forms.TextInput(
+                attrs={'aria-describedby': "desc_name"}
+            ),
+            "summary": forms.Textarea(
+                attrs={'aria-describedby': "desc_summary"}
+            ),
+            "email": forms.EmailInput(
+                attrs={'aria-describedby': "desc_email"}
+            ),
+            "discoverable": forms.CheckboxInput(
+                attrs={'aria-describedby': "desc_discoverable"}
+            ),
+        }
 
 
 class LimitedEditUserForm(CustomForm):
@@ -160,6 +178,20 @@ class LimitedEditUserForm(CustomForm):
             "discoverable",
         ]
         help_texts = {f: None for f in fields}
+        widgets = {
+            "avatar": ClearableFileInputWithWarning(
+                attrs={'aria-describedby': "desc_avatar"}
+            ),
+            "name": forms.TextInput(
+                attrs={'aria-describedby': "desc_name"}
+            ),
+            "summary": forms.Textarea(
+                attrs={'aria-describedby': "desc_summary"}
+            ),
+            "discoverable": forms.CheckboxInput(
+                attrs={'aria-describedby': "desc_discoverable"}
+            ),
+        }
 
 
 class DeleteUserForm(CustomForm):
@@ -288,6 +320,17 @@ class SiteForm(CustomForm):
     class Meta:
         model = models.SiteSettings
         exclude = []
+        widgets = {
+            "instance_short_description": forms.TextInput(
+                attrs={'aria-describedby': "desc_instance_short_description"}
+            ),
+            "require_confirm_email": forms.CheckboxInput(
+                attrs={'aria-describedby': "desc_require_confirm_email"}
+            ),
+            "invite_request_text": forms.Textarea(
+                attrs={'aria-describedby': "desc_invite_request_text"}
+            ),
+        }
 
 
 class AnnouncementForm(CustomForm):

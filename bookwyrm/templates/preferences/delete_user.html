@@ -18,9 +18,9 @@
         {% csrf_token %}
         <div class="field">
             <label class="label" for="id_password">{% trans "Confirm password:" %}</label>
-            <input class="input {% if form.password.errors %}is-danger{% endif %}" type="password" name="password" id="id_password" required>
+            <input class="input {% if form.password.errors %}is-danger{% endif %}" type="password" name="password" id="id_password" required aria-describedby="desc_password">
             {% for error in form.password.errors %}
-            <p class="help is-danger">{{ error | escape }}</p>
+            <p class="help is-danger" id="desc_password">{{ error | escape }}</p>
             {% endfor %}
         </div>
         <button type="submit" class="button is-danger">{% trans "Delete Account" %}</button>
