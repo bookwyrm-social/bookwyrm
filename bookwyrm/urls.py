@@ -44,6 +44,7 @@ urlpatterns = [
     re_path(r"^api/v1/instance/?$", views.instance_info),
     re_path(r"^api/v1/instance/peers/?$", views.peers),
     re_path(r"^opensearch.xml$", views.opensearch, name="opensearch"),
+    re_path(r"^ostatus_subscribe/?$", views.ostatus_follow_request),
     # polling updates
     re_path("^api/updates/notifications/?$", views.get_notification_count),
     re_path("^api/updates/stream/(?P<stream>[a-z]+)/?$", views.get_unread_status_count),
@@ -450,4 +451,6 @@ urlpatterns = [
     re_path(r"^unfollow/?$", views.unfollow, name="unfollow"),
     re_path(r"^accept-follow-request/?$", views.accept_follow_request),
     re_path(r"^delete-follow-request/?$", views.delete_follow_request),
+    # re_path(r"^ostatus_follow/?$", views.remote_follow),
+    re_path(r"^ostatus_success/?$", views.ostatus_follow_success, name="ostatus-success"),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
