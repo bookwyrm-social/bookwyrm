@@ -425,10 +425,10 @@ let BookWyrm = new class {
                     'a[href]:not([disabled])',
                     'button:not([disabled])',
                     'textarea:not([disabled])',
-                    'input[type="text"]:not([disabled])',
-                    'input[type="radio"]:not([disabled])',
-                    'input[type="checkbox"]:not([disabled])',
-                    'select:not([disabled])'
+                    'input:not([type="hidden"]):not([disabled])',
+                    'select:not([disabled])',
+                    'details:not([disabled])',
+                    '[tabindex]:not([tabindex="-1"]):not([disabled])'
                 ].join(',')
             );
             const firstFocusableEl = focusableEls[0];  
