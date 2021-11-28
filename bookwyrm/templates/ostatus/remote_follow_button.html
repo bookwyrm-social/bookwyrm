@@ -4,13 +4,9 @@
 
 <div class="field mb-0">
     <div class="control">
-        <form method="GET" action="{% url 'remote-follow-page' %}" >
-            {% csrf_token %}
-            <input type="hidden" name="user" value="{{ user.username }}">
-            <button class="button is-small{% if not minimal %} is-link{% endif %}" type="submit">
-                {% blocktrans with username=user.localname %}Follow on Fediverse{% endblocktrans %}
-            </button>
-        </form>
+        <a class="button is-small is-link" href="{% url 'remote-follow-page' %}?user={{ user.username }}" target="_blank" rel="noopener noreferrer" onclick="BookWyrm.displayPopUp(`{% url 'remote-follow-page' %}?user={{ user.username }}`, `remoteFollow`); return false">
+            {% blocktrans with username=user.localname %}Follow on Fediverse{% endblocktrans %}
+        </a>
     </div>
 </div>
 {% endif %}

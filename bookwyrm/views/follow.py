@@ -136,11 +136,6 @@ def ostatus_follow_success(request):
 
 def remote_follow_page(request):
     """Display remote follow page"""
-
-    # this is triggered from remote follow form
-    # attempt the follow request
-    # on success [[return success page]]
-    # on fail return [[ostatus_error]]
     user = get_user_from_username(request.user, request.GET.get("user"))
     data = {
         "user": user
@@ -154,15 +149,3 @@ def remote_follow(request):
     template = subscribe_remote_webfinger(remote_user)
     url = template.replace("{uri}", request.POST.get("user"))
     return redirect(url)
-
-"""
-REQUEST TO FOLLOW FROM REMOTE ACCOUNT
-1. click remote follow button [default checked option to open new window]
-2. popup new small window
-
-
-REQUEST TO FOLLOW FROM LOCAL ACCOUNT
-
-4. send follow request, on 200 response display success else display error 
-5. Include button inviting to close window
-"""

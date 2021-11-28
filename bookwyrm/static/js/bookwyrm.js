@@ -368,4 +368,20 @@ let BookWyrm = new class {
             );
         }
     }
+
+    /**
+     * Display pop up window.
+     *
+     * @param {string} url Url to open
+     * @param {string} windowName windowName
+     * @return {undefined}
+     */
+    displayPopUp(url, windowName){
+
+      window.open(
+        url,
+        windowName,
+        "left=100,top=100,width=430,height=600"
+        )
+    }
 }();
