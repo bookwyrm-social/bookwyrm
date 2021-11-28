@@ -25,7 +25,7 @@
 
 {% block content %}
 {% if error or not request.user.is_authenticated %}
-    {% include 'ostatus/ostatus_error.html' with error=error user=user account=account %}
+    {% include 'ostatus/error.html' with error=error user=user account=account %}
 {% else %}
 <div class="block card">
     <div class="card-content">
@@ -45,13 +45,14 @@
                     </span>
                     <span class="subtitle is-7 is-block">@{{ user|username }}</span>
                 </a>
-                <form name="follow" method="post" action="">
+                <form name="follow" method="post" action="{% url 'follow' %}/?next={% url 'ostatus-success' %}?following={{ user.username }}">
                   {% csrf_token %}
+                  <input name="user" value={{ user.username }} hidden>
                   <button class="button is-link" type="submit">{% trans "Follow " %} {{ user.name }}</button>
                 </form>
             </div>
         </div>
-        <div class="">
+        <div>
         {% if user.summary %}
             {{ user.summary|to_markdown|safe|truncatechars_html:120 }}
         {% else %}&nbsp;{% endif %}
