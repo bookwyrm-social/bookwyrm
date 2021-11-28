@@ -379,6 +379,11 @@ let BookWyrm = new class {
         const modalButton = element.currentTarget;
         const targetModalId = modalButton.dataset.modalOpen;
         const htmlElement = document.querySelector('html');
+        const modal = document.getElementById(targetModalId);
+        
+        if (!modal) {
+            return;
+        }
 
         // Helper functions
         function handleModalOpen(modalElement) {
@@ -387,10 +392,11 @@ let BookWyrm = new class {
             modalElement.getElementsByClassName('modal-card')[0].focus();
 
             const closeButtons = modalElement.querySelectorAll("[data-modal-close]");
+            
             closeButtons.forEach((button) => {
                 button.addEventListener(
-                'click',
-                function() { handleModalClose(modalElement) },
+                    'click',
+                    function() { handleModalClose(modalElement) }
                 );
             });
 
@@ -400,7 +406,7 @@ let BookWyrm = new class {
                     if (event.key === 'Escape') {
                         handleModalClose(modalElement);
                     }
-                },
+                }
             );
 
             modalElement.addEventListener('keydown', handleFocusTrap)
@@ -432,24 +438,20 @@ let BookWyrm = new class {
                 return; 
             }
 
-            if (event.shiftKey ) /* shift + tab */ {
+            if (event.shiftKey ) /* Shift + tab */ {
                 if (document.activeElement === firstFocusableEl) {
                     lastFocusableEl.focus();
                     event.preventDefault();
                 }
-            } else /* tab */ {
+            } else /* Tab */ {
                 if (document.activeElement === lastFocusableEl) {
                     firstFocusableEl.focus();
                     event.preventDefault();
                 }
             }
         }
-
-        const modal = document.getElementById(targetModalId);
-        if (modal) {
-            // Open the modal
-            handleModalOpen(modal);
-        }
+        
+        // Open modal
+        handleModalOpen(modal);
     }
-
 }();
