@@ -1,0 +1,16 @@
+{% load i18n %}
+{% if request.user == user %}
+{% else %}
+
+<div class="field mb-0">
+    <div class="control">
+        <form method="GET" action="{% url 'remote-follow-page' %}" >
+            {% csrf_token %}
+            <input type="hidden" name="user" value="{{ user.username }}">
+            <button class="button is-small{% if not minimal %} is-link{% endif %}" type="submit">
+                {% blocktrans with username=user.localname %}Follow on Fediverse{% endblocktrans %}
+            </button>
+        </form>
+    </div>
+</div>
+{% endif %}
