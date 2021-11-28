@@ -14,7 +14,7 @@
 {% endblock %}
 
 {% block heading %}
-{% if not request.user.is_authenticated %}
+{% if not request.user.is_authenticated and not error == 'remote_subscribe' %}
 {% trans "Let's log in first..." %}
 {% elif error %}
 {% trans 'Uh oh...' %} 
