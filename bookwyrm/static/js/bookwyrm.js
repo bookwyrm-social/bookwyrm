@@ -420,6 +420,10 @@ let BookWyrm = new class {
         }
 
         function handleFocusTrap(event) {
+            if (event.key !== 'Tab') { 
+                return; 
+            }
+
             const focusableEls = event.currentTarget.querySelectorAll(
                 [
                     'a[href]:not([disabled])',
@@ -433,10 +437,6 @@ let BookWyrm = new class {
             );
             const firstFocusableEl = focusableEls[0];  
             const lastFocusableEl = focusableEls[focusableEls.length - 1];
-
-            if (event.key !== 'Tab') { 
-                return; 
-            }
 
             if (event.shiftKey ) /* Shift + tab */ {
                 if (document.activeElement === firstFocusableEl) {
