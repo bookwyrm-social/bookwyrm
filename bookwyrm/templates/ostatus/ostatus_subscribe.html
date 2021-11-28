@@ -1,0 +1,48 @@
+{% extends 'ostatus/template.html' %}
+{% load i18n %}
+{% load utilities %}
+{% load markdown %}
+
+{% if error or not request.user.is_authenticated %}
+    {% include 'ostatus/ostatus_error.html' %}
+{% else %}
+
+{% block title %}{% trans "Follow from " %}{% endblock %}
+
+{% block heading %}Follow from {{ site.name }}{% endblock %}
+
+{% block content %}
+<div class="block card">
+    <div class="card-content">
+        <div class="media">
+            <a href="{{ user.local_path }}" class="media-left">
+                {% include 'snippets/avatar.html' with user=user large=True %}
+            </a>
+            <div class="media-content">
+                <a href="{{ user.local_path }}" class="is-block mb-2">
+                    <span class="title is-4 is-block">
+                        {{ user.display_name }}
+                        {% if user.manually_approves_followers %}
+                        <span class="icon icon-lock is-size-7" title="{% trans 'Locked account' %}">
+                            <span class="is-sr-only">{% trans "Locked account" %}</span>
+                        </span>
+                        {% endif %}
+                    </span>
+                    <span class="subtitle is-7 is-block">@{{ user|username }}</span>
+                </a>
+                <form name="follow" method="post" action="">
+                  {% csrf_token %}
+                  <button class="button is-link" type="submit">{% trans "Follow " %} {{ user.name }}</button>
+                </form>
+            </div>
+        </div>
+        <div class="">
+        {% if user.summary %}
+            {{ user.summary|to_markdown|safe|truncatechars_html:120 }}
+        {% else %}&nbsp;{% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% endif %}
