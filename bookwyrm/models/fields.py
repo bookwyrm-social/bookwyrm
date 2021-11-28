@@ -296,7 +296,7 @@ class ManyToManyField(ActivitypubFieldMixin, models.ManyToManyField):
         super().__init__(*args, **kwargs)
 
     def set_field_from_activity(self, instance, data, overwrite=True):
-        """helper function for assinging a value to the field"""
+        """helper function for assigning a value to the field"""
         if not overwrite and getattr(instance, self.name).exists():
             return False
 
