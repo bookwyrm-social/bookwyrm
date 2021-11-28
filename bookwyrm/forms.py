@@ -150,19 +150,13 @@ class EditUserForm(CustomForm):
         help_texts = {f: None for f in fields}
         widgets = {
             "avatar": ClearableFileInputWithWarning(
-                attrs={'aria-describedby': "desc_avatar"}
+                attrs={"aria-describedby": "desc_avatar"}
             ),
-            "name": forms.TextInput(
-                attrs={'aria-describedby': "desc_name"}
-            ),
-            "summary": forms.Textarea(
-                attrs={'aria-describedby': "desc_summary"}
-            ),
-            "email": forms.EmailInput(
-                attrs={'aria-describedby': "desc_email"}
-            ),
+            "name": forms.TextInput(attrs={"aria-describedby": "desc_name"}),
+            "summary": forms.Textarea(attrs={"aria-describedby": "desc_summary"}),
+            "email": forms.EmailInput(attrs={"aria-describedby": "desc_email"}),
             "discoverable": forms.CheckboxInput(
-                attrs={'aria-describedby': "desc_discoverable"}
+                attrs={"aria-describedby": "desc_discoverable"}
             ),
         }
 
@@ -180,16 +174,12 @@ class LimitedEditUserForm(CustomForm):
         help_texts = {f: None for f in fields}
         widgets = {
             "avatar": ClearableFileInputWithWarning(
-                attrs={'aria-describedby': "desc_avatar"}
+                attrs={"aria-describedby": "desc_avatar"}
             ),
-            "name": forms.TextInput(
-                attrs={'aria-describedby': "desc_name"}
-            ),
-            "summary": forms.Textarea(
-                attrs={'aria-describedby': "desc_summary"}
-            ),
+            "name": forms.TextInput(attrs={"aria-describedby": "desc_name"}),
+            "summary": forms.Textarea(attrs={"aria-describedby": "desc_summary"}),
             "discoverable": forms.CheckboxInput(
-                attrs={'aria-describedby': "desc_discoverable"}
+                attrs={"aria-describedby": "desc_discoverable"}
             ),
         }
 
@@ -322,13 +312,13 @@ class SiteForm(CustomForm):
         exclude = []
         widgets = {
             "instance_short_description": forms.TextInput(
-                attrs={'aria-describedby': "desc_instance_short_description"}
+                attrs={"aria-describedby": "desc_instance_short_description"}
             ),
             "require_confirm_email": forms.CheckboxInput(
-                attrs={'aria-describedby': "desc_require_confirm_email"}
+                attrs={"aria-describedby": "desc_require_confirm_email"}
             ),
             "invite_request_text": forms.Textarea(
-                attrs={'aria-describedby': "desc_invite_request_text"}
+                attrs={"aria-describedby": "desc_invite_request_text"}
             ),
         }
 
