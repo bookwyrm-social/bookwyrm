@@ -8,7 +8,11 @@ from django.template.response import TemplateResponse
 from django.views.decorators.http import require_POST
 
 from bookwyrm import models
-from .helpers import get_user_from_username, handle_remote_webfinger, subscribe_remote_webfinger
+from .helpers import (
+    get_user_from_username,
+    handle_remote_webfinger,
+    subscribe_remote_webfinger,
+)
 
 
 @login_required
@@ -30,7 +34,6 @@ def follow(request):
         return redirect(request.GET.get("next", "/"))
 
     return redirect(to_follow.local_path)
-
 
 
 @login_required
@@ -92,12 +95,15 @@ def delete_follow_request(request):
     follow_request.delete()
     return redirect(f"/user/{request.user.localname}")
 
+
 def ostatus_follow_request(request):
     """prepare an outgoing remote follow request"""
 
     # parse the acct URI into a user string
     uri = urllib.parse.unquote(request.GET.get("acct"))
-    username_parts = re.search("(?:^http(?:s?):\/\/)([\w\-\.]*)(?:.)*(?:(?:\/)([\w]*))", uri)
+    username_parts = re.search(
+        "(?:^http(?:s?):\/\/)([\w\-\.]*)(?:.)*(?:(?:\/)([\w]*))", uri
+    )
     account = f"{username_parts[2]}@{username_parts[1]}"
     user = handle_remote_webfinger(account)
     error = None
@@ -111,14 +117,13 @@ def ostatus_follow_request(request):
     if hasattr(user, "followers") and request.user in user.followers.all():
         error = "already_following"
 
-    if hasattr(user, "follower_requests") and request.user in user.follower_requests.all():
+    if (
+        hasattr(user, "follower_requests")
+        and request.user in user.follower_requests.all()
+    ):
         error = "already_requested"
 
-    data = {
-        "account": account,
-        "user": user,
-        "error": error
-    }
+    data = {"account": account, "user": user, "error": error}
 
     return TemplateResponse(request, "ostatus/subscribe.html", data)
 
@@ -127,20 +132,16 @@ def ostatus_follow_request(request):
 def ostatus_follow_success(request):
     """display success message for remote follow"""
     user = get_user_from_username(request.user, request.GET.get("following"))
-    data = {
-        "account": user.name,
-        "user": user, 
-        "error": None
-    }
+    data = {"account": user.name, "user": user, "error": None}
     return TemplateResponse(request, "ostatus/success.html", data)
+
 
 def remote_follow_page(request):
     """Display remote follow page"""
     user = get_user_from_username(request.user, request.GET.get("user"))
-    data = {
-        "user": user
-    }
+    data = {"user": user}
     return TemplateResponse(request, "ostatus/remote_follow.html", data)
+
 
 @require_POST
 def remote_follow(request):

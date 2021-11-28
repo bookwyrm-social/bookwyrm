@@ -453,5 +453,7 @@ urlpatterns = [
     re_path(r"^delete-follow-request/?$", views.delete_follow_request),
     re_path(r"^ostatus_follow/?$", views.remote_follow, name="remote-follow"),
     re_path(r"^remote_follow/?$", views.remote_follow_page, name="remote-follow-page"),
-    re_path(r"^ostatus_success/?$", views.ostatus_follow_success, name="ostatus-success"),
+    re_path(
+        r"^ostatus_success/?$", views.ostatus_follow_success, name="ostatus-success"
+    ),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

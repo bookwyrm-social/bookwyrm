@@ -84,6 +84,7 @@ def handle_remote_webfinger(query):
                     return None
     return user
 
+
 def subscribe_remote_webfinger(query):
     """get subscribe template from other servers"""
     template = None
@@ -111,6 +112,7 @@ def subscribe_remote_webfinger(query):
             template = link["template"]
 
     return template
+
 
 def get_edition(book_id):
     """look up a book in the db and return an edition"""

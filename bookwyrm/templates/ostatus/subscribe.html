@@ -46,9 +46,9 @@
                     <span class="subtitle is-7 is-block">@{{ user|username }}</span>
                 </a>
                 <form name="follow" method="post" action="{% url 'follow' %}/?next={% url 'ostatus-success' %}?following={{ user.username }}">
-                  {% csrf_token %}
-                  <input name="user" value={{ user.username }} hidden>
-                  <button class="button is-link" type="submit">{% trans "Follow " %} {{ user.name }}</button>
+                    {% csrf_token %}
+                    <input name="user" value={{ user.username }} hidden>
+                    <button class="button is-link" type="submit">{% trans "Follow " %} {{ user.name }}</button>
                 </form>
             </div>
         </div>

@@ -32,9 +32,9 @@ def webfinger(request):
                     "href": user.remote_id,
                 },
                 {
-                  "rel": "http://ostatus.org/schema/1.0/subscribe",
-                  "template": f"https://{DOMAIN}/ostatus_subscribe?acct={{uri}}"
-                }
+                    "rel": "http://ostatus.org/schema/1.0/subscribe",
+                    "template": f"https://{DOMAIN}/ostatus_subscribe?acct={{uri}}",
+                },
             ],
         }
     )
