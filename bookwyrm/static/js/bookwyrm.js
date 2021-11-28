@@ -375,8 +375,16 @@ let BookWyrm = new class {
         }
     }
 
-    handleModalButton(element) {
-        const modalButton = element.currentTarget;
+    /**
+     * Handle the modal component.
+     *
+     * @param  {Event} event - Event fired by an element
+     *                         with the `data-modal-open` attribute
+     *                         pointing to a modal by its id.
+     * @return {undefined}
+     */
+    handleModalButton(event) {
+        const modalButton = event.currentTarget;
         const targetModalId = modalButton.dataset.modalOpen;
         const htmlElement = document.querySelector('html');
         const modal = document.getElementById(targetModalId);
