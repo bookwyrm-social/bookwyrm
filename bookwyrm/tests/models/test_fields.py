@@ -215,7 +215,7 @@ class ModelFields(TestCase):
             "rat", "rat@rat.rat", "ratword", local=True, localname="rat"
         )
         public = "https://www.w3.org/ns/activitystreams#Public"
-        followers = "%s/followers" % user.remote_id
+        followers = f"{user.remote_id}/followers"
 
         instance = fields.PrivacyField()
         instance.name = "privacy_field"
@@ -409,11 +409,10 @@ class ModelFields(TestCase):
         """loadin' a list of items from Links"""
         # TODO
 
-    @responses.activate
     @patch("bookwyrm.models.activitypub_mixin.ObjectMixin.broadcast")
     @patch("bookwyrm.suggested_users.remove_user_task.delay")
-    def test_image_field(self, *_):
-        """storing images"""
+    def test_image_field_to_activity(self, *_):
+        """serialize an image field to activitypub"""
         user = User.objects.create_user(
             "mouse", "mouse@mouse.mouse", "mouseword", local=True, localname="mouse"
         )
@@ -437,10 +436,22 @@ class ModelFields(TestCase):
         self.assertEqual(output.name, "")
         self.assertEqual(output.type, "Document")
 
+    @responses.activate
+    def test_image_field_from_activity(self, *_):
+        """load an image from activitypub"""
+        image_file = pathlib.Path(__file__).parent.joinpath(
+            "../../static/images/default_avi.jpg"
+        )
+        image = Image.open(image_file)
+        output = BytesIO()
+        image.save(output, format=image.format)
+
+        instance = fields.ImageField()
+
         responses.add(
             responses.GET,
             "http://www.example.com/image.jpg",
-            body=user.avatar.file.read(),
+            body=image.tobytes(),
             status=200,
         )
         loaded_image = instance.field_from_activity("http://www.example.com/image.jpg")
