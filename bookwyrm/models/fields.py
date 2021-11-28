@@ -398,7 +398,11 @@ class ImageField(ActivitypubFieldMixin, models.ImageField):
         if formatted is None or formatted is MISSING:
             return False
 
-        if not overwrite and hasattr(instance, self.name):
+        if (
+            not overwrite
+            and hasattr(instance, self.name)
+            and getattr(instance, self.name)
+        ):
             return False
 
         getattr(instance, self.name).save(*formatted, save=save)
