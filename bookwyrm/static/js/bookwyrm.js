@@ -414,7 +414,17 @@ let BookWyrm = new class {
         }
 
         function handleFocusTrap(event) {
-            const focusableEls = event.currentTarget.querySelectorAll('a[href]:not([disabled]), button:not([disabled]), textarea:not([disabled]), input[type="text"]:not([disabled]), input[type="radio"]:not([disabled]), input[type="checkbox"]:not([disabled]), select:not([disabled])');
+            const focusableEls = event.currentTarget.querySelectorAll(
+                [
+                    'a[href]:not([disabled])',
+                    'button:not([disabled])',
+                    'textarea:not([disabled])',
+                    'input[type="text"]:not([disabled])',
+                    'input[type="radio"]:not([disabled])',
+                    'input[type="checkbox"]:not([disabled])',
+                    'select:not([disabled])'
+                ].join(',')
+            );
             const firstFocusableEl = focusableEls[0];  
             const lastFocusableEl = focusableEls[focusableEls.length - 1];
 

@@ -30,15 +30,19 @@ body {
     overflow-x: auto;
 }
 
+/* stylelint-disable no-descending-specificity */
 .modal-card:focus {
     outline-style: auto;
 }
+
 .modal-card:focus:not(:focus-visible) {
     outline-style: initial;
 }
+
 .modal-card:focus-visible {
     outline-style: auto;
 }
+/* stylelint-disable no-descending-specificity */
 
 .modal-card.is-fullwidth {
     min-width: 75% !important;
