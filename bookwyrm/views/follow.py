@@ -100,7 +100,7 @@ def ostatus_follow_request(request):
     """prepare an outgoing remote follow request"""
     uri = urllib.parse.unquote(request.GET.get("acct"))
     username_parts = re.search(
-        "(?:^http(?:s?):\/\/)([\w\-\.]*)(?:.)*(?:(?:\/)([\w]*))", uri
+        r"(?:^http(?:s?):\/\/)([\w\-\.]*)(?:.)*(?:(?:\/)([\w]*))", uri
     )
     account = f"{username_parts[2]}@{username_parts[1]}"
     user = handle_remote_webfinger(account)

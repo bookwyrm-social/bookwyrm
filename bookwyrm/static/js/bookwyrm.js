@@ -376,12 +376,11 @@ let BookWyrm = new class {
      * @param {string} windowName windowName
      * @return {undefined}
      */
-    displayPopUp(url, windowName){
-
-      window.open(
-        url,
-        windowName,
-        "left=100,top=100,width=430,height=600"
-        )
+    displayPopUp(url, windowName) {
+        window.open(
+            url,
+            windowName,
+            "left=100,top=100,width=430,height=600"
+        );
     }
 }();
