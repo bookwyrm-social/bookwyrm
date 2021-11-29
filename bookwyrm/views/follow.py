@@ -98,8 +98,6 @@ def delete_follow_request(request):
 
 def ostatus_follow_request(request):
     """prepare an outgoing remote follow request"""
-
-    # parse the acct URI into a user string
     uri = urllib.parse.unquote(request.GET.get("acct"))
     username_parts = re.search(
         "(?:^http(?:s?):\/\/)([\w\-\.]*)(?:.)*(?:(?:\/)([\w]*))", uri
@@ -111,7 +109,7 @@ def ostatus_follow_request(request):
     if user is None or user == "":
         error = "ostatus_subscribe"
 
-    if bool(user) and user in request.user.blocks.all():
+    if hasattr(request.user, "blocks") and user in request.user.blocks.all():
         error = "is_blocked"
 
     if hasattr(user, "followers") and request.user in user.followers.all():
@@ -151,5 +149,8 @@ def remote_follow(request):
     if template is None:
         data = {"account": remote_user, "user": None, "error": "remote_subscribe"}
         return TemplateResponse(request, "ostatus/subscribe.html", data)
-    url = template.replace("{uri}", request.POST.get("user"))
+    user = get_object_or_404(
+        models.User, id=request.POST.get("user")
+    )
+    url = template.replace("{uri}", urllib.parse.quote(user.remote_id))
     return redirect(url)
