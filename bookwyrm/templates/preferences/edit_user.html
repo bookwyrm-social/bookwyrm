@@ -33,31 +33,27 @@
                 {% endif %}
                 <div class="column">
                     {{ form.avatar }}
-                    {% for error in form.avatar.errors %}
-                    <p class="help is-danger" id="desc_avatar">{{ error | escape }}</p>
-                    {% endfor %}
+
+                    {% include 'snippets/form_errors.html' with errors_list=form.avatar.errors id="desc_avatar" %}    
                 </div>
             </div>
             <div class="field">
                 <label class="label" for="id_name">{% trans "Display name:" %}</label>
                 {{ form.name }}
-                {% for error in form.name.errors %}
-                <p class="help is-danger" id="desc_name">{{ error | escape }}</p>
-                {% endfor %}
+
+                {% include 'snippets/form_errors.html' with errors_list=form.name.errors id="desc_name" %}    
             </div>
             <div class="field">
                 <label class="label" for="id_summary">{% trans "Summary:" %}</label>
                 {{ form.summary }}
-                {% for error in form.summary.errors %}
-                <p class="help is-danger" id="desc_summary">{{ error | escape }}</p>
-                {% endfor %}
+
+                {% include 'snippets/form_errors.html' with errors_list=form.summary.errors id="desc_summary" %}    
             </div>
             <div class="field">
                 <label class="label" for="id_email">{% trans "Email address:" %}</label>
                 {{ form.email }}
-                {% for error in form.email.errors %}
-                <p class="help is-danger" id="desc_email">{{ error | escape }}</p>
-                {% endfor %}
+
+                {% include 'snippets/form_errors.html' with errors_list=form.email.errors id="desc_email" %}    
             </div>
         </div>
     </section>

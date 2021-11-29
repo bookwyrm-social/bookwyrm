@@ -19,9 +19,8 @@
         <div class="field">
             <label class="label" for="id_password">{% trans "Confirm password:" %}</label>
             <input class="input {% if form.password.errors %}is-danger{% endif %}" type="password" name="password" id="id_password" required aria-describedby="desc_password">
-            {% for error in form.password.errors %}
-            <p class="help is-danger" id="desc_password">{{ error | escape }}</p>
-            {% endfor %}
+
+            {% include 'snippets/form_errors.html' with errors_list=form.password.errors id="desc_password" %}    
         </div>
         <button type="submit" class="button is-danger">{% trans "Delete Account" %}</button>
     </form>
