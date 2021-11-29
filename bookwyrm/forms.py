@@ -359,6 +359,26 @@ class AnnouncementForm(CustomForm):
     class Meta:
         model = models.Announcement
         exclude = ["remote_id"]
+        widgets = {
+            "preview": forms.TextInput(
+                attrs={"aria-describedby": "desc_preview"}
+            ),
+            "content": forms.Textarea(
+                attrs={"aria-describedby": "desc_content"}
+            ),
+            "event_date": forms.SelectDateWidget(
+                attrs={"aria-describedby": "desc_event_date"}
+            ),
+            "start_date": forms.SelectDateWidget(
+                attrs={"aria-describedby": "desc_start_date"}
+            ),
+            "end_date": forms.SelectDateWidget(
+                attrs={"aria-describedby": "desc_end_date"}
+            ),
+            "active": forms.CheckboxInput(
+                attrs={"aria-describedby": "desc_active"}
+            ),
+        }
 
 
 class ListForm(CustomForm):
