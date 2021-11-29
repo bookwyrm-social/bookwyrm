@@ -218,6 +218,65 @@ class EditionForm(CustomForm):
             "connector",
             "search_vector",
         ]
+        widgets = {
+            "title": forms.TextInput(
+                attrs={"aria-describedby": "desc_title"}
+            ),
+            "subtitle": forms.TextInput(
+                attrs={"aria-describedby": "desc_subtitle"}
+            ),
+            "description": forms.Textarea(
+                attrs={"aria-describedby": "desc_description"}
+            ),
+            "series": forms.TextInput(
+                attrs={"aria-describedby": "desc_series"}
+            ),
+            "series_number": forms.TextInput(
+                attrs={"aria-describedby": "desc_series_number"}
+            ),
+            "languages": forms.TextInput(
+                attrs={"aria-describedby": "desc_languages_help desc_languages"}
+            ),
+            "publishers": forms.TextInput(
+                attrs={"aria-describedby": "desc_publishers_help desc_publishers"}
+            ),
+            "first_published_date": forms.SelectDateWidget(
+                attrs={"aria-describedby": "desc_first_published_date"}
+            ),
+            "published_date": forms.SelectDateWidget(
+                attrs={"aria-describedby": "desc_published_date"}
+            ),
+            "cover": ClearableFileInputWithWarning(
+                attrs={"aria-describedby": "desc_cover"}
+            ),
+            "physical_format": forms.Select(
+                attrs={"aria-describedby": "desc_physical_format"}
+            ),
+            "physical_format_detail": forms.TextInput(
+                attrs={"aria-describedby": "desc_physical_format_detail"}
+            ),
+            "pages": forms.NumberInput(
+                attrs={"aria-describedby": "desc_pages"}
+            ),
+            "isbn_13": forms.TextInput(
+                attrs={"aria-describedby": "desc_isbn_13"}
+            ),
+            "isbn_10": forms.TextInput(
+                attrs={"aria-describedby": "desc_isbn_10"}
+            ),
+            "openlibrary_key": forms.TextInput(
+                attrs={"aria-describedby": "desc_openlibrary_key"}
+            ),
+            "inventaire_id": forms.TextInput(
+                attrs={"aria-describedby": "desc_inventaire_id"}
+            ),
+            "oclc_number": forms.TextInput(
+                attrs={"aria-describedby": "desc_oclc_number"}
+            ),
+            "ASIN": forms.TextInput(
+                attrs={"aria-describedby": "desc_ASIN"}
+            ),
+        }
 
 
 class AuthorForm(CustomForm):
@@ -268,7 +327,7 @@ class AuthorForm(CustomForm):
                 attrs={"aria-describedby": "desc_goodreads_key"}
             ),
         }
-        
+
 
 class ImportForm(forms.Form):
     csv_file = forms.FileField()
