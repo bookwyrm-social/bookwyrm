@@ -113,22 +113,13 @@ def ostatus_follow_request(request):
     if request.user.id:
 
         # you have blocked them so you probably don't want to follow
-        if (
-            hasattr(request.user, "blocks") 
-            and user in request.user.blocks.all()
-        ):
+        if hasattr(request.user, "blocks") and user in request.user.blocks.all():
             error = "is_blocked"
         # they have blocked you
-        if (
-            hasattr(user, "blocks") 
-            and request.user in user.blocks.all()
-        ):
+        if hasattr(user, "blocks") and request.user in user.blocks.all():
             error = "has_blocked"
         # you're already following them
-        if (
-            hasattr(user, "followers")
-            and request.user in user.followers.all()
-        ):
+        if hasattr(user, "followers") and request.user in user.followers.all():
             error = "already_following"
         # you're not following yet but you already asked
         if (
@@ -165,8 +156,6 @@ def remote_follow(request):
     if template is None:
         data = {"account": remote_user, "user": None, "error": "remote_subscribe"}
         return TemplateResponse(request, "ostatus/subscribe.html", data)
-    user = get_object_or_404(
-        models.User, id=request.POST.get("user")
-    )
+    user = get_object_or_404(models.User, id=request.POST.get("user"))
     url = template.replace("{uri}", urllib.parse.quote(user.remote_id))
     return redirect(url)
