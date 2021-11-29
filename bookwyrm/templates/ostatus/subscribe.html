@@ -19,7 +19,7 @@
 {% elif error %}
 {% trans 'Uh oh...' %} 
 {% else %}
-{% blocktrans %}Follow from {{ site.name }}{% endblocktrans %}
+{% trans 'Follow from ' %}{{ site.name }}
 {% endif %}
 {% endblock %}
 
@@ -48,7 +48,7 @@
                 <form name="follow" method="post" action="{% url 'follow' %}/?next={% url 'ostatus-success' %}?following={{ user.username }}">
                     {% csrf_token %}
                     <input name="user" value={{ user.username }} hidden>
-                    <button class="button is-link" type="submit">{% trans "Follow " %} {{ user.name }}</button>
+                    <button class="button is-link" type="submit">{% trans "Follow " %} {{ user.display_name }}</button>
                 </form>
             </div>
         </div>

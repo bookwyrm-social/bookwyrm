@@ -22,11 +22,14 @@
                   <span class="subtitle is-7 is-block">@{{ user|username }}</span>
               </a>
           </div>
-          <!-- TODO: this shoudl be a big tick instead -->
-          <a href="{{ user.local_path }}" class="media-left">
-            {% include 'snippets/avatar.html' with user=user large=True %}
-        </a>
       </div>
+      <p class="notification is-success">
+          <span class="icon icon-check m-0-mobile" aria-hidden="true"></span>
+          <span>{% trans 'You are now following ' %}{{ user.display_name }}!  </span>
+      </p>
     </div>
+</div>
+<div class="block is-pulled-right">
+    <a href="" onclick="closeWindow()">Close window</a>
 </div>
 {% endblock %}

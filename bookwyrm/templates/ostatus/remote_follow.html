@@ -24,7 +24,7 @@
                   </span>
                   <span class="subtitle is-7 is-block">@{{ user|username }}</span>
               </a>
-              <p>Follow {{ user.display_name }} from another Fediverse account like Bookwyrm, Mastodon, or Pleroma.</p>
+              <p>{% blocktrans %}Follow {{ user.display_name }} from another Fediverse account like Bookwyrm, Mastodon, or Pleroma.{% endblocktrans %}</p>
           </div>
       </div>
     </div>
@@ -33,8 +33,8 @@
       <section class="card-content content">
           <form name="remote-follow" method="post" action="{% url 'remote-follow' %}">
               {% csrf_token %}
-              <input type="hidden" name="user" value="{{ user.username }}">
-              <label class="label" for="remote_user">User handle to follow from:</label>
+              <input type="hidden" name="user" value="{{ user.id }}">
+              <label class="label" for="remote_user">{% trans 'User handle to follow from:' %}</label>
               <input class="input" type="text" name="remote_user" id="remote_user" placeholder="user@example.social">
               <button class="button mt-1 is-primary" type="submit">{% trans 'Follow!' %}</button>
           </form>
