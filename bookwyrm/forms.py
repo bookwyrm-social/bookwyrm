@@ -383,6 +383,11 @@ class EmailBlocklistForm(CustomForm):
     class Meta:
         model = models.EmailBlocklist
         fields = ["domain"]
+        widgets = {
+            "avatar": forms.TextInput(
+                attrs={'aria-describedby': "desc_domain"}
+            ),
+        }
 
 
 class IPBlocklistForm(CustomForm):
