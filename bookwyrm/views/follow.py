@@ -109,17 +109,33 @@ def ostatus_follow_request(request):
     if user is None or user == "":
         error = "ostatus_subscribe"
 
-    if hasattr(request.user, "blocks") and user in request.user.blocks.all():
-        error = "is_blocked"
+    # don't do these checks for AnonymousUser before they sign in
+    if request.user.id:
 
-    if hasattr(user, "followers") and request.user in user.followers.all():
-        error = "already_following"
-
-    if (
-        hasattr(user, "follower_requests")
-        and request.user in user.follower_requests.all()
-    ):
-        error = "already_requested"
+        # you have blocked them so you probably don't want to follow
+        if (
+            hasattr(request.user, "blocks") 
+            and user in request.user.blocks.all()
+        ):
+            error = "is_blocked"
+        # they have blocked you
+        if (
+            hasattr(user, "blocks") 
+            and request.user in user.blocks.all()
+        ):
+            error = "has_blocked"
+        # you're already following them
+        if (
+            hasattr(user, "followers")
+            and request.user in user.followers.all()
+        ):
+            error = "already_following"
+        # you're not following yet but you already asked
+        if (
+            hasattr(user, "follower_requests")
+            and request.user in user.follower_requests.all()
+        ):
+            error = "already_requested"
 
     data = {"account": account, "user": user, "error": error}
 

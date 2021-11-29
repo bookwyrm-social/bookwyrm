@@ -42,6 +42,10 @@
     <div class="notification is-danger has-text-centered">
         <p>{% blocktrans %}You have blocked <strong>{{ account }}</strong>{% endblocktrans %}</p>
     </div>
+    {% elif error == 'has_blocked' %}
+    <div class="notification is-danger has-text-centered">
+        <p>{% blocktrans %}<strong>{{ account }}</strong> has blocked you{% endblocktrans %}</p>
+    </div>
     {% elif error == 'already_following' %}
     <div class="notification is-success has-text-centered">
         <p>{% blocktrans %}You are already following <strong>{{ account }}</strong>{% endblocktrans %}</p>
