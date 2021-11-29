@@ -7,45 +7,46 @@
 <!DOCTYPE html>
 <html lang="{% get_lang %}">
 <head>
-  <title>{% block title %}{% endblock %}{{ site.name }}</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="{% static "css/vendor/bulma.min.css" %}">
-  <link rel="stylesheet" href="{% static "css/vendor/icons.css" %}">
-  <link rel="stylesheet" href="{% static "css/bookwyrm.css" %}">
+    <title>{% block title %}{% endblock %}{{ site.name }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{% static "css/vendor/bulma.min.css" %}">
+    <link rel="stylesheet" href="{% static "css/vendor/icons.css" %}">
+    <link rel="stylesheet" href="{% static "css/bookwyrm.css" %}">
 
-  <link rel="search" type="application/opensearchdescription+xml" href="{% url 'opensearch' %}" title="{% blocktrans with site_name=site.name %}{{ site_name }} search{% endblocktrans %}" />
+    <link rel="search" type="application/opensearchdescription+xml" href="{% url 'opensearch' %}" title="{% blocktrans with site_name=site.name %}{{ site_name }} search{% endblocktrans %}" />
 
-  <link rel="shortcut icon" type="image/x-icon" href="{% if site.favicon %}{% get_media_prefix %}{{ site.favicon }}{% else %}{% static "images/favicon.ico" %}{% endif %}">
+    <link rel="shortcut icon" type="image/x-icon" href="{% if site.favicon %}{% get_media_prefix %}{{ site.favicon }}{% else %}{% static "images/favicon.ico" %}{% endif %}">
 
-  {% if preview_images_enabled is True %}
-  <meta name="twitter:card" content="summary_large_image">
-  {% else %}
-  <meta name="twitter:card" content="summary">
-  {% endif %}
-  <meta name="twitter:title" content="{% if title %}{{ title }} - {% endif %}{{ site.name }}">
-  <meta name="og:title" content="{% if title %}{{ title }} - {% endif %}{{ site.name }}">
-  <meta name="twitter:description" content="{{ site.instance_tagline }}">
-  <meta name="og:description" content="{{ site.instance_tagline }}">
+    {% if preview_images_enabled is True %}
+    <meta name="twitter:card" content="summary_large_image">
+    {% else %}
+    <meta name="twitter:card" content="summary">
+    {% endif %}
+    <meta name="twitter:title" content="{% if title %}{{ title }} - {% endif %}{{ site.name }}">
+    <meta name="og:title" content="{% if title %}{{ title }} - {% endif %}{{ site.name }}">
+    <meta name="twitter:description" content="{{ site.instance_tagline }}">
+    <meta name="og:description" content="{{ site.instance_tagline }}">
 
-  {% block opengraph_images %}
-      {% include 'snippets/opengraph_images.html' %}
-  {% endblock %}
-  <meta name="twitter:image:alt" content="BookWyrm Logo">
-  <script>
-      function closeWindow() {
-        window.close();
-      }
-  </script>
+    {% block opengraph_images %}
+        {% include 'snippets/opengraph_images.html' %}
+    {% endblock %}
+    <meta name="twitter:image:alt" content="BookWyrm Logo">
+    <script>
+        function closeWindow() {
+          window.close();
+        }
+    </script>
 </head>
 <body>
 <nav class="navbar" aria-label="main navigation">
-  <div class="container">
-      <div class="navbar-brand">
-          <a class="navbar-item" href="/">
-              <img class="image logo" src="{% if site.logo_small %}{% get_media_prefix %}{{ site.logo_small }}{% else %}{% static "images/logo-small.png" %}{% endif %}" alt="Home page">
-          </a>
-          <h2 class="navbar-item subtitle">{% block heading %}{% endblock %}</h2>
-      </div>
+    <div class="container">
+        <div class="navbar-brand">
+            <a class="navbar-item" href="/">
+                <img class="image logo" src="{% if site.logo_small %}{% get_media_prefix %}{{ site.logo_small }}{% else %}{% static "images/logo-small.png" %}{% endif %}" alt="Home page">
+            </a>
+            <h2 class="navbar-item subtitle">{% block heading %}{% endblock %}</h2>
+        </div>
+    </div>
 </nav>
 
 
@@ -57,43 +58,43 @@
 
 <!-- TODO: pull footer into its own template: this is the same as generic template footer -->
 <footer class="footer">
-  <div class="container">
-      <div class="columns">
-          <div class="column is-one-fifth">
-              <p>
-              <a href="{% url 'about' %}">{% blocktrans with site_name=site.name %}About {{ site_name }}{% endblocktrans %}</a>
-              </p>
-              {% if site.admin_email %}
-              <p>
-                  <a href="mailto:{{ site.admin_email }}">{% trans "Contact site admin" %}</a>
-              </p>
-              {% endif %}
-              <p>
-                  <a href="https://docs.joinbookwyrm.com/">{% trans "Documentation" %}</a>
-              </p>
-          </div>
-          <div class="column content is-two-fifth">
-              {% if site.support_link %}
-              <p>
-                  <span class="icon icon-heart"></span>
-                  {% blocktrans with site_name=site.name support_link=site.support_link support_title=site.support_title %}Support {{ site_name }} on <a href="{{ support_link }}" target="_blank">{{ support_title }}</a>{% endblocktrans %}
-              </p>
-              {% endif %}
-              <p>
-              {% blocktrans %}BookWyrm's source code is freely available. You can contribute or report issues on <a href="https://github.com/mouse-reeve/bookwyrm">GitHub</a>.{% endblocktrans %}
-              </p>
-          </div>
-          {% if site.footer_item %}
-          <div class="column">
-              <p>{{ site.footer_item|safe }}</p>
-          </div>
-          {% endif %}
-      </div>
-  </div>
+    <div class="container">
+        <div class="columns">
+            <div class="column is-one-fifth">
+                <p>
+                <a href="{% url 'about' %}">{% blocktrans with site_name=site.name %}About {{ site_name }}{% endblocktrans %}</a>
+                </p>
+                {% if site.admin_email %}
+                <p>
+                    <a href="mailto:{{ site.admin_email }}">{% trans "Contact site admin" %}</a>
+                </p>
+                {% endif %}
+                <p>
+                    <a href="https://docs.joinbookwyrm.com/">{% trans "Documentation" %}</a>
+                </p>
+            </div>
+            <div class="column content is-two-fifth">
+                {% if site.support_link %}
+                <p>
+                    <span class="icon icon-heart"></span>
+                    {% blocktrans with site_name=site.name support_link=site.support_link support_title=site.support_title %}Support {{ site_name }} on <a href="{{ support_link }}" target="_blank">{{ support_title }}</a>{% endblocktrans %}
+                </p>
+                {% endif %}
+                <p>
+                {% blocktrans %}BookWyrm's source code is freely available. You can contribute or report issues on <a href="https://github.com/mouse-reeve/bookwyrm">GitHub</a>.{% endblocktrans %}
+                </p>
+            </div>
+            {% if site.footer_item %}
+            <div class="column">
+                <p>{{ site.footer_item|safe }}</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
 </footer>
 
 <script>
-  var csrf_token = '{{ csrf_token }}';
+    var csrf_token = '{{ csrf_token }}';
 </script>
 
 <script src="{% static "js/bookwyrm.js" %}?v={{ js_cache }}"></script>

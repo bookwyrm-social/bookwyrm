@@ -4,41 +4,40 @@
 
 {% block content %}
 <div class="block card">
-  <header class="card-header">
-    <h2 class="card-header-title">{% blocktrans %}Follow {{ user.display_name }} on the fediverse{% endblocktrans %}</h2>
-  </header>
-  <div class="card-content">
-      <div class="media">
-          <a href="{{ user.local_path }}" class="media-left">
-              {% include 'snippets/avatar.html' with user=user large=True %}
-          </a>
-          <div class="media-content">
-              <a href="{{ user.local_path }}" class="is-block mb-2">
-                  <span class="title is-4 is-block">
-                      {{ user.display_name }}
-                      {% if user.manually_approves_followers %}
-                      <span class="icon icon-lock is-size-7" title="{% trans 'Locked account' %}">
-                          <span class="is-sr-only">{% trans "Locked account" %}</span>
-                      </span>
-                      {% endif %}
-                  </span>
-                  <span class="subtitle is-7 is-block">@{{ user|username }}</span>
-              </a>
-              <p>{% blocktrans %}Follow {{ user.display_name }} from another Fediverse account like Bookwyrm, Mastodon, or Pleroma.{% endblocktrans %}</p>
-          </div>
-      </div>
+    <header class="card-header">
+        <h2 class="card-header-title">{% blocktrans %}Follow {{ user.display_name }} on the fediverse{% endblocktrans %}</h2>
+    </header>
+    <div class="card-content">
+        <div class="media">
+            <a href="{{ user.local_path }}" class="media-left">
+                {% include 'snippets/avatar.html' with user=user large=True %}
+            </a>
+            <div class="media-content">
+                <a href="{{ user.local_path }}" class="is-block mb-2">
+                    <span class="title is-4 is-block">
+                        {{ user.display_name }}
+                        {% if user.manually_approves_followers %}
+                        <span class="icon icon-lock is-size-7" title="{% trans 'Locked account' %}">
+                            <span class="is-sr-only">{% trans "Locked account" %}</span>
+                        </span>
+                        {% endif %}
+                    </span>
+                    <span class="subtitle is-7 is-block">@{{ user|username }}</span>
+                </a>
+                <p>{% blocktrans %}Follow {{ user.display_name }} from another Fediverse account like Bookwyrm, Mastodon, or Pleroma.{% endblocktrans %}</p>
+            </div>
+        </div>
     </div>
 </div>
-    <div class="card">
-      <section class="card-content content">
-          <form name="remote-follow" method="post" action="{% url 'remote-follow' %}">
-              {% csrf_token %}
-              <input type="hidden" name="user" value="{{ user.id }}">
-              <label class="label" for="remote_user">{% trans 'User handle to follow from:' %}</label>
-              <input class="input" type="text" name="remote_user" id="remote_user" placeholder="user@example.social">
-              <button class="button mt-1 is-primary" type="submit">{% trans 'Follow!' %}</button>
-          </form>
-      </section>
-  </div>
+<div class="card">
+    <section class="card-content content">
+        <form name="remote-follow" method="post" action="{% url 'remote-follow' %}">
+            {% csrf_token %}
+            <input type="hidden" name="user" value="{{ user.id }}">
+            <label class="label" for="remote_user">{% trans 'User handle to follow from:' %}</label>
+            <input class="input" type="text" name="remote_user" id="remote_user" placeholder="user@example.social">
+            <button class="button mt-1 is-primary" type="submit">{% trans 'Follow!' %}</button>
+        </form>
+    </section>
 </div>
 {% endblock %}
