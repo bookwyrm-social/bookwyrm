@@ -219,18 +219,12 @@ class EditionForm(CustomForm):
             "search_vector",
         ]
         widgets = {
-            "title": forms.TextInput(
-                attrs={"aria-describedby": "desc_title"}
-            ),
-            "subtitle": forms.TextInput(
-                attrs={"aria-describedby": "desc_subtitle"}
-            ),
+            "title": forms.TextInput(attrs={"aria-describedby": "desc_title"}),
+            "subtitle": forms.TextInput(attrs={"aria-describedby": "desc_subtitle"}),
             "description": forms.Textarea(
                 attrs={"aria-describedby": "desc_description"}
             ),
-            "series": forms.TextInput(
-                attrs={"aria-describedby": "desc_series"}
-            ),
+            "series": forms.TextInput(attrs={"aria-describedby": "desc_series"}),
             "series_number": forms.TextInput(
                 attrs={"aria-describedby": "desc_series_number"}
             ),
@@ -255,15 +249,9 @@ class EditionForm(CustomForm):
             "physical_format_detail": forms.TextInput(
                 attrs={"aria-describedby": "desc_physical_format_detail"}
             ),
-            "pages": forms.NumberInput(
-                attrs={"aria-describedby": "desc_pages"}
-            ),
-            "isbn_13": forms.TextInput(
-                attrs={"aria-describedby": "desc_isbn_13"}
-            ),
-            "isbn_10": forms.TextInput(
-                attrs={"aria-describedby": "desc_isbn_10"}
-            ),
+            "pages": forms.NumberInput(attrs={"aria-describedby": "desc_pages"}),
+            "isbn_13": forms.TextInput(attrs={"aria-describedby": "desc_isbn_13"}),
+            "isbn_10": forms.TextInput(attrs={"aria-describedby": "desc_isbn_10"}),
             "openlibrary_key": forms.TextInput(
                 attrs={"aria-describedby": "desc_openlibrary_key"}
             ),
@@ -273,9 +261,7 @@ class EditionForm(CustomForm):
             "oclc_number": forms.TextInput(
                 attrs={"aria-describedby": "desc_oclc_number"}
             ),
-            "ASIN": forms.TextInput(
-                attrs={"aria-describedby": "desc_ASIN"}
-            ),
+            "ASIN": forms.TextInput(attrs={"aria-describedby": "desc_ASIN"}),
         }
 
 
@@ -296,24 +282,14 @@ class AuthorForm(CustomForm):
             "goodreads_key",
         ]
         widgets = {
-            "name": forms.TextInput(
-                attrs={"aria-describedby": "desc_name"}
-            ),
-            "aliases": forms.TextInput(
-                attrs={"aria-describedby": "desc_aliases"}
-            ),
-            "bio": forms.Textarea(
-                attrs={"aria-describedby": "desc_bio"}
-            ),
+            "name": forms.TextInput(attrs={"aria-describedby": "desc_name"}),
+            "aliases": forms.TextInput(attrs={"aria-describedby": "desc_aliases"}),
+            "bio": forms.Textarea(attrs={"aria-describedby": "desc_bio"}),
             "wikipedia_link": forms.TextInput(
                 attrs={"aria-describedby": "desc_wikipedia_link"}
             ),
-            "born": forms.SelectDateWidget(
-                attrs={"aria-describedby": "desc_born"}
-            ),
-            "died": forms.SelectDateWidget(
-                attrs={"aria-describedby": "desc_died"}
-            ),
+            "born": forms.SelectDateWidget(attrs={"aria-describedby": "desc_born"}),
+            "died": forms.SelectDateWidget(attrs={"aria-describedby": "desc_died"}),
             "oepnlibrary_key": forms.TextInput(
                 attrs={"aria-describedby": "desc_oepnlibrary_key"}
             ),
@@ -419,12 +395,8 @@ class AnnouncementForm(CustomForm):
         model = models.Announcement
         exclude = ["remote_id"]
         widgets = {
-            "preview": forms.TextInput(
-                attrs={"aria-describedby": "desc_preview"}
-            ),
-            "content": forms.Textarea(
-                attrs={"aria-describedby": "desc_content"}
-            ),
+            "preview": forms.TextInput(attrs={"aria-describedby": "desc_preview"}),
+            "content": forms.Textarea(attrs={"aria-describedby": "desc_content"}),
             "event_date": forms.SelectDateWidget(
                 attrs={"aria-describedby": "desc_event_date"}
             ),
@@ -434,9 +406,7 @@ class AnnouncementForm(CustomForm):
             "end_date": forms.SelectDateWidget(
                 attrs={"aria-describedby": "desc_end_date"}
             ),
-            "active": forms.CheckboxInput(
-                attrs={"aria-describedby": "desc_active"}
-            ),
+            "active": forms.CheckboxInput(attrs={"aria-describedby": "desc_active"}),
         }
 
 
@@ -463,9 +433,7 @@ class EmailBlocklistForm(CustomForm):
         model = models.EmailBlocklist
         fields = ["domain"]
         widgets = {
-            "avatar": forms.TextInput(
-                attrs={'aria-describedby': "desc_domain"}
-            ),
+            "avatar": forms.TextInput(attrs={"aria-describedby": "desc_domain"}),
         }
 
 
