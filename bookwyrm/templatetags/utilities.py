@@ -1,8 +1,11 @@
 """ template filters for really common utilities """
 import os
+import re
 from uuid import uuid4
 from django import template
+from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
+from django.template.defaultfilters import stringfilter
 from django.templatetags.static import static
 
 
@@ -66,3 +69,39 @@ def get_book_cover_thumbnail(book, size="medium", ext="jpg"):
         return cover_thumbnail.url
     except OSError:
         return static("images/no_cover.jpg")
+
+
+@register.filter(name="get_isni_bio")
+def get_isni_bio(existing, author):
+    """Returns the isni bio string if an existing author has an isni listed"""
+    auth_isni = re.sub(r"\D", "", str(author.isni))
+    if len(existing) == 0:
+        return ""
+    for value in existing:
+        if hasattr(value, "bio") and auth_isni == re.sub(r"\D", "", str(value.isni)):
+            return mark_safe(f"Author of <em>{value.bio}</em>")
+
+    return ""
+
+
+# pylint: disable=unused-argument
+@register.filter(name="get_isni", needs_autoescape=True)
+def get_isni(existing, author, autoescape=True):
+    """Returns the isni ID if an existing author has an ISNI listing"""
+    auth_isni = re.sub(r"\D", "", str(author.isni))
+    if len(existing) == 0:
+        return ""
+    for value in existing:
+        if hasattr(value, "isni") and auth_isni == re.sub(r"\D", "", str(value.isni)):
+            isni = value.isni
+            return mark_safe(
+                f'<input type="text" name="isni-for-{author.id}" value="{isni}" hidden>'
+            )
+    return ""
+
+
+@register.filter(name="remove_spaces")
+@stringfilter
+def remove_spaces(arg):
+    """Removes spaces from argument passed in"""
+    return re.sub(r"\s", "", str(arg))
