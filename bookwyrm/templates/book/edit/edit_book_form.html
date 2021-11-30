@@ -128,7 +128,7 @@
                     <input class="input" type="text" name="add_author" id="id_add_author" placeholder="{% trans 'Jane Doe' %}" value="{{ author }}" {% if confirm_mode %}readonly{% endif %}>
                     {% endfor %}
                 </div>
-                <span class="help"><a id="another_author_field" onclick="BookWyrm.duplicateInput('id_add_author')">{% trans "Add Another Author" %}</a></span>
+                <span class="help"><button class="button is-small" type="button" data-duplicate="id_add_author" id="another_author_field">{% trans "Add Another Author" %}</button></span>
             </div>
         </section>
     </div>

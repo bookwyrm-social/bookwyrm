@@ -45,6 +45,13 @@ let BookWyrm = new class {
                 'change',
                 this.disableIfTooLarge.bind(this)
             ));
+        
+        document.querySelectorAll('[data-duplicate]')
+                .forEach(node => node.addEventListener(
+                    'click',
+                    this.duplicateInput.bind(this)
+            
+            ))
     }
 
     /**
@@ -369,7 +376,9 @@ let BookWyrm = new class {
         }
     }
 
-    duplicateInput (input_id ) {
+    duplicateInput (event ) {
+        const trigger = event.currentTarget;
+        const input_id = trigger.dataset['duplicate']
         const orig = document.getElementById(input_id);
         const parent = orig.parentNode;
         const new_count = parent.querySelectorAll("input").length + 1
