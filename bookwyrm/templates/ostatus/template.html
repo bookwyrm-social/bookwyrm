@@ -7,16 +7,11 @@
 <!DOCTYPE html>
 <html lang="{% get_lang %}">
 <head>
-    <title>{% block title %}{% endblock %}{{ site.name }}</title>
+    <title>{% block title %}{% endblock %}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="{% static "css/vendor/bulma.min.css" %}">
     <link rel="stylesheet" href="{% static "css/vendor/icons.css" %}">
     <link rel="stylesheet" href="{% static "css/bookwyrm.css" %}">
-
-    <link rel="search" type="application/opensearchdescription+xml" href="{% url 'opensearch' %}" title="{% blocktrans with site_name=site.name %}{{ site_name }} search{% endblocktrans %}" />
-
-    <link rel="shortcut icon" type="image/x-icon" href="{% if site.favicon %}{% get_media_prefix %}{{ site.favicon }}{% else %}{% static "images/favicon.ico" %}{% endif %}">
-
     <script>
         function closeWindow() {
             window.close();
@@ -27,9 +22,7 @@
 <nav class="navbar" aria-label="main navigation">
     <div class="container">
         <div class="navbar-brand">
-            <a class="navbar-item" href="/">
-                <img class="image logo" src="{% if site.logo_small %}{% get_media_prefix %}{{ site.logo_small }}{% else %}{% static "images/logo-small.png" %}{% endif %}" alt="Home page">
-            </a>
+                <img class="image logo navbar-item" src="{% if site.logo_small %}{% get_media_prefix %}{{ site.logo_small }}{% else %}{% static "images/logo-small.png" %}{% endif %}" alt="Home page">
             <h2 class="navbar-item subtitle">{% block heading %}{% endblock %}</h2>
         </div>
     </div>
@@ -40,7 +33,9 @@
     </div>
 </div>
 
-{% include 'components/footer.html' %}
-
+<script>
+    var csrf_token = '{{ csrf_token }}';
+</script>
+<script src="{% static "js/bookwyrm.js" %}?v={{ js_cache }}"></script>
 </body>
 </html>
