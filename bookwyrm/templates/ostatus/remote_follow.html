@@ -2,11 +2,12 @@
 {% load i18n %}
 {% load utilities %}
 
+{% block heading %}
+{% blocktrans with username=user.localname sitename=site.name %}Follow {{ username }} on the fediverse{% endblocktrans %}
+{% endblock %}
+
 {% block content %}
 <div class="block card">
-    <header class="card-header">
-        <h2 class="card-header-title">{% blocktrans %}Follow {{ user.display_name }} on the fediverse{% endblocktrans %}</h2>
-    </header>
     <div class="card-content">
         <div class="media">
             <a href="{{ user.local_path }}" class="media-left">
@@ -24,10 +25,12 @@
                     </span>
                     <span class="subtitle is-7 is-block">@{{ user|username }}</span>
                 </a>
-                <p>{% blocktrans %}Follow {{ user.display_name }} from another Fediverse account like Bookwyrm, Mastodon, or Pleroma.{% endblocktrans %}</p>
             </div>
         </div>
     </div>
+</div>
+<div class="block">
+    <p>{% blocktrans with username=user.display_name %}Follow {{ username }} from another Fediverse account like Bookwyrm, Mastodon, or Pleroma.{% endblocktrans %}</p>
 </div>
 <div class="card">
     <section class="card-content content">

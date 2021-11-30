@@ -5,11 +5,11 @@
 
 {% block title %}
 {% if not request.user.is_authenticated %}
-{% trans "Log in to " %}
+{% blocktrans with sitename=site.name %}Log in to {{ sitename }}{% endblocktrans %}
 {% elif error %}
-{% trans "Error following from " %}
+{% blocktrans with sitename=site.name %}Error following from {{ sitename }}{% endblocktrans %}
 {% else %}
-{% trans "Follow from " %}
+{% blocktrans with sitename=site.name %}Follow from {{ sitename }}{% endblocktrans %}
 {% endif %}
 {% endblock %}
 
@@ -19,7 +19,7 @@
 {% elif error %}
 {% trans 'Uh oh...' %} 
 {% else %}
-{% trans 'Follow from ' %}{{ site.name }}
+{% blocktrans with sitename=site.name %}Follow from {{ sitename }}{% endblocktrans %}
 {% endif %}
 {% endblock %}
 
@@ -48,7 +48,7 @@
                 <form name="follow" method="post" action="{% url 'follow' %}/?next={% url 'ostatus-success' %}?following={{ user.username }}">
                     {% csrf_token %}
                     <input name="user" value={{ user.username }} hidden>
-                    <button class="button is-link" type="submit">{% trans "Follow " %} {{ user.display_name }}</button>
+                    <button class="button is-link" type="submit">{% blocktrans with username=user.display_name %}Follow {{ username }}{% endblocktrans %}</button>
                 </form>
             </div>
         </div>
