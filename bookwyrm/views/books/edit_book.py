@@ -57,7 +57,7 @@ class EditBook(View):
             data["add_author"] = add_author
             data["author_matches"] = []
             data["isni_matches"] = []
-            
+
             for author in add_author:
                 if not author:
                     continue
