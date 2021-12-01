@@ -54,7 +54,8 @@
 
 {% if goal %}
 <div class="block">
-    <h2 class="title">{% now 'Y' %} {% trans 'Reading Goal' %}</h2>
+    {% now 'Y' as current_year%}
+    <h2 class="title">{% blocktrans %}{{ current_year }} Reading Goal{% endblocktrans %}</h2>
     {% include 'snippets/goal_progress.html' with goal=goal %}
 </div>
 {% endif %}
