@@ -91,13 +91,13 @@ def shelve(request):
 
 @login_required
 @require_POST
-def unshelve(request):
+def unshelve(request, book_id=False):
     """remove a book from a user's shelf"""
-    book = get_object_or_404(models.Edition, id=request.POST.get("book"))
+    identity = book_id if book_id else request.POST.get("book")
+    book = get_object_or_404(models.Edition, id=identity)
     shelf_book = get_object_or_404(
         models.ShelfBook, book=book, shelf__id=request.POST["shelf"]
     )
     shelf_book.raise_not_deletable(request.user)
-
     shelf_book.delete()
     return redirect(request.headers.get("Referer", "/"))
