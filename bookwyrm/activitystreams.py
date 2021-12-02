@@ -22,6 +22,11 @@ class ActivityStream(RedisStore):
         stream_id = self.stream_id(user)
         return f"{stream_id}-unread"
 
+    def unread_by_status_type_id(self, user):
+        """the redis key for this user's unread count for this stream"""
+        stream_id = self.stream_id(user)
+        return f"{stream_id}-unread-by-type"
+
     def get_rank(self, obj):  # pylint: disable=no-self-use
         """statuses are sorted by date published"""
         return obj.published_date.timestamp()
@@ -35,6 +40,10 @@ class ActivityStream(RedisStore):
             for user in self.get_audience(status):
                 # add to the unread status count
                 pipeline.incr(self.unread_id(user))
+                # add to the unread status count for status type
+                pipeline.hincrby(
+                    self.unread_by_status_type_id(user), get_status_type(status), 1
+                )
 
         # and go!
         pipeline.execute()
@@ -55,6 +64,7 @@ class ActivityStream(RedisStore):
         """load the statuses to be displayed"""
         # clear unreads for this feed
         r.set(self.unread_id(user), 0)
+        r.delete(self.unread_by_status_type_id(user))
 
         statuses = self.get_store(self.stream_id(user))
         return (
@@ -74,6 +84,14 @@ class ActivityStream(RedisStore):
     def get_unread_count(self, user):
         """get the unread status count for this user's feed"""
         return int(r.get(self.unread_id(user)) or 0)
+
+    def get_unread_count_by_status_type(self, user):
+        """get the unread status count for this user's feed's status types"""
+        status_types = r.hgetall(self.unread_by_status_type_id(user))
+        return {
+            str(key.decode("utf-8")): int(value) or 0
+            for key, value in status_types.items()
+        }
 
     def populate_streams(self, user):
         """go from zero to a timeline"""
@@ -460,7 +478,7 @@ def remove_status_task(status_ids):
 @app.task(queue=HIGH)
 def add_status_task(status_id, increment_unread=False):
     """add a status to any stream it should be in"""
-    status = models.Status.objects.get(id=status_id)
+    status = models.Status.objects.select_subclasses().get(id=status_id)
     # we don't want to tick the unread count for csv import statuses, idk how better
     # to check than just to see if the states is more than a few days old
     if status.created_date < timezone.now() - timedelta(days=2):
@@ -507,3 +525,20 @@ def handle_boost_task(boost_id):
         stream.remove_object_from_related_stores(boosted, stores=audience)
         for status in old_versions:
             stream.remove_object_from_related_stores(status, stores=audience)
+
+
+def get_status_type(status):
+    """return status type even for boosted statuses"""
+    status_type = status.status_type.lower()
+
+    # Check if current status is a boost
+    if hasattr(status, "boost"):
+        # Act in accordance of your findings
+        if hasattr(status.boost.boosted_status, "review"):
+            status_type = "review"
+        if hasattr(status.boost.boosted_status, "comment"):
+            status_type = "comment"
+        if hasattr(status.boost.boosted_status, "quotation"):
+            status_type = "quotation"
+
+    return status_type
