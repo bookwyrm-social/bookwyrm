@@ -45,6 +45,13 @@ let BookWyrm = new class {
                 'change',
                 this.disableIfTooLarge.bind(this)
             ));
+        
+        document.querySelectorAll('[data-duplicate]')
+                .forEach(node => node.addEventListener(
+                    'click',
+                    this.duplicateInput.bind(this)
+            
+            ))
     }
 
     /**
@@ -382,5 +389,25 @@ let BookWyrm = new class {
             windowName,
             "left=100,top=100,width=430,height=600"
         );
+    }
+
+    duplicateInput (event ) {
+        const trigger = event.currentTarget;
+        const input_id = trigger.dataset['duplicate']
+        const orig = document.getElementById(input_id);
+        const parent = orig.parentNode;
+        const new_count = parent.querySelectorAll("input").length + 1
+
+        let input = orig.cloneNode();
+
+        input.id += ("-" + (new_count))
+        input.value = ""
+
+        let label = parent.querySelector("label").cloneNode();
+
+        label.setAttribute("for", input.id)
+
+        parent.appendChild(label)
+        parent.appendChild(input)
     }
 }();
