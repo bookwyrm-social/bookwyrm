@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-12-02 18:24+0000\n"
-"PO-Revision-Date: 2021-12-02 20:38\n"
+"PO-Revision-Date: 2021-12-02 21:41\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Basque\n"
 "Language: eu\n"
@@ -17,58 +17,58 @@ msgstr ""
 "X-Crowdin-File: /[bookwyrm-social.bookwyrm] main/locale/en_US/LC_MESSAGES/django.po\n"
 "X-Crowdin-File-ID: 1553\n"
 
-#: bookwyrm/forms.py:248
+#: bookwyrm/forms.py:262
 msgid "A user with this email already exists."
 msgstr "Mezu elektroniko hau duen erabiltzailea dagoeneko badago."
 
-#: bookwyrm/forms.py:262
+#: bookwyrm/forms.py:276
 msgid "One Day"
 msgstr "Egun bat"
 
-#: bookwyrm/forms.py:263
+#: bookwyrm/forms.py:277
 msgid "One Week"
 msgstr "Aste bat"
 
-#: bookwyrm/forms.py:264
+#: bookwyrm/forms.py:278
 msgid "One Month"
 msgstr "Hilabete bat"
 
-#: bookwyrm/forms.py:265
+#: bookwyrm/forms.py:279
 msgid "Does Not Expire"
 msgstr "Ez da iraungitzen"
 
-#: bookwyrm/forms.py:269
+#: bookwyrm/forms.py:283
 #, python-brace-format
 msgid "{i} uses"
 msgstr "{i}k erabiltzen du"
 
-#: bookwyrm/forms.py:270
+#: bookwyrm/forms.py:284
 msgid "Unlimited"
 msgstr "Mugagabea"
 
-#: bookwyrm/forms.py:338
+#: bookwyrm/forms.py:352
 msgid "List Order"
 msgstr "Zerrendaren ordena"
 
-#: bookwyrm/forms.py:339
+#: bookwyrm/forms.py:353
 msgid "Book Title"
 msgstr "Liburuaren izenburua"
 
-#: bookwyrm/forms.py:340 bookwyrm/templates/shelf/shelf.html:149
+#: bookwyrm/forms.py:354 bookwyrm/templates/shelf/shelf.html:149
 #: bookwyrm/templates/shelf/shelf.html:181
 #: bookwyrm/templates/snippets/create_status/review.html:33
 msgid "Rating"
 msgstr "Balorazioa"
 
-#: bookwyrm/forms.py:342 bookwyrm/templates/lists/list.html:110
+#: bookwyrm/forms.py:356 bookwyrm/templates/lists/list.html:110
 msgid "Sort By"
 msgstr "Ordenatzeko irizpidea"
 
-#: bookwyrm/forms.py:346
+#: bookwyrm/forms.py:360
 msgid "Ascending"
 msgstr "Gorakorra"
 
-#: bookwyrm/forms.py:347
+#: bookwyrm/forms.py:361
 msgid "Descending"
 msgstr "Beherakorra"
 
@@ -151,6 +151,22 @@ msgstr "erabiltzaile-izena"
 #: bookwyrm/models/fields.py:188
 msgid "A user with that username already exists."
 msgstr "Erabiltzaile-izen hori duen erabiltzailea dagoeneko badago."
+
+#: bookwyrm/models/user.py:32 bookwyrm/templates/book/book.html:218
+msgid "Reviews"
+msgstr "Berrikuspenak"
+
+#: bookwyrm/models/user.py:33
+msgid "Comments"
+msgstr "Iruzkinak"
+
+#: bookwyrm/models/user.py:34
+msgid "Quotations"
+msgstr "Aipamenak"
+
+#: bookwyrm/models/user.py:35
+msgid "Everything else"
+msgstr "Gainerako guztia"
 
 #: bookwyrm/settings.py:118
 msgid "Home Timeline"
@@ -250,7 +266,7 @@ msgstr "Wikipedia"
 
 #: bookwyrm/templates/author/author.html:70
 msgid "View ISNI record"
-msgstr ""
+msgstr "Ikusi ISNI erregistroa"
 
 #: bookwyrm/templates/author/author.html:78
 #: bookwyrm/templates/book/book.html:94
@@ -448,10 +464,6 @@ msgstr "Sortu"
 msgid "You don't have any reading activity for this book."
 msgstr "Ez duzu liburu honetarako irakurketa jarduerarik."
 
-#: bookwyrm/templates/book/book.html:218
-msgid "Reviews"
-msgstr "Berrikuspenak"
-
 #: bookwyrm/templates/book/book.html:223
 msgid "Your reviews"
 msgstr "Zure berrikuspenak"
@@ -534,16 +546,16 @@ msgstr "Liburuaren informazioa berretsi"
 #: bookwyrm/templates/book/edit/edit_book.html:56
 #, python-format
 msgid "Is \"%(name)s\" one of these authors?"
-msgstr ""
+msgstr "\"%(name)s\" da autore horietako bat?"
 
 #: bookwyrm/templates/book/edit/edit_book.html:67
 #: bookwyrm/templates/book/edit/edit_book.html:69
 msgid "Author of "
-msgstr ""
+msgstr "Egilea "
 
 #: bookwyrm/templates/book/edit/edit_book.html:69
 msgid "Find more information at isni.org"
-msgstr ""
+msgstr "Informazio gehiagorako: isni.org"
 
 #: bookwyrm/templates/book/edit/edit_book.html:79
 msgid "This is a new author"
@@ -1027,17 +1039,17 @@ msgstr "Informazio gehiago %(site_name)s buruz:"
 #: bookwyrm/templates/email/moderation_report/text_content.html:5
 #, python-format
 msgid "@%(reporter)s has flagged behavior by @%(reportee)s for moderation. "
-msgstr ""
+msgstr "@%(reporter)s-ek @%(reportee)s-ren portaera markatu du bere neurritasunerako. "
 
 #: bookwyrm/templates/email/moderation_report/html_content.html:9
 #: bookwyrm/templates/email/moderation_report/text_content.html:7
 msgid "View report"
-msgstr ""
+msgstr "Ikusi txostena"
 
 #: bookwyrm/templates/email/moderation_report/subject.html:2
 #, python-format
 msgid "New report for %(site_name)s"
-msgstr ""
+msgstr "Txosten berria %(site_name)s"
 
 #: bookwyrm/templates/email/password_reset/html_content.html:6
 #: bookwyrm/templates/email/password_reset/text_content.html:4
@@ -1081,14 +1093,30 @@ msgstr "Mezu guztiak"
 msgid "You have no messages right now."
 msgstr "Ez duzu mezurik une honetan."
 
-#: bookwyrm/templates/feed/feed.html:22
+#: bookwyrm/templates/feed/feed.html:23
+msgid "Feed settings"
+msgstr ""
+
+#: bookwyrm/templates/feed/feed.html:26
+msgid "Saved!"
+msgstr "Gordeta!"
+
+#: bookwyrm/templates/feed/feed.html:47
+msgid "Save settings"
+msgstr "Ezarpenak gorde"
+
+#: bookwyrm/templates/feed/feed.html:56
 #, python-format
 msgid "load <span data-poll=\"stream/%(tab_key)s\">0</span> unread status(es)"
 msgstr "kargatu irakurri gabeko <span data-poll=\"stream/%(tab_key)s\">0</span> egoera(k)"
 
-#: bookwyrm/templates/feed/feed.html:38
+#: bookwyrm/templates/feed/feed.html:72
 msgid "There aren't any activities right now! Try following a user to get started"
 msgstr "Oraintxe ez dago jarduerarik! Hasteko, saiatu erabiltzaile bati jarraitzen"
+
+#: bookwyrm/templates/feed/feed.html:73
+msgid "Alternatively, you can try enabling more status types"
+msgstr "Aukera gisa, estatu mota gehiago gaitzen saia zaitezke"
 
 #: bookwyrm/templates/feed/goal_card.html:6
 #: bookwyrm/templates/feed/layout.html:90
@@ -1511,11 +1539,11 @@ msgstr "Egoera"
 
 #: bookwyrm/templates/import/import_status.html:130
 msgid "Import preview unavailable."
-msgstr ""
+msgstr "Inportazioaren aurretiko bista ez dago eskuragarri."
 
 #: bookwyrm/templates/import/import_status.html:162
 msgid "View imported review"
-msgstr ""
+msgstr "Ikusi inportatutako berrikuspena"
 
 #: bookwyrm/templates/import/import_status.html:176
 msgid "Imported"
@@ -1523,7 +1551,7 @@ msgstr "Inportatuta"
 
 #: bookwyrm/templates/import/import_status.html:182
 msgid "Needs manual review"
-msgstr ""
+msgstr "Eskuz berrikusi behar da"
 
 #: bookwyrm/templates/import/import_status.html:195
 msgid "Retry"
@@ -1531,20 +1559,20 @@ msgstr "Saiatu berriro"
 
 #: bookwyrm/templates/import/import_status.html:213
 msgid "This import is in an old format that is no longer supported. If you would like to troubleshoot missing items from this import, click the button below to update the import format."
-msgstr ""
+msgstr "Inportazio honek formatu zaharra du, eta jada ez da bateragarria. Inportazio honetan falta diren elementuak konpondu nahi badituzu, egin klik hurrengo botoian inportazio-formatua eguneratzeko."
 
 #: bookwyrm/templates/import/import_status.html:215
 msgid "Update import"
-msgstr ""
+msgstr "Inportazioa eguneratu"
 
 #: bookwyrm/templates/import/manual_review.html:5
 #: bookwyrm/templates/import/troubleshoot.html:4
 msgid "Import Troubleshooting"
-msgstr ""
+msgstr "Inportazio-arazoak konpondu"
 
 #: bookwyrm/templates/import/manual_review.html:21
 msgid "Approving a suggestion will permanently add the suggested book to your shelves and associate your reading dates, reviews, and ratings with that book."
-msgstr ""
+msgstr "Iradokizun bat onartzean, iradokitako liburua etengabe gehituko da zure apalategietara, eta zure irakurketa-datak, berrikusketak, eta balorazioak liburu horrekin lotuko dira."
 
 #: bookwyrm/templates/import/manual_review.html:58
 #: bookwyrm/templates/lists/curate.html:57
@@ -1553,23 +1581,23 @@ msgstr "Onartu"
 
 #: bookwyrm/templates/import/manual_review.html:66
 msgid "Reject"
-msgstr ""
+msgstr "Ezetsi"
 
 #: bookwyrm/templates/import/tooltip.html:6
 msgid "You can download your Goodreads data from the <a href=\"https://www.goodreads.com/review/import\" target=\"_blank\" rel=\"noopener\">Import/Export page</a> of your Goodreads account."
-msgstr ""
+msgstr "Goodreads-en datuak deskarga ditzakezu zure Goodreads kontuko <a href=\"https://www.goodreads.com/review/import\" target=\"_blank\" rel=\"noopener\"> inportatu/esportatu orria </a> Goodreads-eko kontutik."
 
 #: bookwyrm/templates/import/troubleshoot.html:7
 msgid "Failed items"
-msgstr ""
+msgstr "Huts egindako elementuak"
 
 #: bookwyrm/templates/import/troubleshoot.html:12
 msgid "Troubleshooting"
-msgstr ""
+msgstr "Arazoen konponketa"
 
 #: bookwyrm/templates/import/troubleshoot.html:20
 msgid "Re-trying an import can fix missing items in cases such as:"
-msgstr ""
+msgstr "Inportazio bat berregiten saiatzeak falta diren elementuak konpon ditzake kasu hauetan:"
 
 #: bookwyrm/templates/import/troubleshoot.html:23
 msgid "The book has been added to the instance since this import"
