@@ -54,6 +54,7 @@ class CreateStatus(View):
         data = {"book": book}
         return TemplateResponse(request, "compose.html", data)
 
+    # pylint: disable=too-many-branches
     def post(self, request, status_type, existing_status_id=None):
         """create status of whatever type"""
         created = not existing_status_id
@@ -117,11 +118,12 @@ class CreateStatus(View):
 
         status.save(created=created)
 
-        # update a readthorugh, if needed
-        try:
-            edit_readthrough(request)
-        except Http404:
-            pass
+        # update a readthrough, if needed
+        if bool(request.POST.get("id")):
+            try:
+                edit_readthrough(request)
+            except Http404:
+                pass
 
         if is_api_request(request):
             return HttpResponse()

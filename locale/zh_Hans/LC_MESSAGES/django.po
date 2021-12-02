@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-11-17 18:03+0000\n"
-"PO-Revision-Date: 2021-11-17 18:42\n"
+"PO-Revision-Date: 2021-11-29 09:31\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Chinese Simplified\n"
 "Language: zh\n"
@@ -184,7 +184,7 @@ msgstr "Español（西班牙语）"
 
 #: bookwyrm/settings.py:168
 msgid "Galego (Galician)"
-msgstr ""
+msgstr "Galego（加利西亚语）"
 
 #: bookwyrm/settings.py:169
 msgid "Français (French)"
@@ -192,11 +192,11 @@ msgstr "Français（法语）"
 
 #: bookwyrm/settings.py:170
 msgid "Lietuvių (Lithuanian)"
-msgstr ""
+msgstr "Lietuvių（立陶宛语）"
 
 #: bookwyrm/settings.py:171
 msgid "Português - Brasil (Brazilian Portuguese)"
-msgstr "葡萄牙语-巴西（巴西的葡语）"
+msgstr "Português - Brasil（巴西葡萄牙语）"
 
 #: bookwyrm/settings.py:172
 msgid "简体中文 (Simplified Chinese)"
@@ -906,12 +906,12 @@ msgstr "<a href=\"%(user_path)s\">%(username)s</a> 想要阅读 <a href=\"%(book
 #: bookwyrm/templates/discover/card-header.html:13
 #, python-format
 msgid "<a href=\"%(user_path)s\">%(username)s</a> finished reading <a href=\"%(book_path)s\">%(book_title)s</a>"
-msgstr ""
+msgstr "<a href=\"%(user_path)s\">%(username)s</a> 完成了 <a href=\"%(book_path)s\">%(book_title)s</a> 的阅读"
 
 #: bookwyrm/templates/discover/card-header.html:18
 #, python-format
 msgid "<a href=\"%(user_path)s\">%(username)s</a> started reading <a href=\"%(book_path)s\">%(book_title)s</a>"
-msgstr ""
+msgstr "<a href=\"%(user_path)s\">%(username)s</a> 开始阅读 <a href=\"%(book_path)s\">%(book_title)s</a>"
 
 #: bookwyrm/templates/discover/card-header.html:23
 #, python-format
@@ -1395,11 +1395,11 @@ msgstr "导入状态"
 #: bookwyrm/templates/import/import_status.html:13
 #: bookwyrm/templates/import/import_status.html:27
 msgid "Retry Status"
-msgstr ""
+msgstr "重试状态"
 
 #: bookwyrm/templates/import/import_status.html:22
 msgid "Imports"
-msgstr ""
+msgstr "导入"
 
 #: bookwyrm/templates/import/import_status.html:39
 msgid "Import started:"
@@ -1407,36 +1407,36 @@ msgstr "导入开始:"
 
 #: bookwyrm/templates/import/import_status.html:48
 msgid "In progress"
-msgstr ""
+msgstr "正在进行"
 
 #: bookwyrm/templates/import/import_status.html:50
 msgid "Refresh"
-msgstr ""
+msgstr "刷新"
 
 #: bookwyrm/templates/import/import_status.html:71
 #, python-format
 msgid "%(display_counter)s item needs manual approval."
 msgid_plural "%(display_counter)s items need manual approval."
-msgstr[0] ""
+msgstr[0] "%(display_counter)s 项需要手动批准。"
 
 #: bookwyrm/templates/import/import_status.html:76
 #: bookwyrm/templates/import/manual_review.html:8
 msgid "Review items"
-msgstr ""
+msgstr "审阅项目"
 
 #: bookwyrm/templates/import/import_status.html:82
 #, python-format
 msgid "%(display_counter)s item failed to import."
 msgid_plural "%(display_counter)s items failed to import."
-msgstr[0] ""
+msgstr[0] "%(display_counter)s 项导入失败。"
 
 #: bookwyrm/templates/import/import_status.html:88
 msgid "View and troubleshoot failed items"
-msgstr ""
+msgstr "查看并排查失败项目"
 
 #: bookwyrm/templates/import/import_status.html:100
 msgid "Row"
-msgstr ""
+msgstr "行"
 
 #: bookwyrm/templates/import/import_status.html:103
 #: bookwyrm/templates/shelf/shelf.html:141
@@ -1446,7 +1446,7 @@ msgstr "标题"
 
 #: bookwyrm/templates/import/import_status.html:106
 msgid "ISBN"
-msgstr ""
+msgstr "ISBN"
 
 #: bookwyrm/templates/import/import_status.html:109
 #: bookwyrm/templates/shelf/shelf.html:142
@@ -1456,7 +1456,7 @@ msgstr "作者"
 
 #: bookwyrm/templates/import/import_status.html:112
 msgid "Shelf"
-msgstr ""
+msgstr "书架"
 
 #: bookwyrm/templates/import/import_status.html:115
 #: bookwyrm/templates/import/manual_review.html:13
@@ -1480,11 +1480,11 @@ msgstr "状态"
 
 #: bookwyrm/templates/import/import_status.html:130
 msgid "Import preview unavailable."
-msgstr ""
+msgstr "导入预览不可用。"
 
 #: bookwyrm/templates/import/import_status.html:162
 msgid "View imported review"
-msgstr ""
+msgstr "查看已导入的书评"
 
 #: bookwyrm/templates/import/import_status.html:176
 msgid "Imported"
@@ -1492,28 +1492,28 @@ msgstr "已导入"
 
 #: bookwyrm/templates/import/import_status.html:182
 msgid "Needs manual review"
-msgstr ""
+msgstr "需要手动批准"
 
 #: bookwyrm/templates/import/import_status.html:195
 msgid "Retry"
-msgstr ""
+msgstr "重试"
 
 #: bookwyrm/templates/import/import_status.html:213
 msgid "This import is in an old format that is no longer supported. If you would like to troubleshoot missing items from this import, click the button below to update the import format."
-msgstr ""
+msgstr "此导入所用格式已不再受支持。 如果您想要在此次导入中排查缺失的项目，请点击下面的按钮来更新导入格式。"
 
 #: bookwyrm/templates/import/import_status.html:215
 msgid "Update import"
-msgstr ""
+msgstr "更新导入"
 
 #: bookwyrm/templates/import/manual_review.html:5
 #: bookwyrm/templates/import/troubleshoot.html:4
 msgid "Import Troubleshooting"
-msgstr ""
+msgstr "导入排查"
 
 #: bookwyrm/templates/import/manual_review.html:21
 msgid "Approving a suggestion will permanently add the suggested book to your shelves and associate your reading dates, reviews, and ratings with that book."
-msgstr ""
+msgstr "批准建议后，被提议的书将会永久添加到您的书架上并与您的阅读日期、书评、评分联系起来。"
 
 #: bookwyrm/templates/import/manual_review.html:58
 #: bookwyrm/templates/lists/curate.html:57
@@ -1522,7 +1522,7 @@ msgstr "批准"
 
 #: bookwyrm/templates/import/manual_review.html:66
 msgid "Reject"
-msgstr ""
+msgstr "驳回"
 
 #: bookwyrm/templates/import/tooltip.html:6
 msgid "You can download your Goodreads data from the <a href=\"https://www.goodreads.com/review/import\" target=\"_blank\" rel=\"noopener\">Import/Export page</a> of your Goodreads account."
@@ -1530,31 +1530,31 @@ msgstr "您可以从 <a href=\"https://www.goodreads.com/review/import\" target=
 
 #: bookwyrm/templates/import/troubleshoot.html:7
 msgid "Failed items"
-msgstr ""
+msgstr "失败项目"
 
 #: bookwyrm/templates/import/troubleshoot.html:12
 msgid "Troubleshooting"
-msgstr ""
+msgstr "问题排查"
 
 #: bookwyrm/templates/import/troubleshoot.html:20
 msgid "Re-trying an import can fix missing items in cases such as:"
-msgstr ""
+msgstr "重试导入可以修复以下情况的缺失项目："
 
 #: bookwyrm/templates/import/troubleshoot.html:23
 msgid "The book has been added to the instance since this import"
-msgstr ""
+msgstr "在此次导入后该书已被添加到本实例"
 
 #: bookwyrm/templates/import/troubleshoot.html:24
 msgid "A transient error or timeout caused the external data source to be unavailable."
-msgstr ""
+msgstr "暂时的错误或超时导致外部数据源不可用。"
 
 #: bookwyrm/templates/import/troubleshoot.html:25
 msgid "BookWyrm has been updated since this import with a bug fix"
-msgstr ""
+msgstr "在此次导入后，BookWyrm 已经更新并修复了漏洞"
 
 #: bookwyrm/templates/import/troubleshoot.html:28
 msgid "Contact your admin or <a href='https://github.com/bookwyrm-social/bookwyrm/issues'>open an issue</a> if you are seeing unexpected failed items."
-msgstr ""
+msgstr "如果您看到意外失败的项目，请联系您的管理员或 <a href='https://github.com/bookwyrm-social/bookwyrm/issues'>发起一个 issue</a>。"
 
 #: bookwyrm/templates/landing/about.html:7 bookwyrm/templates/layout.html:230
 #, python-format
