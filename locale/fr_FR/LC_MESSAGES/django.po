@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-12-02 18:24+0000\n"
-"PO-Revision-Date: 2021-12-02 19:38\n"
+"PO-Revision-Date: 2021-12-02 21:40\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: French\n"
 "Language: fr\n"
@@ -17,58 +17,58 @@ msgstr ""
 "X-Crowdin-File: /[bookwyrm-social.bookwyrm] main/locale/en_US/LC_MESSAGES/django.po\n"
 "X-Crowdin-File-ID: 1553\n"
 
-#: bookwyrm/forms.py:248
+#: bookwyrm/forms.py:262
 msgid "A user with this email already exists."
 msgstr "Cet email est déjà associé à un compte."
 
-#: bookwyrm/forms.py:262
+#: bookwyrm/forms.py:276
 msgid "One Day"
 msgstr "Un jour"
 
-#: bookwyrm/forms.py:263
+#: bookwyrm/forms.py:277
 msgid "One Week"
 msgstr "Une semaine"
 
-#: bookwyrm/forms.py:264
+#: bookwyrm/forms.py:278
 msgid "One Month"
 msgstr "Un mois"
 
-#: bookwyrm/forms.py:265
+#: bookwyrm/forms.py:279
 msgid "Does Not Expire"
 msgstr "Sans expiration"
 
-#: bookwyrm/forms.py:269
+#: bookwyrm/forms.py:283
 #, python-brace-format
 msgid "{i} uses"
 msgstr "{i} utilisations"
 
-#: bookwyrm/forms.py:270
+#: bookwyrm/forms.py:284
 msgid "Unlimited"
 msgstr "Sans limite"
 
-#: bookwyrm/forms.py:338
+#: bookwyrm/forms.py:352
 msgid "List Order"
 msgstr "Ordre de la liste"
 
-#: bookwyrm/forms.py:339
+#: bookwyrm/forms.py:353
 msgid "Book Title"
 msgstr "Titre du livre"
 
-#: bookwyrm/forms.py:340 bookwyrm/templates/shelf/shelf.html:149
+#: bookwyrm/forms.py:354 bookwyrm/templates/shelf/shelf.html:149
 #: bookwyrm/templates/shelf/shelf.html:181
 #: bookwyrm/templates/snippets/create_status/review.html:33
 msgid "Rating"
 msgstr "Note"
 
-#: bookwyrm/forms.py:342 bookwyrm/templates/lists/list.html:110
+#: bookwyrm/forms.py:356 bookwyrm/templates/lists/list.html:110
 msgid "Sort By"
 msgstr "Trier par"
 
-#: bookwyrm/forms.py:346
+#: bookwyrm/forms.py:360
 msgid "Ascending"
 msgstr "Ordre croissant"
 
-#: bookwyrm/forms.py:347
+#: bookwyrm/forms.py:361
 msgid "Descending"
 msgstr "Ordre décroissant"
 
@@ -151,6 +151,22 @@ msgstr "nom du compte :"
 #: bookwyrm/models/fields.py:188
 msgid "A user with that username already exists."
 msgstr "Ce nom est déjà associé à un compte."
+
+#: bookwyrm/models/user.py:32 bookwyrm/templates/book/book.html:218
+msgid "Reviews"
+msgstr "Critiques"
+
+#: bookwyrm/models/user.py:33
+msgid "Comments"
+msgstr ""
+
+#: bookwyrm/models/user.py:34
+msgid "Quotations"
+msgstr ""
+
+#: bookwyrm/models/user.py:35
+msgid "Everything else"
+msgstr ""
 
 #: bookwyrm/settings.py:118
 msgid "Home Timeline"
@@ -250,7 +266,7 @@ msgstr "Wikipedia"
 
 #: bookwyrm/templates/author/author.html:70
 msgid "View ISNI record"
-msgstr ""
+msgstr "Voir l’enregistrement ISNI"
 
 #: bookwyrm/templates/author/author.html:78
 #: bookwyrm/templates/book/book.html:94
@@ -448,10 +464,6 @@ msgstr "Créer"
 msgid "You don't have any reading activity for this book."
 msgstr "Vous n’avez aucune activité de lecture pour ce livre"
 
-#: bookwyrm/templates/book/book.html:218
-msgid "Reviews"
-msgstr "Critiques"
-
 #: bookwyrm/templates/book/book.html:223
 msgid "Your reviews"
 msgstr "Vos critiques"
@@ -534,16 +546,16 @@ msgstr "Confirmer les informations de ce livre"
 #: bookwyrm/templates/book/edit/edit_book.html:56
 #, python-format
 msgid "Is \"%(name)s\" one of these authors?"
-msgstr ""
+msgstr "Est-ce que \"%(name)s\" fait partie de ces auteurs ou autrices ?"
 
 #: bookwyrm/templates/book/edit/edit_book.html:67
 #: bookwyrm/templates/book/edit/edit_book.html:69
 msgid "Author of "
-msgstr ""
+msgstr "Auteur ou autrice de "
 
 #: bookwyrm/templates/book/edit/edit_book.html:69
 msgid "Find more information at isni.org"
-msgstr ""
+msgstr "Trouver plus d’informations sur isni.org"
 
 #: bookwyrm/templates/book/edit/edit_book.html:79
 msgid "This is a new author"
@@ -1027,17 +1039,17 @@ msgstr "En savoir plus sur %(site_name)s :"
 #: bookwyrm/templates/email/moderation_report/text_content.html:5
 #, python-format
 msgid "@%(reporter)s has flagged behavior by @%(reportee)s for moderation. "
-msgstr ""
+msgstr "@%(reporter)s a signalé un comportement de @%(reportee)s pour modération. "
 
 #: bookwyrm/templates/email/moderation_report/html_content.html:9
 #: bookwyrm/templates/email/moderation_report/text_content.html:7
 msgid "View report"
-msgstr ""
+msgstr "Voir le signalement"
 
 #: bookwyrm/templates/email/moderation_report/subject.html:2
 #, python-format
 msgid "New report for %(site_name)s"
-msgstr ""
+msgstr "Nouveau signalement pour %(site_name)s"
 
 #: bookwyrm/templates/email/password_reset/html_content.html:6
 #: bookwyrm/templates/email/password_reset/text_content.html:4
@@ -1081,14 +1093,30 @@ msgstr "Tous les messages"
 msgid "You have no messages right now."
 msgstr "Vous n’avez aucun message pour l’instant."
 
-#: bookwyrm/templates/feed/feed.html:22
+#: bookwyrm/templates/feed/feed.html:23
+msgid "Feed settings"
+msgstr ""
+
+#: bookwyrm/templates/feed/feed.html:26
+msgid "Saved!"
+msgstr ""
+
+#: bookwyrm/templates/feed/feed.html:47
+msgid "Save settings"
+msgstr ""
+
+#: bookwyrm/templates/feed/feed.html:56
 #, python-format
 msgid "load <span data-poll=\"stream/%(tab_key)s\">0</span> unread status(es)"
 msgstr "charger <span data-poll=\"stream/%(tab_key)s\">0</span> statut(s) non lus"
 
-#: bookwyrm/templates/feed/feed.html:38
+#: bookwyrm/templates/feed/feed.html:72
 msgid "There aren't any activities right now! Try following a user to get started"
 msgstr "Aucune activité pour l’instant ! Abonnez‑vous à quelqu’un pour commencer"
+
+#: bookwyrm/templates/feed/feed.html:73
+msgid "Alternatively, you can try enabling more status types"
+msgstr ""
 
 #: bookwyrm/templates/feed/goal_card.html:6
 #: bookwyrm/templates/feed/layout.html:90
