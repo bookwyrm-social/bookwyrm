@@ -22,7 +22,15 @@
         <input type="hidden" name="book" value="{{ book.id }}">
         <input type="hidden" name="change-shelf-from" value="{{ current.identifier }}">
         <input type="hidden" name="shelf" value="{{ shelf.identifier }}">
-        <button class="button is-fullwidth is-small shelf-option is-radiusless is-white" type="submit" {% if shelf in book.shelf_set.all %} disabled {% endif %}><span>{{ shelf.name }}</span></button>
+
+        <button class="button is-fullwidth is-small shelf-option is-radiusless is-white" type="submit" {% if shelf.identifier == current.identifier %}disabled{% endif %}>
+            <span>
+                {% if shelf.identifier == 'to-read' %}{% trans "To Read" %}
+                {% elif shelf.identifier == 'reading' %}{% trans "Currently Reading" %}
+                {% elif shelf.identifier == 'read' %}{% trans "Read" %}
+                {% else %}{{ shelf.name }}{% endif %}
+            </span>
+        </button>
     </form>
 </li>
 {% else%}
