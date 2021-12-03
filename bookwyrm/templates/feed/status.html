@@ -2,6 +2,18 @@
 {% load i18n %}
 {% load bookwyrm_tags %}
 
+{% block opengraph_images %}
+
+{% firstof status.book status.mention_books.first as book %}
+{% if book %}
+    {% include 'snippets/opengraph_images.html' with image=preview %}
+{% else %}
+    {% include 'snippets/opengraph_images.html' %}
+{% endif %}
+
+{% endblock %}
+
+
 {% block panel %}
 <header class="block">
     <a href="/#feed" class="button" data-back>
