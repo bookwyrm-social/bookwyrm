@@ -177,12 +177,19 @@ class Status(View):
             params=[status.id, visible_thread, visible_thread],
         )
 
+        preview = None
+        if hasattr(status, "book"):
+            preview = status.book.preview_image
+        elif status.mention_books.exists():
+            preview = status.mention_books.first().preview_image
+
         data = {
             **feed_page_data(request.user),
             **{
                 "status": status,
                 "children": children,
                 "ancestors": ancestors,
+                "preview": preview,
             },
         }
         return TemplateResponse(request, "feed/status.html", data)
