@@ -39,7 +39,7 @@
         <header class="columns is-mobile">
             <div class="column">
                 <h3 class="title is-5">
-                    Results from
+                    {% trans 'Results from' %}
                     <a href="{{ result_set.connector.base_url }}" target="_blank">{{ result_set.connector.name|default:result_set.connector.identifier }}</a>
                 </h3>
             </div>

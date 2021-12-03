@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-11-17 18:03+0000\n"
-"PO-Revision-Date: 2021-11-22 08:50\n"
+"PO-Revision-Date: 2021-11-29 13:53\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Lithuanian\n"
 "Language: lt\n"
@@ -591,7 +591,7 @@ msgstr "Kalbos:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:74
 msgid "Publication"
-msgstr "Paskelbimas"
+msgstr "Leidimas"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:77
 msgid "Publisher:"
@@ -930,7 +930,7 @@ msgstr "<a href=\"%(user_path)s\">%(username)s</a> įvertino <a href=\"%(book_pa
 #: bookwyrm/templates/discover/card-header.html:27
 #, python-format
 msgid "<a href=\"%(user_path)s\">%(username)s</a> reviewed <a href=\"%(book_path)s\">%(book_title)s</a>"
-msgstr "<a href=\"%(user_path)s\">%(username)s</a> peržiūrėjo <a href=\"%(book_path)s\">%(book_title)s</a>"
+msgstr "<a href=\"%(user_path)s\">%(username)s</a> apžvelgė <a href=\"%(book_path)s\">%(book_title)s</a>"
 
 #: bookwyrm/templates/discover/card-header.html:31
 #, python-format
@@ -1114,7 +1114,7 @@ msgstr "Šiuo metu skaitoma"
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_options.html:12
 #: bookwyrm/templates/user/books_header.html:8
 msgid "Read"
-msgstr "Perskaičiau"
+msgstr "Perskaityta"
 
 #: bookwyrm/templates/feed/suggested_users.html:5
 #: bookwyrm/templates/get_started/users.html:6
@@ -1483,7 +1483,7 @@ msgstr "Lentyna"
 #: bookwyrm/templates/import/manual_review.html:13
 #: bookwyrm/templates/snippets/create_status.html:17
 msgid "Review"
-msgstr "Peržiūra"
+msgstr "Apžvalga"
 
 #: bookwyrm/templates/import/import_status.html:119
 msgid "Book"
@@ -1513,7 +1513,7 @@ msgstr "Importuota"
 
 #: bookwyrm/templates/import/import_status.html:182
 msgid "Needs manual review"
-msgstr "Reikalingas manualus atsiliepimas"
+msgstr "Reikalinga peržvelgti"
 
 #: bookwyrm/templates/import/import_status.html:195
 msgid "Retry"
@@ -2416,7 +2416,7 @@ msgstr[3] "%(display_count)s prašymai pakviesti"
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:65
 msgid "Instance Activity"
-msgstr "Pavyzdinė veikla"
+msgstr "Serverio statistika"
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:83
 msgid "Interval:"
@@ -2436,7 +2436,7 @@ msgstr "Naudotojo prisijungimo veikla"
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:112
 msgid "Status activity"
-msgstr "Būsenos veikla"
+msgstr "Būsenos"
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:118
 msgid "Works created"
@@ -3467,7 +3467,7 @@ msgstr "%(percent)s%% baigta!"
 #: bookwyrm/templates/snippets/goal_progress.html:12
 #, python-format
 msgid "You've read <a href=\"%(path)s\">%(read_count)s of %(goal_count)s books</a>."
-msgstr "Perskaitėte <a href=\"%(path)s\">%(read_count)s iš %(goal_count)s knygų</a>."
+msgstr "Perskaityta <a href=\"%(path)s\">%(read_count)s iš %(goal_count)s knygų</a>."
 
 #: bookwyrm/templates/snippets/goal_progress.html:14
 #, python-format
@@ -3504,7 +3504,7 @@ msgstr "Viešas"
 #: bookwyrm/templates/snippets/privacy_select.html:14
 #: bookwyrm/templates/snippets/privacy_select_no_followers.html:14
 msgid "Unlisted"
-msgstr "Nėra sąraše"
+msgstr "Slaptas"
 
 #: bookwyrm/templates/snippets/privacy-icons.html:12
 msgid "Followers-only"
@@ -3873,7 +3873,7 @@ msgstr[3] "%(mutuals_display)s sekėjai, kuriuos sekate jūs"
 
 #: bookwyrm/templates/user/user_preview.html:38
 msgid "No followers you follow"
-msgstr "Jūs nieko nesekate"
+msgstr "Jūs kartu nieko nesekate"
 
 #: bookwyrm/templates/widgets/clearable_file_input_with_warning.html:28
 msgid "File exceeds maximum size: 10MB"

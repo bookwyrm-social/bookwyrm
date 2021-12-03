@@ -19,7 +19,7 @@ def request_isni_data(search_index, search_term, max_records=5):
         "recordPacking": "xml",
         "sortKeys": "RLV,pica,0,,",
     }
-    result = requests.get("http://isni.oclc.org/sru/", params=query_params, timeout=10)
+    result = requests.get("http://isni.oclc.org/sru/", params=query_params, timeout=15)
     # the OCLC ISNI server asserts the payload is encoded
     # in latin1, but we know better
     result.encoding = "utf-8"
