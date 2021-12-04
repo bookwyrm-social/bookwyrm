@@ -50,18 +50,23 @@
             {% endif %}
             {% with group=user.groups.first %}
             <div class="select">
-                <select name="groups" id="id_user_group">
+                <select name="groups" id="id_user_group" aria-describedby="desc_user_group">
                     {% for value, name in group_form.fields.groups.choices %}
-                    <option value="{{ value }}" {% if name == group.name %}selected{% endif %}>{{ name|title }}</option>
+                    <option value="{{ value }}" {% if name == group.name %}selected{% endif %}>
+                        {{ name|title }}
+                    </option>
                     {% endfor %}
-                    <option value="" {% if not group %}selected{% endif %}>User</option>
+                    <option value="" {% if not group %}selected{% endif %}>
+                        User
+                    </option>
                 </select>
             </div>
-            {% for error in group_form.groups.errors %}
-            <p class="help is-danger">{{ error | escape }}</p>
-            {% endfor %}
+
+            {% include 'snippets/form_errors.html' with errors_list=group_form.groups.errors id="desc_user_group" %}
             {% endwith %}
-            <button class="button">{% trans "Save" %}</button>
+            <button class="button">
+                {% trans "Save" %}
+            </button>
         </form>
     </div>
     {% endif %}

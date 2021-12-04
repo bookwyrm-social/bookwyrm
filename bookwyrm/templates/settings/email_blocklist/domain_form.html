@@ -17,10 +17,8 @@
             {{ form.domain }}
         </div>
     </div>
-    {% for error in form.domain.errors %}
-    <p class="help is-danger">{{ error | escape }}</p>
-    {% endfor %}
 
+    {% include 'snippets/form_errors.html' with errors_list=form.domain.errors id="desc_domain" %}
     <div class="field">
         <div class="control">
             <button type="submit" class="button is-primary">{% trans "Add" %}</button>
