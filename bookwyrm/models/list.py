@@ -112,7 +112,7 @@ class List(OrderedCollectionMixin, BookWyrmModel):
         """on save, update embed_key and avoid clash with existing code"""
         if not self.embed_key:
             self.embed_key = uuid.uuid4()
-        return super(List, self).save(*args, **kwargs)
+        return super().save(*args, **kwargs)
 
 
 class ListItem(CollectionItemMixin, BookWyrmModel):

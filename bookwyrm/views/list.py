@@ -174,7 +174,7 @@ class List(View):
         embed_url = request.build_absolute_uri(embed_url)
 
         if request.GET:
-            embed_url = "%s?%s" % (embed_url, request.GET.urlencode())
+            embed_url = f"{embed_url}?{request.GET.urlencode()}"
 
         data = {
             "list": book_list,
@@ -223,7 +223,6 @@ class EmbedList(View):
             raise Http404()
 
         query = request.GET.get("q")
-        suggestions = None
 
         # sort_by shall be "order" unless a valid alternative is given
         sort_by = request.GET.get("sort_by", "order")
