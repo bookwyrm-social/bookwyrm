@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-11-17 18:03+0000\n"
-"PO-Revision-Date: 2021-11-29 13:53\n"
+"POT-Creation-Date: 2021-12-02 18:24+0000\n"
+"PO-Revision-Date: 2021-12-04 18:09\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Lithuanian\n"
 "Language: lt\n"
@@ -17,58 +17,58 @@ msgstr ""
 "X-Crowdin-File: /[bookwyrm-social.bookwyrm] main/locale/en_US/LC_MESSAGES/django.po\n"
 "X-Crowdin-File-ID: 1553\n"
 
-#: bookwyrm/forms.py:248
+#: bookwyrm/forms.py:262
 msgid "A user with this email already exists."
 msgstr "Vartotojas su šiuo el. pašto adresu jau yra."
 
-#: bookwyrm/forms.py:262
+#: bookwyrm/forms.py:276
 msgid "One Day"
 msgstr "Diena"
 
-#: bookwyrm/forms.py:263
+#: bookwyrm/forms.py:277
 msgid "One Week"
 msgstr "Savaitė"
 
-#: bookwyrm/forms.py:264
+#: bookwyrm/forms.py:278
 msgid "One Month"
 msgstr "Mėnuo"
 
-#: bookwyrm/forms.py:265
+#: bookwyrm/forms.py:279
 msgid "Does Not Expire"
 msgstr "Galiojimas nesibaigia"
 
-#: bookwyrm/forms.py:269
+#: bookwyrm/forms.py:283
 #, python-brace-format
 msgid "{i} uses"
 msgstr "{i} naudoja"
 
-#: bookwyrm/forms.py:270
+#: bookwyrm/forms.py:284
 msgid "Unlimited"
 msgstr "Neribota"
 
-#: bookwyrm/forms.py:338
+#: bookwyrm/forms.py:352
 msgid "List Order"
 msgstr "Kaip pridėta į sąrašą"
 
-#: bookwyrm/forms.py:339
+#: bookwyrm/forms.py:353
 msgid "Book Title"
 msgstr "Knygos antraštė"
 
-#: bookwyrm/forms.py:340 bookwyrm/templates/shelf/shelf.html:149
+#: bookwyrm/forms.py:354 bookwyrm/templates/shelf/shelf.html:149
 #: bookwyrm/templates/shelf/shelf.html:181
 #: bookwyrm/templates/snippets/create_status/review.html:33
 msgid "Rating"
 msgstr "Įvertinimas"
 
-#: bookwyrm/forms.py:342 bookwyrm/templates/lists/list.html:110
+#: bookwyrm/forms.py:356 bookwyrm/templates/lists/list.html:110
 msgid "Sort By"
 msgstr "Rūšiuoti pagal"
 
-#: bookwyrm/forms.py:346
+#: bookwyrm/forms.py:360
 msgid "Ascending"
 msgstr "Didėjančia tvarka"
 
-#: bookwyrm/forms.py:347
+#: bookwyrm/forms.py:361
 msgid "Descending"
 msgstr "Mažėjančia tvarka"
 
@@ -152,6 +152,22 @@ msgstr "naudotojo vardas"
 msgid "A user with that username already exists."
 msgstr "Toks naudotojo vardas jau egzistuoja."
 
+#: bookwyrm/models/user.py:32 bookwyrm/templates/book/book.html:218
+msgid "Reviews"
+msgstr "Apžvalgos"
+
+#: bookwyrm/models/user.py:33
+msgid "Comments"
+msgstr "Komentarai"
+
+#: bookwyrm/models/user.py:34
+msgid "Quotations"
+msgstr "Citatos"
+
+#: bookwyrm/models/user.py:35
+msgid "Everything else"
+msgstr "Visa kita"
+
 #: bookwyrm/settings.py:118
 msgid "Home Timeline"
 msgstr "Pagrindinė siena"
@@ -226,47 +242,51 @@ msgstr "Serverio klaida"
 msgid "Something went wrong! Sorry about that."
 msgstr "Kažkas nepavyko. Atsiprašome."
 
-#: bookwyrm/templates/author/author.html:17
 #: bookwyrm/templates/author/author.html:18
+#: bookwyrm/templates/author/author.html:19
 msgid "Edit Author"
 msgstr "Keisti autorių"
 
-#: bookwyrm/templates/author/author.html:34
+#: bookwyrm/templates/author/author.html:35
 #: bookwyrm/templates/author/edit_author.html:43
 msgid "Aliases:"
 msgstr "Pseudonimai:"
 
-#: bookwyrm/templates/author/author.html:45
+#: bookwyrm/templates/author/author.html:46
 msgid "Born:"
 msgstr "Gimęs:"
 
-#: bookwyrm/templates/author/author.html:52
+#: bookwyrm/templates/author/author.html:53
 msgid "Died:"
 msgstr "Mirė:"
 
-#: bookwyrm/templates/author/author.html:61
+#: bookwyrm/templates/author/author.html:62
 msgid "Wikipedia"
 msgstr "Wikipedia"
 
-#: bookwyrm/templates/author/author.html:69
+#: bookwyrm/templates/author/author.html:70
+msgid "View ISNI record"
+msgstr "Peržiūrėti ISNI įrašą"
+
+#: bookwyrm/templates/author/author.html:78
 #: bookwyrm/templates/book/book.html:94
 msgid "View on OpenLibrary"
 msgstr "Žiūrėti „OpenLibrary“"
 
-#: bookwyrm/templates/author/author.html:77
+#: bookwyrm/templates/author/author.html:86
 #: bookwyrm/templates/book/book.html:97
 msgid "View on Inventaire"
 msgstr "Žiūrėti „Inventaire“"
 
-#: bookwyrm/templates/author/author.html:85
+#: bookwyrm/templates/author/author.html:94
 msgid "View on LibraryThing"
 msgstr "Žiūrėti „LibraryThing“"
 
-#: bookwyrm/templates/author/author.html:93
+#: bookwyrm/templates/author/author.html:102
 msgid "View on Goodreads"
 msgstr "Žiūrėti „Goodreads“"
 
-#: bookwyrm/templates/author/author.html:108
+#: bookwyrm/templates/author/author.html:117
 #, python-format
 msgid "Books by %(name)s"
 msgstr "%(name)s knygos"
@@ -276,17 +296,17 @@ msgid "Edit Author:"
 msgstr "Keisti autorių:"
 
 #: bookwyrm/templates/author/edit_author.html:13
-#: bookwyrm/templates/book/edit/edit_book.html:18
+#: bookwyrm/templates/book/edit/edit_book.html:19
 msgid "Added:"
 msgstr "Pridėta:"
 
 #: bookwyrm/templates/author/edit_author.html:14
-#: bookwyrm/templates/book/edit/edit_book.html:21
+#: bookwyrm/templates/book/edit/edit_book.html:22
 msgid "Updated:"
 msgstr "Atnaujinta:"
 
 #: bookwyrm/templates/author/edit_author.html:16
-#: bookwyrm/templates/book/edit/edit_book.html:25
+#: bookwyrm/templates/book/edit/edit_book.html:26
 msgid "Last edited by:"
 msgstr "Pastarąjį kartą redagavo:"
 
@@ -346,7 +366,7 @@ msgstr "„Goodreads“ raktas:"
 
 #: bookwyrm/templates/author/edit_author.html:118
 #: bookwyrm/templates/book/book.html:140
-#: bookwyrm/templates/book/edit/edit_book.html:110
+#: bookwyrm/templates/book/edit/edit_book.html:121
 #: bookwyrm/templates/book/readthrough.html:76
 #: bookwyrm/templates/groups/form.html:24
 #: bookwyrm/templates/lists/bookmark_button.html:15
@@ -365,8 +385,8 @@ msgstr "Išsaugoti"
 #: bookwyrm/templates/author/edit_author.html:119
 #: bookwyrm/templates/book/book.html:141 bookwyrm/templates/book/book.html:190
 #: bookwyrm/templates/book/cover_modal.html:32
-#: bookwyrm/templates/book/edit/edit_book.html:112
-#: bookwyrm/templates/book/edit/edit_book.html:115
+#: bookwyrm/templates/book/edit/edit_book.html:123
+#: bookwyrm/templates/book/edit/edit_book.html:126
 #: bookwyrm/templates/book/readthrough.html:77
 #: bookwyrm/templates/groups/delete_group_modal.html:17
 #: bookwyrm/templates/lists/delete_list_modal.html:17
@@ -446,10 +466,6 @@ msgstr "Kurti"
 msgid "You don't have any reading activity for this book."
 msgstr "Šios knygos neskaitote."
 
-#: bookwyrm/templates/book/book.html:218
-msgid "Reviews"
-msgstr "Apžvalgos"
-
 #: bookwyrm/templates/book/book.html:223
 msgid "Your reviews"
 msgstr "Tavo atsiliepimai"
@@ -514,56 +530,60 @@ msgstr "Įkelti viršelį:"
 msgid "Load cover from url:"
 msgstr "Įkelti viršelį iš url:"
 
-#: bookwyrm/templates/book/edit/edit_book.html:5
-#: bookwyrm/templates/book/edit/edit_book.html:11
+#: bookwyrm/templates/book/edit/edit_book.html:6
+#: bookwyrm/templates/book/edit/edit_book.html:12
 #, python-format
 msgid "Edit \"%(book_title)s\""
 msgstr "Redaguoti „%(book_title)s“"
 
-#: bookwyrm/templates/book/edit/edit_book.html:5
-#: bookwyrm/templates/book/edit/edit_book.html:13
+#: bookwyrm/templates/book/edit/edit_book.html:6
+#: bookwyrm/templates/book/edit/edit_book.html:14
 msgid "Add Book"
 msgstr "Pridėti knygą"
 
-#: bookwyrm/templates/book/edit/edit_book.html:47
+#: bookwyrm/templates/book/edit/edit_book.html:48
 msgid "Confirm Book Info"
 msgstr "Patvirtinti knygos informaciją"
 
-#: bookwyrm/templates/book/edit/edit_book.html:55
+#: bookwyrm/templates/book/edit/edit_book.html:56
 #, python-format
-msgid "Is \"%(name)s\" an existing author?"
-msgstr "Yra „%(name)s“ egzistuojantis autorius?"
+msgid "Is \"%(name)s\" one of these authors?"
+msgstr "Ar \"%(name)s\" yra vienas iš šių autorių?"
 
-#: bookwyrm/templates/book/edit/edit_book.html:64
-#, python-format
-msgid "Author of <em>%(book_title)s</em>"
-msgstr "<em>%(book_title)s</em> autorius"
+#: bookwyrm/templates/book/edit/edit_book.html:67
+#: bookwyrm/templates/book/edit/edit_book.html:69
+msgid "Author of "
+msgstr "Autorius "
 
-#: bookwyrm/templates/book/edit/edit_book.html:68
+#: bookwyrm/templates/book/edit/edit_book.html:69
+msgid "Find more information at isni.org"
+msgstr "Daugiau informacijos isni.org"
+
+#: bookwyrm/templates/book/edit/edit_book.html:79
 msgid "This is a new author"
 msgstr "Tai naujas autorius"
 
-#: bookwyrm/templates/book/edit/edit_book.html:75
+#: bookwyrm/templates/book/edit/edit_book.html:86
 #, python-format
 msgid "Creating a new author: %(name)s"
 msgstr "Kuriamas naujas autorius: %(name)s"
 
-#: bookwyrm/templates/book/edit/edit_book.html:82
+#: bookwyrm/templates/book/edit/edit_book.html:93
 msgid "Is this an edition of an existing work?"
 msgstr "Ar tai egzistuojančio darbo leidimas?"
 
-#: bookwyrm/templates/book/edit/edit_book.html:90
+#: bookwyrm/templates/book/edit/edit_book.html:101
 msgid "This is a new work"
 msgstr "Tai naujas darbas"
 
-#: bookwyrm/templates/book/edit/edit_book.html:97
+#: bookwyrm/templates/book/edit/edit_book.html:108
 #: bookwyrm/templates/groups/members.html:16
 #: bookwyrm/templates/landing/password_reset.html:30
 #: bookwyrm/templates/snippets/remove_from_group_button.html:16
 msgid "Confirm"
 msgstr "Patvirtinti"
 
-#: bookwyrm/templates/book/edit/edit_book.html:99
+#: bookwyrm/templates/book/edit/edit_book.html:110
 #: bookwyrm/templates/feed/status.html:9
 msgid "Back"
 msgstr "Atgal"
@@ -1021,6 +1041,22 @@ msgstr "Esate pakviesti prisijungti prie %(site_name)s! Spauskite nuorodą žemi
 msgid "Learn more about %(site_name)s:"
 msgstr "Sužinoti daugiau apie %(site_name)s:"
 
+#: bookwyrm/templates/email/moderation_report/html_content.html:6
+#: bookwyrm/templates/email/moderation_report/text_content.html:5
+#, python-format
+msgid "@%(reporter)s has flagged behavior by @%(reportee)s for moderation. "
+msgstr "@%(reporter)s pranešė apie netinkamą @%(reportee)s veiklą. "
+
+#: bookwyrm/templates/email/moderation_report/html_content.html:9
+#: bookwyrm/templates/email/moderation_report/text_content.html:7
+msgid "View report"
+msgstr "Peržiūrėti raportą"
+
+#: bookwyrm/templates/email/moderation_report/subject.html:2
+#, python-format
+msgid "New report for %(site_name)s"
+msgstr "Naujas %(site_name)s pranešimas"
+
 #: bookwyrm/templates/email/password_reset/html_content.html:6
 #: bookwyrm/templates/email/password_reset/text_content.html:4
 #, python-format
@@ -1063,14 +1099,30 @@ msgstr "Visos žinutės"
 msgid "You have no messages right now."
 msgstr "Neturite žinučių."
 
-#: bookwyrm/templates/feed/feed.html:22
+#: bookwyrm/templates/feed/feed.html:23
+msgid "Feed settings"
+msgstr "Srauto nustatymai"
+
+#: bookwyrm/templates/feed/feed.html:26
+msgid "Saved!"
+msgstr "Išsaugota!"
+
+#: bookwyrm/templates/feed/feed.html:47
+msgid "Save settings"
+msgstr "Išsaugoti nustatymus"
+
+#: bookwyrm/templates/feed/feed.html:56
 #, python-format
 msgid "load <span data-poll=\"stream/%(tab_key)s\">0</span> unread status(es)"
 msgstr "įkelti <span data-poll=\"stream/%(tab_key)s\">0</span> neperskaitytų būsena"
 
-#: bookwyrm/templates/feed/feed.html:38
+#: bookwyrm/templates/feed/feed.html:72
 msgid "There aren't any activities right now! Try following a user to get started"
 msgstr "Šiuo metu įrašų nėra. Norėdami matyti, sekite narį."
+
+#: bookwyrm/templates/feed/feed.html:73
+msgid "Alternatively, you can try enabling more status types"
+msgstr "Taip pat galite pasirinkti daugiau būsenos tipų"
 
 #: bookwyrm/templates/feed/goal_card.html:6
 #: bookwyrm/templates/feed/layout.html:90
@@ -3811,7 +3863,7 @@ msgstr "%(username)s neturi sekėjų"
 #: bookwyrm/templates/user/relationships/following.html:6
 #: bookwyrm/templates/user/relationships/layout.html:15
 msgid "Following"
-msgstr "Sekama"
+msgstr "Sekami"
 
 #: bookwyrm/templates/user/relationships/following.html:12
 #, python-format
@@ -3825,7 +3877,7 @@ msgstr "Redaguoti paskyrą"
 #: bookwyrm/templates/user/user.html:33
 #, python-format
 msgid "View all %(size)s"
-msgstr "Žiūrėti visus %(size)s"
+msgstr "Žiūrėti visas %(size)s"
 
 #: bookwyrm/templates/user/user.html:46
 msgid "View all books"
@@ -3879,7 +3931,7 @@ msgstr "Jūs kartu nieko nesekate"
 msgid "File exceeds maximum size: 10MB"
 msgstr "Failas viršijo maksimalų dydį: 10 MB"
 
-#: bookwyrm/templatetags/utilities.py:31
+#: bookwyrm/templatetags/utilities.py:34
 #, python-format
 msgid "%(title)s: %(subtitle)s"
 msgstr "%(title)s: %(subtitle)s"
