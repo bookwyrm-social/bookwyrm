@@ -55,15 +55,18 @@ def get_wrapped_text(text, font, content_width):
     low = 0
     high = len(text)
 
-    # ideal length is determined via binary search
-    while low < high:
-        mid = math.floor(low + high)
-        wrapped_text = textwrap.fill(text, width=mid)
-        width = font.getsize_multiline(wrapped_text)[0]
-        if width < content_width:
-            low = mid
-        else:
-            high = mid - 1
+    try:
+        # ideal length is determined via binary search
+        while low < high:
+            mid = math.floor(low + high)
+            wrapped_text = textwrap.fill(text, width=mid)
+            width = font.getsize_multiline(wrapped_text)[0]
+            if width < content_width:
+                low = mid
+            else:
+                high = mid - 1
+    except AttributeError:
+        wrapped_text = text
 
     return wrapped_text
 
