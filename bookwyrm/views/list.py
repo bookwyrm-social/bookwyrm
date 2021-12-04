@@ -168,6 +168,14 @@ class List(View):
                 ][: 5 - len(suggestions)]
 
         page = paginated.get_page(request.GET.get("page"))
+
+        embed_key = str(book_list.embed_key.hex)
+        embed_url = reverse("embed-list", args=[book_list.id, embed_key])
+        embed_url = request.build_absolute_uri(embed_url)
+
+        if request.GET:
+            embed_url = "%s?%s" % (embed_url, request.GET.urlencode())
+
         data = {
             "list": book_list,
             "items": page,
@@ -181,6 +189,7 @@ class List(View):
             "sort_form": forms.SortListForm(
                 {"direction": direction, "sort_by": sort_by}
             ),
+            "embed_url": embed_url,
         }
         return TemplateResponse(request, "lists/list.html", data)
 
