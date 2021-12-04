@@ -449,13 +449,20 @@ let BookWyrm = new class {
         const copyButtonEl = document.createElement('button');
 
         copyButtonEl.textContent = textareaEl.dataset.copytextLabel;
-        copyButtonEl.classList.add("mt-2","button","is-small","is-fullwidth","is-primary","is-light");
+        copyButtonEl.classList.add(
+            "mt-2",
+            "button",
+            "is-small",
+            "is-fullwidth",
+            "is-primary",
+            "is-light"
+        );
         copyButtonEl.addEventListener('click', () => {
-          navigator.clipboard.writeText(text).then(function() {
-            textareaEl.classList.add('is-success');
-            copyButtonEl.classList.replace('is-primary', 'is-success');
-            copyButtonEl.textContent = textareaEl.dataset.copytextSuccess;
-          });
+            navigator.clipboard.writeText(text).then(function() {
+                textareaEl.classList.add('is-success');
+                copyButtonEl.classList.replace('is-primary', 'is-success');
+                copyButtonEl.textContent = textareaEl.dataset.copytextSuccess;
+            });
         });
 
         textareaEl.parentNode.appendChild(copyButtonEl)
