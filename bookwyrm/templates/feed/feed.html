@@ -26,9 +26,6 @@
                 <span class="icon icon-dots-three m-0-mobile" aria-hidden="true"></span>
                 <span class="is-sr-only-mobile">{{ _("Feed settings") }}</span>
             </span>
-            {% if settings_saved %}
-                <span class="tag is-success is-light ml-2">{{ _("Saved!") }}</span>
-            {% endif %}
         </summary>
         <form class="notification level is-align-items-flex-end" method="post" action="/{{ tab.key }}#feed">
             {% csrf_token %}
@@ -36,7 +33,12 @@
             <div class="level-left">
                 <div class="field">
                     <div class="control">
-                        <label class="label mt-2 mb-1">Status types</label>
+                        <span class="is-flex is-align-items-baseline">
+                            <label class="label mt-2 mb-1">Status types</label>
+                            {% if settings_saved %}
+                                <span class="tag is-success is-light ml-2">{{ _("Saved!") }}</span>
+                            {% endif %}
+                        </span>
                         {% for name, value in feed_status_types_options %}
                         <label class="mr-2">
                             <input type="checkbox" name="feed_status_types" value="{{ name }}" {% if name in user.feed_status_types %}checked=""{% endif %}/>
