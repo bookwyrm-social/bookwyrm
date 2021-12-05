@@ -14,7 +14,7 @@
         </div>
         {% if request.user.is_authenticated and perms.bookwyrm.edit_book %}
         <div class="column is-narrow">
-            <a href="{{ author.local_path }}/edit">
+            <a href="{% url 'edit-author' author.id %}">
                 <span class="icon icon-pencil" title="{% trans 'Edit Author' %}" aria-hidden="True"></span>
                 <span class="is-hidden-mobile">{% trans "Edit Author" %}</span>
             </a>
@@ -73,23 +73,29 @@
             {% endif %}
 
             {% if author.openlibrary_key %}
-            <p class="my-1 is-flex is-justify-content-space-between">
+            <p class="my-1">
                 <a itemprop="sameAs" href="{{ author.openlibrary_link }}" target="_blank" rel="noopener">
                     {% trans "View on OpenLibrary" %}
                 </a>
                 {% if request.user.is_authenticated and perms.bookwyrm.edit_book %}
-                <button class="button is-small" type="button">{% trans "Update from OpenLibrary" %}</button>
+                <form name="ol-update" method="POST" action="{% url 'author-update-remote' author.id 'openlibrary.org' %}">
+                    {% csrf_token %}
+                    <button class="button is-small" type="submit">{% trans "Update from OpenLibrary" %}</button>
+                </form>
                 {% endif %}
             </p>
             {% endif %}
 
             {% if author.inventaire_id %}
-            <p class="my-1 is-flex is-justify-content-space-between">
+            <p class="my-1">
                 <a itemprop="sameAs" href="{{ author.inventaire_link }}" target="_blank" rel="noopener">
                     {% trans "View on Inventaire" %}
                 </a>
                 {% if request.user.is_authenticated and perms.bookwyrm.edit_book %}
-                <button class="button is-small" type="button">{% trans "Update from Inventaire" %}</button>
+                <form name="ol-update" method="POST" action="{% url 'author-update-remote' author.id 'inventaire' %}">
+                    {% csrf_token %}
+                    <button class="button is-small" type="submit">{% trans "Update from Inventaire" %}</button>
+                </form>
                 {% endif %}
             </p>
             {% endif %}

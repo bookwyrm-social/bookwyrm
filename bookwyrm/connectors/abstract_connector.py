@@ -177,9 +177,10 @@ class AbstractConnector(AbstractMinimalConnector):
 
     def get_or_create_author(self, remote_id, instance=None):
         """load that author"""
-        existing = models.Author.find_existing_by_remote_id(remote_id)
-        if existing:
-            return existing
+        if not instance:
+            existing = models.Author.find_existing_by_remote_id(remote_id)
+            if existing:
+                return existing
 
         data = self.get_book_data(remote_id)
 

@@ -68,6 +68,7 @@ class Connector(AbstractConnector):
             Mapping("born", remote_field="birth_date"),
             Mapping("died", remote_field="death_date"),
             Mapping("bio", formatter=get_description),
+            Mapping("isni", remote_field="remote_ids", formatter=get_isni),
         ]
 
     def get_book_data(self, remote_id):
@@ -224,6 +225,13 @@ def get_languages(language_blob):
     for lang in language_blob:
         langs.append(languages.get(lang.get("key", ""), None))
     return langs
+
+
+def get_isni(remote_ids_blob):
+    """extract the isni from the remote id data for the author"""
+    if not remote_ids_blob or not isinstance(remote_ids_blob, dict):
+        return None
+    return remote_ids_blob.get("isni")
 
 
 def pick_default_edition(options):

@@ -38,7 +38,7 @@ class Author(BookDataModel):
     def isni_link(self):
         """generate the url from the isni id"""
         clean_isni = re.sub(r"\s", "", self.isni)
-        return f"https://insi.org/isni/{clean_isni}"
+        return f"https://isni.org/isni/{clean_isni}"
 
     @property
     def openlibrary_link(self):

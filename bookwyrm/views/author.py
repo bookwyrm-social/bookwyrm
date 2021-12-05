@@ -86,7 +86,7 @@ def update_author_from_remote(request, author_id, connector_identifier):
     connector = connector_manager.load_connector(
         get_object_or_404(models.Connector, identifier=connector_identifier)
     )
-    author = get_object_or_404(models.Book.objects.select_subclasses(), id=author_id)
+    author = get_object_or_404(models.Author, id=author_id)
 
     connector.update_author_from_remote(author)
 

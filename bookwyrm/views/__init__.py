@@ -55,7 +55,7 @@ from .imports.manually_review import (
 )
 
 # misc views
-from .author import Author, EditAuthor
+from .author import Author, EditAuthor, update_author_from_remote
 from .directory import Directory
 from .discover import Discover
 from .feed import DirectMessage, Feed, Replies, Status
