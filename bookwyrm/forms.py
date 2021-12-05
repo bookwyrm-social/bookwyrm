@@ -293,6 +293,7 @@ class AuthorForm(CustomForm):
             "inventaire_id",
             "librarything_key",
             "goodreads_key",
+            "isni",
         ]
         widgets = {
             "name": forms.TextInput(attrs={"aria-describedby": "desc_name"}),
