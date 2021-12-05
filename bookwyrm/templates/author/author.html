@@ -92,7 +92,7 @@
                     {% trans "View on Inventaire" %}
                 </a>
                 {% if request.user.is_authenticated and perms.bookwyrm.edit_book %}
-                <form name="ol-update" method="POST" action="{% url 'author-update-remote' author.id 'inventaire' %}">
+                <form name="ol-update" method="POST" action="{% url 'author-update-remote' author.id 'inventaire.io' %}">
                     {% csrf_token %}
                     <button class="button is-small" type="submit">{% trans "Update from Inventaire" %}</button>
                 </form>

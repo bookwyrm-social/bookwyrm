@@ -195,14 +195,18 @@ class AbstractConnector(AbstractMinimalConnector):
             model=models.Author, overwrite=False, instance=instance
         )
 
+    def get_remote_id_from_model(self, obj):
+        """given the data stored, how can we look this up"""
+        return getattr(obj, getattr(self, "generated_remote_link_field"))
+
     def update_author_from_remote(self, obj):
         """load the remote data from this connector and add it to an existing author"""
-        remote_id = getattr(obj, getattr(self, "generated_remote_link_field"))
+        remote_id = self.get_remote_id_from_model(obj)
         return self.get_or_create_author(remote_id, instance=obj)
 
     def update_book_from_remote(self, obj):
         """load the remote data from this connector and add it to an existing book"""
-        remote_id = getattr(obj, getattr(self, "generated_remote_link_field"))
+        remote_id = self.get_remote_id_from_model(obj)
         data = self.get_book_data(remote_id)
         return self.create_edition_from_data(obj.parent_work, data, instance=obj)
 
