@@ -104,12 +104,14 @@ def find_authors_by_name(name_string, description=False):
             # otherwise just grab the first title listing
             titles.append(element.find(".//title"))
 
-            if titles is not None:
+            if titles:
                 # some of the "titles" in ISNI are a little ...iffy
                 # '@' is used by ISNI/OCLC to index the starting point ignoring stop words
                 # (e.g. "The @Government of no one")
                 title_elements = [
-                    e for e in titles if not e.text.replace("@", "").isnumeric()
+                    e
+                    for e in titles
+                    if hasattr(e, "text") and not e.text.replace("@", "").isnumeric()
                 ]
                 if len(title_elements):
                     author.bio = title_elements[0].text.replace("@", "")
