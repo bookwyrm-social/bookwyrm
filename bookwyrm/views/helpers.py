@@ -21,21 +21,6 @@ class WebFingerError(Exception):
     pass
 
 
-def get_domain_from_username(username):
-    # usernames could be @user@domain or user@domain
-    if not username:
-        return None
-
-    if username[0] == "@":
-        username = username[1:]
-
-    try:
-        domain = username.split("@")[1]
-        return domain
-    except IndexError:
-        return None
-
-
 def get_user_from_username(viewer, username):
     """helper function to resolve a localname or a username to a user"""
     if viewer.is_authenticated and viewer.localname == username:
@@ -73,8 +58,15 @@ def is_bookwyrm_request(request):
 def handle_remote_webfinger(query):
     """webfingerin' other servers"""
     user = None
-    domain = get_domain_from_username(query)
-    if domain is None:
+
+    # usernames could be @user@domain or user@domain
+    if not query:
+        return None
+    if query[0] == "@":
+        query = query[1:]
+    try:
+        domain = query.split("@")[1]
+    except IndexError:
         return None
 
     try:
@@ -100,9 +92,16 @@ def handle_remote_webfinger(query):
 def subscribe_remote_webfinger(query):
     """get subscribe template from other servers"""
     template = None
-    domain = get_domain_from_username(query)
+    # usernames could be @user@domain or user@domain
+    if not query:
+        return WebFingerError("invalid_username")
 
-    if domain is None:
+    if query[0] == "@":
+        query = query[1:]
+
+    try:
+        domain = query.split("@")[1]
+    except IndexError:
         return WebFingerError("invalid_username")
 
     url = f"https://{domain}/.well-known/webfinger?resource=acct:{query}"
