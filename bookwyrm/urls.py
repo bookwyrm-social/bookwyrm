@@ -425,12 +425,12 @@ urlpatterns = [
     re_path(r"^resolve-book/?$", views.resolve_book, name="resolve-book"),
     re_path(r"^switch-edition/?$", views.switch_edition, name="switch-edition"),
     re_path(
-        rf"^{BOOK_PATH}/update/(?P<connector_identifier>[\w\.]+)?$",
+        rf"{BOOK_PATH}/update/(?P<connector_identifier>[\w\.]+)/?$",
         views.update_book_from_remote,
         name="book-update-remote",
     ),
     re_path(
-        r"^author/(?P<author_id>\d+)/update/(?P<connector_identifier>[\w\.]+)?$",
+        r"^author/(?P<author_id>\d+)/update/(?P<connector_identifier>[\w\.]+)/?$",
         views.update_author_from_remote,
         name="author-update-remote",
     ),

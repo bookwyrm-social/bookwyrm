@@ -214,7 +214,7 @@ class Connector(AbstractConnector):
 
     def get_remote_id_from_model(self, obj):
         """use get_remote_id to figure out the link from a model obj"""
-        remote_id_value = getattr(obj, self.inventaire_id)
+        remote_id_value = obj.inventaire_id
         return self.get_remote_id(remote_id_value)
 
 

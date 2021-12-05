@@ -102,7 +102,15 @@
                 </p>
                 {% endif %}
                 {% if book.inventaire_id %}
-                <p><a href="{{ book.inventaire_link }}" target="_blank" rel="noopener">{% trans "View on Inventaire" %}</a></p>
+                <p>
+                    <a href="{{ book.inventaire_link }}" target="_blank" rel="noopener">{% trans "View on Inventaire" %}</a>
+                    {% if request.user.is_authenticated and perms.bookwyrm.edit_book %}
+                    <form name="iv-update" method="POST" action="{% url 'book-update-remote' book.id 'inventaire.io' %}">
+                        {% csrf_token %}
+                        <button class="button is-small" type="submit">{% trans "Update from Inventaire" %}</button>
+                    </form>
+                    {% endif %}
+                </p>
                 {% endif %}
             </section>
         </div>
