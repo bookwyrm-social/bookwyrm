@@ -12,6 +12,7 @@ from .helpers import (
     get_user_from_username,
     handle_remote_webfinger,
     subscribe_remote_webfinger,
+    WebFingerError,
 )
 
 
@@ -142,7 +143,7 @@ def ostatus_follow_success(request):
 
 
 def remote_follow_page(request):
-    """Display remote follow page"""
+    """display remote follow page"""
     user = get_user_from_username(request.user, request.GET.get("user"))
     data = {"user": user}
     return TemplateResponse(request, "ostatus/remote_follow.html", data)
@@ -152,10 +153,33 @@ def remote_follow_page(request):
 def remote_follow(request):
     """direct user to follow from remote account using ostatus subscribe protocol"""
     remote_user = request.POST.get("remote_user")
-    template = subscribe_remote_webfinger(remote_user)
-    if template is None:
-        data = {"account": remote_user, "user": None, "error": "remote_subscribe"}
-        return TemplateResponse(request, "ostatus/subscribe.html", data)
+    try:
+        if remote_user[0] == "@":
+            remote_user = remote_user[1:]
+        remote_domain = remote_user.split("@")[1]
+    except:
+        remote_domain = None
+
+    wf_response = subscribe_remote_webfinger(remote_user)
     user = get_object_or_404(models.User, id=request.POST.get("user"))
-    url = template.replace("{uri}", urllib.parse.quote(user.remote_id))
+
+    if wf_response is None:
+        data = {
+            "account": remote_user,
+            "user": user,
+            "error": "not_supported",
+            "remote_domain": remote_domain,
+        }
+        return TemplateResponse(request, "ostatus/subscribe.html", data)
+
+    if type(wf_response) == WebFingerError:
+        data = {
+            "account": remote_user,
+            "user": user,
+            "error": str(wf_response),
+            "remote_domain": remote_domain,
+        }
+        return TemplateResponse(request, "ostatus/subscribe.html", data)
+
+    url = wf_response.replace("{uri}", urllib.parse.quote(user.remote_id))
     return redirect(url)

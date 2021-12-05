@@ -14,10 +14,10 @@
 {% endblock %}
 
 {% block heading %}
-{% if not request.user.is_authenticated and not error == 'remote_subscribe' %}
-{% trans "Let's log in first..." %}
-{% elif error %}
+{% if error %}
 {% trans 'Uh oh...' %} 
+{% elif not request.user.is_authenticated %}
+{% trans "Let's log in first..." %}
 {% else %}
 {% blocktrans with sitename=site.name %}Follow from {{ sitename }}{% endblocktrans %}
 {% endif %}

@@ -2,7 +2,28 @@
 
 {% block content %}
 <div class="block">
-    {% if not request.user.is_authenticated and not error == 'remote_subscribe' %}
+    {% if error == 'invalid_username' %}
+    <div class="notification is-warning has-text-centered" role="status">
+        {% blocktrans %}
+        <p><strong>{{ account }}</strong> is not a valid username.</p>
+        <p>Check you have the correct username before trying again.</p>
+        {% endblocktrans %}
+    </div>
+    {% elif error == 'user_not_found' %}
+    <div class="notification is-warning has-text-centered" role="status">
+        {% blocktrans %}
+        <p><strong>{{ account }}</strong> could not be found or <code>{{ remote_domain }}</code> does not support identity discovery.</p>
+        <p>Check you have the correct username before trying again.</p>
+        {% endblocktrans %}
+    </div>
+    {% elif error == 'not_supported' %}
+    <div class="notification is-warning has-text-centered" role="status">
+        {% blocktrans %}
+        <p><strong>{{ account }}</strong> was found but <code>{{ remote_domain }}</code> does not support 'remote follow'.</p>
+        <p>Try searching for <strong>{{ user }}</strong> on <code>{{ remote_domain }}</code> instead.</p>
+        {% endblocktrans %}
+    </div>
+    {% elif not request.user.is_authenticated %}
     <div class="navbar-item">
         <div class="columns">
             <div class="column">
@@ -29,11 +50,6 @@
     {% elif error == 'ostatus_subscribe' %}
     <div class="notification is-warning has-text-centered" role="status">
         <p>{% blocktrans %}Something went wrong trying to follow <strong>{{ account }}</strong>{% endblocktrans %}</p>
-        <p>{% trans 'Check you have the correct username before trying again.' %}</p>
-    </div>
-    {% elif error == 'remote_subscribe' %}
-    <div class="notification is-warning has-text-centered" role="status">
-        <p>{% blocktrans %}Something went wrong trying to follow from <strong>{{ account }}</strong>{% endblocktrans %}</p>
         <p>{% trans 'Check you have the correct username before trying again.' %}</p>
     </div>
     {% elif error == 'is_blocked' %}

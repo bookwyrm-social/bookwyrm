@@ -15,6 +15,27 @@ from bookwyrm.status import create_generated_note
 from bookwyrm.utils import regex
 
 
+class WebFingerError(Exception):
+    """error class for problems finding user information with webfinger"""
+
+    pass
+
+
+def get_domain_from_username(username):
+    # usernames could be @user@domain or user@domain
+    if not username:
+        return None
+
+    if username[0] == "@":
+        username = username[1:]
+
+    try:
+        domain = username.split("@")[1]
+        return domain
+    except IndexError:
+        return None
+
+
 def get_user_from_username(viewer, username):
     """helper function to resolve a localname or a username to a user"""
     if viewer.is_authenticated and viewer.localname == username:
@@ -52,17 +73,8 @@ def is_bookwyrm_request(request):
 def handle_remote_webfinger(query):
     """webfingerin' other servers"""
     user = None
-
-    # usernames could be @user@domain or user@domain
-    if not query:
-        return None
-
-    if query[0] == "@":
-        query = query[1:]
-
-    try:
-        domain = query.split("@")[1]
-    except IndexError:
+    domain = get_domain_from_username(query)
+    if domain is None:
         return None
 
     try:
@@ -88,24 +100,17 @@ def handle_remote_webfinger(query):
 def subscribe_remote_webfinger(query):
     """get subscribe template from other servers"""
     template = None
+    domain = get_domain_from_username(query)
 
-    # usernames could be @user@domain or user@domain
-    if not query:
-        return None
-
-    if query[0] == "@":
-        query = query[1:]
-
-    try:
-        domain = query.split("@")[1]
-    except IndexError:
-        return None
+    if domain is None:
+        return WebFingerError("invalid_username")
 
     url = f"https://{domain}/.well-known/webfinger?resource=acct:{query}"
+
     try:
         data = get_data(url)
     except (ConnectorException, HTTPError):
-        return None
+        return WebFingerError("user_not_found")
 
     for link in data.get("links"):
         if link.get("rel") == "http://ostatus.org/schema/1.0/subscribe":
