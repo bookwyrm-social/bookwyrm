@@ -12,6 +12,8 @@ from .openlibrary_languages import languages
 class Connector(AbstractConnector):
     """instantiate a connector for OL"""
 
+    generated_remote_link_field = "openlibrary_link"
+
     def __init__(self, identifier):
         super().__init__(identifier)
 
