@@ -66,23 +66,23 @@
 
             {% if author.isni %}
             <p class="my-1">
-                <a itemprop="sameAs" href="https://isni.org/isni/{{ author.isni|remove_spaces }}" rel="noopener" target="_blank">
+            <a itemprop="sameAs" href="{{ author.isni_link }}" rel="noopener" target="_blank">
                     {% trans "View ISNI record" %}
                 </a>
             </p>
             {% endif %}
 
             {% if author.openlibrary_key %}
-            <p class="my-1">
-                <a itemprop="sameAs" href="https://openlibrary.org/authors/{{ author.openlibrary_key }}" target="_blank" rel="noopener">
+            <p class="my-1 is-flex is-justify-content-space-between">
+                <a itemprop="sameAs" href="{{ author.openlibrary_link }}" target="_blank" rel="noopener">
                     {% trans "View on OpenLibrary" %}
                 </a>
             </p>
             {% endif %}
 
             {% if author.inventaire_id %}
-            <p class="my-1">
-                <a itemprop="sameAs" href="https://inventaire.io/entity/{{ author.inventaire_id }}" target="_blank" rel="noopener">
+            <p class="my-1 is-flex is-justify-content-space-between">
+                <a itemprop="sameAs" href="{{ author.inventaire_link }}" target="_blank" rel="noopener">
                     {% trans "View on Inventaire" %}
                 </a>
             </p>
