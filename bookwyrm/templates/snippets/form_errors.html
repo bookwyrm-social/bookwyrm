@@ -1,0 +1,9 @@
+{% if errors_list %}
+<div id="{{ id }}">
+    {% for error in errors_list %}
+    <p class="help is-danger">
+        {{ error | escape }}
+    </p>
+    {% endfor %}
+</div>
+{% endif %}

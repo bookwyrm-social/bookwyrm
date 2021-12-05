@@ -153,12 +153,21 @@
 
             {# user's relationship to the book #}
             <div class="block">
+                {% if user_shelfbooks.count > 0 %}
+                <h2 class="title is-5">
+                    {% trans "You have shelved this edition in:" %}
+                </h2>
+                <ul>
                 {% for shelf in user_shelfbooks %}
-                <p>
-                    {% blocktrans with path=shelf.shelf.local_path shelf_name=shelf.shelf.name %}This edition is on your <a href="{{ path }}">{{ shelf_name }}</a> shelf.{% endblocktrans %}
-                    {% include 'snippets/shelf_selector.html' with current=shelf.shelf %}
-                </p>
+                    <li class="box">
+                        <a href="{{ shelf.shelf.local_path }}">{{ shelf.shelf.name }}</a>
+                        <div class="mb-3">
+                            {% include 'snippets/shelf_selector.html' with shelf=shelf.shelf class="is-small" readthrough=readthrough %}
+                        </div>
+                    </li>
                 {% endfor %}
+                </ul>
+                {% endif %}
                 {% for shelf in other_edition_shelves %}
                 <p>
                 {% blocktrans with book_path=shelf.book.local_path shelf_path=shelf.shelf.local_path shelf_name=shelf.shelf.name %}A <a href="{{ book_path }}">different edition</a> of this book is on your <a href="{{ shelf_path }}">{{ shelf_name }}</a> shelf.{% endblocktrans %}

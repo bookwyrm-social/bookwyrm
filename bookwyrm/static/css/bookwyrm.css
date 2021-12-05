@@ -115,6 +115,21 @@ input[type=file]::file-selector-button:hover {
     color: #363636;
 }
 
+summary::marker {
+    content: none;
+}
+
+.detail-pinned-button summary {
+    position: absolute;
+    right: 0;
+}
+
+.detail-pinned-button form {
+    float: left;
+    width: -webkit-fill-available;
+    margin-top: 1em;
+}
+
 /** Shelving
  ******************************************************************************/
 

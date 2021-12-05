@@ -9,10 +9,11 @@ Finish "<em>{{ book_title }}</em>"
 {% endblock %}
 
 {% block modal-form-open %}
-<form name="finish-reading" action="{% url 'reading-status' 'finish' book.id %}" method="post" class="submit-status">
+<form name="finish-reading" action="{% url 'reading-status' 'finish' book.id %}" method="post" {% if not refresh %}class="submit-status"{% endif %}>
 {% csrf_token %}
 <input type="hidden" name="id" value="{{ readthrough.id }}">
 <input type="hidden" name="reading_status" value="read">
+<input type="hidden" name="shelf" value="{{ move_from }}"> 
 {% endblock %}
 
 {% block reading-dates %}

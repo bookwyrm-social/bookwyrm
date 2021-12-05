@@ -6,6 +6,7 @@ import dateutil.tz
 from dateutil.parser import ParserError
 
 from requests import HTTPError
+from django.db.models import Q
 from django.http import Http404
 from django.utils import translation
 
@@ -153,3 +154,29 @@ def set_language(user, response):
         translation.activate(user.preferred_language)
     response.set_cookie(settings.LANGUAGE_COOKIE_NAME, user.preferred_language)
     return response
+
+
+def filter_stream_by_status_type(activities, allowed_types=None):
+    """filter out activities based on types"""
+    if not allowed_types:
+        allowed_types = []
+
+    if "review" not in allowed_types:
+        activities = activities.filter(
+            Q(review__isnull=True), Q(boost__boosted_status__review__isnull=True)
+        )
+    if "comment" not in allowed_types:
+        activities = activities.filter(
+            Q(comment__isnull=True), Q(boost__boosted_status__comment__isnull=True)
+        )
+    if "quotation" not in allowed_types:
+        activities = activities.filter(
+            Q(quotation__isnull=True), Q(boost__boosted_status__quotation__isnull=True)
+        )
+    if "everything" not in allowed_types:
+        activities = activities.filter(
+            Q(generatednote__isnull=True),
+            Q(boost__boosted_status__generatednote__isnull=True),
+        )
+
+    return activities
