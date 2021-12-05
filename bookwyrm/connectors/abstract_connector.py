@@ -196,12 +196,12 @@ class AbstractConnector(AbstractMinimalConnector):
 
     def update_author_from_remote(self, obj):
         """load the remote data from this connector and add it to an existing author"""
-        remote_id = obj.getattr(self, "generated_remote_link_field")
+        remote_id = getattr(obj, getattr(self, "generated_remote_link_field"))
         return self.get_or_create_author(remote_id, instance=obj)
 
     def update_book_from_remote(self, obj):
         """load the remote data from this connector and add it to an existing book"""
-        remote_id = obj.getattr(self, "generated_remote_link_field")
+        remote_id = getattr(obj, getattr(self, "generated_remote_link_field"))
         data = self.get_book_data(remote_id)
         return self.create_edition_from_data(obj.parent_work, data, instance=obj)
 

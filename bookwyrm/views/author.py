@@ -81,7 +81,7 @@ class EditAuthor(View):
 @require_POST
 @permission_required("bookwyrm.edit_book", raise_exception=True)
 # pylint: disable=unused-argument
-def update_author_from_remote(request, connector_identifier, author_id):
+def update_author_from_remote(request, author_id, connector_identifier):
     """load the remote data for this author"""
     connector = connector_manager.load_connector(
         get_object_or_404(models.Connector, identifier=connector_identifier)

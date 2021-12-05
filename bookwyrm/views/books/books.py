@@ -184,7 +184,7 @@ def resolve_book(request):
 @require_POST
 @permission_required("bookwyrm.edit_book", raise_exception=True)
 # pylint: disable=unused-argument
-def update_book_from_remote(request, connector_identifier, book_id):
+def update_book_from_remote(request, book_id, connector_identifier):
     """load the remote data for this book"""
     connector = connector_manager.load_connector(
         get_object_or_404(models.Connector, identifier=connector_identifier)

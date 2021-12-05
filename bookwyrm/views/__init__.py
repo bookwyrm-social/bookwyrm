@@ -29,6 +29,7 @@ from .preferences.block import Block, unblock
 
 # books
 from .books.books import Book, upload_cover, add_description, resolve_book
+from .books.books import update_book_from_remote
 from .books.edit_book import EditBook, ConfirmEditBook
 from .books.editions import Editions, switch_edition
 

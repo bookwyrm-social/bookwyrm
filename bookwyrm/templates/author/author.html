@@ -77,6 +77,9 @@
                 <a itemprop="sameAs" href="{{ author.openlibrary_link }}" target="_blank" rel="noopener">
                     {% trans "View on OpenLibrary" %}
                 </a>
+                {% if request.user.is_authenticated and perms.bookwyrm.edit_book %}
+                <button class="button is-small" type="button">{% trans "Update from OpenLibrary" %}</button>
+                {% endif %}
             </p>
             {% endif %}
 
@@ -85,6 +88,9 @@
                 <a itemprop="sameAs" href="{{ author.inventaire_link }}" target="_blank" rel="noopener">
                     {% trans "View on Inventaire" %}
                 </a>
+                {% if request.user.is_authenticated and perms.bookwyrm.edit_book %}
+                <button class="button is-small" type="button">{% trans "Update from Inventaire" %}</button>
+                {% endif %}
             </p>
             {% endif %}
 

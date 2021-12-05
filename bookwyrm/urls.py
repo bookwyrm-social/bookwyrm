@@ -422,8 +422,13 @@ urlpatterns = [
         r"^upload-cover/(?P<book_id>\d+)/?$", views.upload_cover, name="upload-cover"
     ),
     re_path(r"^add-description/(?P<book_id>\d+)/?$", views.add_description),
-    re_path(r"^resolve-book/?$", views.resolve_book),
-    re_path(r"^switch-edition/?$", views.switch_edition),
+    re_path(r"^resolve-book/?$", views.resolve_book, name="resolve-book"),
+    re_path(r"^switch-edition/?$", views.switch_edition, name="switch-edition"),
+    re_path(
+        rf"{BOOK_PATH}/update/(?P<connector_identifier>[\w\.]+)?$",
+        views.update_book_from_remote,
+        name="book-update-remote"
+    ),
     # isbn
     re_path(r"^isbn/(?P<isbn>\d+)(.json)?/?$", views.Isbn.as_view()),
     # author
