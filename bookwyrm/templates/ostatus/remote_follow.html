@@ -30,7 +30,7 @@
     </div>
 </div>
 <div class="block">
-    <p>{% blocktrans with username=user.display_name %}Follow {{ username }} from another Fediverse account like Bookwyrm, Mastodon, or Pleroma.{% endblocktrans %}</p>
+    <p>{% blocktrans with username=user.display_name %}Follow {{ username }} from another Fediverse account like BookWyrm, Mastodon, or Pleroma.{% endblocktrans %}</p>
 </div>
 <div class="card">
     <section class="card-content content">
@@ -38,7 +38,7 @@
             {% csrf_token %}
             <input type="hidden" name="user" value="{{ user.id }}">
             <label class="label" for="remote_user">{% trans 'User handle to follow from:' %}</label>
-            <input class="input" type="text" name="remote_user" id="remote_user" placeholder="user@example.social">
+            <input class="input" type="text" name="remote_user" id="remote_user" placeholder="user@example.social" required>
             <button class="button mt-1 is-primary" type="submit">{% trans 'Follow!' %}</button>
         </form>
     </section>
