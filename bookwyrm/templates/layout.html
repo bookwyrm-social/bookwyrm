@@ -32,11 +32,11 @@
 <body>
 <nav class="navbar" aria-label="main navigation">
     <div class="container">
-        <div class="navbar-brand is-align-items-end">
+        <div class="navbar-brand">
             <a class="navbar-item" href="/">
                 <img class="image logo" src="{% if site.logo_small %}{% get_media_prefix %}{{ site.logo_small }}{% else %}{% static "images/logo-small.png" %}{% endif %}" alt="Home page">
             </a>
-            <form class="navbar-item mt-1" action="{% url 'search' %}">
+            <form class="navbar-item column" action="{% url 'search' %}">
                 <div class="field has-addons">
                     <div class="control">
                         {% if user.is_authenticated %}
@@ -159,7 +159,7 @@
                     </a>
                 </div>
                 {% else %}
-                <div class="navbar-item mt-1">
+                <div class="navbar-item">
                     {% if request.path != '/login' and request.path != '/login/' %}
                     <div class="columns">
                         <div class="column">
