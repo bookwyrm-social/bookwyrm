@@ -58,7 +58,14 @@ from .author import Author, EditAuthor
 from .directory import Directory
 from .discover import Discover
 from .feed import DirectMessage, Feed, Replies, Status
-from .follow import follow, unfollow
+from .follow import (
+    follow,
+    unfollow,
+    ostatus_follow_request,
+    ostatus_follow_success,
+    remote_follow,
+    remote_follow_page,
+)
 from .follow import accept_follow_request, delete_follow_request
 from .get_started import GetStartedBooks, GetStartedProfile, GetStartedUsers
 from .goal import Goal, hide_goal
