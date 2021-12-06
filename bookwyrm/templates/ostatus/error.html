@@ -4,24 +4,18 @@
 <div class="block">
     {% if error == 'invalid_username' %}
     <div class="notification is-warning has-text-centered" role="status">
-        {% blocktrans %}
-        <p><strong>{{ account }}</strong> is not a valid username.</p>
-        <p>Check you have the correct username before trying again.</p>
-        {% endblocktrans %}
+        <p>{% blocktrans %}<strong>{{ account }}</strong> is not a valid username{% endblocktrans %}.</p>
+        <p>{% trans 'Check you have the correct username before trying again' %}.</p>
     </div>
     {% elif error == 'user_not_found' %}
     <div class="notification is-warning has-text-centered" role="status">
-        {% blocktrans %}
-        <p><strong>{{ account }}</strong> could not be found or <code>{{ remote_domain }}</code> does not support identity discovery.</p>
-        <p>Check you have the correct username before trying again.</p>
-        {% endblocktrans %}
+        <p>{% blocktrans %}<strong>{{ account }}</strong> could not be found or <code>{{ remote_domain }}</code> does not support identity discovery{% endblocktrans %}.</p>
+        <p>{% trans 'Check you have the correct username before trying again' %}.</p>
     </div>
     {% elif error == 'not_supported' %}
     <div class="notification is-warning has-text-centered" role="status">
-        {% blocktrans %}
-        <p><strong>{{ account }}</strong> was found but <code>{{ remote_domain }}</code> does not support 'remote follow'.</p>
-        <p>Try searching for <strong>{{ user }}</strong> on <code>{{ remote_domain }}</code> instead.</p>
-        {% endblocktrans %}
+        <p>{% blocktrans %}<strong>{{ account }}</strong> was found but <code>{{ remote_domain }}</code> does not support 'remote follow'{% endblocktrans %}.</p>
+        <p>{% blocktrans %}Try searching for <strong>{{ user }}</strong> on <code>{{ remote_domain }}</code> instead{% endblocktrans %}.</p>
     </div>
     {% elif not request.user.is_authenticated %}
     <div class="navbar-item">
