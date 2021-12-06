@@ -15,11 +15,12 @@ from bookwyrm.status import create_generated_note
 from bookwyrm.utils import regex
 
 
-#pylint: disable=unnecessary-pass
+# pylint: disable=unnecessary-pass
 class WebFingerError(Exception):
     """empty error class for problems finding user information with webfinger"""
 
     pass
+
 
 def get_user_from_username(viewer, username):
     """helper function to resolve a localname or a username to a user"""
