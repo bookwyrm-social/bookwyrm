@@ -18,7 +18,8 @@ from bookwyrm.utils import regex
 class WebFingerError(Exception):
     """error class for problems finding user information with webfinger"""
 
-    pass
+    def __init__(self, message):
+        super().__init__(message)
 
 
 def get_user_from_username(viewer, username):

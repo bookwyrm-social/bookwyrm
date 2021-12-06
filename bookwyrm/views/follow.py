@@ -157,7 +157,7 @@ def remote_follow(request):
         if remote_user[0] == "@":
             remote_user = remote_user[1:]
         remote_domain = remote_user.split("@")[1]
-    except:
+    except IndexError:
         remote_domain = None
 
     wf_response = subscribe_remote_webfinger(remote_user)
@@ -172,7 +172,7 @@ def remote_follow(request):
         }
         return TemplateResponse(request, "ostatus/subscribe.html", data)
 
-    if type(wf_response) == WebFingerError:
+    if isinstance(wf_response, WebFingerError):
         data = {
             "account": remote_user,
             "user": user,
