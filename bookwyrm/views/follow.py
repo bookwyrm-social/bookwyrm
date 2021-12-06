@@ -157,7 +157,7 @@ def remote_follow(request):
         if remote_user[0] == "@":
             remote_user = remote_user[1:]
         remote_domain = remote_user.split("@")[1]
-    except IndexError:
+    except (TypeError, IndexError):
         remote_domain = None
 
     wf_response = subscribe_remote_webfinger(remote_user)
