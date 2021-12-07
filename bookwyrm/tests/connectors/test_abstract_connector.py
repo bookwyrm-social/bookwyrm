@@ -88,7 +88,7 @@ class AbstractConnector(TestCase):
         """find an existing book by remote/origin id"""
         self.assertEqual(models.Book.objects.count(), 1)
         self.assertEqual(
-            self.book.remote_id, "https://%s/book/%d" % (DOMAIN, self.book.id)
+            self.book.remote_id, f"https://{DOMAIN}/book/{self.book.id}"
         )
         self.assertEqual(self.book.origin_id, "https://example.com/book/1234")
 
@@ -99,7 +99,7 @@ class AbstractConnector(TestCase):
 
         # dedupe by remote id
         result = self.connector.get_or_create_book(
-            "https://%s/book/%d" % (DOMAIN, self.book.id)
+            f"https://{DOMAIN}/book/{self.book.id}"
         )
         self.assertEqual(models.Book.objects.count(), 1)
         self.assertEqual(result, self.book)
@@ -119,7 +119,8 @@ class AbstractConnector(TestCase):
     @responses.activate
     def test_get_or_create_author(self):
         """load an author"""
-        self.connector.author_mappings = [  # pylint: disable=attribute-defined-outside-init  # pylint: disable=attribute-defined-outside-init
+        # pylint: disable=attribute-defined-outside-init
+        self.connector.author_mappings = [
             Mapping("id"),
             Mapping("name"),
         ]
