@@ -94,7 +94,7 @@
                     {% if request.user.is_authenticated and perms.bookwyrm.edit_book %}
                     {% with controls_text="ol_sync" controls_uid=author.id %}
                         {% include 'snippets/toggle/toggle_button.html' with text=button_text focus="modal_title_ol_sync" class="is-small" icon_with_text="download" %}
-                        {% include "author/sync_modal.html" with source="opnlibrary.org" source_name="OpenLibrary" %}
+                        {% include "author/sync_modal.html" with source="openlibrary.org" source_name="OpenLibrary" %}
                     {% endwith %}
                     {% endif %}
                 </div>
