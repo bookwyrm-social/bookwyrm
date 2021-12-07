@@ -1,0 +1,41 @@
+{% load layout %}
+{% load i18n %}
+{% load static %}
+{% load utilities %}
+{% load markdown %}
+
+<!DOCTYPE html>
+<html lang="{% get_lang %}">
+<head>
+    <title>{% block title %}{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{% static 'css/vendor/bulma.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/vendor/icons.css' %}">
+    <link rel="stylesheet" href="{% static 'css/bookwyrm.css' %}">
+    <script>
+        function closeWindow() {
+            window.close();
+        }
+    </script>
+</head>
+<body>
+<nav class="navbar" aria-label="main navigation">
+    <div class="container">
+        <div class="navbar-brand">
+                <img class="image logo navbar-item" src="{% if site.logo_small %}{% get_media_prefix %}{{ site.logo_small }}{% else %}{% static 'images/logo-small.png' %}{% endif %}" alt="Home page">
+            <h2 class="navbar-item subtitle">{% block heading %}{% endblock %}</h2>
+        </div>
+    </div>
+</nav>
+<div class="section is-flex-grow-1 columns is-centered">
+    <div class="block column is-one-third">
+        {% block content%}{% endblock %}
+    </div>
+</div>
+
+<script>
+    var csrf_token = '{{ csrf_token }}';
+</script>
+<script src="{% static 'js/bookwyrm.js' %}?v={{ js_cache }}"></script>
+</body>
+</html>

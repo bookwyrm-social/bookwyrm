@@ -14,7 +14,7 @@
         </div>
         {% if request.user.is_authenticated and perms.bookwyrm.edit_book %}
         <div class="column is-narrow">
-            <a href="{{ author.local_path }}/edit">
+            <a href="{% url 'edit-author' author.id %}">
                 <span class="icon icon-pencil" title="{% trans 'Edit Author' %}" aria-hidden="True"></span>
                 <span class="is-hidden-mobile">{% trans "Edit Author" %}</span>
             </a>
@@ -23,102 +23,130 @@
     </div>
 </div>
 
-<div class="block columns content" itemscope itemtype="https://schema.org/Person">
+<div class="block columns is-flex-direction-row-reverse" itemscope itemtype="https://schema.org/Person">
     <meta itemprop="name" content="{{ author.name }}">
+    {% if author.bio %}
+    <div class="column">
+        {% include "snippets/trimmed_text.html" with full=author.bio trim_length=200 %}
+    </div>
+    {% endif %}
 
-    {% if author.aliases or author.born or author.died or author.wikipedia_link or author.openlibrary_key or author.inventaire_id or author.isni %}
+    {% firstof author.aliases author.born author.died as details %}
+    {% firstof author.wikipedia_link author.openlibrary_key author.inventaire_id author.isni as links %}
+    {% if details or links %}
     <div class="column is-two-fifths">
-        <div class="box py-2">
-            <dl>
+        {% if details %}
+        <section class="block content">
+            <h2 class="title is-4">{% trans "Author details" %}</h2>
+            <dl class="box">
                 {% if author.aliases %}
-                <div class="is-flex is-flex-wrap-wrap my-1">
+                <div class="is-flex is-flex-wrap-wrap mr-1">
                     <dt class="has-text-weight-bold mr-1">{% trans "Aliases:" %}</dt>
-                    {% for alias in author.aliases %}
-                        <dd itemprop="alternateName" content="{{alias}}">
-                            {{alias}}{% if not forloop.last %},&nbsp;{% endif %}
-                        </dd>
-                    {% endfor %}
+                    <dd>
+                        {% include "snippets/trimmed_list.html" with items=author.aliases itemprop="alternateName" %}
+                    </dd>
                 </div>
                 {% endif %}
 
                 {% if author.born %}
-                <div class="is-flex my-1">
+                <div class="is-flex mt-1">
                     <dt class="has-text-weight-bold mr-1">{% trans "Born:" %}</dt>
                     <dd itemprop="birthDate">{{ author.born|naturalday }}</dd>
                 </div>
                 {% endif %}
 
                 {% if author.died %}
-                <div class="is-flex my-1">
+                <div class="is-flex mt-1">
                     <dt class="has-text-weight-bold mr-1">{% trans "Died:" %}</dt>
                     <dd itemprop="deathDate">{{ author.died|naturalday }}</dd>
                 </div>
                 {% endif %}
             </dl>
+        </section>
+        {% endif %}
 
-            {% if author.wikipedia_link %}
-            <p class="my-1">
-                <a itemprop="sameAs" href="{{ author.wikipedia_link }}" rel="noopener" target="_blank">
-                    {% trans "Wikipedia" %}
-                </a>
-            </p>
-            {% endif %}
+        {% if links %}
+        <section>
+            <h2 class="title is-4">{% trans "External links" %}</h2>
+            <div class="box">
+                {% if author.wikipedia_link %}
+                <div>
+                    <a itemprop="sameAs" href="{{ author.wikipedia_link }}" rel="noopener" target="_blank">
+                        {% trans "Wikipedia" %}
+                    </a>
+                </div>
+                {% endif %}
 
-            {% if author.isni %}
-            <p class="my-1">
-                <a itemprop="sameAs" href="https://isni.org/isni/{{ author.isni|remove_spaces }}" rel="noopener" target="_blank">
-                    {% trans "View ISNI record" %}
-                </a>
-            </p>
-            {% endif %}
+                {% if author.isni %}
+                <div class="mt-1">
+                    <a itemprop="sameAs" href="{{ author.isni_link }}" rel="noopener" target="_blank">
+                        {% trans "View ISNI record" %}
+                    </a>
+                </div>
+                {% endif %}
 
-            {% if author.openlibrary_key %}
-            <p class="my-1">
-                <a itemprop="sameAs" href="https://openlibrary.org/authors/{{ author.openlibrary_key }}" target="_blank" rel="noopener">
-                    {% trans "View on OpenLibrary" %}
-                </a>
-            </p>
-            {% endif %}
+                {% trans "Load data" as button_text %}
+                {% if author.openlibrary_key %}
+                <div class="mt-1 is-flex">
+                    <a class="mr-3" itemprop="sameAs" href="{{ author.openlibrary_link }}" target="_blank" rel="noopener">
+                        {% trans "View on OpenLibrary" %}
+                    </a>
+                    {% if request.user.is_authenticated and perms.bookwyrm.edit_book %}
+                    {% with controls_text="ol_sync" controls_uid=author.id %}
+                        {% include 'snippets/toggle/toggle_button.html' with text=button_text focus="modal_title_ol_sync" class="is-small" icon_with_text="download" %}
+                        {% include "author/sync_modal.html" with source="openlibrary.org" source_name="OpenLibrary" %}
+                    {% endwith %}
+                    {% endif %}
+                </div>
+                {% endif %}
 
-            {% if author.inventaire_id %}
-            <p class="my-1">
-                <a itemprop="sameAs" href="https://inventaire.io/entity/{{ author.inventaire_id }}" target="_blank" rel="noopener">
-                    {% trans "View on Inventaire" %}
-                </a>
-            </p>
-            {% endif %}
+                {% if author.inventaire_id %}
+                <div class="mt-1 is-flex">
+                    <a class="mr-3" itemprop="sameAs" href="{{ author.inventaire_link }}" target="_blank" rel="noopener">
+                        {% trans "View on Inventaire" %}
+                    </a>
 
-            {% if author.librarything_key %}
-            <p class="my-1">
-                <a itemprop="sameAs" href="https://www.librarything.com/author/{{ author.librarything_key }}" target="_blank" rel="noopener">
-                    {% trans "View on LibraryThing" %}
-                </a>
-            </p>
-            {% endif %}
+                    {% if request.user.is_authenticated and perms.bookwyrm.edit_book %}
+                    {% with controls_text="iv_sync" controls_uid=author.id %}
+                        {% include 'snippets/toggle/toggle_button.html' with text=button_text focus="modal_title_iv_sync" class="is-small" icon_with_text="download" %}
+                        {% include "author/sync_modal.html" with source="inventaire.io" source_name="Inventaire" %}
+                    {% endwith %}
+                    {% endif %}
+                </div>
+                {% endif %}
 
-            {% if author.goodreads_key %}
-            <p class="my-1">
-                <a itemprop="sameAs" href="https://www.goodreads.com/author/show/{{ author.goodreads_key }}" target="_blank" rel="noopener">
-                    {% trans "View on Goodreads" %}
-                </a>
-            </p>
-            {% endif %}
-        </div>
-    </div>
-    {% endif %}
-    <div class="column">
-        {% if author.bio %}
-            {{ author.bio|to_markdown|safe }}
+                {% if author.librarything_key %}
+                <div class="mt-1">
+                    <a itemprop="sameAs" href="https://www.librarything.com/author/{{ author.librarything_key }}" target="_blank" rel="noopener">
+                        {% trans "View on LibraryThing" %}
+                    </a>
+                </div>
+                {% endif %}
+
+                {% if author.goodreads_key %}
+                <div>
+                    <a itemprop="sameAs" href="https://www.goodreads.com/author/show/{{ author.goodreads_key }}" target="_blank" rel="noopener">
+                        {% trans "View on Goodreads" %}
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </section>
         {% endif %}
     </div>
+    {% endif %}
 </div>
 
+<hr aria-hidden="true">
+
 <div class="block">
-    <h3 class="title is-4">{% blocktrans with name=author.name %}Books by {{ name }}{% endblocktrans %}</h3>
+    <h2 class="title is-4">{% blocktrans with name=author.name %}Books by {{ name }}{% endblocktrans %}</h2>
     <div class="columns is-multiline is-mobile">
     {% for book in books %}
-        <div class="column is-one-fifth">
-            {% include 'landing/small-book.html' with book=book %}
+        <div class="column is-one-fifth-tablet is-half-mobile is-flex is-flex-direction-column">
+            <div class="is-flex-grow-1">
+                {% include 'landing/small-book.html' with book=book %}
+            </div>
             {% include 'snippets/shelve_button/shelve_button.html' with book=book %}
         </div>
     {% endfor %}
