@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-12-04 22:38+0000\n"
-"PO-Revision-Date: 2021-12-05 14:06\n"
+"POT-Creation-Date: 2021-12-07 17:35+0000\n"
+"PO-Revision-Date: 2021-12-07 20:54\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Portuguese, Brazilian\n"
 "Language: pt\n"
@@ -17,58 +17,58 @@ msgstr ""
 "X-Crowdin-File: /[bookwyrm-social.bookwyrm] main/locale/en_US/LC_MESSAGES/django.po\n"
 "X-Crowdin-File-ID: 1553\n"
 
-#: bookwyrm/forms.py:350
+#: bookwyrm/forms.py:351
 msgid "A user with this email already exists."
 msgstr "Já existe um usuário com este endereço de e-mail."
 
-#: bookwyrm/forms.py:364
+#: bookwyrm/forms.py:365
 msgid "One Day"
 msgstr "Um dia"
 
-#: bookwyrm/forms.py:365
+#: bookwyrm/forms.py:366
 msgid "One Week"
 msgstr "Uma semana"
 
-#: bookwyrm/forms.py:366
+#: bookwyrm/forms.py:367
 msgid "One Month"
 msgstr "Um mês"
 
-#: bookwyrm/forms.py:367
+#: bookwyrm/forms.py:368
 msgid "Does Not Expire"
 msgstr "Não expira"
 
-#: bookwyrm/forms.py:371
+#: bookwyrm/forms.py:372
 #, python-brace-format
 msgid "{i} uses"
 msgstr "{i} usos"
 
-#: bookwyrm/forms.py:372
+#: bookwyrm/forms.py:373
 msgid "Unlimited"
 msgstr "Ilimitado"
 
-#: bookwyrm/forms.py:468
+#: bookwyrm/forms.py:469
 msgid "List Order"
 msgstr "Ordem de inserção"
 
-#: bookwyrm/forms.py:469
+#: bookwyrm/forms.py:470
 msgid "Book Title"
 msgstr "Título do livro"
 
-#: bookwyrm/forms.py:470 bookwyrm/templates/shelf/shelf.html:152
+#: bookwyrm/forms.py:471 bookwyrm/templates/shelf/shelf.html:152
 #: bookwyrm/templates/shelf/shelf.html:184
 #: bookwyrm/templates/snippets/create_status/review.html:33
 msgid "Rating"
 msgstr "Avaliação"
 
-#: bookwyrm/forms.py:472 bookwyrm/templates/lists/list.html:110
+#: bookwyrm/forms.py:473 bookwyrm/templates/lists/list.html:110
 msgid "Sort By"
 msgstr "Organizar por"
 
-#: bookwyrm/forms.py:476
+#: bookwyrm/forms.py:477
 msgid "Ascending"
 msgstr "Crescente"
 
-#: bookwyrm/forms.py:477
+#: bookwyrm/forms.py:478
 msgid "Descending"
 msgstr "Decrescente"
 
@@ -145,6 +145,7 @@ msgid "%(value)s is not a valid username"
 msgstr "%(value)s não é um nome de usuário válido"
 
 #: bookwyrm/models/fields.py:183 bookwyrm/templates/layout.html:171
+#: bookwyrm/templates/ostatus/error.html:29
 msgid "username"
 msgstr "nome de usuário"
 
@@ -182,7 +183,7 @@ msgstr "Linha do tempo dos livros"
 
 #: bookwyrm/settings.py:119 bookwyrm/templates/search/layout.html:21
 #: bookwyrm/templates/search/layout.html:42
-#: bookwyrm/templates/user/layout.html:88
+#: bookwyrm/templates/user/layout.html:91
 msgid "Books"
 msgstr "Livros"
 
@@ -363,7 +364,11 @@ msgstr "Chave Librarything:"
 msgid "Goodreads key:"
 msgstr "Chave Goodreads:"
 
-#: bookwyrm/templates/author/edit_author.html:108
+#: bookwyrm/templates/author/edit_author.html:105
+msgid "ISNI:"
+msgstr "ISNI:"
+
+#: bookwyrm/templates/author/edit_author.html:115
 #: bookwyrm/templates/book/book.html:140
 #: bookwyrm/templates/book/edit/edit_book.html:121
 #: bookwyrm/templates/book/readthrough.html:76
@@ -381,7 +386,7 @@ msgstr "Chave Goodreads:"
 msgid "Save"
 msgstr "Salvar"
 
-#: bookwyrm/templates/author/edit_author.html:109
+#: bookwyrm/templates/author/edit_author.html:116
 #: bookwyrm/templates/book/book.html:141 bookwyrm/templates/book/book.html:199
 #: bookwyrm/templates/book/cover_modal.html:32
 #: bookwyrm/templates/book/edit/edit_book.html:123
@@ -439,7 +444,7 @@ msgstr "<a href=\"%(path)s/editions\">%(count)s edições</a>"
 
 #: bookwyrm/templates/book/book.html:158
 msgid "You have shelved this edition in:"
-msgstr "Você acabou esta edição em:"
+msgstr "Você colocou esta edição na estante em:"
 
 #: bookwyrm/templates/book/book.html:173
 #, python-format
@@ -486,7 +491,7 @@ msgstr "Lugares"
 #: bookwyrm/templates/lists/lists.html:5 bookwyrm/templates/lists/lists.html:12
 #: bookwyrm/templates/search/layout.html:25
 #: bookwyrm/templates/search/layout.html:50
-#: bookwyrm/templates/user/layout.html:82
+#: bookwyrm/templates/user/layout.html:85
 msgid "Lists"
 msgstr "Listas"
 
@@ -647,11 +652,11 @@ msgstr "Adicionar autor/a"
 #: bookwyrm/templates/book/edit/edit_book_form.html:146
 #: bookwyrm/templates/book/edit/edit_book_form.html:149
 msgid "Jane Doe"
-msgstr "Joana Sem-nome"
+msgstr "Fulana"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:152
 msgid "Add Another Author"
-msgstr "Adicionar outro autor/a"
+msgstr "Adicionar outro/a autor/a"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:160
 #: bookwyrm/templates/shelf/shelf.html:143
@@ -869,7 +874,7 @@ msgstr "Listar seu perfil no diretório para que outros usuários da BookWyrm te
 
 #: bookwyrm/templates/directory/directory.html:21
 msgid "Join Directory"
-msgstr "Junte-se ao diretório publico"
+msgstr "Junte-se ao diretório"
 
 #: bookwyrm/templates/directory/directory.html:24
 #, python-format
@@ -897,6 +902,12 @@ msgstr "Sugerido"
 
 #: bookwyrm/templates/directory/user_card.html:17
 #: bookwyrm/templates/directory/user_card.html:18
+#: bookwyrm/templates/ostatus/remote_follow.html:21
+#: bookwyrm/templates/ostatus/remote_follow.html:22
+#: bookwyrm/templates/ostatus/subscribe.html:41
+#: bookwyrm/templates/ostatus/subscribe.html:42
+#: bookwyrm/templates/ostatus/success.html:17
+#: bookwyrm/templates/ostatus/success.html:18
 #: bookwyrm/templates/user/user_preview.html:16
 #: bookwyrm/templates/user/user_preview.html:17
 msgid "Locked account"
@@ -1716,6 +1727,7 @@ msgstr "Entrar"
 
 #: bookwyrm/templates/landing/login.html:7
 #: bookwyrm/templates/landing/login.html:36 bookwyrm/templates/layout.html:179
+#: bookwyrm/templates/ostatus/error.html:37
 msgid "Log in"
 msgstr "Entrar"
 
@@ -1724,18 +1736,20 @@ msgid "Success! Email address confirmed."
 msgstr "Endereço de e-mail confirmado com sucesso."
 
 #: bookwyrm/templates/landing/login.html:21 bookwyrm/templates/layout.html:170
+#: bookwyrm/templates/ostatus/error.html:28
 #: bookwyrm/templates/snippets/register_form.html:4
 msgid "Username:"
 msgstr "Usuário:"
 
 #: bookwyrm/templates/landing/login.html:27
 #: bookwyrm/templates/landing/password_reset.html:26
-#: bookwyrm/templates/layout.html:174
+#: bookwyrm/templates/layout.html:174 bookwyrm/templates/ostatus/error.html:32
 #: bookwyrm/templates/snippets/register_form.html:20
 msgid "Password:"
 msgstr "Senha:"
 
 #: bookwyrm/templates/landing/login.html:39 bookwyrm/templates/layout.html:176
+#: bookwyrm/templates/ostatus/error.html:34
 msgid "Forgot your password?"
 msgstr "Esqueceu sua senha?"
 
@@ -1800,7 +1814,7 @@ msgstr "Sair"
 msgid "Notifications"
 msgstr "Notificações"
 
-#: bookwyrm/templates/layout.html:175
+#: bookwyrm/templates/layout.html:175 bookwyrm/templates/ostatus/error.html:33
 msgid "password"
 msgstr "senha"
 
@@ -2192,6 +2206,120 @@ msgstr "Menções"
 msgid "You're all caught up!"
 msgstr "Nenhuma notificação nova!"
 
+#: bookwyrm/templates/ostatus/error.html:7
+#, python-format
+msgid "<strong>%(account)s</strong> is not a valid username"
+msgstr "<strong>%(account)s</strong> não é um nome de usuário válido"
+
+#: bookwyrm/templates/ostatus/error.html:8
+#: bookwyrm/templates/ostatus/error.html:13
+msgid "Check you have the correct username before trying again"
+msgstr "Verifique se o nome de usuário está correto antes de tentar novamente"
+
+#: bookwyrm/templates/ostatus/error.html:12
+#, python-format
+msgid "<strong>%(account)s</strong> could not be found or <code>%(remote_domain)s</code> does not support identity discovery"
+msgstr "<strong>%(account)s</strong> não pode ser encontrado(a) ou <code>%(remote_domain)s</code> não permite a descoberta de identidade"
+
+#: bookwyrm/templates/ostatus/error.html:17
+#, python-format
+msgid "<strong>%(account)s</strong> was found but <code>%(remote_domain)s</code> does not support 'remote follow'"
+msgstr "<strong>%(account)s</strong> foi encontrado(a) mas <code>%(remote_domain)s</code> não permite seguir remotamente"
+
+#: bookwyrm/templates/ostatus/error.html:18
+#, python-format
+msgid "Try searching for <strong>%(user)s</strong> on <code>%(remote_domain)s</code> instead"
+msgstr "Em vez disso, tente procurar <strong>%(user)s</strong> em <code>%(remote_domain)s</code>"
+
+#: bookwyrm/templates/ostatus/error.html:46
+#, python-format
+msgid "Something went wrong trying to follow <strong>%(account)s</strong>"
+msgstr "Algo deu errado ao tentar seguir <strong>%(account)s</strong>"
+
+#: bookwyrm/templates/ostatus/error.html:47
+msgid "Check you have the correct username before trying again."
+msgstr "Verifique se o nome de usuário está correto antes de tentar novamente."
+
+#: bookwyrm/templates/ostatus/error.html:51
+#, python-format
+msgid "You have blocked <strong>%(account)s</strong>"
+msgstr "Você bloqueou <strong>%(account)s</strong>"
+
+#: bookwyrm/templates/ostatus/error.html:55
+#, python-format
+msgid "<strong>%(account)s</strong> has blocked you"
+msgstr "<strong>%(account)s</strong> te bloqueou"
+
+#: bookwyrm/templates/ostatus/error.html:59
+#, python-format
+msgid "You are already following <strong>%(account)s</strong>"
+msgstr "Você já está seguindo <strong>%(account)s</strong>"
+
+#: bookwyrm/templates/ostatus/error.html:63
+#, python-format
+msgid "You have already requested to follow <strong>%(account)s</strong>"
+msgstr "Você já pediu para seguir <strong>%(account)s</strong>"
+
+#: bookwyrm/templates/ostatus/remote_follow.html:6
+#, python-format
+msgid "Follow %(username)s on the fediverse"
+msgstr "Siga %(username)s no fediverso"
+
+#: bookwyrm/templates/ostatus/remote_follow.html:33
+#, python-format
+msgid "Follow %(username)s from another Fediverse account like BookWyrm, Mastodon, or Pleroma."
+msgstr "Siga %(username)s de outra conta no fediverso, como BookWyrm, Mastodon ou Pleroma."
+
+#: bookwyrm/templates/ostatus/remote_follow.html:40
+msgid "User handle to follow from:"
+msgstr "Seu nome de usuário:"
+
+#: bookwyrm/templates/ostatus/remote_follow.html:42
+msgid "Follow!"
+msgstr "Seguir!"
+
+#: bookwyrm/templates/ostatus/remote_follow_button.html:8
+msgid "Follow on Fediverse"
+msgstr "Seguir no fediverso"
+
+#: bookwyrm/templates/ostatus/remote_follow_button.html:12
+msgid "This link opens in a pop-up window"
+msgstr "Este link abrirá em uma janela pop-up"
+
+#: bookwyrm/templates/ostatus/subscribe.html:8
+#, python-format
+msgid "Log in to %(sitename)s"
+msgstr "Entrar em %(sitename)s"
+
+#: bookwyrm/templates/ostatus/subscribe.html:10
+#, python-format
+msgid "Error following from %(sitename)s"
+msgstr "Erro ao seguir de %(sitename)s"
+
+#: bookwyrm/templates/ostatus/subscribe.html:12
+#: bookwyrm/templates/ostatus/subscribe.html:22
+#, python-format
+msgid "Follow from %(sitename)s"
+msgstr "Seguir de %(sitename)s"
+
+#: bookwyrm/templates/ostatus/subscribe.html:18
+msgid "Uh oh..."
+msgstr "Ah não..."
+
+#: bookwyrm/templates/ostatus/subscribe.html:20
+msgid "Let's log in first..."
+msgstr "Vamos entrar primeiro..."
+
+#: bookwyrm/templates/ostatus/subscribe.html:51
+#, python-format
+msgid "Follow %(username)s"
+msgstr "Seguir %(username)s"
+
+#: bookwyrm/templates/ostatus/success.html:28
+#, python-format
+msgid "You are now following %(display_name)s!"
+msgstr "Agora você está seguindo %(display_name)s!"
+
 #: bookwyrm/templates/preferences/blocks.html:4
 #: bookwyrm/templates/preferences/blocks.html:7
 #: bookwyrm/templates/preferences/layout.html:31
@@ -2253,15 +2381,15 @@ msgstr "Privacidade"
 
 #: bookwyrm/templates/preferences/edit_user.html:69
 msgid "Show reading goal prompt in feed"
-msgstr "Mostrar sugestão de meta de leitura na linha de tempo"
+msgstr "Mostrar sugestão de meta de leitura na linha do tempo"
 
 #: bookwyrm/templates/preferences/edit_user.html:75
 msgid "Show suggested users"
-msgstr "Mostrar usuários sugeridos"
+msgstr "Mostrar sugestões de usuários"
 
 #: bookwyrm/templates/preferences/edit_user.html:81
 msgid "Show this account in suggested users"
-msgstr "Mostrar esta conta nos usuários sugeridos"
+msgstr "Mostrar conta nas sugestões de usuários"
 
 #: bookwyrm/templates/preferences/edit_user.html:85
 #, python-format
@@ -2274,7 +2402,7 @@ msgstr "Fuso horário preferido: "
 
 #: bookwyrm/templates/preferences/edit_user.html:111
 msgid "Manually approve followers"
-msgstr "Aprovar manualmente seguidores"
+msgstr "Aprovar seguidores manualmente"
 
 #: bookwyrm/templates/preferences/edit_user.html:116
 msgid "Default post privacy:"
@@ -2617,7 +2745,7 @@ msgid "Details"
 msgstr "Detalhes"
 
 #: bookwyrm/templates/settings/federation/instance.html:35
-#: bookwyrm/templates/user/layout.html:64
+#: bookwyrm/templates/user/layout.html:67
 msgid "Activity"
 msgstr "Atividade"
 
@@ -2695,7 +2823,7 @@ msgstr "Sucesso!"
 
 #: bookwyrm/templates/settings/federation/instance_blocklist.html:30
 msgid "Successfully blocked:"
-msgstr "Bloqueada co msucesso:"
+msgstr "Bloqueada com sucesso:"
 
 #: bookwyrm/templates/settings/federation/instance_blocklist.html:32
 msgid "Failed:"
@@ -3846,15 +3974,15 @@ msgstr "Criar grupo"
 msgid "User Profile"
 msgstr "Perfil do usuário"
 
-#: bookwyrm/templates/user/layout.html:45
+#: bookwyrm/templates/user/layout.html:48
 msgid "Follow Requests"
 msgstr "Solicitações para seguir"
 
-#: bookwyrm/templates/user/layout.html:70
+#: bookwyrm/templates/user/layout.html:73
 msgid "Reading Goal"
 msgstr "Meta de leitura"
 
-#: bookwyrm/templates/user/layout.html:76
+#: bookwyrm/templates/user/layout.html:79
 msgid "Groups"
 msgstr "Grupos"
 
