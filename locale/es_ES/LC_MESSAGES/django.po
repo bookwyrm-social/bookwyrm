@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-12-04 22:38+0000\n"
-"PO-Revision-Date: 2021-12-07 14:46\n"
+"PO-Revision-Date: 2021-12-07 15:47\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Spanish\n"
 "Language: es\n"
@@ -170,7 +170,7 @@ msgstr "Todo lo demás"
 
 #: bookwyrm/settings.py:118
 msgid "Home Timeline"
-msgstr "Línea temporal de hogar"
+msgstr "Línea de tiempo principal"
 
 #: bookwyrm/settings.py:118
 msgid "Home"
@@ -188,7 +188,7 @@ msgstr "Libros"
 
 #: bookwyrm/settings.py:165
 msgid "English"
-msgstr "Inglés"
+msgstr "English (Inglés)"
 
 #: bookwyrm/settings.py:166
 msgid "Deutsch (German)"
@@ -224,7 +224,7 @@ msgstr "繁體中文 (Chino tradicional)"
 
 #: bookwyrm/templates/404.html:4 bookwyrm/templates/404.html:8
 msgid "Not Found"
-msgstr "No encontrado"
+msgstr "No Encontrado"
 
 #: bookwyrm/templates/404.html:9
 msgid "The page you requested doesn't seem to exist!"
@@ -232,11 +232,11 @@ msgstr "¡Parece que la página solicitada no existe!"
 
 #: bookwyrm/templates/500.html:4
 msgid "Oops!"
-msgstr "¡Úps!"
+msgstr "¡Ups!"
 
 #: bookwyrm/templates/500.html:8
 msgid "Server Error"
-msgstr "Error de servidor"
+msgstr "Error del Servidor"
 
 #: bookwyrm/templates/500.html:9
 msgid "Something went wrong! Sorry about that."
@@ -444,7 +444,7 @@ msgstr "Has guardado esta edición en la estantería de:"
 #: bookwyrm/templates/book/book.html:173
 #, python-format
 msgid "A <a href=\"%(book_path)s\">different edition</a> of this book is on your <a href=\"%(shelf_path)s\">%(shelf_name)s</a> shelf."
-msgstr "Una <a href=\"%(book_path)s\">edición diferente</a> de este libro está en tu <a href=\"%(shelf_path)s\">%(shelf_name)s</a> estante."
+msgstr "Una <a href=\"%(book_path)s\">edición diferente</a> de este libro está en tu estantería <a href=\"%(shelf_path)s\">%(shelf_name)s</a>."
 
 #: bookwyrm/templates/book/book.html:184
 msgid "Your reading activity"
@@ -881,7 +881,7 @@ msgstr "Puedes optar por no en cualquier hora en tus <a href=\"%(path)s\">config
 #: bookwyrm/templates/feed/goal_card.html:17
 #: bookwyrm/templates/snippets/announcement.html:34
 msgid "Dismiss message"
-msgstr "Desechar mensaje"
+msgstr "Descartar mensaje"
 
 #: bookwyrm/templates/directory/sort_filter.html:5
 msgid "Order by"
@@ -889,7 +889,7 @@ msgstr "Ordenar por"
 
 #: bookwyrm/templates/directory/sort_filter.html:8
 msgid "Recently active"
-msgstr "Activo recientemente"
+msgstr "Activ@ recientemente"
 
 #: bookwyrm/templates/directory/sort_filter.html:9
 msgid "Suggested"
@@ -911,8 +911,8 @@ msgstr[1] "seguidores que tu sigues"
 #: bookwyrm/templates/directory/user_card.html:47
 msgid "book on your shelves"
 msgid_plural "books on your shelves"
-msgstr[0] "libro en tus estantes"
-msgstr[1] "libro en tus estantes"
+msgstr[0] "libro en tus estanterías"
+msgstr[1] "libros en tus estanterías"
 
 #: bookwyrm/templates/directory/user_card.html:55
 msgid "posts"
@@ -1027,7 +1027,7 @@ msgstr "Preferencia de correo electrónico"
 #: bookwyrm/templates/email/invite/subject.html:2
 #, python-format
 msgid "You're invited to join %(site_name)s!"
-msgstr "¡Estás invitado a unirse con %(site_name)s!"
+msgstr "¡Te han invitado a unirte a %(site_name)s!"
 
 #: bookwyrm/templates/email/invite/html_content.html:9
 msgid "Join Now"
@@ -1424,8 +1424,8 @@ msgstr[1] "%(mutuals)s seguidores que sigues"
 #, python-format
 msgid "%(shared_books)s book on your shelves"
 msgid_plural "%(shared_books)s books on your shelves"
-msgstr[0] "%(shared_books)s libro en tus estantes"
-msgstr[1] "%(shared_books)s libros en tus estantes"
+msgstr[0] "%(shared_books)s libro en tus estanterías"
+msgstr[1] "%(shared_books)s libros en tus estanterías"
 
 #: bookwyrm/templates/groups/suggested_users.html:40
 #, python-format
@@ -1875,7 +1875,7 @@ msgstr "Sugerido por"
 
 #: bookwyrm/templates/lists/curate.html:63
 msgid "Discard"
-msgstr "Desechar"
+msgstr "Descartar"
 
 #: bookwyrm/templates/lists/delete_list_modal.html:4
 msgid "Delete this list?"
@@ -3187,11 +3187,11 @@ msgstr "Nivel de acceso:"
 
 #: bookwyrm/templates/shelf/create_shelf_form.html:5
 msgid "Create Shelf"
-msgstr "Crear estante"
+msgstr "Crear Estantería"
 
 #: bookwyrm/templates/shelf/edit_shelf_form.html:5
 msgid "Edit Shelf"
-msgstr "Editar estante"
+msgstr "Editar Estantería"
 
 #: bookwyrm/templates/shelf/shelf.html:28 bookwyrm/views/shelf/shelf.py:53
 msgid "All books"
@@ -3199,7 +3199,7 @@ msgstr "Todos los libros"
 
 #: bookwyrm/templates/shelf/shelf.html:69
 msgid "Create shelf"
-msgstr "Crear estante"
+msgstr "Crear estantería"
 
 #: bookwyrm/templates/shelf/shelf.html:93
 #, python-format
@@ -3215,11 +3215,11 @@ msgstr "(mostrando %(start)s-%(end)s)"
 
 #: bookwyrm/templates/shelf/shelf.html:112
 msgid "Edit shelf"
-msgstr "Editar estante"
+msgstr "Editar estantería"
 
 #: bookwyrm/templates/shelf/shelf.html:120
 msgid "Delete shelf"
-msgstr "Eliminar estante"
+msgstr "Eliminar estantería"
 
 #: bookwyrm/templates/shelf/shelf.html:148
 #: bookwyrm/templates/shelf/shelf.html:174
@@ -3238,7 +3238,7 @@ msgstr "Terminado"
 
 #: bookwyrm/templates/shelf/shelf.html:206
 msgid "This shelf is empty."
-msgstr "Este estante está vacio."
+msgstr "Esta estantería está vacía."
 
 #: bookwyrm/templates/snippets/add_to_group_button.html:15
 msgid "Invite"
@@ -3346,7 +3346,7 @@ msgstr "Comentario:"
 #: bookwyrm/templates/snippets/privacy_select.html:20
 #: bookwyrm/templates/snippets/privacy_select_no_followers.html:17
 msgid "Private"
-msgstr "Privada"
+msgstr "Privado"
 
 #: bookwyrm/templates/snippets/create_status/post_options_block.html:21
 msgid "Post"
@@ -3493,7 +3493,7 @@ msgstr "Reseña de \"%(book_title)s\": %(review_title)s"
 #: bookwyrm/templates/snippets/goal_form.html:4
 #, python-format
 msgid "Set a goal for how many books you'll finish reading in %(year)s, and track your progress throughout the year."
-msgstr "Establece una meta para cuantos libros leerás en %(year)s, y seguir tu progreso durante el año."
+msgstr "Establece un objetivo de cuántos libros leerás en %(year)s, y sigue tu progreso a lo largo del año."
 
 #: bookwyrm/templates/snippets/goal_form.html:16
 msgid "Reading goal:"
@@ -3670,7 +3670,7 @@ msgstr "Eliminar de"
 
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_dropdown.html:5
 msgid "More shelves"
-msgstr "Más estantes"
+msgstr "Más estanterías"
 
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_dropdown_options.html:62
 #, python-format
