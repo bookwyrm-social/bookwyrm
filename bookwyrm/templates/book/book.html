@@ -90,11 +90,28 @@
                     </div>
                 {% endwith %}
 
+                {% trans "Load data" as button_text %}
                 {% if book.openlibrary_key %}
-                <p><a href="https://openlibrary.org/books/{{ book.openlibrary_key }}" target="_blank" rel="noopener">{% trans "View on OpenLibrary" %}</a></p>
+                <p>
+                    <a href="{{ book.openlibrary_link }}" target="_blank" rel="noopener">{% trans "View on OpenLibrary" %}</a>
+                    {% if request.user.is_authenticated and perms.bookwyrm.edit_book %}
+                    {% with controls_text="ol_sync" controls_uid=book.id %}
+                        {% include 'snippets/toggle/toggle_button.html' with text=button_text focus="modal_title_ol_sync" class="is-small" icon_with_text="download" %}
+                        {% include "book/sync_modal.html" with source="openlibrary.org" source_name="OpenLibrary" %}
+                    {% endwith %}
+                    {% endif %}
+                </p>
                 {% endif %}
                 {% if book.inventaire_id %}
-                <p><a href="https://inventaire.io/entity/{{ book.inventaire_id }}" target="_blank" rel="noopener">{% trans "View on Inventaire" %}</a></p>
+                <p>
+                    <a href="{{ book.inventaire_link }}" target="_blank" rel="noopener">{% trans "View on Inventaire" %}</a>
+                    {% if request.user.is_authenticated and perms.bookwyrm.edit_book %}
+                    {% with controls_text="iv_sync" controls_uid=book.id %}
+                        {% include 'snippets/toggle/toggle_button.html' with text=button_text focus="modal_title_iv_sync" class="is-small" icon_with_text="download" %}
+                        {% include "book/sync_modal.html" with source="inventaire.io" source_name="Inventaire" %}
+                    {% endwith %}
+                    {% endif %}
+                </p>
                 {% endif %}
             </section>
         </div>

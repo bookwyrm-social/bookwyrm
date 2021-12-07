@@ -5,7 +5,6 @@ from uuid import uuid4
 from django import template
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
-from django.template.defaultfilters import stringfilter
 from django.templatetags.static import static
 
 
@@ -98,10 +97,3 @@ def get_isni(existing, author, autoescape=True):
                 f'<input type="text" name="isni-for-{author.id}" value="{isni}" hidden>'
             )
     return ""
-
-
-@register.filter(name="remove_spaces")
-@stringfilter
-def remove_spaces(arg):
-    """Removes spaces from argument passed in"""
-    return re.sub(r"\s", "", str(arg))

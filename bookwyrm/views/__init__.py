@@ -29,6 +29,7 @@ from .preferences.block import Block, unblock
 
 # books
 from .books.books import Book, upload_cover, add_description, resolve_book
+from .books.books import update_book_from_remote
 from .books.edit_book import EditBook, ConfirmEditBook
 from .books.editions import Editions, switch_edition
 
@@ -54,7 +55,7 @@ from .imports.manually_review import (
 )
 
 # misc views
-from .author import Author, EditAuthor
+from .author import Author, EditAuthor, update_author_from_remote
 from .directory import Directory
 from .discover import Discover
 from .feed import DirectMessage, Feed, Replies, Status

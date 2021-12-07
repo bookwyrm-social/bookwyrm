@@ -148,3 +148,26 @@ class AuthorViews(TestCase):
         self.assertEqual(author.name, "Test Author")
         validate_html(resp.render())
         self.assertEqual(resp.status_code, 200)
+
+    def test_update_author_from_remote(self):
+        """call out to sync with remote connector"""
+        author = models.Author.objects.create(name="Test Author")
+        models.Connector.objects.create(
+            identifier="openlibrary.org",
+            name="OpenLibrary",
+            connector_file="openlibrary",
+            base_url="https://openlibrary.org",
+            books_url="https://openlibrary.org",
+            covers_url="https://covers.openlibrary.org",
+            search_url="https://openlibrary.org/search?q=",
+            isbn_search_url="https://openlibrary.org/isbn",
+        )
+        self.local_user.groups.add(self.group)
+        request = self.factory.post("")
+        request.user = self.local_user
+
+        with patch(
+            "bookwyrm.connectors.openlibrary.Connector.update_author_from_remote"
+        ) as mock:
+            views.update_author_from_remote(request, author.id, "openlibrary.org")
+        self.assertEqual(mock.call_count, 1)
