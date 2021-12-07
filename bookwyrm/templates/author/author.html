@@ -23,114 +23,128 @@
     </div>
 </div>
 
-<div class="block columns content" itemscope itemtype="https://schema.org/Person">
+<div class="block columns is-flex-direction-row-reverse" itemscope itemtype="https://schema.org/Person">
     <meta itemprop="name" content="{{ author.name }}">
+    {% if author.bio %}
+    <div class="column">
+        {% include "snippets/trimmed_text.html" with full=author.bio trim_length=200 %}
+    </div>
+    {% endif %}
 
-    {% if author.aliases or author.born or author.died or author.wikipedia_link or author.openlibrary_key or author.inventaire_id or author.isni %}
+    {% firstof author.aliases author.born author.died as details %}
+    {% firstof author.wikipedia_link author.openlibrary_key author.inventaire_id author.isni as links %}
+    {% if details or links %}
     <div class="column is-two-fifths">
-        <div class="box py-2">
-            <dl>
+        {% if details %}
+        <section class="block content">
+            <h2 class="title is-4">{% trans "Author details" %}</h2>
+            <dl class="box">
                 {% if author.aliases %}
-                <div class="is-flex is-flex-wrap-wrap my-1">
+                <div class="is-flex is-flex-wrap-wrap mr-1">
                     <dt class="has-text-weight-bold mr-1">{% trans "Aliases:" %}</dt>
-                    {% for alias in author.aliases %}
-                        <dd itemprop="alternateName" content="{{alias}}">
-                            {{alias}}{% if not forloop.last %},&nbsp;{% endif %}
-                        </dd>
-                    {% endfor %}
+                    <dd>
+                        {% include "snippets/trimmed_list.html" with items=author.aliases itemprop="alternateName" %}
+                    </dd>
                 </div>
                 {% endif %}
 
                 {% if author.born %}
-                <div class="is-flex my-1">
+                <div class="is-flex mt-1">
                     <dt class="has-text-weight-bold mr-1">{% trans "Born:" %}</dt>
                     <dd itemprop="birthDate">{{ author.born|naturalday }}</dd>
                 </div>
                 {% endif %}
 
                 {% if author.died %}
-                <div class="is-flex my-1">
+                <div class="is-flex mt-1">
                     <dt class="has-text-weight-bold mr-1">{% trans "Died:" %}</dt>
                     <dd itemprop="deathDate">{{ author.died|naturalday }}</dd>
                 </div>
                 {% endif %}
             </dl>
+        </section>
+        {% endif %}
 
-            {% if author.wikipedia_link %}
-            <p class="my-1">
-                <a itemprop="sameAs" href="{{ author.wikipedia_link }}" rel="noopener" target="_blank">
-                    {% trans "Wikipedia" %}
-                </a>
-            </p>
-            {% endif %}
-
-            {% if author.isni %}
-            <p class="my-1">
-            <a itemprop="sameAs" href="{{ author.isni_link }}" rel="noopener" target="_blank">
-                    {% trans "View ISNI record" %}
-                </a>
-            </p>
-            {% endif %}
-
-            {% if author.openlibrary_key %}
-            <p class="my-1">
-                <a itemprop="sameAs" href="{{ author.openlibrary_link }}" target="_blank" rel="noopener">
-                    {% trans "View on OpenLibrary" %}
-                </a>
-                {% if request.user.is_authenticated and perms.bookwyrm.edit_book %}
-                <form name="ol-update" method="POST" action="{% url 'author-update-remote' author.id 'openlibrary.org' %}">
-                    {% csrf_token %}
-                    <button class="button is-small" type="submit">{% trans "Update from OpenLibrary" %}</button>
-                </form>
+        {% if links %}
+        <section>
+            <h2 class="title is-4">{% trans "External links" %}</h2>
+            <div class="box">
+                {% if author.wikipedia_link %}
+                <p>
+                    <a itemprop="sameAs" href="{{ author.wikipedia_link }}" rel="noopener" target="_blank">
+                        {% trans "Wikipedia" %}
+                    </a>
+                </p>
                 {% endif %}
-            </p>
-            {% endif %}
 
-            {% if author.inventaire_id %}
-            <p class="my-1">
-                <a itemprop="sameAs" href="{{ author.inventaire_link }}" target="_blank" rel="noopener">
-                    {% trans "View on Inventaire" %}
-                </a>
-                {% if request.user.is_authenticated and perms.bookwyrm.edit_book %}
-                <form name="ol-update" method="POST" action="{% url 'author-update-remote' author.id 'inventaire.io' %}">
-                    {% csrf_token %}
-                    <button class="button is-small" type="submit">{% trans "Update from Inventaire" %}</button>
-                </form>
+                {% if author.isni %}
+                <p>
+                    <a itemprop="sameAs" href="{{ author.isni_link }}" rel="noopener" target="_blank">
+                        {% trans "View ISNI record" %}
+                    </a>
+                </p>
                 {% endif %}
-            </p>
-            {% endif %}
 
-            {% if author.librarything_key %}
-            <p class="my-1">
-                <a itemprop="sameAs" href="https://www.librarything.com/author/{{ author.librarything_key }}" target="_blank" rel="noopener">
-                    {% trans "View on LibraryThing" %}
-                </a>
-            </p>
-            {% endif %}
+                {% if author.openlibrary_key %}
+                <p>
+                    <a itemprop="sameAs" href="{{ author.openlibrary_link }}" target="_blank" rel="noopener">
+                        {% trans "View on OpenLibrary" %}
+                    </a>
+                    {% if request.user.is_authenticated and perms.bookwyrm.edit_book %}
+                    <form name="ol-update" method="POST" action="{% url 'author-update-remote' author.id 'openlibrary.org' %}">
+                        {% csrf_token %}
+                        <button class="button is-small" type="submit">{% trans "Update from OpenLibrary" %}</button>
+                    </form>
+                    {% endif %}
+                </p>
+                {% endif %}
 
-            {% if author.goodreads_key %}
-            <p class="my-1">
-                <a itemprop="sameAs" href="https://www.goodreads.com/author/show/{{ author.goodreads_key }}" target="_blank" rel="noopener">
-                    {% trans "View on Goodreads" %}
-                </a>
-            </p>
-            {% endif %}
-        </div>
-    </div>
-    {% endif %}
-    <div class="column">
-        {% if author.bio %}
-            {{ author.bio|to_markdown|safe }}
+                {% if author.inventaire_id %}
+                <p>
+                    <a itemprop="sameAs" href="{{ author.inventaire_link }}" target="_blank" rel="noopener">
+                        {% trans "View on Inventaire" %}
+                    </a>
+                    {% if request.user.is_authenticated and perms.bookwyrm.edit_book %}
+                    <form name="ol-update" method="POST" action="{% url 'author-update-remote' author.id 'inventaire.io' %}">
+                        {% csrf_token %}
+                        <button class="button is-small" type="submit">{% trans "Update from Inventaire" %}</button>
+                    </form>
+                    {% endif %}
+                </p>
+                {% endif %}
+
+                {% if author.librarything_key %}
+                <p>
+                    <a itemprop="sameAs" href="https://www.librarything.com/author/{{ author.librarything_key }}" target="_blank" rel="noopener">
+                        {% trans "View on LibraryThing" %}
+                    </a>
+                </p>
+                {% endif %}
+
+                {% if author.goodreads_key %}
+                <p>
+                    <a itemprop="sameAs" href="https://www.goodreads.com/author/show/{{ author.goodreads_key }}" target="_blank" rel="noopener">
+                        {% trans "View on Goodreads" %}
+                    </a>
+                </p>
+                {% endif %}
+            </div>
+        </section>
         {% endif %}
     </div>
+    {% endif %}
 </div>
 
+<hr aria-hidden="true">
+
 <div class="block">
-    <h3 class="title is-4">{% blocktrans with name=author.name %}Books by {{ name }}{% endblocktrans %}</h3>
+    <h2 class="title is-4">{% blocktrans with name=author.name %}Books by {{ name }}{% endblocktrans %}</h2>
     <div class="columns is-multiline is-mobile">
     {% for book in books %}
-        <div class="column is-one-fifth">
-            {% include 'landing/small-book.html' with book=book %}
+        <div class="column is-one-fifth-tablet is-half-mobile is-flex is-flex-direction-column">
+            <div class="is-flex-grow-1">
+                {% include 'landing/small-book.html' with book=book %}
+            </div>
             {% include 'snippets/shelve_button/shelve_button.html' with book=book %}
         </div>
     {% endfor %}
