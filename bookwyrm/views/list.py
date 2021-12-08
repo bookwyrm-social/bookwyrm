@@ -222,8 +222,6 @@ class EmbedList(View):
         if list_key != embed_key:
             raise Http404()
 
-        query = request.GET.get("q")
-
         # sort_by shall be "order" unless a valid alternative is given
         sort_by = request.GET.get("sort_by", "order")
         if sort_by not in ("order", "title", "rating"):
@@ -262,7 +260,6 @@ class EmbedList(View):
             "page_range": paginated.get_elided_page_range(
                 page.number, on_each_side=2, on_ends=1
             ),
-            "query": query or "",
         }
         return TemplateResponse(request, "lists/embed-list.html", data)
 
