@@ -1,0 +1,35 @@
+{% extends 'ostatus/template.html' %}
+{% load i18n %}
+{% load utilities %}
+
+{% block content %}
+<div class="block card">
+    <div class="card-content">
+        <div class="media">
+            <a href="{{ user.local_path }}" class="media-left">
+                {% include 'snippets/avatar.html' with user=user large=True %}
+            </a>
+            <div class="media-content">
+                <a href="{{ user.local_path }}" class="is-block mb-2">
+                    <span class="title is-4 is-block">
+                        {{ user.display_name }}
+                        {% if user.manually_approves_followers %}
+                        <span class="icon icon-lock is-size-7" title="{% trans 'Locked account' %}">
+                            <span class="is-sr-only">{% trans "Locked account" %}</span>
+                        </span>
+                        {% endif %}
+                    </span>
+                    <span class="subtitle is-7 is-block">@{{ user|username }}</span>
+                </a>
+            </div>
+        </div>
+        <p class="notification is-success">
+            <span class="icon icon-check m-0-mobile" aria-hidden="true"></span>
+            <span>{% blocktrans with display_name=user.display_name %}You are now following {{ display_name }}!{% endblocktrans %}</span>
+        </p>
+    </div>
+</div>
+<div class="block is-pulled-right">
+    <button type="button" class="button" onclick="closeWindow()">Close window</button>
+</div>
+{% endblock %}

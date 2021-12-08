@@ -29,6 +29,7 @@ from .preferences.block import Block, unblock
 
 # books
 from .books.books import Book, upload_cover, add_description, resolve_book
+from .books.books import update_book_from_remote
 from .books.edit_book import EditBook, ConfirmEditBook
 from .books.editions import Editions, switch_edition
 
@@ -54,11 +55,18 @@ from .imports.manually_review import (
 )
 
 # misc views
-from .author import Author, EditAuthor
+from .author import Author, EditAuthor, update_author_from_remote
 from .directory import Directory
 from .discover import Discover
 from .feed import DirectMessage, Feed, Replies, Status
-from .follow import follow, unfollow
+from .follow import (
+    follow,
+    unfollow,
+    ostatus_follow_request,
+    ostatus_follow_success,
+    remote_follow,
+    remote_follow_page,
+)
 from .follow import accept_follow_request, delete_follow_request
 from .get_started import GetStartedBooks, GetStartedProfile, GetStartedUsers
 from .goal import Goal, hide_goal

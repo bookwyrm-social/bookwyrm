@@ -33,8 +33,8 @@
                 {{ site_form.instance_description }}
             </div>
             <div class="field">
-                <label class="label mb-0" for="id_short_description">{% trans "Short description:" %}</label>
-                <p class="help">{% trans "Used when the instance is previewed on joinbookwyrm.com. Does not support HTML or Markdown." %}</p>
+                <label class="label mb-0" for="id_instance_short_description">{% trans "Short description:" %}</label>
+                <p class="help" id="desc_instance_short_description">{% trans "Used when the instance is previewed on joinbookwyrm.com. Does not support HTML or Markdown." %}</p>
                 {{ site_form.instance_short_description }}
             </div>
             <div class="field">
@@ -114,7 +114,7 @@
                     {{ site_form.require_confirm_email }}
                     {% trans "Require users to confirm email address" %}
                 </label>
-                <p class="help">{% trans "(Recommended if registration is open)" %}</p>
+                <p class="help" id="desc_require_confirm_email">{% trans "(Recommended if registration is open)" %}</p>
             </div>
             <div class="field">
                 <label class="label" for="id_registration_closed_text">{% trans "Registration closed text:" %}</label>
@@ -123,9 +123,8 @@
             <div class="field">
                 <label class="label" for="id_invite_request_text">{% trans "Invite request text:" %}</label>
                 {{ site_form.invite_request_text }}
-                {% for error in site_form.invite_request_text.errors %}
-                <p class="help is-danger">{{ error|escape }}</p>
-                {% endfor %}
+    
+                {% include 'snippets/form_errors.html' with errors_list=site_form.invite_request_text.errors id="desc_invite_request_text" %}
             </div>
         </div>
     </section>

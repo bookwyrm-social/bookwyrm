@@ -7,8 +7,8 @@
     <div class="column is-one-quarter">
         <div class="card is-stretchable">
             <header class="card-header">
-                <h4 class="card-header-title">
-                    <a href="{{ list.local_path }}">{{ list.name }}</a> <span class="subtitle">{% include 'snippets/privacy-icons.html' with item=list %}</span>
+                <h4 class="card-header-title is-clipped">
+                    <a href="{{ list.local_path }}" class="is-clipped">{{ list.name }}</a> <span class="subtitle">{% include 'snippets/privacy-icons.html' with item=list %}</span>
                 </h4>
                 {% if request.user.is_authenticated and request.user|saved:list %}
                 <div class="card-header-icon">

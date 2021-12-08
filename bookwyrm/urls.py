@@ -44,6 +44,7 @@ urlpatterns = [
     re_path(r"^api/v1/instance/?$", views.instance_info),
     re_path(r"^api/v1/instance/peers/?$", views.peers),
     re_path(r"^opensearch.xml$", views.opensearch, name="opensearch"),
+    re_path(r"^ostatus_subscribe/?$", views.ostatus_follow_request),
     # polling updates
     re_path("^api/updates/notifications/?$", views.get_notification_count),
     re_path("^api/updates/stream/(?P<stream>[a-z]+)/?$", views.get_unread_status_count),
@@ -427,13 +428,29 @@ urlpatterns = [
         r"^upload-cover/(?P<book_id>\d+)/?$", views.upload_cover, name="upload-cover"
     ),
     re_path(r"^add-description/(?P<book_id>\d+)/?$", views.add_description),
-    re_path(r"^resolve-book/?$", views.resolve_book),
-    re_path(r"^switch-edition/?$", views.switch_edition),
+    re_path(r"^resolve-book/?$", views.resolve_book, name="resolve-book"),
+    re_path(r"^switch-edition/?$", views.switch_edition, name="switch-edition"),
+    re_path(
+        rf"{BOOK_PATH}/update/(?P<connector_identifier>[\w\.]+)/?$",
+        views.update_book_from_remote,
+        name="book-update-remote",
+    ),
+    re_path(
+        r"^author/(?P<author_id>\d+)/update/(?P<connector_identifier>[\w\.]+)/?$",
+        views.update_author_from_remote,
+        name="author-update-remote",
+    ),
     # isbn
     re_path(r"^isbn/(?P<isbn>\d+)(.json)?/?$", views.Isbn.as_view()),
     # author
-    re_path(r"^author/(?P<author_id>\d+)(.json)?/?$", views.Author.as_view()),
-    re_path(r"^author/(?P<author_id>\d+)/edit/?$", views.EditAuthor.as_view()),
+    re_path(
+        r"^author/(?P<author_id>\d+)(.json)?/?$", views.Author.as_view(), name="author"
+    ),
+    re_path(
+        r"^author/(?P<author_id>\d+)/edit/?$",
+        views.EditAuthor.as_view(),
+        name="edit-author",
+    ),
     # reading progress
     re_path(r"^edit-readthrough/?$", views.edit_readthrough, name="edit-readthrough"),
     re_path(r"^delete-readthrough/?$", views.delete_readthrough),
@@ -455,4 +472,9 @@ urlpatterns = [
     re_path(r"^unfollow/?$", views.unfollow, name="unfollow"),
     re_path(r"^accept-follow-request/?$", views.accept_follow_request),
     re_path(r"^delete-follow-request/?$", views.delete_follow_request),
+    re_path(r"^ostatus_follow/?$", views.remote_follow, name="remote-follow"),
+    re_path(r"^remote_follow/?$", views.remote_follow_page, name="remote-follow-page"),
+    re_path(
+        r"^ostatus_success/?$", views.ostatus_follow_success, name="ostatus-success"
+    ),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

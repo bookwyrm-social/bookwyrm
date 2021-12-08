@@ -16,6 +16,13 @@ from bookwyrm.status import create_generated_note
 from bookwyrm.utils import regex
 
 
+# pylint: disable=unnecessary-pass
+class WebFingerError(Exception):
+    """empty error class for problems finding user information with webfinger"""
+
+    pass
+
+
 def get_user_from_username(viewer, username):
     """helper function to resolve a localname or a username to a user"""
     if viewer.is_authenticated and viewer.localname == username:
@@ -57,10 +64,8 @@ def handle_remote_webfinger(query):
     # usernames could be @user@domain or user@domain
     if not query:
         return None
-
     if query[0] == "@":
         query = query[1:]
-
     try:
         domain = query.split("@")[1]
     except IndexError:
@@ -84,6 +89,35 @@ def handle_remote_webfinger(query):
                 except (KeyError, activitypub.ActivitySerializerError):
                     return None
     return user
+
+
+def subscribe_remote_webfinger(query):
+    """get subscribe template from other servers"""
+    template = None
+    # usernames could be @user@domain or user@domain
+    if not query:
+        return WebFingerError("invalid_username")
+
+    if query[0] == "@":
+        query = query[1:]
+
+    try:
+        domain = query.split("@")[1]
+    except IndexError:
+        return WebFingerError("invalid_username")
+
+    url = f"https://{domain}/.well-known/webfinger?resource=acct:{query}"
+
+    try:
+        data = get_data(url)
+    except (ConnectorException, HTTPError):
+        return WebFingerError("user_not_found")
+
+    for link in data.get("links"):
+        if link.get("rel") == "http://ostatus.org/schema/1.0/subscribe":
+            template = link["template"]
+
+    return template
 
 
 def get_edition(book_id):

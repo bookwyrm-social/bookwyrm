@@ -11,6 +11,8 @@ from .connector_manager import ConnectorException
 class Connector(AbstractConnector):
     """instantiate a connector for inventaire"""
 
+    generated_remote_link_field = "inventaire_id"
+
     def __init__(self, identifier):
         super().__init__(identifier)
 
@@ -209,6 +211,11 @@ class Connector(AbstractConnector):
         except ConnectorException:
             return ""
         return data.get("extract")
+
+    def get_remote_id_from_model(self, obj):
+        """use get_remote_id to figure out the link from a model obj"""
+        remote_id_value = obj.inventaire_id
+        return self.get_remote_id(remote_id_value)
 
 
 def get_language_code(options, code="en"):

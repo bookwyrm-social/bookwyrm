@@ -209,6 +209,28 @@ class BookViews(TestCase):
         self.assertEqual(self.book.description, "new description hi")
         self.assertEqual(self.book.last_edited_by, self.local_user)
 
+    def test_update_book_from_remote(self):
+        """call out to sync with remote connector"""
+        models.Connector.objects.create(
+            identifier="openlibrary.org",
+            name="OpenLibrary",
+            connector_file="openlibrary",
+            base_url="https://openlibrary.org",
+            books_url="https://openlibrary.org",
+            covers_url="https://covers.openlibrary.org",
+            search_url="https://openlibrary.org/search?q=",
+            isbn_search_url="https://openlibrary.org/isbn",
+        )
+        self.local_user.groups.add(self.group)
+        request = self.factory.post("")
+        request.user = self.local_user
+
+        with patch(
+            "bookwyrm.connectors.openlibrary.Connector.update_book_from_remote"
+        ) as mock:
+            views.update_book_from_remote(request, self.book.id, "openlibrary.org")
+        self.assertEqual(mock.call_count, 1)
+
 
 def _setup_cover_url():
     """creates cover url mock"""
