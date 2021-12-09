@@ -337,6 +337,11 @@ urlpatterns = [
     ),
     re_path(r"^save-list/(?P<list_id>\d+)/?$", views.save_list, name="list-save"),
     re_path(r"^unsave-list/(?P<list_id>\d+)/?$", views.unsave_list, name="list-unsave"),
+    re_path(
+        r"^list/(?P<list_id>\d+)/embed/(?P<list_key>[0-9a-f]+)?$",
+        views.unsafe_embed_list,
+        name="embed-list",
+    ),
     # User books
     re_path(rf"{USER_PATH}/books/?$", views.Shelf.as_view(), name="user-shelves"),
     re_path(

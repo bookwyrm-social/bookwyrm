@@ -84,7 +84,7 @@ from .inbox import Inbox
 from .interaction import Favorite, Unfavorite, Boost, Unboost
 from .isbn import Isbn
 from .list import Lists, SavedLists, List, Curate, UserLists
-from .list import save_list, unsave_list, delete_list
+from .list import save_list, unsave_list, delete_list, unsafe_embed_list
 from .notifications import Notifications
 from .outbox import Outbox
 from .reading import create_readthrough, delete_readthrough, delete_progressupdate

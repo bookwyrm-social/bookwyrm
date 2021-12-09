@@ -3,6 +3,7 @@ import json
 from unittest.mock import patch
 
 from django.contrib.auth.models import AnonymousUser
+from django.http.response import Http404
 from django.template.response import TemplateResponse
 from django.test import TestCase
 from django.test.client import RequestFactory
@@ -385,3 +386,46 @@ class ListViews(TestCase):
 
         result = view(request, self.local_user.username)
         self.assertEqual(result.status_code, 302)
+
+    def test_embed_call_without_key(self):
+        """there are so many views, this just makes sure it DOESN’T load"""
+        view = views.unsafe_embed_list
+        request = self.factory.get("")
+        request.user = self.anonymous_user
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
+            models.ListItem.objects.create(
+                book_list=self.list,
+                user=self.local_user,
+                book=self.book,
+                approved=True,
+                order=1,
+            )
+
+        with patch("bookwyrm.views.list.is_api_request") as is_api:
+            is_api.return_value = False
+            with self.assertRaises(Http404):
+                result = view(request, self.list.id, "")
+
+    def test_embed_call_with_key(self):
+        """there are so many views, this just makes sure it LOADS"""
+        view = views.unsafe_embed_list
+        request = self.factory.get("")
+        request.user = self.anonymous_user
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
+            models.ListItem.objects.create(
+                book_list=self.list,
+                user=self.local_user,
+                book=self.book,
+                approved=True,
+                order=1,
+            )
+
+        embed_key = str(self.list.embed_key.hex)
+
+        with patch("bookwyrm.views.list.is_api_request") as is_api:
+            is_api.return_value = False
+            result = view(request, self.list.id, embed_key)
+
+        self.assertIsInstance(result, TemplateResponse)
+        result.render()
+        self.assertEqual(result.status_code, 200)
