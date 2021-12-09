@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-12-07 22:16+0000\n"
-"PO-Revision-Date: 2021-12-07 23:51\n"
+"POT-Creation-Date: 2021-12-08 15:40+0000\n"
+"PO-Revision-Date: 2021-12-09 18:56\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Chinese Simplified\n"
 "Language: zh\n"
@@ -1125,6 +1125,25 @@ msgstr "如果你没有请求重设密码，你可以忽略这封邮件。"
 msgid "Reset your %(site_name)s password"
 msgstr "重置你在 %(site_name)s 的密码"
 
+#: bookwyrm/templates/embed-layout.html:21 bookwyrm/templates/layout.html:37
+#, python-format
+msgid "%(site_name)s home page"
+msgstr ""
+
+#: bookwyrm/templates/embed-layout.html:34
+#: bookwyrm/templates/landing/about.html:7 bookwyrm/templates/layout.html:230
+#, python-format
+msgid "About %(site_name)s"
+msgstr "关于 %(site_name)s"
+
+#: bookwyrm/templates/embed-layout.html:40 bookwyrm/templates/layout.html:234
+msgid "Contact site admin"
+msgstr "联系站点管理员"
+
+#: bookwyrm/templates/embed-layout.html:46
+msgid "Join Bookwyrm"
+msgstr ""
+
 #: bookwyrm/templates/feed/direct_messages.html:8
 #, python-format
 msgid "Direct Messages with <a href=\"%(path)s\">%(username)s</a>"
@@ -1676,11 +1695,6 @@ msgstr "在此次导入后，BookWyrm 已经更新并修复了漏洞"
 msgid "Contact your admin or <a href='https://github.com/bookwyrm-social/bookwyrm/issues'>open an issue</a> if you are seeing unexpected failed items."
 msgstr "如果您看到意外失败的项目，请联系您的管理员或 <a href='https://github.com/bookwyrm-social/bookwyrm/issues'>发起一个 issue</a>。"
 
-#: bookwyrm/templates/landing/about.html:7 bookwyrm/templates/layout.html:230
-#, python-format
-msgid "About %(site_name)s"
-msgstr "关于 %(site_name)s"
-
 #: bookwyrm/templates/landing/about.html:10
 #: bookwyrm/templates/landing/about.html:20
 msgid "Code of Conduct"
@@ -1852,10 +1866,6 @@ msgstr "成功发布的状态"
 msgid "Error posting status"
 msgstr "发布状态时出错"
 
-#: bookwyrm/templates/layout.html:234
-msgid "Contact site admin"
-msgstr "联系站点管理员"
-
 #: bookwyrm/templates/layout.html:238
 msgid "Documentation"
 msgstr "文档"
@@ -1922,6 +1932,21 @@ msgstr "删除此列表？"
 msgid "Edit List"
 msgstr "编辑列表"
 
+#: bookwyrm/templates/lists/embed-list.html:7
+#, python-format
+msgid "%(list_name)s, a list by %(owner)s"
+msgstr ""
+
+#: bookwyrm/templates/lists/embed-list.html:17
+#, python-format
+msgid "on <a href=\"/\">%(site_name)s</a>"
+msgstr ""
+
+#: bookwyrm/templates/lists/embed-list.html:26
+#: bookwyrm/templates/lists/list.html:29
+msgid "This list is currently empty"
+msgstr "此列表当前是空的"
+
 #: bookwyrm/templates/lists/form.html:19
 msgid "List curation:"
 msgstr "列表策展:"
@@ -1987,10 +2012,6 @@ msgstr "你成功向该列表推荐了一本书！"
 msgid "You successfully added a book to this list!"
 msgstr "你成功向此列表添加了一本书！"
 
-#: bookwyrm/templates/lists/list.html:29
-msgid "This list is currently empty"
-msgstr "此列表当前是空的"
-
 #: bookwyrm/templates/lists/list.html:67
 #, python-format
 msgid "Added by <a href=\"%(user_path)s\">%(username)s</a>"
@@ -2042,6 +2063,23 @@ msgstr "没有符合 “%(query)s” 请求的书目"
 #: bookwyrm/templates/lists/list.html:182
 msgid "Suggest"
 msgstr "推荐"
+
+#: bookwyrm/templates/lists/list.html:191
+msgid "Embed this list on a website"
+msgstr ""
+
+#: bookwyrm/templates/lists/list.html:193
+msgid "Copy embed code"
+msgstr ""
+
+#: bookwyrm/templates/lists/list.html:193
+msgid "Copied!"
+msgstr ""
+
+#: bookwyrm/templates/lists/list.html:193
+#, python-format
+msgid "%(list_name)s, a list by %(owner)s on %(site_name)s"
+msgstr ""
 
 #: bookwyrm/templates/lists/list_items.html:15
 msgid "Saved"
