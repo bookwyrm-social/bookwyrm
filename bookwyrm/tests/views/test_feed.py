@@ -10,8 +10,7 @@ from django.template.response import TemplateResponse
 from django.test import TestCase
 from django.test.client import RequestFactory
 
-from bookwyrm import models
-from bookwyrm import views
+from bookwyrm import forms, models, views
 from bookwyrm.activitypub import ActivitypubResponse
 
 
@@ -19,6 +18,7 @@ from bookwyrm.activitypub import ActivitypubResponse
 @patch("bookwyrm.activitystreams.add_status_task.delay")
 @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
 @patch("bookwyrm.activitystreams.populate_stream_task.delay")
+@patch("bookwyrm.lists_stream.populate_lists_task.delay")
 @patch("bookwyrm.suggested_users.remove_user_task.delay")
 class FeedViews(TestCase):
     """activity feed, statuses, dms"""
@@ -28,7 +28,7 @@ class FeedViews(TestCase):
         self.factory = RequestFactory()
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
-        ):
+        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
             self.local_user = models.User.objects.create_user(
                 "mouse@local.com",
                 "mouse@mouse.mouse",
@@ -53,6 +53,25 @@ class FeedViews(TestCase):
         self.assertIsInstance(result, TemplateResponse)
         result.render()
         self.assertEqual(result.status_code, 200)
+
+    @patch("bookwyrm.suggested_users.SuggestedUsers.get_suggestions")
+    def test_save_feed_settings(self, *_):
+        """update display preferences"""
+        self.assertEqual(
+            self.local_user.feed_status_types,
+            ["review", "comment", "quotation", "everything"],
+        )
+        view = views.Feed.as_view()
+        form = forms.FeedStatusTypesForm(instance=self.local_user)
+        form.data["feed_status_types"] = "review"
+        request = self.factory.post("", form.data)
+        request.user = self.local_user
+
+        result = view(request, "home")
+
+        self.assertEqual(result.status_code, 200)
+        self.local_user.refresh_from_db()
+        self.assertEqual(self.local_user.feed_status_types, ["review"])
 
     def test_status_page(self, *_):
         """there are so many views, this just makes sure it LOADS"""
