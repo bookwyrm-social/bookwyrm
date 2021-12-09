@@ -178,3 +178,19 @@ def resolve_book(request):
     book = connector.get_or_create_book(remote_id)
 
     return redirect("book", book.id)
+
+
+@login_required
+@require_POST
+@permission_required("bookwyrm.edit_book", raise_exception=True)
+# pylint: disable=unused-argument
+def update_book_from_remote(request, book_id, connector_identifier):
+    """load the remote data for this book"""
+    connector = connector_manager.load_connector(
+        get_object_or_404(models.Connector, identifier=connector_identifier)
+    )
+    book = get_object_or_404(models.Book.objects.select_subclasses(), id=book_id)
+
+    connector.update_book_from_remote(book)
+
+    return redirect("book", book.id)

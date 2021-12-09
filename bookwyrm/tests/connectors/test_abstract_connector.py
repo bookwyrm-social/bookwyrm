@@ -40,6 +40,8 @@ class AbstractConnector(TestCase):
         class TestConnector(abstract_connector.AbstractConnector):
             """nothing added here"""
 
+            generated_remote_link_field = "openlibrary_link"
+
             def format_search_result(self, search_result):
                 return search_result
 
@@ -87,9 +89,7 @@ class AbstractConnector(TestCase):
     def test_get_or_create_book_existing(self):
         """find an existing book by remote/origin id"""
         self.assertEqual(models.Book.objects.count(), 1)
-        self.assertEqual(
-            self.book.remote_id, "https://%s/book/%d" % (DOMAIN, self.book.id)
-        )
+        self.assertEqual(self.book.remote_id, f"https://{DOMAIN}/book/{self.book.id}")
         self.assertEqual(self.book.origin_id, "https://example.com/book/1234")
 
         # dedupe by origin id
@@ -99,7 +99,7 @@ class AbstractConnector(TestCase):
 
         # dedupe by remote id
         result = self.connector.get_or_create_book(
-            "https://%s/book/%d" % (DOMAIN, self.book.id)
+            f"https://{DOMAIN}/book/{self.book.id}"
         )
         self.assertEqual(models.Book.objects.count(), 1)
         self.assertEqual(result, self.book)
@@ -119,7 +119,8 @@ class AbstractConnector(TestCase):
     @responses.activate
     def test_get_or_create_author(self):
         """load an author"""
-        self.connector.author_mappings = [  # pylint: disable=attribute-defined-outside-init  # pylint: disable=attribute-defined-outside-init
+        # pylint: disable=attribute-defined-outside-init
+        self.connector.author_mappings = [
             Mapping("id"),
             Mapping("name"),
         ]
@@ -139,3 +140,26 @@ class AbstractConnector(TestCase):
         author = models.Author.objects.create(name="Test Author")
         result = self.connector.get_or_create_author(author.remote_id)
         self.assertEqual(author, result)
+
+    @responses.activate
+    def test_update_author_from_remote(self):
+        """trigger the function that looks up the remote data"""
+        author = models.Author.objects.create(name="Test", openlibrary_key="OL123A")
+        # pylint: disable=attribute-defined-outside-init
+        self.connector.author_mappings = [
+            Mapping("id"),
+            Mapping("name"),
+            Mapping("isni"),
+        ]
+
+        responses.add(
+            responses.GET,
+            "https://openlibrary.org/authors/OL123A",
+            json={"id": "https://www.example.com/author", "name": "Beep", "isni": "hi"},
+        )
+
+        self.connector.update_author_from_remote(author)
+
+        author.refresh_from_db()
+        self.assertEqual(author.name, "Test")
+        self.assertEqual(author.isni, "hi")

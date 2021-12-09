@@ -20,16 +20,16 @@
     </div>
 
     <div class="field">
-        <input type="text" name="address" maxlength="255" class="input" required="" id="id_address" placeholder="190.0.2.0/24">
+        <input type="text" name="address" maxlength="255" class="input" required="" id="id_address" placeholder="190.0.2.0/24" aria-describedby="desc_address">
     </div>
 
-    {% for error in form.address.errors %}
-    <p class="help is-danger">{{ error | escape }}</p>
-    {% endfor %}
+    {% include 'snippets/form_errors.html' with errors_list=form.address.errors id="desc_address" %}
 
     <div class="field">
         <div class="control">
-            <button type="submit" class="button is-primary">{% trans "Add" %}</button>
+            <button type="submit" class="button is-primary">
+                {% trans "Add" %}
+            </button>
         </div>
     </div>
 </form>

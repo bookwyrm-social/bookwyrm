@@ -6,9 +6,11 @@ from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
 from django.views import View
+from django.views.decorators.http import require_POST
 
 from bookwyrm import forms, models
 from bookwyrm.activitypub import ActivitypubResponse
+from bookwyrm.connectors import connector_manager
 from bookwyrm.settings import PAGE_LENGTH
 from bookwyrm.views.helpers import is_api_request
 
@@ -73,3 +75,19 @@ class EditAuthor(View):
         author = form.save()
 
         return redirect(f"/author/{author.id}")
+
+
+@login_required
+@require_POST
+@permission_required("bookwyrm.edit_book", raise_exception=True)
+# pylint: disable=unused-argument
+def update_author_from_remote(request, author_id, connector_identifier):
+    """load the remote data for this author"""
+    connector = connector_manager.load_connector(
+        get_object_or_404(models.Connector, identifier=connector_identifier)
+    )
+    author = get_object_or_404(models.Author, id=author_id)
+
+    connector.update_author_from_remote(author)
+
+    return redirect("author", author.id)

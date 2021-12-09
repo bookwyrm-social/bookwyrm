@@ -22,4 +22,9 @@ def get_unread_status_count(request, stream="home"):
     stream = activitystreams.streams.get(stream)
     if not stream:
         return JsonResponse({})
-    return JsonResponse({"count": stream.get_unread_count(request.user)})
+    return JsonResponse(
+        {
+            "count": stream.get_unread_count(request.user),
+            "count_by_type": stream.get_unread_count_by_status_type(request.user),
+        }
+    )

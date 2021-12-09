@@ -186,6 +186,13 @@
             {% endfor %}
         {% endif %}
     {% endif %}
+        <div>
+            <h2 class="title is-5 mt-6" id="embed-label">
+                {% trans "Embed this list on a website" %}
+            </h2>
+            <textarea readonly class="textarea is-small" aria-labelledby="embed-label" data-copytext data-copytext-label="{% trans 'Copy embed code' %}" data-copytext-success="{% trans 'Copied!' %}"><iframe style="border-width:0;" id="bookwyrm_list_embed" width="400" height="600" title="{% blocktrans with list_name=list.name site_name=site.name owner=list.user.display_name %}{{ list_name }}, a list by {{owner}} on {{ site_name }}{% endblocktrans %}" src="{{ embed_url }}"></iframe></textarea>
+        </div>
+
     </section>
 </div>
 {% endblock %}

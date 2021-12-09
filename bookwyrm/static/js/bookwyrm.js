@@ -45,6 +45,13 @@ let BookWyrm = new class {
                 'change',
                 this.disableIfTooLarge.bind(this)
             ));
+        
+        document.querySelectorAll('[data-duplicate]')
+                .forEach(node => node.addEventListener(
+                    'click',
+                    this.duplicateInput.bind(this)
+            
+            ))
     }
 
     /**
@@ -58,6 +65,9 @@ let BookWyrm = new class {
                 .forEach(tabs => new TabGroup(tabs));
             document.querySelectorAll('input[type="file"]').forEach(
                 bookwyrm.disableIfTooLarge.bind(bookwyrm)
+            );
+            document.querySelectorAll('[data-copytext]').forEach(
+                bookwyrm.copyText.bind(bookwyrm)
             );
         });
     }
@@ -113,9 +123,44 @@ let BookWyrm = new class {
      * @return {undefined}
      */
     updateCountElement(counter, data) {
+        let count = data.count;
+        const count_by_type = data.count_by_type;
         const currentCount = counter.innerText;
-        const count = data.count;
         const hasMentions = data.has_mentions;
+        const allowedStatusTypesEl = document.getElementById('unread-notifications-wrapper');
+
+        // If we're on the right counter element
+        if (counter.closest('[data-poll-wrapper]').contains(allowedStatusTypesEl)) {
+            const allowedStatusTypes = JSON.parse(allowedStatusTypesEl.textContent);
+
+            // For keys in common between allowedStatusTypes and count_by_type
+            // This concerns 'review', 'quotation', 'comment'
+            count = allowedStatusTypes.reduce(function(prev, currentKey) {
+                const currentValue = count_by_type[currentKey] | 0;
+
+                return prev + currentValue;
+            }, 0);
+
+            // Add all the "other" in count_by_type if 'everything' is allowed
+            if (allowedStatusTypes.includes('everything')) {
+                // Clone count_by_type with 0 for reviews/quotations/comments
+                const count_by_everything_else = Object.assign(
+                    {},
+                    count_by_type,
+                    {review: 0, quotation: 0, comment: 0}
+                );
+
+                count = Object.keys(count_by_everything_else).reduce(
+                    function(prev, currentKey) {
+                        const currentValue =
+                            count_by_everything_else[currentKey] | 0
+
+                        return prev + currentValue;
+                    },
+                    count
+                );
+            }
+        }
 
         if (count != currentCount) {
             this.addRemoveClass(counter.closest('[data-poll-wrapper]'), 'is-hidden', count < 1);
@@ -367,5 +412,74 @@ let BookWyrm = new class {
                 sib => addRemoveClass(sib, 'is-hidden', true)
             );
         }
+    }
+
+    /**
+     * Display pop up window.
+     *
+     * @param {string} url Url to open
+     * @param {string} windowName windowName
+     * @return {undefined}
+     */
+    displayPopUp(url, windowName) {
+        window.open(
+            url,
+            windowName,
+            "left=100,top=100,width=430,height=600"
+        );
+    }
+
+    duplicateInput (event ) {
+        const trigger = event.currentTarget;
+        const input_id = trigger.dataset['duplicate']
+        const orig = document.getElementById(input_id);
+        const parent = orig.parentNode;
+        const new_count = parent.querySelectorAll("input").length + 1
+
+        let input = orig.cloneNode();
+
+        input.id += ("-" + (new_count))
+        input.value = ""
+
+        let label = parent.querySelector("label").cloneNode();
+
+        label.setAttribute("for", input.id)
+
+        parent.appendChild(label)
+        parent.appendChild(input)
+    }
+
+    /**
+     * Set up a "click-to-copy" component from a textarea element
+     * with `data-copytext`, `data-copytext-label`, `data-copytext-success`
+     * attributes.
+     *
+     * @param  {object}  node - DOM node of the text container
+     * @return {undefined}
+     */
+
+    copyText(textareaEl) {
+        const text = textareaEl.textContent;
+
+        const copyButtonEl = document.createElement('button');
+
+        copyButtonEl.textContent = textareaEl.dataset.copytextLabel;
+        copyButtonEl.classList.add(
+            "mt-2",
+            "button",
+            "is-small",
+            "is-fullwidth",
+            "is-primary",
+            "is-light"
+        );
+        copyButtonEl.addEventListener('click', () => {
+            navigator.clipboard.writeText(text).then(function() {
+                textareaEl.classList.add('is-success');
+                copyButtonEl.classList.replace('is-primary', 'is-success');
+                copyButtonEl.textContent = textareaEl.dataset.copytextSuccess;
+            });
+        });
+
+        textareaEl.parentNode.appendChild(copyButtonEl)
     }
 }();

@@ -1,6 +1,7 @@
 """ testing models """
 from unittest.mock import patch
 from django.test import TestCase
+from uuid import UUID
 
 from bookwyrm import models, settings
 
@@ -80,3 +81,12 @@ class List(TestCase):
         self.assertEqual(item.book_list.privacy, "public")
         self.assertEqual(item.privacy, "direct")
         self.assertEqual(item.recipients, [])
+
+    def test_embed_key(self, _):
+        """embed_key should never be empty"""
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
+            book_list = models.List.objects.create(
+                name="Test List", user=self.local_user
+            )
+
+        self.assertIsInstance(book_list.embed_key, UUID)

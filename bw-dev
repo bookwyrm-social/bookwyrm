@@ -108,6 +108,19 @@ case "$CMD" in
     compilemessages)
         runweb django-admin compilemessages --ignore venv $@
         ;;
+    update_locales)
+        git fetch origin l10n_main:l10n_main
+        git checkout l10n_main locale/de_DE
+        git checkout l10n_main locale/es_ES
+        git checkout l10n_main locale/fr_FR
+        git checkout l10n_main locale/gl_ES
+        git checkout l10n_main locale/lt_LT
+        git checkout l10n_main locale/pt_BR
+        git checkout l10n_main locale/zh_Hans
+        git checkout l10n_main locale/zh_Hant
+        runweb django-admin makemessages --no-wrap --ignore=venv -l en_US $@
+        runweb django-admin compilemessages --ignore venv
+        ;;
     build)
         docker-compose build
         ;;
@@ -165,6 +178,7 @@ case "$CMD" in
         echo "    collectstatic"
         echo "    makemessages"
         echo "    compilemessages [locale]"
+        echo "    update_locales"
         echo "    build"
         echo "    clean"
         echo "    black"

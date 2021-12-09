@@ -14,7 +14,7 @@ VERSION = "0.1.0"
 PAGE_LENGTH = env("PAGE_LENGTH", 15)
 DEFAULT_LANGUAGE = env("DEFAULT_LANGUAGE", "English")
 
-JS_CACHE = "3eb4edb1"
+JS_CACHE = "3891b373"
 
 # email
 EMAIL_BACKEND = env("EMAIL_BACKEND", "django.core.mail.backends.smtp.EmailBackend")
@@ -165,8 +165,9 @@ LANGUAGES = [
     ("en-us", _("English")),
     ("de-de", _("Deutsch (German)")),
     ("es-es", _("Español (Spanish)")),
+    ("gl-es", _("Galego (Galician)")),
     ("fr-fr", _("Français (French)")),
-    ("lt-lt", _("lietuvių (Lithuanian)")),
+    ("lt-lt", _("Lietuvių (Lithuanian)")),
     ("pt-br", _("Português - Brasil (Brazilian Portuguese)")),
     ("zh-hans", _("简体中文 (Simplified Chinese)")),
     ("zh-hant", _("繁體中文 (Traditional Chinese)")),
