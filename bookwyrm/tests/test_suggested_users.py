@@ -13,6 +13,7 @@ from bookwyrm.suggested_users import suggested_users, get_annotated_users
 @patch("bookwyrm.activitystreams.add_status_task.delay")
 @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
 @patch("bookwyrm.activitystreams.populate_stream_task.delay")
+@patch("bookwyrm.lists_stream.populate_lists_task.delay")
 @patch("bookwyrm.activitystreams.add_book_statuses_task.delay")
 @patch("bookwyrm.suggested_users.rerank_user_task.delay")
 @patch("bookwyrm.suggested_users.remove_user_task.delay")
@@ -23,7 +24,7 @@ class SuggestedUsers(TestCase):
         """use a test csv"""
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
-        ):
+        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
             self.local_user = models.User.objects.create_user(
                 "mouse", "mouse@mouse.mouse", "password", local=True, localname="mouse"
             )

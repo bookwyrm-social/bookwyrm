@@ -39,19 +39,19 @@ class Signature(TestCase):
         """create users and test data"""
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
-        ):
+        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
             self.mouse = models.User.objects.create_user(
-                "mouse@%s" % DOMAIN,
+                f"mouse@{DOMAIN}",
                 "mouse@example.com",
                 "",
                 local=True,
                 localname="mouse",
             )
             self.rat = models.User.objects.create_user(
-                "rat@%s" % DOMAIN, "rat@example.com", "", local=True, localname="rat"
+                f"rat@{DOMAIN}", "rat@example.com", "", local=True, localname="rat"
             )
             self.cat = models.User.objects.create_user(
-                "cat@%s" % DOMAIN, "cat@example.com", "", local=True, localname="cat"
+                f"cat@{DOMAIN}", "cat@example.com", "", local=True, localname="cat"
             )
 
         private_key, public_key = create_key_pair()
@@ -75,7 +75,7 @@ class Signature(TestCase):
                 "HTTP_DIGEST": digest,
                 "HTTP_CONTENT_TYPE": "application/activity+json; charset=utf-8",
                 "HTTP_HOST": DOMAIN,
-            }
+            },
         )
 
     def send_test_request(  # pylint: disable=too-many-arguments
