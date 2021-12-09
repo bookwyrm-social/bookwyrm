@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-12-07 22:16+0000\n"
-"PO-Revision-Date: 2021-12-08 12:19\n"
+"POT-Creation-Date: 2021-12-08 15:40+0000\n"
+"PO-Revision-Date: 2021-12-09 18:56\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Spanish\n"
 "Language: es\n"
@@ -1128,6 +1128,25 @@ msgstr "Si no solicitaste reestablecer tu contraseña, puedes ignorar este mensa
 msgid "Reset your %(site_name)s password"
 msgstr "Reestablece tu contraseña de %(site_name)s"
 
+#: bookwyrm/templates/embed-layout.html:21 bookwyrm/templates/layout.html:37
+#, python-format
+msgid "%(site_name)s home page"
+msgstr ""
+
+#: bookwyrm/templates/embed-layout.html:34
+#: bookwyrm/templates/landing/about.html:7 bookwyrm/templates/layout.html:230
+#, python-format
+msgid "About %(site_name)s"
+msgstr "Sobre %(site_name)s"
+
+#: bookwyrm/templates/embed-layout.html:40 bookwyrm/templates/layout.html:234
+msgid "Contact site admin"
+msgstr "Comuníquese con el administrador del sitio"
+
+#: bookwyrm/templates/embed-layout.html:46
+msgid "Join Bookwyrm"
+msgstr ""
+
 #: bookwyrm/templates/feed/direct_messages.html:8
 #, python-format
 msgid "Direct Messages with <a href=\"%(path)s\">%(username)s</a>"
@@ -1683,11 +1702,6 @@ msgstr "BookWyrm ha sido actualizado con posterioridad a esta importación con u
 msgid "Contact your admin or <a href='https://github.com/bookwyrm-social/bookwyrm/issues'>open an issue</a> if you are seeing unexpected failed items."
 msgstr "Póngase en contacto con su administrador o <a href='https://github.com/bookwyrm-social/bookwyrm/issues'>cree una propuesta</a> si está viendo elementos fallidos inesperados."
 
-#: bookwyrm/templates/landing/about.html:7 bookwyrm/templates/layout.html:230
-#, python-format
-msgid "About %(site_name)s"
-msgstr "Sobre %(site_name)s"
-
 #: bookwyrm/templates/landing/about.html:10
 #: bookwyrm/templates/landing/about.html:20
 msgid "Code of Conduct"
@@ -1859,10 +1873,6 @@ msgstr "Estado publicado con éxito"
 msgid "Error posting status"
 msgstr "Error al publicar el estado"
 
-#: bookwyrm/templates/layout.html:234
-msgid "Contact site admin"
-msgstr "Comuníquese con el administrador del sitio"
-
 #: bookwyrm/templates/layout.html:238
 msgid "Documentation"
 msgstr "Documentación de Django"
@@ -1929,6 +1939,21 @@ msgstr "¿Eliminar esta lista?"
 msgid "Edit List"
 msgstr "Editar lista"
 
+#: bookwyrm/templates/lists/embed-list.html:7
+#, python-format
+msgid "%(list_name)s, a list by %(owner)s"
+msgstr ""
+
+#: bookwyrm/templates/lists/embed-list.html:17
+#, python-format
+msgid "on <a href=\"/\">%(site_name)s</a>"
+msgstr ""
+
+#: bookwyrm/templates/lists/embed-list.html:26
+#: bookwyrm/templates/lists/list.html:29
+msgid "This list is currently empty"
+msgstr "Esta lista está vacia"
+
 #: bookwyrm/templates/lists/form.html:19
 msgid "List curation:"
 msgstr "Enumerar lista de comisariado:"
@@ -1994,10 +2019,6 @@ msgstr "¡Has sugerido un libro para esta lista exitosamente!"
 msgid "You successfully added a book to this list!"
 msgstr "¡Has agregado un libro a esta lista exitosamente!"
 
-#: bookwyrm/templates/lists/list.html:29
-msgid "This list is currently empty"
-msgstr "Esta lista está vacia"
-
 #: bookwyrm/templates/lists/list.html:67
 #, python-format
 msgid "Added by <a href=\"%(user_path)s\">%(username)s</a>"
@@ -2049,6 +2070,23 @@ msgstr "No se encontró ningún libro correspondiente a la búsqueda: \"%(query)
 #: bookwyrm/templates/lists/list.html:182
 msgid "Suggest"
 msgstr "Sugerir"
+
+#: bookwyrm/templates/lists/list.html:191
+msgid "Embed this list on a website"
+msgstr ""
+
+#: bookwyrm/templates/lists/list.html:193
+msgid "Copy embed code"
+msgstr ""
+
+#: bookwyrm/templates/lists/list.html:193
+msgid "Copied!"
+msgstr ""
+
+#: bookwyrm/templates/lists/list.html:193
+#, python-format
+msgid "%(list_name)s, a list by %(owner)s on %(site_name)s"
+msgstr ""
 
 #: bookwyrm/templates/lists/list_items.html:15
 msgid "Saved"
