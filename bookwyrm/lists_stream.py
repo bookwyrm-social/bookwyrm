@@ -9,7 +9,7 @@ from bookwyrm.tasks import app, MEDIUM, HIGH
 
 
 class ListsStream(RedisStore):
-    """a category of activity stream (like home, local, books)"""
+    """all the lists you can see"""
 
     def stream_id(self, user):  # pylint: disable=no-self-use
         """the redis key for this user's instance of this stream"""
@@ -122,9 +122,7 @@ def add_lists_on_follow(sender, instance, created, *args, **kwargs):
     """add a newly followed user's lists to feeds"""
     if not created or not instance.user_subject.local:
         return
-    add_user_lists_task.delay(
-        instance.user_subject.id, instance.user_object.id, stream_list=["home"]
-    )
+    add_user_lists_task.delay(instance.user_subject.id, instance.user_object.id)
 
 
 @receiver(signals.post_delete, sender=models.UserFollows)
@@ -133,9 +131,7 @@ def remove_lists_on_unfollow(sender, instance, *args, **kwargs):
     """remove lists from a feed on unfollow"""
     if not instance.user_subject.local:
         return
-    remove_user_lists_task.delay(
-        instance.user_subject.id, instance.user_object.id, stream_list=["home"]
-    )
+    remove_user_lists_task.delay(instance.user_subject.id, instance.user_object.id)
 
 
 @receiver(signals.post_save, sender=models.UserBlocks)
