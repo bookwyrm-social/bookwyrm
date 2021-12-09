@@ -15,7 +15,7 @@ class InboxActivities(TestCase):
         """basic user and book data"""
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
-        ):
+        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
             self.local_user = models.User.objects.create_user(
                 "mouse@example.com",
                 "mouse@mouse.com",
@@ -51,7 +51,7 @@ class InboxActivities(TestCase):
             "type": "Delete",
             "to": ["https://www.w3.org/ns/activitystreams#Public"],
             "cc": ["https://example.com/user/mouse/followers"],
-            "id": "%s/activity" % self.status.remote_id,
+            "id": f"{self.status.remote_id}/activity",
             "actor": self.remote_user.remote_id,
             "object": {"id": self.status.remote_id, "type": "Tombstone"},
         }
@@ -80,7 +80,7 @@ class InboxActivities(TestCase):
             "type": "Delete",
             "to": ["https://www.w3.org/ns/activitystreams#Public"],
             "cc": ["https://example.com/user/mouse/followers"],
-            "id": "%s/activity" % self.status.remote_id,
+            "id": f"{self.status.remote_id}/activity",
             "actor": self.remote_user.remote_id,
             "object": {"id": self.status.remote_id, "type": "Tombstone"},
         }
@@ -152,5 +152,7 @@ class InboxActivities(TestCase):
                 "cc": [],
             },
         }
-        views.inbox.activity_task(activity)
+        with patch("bookwyrm.lists_stream.remove_list_task.delay") as mock:
+            views.inbox.activity_task(activity)
+        self.assertTrue(mock.called)
         self.assertFalse(models.List.objects.exists())
