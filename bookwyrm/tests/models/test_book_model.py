@@ -42,7 +42,6 @@ class Book(TestCase):
         )
         self.assertEqual(book.openlibrary_link, "https://openlibrary.org/books/OL123M")
         self.assertEqual(book.inventaire_link, "https://inventaire.io/entity/isbn:123")
-        self.assertIsInstance(book.cover_bw_book_xsmall_webp, ImageSpecField)
 
     def test_create_book_invalid(self):
         """you shouldn't be able to create Books (only editions and works)"""
