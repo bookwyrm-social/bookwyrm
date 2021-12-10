@@ -256,18 +256,13 @@ def remove_member(request):
 @login_required
 def accept_membership(request):
     """accept an invitation to join a group"""
-
-    group = models.Group.objects.get(id=request.POST["group"])
-    if not group:
-        return HttpResponseBadRequest()
-
-    invite = models.GroupMemberInvitation.objects.get(group=group, user=request.user)
-    if not invite:
-        return HttpResponseBadRequest()
+    group = get_object_or_404(models.Group, id=request.POST.get("group"))
+    invite = get_object_or_404(
+        models.GroupMemberInvitation, group=group, user=request.user
+    )
 
     try:
         invite.accept()
-
     except IntegrityError:
         pass
 
@@ -278,19 +273,10 @@ def accept_membership(request):
 @login_required
 def reject_membership(request):
     """reject an invitation to join a group"""
+    group = get_object_or_404(models.Group, id=request.POST.get("group"))
+    invite = get_object_or_404(
+        models.GroupMemberInvitation, group=group, user=request.user
+    )
 
-    group = models.Group.objects.get(id=request.POST["group"])
-    if not group:
-        return HttpResponseBadRequest()
-
-    invite = models.GroupMemberInvitation.objects.get(group=group, user=request.user)
-    if not invite:
-        return HttpResponseBadRequest()
-
-    try:
-        invite.reject()
-
-    except IntegrityError:
-        pass
-
+    invite.reject()
     return redirect(request.user.local_path)
