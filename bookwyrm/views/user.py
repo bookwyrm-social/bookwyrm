@@ -34,11 +34,9 @@ class User(View):
         shelves = user.shelf_set
         is_self = request.user.id == user.id
         if not is_self:
-            follower = user.followers.filter(id=request.user.id).exists()
-            if follower:
-                shelves = shelves.filter(privacy__in=["public", "followers"])
-            else:
-                shelves = shelves.filter(privacy="public")
+            shelves = models.Shelf.privacy_filter(
+                request.user, privacy_levels=["public", "followers"]
+            ).filter(user=user)
 
         for user_shelf in shelves.all():
             if not user_shelf.books.count():
@@ -144,25 +142,6 @@ def annotate_if_follows(user, queryset):
     return queryset.annotate(
         request_user_follows=Count("followers", filter=Q(followers=user))
     ).order_by("-request_user_follows", "-created_date")
-
-
-class Groups(View):
-    """list of user's groups view"""
-
-    def get(self, request, username):
-        """list of groups"""
-        user = get_user_from_username(request.user, username)
-
-        paginated = Paginator(
-            models.Group.memberships.filter(user=user).order_by("-created_date"),
-            PAGE_LENGTH,
-        )
-        data = {
-            "user": user,
-            "is_self": request.user.id == user.id,
-            "group_list": paginated.get_page(request.GET.get("page")),
-        }
-        return TemplateResponse(request, "user/groups.html", data)
 
 
 @require_POST
