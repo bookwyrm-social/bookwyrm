@@ -229,3 +229,30 @@ class GroupViews(TestCase):
         self.assertEqual(notification.user, self.rat)
         self.assertEqual(notification.related_group, self.testgroup)
         self.assertEqual(notification.notification_type, "REMOVE")
+
+    def test_accept_membership(self, _):
+        """accept an invite"""
+        models.GroupMemberInvitation.objects.create(
+            user=self.rat,
+            group=self.testgroup,
+        )
+        request = self.factory.post("", {"group": self.testgroup.id})
+        request.user = self.rat
+        views.accept_membership(request)
+
+        self.assertFalse(models.GroupMemberInvitation.objects.exists())
+        self.assertTrue(self.rat in [m.user for m in self.testgroup.memberships.all()])
+
+    def test_reject_membership(self, _):
+        """reject an invite"""
+        models.GroupMemberInvitation.objects.create(
+            user=self.rat,
+            group=self.testgroup,
+        )
+        request = self.factory.post("", {"group": self.testgroup.id})
+        request.user = self.rat
+        views.reject_membership(request)
+
+        self.testgroup.refresh_from_db()
+        self.assertFalse(models.GroupMemberInvitation.objects.exists())
+        self.assertFalse(self.rat in [m.user for m in self.testgroup.memberships.all()])
