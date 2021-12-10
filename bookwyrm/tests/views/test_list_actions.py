@@ -551,12 +551,7 @@ class ListActionViews(TestCase):
             )
         self.assertTrue(self.list.listitem_set.exists())
 
-        request = self.factory.post(
-            "",
-            {
-                "item": item.id,
-            },
-        )
+        request = self.factory.post("", {"item": item.id})
         request.user = self.local_user
 
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
@@ -570,14 +565,22 @@ class ListActionViews(TestCase):
                 book_list=self.list, user=self.local_user, book=self.book, order=1
             )
         self.assertTrue(self.list.listitem_set.exists())
-        request = self.factory.post(
-            "",
-            {
-                "item": item.id,
-            },
-        )
+        request = self.factory.post("", {"item": item.id})
         request.user = self.rat
 
         with self.assertRaises(PermissionDenied):
             views.list.remove_book(request, self.list.id)
         self.assertTrue(self.list.listitem_set.exists())
+
+    def test_save_unsave_list(self):
+        """bookmark a list"""
+        self.assertFalse(self.local_user.saved_lists.exists())
+        request = self.factory.post("")
+        request.user = self.local_user
+        views.save_list(request, self.list.id)
+        self.local_user.refresh_from_db()
+        self.assertEqual(self.local_user.saved_lists.first(), self.list)
+
+        views.unsave_list(request, self.list.id)
+        self.local_user.refresh_from_db()
+        self.assertFalse(self.local_user.saved_lists.exists())

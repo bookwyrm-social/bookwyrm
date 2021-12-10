@@ -49,8 +49,6 @@ class Activitystreams(TestCase):
 
     def test_populate_streams(self, *_):
         """make sure the function on the redis manager gets called"""
-        with patch(
-            "bookwyrm.lists_stream.populate_lists_task.delay"
-        ) as list_mock:
+        with patch("bookwyrm.lists_stream.populate_lists_task.delay") as list_mock:
             populate_lists_streams()
         self.assertEqual(list_mock.call_count, 2)  # 2 users
