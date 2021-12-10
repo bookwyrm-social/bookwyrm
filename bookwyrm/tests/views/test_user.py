@@ -107,7 +107,6 @@ class UserViews(TestCase):
             is_api.return_value = True
             result = view(request, "mouse")
         self.assertIsInstance(result, ActivitypubResponse)
-        validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
     def test_followers_page_anonymous(self):
