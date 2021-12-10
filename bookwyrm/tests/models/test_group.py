@@ -2,7 +2,7 @@
 from unittest.mock import patch
 from django.test import TestCase
 
-from bookwyrm import models
+from bookwyrm import models, settings
 
 
 @patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
@@ -19,16 +19,10 @@ class Group(TestCase):
                 "mouse", "mouse@mouse.mouse", "mouseword", local=True, localname="mouse"
             )
 
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
             self.rat = models.User.objects.create_user(
                 "rat", "rat@rat.rat", "ratword", local=True, localname="rat"
             )
 
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
             self.badger = models.User.objects.create_user(
                 "badger",
                 "badger@badger.badger",
@@ -37,9 +31,6 @@ class Group(TestCase):
                 localname="badger",
             )
 
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
             self.capybara = models.User.objects.create_user(
                 "capybara",
                 "capybara@capybara.capybara",
@@ -76,8 +67,7 @@ class Group(TestCase):
         models.GroupMember.objects.create(group=self.public_group, user=self.capybara)
 
     def test_group_members_can_see_private_groups(self, _):
-        """direct privacy group should not be excluded from group listings for group
-        members viewing"""
+        """direct privacy group should not be excluded from group listings for group members viewing"""
 
         rat_groups = models.Group.privacy_filter(self.rat).all()
         badger_groups = models.Group.privacy_filter(self.badger).all()
@@ -86,8 +76,7 @@ class Group(TestCase):
         self.assertTrue(self.private_group in badger_groups)
 
     def test_group_members_can_see_followers_only_lists(self, _):
-        """follower-only group booklists should not be excluded from group booklist
-        listing for group members who do not follower list owner"""
+        """follower-only group booklists should not be excluded from group booklist listing for group members who do not follower list owner"""
 
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             followers_list = models.List.objects.create(
@@ -107,8 +96,7 @@ class Group(TestCase):
         self.assertTrue(followers_list in capybara_lists)
 
     def test_group_members_can_see_private_lists(self, _):
-        """private group booklists should not be excluded from group booklist listing
-        for group members"""
+        """private group booklists should not be excluded from group booklist listing for group members"""
 
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
 
