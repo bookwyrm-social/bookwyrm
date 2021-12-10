@@ -103,6 +103,13 @@ class UserViews(TestCase):
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
+        with patch("bookwyrm.views.user.is_api_request") as is_api:
+            is_api.return_value = True
+            result = view(request, "mouse")
+        self.assertIsInstance(result, ActivitypubResponse)
+        validate_html(result.render())
+        self.assertEqual(result.status_code, 200)
+
     def test_followers_page_anonymous(self):
         """there are so many views, this just makes sure it LOADS"""
         view = views.Followers.as_view()
