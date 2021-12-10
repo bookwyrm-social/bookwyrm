@@ -13,7 +13,7 @@ def populate_lists_streams():
     print("This may take a long time! Please be patient.")
     for user in users:
         print(".", end="")
-        lists_stream.populate_lists_stream_task.delay(user.id)
+        lists_stream.populate_lists_task.delay(user.id)
 
 
 class Command(BaseCommand):

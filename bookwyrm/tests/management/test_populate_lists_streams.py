@@ -7,6 +7,8 @@ from bookwyrm.management.commands.populate_lists_streams import populate_lists_s
 
 
 @patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
+@patch("bookwyrm.activitystreams.add_status_task.delay")
+@patch("bookwyrm.activitystreams.populate_stream_task.delay")
 class Activitystreams(TestCase):
     """using redis to build activity streams"""
 
@@ -45,10 +47,10 @@ class Activitystreams(TestCase):
             )
         self.book = models.Edition.objects.create(title="test book")
 
-    def test_populate_streams(self, _):
+    def test_populate_streams(self, *_):
         """make sure the function on the redis manager gets called"""
         with patch(
-            "bookwyrm.lists_stream.populate_lists_stream_task.delay"
+            "bookwyrm.lists_stream.populate_lists_task.delay"
         ) as list_mock:
             populate_lists_streams()
         self.assertEqual(list_mock.call_count, 2)  # 2 users

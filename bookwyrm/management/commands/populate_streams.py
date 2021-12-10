@@ -14,7 +14,7 @@ def populate_streams(stream=None):
     print("This may take a long time! Please be patient.")
     for user in users:
         print(".", end="")
-        lists_stream.populate_lists_stream_task.delay(user.id)
+        lists_stream.populate_lists_task.delay(user.id)
         for stream_key in streams:
             print(".", end="")
             activitystreams.populate_stream_task.delay(stream_key, user.id)
