@@ -176,7 +176,7 @@ class UserViews(TestCase):
         request.user = self.local_user
 
         result = views.hide_suggestions(request)
-        validate_html(result.render())
+        self.assertEqual(result.status_code, 302)
 
         self.local_user.refresh_from_db()
         self.assertFalse(self.local_user.show_suggested_users)
