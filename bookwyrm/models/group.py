@@ -73,7 +73,7 @@ class GroupMember(models.Model):
             )
         ).exists():
             raise IntegrityError()
-        # accepts and requests are handled by the GroupInvitation model
+        # accepts and requests are handled by the GroupMemberInvitation model
         super().save(*args, **kwargs)
 
     @classmethod
