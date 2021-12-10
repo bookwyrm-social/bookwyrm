@@ -180,19 +180,13 @@ def delete_group(request, group_id):
 def invite_member(request):
     """invite a member to the group"""
     group = get_object_or_404(models.Group, id=request.POST.get("group"))
-    if not group:
-        return HttpResponseBadRequest()
-
     user = get_user_from_username(request.user, request.POST["user"])
-    if not user:
-        return HttpResponseBadRequest()
 
     if not group.user == request.user:
         return HttpResponseBadRequest()
 
     try:
         models.GroupMemberInvitation.objects.create(user=user, group=group)
-
     except IntegrityError:
         pass
 
@@ -203,17 +197,11 @@ def invite_member(request):
 @login_required
 def remove_member(request):
     """remove a member from the group"""
-
     group = get_object_or_404(models.Group, id=request.POST.get("group"))
-    if not group:
-        return HttpResponseBadRequest()
-
     user = get_user_from_username(request.user, request.POST["user"])
-    if not user:
-        return HttpResponseBadRequest()
 
     # you can't be removed from your own group
-    if request.POST["user"] == group.user:
+    if user == group.user:
         return HttpResponseBadRequest()
 
     is_member = models.GroupMember.objects.filter(group=group, user=user).exists()
@@ -233,11 +221,9 @@ def remove_member(request):
             pass
 
     if is_member:
-
         try:
             models.List.remove_from_group(group.user, user)
             models.GroupMember.remove(group.user, user)
-
         except IntegrityError:
             pass
 

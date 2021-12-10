@@ -26,6 +26,13 @@ class GroupViews(TestCase):
                 local=True,
                 localname="mouse",
             )
+            self.rat = models.User.objects.create_user(
+                "rat@local.com",
+                "rat@rat.rat",
+                "password",
+                local=True,
+                localname="rat",
+            )
 
         self.testgroup = models.Group.objects.create(
             name="Test Group",
@@ -97,7 +104,6 @@ class GroupViews(TestCase):
 
     def test_group_edit(self, _):
         """test editing a "group" database entry"""
-
         view = views.Group.as_view()
         request = self.factory.post(
             "",
@@ -126,3 +132,59 @@ class GroupViews(TestCase):
 
     def test_invite_member(self, _):
         """invite a member to a group"""
+        request = self.factory.post(
+            "",
+            {
+                "group": self.testgroup.id,
+                "user": self.rat.localname,
+            },
+        )
+        request.user = self.local_user
+        result = views.invite_member(request)
+        self.assertEqual(result.status_code, 302)
+
+        invite = models.GroupMemberInvitation.objects.get()
+        self.assertEqual(invite.user, self.rat)
+        self.assertEqual(invite.group, self.testgroup)
+
+    def test_invite_member_twice(self, _):
+        """invite a member to a group again"""
+        request = self.factory.post(
+            "",
+            {
+                "group": self.testgroup.id,
+                "user": self.rat.localname,
+            },
+        )
+        request.user = self.local_user
+        result = views.invite_member(request)
+        self.assertEqual(result.status_code, 302)
+        result = views.invite_member(request)
+        self.assertEqual(result.status_code, 302)
+
+    def test_remove_member_denied(self, _):
+        """remove member"""
+        request = self.factory.post(
+            "",
+            {
+                "group": self.testgroup.id,
+                "user": self.local_user.localname,
+            },
+        )
+        request.user = self.local_user
+        result = views.remove_member(request)
+        self.assertEqual(result.status_code, 400)
+
+    def test_remove_member_non_member(self, _):
+        """remove member but wait, that's not a member"""
+        request = self.factory.post(
+            "",
+            {
+                "group": self.testgroup.id,
+                "user": self.rat.localname,
+            },
+        )
+        request.user = self.local_user
+        result = views.remove_member(request)
+        # nothing happens
+        self.assertEqual(result.status_code, 302)
