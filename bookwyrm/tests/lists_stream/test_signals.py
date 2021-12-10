@@ -61,7 +61,8 @@ class ListsStreamSignals(TestCase):
         args = mock.call_args[0]
         self.assertEqual(args[0], self.local_user.id)
 
-    def test_remove_lists_on_block(self, _):
+    @patch("bookwyrm.activitystreams.remove_user_statuses_task.delay")
+    def test_remove_lists_on_block(self, *_):
         """don't show lists from blocked users"""
         with patch("bookwyrm.lists_stream.remove_user_lists_task.delay") as mock:
             models.UserBlocks.objects.create(
@@ -73,7 +74,9 @@ class ListsStreamSignals(TestCase):
         self.assertEqual(args[0], self.local_user.id)
         self.assertEqual(args[1], self.remote_user.id)
 
-    def test_add_lists_on_unblock(self, _):
+    @patch("bookwyrm.activitystreams.remove_user_statuses_task.delay")
+    @patch("bookwyrm.activitystreams.add_user_statuses_task.delay")
+    def test_add_lists_on_unblock(self, *_):
         """re-add lists on unblock"""
         with patch("bookwyrm.lists_stream.remove_user_lists_task.delay"):
             block = models.UserBlocks.objects.create(
@@ -88,7 +91,9 @@ class ListsStreamSignals(TestCase):
         self.assertEqual(args[0], self.local_user.id)
         self.assertEqual(args[1], self.remote_user.id)
 
-    def test_add_lists_on_unblock_reciprocal_block(self, _):
+    @patch("bookwyrm.activitystreams.remove_user_statuses_task.delay")
+    @patch("bookwyrm.activitystreams.add_user_statuses_task.delay")
+    def test_add_lists_on_unblock_reciprocal_block(self, *_):
         """dont' re-add lists on unblock if there's a block the other way"""
         with patch("bookwyrm.lists_stream.remove_user_lists_task.delay"):
             block = models.UserBlocks.objects.create(
