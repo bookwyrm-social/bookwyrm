@@ -40,7 +40,7 @@ class Book(TestCase):
             openlibrary_key="OL123M",
             inventaire_id="isbn:123",
         )
-        self.assertEqual(book.openlibrary_link, "https://openlibrary.org/books/OL213M")
+        self.assertEqual(book.openlibrary_link, "https://openlibrary.org/books/OL123M")
         self.assertEqual(book.inventaire_link, "https://inventaire.io/entity/isbn:123")
         self.assertIsInstance(book.cover_bw_book_xsmall_webp, ImageSpecField)
 
