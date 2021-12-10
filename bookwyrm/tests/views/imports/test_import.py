@@ -96,7 +96,6 @@ class ImportViews(TestCase):
         item = models.ImportItem.objects.create(
             index=0,
             job=job,
-            book_guess=self.book,
             fail_reason="no match",
             data={},
             normalized_data={},
