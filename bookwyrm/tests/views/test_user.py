@@ -51,6 +51,11 @@ class UserViews(TestCase):
 
     def test_user_page(self):
         """there are so many views, this just makes sure it LOADS"""
+        # extras that are rendered on the user page
+        models.AnnualGoal.objects.create(
+            user=self.local_user, goal=12, privacy="followers"
+        )
+
         view = views.User.as_view()
         request = self.factory.get("")
         request.user = self.local_user
@@ -104,6 +109,18 @@ class UserViews(TestCase):
         self.assertIsInstance(result, ActivitypubResponse)
         self.assertEqual(result.status_code, 200)
 
+    def test_followers_page_anonymous(self):
+        """there are so many views, this just makes sure it LOADS"""
+        view = views.Followers.as_view()
+        request = self.factory.get("")
+        request.user = self.anonymous_user
+        with patch("bookwyrm.views.user.is_api_request") as is_api:
+            is_api.return_value = False
+            result = view(request, "mouse")
+        self.assertIsInstance(result, TemplateResponse)
+        validate_html(result.render())
+        self.assertEqual(result.status_code, 200)
+
     @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
     @patch("bookwyrm.activitystreams.populate_stream_task.delay")
     def test_followers_page_blocked(self, *_):
@@ -135,6 +152,18 @@ class UserViews(TestCase):
         self.assertIsInstance(result, ActivitypubResponse)
         self.assertEqual(result.status_code, 200)
 
+    def test_following_page_anonymous(self):
+        """there are so many views, this just makes sure it LOADS"""
+        view = views.Following.as_view()
+        request = self.factory.get("")
+        request.user = self.anonymous_user
+        with patch("bookwyrm.views.user.is_api_request") as is_api:
+            is_api.return_value = False
+            result = view(request, "mouse")
+        self.assertIsInstance(result, TemplateResponse)
+        validate_html(result.render())
+        self.assertEqual(result.status_code, 200)
+
     def test_following_page_blocked(self):
         """there are so many views, this just makes sure it LOADS"""
         view = views.Following.as_view()
@@ -145,3 +174,15 @@ class UserViews(TestCase):
             is_api.return_value = False
             with self.assertRaises(Http404):
                 view(request, "rat")
+
+    def test_hide_suggestions(self):
+        """update suggestions settings"""
+        self.assertTrue(self.local_user.show_suggested_users)
+        request = self.factory.post("")
+        request.user = self.local_user
+
+        result = views.hide_suggestions(request)
+        self.assertEqual(result.status_code, 302)
+
+        self.local_user.refresh_from_db()
+        self.assertFalse(self.local_user.show_suggested_users)
