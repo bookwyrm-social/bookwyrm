@@ -1,12 +1,11 @@
 """ test for app action functionality """
 from unittest.mock import patch
-from django.contrib.auth import decorators
 
 from django.template.response import TemplateResponse
 from django.test import TestCase
 from django.test.client import RequestFactory
 
-from bookwyrm import models, views, forms
+from bookwyrm import models, views
 from bookwyrm.tests.validate_html import validate_html
 
 
@@ -28,15 +27,15 @@ class GroupViews(TestCase):
                 localname="mouse",
             )
 
-            self.testgroup = models.Group.objects.create(
-                name="Test Group",
-                description="Initial description",
-                user=self.local_user,
-                privacy="public",
-            )
-            self.membership = models.GroupMember.objects.create(
-                group=self.testgroup, user=self.local_user
-            )
+        self.testgroup = models.Group.objects.create(
+            name="Test Group",
+            description="Initial description",
+            user=self.local_user,
+            privacy="public",
+        )
+        self.membership = models.GroupMember.objects.create(
+            group=self.testgroup, user=self.local_user
+        )
 
         models.SiteSettings.objects.create()
 
@@ -117,3 +116,13 @@ class GroupViews(TestCase):
         self.assertEqual(self.testgroup.name, "Updated Group name")
         self.assertEqual(self.testgroup.description, "wow")
         self.assertEqual(self.testgroup.privacy, "direct")
+
+    def test_delete_group(self, _):
+        """delete a group"""
+        request = self.factory.post("")
+        request.user = self.local_user
+        views.delete_group(request, self.testgroup.id)
+        self.assertFalse(models.Group.objects.exists())
+
+    def test_invite_member(self, _):
+        """invite a member to a group"""

@@ -179,7 +179,6 @@ def delete_group(request, group_id):
 @login_required
 def invite_member(request):
     """invite a member to the group"""
-
     group = get_object_or_404(models.Group, id=request.POST.get("group"))
     if not group:
         return HttpResponseBadRequest()
