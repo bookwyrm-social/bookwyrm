@@ -27,7 +27,8 @@ class RedisStore(ABC):
             # add the status to the feed
             pipeline.zadd(store, value)
             # trim the store
-            pipeline.zremrangebyrank(store, 0, -1 * self.max_length)
+            if self.max_length:
+                pipeline.zremrangebyrank(store, 0, -1 * self.max_length)
         if not execute:
             return pipeline
         # and go!
@@ -46,7 +47,7 @@ class RedisStore(ABC):
         pipeline = r.pipeline()
         for obj in objs[: self.max_length]:
             pipeline.zadd(store, self.get_value(obj))
-        if objs:
+        if objs and self.max_length:
             pipeline.zremrangebyrank(store, 0, -1 * self.max_length)
         pipeline.execute()
 
@@ -70,7 +71,7 @@ class RedisStore(ABC):
             pipeline.zadd(store, self.get_value(obj))
 
         # only trim the store if objects were added
-        if queryset.exists():
+        if queryset.exists() and self.max_length:
             pipeline.zremrangebyrank(store, 0, -1 * self.max_length)
         pipeline.execute()
 
