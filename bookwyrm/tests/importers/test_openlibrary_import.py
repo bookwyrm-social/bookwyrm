@@ -68,7 +68,7 @@ class OpenLibraryImport(TestCase):
 
     def test_handle_imported_book(self, *_):
         """openlibrary import added a book, this adds related connections"""
-        shelf = self.local_user.shelf_set.filter(identifier="read").first()
+        shelf = self.local_user.shelf_set.filter(identifier="reading").first()
         self.assertIsNone(shelf.books.first())
 
         import_job = self.importer.create_job(
@@ -83,11 +83,3 @@ class OpenLibraryImport(TestCase):
 
         shelf.refresh_from_db()
         self.assertEqual(shelf.books.first(), self.book)
-        self.assertEqual(
-            shelf.shelfbook_set.first().shelved_date, make_date(2020, 10, 21)
-        )
-
-        readthrough = models.ReadThrough.objects.get(user=self.local_user)
-        self.assertEqual(readthrough.book, self.book)
-        self.assertEqual(readthrough.start_date, make_date(2020, 10, 21))
-        self.assertEqual(readthrough.finish_date, make_date(2020, 10, 25))

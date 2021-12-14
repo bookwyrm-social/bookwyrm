@@ -267,7 +267,7 @@ def get_data(url, params=None, timeout=10):
         raise ConnectorException(err)
 
     if not resp.ok:
-        raise ConnectorException(resp.err)
+        raise ConnectorException()
     try:
         data = resp.json()
     except ValueError as err:
