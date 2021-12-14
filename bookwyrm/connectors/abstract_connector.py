@@ -256,9 +256,7 @@ def get_data(url, params=None, timeout=10):
             params=params,
             headers={  # pylint: disable=line-too-long
                 "Accept": (
-                    "application/activity+json,"
-                    ' application/ld+json; profile="https://www.w3.org/ns/activitystreams",'
-                    " application/json; charset=utf-8"
+                    'application/json, application/activity+json, application/ld+json; profile="https://www.w3.org/ns/activitystreams"; charset=utf-8'
                 ),
                 "User-Agent": settings.USER_AGENT,
             },
@@ -266,15 +264,15 @@ def get_data(url, params=None, timeout=10):
         )
     except RequestException as err:
         logger.exception(err)
-        raise ConnectorException()
+        raise ConnectorException(err)
 
     if not resp.ok:
-        raise ConnectorException()
+        raise ConnectorException(resp.err)
     try:
         data = resp.json()
     except ValueError as err:
         logger.exception(err)
-        raise ConnectorException()
+        raise ConnectorException(err)
 
     return data
 
