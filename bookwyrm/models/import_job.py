@@ -25,7 +25,7 @@ def construct_search_term(title, author):
     # Strip brackets (usually series title from search term)
     title = re.sub(r"\s*\([^)]*\)\s*", "", title)
     # Open library doesn't like including author initials in search term.
-    author = re.sub(r"(\w\.)+\s*", "", author)
+    author = re.sub(r"(\w\.)+\s*", "", author) if author else ""
 
     return " ".join([title, author])
 
@@ -114,6 +114,8 @@ class ImportItem(models.Model):
 
     def get_book_from_title_author(self):
         """search by title and author"""
+        if not self.title:
+            return None, 0
         search_term = construct_search_term(self.title, self.author)
         search_result = connector_manager.first_search_result(
             search_term, min_confidence=0.1
