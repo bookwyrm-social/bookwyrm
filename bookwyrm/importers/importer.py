@@ -109,6 +109,7 @@ class Importer:
             user=user,
             include_reviews=original_job.include_reviews,
             privacy=original_job.privacy,
+            source=original_job.source,
             # TODO: allow users to adjust mappings
             mappings=original_job.mappings,
             retry=True,
