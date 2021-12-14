@@ -56,6 +56,15 @@ class OpenLibraryImport(TestCase):
         self.assertEqual(import_items[1].data["Edition Id"], "OL7798182M")
 
         self.assertEqual(import_items[0].normalized_data["shelf"], "reading")
+        self.assertIsNone(import_items[0].normalized_data["openlibrary_key"])
+        self.assertEqual(
+            import_items[0].normalized_data["openlibrary_work_key"],
+            "OL102749W"
+        )
+        self.assertEqual(
+            import_items[1].normalized_data["openlibrary_key"],
+            "OL7798182M"
+        )
         self.assertEqual(import_items[2].normalized_data["shelf"], "to-read")
         self.assertEqual(import_items[3].normalized_data["shelf"], "read")
 

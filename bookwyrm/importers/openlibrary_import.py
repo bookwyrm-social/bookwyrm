@@ -6,3 +6,8 @@ class OpenLibraryImporter(Importer):
     """csv downloads from OpenLibrary"""
 
     service = "OpenLibrary"
+
+    def __init__(self, *args, **kwargs):
+        self.row_mappings_guesses.append(("openlibrary_key", ["edition id"]))
+        self.row_mappings_guesses.append(("openlibrary_work_key", ["work id"]))
+        super().__init__(*args, **kwargs)
