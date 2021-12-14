@@ -90,7 +90,10 @@ class Importer:
 
     def get_shelf(self, normalized_row):
         """determine which shelf to use"""
-        shelf_name = normalized_row["shelf"].lower()
+        shelf_name = normalized_row.get("shelf")
+        if not shelf_name:
+            return None
+        shelf_name = shelf_name.lower()
         shelf = [
             s for (s, gs) in self.shelf_mapping_guesses.items() if shelf_name in gs
         ]
