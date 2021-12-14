@@ -92,7 +92,7 @@ class ListsStream(TestCase):
         book_list = models.List.objects.create(
             user=self.local_user,
             name="hi",
-            privacy="direct",
+            privacy="followers",
         )
         users = self.stream.get_audience(book_list)
         self.assertTrue(self.local_user in users)
@@ -105,9 +105,29 @@ class ListsStream(TestCase):
         book_list = models.List.objects.create(
             user=self.remote_user,
             name="hi",
-            privacy="direct",
+            privacy="followers",
+        )
+        users = self.stream.get_audience(book_list)
+        self.assertTrue(self.local_user in users)
+        self.assertFalse(self.another_user in users)
+
+    def test_get_audience_followers_with_group(self, *_):
+        """get a list of users that should see a list"""
+        group = models.Group.objects.create(name="test group", user=self.remote_user)
+        models.GroupMember.objects.create(
+            group=group,
+            user=self.local_user,
+        )
+
+        book_list = models.List.objects.create(
+            user=self.remote_user, name="hi", privacy="followers", curation="group"
         )
         users = self.stream.get_audience(book_list)
         self.assertFalse(self.local_user in users)
+
+        book_list.group = group
+        book_list.save(broadcast=False)
+
+        users = self.stream.get_audience(book_list)
+        self.assertTrue(self.local_user in users)
         self.assertFalse(self.another_user in users)
-        self.assertFalse(self.remote_user in users)

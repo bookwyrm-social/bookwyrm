@@ -64,19 +64,32 @@ class ListsStream(RedisStore):
             Q(id__in=book_list.user.blocks.all()) | Q(blocks=book_list.user)
         )
 
-        # TODO: groups
-
+        group = book_list.group
         # only visible to the poster and mentioned users
         if book_list.privacy == "direct":
-            audience = audience.filter(
-                Q(id=book_list.user.id)  # if the user is the post's author
-            )
+            if group:
+                audience = audience.filter(
+                    Q(id=book_list.user.id)  # if the user is the post's author
+                    | ~Q(groups=group.memberships)  # if the user is in the group
+                )
+            else:
+                audience = audience.filter(
+                    Q(id=book_list.user.id)  # if the user is the post's author
+                )
         # only visible to the poster's followers and tagged users
         elif book_list.privacy == "followers":
-            audience = audience.filter(
-                Q(id=book_list.user.id)  # if the user is the post's author
-                | Q(following=book_list.user)  # if the user is following the author
-            )
+            if group:
+                audience = audience.filter(
+                    Q(id=book_list.user.id)  # if the user is the list's owner
+                    | Q(following=book_list.user)  # if the user is following the pwmer
+                    # if a user is in the group
+                    | Q(memberships__group__id=book_list.group.id)
+                )
+            else:
+                audience = audience.filter(
+                    Q(id=book_list.user.id)  # if the user is the list's owner
+                    | Q(following=book_list.user)  # if the user is following the pwmer
+                )
         return audience.distinct()
 
     def get_stores_for_object(self, obj):
