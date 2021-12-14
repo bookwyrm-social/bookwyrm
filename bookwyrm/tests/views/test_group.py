@@ -1,12 +1,11 @@
 """ test for app action functionality """
 from unittest.mock import patch
-from django.contrib.auth import decorators
 
 from django.template.response import TemplateResponse
 from django.test import TestCase
 from django.test.client import RequestFactory
 
-from bookwyrm import models, views, forms
+from bookwyrm import models, views
 from bookwyrm.tests.validate_html import validate_html
 
 
@@ -27,16 +26,23 @@ class GroupViews(TestCase):
                 local=True,
                 localname="mouse",
             )
+            self.rat = models.User.objects.create_user(
+                "rat@local.com",
+                "rat@rat.rat",
+                "password",
+                local=True,
+                localname="rat",
+            )
 
-            self.testgroup = models.Group.objects.create(
-                name="Test Group",
-                description="Initial description",
-                user=self.local_user,
-                privacy="public",
-            )
-            self.membership = models.GroupMember.objects.create(
-                group=self.testgroup, user=self.local_user
-            )
+        self.testgroup = models.Group.objects.create(
+            name="Test Group",
+            description="Initial description",
+            user=self.local_user,
+            privacy="public",
+        )
+        self.membership = models.GroupMember.objects.create(
+            group=self.testgroup, user=self.local_user
+        )
 
         models.SiteSettings.objects.create()
 
@@ -98,7 +104,6 @@ class GroupViews(TestCase):
 
     def test_group_edit(self, _):
         """test editing a "group" database entry"""
-
         view = views.Group.as_view()
         request = self.factory.post(
             "",
@@ -117,3 +122,137 @@ class GroupViews(TestCase):
         self.assertEqual(self.testgroup.name, "Updated Group name")
         self.assertEqual(self.testgroup.description, "wow")
         self.assertEqual(self.testgroup.privacy, "direct")
+
+    def test_delete_group(self, _):
+        """delete a group"""
+        request = self.factory.post("")
+        request.user = self.local_user
+        views.delete_group(request, self.testgroup.id)
+        self.assertFalse(models.Group.objects.exists())
+
+    def test_invite_member(self, _):
+        """invite a member to a group"""
+        request = self.factory.post(
+            "",
+            {
+                "group": self.testgroup.id,
+                "user": self.rat.localname,
+            },
+        )
+        request.user = self.local_user
+        result = views.invite_member(request)
+        self.assertEqual(result.status_code, 302)
+
+        invite = models.GroupMemberInvitation.objects.get()
+        self.assertEqual(invite.user, self.rat)
+        self.assertEqual(invite.group, self.testgroup)
+
+    def test_invite_member_twice(self, _):
+        """invite a member to a group again"""
+        request = self.factory.post(
+            "",
+            {
+                "group": self.testgroup.id,
+                "user": self.rat.localname,
+            },
+        )
+        request.user = self.local_user
+        result = views.invite_member(request)
+        self.assertEqual(result.status_code, 302)
+        result = views.invite_member(request)
+        self.assertEqual(result.status_code, 302)
+
+    def test_remove_member_denied(self, _):
+        """remove member"""
+        request = self.factory.post(
+            "",
+            {
+                "group": self.testgroup.id,
+                "user": self.local_user.localname,
+            },
+        )
+        request.user = self.local_user
+        result = views.remove_member(request)
+        self.assertEqual(result.status_code, 400)
+
+    def test_remove_member_non_member(self, _):
+        """remove member but wait, that's not a member"""
+        request = self.factory.post(
+            "",
+            {
+                "group": self.testgroup.id,
+                "user": self.rat.localname,
+            },
+        )
+        request.user = self.local_user
+        result = views.remove_member(request)
+        # nothing happens
+        self.assertEqual(result.status_code, 302)
+
+    def test_remove_member_invited(self, _):
+        """remove an invited member"""
+        models.GroupMemberInvitation.objects.create(
+            user=self.rat,
+            group=self.testgroup,
+        )
+        request = self.factory.post(
+            "",
+            {
+                "group": self.testgroup.id,
+                "user": self.rat.localname,
+            },
+        )
+        request.user = self.local_user
+        result = views.remove_member(request)
+        self.assertEqual(result.status_code, 302)
+        self.assertFalse(models.GroupMemberInvitation.objects.exists())
+
+    def test_remove_member_existing_member(self, _):
+        """remove an invited member"""
+        models.GroupMember.objects.create(
+            user=self.rat,
+            group=self.testgroup,
+        )
+        request = self.factory.post(
+            "",
+            {
+                "group": self.testgroup.id,
+                "user": self.rat.localname,
+            },
+        )
+        request.user = self.local_user
+        result = views.remove_member(request)
+        self.assertEqual(result.status_code, 302)
+        self.assertEqual(models.GroupMember.objects.count(), 1)
+        self.assertEqual(models.GroupMember.objects.first().user, self.local_user)
+        notification = models.Notification.objects.get()
+        self.assertEqual(notification.user, self.rat)
+        self.assertEqual(notification.related_group, self.testgroup)
+        self.assertEqual(notification.notification_type, "REMOVE")
+
+    def test_accept_membership(self, _):
+        """accept an invite"""
+        models.GroupMemberInvitation.objects.create(
+            user=self.rat,
+            group=self.testgroup,
+        )
+        request = self.factory.post("", {"group": self.testgroup.id})
+        request.user = self.rat
+        views.accept_membership(request)
+
+        self.assertFalse(models.GroupMemberInvitation.objects.exists())
+        self.assertTrue(self.rat in [m.user for m in self.testgroup.memberships.all()])
+
+    def test_reject_membership(self, _):
+        """reject an invite"""
+        models.GroupMemberInvitation.objects.create(
+            user=self.rat,
+            group=self.testgroup,
+        )
+        request = self.factory.post("", {"group": self.testgroup.id})
+        request.user = self.rat
+        views.reject_membership(request)
+
+        self.testgroup.refresh_from_db()
+        self.assertFalse(models.GroupMemberInvitation.objects.exists())
+        self.assertFalse(self.rat in [m.user for m in self.testgroup.memberships.all()])

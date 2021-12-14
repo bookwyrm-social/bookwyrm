@@ -231,6 +231,32 @@ class BookViews(TestCase):
             views.update_book_from_remote(request, self.book.id, "openlibrary.org")
         self.assertEqual(mock.call_count, 1)
 
+    def test_resolve_book(self):
+        """load a book from search results"""
+        models.Connector.objects.create(
+            identifier="openlibrary.org",
+            name="OpenLibrary",
+            connector_file="openlibrary",
+            base_url="https://openlibrary.org",
+            books_url="https://openlibrary.org",
+            covers_url="https://covers.openlibrary.org",
+            search_url="https://openlibrary.org/search?q=",
+            isbn_search_url="https://openlibrary.org/isbn",
+        )
+        request = self.factory.post(
+            "", {"remote_id": "https://openlibrary.org/book/123"}
+        )
+        request.user = self.local_user
+
+        with patch(
+            "bookwyrm.connectors.openlibrary.Connector.get_or_create_book"
+        ) as mock:
+            mock.return_value = self.book
+            result = views.resolve_book(request)
+        self.assertEqual(mock.call_count, 1)
+        self.assertEqual(mock.call_args[0][0], "https://openlibrary.org/book/123")
+        self.assertEqual(result.status_code, 302)
+
 
 def _setup_cover_url():
     """creates cover url mock"""
