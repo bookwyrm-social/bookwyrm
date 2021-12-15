@@ -351,7 +351,10 @@
                 {% if book.file_links %}
                 <ul>
                     {% for link in book.file_links.all %}
-                    <li><a href="{{ link.url }}">{{ link.name }}</a> ({{ link.filetype }})</li>
+                    <li>
+                        <a href="{{ link.url }}" rel="noopener" target="_blank" title="{{ link.url }}">{{ link.name }}</a>
+                        ({{ link.filetype }})
+                    </li>
                     {% endfor %}
                 </ul>
                 {% endif %}

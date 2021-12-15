@@ -427,7 +427,14 @@ urlpatterns = [
     re_path(
         r"^upload-cover/(?P<book_id>\d+)/?$", views.upload_cover, name="upload-cover"
     ),
-    re_path(r"^add-description/(?P<book_id>\d+)/?$", views.add_description),
+    re_path(
+        r"^add-description/(?P<book_id>\d+)/?$",
+        views.add_description,
+        name="add-description",
+    ),
+    re_path(
+        r"^add-file-link/(?P<book_id>\d+)/?$", views.add_file_link, name="add-file-link"
+    ),
     re_path(r"^resolve-book/?$", views.resolve_book, name="resolve-book"),
     re_path(r"^switch-edition/?$", views.switch_edition, name="switch-edition"),
     re_path(

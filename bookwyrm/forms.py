@@ -216,6 +216,12 @@ class CoverForm(CustomForm):
         help_texts = {f: None for f in fields}
 
 
+class FileLinkForm(CustomForm):
+    class Meta:
+        model = models.FileLink
+        exclude = ["remote_id"]
+
+
 class EditionForm(CustomForm):
     class Meta:
         model = models.Edition
