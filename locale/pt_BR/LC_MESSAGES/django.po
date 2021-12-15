@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-12-08 15:40+0000\n"
-"PO-Revision-Date: 2021-12-09 18:55\n"
+"PO-Revision-Date: 2021-12-11 15:41\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Portuguese, Brazilian\n"
 "Language: pt\n"
@@ -246,7 +246,7 @@ msgstr "Algo deu errado! Foi mal."
 #: bookwyrm/templates/author/author.html:18
 #: bookwyrm/templates/author/author.html:19
 msgid "Edit Author"
-msgstr "Editar autor"
+msgstr "Editar autor/a"
 
 #: bookwyrm/templates/author/author.html:40
 msgid "Author details"
@@ -282,7 +282,7 @@ msgstr "Ver registro ISNI"
 #: bookwyrm/templates/book/book.html:93
 #: bookwyrm/templates/book/sync_modal.html:5
 msgid "Load data"
-msgstr "Carregar dados"
+msgstr "Carregar informações"
 
 #: bookwyrm/templates/author/author.html:92
 #: bookwyrm/templates/book/book.html:96
@@ -309,7 +309,7 @@ msgstr "Livros de %(name)s"
 
 #: bookwyrm/templates/author/edit_author.html:5
 msgid "Edit Author:"
-msgstr "Editar autor:"
+msgstr "Editar autor/a:"
 
 #: bookwyrm/templates/author/edit_author.html:13
 #: bookwyrm/templates/book/edit/edit_book.html:19
@@ -360,7 +360,7 @@ msgstr "Data da morte:"
 
 #: bookwyrm/templates/author/edit_author.html:75
 msgid "Author Identifiers"
-msgstr "Identificadores do autor"
+msgstr "Identificadores do/a autor/a"
 
 #: bookwyrm/templates/author/edit_author.html:77
 msgid "Openlibrary key:"
@@ -420,7 +420,7 @@ msgstr "Cancelar"
 #: bookwyrm/templates/author/sync_modal.html:15
 #, python-format
 msgid "Loading data will connect to <strong>%(source_name)s</strong> and check for any metadata about this author which aren't present here. Existing metadata will not be overwritten."
-msgstr "Ao carregar os dados nos conectaremos a <strong>%(source_name)s</strong> e buscaremos metadados sobre este/a autor/a que ainda não temos. Metadados já existentes não serão substituídos."
+msgstr "Para carregar informações nos conectaremos a <strong>%(source_name)s</strong> e buscaremos metadados que ainda não temos sobre este/a autor/a. Metadados já existentes não serão substituídos."
 
 #: bookwyrm/templates/author/sync_modal.html:23
 #: bookwyrm/templates/book/edit/edit_book.html:108
@@ -484,11 +484,11 @@ msgstr "Uma <a href=\"%(book_path)s\">edição diferente</a> deste livro está e
 
 #: bookwyrm/templates/book/book.html:201
 msgid "Your reading activity"
-msgstr "Sua atividade de leitura"
+msgstr "Andamento da sua leitura"
 
 #: bookwyrm/templates/book/book.html:204
 msgid "Add read dates"
-msgstr "Adicionar datas de leitura"
+msgstr "Adicionar registro de leitura"
 
 #: bookwyrm/templates/book/book.html:213
 msgid "Create"
@@ -496,7 +496,7 @@ msgstr "Criar"
 
 #: bookwyrm/templates/book/book.html:223
 msgid "You don't have any reading activity for this book."
-msgstr "Você ainda não registrou seu progresso para este livro."
+msgstr "Você ainda não registrou nenhuma atividade neste livro."
 
 #: bookwyrm/templates/book/book.html:249
 msgid "Your reviews"
@@ -585,7 +585,7 @@ msgstr "\"%(name)s\" é uma das pessoas citadas abaixo?"
 #: bookwyrm/templates/book/edit/edit_book.html:67
 #: bookwyrm/templates/book/edit/edit_book.html:69
 msgid "Author of "
-msgstr "Autor de "
+msgstr "Autor/a de "
 
 #: bookwyrm/templates/book/edit/edit_book.html:69
 msgid "Find more information at isni.org"
@@ -593,12 +593,12 @@ msgstr "Conheça mais em isni.org"
 
 #: bookwyrm/templates/book/edit/edit_book.html:79
 msgid "This is a new author"
-msgstr "Novo autor"
+msgstr "É um/a novo/a autor/a"
 
 #: bookwyrm/templates/book/edit/edit_book.html:86
 #, python-format
 msgid "Creating a new author: %(name)s"
-msgstr "Criando um novo autor: %(name)s"
+msgstr "Criando um/a novo/a autor/a: %(name)s"
 
 #: bookwyrm/templates/book/edit/edit_book.html:93
 msgid "Is this an edition of an existing work?"
@@ -652,7 +652,7 @@ msgstr "Data de publicação:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:122
 msgid "Authors"
-msgstr "Autores"
+msgstr "Autores/as"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:131
 #, python-format
@@ -662,11 +662,11 @@ msgstr "Remover %(name)s"
 #: bookwyrm/templates/book/edit/edit_book_form.html:134
 #, python-format
 msgid "Author page for %(name)s"
-msgstr "Página de autor de %(name)s"
+msgstr "Página de autor/a de %(name)s"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:142
 msgid "Add Authors:"
-msgstr "Adicionar autores:"
+msgstr "Adicionar autores/as:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:145
 #: bookwyrm/templates/book/edit/edit_book_form.html:148
@@ -780,7 +780,7 @@ msgstr "avaliou este livro"
 
 #: bookwyrm/templates/book/readthrough.html:8
 msgid "Progress Updates:"
-msgstr "Atualização de progresso:"
+msgstr "Registro de leitura:"
 
 #: bookwyrm/templates/book/readthrough.html:13
 msgid "finished"
@@ -788,11 +788,11 @@ msgstr "terminado"
 
 #: bookwyrm/templates/book/readthrough.html:24
 msgid "Show all updates"
-msgstr "Mostrar todas as atualizações"
+msgstr "Mostrar andamento da leitura"
 
 #: bookwyrm/templates/book/readthrough.html:40
 msgid "Delete this progress update"
-msgstr "Excluir esta atualização de progresso"
+msgstr "Excluir esta atualização de andamento"
 
 #: bookwyrm/templates/book/readthrough.html:51
 msgid "started"
@@ -801,7 +801,7 @@ msgstr "iniciado"
 #: bookwyrm/templates/book/readthrough.html:58
 #: bookwyrm/templates/book/readthrough.html:72
 msgid "Edit read dates"
-msgstr "Editar datas de leitura"
+msgstr "Editar registro de leitura"
 
 #: bookwyrm/templates/book/readthrough.html:62
 msgid "Delete these read dates"
@@ -810,7 +810,7 @@ msgstr "Excluir estas datas de leitura"
 #: bookwyrm/templates/book/sync_modal.html:15
 #, python-format
 msgid "Loading data will connect to <strong>%(source_name)s</strong> and check for any metadata about this book which aren't present here. Existing metadata will not be overwritten."
-msgstr "Ao carregar os dados nos conectaremos a <strong>%(source_name)s</strong> e buscaremos metadados sobre este livro que ainda não temos. Metadados já existentes não serão substituídos."
+msgstr "Para carregar informações nos conectaremos a <strong>%(source_name)s</strong> e buscaremos metadados que ainda não temos sobre este livro. Metadados já existentes não serão substituídos."
 
 #: bookwyrm/templates/components/inline_form.html:8
 #: bookwyrm/templates/components/modal.html:11
@@ -1131,7 +1131,7 @@ msgstr "Redefinir sua senha no %(site_name)s"
 #: bookwyrm/templates/embed-layout.html:21 bookwyrm/templates/layout.html:37
 #, python-format
 msgid "%(site_name)s home page"
-msgstr ""
+msgstr "Página inicial de %(site_name)s"
 
 #: bookwyrm/templates/embed-layout.html:34
 #: bookwyrm/templates/landing/about.html:7 bookwyrm/templates/layout.html:230
@@ -1145,7 +1145,7 @@ msgstr "Falar com a administração"
 
 #: bookwyrm/templates/embed-layout.html:46
 msgid "Join Bookwyrm"
-msgstr ""
+msgstr "Participe da BookWyrm"
 
 #: bookwyrm/templates/feed/direct_messages.html:8
 #, python-format
@@ -1598,7 +1598,7 @@ msgstr "ISBN"
 #: bookwyrm/templates/shelf/shelf.html:145
 #: bookwyrm/templates/shelf/shelf.html:169
 msgid "Author"
-msgstr "Autor"
+msgstr "Autor/a"
 
 #: bookwyrm/templates/import/import_status.html:112
 msgid "Shelf"
@@ -1942,12 +1942,12 @@ msgstr "Editar lista"
 #: bookwyrm/templates/lists/embed-list.html:7
 #, python-format
 msgid "%(list_name)s, a list by %(owner)s"
-msgstr ""
+msgstr "%(list_name)s, uma lista de %(owner)s"
 
 #: bookwyrm/templates/lists/embed-list.html:17
 #, python-format
 msgid "on <a href=\"/\">%(site_name)s</a>"
-msgstr ""
+msgstr "em <a href=\"/\">%(site_name)s</a>"
 
 #: bookwyrm/templates/lists/embed-list.html:26
 #: bookwyrm/templates/lists/list.html:29
@@ -2073,20 +2073,20 @@ msgstr "Sugerir"
 
 #: bookwyrm/templates/lists/list.html:191
 msgid "Embed this list on a website"
-msgstr ""
+msgstr "Incorpore esta lista em um site"
 
 #: bookwyrm/templates/lists/list.html:193
 msgid "Copy embed code"
-msgstr ""
+msgstr "Copiar código de incorporação"
 
 #: bookwyrm/templates/lists/list.html:193
 msgid "Copied!"
-msgstr ""
+msgstr "Copiado!"
 
 #: bookwyrm/templates/lists/list.html:193
 #, python-format
 msgid "%(list_name)s, a list by %(owner)s on %(site_name)s"
-msgstr ""
+msgstr "%(list_name)s, uma lista de %(owner)s em %(site_name)s"
 
 #: bookwyrm/templates/lists/list_items.html:15
 msgid "Saved"
@@ -3491,7 +3491,7 @@ msgstr "Algumas ideias sobre o livro"
 #: bookwyrm/templates/snippets/create_status/comment.html:27
 #: bookwyrm/templates/snippets/reading_modals/progress_update_modal.html:15
 msgid "Progress:"
-msgstr "Progresso:"
+msgstr "Andamento:"
 
 #: bookwyrm/templates/snippets/create_status/comment.html:53
 #: bookwyrm/templates/snippets/progress_field.html:18
@@ -3585,7 +3585,7 @@ msgstr "Excluir as datas de leitura?"
 #: bookwyrm/templates/snippets/delete_readthrough_modal.html:7
 #, python-format
 msgid "You are deleting this readthrough and its %(count)s associated progress updates."
-msgstr "Você está excluindo este registro de leitura e as %(count)s atualizações de progresso associadas."
+msgstr "Você está excluindo este registro de leitura e as %(count)s atualizações de andamento associadas."
 
 #: bookwyrm/templates/snippets/fav_button.html:16
 #: bookwyrm/templates/snippets/fav_button.html:17
@@ -3715,7 +3715,7 @@ msgstr "Definir meta"
 #: bookwyrm/templates/snippets/goal_progress.html:9
 #, python-format
 msgid "%(percent)s%% complete!"
-msgstr "%(percent)s%% lá!"
+msgstr "%(percent)s%% lido!"
 
 #: bookwyrm/templates/snippets/goal_progress.html:12
 #, python-format
@@ -3805,7 +3805,7 @@ msgstr "(Opcional)"
 #: bookwyrm/templates/snippets/reading_modals/progress_update_modal.html:5
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_dropdown_options.html:50
 msgid "Update progress"
-msgstr "Atualizar progresso"
+msgstr "Atualizar andamento"
 
 #: bookwyrm/templates/snippets/reading_modals/start_reading_modal.html:6
 #, python-format
@@ -3819,7 +3819,7 @@ msgstr "Quero ler \"<em>%(book_title)s</em>\""
 
 #: bookwyrm/templates/snippets/readthrough_form.html:14
 msgid "Progress"
-msgstr "Progresso"
+msgstr "Andamento"
 
 #: bookwyrm/templates/snippets/register_form.html:30
 msgid "Sign Up"
