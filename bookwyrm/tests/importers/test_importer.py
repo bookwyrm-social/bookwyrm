@@ -146,11 +146,7 @@ class GenericImporter(TestCase):
             self.local_user, self.csv, False, "unlisted"
         )
         items = import_job.items.all()
-        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-        print(items.count())
-        print(import_job.pending_items.count())
         for item in items[:3]:
-            print(item.id)
             item.fail_reason = "hello"
             item.save()
             item.update_job()
@@ -161,16 +157,12 @@ class GenericImporter(TestCase):
                     notification_type="IMPORT",
                 ).exists()
             )
-            print(import_job.pending_items.count())
 
         item = items.last()
-        print(item.id)
-        print(item.fail_reason, item.book)
         item.fail_reason = "hello"
         item.save()
         item.update_job()
         import_job.refresh_from_db()
-        print(import_job.pending_items.count())
         self.assertTrue(import_job.complete)
         self.assertTrue(
             models.Notification.objects.filter(
