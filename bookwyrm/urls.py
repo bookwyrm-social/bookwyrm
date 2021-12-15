@@ -432,13 +432,11 @@ urlpatterns = [
         views.add_description,
         name="add-description",
     ),
-    re_path(
-        rf"{BOOK_PATH}/file-link/?$", views.FileLink.as_view(), name="file-link"
-    ),
+    re_path(rf"{BOOK_PATH}/file-link/?$", views.FileLink.as_view(), name="file-link"),
     re_path(
         rf"{BOOK_PATH}/file-link/(?P<link_id>\d+)/?$",
         views.FileLink.as_view(),
-        name="file-link"
+        name="file-link",
     ),
     re_path(r"^resolve-book/?$", views.resolve_book, name="resolve-book"),
     re_path(r"^switch-edition/?$", views.switch_edition, name="switch-edition"),
