@@ -17,6 +17,8 @@ class BookData(ActivityObject):
     goodreadsKey: str = None
     bnfId: str = None
     lastEditedBy: str = None
+    links: List[str] = field(default_factory=lambda: [])
+    fileLinks: List[str] = field(default_factory=lambda: [])
 
 
 # pylint: disable=invalid-name
