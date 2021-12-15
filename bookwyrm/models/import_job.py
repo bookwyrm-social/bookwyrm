@@ -25,7 +25,7 @@ def construct_search_term(title, author):
     # Strip brackets (usually series title from search term)
     title = re.sub(r"\s*\([^)]*\)\s*", "", title)
     # Open library doesn't like including author initials in search term.
-    author = re.sub(r"(\w\.)+\s*", "", author)
+    author = re.sub(r"(\w\.)+\s*", "", author) if author else ""
 
     return " ".join([title, author])
 
@@ -88,7 +88,9 @@ class ImportItem(models.Model):
             return
 
         if self.isbn:
-            self.book = self.get_book_from_isbn()
+            self.book = self.get_book_from_identifier()
+        elif self.openlibrary_key:
+            self.book = self.get_book_from_identifier(field="openlibrary_key")
         else:
             # don't fall back on title/author search if isbn is present.
             # you're too likely to mismatch
@@ -98,10 +100,10 @@ class ImportItem(models.Model):
             else:
                 self.book_guess = book
 
-    def get_book_from_isbn(self):
-        """search by isbn"""
+    def get_book_from_identifier(self, field="isbn"):
+        """search by isbn or other unique identifier"""
         search_result = connector_manager.first_search_result(
-            self.isbn, min_confidence=0.999
+            getattr(self, field), min_confidence=0.999
         )
         if search_result:
             # it's already in the right format
@@ -114,6 +116,8 @@ class ImportItem(models.Model):
 
     def get_book_from_title_author(self):
         """search by title and author"""
+        if not self.title:
+            return None, 0
         search_term = construct_search_term(self.title, self.author)
         search_result = connector_manager.first_search_result(
             search_term, min_confidence=0.1
@@ -143,6 +147,13 @@ class ImportItem(models.Model):
         """pulls out the isbn13 field from the csv line data"""
         return unquote_string(self.normalized_data.get("isbn_13")) or unquote_string(
             self.normalized_data.get("isbn_10")
+        )
+
+    @property
+    def openlibrary_key(self):
+        """the edition identifier is preferable to the work key"""
+        return self.normalized_data.get("openlibrary_key") or self.normalized_data.get(
+            "openlibrary_work_key"
         )
 
     @property

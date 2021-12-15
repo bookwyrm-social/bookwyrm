@@ -14,6 +14,7 @@ from bookwyrm.importers import (
     LibrarythingImporter,
     GoodreadsImporter,
     StorygraphImporter,
+    OpenLibraryImporter,
 )
 
 # pylint: disable= no-self-use
@@ -49,6 +50,8 @@ class Import(View):
             importer = LibrarythingImporter()
         elif source == "Storygraph":
             importer = StorygraphImporter()
+        elif source == "OpenLibrary":
+            importer = OpenLibraryImporter()
         else:
             # Default : Goodreads
             importer = GoodreadsImporter()

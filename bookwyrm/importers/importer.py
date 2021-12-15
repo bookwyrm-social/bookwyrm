@@ -26,7 +26,7 @@ class Importer:
         ("authors", ["author", "authors", "primary author"]),
         ("isbn_10", ["isbn10", "isbn"]),
         ("isbn_13", ["isbn13", "isbn", "isbns"]),
-        ("shelf", ["shelf", "exclusive shelf", "read status"]),
+        ("shelf", ["shelf", "exclusive shelf", "read status", "bookshelf"]),
         ("review_name", ["review name"]),
         ("review_body", ["my review", "review"]),
         ("rating", ["my rating", "rating", "star rating"]),
@@ -36,9 +36,9 @@ class Importer:
     ]
     date_fields = ["date_added", "date_started", "date_finished"]
     shelf_mapping_guesses = {
-        "to-read": ["to-read"],
-        "read": ["read"],
-        "reading": ["currently-reading", "reading"],
+        "to-read": ["to-read", "want to read"],
+        "read": ["read", "already read"],
+        "reading": ["currently-reading", "reading", "currently reading"],
     }
 
     def create_job(self, user, csv_file, include_reviews, privacy):
@@ -90,7 +90,10 @@ class Importer:
 
     def get_shelf(self, normalized_row):
         """determine which shelf to use"""
-        shelf_name = normalized_row["shelf"]
+        shelf_name = normalized_row.get("shelf")
+        if not shelf_name:
+            return None
+        shelf_name = shelf_name.lower()
         shelf = [
             s for (s, gs) in self.shelf_mapping_guesses.items() if shelf_name in gs
         ]
@@ -106,6 +109,7 @@ class Importer:
             user=user,
             include_reviews=original_job.include_reviews,
             privacy=original_job.privacy,
+            source=original_job.source,
             # TODO: allow users to adjust mappings
             mappings=original_job.mappings,
             retry=True,

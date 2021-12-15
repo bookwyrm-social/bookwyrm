@@ -139,7 +139,7 @@ class ImportJob(TestCase):
         self.assertEqual(item.reads, expected)
 
     @responses.activate
-    def test_get_book_from_isbn(self):
+    def test_get_book_from_identifier(self):
         """search and load books by isbn (9780356506999)"""
         item = models.ImportItem.objects.create(
             index=1,
@@ -197,6 +197,6 @@ class ImportJob(TestCase):
                 with patch(
                     "bookwyrm.connectors.openlibrary.Connector." "get_authors_from_data"
                 ):
-                    book = item.get_book_from_isbn()
+                    book = item.get_book_from_identifier()
 
         self.assertEqual(book.title, "Sabriel")

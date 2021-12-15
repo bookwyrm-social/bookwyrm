@@ -128,7 +128,7 @@ class GenericImporter(TestCase):
 
         import_item = models.ImportItem.objects.get(job=import_job, index=0)
         with patch(
-            "bookwyrm.models.import_job.ImportItem.get_book_from_isbn"
+            "bookwyrm.models.import_job.ImportItem.get_book_from_identifier"
         ) as resolve:
             resolve.return_value = self.book
 
@@ -158,7 +158,7 @@ class GenericImporter(TestCase):
                 ).exists()
             )
 
-        item = items[3]
+        item = items.last()
         item.fail_reason = "hello"
         item.save()
         item.update_job()
