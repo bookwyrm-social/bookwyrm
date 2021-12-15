@@ -82,6 +82,8 @@ def search_identifiers(query, *filters, return_first=False):
         *filters, reduce(operator.or_, (Q(**f) for f in or_filters))
     ).distinct()
     if results.count() <= 1:
+        if return_first:
+            return results.first()
         return results
 
     # when there are multiple editions of the same work, pick the default.
@@ -124,6 +126,7 @@ def search_title_author(query, min_confidence, *filters, return_first=False):
             result = default
         else:
             result = editions.first()
+
         if return_first:
             return result
         list_results.append(result)

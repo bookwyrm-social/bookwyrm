@@ -1,0 +1,70 @@
+{% load i18n %}
+
+{% block content %}
+<div class="block">
+    {% if error == 'invalid_username' %}
+    <div class="notification is-warning has-text-centered" role="status">
+        <p>{% blocktrans %}<strong>{{ account }}</strong> is not a valid username{% endblocktrans %}.</p>
+        <p>{% trans 'Check you have the correct username before trying again' %}.</p>
+    </div>
+    {% elif error == 'user_not_found' %}
+    <div class="notification is-warning has-text-centered" role="status">
+        <p>{% blocktrans %}<strong>{{ account }}</strong> could not be found or <code>{{ remote_domain }}</code> does not support identity discovery{% endblocktrans %}.</p>
+        <p>{% trans 'Check you have the correct username before trying again' %}.</p>
+    </div>
+    {% elif error == 'not_supported' %}
+    <div class="notification is-warning has-text-centered" role="status">
+        <p>{% blocktrans %}<strong>{{ account }}</strong> was found but <code>{{ remote_domain }}</code> does not support 'remote follow'{% endblocktrans %}.</p>
+        <p>{% blocktrans %}Try searching for <strong>{{ user }}</strong> on <code>{{ remote_domain }}</code> instead{% endblocktrans %}.</p>
+    </div>
+    {% elif not request.user.is_authenticated %}
+    <div class="navbar-item">
+        <div class="columns">
+            <div class="column">
+                <form name="login" method="post" action="{% url 'login' %}?next={{ request.path }}?acct={{ user.remote_id }}">
+                    {% csrf_token %}
+                    <div class="columns is-variable is-1">
+                        <div class="column">
+                            <label class="is-sr-only" for="id_localname">{% trans "Username:" %}</label>
+                            <input type="text" name="localname" maxlength="150" class="input" required="" id="id_localname" placeholder="{% trans 'username' %}">
+                        </div>
+                        <div class="column">
+                            <label class="is-sr-only" for="id_password">{% trans "Password:" %}</label>
+                            <input type="password" name="password" maxlength="128" class="input" required="" id="id_password" placeholder="{% trans 'password' %}">
+                            <p class="help"><a href="{% url 'password-reset' %}">{% trans "Forgot your password?" %}</a></p>
+                        </div>
+                        <div class="column is-narrow">
+                            <button class="button is-primary" type="submit">{% trans "Log in" %}</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% elif error == 'ostatus_subscribe' %}
+    <div class="notification is-warning has-text-centered" role="status">
+        <p>{% blocktrans %}Something went wrong trying to follow <strong>{{ account }}</strong>{% endblocktrans %}</p>
+        <p>{% trans 'Check you have the correct username before trying again.' %}</p>
+    </div>
+    {% elif error == 'is_blocked' %}
+    <div class="notification is-danger has-text-centered" role="status">
+        <p>{% blocktrans %}You have blocked <strong>{{ account }}</strong>{% endblocktrans %}</p>
+    </div>
+    {% elif error == 'has_blocked' %}
+    <div class="notification is-danger has-text-centered" role="status">
+        <p>{% blocktrans %}<strong>{{ account }}</strong> has blocked you{% endblocktrans %}</p>
+    </div>
+    {% elif error == 'already_following' %}
+    <div class="notification is-success has-text-centered" role="status">
+        <p>{% blocktrans %}You are already following <strong>{{ account }}</strong>{% endblocktrans %}</p>
+    </div>
+    {% elif error == 'already_requested' %}
+    <div class="notification is-success has-text-centered" role="status">
+        <p>{% blocktrans %}You have already requested to follow <strong>{{ account }}</strong>{% endblocktrans %}</p>
+    </div>
+    {% endif %}
+</div>
+<div class="block is-pulled-right">
+    <button type="button" class="button" onclick="closeWindow()">Close window</button>
+</div>
+{% endblock %}

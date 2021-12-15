@@ -1,0 +1,35 @@
+{% load i18n %}
+{% load markdown %}
+{% load interaction %}
+
+<div class="columns is-multiline">
+    {% for group in groups %}
+    <div class="column is-one-quarter">
+        <div class="card is-stretchable">
+            <header class="card-header">
+                <h4 class="card-header-title">
+                    <a href="{{ group.local_path }}">{{ group.name }}</a> <span class="subtitle">{% include 'snippets/privacy-icons.html' with item=group %}</span>
+                </h4>
+                {% if group.user == user %}
+                <div class="card-header-icon">
+                    {% trans "Manager" as text %}
+                    <span class="icon icon-star-full has-text-grey" title="{{ text }}">
+                        <span class="is-sr-only">{{ text }}</span>
+                    </span>
+                </div>
+                {% endif %}
+            </header>
+
+            <div class="card-content is-flex-grow-0">
+                <div class="is-clipped" {% if group.description %}title="{{ group.description }}"{% endif %}>
+                {% if group.description %}
+                    {{ group.description|to_markdown|safe|truncatechars_html:30 }}
+                {% else %}
+                &nbsp;
+                {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>

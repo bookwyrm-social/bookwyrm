@@ -4,9 +4,14 @@
 
     <div class="select is-small mt-1 mb-3">
         <select name="{{ book.id }}" aria-label="{% blocktrans with book_title=book.title %}Have you read {{ book_title }}?{% endblocktrans %}">
-            <option disabled selected value>Add to your books</option>
+            <option disabled selected value>{% trans 'Add to your books' %}</option>
             {% for shelf in user_shelves %}
-            <option value="{{ shelf.id }}">{{ shelf.name }}</option>
+            <option value="{{ shelf.id }}">
+                {% if shelf.identifier == 'to-read' %}{% trans "To Read" %}
+                {% elif shelf.identifier == 'reading' %}{% trans "Currently Reading" %}
+                {% elif shelf.identifier == 'read' %}{% trans "Read" %}
+                {% else %}{{ shelf.name }}{% endif %}
+            </option>
             {% endfor %}
         </select>
     </div>

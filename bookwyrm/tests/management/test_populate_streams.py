@@ -6,7 +6,7 @@ from bookwyrm import models
 from bookwyrm.management.commands.populate_streams import populate_streams
 
 
-@patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
+@patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
 class Activitystreams(TestCase):
     """using redis to build activity streams"""
 

@@ -1,0 +1,11 @@
+{% extends 'email/html_layout.html' %}
+{% load i18n %}
+
+{% block content %}
+<p>
+{% blocktrans %}@{{ reporter }} has flagged behavior by @{{ reportee }} for moderation. {% endblocktrans %}
+</p>
+
+{% trans "View report" as text %}
+{% include 'email/snippets/action.html' with path=report_link text=text %}
+{% endblock %}

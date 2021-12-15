@@ -4,10 +4,12 @@ from unittest.mock import patch
 
 from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
+from django.template.response import TemplateResponse
 from django.test import TestCase
 from django.test.client import RequestFactory
 
 from bookwyrm import models, views
+from bookwyrm.tests.validate_html import validate_html
 
 
 @patch("bookwyrm.activitystreams.add_user_statuses_task.delay")
@@ -16,6 +18,7 @@ class FollowViews(TestCase):
 
     def setUp(self):
         """we need basic test data and mocks"""
+        models.SiteSettings.objects.create()
         self.factory = RequestFactory()
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
@@ -59,7 +62,7 @@ class FollowViews(TestCase):
         request.user = self.local_user
         self.assertEqual(models.UserFollowRequest.objects.count(), 0)
 
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             views.follow(request)
 
         rel = models.UserFollowRequest.objects.get()
@@ -86,7 +89,7 @@ class FollowViews(TestCase):
         request.user = self.local_user
         self.assertEqual(models.UserFollowRequest.objects.count(), 0)
 
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             views.follow(request)
         rel = models.UserFollowRequest.objects.get()
 
@@ -111,7 +114,7 @@ class FollowViews(TestCase):
         request.user = self.local_user
         self.assertEqual(models.UserFollowRequest.objects.count(), 0)
 
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             views.follow(request)
 
         rel = models.UserFollows.objects.get()
@@ -127,10 +130,12 @@ class FollowViews(TestCase):
         request.user = self.local_user
         self.remote_user.followers.add(self.local_user)
         self.assertEqual(self.remote_user.followers.count(), 1)
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay") as mock:
+        with patch(
+            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+        ) as mock:
             views.unfollow(request)
             self.assertEqual(mock.call_count, 1)
-            activity = json.loads(mock.call_args_list[0][0][1])
+            activity = json.loads(mock.call_args_list[0][1]["args"][1])
             self.assertEqual(activity["type"], "Undo")
 
         self.assertEqual(self.remote_user.followers.count(), 0)
@@ -147,7 +152,7 @@ class FollowViews(TestCase):
             user_subject=self.remote_user, user_object=self.local_user
         )
 
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             views.accept_follow_request(request)
         # request should be deleted
         self.assertEqual(models.UserFollowRequest.objects.filter(id=rel.id).count(), 0)
@@ -166,9 +171,49 @@ class FollowViews(TestCase):
             user_subject=self.remote_user, user_object=self.local_user
         )
 
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             views.delete_follow_request(request)
         # request should be deleted
         self.assertEqual(models.UserFollowRequest.objects.filter(id=rel.id).count(), 0)
         # follow relationship should not exist
         self.assertEqual(models.UserFollows.objects.filter(id=rel.id).count(), 0)
+
+    def test_ostatus_follow_request(self, _):
+        """check ostatus subscribe template loads"""
+        request = self.factory.get(
+            "", {"acct": "https%3A%2F%2Fexample.com%2Fusers%2Frat"}
+        )
+        request.user = self.local_user
+        result = views.ostatus_follow_request(request)
+        self.assertIsInstance(result, TemplateResponse)
+        validate_html(result.render())
+        self.assertEqual(result.status_code, 200)
+
+    def test_remote_follow_page(self, _):
+        """check remote follow page loads"""
+        request = self.factory.get("", {"acct": "mouse@local.com"})
+        request.user = self.remote_user
+        result = views.remote_follow_page(request)
+        self.assertIsInstance(result, TemplateResponse)
+        validate_html(result.render())
+        self.assertEqual(result.status_code, 200)
+
+    def test_ostatus_follow_success(self, _):
+        """check remote follow success page loads"""
+        request = self.factory.get("")
+        request.user = self.remote_user
+        request.following = "mouse@local.com"
+        result = views.ostatus_follow_success(request)
+        self.assertIsInstance(result, TemplateResponse)
+        validate_html(result.render())
+        self.assertEqual(result.status_code, 200)
+
+    def test_remote_follow(self, _):
+        """check follow from remote page loads"""
+        request = self.factory.post("", {"user": self.remote_user.id})
+        request.user = self.remote_user
+        request.remote_user = "mouse@local.com"
+        result = views.remote_follow(request)
+        self.assertIsInstance(result, TemplateResponse)
+        validate_html(result.render())
+        self.assertEqual(result.status_code, 200)

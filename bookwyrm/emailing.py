@@ -10,14 +10,9 @@ from bookwyrm.settings import DOMAIN
 def email_data():
     """fields every email needs"""
     site = models.SiteSettings.objects.get()
-    if site.logo_small:
-        logo_path = f"/images/{site.logo_small.url}"
-    else:
-        logo_path = "/static/images/logo-small.png"
-
     return {
         "site_name": site.name,
-        "logo": logo_path,
+        "logo": site.logo_small_url,
         "domain": DOMAIN,
         "user": None,
     }
@@ -44,6 +39,18 @@ def password_reset_email(reset_code):
     data["reset_link"] = reset_code.link
     data["user"] = reset_code.user.display_name
     send_email.delay(reset_code.user.email, *format_email("password_reset", data))
+
+
+def moderation_report_email(report):
+    """a report was created"""
+    data = email_data()
+    data["reporter"] = report.reporter.localname or report.reporter.username
+    data["reportee"] = report.user.localname or report.user.username
+    data["report_link"] = report.remote_id
+
+    for admin in models.User.objects.filter(groups__name__in=["admin", "moderator"]):
+        data["user"] = admin.display_name
+        send_email.delay(admin.email, *format_email("moderation_report", data))
 
 
 def format_email(email_name, data):

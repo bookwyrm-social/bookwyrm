@@ -1,0 +1,15 @@
+{% load i18n %}
+{% if request.user == user %}
+{% else %}
+
+<div class="field mb-0">
+    <div class="control">
+        <a class="button is-small is-link" href="{% url 'remote-follow-page' %}?user={{ user.username }}" target="_blank" rel="noopener noreferrer" onclick="BookWyrm.displayPopUp(`{% url 'remote-follow-page' %}?user={{ user.username }}`, `remoteFollow`); return false;" aria-describedby="remote_follow_warning">
+            {% blocktrans with username=user.localname %}Follow on Fediverse{% endblocktrans %}
+        </a>
+    </div>
+    <p id="remote_follow_warning" class="mt-1 is-size-7 has-text-weight-light">
+        {% trans 'This link opens in a pop-up window' %}
+    </p>
+</div>
+{% endif %}

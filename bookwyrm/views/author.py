@@ -1,14 +1,18 @@
 """ the good people stuff! the authors! """
 from django.contrib.auth.decorators import login_required, permission_required
-from django.db.models import Q
+from django.core.paginator import Paginator
+from django.db.models import OuterRef, Subquery, F, Q
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
 from django.views import View
+from django.views.decorators.http import require_POST
 
 from bookwyrm import forms, models
 from bookwyrm.activitypub import ActivitypubResponse
-from .helpers import is_api_request
+from bookwyrm.connectors import connector_manager
+from bookwyrm.settings import PAGE_LENGTH
+from bookwyrm.views.helpers import is_api_request
 
 
 # pylint: disable= no-self-use
@@ -22,12 +26,27 @@ class Author(View):
         if is_api_request(request):
             return ActivitypubResponse(author.to_activity())
 
-        books = models.Work.objects.filter(
-            Q(authors=author) | Q(editions__authors=author)
+        default_editions = models.Edition.objects.filter(
+            parent_work=OuterRef("parent_work")
+        ).order_by("-edition_rank")
+
+        books = (
+            models.Edition.viewer_aware_objects(request.user)
+            .filter(Q(authors=author) | Q(parent_work__authors=author))
+            .annotate(default_id=Subquery(default_editions.values("id")[:1]))
+            .filter(default_id=F("id"))
+            .order_by("-first_published_date", "-published_date", "-created_date")
+            .prefetch_related("authors")
         ).distinct()
+
+        paginated = Paginator(books, PAGE_LENGTH)
+        page = paginated.get_page(request.GET.get("page"))
         data = {
             "author": author,
-            "books": [b.default_edition for b in books],
+            "books": page,
+            "page_range": paginated.get_elided_page_range(
+                page.number, on_each_side=2, on_ends=1
+            ),
         }
         return TemplateResponse(request, "author/author.html", data)
 
@@ -56,3 +75,19 @@ class EditAuthor(View):
         author = form.save()
 
         return redirect(f"/author/{author.id}")
+
+
+@login_required
+@require_POST
+@permission_required("bookwyrm.edit_book", raise_exception=True)
+# pylint: disable=unused-argument
+def update_author_from_remote(request, author_id, connector_identifier):
+    """load the remote data for this author"""
+    connector = connector_manager.load_connector(
+        get_object_or_404(models.Connector, identifier=connector_identifier)
+    )
+    author = get_object_or_404(models.Author, id=author_id)
+
+    connector.update_author_from_remote(author)
+
+    return redirect("author", author.id)

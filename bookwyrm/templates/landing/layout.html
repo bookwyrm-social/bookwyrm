@@ -65,10 +65,9 @@
                         {% csrf_token %}
                         <div class="block">
                             <label for="id_request_email" class="label">{% trans "Email address:" %}</label>
-                            <input type="email" name="email" maxlength="255" class="input" required="" id="id_request_email">
-                            {% for error in request_form.email.errors %}
-                            <p class="help is-danger">{{ error|escape }}</p>
-                            {% endfor %}
+                            <input type="email" name="email" maxlength="255" class="input" required="" id="id_request_email" aria-describedby="desc_request_email">
+
+                            {% include 'snippets/form_errors.html' with errors_list=request_form.email.errors id="desc_request_email" %}
                         </div>
                         <button type="submit" class="button is-link">{% trans "Submit" %}</button>
                     </form>

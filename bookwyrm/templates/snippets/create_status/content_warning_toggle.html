@@ -8,7 +8,7 @@
         id="id_show_spoilers_{{ uuid }}{{ local_uuid }}"
         {% if draft.content_warning or status.content_warning %}checked{% endif %}
         aria-hidden="true"
-        data-cache-draft="id_sensitive_{{ book.id }}_{{ type }}{{ reply_parent.id }}"
+        {% if not draft %}data-cache-draft="id_sensitive_{{ book.id }}_{{ type }}{{ reply_parent.id }}"{% endif %}
     >
     {% trans "Include spoiler alert" as button_text %}
     {% firstof draft.content_warning status.content_warning as pressed %}

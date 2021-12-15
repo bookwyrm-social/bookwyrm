@@ -17,7 +17,11 @@ reply_parent: the Status object this post will be in reply to, if applicable
 <form
     class="is-flex-grow-1{% if not no_script %} submit-status{% endif %}"
     name="{{ type }}"
-    action="/post/{{ type }}"
+    {% if draft %}
+    action="{% url 'create-status' type draft.id %}"
+    {% else %}
+    action="{% url 'create-status' type %}"
+    {% endif %}
     method="post"
     id="form_{{ type }}_{{ book.id }}{{ reply_parent.id }}"
 >
@@ -29,6 +33,9 @@ reply_parent: the Status object this post will be in reply to, if applicable
     <input type="hidden" name="book" value="{{ book.id }}">
     <input type="hidden" name="user" value="{{ request.user.id }}">
     <input type="hidden" name="reply_parent" value="{% firstof draft.reply_parent.id reply_parent.id %}">
+    {% if draft %}
+    <input type="hidden" name="reading_status" value="{{ draft.reading_status|default:'' }}">
+    {% endif %}
     {% endblock %}
 
     {% include "snippets/create_status/content_warning_field.html" %}

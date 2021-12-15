@@ -98,6 +98,9 @@ class Openlibrary(TestCase):
                     "type": "/type/datetime",
                     "value": "2008-08-31 10:09:33.413686",
                 },
+                "remote_ids": {
+                    "isni": "000111",
+                },
                 "key": "/authors/OL453734A",
                 "type": {"key": "/type/author"},
                 "id": 1259965,
@@ -110,6 +113,7 @@ class Openlibrary(TestCase):
         self.assertIsInstance(result, models.Author)
         self.assertEqual(result.name, "George Elliott")
         self.assertEqual(result.openlibrary_key, "OL453734A")
+        self.assertEqual(result.isni, "000111")
 
     def test_get_cover_url(self):
         """formats a url that should contain the cover image"""

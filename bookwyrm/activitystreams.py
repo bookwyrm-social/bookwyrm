@@ -7,7 +7,7 @@ from django.utils import timezone
 
 from bookwyrm import models
 from bookwyrm.redis_store import RedisStore, r
-from bookwyrm.tasks import app
+from bookwyrm.tasks import app, LOW, MEDIUM, HIGH
 
 
 class ActivityStream(RedisStore):
@@ -22,6 +22,11 @@ class ActivityStream(RedisStore):
         stream_id = self.stream_id(user)
         return f"{stream_id}-unread"
 
+    def unread_by_status_type_id(self, user):
+        """the redis key for this user's unread count for this stream"""
+        stream_id = self.stream_id(user)
+        return f"{stream_id}-unread-by-type"
+
     def get_rank(self, obj):  # pylint: disable=no-self-use
         """statuses are sorted by date published"""
         return obj.published_date.timestamp()
@@ -35,6 +40,10 @@ class ActivityStream(RedisStore):
             for user in self.get_audience(status):
                 # add to the unread status count
                 pipeline.incr(self.unread_id(user))
+                # add to the unread status count for status type
+                pipeline.hincrby(
+                    self.unread_by_status_type_id(user), get_status_type(status), 1
+                )
 
         # and go!
         pipeline.execute()
@@ -55,6 +64,7 @@ class ActivityStream(RedisStore):
         """load the statuses to be displayed"""
         # clear unreads for this feed
         r.set(self.unread_id(user), 0)
+        r.delete(self.unread_by_status_type_id(user))
 
         statuses = self.get_store(self.stream_id(user))
         return (
@@ -74,6 +84,14 @@ class ActivityStream(RedisStore):
     def get_unread_count(self, user):
         """get the unread status count for this user's feed"""
         return int(r.get(self.unread_id(user)) or 0)
+
+    def get_unread_count_by_status_type(self, user):
+        """get the unread status count for this user's feed's status types"""
+        status_types = r.hgetall(self.unread_by_status_type_id(user))
+        return {
+            str(key.decode("utf-8")): int(value) or 0
+            for key, value in status_types.items()
+        }
 
     def populate_streams(self, user):
         """go from zero to a timeline"""
@@ -277,7 +295,18 @@ def add_status_on_create(sender, instance, created, *args, **kwargs):
 
 def add_status_on_create_command(sender, instance, created):
     """runs this code only after the database commit completes"""
-    add_status_task.delay(instance.id, increment_unread=created)
+    priority = HIGH
+    # check if this is an old status, de-prioritize if so
+    # (this will happen if federation is very slow, or, more expectedly, on csv import)
+    one_day = 60 * 60 * 24
+    if (instance.created_date - instance.published_date).seconds > one_day:
+        priority = LOW
+
+    add_status_task.apply_async(
+        args=(instance.id,),
+        kwargs={"increment_unread": created},
+        queue=priority,
+    )
 
     if sender == models.Boost:
         handle_boost_task.delay(instance.id)
@@ -409,7 +438,7 @@ def remove_statuses_on_unshelve(sender, instance, *args, **kwargs):
 # ---- TASKS
 
 
-@app.task(queue="low_priority")
+@app.task(queue=LOW)
 def add_book_statuses_task(user_id, book_id):
     """add statuses related to a book on shelve"""
     user = models.User.objects.get(id=user_id)
@@ -417,7 +446,7 @@ def add_book_statuses_task(user_id, book_id):
     BooksStream().add_book_statuses(user, book)
 
 
-@app.task(queue="low_priority")
+@app.task(queue=LOW)
 def remove_book_statuses_task(user_id, book_id):
     """remove statuses about a book from a user's books feed"""
     user = models.User.objects.get(id=user_id)
@@ -425,7 +454,7 @@ def remove_book_statuses_task(user_id, book_id):
     BooksStream().remove_book_statuses(user, book)
 
 
-@app.task(queue="medium_priority")
+@app.task(queue=MEDIUM)
 def populate_stream_task(stream, user_id):
     """background task for populating an empty activitystream"""
     user = models.User.objects.get(id=user_id)
@@ -433,7 +462,7 @@ def populate_stream_task(stream, user_id):
     stream.populate_streams(user)
 
 
-@app.task(queue="medium_priority")
+@app.task(queue=MEDIUM)
 def remove_status_task(status_ids):
     """remove a status from any stream it might be in"""
     # this can take an id or a list of ids
@@ -446,10 +475,10 @@ def remove_status_task(status_ids):
             stream.remove_object_from_related_stores(status)
 
 
-@app.task(queue="high_priority")
+@app.task(queue=HIGH)
 def add_status_task(status_id, increment_unread=False):
     """add a status to any stream it should be in"""
-    status = models.Status.objects.get(id=status_id)
+    status = models.Status.objects.select_subclasses().get(id=status_id)
     # we don't want to tick the unread count for csv import statuses, idk how better
     # to check than just to see if the states is more than a few days old
     if status.created_date < timezone.now() - timedelta(days=2):
@@ -458,7 +487,7 @@ def add_status_task(status_id, increment_unread=False):
         stream.add_status(status, increment_unread=increment_unread)
 
 
-@app.task(queue="medium_priority")
+@app.task(queue=MEDIUM)
 def remove_user_statuses_task(viewer_id, user_id, stream_list=None):
     """remove all statuses by a user from a viewer's stream"""
     stream_list = [streams[s] for s in stream_list] if stream_list else streams.values()
@@ -468,7 +497,7 @@ def remove_user_statuses_task(viewer_id, user_id, stream_list=None):
         stream.remove_user_statuses(viewer, user)
 
 
-@app.task(queue="medium_priority")
+@app.task(queue=MEDIUM)
 def add_user_statuses_task(viewer_id, user_id, stream_list=None):
     """add all statuses by a user to a viewer's stream"""
     stream_list = [streams[s] for s in stream_list] if stream_list else streams.values()
@@ -478,7 +507,7 @@ def add_user_statuses_task(viewer_id, user_id, stream_list=None):
         stream.add_user_statuses(viewer, user)
 
 
-@app.task(queue="medium_priority")
+@app.task(queue=MEDIUM)
 def handle_boost_task(boost_id):
     """remove the original post and other, earlier boosts"""
     instance = models.Status.objects.get(id=boost_id)
@@ -496,3 +525,20 @@ def handle_boost_task(boost_id):
         stream.remove_object_from_related_stores(boosted, stores=audience)
         for status in old_versions:
             stream.remove_object_from_related_stores(status, stores=audience)
+
+
+def get_status_type(status):
+    """return status type even for boosted statuses"""
+    status_type = status.status_type.lower()
+
+    # Check if current status is a boost
+    if hasattr(status, "boost"):
+        # Act in accordance of your findings
+        if hasattr(status.boost.boosted_status, "review"):
+            status_type = "review"
+        if hasattr(status.boost.boosted_status, "comment"):
+            status_type = "comment"
+        if hasattr(status.boost.boosted_status, "quotation"):
+            status_type = "quotation"
+
+    return status_type

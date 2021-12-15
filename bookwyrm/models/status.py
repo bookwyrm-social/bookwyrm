@@ -19,7 +19,6 @@ from bookwyrm.settings import ENABLE_PREVIEW_IMAGES
 from .activitypub_mixin import ActivitypubMixin, ActivityMixin
 from .activitypub_mixin import OrderedCollectionPageMixin
 from .base_model import BookWyrmModel
-from .fields import image_serializer
 from .readthrough import ProgressMode
 from . import fields
 
@@ -31,6 +30,7 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         "User", on_delete=models.PROTECT, activitypub_field="attributedTo"
     )
     content = fields.HtmlField(blank=True, null=True)
+    raw_content = models.TextField(blank=True, null=True)
     mention_users = fields.TagField("User", related_name="mention_user")
     mention_books = fields.TagField("Edition", related_name="mention_book")
     local = models.BooleanField(default=True)
@@ -42,6 +42,9 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
     # created date is different than publish date because of federated posts
     published_date = fields.DateTimeField(
         default=timezone.now, activitypub_field="published"
+    )
+    edited_date = fields.DateTimeField(
+        blank=True, null=True, activitypub_field="updated"
     )
     deleted = models.BooleanField(default=False)
     deleted_date = models.DateTimeField(blank=True, null=True)
@@ -186,15 +189,26 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
             if hasattr(activity, "name"):
                 activity.name = self.pure_name
             activity.type = self.pure_type
-            activity.attachment = [
-                image_serializer(b.cover, b.alt_text)
-                for b in self.mention_books.all()[:4]
-                if b.cover
-            ]
-            if hasattr(self, "book") and self.book.cover:
-                activity.attachment.append(
-                    image_serializer(self.book.cover, self.book.alt_text)
-                )
+            book = getattr(self, "book", None)
+            books = [book] if book else []
+            books += list(self.mention_books.all())
+            if len(books) == 1 and getattr(books[0], "preview_image", None):
+                covers = [
+                    activitypub.Document(
+                        url=fields.get_absolute_url(books[0].preview_image),
+                        name=books[0].alt_text,
+                    )
+                ]
+            else:
+                covers = [
+                    activitypub.Document(
+                        url=fields.get_absolute_url(b.cover),
+                        name=b.alt_text,
+                    )
+                    for b in books
+                    if b and b.cover
+                ]
+            activity.attachment = covers
         return activity
 
     def to_activity(self, pure=False):  # pylint: disable=arguments-differ
@@ -218,6 +232,16 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         """Overridden filter for "direct" privacy level"""
         return queryset.exclude(
             ~Q(Q(user=viewer) | Q(mention_users=viewer)), privacy="direct"
+        )
+
+    @classmethod
+    def followers_filter(cls, queryset, viewer):
+        """Override-able filter for "followers" privacy level"""
+        return queryset.exclude(
+            ~Q(  # not yourself, a follower, or someone who is tagged
+                Q(user__followers=viewer) | Q(user=viewer) | Q(mention_users=viewer)
+            ),
+            privacy="followers",  # and the status is followers only
         )
 
 
@@ -292,6 +316,7 @@ class Quotation(BookStatus):
     """like a review but without a rating and transient"""
 
     quote = fields.HtmlField()
+    raw_quote = models.TextField(blank=True, null=True)
     position = models.IntegerField(
         validators=[MinValueValidator(0)], null=True, blank=True
     )

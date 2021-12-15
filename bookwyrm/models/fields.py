@@ -3,6 +3,7 @@ from dataclasses import MISSING
 import imghdr
 import re
 from uuid import uuid4
+from urllib.parse import urljoin
 
 import dateutil.parser
 from dateutil.parser import ParserError
@@ -13,11 +14,12 @@ from django.db import models
 from django.forms import ClearableFileInput, ImageField as DjangoImageField
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+from django.utils.encoding import filepath_to_uri
 
 from bookwyrm import activitypub
 from bookwyrm.connectors import get_image
 from bookwyrm.sanitize_html import InputHtmlParser
-from bookwyrm.settings import DOMAIN
+from bookwyrm.settings import MEDIA_FULL_URL
 
 
 def validate_remote_id(value):
@@ -294,7 +296,7 @@ class ManyToManyField(ActivitypubFieldMixin, models.ManyToManyField):
         super().__init__(*args, **kwargs)
 
     def set_field_from_activity(self, instance, data, overwrite=True):
-        """helper function for assinging a value to the field"""
+        """helper function for assigning a value to the field"""
         if not overwrite and getattr(instance, self.name).exists():
             return False
 
@@ -381,17 +383,6 @@ class CustomImageField(DjangoImageField):
     widget = ClearableFileInputWithWarning
 
 
-def image_serializer(value, alt):
-    """helper for serializing images"""
-    if value and hasattr(value, "url"):
-        url = value.url
-    else:
-        return None
-    if not url[:4] == "http":
-        url = f"https://{DOMAIN}{url}"
-    return activitypub.Document(url=url, name=alt)
-
-
 class ImageField(ActivitypubFieldMixin, models.ImageField):
     """activitypub-aware image field"""
 
@@ -407,7 +398,11 @@ class ImageField(ActivitypubFieldMixin, models.ImageField):
         if formatted is None or formatted is MISSING:
             return False
 
-        if not overwrite and hasattr(instance, self.name):
+        if (
+            not overwrite
+            and hasattr(instance, self.name)
+            and getattr(instance, self.name)
+        ):
             return False
 
         getattr(instance, self.name).save(*formatted, save=save)
@@ -424,7 +419,12 @@ class ImageField(ActivitypubFieldMixin, models.ImageField):
         activity[key] = formatted
 
     def field_to_activity(self, value, alt=None):
-        return image_serializer(value, alt)
+        url = get_absolute_url(value)
+
+        if not url:
+            return None
+
+        return activitypub.Document(url=url, name=alt)
 
     def field_from_activity(self, value):
         image_slug = value
@@ -459,6 +459,20 @@ class ImageField(ActivitypubFieldMixin, models.ImageField):
                 **kwargs,
             }
         )
+
+
+def get_absolute_url(value):
+    """returns an absolute URL for the image"""
+    name = getattr(value, "name")
+    if not name:
+        return None
+
+    url = filepath_to_uri(name)
+    if url is not None:
+        url = url.lstrip("/")
+    url = urljoin(MEDIA_FULL_URL, url)
+
+    return url
 
 
 class DateTimeField(ActivitypubFieldMixin, models.DateTimeField):

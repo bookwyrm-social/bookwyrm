@@ -1,0 +1,22 @@
+{% extends 'notifications/items/item_layout.html' %}
+
+{% load i18n %}
+{% load utilities %}
+
+{% block primary_link %}{% spaceless %}
+    {{ notification.related_group.local_path }}
+{% endspaceless %}{% endblock %}
+
+{% block icon %}
+<span class="icon icon-local"></span>
+{% endblock %}
+
+{% block description %}
+{% blocktrans trimmed with group_name=notification.related_group.name group_path=notification.related_group.local_path %}
+invited you to join the group "<a href="{{ group_path }}">{{ group_name }}</a>"
+{% endblocktrans %}
+<div class="row shrink">
+    {% include 'snippets/join_invitation_buttons.html' with group=notification.related_group %}
+</div>
+{% endblock %}
+

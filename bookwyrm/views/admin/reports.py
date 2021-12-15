@@ -7,7 +7,7 @@ from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.http import require_POST
 
-from bookwyrm import forms, models
+from bookwyrm import emailing, forms, models
 
 
 # pylint: disable=no-self-use
@@ -142,5 +142,6 @@ def make_report(request):
     if not form.is_valid():
         raise ValueError(form.errors)
 
-    form.save()
+    report = form.save()
+    emailing.moderation_report_email(report)
     return redirect(request.headers.get("Referer", "/"))

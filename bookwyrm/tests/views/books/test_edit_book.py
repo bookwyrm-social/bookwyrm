@@ -58,6 +58,17 @@ class EditBookViews(TestCase):
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
+    def test_edit_book_create_page(self):
+        """there are so many views, this just makes sure it LOADS"""
+        view = views.EditBook.as_view()
+        request = self.factory.get("")
+        request.user = self.local_user
+        request.user.is_superuser = True
+        result = view(request)
+        self.assertIsInstance(result, TemplateResponse)
+        validate_html(result.render())
+        self.assertEqual(result.status_code, 200)
+
     def test_edit_book(self):
         """lets a user edit a book"""
         view = views.EditBook.as_view()
@@ -68,7 +79,7 @@ class EditBookViews(TestCase):
         request = self.factory.post("", form.data)
         request.user = self.local_user
 
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             view(request, self.book.id)
 
         self.book.refresh_from_db()
@@ -104,7 +115,7 @@ class EditBookViews(TestCase):
         request = self.factory.post("", form.data)
         request.user = self.local_user
 
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             view(request, self.book.id)
 
         self.book.refresh_from_db()
@@ -125,7 +136,7 @@ class EditBookViews(TestCase):
         request = self.factory.post("", form.data)
         request.user = self.local_user
 
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             view(request, self.book.id)
         self.book.refresh_from_db()
         self.assertEqual(self.book.title, "New Title")
@@ -196,7 +207,7 @@ class EditBookViews(TestCase):
         request.user = self.local_user
 
         with patch(
-            "bookwyrm.models.activitypub_mixin.broadcast_task.delay"
+            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
         ) as delay_mock:
             views.upload_cover(request, self.book.id)
             self.assertEqual(delay_mock.call_count, 1)

@@ -77,7 +77,12 @@ def related_status(notification):
 def active_shelf(context, book):
     """check what shelf a user has a book on, if any"""
     if hasattr(book, "current_shelves"):
-        return book.current_shelves[0] if len(book.current_shelves) else {"book": book}
+        read_shelves = [
+            s
+            for s in book.current_shelves
+            if s.shelf.identifier in models.Shelf.READ_STATUS_IDENTIFIERS
+        ]
+        return read_shelves[0] if len(read_shelves) else {"book": book}
 
     shelf = (
         models.ShelfBook.objects.filter(

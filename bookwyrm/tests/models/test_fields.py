@@ -19,9 +19,10 @@ from django.utils import timezone
 
 from bookwyrm import activitypub
 from bookwyrm.activitypub.base_activity import ActivityObject
-from bookwyrm.models import fields, User, Status
+from bookwyrm.models import fields, User, Status, Edition
 from bookwyrm.models.base_model import BookWyrmModel
 from bookwyrm.models.activitypub_mixin import ActivitypubMixin
+from bookwyrm.settings import DOMAIN
 
 # pylint: disable=too-many-public-methods
 @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
@@ -214,7 +215,7 @@ class ModelFields(TestCase):
             "rat", "rat@rat.rat", "ratword", local=True, localname="rat"
         )
         public = "https://www.w3.org/ns/activitystreams#Public"
-        followers = "%s/followers" % user.remote_id
+        followers = f"{user.remote_id}/followers"
 
         instance = fields.PrivacyField()
         instance.name = "privacy_field"
@@ -408,11 +409,10 @@ class ModelFields(TestCase):
         """loadin' a list of items from Links"""
         # TODO
 
-    @responses.activate
     @patch("bookwyrm.models.activitypub_mixin.ObjectMixin.broadcast")
     @patch("bookwyrm.suggested_users.remove_user_task.delay")
-    def test_image_field(self, *_):
-        """storing images"""
+    def test_image_field_to_activity(self, *_):
+        """serialize an image field to activitypub"""
         user = User.objects.create_user(
             "mouse", "mouse@mouse.mouse", "mouseword", local=True, localname="mouse"
         )
@@ -424,39 +424,166 @@ class ModelFields(TestCase):
         image.save(output, format=image.format)
         user.avatar.save("test.jpg", ContentFile(output.getvalue()))
 
-        output = fields.image_serializer(user.avatar, alt="alt text")
+        instance = fields.ImageField()
+
+        output = instance.field_to_activity(user.avatar)
         self.assertIsNotNone(
             re.match(
-                r".*\.jpg",
+                fr"https:\/\/{DOMAIN}\/.*\.jpg",
                 output.url,
             )
         )
-        self.assertEqual(output.name, "alt text")
+        self.assertEqual(output.name, "")
         self.assertEqual(output.type, "Document")
 
-        instance = fields.ImageField()
+    @responses.activate
+    def test_image_field_from_activity(self, *_):
+        """load an image from activitypub"""
+        image_file = pathlib.Path(__file__).parent.joinpath(
+            "../../static/images/default_avi.jpg"
+        )
+        image = Image.open(image_file)
+        output = BytesIO()
+        image.save(output, format=image.format)
 
-        output = fields.image_serializer(user.avatar, alt=None)
-        self.assertEqual(instance.field_to_activity(user.avatar), output)
+        instance = fields.ImageField()
 
         responses.add(
             responses.GET,
             "http://www.example.com/image.jpg",
-            body=user.avatar.file.read(),
+            body=image.tobytes(),
             status=200,
         )
         loaded_image = instance.field_from_activity("http://www.example.com/image.jpg")
         self.assertIsInstance(loaded_image, list)
         self.assertIsInstance(loaded_image[1], ContentFile)
 
-    def test_image_serialize(self, *_):
-        """make sure we're creating sensible image paths"""
-        ValueMock = namedtuple("ValueMock", ("url"))
-        value_mock = ValueMock("/images/fish.jpg")
-        result = fields.image_serializer(value_mock, "hello")
-        self.assertEqual(result.type, "Document")
-        self.assertEqual(result.url, "https://your.domain.here/images/fish.jpg")
-        self.assertEqual(result.name, "hello")
+    @responses.activate
+    def test_image_field_set_field_from_activity(self, *_):
+        """update a model instance from an activitypub object"""
+        image_file = pathlib.Path(__file__).parent.joinpath(
+            "../../static/images/default_avi.jpg"
+        )
+        image = Image.open(image_file)
+        output = BytesIO()
+        image.save(output, format=image.format)
+
+        instance = fields.ImageField(activitypub_field="cover", name="cover")
+
+        responses.add(
+            responses.GET,
+            "http://www.example.com/image.jpg",
+            body=image.tobytes(),
+            status=200,
+        )
+        book = Edition.objects.create(title="hello")
+
+        MockActivity = namedtuple("MockActivity", ("cover"))
+        mock_activity = MockActivity("http://www.example.com/image.jpg")
+
+        instance.set_field_from_activity(book, mock_activity)
+        self.assertIsNotNone(book.cover.name)
+        self.assertEqual(book.cover.size, 43200)
+
+    @responses.activate
+    def test_image_field_set_field_from_activity_no_overwrite_no_cover(self, *_):
+        """update a model instance from an activitypub object"""
+        image_file = pathlib.Path(__file__).parent.joinpath(
+            "../../static/images/default_avi.jpg"
+        )
+        image = Image.open(image_file)
+        output = BytesIO()
+        image.save(output, format=image.format)
+
+        instance = fields.ImageField(activitypub_field="cover", name="cover")
+
+        responses.add(
+            responses.GET,
+            "http://www.example.com/image.jpg",
+            body=image.tobytes(),
+            status=200,
+        )
+        book = Edition.objects.create(title="hello")
+
+        MockActivity = namedtuple("MockActivity", ("cover"))
+        mock_activity = MockActivity("http://www.example.com/image.jpg")
+
+        instance.set_field_from_activity(book, mock_activity, overwrite=False)
+        self.assertIsNotNone(book.cover.name)
+        self.assertEqual(book.cover.size, 43200)
+
+    @responses.activate
+    def test_image_field_set_field_from_activity_no_overwrite_with_cover(self, *_):
+        """update a model instance from an activitypub object"""
+        image_file = pathlib.Path(__file__).parent.joinpath(
+            "../../static/images/default_avi.jpg"
+        )
+        image = Image.open(image_file)
+        output = BytesIO()
+        image.save(output, format=image.format)
+
+        another_image_file = pathlib.Path(__file__).parent.joinpath(
+            "../../static/images/logo.png"
+        )
+        another_image = Image.open(another_image_file)
+        another_output = BytesIO()
+        another_image.save(another_output, format=another_image.format)
+
+        instance = fields.ImageField(activitypub_field="cover", name="cover")
+
+        responses.add(
+            responses.GET,
+            "http://www.example.com/image.jpg",
+            body=another_image.tobytes(),
+            status=200,
+        )
+        book = Edition.objects.create(title="hello")
+        book.cover.save("test.jpg", ContentFile(output.getvalue()))
+        self.assertEqual(book.cover.size, 2136)
+
+        MockActivity = namedtuple("MockActivity", ("cover"))
+        mock_activity = MockActivity("http://www.example.com/image.jpg")
+
+        instance.set_field_from_activity(book, mock_activity, overwrite=False)
+        # same cover as before
+        self.assertEqual(book.cover.size, 2136)
+
+    @responses.activate
+    def test_image_field_set_field_from_activity_with_overwrite_with_cover(self, *_):
+        """update a model instance from an activitypub object"""
+        image_file = pathlib.Path(__file__).parent.joinpath(
+            "../../static/images/default_avi.jpg"
+        )
+        image = Image.open(image_file)
+        output = BytesIO()
+        image.save(output, format=image.format)
+        book = Edition.objects.create(title="hello")
+        book.cover.save("test.jpg", ContentFile(output.getvalue()))
+        self.assertEqual(book.cover.size, 2136)
+
+        another_image_file = pathlib.Path(__file__).parent.joinpath(
+            "../../static/images/logo.png"
+        )
+        another_image = Image.open(another_image_file)
+        another_output = BytesIO()
+        another_image.save(another_output, format=another_image.format)
+
+        instance = fields.ImageField(activitypub_field="cover", name="cover")
+
+        responses.add(
+            responses.GET,
+            "http://www.example.com/image.jpg",
+            body=another_image.tobytes(),
+            status=200,
+        )
+
+        MockActivity = namedtuple("MockActivity", ("cover"))
+        mock_activity = MockActivity("http://www.example.com/image.jpg")
+
+        instance.set_field_from_activity(book, mock_activity, overwrite=True)
+        # new cover
+        self.assertIsNotNone(book.cover.name)
+        self.assertEqual(book.cover.size, 376800)
 
     def test_datetime_field(self, *_):
         """this one is pretty simple, it just has to use isoformat"""

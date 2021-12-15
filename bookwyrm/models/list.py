@@ -1,22 +1,22 @@
 """ make a list of books!! """
+import uuid
+
 from django.apps import apps
 from django.db import models
+from django.db.models import Q
 from django.utils import timezone
 
 from bookwyrm import activitypub
 from bookwyrm.settings import DOMAIN
+
 from .activitypub_mixin import CollectionItemMixin, OrderedCollectionMixin
 from .base_model import BookWyrmModel
+from .group import GroupMember
 from . import fields
-
 
 CurationType = models.TextChoices(
     "Curation",
-    [
-        "closed",
-        "open",
-        "curated",
-    ],
+    ["closed", "open", "curated", "group"],
 )
 
 
@@ -32,12 +32,20 @@ class List(OrderedCollectionMixin, BookWyrmModel):
     curation = fields.CharField(
         max_length=255, default="closed", choices=CurationType.choices
     )
+    group = models.ForeignKey(
+        "Group",
+        on_delete=models.SET_NULL,
+        default=None,
+        blank=True,
+        null=True,
+    )
     books = models.ManyToManyField(
         "Edition",
         symmetrical=False,
         through="ListItem",
         through_fields=("book_list", "book"),
     )
+    embed_key = models.UUIDField(unique=True, null=True, editable=False)
     activity_serializer = activitypub.BookList
 
     def get_remote_id(self):
@@ -53,6 +61,58 @@ class List(OrderedCollectionMixin, BookWyrmModel):
         """default sorting"""
 
         ordering = ("-updated_date",)
+
+    def raise_not_editable(self, viewer):
+        """the associated user OR the list owner can edit"""
+        if self.user == viewer:
+            return
+        # group members can edit items in group lists
+        is_group_member = GroupMember.objects.filter(
+            group=self.group, user=viewer
+        ).exists()
+        if is_group_member:
+            return
+        super().raise_not_editable(viewer)
+
+    @classmethod
+    def followers_filter(cls, queryset, viewer):
+        """Override filter for "followers" privacy level to allow non-following
+        group members to see the existence of group lists"""
+
+        return queryset.exclude(
+            ~Q(  # user isn't following or group member
+                Q(user__followers=viewer)
+                | Q(user=viewer)
+                | Q(group__memberships__user=viewer)
+            ),
+            privacy="followers",  # and the status (of the list) is followers only
+        )
+
+    @classmethod
+    def direct_filter(cls, queryset, viewer):
+        """Override filter for "direct" privacy level to allow
+        group members to see the existence of group lists"""
+
+        return queryset.exclude(
+            ~Q(  # user not self and not in the group if this is a group list
+                Q(user=viewer) | Q(group__memberships__user=viewer)
+            ),
+            privacy="direct",
+        )
+
+    @classmethod
+    def remove_from_group(cls, owner, user):
+        """remove a list from a group"""
+
+        cls.objects.filter(group__user=owner, user=user).all().update(
+            group=None, curation="closed"
+        )
+
+    def save(self, *args, **kwargs):
+        """on save, update embed_key and avoid clash with existing code"""
+        if not self.embed_key:
+            self.embed_key = uuid.uuid4()
+        return super().save(*args, **kwargs)
 
 
 class ListItem(CollectionItemMixin, BookWyrmModel):
@@ -82,9 +142,9 @@ class ListItem(CollectionItemMixin, BookWyrmModel):
         self.book_list.save(broadcast=False)
 
         list_owner = self.book_list.user
+        model = apps.get_model("bookwyrm.Notification", require_ready=True)
         # create a notification if somoene ELSE added to a local user's list
         if created and list_owner.local and list_owner != self.user:
-            model = apps.get_model("bookwyrm.Notification", require_ready=True)
             model.objects.create(
                 user=list_owner,
                 related_user=self.user,
@@ -92,9 +152,25 @@ class ListItem(CollectionItemMixin, BookWyrmModel):
                 notification_type="ADD",
             )
 
+        if self.book_list.group:
+            for membership in self.book_list.group.memberships.all():
+                if membership.user != self.user:
+                    model.objects.create(
+                        user=membership.user,
+                        related_user=self.user,
+                        related_list_item=self,
+                        notification_type="ADD",
+                    )
+
     def raise_not_deletable(self, viewer):
         """the associated user OR the list owner can delete"""
         if self.book_list.user == viewer:
+            return
+        # group members can delete items in group lists
+        is_group_member = GroupMember.objects.filter(
+            group=self.book_list.group, user=viewer
+        ).exists()
+        if is_group_member:
             return
         super().raise_not_deletable(viewer)
 

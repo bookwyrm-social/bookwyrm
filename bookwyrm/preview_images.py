@@ -49,6 +49,28 @@ def get_font(font_name, size=28):
     return font
 
 
+def get_wrapped_text(text, font, content_width):
+    """text wrap length depends on the max width of the content"""
+
+    low = 0
+    high = len(text)
+
+    try:
+        # ideal length is determined via binary search
+        while low < high:
+            mid = math.floor(low + high)
+            wrapped_text = textwrap.fill(text, width=mid)
+            width = font.getsize_multiline(wrapped_text)[0]
+            if width < content_width:
+                low = mid
+            else:
+                high = mid - 1
+    except AttributeError:
+        wrapped_text = text
+
+    return wrapped_text
+
+
 def generate_texts_layer(texts, content_width):
     """Adds text for images"""
     font_text_zero = get_font("bold", size=20)
@@ -63,7 +85,8 @@ def generate_texts_layer(texts, content_width):
 
     if "text_zero" in texts and texts["text_zero"]:
         # Text one (Book title)
-        text_zero = textwrap.fill(texts["text_zero"], width=72)
+        text_zero = get_wrapped_text(texts["text_zero"], font_text_zero, content_width)
+
         text_layer_draw.multiline_text(
             (0, text_y), text_zero, font=font_text_zero, fill=TEXT_COLOR
         )
@@ -75,7 +98,8 @@ def generate_texts_layer(texts, content_width):
 
     if "text_one" in texts and texts["text_one"]:
         # Text one (Book title)
-        text_one = textwrap.fill(texts["text_one"], width=28)
+        text_one = get_wrapped_text(texts["text_one"], font_text_one, content_width)
+
         text_layer_draw.multiline_text(
             (0, text_y), text_one, font=font_text_one, fill=TEXT_COLOR
         )
@@ -87,7 +111,8 @@ def generate_texts_layer(texts, content_width):
 
     if "text_two" in texts and texts["text_two"]:
         # Text one (Book subtitle)
-        text_two = textwrap.fill(texts["text_two"], width=36)
+        text_two = get_wrapped_text(texts["text_two"], font_text_two, content_width)
+
         text_layer_draw.multiline_text(
             (0, text_y), text_two, font=font_text_two, fill=TEXT_COLOR
         )
@@ -99,7 +124,10 @@ def generate_texts_layer(texts, content_width):
 
     if "text_three" in texts and texts["text_three"]:
         # Text three (Book authors)
-        text_three = textwrap.fill(texts["text_three"], width=36)
+        text_three = get_wrapped_text(
+            texts["text_three"], font_text_three, content_width
+        )
+
         text_layer_draw.multiline_text(
             (0, text_y), text_three, font=font_text_three, fill=TEXT_COLOR
         )
@@ -317,15 +345,21 @@ def save_and_cleanup(image, instance=None):
     """Save and close the file"""
     if not isinstance(instance, (models.Book, models.User, models.SiteSettings)):
         return False
-    uuid = uuid4()
-    file_name = f"{instance.id}-{uuid}.jpg"
     image_buffer = BytesIO()
 
     try:
         try:
-            old_path = instance.preview_image.name
+            file_name = instance.preview_image.name
         except ValueError:
-            old_path = None
+            file_name = None
+
+        if not file_name or file_name == "":
+            uuid = uuid4()
+            file_name = f"{instance.id}-{uuid}.jpg"
+
+        # Clean up old file before saving
+        if file_name and default_storage.exists(file_name):
+            default_storage.delete(file_name)
 
         # Save
         image.save(image_buffer, format="jpeg", quality=75)
@@ -344,10 +378,6 @@ def save_and_cleanup(image, instance=None):
             instance.save(broadcast=False, update_fields=["preview_image"])
         else:
             instance.save(update_fields=["preview_image"])
-
-        # Clean up old file after saving
-        if old_path and default_storage.exists(old_path):
-            default_storage.delete(old_path)
 
     finally:
         image_buffer.close()

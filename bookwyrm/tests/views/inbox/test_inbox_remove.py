@@ -75,7 +75,7 @@ class InboxRemove(TestCase):
 
     def test_handle_remove_book_from_list(self):
         """listing a book"""
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             booklist = models.List.objects.create(
                 name="test list",
                 user=self.local_user,

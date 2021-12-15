@@ -20,6 +20,10 @@ body {
     overflow: visible;
 }
 
+.card.has-border {
+    border: 1px solid #eee;
+}
+
 .scroll-x {
     overflow: hidden;
     overflow-x: auto;
@@ -113,6 +117,34 @@ input[type=file]::file-selector-button {
 input[type=file]::file-selector-button:hover {
     border-color: #b5b5b5;
     color: #363636;
+}
+
+details .dropdown-menu {
+    display: block !important;
+}
+
+details.dropdown[open] summary.dropdown-trigger::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+summary::marker {
+    content: none;
+}
+
+.detail-pinned-button summary {
+    position: absolute;
+    right: 0;
+}
+
+.detail-pinned-button form {
+    float: left;
+    width: -webkit-fill-available;
+    margin-top: 1em;
 }
 
 /** Shelving
@@ -507,6 +539,20 @@ ol.ordered-list li::before {
     bottom: 0;
     left: 2.5em;
     border-left: 2px solid #e0e0e0;
+}
+
+/* Breadcrumbs
+ ******************************************************************************/
+
+.breadcrumb li:first-child * {
+    padding-left: 0;
+}
+
+.breadcrumb li > * {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    padding: 0 0.75em;
 }
 
 /* Dimensions

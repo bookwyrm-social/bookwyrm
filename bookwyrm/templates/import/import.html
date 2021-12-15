@@ -22,14 +22,17 @@
 
             <div class="select block">
                 <select name="source" id="source">
-                    <option value="GoodReads" {% if current == 'GoodReads' %}selected{% endif %}>
-                        GoodReads (CSV)
+                    <option value="Goodreads" {% if current == 'Goodreads' %}selected{% endif %}>
+                        Goodreads (CSV)
                     </option>
                     <option value="Storygraph" {% if current == 'Storygraph' %}selected{% endif %}>
                         Storygraph (CSV)
                     </option>
                     <option value="LibraryThing" {% if current == 'LibraryThing' %}selected{% endif %}>
                         LibraryThing (TSV)
+                    </option>
+                    <option value="OpenLibrary" {% if current == 'OpenLibrary' %}selected{% endif %}>
+                        OpenLibrary (CSV)
                     </option>
                 </select>
             </div>
@@ -46,10 +49,10 @@
                 </label>
             </div>
             <div class="field">
-                <label>
-                    <span class="label">{% trans "Privacy setting for imported reviews:" %}</span>
-                    {% include 'snippets/privacy_select.html' with no_label=True %}
+                <label class="label" for="privacy_import">
+                    {% trans "Privacy setting for imported reviews:" %}
                 </label>
+                {% include 'snippets/privacy_select.html' with no_label=True privacy_uuid="import" %}
             </div>
         </div>
         </div>

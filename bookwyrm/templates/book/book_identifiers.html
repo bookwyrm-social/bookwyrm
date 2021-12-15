@@ -1,7 +1,7 @@
 {% spaceless %}
 {% load i18n %}
 
-{% if book.isbn13 or book.oclc_number or book.asin %}
+{% if book.isbn_13 or book.oclc_number or book.asin %}
 <dl>
     {% if book.isbn_13 %}
         <div class="is-flex">

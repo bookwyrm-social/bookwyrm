@@ -44,6 +44,7 @@ urlpatterns = [
     re_path(r"^api/v1/instance/?$", views.instance_info),
     re_path(r"^api/v1/instance/peers/?$", views.peers),
     re_path(r"^opensearch.xml$", views.opensearch, name="opensearch"),
+    re_path(r"^ostatus_subscribe/?$", views.ostatus_follow_request),
     # polling updates
     re_path("^api/updates/notifications/?$", views.get_notification_count),
     re_path("^api/updates/stream/(?P<stream>[a-z]+)/?$", views.get_unread_status_count),
@@ -237,7 +238,41 @@ urlpatterns = [
     re_path(r"^search/?$", views.Search.as_view(), name="search"),
     # imports
     re_path(r"^import/?$", views.Import.as_view(), name="import"),
-    re_path(r"^import/(\d+)/?$", views.ImportStatus.as_view(), name="import-status"),
+    re_path(
+        r"^import/(?P<job_id>\d+)/?$",
+        views.ImportStatus.as_view(),
+        name="import-status",
+    ),
+    re_path(
+        r"^import/(?P<job_id>\d+)/retry/(?P<item_id>\d+)/?$",
+        views.retry_item,
+        name="import-item-retry",
+    ),
+    re_path(
+        r"^import/(?P<job_id>\d+)/failed/?$",
+        views.ImportTroubleshoot.as_view(),
+        name="import-troubleshoot",
+    ),
+    re_path(
+        r"^import/(?P<job_id>\d+)/review/?$",
+        views.ImportManualReview.as_view(),
+        name="import-review",
+    ),
+    re_path(
+        r"^import/(?P<job_id>\d+)/review/?$",
+        views.ImportManualReview.as_view(),
+        name="import-review",
+    ),
+    re_path(
+        r"^import/(?P<job_id>\d+)/review/(?P<item_id>\d+)/approve/?$",
+        views.approve_import_item,
+        name="import-approve",
+    ),
+    re_path(
+        r"^import/(?P<job_id>\d+)/review/(?P<item_id>\d+)/delete/?$",
+        views.delete_import_item,
+        name="import-delete",
+    ),
     # users
     re_path(rf"{USER_PATH}\.json$", views.User.as_view()),
     re_path(rf"{USER_PATH}/?$", views.User.as_view(), name="user-feed"),
@@ -253,6 +288,33 @@ urlpatterns = [
         name="user-following",
     ),
     re_path(r"^hide-suggestions/?$", views.hide_suggestions, name="hide-suggestions"),
+    # groups
+    re_path(rf"{USER_PATH}/groups/?$", views.UserGroups.as_view(), name="user-groups"),
+    re_path(
+        r"^group/(?P<group_id>\d+)(.json)?/?$", views.Group.as_view(), name="group"
+    ),
+    re_path(
+        r"^group/delete/(?P<group_id>\d+)/?$", views.delete_group, name="delete-group"
+    ),
+    re_path(
+        r"^group/(?P<group_id>\d+)/add-users/?$",
+        views.FindUsers.as_view(),
+        name="group-find-users",
+    ),
+    re_path(r"^add-group-member/?$", views.invite_member, name="invite-group-member"),
+    re_path(
+        r"^remove-group-member/?$", views.remove_member, name="remove-group-member"
+    ),
+    re_path(
+        r"^accept-group-invitation/?$",
+        views.accept_membership,
+        name="accept-group-invitation",
+    ),
+    re_path(
+        r"^reject-group-invitation/?$",
+        views.reject_membership,
+        name="reject-group-invitation",
+    ),
     # lists
     re_path(rf"{USER_PATH}/lists/?$", views.UserLists.as_view(), name="user-lists"),
     re_path(r"^list/?$", views.Lists.as_view(), name="lists"),
@@ -275,6 +337,11 @@ urlpatterns = [
     ),
     re_path(r"^save-list/(?P<list_id>\d+)/?$", views.save_list, name="list-save"),
     re_path(r"^unsave-list/(?P<list_id>\d+)/?$", views.unsave_list, name="list-unsave"),
+    re_path(
+        r"^list/(?P<list_id>\d+)/embed/(?P<list_key>[0-9a-f]+)?$",
+        views.unsafe_embed_list,
+        name="embed-list",
+    ),
     # User books
     re_path(rf"{USER_PATH}/books/?$", views.Shelf.as_view(), name="user-shelves"),
     re_path(
@@ -316,6 +383,9 @@ urlpatterns = [
         rf"{STATUS_PATH}/replies(.json)?/?$", views.Replies.as_view(), name="replies"
     ),
     re_path(
+        r"^edit/(?P<status_id>\d+)/?$", views.EditStatus.as_view(), name="edit-status"
+    ),
+    re_path(
         r"^post/?$",
         views.CreateStatus.as_view(),
         name="create-status",
@@ -326,14 +396,14 @@ urlpatterns = [
         name="create-status",
     ),
     re_path(
+        r"^post/(?P<status_type>\w+)/(?P<existing_status_id>\d+)/?$",
+        views.CreateStatus.as_view(),
+        name="create-status",
+    ),
+    re_path(
         r"^delete-status/(?P<status_id>\d+)/?$",
         views.DeleteStatus.as_view(),
         name="delete-status",
-    ),
-    re_path(
-        r"^redraft-status/(?P<status_id>\d+)/?$",
-        views.DeleteAndRedraft.as_view(),
-        name="redraft",
     ),
     # interact
     re_path(r"^favorite/(?P<status_id>\d+)/?$", views.Favorite.as_view(), name="fav"),
@@ -358,13 +428,29 @@ urlpatterns = [
         r"^upload-cover/(?P<book_id>\d+)/?$", views.upload_cover, name="upload-cover"
     ),
     re_path(r"^add-description/(?P<book_id>\d+)/?$", views.add_description),
-    re_path(r"^resolve-book/?$", views.resolve_book),
-    re_path(r"^switch-edition/?$", views.switch_edition),
+    re_path(r"^resolve-book/?$", views.resolve_book, name="resolve-book"),
+    re_path(r"^switch-edition/?$", views.switch_edition, name="switch-edition"),
+    re_path(
+        rf"{BOOK_PATH}/update/(?P<connector_identifier>[\w\.]+)/?$",
+        views.update_book_from_remote,
+        name="book-update-remote",
+    ),
+    re_path(
+        r"^author/(?P<author_id>\d+)/update/(?P<connector_identifier>[\w\.]+)/?$",
+        views.update_author_from_remote,
+        name="author-update-remote",
+    ),
     # isbn
     re_path(r"^isbn/(?P<isbn>\d+)(.json)?/?$", views.Isbn.as_view()),
     # author
-    re_path(r"^author/(?P<author_id>\d+)(.json)?/?$", views.Author.as_view()),
-    re_path(r"^author/(?P<author_id>\d+)/edit/?$", views.EditAuthor.as_view()),
+    re_path(
+        r"^author/(?P<author_id>\d+)(.json)?/?$", views.Author.as_view(), name="author"
+    ),
+    re_path(
+        r"^author/(?P<author_id>\d+)/edit/?$",
+        views.EditAuthor.as_view(),
+        name="edit-author",
+    ),
     # reading progress
     re_path(r"^edit-readthrough/?$", views.edit_readthrough, name="edit-readthrough"),
     re_path(r"^delete-readthrough/?$", views.delete_readthrough),
@@ -386,4 +472,9 @@ urlpatterns = [
     re_path(r"^unfollow/?$", views.unfollow, name="unfollow"),
     re_path(r"^accept-follow-request/?$", views.accept_follow_request),
     re_path(r"^delete-follow-request/?$", views.delete_follow_request),
+    re_path(r"^ostatus_follow/?$", views.remote_follow, name="remote-follow"),
+    re_path(r"^remote_follow/?$", views.remote_follow_page, name="remote-follow-page"),
+    re_path(
+        r"^ostatus_success/?$", views.ostatus_follow_success, name="ostatus-success"
+    ),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

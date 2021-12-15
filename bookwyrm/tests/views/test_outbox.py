@@ -11,7 +11,7 @@ from bookwyrm.settings import USER_AGENT
 
 
 # pylint: disable=too-many-public-methods
-@patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
+@patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
 class OutboxView(TestCase):
     """sends out activities"""
 

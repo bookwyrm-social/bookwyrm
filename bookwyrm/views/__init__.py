@@ -29,38 +29,69 @@ from .preferences.block import Block, unblock
 
 # books
 from .books.books import Book, upload_cover, add_description, resolve_book
+from .books.books import update_book_from_remote
 from .books.edit_book import EditBook, ConfirmEditBook
 from .books.editions import Editions, switch_edition
 
+# landing
+from .landing.landing import About, Home, Landing
+from .landing.login import Login, Logout
+from .landing.register import Register, ConfirmEmail, ConfirmEmailCode, resend_link
+from .landing.password import PasswordResetRequest, PasswordReset
+
+# shelves
+from .shelf.shelf import Shelf
+from .shelf.shelf_actions import create_shelf, delete_shelf
+from .shelf.shelf_actions import shelve, unshelve
+
+# csv import
+from .imports.import_data import Import
+from .imports.import_status import ImportStatus, retry_item
+from .imports.troubleshoot import ImportTroubleshoot
+from .imports.manually_review import (
+    ImportManualReview,
+    approve_import_item,
+    delete_import_item,
+)
+
 # misc views
-from .author import Author, EditAuthor
+from .author import Author, EditAuthor, update_author_from_remote
 from .directory import Directory
 from .discover import Discover
 from .feed import DirectMessage, Feed, Replies, Status
-from .follow import follow, unfollow
+from .follow import (
+    follow,
+    unfollow,
+    ostatus_follow_request,
+    ostatus_follow_success,
+    remote_follow,
+    remote_follow_page,
+)
 from .follow import accept_follow_request, delete_follow_request
 from .get_started import GetStartedBooks, GetStartedProfile, GetStartedUsers
 from .goal import Goal, hide_goal
-from .import_data import Import, ImportStatus
+from .group import (
+    Group,
+    UserGroups,
+    FindUsers,
+    delete_group,
+    invite_member,
+    remove_member,
+    accept_membership,
+    reject_membership,
+)
 from .inbox import Inbox
 from .interaction import Favorite, Unfavorite, Boost, Unboost
 from .isbn import Isbn
-from .landing import About, Home, Landing
 from .list import Lists, SavedLists, List, Curate, UserLists
-from .list import save_list, unsave_list, delete_list
-from .login import Login, Logout
+from .list import save_list, unsave_list, delete_list, unsafe_embed_list
 from .notifications import Notifications
 from .outbox import Outbox
 from .reading import create_readthrough, delete_readthrough, delete_progressupdate
 from .reading import ReadingStatus
-from .register import Register, ConfirmEmail, ConfirmEmailCode, resend_link
 from .rss_feed import RssFeed
-from .password import PasswordResetRequest, PasswordReset
 from .search import Search
-from .shelf import Shelf
-from .shelf import create_shelf, delete_shelf
-from .shelf import shelve, unshelve
-from .status import CreateStatus, DeleteStatus, DeleteAndRedraft, update_progress
+from .status import CreateStatus, EditStatus, DeleteStatus, update_progress
 from .status import edit_readthrough
 from .updates import get_notification_count, get_unread_status_count
 from .user import User, Followers, Following, hide_suggestions

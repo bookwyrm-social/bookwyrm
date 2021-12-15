@@ -1,0 +1,28 @@
+{% extends 'notifications/items/item_layout.html' %}
+
+{% load i18n %}
+{% load utilities %}
+
+{% block primary_link %}{% spaceless %}
+    {{ notification.related_group.local_path }}
+{% endspaceless %}{% endblock %}
+
+{% block icon %}
+<span class="icon icon-local"></span>
+{% endblock %}
+
+{% block description %}
+    {% if notification.notification_type == 'GROUP_PRIVACY' %}
+        {% blocktrans trimmed with group_name=notification.related_group.name group_path=notification.related_group.local_path %}
+        has changed the privacy level for <a href="{{ group_path }}">{{ group_name }}</a>
+        {% endblocktrans %}
+    {% elif notification.notification_type == 'GROUP_NAME' %}
+        {% blocktrans trimmed with group_name=notification.related_group.name group_path=notification.related_group.local_path %}
+        has changed the name of <a href="{{ group_path }}">{{ group_name }}</a>
+        {% endblocktrans %}
+    {% else %}
+        {% blocktrans trimmed with group_name=notification.related_group.name group_path=notification.related_group.local_path %}
+        has changed the description of <a href="{{ group_path }}">{{ group_name }}</a>
+        {% endblocktrans %}
+    {% endif %}
+{% endblock %}

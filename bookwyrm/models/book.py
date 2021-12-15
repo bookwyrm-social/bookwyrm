@@ -53,6 +53,16 @@ class BookDataModel(ObjectMixin, BookWyrmModel):
         null=True,
     )
 
+    @property
+    def openlibrary_link(self):
+        """generate the url from the openlibrary id"""
+        return f"https://openlibrary.org/books/{self.openlibrary_key}"
+
+    @property
+    def inventaire_link(self):
+        """generate the url from the inventaire id"""
+        return f"https://inventaire.io/entity/{self.inventaire_id}"
+
     class Meta:
         """can't initialize this model, that wouldn't make sense"""
 
@@ -67,9 +77,10 @@ class BookDataModel(ObjectMixin, BookWyrmModel):
             self.remote_id = None
         return super().save(*args, **kwargs)
 
-    def broadcast(self, activity, sender, software="bookwyrm"):
+    # pylint: disable=arguments-differ
+    def broadcast(self, activity, sender, software="bookwyrm", **kwargs):
         """only send book data updates to other bookwyrm instances"""
-        super().broadcast(activity, sender, software=software)
+        super().broadcast(activity, sender, software=software, **kwargs)
 
 
 class Book(BookDataModel):

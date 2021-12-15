@@ -7,13 +7,14 @@ from django.utils.translation import gettext_lazy as _
 
 
 env = Env()
+env.read_env()
 DOMAIN = env("DOMAIN")
-VERSION = "0.0.1"
+VERSION = "0.1.0"
 
 PAGE_LENGTH = env("PAGE_LENGTH", 15)
 DEFAULT_LANGUAGE = env("DEFAULT_LANGUAGE", "English")
 
-JS_CACHE = "c02929b1"
+JS_CACHE = "3891b373"
 
 # email
 EMAIL_BACKEND = env("EMAIL_BACKEND", "django.core.mail.backends.smtp.EmailBackend")
@@ -162,11 +163,14 @@ AUTH_PASSWORD_VALIDATORS = [
 LANGUAGE_CODE = "en-us"
 LANGUAGES = [
     ("en-us", _("English")),
-    ("de-de", _("Deutsch (German)")),  # German
-    ("es", _("Español (Spanish)")),  # Spanish
-    ("fr-fr", _("Français (French)")),  # French
-    ("zh-hans", _("简体中文 (Simplified Chinese)")),  # Simplified Chinese
-    ("zh-hant", _("繁體中文 (Traditional Chinese)")),  # Traditional Chinese
+    ("de-de", _("Deutsch (German)")),
+    ("es-es", _("Español (Spanish)")),
+    ("gl-es", _("Galego (Galician)")),
+    ("fr-fr", _("Français (French)")),
+    ("lt-lt", _("Lietuvių (Lithuanian)")),
+    ("pt-br", _("Português - Brasil (Brazilian Portuguese)")),
+    ("zh-hans", _("简体中文 (Simplified Chinese)")),
+    ("zh-hant", _("繁體中文 (Traditional Chinese)")),
 ]
 
 

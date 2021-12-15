@@ -1,0 +1,53 @@
+{% load layout %}
+{% load i18n %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="{% get_lang %}">
+<head>
+    <title>{% block title %}BookWyrm{% endblock %} - {{ site.name }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{% static "css/vendor/bulma.min.css" %}">
+    <link rel="stylesheet" href="{% static "css/vendor/icons.css" %}">
+    <link rel="stylesheet" href="{% static "css/bookwyrm.css" %}">
+
+    <base target="_blank">
+
+    <link rel="shortcut icon" type="image/x-icon" href="{% if site.favicon %}{% get_media_prefix %}{{ site.favicon }}{% else %}{% static "images/favicon.ico" %}{% endif %}">
+</head>
+<body>
+
+<header class="section py-3">
+    <a href="/" class="is-flex is-align-items-center">
+        <img class="image logo is-flex-shrink-0" style="height: 32px" src="{% if site.logo_small %}{% get_media_prefix %}{{ site.logo_small }}{% else %}{% static "images/logo-small.png" %}{% endif %}" alt="{% blocktrans with site_name=site.name %}{{ site_name }} home page{% endblocktrans %}">
+        <span class="title is-5 ml-2">{{ site.name }}</span>
+    </a>
+</header>
+
+<main class="section py-3">
+    {% block content %}
+    {% endblock %}
+</main>
+
+<footer class="section py-3">
+    <p>
+        <a href="{% url 'about' %}">
+            {% blocktrans with site_name=site.name %}About {{ site_name }}{% endblocktrans %}
+        </a>
+    </p>
+    {% if site.admin_email %}
+    <p>
+        <a href="mailto:{{ site.admin_email }}">
+            {% trans "Contact site admin" %}
+        </a>
+    </p>
+    {% endif %}
+    <p>
+        <a href="https://joinbookwyrm.com/">
+            {% trans "Join Bookwyrm" %}
+        </a>
+    </p>
+</footer>
+
+{% block scripts %}{% endblock %}
+</body>
+</html>

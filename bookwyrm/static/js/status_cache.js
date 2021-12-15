@@ -187,6 +187,7 @@ let StatusCache = new class {
             .forEach(item => BookWyrm.addRemoveClass(item, "is-hidden", false));
 
         // Remove existing disabled states
+
         button.querySelectorAll("[data-shelf-dropdown-identifier] button")
             .forEach(item => item.disabled = false);
 
@@ -209,10 +210,10 @@ let StatusCache = new class {
             .forEach(item => BookWyrm.addRemoveClass(item, "is-hidden", true));
 
         // Close menu
-        let menu = button.querySelector(".dropdown-trigger[aria-expanded=true]");
+        let menu = button.querySelector("details[open]");
 
         if (menu) {
-            menu.click();
+            menu.removeAttribute("open");
         }
     }
 

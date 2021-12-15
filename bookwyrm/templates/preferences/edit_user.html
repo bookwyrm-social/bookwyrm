@@ -33,31 +33,27 @@
                 {% endif %}
                 <div class="column">
                     {{ form.avatar }}
-                    {% for error in form.avatar.errors %}
-                    <p class="help is-danger">{{ error | escape }}</p>
-                    {% endfor %}
+
+                    {% include 'snippets/form_errors.html' with errors_list=form.avatar.errors id="desc_avatar" %}    
                 </div>
             </div>
             <div class="field">
                 <label class="label" for="id_name">{% trans "Display name:" %}</label>
                 {{ form.name }}
-                {% for error in form.name.errors %}
-                <p class="help is-danger">{{ error | escape }}</p>
-                {% endfor %}
+
+                {% include 'snippets/form_errors.html' with errors_list=form.name.errors id="desc_name" %}    
             </div>
             <div class="field">
                 <label class="label" for="id_summary">{% trans "Summary:" %}</label>
                 {{ form.summary }}
-                {% for error in form.summary.errors %}
-                <p class="help is-danger">{{ error | escape }}</p>
-                {% endfor %}
+
+                {% include 'snippets/form_errors.html' with errors_list=form.summary.errors id="desc_summary" %}    
             </div>
             <div class="field">
                 <label class="label" for="id_email">{% trans "Email address:" %}</label>
                 {{ form.email }}
-                {% for error in form.email.errors %}
-                <p class="help is-danger">{{ error | escape }}</p>
-                {% endfor %}
+
+                {% include 'snippets/form_errors.html' with errors_list=form.email.errors id="desc_email" %}    
             </div>
         </div>
     </section>
@@ -69,19 +65,23 @@
         <div class="box">
             <div class="field">
                 <label class="checkbox label" for="id_show_goal">
-                    {% trans "Show reading goal prompt in feed:" %}
                     {{ form.show_goal }}
+                    {% trans "Show reading goal prompt in feed" %}
                 </label>
+            </div>
+            <div class="field">
                 <label class="checkbox label" for="id_show_suggested_users">
-                    {% trans "Show suggested users:" %}
                     {{ form.show_suggested_users }}
+                    {% trans "Show suggested users" %}
                 </label>
+            </div>
+            <div class="field">
                 <label class="checkbox label" for="id_discoverable">
-                    {% trans "Show this account in suggested users:" %}
                     {{ form.discoverable }}
+                    {% trans "Show this account in suggested users" %}
                 </label>
                 {% url 'directory' as path %}
-                <p class="help">
+                <p class="help" id="desc_discoverable">
                     {% blocktrans %}Your account will show up in the <a href="{{ path }}">directory</a>, and may be recommended to other BookWyrm users.{% endblocktrans %}
                 </p>
             </div>
@@ -107,8 +107,8 @@
         <div class="box">
             <div class="field">
                 <label class="checkbox label" for="id_manually_approves_followers">
-                    {% trans "Manually approve followers:" %}
                     {{ form.manually_approves_followers }}
+                    {% trans "Manually approve followers" %}
                 </label>
             </div>
             <div class="field">

@@ -5,7 +5,7 @@
 {% load i18n %}
 
 {% block title %}
-{% include 'user/books_header.html' %}
+{% include 'user/books_header.html' with shelf=shelf %}
 {% endblock %}
 
 {% block opengraph_images %}
@@ -19,45 +19,58 @@
     </h1>
 </header>
 
-<div class="block columns">
-    <div class="column">
+<nav class="block columns is-mobile scroll-x">
+    <div class="column pr-0">
         <div class="tabs">
             <ul>
-            <li class="{% if shelf.identifier == 'all' %}is-active{% endif %}">
-                <a href="{% url 'user-shelves' user|username %}"{% if shelf.identifier == 'all' %} aria-current="page"{% endif %}>
-                    {% trans "All books" %}
-                </a>
-            </li>
-            {% for shelf_tab in shelves %}
-            <li class="{% if shelf_tab.identifier == shelf.identifier %}is-active{% endif %}">
-                <a
-                    href="{{ shelf_tab.local_path }}"
-                    {% if shelf_tab.identifier == shelf.identifier %} aria-current="page"{% endif %}
-                >
-                    {% if shelf_tab.identifier == 'to-read' %}
-                        {% trans "To Read" %}
-                    {% elif shelf_tab.identifier == 'reading' %}
-                        {% trans "Currently Reading" %}
-                    {% elif shelf_tab.identifier == 'read' %}
-                        {% trans "Read" %}
-                    {% else %}
-                        {{ shelf_tab.name }}
-                    {% endif %}
-                </a>
-            </li>
-            {% endfor %}
+                <li class="{% if shelf.identifier == 'all' %}is-active{% endif %}">
+                    <a href="{% url 'user-shelves' user|username %}"{% if shelf.identifier == 'all' %} aria-current="page"{% endif %}>
+                        {% trans "All books" %}
+                    </a>
+                </li>
+                {% for shelf_tab in shelves %}
+                <li class="{% if shelf_tab.identifier == shelf.identifier %}is-active{% endif %}">
+                    <a
+                        href="{{ shelf_tab.local_path }}"
+                        {% if shelf_tab.identifier == shelf.identifier %} aria-current="page"{% endif %}
+                    >
+                        {% if shelf_tab.identifier == 'to-read' %}
+                            {% trans "To Read" %}
+                        {% elif shelf_tab.identifier == 'reading' %}
+                            {% trans "Currently Reading" %}
+                        {% elif shelf_tab.identifier == 'read' %}
+                            {% trans "Read" %}
+                        {% else %}
+                            {{ shelf_tab.name }}
+                        {% endif %}
+                    </a>
+                </li>
+                {% endfor %}
+
             </ul>
         </div>
     </div>
 
     {% if is_self %}
+    <div class="column is-narrow pl-0">
+        <div class="tabs">
+            <ul>
+                <li>
+                    <a href="{% url 'import' %}">
+                        <span class="icon icon-list" aria-hidden="true"></span>
+                        <span>{% trans "Import Books" %}</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
     <div class="column is-narrow">
         {% trans "Create shelf" as button_text %}
         {% include 'snippets/toggle/open_button.html' with text=button_text icon_with_text="plus" controls_text="create_shelf_form" focus="create_shelf_form_header" %}
-        <a class="button" href="{% url 'import' %}">{% trans "Import Books" %}</a>
     </div>
     {% endif %}
-</div>
+</nav>
 
 <div class="block">
     {% include 'shelf/create_shelf_form.html' with controls_text='create_shelf_form' %}
@@ -67,7 +80,10 @@
     <div class="block columns is-mobile">
         <div class="column">
             <h2 class="title is-3">
-                {{ shelf.name }}
+                {% if shelf.identifier == 'to-read' %}{% trans "To Read" %}
+                {% elif shelf.identifier == 'reading' %}{% trans "Currently Reading" %}
+                {% elif shelf.identifier == 'read' %}{% trans "Read" %}
+                {% else %}{{ shelf.name }}{% endif %}
                 <span class="subtitle">
                     {% include 'snippets/privacy-icons.html' with item=shelf %}
                 </span>
@@ -124,14 +140,16 @@
         <table class="table is-striped is-fullwidth is-mobile">
             <thead>
                 <tr>
-                    <th>{% trans "Cover" %}</th>
-                    <th>{% trans "Title" %}</th>
-                    <th>{% trans "Author" %}</th>
-                    <th>{% trans "Shelved" %}</th>
-                    <th>{% trans "Started" %}</th>
-                    <th>{% trans "Finished" %}</th>
+                    <th>{% trans "Cover"%}</th>
+                    <th>{% trans "Title"  as text %}{% include 'snippets/table-sort-header.html' with field="title" sort=sort text=text %}</th>
+                    <th>{% trans "Author"  as text %}{% include 'snippets/table-sort-header.html' with field="author" sort=sort text=text %}</th>
                     {% if request.user.is_authenticated %}
-                    <th>{% trans "Rating" %}</th>
+                        {% if is_self %}
+                    <th>{% trans "Shelved"  as text %}{% include 'snippets/table-sort-header.html' with field="shelved_date" sort=sort text=text %}</th>
+                    <th>{% trans "Started"  as text %}{% include 'snippets/table-sort-header.html' with field="start_date" sort=sort text=text %}</th>
+                    <th>{% trans "Finished"  as text %}{% include 'snippets/table-sort-header.html' with field="finish_date" sort=sort text=text %}</th>
+                        {% endif %}
+                    <th>{% trans "Rating" as text %}{% include 'snippets/table-sort-header.html' with field="rating" sort=sort text=text %}</th>
                     {% endif %}
                     {% if shelf.user == request.user %}
                     <th aria-hidden="true"></th>
@@ -151,17 +169,18 @@
                     <td data-title="{% trans "Author" %}">
                         {% include 'snippets/authors.html' %}
                     </td>
+                    {% if request.user.is_authenticated %}
+                        {% if is_self %}
                     <td data-title="{% trans "Shelved" %}">
                         {{ book.shelved_date|naturalday }}
                     </td>
-                    {% latest_read_through book user as read_through %}
                     <td data-title="{% trans "Started" %}">
-                        {{ read_through.start_date|naturalday|default_if_none:""}}
+                        {{ book.start_date|naturalday|default_if_none:""}}
                     </td>
                     <td data-title="{% trans "Finished" %}">
-                        {{ read_through.finish_date|naturalday|default_if_none:""}}
+                        {{ book.finish_date|naturalday|default_if_none:""}}
                     </td>
-                    {% if request.user.is_authenticated %}
+                        {% endif %}
                     <td data-title="{% trans "Rating" %}">
                         {% include 'snippets/stars.html' with rating=book.rating %}
                     </td>

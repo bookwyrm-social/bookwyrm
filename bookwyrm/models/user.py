@@ -4,11 +4,12 @@ from urllib.parse import urlparse
 
 from django.apps import apps
 from django.contrib.auth.models import AbstractUser, Group
-from django.contrib.postgres.fields import CICharField
+from django.contrib.postgres.fields import ArrayField, CICharField
 from django.core.validators import MinValueValidator
 from django.dispatch import receiver
 from django.db import models, transaction
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 from model_utils import FieldTracker
 import pytz
 
@@ -25,6 +26,19 @@ from .activitypub_mixin import OrderedCollectionPageMixin, ActivitypubMixin
 from .base_model import BookWyrmModel, DeactivationReason, new_access_code
 from .federated_server import FederatedServer
 from . import fields, Review
+
+
+FeedFilterChoices = [
+    ("review", _("Reviews")),
+    ("comment", _("Comments")),
+    ("quotation", _("Quotations")),
+    ("everything", _("Everything else")),
+]
+
+
+def get_feed_filter_choices():
+    """return a list of filter choice keys"""
+    return [f[0] for f in FeedFilterChoices]
 
 
 def site_link():
@@ -127,6 +141,13 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     show_goal = models.BooleanField(default=True)
     show_suggested_users = models.BooleanField(default=True)
     discoverable = fields.BooleanField(default=False)
+
+    # feed options
+    feed_status_types = ArrayField(
+        models.CharField(max_length=10, blank=False, choices=FeedFilterChoices),
+        size=8,
+        default=get_feed_filter_choices,
+    )
 
     preferred_timezone = models.CharField(
         choices=[(str(tz), str(tz)) for tz in pytz.all_timezones],
