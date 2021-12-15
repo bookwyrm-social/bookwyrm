@@ -196,21 +196,3 @@ def update_book_from_remote(request, book_id, connector_identifier):
     connector.update_book_from_remote(book)
 
     return redirect("book", book.id)
-
-
-@login_required
-@require_POST
-@permission_required("bookwyrm.edit_book", raise_exception=True)
-@transaction.atomic
-def add_file_link(request, book_id):
-    """Add a link to a copy of the book you can read"""
-    book = get_object_or_404(models.Book.objects.select_subclasses(), id=book_id)
-    form = forms.FileLinkForm(request.POST)
-    if not form.is_valid():
-        return redirect("book", book.id)
-
-    link = form.save()
-    book.file_links.add(link)
-    book.last_edited_by = request.user
-    book.save()
-    return redirect("book", book.id)

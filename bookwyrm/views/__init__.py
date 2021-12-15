@@ -33,11 +33,11 @@ from .books.books import (
     upload_cover,
     add_description,
     resolve_book,
-    add_file_link,
 )
 from .books.books import update_book_from_remote
 from .books.edit_book import EditBook, ConfirmEditBook
 from .books.editions import Editions, switch_edition
+from .books.links import FileLink
 
 # landing
 from .landing.landing import About, Home, Landing

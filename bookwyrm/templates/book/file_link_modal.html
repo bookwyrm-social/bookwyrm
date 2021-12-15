@@ -6,13 +6,13 @@
 {% endblock %}
 
 {% block modal-form-open %}
-<form name="add-link" method="POST" action="{% url 'add-file-link' book.id %}">
+<form name="add-link" method="POST" action="{% url 'file-link' book.id %}">
 {% endblock %}
 
 {% block modal-body %}
 {% csrf_token %}
 <div class="field">
-    <label class="label" for="id_url">{% trans "Description:" %}</label>
+    <label class="label" for="id_url">{% trans "Name:" %}</label>
     {{ file_link_form.name }}
 </div>
 

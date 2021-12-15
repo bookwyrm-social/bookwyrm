@@ -1,0 +1,10 @@
+{% extends 'layout.html' %}
+{% load i18n %}
+
+{% block title %}
+{% trans "File Links" %}
+{% endblock %}
+
+{% block content %}
+{% include "book/file_link_modal.html" with book=book active=True static=True %}
+{% endblock %}
