@@ -163,13 +163,12 @@ class GenericImporter(TestCase):
             )
             print(import_job.pending_items.count())
 
-        item = items[3]
+        item = items.last()
         print(item.id)
         print(item.fail_reason, item.book)
         item.fail_reason = "hello"
         item.save()
         item.update_job()
-        print(import_job.pending_items.count())
         import_job.refresh_from_db()
         print(import_job.pending_items.count())
         self.assertTrue(import_job.complete)
