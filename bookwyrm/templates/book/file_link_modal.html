@@ -14,16 +14,19 @@
 <div class="field">
     <label class="label" for="id_url">{% trans "Name:" %}</label>
     {{ file_link_form.name }}
+    {% include 'snippets/form_errors.html' with errors_list=file_link_form.name.errors id="desc_name" %}
 </div>
 
 <div class="columns">
     <div class="column is-four-fifths">
         <label class="label" for="id_url">{% trans "URL:" %}</label>
-        <input type="url" name="url" maxlength="255" class="input" required="" id="id_url" value="{% firstof file_link_form.url.value "" %}" placeholder="https://...">
+        <input type="url" name="url" maxlength="255" class="input" required="" id="id_url" value="{% firstof file_link_form.url.value "" %}" placeholder="https://..." aria-describedby="desc_name">
+        {% include 'snippets/form_errors.html' with errors_list=file_link_form.url.errors id="desc_url" %}
     </div>
     <div class="column is-one-fifth">
         <label class="label" for="id_filetype">{% trans "File type:" %}</label>
         <input type="text" name="filetype" maxlength="5" class="input" required="" id="id_filetype" value="{% firstof file_link_form.filetype.value "" %}" placeholder="PDF">
+        {% include 'snippets/form_errors.html' with errors_list=file_link_form.filetype.errors id="desc_filetype" %}
     </div>
 </div>
 

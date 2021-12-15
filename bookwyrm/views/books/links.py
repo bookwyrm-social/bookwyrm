@@ -28,10 +28,11 @@ class FileLink(View):
         return TemplateResponse(request, "book/file_link_page.html", data)
 
     @transaction.atomic
-    def post(self, request, book_id):
+    def post(self, request, book_id, link_id=None):
         """Add a link to a copy of the book you can read"""
         book = get_object_or_404(models.Book.objects.select_subclasses(), id=book_id)
-        form = forms.FileLinkForm(request.POST)
+        link = get_object_or_404(models.FileLink, id=link_id) if link_id else None
+        form = forms.FileLinkForm(request.POST, instance=link)
         if not form.is_valid():
             data = {"file_link_form": form, "book": book}
             return TemplateResponse(request, "book/file_link_page.html", data)
