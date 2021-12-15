@@ -4,6 +4,7 @@ from uuid import uuid4
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.files.base import ContentFile
 from django.core.paginator import Paginator
+from django.db import transaction
 from django.db.models import Avg, Q
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect
@@ -40,7 +41,7 @@ class Book(View):
             .filter(Q(id=book_id) | Q(parent_work__id=book_id))
             .order_by("-edition_rank")
             .select_related("parent_work")
-            .prefetch_related("authors")
+            .prefetch_related("authors", "file_links")
             .first()
         )
 
@@ -84,6 +85,7 @@ class Book(View):
         }
 
         if request.user.is_authenticated:
+            data["file_link_form"] = forms.FileLinkForm()
             readthroughs = models.ReadThrough.objects.filter(
                 user=request.user,
                 book=book,
@@ -193,4 +195,22 @@ def update_book_from_remote(request, book_id, connector_identifier):
 
     connector.update_book_from_remote(book)
 
+    return redirect("book", book.id)
+
+
+@login_required
+@require_POST
+@permission_required("bookwyrm.edit_book", raise_exception=True)
+@transaction.atomic
+def add_file_link(request, book_id):
+    """Add a link to a copy of the book you can read"""
+    book = get_object_or_404(models.Book.objects.select_subclasses(), id=book_id)
+    form = forms.FileLinkForm(request.POST)
+    if not form.is_valid():
+        return redirect("book", book.id)
+
+    link = form.save()
+    book.file_links.add(link)
+    book.last_edited_by = request.user
+    book.save()
     return redirect("book", book.id)
