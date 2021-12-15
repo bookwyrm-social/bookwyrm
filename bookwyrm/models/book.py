@@ -52,6 +52,16 @@ class BookDataModel(ObjectMixin, BookWyrmModel):
         null=True,
     )
 
+    @property
+    def openlibrary_link(self):
+        """generate the url from the openlibrary id"""
+        return f"https://openlibrary.org/books/{self.openlibrary_key}"
+
+    @property
+    def inventaire_link(self):
+        """generate the url from the inventaire id"""
+        return f"https://inventaire.io/entity/{self.inventaire_id}"
+
     class Meta:
         """can't initialize this model, that wouldn't make sense"""
 

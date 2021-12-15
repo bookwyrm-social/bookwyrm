@@ -6,20 +6,62 @@
 <h1 class="title">
     {{ tab.name }}
 </h1>
-<div class="tabs">
-    <ul>
-        {% for stream in streams %}
-        <li class="{% if tab.key == stream.key %}is-active{% endif %}"{% if tab.key == stream.key %} aria-current="page"{% endif %}>
-            <a href="/{{ stream.key }}#feed">{{ stream.shortname }}</a>
-        </li>
-        {% endfor %}
-    </ul>
+<div class="block is-clipped">
+    <div class="is-pulled-left">
+        <div class="tabs">
+            <ul>
+                {% for stream in streams %}
+                <li class="{% if tab.key == stream.key %}is-active{% endif %}"{% if tab.key == stream.key %} aria-current="page"{% endif %}>
+                    <a href="/{{ stream.key }}#feed">{{ stream.shortname }}</a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    {# feed settings #}
+    <details class="detail-pinned-button" {% if settings_saved %}open{% endif %}>
+        <summary class="control">
+            <span class="button">
+                <span class="icon icon-dots-three m-0-mobile" aria-hidden="true"></span>
+                <span class="is-sr-only-mobile">{{ _("Feed settings") }}</span>
+            </span>
+        </summary>
+        <form class="notification level is-align-items-flex-end" method="post" action="/{{ tab.key }}#feed">
+            {% csrf_token %}
+
+            <div class="level-left">
+                <div class="field">
+                    <div class="control">
+                        <span class="is-flex is-align-items-baseline">
+                            <label class="label mt-2 mb-1">Status types</label>
+                            {% if settings_saved %}
+                                <span class="tag is-success is-light ml-2">{{ _("Saved!") }}</span>
+                            {% endif %}
+                        </span>
+                        {% for name, value in feed_status_types_options %}
+                        <label class="mr-2">
+                            <input type="checkbox" name="feed_status_types" value="{{ name }}" {% if name in user.feed_status_types %}checked=""{% endif %}/>
+                            {{ value }}
+                        </label>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <div class="level-right control">
+                <button class="button is-small is-primary is-outlined" type="submit">
+                    {{ _("Save settings") }}
+                </button>
+            </div>
+        </form>
+    </details>
 </div>
 
 {# announcements and system messages #}
 {% if not activities.number > 1 %}
 <a href="{{ request.path }}" class="transition-y is-hidden notification is-primary is-block" data-poll-wrapper>
     {% blocktrans with tab_key=tab.key %}load <span data-poll="stream/{{ tab_key }}">0</span> unread status(es){% endblocktrans %}
+    {{ allowed_status_types|json_script:"unread-notifications-wrapper" }}
 </a>
 
 {% if request.user.show_goal and not goal and tab.key == 'home' %}
@@ -36,6 +78,7 @@
 {% if not activities %}
 <div class="block content">
     <p>{% trans "There aren't any activities right now! Try following a user to get started" %}</p>
+    <p>{% if user.feed_status_types|length < 4 %}{% trans "Alternatively, you can try enabling more status types" %}{% endif %}</p>
 
     {% if request.user.show_suggested_users and suggested_users %}
     {# suggested users for when things are very lonely #}

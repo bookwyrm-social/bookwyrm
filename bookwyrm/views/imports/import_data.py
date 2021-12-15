@@ -14,6 +14,7 @@ from bookwyrm.importers import (
     LibrarythingImporter,
     GoodreadsImporter,
     StorygraphImporter,
+    OpenLibraryImporter,
 )
 
 # pylint: disable= no-self-use
@@ -37,33 +38,34 @@ class Import(View):
     def post(self, request):
         """ingest a goodreads csv"""
         form = forms.ImportForm(request.POST, request.FILES)
-        if form.is_valid():
-            include_reviews = request.POST.get("include_reviews") == "on"
-            privacy = request.POST.get("privacy")
-            source = request.POST.get("source")
+        if not form.is_valid():
+            return HttpResponseBadRequest()
 
-            importer = None
-            if source == "LibraryThing":
-                importer = LibrarythingImporter()
-            elif source == "Storygraph":
-                importer = StorygraphImporter()
-            else:
-                # Default : Goodreads
-                importer = GoodreadsImporter()
+        include_reviews = request.POST.get("include_reviews") == "on"
+        privacy = request.POST.get("privacy")
+        source = request.POST.get("source")
 
-            try:
-                job = importer.create_job(
-                    request.user,
-                    TextIOWrapper(
-                        request.FILES["csv_file"], encoding=importer.encoding
-                    ),
-                    include_reviews,
-                    privacy,
-                )
-            except (UnicodeDecodeError, ValueError, KeyError):
-                return HttpResponseBadRequest(_("Not a valid csv file"))
+        importer = None
+        if source == "LibraryThing":
+            importer = LibrarythingImporter()
+        elif source == "Storygraph":
+            importer = StorygraphImporter()
+        elif source == "OpenLibrary":
+            importer = OpenLibraryImporter()
+        else:
+            # Default : Goodreads
+            importer = GoodreadsImporter()
 
-            importer.start_import(job)
+        try:
+            job = importer.create_job(
+                request.user,
+                TextIOWrapper(request.FILES["csv_file"], encoding=importer.encoding),
+                include_reviews,
+                privacy,
+            )
+        except (UnicodeDecodeError, ValueError, KeyError):
+            return HttpResponseBadRequest(_("Not a valid csv file"))
 
-            return redirect(f"/import/{job.id}")
-        return HttpResponseBadRequest()
+        importer.start_import(job)
+
+        return redirect(f"/import/{job.id}")

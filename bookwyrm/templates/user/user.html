@@ -29,8 +29,13 @@
     <div class="columns is-mobile scroll-x">
         {% for shelf in shelves %}
         <div class="column is-narrow">
-            <h3>{{ shelf.name }}
-                {% if shelf.size > 3 %}<small>(<a href="{{ shelf.local_path }}">{% blocktrans with size=shelf.size %}View all {{ size }}{% endblocktrans %}</a>)</small>{% endif %}</h3>
+            <h3>
+                {% if shelf.name == 'To Read' %}{% trans "To Read" %}
+                {% elif shelf.name == 'Currently Reading' %}{% trans "Currently Reading" %}
+                {% elif shelf.name == 'Read' %}{% trans "Read" %}
+                {% else %}{{ shelf.name }}{% endif %}
+                {% if shelf.size > 3 %}<small>(<a href="{{ shelf.local_path }}">{% blocktrans with size=shelf.size %}View all {{ size }}{% endblocktrans %}</a>)</small>{% endif %}
+            </h3>
             <div class="is-mobile field is-grouped">
             {% for book in shelf.books %}
             <div class="control">
@@ -49,7 +54,8 @@
 
 {% if goal %}
 <div class="block">
-    <h2 class="title">{% now 'Y' %} Reading Goal</h2>
+    {% now 'Y' as current_year%}
+    <h2 class="title">{% blocktrans %}{{ current_year }} Reading Goal{% endblocktrans %}</h2>
     {% include 'snippets/goal_progress.html' with goal=goal %}
 </div>
 {% endif %}

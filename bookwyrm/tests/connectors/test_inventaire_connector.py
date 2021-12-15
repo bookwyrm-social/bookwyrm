@@ -306,3 +306,11 @@ class Inventaire(TestCase):
 
         extract = self.connector.get_description({"enwiki": "test_path"})
         self.assertEqual(extract, "hi hi")
+
+    def test_remote_id_from_model(self):
+        """figure out a url from an id"""
+        obj = models.Author.objects.create(name="hello", inventaire_id="123")
+        self.assertEqual(
+            self.connector.get_remote_id_from_model(obj),
+            "https://inventaire.io?action=by-uris&uris=123",
+        )

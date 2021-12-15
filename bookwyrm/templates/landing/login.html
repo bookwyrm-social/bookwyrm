@@ -26,11 +26,10 @@
             <div class="field">
                 <label class="label" for="id_password_confirm">{% trans "Password:" %}</label>
                 <div class="control">
-                    <input type="password" name="password" maxlength="128" class="input" required="" id="id_password_confirm">
+                    <input type="password" name="password" maxlength="128" class="input" required="" id="id_password_confirm" aria-describedby="desc_password">
                 </div>
-                {% for error in login_form.password.errors %}
-                <p class="help is-danger">{{ error | escape }}</p>
-                {% endfor %}
+
+                {% include 'snippets/form_errors.html' with errors_list=login_form.password.errors id="desc_password" %}
             </div>
             <div class="field is-grouped">
                 <div class="control">

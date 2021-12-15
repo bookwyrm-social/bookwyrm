@@ -1,13 +1,14 @@
 """ test for app action functionality """
 import pathlib
 from unittest.mock import patch
+
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.template.response import TemplateResponse
 from django.test import TestCase
 from django.test.client import RequestFactory
-from bookwyrm.tests.validate_html import validate_html
 
 from bookwyrm import forms, models, views
+from bookwyrm.tests.validate_html import validate_html
 
 
 class ImportViews(TestCase):
@@ -44,15 +45,29 @@ class ImportViews(TestCase):
         import_job = models.ImportJob.objects.create(user=self.local_user, mappings={})
         request = self.factory.get("")
         request.user = self.local_user
-        with patch("bookwyrm.tasks.app.AsyncResult") as async_result:
-            async_result.return_value = []
-            result = view(request, import_job.id)
+
+        result = view(request, import_job.id)
+
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
+    def test_import_status_reformat(self):
+        """there are so many views, this just makes sure it LOADS"""
+        view = views.ImportStatus.as_view()
+        import_job = models.ImportJob.objects.create(user=self.local_user, mappings={})
+        request = self.factory.post("")
+        request.user = self.local_user
+        with patch(
+            "bookwyrm.importers.goodreads_import.GoodreadsImporter.update_legacy_job"
+        ) as mock:
+            result = view(request, import_job.id)
+        self.assertEqual(mock.call_args[0][0], import_job)
+
+        self.assertEqual(result.status_code, 302)
+
     def test_start_import(self):
-        """retry failed items"""
+        """start a job"""
         view = views.Import.as_view()
         form = forms.ImportForm()
         form.data["source"] = "Goodreads"
@@ -74,3 +89,19 @@ class ImportViews(TestCase):
         job = models.ImportJob.objects.get()
         self.assertFalse(job.include_reviews)
         self.assertEqual(job.privacy, "public")
+
+    def test_retry_item(self):
+        """try again on a single row"""
+        job = models.ImportJob.objects.create(user=self.local_user, mappings={})
+        item = models.ImportItem.objects.create(
+            index=0,
+            job=job,
+            fail_reason="no match",
+            data={},
+            normalized_data={},
+        )
+        request = self.factory.post("")
+        request.user = self.local_user
+        with patch("bookwyrm.importers.importer.import_item_task.delay") as mock:
+            views.retry_item(request, job.id, item.id)
+        self.assertEqual(mock.call_count, 1)

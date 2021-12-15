@@ -1,4 +1,5 @@
 """ database schema for info about authors """
+import re
 from django.contrib.postgres.indexes import GinIndex
 from django.db import models
 
@@ -32,6 +33,17 @@ class Author(BookDataModel):
         models.CharField(max_length=255), blank=True, default=list
     )
     bio = fields.HtmlField(null=True, blank=True)
+
+    @property
+    def isni_link(self):
+        """generate the url from the isni id"""
+        clean_isni = re.sub(r"\s", "", self.isni)
+        return f"https://isni.org/isni/{clean_isni}"
+
+    @property
+    def openlibrary_link(self):
+        """generate the url from the openlibrary id"""
+        return f"https://openlibrary.org/authors/{self.openlibrary_key}"
 
     def get_remote_id(self):
         """editions and works both use "book" instead of model_name"""

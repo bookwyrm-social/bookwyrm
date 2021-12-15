@@ -4,10 +4,12 @@ from unittest.mock import patch
 
 from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
+from django.template.response import TemplateResponse
 from django.test import TestCase
 from django.test.client import RequestFactory
 
 from bookwyrm import models, views
+from bookwyrm.tests.validate_html import validate_html
 
 
 @patch("bookwyrm.activitystreams.add_user_statuses_task.delay")
@@ -16,6 +18,7 @@ class FollowViews(TestCase):
 
     def setUp(self):
         """we need basic test data and mocks"""
+        models.SiteSettings.objects.create()
         self.factory = RequestFactory()
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
@@ -174,3 +177,43 @@ class FollowViews(TestCase):
         self.assertEqual(models.UserFollowRequest.objects.filter(id=rel.id).count(), 0)
         # follow relationship should not exist
         self.assertEqual(models.UserFollows.objects.filter(id=rel.id).count(), 0)
+
+    def test_ostatus_follow_request(self, _):
+        """check ostatus subscribe template loads"""
+        request = self.factory.get(
+            "", {"acct": "https%3A%2F%2Fexample.com%2Fusers%2Frat"}
+        )
+        request.user = self.local_user
+        result = views.ostatus_follow_request(request)
+        self.assertIsInstance(result, TemplateResponse)
+        validate_html(result.render())
+        self.assertEqual(result.status_code, 200)
+
+    def test_remote_follow_page(self, _):
+        """check remote follow page loads"""
+        request = self.factory.get("", {"acct": "mouse@local.com"})
+        request.user = self.remote_user
+        result = views.remote_follow_page(request)
+        self.assertIsInstance(result, TemplateResponse)
+        validate_html(result.render())
+        self.assertEqual(result.status_code, 200)
+
+    def test_ostatus_follow_success(self, _):
+        """check remote follow success page loads"""
+        request = self.factory.get("")
+        request.user = self.remote_user
+        request.following = "mouse@local.com"
+        result = views.ostatus_follow_success(request)
+        self.assertIsInstance(result, TemplateResponse)
+        validate_html(result.render())
+        self.assertEqual(result.status_code, 200)
+
+    def test_remote_follow(self, _):
+        """check follow from remote page loads"""
+        request = self.factory.post("", {"user": self.remote_user.id})
+        request.user = self.remote_user
+        request.remote_user = "mouse@local.com"
+        result = views.remote_follow(request)
+        self.assertIsInstance(result, TemplateResponse)
+        validate_html(result.render())
+        self.assertEqual(result.status_code, 200)

@@ -1,0 +1,59 @@
+{% extends 'embed-layout.html' %}
+{% load i18n %}
+{% load bookwyrm_tags %}
+{% load bookwyrm_group_tags %}
+{% load markdown %}
+
+{% block title %}{% blocktrans with list_name=list.name owner=list.user.display_name %}{{ list_name }}, a list by {{owner}}{% endblocktrans %}{% endblock title %}
+
+{% block content %}
+<div class="mt-3">
+    <h1 class="title is-4">
+        {{ list.name }}
+        <span class="subtitle">{% include 'snippets/privacy-icons.html' with item=list %}</span>
+    </h1>
+    <p class="subtitle is-size-6">
+        {% include 'lists/created_text.html' with list=list %}
+        {% blocktrans with site_name=site.name %}on <a href="/">{{ site_name }}</a>{% endblocktrans %}
+    </p>
+
+    <div class="block content">
+        {% include 'snippets/trimmed_text.html' with full=list.description %}
+    </div>
+
+    <section>
+        {% if not items.object_list.exists %}
+        <p>{% trans "This list is currently empty" %}</p>
+        {% else %}
+        <ol start="{{ items.start_index }}" class="ordered-list">
+        {% for item in items %}
+        {% with book=item.book %}
+            <li class="mb-5 card is-shadowless has-border">
+                <div class="card-content p-0 mb-0 columns is-gapless is-mobile">
+                    <div class="column is-3-mobile is-2-tablet is-cover align to-t">
+                        <a href="{{ item.book.local_path }}" aria-hidden="true">
+                            {% include 'snippets/book_cover.html' with cover_class='is-w-auto is-h-m-tablet is-align-items-flex-start' size='medium' %}
+                        </a>
+                    </div>
+
+                    <div class="column mx-3 my-2">
+                        <h2 class="title is-6 mb-1">
+                            {% include 'snippets/book_titleby.html' %}
+                        </h2>
+                        <p>
+                            {% include 'snippets/stars.html' with rating=item.book|rating:request.user %}
+                        </p>
+                        <div>
+                            {{ book|book_description|to_markdown|default:""|safe|truncatewords_html:20 }}
+                        </div>
+                    </div>
+                </div>
+            </li>
+        {% endwith %}
+        {% endfor %}
+        </ol>
+        {% endif %}
+        {% include "snippets/pagination.html" with page=items %}
+    </section>
+</div>
+{% endblock %}
