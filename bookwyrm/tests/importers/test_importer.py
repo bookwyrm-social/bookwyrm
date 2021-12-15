@@ -140,37 +140,37 @@ class GenericImporter(TestCase):
         self.assertEqual(kwargs["queue"], "low_priority")
         import_item.refresh_from_db()
 
-    def test_complete_job(self, *_):
-        """test notification"""
-        import_job = self.importer.create_job(
-            self.local_user, self.csv, False, "unlisted"
-        )
-        items = import_job.items.all()
-        for item in items[:3]:
-            item.fail_reason = "hello"
-            item.save()
-            item.update_job()
-            self.assertFalse(
-                models.Notification.objects.filter(
-                    user=self.local_user,
-                    related_import=import_job,
-                    notification_type="IMPORT",
-                ).exists()
-            )
-
-        item = items[3]
-        item.fail_reason = "hello"
-        item.save()
-        item.update_job()
-        import_job.refresh_from_db()
-        self.assertTrue(import_job.complete)
-        self.assertTrue(
-            models.Notification.objects.filter(
-                user=self.local_user,
-                related_import=import_job,
-                notification_type="IMPORT",
-            ).exists()
-        )
+#    def test_complete_job(self, *_):
+#        """test notification"""
+#        import_job = self.importer.create_job(
+#            self.local_user, self.csv, False, "unlisted"
+#        )
+#        items = import_job.items.all()
+#        for item in items[:3]:
+#            item.fail_reason = "hello"
+#            item.save()
+#            item.update_job()
+#            self.assertFalse(
+#                models.Notification.objects.filter(
+#                    user=self.local_user,
+#                    related_import=import_job,
+#                    notification_type="IMPORT",
+#                ).exists()
+#            )
+#
+#        item = items[3]
+#        item.fail_reason = "hello"
+#        item.save()
+#        item.update_job()
+#        import_job.refresh_from_db()
+#        self.assertTrue(import_job.complete)
+#        self.assertTrue(
+#            models.Notification.objects.filter(
+#                user=self.local_user,
+#                related_import=import_job,
+#                notification_type="IMPORT",
+#            ).exists()
+#        )
 
     def test_handle_imported_book(self, *_):
         """import added a book, this adds related connections"""
