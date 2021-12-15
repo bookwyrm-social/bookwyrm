@@ -291,7 +291,7 @@
                 </div>
             </div>
         </div>
-        <div class="column is-one-fifth">
+        <div class="column is-one-fifth is-clipped">
             {% if book.subjects %}
                 <section class="content block">
                     <h2 class="title is-5">{% trans "Subjects" %}</h2>
@@ -316,7 +316,7 @@
             {% endif %}
 
             {% if lists.exists or request.user.list_set.exists %}
-            <section class="content block">
+            <section class="content block is-clipped">
                 <h2 class="title is-5">{% trans "Lists" %}</h2>
                 <ul>
                 {% for list in lists %}
@@ -330,7 +330,7 @@
                     <input type="hidden" name="book" value="{{ book.id }}">
                     <label class="label" for="id_list">{% trans "Add to list" %}</label>
                     <div class="field has-addons">
-                        <div class="select control">
+                        <div class="select control is-clipped">
                             <select name="list" id="id_list">
                                 {% for list in user.list_set.all %}
                                 <option value="{{ list.id }}">{{ list.name }}</option>
@@ -347,9 +347,20 @@
             {% endif %}
 
             <section class="content block">
-                <h2 class="title is-5">{% trans "Get a copy" %}</h2>
+                <header class="columns is-mobile mb-0">
+                    <div class="column">
+                        <h2 class="title is-5">{% trans "Get a copy" %}</h2>
+                    </div>
+                    {% if can_edit_book %}
+                    <div class="column is-narrow">
+                        {% trans "Add link to copy" as button_text %}
+                        {% url 'file-link' book.id as fallback_url %}
+                        {% include 'snippets/toggle/toggle_button.html' with text=button_text controls_text="edit_file_links" controls_uid=book.id focus="modal_title_edit_file_links" class="is-small" icon="plus" fallback_url=fallback_url %}
+                    </div>
+                    {% endif %}
+                </header>
                 {% if book.file_links %}
-                <ul>
+                <ul class="mt-0">
                     {% for link in book.file_links.all %}
                     <li>
                         <a href="{{ link.url }}" rel="noopener" target="_blank" title="{{ link.url }}">{{ link.name }}</a>
@@ -360,9 +371,6 @@
                 {% endif %}
 
                 {% if can_edit_book %}
-                {% trans "Add link to copy" as button_text %}
-                {% url 'file-link' book.id as fallback_url %}
-                {% include 'snippets/toggle/toggle_button.html' with text=button_text controls_text="edit_file_links" controls_uid=book.id focus="modal_title_edit_file_links" class="is-small" icon_with_text="plus" fallback_url=fallback_url %}
                 {% include 'book/file_link_modal.html' with book=book controls_text="edit_file_links" controls_uid=book.id %}
                 {% endif %}
             </section>
