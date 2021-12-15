@@ -66,6 +66,9 @@ let BookWyrm = new class {
             document.querySelectorAll('input[type="file"]').forEach(
                 bookwyrm.disableIfTooLarge.bind(bookwyrm)
             );
+            document.querySelectorAll('[data-copytext]').forEach(
+                bookwyrm.copyText.bind(bookwyrm)
+            );
         });
     }
 
@@ -444,5 +447,39 @@ let BookWyrm = new class {
 
         parent.appendChild(label)
         parent.appendChild(input)
+    }
+
+    /**
+     * Set up a "click-to-copy" component from a textarea element
+     * with `data-copytext`, `data-copytext-label`, `data-copytext-success`
+     * attributes.
+     *
+     * @param  {object}  node - DOM node of the text container
+     * @return {undefined}
+     */
+
+    copyText(textareaEl) {
+        const text = textareaEl.textContent;
+
+        const copyButtonEl = document.createElement('button');
+
+        copyButtonEl.textContent = textareaEl.dataset.copytextLabel;
+        copyButtonEl.classList.add(
+            "mt-2",
+            "button",
+            "is-small",
+            "is-fullwidth",
+            "is-primary",
+            "is-light"
+        );
+        copyButtonEl.addEventListener('click', () => {
+            navigator.clipboard.writeText(text).then(function() {
+                textareaEl.classList.add('is-success');
+                copyButtonEl.classList.replace('is-primary', 'is-success');
+                copyButtonEl.textContent = textareaEl.dataset.copytextSuccess;
+            });
+        });
+
+        textareaEl.parentNode.appendChild(copyButtonEl)
     }
 }();

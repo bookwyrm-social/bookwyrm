@@ -1,4 +1,6 @@
 """ make a list of books!! """
+import uuid
+
 from django.apps import apps
 from django.db import models
 from django.db.models import Q
@@ -43,6 +45,7 @@ class List(OrderedCollectionMixin, BookWyrmModel):
         through="ListItem",
         through_fields=("book_list", "book"),
     )
+    embed_key = models.UUIDField(unique=True, null=True, editable=False)
     activity_serializer = activitypub.BookList
 
     def get_remote_id(self):
@@ -104,6 +107,12 @@ class List(OrderedCollectionMixin, BookWyrmModel):
         cls.objects.filter(group__user=owner, user=user).all().update(
             group=None, curation="closed"
         )
+
+    def save(self, *args, **kwargs):
+        """on save, update embed_key and avoid clash with existing code"""
+        if not self.embed_key:
+            self.embed_key = uuid.uuid4()
+        return super().save(*args, **kwargs)
 
 
 class ListItem(CollectionItemMixin, BookWyrmModel):

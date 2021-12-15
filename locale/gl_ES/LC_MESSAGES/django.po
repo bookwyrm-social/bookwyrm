@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-12-07 17:35+0000\n"
-"PO-Revision-Date: 2021-12-07 18:25\n"
+"POT-Creation-Date: 2021-12-08 15:40+0000\n"
+"PO-Revision-Date: 2021-12-10 05:04\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Galician\n"
 "Language: gl\n"
@@ -101,23 +101,23 @@ msgstr "Eliminado pola moderación"
 msgid "Domain block"
 msgstr "Bloqueo de dominio"
 
-#: bookwyrm/models/book.py:233
+#: bookwyrm/models/book.py:243
 msgid "Audiobook"
 msgstr "Audiolibro"
 
-#: bookwyrm/models/book.py:234
+#: bookwyrm/models/book.py:244
 msgid "eBook"
 msgstr "eBook"
 
-#: bookwyrm/models/book.py:235
+#: bookwyrm/models/book.py:245
 msgid "Graphic novel"
 msgstr "Novela gráfica"
 
-#: bookwyrm/models/book.py:236
+#: bookwyrm/models/book.py:246
 msgid "Hardcover"
 msgstr "Portada dura"
 
-#: bookwyrm/models/book.py:237
+#: bookwyrm/models/book.py:247
 msgid "Paperback"
 msgstr "En rústica"
 
@@ -153,7 +153,7 @@ msgstr "nome de usuaria"
 msgid "A user with that username already exists."
 msgstr "Xa existe unha usuaria con ese nome."
 
-#: bookwyrm/models/user.py:32 bookwyrm/templates/book/book.html:227
+#: bookwyrm/models/user.py:32 bookwyrm/templates/book/book.html:244
 msgid "Reviews"
 msgstr "Recensións"
 
@@ -248,46 +248,61 @@ msgstr "Algo fallou! Lamentámolo."
 msgid "Edit Author"
 msgstr "Editar Autora"
 
-#: bookwyrm/templates/author/author.html:35
+#: bookwyrm/templates/author/author.html:40
+msgid "Author details"
+msgstr "Detalles da autoría"
+
+#: bookwyrm/templates/author/author.html:44
 #: bookwyrm/templates/author/edit_author.html:42
 msgid "Aliases:"
 msgstr "Alias:"
 
-#: bookwyrm/templates/author/author.html:46
+#: bookwyrm/templates/author/author.html:53
 msgid "Born:"
 msgstr "Nacemento:"
 
-#: bookwyrm/templates/author/author.html:53
+#: bookwyrm/templates/author/author.html:60
 msgid "Died:"
 msgstr "Morte:"
 
-#: bookwyrm/templates/author/author.html:62
+#: bookwyrm/templates/author/author.html:70
+msgid "External links"
+msgstr "Ligazóns externas"
+
+#: bookwyrm/templates/author/author.html:75
 msgid "Wikipedia"
 msgstr "Wikipedia"
 
-#: bookwyrm/templates/author/author.html:70
+#: bookwyrm/templates/author/author.html:83
 msgid "View ISNI record"
 msgstr "Ver rexistro ISNI"
 
-#: bookwyrm/templates/author/author.html:78
-#: bookwyrm/templates/book/book.html:94
+#: bookwyrm/templates/author/author.html:88
+#: bookwyrm/templates/author/sync_modal.html:5
+#: bookwyrm/templates/book/book.html:93
+#: bookwyrm/templates/book/sync_modal.html:5
+msgid "Load data"
+msgstr "Cargar datos"
+
+#: bookwyrm/templates/author/author.html:92
+#: bookwyrm/templates/book/book.html:96
 msgid "View on OpenLibrary"
 msgstr "Ver en OpenLibrary"
 
-#: bookwyrm/templates/author/author.html:86
-#: bookwyrm/templates/book/book.html:97
+#: bookwyrm/templates/author/author.html:106
+#: bookwyrm/templates/book/book.html:107
 msgid "View on Inventaire"
 msgstr "Ver en Inventaire"
 
-#: bookwyrm/templates/author/author.html:94
+#: bookwyrm/templates/author/author.html:121
 msgid "View on LibraryThing"
 msgstr "Ver en LibraryThing"
 
-#: bookwyrm/templates/author/author.html:102
+#: bookwyrm/templates/author/author.html:129
 msgid "View on Goodreads"
 msgstr "Ver en Goodreads"
 
-#: bookwyrm/templates/author/author.html:117
+#: bookwyrm/templates/author/author.html:143
 #, python-format
 msgid "Books by %(name)s"
 msgstr "Libros de %(name)s"
@@ -366,10 +381,10 @@ msgstr "Chave en Goodreads:"
 
 #: bookwyrm/templates/author/edit_author.html:105
 msgid "ISNI:"
-msgstr ""
+msgstr "ISNI:"
 
 #: bookwyrm/templates/author/edit_author.html:115
-#: bookwyrm/templates/book/book.html:140
+#: bookwyrm/templates/book/book.html:157
 #: bookwyrm/templates/book/edit/edit_book.html:121
 #: bookwyrm/templates/book/readthrough.html:76
 #: bookwyrm/templates/groups/form.html:24
@@ -387,11 +402,13 @@ msgid "Save"
 msgstr "Gardar"
 
 #: bookwyrm/templates/author/edit_author.html:116
-#: bookwyrm/templates/book/book.html:141 bookwyrm/templates/book/book.html:199
+#: bookwyrm/templates/author/sync_modal.html:26
+#: bookwyrm/templates/book/book.html:158 bookwyrm/templates/book/book.html:216
 #: bookwyrm/templates/book/cover_modal.html:32
 #: bookwyrm/templates/book/edit/edit_book.html:123
 #: bookwyrm/templates/book/edit/edit_book.html:126
 #: bookwyrm/templates/book/readthrough.html:77
+#: bookwyrm/templates/book/sync_modal.html:26
 #: bookwyrm/templates/groups/delete_group_modal.html:17
 #: bookwyrm/templates/lists/delete_list_modal.html:17
 #: bookwyrm/templates/settings/federation/instance.html:88
@@ -399,6 +416,20 @@ msgstr "Gardar"
 #: bookwyrm/templates/snippets/report_modal.html:34
 msgid "Cancel"
 msgstr "Cancelar"
+
+#: bookwyrm/templates/author/sync_modal.html:15
+#, python-format
+msgid "Loading data will connect to <strong>%(source_name)s</strong> and check for any metadata about this author which aren't present here. Existing metadata will not be overwritten."
+msgstr "Ao cargar os datos vas conectar con <strong>%(source_name)s</strong> e comprobar se existen metadatos desta persoa autora que non están aquí presentes. Non se sobrescribirán os datos existentes."
+
+#: bookwyrm/templates/author/sync_modal.html:23
+#: bookwyrm/templates/book/edit/edit_book.html:108
+#: bookwyrm/templates/book/sync_modal.html:23
+#: bookwyrm/templates/groups/members.html:16
+#: bookwyrm/templates/landing/password_reset.html:42
+#: bookwyrm/templates/snippets/remove_from_group_button.html:16
+msgid "Confirm"
+msgstr "Confirmar"
 
 #: bookwyrm/templates/book/book.html:47
 #: bookwyrm/templates/discover/large-book.html:22
@@ -420,74 +451,74 @@ msgstr "Engadir portada"
 msgid "Failed to load cover"
 msgstr "Fallou a carga da portada"
 
-#: bookwyrm/templates/book/book.html:117
+#: bookwyrm/templates/book/book.html:134
 #, python-format
 msgid "(%(review_count)s review)"
 msgid_plural "(%(review_count)s reviews)"
 msgstr[0] "(%(review_count)s recensión)"
 msgstr[1] "(%(review_count)s recensións)"
 
-#: bookwyrm/templates/book/book.html:129
+#: bookwyrm/templates/book/book.html:146
 msgid "Add Description"
 msgstr "Engadir descrición"
 
-#: bookwyrm/templates/book/book.html:136
+#: bookwyrm/templates/book/book.html:153
 #: bookwyrm/templates/book/edit/edit_book_form.html:39
 #: bookwyrm/templates/lists/form.html:13 bookwyrm/templates/shelf/form.html:17
 msgid "Description:"
 msgstr "Descrición:"
 
-#: bookwyrm/templates/book/book.html:150
+#: bookwyrm/templates/book/book.html:167
 #, python-format
 msgid "<a href=\"%(path)s/editions\">%(count)s editions</a>"
 msgstr "<a href=\"%(path)s/editions\">%(count)s edicións</a>"
 
-#: bookwyrm/templates/book/book.html:158
+#: bookwyrm/templates/book/book.html:175
 msgid "You have shelved this edition in:"
 msgstr "Puxeches esta edición no estante:"
 
-#: bookwyrm/templates/book/book.html:173
+#: bookwyrm/templates/book/book.html:190
 #, python-format
 msgid "A <a href=\"%(book_path)s\">different edition</a> of this book is on your <a href=\"%(shelf_path)s\">%(shelf_name)s</a> shelf."
 msgstr "Hai unha <a href=\"%(book_path)s\">edición diferente</a> deste libro no teu estante <a href=\"%(shelf_path)s\">%(shelf_name)s</a>."
 
-#: bookwyrm/templates/book/book.html:184
+#: bookwyrm/templates/book/book.html:201
 msgid "Your reading activity"
 msgstr "Actividade lectora"
 
-#: bookwyrm/templates/book/book.html:187
+#: bookwyrm/templates/book/book.html:204
 msgid "Add read dates"
 msgstr "Engadir datas de lectura"
 
-#: bookwyrm/templates/book/book.html:196
+#: bookwyrm/templates/book/book.html:213
 msgid "Create"
 msgstr "Crear"
 
-#: bookwyrm/templates/book/book.html:206
+#: bookwyrm/templates/book/book.html:223
 msgid "You don't have any reading activity for this book."
 msgstr "Non tes actividade lectora neste libro."
 
-#: bookwyrm/templates/book/book.html:232
+#: bookwyrm/templates/book/book.html:249
 msgid "Your reviews"
 msgstr "As túas recensións"
 
-#: bookwyrm/templates/book/book.html:238
+#: bookwyrm/templates/book/book.html:255
 msgid "Your comments"
 msgstr "Os teus comentarios"
 
-#: bookwyrm/templates/book/book.html:244
+#: bookwyrm/templates/book/book.html:261
 msgid "Your quotes"
 msgstr "As túas citas"
 
-#: bookwyrm/templates/book/book.html:280
+#: bookwyrm/templates/book/book.html:297
 msgid "Subjects"
 msgstr "Temas"
 
-#: bookwyrm/templates/book/book.html:292
+#: bookwyrm/templates/book/book.html:309
 msgid "Places"
 msgstr "Lugares"
 
-#: bookwyrm/templates/book/book.html:303 bookwyrm/templates/layout.html:75
+#: bookwyrm/templates/book/book.html:320 bookwyrm/templates/layout.html:75
 #: bookwyrm/templates/lists/lists.html:5 bookwyrm/templates/lists/lists.html:12
 #: bookwyrm/templates/search/layout.html:25
 #: bookwyrm/templates/search/layout.html:50
@@ -495,11 +526,11 @@ msgstr "Lugares"
 msgid "Lists"
 msgstr "Listaxes"
 
-#: bookwyrm/templates/book/book.html:314
+#: bookwyrm/templates/book/book.html:331
 msgid "Add to list"
 msgstr "Engadir a listaxe"
 
-#: bookwyrm/templates/book/book.html:324
+#: bookwyrm/templates/book/book.html:341
 #: bookwyrm/templates/book/cover_modal.html:31
 #: bookwyrm/templates/lists/list.html:182
 #: bookwyrm/templates/settings/email_blocklist/domain_form.html:24
@@ -576,13 +607,6 @@ msgstr "É esta a edición dun traballo existente?"
 #: bookwyrm/templates/book/edit/edit_book.html:101
 msgid "This is a new work"
 msgstr "Este é un novo traballo"
-
-#: bookwyrm/templates/book/edit/edit_book.html:108
-#: bookwyrm/templates/groups/members.html:16
-#: bookwyrm/templates/landing/password_reset.html:42
-#: bookwyrm/templates/snippets/remove_from_group_button.html:16
-msgid "Confirm"
-msgstr "Confirmar"
 
 #: bookwyrm/templates/book/edit/edit_book.html:110
 #: bookwyrm/templates/feed/status.html:21
@@ -782,6 +806,11 @@ msgstr "Editar datas da lectura"
 #: bookwyrm/templates/book/readthrough.html:62
 msgid "Delete these read dates"
 msgstr "Eliminar estas datas da lectura"
+
+#: bookwyrm/templates/book/sync_modal.html:15
+#, python-format
+msgid "Loading data will connect to <strong>%(source_name)s</strong> and check for any metadata about this book which aren't present here. Existing metadata will not be overwritten."
+msgstr "Ao cargar os datos vas conectar con <strong>%(source_name)s</strong> e comprobar se existen metadatos deste libro que non están aquí presentes. Non se sobrescribirán os datos existentes."
 
 #: bookwyrm/templates/components/inline_form.html:8
 #: bookwyrm/templates/components/modal.html:11
@@ -1098,6 +1127,25 @@ msgstr "Se non solicitaches cambiar o contrasinal podes ignorar este email."
 #, python-format
 msgid "Reset your %(site_name)s password"
 msgstr "Restablece o contrasinal en %(site_name)s"
+
+#: bookwyrm/templates/embed-layout.html:21 bookwyrm/templates/layout.html:37
+#, python-format
+msgid "%(site_name)s home page"
+msgstr "Páxina de inicio de %(site_name)s"
+
+#: bookwyrm/templates/embed-layout.html:34
+#: bookwyrm/templates/landing/about.html:7 bookwyrm/templates/layout.html:230
+#, python-format
+msgid "About %(site_name)s"
+msgstr "Acerca de %(site_name)s"
+
+#: bookwyrm/templates/embed-layout.html:40 bookwyrm/templates/layout.html:234
+msgid "Contact site admin"
+msgstr "Contacta coa administración"
+
+#: bookwyrm/templates/embed-layout.html:46
+msgid "Join Bookwyrm"
+msgstr "Únete a BookWyrm"
 
 #: bookwyrm/templates/feed/direct_messages.html:8
 #, python-format
@@ -1463,7 +1511,7 @@ msgstr "Ficheiro de datos:"
 
 #: bookwyrm/templates/import/import.html:45
 msgid "Include reviews"
-msgstr "Incluir recensións"
+msgstr "Incluír recensións"
 
 #: bookwyrm/templates/import/import.html:50
 msgid "Privacy setting for imported reviews:"
@@ -1654,11 +1702,6 @@ msgstr "Actualizouse BookWyrm desde a importación arranxando algún fallo"
 msgid "Contact your admin or <a href='https://github.com/bookwyrm-social/bookwyrm/issues'>open an issue</a> if you are seeing unexpected failed items."
 msgstr "Contacta coa administración ou <a href='https://github.com/bookwyrm-social/bookwyrm/issues'>abre unha incidencia</a> se atopas fallos non agardados."
 
-#: bookwyrm/templates/landing/about.html:7 bookwyrm/templates/layout.html:230
-#, python-format
-msgid "About %(site_name)s"
-msgstr "Acerca de %(site_name)s"
-
 #: bookwyrm/templates/landing/about.html:10
 #: bookwyrm/templates/landing/about.html:20
 msgid "Code of Conduct"
@@ -1830,10 +1873,6 @@ msgstr "Publicación correcta"
 msgid "Error posting status"
 msgstr "Erro ao publicar"
 
-#: bookwyrm/templates/layout.html:234
-msgid "Contact site admin"
-msgstr "Contacta coa administración"
-
 #: bookwyrm/templates/layout.html:238
 msgid "Documentation"
 msgstr "Documentación"
@@ -1900,6 +1939,21 @@ msgstr "Eliminar esta lista?"
 msgid "Edit List"
 msgstr "Editar lista"
 
+#: bookwyrm/templates/lists/embed-list.html:7
+#, python-format
+msgid "%(list_name)s, a list by %(owner)s"
+msgstr "%(list_name)s, unha lista de %(owner)s"
+
+#: bookwyrm/templates/lists/embed-list.html:17
+#, python-format
+msgid "on <a href=\"/\">%(site_name)s</a>"
+msgstr "en <a href=\"/\">%(site_name)s</a>"
+
+#: bookwyrm/templates/lists/embed-list.html:26
+#: bookwyrm/templates/lists/list.html:29
+msgid "This list is currently empty"
+msgstr "A lista está baleira neste intre"
+
 #: bookwyrm/templates/lists/form.html:19
 msgid "List curation:"
 msgstr "Mantemento da lista:"
@@ -1965,10 +2019,6 @@ msgstr "Suxeriches correctamente un libro para esta lista!"
 msgid "You successfully added a book to this list!"
 msgstr "Engadiches correctamente un libro a esta lista!"
 
-#: bookwyrm/templates/lists/list.html:29
-msgid "This list is currently empty"
-msgstr "A lista está baleira neste intre"
-
 #: bookwyrm/templates/lists/list.html:67
 #, python-format
 msgid "Added by <a href=\"%(user_path)s\">%(username)s</a>"
@@ -2020,6 +2070,23 @@ msgstr "Non se atopan libros coa consulta \"%(query)s\""
 #: bookwyrm/templates/lists/list.html:182
 msgid "Suggest"
 msgstr "Suxire"
+
+#: bookwyrm/templates/lists/list.html:191
+msgid "Embed this list on a website"
+msgstr "Utiliza esta lista nunha páxina web"
+
+#: bookwyrm/templates/lists/list.html:193
+msgid "Copy embed code"
+msgstr "Copia o código a incluír"
+
+#: bookwyrm/templates/lists/list.html:193
+msgid "Copied!"
+msgstr "Copiado!"
+
+#: bookwyrm/templates/lists/list.html:193
+#, python-format
+msgid "%(list_name)s, a list by %(owner)s on %(site_name)s"
+msgstr "%(list_name)s, unha lista de %(owner)s en %(site_name)s"
 
 #: bookwyrm/templates/lists/list_items.html:15
 msgid "Saved"
@@ -2209,116 +2276,116 @@ msgstr "Estás ao día!"
 #: bookwyrm/templates/ostatus/error.html:7
 #, python-format
 msgid "<strong>%(account)s</strong> is not a valid username"
-msgstr ""
+msgstr "<strong>%(account)s</strong> non é un nome de usuaria válido"
 
 #: bookwyrm/templates/ostatus/error.html:8
 #: bookwyrm/templates/ostatus/error.html:13
 msgid "Check you have the correct username before trying again"
-msgstr ""
+msgstr "Comproba que usaches o identificador correcto e inténtao outra vez"
 
 #: bookwyrm/templates/ostatus/error.html:12
 #, python-format
 msgid "<strong>%(account)s</strong> could not be found or <code>%(remote_domain)s</code> does not support identity discovery"
-msgstr ""
+msgstr "Non se puido atopar a <strong>%(account)s</strong> ou <code>%(remote_domain)s</code> non ten soporte para o descubrimento remoto de identidades"
 
 #: bookwyrm/templates/ostatus/error.html:17
 #, python-format
 msgid "<strong>%(account)s</strong> was found but <code>%(remote_domain)s</code> does not support 'remote follow'"
-msgstr ""
+msgstr "Atopamos a <strong>%(account)s</strong> mais <code>%(remote_domain)s</code> non ten soporte para 'seguimento remoto'"
 
 #: bookwyrm/templates/ostatus/error.html:18
 #, python-format
 msgid "Try searching for <strong>%(user)s</strong> on <code>%(remote_domain)s</code> instead"
-msgstr ""
+msgstr "Intenta buscar <strong>%(user)s</strong> en <code>%(remote_domain)s</code>"
 
 #: bookwyrm/templates/ostatus/error.html:46
 #, python-format
 msgid "Something went wrong trying to follow <strong>%(account)s</strong>"
-msgstr ""
+msgstr "Algo fallou ao intentar seguir a <strong>%(account)s</strong>"
 
 #: bookwyrm/templates/ostatus/error.html:47
 msgid "Check you have the correct username before trying again."
-msgstr ""
+msgstr "Comproba se escribiches o nome de usuaria correcto e inténtao outra vez."
 
 #: bookwyrm/templates/ostatus/error.html:51
 #, python-format
 msgid "You have blocked <strong>%(account)s</strong>"
-msgstr ""
+msgstr "Bloqueaches a <strong>%(account)s</strong>"
 
 #: bookwyrm/templates/ostatus/error.html:55
 #, python-format
 msgid "<strong>%(account)s</strong> has blocked you"
-msgstr ""
+msgstr "<strong>%(account)s</strong> bloqueoute"
 
 #: bookwyrm/templates/ostatus/error.html:59
 #, python-format
 msgid "You are already following <strong>%(account)s</strong>"
-msgstr ""
+msgstr "Xa estás a seguir a <strong>%(account)s</strong>"
 
 #: bookwyrm/templates/ostatus/error.html:63
 #, python-format
 msgid "You have already requested to follow <strong>%(account)s</strong>"
-msgstr ""
+msgstr "Xa solicitaches seguir a <strong>%(account)s</strong>"
 
 #: bookwyrm/templates/ostatus/remote_follow.html:6
 #, python-format
 msgid "Follow %(username)s on the fediverse"
-msgstr ""
+msgstr "Seguir a %(username)s no fediverso"
 
 #: bookwyrm/templates/ostatus/remote_follow.html:33
 #, python-format
 msgid "Follow %(username)s from another Fediverse account like BookWyrm, Mastodon, or Pleroma."
-msgstr ""
+msgstr "Sigue a %(username)s desde outra conta no Fediverso como BookWyrm, Mastodon ou Pleroma."
 
 #: bookwyrm/templates/ostatus/remote_follow.html:40
 msgid "User handle to follow from:"
-msgstr ""
+msgstr "ID da usuaria desde onde seguir:"
 
 #: bookwyrm/templates/ostatus/remote_follow.html:42
 msgid "Follow!"
-msgstr ""
+msgstr "Seguir!"
 
 #: bookwyrm/templates/ostatus/remote_follow_button.html:8
 msgid "Follow on Fediverse"
-msgstr ""
+msgstr "Seguir no Fediverso"
 
 #: bookwyrm/templates/ostatus/remote_follow_button.html:12
 msgid "This link opens in a pop-up window"
-msgstr ""
+msgstr "Esta ligazón abre unha ventá emerxente"
 
 #: bookwyrm/templates/ostatus/subscribe.html:8
 #, python-format
 msgid "Log in to %(sitename)s"
-msgstr ""
+msgstr "Conectar con %(sitename)s"
 
 #: bookwyrm/templates/ostatus/subscribe.html:10
 #, python-format
 msgid "Error following from %(sitename)s"
-msgstr ""
+msgstr "Erro no seguimento desde %(sitename)s"
 
 #: bookwyrm/templates/ostatus/subscribe.html:12
 #: bookwyrm/templates/ostatus/subscribe.html:22
 #, python-format
 msgid "Follow from %(sitename)s"
-msgstr ""
+msgstr "Seguir desde %(sitename)s"
 
 #: bookwyrm/templates/ostatus/subscribe.html:18
 msgid "Uh oh..."
-msgstr ""
+msgstr "Oioioi..."
 
 #: bookwyrm/templates/ostatus/subscribe.html:20
 msgid "Let's log in first..."
-msgstr ""
+msgstr "Primeiro hai que conectar..."
 
 #: bookwyrm/templates/ostatus/subscribe.html:51
 #, python-format
 msgid "Follow %(username)s"
-msgstr ""
+msgstr "Segue a %(username)s"
 
 #: bookwyrm/templates/ostatus/success.html:28
 #, python-format
 msgid "You are now following %(display_name)s!"
-msgstr ""
+msgstr "Estás a seguir a %(display_name)s!"
 
 #: bookwyrm/templates/preferences/blocks.html:4
 #: bookwyrm/templates/preferences/blocks.html:7
@@ -3387,6 +3454,7 @@ msgid "Posted by <a href=\"%(user_path)s\">%(username)s</a>"
 msgstr "Publicado por <a href=\"%(user_path)s\">%(username)s</a>"
 
 #: bookwyrm/templates/snippets/authors.html:22
+#: bookwyrm/templates/snippets/trimmed_list.html:14
 #, python-format
 msgid "and %(remainder_count_display)s other"
 msgid_plural "and %(remainder_count_display)s others"
@@ -4072,7 +4140,7 @@ msgstr "Sen seguidoras que ti segues"
 msgid "File exceeds maximum size: 10MB"
 msgstr "O ficheiro supera o tamaño máximo: 10MB"
 
-#: bookwyrm/templatetags/utilities.py:34
+#: bookwyrm/templatetags/utilities.py:33
 #, python-format
 msgid "%(title)s: %(subtitle)s"
 msgstr "%(title)s: %(subtitle)s"
