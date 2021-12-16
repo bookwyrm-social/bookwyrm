@@ -1,6 +1,5 @@
-
-(function() {
-    'use strict';
+(function () {
+    "use strict";
 
     /**
      * Toggle all descendant checkboxes of a target.
@@ -23,12 +22,10 @@
 
         document
             .querySelectorAll(`#${mainCheckbox.dataset.target} [type="checkbox"]`)
-            .forEach(checkbox => checkbox.checked = mainCheckbox.checked);
+            .forEach((checkbox) => (checkbox.checked = mainCheckbox.checked));
     }
 
-    document
-        .querySelectorAll('[data-action="toggle-all"]')
-        .forEach(input => {
-            input.addEventListener('change', toggleAllCheckboxes);
-        });
+    document.querySelectorAll('[data-action="toggle-all"]').forEach((input) => {
+        input.addEventListener("change", toggleAllCheckboxes);
+    });
 })();
