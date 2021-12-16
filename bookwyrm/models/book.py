@@ -234,7 +234,10 @@ class Work(OrderedCollectionPageMixin, Book):
         )
 
     activity_serializer = activitypub.Work
-    serialize_reverse_fields = [("editions", "editions", "-edition_rank")]
+    serialize_reverse_fields = [
+        ("editions", "editions", "-edition_rank"),
+        ("file_links", "fileLinks", "-created_date"),
+    ]
     deserialize_reverse_fields = [("editions", "editions"), ("file_links", "fileLinks")]
 
 
@@ -289,6 +292,8 @@ class Edition(Book):
 
     activity_serializer = activitypub.Edition
     name_field = "title"
+    serialize_reverse_fields = [("file_links", "fileLinks", "-created_date")]
+    deserialize_reverse_fields = [("file_links", "fileLinks")]
 
     def get_rank(self):
         """calculate how complete the data is on this edition"""

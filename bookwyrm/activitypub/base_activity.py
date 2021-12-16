@@ -21,23 +21,6 @@ class ActivityEncoder(JSONEncoder):
 
 
 @dataclass
-class Link:
-    """for tagging a book in a status"""
-
-    href: str
-    name: str
-    mediaType: str = None
-    type: str = "Link"
-
-
-@dataclass
-class Mention(Link):
-    """a subtype of Link for mentioning an actor"""
-
-    type: str = "Mention"
-
-
-@dataclass
 # pylint: disable=invalid-name
 class Signature:
     """public key block"""
@@ -199,8 +182,9 @@ class ActivityObject:
                 )
         return instance
 
-    def serialize(self):
+    def serialize(self, **kwargs):
         """convert to dictionary with context attr"""
+        omit = kwargs.get("omit", ())
         data = self.__dict__.copy()
         # recursively serialize
         for (k, v) in data.items():
@@ -209,8 +193,9 @@ class ActivityObject:
                     data[k] = v.serialize()
             except TypeError:
                 pass
-        data = {k: v for (k, v) in data.items() if v is not None}
-        data["@context"] = "https://www.w3.org/ns/activitystreams"
+        data = {k: v for (k, v) in data.items() if v is not None and k not in omit}
+        if "@context" not in omit:
+            data["@context"] = "https://www.w3.org/ns/activitystreams"
         return data
 
 
@@ -305,3 +290,26 @@ def resolve_remote_id(
 
     # if we're refreshing, "result" will be set and we'll update it
     return item.to_model(model=model, instance=result, save=save)
+
+
+@dataclass(init=False)
+class Link(ActivityObject):
+    """for tagging a book in a status"""
+
+    href: str
+    name: str
+    mediaType: str = None
+    id: str = None
+    type: str = "Link"
+
+    def serialize(self, **kwargs):
+        """remove fields"""
+        omit = ("id", "type", "@context")
+        return super().serialize(omit=omit)
+
+
+@dataclass(init=False)
+class Mention(Link):
+    """a subtype of Link for mentioning an actor"""
+
+    type: str = "Mention"
