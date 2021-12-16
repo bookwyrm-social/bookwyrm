@@ -23,10 +23,6 @@ class Link(ActivitypubMixin, BookWyrmModel):
             del kwargs["broadcast"]
         return super().save(*args, **kwargs)
 
-    def to_activity(self, omit=(), **kwargs):
-        """we don't need ALL the fields"""
-        return super().to_activity(omit=("@context", "id"), **kwargs)
-
 
 class FileLink(Link):
     """a link to a file"""

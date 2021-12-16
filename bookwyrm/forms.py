@@ -219,7 +219,7 @@ class CoverForm(CustomForm):
 class FileLinkForm(CustomForm):
     class Meta:
         model = models.FileLink
-        exclude = ["remote_id"]
+        exclude = ["remote_id", "filetype"]
 
 
 class EditionForm(CustomForm):
