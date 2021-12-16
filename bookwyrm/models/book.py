@@ -44,7 +44,6 @@ class BookDataModel(ObjectMixin, BookWyrmModel):
     bnf_id = fields.CharField(  # Bibliothèque nationale de France
         max_length=255, blank=True, null=True, deduplication_field=True
     )
-    links = fields.ManyToManyField("Link")
     search_vector = SearchVectorField(null=True)
 
     last_edited_by = fields.ForeignKey(
@@ -116,7 +115,6 @@ class Book(BookDataModel):
 
     objects = InheritanceManager()
     field_tracker = FieldTracker(fields=["authors", "title", "subtitle", "cover"])
-    file_links = fields.ManyToManyField("FileLink", related_name="editions")
 
     if ENABLE_THUMBNAIL_GENERATION:
         cover_bw_book_xsmall_webp = ImageSpecField(
@@ -237,7 +235,7 @@ class Work(OrderedCollectionPageMixin, Book):
 
     activity_serializer = activitypub.Work
     serialize_reverse_fields = [("editions", "editions", "-edition_rank")]
-    deserialize_reverse_fields = [("editions", "editions")]
+    deserialize_reverse_fields = [("editions", "editions"), ("file_links", "fileLinks")]
 
 
 # https://schema.org/BookFormatType

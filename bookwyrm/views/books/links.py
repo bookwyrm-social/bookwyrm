@@ -7,6 +7,7 @@ from django.views import View
 from django.utils.decorators import method_decorator
 
 from bookwyrm import forms, models
+from bookwyrm.activitypub import ActivitypubResponse
 
 
 # pylint: disable=no-self-use
@@ -17,10 +18,13 @@ from bookwyrm import forms, models
 class FileLink(View):
     """a book! this is the stuff"""
 
-    def get(self, request, book_id, link_id=None):
+    def get(self, request, book_id=None, link_id=None):
         """info about a book"""
-        book = get_object_or_404(models.Edition, id=book_id)
         link = get_object_or_404(models.FileLink, id=link_id) if link_id else None
+        if not book_id:
+            return ActivitypubResponse(link.to_activity())
+
+        book = get_object_or_404(models.Edition, id=book_id)
         data = {
             "file_link_form": forms.FileLinkForm(instance=link),
             "book": book,

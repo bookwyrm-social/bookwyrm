@@ -1,4 +1,7 @@
 """ outlink data """
+from django.db import models
+
+from bookwyrm import activitypub
 from .activitypub_mixin import ActivitypubMixin
 from .base_model import BookWyrmModel
 from . import fields
@@ -7,8 +10,11 @@ from . import fields
 class Link(ActivitypubMixin, BookWyrmModel):
     """a link to a website"""
 
-    url = fields.URLField(max_length=255)
+    url = fields.URLField(max_length=255, activitypub_field="href")
     name = fields.CharField(max_length=255)
+
+    activity_serializer = activitypub.Link
+    reverse_unfurl = True
 
     def save(self, *args, **kwargs):
         """create a link"""
@@ -21,4 +27,7 @@ class Link(ActivitypubMixin, BookWyrmModel):
 class FileLink(Link):
     """a link to a file"""
 
-    filetype = fields.CharField(max_length=5)
+    book = fields.ForeignKey(
+        "Book", on_delete=models.CASCADE, related_name="file_links", null=True
+    )
+    filetype = fields.CharField(max_length=5, activitypub_field="mediaType")

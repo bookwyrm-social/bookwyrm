@@ -432,9 +432,9 @@ urlpatterns = [
         views.add_description,
         name="add-description",
     ),
-    re_path(rf"{BOOK_PATH}/file-link/?$", views.FileLink.as_view(), name="file-link"),
+    re_path(rf"{BOOK_PATH}/filelink/?$", views.FileLink.as_view(), name="file-link"),
     re_path(
-        rf"{BOOK_PATH}/file-link/(?P<link_id>\d+)/?$",
+        rf"{BOOK_PATH}/filelink/(?P<link_id>\d+)/?$",
         views.FileLink.as_view(),
         name="file-link",
     ),

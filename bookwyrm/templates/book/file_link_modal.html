@@ -11,6 +11,7 @@
 
 {% block modal-body %}
 {% csrf_token %}
+<input type="hidden" name="book" value="{{ book.id }}">
 <div class="field">
     <label class="label" for="id_url">{% trans "Name:" %}</label>
     {{ file_link_form.name }}

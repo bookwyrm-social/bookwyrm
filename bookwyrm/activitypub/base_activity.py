@@ -26,6 +26,7 @@ class Link:
 
     href: str
     name: str
+    mediaType: str = None
     type: str = "Link"
 
 
