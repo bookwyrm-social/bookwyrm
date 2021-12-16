@@ -146,7 +146,13 @@ case "$CMD" in
         awscommand "bookwyrm_media_volume:/images"\
             "s3 cp /images s3://${AWS_STORAGE_BUCKET_NAME}/images\
             --endpoint-url ${AWS_S3_ENDPOINT_URL}\
-            --recursive --acl public-read"
+            --recursive --acl public-read" "$@"
+        ;;
+    sync_media_to_s3)
+        awscommand "bookwyrm_media_volume:/images"\
+            "s3 sync /images s3://${AWS_STORAGE_BUCKET_NAME}/images\
+            --endpoint-url ${AWS_S3_ENDPOINT_URL}\
+            --acl public-read" "$@"
         ;;
     set_cors_to_s3)
         awscommand "$(pwd):/bw"\
@@ -184,6 +190,7 @@ case "$CMD" in
         echo "    generate_thumbnails"
         echo "    generate_preview_images [--all]"
         echo "    copy_media_to_s3"
+        echo "    sync_media_to_s3"
         echo "    set_cors_to_s3 [cors file]"
         echo "    runweb [command]"
         ;;
