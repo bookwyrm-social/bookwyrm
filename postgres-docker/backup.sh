@@ -1,3 +1,3 @@
 #!/bin/bash
 filename=backup__$(date +%F)
-pg_dump -U fedireads  > /backups/$filename.sql
+pg_dump -U bookwyrm  > /backups/$filename.sql
