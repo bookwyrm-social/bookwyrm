@@ -158,14 +158,28 @@
                         {% endwith %}
                     </a>
                 </div>
-            {% endif %}
-
-            {% if not request.user.is_authenticated %}
+                {% else %}
                 <div class="navbar-item">
                     {% if request.path != '/login' and request.path != '/login/' %}
                     <div class="columns">
-                        <div class="column is-narrow">
-                            <button class="button is-primary" type="button" data-modal-open="login-modal" aria-haspopup="dialog">{% trans "Log in" %}</button>
+                        <div class="column">
+                            <form name="login" method="post" action="{% url 'login' %}?next={{ request.path }}">
+                                {% csrf_token %}
+                                <div class="columns is-variable is-1">
+                                    <div class="column">
+                                        <label class="is-sr-only" for="id_localname">{% trans "Username:" %}</label>
+                                        <input type="text" name="localname" maxlength="150" class="input" required="" id="id_localname" placeholder="{% trans 'username' %}">
+                                    </div>
+                                    <div class="column">
+                                        <label class="is-sr-only" for="id_password">{% trans "Password:" %}</label>
+                                        <input type="password" name="password" maxlength="128" class="input" required="" id="id_password" placeholder="{% trans 'password' %}">
+                                        <p class="help"><a href="{% url 'password-reset' %}">{% trans "Forgot your password?" %}</a></p>
+                                    </div>
+                                    <div class="column is-narrow">
+                                        <button class="button is-primary" type="submit">{% trans "Log in" %}</button>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
                         {% if site.allow_registration and request.path != '' and request.path != '/' %}
                         <div class="column is-narrow">
@@ -177,7 +191,7 @@
                     </div>
                     {% endif %}
                 </div>
-            {% endif %}
+                {% endif %}
             </div>
         </div>
     </div>
@@ -243,51 +257,6 @@
         </div>
     </div>
 </footer>
-
-{# Login modal #}
-{% if not request.user.is_authenticated %}
-<div class="modal" id="login-modal">
-    <div class="modal-background" data-modal-close></div>
-    <div class="modal-card is-thin" role="dialog" aria-modal="true" aria-labelledby="login_header" tabindex="-1">
-        <header class="modal-card-head">
-            <h1 class="modal-card-title" id="login_header">
-                {% trans "Log in" %}
-            </h1>
-            <button type="button" class="delete" data-modal-close aria-label="{% trans 'Close' %}"></button>
-        </header>
-        <section class="modal-card-body">
-            <form name="login" method="post" action="{% url 'login' %}?next={{ request.path }}" class="form" id="login-form">
-                {% csrf_token %}
-                <div class="field">
-                    <label class="label" for="id_localname">
-                        {% trans "Username:" %}
-                    </label>
-                    <div class="control">
-                        <input type="text" name="localname" maxlength="150" class="input" required="" id="id_localname" placeholder="{% trans 'username' %}">
-                    </div>
-                </div>
-                <div class="field">
-                    <label class="label" for="id_password">
-                        {% trans "Password:" %}
-                    </label>
-                    <div class="control">
-                        <input type="password" name="password" maxlength="128" class="input" required="" id="id_password" placeholder="{% trans 'password' %}">
-                    </div>
-                    <p class="help">
-                        <a href="{% url 'password-reset' %}">{% trans "Forgot your password?" %}</a>
-                    </p>
-                </div>
-            </form>
-        </section>
-        <footer class="modal-card-foot">
-            <button class="button is-primary" type="submit" form="login-form">
-                {% trans "Log in" %}
-            </button>
-        </footer>
-    </div>
-    <button type="button" data-modal-close class="modal-close is-large" aria-label="{% trans 'Close' %}"></button>
-</div>
-{% endif %}
 
 <script>
     var csrf_token = '{{ csrf_token }}';

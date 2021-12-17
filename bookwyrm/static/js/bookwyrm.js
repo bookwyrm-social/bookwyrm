@@ -427,6 +427,9 @@ let BookWyrm = new class {
      *                         with the `data-modal-open` attribute
      *                         pointing to a modal by its id.
      * @return {undefined}
+     *
+     * See https://github.com/bookwyrm-social/bookwyrm/pull/1633
+     *  for information about using the modal.
      */
     handleModalButton(event) {
         const modalButton = event.currentTarget;
