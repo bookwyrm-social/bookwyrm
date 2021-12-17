@@ -125,9 +125,9 @@ STREAMS = [
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "NAME": env("POSTGRES_DB", "fedireads"),
-        "USER": env("POSTGRES_USER", "fedireads"),
-        "PASSWORD": env("POSTGRES_PASSWORD", "fedireads"),
+        "NAME": env("POSTGRES_DB", "bookwyrm"),
+        "USER": env("POSTGRES_USER", "bookwyrm"),
+        "PASSWORD": env("POSTGRES_PASSWORD", "bookwyrm"),
         "HOST": env("POSTGRES_HOST", ""),
         "PORT": env("PGPORT", 5432),
     },
