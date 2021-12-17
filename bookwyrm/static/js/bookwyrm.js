@@ -507,8 +507,10 @@ let BookWyrm = new class {
             menuElement.querySelectorAll(
                 'a[href]:not([disabled]), button:not([disabled])'
             )[0].focus();
+            
             // Enable focus trap
             menuElement.addEventListener('keydown', this.handleFocusTrap);
+            
             // Close on Esc
             detailsElement.addEventListener('keydown', handleEscKey);
 
@@ -518,6 +520,7 @@ let BookWyrm = new class {
             }
         } else {
             summaryElement.focus();
+            
             // Disable focus trap
             menuElement.removeEventListener('keydown', this.handleFocusTrap);
 
