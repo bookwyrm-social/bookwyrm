@@ -93,7 +93,6 @@ body {
     display: inline !important;
 }
 
-
 /** File input styles
  ******************************************************************************/
 
@@ -122,7 +121,6 @@ input[type=file]::file-selector-button:hover {
     border-color: #b5b5b5;
     color: #363636;
 }
-
 
 /** General `details` element styles
  ******************************************************************************/
@@ -175,9 +173,10 @@ details.dropdown .dropdown-menu a:focus-visible {
 
 @media only screen and (max-width: 768px) {
     details.dropdown[open] summary.dropdown-trigger::before {
-        background-color:  rgba(0, 0, 0, 0.5);
+        background-color: rgba(0, 0, 0, 0.5);
         z-index: 30;
     }
+
     details .dropdown-menu {
         position: fixed;
         top: 0;
@@ -190,6 +189,7 @@ details.dropdown .dropdown-menu a:focus-visible {
         pointer-events: none;
         z-index: 100;
     }
+    
     details .dropdown-menu > * {
         pointer-events: all;
     }
