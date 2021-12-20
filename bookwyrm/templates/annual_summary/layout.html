@@ -5,8 +5,12 @@
 
 {% block title %}{% blocktrans %}{{ year }} in the books{% endblocktrans %}{% endblock %}
 
+{% block head_links %}
+    <link rel="stylesheet" href="{% static "css/vendor/dm_serif_display.css" %}">
+{% endblock %}
+
 {% block content %}
-    <h1 class="title is-1 has-text-centered mb-5">{% blocktrans %}{{ year }} <em>in the books</em>{% endblocktrans %}</h1>
+    <h1 class="title is-1 is-serif has-text-centered mb-5">{% blocktrans %}{{ year }} <em>in the books</em>{% endblocktrans %}</h1>
 
     {% if not books %}
         {% blocktrans %}Sadly you didn't finish any book in {{ year }}{% endblocktrans %}
@@ -14,12 +18,12 @@
 
     <div class="columns is-mobile">
         <div class="column is-8 is-offset-2 has-text-centered">
-            <h2 class="title is-3">
+            <h2 class="title is-3 is-serif">
                 {% blocktrans %}In {{ year }}, you read {{ books_total }} books<br />for a total of {{ pages_total }} pages!{% endblocktrans %}
             </h2>
             <p class="subtitle is-5">{% trans "That’s great!" %}</p>
     
-            <p class="title is-4">
+            <p class="title is-4 is-serif">
                 {% blocktrans %}That makes an average of {{ pages_average }} pages per book.{% endblocktrans %}
             </p>
 
@@ -35,7 +39,7 @@
         </div>
         <div class="column is-3">
             {% trans "Your shortest read this year" %}
-            <p class="title is-4 is-italic">
+            <p class="title is-4 is-serif is-italic">
                 <a href="{{ book_pages_lowest.local_path }}" class="has-text-link-dark">
                     {{ book_pages_lowest.title }}
                 </a>
@@ -56,7 +60,7 @@
         </div>
         <div class="column is-3">
             {% trans "and the longest read" %}
-            <p class="title is-4 is-italic">
+            <p class="title is-4 is-serif is-italic">
                 <a href="{{ book_pages_lowest.local_path }}" class="has-text-link-dark">
                     {{ book_pages_highest.title }}
                 </a>
@@ -82,7 +86,7 @@
 
     <div class="columns">
         <div class="column has-text-centered">
-            <h2 class="title is-3">
+            <h2 class="title is-3 is-serif">
             {% blocktrans %}You rated {{ ratings_total }} books and your average rating is {{ rating_average }}{% endblocktrans %}
             </h2>
         </div>
@@ -93,7 +97,7 @@
         </div>
         <div class="column is-3">
             {% trans "Your best rated review" %}
-            <p class="title is-4 is-italic">
+            <p class="title is-4 is-serif is-italic">
                 <a href="{{ book_rating_highest.book.local_path }}" class="has-text-link-dark">
                     {{ book_rating_highest.book.title }}
                 </a>
@@ -119,7 +123,7 @@
 
     <div class="columns">
         <div class="column has-text-centered">
-            <h2 class="title is-3">
+            <h2 class="title is-3 is-serif">
             {% blocktrans %}All the books you read in 2021{% endblocktrans %}
             </h2>
         </div>
@@ -132,14 +136,14 @@
                 {% if book.id in best_ratings_books_ids %}
                 <a href="{{ book.local_path }}" class="has-text-centered is-big">
                     {% include 'snippets/book_cover.html' with book=book cover_class='is-w-auto' %}
-                    <span class="book-title is-size-5">
+                    <span class="book-title is-serif is-size-5">
                         {{ book.title }}
                     </span>
                 </a>
                 {% else %}
                 <a href="{{ book.local_path }}" class="has-text-centered">
                     {% include 'snippets/book_cover.html' with book=book cover_class='is-w-auto' %}
-                    <span class="book-title is-size-6">
+                    <span class="book-title is-serif is-size-6">
                         {{ book.title }}
                     </span>
                 </a>
