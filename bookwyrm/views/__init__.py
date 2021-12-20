@@ -96,3 +96,4 @@ from .status import edit_readthrough
 from .updates import get_notification_count, get_unread_status_count
 from .user import User, Followers, Following, hide_suggestions
 from .wellknown import *
+from .annual_summary import AnnualSummary

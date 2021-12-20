@@ -555,6 +555,35 @@ ol.ordered-list li::before {
     padding: 0 0.75em;
 }
 
+/* Breadcrumbs
+ ******************************************************************************/
+
+.books-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(10em, 1fr));
+    gap: 2em;
+    align-items: end;
+    justify-items: center;
+}
+
+.books-grid > .is-big {
+    grid-column: span 2;
+    grid-row: span 2;
+    justify-self: stretch;
+}
+
+.books-grid .book-cover {
+    width: 100%;
+}
+
+.books-grid .book-title {
+    --height-basis: 1.35rem;
+    display: block;
+    margin-top: 0.5rem;
+    line-height: var(--height-basis);
+    min-height: calc(2 * var(--height-basis));
+}
+
 /* Dimensions
  * @todo These could be in rem.
  ******************************************************************************/
