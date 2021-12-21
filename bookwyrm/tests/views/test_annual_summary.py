@@ -36,13 +36,14 @@ class AnnualSummary(TestCase):
             parent_work=self.work,
             pages=300,
         )
-        self.review = models.Review.objects.create(
-            name="Review name",
-            content="test content",
-            rating=3.0,
-            user=self.local_user,
-            book=self.book,
-        )
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
+          self.review = models.Review.objects.create(
+              name="Review name",
+              content="test content",
+              rating=3.0,
+              user=self.local_user,
+              book=self.book,
+          )
         self.anonymous_user = AnonymousUser
         self.anonymous_user.is_authenticated = False
 
