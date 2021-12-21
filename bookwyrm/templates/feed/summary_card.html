@@ -2,7 +2,7 @@
 {% load i18n %}
 
 {% block card-header %}
-<h3 class="card-header-title has-background-success has-text-white">
+<h3 class="card-header-title has-background-success-dark has-text-white">
     <span class="icon is-size-3 mr-2" aria-hidden="true">📚</span>
     <span class="icon is-size-3 mr-2" aria-hidden="true">✨</span>
     {% blocktrans %}{{ year }} in the books{% endblocktrans %}
@@ -15,7 +15,7 @@
 </p>
 
 <p>
-    <a href="{% url 'annual-summary' year %}" class="button is-success">
+    <a href="{% url 'annual-summary' year %}" class="button is-success has-background-success-dark">
     {% blocktrans %}Discover your stats for {{ year }}!{% endblocktrans %}
     </a>
 </p>

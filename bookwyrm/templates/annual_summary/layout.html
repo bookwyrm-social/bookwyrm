@@ -32,7 +32,11 @@
     {% endwith %}
     </div>
 
-    <h1 class="title is-1 is-serif has-text-centered mb-5">{% blocktrans %}{{ year }} <em>in the books</em>{% endblocktrans %}</h1>
+    <h1 class="title is-1 is-serif has-text-centered mb-5">
+        📚✨
+        {% blocktrans %}{{ year }} <em>in the books</em>{% endblocktrans %}
+        ✨📚
+    </h1>
 
     {% if not books %}
         <p class="has-text-centered is-size-5">{% blocktrans %}Sadly you didn't finish any book in {{ year }}{% endblocktrans %}</p>
@@ -109,7 +113,7 @@
     <div class="columns">
         <div class="column has-text-centered">
             <h2 class="title is-3 is-serif">
-            {% blocktrans %}You rated {{ ratings_total }} books and your average rating is {{ rating_average }}{% endblocktrans %}
+            {% blocktrans %}You left {{ ratings_total }} ratings, <br />your average rating is {{ rating_average }}{% endblocktrans %}
             </h2>
         </div>
     </div>
