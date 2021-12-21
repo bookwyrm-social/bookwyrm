@@ -1,3 +1,4 @@
+"""end-of-year read books stats"""
 from datetime import date
 
 from django.db.models import Case, When, Avg, Sum
@@ -19,13 +20,12 @@ def get_annual_summary_year():
     """return the latest available annual summary year or None"""
 
     today = date.today()
-    if today >= date(today.year, 12, FIRST_DAY) and today <= date(today.year, 12, 31):
+    if date(today.year, 12, FIRST_DAY) <= today <= date(today.year, 12, 31):
         return today.year
 
     if (
         LAST_DAY > 0
-        and today >= date(today.year, 1, 1)
-        and today <= date(today.year, 1, LAST_DAY)
+        and date(today.year, 1, 1) <= today <= date(today.year, 1, LAST_DAY)
     ):
         return today.year - 1
 
@@ -85,16 +85,16 @@ class AnnualSummary(View):
             id__in=read_book_ids_in_year
         ).order_by(read_shelf_order)
 
-        """pages stats queries"""
+        # pages stats queries
         page_stats = read_books_in_year.aggregate(Sum("pages"), Avg("pages"))
         book_list_by_pages = read_books_in_year.filter(pages__gte=0).order_by("pages")
         book_pages_lowest = book_list_by_pages.first()
         book_pages_highest = book_list_by_pages.last()
 
-        """books with no pages"""
+        # books with no pages
         no_page_list = len(read_books_in_year.filter(pages__exact=None))
 
-        """rating stats queries"""
+        # rating stats queries
         ratings = (
             models.Review.objects.filter(user=user)
             .exclude(deleted=True)
