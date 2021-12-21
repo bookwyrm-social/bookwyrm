@@ -12,6 +12,11 @@ from bookwyrm import models, views
 from bookwyrm.tests.validate_html import validate_html
 
 
+def make_date(*args):
+    """helper function to easily generate a date obj"""
+    return datetime(*args, tzinfo=pytz.UTC)
+
+
 class AnnualSummary(TestCase):
     """views"""
 
@@ -91,18 +96,18 @@ class AnnualSummary(TestCase):
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
+    @patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
+    @patch("bookwyrm.activitystreams.add_book_statuses_task.delay")
     def test_annual_summary_page(self, *_):
         """there are so many views, this just makes sure it LOADS"""
 
-        shelf = self.local_user.shelf_set.get(identifier="read")
-
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
-            models.ShelfBook.objects.create(
-                book=self.book,
-                user=self.local_user,
-                shelf=shelf,
-                shelved_date=datetime(2020, 1, 1),
-            )
+        shelf = self.local_user.shelf_set.filter(identifier="read").first()
+        models.ShelfBook.objects.create(
+            book=self.book,
+            user=self.local_user,
+            shelf=shelf,
+            shelved_date=make_date(2020, 1, 1),
+        )
 
         view = views.AnnualSummary.as_view()
         request = self.factory.get("")
