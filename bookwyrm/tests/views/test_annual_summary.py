@@ -1,5 +1,6 @@
 """testing the annual summary page"""
 from datetime import datetime
+import pytz
 from unittest.mock import patch
 
 from django.contrib.auth.models import AnonymousUser
