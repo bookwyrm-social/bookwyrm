@@ -117,7 +117,7 @@
         <div class="column is-3 is-offset-3">
             <a href="{{ book_rating_highest.book.local_path }}">{% include 'snippets/book_cover.html' with book=book_rating_highest.book cover_class='is-w-auto-tablet is-h-l-mobile' %}</a>
         </div>
-        <div class="column is-3">
+        <div class="column is-4">
             {% trans "Your best rated review" %}
             <p class="title is-4 is-serif is-italic">
                 <a href="{{ book_rating_highest.book.local_path }}" class="has-text-link-dark">

@@ -561,7 +561,7 @@ ol.ordered-list li::before {
 .books-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(10em, 1fr));
-    gap: 2em;
+    gap: 1.5rem;
     align-items: end;
     justify-items: center;
 }
@@ -570,6 +570,7 @@ ol.ordered-list li::before {
     grid-column: span 2;
     grid-row: span 2;
     justify-self: stretch;
+    padding: 1.5rem 1.5rem 0;
 }
 
 .books-grid .book-cover {
