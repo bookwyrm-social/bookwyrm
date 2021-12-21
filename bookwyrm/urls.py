@@ -478,5 +478,9 @@ urlpatterns = [
         r"^ostatus_success/?$", views.ostatus_follow_success, name="ostatus-success"
     ),
     # annual summary
-    re_path(r"^my-year-in-the-books/(?P<year>\d{4})/?$", views.AnnualSummary.as_view(), name="annual-summary"),
+    re_path(
+        r"^my-year-in-the-books/(?P<year>\d{4})/?$",
+        views.AnnualSummary.as_view(),
+        name="annual-summary",
+    ),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

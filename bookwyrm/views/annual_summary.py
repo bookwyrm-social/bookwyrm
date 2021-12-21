@@ -22,7 +22,11 @@ def get_annual_summary_year():
     if today >= date(today.year, 12, FIRST_DAY) and today <= date(today.year, 12, 31):
         return today.year
 
-    if LAST_DAY > 0 and today >= date(today.year, 1, 1) and today <= date(today.year, 1, LAST_DAY):
+    if (
+        LAST_DAY > 0
+        and today >= date(today.year, 1, 1)
+        and today <= date(today.year, 1, LAST_DAY)
+    ):
         return today.year - 1
 
     return None
@@ -52,7 +56,7 @@ class AnnualSummary(View):
 
         paginated_years = (
             int(year) - 1,
-            int(year) + 1 if is_year_available(int(year) + 1) else None
+            int(year) + 1 if is_year_available(int(year) + 1) else None,
         )
 
         user = request.user
