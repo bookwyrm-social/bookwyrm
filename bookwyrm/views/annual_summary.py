@@ -44,6 +44,7 @@ def is_year_available(year):
     return False
 
 
+# pylint: disable= no-self-use
 class AnnualSummary(View):
     """display a summary of the year for the current user"""
 
