@@ -11,6 +11,21 @@ from bookwyrm import models
 
 # December day of first availability
 FIRST_DAY = 15
+# January day of last availability, 0 for no availability in Jan.
+LAST_DAY = 15
+
+
+def get_annual_summary_year():
+    """return the latest available annual summary year or None"""
+
+    today = date.today()
+    if today >= date(today.year, 12, FIRST_DAY) and today <= date(today.year, 12, 31):
+        return today.year
+
+    if LAST_DAY > 0 and today >= date(today.year, 1, 1) and today <= date(today.year, 1, LAST_DAY):
+        return today.year - 1
+
+    return None
 
 
 def is_year_available(year):
