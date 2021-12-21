@@ -1,4 +1,7 @@
+from datetime import date
+
 from django.db.models import Case, When, Avg, Sum
+from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.template.response import TemplateResponse
 from django.views import View
@@ -6,11 +9,31 @@ from django.views import View
 from bookwyrm import models
 
 
+# December day of first availability
+FIRST_DAY = 15
+
+
+def is_year_available(year):
+    """return boolean"""
+
+    today = date.today()
+    year = int(year)
+    if year < today.year:
+        return True
+    if year == today.year and today >= date(today.year, 12, FIRST_DAY):
+        return True
+
+    return False
+
+
 class AnnualSummary(View):
-    """display a summary of the year"""
+    """display a summary of the year for the current user"""
 
     def get(self, request, year):
         """get response"""
+
+        if not is_year_available(year):
+            raise Http404(f"The summary for {year} is unavailable")
 
         user = request.user
         read_shelf = get_object_or_404(user.shelf_set, identifier="read")
@@ -47,6 +70,11 @@ class AnnualSummary(View):
         best_ratings_books_ids = [review.book.id for review in ratings.filter(rating=5)]
         ratings_stats = ratings.aggregate(Avg("rating"))
 
+        paginated_years = (
+            int(year) - 1,
+            int(year) + 1 if is_year_available(int(year) + 1) else None
+        )
+
         data = {
             "year": year,
             "books_total": len(read_books_in_year),
@@ -60,6 +88,7 @@ class AnnualSummary(View):
             "rating_average": ratings_stats["rating__avg"],
             "book_rating_highest": ratings.order_by("-rating").first(),
             "best_ratings_books_ids": best_ratings_books_ids,
+            "paginated_years": paginated_years,
         }
 
         return TemplateResponse(request, "annual_summary/layout.html", data)

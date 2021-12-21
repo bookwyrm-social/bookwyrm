@@ -10,6 +10,28 @@
 {% endblock %}
 
 {% block content %}
+    <div class="columns">
+    {% with year=paginated_years|first %}
+        <div class="column">
+            <a href="{% url 'annual-summary' year %}">
+                <span class="icon icon-arrow-left" aria-hidden="true"></span>
+            {% blocktrans %}{{ year }} in the books{% endblocktrans %}
+            </a>
+        </div>
+    {% endwith %}
+
+    {% with year=paginated_year|last %}
+    {% if year %}
+        <div class="column has-text-right">
+            <a href="{% url 'annual-summary' year %}">
+            {% blocktrans %}{{ year }} in the books{% endblocktrans %}
+                <span class="icon icon-arrow-right" aria-hidden="true"></span>
+            </a>
+        </div>
+    {% endif %}
+    {% endwith %}
+    </div>
+
     <h1 class="title is-1 is-serif has-text-centered mb-5">{% blocktrans %}{{ year }} <em>in the books</em>{% endblocktrans %}</h1>
 
     {% if not books %}
