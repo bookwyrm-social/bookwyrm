@@ -50,6 +50,11 @@ class AnnualSummary(View):
         if not is_year_available(year):
             raise Http404(f"The summary for {year} is unavailable")
 
+        paginated_years = (
+            int(year) - 1,
+            int(year) + 1 if is_year_available(int(year) + 1) else None
+        )
+
         user = request.user
         read_shelf = get_object_or_404(user.shelf_set, identifier="read")
         read_book_ids_in_year = (
@@ -59,6 +64,16 @@ class AnnualSummary(View):
             .order_by("shelved_date", "created_date", "updated_date")
             .values_list("book", flat=True)
         )
+
+        if len(read_book_ids_in_year) == 0:
+            data = {
+                "year": year,
+                "book_total": 0,
+                "books": [],
+                "paginated_years": paginated_years,
+            }
+            return TemplateResponse(request, "annual_summary/layout.html", data)
+
         read_shelf_order = Case(
             *[When(pk=pk, then=pos) for pos, pk in enumerate(read_book_ids_in_year)]
         )
@@ -84,11 +99,6 @@ class AnnualSummary(View):
         )
         best_ratings_books_ids = [review.book.id for review in ratings.filter(rating=5)]
         ratings_stats = ratings.aggregate(Avg("rating"))
-
-        paginated_years = (
-            int(year) - 1,
-            int(year) + 1 if is_year_available(int(year) + 1) else None
-        )
 
         data = {
             "year": year,

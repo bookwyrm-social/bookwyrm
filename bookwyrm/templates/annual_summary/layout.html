@@ -20,7 +20,7 @@
         </div>
     {% endwith %}
 
-    {% with year=paginated_year|last %}
+    {% with year=paginated_years|last %}
     {% if year %}
         <div class="column has-text-right">
             <a href="{% url 'annual-summary' year %}">
@@ -35,7 +35,7 @@
     <h1 class="title is-1 is-serif has-text-centered mb-5">{% blocktrans %}{{ year }} <em>in the books</em>{% endblocktrans %}</h1>
 
     {% if not books %}
-        {% blocktrans %}Sadly you didn't finish any book in {{ year }}{% endblocktrans %}
+        <p class="has-text-centered is-size-5">{% blocktrans %}Sadly you didn't finish any book in {{ year }}{% endblocktrans %}</p>
     {% else %}
 
     <div class="columns is-mobile">
