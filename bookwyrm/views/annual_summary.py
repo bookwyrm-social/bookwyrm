@@ -61,6 +61,9 @@ class AnnualSummary(View):
 
         user = request.user
 
+        if not user.is_authenticated:
+            raise Http404(f"Login or register {year} to access this page")
+
         read_book_ids_in_year = get_read_book_ids_in_year(user, year)
 
         if len(read_book_ids_in_year) == 0:
@@ -95,7 +98,9 @@ class AnnualSummary(View):
             "books_total": len(read_books_in_year),
             "books": read_books_in_year,
             "pages_total": page_stats["pages__sum"],
-            "pages_average": round(page_stats["pages__avg"]),
+            "pages_average": round(
+                page_stats["pages__avg"] if page_stats["pages__avg"] else 0
+            ),
             "book_pages_lowest": book_list_by_pages.first(),
             "book_pages_highest": book_list_by_pages.last(),
             "no_page_number": no_page_list,
