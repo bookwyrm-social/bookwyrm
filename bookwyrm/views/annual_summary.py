@@ -162,6 +162,7 @@ def get_annual_summary_year():
 
 
 def privacy_verification(request, user, year, year_key):
+    """raises a 404 error if the user should not access the page"""
     if user != request.user:
         request_key = None
         if "key" in request.GET:
