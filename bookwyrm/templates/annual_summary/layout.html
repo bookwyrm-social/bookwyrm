@@ -48,7 +48,9 @@
 
     <details>
         <summary>
-            <h2 class="title is-6 has-text-centered has-text-success-dark">Share this page</h2>
+            <span role="heading" aria-level="2" class="title is-6 has-text-centered has-text-success-dark">
+                {% trans "Share this page" %}
+            </span>
         </summary>
         <div class="columns mt-3">
             <div class="column is-three-fifths is-offset-one-fifth">
@@ -63,29 +65,29 @@
             {% if year_key %}
                 <div class="columns mb-2">
                     <div class="column pb-0">
-                        <p>Sharing status: <strong>public with key</strong></p>
-                        <p>The page can be seen by anyone with the complete address.</p>
+                        <p>{% trans "Sharing status: <strong>public with key</strong>" %}</p>
+                        <p>{% trans "The page can be seen by anyone with the complete address." %}</p>
                     </div>
                     <form class="column pb-0 is-narrow" method="post" action="{% url "summary-revoke-key" %}" id="revoke-key">
                         {% csrf_token %}
                         <input type="hidden" name="year" value="{{ year }}" />
-                        <button class="button is-danger is-outlined" type="submit">Make page private</button>
+                        <button class="button is-danger is-outlined" type="submit">{% trans "Make page private" %}</button>
                     </form>
                 </div>
             {% else %}
                 <div class="columns">
                     <div class="column pb-0">
-                        <p>Sharing status: <strong>private</strong></p>
-                        <p>The page is private, only you can see it.</p>
+                        <p>{% trans "Sharing status: <strong>private</strong>" %}</p>
+                        <p>{% trans "The page is private, only you can see it." %}</p>
                     </div>
                     <form class="column pb-0 is-narrow" method="post" action="{% url "summary-add-key" %}" id="add-key">
                         {% csrf_token %}
                         <input type="hidden" name="year" value="{{ year }}" />
-                        <button class="button is-primary is-outlined" type="submit">Make page public</button>
+                        <button class="button is-primary is-outlined" type="submit">{% trans "Make page public" %}</button>
                     </form>
                 </div>
             {% endif %}
-                <p class="help">When you make your page private, the old key won’t give access to the page anymore. A new key will be created if the page is once again made public.</p>
+                <p class="help">{% trans "When you make your page private, the old key won’t give access to the page anymore. A new key will be created if the page is once again made public." %}</p>
             {% endif %}
             </div>
         </div>
