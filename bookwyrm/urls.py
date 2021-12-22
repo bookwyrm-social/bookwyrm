@@ -479,7 +479,11 @@ urlpatterns = [
     ),
     # annual summary
     re_path(
-        r"^my-year-in-the-books/(?P<year>\d{4})/?$",
+        r"^my-year-in-the-books/(?P<year>\d+)/?$",
+        views.personal_annual_summary,
+    ),
+    re_path(
+        rf"{LOCAL_USER_PATH}/(?P<year>\d+)-in-the-books/?$",
         views.AnnualSummary.as_view(),
         name="annual-summary",
     ),

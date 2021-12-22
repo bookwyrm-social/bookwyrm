@@ -10,12 +10,14 @@
 {% endblock %}
 
 {% block content %}
+{% with display_name=summary_user.display_name %}
+{% if user == summary_user %}
     <div class="columns">
     {% with year=paginated_years|first %}
         <div class="column">
-            <a href="{% url 'annual-summary' year %}">
+            <a href="{% url 'annual-summary' summary_user.localname year %}">
                 <span class="icon icon-arrow-left" aria-hidden="true"></span>
-            {% blocktrans %}{{ year }} in the books{% endblocktrans %}
+                {{ year }}
             </a>
         </div>
     {% endwith %}
@@ -23,20 +25,24 @@
     {% with year=paginated_years|last %}
     {% if year %}
         <div class="column has-text-right">
-            <a href="{% url 'annual-summary' year %}">
-            {% blocktrans %}{{ year }} in the books{% endblocktrans %}
+            <a href="{% url 'annual-summary' summary_user.localname year %}">
+                {{ year }}
                 <span class="icon icon-arrow-right" aria-hidden="true"></span>
             </a>
         </div>
     {% endif %}
     {% endwith %}
     </div>
+{% endif %}
 
-    <h1 class="title is-1 is-serif has-text-centered mb-5">
+    <h1 class="title is-1 is-serif has-text-centered">
         📚✨
         {% blocktrans %}{{ year }} <em>in the books</em>{% endblocktrans %}
         ✨📚
     </h1>
+    <p class="subtitle is-3 is-serif has-text-centered mb-5">
+        {% blocktrans %}<em>{{ display_name }}’s</em> year of reading{% endblocktrans %}
+    </p>
 
     {% if not books %}
         <p class="has-text-centered is-size-5">{% blocktrans %}Sadly you didn't finish any book in {{ year }}{% endblocktrans %}</p>
@@ -45,7 +51,7 @@
     <div class="columns is-mobile">
         <div class="column is-8 is-offset-2 has-text-centered">
             <h2 class="title is-3 is-serif">
-                {% blocktrans %}In {{ year }}, you read {{ books_total }} books<br />for a total of {{ pages_total }} pages!{% endblocktrans %}
+                {% blocktrans %}In {{ year }}, {{ display_name }} read {{ books_total }} books<br />for a total of {{ pages_total }} pages!{% endblocktrans %}
             </h2>
             <p class="subtitle is-5">{% trans "That’s great!" %}</p>
     
@@ -65,7 +71,7 @@
             <a href="{{ book_pages_lowest.local_path }}">{% include 'snippets/book_cover.html' with book=book_pages_lowest cover_class='is-w-auto-tablet is-h-l-mobile' %}</a>
         </div>
         <div class="column is-3">
-            {% trans "Your shortest read this year" %}
+            {% trans "Their shortest read this year…" %}
             <p class="title is-4 is-serif is-italic">
                 <a href="{{ book_pages_lowest.local_path }}" class="has-text-success-dark">
                     {{ book_pages_lowest.title }}
@@ -86,7 +92,7 @@
             <a href="{{ book_pages_highest.local_path }}">{% include 'snippets/book_cover.html' with book=book_pages_highest cover_class='is-w-auto-tablet is-h-l-mobile' %}</a>
         </div>
         <div class="column is-3">
-            {% trans "and the longest read" %}
+            {% trans "…and the longest" %}
             <p class="title is-4 is-serif is-italic">
                 <a href="{{ book_pages_lowest.local_path }}" class="has-text-success-dark">
                     {{ book_pages_highest.title }}
@@ -112,10 +118,11 @@
         </div>
     </div>
 
+    {% if ratings_total > 0 %}
     <div class="columns">
         <div class="column has-text-centered">
             <h2 class="title is-3 is-serif">
-            {% blocktrans %}You left {{ ratings_total }} ratings, <br />your average rating is {{ rating_average }}{% endblocktrans %}
+            {% blocktrans %}{{ display_name }} left {{ ratings_total }} ratings, <br />their average rating is {{ rating_average }}{% endblocktrans %}
             </h2>
         </div>
     </div>
@@ -124,7 +131,7 @@
             <a href="{{ book_rating_highest.book.local_path }}">{% include 'snippets/book_cover.html' with book=book_rating_highest.book cover_class='is-w-auto-tablet is-h-l-mobile' %}</a>
         </div>
         <div class="column is-4">
-            {% trans "Your best rated review" %}
+            {% trans "Their best rated review" %}
             <p class="title is-4 is-serif is-italic">
                 <a href="{{ book_rating_highest.book.local_path }}" class="has-text-success-dark">
                     {{ book_rating_highest.book.title }}
@@ -137,7 +144,7 @@
             {% endif %}
             <p class="subtitle is-6">
                 {% with rating=book_rating_highest.rating|floatformat %}
-                {% blocktrans %}Your rating: <strong>{{ rating }}</strong>{% endblocktrans%}
+                {% blocktrans %}Their rating: <strong>{{ rating }}</strong>{% endblocktrans%}
                 {% endwith %}
             </p>
         </div>
@@ -148,11 +155,12 @@
             <hr />
         </div>
     </div>
+    {% endif %}
 
     <div class="columns">
         <div class="column has-text-centered">
             <h2 class="title is-3 is-serif">
-            {% blocktrans %}All the books you read in 2021{% endblocktrans %}
+            {% blocktrans %}All the books {{ display_name }} read in 2021{% endblocktrans %}
             </h2>
         </div>
     </div>
@@ -180,5 +188,6 @@
             </div>
         </div>
     </div>
-    {% endif %}
+{% endif %}
+{% endwith %}
 {% endblock %}
