@@ -105,7 +105,9 @@ class AnnualSummary(View):
             "book_pages_highest": book_list_by_pages.last(),
             "no_page_number": no_page_list,
             "ratings_total": len(ratings),
-            "rating_average": round(ratings_stats["rating__avg"], 2),
+            "rating_average": round(
+                ratings_stats["rating__avg"] if ratings_stats["rating__avg"] else 0, 2
+            ),
             "book_rating_highest": ratings.order_by("-rating").first(),
             "best_ratings_books_ids": [
                 review.book.id for review in ratings.filter(rating=5)
