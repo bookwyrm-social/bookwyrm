@@ -178,7 +178,7 @@ def privacy_verification(request, user, year, year_key):
 def is_year_available(user, year):
     """return boolean"""
 
-    earliest_year = get_earliest_year(user)
+    earliest_year = int(get_earliest_year(user, year))
     today = date.today()
     year = int(year)
     if earliest_year <= year < today.year:
@@ -189,7 +189,7 @@ def is_year_available(user, year):
     return False
 
 
-def get_earliest_year(user):
+def get_earliest_year(user, year):
     """return the earliest finish_date or shelved_date year for user books in read shelf"""
 
     read_shelfbooks = models.ShelfBook.objects.filter(user__id=user.id).filter(
@@ -216,7 +216,10 @@ def get_earliest_year(user):
         else:
             book_dates.append(book["shelved_date"])
 
-    return min(book_dates).year
+    if book_dates:
+        return min(book_dates).year
+
+    return year
 
 
 def get_read_book_ids_in_year(user, year):

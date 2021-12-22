@@ -34,6 +34,7 @@ class AnnualSummary(TestCase):
                 local=True,
                 localname="mouse",
                 remote_id="https://example.com/users/mouse",
+                summary_keys={"2020": "0123456789"},
             )
         self.work = models.Work.objects.create(title="Test Work")
         self.book = models.Edition.objects.create(
@@ -42,18 +43,11 @@ class AnnualSummary(TestCase):
             parent_work=self.work,
             pages=300,
         )
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
-            self.review = models.Review.objects.create(
-                name="Review name",
-                content="test content",
-                rating=3.0,
-                user=self.local_user,
-                book=self.book,
-            )
+
         self.anonymous_user = AnonymousUser
         self.anonymous_user.is_authenticated = False
 
-        self.year = 2020
+        self.year = "2020"
         models.SiteSettings.objects.create()
 
     def test_annual_summary_not_authenticated(self, *_):
@@ -62,12 +56,24 @@ class AnnualSummary(TestCase):
         request = self.factory.get("")
         request.user = self.anonymous_user
 
-        with patch(
-            "bookwyrm.views.annual_summary.is_year_available"
-        ) as is_year_available:
-            is_year_available.return_value = True
-            with self.assertRaises(Http404):
-                view(request, self.year)
+        with self.assertRaises(Http404):
+            view(request, self.local_user.localname, self.year)
+
+    def test_annual_summary_not_authenticated_with_key(self, *_):
+        """there are so many views, this just makes sure it DOES LOAD"""
+        key = self.local_user.summary_keys[self.year]
+        view = views.AnnualSummary.as_view()
+        request_url = (
+            f"user/{self.local_user.localname}/{self.year}-in-the-books?key={key}"
+        )
+        request = self.factory.get(request_url)
+        request.user = self.anonymous_user
+
+        result = view(request, self.local_user.localname, self.year)
+
+        self.assertIsInstance(result, TemplateResponse)
+        validate_html(result.render())
+        self.assertEqual(result.status_code, 200)
 
     def test_annual_summary_wrong_year(self, *_):
         """there are so many views, this just makes sure it DOESN’T LOAD"""
@@ -75,12 +81,8 @@ class AnnualSummary(TestCase):
         request = self.factory.get("")
         request.user = self.anonymous_user
 
-        with patch(
-            "bookwyrm.views.annual_summary.is_year_available"
-        ) as is_year_available:
-            is_year_available.return_value = False
-            with self.assertRaises(Http404):
-                view(request, self.year)
+        with self.assertRaises(Http404):
+            view(request, self.local_user.localname, self.year)
 
     def test_annual_summary_empty_page(self, *_):
         """there are so many views, this just makes sure it LOADS"""
@@ -88,11 +90,8 @@ class AnnualSummary(TestCase):
         request = self.factory.get("")
         request.user = self.local_user
 
-        with patch(
-            "bookwyrm.views.annual_summary.is_year_available"
-        ) as is_year_available:
-            is_year_available.return_value = True
-            result = view(request, self.year)
+        result = view(request, self.local_user.localname, self.year)
+
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
@@ -114,11 +113,38 @@ class AnnualSummary(TestCase):
         request = self.factory.get("")
         request.user = self.local_user
 
-        with patch(
-            "bookwyrm.views.annual_summary.is_year_available"
-        ) as is_year_available:
-            is_year_available.return_value = True
-            result = view(request, self.year)
+        result = view(request, self.local_user.localname, self.year)
+
+        self.assertIsInstance(result, TemplateResponse)
+        validate_html(result.render())
+        self.assertEqual(result.status_code, 200)
+
+    @patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
+    @patch("bookwyrm.activitystreams.add_book_statuses_task.delay")
+    def test_annual_summary_page_with_review(self, *_):
+        """there are so many views, this just makes sure it LOADS"""
+
+        self.review = models.Review.objects.create(
+            name="Review name",
+            content="test content",
+            rating=3.0,
+            user=self.local_user,
+            book=self.book,
+        )
+
+        shelf = self.local_user.shelf_set.filter(identifier="read").first()
+        models.ShelfBook.objects.create(
+            book=self.book,
+            user=self.local_user,
+            shelf=shelf,
+            shelved_date=make_date(2020, 1, 1),
+        )
+
+        view = views.AnnualSummary.as_view()
+        request = self.factory.get("")
+        request.user = self.local_user
+
+        result = view(request, self.local_user.localname, self.year)
 
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
