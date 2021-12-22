@@ -219,14 +219,28 @@ def get_read_book_ids_in_year(user, year):
     """return an ordered QuerySet of the read book ids"""
 
     read_shelf = get_object_or_404(user.shelf_set, identifier="read")
-    read_book_ids_in_year = (
+    shelved_book_ids = (
         models.ShelfBook.objects.filter(shelf=read_shelf)
         .filter(user=user)
-        .filter(shelved_date__year=year)
-        .order_by("shelved_date", "created_date", "updated_date")
-        .values_list("book", flat=True)
+        .values_list("book", "shelved_date")
     )
-    return read_book_ids_in_year
+
+    book_dates = []
+
+    for book in shelved_book_ids:
+        finished_in_year = (
+            models.ReadThrough.objects.filter(user__id=user.id)
+            .filter(book_id=book[0])
+            .filter(finish_date__year=year)
+            .values("finish_date")
+            .first()
+        )
+
+        if finished_in_year:
+            # Finished a readthrough in the year
+            book_dates.append((book[0], finished_in_year["finish_date"]))
+        else:
+            has_other_year_readthrough = (
                 models.ReadThrough.objects.filter(user__id=user.id)
                 .filter(book_id=book[0])
                 .exists()
