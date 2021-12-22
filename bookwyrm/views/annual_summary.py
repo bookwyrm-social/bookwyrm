@@ -27,14 +27,6 @@ class AnnualSummary(View):
     def get(self, request, username, year):
         """get response"""
 
-        if not is_year_available(year):
-            raise Http404(f"The summary for {year} is unavailable")
-
-        paginated_years = (
-            int(year) - 1,
-            int(year) + 1 if is_year_available(int(year) + 1) else None,
-        )
-
         user = get_user_from_username(request.user, username)
 
         year_key = None
@@ -49,6 +41,14 @@ class AnnualSummary(View):
 
             if not request_key or request_key != year_key:
                 raise Http404(f"The summary for {year} is unavailable")
+
+        if not is_year_available(user, year):
+            raise Http404(f"The summary for {year} is unavailable")
+
+        paginated_years = (
+            int(year) - 1 if is_year_available(user, int(year) - 1) else None,
+            int(year) + 1 if is_year_available(user, int(year) + 1) else None,
+        )
 
         # get data
         read_book_ids_in_year = get_read_book_ids_in_year(user, year)
@@ -171,17 +171,48 @@ def get_annual_summary_year():
     return None
 
 
-def is_year_available(year):
+def is_year_available(user, year):
     """return boolean"""
 
+    earliest_year = get_earliest_year(user)
     today = date.today()
     year = int(year)
-    if year < today.year:
+    if year < today.year and year >= earliest_year:
         return True
     if year == today.year and today >= date(today.year, 12, FIRST_DAY):
         return True
 
     return False
+
+
+def get_earliest_year(user):
+    """return the earliest finish_date or shelved_date year for user books in read shelf"""
+
+    read_shelfbooks = models.ShelfBook.objects.filter(user__id=user.id).filter(
+        shelf__identifier__exact="read"
+    )
+    read_shelfbooks_list = list(read_shelfbooks.values("book", "shelved_date"))
+
+    book_dates = []
+
+    for book in read_shelfbooks_list:
+        earliest_finished = (
+            models.ReadThrough.objects.filter(user__id=user.id)
+            .filter(book_id=book["book"])
+            .exclude(finish_date__exact=None)
+            .order_by("finish_date")
+            .values("finish_date")
+            .first()
+        )
+
+        if earliest_finished:
+            book_dates.append(
+                min(earliest_finished["finish_date"], book["shelved_date"])
+            )
+        else:
+            book_dates.append(book["shelved_date"])
+
+    return min(book_dates).year
 
 
 def get_read_book_ids_in_year(user, year):
@@ -196,6 +227,17 @@ def get_read_book_ids_in_year(user, year):
         .values_list("book", flat=True)
     )
     return read_book_ids_in_year
+                models.ReadThrough.objects.filter(user__id=user.id)
+                .filter(book_id=book[0])
+                .exists()
+            )
+            if not has_other_year_readthrough and book[1].year == int(year):
+                # No readthrough but shelved this year
+                book_dates.append(book)
+
+    book_dates = sorted(book_dates, key=lambda tup: tup[1])
+
+    return [book[0] for book in book_dates]
 
 
 def get_books_from_shelfbooks(books_ids):

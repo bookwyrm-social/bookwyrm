@@ -14,12 +14,14 @@
 {% if user == summary_user %}
     <div class="columns">
     {% with year=paginated_years|first %}
+    {% if year %}
         <div class="column">
             <a href="{% url 'annual-summary' summary_user.localname year %}">
                 <span class="icon icon-arrow-left" aria-hidden="true"></span>
                 {{ year }}
             </a>
         </div>
+    {% endif %}
     {% endwith %}
 
     {% with year=paginated_years|last %}
