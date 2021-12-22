@@ -174,7 +174,6 @@ def privacy_verification(request, user, year, year_key):
         raise Http404(f"The summary for {year} is unavailable")
 
 
-
 def is_year_available(user, year):
     """return boolean"""
 
