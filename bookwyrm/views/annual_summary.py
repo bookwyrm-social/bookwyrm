@@ -57,6 +57,7 @@ class AnnualSummary(View):
             data = {
                 "summary_user": user,
                 "year": year,
+                "year_key": year_key,
                 "book_total": 0,
                 "books": [],
                 "paginated_years": paginated_years,
@@ -84,6 +85,7 @@ class AnnualSummary(View):
         data = {
             "summary_user": user,
             "year": year,
+            "year_key": year_key,
             "books_total": len(read_books_in_year),
             "books": read_books_in_year,
             "pages_total": page_stats["pages__sum"],
@@ -112,6 +114,46 @@ def personal_annual_summary(request, year):
     """redirect simple URL to URL with username"""
 
     return redirect("annual-summary", request.user.localname, year)
+
+
+@login_required
+@require_POST
+def summary_add_key(request):
+    """add summary key"""
+
+    year = request.POST["year"]
+    user = request.user
+
+    new_key = uuid4().hex
+
+    if not user.summary_keys:
+        user.summary_keys = {
+            year: new_key,
+        }
+    else:
+        user.summary_keys[year] = new_key
+
+    user.save()
+
+    response = redirect("annual-summary", user.localname, year)
+    response["Location"] += f"?key={str(new_key)}"
+    return response
+
+
+@login_required
+@require_POST
+def summary_revoke_key(request):
+    """revoke summary key"""
+
+    year = request.POST["year"]
+    user = request.user
+
+    if user.summary_keys and year in user.summary_keys:
+        user.summary_keys.pop(year)
+
+    user.save()
+
+    return redirect("annual-summary", user.localname, year)
 
 
 def get_annual_summary_year():

@@ -487,4 +487,8 @@ urlpatterns = [
         views.AnnualSummary.as_view(),
         name="annual-summary",
     ),
+    re_path(r"^summary_add_key/?$", views.summary_add_key, name="summary-add-key"),
+    re_path(
+        r"^summary_revoke_key/?$", views.summary_revoke_key, name="summary-revoke-key"
+    ),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

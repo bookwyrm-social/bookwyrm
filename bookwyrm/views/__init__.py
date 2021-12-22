@@ -99,4 +99,6 @@ from .wellknown import *
 from .annual_summary import (
     AnnualSummary,
     personal_annual_summary,
+    summary_add_key,
+    summary_revoke_key,
 )

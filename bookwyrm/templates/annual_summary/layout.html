@@ -44,6 +44,51 @@
         {% blocktrans %}<em>{{ display_name }}’s</em> year of reading{% endblocktrans %}
     </p>
 
+    <details>
+        <summary>
+            <h2 class="title is-6 has-text-centered has-text-success-dark">Share this page</h2>
+        </summary>
+        <div class="columns mt-3">
+            <div class="column is-three-fifths is-offset-one-fifth">
+
+            {% if user == summary_user %}
+            {% if year_key %}
+                <div class="columns mb-2">
+                    <div class="column pb-0">
+                        <p>Sharing status: <strong>public with key</strong></p>
+                        <p>The page can be seen by anyone with the complete address.</p>
+                    </div>
+                    <form class="column pb-0 is-narrow" method="post" action="{% url "summary-revoke-key" %}" id="revoke-key">
+                        {% csrf_token %}
+                        <input type="hidden" name="year" value="{{ year }}" />
+                        <button class="button is-danger is-outlined" type="submit">Make page private</button>
+                    </form>
+                </div>
+            {% else %}
+                <div class="columns">
+                    <div class="column pb-0">
+                        <p>Sharing status: <strong>private</strong></p>
+                        <p>The page is private, only you can see it.</p>
+                    </div>
+                    <form class="column pb-0 is-narrow" method="post" action="{% url "summary-add-key" %}" id="add-key">
+                        {% csrf_token %}
+                        <input type="hidden" name="year" value="{{ year }}" />
+                        <button class="button is-primary is-outlined" type="submit">Make page public</button>
+                    </form>
+                </div>
+            {% endif %}
+                <p class="help">When you make your page private, the old key won’t give access to the page anymore. A new key will be created if the page is once again made public.</p>
+            {% endif %}
+            </div>
+        </div>
+    </details>
+
+    <div class="columns mt-1">
+        <div class="column is-one-fifth is-offset-two-fifths">
+            <hr />
+        </div>
+    </div>
+
 {% if not books %}
     <p class="has-text-centered is-size-5">{% blocktrans %}Sadly {{ display_name }} didn’t finish any book in {{ year }}{% endblocktrans %}</p>
 {% else %}
