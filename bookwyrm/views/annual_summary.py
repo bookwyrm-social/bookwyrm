@@ -33,17 +33,7 @@ class AnnualSummary(View):
         if user.summary_keys and year in user.summary_keys:
             year_key = user.summary_keys[year]
 
-        # verify key
-        if user != request.user:
-            request_key = None
-            if "key" in request.GET:
-                request_key = request.GET["key"]
-
-            if not request_key or request_key != year_key:
-                raise Http404(f"The summary for {year} is unavailable")
-
-        if not is_year_available(user, year):
-            raise Http404(f"The summary for {year} is unavailable")
+        privacy_verification(request, user, year, year_key)
 
         paginated_years = (
             int(year) - 1 if is_year_available(user, int(year) - 1) else None,
@@ -171,13 +161,27 @@ def get_annual_summary_year():
     return None
 
 
+def privacy_verification(request, user, year, year_key):
+    if user != request.user:
+        request_key = None
+        if "key" in request.GET:
+            request_key = request.GET["key"]
+
+        if not request_key or request_key != year_key:
+            raise Http404(f"The summary for {year} is unavailable")
+
+    if not is_year_available(user, year):
+        raise Http404(f"The summary for {year} is unavailable")
+
+
+
 def is_year_available(user, year):
     """return boolean"""
 
     earliest_year = get_earliest_year(user)
     today = date.today()
     year = int(year)
-    if year < today.year and year >= earliest_year:
+    if earliest_year <= year < today.year:
         return True
     if year == today.year and today >= date(today.year, 12, FIRST_DAY):
         return True
