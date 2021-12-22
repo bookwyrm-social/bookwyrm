@@ -465,10 +465,8 @@ let BookWyrm = new class {
 
         copyButtonEl.textContent = textareaEl.dataset.copytextLabel;
         copyButtonEl.classList.add(
-            "mt-2",
             "button",
             "is-small",
-            "is-fullwidth",
             "is-primary",
             "is-light"
         );

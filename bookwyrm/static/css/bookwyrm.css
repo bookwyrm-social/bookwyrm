@@ -136,6 +136,10 @@ summary::marker {
     content: none;
 }
 
+summary {
+    cursor: pointer;
+}
+
 .detail-pinned-button summary {
     position: absolute;
     right: 0;
@@ -584,6 +588,37 @@ ol.ordered-list li::before {
     margin-top: 0.5rem;
     line-height: var(--height-basis);
     min-height: calc(2 * var(--height-basis));
+}
+
+/* Copy
+ ******************************************************************************/
+
+.horizontal-copy {
+    display:  flex;
+    flex-direction: row;
+    align-items: center;
+    gap: .75rem;
+}
+
+.horizontal-copy textarea {
+    min-width: initial;
+    white-space: nowrap;
+}
+
+.horizontal-copy button {
+    align-self: stretch;
+    height: unset;
+}
+
+.vertical-copy {
+    display:  flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: .75rem;
+}
+
+.vertical-copy button {
+    width: 100%;
 }
 
 /* Dimensions

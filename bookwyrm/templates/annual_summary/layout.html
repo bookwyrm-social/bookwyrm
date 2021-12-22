@@ -51,6 +51,12 @@
         <div class="columns mt-3">
             <div class="column is-three-fifths is-offset-one-fifth">
 
+            {% if year_key %}
+                <div class="horizontal-copy mb-5">
+                    <textarea rows="1" readonly class="textarea is-small" aria-labelledby="embed-label" data-copytext data-copytext-label="{% trans 'Copy address' %}" data-copytext-success="{% trans 'Copied!' %}">{{ request.scheme|add:"://"|add:request.get_host|add:request.path }}?key={{ year_key }}</textarea>
+                </div>
+            {% endif %}
+
             {% if user == summary_user %}
             {% if year_key %}
                 <div class="columns mb-2">
