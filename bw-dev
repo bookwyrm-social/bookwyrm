@@ -86,7 +86,7 @@ case "$CMD" in
         docker-compose restart
         ;;
     populate_streams)
-        runweb python manage.py populate_streams $@
+        runweb python manage.py populate_streams "$@"
         ;;
     populate_suggestions)
         runweb python manage.py populate_suggestions
@@ -95,20 +95,33 @@ case "$CMD" in
         runweb python manage.py generateimages
         ;;
     generate_preview_images)
-        runweb python manage.py generate_preview_images $@
+        runweb python manage.py generate_preview_images "$@"
         ;;
     copy_media_to_s3)
         awscommand "bookwyrm_media_volume:/images"\
             "s3 cp /images s3://${AWS_STORAGE_BUCKET_NAME}/images\
             --endpoint-url ${AWS_S3_ENDPOINT_URL}\
-            --recursive --acl public-read"
+            --recursive --acl public-read" "$@"
+        ;;
+    sync_media_to_s3)
+        awscommand "bookwyrm_media_volume:/images"\
+            "s3 sync /images s3://${AWS_STORAGE_BUCKET_NAME}/images\
+            --endpoint-url ${AWS_S3_ENDPOINT_URL}\
+            --acl public-read" "$@"
         ;;
     set_cors_to_s3)
+        set +x
+        config_file=$1
+        if [ -z "$config_file" ]; then
+            echo "This command requires a JSON file containing a CORS configuration as an argument"
+            exit 1
+        fi
+        set -x
         awscommand "$(pwd):/bw"\
             "s3api put-bucket-cors\
             --bucket ${AWS_STORAGE_BUCKET_NAME}\
             --endpoint-url ${AWS_S3_ENDPOINT_URL}\
-            --cors-configuration file:///bw/$@"
+            --cors-configuration file:///bw/$config_file" "$@"
         ;;
     runweb)
         runweb "$@"
@@ -132,6 +145,7 @@ case "$CMD" in
         echo "    generate_thumbnails"
         echo "    generate_preview_images [--all]"
         echo "    copy_media_to_s3"
+        echo "    sync_media_to_s3"
         echo "    set_cors_to_s3 [cors file]"
         echo "    runweb [command]"
         ;;

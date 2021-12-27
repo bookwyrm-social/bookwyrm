@@ -52,6 +52,12 @@ let BookWyrm = new class {
                     this.duplicateInput.bind(this)
             
             ))
+        document.querySelectorAll('details.dropdown')
+                .forEach(node => node.addEventListener(
+                    'toggle',
+                    this.handleDetailsDropdown.bind(this)
+            
+            ))
     }
 
     /**
@@ -465,10 +471,8 @@ let BookWyrm = new class {
 
         copyButtonEl.textContent = textareaEl.dataset.copytextLabel;
         copyButtonEl.classList.add(
-            "mt-2",
             "button",
             "is-small",
-            "is-fullwidth",
             "is-primary",
             "is-light"
         );
@@ -481,5 +485,102 @@ let BookWyrm = new class {
         });
 
         textareaEl.parentNode.appendChild(copyButtonEl)
+    }
+
+    /**
+     * Handle the details dropdown component.
+     *
+     * @param  {Event} event - Event fired by a `details` element
+     *                         with the `dropdown` class name, on toggle.
+     * @return {undefined}
+     */
+    handleDetailsDropdown(event) {
+        const detailsElement = event.target;
+        const summaryElement = detailsElement.querySelector('summary');
+        const menuElement = detailsElement.querySelector('.dropdown-menu');
+        const htmlElement = document.querySelector('html');
+
+        if (detailsElement.open) {
+            // Focus first menu element
+            menuElement.querySelectorAll(
+                'a[href]:not([disabled]), button:not([disabled])'
+            )[0].focus();
+            
+            // Enable focus trap
+            menuElement.addEventListener('keydown', this.handleFocusTrap);
+            
+            // Close on Esc
+            detailsElement.addEventListener('keydown', handleEscKey);
+
+            // Clip page if Mobile
+            if (this.isMobile()) {
+                htmlElement.classList.add('is-clipped');
+            }
+        } else {
+            summaryElement.focus();
+            
+            // Disable focus trap
+            menuElement.removeEventListener('keydown', this.handleFocusTrap);
+
+            // Unclip page
+            if (this.isMobile()) {
+                htmlElement.classList.remove('is-clipped');
+            }
+        }
+
+        function handleEscKey(event) {
+            if (event.key !== 'Escape') { 
+                return; 
+            }
+
+            summaryElement.click();
+        }
+    }
+
+    /**
+     * Check if windows matches mobile media query.
+     *
+     * @return {Boolean}
+     */
+    isMobile() {
+        return window.matchMedia("(max-width: 768px)").matches;
+    }
+
+    /**
+     * Focus trap handler
+     *
+     * @param  {Event} event - Keydown event.
+     * @return {undefined}
+     */
+    handleFocusTrap(event) {
+        if (event.key !== 'Tab') { 
+            return; 
+        }
+
+        const focusableEls = event.currentTarget.querySelectorAll(
+            [
+                'a[href]:not([disabled])',
+                'button:not([disabled])',
+                'textarea:not([disabled])',
+                'input:not([type="hidden"]):not([disabled])',
+                'select:not([disabled])',
+                'details:not([disabled])',
+                '[tabindex]:not([tabindex="-1"]):not([disabled])'
+            ].join(',')
+        );
+        const firstFocusableEl = focusableEls[0];  
+        const lastFocusableEl = focusableEls[focusableEls.length - 1];
+
+        if (event.shiftKey ) /* Shift + tab */ {
+            if (document.activeElement === firstFocusableEl) {
+                lastFocusableEl.focus();
+                event.preventDefault();
+            }
+        } else /* Tab */ {
+            if (document.activeElement === lastFocusableEl) {
+                firstFocusableEl.focus();
+                event.preventDefault();
+            }
+        }
     }
 }();

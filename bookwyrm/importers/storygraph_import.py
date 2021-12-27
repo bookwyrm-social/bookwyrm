@@ -3,6 +3,6 @@ from . import Importer
 
 
 class StorygraphImporter(Importer):
-    """csv downloads from librarything"""
+    """csv downloads from Storygraph"""
 
     service = "Storygraph"

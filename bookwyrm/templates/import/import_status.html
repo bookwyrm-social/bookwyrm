@@ -105,6 +105,11 @@
                 <th>
                     {% trans "ISBN" %}
                 </th>
+                {% if job.source == "OpenLibrary" %}
+                <th>
+                    {% trans "Openlibrary key" %}
+                </th>
+                {% endif %}
                 <th>
                     {% trans "Author" %}
                 </th>
@@ -145,6 +150,11 @@
                 <td>
                     {{ item.isbn|default:'' }}
                 </td>
+                {% if job.source == "OpenLibrary" %}
+                <td>
+                    {{ item.openlibrary_key }}
+                </td>
+                {% endif %}
                 <td>
                     {{ item.normalized_data.authors }}
                 </td>
@@ -224,7 +234,3 @@
 </div>
 {% endif %}
 {% endspaceless %}{% endblock %}
-
-{% block scripts %}
-<script src="{% static "js/check_all.js" %}?v={{ js_cache }}"></script>
-{% endblock %}
