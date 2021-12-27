@@ -477,4 +477,18 @@ urlpatterns = [
     re_path(
         r"^ostatus_success/?$", views.ostatus_follow_success, name="ostatus-success"
     ),
+    # annual summary
+    re_path(
+        r"^my-year-in-the-books/(?P<year>\d+)/?$",
+        views.personal_annual_summary,
+    ),
+    re_path(
+        rf"{LOCAL_USER_PATH}/(?P<year>\d+)-in-the-books/?$",
+        views.AnnualSummary.as_view(),
+        name="annual-summary",
+    ),
+    re_path(r"^summary_add_key/?$", views.summary_add_key, name="summary-add-key"),
+    re_path(
+        r"^summary_revoke_key/?$", views.summary_revoke_key, name="summary-revoke-key"
+    ),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
