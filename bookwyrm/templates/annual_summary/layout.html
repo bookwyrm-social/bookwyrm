@@ -1,6 +1,7 @@
 {% extends 'layout.html' %}
 {% load i18n %}
 {% load static %}
+{% load humanize %}
 
 
 {% block title %}{% blocktrans %}{{ year }} in the books{% endblocktrans %}{% endblock %}
@@ -111,7 +112,7 @@
             <p class="subtitle is-5">{% trans "That’s great!" %}</p>
 
             <p class="title is-4 is-serif">
-                {% blocktrans %}That makes an average of {{ pages_average }} pages per book.{% endblocktrans %}
+                {% blocktrans with pages=pages_average|intcomma %}That makes an average of {{ pages }} pages per book.{% endblocktrans %}
             </p>
 
             {% if no_page_number %}
