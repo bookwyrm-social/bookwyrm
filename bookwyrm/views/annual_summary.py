@@ -5,7 +5,7 @@ from uuid import uuid4
 from django.contrib.auth.decorators import login_required
 from django.db.models import Case, When, Avg, Sum
 from django.http import Http404
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.views import View
 from django.views.decorators.http import require_POST
