@@ -15,7 +15,7 @@
 </p>
 
 <p>
-    <a href="{% url 'annual-summary' year %}" class="button is-success has-background-success-dark">
+    <a href="{% url 'annual-summary' request.user.localname year %}" class="button is-success has-background-success-dark">
     {% blocktrans %}Discover your stats for {{ year }}!{% endblocktrans %}
     </a>
 </p>

@@ -10,42 +10,103 @@
 {% endblock %}
 
 {% block content %}
+{% with display_name=summary_user.display_name %}
+{% if user == summary_user %}
     <div class="columns">
     {% with year=paginated_years|first %}
+    {% if year %}
         <div class="column">
-            <a href="{% url 'annual-summary' year %}">
+            <a href="{% url 'annual-summary' summary_user.localname year %}">
                 <span class="icon icon-arrow-left" aria-hidden="true"></span>
-            {% blocktrans %}{{ year }} in the books{% endblocktrans %}
+                {{ year }}
             </a>
         </div>
+    {% endif %}
     {% endwith %}
 
     {% with year=paginated_years|last %}
     {% if year %}
         <div class="column has-text-right">
-            <a href="{% url 'annual-summary' year %}">
-            {% blocktrans %}{{ year }} in the books{% endblocktrans %}
+            <a href="{% url 'annual-summary' summary_user.localname year %}">
+                {{ year }}
                 <span class="icon icon-arrow-right" aria-hidden="true"></span>
             </a>
         </div>
     {% endif %}
     {% endwith %}
     </div>
+{% endif %}
 
-    <h1 class="title is-1 is-serif has-text-centered mb-5">
+    <h1 class="title is-1 is-serif has-text-centered">
         📚✨
         {% blocktrans %}{{ year }} <em>in the books</em>{% endblocktrans %}
         ✨📚
     </h1>
+    <p class="subtitle is-3 is-serif has-text-centered mb-5">
+        {% blocktrans %}<em>{{ display_name }}’s</em> year of reading{% endblocktrans %}
+    </p>
 
-    {% if not books %}
-        <p class="has-text-centered is-size-5">{% blocktrans %}Sadly you didn't finish any book in {{ year }}{% endblocktrans %}</p>
-    {% else %}
+    <details>
+        <summary class="has-text-centered">
+            <span role="heading" aria-level="2" class="title is-6 has-text-success-dark">
+                {% trans "Share this page" %}
+            </span>
+        </summary>
+        <div class="columns mt-3">
+            <div class="column is-three-fifths is-offset-one-fifth">
+
+            {% if year_key %}
+                <div class="horizontal-copy mb-5">
+                    <textarea rows="1" readonly class="textarea is-small" aria-labelledby="embed-label" data-copytext data-copytext-label="{% trans 'Copy address' %}" data-copytext-success="{% trans 'Copied!' %}">{{ request.scheme|add:"://"|add:request.get_host|add:request.path }}?key={{ year_key }}</textarea>
+                </div>
+            {% endif %}
+
+            {% if user == summary_user %}
+            {% if year_key %}
+                <div class="columns mb-2">
+                    <div class="column pb-0">
+                        <p>{% trans "Sharing status: <strong>public with key</strong>" %}</p>
+                        <p>{% trans "The page can be seen by anyone with the complete address." %}</p>
+                    </div>
+                    <form class="column pb-0 is-narrow" method="post" action="{% url "summary-revoke-key" %}" id="revoke-key">
+                        {% csrf_token %}
+                        <input type="hidden" name="year" value="{{ year }}" />
+                        <button class="button is-danger is-outlined" type="submit">{% trans "Make page private" %}</button>
+                    </form>
+                </div>
+            {% else %}
+                <div class="columns">
+                    <div class="column pb-0">
+                        <p>{% trans "Sharing status: <strong>private</strong>" %}</p>
+                        <p>{% trans "The page is private, only you can see it." %}</p>
+                    </div>
+                    <form class="column pb-0 is-narrow" method="post" action="{% url "summary-add-key" %}" id="add-key">
+                        {% csrf_token %}
+                        <input type="hidden" name="year" value="{{ year }}" />
+                        <button class="button is-primary is-outlined" type="submit">{% trans "Make page public" %}</button>
+                    </form>
+                </div>
+            {% endif %}
+                <p class="help">{% trans "When you make your page private, the old key won’t give access to the page anymore. A new key will be created if the page is once again made public." %}</p>
+            {% endif %}
+            </div>
+        </div>
+    </details>
+
+    <div class="columns mt-1">
+        <div class="column is-one-fifth is-offset-two-fifths">
+            <hr />
+        </div>
+    </div>
+
+{% if not books %}
+    <p class="has-text-centered is-size-5">{% blocktrans %}Sadly {{ display_name }} didn’t finish any book in {{ year }}{% endblocktrans %}</p>
+{% else %}
 
     <div class="columns is-mobile">
         <div class="column is-8 is-offset-2 has-text-centered">
             <h2 class="title is-3 is-serif">
-                {% blocktrans %}In {{ year }}, you read {{ books_total }} books<br />for a total of {{ pages_total }} pages!{% endblocktrans %}
+                {% blocktrans %}In {{ year }}, {{ display_name }} read {{ books_total }} books<br />for a total of {{ pages_total }} pages!{% endblocktrans %}
             </h2>
             <p class="subtitle is-5">{% trans "That’s great!" %}</p>
 
@@ -71,7 +132,7 @@
             <a href="{{ book_pages_lowest.local_path }}">{% include 'snippets/book_cover.html' with book=book_pages_lowest cover_class='is-w-auto-tablet is-h-l-mobile' %}</a>
         </div>
         <div class="column is-3">
-            {% trans "Your shortest read this year" %}
+            {% trans "Their shortest read this year…" %}
             <p class="title is-4 is-serif is-italic">
                 <a href="{{ book_pages_lowest.local_path }}" class="has-text-success-dark">
                     {{ book_pages_lowest.title }}
@@ -92,7 +153,7 @@
             <a href="{{ book_pages_highest.local_path }}">{% include 'snippets/book_cover.html' with book=book_pages_highest cover_class='is-w-auto-tablet is-h-l-mobile' %}</a>
         </div>
         <div class="column is-3">
-            {% trans "and the longest read" %}
+            {% trans "…and the longest" %}
             <p class="title is-4 is-serif is-italic">
                 <a href="{{ book_pages_lowest.local_path }}" class="has-text-success-dark">
                     {{ book_pages_highest.title }}
@@ -118,10 +179,11 @@
         </div>
     </div>
 
+    {% if ratings_total > 0 %}
     <div class="columns">
         <div class="column has-text-centered">
             <h2 class="title is-3 is-serif">
-            {% blocktrans %}You left {{ ratings_total }} ratings, <br />your average rating is {{ rating_average }}{% endblocktrans %}
+            {% blocktrans %}{{ display_name }} left {{ ratings_total }} ratings, <br />their average rating is {{ rating_average }}{% endblocktrans %}
             </h2>
         </div>
     </div>
@@ -131,7 +193,7 @@
         </div>
         {% if book_rating_highest %}
         <div class="column is-4">
-            {% trans "Your best rated review" %}
+            {% trans "Their best rated review" %}
             <p class="title is-4 is-serif is-italic">
                 <a href="{{ book_rating_highest.book.local_path }}" class="has-text-success-dark">
                     {{ book_rating_highest.book.title }}
@@ -144,7 +206,7 @@
             {% endif %}
             <p class="subtitle is-6">
                 {% with rating=book_rating_highest.rating|floatformat %}
-                {% blocktrans %}Your rating: <strong>{{ rating }}</strong>{% endblocktrans%}
+                {% blocktrans %}Their rating: <strong>{{ rating }}</strong>{% endblocktrans%}
                 {% endwith %}
             </p>
         </div>
@@ -156,11 +218,12 @@
             <hr />
         </div>
     </div>
+    {% endif %}
 
     <div class="columns">
         <div class="column has-text-centered">
             <h2 class="title is-3 is-serif">
-            {% blocktrans %}All the books you read in 2021{% endblocktrans %}
+            {% blocktrans %}All the books {{ display_name }} read in 2021{% endblocktrans %}
             </h2>
         </div>
     </div>
@@ -188,5 +251,6 @@
             </div>
         </div>
     </div>
-    {% endif %}
+{% endif %}
+{% endwith %}
 {% endblock %}
