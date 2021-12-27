@@ -5,7 +5,7 @@ from uuid import uuid4
 from django.contrib.auth.decorators import login_required
 from django.db.models import Case, When, Avg, Sum
 from django.http import Http404
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.views import View
 from django.views.decorators.http import require_POST
@@ -41,7 +41,14 @@ class AnnualSummary(View):
         )
 
         # get data
-        read_book_ids_in_year = get_read_book_ids_in_year(user, year)
+        read_book_ids_in_year = (
+            user.readthrough_set.filter(
+                finish_date__year__gte=year,
+                finish_date__year__lt=int(year) + 1,
+            )
+            .order_by("-finish_date")
+            .values_list("book__id", flat=True)
+        )
 
         if len(read_book_ids_in_year) == 0:
             data = {
@@ -220,45 +227,6 @@ def get_earliest_year(user, year):
         return min(book_dates).year
 
     return year
-
-
-def get_read_book_ids_in_year(user, year):
-    """return an ordered QuerySet of the read book ids"""
-
-    read_shelf = get_object_or_404(user.shelf_set, identifier="read")
-    shelved_book_ids = (
-        models.ShelfBook.objects.filter(shelf=read_shelf)
-        .filter(user=user)
-        .values_list("book", "shelved_date")
-    )
-
-    book_dates = []
-
-    for book in shelved_book_ids:
-        finished_in_year = (
-            models.ReadThrough.objects.filter(user__id=user.id)
-            .filter(book_id=book[0])
-            .filter(finish_date__year=year)
-            .values("finish_date")
-            .first()
-        )
-
-        if finished_in_year:
-            # Finished a readthrough in the year
-            book_dates.append((book[0], finished_in_year["finish_date"]))
-        else:
-            has_other_year_readthrough = (
-                models.ReadThrough.objects.filter(user__id=user.id)
-                .filter(book_id=book[0])
-                .exists()
-            )
-            if not has_other_year_readthrough and book[1].year == int(year):
-                # No readthrough but shelved this year
-                book_dates.append(book)
-
-    book_dates = sorted(book_dates, key=lambda tup: tup[1])
-
-    return [book[0] for book in book_dates]
 
 
 def get_books_from_shelfbooks(books_ids):
