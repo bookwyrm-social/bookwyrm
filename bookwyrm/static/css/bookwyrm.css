@@ -125,16 +125,16 @@ input[type=file]::file-selector-button:hover {
 /** General `details` element styles
  ******************************************************************************/
 
+summary {
+    cursor: pointer;
+}
+
 summary::-webkit-details-marker {
     display: none;
 }
 
 summary::marker {
     content: none;
-}
-
-summary {
-    cursor: pointer;
 }
 
 .detail-pinned-button summary {
