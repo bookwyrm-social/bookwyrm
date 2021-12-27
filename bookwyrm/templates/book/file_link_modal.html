@@ -1,5 +1,6 @@
 {% extends 'components/modal.html' %}
 {% load i18n %}
+{% load static %}
 
 {% block modal-title %}
 {% trans "Add file link" %}
@@ -26,7 +27,7 @@
     </div>
     <div class="column is-one-fifth">
         <label class="label" for="id_filetype">{% trans "File type:" %}</label>
-        <input type="text" name="filetype" maxlength="5" class="input" required="" id="id_filetype" value="{% firstof file_link_form.filetype.value "" %}" placeholder="PDF">
+        <input type="text" name="filetype" maxlength="5" class="input" required="" id="id_filetype" value="{% firstof file_link_form.filetype.value "" %}" placeholder="PDF" data-autocomplete="mimetype">
         {% include 'snippets/form_errors.html' with errors_list=file_link_form.filetype.errors id="desc_filetype" %}
     </div>
 </div>
