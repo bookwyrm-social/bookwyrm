@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-12-08 15:40+0000\n"
-"PO-Revision-Date: 2021-12-26 20:36\n"
+"POT-Creation-Date: 2021-12-27 20:43+0000\n"
+"PO-Revision-Date: 2021-12-27 22:00\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Lithuanian\n"
 "Language: lt\n"
@@ -72,16 +72,16 @@ msgstr "Didėjančia tvarka"
 msgid "Descending"
 msgstr "Mažėjančia tvarka"
 
-#: bookwyrm/importers/importer.py:141 bookwyrm/importers/importer.py:163
+#: bookwyrm/importers/importer.py:145 bookwyrm/importers/importer.py:167
 msgid "Error loading book"
 msgstr "Klaida įkeliant knygą"
 
-#: bookwyrm/importers/importer.py:150
+#: bookwyrm/importers/importer.py:154
 msgid "Could not find a match for book"
 msgstr "Nepavyko rasti tokios knygos"
 
 #: bookwyrm/models/base_model.py:17
-#: bookwyrm/templates/import/import_status.html:190
+#: bookwyrm/templates/import/import_status.html:200
 msgid "Pending"
 msgstr "Laukiama"
 
@@ -1515,28 +1515,28 @@ msgstr "Importuoti knygas"
 msgid "Data source:"
 msgstr "Duomenų šaltinis:"
 
-#: bookwyrm/templates/import/import.html:37
+#: bookwyrm/templates/import/import.html:40
 msgid "Data file:"
 msgstr "Duomenų failas:"
 
-#: bookwyrm/templates/import/import.html:45
+#: bookwyrm/templates/import/import.html:48
 msgid "Include reviews"
 msgstr "Įtraukti atsiliepimus"
 
-#: bookwyrm/templates/import/import.html:50
+#: bookwyrm/templates/import/import.html:53
 msgid "Privacy setting for imported reviews:"
 msgstr "Privatumo nustatymai svarbiems atsiliepimams:"
 
-#: bookwyrm/templates/import/import.html:56
+#: bookwyrm/templates/import/import.html:59
 #: bookwyrm/templates/settings/federation/instance_blocklist.html:64
 msgid "Import"
 msgstr "Importuoti"
 
-#: bookwyrm/templates/import/import.html:61
+#: bookwyrm/templates/import/import.html:64
 msgid "Recent Imports"
 msgstr "Pastaruoju metu importuota"
 
-#: bookwyrm/templates/import/import.html:63
+#: bookwyrm/templates/import/import.html:66
 msgid "No recent imports"
 msgstr "Pastaruoju metu neimportuota"
 
@@ -1608,27 +1608,31 @@ msgstr "Pavadinimas"
 msgid "ISBN"
 msgstr "ISBN"
 
-#: bookwyrm/templates/import/import_status.html:109
+#: bookwyrm/templates/import/import_status.html:110
+msgid "Openlibrary key"
+msgstr "„Openlibrary“ raktas"
+
+#: bookwyrm/templates/import/import_status.html:114
 #: bookwyrm/templates/shelf/shelf.html:145
 #: bookwyrm/templates/shelf/shelf.html:169
 msgid "Author"
 msgstr "Autorius"
 
-#: bookwyrm/templates/import/import_status.html:112
+#: bookwyrm/templates/import/import_status.html:117
 msgid "Shelf"
 msgstr "Lentyna"
 
-#: bookwyrm/templates/import/import_status.html:115
+#: bookwyrm/templates/import/import_status.html:120
 #: bookwyrm/templates/import/manual_review.html:13
 #: bookwyrm/templates/snippets/create_status.html:17
 msgid "Review"
 msgstr "Apžvalga"
 
-#: bookwyrm/templates/import/import_status.html:119
+#: bookwyrm/templates/import/import_status.html:124
 msgid "Book"
 msgstr "Knyga"
 
-#: bookwyrm/templates/import/import_status.html:122
+#: bookwyrm/templates/import/import_status.html:127
 #: bookwyrm/templates/settings/announcements/announcements.html:38
 #: bookwyrm/templates/settings/federation/instance_list.html:46
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:44
@@ -1638,31 +1642,31 @@ msgstr "Knyga"
 msgid "Status"
 msgstr "Būsena"
 
-#: bookwyrm/templates/import/import_status.html:130
+#: bookwyrm/templates/import/import_status.html:135
 msgid "Import preview unavailable."
 msgstr "Nepavyko įkelti peržiūros."
 
-#: bookwyrm/templates/import/import_status.html:162
+#: bookwyrm/templates/import/import_status.html:172
 msgid "View imported review"
 msgstr "Peržiūrėti įkeltą atsiliepimą"
 
-#: bookwyrm/templates/import/import_status.html:176
+#: bookwyrm/templates/import/import_status.html:186
 msgid "Imported"
 msgstr "Importuota"
 
-#: bookwyrm/templates/import/import_status.html:182
+#: bookwyrm/templates/import/import_status.html:192
 msgid "Needs manual review"
 msgstr "Reikalinga peržvelgti"
 
-#: bookwyrm/templates/import/import_status.html:195
+#: bookwyrm/templates/import/import_status.html:205
 msgid "Retry"
 msgstr "Bandyti dar kartą"
 
-#: bookwyrm/templates/import/import_status.html:213
+#: bookwyrm/templates/import/import_status.html:223
 msgid "This import is in an old format that is no longer supported. If you would like to troubleshoot missing items from this import, click the button below to update the import format."
 msgstr "Tai seno formato importas, kuris nebepalaikomas. Jei norite matyti importo metu praleistus elementus, spustelėkite žemiau esantį mygtuką ir atnaujinkite importavimo formatą."
 
-#: bookwyrm/templates/import/import_status.html:215
+#: bookwyrm/templates/import/import_status.html:225
 msgid "Update import"
 msgstr "Atnaujinti importą"
 
@@ -4183,7 +4187,7 @@ msgstr "Failas viršijo maksimalų dydį: 10 MB"
 msgid "%(title)s: %(subtitle)s"
 msgstr "%(title)s: %(subtitle)s"
 
-#: bookwyrm/views/imports/import_data.py:64
+#: bookwyrm/views/imports/import_data.py:67
 msgid "Not a valid csv file"
 msgstr "Netinkamas csv failas"
 
