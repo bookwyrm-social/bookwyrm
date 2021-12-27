@@ -97,7 +97,7 @@ class AnnualSummary(View):
             "year": year,
             "books_total": len(read_books_in_year),
             "books": read_books_in_year,
-            "pages_total": page_stats["pages__sum"],
+            "pages_total": page_stats["pages__sum"] or 0,
             "pages_average": round(
                 page_stats["pages__avg"] if page_stats["pages__avg"] else 0
             ),
