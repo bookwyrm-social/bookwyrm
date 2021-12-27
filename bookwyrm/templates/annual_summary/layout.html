@@ -48,13 +48,19 @@
                 {% blocktrans %}In {{ year }}, you read {{ books_total }} books<br />for a total of {{ pages_total }} pages!{% endblocktrans %}
             </h2>
             <p class="subtitle is-5">{% trans "That’s great!" %}</p>
-    
+
             <p class="title is-4 is-serif">
                 {% blocktrans %}That makes an average of {{ pages_average }} pages per book.{% endblocktrans %}
             </p>
 
             {% if no_page_number %}
-                <p class="subtitle is-6">{% blocktrans %}({{ no_page_number }} books don’t have pages){% endblocktrans %}</p>
+                <p class="subtitle is-6">
+                    {% blocktrans trimmed count counter=no_page_number %}
+                    ({{ no_page_number }} book doesn’t have pages)
+                    {% plural %}
+                    ({{ no_page_number }} books don’t have pages)
+                    {% endblocktrans %}
+                </p>
             {% endif %}
         </div>
     </div>
@@ -123,6 +129,7 @@
         <div class="column is-3 is-offset-3">
             <a href="{{ book_rating_highest.book.local_path }}">{% include 'snippets/book_cover.html' with book=book_rating_highest.book cover_class='is-w-auto-tablet is-h-l-mobile' %}</a>
         </div>
+        {% if book_rating_highest %}
         <div class="column is-4">
             {% trans "Your best rated review" %}
             <p class="title is-4 is-serif is-italic">
@@ -141,6 +148,7 @@
                 {% endwith %}
             </p>
         </div>
+        {% endif %}
     </div>
 
     <div class="columns">
