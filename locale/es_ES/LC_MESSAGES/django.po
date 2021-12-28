@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-12-28 15:00+0000\n"
-"PO-Revision-Date: 2021-12-28 17:59\n"
+"POT-Creation-Date: 2021-12-28 20:12+0000\n"
+"PO-Revision-Date: 2021-12-28 21:17\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Spanish\n"
 "Language: es\n"
@@ -263,76 +263,78 @@ msgstr "El año de lectura de <em>%(display_name)s</em>"
 msgid "Share this page"
 msgstr "Compartir esta página"
 
-#: bookwyrm/templates/annual_summary/layout.html:61
+#: bookwyrm/templates/annual_summary/layout.html:67
 msgid "Copy address"
 msgstr "Copiar dirección"
 
-#: bookwyrm/templates/annual_summary/layout.html:61
+#: bookwyrm/templates/annual_summary/layout.html:68
 #: bookwyrm/templates/lists/list.html:194
 msgid "Copied!"
 msgstr "¡Copiado!"
 
-#: bookwyrm/templates/annual_summary/layout.html:69
+#: bookwyrm/templates/annual_summary/layout.html:77
 msgid "Sharing status: <strong>public with key</strong>"
 msgstr "Nivel de compartido: <strong>público con llave</strong>"
 
-#: bookwyrm/templates/annual_summary/layout.html:70
+#: bookwyrm/templates/annual_summary/layout.html:78
 msgid "The page can be seen by anyone with the complete address."
 msgstr "La página puede ser vista por cualquier persona que tenga la dirección completa."
 
-#: bookwyrm/templates/annual_summary/layout.html:75
+#: bookwyrm/templates/annual_summary/layout.html:83
 msgid "Make page private"
 msgstr "Hacer privada la página"
 
-#: bookwyrm/templates/annual_summary/layout.html:81
+#: bookwyrm/templates/annual_summary/layout.html:89
 msgid "Sharing status: <strong>private</strong>"
 msgstr "Nivel de compartido: <strong>privado</strong>"
 
-#: bookwyrm/templates/annual_summary/layout.html:82
+#: bookwyrm/templates/annual_summary/layout.html:90
 msgid "The page is private, only you can see it."
 msgstr "La página es privada, solo tú puedes verla."
 
-#: bookwyrm/templates/annual_summary/layout.html:87
+#: bookwyrm/templates/annual_summary/layout.html:95
 msgid "Make page public"
 msgstr "Hacer pública la página"
 
-#: bookwyrm/templates/annual_summary/layout.html:91
+#: bookwyrm/templates/annual_summary/layout.html:99
 msgid "When you make your page private, the old key won’t give access to the page anymore. A new key will be created if the page is once again made public."
 msgstr "Una vez que haces privada tu página, la clave antigua ya no dará acceso a la página. Si la página se vuelve a hacer pública se creará una nueva clave."
 
-#: bookwyrm/templates/annual_summary/layout.html:104
+#: bookwyrm/templates/annual_summary/layout.html:112
 #, python-format
 msgid "Sadly %(display_name)s didn’t finish any book in %(year)s"
 msgstr "Lamentablemente, %(display_name)s no terminó ningún libro en %(year)s"
 
-#: bookwyrm/templates/annual_summary/layout.html:110
+#: bookwyrm/templates/annual_summary/layout.html:118
 #, python-format
-msgid "In %(year)s, %(display_name)s read %(books_total)s books<br />for a total of %(pages_total)s pages!"
-msgstr "En %(year)s %(display_name)s ha leído %(books_total)s libros<br />¡haciendo un total de %(pages_total)s páginas!"
+msgid "In %(year)s, %(display_name)s read %(books_total)s book<br />for a total of %(pages_total)s pages!"
+msgid_plural "In %(year)s, %(display_name)s read %(books_total)s books<br />for a total of %(pages_total)s pages!"
+msgstr[0] ""
+msgstr[1] ""
 
-#: bookwyrm/templates/annual_summary/layout.html:112
+#: bookwyrm/templates/annual_summary/layout.html:124
 msgid "That’s great!"
 msgstr "¡Eso es genial!"
 
-#: bookwyrm/templates/annual_summary/layout.html:115
+#: bookwyrm/templates/annual_summary/layout.html:127
 #, python-format
 msgid "That makes an average of %(pages)s pages per book."
 msgstr "Eso hace un promedio de %(pages)s páginas por libro."
 
-#: bookwyrm/templates/annual_summary/layout.html:120
+#: bookwyrm/templates/annual_summary/layout.html:132
 #, python-format
 msgid "(%(no_page_number)s book doesn’t have pages)"
 msgid_plural "(%(no_page_number)s books don’t have pages)"
 msgstr[0] "(%(no_page_number)s libro no tiene páginas)"
 msgstr[1] "(%(no_page_number)s libros no tienen páginas)"
 
-#: bookwyrm/templates/annual_summary/layout.html:136
+#: bookwyrm/templates/annual_summary/layout.html:148
 msgid "Their shortest read this year…"
 msgstr "Su lectura más corta de este año…"
 
-#: bookwyrm/templates/annual_summary/layout.html:143
-#: bookwyrm/templates/annual_summary/layout.html:164
-#: bookwyrm/templates/annual_summary/layout.html:204
+#: bookwyrm/templates/annual_summary/layout.html:155
+#: bookwyrm/templates/annual_summary/layout.html:176
+#: bookwyrm/templates/annual_summary/layout.html:220
 #: bookwyrm/templates/book/book.html:47
 #: bookwyrm/templates/discover/large-book.html:22
 #: bookwyrm/templates/landing/large-book.html:25
@@ -340,34 +342,36 @@ msgstr "Su lectura más corta de este año…"
 msgid "by"
 msgstr "por"
 
-#: bookwyrm/templates/annual_summary/layout.html:149
-#: bookwyrm/templates/annual_summary/layout.html:170
+#: bookwyrm/templates/annual_summary/layout.html:161
+#: bookwyrm/templates/annual_summary/layout.html:182
 #, python-format
 msgid "<strong>%(pages)s</strong> pages"
 msgstr "<strong>%(pages)s</strong> páginas"
 
-#: bookwyrm/templates/annual_summary/layout.html:157
+#: bookwyrm/templates/annual_summary/layout.html:169
 msgid "…and the longest"
 msgstr "… y la más larga"
 
-#: bookwyrm/templates/annual_summary/layout.html:187
+#: bookwyrm/templates/annual_summary/layout.html:199
 #, python-format
-msgid "%(display_name)s left %(ratings_total)s ratings, <br />their average rating is %(rating_average)s"
-msgstr "%(display_name)s dio %(ratings_total)s valoraciones, <br />su valoración media es %(rating_average)s"
+msgid "%(display_name)s left %(ratings_total)s rating, <br />their average rating is %(rating_average)s"
+msgid_plural "%(display_name)s left %(ratings_total)s ratings, <br />their average rating is %(rating_average)s"
+msgstr[0] ""
+msgstr[1] ""
 
-#: bookwyrm/templates/annual_summary/layout.html:197
+#: bookwyrm/templates/annual_summary/layout.html:213
 msgid "Their best rated review"
 msgstr "Su mejor valoración"
 
-#: bookwyrm/templates/annual_summary/layout.html:210
+#: bookwyrm/templates/annual_summary/layout.html:226
 #, python-format
 msgid "Their rating: <strong>%(rating)s</strong>"
 msgstr "Su valoración: <strong>%(rating)s</strong>"
 
-#: bookwyrm/templates/annual_summary/layout.html:227
+#: bookwyrm/templates/annual_summary/layout.html:243
 #, python-format
-msgid "All the books %(display_name)s read in 2021"
-msgstr "Todos los libros que ha leído %(display_name)s en 2021"
+msgid "All the books %(display_name)s read in %(year)s"
+msgstr ""
 
 #: bookwyrm/templates/author/author.html:18
 #: bookwyrm/templates/author/author.html:19
