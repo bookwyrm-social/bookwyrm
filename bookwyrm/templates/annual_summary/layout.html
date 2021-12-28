@@ -130,7 +130,7 @@
     {% if book_pages_lowest and book_pages_highest %}
     <div class="columns is-align-items-center mt-5">
         <div class="column is-2 is-offset-1">
-            <a href="{{ book_pages_lowest.local_path }}">{% include 'snippets/book_cover.html' with book=book_pages_lowest cover_class='is-w-auto-tablet is-h-l-mobile' %}</a>
+            <a href="{{ book_pages_lowest.local_path }}">{% include 'snippets/book_cover.html' with book=book_pages_lowest cover_class='is-w-auto-tablet is-h-l-mobile' size='xxlarge' %}</a>
         </div>
         <div class="column is-3">
             {% trans "Their shortest read this year…" %}
@@ -151,7 +151,7 @@
             </p>
         </div>
         <div class="column is-2">
-            <a href="{{ book_pages_highest.local_path }}">{% include 'snippets/book_cover.html' with book=book_pages_highest cover_class='is-w-auto-tablet is-h-l-mobile' %}</a>
+            <a href="{{ book_pages_highest.local_path }}">{% include 'snippets/book_cover.html' with book=book_pages_highest cover_class='is-w-auto-tablet is-h-l-mobile' size='xxlarge' %}</a>
         </div>
         <div class="column is-3">
             {% trans "…and the longest" %}
@@ -189,8 +189,8 @@
         </div>
     </div>
     <div class="columns is-align-items-center">
-        <div class="column is-3 is-offset-3">
-            <a href="{{ book_rating_highest.book.local_path }}">{% include 'snippets/book_cover.html' with book=book_rating_highest.book cover_class='is-w-auto-tablet is-h-l-mobile' %}</a>
+        <div class="column is-2 is-offset-4">
+            <a href="{{ book_rating_highest.book.local_path }}">{% include 'snippets/book_cover.html' with book=book_rating_highest.book cover_class='is-w-xl-tablet is-h-l-mobile' size='xxlarge' %}</a>
         </div>
         {% if book_rating_highest %}
         <div class="column is-4">
@@ -224,7 +224,7 @@
     <div class="columns">
         <div class="column has-text-centered">
             <h2 class="title is-3 is-serif">
-            {% blocktrans %}All the books {{ display_name }} read in 2021{% endblocktrans %}
+            {% blocktrans %}All the books {{ display_name }} read in {{ year }}{% endblocktrans %}
             </h2>
         </div>
     </div>
@@ -242,7 +242,7 @@
                 </a>
                 {% else %}
                 <a href="{{ book.local_path }}" class="has-text-centered has-text-success-dark">
-                    {% include 'snippets/book_cover.html' with book=book cover_class='is-w-auto' size='large' %}
+                    {% include 'snippets/book_cover.html' with book=book cover_class='is-w-auto' size='xlarge' %}
                     <span class="book-title is-serif is-size-6">
                         {{ book.title }}
                     </span>
