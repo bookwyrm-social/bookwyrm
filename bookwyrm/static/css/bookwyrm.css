@@ -612,8 +612,8 @@ ol.ordered-list li::before {
 
 .books-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(10em, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
     align-items: end;
     justify-items: stretch;
 }
@@ -622,7 +622,6 @@ ol.ordered-list li::before {
     grid-column: span 2;
     grid-row: span 2;
     justify-self: stretch;
-    padding: 1.5rem 1.5rem 0;
 }
 
 .books-grid .book-cover {
@@ -636,6 +635,16 @@ ol.ordered-list li::before {
     margin-top: 0.5rem;
     line-height: var(--height-basis);
     min-height: calc(2 * var(--height-basis));
+}
+
+@media only screen and (min-width: 769px) {
+    .books-grid {
+        gap: 1.5rem;
+        grid-template-columns: repeat(auto-fit, minmax(10em, 1fr));
+    }
+    .books-grid > .is-big {
+        padding: 1.5rem 1.5rem 0;
+    }
 }
 
 /* Copy
