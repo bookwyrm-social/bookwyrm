@@ -153,6 +153,7 @@ def hide_suggestions(request):
     return redirect(request.headers.get("Referer", "/"))
 
 
+# pylint: disable=unused-argument
 def user_redirect(request, username):
     """redirect to a user's feed"""
     return redirect("user-feed", username=username)
