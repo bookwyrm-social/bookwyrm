@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-12-27 22:24+0000\n"
-"PO-Revision-Date: 2021-12-27 23:03\n"
+"POT-Creation-Date: 2021-12-28 15:00+0000\n"
+"PO-Revision-Date: 2021-12-28 16:59\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: French\n"
 "Language: fr\n"
@@ -243,96 +243,96 @@ msgstr "Erreur côté serveur"
 msgid "Something went wrong! Sorry about that."
 msgstr "Une erreur s’est produite ; désolé !"
 
-#: bookwyrm/templates/annual_summary/layout.html:6
+#: bookwyrm/templates/annual_summary/layout.html:7
 #: bookwyrm/templates/feed/summary_card.html:8
 #, python-format
 msgid "%(year)s in the books"
-msgstr ""
+msgstr "les livres de %(year)s"
 
-#: bookwyrm/templates/annual_summary/layout.html:42
+#: bookwyrm/templates/annual_summary/layout.html:43
 #, python-format
 msgid "%(year)s <em>in the books</em>"
-msgstr ""
+msgstr "<em>les livres de</em> %(year)s"
 
-#: bookwyrm/templates/annual_summary/layout.html:46
+#: bookwyrm/templates/annual_summary/layout.html:47
 #, python-format
 msgid "<em>%(display_name)s’s</em> year of reading"
-msgstr ""
+msgstr "l’année de lecture de <em>%(display_name)s</em>"
 
-#: bookwyrm/templates/annual_summary/layout.html:52
+#: bookwyrm/templates/annual_summary/layout.html:53
 msgid "Share this page"
-msgstr ""
+msgstr "Partager cette page"
 
-#: bookwyrm/templates/annual_summary/layout.html:60
+#: bookwyrm/templates/annual_summary/layout.html:61
 msgid "Copy address"
-msgstr ""
+msgstr "Copier l’adresse"
 
-#: bookwyrm/templates/annual_summary/layout.html:60
+#: bookwyrm/templates/annual_summary/layout.html:61
 #: bookwyrm/templates/lists/list.html:194
 msgid "Copied!"
 msgstr "Copié!"
 
-#: bookwyrm/templates/annual_summary/layout.html:68
-msgid "Sharing status: <strong>public with key</strong>"
-msgstr ""
-
 #: bookwyrm/templates/annual_summary/layout.html:69
+msgid "Sharing status: <strong>public with key</strong>"
+msgstr "Statut de partage : <strong>public avec clé</strong>"
+
+#: bookwyrm/templates/annual_summary/layout.html:70
 msgid "The page can be seen by anyone with the complete address."
-msgstr ""
+msgstr "La page peut être consultée par toute personne ayant l'adresse complète."
 
-#: bookwyrm/templates/annual_summary/layout.html:74
+#: bookwyrm/templates/annual_summary/layout.html:75
 msgid "Make page private"
-msgstr ""
-
-#: bookwyrm/templates/annual_summary/layout.html:80
-msgid "Sharing status: <strong>private</strong>"
-msgstr ""
+msgstr "Rendre cette page privée"
 
 #: bookwyrm/templates/annual_summary/layout.html:81
+msgid "Sharing status: <strong>private</strong>"
+msgstr "Statut de partage : <strong>privé</strong>"
+
+#: bookwyrm/templates/annual_summary/layout.html:82
 msgid "The page is private, only you can see it."
-msgstr ""
+msgstr "La page est privée, seulement vous pouvez la voir."
 
-#: bookwyrm/templates/annual_summary/layout.html:86
+#: bookwyrm/templates/annual_summary/layout.html:87
 msgid "Make page public"
-msgstr ""
+msgstr "Rendre cette page publique"
 
-#: bookwyrm/templates/annual_summary/layout.html:90
+#: bookwyrm/templates/annual_summary/layout.html:91
 msgid "When you make your page private, the old key won’t give access to the page anymore. A new key will be created if the page is once again made public."
-msgstr ""
+msgstr "Lorsque vous rendez votre page privée, l’ancienne clé ne donnera plus accès à la page. Une nouvelle clé sera créée si la page est à nouveau rendue publique."
 
-#: bookwyrm/templates/annual_summary/layout.html:103
+#: bookwyrm/templates/annual_summary/layout.html:104
 #, python-format
 msgid "Sadly %(display_name)s didn’t finish any book in %(year)s"
-msgstr ""
+msgstr "Malheureusement, %(display_name)s n’a terminé aucun livre en %(year)s"
 
-#: bookwyrm/templates/annual_summary/layout.html:109
+#: bookwyrm/templates/annual_summary/layout.html:110
 #, python-format
 msgid "In %(year)s, %(display_name)s read %(books_total)s books<br />for a total of %(pages_total)s pages!"
-msgstr ""
+msgstr "En %(year)s, %(display_name)s a lu %(books_total)s livres<br />pour un total de %(pages_total)s pages !"
 
-#: bookwyrm/templates/annual_summary/layout.html:111
+#: bookwyrm/templates/annual_summary/layout.html:112
 msgid "That’s great!"
-msgstr ""
+msgstr "C’est génial !"
 
-#: bookwyrm/templates/annual_summary/layout.html:114
+#: bookwyrm/templates/annual_summary/layout.html:115
 #, python-format
-msgid "That makes an average of %(pages_average)s pages per book."
-msgstr ""
+msgid "That makes an average of %(pages)s pages per book."
+msgstr "Ce qui fait en moyenne %(pages)s pages par livre."
 
-#: bookwyrm/templates/annual_summary/layout.html:119
+#: bookwyrm/templates/annual_summary/layout.html:120
 #, python-format
 msgid "(%(no_page_number)s book doesn’t have pages)"
 msgid_plural "(%(no_page_number)s books don’t have pages)"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "(%(no_page_number)s livre n’a pas de pages)"
+msgstr[1] "(%(no_page_number)s livres n’ont pas de pages)"
 
-#: bookwyrm/templates/annual_summary/layout.html:135
+#: bookwyrm/templates/annual_summary/layout.html:136
 msgid "Their shortest read this year…"
-msgstr ""
+msgstr "Sa lecture la plus courte l’année…"
 
-#: bookwyrm/templates/annual_summary/layout.html:142
-#: bookwyrm/templates/annual_summary/layout.html:163
-#: bookwyrm/templates/annual_summary/layout.html:203
+#: bookwyrm/templates/annual_summary/layout.html:143
+#: bookwyrm/templates/annual_summary/layout.html:164
+#: bookwyrm/templates/annual_summary/layout.html:204
 #: bookwyrm/templates/book/book.html:47
 #: bookwyrm/templates/discover/large-book.html:22
 #: bookwyrm/templates/landing/large-book.html:25
@@ -340,34 +340,34 @@ msgstr ""
 msgid "by"
 msgstr "de"
 
-#: bookwyrm/templates/annual_summary/layout.html:148
-#: bookwyrm/templates/annual_summary/layout.html:169
+#: bookwyrm/templates/annual_summary/layout.html:149
+#: bookwyrm/templates/annual_summary/layout.html:170
 #, python-format
 msgid "<strong>%(pages)s</strong> pages"
-msgstr ""
+msgstr "<strong>%(pages)s</strong> pages"
 
-#: bookwyrm/templates/annual_summary/layout.html:156
+#: bookwyrm/templates/annual_summary/layout.html:157
 msgid "…and the longest"
-msgstr ""
+msgstr "…et sa plus longue lecture"
 
-#: bookwyrm/templates/annual_summary/layout.html:186
+#: bookwyrm/templates/annual_summary/layout.html:187
 #, python-format
 msgid "%(display_name)s left %(ratings_total)s ratings, <br />their average rating is %(rating_average)s"
-msgstr ""
+msgstr "%(display_name)s a laissé %(ratings_total)s notes, <br />sa note moyenne est %(rating_average)s"
 
-#: bookwyrm/templates/annual_summary/layout.html:196
+#: bookwyrm/templates/annual_summary/layout.html:197
 msgid "Their best rated review"
-msgstr ""
+msgstr "Son avis le mieux noté"
 
-#: bookwyrm/templates/annual_summary/layout.html:209
+#: bookwyrm/templates/annual_summary/layout.html:210
 #, python-format
 msgid "Their rating: <strong>%(rating)s</strong>"
-msgstr ""
+msgstr "Sa note : <strong>%(rating)s</strong>"
 
-#: bookwyrm/templates/annual_summary/layout.html:226
+#: bookwyrm/templates/annual_summary/layout.html:227
 #, python-format
 msgid "All the books %(display_name)s read in 2021"
-msgstr ""
+msgstr "Tous les livres que %(display_name)s a lus"
 
 #: bookwyrm/templates/author/author.html:18
 #: bookwyrm/templates/author/author.html:19
@@ -1032,6 +1032,8 @@ msgstr "Vous pouvez décider de ne plus y figurer à n’importe quel moment dep
 #: bookwyrm/templates/directory/directory.html:29
 #: bookwyrm/templates/directory/directory.html:31
 #: bookwyrm/templates/feed/goal_card.html:17
+#: bookwyrm/templates/feed/summary_card.html:12
+#: bookwyrm/templates/feed/summary_card.html:14
 #: bookwyrm/templates/snippets/announcement.html:34
 msgid "Dismiss message"
 msgstr "Fermer le message"
@@ -1379,14 +1381,14 @@ msgstr "Ne pas afficher les utilisateurs suggérés"
 msgid "View directory"
 msgstr "Voir le répertoire"
 
-#: bookwyrm/templates/feed/summary_card.html:14
+#: bookwyrm/templates/feed/summary_card.html:21
 msgid "The end of the year is the best moment to take stock of all the books read during the last 12 months. How many pages have you read? Which book is your best-rated of the year? We compiled these stats, and more!"
-msgstr ""
+msgstr "La fin de l'année est le meilleur moment pour faire le point sur tous les livres lus au cours des 12 derniers mois. Combien de pages avez-vous lues ? Quel est votre livre le mieux noté de l'année ? Nous avons compilé ces statistiques, et plus encore !"
 
-#: bookwyrm/templates/feed/summary_card.html:19
+#: bookwyrm/templates/feed/summary_card.html:26
 #, python-format
 msgid "Discover your stats for %(year)s!"
-msgstr ""
+msgstr "Découvrez vos stats pour %(year)s !"
 
 #: bookwyrm/templates/get_started/book_preview.html:6
 #, python-format
@@ -1724,7 +1726,7 @@ msgstr "ISBN"
 
 #: bookwyrm/templates/import/import_status.html:110
 msgid "Openlibrary key"
-msgstr ""
+msgstr "Clé Openlibrary"
 
 #: bookwyrm/templates/import/import_status.html:114
 #: bookwyrm/templates/shelf/shelf.html:145
@@ -2079,7 +2081,7 @@ msgstr "%(list_name)s, une liste de %(owner)s"
 #: bookwyrm/templates/lists/embed-list.html:17
 #, python-format
 msgid "on <a href=\"/\">%(site_name)s</a>"
-msgstr ""
+msgstr "sur <a href=\"/\">%(site_name)s</a>"
 
 #: bookwyrm/templates/lists/embed-list.html:26
 #: bookwyrm/templates/lists/list.html:29
