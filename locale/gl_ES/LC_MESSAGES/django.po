@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-12-27 22:24+0000\n"
-"PO-Revision-Date: 2021-12-28 05:42\n"
+"PO-Revision-Date: 2021-12-28 07:08\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Galician\n"
 "Language: gl\n"
@@ -247,17 +247,17 @@ msgstr "Algo fallou! Lamentámolo."
 #: bookwyrm/templates/feed/summary_card.html:8
 #, python-format
 msgid "%(year)s in the books"
-msgstr ""
+msgstr "Os libros en %(year)s"
 
 #: bookwyrm/templates/annual_summary/layout.html:42
 #, python-format
 msgid "%(year)s <em>in the books</em>"
-msgstr ""
+msgstr "<em>os libros en </em> %(year)s"
 
 #: bookwyrm/templates/annual_summary/layout.html:46
 #, python-format
 msgid "<em>%(display_name)s’s</em> year of reading"
-msgstr ""
+msgstr "Un ano de lecturas de <em>%(display_name)s</em>"
 
 #: bookwyrm/templates/annual_summary/layout.html:52
 msgid "Share this page"
@@ -303,32 +303,32 @@ msgstr "Cando fas privada unha páxina, a chave antiga non dará acceso á mesma
 #: bookwyrm/templates/annual_summary/layout.html:103
 #, python-format
 msgid "Sadly %(display_name)s didn’t finish any book in %(year)s"
-msgstr ""
+msgstr "Unha mágoa, pero %(display_name)s aínda non rematou ningún libro en %(year)s"
 
 #: bookwyrm/templates/annual_summary/layout.html:109
 #, python-format
 msgid "In %(year)s, %(display_name)s read %(books_total)s books<br />for a total of %(pages_total)s pages!"
-msgstr ""
+msgstr "En %(year)s, %(display_name)s leu %(books_total)s libros<br /> cun total de %(pages_total)s páxinas!"
 
 #: bookwyrm/templates/annual_summary/layout.html:111
 msgid "That’s great!"
-msgstr ""
+msgstr "Está moi ben!"
 
 #: bookwyrm/templates/annual_summary/layout.html:114
 #, python-format
 msgid "That makes an average of %(pages_average)s pages per book."
-msgstr ""
+msgstr "Iso fai unha media de %(pages_average)s páxinas por libro."
 
 #: bookwyrm/templates/annual_summary/layout.html:119
 #, python-format
 msgid "(%(no_page_number)s book doesn’t have pages)"
 msgid_plural "(%(no_page_number)s books don’t have pages)"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "(%(no_page_number)s libro non ten páxinas)"
+msgstr[1] "(%(no_page_number)s libros non teñen páxinas)"
 
 #: bookwyrm/templates/annual_summary/layout.html:135
 msgid "Their shortest read this year…"
-msgstr ""
+msgstr "A lectura máis curta deste ano…"
 
 #: bookwyrm/templates/annual_summary/layout.html:142
 #: bookwyrm/templates/annual_summary/layout.html:163
@@ -344,30 +344,30 @@ msgstr "por"
 #: bookwyrm/templates/annual_summary/layout.html:169
 #, python-format
 msgid "<strong>%(pages)s</strong> pages"
-msgstr ""
+msgstr "<strong>%(pages)s</strong> páxinas"
 
 #: bookwyrm/templates/annual_summary/layout.html:156
 msgid "…and the longest"
-msgstr ""
+msgstr "…e a máis longa"
 
 #: bookwyrm/templates/annual_summary/layout.html:186
 #, python-format
 msgid "%(display_name)s left %(ratings_total)s ratings, <br />their average rating is %(rating_average)s"
-msgstr ""
+msgstr "%(display_name)s escribiu %(ratings_total)s valoracións, <br />a media das súas valoracións é %(rating_average)s"
 
 #: bookwyrm/templates/annual_summary/layout.html:196
 msgid "Their best rated review"
-msgstr ""
+msgstr "A súa recensión máis valorada"
 
 #: bookwyrm/templates/annual_summary/layout.html:209
 #, python-format
 msgid "Their rating: <strong>%(rating)s</strong>"
-msgstr ""
+msgstr "Valoración: <strong>%(rating)s</strong>"
 
 #: bookwyrm/templates/annual_summary/layout.html:226
 #, python-format
 msgid "All the books %(display_name)s read in 2021"
-msgstr ""
+msgstr "Tódolos libros lidos por %(display_name)s en 2021"
 
 #: bookwyrm/templates/author/author.html:18
 #: bookwyrm/templates/author/author.html:19
@@ -1381,12 +1381,12 @@ msgstr "Ver directorio"
 
 #: bookwyrm/templates/feed/summary_card.html:14
 msgid "The end of the year is the best moment to take stock of all the books read during the last 12 months. How many pages have you read? Which book is your best-rated of the year? We compiled these stats, and more!"
-msgstr ""
+msgstr "O final do ano é o mellor momento para botar unha ollada a tódolos libros lidos nos últimos 12 meses. Cantas páxinas liches? Cal é o libro con mellor puntuación do ano? Recollemos estas estatísticas e moitas máis!"
 
 #: bookwyrm/templates/feed/summary_card.html:19
 #, python-format
 msgid "Discover your stats for %(year)s!"
-msgstr ""
+msgstr "Mira aquí as túas estatísticas de %(year)s!"
 
 #: bookwyrm/templates/get_started/book_preview.html:6
 #, python-format
@@ -1724,7 +1724,7 @@ msgstr "ISBN"
 
 #: bookwyrm/templates/import/import_status.html:110
 msgid "Openlibrary key"
-msgstr ""
+msgstr "Chave en Openlibrary"
 
 #: bookwyrm/templates/import/import_status.html:114
 #: bookwyrm/templates/shelf/shelf.html:145
