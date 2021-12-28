@@ -339,7 +339,7 @@ urlpatterns = [
     re_path(r"^save-list/(?P<list_id>\d+)/?$", views.save_list, name="list-save"),
     re_path(r"^unsave-list/(?P<list_id>\d+)/?$", views.unsave_list, name="list-unsave"),
     re_path(
-        r"^list/(?P<list_id>\d+)/embed/(?P<list_key>[0-9a-f]+)?$",
+        r"^list/(?P<list_id>\d+)/embed/(?P<list_key>[0-9a-f]+)/?$",
         views.unsafe_embed_list,
         name="embed-list",
     ),
