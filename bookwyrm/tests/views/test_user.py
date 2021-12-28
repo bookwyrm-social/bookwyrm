@@ -186,3 +186,12 @@ class UserViews(TestCase):
 
         self.local_user.refresh_from_db()
         self.assertFalse(self.local_user.show_suggested_users)
+
+
+    def test_user_redirect(self):
+        """test the basic redirect"""
+        request = self.factory.get("@mouse")
+        request.user = self.anonymous_user
+        result = views.user_redirect(request, "mouse")
+
+        self.assertEqual(result.status_code, 302)
