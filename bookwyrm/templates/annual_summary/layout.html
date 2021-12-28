@@ -58,7 +58,15 @@
 
             {% if year_key %}
                 <div class="horizontal-copy mb-5">
-                    <textarea rows="1" readonly class="textarea is-small" aria-labelledby="embed-label" data-copytext data-copytext-label="{% trans 'Copy address' %}" data-copytext-success="{% trans 'Copied!' %}">{{ request.scheme|add:"://"|add:request.get_host|add:request.path }}?key={{ year_key }}</textarea>
+                    <textarea
+                        rows="1"
+                        readonly
+                        class="textarea is-small"
+                        aria-labelledby="embed-label"
+                        data-copytext
+                        data-copytext-label="{% trans 'Copy address' %}"
+                        data-copytext-success="{% trans 'Copied!' %}"
+                    >{{ request.scheme|add:"://"|add:request.get_host|add:request.path }}?key={{ year_key }}</textarea>
                 </div>
             {% endif %}
 
@@ -107,7 +115,11 @@
     <div class="columns is-mobile">
         <div class="column is-8 is-offset-2 has-text-centered">
             <h2 class="title is-3 is-serif">
-                {% blocktrans with pages_total=pages_total|intcomma %}In {{ year }}, {{ display_name }} read {{ books_total }} books<br />for a total of {{ pages_total }} pages!{% endblocktrans %}
+                {% blocktrans trimmed counter count=books_total pages_total with pages_total=pages_total|intcomma %}
+                    In {{ year }}, {{ display_name }} read {{ books_total }} book<br />for a total of {{ pages_total }} pages!
+                {% plural %}
+                    In {{ year }}, {{ display_name }} read {{ books_total }} books<br />for a total of {{ pages_total }} pages!
+                {% endblocktrans %}
             </h2>
             <p class="subtitle is-5">{% trans "That’s great!" %}</p>
 
@@ -184,7 +196,11 @@
     <div class="columns">
         <div class="column has-text-centered">
             <h2 class="title is-3 is-serif">
-            {% blocktrans %}{{ display_name }} left {{ ratings_total }} ratings, <br />their average rating is {{ rating_average }}{% endblocktrans %}
+            {% blocktrans trimmed counter count=ratings_total %}
+                {{ display_name }} left {{ ratings_total }} rating, <br />their average rating is {{ rating_average }}
+            {% plural %}
+                {{ display_name }} left {{ ratings_total }} ratings, <br />their average rating is {{ rating_average }}
+            {% endblocktrans %}
             </h2>
         </div>
     </div>
@@ -224,7 +240,7 @@
     <div class="columns">
         <div class="column has-text-centered">
             <h2 class="title is-3 is-serif">
-            {% blocktrans %}All the books {{ display_name }} read in {{ year }}{% endblocktrans %}
+                {% blocktrans %}All the books {{ display_name }} read in {{ year }}{% endblocktrans %}
             </h2>
         </div>
     </div>
