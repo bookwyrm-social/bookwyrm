@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-12-28 20:12+0000\n"
-"PO-Revision-Date: 2021-12-28 21:17\n"
+"PO-Revision-Date: 2021-12-28 22:55\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Spanish\n"
 "Language: es\n"
@@ -309,8 +309,8 @@ msgstr "Lamentablemente, %(display_name)s no terminó ningún libro en %(year)s"
 #, python-format
 msgid "In %(year)s, %(display_name)s read %(books_total)s book<br />for a total of %(pages_total)s pages!"
 msgid_plural "In %(year)s, %(display_name)s read %(books_total)s books<br />for a total of %(pages_total)s pages!"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "En %(year)s %(display_name)s ha leído %(books_total)s libro<br />¡haciendo un total de %(pages_total)s páginas!"
+msgstr[1] "En %(year)s %(display_name)s ha leído %(books_total)s libros<br />¡haciendo un total de %(pages_total)s páginas!"
 
 #: bookwyrm/templates/annual_summary/layout.html:124
 msgid "That’s great!"
@@ -356,8 +356,8 @@ msgstr "… y la más larga"
 #, python-format
 msgid "%(display_name)s left %(ratings_total)s rating, <br />their average rating is %(rating_average)s"
 msgid_plural "%(display_name)s left %(ratings_total)s ratings, <br />their average rating is %(rating_average)s"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(display_name)s dio %(ratings_total)s valoración, <br />su valoración media es %(rating_average)s"
+msgstr[1] "%(display_name)s dio %(ratings_total)s valoraciones, <br />su valoración media es %(rating_average)s"
 
 #: bookwyrm/templates/annual_summary/layout.html:213
 msgid "Their best rated review"
@@ -371,7 +371,7 @@ msgstr "Su valoración: <strong>%(rating)s</strong>"
 #: bookwyrm/templates/annual_summary/layout.html:243
 #, python-format
 msgid "All the books %(display_name)s read in %(year)s"
-msgstr ""
+msgstr "Todos los libros que ha leído %(display_name)s en %(year)s"
 
 #: bookwyrm/templates/author/author.html:18
 #: bookwyrm/templates/author/author.html:19
