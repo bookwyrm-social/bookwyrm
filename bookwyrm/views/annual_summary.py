@@ -46,7 +46,7 @@ class AnnualSummary(View):
                 finish_date__year__gte=year,
                 finish_date__year__lt=int(year) + 1,
             )
-            .order_by("-finish_date")
+            .order_by("finish_date")
             .values_list("book__id", flat=True)
         )
 
