@@ -115,7 +115,7 @@
     <div class="columns is-mobile">
         <div class="column is-8 is-offset-2 has-text-centered">
             <h2 class="title is-3 is-serif">
-                {% blocktrans trimmed counter count=books_total pages_total with pages_total=pages_total|intcomma %}
+                {% blocktrans trimmed count counter=books_total with pages_total=pages_total|intcomma %}
                     In {{ year }}, {{ display_name }} read {{ books_total }} book<br />for a total of {{ pages_total }} pages!
                 {% plural %}
                     In {{ year }}, {{ display_name }} read {{ books_total }} books<br />for a total of {{ pages_total }} pages!
@@ -196,7 +196,7 @@
     <div class="columns">
         <div class="column has-text-centered">
             <h2 class="title is-3 is-serif">
-            {% blocktrans trimmed counter count=ratings_total %}
+            {% blocktrans trimmed count counter=ratings_total %}
                 {{ display_name }} left {{ ratings_total }} rating, <br />their average rating is {{ rating_average }}
             {% plural %}
                 {{ display_name }} left {{ ratings_total }} ratings, <br />their average rating is {{ rating_average }}
