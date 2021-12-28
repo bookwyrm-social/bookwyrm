@@ -107,7 +107,7 @@
     <div class="columns is-mobile">
         <div class="column is-8 is-offset-2 has-text-centered">
             <h2 class="title is-3 is-serif">
-                {% blocktrans %}In {{ year }}, {{ display_name }} read {{ books_total }} books<br />for a total of {{ pages_total }} pages!{% endblocktrans %}
+                {% blocktrans with pages_total=pages_total|intcomma %}In {{ year }}, {{ display_name }} read {{ books_total }} books<br />for a total of {{ pages_total }} pages!{% endblocktrans %}
             </h2>
             <p class="subtitle is-5">{% trans "That’s great!" %}</p>
 
@@ -128,7 +128,7 @@
     </div>
 
     {% if book_pages_lowest and book_pages_highest %}
-    <div class="columns is-mobile is-align-items-center mt-5">
+    <div class="columns is-align-items-center mt-5">
         <div class="column is-2 is-offset-1">
             <a href="{{ book_pages_lowest.local_path }}">{% include 'snippets/book_cover.html' with book=book_pages_lowest cover_class='is-w-auto-tablet is-h-l-mobile' %}</a>
         </div>
