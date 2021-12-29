@@ -56,7 +56,7 @@
                                 <div>
                                     {{ book|book_description|to_markdown|default:""|safe|truncatewords_html:20 }}
                                 </div>
-                                {% include 'snippets/shelve_button/shelve_button.html' %}
+                                {% include 'snippets/shelve_button/shelve_button.html' with book=book %}
                             </div>
                         </div>
                     {% endwith %}
