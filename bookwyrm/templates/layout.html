@@ -38,7 +38,7 @@
             <a class="navbar-item" href="/">
                 <img class="image logo" src="{% if site.logo_small %}{% get_media_prefix %}{{ site.logo_small }}{% else %}{% static "images/logo-small.png" %}{% endif %}" alt="{% blocktrans with site_name=site.name %}{{ site_name }} home page{% endblocktrans %}">
             </a>
-            <form class="navbar-item column" action="{% url 'search' %}">
+            <form class="navbar-item column is-align-items-start pt-5" action="{% url 'search' %}">
                 <div class="field has-addons">
                     <div class="control">
                         {% if user.is_authenticated %}
@@ -58,25 +58,22 @@
                 </div>
             </form>
 
-            <div role="button" tabindex="0" class="navbar-burger pulldown-menu" data-controls="main_nav" aria-expanded="false">
-                <div class="navbar-item mt-3">
-                    <div class="icon icon-dots-three-vertical" title="{% trans 'Main navigation menu' %}">
-                        <span class="is-sr-only">{% trans "Main navigation menu" %}</span>
-                    </div>
-                </div>
-            </div>
+            <button type="button" tabindex="0" class="navbar-burger pulldown-menu my-4" data-controls="main_nav" aria-expanded="false">
+                <i class="icon icon-dots-three-vertical" aria-hidden="true"></i>
+                <span class="is-sr-only">{% trans "Main navigation menu" %}</span>
+            </button>
         </div>
 
         <div class="navbar-menu" id="main_nav">
             <div class="navbar-start">
                 {% if request.user.is_authenticated %}
-                <a href="/#feed" class="navbar-item">
+                <a href="/#feed" class="navbar-item mt-3 py-0">
                     {% trans "Feed" %}
                 </a>
-                <a href="{% url 'lists' %}" class="navbar-item">
+                <a href="{% url 'lists' %}" class="navbar-item mt-3 py-0">
                     {% trans "Lists" %}
                 </a>
-                <a href="{% url 'discover' %}" class="navbar-item">
+                <a href="{% url 'discover' %}" class="navbar-item mt-3 py-0">
                     {% trans "Discover" %}
                 </a>
                 {% endif %}
@@ -84,7 +81,7 @@
 
             <div class="navbar-end">
             {% if request.user.is_authenticated %}
-                <div class="navbar-item has-dropdown is-hoverable">
+                <div class="navbar-item mt-3 py-0 has-dropdown is-hoverable">
                     <a
                         href="{{ request.user.local_path }}"
                         class="navbar-link pulldown-menu"
@@ -143,7 +140,7 @@
                         </li>
                     </ul>
                 </div>
-                <div class="navbar-item">
+                <div class="navbar-item mt-3 py-0">
                     <a href="{% url 'notifications' %}" class="tags has-addons">
                         <span class="tag is-medium">
                             <span class="icon icon-bell" title="{% trans 'Notifications' %}">
@@ -161,7 +158,7 @@
                     </a>
                 </div>
                 {% else %}
-                <div class="navbar-item">
+                <div class="navbar-item pt-5 pb-0">
                     {% if request.path != '/login' and request.path != '/login/' %}
                     <div class="columns">
                         <div class="column">

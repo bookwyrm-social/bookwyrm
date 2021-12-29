@@ -36,6 +36,13 @@ class FeedViews(TestCase):
                 local=True,
                 localname="mouse",
             )
+            self.another_user = models.User.objects.create_user(
+                "nutria@local.com",
+                "nutria@nutria.nutria",
+                "password",
+                local=True,
+                localname="nutria",
+            )
         self.book = models.Edition.objects.create(
             parent_work=models.Work.objects.create(title="hi"),
             title="Example Edition",
@@ -170,6 +177,17 @@ class FeedViews(TestCase):
         self.assertIsInstance(result, TemplateResponse)
         result.render()
         self.assertEqual(result.status_code, 200)
+
+    def test_direct_messages_page_user(self, *_):
+        """there are so many views, this just makes sure it LOADS"""
+        view = views.DirectMessage.as_view()
+        request = self.factory.get("")
+        request.user = self.local_user
+        result = view(request, "nutria")
+        self.assertIsInstance(result, TemplateResponse)
+        result.render()
+        self.assertEqual(result.status_code, 200)
+        self.assertEqual(result.context_data["partner"], self.another_user)
 
     @patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
     @patch("bookwyrm.activitystreams.add_book_statuses_task.delay")

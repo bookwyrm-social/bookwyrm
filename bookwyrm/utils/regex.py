@@ -1,6 +1,6 @@
 """ defining regexes for regularly used concepts """
 
-DOMAIN = r"[\w_\-\.]+\.[a-z]{2,}"
+DOMAIN = r"[\w_\-\.]+\.[a-z\-]{2,}"
 LOCALNAME = r"@?[a-zA-Z_\-\.0-9]+"
 STRICT_LOCALNAME = r"@[a-zA-Z_\-\.0-9]+"
 USERNAME = rf"{LOCALNAME}(@{DOMAIN})?"

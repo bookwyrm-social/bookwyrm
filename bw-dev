@@ -85,6 +85,9 @@ case "$CMD" in
         docker-compose exec web python manage.py collectstatic --no-input
         docker-compose restart
         ;;
+    prettier)
+        npx prettier --write bookwyrm/static/js/*.js
+        ;;
     populate_streams)
         runweb python manage.py populate_streams "$@"
         ;;
