@@ -37,11 +37,11 @@ class FeedViews(TestCase):
                 localname="mouse",
             )
             self.another_user = models.User.objects.create_user(
-                "rat@local.com",
-                "rat@rat.rat",
+                "nutria@local.com",
+                "nutria@nutria.nutria",
                 "password",
                 local=True,
-                localname="rat",
+                localname="nutria",
             )
         self.book = models.Edition.objects.create(
             parent_work=models.Work.objects.create(title="hi"),
@@ -183,7 +183,7 @@ class FeedViews(TestCase):
         view = views.DirectMessage.as_view()
         request = self.factory.get("")
         request.user = self.local_user
-        result = view(request, "rat")
+        result = view(request, "nutria")
         self.assertIsInstance(result, TemplateResponse)
         result.render()
         self.assertEqual(result.status_code, 200)
