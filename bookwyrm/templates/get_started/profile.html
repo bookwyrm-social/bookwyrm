@@ -13,13 +13,26 @@
             <div class="column is-two-thirds">
                 <div class="block">
                     <label class="label" for="id_name">{% trans "Display name:" %}</label>
-                    <input type="text" name="name" maxlength="100" class="input" id="id_name" placeholder="{{ user.localname }}" value="{% if request.user.name %}{{ request.user.name }}{% endif %}">
+                    <input
+                        type="text"
+                        name="name"
+                        maxlength="100"
+                        class="input"
+                        id="id_name"
+                        placeholder="{{ user.localname }}"
+                        value="{% if request.user.name %}{{ request.user.name }}{% endif %}"
+                    >
 
                     {% include 'snippets/form_errors.html' with errors_list=form.name.errors id="desc_name" %}
                 </div>
                 <div class="block">
                     <label class="label" for="id_summary">{% trans "Summary:" %}</label>
-                    <textarea name="summary" cols="None" rows="None" class="textarea" id="id_summary" placeholder="{% trans 'A little bit about you' %}">{% if request.user.summary %}{{ request.user.summary }}{% endif %}</textarea>
+                    <textarea
+                        name="summary"
+                        class="textarea"
+                        id="id_summary"
+                        placeholder="{% trans 'A little bit about you' %}"
+                    >{% if request.user.summary %}{{ request.user.summary }}{% endif %}</textarea>
 
                     {% include 'snippets/form_errors.html' with errors_list=form.summary.errors id="desc_summary" %}
                 </div>
