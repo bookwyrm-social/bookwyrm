@@ -27,7 +27,7 @@
     </summary>
 
     <div class="mt-3">
-        <form id="filters" method="{{ method|default:'get' }}" action="{{ action|default:request.path }}" tabindex="0">
+        <form id="filters" method="{{ method|default:'get' }}" action="{{ action|default:request.path }}">
             {% if method == 'post' %}
                 {% csrf_token %}
             {% endif %}

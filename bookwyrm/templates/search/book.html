@@ -37,6 +37,8 @@
     <section class="mb-5">
         {% if not result_set.connector.local %}
         <details class="details-panel box" {% if forloop.first %}open{% endif %}>
+        {% endif %}
+            {% if not result_set.connector.local %}
             <summary class="is-flex is-align-items-center is-flex-wrap-wrap is-gap-2">
                 <h3 class="mb-0 title is-5">
                     {% trans 'Results from' %}
@@ -45,13 +47,10 @@
 
                 <span class="details-close icon icon-x" aria-hidden></span>
             </summary>
-        {% endif %}
+            {% endif %}
 
         <div class="mt-5">
             <div class="is-flex is-flex-direction-row-reverse">
-                <div>
-                </div>
-
                 <ul class="is-flex-grow-1">
                     {% for result in result_set.results %}
                         <li class="{% if not forloop.last %}mb-5{% endif %}">
@@ -86,6 +85,7 @@
                     {% endfor %}
                 </ul>
             </div>
+        </div>
         {% if not result_set.connector.local %}
         </details>
         {% endif %}
