@@ -100,13 +100,10 @@ class AnnualSummary(TestCase):
     @patch("bookwyrm.activitystreams.add_book_statuses_task.delay")
     def test_annual_summary_page(self, *_):
         """there are so many views, this just makes sure it LOADS"""
-
-        shelf = self.local_user.shelf_set.filter(identifier="read").first()
-        models.ShelfBook.objects.create(
-            book=self.book,
+        models.ReadThrough.objects.create(
             user=self.local_user,
-            shelf=shelf,
-            shelved_date=make_date(2020, 1, 1),
+            book=self.book,
+            finish_date=make_date(2020, 1, 1)
         )
 
         view = views.AnnualSummary.as_view()
@@ -132,12 +129,10 @@ class AnnualSummary(TestCase):
             book=self.book,
         )
 
-        shelf = self.local_user.shelf_set.filter(identifier="read").first()
-        models.ShelfBook.objects.create(
-            book=self.book,
+        models.ReadThrough.objects.create(
             user=self.local_user,
-            shelf=shelf,
-            shelved_date=make_date(2020, 1, 1),
+            book=self.book,
+            finish_date=make_date(2020, 1, 1)
         )
 
         view = views.AnnualSummary.as_view()

@@ -189,7 +189,7 @@ def is_year_available(user, year):
         Min("finish_date")
     )["finish_date__min"]
     if not earliest_year:
-        return False
+        return True
     earliest_year = earliest_year.year
     today = date.today()
     year = int(year)
