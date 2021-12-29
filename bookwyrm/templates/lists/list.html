@@ -172,7 +172,7 @@
 
                         <form
                             class="mt-1"
-                            name="add-book"
+                            name="add-book-{{ book.id }}"
                             method="post"
                             action="{% url 'list-add-book' %}{% if query %}?q={{ query }}{% endif %}"
                         >
@@ -191,7 +191,16 @@
                 {% trans "Embed this list on a website" %}
             </h2>
             <div class="vertical-copy">
-                <textarea readonly class="textarea is-small" aria-labelledby="embed-label" data-copytext data-copytext-label="{% trans 'Copy embed code' %}" data-copytext-success="{% trans 'Copied!' %}"><iframe style="border-width:0;" id="bookwyrm_list_embed" width="400" height="600" title="{% blocktrans with list_name=list.name site_name=site.name owner=list.user.display_name %}{{ list_name }}, a list by {{owner}} on {{ site_name }}{% endblocktrans %}" src="{{ embed_url }}"></iframe></textarea>
+                <textarea
+                    readonly
+                    class="textarea is-small"
+                    aria-labelledby="embed-label"
+                    data-copytext
+                    data-copytext-label="{% trans 'Copy embed code' %}"
+                    data-copytext-success="{% trans 'Copied!' %}"
+                >&lt;iframe style="border-width:0;" id="bookwyrm_list_embed" width="400" height="600" title="{% blocktrans trimmed with list_name=list.name site_name=site.name owner=list.user.display_name %}
+                    {{ list_name }}, a list by {{owner}} on {{ site_name }}
+                {% endblocktrans %}" src="{{ embed_url }}"&gt;&lt;/iframe&gt;</textarea>
             </div>
         </div>
 
