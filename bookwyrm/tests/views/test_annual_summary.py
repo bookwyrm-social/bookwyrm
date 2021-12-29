@@ -101,9 +101,7 @@ class AnnualSummary(TestCase):
     def test_annual_summary_page(self, *_):
         """there are so many views, this just makes sure it LOADS"""
         models.ReadThrough.objects.create(
-            user=self.local_user,
-            book=self.book,
-            finish_date=make_date(2020, 1, 1)
+            user=self.local_user, book=self.book, finish_date=make_date(2020, 1, 1)
         )
 
         view = views.AnnualSummary.as_view()
@@ -130,9 +128,7 @@ class AnnualSummary(TestCase):
         )
 
         models.ReadThrough.objects.create(
-            user=self.local_user,
-            book=self.book,
-            finish_date=make_date(2020, 1, 1)
+            user=self.local_user, book=self.book, finish_date=make_date(2020, 1, 1)
         )
 
         view = views.AnnualSummary.as_view()
