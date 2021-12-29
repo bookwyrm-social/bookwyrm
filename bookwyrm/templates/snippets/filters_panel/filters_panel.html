@@ -1,10 +1,10 @@
 {% load i18n %}
 <details class="details-panel box is-size-{{ size|default:'normal' }}" {% if filters_applied %}open{% endif %}>
     <summary class="is-flex is-align-items-center is-flex-wrap-wrap is-gap-2">
-        <h2 class="mb-0 title {% if size == 'small' %}is-6{% else %}is-5{% endif %} is-flex-shrink-0">
+        <span class="mb-0 title {% if size == 'small' %}is-6{% else %}is-5{% endif %} is-flex-shrink-0">
             {% trans "Filters" %}
 
-        </h2>
+        </span>
 
         {% if filters_applied %}
         <span class="tag is-success is-light ml-2 mb-0 is-{{ size|default:'normal' }}">
