@@ -1,7 +1,7 @@
 """testing the annual summary page"""
 from datetime import datetime
-import pytz
 from unittest.mock import patch
+import pytz
 
 from django.contrib.auth.models import AnonymousUser
 from django.http import Http404
@@ -124,7 +124,7 @@ class AnnualSummary(TestCase):
     def test_annual_summary_page_with_review(self, *_):
         """there are so many views, this just makes sure it LOADS"""
 
-        self.review = models.Review.objects.create(
+        models.Review.objects.create(
             name="Review name",
             content="test content",
             rating=3.0,
