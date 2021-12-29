@@ -13,14 +13,14 @@
         {% endif %}
 
         {% if request.GET %}
-        <div class="mb-0 tags has-addons">
+        <span class="mb-0 tags has-addons">
             <span class="mb-0 tag is-success is-light is-{{ size|default:'normal' }}">
                 {% trans "Filters are applied" %}
             </span>
             <a class="mb-0 tag is-success is-{{ size|default:'normal' }}" href="{{ request.path }}">
                 {% trans "Clear filters" %}
             </a>
-        </div>
+        </span>
         {% endif %}
 
         <span class="details-close icon icon-x is-{{ size|default:'normal' }}" aria-hidden></span>
