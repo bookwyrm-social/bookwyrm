@@ -62,6 +62,9 @@
         >
         <figcaption class="cover-caption">
             <p>{{ book.alt_text }}</p>
+            {% if text_append %}
+                <p>{{ text_append }}</p>
+            {% endif %}
         </figcaption>
     </figure>
 {% endif %}

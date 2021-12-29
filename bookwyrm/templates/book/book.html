@@ -61,23 +61,33 @@
 
     <div class="columns">
         <div class="column is-one-fifth">
-            {% include 'snippets/book_cover.html' with size='xxlarge' size_mobile='medium' book=book cover_class='is-h-m-mobile' %}
+            {% if not book.cover %}
+                {% if user_authenticated %}
+                    {% trans "Click to add cover" as button_text %}
+                    <button type="button" data-controls="add_cover_{{ book.id }}" data-focus-target="modal_title_add_cover_{{ book.id }}" aria-pressed="false">
+                        {% include 'snippets/book_cover.html' with size='xxlarge' size_mobile='medium' book=book cover_class='is-h-m-mobile' text_append=button_text %}
+                    </button>
+                    {% include 'book/cover_add_modal.html' with book=book controls_text="add_cover" controls_uid=book.id %}
+                    {% if request.GET.cover_error %}
+                    <p class="help is-danger">{% trans "Failed to load cover" %}</p>
+                    {% endif %}
+                {% else %}
+                    {% include 'snippets/book_cover.html' with size='xxlarge' size_mobile='medium' book=book cover_class='is-h-m-mobile' %}
+                {% endif %}
+            {% endif %}
+
+            {% if book.cover %}
+                <button type="button" data-modal-open="cover_show_modal" aria-haspopup="dialog"class="cover-container is-h-m-mobile">
+                {% include 'snippets/book_cover.html' with size='xxlarge' size_mobile='medium' book=book cover_class='is-h-m-mobile' %}
+                </button>
+                {% include 'book/cover_show_modal.html' with book=book id="cover_show_modal" %}
+            {% endif %}
+
             {% include 'snippets/rate_action.html' with user=request.user book=book %}
 
             <div class="mb-3">
                 {% include 'snippets/shelve_button/shelve_button.html' %}
             </div>
-
-            {% if user_authenticated and not book.cover %}
-            <div class="block">
-                {% trans "Add cover" as button_text %}
-                {% include 'snippets/toggle/toggle_button.html' with text=button_text controls_text="add_cover" controls_uid=book.id focus="modal_title_add_cover" class="is-small" %}
-                {% include 'book/cover_modal.html' with book=book controls_text="add_cover" controls_uid=book.id %}
-                {% if request.GET.cover_error %}
-                <p class="help is-danger">{% trans "Failed to load cover" %}</p>
-                {% endif %}
-            </div>
-            {% endif %}
 
             <section class="is-clipped">
                 {% with book=book %}

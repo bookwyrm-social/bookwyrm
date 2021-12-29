@@ -30,6 +30,9 @@ button {
 
     /* Corrects inability to style clickable `input` types in iOS */
     -webkit-appearance: none;
+
+    /* Generalizes pointer cursor */
+    cursor: pointer;
 }
 
 button::-moz-focus-inner {
@@ -62,6 +65,14 @@ button::-moz-focus-inner {
 .scroll-x {
     overflow: hidden;
     overflow-x: auto;
+}
+
+.modal-card {
+    pointer-events: none;
+}
+
+.modal-card > * {
+    pointer-events: all;
 }
 
 /* stylelint-disable no-descending-specificity */
@@ -146,6 +157,16 @@ button::-moz-focus-inner {
 
 .display-inline p {
     display: inline !important;
+}
+
+img.is-fit-cover {
+    object-fit: cover;
+    object-position: center;
+}
+
+img.is-fit-contain {
+    object-fit: contain;
+    object-position: center;
 }
 
 /** File input styles
@@ -429,6 +450,8 @@ details.dropdown .dropdown-menu a:focus-visible {
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-direction: column;
+    gap: 1em;
     white-space: initial;
     text-align: center;
 }
