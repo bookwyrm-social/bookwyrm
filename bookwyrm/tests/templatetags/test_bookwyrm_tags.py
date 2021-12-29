@@ -60,6 +60,35 @@ class BookWyrmTags(TestCase):
         self.book.save()
         self.assertEqual(bookwyrm_tags.get_book_description(self.book), "hello")
 
+    def test_get_next_shelf(self, *_):
+        """self progress helper"""
+        self.assertEqual(bookwyrm_tags.get_next_shelf("to-read"), "reading")
+        self.assertEqual(bookwyrm_tags.get_next_shelf("reading"), "read")
+        self.assertEqual(bookwyrm_tags.get_next_shelf("read"), "complete")
+        self.assertEqual(bookwyrm_tags.get_next_shelf("blooooga"), "to-read")
+
+    @patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
+    def test_load_subclass(self, *_):
+        """get a status' real type"""
+        review = models.Review.objects.create(user=self.user, book=self.book, rating=3)
+        status = models.Status.objects.get(id=review.id)
+        self.assertIsInstance(status, models.Status)
+        self.assertIsInstance(bookwyrm_tags.load_subclass(status), models.Review)
+
+        quote = models.Quotation.objects.create(
+            user=self.user, book=self.book, content="hi"
+        )
+        status = models.Status.objects.get(id=quote.id)
+        self.assertIsInstance(status, models.Status)
+        self.assertIsInstance(bookwyrm_tags.load_subclass(status), models.Quotation)
+
+        comment = models.Comment.objects.create(
+            user=self.user, book=self.book, content="hi"
+        )
+        status = models.Status.objects.get(id=comment.id)
+        self.assertIsInstance(status, models.Status)
+        self.assertIsInstance(bookwyrm_tags.load_subclass(status), models.Comment)
+
     def test_related_status(self, *_):
         """gets the subclass model for a notification status"""
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
@@ -70,10 +99,3 @@ class BookWyrmTags(TestCase):
 
         result = bookwyrm_tags.related_status(notification)
         self.assertIsInstance(result, models.Status)
-
-    def test_get_next_shelf(self, *_):
-        """self progress helper"""
-        self.assertEqual(bookwyrm_tags.get_next_shelf("to-read"), "reading")
-        self.assertEqual(bookwyrm_tags.get_next_shelf("reading"), "read")
-        self.assertEqual(bookwyrm_tags.get_next_shelf("read"), "complete")
-        self.assertEqual(bookwyrm_tags.get_next_shelf("blooooga"), "to-read")
