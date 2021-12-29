@@ -77,7 +77,7 @@
             {% endif %}
 
             {% if book.cover %}
-                <button type="button" data-modal-open="cover_show_modal" aria-haspopup="dialog"class="cover-container is-h-m-mobile">
+                <button type="button" data-modal-open="cover_show_modal" class="cover-container is-h-m-mobile">
                 {% include 'snippets/book_cover.html' with size='xxlarge' size_mobile='medium' book=book cover_class='is-h-m-mobile' %}
                 </button>
                 {% include 'book/cover_show_modal.html' with book=book id="cover_show_modal" %}
