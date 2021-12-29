@@ -148,6 +148,8 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         size=8,
         default=get_feed_filter_choices,
     )
+    # annual summary keys
+    summary_keys = models.JSONField(null=True)
 
     preferred_timezone = models.CharField(
         choices=[(str(tz), str(tz)) for tz in pytz.all_timezones],

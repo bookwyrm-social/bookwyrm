@@ -1,0 +1,29 @@
+{% extends 'components/card.html' %}
+{% load i18n %}
+
+{% block card-header %}
+<h3 class="card-header-title has-background-success-dark has-text-white">
+    <span class="icon is-size-3 mr-2" aria-hidden="true">📚</span>
+    <span class="icon is-size-3 mr-2" aria-hidden="true">✨</span>
+    {% blocktrans %}{{ year }} in the books{% endblocktrans %}
+</h3>
+
+<div class="card-header-icon has-background-success-dark has-text-white">
+    {% trans "Dismiss message" as button_text %}
+    <button class="delete set-display" type="button" data-id="hide_annual_summary_{{ year }}" data-value="true">
+        <span>{% trans "Dismiss message" %}</span>
+    </button>
+</div>
+{% endblock %}
+
+{% block card-content %}
+<p class="mb-3">
+{% blocktrans %}The end of the year is the best moment to take stock of all the books read during the last 12 months. How many pages have you read? Which book is your best-rated of the year? We compiled these stats, and more!{% endblocktrans %}
+</p>
+
+<p>
+    <a href="{% url 'annual-summary' request.user.localname year %}" class="button is-success has-background-success-dark">
+    {% blocktrans %}Discover your stats for {{ year }}!{% endblocktrans %}
+    </a>
+</p>
+{% endblock %}

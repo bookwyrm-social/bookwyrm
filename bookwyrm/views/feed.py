@@ -16,6 +16,7 @@ from bookwyrm.settings import PAGE_LENGTH, STREAMS
 from bookwyrm.suggested_users import suggested_users
 from .helpers import filter_stream_by_status_type, get_user_from_username
 from .helpers import is_api_request, is_bookwyrm_request
+from .annual_summary import get_annual_summary_year
 
 
 # pylint: disable= no-self-use
@@ -62,6 +63,7 @@ class Feed(View):
                 "allowed_status_types": request.user.feed_status_types,
                 "settings_saved": settings_saved,
                 "path": f"/{tab['key']}",
+                "annual_summary_year": get_annual_summary_year(),
             },
         }
         return TemplateResponse(request, "feed/feed.html", data)
