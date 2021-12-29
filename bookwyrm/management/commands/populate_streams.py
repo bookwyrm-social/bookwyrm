@@ -6,7 +6,7 @@ from bookwyrm import activitystreams, models
 def populate_streams(stream=None):
     """build all the streams for all the users"""
     streams = [stream] if stream else activitystreams.streams.keys()
-    print("Populations streams", streams)
+    print("Populating streams", streams)
     users = models.User.objects.filter(
         local=True,
         is_active=True,
