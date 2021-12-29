@@ -4,8 +4,8 @@ from django.contrib.auth.models import AnonymousUser
 from django.test import TestCase
 from django.test.client import RequestFactory
 
-from bookwyrm import models
-from bookwyrm import views
+from bookwyrm import models, views
+from bookwyrm.tests.validate_html import validate_html
 
 
 class DiscoverViews(TestCase):
@@ -39,7 +39,7 @@ class DiscoverViews(TestCase):
             result = view(request)
         self.assertEqual(mock.call_count, 1)
         self.assertEqual(result.status_code, 200)
-        result.render()
+        validate_html(result.render())
 
     @patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
     @patch("bookwyrm.activitystreams.add_status_task.delay")
@@ -67,7 +67,7 @@ class DiscoverViews(TestCase):
             result = view(request)
         self.assertEqual(mock.call_count, 1)
         self.assertEqual(result.status_code, 200)
-        result.render()
+        validate_html(result.render())
 
     def test_discover_page_logged_out(self):
         """there are so many views, this just makes sure it LOADS"""

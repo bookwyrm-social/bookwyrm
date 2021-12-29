@@ -39,7 +39,7 @@
 
     {% elif shelf.editable %}
 
-        <form name="shelve" action="/shelve/" method="post">
+        <form name="shelve-{{ uuid }}-{{ shelf.identifier }}" action="/shelve/" method="post">
             {% csrf_token %}
             <input type="hidden" name="book" value="{{ active_shelf.book.id }}">
             <button class="button {{ class }}" name="shelf" type="submit" value="{{ shelf.identifier }}" {% if shelf in book.shelf_set.all %} disabled {% endif %}>

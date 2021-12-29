@@ -13,6 +13,7 @@ from django.test.client import RequestFactory
 from bookwyrm import models
 from bookwyrm import views
 from bookwyrm.activitypub import ActivitypubResponse
+from bookwyrm.tests.validate_html import validate_html
 
 
 @patch("bookwyrm.activitystreams.ActivityStream.get_activity_stream")
@@ -58,7 +59,7 @@ class FeedViews(TestCase):
         request.user = self.local_user
         result = view(request, "home")
         self.assertIsInstance(result, TemplateResponse)
-        result.render()
+        validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
     def test_status_page(self, *_):
@@ -72,7 +73,7 @@ class FeedViews(TestCase):
             is_api.return_value = False
             result = view(request, "mouse", status.id)
         self.assertIsInstance(result, TemplateResponse)
-        result.render()
+        validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
         with patch("bookwyrm.views.feed.is_api_request") as is_api:
@@ -139,7 +140,7 @@ class FeedViews(TestCase):
             is_api.return_value = False
             result = view(request, "mouse", status.id)
         self.assertIsInstance(result, TemplateResponse)
-        result.render()
+        validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
         with patch("bookwyrm.views.feed.is_api_request") as is_api:
@@ -159,7 +160,7 @@ class FeedViews(TestCase):
             is_api.return_value = False
             result = view(request, "mouse", status.id)
         self.assertIsInstance(result, TemplateResponse)
-        result.render()
+        validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
         with patch("bookwyrm.views.feed.is_api_request") as is_api:
@@ -175,7 +176,7 @@ class FeedViews(TestCase):
         request.user = self.local_user
         result = view(request)
         self.assertIsInstance(result, TemplateResponse)
-        result.render()
+        validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
     def test_direct_messages_page_user(self, *_):
@@ -185,7 +186,7 @@ class FeedViews(TestCase):
         request.user = self.local_user
         result = view(request, "nutria")
         self.assertIsInstance(result, TemplateResponse)
-        result.render()
+        validate_html(result.render())
         self.assertEqual(result.status_code, 200)
         self.assertEqual(result.context_data["partner"], self.another_user)
 

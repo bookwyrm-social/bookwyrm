@@ -10,6 +10,7 @@ from django.test.client import RequestFactory
 
 from bookwyrm import models, views
 from bookwyrm.activitypub import ActivitypubResponse
+from bookwyrm.tests.validate_html import validate_html
 
 # pylint: disable=unused-argument
 class ListViews(TestCase):
@@ -84,14 +85,14 @@ class ListViews(TestCase):
 
         result = view(request)
         self.assertIsInstance(result, TemplateResponse)
-        result.render()
+        validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
         request.user = self.anonymous_user
 
         result = view(request)
         self.assertIsInstance(result, TemplateResponse)
-        result.render()
+        validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
     def test_saved_lists_page(self):
@@ -110,7 +111,7 @@ class ListViews(TestCase):
 
         result = view(request)
         self.assertIsInstance(result, TemplateResponse)
-        result.render()
+        validate_html(result.render())
         self.assertEqual(result.status_code, 200)
         self.assertEqual(result.context_data["lists"].object_list, [booklist])
 
@@ -127,7 +128,7 @@ class ListViews(TestCase):
 
         result = view(request)
         self.assertIsInstance(result, TemplateResponse)
-        result.render()
+        validate_html(result.render())
         self.assertEqual(result.status_code, 200)
         self.assertEqual(len(result.context_data["lists"].object_list), 0)
 
@@ -188,7 +189,7 @@ class ListViews(TestCase):
             is_api.return_value = False
             result = view(request, self.list.id)
         self.assertIsInstance(result, TemplateResponse)
-        result.render()
+        validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
     def test_list_page_sorted(self):
@@ -210,7 +211,7 @@ class ListViews(TestCase):
             is_api.return_value = False
             result = view(request, self.list.id)
         self.assertIsInstance(result, TemplateResponse)
-        result.render()
+        validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
         request = self.factory.get("/?sort_by=title")
@@ -219,7 +220,7 @@ class ListViews(TestCase):
             is_api.return_value = False
             result = view(request, self.list.id)
         self.assertIsInstance(result, TemplateResponse)
-        result.render()
+        validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
         request = self.factory.get("/?sort_by=rating")
@@ -228,7 +229,7 @@ class ListViews(TestCase):
             is_api.return_value = False
             result = view(request, self.list.id)
         self.assertIsInstance(result, TemplateResponse)
-        result.render()
+        validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
         request = self.factory.get("/?sort_by=sdkfh")
@@ -237,7 +238,7 @@ class ListViews(TestCase):
             is_api.return_value = False
             result = view(request, self.list.id)
         self.assertIsInstance(result, TemplateResponse)
-        result.render()
+        validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
     def test_list_page_empty(self):
@@ -250,7 +251,7 @@ class ListViews(TestCase):
             is_api.return_value = False
             result = view(request, self.list.id)
         self.assertIsInstance(result, TemplateResponse)
-        result.render()
+        validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
     def test_list_page_logged_out(self):
@@ -271,7 +272,7 @@ class ListViews(TestCase):
             is_api.return_value = False
             result = view(request, self.list.id)
         self.assertIsInstance(result, TemplateResponse)
-        result.render()
+        validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
     def test_list_page_json_view(self):
@@ -355,7 +356,7 @@ class ListViews(TestCase):
 
         result = view(request, self.list.id)
         self.assertIsInstance(result, TemplateResponse)
-        result.render()
+        validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
         request.user = self.anonymous_user
@@ -375,7 +376,7 @@ class ListViews(TestCase):
 
         result = view(request, self.local_user.localname)
         self.assertIsInstance(result, TemplateResponse)
-        result.render()
+        validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
     def test_user_lists_page_logged_out(self):
@@ -404,7 +405,7 @@ class ListViews(TestCase):
         with patch("bookwyrm.views.list.is_api_request") as is_api:
             is_api.return_value = False
             with self.assertRaises(Http404):
-                result = view(request, self.list.id, "")
+                view(request, self.list.id, "")
 
     def test_embed_call_with_key(self):
         """there are so many views, this just makes sure it LOADS"""
@@ -427,5 +428,5 @@ class ListViews(TestCase):
             result = view(request, self.list.id, embed_key)
 
         self.assertIsInstance(result, TemplateResponse)
-        result.render()
+        validate_html(result.render())
         self.assertEqual(result.status_code, 200)

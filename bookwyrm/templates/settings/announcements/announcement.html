@@ -31,35 +31,29 @@
 
 <div class="block content">
     <dl>
-        <div class="is-flex notification pt-1 pb-1 mb-0 {% if announcement in active_announcements %}is-success{% else %}is-danger{% endif %}">
-            <dt class="mr-1 has-text-weight-bold">{% trans "Visible:" %}</dt>
-            <dd>
-                {% if announcement in active_announcements %}
-                {% trans "True" %}
-                {% else %}
-                {% trans "False" %}
-                {% endif %}
-            </dd>
-        </div>
+        <dt class="is-pulled-left mr-5 has-text-weight-bold">{% trans "Visible:" %}</dt>
+        <dd>
+            <span class="tag {% if announcement in active_announcements %}is-success{% else %}is-danger{% endif %}">
+            {% if announcement in active_announcements %}
+            {% trans "True" %}
+            {% else %}
+            {% trans "False" %}
+            {% endif %}
+            </span>
+        </dd>
 
         {% if announcement.start_date %}
-        <div class="is-flex notificationi pt-1 pb-1 mb-0 has-background-white">
-            <dt class="mr-1 has-text-weight-bold">{% trans "Start date:" %}</dt>
-            <dd>{{ announcement.start_date|naturalday }}</dd>
-        </div>
+        <dt class="is-pulled-left mr-5 has-text-weight-bold">{% trans "Start date:" %}</dt>
+        <dd>{{ announcement.start_date|naturalday }}</dd>
         {% endif %}
 
         {% if announcement.end_date %}
-        <div class="is-flex notification pt-1 pb-1 mb-0 has-background-white">
-            <dt class="mr-1 has-text-weight-bold">{% trans "End date:" %}</dt>
-            <dd>{{ announcement.end_date|naturalday }}</dd>
-        </div>
+        <dt class="is-pulled-left mr-5 has-text-weight-bold">{% trans "End date:" %}</dt>
+        <dd>{{ announcement.end_date|naturalday }}</dd>
         {% endif %}
 
-        <div class="is-flex notification pt-1 pb-1 has-background-white">
-            <dt class="mr-1 has-text-weight-bold">{% trans "Active:" %}</dt>
-            <dd>{{ announcement.active }}</dd>
-        </div>
+        <dt class="is-pulled-left mr-5 has-text-weight-bold">{% trans "Active:" %}</dt>
+        <dd>{{ announcement.active }}</dd>
     </dl>
 
     <hr aria-hidden="true">
