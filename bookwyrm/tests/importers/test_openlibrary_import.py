@@ -48,7 +48,9 @@ class OpenLibraryImport(TestCase):
             self.local_user, self.csv, False, "public"
         )
 
-        import_items = models.ImportItem.objects.filter(job=import_job).all()
+        import_items = (
+            models.ImportItem.objects.filter(job=import_job).order_by("index").all()
+        )
         self.assertEqual(len(import_items), 4)
         self.assertEqual(import_items[0].index, 0)
         self.assertEqual(import_items[0].data["Work Id"], "OL102749W")

@@ -8,6 +8,41 @@ body {
     flex-direction: column;
 }
 
+button {
+    border: none;
+    margin: 0;
+    padding: 0;
+    width: auto;
+    overflow: visible;
+    background: transparent;
+
+    /* inherit font, color & alignment from ancestor */
+    color: inherit;
+    font: inherit;
+    text-align: inherit;
+
+    /* Normalize `line-height`. Cannot be changed from `normal` in Firefox 4+. */
+    line-height: normal;
+
+    /* Corrects font smoothing for webkit */
+    -webkit-font-smoothing: inherit;
+    -moz-osx-font-smoothing: inherit;
+
+    /* Corrects inability to style clickable `input` types in iOS */
+    -webkit-appearance: none;
+}
+
+button::-moz-focus-inner {
+    /* Remove excess padding and border in Firefox 4+ */
+    border: 0;
+    padding: 0;
+}
+
+/* Better accessibility for keyboard users */
+*:focus-visible {
+    outline-style: auto !important;
+}
+
 .image {
     overflow: hidden;
 }
@@ -29,8 +64,28 @@ body {
     overflow-x: auto;
 }
 
+/* stylelint-disable no-descending-specificity */
+.modal-card:focus {
+    outline-style: auto;
+}
+
+.modal-card:focus:not(:focus-visible) {
+    outline-style: initial;
+}
+
+.modal-card:focus-visible {
+    outline-style: auto;
+}
+/* stylelint-enable no-descending-specificity */
+
 .modal-card.is-fullwidth {
     min-width: 75% !important;
+}
+
+@media only screen and (min-width: 769px) {
+    .modal-card.is-thin {
+        width: 350px !important;
+    }
 }
 
 .modal-card-body {
@@ -612,17 +667,16 @@ ol.ordered-list li::before {
 
 .books-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(10em, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
     align-items: end;
-    justify-items: center;
+    justify-items: stretch;
 }
 
 .books-grid > .is-big {
     grid-column: span 2;
     grid-row: span 2;
     justify-self: stretch;
-    padding: 1.5rem 1.5rem 0;
 }
 
 .books-grid .book-cover {
@@ -636,6 +690,17 @@ ol.ordered-list li::before {
     margin-top: 0.5rem;
     line-height: var(--height-basis);
     min-height: calc(2 * var(--height-basis));
+}
+
+@media only screen and (min-width: 769px) {
+    .books-grid {
+        gap: 1.5rem;
+        grid-template-columns: repeat(auto-fit, minmax(10em, 1fr));
+    }
+
+    .books-grid > .is-big {
+        padding: 1.5rem 1.5rem 0;
+    }
 }
 
 /* Copy
