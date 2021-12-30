@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-12-29 21:32+0000\n"
-"PO-Revision-Date: 2021-12-30 03:37\n"
+"PO-Revision-Date: 2021-12-30 04:35\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Chinese Simplified\n"
 "Language: zh\n"
@@ -328,7 +328,7 @@ msgstr[0] "（%(no_page_number)s 本书没有页码）"
 
 #: bookwyrm/templates/annual_summary/layout.html:148
 msgid "Their shortest read this year…"
-msgstr ""
+msgstr "TA 今年阅读最短的…"
 
 #: bookwyrm/templates/annual_summary/layout.html:155
 #: bookwyrm/templates/annual_summary/layout.html:176
@@ -344,31 +344,31 @@ msgstr "作者"
 #: bookwyrm/templates/annual_summary/layout.html:182
 #, python-format
 msgid "<strong>%(pages)s</strong> pages"
-msgstr ""
+msgstr "<strong>%(pages)s</strong> 页"
 
 #: bookwyrm/templates/annual_summary/layout.html:169
 msgid "…and the longest"
-msgstr ""
+msgstr "…最长的"
 
 #: bookwyrm/templates/annual_summary/layout.html:199
 #, python-format
 msgid "%(display_name)s left %(ratings_total)s rating, <br />their average rating is %(rating_average)s"
 msgid_plural "%(display_name)s left %(ratings_total)s ratings, <br />their average rating is %(rating_average)s"
-msgstr[0] ""
+msgstr[0] "%(display_name)s 留下了 %(ratings_total)s 条评分，<br />TA 的平均评分是 %(rating_average)s"
 
 #: bookwyrm/templates/annual_summary/layout.html:213
 msgid "Their best rated review"
-msgstr ""
+msgstr "TA 评分最好的评论"
 
 #: bookwyrm/templates/annual_summary/layout.html:226
 #, python-format
 msgid "Their rating: <strong>%(rating)s</strong>"
-msgstr ""
+msgstr "TA 的评分：<strong>%(rating)s</strong>"
 
 #: bookwyrm/templates/annual_summary/layout.html:243
 #, python-format
 msgid "All the books %(display_name)s read in %(year)s"
-msgstr ""
+msgstr "在 %(year)s 里 %(display_name)s 阅读的所有书"
 
 #: bookwyrm/templates/author/author.html:18
 #: bookwyrm/templates/author/author.html:19
@@ -377,7 +377,7 @@ msgstr "编辑作者"
 
 #: bookwyrm/templates/author/author.html:40
 msgid "Author details"
-msgstr ""
+msgstr "作者详情"
 
 #: bookwyrm/templates/author/author.html:44
 #: bookwyrm/templates/author/edit_author.html:42
@@ -394,7 +394,7 @@ msgstr "逝世:"
 
 #: bookwyrm/templates/author/author.html:70
 msgid "External links"
-msgstr ""
+msgstr "外部链接"
 
 #: bookwyrm/templates/author/author.html:75
 msgid "Wikipedia"
@@ -402,14 +402,14 @@ msgstr "维基百科"
 
 #: bookwyrm/templates/author/author.html:83
 msgid "View ISNI record"
-msgstr ""
+msgstr "查看 ISNI 记录"
 
 #: bookwyrm/templates/author/author.html:88
 #: bookwyrm/templates/author/sync_modal.html:5
 #: bookwyrm/templates/book/book.html:93
 #: bookwyrm/templates/book/sync_modal.html:5
 msgid "Load data"
-msgstr ""
+msgstr "加载数据"
 
 #: bookwyrm/templates/author/author.html:92
 #: bookwyrm/templates/book/book.html:96
@@ -508,7 +508,7 @@ msgstr "Goodreads key:"
 
 #: bookwyrm/templates/author/edit_author.html:105
 msgid "ISNI:"
-msgstr ""
+msgstr "ISNI:"
 
 #: bookwyrm/templates/author/edit_author.html:115
 #: bookwyrm/templates/book/book.html:157
@@ -547,7 +547,7 @@ msgstr "取消"
 #: bookwyrm/templates/author/sync_modal.html:15
 #, python-format
 msgid "Loading data will connect to <strong>%(source_name)s</strong> and check for any metadata about this author which aren't present here. Existing metadata will not be overwritten."
-msgstr ""
+msgstr "加载数据会连接到 <strong>%(source_name)s</strong> 并检查这里还没有记录的与作者相关的元数据。现存的元数据不会被覆盖。"
 
 #: bookwyrm/templates/author/sync_modal.html:23
 #: bookwyrm/templates/book/edit/edit_book.html:108
@@ -594,7 +594,7 @@ msgstr "<a href=\"%(path)s/editions\">%(count)s 个版本</a>"
 
 #: bookwyrm/templates/book/book.html:175
 msgid "You have shelved this edition in:"
-msgstr ""
+msgstr "此版本已在你的书架上:"
 
 #: bookwyrm/templates/book/book.html:190
 #, python-format
@@ -699,16 +699,16 @@ msgstr "确认书目信息"
 #: bookwyrm/templates/book/edit/edit_book.html:56
 #, python-format
 msgid "Is \"%(name)s\" one of these authors?"
-msgstr ""
+msgstr "“%(name)s” 是这些作者之一吗？"
 
 #: bookwyrm/templates/book/edit/edit_book.html:67
 #: bookwyrm/templates/book/edit/edit_book.html:69
 msgid "Author of "
-msgstr ""
+msgstr "所著书有 "
 
 #: bookwyrm/templates/book/edit/edit_book.html:69
 msgid "Find more information at isni.org"
-msgstr ""
+msgstr "在 isni.org 查找更多信息"
 
 #: bookwyrm/templates/book/edit/edit_book.html:79
 msgid "This is a new author"
@@ -790,16 +790,16 @@ msgstr "添加作者:"
 #: bookwyrm/templates/book/edit/edit_book_form.html:145
 #: bookwyrm/templates/book/edit/edit_book_form.html:148
 msgid "Add Author"
-msgstr ""
+msgstr "添加作者"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:146
 #: bookwyrm/templates/book/edit/edit_book_form.html:149
 msgid "Jane Doe"
-msgstr ""
+msgstr "张三"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:152
 msgid "Add Another Author"
-msgstr ""
+msgstr "添加另一作者"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:160
 #: bookwyrm/templates/shelf/shelf.html:143
@@ -929,7 +929,7 @@ msgstr "删除这些阅读日期"
 #: bookwyrm/templates/book/sync_modal.html:15
 #, python-format
 msgid "Loading data will connect to <strong>%(source_name)s</strong> and check for any metadata about this book which aren't present here. Existing metadata will not be overwritten."
-msgstr ""
+msgstr "加载数据会连接到 <strong>%(source_name)s</strong> 并检查这里还没有记录的与书籍相关的元数据。现存的元数据不会被覆盖。"
 
 #: bookwyrm/templates/components/inline_form.html:8
 #: bookwyrm/templates/components/modal.html:11
@@ -1022,7 +1022,7 @@ msgstr "使你的个人资料可以被其它 BookWyrm 用户发现。"
 
 #: bookwyrm/templates/directory/directory.html:21
 msgid "Join Directory"
-msgstr ""
+msgstr "加入目录"
 
 #: bookwyrm/templates/directory/directory.html:24
 #, python-format
@@ -1211,17 +1211,17 @@ msgstr "进一步了解 %(site_name)s"
 #: bookwyrm/templates/email/moderation_report/text_content.html:5
 #, python-format
 msgid "@%(reporter)s has flagged behavior by @%(reportee)s for moderation. "
-msgstr ""
+msgstr "@%(reporter)s 标记 @%(reportee)s 为需要仲裁。 "
 
 #: bookwyrm/templates/email/moderation_report/html_content.html:9
 #: bookwyrm/templates/email/moderation_report/text_content.html:7
 msgid "View report"
-msgstr ""
+msgstr "查看报告"
 
 #: bookwyrm/templates/email/moderation_report/subject.html:2
 #, python-format
 msgid "New report for %(site_name)s"
-msgstr ""
+msgstr "%(site_name)s 的新报告"
 
 #: bookwyrm/templates/email/password_reset/html_content.html:6
 #: bookwyrm/templates/email/password_reset/text_content.html:4
@@ -1250,7 +1250,7 @@ msgstr "重置你在 %(site_name)s 的密码"
 #: bookwyrm/templates/embed-layout.html:21 bookwyrm/templates/layout.html:39
 #, python-format
 msgid "%(site_name)s home page"
-msgstr ""
+msgstr "%(site_name)s 首页"
 
 #: bookwyrm/templates/embed-layout.html:34
 #: bookwyrm/templates/landing/about.html:7 bookwyrm/templates/layout.html:229
@@ -1264,7 +1264,7 @@ msgstr "联系站点管理员"
 
 #: bookwyrm/templates/embed-layout.html:46
 msgid "Join Bookwyrm"
-msgstr ""
+msgstr "加入 BookWyrm"
 
 #: bookwyrm/templates/feed/direct_messages.html:8
 #, python-format
@@ -1286,15 +1286,15 @@ msgstr "你现在没有消息。"
 
 #: bookwyrm/templates/feed/feed.html:27
 msgid "Feed settings"
-msgstr ""
+msgstr "源设置"
 
 #: bookwyrm/templates/feed/feed.html:39
 msgid "Saved!"
-msgstr ""
+msgstr "已保存!"
 
 #: bookwyrm/templates/feed/feed.html:53
 msgid "Save settings"
-msgstr ""
+msgstr "保存设置"
 
 #: bookwyrm/templates/feed/feed.html:63
 #, python-format
@@ -1307,7 +1307,7 @@ msgstr "现在还没有任何活动！尝试从关注一个用户开始吧"
 
 #: bookwyrm/templates/feed/feed.html:87
 msgid "Alternatively, you can try enabling more status types"
-msgstr ""
+msgstr "或者，您可以尝试启用更多的状态种类"
 
 #: bookwyrm/templates/feed/goal_card.html:6
 #: bookwyrm/templates/feed/layout.html:90
@@ -1381,12 +1381,12 @@ msgstr "查看目录"
 
 #: bookwyrm/templates/feed/summary_card.html:21
 msgid "The end of the year is the best moment to take stock of all the books read during the last 12 months. How many pages have you read? Which book is your best-rated of the year? We compiled these stats, and more!"
-msgstr ""
+msgstr "年末是总结过去 12 个月阅读的所有书籍的最佳时机。你阅读了多少页书？哪一本书是你今年评价最高的？我们汇编了这些统计数据以及更多！"
 
 #: bookwyrm/templates/feed/summary_card.html:26
 #, python-format
 msgid "Discover your stats for %(year)s!"
-msgstr ""
+msgstr "探索您的 %(year)s 统计！"
 
 #: bookwyrm/templates/get_started/book_preview.html:6
 #, python-format
@@ -1395,7 +1395,7 @@ msgstr "你读过 %(book_title)s 了吗？"
 
 #: bookwyrm/templates/get_started/book_preview.html:7
 msgid "Add to your books"
-msgstr ""
+msgstr "添加到您的书籍中"
 
 #: bookwyrm/templates/get_started/books.html:6
 msgid "What are you reading?"
@@ -1720,7 +1720,7 @@ msgstr "ISBN"
 
 #: bookwyrm/templates/import/import_status.html:110
 msgid "Openlibrary key"
-msgstr ""
+msgstr "Openlibrary key"
 
 #: bookwyrm/templates/import/import_status.html:114
 #: bookwyrm/templates/shelf/shelf.html:145
@@ -2070,12 +2070,12 @@ msgstr "编辑列表"
 #: bookwyrm/templates/lists/embed-list.html:7
 #, python-format
 msgid "%(list_name)s, a list by %(owner)s"
-msgstr ""
+msgstr "%(list_name)s，来自 %(owner)s 的列表"
 
 #: bookwyrm/templates/lists/embed-list.html:17
 #, python-format
 msgid "on <a href=\"/\">%(site_name)s</a>"
-msgstr ""
+msgstr "在 <a href=\"/\">%(site_name)s</a>"
 
 #: bookwyrm/templates/lists/embed-list.html:26
 #: bookwyrm/templates/lists/list.html:29
@@ -2201,16 +2201,16 @@ msgstr "推荐"
 
 #: bookwyrm/templates/lists/list.html:208
 msgid "Embed this list on a website"
-msgstr ""
+msgstr "将此列表嵌入到网站"
 
 #: bookwyrm/templates/lists/list.html:216
 msgid "Copy embed code"
-msgstr ""
+msgstr "复制嵌入代码"
 
 #: bookwyrm/templates/lists/list.html:218
 #, python-format
 msgid "%(list_name)s, a list by %(owner)s on %(site_name)s"
-msgstr ""
+msgstr "%(list_name)s，%(owner)s 在 %(site_name)s 上的列表"
 
 #: bookwyrm/templates/lists/list_items.html:15
 msgid "Saved"
@@ -2400,116 +2400,116 @@ msgstr "你什么也没错过！"
 #: bookwyrm/templates/ostatus/error.html:7
 #, python-format
 msgid "<strong>%(account)s</strong> is not a valid username"
-msgstr ""
+msgstr "<strong>%(account)s</strong> 不是有效的用户名"
 
 #: bookwyrm/templates/ostatus/error.html:8
 #: bookwyrm/templates/ostatus/error.html:13
 msgid "Check you have the correct username before trying again"
-msgstr ""
+msgstr "请在重试前检查用户名是否正确"
 
 #: bookwyrm/templates/ostatus/error.html:12
 #, python-format
 msgid "<strong>%(account)s</strong> could not be found or <code>%(remote_domain)s</code> does not support identity discovery"
-msgstr ""
+msgstr "找不到 <strong>%(account)s</strong> 或者是 <code>%(remote_domain)s</code> 不支持身份查找"
 
 #: bookwyrm/templates/ostatus/error.html:17
 #, python-format
 msgid "<strong>%(account)s</strong> was found but <code>%(remote_domain)s</code> does not support 'remote follow'"
-msgstr ""
+msgstr "找到了<strong>%(account)s</strong> 但是 <code>%(remote_domain)s</code> 不支持“远程关注”"
 
 #: bookwyrm/templates/ostatus/error.html:18
 #, python-format
 msgid "Try searching for <strong>%(user)s</strong> on <code>%(remote_domain)s</code> instead"
-msgstr ""
+msgstr "请尝试改为在 <code>%(remote_domain)s</code> 上查找 <strong>%(user)s</strong>"
 
 #: bookwyrm/templates/ostatus/error.html:46
 #, python-format
 msgid "Something went wrong trying to follow <strong>%(account)s</strong>"
-msgstr ""
+msgstr "试图关注 <strong>%(account)s</strong> 时出了错"
 
 #: bookwyrm/templates/ostatus/error.html:47
 msgid "Check you have the correct username before trying again."
-msgstr ""
+msgstr "请在重试前检查用户名是否正确。"
 
 #: bookwyrm/templates/ostatus/error.html:51
 #, python-format
 msgid "You have blocked <strong>%(account)s</strong>"
-msgstr ""
+msgstr "您已屏蔽 <strong>%(account)s</strong>"
 
 #: bookwyrm/templates/ostatus/error.html:55
 #, python-format
 msgid "<strong>%(account)s</strong> has blocked you"
-msgstr ""
+msgstr "<strong>%(account)s</strong> 已屏蔽你"
 
 #: bookwyrm/templates/ostatus/error.html:59
 #, python-format
 msgid "You are already following <strong>%(account)s</strong>"
-msgstr ""
+msgstr "您已在关注 <strong>%(account)s</strong>"
 
 #: bookwyrm/templates/ostatus/error.html:63
 #, python-format
 msgid "You have already requested to follow <strong>%(account)s</strong>"
-msgstr ""
+msgstr "您已请求关注 <strong>%(account)s</strong>"
 
 #: bookwyrm/templates/ostatus/remote_follow.html:6
 #, python-format
 msgid "Follow %(username)s on the fediverse"
-msgstr ""
+msgstr "在联邦宇宙上关注 %(username)s"
 
 #: bookwyrm/templates/ostatus/remote_follow.html:33
 #, python-format
 msgid "Follow %(username)s from another Fediverse account like BookWyrm, Mastodon, or Pleroma."
-msgstr ""
+msgstr "从另一个联邦宇宙帐户关注 %(username)s ，如 BookWyrm、Mastodon 或 Pleroma。"
 
 #: bookwyrm/templates/ostatus/remote_follow.html:40
 msgid "User handle to follow from:"
-msgstr ""
+msgstr "要关注此用户的用户代号:"
 
 #: bookwyrm/templates/ostatus/remote_follow.html:42
 msgid "Follow!"
-msgstr ""
+msgstr "关注!"
 
 #: bookwyrm/templates/ostatus/remote_follow_button.html:8
 msgid "Follow on Fediverse"
-msgstr ""
+msgstr "在联邦宇宙中关注"
 
 #: bookwyrm/templates/ostatus/remote_follow_button.html:12
 msgid "This link opens in a pop-up window"
-msgstr ""
+msgstr "此链接会在弹出窗口中打开"
 
 #: bookwyrm/templates/ostatus/subscribe.html:8
 #, python-format
 msgid "Log in to %(sitename)s"
-msgstr ""
+msgstr "登录到 %(sitename)s"
 
 #: bookwyrm/templates/ostatus/subscribe.html:10
 #, python-format
 msgid "Error following from %(sitename)s"
-msgstr ""
+msgstr "从 %(sitename)s 关注出错"
 
 #: bookwyrm/templates/ostatus/subscribe.html:12
 #: bookwyrm/templates/ostatus/subscribe.html:22
 #, python-format
 msgid "Follow from %(sitename)s"
-msgstr ""
+msgstr "从 %(sitename)s 关注"
 
 #: bookwyrm/templates/ostatus/subscribe.html:18
 msgid "Uh oh..."
-msgstr ""
+msgstr "哎呀..."
 
 #: bookwyrm/templates/ostatus/subscribe.html:20
 msgid "Let's log in first..."
-msgstr ""
+msgstr "让我们先登录..."
 
 #: bookwyrm/templates/ostatus/subscribe.html:51
 #, python-format
 msgid "Follow %(username)s"
-msgstr ""
+msgstr "关注 %(username)s"
 
 #: bookwyrm/templates/ostatus/success.html:28
 #, python-format
 msgid "You are now following %(display_name)s!"
-msgstr ""
+msgstr "您正在关注 %(display_name)s！"
 
 #: bookwyrm/templates/preferences/blocks.html:4
 #: bookwyrm/templates/preferences/blocks.html:7
@@ -2572,15 +2572,15 @@ msgstr "隐私"
 
 #: bookwyrm/templates/preferences/edit_user.html:69
 msgid "Show reading goal prompt in feed"
-msgstr ""
+msgstr "在状态流中显示阅读目标提示"
 
 #: bookwyrm/templates/preferences/edit_user.html:75
 msgid "Show suggested users"
-msgstr ""
+msgstr "显示推荐用户"
 
 #: bookwyrm/templates/preferences/edit_user.html:81
 msgid "Show this account in suggested users"
-msgstr ""
+msgstr "在推荐的用户中显示此帐号"
 
 #: bookwyrm/templates/preferences/edit_user.html:85
 #, python-format
@@ -2593,7 +2593,7 @@ msgstr "偏好的时区:"
 
 #: bookwyrm/templates/preferences/edit_user.html:111
 msgid "Manually approve followers"
-msgstr ""
+msgstr "手动批准关注者"
 
 #: bookwyrm/templates/preferences/edit_user.html:116
 msgid "Default post privacy:"
@@ -2624,7 +2624,7 @@ msgstr "想要阅读《%(book_title)s》"
 
 #: bookwyrm/templates/search/book.html:42
 msgid "Results from"
-msgstr ""
+msgstr "结果来自"
 
 #: bookwyrm/templates/search/book.html:47
 #: bookwyrm/templates/settings/reports/reports.html:25
@@ -3976,7 +3976,7 @@ msgstr "想要阅读"
 #: bookwyrm/templates/snippets/shelf_selector.html:73
 #: bookwyrm/templates/snippets/shelf_selector.html:84
 msgid "Remove from"
-msgstr ""
+msgstr "移除自"
 
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_dropdown.html:5
 msgid "More shelves"
@@ -4208,7 +4208,7 @@ msgstr "查看所有书目"
 #: bookwyrm/templates/user/user.html:58
 #, python-format
 msgid "%(current_year)s Reading Goal"
-msgstr ""
+msgstr "%(current_year)s 阅读目标"
 
 #: bookwyrm/templates/user/user.html:65
 msgid "User Activity"
