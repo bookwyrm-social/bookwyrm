@@ -72,7 +72,7 @@ class ListViews(TestCase):
 
         models.SiteSettings.objects.create()
 
-    @patch("bookwyrm.lists_stream.ListsStream.get_activity_stream")
+    @patch("bookwyrm.lists_stream.ListsStream.get_list_stream")
     def test_lists_page(self, _):
         """there are so many views, this just makes sure it LOADS"""
         view = views.Lists.as_view()
