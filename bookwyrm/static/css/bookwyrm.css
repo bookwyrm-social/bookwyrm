@@ -695,11 +695,7 @@ ol.ordered-list li::before {
 @media only screen and (min-width: 769px) {
     .books-grid {
         gap: 1.5rem;
-        grid-template-columns: repeat(auto-fit, minmax(10em, 1fr));
-    }
-
-    .books-grid > .is-big {
-        padding: 1.5rem 1.5rem 0;
+        grid-template-columns: repeat(auto-fill, minmax(8em, 1fr));
     }
 }
 

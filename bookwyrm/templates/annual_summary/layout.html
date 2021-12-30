@@ -249,7 +249,7 @@
         <div class="column is-10 is-offset-1">
             <div class="books-grid">
                 {% for book in books %}
-                {% if book.id in best_ratings_books_ids %}
+                {% if books_total > 12 and book.id in best_ratings_books_ids %}
                 <a href="{{ book.local_path }}" class="has-text-centered is-big has-text-success-dark">
                     {% include 'snippets/book_cover.html' with book=book cover_class='is-w-auto' size='xxlarge' %}
                     <span class="book-title is-serif is-size-5">
