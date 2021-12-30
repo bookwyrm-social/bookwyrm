@@ -30,7 +30,7 @@ class Lists(View):
 
     def get(self, request):
         """display a book list"""
-        lists = ListsStream().get_activity_stream(request.user)
+        lists = ListsStream().get_list_stream(request.user)
         paginated = Paginator(lists, 12)
         data = {
             "lists": paginated.get_page(request.GET.get("page")),

@@ -36,7 +36,7 @@ class ListsStream(RedisStore):
         lists = user.list_set.all()
         self.bulk_remove_objects_from_store(lists, self.stream_id(viewer))
 
-    def get_activity_stream(self, user):
+    def get_list_stream(self, user):
         """load the lists to be displayed"""
         lists = self.get_store(self.stream_id(user))
         return (
