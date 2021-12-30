@@ -1,5 +1,7 @@
 """ testing activitystreams """
+from datetime import datetime
 from unittest.mock import patch
+
 from django.test import TestCase
 from bookwyrm import lists_stream, models
 
@@ -45,6 +47,42 @@ class ListsStream(TestCase):
             self.stream.stream_id(self.local_user),
             f"{self.local_user.id}-lists",
         )
+
+    def test_get_rank(self, *_):
+        """sort order for lists"""
+        book_list = models.List.objects.create(
+            user=self.remote_user, name="hi", privacy="public"
+        )
+        book_list.updated_date = datetime(2020, 1, 1, 0, 0, 0)
+        self.assertEqual(self.stream.get_rank(book_list), 1577836800.0)
+
+    def test_add_user_lists(self, *_):
+        """add all of a user's lists"""
+        book_list = models.List.objects.create(
+            user=self.remote_user, name="hi", privacy="public"
+        )
+        with patch(
+            "bookwyrm.lists_stream.ListsStream.bulk_add_objects_to_store"
+        ) as mock:
+            self.stream.add_user_lists(self.local_user, self.remote_user)
+        self.assertEqual(mock.call_count, 1)
+        args = mock.call_args[0]
+        self.assertEqual(args[0][0], book_list)
+        self.assertEqual(args[1], f"{self.local_user.id}-lists")
+
+    def test_remove_user_lists(self, *_):
+        """remove user's lists"""
+        book_list = models.List.objects.create(
+            user=self.remote_user, name="hi", privacy="public"
+        )
+        with patch(
+            "bookwyrm.lists_stream.ListsStream.bulk_remove_objects_from_store"
+        ) as mock:
+            self.stream.remove_user_lists(self.local_user, self.remote_user)
+        self.assertEqual(mock.call_count, 1)
+        args = mock.call_args[0]
+        self.assertEqual(args[0][0], book_list)
+        self.assertEqual(args[1], f"{self.local_user.id}-lists")
 
     def test_get_audience(self, *_):
         """get a list of users that should see a list"""

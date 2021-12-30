@@ -27,7 +27,7 @@ class ListsStream(RedisStore):
     def add_user_lists(self, viewer, user):
         """add a user's lists to another user's feed"""
         # only add the lists that the viewer should be able to see
-        lists = models.List.filter(user=user).privacy_filter(viewer)
+        lists = models.List.privacy_filter(viewer).filter(user=user)
         self.bulk_add_objects_to_store(lists, self.stream_id(viewer))
 
     def remove_user_lists(self, viewer, user):
