@@ -1,4 +1,4 @@
-""" access the activity streams stored in redis """
+""" access the list streams stored in redis """
 from django.dispatch import receiver
 from django.db import transaction
 from django.db.models import signals, Count, Q
@@ -25,8 +25,8 @@ class ListsStream(RedisStore):
         self.add_object_to_related_stores(book_list)
 
     def add_user_lists(self, viewer, user):
-        """add a user's listes to another user's feed"""
-        # only add the listes that the viewer should be able to see
+        """add a user's lists to another user's feed"""
+        # only add the lists that the viewer should be able to see
         lists = models.List.filter(user=user).privacy_filter(viewer)
         self.bulk_add_objects_to_store(lists, self.stream_id(viewer))
 
@@ -110,7 +110,7 @@ class ListsStream(RedisStore):
 @receiver(signals.post_save, sender=models.List)
 # pylint: disable=unused-argument
 def add_list_on_create(sender, instance, created, *args, **kwargs):
-    """add newly created lists to activity feeds"""
+    """add newly created lists streamsstreams"""
     if not created:
         return
     # when creating new things, gotta wait on the transaction
@@ -120,7 +120,7 @@ def add_list_on_create(sender, instance, created, *args, **kwargs):
 @receiver(signals.pre_delete, sender=models.List)
 # pylint: disable=unused-argument
 def remove_list_on_delete(sender, instance, *args, **kwargs):
-    """add newly created lists to activity feeds"""
+    """remove deleted lists to streams"""
     remove_list_task.delay(instance.id)
 
 
@@ -199,7 +199,7 @@ def populate_lists_on_account_create(sender, instance, created, *args, **kwargs)
 # ---- TASKS
 @app.task(queue=MEDIUM)
 def populate_lists_task(user_id):
-    """background task for populating an empty activitystream"""
+    """background task for populating an empty list stream"""
     user = models.User.objects.get(id=user_id)
     ListsStream().populate_streams(user)
 

@@ -36,7 +36,7 @@ class ListsStreamSignals(TestCase):
             user=self.remote_user, name="hi", privacy="public"
         )
         with patch("bookwyrm.lists_stream.add_list_task.delay") as mock:
-            lists_stream.add_list_on_create_command(book_list)
+            lists_stream.add_list_on_create(models.List, book_list, True)
         self.assertEqual(mock.call_count, 1)
         args = mock.call_args[0]
         self.assertEqual(args[0], book_list.id)

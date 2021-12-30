@@ -1,4 +1,4 @@
-""" Re-create user streams """
+""" Re-create list streams """
 from django.core.management.base import BaseCommand
 from bookwyrm import lists_stream, models
 
@@ -17,9 +17,9 @@ def populate_lists_streams():
 
 
 class Command(BaseCommand):
-    """start all over with user streams"""
+    """start all over with lists streams"""
 
-    help = "Populate streams for all users"
+    help = "Populate list streams for all users"
 
     def add_arguments(self, parser):
         parser.add_argument(
