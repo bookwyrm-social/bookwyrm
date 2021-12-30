@@ -63,7 +63,11 @@
         <div class="column is-one-fifth">
             {% if not book.cover %}
                 {% if user_authenticated %}
-                    <button type="button" data-controls="add_cover_{{ book.id }}" data-focus-target="modal_title_add_cover_{{ book.id }}" aria-pressed="false" class="cover-container no-cover is-h-m-mobile">
+                    <button
+                        type="button"
+                        class="cover-container no-cover is-h-m-mobile"
+                        data-modal-open="add_cover_{{ book.id }}"
+                    >
                         <img
                             class="book-cover"
                             src="{% static "images/no_cover.jpg" %}"
@@ -78,7 +82,8 @@
                             {% trans "Click to add cover" %}
                         </span>
                     </button>
-                    {% include 'book/cover_add_modal.html' with book=book controls_text="add_cover" controls_uid=book.id %}
+                    {% join "add_cover" book.id as modal_id %}
+                    {% include 'book/cover_add_modal.html' with id=modal_id %}
                     {% if request.GET.cover_error %}
                     <p class="help is-danger">{% trans "Failed to load cover" %}</p>
                     {% endif %}

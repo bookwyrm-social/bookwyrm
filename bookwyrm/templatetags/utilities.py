@@ -17,6 +17,12 @@ def get_uuid(identifier):
     return f"{identifier}{uuid4()}"
 
 
+@register.simple_tag(takes_context=False)
+def join(*args):
+    """concatenate an arbitary set of values"""
+    return "_".join(str(a) for a in args)
+
+
 @register.filter(name="username")
 def get_user_identifier(user):
     """use localname for local users, username for remote"""
