@@ -1,0 +1,31 @@
+{% load i18n %}
+
+<div class="modal" id="{{ id }}">
+    <div class="modal-background" data-modal-close></div>
+    <div class="modal-card is-thin" role="dialog" aria-modal="true" tabindex="-1">
+        <header class="modal-card-head">
+            <h2 class="modal-card-title mb-0">
+                {% block modal-title %}{% endblock %}
+            </h2>
+            <button
+                type="button"
+                class="delete"
+                aria-label="{% trans 'Close' %}"
+                data-modal-close
+            ></button>
+        </header>
+
+        <section class="modal-card-body">
+            {% block modal-body %}{% endblock %}
+        </section>
+        <footer class="modal-card-foot">
+            {% block modal-footer %}{% endblock %}
+        </footer>
+    </div>
+    <button
+        type="button"
+        class="modal-close is-large"
+        aria-label="{% trans 'Close' %}"
+        data-modal-close
+    ></button>
+</div>
