@@ -348,7 +348,11 @@ class ListViews(TestCase):
         view = views.Curate.as_view()
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             models.ListItem.objects.create(
-                user=self.local_user, book_list=self.list, book=self.book, approved=False, order=1
+                user=self.local_user,
+                book_list=self.list,
+                book=self.book,
+                approved=False,
+                order=1,
             )
         request = self.factory.get("")
         request.user = self.local_user
