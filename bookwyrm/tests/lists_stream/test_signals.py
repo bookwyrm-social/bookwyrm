@@ -30,13 +30,13 @@ class ListsStreamSignals(TestCase):
                 outbox="https://example.com/users/rat/outbox",
             )
 
-    def test_add_list_on_create(self, _):
+    def test_add_list_on_create_command(self, _):
         """a new lists has entered"""
         book_list = models.List.objects.create(
             user=self.remote_user, name="hi", privacy="public"
         )
         with patch("bookwyrm.lists_stream.add_list_task.delay") as mock:
-            lists_stream.add_list_on_create(models.List, book_list, True)
+            lists_stream.add_list_on_create_command(book_list)
         self.assertEqual(mock.call_count, 1)
         args = mock.call_args[0]
         self.assertEqual(args[0], book_list.id)
