@@ -80,6 +80,29 @@ class UserViews(TestCase):
         self.assertIsInstance(result, ActivitypubResponse)
         self.assertEqual(result.status_code, 200)
 
+    def test_user_page_domain(self):
+        """when the user domain has dashes in it"""
+        with patch("bookwyrm.models.user.set_remote_server"):
+            self.remote_user = models.User.objects.create_user(
+                "nutria",
+                "",
+                "nutriaword",
+                local=False,
+                remote_id="https://ex--ample.co----m/users/nutria",
+                inbox="https://ex--ample.co----m/users/nutria/inbox",
+                outbox="https://ex--ample.co----m/users/nutria/outbox",
+            )
+
+        view = views.User.as_view()
+        request = self.factory.get("")
+        request.user = self.local_user
+        with patch("bookwyrm.views.user.is_api_request") as is_api:
+            is_api.return_value = False
+            result = view(request, "nutria@ex--ample.co----m")
+        self.assertIsInstance(result, TemplateResponse)
+        validate_html(result.render())
+        self.assertEqual(result.status_code, 200)
+
     def test_user_page_blocked(self):
         """there are so many views, this just makes sure it LOADS"""
         view = views.User.as_view()
@@ -186,3 +209,11 @@ class UserViews(TestCase):
 
         self.local_user.refresh_from_db()
         self.assertFalse(self.local_user.show_suggested_users)
+
+    def test_user_redirect(self):
+        """test the basic redirect"""
+        request = self.factory.get("@mouse")
+        request.user = self.anonymous_user
+        result = views.user_redirect(request, "mouse")
+
+        self.assertEqual(result.status_code, 302)

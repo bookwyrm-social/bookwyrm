@@ -7,6 +7,7 @@
     class="
         dropdown control
         {% if right %}is-right{% endif %}
+        has-text-left
     "
 >
     <summary
@@ -15,7 +16,7 @@
         {% block dropdown-trigger %}{% endblock %}
     </summary>
 
-    <div class="dropdown-menu control">
+    <div class="dropdown-menu">
         <ul
             id="menu_options_{{ uuid }}"
             class="dropdown-content p-0 is-clipped"

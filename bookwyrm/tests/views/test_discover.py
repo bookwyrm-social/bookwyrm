@@ -4,8 +4,7 @@ from django.contrib.auth.models import AnonymousUser
 from django.test import TestCase
 from django.test.client import RequestFactory
 
-from bookwyrm import models
-from bookwyrm import views
+from bookwyrm import models, views
 from bookwyrm.tests.validate_html import validate_html
 
 

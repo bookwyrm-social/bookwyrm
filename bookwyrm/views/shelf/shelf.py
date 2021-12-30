@@ -52,7 +52,7 @@ class Shelf(View):
             )
             shelf = FakeShelf("all", _("All books"), user, books, "public")
 
-        if is_api_request(request):
+        if is_api_request(request) and shelf_identifier:
             return ActivitypubResponse(shelf.to_activity(**request.GET))
 
         reviews = models.Review.objects

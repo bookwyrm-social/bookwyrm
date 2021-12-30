@@ -1,9 +1,10 @@
 /* exported BlockHref */
 
-let BlockHref = new class {
+let BlockHref = new (class {
     constructor() {
-        document.querySelectorAll('[data-href]')
-            .forEach(t => t.addEventListener('click', this.followLink.bind(this)));
+        document
+            .querySelectorAll("[data-href]")
+            .forEach((t) => t.addEventListener("click", this.followLink.bind(this)));
     }
 
     /**
@@ -17,5 +18,4 @@ let BlockHref = new class {
 
         window.location.href = url;
     }
-}();
-
+})();

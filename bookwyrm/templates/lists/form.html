@@ -18,24 +18,73 @@
         <fieldset class="field">
             <legend class="label">{% trans "List curation:" %}</legend>
 
-            <label class="field" data-hides="list_group_selector">
-                <input type="radio" name="curation" value="closed"{% if not list or list.curation == 'closed' %} checked{% endif %}> {% trans "Closed" %}
-                <p class="help mb-2">{% trans "Only you can add and remove books to this list" %}</p>
-            </label>
+            <div class="field" data-hides="list_group_selector">
+                <input
+                    type="radio"
+                    name="curation"
+                    value="closed"
+                    aria-described-by="id_curation_closed_help"
+                    id="id_curation_closed"
+                    {% if not list or list.curation == 'closed' %} checked{% endif %}
+                >
+                <label for="id_curation_closed">
+                    {% trans "Closed" %}
+                </label>
+                <p class="help mb-2" id="id_curation_closed_help">
+                    {% trans "Only you can add and remove books to this list" %}
+                </p>
+            </div>
 
-            <label class="field" data-hides="list_group_selector">
-                <input type="radio" name="curation" value="curated"{% if list.curation == 'curated' %} checked{% endif %}> {% trans "Curated" %}
-                <p class="help mb-2">{% trans "Anyone can suggest books, subject to your approval" %}</p>
-            </label>
+            <div class="field" data-hides="list_group_selector">
+                <input
+                    type="radio"
+                    name="curation"
+                    value="curated"
+                    aria-described-by="id_curation_curated_help"
+                    id="id_curation_curated"
+                    {% if list.curation == 'curated' %} checked{% endif %}
+                >
+                <label for="id_curation_curated">
+                    {% trans "Curated" %}
+                </label>
+                <p class="help mb-2" id="id_curation_curated_help">
+                    {% trans "Anyone can suggest books, subject to your approval" %}
+                </p>
+            </div>
 
-            <label class="field" data-hides="list_group_selector">
-                <input type="radio" name="curation" value="open"{% if list.curation == 'open' %} checked{% endif %}> {% trans "Open" context "curation type"  %}
-                <p class="help mb-2">{% trans "Anyone can add books to this list" %}</p>
-            </label>
+            <div class="field" data-hides="list_group_selector">
+                <input
+                    type="radio"
+                    name="curation"
+                    value="open"
+                    aria-described-by="id_curation_open_help"
+                    id="id_curation_open"
+                    {% if list.curation == 'open' %} checked{% endif %}
+                >
+                <label for="id_curation_open">
+                    {% trans "Open" context "curation type" %}
+                </label>
+                <p class="help mb-2" id="id_curation_open_help">
+                    {% trans "Anyone can add books to this list" %}
+                </p>
+            </div>
 
-            <label class="field hidden-form">
-                <input type="radio" name="curation" value="group"{% if list.curation == 'group' %} checked{% endif %} > {% trans "Group" %}
-                <p class="help mb-2">{% trans "Group members can add to and remove from this list" %}</p>
+            <div class="field hidden-form">
+                <input
+                    type="radio"
+                    name="curation"
+                    value="group"
+                    aria-described-by="id_curation_group_help"
+                    id="id_curation_group"
+                    {% if list.curation == 'group' %}checked{% endif %}
+                >
+                <label for="id_curation_group">
+                    {% trans "Group" %}
+                </label>
+                <p class="help mb-2" id="id_curation_group_help">
+                    {% trans "Group members can add to and remove from this list" %}
+                </p>
+
                 <fieldset class="{% if list.curation != 'group' %}is-hidden{% endif %}" id="list_group_selector">
                 {% if user.memberships.exists %}
                     <label class="label" for="id_group" id="group">{% trans "Select Group" %}</label>
@@ -61,7 +110,7 @@
                     {% endwith %}
                 {% endif %}
                 </fieldset>
-            </label>
+            </div>
         </fieldset>
     </div>
 </div>

@@ -14,7 +14,7 @@ VERSION = "0.1.0"
 PAGE_LENGTH = env("PAGE_LENGTH", 15)
 DEFAULT_LANGUAGE = env("DEFAULT_LANGUAGE", "English")
 
-JS_CACHE = "3891b373"
+JS_CACHE = "2d3181e1"
 
 # email
 EMAIL_BACKEND = env("EMAIL_BACKEND", "django.core.mail.backends.smtp.EmailBackend")
@@ -125,9 +125,9 @@ STREAMS = [
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "NAME": env("POSTGRES_DB", "fedireads"),
-        "USER": env("POSTGRES_USER", "fedireads"),
-        "PASSWORD": env("POSTGRES_PASSWORD", "fedireads"),
+        "NAME": env("POSTGRES_DB", "bookwyrm"),
+        "USER": env("POSTGRES_USER", "bookwyrm"),
+        "PASSWORD": env("POSTGRES_PASSWORD", "bookwyrm"),
         "HOST": env("POSTGRES_HOST", ""),
         "PORT": env("PGPORT", 5432),
     },

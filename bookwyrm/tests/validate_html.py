@@ -15,7 +15,11 @@ def validate_html(html):
     errors = "\n".join(
         e
         for e in errors.split("\n")
-        if "&book" not in e and "id and name attribute" not in e
+        if "&book" not in e
+        and "&type" not in e
+        and "id and name attribute" not in e
+        and "illegal characters found in URI" not in e
+        and "escaping malformed URI reference" not in e
     )
     if errors:
         raise Exception(errors)

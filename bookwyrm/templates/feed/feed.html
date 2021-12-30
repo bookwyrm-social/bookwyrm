@@ -64,14 +64,20 @@
     {{ allowed_status_types|json_script:"unread-notifications-wrapper" }}
 </a>
 
-{% if request.user.show_goal and not goal and tab.key == 'home' %}
-{% now 'Y' as year %}
-<section class="block">
-    {% include 'feed/goal_card.html' with year=year %}
-    <hr>
-</section>
-{% endif %}
+    {% if request.user.show_goal and not goal and tab.key == 'home' %}
+    {% now 'Y' as year %}
+    <section class="block">
+        {% include 'feed/goal_card.html' with year=year %}
+        <hr>
+    </section>
+    {% endif %}
 
+    {% if annual_summary_year and tab.key == 'home' %}
+    <section class="block" data-hide="hide_annual_summary_{{ annual_summary_year }}">
+        {% include 'feed/summary_card.html' with year=annual_summary_year %}
+        <hr>
+    </section>
+    {% endif %}
 {% endif %}
 
 {# activity feed #}

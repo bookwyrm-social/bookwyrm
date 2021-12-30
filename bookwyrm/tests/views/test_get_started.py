@@ -5,6 +5,7 @@ from django.test import TestCase
 from django.test.client import RequestFactory
 
 from bookwyrm import forms, models, views
+from bookwyrm.tests.validate_html import validate_html
 
 
 @patch("bookwyrm.activitystreams.populate_stream_task.delay")
@@ -40,7 +41,7 @@ class GetStartedViews(TestCase):
         result = view(request)
 
         self.assertIsInstance(result, TemplateResponse)
-        result.render()
+        validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
     @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
@@ -72,7 +73,7 @@ class GetStartedViews(TestCase):
         result = view(request)
 
         self.assertIsInstance(result, TemplateResponse)
-        result.render()
+        validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
     def test_books_view_with_query(self, _):
@@ -84,7 +85,7 @@ class GetStartedViews(TestCase):
         result = view(request)
 
         self.assertIsInstance(result, TemplateResponse)
-        result.render()
+        validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
     @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
@@ -117,7 +118,7 @@ class GetStartedViews(TestCase):
         result = view(request)
 
         self.assertIsInstance(result, TemplateResponse)
-        result.render()
+        validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
     @patch("bookwyrm.suggested_users.SuggestedUsers.get_suggestions")
@@ -130,5 +131,5 @@ class GetStartedViews(TestCase):
         result = view(request)
 
         self.assertIsInstance(result, TemplateResponse)
-        result.render()
+        validate_html(result.render())
         self.assertEqual(result.status_code, 200)

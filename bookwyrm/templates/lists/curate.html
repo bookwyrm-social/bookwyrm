@@ -54,13 +54,13 @@
                             {% csrf_token %}
                             <input type="hidden" name="item" value="{{ item.id }}">
                             <input type="hidden" name="approved" value="true">
-                            <button class="button">{% trans "Approve" %}</button>
+                            <button type="submit" class="button">{% trans "Approve" %}</button>
                         </form>
                         <form class="control" method="POST" action="{% url 'list-curate' list.id %}">
                             {% csrf_token %}
                             <input type="hidden" name="item" value="{{ item.id }}">
                             <input type="hidden" name="approved" value="false">
-                            <button class="button is-danger is-light">{% trans "Discard" %}</button>
+                            <button type="submit" class="button is-danger is-light">{% trans "Discard" %}</button>
                         </form>
                     </dd>
                 </div>

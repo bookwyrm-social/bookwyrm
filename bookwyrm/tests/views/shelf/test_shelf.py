@@ -61,6 +61,18 @@ class ShelfViews(TestCase):
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
+    def test_shelf_page_all_books_json(self, *_):
+        """there is no json view here"""
+        view = views.Shelf.as_view()
+        request = self.factory.get("")
+        request.user = self.local_user
+        with patch("bookwyrm.views.shelf.shelf.is_api_request") as is_api:
+            is_api.return_value = True
+            result = view(request, self.local_user.username)
+        self.assertIsInstance(result, TemplateResponse)
+        validate_html(result.render())
+        self.assertEqual(result.status_code, 200)
+
     def test_shelf_page_all_books_anonymous(self, *_):
         """there are so many views, this just makes sure it LOADS"""
         view = views.Shelf.as_view()
