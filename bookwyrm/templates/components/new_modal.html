@@ -1,6 +1,6 @@
 {% load i18n %}
 
-<div class="modal" id="{{ id }}">
+<div class="modal {% if active %}is-active{% endif %}" id="{{ id }}">
     <div class="modal-background" data-modal-close></div>
     <div class="modal-card" role="dialog" aria-modal="true" tabindex="-1">
         <header class="modal-card-head">
