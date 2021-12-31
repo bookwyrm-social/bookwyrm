@@ -427,6 +427,8 @@ let BookWyrm = new (class {
 
         // Helper functions
         function handleModalOpen(modalElement) {
+            event.preventDefault();
+
             htmlElement.classList.add("is-clipped");
             modalElement.classList.add("is-active");
             modalElement.getElementsByClassName("modal-card")[0].focus();
