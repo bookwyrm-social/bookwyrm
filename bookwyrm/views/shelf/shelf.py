@@ -73,13 +73,9 @@ class Shelf(View):
         )
 
         if shelf_identifier:
-            books = books.annotate(
-                shelved_date=F("shelfbook__shelved_date")
-            )
+            books = books.annotate(shelved_date=F("shelfbook__shelved_date"))
         else:
-            books = books.annotate(
-                shelved_date=F("updated_date")
-            )
+            books = books.annotate(shelved_date=F("updated_date"))
         books = books.annotate(
             rating=Subquery(reviews.values("rating")[:1]),
             start_date=Subquery(reading.values("start_date")[:1]),
