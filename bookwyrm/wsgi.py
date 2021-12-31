@@ -21,8 +21,6 @@ Env.read_env()
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "bookwyrm.settings")
 DjangoInstrumentor().instrument()
 trace.set_tracer_provider(TracerProvider())
-trace.get_tracer_provider().add_span_processor(
-    BatchSpanProcessor(OTLPSpanExporter())
-)
+trace.get_tracer_provider().add_span_processor(BatchSpanProcessor(OTLPSpanExporter()))
 
 application = get_wsgi_application()
