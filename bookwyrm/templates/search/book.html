@@ -40,10 +40,10 @@
         {% endif %}
             {% if not result_set.connector.local %}
             <summary class="is-flex is-align-items-center is-flex-wrap-wrap is-gap-2">
-                <h3 class="mb-0 title is-5">
+                <span class="mb-0 title is-5">
                     {% trans 'Results from' %}
                     <a href="{{ result_set.connector.base_url }}" target="_blank">{{ result_set.connector.name|default:result_set.connector.identifier }}</a>
-                </h3>
+                </span>
 
                 <span class="details-close icon icon-x" aria-hidden></span>
             </summary>
