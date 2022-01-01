@@ -61,6 +61,7 @@ let BookWyrm = new (class {
                 .querySelectorAll('input[type="file"]')
                 .forEach(bookwyrm.disableIfTooLarge.bind(bookwyrm));
             document.querySelectorAll("[data-copytext]").forEach(bookwyrm.copyText.bind(bookwyrm));
+            document.querySelectorAll(".modal.is-active").forEach(bookwyrm.handleActiveModal.bind(bookwyrm));
         });
     }
 
@@ -461,6 +462,44 @@ let BookWyrm = new (class {
 
         // Open modal
         handleModalOpen(modal);
+    }
+
+    /**
+     * Handle the modal component when opened at page load.
+     *
+     * @param  {Element} modalElement - Active modal element
+     * @return {undefined}
+     *
+     */
+    handleActiveModal(modalElement) {
+        if (!modalElement) {
+            return;
+        }
+
+        const { handleFocusTrap } = this
+
+        modalElement.getElementsByClassName("modal-card")[0].focus();
+
+        const closeButtons = modalElement.querySelectorAll("[data-modal-close]");
+
+        closeButtons.forEach((button) => {
+            button.addEventListener("click", function () {
+                handleModalClose(modalElement);
+            });
+        });
+
+        document.addEventListener("keydown", function (event) {
+            if (event.key === "Escape") {
+                handleModalClose(modalElement);
+            }
+        });
+
+        modalElement.addEventListener("keydown", handleFocusTrap);
+
+        function handleModalClose(modalElement) {
+            modalElement.removeEventListener("keydown", handleFocusTrap);
+            history.back();
+        }
     }
 
     /**
