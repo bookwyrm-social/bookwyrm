@@ -264,10 +264,10 @@ class EmbedList(View):
         return TemplateResponse(request, "lists/embed-list.html", data)
 
 
+@method_decorator(login_required, name="dispatch")
 class Curate(View):
     """approve or discard list suggestsions"""
 
-    @method_decorator(login_required, name="dispatch")
     def get(self, request, list_id):
         """display a pending list"""
         book_list = get_object_or_404(models.List, id=list_id)
@@ -280,8 +280,6 @@ class Curate(View):
         }
         return TemplateResponse(request, "lists/curate.html", data)
 
-    @method_decorator(login_required, name="dispatch")
-    # pylint: disable=unused-argument
     def post(self, request, list_id):
         """edit a book_list"""
         book_list = get_object_or_404(models.List, id=list_id)
