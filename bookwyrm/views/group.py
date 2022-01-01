@@ -34,7 +34,7 @@ class Group(View):
         data = {
             "group": group,
             "lists": lists,
-            "group_form": forms.GroupForm(instance=group),
+            "group_form": forms.GroupForm(instance=group,auto_id='group_form_id_%s'),
             "list_form": forms.ListForm(),
             "path": "/group",
         }
@@ -153,7 +153,8 @@ class FindUsers(View):
         data = {
             "suggested_users": user_results,
             "group": group,
-            "group_form": forms.GroupForm(instance=group),
+            "group_form": forms.GroupForm(instance=group,auto_id='group_form_id_%s'),
+            "list_form": forms.ListForm(),
             "user_query": user_query,
             "requestor_is_manager": request.user == group.user,
         }
