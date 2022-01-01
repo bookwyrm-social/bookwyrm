@@ -199,8 +199,7 @@ def is_year_available(user, year):
     year = int(year)
     if earliest_year <= year < today.year:
         return True
-    #if year == today.year and today >= date(today.year, 12, FIRST_DAY):
-    if year == today.year and today >= date(today.year, 1, 1):
+    if year == today.year and today >= date(today.year, 12, FIRST_DAY):
         return True
 
     return False
