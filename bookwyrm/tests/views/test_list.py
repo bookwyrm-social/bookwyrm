@@ -347,9 +347,12 @@ class ListViews(TestCase):
         """there are so many views, this just makes sure it LOADS"""
         view = views.Curate.as_view()
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
-            models.List.objects.create(name="Public list", user=self.local_user)
-            models.List.objects.create(
-                name="Private list", privacy="direct", user=self.local_user
+            models.ListItem.objects.create(
+                user=self.local_user,
+                book_list=self.list,
+                book=self.book,
+                approved=False,
+                order=1,
             )
         request = self.factory.get("")
         request.user = self.local_user

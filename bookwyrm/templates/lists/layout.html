@@ -11,6 +11,7 @@
             {% include 'lists/created_text.html' with list=list %}
         </p>
     </div>
+
     <div class="column is-narrow is-flex">
         {% if request.user == list.user %}
             {% trans "Edit List" as button_text %}
@@ -19,6 +20,8 @@
         {% include "lists/bookmark_button.html" with list=list %}
     </div>
 </header>
+
+{% block breadcrumbs %}{% endblock %}
 
 <div class="block content">
     {% include 'snippets/trimmed_text.html' with full=list.description %}

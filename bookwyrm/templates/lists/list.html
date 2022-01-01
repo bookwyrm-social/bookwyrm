@@ -4,6 +4,19 @@
 {% load bookwyrm_group_tags %}
 {% load markdown %}
 
+{% block breadcrumbs %}
+<nav class="breadcrumb subtitle" aria-label="breadcrumbs">
+    <ul>
+        <li><a href="{% url 'lists' %}">{% trans "Lists" %}</a></li>
+        <li class="is-active">
+            <a href="#" aria-current="page">
+                {{ list.name|truncatechars:30 }}
+            </a>
+        </li>
+    </ul>
+</nav>
+{% endblock %}
+
 {% block panel %}
 {% if request.user == list.user and pending_count %}
 <div class="block content">
