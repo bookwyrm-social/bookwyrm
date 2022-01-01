@@ -216,7 +216,7 @@ def get_books_from_shelfbooks(books_ids):
 
 def get_goal_status(user, year):
     """return a dict with the year's goal status"""
-    
+
     try:
         goal = models.AnnualGoal.objects.get(user=user, year=year)
     except:
