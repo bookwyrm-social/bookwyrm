@@ -192,6 +192,31 @@
         </div>
     </div>
 
+    {% if goal_status and goal_status.percent >= 100 %}
+    <div class="columns">
+        <div class="column has-text-centered">
+            <h2 class="title is-3 is-serif">
+            {% with goal=goal_status.goal goal_percent=goal_status.percent %}
+            {% blocktrans trimmed count counter=goal %}
+                {{ display_name }} set a goal of reading {{ goal }} book in {{ year }},<br />
+                and achieved {{ goal_percent }}% of that goal
+            {% plural %}
+                {{ display_name }} set a goal of reading {{ goal }} books in {{ year }},<br />
+                and achieved {{ goal_percent }}% of that goal
+            {% endblocktrans %}
+            {% endwith %}
+            </h2>
+            <p class="subtitle is-5">{% trans "Way to go!" %}</p>
+        </div>
+    </div>
+
+    <div class="columns">
+        <div class="column is-one-fifth is-offset-two-fifths">
+            <hr />
+        </div>
+    </div>
+    {% endif %}
+
     {% if ratings_total > 0 %}
     <div class="columns">
         <div class="column has-text-centered">

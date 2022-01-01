@@ -79,6 +79,9 @@ class AnnualSummary(View):
         )
         ratings_stats = ratings.aggregate(Avg("rating"))
 
+        # annual goal status
+        goal_status = get_goal_status(user, year)
+
         data = {
             "summary_user": user,
             "year": year,
@@ -101,6 +104,7 @@ class AnnualSummary(View):
                 review.book.id for review in ratings.filter(rating=5)
             ],
             "paginated_years": paginated_years,
+            "goal_status": goal_status,
         }
 
         return TemplateResponse(request, "annual_summary/layout.html", data)
@@ -195,7 +199,8 @@ def is_year_available(user, year):
     year = int(year)
     if earliest_year <= year < today.year:
         return True
-    if year == today.year and today >= date(today.year, 12, FIRST_DAY):
+    #if year == today.year and today >= date(today.year, 12, FIRST_DAY):
+    if year == today.year and today >= date(today.year, 1, 1):
         return True
 
     return False
@@ -208,3 +213,17 @@ def get_books_from_shelfbooks(books_ids):
     books = models.Edition.objects.filter(id__in=books_ids).order_by(ordered)
 
     return books
+
+
+def get_goal_status(user, year):
+    """return a dict with the year's goal status"""
+    
+    try:
+        goal = models.AnnualGoal.objects.get(user=user, year=year)
+    except:
+        return None
+
+    if goal.privacy != "public":
+        return None
+
+    return dict(**goal.progress, **{"goal": goal.goal})
