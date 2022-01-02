@@ -24,7 +24,7 @@ LAST_DAY = 15
 class AnnualSummary(View):
     """display a summary of the year for the current user"""
 
-    def get(self, request, username, year): # pylint: disable=too-many-locals
+    def get(self, request, username, year):  # pylint: disable=too-many-locals
         """get response"""
 
         user = get_user_from_username(request.user, username)
@@ -219,7 +219,7 @@ def get_goal_status(user, year):
 
     try:
         goal = models.AnnualGoal.objects.get(user=user, year=year)
-    except ObjectDoesNotExist:
+    except models.AnnualGoal.DoesNotExist:
         return None
 
     if goal.privacy != "public":
