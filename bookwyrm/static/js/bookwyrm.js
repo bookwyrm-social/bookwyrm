@@ -41,6 +41,7 @@ let BookWyrm = new (class {
         document
             .querySelectorAll("[data-duplicate]")
             .forEach((node) => node.addEventListener("click", this.duplicateInput.bind(this)));
+
         document
             .querySelectorAll("details.dropdown")
             .forEach((node) =>
@@ -60,6 +61,7 @@ let BookWyrm = new (class {
                 .querySelectorAll('input[type="file"]')
                 .forEach(bookwyrm.disableIfTooLarge.bind(bookwyrm));
             document.querySelectorAll("[data-copytext]").forEach(bookwyrm.copyText.bind(bookwyrm));
+            document.querySelectorAll(".modal.is-active").forEach(bookwyrm.handleActiveModal.bind(bookwyrm));
         });
     }
 
@@ -405,7 +407,7 @@ let BookWyrm = new (class {
     }
 
     /**
-     * Handle the modal component.
+     * Handle the modal component with a button trigger.
      *
      * @param  {Event} event - Event fired by an element
      *                         with the `data-modal-open` attribute
@@ -416,6 +418,7 @@ let BookWyrm = new (class {
      *  for information about using the modal.
      */
     handleModalButton(event) {
+        const { handleFocusTrap } = this
         const modalButton = event.currentTarget;
         const targetModalId = modalButton.dataset.modalOpen;
         const htmlElement = document.querySelector("html");
@@ -457,40 +460,46 @@ let BookWyrm = new (class {
             modalButton.focus();
         }
 
-        function handleFocusTrap(event) {
-            if (event.key !== "Tab") {
-                return;
-            }
-
-            const focusableEls = event.currentTarget.querySelectorAll(
-                [
-                    "a[href]:not([disabled])",
-                    "button:not([disabled])",
-                    "textarea:not([disabled])",
-                    'input:not([type="hidden"]):not([disabled])',
-                    "select:not([disabled])",
-                    "details:not([disabled])",
-                    '[tabindex]:not([tabindex="-1"]):not([disabled])',
-                ].join(",")
-            );
-            const firstFocusableEl = focusableEls[0];
-            const lastFocusableEl = focusableEls[focusableEls.length - 1];
-
-            if (event.shiftKey) {
-                /* Shift + tab */ if (document.activeElement === firstFocusableEl) {
-                    lastFocusableEl.focus();
-                    event.preventDefault();
-                }
-            } /* Tab */ else {
-                if (document.activeElement === lastFocusableEl) {
-                    firstFocusableEl.focus();
-                    event.preventDefault();
-                }
-            }
-        }
-
         // Open modal
         handleModalOpen(modal);
+    }
+
+    /**
+     * Handle the modal component when opened at page load.
+     *
+     * @param  {Element} modalElement - Active modal element
+     * @return {undefined}
+     *
+     */
+    handleActiveModal(modalElement) {
+        if (!modalElement) {
+            return;
+        }
+
+        const { handleFocusTrap } = this
+
+        modalElement.getElementsByClassName("modal-card")[0].focus();
+
+        const closeButtons = modalElement.querySelectorAll("[data-modal-close]");
+
+        closeButtons.forEach((button) => {
+            button.addEventListener("click", function () {
+                handleModalClose(modalElement);
+            });
+        });
+
+        document.addEventListener("keydown", function (event) {
+            if (event.key === "Escape") {
+                handleModalClose(modalElement);
+            }
+        });
+
+        modalElement.addEventListener("keydown", handleFocusTrap);
+
+        function handleModalClose(modalElement) {
+            modalElement.removeEventListener("keydown", handleFocusTrap);
+            history.back();
+        }
     }
 
     /**
