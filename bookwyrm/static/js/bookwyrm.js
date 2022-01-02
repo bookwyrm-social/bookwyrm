@@ -61,7 +61,9 @@ let BookWyrm = new (class {
                 .querySelectorAll('input[type="file"]')
                 .forEach(bookwyrm.disableIfTooLarge.bind(bookwyrm));
             document.querySelectorAll("[data-copytext]").forEach(bookwyrm.copyText.bind(bookwyrm));
-            document.querySelectorAll(".modal.is-active").forEach(bookwyrm.handleActiveModal.bind(bookwyrm));
+            document
+                .querySelectorAll(".modal.is-active")
+                .forEach(bookwyrm.handleActiveModal.bind(bookwyrm));
         });
     }
 
@@ -418,7 +420,7 @@ let BookWyrm = new (class {
      *  for information about using the modal.
      */
     handleModalButton(event) {
-        const { handleFocusTrap } = this
+        const { handleFocusTrap } = this;
         const modalButton = event.currentTarget;
         const targetModalId = modalButton.dataset.modalOpen;
         const htmlElement = document.querySelector("html");
@@ -476,7 +478,7 @@ let BookWyrm = new (class {
             return;
         }
 
-        const { handleFocusTrap } = this
+        const { handleFocusTrap } = this;
 
         modalElement.getElementsByClassName("modal-card")[0].focus();
 
