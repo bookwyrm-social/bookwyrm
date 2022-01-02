@@ -3,6 +3,9 @@
 {% load humanize %}
 
 {% if suggested_users %}
+    <h2 class="title is-5">
+        {% trans "Add new members!" %}
+    </h2>
     <div class="column is-flex is-flex-grow-0">
         {% for user in suggested_users %}
         <div class="box has-text-centered is-shadowless has-background-white-bis m-2">
