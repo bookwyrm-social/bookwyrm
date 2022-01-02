@@ -75,6 +75,7 @@ class Shelf(View):
         if shelf_identifier:
             books = books.annotate(shelved_date=F("shelfbook__shelved_date"))
         else:
+            # sorting by shelved date will cause duplicates in the "all books" view
             books = books.annotate(shelved_date=F("updated_date"))
         books = books.annotate(
             rating=Subquery(reviews.values("rating")[:1]),
