@@ -8,7 +8,7 @@
 <ul class="block">
 {% for result in local_results.results %}
     <li class="pd-4 mb-5">
-        <div class="columns is-mobile is-gapless">
+        <div class="columns is-mobile is-gapless mb-0">
             <div class="column is-cover">
                 {% include 'snippets/book_cover.html' with book=result cover_class='is-w-xs is-h-xs' %}
             </div>
@@ -34,34 +34,28 @@
 <div class="block">
 {% for result_set in results|slice:"1:" %}
     {% if result_set.results %}
-    <section class="box has-background-white-bis">
+    <section class="mb-5">
         {% if not result_set.connector.local %}
-        <header class="columns is-mobile">
-            <div class="column">
-                <h3 class="title is-5">
+        <details class="details-panel box" {% if forloop.first %}open{% endif %}>
+        {% endif %}
+            {% if not result_set.connector.local %}
+            <summary class="is-flex is-align-items-center is-flex-wrap-wrap is-gap-2">
+                <span class="mb-0 title is-5">
                     {% trans 'Results from' %}
                     <a href="{{ result_set.connector.base_url }}" target="_blank">{{ result_set.connector.name|default:result_set.connector.identifier }}</a>
-                </h3>
-            </div>
-            <div class="column is-narrow">
-                {% trans "Open" as button_text %}
-                {% include 'snippets/toggle/open_button.html' with text=button_text controls_text="more_results_panel" controls_uid=result_set.connector.identifier class="is-small" icon_with_text="arrow-down" pressed=forloop.first %}
-                {% trans "Close" as button_text %}
-                {% include 'snippets/toggle/close_button.html' with text=button_text controls_text="more_results_panel" controls_uid=result_set.connector.identifier class="is-small" icon_with_text="arrow-up" pressed=forloop.first %}
-            </div>
-        </header>
-        {% endif %}
+                </span>
 
-        <div class="box has-background-white is-shadowless{% if not forloop.first %} is-hidden{% endif %}" id="more_results_panel_{{ result_set.connector.identifier }}">
+                <span class="details-close icon icon-x" aria-hidden></span>
+            </summary>
+            {% endif %}
+
+        <div class="mt-5">
             <div class="is-flex is-flex-direction-row-reverse">
-                <div>
-                </div>
-
                 <ul class="is-flex-grow-1">
                     {% for result in result_set.results %}
-                        <li class="mb-5">
+                        <li class="{% if not forloop.last %}mb-5{% endif %}">
                             <div class="columns is-mobile is-gapless">
-                                <div class="columns is-mobile is-gapless">
+                                <div class="column is-1 is-cover">
                                     {% include 'snippets/book_cover.html' with book=result cover_class='is-w-xs is-h-xs' external_path=True %}
                                 </div>
                                 <div class="column is-10 ml-3">
@@ -92,6 +86,9 @@
                 </ul>
             </div>
         </div>
+        {% if not result_set.connector.local %}
+        </details>
+        {% endif %}
     </section>
     {% endif %}
     {% endfor %}
