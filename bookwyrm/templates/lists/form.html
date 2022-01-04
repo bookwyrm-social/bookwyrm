@@ -25,7 +25,7 @@
                     value="closed"
                     aria-described-by="id_curation_closed_help"
                     id="id_curation_closed"
-                    {% if not list or list.curation == 'closed' %} checked{% endif %}
+                    {% if not curation_group.exists or not list or list.curation == 'closed' %}checked{% endif %}
                 >
                 <label for="id_curation_closed">
                     {% trans "Closed" %}
@@ -76,7 +76,7 @@
                     value="group"
                     aria-described-by="id_curation_group_help"
                     id="id_curation_group"
-                    {% if list.curation == 'group' %}checked{% endif %}
+                    {% if curation_group.id or list.curation == 'group' %}checked{% endif %}
                 >
                 <label for="id_curation_group">
                     {% trans "Group" %}
@@ -85,15 +85,15 @@
                     {% trans "Group members can add to and remove from this list" %}
                 </p>
 
-                <fieldset class="{% if list.curation != 'group' %}is-hidden{% endif %}" id="list_group_selector">
+                <fieldset class="{% if list.curation != 'group' and not curation_group %}is-hidden{% endif %}" id="list_group_selector">
                 {% if user.memberships.exists %}
                     <label class="label" for="id_group" id="group">{% trans "Select Group" %}</label>
                     <div class="field has-addons">
                         <div class="select control">
                             <select name="group" id="id_group">
-                                <option value="" disabled {% if not list.group %} selected{% endif %}>{% trans "Select a group" %}</option>
+                                <option value="" disabled {% if not list.group and not curation_group %} selected{% endif %}>{% trans "Select a group" %}</option>
                                 {% for membership in user.memberships.all %}
-                                <option value="{{ membership.group.id }}" {% if list.group.id == membership.group.id %} selected{% endif %}>{{ membership.group.name }}</option>
+                                <option value="{{ membership.group.id }}" {% if list.group.id == membership.group.id or curation_group.id == membership.group.id %} selected{% endif %}>{{ membership.group.name }}</option>
                                 {% endfor %}
                             </select>
                         </div>
