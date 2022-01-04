@@ -168,6 +168,7 @@ LANGUAGES = [
     ("gl-es", _("Galego (Galician)")),
     ("fr-fr", _("Français (French)")),
     ("lt-lt", _("Lietuvių (Lithuanian)")),
+    ("pt-pt", _("Portug- Brasil uês (Portuguese)")),
     ("pt-br", _("Português - Brasil (Brazilian Portuguese)")),
     ("zh-hans", _("简体中文 (Simplified Chinese)")),
     ("zh-hant", _("繁體中文 (Traditional Chinese)")),
