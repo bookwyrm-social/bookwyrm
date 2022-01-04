@@ -415,12 +415,17 @@ class KeyPair(ActivitypubMixin, BookWyrmModel):
         return activity_object
 
 
+def get_current_year():
+    """sets default year for annual goal to this year"""
+    return timezone.now().year
+
+
 class AnnualGoal(BookWyrmModel):
     """set a goal for how many books you read in a year"""
 
     user = models.ForeignKey("User", on_delete=models.PROTECT)
     goal = models.IntegerField(validators=[MinValueValidator(1)])
-    year = models.IntegerField(default=timezone.now().year)
+    year = models.IntegerField(default=get_current_year)
     privacy = models.CharField(
         max_length=255, default="public", choices=fields.PrivacyLevels.choices
     )
