@@ -30,11 +30,13 @@ class ListsStream(RedisStore):
         lists = models.List.privacy_filter(viewer).filter(user=user)
         self.bulk_add_objects_to_store(lists, self.stream_id(viewer))
 
-    def remove_user_lists(self, viewer, user):
+    def remove_user_lists(self, viewer, user, exclude_privacy=None):
         """remove a user's list from another user's feed"""
         # remove all so that followers only lists are removed
-        lists = user.list_set.all()
-        self.bulk_remove_objects_from_store(lists, self.stream_id(viewer))
+        lists = user.list_set
+        if exclude_privacy:
+            lists = lists.exclude(privacy=exclude_privacy)
+        self.bulk_remove_objects_from_store(lists.all(), self.stream_id(viewer))
 
     def get_list_stream(self, user):
         """load the lists to be displayed"""
@@ -144,7 +146,10 @@ def remove_lists_on_unfollow(sender, instance, *args, **kwargs):
     """remove lists from a feed on unfollow"""
     if not instance.user_subject.local:
         return
-    remove_user_lists_task.delay(instance.user_subject.id, instance.user_object.id)
+    # remove all but public lists
+    remove_user_lists_task.delay(
+        instance.user_subject.id, instance.user_object.id, exclude_privacy="public"
+    )
 
 
 @receiver(signals.post_save, sender=models.UserBlocks)
@@ -224,11 +229,11 @@ def add_list_task(list_id):
 
 
 @app.task(queue=MEDIUM)
-def remove_user_lists_task(viewer_id, user_id):
+def remove_user_lists_task(viewer_id, user_id, exclude_privacy=None):
     """remove all lists by a user from a viewer's stream"""
     viewer = models.User.objects.get(id=viewer_id)
     user = models.User.objects.get(id=user_id)
-    ListsStream().remove_user_lists(viewer, user)
+    ListsStream().remove_user_lists(viewer, user, exclude_privacy=exclude_privacy)
 
 
 @app.task(queue=MEDIUM)
