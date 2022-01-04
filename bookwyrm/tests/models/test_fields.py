@@ -483,7 +483,6 @@ class ModelFields(TestCase):
 
         instance.set_field_from_activity(book, mock_activity)
         self.assertIsNotNone(book.cover.name)
-        self.assertEqual(book.cover.size, 43200)
 
     @responses.activate
     def test_image_field_set_field_from_activity_no_overwrite_no_cover(self, *_):
@@ -510,7 +509,6 @@ class ModelFields(TestCase):
 
         instance.set_field_from_activity(book, mock_activity, overwrite=False)
         self.assertIsNotNone(book.cover.name)
-        self.assertEqual(book.cover.size, 43200)
 
     @responses.activate
     def test_image_field_set_field_from_activity_no_overwrite_with_cover(self, *_):
@@ -539,14 +537,15 @@ class ModelFields(TestCase):
         )
         book = Edition.objects.create(title="hello")
         book.cover.save("test.jpg", ContentFile(output.getvalue()))
-        self.assertEqual(book.cover.size, 2136)
+        cover_size = book.cover.size
+        self.assertIsNotNone(cover_size)
 
         MockActivity = namedtuple("MockActivity", ("cover"))
         mock_activity = MockActivity("http://www.example.com/image.jpg")
 
         instance.set_field_from_activity(book, mock_activity, overwrite=False)
         # same cover as before
-        self.assertEqual(book.cover.size, 2136)
+        self.assertEqual(book.cover.size, cover_size)
 
     @responses.activate
     def test_image_field_set_field_from_activity_with_overwrite_with_cover(self, *_):
@@ -559,7 +558,8 @@ class ModelFields(TestCase):
         image.save(output, format=image.format)
         book = Edition.objects.create(title="hello")
         book.cover.save("test.jpg", ContentFile(output.getvalue()))
-        self.assertEqual(book.cover.size, 2136)
+        cover_size = book.cover.size
+        self.assertIsNotNone(cover_size)
 
         another_image_file = pathlib.Path(__file__).parent.joinpath(
             "../../static/images/logo.png"
@@ -583,7 +583,7 @@ class ModelFields(TestCase):
         instance.set_field_from_activity(book, mock_activity, overwrite=True)
         # new cover
         self.assertIsNotNone(book.cover.name)
-        self.assertEqual(book.cover.size, 376800)
+        self.assertFalse(book.cover.size, cover_size)
 
     def test_datetime_field(self, *_):
         """this one is pretty simple, it just has to use isoformat"""
