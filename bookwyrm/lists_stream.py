@@ -52,7 +52,7 @@ class ListsStream(RedisStore):
             .distinct()
         )
 
-    def populate_streams(self, user):
+    def populate_lists(self, user):
         """go from zero to a timeline"""
         self.populate_store(self.stream_id(user))
 
@@ -116,7 +116,7 @@ def add_list_on_create(sender, instance, created, *args, **kwargs):
     if not created:
         return
     # when creating new things, gotta wait on the transaction
-    transaction.on_commit(lambda: add_list_on_create_command(instance))
+    transaction.on_commit(lambda: add_list_on_create_command(instance.id))
 
 
 @receiver(signals.pre_delete, sender=models.List)
@@ -126,9 +126,9 @@ def remove_list_on_delete(sender, instance, *args, **kwargs):
     remove_list_task.delay(instance.id)
 
 
-def add_list_on_create_command(instance):
+def add_list_on_create_command(instance_id):
     """runs this code only after the database commit completes"""
-    add_list_task.delay(instance.id)
+    add_list_task.delay(instance_id)
 
 
 @receiver(signals.post_save, sender=models.UserFollows)
@@ -197,8 +197,12 @@ def populate_lists_on_account_create(sender, instance, created, *args, **kwargs)
     """build a user's feeds when they join"""
     if not created or not instance.local:
         return
+    transaction.on_commit(lambda: add_list_on_account_create_command(instance.id))
 
-    populate_lists_task.delay(instance.id)
+
+def add_list_on_account_create_command(user_id):
+    """wait for the transaction to complete"""
+    populate_lists_task.delay(user_id)
 
 
 # ---- TASKS
@@ -206,7 +210,7 @@ def populate_lists_on_account_create(sender, instance, created, *args, **kwargs)
 def populate_lists_task(user_id):
     """background task for populating an empty list stream"""
     user = models.User.objects.get(id=user_id)
-    ListsStream().populate_streams(user)
+    ListsStream().populate_lists(user)
 
 
 @app.task(queue=MEDIUM)
