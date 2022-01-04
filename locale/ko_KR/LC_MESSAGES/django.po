@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-01-02 15:29+0000\n"
-"PO-Revision-Date: 2022-01-02 16:29\n"
+"POT-Creation-Date: 2022-01-04 22:32+0000\n"
+"PO-Revision-Date: 2022-01-04 23:08\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Korean\n"
 "Language: ko\n"
@@ -212,14 +212,18 @@ msgid "Lietuvių (Lithuanian)"
 msgstr ""
 
 #: bookwyrm/settings.py:171
-msgid "Português - Brasil (Brazilian Portuguese)"
+msgid "Português do Brasil (Brazilian Portuguese)"
 msgstr ""
 
 #: bookwyrm/settings.py:172
-msgid "简体中文 (Simplified Chinese)"
+msgid "Português Europeu (European Portuguese)"
 msgstr ""
 
 #: bookwyrm/settings.py:173
+msgid "简体中文 (Simplified Chinese)"
+msgstr ""
+
+#: bookwyrm/settings.py:174
 msgid "繁體中文 (Traditional Chinese)"
 msgstr ""
 
@@ -332,7 +336,7 @@ msgstr ""
 
 #: bookwyrm/templates/annual_summary/layout.html:155
 #: bookwyrm/templates/annual_summary/layout.html:176
-#: bookwyrm/templates/annual_summary/layout.html:220
+#: bookwyrm/templates/annual_summary/layout.html:245
 #: bookwyrm/templates/book/book.html:47
 #: bookwyrm/templates/discover/large-book.html:22
 #: bookwyrm/templates/landing/large-book.html:25
@@ -350,22 +354,32 @@ msgstr ""
 msgid "…and the longest"
 msgstr ""
 
-#: bookwyrm/templates/annual_summary/layout.html:199
+#: bookwyrm/templates/annual_summary/layout.html:200
+#, python-format
+msgid "%(display_name)s set a goal of reading %(goal)s book in %(year)s,<br /> and achieved %(goal_percent)s%% of that goal"
+msgid_plural "%(display_name)s set a goal of reading %(goal)s books in %(year)s,<br /> and achieved %(goal_percent)s%% of that goal"
+msgstr[0] ""
+
+#: bookwyrm/templates/annual_summary/layout.html:209
+msgid "Way to go!"
+msgstr ""
+
+#: bookwyrm/templates/annual_summary/layout.html:224
 #, python-format
 msgid "%(display_name)s left %(ratings_total)s rating, <br />their average rating is %(rating_average)s"
 msgid_plural "%(display_name)s left %(ratings_total)s ratings, <br />their average rating is %(rating_average)s"
 msgstr[0] ""
 
-#: bookwyrm/templates/annual_summary/layout.html:213
+#: bookwyrm/templates/annual_summary/layout.html:238
 msgid "Their best rated review"
 msgstr ""
 
-#: bookwyrm/templates/annual_summary/layout.html:226
+#: bookwyrm/templates/annual_summary/layout.html:251
 #, python-format
 msgid "Their rating: <strong>%(rating)s</strong>"
 msgstr ""
 
-#: bookwyrm/templates/annual_summary/layout.html:243
+#: bookwyrm/templates/annual_summary/layout.html:268
 #, python-format
 msgid "All the books %(display_name)s read in %(year)s"
 msgstr ""
@@ -702,7 +716,6 @@ msgstr ""
 #: bookwyrm/templates/feed/layout.html:71
 #: bookwyrm/templates/get_started/layout.html:25
 #: bookwyrm/templates/get_started/layout.html:58
-#: bookwyrm/templates/search/book.html:49
 #: bookwyrm/templates/snippets/announcement.html:18
 msgid "Close"
 msgstr ""
@@ -1299,28 +1312,16 @@ msgstr ""
 msgid "You have no messages right now."
 msgstr ""
 
-#: bookwyrm/templates/feed/feed.html:27
-msgid "Feed settings"
-msgstr ""
-
-#: bookwyrm/templates/feed/feed.html:39
-msgid "Saved!"
-msgstr ""
-
-#: bookwyrm/templates/feed/feed.html:53
-msgid "Save settings"
-msgstr ""
-
-#: bookwyrm/templates/feed/feed.html:63
+#: bookwyrm/templates/feed/feed.html:28
 #, python-format
 msgid "load <span data-poll=\"stream/%(tab_key)s\">0</span> unread status(es)"
 msgstr ""
 
-#: bookwyrm/templates/feed/feed.html:86
+#: bookwyrm/templates/feed/feed.html:51
 msgid "There aren't any activities right now! Try following a user to get started"
 msgstr ""
 
-#: bookwyrm/templates/feed/feed.html:87
+#: bookwyrm/templates/feed/feed.html:52
 msgid "Alternatively, you can try enabling more status types"
 msgstr ""
 
@@ -2637,29 +2638,23 @@ msgstr ""
 msgid "Want to Read \"%(book_title)s\""
 msgstr ""
 
-#: bookwyrm/templates/search/book.html:42
+#: bookwyrm/templates/search/book.html:44
 msgid "Results from"
 msgstr ""
 
-#: bookwyrm/templates/search/book.html:47
-#: bookwyrm/templates/settings/reports/reports.html:25
-#: bookwyrm/templates/snippets/announcement.html:16
-msgid "Open"
-msgstr ""
-
-#: bookwyrm/templates/search/book.html:85
+#: bookwyrm/templates/search/book.html:79
 msgid "Import book"
 msgstr ""
 
-#: bookwyrm/templates/search/book.html:107
+#: bookwyrm/templates/search/book.html:104
 msgid "Load results from other catalogues"
 msgstr ""
 
-#: bookwyrm/templates/search/book.html:111
+#: bookwyrm/templates/search/book.html:108
 msgid "Manually add book"
 msgstr ""
 
-#: bookwyrm/templates/search/book.html:116
+#: bookwyrm/templates/search/book.html:113
 msgid "Log in to import or add books."
 msgstr ""
 
@@ -3279,6 +3274,11 @@ msgstr ""
 msgid "Reports: <small>%(instance_name)s</small>"
 msgstr ""
 
+#: bookwyrm/templates/settings/reports/reports.html:25
+#: bookwyrm/templates/snippets/announcement.html:16
+msgid "Open"
+msgstr ""
+
 #: bookwyrm/templates/settings/reports/reports.html:28
 msgid "Resolved"
 msgstr ""
@@ -3731,20 +3731,21 @@ msgstr ""
 msgid "Un-like"
 msgstr ""
 
-#: bookwyrm/templates/snippets/filters_panel/filters_panel.html:7
-msgid "Show filters"
+#: bookwyrm/templates/snippets/filters_panel/filters_panel.html:5
+msgid "Filters"
 msgstr ""
 
-#: bookwyrm/templates/snippets/filters_panel/filters_panel.html:9
-msgid "Hide filters"
+#: bookwyrm/templates/snippets/filters_panel/filters_panel.html:11
+#: bookwyrm/templates/snippets/filters_panel/filters_panel.html:18
+msgid "Filters are applied"
 msgstr ""
 
-#: bookwyrm/templates/snippets/filters_panel/filters_panel.html:22
-msgid "Apply filters"
-msgstr ""
-
-#: bookwyrm/templates/snippets/filters_panel/filters_panel.html:26
+#: bookwyrm/templates/snippets/filters_panel/filters_panel.html:21
 msgid "Clear filters"
+msgstr ""
+
+#: bookwyrm/templates/snippets/filters_panel/filters_panel.html:43
+msgid "Apply filters"
 msgstr ""
 
 #: bookwyrm/templates/snippets/follow_button.html:14
@@ -3988,8 +3989,8 @@ msgstr ""
 msgid "Want to read"
 msgstr ""
 
-#: bookwyrm/templates/snippets/shelf_selector.html:73
-#: bookwyrm/templates/snippets/shelf_selector.html:84
+#: bookwyrm/templates/snippets/shelf_selector.html:74
+#: bookwyrm/templates/snippets/shelf_selector.html:86
 msgid "Remove from"
 msgstr ""
 
