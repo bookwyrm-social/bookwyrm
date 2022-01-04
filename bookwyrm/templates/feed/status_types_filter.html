@@ -1,0 +1,16 @@
+{% extends 'snippets/filters_panel/filter_field.html' %}
+{% load i18n %}
+
+{% block filter %}
+<label class="label mt-2 mb-1">Status types</label>
+
+<div class="is-flex is-flex-direction-row is-flex-direction-column-mobile">
+    {% for name, value in feed_status_types_options %}
+    <label class="mr-2">
+        <input type="checkbox" name="feed_status_types" value="{{ name }}" {% if name in user.feed_status_types %}checked=""{% endif %}/>
+        {{ value }}
+    </label>
+    {% endfor %}
+</div>
+{% endblock %}
+

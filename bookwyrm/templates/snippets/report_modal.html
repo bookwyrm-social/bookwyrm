@@ -21,8 +21,12 @@
 
 <section class="content">
     <p>{% blocktrans with site_name=site.name %}This report will be sent to {{ site_name }}'s moderators for review.{% endblocktrans %}</p>
-    <label class="label" for="id_{{ controls_uid }}_report_note">{% trans "More info about this report:" %}</label>
-    <textarea class="textarea" name="note" id="id_{{ controls_uid }}_report_note"></textarea>
+    <div class="control">
+        <label class="label" for="id_{{ controls_uid }}_report_note">
+            {% trans "More info about this report:" %}
+        </label>
+        <textarea class="textarea" name="note" id="id_{{ controls_uid }}_report_note"></textarea>
+    </div>
 </section>
 
 {% endblock %}
@@ -31,9 +35,9 @@
 {% block modal-footer %}
 
 <button class="button is-success" type="submit">{% trans "Submit" %}</button>
-{% trans "Cancel" as button_text %}
-{% include 'snippets/toggle/toggle_button.html' with text=button_text controls_text="report" controls_uid=report_uuid class="" %}
+<button type="button" class="button" data-modal-close>{% trans "Cancel" %}</button>
 
 {% endblock %}
+
 {% block modal-form-close %}</form>{% endblock %}
 

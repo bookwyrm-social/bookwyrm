@@ -26,15 +26,15 @@ class Feed(View):
 
     def post(self, request, tab):
         """save feed settings form, with a silent validation fail"""
-        settings_saved = False
+        filters_applied = False
         form = forms.FeedStatusTypesForm(request.POST, instance=request.user)
         if form.is_valid():
             form.save()
-            settings_saved = True
+            filters_applied = True
 
-        return self.get(request, tab, settings_saved)
+        return self.get(request, tab, filters_applied)
 
-    def get(self, request, tab, settings_saved=False):
+    def get(self, request, tab, filters_applied=False):
         """user's homepage with activity feed"""
         tab = [s for s in STREAMS if s["key"] == tab]
         tab = tab[0] if tab else STREAMS[0]
@@ -61,7 +61,7 @@ class Feed(View):
                 "goal_form": forms.GoalForm(),
                 "feed_status_types_options": FeedFilterChoices,
                 "allowed_status_types": request.user.feed_status_types,
-                "settings_saved": settings_saved,
+                "filters_applied": filters_applied,
                 "path": f"/{tab['key']}",
                 "annual_summary_year": get_annual_summary_year(),
             },
