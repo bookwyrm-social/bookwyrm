@@ -9,5 +9,5 @@
 <form name="edit-group" method="post" action="{% url 'group' group.id %}">
     {% include 'groups/form.html' %}
 </form>
-{% include "groups/delete_group_modal.html" with controls_text="delete_group" controls_uid=group.id %}
+{% include "groups/delete_group_modal.html" with id="delete_group" %}
 {% endblock %}
