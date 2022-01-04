@@ -583,7 +583,7 @@ class ModelFields(TestCase):
         instance.set_field_from_activity(book, mock_activity, overwrite=True)
         # new cover
         self.assertIsNotNone(book.cover.name)
-        self.assertFalse(book.cover.size, cover_size)
+        self.assertNotEqual(book.cover.size, cover_size)
 
     def test_datetime_field(self, *_):
         """this one is pretty simple, it just has to use isoformat"""
