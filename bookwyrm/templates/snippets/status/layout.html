@@ -1,7 +1,6 @@
 {% extends 'components/card.html' %}
 {% load i18n %}
 {% load utilities %}
-{% load cache %}
 
 {% block card-header %}
 <div
@@ -12,10 +11,7 @@
 </div>
 {% endblock %}
 
-{# three day cache #}
-{% cache 259200 status_content status.id %}
 {% block card-content %}{% endblock %}
-{% endcache %}
 
 {% block card-footer %}
 {% if moderation_mode and perms.bookwyrm.moderate_post %}
