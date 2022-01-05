@@ -1,6 +1,8 @@
 """ boosts and favs """
-from django.db import IntegrityError
 from django.contrib.auth.decorators import login_required
+from django.core.cache import cache
+from django.core.cache.utils import make_template_fragment_key
+from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseNotFound
 from django.shortcuts import redirect
 from django.utils.decorators import method_decorator
@@ -17,6 +19,7 @@ class Favorite(View):
 
     def post(self, request, status_id):
         """create a like"""
+        clear_cache(request.user.id, status_id)
         status = models.Status.objects.get(id=status_id)
         try:
             models.Favorite.objects.create(status=status, user=request.user)
@@ -43,6 +46,7 @@ class Unfavorite(View):
             return HttpResponseNotFound()
 
         favorite.delete()
+        clear_cache(request.user.id, status_id)
         if is_api_request(request):
             return HttpResponse()
         return redirect(request.headers.get("Referer", "/"))
@@ -70,6 +74,7 @@ class Boost(View):
             privacy=status.privacy,
             user=request.user,
         )
+        clear_cache(request.user.id, status_id)
         if is_api_request(request):
             return HttpResponse()
         return redirect(request.headers.get("Referer", "/"))
@@ -87,6 +92,13 @@ class Unboost(View):
         ).first()
 
         boost.delete()
+        clear_cache(request.user.id, status_id)
         if is_api_request(request):
             return HttpResponse()
         return redirect(request.headers.get("Referer", "/"))
+
+
+def clear_cache(user_id, status_id):
+    """clear template cache"""
+    cache_key = make_template_fragment_key("interact", [user_id, status_id])
+    cache.delete(cache_key)
