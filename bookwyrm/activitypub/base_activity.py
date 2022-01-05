@@ -12,6 +12,7 @@ import requests
 from django.utils.http import http_date
 from bookwyrm import models
 from bookwyrm.signatures import make_signature
+from bookwyrm.settings import DOMAIN
 
 class ActivitySerializerError(ValueError):
     """routine problems serializing activitypub json"""
@@ -315,12 +316,19 @@ def resolve_remote_id(
     # if we're refreshing, "result" will be set and we'll update it
     return item.to_model(model=model, instance=result, save=save)
 
+def get_representative():
+    try:
+        models.User.objects.get(id=-99)
+    except models.User.DoesNotExist:
+        username = "%s@%s" % (DOMAIN, DOMAIN)
+        email = "representative@%s" % (DOMAIN)
+        models.User.objects.create_user(id=-99, username=username, email=email, local=True, localname=DOMAIN)
+
 def get_activitypub_data(url):
     ''' wrapper for request.get '''
     now = http_date()
 
-    # XXX TEMP!!
-    sender = models.User.objects.get(id=1)
+    sender = get_representative()
     if not sender.key_pair.private_key:
         # this shouldn't happen. it would be bad if it happened.
         raise ValueError('No private key found for sender')
