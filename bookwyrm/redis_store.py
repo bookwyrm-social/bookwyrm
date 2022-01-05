@@ -5,9 +5,11 @@ import redis
 from bookwyrm import settings
 
 r = redis.Redis(
-    host=settings.REDIS_ACTIVITY_HOST, port=settings.REDIS_ACTIVITY_PORT, db=0
+    host=settings.REDIS_ACTIVITY_HOST,
+    port=settings.REDIS_ACTIVITY_PORT,
+    password=settings.REDIS_ACTIVITY_PASSWORD,
+    db=0,
 )
-
 
 class RedisStore(ABC):
     """sets of ranked, related objects, like statuses for a user's feed"""
