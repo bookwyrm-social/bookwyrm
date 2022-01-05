@@ -11,6 +11,7 @@ r = redis.Redis(
     db=0,
 )
 
+
 class RedisStore(ABC):
     """sets of ranked, related objects, like statuses for a user's feed"""
 
