@@ -3,7 +3,7 @@
 {% load cache %}
 
 {% if request.user.is_authenticated %}
-{% cache 900 shelve_button request.user.id book.id %}
+{% cache shelve_button request.user.id book.id %}
 
 {% with book.id|uuid as uuid %}
 {% active_shelf book as active_shelf %}

@@ -47,7 +47,9 @@ class ReadingStatus(View):
             return HttpResponseBadRequest()
 
         # invalidate the template cache
-        cache_key = make_template_fragment_key("shelve_button", [request.user.id, book_id])
+        cache_key = make_template_fragment_key(
+            "shelve_button", [request.user.id, book_id]
+        )
         cache.delete(cache_key)
 
         desired_shelf = get_object_or_404(
