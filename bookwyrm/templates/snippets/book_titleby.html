@@ -1,6 +1,8 @@
 {% load i18n %}
 {% load utilities %}
+{% load cache %}
 {% spaceless %}
+{% cache None titleby book.id %}
 
 {% if book.authors.exists %}
 {% blocktrans trimmed with path=book.local_path title=book|book_title %}
@@ -10,4 +12,6 @@
 {% else %}
 <a href="{{ book.local_path }}">{{ book|book_title }}</a>
 {% endif %}
+
+{% endcache %}
 {% endspaceless %}
