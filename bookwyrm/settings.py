@@ -130,6 +130,10 @@ CACHES = {
         },
     }
 }
+if env("USE_LOCAL_CACHE", False):
+    # use the default local memory cache for testing
+    CACHE = None
+
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 SESSION_CACHE_ALIAS = "default"
 
