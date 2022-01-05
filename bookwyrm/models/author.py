@@ -39,12 +39,12 @@ class Author(BookDataModel):
     def save(self, *args, **kwargs):
         """clear related template caches"""
         # clear template caches
-        cache_keys = [
-            make_template_fragment_key("titleby", [book])
-            for book in self.book_set.values_list("id", flat=True)
-        ]
-        cache.delete_many(cache_keys)
-
+        if self.id:
+            cache_keys = [
+                make_template_fragment_key("titleby", [book])
+                for book in self.book_set.values_list("id", flat=True)
+            ]
+            cache.delete_many(cache_keys)
         return super().save(*args, **kwargs)
 
     @property
