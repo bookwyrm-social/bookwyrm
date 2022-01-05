@@ -1,6 +1,8 @@
 """ non-interactive pages """
 from django.template.response import TemplateResponse
 from django.views import View
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 
 from bookwyrm import forms
 from bookwyrm.views import helpers
@@ -31,6 +33,7 @@ class Home(View):
 class Landing(View):
     """preview of recently reviewed books"""
 
+    @method_decorator(cache_page(60 * 60), name="dispatch")
     def get(self, request):
         """tiled book activity page"""
         data = {
