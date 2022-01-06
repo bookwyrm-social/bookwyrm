@@ -30,7 +30,7 @@
                 </div>
                 <div class="media-content">
                     {% blocktrans trimmed with title=top_rated|book_title site_name=site.name rating=top_rated.rating|floatformat:1 %}
-                    <em>{{ title }}</em> is {{ site_name }}'s most beloved book, with a {{ rating }} rating out of 5
+                    <em>{{ title }}</em> is {{ site_name }}'s most beloved book, with an average rating of {{ rating }} out of 5.
                     {% endblocktrans %}
                 </div>
             </div>
@@ -44,7 +44,7 @@
                 </div>
                 <div class="media-content">
                     {% blocktrans trimmed with title=wanted|book_title site_name=site.name %}
-                    More {{ site_name }} users want to read <em>{{ title }}</em>
+                    More {{ site_name }} users want to read <em>{{ title }}</em>.
                     {% endblocktrans %}
                 </div>
             </div>
@@ -58,7 +58,7 @@
                 </div>
                 <div class="media-content">
                     {% blocktrans trimmed with title=controversial|book_title site_name=site.name %}
-                    <em>{{ title }}</em> has the most divisive ratings of any book on {{ site_name }}
+                    <em>{{ title }}</em> has the most divisive ratings of any book on {{ site_name }}.
                     {% endblocktrans %}
                 </div>
             </div>

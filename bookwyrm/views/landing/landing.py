@@ -1,6 +1,6 @@
 """ non-interactive pages """
 from dateutil.relativedelta import relativedelta
-from django.db.models import Avg, StdDev, Count, Q
+from django.db.models import Avg, StdDev, Count, F, Q
 from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.views import View
@@ -29,13 +29,20 @@ def about(request):
 
     books = models.Edition.objects.exclude(cover__exact="")
 
+    total_ratings = models.Review.objects.filter(user__local=True).count()
     data["top_rated"] = books.annotate(
-        rating=Avg("review__rating", filter=Q(review__user__local=True))
-    ).filter(rating__gt=0).order_by("-rating").first()
+        rating=Avg("review__rating", filter=Q(review__user__local=True)),
+        rating_count=Count("review__rating", filter=Q(review__user__local=True)),
+    ).annotate(
+        weighted=F("rating") * F("rating_count") / total_ratings
+    ).filter(weighted__gt=0).order_by("-weighted").first()
 
     data["controversial"] = books.annotate(
-        deviation=StdDev("review__rating")
-    ).filter(deviation__gt=0).order_by("-deviation").first()
+        deviation=StdDev("review__rating", filter=Q(review__user__local=True)),
+        rating_count=Count("review__rating", filter=Q(review__user__local=True)),
+    ).annotate(
+        weighted=F("deviation") * F("rating_count") / total_ratings
+    ).filter(weighted__gt=0).order_by("-weighted").first()
 
     data["wanted"] = books.annotate(
         shelf_count=Count("shelves", filter=Q(shelves__identifier="to-read"))
