@@ -3,10 +3,12 @@
 
 {% block filter %}
 <label class="label" for="id_sort">{% trans "Order by" %}</label>
-<div class="select">
-    <select name="sort" id="id_sort">
-        <option value="recent" {% if request.GET.sort == "recent" %}selected{% endif %}>{% trans "Recently active" %}</option>
-        <option value="suggested" {% if request.GET.sort == "suggested" %}selected{% endif %}>{% trans "Suggested" %}</option>
-    </select>
+<div class="control">
+    <div class="select">
+        <select name="sort" id="id_sort">
+            <option value="recent" {% if request.GET.sort == "recent" %}selected{% endif %}>{% trans "Recently active" %}</option>
+            <option value="suggested" {% if request.GET.sort == "suggested" %}selected{% endif %}>{% trans "Suggested" %}</option>
+        </select>
+    </div>
 </div>
 {% endblock %}
