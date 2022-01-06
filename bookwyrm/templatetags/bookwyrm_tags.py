@@ -63,6 +63,8 @@ def load_subclass(status):
         return status.review
     if hasattr(status, "comment"):
         return status.comment
+    if hasattr(status, "generatednote"):
+        return status.generatednote
     return status
 
 
