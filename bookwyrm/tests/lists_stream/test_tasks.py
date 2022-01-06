@@ -42,13 +42,13 @@ class Activitystreams(TestCase):
 
     def test_populate_lists_task(self, *_):
         """populate lists cache"""
-        with patch("bookwyrm.lists_stream.ListsStream.populate_streams") as mock:
+        with patch("bookwyrm.lists_stream.ListsStream.populate_lists") as mock:
             lists_stream.populate_lists_task(self.local_user.id)
         self.assertTrue(mock.called)
         args = mock.call_args[0]
         self.assertEqual(args[0], self.local_user)
 
-        with patch("bookwyrm.lists_stream.ListsStream.populate_streams") as mock:
+        with patch("bookwyrm.lists_stream.ListsStream.populate_lists") as mock:
             lists_stream.populate_lists_task(self.local_user.id)
         self.assertTrue(mock.called)
         args = mock.call_args[0]

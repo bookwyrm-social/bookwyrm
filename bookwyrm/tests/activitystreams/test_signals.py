@@ -62,11 +62,11 @@ class ActivitystreamsSignals(TestCase):
         self.assertEqual(args["args"][0], status.id)
         self.assertEqual(args["queue"], "high_priority")
 
-    def test_populate_streams_on_account_create(self, *_):
+    def test_populate_streams_on_account_create_command(self, *_):
         """create streams for a user"""
         with patch("bookwyrm.activitystreams.populate_stream_task.delay") as mock:
-            activitystreams.populate_streams_on_account_create(
-                models.User, self.local_user, True
+            activitystreams.populate_streams_on_account_create_command(
+                self.local_user.id
             )
         self.assertEqual(mock.call_count, 3)
         args = mock.call_args[0]

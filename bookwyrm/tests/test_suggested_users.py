@@ -236,12 +236,3 @@ class SuggestedUsers(TestCase):
         )
         user_1_annotated = result.get(id=user_1.id)
         self.assertEqual(user_1_annotated.mutuals, 3)
-
-    def test_create_user_signal(self, *_):
-        """build suggestions for new users"""
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay") as mock:
-            models.User.objects.create_user(
-                "nutria", "nutria@nu.tria", "password", local=True, localname="nutria"
-            )
-
-        self.assertEqual(mock.call_count, 1)

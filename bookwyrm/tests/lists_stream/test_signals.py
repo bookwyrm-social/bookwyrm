@@ -36,7 +36,7 @@ class ListsStreamSignals(TestCase):
             user=self.remote_user, name="hi", privacy="public"
         )
         with patch("bookwyrm.lists_stream.add_list_task.delay") as mock:
-            lists_stream.add_list_on_create_command(book_list)
+            lists_stream.add_list_on_create_command(book_list.id)
         self.assertEqual(mock.call_count, 1)
         args = mock.call_args[0]
         self.assertEqual(args[0], book_list.id)
@@ -51,12 +51,10 @@ class ListsStreamSignals(TestCase):
         args = mock.call_args[0]
         self.assertEqual(args[0], book_list.id)
 
-    def test_populate_lists_on_account_create(self, _):
+    def test_populate_lists_on_account_create_command(self, _):
         """create streams for a user"""
         with patch("bookwyrm.lists_stream.populate_lists_task.delay") as mock:
-            lists_stream.populate_lists_on_account_create(
-                models.User, self.local_user, True
-            )
+            lists_stream.populate_lists_on_account_create_command(self.local_user.id)
         self.assertEqual(mock.call_count, 1)
         args = mock.call_args[0]
         self.assertEqual(args[0], self.local_user.id)
