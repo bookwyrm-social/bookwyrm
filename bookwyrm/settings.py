@@ -122,8 +122,8 @@ STREAMS = [
 # Redis cache backend
 if env("USE_DUMMY_CACHE", False):
     CACHES = {
-        'default': {
-            'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
+        "default": {
+            "BACKEND": "django.core.cache.backends.dummy.DummyCache",
         }
     }
 else:
