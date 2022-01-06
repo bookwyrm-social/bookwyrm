@@ -34,7 +34,8 @@ class Group(View):
         data = {
             "group": group,
             "lists": lists,
-            "group_form": forms.GroupForm(instance=group),
+            "group_form": forms.GroupForm(instance=group, auto_id="group_form_id_%s"),
+            "list_form": forms.ListForm(),
             "path": "/group",
         }
         return TemplateResponse(request, "groups/group.html", data)
@@ -121,6 +122,11 @@ class FindUsers(View):
         """basic profile info"""
         user_query = request.GET.get("user_query")
         group = get_object_or_404(models.Group, id=group_id)
+        lists = (
+            models.List.privacy_filter(request.user)
+            .filter(group=group)
+            .order_by("-updated_date")
+        )
 
         if not group:
             return HttpResponseBadRequest()
@@ -142,7 +148,7 @@ class FindUsers(View):
             .filter(similarity__gt=0.5, local=True)
             .order_by("-similarity")[:5]
         )
-        data = {"no_results": not user_results}
+        no_results = not user_results
 
         if user_results.count() < 5:
             user_results = list(user_results) + suggested_users.get_suggestions(
@@ -151,8 +157,11 @@ class FindUsers(View):
 
         data = {
             "suggested_users": user_results,
+            "no_results": no_results,
             "group": group,
-            "group_form": forms.GroupForm(instance=group),
+            "lists": lists,
+            "group_form": forms.GroupForm(instance=group, auto_id="group_form_id_%s"),
+            "list_form": forms.ListForm(),
             "user_query": user_query,
             "requestor_is_manager": request.user == group.user,
         }

@@ -1,0 +1,10 @@
+{% load utilities %}
+<form name="fallback_form_{{ 0|uuid }}" method="GET" action="{{ fallback_url }}" autocomplete="off">
+    <button
+        type="submit"
+        class="button {{ class }}"
+        data-modal-open="{{ modal_id }}"
+    >
+        {{ button_text }}
+    </button>
+</form>

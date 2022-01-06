@@ -1,5 +1,6 @@
 {% extends 'snippets/reading_modals/layout.html' %}
 {% load i18n %}
+{% load utilities %}
 
 {% block modal-title %}
 {% trans "Update progress" %}
@@ -12,8 +13,9 @@
 {% endblock %}
 
 {% block reading-dates %}
-<label for="id_progress_{{ readthrough.id }}{{ controls_uid }}" class="label">{% trans "Progress:" %}</label>
-{% include "snippets/progress_field.html" with progress_required=True %}
+{% join "id_progress" uuid as field_id %}
+<label for="{{ field_id }}" class="label">{% trans "Progress:" %}</label>
+{% include "snippets/progress_field.html" with progress_required=True id=field_id %}
 {% endblock %}
 
 {% block form %}
