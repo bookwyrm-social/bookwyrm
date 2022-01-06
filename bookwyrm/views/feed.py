@@ -223,7 +223,6 @@ def feed_page_data(user):
 
     goal = models.AnnualGoal.objects.filter(user=user, year=timezone.now().year).first()
     return {
-        "suggested_books": get_suggested_books(user),
         "goal": goal,
         "goal_form": forms.GoalForm(),
     }

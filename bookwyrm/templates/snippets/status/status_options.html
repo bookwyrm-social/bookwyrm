@@ -20,17 +20,21 @@
 </li>
 {% if status.status_type != 'GeneratedNote' and status.status_type != 'Rating' %}
 <li role="menuitem" class="dropdown-item p-0">
-    <a href="{% url 'edit-status' status.id %}" class="button is-radiusless is-fullwidth is-small" type="submit">
-        {% trans "Edit" %}
-    </a>
+    <span class="control">
+        <a href="{% url 'edit-status' status.id %}" class="button is-radiusless is-fullwidth is-small" type="submit">
+            {% trans "Edit" %}
+        </a>
+    </span>
 </li>
 {% endif %}
 {% else %}
 {# things you can do to other people's statuses #}
 <li role="menuitem" class="dropdown-item p-0">
-    <a href="{% url 'direct-messages-user' status.user|username %}" class="button is-small is-white is-radiusless is-fullwidth">
-        {% trans "Send direct message" %}
-    </a>
+    <span class="control">
+        <a href="{% url 'direct-messages-user' status.user|username %}" class="button is-small is-white is-radiusless is-fullwidth">
+            {% trans "Send direct message" %}
+        </a>
+    </span>
 </li>
 <li role="menuitem" class="dropdown-item p-0">
     {% include 'snippets/report_button.html' with user=status.user status=status %}

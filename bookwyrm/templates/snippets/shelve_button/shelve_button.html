@@ -1,7 +1,10 @@
 {% load bookwyrm_tags %}
 {% load utilities %}
+{% load cache %}
 
 {% if request.user.is_authenticated %}
+{# 6 month cache #}
+{% cache 15552000 shelve_button request.user.id book.id %}
 
 {% with book.id|uuid as uuid %}
 {% active_shelf book as active_shelf %}
@@ -32,4 +35,5 @@
 {% include 'snippets/reading_modals/progress_update_modal.html' with book=active_shelf.book id=modal_id readthrough=readthrough class="" %}
 
 {% endwith %}
+{% endcache %}
 {% endif %}

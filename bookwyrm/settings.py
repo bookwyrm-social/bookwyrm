@@ -119,6 +119,28 @@ STREAMS = [
     {"key": "books", "name": _("Books Timeline"), "shortname": _("Books")},
 ]
 
+# Redis cache backend
+if env("USE_DUMMY_CACHE", False):
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.dummy.DummyCache",
+        }
+    }
+else:
+    # pylint: disable=line-too-long
+    CACHES = {
+        "default": {
+            "BACKEND": "django_redis.cache.RedisCache",
+            "LOCATION": f"redis://:{REDIS_ACTIVITY_PASSWORD}@{REDIS_ACTIVITY_HOST}:{REDIS_ACTIVITY_PORT}/0",
+            "OPTIONS": {
+                "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            },
+        }
+    }
+
+    SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+    SESSION_CACHE_ALIAS = "default"
+
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 

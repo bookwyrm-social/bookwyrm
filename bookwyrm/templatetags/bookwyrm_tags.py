@@ -3,6 +3,7 @@ from django import template
 from django.db.models import Avg
 
 from bookwyrm import models
+from bookwyrm.views.feed import get_suggested_books
 
 
 register = template.Library()
@@ -62,6 +63,8 @@ def load_subclass(status):
         return status.review
     if hasattr(status, "comment"):
         return status.comment
+    if hasattr(status, "generatednote"):
+        return status.generatednote
     return status
 
 
@@ -115,3 +118,11 @@ def mutuals_count(context, user):
     if not viewer.is_authenticated:
         return None
     return user.followers.filter(followers=viewer).count()
+
+
+@register.simple_tag(takes_context=True)
+def suggested_books(context):
+    """get books for suggested books panel"""
+    # this happens here instead of in the view so that the template snippet can
+    # be cached in the template
+    return get_suggested_books(context["request"].user)

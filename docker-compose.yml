@@ -67,8 +67,6 @@ services:
       - ./redis.conf:/etc/redis/redis.conf
       - redis_broker_data:/data
     env_file: .env
-    ports:
-      - 6379:6379
     networks:
       - main
     restart: on-failure
