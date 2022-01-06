@@ -1,4 +1,5 @@
 {% extends 'about/layout.html' %}
+{% load humanize %}
 {% load i18n %}
 {% load utilities %}
 
@@ -7,10 +8,14 @@
 {% endblock %}
 
 {% block about_content %}
-<section class="block content pb-4">
+<section class="content pb-4">
+    <h2>
+        {% blocktrans with site_name=site.name %}Welcome to {{ site_name }}!{% endblocktrans %}
+    </h2>
+
     <p class="subtitle notification has-background-primary-light">
         {% blocktrans trimmed with site_name=site.name %}
-            {{ site_name }} is part of BookWyrm, a network of independent, self-directed communites for readers.
+            {{ site_name }} is part of <em>BookWyrm</em>, a network of independent, self-directed communities for readers.
              While you can interact seemlessly with users anywhere in the <a href="https://joinbookwyrm.com/instances/" target="_blank">BookWyrm network</a>, this community is unique.
         {% endblocktrans %}
     </p>
@@ -61,7 +66,7 @@
     </div>
 
     <p>
-    Join/request an invite to track your reading, share your thoughts, and discover what to read next on {{ site.name }}.
+        {% trans "Track your reading, talk about books, write reviews, and discover what to read next. Always ad-free, anti-corporate, and community-oriented, BookWyrm is human-scale software, designed to stay small and personal. If you have feature requests, bug reports, or grand dreams, <a href='https://joinbookwyrm.com/get-involved' target='_blank'>reach out</a> and make yourself heard." %}
     </p>
 
 </section>

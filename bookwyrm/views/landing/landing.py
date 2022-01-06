@@ -1,10 +1,12 @@
 """ non-interactive pages """
+from dateutil.relativedelta import relativedelta
 from django.db.models import Avg, StdDev, Count, Q
 from django.template.response import TemplateResponse
+from django.utils import timezone
 from django.views import View
 from django.views.decorators.http import require_GET
 
-from bookwyrm import forms, models
+from bookwyrm import forms, models, settings
 from bookwyrm.views import helpers
 from bookwyrm.views.feed import Feed
 
@@ -12,21 +14,33 @@ from bookwyrm.views.feed import Feed
 @require_GET
 def about(request):
     """more information about the instance"""
-
-    books = models.Edition.objects.exclude(
-        cover__exact=""
-    ).annotate(
-        rating=Avg("review__rating"),
-        deviation=StdDev("review__rating"),
-        shelf_count=Count("shelves", filter=Q(shelves__identifier="to-read")),
-    )
-
+    six_months_ago = timezone.now() - relativedelta(months=6)
+    six_month_count = models.User.objects.filter(
+        is_active=True, local=True, last_active_date__gt=six_months_ago
+    ).count()
     data = {
+        "active_users": six_month_count,
+        "status_count": models.Status.objects.filter(
+            user__local=True, deleted=False
+        ).count(),
         "admins": models.User.objects.filter(groups__name__in=["admin", "moderator"]),
-        "top_rated": books.order_by("rating").first(),
-        "controversial": books.order_by("deviation").first(),
-        "wanted": books.order_by("shelf_count").first(),
+        "version": settings.VERSION,
     }
+
+    books = models.Edition.objects.exclude(cover__exact="")
+
+    data["top_rated"] = books.annotate(
+        rating=Avg("review__rating")
+    ).order_by("rating").first()
+
+    data["controversial"] = books.annotate(
+        deviation=StdDev("review__rating")
+    ).order_by("deviation").first()
+
+    data["wanted"] = books.annotate(
+        shelf_count=Count("shelves", filter=Q(shelves__identifier="to-read"))
+    ).order_by("shelf_count").first()
+
     return TemplateResponse(request, "about/about.html", data)
 
 
