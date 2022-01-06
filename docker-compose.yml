@@ -38,16 +38,17 @@ services:
       - 8000:8000
   redis_activity:
     image: redis
-    command: ["redis-server", "--appendonly", "yes"]
+    command: redis-server --requirepass ${REDIS_ACTIVITY_PASSWORD} --appendonly yes --port ${REDIS_ACTIVITY_PORT}
     env_file: .env
     networks:
       - main
     restart: on-failure
     volumes:
+      - ./redis.conf:/etc/redis/redis.conf
       - redis_activity_data:/data
   redis_broker:
     image: redis
-    command: ["redis-server", "--appendonly", "yes"]
+    command: redis-server --requirepass ${REDIS_BROKER_PASSWORD} --appendonly yes --port ${REDIS_BROKER_PORT}
     env_file: .env
     ports:
       - 6379:6379
@@ -55,6 +56,7 @@ services:
       - main
     restart: on-failure
     volumes:
+      - ./redis.conf:/etc/redis/redis.conf
       - redis_broker_data:/data
   celery_worker:
     env_file: .env

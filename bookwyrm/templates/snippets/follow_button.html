@@ -1,4 +1,8 @@
 {% load i18n %}
+{% load cache %}
+
+{# 6 month cache #}
+{% cache 15552000 follow_button request.user.id user.id %}
 {% if request.user == user or not request.user.is_authenticated %}
 {% elif user in request.user.blocks.all %}
 {% include 'snippets/block_button.html' with blocks=True %}
@@ -42,3 +46,4 @@
     {% endif %}
 </div>
 {% endif %}
+{% endcache %}
