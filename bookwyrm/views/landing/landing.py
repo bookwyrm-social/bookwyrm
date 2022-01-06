@@ -30,16 +30,16 @@ def about(request):
     books = models.Edition.objects.exclude(cover__exact="")
 
     data["top_rated"] = books.annotate(
-        rating=Avg("review__rating")
-    ).order_by("rating").first()
+        rating=Avg("review__rating", filter=Q(review__user__local=True))
+    ).filter(rating__gt=0).order_by("-rating").first()
 
     data["controversial"] = books.annotate(
         deviation=StdDev("review__rating")
-    ).order_by("deviation").first()
+    ).filter(deviation__gt=0).order_by("-deviation").first()
 
     data["wanted"] = books.annotate(
         shelf_count=Count("shelves", filter=Q(shelves__identifier="to-read"))
-    ).order_by("shelf_count").first()
+    ).order_by("-shelf_count").first()
 
     return TemplateResponse(request, "about/about.html", data)
 
