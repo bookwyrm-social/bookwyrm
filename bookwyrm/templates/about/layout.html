@@ -1,0 +1,37 @@
+{% extends 'landing/layout.html' %}
+{% load i18n %}
+
+{% block about_panel %}
+{% endblock %}
+
+{% block panel %}
+<div class="block columns pt-4">
+    <nav class="menu column is-one-quarter">
+        <h2 class="menu-label">{% blocktrans with site_name=site.name %}About {{ site_name }}{% endblocktrans %}</h2>
+        <ul class="menu-list">
+            <li>
+                {% url 'about' as path %}
+                <a href="{{ path }}" {% if request.path in path %}class="is-active"{% endif %}>
+                    {% trans "About" %}
+                </a>
+            </li>
+            <li>
+                {% url 'conduct' as path %}
+                <a href="{{ path }}" {% if request.path in path %}class="is-active"{% endif %}>
+                    {% trans "Code of Conduct" %}
+                </a>
+            </li>
+            <li>
+                {% url 'privacy' as path %}
+                <a href="{{ path }}" {% if request.path in path %}class="is-active"{% endif %}>
+                    {% trans "Privacy Policy" %}
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <div class="column">
+        {% block about_content %}{% endblock %}
+    </div>
+</div>
+{% endblock %}

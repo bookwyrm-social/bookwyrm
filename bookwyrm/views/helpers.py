@@ -160,7 +160,7 @@ def get_landing_books():
             models.Edition.objects.filter(
                 review__published_date__isnull=False,
                 review__deleted=False,
-                review__user__local=True,
+                #review__user__local=True,
                 review__privacy__in=["public", "unlisted"],
             )
             .exclude(cover__exact="")

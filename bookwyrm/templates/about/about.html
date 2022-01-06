@@ -1,0 +1,111 @@
+{% extends 'about/layout.html' %}
+{% load i18n %}
+{% load utilities %}
+
+{% block title %}
+{% trans "About" %}
+{% endblock %}
+
+{% block about_content %}
+<section class="block content pb-4">
+    <p class="subtitle notification has-background-primary-light">
+        {% blocktrans trimmed with site_name=site.name %}
+            {{ site_name }} is part of BookWyrm, a network of independent, self-directed communites for readers.
+             While you can interact seemlessly with users anywhere in the <a href="https://joinbookwyrm.com/instances/" target="_blank">BookWyrm network</a>, this community is unique.
+        {% endblocktrans %}
+    </p>
+
+    <div class="columns">
+        <div class="column is-one-third">
+            <div class="media notification">
+                <div class="media-left">
+                    <a href="{{ book.local_path }}">
+                        {% include 'snippets/book_cover.html' with book=top_rated cover_class='is-h-m' size='medium' aria='show' %}
+                    </a>
+                </div>
+                <div class="media-content">
+                    {% blocktrans trimmed with title=top_rated|book_title site_name=site.name rating=top_rated.rating|floatformat:1 %}
+                    <em>{{ title }}</em> is {{ site_name }}'s most beloved book, with a {{ rating }} rating out of 5
+                    {% endblocktrans %}
+                </div>
+            </div>
+        </div>
+        <div class="column is-one-third">
+            <div class="media notification">
+                <div class="media-left">
+                    <a href="{{ book.local_path }}">
+                        {% include 'snippets/book_cover.html' with book=wanted cover_class='is-h-m' size='medium' aria='show' %}
+                    </a>
+                </div>
+                <div class="media-content">
+                    {% blocktrans trimmed with title=wanted|book_title site_name=site.name %}
+                    More {{ site_name }} users want to read <em>{{ title }}</em>
+                    {% endblocktrans %}
+                </div>
+            </div>
+        </div>
+        <div class="column is-one-third">
+            <div class="media notification">
+                <div class="media-left">
+                    <a href="{{ book.local_path }}">
+                        {% include 'snippets/book_cover.html' with book=controversial cover_class='is-h-m' size='medium' aria='show' %}
+                    </a>
+                </div>
+                <div class="media-content">
+                    {% blocktrans trimmed with title=controversial|book_title site_name=site.name %}
+                    <em>{{ title }}</em> has the most divisive ratings of any book on {{ site_name }}
+                    {% endblocktrans %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <p>
+    Join/request an invite to track your reading, share your thoughts, and discover what to read next on {{ site.name }}.
+    </p>
+
+</section>
+
+<section class="block">
+    <header class="content">
+        <h2 class="title is-3">{% trans "Meet your admins" %}</h2>
+        <p>
+            these nice people run your instance, when you have a problem, talk to them. when you make a report, they are the ones that receive it
+        </p>
+    </header>
+    <div class="columns is-multiline">
+        {% for user in admins %}
+        <div class="column">
+            <div class="card is-stretchable">
+                {% with role=user.groups.first.name %}
+                <div class="card-header {% if role == "moderator" %}has-background-info-light{% else %}has-background-success-light{% endif %}">
+                    <span class="card-header-title is-size-7 pt-1 pb-1">
+                        {% if role == "moderator" %}
+                            {% trans "Moderator" %}
+                        {% else %}
+                            {% trans "Admin" %}
+                        {% endif %}
+                    </span>
+                </div>
+                {% endwith %}
+
+                <div class="cord-content p-5">
+                    {% include 'user/user_preview.html' with user=user %}
+                </div>
+
+                {% if request.user.is_authenticated and user.id != request.user.id %}
+                <div class="has-background-white-bis card-footer">
+                    <div class="card-footer-item">
+                        {% include 'snippets/follow_button.html' with user=user minimal=True %}
+                    </div>
+                    <div class="card-footer-item">
+                        <a href="{% url 'direct-messages-user' user|username %}">{% trans "Send direct message" %}</a>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

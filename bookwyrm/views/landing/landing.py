@@ -1,21 +1,48 @@
 """ non-interactive pages """
+from django.db.models import Avg, StdDev, Count, Q
 from django.template.response import TemplateResponse
 from django.views import View
+from django.views.decorators.http import require_GET
 
-from bookwyrm import forms
+from bookwyrm import forms, models
 from bookwyrm.views import helpers
 from bookwyrm.views.feed import Feed
 
 
+@require_GET
+def about(request):
+    """more information about the instance"""
+
+    books = models.Edition.objects.exclude(
+        cover__exact=""
+    ).annotate(
+        rating=Avg("review__rating"),
+        deviation=StdDev("review__rating"),
+        shelf_count=Count("shelves", filter=Q(shelves__identifier="to-read")),
+    )
+
+    data = {
+        "admins": models.User.objects.filter(groups__name__in=["admin", "moderator"]),
+        "top_rated": books.order_by("rating").first(),
+        "controversial": books.order_by("deviation").first(),
+        "wanted": books.order_by("shelf_count").first(),
+    }
+    return TemplateResponse(request, "about/about.html", data)
+
+
+@require_GET
+def conduct(request):
+    """more information about the instance"""
+    return TemplateResponse(request, "about/conduct.html")
+
+
+@require_GET
+def privacy(request):
+    """more information about the instance"""
+    return TemplateResponse(request, "about/privacy.html")
+
+
 # pylint: disable= no-self-use
-class About(View):
-    """create invites"""
-
-    def get(self, request):
-        """more information about the instance"""
-        return TemplateResponse(request, "landing/about.html")
-
-
 class Home(View):
     """landing page or home feed depending on auth"""
 

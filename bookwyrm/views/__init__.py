@@ -34,7 +34,7 @@ from .books.edit_book import EditBook, ConfirmEditBook
 from .books.editions import Editions, switch_edition
 
 # landing
-from .landing.landing import About, Home, Landing
+from .landing.landing import Home, Landing, about, privacy, conduct
 from .landing.login import Login, Logout
 from .landing.register import Register, ConfirmEmail, ConfirmEmailCode, resend_link
 from .landing.password import PasswordResetRequest, PasswordReset
