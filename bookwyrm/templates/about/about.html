@@ -75,9 +75,13 @@
     <header class="content">
         <h2 class="title is-3">{% trans "Meet your admins" %}</h2>
         <p>
-            these nice people run your instance, when you have a problem, talk to them. when you make a report, they are the ones that receive it
+        {% url "conduct" as coc_path %}
+        {% blocktrans with site_name=site.name %}
+            {{ site_name }}'s moderators and administrators keep the site up and running, enforce the <a href="coc_path">code of conduct</a>, and respond when users report spam and bad behavior.
+        {% endblocktrans %}
         </p>
     </header>
+
     <div class="columns is-multiline">
         {% for user in admins %}
         <div class="column">
