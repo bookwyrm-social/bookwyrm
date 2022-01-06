@@ -95,7 +95,7 @@ class SuggestedUsers(RedisStore):
         ).annotate(mutuals=Case(*annotations, output_field=IntegerField(), default=0))
         if local:
             users = users.filter(local=True)
-        return users[:5]
+        return users.order_by("-mutuals")[:5]
 
 
 def get_annotated_users(viewer, *args, **kwargs):
