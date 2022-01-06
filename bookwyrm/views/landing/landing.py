@@ -29,24 +29,50 @@ def about(request):
 
     books = models.Edition.objects.exclude(cover__exact="")
 
-    total_ratings = models.Review.objects.filter(user__local=True, deleted=False).count()
-    data["top_rated"] = books.annotate(
-        rating=Avg("review__rating", filter=Q(review__user__local=True, review__deleted=False)),
-        rating_count=Count("review__rating", filter=Q(review__user__local=True, review__deleted=False)),
-    ).annotate(
-        weighted=F("rating") * F("rating_count") / total_ratings
-    ).filter(weighted__gt=0).order_by("-weighted").first()
+    total_ratings = models.Review.objects.filter(
+        user__local=True, deleted=False
+    ).count()
+    data["top_rated"] = (
+        books.annotate(
+            rating=Avg(
+                "review__rating",
+                filter=Q(review__user__local=True, review__deleted=False),
+            ),
+            rating_count=Count(
+                "review__rating",
+                filter=Q(review__user__local=True, review__deleted=False),
+            ),
+        )
+        .annotate(weighted=F("rating") * F("rating_count") / total_ratings)
+        .filter(weighted__gt=0)
+        .order_by("-weighted")
+        .first()
+    )
 
-    data["controversial"] = books.annotate(
-        deviation=StdDev("review__rating", filter=Q(review__user__local=True, review__deleted=False)),
-        rating_count=Count("review__rating", filter=Q(review__user__local=True, review__deleted=False)),
-    ).annotate(
-        weighted=F("deviation") * F("rating_count") / total_ratings
-    ).filter(weighted__gt=0).order_by("-weighted").first()
+    data["controversial"] = (
+        books.annotate(
+            deviation=StdDev(
+                "review__rating",
+                filter=Q(review__user__local=True, review__deleted=False),
+            ),
+            rating_count=Count(
+                "review__rating",
+                filter=Q(review__user__local=True, review__deleted=False),
+            ),
+        )
+        .annotate(weighted=F("deviation") * F("rating_count") / total_ratings)
+        .filter(weighted__gt=0)
+        .order_by("-weighted")
+        .first()
+    )
 
-    data["wanted"] = books.annotate(
-        shelf_count=Count("shelves", filter=Q(shelves__identifier="to-read"))
-    ).order_by("-shelf_count").first()
+    data["wanted"] = (
+        books.annotate(
+            shelf_count=Count("shelves", filter=Q(shelves__identifier="to-read"))
+        )
+        .order_by("-shelf_count")
+        .first()
+    )
 
     return TemplateResponse(request, "about/about.html", data)
 
