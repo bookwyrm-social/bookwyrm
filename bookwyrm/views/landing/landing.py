@@ -29,17 +29,17 @@ def about(request):
 
     books = models.Edition.objects.exclude(cover__exact="")
 
-    total_ratings = models.Review.objects.filter(user__local=True).count()
+    total_ratings = models.Review.objects.filter(user__local=True, deleted=False).count()
     data["top_rated"] = books.annotate(
-        rating=Avg("review__rating", filter=Q(review__user__local=True)),
-        rating_count=Count("review__rating", filter=Q(review__user__local=True)),
+        rating=Avg("review__rating", filter=Q(review__user__local=True, review__deleted=False)),
+        rating_count=Count("review__rating", filter=Q(review__user__local=True, review__deleted=False)),
     ).annotate(
         weighted=F("rating") * F("rating_count") / total_ratings
     ).filter(weighted__gt=0).order_by("-weighted").first()
 
     data["controversial"] = books.annotate(
-        deviation=StdDev("review__rating", filter=Q(review__user__local=True)),
-        rating_count=Count("review__rating", filter=Q(review__user__local=True)),
+        deviation=StdDev("review__rating", filter=Q(review__user__local=True, review__deleted=False)),
+        rating_count=Count("review__rating", filter=Q(review__user__local=True, review__deleted=False)),
     ).annotate(
         weighted=F("deviation") * F("rating_count") / total_ratings
     ).filter(weighted__gt=0).order_by("-weighted").first()
