@@ -3,7 +3,7 @@ import math
 import logging
 from django.dispatch import receiver
 from django.db import transaction
-from django.db.models import signals, Count, Q
+from django.db.models import signals, Count, Q, Case, When, IntegerField
 
 from bookwyrm import models
 from bookwyrm.redis_store import RedisStore, r
@@ -85,24 +85,17 @@ class SuggestedUsers(RedisStore):
     def get_suggestions(self, user, local=False):
         """get suggestions"""
         values = self.get_store(self.store_id(user), withscores=True)
-        results = []
+        annotations = [
+            When(pk=int(pk), then=self.get_counts_from_rank(score)["mutuals"])
+            for (pk, score) in values
+        ]
         # annotate users with mutuals and shared book counts
-        for user_id, rank in values:
-            counts = self.get_counts_from_rank(rank)
-            try:
-                user = models.User.objects.get(
-                    id=user_id, is_active=True, bookwyrm_user=True
-                )
-            except models.User.DoesNotExist as err:
-                # if this happens, the suggestions are janked way up
-                logger.exception(err)
-                continue
-            user.mutuals = counts["mutuals"]
-            if (local and user.local) or not local:
-                results.append(user)
-            if len(results) >= 5:
-                break
-        return results
+        users = models.User.objects.filter(
+            is_active=True, bookwyrm_user=True, id__in=[pk for (pk, _) in values]
+        ).annotate(mutuals=Case(*annotations, output_field=IntegerField(), default=0))
+        if local:
+            users = users.filter(local=True)
+        return users[:5]
 
 
 def get_annotated_users(viewer, *args, **kwargs):
