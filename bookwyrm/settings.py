@@ -24,7 +24,9 @@ EMAIL_HOST_USER = env("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
 EMAIL_USE_TLS = env.bool("EMAIL_USE_TLS", True)
 EMAIL_USE_SSL = env.bool("EMAIL_USE_SSL", False)
-DEFAULT_FROM_EMAIL = f"admin@{DOMAIN}"
+EMAIL_SENDER_NAME = env.bool("EMAIL_SENDER_NAME", "admin")
+EMAIL_SENDER_DOMAIN = env.bool("EMAIL_SENDER_NAME", DOMAIN)
+EMAIL_SENDER = f"{EMAIL_SENDER_NAME}@{EMAIL_SENDER_DOMAIN}"
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

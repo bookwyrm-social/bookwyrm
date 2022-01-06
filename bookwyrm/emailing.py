@@ -69,7 +69,7 @@ def format_email(email_name, data):
 def send_email(recipient, subject, html_content, text_content):
     """use a task to send the email"""
     email = EmailMultiAlternatives(
-        subject, text_content, settings.DEFAULT_FROM_EMAIL, [recipient]
+        subject, text_content, settings.EMAIL_SENDER, [recipient]
     )
     email.attach_alternative(html_content, "text/html")
     email.send()
