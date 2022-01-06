@@ -1,7 +1,6 @@
 {% extends 'components/card.html' %}
 {% load i18n %}
 {% load utilities %}
-{% load cache %}
 
 {% block card-header %}
 <div
@@ -31,7 +30,6 @@
 {# nothing here #}
 {% elif request.user.is_authenticated %}
 
-    {% cache 259200 interact request.user.id status.id %}
     <div class="card-footer-item">
         {% trans "Reply" as button_text %}
         {% include 'snippets/toggle/toggle_button.html' with controls_text="show_comment" controls_uid=status.id text=button_text icon_with_text="comment" class="is-small is-light is-transparent toggle-button" focus="id_content_reply" %}
@@ -47,7 +45,6 @@
         {% include 'snippets/status/status_options.html' with class="is-small is-light is-transparent" right=True %}
     </div>
     {% endif %}
-    {% endcache %}
 
 {% else %}
 

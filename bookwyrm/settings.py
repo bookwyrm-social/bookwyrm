@@ -120,7 +120,13 @@ STREAMS = [
 ]
 
 # Redis cache backend
-if not env("USE_LOCAL_CACHE", False):
+if env("USE_DUMMY_CACHE", False):
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.dummy.DummyCache",
+        }
+    }
+else:
     # pylint: disable=line-too-long
     CACHES = {
         "default": {
