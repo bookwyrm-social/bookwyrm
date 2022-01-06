@@ -9,7 +9,11 @@ def get_admins(apps, schema_editor):
 
     db_alias = schema_editor.connection.alias
     groups = apps.get_model("auth", "Group")
-    group = groups.objects.using(db_alias).get(name="admin")
+    try:
+        group = groups.objects.using(db_alias).get(name="admin")
+    except groups.DoesNotExist:
+        # for tests
+        return
 
     users = apps.get_model("bookwyrm", "User")
     admins = users.objects.using(db_alias).filter(is_superuser=True)
