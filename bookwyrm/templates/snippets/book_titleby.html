@@ -2,7 +2,9 @@
 {% load utilities %}
 {% load cache %}
 {% spaceless %}
-{% cache None titleby book.id %}
+
+{# 6 month cache #}
+{% cache 15552000 titleby book.id %}
 
 {% if book.authors.exists %}
 {% blocktrans trimmed with path=book.local_path title=book|book_title %}
