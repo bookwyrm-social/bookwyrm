@@ -1,5 +1,7 @@
 """ template filters for status interaction buttons """
 from django import template
+from django.core.cache import cache
+
 from bookwyrm import models
 
 
@@ -9,13 +11,21 @@ register = template.Library()
 @register.filter(name="liked")
 def get_user_liked(user, status):
     """did the given user fav a status?"""
-    return models.Favorite.objects.filter(user=user, status=status).exists()
+    return cache.get_or_set(
+        f"fav-{user.id}-{status.id}",
+        models.Favorite.objects.filter(user=user, status=status).exists(),
+        259200,
+    )
 
 
 @register.filter(name="boosted")
 def get_user_boosted(user, status):
     """did the given user fav a status?"""
-    return status.boosters.filter(user=user).exists()
+    return cache.get_or_set(
+        f"boost-{user.id}-{status.id}",
+        status.boosters.filter(user=user).exists(),
+        259200,
+    )
 
 
 @register.filter(name="saved")
