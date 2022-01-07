@@ -54,7 +54,7 @@ class ListsStreamSignals(TestCase):
     def test_populate_lists_on_account_create_command(self, _):
         """create streams for a user"""
         with patch("bookwyrm.lists_stream.populate_lists_task.delay") as mock:
-            lists_stream.populate_lists_on_account_create_command(self.local_user.id)
+            lists_stream.add_list_on_account_create_command(self.local_user.id)
         self.assertEqual(mock.call_count, 1)
         args = mock.call_args[0]
         self.assertEqual(args[0], self.local_user.id)
