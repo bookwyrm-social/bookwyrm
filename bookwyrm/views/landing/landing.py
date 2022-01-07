@@ -1,8 +1,6 @@
 """ non-interactive pages """
 from django.template.response import TemplateResponse
 from django.views import View
-from django.utils.decorators import method_decorator
-from django.views.decorators.cache import cache_page
 
 from bookwyrm import forms
 from bookwyrm.views import helpers
