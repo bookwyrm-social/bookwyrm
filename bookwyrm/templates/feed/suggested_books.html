@@ -1,9 +1,6 @@
 {% load i18n %}
-{% load cache %}
 {% load bookwyrm_tags %}
 
-{# 6 month cache #}
-{% cache 15552000 suggested_books request.user.id %}
 {% suggested_books as suggested_books %}
 <section class="block">
     <h2 class="title is-4">{% trans "Your Books" %}</h2>
@@ -80,4 +77,3 @@
     {% endwith %}
     {% endif %}
 </section>
-{% endcache %}

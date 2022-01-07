@@ -113,13 +113,16 @@ class GetStartedUsers(View):
             .filter(
                 similarity__gt=0.5,
             )
+            .exclude(
+                id=request.user.id,
+            )
             .order_by("-similarity")[:5]
         )
         data = {"no_results": not user_results}
 
         if user_results.count() < 5:
-            user_results = list(user_results) + suggested_users.get_suggestions(
-                request.user
+            user_results = list(user_results) + list(
+                suggested_users.get_suggestions(request.user)
             )
 
         data["suggested_users"] = user_results
