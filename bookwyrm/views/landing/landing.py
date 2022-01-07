@@ -33,7 +33,6 @@ class Home(View):
 class Landing(View):
     """preview of recently reviewed books"""
 
-    @method_decorator(cache_page(60 * 60), name="dispatch")
     def get(self, request):
         """tiled book activity page"""
         data = {
