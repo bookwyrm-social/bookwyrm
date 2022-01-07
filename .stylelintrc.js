@@ -13,8 +13,8 @@ module.exports = {
             "declarations"
         ],
         "indentation": 4,
-        "property-no-vendor-prefix": false,
-        "color-function-notation": false,
-        "declaration-block-no-redundant-longhand-properties": false,
+        "property-no-vendor-prefix": null,
+        "color-function-notation": null,
+        "declaration-block-no-redundant-longhand-properties": null,
     }
 };
