@@ -13,6 +13,9 @@ class ListsStream(RedisStore):
 
     def stream_id(self, user):  # pylint: disable=no-self-use
         """the redis key for this user's instance of this stream"""
+        if isinstance(user, int):
+            # allows the function to take an int or an obj
+            return f"{user}-lists"
         return f"{user.id}-lists"
 
     def get_rank(self, obj):  # pylint: disable=no-self-use
@@ -119,7 +122,7 @@ def add_list_on_create(sender, instance, created, *args, **kwargs):
     transaction.on_commit(lambda: add_list_on_create_command(instance.id))
 
 
-@receiver(signals.pre_delete, sender=models.List)
+@receiver(signals.post_delete, sender=models.List)
 # pylint: disable=unused-argument
 def remove_list_on_delete(sender, instance, *args, **kwargs):
     """remove deleted lists to streams"""
@@ -214,15 +217,15 @@ def populate_lists_task(user_id):
 
 
 @app.task(queue=MEDIUM)
-def remove_list_task(list_ids):
+def remove_list_task(list_id):
     """remove a list from any stream it might be in"""
-    # this can take an id or a list of ids
-    if not isinstance(list_ids, list):
-        list_ids = [list_ids]
-    lists = models.List.objects.filter(id__in=list_ids)
+    stores = models.User.objects.filter(local=True, is_active=True).values_list(
+        "id", flat=True
+    )
 
-    for book_list in lists:
-        ListsStream().remove_object_from_related_stores(book_list)
+    # delete for every store
+    stores = [ListsStream().stream_id(idx) for idx in stores]
+    ListsStream().remove_object_from_related_stores(list_id, stores=stores)
 
 
 @app.task(queue=HIGH)
