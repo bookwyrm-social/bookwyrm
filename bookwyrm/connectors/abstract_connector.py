@@ -35,7 +35,7 @@ class AbstractMinimalConnector(ABC):
         for field in self_fields:
             setattr(self, field, getattr(info, field))
 
-    def search(self, query, min_confidence=None, timeout=5):
+    def search(self, query, min_confidence=None, timeout=settings.QUERY_TIMEOUT):
         """free text search"""
         params = {}
         if min_confidence:
@@ -52,12 +52,13 @@ class AbstractMinimalConnector(ABC):
             results.append(self.format_search_result(doc))
         return results
 
-    def isbn_search(self, query):
+    def isbn_search(self, query, timeout=settings.QUERY_TIMEOUT):
         """isbn search"""
         params = {}
         data = self.get_search_data(
             f"{self.isbn_search_url}{query}",
             params=params,
+            timeout=timeout,
         )
         results = []
 

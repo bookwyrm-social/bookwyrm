@@ -119,6 +119,12 @@ STREAMS = [
     {"key": "books", "name": _("Books Timeline"), "shortname": _("Books")},
 ]
 
+# Search configuration
+# total time in seconds that the instance will spend searching connectors
+SEARCH_TIMEOUT = int(env("SEARCH_TIMEOUT", 15))
+# timeout for a query to an individual connector
+QUERY_TIMEOUT = int(env("QUERY_TIMEOUT", 5))
+
 # Redis cache backend
 if env("USE_DUMMY_CACHE", False):
     CACHES = {
