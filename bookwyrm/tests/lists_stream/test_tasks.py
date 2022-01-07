@@ -62,7 +62,7 @@ class Activitystreams(TestCase):
             lists_stream.remove_list_task(self.list.id)
         self.assertEqual(mock.call_count, 1)
         args = mock.call_args[0]
-        self.assertEqual(args[0], self.list)
+        self.assertEqual(args[0], self.list.id)
 
     def test_add_list_task(self, *_):
         """add a list to all streams"""
