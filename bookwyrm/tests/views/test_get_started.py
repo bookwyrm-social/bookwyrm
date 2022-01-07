@@ -25,6 +25,13 @@ class GetStartedViews(TestCase):
                 local=True,
                 localname="mouse",
             )
+            self.local_user = models.User.objects.create_user(
+                "rat@local.com",
+                "rat@rat.rat",
+                "password",
+                local=True,
+                localname="rat",
+            )
         self.book = models.Edition.objects.create(
             parent_work=models.Work.objects.create(title="hi"),
             title="Example Edition",
@@ -121,14 +128,15 @@ class GetStartedViews(TestCase):
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
-    @patch("bookwyrm.suggested_users.SuggestedUsers.get_suggestions")
     def test_users_view_with_query(self, *_):
         """there are so many views, this just makes sure it LOADS"""
         view = views.GetStartedUsers.as_view()
         request = self.factory.get("?query=rat")
         request.user = self.local_user
 
-        result = view(request)
+        with patch("bookwyrm.suggested_users.SuggestedUsers.get_suggestions") as mock:
+            mock.return_value = models.User.objects.all()
+            result = view(request)
 
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
