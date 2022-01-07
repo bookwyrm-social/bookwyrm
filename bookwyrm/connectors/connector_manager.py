@@ -11,6 +11,7 @@ from django.db.models import signals
 from requests import HTTPError
 
 from bookwyrm import book_search, models
+from bookwyrm.settings import SEARCH_TIMEOUT
 from bookwyrm.tasks import app
 
 logger = logging.getLogger(__name__)
@@ -30,7 +31,6 @@ def search(query, min_confidence=0.1, return_first=False):
     isbn = re.sub(r"[\W_]", "", query)
     maybe_isbn = len(isbn) in [10, 13]  # ISBN10 or ISBN13
 
-    timeout = 15
     start_time = datetime.now()
     for connector in get_connectors():
         result_set = None
@@ -62,7 +62,7 @@ def search(query, min_confidence=0.1, return_first=False):
                     "results": result_set,
                 }
             )
-        if (datetime.now() - start_time).seconds >= timeout:
+        if (datetime.now() - start_time).seconds >= SEARCH_TIMEOUT:
             break
 
     if return_first:
