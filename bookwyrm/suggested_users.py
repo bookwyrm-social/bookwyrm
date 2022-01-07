@@ -30,6 +30,7 @@ class SuggestedUsers(RedisStore):
 
     def get_counts_from_rank(self, rank):  # pylint: disable=no-self-use
         """calculate mutuals count and shared books count from rank"""
+        # pylint: disable=c-extension-no-member
         return {
             "mutuals": math.floor(rank),
             # "shared_books": int(1 / (-1 * (rank % 1 - 1))) - 1,
@@ -95,7 +96,7 @@ class SuggestedUsers(RedisStore):
         ).annotate(mutuals=Case(*annotations, output_field=IntegerField(), default=0))
         if local:
             users = users.filter(local=True)
-        return users[:5]
+        return users.order_by("-mutuals")[:5]
 
 
 def get_annotated_users(viewer, *args, **kwargs):
@@ -113,16 +114,17 @@ def get_annotated_users(viewer, *args, **kwargs):
                 ),
                 distinct=True,
             ),
-            #             shared_books=Count(
-            #                 "shelfbook",
-            #                 filter=Q(
-            #                     ~Q(id=viewer.id),
-            #                     shelfbook__book__parent_work__in=[
-            #                         s.book.parent_work for s in viewer.shelfbook_set.all()
-            #                     ],
-            #                 ),
-            #                 distinct=True,
-            #             ),
+            # pylint: disable=line-too-long
+            # shared_books=Count(
+            #     "shelfbook",
+            #     filter=Q(
+            #         ~Q(id=viewer.id),
+            #         shelfbook__book__parent_work__in=[
+            #             s.book.parent_work for s in viewer.shelfbook_set.all()
+            #         ],
+            #     ),
+            #     distinct=True,
+            # ),
         )
     )
 

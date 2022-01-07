@@ -24,7 +24,9 @@ EMAIL_HOST_USER = env("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
 EMAIL_USE_TLS = env.bool("EMAIL_USE_TLS", True)
 EMAIL_USE_SSL = env.bool("EMAIL_USE_SSL", False)
-DEFAULT_FROM_EMAIL = f"admin@{DOMAIN}"
+EMAIL_SENDER_NAME = env("EMAIL_SENDER_NAME", "admin")
+EMAIL_SENDER_DOMAIN = env("EMAIL_SENDER_NAME", DOMAIN)
+EMAIL_SENDER = f"{EMAIL_SENDER_NAME}@{EMAIL_SENDER_DOMAIN}"
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -118,6 +120,34 @@ STREAMS = [
     {"key": "home", "name": _("Home Timeline"), "shortname": _("Home")},
     {"key": "books", "name": _("Books Timeline"), "shortname": _("Books")},
 ]
+
+# Search configuration
+# total time in seconds that the instance will spend searching connectors
+SEARCH_TIMEOUT = int(env("SEARCH_TIMEOUT", 15))
+# timeout for a query to an individual connector
+QUERY_TIMEOUT = int(env("QUERY_TIMEOUT", 5))
+
+# Redis cache backend
+if env("USE_DUMMY_CACHE", False):
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.dummy.DummyCache",
+        }
+    }
+else:
+    # pylint: disable=line-too-long
+    CACHES = {
+        "default": {
+            "BACKEND": "django_redis.cache.RedisCache",
+            "LOCATION": f"redis://:{REDIS_ACTIVITY_PASSWORD}@{REDIS_ACTIVITY_HOST}:{REDIS_ACTIVITY_PORT}/0",
+            "OPTIONS": {
+                "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            },
+        }
+    }
+
+    SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+    SESSION_CACHE_ALIAS = "default"
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
