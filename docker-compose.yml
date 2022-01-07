@@ -74,8 +74,10 @@ services:
     restart: on-failure
   flower:
     build: .
-    command: flower -A celerywyrm
+    command: celery -A celerywyrm flower
     env_file: .env
+    ports:
+      - ${FLOWER_PORT}:${FLOWER_PORT}
     volumes:
       - .:/app
     networks:
@@ -84,8 +86,6 @@ services:
       - db
       - redis_broker
     restart: on-failure
-    ports:
-      - 8888:8888
 volumes:
   pgdata:
   static_volume:
