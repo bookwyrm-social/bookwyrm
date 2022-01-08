@@ -2,12 +2,17 @@
 {% load humanize %}
 {% load i18n %}
 {% load utilities %}
+{% load bookwyrm_tags %}
+{% load cache %}
 
 {% block title %}
 {% trans "About" %}
 {% endblock %}
 
 {% block about_content %}
+{# seven day cache #}
+{% cache 604800 about_page %}
+{% get_book_superlatives as superlatives %}
 <section class="content pb-4">
     <h2>
         {% blocktrans with site_name=site.name %}Welcome to {{ site_name }}!{% endblocktrans %}
@@ -22,7 +27,7 @@
 
     <div class="columns">
         {% if top_rated %}
-        {% with book=top_rated.default_edition rating=top_rated.rating %}
+        {% with book=superlatives.top_rated.default_edition rating=top_rated.rating %}
         <div class="column is-one-third is-flex">
             <div class="media notification">
                 <div class="media-left">
@@ -41,7 +46,7 @@
         {% endif %}
 
         {% if wanted %}
-        {% with book=wanted.default_edition %}
+        {% with book=superlatives.wanted.default_edition %}
         <div class="column is-one-third is-flex">
             <div class="media notification">
                 <div class="media-left">
@@ -60,7 +65,7 @@
         {% endif %}
 
         {% if controversial %}
-        {% with book=controversial.default_edition %}
+        {% with book=superlatives.controversial.default_edition %}
         <div class="column is-one-third is-flex">
             <div class="media notification">
                 <div class="media-left">
@@ -131,4 +136,6 @@
         {% endfor %}
     </div>
 </section>
+
+{% endcache %}
 {% endblock %}
