@@ -24,37 +24,33 @@ def about(request):
         "version": settings.VERSION,
     }
 
-    books = models.Edition.objects.exclude(cover__exact="")
-
-    total_ratings = models.Review.objects.filter(
-        user__local=True, deleted=False
-    ).count()
+    total_ratings = models.Review.objects.filter(local=True, deleted=False).count()
     data["top_rated"] = (
-        books.annotate(
+        models.Work.objects.annotate(
             rating=Avg(
-                "review__rating",
-                filter=Q(review__user__local=True, review__deleted=False),
+                "editions__review__rating",
+                filter=Q(editions__review__local=True, editions__review__deleted=False),
             ),
             rating_count=Count(
-                "review__rating",
-                filter=Q(review__user__local=True, review__deleted=False),
+                "editions__review",
+                filter=Q(editions__review__local=True, editions__review__deleted=False),
             ),
         )
         .annotate(weighted=F("rating") * F("rating_count") / total_ratings)
-        .filter(weighted__gt=0)
+        .filter(rating__gt=4, weighted__gt=0)
         .order_by("-weighted")
         .first()
     )
 
     data["controversial"] = (
-        books.annotate(
+        models.Work.objects.annotate(
             deviation=StdDev(
-                "review__rating",
-                filter=Q(review__user__local=True, review__deleted=False),
+                "editions__review__rating",
+                filter=Q(editions__review__local=True, editions__review__deleted=False),
             ),
             rating_count=Count(
-                "review__rating",
-                filter=Q(review__user__local=True, review__deleted=False),
+                "editions__review",
+                filter=Q(editions__review__local=True, editions__review__deleted=False),
             ),
         )
         .annotate(weighted=F("deviation") * F("rating_count") / total_ratings)
@@ -64,8 +60,10 @@ def about(request):
     )
 
     data["wanted"] = (
-        books.annotate(
-            shelf_count=Count("shelves", filter=Q(shelves__identifier="to-read"))
+        models.Work.objects.annotate(
+            shelf_count=Count(
+                "editions__shelves", filter=Q(editions__shelves__identifier="to-read")
+            )
         )
         .order_by("-shelf_count")
         .first()
