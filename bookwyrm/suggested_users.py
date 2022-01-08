@@ -2,6 +2,7 @@
 import math
 import logging
 from django.dispatch import receiver
+from django.db import transaction
 from django.db.models import signals, Count, Q, Case, When, IntegerField
 
 from bookwyrm import models
@@ -192,7 +193,7 @@ def update_user(sender, instance, created, update_fields=None, **kwargs):
     """an updated user, neat"""
     # a new user is found, create suggestions for them
     if created and instance.local:
-        rerank_suggestions_task.delay(instance.id)
+        transaction.on_commit(lambda: update_new_user_command(instance.id))
 
     # we know what fields were updated and discoverability didn't change
     if not instance.bookwyrm_user or (
@@ -210,6 +211,11 @@ def update_user(sender, instance, created, update_fields=None, **kwargs):
         rerank_user_task.delay(instance.id, update_only=False)
     elif not created:
         remove_user_task.delay(instance.id)
+
+
+def update_new_user_command(instance_id):
+    """wait for transaction to complete"""
+    rerank_suggestions_task.delay(instance_id)
 
 
 @receiver(signals.post_save, sender=models.FederatedServer)

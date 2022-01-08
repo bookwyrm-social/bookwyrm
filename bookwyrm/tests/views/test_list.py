@@ -21,7 +21,7 @@ class ListViews(TestCase):
         self.factory = RequestFactory()
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
-        ):
+        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
             self.local_user = models.User.objects.create_user(
                 "mouse@local.com",
                 "mouse@mouse.com",
@@ -72,10 +72,13 @@ class ListViews(TestCase):
 
         models.SiteSettings.objects.create()
 
-    def test_lists_page(self):
+    @patch("bookwyrm.lists_stream.ListsStream.get_list_stream")
+    def test_lists_page(self, _):
         """there are so many views, this just makes sure it LOADS"""
         view = views.Lists.as_view()
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
+        with patch(
+            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+        ), patch("bookwyrm.lists_stream.add_list_task.delay"):
             models.List.objects.create(name="Public list", user=self.local_user)
             models.List.objects.create(
                 name="Private list", privacy="direct", user=self.local_user
@@ -346,16 +349,16 @@ class ListViews(TestCase):
     def test_curate_page(self):
         """there are so many views, this just makes sure it LOADS"""
         view = views.Curate.as_view()
+        request = self.factory.get("")
+        request.user = self.local_user
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             models.ListItem.objects.create(
-                user=self.local_user,
                 book_list=self.list,
+                user=self.local_user,
                 book=self.book,
                 approved=False,
                 order=1,
             )
-        request = self.factory.get("")
-        request.user = self.local_user
 
         result = view(request, self.list.id)
         self.assertIsInstance(result, TemplateResponse)

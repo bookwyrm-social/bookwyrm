@@ -14,21 +14,15 @@ class Group(TestCase):
 
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
-        ):
+        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
             self.owner_user = models.User.objects.create_user(
                 "mouse", "mouse@mouse.mouse", "mouseword", local=True, localname="mouse"
             )
 
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ):
             self.rat = models.User.objects.create_user(
                 "rat", "rat@rat.rat", "ratword", local=True, localname="rat"
             )
 
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ):
             self.badger = models.User.objects.create_user(
                 "badger",
                 "badger@badger.badger",
@@ -37,9 +31,6 @@ class Group(TestCase):
                 localname="badger",
             )
 
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ):
             self.capybara = models.User.objects.create_user(
                 "capybara",
                 "capybara@capybara.capybara",

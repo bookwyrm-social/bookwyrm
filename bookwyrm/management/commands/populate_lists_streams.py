@@ -1,12 +1,11 @@
-""" Re-create user streams """
+""" Re-create list streams """
 from django.core.management.base import BaseCommand
-from bookwyrm import activitystreams, lists_stream, models
+from bookwyrm import lists_stream, models
 
 
-def populate_streams(stream=None):
-    """build all the streams for all the users"""
-    streams = [stream] if stream else activitystreams.streams.keys()
-    print("Populating streams", streams)
+def populate_lists_streams():
+    """build all the lists streams for all the users"""
+    print("Populating lists streams")
     users = models.User.objects.filter(
         local=True,
         is_active=True,
@@ -15,15 +14,12 @@ def populate_streams(stream=None):
     for user in users:
         print(".", end="")
         lists_stream.populate_lists_task.delay(user.id)
-        for stream_key in streams:
-            print(".", end="")
-            activitystreams.populate_stream_task.delay(stream_key, user.id)
 
 
 class Command(BaseCommand):
-    """start all over with user streams"""
+    """start all over with lists streams"""
 
-    help = "Populate streams for all users"
+    help = "Populate list streams for all users"
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -35,5 +31,4 @@ class Command(BaseCommand):
     # pylint: disable=no-self-use,unused-argument
     def handle(self, *args, **options):
         """run feed builder"""
-        stream = options.get("stream")
-        populate_streams(stream=stream)
+        populate_lists_streams()
