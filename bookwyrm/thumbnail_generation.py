@@ -1,4 +1,6 @@
 """thumbnail generation strategy for django-imagekit"""
+
+
 class Strategy:
     """
     A strategy that generates the image on source saved (Optimistic),
