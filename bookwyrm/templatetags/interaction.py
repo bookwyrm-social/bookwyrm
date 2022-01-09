@@ -16,7 +16,7 @@ def get_user_liked(user, status):
         lambda u, s: models.Favorite.objects.filter(user=u, status=s).exists(),
         user,
         status,
-        timeout=259200
+        timeout=259200,
     )
 
 

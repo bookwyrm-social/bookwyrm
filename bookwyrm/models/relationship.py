@@ -40,10 +40,12 @@ class UserRelationship(BookWyrmModel):
     def save(self, *args, **kwargs):
         """clear the template cache"""
         # invalidate the template cache
-        cache.delete_many([
-            f"relationship-{self.user_subject.id}-{self.user_object.id}",
-            f"relationship-{self.user_object.id}-{self.user_subject.id}",
-        ])
+        cache.delete_many(
+            [
+                f"relationship-{self.user_subject.id}-{self.user_object.id}",
+                f"relationship-{self.user_object.id}-{self.user_subject.id}",
+            ]
+        )
         super().save(*args, **kwargs)
 
     class Meta:
