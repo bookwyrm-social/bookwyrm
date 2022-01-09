@@ -112,6 +112,24 @@ def latest_read_through(book, user):
     )
 
 
+@register.simple_tag(takes_context=False)
+def get_landing_books():
+    """list of books for the landing page"""
+    return list(
+        set(
+            models.Edition.objects.filter(
+                review__published_date__isnull=False,
+                review__deleted=False,
+                review__user__local=True,
+                review__privacy__in=["public", "unlisted"],
+            )
+            .exclude(cover__exact="")
+            .distinct()
+            .order_by("-review__published_date")[:6]
+        )
+    )
+
+
 @register.simple_tag(takes_context=True)
 def mutuals_count(context, user):
     """how many users that you follow, follow them"""
