@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-01-09 00:54+0000\n"
-"PO-Revision-Date: 2022-01-09 10:40\n"
+"PO-Revision-Date: 2022-01-09 11:36\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: German\n"
 "Language: de\n"
@@ -408,7 +408,7 @@ msgstr ""
 #: bookwyrm/templates/annual_summary/layout.html:112
 #, python-format
 msgid "Sadly %(display_name)s didn’t finish any books in %(year)s"
-msgstr ""
+msgstr "Leider hat %(display_name)s keine Bücher in %(year)s zu Ende gelesen"
 
 #: bookwyrm/templates/annual_summary/layout.html:118
 #, python-format
@@ -461,23 +461,23 @@ msgstr "…und das am längsten"
 #, python-format
 msgid "%(display_name)s set a goal of reading %(goal)s book in %(year)s,<br /> and achieved %(goal_percent)s%% of that goal"
 msgid_plural "%(display_name)s set a goal of reading %(goal)s books in %(year)s,<br /> and achieved %(goal_percent)s%% of that goal"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(display_name)s hat sich als Ziel gesetzt, %(goal)s Buch in %(year)s zu lesen<br /> und hat %(goal_percent)s%% dieses Ziels erreicht"
+msgstr[1] "%(display_name)s hat sich als Ziel gesetzt, %(goal)s Bücher in %(year)s zu lesen<br /> und hat %(goal_percent)s%% dieses Ziels erreicht"
 
 #: bookwyrm/templates/annual_summary/layout.html:209
 msgid "Way to go!"
-msgstr ""
+msgstr "Weiter so!"
 
 #: bookwyrm/templates/annual_summary/layout.html:224
 #, python-format
 msgid "%(display_name)s left %(ratings_total)s rating, <br />their average rating is %(rating_average)s"
 msgid_plural "%(display_name)s left %(ratings_total)s ratings, <br />their average rating is %(rating_average)s"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(display_name)s hat %(ratings_total)s Rezensionen mit einer durchschnittlichen Bewertung von %(rating_average)s geschrieben"
+msgstr[1] "%(display_name)s hat %(ratings_total)s Rezensionen mit einer durchschnittlichen Bewertung von %(rating_average)s geschrieben"
 
 #: bookwyrm/templates/annual_summary/layout.html:238
 msgid "Their best rated review"
-msgstr ""
+msgstr "Ihre oder Seine bestbewertete Rezension"
 
 #: bookwyrm/templates/annual_summary/layout.html:251
 #, python-format
@@ -487,7 +487,7 @@ msgstr ""
 #: bookwyrm/templates/annual_summary/layout.html:268
 #, python-format
 msgid "All the books %(display_name)s read in %(year)s"
-msgstr ""
+msgstr "Alle Bücher die %(display_name)s im Jahr %(year)s gelesen hat"
 
 #: bookwyrm/templates/author/author.html:18
 #: bookwyrm/templates/author/author.html:19
@@ -496,7 +496,7 @@ msgstr "Autor*in bearbeiten"
 
 #: bookwyrm/templates/author/author.html:40
 msgid "Author details"
-msgstr ""
+msgstr "Über den Autor"
 
 #: bookwyrm/templates/author/author.html:44
 #: bookwyrm/templates/author/edit_author.html:42
@@ -513,7 +513,7 @@ msgstr "Gestorben:"
 
 #: bookwyrm/templates/author/author.html:70
 msgid "External links"
-msgstr ""
+msgstr "Externe Links"
 
 #: bookwyrm/templates/author/author.html:75
 msgid "Wikipedia"
@@ -683,7 +683,7 @@ msgstr "Buch bearbeiten"
 
 #: bookwyrm/templates/book/book.html:79 bookwyrm/templates/book/book.html:82
 msgid "Click to add cover"
-msgstr ""
+msgstr "Cover durch Klicken hinzufügen"
 
 #: bookwyrm/templates/book/book.html:88
 msgid "Failed to load cover"
@@ -691,7 +691,7 @@ msgstr "Fehler beim Laden des Titelbilds"
 
 #: bookwyrm/templates/book/book.html:99
 msgid "Click to enlarge"
-msgstr ""
+msgstr "Zum Vergrößern anklicken"
 
 #: bookwyrm/templates/book/book.html:170
 #, python-format
@@ -717,7 +717,7 @@ msgstr "<a href=\"%(path)s/editions\">%(count)s Ausgaben</a>"
 
 #: bookwyrm/templates/book/book.html:211
 msgid "You have shelved this edition in:"
-msgstr ""
+msgstr "Du hast diese Ausgabe eingeordnet unter:"
 
 #: bookwyrm/templates/book/book.html:226
 #, python-format
@@ -812,7 +812,7 @@ msgstr "Titelbild von URL laden:"
 
 #: bookwyrm/templates/book/cover_show_modal.html:6
 msgid "Book cover preview"
-msgstr ""
+msgstr "Vorschau auf das Cover"
 
 #: bookwyrm/templates/book/cover_show_modal.html:11
 #: bookwyrm/templates/components/inline_form.html:8
@@ -970,7 +970,7 @@ msgstr ""
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:152
 msgid "Add Another Author"
-msgstr ""
+msgstr "Weiteren Autor hinzufügen"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:160
 #: bookwyrm/templates/shelf/shelf.html:143
@@ -1258,17 +1258,17 @@ msgstr "Alle bekannten Benutzer*innen"
 #: bookwyrm/templates/discover/card-header.html:8
 #, python-format
 msgid "<a href=\"%(user_path)s\">%(username)s</a> wants to read <a href=\"%(book_path)s\">%(book_title)s</a>"
-msgstr ""
+msgstr "<a href=\"%(user_path)s\">%(username)s</a> will <a href=\"%(book_path)s\">%(book_title)s</a> lesen"
 
 #: bookwyrm/templates/discover/card-header.html:13
 #, python-format
 msgid "<a href=\"%(user_path)s\">%(username)s</a> finished reading <a href=\"%(book_path)s\">%(book_title)s</a>"
-msgstr ""
+msgstr "<a href=\"%(user_path)s\">%(username)s</a> hat <a href=\"%(book_path)s\">%(book_title)s</a> zu Ende gelesen"
 
 #: bookwyrm/templates/discover/card-header.html:18
 #, python-format
 msgid "<a href=\"%(user_path)s\">%(username)s</a> started reading <a href=\"%(book_path)s\">%(book_title)s</a>"
-msgstr ""
+msgstr "<a href=\"%(user_path)s\">%(username)s</a> hat angefangen <a href=\"%(book_path)s\">%(book_title)s</a> zu lesen"
 
 #: bookwyrm/templates/discover/card-header.html:23
 #, python-format
@@ -1526,12 +1526,12 @@ msgstr "Verzeichnis anzeigen"
 
 #: bookwyrm/templates/feed/summary_card.html:21
 msgid "The end of the year is the best moment to take stock of all the books read during the last 12 months. How many pages have you read? Which book is your best-rated of the year? We compiled these stats, and more!"
-msgstr ""
+msgstr "Das Ende des Jahrs ist der beste Zeitpunkt um auf all die Bücher zurückzublicken die du in den letzten zwölf Monaten gelesen hast. Wie viele Seiten das wohl waren? Welches Buch hat dir am besten gefallen? Wir haben diese und andere Statistiken für dich zusammengestellt!"
 
 #: bookwyrm/templates/feed/summary_card.html:26
 #, python-format
 msgid "Discover your stats for %(year)s!"
-msgstr ""
+msgstr "Erkunde deine Statistiken für das Jahr %(year)s!"
 
 #: bookwyrm/templates/get_started/book_preview.html:6
 #, python-format
@@ -1693,7 +1693,7 @@ msgstr "Lesezirkel löschen"
 
 #: bookwyrm/templates/groups/group.html:22
 msgid "Members of this group can create group-curated lists."
-msgstr ""
+msgstr "Mitglieder dieses Lesezirkels können durch den Zirkel zu kuratierende Listen anlegen."
 
 #: bookwyrm/templates/groups/group.html:27
 #: bookwyrm/templates/lists/create_form.html:5
@@ -2155,7 +2155,7 @@ msgstr "Erstellt von <a href=\"%(path)s\">%(username)s</a>"
 
 #: bookwyrm/templates/lists/curate.html:11
 msgid "Curate"
-msgstr ""
+msgstr "Kuratieren"
 
 #: bookwyrm/templates/lists/curate.html:20
 msgid "Pending Books"
@@ -2185,12 +2185,12 @@ msgstr "Liste bearbeiten"
 #: bookwyrm/templates/lists/embed-list.html:7
 #, python-format
 msgid "%(list_name)s, a list by %(owner)s"
-msgstr ""
+msgstr "%(list_name)s, eine Liste von %(owner)s"
 
 #: bookwyrm/templates/lists/embed-list.html:17
 #, python-format
 msgid "on <a href=\"/\">%(site_name)s</a>"
-msgstr ""
+msgstr "auf <a href=\"/\">%(site_name)s</a>"
 
 #: bookwyrm/templates/lists/embed-list.html:26
 #: bookwyrm/templates/lists/list.html:42
@@ -2316,16 +2316,16 @@ msgstr "Vorschlagen"
 
 #: bookwyrm/templates/lists/list.html:221
 msgid "Embed this list on a website"
-msgstr ""
+msgstr "Diese Liste auf einer Webseite einbetten"
 
 #: bookwyrm/templates/lists/list.html:229
 msgid "Copy embed code"
-msgstr ""
+msgstr "Code zum Einbetten kopieren"
 
 #: bookwyrm/templates/lists/list.html:231
 #, python-format
 msgid "%(list_name)s, a list by %(owner)s on %(site_name)s"
-msgstr ""
+msgstr "%(list_name)s, eine Liste von %(owner)s auf %(site_name)s"
 
 #: bookwyrm/templates/lists/list_items.html:15
 msgid "Saved"
