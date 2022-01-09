@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-01-09 00:54+0000\n"
-"PO-Revision-Date: 2022-01-09 09:45\n"
+"PO-Revision-Date: 2022-01-09 10:40\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: German\n"
 "Language: de\n"
@@ -258,7 +258,7 @@ msgstr "Etwas ist schief gelaufen! Tut uns leid."
 #: bookwyrm/templates/about/about.html:9
 #: bookwyrm/templates/about/layout.html:35
 msgid "About"
-msgstr ""
+msgstr "Allgemein"
 
 #: bookwyrm/templates/about/about.html:18
 #: bookwyrm/templates/get_started/layout.html:20
@@ -269,12 +269,12 @@ msgstr "Willkommen auf %(site_name)s!"
 #: bookwyrm/templates/about/about.html:22
 #, python-format
 msgid "%(site_name)s is part of <em>BookWyrm</em>, a network of independent, self-directed communities for readers. While you can interact seemlessly with users anywhere in the <a href=\"https://joinbookwyrm.com/instances/\" target=\"_blank\">BookWyrm network</a>, this community is unique."
-msgstr ""
+msgstr "%(site_name)s ist Teil von <em>BookWyrm</em>, einem Netzwerk von unabhängigen, selbst verwalteten Communities von Bücherfreunden. Obwohl du nahtlos mit anderen Nutzern überall im <a href=\"https://joinbookwyrm.com/instances/\" target=\"_blank\">BookWyrm Netzwerk</a> interagieren kannst, ist die Community hier einzigartig."
 
 #: bookwyrm/templates/about/about.html:39
 #, python-format
 msgid "<a href=\"%(book_path)s\"><em>%(title)s</em></a> is %(site_name)s's most beloved book, with an average rating of %(rating)s out of 5."
-msgstr ""
+msgstr "<a href=\"%(book_path)s\"><em>%(title)s</em></a> ist mit einer durchschnittlichen Bewertung von %(rating)s (von 5) das beliebtestes Buch auf %(site_name)s."
 
 #: bookwyrm/templates/about/about.html:58
 #, python-format
@@ -284,7 +284,7 @@ msgstr ""
 #: bookwyrm/templates/about/about.html:77
 #, python-format
 msgid "<a href=\"%(book_path)s\"><em>%(title)s</em></a> has the most divisive ratings of any book on %(site_name)s."
-msgstr ""
+msgstr "<a href=\"%(book_path)s\"><em>%(title)s</em></a> hat die unterschiedlichsten Bewertungen aller Bücher auf %(site_name)s."
 
 #: bookwyrm/templates/about/about.html:88
 msgid "Track your reading, talk about books, write reviews, and discover what to read next. Always ad-free, anti-corporate, and community-oriented, BookWyrm is human-scale software, designed to stay small and personal. If you have feature requests, bug reports, or grand dreams, <a href='https://joinbookwyrm.com/get-involved' target='_blank'>reach out</a> and make yourself heard."
@@ -292,18 +292,20 @@ msgstr ""
 
 #: bookwyrm/templates/about/about.html:95
 msgid "Meet your admins"
-msgstr ""
+msgstr "Lerne deinen Admins kennen"
 
 #: bookwyrm/templates/about/about.html:98
 #, python-format
 msgid "\n"
 "            %(site_name)s's moderators and administrators keep the site up and running, enforce the <a href=\"coc_path\">code of conduct</a>, and respond when users report spam and bad behavior.\n"
 "        "
-msgstr ""
+msgstr "\n"
+"            die Moderatoren und Administratoren von %(site_name)s halten diese Seite am laufen, setzen die <a href=\"coc_path\">Verhaltensregeln</a> durch und reagieren auf Meldungen über Spam oder schlechtes Benehmen von Nutzer*innen.\n"
+"        "
 
 #: bookwyrm/templates/about/about.html:112
 msgid "Moderator"
-msgstr ""
+msgstr "Moderator"
 
 #: bookwyrm/templates/about/about.html:114 bookwyrm/templates/layout.html:131
 msgid "Admin"
@@ -324,15 +326,15 @@ msgstr "Verhaltenskodex"
 
 #: bookwyrm/templates/about/layout.html:11
 msgid "Active users:"
-msgstr ""
+msgstr "Aktive Nutzer*innen:"
 
 #: bookwyrm/templates/about/layout.html:15
 msgid "Statuses posted:"
-msgstr ""
+msgstr "Veröffentlichte Status:"
 
 #: bookwyrm/templates/about/layout.html:19
 msgid "Software version:"
-msgstr ""
+msgstr "Softwareversion:"
 
 #: bookwyrm/templates/about/layout.html:30
 #: bookwyrm/templates/embed-layout.html:34 bookwyrm/templates/layout.html:229
@@ -412,28 +414,28 @@ msgstr ""
 #, python-format
 msgid "In %(year)s, %(display_name)s read %(books_total)s book<br />for a total of %(pages_total)s pages!"
 msgid_plural "In %(year)s, %(display_name)s read %(books_total)s books<br />for a total of %(pages_total)s pages!"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Im Jahr %(year)s, lass %(display_name)s %(books_total)s Buch<br />mit %(pages_total)s Seiten!"
+msgstr[1] "Im Jahr %(year)s lass %(display_name)s %(books_total)s Bücher<br />mit zusammen %(pages_total)s Seiten!"
 
 #: bookwyrm/templates/annual_summary/layout.html:124
 msgid "That’s great!"
-msgstr ""
+msgstr "Großartig!"
 
 #: bookwyrm/templates/annual_summary/layout.html:127
 #, python-format
 msgid "That makes an average of %(pages)s pages per book."
-msgstr ""
+msgstr "Im Durschnitt waren das %(pages)s Seiten pro Buch."
 
 #: bookwyrm/templates/annual_summary/layout.html:132
 #, python-format
 msgid "(%(no_page_number)s book doesn’t have pages)"
 msgid_plural "(%(no_page_number)s books don’t have pages)"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "(zu %(no_page_number)s Buch ist keine Seitenzahl angegeben)"
+msgstr[1] "(zu %(no_page_number)s Büchern ist keine Seitenzahl angegeben)"
 
 #: bookwyrm/templates/annual_summary/layout.html:148
 msgid "Their shortest read this year…"
-msgstr ""
+msgstr "Das am schnellsten gelesene Buch dieses Jahr…"
 
 #: bookwyrm/templates/annual_summary/layout.html:155
 #: bookwyrm/templates/annual_summary/layout.html:176
@@ -449,11 +451,11 @@ msgstr "von"
 #: bookwyrm/templates/annual_summary/layout.html:182
 #, python-format
 msgid "<strong>%(pages)s</strong> pages"
-msgstr ""
+msgstr "<strong>%(pages)s</strong> Seiten"
 
 #: bookwyrm/templates/annual_summary/layout.html:169
 msgid "…and the longest"
-msgstr ""
+msgstr "…und das am längsten"
 
 #: bookwyrm/templates/annual_summary/layout.html:200
 #, python-format
@@ -2344,7 +2346,7 @@ msgstr "Gespeicherte Listen"
 #: bookwyrm/templates/notifications/items/accept.html:16
 #, python-format
 msgid "accepted your invitation to join group \"<a href=\"%(group_path)s\">%(group_name)s</a>\""
-msgstr "hat deine Einladung angenommen, der Gruppe „<a href=\"%(group_path)s\">%(group_name)s</a>“ beizutreten"
+msgstr "hat deine Einladung angenommen, dem Lesezirkel „<a href=\"%(group_path)s\">%(group_name)s</a>“ beizutreten"
 
 #: bookwyrm/templates/notifications/items/add.html:24
 #, python-format
@@ -2417,12 +2419,12 @@ msgstr "hat dich eingeladen, der Gruppe „<a href=\"%(group_path)s\">%(group_na
 #: bookwyrm/templates/notifications/items/join.html:16
 #, python-format
 msgid "has joined your group \"<a href=\"%(group_path)s\">%(group_name)s</a>\""
-msgstr "ist deiner Gruppe „<a href=\"%(group_path)s\">%(group_name)s</a>“ beigetreten"
+msgstr "ist deinem Lesezirkel „<a href=\"%(group_path)s\">%(group_name)s</a>“ beigetreten"
 
 #: bookwyrm/templates/notifications/items/leave.html:16
 #, python-format
 msgid "has left your group \"<a href=\"%(group_path)s\">%(group_name)s</a>\""
-msgstr "hat deine Gruppe „<a href=\"%(group_path)s\">%(group_name)s</a>“ verlassen"
+msgstr "hat deinen Lesezirkel „<a href=\"%(group_path)s\">%(group_name)s</a>“ verlassen"
 
 #: bookwyrm/templates/notifications/items/mention.html:20
 #, python-format
@@ -2447,12 +2449,12 @@ msgstr "hat dich in einem <a href=\"%(related_path)s\">Status</a> erwähnt"
 #: bookwyrm/templates/notifications/items/remove.html:17
 #, python-format
 msgid "has been removed from your group \"<a href=\"%(group_path)s\">%(group_name)s</a>\""
-msgstr "wurde aus deiner Gruppe „<a href=\"%(group_path)s\">%(group_name)s</a>“ entfernt"
+msgstr "wurde aus deinem Lesezirkel „<a href=\"%(group_path)s\">%(group_name)s</a>“ entfernt"
 
 #: bookwyrm/templates/notifications/items/remove.html:23
 #, python-format
 msgid "You have been removed from the \"<a href=\"%(group_path)s\">%(group_name)s</a>\" group"
-msgstr "Du wurdest aus der Gruppe „<a href=\"%(group_path)s\">%(group_name)s</a>“ entfernt"
+msgstr "Du wurdest aus dem Lesezirkel „<a href=\"%(group_path)s\">%(group_name)s</a>“ entfernt"
 
 #: bookwyrm/templates/notifications/items/reply.html:21
 #, python-format
