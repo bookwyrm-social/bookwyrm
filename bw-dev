@@ -139,6 +139,9 @@ case "$CMD" in
     populate_streams)
         runweb python manage.py populate_streams "$@"
         ;;
+    populate_lists_streams)
+        runweb python manage.py populate_lists_streams $@
+        ;;
     populate_suggestions)
         runweb python manage.py populate_suggestions
         ;;

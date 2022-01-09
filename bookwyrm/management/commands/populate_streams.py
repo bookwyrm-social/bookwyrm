@@ -1,6 +1,6 @@
 """ Re-create user streams """
 from django.core.management.base import BaseCommand
-from bookwyrm import activitystreams, models
+from bookwyrm import activitystreams, lists_stream, models
 
 
 def populate_streams(stream=None):
@@ -13,6 +13,8 @@ def populate_streams(stream=None):
     ).order_by("-last_active_date")
     print("This may take a long time! Please be patient.")
     for user in users:
+        print(".", end="")
+        lists_stream.populate_lists_task.delay(user.id)
         for stream_key in streams:
             print(".", end="")
             activitystreams.populate_stream_task.delay(stream_key, user.id)

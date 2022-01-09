@@ -197,7 +197,9 @@ urlpatterns = [
     ),
     re_path(r"^report/?$", views.make_report, name="report"),
     # landing pages
-    re_path(r"^about/?$", views.About.as_view(), name="about"),
+    re_path(r"^about/?$", views.about, name="about"),
+    re_path(r"^privacy/?$", views.privacy, name="privacy"),
+    re_path(r"^conduct/?$", views.conduct, name="conduct"),
     path("", views.Home.as_view(), name="landing"),
     re_path(r"^discover/?$", views.Discover.as_view(), name="discover"),
     re_path(r"^notifications/?$", views.Notifications.as_view(), name="notifications"),

@@ -397,9 +397,15 @@ def populate_streams_on_account_create(sender, instance, created, *args, **kwarg
     """build a user's feeds when they join"""
     if not created or not instance.local:
         return
+    transaction.on_commit(
+        lambda: populate_streams_on_account_create_command(instance.id)
+    )
 
+
+def populate_streams_on_account_create_command(instance_id):
+    """wait for the transaction to complete"""
     for stream in streams:
-        populate_stream_task.delay(stream, instance.id)
+        populate_stream_task.delay(stream, instance_id)
 
 
 @receiver(signals.pre_save, sender=models.ShelfBook)

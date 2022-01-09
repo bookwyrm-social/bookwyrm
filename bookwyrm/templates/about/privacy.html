@@ -1,0 +1,15 @@
+{% extends 'about/layout.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Privacy Policy" %}{% endblock %}
+
+{% block about_content %}
+
+<div class="block">
+    <h2 class="title">{% trans "Privacy Policy" %}</h2>
+    <div class="content">
+        {{ site.privacy_policy | safe }}
+    </div>
+</div>
+
+{% endblock %}
