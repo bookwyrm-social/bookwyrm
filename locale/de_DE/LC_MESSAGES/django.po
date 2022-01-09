@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-01-02 15:29+0000\n"
-"PO-Revision-Date: 2022-01-02 16:29\n"
+"POT-Creation-Date: 2022-01-04 22:32+0000\n"
+"PO-Revision-Date: 2022-01-07 20:53\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: German\n"
 "Language: de\n"
@@ -167,7 +167,7 @@ msgstr "Zitate"
 
 #: bookwyrm/models/user.py:35
 msgid "Everything else"
-msgstr ""
+msgstr "Alles Andere"
 
 #: bookwyrm/settings.py:118
 msgid "Home Timeline"
@@ -212,14 +212,18 @@ msgid "Lietuvių (Lithuanian)"
 msgstr "Litauisch (Lithuanian)"
 
 #: bookwyrm/settings.py:171
-msgid "Português - Brasil (Brazilian Portuguese)"
-msgstr "Português (Portugiesisch)"
+msgid "Português do Brasil (Brazilian Portuguese)"
+msgstr "Portugiesisch (Brasilien)"
 
 #: bookwyrm/settings.py:172
+msgid "Português Europeu (European Portuguese)"
+msgstr "Portugiesisch (Portugal)"
+
+#: bookwyrm/settings.py:173
 msgid "简体中文 (Simplified Chinese)"
 msgstr "简体中文 (vereinfachtes Chinesisch)"
 
-#: bookwyrm/settings.py:173
+#: bookwyrm/settings.py:174
 msgid "繁體中文 (Traditional Chinese)"
 msgstr "繁體中文 (Chinesisch, traditionell)"
 
@@ -247,30 +251,30 @@ msgstr "Etwas ist schief gelaufen! Tut uns leid."
 #: bookwyrm/templates/feed/summary_card.html:8
 #, python-format
 msgid "%(year)s in the books"
-msgstr ""
+msgstr "Rückblick auf %(year)s"
 
 #: bookwyrm/templates/annual_summary/layout.html:43
 #, python-format
 msgid "%(year)s <em>in the books</em>"
-msgstr ""
+msgstr "<em>Rückblick</em> auf %(year)s"
 
 #: bookwyrm/templates/annual_summary/layout.html:47
 #, python-format
 msgid "<em>%(display_name)s’s</em> year of reading"
-msgstr ""
+msgstr "<em>%(display_name)s’s</em> Jahr mit Büchern"
 
 #: bookwyrm/templates/annual_summary/layout.html:53
 msgid "Share this page"
-msgstr ""
+msgstr "Teile diese Seite"
 
 #: bookwyrm/templates/annual_summary/layout.html:67
 msgid "Copy address"
-msgstr ""
+msgstr "Adresse kopieren"
 
 #: bookwyrm/templates/annual_summary/layout.html:68
 #: bookwyrm/templates/lists/list.html:230
 msgid "Copied!"
-msgstr ""
+msgstr "Kopiert!"
 
 #: bookwyrm/templates/annual_summary/layout.html:77
 msgid "Sharing status: <strong>public with key</strong>"
@@ -278,11 +282,11 @@ msgstr ""
 
 #: bookwyrm/templates/annual_summary/layout.html:78
 msgid "The page can be seen by anyone with the complete address."
-msgstr ""
+msgstr "Diese Seite kann jeder sehen der die vollständige Adresse kennt."
 
 #: bookwyrm/templates/annual_summary/layout.html:83
 msgid "Make page private"
-msgstr ""
+msgstr "Seite auf privat stellen"
 
 #: bookwyrm/templates/annual_summary/layout.html:89
 msgid "Sharing status: <strong>private</strong>"
@@ -290,7 +294,7 @@ msgstr ""
 
 #: bookwyrm/templates/annual_summary/layout.html:90
 msgid "The page is private, only you can see it."
-msgstr ""
+msgstr "Diese Seite ist privat, nur du kannst sie sehen."
 
 #: bookwyrm/templates/annual_summary/layout.html:95
 msgid "Make page public"
@@ -334,7 +338,7 @@ msgstr ""
 
 #: bookwyrm/templates/annual_summary/layout.html:155
 #: bookwyrm/templates/annual_summary/layout.html:176
-#: bookwyrm/templates/annual_summary/layout.html:220
+#: bookwyrm/templates/annual_summary/layout.html:245
 #: bookwyrm/templates/book/book.html:47
 #: bookwyrm/templates/discover/large-book.html:22
 #: bookwyrm/templates/landing/large-book.html:25
@@ -352,23 +356,34 @@ msgstr ""
 msgid "…and the longest"
 msgstr ""
 
-#: bookwyrm/templates/annual_summary/layout.html:199
+#: bookwyrm/templates/annual_summary/layout.html:200
+#, python-format
+msgid "%(display_name)s set a goal of reading %(goal)s book in %(year)s,<br /> and achieved %(goal_percent)s%% of that goal"
+msgid_plural "%(display_name)s set a goal of reading %(goal)s books in %(year)s,<br /> and achieved %(goal_percent)s%% of that goal"
+msgstr[0] ""
+msgstr[1] ""
+
+#: bookwyrm/templates/annual_summary/layout.html:209
+msgid "Way to go!"
+msgstr ""
+
+#: bookwyrm/templates/annual_summary/layout.html:224
 #, python-format
 msgid "%(display_name)s left %(ratings_total)s rating, <br />their average rating is %(rating_average)s"
 msgid_plural "%(display_name)s left %(ratings_total)s ratings, <br />their average rating is %(rating_average)s"
 msgstr[0] ""
 msgstr[1] ""
 
-#: bookwyrm/templates/annual_summary/layout.html:213
+#: bookwyrm/templates/annual_summary/layout.html:238
 msgid "Their best rated review"
 msgstr ""
 
-#: bookwyrm/templates/annual_summary/layout.html:226
+#: bookwyrm/templates/annual_summary/layout.html:251
 #, python-format
 msgid "Their rating: <strong>%(rating)s</strong>"
 msgstr ""
 
-#: bookwyrm/templates/annual_summary/layout.html:243
+#: bookwyrm/templates/annual_summary/layout.html:268
 #, python-format
 msgid "All the books %(display_name)s read in %(year)s"
 msgstr ""
@@ -706,7 +721,6 @@ msgstr ""
 #: bookwyrm/templates/feed/layout.html:71
 #: bookwyrm/templates/get_started/layout.html:25
 #: bookwyrm/templates/get_started/layout.html:58
-#: bookwyrm/templates/search/book.html:49
 #: bookwyrm/templates/snippets/announcement.html:18
 msgid "Close"
 msgstr "Schließen"
@@ -1305,28 +1319,16 @@ msgstr "Alle Nachrichten"
 msgid "You have no messages right now."
 msgstr "Du hast momentan keine Nachrichten."
 
-#: bookwyrm/templates/feed/feed.html:27
-msgid "Feed settings"
-msgstr ""
-
-#: bookwyrm/templates/feed/feed.html:39
-msgid "Saved!"
-msgstr "Gespeichert!"
-
-#: bookwyrm/templates/feed/feed.html:53
-msgid "Save settings"
-msgstr "Einstellungen speichern"
-
-#: bookwyrm/templates/feed/feed.html:63
+#: bookwyrm/templates/feed/feed.html:28
 #, python-format
 msgid "load <span data-poll=\"stream/%(tab_key)s\">0</span> unread status(es)"
 msgstr "lade <span data-poll=\"stream/%(tab_key)s\">0</span> ungelesene Statusmeldung(en)"
 
-#: bookwyrm/templates/feed/feed.html:86
+#: bookwyrm/templates/feed/feed.html:51
 msgid "There aren't any activities right now! Try following a user to get started"
 msgstr "Hier sind noch keine Aktivitäten! Folge Anderen, um loszulegen"
 
-#: bookwyrm/templates/feed/feed.html:87
+#: bookwyrm/templates/feed/feed.html:52
 msgid "Alternatively, you can try enabling more status types"
 msgstr ""
 
@@ -1372,7 +1374,7 @@ msgstr "Zu lesen"
 #: bookwyrm/templates/user/books_header.html:6
 #: bookwyrm/templates/user/user.html:34
 msgid "Currently Reading"
-msgstr "Lese ich gerade"
+msgstr "Aktuell lesend"
 
 #: bookwyrm/templates/feed/layout.html:27
 #: bookwyrm/templates/get_started/book_preview.html:12
@@ -1545,7 +1547,7 @@ msgstr "Keine Benutzer*innen für „%(query)s“ gefunden"
 
 #: bookwyrm/templates/groups/create_form.html:5
 msgid "Create Group"
-msgstr "Gruppe erstellen"
+msgstr "Lesezirkel erstellen"
 
 #: bookwyrm/templates/groups/created_text.html:4
 #, python-format
@@ -1554,7 +1556,7 @@ msgstr "Administriert von <a href=\"%(path)s\">%(username)s</a>"
 
 #: bookwyrm/templates/groups/delete_group_modal.html:4
 msgid "Delete this group?"
-msgstr "Diese Gruppe löschen?"
+msgstr "Diesen Lesezirkel löschen?"
 
 #: bookwyrm/templates/groups/delete_group_modal.html:7
 #: bookwyrm/templates/lists/delete_list_modal.html:7
@@ -1582,7 +1584,7 @@ msgstr "Mitglieder hinzufügen!"
 
 #: bookwyrm/templates/groups/form.html:8
 msgid "Group Name:"
-msgstr "Gruppenname:"
+msgstr "Name des Lesezirkels:"
 
 #: bookwyrm/templates/groups/form.html:12
 msgid "Group Description:"
@@ -1590,7 +1592,7 @@ msgstr "Gruppenbeschreibung:"
 
 #: bookwyrm/templates/groups/form.html:30
 msgid "Delete group"
-msgstr "Gruppe löschen"
+msgstr "Lesezirkel löschen"
 
 #: bookwyrm/templates/groups/group.html:15
 msgid "Search to add a user"
@@ -1598,19 +1600,19 @@ msgstr "Hinzuzufügende*n Benutzer*in suchen"
 
 #: bookwyrm/templates/groups/group.html:36
 msgid "This group has no lists"
-msgstr "Diese Gruppe enthält keine Listen"
+msgstr "Dieser Lesezirkel hat keine Listen"
 
 #: bookwyrm/templates/groups/layout.html:16
 msgid "Edit group"
-msgstr "Gruppe bearbeiten"
+msgstr "Lesezirkel bearbeiten"
 
 #: bookwyrm/templates/groups/members.html:8
 msgid "Members can add and remove books on a group's book lists"
-msgstr "Mitglieder können Bücher in den Buchlisten einer Gruppe hinzufügen und entfernen"
+msgstr "Mitglieder können Bücher in den Buchlisten eines Lesezirkels hinzufügen und entfernen"
 
 #: bookwyrm/templates/groups/members.html:19
 msgid "Leave group"
-msgstr "Gruppe verlassen"
+msgstr "Lesezirkel verlassen"
 
 #: bookwyrm/templates/groups/members.html:41
 #: bookwyrm/templates/groups/suggested_users.html:32
@@ -1624,7 +1626,7 @@ msgstr "Folgt dir"
 #, python-format
 msgid "%(mutuals)s follower you follow"
 msgid_plural "%(mutuals)s followers you follow"
-msgstr[0] "%(mutuals)s Follower*in, der*die du folgst"
+msgstr[0] "%(mutuals)s Follower*in, der du folgst"
 msgstr[1] "%(mutuals)s Follower*innen, denen du folgst"
 
 #: bookwyrm/templates/groups/suggested_users.html:24
@@ -2154,7 +2156,7 @@ msgstr "Eine Gruppe auswählen"
 
 #: bookwyrm/templates/lists/form.html:105
 msgid "You don't have any Groups yet!"
-msgstr "Du hast noch keine Gruppen!"
+msgstr "Du bist noch nicht in einem Lesezirkel!"
 
 #: bookwyrm/templates/lists/form.html:107
 msgid "Create a Group"
@@ -2647,29 +2649,23 @@ msgstr "„%(book_title)s“ beginnen"
 msgid "Want to Read \"%(book_title)s\""
 msgstr "„%(book_title)s“ auf Leseliste setzen"
 
-#: bookwyrm/templates/search/book.html:42
+#: bookwyrm/templates/search/book.html:44
 msgid "Results from"
 msgstr ""
 
-#: bookwyrm/templates/search/book.html:47
-#: bookwyrm/templates/settings/reports/reports.html:25
-#: bookwyrm/templates/snippets/announcement.html:16
-msgid "Open"
-msgstr "Offen"
-
-#: bookwyrm/templates/search/book.html:85
+#: bookwyrm/templates/search/book.html:79
 msgid "Import book"
 msgstr "Buch importieren"
 
-#: bookwyrm/templates/search/book.html:107
+#: bookwyrm/templates/search/book.html:104
 msgid "Load results from other catalogues"
 msgstr "Ergebnisse aus anderen Katalogen laden"
 
-#: bookwyrm/templates/search/book.html:111
+#: bookwyrm/templates/search/book.html:108
 msgid "Manually add book"
 msgstr "Buch manuell hinzufügen"
 
-#: bookwyrm/templates/search/book.html:116
+#: bookwyrm/templates/search/book.html:113
 msgid "Log in to import or add books."
 msgstr "Melde dich an, um Bücher zu importieren oder hinzuzufügen."
 
@@ -3292,6 +3288,11 @@ msgstr "Meldungen: %(instance_name)s"
 msgid "Reports: <small>%(instance_name)s</small>"
 msgstr "Meldungen: <small>%(instance_name)s</small>"
 
+#: bookwyrm/templates/settings/reports/reports.html:25
+#: bookwyrm/templates/snippets/announcement.html:16
+msgid "Open"
+msgstr "Offen"
+
 #: bookwyrm/templates/settings/reports/reports.html:28
 msgid "Resolved"
 msgstr "Behoben"
@@ -3746,21 +3747,22 @@ msgstr "Favorisieren"
 msgid "Un-like"
 msgstr "Favorisierung zurücknehmen"
 
-#: bookwyrm/templates/snippets/filters_panel/filters_panel.html:7
-msgid "Show filters"
-msgstr "Filter anzeigen"
+#: bookwyrm/templates/snippets/filters_panel/filters_panel.html:5
+msgid "Filters"
+msgstr ""
 
-#: bookwyrm/templates/snippets/filters_panel/filters_panel.html:9
-msgid "Hide filters"
-msgstr "Filter ausblenden"
+#: bookwyrm/templates/snippets/filters_panel/filters_panel.html:11
+#: bookwyrm/templates/snippets/filters_panel/filters_panel.html:18
+msgid "Filters are applied"
+msgstr ""
 
-#: bookwyrm/templates/snippets/filters_panel/filters_panel.html:22
-msgid "Apply filters"
-msgstr "Filter anwenden"
-
-#: bookwyrm/templates/snippets/filters_panel/filters_panel.html:26
+#: bookwyrm/templates/snippets/filters_panel/filters_panel.html:21
 msgid "Clear filters"
 msgstr "Filter zurücksetzen"
+
+#: bookwyrm/templates/snippets/filters_panel/filters_panel.html:43
+msgid "Apply filters"
+msgstr "Filter anwenden"
 
 #: bookwyrm/templates/snippets/follow_button.html:14
 #, python-format
@@ -4008,8 +4010,8 @@ msgstr "Zu lesen beginnen"
 msgid "Want to read"
 msgstr "Auf Leseliste setzen"
 
-#: bookwyrm/templates/snippets/shelf_selector.html:73
-#: bookwyrm/templates/snippets/shelf_selector.html:84
+#: bookwyrm/templates/snippets/shelf_selector.html:74
+#: bookwyrm/templates/snippets/shelf_selector.html:86
 msgid "Remove from"
 msgstr ""
 
@@ -4176,7 +4178,7 @@ msgstr "Bücher von %(username)s %(year)s"
 
 #: bookwyrm/templates/user/groups.html:9
 msgid "Your Groups"
-msgstr "Deine Gruppen"
+msgstr "Deine Lesezirkel"
 
 #: bookwyrm/templates/user/groups.html:11
 #, python-format
@@ -4201,7 +4203,7 @@ msgstr "Leseziel"
 
 #: bookwyrm/templates/user/layout.html:79
 msgid "Groups"
-msgstr "Gruppen"
+msgstr "Lesezirkel"
 
 #: bookwyrm/templates/user/lists.html:11
 #, python-format
