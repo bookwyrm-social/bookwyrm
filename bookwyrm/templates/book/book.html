@@ -389,9 +389,14 @@
                     </div>
                     {% if can_edit_book %}
                     <div class="column is-narrow">
-                        {% trans "Add link to copy" as button_text %}
                         {% url 'file-link' book.id as fallback_url %}
-                        {% include 'snippets/toggle/toggle_button.html' with text=button_text controls_text="edit_file_links" controls_uid=book.id focus="modal_title_edit_file_links" class="is-small" icon="plus" fallback_url=fallback_url %}
+                        <button class="button is-small" type="button" data-modal-open="edit-links">
+                            <span class="icon icon-plus">
+                                <span class="is-sr-only">
+                                    {% trans "Add link to copy" %}
+                                </span>
+                            </span>
+                        </button>
                     </div>
                     {% endif %}
                 </header>
@@ -407,7 +412,7 @@
                 {% endif %}
 
                 {% if can_edit_book %}
-                {% include 'book/file_link_modal.html' with book=book controls_text="edit_file_links" controls_uid=book.id %}
+                {% include 'book/file_link_modal.html' with book=book id="edit-links" %}
                 {% endif %}
             </section>
         </div>
