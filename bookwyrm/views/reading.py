@@ -46,11 +46,8 @@ class ReadingStatus(View):
             return HttpResponseBadRequest()
 
         # invalidate related caches
-        cache.delete_many(
-            [
-                f"suggested_books-{request.user.id}",
-                f"active_shelf-{request.user.id}-{book_id}",
-            ]
+        cache.delete(
+            f"active_shelf-{request.user.id}-{book_id}",
         )
 
         desired_shelf = get_object_or_404(
