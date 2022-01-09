@@ -1,8 +1,9 @@
 """ template filters """
 from django import template
-from django.db.models import Avg
+from django.db.models import Avg, StdDev, Count, F, Q
 
 from bookwyrm import models
+from bookwyrm.views.feed import get_suggested_books
 
 
 register = template.Library()
@@ -62,7 +63,60 @@ def load_subclass(status):
         return status.review
     if hasattr(status, "comment"):
         return status.comment
+    if hasattr(status, "generatednote"):
+        return status.generatednote
     return status
+
+
+@register.simple_tag(takes_context=False)
+def get_book_superlatives():
+    """get book stats for the about page"""
+    total_ratings = models.Review.objects.filter(local=True, deleted=False).count()
+    data = {}
+    data["top_rated"] = (
+        models.Work.objects.annotate(
+            rating=Avg(
+                "editions__review__rating",
+                filter=Q(editions__review__local=True, editions__review__deleted=False),
+            ),
+            rating_count=Count(
+                "editions__review",
+                filter=Q(editions__review__local=True, editions__review__deleted=False),
+            ),
+        )
+        .annotate(weighted=F("rating") * F("rating_count") / total_ratings)
+        .filter(rating__gt=4, weighted__gt=0)
+        .order_by("-weighted")
+        .first()
+    )
+
+    data["controversial"] = (
+        models.Work.objects.annotate(
+            deviation=StdDev(
+                "editions__review__rating",
+                filter=Q(editions__review__local=True, editions__review__deleted=False),
+            ),
+            rating_count=Count(
+                "editions__review",
+                filter=Q(editions__review__local=True, editions__review__deleted=False),
+            ),
+        )
+        .annotate(weighted=F("deviation") * F("rating_count") / total_ratings)
+        .filter(weighted__gt=0)
+        .order_by("-weighted")
+        .first()
+    )
+
+    data["wanted"] = (
+        models.Work.objects.annotate(
+            shelf_count=Count(
+                "editions__shelves", filter=Q(editions__shelves__identifier="to-read")
+            )
+        )
+        .order_by("-shelf_count")
+        .first()
+    )
+    return data
 
 
 @register.simple_tag(takes_context=False)
@@ -115,3 +169,11 @@ def mutuals_count(context, user):
     if not viewer.is_authenticated:
         return None
     return user.followers.filter(followers=viewer).count()
+
+
+@register.simple_tag(takes_context=True)
+def suggested_books(context):
+    """get books for suggested books panel"""
+    # this happens here instead of in the view so that the template snippet can
+    # be cached in the template
+    return get_suggested_books(context["request"].user)

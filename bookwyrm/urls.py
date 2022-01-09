@@ -50,7 +50,7 @@ urlpatterns = [
     re_path("^api/updates/stream/(?P<stream>[a-z]+)/?$", views.get_unread_status_count),
     # authentication
     re_path(r"^login/?$", views.Login.as_view(), name="login"),
-    re_path(r"^login/(?P<confirmed>confirmed)?$", views.Login.as_view(), name="login"),
+    re_path(r"^login/(?P<confirmed>confirmed)/?$", views.Login.as_view(), name="login"),
     re_path(r"^register/?$", views.Register.as_view()),
     re_path(r"confirm-email/?$", views.ConfirmEmail.as_view(), name="confirm-email"),
     re_path(
@@ -112,12 +112,12 @@ urlpatterns = [
         name="settings-federated-server",
     ),
     re_path(
-        r"^settings/federation/(?P<server>\d+)/block?$",
+        r"^settings/federation/(?P<server>\d+)/block/?$",
         views.block_server,
         name="settings-federated-server-block",
     ),
     re_path(
-        r"^settings/federation/(?P<server>\d+)/unblock?$",
+        r"^settings/federation/(?P<server>\d+)/unblock/?$",
         views.unblock_server,
         name="settings-federated-server-unblock",
     ),
@@ -140,7 +140,7 @@ urlpatterns = [
         name="settings-invite-requests",
     ),
     re_path(
-        r"^settings/requests/ignore?$",
+        r"^settings/requests/ignore/?$",
         views.ignore_invite_request,
         name="settings-invite-requests-ignore",
     ),
@@ -197,7 +197,9 @@ urlpatterns = [
     ),
     re_path(r"^report/?$", views.make_report, name="report"),
     # landing pages
-    re_path(r"^about/?$", views.About.as_view(), name="about"),
+    re_path(r"^about/?$", views.about, name="about"),
+    re_path(r"^privacy/?$", views.privacy, name="privacy"),
+    re_path(r"^conduct/?$", views.conduct, name="conduct"),
     path("", views.Home.as_view(), name="landing"),
     re_path(r"^discover/?$", views.Discover.as_view(), name="discover"),
     re_path(r"^notifications/?$", views.Notifications.as_view(), name="notifications"),
@@ -229,7 +231,7 @@ urlpatterns = [
         r"^direct-messages/?$", views.DirectMessage.as_view(), name="direct-messages"
     ),
     re_path(
-        rf"^direct-messages/(?P<username>{regex.USERNAME})?$",
+        rf"^direct-messages/(?P<username>{regex.USERNAME})/?$",
         views.DirectMessage.as_view(),
         name="direct-messages-user",
     ),
@@ -276,6 +278,7 @@ urlpatterns = [
     # users
     re_path(rf"{USER_PATH}\.json$", views.User.as_view()),
     re_path(rf"{USER_PATH}/?$", views.User.as_view(), name="user-feed"),
+    re_path(rf"^@(?P<username>{regex.USERNAME})$", views.user_redirect),
     re_path(rf"{USER_PATH}/rss/?$", views.rss_feed.RssFeed(), name="user-rss"),
     re_path(
         rf"{USER_PATH}/followers(.json)?/?$",
@@ -338,7 +341,7 @@ urlpatterns = [
     re_path(r"^save-list/(?P<list_id>\d+)/?$", views.save_list, name="list-save"),
     re_path(r"^unsave-list/(?P<list_id>\d+)/?$", views.unsave_list, name="list-unsave"),
     re_path(
-        r"^list/(?P<list_id>\d+)/embed/(?P<list_key>[0-9a-f]+)?$",
+        r"^list/(?P<list_id>\d+)/embed/(?P<list_key>[0-9a-f]+)/?$",
         views.unsafe_embed_list,
         name="embed-list",
     ),
@@ -355,7 +358,7 @@ urlpatterns = [
         name="shelf",
     ),
     re_path(r"^create-shelf/?$", views.create_shelf, name="shelf-create"),
-    re_path(r"^delete-shelf/(?P<shelf_id>\d+)?$", views.delete_shelf),
+    re_path(r"^delete-shelf/(?P<shelf_id>\d+)/?$", views.delete_shelf),
     re_path(r"^shelve/?$", views.shelve),
     re_path(r"^unshelve/?$", views.unshelve),
     # goals
@@ -422,7 +425,7 @@ urlpatterns = [
     re_path(rf"{BOOK_PATH}/edit/?$", views.EditBook.as_view(), name="edit-book"),
     re_path(rf"{BOOK_PATH}/confirm/?$", views.ConfirmEditBook.as_view()),
     re_path(r"^create-book/?$", views.EditBook.as_view(), name="create-book"),
-    re_path(r"^create-book/confirm?$", views.ConfirmEditBook.as_view()),
+    re_path(r"^create-book/confirm/?$", views.ConfirmEditBook.as_view()),
     re_path(rf"{BOOK_PATH}/editions(.json)?/?$", views.Editions.as_view()),
     re_path(
         r"^upload-cover/(?P<book_id>\d+)/?$", views.upload_cover, name="upload-cover"
@@ -486,5 +489,19 @@ urlpatterns = [
     re_path(r"^remote_follow/?$", views.remote_follow_page, name="remote-follow-page"),
     re_path(
         r"^ostatus_success/?$", views.ostatus_follow_success, name="ostatus-success"
+    ),
+    # annual summary
+    re_path(
+        r"^my-year-in-the-books/(?P<year>\d+)/?$",
+        views.personal_annual_summary,
+    ),
+    re_path(
+        rf"{LOCAL_USER_PATH}/(?P<year>\d+)-in-the-books/?$",
+        views.AnnualSummary.as_view(),
+        name="annual-summary",
+    ),
+    re_path(r"^summary_add_key/?$", views.summary_add_key, name="summary-add-key"),
+    re_path(
+        r"^summary_revoke_key/?$", views.summary_revoke_key, name="summary-revoke-key"
     ),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

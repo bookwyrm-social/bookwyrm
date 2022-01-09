@@ -16,6 +16,7 @@ from bookwyrm.settings import PAGE_LENGTH, STREAMS
 from bookwyrm.suggested_users import suggested_users
 from .helpers import filter_stream_by_status_type, get_user_from_username
 from .helpers import is_api_request, is_bookwyrm_request
+from .annual_summary import get_annual_summary_year
 
 
 # pylint: disable= no-self-use
@@ -25,15 +26,17 @@ class Feed(View):
 
     def post(self, request, tab):
         """save feed settings form, with a silent validation fail"""
-        settings_saved = False
+        filters_applied = False
         form = forms.FeedStatusTypesForm(request.POST, instance=request.user)
         if form.is_valid():
-            form.save()
-            settings_saved = True
+            # workaround to avoid broadcasting this change
+            user = form.save(commit=False)
+            user.save(broadcast=False, update_fields=["feed_status_types"])
+            filters_applied = True
 
-        return self.get(request, tab, settings_saved)
+        return self.get(request, tab, filters_applied)
 
-    def get(self, request, tab, settings_saved=False):
+    def get(self, request, tab, filters_applied=False):
         """user's homepage with activity feed"""
         tab = [s for s in STREAMS if s["key"] == tab]
         tab = tab[0] if tab else STREAMS[0]
@@ -60,8 +63,9 @@ class Feed(View):
                 "goal_form": forms.GoalForm(),
                 "feed_status_types_options": FeedFilterChoices,
                 "allowed_status_types": request.user.feed_status_types,
-                "settings_saved": settings_saved,
+                "filters_applied": filters_applied,
                 "path": f"/{tab['key']}",
+                "annual_summary_year": get_annual_summary_year(),
             },
         }
         return TemplateResponse(request, "feed/feed.html", data)
@@ -221,7 +225,6 @@ def feed_page_data(user):
 
     goal = models.AnnualGoal.objects.filter(user=user, year=timezone.now().year).first()
     return {
-        "suggested_books": get_suggested_books(user),
         "goal": goal,
         "goal_form": forms.GoalForm(),
     }

@@ -1,7 +1,7 @@
 /* exported BookWyrm */
 /* globals TabGroup */
 
-let BookWyrm = new class {
+let BookWyrm = new (class {
     constructor() {
         this.MAX_FILE_SIZE_BYTES = 10 * 1000000;
         this.initOnDOMLoaded();
@@ -10,48 +10,43 @@ let BookWyrm = new class {
     }
 
     initEventListeners() {
-        document.querySelectorAll('[data-controls]')
-            .forEach(button => button.addEventListener(
-                'click',
-                this.toggleAction.bind(this))
-            );
+        document
+            .querySelectorAll("[data-controls]")
+            .forEach((button) => button.addEventListener("click", this.toggleAction.bind(this)));
 
-        document.querySelectorAll('.interaction')
-            .forEach(button => button.addEventListener(
-                'submit',
-                this.interact.bind(this))
-            );
+        document
+            .querySelectorAll(".interaction")
+            .forEach((button) => button.addEventListener("submit", this.interact.bind(this)));
 
-        document.querySelectorAll('.hidden-form input')
-            .forEach(button => button.addEventListener(
-                'change',
-                this.revealForm.bind(this))
-            );
+        document
+            .querySelectorAll(".hidden-form input")
+            .forEach((button) => button.addEventListener("change", this.revealForm.bind(this)));
 
-        document.querySelectorAll('[data-hides]')
-            .forEach(button => button.addEventListener(
-                'change',
-                this.hideForm.bind(this))
-            );
+        document
+            .querySelectorAll("[data-hides]")
+            .forEach((button) => button.addEventListener("change", this.hideForm.bind(this)));
 
-        document.querySelectorAll('[data-back]')
-            .forEach(button => button.addEventListener(
-                'click',
-                this.back)
-            );
+        document
+            .querySelectorAll("[data-back]")
+            .forEach((button) => button.addEventListener("click", this.back));
 
-        document.querySelectorAll('input[type="file"]')
-            .forEach(node => node.addEventListener(
-                'change',
-                this.disableIfTooLarge.bind(this)
-            ));
-        
-        document.querySelectorAll('[data-duplicate]')
-                .forEach(node => node.addEventListener(
-                    'click',
-                    this.duplicateInput.bind(this)
-            
-            ))
+        document
+            .querySelectorAll('input[type="file"]')
+            .forEach((node) => node.addEventListener("change", this.disableIfTooLarge.bind(this)));
+
+        document
+            .querySelectorAll("button[data-modal-open]")
+            .forEach((node) => node.addEventListener("click", this.handleModalButton.bind(this)));
+
+        document
+            .querySelectorAll("[data-duplicate]")
+            .forEach((node) => node.addEventListener("click", this.duplicateInput.bind(this)));
+
+        document
+            .querySelectorAll("details.dropdown")
+            .forEach((node) =>
+                node.addEventListener("toggle", this.handleDetailsDropdown.bind(this))
+            );
     }
 
     /**
@@ -60,15 +55,15 @@ let BookWyrm = new class {
     initOnDOMLoaded() {
         const bookwyrm = this;
 
-        window.addEventListener('DOMContentLoaded', function() {
-            document.querySelectorAll('.tab-group')
-                .forEach(tabs => new TabGroup(tabs));
-            document.querySelectorAll('input[type="file"]').forEach(
-                bookwyrm.disableIfTooLarge.bind(bookwyrm)
-            );
-            document.querySelectorAll('[data-copytext]').forEach(
-                bookwyrm.copyText.bind(bookwyrm)
-            );
+        window.addEventListener("DOMContentLoaded", function () {
+            document.querySelectorAll(".tab-group").forEach((tabs) => new TabGroup(tabs));
+            document
+                .querySelectorAll('input[type="file"]')
+                .forEach(bookwyrm.disableIfTooLarge.bind(bookwyrm));
+            document.querySelectorAll("[data-copytext]").forEach(bookwyrm.copyText.bind(bookwyrm));
+            document
+                .querySelectorAll(".modal.is-active")
+                .forEach(bookwyrm.handleActiveModal.bind(bookwyrm));
         });
     }
 
@@ -77,8 +72,7 @@ let BookWyrm = new class {
      */
     initReccuringTasks() {
         // Polling
-        document.querySelectorAll('[data-poll]')
-            .forEach(liveArea => this.polling(liveArea));
+        document.querySelectorAll("[data-poll]").forEach((liveArea) => this.polling(liveArea));
     }
 
     /**
@@ -104,15 +98,19 @@ let BookWyrm = new class {
         const bookwyrm = this;
 
         delay = delay || 10000;
-        delay += (Math.random() * 1000);
+        delay += Math.random() * 1000;
 
-        setTimeout(function() {
-            fetch('/api/updates/' + counter.dataset.poll)
-                .then(response => response.json())
-                .then(data => bookwyrm.updateCountElement(counter, data));
+        setTimeout(
+            function () {
+                fetch("/api/updates/" + counter.dataset.poll)
+                    .then((response) => response.json())
+                    .then((data) => bookwyrm.updateCountElement(counter, data));
 
-            bookwyrm.polling(counter, delay * 1.25);
-        }, delay, counter);
+                bookwyrm.polling(counter, delay * 1.25);
+            },
+            delay,
+            counter
+        );
     }
 
     /**
@@ -127,60 +125,56 @@ let BookWyrm = new class {
         const count_by_type = data.count_by_type;
         const currentCount = counter.innerText;
         const hasMentions = data.has_mentions;
-        const allowedStatusTypesEl = document.getElementById('unread-notifications-wrapper');
+        const allowedStatusTypesEl = document.getElementById("unread-notifications-wrapper");
 
         // If we're on the right counter element
-        if (counter.closest('[data-poll-wrapper]').contains(allowedStatusTypesEl)) {
+        if (counter.closest("[data-poll-wrapper]").contains(allowedStatusTypesEl)) {
             const allowedStatusTypes = JSON.parse(allowedStatusTypesEl.textContent);
 
             // For keys in common between allowedStatusTypes and count_by_type
             // This concerns 'review', 'quotation', 'comment'
-            count = allowedStatusTypes.reduce(function(prev, currentKey) {
+            count = allowedStatusTypes.reduce(function (prev, currentKey) {
                 const currentValue = count_by_type[currentKey] | 0;
 
                 return prev + currentValue;
             }, 0);
 
             // Add all the "other" in count_by_type if 'everything' is allowed
-            if (allowedStatusTypes.includes('everything')) {
+            if (allowedStatusTypes.includes("everything")) {
                 // Clone count_by_type with 0 for reviews/quotations/comments
-                const count_by_everything_else = Object.assign(
-                    {},
-                    count_by_type,
-                    {review: 0, quotation: 0, comment: 0}
-                );
+                const count_by_everything_else = Object.assign({}, count_by_type, {
+                    review: 0,
+                    quotation: 0,
+                    comment: 0,
+                });
 
-                count = Object.keys(count_by_everything_else).reduce(
-                    function(prev, currentKey) {
-                        const currentValue =
-                            count_by_everything_else[currentKey] | 0
+                count = Object.keys(count_by_everything_else).reduce(function (prev, currentKey) {
+                    const currentValue = count_by_everything_else[currentKey] | 0;
 
-                        return prev + currentValue;
-                    },
-                    count
-                );
+                    return prev + currentValue;
+                }, count);
             }
         }
 
         if (count != currentCount) {
-            this.addRemoveClass(counter.closest('[data-poll-wrapper]'), 'is-hidden', count < 1);
+            this.addRemoveClass(counter.closest("[data-poll-wrapper]"), "is-hidden", count < 1);
             counter.innerText = count;
-            this.addRemoveClass(counter.closest('[data-poll-wrapper]'), 'is-danger', hasMentions);
+            this.addRemoveClass(counter.closest("[data-poll-wrapper]"), "is-danger", hasMentions);
         }
     }
 
     /**
      * Show form.
-     * 
+     *
      * @param  {Event} event
      * @return {undefined}
      */
     revealForm(event) {
         let trigger = event.currentTarget;
-        let hidden = trigger.closest('.hidden-form').querySelectorAll('.is-hidden')[0];
+        let hidden = trigger.closest(".hidden-form").querySelectorAll(".is-hidden")[0];
 
         if (hidden) {
-            this.addRemoveClass(hidden, 'is-hidden', !hidden);
+            this.addRemoveClass(hidden, "is-hidden", !hidden);
         }
     }
 
@@ -192,10 +186,10 @@ let BookWyrm = new class {
      */
     hideForm(event) {
         let trigger = event.currentTarget;
-        let targetId = trigger.dataset.hides
-        let visible = document.getElementById(targetId)
+        let targetId = trigger.dataset.hides;
+        let visible = document.getElementById(targetId);
 
-        this.addRemoveClass(visible, 'is-hidden', true);
+        this.addRemoveClass(visible, "is-hidden", true);
     }
 
     /**
@@ -210,31 +204,34 @@ let BookWyrm = new class {
         if (!trigger.dataset.allowDefault || event.currentTarget == event.target) {
             event.preventDefault();
         }
-        let pressed = trigger.getAttribute('aria-pressed') === 'false';
+        let pressed = trigger.getAttribute("aria-pressed") === "false";
         let targetId = trigger.dataset.controls;
 
         // Toggle pressed status on all triggers controlling the same target.
-        document.querySelectorAll('[data-controls="' + targetId + '"]')
-            .forEach(otherTrigger => otherTrigger.setAttribute(
-                'aria-pressed',
-                otherTrigger.getAttribute('aria-pressed') === 'false'
-            ));
+        document
+            .querySelectorAll('[data-controls="' + targetId + '"]')
+            .forEach((otherTrigger) =>
+                otherTrigger.setAttribute(
+                    "aria-pressed",
+                    otherTrigger.getAttribute("aria-pressed") === "false"
+                )
+            );
 
         // @todo Find a better way to handle the exception.
-        if (targetId && ! trigger.classList.contains('pulldown-menu')) {
+        if (targetId && !trigger.classList.contains("pulldown-menu")) {
             let target = document.getElementById(targetId);
 
-            this.addRemoveClass(target, 'is-hidden', !pressed);
-            this.addRemoveClass(target, 'is-active', pressed);
+            this.addRemoveClass(target, "is-hidden", !pressed);
+            this.addRemoveClass(target, "is-active", pressed);
         }
 
         // Show/hide pulldown-menus.
-        if (trigger.classList.contains('pulldown-menu')) {
+        if (trigger.classList.contains("pulldown-menu")) {
             this.toggleMenu(trigger, targetId);
         }
 
         // Show/hide container.
-        let container = document.getElementById('hide_' + targetId);
+        let container = document.getElementById("hide_" + targetId);
 
         if (container) {
             this.toggleContainer(container, pressed);
@@ -271,14 +268,14 @@ let BookWyrm = new class {
      * @return {undefined}
      */
     toggleMenu(trigger, targetId) {
-        let expanded = trigger.getAttribute('aria-expanded') == 'false';
+        let expanded = trigger.getAttribute("aria-expanded") == "false";
 
-        trigger.setAttribute('aria-expanded', expanded);
+        trigger.setAttribute("aria-expanded", expanded);
 
         if (targetId) {
             let target = document.getElementById(targetId);
 
-            this.addRemoveClass(target, 'is-active', expanded);
+            this.addRemoveClass(target, "is-active", expanded);
         }
     }
 
@@ -290,7 +287,7 @@ let BookWyrm = new class {
      * @return {undefined}
      */
     toggleContainer(container, pressed) {
-        this.addRemoveClass(container, 'is-hidden', pressed);
+        this.addRemoveClass(container, "is-hidden", pressed);
     }
 
     /**
@@ -327,7 +324,7 @@ let BookWyrm = new class {
 
         node.focus();
 
-        setTimeout(function() {
+        setTimeout(function () {
             node.selectionStart = node.selectionEnd = 10000;
         }, 0);
     }
@@ -347,15 +344,17 @@ let BookWyrm = new class {
         const relatedforms = document.querySelectorAll(`.${form.dataset.id}`);
 
         // Toggle class on all related forms.
-        relatedforms.forEach(relatedForm => bookwyrm.addRemoveClass(
-            relatedForm,
-            'is-hidden',
-            relatedForm.className.indexOf('is-hidden') == -1
-        ));
+        relatedforms.forEach((relatedForm) =>
+            bookwyrm.addRemoveClass(
+                relatedForm,
+                "is-hidden",
+                relatedForm.className.indexOf("is-hidden") == -1
+            )
+        );
 
-        this.ajaxPost(form).catch(error => {
+        this.ajaxPost(form).catch((error) => {
             // @todo Display a notification in the UI instead.
-            console.warn('Request failed:', error);
+            console.warn("Request failed:", error);
         });
     }
 
@@ -367,11 +366,11 @@ let BookWyrm = new class {
      */
     ajaxPost(form) {
         return fetch(form.action, {
-            method : "POST",
+            method: "POST",
             body: new FormData(form),
             headers: {
-                'Accept': 'application/json',
-            }
+                Accept: "application/json",
+            },
         });
     }
 
@@ -396,21 +395,112 @@ let BookWyrm = new class {
         const element = eventOrElement.currentTarget || eventOrElement;
 
         const submits = element.form.querySelectorAll('[type="submit"]');
-        const warns = element.parentElement.querySelectorAll('.file-too-big');
-        const isTooBig = element.files &&
-            element.files[0] &&
-            element.files[0].size > MAX_FILE_SIZE_BYTES;
+        const warns = element.parentElement.querySelectorAll(".file-too-big");
+        const isTooBig =
+            element.files && element.files[0] && element.files[0].size > MAX_FILE_SIZE_BYTES;
 
         if (isTooBig) {
-            submits.forEach(submitter => submitter.disabled = true);
-            warns.forEach(
-                sib => addRemoveClass(sib, 'is-hidden', false)
-            );
+            submits.forEach((submitter) => (submitter.disabled = true));
+            warns.forEach((sib) => addRemoveClass(sib, "is-hidden", false));
         } else {
-            submits.forEach(submitter => submitter.disabled = false);
-            warns.forEach(
-                sib => addRemoveClass(sib, 'is-hidden', true)
-            );
+            submits.forEach((submitter) => (submitter.disabled = false));
+            warns.forEach((sib) => addRemoveClass(sib, "is-hidden", true));
+        }
+    }
+
+    /**
+     * Handle the modal component with a button trigger.
+     *
+     * @param  {Event} event - Event fired by an element
+     *                         with the `data-modal-open` attribute
+     *                         pointing to a modal by its id.
+     * @return {undefined}
+     *
+     * See https://github.com/bookwyrm-social/bookwyrm/pull/1633
+     *  for information about using the modal.
+     */
+    handleModalButton(event) {
+        const { handleFocusTrap } = this;
+        const modalButton = event.currentTarget;
+        const targetModalId = modalButton.dataset.modalOpen;
+        const htmlElement = document.querySelector("html");
+        const modal = document.getElementById(targetModalId);
+
+        if (!modal) {
+            return;
+        }
+
+        // Helper functions
+        function handleModalOpen(modalElement) {
+            event.preventDefault();
+
+            htmlElement.classList.add("is-clipped");
+            modalElement.classList.add("is-active");
+            modalElement.getElementsByClassName("modal-card")[0].focus();
+
+            const closeButtons = modalElement.querySelectorAll("[data-modal-close]");
+
+            closeButtons.forEach((button) => {
+                button.addEventListener("click", function () {
+                    handleModalClose(modalElement);
+                });
+            });
+
+            document.addEventListener("keydown", function (event) {
+                if (event.key === "Escape") {
+                    handleModalClose(modalElement);
+                }
+            });
+
+            modalElement.addEventListener("keydown", handleFocusTrap);
+        }
+
+        function handleModalClose(modalElement) {
+            modalElement.removeEventListener("keydown", handleFocusTrap);
+            htmlElement.classList.remove("is-clipped");
+            modalElement.classList.remove("is-active");
+            modalButton.focus();
+        }
+
+        // Open modal
+        handleModalOpen(modal);
+    }
+
+    /**
+     * Handle the modal component when opened at page load.
+     *
+     * @param  {Element} modalElement - Active modal element
+     * @return {undefined}
+     *
+     */
+    handleActiveModal(modalElement) {
+        if (!modalElement) {
+            return;
+        }
+
+        const { handleFocusTrap } = this;
+
+        modalElement.getElementsByClassName("modal-card")[0].focus();
+
+        const closeButtons = modalElement.querySelectorAll("[data-modal-close]");
+
+        closeButtons.forEach((button) => {
+            button.addEventListener("click", function () {
+                handleModalClose(modalElement);
+            });
+        });
+
+        document.addEventListener("keydown", function (event) {
+            if (event.key === "Escape") {
+                handleModalClose(modalElement);
+            }
+        });
+
+        modalElement.addEventListener("keydown", handleFocusTrap);
+
+        function handleModalClose(modalElement) {
+            modalElement.removeEventListener("keydown", handleFocusTrap);
+            history.back();
         }
     }
 
@@ -422,31 +512,27 @@ let BookWyrm = new class {
      * @return {undefined}
      */
     displayPopUp(url, windowName) {
-        window.open(
-            url,
-            windowName,
-            "left=100,top=100,width=430,height=600"
-        );
+        window.open(url, windowName, "left=100,top=100,width=430,height=600");
     }
 
-    duplicateInput (event ) {
+    duplicateInput(event) {
         const trigger = event.currentTarget;
-        const input_id = trigger.dataset['duplicate']
+        const input_id = trigger.dataset["duplicate"];
         const orig = document.getElementById(input_id);
         const parent = orig.parentNode;
-        const new_count = parent.querySelectorAll("input").length + 1
+        const new_count = parent.querySelectorAll("input").length + 1;
 
         let input = orig.cloneNode();
 
-        input.id += ("-" + (new_count))
-        input.value = ""
+        input.id += "-" + new_count;
+        input.value = "";
 
         let label = parent.querySelector("label").cloneNode();
 
-        label.setAttribute("for", input.id)
+        label.setAttribute("for", input.id);
 
-        parent.appendChild(label)
-        parent.appendChild(input)
+        parent.appendChild(label);
+        parent.appendChild(input);
     }
 
     /**
@@ -461,25 +547,115 @@ let BookWyrm = new class {
     copyText(textareaEl) {
         const text = textareaEl.textContent;
 
-        const copyButtonEl = document.createElement('button');
+        const copyButtonEl = document.createElement("button");
 
         copyButtonEl.textContent = textareaEl.dataset.copytextLabel;
-        copyButtonEl.classList.add(
-            "mt-2",
-            "button",
-            "is-small",
-            "is-fullwidth",
-            "is-primary",
-            "is-light"
-        );
-        copyButtonEl.addEventListener('click', () => {
-            navigator.clipboard.writeText(text).then(function() {
-                textareaEl.classList.add('is-success');
-                copyButtonEl.classList.replace('is-primary', 'is-success');
+        copyButtonEl.classList.add("button", "is-small", "is-primary", "is-light");
+        copyButtonEl.addEventListener("click", () => {
+            navigator.clipboard.writeText(text).then(function () {
+                textareaEl.classList.add("is-success");
+                copyButtonEl.classList.replace("is-primary", "is-success");
                 copyButtonEl.textContent = textareaEl.dataset.copytextSuccess;
             });
         });
 
-        textareaEl.parentNode.appendChild(copyButtonEl)
+        textareaEl.parentNode.appendChild(copyButtonEl);
     }
-}();
+
+    /**
+     * Handle the details dropdown component.
+     *
+     * @param  {Event} event - Event fired by a `details` element
+     *                         with the `dropdown` class name, on toggle.
+     * @return {undefined}
+     */
+    handleDetailsDropdown(event) {
+        const detailsElement = event.target;
+        const summaryElement = detailsElement.querySelector("summary");
+        const menuElement = detailsElement.querySelector(".dropdown-menu");
+        const htmlElement = document.querySelector("html");
+
+        if (detailsElement.open) {
+            // Focus first menu element
+            menuElement
+                .querySelectorAll("a[href]:not([disabled]), button:not([disabled])")[0]
+                .focus();
+
+            // Enable focus trap
+            menuElement.addEventListener("keydown", this.handleFocusTrap);
+
+            // Close on Esc
+            detailsElement.addEventListener("keydown", handleEscKey);
+
+            // Clip page if Mobile
+            if (this.isMobile()) {
+                htmlElement.classList.add("is-clipped");
+            }
+        } else {
+            summaryElement.focus();
+
+            // Disable focus trap
+            menuElement.removeEventListener("keydown", this.handleFocusTrap);
+
+            // Unclip page
+            if (this.isMobile()) {
+                htmlElement.classList.remove("is-clipped");
+            }
+        }
+
+        function handleEscKey(event) {
+            if (event.key !== "Escape") {
+                return;
+            }
+
+            summaryElement.click();
+        }
+    }
+
+    /**
+     * Check if windows matches mobile media query.
+     *
+     * @return {Boolean}
+     */
+    isMobile() {
+        return window.matchMedia("(max-width: 768px)").matches;
+    }
+
+    /**
+     * Focus trap handler
+     *
+     * @param  {Event} event - Keydown event.
+     * @return {undefined}
+     */
+    handleFocusTrap(event) {
+        if (event.key !== "Tab") {
+            return;
+        }
+
+        const focusableEls = event.currentTarget.querySelectorAll(
+            [
+                "a[href]:not([disabled])",
+                "button:not([disabled])",
+                "textarea:not([disabled])",
+                'input:not([type="hidden"]):not([disabled])',
+                "select:not([disabled])",
+                "details:not([disabled])",
+                '[tabindex]:not([tabindex="-1"]):not([disabled])',
+            ].join(",")
+        );
+        const firstFocusableEl = focusableEls[0];
+        const lastFocusableEl = focusableEls[focusableEls.length - 1];
+
+        if (event.shiftKey) {
+            /* Shift + tab */ if (document.activeElement === firstFocusableEl) {
+                lastFocusableEl.focus();
+                event.preventDefault();
+            }
+        } /* Tab */ else {
+            if (document.activeElement === lastFocusableEl) {
+                firstFocusableEl.focus();
+                event.preventDefault();
+            }
+        }
+    }
+})();

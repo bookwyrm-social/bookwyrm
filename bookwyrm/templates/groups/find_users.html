@@ -2,8 +2,5 @@
 {% load i18n %}
 
 {% block searchresults %}
-    <h2 class="title is-5">
-        {% trans "Add new members!" %}
-    </h2>
     {% include 'groups/suggested_users.html' with suggested_users=suggested_users %}
 {% endblock %}

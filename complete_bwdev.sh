@@ -20,7 +20,9 @@ update_locales
 build
 clean
 black
+prettier
 populate_streams
+populate_lists_streams
 populate_suggestions
 generate_thumbnails
 generate_preview_images

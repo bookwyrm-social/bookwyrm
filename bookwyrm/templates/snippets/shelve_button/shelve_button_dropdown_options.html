@@ -16,23 +16,26 @@
 
             {% trans "Start reading" as button_text %}
             {% url 'reading-status' 'start' book.id as fallback_url %}
-            {% include 'snippets/toggle/toggle_button.html' with class=class text=button_text controls_text="start_reading" controls_uid=button_uuid focus="modal_title_start_reading" disabled=is_current fallback_url=fallback_url %}
+            {% join "start_reading" button_uuid as modal_id %}
+            {% include 'snippets/shelve_button/modal_button.html' with class=class fallback_url=fallback_url %}
 
         {% elif shelf.identifier == 'read' %}
 
             {% trans "Read" as button_text %}
             {% url 'reading-status' 'finish' book.id as fallback_url %}
-            {% include 'snippets/toggle/toggle_button.html' with class=class text=button_text controls_text="finish_reading" controls_uid=button_uuid focus="modal_title_finish_reading" disabled=is_current fallback_url=fallback_url %}
+            {% join "finish_reading" button_uuid as modal_id %}
+            {% include 'snippets/shelve_button/modal_button.html' with class=class fallback_url=fallback_url %}
 
         {% elif shelf.identifier == 'to-read' %}
 
             {% trans "Want to read" as button_text %}
             {% url 'reading-status' 'want' book.id as fallback_url %}
-            {% include 'snippets/toggle/toggle_button.html' with class=class text=button_text controls_text="want_to_read" controls_uid=button_uuid focus="modal_title_want_to_read" disabled=is_current fallback_url=fallback_url %}
+            {% join "want_to_read" button_uuid as modal_id %}
+            {% include 'snippets/shelve_button/modal_button.html' with class=class fallback_url=fallback_url %}
 
         {% elif shelf.editable %}
 
-            <form name="shelve" action="/shelve/" method="post" autocomplete="off">
+            <form name="shelve-{{ uuid }}-{{ shelf.identifier }}" action="/shelve/" method="post" autocomplete="off">
                 {% csrf_token %}
                 <input type="hidden" name="book" value="{{ active_shelf.book.id }}">
                 <button class="button {{ class }}" name="shelf" type="submit" value="{{ shelf.identifier }}" {% if shelf in book.shelf_set.all %} disabled {% endif %}>
@@ -47,8 +50,9 @@
 
 {% if readthrough and active_shelf.shelf.identifier != 'read' %}
 <li role="menuitem" class="dropdown-item p-0" data-extra-options>
-    {% trans "Update progress" as button_text %}
-    {% include 'snippets/toggle/toggle_button.html' with class=class text=button_text controls_text="progress_update" controls_uid=button_uuid focus="modal_title_progress_update" %}
+    <button type="submit" class="button {{ class }}" data-modal-open="progress_update_{{ button_uuid }}">
+        {% trans "Update progress" %}
+    </button>
 </li>
 {% endif %}
 

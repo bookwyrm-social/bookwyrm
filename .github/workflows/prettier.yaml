@@ -1,0 +1,24 @@
+# @url https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
+name: JavaScript Prettier (run ./bw-dev prettier to fix)
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  lint:
+    name: Lint with Prettier
+    runs-on: ubuntu-20.04
+
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it.
+      - uses: actions/checkout@v2
+
+      - name: Install modules
+        run: npm install .
+
+      # See .stylelintignore for files that are not linted.
+      - name: Run Prettier
+        run: npx prettier --check bookwyrm/static/js/*.js

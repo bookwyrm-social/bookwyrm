@@ -1,22 +1,21 @@
 /* exported StatusCache */
 /* globals BookWyrm */
 
-let StatusCache = new class {
+let StatusCache = new (class {
     constructor() {
-        document.querySelectorAll('[data-cache-draft]')
-            .forEach(t => t.addEventListener('change', this.updateDraft.bind(this)));
+        document
+            .querySelectorAll("[data-cache-draft]")
+            .forEach((t) => t.addEventListener("change", this.updateDraft.bind(this)));
 
-        document.querySelectorAll('[data-cache-draft]')
-            .forEach(t => this.populateDraft(t));
+        document.querySelectorAll("[data-cache-draft]").forEach((t) => this.populateDraft(t));
 
-        document.querySelectorAll('.submit-status')
-            .forEach(button => button.addEventListener(
-                'submit',
-                this.submitStatus.bind(this))
-            );
+        document
+            .querySelectorAll(".submit-status")
+            .forEach((button) => button.addEventListener("submit", this.submitStatus.bind(this)));
 
-        document.querySelectorAll('.form-rate-stars label.icon')
-            .forEach(button => button.addEventListener('click', this.toggleStar.bind(this)));
+        document
+            .querySelectorAll(".form-rate-stars label.icon")
+            .forEach((button) => button.addEventListener("click", this.toggleStar.bind(this)));
     }
 
     /**
@@ -80,25 +79,26 @@ let StatusCache = new class {
 
         event.preventDefault();
 
-        BookWyrm.addRemoveClass(form, 'is-processing', true);
-        trigger.setAttribute('disabled', null);
+        BookWyrm.addRemoveClass(form, "is-processing", true);
+        trigger.setAttribute("disabled", null);
 
-        BookWyrm.ajaxPost(form).finally(() => {
-            // Change icon to remove ongoing activity on the current UI.
-            // Enable back the element used to submit the form.
-            BookWyrm.addRemoveClass(form, 'is-processing', false);
-            trigger.removeAttribute('disabled');
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error();
-            }
-            this.submitStatusSuccess(form);
-        })
-        .catch(error => {
-            console.warn(error);
-            this.announceMessage('status-error-message');
-        });
+        BookWyrm.ajaxPost(form)
+            .finally(() => {
+                // Change icon to remove ongoing activity on the current UI.
+                // Enable back the element used to submit the form.
+                BookWyrm.addRemoveClass(form, "is-processing", false);
+                trigger.removeAttribute("disabled");
+            })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error();
+                }
+                this.submitStatusSuccess(form);
+            })
+            .catch((error) => {
+                console.warn(error);
+                this.announceMessage("status-error-message");
+            });
     }
 
     /**
@@ -112,12 +112,16 @@ let StatusCache = new class {
         let copy = element.cloneNode(true);
 
         copy.id = null;
-        element.insertAdjacentElement('beforebegin', copy);
+        element.insertAdjacentElement("beforebegin", copy);
 
-        BookWyrm.addRemoveClass(copy, 'is-hidden', false);
-        setTimeout(function() {
-            copy.remove();
-        }, 10000, copy);
+        BookWyrm.addRemoveClass(copy, "is-hidden", false);
+        setTimeout(
+            function () {
+                copy.remove();
+            },
+            10000,
+            copy
+        );
     }
 
     /**
@@ -131,8 +135,9 @@ let StatusCache = new class {
         form.reset();
 
         // Clear localstorage
-        form.querySelectorAll('[data-cache-draft]')
-            .forEach(node => window.localStorage.removeItem(node.dataset.cacheDraft));
+        form.querySelectorAll("[data-cache-draft]").forEach((node) =>
+            window.localStorage.removeItem(node.dataset.cacheDraft)
+        );
 
         // Close modals
         let modal = form.closest(".modal.is-active");
@@ -142,8 +147,11 @@ let StatusCache = new class {
 
             // Update shelve buttons
             if (form.reading_status) {
-                document.querySelectorAll("[data-shelve-button-book='" + form.book.value +"']")
-                    .forEach(button => this.cycleShelveButtons(button, form.reading_status.value));
+                document
+                    .querySelectorAll("[data-shelve-button-book='" + form.book.value + "']")
+                    .forEach((button) =>
+                        this.cycleShelveButtons(button, form.reading_status.value)
+                    );
             }
 
             return;
@@ -156,7 +164,7 @@ let StatusCache = new class {
             document.querySelector("[data-controls=" + reply.id + "]").click();
         }
 
-        this.announceMessage('status-success-message');
+        this.announceMessage("status-success-message");
     }
 
     /**
@@ -172,8 +180,9 @@ let StatusCache = new class {
         let next_identifier = shelf.dataset.shelfNext;
 
         // Set all buttons to hidden
-        button.querySelectorAll("[data-shelf-identifier]")
-            .forEach(item => BookWyrm.addRemoveClass(item, "is-hidden", true));
+        button
+            .querySelectorAll("[data-shelf-identifier]")
+            .forEach((item) => BookWyrm.addRemoveClass(item, "is-hidden", true));
 
         // Button that should be visible now
         let next = button.querySelector("[data-shelf-identifier=" + next_identifier + "]");
@@ -183,15 +192,17 @@ let StatusCache = new class {
 
         // ------ update the dropdown buttons
         // Remove existing hidden class
-        button.querySelectorAll("[data-shelf-dropdown-identifier]")
-            .forEach(item => BookWyrm.addRemoveClass(item, "is-hidden", false));
+        button
+            .querySelectorAll("[data-shelf-dropdown-identifier]")
+            .forEach((item) => BookWyrm.addRemoveClass(item, "is-hidden", false));
 
         // Remove existing disabled states
 
-        button.querySelectorAll("[data-shelf-dropdown-identifier] button")
-            .forEach(item => item.disabled = false);
+        button
+            .querySelectorAll("[data-shelf-dropdown-identifier] button")
+            .forEach((item) => (item.disabled = false));
 
-        next_identifier = next_identifier == 'complete' ? 'read' : next_identifier;
+        next_identifier = next_identifier == "complete" ? "read" : next_identifier;
 
         // Disable the current state
         button.querySelector(
@@ -206,8 +217,9 @@ let StatusCache = new class {
         BookWyrm.addRemoveClass(main_button, "is-hidden", true);
 
         // Just hide the other two menu options, idk what to do with them
-        button.querySelectorAll("[data-extra-options]")
-            .forEach(item => BookWyrm.addRemoveClass(item, "is-hidden", true));
+        button
+            .querySelectorAll("[data-extra-options]")
+            .forEach((item) => BookWyrm.addRemoveClass(item, "is-hidden", true));
 
         // Close menu
         let menu = button.querySelector("details[open]");
@@ -235,5 +247,4 @@ let StatusCache = new class {
             halfStar.checked = "checked";
         }
     }
-}();
-
+})();

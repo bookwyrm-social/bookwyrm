@@ -15,7 +15,7 @@ class RssFeedView(TestCase):
     def setUp(self):
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
-        ):
+        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
             self.local_user = models.User.objects.create_user(
                 "rss_user", "rss@test.rss", "password", local=True
             )

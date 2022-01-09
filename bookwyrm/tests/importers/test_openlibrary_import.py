@@ -30,7 +30,7 @@ class OpenLibraryImport(TestCase):
         self.csv = open(datafile, "r", encoding=self.importer.encoding)
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
-        ):
+        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
             self.local_user = models.User.objects.create_user(
                 "mouse", "mouse@mouse.mouse", "password", local=True
             )
@@ -48,7 +48,9 @@ class OpenLibraryImport(TestCase):
             self.local_user, self.csv, False, "public"
         )
 
-        import_items = models.ImportItem.objects.filter(job=import_job).all()
+        import_items = (
+            models.ImportItem.objects.filter(job=import_job).order_by("index").all()
+        )
         self.assertEqual(len(import_items), 4)
         self.assertEqual(import_items[0].index, 0)
         self.assertEqual(import_items[0].data["Work Id"], "OL102749W")

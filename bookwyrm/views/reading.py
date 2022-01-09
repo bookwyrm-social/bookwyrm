@@ -1,5 +1,7 @@
 """ the good stuff! the books! """
 from django.contrib.auth.decorators import login_required
+from django.core.cache import cache
+from django.core.cache.utils import make_template_fragment_key
 from django.db import transaction
 from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseNotFound
 from django.shortcuts import get_object_or_404, redirect
@@ -43,6 +45,13 @@ class ReadingStatus(View):
         }.get(status)
         if not identifier:
             return HttpResponseBadRequest()
+
+        # invalidate the template cache
+        cache_keys = [
+            make_template_fragment_key("shelve_button", [request.user.id, book_id]),
+            make_template_fragment_key("suggested_books", [request.user.id]),
+        ]
+        cache.delete_many(cache_keys)
 
         desired_shelf = get_object_or_404(
             models.Shelf, identifier=identifier, user=request.user
