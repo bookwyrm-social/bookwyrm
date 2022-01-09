@@ -1,6 +1,6 @@
 """ endpoints for getting updates about activity """
 from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse
+from django.http import Http404, JsonResponse
 
 from bookwyrm import activitystreams
 
@@ -21,5 +21,10 @@ def get_unread_status_count(request, stream="home"):
     """any unread statuses for this feed?"""
     stream = activitystreams.streams.get(stream)
     if not stream:
-        return JsonResponse({})
-    return JsonResponse({"count": stream.get_unread_count(request.user)})
+        raise Http404
+    return JsonResponse(
+        {
+            "count": stream.get_unread_count(request.user),
+            "count_by_type": stream.get_unread_count_by_status_type(request.user),
+        }
+    )

@@ -1,10 +1,24 @@
 {% load i18n %}
 {% load utilities %}
 
-{% with user_path=status.user.local_path username=status.user.display_name book_path=status.book.local_poth book_title=book|book_title %}
+{% with user_path=status.user.local_path username=status.user.display_name book_path=book.local_path book_title=book|book_title %}
 
 {% if status.status_type == 'GeneratedNote' %}
-    {{ status.content|safe }}
+    {% if status.content == 'wants to read' %}
+        {% blocktrans trimmed %}
+        <a href="{{ user_path}}">{{ username }}</a> wants to read <a href="{{ book_path }}">{{ book_title }}</a>
+        {% endblocktrans %}
+    {% endif %}
+    {% if status.content == 'finished reading' %}
+        {% blocktrans trimmed %}
+        <a href="{{ user_path}}">{{ username }}</a> finished reading <a href="{{ book_path }}">{{ book_title }}</a>
+        {% endblocktrans %}
+    {% endif %}
+    {% if status.content == 'started reading' %}
+        {% blocktrans trimmed %}
+        <a href="{{ user_path}}">{{ username }}</a> started reading <a href="{{ book_path }}">{{ book_title }}</a>
+        {% endblocktrans %}
+    {% endif %}
 {% elif status.status_type == 'Rating' %}
     {% blocktrans trimmed %}
     <a href="{{ user_path}}">{{ username }}</a> rated <a href="{{ book_path }}">{{ book_title }}</a>

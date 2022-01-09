@@ -1,4 +1,6 @@
 {% load i18n %}
+{% load utilities %}
+
 {% csrf_token %}
 <input type="hidden" name="id" value="{{ readthrough.id }}">
 <input type="hidden" name="book" value="{{ book.id }}">
@@ -10,10 +12,11 @@
 </div>
 {# Only show progress for editing existing readthroughs #}
 {% if readthrough.id and not readthrough.finish_date %}
-<label class="label" for="id_progress_{{ readthrough.id }}{{ controls_uid }}">
+{% join "id_progress" readthrough.id as field_id %}
+<label class="label" for="{{ field_id }}">
     {% trans "Progress" %}
 </label>
-{% include "snippets/progress_field.html" %}
+{% include "snippets/progress_field.html" with id=field_id %}
 {% endif %}
 <div class="field">
     <label class="label" for="id_finish_date_{{ readthrough.id }}">

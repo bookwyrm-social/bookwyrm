@@ -20,7 +20,7 @@ class ReadingViews(TestCase):
         self.factory = RequestFactory()
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
-        ):
+        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
             self.local_user = models.User.objects.create_user(
                 "mouse@local.com",
                 "mouse@mouse.com",
@@ -64,7 +64,7 @@ class ReadingViews(TestCase):
             },
         )
         request.user = self.local_user
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             views.ReadingStatus.as_view()(request, "start", self.book.id)
 
         self.assertEqual(shelf.books.get(), self.book)
@@ -100,7 +100,7 @@ class ReadingViews(TestCase):
             },
         )
         request.user = self.local_user
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             views.ReadingStatus.as_view()(request, "start", self.book.id)
 
         self.assertEqual(shelf.books.get(), self.book)
@@ -124,7 +124,7 @@ class ReadingViews(TestCase):
     def test_start_reading_reshelve(self, *_):
         """begin a book"""
         to_read_shelf = self.local_user.shelf_set.get(identifier=models.Shelf.TO_READ)
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             models.ShelfBook.objects.create(
                 shelf=to_read_shelf, book=self.book, user=self.local_user
             )
@@ -135,7 +135,7 @@ class ReadingViews(TestCase):
 
         request = self.factory.post("")
         request.user = self.local_user
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             views.ReadingStatus.as_view()(request, "start", self.book.id)
 
         self.assertFalse(to_read_shelf.books.exists())
@@ -162,7 +162,7 @@ class ReadingViews(TestCase):
         )
         request.user = self.local_user
 
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             views.ReadingStatus.as_view()(request, "finish", self.book.id)
 
         self.assertEqual(shelf.books.get(), self.book)
@@ -267,7 +267,7 @@ class ReadingViews(TestCase):
             },
         )
         request.user = self.local_user
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             views.update_progress(request, self.book.id)
 
         status = models.Comment.objects.get()

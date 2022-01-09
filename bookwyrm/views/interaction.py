@@ -1,6 +1,7 @@
 """ boosts and favs """
-from django.db import IntegrityError
 from django.contrib.auth.decorators import login_required
+from django.core.cache import cache
+from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseNotFound
 from django.shortcuts import redirect
 from django.utils.decorators import method_decorator
@@ -17,6 +18,7 @@ class Favorite(View):
 
     def post(self, request, status_id):
         """create a like"""
+        cache.delete(f"fav-{request.user.id}-{status_id}")
         status = models.Status.objects.get(id=status_id)
         try:
             models.Favorite.objects.create(status=status, user=request.user)
@@ -35,6 +37,7 @@ class Unfavorite(View):
 
     def post(self, request, status_id):
         """unlike a status"""
+        cache.delete(f"fav-{request.user.id}-{status_id}")
         status = models.Status.objects.get(id=status_id)
         try:
             favorite = models.Favorite.objects.get(status=status, user=request.user)
@@ -54,6 +57,7 @@ class Boost(View):
 
     def post(self, request, status_id):
         """boost a status"""
+        cache.delete(f"boost-{request.user.id}-{status_id}")
         status = models.Status.objects.get(id=status_id)
         # is it boostable?
         if not status.boostable:
@@ -81,6 +85,7 @@ class Unboost(View):
 
     def post(self, request, status_id):
         """boost a status"""
+        cache.delete(f"boost-{request.user.id}-{status_id}")
         status = models.Status.objects.get(id=status_id)
         boost = models.Boost.objects.filter(
             boosted_status=status, user=request.user

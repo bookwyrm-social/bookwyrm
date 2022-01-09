@@ -8,6 +8,44 @@ body {
     flex-direction: column;
 }
 
+button {
+    border: none;
+    margin: 0;
+    padding: 0;
+    width: auto;
+    overflow: visible;
+    background: transparent;
+
+    /* inherit font, color & alignment from ancestor */
+    color: inherit;
+    font: inherit;
+    text-align: inherit;
+
+    /* Normalize `line-height`. Cannot be changed from `normal` in Firefox 4+. */
+    line-height: normal;
+
+    /* Corrects font smoothing for webkit */
+    -webkit-font-smoothing: inherit;
+    -moz-osx-font-smoothing: inherit;
+
+    /* Corrects inability to style clickable `input` types in iOS */
+    -webkit-appearance: none;
+
+    /* Generalizes pointer cursor */
+    cursor: pointer;
+}
+
+button::-moz-focus-inner {
+    /* Remove excess padding and border in Firefox 4+ */
+    border: 0;
+    padding: 0;
+}
+
+/* Better accessibility for keyboard users */
+*:focus-visible {
+    outline-style: auto !important;
+}
+
 .image {
     overflow: hidden;
 }
@@ -20,13 +58,45 @@ body {
     overflow: visible;
 }
 
+.card.has-border {
+    border: 1px solid #eee;
+}
+
 .scroll-x {
     overflow: hidden;
     overflow-x: auto;
 }
 
+.modal-card {
+    pointer-events: none;
+}
+
+.modal-card > * {
+    pointer-events: all;
+}
+
+/* stylelint-disable no-descending-specificity */
+.modal-card:focus {
+    outline-style: auto;
+}
+
+.modal-card:focus:not(:focus-visible) {
+    outline-style: initial;
+}
+
+.modal-card:focus-visible {
+    outline-style: auto;
+}
+/* stylelint-enable no-descending-specificity */
+
 .modal-card.is-fullwidth {
     min-width: 75% !important;
+}
+
+@media only screen and (min-width: 769px) {
+    .modal-card.is-thin {
+        width: 350px !important;
+    }
 }
 
 .modal-card-body {
@@ -65,6 +135,18 @@ body {
         border-bottom: 1px solid #ededed;
         border-right: 0;
     }
+
+    .is-flex-direction-row-mobile {
+        flex-direction: row !important;
+    }
+
+    .is-flex-direction-column-mobile {
+        flex-direction: column !important;
+    }
+}
+
+.tag.is-small {
+    height: auto;
 }
 
 .button.is-transparent {
@@ -89,7 +171,34 @@ body {
     display: inline !important;
 }
 
-input[type=file]::file-selector-button {
+button .button-invisible-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    padding: 1rem;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    background: rgba(0, 0, 0, 66%);
+    color: white;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+button:hover .button-invisible-overlay,
+button:active .button-invisible-overlay,
+button:focus-visible .button-invisible-overlay {
+    opacity: 1;
+}
+
+/** File input styles
+ ******************************************************************************/
+
+input[type="file"]::file-selector-button {
     -moz-appearance: none;
     -webkit-appearance: none;
     background-color: #fff;
@@ -110,9 +219,126 @@ input[type=file]::file-selector-button {
     white-space: nowrap;
 }
 
-input[type=file]::file-selector-button:hover {
+input[type="file"]::file-selector-button:hover {
     border-color: #b5b5b5;
     color: #363636;
+}
+
+/** General `details` element styles
+ ******************************************************************************/
+
+details summary {
+    cursor: pointer;
+}
+
+summary::-webkit-details-marker {
+    display: none;
+}
+
+details summary::marker {
+    content: none;
+}
+
+details.detail-pinned-button summary {
+    position: absolute;
+    right: 0;
+}
+
+details.detail-pinned-button form {
+    float: left;
+    width: 100%;
+    margin-top: 1em;
+}
+
+/** Dropdown w/ Details element
+ ******************************************************************************/
+
+details.dropdown[open] summary.dropdown-trigger::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+details.dropdown .dropdown-menu {
+    display: block !important;
+}
+
+details.dropdown .dropdown-menu button {
+    /* Fix weird Safari defaults */
+    box-sizing: border-box;
+}
+
+details.dropdown .dropdown-menu button:focus-visible,
+details.dropdown .dropdown-menu a:focus-visible {
+    outline-style: auto;
+    outline-offset: -2px;
+}
+
+@media only screen and (max-width: 768px) {
+    details.dropdown[open] summary.dropdown-trigger::before {
+        background-color: rgba(0, 0, 0, 50%);
+        z-index: 30;
+    }
+
+    details .dropdown-menu {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        pointer-events: none;
+        z-index: 100;
+    }
+
+    details .dropdown-menu > * {
+        pointer-events: all;
+    }
+}
+
+/** Details panel
+ ******************************************************************************/
+
+details.details-panel {
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 10%);
+    transition: box-shadow 0.2s ease;
+    padding: 0.75rem;
+}
+
+details[open].details-panel,
+details.details-panel:hover {
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 20%);
+}
+
+details.details-panel summary {
+    position: relative;
+}
+
+details.details-panel summary .details-close {
+    position: absolute;
+    right: 0;
+    top: 0;
+    transform: rotate(45deg);
+    transition: transform 0.2s ease;
+}
+
+details[open].details-panel summary .details-close {
+    transform: rotate(0deg);
+}
+
+@media only screen and (min-width: 769px) {
+    .details-panel .filters-field:not(:last-child) {
+        border-right: 1px solid rgba(0, 0, 0, 10%);
+        margin-top: 0.75rem;
+        margin-bottom: 0.75rem;
+        padding-top: 0.25rem;
+        padding-bottom: 0.25rem;
+    }
 }
 
 /** Shelving
@@ -121,7 +347,7 @@ input[type=file]::file-selector-button:hover {
 /** @todo Replace icons with SVG symbols.
     @see https://www.youtube.com/watch?v=9xXBYcWgCHA */
 .shelf-option:disabled > *::after {
-    font-family: "icomoon"; /* stylelint-disable font-family-no-missing-generic-family-keyword */
+    font-family: icomoon; /* stylelint-disable font-family-no-missing-generic-family-keyword */
     content: "\e919"; /* icon-check */
     margin-left: 0.5em;
 }
@@ -129,14 +355,14 @@ input[type=file]::file-selector-button:hover {
 /** Toggles
  ******************************************************************************/
 
-.toggle-button[aria-pressed=true],
-.toggle-button[aria-pressed=true]:hover {
-    background-color: hsl(171, 100%, 41%);
+.toggle-button[aria-pressed="true"],
+.toggle-button[aria-pressed="true"]:hover {
+    background-color: hsl(171deg, 100%, 41%);
     color: white;
 }
 
-.hide-active[aria-pressed=true],
-.hide-inactive[aria-pressed=false] {
+.hide-active[aria-pressed="true"],
+.hide-inactive[aria-pressed="false"] {
     display: none;
 }
 
@@ -193,36 +419,36 @@ input[type=file]::file-selector-button:hover {
 
 /* All stars are visually filled by default. */
 .form-rate-stars .icon::before {
-    content: '\e9d9'; /* icon-star-full */
+    content: "\e9d9"; /* icon-star-full */
 }
 
 /* Icons directly following half star inputs are marked as half */
 .form-rate-stars input.half:checked ~ .icon::before {
-    content: '\e9d8'; /* icon-star-half */
+    content: "\e9d8"; /* icon-star-half */
 }
 
 /* stylelint-disable no-descending-specificity */
 .form-rate-stars input.half:checked + input + .icon:hover::before {
-    content: '\e9d8' !important; /* icon-star-half */
+    content: "\e9d8" !important; /* icon-star-half */
 }
 
 /* Icons directly following half check inputs that follow the checked input are emptied. */
 .form-rate-stars input.half:checked + input + .icon ~ .icon::before {
-    content: '\e9d7'; /* icon-star-empty */
+    content: "\e9d7"; /* icon-star-empty */
 }
 
 /* Icons directly following inputs that follow the checked input are emptied. */
 .form-rate-stars input:checked ~ input + .icon::before {
-    content: '\e9d7'; /* icon-star-empty */
+    content: "\e9d7"; /* icon-star-empty */
 }
 
 /* When a label is hovered, repeat the fill-all-then-empty-following pattern. */
 .form-rate-stars:hover .icon.icon::before {
-    content: '\e9d9' !important; /* icon-star-full */
+    content: "\e9d9" !important; /* icon-star-full */
 }
 
 .form-rate-stars .icon:hover ~ .icon::before {
-    content: '\e9d7' !important; /* icon-star-empty */
+    content: "\e9d7" !important; /* icon-star-empty */
 }
 
 /** Book covers
@@ -290,6 +516,8 @@ input[type=file]::file-selector-button:hover {
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-direction: column;
+    gap: 1em;
     white-space: initial;
     text-align: center;
 }
@@ -328,7 +556,7 @@ input[type=file]::file-selector-button:hover {
 
 .quote > blockquote::before,
 .quote > blockquote::after {
-    font-family: 'icomoon';
+    font-family: icomoon;
     position: absolute;
 }
 
@@ -521,6 +749,74 @@ ol.ordered-list li::before {
     display: flex;
     justify-content: center;
     padding: 0 0.75em;
+}
+
+/* Breadcrumbs
+ ******************************************************************************/
+
+.books-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    align-items: end;
+    justify-items: stretch;
+}
+
+.books-grid > .is-big {
+    grid-column: span 2;
+    grid-row: span 2;
+    justify-self: stretch;
+}
+
+.books-grid .book-cover {
+    width: 100%;
+}
+
+.books-grid .book-title {
+    --height-basis: 1.35rem;
+
+    display: block;
+    margin-top: 0.5rem;
+    line-height: var(--height-basis);
+    min-height: calc(2 * var(--height-basis));
+}
+
+@media only screen and (min-width: 769px) {
+    .books-grid {
+        gap: 1.5rem;
+        grid-template-columns: repeat(auto-fill, minmax(8em, 1fr));
+    }
+}
+
+/* Copy
+ ******************************************************************************/
+
+.horizontal-copy {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.horizontal-copy textarea {
+    min-width: initial;
+    white-space: nowrap;
+}
+
+.horizontal-copy button {
+    align-self: stretch;
+    height: unset;
+}
+
+.vertical-copy {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+}
+
+.vertical-copy button {
+    width: 100%;
 }
 
 /* Dimensions
@@ -904,4 +1200,94 @@ ol.ordered-list li::before {
         margin-top: 0.75rem !important;
         margin-bottom: 0.75rem !important;
     }
+}
+
+/* Gaps (for Flexbox and Grid)
+ *
+ * Those are supplementary rules to Bulma’s. They follow the same conventions.
+ * Add those you’ll need.
+ ******************************************************************************/
+
+.is-gap-0 {
+    gap: 0;
+}
+
+.is-gap-1 {
+    gap: 0.25rem;
+}
+
+.is-gap-2 {
+    gap: 0.5rem;
+}
+
+.is-gap-3 {
+    gap: 0.75rem;
+}
+
+.is-gap-4 {
+    gap: 1rem;
+}
+
+.is-gap-5 {
+    gap: 1.5rem;
+}
+
+.is-gap-6 {
+    gap: 3rem;
+}
+
+.is-row-gap-0 {
+    row-gap: 0;
+}
+
+.is-row-gap-1 {
+    row-gap: 0.25rem;
+}
+
+.is-row-gap-2 {
+    row-gap: 0.5rem;
+}
+
+.is-row-gap-3 {
+    row-gap: 0.75rem;
+}
+
+.is-row-gap-4 {
+    row-gap: 1rem;
+}
+
+.is-row-gap-5 {
+    row-gap: 1.5rem;
+}
+
+.is-row-gap-6 {
+    row-gap: 3rem;
+}
+
+.is-column-gap-0 {
+    column-gap: 0;
+}
+
+.is-column-gap-1 {
+    column-gap: 0.25rem;
+}
+
+.is-column-gap-2 {
+    column-gap: 0.5rem;
+}
+
+.is-column-gap-3 {
+    column-gap: 0.75rem;
+}
+
+.is-column-gap-4 {
+    column-gap: 1rem;
+}
+
+.is-column-gap-5 {
+    column-gap: 1.5rem;
+}
+
+.is-column-gap-6 {
+    column-gap: 3rem;
 }

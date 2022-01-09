@@ -20,7 +20,7 @@ class DeleteUserViews(TestCase):
         self.factory = RequestFactory()
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
-        ):
+        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
             self.local_user = models.User.objects.create_user(
                 "mouse@local.com",
                 "mouse@mouse.mouse",
@@ -35,9 +35,9 @@ class DeleteUserViews(TestCase):
             self.book = models.Edition.objects.create(
                 title="test", parent_work=models.Work.objects.create(title="test work")
             )
-            with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"), patch(
-                "bookwyrm.activitystreams.add_book_statuses_task.delay"
-            ):
+            with patch(
+                "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+            ), patch("bookwyrm.activitystreams.add_book_statuses_task.delay"):
                 models.ShelfBook.objects.create(
                     book=self.book,
                     user=self.local_user,
@@ -70,11 +70,11 @@ class DeleteUserViews(TestCase):
 
         self.assertIsNone(self.local_user.name)
         with patch(
-            "bookwyrm.models.activitypub_mixin.broadcast_task.delay"
+            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
         ) as delay_mock:
             view(request)
         self.assertEqual(delay_mock.call_count, 1)
-        activity = json.loads(delay_mock.call_args[0][1])
+        activity = json.loads(delay_mock.call_args[1]["args"][1])
         self.assertEqual(activity["type"], "Delete")
         self.assertEqual(activity["actor"], self.local_user.remote_id)
         self.assertEqual(

@@ -46,6 +46,8 @@ jobs:
         POSTGRES_HOST: 127.0.0.1
         CELERY_BROKER: ""
         REDIS_BROKER_PORT: 6379
+        REDIS_BROKER_PASSWORD: beep
+        USE_DUMMY_CACHE: true
         FLOWER_PORT: 8888
         EMAIL_HOST: "smtp.mailgun.org"
         EMAIL_PORT: 587

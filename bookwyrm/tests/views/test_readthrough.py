@@ -9,7 +9,7 @@ from bookwyrm import models
 
 @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
 @patch("bookwyrm.activitystreams.populate_stream_task.delay")
-@patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
+@patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
 @patch("bookwyrm.activitystreams.add_book_statuses_task.delay")
 @patch("bookwyrm.activitystreams.remove_book_statuses_task.delay")
 class ReadThrough(TestCase):
@@ -27,12 +27,12 @@ class ReadThrough(TestCase):
 
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
-        ):
+        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
             self.user = models.User.objects.create_user(
                 "cinco", "cinco@example.com", "seissiete", local=True, localname="cinco"
             )
 
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             self.client.force_login(self.user)
 
     @patch("bookwyrm.activitystreams.remove_user_statuses_task.delay")

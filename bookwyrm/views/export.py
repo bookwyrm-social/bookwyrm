@@ -49,9 +49,9 @@ def export_user_book_data(request):
 
 def csv_row_generator(books):
     """generate a csv entry for the user's book"""
-    deduplication_fields = [  # pylint: disable=protected-access
+    deduplication_fields = [
         f.name
-        for f in models.Edition._meta.get_fields()
+        for f in models.Edition._meta.get_fields()  # pylint: disable=protected-access
         if getattr(f, "deduplication_field", False)
     ]
     fields = ["title"] + deduplication_fields

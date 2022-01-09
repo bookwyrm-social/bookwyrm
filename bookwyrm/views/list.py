@@ -5,18 +5,20 @@ from urllib.parse import urlencode
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db import IntegrityError, transaction
-from django.db.models import Avg, Count, DecimalField, Q, Max
+from django.db.models import Avg, DecimalField, Q, Max
 from django.db.models.functions import Coalesce
-from django.http import HttpResponseBadRequest, HttpResponse
+from django.http import HttpResponseBadRequest, HttpResponse, Http404
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.http import require_POST
+from django.views.decorators.clickjacking import xframe_options_exempt
 
 from bookwyrm import book_search, forms, models
 from bookwyrm.activitypub import ActivitypubResponse
+from bookwyrm.lists_stream import ListsStream
 from bookwyrm.settings import PAGE_LENGTH
 from .helpers import is_api_request
 from .helpers import get_user_from_username
@@ -28,18 +30,7 @@ class Lists(View):
 
     def get(self, request):
         """display a book list"""
-        # hide lists with no approved books
-        lists = (
-            models.List.privacy_filter(
-                request.user, privacy_levels=["public", "followers"]
-            )
-            .annotate(item_count=Count("listitem", filter=Q(listitem__approved=True)))
-            .filter(item_count__gt=0)
-            .select_related("user")
-            .prefetch_related("listitem_set")
-            .order_by("-updated_date")
-            .distinct()
-        )
+        lists = ListsStream().get_list_stream(request.user)
         paginated = Paginator(lists, 12)
         data = {
             "lists": paginated.get_page(request.GET.get("page")),
@@ -167,6 +158,14 @@ class List(View):
                 ][: 5 - len(suggestions)]
 
         page = paginated.get_page(request.GET.get("page"))
+
+        embed_key = str(book_list.embed_key.hex)
+        embed_url = reverse("embed-list", args=[book_list.id, embed_key])
+        embed_url = request.build_absolute_uri(embed_url)
+
+        if request.GET:
+            embed_url = f"{embed_url}?{request.GET.urlencode()}"
+
         data = {
             "list": book_list,
             "items": page,
@@ -180,6 +179,7 @@ class List(View):
             "sort_form": forms.SortListForm(
                 {"direction": direction, "sort_by": sort_by}
             ),
+            "embed_url": embed_url,
         }
         return TemplateResponse(request, "lists/list.html", data)
 
@@ -200,10 +200,64 @@ class List(View):
         return redirect(book_list.local_path)
 
 
+class EmbedList(View):
+    """embeded book list page"""
+
+    def get(self, request, list_id, list_key):
+        """display a book list"""
+        book_list = get_object_or_404(models.List, id=list_id)
+
+        embed_key = str(book_list.embed_key.hex)
+
+        if list_key != embed_key:
+            raise Http404()
+
+        # sort_by shall be "order" unless a valid alternative is given
+        sort_by = request.GET.get("sort_by", "order")
+        if sort_by not in ("order", "title", "rating"):
+            sort_by = "order"
+
+        # direction shall be "ascending" unless a valid alternative is given
+        direction = request.GET.get("direction", "ascending")
+        if direction not in ("ascending", "descending"):
+            direction = "ascending"
+
+        directional_sort_by = {
+            "order": "order",
+            "title": "book__title",
+            "rating": "average_rating",
+        }[sort_by]
+        if direction == "descending":
+            directional_sort_by = "-" + directional_sort_by
+
+        items = book_list.listitem_set.prefetch_related("user", "book", "book__authors")
+        if sort_by == "rating":
+            items = items.annotate(
+                average_rating=Avg(
+                    Coalesce("book__review__rating", 0.0),
+                    output_field=DecimalField(),
+                )
+            )
+        items = items.filter(approved=True).order_by(directional_sort_by)
+
+        paginated = Paginator(items, PAGE_LENGTH)
+
+        page = paginated.get_page(request.GET.get("page"))
+
+        data = {
+            "list": book_list,
+            "items": page,
+            "page_range": paginated.get_elided_page_range(
+                page.number, on_each_side=2, on_ends=1
+            ),
+        }
+        return TemplateResponse(request, "lists/embed-list.html", data)
+
+
+@method_decorator(login_required, name="dispatch")
 class Curate(View):
     """approve or discard list suggestsions"""
 
-    @method_decorator(login_required, name="dispatch")
     def get(self, request, list_id):
         """display a pending list"""
         book_list = get_object_or_404(models.List, id=list_id)
@@ -216,8 +270,6 @@ class Curate(View):
         }
         return TemplateResponse(request, "lists/curate.html", data)
 
-    @method_decorator(login_required, name="dispatch")
-    # pylint: disable=unused-argument
     def post(self, request, list_id):
         """edit a book_list"""
         book_list = get_object_or_404(models.List, id=list_id)
@@ -447,3 +499,11 @@ def normalize_book_list_ordering(book_list_id, start=0, add_offset=0):
         if item.order != effective_order:
             item.order = effective_order
             item.save()
+
+
+@xframe_options_exempt
+def unsafe_embed_list(request, *args, **kwargs):
+    """allows the EmbedList view to be loaded through unsafe iframe origins"""
+
+    embed_list_view = EmbedList.as_view()
+    return embed_list_view(request, *args, **kwargs)

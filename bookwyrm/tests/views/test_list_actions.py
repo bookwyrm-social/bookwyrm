@@ -18,7 +18,7 @@ class ListActionViews(TestCase):
         self.factory = RequestFactory()
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
-        ):
+        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
             self.local_user = models.User.objects.create_user(
                 "mouse@local.com",
                 "mouse@mouse.com",
@@ -61,7 +61,7 @@ class ListActionViews(TestCase):
             parent_work=work_four,
         )
 
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             self.list = models.List.objects.create(
                 name="Test List", user=self.local_user
             )
@@ -71,7 +71,7 @@ class ListActionViews(TestCase):
 
     def test_delete_list(self):
         """delete an entire list"""
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             models.ListItem.objects.create(
                 book_list=self.list,
                 user=self.local_user,
@@ -88,9 +88,12 @@ class ListActionViews(TestCase):
             )
         request = self.factory.post("")
         request.user = self.local_user
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay") as mock:
+        with patch(
+            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+        ) as mock, patch("bookwyrm.lists_stream.remove_list_task.delay") as redis_mock:
             views.delete_list(request, self.list.id)
-        activity = json.loads(mock.call_args[0][1])
+        self.assertTrue(redis_mock.called)
+        activity = json.loads(mock.call_args[1]["args"][1])
         self.assertEqual(activity["type"], "Delete")
         self.assertEqual(activity["actor"], self.local_user.remote_id)
         self.assertEqual(activity["object"]["id"], self.list.remote_id)
@@ -110,7 +113,7 @@ class ListActionViews(TestCase):
     def test_curate_approve(self):
         """approve a pending item"""
         view = views.Curate.as_view()
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             pending = models.ListItem.objects.create(
                 book_list=self.list,
                 user=self.local_user,
@@ -121,18 +124,17 @@ class ListActionViews(TestCase):
 
         request = self.factory.post(
             "",
-            {
-                "item": pending.id,
-                "approved": "true",
-            },
+            {"item": pending.id, "approved": "true"},
         )
         request.user = self.local_user
 
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay") as mock:
+        with patch(
+            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+        ) as mock:
             view(request, self.list.id)
 
         self.assertEqual(mock.call_count, 2)
-        activity = json.loads(mock.call_args[0][1])
+        activity = json.loads(mock.call_args[1]["args"][1])
         self.assertEqual(activity["type"], "Add")
         self.assertEqual(activity["actor"], self.local_user.remote_id)
         self.assertEqual(activity["target"], self.list.remote_id)
@@ -145,7 +147,7 @@ class ListActionViews(TestCase):
     def test_curate_reject(self):
         """approve a pending item"""
         view = views.Curate.as_view()
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             pending = models.ListItem.objects.create(
                 book_list=self.list,
                 user=self.local_user,
@@ -179,10 +181,12 @@ class ListActionViews(TestCase):
         )
         request.user = self.local_user
 
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay") as mock:
+        with patch(
+            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+        ) as mock:
             views.list.add_book(request)
             self.assertEqual(mock.call_count, 1)
-            activity = json.loads(mock.call_args[0][1])
+            activity = json.loads(mock.call_args[1]["args"][1])
             self.assertEqual(activity["type"], "Add")
             self.assertEqual(activity["actor"], self.local_user.remote_id)
             self.assertEqual(activity["target"], self.list.remote_id)
@@ -214,7 +218,7 @@ class ListActionViews(TestCase):
             },
         )
         request_two.user = self.local_user
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             views.list.add_book(request_one)
             views.list.add_book(request_two)
 
@@ -256,7 +260,7 @@ class ListActionViews(TestCase):
         )
         request_three.user = self.local_user
 
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             views.list.add_book(request_one)
             views.list.add_book(request_two)
             views.list.add_book(request_three)
@@ -271,7 +275,7 @@ class ListActionViews(TestCase):
 
         remove_request = self.factory.post("", {"item": items[1].id})
         remove_request.user = self.local_user
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             views.list.remove_book(remove_request, self.list.id)
         items = self.list.listitem_set.order_by("order").all()
         self.assertEqual(items[0].book, self.book)
@@ -293,7 +297,7 @@ class ListActionViews(TestCase):
             },
         )
         request.user = self.local_user
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             models.ListItem.objects.create(
                 book_list=self.list,
                 user=self.local_user,
@@ -330,7 +334,7 @@ class ListActionViews(TestCase):
         its order should be at the end of the approved books and before the
         remaining pending books.
         """
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             models.ListItem.objects.create(
                 book_list=self.list,
                 user=self.local_user,
@@ -370,7 +374,7 @@ class ListActionViews(TestCase):
         )
         request.user = self.local_user
 
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             view(request, self.list.id)
 
         items = self.list.listitem_set.order_by("order").all()
@@ -422,7 +426,7 @@ class ListActionViews(TestCase):
         )
         request_three.user = self.local_user
 
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             views.list.add_book(request_one)
             views.list.add_book(request_two)
             views.list.add_book(request_three)
@@ -437,7 +441,7 @@ class ListActionViews(TestCase):
 
         set_position_request = self.factory.post("", {"position": 1})
         set_position_request.user = self.local_user
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             views.list.set_book_position(set_position_request, items[2].id)
         items = self.list.listitem_set.order_by("order").all()
         self.assertEqual(items[0].book, self.book_three)
@@ -460,10 +464,12 @@ class ListActionViews(TestCase):
         )
         request.user = self.rat
 
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay") as mock:
+        with patch(
+            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+        ) as mock:
             views.list.add_book(request)
             self.assertEqual(mock.call_count, 1)
-            activity = json.loads(mock.call_args[0][1])
+            activity = json.loads(mock.call_args[1]["args"][1])
             self.assertEqual(activity["type"], "Add")
             self.assertEqual(activity["actor"], self.rat.remote_id)
             self.assertEqual(activity["target"], self.list.remote_id)
@@ -486,11 +492,13 @@ class ListActionViews(TestCase):
         )
         request.user = self.rat
 
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay") as mock:
+        with patch(
+            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+        ) as mock:
             views.list.add_book(request)
 
         self.assertEqual(mock.call_count, 1)
-        activity = json.loads(mock.call_args[0][1])
+        activity = json.loads(mock.call_args[1]["args"][1])
 
         self.assertEqual(activity["type"], "Add")
         self.assertEqual(activity["actor"], self.rat.remote_id)
@@ -516,10 +524,12 @@ class ListActionViews(TestCase):
         )
         request.user = self.local_user
 
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay") as mock:
+        with patch(
+            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+        ) as mock:
             views.list.add_book(request)
             self.assertEqual(mock.call_count, 1)
-            activity = json.loads(mock.call_args[0][1])
+            activity = json.loads(mock.call_args[1]["args"][1])
             self.assertEqual(activity["type"], "Add")
             self.assertEqual(activity["actor"], self.local_user.remote_id)
             self.assertEqual(activity["target"], self.list.remote_id)
@@ -532,7 +542,7 @@ class ListActionViews(TestCase):
     def test_remove_book(self):
         """take an item off a list"""
 
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             item = models.ListItem.objects.create(
                 book_list=self.list,
                 user=self.local_user,
@@ -541,33 +551,36 @@ class ListActionViews(TestCase):
             )
         self.assertTrue(self.list.listitem_set.exists())
 
-        request = self.factory.post(
-            "",
-            {
-                "item": item.id,
-            },
-        )
+        request = self.factory.post("", {"item": item.id})
         request.user = self.local_user
 
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             views.list.remove_book(request, self.list.id)
         self.assertFalse(self.list.listitem_set.exists())
 
     def test_remove_book_unauthorized(self):
         """take an item off a list"""
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             item = models.ListItem.objects.create(
                 book_list=self.list, user=self.local_user, book=self.book, order=1
             )
         self.assertTrue(self.list.listitem_set.exists())
-        request = self.factory.post(
-            "",
-            {
-                "item": item.id,
-            },
-        )
+        request = self.factory.post("", {"item": item.id})
         request.user = self.rat
 
         with self.assertRaises(PermissionDenied):
             views.list.remove_book(request, self.list.id)
         self.assertTrue(self.list.listitem_set.exists())
+
+    def test_save_unsave_list(self):
+        """bookmark a list"""
+        self.assertFalse(self.local_user.saved_lists.exists())
+        request = self.factory.post("")
+        request.user = self.local_user
+        views.save_list(request, self.list.id)
+        self.local_user.refresh_from_db()
+        self.assertEqual(self.local_user.saved_lists.first(), self.list)
+
+        views.unsave_list(request, self.list.id)
+        self.local_user.refresh_from_db()
+        self.assertFalse(self.local_user.saved_lists.exists())

@@ -39,6 +39,9 @@
     {% if not is_self and request.user.is_authenticated %}
     {% include 'snippets/follow_button.html' with user=user %}
     {% endif %}
+    {% if not is_self %}
+    {% include 'ostatus/remote_follow_button.html' with user=user %}
+    {% endif %}
 
     {% if is_self and user.follower_requests.all %}
     <div class="follow-requests">

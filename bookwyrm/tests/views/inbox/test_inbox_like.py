@@ -14,7 +14,7 @@ class InboxActivities(TestCase):
         """basic user and book data"""
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
-        ):
+        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
             self.local_user = models.User.objects.create_user(
                 "mouse@example.com",
                 "mouse@mouse.com",
@@ -35,7 +35,7 @@ class InboxActivities(TestCase):
                 outbox="https://example.com/users/rat/outbox",
             )
 
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             with patch("bookwyrm.activitystreams.add_status_task.delay"):
                 self.status = models.Status.objects.create(
                     user=self.local_user,

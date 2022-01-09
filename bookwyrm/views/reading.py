@@ -1,5 +1,7 @@
 """ the good stuff! the books! """
 from django.contrib.auth.decorators import login_required
+from django.core.cache import cache
+from django.core.cache.utils import make_template_fragment_key
 from django.db import transaction
 from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseNotFound
 from django.shortcuts import get_object_or_404, redirect
@@ -9,6 +11,7 @@ from django.views import View
 from django.views.decorators.http import require_POST
 
 from bookwyrm import models
+from bookwyrm.views.shelf.shelf_actions import unshelve
 from .status import CreateStatus
 from .helpers import get_edition, handle_reading_status, is_api_request
 from .helpers import load_date_in_user_tz_as_utc
@@ -16,6 +19,7 @@ from .helpers import load_date_in_user_tz_as_utc
 
 @method_decorator(login_required, name="dispatch")
 # pylint: disable=no-self-use
+# pylint: disable=too-many-return-statements
 class ReadingStatus(View):
     """consider reading a book"""
 
@@ -41,6 +45,13 @@ class ReadingStatus(View):
         }.get(status)
         if not identifier:
             return HttpResponseBadRequest()
+
+        # invalidate the template cache
+        cache_keys = [
+            make_template_fragment_key("shelve_button", [request.user.id, book_id]),
+            make_template_fragment_key("suggested_books", [request.user.id]),
+        ]
+        cache.delete_many(cache_keys)
 
         desired_shelf = get_object_or_404(
             models.Shelf, identifier=identifier, user=request.user
@@ -89,8 +100,21 @@ class ReadingStatus(View):
             privacy = request.POST.get("privacy")
             handle_reading_status(request.user, desired_shelf, book, privacy)
 
+        # if the request includes a "shelf" value we are using the 'move' button
+        if bool(request.POST.get("shelf")):
+            # unshelve the existing shelf
+            this_shelf = request.POST.get("shelf")
+            if (
+                bool(current_status_shelfbook)
+                and int(this_shelf) != int(current_status_shelfbook.shelf.id)
+                and current_status_shelfbook.shelf.identifier
+                != desired_shelf.identifier
+            ):
+                return unshelve(request, book_id=book_id)
+
         if is_api_request(request):
             return HttpResponse()
+
         return redirect(referer)
 
 

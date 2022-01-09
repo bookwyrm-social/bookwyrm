@@ -1,6 +1,7 @@
 """ non-interactive pages """
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
+from django.db.models import Q, Count
 from django.http import Http404
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
@@ -33,11 +34,9 @@ class User(View):
         shelves = user.shelf_set
         is_self = request.user.id == user.id
         if not is_self:
-            follower = user.followers.filter(id=request.user.id).exists()
-            if follower:
-                shelves = shelves.filter(privacy__in=["public", "followers"])
-            else:
-                shelves = shelves.filter(privacy="public")
+            shelves = models.Shelf.privacy_filter(
+                request.user, privacy_levels=["public", "followers"]
+            ).filter(user=user)
 
         for user_shelf in shelves.all():
             if not user_shelf.books.count():
@@ -105,9 +104,8 @@ class Followers(View):
         if is_api_request(request):
             return ActivitypubResponse(user.to_followers_activity(**request.GET))
 
-        paginated = Paginator(
-            user.followers.order_by("-created_date").all(), PAGE_LENGTH
-        )
+        followers = annotate_if_follows(request.user, user.followers)
+        paginated = Paginator(followers.all(), PAGE_LENGTH)
         data = {
             "user": user,
             "is_self": request.user.id == user.id,
@@ -126,9 +124,8 @@ class Following(View):
         if is_api_request(request):
             return ActivitypubResponse(user.to_following_activity(**request.GET))
 
-        paginated = Paginator(
-            user.following.order_by("-created_date").all(), PAGE_LENGTH
-        )
+        following = annotate_if_follows(request.user, user.following)
+        paginated = Paginator(following.all(), PAGE_LENGTH)
         data = {
             "user": user,
             "is_self": request.user.id == user.id,
@@ -137,23 +134,14 @@ class Following(View):
         return TemplateResponse(request, "user/relationships/following.html", data)
 
 
-class Groups(View):
-    """list of user's groups view"""
+def annotate_if_follows(user, queryset):
+    """Sort a list of users by if you follow them"""
+    if not user.is_authenticated:
+        return queryset.order_by("-created_date")
 
-    def get(self, request, username):
-        """list of groups"""
-        user = get_user_from_username(request.user, username)
-
-        paginated = Paginator(
-            models.Group.memberships.filter(user=user).order_by("-created_date"),
-            PAGE_LENGTH,
-        )
-        data = {
-            "user": user,
-            "is_self": request.user.id == user.id,
-            "group_list": paginated.get_page(request.GET.get("page")),
-        }
-        return TemplateResponse(request, "user/groups.html", data)
+    return queryset.annotate(
+        request_user_follows=Count("followers", filter=Q(followers=user))
+    ).order_by("-request_user_follows", "-created_date")
 
 
 @require_POST
@@ -163,3 +151,9 @@ def hide_suggestions(request):
     request.user.show_suggested_users = False
     request.user.save(broadcast=False, update_fields=["show_suggested_users"])
     return redirect(request.headers.get("Referer", "/"))
+
+
+# pylint: disable=unused-argument
+def user_redirect(request, username):
+    """redirect to a user's feed"""
+    return redirect("user-feed", username=username)

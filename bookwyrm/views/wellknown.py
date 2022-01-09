@@ -9,7 +9,7 @@ from django.utils import timezone
 from django.views.decorators.http import require_GET
 
 from bookwyrm import models
-from bookwyrm.settings import DOMAIN, VERSION, MEDIA_FULL_URL, STATIC_FULL_URL
+from bookwyrm.settings import DOMAIN, VERSION
 
 
 @require_GET
@@ -30,7 +30,11 @@ def webfinger(request):
                     "rel": "self",
                     "type": "application/activity+json",
                     "href": user.remote_id,
-                }
+                },
+                {
+                    "rel": "http://ostatus.org/schema/1.0/subscribe",
+                    "template": f"https://{DOMAIN}/ostatus_subscribe?acct={{uri}}",
+                },
             ],
         }
     )
@@ -93,7 +97,7 @@ def instance_info(_):
     status_count = models.Status.objects.filter(user__local=True, deleted=False).count()
 
     site = models.SiteSettings.get()
-    logo = get_image_url(site.logo, "logo.png")
+    logo = site.logo_url
     return JsonResponse(
         {
             "uri": DOMAIN,
@@ -108,7 +112,8 @@ def instance_info(_):
             "thumbnail": logo,
             "languages": ["en"],
             "registrations": site.allow_registration,
-            "approval_required": site.allow_registration and site.allow_invite_requests,
+            "approval_required": not site.allow_registration
+            and site.allow_invite_requests,
             "email": site.admin_email,
         }
     )
@@ -133,14 +138,7 @@ def host_meta(request):
 def opensearch(request):
     """Open Search xml spec"""
     site = models.SiteSettings.get()
-    image = get_image_url(site.favicon, "favicon.png")
+    image = site.favicon_url
     return TemplateResponse(
         request, "opensearch.xml", {"image": image, "DOMAIN": DOMAIN}
     )
-
-
-def get_image_url(obj, fallback):
-    """helper for loading the full path to an image"""
-    if obj:
-        return f"{MEDIA_FULL_URL}{obj}"
-    return f"{STATIC_FULL_URL}images/{fallback}"

@@ -28,7 +28,7 @@ class BookViews(TestCase):
         self.factory = RequestFactory()
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
-        ):
+        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
             self.local_user = models.User.objects.create_user(
                 "mouse@local.com",
                 "mouse@mouse.com",
@@ -78,7 +78,7 @@ class BookViews(TestCase):
         self.assertIsInstance(result, ActivitypubResponse)
         self.assertEqual(result.status_code, 200)
 
-    @patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
+    @patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
     @patch("bookwyrm.activitystreams.add_status_task.delay")
     def test_book_page_statuses(self, *_):
         """there are so many views, this just makes sure it LOADS"""
@@ -169,7 +169,7 @@ class BookViews(TestCase):
         request.user = self.local_user
 
         with patch(
-            "bookwyrm.models.activitypub_mixin.broadcast_task.delay"
+            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
         ) as delay_mock:
             views.upload_cover(request, self.book.id)
             self.assertEqual(delay_mock.call_count, 1)
@@ -188,7 +188,7 @@ class BookViews(TestCase):
         request.user = self.local_user
 
         with patch(
-            "bookwyrm.models.activitypub_mixin.broadcast_task.delay"
+            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
         ) as delay_mock:
             views.upload_cover(request, self.book.id)
             self.assertEqual(delay_mock.call_count, 1)
@@ -202,12 +202,60 @@ class BookViews(TestCase):
         request = self.factory.post("", {"description": "new description hi"})
         request.user = self.local_user
 
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             views.add_description(request, self.book.id)
 
         self.book.refresh_from_db()
         self.assertEqual(self.book.description, "new description hi")
         self.assertEqual(self.book.last_edited_by, self.local_user)
+
+    def test_update_book_from_remote(self):
+        """call out to sync with remote connector"""
+        models.Connector.objects.create(
+            identifier="openlibrary.org",
+            name="OpenLibrary",
+            connector_file="openlibrary",
+            base_url="https://openlibrary.org",
+            books_url="https://openlibrary.org",
+            covers_url="https://covers.openlibrary.org",
+            search_url="https://openlibrary.org/search?q=",
+            isbn_search_url="https://openlibrary.org/isbn",
+        )
+        self.local_user.groups.add(self.group)
+        request = self.factory.post("")
+        request.user = self.local_user
+
+        with patch(
+            "bookwyrm.connectors.openlibrary.Connector.update_book_from_remote"
+        ) as mock:
+            views.update_book_from_remote(request, self.book.id, "openlibrary.org")
+        self.assertEqual(mock.call_count, 1)
+
+    def test_resolve_book(self):
+        """load a book from search results"""
+        models.Connector.objects.create(
+            identifier="openlibrary.org",
+            name="OpenLibrary",
+            connector_file="openlibrary",
+            base_url="https://openlibrary.org",
+            books_url="https://openlibrary.org",
+            covers_url="https://covers.openlibrary.org",
+            search_url="https://openlibrary.org/search?q=",
+            isbn_search_url="https://openlibrary.org/isbn",
+        )
+        request = self.factory.post(
+            "", {"remote_id": "https://openlibrary.org/book/123"}
+        )
+        request.user = self.local_user
+
+        with patch(
+            "bookwyrm.connectors.openlibrary.Connector.get_or_create_book"
+        ) as mock:
+            mock.return_value = self.book
+            result = views.resolve_book(request)
+        self.assertEqual(mock.call_count, 1)
+        self.assertEqual(mock.call_args[0][0], "https://openlibrary.org/book/123")
+        self.assertEqual(result.status_code, 302)
 
 
 def _setup_cover_url():

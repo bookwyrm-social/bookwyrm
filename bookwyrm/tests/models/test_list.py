@@ -1,11 +1,12 @@
 """ testing models """
+from uuid import UUID
 from unittest.mock import patch
 from django.test import TestCase
 
 from bookwyrm import models, settings
 
 
-@patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
+@patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
 class List(TestCase):
     """some activitypub oddness ahead"""
 
@@ -13,7 +14,7 @@ class List(TestCase):
         """look, a list"""
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
-        ):
+        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
             self.local_user = models.User.objects.create_user(
                 "mouse", "mouse@mouse.mouse", "mouseword", local=True, localname="mouse"
             )
@@ -22,16 +23,16 @@ class List(TestCase):
 
     def test_remote_id(self, _):
         """shelves use custom remote ids"""
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             book_list = models.List.objects.create(
                 name="Test List", user=self.local_user
             )
-        expected_id = "https://%s/list/%d" % (settings.DOMAIN, book_list.id)
+        expected_id = f"https://{settings.DOMAIN}/list/{book_list.id}"
         self.assertEqual(book_list.get_remote_id(), expected_id)
 
     def test_to_activity(self, _):
         """jsonify it"""
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             book_list = models.List.objects.create(
                 name="Test List", user=self.local_user
             )
@@ -45,7 +46,7 @@ class List(TestCase):
 
     def test_list_item(self, _):
         """a list entry"""
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             book_list = models.List.objects.create(
                 name="Test List", user=self.local_user, privacy="unlisted"
             )
@@ -63,7 +64,7 @@ class List(TestCase):
 
     def test_list_item_pending(self, _):
         """a list entry"""
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             book_list = models.List.objects.create(
                 name="Test List", user=self.local_user
             )
@@ -80,3 +81,12 @@ class List(TestCase):
         self.assertEqual(item.book_list.privacy, "public")
         self.assertEqual(item.privacy, "direct")
         self.assertEqual(item.recipients, [])
+
+    def test_embed_key(self, _):
+        """embed_key should never be empty"""
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
+            book_list = models.List.objects.create(
+                name="Test List", user=self.local_user
+            )
+
+        self.assertIsInstance(book_list.embed_key, UUID)

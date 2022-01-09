@@ -9,10 +9,11 @@ from bookwyrm import models
 from bookwyrm.suggested_users import suggested_users, get_annotated_users
 
 
-@patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
+@patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
 @patch("bookwyrm.activitystreams.add_status_task.delay")
 @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
 @patch("bookwyrm.activitystreams.populate_stream_task.delay")
+@patch("bookwyrm.lists_stream.populate_lists_task.delay")
 @patch("bookwyrm.activitystreams.add_book_statuses_task.delay")
 @patch("bookwyrm.suggested_users.rerank_user_task.delay")
 @patch("bookwyrm.suggested_users.remove_user_task.delay")
@@ -23,7 +24,7 @@ class SuggestedUsers(TestCase):
         """use a test csv"""
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
-        ):
+        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
             self.local_user = models.User.objects.create_user(
                 "mouse", "mouse@mouse.mouse", "password", local=True, localname="mouse"
             )
@@ -35,11 +36,18 @@ class SuggestedUsers(TestCase):
         rank = suggested_users.get_rank(annotated_user_mock)
         self.assertEqual(rank, 3)  # 3.9642857142857144)
 
-    def test_store_id(self, *_):
-        """redis key generation"""
+    def test_store_id_from_obj(self, *_):
+        """redis key generation by user obj"""
         self.assertEqual(
             suggested_users.store_id(self.local_user),
-            "{:d}-suggestions".format(self.local_user.id),
+            f"{self.local_user.id}-suggestions",
+        )
+
+    def test_store_id_from_id(self, *_):
+        """redis key generation by user id"""
+        self.assertEqual(
+            suggested_users.store_id(self.local_user.id),
+            f"{self.local_user.id}-suggestions",
         )
 
     def test_get_counts_from_rank(self, *_):
@@ -69,21 +77,74 @@ class SuggestedUsers(TestCase):
         suggestable_user.followers.add(mutual_user)
 
         results = suggested_users.get_objects_for_store(
-            "{:d}-suggestions".format(self.local_user.id)
+            f"{self.local_user.id}-suggestions"
         )
         self.assertEqual(results.count(), 1)
         match = results.first()
         self.assertEqual(match.id, suggestable_user.id)
         self.assertEqual(match.mutuals, 1)
 
-    def test_create_user_signal(self, *_):
-        """build suggestions for new users"""
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay") as mock:
-            models.User.objects.create_user(
-                "nutria", "nutria@nu.tria", "password", local=True, localname="nutria"
-            )
+    def test_get_stores_for_object(self, *_):
+        """possible follows"""
+        mutual_user = models.User.objects.create_user(
+            "rat", "rat@local.rat", "password", local=True, localname="rat"
+        )
+        suggestable_user = models.User.objects.create_user(
+            "nutria",
+            "nutria@nutria.nutria",
+            "password",
+            local=True,
+            localname="nutria",
+            discoverable=True,
+        )
 
-        self.assertEqual(mock.call_count, 1)
+        # you follow rat
+        mutual_user.followers.add(self.local_user)
+        # rat follows the suggested user
+        suggestable_user.followers.add(mutual_user)
+
+        results = suggested_users.get_stores_for_object(self.local_user)
+        self.assertEqual(len(results), 1)
+        self.assertEqual(results[0], f"{suggestable_user.id}-suggestions")
+
+    def test_get_users_for_object(self, *_):
+        """given a user, who might want to follow them"""
+        mutual_user = models.User.objects.create_user(
+            "rat", "rat@local.rat", "password", local=True, localname="rat"
+        )
+        suggestable_user = models.User.objects.create_user(
+            "nutria",
+            "nutria@nutria.nutria",
+            "password",
+            local=True,
+            localname="nutria",
+            discoverable=True,
+        )
+        # you follow rat
+        mutual_user.followers.add(self.local_user)
+        # rat follows the suggested user
+        suggestable_user.followers.add(mutual_user)
+
+        results = suggested_users.get_users_for_object(self.local_user)
+        self.assertEqual(len(results), 1)
+        self.assertEqual(results[0], suggestable_user)
+
+    def test_rerank_user_suggestions(self, *_):
+        """does it call the populate store function correctly"""
+        with patch(
+            "bookwyrm.suggested_users.SuggestedUsers.populate_store"
+        ) as store_mock:
+            suggested_users.rerank_user_suggestions(self.local_user)
+        args = store_mock.call_args[0]
+        self.assertEqual(args[0], f"{self.local_user.id}-suggestions")
+
+    def test_get_suggestions(self, *_):
+        """load from store"""
+        with patch("bookwyrm.suggested_users.SuggestedUsers.get_store") as mock:
+            mock.return_value = [(self.local_user.id, 7.9)]
+            results = suggested_users.get_suggestions(self.local_user)
+        self.assertEqual(results[0], self.local_user)
+        self.assertEqual(results[0].mutuals, 7)
 
     def test_get_annotated_users(self, *_):
         """list of people you might know"""
@@ -108,7 +169,7 @@ class SuggestedUsers(TestCase):
             remote_id="https://example.com/book/1",
             parent_work=work,
         )
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             # 1 shared follow
             self.local_user.following.add(user_2)
             user_1.followers.add(user_2)
@@ -144,8 +205,8 @@ class SuggestedUsers(TestCase):
         )
         for i in range(3):
             user = models.User.objects.create_user(
-                "{:d}@local.com".format(i),
-                "{:d}@nutria.com".format(i),
+                f"{i}@local.com",
+                f"{i}@nutria.com",
                 "password",
                 local=True,
                 localname=i,
@@ -153,7 +214,7 @@ class SuggestedUsers(TestCase):
             user.following.add(user_1)
             user.followers.add(self.local_user)
 
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             for i in range(3):
                 book = models.Edition.objects.create(
                     title=i,

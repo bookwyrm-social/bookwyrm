@@ -13,8 +13,9 @@ from bookwyrm.tests.validate_html import validate_html
 # pylint: disable=invalid-name
 @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
 @patch("bookwyrm.activitystreams.populate_stream_task.delay")
+@patch("bookwyrm.lists_stream.populate_lists_task.delay")
 @patch("bookwyrm.activitystreams.remove_status_task.delay")
-@patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
+@patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
 class StatusViews(TestCase):
     """viewing and creating statuses"""
 
@@ -23,7 +24,7 @@ class StatusViews(TestCase):
         self.factory = RequestFactory()
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
-        ):
+        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
             self.local_user = models.User.objects.create_user(
                 "mouse@local.com",
                 "mouse@mouse.com",
@@ -310,7 +311,7 @@ http://www.fish.com/"""
         with patch("bookwyrm.activitystreams.remove_status_task.delay") as redis_mock:
             view(request, status.id)
             self.assertTrue(redis_mock.called)
-        activity = json.loads(mock.call_args_list[1][0][1])
+        activity = json.loads(mock.call_args_list[1][1]["args"][1])
         self.assertEqual(activity["type"], "Delete")
         self.assertEqual(activity["object"]["type"], "Tombstone")
         status.refresh_from_db()
@@ -344,7 +345,7 @@ http://www.fish.com/"""
         with patch("bookwyrm.activitystreams.remove_status_task.delay") as redis_mock:
             view(request, status.id)
             self.assertTrue(redis_mock.called)
-        activity = json.loads(mock.call_args_list[1][0][1])
+        activity = json.loads(mock.call_args_list[1][1]["args"][1])
         self.assertEqual(activity["type"], "Delete")
         self.assertEqual(activity["object"]["type"], "Tombstone")
         status.refresh_from_db()
@@ -396,7 +397,7 @@ http://www.fish.com/"""
         request.user = self.local_user
 
         view(request, "comment", existing_status_id=status.id)
-        activity = json.loads(mock.call_args_list[1][0][1])
+        activity = json.loads(mock.call_args_list[1][1]["args"][1])
         self.assertEqual(activity["type"], "Update")
         self.assertEqual(activity["object"]["id"], status.remote_id)
 

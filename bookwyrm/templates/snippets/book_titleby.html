@@ -1,15 +1,19 @@
 {% load i18n %}
 {% load utilities %}
+{% load cache %}
 {% spaceless %}
+
+{# 6 month cache #}
+{% cache 15552000 titleby book.id %}
 
 {% if book.authors.exists %}
 {% blocktrans trimmed with path=book.local_path title=book|book_title %}
 <a href="{{ path }}">{{ title }}</a> by
-{% endblocktrans %}
-{% include 'snippets/authors.html' with book=book limit=3 %}
+{% endblocktrans %}&nbsp;{% include 'snippets/authors.html' with book=book limit=3 %}
 
 {% else %}
 <a href="{{ book.local_path }}">{{ book|book_title }}</a>
 {% endif %}
 
+{% endcache %}
 {% endspaceless %}

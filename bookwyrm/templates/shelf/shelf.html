@@ -5,7 +5,7 @@
 {% load i18n %}
 
 {% block title %}
-{% include 'user/books_header.html' %}
+{% include 'user/books_header.html' with shelf=shelf %}
 {% endblock %}
 
 {% block opengraph_images %}
@@ -80,7 +80,10 @@
     <div class="block columns is-mobile">
         <div class="column">
             <h2 class="title is-3">
-                {{ shelf.name }}
+                {% if shelf.identifier == 'to-read' %}{% trans "To Read" %}
+                {% elif shelf.identifier == 'reading' %}{% trans "Currently Reading" %}
+                {% elif shelf.identifier == 'read' %}{% trans "Read" %}
+                {% else %}{{ shelf.name }}{% endif %}
                 <span class="subtitle">
                     {% include 'snippets/privacy-icons.html' with item=shelf %}
                 </span>

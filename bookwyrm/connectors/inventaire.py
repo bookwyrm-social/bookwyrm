@@ -11,6 +11,8 @@ from .connector_manager import ConnectorException
 class Connector(AbstractConnector):
     """instantiate a connector for inventaire"""
 
+    generated_remote_link_field = "inventaire_id"
+
     def __init__(self, identifier):
         super().__init__(identifier)
 
@@ -67,7 +69,7 @@ class Connector(AbstractConnector):
         extracted = list(data.get("entities").values())
         try:
             data = extracted[0]
-        except KeyError:
+        except (KeyError, IndexError):
             raise ConnectorException("Invalid book data")
         # flatten the data so that images, uri, and claims are on the same level
         return {
@@ -128,6 +130,7 @@ class Connector(AbstractConnector):
 
     def load_edition_data(self, work_uri):
         """get a list of editions for a work"""
+        # pylint: disable=line-too-long
         url = f"{self.books_url}?action=reverse-claims&property=wdt:P629&value={work_uri}&sort=true"
         return get_data(url)
 
@@ -208,6 +211,11 @@ class Connector(AbstractConnector):
         except ConnectorException:
             return ""
         return data.get("extract")
+
+    def get_remote_id_from_model(self, obj):
+        """use get_remote_id to figure out the link from a model obj"""
+        remote_id_value = obj.inventaire_id
+        return self.get_remote_id(remote_id_value)
 
 
 def get_language_code(options, code="en"):

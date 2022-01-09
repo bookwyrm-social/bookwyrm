@@ -61,23 +61,52 @@
 
     <div class="columns">
         <div class="column is-one-fifth">
-            {% include 'snippets/book_cover.html' with size='xxlarge' size_mobile='medium' book=book cover_class='is-h-m-mobile' %}
+            {% if not book.cover %}
+                {% if user_authenticated %}
+                    <button
+                        type="button"
+                        class="cover-container no-cover is-h-m-mobile"
+                        data-modal-open="add_cover_{{ book.id }}"
+                    >
+                        <img
+                            class="book-cover"
+                            src="{% static "images/no_cover.jpg" %}"
+                            alt=""
+                            aria-hidden="true"
+                        >
+                        <span class="cover-caption">
+                            <span>{{ book.alt_text }}</span>
+                            <span>{% trans "Click to add cover" %}</span>
+                        </span>
+                        <span class="button-invisible-overlay has-text-centered">
+                            {% trans "Click to add cover" %}
+                        </span>
+                    </button>
+                    {% join "add_cover" book.id as modal_id %}
+                    {% include 'book/cover_add_modal.html' with id=modal_id %}
+                    {% if request.GET.cover_error %}
+                    <p class="help is-danger">{% trans "Failed to load cover" %}</p>
+                    {% endif %}
+                {% else %}
+                    {% include 'snippets/book_cover.html' with book=book cover_class='is-h-m-mobile' %}
+                {% endif %}
+            {% endif %}
+
+            {% if book.cover %}
+                <button type="button" data-modal-open="cover_show_modal" class="cover-container is-h-m-mobile is-relative">
+                {% include 'snippets/book_cover.html' with size='xxlarge' size_mobile='medium' book=book cover_class='is-h-m-mobile' %}
+                    <span class="button-invisible-overlay has-text-centered">
+                        {% trans "Click to enlarge" %}
+                    </span>
+                </button>
+                {% include 'book/cover_show_modal.html' with book=book id="cover_show_modal" %}
+            {% endif %}
+
             {% include 'snippets/rate_action.html' with user=request.user book=book %}
 
             <div class="mb-3">
                 {% include 'snippets/shelve_button/shelve_button.html' %}
             </div>
-
-            {% if user_authenticated and not book.cover %}
-            <div class="block">
-                {% trans "Add cover" as button_text %}
-                {% include 'snippets/toggle/toggle_button.html' with text=button_text controls_text="add_cover" controls_uid=book.id focus="modal_title_add_cover" class="is-small" %}
-                {% include 'book/cover_modal.html' with book=book controls_text="add_cover" controls_uid=book.id %}
-                {% if request.GET.cover_error %}
-                <p class="help is-danger">{% trans "Failed to load cover" %}</p>
-                {% endif %}
-            </div>
-            {% endif %}
 
             <section class="is-clipped">
                 {% with book=book %}
@@ -90,11 +119,35 @@
                     </div>
                 {% endwith %}
 
+                {% trans "Load data" as button_text %}
                 {% if book.openlibrary_key %}
-                <p><a href="https://openlibrary.org/books/{{ book.openlibrary_key }}" target="_blank" rel="noopener">{% trans "View on OpenLibrary" %}</a></p>
+                <p>
+                    <a href="{{ book.openlibrary_link }}" target="_blank" rel="noopener">
+                        {% trans "View on OpenLibrary" %}
+                    </a>
+                    {% if request.user.is_authenticated and perms.bookwyrm.edit_book %}
+                    <button class="button is-small" type="button" data-modal-open="openlibrary_sync">
+                        <span class="icon icon-download" title="{{ button_text }}"></span>
+                        <span class="is-sr-only-mobile">{{ button_text }}</span>
+                    </button>
+                    {% include "book/sync_modal.html" with source="openlibrary.org" source_name="OpenLibrary" id="openlibrary_sync" %}
+                    {% endif %}
+                </p>
                 {% endif %}
                 {% if book.inventaire_id %}
-                <p><a href="https://inventaire.io/entity/{{ book.inventaire_id }}" target="_blank" rel="noopener">{% trans "View on Inventaire" %}</a></p>
+                <p>
+                    <a href="{{ book.inventaire_link }}" target="_blank" rel="noopener">
+                        {% trans "View on Inventaire" %}
+                    </a>
+
+                    {% if request.user.is_authenticated and perms.bookwyrm.edit_book %}
+                    <button class="button is-small" type="button" data-modal-open="inventaire_sync">
+                        <span class="icon icon-download" title="{{ button_text }}"></span>
+                        <span class="is-sr-only-mobile">{{ button_text }}</span>
+                    </button>
+                    {% include "book/sync_modal.html" with source="inventaire.io" source_name="Inventaire" id="inventaire_sync" %}
+                    {% endif %}
+                </p>
                 {% endif %}
             </section>
         </div>
@@ -153,12 +206,21 @@
 
             {# user's relationship to the book #}
             <div class="block">
+                {% if user_shelfbooks.count > 0 %}
+                <h2 class="title is-5">
+                    {% trans "You have shelved this edition in:" %}
+                </h2>
+                <ul>
                 {% for shelf in user_shelfbooks %}
-                <p>
-                    {% blocktrans with path=shelf.shelf.local_path shelf_name=shelf.shelf.name %}This edition is on your <a href="{{ path }}">{{ shelf_name }}</a> shelf.{% endblocktrans %}
-                    {% include 'snippets/shelf_selector.html' with current=shelf.shelf %}
-                </p>
+                    <li class="box">
+                        <a href="{{ shelf.shelf.local_path }}">{{ shelf.shelf.name }}</a>
+                        <div class="mb-3">
+                            {% include 'snippets/shelf_selector.html' with shelf=shelf.shelf class="is-small" readthrough=readthrough %}
+                        </div>
+                    </li>
                 {% endfor %}
+                </ul>
+                {% endif %}
                 {% for shelf in other_edition_shelves %}
                 <p>
                 {% blocktrans with book_path=shelf.book.local_path shelf_path=shelf.shelf.local_path shelf_name=shelf.shelf.name %}A <a href="{{ book_path }}">different edition</a> of this book is on your <a href="{{ shelf_path }}">{{ shelf_name }}</a> shelf.{% endblocktrans %}

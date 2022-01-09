@@ -5,6 +5,7 @@ from django.test import TestCase
 from django.test.client import RequestFactory
 
 from bookwyrm import forms, models, views
+from bookwyrm.tests.validate_html import validate_html
 
 
 class AnnouncementViews(TestCase):
@@ -15,7 +16,7 @@ class AnnouncementViews(TestCase):
         self.factory = RequestFactory()
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
-        ):
+        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
             self.local_user = models.User.objects.create_user(
                 "mouse@local.com",
                 "mouse@mouse.mouse",
@@ -38,7 +39,7 @@ class AnnouncementViews(TestCase):
         result = view(request)
 
         self.assertIsInstance(result, TemplateResponse)
-        result.render()
+        validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
     def test_announcements_page_empty(self):
@@ -51,7 +52,7 @@ class AnnouncementViews(TestCase):
         result = view(request)
 
         self.assertIsInstance(result, TemplateResponse)
-        result.render()
+        validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
     def test_announcement_page(self):
@@ -68,7 +69,7 @@ class AnnouncementViews(TestCase):
         result = view(request, announcement.id)
 
         self.assertIsInstance(result, TemplateResponse)
-        result.render()
+        validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
     def test_create_announcement(self):
@@ -138,5 +139,5 @@ class AnnouncementViews(TestCase):
         result = view(request, self.local_user.localname)
 
         self.assertIsInstance(result, TemplateResponse)
-        result.render()
+        validate_html(result.render())
         self.assertEqual(result.status_code, 200)

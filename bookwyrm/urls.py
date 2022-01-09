@@ -44,12 +44,13 @@ urlpatterns = [
     re_path(r"^api/v1/instance/?$", views.instance_info),
     re_path(r"^api/v1/instance/peers/?$", views.peers),
     re_path(r"^opensearch.xml$", views.opensearch, name="opensearch"),
+    re_path(r"^ostatus_subscribe/?$", views.ostatus_follow_request),
     # polling updates
     re_path("^api/updates/notifications/?$", views.get_notification_count),
     re_path("^api/updates/stream/(?P<stream>[a-z]+)/?$", views.get_unread_status_count),
     # authentication
     re_path(r"^login/?$", views.Login.as_view(), name="login"),
-    re_path(r"^login/(?P<confirmed>confirmed)?$", views.Login.as_view(), name="login"),
+    re_path(r"^login/(?P<confirmed>confirmed)/?$", views.Login.as_view(), name="login"),
     re_path(r"^register/?$", views.Register.as_view()),
     re_path(r"confirm-email/?$", views.ConfirmEmail.as_view(), name="confirm-email"),
     re_path(
@@ -111,12 +112,12 @@ urlpatterns = [
         name="settings-federated-server",
     ),
     re_path(
-        r"^settings/federation/(?P<server>\d+)/block?$",
+        r"^settings/federation/(?P<server>\d+)/block/?$",
         views.block_server,
         name="settings-federated-server-block",
     ),
     re_path(
-        r"^settings/federation/(?P<server>\d+)/unblock?$",
+        r"^settings/federation/(?P<server>\d+)/unblock/?$",
         views.unblock_server,
         name="settings-federated-server-unblock",
     ),
@@ -139,7 +140,7 @@ urlpatterns = [
         name="settings-invite-requests",
     ),
     re_path(
-        r"^settings/requests/ignore?$",
+        r"^settings/requests/ignore/?$",
         views.ignore_invite_request,
         name="settings-invite-requests-ignore",
     ),
@@ -196,7 +197,9 @@ urlpatterns = [
     ),
     re_path(r"^report/?$", views.make_report, name="report"),
     # landing pages
-    re_path(r"^about/?$", views.About.as_view(), name="about"),
+    re_path(r"^about/?$", views.about, name="about"),
+    re_path(r"^privacy/?$", views.privacy, name="privacy"),
+    re_path(r"^conduct/?$", views.conduct, name="conduct"),
     path("", views.Home.as_view(), name="landing"),
     re_path(r"^discover/?$", views.Discover.as_view(), name="discover"),
     re_path(r"^notifications/?$", views.Notifications.as_view(), name="notifications"),
@@ -228,7 +231,7 @@ urlpatterns = [
         r"^direct-messages/?$", views.DirectMessage.as_view(), name="direct-messages"
     ),
     re_path(
-        rf"^direct-messages/(?P<username>{regex.USERNAME})?$",
+        rf"^direct-messages/(?P<username>{regex.USERNAME})/?$",
         views.DirectMessage.as_view(),
         name="direct-messages-user",
     ),
@@ -237,10 +240,45 @@ urlpatterns = [
     re_path(r"^search/?$", views.Search.as_view(), name="search"),
     # imports
     re_path(r"^import/?$", views.Import.as_view(), name="import"),
-    re_path(r"^import/(\d+)/?$", views.ImportStatus.as_view(), name="import-status"),
+    re_path(
+        r"^import/(?P<job_id>\d+)/?$",
+        views.ImportStatus.as_view(),
+        name="import-status",
+    ),
+    re_path(
+        r"^import/(?P<job_id>\d+)/retry/(?P<item_id>\d+)/?$",
+        views.retry_item,
+        name="import-item-retry",
+    ),
+    re_path(
+        r"^import/(?P<job_id>\d+)/failed/?$",
+        views.ImportTroubleshoot.as_view(),
+        name="import-troubleshoot",
+    ),
+    re_path(
+        r"^import/(?P<job_id>\d+)/review/?$",
+        views.ImportManualReview.as_view(),
+        name="import-review",
+    ),
+    re_path(
+        r"^import/(?P<job_id>\d+)/review/?$",
+        views.ImportManualReview.as_view(),
+        name="import-review",
+    ),
+    re_path(
+        r"^import/(?P<job_id>\d+)/review/(?P<item_id>\d+)/approve/?$",
+        views.approve_import_item,
+        name="import-approve",
+    ),
+    re_path(
+        r"^import/(?P<job_id>\d+)/review/(?P<item_id>\d+)/delete/?$",
+        views.delete_import_item,
+        name="import-delete",
+    ),
     # users
     re_path(rf"{USER_PATH}\.json$", views.User.as_view()),
     re_path(rf"{USER_PATH}/?$", views.User.as_view(), name="user-feed"),
+    re_path(rf"^@(?P<username>{regex.USERNAME})$", views.user_redirect),
     re_path(rf"{USER_PATH}/rss/?$", views.rss_feed.RssFeed(), name="user-rss"),
     re_path(
         rf"{USER_PATH}/followers(.json)?/?$",
@@ -302,6 +340,11 @@ urlpatterns = [
     ),
     re_path(r"^save-list/(?P<list_id>\d+)/?$", views.save_list, name="list-save"),
     re_path(r"^unsave-list/(?P<list_id>\d+)/?$", views.unsave_list, name="list-unsave"),
+    re_path(
+        r"^list/(?P<list_id>\d+)/embed/(?P<list_key>[0-9a-f]+)/?$",
+        views.unsafe_embed_list,
+        name="embed-list",
+    ),
     # User books
     re_path(rf"{USER_PATH}/books/?$", views.Shelf.as_view(), name="user-shelves"),
     re_path(
@@ -315,7 +358,7 @@ urlpatterns = [
         name="shelf",
     ),
     re_path(r"^create-shelf/?$", views.create_shelf, name="shelf-create"),
-    re_path(r"^delete-shelf/(?P<shelf_id>\d+)?$", views.delete_shelf),
+    re_path(r"^delete-shelf/(?P<shelf_id>\d+)/?$", views.delete_shelf),
     re_path(r"^shelve/?$", views.shelve),
     re_path(r"^unshelve/?$", views.unshelve),
     # goals
@@ -382,19 +425,35 @@ urlpatterns = [
     re_path(rf"{BOOK_PATH}/edit/?$", views.EditBook.as_view(), name="edit-book"),
     re_path(rf"{BOOK_PATH}/confirm/?$", views.ConfirmEditBook.as_view()),
     re_path(r"^create-book/?$", views.EditBook.as_view(), name="create-book"),
-    re_path(r"^create-book/confirm?$", views.ConfirmEditBook.as_view()),
+    re_path(r"^create-book/confirm/?$", views.ConfirmEditBook.as_view()),
     re_path(rf"{BOOK_PATH}/editions(.json)?/?$", views.Editions.as_view()),
     re_path(
         r"^upload-cover/(?P<book_id>\d+)/?$", views.upload_cover, name="upload-cover"
     ),
     re_path(r"^add-description/(?P<book_id>\d+)/?$", views.add_description),
-    re_path(r"^resolve-book/?$", views.resolve_book),
-    re_path(r"^switch-edition/?$", views.switch_edition),
+    re_path(r"^resolve-book/?$", views.resolve_book, name="resolve-book"),
+    re_path(r"^switch-edition/?$", views.switch_edition, name="switch-edition"),
+    re_path(
+        rf"{BOOK_PATH}/update/(?P<connector_identifier>[\w\.]+)/?$",
+        views.update_book_from_remote,
+        name="book-update-remote",
+    ),
+    re_path(
+        r"^author/(?P<author_id>\d+)/update/(?P<connector_identifier>[\w\.]+)/?$",
+        views.update_author_from_remote,
+        name="author-update-remote",
+    ),
     # isbn
     re_path(r"^isbn/(?P<isbn>\d+)(.json)?/?$", views.Isbn.as_view()),
     # author
-    re_path(r"^author/(?P<author_id>\d+)(.json)?/?$", views.Author.as_view()),
-    re_path(r"^author/(?P<author_id>\d+)/edit/?$", views.EditAuthor.as_view()),
+    re_path(
+        r"^author/(?P<author_id>\d+)(.json)?/?$", views.Author.as_view(), name="author"
+    ),
+    re_path(
+        r"^author/(?P<author_id>\d+)/edit/?$",
+        views.EditAuthor.as_view(),
+        name="edit-author",
+    ),
     # reading progress
     re_path(r"^edit-readthrough/?$", views.edit_readthrough, name="edit-readthrough"),
     re_path(r"^delete-readthrough/?$", views.delete_readthrough),
@@ -416,4 +475,23 @@ urlpatterns = [
     re_path(r"^unfollow/?$", views.unfollow, name="unfollow"),
     re_path(r"^accept-follow-request/?$", views.accept_follow_request),
     re_path(r"^delete-follow-request/?$", views.delete_follow_request),
+    re_path(r"^ostatus_follow/?$", views.remote_follow, name="remote-follow"),
+    re_path(r"^remote_follow/?$", views.remote_follow_page, name="remote-follow-page"),
+    re_path(
+        r"^ostatus_success/?$", views.ostatus_follow_success, name="ostatus-success"
+    ),
+    # annual summary
+    re_path(
+        r"^my-year-in-the-books/(?P<year>\d+)/?$",
+        views.personal_annual_summary,
+    ),
+    re_path(
+        rf"{LOCAL_USER_PATH}/(?P<year>\d+)-in-the-books/?$",
+        views.AnnualSummary.as_view(),
+        name="annual-summary",
+    ),
+    re_path(r"^summary_add_key/?$", views.summary_add_key, name="summary-add-key"),
+    re_path(
+        r"^summary_revoke_key/?$", views.summary_revoke_key, name="summary-revoke-key"
+    ),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

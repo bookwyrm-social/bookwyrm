@@ -18,7 +18,7 @@ class UserAdminViews(TestCase):
         self.factory = RequestFactory()
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
-        ):
+        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
             self.local_user = models.User.objects.create_user(
                 "mouse@local.com",
                 "mouse@mouse.mouse",
@@ -67,7 +67,7 @@ class UserAdminViews(TestCase):
         request.user = self.local_user
         request.user.is_superuser = True
 
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             result = view(request, self.local_user.id)
 
         self.assertIsInstance(result, TemplateResponse)

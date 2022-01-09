@@ -1,72 +1,74 @@
 {% extends 'lists/layout.html' %}
 {% load i18n %}
+
+{% block breadcrumbs %}
+<nav class="breadcrumb subtitle" aria-label="breadcrumbs">
+    <ul>
+        <li><a href="{% url 'lists' %}">{% trans "Lists" %}</a></li>
+        <li><a href="{% url 'list' list.id %}">{{ list.name|truncatechars:30 }}</a></li>
+        <li class="is-active">
+            <a href="#" aria-current="page">
+                {% trans "Curate" %}
+            </a>
+        </li>
+    </ul>
+</nav>
+{% endblock %}
+
 {% block panel %}
-
 <section class="block">
-    <div class="columns is-mobile is-multiline is-align-items-baseline">
-        <div class="column is-narrow">
-            <h2 class="title is-4">{% trans "Pending Books" %}</h2>
-        </div>
-
-        <p class="column is-narrow"><a href="{% url 'list' list.id %}">{% trans "Go to list" %}</a></p>
-    </div>
+    <h2 class="title is-4">{% trans "Pending Books" %}</h2>
 
     {% if not pending.exists %}
-        <p>{% trans "You're all set!" %}</p>
+        <p><em>{% trans "You're all set!" %}</em></p>
     {% else %}
 
-    <dl>
+    <div class="columns">
         {% for item in pending %}
-            {% with book=item.book %}
-                <div
-                    class="
-                        columns is-gapless
-                        is-vcentered is-justify-content-space-between
-                        mb-6
-                    "
-                >
-                    <dt class="column mr-auto">
-                        <div class="columns is-mobile is-gapless is-vcentered">
-                            <a
-                                class="column is-cover"
-                                href="{{ book.local_path }}"
-                                aria-hidden="true"
-                            >
-                                {% include 'snippets/book_cover.html' with cover_class='is-w-xs-mobile is-w-s is-h-xs-mobile is-h-s' size_mobile='xsmall' size='small' %}
+        {% with book=item.book %}
+            <div class="column">
+                <div class="columns is-mobile">
+                    <a
+                        class="column is-cover"
+                        href="{{ book.local_path }}"
+                        aria-hidden="true"
+                    >
+                        {% include 'snippets/book_cover.html' with cover_class='is-w-xs-mobile is-w-s is-h-xs-mobile is-h-s' size_mobile='xsmall' size='small' %}
+                    </a>
+
+                    <div class="column ml-3">
+                        {% include 'snippets/book_titleby.html' %}
+
+                        <p>
+                            {% trans "Suggested by" %}
+
+                            <a href="{{ item.user.local_path }}">
+                                {{ item.user.display_name }}
                             </a>
-
-                            <div class="column ml-3">
-                                {% include 'snippets/book_titleby.html' %}
-                            </div>
-                        </div>
-                    </dt>
-
-                    <dd class="column is-4-tablet mx-3-tablet my-3-mobile">
-                        {% trans "Suggested by" %}
-
-                        <a href="{{ item.user.local_path }}">
-                            {{ item.user.display_name }}
-                        </a>
-                    </dd>
-
-                    <dd class="column is-narrow field has-addons">
-                        <form class="control" method="POST" action="{% url 'list-curate' list.id %}">
-                            {% csrf_token %}
-                            <input type="hidden" name="item" value="{{ item.id }}">
-                            <input type="hidden" name="approved" value="true">
-                            <button class="button">{% trans "Approve" %}</button>
-                        </form>
-                        <form class="control" method="POST" action="{% url 'list-curate' list.id %}">
-                            {% csrf_token %}
-                            <input type="hidden" name="item" value="{{ item.id }}">
-                            <input type="hidden" name="approved" value="false">
-                            <button class="button is-danger is-light">{% trans "Discard" %}</button>
-                        </form>
-                    </dd>
+                        </p>
+                    </div>
                 </div>
-            {% endwith %}
+            </div>
+
+            <div class="column is-narrow">
+                <div class="field has-addons">
+                    <form class="control" method="POST" action="{% url 'list-curate' list.id %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="item" value="{{ item.id }}">
+                        <input type="hidden" name="approved" value="true">
+                        <button type="submit" class="button">{% trans "Approve" %}</button>
+                    </form>
+                    <form class="control" method="POST" action="{% url 'list-curate' list.id %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="item" value="{{ item.id }}">
+                        <input type="hidden" name="approved" value="false">
+                        <button type="submit" class="button is-danger is-light">{% trans "Discard" %}</button>
+                    </form>
+                </div>
+            </div>
+        {% endwith %}
         {% endfor %}
-    </dl>
+    </div>
     {% endif %}
 </section>
 {% endblock %}

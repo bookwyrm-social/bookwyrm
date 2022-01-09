@@ -16,7 +16,7 @@ class InboxUpdate(TestCase):
         """basic user and book data"""
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
-        ):
+        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
             self.local_user = models.User.objects.create_user(
                 "mouse@example.com",
                 "mouse@mouse.com",
@@ -50,7 +50,7 @@ class InboxUpdate(TestCase):
 
     def test_update_list(self):
         """a new list"""
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             book_list = models.List.objects.create(
                 name="hi", remote_id="https://example.com/list/22", user=self.local_user
             )
@@ -78,6 +78,7 @@ class InboxUpdate(TestCase):
 
     @patch("bookwyrm.suggested_users.rerank_user_task.delay")
     @patch("bookwyrm.activitystreams.add_user_statuses_task.delay")
+    @patch("bookwyrm.lists_stream.add_user_lists_task.delay")
     def test_update_user(self, *_):
         """update an existing user"""
         models.UserFollows.objects.create(
@@ -171,7 +172,7 @@ class InboxUpdate(TestCase):
         book = models.Work.objects.get(id=book.id)
         self.assertEqual(book.title, "Piranesi")
 
-    @patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
+    @patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
     @patch("bookwyrm.activitystreams.add_status_task.delay")
     def test_update_status(self, *_):
         """edit a status"""

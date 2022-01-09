@@ -10,7 +10,7 @@ from bookwyrm.activitypub import ActivitySerializerError
 
 
 # pylint: disable=too-many-public-methods
-@patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
+@patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
 @patch("bookwyrm.activitystreams.add_book_statuses_task.delay")
 class InboxCreate(TestCase):
     """readthrough tests"""
@@ -19,7 +19,7 @@ class InboxCreate(TestCase):
         """basic user and book data"""
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
-        ):
+        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
             self.local_user = models.User.objects.create_user(
                 "mouse@example.com",
                 "mouse@mouse.com",

@@ -34,7 +34,8 @@ class Group(View):
         data = {
             "group": group,
             "lists": lists,
-            "group_form": forms.GroupForm(instance=group),
+            "group_form": forms.GroupForm(instance=group, auto_id="group_form_id_%s"),
+            "list_form": forms.ListForm(),
             "path": "/group",
         }
         return TemplateResponse(request, "groups/group.html", data)
@@ -47,6 +48,31 @@ class Group(View):
         if not form.is_valid():
             return redirect("group", user_group.id)
         user_group = form.save()
+
+        # let the other members know something about the group changed
+        memberships = models.GroupMember.objects.filter(group=user_group)
+        model = apps.get_model("bookwyrm.Notification", require_ready=True)
+        for field in form.changed_data:
+            notification_type = (
+                "GROUP_PRIVACY"
+                if field == "privacy"
+                else "GROUP_NAME"
+                if field == "name"
+                else "GROUP_DESCRIPTION"
+                if field == "description"
+                else None
+            )
+            if notification_type:
+                for membership in memberships:
+                    member = membership.user
+                    if member != request.user:
+                        model.objects.create(
+                            user=member,
+                            related_user=request.user,
+                            related_group=user_group,
+                            notification_type=notification_type,
+                        )
+
         return redirect("group", user_group.id)
 
 
@@ -96,6 +122,11 @@ class FindUsers(View):
         """basic profile info"""
         user_query = request.GET.get("user_query")
         group = get_object_or_404(models.Group, id=group_id)
+        lists = (
+            models.List.privacy_filter(request.user)
+            .filter(group=group)
+            .order_by("-updated_date")
+        )
 
         if not group:
             return HttpResponseBadRequest()
@@ -117,7 +148,7 @@ class FindUsers(View):
             .filter(similarity__gt=0.5, local=True)
             .order_by("-similarity")[:5]
         )
-        data = {"no_results": not user_results}
+        no_results = not user_results
 
         if user_results.count() < 5:
             user_results = list(user_results) + suggested_users.get_suggestions(
@@ -126,8 +157,11 @@ class FindUsers(View):
 
         data = {
             "suggested_users": user_results,
+            "no_results": no_results,
             "group": group,
-            "group_form": forms.GroupForm(instance=group),
+            "lists": lists,
+            "group_form": forms.GroupForm(instance=group, auto_id="group_form_id_%s"),
+            "list_form": forms.ListForm(),
             "user_query": user_query,
             "requestor_is_manager": request.user == group.user,
         }
@@ -154,21 +188,14 @@ def delete_group(request, group_id):
 @login_required
 def invite_member(request):
     """invite a member to the group"""
-
     group = get_object_or_404(models.Group, id=request.POST.get("group"))
-    if not group:
-        return HttpResponseBadRequest()
-
     user = get_user_from_username(request.user, request.POST["user"])
-    if not user:
-        return HttpResponseBadRequest()
 
     if not group.user == request.user:
         return HttpResponseBadRequest()
 
     try:
         models.GroupMemberInvitation.objects.create(user=user, group=group)
-
     except IntegrityError:
         pass
 
@@ -179,17 +206,11 @@ def invite_member(request):
 @login_required
 def remove_member(request):
     """remove a member from the group"""
-
     group = get_object_or_404(models.Group, id=request.POST.get("group"))
-    if not group:
-        return HttpResponseBadRequest()
-
     user = get_user_from_username(request.user, request.POST["user"])
-    if not user:
-        return HttpResponseBadRequest()
 
     # you can't be removed from your own group
-    if request.POST["user"] == group.user:
+    if user == group.user:
         return HttpResponseBadRequest()
 
     is_member = models.GroupMember.objects.filter(group=group, user=user).exists()
@@ -209,11 +230,9 @@ def remove_member(request):
             pass
 
     if is_member:
-
         try:
             models.List.remove_from_group(group.user, user)
             models.GroupMember.remove(group.user, user)
-
         except IntegrityError:
             pass
 
@@ -246,18 +265,13 @@ def remove_member(request):
 @login_required
 def accept_membership(request):
     """accept an invitation to join a group"""
-
-    group = models.Group.objects.get(id=request.POST["group"])
-    if not group:
-        return HttpResponseBadRequest()
-
-    invite = models.GroupMemberInvitation.objects.get(group=group, user=request.user)
-    if not invite:
-        return HttpResponseBadRequest()
+    group = get_object_or_404(models.Group, id=request.POST.get("group"))
+    invite = get_object_or_404(
+        models.GroupMemberInvitation, group=group, user=request.user
+    )
 
     try:
         invite.accept()
-
     except IntegrityError:
         pass
 
@@ -268,19 +282,10 @@ def accept_membership(request):
 @login_required
 def reject_membership(request):
     """reject an invitation to join a group"""
+    group = get_object_or_404(models.Group, id=request.POST.get("group"))
+    invite = get_object_or_404(
+        models.GroupMemberInvitation, group=group, user=request.user
+    )
 
-    group = models.Group.objects.get(id=request.POST["group"])
-    if not group:
-        return HttpResponseBadRequest()
-
-    invite = models.GroupMemberInvitation.objects.get(group=group, user=request.user)
-    if not invite:
-        return HttpResponseBadRequest()
-
-    try:
-        invite.reject()
-
-    except IntegrityError:
-        pass
-
+    invite.reject()
     return redirect(request.user.local_path)

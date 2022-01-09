@@ -9,12 +9,12 @@ from django.utils.translation import gettext_lazy as _
 env = Env()
 env.read_env()
 DOMAIN = env("DOMAIN")
-VERSION = "0.1.0"
+VERSION = "0.1.1"
 
 PAGE_LENGTH = env("PAGE_LENGTH", 15)
 DEFAULT_LANGUAGE = env("DEFAULT_LANGUAGE", "English")
 
-JS_CACHE = "3eb4edb1"
+JS_CACHE = "2d3181e1"
 
 # email
 EMAIL_BACKEND = env("EMAIL_BACKEND", "django.core.mail.backends.smtp.EmailBackend")
@@ -24,7 +24,9 @@ EMAIL_HOST_USER = env("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
 EMAIL_USE_TLS = env.bool("EMAIL_USE_TLS", True)
 EMAIL_USE_SSL = env.bool("EMAIL_USE_SSL", False)
-DEFAULT_FROM_EMAIL = f"admin@{DOMAIN}"
+EMAIL_SENDER_NAME = env("EMAIL_SENDER_NAME", "admin")
+EMAIL_SENDER_DOMAIN = env("EMAIL_SENDER_NAME", DOMAIN)
+EMAIL_SENDER = f"{EMAIL_SENDER_NAME}@{EMAIL_SENDER_DOMAIN}"
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -119,15 +121,43 @@ STREAMS = [
     {"key": "books", "name": _("Books Timeline"), "shortname": _("Books")},
 ]
 
+# Search configuration
+# total time in seconds that the instance will spend searching connectors
+SEARCH_TIMEOUT = int(env("SEARCH_TIMEOUT", 15))
+# timeout for a query to an individual connector
+QUERY_TIMEOUT = int(env("QUERY_TIMEOUT", 5))
+
+# Redis cache backend
+if env("USE_DUMMY_CACHE", False):
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.dummy.DummyCache",
+        }
+    }
+else:
+    # pylint: disable=line-too-long
+    CACHES = {
+        "default": {
+            "BACKEND": "django_redis.cache.RedisCache",
+            "LOCATION": f"redis://:{REDIS_ACTIVITY_PASSWORD}@{REDIS_ACTIVITY_HOST}:{REDIS_ACTIVITY_PORT}/0",
+            "OPTIONS": {
+                "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            },
+        }
+    }
+
+    SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+    SESSION_CACHE_ALIAS = "default"
+
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "NAME": env("POSTGRES_DB", "fedireads"),
-        "USER": env("POSTGRES_USER", "fedireads"),
-        "PASSWORD": env("POSTGRES_PASSWORD", "fedireads"),
+        "NAME": env("POSTGRES_DB", "bookwyrm"),
+        "USER": env("POSTGRES_USER", "bookwyrm"),
+        "PASSWORD": env("POSTGRES_PASSWORD", "bookwyrm"),
         "HOST": env("POSTGRES_HOST", ""),
         "PORT": env("PGPORT", 5432),
     },
@@ -165,8 +195,11 @@ LANGUAGES = [
     ("en-us", _("English")),
     ("de-de", _("Deutsch (German)")),
     ("es-es", _("Español (Spanish)")),
+    ("gl-es", _("Galego (Galician)")),
     ("fr-fr", _("Français (French)")),
-    ("pt-br", _("Português - Brasil (Brazilian Portuguese)")),
+    ("lt-lt", _("Lietuvių (Lithuanian)")),
+    ("pt-br", _("Português do Brasil (Brazilian Portuguese)")),
+    ("pt-pt", _("Português Europeu (European Portuguese)")),
     ("zh-hans", _("简体中文 (Simplified Chinese)")),
     ("zh-hant", _("繁體中文 (Traditional Chinese)")),
 ]
