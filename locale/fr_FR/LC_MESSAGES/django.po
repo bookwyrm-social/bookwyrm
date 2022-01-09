@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-01-09 00:54+0000\n"
-"PO-Revision-Date: 2022-01-09 02:53\n"
+"PO-Revision-Date: 2022-01-09 12:56\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: French\n"
 "Language: fr\n"
@@ -205,7 +205,7 @@ msgstr "Galego (Galicien)"
 
 #: bookwyrm/settings.py:199
 msgid "Italiano (Italian)"
-msgstr ""
+msgstr "Italiano (italien)"
 
 #: bookwyrm/settings.py:200
 msgid "Français (French)"
@@ -217,7 +217,7 @@ msgstr "Lietuvių (Lituanien)"
 
 #: bookwyrm/settings.py:202
 msgid "Norsk (Norwegian)"
-msgstr ""
+msgstr "Norsk (norvégien)"
 
 #: bookwyrm/settings.py:203
 msgid "Português do Brasil (Brazilian Portuguese)"
@@ -258,7 +258,7 @@ msgstr "Une erreur s’est produite ; désolé !"
 #: bookwyrm/templates/about/about.html:9
 #: bookwyrm/templates/about/layout.html:35
 msgid "About"
-msgstr ""
+msgstr "À propos"
 
 #: bookwyrm/templates/about/about.html:18
 #: bookwyrm/templates/get_started/layout.html:20
@@ -269,41 +269,43 @@ msgstr "Bienvenue sur %(site_name)s !"
 #: bookwyrm/templates/about/about.html:22
 #, python-format
 msgid "%(site_name)s is part of <em>BookWyrm</em>, a network of independent, self-directed communities for readers. While you can interact seemlessly with users anywhere in the <a href=\"https://joinbookwyrm.com/instances/\" target=\"_blank\">BookWyrm network</a>, this community is unique."
-msgstr ""
+msgstr "%(site_name)s fait partie de <em>BookWyrm</em>, un réseau de communautés indépendantes et autogérées pour les lecteurs. Bien que vous puissiez interagir apparemment avec les utilisateurs n'importe où dans le <a href=\"https://joinbookwyrm.com/instances/\" target=\"_blank\">réseau BookWyrm</a>, cette communauté est unique."
 
 #: bookwyrm/templates/about/about.html:39
 #, python-format
 msgid "<a href=\"%(book_path)s\"><em>%(title)s</em></a> is %(site_name)s's most beloved book, with an average rating of %(rating)s out of 5."
-msgstr ""
+msgstr "<a href=\"%(book_path)s\"><em>%(title)s</em></a> est le livre le plus aimé de %(site_name)s, avec une note moyenne de %(rating)s sur 5."
 
 #: bookwyrm/templates/about/about.html:58
 #, python-format
 msgid "More %(site_name)s users want to read <a href=\"%(book_path)s\"><em>%(title)s</em></a> than any other book."
-msgstr ""
+msgstr "Sur %(site_name)s, c’est <a href=\"%(book_path)s\"><em>%(title)s</em></a> que tout le monde veut lire plus que n’importe quel autre livre."
 
 #: bookwyrm/templates/about/about.html:77
 #, python-format
 msgid "<a href=\"%(book_path)s\"><em>%(title)s</em></a> has the most divisive ratings of any book on %(site_name)s."
-msgstr ""
+msgstr "<a href=\"%(book_path)s\"><em>%(title)s</em></a> divise les critiques plus que n’importe quel autre livre sur %(site_name)s."
 
 #: bookwyrm/templates/about/about.html:88
 msgid "Track your reading, talk about books, write reviews, and discover what to read next. Always ad-free, anti-corporate, and community-oriented, BookWyrm is human-scale software, designed to stay small and personal. If you have feature requests, bug reports, or grand dreams, <a href='https://joinbookwyrm.com/get-involved' target='_blank'>reach out</a> and make yourself heard."
-msgstr ""
+msgstr "Gardez trace de vos lectures, parlez de livres, écrivez des commentaires et découvrez quoi lire ensuite. BookWyrm est un logiciel à échelle humaine, sans publicité, anti-capitaliste et axé sur la communauté, conçu pour rester petit et personnel. Si vous avez des demandes de fonctionnalités, des rapports de bogue ou des rêves grandioses, <a href='https://joinbookwyrm.com/get-involved' target='_blank'>rejoignez-nous</a> et faites-vous entendre."
 
 #: bookwyrm/templates/about/about.html:95
 msgid "Meet your admins"
-msgstr ""
+msgstr "Rencontrez vos admins"
 
 #: bookwyrm/templates/about/about.html:98
 #, python-format
 msgid "\n"
 "            %(site_name)s's moderators and administrators keep the site up and running, enforce the <a href=\"coc_path\">code of conduct</a>, and respond when users report spam and bad behavior.\n"
 "        "
-msgstr ""
+msgstr "\n"
+"            Les admins et modérateurs/modératrices de %(site_name)s maintiennent le site opérationnel, font respecter le <a href=\"coc_path\">code de conduite</a>, et répondent lorsque les utilisateurs signalent spam et mauvais comportements.\n"
+"        "
 
 #: bookwyrm/templates/about/about.html:112
 msgid "Moderator"
-msgstr ""
+msgstr "Modérateur/modératrice"
 
 #: bookwyrm/templates/about/about.html:114 bookwyrm/templates/layout.html:131
 msgid "Admin"
@@ -324,15 +326,15 @@ msgstr "Code de conduite"
 
 #: bookwyrm/templates/about/layout.html:11
 msgid "Active users:"
-msgstr ""
+msgstr "Comptes actifs :"
 
 #: bookwyrm/templates/about/layout.html:15
 msgid "Statuses posted:"
-msgstr ""
+msgstr "Statuts publiés :"
 
 #: bookwyrm/templates/about/layout.html:19
 msgid "Software version:"
-msgstr ""
+msgstr "Version logicielle :"
 
 #: bookwyrm/templates/about/layout.html:30
 #: bookwyrm/templates/embed-layout.html:34 bookwyrm/templates/layout.html:229
@@ -406,7 +408,7 @@ msgstr "Lorsque vous rendez votre page privée, l’ancienne clé ne donnera plu
 #: bookwyrm/templates/annual_summary/layout.html:112
 #, python-format
 msgid "Sadly %(display_name)s didn’t finish any books in %(year)s"
-msgstr ""
+msgstr "Malheureusement, %(display_name)s n’a terminé aucun livre en %(year)s"
 
 #: bookwyrm/templates/annual_summary/layout.html:118
 #, python-format
@@ -1691,7 +1693,7 @@ msgstr "Supprimer le groupe"
 
 #: bookwyrm/templates/groups/group.html:22
 msgid "Members of this group can create group-curated lists."
-msgstr ""
+msgstr "Les membres de ce groupe peuvent créer des listes gérées par le groupe."
 
 #: bookwyrm/templates/groups/group.html:27
 #: bookwyrm/templates/lists/create_form.html:5
