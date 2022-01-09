@@ -29,7 +29,7 @@ class ActivitypubMixins(TestCase):
         """shared data"""
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
-        ):
+        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
             self.local_user = models.User.objects.create_user(
                 "mouse", "mouse@mouse.com", "mouseword", local=True, localname="mouse"
             )
@@ -332,7 +332,7 @@ class ActivitypubMixins(TestCase):
         self.assertEqual(activity["id"], "https://example.com/status/1/activity")
         self.assertEqual(activity["actor"], self.local_user.remote_id)
         self.assertEqual(activity["type"], "Delete")
-        self.assertEqual(activity["to"], ["%s/followers" % self.local_user.remote_id])
+        self.assertEqual(activity["to"], [f"{self.local_user.remote_id}/followers"])
         self.assertEqual(
             activity["cc"], ["https://www.w3.org/ns/activitystreams#Public"]
         )
@@ -374,7 +374,7 @@ class ActivitypubMixins(TestCase):
         for number in range(0, 2 * PAGE_LENGTH):
             models.Status.objects.create(
                 user=self.local_user,
-                content="test status {:d}".format(number),
+                content=f"test status {number}",
             )
         page_1 = to_ordered_collection_page(
             models.Status.objects.all(), "http://fish.com/", page=1
@@ -400,7 +400,7 @@ class ActivitypubMixins(TestCase):
         for number in range(0, 2 * PAGE_LENGTH):
             models.Status.objects.create(
                 user=self.local_user,
-                content="test status {:d}".format(number),
+                content=f"test status {number}",
             )
 
         MockSelf = namedtuple("Self", ("remote_id"))

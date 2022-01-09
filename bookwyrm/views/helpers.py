@@ -1,12 +1,13 @@
 """ helper functions used in various views """
 import re
-from datetime import datetime
+from datetime import datetime, timedelta
 import dateutil.parser
 import dateutil.tz
 from dateutil.parser import ParserError
 
 from requests import HTTPError
 from django.db.models import Q
+from django.conf import settings as django_settings
 from django.http import Http404
 from django.utils import translation
 
@@ -186,7 +187,11 @@ def set_language(user, response):
     """Updates a user's language"""
     if user.preferred_language:
         translation.activate(user.preferred_language)
-    response.set_cookie(settings.LANGUAGE_COOKIE_NAME, user.preferred_language)
+    response.set_cookie(
+        settings.LANGUAGE_COOKIE_NAME,
+        user.preferred_language,
+        expires=datetime.now() + timedelta(seconds=django_settings.SESSION_COOKIE_AGE),
+    )
     return response
 
 

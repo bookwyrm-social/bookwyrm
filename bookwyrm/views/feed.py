@@ -29,7 +29,9 @@ class Feed(View):
         filters_applied = False
         form = forms.FeedStatusTypesForm(request.POST, instance=request.user)
         if form.is_valid():
-            form.save()
+            # workaround to avoid broadcasting this change
+            user = form.save(commit=False)
+            user.save(broadcast=False, update_fields=["feed_status_types"])
             filters_applied = True
 
         return self.get(request, tab, filters_applied)

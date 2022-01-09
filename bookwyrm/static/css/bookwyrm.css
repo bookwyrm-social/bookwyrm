@@ -183,7 +183,7 @@ button .button-invisible-overlay {
     align-items: center;
     flex-direction: column;
     justify-content: center;
-    background: rgba(0, 0, 0, 0.66);
+    background: rgba(0, 0, 0, 66%);
     color: white;
     opacity: 0;
     transition: opacity 0.2s ease;
@@ -198,7 +198,7 @@ button:focus-visible .button-invisible-overlay {
 /** File input styles
  ******************************************************************************/
 
-input[type=file]::file-selector-button {
+input[type="file"]::file-selector-button {
     -moz-appearance: none;
     -webkit-appearance: none;
     background-color: #fff;
@@ -219,7 +219,7 @@ input[type=file]::file-selector-button {
     white-space: nowrap;
 }
 
-input[type=file]::file-selector-button:hover {
+input[type="file"]::file-selector-button:hover {
     border-color: #b5b5b5;
     color: #363636;
 }
@@ -279,7 +279,7 @@ details.dropdown .dropdown-menu a:focus-visible {
 
 @media only screen and (max-width: 768px) {
     details.dropdown[open] summary.dropdown-trigger::before {
-        background-color: rgba(0, 0, 0, 0.5);
+        background-color: rgba(0, 0, 0, 50%);
         z-index: 30;
     }
 
@@ -305,14 +305,14 @@ details.dropdown .dropdown-menu a:focus-visible {
  ******************************************************************************/
 
 details.details-panel {
-    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 10%);
     transition: box-shadow 0.2s ease;
     padding: 0.75rem;
 }
 
 details[open].details-panel,
 details.details-panel:hover {
-    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 20%);
 }
 
 details.details-panel summary {
@@ -333,7 +333,7 @@ details[open].details-panel summary .details-close {
 
 @media only screen and (min-width: 769px) {
     .details-panel .filters-field:not(:last-child) {
-        border-right: 1px solid rgba(0, 0, 0, 0.1);
+        border-right: 1px solid rgba(0, 0, 0, 10%);
         margin-top: 0.75rem;
         margin-bottom: 0.75rem;
         padding-top: 0.25rem;
@@ -347,7 +347,7 @@ details[open].details-panel summary .details-close {
 /** @todo Replace icons with SVG symbols.
     @see https://www.youtube.com/watch?v=9xXBYcWgCHA */
 .shelf-option:disabled > *::after {
-    font-family: "icomoon"; /* stylelint-disable font-family-no-missing-generic-family-keyword */
+    font-family: icomoon; /* stylelint-disable font-family-no-missing-generic-family-keyword */
     content: "\e919"; /* icon-check */
     margin-left: 0.5em;
 }
@@ -355,14 +355,14 @@ details[open].details-panel summary .details-close {
 /** Toggles
  ******************************************************************************/
 
-.toggle-button[aria-pressed=true],
-.toggle-button[aria-pressed=true]:hover {
-    background-color: hsl(171, 100%, 41%);
+.toggle-button[aria-pressed="true"],
+.toggle-button[aria-pressed="true"]:hover {
+    background-color: hsl(171deg, 100%, 41%);
     color: white;
 }
 
-.hide-active[aria-pressed=true],
-.hide-inactive[aria-pressed=false] {
+.hide-active[aria-pressed="true"],
+.hide-inactive[aria-pressed="false"] {
     display: none;
 }
 
@@ -419,36 +419,36 @@ details[open].details-panel summary .details-close {
 
 /* All stars are visually filled by default. */
 .form-rate-stars .icon::before {
-    content: '\e9d9'; /* icon-star-full */
+    content: "\e9d9"; /* icon-star-full */
 }
 
 /* Icons directly following half star inputs are marked as half */
 .form-rate-stars input.half:checked ~ .icon::before {
-    content: '\e9d8'; /* icon-star-half */
+    content: "\e9d8"; /* icon-star-half */
 }
 
 /* stylelint-disable no-descending-specificity */
 .form-rate-stars input.half:checked + input + .icon:hover::before {
-    content: '\e9d8' !important; /* icon-star-half */
+    content: "\e9d8" !important; /* icon-star-half */
 }
 
 /* Icons directly following half check inputs that follow the checked input are emptied. */
 .form-rate-stars input.half:checked + input + .icon ~ .icon::before {
-    content: '\e9d7'; /* icon-star-empty */
+    content: "\e9d7"; /* icon-star-empty */
 }
 
 /* Icons directly following inputs that follow the checked input are emptied. */
 .form-rate-stars input:checked ~ input + .icon::before {
-    content: '\e9d7'; /* icon-star-empty */
+    content: "\e9d7"; /* icon-star-empty */
 }
 
 /* When a label is hovered, repeat the fill-all-then-empty-following pattern. */
 .form-rate-stars:hover .icon.icon::before {
-    content: '\e9d9' !important; /* icon-star-full */
+    content: "\e9d9" !important; /* icon-star-full */
 }
 
 .form-rate-stars .icon:hover ~ .icon::before {
-    content: '\e9d7' !important; /* icon-star-empty */
+    content: "\e9d7" !important; /* icon-star-empty */
 }
 
 /** Book covers
@@ -556,7 +556,7 @@ details[open].details-panel summary .details-close {
 
 .quote > blockquote::before,
 .quote > blockquote::after {
-    font-family: 'icomoon';
+    font-family: icomoon;
     position: absolute;
 }
 

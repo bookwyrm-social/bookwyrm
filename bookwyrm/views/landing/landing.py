@@ -8,14 +8,6 @@ from bookwyrm.views.feed import Feed
 
 
 # pylint: disable= no-self-use
-class About(View):
-    """create invites"""
-
-    def get(self, request):
-        """more information about the instance"""
-        return TemplateResponse(request, "landing/about.html")
-
-
 class Home(View):
     """landing page or home feed depending on auth"""
 

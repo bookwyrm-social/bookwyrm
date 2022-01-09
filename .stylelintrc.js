@@ -12,6 +12,9 @@ module.exports = {
             "custom-properties",
             "declarations"
         ],
-        "indentation": 4
+        "indentation": 4,
+        "property-no-vendor-prefix": null,
+        "color-function-notation": null,
+        "declaration-block-no-redundant-longhand-properties": null,
     }
 };

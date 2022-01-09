@@ -13,6 +13,7 @@ from bookwyrm.suggested_users import suggested_users, get_annotated_users
 @patch("bookwyrm.activitystreams.add_status_task.delay")
 @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
 @patch("bookwyrm.activitystreams.populate_stream_task.delay")
+@patch("bookwyrm.lists_stream.populate_lists_task.delay")
 @patch("bookwyrm.activitystreams.add_book_statuses_task.delay")
 @patch("bookwyrm.suggested_users.rerank_user_task.delay")
 @patch("bookwyrm.suggested_users.remove_user_task.delay")
@@ -23,7 +24,7 @@ class SuggestedUsers(TestCase):
         """use a test csv"""
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
-        ):
+        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
             self.local_user = models.User.objects.create_user(
                 "mouse", "mouse@mouse.mouse", "password", local=True, localname="mouse"
             )
@@ -235,12 +236,3 @@ class SuggestedUsers(TestCase):
         )
         user_1_annotated = result.get(id=user_1.id)
         self.assertEqual(user_1_annotated.mutuals, 3)
-
-    def test_create_user_signal(self, *_):
-        """build suggestions for new users"""
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay") as mock:
-            models.User.objects.create_user(
-                "nutria", "nutria@nu.tria", "password", local=True, localname="nutria"
-            )
-
-        self.assertEqual(mock.call_count, 1)
