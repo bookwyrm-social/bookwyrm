@@ -19,7 +19,9 @@ def about(request):
         "status_count": models.Status.objects.filter(
             user__local=True, deleted=False
         ).count(),
-        "admins": models.User.objects.filter(groups__name__in=["admin", "moderator"]),
+        "admins": models.User.objects.filter(
+            groups__name__in=["admin", "moderator"]
+        ).distinct(),
         "version": settings.VERSION,
     }
 

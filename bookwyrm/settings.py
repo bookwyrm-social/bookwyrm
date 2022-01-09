@@ -196,8 +196,10 @@ LANGUAGES = [
     ("de-de", _("Deutsch (German)")),
     ("es-es", _("Español (Spanish)")),
     ("gl-es", _("Galego (Galician)")),
+    ("it-it", _("Italiano (Italian)")),
     ("fr-fr", _("Français (French)")),
     ("lt-lt", _("Lietuvių (Lithuanian)")),
+    ("no-no", _("Norsk (Norwegian)")),
     ("pt-br", _("Português do Brasil (Brazilian Portuguese)")),
     ("pt-pt", _("Português Europeu (European Portuguese)")),
     ("zh-hans", _("简体中文 (Simplified Chinese)")),
@@ -220,6 +222,7 @@ USER_AGENT = f"{agent} (BookWyrm/{VERSION}; +https://{DOMAIN}/)"
 # Imagekit generated thumbnails
 ENABLE_THUMBNAIL_GENERATION = env.bool("ENABLE_THUMBNAIL_GENERATION", False)
 IMAGEKIT_CACHEFILE_DIR = "thumbnails"
+IMAGEKIT_DEFAULT_CACHEFILE_STRATEGY = "bookwyrm.thumbnail_generation.Strategy"
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
