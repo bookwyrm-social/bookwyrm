@@ -14,6 +14,7 @@ def populate_lists_streams():
     for user in users:
         print(".", end="")
         lists_stream.populate_lists_task.delay(user.id)
+    print("\nAll done, thank you for your patience!")
 
 
 class Command(BaseCommand):
