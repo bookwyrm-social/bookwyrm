@@ -21,25 +21,17 @@
         // Get suggestions
         let suggestions = getSuggestions(input.value, mimetypeTrie);
 
-        const boxId = input.id + "_suggestions";
+        const boxId = input.getAttribute("list");
 
         // Create suggestion box, if needed
         let suggestionsBox = document.getElementById(boxId);
-
-        if (!suggestionsBox) {
-            suggestionsBox = document.createElement("ul");
-            suggestionsBox.id = boxId;
-            suggestionsBox.classList.add("autocomplete-suggestions", "box");
-
-            input.insertAdjacentElement("afterend", suggestionsBox);
-        }
 
         // Clear existing suggestions
         suggestionsBox.innerHTML = "";
 
         // Populate suggestions box
         suggestions.forEach(suggestion => {
-            const suggestionItem = document.createElement("li");
+            const suggestionItem = document.createElement("option");
 
             suggestionItem.textContent = suggestion;
             suggestionsBox.appendChild(suggestionItem);
