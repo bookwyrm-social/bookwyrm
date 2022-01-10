@@ -4,6 +4,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
 from django.views import View
+from django.views.decorators.http import require_POST
 
 from bookwyrm import forms, models
 
@@ -35,3 +36,15 @@ class LinkDomain(View):
         form = forms.LinkDomainForm(request.POST, instance=domain)
         form.save()
         return redirect('settings-link-domain', status=status)
+
+
+@require_POST
+@login_required
+def update_domain_status(request, domain_id, status):
+    """This domain seems fine"""
+    domain = get_object_or_404(models.LinkDomain, id=domain_id)
+    domain.raise_not_editable(request.user)
+
+    domain.status = status
+    domain.save()
+    return redirect('settings-link-domain', status="pending")

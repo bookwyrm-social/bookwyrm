@@ -1,6 +1,7 @@
 """ outlink data """
 from urllib.parse import urlparse
 
+from django.core.exceptions import PermissionDenied
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -61,6 +62,11 @@ class LinkDomain(BookWyrmModel):
     domain = models.CharField(max_length=255, unique=True)
     status = models.CharField(max_length=50, choices=StatusChoices, default="pending")
     name = models.CharField(max_length=100)
+
+    def raise_not_editable(self, viewer):
+        if viewer.has_perm("moderate_post"):
+            return
+        raise PermissionDenied()
 
     def save(self, *args, **kwargs):
         """set a default name"""

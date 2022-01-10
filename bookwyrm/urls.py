@@ -164,6 +164,11 @@ urlpatterns = [
         name="settings-link-domain",
     ),
     re_path(
+        r"^setting/link-domains/(?P<domain_id>\d+)/(?P<status>(pending|approved|blocked))/?$",
+        views.update_domain_status,
+        name="settings-link-domain-status",
+    ),
+    re_path(
         r"^settings/ip-blocklist/?$",
         views.IPBlocklist.as_view(),
         name="settings-ip-blocks",

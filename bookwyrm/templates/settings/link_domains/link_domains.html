@@ -91,17 +91,30 @@
 
         {% include "settings/link_domains/edit_domain_modal.html" with domain=domain id=domain_modal %}
 
-        <form name="domain-{{ domain.id }}">
-            {% csrf_token %}
-            <div class="field has-addons">
-                <div class="control">
-                    <button type="submit" class="button is-success is-light">{% trans "Approve" %}</button>
-                </div>
-                <div class="control">
-                    <button type="submit" class="button is-danger is-light">{% trans "Block" %}</button>
-                </div>
-            </div>
-        </form>
+        <div class="field has-addons">
+            {% if status != "approved" %}
+            <form
+                name="domain-{{ domains.id }}-approve"
+                class="control"
+                method="post"
+                action="{% url 'settings-link-domain-status' domain.id 'approved' %}"
+            >
+                {% csrf_token %}
+                <button type="submit" class="button is-success is-light">{% trans "Approve" %}</button>
+            </form>
+            {% endif %}
+            {% if status != "blocked" %}
+            <form
+                name="domain-{{ domains.id }}-block"
+                class="control"
+                method="post"
+                action="{% url 'settings-link-domain-status' domain.id 'blocked' %}"
+            >
+                {% csrf_token %}
+                <button type="submit" class="button is-danger is-light">{% trans "Block" %}</button>
+            </form>
+            {% endif %}
+        </div>
     </div>
     {% endfor %}
 
