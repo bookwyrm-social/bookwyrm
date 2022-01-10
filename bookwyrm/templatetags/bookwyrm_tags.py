@@ -3,6 +3,7 @@ from django import template
 from django.db.models import Avg, StdDev, Count, F, Q
 
 from bookwyrm import models
+from bookwyrm.utils import cache
 from bookwyrm.views.feed import get_suggested_books
 
 
@@ -130,35 +131,53 @@ def related_status(notification):
 @register.simple_tag(takes_context=True)
 def active_shelf(context, book):
     """check what shelf a user has a book on, if any"""
-    if hasattr(book, "current_shelves"):
-        read_shelves = [
-            s
-            for s in book.current_shelves
-            if s.shelf.identifier in models.Shelf.READ_STATUS_IDENTIFIERS
-        ]
-        return read_shelves[0] if len(read_shelves) else {"book": book}
-
-    shelf = (
-        models.ShelfBook.objects.filter(
-            shelf__user=context["request"].user,
-            book__parent_work__editions=book,
+    user = context["request"].user
+    return cache.get_or_set(
+        f"active_shelf-{user.id}-{book.id}",
+        lambda u, b: (
+            models.ShelfBook.objects.filter(
+                shelf__user=u,
+                book__parent_work__editions=b,
+            ).first()
         )
-        .select_related("book", "shelf")
-        .first()
+        or {"book": book},
+        user,
+        book,
+        timeout=15552000,
     )
-    return shelf if shelf else {"book": book}
 
 
 @register.simple_tag(takes_context=False)
 def latest_read_through(book, user):
     """the most recent read activity"""
-    if hasattr(book, "active_readthroughs"):
-        return book.active_readthroughs[0] if len(book.active_readthroughs) else None
+    return cache.get_or_set(
+        f"latest_read_through-{user.id}-{book.id}",
+        lambda u, b: (
+            models.ReadThrough.objects.filter(user=u, book=b, is_active=True)
+            .order_by("-start_date")
+            .first()
+        ),
+        user,
+        book,
+        timeout=15552000,
+    )
 
-    return (
-        models.ReadThrough.objects.filter(user=user, book=book, is_active=True)
-        .order_by("-start_date")
-        .first()
+
+@register.simple_tag(takes_context=False)
+def get_landing_books():
+    """list of books for the landing page"""
+    return list(
+        set(
+            models.Edition.objects.filter(
+                review__published_date__isnull=False,
+                review__deleted=False,
+                review__user__local=True,
+                review__privacy__in=["public", "unlisted"],
+            )
+            .exclude(cover__exact="")
+            .distinct()
+            .order_by("-review__published_date")[:6]
+        )
     )
 
 
