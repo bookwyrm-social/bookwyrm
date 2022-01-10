@@ -97,11 +97,6 @@ urlpatterns = [
         r"^settings/users/?$", views.UserAdminList.as_view(), name="settings-users"
     ),
     re_path(
-        r"^settings/users/(?P<user>\d+)/?$",
-        views.UserAdmin.as_view(),
-        name="settings-user",
-    ),
-    re_path(
         r"^settings/federation/(?P<status>(federated|blocked))?/?$",
         views.Federation.as_view(),
         name="settings-federation",
@@ -157,6 +152,11 @@ urlpatterns = [
         r"^settings/email-blocks/(?P<domain_id>\d+)/delete/?$",
         views.EmailBlocklist.as_view(),
         name="settings-email-blocks-delete",
+    ),
+    re_path(
+        r"^setting/link-domains/(?P<status>(pending|approved|blocked))/?",
+        views.LinkDomain.as_view(),
+        name="settings-link-domain",
     ),
     re_path(
         r"^settings/ip-blocklist/?$",

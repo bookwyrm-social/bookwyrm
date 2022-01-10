@@ -297,6 +297,7 @@ class Link(ActivityObject):
     """for tagging a book in a status"""
 
     href: str
+    name: str
     mediaType: str = None
     id: str = None
     type: str = "Link"

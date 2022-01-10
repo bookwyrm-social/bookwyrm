@@ -1,0 +1,95 @@
+{% extends 'settings/layout.html' %}
+{% load humanize %}
+{% load i18n %}
+
+{% block title %}{% trans "Link Domains" %}{% endblock %}
+
+{% block header %}{% trans "Link Domains" %}{% endblock %}
+
+{% block panel %}
+<p class="notification block">
+    {% trans "Link domains must be approved before they are shown on book pages. Please make sure that the domains are not hosting spam, malicious code, or deceptive links before approving." %}
+</p>
+
+<div class="block">
+    <div class="tabs">
+        <ul>
+            {% url 'settings-link-domain' status='pending' as url %}
+            <li {% if request.path in url %}class="is-active" aria-current="page"{% endif %}>
+                <a href="{{ url }}">{% trans "Pending" %}</a>
+            </li>
+            {% url 'settings-link-domain' status='approved' as url %}
+            <li {% if url in request.path %}class="is-active" aria-current="page"{% endif %}>
+                <a href="{{ url }}">{% trans "Approved" %}</a>
+            </li>
+            {% url 'settings-link-domain' status='blocked' as url %}
+            <li {% if url in request.path %}class="is-active" aria-current="page"{% endif %}>
+                <a href="{{ url }}">{% trans "Blocked" %}</a>
+            </li>
+        </ul>
+    </div>
+
+    {% for domain in domains %}
+    <div class="box content">
+        <div class="columns is-mobile">
+            <header class="column">
+                <h3 class="title is-5">
+                    {{ domain.name }}
+                    (<a href="http://{{ domain.domain }}" target="_blank" rel="noopener">{{ domain.domain }}</a>)
+                </h3>
+            </header>
+            <div class="column is-narrow">
+                {% trans "Set name" as button_text %}
+                {% include 'snippets/toggle/open_button.html' with text=button_text icon_with_text="pencil" controls_text="edit_domain" controls_uid=domain.id focus="id_description" %}
+            </div>
+        </div>
+        <div class="block">
+            <details class="details-panel">
+                <summary>
+                    <span>
+                        {% trans "View links" %}
+                        ({{ domain.links.count }})
+                    </span>
+                    <span class="details-close icon icon-x" aria-hidden></span>
+                </summary>
+
+                <ul>
+                    {% for link in domain.links.all|slice:10 %}
+                    <li>
+                        <a href="{{ link.url }}" target="_blank" rel="noopener">{{ link.url }}</a>
+                        {% if link.filelink.filetype %}
+                        ({{ link.filelink.filetype }})
+                        {% endif %}
+                    </li>
+                    {% endfor %}
+                </ul>
+            </details>
+        </div>
+
+        <form name="domain-{{ domain.id }}">
+            {% csrf_token %}
+            <div class="field has-addons">
+                <div class="control">
+                    <button type="submit" class="button is-success is-light">{% trans "Approve" %}</button>
+                </div>
+                <div class="control">
+                    <button type="submit" class="button is-danger is-light">{% trans "Block" %}</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    {% endfor %}
+
+    {% if not domains.exists %}
+        {% if status == "approved" %}
+        <em>{% trans "No domains currently approved" %}</em>
+        {% elif status == "pending" %}
+        <em>{% trans "No domains currently pending" %}</em>
+        {% else %}
+        <em>{% trans "No domains currently blocked" %}</em>
+        {% endif %}
+    {% endif %}
+</div>
+
+{% endblock %}
+
