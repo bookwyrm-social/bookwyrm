@@ -297,9 +297,10 @@ class Link(ActivityObject):
     """for tagging a book in a status"""
 
     href: str
-    name: str
+    name: str = None
     mediaType: str = None
     id: str = None
+    attributedTo: str = None
     type: str = "Link"
 
     def serialize(self, **kwargs):

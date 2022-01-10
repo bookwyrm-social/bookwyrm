@@ -3,9 +3,15 @@
 
 {% with 0|uuid as report_uuid %}
 
-{% trans "Report" as button_text %}
-{% include 'snippets/toggle/toggle_button.html' with class="is-danger is-light is-small is-fullwidth" text=button_text controls_text="report" controls_uid=report_uuid focus="modal_title_report" disabled=is_current %}
-
-{% include 'snippets/report_modal.html' with user=user reporter=request.user controls_text="report" controls_uid=report_uuid %}
+{% join "report" report_uuid as modal_id %}
+<button
+    class="button is-small is-danger is-light is-fullwidth"
+    type="button"
+    data-modal-open="{{ modal_id }}"
+    {% if is_current %}disabled{% endif %}
+>
+    {% trans "Report" %}
+</button>
+{% include 'snippets/report_modal.html' with user=user id=modal_id status=status.id %}
 
 {% endwith %}

@@ -63,10 +63,10 @@ class LinkViews(TestCase):
         """there are so many views, this just makes sure it LOADS"""
         view = views.FileLink.as_view()
         form = forms.FileLinkForm()
-        form.data["name"] = "hi"
         form.data["url"] = "https://www.example.com"
         form.data["filetype"] = "HTML"
         form.data["book"] = self.book.id
+        form.data["added_by"] = self.local_user
 
         request = self.factory.post("", form.data)
         request.user = self.local_user
@@ -81,7 +81,7 @@ class LinkViews(TestCase):
         self.assertEqual(activity["object"]["type"], "Edition")
 
         link = models.FileLink.objects.get()
-        self.assertEqual(link.name, "hi")
+        self.assertEqual(link.name, "www.example.com")
         self.assertEqual(link.url, "https://www.example.com")
         self.assertEqual(link.filetype, "HTML")
 

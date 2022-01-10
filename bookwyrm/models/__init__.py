@@ -4,7 +4,7 @@ import sys
 
 from .book import Book, Work, Edition, BookDataModel
 from .author import Author
-from .link import Link, FileLink
+from .link import Link, FileLink, LinkDomain
 from .connector import Connector
 
 from .shelf import Shelf, ShelfBook

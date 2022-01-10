@@ -1,37 +1,41 @@
 {% extends 'groups/layout.html' %}
 {% load i18n %}
 {% load bookwyrm_tags %}
+{% load bookwyrm_group_tags %}
 {% load markdown %}
 
 {% block panel %}
 
 <div class="columns mt-3">
     <section class="column is-three-quarters">
-
-        {% if group.user == request.user %}
-        <div class="block">
-            <form class="field has-addons" method="get" action="{% url 'group-find-users' group.id %}">
-                <div class="control">
-                    <input type="text" name="user_query" value="{{ request.GET.user_query }}" class="input" placeholder="{% trans 'Search to add a user' %}" aria-label="{% trans 'Search to add a user' %}">
-                </div>
-                <div class="control">
-                    <button class="button" type="submit">
-                        <span class="icon icon-search" title="{% trans 'Search' %}">
-                            <span class="is-sr-only">{% trans "Search" %}</span>
-                        </span>
-                    </button>
-                </div>
-            </form>
-        </div>
-        {% endif %}
-
         {% block searchresults %}
         {% endblock %}
         <div class="mb-2">
             {% include "groups/members.html"  with group=group %}
         </div>
-
-        <h2 class="title is-5">Lists</h2>
+    </section>
+</div>
+<header class="columns content is-mobile">
+    <div class="column">
+        <h2 class="title is-5">{% trans "Lists" %}</h2>
+        <p class="subtitle is-6">
+            {% trans "Members of this group can create group-curated lists." %}
+        </p>
+    </div>
+    {% if request.user.is_authenticated and group|is_member:request.user %}
+    <div class="column is-narrow is-flex">
+        {% trans "Create List" as button_text %}
+        {% include 'snippets/toggle/open_button.html' with controls_text="create_list" icon_with_text="plus" text=button_text focus="create_list_header" %}
+    </div>
+    {% endif %}
+</header>
+{% if request.user.is_authenticated and group|is_member:request.user %}
+<div class="block">
+    {% include 'lists/create_form.html' with controls_text="create_list" curation_group=group %}
+</div>
+{% endif %}
+<div class="columns mt-3">
+    <section class="column is-three-quarters">
         {% if not lists %}
         <p>{% trans "This group has no lists" %}</p>
         {% else %}
@@ -45,19 +49,17 @@
                             <a href="{{ list.local_path }}">{{ list.name }}</a> <span class="subtitle">{% include 'snippets/privacy-icons.html' with item=list %}</span>
                         </h4>
                     </header>
-        
                     {% with list_books=list.listitem_set.all|slice:5 %}
-                        {% if list_books %}
-                            <div class="card-image columns is-mobile is-gapless is-clipped">
-                                {% for book in list_books %}
-                                    <a class="column is-cover" href="{{ book.book.local_path }}">
-                                        {% include 'snippets/book_cover.html' with book=book.book cover_class='is-h-s' size='small' aria='show' %}
-                                    </a>
-                                {% endfor %}
-                            </div>
-                        {% endif %}
+                    {% if list_books %}
+                    <div class="card-image columns is-mobile is-gapless is-clipped">
+                        {% for book in list_books %}
+                        <a class="column is-cover" href="{{ book.book.local_path }}">
+                            {% include 'snippets/book_cover.html' with book=book.book cover_class='is-h-s' size='small' aria='show' %}
+                        </a>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
                     {% endwith %}
-        
                     <div class="card-content is-flex-grow-0">
                         <div class="is-clipped" {% if list.description %}title="{{ list.description }}"{% endif %}>
                         {% if list.description %}
@@ -74,9 +76,8 @@
             </div>
             {% endfor %}
         </div>
-
         {% endif %}
-        {% include "snippets/pagination.html" with page=items %}
     </section>
 </div>
+
 {% endblock %}

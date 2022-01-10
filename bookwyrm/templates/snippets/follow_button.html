@@ -1,4 +1,5 @@
 {% load i18n %}
+
 {% if request.user == user or not request.user.is_authenticated %}
 {% elif user in request.user.blocks.all %}
 {% include 'snippets/block_button.html' with blocks=True %}

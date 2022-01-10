@@ -13,11 +13,11 @@
 {% block modal-body %}
 {% csrf_token %}
 <input type="hidden" name="book" value="{{ book.id }}">
-<div class="field">
-    <label class="label" for="id_url">{% trans "Name:" %}</label>
-    {{ file_link_form.name }}
-    {% include 'snippets/form_errors.html' with errors_list=file_link_form.name.errors id="desc_name" %}
-</div>
+<input type="hidden" name="added_by" value="{{ request.user.id }}">
+
+<p class="notification">
+    {% trans "Links from unknown domains will need to be approved by a moderator before they are added." %}
+</p>
 
 <div class="columns">
     <div class="column is-four-fifths">
@@ -37,8 +37,7 @@
 {% block modal-footer %}
 <button class="button is-primary" type="submit">{% trans "Save" %}</button>
 {% if not static %}
-    {% trans "Cancel" as button_text %}
-    {% include 'snippets/toggle/toggle_button.html' with text=button_text %}
+    <button type="button" class="button" data-modal-close>{% trans "Cancel" %}</button>
 {% endif %}
 
 {% endblock %}

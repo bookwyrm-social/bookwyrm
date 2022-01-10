@@ -5,7 +5,10 @@ import redis
 from bookwyrm import settings
 
 r = redis.Redis(
-    host=settings.REDIS_ACTIVITY_HOST, port=settings.REDIS_ACTIVITY_PORT, db=0
+    host=settings.REDIS_ACTIVITY_HOST,
+    port=settings.REDIS_ACTIVITY_PORT,
+    password=settings.REDIS_ACTIVITY_PASSWORD,
+    db=0,
 )
 
 
@@ -27,7 +30,8 @@ class RedisStore(ABC):
             # add the status to the feed
             pipeline.zadd(store, value)
             # trim the store
-            pipeline.zremrangebyrank(store, 0, -1 * self.max_length)
+            if self.max_length:
+                pipeline.zremrangebyrank(store, 0, -1 * self.max_length)
         if not execute:
             return pipeline
         # and go!
@@ -35,10 +39,15 @@ class RedisStore(ABC):
 
     def remove_object_from_related_stores(self, obj, stores=None):
         """remove an object from all stores"""
+        # if the stoers are provided, the object can just be an id
+        if stores and isinstance(obj, int):
+            obj_id = obj
+        else:
+            obj_id = obj.id
         stores = self.get_stores_for_object(obj) if stores is None else stores
         pipeline = r.pipeline()
         for store in stores:
-            pipeline.zrem(store, -1, obj.id)
+            pipeline.zrem(store, -1, obj_id)
         pipeline.execute()
 
     def bulk_add_objects_to_store(self, objs, store):
@@ -46,7 +55,7 @@ class RedisStore(ABC):
         pipeline = r.pipeline()
         for obj in objs[: self.max_length]:
             pipeline.zadd(store, self.get_value(obj))
-        if objs:
+        if objs and self.max_length:
             pipeline.zremrangebyrank(store, 0, -1 * self.max_length)
         pipeline.execute()
 
@@ -70,7 +79,7 @@ class RedisStore(ABC):
             pipeline.zadd(store, self.get_value(obj))
 
         # only trim the store if objects were added
-        if queryset.exists():
+        if queryset.exists() and self.max_length:
             pipeline.zremrangebyrank(store, 0, -1 * self.max_length)
         pipeline.execute()
 

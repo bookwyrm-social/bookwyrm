@@ -15,7 +15,7 @@ class InboxRelationships(TestCase):
         """basic user and book data"""
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
-        ):
+        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
             self.local_user = models.User.objects.create_user(
                 "mouse@example.com",
                 "mouse@mouse.com",
@@ -188,7 +188,8 @@ class InboxRelationships(TestCase):
         self.assertIsNone(self.local_user.followers.first())
 
     @patch("bookwyrm.activitystreams.add_user_statuses_task.delay")
-    def test_follow_accept(self, _):
+    @patch("bookwyrm.lists_stream.add_user_lists_task.delay")
+    def test_follow_accept(self, *_):
         """a remote user approved a follow request from local"""
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             rel = models.UserFollowRequest.objects.create(

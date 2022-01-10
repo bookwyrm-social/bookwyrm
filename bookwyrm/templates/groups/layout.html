@@ -1,5 +1,6 @@
 {% extends 'layout.html' %}
 {% load i18n %}
+{% load bookwyrm_group_tags %}
 
 {% block title %}{{ group.name }}{% endblock %}
 
@@ -11,12 +12,12 @@
             {% include 'groups/created_text.html' with group=group %}
         </p>
     </div>
+    {% if request.user == group.user %}
     <div class="column is-narrow is-flex">
-        {% if request.user == group.user %}
-            {% trans "Edit group" as button_text %}
-            {% include 'snippets/toggle/open_button.html' with text=button_text icon_with_text="pencil" controls_text="edit_group" focus="edit_group_header" %}
-        {% endif %}
+        {% trans "Edit group" as button_text %}
+        {% include 'snippets/toggle/open_button.html' with text=button_text icon_with_text="pencil" controls_text="edit_group" focus="edit_group_header" %}
     </div>
+    {% endif %}
 </header>
 
 <div class="block content">

@@ -148,6 +148,8 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         size=8,
         default=get_feed_filter_choices,
     )
+    # annual summary keys
+    summary_keys = models.JSONField(null=True)
 
     preferred_timezone = models.CharField(
         choices=[(str(tz), str(tz)) for tz in pytz.all_timezones],
@@ -406,12 +408,17 @@ class KeyPair(ActivitypubMixin, BookWyrmModel):
         return super().save(*args, **kwargs)
 
 
+def get_current_year():
+    """sets default year for annual goal to this year"""
+    return timezone.now().year
+
+
 class AnnualGoal(BookWyrmModel):
     """set a goal for how many books you read in a year"""
 
     user = models.ForeignKey("User", on_delete=models.PROTECT)
     goal = models.IntegerField(validators=[MinValueValidator(1)])
-    year = models.IntegerField(default=timezone.now().year)
+    year = models.IntegerField(default=get_current_year)
     privacy = models.CharField(
         max_length=255, default="public", choices=fields.PrivacyLevels.choices
     )

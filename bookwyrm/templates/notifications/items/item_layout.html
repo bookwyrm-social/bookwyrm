@@ -1,12 +1,15 @@
 {% load bookwyrm_tags %}
 {% related_status notification as related_status %}
-<div class="notification is-clickable {% if notification.id in unread %} is-primary{% endif %}" data-href="{% block primary_link %}{% endblock %}">
+<div class="box is-shadowless has-background-white-ter {% if notification.id in unread %} is-primary{% endif %}">
     <div class="columns is-mobile">
         <div class="column is-narrow is-size-3 {% if notification.id in unread%}has-text-white{% else %}has-text-grey{% endif %}">
-            {% block icon %}{% endblock %}
+            <a class="has-text-dark" href="{% block primary_link %}{% endblock %}">
+                {% block icon %}{% endblock %}
+            </a>
         </div>
+
         <div class="column is-clipped">
-            <div class="block">
+            <div class="block content">
                 <p>
                     {% if notification.related_user %}
                         <a href="{{ notification.related_user.local_path }}">{% include 'snippets/avatar.html' with user=notification.related_user %}
@@ -15,6 +18,7 @@
                     {% block description %}{% endblock %}
                 </p>
             </div>
+
             {% if related_status %}
             <div class="block">
                 {% block preview %}{% endblock %}

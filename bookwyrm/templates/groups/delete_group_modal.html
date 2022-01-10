@@ -14,8 +14,7 @@
     <button class="button is-danger" type="submit">
         {% trans "Delete" %}
     </button>
-    {% trans "Cancel" as button_text %}
-    {% include 'snippets/toggle/toggle_button.html' with text=button_text controls_text="delete_group" controls_uid=group.id %}
+    <button type="button" class="button" data-modal-close>{% trans "Cancel" %}</button>
 </form>
 {% endblock %}
 

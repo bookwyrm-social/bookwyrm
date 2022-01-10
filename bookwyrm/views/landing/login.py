@@ -39,7 +39,8 @@ class Login(View):
             return redirect("/")
         login_form = forms.LoginForm(request.POST)
 
-        localname = login_form.data["localname"]
+        localname = login_form.data.get("localname")
+
         if "@" in localname:  # looks like an email address to me
             try:
                 username = models.User.objects.get(email=localname).username
@@ -47,7 +48,7 @@ class Login(View):
                 username = localname
         else:
             username = f"{localname}@{DOMAIN}"
-        password = login_form.data["password"]
+        password = login_form.data.get("password")
 
         # perform authentication
         user = authenticate(request, username=username, password=password)

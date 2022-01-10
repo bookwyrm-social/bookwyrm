@@ -216,10 +216,16 @@ class CoverForm(CustomForm):
         help_texts = {f: None for f in fields}
 
 
+class LinkDomainForm(CustomForm):
+    class Meta:
+        model = models.LinkDomain
+        fields = ["name"]
+
+
 class FileLinkForm(CustomForm):
     class Meta:
         model = models.FileLink
-        exclude = ["remote_id"]
+        fields = ["url", "filetype", "book", "added_by"]
 
 
 class EditionForm(CustomForm):
@@ -447,7 +453,7 @@ class GroupForm(CustomForm):
 class ReportForm(CustomForm):
     class Meta:
         model = models.Report
-        fields = ["user", "reporter", "statuses", "note"]
+        fields = ["user", "reporter", "statuses", "links", "note"]
 
 
 class EmailBlocklistForm(CustomForm):
