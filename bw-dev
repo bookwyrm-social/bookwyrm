@@ -81,9 +81,9 @@ case "$CMD" in
     update)
         git pull
         docker-compose build --no-cache
-        docker-compose exec web python manage.py migrate
-        docker-compose exec web python manage.py collectstatic --no-input
-        docker-compose restart
+        runweb python manage.py migrate
+        runweb python manage.py collectstatic --no-input
+        docker-compose up -d
         ;;
     populate_streams)
         runweb python manage.py populate_streams "$@"
