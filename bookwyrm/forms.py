@@ -216,6 +216,12 @@ class CoverForm(CustomForm):
         help_texts = {f: None for f in fields}
 
 
+class LinkDomainForm(CustomForm):
+    class Meta:
+        model = models.LinkDomain
+        fields = ["id", "name"]
+
+
 class FileLinkForm(CustomForm):
     class Meta:
         model = models.FileLink
