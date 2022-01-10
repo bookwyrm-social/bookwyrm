@@ -66,6 +66,7 @@ class LinkViews(TestCase):
         form.data["url"] = "https://www.example.com"
         form.data["filetype"] = "HTML"
         form.data["book"] = self.book.id
+        form.data["added_by"] = self.local_user
 
         request = self.factory.post("", form.data)
         request.user = self.local_user

@@ -12,6 +12,7 @@
 {% block modal-body %}
 {% csrf_token %}
 <input type="hidden" name="book" value="{{ book.id }}">
+<input type="hidden" name="added_by" value="{{ request.user.id }}">
 
 <p class="notification">
     {% trans "Links from unknown domains will need to be approved by a moderator before they are added." %}

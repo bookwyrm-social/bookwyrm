@@ -225,7 +225,7 @@ class LinkDomainForm(CustomForm):
 class FileLinkForm(CustomForm):
     class Meta:
         model = models.FileLink
-        fields = ["url", "filetype", "book"]
+        fields = ["url", "filetype", "book", "added_by"]
 
 
 class EditionForm(CustomForm):

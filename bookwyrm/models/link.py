@@ -15,15 +15,18 @@ class Link(ActivitypubMixin, BookWyrmModel):
     """a link to a website"""
 
     url = fields.URLField(max_length=255, activitypub_field="href")
+    added_by = fields.ForeignKey(
+        "User",
+        on_delete=models.SET_NULL,
+        null=True,
+        activitypub_field="attributedTo"
+    )
     domain = models.ForeignKey(
         "LinkDomain",
         on_delete=models.CASCADE,
         null=True,
         blank=True,
         related_name="links",
-    )
-    added_by = fields.ForeignKey(
-        "User", on_delete=models.SET_NULL, null=True, activitypub_field="attributedTo"
     )
 
     activity_serializer = activitypub.Link
