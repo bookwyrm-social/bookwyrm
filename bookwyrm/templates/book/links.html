@@ -3,6 +3,7 @@
 {% load utilities %}
 
 {% get_book_file_links book as links %}
+{% if links.exists or request.user.is_authenticated %}
 <header class="columns is-mobile mb-0">
     <div class="column">
         <h2 class="title is-5">{% trans "Get a copy" %}</h2>
@@ -34,8 +35,12 @@
 {% join "verify" link.id as verify_modal %}
 {% include "book/link_verification_modal.html" with id=verify_modal %}
 {% endfor %}
+{% else %}
+<em>{% trans "No links available" %}</em>
 {% endif %}
 
 {% if can_edit_book %}
 {% include 'book/file_link_modal.html' with book=book id="edit-links" %}
+{% endif %}
+
 {% endif %}

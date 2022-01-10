@@ -17,15 +17,15 @@
         <ul>
             {% url 'settings-link-domain' status='pending' as url %}
             <li {% if request.path in url %}class="is-active" aria-current="page"{% endif %}>
-                <a href="{{ url }}">{% trans "Pending" %}</a>
+                <a href="{{ url }}">{% trans "Pending" %} ({{ counts.pending }})</a>
             </li>
             {% url 'settings-link-domain' status='approved' as url %}
             <li {% if url in request.path %}class="is-active" aria-current="page"{% endif %}>
-                <a href="{{ url }}">{% trans "Approved" %}</a>
+                <a href="{{ url }}">{% trans "Approved" %} ({{ counts.approved }})</a>
             </li>
             {% url 'settings-link-domain' status='blocked' as url %}
             <li {% if url in request.path %}class="is-active" aria-current="page"{% endif %}>
-                <a href="{{ url }}">{% trans "Blocked" %}</a>
+                <a href="{{ url }}">{% trans "Blocked" %} ({{ counts.blocked }})</a>
             </li>
         </ul>
     </div>

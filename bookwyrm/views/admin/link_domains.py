@@ -23,6 +23,11 @@ class LinkDomain(View):
             "domains": models.LinkDomain.objects.filter(status=status).prefetch_related(
                 "links"
             ),
+            "counts": {
+                "pending": models.LinkDomain.objects.filter(status="pending").count(),
+                "approved": models.LinkDomain.objects.filter(status="approved").count(),
+                "blocked": models.LinkDomain.objects.filter(status="blocked").count(),
+            },
             "form": forms.EmailBlocklistForm(),
             "status": status,
         }

@@ -3,7 +3,7 @@ from django.core.management.base import BaseCommand
 from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
 
-from bookwyrm.models import Connector, FederatedServer, SiteSettings, User
+from bookwyrm import models
 
 
 def init_groups():
@@ -55,7 +55,7 @@ def init_permissions():
         },
     ]
 
-    content_type = ContentType.objects.get_for_model(User)
+    content_type = models.ContentType.objects.get_for_model(User)
     for permission in permissions:
         permission_obj = Permission.objects.create(
             codename=permission["codename"],
@@ -72,7 +72,7 @@ def init_permissions():
 
 def init_connectors():
     """access book data sources"""
-    Connector.objects.create(
+    models.Connector.objects.create(
         identifier="bookwyrm.social",
         name="BookWyrm dot Social",
         connector_file="bookwyrm_connector",
@@ -84,7 +84,7 @@ def init_connectors():
         priority=2,
     )
 
-    Connector.objects.create(
+    models.Connector.objects.create(
         identifier="inventaire.io",
         name="Inventaire",
         connector_file="inventaire",
@@ -96,7 +96,7 @@ def init_connectors():
         priority=3,
     )
 
-    Connector.objects.create(
+    models.Connector.objects.create(
         identifier="openlibrary.org",
         name="OpenLibrary",
         connector_file="openlibrary",
@@ -113,7 +113,7 @@ def init_federated_servers():
     """big no to nazis"""
     built_in_blocks = ["gab.ai", "gab.com"]
     for server in built_in_blocks:
-        FederatedServer.objects.create(
+        models.FederatedServer.objects.create(
             server_name=server,
             status="blocked",
         )
@@ -121,9 +121,33 @@ def init_federated_servers():
 
 def init_settings():
     """info about the instance"""
-    SiteSettings.objects.create(
+    models.SiteSettings.objects.create(
         support_link="https://www.patreon.com/bookwyrm",
         support_title="Patreon",
+    )
+
+
+def init_link_domains(*_):
+    """safe book links"""
+    models.LinkDomain.objects.create(
+        domain="www.gutenberg.org",
+        name="Project Gutenberg",
+        status="approved",
+    )
+    models.LinkDomain.objects.create(
+        domain="archive.org",
+        name="Internet Archive",
+        status="approved",
+    )
+    models.LinkDomain.objects.create(
+        domain="openlibrary.org",
+        name="Open Library",
+        status="approved",
+    )
+    models.LinkDomain.objects.create(
+        domain="theanarchistlibrary.org",
+        name="The Anarchist Library",
+        status="approved",
     )
 
 
