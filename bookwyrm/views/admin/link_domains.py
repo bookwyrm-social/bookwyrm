@@ -20,9 +20,9 @@ class LinkDomain(View):
     def get(self, request, status):
         """view pending domains"""
         data = {
-            "domains": models.LinkDomain.objects.filter(
-                status=status
-            ).prefetch_related("links"),
+            "domains": models.LinkDomain.objects.filter(status=status).prefetch_related(
+                "links"
+            ),
             "form": forms.EmailBlocklistForm(),
             "status": status,
         }
@@ -35,7 +35,7 @@ class LinkDomain(View):
         domain = get_object_or_404(models.LinkDomain, id=domain_id)
         form = forms.LinkDomainForm(request.POST, instance=domain)
         form.save()
-        return redirect('settings-link-domain', status=status)
+        return redirect("settings-link-domain", status=status)
 
 
 @require_POST
@@ -47,4 +47,4 @@ def update_domain_status(request, domain_id, status):
 
     domain.status = status
     domain.save()
-    return redirect('settings-link-domain', status="pending")
+    return redirect("settings-link-domain", status="pending")
