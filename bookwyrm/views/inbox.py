@@ -19,6 +19,7 @@ from bookwyrm.utils import regex
 
 logger = logging.getLogger(__name__)
 
+
 @method_decorator(csrf_exempt, name="dispatch")
 # pylint: disable=no-self-use
 class Inbox(View):

@@ -106,31 +106,31 @@ TEMPLATES = [
     },
 ]
 
-LOG_LEVEL = env('LOG_LEVEL', 'INFO').upper()
+LOG_LEVEL = env("LOG_LEVEL", "INFO").upper()
 # Override aspects of the default handler to our taste
 # See https://docs.djangoproject.com/en/3.2/topics/logging/#default-logging-configuration
 # for a reference to the defaults we're overriding
 LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
         # Overrides the default handler, which does not log in prod
-        'console': {
-            'level': LOG_LEVEL,
-            'class': 'logging.StreamHandler',
+        "console": {
+            "level": LOG_LEVEL,
+            "class": "logging.StreamHandler",
         },
     },
-    'loggers': {
+    "loggers": {
         # Override the log level for the default logger
-        'django': {
-            'handlers': ['console', 'mail_admins'],
-            'level': LOG_LEVEL,
+        "django": {
+            "handlers": ["console", "mail_admins"],
+            "level": LOG_LEVEL,
         },
         # Add a bookwyrm-specific logger
-        'bookwyrm': {
-            'handlers': ['console'],
-            'level': LOG_LEVEL,
-        }
+        "bookwyrm": {
+            "handlers": ["console"],
+            "level": LOG_LEVEL,
+        },
     },
 }
 
