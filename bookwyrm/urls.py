@@ -159,6 +159,11 @@ urlpatterns = [
         name="settings-email-blocks-delete",
     ),
     re_path(
+        r"^setting/link-domains/?$",
+        views.LinkDomain.as_view(),
+        name="settings-link-domain",
+    ),
+    re_path(
         r"^setting/link-domains/(?P<status>(pending|approved|blocked))/?$",
         views.LinkDomain.as_view(),
         name="settings-link-domain",

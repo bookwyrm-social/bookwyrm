@@ -63,7 +63,7 @@
                 <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "IP Address Blocklist" %}</a>
             </li>
             <li>
-                {% url 'settings-link-domain' status='pending' as url %}
+                {% url 'settings-link-domain' as url %}
                 <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Link Domains" %}</a>
             </li>
         </ul>

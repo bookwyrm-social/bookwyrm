@@ -17,7 +17,7 @@ from bookwyrm import forms, models
 class LinkDomain(View):
     """Moderate links"""
 
-    def get(self, request, status):
+    def get(self, request, status="pending"):
         """view pending domains"""
         data = {
             "domains": models.LinkDomain.objects.filter(status=status).prefetch_related(
