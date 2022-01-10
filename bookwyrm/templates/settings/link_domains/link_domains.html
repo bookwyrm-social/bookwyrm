@@ -61,6 +61,7 @@
                     <table class="is-striped">
                         <tr>
                             <th>{% trans "URL" %}</th>
+                            <th>{% trans "Added by" %}</th>
                             <th>{% trans "Filetype" %}</th>
                             <th>{% trans "Book" %}</th>
                         </tr>
@@ -68,6 +69,9 @@
                         <tr>
                             <td>
                                 <a href="{{ link.url }}" target="_blank" rel="noopener">{{ link.url }}</a>
+                            </td>
+                            <td>
+                                <a href="{% url 'settings-user' link.added_by.id %}">@{{ link.added_by|username }}</a>
                             </td>
                             <td>
                                 {% if link.filelink.filetype %}
