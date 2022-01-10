@@ -6,14 +6,14 @@
 {% endblock %}
 
 {% block modal-form-open %}
-<form name="edit-domain-{{ domain.id }}" method="post" action="{% url 'settings-link-domain' %}">
+<form name="edit-domain-{{ domain.id }}" method="post" action="{% url 'settings-link-domain' status=status domain_id=domain.id %}">
 {% endblock %}
 
 {% block modal-body %}
 {% csrf_token %}
 <label class="label" for="id_name">{% trans "Name:" %}</label>
 <div class="control">
-    <input type="text" id="id_name" class="input" value="{{ domain.name }}">
+    <input type="text" id="id_name" class="input" name="name" value="{{ domain.name }}">
 </div>
 {% endblock %}
 

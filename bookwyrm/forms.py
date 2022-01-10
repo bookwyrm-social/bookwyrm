@@ -219,7 +219,7 @@ class CoverForm(CustomForm):
 class LinkDomainForm(CustomForm):
     class Meta:
         model = models.LinkDomain
-        fields = ["id", "name"]
+        fields = ["name"]
 
 
 class FileLinkForm(CustomForm):
