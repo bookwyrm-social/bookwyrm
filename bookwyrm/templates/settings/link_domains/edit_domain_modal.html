@@ -13,7 +13,7 @@
 {% csrf_token %}
 <label class="label" for="id_name">{% trans "Name:" %}</label>
 <div class="control">
-    <input type="text" id="id_name" class="input" name="name" value="{{ domain.name }}">
+    <input type="text" id="id_name" class="input" name="name" value="{{ domain.name }}" required>
 </div>
 {% endblock %}
 

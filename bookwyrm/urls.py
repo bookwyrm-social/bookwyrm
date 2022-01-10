@@ -97,6 +97,11 @@ urlpatterns = [
         r"^settings/users/?$", views.UserAdminList.as_view(), name="settings-users"
     ),
     re_path(
+        r"^settings/users/(?P<user>\d+)/?$",
+        views.UserAdmin.as_view(),
+        name="settings-user",
+    ),
+    re_path(
         r"^settings/federation/(?P<status>(federated|blocked))?/?$",
         views.Federation.as_view(),
         name="settings-federation",
