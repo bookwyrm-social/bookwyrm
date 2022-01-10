@@ -124,6 +124,10 @@ LOGGING = {
             'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
             'propagate': False,
         },
+        'bookwyrm': {
+            'handlers': ['console'],
+            'level': os.getenv('LOG_LEVEL', 'DEBUG' if DEBUG else 'INFO').upper(),
+        }
     },
 }
 

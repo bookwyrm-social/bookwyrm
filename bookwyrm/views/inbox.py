@@ -10,12 +10,14 @@ from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 import requests
+import logging
 
 from bookwyrm import activitypub, models
 from bookwyrm.tasks import app
 from bookwyrm.signatures import Signature
 from bookwyrm.utils import regex
 
+logger = logging.getLogger(__name__)
 
 @method_decorator(csrf_exempt, name="dispatch")
 # pylint: disable=no-self-use
@@ -71,6 +73,7 @@ def raise_is_blocked_user_agent(request):
         return
     url = url.group()
     if models.FederatedServer.is_blocked(url):
+        logger.debug(f"{url} is blocked, denying request based on user agent")
         raise PermissionDenied()
 
 
@@ -78,16 +81,18 @@ def raise_is_blocked_activity(activity_json):
     """get the sender out of activity json and check if it's blocked"""
     actor = activity_json.get("actor")
 
-    # check if the user is banned/deleted
-    existing = models.User.find_existing_by_remote_id(actor)
-    if existing and existing.deleted:
-        raise PermissionDenied()
-
     if not actor:
         # well I guess it's not even a valid activity so who knows
         return
 
+    # check if the user is banned/deleted
+    existing = models.User.find_existing_by_remote_id(actor)
+    if existing and existing.deleted:
+        logger.debug(f"{actor} is banned/deleted, denying request based on actor")
+        raise PermissionDenied()
+
     if models.FederatedServer.is_blocked(actor):
+        logger.debug(f"{actor} is blocked, denying request based on actor")
         raise PermissionDenied()
 
 
