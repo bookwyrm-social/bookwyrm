@@ -31,7 +31,6 @@ class LinkDomainViews(TestCase):
             url="https://beep.com/book/1",
         )
 
-
         models.SiteSettings.objects.create()
 
     def test_domain_page_get(self):
@@ -49,7 +48,7 @@ class LinkDomainViews(TestCase):
 
     def test_domain_page_post(self):
         """there are so many views, this just makes sure it LOADS"""
-        domain = models.LinkDomain.objects.get()
+        domain = models.LinkDomain.objects.get(domain="beep.com")
         self.assertEqual(domain.name, "beep.com")
 
         view = views.LinkDomain.as_view()
@@ -58,21 +57,23 @@ class LinkDomainViews(TestCase):
         request.user.is_superuser = True
 
         result = view(request, "pending", domain.id)
-        self.assertEqual(result.status_code, 301)
+        self.assertEqual(result.status_code, 302)
 
+        domain.refresh_from_db()
         self.assertEqual(domain.name, "ugh")
 
     def test_domain_page_set_status(self):
         """there are so many views, this just makes sure it LOADS"""
-        domain = models.LinkDomain.objects.get()
+        domain = models.LinkDomain.objects.get(domain="beep.com")
         self.assertEqual(domain.status, "pending")
 
-        view = views.LinkDomain.as_view()
+        view = views.update_domain_status
         request = self.factory.post("")
         request.user = self.local_user
         request.user.is_superuser = True
 
         result = view(request, domain.id, "approved")
-        self.assertEqual(result.status_code, 301)
+        self.assertEqual(result.status_code, 302)
 
+        domain.refresh_from_db()
         self.assertEqual(domain.status, "approved")
