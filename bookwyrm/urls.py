@@ -184,10 +184,12 @@ urlpatterns = [
         name="settings-ip-blocks-delete",
     ),
     # moderation
-    re_path(r"^settings/reports/?$", views.Reports.as_view(), name="settings-reports"),
+    re_path(
+        r"^settings/reports/?$", views.ReportsAdmin.as_view(), name="settings-reports"
+    ),
     re_path(
         r"^settings/reports/(?P<report_id>\d+)/?$",
-        views.Report.as_view(),
+        views.ReportAdmin.as_view(),
         name="settings-report",
     ),
     re_path(
@@ -210,7 +212,18 @@ urlpatterns = [
         views.resolve_report,
         name="settings-report-resolve",
     ),
-    re_path(r"^report/?$", views.make_report, name="report"),
+    re_path(r"^report/?$", views.Report.as_view(), name="report"),
+    re_path(r"^report/(?P<user_id>\d+)/?$", views.Report.as_view(), name="report"),
+    re_path(
+        r"^report/(?P<user_id>\d+)/status/(?P<status_id>\d+)?$",
+        views.Report.as_view(),
+        name="report-status",
+    ),
+    re_path(
+        r"^report/(?P<user_id>\d+)/link/(?P<link_id>\d+)?$",
+        views.Report.as_view(),
+        name="report-link",
+    ),
     # landing pages
     re_path(r"^about/?$", views.about, name="about"),
     re_path(r"^privacy/?$", views.privacy, name="privacy"),

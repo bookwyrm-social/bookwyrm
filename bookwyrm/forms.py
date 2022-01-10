@@ -453,7 +453,7 @@ class GroupForm(CustomForm):
 class ReportForm(CustomForm):
     class Meta:
         model = models.Report
-        fields = ["user", "reporter", "statuses", "note"]
+        fields = ["user", "reporter", "statuses", "links", "note"]
 
 
 class EmailBlocklistForm(CustomForm):

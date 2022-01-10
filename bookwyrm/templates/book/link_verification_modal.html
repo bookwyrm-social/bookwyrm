@@ -9,7 +9,8 @@
 {% block modal-body %}
 
 {% blocktrans trimmed with link_url=link.url %}
-This link is taking you to <code>{{ link_url }}</code>. Is that where you'd like to go?
+This link is taking you to: <code>{{ link_url }}</code>.<br>
+Is that where you'd like to go?
 {% endblocktrans %}
 
 {% endblock %}
@@ -18,5 +19,11 @@ This link is taking you to <code>{{ link_url }}</code>. Is that where you'd like
 {% block modal-footer %}
 <a href="{{ link.url }}" target="_blank" rel="noopener" class="button is-primary">{% trans "Continue" %}</a>
 <button type="button" class="button" data-modal-close>{% trans "Cancel" %}</button>
+
+{% if request.user.is_authenticated %}
+<div class="has-text-right is-flex-grow-1">
+    <a href="{% url 'report-link' link.added_by.id link.id %}">{% trans "Report spam" %}</button>
+</div>
+{% endif %}
 
 {% endblock %}

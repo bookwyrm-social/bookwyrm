@@ -1,5 +1,4 @@
 {% extends 'settings/layout.html' %}
-{% load humanize %}
 {% load i18n %}
 {% load utilities %}
 
@@ -32,7 +31,7 @@
 
     {% for domain in domains %}
     {% join "domain" domain.id as domain_modal %}
-    <div class="box content">
+    <div class="box content" id="{{ domain.id }}">
         <div class="columns is-mobile">
             <header class="column">
                 <h2 class="title is-5">
@@ -58,37 +57,7 @@
                 </summary>
 
                 <div class="table-container mt-4">
-                    <table class="is-striped">
-                        <tr>
-                            <th>{% trans "URL" %}</th>
-                            <th>{% trans "Added by" %}</th>
-                            <th>{% trans "Filetype" %}</th>
-                            <th>{% trans "Book" %}</th>
-                        </tr>
-                    {% for link in domain.links.all|slice:10 %}
-                        <tr>
-                            <td>
-                                <a href="{{ link.url }}" target="_blank" rel="noopener">{{ link.url }}</a>
-                            </td>
-                            <td>
-                                <a href="{% url 'settings-user' link.added_by.id %}">@{{ link.added_by|username }}</a>
-                            </td>
-                            <td>
-                                {% if link.filelink.filetype %}
-                                {{ link.filelink.filetype }}
-                                {% endif %}
-                            </td>
-
-                            <td>
-                            {% if link.filelink.filetype %}
-                                {% with book=link.filelink.book %}
-                                <a href="{{ book.local_path }}">{% include "snippets/book_titleby.html" with book=book %}</a>
-                                {% endwith %}
-                            {% endif %}
-                            </td>
-                        </tr>
-                    {% endfor %}
-                    </table>
+                    {% include "settings/link_domains/link_table.html" with links=domain.links.all|slice:10 %}
                 </div>
             </details>
         </div>

@@ -13,14 +13,12 @@ class Report(BookWyrmModel):
     note = models.TextField(null=True, blank=True)
     user = models.ForeignKey("User", on_delete=models.PROTECT)
     statuses = models.ManyToManyField("Status", blank=True)
+    links = models.ManyToManyField("Link", blank=True)
     resolved = models.BooleanField(default=False)
 
     class Meta:
-        """don't let users report themselves"""
+        """set order by default"""
 
-        constraints = [
-            models.CheckConstraint(check=~Q(reporter=F("user")), name="self_report")
-        ]
         ordering = ("-created_date",)
 
 
