@@ -15,7 +15,7 @@ class Link(ActivitypubMixin, BookWyrmModel):
 
     url = fields.URLField(max_length=255, activitypub_field="href")
     domain = models.ForeignKey(
-        "LinkDomain", on_delete=models.PROTECT, null=True, blank=True
+        "LinkDomain", on_delete=models.CASCADE, null=True, blank=True
     )
 
     activity_serializer = activitypub.Link

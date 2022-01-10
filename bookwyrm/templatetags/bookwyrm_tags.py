@@ -177,3 +177,9 @@ def suggested_books(context):
     # this happens here instead of in the view so that the template snippet can
     # be cached in the template
     return get_suggested_books(context["request"].user)
+
+
+@register.simple_tag(takes_context=False)
+def get_book_file_links(book):
+    """links for a book"""
+    return book.file_links.filter(domain__status="approved")
