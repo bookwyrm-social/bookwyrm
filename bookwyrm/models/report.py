@@ -1,6 +1,5 @@
 """ flagged for moderation """
 from django.db import models
-from django.db.models import F, Q
 from .base_model import BookWyrmModel
 
 
