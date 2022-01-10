@@ -22,6 +22,9 @@ class Link(ActivitypubMixin, BookWyrmModel):
         blank=True,
         related_name="links",
     )
+    added_by = fields.ForeignKey(
+        "User", on_delete=models.SET_NULL, null=True, activitypub_field="attributedTo"
+    )
 
     activity_serializer = activitypub.Link
     reverse_unfurl = True
@@ -66,6 +69,9 @@ class LinkDomain(BookWyrmModel):
     domain = models.CharField(max_length=255, unique=True)
     status = models.CharField(max_length=50, choices=StatusChoices, default="pending")
     name = models.CharField(max_length=100)
+    reported_by = models.ForeignKey(
+        "User", blank=True, null=True, on_delete=models.SET_NULL
+    )
 
     def raise_not_editable(self, viewer):
         if viewer.has_perm("moderate_post"):

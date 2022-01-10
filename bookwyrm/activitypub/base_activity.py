@@ -300,6 +300,7 @@ class Link(ActivityObject):
     name: str = None
     mediaType: str = None
     id: str = None
+    attributedTo: str = None
     type: str = "Link"
 
     def serialize(self, **kwargs):
