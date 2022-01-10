@@ -129,26 +129,19 @@ def init_settings():
 
 def init_link_domains(*_):
     """safe book links"""
-    models.LinkDomain.objects.create(
-        domain="www.gutenberg.org",
-        name="Project Gutenberg",
-        status="approved",
-    )
-    models.LinkDomain.objects.create(
-        domain="archive.org",
-        name="Internet Archive",
-        status="approved",
-    )
-    models.LinkDomain.objects.create(
-        domain="openlibrary.org",
-        name="Open Library",
-        status="approved",
-    )
-    models.LinkDomain.objects.create(
-        domain="theanarchistlibrary.org",
-        name="The Anarchist Library",
-        status="approved",
-    )
+    domains = [
+        ("standardebooks.org", "Standard EBooks"),
+        ("www.gutenberg.org", "Project Gutenberg"),
+        ("archive.org", "Internet Archive"),
+        ("openlibrary.org", "Open Library"),
+        ("theanarchistlibrary.org", "The Anarchist Library"),
+    ]
+    for domain, name in domains:
+        models.LinkDomain.objects.create(
+            domain=domain,
+            name=name,
+            status="approved",
+        )
 
 
 class Command(BaseCommand):
@@ -164,7 +157,12 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         limit = options.get("limit")
         tables = [
-            "group", "permission", "connector", "federatedserver", "settings", "linkdomain"
+            "group",
+            "permission",
+            "connector",
+            "federatedserver",
+            "settings",
+            "linkdomain",
         ]
         if limit not in tables:
             raise Exception("Invalid table limit:", limit)
