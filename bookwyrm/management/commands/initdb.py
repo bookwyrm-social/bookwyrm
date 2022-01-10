@@ -154,9 +154,30 @@ def init_link_domains(*_):
 class Command(BaseCommand):
     help = "Initializes the database with starter data"
 
+    def add_arguments(self, parser):
+        parser.add_argument(
+            "--limit",
+            default=None,
+            help="Limit init to specific table",
+        )
+
     def handle(self, *args, **options):
-        init_groups()
-        init_permissions()
-        init_connectors()
-        init_federated_servers()
-        init_settings()
+        limit = options.get("limit")
+        tables = [
+            "group", "permission", "connector", "federatedserver", "settings", "linkdomain"
+        ]
+        if limit not in tables:
+            raise Exception("Invalid table limit:", limit)
+
+        if not limit or limit == "group":
+            init_groups()
+        if not limit or limit == "permission":
+            init_permissions()
+        if not limit or limit == "connector":
+            init_connectors()
+        if not limit or limit == "federatedserver":
+            init_federated_servers()
+        if not limit or limit == "settings":
+            init_settings()
+        if not limit or limit == "linkdomain":
+            init_link_domains()

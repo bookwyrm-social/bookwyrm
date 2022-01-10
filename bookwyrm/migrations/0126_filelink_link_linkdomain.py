@@ -5,8 +5,6 @@ import bookwyrm.models.fields
 from django.db import migrations, models
 import django.db.models.deletion
 
-from bookwyrm.management.commands.initdb import init_link_domains
-
 
 class Migration(migrations.Migration):
 
@@ -125,5 +123,4 @@ class Migration(migrations.Migration):
             },
             bases=("bookwyrm.link",),
         ),
-        migrations.RunPython(init_link_domains, reverse_code=migrations.RunPython.noop),
     ]
