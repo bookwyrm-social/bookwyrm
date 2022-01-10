@@ -36,4 +36,4 @@ class Report(View):
             domain.status = "pending"
             domain.save()
         emailing.moderation_report_email(report)
-        return redirect(request.headers.get("Referer", "/"))
+        return redirect("/")
