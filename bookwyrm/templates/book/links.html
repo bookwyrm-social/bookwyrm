@@ -1,5 +1,7 @@
 {% load i18n %}
 {% load bookwyrm_tags %}
+{% load utilities %}
+
 {% get_book_file_links book as links %}
 <header class="columns is-mobile mb-0">
     <div class="column">
@@ -21,12 +23,17 @@
 {% if links %}
 <ul class="mt-0">
     {% for link in links.all %}
+    {% join "verify" link.id as verify_modal %}
     <li>
-        <a href="{{ link.url }}" rel="noopener" target="_blank" title="{{ link.url }}">{{ link.name }}</a>
+        <a href="{{ link.url }}" rel="noopener" target="_blank" title="{{ link.url }}" data-modal-open="{{ verify_modal }}">{{ link.name }}</a>
         ({{ link.filetype }})
     </li>
     {% endfor %}
 </ul>
+{% for link in links.all %}
+{% join "verify" link.id as verify_modal %}
+{% include "book/link_verification_modal.html" with id=verify_modal %}
+{% endfor %}
 {% endif %}
 
 {% if can_edit_book %}
