@@ -58,14 +58,16 @@
     function searchTrie(trie) {
         const options = Object.values(trie);
 
-        if (!options.length) {
-            return;
-        } else if (typeof options[0] == 'string') {
-            return [options[0]];
+        if (typeof trie == 'string') {
+            return [trie];
         }
 
         return options.map(option => {
             const newTrie = option;
+
+            if (typeof newTrie == 'string') {
+                return [newTrie];
+            }
 
             return searchTrie(newTrie);
         }).reduce((prev, next) => prev.concat(next));
@@ -79,13 +81,32 @@
 })();
 
 const mimetypeTrie = {
+    "a": {
+        "a": {
+            "c": "AAC",
+        },
+        "z": {
+            "w": "AZW",
+        }
+    },
+    "d": "Daisy",
+    "e": "ePub",
+    "f": "FLAC",
+    "h": "HTML",
+    "m": {
+        "4": {
+            "a": "M4A",
+            "b": "M4B",
+        },
+        "o": "MOBI",
+        "p": "MP3",
+    },
+    "o": "OGG",
     "p": {
         "d": {
             "f": "PDF",
         },
-        "n": {
-            "g": "PNG",
-        },
+        "l": "Plaintext",
     },
 };
 
