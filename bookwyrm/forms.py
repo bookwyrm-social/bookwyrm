@@ -479,6 +479,7 @@ class SortListForm(forms.Form):
         ),
     )
 
+
 class ReadThroughForm(CustomForm):
     def clean(self):
         """make sure the email isn't in use by a registered user"""

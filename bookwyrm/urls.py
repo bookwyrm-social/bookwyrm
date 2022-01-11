@@ -457,7 +457,7 @@ urlpatterns = [
     # reading progress
     re_path(r"^edit-readthrough/?$", views.edit_readthrough, name="edit-readthrough"),
     re_path(r"^delete-readthrough/?$", views.delete_readthrough),
-    re_path(r"^create-readthrough/?$", views.CreateReadThrough.as_view(), name="create-readthrough"),
+    re_path(r"^create-readthrough/?$", views.ReadThrough.as_view(), name="create-readthrough"),
     re_path(r"^delete-progressupdate/?$", views.delete_progressupdate),
     # shelve actions
     re_path(

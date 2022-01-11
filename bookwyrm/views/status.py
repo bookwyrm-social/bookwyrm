@@ -159,6 +159,7 @@ def update_progress(request, book_id):  # pylint: disable=unused-argument
 @require_POST
 def edit_readthrough(request):
     """can't use the form because the dates are too finnicky"""
+    # TODO: remove this, it duplicates the code in the ReadThrough view
     readthrough = get_object_or_404(models.ReadThrough, id=request.POST.get("id"))
     readthrough.raise_not_editable(request.user)
 

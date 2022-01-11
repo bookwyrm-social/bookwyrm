@@ -116,10 +116,18 @@ class ReadingStatus(View):
 
 
 @method_decorator(login_required, name="dispatch")
-class CreateReadThrough(View):
+class ReadThrough(View):
     """Add new read dates"""
-    def get(self, request):
+    def get(self, request, book_id, readthrough_id=None):
         """standalone form in case of errors"""
+        book = get_object_or_404(models.Edition, id=book_id)
+        form = forms.ReadThroughForm()
+        data = {"form": form, "book": book}
+        if readthrough_id:
+            data["readthrough"] = get_object_or_404(
+                models.ReadThrough, id=readthrough_id
+            )
+        return TemplateResponse(request, "readthrough/readthrough.html", data)
 
 
     def post(self, request):
