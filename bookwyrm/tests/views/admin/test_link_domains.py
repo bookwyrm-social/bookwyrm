@@ -29,6 +29,7 @@ class LinkDomainViews(TestCase):
         models.FileLink.objects.create(
             book=self.book,
             url="https://beep.com/book/1",
+            added_by=self.local_user,
         )
 
         models.SiteSettings.objects.create()
