@@ -9,16 +9,16 @@ from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.http import require_POST
 
-from bookwyrm import models
+from bookwyrm import forms, models
 from bookwyrm.views.shelf.shelf_actions import unshelve
 from .status import CreateStatus
 from .helpers import get_edition, handle_reading_status, is_api_request
 from .helpers import load_date_in_user_tz_as_utc
 
 
-@method_decorator(login_required, name="dispatch")
 # pylint: disable=no-self-use
 # pylint: disable=too-many-return-statements
+@method_decorator(login_required, name="dispatch")
 class ReadingStatus(View):
     """consider reading a book"""
 
@@ -115,6 +115,45 @@ class ReadingStatus(View):
         return redirect(referer)
 
 
+@method_decorator(login_required, name="dispatch")
+class ReadThrough(View):
+    """Add new read dates"""
+
+    def get(self, request, book_id, readthrough_id=None):
+        """standalone form in case of errors"""
+        book = get_object_or_404(models.Edition, id=book_id)
+        form = forms.ReadThroughForm()
+        data = {"form": form, "book": book}
+        if readthrough_id:
+            data["readthrough"] = get_object_or_404(
+                models.ReadThrough, id=readthrough_id
+            )
+        return TemplateResponse(request, "readthrough/readthrough.html", data)
+
+    def post(self, request):
+        """can't use the form normally because the dates are too finnicky"""
+        book_id = request.POST.get("book")
+        normalized_post = request.POST.copy()
+
+        normalized_post["start_date"] = load_date_in_user_tz_as_utc(
+            request.POST.get("start_date"), request.user
+        )
+        normalized_post["finish_date"] = load_date_in_user_tz_as_utc(
+            request.POST.get("finish_date"), request.user
+        )
+        form = forms.ReadThroughForm(request.POST)
+        if not form.is_valid():
+            book = get_object_or_404(models.Edition, id=book_id)
+            data = {"form": form, "book": book}
+            if request.POST.get("id"):
+                data["readthrough"] = get_object_or_404(
+                    models.ReadThrough, id=request.POST.get("id")
+                )
+            return TemplateResponse(request, "readthrough/readthrough.html", data)
+        form.save()
+        return redirect("book", book_id)
+
+
 @transaction.atomic
 def update_readthrough_on_shelve(
     user, annotated_book, status, start_date=None, finish_date=None
@@ -154,27 +193,6 @@ def delete_readthrough(request):
 
     readthrough.delete()
     return redirect(request.headers.get("Referer", "/"))
-
-
-@login_required
-@require_POST
-def create_readthrough(request):
-    """can't use the form because the dates are too finnicky"""
-    book = get_object_or_404(models.Edition, id=request.POST.get("book"))
-
-    start_date = load_date_in_user_tz_as_utc(
-        request.POST.get("start_date"), request.user
-    )
-    finish_date = load_date_in_user_tz_as_utc(
-        request.POST.get("finish_date"), request.user
-    )
-    models.ReadThrough.objects.create(
-        user=request.user,
-        book=book,
-        start_date=start_date,
-        finish_date=finish_date,
-    )
-    return redirect("book", book.id)
 
 
 @login_required
