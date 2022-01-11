@@ -478,3 +478,8 @@ class SortListForm(forms.Form):
             ("descending", _("Descending")),
         ),
     )
+
+class ReadThroughForm(CustomForm):
+    class Meta:
+        model = models.ReadThrough
+        fields = ["user", "book", "start_date", "finish_date"]
