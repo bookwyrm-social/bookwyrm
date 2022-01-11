@@ -77,7 +77,7 @@
 <div class="box is-hidden" id="edit_readthrough_{{ readthrough.id }}" tabindex="0">
     <h3 class="title is-5">{% trans "Edit read dates" %}</h3>
     <form name="edit-readthrough" action="/edit-readthrough" method="post">
-        {% include 'snippets/readthrough_form.html' with readthrough=readthrough %}
+        {% include 'readthrough/readthrough_form.html' with readthrough=readthrough %}
         <div class="field is-grouped">
             <button class="button is-primary" type="submit">{% trans "Save" %}</button>
             {% trans "Cancel" as button_text %}
@@ -86,4 +86,4 @@
     </form>
 </div>
 {% join "delete_readthrough" readthrough.id as modal_id %}
-{% include 'book/delete_readthrough_modal.html' with id=modal_id %}
+{% include 'readthrough/delete_readthrough_modal.html' with id=modal_id %}

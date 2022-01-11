@@ -245,13 +245,13 @@
                         </button>
                     </div>
                 </header>
-                {% include "book/add_readthrough_modal.html" with id="add-readthrough" %}
+                {% include "readthrough/add_readthrough_modal.html" with id="add-readthrough" %}
 
                 {% if not readthroughs.exists %}
                 <p>{% trans "You don't have any reading activity for this book." %}</p>
                 {% endif %}
                 {% for readthrough in readthroughs %}
-                {% include 'book/readthrough.html' with readthrough=readthrough %}
+                {% include 'readthrough/readthrough_list.html' with readthrough=readthrough %}
                 {% endfor %}
             </section>
             <hr aria-hidden="true">
