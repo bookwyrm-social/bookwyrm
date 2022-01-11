@@ -132,18 +132,21 @@ def related_status(notification):
 def active_shelf(context, book):
     """check what shelf a user has a book on, if any"""
     user = context["request"].user
-    return cache.get_or_set(
-        f"active_shelf-{user.id}-{book.id}",
-        lambda u, b: (
-            models.ShelfBook.objects.filter(
-                shelf__user=u,
-                book__parent_work__editions=b,
-            ).first()
-        ),
-        user,
-        book,
-        timeout=15552000,
-    ) or {"book": book}
+    return (
+        cache.get_or_set(
+            f"active_shelf-{user.id}-{book.id}",
+            lambda u, b: (
+                models.ShelfBook.objects.filter(
+                    shelf__user=u,
+                    book__parent_work__editions=b,
+                ).first()
+            ),
+            user,
+            book,
+            timeout=15552000,
+        )
+        or {"book": book}
+    )
 
 
 @register.simple_tag(takes_context=False)
