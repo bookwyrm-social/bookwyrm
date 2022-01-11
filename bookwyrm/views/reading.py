@@ -124,9 +124,8 @@ class CreateReadThrough(View):
 
     def post(self, request):
         """can't use the form normally because the dates are too finnicky"""
-        print("hi")
+        book_id = request.POST.get("book")
         normalized_post = request.POST.copy()
-        print(normalized_post)
 
         normalized_post["start_date"] = load_date_in_user_tz_as_utc(
             request.POST.get("start_date"), request.user
@@ -134,13 +133,15 @@ class CreateReadThrough(View):
         normalized_post["finish_date"] = load_date_in_user_tz_as_utc(
             request.POST.get("finish_date"), request.user
         )
-        form = forms.ReadThroughForm(normalized_post)
+        form = forms.ReadThroughForm(request.POST)
         if not form.is_valid():
-            print(form.errors)
-            # TODO error handling
-            return ""
+            book = get_object_or_404(models.Edition, id=book_id)
+            data = {"form": form, "book": book}
+            return TemplateResponse(
+                request, "readthrough/readthrough.html", data
+            )
         form.save()
-        return redirect("book", request.POST.get("book"))
+        return redirect("book", book_id)
 
 
 
