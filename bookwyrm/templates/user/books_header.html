@@ -1,16 +1,10 @@
 {% load i18n %}
 {% if is_self %}
-{% if shelf.identifier == 'to-read' %}
-{% trans "To Read" %}
-{% elif shelf.identifier == 'reading' %}
-{% trans "Currently Reading" %}
-{% elif shelf.identifier == 'read' %}
-{% trans "Read" %}
-{% elif shelf.identifier == 'all' %}
-{% trans "Your books" %}
+    {% if shelf.identifier == 'all' %}
+        {% trans "Your books" %}
+    {% else %}
+        {% include "snippets/translated_shelf_name.html" with shelf=shelf %}
+    {% endif %}
 {% else %}
-{{ shelf.name }}
-{% endif %}
-{% else %}
-{% blocktrans with username=user.display_name %}{{ username }}'s books{% endblocktrans %}
+    {% blocktrans with username=user.display_name %}{{ username }}'s books{% endblocktrans %}
 {% endif %}

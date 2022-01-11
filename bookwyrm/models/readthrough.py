@@ -1,5 +1,6 @@
 """ progress in a book """
 from django.core import validators
+from django.core.cache import cache
 from django.db import models
 from django.db.models import F, Q
 
@@ -30,6 +31,7 @@ class ReadThrough(BookWyrmModel):
 
     def save(self, *args, **kwargs):
         """update user active time"""
+        cache.delete(f"latest_read_through-{self.user.id}-{self.book.id}")
         self.user.update_active_date()
         # an active readthrough must have an unset finish date
         if self.finish_date:
