@@ -75,9 +75,11 @@
                                     <form class="mt-1" action="/resolve-book" method="post">
                                         {% csrf_token %}
                                         <input type="hidden" name="remote_id" value="{{ result.key }}">
-                                        <button type="submit" class="button is-small is-link">
-                                            {% trans "Import book" %}
-                                        </button>
+                                        <div class="control">
+                                            <button type="submit" class="button is-small is-link">
+                                                {% trans "Import book" %}
+                                            </button>
+                                        </div>
                                     </form>
                                 </div>
                             </div>
