@@ -137,12 +137,15 @@ class CreateReadThrough(View):
         if not form.is_valid():
             book = get_object_or_404(models.Edition, id=book_id)
             data = {"form": form, "book": book}
+            if request.POST.get("id"):
+                data["readthrough"] = get_object_or_404(
+                    models.ReadThrough, id=request.POST.get("id")
+                )
             return TemplateResponse(
                 request, "readthrough/readthrough.html", data
             )
         form.save()
         return redirect("book", book_id)
-
 
 
 @transaction.atomic
