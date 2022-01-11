@@ -118,6 +118,7 @@ class ReadingStatus(View):
 @method_decorator(login_required, name="dispatch")
 class ReadThrough(View):
     """Add new read dates"""
+
     def get(self, request, book_id, readthrough_id=None):
         """standalone form in case of errors"""
         book = get_object_or_404(models.Edition, id=book_id)
@@ -128,7 +129,6 @@ class ReadThrough(View):
                 models.ReadThrough, id=readthrough_id
             )
         return TemplateResponse(request, "readthrough/readthrough.html", data)
-
 
     def post(self, request):
         """can't use the form normally because the dates are too finnicky"""
@@ -149,9 +149,7 @@ class ReadThrough(View):
                 data["readthrough"] = get_object_or_404(
                     models.ReadThrough, id=request.POST.get("id")
                 )
-            return TemplateResponse(
-                request, "readthrough/readthrough.html", data
-            )
+            return TemplateResponse(request, "readthrough/readthrough.html", data)
         form.save()
         return redirect("book", book_id)
 
@@ -195,6 +193,7 @@ def delete_readthrough(request):
 
     readthrough.delete()
     return redirect(request.headers.get("Referer", "/"))
+
 
 @login_required
 @require_POST
