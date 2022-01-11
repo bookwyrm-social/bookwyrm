@@ -34,7 +34,8 @@ from .books.edit_book import EditBook, ConfirmEditBook
 from .books.editions import Editions, switch_edition
 
 # landing
-from .landing.landing import About, Home, Landing
+from .landing.about import about, privacy, conduct
+from .landing.landing import Home, Landing
 from .landing.login import Login, Logout
 from .landing.register import Register, ConfirmEmail, ConfirmEmailCode, resend_link
 from .landing.password import PasswordResetRequest, PasswordReset
@@ -94,7 +95,7 @@ from .search import Search
 from .status import CreateStatus, EditStatus, DeleteStatus, update_progress
 from .status import edit_readthrough
 from .updates import get_notification_count, get_unread_status_count
-from .user import User, Followers, Following, hide_suggestions
+from .user import User, Followers, Following, hide_suggestions, user_redirect
 from .wellknown import *
 from .annual_summary import (
     AnnualSummary,

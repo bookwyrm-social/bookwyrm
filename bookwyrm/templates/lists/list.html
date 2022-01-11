@@ -4,6 +4,19 @@
 {% load bookwyrm_group_tags %}
 {% load markdown %}
 
+{% block breadcrumbs %}
+<nav class="breadcrumb subtitle" aria-label="breadcrumbs">
+    <ul>
+        <li><a href="{% url 'lists' %}">{% trans "Lists" %}</a></li>
+        <li class="is-active">
+            <a href="#" aria-current="page">
+                {{ list.name|truncatechars:30 }}
+            </a>
+        </li>
+    </ul>
+</nav>
+{% endblock %}
+
 {% block panel %}
 {% if request.user == list.user and pending_count %}
 <div class="block content">
@@ -56,37 +69,48 @@
                                 <div>
                                     {{ book|book_description|to_markdown|default:""|safe|truncatewords_html:20 }}
                                 </div>
-                                {% include 'snippets/shelve_button/shelve_button.html' %}
+                                {% include 'snippets/shelve_button/shelve_button.html' with book=book %}
                             </div>
                         </div>
                     {% endwith %}
 
                     <div class="card-footer is-stacked-mobile has-background-white-bis is-align-items-stretch">
                         <div class="card-footer-item">
-                            <div>
-                            <p>{% blocktrans with username=item.user.display_name user_path=item.user.local_path %}Added by <a href="{{ user_path }}">{{ username }}</a>{% endblocktrans %}</p>
-                            </div>
+                            <p>
+                                {% blocktrans trimmed with username=item.user.display_name user_path=item.user.local_path %}
+                                Added by <a href="{{ user_path }}">{{ username }}</a>
+                                {% endblocktrans %}
+                            </p>
                         </div>
                         {% if list.user == request.user or list.group|is_member:request.user %}
-                        <div class="card-footer-item">
-                            <form name="set-position" method="post" action="{% url 'list-set-book-position' item.id %}">
-                                {% csrf_token %}
-                                <div class="field has-addons mb-0">
-                                    <div class="control">
-                                        <label for="input-list-position" class="button is-transparent is-small">{% trans "List position" %}</label>
-                                    </div>
-                                    <div class="control">
-                                        <input id="input_list_position" class="input is-small" type="number" min="1" name="position" value="{{ item.order }}">
-                                    </div>
-                                    <div class="control">
-                                        <button type="submit" class="button is-info is-small is-tablet">{% trans "Set" %}</button>
-                                    </div>
+                        <form
+                            name="set-position-{{ item.id }}"
+                            method="post"
+                            action="{% url 'list-set-book-position' item.id %}"
+                            class="card-footer-item"
+                        >
+                            {% csrf_token %}
+                            <div class="field has-addons mb-0">
+                                <div class="control">
+                                    <label for="input-list-position" class="button is-transparent is-small">{% trans "List position" %}</label>
                                 </div>
-                            </form>
-                        </div>
+                                <div class="control">
+                                    <input id="input_list_position_{{ item.id }}" class="input is-small" type="number" min="1" name="position" value="{{ item.order }}">
+                                </div>
+                                <div class="control">
+                                    <button type="submit" class="button is-info is-small is-tablet">{% trans "Set" %}</button>
+                                </div>
+                            </div>
+                        </form>
                         {% endif %}
+
                         {% if list.user == request.user or list.curation == 'open' and item.user == request.user or list.group|is_member:request.user %}
-                        <form name="remove-book" method="post" action="{% url 'list-remove-book' list.id %}" class="card-footer-item">
+                        <form
+                            name="remove-book-{{ item.id }}"
+                            method="post"
+                            action="{% url 'list-remove-book' list.id %}"
+                            class="card-footer-item"
+                        >
                             {% csrf_token %}
                             <input type="hidden" name="item" value="{{ item.id }}">
                             <button type="submit" class="button is-small is-danger">{% trans "Remove" %}</button>
@@ -172,14 +196,20 @@
 
                         <form
                             class="mt-1"
-                            name="add-book"
+                            name="add-book-{{ book.id }}"
                             method="post"
                             action="{% url 'list-add-book' %}{% if query %}?q={{ query }}{% endif %}"
                         >
                             {% csrf_token %}
                             <input type="hidden" name="book" value="{{ book.id }}">
                             <input type="hidden" name="list" value="{{ list.id }}">
-                            <button type="submit" class="button is-small is-link">{% if list.curation == 'open' or request.user == list.user or list.group|is_member:request.user %}{% trans "Add" %}{% else %}{% trans "Suggest" %}{% endif %}</button>
+                            <button type="submit" class="button is-small is-link">
+                                {% if list.curation == 'open' or request.user == list.user or list.group|is_member:request.user %}
+                                    {% trans "Add" %}
+                                {% else %}
+                                    {% trans "Suggest" %}
+                                {% endif %}
+                            </button>
                         </form>
                     </div>
                 </div>
@@ -191,7 +221,16 @@
                 {% trans "Embed this list on a website" %}
             </h2>
             <div class="vertical-copy">
-                <textarea readonly class="textarea is-small" aria-labelledby="embed-label" data-copytext data-copytext-label="{% trans 'Copy embed code' %}" data-copytext-success="{% trans 'Copied!' %}"><iframe style="border-width:0;" id="bookwyrm_list_embed" width="400" height="600" title="{% blocktrans with list_name=list.name site_name=site.name owner=list.user.display_name %}{{ list_name }}, a list by {{owner}} on {{ site_name }}{% endblocktrans %}" src="{{ embed_url }}"></iframe></textarea>
+                <textarea
+                    readonly
+                    class="textarea is-small"
+                    aria-labelledby="embed-label"
+                    data-copytext
+                    data-copytext-label="{% trans 'Copy embed code' %}"
+                    data-copytext-success="{% trans 'Copied!' %}"
+                >&lt;iframe style="border-width:0;" id="bookwyrm_list_embed" width="400" height="600" title="{% blocktrans trimmed with list_name=list.name site_name=site.name owner=list.user.display_name %}
+                    {{ list_name }}, a list by {{owner}} on {{ site_name }}
+                {% endblocktrans %}" src="{{ embed_url }}"&gt;&lt;/iframe&gt;</textarea>
             </div>
         </div>
 

@@ -1,7 +1,7 @@
 """testing the annual summary page"""
 from datetime import datetime
-import pytz
 from unittest.mock import patch
+import pytz
 
 from django.contrib.auth.models import AnonymousUser
 from django.http import Http404
@@ -26,7 +26,7 @@ class AnnualSummary(TestCase):
         self.factory = RequestFactory()
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
-        ):
+        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
             self.local_user = models.User.objects.create_user(
                 "mouse@local.com",
                 "mouse@mouse.com",
@@ -100,13 +100,8 @@ class AnnualSummary(TestCase):
     @patch("bookwyrm.activitystreams.add_book_statuses_task.delay")
     def test_annual_summary_page(self, *_):
         """there are so many views, this just makes sure it LOADS"""
-
-        shelf = self.local_user.shelf_set.filter(identifier="read").first()
-        models.ShelfBook.objects.create(
-            book=self.book,
-            user=self.local_user,
-            shelf=shelf,
-            shelved_date=make_date(2020, 1, 1),
+        models.ReadThrough.objects.create(
+            user=self.local_user, book=self.book, finish_date=make_date(2020, 1, 1)
         )
 
         view = views.AnnualSummary.as_view()
@@ -124,7 +119,7 @@ class AnnualSummary(TestCase):
     def test_annual_summary_page_with_review(self, *_):
         """there are so many views, this just makes sure it LOADS"""
 
-        self.review = models.Review.objects.create(
+        models.Review.objects.create(
             name="Review name",
             content="test content",
             rating=3.0,
@@ -132,12 +127,8 @@ class AnnualSummary(TestCase):
             book=self.book,
         )
 
-        shelf = self.local_user.shelf_set.filter(identifier="read").first()
-        models.ShelfBook.objects.create(
-            book=self.book,
-            user=self.local_user,
-            shelf=shelf,
-            shelved_date=make_date(2020, 1, 1),
+        models.ReadThrough.objects.create(
+            user=self.local_user, book=self.book, finish_date=make_date(2020, 1, 1)
         )
 
         view = views.AnnualSummary.as_view()

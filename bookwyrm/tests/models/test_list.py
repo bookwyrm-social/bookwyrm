@@ -1,7 +1,7 @@
 """ testing models """
+from uuid import UUID
 from unittest.mock import patch
 from django.test import TestCase
-from uuid import UUID
 
 from bookwyrm import models, settings
 
@@ -14,7 +14,7 @@ class List(TestCase):
         """look, a list"""
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
-        ):
+        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
             self.local_user = models.User.objects.create_user(
                 "mouse", "mouse@mouse.mouse", "mouseword", local=True, localname="mouse"
             )
@@ -27,7 +27,7 @@ class List(TestCase):
             book_list = models.List.objects.create(
                 name="Test List", user=self.local_user
             )
-        expected_id = "https://%s/list/%d" % (settings.DOMAIN, book_list.id)
+        expected_id = f"https://{settings.DOMAIN}/list/{book_list.id}"
         self.assertEqual(book_list.get_remote_id(), expected_id)
 
     def test_to_activity(self, _):

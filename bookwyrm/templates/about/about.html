@@ -1,0 +1,141 @@
+{% extends 'about/layout.html' %}
+{% load humanize %}
+{% load i18n %}
+{% load utilities %}
+{% load bookwyrm_tags %}
+{% load cache %}
+
+{% block title %}
+{% trans "About" %}
+{% endblock %}
+
+{% block about_content %}
+{# seven day cache #}
+{% cache 604800 about_page %}
+{% get_book_superlatives as superlatives %}
+<section class="content pb-4">
+    <h2>
+        {% blocktrans with site_name=site.name %}Welcome to {{ site_name }}!{% endblocktrans %}
+    </h2>
+
+    <p class="subtitle notification has-background-primary-light">
+        {% blocktrans trimmed with site_name=site.name %}
+            {{ site_name }} is part of <em>BookWyrm</em>, a network of independent, self-directed communities for readers.
+            While you can interact seamlessly with users anywhere in the <a href="https://joinbookwyrm.com/instances/" target="_blank">BookWyrm network</a>, this community is unique.
+        {% endblocktrans %}
+    </p>
+
+    <div class="columns">
+        {% if top_rated %}
+        {% with book=superlatives.top_rated.default_edition rating=top_rated.rating %}
+        <div class="column is-one-third is-flex">
+            <div class="media notification">
+                <div class="media-left">
+                    <a href="{{ book.local_path }}">
+                        {% include 'snippets/book_cover.html' with book=book cover_class='is-h-m' size='medium' aria='show' %}
+                    </a>
+                </div>
+                <div class="media-content">
+                    {% blocktrans trimmed with title=book|book_title book_path=book.local_path site_name=site.name rating=rating|floatformat:1 %}
+                    <a href="{{ book_path }}"><em>{{ title }}</em></a> is {{ site_name }}'s most beloved book, with an average rating of {{ rating }} out of 5.
+                    {% endblocktrans %}
+                </div>
+            </div>
+        </div>
+        {% endwith %}
+        {% endif %}
+
+        {% if wanted %}
+        {% with book=superlatives.wanted.default_edition %}
+        <div class="column is-one-third is-flex">
+            <div class="media notification">
+                <div class="media-left">
+                    <a href="{{ book.local_path }}">
+                        {% include 'snippets/book_cover.html' with book=book cover_class='is-h-m' size='medium' aria='show' %}
+                    </a>
+                </div>
+                <div class="media-content">
+                    {% blocktrans trimmed with title=book|book_title book_path=book.local_path site_name=site.name %}
+                    More {{ site_name }} users want to read <a href="{{ book_path }}"><em>{{ title }}</em></a> than any other book.
+                    {% endblocktrans %}
+                </div>
+            </div>
+        </div>
+        {% endwith %}
+        {% endif %}
+
+        {% if controversial %}
+        {% with book=superlatives.controversial.default_edition %}
+        <div class="column is-one-third is-flex">
+            <div class="media notification">
+                <div class="media-left">
+                    <a href="{{ book.local_path }}">
+                        {% include 'snippets/book_cover.html' with book=book cover_class='is-h-m' size='medium' aria='show' %}
+                    </a>
+                </div>
+                <div class="media-content">
+                    {% blocktrans trimmed with title=book|book_title book_path=book.local_path site_name=site.name %}
+                    <a href="{{ book_path }}"><em>{{ title }}</em></a> has the most divisive ratings of any book on {{ site_name }}.
+                    {% endblocktrans %}
+                </div>
+            </div>
+        </div>
+        {% endwith %}
+        {% endif %}
+    </div>
+
+    <p>
+        {% trans "Track your reading, talk about books, write reviews, and discover what to read next. Always ad-free, anti-corporate, and community-oriented, BookWyrm is human-scale software, designed to stay small and personal. If you have feature requests, bug reports, or grand dreams, <a href='https://joinbookwyrm.com/get-involved' target='_blank'>reach out</a> and make yourself heard." %}
+    </p>
+
+</section>
+
+<section class="block">
+    <header class="content">
+        <h2 class="title is-3">{% trans "Meet your admins" %}</h2>
+        <p>
+        {% url "conduct" as coc_path %}
+        {% blocktrans with site_name=site.name %}
+            {{ site_name }}'s moderators and administrators keep the site up and running, enforce the <a href="coc_path">code of conduct</a>, and respond when users report spam and bad behavior.
+        {% endblocktrans %}
+        </p>
+    </header>
+
+    <div class="columns is-multiline">
+        {% for user in admins %}
+        <div class="column">
+            <div class="card is-stretchable">
+                {% with role=user.groups.first.name %}
+                <div class="card-header {% if role == "moderator" %}has-background-info-light{% else %}has-background-success-light{% endif %}">
+                    <span class="card-header-title is-size-7 pt-1 pb-1">
+                        {% if role == "moderator" %}
+                            {% trans "Moderator" %}
+                        {% else %}
+                            {% trans "Admin" %}
+                        {% endif %}
+                    </span>
+                </div>
+                {% endwith %}
+
+                <div class="cord-content p-5">
+                    {% include 'user/user_preview.html' with user=user %}
+                </div>
+
+                {% if request.user.is_authenticated and user.id != request.user.id %}
+                <div class="has-background-white-bis card-footer">
+                    <div class="card-footer-item">
+                        {% include 'snippets/follow_button.html' with user=user minimal=True %}
+                    </div>
+                    <div class="card-footer-item">
+                        <a href="{% url 'direct-messages-user' user|username %}">{% trans "Send direct message" %}</a>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+{% endcache %}
+{% endblock %}

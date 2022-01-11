@@ -1,6 +1,8 @@
 """ test for app action functionality """
 from unittest.mock import patch
 
+from django.contrib.auth.models import AnonymousUser
+from django.http import Http404
 from django.template.response import TemplateResponse
 from django.test import TestCase
 from django.test.client import RequestFactory
@@ -18,7 +20,7 @@ class GroupViews(TestCase):
         self.factory = RequestFactory()
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
-        ):
+        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
             self.local_user = models.User.objects.create_user(
                 "mouse@local.com",
                 "mouse@mouse.mouse",
@@ -43,6 +45,8 @@ class GroupViews(TestCase):
         self.membership = models.GroupMember.objects.create(
             group=self.testgroup, user=self.local_user
         )
+        self.anonymous_user = AnonymousUser
+        self.anonymous_user.is_authenticated = False
 
         models.SiteSettings.objects.create()
 
@@ -55,6 +59,17 @@ class GroupViews(TestCase):
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
+
+    def test_group_get_anonymous(self, _):
+        """there are so many views, this just makes sure it LOADS"""
+        self.testgroup.privacy = "followers"
+        self.testgroup.save()
+
+        view = views.Group.as_view()
+        request = self.factory.get("")
+        request.user = self.anonymous_user
+        with self.assertRaises(Http404):
+            view(request, group_id=self.testgroup.id)
 
     def test_usergroups_get(self, _):
         """there are so many views, this just makes sure it LOADS"""

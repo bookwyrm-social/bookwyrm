@@ -18,7 +18,7 @@ class BlockViews(TestCase):
         self.factory = RequestFactory()
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
-        ):
+        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
             self.local_user = models.User.objects.create_user(
                 "mouse@local.com",
                 "mouse@mouse.mouse",
@@ -61,7 +61,9 @@ class BlockViews(TestCase):
 
         request = self.factory.post("")
         request.user = self.local_user
-        with patch("bookwyrm.activitystreams.remove_user_statuses_task.delay"):
+        with patch("bookwyrm.activitystreams.remove_user_statuses_task.delay"), patch(
+            "bookwyrm.lists_stream.remove_user_lists_task.delay"
+        ):
             view(request, self.remote_user.id)
         block = models.UserBlocks.objects.get()
         self.assertEqual(block.user_subject, self.local_user)
@@ -76,7 +78,9 @@ class BlockViews(TestCase):
         request = self.factory.post("")
         request.user = self.local_user
 
-        with patch("bookwyrm.activitystreams.add_user_statuses_task.delay"):
+        with patch("bookwyrm.activitystreams.add_user_statuses_task.delay"), patch(
+            "bookwyrm.lists_stream.add_user_lists_task.delay"
+        ):
             views.unblock(request, self.remote_user.id)
 
         self.assertFalse(models.UserBlocks.objects.exists())

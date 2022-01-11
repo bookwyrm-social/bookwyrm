@@ -9,6 +9,7 @@ from bookwyrm import models, settings
 # pylint: disable=unused-argument
 @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
 @patch("bookwyrm.activitystreams.populate_stream_task.delay")
+@patch("bookwyrm.lists_stream.populate_lists_task.delay")
 @patch("bookwyrm.activitystreams.add_book_statuses_task.delay")
 @patch("bookwyrm.activitystreams.remove_book_statuses_task.delay")
 class Shelf(TestCase):
@@ -18,7 +19,7 @@ class Shelf(TestCase):
         """look, a shelf"""
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
-        ):
+        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
             self.local_user = models.User.objects.create_user(
                 "mouse", "mouse@mouse.mouse", "mouseword", local=True, localname="mouse"
             )
@@ -31,7 +32,7 @@ class Shelf(TestCase):
             shelf = models.Shelf.objects.create(
                 name="Test Shelf", identifier="test-shelf", user=self.local_user
             )
-        expected_id = "https://%s/user/mouse/books/test-shelf" % settings.DOMAIN
+        expected_id = f"https://{settings.DOMAIN}/user/mouse/books/test-shelf"
         self.assertEqual(shelf.get_remote_id(), expected_id)
 
     def test_to_activity(self, *_):

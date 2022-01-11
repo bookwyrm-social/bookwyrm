@@ -52,7 +52,7 @@ class Shelf(View):
             )
             shelf = FakeShelf("all", _("All books"), user, books, "public")
 
-        if is_api_request(request):
+        if is_api_request(request) and shelf_identifier:
             return ActivitypubResponse(shelf.to_activity(**request.GET))
 
         reviews = models.Review.objects
@@ -72,9 +72,13 @@ class Shelf(View):
             "start_date"
         )
 
+        if shelf_identifier:
+            books = books.annotate(shelved_date=F("shelfbook__shelved_date"))
+        else:
+            # sorting by shelved date will cause duplicates in the "all books" view
+            books = books.annotate(shelved_date=F("updated_date"))
         books = books.annotate(
             rating=Subquery(reviews.values("rating")[:1]),
-            shelved_date=F("shelfbook__shelved_date"),
             start_date=Subquery(reading.values("start_date")[:1]),
             finish_date=Subquery(reading.values("finish_date")[:1]),
             author=Subquery(

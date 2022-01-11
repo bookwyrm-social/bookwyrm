@@ -5,6 +5,7 @@ from django.test import TestCase
 from django.test.client import RequestFactory
 
 from bookwyrm import forms, models, views
+from bookwyrm.tests.validate_html import validate_html
 
 
 @patch("bookwyrm.activitystreams.populate_stream_task.delay")
@@ -16,13 +17,20 @@ class GetStartedViews(TestCase):
         self.factory = RequestFactory()
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
-        ):
+        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
             self.local_user = models.User.objects.create_user(
                 "mouse@local.com",
                 "mouse@mouse.mouse",
                 "password",
                 local=True,
                 localname="mouse",
+            )
+            self.local_user = models.User.objects.create_user(
+                "rat@local.com",
+                "rat@rat.rat",
+                "password",
+                local=True,
+                localname="rat",
             )
         self.book = models.Edition.objects.create(
             parent_work=models.Work.objects.create(title="hi"),
@@ -40,7 +48,7 @@ class GetStartedViews(TestCase):
         result = view(request)
 
         self.assertIsInstance(result, TemplateResponse)
-        result.render()
+        validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
     @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
@@ -72,7 +80,7 @@ class GetStartedViews(TestCase):
         result = view(request)
 
         self.assertIsInstance(result, TemplateResponse)
-        result.render()
+        validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
     def test_books_view_with_query(self, _):
@@ -84,7 +92,7 @@ class GetStartedViews(TestCase):
         result = view(request)
 
         self.assertIsInstance(result, TemplateResponse)
-        result.render()
+        validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
     @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
@@ -117,18 +125,19 @@ class GetStartedViews(TestCase):
         result = view(request)
 
         self.assertIsInstance(result, TemplateResponse)
-        result.render()
+        validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
-    @patch("bookwyrm.suggested_users.SuggestedUsers.get_suggestions")
     def test_users_view_with_query(self, *_):
         """there are so many views, this just makes sure it LOADS"""
         view = views.GetStartedUsers.as_view()
         request = self.factory.get("?query=rat")
         request.user = self.local_user
 
-        result = view(request)
+        with patch("bookwyrm.suggested_users.SuggestedUsers.get_suggestions") as mock:
+            mock.return_value = models.User.objects.all()
+            result = view(request)
 
         self.assertIsInstance(result, TemplateResponse)
-        result.render()
+        validate_html(result.render())
         self.assertEqual(result.status_code, 200)

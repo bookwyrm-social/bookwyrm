@@ -12,6 +12,7 @@ import responses
 
 from bookwyrm import models, views
 from bookwyrm.settings import DOMAIN
+from bookwyrm.tests.validate_html import validate_html
 
 
 class Views(TestCase):
@@ -22,7 +23,7 @@ class Views(TestCase):
         self.factory = RequestFactory()
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
-        ):
+        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
             self.local_user = models.User.objects.create_user(
                 "mouse@local.com",
                 "mouse@mouse.com",
@@ -62,7 +63,7 @@ class Views(TestCase):
             is_api.return_value = False
             response = view(request)
         self.assertIsInstance(response, TemplateResponse)
-        response.render()
+        validate_html(response.render())
 
     @responses.activate
     def test_search_books(self):
@@ -89,7 +90,7 @@ class Views(TestCase):
             is_api.return_value = False
             response = view(request)
         self.assertIsInstance(response, TemplateResponse)
-        response.render()
+        validate_html(response.render())
         connector_results = response.context_data["results"]
         self.assertEqual(len(connector_results), 2)
         self.assertEqual(connector_results[0]["results"][0].title, "Test Book")
@@ -107,7 +108,7 @@ class Views(TestCase):
             is_api.return_value = False
             response = view(request)
         self.assertIsInstance(response, TemplateResponse)
-        response.render()
+        validate_html(response.render())
         connector_results = response.context_data["results"]
         self.assertEqual(len(connector_results), 1)
         self.assertEqual(connector_results[0]["results"][0].title, "Test Book")
@@ -120,7 +121,7 @@ class Views(TestCase):
         response = view(request)
 
         self.assertIsInstance(response, TemplateResponse)
-        response.render()
+        validate_html(response.render())
         self.assertEqual(response.context_data["results"][0], self.local_user)
 
     def test_search_users_logged_out(self):
@@ -134,7 +135,7 @@ class Views(TestCase):
 
         response = view(request)
 
-        response.render()
+        validate_html(response.render())
         self.assertFalse("results" in response.context_data)
 
     def test_search_lists(self):
@@ -149,5 +150,5 @@ class Views(TestCase):
         response = view(request)
 
         self.assertIsInstance(response, TemplateResponse)
-        response.render()
+        validate_html(response.render())
         self.assertEqual(response.context_data["results"][0], booklist)

@@ -67,8 +67,6 @@ services:
       - ./redis.conf:/etc/redis/redis.conf
       - redis_broker_data:/data
     env_file: .env
-    ports:
-      - 6379:6379
     networks:
       - main
     restart: on-failure
@@ -88,8 +86,10 @@ services:
     restart: on-failure
   flower:
     build: .
-    command: flower -A celerywyrm
+    command: celery -A celerywyrm flower
     env_file: .env
+    ports:
+      - ${FLOWER_PORT}:${FLOWER_PORT}
     volumes:
       - .:/app
     networks:
@@ -98,8 +98,6 @@ services:
       - db
       - redis_broker
     restart: on-failure
-    ports:
-      - 8888:8888
 volumes:
   pgdata:
   backups:

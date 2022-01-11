@@ -9,9 +9,9 @@ Start "<em>{{ book_title }}</em>"
 {% endblock %}
 
 {% block modal-form-open %}
-<form name="start-reading" action="{% url 'reading-status' 'start' book.id %}" method="post" {% if not refresh %}class="submit-status"{% endif %}>
+<form name="start-reading-{{ uuid }}" action="{% url 'reading-status' 'start' book.id %}" method="post" {% if not refresh %}class="submit-status"{% endif %}>
 <input type="hidden" name="reading_status" value="reading">
-<input type="hidden" name="shelf" value="{{ move_from }}"> 
+<input type="hidden" name="shelf" value="{{ move_from }}">
 {% csrf_token %}
 {% endblock %}
 

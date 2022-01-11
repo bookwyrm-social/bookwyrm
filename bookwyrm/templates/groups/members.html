@@ -5,8 +5,22 @@
 {% load bookwyrm_group_tags %}
 
 <h2 class="title is-5">Group Members</h2>
-<p class="subtitle is-6">{% trans "Members can add and remove books on a group's book lists" %}</p>
-
+{% if group.user == request.user %}
+<div class="block">
+    <form class="field has-addons" method="get" action="{% url 'group-find-users' group.id %}">
+        <div class="control">
+            <input type="text" name="user_query" value="{{ request.GET.user_query }}" class="input" placeholder="{% trans 'Search to add a user' %}" aria-label="{% trans 'Search to add a user' %}">
+        </div>
+        <div class="control">
+            <button class="button" type="submit">
+                <span class="icon icon-search" title="{% trans 'Search' %}">
+                    <span class="is-sr-only">{% trans "Search" %}</span>
+                </span>
+            </button>
+        </div>
+    </form>
+</div>
+{% endif %}
 {% if group.user != request.user and group|is_member:request.user %}
 <form action="{% url 'remove-group-member' %}" method="POST" class="my-4">
     {% csrf_token %}

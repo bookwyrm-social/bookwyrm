@@ -1,11 +1,14 @@
+{% load cache %}
+
+{# Three day cache #}
+{% cache 259200 generated_note_header status.id %}
 {% if status.content == 'wants to read' %}
     {% include 'snippets/status/headers/to_read.html' with book=status.mention_books.first %}
-{% endif %}
-
-{% if status.content == 'finished reading' %}
+{% elif status.content == 'finished reading' %}
     {% include 'snippets/status/headers/read.html' with book=status.mention_books.first %}
-{% endif %}
-
-{% if status.content == 'started reading' %}
+{% elif status.content == 'started reading' %}
     {% include 'snippets/status/headers/reading.html' with book=status.mention_books.first %}
+{% else %}
+    {{ status.content }}
 {% endif %}
+{% endcache %}

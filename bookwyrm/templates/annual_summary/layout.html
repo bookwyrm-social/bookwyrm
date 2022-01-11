@@ -58,7 +58,15 @@
 
             {% if year_key %}
                 <div class="horizontal-copy mb-5">
-                    <textarea rows="1" readonly class="textarea is-small" aria-labelledby="embed-label" data-copytext data-copytext-label="{% trans 'Copy address' %}" data-copytext-success="{% trans 'Copied!' %}">{{ request.scheme|add:"://"|add:request.get_host|add:request.path }}?key={{ year_key }}</textarea>
+                    <textarea
+                        rows="1"
+                        readonly
+                        class="textarea is-small"
+                        aria-labelledby="embed-label"
+                        data-copytext
+                        data-copytext-label="{% trans 'Copy address' %}"
+                        data-copytext-success="{% trans 'Copied!' %}"
+                    >{{ request.scheme|add:"://"|add:request.get_host|add:request.path }}?key={{ year_key }}</textarea>
                 </div>
             {% endif %}
 
@@ -101,13 +109,17 @@
     </div>
 
 {% if not books %}
-    <p class="has-text-centered is-size-5">{% blocktrans %}Sadly {{ display_name }} didn’t finish any book in {{ year }}{% endblocktrans %}</p>
+    <p class="has-text-centered is-size-5">{% blocktrans %}Sadly {{ display_name }} didn’t finish any books in {{ year }}{% endblocktrans %}</p>
 {% else %}
 
     <div class="columns is-mobile">
         <div class="column is-8 is-offset-2 has-text-centered">
             <h2 class="title is-3 is-serif">
-                {% blocktrans with pages_total=pages_total|intcomma %}In {{ year }}, {{ display_name }} read {{ books_total }} books<br />for a total of {{ pages_total }} pages!{% endblocktrans %}
+                {% blocktrans trimmed count counter=books_total with pages_total=pages_total|intcomma %}
+                    In {{ year }}, {{ display_name }} read {{ books_total }} book<br />for a total of {{ pages_total }} pages!
+                {% plural %}
+                    In {{ year }}, {{ display_name }} read {{ books_total }} books<br />for a total of {{ pages_total }} pages!
+                {% endblocktrans %}
             </h2>
             <p class="subtitle is-5">{% trans "That’s great!" %}</p>
 
@@ -130,7 +142,7 @@
     {% if book_pages_lowest and book_pages_highest %}
     <div class="columns is-align-items-center mt-5">
         <div class="column is-2 is-offset-1">
-            <a href="{{ book_pages_lowest.local_path }}">{% include 'snippets/book_cover.html' with book=book_pages_lowest cover_class='is-w-auto-tablet is-h-l-mobile' %}</a>
+            <a href="{{ book_pages_lowest.local_path }}">{% include 'snippets/book_cover.html' with book=book_pages_lowest cover_class='is-w-auto-tablet is-h-l-mobile' size='xxlarge' %}</a>
         </div>
         <div class="column is-3">
             {% trans "Their shortest read this year…" %}
@@ -151,12 +163,12 @@
             </p>
         </div>
         <div class="column is-2">
-            <a href="{{ book_pages_highest.local_path }}">{% include 'snippets/book_cover.html' with book=book_pages_highest cover_class='is-w-auto-tablet is-h-l-mobile' %}</a>
+            <a href="{{ book_pages_highest.local_path }}">{% include 'snippets/book_cover.html' with book=book_pages_highest cover_class='is-w-auto-tablet is-h-l-mobile' size='xxlarge' %}</a>
         </div>
         <div class="column is-3">
             {% trans "…and the longest" %}
             <p class="title is-4 is-serif is-italic">
-                <a href="{{ book_pages_lowest.local_path }}" class="has-text-success-dark">
+                <a href="{{ book_pages_highest.local_path }}" class="has-text-success-dark">
                     {{ book_pages_highest.title }}
                 </a>
             </p>
@@ -180,17 +192,46 @@
         </div>
     </div>
 
+    {% if goal_status and goal_status.percent >= 100 %}
+    <div class="columns">
+        <div class="column has-text-centered">
+            <h2 class="title is-3 is-serif">
+            {% with goal=goal_status.goal goal_percent=goal_status.percent %}
+            {% blocktrans trimmed count counter=goal %}
+                {{ display_name }} set a goal of reading {{ goal }} book in {{ year }},<br />
+                and achieved {{ goal_percent }}% of that goal
+            {% plural %}
+                {{ display_name }} set a goal of reading {{ goal }} books in {{ year }},<br />
+                and achieved {{ goal_percent }}% of that goal
+            {% endblocktrans %}
+            {% endwith %}
+            </h2>
+            <p class="subtitle is-5">{% trans "Way to go!" %}</p>
+        </div>
+    </div>
+
+    <div class="columns">
+        <div class="column is-one-fifth is-offset-two-fifths">
+            <hr />
+        </div>
+    </div>
+    {% endif %}
+
     {% if ratings_total > 0 %}
     <div class="columns">
         <div class="column has-text-centered">
             <h2 class="title is-3 is-serif">
-            {% blocktrans %}{{ display_name }} left {{ ratings_total }} ratings, <br />their average rating is {{ rating_average }}{% endblocktrans %}
+            {% blocktrans trimmed count counter=ratings_total %}
+                {{ display_name }} left {{ ratings_total }} rating, <br />their average rating is {{ rating_average }}
+            {% plural %}
+                {{ display_name }} left {{ ratings_total }} ratings, <br />their average rating is {{ rating_average }}
+            {% endblocktrans %}
             </h2>
         </div>
     </div>
     <div class="columns is-align-items-center">
-        <div class="column is-3 is-offset-3">
-            <a href="{{ book_rating_highest.book.local_path }}">{% include 'snippets/book_cover.html' with book=book_rating_highest.book cover_class='is-w-auto-tablet is-h-l-mobile' %}</a>
+        <div class="column is-2 is-offset-4">
+            <a href="{{ book_rating_highest.book.local_path }}">{% include 'snippets/book_cover.html' with book=book_rating_highest.book cover_class='is-w-xl-tablet is-h-l-mobile' size='xxlarge' %}</a>
         </div>
         {% if book_rating_highest %}
         <div class="column is-4">
@@ -224,7 +265,7 @@
     <div class="columns">
         <div class="column has-text-centered">
             <h2 class="title is-3 is-serif">
-            {% blocktrans %}All the books {{ display_name }} read in 2021{% endblocktrans %}
+                {% blocktrans %}All the books {{ display_name }} read in {{ year }}{% endblocktrans %}
             </h2>
         </div>
     </div>
@@ -233,7 +274,7 @@
         <div class="column is-10 is-offset-1">
             <div class="books-grid">
                 {% for book in books %}
-                {% if book.id in best_ratings_books_ids %}
+                {% if books_total > 12 and book.id in best_ratings_books_ids %}
                 <a href="{{ book.local_path }}" class="has-text-centered is-big has-text-success-dark">
                     {% include 'snippets/book_cover.html' with book=book cover_class='is-w-auto' size='xxlarge' %}
                     <span class="book-title is-serif is-size-5">
@@ -242,7 +283,7 @@
                 </a>
                 {% else %}
                 <a href="{{ book.local_path }}" class="has-text-centered has-text-success-dark">
-                    {% include 'snippets/book_cover.html' with book=book cover_class='is-w-auto' size='large' %}
+                    {% include 'snippets/book_cover.html' with book=book cover_class='is-w-auto' size='xlarge' %}
                     <span class="book-title is-serif is-size-6">
                         {{ book.title }}
                     </span>

@@ -31,7 +31,7 @@ class BaseActivity(TestCase):
         """we're probably going to re-use this so why copy/paste"""
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
-        ):
+        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
             self.user = models.User.objects.create_user(
                 "mouse", "mouse@mouse.mouse", "mouseword", local=True, localname="mouse"
             )

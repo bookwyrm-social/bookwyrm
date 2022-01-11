@@ -3,7 +3,7 @@ from datetime import date
 from uuid import uuid4
 
 from django.contrib.auth.decorators import login_required
-from django.db.models import Case, When, Avg, Sum
+from django.db.models import Avg, Sum, Min, Case, When
 from django.http import Http404
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
@@ -24,7 +24,7 @@ LAST_DAY = 15
 class AnnualSummary(View):
     """display a summary of the year for the current user"""
 
-    def get(self, request, username, year):
+    def get(self, request, username, year):  # pylint: disable=too-many-locals
         """get response"""
 
         user = get_user_from_username(request.user, username)
@@ -79,6 +79,9 @@ class AnnualSummary(View):
         )
         ratings_stats = ratings.aggregate(Avg("rating"))
 
+        # annual goal status
+        goal_status = get_goal_status(user, year)
+
         data = {
             "summary_user": user,
             "year": year,
@@ -101,6 +104,7 @@ class AnnualSummary(View):
                 review.book.id for review in ratings.filter(rating=5)
             ],
             "paginated_years": paginated_years,
+            "goal_status": goal_status,
         }
 
         return TemplateResponse(request, "annual_summary/layout.html", data)
@@ -185,7 +189,12 @@ def privacy_verification(request, user, year, year_key):
 def is_year_available(user, year):
     """return boolean"""
 
-    earliest_year = int(get_earliest_year(user, year))
+    earliest_year = user.readthrough_set.filter(finish_date__isnull=False).aggregate(
+        Min("finish_date")
+    )["finish_date__min"]
+    if not earliest_year:
+        return True
+    earliest_year = earliest_year.year
     today = date.today()
     year = int(year)
     if earliest_year <= year < today.year:
@@ -196,39 +205,6 @@ def is_year_available(user, year):
     return False
 
 
-def get_earliest_year(user, year):
-    """return the earliest finish_date or shelved_date year for user books in read shelf"""
-
-    read_shelfbooks = models.ShelfBook.objects.filter(user__id=user.id).filter(
-        shelf__identifier__exact="read"
-    )
-    read_shelfbooks_list = list(read_shelfbooks.values("book", "shelved_date"))
-
-    book_dates = []
-
-    for book in read_shelfbooks_list:
-        earliest_finished = (
-            models.ReadThrough.objects.filter(user__id=user.id)
-            .filter(book_id=book["book"])
-            .exclude(finish_date__exact=None)
-            .order_by("finish_date")
-            .values("finish_date")
-            .first()
-        )
-
-        if earliest_finished:
-            book_dates.append(
-                min(earliest_finished["finish_date"], book["shelved_date"])
-            )
-        else:
-            book_dates.append(book["shelved_date"])
-
-    if book_dates:
-        return min(book_dates).year
-
-    return year
-
-
 def get_books_from_shelfbooks(books_ids):
     """return an ordered QuerySet of books from a list"""
 
@@ -236,3 +212,17 @@ def get_books_from_shelfbooks(books_ids):
     books = models.Edition.objects.filter(id__in=books_ids).order_by(ordered)
 
     return books
+
+
+def get_goal_status(user, year):
+    """return a dict with the year's goal status"""
+
+    try:
+        goal = models.AnnualGoal.objects.get(user=user, year=year)
+    except models.AnnualGoal.DoesNotExist:
+        return None
+
+    if goal.privacy != "public":
+        return None
+
+    return dict(**goal.progress, **{"goal": goal.goal})
