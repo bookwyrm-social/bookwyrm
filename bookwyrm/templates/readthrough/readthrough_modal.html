@@ -3,9 +3,17 @@
 {% load utilities %}
 
 {% block modal-title %}
+
+{% if readthrough %}
 {% blocktrans trimmed with title=book|book_title %}
-Add read dates for "<em>{{ title }}</em>"
+    Update read dates for "<em>{{ title }}</em>"
 {% endblocktrans %}
+{% else %}
+{% blocktrans trimmed with title=book|book_title %}
+    Add read dates for "<em>{{ title }}</em>"
+{% endblocktrans %}
+{% endif %}
+
 {% endblock %}
 
 {% block modal-form-open %}
@@ -61,7 +69,7 @@ Add read dates for "<em>{{ title }}</em>"
 {% endblock %}
 
 {% block modal-footer %}
-<button class="button is-primary" type="submit">{% trans "Add" %}</button>
+<button class="button is-primary" type="submit">{% trans "Save" %}</button>
 {% if not static %}
 <button type="button" class="button" data-modal-close>{% trans "Cancel" %}</button>
 {% endif %}
