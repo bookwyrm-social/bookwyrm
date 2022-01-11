@@ -19,6 +19,17 @@
     </h1>
 </header>
 
+<nav class="breadcrumb subtitle" aria-label="breadcrumbs">
+    <ul>
+        <li><a href="{% url 'user-feed' user|username %}">{% trans "User profile" %}</a></li>
+        <li class="is-active">
+            <a href="#" aria-current="page">
+                {% include "snippets/translated_shelf_name.html" with shelf=shelf %}
+            </a>
+        </li>
+    </ul>
+</nav>
+
 <nav class="block columns is-mobile scroll-x">
     <div class="column pr-0">
         <div class="tabs">
@@ -34,15 +45,7 @@
                         href="{{ shelf_tab.local_path }}"
                         {% if shelf_tab.identifier == shelf.identifier %} aria-current="page"{% endif %}
                     >
-                        {% if shelf_tab.identifier == 'to-read' %}
-                            {% trans "To Read" %}
-                        {% elif shelf_tab.identifier == 'reading' %}
-                            {% trans "Currently Reading" %}
-                        {% elif shelf_tab.identifier == 'read' %}
-                            {% trans "Read" %}
-                        {% else %}
-                            {{ shelf_tab.name }}
-                        {% endif %}
+                        {% include 'user/books_header.html' with shelf=shelf_tab %}
                     </a>
                 </li>
                 {% endfor %}
