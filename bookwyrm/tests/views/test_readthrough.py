@@ -41,10 +41,8 @@ class ReadThrough(TestCase):
         self.assertEqual(self.edition.readthrough_set.count(), 0)
 
         self.client.post(
-            "/reading-status/start/{}".format(self.edition.id),
-            {
-                "start_date": "2020-11-27",
-            },
+            f"/reading-status/start/{self.edition.id}",
+            {"start_date": "2020-11-27"},
         )
 
         readthroughs = self.edition.readthrough_set.all()
@@ -62,10 +60,8 @@ class ReadThrough(TestCase):
         self.assertEqual(self.edition.readthrough_set.count(), 0)
 
         self.client.post(
-            "/reading-status/start/{}".format(self.edition.id),
-            {
-                "start_date": "2020-11-27",
-            },
+            f"/reading-status/start/{self.edition.id}",
+            {"start_date": "2020-11-27"},
         )
 
         readthroughs = self.edition.readthrough_set.all()
