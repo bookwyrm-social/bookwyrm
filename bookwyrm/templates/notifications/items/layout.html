@@ -1,9 +1,9 @@
 {% load bookwyrm_tags %}
 {% related_status notification as related_status %}
-<div class="box is-shadowless has-background-white-ter {% if notification.id in unread %} is-primary{% endif %}">
-    <div class="columns is-mobile">
-        <div class="column is-narrow is-size-3 {% if notification.id in unread%}has-text-white{% else %}has-text-grey{% endif %}">
-            <a class="has-text-dark" href="{% block primary_link %}{% endblock %}">
+<div class="notification {% if notification.id in unread %}has-background-primary{% endif %}">
+    <div class="columns is-mobile {% if notification.id in unread %}has-text-white{% else %}has-text-grey{% endif %}">
+        <div class="column is-narrow is-size-3">
+            <a class="icon" href="{% block primary_link %}{% endblock %}">
                 {% block icon %}{% endblock %}
             </a>
         </div>
