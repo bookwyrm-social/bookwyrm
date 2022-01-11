@@ -52,24 +52,22 @@
             return [];
         }
 
-        return searchTrie(input, trie);
+        return searchTrie(trie);
     }
 
-    function searchTrie(output, trie) {
-        const options = Object.keys(trie);
+    function searchTrie(trie) {
+        const options = Object.values(trie);
 
         if (!options.length) {
-            return [output];
+            return;
+        } else if (typeof options[0] == 'string') {
+            return [options[0]];
         }
 
         return options.map(option => {
-            const newTrie = trie[option];
+            const newTrie = option;
 
-            if (!newTrie) {
-                return;
-            }
-
-            return searchTrie(output + option, trie[option]);
+            return searchTrie(newTrie);
         }).reduce((prev, next) => prev.concat(next));
     }
 
@@ -83,14 +81,11 @@
 const mimetypeTrie = {
     "p": {
         "d": {
-            "f": {
-                "": {},
-                "x": {},
-            },
+            "f": "PDF",
         },
         "n": {
-            "g": {}
+            "g": "PNG",
         },
-    }
+    },
 };
 
