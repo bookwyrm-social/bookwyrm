@@ -139,12 +139,11 @@ def active_shelf(context, book):
                 shelf__user=u,
                 book__parent_work__editions=b,
             ).first()
-        )
-        or {"book": book},
+        ),
         user,
         book,
         timeout=15552000,
-    )
+    ) or {"book": book}
 
 
 @register.simple_tag(takes_context=False)
