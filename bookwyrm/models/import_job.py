@@ -40,9 +40,7 @@ class ImportJob(models.Model):
     mappings = models.JSONField()
     complete = models.BooleanField(default=False)
     source = models.CharField(max_length=100)
-    privacy = models.CharField(
-        max_length=255, default="public", choices=PrivacyLevels.choices
-    )
+    privacy = models.CharField(max_length=255, default="public", choices=PrivacyLevels)
     retry = models.BooleanField(default=False)
 
     @property
