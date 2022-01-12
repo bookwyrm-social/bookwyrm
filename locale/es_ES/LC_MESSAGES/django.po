@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-01-12 18:37+0000\n"
-"PO-Revision-Date: 2022-01-12 19:52\n"
+"PO-Revision-Date: 2022-01-12 21:26\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Spanish\n"
 "Language: es\n"
@@ -74,7 +74,7 @@ msgstr "Descendente"
 
 #: bookwyrm/forms.py:491
 msgid "Reading finish date cannot be before start date."
-msgstr ""
+msgstr "La fecha final de lectura no puede ser anterior a la fecha de inicio."
 
 #: bookwyrm/importers/importer.py:145 bookwyrm/importers/importer.py:167
 msgid "Error loading book"
@@ -2703,7 +2703,7 @@ msgstr "Estás eliminando esta lectura y sus %(count)s actualizaciones de progre
 #: bookwyrm/templates/readthrough/readthrough_modal.html:8
 #, python-format
 msgid "Update read dates for \"<em>%(title)s</em>\""
-msgstr ""
+msgstr "Actualizar fechas de lectura de «<em>%(title)s</em>»"
 
 #: bookwyrm/templates/readthrough/readthrough_form.html:10
 #: bookwyrm/templates/readthrough/readthrough_modal.html:31
@@ -2754,7 +2754,7 @@ msgstr "Eliminar estas fechas de lectura"
 #: bookwyrm/templates/readthrough/readthrough_modal.html:12
 #, python-format
 msgid "Add read dates for \"<em>%(title)s</em>\""
-msgstr ""
+msgstr "Añadir fechas de lectura de «<em>%(title)s</em>»"
 
 #: bookwyrm/templates/search/book.html:44
 msgid "Results from"
@@ -3641,7 +3641,7 @@ msgstr "Editar Estantería"
 
 #: bookwyrm/templates/shelf/shelf.html:24
 msgid "User profile"
-msgstr ""
+msgstr "Perfil de usuario"
 
 #: bookwyrm/templates/shelf/shelf.html:39
 #: bookwyrm/templates/snippets/translated_shelf_name.html:3
@@ -3927,13 +3927,13 @@ msgstr[1] "valoró <em><a href=\"%(path)s\">%(title)s</a></em>: %(display_rating
 #, python-format
 msgid "Review of \"<a href=\"%(book_path)s\">%(book_title)s</a>\" (%(display_rating)s star): %(review_title)s"
 msgid_plural "Review of \"<a href=\"%(book_path)s\">%(book_title)s</a>\" (%(display_rating)s stars): %(review_title)s"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Reseña de «<a href=\"%(book_path)s\">%(book_title)s</a>» (%(display_rating)s estrella): %(review_title)s"
+msgstr[1] "Reseña de «<a href=\"%(book_path)s\">%(book_title)s</a>» (%(display_rating)s estrellas): %(review_title)s"
 
 #: bookwyrm/templates/snippets/generated_status/review_pure_name.html:12
 #, python-format
 msgid "Review of \"<a href=\"%(book_path)s\">%(book_title)s</a>\": {{ review_title }"
-msgstr ""
+msgstr "Reseña de «<a href=\"%(book_path)s\">%(book_title)s</a>»: {{ review_title }"
 
 #: bookwyrm/templates/snippets/goal_form.html:4
 #, python-format
@@ -4145,7 +4145,7 @@ msgstr "editado %(date)s"
 #: bookwyrm/templates/snippets/status/headers/comment.html:8
 #, python-format
 msgid "commented on <a href=\"%(book_path)s\">%(book)s</a> by <a href=\"%(author_path)s\">%(author_name)s</a>"
-msgstr ""
+msgstr "comentó acerca de <a href=\"%(book_path)s\">%(book)s</a> de <a href=\"%(author_path)s\">%(author_name)s</a>"
 
 #: bookwyrm/templates/snippets/status/headers/comment.html:15
 #, python-format
@@ -4160,7 +4160,7 @@ msgstr "respondió al <a href=\"%(status_path)s\">estado</a> de <a href=\"%(user
 #: bookwyrm/templates/snippets/status/headers/quotation.html:8
 #, python-format
 msgid "quoted <a href=\"%(book_path)s\">%(book)s</a> by <a href=\"%(author_path)s\">%(author_name)s</a>"
-msgstr ""
+msgstr "citó <a href=\"%(book_path)s\">%(book)s</a> de <a href=\"%(author_path)s\">%(author_name)s</a>"
 
 #: bookwyrm/templates/snippets/status/headers/quotation.html:15
 #, python-format
@@ -4175,7 +4175,7 @@ msgstr "valoró <a href=\"%(book_path)s\">%(book)s</a>:"
 #: bookwyrm/templates/snippets/status/headers/read.html:10
 #, python-format
 msgid "finished reading <a href=\"%(book_path)s\">%(book)s</a> by <a href=\"%(author_path)s\">%(author_name)s</a>"
-msgstr ""
+msgstr "terminó de leer <a href=\"%(book_path)s\">%(book)s</a> de <a href=\"%(author_path)s\">%(author_name)s</a>"
 
 #: bookwyrm/templates/snippets/status/headers/read.html:17
 #, python-format
@@ -4185,7 +4185,7 @@ msgstr "terminó de leer <a href=\"%(book_path)s\">%(book)s</a>"
 #: bookwyrm/templates/snippets/status/headers/reading.html:10
 #, python-format
 msgid "started reading <a href=\"%(book_path)s\">%(book)s</a> by <a href=\"%(author_path)s\">%(author_name)s</a>"
-msgstr ""
+msgstr "empezó a leer <a href=\"%(book_path)s\">%(book)s</a> de <a href=\"%(author_path)s\">%(author_name)s</a>"
 
 #: bookwyrm/templates/snippets/status/headers/reading.html:17
 #, python-format
@@ -4195,7 +4195,7 @@ msgstr "empezó a leer <a href=\"%(book_path)s\">%(book)s</a>"
 #: bookwyrm/templates/snippets/status/headers/review.html:8
 #, python-format
 msgid "reviewed <a href=\"%(book_path)s\">%(book)s</a> by <a href=\"%(author_path)s\">%(author_name)s</a>"
-msgstr ""
+msgstr "reseñó <a href=\"%(book_path)s\">%(book)s</a> de <a href=\"%(author_path)s\">%(author_name)s</a>"
 
 #: bookwyrm/templates/snippets/status/headers/review.html:15
 #, python-format
@@ -4205,12 +4205,12 @@ msgstr "reseñó a <a href=\"%(book_path)s\">%(book)s</a>"
 #: bookwyrm/templates/snippets/status/headers/to_read.html:10
 #, python-format
 msgid "wants to read <a href=\"%(book_path)s\">%(book)s</a> by <a href=\"%(author_path)s\">%(author_name)s</a>"
-msgstr ""
+msgstr "quiere leer <a href=\"%(book_path)s\">%(book)s</a> de <a href=\"%(author_path)s\">%(author_name)s</a>"
 
 #: bookwyrm/templates/snippets/status/headers/to_read.html:17
 #, python-format
 msgid "wants to read <a href=\"%(book_path)s\">%(book)s</a>"
-msgstr ""
+msgstr "quiere leer <a href=\"%(book_path)s\">%(book)s</a>"
 
 #: bookwyrm/templates/snippets/status/layout.html:24
 #: bookwyrm/templates/snippets/status/status_options.html:17
