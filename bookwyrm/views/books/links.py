@@ -18,6 +18,12 @@ class BookFileLinks(View):
         book = get_object_or_404(models.Edition, id=book_id)
         return TemplateResponse(request, "book/edit_links.html", {"book": book})
 
+    def post(self, request, book_id, link_id):
+        """delete link"""
+        link = get_object_or_404(models.FileLink, id=link_id, book=book_id)
+        link.delete()
+        return self.get(request, book_id)
+
 
 @method_decorator(login_required, name="dispatch")
 @method_decorator(

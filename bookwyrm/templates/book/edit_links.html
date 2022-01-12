@@ -53,7 +53,10 @@
                     </p>
                 </td>
                 <td>
-                    <button class="button is-danger is-light">Delete link</button>
+                    <form name="delete-link-{{ link.id }}" class="control" method="post" action="{% url 'file-link' book.id link.id %}">
+                        {% csrf_token %}
+                        <button class="button is-danger is-light" type="submit">Delete link</button>
+                    </form>
                 </td>
             </tr>
             {% endfor %}
@@ -64,6 +67,16 @@
             {% endif %}
         </table>
     </div>
+
+    {% url 'file-link-add' book.id as fallback_url %}
+    <form name="add-link" method="get" action="{{ fallback_url }}">
+        <button class="button" type="submit" data-modal-open="add-links">
+            <span class="icon icon-plus m-0-mobile" aria-hidden="true"></span>
+            <span class="is-sr-only-mobile">
+                {% trans "Add link to file" %}
+            </span>
+        </button>
+    </form>
 </section>
 
 {% endblock %}

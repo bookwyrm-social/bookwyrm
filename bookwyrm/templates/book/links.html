@@ -11,13 +11,15 @@
     {% if can_edit_book %}
     <div class="column is-narrow">
         {% url 'file-link-add' book.id as fallback_url %}
-        <button class="button is-small" type="button" data-modal-open="add-links">
-            <span class="icon icon-plus">
-                <span class="is-sr-only">
-                    {% trans "Add link to copy" %}
+        <form name="add-link" method="get" action="{{ fallback_url }}">
+            <button class="button is-small" type="submit" data-modal-open="add-links">
+                <span class="icon icon-plus">
+                    <span class="is-sr-only">
+                        {% trans "Add link to file" %}
+                    </span>
                 </span>
-            </span>
-        </button>
+            </button>
+        </form>
     </div>
     {% endif %}
 </header>

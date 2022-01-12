@@ -469,8 +469,19 @@ urlpatterns = [
         views.add_description,
         name="add-description",
     ),
-    re_path(rf"{BOOK_PATH}/filelink/?$", views.BookFileLinks.as_view(), name="file-link"),
-    re_path(rf"{BOOK_PATH}/filelink/add/?$", views.AddFileLink.as_view(), name="file-link-add"),
+    re_path(
+        rf"{BOOK_PATH}/filelink/?$", views.BookFileLinks.as_view(), name="file-link"
+    ),
+    re_path(
+        rf"{BOOK_PATH}/filelink/(?P<link_id>\d+)/delete/?$",
+        views.BookFileLinks.as_view(),
+        name="file-link",
+    ),
+    re_path(
+        rf"{BOOK_PATH}/filelink/add/?$",
+        views.AddFileLink.as_view(),
+        name="file-link-add",
+    ),
     re_path(r"^resolve-book/?$", views.resolve_book, name="resolve-book"),
     re_path(r"^switch-edition/?$", views.switch_edition, name="switch-edition"),
     re_path(
