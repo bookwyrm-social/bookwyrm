@@ -10,6 +10,15 @@ from bookwyrm import forms, models
 
 
 # pylint: disable=no-self-use
+class BookFileLinks(View):
+    """View all links"""
+
+    def get(self, request, book_id):
+        """view links"""
+        book = get_object_or_404(models.Edition, id=book_id)
+        return TemplateResponse(request, "book/edit_links.html", {"book": book})
+
+
 @method_decorator(login_required, name="dispatch")
 @method_decorator(
     permission_required("bookwyrm.edit_book", raise_exception=True), name="dispatch"

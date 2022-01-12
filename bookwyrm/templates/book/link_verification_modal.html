@@ -22,7 +22,7 @@ Is that where you'd like to go?
 
 {% if request.user.is_authenticated %}
 <div class="has-text-right is-flex-grow-1">
-    <a href="{% url 'report-link' link.added_by.id link.id %}">{% trans "Report spam" %}</button>
+    <a href="{% url 'report-link' link.added_by.id link.id %}">{% trans "Report spam" %}</a>
 </div>
 {% endif %}
 

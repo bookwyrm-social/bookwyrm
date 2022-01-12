@@ -1,0 +1,69 @@
+{% extends 'layout.html' %}
+{% load i18n %}
+{% load utilities %}
+
+{% block title %}{% trans "Edit links" %}{% endblock %}
+
+{% block content %}
+
+<header class="block content">
+    <h1 class="title">
+        {% blocktrans with title=book|book_title %}
+        Links for "<em>{{ title }}</em>"
+        {% endblocktrans %}
+    </h1>
+</header>
+
+<nav class="breadcrumb subtitle" aria-label="breadcrumbs">
+    <ul>
+        <li><a href="{% url 'book' book.id %}">{{ book|book_title }}</a></li>
+        <li class="is-active">
+            <a href="#" aria-current="page">
+                {% trans "Edit links" %}
+            </a>
+        </li>
+    </ul>
+</nav>
+
+<section class="block content">
+    <div class="table-container">
+        <table class="is-striped is-fullwidth">
+            <tr>
+                <th>{% trans "URL" %}</th>
+                <th>{% trans "Added by" %}</th>
+                <th>{% trans "Filetype" %}</th>
+                <th>{% trans "Domain" %}</th>
+                <th>{% trans "Actions" %}</th>
+            </tr>
+            {% for link in book.file_links.all %}
+            <tr>
+                <td class="overflow-wrap-anywhere">
+                    <a href="{{ link.url }}" target="_blank" rel="noopener">{{ link.url }}</a>
+                </td>
+                <td>
+                    <a href="{% url 'user-feed' link.added_by.id %}">{{ link.added_by.display_name }}</a>
+                </td>
+                <td>
+                    {{ link.filelink.filetype }}
+                </td>
+                <td>
+                    {{ link.domain.name }} ({{ link.domain.get_status_display }})
+                    <p>
+                        <a href="{% url 'report-link' link.added_by.id link.id %}">{% trans "Report spam" %}</a>
+                    </p>
+                </td>
+                <td>
+                    <button class="button is-danger is-light">Delete link</button>
+                </td>
+            </tr>
+            {% endfor %}
+            {% if not book.file_links.exists %}
+            <tr>
+                <td colspan="5"><em>{% trans "No links available for this book." %}</em></td>
+            </tr>
+            {% endif %}
+        </table>
+    </div>
+</section>
+
+{% endblock %}
