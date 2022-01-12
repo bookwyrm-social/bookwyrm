@@ -3,7 +3,7 @@
     xmlns="http://a9.com/-/spec/opensearch/1.1/"
     xmlns:moz="http://www.mozilla.org/2006/browser/search/"
 >
-    <ShortName>BW</ShortName>
+    <ShortName>{{ site_name }}</ShortName>
     <Description>{% blocktrans trimmed with site_name=site.name %}
         {{ site_name }} search
     {% endblocktrans %}</Description>
