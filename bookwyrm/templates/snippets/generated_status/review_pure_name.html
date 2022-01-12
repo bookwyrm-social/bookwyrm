@@ -10,7 +10,7 @@ Review of "<a href='{{ book_path }}'>{{ book_title }}</a>" ({{ display_rating }}
 {% else %}
 
 {% blocktrans trimmed with book_title=book.title|safe book_path=book.local_path review_title=name|safe %}
-Review of "<a href='{{ book_path }}'>{{ book_title }}</a>": {{ review_title }
+Review of "<a href='{{ book_path }}'>{{ book_title }}</a>": {{ review_title }}
 {% endblocktrans %}
 
 {% endif %}
