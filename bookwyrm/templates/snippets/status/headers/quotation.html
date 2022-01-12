@@ -1,2 +1,20 @@
-{% load i18n %}{% load utilities %}
-{% blocktrans with book_path=status.book.local_path book=status.book|book_title %}quoted <a href="{{ book_path }}">{{ book }}</a>{% endblocktrans %}
+{% load i18n %}
+{% load utilities %}
+
+{% with book=status.book %}
+{% if book.authors.exists %}
+
+{% with author=book.authors.first %}
+{% blocktrans trimmed with book_path=book.local_path book=book|book_title author_name=author.name author_path=author.local_path %}
+quoted <a href="{{ book_path }}">{{ book }}</a> by <a href="{{ author_path }}">{{ author_name }}</a>
+{% endblocktrans %}
+{% endwith %}
+
+{% else %}
+
+{% blocktrans trimmed with book_path=book.local_path book=book|book_title %}
+quoted <a href="{{ book_path }}">{{ book }}</a>
+{% endblocktrans %}
+
+{% endif %}
+{% endwith %}
