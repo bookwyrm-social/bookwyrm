@@ -3,7 +3,6 @@ from django.template.response import TemplateResponse
 from django.views import View
 
 from bookwyrm import forms
-from bookwyrm.views import helpers
 from bookwyrm.views.feed import Feed
 
 
@@ -28,6 +27,5 @@ class Landing(View):
         data = {
             "register_form": forms.RegisterForm(),
             "request_form": forms.InviteRequestForm(),
-            "books": helpers.get_landing_books(),
         }
         return TemplateResponse(request, "landing/landing.html", data)

@@ -1,0 +1,12 @@
+{% load i18n %}
+{% if shelf.identifier == 'all' %}
+    {% trans "All books" %}
+{% elif shelf.identifier == 'to-read' %}
+    {% trans "To Read" %}
+{% elif shelf.identifier == 'reading' %}
+    {% trans "Currently Reading" %}
+{% elif shelf.identifier == 'read' %}
+    {% trans "Read" %}
+{% else %}
+    {{ shelf.name }}
+{% endif %}

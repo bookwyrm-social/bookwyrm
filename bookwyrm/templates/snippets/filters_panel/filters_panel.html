@@ -3,16 +3,15 @@
     <summary class="is-flex is-align-items-center is-flex-wrap-wrap is-gap-2">
         <span class="mb-0 title {% if size == 'small' %}is-6{% else %}is-5{% endif %} is-flex-shrink-0">
             {% trans "Filters" %}
-
         </span>
 
         {% if filters_applied %}
         <span class="tag is-success is-light ml-2 mb-0 is-{{ size|default:'normal' }}">
-            {{ _("Filters are applied") }}
+            {% trans "Filters are applied" %}
         </span>
         {% endif %}
 
-        {% if request.GET %}
+        {% if method != "post" and request.GET %}
         <span class="mb-0 tags has-addons">
             <span class="mb-0 tag is-success is-light is-{{ size|default:'normal' }}">
                 {% trans "Filters are applied" %}
