@@ -26,7 +26,7 @@
         <td>
         {% if link.filelink.book %}
             {% with book=link.filelink.book %}
-            <a href="{{ book.local_path }}">{% include "snippets/book_titleby.html" with book=book %}</a>
+            {% include "snippets/book_titleby.html" with book=book %}
             {% endwith %}
         {% endif %}
         </td>
