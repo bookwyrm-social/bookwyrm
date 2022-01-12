@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-01-09 00:54+0000\n"
-"PO-Revision-Date: 2022-01-09 14:07\n"
+"POT-Creation-Date: 2022-01-09 19:01+0000\n"
+"PO-Revision-Date: 2022-01-10 18:18\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: German\n"
 "Language: de\n"
@@ -268,8 +268,8 @@ msgstr "Willkommen auf %(site_name)s!"
 
 #: bookwyrm/templates/about/about.html:22
 #, python-format
-msgid "%(site_name)s is part of <em>BookWyrm</em>, a network of independent, self-directed communities for readers. While you can interact seemlessly with users anywhere in the <a href=\"https://joinbookwyrm.com/instances/\" target=\"_blank\">BookWyrm network</a>, this community is unique."
-msgstr "%(site_name)s ist Teil von <em>BookWyrm</em>, einem Netzwerk von unabhängigen, selbst verwalteten Communities von Bücherfreunden. Obwohl du nahtlos mit anderen Nutzern überall im <a href=\"https://joinbookwyrm.com/instances/\" target=\"_blank\">BookWyrm Netzwerk</a> interagieren kannst, ist die Community hier einzigartig."
+msgid "%(site_name)s is part of <em>BookWyrm</em>, a network of independent, self-directed communities for readers. While you can interact seamlessly with users anywhere in the <a href=\"https://joinbookwyrm.com/instances/\" target=\"_blank\">BookWyrm network</a>, this community is unique."
+msgstr "%(site_name)s ist Teil von <em>BookWyrm</em>, ein Netzwerk unabhängiger, selbst verwalteter Communities von Bücherfreunden. Obwohl du dich nahtlos mit anderen Benutzern irgendwo im <a href=\"https://joinbookwyrm.com/instances/\" target=\"_blank\">Netzwerk von BookWyrm</a> austauschen kannst, ist jede Community einzigartig."
 
 #: bookwyrm/templates/about/about.html:39
 #, python-format
@@ -366,7 +366,7 @@ msgstr "<em>%(display_name)s’s</em> Jahr mit Büchern"
 
 #: bookwyrm/templates/annual_summary/layout.html:53
 msgid "Share this page"
-msgstr "Teile diese Seite"
+msgstr "Teile diese Seite mit Anderen"
 
 #: bookwyrm/templates/annual_summary/layout.html:67
 msgid "Copy address"
@@ -379,11 +379,11 @@ msgstr "Kopiert!"
 
 #: bookwyrm/templates/annual_summary/layout.html:77
 msgid "Sharing status: <strong>public with key</strong>"
-msgstr ""
+msgstr "Freigabestatus: <strong>öffentlich mit Schlüssel</strong>"
 
 #: bookwyrm/templates/annual_summary/layout.html:78
 msgid "The page can be seen by anyone with the complete address."
-msgstr "Diese Seite kann jeder sehen der die vollständige Adresse kennt."
+msgstr "Diese Seite kann jeder sehen, der die vollständige Adresse kennt."
 
 #: bookwyrm/templates/annual_summary/layout.html:83
 msgid "Make page private"
@@ -391,7 +391,7 @@ msgstr "Seite auf privat stellen"
 
 #: bookwyrm/templates/annual_summary/layout.html:89
 msgid "Sharing status: <strong>private</strong>"
-msgstr ""
+msgstr "Freigabestatus: <strong>private</strong>"
 
 #: bookwyrm/templates/annual_summary/layout.html:90
 msgid "The page is private, only you can see it."
@@ -399,11 +399,11 @@ msgstr "Diese Seite ist privat, nur du kannst sie sehen."
 
 #: bookwyrm/templates/annual_summary/layout.html:95
 msgid "Make page public"
-msgstr ""
+msgstr "Seite öffentlich machen"
 
 #: bookwyrm/templates/annual_summary/layout.html:99
 msgid "When you make your page private, the old key won’t give access to the page anymore. A new key will be created if the page is once again made public."
-msgstr ""
+msgstr "Wenn du diese Seite auf privat stellen wird der alte Schlüssel ungültig. Ein neuer Schlüssel wird erzeugt solltest du die Seite erneut freigeben."
 
 #: bookwyrm/templates/annual_summary/layout.html:112
 #, python-format
@@ -414,8 +414,8 @@ msgstr "Leider hat %(display_name)s keine Bücher in %(year)s zu Ende gelesen"
 #, python-format
 msgid "In %(year)s, %(display_name)s read %(books_total)s book<br />for a total of %(pages_total)s pages!"
 msgid_plural "In %(year)s, %(display_name)s read %(books_total)s books<br />for a total of %(pages_total)s pages!"
-msgstr[0] "Im Jahr %(year)s, lass %(display_name)s %(books_total)s Buch<br />mit %(pages_total)s Seiten!"
-msgstr[1] "Im Jahr %(year)s lass %(display_name)s %(books_total)s Bücher<br />mit zusammen %(pages_total)s Seiten!"
+msgstr[0] "Im Jahr %(year)s las %(display_name)s %(books_total)s Buch<br />mit %(pages_total)s Seiten!"
+msgstr[1] "Im Jahr %(year)s las %(display_name)s %(books_total)s Bücher<br />mit zusammen %(pages_total)s Seiten!"
 
 #: bookwyrm/templates/annual_summary/layout.html:124
 msgid "That’s great!"
@@ -424,7 +424,7 @@ msgstr "Großartig!"
 #: bookwyrm/templates/annual_summary/layout.html:127
 #, python-format
 msgid "That makes an average of %(pages)s pages per book."
-msgstr "Im Durschnitt waren das %(pages)s Seiten pro Buch."
+msgstr "Im Durchschnitt waren das %(pages)s Seiten pro Buch."
 
 #: bookwyrm/templates/annual_summary/layout.html:132
 #, python-format
@@ -482,7 +482,7 @@ msgstr "Ihre oder Seine bestbewertete Rezension"
 #: bookwyrm/templates/annual_summary/layout.html:251
 #, python-format
 msgid "Their rating: <strong>%(rating)s</strong>"
-msgstr ""
+msgstr "Ihre Bewertung: <strong>%(rating)s</strong>"
 
 #: bookwyrm/templates/annual_summary/layout.html:268
 #, python-format
@@ -528,7 +528,7 @@ msgstr "ISNI-Datensatz anzeigen"
 #: bookwyrm/templates/book/book.html:122
 #: bookwyrm/templates/book/sync_modal.html:5
 msgid "Load data"
-msgstr ""
+msgstr "Lade Daten"
 
 #: bookwyrm/templates/author/author.html:92
 #: bookwyrm/templates/book/book.html:126
@@ -666,7 +666,7 @@ msgstr "Abbrechen"
 #: bookwyrm/templates/author/sync_modal.html:15
 #, python-format
 msgid "Loading data will connect to <strong>%(source_name)s</strong> and check for any metadata about this author which aren't present here. Existing metadata will not be overwritten."
-msgstr ""
+msgstr "Das Nachladen von Daten wird eine Verbindung zu <strong>%(source_name)s</strong> aufbauen und überprüfen ob Informationen über den Autor ergänzt werden konnten die hier noch nicht vorliegen. Bestehende Informationen werden nicht überschrieben."
 
 #: bookwyrm/templates/author/sync_modal.html:22
 #: bookwyrm/templates/book/edit/edit_book.html:108
@@ -1100,7 +1100,7 @@ msgstr "Diese Lesedaten löschen"
 #: bookwyrm/templates/book/sync_modal.html:15
 #, python-format
 msgid "Loading data will connect to <strong>%(source_name)s</strong> and check for any metadata about this book which aren't present here. Existing metadata will not be overwritten."
-msgstr ""
+msgstr "Das Nachladen von Daten wird eine Verbindung zu <strong>%(source_name)s</strong> aufbauen und überprüfen ob Informationen über das Buch ergänzt werden konnten die hier noch nicht vorliegen. Bestehende Informationen werden nicht überschrieben."
 
 #: bookwyrm/templates/components/tooltip.html:3
 msgid "Help"
@@ -2515,7 +2515,7 @@ msgstr "Du bist auf dem neusten Stand!"
 #: bookwyrm/templates/ostatus/error.html:7
 #, python-format
 msgid "<strong>%(account)s</strong> is not a valid username"
-msgstr ""
+msgstr "<strong>%(account)s</strong> ist kein gültiger Benutzername"
 
 #: bookwyrm/templates/ostatus/error.html:8
 #: bookwyrm/templates/ostatus/error.html:13
@@ -3822,7 +3822,7 @@ msgstr "Favorisierung zurücknehmen"
 
 #: bookwyrm/templates/snippets/filters_panel/filters_panel.html:5
 msgid "Filters"
-msgstr ""
+msgstr "Filter"
 
 #: bookwyrm/templates/snippets/filters_panel/filters_panel.html:11
 #: bookwyrm/templates/snippets/filters_panel/filters_panel.html:18
