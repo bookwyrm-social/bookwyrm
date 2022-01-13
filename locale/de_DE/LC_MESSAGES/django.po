@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-01-12 18:37+0000\n"
-"PO-Revision-Date: 2022-01-12 19:52\n"
+"PO-Revision-Date: 2022-01-13 07:16\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: German\n"
 "Language: de\n"
@@ -74,7 +74,7 @@ msgstr "Absteigend"
 
 #: bookwyrm/forms.py:491
 msgid "Reading finish date cannot be before start date."
-msgstr ""
+msgstr "Du kannst das Buch nicht abgeschlossen haben bevor du es begonnen hast."
 
 #: bookwyrm/importers/importer.py:145 bookwyrm/importers/importer.py:167
 msgid "Error loading book"
@@ -1323,12 +1323,12 @@ msgstr ""
 #: bookwyrm/templates/email/moderation_report/html_content.html:9
 #: bookwyrm/templates/email/moderation_report/text_content.html:7
 msgid "View report"
-msgstr ""
+msgstr "Bericht anzeigen"
 
 #: bookwyrm/templates/email/moderation_report/subject.html:2
 #, python-format
 msgid "New report for %(site_name)s"
-msgstr ""
+msgstr "Neuer Bericht für %(site_name)s"
 
 #: bookwyrm/templates/email/password_reset/html_content.html:6
 #: bookwyrm/templates/email/password_reset/text_content.html:4
@@ -3641,7 +3641,7 @@ msgstr "Regal bearbeiten"
 
 #: bookwyrm/templates/shelf/shelf.html:24
 msgid "User profile"
-msgstr ""
+msgstr "Benutzerprofil"
 
 #: bookwyrm/templates/shelf/shelf.html:39
 #: bookwyrm/templates/snippets/translated_shelf_name.html:3
@@ -3852,7 +3852,7 @@ msgstr "Filter"
 #: bookwyrm/templates/snippets/filters_panel/filters_panel.html:10
 #: bookwyrm/templates/snippets/filters_panel/filters_panel.html:17
 msgid "Filters are applied"
-msgstr ""
+msgstr "Filter werden angewendet"
 
 #: bookwyrm/templates/snippets/filters_panel/filters_panel.html:20
 msgid "Clear filters"
@@ -3927,13 +3927,13 @@ msgstr[1] "hat <em><a href=\"%(path)s\">%(title)s</a></em> mit %(display_rating)
 #, python-format
 msgid "Review of \"<a href=\"%(book_path)s\">%(book_title)s</a>\" (%(display_rating)s star): %(review_title)s"
 msgid_plural "Review of \"<a href=\"%(book_path)s\">%(book_title)s</a>\" (%(display_rating)s stars): %(review_title)s"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Rezension von \"<a href=\"%(book_path)s\">%(book_title)s</a>\" (%(display_rating)s star): %(review_title)s"
+msgstr[1] "Rezension von \"<a href=\"%(book_path)s\">%(book_title)s</a>\" (%(display_rating)s stars): %(review_title)s"
 
 #: bookwyrm/templates/snippets/generated_status/review_pure_name.html:12
 #, python-format
 msgid "Review of \"<a href=\"%(book_path)s\">%(book_title)s</a>\": {{ review_title }"
-msgstr ""
+msgstr "Rezension von \"<a href=\"%(book_path)s\">%(book_title)s</a>\": {{ review_title }"
 
 #: bookwyrm/templates/snippets/goal_form.html:4
 #, python-format
@@ -4096,7 +4096,7 @@ msgstr "Auf Leseliste setzen"
 #: bookwyrm/templates/snippets/shelf_selector.html:74
 #: bookwyrm/templates/snippets/shelf_selector.html:86
 msgid "Remove from"
-msgstr ""
+msgstr "Entfernen aus"
 
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_dropdown.html:5
 msgid "More shelves"
@@ -4145,7 +4145,7 @@ msgstr "%(date)s bearbeitet"
 #: bookwyrm/templates/snippets/status/headers/comment.html:8
 #, python-format
 msgid "commented on <a href=\"%(book_path)s\">%(book)s</a> by <a href=\"%(author_path)s\">%(author_name)s</a>"
-msgstr ""
+msgstr "Kommentar zu <a href=\"%(book_path)s\">%(book)s</a> von <a href=\"%(author_path)s\">%(author_name)s</a>"
 
 #: bookwyrm/templates/snippets/status/headers/comment.html:15
 #, python-format
@@ -4160,7 +4160,7 @@ msgstr "hat auf die <a href=\"%(status_path)s\">Statusmeldung</a> von <a href=\"
 #: bookwyrm/templates/snippets/status/headers/quotation.html:8
 #, python-format
 msgid "quoted <a href=\"%(book_path)s\">%(book)s</a> by <a href=\"%(author_path)s\">%(author_name)s</a>"
-msgstr ""
+msgstr "zitiert aus <a href=\"%(book_path)s\">%(book)s</a> durch <a href=\"%(author_path)s\">%(author_name)s</a>"
 
 #: bookwyrm/templates/snippets/status/headers/quotation.html:15
 #, python-format
@@ -4175,7 +4175,7 @@ msgstr "hat <a href=\"%(book_path)s\">%(book)s</a> bewertet:"
 #: bookwyrm/templates/snippets/status/headers/read.html:10
 #, python-format
 msgid "finished reading <a href=\"%(book_path)s\">%(book)s</a> by <a href=\"%(author_path)s\">%(author_name)s</a>"
-msgstr ""
+msgstr "<a href=\"%(book_path)s\">%(book)s</a> abgeschlossen von <a href=\"%(author_path)s\">%(author_name)s</a>"
 
 #: bookwyrm/templates/snippets/status/headers/read.html:17
 #, python-format
@@ -4185,7 +4185,7 @@ msgstr "hat <a href=\"%(book_path)s\">%(book)s</a> abgeschlossen"
 #: bookwyrm/templates/snippets/status/headers/reading.html:10
 #, python-format
 msgid "started reading <a href=\"%(book_path)s\">%(book)s</a> by <a href=\"%(author_path)s\">%(author_name)s</a>"
-msgstr ""
+msgstr "<a href=\"%(author_path)s\">%(author_name)s</a> beginnt <a href=\"%(book_path)s\">%(book)s</a> zu lesen"
 
 #: bookwyrm/templates/snippets/status/headers/reading.html:17
 #, python-format
@@ -4195,7 +4195,7 @@ msgstr "hat angefangen, <a href=\"%(book_path)s\">%(book)s</a> zu lesen"
 #: bookwyrm/templates/snippets/status/headers/review.html:8
 #, python-format
 msgid "reviewed <a href=\"%(book_path)s\">%(book)s</a> by <a href=\"%(author_path)s\">%(author_name)s</a>"
-msgstr ""
+msgstr "<a href=\"%(author_path)s\">%(author_name)s</a> hat <a href=\"%(book_path)s\">%(book)s</a> rezensiert"
 
 #: bookwyrm/templates/snippets/status/headers/review.html:15
 #, python-format
@@ -4205,12 +4205,12 @@ msgstr "hat <a href=\"%(book_path)s\">%(book)s</a> besprochen"
 #: bookwyrm/templates/snippets/status/headers/to_read.html:10
 #, python-format
 msgid "wants to read <a href=\"%(book_path)s\">%(book)s</a> by <a href=\"%(author_path)s\">%(author_name)s</a>"
-msgstr ""
+msgstr "<a href=\"%(author_path)s\">%(author_name)s</a> will <a href=\"%(book_path)s\">%(book)s</a> lesen"
 
 #: bookwyrm/templates/snippets/status/headers/to_read.html:17
 #, python-format
 msgid "wants to read <a href=\"%(book_path)s\">%(book)s</a>"
-msgstr ""
+msgstr "will <a href=\"%(book_path)s\">%(book)s</a> lesen"
 
 #: bookwyrm/templates/snippets/status/layout.html:24
 #: bookwyrm/templates/snippets/status/status_options.html:17
@@ -4358,7 +4358,7 @@ msgstr "Alle Bücher anzeigen"
 #: bookwyrm/templates/user/user.html:58
 #, python-format
 msgid "%(current_year)s Reading Goal"
-msgstr ""
+msgstr "Leseziel %(current_year)s"
 
 #: bookwyrm/templates/user/user.html:65
 msgid "User Activity"
