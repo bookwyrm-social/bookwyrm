@@ -16,7 +16,9 @@ class BookFileLinks(View):
     def get(self, request, book_id):
         """view links"""
         book = get_object_or_404(models.Edition, id=book_id)
-        return TemplateResponse(request, "book/file_links/edit_links.html", {"book": book})
+        return TemplateResponse(
+            request, "book/file_links/edit_links.html", {"book": book}
+        )
 
     def post(self, request, book_id, link_id):
         """delete link"""
@@ -49,7 +51,9 @@ class AddFileLink(View):
         form = forms.FileLinkForm(request.POST, instance=link)
         if not form.is_valid():
             data = {"file_link_form": form, "book": book}
-            return TemplateResponse(request, "book/file_links/file_link_page.html", data)
+            return TemplateResponse(
+                request, "book/file_links/file_link_page.html", data
+            )
 
         link = form.save()
         book.file_links.add(link)

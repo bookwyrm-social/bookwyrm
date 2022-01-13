@@ -226,9 +226,7 @@ def set_related_field(
     # edition.parentWork = instance, for example
     model_field = getattr(model, related_field_name)
     if hasattr(model_field, "activitypub_field"):
-        setattr(
-            activity, getattr(model_field, "activitypub_field"), instance.remote_id
-        )
+        setattr(activity, getattr(model_field, "activitypub_field"), instance.remote_id)
     item = activity.to_model()
 
     # if the related field isn't serialized (attachments on Status), then

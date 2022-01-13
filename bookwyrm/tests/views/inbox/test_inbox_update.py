@@ -157,7 +157,7 @@ class InboxUpdate(TestCase):
         link_data = {
             "href": "https://openlibrary.org/books/OL11645413M/Queen_Victoria/daisy",
             "mediaType": "Daisy",
-            "attributedTo": self.remote_user.remote_id
+            "attributedTo": self.remote_user.remote_id,
         }
         bookdata["fileLinks"] = [link_data]
 
@@ -169,7 +169,9 @@ class InboxUpdate(TestCase):
         )
         self.assertFalse(book.file_links.exists())
 
-        with patch("bookwyrm.activitypub.base_activity.set_related_field.delay") as mock:
+        with patch(
+            "bookwyrm.activitypub.base_activity.set_related_field.delay"
+        ) as mock:
             views.inbox.activity_task(
                 {
                     "type": "Update",
