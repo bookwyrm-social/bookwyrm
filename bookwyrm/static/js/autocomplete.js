@@ -43,11 +43,11 @@
     function getSuggestions(input, trie) {
         // Follow the trie through the provided input
         input.split("").forEach((letter) => {
-            trie = trie[letter];
-
             if (!trie) {
                 return;
             }
+
+            trie = trie[letter];
         });
 
         if (!trie) {
