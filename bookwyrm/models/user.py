@@ -129,7 +129,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         related_name="favorite_statuses",
     )
     default_post_privacy = models.CharField(
-        max_length=255, default="public", choices=fields.PrivacyLevels.choices
+        max_length=255, default="public", choices=fields.PrivacyLevels
     )
     remote_id = fields.RemoteIdField(null=True, unique=True, activitypub_field="id")
     created_date = models.DateTimeField(auto_now_add=True)
@@ -420,7 +420,7 @@ class AnnualGoal(BookWyrmModel):
     goal = models.IntegerField(validators=[MinValueValidator(1)])
     year = models.IntegerField(default=get_current_year)
     privacy = models.CharField(
-        max_length=255, default="public", choices=fields.PrivacyLevels.choices
+        max_length=255, default="public", choices=fields.PrivacyLevels
     )
 
     class Meta:
