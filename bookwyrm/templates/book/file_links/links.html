@@ -35,7 +35,7 @@
 </ul>
 {% for link in links.all %}
 {% join "verify" link.id as verify_modal %}
-{% include "book/link_verification_modal.html" with id=verify_modal %}
+{% include "book/file_links/verification_modal.html" with id=verify_modal %}
 {% endfor %}
 {% else %}
 <em>{% trans "No links available" %}</em>
@@ -46,7 +46,7 @@
     <span class="icon icon-pencil" aria-hidden="true"></span>
     <span>{% trans "Edit links" %}</span>
 </a>
-{% include 'book/file_link_modal.html' with book=book id="add-links" %}
+{% include 'book/file_links/add_link_modal.html' with book=book id="add-links" %}
 {% endif %}
 
 {% endif %}
