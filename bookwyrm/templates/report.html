@@ -1,0 +1,10 @@
+{% extends "layout.html" %}
+{% load i18n %}
+
+{% block title %}
+{% trans "Report" %}
+{% endblock %}
+
+{% block content %}
+{% include "snippets/report_modal.html" with user=user active=True static=True %}
+{% endblock %}

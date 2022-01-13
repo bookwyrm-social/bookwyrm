@@ -216,6 +216,18 @@ class CoverForm(CustomForm):
         help_texts = {f: None for f in fields}
 
 
+class LinkDomainForm(CustomForm):
+    class Meta:
+        model = models.LinkDomain
+        fields = ["name"]
+
+
+class FileLinkForm(CustomForm):
+    class Meta:
+        model = models.FileLink
+        fields = ["url", "filetype", "book", "added_by"]
+
+
 class EditionForm(CustomForm):
     class Meta:
         model = models.Edition
@@ -230,6 +242,8 @@ class EditionForm(CustomForm):
             "shelves",
             "connector",
             "search_vector",
+            "links",
+            "file_links",
         ]
         widgets = {
             "title": forms.TextInput(attrs={"aria-describedby": "desc_title"}),
@@ -439,7 +453,7 @@ class GroupForm(CustomForm):
 class ReportForm(CustomForm):
     class Meta:
         model = models.Report
-        fields = ["user", "reporter", "statuses", "note"]
+        fields = ["user", "reporter", "statuses", "links", "note"]
 
 
 class EmailBlocklistForm(CustomForm):

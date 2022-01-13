@@ -28,7 +28,7 @@ function execweb {
 
 function initdb {
     execweb python manage.py migrate
-    execweb python manage.py initdb
+    execweb python manage.py initdb "$@"
 }
 
 function awscommand {
@@ -55,7 +55,7 @@ case "$CMD" in
         docker-compose up --build "$@"
         ;;
     initdb)
-        initdb
+        initdb "$@"
         ;;
     migrate)
         runweb python manage.py migrate "$@"

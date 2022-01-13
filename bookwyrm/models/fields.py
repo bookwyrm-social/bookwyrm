@@ -517,6 +517,10 @@ class CharField(ActivitypubFieldMixin, models.CharField):
     """activitypub-aware char field"""
 
 
+class URLField(ActivitypubFieldMixin, models.URLField):
+    """activitypub-aware url field"""
+
+
 class TextField(ActivitypubFieldMixin, models.TextField):
     """activitypub-aware text field"""
 
