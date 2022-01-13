@@ -48,9 +48,9 @@ class LinkViews(TestCase):
 
         models.SiteSettings.objects.create()
 
-    def test_edit_link_page(self):
+    def test_add_link_page(self):
         """there are so many views, this just makes sure it LOADS"""
-        view = views.FileLink.as_view()
+        view = views.AddFileLink.as_view()
         request = self.factory.get("")
         request.user = self.local_user
         result = view(request, self.book.id)
@@ -59,14 +59,14 @@ class LinkViews(TestCase):
 
         self.assertEqual(result.status_code, 200)
 
-    def test_edit_link_post(self, *_):
+    def test_add_link_post(self, *_):
         """there are so many views, this just makes sure it LOADS"""
-        view = views.FileLink.as_view()
+        view = views.AddFileLink.as_view()
         form = forms.FileLinkForm()
         form.data["url"] = "https://www.example.com"
         form.data["filetype"] = "HTML"
         form.data["book"] = self.book.id
-        form.data["added_by"] = self.local_user
+        form.data["added_by"] = self.local_user.id
 
         request = self.factory.post("", form.data)
         request.user = self.local_user

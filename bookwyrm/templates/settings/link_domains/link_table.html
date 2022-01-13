@@ -1,7 +1,7 @@
 {% load i18n %}
 {% load utilities %}
 
-<table class="is-striped">
+<table class="is-striped is-fullwidth">
     <tr>
         <th>{% trans "URL" %}</th>
         <th>{% trans "Added by" %}</th>
@@ -9,7 +9,7 @@
         <th>{% trans "Book" %}</th>
         {% block additional_headers %}{% endblock %}
     </tr>
-    {% for link in links%}
+    {% for link in links %}
     <tr>
         <td class="overflow-wrap-anywhere">
             <a href="{{ link.url }}" target="_blank" rel="noopener">{{ link.url }}</a>
@@ -24,13 +24,19 @@
         </td>
 
         <td>
-        {% if link.filelink.filetype %}
+        {% if link.filelink.book %}
             {% with book=link.filelink.book %}
-            <a href="{{ book.local_path }}">{% include "snippets/book_titleby.html" with book=book %}</a>
+            {% include "snippets/book_titleby.html" with book=book %}
             {% endwith %}
         {% endif %}
         </td>
+
         {% block additional_data %}{% endblock %}
     </tr>
     {% endfor %}
+    {% if not links %}
+    <tr>
+        <td colspan="7"><em>{% trans "No links available for this domain." %}</em></td>
+    </tr>
+    {% endif %}
 </table>

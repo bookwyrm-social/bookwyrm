@@ -168,6 +168,7 @@ urlpatterns = [
         views.LinkDomain.as_view(),
         name="settings-link-domain",
     ),
+    # pylint: disable=line-too-long
     re_path(
         r"^setting/link-domains/(?P<status>(pending|approved|blocked))/(?P<domain_id>\d+)/?$",
         views.LinkDomain.as_view(),
@@ -468,11 +469,18 @@ urlpatterns = [
         views.add_description,
         name="add-description",
     ),
-    re_path(rf"{BOOK_PATH}/filelink/?$", views.FileLink.as_view(), name="file-link"),
     re_path(
-        rf"{BOOK_PATH}/filelink/(?P<link_id>\d+)/?$",
-        views.FileLink.as_view(),
+        rf"{BOOK_PATH}/filelink/?$", views.BookFileLinks.as_view(), name="file-link"
+    ),
+    re_path(
+        rf"{BOOK_PATH}/filelink/(?P<link_id>\d+)/delete/?$",
+        views.BookFileLinks.as_view(),
         name="file-link",
+    ),
+    re_path(
+        rf"{BOOK_PATH}/filelink/add/?$",
+        views.AddFileLink.as_view(),
+        name="file-link-add",
     ),
     re_path(r"^resolve-book/?$", views.resolve_book, name="resolve-book"),
     re_path(r"^switch-edition/?$", views.switch_edition, name="switch-edition"),
@@ -500,7 +508,11 @@ urlpatterns = [
     # reading progress
     re_path(r"^edit-readthrough/?$", views.edit_readthrough, name="edit-readthrough"),
     re_path(r"^delete-readthrough/?$", views.delete_readthrough),
-    re_path(r"^create-readthrough/?$", views.create_readthrough),
+    re_path(
+        r"^create-readthrough/?$",
+        views.ReadThrough.as_view(),
+        name="create-readthrough",
+    ),
     re_path(r"^delete-progressupdate/?$", views.delete_progressupdate),
     # shelve actions
     re_path(

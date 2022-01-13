@@ -37,7 +37,7 @@ from .books.books import (
 from .books.books import update_book_from_remote
 from .books.edit_book import EditBook, ConfirmEditBook
 from .books.editions import Editions, switch_edition
-from .books.links import FileLink
+from .books.links import BookFileLinks, AddFileLink
 
 # landing
 from .landing.about import about, privacy, conduct
@@ -94,7 +94,7 @@ from .list import Lists, SavedLists, List, Curate, UserLists
 from .list import save_list, unsave_list, delete_list, unsafe_embed_list
 from .notifications import Notifications
 from .outbox import Outbox
-from .reading import create_readthrough, delete_readthrough, delete_progressupdate
+from .reading import ReadThrough, delete_readthrough, delete_progressupdate
 from .reading import ReadingStatus
 from .report import Report
 from .rss_feed import RssFeed
