@@ -28,7 +28,7 @@ class Status(TestCase):
         """useful things for creating a status"""
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
-        ):
+        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
             self.local_user = models.User.objects.create_user(
                 "mouse", "mouse@mouse.mouse", "mouseword", local=True, localname="mouse"
             )
@@ -301,7 +301,7 @@ class Status(TestCase):
         self.assertEqual(activity["type"], "Article")
         self.assertEqual(
             activity["name"],
-            f'Review of "{self.book.title}" (3 stars): Review\'s name',
+            f"Review of \"<a href='{self.book.local_path}'>{self.book.title}</a>\" (3 stars): Review's name",
         )
         self.assertEqual(activity["content"], "test content")
         self.assertEqual(activity["attachment"][0].type, "Document")
@@ -325,7 +325,8 @@ class Status(TestCase):
         self.assertEqual(activity["id"], status.remote_id)
         self.assertEqual(activity["type"], "Article")
         self.assertEqual(
-            activity["name"], f'Review of "{self.book.title}": Review name'
+            activity["name"],
+            f"Review of \"<a href='{self.book.local_path}'>{self.book.title}</a>\": Review name",
         )
         self.assertEqual(activity["content"], "test content")
         self.assertEqual(activity["attachment"][0].type, "Document")

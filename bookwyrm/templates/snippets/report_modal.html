@@ -1,9 +1,16 @@
 {% extends 'components/modal.html' %}
 {% load i18n %}
+{% load utilities %}
 {% load humanize %}
 
 {% block modal-title %}
-{% blocktrans with username=user.username %}Report @{{ username }}{% endblocktrans %}
+{% if status %}
+{% blocktrans with username=user|username %}Report @{{ username }}'s status{% endblocktrans %}
+{% elif link %}
+{% blocktrans with domain=link.domain.domain %}Report {{ domain }} link{% endblocktrans %}
+{% else %}
+{% blocktrans with username=user|username %}Report @{{ username }}{% endblocktrans %}
+{%  endif %}
 {% endblock %}
 
 {% block modal-form-open %}
@@ -13,14 +20,22 @@
 {% block modal-body %}
 
 {% csrf_token %}
-<input type="hidden" name="reporter" value="{{ reporter.id }}">
+<input type="hidden" name="reporter" value="{{ request.user.id }}">
 <input type="hidden" name="user" value="{{ user.id }}">
 {% if status %}
-<input type="hidden" name="statuses" value="{{ status.id }}">
+<input type="hidden" name="statuses" value="{{ status_id }}">
+{% endif %}
+{% if link %}
+<input type="hidden" name="links" value="{{ link.id }}">
 {% endif %}
 
 <section class="content">
-    <p>{% blocktrans with site_name=site.name %}This report will be sent to {{ site_name }}'s moderators for review.{% endblocktrans %}</p>
+    <p class="notification">
+        {% blocktrans with site_name=site.name %}This report will be sent to {{ site_name }}'s moderators for review.{% endblocktrans %}
+        {% if link %}
+            {% trans "Links from this domain will be removed until your report has been reviewed." %}
+        {% endif %}
+    </p>
     <div class="control">
         <label class="label" for="id_{{ controls_uid }}_report_note">
             {% trans "More info about this report:" %}
@@ -35,7 +50,9 @@
 {% block modal-footer %}
 
 <button class="button is-success" type="submit">{% trans "Submit" %}</button>
-<button type="button" class="button" data-modal-close>{% trans "Cancel" %}</button>
+{% if not static %}
+    <button type="button" class="button" data-modal-close>{% trans "Cancel" %}</button>
+{% endif %}
 
 {% endblock %}
 

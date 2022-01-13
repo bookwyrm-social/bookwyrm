@@ -6,6 +6,7 @@ from unittest.mock import patch
 from django.test import TestCase
 
 from bookwyrm import models, views
+from bookwyrm.activitypub.base_activity import set_related_field
 
 
 # pylint: disable=too-many-public-methods
@@ -16,7 +17,7 @@ class InboxUpdate(TestCase):
         """basic user and book data"""
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
-        ):
+        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
             self.local_user = models.User.objects.create_user(
                 "mouse@example.com",
                 "mouse@mouse.com",
@@ -78,6 +79,7 @@ class InboxUpdate(TestCase):
 
     @patch("bookwyrm.suggested_users.rerank_user_task.delay")
     @patch("bookwyrm.activitystreams.add_user_statuses_task.delay")
+    @patch("bookwyrm.lists_stream.add_user_lists_task.delay")
     def test_update_user(self, *_):
         """update an existing user"""
         models.UserFollows.objects.create(
@@ -145,6 +147,48 @@ class InboxUpdate(TestCase):
         book = models.Edition.objects.get(id=book.id)
         self.assertEqual(book.title, "Piranesi")
         self.assertEqual(book.last_edited_by, self.remote_user)
+
+    def test_update_edition_links(self):
+        """add links to edition"""
+        datafile = pathlib.Path(__file__).parent.joinpath("../../data/bw_edition.json")
+        bookdata = json.loads(datafile.read_bytes())
+        del bookdata["authors"]
+        # pylint: disable=line-too-long
+        link_data = {
+            "href": "https://openlibrary.org/books/OL11645413M/Queen_Victoria/daisy",
+            "mediaType": "Daisy",
+            "attributedTo": self.remote_user.remote_id,
+        }
+        bookdata["fileLinks"] = [link_data]
+
+        models.Work.objects.create(
+            title="Test Work", remote_id="https://bookwyrm.social/book/5988"
+        )
+        book = models.Edition.objects.create(
+            title="Test Book", remote_id="https://bookwyrm.social/book/5989"
+        )
+        self.assertFalse(book.file_links.exists())
+
+        with patch(
+            "bookwyrm.activitypub.base_activity.set_related_field.delay"
+        ) as mock:
+            views.inbox.activity_task(
+                {
+                    "type": "Update",
+                    "to": [],
+                    "cc": [],
+                    "actor": "hi",
+                    "id": "sdkjf",
+                    "object": bookdata,
+                }
+            )
+        args = mock.call_args[0]
+        self.assertEqual(args[0], "FileLink")
+        self.assertEqual(args[1], "Edition")
+        self.assertEqual(args[2], "book")
+        self.assertEqual(args[3], book.remote_id)
+        self.assertEqual(args[4], link_data)
+        # idk how to test that related name works, because of the transaction
 
     def test_update_work(self):
         """update an existing edition"""

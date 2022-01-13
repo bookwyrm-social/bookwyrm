@@ -9,12 +9,12 @@ from django.utils.translation import gettext_lazy as _
 env = Env()
 env.read_env()
 DOMAIN = env("DOMAIN")
-VERSION = "0.1.0"
+VERSION = "0.2.0"
 
 PAGE_LENGTH = env("PAGE_LENGTH", 15)
 DEFAULT_LANGUAGE = env("DEFAULT_LANGUAGE", "English")
 
-JS_CACHE = "2d3181e1"
+JS_CACHE = "a47cc2ca"
 
 # email
 EMAIL_BACKEND = env("EMAIL_BACKEND", "django.core.mail.backends.smtp.EmailBackend")
@@ -24,7 +24,9 @@ EMAIL_HOST_USER = env("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
 EMAIL_USE_TLS = env.bool("EMAIL_USE_TLS", True)
 EMAIL_USE_SSL = env.bool("EMAIL_USE_SSL", False)
-DEFAULT_FROM_EMAIL = f"admin@{DOMAIN}"
+EMAIL_SENDER_NAME = env("EMAIL_SENDER_NAME", "admin")
+EMAIL_SENDER_DOMAIN = env("EMAIL_SENDER_DOMAIN", DOMAIN)
+EMAIL_SENDER = f"{EMAIL_SENDER_NAME}@{EMAIL_SENDER_DOMAIN}"
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -111,6 +113,7 @@ WSGI_APPLICATION = "bookwyrm.wsgi.application"
 REDIS_ACTIVITY_HOST = env("REDIS_ACTIVITY_HOST", "localhost")
 REDIS_ACTIVITY_PORT = env("REDIS_ACTIVITY_PORT", 6379)
 REDIS_ACTIVITY_PASSWORD = env("REDIS_ACTIVITY_PASSWORD", None)
+REDIS_ACTIVITY_DB_INDEX = env("REDIS_ACTIVITY_DB_INDEX", 0)
 
 MAX_STREAM_LENGTH = int(env("MAX_STREAM_LENGTH", 200))
 
@@ -118,6 +121,34 @@ STREAMS = [
     {"key": "home", "name": _("Home Timeline"), "shortname": _("Home")},
     {"key": "books", "name": _("Books Timeline"), "shortname": _("Books")},
 ]
+
+# Search configuration
+# total time in seconds that the instance will spend searching connectors
+SEARCH_TIMEOUT = int(env("SEARCH_TIMEOUT", 15))
+# timeout for a query to an individual connector
+QUERY_TIMEOUT = int(env("QUERY_TIMEOUT", 5))
+
+# Redis cache backend
+if env("USE_DUMMY_CACHE", False):
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.dummy.DummyCache",
+        }
+    }
+else:
+    # pylint: disable=line-too-long
+    CACHES = {
+        "default": {
+            "BACKEND": "django_redis.cache.RedisCache",
+            "LOCATION": f"redis://:{REDIS_ACTIVITY_PASSWORD}@{REDIS_ACTIVITY_HOST}:{REDIS_ACTIVITY_PORT}/{REDIS_ACTIVITY_DB_INDEX}",
+            "OPTIONS": {
+                "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            },
+        }
+    }
+
+    SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+    SESSION_CACHE_ALIAS = "default"
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
@@ -166,8 +197,10 @@ LANGUAGES = [
     ("de-de", _("Deutsch (German)")),
     ("es-es", _("Español (Spanish)")),
     ("gl-es", _("Galego (Galician)")),
+    ("it-it", _("Italiano (Italian)")),
     ("fr-fr", _("Français (French)")),
     ("lt-lt", _("Lietuvių (Lithuanian)")),
+    ("no-no", _("Norsk (Norwegian)")),
     ("pt-br", _("Português do Brasil (Brazilian Portuguese)")),
     ("pt-pt", _("Português Europeu (European Portuguese)")),
     ("zh-hans", _("简体中文 (Simplified Chinese)")),
@@ -190,6 +223,7 @@ USER_AGENT = f"{agent} (BookWyrm/{VERSION}; +https://{DOMAIN}/)"
 # Imagekit generated thumbnails
 ENABLE_THUMBNAIL_GENERATION = env.bool("ENABLE_THUMBNAIL_GENERATION", False)
 IMAGEKIT_CACHEFILE_DIR = "thumbnails"
+IMAGEKIT_DEFAULT_CACHEFILE_STRATEGY = "bookwyrm.thumbnail_generation.Strategy"
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/

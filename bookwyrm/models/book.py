@@ -3,6 +3,8 @@ import re
 
 from django.contrib.postgres.search import SearchVectorField
 from django.contrib.postgres.indexes import GinIndex
+from django.core.cache import cache
+from django.core.cache.utils import make_template_fragment_key
 from django.db import models, transaction
 from django.db.models import Prefetch
 from django.dispatch import receiver
@@ -185,6 +187,11 @@ class Book(BookDataModel):
         """can't be abstract for query reasons, but you shouldn't USE it"""
         if not isinstance(self, Edition) and not isinstance(self, Work):
             raise ValueError("Books should be added as Editions or Works")
+
+        # clear template caches
+        cache_key = make_template_fragment_key("titleby", [self.id])
+        cache.delete(cache_key)
+
         return super().save(*args, **kwargs)
 
     def get_remote_id(self):
@@ -234,8 +241,11 @@ class Work(OrderedCollectionPageMixin, Book):
         )
 
     activity_serializer = activitypub.Work
-    serialize_reverse_fields = [("editions", "editions", "-edition_rank")]
-    deserialize_reverse_fields = [("editions", "editions")]
+    serialize_reverse_fields = [
+        ("editions", "editions", "-edition_rank"),
+        ("file_links", "fileLinks", "-created_date"),
+    ]
+    deserialize_reverse_fields = [("editions", "editions"), ("file_links", "fileLinks")]
 
 
 # https://schema.org/BookFormatType
@@ -289,6 +299,8 @@ class Edition(Book):
 
     activity_serializer = activitypub.Edition
     name_field = "title"
+    serialize_reverse_fields = [("file_links", "fileLinks", "-created_date")]
+    deserialize_reverse_fields = [("file_links", "fileLinks")]
 
     def get_rank(self):
         """calculate how complete the data is on this edition"""

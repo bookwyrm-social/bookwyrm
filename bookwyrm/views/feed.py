@@ -29,7 +29,9 @@ class Feed(View):
         filters_applied = False
         form = forms.FeedStatusTypesForm(request.POST, instance=request.user)
         if form.is_valid():
-            form.save()
+            # workaround to avoid broadcasting this change
+            user = form.save(commit=False)
+            user.save(broadcast=False, update_fields=["feed_status_types"])
             filters_applied = True
 
         return self.get(request, tab, filters_applied)
@@ -223,7 +225,6 @@ def feed_page_data(user):
 
     goal = models.AnnualGoal.objects.filter(user=user, year=timezone.now().year).first()
     return {
-        "suggested_books": get_suggested_books(user),
         "goal": goal,
         "goal_form": forms.GoalForm(),
     }

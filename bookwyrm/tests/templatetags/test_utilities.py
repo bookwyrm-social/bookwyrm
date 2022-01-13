@@ -17,7 +17,7 @@ class UtilitiesTags(TestCase):
         """create some filler objects"""
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
-        ):
+        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
             self.user = models.User.objects.create_user(
                 "mouse@example.com",
                 "mouse@mouse.mouse",
@@ -50,3 +50,10 @@ class UtilitiesTags(TestCase):
         """uuid functionality"""
         uuid = utilities.get_uuid("hi")
         self.assertTrue(re.match(r"hi[A-Za-z0-9\-]", uuid))
+
+    def test_get_title(self, *_):
+        """the title of a book"""
+        self.assertEqual(utilities.get_title(None), "")
+        self.assertEqual(utilities.get_title(self.book), "Test Book")
+        book = models.Edition.objects.create(title="Oh", subtitle="oh my")
+        self.assertEqual(utilities.get_title(book), "Oh: oh my")

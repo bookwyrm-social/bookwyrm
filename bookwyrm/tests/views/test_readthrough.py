@@ -27,7 +27,7 @@ class ReadThrough(TestCase):
 
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
-        ):
+        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
             self.user = models.User.objects.create_user(
                 "cinco", "cinco@example.com", "seissiete", local=True, localname="cinco"
             )
@@ -41,10 +41,8 @@ class ReadThrough(TestCase):
         self.assertEqual(self.edition.readthrough_set.count(), 0)
 
         self.client.post(
-            "/reading-status/start/{}".format(self.edition.id),
-            {
-                "start_date": "2020-11-27",
-            },
+            f"/reading-status/start/{self.edition.id}",
+            {"start_date": "2020-11-27"},
         )
 
         readthroughs = self.edition.readthrough_set.all()
@@ -62,10 +60,8 @@ class ReadThrough(TestCase):
         self.assertEqual(self.edition.readthrough_set.count(), 0)
 
         self.client.post(
-            "/reading-status/start/{}".format(self.edition.id),
-            {
-                "start_date": "2020-11-27",
-            },
+            f"/reading-status/start/{self.edition.id}",
+            {"start_date": "2020-11-27"},
         )
 
         readthroughs = self.edition.readthrough_set.all()

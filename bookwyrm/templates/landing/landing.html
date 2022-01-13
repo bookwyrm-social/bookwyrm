@@ -1,11 +1,17 @@
 {% extends 'landing/layout.html' %}
 {% load i18n %}
+{% load cache %}
+{% load bookwyrm_tags %}
+
 {% block panel %}
 
 <div class="block is-hidden-tablet">
     <h2 class="title has-text-centered">{% trans "Recent Books" %}</h2>
 </div>
 
+{% get_current_language as LANGUAGE_CODE %}
+{% cache 60 * 60 LANGUAGE_CODE %}
+{% get_landing_books as books %}
 <section class="tile is-ancestor">
     <div class="tile is-vertical is-6">
         <div class="tile is-parent">
@@ -46,5 +52,5 @@
         </div>
     </div>
 </section>
-
+{% endcache %}
 {% endblock %}

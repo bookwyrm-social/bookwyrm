@@ -183,7 +183,7 @@
                 {% include 'snippets/toggle/open_button.html' with text=button_text controls_text="add_description" controls_uid=book.id focus="id_description" hide_active=True id="hide_description" %}
 
                 <div class="box is-hidden" id="add_description_{{ book.id }}">
-                    <form name="add-description" method="POST" action="/add-description/{{ book.id }}">
+                    <form name="add-description" method="POST" action="{% url "add-description" book.id %}">
                         {% csrf_token %}
                         <p class="fields is-grouped">
                             <label class="label" for="id_description_{{ book.id }}">{% trans "Description:" %}</label>
@@ -237,29 +237,21 @@
                     <h2 class="title is-5">{% trans "Your reading activity" %}</h2>
                     </div>
                     <div class="column is-narrow">
-                        {% trans "Add read dates" as button_text %}
-                        {% include 'snippets/toggle/open_button.html' with text=button_text icon_with_text="plus" class="is-small" controls_text="add_readthrough" focus="add_readthrough_focus_" %}
+                        <button class="button is-small" data-modal-open="add-readthrough">
+                            <span class="icon icon-plus m-mobile-0" aria-hidden="true"></span>
+                            <span class="is-sr-only-mobile">
+                                {% trans "Add read dates" %}
+                            </span>
+                        </button>
                     </div>
                 </header>
-                <section class="is-hidden box" id="add_readthrough">
-                    <form name="add-readthrough" action="/create-readthrough" method="post">
-                        {% include 'snippets/readthrough_form.html' with readthrough=None %}
-                        <div class="field is-grouped">
-                            <div class="control">
-                                <button class="button is-primary" type="submit">{% trans "Create" %}</button>
-                            </div>
-                            <div class="control">
-                                {% trans "Cancel" as button_text %}
-                                {% include 'snippets/toggle/close_button.html' with text=button_text controls_text="add_readthrough" %}
-                            </div>
-                        </div>
-                    </form>
-                </section>
+                {% include "readthrough/readthrough_modal.html" with id="add-readthrough" %}
+
                 {% if not readthroughs.exists %}
                 <p>{% trans "You don't have any reading activity for this book." %}</p>
                 {% endif %}
                 {% for readthrough in readthroughs %}
-                {% include 'book/readthrough.html' with readthrough=readthrough %}
+                {% include 'readthrough/readthrough_list.html' with readthrough=readthrough %}
                 {% endfor %}
             </section>
             <hr aria-hidden="true">
@@ -327,7 +319,7 @@
                 </div>
             </div>
         </div>
-        <div class="column is-one-fifth">
+        <div class="column is-one-fifth is-clipped">
             {% if book.subjects %}
                 <section class="content block">
                     <h2 class="title is-5">{% trans "Subjects" %}</h2>
@@ -352,11 +344,11 @@
             {% endif %}
 
             {% if lists.exists or request.user.list_set.exists %}
-            <section class="content block">
+            <section class="content block is-clipped">
                 <h2 class="title is-5">{% trans "Lists" %}</h2>
                 <ul>
                 {% for list in lists %}
-                <li><a href="{{ list.local_path }}">{{ list.name }}</a></li>
+                    <li><a href="{{ list.local_path }}">{{ list.name }}</a></li>
                 {% endfor %}
                 </ul>
 
@@ -366,7 +358,7 @@
                     <input type="hidden" name="book" value="{{ book.id }}">
                     <label class="label" for="id_list">{% trans "Add to list" %}</label>
                     <div class="field has-addons">
-                        <div class="select control">
+                        <div class="select control is-clipped">
                             <select name="list" id="id_list">
                                 {% for list in user.list_set.all %}
                                 <option value="{{ list.id }}">{{ list.name }}</option>
@@ -381,6 +373,10 @@
                 {% endif %}
             </section>
             {% endif %}
+
+            <section class="content block">
+                {% include "book/file_links/links.html" %}
+            </section>
         </div>
     </div>
 
@@ -390,4 +386,5 @@
 
 {% block scripts %}
 <script src="{% static "js/vendor/tabs.js" %}?v={{ js_cache }}"></script>
+<script src="{% static "js/autocomplete.js" %}?v={{ js_cache }}"></script>
 {% endblock %}

@@ -4,6 +4,7 @@
 {% csrf_token %}
 <input type="hidden" name="id" value="{{ readthrough.id }}">
 <input type="hidden" name="book" value="{{ book.id }}">
+<input type="hidden" name="user" value="{{ request.user.id }}">
 <div class="field">
     <label class="label" tabindex="0" id="add_readthrough_focus_{{ readthrough.id }}" for="id_start_date_{{ readthrough.id }}">
         {% trans "Started reading" %}

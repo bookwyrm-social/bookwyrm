@@ -18,7 +18,7 @@ class ReportViews(TestCase):
         self.factory = RequestFactory()
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
-        ):
+        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
             self.local_user = models.User.objects.create_user(
                 "mouse@local.com",
                 "mouse@mouse.mouse",
@@ -37,7 +37,7 @@ class ReportViews(TestCase):
 
     def test_reports_page(self):
         """there are so many views, this just makes sure it LOADS"""
-        view = views.Reports.as_view()
+        view = views.ReportsAdmin.as_view()
         request = self.factory.get("")
         request.user = self.local_user
         request.user.is_superuser = True
@@ -49,7 +49,7 @@ class ReportViews(TestCase):
 
     def test_reports_page_with_data(self):
         """there are so many views, this just makes sure it LOADS"""
-        view = views.Reports.as_view()
+        view = views.ReportsAdmin.as_view()
         request = self.factory.get("")
         request.user = self.local_user
         request.user.is_superuser = True
@@ -62,7 +62,7 @@ class ReportViews(TestCase):
 
     def test_report_page(self):
         """there are so many views, this just makes sure it LOADS"""
-        view = views.Report.as_view()
+        view = views.ReportAdmin.as_view()
         request = self.factory.get("")
         request.user = self.local_user
         request.user.is_superuser = True
@@ -76,7 +76,7 @@ class ReportViews(TestCase):
 
     def test_report_comment(self):
         """comment on a report"""
-        view = views.Report.as_view()
+        view = views.ReportAdmin.as_view()
         request = self.factory.post("", {"note": "hi"})
         request.user = self.local_user
         request.user.is_superuser = True
@@ -97,7 +97,7 @@ class ReportViews(TestCase):
         request = self.factory.post("", form.data)
         request.user = self.local_user
 
-        views.make_report(request)
+        views.Report.as_view()(request)
 
         report = models.Report.objects.get()
         self.assertEqual(report.reporter, self.local_user)

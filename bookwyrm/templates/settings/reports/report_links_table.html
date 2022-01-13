@@ -1,0 +1,20 @@
+{% extends "settings/link_domains/link_table.html" %}
+{% load i18n %}
+
+{% block additional_headers %}
+<th>{% trans "Domain" %}</th>
+<th>{% trans "Actions" %}</th>
+{% endblock %}
+
+{% block additional_data %}
+<td>
+    <a href="{% url 'settings-link-domain' 'pending' %}#{{ link.domain.id }}">
+        {{ link.domain.domain }}
+    </a>
+</td>
+<td>
+    <form>
+        <button type="submit" class="button is-danger is-light">{% trans "Block domain" %}</button>
+    </form>
+</td>
+{% endblock %}

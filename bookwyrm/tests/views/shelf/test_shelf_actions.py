@@ -12,6 +12,7 @@ from bookwyrm import forms, models, views
 @patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
 @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
 @patch("bookwyrm.activitystreams.populate_stream_task.delay")
+@patch("bookwyrm.lists_stream.populate_lists_task.delay")
 @patch("bookwyrm.activitystreams.add_book_statuses_task.delay")
 @patch("bookwyrm.activitystreams.remove_book_statuses_task.delay")
 class ShelfActionViews(TestCase):
@@ -22,7 +23,7 @@ class ShelfActionViews(TestCase):
         self.factory = RequestFactory()
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
-        ):
+        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
             self.local_user = models.User.objects.create_user(
                 "mouse@local.com",
                 "mouse@mouse.com",
@@ -178,7 +179,7 @@ class ShelfActionViews(TestCase):
         """delete a brand new custom shelf"""
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
-        ):
+        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
             rat = models.User.objects.create_user(
                 "rat@local.com",
                 "rat@mouse.mouse",

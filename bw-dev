@@ -31,7 +31,7 @@ function execweb {
 
 function initdb {
     execweb python manage.py migrate
-    execweb python manage.py initdb
+    execweb python manage.py initdb "$@"
 }
 
 function makeitblack {
@@ -65,7 +65,7 @@ case "$CMD" in
         docker-compose run --rm --service-ports web
         ;;
     initdb)
-        initdb
+        initdb "$@"
         ;;
     resetdb)
         clean
@@ -114,7 +114,9 @@ case "$CMD" in
         git checkout l10n_main locale/es_ES
         git checkout l10n_main locale/fr_FR
         git checkout l10n_main locale/gl_ES
+        git checkout l10n_main locale/it_IT
         git checkout l10n_main locale/lt_LT
+        git checkout l10n_main locale/no_NO
         git checkout l10n_main locale/pt_PT
         git checkout l10n_main locale/pt_BR
         git checkout l10n_main locale/zh_Hans
@@ -134,8 +136,18 @@ case "$CMD" in
     prettier)
         npx prettier --write bookwyrm/static/js/*.js
         ;;
+    update)
+        git pull
+        docker-compose build
+        runweb python manage.py migrate
+        runweb python manage.py collectstatic --no-input
+        docker-compose up -d
+        ;;
     populate_streams)
         runweb python manage.py populate_streams "$@"
+        ;;
+    populate_lists_streams)
+        runweb python manage.py populate_lists_streams $@
         ;;
     populate_suggestions)
         runweb python manage.py populate_suggestions

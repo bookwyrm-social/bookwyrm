@@ -1,8 +1,10 @@
 """ template filters """
 from django import template
-from django.db.models import Avg
+from django.db.models import Avg, StdDev, Count, F, Q
 
 from bookwyrm import models
+from bookwyrm.utils import cache
+from bookwyrm.views.feed import get_suggested_books
 
 
 register = template.Library()
@@ -62,7 +64,60 @@ def load_subclass(status):
         return status.review
     if hasattr(status, "comment"):
         return status.comment
+    if hasattr(status, "generatednote"):
+        return status.generatednote
     return status
+
+
+@register.simple_tag(takes_context=False)
+def get_book_superlatives():
+    """get book stats for the about page"""
+    total_ratings = models.Review.objects.filter(local=True, deleted=False).count()
+    data = {}
+    data["top_rated"] = (
+        models.Work.objects.annotate(
+            rating=Avg(
+                "editions__review__rating",
+                filter=Q(editions__review__local=True, editions__review__deleted=False),
+            ),
+            rating_count=Count(
+                "editions__review",
+                filter=Q(editions__review__local=True, editions__review__deleted=False),
+            ),
+        )
+        .annotate(weighted=F("rating") * F("rating_count") / total_ratings)
+        .filter(rating__gt=4, weighted__gt=0)
+        .order_by("-weighted")
+        .first()
+    )
+
+    data["controversial"] = (
+        models.Work.objects.annotate(
+            deviation=StdDev(
+                "editions__review__rating",
+                filter=Q(editions__review__local=True, editions__review__deleted=False),
+            ),
+            rating_count=Count(
+                "editions__review",
+                filter=Q(editions__review__local=True, editions__review__deleted=False),
+            ),
+        )
+        .annotate(weighted=F("deviation") * F("rating_count") / total_ratings)
+        .filter(weighted__gt=0)
+        .order_by("-weighted")
+        .first()
+    )
+
+    data["wanted"] = (
+        models.Work.objects.annotate(
+            shelf_count=Count(
+                "editions__shelves", filter=Q(editions__shelves__identifier="to-read")
+            )
+        )
+        .order_by("-shelf_count")
+        .first()
+    )
+    return data
 
 
 @register.simple_tag(takes_context=False)
@@ -76,35 +131,55 @@ def related_status(notification):
 @register.simple_tag(takes_context=True)
 def active_shelf(context, book):
     """check what shelf a user has a book on, if any"""
-    if hasattr(book, "current_shelves"):
-        read_shelves = [
-            s
-            for s in book.current_shelves
-            if s.shelf.identifier in models.Shelf.READ_STATUS_IDENTIFIERS
-        ]
-        return read_shelves[0] if len(read_shelves) else {"book": book}
-
-    shelf = (
-        models.ShelfBook.objects.filter(
-            shelf__user=context["request"].user,
-            book__parent_work__editions=book,
+    user = context["request"].user
+    return (
+        cache.get_or_set(
+            f"active_shelf-{user.id}-{book.id}",
+            lambda u, b: (
+                models.ShelfBook.objects.filter(
+                    shelf__user=u,
+                    book__parent_work__editions=b,
+                ).first()
+            ),
+            user,
+            book,
+            timeout=15552000,
         )
-        .select_related("book", "shelf")
-        .first()
+        or {"book": book}
     )
-    return shelf if shelf else {"book": book}
 
 
 @register.simple_tag(takes_context=False)
 def latest_read_through(book, user):
     """the most recent read activity"""
-    if hasattr(book, "active_readthroughs"):
-        return book.active_readthroughs[0] if len(book.active_readthroughs) else None
+    return cache.get_or_set(
+        f"latest_read_through-{user.id}-{book.id}",
+        lambda u, b: (
+            models.ReadThrough.objects.filter(user=u, book=b, is_active=True)
+            .order_by("-start_date")
+            .first()
+        ),
+        user,
+        book,
+        timeout=15552000,
+    )
 
-    return (
-        models.ReadThrough.objects.filter(user=user, book=book, is_active=True)
-        .order_by("-start_date")
-        .first()
+
+@register.simple_tag(takes_context=False)
+def get_landing_books():
+    """list of books for the landing page"""
+    return list(
+        set(
+            models.Edition.objects.filter(
+                review__published_date__isnull=False,
+                review__deleted=False,
+                review__user__local=True,
+                review__privacy__in=["public", "unlisted"],
+            )
+            .exclude(cover__exact="")
+            .distinct()
+            .order_by("-review__published_date")[:6]
+        )
     )
 
 
@@ -115,3 +190,17 @@ def mutuals_count(context, user):
     if not viewer.is_authenticated:
         return None
     return user.followers.filter(followers=viewer).count()
+
+
+@register.simple_tag(takes_context=True)
+def suggested_books(context):
+    """get books for suggested books panel"""
+    # this happens here instead of in the view so that the template snippet can
+    # be cached in the template
+    return get_suggested_books(context["request"].user)
+
+
+@register.simple_tag(takes_context=False)
+def get_book_file_links(book):
+    """links for a book"""
+    return book.file_links.filter(domain__status="approved")

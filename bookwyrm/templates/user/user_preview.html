@@ -21,23 +21,23 @@
         <p><a href="{{ user.remote_id }}">{{ user.username }}</a></p>
         <p>{% blocktrans with date=user.created_date|naturaltime %}Joined {{ date }}{% endblocktrans %}</p>
         <p>
-            {% if is_self %}
+            {% if request.user.id == user.id %}
 
-            <a href="{% url 'user-followers' user|username %}">{% blocktrans count counter=user.followers.count %}{{ counter }} follower{% plural %}{{ counter }} followers{% endblocktrans %}</a>,
-            <a href="{% url 'user-following' user|username %}">{% blocktrans with counter=user.following.count %}{{ counter }} following{% endblocktrans %}</a>
+                <a href="{% url 'user-followers' user|username %}">{% blocktrans count counter=user.followers.count %}{{ counter }} follower{% plural %}{{ counter }} followers{% endblocktrans %}</a>,
+                <a href="{% url 'user-following' user|username %}">{% blocktrans with counter=user.following.count %}{{ counter }} following{% endblocktrans %}</a>
 
             {% elif request.user.is_authenticated %}
 
-            {% mutuals_count user as mutuals %}
-            <a href="{% url 'user-followers' user|username %}">
-            {% if mutuals %}
-                {% blocktrans with mutuals_display=mutuals|intcomma count counter=mutuals %}{{ mutuals_display }} follower you follow{% plural %}{{ mutuals_display }} followers you follow{% endblocktrans %}
-            {% elif request.user in user.following.all %}
-            {% trans "Follows you" %}
-            {% else %}
-            {% trans "No followers you follow" %}
-            {% endif %}
-            </a>
+                {% mutuals_count user as mutuals %}
+                <a href="{% url 'user-followers' user|username %}">
+                    {% if mutuals %}
+                        {% blocktrans with mutuals_display=mutuals|intcomma count counter=mutuals %}{{ mutuals_display }} follower you follow{% plural %}{{ mutuals_display }} followers you follow{% endblocktrans %}
+                    {% elif request.user in user.following.all %}
+                    {% trans "Follows you" %}
+                    {% else %}
+                    {% trans "No followers you follow" %}
+                    {% endif %}
+                </a>
 
             {% endif %}
         </p>
