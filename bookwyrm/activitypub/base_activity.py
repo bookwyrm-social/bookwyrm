@@ -208,35 +208,34 @@ def set_related_field(
     model = apps.get_model(f"bookwyrm.{model_name}", require_ready=True)
     origin_model = apps.get_model(f"bookwyrm.{origin_model_name}", require_ready=True)
 
-    with transaction.atomic():
-        if isinstance(data, str):
-            existing = model.find_existing_by_remote_id(data)
-            if existing:
-                data = existing.to_activity()
-            else:
-                data = get_data(data)
-        activity = model.activity_serializer(**data)
+    if isinstance(data, str):
+        existing = model.find_existing_by_remote_id(data)
+        if existing:
+            data = existing.to_activity()
+        else:
+            data = get_data(data)
+    activity = model.activity_serializer(**data)
 
-        # this must exist because it's the object that triggered this function
-        instance = origin_model.find_existing_by_remote_id(related_remote_id)
-        if not instance:
-            raise ValueError(f"Invalid related remote id: {related_remote_id}")
+    # this must exist because it's the object that triggered this function
+    instance = origin_model.find_existing_by_remote_id(related_remote_id)
+    if not instance:
+        raise ValueError(f"Invalid related remote id: {related_remote_id}")
 
-        # set the origin's remote id on the activity so it will be there when
-        # the model instance is created
-        # edition.parentWork = instance, for example
-        model_field = getattr(model, related_field_name)
-        if hasattr(model_field, "activitypub_field"):
-            setattr(
-                activity, getattr(model_field, "activitypub_field"), instance.remote_id
-            )
-        item = activity.to_model()
+    # set the origin's remote id on the activity so it will be there when
+    # the model instance is created
+    # edition.parentWork = instance, for example
+    model_field = getattr(model, related_field_name)
+    if hasattr(model_field, "activitypub_field"):
+        setattr(
+            activity, getattr(model_field, "activitypub_field"), instance.remote_id
+        )
+    item = activity.to_model()
 
-        # if the related field isn't serialized (attachments on Status), then
-        # we have to set it post-creation
-        if not hasattr(model_field, "activitypub_field"):
-            setattr(item, related_field_name, instance)
-            item.save()
+    # if the related field isn't serialized (attachments on Status), then
+    # we have to set it post-creation
+    if not hasattr(model_field, "activitypub_field"):
+        setattr(item, related_field_name, instance)
+        item.save()
 
 
 def get_model_from_type(activity_type):
