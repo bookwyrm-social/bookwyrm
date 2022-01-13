@@ -136,6 +136,13 @@ case "$CMD" in
     prettier)
         npx prettier --write bookwyrm/static/js/*.js
         ;;
+    update)
+        git pull
+        docker-compose build
+        runweb python manage.py migrate
+        runweb python manage.py collectstatic --no-input
+        docker-compose up -d
+        ;;
     populate_streams)
         runweb python manage.py populate_streams "$@"
         ;;
