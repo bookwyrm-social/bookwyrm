@@ -96,6 +96,9 @@ class Dashboard(View):
             "statuses": status_queryset.count(),
             "works": models.Work.objects.count(),
             "reports": models.Report.objects.filter(resolved=False).count(),
+            "pending_domains": models.LinkDomain.objects.filter(
+                status="pending"
+            ).count(),
             "invite_requests": models.InviteRequest.objects.filter(
                 ignored=False, invite_sent=False
             ).count(),
