@@ -25,7 +25,7 @@ EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
 EMAIL_USE_TLS = env.bool("EMAIL_USE_TLS", True)
 EMAIL_USE_SSL = env.bool("EMAIL_USE_SSL", False)
 EMAIL_SENDER_NAME = env("EMAIL_SENDER_NAME", "admin")
-EMAIL_SENDER_DOMAIN = env("EMAIL_SENDER_NAME", DOMAIN)
+EMAIL_SENDER_DOMAIN = env("EMAIL_SENDER_DOMAIN", DOMAIN)
 EMAIL_SENDER = f"{EMAIL_SENDER_NAME}@{EMAIL_SENDER_DOMAIN}"
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -113,6 +113,7 @@ WSGI_APPLICATION = "bookwyrm.wsgi.application"
 REDIS_ACTIVITY_HOST = env("REDIS_ACTIVITY_HOST", "localhost")
 REDIS_ACTIVITY_PORT = env("REDIS_ACTIVITY_PORT", 6379)
 REDIS_ACTIVITY_PASSWORD = env("REDIS_ACTIVITY_PASSWORD", None)
+REDIS_ACTIVITY_DB_INDEX = env("REDIS_ACTIVITY_DB_INDEX", 0)
 
 MAX_STREAM_LENGTH = int(env("MAX_STREAM_LENGTH", 200))
 
@@ -139,7 +140,7 @@ else:
     CACHES = {
         "default": {
             "BACKEND": "django_redis.cache.RedisCache",
-            "LOCATION": f"redis://:{REDIS_ACTIVITY_PASSWORD}@{REDIS_ACTIVITY_HOST}:{REDIS_ACTIVITY_PORT}/0",
+            "LOCATION": f"redis://:{REDIS_ACTIVITY_PASSWORD}@{REDIS_ACTIVITY_HOST}:{REDIS_ACTIVITY_PORT}/{REDIS_ACTIVITY_DB_INDEX}",
             "OPTIONS": {
                 "CLIENT_CLASS": "django_redis.client.DefaultClient",
             },

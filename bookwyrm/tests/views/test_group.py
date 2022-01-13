@@ -92,6 +92,18 @@ class GroupViews(TestCase):
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
+    def test_findusers_get_with_query(self, _):
+        """there are so many views, this just makes sure it LOADS"""
+        view = views.FindUsers.as_view()
+        request = self.factory.get("", {"user_query": "rat"})
+        request.user = self.local_user
+        with patch("bookwyrm.suggested_users.SuggestedUsers.get_suggestions") as mock:
+            mock.return_value = models.User.objects.all()
+            result = view(request, group_id=self.testgroup.id)
+        self.assertIsInstance(result, TemplateResponse)
+        validate_html(result.render())
+        self.assertEqual(result.status_code, 200)
+
     def test_group_create(self, _):
         """create group view"""
         view = views.UserGroups.as_view()
