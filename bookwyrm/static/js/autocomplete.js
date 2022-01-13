@@ -82,7 +82,8 @@
     });
 })();
 
-const tries = {"mimetype": {
+const tries = {
+    mimetype: {
         a: {
             a: {
                 c: "AAC",
