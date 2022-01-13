@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-01-12 18:37+0000\n"
-"PO-Revision-Date: 2022-01-12 19:52\n"
+"POT-Creation-Date: 2022-01-13 16:54+0000\n"
+"PO-Revision-Date: 2022-01-13 17:50\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Oulipo\n"
 "Language: en_Oulipo\n"
@@ -157,6 +157,38 @@ msgstr "alias"
 msgid "A user with that username already exists."
 msgstr "An account is using this alias."
 
+#: bookwyrm/models/fields.py:207
+#: bookwyrm/templates/snippets/privacy-icons.html:3
+#: bookwyrm/templates/snippets/privacy-icons.html:4
+#: bookwyrm/templates/snippets/privacy_select.html:11
+#: bookwyrm/templates/snippets/privacy_select_no_followers.html:11
+msgid "Public"
+msgstr ""
+
+#: bookwyrm/models/fields.py:208
+#: bookwyrm/templates/snippets/privacy-icons.html:7
+#: bookwyrm/templates/snippets/privacy-icons.html:8
+#: bookwyrm/templates/snippets/privacy_select.html:14
+#: bookwyrm/templates/snippets/privacy_select_no_followers.html:14
+msgid "Unlisted"
+msgstr ""
+
+#: bookwyrm/models/fields.py:209
+#: bookwyrm/templates/snippets/privacy_select.html:17
+#: bookwyrm/templates/user/relationships/followers.html:6
+#: bookwyrm/templates/user/relationships/layout.html:11
+msgid "Followers"
+msgstr ""
+
+#: bookwyrm/models/fields.py:210
+#: bookwyrm/templates/snippets/create_status/post_options_block.html:8
+#: bookwyrm/templates/snippets/privacy-icons.html:15
+#: bookwyrm/templates/snippets/privacy-icons.html:16
+#: bookwyrm/templates/snippets/privacy_select.html:20
+#: bookwyrm/templates/snippets/privacy_select_no_followers.html:17
+msgid "Private"
+msgstr ""
+
 #: bookwyrm/models/user.py:32 bookwyrm/templates/book/book.html:272
 msgid "Reviews"
 msgstr "Rundowns"
@@ -173,69 +205,69 @@ msgstr ""
 msgid "Everything else"
 msgstr ""
 
-#: bookwyrm/settings.py:120
+#: bookwyrm/settings.py:121
 msgid "Home Timeline"
 msgstr "Community Posts"
 
-#: bookwyrm/settings.py:120
+#: bookwyrm/settings.py:121
 msgid "Home"
 msgstr "Community"
 
-#: bookwyrm/settings.py:121
+#: bookwyrm/settings.py:122
 msgid "Books Timeline"
 msgstr "Book Posts"
 
-#: bookwyrm/settings.py:121 bookwyrm/templates/search/layout.html:21
+#: bookwyrm/settings.py:122 bookwyrm/templates/search/layout.html:21
 #: bookwyrm/templates/search/layout.html:42
 #: bookwyrm/templates/user/layout.html:91
 msgid "Books"
 msgstr "Books"
 
-#: bookwyrm/settings.py:195
+#: bookwyrm/settings.py:196
 msgid "English"
 msgstr ""
 
-#: bookwyrm/settings.py:196
+#: bookwyrm/settings.py:197
 msgid "Deutsch (German)"
 msgstr ""
 
-#: bookwyrm/settings.py:197
+#: bookwyrm/settings.py:198
 msgid "Español (Spanish)"
 msgstr ""
 
-#: bookwyrm/settings.py:198
+#: bookwyrm/settings.py:199
 msgid "Galego (Galician)"
 msgstr ""
 
-#: bookwyrm/settings.py:199
+#: bookwyrm/settings.py:200
 msgid "Italiano (Italian)"
 msgstr ""
 
-#: bookwyrm/settings.py:200
+#: bookwyrm/settings.py:201
 msgid "Français (French)"
 msgstr ""
 
-#: bookwyrm/settings.py:201
+#: bookwyrm/settings.py:202
 msgid "Lietuvių (Lithuanian)"
 msgstr ""
 
-#: bookwyrm/settings.py:202
+#: bookwyrm/settings.py:203
 msgid "Norsk (Norwegian)"
 msgstr ""
 
-#: bookwyrm/settings.py:203
+#: bookwyrm/settings.py:204
 msgid "Português do Brasil (Brazilian Portuguese)"
 msgstr ""
 
-#: bookwyrm/settings.py:204
+#: bookwyrm/settings.py:205
 msgid "Português Europeu (European Portuguese)"
 msgstr ""
 
-#: bookwyrm/settings.py:205
+#: bookwyrm/settings.py:206
 msgid "简体中文 (Simplified Chinese)"
 msgstr ""
 
-#: bookwyrm/settings.py:206
+#: bookwyrm/settings.py:207
 msgid "繁體中文 (Traditional Chinese)"
 msgstr ""
 
@@ -3791,14 +3823,6 @@ msgstr ""
 msgid "Comment:"
 msgstr ""
 
-#: bookwyrm/templates/snippets/create_status/post_options_block.html:8
-#: bookwyrm/templates/snippets/privacy-icons.html:15
-#: bookwyrm/templates/snippets/privacy-icons.html:16
-#: bookwyrm/templates/snippets/privacy_select.html:20
-#: bookwyrm/templates/snippets/privacy_select_no_followers.html:17
-msgid "Private"
-msgstr ""
-
 #: bookwyrm/templates/snippets/create_status/post_options_block.html:21
 msgid "Post"
 msgstr ""
@@ -3923,14 +3947,14 @@ msgstr[1] ""
 
 #: bookwyrm/templates/snippets/generated_status/review_pure_name.html:4
 #, python-format
-msgid "Review of \"<a href=\"%(book_path)s\">%(book_title)s</a>\" (%(display_rating)s star): %(review_title)s"
-msgid_plural "Review of \"<a href=\"%(book_path)s\">%(book_title)s</a>\" (%(display_rating)s stars): %(review_title)s"
+msgid "Review of \"<a href='%(book_path)s'>%(book_title)s</a>\" (%(display_rating)s star): %(review_title)s"
+msgid_plural "Review of \"<a href='%(book_path)s'>%(book_title)s</a>\" (%(display_rating)s stars): %(review_title)s"
 msgstr[0] ""
 msgstr[1] ""
 
 #: bookwyrm/templates/snippets/generated_status/review_pure_name.html:12
 #, python-format
-msgid "Review of \"<a href=\"%(book_path)s\">%(book_title)s</a>\": {{ review_title }"
+msgid "Review of \"<a href='%(book_path)s'>%(book_title)s</a>\": %(review_title)s"
 msgstr ""
 
 #: bookwyrm/templates/snippets/goal_form.html:4
@@ -3992,20 +4016,6 @@ msgstr ""
 msgid "Next"
 msgstr ""
 
-#: bookwyrm/templates/snippets/privacy-icons.html:3
-#: bookwyrm/templates/snippets/privacy-icons.html:4
-#: bookwyrm/templates/snippets/privacy_select.html:11
-#: bookwyrm/templates/snippets/privacy_select_no_followers.html:11
-msgid "Public"
-msgstr ""
-
-#: bookwyrm/templates/snippets/privacy-icons.html:7
-#: bookwyrm/templates/snippets/privacy-icons.html:8
-#: bookwyrm/templates/snippets/privacy_select.html:14
-#: bookwyrm/templates/snippets/privacy_select_no_followers.html:14
-msgid "Unlisted"
-msgstr ""
-
 #: bookwyrm/templates/snippets/privacy-icons.html:12
 msgid "Followers-only"
 msgstr ""
@@ -4013,12 +4023,6 @@ msgstr ""
 #: bookwyrm/templates/snippets/privacy_select.html:6
 #: bookwyrm/templates/snippets/privacy_select_no_followers.html:6
 msgid "Post privacy"
-msgstr ""
-
-#: bookwyrm/templates/snippets/privacy_select.html:17
-#: bookwyrm/templates/user/relationships/followers.html:6
-#: bookwyrm/templates/user/relationships/layout.html:11
-msgid "Followers"
 msgstr ""
 
 #: bookwyrm/templates/snippets/rate_action.html:4
