@@ -19,7 +19,9 @@
         const input = event.target;
 
         // Get suggestions
-        let suggestions = getSuggestions(input.value, mimetypeTrie);
+        let trie = tries[input.getAttribute("data-autocomplete")];
+
+        let suggestions = getSuggestions(input.value, trie);
 
         const boxId = input.getAttribute("list");
 
@@ -80,32 +82,83 @@
     });
 })();
 
-const mimetypeTrie = {
-    a: {
+const tries = {"mimetype": {
         a: {
-            c: "AAC",
+            a: {
+                c: "AAC",
+            },
+            z: {
+                w: "AZW",
+            },
         },
-        z: {
-            w: "AZW",
-        },
-    },
-    d: "Daisy",
-    e: "ePub",
-    f: "FLAC",
-    h: "HTML",
-    m: {
-        4: {
-            a: "M4A",
-            b: "M4B",
-        },
-        o: "MOBI",
-        p: "MP3",
-    },
-    o: "OGG",
-    p: {
         d: {
-            f: "PDF",
+            a: {
+                i: {
+                    s: {
+                        y: "Daisy",
+                    },
+                },
+            },
         },
-        l: "Plaintext",
+        e: {
+            p: {
+                u: {
+                    b: "ePub",
+                },
+            },
+        },
+        f: {
+            l: {
+                a: {
+                    c: "FLAC",
+                },
+            },
+        },
+        h: {
+            t: {
+                m: {
+                    l: "HTML",
+                },
+            },
+        },
+        m: {
+            4: {
+                a: "M4A",
+                b: "M4B",
+            },
+            o: {
+                b: {
+                    i: "MOBI",
+                },
+            },
+            p: {
+                3: "MP3",
+            },
+        },
+        o: {
+            g: {
+                g: "OGG",
+            },
+        },
+        p: {
+            d: {
+                f: "PDF",
+            },
+            l: {
+                a: {
+                    i: {
+                        n: {
+                            t: {
+                                e: {
+                                    x: {
+                                        t: "Plaintext",
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
     },
 };
