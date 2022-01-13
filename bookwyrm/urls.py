@@ -159,6 +159,27 @@ urlpatterns = [
         name="settings-email-blocks-delete",
     ),
     re_path(
+        r"^setting/link-domains/?$",
+        views.LinkDomain.as_view(),
+        name="settings-link-domain",
+    ),
+    re_path(
+        r"^setting/link-domains/(?P<status>(pending|approved|blocked))/?$",
+        views.LinkDomain.as_view(),
+        name="settings-link-domain",
+    ),
+    # pylint: disable=line-too-long
+    re_path(
+        r"^setting/link-domains/(?P<status>(pending|approved|blocked))/(?P<domain_id>\d+)/?$",
+        views.LinkDomain.as_view(),
+        name="settings-link-domain",
+    ),
+    re_path(
+        r"^setting/link-domains/(?P<domain_id>\d+)/(?P<status>(pending|approved|blocked))/?$",
+        views.update_domain_status,
+        name="settings-link-domain-status",
+    ),
+    re_path(
         r"^settings/ip-blocklist/?$",
         views.IPBlocklist.as_view(),
         name="settings-ip-blocks",
@@ -169,10 +190,12 @@ urlpatterns = [
         name="settings-ip-blocks-delete",
     ),
     # moderation
-    re_path(r"^settings/reports/?$", views.Reports.as_view(), name="settings-reports"),
+    re_path(
+        r"^settings/reports/?$", views.ReportsAdmin.as_view(), name="settings-reports"
+    ),
     re_path(
         r"^settings/reports/(?P<report_id>\d+)/?$",
-        views.Report.as_view(),
+        views.ReportAdmin.as_view(),
         name="settings-report",
     ),
     re_path(
@@ -195,7 +218,18 @@ urlpatterns = [
         views.resolve_report,
         name="settings-report-resolve",
     ),
-    re_path(r"^report/?$", views.make_report, name="report"),
+    re_path(r"^report/?$", views.Report.as_view(), name="report"),
+    re_path(r"^report/(?P<user_id>\d+)/?$", views.Report.as_view(), name="report"),
+    re_path(
+        r"^report/(?P<user_id>\d+)/status/(?P<status_id>\d+)?$",
+        views.Report.as_view(),
+        name="report-status",
+    ),
+    re_path(
+        r"^report/(?P<user_id>\d+)/link/(?P<link_id>\d+)?$",
+        views.Report.as_view(),
+        name="report-link",
+    ),
     # landing pages
     re_path(r"^about/?$", views.about, name="about"),
     re_path(r"^privacy/?$", views.privacy, name="privacy"),
@@ -430,7 +464,24 @@ urlpatterns = [
     re_path(
         r"^upload-cover/(?P<book_id>\d+)/?$", views.upload_cover, name="upload-cover"
     ),
-    re_path(r"^add-description/(?P<book_id>\d+)/?$", views.add_description),
+    re_path(
+        r"^add-description/(?P<book_id>\d+)/?$",
+        views.add_description,
+        name="add-description",
+    ),
+    re_path(
+        rf"{BOOK_PATH}/filelink/?$", views.BookFileLinks.as_view(), name="file-link"
+    ),
+    re_path(
+        rf"{BOOK_PATH}/filelink/(?P<link_id>\d+)/delete/?$",
+        views.BookFileLinks.as_view(),
+        name="file-link",
+    ),
+    re_path(
+        rf"{BOOK_PATH}/filelink/add/?$",
+        views.AddFileLink.as_view(),
+        name="file-link-add",
+    ),
     re_path(r"^resolve-book/?$", views.resolve_book, name="resolve-book"),
     re_path(r"^switch-edition/?$", views.switch_edition, name="switch-edition"),
     re_path(

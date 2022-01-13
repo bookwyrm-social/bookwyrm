@@ -35,7 +35,7 @@ let BookWyrm = new (class {
             .forEach((node) => node.addEventListener("change", this.disableIfTooLarge.bind(this)));
 
         document
-            .querySelectorAll("button[data-modal-open]")
+            .querySelectorAll("[data-modal-open]")
             .forEach((node) => node.addEventListener("click", this.handleModalButton.bind(this)));
 
         document

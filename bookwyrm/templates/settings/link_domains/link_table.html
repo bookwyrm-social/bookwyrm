@@ -1,0 +1,42 @@
+{% load i18n %}
+{% load utilities %}
+
+<table class="is-striped is-fullwidth">
+    <tr>
+        <th>{% trans "URL" %}</th>
+        <th>{% trans "Added by" %}</th>
+        <th>{% trans "Filetype" %}</th>
+        <th>{% trans "Book" %}</th>
+        {% block additional_headers %}{% endblock %}
+    </tr>
+    {% for link in links %}
+    <tr>
+        <td class="overflow-wrap-anywhere">
+            <a href="{{ link.url }}" target="_blank" rel="noopener">{{ link.url }}</a>
+        </td>
+        <td>
+            <a href="{% url 'settings-user' link.added_by.id %}">@{{ link.added_by|username }}</a>
+        </td>
+        <td>
+            {% if link.filelink.filetype %}
+            {{ link.filelink.filetype }}
+            {% endif %}
+        </td>
+
+        <td>
+        {% if link.filelink.book %}
+            {% with book=link.filelink.book %}
+            {% include "snippets/book_titleby.html" with book=book %}
+            {% endwith %}
+        {% endif %}
+        </td>
+
+        {% block additional_data %}{% endblock %}
+    </tr>
+    {% endfor %}
+    {% if not links %}
+    <tr>
+        <td colspan="7"><em>{% trans "No links available for this domain." %}</em></td>
+    </tr>
+    {% endif %}
+</table>
