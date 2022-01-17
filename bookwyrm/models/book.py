@@ -342,6 +342,11 @@ class Edition(Book):
         # set rank
         self.edition_rank = self.get_rank()
 
+        # clear author cache
+        if self.id:
+            for author_id in self.authors.values_list("id", flat=True):
+                cache.delete(f"author-books-{author_id}")
+
         return super().save(*args, **kwargs)
 
     @classmethod
