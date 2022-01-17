@@ -53,7 +53,8 @@ class FileLink(Link):
     book = models.ForeignKey(
         "Book", on_delete=models.CASCADE, related_name="file_links", null=True
     )
-    filetype = fields.CharField(max_length=5, activitypub_field="mediaType")
+    filetype = fields.CharField(max_length=50, activitypub_field="mediaType")
+    is_purchase = fields.BooleanField(null=True, blank=True)
 
 
 StatusChoices = [
