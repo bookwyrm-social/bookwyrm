@@ -37,7 +37,7 @@ from .books.books import (
 from .books.books import update_book_from_remote
 from .books.edit_book import EditBook, ConfirmEditBook
 from .books.editions import Editions, switch_edition
-from .books.links import BookFileLinks, AddFileLink
+from .books.links import BookFileLinks, AddFileLink, delete_link
 
 # landing
 from .landing.about import about, privacy, conduct

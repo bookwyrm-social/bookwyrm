@@ -34,9 +34,9 @@
                 <th>{% trans "Filetype" %}</th>
                 <th>{% trans "Domain" %}</th>
                 <th>{% trans "Status" %}</th>
-                <th>{% trans "Actions" %}</th>
+                <th colspan="2">{% trans "Actions" %}</th>
             </tr>
-            {% for link in book.file_links.all %}
+            {% for link in links %}
             <tr>
                 <td class="overflow-wrap-anywhere">
                     <a href="{{ link.url }}" target="_blank" rel="noopener">{{ link.url }}</a>
@@ -66,7 +66,26 @@
                     {% endwith %}
                 </td>
                 <td>
-                    <form name="delete-link-{{ link.id }}" class="control" method="post" action="{% url 'file-link' book.id link.id %}">
+                    <form name="edit-link" class="control" method="post" action="{% url 'file-link' book.id link.id %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="url" value="{{ link.form.url.value }}">
+                        <input type="hidden" name="filetype" value="{{ link.form.filetype.value }}">
+                        <input type="hidden" name="added_by" value="{{ link.form.added_by.value }}">
+                        <input type="hidden" name="book" value="{{ link.form.book.value }}">
+                        <div class="field has-addons">
+                            <div class="control">
+                                <div class="select">
+                                    {{ link.form.availability }}
+                                </div>
+                            </div>
+                            <div class="control">
+                                <button class="button is-primary" type="submit">{% trans "Save" %}</button>
+                            </div>
+                        </div>
+                    </form>
+                </td>
+                <td>
+                    <form name="delete-link-{{ link.id }}" class="control" method="post" action="{% url 'file-link-delete' book.id link.id %}">
                         {% csrf_token %}
                         <button class="button is-danger is-light" type="submit">Delete link</button>
                     </form>
