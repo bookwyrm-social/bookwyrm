@@ -74,7 +74,7 @@ def raise_is_blocked_user_agent(request):
         return
     url = url.group()
     if models.FederatedServer.is_blocked(url):
-        logger.debug(f"{url} is blocked, denying request based on user agent")
+        logger.debug("%s is blocked, denying request based on user agent", url)
         raise PermissionDenied()
 
 
@@ -89,11 +89,11 @@ def raise_is_blocked_activity(activity_json):
     # check if the user is banned/deleted
     existing = models.User.find_existing_by_remote_id(actor)
     if existing and existing.deleted:
-        logger.debug(f"{actor} is banned/deleted, denying request based on actor")
+        logger.debug("%s is banned/deleted, denying request based on actor", actor)
         raise PermissionDenied()
 
     if models.FederatedServer.is_blocked(actor):
-        logger.debug(f"{actor} is blocked, denying request based on actor")
+        logger.debug("%s is blocked, denying request based on actor", actor)
         raise PermissionDenied()
 
 
