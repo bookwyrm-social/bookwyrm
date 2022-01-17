@@ -12,7 +12,7 @@
     {% for link in links %}
     <tr>
         <td class="overflow-wrap-anywhere">
-            <a href="{{ link.url }}" target="_blank" rel="noopener">{{ link.url }}</a>
+            <a href="{{ link.url }}" target="_blank" rel="noopener noreferrer">{{ link.url }}</a>
         </td>
         <td>
             <a href="{% url 'settings-user' link.added_by.id %}">@{{ link.added_by|username }}</a>
