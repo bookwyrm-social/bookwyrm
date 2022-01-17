@@ -3,7 +3,6 @@
 {% load i18n %}
 {% load static %}
 {% load humanize %}
-{% load cache %}
 
 {% with status_type=status.status_type %}
 <div
@@ -16,7 +15,6 @@
 
     <div class="columns is-gapless">
         {% if not hide_book %}
-        {% cache 259200 content_status_book status.id %}
             {% with book=status.book|default:status.mention_books.first %}
                 {% if book %}
                     <div class="column is-cover">
@@ -36,7 +34,6 @@
                     </div>
                 {% endif %}
             {% endwith %}
-        {% endcache %}
         {% endif %}
 
         <article class="column ml-3-tablet my-3-mobile">
