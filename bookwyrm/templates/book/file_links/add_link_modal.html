@@ -43,6 +43,14 @@
         {% include 'snippets/form_errors.html' with errors_list=file_link_form.filetype.errors id="desc_filetype" %}
     </div>
 </div>
+<div>
+    <label class="label" for="id_availability">
+        {% trans "Availability:" %}
+    </label>
+    <div class="select">
+        {{ file_link_form.availability }}
+    </div>
+</div>
 
 {% endblock %}
 

@@ -47,6 +47,13 @@ class Link(ActivitypubMixin, BookWyrmModel):
         return super().save(*args, **kwargs)
 
 
+AvailabilityChoices = [
+    ("free", _("Free")),
+    ("purchase", _("Purchasable")),
+    ("loan", _("Available for loan")),
+]
+
+
 class FileLink(Link):
     """a link to a file"""
 
@@ -54,7 +61,9 @@ class FileLink(Link):
         "Book", on_delete=models.CASCADE, related_name="file_links", null=True
     )
     filetype = fields.CharField(max_length=50, activitypub_field="mediaType")
-    is_purchase = fields.BooleanField(null=True, blank=True)
+    availability = fields.CharField(
+        max_length=100, choices=AvailabilityChoices, default="free"
+    )
 
 
 StatusChoices = [
