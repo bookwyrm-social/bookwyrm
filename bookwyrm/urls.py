@@ -473,9 +473,14 @@ urlpatterns = [
         rf"{BOOK_PATH}/filelink/?$", views.BookFileLinks.as_view(), name="file-link"
     ),
     re_path(
-        rf"{BOOK_PATH}/filelink/(?P<link_id>\d+)/delete/?$",
+        rf"{BOOK_PATH}/filelink/(?P<link_id>\d+)/?$",
         views.BookFileLinks.as_view(),
         name="file-link",
+    ),
+    re_path(
+        rf"{BOOK_PATH}/filelink/(?P<link_id>\d+)/delete/?$",
+        views.delete_link,
+        name="file-link-delete",
     ),
     re_path(
         rf"{BOOK_PATH}/filelink/add/?$",
