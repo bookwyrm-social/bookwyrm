@@ -30,7 +30,7 @@
         <input
             type="text"
             name="filetype"
-            maxlength="5"
+            maxlength="50"
             class="input"
             required=""
             id="id_filetype"
@@ -41,6 +41,14 @@
         >
         <datalist id="mimetypes-list"></datalist>
         {% include 'snippets/form_errors.html' with errors_list=file_link_form.filetype.errors id="desc_filetype" %}
+    </div>
+</div>
+<div>
+    <label class="label" for="id_availability">
+        {% trans "Availability:" %}
+    </label>
+    <div class="select">
+        {{ file_link_form.availability }}
     </div>
 </div>
 
