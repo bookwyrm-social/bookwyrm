@@ -17,7 +17,7 @@ def get_rating(book, user):
         f"book-rating-{book.parent_work.id}-{user.id}",
         lambda u, b: models.Review.privacy_filter(u)
         .filter(book__parent_work__editions=b)
-        .aggregate(Avg("rating"))["rating__avg"],
+        .aggregate(Avg("rating"))["rating__avg"] or 0,
         user,
         book,
         timeout=15552000,
@@ -144,7 +144,7 @@ def active_shelf(context, book):
                 models.ShelfBook.objects.filter(
                     shelf__user=u,
                     book__parent_work__editions=b,
-                ).first()
+                ).first() or False
             ),
             user,
             book,
@@ -162,7 +162,7 @@ def latest_read_through(book, user):
         lambda u, b: (
             models.ReadThrough.objects.filter(user=u, book=b, is_active=True)
             .order_by("-start_date")
-            .first()
+            .first() or False
         ),
         user,
         book,
