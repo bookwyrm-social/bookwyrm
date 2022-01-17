@@ -33,6 +33,7 @@
                 <th>{% trans "Added by" %}</th>
                 <th>{% trans "Filetype" %}</th>
                 <th>{% trans "Domain" %}</th>
+                <th>{% trans "Status" %}</th>
                 <th>{% trans "Actions" %}</th>
             </tr>
             {% for link in book.file_links.all %}
@@ -47,10 +48,22 @@
                     {{ link.filelink.filetype }}
                 </td>
                 <td>
-                    {{ link.domain.name }} ({{ link.domain.get_status_display }})
+                    {{ link.domain.name }}
                     <p>
                         <a href="{% url 'report-link' link.added_by.id link.id %}">{% trans "Report spam" %}</a>
                     </p>
+                </td>
+                <td>
+                    {% with status=link.domain.status %}
+                    <span class="tag {% if status == 'blocked' %}has-background-danger{% elif status == 'approved' %}has-background-primary{% endif %}">
+                        <span class="icon" aria-hidden="true">
+                            <span class="icon-{% if status == 'blocked' %}x{% elif status == 'approved' %}check{% else %}lock{% endif %}"></span>
+                        </span>
+                        <span>
+                            {{ link.domain.get_status_display }}
+                        </span>
+                    </span>
+                    {% endwith %}
                 </td>
                 <td>
                     <form name="delete-link-{{ link.id }}" class="control" method="post" action="{% url 'file-link' book.id link.id %}">
