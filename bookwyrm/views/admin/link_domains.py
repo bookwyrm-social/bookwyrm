@@ -20,9 +20,9 @@ class LinkDomain(View):
     def get(self, request, status="pending"):
         """view pending domains"""
         data = {
-            "domains": models.LinkDomain.objects.filter(status=status).prefetch_related(
-                "links"
-            ),
+            "domains": models.LinkDomain.objects.filter(status=status)
+            .prefetch_related("links")
+            .order_by("-created_date"),
             "counts": {
                 "pending": models.LinkDomain.objects.filter(status="pending").count(),
                 "approved": models.LinkDomain.objects.filter(status="approved").count(),
