@@ -23,18 +23,13 @@
     </div>
 </div>
 
-<div class="block columns is-flex-direction-row-reverse" itemscope itemtype="https://schema.org/Person">
+<div class="block columns" itemscope itemtype="https://schema.org/Person">
     <meta itemprop="name" content="{{ author.name }}">
-    {% if author.bio %}
-    <div class="column">
-        {% include "snippets/trimmed_text.html" with full=author.bio trim_length=200 %}
-    </div>
-    {% endif %}
 
     {% firstof author.aliases author.born author.died as details %}
     {% firstof author.wikipedia_link author.openlibrary_key author.inventaire_id author.isni as links %}
     {% if details or links %}
-    <div class="column is-two-fifths">
+    <div class="column is-3">
         {% if details %}
         <section class="block content">
             <h2 class="title is-4">{% trans "Author details" %}</h2>
@@ -137,26 +132,28 @@
         {% endif %}
     </div>
     {% endif %}
-</div>
 
-<hr aria-hidden="true">
+    <div class="column">
+        {% if author.bio %}
+        {% include "snippets/trimmed_text.html" with full=author.bio trim_length=200 %}
+        {% endif %}
 
-<div class="block">
-    <h2 class="title is-4">{% blocktrans with name=author.name %}Books by {{ name }}{% endblocktrans %}</h2>
-    <div class="columns is-multiline is-mobile">
-    {% for book in books %}
-        <div class="column is-one-fifth-tablet is-half-mobile is-flex is-flex-direction-column">
-            <div class="is-flex-grow-1">
-                {% include 'landing/small-book.html' with book=book %}
+        <h2 class="title is-4">{% blocktrans with name=author.name %}Books by {{ name }}{% endblocktrans %}</h2>
+        <div class="columns is-multiline is-mobile">
+        {% for book in books %}
+            <div class="column is-one-fifth-tablet is-half-mobile is-flex is-flex-direction-column">
+                <div class="is-flex-grow-1">
+                    {% include 'landing/small-book.html' with book=book %}
+                </div>
+                {% include 'snippets/shelve_button/shelve_button.html' with book=book %}
             </div>
-            {% include 'snippets/shelve_button/shelve_button.html' with book=book %}
+        {% endfor %}
         </div>
-    {% endfor %}
-    </div>
-</div>
 
-<div>
-    {% include 'snippets/pagination.html' with page=books %}
+        <div>
+            {% include 'snippets/pagination.html' with page=books %}
+        </div>
+    </div>
 </div>
 
 {% endblock %}
