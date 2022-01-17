@@ -42,6 +42,8 @@
 
     function getSuggestions(input, trie) {
         // Follow the trie through the provided input
+        input = input.toLowerCase();
+
         input.split("").forEach((letter) => {
             if (!trie) {
                 return;
