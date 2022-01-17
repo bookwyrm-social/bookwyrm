@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-01-17 19:26+0000\n"
-"PO-Revision-Date: 2022-01-17 19:57\n"
+"PO-Revision-Date: 2022-01-17 22:00\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: German\n"
 "Language: de\n"
@@ -527,12 +527,12 @@ msgstr "Weiter so!"
 #, python-format
 msgid "%(display_name)s left %(ratings_total)s rating, <br />their average rating is %(rating_average)s"
 msgid_plural "%(display_name)s left %(ratings_total)s ratings, <br />their average rating is %(rating_average)s"
-msgstr[0] "%(display_name)s hat %(ratings_total)s Rezensionen mit einer durchschnittlichen Bewertung von %(rating_average)s geschrieben"
-msgstr[1] "%(display_name)s hat %(ratings_total)s Rezensionen mit einer durchschnittlichen Bewertung von %(rating_average)s geschrieben"
+msgstr[0] "%(display_name)s hat %(ratings_total)s Bewertung geschrieben, <br />die durchschnittliche Bewertung ist %(rating_average)s"
+msgstr[1] "%(display_name)s hat %(ratings_total)s Bewertungen geschrieben, <br />die durchschnittliche Bewertung ist %(rating_average)s"
 
 #: bookwyrm/templates/annual_summary/layout.html:238
 msgid "Their best rated review"
-msgstr "Ihre oder Seine bestbewertete Rezension"
+msgstr "Am besten bewertete Besprechung"
 
 #: bookwyrm/templates/annual_summary/layout.html:251
 #, python-format
@@ -4387,7 +4387,7 @@ msgstr "hat <a href=\"%(book_path)s\">%(book)s</a> abgeschlossen"
 #: bookwyrm/templates/snippets/status/headers/reading.html:10
 #, python-format
 msgid "started reading <a href=\"%(book_path)s\">%(book)s</a> by <a href=\"%(author_path)s\">%(author_name)s</a>"
-msgstr "<a href=\"%(author_path)s\">%(author_name)s</a> beginnt <a href=\"%(book_path)s\">%(book)s</a> zu lesen"
+msgstr "hat begonnen, <a href=\"%(book_path)s\">%(book)s</a> von <a href=\"%(author_path)s\">%(author_name)s</a> zu lesen"
 
 #: bookwyrm/templates/snippets/status/headers/reading.html:17
 #, python-format
@@ -4397,7 +4397,7 @@ msgstr "hat angefangen, <a href=\"%(book_path)s\">%(book)s</a> zu lesen"
 #: bookwyrm/templates/snippets/status/headers/review.html:8
 #, python-format
 msgid "reviewed <a href=\"%(book_path)s\">%(book)s</a> by <a href=\"%(author_path)s\">%(author_name)s</a>"
-msgstr "<a href=\"%(author_path)s\">%(author_name)s</a> hat <a href=\"%(book_path)s\">%(book)s</a> rezensiert"
+msgstr "hat <a href=\"%(book_path)s\">%(book)s</a> von <a href=\"%(author_path)s\">%(author_name)s</a> besprochen"
 
 #: bookwyrm/templates/snippets/status/headers/review.html:15
 #, python-format
