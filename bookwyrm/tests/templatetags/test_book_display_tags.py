@@ -4,12 +4,13 @@ from unittest.mock import patch
 from django.test import TestCase
 
 from bookwyrm import models
-from bookwyrm.templatetags import bookwyrm_tags
+from bookwyrm.templatetags import book_display_tags
 
 
 @patch("bookwyrm.activitystreams.add_status_task.delay")
 @patch("bookwyrm.activitystreams.remove_status_task.delay")
-class BookWyrmTags(TestCase):
+@patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
+class BookDisplayTags(TestCase):
     """lotta different things here"""
 
     def setUp(self):
@@ -24,14 +25,6 @@ class BookWyrmTags(TestCase):
                 local=True,
                 localname="mouse",
             )
-        with patch("bookwyrm.models.user.set_remote_server.delay"):
-            self.remote_user = models.User.objects.create_user(
-                "rat",
-                "rat@rat.rat",
-                "ratword",
-                remote_id="http://example.com/rat",
-                local=False,
-            )
         self.book = models.Edition.objects.create(title="Test Book")
 
     def test_get_book_description(self, *_):
@@ -40,12 +33,30 @@ class BookWyrmTags(TestCase):
         self.book.parent_work = work
         self.book.save()
 
-        self.assertIsNone(bookwyrm_tags.get_book_description(self.book))
+        self.assertIsNone(book_display_tags.get_book_description(self.book))
 
         work.description = "hi"
         work.save()
-        self.assertEqual(bookwyrm_tags.get_book_description(self.book), "hi")
+        self.assertEqual(book_display_tags.get_book_description(self.book), "hi")
 
         self.book.description = "hello"
         self.book.save()
-        self.assertEqual(bookwyrm_tags.get_book_description(self.book), "hello")
+        self.assertEqual(book_display_tags.get_book_description(self.book), "hello")
+
+    def test_get_book_file_links(self, *_):
+        """load approved links"""
+        link = models.FileLink.objects.create(
+            book=self.book,
+            url="https://web.site/hello",
+        )
+        links = book_display_tags.get_book_file_links(self.book)
+        # the link is pending
+        self.assertFalse(links.exists())
+
+        domain = link.domain
+        domain.status = "approved"
+        domain.save()
+
+        links = book_display_tags.get_book_file_links(self.book)
+        self.assertTrue(links.exists())
+        self.assertEqual(links[0], link)
