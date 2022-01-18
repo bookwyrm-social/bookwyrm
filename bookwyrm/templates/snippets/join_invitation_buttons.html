@@ -1,5 +1,6 @@
 {% load i18n %}
-{% load bookwyrm_group_tags %}
+{% load group_tags %}
+
 {% if group|is_invited:request.user %}
 <div class="field is-grouped">
     <form action="/accept-group-invitation/" method="POST">

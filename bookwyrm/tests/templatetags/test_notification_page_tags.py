@@ -25,7 +25,6 @@ class BookWyrmTags(TestCase):
                 localname="mouse",
             )
 
-
     def test_related_status(self, *_):
         """gets the subclass model for a notification status"""
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
