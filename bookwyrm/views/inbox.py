@@ -1,7 +1,10 @@
 """ incoming activities """
 import json
 import re
+import logging
+
 from urllib.parse import urldefrag
+import requests
 
 from django.http import HttpResponse, Http404
 from django.core.exceptions import BadRequest, PermissionDenied
@@ -9,8 +12,6 @@ from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
-import requests
-import logging
 
 from bookwyrm import activitypub, models
 from bookwyrm.tasks import app
