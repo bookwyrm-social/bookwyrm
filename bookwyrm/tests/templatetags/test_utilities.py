@@ -35,6 +35,15 @@ class UtilitiesTags(TestCase):
             )
         self.book = models.Edition.objects.create(title="Test Book")
 
+    def test_get_uuid(self, *_):
+        """uuid functionality"""
+        uuid = utilities.get_uuid("hi")
+        self.assertTrue(re.match(r"hi[A-Za-z0-9\-]", uuid))
+
+    def test_join(self, *_):
+        """concats things with underscores"""
+        self.assertEqual(utilities.join("hi", 5, "blah", 0.75), "hi_5_blah_0.75")
+
     def test_get_user_identifer_local(self, *_):
         """fall back to the simplest uid available"""
         self.assertNotEqual(self.user.username, self.user.localname)
@@ -45,11 +54,6 @@ class UtilitiesTags(TestCase):
         self.assertEqual(
             utilities.get_user_identifier(self.remote_user), "rat@example.com"
         )
-
-    def test_get_uuid(self, *_):
-        """uuid functionality"""
-        uuid = utilities.get_uuid("hi")
-        self.assertTrue(re.match(r"hi[A-Za-z0-9\-]", uuid))
 
     def test_get_title(self, *_):
         """the title of a book"""

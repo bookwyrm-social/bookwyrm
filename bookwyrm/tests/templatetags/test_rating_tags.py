@@ -48,9 +48,7 @@ class RatingTags(TestCase):
             book=self.book,
             privacy="followers",
         )
-        self.assertEqual(
-            rating_tags.get_rating(self.book, self.local_user), 0
-        )
+        self.assertEqual(rating_tags.get_rating(self.book, self.local_user), 0)
 
         # public: included
         models.ReviewRating.objects.create(
@@ -59,9 +57,7 @@ class RatingTags(TestCase):
             book=self.book,
             privacy="public",
         )
-        self.assertEqual(
-            rating_tags.get_rating(self.book, self.local_user), 5
-        )
+        self.assertEqual(rating_tags.get_rating(self.book, self.local_user), 5)
 
         # rating unset: not included
         models.Review.objects.create(
@@ -71,10 +67,7 @@ class RatingTags(TestCase):
             book=self.book,
             privacy="public",
         )
-        self.assertEqual(
-            rating_tags.get_rating(self.book, self.local_user), 5
-        )
-
+        self.assertEqual(rating_tags.get_rating(self.book, self.local_user), 5)
 
     def test_get_user_rating(self, *_):
         """get a user's most recent rating of a book"""

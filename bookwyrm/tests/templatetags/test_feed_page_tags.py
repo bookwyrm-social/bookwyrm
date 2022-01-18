@@ -9,7 +9,7 @@ from bookwyrm.templatetags import feed_page_tags
 
 @patch("bookwyrm.activitystreams.add_status_task.delay")
 @patch("bookwyrm.activitystreams.remove_status_task.delay")
-class BookWyrmTags(TestCase):
+class FeedPageTags(TestCase):
     """lotta different things here"""
 
     def setUp(self):
