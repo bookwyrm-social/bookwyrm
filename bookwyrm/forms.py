@@ -500,7 +500,7 @@ class ReadThroughForm(CustomForm):
         cleaned_data = super().clean()
         start_date = cleaned_data.get("start_date")
         finish_date = cleaned_data.get("finish_date")
-        if start_date > finish_date:
+        if start_date and finish_date and start_date > finish_date:
             self.add_error(
                 "finish_date", _("Reading finish date cannot be before start date.")
             )
