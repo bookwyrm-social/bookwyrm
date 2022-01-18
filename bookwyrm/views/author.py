@@ -12,6 +12,7 @@ from bookwyrm import forms, models
 from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.connectors import connector_manager
 from bookwyrm.settings import PAGE_LENGTH
+from bookwyrm.utils import cache
 from bookwyrm.views.helpers import is_api_request
 
 
@@ -30,14 +31,24 @@ class Author(View):
             parent_work=OuterRef("parent_work")
         ).order_by("-edition_rank")
 
-        books = (
-            models.Edition.viewer_aware_objects(request.user)
-            .filter(Q(authors=author) | Q(parent_work__authors=author))
+        book_ids = cache.get_or_set(
+            f"author-books-{author.id}",
+            lambda a: models.Edition.objects.filter(
+                Q(authors=a) | Q(parent_work__authors=a)
+            )
             .annotate(default_id=Subquery(default_editions.values("id")[:1]))
             .filter(default_id=F("id"))
-            .order_by("-first_published_date", "-published_date", "-created_date")
+            .distinct()
+            .values_list("id", flat=True),
+            author,
+            timeout=15552000,
+        )
+
+        books = (
+            models.Edition.objects.filter(id__in=book_ids)
+            .order_by("-published_date", "-first_published_date", "-created_date")
             .prefetch_related("authors")
-        ).distinct()
+        )
 
         paginated = Paginator(books, PAGE_LENGTH)
         page = paginated.get_page(request.GET.get("page"))

@@ -13,10 +13,16 @@ register = template.Library()
 @register.filter(name="rating")
 def get_rating(book, user):
     """get the overall rating of a book"""
-    queryset = models.Review.privacy_filter(user).filter(
-        book__parent_work__editions=book
+    return cache.get_or_set(
+        f"book-rating-{book.parent_work.id}-{user.id}",
+        lambda u, b: models.Review.privacy_filter(u)
+        .filter(book__parent_work__editions=b)
+        .aggregate(Avg("rating"))["rating__avg"]
+        or 0,
+        user,
+        book,
+        timeout=15552000,
     )
-    return queryset.aggregate(Avg("rating"))["rating__avg"]
 
 
 @register.filter(name="user_rating")
@@ -35,6 +41,18 @@ def get_user_rating(book, user):
     if rating:
         return rating.rating
     return 0
+
+
+@register.filter(name="is_book_on_shelf")
+def get_is_book_on_shelf(book, shelf):
+    """is a book on a shelf"""
+    return cache.get_or_set(
+        f"book-on-shelf-{book.id}-{shelf.id}",
+        lambda b, s: s.books.filter(id=b.id).exists(),
+        book,
+        shelf,
+        timeout=15552000,
+    )
 
 
 @register.filter(name="book_description")
@@ -140,6 +158,7 @@ def active_shelf(context, book):
                     shelf__user=u,
                     book__parent_work__editions=b,
                 ).first()
+                or False
             ),
             user,
             book,
@@ -158,6 +177,7 @@ def latest_read_through(book, user):
             models.ReadThrough.objects.filter(user=u, book=b, is_active=True)
             .order_by("-start_date")
             .first()
+            or False
         ),
         user,
         book,
