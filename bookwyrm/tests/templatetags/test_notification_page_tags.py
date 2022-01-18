@@ -4,7 +4,7 @@ from unittest.mock import patch
 from django.test import TestCase
 
 from bookwyrm import models
-from bookwyrm.templatetags import bookwyrm_tags
+from bookwyrm.templatetags import notification_page_tags
 
 
 @patch("bookwyrm.activitystreams.add_status_task.delay")
@@ -33,5 +33,5 @@ class BookWyrmTags(TestCase):
             user=self.user, notification_type="MENTION", related_status=status
         )
 
-        result = bookwyrm_tags.related_status(notification)
+        result = notification_page_tags.related_status(notification)
         self.assertIsInstance(result, models.Status)

@@ -4,7 +4,7 @@ from unittest.mock import patch
 from django.test import TestCase
 
 from bookwyrm import models
-from bookwyrm.templatetags import bookwyrm_tags
+from bookwyrm.templatetags import feed_page_tags
 
 
 @patch("bookwyrm.activitystreams.add_status_task.delay")
@@ -26,7 +26,7 @@ class BookWyrmTags(TestCase):
             )
         self.book = models.Edition.objects.create(title="Test Book")
 
-        self.assertEqual(bookwyrm_tags.get_book_description(self.book), "hello")
+        self.assertEqual(feed_page_tags.get_book_description(self.book), "hello")
 
     @patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
     def test_load_subclass(self, *_):
@@ -34,18 +34,18 @@ class BookWyrmTags(TestCase):
         review = models.Review.objects.create(user=self.user, book=self.book, rating=3)
         status = models.Status.objects.get(id=review.id)
         self.assertIsInstance(status, models.Status)
-        self.assertIsInstance(bookwyrm_tags.load_subclass(status), models.Review)
+        self.assertIsInstance(feed_page_tags.load_subclass(status), models.Review)
 
         quote = models.Quotation.objects.create(
             user=self.user, book=self.book, content="hi"
         )
         status = models.Status.objects.get(id=quote.id)
         self.assertIsInstance(status, models.Status)
-        self.assertIsInstance(bookwyrm_tags.load_subclass(status), models.Quotation)
+        self.assertIsInstance(feed_page_tags.load_subclass(status), models.Quotation)
 
         comment = models.Comment.objects.create(
             user=self.user, book=self.book, content="hi"
         )
         status = models.Status.objects.get(id=comment.id)
         self.assertIsInstance(status, models.Status)
-        self.assertIsInstance(bookwyrm_tags.load_subclass(status), models.Comment)
+        self.assertIsInstance(feed_page_tags.load_subclass(status), models.Comment)
