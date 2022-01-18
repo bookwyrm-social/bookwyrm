@@ -12,7 +12,7 @@ from bookwyrm.templatetags import shelf_tags
 @patch("bookwyrm.activitystreams.remove_status_task.delay")
 @patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
 @patch("bookwyrm.activitystreams.add_book_statuses_task.delay")
-class BookWyrmTags(TestCase):
+class ShelfTags(TestCase):
     """lotta different things here"""
 
     def setUp(self):

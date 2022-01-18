@@ -34,16 +34,6 @@ class BookWyrmTags(TestCase):
             )
         self.book = models.Edition.objects.create(title="Test Book")
 
-    def test_get_user_rating(self, *_):
-        """get a user's most recent rating of a book"""
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
-            models.Review.objects.create(user=self.user, book=self.book, rating=3)
-        self.assertEqual(bookwyrm_tags.get_user_rating(self.book, self.user), 3)
-
-    def test_get_user_rating_doesnt_exist(self, *_):
-        """there is no rating available"""
-        self.assertEqual(bookwyrm_tags.get_user_rating(self.book, self.user), 0)
-
     def test_get_book_description(self, *_):
         """grab it from the edition or the parent"""
         work = models.Work.objects.create(title="Test Work")
