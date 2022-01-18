@@ -43,6 +43,18 @@ def get_user_rating(book, user):
     return 0
 
 
+@register.filter(name="is_book_on_shelf")
+def get_is_book_on_shelf(book, shelf):
+    """is a book on a shelf"""
+    return cache.get_or_set(
+        f"book-on-shelf-{book.id}-{shelf.id}",
+        lambda b, s: s.books.filter(id=b.id).exists(),
+        book,
+        shelf,
+        timeout=15552000,
+    )
+
+
 @register.filter(name="book_description")
 def get_book_description(book):
     """use the work's text if the book doesn't have it"""

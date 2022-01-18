@@ -38,7 +38,7 @@
             <form name="shelve-{{ uuid }}-{{ shelf.identifier }}" action="/shelve/" method="post" autocomplete="off">
                 {% csrf_token %}
                 <input type="hidden" name="book" value="{{ active_shelf.book.id }}">
-                <button class="button {{ class }}" name="shelf" type="submit" value="{{ shelf.identifier }}" {% if shelf in book.shelf_set.all %} disabled {% endif %}>
+                <button class="button {{ class }}" name="shelf" type="submit" value="{{ shelf.identifier }}" {% if book|is_book_on_shelf:shelf %} disabled {% endif %}>
                     <span>{{ shelf.name }}</span>
                 </button>
             </form>
