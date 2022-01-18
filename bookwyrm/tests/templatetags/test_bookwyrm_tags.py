@@ -60,13 +60,6 @@ class BookWyrmTags(TestCase):
         self.book.save()
         self.assertEqual(bookwyrm_tags.get_book_description(self.book), "hello")
 
-    def test_get_next_shelf(self, *_):
-        """self progress helper"""
-        self.assertEqual(bookwyrm_tags.get_next_shelf("to-read"), "reading")
-        self.assertEqual(bookwyrm_tags.get_next_shelf("reading"), "read")
-        self.assertEqual(bookwyrm_tags.get_next_shelf("read"), "complete")
-        self.assertEqual(bookwyrm_tags.get_next_shelf("blooooga"), "to-read")
-
     @patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
     def test_load_subclass(self, *_):
         """get a status' real type"""
