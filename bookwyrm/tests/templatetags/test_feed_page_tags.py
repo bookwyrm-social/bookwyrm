@@ -26,7 +26,6 @@ class FeedPageTags(TestCase):
             )
         self.book = models.Edition.objects.create(title="Test Book")
 
-        self.assertEqual(feed_page_tags.get_book_description(self.book), "hello")
 
     @patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
     def test_load_subclass(self, *_):
