@@ -29,22 +29,24 @@ margin = math.floor(IMG_HEIGHT / 10)
 gutter = math.floor(margin / 2)
 inner_img_height = math.floor(IMG_HEIGHT * 0.8)
 inner_img_width = math.floor(inner_img_height * 0.7)
-font_dir = os.path.join(settings.STATIC_ROOT, "fonts/public_sans")
+font_dir = os.path.join(settings.STATIC_ROOT, "fonts/source_han_sans")
 
 
-def get_font(font_name, size=28):
+def get_font(weight, size=28):
     """Loads custom font"""
-    if font_name == "light":
-        font_path = os.path.join(font_dir, "PublicSans-Light.ttf")
-    if font_name == "regular":
-        font_path = os.path.join(font_dir, "PublicSans-Regular.ttf")
-    elif font_name == "bold":
-        font_path = os.path.join(font_dir, "PublicSans-Bold.ttf")
+    font_path = os.path.join(font_dir, "SourceHanSans-VF.ttf.ttc")
 
     try:
         font = ImageFont.truetype(font_path, size)
     except OSError:
         font = ImageFont.load_default()
+
+    if (weight == 'light'):
+        font.set_variation_by_name('Light')
+    if (weight == 'bold'):
+        font.set_variation_by_name('Bold')
+    if (weight == 'regular'):
+        font.set_variation_by_name('Regular')
 
     return font
 
