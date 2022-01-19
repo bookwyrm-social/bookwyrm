@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-01-17 19:26+0000\n"
-"PO-Revision-Date: 2022-01-19 06:51\n"
+"PO-Revision-Date: 2022-01-19 08:13\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Swedish\n"
 "Language: sv\n"
@@ -469,8 +469,8 @@ msgstr "%(display_name)s avslutade tyvärr inte några böcker under %(year)s"
 #, python-format
 msgid "In %(year)s, %(display_name)s read %(books_total)s book<br />for a total of %(pages_total)s pages!"
 msgid_plural "In %(year)s, %(display_name)s read %(books_total)s books<br />for a total of %(pages_total)s pages!"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Under %(year)s så läste %(display_name)s %(books_total)s bok<br />, totalt %(pages_total)s sidor!"
+msgstr[1] "Under %(year)s så läste %(display_name)s %(books_total)s böcker<br />, totalt %(pages_total)s sidor!"
 
 #: bookwyrm/templates/annual_summary/layout.html:124
 msgid "That’s great!"
@@ -479,14 +479,14 @@ msgstr "Det är ju jättebra!"
 #: bookwyrm/templates/annual_summary/layout.html:127
 #, python-format
 msgid "That makes an average of %(pages)s pages per book."
-msgstr ""
+msgstr "Det är i snitt %(pages)s sidor per bok."
 
 #: bookwyrm/templates/annual_summary/layout.html:132
 #, python-format
 msgid "(%(no_page_number)s book doesn’t have pages)"
 msgid_plural "(%(no_page_number)s books don’t have pages)"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "(%(no_page_number)s bok har inga sidor)"
+msgstr[1] "(%(no_page_number)s böcker har inga sidor)"
 
 #: bookwyrm/templates/annual_summary/layout.html:148
 msgid "Their shortest read this year…"
@@ -516,8 +516,8 @@ msgstr "…och den längsta"
 #, python-format
 msgid "%(display_name)s set a goal of reading %(goal)s book in %(year)s,<br /> and achieved %(goal_percent)s%% of that goal"
 msgid_plural "%(display_name)s set a goal of reading %(goal)s books in %(year)s,<br /> and achieved %(goal_percent)s%% of that goal"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(display_name)s satte ett mål att läsa %(goal)s bok under %(year)s,<br /> och uppnådde %(goal_percent)s%% av det målet"
+msgstr[1] "%(display_name)s satte ett mål att läsa %(goal)s böcker under %(year)s,<br /> och uppnådde %(goal_percent)s%% av det målet"
 
 #: bookwyrm/templates/annual_summary/layout.html:209
 msgid "Way to go!"
@@ -527,8 +527,8 @@ msgstr "Bra gjort!"
 #, python-format
 msgid "%(display_name)s left %(ratings_total)s rating, <br />their average rating is %(rating_average)s"
 msgid_plural "%(display_name)s left %(ratings_total)s ratings, <br />their average rating is %(rating_average)s"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(display_name)s lämnade %(ratings_total)s betyg, <br />deras genomsnittliga betyg är %(rating_average)s"
+msgstr[1] "%(display_name)s lämnade %(ratings_total)s betyg, <br />deras genomsnittliga betyg är %(rating_average)s"
 
 #: bookwyrm/templates/annual_summary/layout.html:238
 msgid "Their best rated review"
