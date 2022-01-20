@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-01-17 16:05+0000\n"
-"PO-Revision-Date: 2022-01-17 17:10\n"
+"POT-Creation-Date: 2022-01-17 19:26+0000\n"
+"PO-Revision-Date: 2022-01-18 14:10\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Portuguese, Brazilian\n"
 "Language: pt\n"
@@ -84,7 +84,7 @@ msgstr "Erro ao carregar livro"
 msgid "Could not find a match for book"
 msgstr "Não foi possível encontrar o livro"
 
-#: bookwyrm/models/base_model.py:17 bookwyrm/models/link.py:62
+#: bookwyrm/models/base_model.py:17 bookwyrm/models/link.py:72
 #: bookwyrm/templates/import/import_status.html:200
 #: bookwyrm/templates/settings/link_domains/link_domains.html:19
 msgid "Pending"
@@ -132,7 +132,7 @@ msgstr "Capa mole"
 msgid "Federated"
 msgstr "Federado"
 
-#: bookwyrm/models/federated_server.py:12 bookwyrm/models/link.py:61
+#: bookwyrm/models/federated_server.py:12 bookwyrm/models/link.py:71
 #: bookwyrm/templates/settings/federation/edit_instance.html:44
 #: bookwyrm/templates/settings/federation/instance.html:10
 #: bookwyrm/templates/settings/federation/instance_list.html:23
@@ -191,7 +191,19 @@ msgstr "Seguidores"
 msgid "Private"
 msgstr "Particular"
 
-#: bookwyrm/models/link.py:60
+#: bookwyrm/models/link.py:51
+msgid "Free"
+msgstr "Gratuito"
+
+#: bookwyrm/models/link.py:52
+msgid "Purchasable"
+msgstr "Comprável"
+
+#: bookwyrm/models/link.py:53
+msgid "Available for loan"
+msgstr "Disponível para empréstimo"
+
+#: bookwyrm/models/link.py:70
 #: bookwyrm/templates/settings/link_domains/link_domains.html:23
 msgid "Approved"
 msgstr "Aprovado"
@@ -676,7 +688,8 @@ msgstr "ISNI:"
 #: bookwyrm/templates/author/edit_author.html:115
 #: bookwyrm/templates/book/book.html:193
 #: bookwyrm/templates/book/edit/edit_book.html:121
-#: bookwyrm/templates/book/file_links/add_link_modal.html:50
+#: bookwyrm/templates/book/file_links/add_link_modal.html:58
+#: bookwyrm/templates/book/file_links/edit_links.html:82
 #: bookwyrm/templates/groups/form.html:30
 #: bookwyrm/templates/lists/bookmark_button.html:15
 #: bookwyrm/templates/lists/form.html:130
@@ -698,7 +711,7 @@ msgstr "Salvar"
 #: bookwyrm/templates/book/cover_add_modal.html:32
 #: bookwyrm/templates/book/edit/edit_book.html:123
 #: bookwyrm/templates/book/edit/edit_book.html:126
-#: bookwyrm/templates/book/file_links/add_link_modal.html:52
+#: bookwyrm/templates/book/file_links/add_link_modal.html:60
 #: bookwyrm/templates/book/file_links/verification_modal.html:21
 #: bookwyrm/templates/book/sync_modal.html:23
 #: bookwyrm/templates/groups/delete_group_modal.html:17
@@ -1068,9 +1081,13 @@ msgstr "URL:"
 msgid "File type:"
 msgstr "Tipo do arquivo:"
 
+#: bookwyrm/templates/book/file_links/add_link_modal.html:48
+msgid "Availability:"
+msgstr "Disponibilidade:"
+
 #: bookwyrm/templates/book/file_links/edit_links.html:5
 #: bookwyrm/templates/book/file_links/edit_links.html:22
-#: bookwyrm/templates/book/file_links/links.html:47
+#: bookwyrm/templates/book/file_links/links.html:53
 msgid "Edit links"
 msgstr "Editar links"
 
@@ -1105,21 +1122,32 @@ msgid "Domain"
 msgstr "Domínio"
 
 #: bookwyrm/templates/book/file_links/edit_links.html:36
+#: bookwyrm/templates/import/import_status.html:127
+#: bookwyrm/templates/settings/announcements/announcements.html:38
+#: bookwyrm/templates/settings/federation/instance_list.html:46
+#: bookwyrm/templates/settings/invites/manage_invite_requests.html:44
+#: bookwyrm/templates/settings/invites/status_filter.html:5
+#: bookwyrm/templates/settings/users/user_admin.html:34
+#: bookwyrm/templates/settings/users/user_info.html:20
+msgid "Status"
+msgstr "Publicação"
+
+#: bookwyrm/templates/book/file_links/edit_links.html:37
 #: bookwyrm/templates/settings/federation/instance.html:94
 #: bookwyrm/templates/settings/reports/report_links_table.html:6
 msgid "Actions"
 msgstr "Ações"
 
-#: bookwyrm/templates/book/file_links/edit_links.html:52
+#: bookwyrm/templates/book/file_links/edit_links.html:53
 #: bookwyrm/templates/book/file_links/verification_modal.html:25
 msgid "Report spam"
 msgstr "Denunciar spam"
 
-#: bookwyrm/templates/book/file_links/edit_links.html:65
+#: bookwyrm/templates/book/file_links/edit_links.html:97
 msgid "No links available for this book."
 msgstr "Nenhum link disponível para este livro."
 
-#: bookwyrm/templates/book/file_links/edit_links.html:76
+#: bookwyrm/templates/book/file_links/edit_links.html:108
 #: bookwyrm/templates/book/file_links/links.html:18
 msgid "Add link to file"
 msgstr "Adicionar link ao arquivo"
@@ -1132,7 +1160,7 @@ msgstr "Links de arquivo"
 msgid "Get a copy"
 msgstr "Obter uma cópia"
 
-#: bookwyrm/templates/book/file_links/links.html:41
+#: bookwyrm/templates/book/file_links/links.html:47
 msgid "No links available"
 msgstr "Nenhum link disponível"
 
@@ -1971,16 +1999,6 @@ msgstr "Resenhar"
 msgid "Book"
 msgstr "Livro"
 
-#: bookwyrm/templates/import/import_status.html:127
-#: bookwyrm/templates/settings/announcements/announcements.html:38
-#: bookwyrm/templates/settings/federation/instance_list.html:46
-#: bookwyrm/templates/settings/invites/manage_invite_requests.html:44
-#: bookwyrm/templates/settings/invites/status_filter.html:5
-#: bookwyrm/templates/settings/users/user_admin.html:34
-#: bookwyrm/templates/settings/users/user_info.html:20
-msgid "Status"
-msgstr "Publicação"
-
 #: bookwyrm/templates/import/import_status.html:135
 msgid "Import preview unavailable."
 msgstr "Pré-visualização de importação indisponível."
@@ -2029,8 +2047,8 @@ msgid "Reject"
 msgstr "Rejeitar"
 
 #: bookwyrm/templates/import/tooltip.html:6
-msgid "You can download your Goodreads data from the <a href=\"https://www.goodreads.com/review/import\" target=\"_blank\" rel=\"noopener\">Import/Export page</a> of your Goodreads account."
-msgstr "Você pode baixar seus dados do Goodreads na <a href=\"https://www.goodreads.com/review/import\" target=\"_blank\" rel=\"noopener\">página de Importar/Exportar</a> da sua conta."
+msgid "You can download your Goodreads data from the <a href=\"https://www.goodreads.com/review/import\" target=\"_blank\" rel=\"noopener noreferrer\">Import/Export page</a> of your Goodreads account."
+msgstr "Você pode baixar seus dados do Goodreads na <a href=\"https://www.goodreads.com/review/import\" target=\"_blank\" rel=\"noopener noreferrer\">página de Importar/Exportar</a> da sua conta."
 
 #: bookwyrm/templates/import/troubleshoot.html:7
 msgid "Failed items"
@@ -4296,29 +4314,29 @@ msgstr "Remover de %(name)s"
 msgid "Finish reading"
 msgstr "Terminar de ler"
 
-#: bookwyrm/templates/snippets/status/content_status.html:75
+#: bookwyrm/templates/snippets/status/content_status.html:72
 msgid "Content warning"
 msgstr "Aviso de conteúdo"
 
-#: bookwyrm/templates/snippets/status/content_status.html:82
+#: bookwyrm/templates/snippets/status/content_status.html:79
 msgid "Show status"
 msgstr "Mostrar publicação"
 
-#: bookwyrm/templates/snippets/status/content_status.html:104
+#: bookwyrm/templates/snippets/status/content_status.html:101
 #, python-format
 msgid "(Page %(page)s)"
 msgstr "(Página %(page)s)"
 
-#: bookwyrm/templates/snippets/status/content_status.html:106
+#: bookwyrm/templates/snippets/status/content_status.html:103
 #, python-format
 msgid "(%(percent)s%%)"
 msgstr "(%(percent)s%%)"
 
-#: bookwyrm/templates/snippets/status/content_status.html:128
+#: bookwyrm/templates/snippets/status/content_status.html:125
 msgid "Open image in new window"
 msgstr "Abrir imagem em nova janela"
 
-#: bookwyrm/templates/snippets/status/content_status.html:147
+#: bookwyrm/templates/snippets/status/content_status.html:144
 msgid "Hide status"
 msgstr "Esconder publicação"
 
