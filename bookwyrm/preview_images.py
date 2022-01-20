@@ -41,12 +41,15 @@ def get_font(weight, size=28):
     except OSError:
         font = ImageFont.load_default()
 
-    if (weight == 'light'):
-        font.set_variation_by_name('Light')
-    if (weight == 'bold'):
-        font.set_variation_by_name('Bold')
-    if (weight == 'regular'):
-        font.set_variation_by_name('Regular')
+    try:
+        if weight == "light":
+            font.set_variation_by_name("Light")
+        if weight == "bold":
+            font.set_variation_by_name("Bold")
+        if weight == "regular":
+            font.set_variation_by_name("Regular")
+    except AttributeError:
+        pass
 
     return font
 
