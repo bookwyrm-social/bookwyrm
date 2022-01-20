@@ -93,3 +93,28 @@ class SiteModels(TestCase):
         token = models.PasswordReset.objects.create(user=self.local_user, code="hello")
         self.assertTrue(token.valid())
         self.assertEqual(token.link, f"https://{settings.DOMAIN}/password-reset/hello")
+
+    def test_change_confirmation_scheme(self):
+        """Switch from requiring email confirmation to not"""
+        site = models.SiteSettings.objects.create(
+            id=1, name="Fish Town", require_confirm_email=True
+        )
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
+            "bookwyrm.activitystreams.populate_stream_task.delay"
+        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
+            pending_user = models.User.objects.create_user(
+                "nutria@local.com",
+                "nutria@nutria.com",
+                "nutriaword",
+                local=True,
+                localname="nutria",
+                remote_id="https://example.com/users/nutria",
+                is_active=False,
+                deactivation_reason="pending",
+                confirmation_code="HELLO",
+            )
+        site.require_confirm_email = False
+        site.save()
+        pending_user.refresh_from_db()
+        self.assertTrue(pending_user.is_active)
+        self.assertIsNone(pending_user.deactivation_reason)
