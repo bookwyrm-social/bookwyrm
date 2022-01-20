@@ -141,12 +141,14 @@
         <h2 class="title is-4">{% blocktrans with name=author.name %}Books by {{ name }}{% endblocktrans %}</h2>
         <div class="columns is-multiline is-mobile">
         {% for book in books %}
+        {% with book=book.default_edition %}
             <div class="column is-one-fifth-tablet is-half-mobile is-flex is-flex-direction-column">
                 <div class="is-flex-grow-1">
                     {% include 'landing/small-book.html' with book=book %}
                 </div>
                 {% include 'snippets/shelve_button/shelve_button.html' with book=book %}
             </div>
+        {% endwith %}
         {% endfor %}
         </div>
 

@@ -2,7 +2,7 @@
 {% load humanize %}
 {% load i18n %}
 {% load utilities %}
-{% load bookwyrm_tags %}
+{% load landing_page_tags %}
 {% load cache %}
 
 {% block title %}
@@ -95,7 +95,7 @@
         <h2 class="title is-3">{% trans "Meet your admins" %}</h2>
         <p>
         {% url "conduct" as coc_path %}
-        {% blocktrans with site_name=site.name %}
+        {% blocktrans trimmed with site_name=site.name %}
             {{ site_name }}'s moderators and administrators keep the site up and running, enforce the <a href="coc_path">code of conduct</a>, and respond when users report spam and bad behavior.
         {% endblocktrans %}
         </p>

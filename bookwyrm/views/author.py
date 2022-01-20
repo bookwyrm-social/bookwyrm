@@ -1,7 +1,6 @@
 """ the good people stuff! the authors! """
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.paginator import Paginator
-from django.db.models import OuterRef, Subquery, F, Q
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
@@ -12,7 +11,6 @@ from bookwyrm import forms, models
 from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.connectors import connector_manager
 from bookwyrm.settings import PAGE_LENGTH
-from bookwyrm.utils import cache
 from bookwyrm.views.helpers import is_api_request
 
 
@@ -27,28 +25,9 @@ class Author(View):
         if is_api_request(request):
             return ActivitypubResponse(author.to_activity())
 
-        default_editions = models.Edition.objects.filter(
-            parent_work=OuterRef("parent_work")
-        ).order_by("-edition_rank")
-
-        book_ids = cache.get_or_set(
-            f"author-books-{author.id}",
-            lambda a: models.Edition.objects.filter(
-                Q(authors=a) | Q(parent_work__authors=a)
-            )
-            .annotate(default_id=Subquery(default_editions.values("id")[:1]))
-            .filter(default_id=F("id"))
-            .distinct()
-            .values_list("id", flat=True),
-            author,
-            timeout=15552000,
-        )
-
-        books = (
-            models.Edition.objects.filter(id__in=book_ids)
-            .order_by("-published_date", "-first_published_date", "-created_date")
-            .prefetch_related("authors")
-        )
+        books = models.Work.objects.filter(
+            authors=author, editions__authors=author
+        ).distinct()
 
         paginated = Paginator(books, PAGE_LENGTH)
         page = paginated.get_page(request.GET.get("page"))
