@@ -2,15 +2,15 @@
 {% if rating %}
 
 {% blocktrans trimmed with book_title=book.title|safe book_path=book.local_path display_rating=rating|floatformat:"-1" review_title=name|safe count counter=rating %}
-Review of "<a href='{{ book_path }}'>{{ book_title }}</a>" ({{ display_rating }} star): {{ review_title }}
+Review of "{{ book_title }}" ({{ display_rating }} star): {{ review_title }}
 {% plural %}
-Review of "<a href='{{ book_path }}'>{{ book_title }}</a>" ({{ display_rating }} stars): {{ review_title }}
+Review of "{{ book_title }}" ({{ display_rating }} stars): {{ review_title }}
 {% endblocktrans %}
 
 {% else %}
 
 {% blocktrans trimmed with book_title=book.title|safe book_path=book.local_path review_title=name|safe %}
-Review of "<a href='{{ book_path }}'>{{ book_title }}</a>": {{ review_title }}
+Review of "{{ book_title }}": {{ review_title }}
 {% endblocktrans %}
 
 {% endif %}

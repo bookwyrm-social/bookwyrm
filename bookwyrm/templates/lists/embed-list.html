@@ -1,7 +1,8 @@
 {% extends 'embed-layout.html' %}
 {% load i18n %}
-{% load bookwyrm_tags %}
-{% load bookwyrm_group_tags %}
+{% load book_display_tags %}
+{% load rating_tags %}
+{% load group_tags %}
 {% load markdown %}
 
 {% block title %}{% blocktrans with list_name=list.name owner=list.user.display_name %}{{ list_name }}, a list by {{owner}}{% endblocktrans %}{% endblock title %}

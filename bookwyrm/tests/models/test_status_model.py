@@ -301,7 +301,7 @@ class Status(TestCase):
         self.assertEqual(activity["type"], "Article")
         self.assertEqual(
             activity["name"],
-            f"Review of \"<a href='{self.book.local_path}'>{self.book.title}</a>\" (3 stars): Review's name",
+            f'Review of "{self.book.title}" (3 stars): Review\'s name',
         )
         self.assertEqual(activity["content"], "test content")
         self.assertEqual(activity["attachment"][0].type, "Document")
@@ -326,7 +326,7 @@ class Status(TestCase):
         self.assertEqual(activity["type"], "Article")
         self.assertEqual(
             activity["name"],
-            f"Review of \"<a href='{self.book.local_path}'>{self.book.title}</a>\": Review name",
+            f'Review of "{self.book.title}": Review name',
         )
         self.assertEqual(activity["content"], "test content")
         self.assertEqual(activity["attachment"][0].type, "Document")
