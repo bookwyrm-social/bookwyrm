@@ -1,7 +1,7 @@
 """ shelf views """
 from collections import namedtuple
 
-from django.db.models import OuterRef, Subquery, F
+from django.db.models import OuterRef, Subquery, F, Max
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.http import HttpResponseBadRequest
@@ -72,11 +72,7 @@ class Shelf(View):
             "start_date"
         )
 
-        if shelf_identifier:
-            books = books.annotate(shelved_date=F("shelfbook__shelved_date"))
-        else:
-            # sorting by shelved date will cause duplicates in the "all books" view
-            books = books.annotate(shelved_date=F("updated_date"))
+        books = books.annotate(shelved_date=Max("shelfbook__shelved_date"))
         books = books.annotate(
             rating=Subquery(reviews.values("rating")[:1]),
             start_date=Subquery(reading.values("start_date")[:1]),
