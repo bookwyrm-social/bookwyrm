@@ -12,6 +12,7 @@
 {% block about_content %}
 {# seven day cache #}
 {% cache 604800 about_page %}
+
 {% get_book_superlatives as superlatives %}
 <section class="content pb-4">
     <h2>
@@ -26,7 +27,7 @@
     </p>
 
     <div class="columns">
-        {% if top_rated %}
+        {% if superlatives.top_rated %}
         {% with book=superlatives.top_rated.default_edition rating=top_rated.rating %}
         <div class="column is-one-third is-flex">
             <div class="media notification">
@@ -45,7 +46,7 @@
         {% endwith %}
         {% endif %}
 
-        {% if wanted %}
+        {% if superlatives.wanted %}
         {% with book=superlatives.wanted.default_edition %}
         <div class="column is-one-third is-flex">
             <div class="media notification">
@@ -64,7 +65,7 @@
         {% endwith %}
         {% endif %}
 
-        {% if controversial %}
+        {% if superlatives.controversial %}
         {% with book=superlatives.controversial.default_edition %}
         <div class="column is-one-third is-flex">
             <div class="media notification">
