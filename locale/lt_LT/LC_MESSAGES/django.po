@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-01-20 17:58+0000\n"
-"PO-Revision-Date: 2022-01-21 21:02\n"
+"PO-Revision-Date: 2022-01-21 22:21\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Lithuanian\n"
 "Language: lt\n"
@@ -329,17 +329,17 @@ msgstr "%(site_name)s yra <em>BookWyrm</em>dalis, tinklo nepriklausomų skaityto
 #: bookwyrm/templates/about/about.html:39
 #, python-format
 msgid "<a href=\"%(book_path)s\"><em>%(title)s</em></a> is %(site_name)s's most beloved book, with an average rating of %(rating)s out of 5."
-msgstr ""
+msgstr "<a href=\"%(book_path)s\"><em>%(title)s</em></a> yra %(site_name)s's mėgstamiausia knyga, kurios vidutinis įvertinimas yra %(rating)s iš 5."
 
 #: bookwyrm/templates/about/about.html:58
 #, python-format
 msgid "More %(site_name)s users want to read <a href=\"%(book_path)s\"><em>%(title)s</em></a> than any other book."
-msgstr ""
+msgstr "Daugiau %(site_name)s narių nori perskaityti <a href=\"%(book_path)s\"><em>%(title)s</em></a> negu bet kurią kitą knygą."
 
 #: bookwyrm/templates/about/about.html:77
 #, python-format
 msgid "<a href=\"%(book_path)s\"><em>%(title)s</em></a> has the most divisive ratings of any book on %(site_name)s."
-msgstr ""
+msgstr "<a href=\"%(book_path)s\"><em>%(title)s</em></a> labiausiai kontroversiškai reitinguota %(site_name)s."
 
 #: bookwyrm/templates/about/about.html:88
 msgid "Track your reading, talk about books, write reviews, and discover what to read next. Always ad-free, anti-corporate, and community-oriented, BookWyrm is human-scale software, designed to stay small and personal. If you have feature requests, bug reports, or grand dreams, <a href='https://joinbookwyrm.com/get-involved' target='_blank'>reach out</a> and make yourself heard."
@@ -347,7 +347,7 @@ msgstr ""
 
 #: bookwyrm/templates/about/about.html:95
 msgid "Meet your admins"
-msgstr ""
+msgstr "Šio serverio administratoriai"
 
 #: bookwyrm/templates/about/about.html:98
 #, python-format
@@ -356,7 +356,7 @@ msgstr ""
 
 #: bookwyrm/templates/about/about.html:112
 msgid "Moderator"
-msgstr ""
+msgstr "Moderatorius"
 
 #: bookwyrm/templates/about/about.html:114 bookwyrm/templates/layout.html:131
 msgid "Admin"
@@ -377,15 +377,15 @@ msgstr "Elgesio kodeksas"
 
 #: bookwyrm/templates/about/layout.html:11
 msgid "Active users:"
-msgstr ""
+msgstr "Aktyvūs vartotojai:"
 
 #: bookwyrm/templates/about/layout.html:15
 msgid "Statuses posted:"
-msgstr ""
+msgstr "Publikuotos būsenos:"
 
 #: bookwyrm/templates/about/layout.html:19
 msgid "Software version:"
-msgstr ""
+msgstr "Serverio programinės įrangos versija:"
 
 #: bookwyrm/templates/about/layout.html:30
 #: bookwyrm/templates/embed-layout.html:34 bookwyrm/templates/layout.html:229
@@ -459,7 +459,7 @@ msgstr "Jei padarysite puslapį privačiu - senas raktas nustos galioti. Ateityj
 #: bookwyrm/templates/annual_summary/layout.html:112
 #, python-format
 msgid "Sadly %(display_name)s didn’t finish any books in %(year)s"
-msgstr ""
+msgstr "Gaila, bet %(display_name)s %(year)s metais neperskaitė nei vienos knygos"
 
 #: bookwyrm/templates/annual_summary/layout.html:118
 #, python-format
@@ -1074,51 +1074,52 @@ msgstr "Paieškos leidimai"
 
 #: bookwyrm/templates/book/file_links/add_link_modal.html:6
 msgid "Add file link"
-msgstr ""
+msgstr "Pridėti nuorodą į failą"
 
 #: bookwyrm/templates/book/file_links/add_link_modal.html:19
 msgid "Links from unknown domains will need to be approved by a moderator before they are added."
-msgstr ""
+msgstr "Nuorodos iš nežinomų domenų turi būti patvirtintos moderatorių."
 
 #: bookwyrm/templates/book/file_links/add_link_modal.html:24
 msgid "URL:"
-msgstr ""
+msgstr "Nuoroda:"
 
 #: bookwyrm/templates/book/file_links/add_link_modal.html:29
 msgid "File type:"
-msgstr ""
+msgstr "Failo tipas:"
 
 #: bookwyrm/templates/book/file_links/add_link_modal.html:48
 msgid "Availability:"
-msgstr ""
+msgstr "Prieinamumas:"
 
 #: bookwyrm/templates/book/file_links/edit_links.html:5
 #: bookwyrm/templates/book/file_links/edit_links.html:22
 #: bookwyrm/templates/book/file_links/links.html:53
 msgid "Edit links"
-msgstr ""
+msgstr "Redaguoti nuorodas"
 
 #: bookwyrm/templates/book/file_links/edit_links.html:11
 #, python-format
 msgid "\n"
 "        Links for \"<em>%(title)s</em>\"\n"
 "        "
-msgstr ""
+msgstr "\"<em>%(title)s</em>\" nuorodos\n"
+"        "
 
 #: bookwyrm/templates/book/file_links/edit_links.html:32
 #: bookwyrm/templates/settings/link_domains/link_table.html:6
 msgid "URL"
-msgstr ""
+msgstr "Nuoroda"
 
 #: bookwyrm/templates/book/file_links/edit_links.html:33
 #: bookwyrm/templates/settings/link_domains/link_table.html:7
 msgid "Added by"
-msgstr ""
+msgstr "Pridėjo"
 
 #: bookwyrm/templates/book/file_links/edit_links.html:34
 #: bookwyrm/templates/settings/link_domains/link_table.html:8
 msgid "Filetype"
-msgstr ""
+msgstr "Failo tipas"
 
 #: bookwyrm/templates/book/file_links/edit_links.html:35
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:25
@@ -1146,41 +1147,41 @@ msgstr "Veiksmai"
 #: bookwyrm/templates/book/file_links/edit_links.html:53
 #: bookwyrm/templates/book/file_links/verification_modal.html:25
 msgid "Report spam"
-msgstr ""
+msgstr "Pranešti apie brukalą"
 
 #: bookwyrm/templates/book/file_links/edit_links.html:97
 msgid "No links available for this book."
-msgstr ""
+msgstr "Šiai knygai nuorodų nėra."
 
 #: bookwyrm/templates/book/file_links/edit_links.html:108
 #: bookwyrm/templates/book/file_links/links.html:18
 msgid "Add link to file"
-msgstr ""
+msgstr "Pridėti nuorodą į failą"
 
 #: bookwyrm/templates/book/file_links/file_link_page.html:6
 msgid "File Links"
-msgstr ""
+msgstr "Nuorodos į failus"
 
 #: bookwyrm/templates/book/file_links/links.html:9
 msgid "Get a copy"
-msgstr ""
+msgstr "Gauti kopiją"
 
 #: bookwyrm/templates/book/file_links/links.html:47
 msgid "No links available"
-msgstr ""
+msgstr "Nuorodų nėra"
 
 #: bookwyrm/templates/book/file_links/verification_modal.html:5
 msgid "Leaving BookWyrm"
-msgstr ""
+msgstr "Tęsti naršymą ne BookWyrm"
 
 #: bookwyrm/templates/book/file_links/verification_modal.html:11
 #, python-format
 msgid "This link is taking you to: <code>%(link_url)s</code>.<br> Is that where you'd like to go?"
-msgstr ""
+msgstr "Nuoroda veda į: <code>%(link_url)s</code>.<br> Ar tikrai norite ten nueiti?"
 
 #: bookwyrm/templates/book/file_links/verification_modal.html:20
 msgid "Continue"
-msgstr ""
+msgstr "Tęsti"
 
 #: bookwyrm/templates/book/publisher_info.html:23
 #, python-format
@@ -1824,7 +1825,7 @@ msgstr "Ištrinti grupę"
 
 #: bookwyrm/templates/groups/group.html:21
 msgid "Members of this group can create group-curated lists."
-msgstr ""
+msgstr "Šios grupės nariai gali kurti grupės kuruojamus sąrašus."
 
 #: bookwyrm/templates/groups/group.html:26
 #: bookwyrm/templates/lists/create_form.html:5
@@ -2065,7 +2066,7 @@ msgstr "Atmesti"
 
 #: bookwyrm/templates/import/tooltip.html:6
 msgid "You can download your Goodreads data from the <a href=\"https://www.goodreads.com/review/import\" target=\"_blank\" rel=\"noopener noreferrer\">Import/Export page</a> of your Goodreads account."
-msgstr ""
+msgstr "Galite atsisiųsti savo „Goodreads“ duomenis iš <a href=\"https://www.goodreads.com/review/import\" target=\"_blank\" rel=\"noopener noreferrer\">Importavimo ir eksportavimo puslapio</a>, esančio jūsų „Goodreads“ paskyroje."
 
 #: bookwyrm/templates/import/troubleshoot.html:7
 msgid "Failed items"
@@ -3521,7 +3522,7 @@ msgstr "Pranešimai"
 #: bookwyrm/templates/settings/link_domains/link_domains.html:5
 #: bookwyrm/templates/settings/link_domains/link_domains.html:7
 msgid "Link Domains"
-msgstr ""
+msgstr "Susieti domenus"
 
 #: bookwyrm/templates/settings/layout.html:72
 msgid "Instance Settings"
@@ -3544,23 +3545,23 @@ msgstr ""
 
 #: bookwyrm/templates/settings/link_domains/link_domains.html:45
 msgid "Set display name"
-msgstr ""
+msgstr "Nurodyti pavadinimą"
 
 #: bookwyrm/templates/settings/link_domains/link_domains.html:53
 msgid "View links"
-msgstr ""
+msgstr "Peržiūrėti nuorodas"
 
 #: bookwyrm/templates/settings/link_domains/link_domains.html:96
 msgid "No domains currently approved"
-msgstr ""
+msgstr "Nėra patvirtintų domenų"
 
 #: bookwyrm/templates/settings/link_domains/link_domains.html:98
 msgid "No domains currently pending"
-msgstr ""
+msgstr "Nėra domenų, laukiančių patvirtinimo"
 
 #: bookwyrm/templates/settings/link_domains/link_domains.html:100
 msgid "No domains currently blocked"
-msgstr ""
+msgstr "Šiuo metu užblokuotų domenų nėra"
 
 #: bookwyrm/templates/settings/link_domains/link_table.html:39
 msgid "No links available for this domain."
@@ -3580,7 +3581,7 @@ msgstr "Būsena ištrinta"
 
 #: bookwyrm/templates/settings/reports/report.html:39
 msgid "Reported links"
-msgstr ""
+msgstr "Raportuotos nuorodos"
 
 #: bookwyrm/templates/settings/reports/report.html:55
 msgid "Moderator Comments"
@@ -3608,7 +3609,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/reports/report_links_table.html:17
 msgid "Block domain"
-msgstr ""
+msgstr "Užblokuoti domeną"
 
 #: bookwyrm/templates/settings/reports/report_preview.html:17
 msgid "No notes provided"
@@ -3863,7 +3864,7 @@ msgstr "Visam laikui ištrintas"
 
 #: bookwyrm/templates/settings/users/user_moderation_actions.html:8
 msgid "User Actions"
-msgstr ""
+msgstr "Nario veiksmai"
 
 #: bookwyrm/templates/settings/users/user_moderation_actions.html:21
 msgid "Suspend user"
@@ -3887,7 +3888,7 @@ msgstr "Redaguoti lentyną"
 
 #: bookwyrm/templates/shelf/shelf.html:24
 msgid "User profile"
-msgstr ""
+msgstr "Nario profilis"
 
 #: bookwyrm/templates/shelf/shelf.html:39
 #: bookwyrm/templates/snippets/translated_shelf_name.html:3
