@@ -1,4 +1,5 @@
 """ style fixes and lookups for templates """
+from datetime import datetime
 from unittest.mock import patch
 
 from django.test import TestCase
@@ -34,6 +35,12 @@ class StatusDisplayTags(TestCase):
                 local=False,
             )
         self.book = models.Edition.objects.create(title="Test Book")
+
+    def test_get_mentions(self, *_):
+        """list of people mentioned"""
+        status = models.Status.objects.create(content="hi", user=self.remote_user)
+        result = status_display.get_mentions(status, self.user)
+        self.assertEqual(result, "@rat@example.com ")
 
     @patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
     def test_get_replies(self, *_):
@@ -83,8 +90,16 @@ class StatusDisplayTags(TestCase):
         self.assertIsInstance(boosted, models.Review)
         self.assertEqual(boosted, status)
 
-    def test_get_mentions(self, *_):
-        """list of people mentioned"""
-        status = models.Status.objects.create(content="hi", user=self.remote_user)
-        result = status_display.get_mentions(status, self.user)
-        self.assertEqual(result, "@rat@example.com ")
+    def test_get_published_date(self, *_):
+        """date formatting"""
+        date = datetime(2020, 1, 1, 0, 0, tzinfo=timezone.utc)
+        with patch("django.utils.timezone.now") as timezone_mock:
+            timezone_mock.return_value = datetime(2022, 1, 1, 0, 0, tzinfo=timezone.utc)
+            result = status_display.get_published_date(date)
+        self.assertEqual(result, "Jan. 1, 2020")
+
+        date = datetime(2022, 1, 1, 0, 0, tzinfo=timezone.utc)
+        with patch("django.utils.timezone.now") as timezone_mock:
+            timezone_mock.return_value = datetime(2022, 1, 8, 0, 0, tzinfo=timezone.utc)
+            result = status_display.get_published_date(date)
+        self.assertEqual(result, "Jan 1")

@@ -1,7 +1,6 @@
 """ defines relationships between users """
 from django.apps import apps
 from django.core.cache import cache
-from django.core.cache.utils import make_template_fragment_key
 from django.db import models, transaction, IntegrityError
 from django.db.models import Q
 
@@ -41,15 +40,12 @@ class UserRelationship(BookWyrmModel):
     def save(self, *args, **kwargs):
         """clear the template cache"""
         # invalidate the template cache
-        cache_keys = [
-            make_template_fragment_key(
-                "follow_button", [self.user_subject.id, self.user_object.id]
-            ),
-            make_template_fragment_key(
-                "follow_button", [self.user_object.id, self.user_subject.id]
-            ),
-        ]
-        cache.delete_many(cache_keys)
+        cache.delete_many(
+            [
+                f"relationship-{self.user_subject.id}-{self.user_object.id}",
+                f"relationship-{self.user_object.id}-{self.user_subject.id}",
+            ]
+        )
         super().save(*args, **kwargs)
 
     class Meta:

@@ -1,7 +1,10 @@
 """ incoming activities """
 import json
 import re
+import logging
+
 from urllib.parse import urldefrag
+import requests
 
 from django.http import HttpResponse, Http404
 from django.core.exceptions import BadRequest, PermissionDenied
@@ -9,12 +12,13 @@ from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
-import requests
 
 from bookwyrm import activitypub, models
 from bookwyrm.tasks import app
 from bookwyrm.signatures import Signature
 from bookwyrm.utils import regex
+
+logger = logging.getLogger(__name__)
 
 
 @method_decorator(csrf_exempt, name="dispatch")
@@ -71,6 +75,7 @@ def raise_is_blocked_user_agent(request):
         return
     url = url.group()
     if models.FederatedServer.is_blocked(url):
+        logger.debug("%s is blocked, denying request based on user agent", url)
         raise PermissionDenied()
 
 
@@ -78,16 +83,18 @@ def raise_is_blocked_activity(activity_json):
     """get the sender out of activity json and check if it's blocked"""
     actor = activity_json.get("actor")
 
-    # check if the user is banned/deleted
-    existing = models.User.find_existing_by_remote_id(actor)
-    if existing and existing.deleted:
-        raise PermissionDenied()
-
     if not actor:
         # well I guess it's not even a valid activity so who knows
         return
 
+    # check if the user is banned/deleted
+    existing = models.User.find_existing_by_remote_id(actor)
+    if existing and existing.deleted:
+        logger.debug("%s is banned/deleted, denying request based on actor", actor)
+        raise PermissionDenied()
+
     if models.FederatedServer.is_blocked(actor):
+        logger.debug("%s is blocked, denying request based on actor", actor)
         raise PermissionDenied()
 
 

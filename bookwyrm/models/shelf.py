@@ -1,5 +1,6 @@
 """ puttin' books on shelves """
 import re
+from django.core.cache import cache
 from django.core.exceptions import PermissionDenied
 from django.db import models
 from django.utils import timezone
@@ -94,7 +95,14 @@ class ShelfBook(CollectionItemMixin, BookWyrmModel):
     def save(self, *args, **kwargs):
         if not self.user:
             self.user = self.shelf.user
+        if self.id and self.user.local:
+            cache.delete(f"book-on-shelf-{self.book.id}-{self.shelf.id}")
         super().save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        if self.id and self.user.local:
+            cache.delete(f"book-on-shelf-{self.book.id}-{self.shelf.id}")
+        super().delete(*args, **kwargs)
 
     class Meta:
         """an opinionated constraint!

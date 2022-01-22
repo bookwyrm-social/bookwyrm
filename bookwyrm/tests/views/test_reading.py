@@ -231,11 +231,12 @@ class ReadingViews(TestCase):
                 "finish_date": "2018-03-07",
                 "book": self.book.id,
                 "id": "",
+                "user": self.local_user.id,
             },
         )
         request.user = self.local_user
 
-        views.create_readthrough(request)
+        views.ReadThrough.as_view()(request)
         readthrough = models.ReadThrough.objects.get()
         self.assertEqual(readthrough.start_date.year, 2017)
         self.assertEqual(readthrough.start_date.month, 1)

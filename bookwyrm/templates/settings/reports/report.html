@@ -2,10 +2,12 @@
 {% load i18n %}
 {% load humanize %}
 
-{% block title %}{% blocktrans with report_id=report.id username=report.user.username %}Report #{{ report_id }}: {{ username }}{% endblocktrans %}{% endblock %}
+{% block title %}
+{% include "settings/reports/report_header.html" with report=report %}
+{% endblock %}
 
 {% block header %}
-{% blocktrans with report_id=report.id username=report.user.username %}Report #{{ report_id }}: {{ username }}{% endblocktrans %}
+{% include "settings/reports/report_header.html" with report=report %}
 <a href="{% url 'settings-reports' %}" class="has-text-weight-normal help">{% trans "Back to reports" %}</a>
 {% endblock %}
 
@@ -14,6 +16,36 @@
 <div class="block">
     {% include 'settings/reports/report_preview.html' with report=report %}
 </div>
+
+{% if report.statuses.exists %}
+<div class="block">
+    <h3 class="title is-4">{% trans "Reported statuses" %}</h3>
+    <ul>
+        {% for status in report.statuses.select_subclasses.all %}
+        <li>
+            {% if status.deleted %}
+            <em>{% trans "Status has been deleted" %}</em>
+            {% else %}
+            {% include 'snippets/status/status.html' with status=status moderation_mode=True %}
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}
+
+{% if report.links.exists %}
+<div class="block">
+    <h3 class="title is-4">{% trans "Reported links" %}</h3>
+    <div class="card block">
+        <div class="card-content content">
+            <div class="table-container">
+                {% include "settings/reports/report_links_table.html" with links=report.links.all %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
 
 {% include 'settings/users/user_info.html' with user=report.user %}
 
@@ -40,24 +72,5 @@
         <textarea name="note" id="report_comment" class="textarea"></textarea>
         <button class="button">{% trans "Comment" %}</button>
     </form>
-</div>
-
-<div class="block">
-    <h3 class="title is-4">{% trans "Reported statuses" %}</h3>
-    {% if not report.statuses.exists %}
-    <em>{% trans "No statuses reported" %}</em>
-    {% else %}
-    <ul>
-        {% for status in report.statuses.select_subclasses.all %}
-        <li>
-            {% if status.deleted %}
-            <em>{% trans "Status has been deleted" %}</em>
-            {% else %}
-            {% include 'snippets/status/status.html' with status=status moderation_mode=True %}
-            {% endif %}
-        </li>
-        {% endfor %}
-    </ul>
-    {% endif %}
 </div>
 {% endblock %}
