@@ -164,7 +164,7 @@ class Command(BaseCommand):
             "settings",
             "linkdomain",
         ]
-        if limit not in tables:
+        if limit and limit not in tables:
             raise Exception("Invalid table limit:", limit)
 
         if not limit or limit == "group":
