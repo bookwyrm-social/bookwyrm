@@ -47,7 +47,9 @@ urlpatterns = [
     re_path(r"^ostatus_subscribe/?$", views.ostatus_follow_request),
     # polling updates
     re_path("^api/updates/notifications/?$", views.get_notification_count),
-    re_path("^api/updates/stream/(?P<stream>[a-z]+)/?$", views.get_unread_status_string),
+    re_path(
+        "^api/updates/stream/(?P<stream>[a-z]+)/?$", views.get_unread_status_string
+    ),
     # authentication
     re_path(r"^login/?$", views.Login.as_view(), name="login"),
     re_path(r"^login/(?P<confirmed>confirmed)/?$", views.Login.as_view(), name="login"),

@@ -33,14 +33,14 @@ def get_unread_status_string(request, stream="home"):
         allowed_status_types = request.user.feed_status_types
         count = sum(c for (k, c) in counts_by_type if k in allowed_status_types)
         # if "everything else" is allowed, add other types to the sum
-        count += sum(c for (k, c) in counts_by_type if k not in ["review", "comment", "quotation"])
+        count += sum(
+            c
+            for (k, c) in counts_by_type
+            if k not in ["review", "comment", "quotation"]
+        )
 
     translation_string = lambda c: ngettext(
-        "Load %(count)d unread status",
-        "Load %(count)d unread statuses",
-        c
+        "Load %(count)d unread status", "Load %(count)d unread statuses", c
     ) % {"count": c}
 
-    return JsonResponse(
-        {"total": translation_string(count)}
-    )
+    return JsonResponse({"total": translation_string(count)})
