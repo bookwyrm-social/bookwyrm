@@ -71,6 +71,7 @@
                         </div>
                         {% endwith %}
 
+                        {% if item.note or item.user == request.user %}
                         <div class="media notification">
                             <figure class="media-left">
                                 {% include "snippets/avatar.html" with user=item.user %}
@@ -87,8 +88,33 @@
                                         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin ornare magna eros, eu pellentesque tortor vestibulum ut. Maecenas non massa sem. Etiam finibus odio quis feugiat facilisis.
                                     </p>
                                 </div>
+                                {% if item.user == request.user %}
+                                <div>
+                                    <details class="details-panel box">
+                                        <summary>
+                                            {% trans "Edit:" %}
+                                            <span class="details-close icon icon-pencil" aria-hidden></span>
+                                        </summary>
+                                        <form>
+                                            <div class="field">
+                                                <div class="control">
+                                                    <textarea class="textarea">{{ item.note }}</textarea>
+                                                </div>
+                                            </div>
+                                            <div class="field">
+                                                <div class="control">
+                                                    <button type="submit" class="button is-success">
+                                                        {% trans "Save" %}
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </details>
+                                </div>
+                                {% endif %}
                             </div>
                         </div>
+                        {% endif %}
                     </div>
                     <div class="card-footer is-stacked-mobile has-background-white-bis is-align-items-stretch">
                         <div class="card-footer-item">
