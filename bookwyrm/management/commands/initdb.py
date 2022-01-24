@@ -55,7 +55,7 @@ def init_permissions():
         },
     ]
 
-    content_type = models.ContentType.objects.get_for_model(User)
+    content_type = ContentType.objects.get_for_model(models.User)
     for permission in permissions:
         permission_obj = Permission.objects.create(
             codename=permission["codename"],
