@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-01-20 17:58+0000\n"
-"PO-Revision-Date: 2022-01-21 08:06\n"
+"POT-Creation-Date: 2022-01-24 17:25+0000\n"
+"PO-Revision-Date: 2022-01-24 18:54\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Galician\n"
 "Language: gl\n"
@@ -315,54 +315,54 @@ msgstr "Algo fallou! Lamentámolo."
 msgid "About"
 msgstr "Acerca de"
 
-#: bookwyrm/templates/about/about.html:18
+#: bookwyrm/templates/about/about.html:19
 #: bookwyrm/templates/get_started/layout.html:20
 #, python-format
 msgid "Welcome to %(site_name)s!"
 msgstr "Sexas ben vida a %(site_name)s!"
 
-#: bookwyrm/templates/about/about.html:22
+#: bookwyrm/templates/about/about.html:23
 #, python-format
 msgid "%(site_name)s is part of <em>BookWyrm</em>, a network of independent, self-directed communities for readers. While you can interact seamlessly with users anywhere in the <a href=\"https://joinbookwyrm.com/instances/\" target=\"_blank\">BookWyrm network</a>, this community is unique."
 msgstr "%(site_name)s é parte de <em>BookWyrm</em>, unha rede independente, auto-xestionada por comunidades de persoas lectoras. Aínda que podes interactuar con outras usuarias da <a href=\"https://joinbookwyrm.com/instances/\" target=\"_blank\">rede BookWyrm</a>, esta comunidade é única."
 
-#: bookwyrm/templates/about/about.html:39
+#: bookwyrm/templates/about/about.html:40
 #, python-format
 msgid "<a href=\"%(book_path)s\"><em>%(title)s</em></a> is %(site_name)s's most beloved book, with an average rating of %(rating)s out of 5."
 msgstr "<a href=\"%(book_path)s\"><em>%(title)s</em></a> é o libro máis querido de %(site_name)s, cunha valoración media de %(rating)s sobre 5."
 
-#: bookwyrm/templates/about/about.html:58
+#: bookwyrm/templates/about/about.html:59
 #, python-format
 msgid "More %(site_name)s users want to read <a href=\"%(book_path)s\"><em>%(title)s</em></a> than any other book."
 msgstr "<a href=\"%(book_path)s\"><em>%(title)s</em></a> é o libro que máis queren ler as usuarias de %(site_name)s."
 
-#: bookwyrm/templates/about/about.html:77
+#: bookwyrm/templates/about/about.html:78
 #, python-format
 msgid "<a href=\"%(book_path)s\"><em>%(title)s</em></a> has the most divisive ratings of any book on %(site_name)s."
 msgstr "<a href=\"%(book_path)s\"><em>%(title)s</em></a> é o libro con valoracións máis diverxentes en %(site_name)s."
 
-#: bookwyrm/templates/about/about.html:88
+#: bookwyrm/templates/about/about.html:89
 msgid "Track your reading, talk about books, write reviews, and discover what to read next. Always ad-free, anti-corporate, and community-oriented, BookWyrm is human-scale software, designed to stay small and personal. If you have feature requests, bug reports, or grand dreams, <a href='https://joinbookwyrm.com/get-involved' target='_blank'>reach out</a> and make yourself heard."
 msgstr "Rexistra as túas lecturas, conversa acerca dos libros, escribe recensións e descubre próximas lecturas. Sempre sen publicidade, anti-corporacións e orientado á comunidade, BookWyrm é software a escala humana, deseñado para ser pequeno e persoal. Se queres propoñer novas ferramentas, informar de fallos, ou colaborar, <a href='https://joinbookwyrm.com/get-involved' target='_blank'>contacta con nós</a> e deixa oír a túa voz."
 
-#: bookwyrm/templates/about/about.html:95
+#: bookwyrm/templates/about/about.html:96
 msgid "Meet your admins"
 msgstr "Contacta coa administración"
 
-#: bookwyrm/templates/about/about.html:98
+#: bookwyrm/templates/about/about.html:99
 #, python-format
 msgid "%(site_name)s's moderators and administrators keep the site up and running, enforce the <a href=\"coc_path\">code of conduct</a>, and respond when users report spam and bad behavior."
 msgstr "A moderación e administración de %(site_name)s coidan e xestionan o sitio web, fan cumprir co <a href=\"coc_path\">código de conduta</a> e responden ás denuncias das usuarias sobre spam e mal comportamento."
 
-#: bookwyrm/templates/about/about.html:112
+#: bookwyrm/templates/about/about.html:113
 msgid "Moderator"
 msgstr "Moderación"
 
-#: bookwyrm/templates/about/about.html:114 bookwyrm/templates/layout.html:131
+#: bookwyrm/templates/about/about.html:115 bookwyrm/templates/layout.html:131
 msgid "Admin"
 msgstr "Admin"
 
-#: bookwyrm/templates/about/about.html:130
+#: bookwyrm/templates/about/about.html:131
 #: bookwyrm/templates/settings/users/user_moderation_actions.html:14
 #: bookwyrm/templates/snippets/status/status_options.html:35
 #: bookwyrm/templates/snippets/user_options.html:13
@@ -4626,7 +4626,7 @@ msgstr "Non atopamos unha usuaria con ese email."
 msgid "A password reset link was sent to {email}"
 msgstr "Enviamos unha ligazón de restablecemento a {email}"
 
-#: bookwyrm/views/rss_feed.py:35
+#: bookwyrm/views/rss_feed.py:34
 #, python-brace-format
 msgid "Status updates from {obj.display_name}"
 msgstr "Actualizacións de estados desde {obj.display_name}"
