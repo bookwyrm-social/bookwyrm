@@ -4,6 +4,7 @@
 {% load book_display_tags %}
 {% load group_tags %}
 {% load markdown %}
+{% load utilities %}
 
 {% block breadcrumbs %}
 <nav class="breadcrumb subtitle" aria-label="breadcrumbs">
@@ -46,21 +47,16 @@
         {% for item in items %}
             <li class="block mb-5">
                 <div class="card">
-                    {% with book=item.book %}
-                        <div
-                            class="
-                                card-content p-0 mb-0
-                                columns is-gapless
-                                is-mobile
-                            "
-                        >
-                            <div class="column is-3-mobile is-2-tablet is-cover align to-t">
+                    <div class="card-content">
+                        {% with book=item.book %}
+                        <div class="columns is-mobile">
+                            <div class="column is-narrow is-cover">
                                 <a href="{{ item.book.local_path }}" aria-hidden="true">
                                     {% include 'snippets/book_cover.html' with cover_class='is-w-auto is-h-m-tablet is-align-items-flex-start' size='medium' %}
                                 </a>
                             </div>
 
-                            <div class="column mx-3 my-2">
+                            <div class="column">
                                 <p>
                                     {% include 'snippets/book_titleby.html' %}
                                 </p>
@@ -73,8 +69,26 @@
                                 {% include 'snippets/shelve_button/shelve_button.html' with book=book %}
                             </div>
                         </div>
-                    {% endwith %}
+                        {% endwith %}
 
+                        <div class="media notification">
+                            <figure class="media-left">
+                                {% include "snippets/avatar.html" with user=item.user %}
+                            </figure>
+                            <div class="media-content">
+                                <div class="content">
+                                    <header>
+                                        <a href="{% url 'user-feed' user|username %}">
+                                            {{ item.user.display_name }}
+                                        </a>
+                                    </header>
+                                    <p>
+                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin ornare magna eros, eu pellentesque tortor vestibulum ut. Maecenas non massa sem. Etiam finibus odio quis feugiat facilisis.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="card-footer is-stacked-mobile has-background-white-bis is-align-items-stretch">
                         <div class="card-footer-item">
                             <p>
