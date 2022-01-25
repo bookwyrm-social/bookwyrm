@@ -1,5 +1,6 @@
 {% extends 'lists/layout.html' %}
 {% load i18n %}
+{% load utilities %}
 
 {% block breadcrumbs %}
 <nav class="breadcrumb subtitle" aria-label="breadcrumbs">
@@ -38,6 +39,17 @@
 
                     <div class="column ml-3">
                         {% include 'snippets/book_titleby.html' %}
+                        {% if item.notes %}
+                        <div>
+                            {% url 'user-feed' item.user|username as user_path %}
+                            {% blocktrans trimmed with username=item.user.display_name %}
+                            <a href="{{ user_path }}">{{ username }}</a> says:
+                            {% endblocktrans %}
+                            <p class="notification">
+                                {{ item.notes }}
+                            </p>
+                        </div>
+                        {% endif %}
 
                         <p>
                             {% trans "Suggested by" %}

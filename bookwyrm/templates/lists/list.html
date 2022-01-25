@@ -22,7 +22,7 @@
 {% block panel %}
 {% if request.user == list.user and pending_count %}
 <div class="block content">
-    <p>
+    <p class="notification">
         <a href="{% url 'list-curate' list.id %}">{{ pending_count }} book{{ pending_count|pluralize }} awaiting your approval</a>
     </p>
 </div>
@@ -80,7 +80,7 @@
                                 <div class="content">
                                     <header>
                                         {% url 'user-feed' user|username as user_path %}
-                                        {% blocktrans trimmed with username=user|username %}
+                                        {% blocktrans trimmed with username=user.display_name %}
                                         <a href="{{ user_path }}">{{ username }}</a> says:
                                         {% endblocktrans %}
                                     </header>
