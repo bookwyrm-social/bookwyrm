@@ -1,4 +1,5 @@
 """ test for app action functionality """
+import json
 from unittest.mock import patch
 
 from django.contrib.auth.models import AnonymousUser
@@ -66,3 +67,63 @@ class ListViews(TestCase):
         request.user = self.anonymous_user
         result = view(request, self.list.id)
         self.assertEqual(result.status_code, 302)
+
+    def test_curate_approve(self):
+        """approve a pending item"""
+        view = views.Curate.as_view()
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
+            pending = models.ListItem.objects.create(
+                book_list=self.list,
+                user=self.local_user,
+                book=self.book,
+                approved=False,
+                order=1,
+            )
+
+        request = self.factory.post(
+            "",
+            {"item": pending.id, "approved": "true"},
+        )
+        request.user = self.local_user
+
+        with patch(
+            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+        ) as mock:
+            view(request, self.list.id)
+
+        self.assertEqual(mock.call_count, 2)
+        activity = json.loads(mock.call_args[1]["args"][1])
+        self.assertEqual(activity["type"], "Add")
+        self.assertEqual(activity["actor"], self.local_user.remote_id)
+        self.assertEqual(activity["target"], self.list.remote_id)
+
+        pending.refresh_from_db()
+        self.assertEqual(self.list.books.count(), 1)
+        self.assertEqual(self.list.listitem_set.first(), pending)
+        self.assertTrue(pending.approved)
+
+    def test_curate_reject(self):
+        """approve a pending item"""
+        view = views.Curate.as_view()
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
+            pending = models.ListItem.objects.create(
+                book_list=self.list,
+                user=self.local_user,
+                book=self.book,
+                approved=False,
+                order=1,
+            )
+
+        request = self.factory.post(
+            "",
+            {
+                "item": pending.id,
+                "approved": "false",
+            },
+        )
+        request.user = self.local_user
+
+        view(request, self.list.id)
+
+        self.assertFalse(self.list.books.exists())
+        self.assertFalse(models.ListItem.objects.exists())
