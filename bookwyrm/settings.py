@@ -163,6 +163,9 @@ LOGGING = {
             "handlers": ["console", "mail_admins"],
             "level": LOG_LEVEL,
         },
+        "django.utils.autoreload": {
+            "level": "INFO",
+        },
         # Add a bookwyrm-specific logger
         "bookwyrm": {
             "handlers": ["console"],

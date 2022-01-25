@@ -8,6 +8,7 @@ from bookwyrm import settings
 
 logger = logging.getLogger(__name__)
 
+
 def download_file(url, destination):
     try:
         stream = urllib.request.urlopen(url)
