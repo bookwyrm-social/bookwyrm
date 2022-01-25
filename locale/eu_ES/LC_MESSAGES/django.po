@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-01-24 17:25+0000\n"
-"PO-Revision-Date: 2022-01-25 09:18\n"
+"PO-Revision-Date: 2022-01-25 10:24\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Basque\n"
 "Language: eu\n"
@@ -324,12 +324,12 @@ msgstr "Ongi etorri %(site_name)s-(e)ra!"
 #: bookwyrm/templates/about/about.html:23
 #, python-format
 msgid "%(site_name)s is part of <em>BookWyrm</em>, a network of independent, self-directed communities for readers. While you can interact seamlessly with users anywhere in the <a href=\"https://joinbookwyrm.com/instances/\" target=\"_blank\">BookWyrm network</a>, this community is unique."
-msgstr ""
+msgstr "%(site_name)s <em>BookWyrm</em>en parte da, irakurleentzako komunitate independente eta auto-kudeatuen sarea. <a href=\"https://joinbookwyrm.com/instances/\" target=\"_blank\">BookWyrm sareko</a> edozein instantziako kideekin egin dezakezu harremana, baina gure komunitate honek bere ezaugarri propioak ditu."
 
 #: bookwyrm/templates/about/about.html:40
 #, python-format
 msgid "<a href=\"%(book_path)s\"><em>%(title)s</em></a> is %(site_name)s's most beloved book, with an average rating of %(rating)s out of 5."
-msgstr ""
+msgstr "<a href=\"%(book_path)s\"><em>%(title)s</em></a> da %(site_name)sko libururik gogokonea, bere batezbesteko balorazioa %(rating)s izanik, 5eko eskalan."
 
 #: bookwyrm/templates/about/about.html:59
 #, python-format
@@ -475,7 +475,7 @@ msgstr "Hori zoragarria da!"
 #: bookwyrm/templates/annual_summary/layout.html:127
 #, python-format
 msgid "That makes an average of %(pages)s pages per book."
-msgstr ""
+msgstr "Liburu bakoitzeko %(pages)s orrialdeko batezbestekoa da."
 
 #: bookwyrm/templates/annual_summary/layout.html:132
 #, python-format
@@ -486,7 +486,7 @@ msgstr[1] ""
 
 #: bookwyrm/templates/annual_summary/layout.html:148
 msgid "Their shortest read this year…"
-msgstr ""
+msgstr "Aurtengo irakurketarik laburrena…"
 
 #: bookwyrm/templates/annual_summary/layout.html:155
 #: bookwyrm/templates/annual_summary/layout.html:176
@@ -680,7 +680,7 @@ msgstr "Goodreads-ren giltza:"
 
 #: bookwyrm/templates/author/edit_author.html:105
 msgid "ISNI:"
-msgstr ""
+msgstr "ISNI:"
 
 #: bookwyrm/templates/author/edit_author.html:115
 #: bookwyrm/templates/book/book.html:193
@@ -775,7 +775,7 @@ msgstr "<a href=\"%(path)s/editions\">%(count)s edizioak</a>"
 
 #: bookwyrm/templates/book/book.html:211
 msgid "You have shelved this edition in:"
-msgstr ""
+msgstr "Edizio hau gorde duzu:"
 
 #: bookwyrm/templates/book/book.html:226
 #, python-format
@@ -989,12 +989,12 @@ msgstr "Gehitu egileak:"
 #: bookwyrm/templates/book/edit/edit_book_form.html:145
 #: bookwyrm/templates/book/edit/edit_book_form.html:148
 msgid "Add Author"
-msgstr ""
+msgstr "Gehitu egilea"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:146
 #: bookwyrm/templates/book/edit/edit_book_form.html:149
 msgid "Jane Doe"
-msgstr ""
+msgstr "Egilearen Izen-Abizenak"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:152
 msgid "Add Another Author"
@@ -1064,15 +1064,15 @@ msgstr "Edizioak bilatu"
 
 #: bookwyrm/templates/book/file_links/add_link_modal.html:6
 msgid "Add file link"
-msgstr ""
+msgstr "Erantsi fitxategi-lotura"
 
 #: bookwyrm/templates/book/file_links/add_link_modal.html:19
 msgid "Links from unknown domains will need to be approved by a moderator before they are added."
-msgstr ""
+msgstr "Domeinu ezezagunetako estekak moderatzaile batek onetsi beharko ditu gehitu aurretik."
 
 #: bookwyrm/templates/book/file_links/add_link_modal.html:24
 msgid "URL:"
-msgstr ""
+msgstr "URLa:"
 
 #: bookwyrm/templates/book/file_links/add_link_modal.html:29
 msgid "File type:"
@@ -1080,7 +1080,7 @@ msgstr "Fitxategi mota:"
 
 #: bookwyrm/templates/book/file_links/add_link_modal.html:48
 msgid "Availability:"
-msgstr ""
+msgstr "Eskuragarritasuna:"
 
 #: bookwyrm/templates/book/file_links/edit_links.html:5
 #: bookwyrm/templates/book/file_links/edit_links.html:22
@@ -1093,7 +1093,8 @@ msgstr "Editatu esteka"
 msgid "\n"
 "        Links for \"<em>%(title)s</em>\"\n"
 "        "
-msgstr ""
+msgstr "\n"
+"\"<em>%(title)s</em>\" -entzako estekak        "
 
 #: bookwyrm/templates/book/file_links/edit_links.html:32
 #: bookwyrm/templates/settings/link_domains/link_table.html:6
@@ -1103,12 +1104,12 @@ msgstr "URLa"
 #: bookwyrm/templates/book/file_links/edit_links.html:33
 #: bookwyrm/templates/settings/link_domains/link_table.html:7
 msgid "Added by"
-msgstr ""
+msgstr "Honek gehitua"
 
 #: bookwyrm/templates/book/file_links/edit_links.html:34
 #: bookwyrm/templates/settings/link_domains/link_table.html:8
 msgid "Filetype"
-msgstr ""
+msgstr "Fitxategi mota"
 
 #: bookwyrm/templates/book/file_links/edit_links.html:35
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:25
@@ -1136,20 +1137,20 @@ msgstr "Ekintzak"
 #: bookwyrm/templates/book/file_links/edit_links.html:53
 #: bookwyrm/templates/book/file_links/verification_modal.html:25
 msgid "Report spam"
-msgstr ""
+msgstr "Spam-a salatu"
 
 #: bookwyrm/templates/book/file_links/edit_links.html:97
 msgid "No links available for this book."
-msgstr ""
+msgstr "Ez dago estekarik eskuragarri liburu honetarako."
 
 #: bookwyrm/templates/book/file_links/edit_links.html:108
 #: bookwyrm/templates/book/file_links/links.html:18
 msgid "Add link to file"
-msgstr ""
+msgstr "Gehitu lotura fitxategiari"
 
 #: bookwyrm/templates/book/file_links/file_link_page.html:6
 msgid "File Links"
-msgstr ""
+msgstr "Fitxategi estekak"
 
 #: bookwyrm/templates/book/file_links/links.html:9
 msgid "Get a copy"
@@ -2405,7 +2406,7 @@ msgstr "Gehitu liburuak"
 
 #: bookwyrm/templates/lists/list.html:157
 msgid "Suggest Books"
-msgstr ""
+msgstr "Iradoki Liburuak"
 
 #: bookwyrm/templates/lists/list.html:168
 msgid "search"
@@ -2413,7 +2414,7 @@ msgstr "bilatu"
 
 #: bookwyrm/templates/lists/list.html:174
 msgid "Clear search"
-msgstr ""
+msgstr "Garbitu bilaketa"
 
 #: bookwyrm/templates/lists/list.html:179
 #, python-format
@@ -2426,11 +2427,11 @@ msgstr "Gomendatu"
 
 #: bookwyrm/templates/lists/list.html:222
 msgid "Embed this list on a website"
-msgstr ""
+msgstr "Zerrenda hau webgune batean txertatu"
 
 #: bookwyrm/templates/lists/list.html:230
 msgid "Copy embed code"
-msgstr ""
+msgstr "Kopiatu kapsulatze-kodea"
 
 #: bookwyrm/templates/lists/list.html:232
 #, python-format
@@ -2510,11 +2511,11 @@ msgstr ""
 
 #: bookwyrm/templates/notifications/items/follow.html:15
 msgid "followed you"
-msgstr ""
+msgstr "zu jarraitzen hasi da"
 
 #: bookwyrm/templates/notifications/items/follow_request.html:11
 msgid "sent you a follow request"
-msgstr ""
+msgstr "eskaera bat bidali dizut"
 
 #: bookwyrm/templates/notifications/items/import.html:14
 #, python-format
@@ -2608,7 +2609,7 @@ msgstr ""
 
 #: bookwyrm/templates/notifications/notifications_page.html:18
 msgid "Delete notifications"
-msgstr ""
+msgstr "Ezabatu jakinarazpenak"
 
 #: bookwyrm/templates/notifications/notifications_page.html:29
 msgid "All"
