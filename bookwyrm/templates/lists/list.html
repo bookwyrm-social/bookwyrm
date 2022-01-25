@@ -1,8 +1,8 @@
 {% extends 'lists/layout.html' %}
 {% load i18n %}
 {% load rating_tags %}
-{% load book_display_tags %}
 {% load group_tags %}
+{% load book_display_tags %}
 {% load markdown %}
 {% load utilities %}
 
@@ -92,24 +92,12 @@
                                 <div>
                                     <details class="details-panel box">
                                         <summary>
-                                            {% trans "Edit notes:" %}
-                                            <span class="details-close icon icon-pencil" aria-hidden></span>
+                                            <span role="heading" aria-level="3">
+                                                {% trans "Edit notes" %}
+                                                <span class="details-close icon icon-pencil" aria-hidden></span>
+                                            </span>
                                         </summary>
-                                        <form name="edit-notes-{{ item.id }}" method="POST" action="{% url 'list-item' list.id item.id %}">
-                                            {% csrf_token %}
-                                            <div class="field">
-                                                <div class="control">
-                                                    <textarea class="textarea" maxlength="300" name="notes">{{ item.notes|default:'' }}</textarea>
-                                                </div>
-                                            </div>
-                                            <div class="field">
-                                                <div class="control">
-                                                    <button type="submit" class="button is-success">
-                                                        {% trans "Save" %}
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </form>
+                                        {% include "lists/edit_item_form.html" %}
                                     </details>
                                 </div>
                                 {% endif %}
@@ -119,24 +107,12 @@
                         <div>
                             <details class="details-panel box">
                                 <summary>
-                                    {% trans "Add notes:" %}
-                                    <span class="details-close icon icon-plus" aria-hidden></span>
+                                    <span role="heading" aria-level="3">
+                                        {% trans "Add notes" %}
+                                        <span class="details-close icon icon-plus" aria-hidden></span>
+                                    </span>
                                 </summary>
-                                <form name="add-notes-{{ item.id }}" method="POST" action="{% url 'list-item' list.id item.id %}">
-                                    {% csrf_token %}
-                                    <div class="field">
-                                        <div class="control">
-                                            <textarea class="textarea" maxlength="300" name="notes">{{ item.notes|default:'' }}</textarea>
-                                        </div>
-                                    </div>
-                                    <div class="field">
-                                        <div class="control">
-                                            <button type="submit" class="button is-success">
-                                                {% trans "Save" %}
-                                            </button>
-                                        </div>
-                                    </div>
-                                </form>
+                                {% include "lists/edit_item_form.html" %}
                             </details>
                         </div>
                         {% endif %}
@@ -261,23 +237,19 @@
                     <div class="column ml-3">
                         <p>{% include 'snippets/book_titleby.html' with book=book %}</p>
 
-                        <form
-                            class="mt-1"
-                            name="add-book-{{ book.id }}"
-                            method="post"
-                            action="{% url 'list-add-book' %}{% if query %}?q={{ query }}{% endif %}"
+                        {% join "add_item" list.id book.id as modal_id %}
+                        <button
+                            type="button"
+                            class="button is-small is-link"
+                            data-modal-open="{{ modal_id }}"
                         >
-                            {% csrf_token %}
-                            <input type="hidden" name="book" value="{{ book.id }}">
-                            <input type="hidden" name="list" value="{{ list.id }}">
-                            <button type="submit" class="button is-small is-link">
-                                {% if list.curation == 'open' or request.user == list.user or list.group|is_member:request.user %}
-                                    {% trans "Add" %}
-                                {% else %}
-                                    {% trans "Suggest" %}
-                                {% endif %}
-                            </button>
-                        </form>
+                            {% if list.curation == 'open' or request.user == list.user or list.group|is_member:request.user %}
+                                {% trans "Add" %}
+                            {% else %}
+                                {% trans "Suggest" %}
+                            {% endif %}
+                        </button>
+                        {% include "lists/add_item_modal.html" with id=modal_id %}
                     </div>
                 </div>
             {% endfor %}

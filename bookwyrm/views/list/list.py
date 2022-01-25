@@ -217,53 +217,35 @@ def delete_list(request, list_id):
 
 @require_POST
 @login_required
+@transaction.atomic
 def add_book(request):
     """put a book on a list"""
-    book_list = get_object_or_404(models.List, id=request.POST.get("list"))
-    is_group_member = False
-    if book_list.curation == "group":
-        is_group_member = models.GroupMember.objects.filter(
-            group=book_list.group, user=request.user
-        ).exists()
+    book_list = get_object_or_404(models.List, id=request.POST.get("book_list"))
+    # make sure the user is allowed to submit to this list
+    book_list.raise_not_submittable(request.user)
 
-    book_list.raise_visible_to_user(request.user)
+    form = forms.ListItemForm(request.POST)
+    if not form.is_valid():
+        # this shouldn't happen, there aren't validated fields
+        raise Exception(form.errors)
+    item = form.save(commit=False)
 
-    book = get_object_or_404(models.Edition, id=request.POST.get("book"))
-    # do you have permission to add to the list?
+    if book_list.curation == "curated":
+        # make a pending entry at the end of the list
+        order_max = (book_list.listitem_set.aggregate(Max("order"))["order__max"]) or 0
+        item.approved = False
+    else:
+        # add the book at the latest order of approved books, before pending books
+        order_max = (
+            book_list.listitem_set.filter(approved=True).aggregate(Max("order"))[
+                "order__max"
+            ]
+        ) or 0
+        increment_order_in_reverse(book_list.id, order_max + 1)
+    item.order = order_max + 1
+
     try:
-        if (
-            request.user == book_list.user
-            or is_group_member
-            or book_list.curation == "open"
-        ):
-            # add the book at the latest order of approved books, before pending books
-            order_max = (
-                book_list.listitem_set.filter(approved=True).aggregate(Max("order"))[
-                    "order__max"
-                ]
-            ) or 0
-            increment_order_in_reverse(book_list.id, order_max + 1)
-            models.ListItem.objects.create(
-                book=book,
-                book_list=book_list,
-                user=request.user,
-                order=order_max + 1,
-            )
-        elif book_list.curation == "curated":
-            # make a pending entry at the end of the list
-            order_max = (
-                book_list.listitem_set.aggregate(Max("order"))["order__max"]
-            ) or 0
-            models.ListItem.objects.create(
-                approved=False,
-                book=book,
-                book_list=book_list,
-                user=request.user,
-                order=order_max + 1,
-            )
-        else:
-            # you can't add to this list, what were you THINKING
-            return HttpResponseBadRequest()
+        item.save()
     except IntegrityError:
         # if the book is already on the list, don't flip out
         pass
