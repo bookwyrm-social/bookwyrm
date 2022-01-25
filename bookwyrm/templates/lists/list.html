@@ -71,7 +71,7 @@
                         </div>
                         {% endwith %}
 
-                        {% if item.note or item.user == request.user %}
+                        {% if item.notes %}
                         <div class="media notification">
                             <figure class="media-left">
                                 {% include "snippets/avatar.html" with user=item.user %}
@@ -85,14 +85,14 @@
                                         {% endblocktrans %}
                                     </header>
                                     <p>
-                                    {{ item.notes|to_markdown|safe }}
+                                        {{ item.notes|to_markdown|safe }}
                                     </p>
                                 </div>
                                 {% if item.user == request.user %}
                                 <div>
                                     <details class="details-panel box">
                                         <summary>
-                                            {% trans "Edit:" %}
+                                            {% trans "Edit notes:" %}
                                             <span class="details-close icon icon-pencil" aria-hidden></span>
                                         </summary>
                                         <form name="edit-notes-{{ item.id }}" method="POST" action="{% url 'list-item' list.id item.id %}">
@@ -114,6 +114,30 @@
                                 </div>
                                 {% endif %}
                             </div>
+                        </div>
+                        {% elif item.user == request.user %}
+                        <div>
+                            <details class="details-panel box">
+                                <summary>
+                                    {% trans "Add notes:" %}
+                                    <span class="details-close icon icon-plus" aria-hidden></span>
+                                </summary>
+                                <form name="add-notes-{{ item.id }}" method="POST" action="{% url 'list-item' list.id item.id %}">
+                                    {% csrf_token %}
+                                    <div class="field">
+                                        <div class="control">
+                                            <textarea class="textarea" maxlength="300" name="notes">{{ item.notes|default:'' }}</textarea>
+                                        </div>
+                                    </div>
+                                    <div class="field">
+                                        <div class="control">
+                                            <button type="submit" class="button is-success">
+                                                {% trans "Save" %}
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </details>
                         </div>
                         {% endif %}
                     </div>
