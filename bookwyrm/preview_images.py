@@ -4,7 +4,6 @@ import os
 import textwrap
 from io import BytesIO
 from uuid import uuid4
-import urllib
 import logging
 
 import colorsys
@@ -36,6 +35,7 @@ inner_img_width = math.floor(inner_img_height * 0.7)
 
 
 def get_imagefont(name, size):
+    """Loads an ImageFont based on config"""
     try:
         config = settings.FONTS[name]
         path = os.path.join(settings.FONT_DIR, config["directory"], config["filename"])
@@ -49,6 +49,7 @@ def get_imagefont(name, size):
 
 
 def get_font(weight, size=28):
+    """Gets a custom font with the given weight and size"""
     font = get_imagefont(DEFAULT_FONT, size)
 
     try:

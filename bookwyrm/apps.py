@@ -1,3 +1,4 @@
+"""Do further startup configuration and initialization"""
 import os
 import urllib
 import logging
@@ -10,15 +11,18 @@ logger = logging.getLogger(__name__)
 
 
 def download_file(url, destination):
+    """Downloads a file to the given path"""
     try:
-        stream = urllib.request.urlopen(url)
-        with open(destination, "b+w") as f:
-            f.write(stream.read())
+        with urllib.request.urlopen(url) as stream:
+            with open(destination, "b+w") as outfile:
+                outfile.write(stream.read())
     except (urllib.error.HTTPError, urllib.error.URLError):
         logger.error("Failed to download file %s", url)
 
 
 class BookwyrmConfig(AppConfig):
+    """Handles additional configuration"""
+
     name = "bookwyrm"
     verbose_name = "BookWyrm"
 

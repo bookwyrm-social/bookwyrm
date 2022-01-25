@@ -50,6 +50,7 @@ PREVIEW_DEFAULT_COVER_COLOR = env.str("PREVIEW_DEFAULT_COVER_COLOR", "#002549")
 PREVIEW_DEFAULT_FONT = env.str("PREVIEW_DEFAULT_FONT", "Source Han Sans")
 
 FONTS = {
+    # pylint: disable=line-too-long
     "Source Han Sans": {
         "directory": "source_han_sans",
         "filename": "SourceHanSans-VF.ttf.ttc",
