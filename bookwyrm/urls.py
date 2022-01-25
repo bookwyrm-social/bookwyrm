@@ -357,6 +357,7 @@ urlpatterns = [
     re_path(r"^list/?$", views.Lists.as_view(), name="lists"),
     re_path(r"^list/saved/?$", views.SavedLists.as_view(), name="saved-lists"),
     re_path(r"^list/(?P<list_id>\d+)(.json)?/?$", views.List.as_view(), name="list"),
+    re_path(r"^list/(?P<list_id>\d+)/item/(?P<list_item>\d+)/?$", views.ListItem.as_view(), name="list-item"),
     re_path(r"^list/delete/(?P<list_id>\d+)/?$", views.delete_list, name="delete-list"),
     re_path(r"^list/add-book/?$", views.add_book, name="list-add-book"),
     re_path(

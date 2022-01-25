@@ -63,6 +63,7 @@ from .imports.manually_review import (
 
 # lists
 from .list.curate import Curate
+from .list.list_item import ListItem
 from .list.lists import Lists, SavedLists, UserLists
 from .list.list import (
     List,

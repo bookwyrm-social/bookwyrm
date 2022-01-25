@@ -443,6 +443,11 @@ class ListForm(CustomForm):
         model = models.List
         fields = ["user", "name", "description", "curation", "privacy", "group"]
 
+class ListItemForm(CustomForm):
+    class Meta:
+        model = models.ListItem
+        fields = ["notes"]
+
 
 class GroupForm(CustomForm):
     class Meta:

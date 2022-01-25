@@ -85,7 +85,7 @@
                                         {% endblocktrans %}
                                     </header>
                                     <p>
-                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin ornare magna eros, eu pellentesque tortor vestibulum ut. Maecenas non massa sem. Etiam finibus odio quis feugiat facilisis.
+                                    {{ item.notes|to_markdown|safe }}
                                     </p>
                                 </div>
                                 {% if item.user == request.user %}
@@ -95,10 +95,11 @@
                                             {% trans "Edit:" %}
                                             <span class="details-close icon icon-pencil" aria-hidden></span>
                                         </summary>
-                                        <form>
+                                        <form name="edit-notes-{{ item.id }}" method="POST" action="{% url 'list-item' list.id item.id %}">
+                                            {% csrf_token %}
                                             <div class="field">
                                                 <div class="control">
-                                                    <textarea class="textarea">{{ item.note }}</textarea>
+                                                    <textarea class="textarea" maxlength="300" name="notes">{{ item.notes|default:'' }}</textarea>
                                                 </div>
                                             </div>
                                             <div class="field">
