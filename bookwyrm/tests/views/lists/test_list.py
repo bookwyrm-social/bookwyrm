@@ -286,7 +286,7 @@ class ListViews(TestCase):
             {
                 "book": self.book.id,
                 "book_list": self.list.id,
-                "user": self.local_user,
+                "user": self.local_user.id,
             },
         )
         request.user = self.local_user
@@ -316,7 +316,7 @@ class ListViews(TestCase):
             {
                 "book": self.book.id,
                 "book_list": self.list.id,
-                "user": self.local_user,
+                "user": self.local_user.id,
             },
         )
         request_one.user = self.local_user
@@ -326,7 +326,7 @@ class ListViews(TestCase):
             {
                 "book": self.book_two.id,
                 "book_list": self.list.id,
-                "user": self.local_user,
+                "user": self.local_user.id,
             },
         )
         request_two.user = self.local_user
@@ -350,7 +350,7 @@ class ListViews(TestCase):
             {
                 "book": self.book.id,
                 "book_list": self.list.id,
-                "user": self.local_user,
+                "user": self.local_user.id,
             },
         )
         request_one.user = self.local_user
@@ -360,7 +360,7 @@ class ListViews(TestCase):
             {
                 "book": self.book_two.id,
                 "book_list": self.list.id,
-                "user": self.local_user,
+                "user": self.local_user.id,
             },
         )
         request_two.user = self.local_user
@@ -370,7 +370,7 @@ class ListViews(TestCase):
             {
                 "book": self.book_three.id,
                 "book_list": self.list.id,
-                "user": self.local_user,
+                "user": self.local_user.id,
             },
         )
         request_three.user = self.local_user
@@ -409,7 +409,7 @@ class ListViews(TestCase):
             {
                 "book": self.book_three.id,
                 "book_list": self.list.id,
-                "user": self.local_user,
+                "user": self.local_user.id,
             },
         )
         request.user = self.local_user
@@ -520,7 +520,7 @@ class ListViews(TestCase):
             {
                 "book": self.book.id,
                 "book_list": self.list.id,
-                "user": self.local_user,
+                "user": self.local_user.id,
             },
         )
         request_one.user = self.local_user
@@ -530,7 +530,7 @@ class ListViews(TestCase):
             {
                 "book": self.book_two.id,
                 "book_list": self.list.id,
-                "user": self.local_user,
+                "user": self.local_user.id,
             },
         )
         request_two.user = self.local_user
@@ -540,7 +540,7 @@ class ListViews(TestCase):
             {
                 "book": self.book_three.id,
                 "book_list": self.list.id,
-                "user": self.local_user,
+                "user": self.local_user.id,
             },
         )
         request_three.user = self.local_user
@@ -579,7 +579,7 @@ class ListViews(TestCase):
             {
                 "book": self.book.id,
                 "book_list": self.list.id,
-                "user": self.local_user,
+                "user": self.local_user.id,
             },
         )
         request.user = self.rat
@@ -608,7 +608,7 @@ class ListViews(TestCase):
             {
                 "book": self.book.id,
                 "book_list": self.list.id,
-                "user": self.local_user,
+                "user": self.local_user.id,
             },
         )
         request.user = self.rat
@@ -641,7 +641,7 @@ class ListViews(TestCase):
             {
                 "book": self.book.id,
                 "book_list": self.list.id,
-                "user": self.local_user,
+                "user": self.local_user.id,
             },
         )
         request.user = self.local_user
