@@ -63,6 +63,7 @@ from .imports.manually_review import (
 
 # lists
 from .list.curate import Curate
+from .list.embed import unsafe_embed_list
 from .list.list_item import ListItem
 from .list.lists import Lists, SavedLists, UserLists
 from .list.list import (
@@ -70,7 +71,6 @@ from .list.list import (
     save_list,
     unsave_list,
     delete_list,
-    unsafe_embed_list,
     add_book,
     remove_book,
     set_book_position,
