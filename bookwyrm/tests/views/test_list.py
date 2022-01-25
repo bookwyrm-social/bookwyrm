@@ -188,7 +188,7 @@ class ListViews(TestCase):
                 order=1,
             )
 
-        with patch("bookwyrm.views.list.is_api_request") as is_api:
+        with patch("bookwyrm.views.list.list.is_api_request") as is_api:
             is_api.return_value = False
             result = view(request, self.list.id)
         self.assertIsInstance(result, TemplateResponse)
@@ -210,7 +210,7 @@ class ListViews(TestCase):
 
         request = self.factory.get("/?sort_by=order")
         request.user = self.local_user
-        with patch("bookwyrm.views.list.is_api_request") as is_api:
+        with patch("bookwyrm.views.list.list.is_api_request") as is_api:
             is_api.return_value = False
             result = view(request, self.list.id)
         self.assertIsInstance(result, TemplateResponse)
@@ -219,7 +219,7 @@ class ListViews(TestCase):
 
         request = self.factory.get("/?sort_by=title")
         request.user = self.local_user
-        with patch("bookwyrm.views.list.is_api_request") as is_api:
+        with patch("bookwyrm.views.list.list.is_api_request") as is_api:
             is_api.return_value = False
             result = view(request, self.list.id)
         self.assertIsInstance(result, TemplateResponse)
@@ -228,7 +228,7 @@ class ListViews(TestCase):
 
         request = self.factory.get("/?sort_by=rating")
         request.user = self.local_user
-        with patch("bookwyrm.views.list.is_api_request") as is_api:
+        with patch("bookwyrm.views.list.list.is_api_request") as is_api:
             is_api.return_value = False
             result = view(request, self.list.id)
         self.assertIsInstance(result, TemplateResponse)
@@ -237,7 +237,7 @@ class ListViews(TestCase):
 
         request = self.factory.get("/?sort_by=sdkfh")
         request.user = self.local_user
-        with patch("bookwyrm.views.list.is_api_request") as is_api:
+        with patch("bookwyrm.views.list.list.is_api_request") as is_api:
             is_api.return_value = False
             result = view(request, self.list.id)
         self.assertIsInstance(result, TemplateResponse)
@@ -250,7 +250,7 @@ class ListViews(TestCase):
         request = self.factory.get("")
         request.user = self.local_user
 
-        with patch("bookwyrm.views.list.is_api_request") as is_api:
+        with patch("bookwyrm.views.list.list.is_api_request") as is_api:
             is_api.return_value = False
             result = view(request, self.list.id)
         self.assertIsInstance(result, TemplateResponse)
@@ -271,7 +271,7 @@ class ListViews(TestCase):
 
         request = self.factory.get("")
         request.user = self.anonymous_user
-        with patch("bookwyrm.views.list.is_api_request") as is_api:
+        with patch("bookwyrm.views.list.list.is_api_request") as is_api:
             is_api.return_value = False
             result = view(request, self.list.id)
         self.assertIsInstance(result, TemplateResponse)
@@ -292,7 +292,7 @@ class ListViews(TestCase):
                 order=1,
             )
 
-        with patch("bookwyrm.views.list.is_api_request") as is_api:
+        with patch("bookwyrm.views.list.list.is_api_request") as is_api:
             is_api.return_value = True
             result = view(request, self.list.id)
         self.assertIsInstance(result, ActivitypubResponse)
@@ -306,7 +306,7 @@ class ListViews(TestCase):
 
         request = self.factory.get("/?page=1")
         request.user = self.local_user
-        with patch("bookwyrm.views.list.is_api_request") as is_api:
+        with patch("bookwyrm.views.list.list.is_api_request") as is_api:
             is_api.return_value = True
             result = view(request, self.list.id)
         self.assertIsInstance(result, ActivitypubResponse)
@@ -408,7 +408,7 @@ class ListViews(TestCase):
                 order=1,
             )
 
-        with patch("bookwyrm.views.list.is_api_request") as is_api:
+        with patch("bookwyrm.views.list.list.is_api_request") as is_api:
             is_api.return_value = False
             with self.assertRaises(Http404):
                 view(request, self.list.id, "")
@@ -429,7 +429,7 @@ class ListViews(TestCase):
 
         embed_key = str(self.list.embed_key.hex)
 
-        with patch("bookwyrm.views.list.is_api_request") as is_api:
+        with patch("bookwyrm.views.list.list.is_api_request") as is_api:
             is_api.return_value = False
             result = view(request, self.list.id, embed_key)
 
