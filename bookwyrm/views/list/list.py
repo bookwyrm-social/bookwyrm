@@ -121,7 +121,8 @@ class List(View):
 
         form = forms.ListForm(request.POST, instance=book_list)
         if not form.is_valid():
-            return redirect("list", book_list.id)
+            # this shouldn't happen
+            raise Exception(form.errors)
         book_list = form.save()
         if not book_list.curation == "group":
             book_list.group = None
@@ -169,9 +170,9 @@ def add_book(request):
     book_list = get_object_or_404(models.List, id=request.POST.get("book_list"))
     # make sure the user is allowed to submit to this list
     book_list.raise_visible_to_user(request.user)
-
     if request.user != book_list.user and book_list.curation == "closed":
         raise PermissionDenied()
+
     is_group_member = models.GroupMember.objects.filter(
         group=book_list.group, user=request.user
     ).exists()

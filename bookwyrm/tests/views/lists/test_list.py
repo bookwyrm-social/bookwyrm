@@ -95,6 +95,19 @@ class ListViews(TestCase):
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
+    def test_list_page_with_query(self):
+        """searching for a book to add"""
+        view = views.List.as_view()
+        request = self.factory.get("", {"q": "Example Edition"})
+        request.user = self.local_user
+
+        with patch("bookwyrm.views.list.list.is_api_request") as is_api:
+            is_api.return_value = False
+            result = view(request, self.list.id)
+        self.assertIsInstance(result, TemplateResponse)
+        validate_html(result.render())
+        self.assertEqual(result.status_code, 200)
+
     def test_list_page_sorted(self):
         """there are so many views, this just makes sure it LOADS"""
         view = views.List.as_view()
@@ -668,6 +681,23 @@ class ListViews(TestCase):
         self.assertEqual(item.book, self.book)
         self.assertEqual(item.user, self.local_user)
         self.assertTrue(item.approved)
+
+    def test_add_book_permission_denied(self):
+        """you can't add to that list"""
+        self.list.curation = "closed"
+        self.list.save(broadcast=False)
+        request = self.factory.post(
+            "",
+            {
+                "book": self.book.id,
+                "book_list": self.list.id,
+                "user": self.rat.id,
+            },
+        )
+        request.user = self.rat
+
+        with self.assertRaises(PermissionDenied):
+            views.add_book(request)
 
     def test_remove_book(self):
         """take an item off a list"""
