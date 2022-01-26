@@ -32,6 +32,14 @@ class ListViews(TestCase):
                 localname="mouse",
                 remote_id="https://example.com/users/mouse",
             )
+            self.rat = models.User.objects.create_user(
+                "rat@local.com",
+                "rat@rat.com",
+                "ratword",
+                local=True,
+                localname="rat",
+                remote_id="https://example.com/users/rat",
+            )
         work = models.Work.objects.create(title="Work")
         self.book = models.Edition.objects.create(
             title="Example Edition",
@@ -579,7 +587,7 @@ class ListViews(TestCase):
             {
                 "book": self.book.id,
                 "book_list": self.list.id,
-                "user": self.local_user.id,
+                "user": self.rat.id,
             },
         )
         request.user = self.rat
@@ -608,7 +616,7 @@ class ListViews(TestCase):
             {
                 "book": self.book.id,
                 "book_list": self.list.id,
-                "user": self.local_user.id,
+                "user": self.rat.id,
             },
         )
         request.user = self.rat

@@ -3,6 +3,7 @@ from typing import Optional
 from urllib.parse import urlencode
 
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator
 from django.db import IntegrityError, transaction
 from django.db.models import Avg, DecimalField, Q, Max
@@ -167,7 +168,13 @@ def add_book(request):
     """put a book on a list"""
     book_list = get_object_or_404(models.List, id=request.POST.get("book_list"))
     # make sure the user is allowed to submit to this list
-    book_list.raise_not_submittable(request.user)
+    book_list.raise_visible_to_user(request.user)
+
+    if request.user != book_list.user and book_list.curation == "closed":
+        raise PermissionDenied()
+    is_group_member = models.GroupMember.objects.filter(
+        group=book_list.group, user=request.user
+    ).exists()
 
     form = forms.ListItemForm(request.POST)
     if not form.is_valid():
@@ -178,7 +185,7 @@ def add_book(request):
     if book_list.curation == "curated":
         # make a pending entry at the end of the list
         order_max = (book_list.listitem_set.aggregate(Max("order"))["order__max"]) or 0
-        item.approved = False
+        item.approved = is_group_member or request.user == book_list.user
     else:
         # add the book at the latest order of approved books, before pending books
         order_max = (
