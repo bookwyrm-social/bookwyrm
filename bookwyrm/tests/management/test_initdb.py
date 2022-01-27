@@ -64,8 +64,8 @@ class InitDB(TestCase):
     def test_init_settings(self):
         """Create the settings file"""
         initdb.init_settings()
-        settings = models.Settings.objects.get()
-        self.asesrtEqual(settings.instance_name, "BookWyrm")
+        settings = models.SiteSettings.objects.get()
+        self.assertEqual(settings.name, "BookWyrm")
 
     def test_init_link_domains(self):
         """Common trusted domains for links"""
@@ -91,7 +91,7 @@ class InitDB(TestCase):
         self.assertTrue(Permission.objects.exists())
         self.assertEqual(models.Connector.objects.count(), 3)
         self.assertEqual(models.FederatedServer.objects.count(), 2)
-        self.assertEqual(models.Settings.objects.count(), 1)
+        self.assertEqual(models.SiteSettings.objects.count(), 1)
         self.assertEqual(models.LinkDomain.objects.count(), 5)
 
     def test_command_with_args(self):
@@ -101,10 +101,9 @@ class InitDB(TestCase):
 
         # everything should have been called
         self.assertEqual(Group.objects.count(), 3)
-        self.assertEqual(Permission.objects.count(), 0)
         self.assertEqual(models.Connector.objects.count(), 0)
         self.assertEqual(models.FederatedServer.objects.count(), 0)
-        self.assertEqual(models.Settings.objects.count(), 0)
+        self.assertEqual(models.SiteSettings.objects.count(), 0)
         self.assertEqual(models.LinkDomain.objects.count(), 0)
 
     def test_command_invalid_args(self):
