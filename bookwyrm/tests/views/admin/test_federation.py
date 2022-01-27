@@ -40,7 +40,7 @@ class FederationViews(TestCase):
             )
 
         models.SiteSettings.objects.create()
-        
+
     def test_federation_page(self):
         """there are so many views, this just makes sure it LOADS"""
         view = views.Federation.as_view()
@@ -211,3 +211,4 @@ class FederationViews(TestCase):
 
         # remove file.json after test
         os.remove("file.json")
+        
