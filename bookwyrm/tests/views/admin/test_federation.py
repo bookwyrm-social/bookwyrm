@@ -1,4 +1,5 @@
 """ test for app action functionality """
+import os
 import json
 from unittest.mock import patch
 
@@ -39,7 +40,7 @@ class FederationViews(TestCase):
             )
 
         models.SiteSettings.objects.create()
-
+        
     def test_federation_page(self):
         """there are so many views, this just makes sure it LOADS"""
         view = views.Federation.as_view()
@@ -207,3 +208,6 @@ class FederationViews(TestCase):
         created = models.FederatedServer.objects.get(server_name="server.name")
         self.assertEqual(created.status, "blocked")
         self.assertEqual(created.notes, "https://explanation.url")
+
+        # remove file.json after test
+        os.remove("file.json")
