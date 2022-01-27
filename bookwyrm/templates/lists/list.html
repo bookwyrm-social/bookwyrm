@@ -73,7 +73,7 @@
 
                         {% if item.notes %}
                         <div class="media notification">
-                            <figure class="media-left">
+                            <figure class="media-left" aria-hidden="true">
                                 {% include "snippets/avatar.html" with user=item.user %}
                             </figure>
                             <div class="media-content">
@@ -263,7 +263,7 @@
                 <textarea
                     readonly
                     class="textarea is-small"
-                    aria-labelledby="embed-label"
+                    aria-describedby="embed-label"
                     data-copytext
                     data-copytext-label="{% trans 'Copy embed code' %}"
                     data-copytext-success="{% trans 'Copied!' %}"
