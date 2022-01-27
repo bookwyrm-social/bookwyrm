@@ -211,4 +211,3 @@ class FederationViews(TestCase):
 
         # remove file.json after test
         os.remove("file.json")
-        
