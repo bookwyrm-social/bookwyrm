@@ -3,96 +3,26 @@ from typing import Optional
 from urllib.parse import urlencode
 
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator
 from django.db import IntegrityError, transaction
 from django.db.models import Avg, DecimalField, Q, Max
 from django.db.models.functions import Coalesce
-from django.http import HttpResponseBadRequest, HttpResponse, Http404
+from django.http import HttpResponseBadRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.http import require_POST
-from django.views.decorators.clickjacking import xframe_options_exempt
 
 from bookwyrm import book_search, forms, models
 from bookwyrm.activitypub import ActivitypubResponse
-from bookwyrm.lists_stream import ListsStream
 from bookwyrm.settings import PAGE_LENGTH
-from .helpers import is_api_request
-from .helpers import get_user_from_username
+from bookwyrm.views.helpers import is_api_request
 
 
 # pylint: disable=no-self-use
-class Lists(View):
-    """book list page"""
-
-    def get(self, request):
-        """display a book list"""
-        lists = ListsStream().get_list_stream(request.user)
-        paginated = Paginator(lists, 12)
-        data = {
-            "lists": paginated.get_page(request.GET.get("page")),
-            "list_form": forms.ListForm(),
-            "path": "/list",
-        }
-        return TemplateResponse(request, "lists/lists.html", data)
-
-    @method_decorator(login_required, name="dispatch")
-    # pylint: disable=unused-argument
-    def post(self, request):
-        """create a book_list"""
-        form = forms.ListForm(request.POST)
-        if not form.is_valid():
-            return redirect("lists")
-        book_list = form.save()
-        # list should not have a group if it is not group curated
-        if not book_list.curation == "group":
-            book_list.group = None
-            book_list.save(broadcast=False)
-
-        return redirect(book_list.local_path)
-
-
-@method_decorator(login_required, name="dispatch")
-class SavedLists(View):
-    """saved book list page"""
-
-    def get(self, request):
-        """display book lists"""
-        # hide lists with no approved books
-        lists = request.user.saved_lists.order_by("-updated_date")
-
-        paginated = Paginator(lists, 12)
-        data = {
-            "lists": paginated.get_page(request.GET.get("page")),
-            "list_form": forms.ListForm(),
-            "path": "/list",
-        }
-        return TemplateResponse(request, "lists/lists.html", data)
-
-
-@method_decorator(login_required, name="dispatch")
-class UserLists(View):
-    """a user's book list page"""
-
-    def get(self, request, username):
-        """display a book list"""
-        user = get_user_from_username(request.user, username)
-        lists = models.List.privacy_filter(request.user).filter(user=user)
-        paginated = Paginator(lists, 12)
-
-        data = {
-            "user": user,
-            "is_self": request.user.id == user.id,
-            "lists": paginated.get_page(request.GET.get("page")),
-            "list_form": forms.ListForm(),
-            "path": user.local_path + "/lists",
-        }
-        return TemplateResponse(request, "user/lists.html", data)
-
-
 class List(View):
     """book list page"""
 
@@ -191,110 +121,14 @@ class List(View):
 
         form = forms.ListForm(request.POST, instance=book_list)
         if not form.is_valid():
-            return redirect("list", book_list.id)
+            # this shouldn't happen
+            raise Exception(form.errors)
         book_list = form.save()
         if not book_list.curation == "group":
             book_list.group = None
             book_list.save(broadcast=False)
 
         return redirect(book_list.local_path)
-
-
-class EmbedList(View):
-    """embeded book list page"""
-
-    def get(self, request, list_id, list_key):
-        """display a book list"""
-        book_list = get_object_or_404(models.List, id=list_id)
-
-        embed_key = str(book_list.embed_key.hex)
-
-        if list_key != embed_key:
-            raise Http404()
-
-        # sort_by shall be "order" unless a valid alternative is given
-        sort_by = request.GET.get("sort_by", "order")
-        if sort_by not in ("order", "title", "rating"):
-            sort_by = "order"
-
-        # direction shall be "ascending" unless a valid alternative is given
-        direction = request.GET.get("direction", "ascending")
-        if direction not in ("ascending", "descending"):
-            direction = "ascending"
-
-        directional_sort_by = {
-            "order": "order",
-            "title": "book__title",
-            "rating": "average_rating",
-        }[sort_by]
-        if direction == "descending":
-            directional_sort_by = "-" + directional_sort_by
-
-        items = book_list.listitem_set.prefetch_related("user", "book", "book__authors")
-        if sort_by == "rating":
-            items = items.annotate(
-                average_rating=Avg(
-                    Coalesce("book__review__rating", 0.0),
-                    output_field=DecimalField(),
-                )
-            )
-        items = items.filter(approved=True).order_by(directional_sort_by)
-
-        paginated = Paginator(items, PAGE_LENGTH)
-
-        page = paginated.get_page(request.GET.get("page"))
-
-        data = {
-            "list": book_list,
-            "items": page,
-            "page_range": paginated.get_elided_page_range(
-                page.number, on_each_side=2, on_ends=1
-            ),
-        }
-        return TemplateResponse(request, "lists/embed-list.html", data)
-
-
-@method_decorator(login_required, name="dispatch")
-class Curate(View):
-    """approve or discard list suggestsions"""
-
-    def get(self, request, list_id):
-        """display a pending list"""
-        book_list = get_object_or_404(models.List, id=list_id)
-        book_list.raise_not_editable(request.user)
-
-        data = {
-            "list": book_list,
-            "pending": book_list.listitem_set.filter(approved=False),
-            "list_form": forms.ListForm(instance=book_list),
-        }
-        return TemplateResponse(request, "lists/curate.html", data)
-
-    def post(self, request, list_id):
-        """edit a book_list"""
-        book_list = get_object_or_404(models.List, id=list_id)
-        book_list.raise_not_editable(request.user)
-
-        suggestion = get_object_or_404(models.ListItem, id=request.POST.get("item"))
-        approved = request.POST.get("approved") == "true"
-        if approved:
-            # update the book and set it to be the last in the order of approved books,
-            # before any pending books
-            suggestion.approved = True
-            order_max = (
-                book_list.listitem_set.filter(approved=True).aggregate(Max("order"))[
-                    "order__max"
-                ]
-                or 0
-            ) + 1
-            suggestion.order = order_max
-            increment_order_in_reverse(book_list.id, order_max)
-            suggestion.save()
-        else:
-            deleted_order = suggestion.order
-            suggestion.delete(broadcast=False)
-            normalize_book_list_ordering(book_list.id, start=deleted_order)
-        return redirect("list-curate", book_list.id)
 
 
 @require_POST
@@ -330,53 +164,41 @@ def delete_list(request, list_id):
 
 @require_POST
 @login_required
+@transaction.atomic
 def add_book(request):
     """put a book on a list"""
-    book_list = get_object_or_404(models.List, id=request.POST.get("list"))
-    is_group_member = False
-    if book_list.curation == "group":
-        is_group_member = models.GroupMember.objects.filter(
-            group=book_list.group, user=request.user
-        ).exists()
-
+    book_list = get_object_or_404(models.List, id=request.POST.get("book_list"))
+    # make sure the user is allowed to submit to this list
     book_list.raise_visible_to_user(request.user)
+    if request.user != book_list.user and book_list.curation == "closed":
+        raise PermissionDenied()
 
-    book = get_object_or_404(models.Edition, id=request.POST.get("book"))
-    # do you have permission to add to the list?
+    is_group_member = models.GroupMember.objects.filter(
+        group=book_list.group, user=request.user
+    ).exists()
+
+    form = forms.ListItemForm(request.POST)
+    if not form.is_valid():
+        # this shouldn't happen, there aren't validated fields
+        raise Exception(form.errors)
+    item = form.save(commit=False)
+
+    if book_list.curation == "curated":
+        # make a pending entry at the end of the list
+        order_max = (book_list.listitem_set.aggregate(Max("order"))["order__max"]) or 0
+        item.approved = is_group_member or request.user == book_list.user
+    else:
+        # add the book at the latest order of approved books, before pending books
+        order_max = (
+            book_list.listitem_set.filter(approved=True).aggregate(Max("order"))[
+                "order__max"
+            ]
+        ) or 0
+        increment_order_in_reverse(book_list.id, order_max + 1)
+    item.order = order_max + 1
+
     try:
-        if (
-            request.user == book_list.user
-            or is_group_member
-            or book_list.curation == "open"
-        ):
-            # add the book at the latest order of approved books, before pending books
-            order_max = (
-                book_list.listitem_set.filter(approved=True).aggregate(Max("order"))[
-                    "order__max"
-                ]
-            ) or 0
-            increment_order_in_reverse(book_list.id, order_max + 1)
-            models.ListItem.objects.create(
-                book=book,
-                book_list=book_list,
-                user=request.user,
-                order=order_max + 1,
-            )
-        elif book_list.curation == "curated":
-            # make a pending entry at the end of the list
-            order_max = (
-                book_list.listitem_set.aggregate(Max("order"))["order__max"]
-            ) or 0
-            models.ListItem.objects.create(
-                approved=False,
-                book=book,
-                book_list=book_list,
-                user=request.user,
-                order=order_max + 1,
-            )
-        else:
-            # you can't add to this list, what were you THINKING
-            return HttpResponseBadRequest()
+        item.save()
     except IntegrityError:
         # if the book is already on the list, don't flip out
         pass
@@ -499,11 +321,3 @@ def normalize_book_list_ordering(book_list_id, start=0, add_offset=0):
         if item.order != effective_order:
             item.order = effective_order
             item.save()
-
-
-@xframe_options_exempt
-def unsafe_embed_list(request, *args, **kwargs):
-    """allows the EmbedList view to be loaded through unsafe iframe origins"""
-
-    embed_list_view = EmbedList.as_view()
-    return embed_list_view(request, *args, **kwargs)

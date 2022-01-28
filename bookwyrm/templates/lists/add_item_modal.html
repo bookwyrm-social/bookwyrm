@@ -1,0 +1,45 @@
+{% extends 'components/modal.html' %}
+{% load i18n %}
+{% load utilities %}
+{% load group_tags %}
+
+{% block modal-title %}
+{% if list.curation == 'open' or request.user == list.user or list.group|is_member:request.user %}
+    {% blocktrans trimmed with title=book|book_title %}
+        Add "<em>{{ title }}</em>" to this list
+    {% endblocktrans %}
+{% else %}
+    {% blocktrans trimmed with title=book|book_title %}
+        Suggest "<em>{{ title }}</em>" for this list
+    {% endblocktrans %}
+{% endif %}
+{% endblock %}
+
+{% block modal-form-open %}
+<form
+    name="add-book-{{ book.id }}"
+    method="POST"
+    action="{% url 'list-add-book' %}{% if query %}?q={{ query }}{% endif %}"
+>
+{% endblock %}
+
+{% block modal-body %}
+    {% csrf_token %}
+    <input type="hidden" name="book" value="{{ book.id }}">
+    <input type="hidden" name="book_list" value="{{ list.id }}">
+    <input type="hidden" name="user" value="{{ request.user.id }}">
+    {% include "lists/item_notes_field.html" with form_id=id show_label=True %}
+{% endblock %}
+
+{% block modal-footer %}
+<button type="submit" class="button is-link">
+    {% if list.curation == 'open' or request.user == list.user or list.group|is_member:request.user %}
+        {% trans "Add" %}
+    {% else %}
+        {% trans "Suggest" %}
+    {% endif %}
+</button>
+<button type="button" class="button" data-modal-close>{% trans "Cancel" %}</button>
+{% endblock %}
+
+{% block modal-form-close %}</form>{% endblock %}

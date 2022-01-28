@@ -57,14 +57,7 @@ class GetStartedBooks(View):
         if len(book_results) < 5:
             popular_books = (
                 models.Edition.objects.exclude(
-                    # exclude already shelved
-                    Q(
-                        parent_work__in=[
-                            b.book.parent_work
-                            for b in request.user.shelfbook_set.distinct().all()
-                        ]
-                    )
-                    | Q(  # and exclude if it's already in search results
+                    Q(  # exclude if it's already in search results
                         parent_work__in=[b.parent_work for b in book_results]
                     )
                 )

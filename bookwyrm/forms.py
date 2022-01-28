@@ -444,6 +444,12 @@ class ListForm(CustomForm):
         fields = ["user", "name", "description", "curation", "privacy", "group"]
 
 
+class ListItemForm(CustomForm):
+    class Meta:
+        model = models.ListItem
+        fields = ["user", "book", "book_list", "notes"]
+
+
 class GroupForm(CustomForm):
     class Meta:
         model = models.Group
