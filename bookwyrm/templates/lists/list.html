@@ -1,9 +1,10 @@
 {% extends 'lists/layout.html' %}
 {% load i18n %}
 {% load rating_tags %}
-{% load book_display_tags %}
 {% load group_tags %}
+{% load book_display_tags %}
 {% load markdown %}
+{% load utilities %}
 
 {% block breadcrumbs %}
 <nav class="breadcrumb subtitle" aria-label="breadcrumbs">
@@ -21,7 +22,7 @@
 {% block panel %}
 {% if request.user == list.user and pending_count %}
 <div class="block content">
-    <p>
+    <p class="notification">
         <a href="{% url 'list-curate' list.id %}">{{ pending_count }} book{{ pending_count|pluralize }} awaiting your approval</a>
     </p>
 </div>
@@ -46,21 +47,16 @@
         {% for item in items %}
             <li class="block mb-5">
                 <div class="card">
-                    {% with book=item.book %}
-                        <div
-                            class="
-                                card-content p-0 mb-0
-                                columns is-gapless
-                                is-mobile
-                            "
-                        >
-                            <div class="column is-3-mobile is-2-tablet is-cover align to-t">
+                    <div class="card-content">
+                        {% with book=item.book %}
+                        <div class="columns is-mobile">
+                            <div class="column is-narrow is-cover">
                                 <a href="{{ item.book.local_path }}" aria-hidden="true">
                                     {% include 'snippets/book_cover.html' with cover_class='is-w-auto is-h-m-tablet is-align-items-flex-start' size='medium' %}
                                 </a>
                             </div>
 
-                            <div class="column mx-3 my-2">
+                            <div class="column">
                                 <p>
                                     {% include 'snippets/book_titleby.html' %}
                                 </p>
@@ -73,8 +69,54 @@
                                 {% include 'snippets/shelve_button/shelve_button.html' with book=book %}
                             </div>
                         </div>
-                    {% endwith %}
+                        {% endwith %}
 
+                        {% if item.notes %}
+                        <div class="media notification">
+                            <figure class="media-left" aria-hidden="true">
+                                {% include "snippets/avatar.html" with user=item.user %}
+                            </figure>
+                            <div class="media-content">
+                                <div class="content">
+                                    <header>
+                                        {% url 'user-feed' user|username as user_path %}
+                                        {% blocktrans trimmed with username=user.display_name %}
+                                        <a href="{{ user_path }}">{{ username }}</a> says:
+                                        {% endblocktrans %}
+                                    </header>
+                                    <p>
+                                        {{ item.notes|to_markdown|safe }}
+                                    </p>
+                                </div>
+                                {% if item.user == request.user %}
+                                <div>
+                                    <details class="details-panel box">
+                                        <summary>
+                                            <span role="heading" aria-level="3">
+                                                {% trans "Edit notes" %}
+                                                <span class="details-close icon icon-pencil" aria-hidden></span>
+                                            </span>
+                                        </summary>
+                                        {% include "lists/edit_item_form.html" %}
+                                    </details>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% elif item.user == request.user %}
+                        <div>
+                            <details class="details-panel box">
+                                <summary>
+                                    <span role="heading" aria-level="3">
+                                        {% trans "Add notes" %}
+                                        <span class="details-close icon icon-plus" aria-hidden></span>
+                                    </span>
+                                </summary>
+                                {% include "lists/edit_item_form.html" %}
+                            </details>
+                        </div>
+                        {% endif %}
+                    </div>
                     <div class="card-footer is-stacked-mobile has-background-white-bis is-align-items-stretch">
                         <div class="card-footer-item">
                             <p>
@@ -195,23 +237,19 @@
                     <div class="column ml-3">
                         <p>{% include 'snippets/book_titleby.html' with book=book %}</p>
 
-                        <form
-                            class="mt-1"
-                            name="add-book-{{ book.id }}"
-                            method="post"
-                            action="{% url 'list-add-book' %}{% if query %}?q={{ query }}{% endif %}"
+                        {% join "add_item" list.id book.id as modal_id %}
+                        <button
+                            type="button"
+                            class="button is-small is-link"
+                            data-modal-open="{{ modal_id }}"
                         >
-                            {% csrf_token %}
-                            <input type="hidden" name="book" value="{{ book.id }}">
-                            <input type="hidden" name="list" value="{{ list.id }}">
-                            <button type="submit" class="button is-small is-link">
-                                {% if list.curation == 'open' or request.user == list.user or list.group|is_member:request.user %}
-                                    {% trans "Add" %}
-                                {% else %}
-                                    {% trans "Suggest" %}
-                                {% endif %}
-                            </button>
-                        </form>
+                            {% if list.curation == 'open' or request.user == list.user or list.group|is_member:request.user %}
+                                {% trans "Add" %}
+                            {% else %}
+                                {% trans "Suggest" %}
+                            {% endif %}
+                        </button>
+                        {% include "lists/add_item_modal.html" with id=modal_id %}
                     </div>
                 </div>
             {% endfor %}
@@ -225,7 +263,7 @@
                 <textarea
                     readonly
                     class="textarea is-small"
-                    aria-labelledby="embed-label"
+                    aria-describedby="embed-label"
                     data-copytext
                     data-copytext-label="{% trans 'Copy embed code' %}"
                     data-copytext-success="{% trans 'Copied!' %}"

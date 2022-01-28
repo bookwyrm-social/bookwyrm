@@ -61,6 +61,21 @@ from .imports.manually_review import (
     delete_import_item,
 )
 
+# lists
+from .list.curate import Curate
+from .list.embed import unsafe_embed_list
+from .list.list_item import ListItem
+from .list.lists import Lists, SavedLists, UserLists
+from .list.list import (
+    List,
+    save_list,
+    unsave_list,
+    delete_list,
+    add_book,
+    remove_book,
+    set_book_position,
+)
+
 # misc views
 from .author import Author, EditAuthor, update_author_from_remote
 from .directory import Directory
@@ -90,8 +105,6 @@ from .group import (
 from .inbox import Inbox
 from .interaction import Favorite, Unfavorite, Boost, Unboost
 from .isbn import Isbn
-from .list import Lists, SavedLists, List, Curate, UserLists
-from .list import save_list, unsave_list, delete_list, unsafe_embed_list
 from .notifications import Notifications
 from .outbox import Outbox
 from .reading import ReadThrough, delete_readthrough, delete_progressupdate
@@ -101,7 +114,7 @@ from .rss_feed import RssFeed
 from .search import Search
 from .status import CreateStatus, EditStatus, DeleteStatus, update_progress
 from .status import edit_readthrough
-from .updates import get_notification_count, get_unread_status_count
+from .updates import get_notification_count, get_unread_status_string
 from .user import User, Followers, Following, hide_suggestions, user_redirect
 from .wellknown import *
 from .annual_summary import (

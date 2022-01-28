@@ -118,6 +118,7 @@ class InboxAdd(TestCase):
                 "type": "ListItem",
                 "book": self.book.remote_id,
                 "id": "https://example.com/listbook/6189",
+                "notes": "hi hello",
                 "order": 1,
             },
             "target": "https://example.com/user/mouse/list/to-read",
@@ -130,3 +131,4 @@ class InboxAdd(TestCase):
         self.assertEqual(booklist.name, "Test List")
         self.assertEqual(booklist.books.first(), self.book)
         self.assertEqual(listitem.remote_id, "https://example.com/listbook/6189")
+        self.assertEqual(listitem.notes, "hi hello")
