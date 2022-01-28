@@ -24,9 +24,12 @@
 
 {# announcements and system messages #}
 {% if not activities.number > 1 %}
-<a href="{{ request.path }}" class="transition-y is-hidden notification is-primary is-block" data-poll-wrapper>
-    {% blocktrans with tab_key=tab.key %}load <span data-poll="stream/{{ tab_key }}">0</span> unread status(es){% endblocktrans %}
-    {{ allowed_status_types|json_script:"unread-notifications-wrapper" }}
+<a
+    href="{{ request.path }}"
+    class="transition-y is-hidden notification is-primary is-block"
+    data-poll-wrapper
+>
+    <span data-poll="stream/{{ tab.key }}"></span>
 </a>
 
     {% if request.user.show_goal and not goal and tab.key == 'home' %}

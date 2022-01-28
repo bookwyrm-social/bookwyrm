@@ -114,7 +114,7 @@ from .rss_feed import RssFeed
 from .search import Search
 from .status import CreateStatus, EditStatus, DeleteStatus, update_progress
 from .status import edit_readthrough
-from .updates import get_notification_count, get_unread_status_count
+from .updates import get_notification_count, get_unread_status_string
 from .user import User, Followers, Following, hide_suggestions, user_redirect
 from .wellknown import *
 from .annual_summary import (
