@@ -38,7 +38,7 @@ class User(View):
                 request.user, privacy_levels=["public", "followers"]
             ).filter(user=user, books__isnull=False)
 
-        for user_shelf in shelves[:3]:
+        for user_shelf in shelves.all()[:3]:
             shelf_preview.append(
                 {
                     "name": user_shelf.name,
