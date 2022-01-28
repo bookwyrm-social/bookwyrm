@@ -44,7 +44,7 @@ class IPBlocklistViews(TestCase):
         """there are so many views, this just makes sure it LOADS"""
         view = views.IPBlocklist.as_view()
         form = forms.IPBlocklistForm()
-        form["address"] = "0.0.0.0"
+        form.data["address"] = "0.0.0.0"
 
         request = self.factory.post("", form.data)
         request.user = self.local_user
@@ -70,4 +70,4 @@ class IPBlocklistViews(TestCase):
         request.user.is_superuser = True
 
         view(request, block.id)
-        self.assertFalse(models.Block.objects.exists())
+        self.assertFalse(models.IPBlocklist.objects.exists())
