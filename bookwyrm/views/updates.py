@@ -25,7 +25,6 @@ def get_unread_status_string(request, stream="home"):
         raise Http404
 
     counts_by_type = stream.get_unread_count_by_status_type(request.user).items()
-    print(counts_by_type)
     if counts_by_type == {}:
         count = stream.get_unread_count(request.user)
     else:
@@ -39,8 +38,11 @@ def get_unread_status_string(request, stream="home"):
             if k not in ["review", "comment", "quotation"]
         )
 
+    if not count:
+        return JsonResponse({})
+
     translation_string = lambda c: ngettext(
         "Load %(count)d unread status", "Load %(count)d unread statuses", c
     ) % {"count": c}
 
-    return JsonResponse({"total": translation_string(count)})
+    return JsonResponse({"count": translation_string(count)})

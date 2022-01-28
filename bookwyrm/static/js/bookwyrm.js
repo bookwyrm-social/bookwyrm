@@ -122,6 +122,11 @@ let BookWyrm = new (class {
      */
     updateCountElement(counter, data) {
         let count = data.count;
+
+        if (count === undefined) {
+            return;
+        }
+
         const currentCount = counter.innerText;
         const hasMentions = data.has_mentions;
 
