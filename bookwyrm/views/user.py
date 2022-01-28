@@ -30,17 +30,15 @@ class User(View):
 
         shelf_preview = []
 
-        # only show other shelves that should be visible
+        # only show shelves that should be visible
         shelves = user.shelf_set
         is_self = request.user.id == user.id
         if not is_self:
             shelves = models.Shelf.privacy_filter(
                 request.user, privacy_levels=["public", "followers"]
-            ).filter(user=user)
+            ).filter(user=user, books__isnull=False)
 
-        for user_shelf in shelves.all():
-            if not user_shelf.books.count():
-                continue
+        for user_shelf in shelves.all()[:3]:
             shelf_preview.append(
                 {
                     "name": user_shelf.name,
@@ -49,8 +47,6 @@ class User(View):
                     "size": user_shelf.books.count(),
                 }
             )
-            if len(shelf_preview) > 2:
-                break
 
         # user's posts
         activities = (
