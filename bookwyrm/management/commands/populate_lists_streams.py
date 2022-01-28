@@ -14,19 +14,13 @@ def populate_lists_streams():
     for user in users:
         print(".", end="")
         lists_stream.populate_lists_task.delay(user.id)
+    print("\nAll done, thank you for your patience!")
 
 
 class Command(BaseCommand):
     """start all over with lists streams"""
 
     help = "Populate list streams for all users"
-
-    def add_arguments(self, parser):
-        parser.add_argument(
-            "--stream",
-            default=None,
-            help="Specifies which time of stream to populate",
-        )
 
     # pylint: disable=no-self-use,unused-argument
     def handle(self, *args, **options):

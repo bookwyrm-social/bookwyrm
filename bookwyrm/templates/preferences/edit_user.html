@@ -34,26 +34,26 @@
                 <div class="column">
                     {{ form.avatar }}
 
-                    {% include 'snippets/form_errors.html' with errors_list=form.avatar.errors id="desc_avatar" %}    
+                    {% include 'snippets/form_errors.html' with errors_list=form.avatar.errors id="desc_avatar" %}
                 </div>
             </div>
             <div class="field">
                 <label class="label" for="id_name">{% trans "Display name:" %}</label>
                 {{ form.name }}
 
-                {% include 'snippets/form_errors.html' with errors_list=form.name.errors id="desc_name" %}    
+                {% include 'snippets/form_errors.html' with errors_list=form.name.errors id="desc_name" %}
             </div>
             <div class="field">
                 <label class="label" for="id_summary">{% trans "Summary:" %}</label>
                 {{ form.summary }}
 
-                {% include 'snippets/form_errors.html' with errors_list=form.summary.errors id="desc_summary" %}    
+                {% include 'snippets/form_errors.html' with errors_list=form.summary.errors id="desc_summary" %}
             </div>
             <div class="field">
                 <label class="label" for="id_email">{% trans "Email address:" %}</label>
                 {{ form.email }}
 
-                {% include 'snippets/form_errors.html' with errors_list=form.email.errors id="desc_email" %}    
+                {% include 'snippets/form_errors.html' with errors_list=form.email.errors id="desc_email" %}
             </div>
         </div>
     </section>

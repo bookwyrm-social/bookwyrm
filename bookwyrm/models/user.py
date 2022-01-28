@@ -129,7 +129,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         related_name="favorite_statuses",
     )
     default_post_privacy = models.CharField(
-        max_length=255, default="public", choices=fields.PrivacyLevels.choices
+        max_length=255, default="public", choices=fields.PrivacyLevels
     )
     remote_id = fields.RemoteIdField(null=True, unique=True, activitypub_field="id")
     created_date = models.DateTimeField(auto_now_add=True)
@@ -346,6 +346,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
 
     def delete(self, *args, **kwargs):
         """deactivate rather than delete a user"""
+        # pylint: disable=attribute-defined-outside-init
         self.is_active = False
         # skip the logic in this class's save()
         super().save(*args, **kwargs)
@@ -406,14 +407,6 @@ class KeyPair(ActivitypubMixin, BookWyrmModel):
             self.private_key, self.public_key = create_key_pair()
         return super().save(*args, **kwargs)
 
-    def to_activity(self, **kwargs):
-        """override default AP serializer to add context object
-        idk if this is the best way to go about this"""
-        activity_object = super().to_activity(**kwargs)
-        del activity_object["@context"]
-        del activity_object["type"]
-        return activity_object
-
 
 def get_current_year():
     """sets default year for annual goal to this year"""
@@ -427,7 +420,7 @@ class AnnualGoal(BookWyrmModel):
     goal = models.IntegerField(validators=[MinValueValidator(1)])
     year = models.IntegerField(default=get_current_year)
     privacy = models.CharField(
-        max_length=255, default="public", choices=fields.PrivacyLevels.choices
+        max_length=255, default="public", choices=fields.PrivacyLevels
     )
 
     class Meta:

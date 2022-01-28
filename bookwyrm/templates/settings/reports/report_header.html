@@ -1,0 +1,22 @@
+{% load i18n %}
+{% load utilities %}
+
+{% if report.statuses.exists %}
+
+{% blocktrans trimmed with report_id=report.id username=report.user|username %}
+Report #{{ report_id }}: Status posted by @{{ username }}
+{% endblocktrans %}
+
+{% elif report.links.exists %}
+
+{% blocktrans trimmed with report_id=report.id username=report.user|username %}
+Report #{{ report_id }}: Link added by @{{ username }}
+{% endblocktrans %}
+
+{% else %}
+
+{% blocktrans trimmed with report_id=report.id username=report.user|username %}
+Report #{{ report_id }}: User @{{ username }}
+{% endblocktrans %}
+
+{% endif %}

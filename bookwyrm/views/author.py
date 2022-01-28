@@ -1,7 +1,6 @@
 """ the good people stuff! the authors! """
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.paginator import Paginator
-from django.db.models import OuterRef, Subquery, F, Q
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
@@ -26,17 +25,8 @@ class Author(View):
         if is_api_request(request):
             return ActivitypubResponse(author.to_activity())
 
-        default_editions = models.Edition.objects.filter(
-            parent_work=OuterRef("parent_work")
-        ).order_by("-edition_rank")
-
-        books = (
-            models.Edition.viewer_aware_objects(request.user)
-            .filter(Q(authors=author) | Q(parent_work__authors=author))
-            .annotate(default_id=Subquery(default_editions.values("id")[:1]))
-            .filter(default_id=F("id"))
-            .order_by("-first_published_date", "-published_date", "-created_date")
-            .prefetch_related("authors")
+        books = models.Work.objects.filter(
+            authors=author, editions__authors=author
         ).distinct()
 
         paginated = Paginator(books, PAGE_LENGTH)

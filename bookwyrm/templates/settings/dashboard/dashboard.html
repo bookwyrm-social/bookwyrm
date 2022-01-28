@@ -48,6 +48,17 @@
         </a>
     </div>
     {% endif %}
+    {% if pending_domains %}
+    <div class="column">
+        <a href="{% url 'settings-link-domain' %}" class="notification is-primary is-block">
+            {% blocktrans trimmed count counter=pending_domains with display_count=pending_domains|intcomma %}
+            {{ display_count }} domain needs review
+            {% plural %}
+            {{ display_count }} domains need review
+            {% endblocktrans %}
+        </a>
+    </div>
+    {% endif %}
     {% if not site.allow_registration and site.allow_invite_requests and invite_requests %}
     <div class="column">
         <a href="{% url 'settings-invite-requests' %}" class="notification is-block is-success is-light">

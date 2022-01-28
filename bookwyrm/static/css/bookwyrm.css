@@ -720,6 +720,11 @@ ol.ordered-list li::before {
     }
 }
 
+.overflow-wrap-anywhere {
+    overflow-wrap: anywhere;
+    min-width: 10em;
+}
+
 /* Threads
  ******************************************************************************/
 
@@ -749,6 +754,13 @@ ol.ordered-list li::before {
     display: flex;
     justify-content: center;
     padding: 0 0.75em;
+}
+
+/* Notifications page
+ ******************************************************************************/
+
+.notification a.icon {
+    text-decoration: none !important;
 }
 
 /* Breadcrumbs

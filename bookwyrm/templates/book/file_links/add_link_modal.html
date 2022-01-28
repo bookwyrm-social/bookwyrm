@@ -1,0 +1,64 @@
+{% extends 'components/modal.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block modal-title %}
+{% trans "Add file link" %}
+{% endblock %}
+
+{% block modal-form-open %}
+<form name="add-link" method="POST" action="{% url 'file-link-add' book.id %}">
+{% endblock %}
+
+{% block modal-body %}
+{% csrf_token %}
+<input type="hidden" name="book" value="{{ book.id }}">
+<input type="hidden" name="added_by" value="{{ request.user.id }}">
+
+<p class="notification">
+    {% trans "Links from unknown domains will need to be approved by a moderator before they are added." %}
+</p>
+
+<div class="columns">
+    <div class="column is-four-fifths">
+        <label class="label" for="id_url">{% trans "URL:" %}</label>
+        <input type="url" name="url" maxlength="255" class="input" required="" id="id_url" value="{% firstof file_link_form.url.value "" %}" placeholder="https://..." aria-describedby="desc_name">
+        {% include 'snippets/form_errors.html' with errors_list=file_link_form.url.errors id="desc_url" %}
+    </div>
+    <div class="column is-one-fifth">
+        <label class="label" for="id_filetype">{% trans "File type:" %}</label>
+        <input
+            type="text"
+            name="filetype"
+            maxlength="50"
+            class="input"
+            required=""
+            id="id_filetype"
+            value="{% firstof file_link_form.filetype.value '' %}"
+            placeholder="ePub"
+            list="mimetypes-list"
+            data-autocomplete="mimetype"
+        >
+        <datalist id="mimetypes-list"></datalist>
+        {% include 'snippets/form_errors.html' with errors_list=file_link_form.filetype.errors id="desc_filetype" %}
+    </div>
+</div>
+<div>
+    <label class="label" for="id_availability">
+        {% trans "Availability:" %}
+    </label>
+    <div class="select">
+        {{ file_link_form.availability }}
+    </div>
+</div>
+
+{% endblock %}
+
+{% block modal-footer %}
+<button class="button is-primary" type="submit">{% trans "Save" %}</button>
+{% if not static %}
+    <button type="button" class="button" data-modal-close>{% trans "Cancel" %}</button>
+{% endif %}
+
+{% endblock %}
+{% block modal-form-close %}</form>{% endblock %}
