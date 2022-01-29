@@ -52,3 +52,29 @@ class Activitystreams(TestCase):
         # yes book, yes audience
         result = activitystreams.BooksStream().get_statuses_for_user(self.local_user)
         self.assertEqual(list(result), [status])
+
+    def test_book_statuses(self, *_):
+        """statuses about a book"""
+        alt_book = models.Edition.objects.create(
+            title="hi", parent_work=self.book.parent_work
+        )
+        status = models.Status.objects.create(
+            user=self.local_user, content="hi", privacy="public"
+        )
+        status = models.Comment.objects.create(
+            user=self.remote_user, content="hi", privacy="public", book=alt_book
+        )
+        models.ShelfBook.objects.create(
+            user=self.local_user,
+            shelf=self.local_user.shelf_set.first(),
+            book=self.book,
+        )
+        with patch(
+            "bookwyrm.activitystreams.BooksStream.bulk_add_objects_to_store"
+        ) as redis_mock:
+            activitystreams.BooksStream().add_book_statuses(self.local_user, self.book)
+        args = redis_mock.call_args[0]
+        queryset = args[0]
+        self.assertEqual(queryset.count(), 1)
+        self.assertTrue(status in queryset)
+        self.assertEqual(args[1], f"{self.local_user.id}-books")
