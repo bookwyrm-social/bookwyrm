@@ -55,7 +55,7 @@ urlpatterns = [
     ),
     re_path(
         "^api/updates/stream/(?P<stream>[a-z]+)/?$",
-        views.get_unread_status_count,
+        views.get_unread_status_string,
         name="stream-updates",
     ),
     # authentication
