@@ -88,6 +88,10 @@ class Connector(AbstractConnector):
                 remote_field="remote_ids",
                 formatter=lambda b: get_dict_field(b, "wikidata"),
             ),
+            Mapping(
+                "wikipedia_link", remote_field="links", formatter=get_wikipedia_link
+            ),
+            Mapping("inventaire_id", remote_field="links", formatter=get_inventaire_id),
         ]
 
     def get_book_data(self, remote_id):
@@ -251,6 +255,33 @@ def get_dict_field(blob, field_name):
     if not blob or not isinstance(blob, dict):
         return None
     return blob.get(field_name)
+
+
+def get_wikipedia_link(links):
+    """extract wikipedia links"""
+    if not isinstance(links, list):
+        return None
+
+    for link in links:
+        if not isinstance(link, dict):
+            continue
+        if link.get("title") == "wikipedia":
+            return link.get("url")
+    return None
+
+
+def get_inventaire_id(links):
+    """extract and format inventaire ids"""
+    if not isinstance(links, list):
+        return None
+
+    for link in links:
+        if not isinstance(link, dict):
+            continue
+        if link.get("title") == "inventaire.io":
+            iv_link = link.get("url")
+            return iv_link.split("/")[-1]
+    return None
 
 
 def pick_default_edition(options):
