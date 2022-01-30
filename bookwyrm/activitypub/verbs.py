@@ -38,7 +38,7 @@ class Create(Verb):
 class Delete(Verb):
     """Create activity"""
 
-    to: List[str]
+    to: List[str] = field(default_factory=lambda: [])
     cc: List[str] = field(default_factory=lambda: [])
     type: str = "Delete"
 
@@ -137,8 +137,8 @@ class Accept(Verb):
     type: str = "Accept"
 
     def action(self):
-        """find and remove the activity object"""
-        obj = self.object.to_model(save=False, allow_create=False)
+        """accept a request"""
+        obj = self.object.to_model(save=False, allow_create=True)
         obj.accept()
 
 
@@ -150,7 +150,7 @@ class Reject(Verb):
     type: str = "Reject"
 
     def action(self):
-        """find and remove the activity object"""
+        """reject a follow request"""
         obj = self.object.to_model(save=False, allow_create=False)
         obj.reject()
 
