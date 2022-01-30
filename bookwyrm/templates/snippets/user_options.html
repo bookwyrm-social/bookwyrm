@@ -10,7 +10,9 @@
 
 {% block dropdown-list %}
 <li role="menuitem">
-    <a href="{% url 'direct-messages-user' user|username %}" class="button is-fullwidth is-small">{% trans "Send direct message" %}</a>
+    <div class="control">
+        <a href="{% url 'direct-messages-user' user|username %}" class="button is-fullwidth is-small">{% trans "Send direct message" %}</a>
+    </div>
 </li>
 <li role="menuitem">
     {% include 'snippets/report_button.html' with user=user class="is-fullwidth" %}
