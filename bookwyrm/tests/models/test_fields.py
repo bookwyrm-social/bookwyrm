@@ -27,6 +27,7 @@ from bookwyrm.settings import DOMAIN
 # pylint: disable=too-many-public-methods
 @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
 @patch("bookwyrm.activitystreams.populate_stream_task.delay")
+@patch("bookwyrm.lists_stream.populate_lists_task.delay")
 class ModelFields(TestCase):
     """overwrites standard model feilds to work with activitypub"""
 
@@ -429,7 +430,7 @@ class ModelFields(TestCase):
         output = instance.field_to_activity(user.avatar)
         self.assertIsNotNone(
             re.match(
-                fr"https:\/\/{DOMAIN}\/.*\.jpg",
+                rf"https:\/\/{DOMAIN}\/.*\.jpg",
                 output.url,
             )
         )

@@ -1,12 +1,18 @@
 {% load i18n %}
+{% load interaction %}
+
 {% if request.user == user or not request.user.is_authenticated %}
-{% elif user in request.user.blocks.all %}
+{# nothing to see here -- either it's yourself or your logged out #}
+{% else %}
+
+{% get_relationship user as relationship %}
+{% if relationship.is_blocked %}
 {% include 'snippets/block_button.html' with blocks=True %}
 {% else %}
 
 <div class="field{% if not minimal %} has-addons{% else %} mb-0{% endif %}">
     <div class="control">
-        <form action="{% url 'follow' %}" method="POST" class="interaction follow_{{ user.id }} {% if request.user in user.followers.all or request.user in user.follower_requests.all %}is-hidden{%endif %}" data-id="follow_{{ user.id }}">
+        <form action="{% url 'follow' %}" method="POST" class="interaction follow_{{ user.id }} {% if relationship.is_following or relationship.is_follow_pending %}is-hidden{%endif %}" data-id="follow_{{ user.id }}">
             {% csrf_token %}
             <input type="hidden" name="user" value="{{ user.username }}">
             <button class="button is-small{% if not minimal %} is-link{% endif %}" type="submit">
@@ -17,10 +23,10 @@
                 {% endif %}
             </button>
         </form>
-        <form action="{% url 'unfollow' %}" method="POST" class="interaction follow_{{ user.id }} {% if not request.user in user.followers.all and not request.user in user.follower_requests.all %}is-hidden{%endif %}" data-id="follow_{{ user.id }}">
+        <form action="{% url 'unfollow' %}" method="POST" class="interaction follow_{{ user.id }} {% if not relationship.is_following and not relationship.is_follow_pending %}is-hidden{%endif %}" data-id="follow_{{ user.id }}">
             {% csrf_token %}
             <input type="hidden" name="user" value="{{ user.username }}">
-            {% if user.manually_approves_followers and request.user not in user.followers.all %}
+            {% if user.manually_approves_followers and not relationship.is_following %}
             <button class="button is-small is-danger is-light" type="submit">
                 {% trans "Undo follow request" %}
             </button>
@@ -41,4 +47,7 @@
     </div>
     {% endif %}
 </div>
+
+{% endif %}
+
 {% endif %}

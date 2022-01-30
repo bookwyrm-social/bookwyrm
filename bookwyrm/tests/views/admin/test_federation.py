@@ -1,4 +1,5 @@
 """ test for app action functionality """
+import os
 import json
 from unittest.mock import patch
 
@@ -19,7 +20,7 @@ class FederationViews(TestCase):
         self.factory = RequestFactory()
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
-        ):
+        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
             self.local_user = models.User.objects.create_user(
                 "mouse@local.com",
                 "mouse@mouse.mouse",
@@ -207,3 +208,6 @@ class FederationViews(TestCase):
         created = models.FederatedServer.objects.get(server_name="server.name")
         self.assertEqual(created.status, "blocked")
         self.assertEqual(created.notes, "https://explanation.url")
+
+        # remove file.json after test
+        os.remove("file.json")

@@ -1,5 +1,78 @@
 # See http://www.robotstxt.org/robotstxt.html for documentation on how to use the robots.txt file
 
+##### AhrefsBot #####
+# see http://ahrefs.com/robot/
+User-agent: AhrefsBot
+Crawl-Delay: 10
+#Disallow: /
+
+
+##### SemrushBot #####
+# see http://www.semrush.com/bot.html
+User-agent: SemrushBot
+Crawl-Delay: 10
+#Disallow: /
+
+# To block SemrushBot from crawling your site for different SEO and technical issues:
+User-agent: SiteAuditBot
+Disallow: /
+
+#To block SemrushBot from crawling your site for Backlink Audit tool:
+User-agent: SemrushBot-BA
+Disallow: /
+
+#To block SemrushBot from crawling your site for On Page SEO Checker tool and similar tools:
+User-agent: SemrushBot-SI
+Disallow: /
+
+#To block SemrushBot from checking URLs on your site for SWA tool:
+User-agent: SemrushBot-SWA
+Disallow: /
+
+#To block SemrushBot from crawling your site for Content Analyzer and Post Tracking tools:
+User-agent: SemrushBot-CT
+Disallow: /
+
+#To block SemrushBot from crawling your site for Brand Monitoring:
+User-agent: SemrushBot-BM
+Disallow: /
+
+#To block SplitSignalBot from crawling your site for SplitSignal tool:
+User-agent: SplitSignalBot
+Disallow: /
+
+#To block SemrushBot-COUB from crawling your site for Content Outline Builder tool:
+User-agent: SemrushBot-COUB
+Disallow: /
+
+
+##### DotBot #####
+# see https://opensiteexplorer.org/dotbot
+User-agent: dotbot
+Crawl-delay: 10
+#Disallow: /
+
+
+##### BLEXBot #####
+# see http://webmeup-crawler.com/
+User-agent: BLEXBot
+Crawl-delay: 10
+#Disallow: /
+
+
+##### MJ12bot #####
+# see http://mj12bot.com/
+User-Agent: MJ12bot
+Crawl-Delay: 20
+#Disallow: /
+
+
+##### PetalBot #####
+# see https://webmaster.petalsearch.com/site/petalbot
+User-agent: PetalBot
+Disallow: /
+
+
 User-agent: *
 Disallow: /static/js/
 Disallow: /static/css/

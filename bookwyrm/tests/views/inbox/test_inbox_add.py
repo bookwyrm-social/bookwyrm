@@ -15,7 +15,7 @@ class InboxAdd(TestCase):
         """basic user and book data"""
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
-        ):
+        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
             local_user = models.User.objects.create_user(
                 "mouse@example.com",
                 "mouse@mouse.com",
@@ -118,6 +118,7 @@ class InboxAdd(TestCase):
                 "type": "ListItem",
                 "book": self.book.remote_id,
                 "id": "https://example.com/listbook/6189",
+                "notes": "hi hello",
                 "order": 1,
             },
             "target": "https://example.com/user/mouse/list/to-read",
@@ -130,3 +131,4 @@ class InboxAdd(TestCase):
         self.assertEqual(booklist.name, "Test List")
         self.assertEqual(booklist.books.first(), self.book)
         self.assertEqual(listitem.remote_id, "https://example.com/listbook/6189")
+        self.assertEqual(listitem.notes, "hi hello")

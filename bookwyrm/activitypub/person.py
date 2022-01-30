@@ -15,6 +15,11 @@ class PublicKey(ActivityObject):
     publicKeyPem: str
     type: str = "PublicKey"
 
+    def serialize(self, **kwargs):
+        """remove fields"""
+        omit = ("type", "@context")
+        return super().serialize(omit=omit)
+
 
 # pylint: disable=invalid-name
 @dataclass(init=False)

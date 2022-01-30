@@ -12,6 +12,6 @@
 >
     {% trans "Report" %}
 </button>
-{% include 'snippets/report_modal.html' with user=user reporter=request.user id=modal_id %}
+{% include 'snippets/report_modal.html' with user=user id=modal_id status=status.id %}
 
 {% endwith %}

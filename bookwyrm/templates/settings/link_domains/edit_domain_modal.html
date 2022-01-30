@@ -1,0 +1,25 @@
+{% extends 'components/modal.html' %}
+{% load i18n %}
+
+{% block modal-title %}
+{% blocktrans with url=domain.domain %}Set display name for {{ url }}{% endblocktrans %}
+{% endblock %}
+
+{% block modal-form-open %}
+<form name="edit-domain-{{ domain.id }}" method="post" action="{% url 'settings-link-domain' status=status domain_id=domain.id %}">
+{% endblock %}
+
+{% block modal-body %}
+{% csrf_token %}
+<label class="label" for="id_name">{% trans "Name:" %}</label>
+<div class="control">
+    <input type="text" id="id_name" class="input" name="name" value="{{ domain.name }}" required>
+</div>
+{% endblock %}
+
+{% block modal-footer %}
+<button type="submit" class="button is-primary">{% trans "Set" %}</button>
+<button type="button" class="button" data-modal-close>{% trans "Cancel" %}</button>
+{% endblock %}
+
+{% block modal-form-close %}</form>{% endblock %}

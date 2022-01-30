@@ -14,6 +14,7 @@ from bookwyrm.tests.validate_html import validate_html
 @patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
 @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
 @patch("bookwyrm.activitystreams.populate_stream_task.delay")
+@patch("bookwyrm.lists_stream.populate_lists_task.delay")
 @patch("bookwyrm.activitystreams.add_book_statuses_task.delay")
 @patch("bookwyrm.activitystreams.remove_book_statuses_task.delay")
 class ShelfViews(TestCase):
@@ -24,7 +25,7 @@ class ShelfViews(TestCase):
         self.factory = RequestFactory()
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
-        ):
+        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
             self.local_user = models.User.objects.create_user(
                 "mouse@local.com",
                 "mouse@mouse.com",
@@ -50,12 +51,52 @@ class ShelfViews(TestCase):
 
     def test_shelf_page_all_books(self, *_):
         """there are so many views, this just makes sure it LOADS"""
+        models.ShelfBook.objects.create(
+            book=self.book,
+            shelf=self.shelf,
+            user=self.local_user,
+        )
         view = views.Shelf.as_view()
         request = self.factory.get("")
         request.user = self.local_user
         with patch("bookwyrm.views.shelf.shelf.is_api_request") as is_api:
             is_api.return_value = False
             result = view(request, self.local_user.username)
+        self.assertIsInstance(result, TemplateResponse)
+        validate_html(result.render())
+        self.assertEqual(result.status_code, 200)
+
+    def test_shelf_page_all_books_empty(self, *_):
+        """No books shelved"""
+        view = views.Shelf.as_view()
+        request = self.factory.get("")
+        request.user = self.local_user
+        with patch("bookwyrm.views.shelf.shelf.is_api_request") as is_api:
+            is_api.return_value = False
+            result = view(request, self.local_user.username)
+        self.assertIsInstance(result, TemplateResponse)
+        validate_html(result.render())
+        self.assertEqual(result.status_code, 200)
+
+    def test_shelf_page_all_books_avoid_duplicates(self, *_):
+        """Make sure books aren't showing up twice on the all shelves view"""
+        models.ShelfBook.objects.create(
+            book=self.book,
+            shelf=self.shelf,
+            user=self.local_user,
+        )
+        models.ShelfBook.objects.create(
+            book=self.book,
+            shelf=self.local_user.shelf_set.first(),
+            user=self.local_user,
+        )
+        view = views.Shelf.as_view()
+        request = self.factory.get("")
+        request.user = self.local_user
+        with patch("bookwyrm.views.shelf.shelf.is_api_request") as is_api:
+            is_api.return_value = False
+            result = view(request, self.local_user.username)
+        self.assertEqual(result.context_data["books"].object_list.count(), 1)
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)

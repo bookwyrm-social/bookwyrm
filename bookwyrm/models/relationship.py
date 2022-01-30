@@ -1,5 +1,6 @@
 """ defines relationships between users """
 from django.apps import apps
+from django.core.cache import cache
 from django.db import models, transaction, IntegrityError
 from django.db.models import Q
 
@@ -35,6 +36,17 @@ class UserRelationship(BookWyrmModel):
     def recipients(self):
         """the remote user needs to recieve direct broadcasts"""
         return [u for u in [self.user_subject, self.user_object] if not u.local]
+
+    def save(self, *args, **kwargs):
+        """clear the template cache"""
+        # invalidate the template cache
+        cache.delete_many(
+            [
+                f"relationship-{self.user_subject.id}-{self.user_object.id}",
+                f"relationship-{self.user_object.id}-{self.user_subject.id}",
+            ]
+        )
+        super().save(*args, **kwargs)
 
     class Meta:
         """relationships should be unique"""

@@ -26,7 +26,7 @@ class AnnualSummary(TestCase):
         self.factory = RequestFactory()
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
-        ):
+        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
             self.local_user = models.User.objects.create_user(
                 "mouse@local.com",
                 "mouse@mouse.com",
@@ -140,3 +140,14 @@ class AnnualSummary(TestCase):
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
+
+    def test_personal_annual_summary(self, *_):
+        """redirect to unique user url"""
+        view = views.personal_annual_summary
+        request = self.factory.get("")
+        request.user = self.local_user
+
+        result = view(request, 2020)
+
+        self.assertEqual(result.status_code, 302)
+        self.assertEqual(result.url, "/user/mouse/2020-in-the-books")

@@ -48,7 +48,9 @@ def moderation_report_email(report):
     data["reportee"] = report.user.localname or report.user.username
     data["report_link"] = report.remote_id
 
-    for admin in models.User.objects.filter(groups__name__in=["admin", "moderator"]):
+    for admin in models.User.objects.filter(
+        groups__name__in=["admin", "moderator"]
+    ).distinct():
         data["user"] = admin.display_name
         send_email.delay(admin.email, *format_email("moderation_report", data))
 
@@ -69,7 +71,7 @@ def format_email(email_name, data):
 def send_email(recipient, subject, html_content, text_content):
     """use a task to send the email"""
     email = EmailMultiAlternatives(
-        subject, text_content, settings.DEFAULT_FROM_EMAIL, [recipient]
+        subject, text_content, settings.EMAIL_SENDER, [recipient]
     )
     email.attach_alternative(html_content, "text/html")
     email.send()

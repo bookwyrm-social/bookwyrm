@@ -3,6 +3,7 @@ from dataclasses import MISSING
 import re
 
 from django.apps import apps
+from django.core.cache import cache
 from django.core.exceptions import PermissionDenied
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
@@ -82,6 +83,7 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
 
         if not self.reply_parent:
             self.thread_id = self.id
+
         super().save(broadcast=False, update_fields=["thread_id"])
 
     def delete(self, *args, **kwargs):  # pylint: disable=unused-argument
@@ -371,6 +373,12 @@ class Review(BookStatus):
 
     activity_serializer = activitypub.Review
     pure_type = "Article"
+
+    def save(self, *args, **kwargs):
+        """clear rating caches"""
+        if self.book.parent_work:
+            cache.delete(f"book-rating-{self.book.parent_work.id}-*")
+        super().save(*args, **kwargs)
 
 
 class ReviewRating(Review):

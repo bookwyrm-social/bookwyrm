@@ -4,5 +4,19 @@
 {% load status_display %}
 
 {% load_book status as book %}
-{% blocktrans with book_path=book.remote_id book=book|book_title %}started reading <a href="{{ book_path }}">{{ book }}</a>{% endblocktrans %}
+{% if book.authors.exists %}
+
+{% with author=book.authors.first %}
+{% blocktrans trimmed with book_path=book.local_path book=book|book_title author_name=author.name author_path=author.local_path %}
+started reading <a href="{{ book_path }}">{{ book }}</a> by <a href="{{ author_path }}">{{ author_name }}</a>
+{% endblocktrans %}
+{% endwith %}
+
+{% else %}
+
+{% blocktrans trimmed with book_path=book.local_path book=book|book_title %}
+started reading <a href="{{ book_path }}">{{ book }}</a>
+{% endblocktrans %}
+
+{% endif %}
 {% endspaceless %}

@@ -57,14 +57,7 @@ class GetStartedBooks(View):
         if len(book_results) < 5:
             popular_books = (
                 models.Edition.objects.exclude(
-                    # exclude already shelved
-                    Q(
-                        parent_work__in=[
-                            b.book.parent_work
-                            for b in request.user.shelfbook_set.distinct().all()
-                        ]
-                    )
-                    | Q(  # and exclude if it's already in search results
+                    Q(  # exclude if it's already in search results
                         parent_work__in=[b.parent_work for b in book_results]
                     )
                 )
@@ -113,13 +106,16 @@ class GetStartedUsers(View):
             .filter(
                 similarity__gt=0.5,
             )
+            .exclude(
+                id=request.user.id,
+            )
             .order_by("-similarity")[:5]
         )
         data = {"no_results": not user_results}
 
         if user_results.count() < 5:
-            user_results = list(user_results) + suggested_users.get_suggestions(
-                request.user
+            user_results = list(user_results) + list(
+                suggested_users.get_suggestions(request.user)
             )
 
         data["suggested_users"] = user_results

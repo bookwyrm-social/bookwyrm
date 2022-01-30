@@ -20,7 +20,7 @@ class GroupViews(TestCase):
         self.factory = RequestFactory()
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
-        ):
+        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
             self.local_user = models.User.objects.create_user(
                 "mouse@local.com",
                 "mouse@mouse.mouse",
@@ -88,6 +88,18 @@ class GroupViews(TestCase):
         request = self.factory.get("")
         request.user = self.local_user
         result = view(request, group_id=self.testgroup.id)
+        self.assertIsInstance(result, TemplateResponse)
+        validate_html(result.render())
+        self.assertEqual(result.status_code, 200)
+
+    def test_findusers_get_with_query(self, _):
+        """there are so many views, this just makes sure it LOADS"""
+        view = views.FindUsers.as_view()
+        request = self.factory.get("", {"user_query": "rat"})
+        request.user = self.local_user
+        with patch("bookwyrm.suggested_users.SuggestedUsers.get_suggestions") as mock:
+            mock.return_value = models.User.objects.all()
+            result = view(request, group_id=self.testgroup.id)
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)

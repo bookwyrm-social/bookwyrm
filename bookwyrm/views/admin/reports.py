@@ -5,9 +5,8 @@ from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
 from django.views import View
-from django.views.decorators.http import require_POST
 
-from bookwyrm import emailing, forms, models
+from bookwyrm import forms, models
 
 
 # pylint: disable=no-self-use
@@ -20,7 +19,7 @@ from bookwyrm import emailing, forms, models
     permission_required("bookwyrm.moderate_post", raise_exception=True),
     name="dispatch",
 )
-class Reports(View):
+class ReportsAdmin(View):
     """list of reports"""
 
     def get(self, request):
@@ -52,13 +51,14 @@ class Reports(View):
     permission_required("bookwyrm.moderate_post", raise_exception=True),
     name="dispatch",
 )
-class Report(View):
+class ReportAdmin(View):
     """view a specific report"""
 
     def get(self, request, report_id):
         """load a report"""
         data = {
             "report": get_object_or_404(models.Report, id=report_id),
+            "group_form": forms.UserGroupForm(),
         }
         return TemplateResponse(request, "settings/reports/report.html", data)
 
@@ -132,16 +132,3 @@ def resolve_report(_, report_id):
     if not report.resolved:
         return redirect("settings-report", report.id)
     return redirect("settings-reports")
-
-
-@login_required
-@require_POST
-def make_report(request):
-    """a user reports something"""
-    form = forms.ReportForm(request.POST)
-    if not form.is_valid():
-        raise ValueError(form.errors)
-
-    report = form.save()
-    emailing.moderation_report_email(report)
-    return redirect(request.headers.get("Referer", "/"))
