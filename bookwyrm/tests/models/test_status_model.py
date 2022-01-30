@@ -325,7 +325,8 @@ class Status(TestCase):
         self.assertEqual(activity["id"], status.remote_id)
         self.assertEqual(activity["type"], "Article")
         self.assertEqual(
-            activity["name"], f'Review of "{self.book.title}": Review name'
+            activity["name"],
+            f'Review of "{self.book.title}": Review name',
         )
         self.assertEqual(activity["content"], "test content")
         self.assertEqual(activity["attachment"][0].type, "Document")

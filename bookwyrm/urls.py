@@ -34,9 +34,11 @@ urlpatterns = [
         TemplateView.as_view(template_name="robots.txt", content_type="text/plain"),
     ),
     # federation endpoints
-    re_path(r"^inbox/?$", views.Inbox.as_view()),
-    re_path(rf"{LOCAL_USER_PATH}/inbox/?$", views.Inbox.as_view()),
-    re_path(rf"{LOCAL_USER_PATH}/outbox/?$", views.Outbox.as_view()),
+    re_path(r"^inbox/?$", views.Inbox.as_view(), name="inbox"),
+    re_path(rf"{LOCAL_USER_PATH}/inbox/?$", views.Inbox.as_view(), name="user_inbox"),
+    re_path(
+        rf"{LOCAL_USER_PATH}/outbox/?$", views.Outbox.as_view(), name="user_outbox"
+    ),
     re_path(r"^\.well-known/webfinger/?$", views.webfinger),
     re_path(r"^\.well-known/nodeinfo/?$", views.nodeinfo_pointer),
     re_path(r"^\.well-known/host-meta/?$", views.host_meta),
@@ -46,8 +48,16 @@ urlpatterns = [
     re_path(r"^opensearch.xml$", views.opensearch, name="opensearch"),
     re_path(r"^ostatus_subscribe/?$", views.ostatus_follow_request),
     # polling updates
-    re_path("^api/updates/notifications/?$", views.get_notification_count),
-    re_path("^api/updates/stream/(?P<stream>[a-z]+)/?$", views.get_unread_status_count),
+    re_path(
+        "^api/updates/notifications/?$",
+        views.get_notification_count,
+        name="notification-updates",
+    ),
+    re_path(
+        "^api/updates/stream/(?P<stream>[a-z]+)/?$",
+        views.get_unread_status_string,
+        name="stream-updates",
+    ),
     # authentication
     re_path(r"^login/?$", views.Login.as_view(), name="login"),
     re_path(r"^login/(?P<confirmed>confirmed)/?$", views.Login.as_view(), name="login"),
@@ -147,7 +157,9 @@ urlpatterns = [
     re_path(
         r"^invite-request/?$", views.InviteRequest.as_view(), name="invite-request"
     ),
-    re_path(r"^invite/(?P<code>[A-Za-z0-9]+)/?$", views.Invite.as_view()),
+    re_path(
+        r"^invite/(?P<code>[A-Za-z0-9]+)/?$", views.Invite.as_view(), name="invite"
+    ),
     re_path(
         r"^settings/email-blocklist/?$",
         views.EmailBlocklist.as_view(),
@@ -157,6 +169,27 @@ urlpatterns = [
         r"^settings/email-blocks/(?P<domain_id>\d+)/delete/?$",
         views.EmailBlocklist.as_view(),
         name="settings-email-blocks-delete",
+    ),
+    re_path(
+        r"^setting/link-domains/?$",
+        views.LinkDomain.as_view(),
+        name="settings-link-domain",
+    ),
+    re_path(
+        r"^setting/link-domains/(?P<status>(pending|approved|blocked))/?$",
+        views.LinkDomain.as_view(),
+        name="settings-link-domain",
+    ),
+    # pylint: disable=line-too-long
+    re_path(
+        r"^setting/link-domains/(?P<status>(pending|approved|blocked))/(?P<domain_id>\d+)/?$",
+        views.LinkDomain.as_view(),
+        name="settings-link-domain",
+    ),
+    re_path(
+        r"^setting/link-domains/(?P<domain_id>\d+)/(?P<status>(pending|approved|blocked))/?$",
+        views.update_domain_status,
+        name="settings-link-domain-status",
     ),
     re_path(
         r"^settings/ip-blocklist/?$",
@@ -169,10 +202,12 @@ urlpatterns = [
         name="settings-ip-blocks-delete",
     ),
     # moderation
-    re_path(r"^settings/reports/?$", views.Reports.as_view(), name="settings-reports"),
+    re_path(
+        r"^settings/reports/?$", views.ReportsAdmin.as_view(), name="settings-reports"
+    ),
     re_path(
         r"^settings/reports/(?P<report_id>\d+)/?$",
-        views.Report.as_view(),
+        views.ReportAdmin.as_view(),
         name="settings-report",
     ),
     re_path(
@@ -195,7 +230,18 @@ urlpatterns = [
         views.resolve_report,
         name="settings-report-resolve",
     ),
-    re_path(r"^report/?$", views.make_report, name="report"),
+    re_path(r"^report/?$", views.Report.as_view(), name="report"),
+    re_path(r"^report/(?P<user_id>\d+)/?$", views.Report.as_view(), name="report"),
+    re_path(
+        r"^report/(?P<user_id>\d+)/status/(?P<status_id>\d+)?$",
+        views.Report.as_view(),
+        name="report-status",
+    ),
+    re_path(
+        r"^report/(?P<user_id>\d+)/link/(?P<link_id>\d+)?$",
+        views.Report.as_view(),
+        name="report-link",
+    ),
     # landing pages
     re_path(r"^about/?$", views.about, name="about"),
     re_path(r"^privacy/?$", views.privacy, name="privacy"),
@@ -323,16 +369,21 @@ urlpatterns = [
     re_path(r"^list/?$", views.Lists.as_view(), name="lists"),
     re_path(r"^list/saved/?$", views.SavedLists.as_view(), name="saved-lists"),
     re_path(r"^list/(?P<list_id>\d+)(.json)?/?$", views.List.as_view(), name="list"),
+    re_path(
+        r"^list/(?P<list_id>\d+)/item/(?P<list_item>\d+)/?$",
+        views.ListItem.as_view(),
+        name="list-item",
+    ),
     re_path(r"^list/delete/(?P<list_id>\d+)/?$", views.delete_list, name="delete-list"),
-    re_path(r"^list/add-book/?$", views.list.add_book, name="list-add-book"),
+    re_path(r"^list/add-book/?$", views.add_book, name="list-add-book"),
     re_path(
         r"^list/(?P<list_id>\d+)/remove/?$",
-        views.list.remove_book,
+        views.remove_book,
         name="list-remove-book",
     ),
     re_path(
         r"^list-item/(?P<list_item_id>\d+)/set-position$",
-        views.list.set_book_position,
+        views.set_book_position,
         name="list-set-book-position",
     ),
     re_path(
@@ -430,7 +481,29 @@ urlpatterns = [
     re_path(
         r"^upload-cover/(?P<book_id>\d+)/?$", views.upload_cover, name="upload-cover"
     ),
-    re_path(r"^add-description/(?P<book_id>\d+)/?$", views.add_description),
+    re_path(
+        r"^add-description/(?P<book_id>\d+)/?$",
+        views.add_description,
+        name="add-description",
+    ),
+    re_path(
+        rf"{BOOK_PATH}/filelink/?$", views.BookFileLinks.as_view(), name="file-link"
+    ),
+    re_path(
+        rf"{BOOK_PATH}/filelink/(?P<link_id>\d+)/?$",
+        views.BookFileLinks.as_view(),
+        name="file-link",
+    ),
+    re_path(
+        rf"{BOOK_PATH}/filelink/(?P<link_id>\d+)/delete/?$",
+        views.delete_link,
+        name="file-link-delete",
+    ),
+    re_path(
+        rf"{BOOK_PATH}/filelink/add/?$",
+        views.AddFileLink.as_view(),
+        name="file-link-add",
+    ),
     re_path(r"^resolve-book/?$", views.resolve_book, name="resolve-book"),
     re_path(r"^switch-edition/?$", views.switch_edition, name="switch-edition"),
     re_path(
@@ -457,7 +530,11 @@ urlpatterns = [
     # reading progress
     re_path(r"^edit-readthrough/?$", views.edit_readthrough, name="edit-readthrough"),
     re_path(r"^delete-readthrough/?$", views.delete_readthrough),
-    re_path(r"^create-readthrough/?$", views.create_readthrough),
+    re_path(
+        r"^create-readthrough/?$",
+        views.ReadThrough.as_view(),
+        name="create-readthrough",
+    ),
     re_path(r"^delete-progressupdate/?$", views.delete_progressupdate),
     # shelve actions
     re_path(

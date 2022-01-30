@@ -203,9 +203,12 @@ class UsernameField(ActivitypubFieldMixin, models.CharField):
         return value.split("@")[0]
 
 
-PrivacyLevels = models.TextChoices(
-    "Privacy", ["public", "unlisted", "followers", "direct"]
-)
+PrivacyLevels = [
+    ("public", _("Public")),
+    ("unlisted", _("Unlisted")),
+    ("followers", _("Followers")),
+    ("direct", _("Private")),
+]
 
 
 class PrivacyField(ActivitypubFieldMixin, models.CharField):
@@ -214,9 +217,7 @@ class PrivacyField(ActivitypubFieldMixin, models.CharField):
     public = "https://www.w3.org/ns/activitystreams#Public"
 
     def __init__(self, *args, **kwargs):
-        super().__init__(
-            *args, max_length=255, choices=PrivacyLevels.choices, default="public"
-        )
+        super().__init__(*args, max_length=255, choices=PrivacyLevels, default="public")
 
     # pylint: disable=invalid-name
     def set_field_from_activity(self, instance, data, overwrite=True):
@@ -514,6 +515,10 @@ class ArrayField(ActivitypubFieldMixin, DjangoArrayField):
 
 class CharField(ActivitypubFieldMixin, models.CharField):
     """activitypub-aware char field"""
+
+
+class URLField(ActivitypubFieldMixin, models.URLField):
+    """activitypub-aware url field"""
 
 
 class TextField(ActivitypubFieldMixin, models.TextField):

@@ -140,3 +140,14 @@ class AnnualSummary(TestCase):
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
+
+    def test_personal_annual_summary(self, *_):
+        """redirect to unique user url"""
+        view = views.personal_annual_summary
+        request = self.factory.get("")
+        request.user = self.local_user
+
+        result = view(request, 2020)
+
+        self.assertEqual(result.status_code, 302)
+        self.assertEqual(result.url, "/user/mouse/2020-in-the-books")

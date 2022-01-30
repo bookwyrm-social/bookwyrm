@@ -21,22 +21,6 @@ class ActivityEncoder(JSONEncoder):
 
 
 @dataclass
-class Link:
-    """for tagging a book in a status"""
-
-    href: str
-    name: str
-    type: str = "Link"
-
-
-@dataclass
-class Mention(Link):
-    """a subtype of Link for mentioning an actor"""
-
-    type: str = "Mention"
-
-
-@dataclass
 # pylint: disable=invalid-name
 class Signature:
     """public key block"""
@@ -198,8 +182,9 @@ class ActivityObject:
                 )
         return instance
 
-    def serialize(self):
+    def serialize(self, **kwargs):
         """convert to dictionary with context attr"""
+        omit = kwargs.get("omit", ())
         data = self.__dict__.copy()
         # recursively serialize
         for (k, v) in data.items():
@@ -208,8 +193,9 @@ class ActivityObject:
                     data[k] = v.serialize()
             except TypeError:
                 pass
-        data = {k: v for (k, v) in data.items() if v is not None}
-        data["@context"] = "https://www.w3.org/ns/activitystreams"
+        data = {k: v for (k, v) in data.items() if v is not None and k not in omit}
+        if "@context" not in omit:
+            data["@context"] = "https://www.w3.org/ns/activitystreams"
         return data
 
 
@@ -222,35 +208,32 @@ def set_related_field(
     model = apps.get_model(f"bookwyrm.{model_name}", require_ready=True)
     origin_model = apps.get_model(f"bookwyrm.{origin_model_name}", require_ready=True)
 
-    with transaction.atomic():
-        if isinstance(data, str):
-            existing = model.find_existing_by_remote_id(data)
-            if existing:
-                data = existing.to_activity()
-            else:
-                data = get_data(data)
-        activity = model.activity_serializer(**data)
+    if isinstance(data, str):
+        existing = model.find_existing_by_remote_id(data)
+        if existing:
+            data = existing.to_activity()
+        else:
+            data = get_data(data)
+    activity = model.activity_serializer(**data)
 
-        # this must exist because it's the object that triggered this function
-        instance = origin_model.find_existing_by_remote_id(related_remote_id)
-        if not instance:
-            raise ValueError(f"Invalid related remote id: {related_remote_id}")
+    # this must exist because it's the object that triggered this function
+    instance = origin_model.find_existing_by_remote_id(related_remote_id)
+    if not instance:
+        raise ValueError(f"Invalid related remote id: {related_remote_id}")
 
-        # set the origin's remote id on the activity so it will be there when
-        # the model instance is created
-        # edition.parentWork = instance, for example
-        model_field = getattr(model, related_field_name)
-        if hasattr(model_field, "activitypub_field"):
-            setattr(
-                activity, getattr(model_field, "activitypub_field"), instance.remote_id
-            )
-        item = activity.to_model()
+    # set the origin's remote id on the activity so it will be there when
+    # the model instance is created
+    # edition.parentWork = instance, for example
+    model_field = getattr(model, related_field_name)
+    if hasattr(model_field, "activitypub_field"):
+        setattr(activity, getattr(model_field, "activitypub_field"), instance.remote_id)
+    item = activity.to_model()
 
-        # if the related field isn't serialized (attachments on Status), then
-        # we have to set it post-creation
-        if not hasattr(model_field, "activitypub_field"):
-            setattr(item, related_field_name, instance)
-            item.save()
+    # if the related field isn't serialized (attachments on Status), then
+    # we have to set it post-creation
+    if not hasattr(model_field, "activitypub_field"):
+        setattr(item, related_field_name, instance)
+        item.save()
 
 
 def get_model_from_type(activity_type):
@@ -304,3 +287,27 @@ def resolve_remote_id(
 
     # if we're refreshing, "result" will be set and we'll update it
     return item.to_model(model=model, instance=result, save=save)
+
+
+@dataclass(init=False)
+class Link(ActivityObject):
+    """for tagging a book in a status"""
+
+    href: str
+    name: str = None
+    mediaType: str = None
+    id: str = None
+    attributedTo: str = None
+    type: str = "Link"
+
+    def serialize(self, **kwargs):
+        """remove fields"""
+        omit = ("id", "type", "@context")
+        return super().serialize(omit=omit)
+
+
+@dataclass(init=False)
+class Mention(Link):
+    """a subtype of Link for mentioning an actor"""
+
+    type: str = "Mention"

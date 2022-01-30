@@ -1,0 +1,80 @@
+{% extends "components/modal.html" %}
+{% load i18n %}
+{% load utilities %}
+
+{% block modal-title %}
+
+{% if readthrough %}
+{% blocktrans trimmed with title=book|book_title %}
+    Update read dates for "<em>{{ title }}</em>"
+{% endblocktrans %}
+{% else %}
+{% blocktrans trimmed with title=book|book_title %}
+    Add read dates for "<em>{{ title }}</em>"
+{% endblocktrans %}
+{% endif %}
+
+{% endblock %}
+
+{% block modal-form-open %}
+<form name="add-readthrough-{{ readthrough.id }}" action="/create-readthrough" method="post">
+{% endblock %}
+
+{% block modal-body %}
+{% csrf_token %}
+
+<input type="hidden" name="id" value="{{ readthrough.id }}">
+<input type="hidden" name="book" value="{{ book.id }}">
+<input type="hidden" name="user" value="{{ request.user.id }}">
+<div class="field">
+    <label class="label" tabindex="0" id="add_readthrough_focus_{{ readthrough.id }}" for="id_start_date_{{ readthrough.id }}">
+        {% trans "Started reading" %}
+    </label>
+    {% firstof form.start_date.value readthrough.start_date|date:"Y-m-d" as value %}
+    <input
+        type="date"
+        name="start_date"
+        class="input"
+        id="id_start_date_{{ readthrough.id }}"
+        value="{{ value }}"
+        aria-describedby="desc_start_date"
+    >
+    {% include 'snippets/form_errors.html' with errors_list=form.start_date.errors id="desc_start_date" %}
+</div>
+
+{# Only show progress for editing existing readthroughs #}
+{% if readthrough.id and not readthrough.finish_date %}
+{% join "id_progress" readthrough.id as field_id %}
+<label class="label" for="{{ field_id }}">
+    {% trans "Progress" %}
+</label>
+{% include "snippets/progress_field.html" with id=field_id %}
+{% endif %}
+
+<div class="field">
+    <label class="label" for="id_finish_date_{{ readthrough.id }}">
+        {% trans "Finished reading" %}
+    </label>
+    {% firstof form.finish_date.value readthrough.finish_date|date:"Y-m-d" as value %}
+    <input
+        type="date"
+        name="finish_date"
+        class="input"
+        id="id_finish_date_{{ readthrough.id }}"
+        value="{{ value }}"
+        aria-describedby="desc_finish_date"
+    >
+    {% include 'snippets/form_errors.html' with errors_list=form.finish_date.errors id="desc_finish_date" %}
+</div>
+{% endblock %}
+
+{% block modal-footer %}
+<button class="button is-primary" type="submit">{% trans "Save" %}</button>
+{% if not static %}
+<button type="button" class="button" data-modal-close>{% trans "Cancel" %}</button>
+{% endif %}
+{% endblock %}
+
+{% block modal-form-close %}
+</form>
+{% endblock %}

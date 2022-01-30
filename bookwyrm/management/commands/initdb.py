@@ -3,7 +3,7 @@ from django.core.management.base import BaseCommand
 from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
 
-from bookwyrm.models import Connector, FederatedServer, SiteSettings, User
+from bookwyrm import models
 
 
 def init_groups():
@@ -19,9 +19,7 @@ def init_permissions():
         {
             "codename": "edit_instance_settings",
             "name": "change the instance info",
-            "groups": [
-                "admin",
-            ],
+            "groups": ["admin"],
         },
         {
             "codename": "set_user_group",
@@ -55,7 +53,7 @@ def init_permissions():
         },
     ]
 
-    content_type = ContentType.objects.get_for_model(User)
+    content_type = ContentType.objects.get_for_model(models.User)
     for permission in permissions:
         permission_obj = Permission.objects.create(
             codename=permission["codename"],
@@ -66,15 +64,12 @@ def init_permissions():
         for group_name in permission["groups"]:
             Group.objects.get(name=group_name).permissions.add(permission_obj)
 
-    # while the groups and permissions shouldn't be changed because the code
-    # depends on them, what permissions go with what groups should be editable
-
 
 def init_connectors():
     """access book data sources"""
-    Connector.objects.create(
+    models.Connector.objects.create(
         identifier="bookwyrm.social",
-        name="BookWyrm dot Social",
+        name="Bookwyrm.social",
         connector_file="bookwyrm_connector",
         base_url="https://bookwyrm.social",
         books_url="https://bookwyrm.social/book",
@@ -84,7 +79,8 @@ def init_connectors():
         priority=2,
     )
 
-    Connector.objects.create(
+    # pylint: disable=line-too-long
+    models.Connector.objects.create(
         identifier="inventaire.io",
         name="Inventaire",
         connector_file="inventaire",
@@ -96,7 +92,7 @@ def init_connectors():
         priority=3,
     )
 
-    Connector.objects.create(
+    models.Connector.objects.create(
         identifier="openlibrary.org",
         name="OpenLibrary",
         connector_file="openlibrary",
@@ -113,7 +109,7 @@ def init_federated_servers():
     """big no to nazis"""
     built_in_blocks = ["gab.ai", "gab.com"]
     for server in built_in_blocks:
-        FederatedServer.objects.create(
+        models.FederatedServer.objects.create(
             server_name=server,
             status="blocked",
         )
@@ -121,18 +117,67 @@ def init_federated_servers():
 
 def init_settings():
     """info about the instance"""
-    SiteSettings.objects.create(
+    models.SiteSettings.objects.create(
         support_link="https://www.patreon.com/bookwyrm",
         support_title="Patreon",
     )
 
 
+def init_link_domains():
+    """safe book links"""
+    domains = [
+        ("standardebooks.org", "Standard EBooks"),
+        ("www.gutenberg.org", "Project Gutenberg"),
+        ("archive.org", "Internet Archive"),
+        ("openlibrary.org", "Open Library"),
+        ("theanarchistlibrary.org", "The Anarchist Library"),
+    ]
+    for domain, name in domains:
+        models.LinkDomain.objects.create(
+            domain=domain,
+            name=name,
+            status="approved",
+        )
+
+
+# pylint: disable=no-self-use
+# pylint: disable=unused-argument
 class Command(BaseCommand):
+    """command-line options"""
+
     help = "Initializes the database with starter data"
 
+    def add_arguments(self, parser):
+        """specify which function to run"""
+        parser.add_argument(
+            "--limit",
+            default=None,
+            help="Limit init to specific table",
+        )
+
     def handle(self, *args, **options):
-        init_groups()
-        init_permissions()
-        init_connectors()
-        init_federated_servers()
-        init_settings()
+        """execute init"""
+        limit = options.get("limit")
+        tables = [
+            "group",
+            "permission",
+            "connector",
+            "federatedserver",
+            "settings",
+            "linkdomain",
+        ]
+        if limit and limit not in tables:
+            raise Exception("Invalid table limit:", limit)
+
+        if not limit or limit == "group":
+            init_groups()
+        if not limit or limit == "permission":
+            init_permissions()
+        if not limit or limit == "connector":
+            init_connectors()
+        if not limit or limit == "federatedserver":
+            init_federated_servers()
+        if not limit or limit == "settings":
+            init_settings()
+        if not limit or limit == "linkdomain":
+            init_link_domains()

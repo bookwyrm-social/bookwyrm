@@ -40,7 +40,7 @@ class Book(View):
             .filter(Q(id=book_id) | Q(parent_work__id=book_id))
             .order_by("-edition_rank")
             .select_related("parent_work")
-            .prefetch_related("authors")
+            .prefetch_related("authors", "file_links")
             .first()
         )
 
@@ -84,6 +84,7 @@ class Book(View):
         }
 
         if request.user.is_authenticated:
+            data["file_link_form"] = forms.FileLinkForm()
             readthroughs = models.ReadThrough.objects.filter(
                 user=request.user,
                 book=book,

@@ -23,18 +23,13 @@
     </div>
 </div>
 
-<div class="block columns is-flex-direction-row-reverse" itemscope itemtype="https://schema.org/Person">
+<div class="block columns" itemscope itemtype="https://schema.org/Person">
     <meta itemprop="name" content="{{ author.name }}">
-    {% if author.bio %}
-    <div class="column">
-        {% include "snippets/trimmed_text.html" with full=author.bio trim_length=200 %}
-    </div>
-    {% endif %}
 
     {% firstof author.aliases author.born author.died as details %}
     {% firstof author.wikipedia_link author.openlibrary_key author.inventaire_id author.isni as links %}
     {% if details or links %}
-    <div class="column is-two-fifths">
+    <div class="column is-3">
         {% if details %}
         <section class="block content">
             <h2 class="title is-4">{% trans "Author details" %}</h2>
@@ -71,7 +66,7 @@
             <div class="box">
                 {% if author.wikipedia_link %}
                 <div>
-                    <a itemprop="sameAs" href="{{ author.wikipedia_link }}" rel="noopener" target="_blank">
+                    <a itemprop="sameAs" href="{{ author.wikipedia_link }}" rel="noopener noreferrer" target="_blank">
                         {% trans "Wikipedia" %}
                     </a>
                 </div>
@@ -79,7 +74,7 @@
 
                 {% if author.isni %}
                 <div class="mt-1">
-                    <a itemprop="sameAs" href="{{ author.isni_link }}" rel="noopener" target="_blank">
+                    <a itemprop="sameAs" href="{{ author.isni_link }}" rel="noopener noreferrer" target="_blank">
                         {% trans "View ISNI record" %}
                     </a>
                 </div>
@@ -88,7 +83,7 @@
                 {% trans "Load data" as button_text %}
                 {% if author.openlibrary_key %}
                 <div class="mt-1 is-flex">
-                    <a class="mr-3" itemprop="sameAs" href="{{ author.openlibrary_link }}" target="_blank" rel="noopener">
+                    <a class="mr-3" itemprop="sameAs" href="{{ author.openlibrary_link }}" target="_blank" rel="noopener noreferrer">
                         {% trans "View on OpenLibrary" %}
                     </a>
                     {% if request.user.is_authenticated and perms.bookwyrm.edit_book %}
@@ -103,7 +98,7 @@
 
                 {% if author.inventaire_id %}
                 <div class="mt-1 is-flex">
-                    <a class="mr-3" itemprop="sameAs" href="{{ author.inventaire_link }}" target="_blank" rel="noopener">
+                    <a class="mr-3" itemprop="sameAs" href="{{ author.inventaire_link }}" target="_blank" rel="noopener noreferrer">
                         {% trans "View on Inventaire" %}
                     </a>
 
@@ -119,7 +114,7 @@
 
                 {% if author.librarything_key %}
                 <div class="mt-1">
-                    <a itemprop="sameAs" href="https://www.librarything.com/author/{{ author.librarything_key }}" target="_blank" rel="noopener">
+                    <a itemprop="sameAs" href="https://www.librarything.com/author/{{ author.librarything_key }}" target="_blank" rel="noopener noreferrer">
                         {% trans "View on LibraryThing" %}
                     </a>
                 </div>
@@ -127,7 +122,7 @@
 
                 {% if author.goodreads_key %}
                 <div>
-                    <a itemprop="sameAs" href="https://www.goodreads.com/author/show/{{ author.goodreads_key }}" target="_blank" rel="noopener">
+                    <a itemprop="sameAs" href="https://www.goodreads.com/author/show/{{ author.goodreads_key }}" target="_blank" rel="noopener noreferrer">
                         {% trans "View on Goodreads" %}
                     </a>
                 </div>
@@ -137,26 +132,30 @@
         {% endif %}
     </div>
     {% endif %}
-</div>
 
-<hr aria-hidden="true">
+    <div class="column">
+        {% if author.bio %}
+        {% include "snippets/trimmed_text.html" with full=author.bio trim_length=200 %}
+        {% endif %}
 
-<div class="block">
-    <h2 class="title is-4">{% blocktrans with name=author.name %}Books by {{ name }}{% endblocktrans %}</h2>
-    <div class="columns is-multiline is-mobile">
-    {% for book in books %}
-        <div class="column is-one-fifth-tablet is-half-mobile is-flex is-flex-direction-column">
-            <div class="is-flex-grow-1">
-                {% include 'landing/small-book.html' with book=book %}
+        <h2 class="title is-4">{% blocktrans with name=author.name %}Books by {{ name }}{% endblocktrans %}</h2>
+        <div class="columns is-multiline is-mobile">
+        {% for book in books %}
+        {% with book=book.default_edition %}
+            <div class="column is-one-fifth-tablet is-half-mobile is-flex is-flex-direction-column">
+                <div class="is-flex-grow-1">
+                    {% include 'landing/small-book.html' with book=book %}
+                </div>
+                {% include 'snippets/shelve_button/shelve_button.html' with book=book %}
             </div>
-            {% include 'snippets/shelve_button/shelve_button.html' with book=book %}
+        {% endwith %}
+        {% endfor %}
         </div>
-    {% endfor %}
-    </div>
-</div>
 
-<div>
-    {% include 'snippets/pagination.html' with page=books %}
+        <div>
+            {% include 'snippets/pagination.html' with page=books %}
+        </div>
+    </div>
 </div>
 
 {% endblock %}

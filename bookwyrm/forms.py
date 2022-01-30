@@ -216,6 +216,18 @@ class CoverForm(CustomForm):
         help_texts = {f: None for f in fields}
 
 
+class LinkDomainForm(CustomForm):
+    class Meta:
+        model = models.LinkDomain
+        fields = ["name"]
+
+
+class FileLinkForm(CustomForm):
+    class Meta:
+        model = models.FileLink
+        fields = ["url", "filetype", "availability", "book", "added_by"]
+
+
 class EditionForm(CustomForm):
     class Meta:
         model = models.Edition
@@ -230,6 +242,8 @@ class EditionForm(CustomForm):
             "shelves",
             "connector",
             "search_vector",
+            "links",
+            "file_links",
         ]
         widgets = {
             "title": forms.TextInput(attrs={"aria-describedby": "desc_title"}),
@@ -430,6 +444,12 @@ class ListForm(CustomForm):
         fields = ["user", "name", "description", "curation", "privacy", "group"]
 
 
+class ListItemForm(CustomForm):
+    class Meta:
+        model = models.ListItem
+        fields = ["user", "book", "book_list", "notes"]
+
+
 class GroupForm(CustomForm):
     class Meta:
         model = models.Group
@@ -439,7 +459,7 @@ class GroupForm(CustomForm):
 class ReportForm(CustomForm):
     class Meta:
         model = models.Report
-        fields = ["user", "reporter", "statuses", "note"]
+        fields = ["user", "reporter", "statuses", "links", "note"]
 
 
 class EmailBlocklistForm(CustomForm):
@@ -478,3 +498,19 @@ class SortListForm(forms.Form):
             ("descending", _("Descending")),
         ),
     )
+
+
+class ReadThroughForm(CustomForm):
+    def clean(self):
+        """make sure the email isn't in use by a registered user"""
+        cleaned_data = super().clean()
+        start_date = cleaned_data.get("start_date")
+        finish_date = cleaned_data.get("finish_date")
+        if start_date and finish_date and start_date > finish_date:
+            self.add_error(
+                "finish_date", _("Reading finish date cannot be before start date.")
+            )
+
+    class Meta:
+        model = models.ReadThrough
+        fields = ["user", "book", "start_date", "finish_date"]

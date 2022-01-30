@@ -45,31 +45,51 @@ class UpdateViews(TestCase):
         data = json.loads(result.getvalue())
         self.assertEqual(data["count"], 1)
 
-    def test_get_unread_status_count(self):
+    def test_get_unread_status_string(self):
         """there are so many views, this just makes sure it LOADS"""
         request = self.factory.get("")
         request.user = self.local_user
 
         with patch(
             "bookwyrm.activitystreams.ActivityStream.get_unread_count"
-        ) as mock_count:
-            with patch(
-                # pylint:disable=line-too-long
-                "bookwyrm.activitystreams.ActivityStream.get_unread_count_by_status_type"
-            ) as mock_count_by_status:
-                mock_count.return_value = 3
-                mock_count_by_status.return_value = {"review": 5}
-                result = views.get_unread_status_count(request, "home")
+        ) as mock_count, patch(
+            "bookwyrm.activitystreams.ActivityStream.get_unread_count_by_status_type"
+        ) as mock_count_by_status:
+            mock_count.return_value = 3
+            mock_count_by_status.return_value = {"review": 5}
+            result = views.get_unread_status_string(request, "home")
 
         self.assertIsInstance(result, JsonResponse)
         data = json.loads(result.getvalue())
-        self.assertEqual(data["count"], 3)
-        self.assertEqual(data["count_by_type"]["review"], 5)
+        self.assertEqual(data["count"], "Load 5 unread statuses")
 
-    def test_get_unread_status_count_invalid_stream(self):
+    def test_get_unread_status_string_with_filters(self):
+        """there are so many views, this just makes sure it LOADS"""
+        self.local_user.feed_status_types = ["comment", "everything"]
+        request = self.factory.get("")
+        request.user = self.local_user
+
+        with patch(
+            "bookwyrm.activitystreams.ActivityStream.get_unread_count"
+        ) as mock_count, patch(
+            "bookwyrm.activitystreams.ActivityStream.get_unread_count_by_status_type"
+        ) as mock_count_by_status:
+            mock_count.return_value = 3
+            mock_count_by_status.return_value = {
+                "generated_note": 1,
+                "comment": 1,
+                "review": 10,
+            }
+            result = views.get_unread_status_string(request, "home")
+
+        self.assertIsInstance(result, JsonResponse)
+        data = json.loads(result.getvalue())
+        self.assertEqual(data["count"], "Load 2 unread statuses")
+
+    def test_get_unread_status_string_invalid_stream(self):
         """there are so many views, this just makes sure it LOADS"""
         request = self.factory.get("")
         request.user = self.local_user
 
         with self.assertRaises(Http404):
-            views.get_unread_status_count(request, "fish")
+            views.get_unread_status_string(request, "fish")
