@@ -19,9 +19,7 @@ def init_permissions():
         {
             "codename": "edit_instance_settings",
             "name": "change the instance info",
-            "groups": [
-                "admin",
-            ],
+            "groups": ["admin"],
         },
         {
             "codename": "set_user_group",
@@ -55,7 +53,7 @@ def init_permissions():
         },
     ]
 
-    content_type = models.ContentType.objects.get_for_model(User)
+    content_type = ContentType.objects.get_for_model(models.User)
     for permission in permissions:
         permission_obj = Permission.objects.create(
             codename=permission["codename"],
@@ -66,15 +64,12 @@ def init_permissions():
         for group_name in permission["groups"]:
             Group.objects.get(name=group_name).permissions.add(permission_obj)
 
-    # while the groups and permissions shouldn't be changed because the code
-    # depends on them, what permissions go with what groups should be editable
-
 
 def init_connectors():
     """access book data sources"""
     models.Connector.objects.create(
         identifier="bookwyrm.social",
-        name="BookWyrm dot Social",
+        name="Bookwyrm.social",
         connector_file="bookwyrm_connector",
         base_url="https://bookwyrm.social",
         books_url="https://bookwyrm.social/book",
@@ -84,6 +79,7 @@ def init_connectors():
         priority=2,
     )
 
+    # pylint: disable=line-too-long
     models.Connector.objects.create(
         identifier="inventaire.io",
         name="Inventaire",
@@ -127,7 +123,7 @@ def init_settings():
     )
 
 
-def init_link_domains(*_):
+def init_link_domains():
     """safe book links"""
     domains = [
         ("standardebooks.org", "Standard EBooks"),
@@ -144,10 +140,15 @@ def init_link_domains(*_):
         )
 
 
+# pylint: disable=no-self-use
+# pylint: disable=unused-argument
 class Command(BaseCommand):
+    """command-line options"""
+
     help = "Initializes the database with starter data"
 
     def add_arguments(self, parser):
+        """specify which function to run"""
         parser.add_argument(
             "--limit",
             default=None,
@@ -155,6 +156,7 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
+        """execute init"""
         limit = options.get("limit")
         tables = [
             "group",
@@ -164,7 +166,7 @@ class Command(BaseCommand):
             "settings",
             "linkdomain",
         ]
-        if limit not in tables:
+        if limit and limit not in tables:
             raise Exception("Invalid table limit:", limit)
 
         if not limit or limit == "group":
