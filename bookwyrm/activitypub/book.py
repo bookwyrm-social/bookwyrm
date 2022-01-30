@@ -16,6 +16,7 @@ class BookData(ActivityObject):
     librarythingKey: str = None
     goodreadsKey: str = None
     bnfId: str = None
+    viaf: str = None
     lastEditedBy: str = None
     links: List[str] = field(default_factory=lambda: [])
     fileLinks: List[str] = field(default_factory=lambda: [])
