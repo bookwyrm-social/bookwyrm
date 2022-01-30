@@ -430,7 +430,7 @@ class ModelFields(TestCase):
         output = instance.field_to_activity(user.avatar)
         self.assertIsNotNone(
             re.match(
-                fr"https:\/\/{DOMAIN}\/.*\.jpg",
+                rf"https:\/\/{DOMAIN}\/.*\.jpg",
                 output.url,
             )
         )
