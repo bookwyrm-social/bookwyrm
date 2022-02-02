@@ -22,6 +22,8 @@ def download_file(url, destination):
         logger.error("Failed to download file %s", url)
     except OSError:
         logger.error("Couldn't open font file %s for writing", destination)
+    except:  # pylint: disable=bare-except
+        logger.exception("Unknown error in file download")
 
 
 class BookwyrmConfig(AppConfig):
