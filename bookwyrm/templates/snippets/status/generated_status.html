@@ -3,7 +3,6 @@
 {% load book_display_tags %}
 {% load markdown %}
 {% load i18n %}
-{% load cache %}
 
 {% if not hide_book %}
     {% with book=status.book|default:status.mention_books.first %}

@@ -364,7 +364,7 @@ msgstr "Lerne deinen Admins kennen"
 #: bookwyrm/templates/about/about.html:99
 #, python-format
 msgid "%(site_name)s's moderators and administrators keep the site up and running, enforce the <a href=\"coc_path\">code of conduct</a>, and respond when users report spam and bad behavior."
-msgstr ""
+msgstr "Die Moderator*innen und Administrator*innen von %(site_name)s halten diese Seite am Laufen. Beachte den <a href=\"coc_path\">Verhaltenskodex</a> und melde, wenn andere Benutzer*innen dagegen verstoßen oder Spam verbreiten."
 
 #: bookwyrm/templates/about/about.html:113
 msgid "Moderator"
@@ -2256,16 +2256,14 @@ msgid "BookWyrm's source code is freely available. You can contribute or report 
 msgstr "BookWyrm ist open source Software. Du kannst dich auf <a href=\"https://github.com/mouse-reeve/bookwyrm\">GitHub</a> beteiligen oder etwas melden."
 
 #: bookwyrm/templates/lists/add_item_modal.html:8
-#, fuzzy, python-format
-#| msgid "Add read dates for \"<em>%(title)s</em>\""
+#, python-format
 msgid "Add \"<em>%(title)s</em>\" to this list"
-msgstr "„<em>%(title)s</em>“ zu dieser Liste hinzufügen"
+msgstr "\"<em>%(title)s</em>\" zu dieser Liste hinzufügen"
 
 #: bookwyrm/templates/lists/add_item_modal.html:12
-#, fuzzy, python-format
-#| msgid "Start \"<em>%(book_title)s</em>\""
+#, python-format
 msgid "Suggest \"<em>%(title)s</em>\" for this list"
-msgstr "„<em>%(book_title)s</em>“ für diese Liste vorschlagen"
+msgstr "\"<em>%(title)s</em>\" für diese Liste vorschlagen"
 
 #: bookwyrm/templates/lists/add_item_modal.html:39
 #: bookwyrm/templates/lists/list.html:249
@@ -2305,8 +2303,7 @@ msgstr "Du bist soweit!"
 
 #: bookwyrm/templates/lists/curate.html:45
 #: bookwyrm/templates/lists/list.html:83
-#, fuzzy, python-format
-#| msgid "Added by <a href=\"%(user_path)s\">%(username)s</a>"
+#, python-format
 msgid "<a href=\"%(user_path)s\">%(username)s</a> says:"
 msgstr "<a href=\"%(user_path)s\">%(username)s</a> sagt:"
 
@@ -2406,7 +2403,7 @@ msgstr "Anmerkungen:"
 
 #: bookwyrm/templates/lists/item_notes_field.html:19
 msgid "An optional note that will be displayed with the book."
-msgstr "Eine optionale Anmerkung, die mit dem Buch angezeigt wird."
+msgstr "Eine optionale Notiz die zusammen mit dem Buch angezeigt wird."
 
 #: bookwyrm/templates/lists/list.html:36
 msgid "You successfully suggested a book for this list!"
@@ -2417,16 +2414,12 @@ msgid "You successfully added a book to this list!"
 msgstr "Du hast ein Buch zu dieser Liste hinzugefügt!"
 
 #: bookwyrm/templates/lists/list.html:96
-#, fuzzy
-#| msgid "Edit links"
 msgid "Edit notes"
-msgstr "Anmerkungen bearbeiten"
+msgstr "Notizen bearbeiten"
 
 #: bookwyrm/templates/lists/list.html:111
-#, fuzzy
-#| msgid "Add cover"
 msgid "Add notes"
-msgstr "Anmerkungen hinzufügen"
+msgstr "Notiz hinzufügen"
 
 #: bookwyrm/templates/lists/list.html:123
 #, python-format
@@ -4184,13 +4177,13 @@ msgstr[1] "hat <em><a href=\"%(path)s\">%(title)s</a></em> mit %(display_rating)
 #, python-format
 msgid "Review of \"%(book_title)s\" (%(display_rating)s star): %(review_title)s"
 msgid_plural "Review of \"%(book_title)s\" (%(display_rating)s stars): %(review_title)s"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Rezension von \"%(book_title)s\" (%(display_rating)s Stern): %(review_title)s"
+msgstr[1] "Rezension von \"%(book_title)s\" (%(display_rating)s Sterne): %(review_title)s"
 
 #: bookwyrm/templates/snippets/generated_status/review_pure_name.html:12
 #, python-format
 msgid "Review of \"%(book_title)s\": %(review_title)s"
-msgstr ""
+msgstr "Rezension von \"%(book_title)s\": %(review_title)s"
 
 #: bookwyrm/templates/snippets/goal_form.html:4
 #, python-format
@@ -4682,9 +4675,15 @@ msgstr "Status -Updates von {obj.display_name}"
 #, python-format
 msgid "Load %(count)d unread status"
 msgid_plural "Load %(count)d unread statuses"
+<<<<<<< HEAD
 msgstr[0] ""
 msgstr[1] ""
 
 #, python-format
 #~ msgid "load <span data-poll=\"stream/%(tab_key)s\">0</span> unread status(es)"
 #~ msgstr "lade <span data-poll=\"stream/%(tab_key)s\">0</span> ungelesene Statusmeldung(en)"
+=======
+msgstr[0] "Lade %(count)d ungelesene Statusmeldung"
+msgstr[1] "Lade %(count)d ungelesene Statusmeldungen"
+
+>>>>>>> f84241b085a00b54a2f5ba083e8e60311ccb8622
