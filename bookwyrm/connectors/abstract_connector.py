@@ -292,16 +292,16 @@ def get_image(url, timeout=10):
         )
     except RequestException as err:
         logger.exception(err)
-        return None
+        return None, None
 
     if not resp.ok:
-        return None
+        return None, None
 
     image_content = ContentFile(resp.content)
     extension = imghdr.what(None, image_content.read())
     if not extension:
         logger.exception("File requested was not an image: %s", url)
-        return None
+        return None, None
 
     return image_content, extension
 
