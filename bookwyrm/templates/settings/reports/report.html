@@ -17,6 +17,19 @@
     {% include 'settings/reports/report_preview.html' with report=report %}
 </div>
 
+<div class="block">
+    <details class="details-panel box">
+        <summary>
+            <span class="title is-4">{% trans "Message reporter" %}</span>
+            <span class="details-close icon icon-x" aria-hidden></span>
+        </summary>
+        <div class="box">
+            {% trans "Update on your report:" as dm_template %}
+            {% include 'snippets/create_status/status.html' with type="direct" uuid=1 mention=report.reporter prepared_content=dm_template no_script=True %}
+        </div>
+    </details>
+</div>
+
 {% if report.statuses.exists %}
 <div class="block">
     <h3 class="title is-4">{% trans "Reported statuses" %}</h3>
@@ -68,9 +81,13 @@
     {% endfor %}
     <form class="block" name="report-comment" method="post" action="{% url 'settings-report' report.id %}">
         {% csrf_token %}
-        <label for="report_comment" class="label">Comment on report</label>
-        <textarea name="note" id="report_comment" class="textarea"></textarea>
-        <button class="button">{% trans "Comment" %}</button>
+        <div class="field">
+            <label for="report_comment" class="label">Comment on report</label>
+            <textarea name="note" id="report_comment" class="textarea"></textarea>
+        </div>
+        <div class="field">
+            <button class="button">{% trans "Comment" %}</button>
+        </div>
     </form>
 </div>
 {% endblock %}

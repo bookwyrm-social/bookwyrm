@@ -1,7 +1,9 @@
 """ functionality outline for a book data connector """
 from abc import ABC, abstractmethod
+import imghdr
 import logging
 
+from django.core.files.base import ContentFile
 from django.db import transaction
 import requests
 from requests.exceptions import RequestException
@@ -290,10 +292,18 @@ def get_image(url, timeout=10):
         )
     except RequestException as err:
         logger.exception(err)
-        return None
+        return None, None
+
     if not resp.ok:
-        return None
-    return resp
+        return None, None
+
+    image_content = ContentFile(resp.content)
+    extension = imghdr.what(None, image_content.read())
+    if not extension:
+        logger.exception("File requested was not an image: %s", url)
+        return None, None
+
+    return image_content, extension
 
 
 class Mapping:

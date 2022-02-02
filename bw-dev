@@ -27,8 +27,8 @@ function execweb {
 }
 
 function initdb {
-    execweb python manage.py migrate
-    execweb python manage.py initdb "$@"
+    runweb python manage.py migrate
+    runweb python manage.py initdb "$@"
 }
 
 function awscommand {
