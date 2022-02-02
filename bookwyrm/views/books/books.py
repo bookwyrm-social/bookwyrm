@@ -2,7 +2,6 @@
 from uuid import uuid4
 
 from django.contrib.auth.decorators import login_required, permission_required
-from django.core.files.base import ContentFile
 from django.core.paginator import Paginator
 from django.db.models import Avg, Q
 from django.http import Http404
@@ -144,13 +143,12 @@ def upload_cover(request, book_id):
 def set_cover_from_url(url):
     """load it from a url"""
     try:
-        image_file = get_image(url)
+        image_content, extension = get_image(url)
     except:  # pylint: disable=bare-except
         return None
-    if not image_file:
+    if not image_content:
         return None
-    image_name = str(uuid4()) + "." + url.split(".")[-1]
-    image_content = ContentFile(image_file.content)
+    image_name = str(uuid4()) + "." + extension
     return [image_name, image_content]
 
 
