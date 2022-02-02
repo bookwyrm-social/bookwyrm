@@ -255,7 +255,7 @@ LANGUAGES = [
     ("no-no", _("Norsk (Norwegian)")),
     ("pt-br", _("Português do Brasil (Brazilian Portuguese)")),
     ("pt-pt", _("Português Europeu (European Portuguese)")),
-    ("sv-se", _("Swedish (Svenska)")),
+    ("sv-se", _("Svenska (Swedish)")),
     ("zh-hans", _("简体中文 (Simplified Chinese)")),
     ("zh-hant", _("繁體中文 (Traditional Chinese)")),
 ]
