@@ -1,6 +1,7 @@
 """ using django model forms """
 import datetime
 from collections import defaultdict
+from urllib.parse import urlparse
 
 from django import forms
 from django.forms import ModelForm, PasswordInput, widgets, ChoiceField
@@ -226,6 +227,18 @@ class FileLinkForm(CustomForm):
     class Meta:
         model = models.FileLink
         fields = ["url", "filetype", "availability", "book", "added_by"]
+    
+    def clean(self):
+        """make sure the domain isn't blocked or pending"""
+        cleaned_data = super().clean()
+        url = cleaned_data.get('url')
+        domain = urlparse(url).netloc
+        if models.LinkDomain.objects.filter(domain=domain).exists():
+            status = models.LinkDomain.objects.get(domain=domain).status
+            if status == 'blocked':
+                self.add_error("url", _("Domain is blocked. Don't try this url again."))
+            elif status == 'pending':
+                self.add_error("url", _("Domain already pending. Please try later."))
 
 
 class EditionForm(CustomForm):
