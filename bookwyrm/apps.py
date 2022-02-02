@@ -13,11 +13,15 @@ logger = logging.getLogger(__name__)
 def download_file(url, destination):
     """Downloads a file to the given path"""
     try:
+        # Ensure our destination directory exists
+        os.makedirs(os.path.dirname(destination))
         with urllib.request.urlopen(url) as stream:
             with open(destination, "b+w") as outfile:
                 outfile.write(stream.read())
     except (urllib.error.HTTPError, urllib.error.URLError):
         logger.error("Failed to download file %s", url)
+    except OSError:
+        logger.error("Couldn't open font file %s for writing", destination)
 
 
 class BookwyrmConfig(AppConfig):
