@@ -37,10 +37,7 @@ class Sanitizer(TestCase):
         parser = InputHtmlParser()
         parser.feed(input_text)
         output = parser.get_output()
-        self.assertEqual(
-            output,
-            '<a href="fish.com">yes    </a> <i>html</i>'
-        )
+        self.assertEqual(output, '<a href="fish.com">yes    </a> <i>html</i>')
 
     def test_invalid_html(self):
         """remove all html when the html is malformed"""

@@ -22,9 +22,7 @@ class InputHtmlParser(HTMLParser):  # pylint: disable=abstract-method
             "ol",
             "li",
         ]
-        self.allowed_attrs = [
-            "href", "rel", "src", "alt"
-        ]
+        self.allowed_attrs = ["href", "rel", "src", "alt"]
         self.tag_stack = []
         self.output = []
         # if the html appears invalid, we just won't allow any at all
@@ -36,7 +34,7 @@ class InputHtmlParser(HTMLParser):  # pylint: disable=abstract-method
             allowed_attrs = " ".join(
                 f'{a}="{v}"' for a, v in attrs if a in self.allowed_attrs
             )
-            reconstructed = f'<{tag}'
+            reconstructed = f"<{tag}"
             if allowed_attrs:
                 reconstructed += " " + allowed_attrs
             reconstructed += ">"
