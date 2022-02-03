@@ -1,7 +1,9 @@
 """ functionality outline for a book data connector """
 from abc import ABC, abstractmethod
 import imghdr
+import ipaddress
 import logging
+from urllib.parse import urlparse
 
 from django.core.files.base import ContentFile
 from django.db import transaction
@@ -250,6 +252,8 @@ def dict_from_mappings(data, mappings):
 def get_data(url, params=None, timeout=10):
     """wrapper for request.get"""
     # check if the url is blocked
+    raise_not_valid_url(url)
+
     if models.FederatedServer.is_blocked(url):
         raise ConnectorException(f"Attempting to load data from blocked url: {url}")
 
@@ -282,6 +286,7 @@ def get_data(url, params=None, timeout=10):
 
 def get_image(url, timeout=10):
     """wrapper for requesting an image"""
+    raise_not_valid_url(url)
     try:
         resp = requests.get(
             url,
@@ -304,6 +309,20 @@ def get_image(url, timeout=10):
         return None, None
 
     return image_content, extension
+
+
+def raise_not_valid_url(url):
+    """do some basic reality checks on the url"""
+    parsed = urlparse(url)
+    if not parsed.scheme in ["http", "https"]:
+        raise ConnectorException("Invalid scheme: ", url)
+
+    try:
+        ipaddress.ip_address(parsed.netloc)
+        raise ConnectorException("Provided url is an IP address: ", url)
+    except ValueError:
+        # it's not an IP address, which is good
+        pass
 
 
 class Mapping:
