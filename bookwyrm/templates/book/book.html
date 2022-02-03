@@ -356,10 +356,11 @@
                 <form name="list-add" method="post" action="{% url 'list-add-book' %}">
                     {% csrf_token %}
                     <input type="hidden" name="book" value="{{ book.id }}">
+                    <input type="hidden" name="user" value="{{ request.user.id }}">
                     <label class="label" for="id_list">{% trans "Add to list" %}</label>
                     <div class="field has-addons">
                         <div class="select control is-clipped">
-                            <select name="list" id="id_list">
+                            <select name="book_list" id="id_list">
                                 {% for list in user.list_set.all %}
                                 <option value="{{ list.id }}">{{ list.name }}</option>
                                 {% endfor %}

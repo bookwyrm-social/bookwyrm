@@ -45,7 +45,7 @@
                         href="{{ shelf_tab.local_path }}"
                         {% if shelf_tab.identifier == shelf.identifier %} aria-current="page"{% endif %}
                     >
-                        {% include 'user/books_header.html' with shelf=shelf_tab %}
+                        {% include "snippets/translated_shelf_name.html" with shelf=shelf_tab %}
                     </a>
                 </li>
                 {% endfor %}

@@ -1,5 +1,6 @@
 """ flagged for moderation """
 from django.db import models
+from bookwyrm.settings import DOMAIN
 from .base_model import BookWyrmModel
 
 
@@ -14,6 +15,9 @@ class Report(BookWyrmModel):
     statuses = models.ManyToManyField("Status", blank=True)
     links = models.ManyToManyField("Link", blank=True)
     resolved = models.BooleanField(default=False)
+
+    def get_remote_id(self):
+        return f"https://{DOMAIN}/settings/reports/{self.id}"
 
     class Meta:
         """set order by default"""

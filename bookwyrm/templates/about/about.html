@@ -28,7 +28,7 @@
 
     <div class="columns">
         {% if superlatives.top_rated %}
-        {% with book=superlatives.top_rated.default_edition rating=top_rated.rating %}
+        {% with book=superlatives.top_rated.default_edition rating=superlatives.top_rated.rating %}
         <div class="column is-one-third is-flex">
             <div class="media notification">
                 <div class="media-left">
