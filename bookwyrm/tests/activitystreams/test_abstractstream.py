@@ -109,7 +109,7 @@ class Activitystreams(TestCase):
         self.assertEqual(result.count(), 2)
         self.assertEqual(result.first(), status2)
         self.assertEqual(result.last(), status)
-        self.assertIsInstance(result.last(), models.Comment)
+        self.assertIsInstance(result.first(), models.Comment)
 
     def test_abstractstream_get_audience(self, *_):
         """get a list of users that should see a status"""
