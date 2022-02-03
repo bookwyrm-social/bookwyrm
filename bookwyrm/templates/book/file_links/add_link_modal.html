@@ -56,9 +56,7 @@
 
 {% block modal-footer %}
 <button class="button is-primary" type="submit">{% trans "Save" %}</button>
-{% if not static %}
-    <button type="button" class="button" data-modal-close>{% trans "Cancel" %}</button>
-{% endif %}
+<button type="button" class="button" data-modal-close>{% trans "Cancel" %}</button>
 
 {% endblock %}
 {% block modal-form-close %}</form>{% endblock %}
