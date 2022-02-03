@@ -97,7 +97,7 @@
                                                 <span class="details-close icon icon-pencil" aria-hidden></span>
                                             </span>
                                         </summary>
-                                        {% include "lists/edit_item_form.html" %}
+                                        {% include "lists/edit_item_form.html" with book=item.book %}
                                     </details>
                                 </div>
                                 {% endif %}
@@ -112,7 +112,7 @@
                                         <span class="details-close icon icon-plus" aria-hidden></span>
                                     </span>
                                 </summary>
-                                {% include "lists/edit_item_form.html" %}
+                                {% include "lists/edit_item_form.html" with book=item.book %}
                             </details>
                         </div>
                         {% endif %}
