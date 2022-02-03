@@ -107,8 +107,8 @@ class Activitystreams(TestCase):
             redis_mock.return_value = [status.id, status2.id]
             result = self.test_stream.get_activity_stream(self.local_user)
         self.assertEqual(result.count(), 2)
-        self.assertEqual(result.first(), status)
-        self.assertEqual(result.last(), status2)
+        self.assertEqual(result.first(), status2)
+        self.assertEqual(result.last(), status)
         self.assertIsInstance(result.last(), models.Comment)
 
     def test_abstractstream_get_audience(self, *_):
