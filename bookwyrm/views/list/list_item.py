@@ -19,4 +19,6 @@ class ListItem(View):
         form = forms.ListItemForm(request.POST, instance=list_item)
         if form.is_valid():
             form.save()
+        else:
+            raise Exception(form.errors)
         return redirect("list", list_item.book_list.id)
