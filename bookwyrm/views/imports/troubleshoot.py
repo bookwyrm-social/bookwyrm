@@ -5,6 +5,7 @@ from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
+from django.urls import reverse
 from django.views import View
 
 from bookwyrm import models
@@ -35,6 +36,7 @@ class ImportTroubleshoot(View):
                 page.number, on_each_side=2, on_ends=1
             ),
             "complete": True,
+            "page_path": reverse("import-troubleshoot", args=[job.id]),
         }
 
         return TemplateResponse(request, "import/troubleshoot.html", data)

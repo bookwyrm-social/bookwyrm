@@ -47,7 +47,7 @@
             <span class="icon icon-spinner is-pulled-left" aria-hidden="true"></span>
             <span>{% trans "In progress" %}</span>
             <span class="is-pulled-right">
-                <a href="#" class="button is-small">{% trans "Refresh" %}</a>
+                <a href="{% url 'import-status' job.id %}" class="button is-small">{% trans "Refresh" %}</a>
             </span>
         </div>
         <div class="is-flex">
@@ -230,7 +230,7 @@
 
 {% if not legacy %}
 <div>
-    {% include 'snippets/pagination.html' with page=items %}
+    {% include 'snippets/pagination.html' with page=items path=page_path %}
 </div>
 {% endif %}
 {% endspaceless %}{% endblock %}
