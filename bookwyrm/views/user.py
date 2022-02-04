@@ -33,9 +33,13 @@ class User(View):
         # only show shelves that should be visible
         is_self = request.user.id == user.id
         if not is_self:
-            shelves = models.Shelf.privacy_filter(
-                request.user, privacy_levels=["public", "followers"]
-            ).filter(user=user, books__isnull=False)
+            shelves = (
+                models.Shelf.privacy_filter(
+                    request.user, privacy_levels=["public", "followers"]
+                )
+                .filter(user=user, books__isnull=False)
+                .distinct()
+            )
         else:
             shelves = user.shelf_set.filter(books__isnull=False).distinct()
 
