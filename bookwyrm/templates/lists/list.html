@@ -84,9 +84,7 @@
                                         <a href="{{ user_path }}">{{ username }}</a> says:
                                         {% endblocktrans %}
                                     </header>
-                                    <p>
-                                        {{ item.notes|to_markdown|safe }}
-                                    </p>
+                                    {{ item.notes|to_markdown|safe }}
                                 </div>
                                 {% if item.user == request.user %}
                                 <div>
