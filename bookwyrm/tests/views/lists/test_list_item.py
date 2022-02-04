@@ -67,4 +67,4 @@ class ListItemViews(TestCase):
         self.assertEqual(mock.call_count, 1)
 
         item.refresh_from_db()
-        self.assertEqual(item.notes, "beep boop")
+        self.assertEqual(item.notes, "<p>beep boop</p>")
