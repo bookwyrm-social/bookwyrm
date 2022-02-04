@@ -17,62 +17,70 @@ msgstr ""
 "X-Crowdin-File: /[bookwyrm-social.bookwyrm] main/locale/en_US/LC_MESSAGES/django.po\n"
 "X-Crowdin-File-ID: 1553\n"
 
-#: bookwyrm/forms.py:365
+#: bookwyrm/forms.py:239
+msgid "Domain is blocked. Don't try this url again."
+msgstr "Die Domäne ist blockiert. Versuchen Sie diese Url nicht mehr."
+
+#: bookwyrm/forms.py:241
+msgid "Domain already pending. Please try later."
+msgstr "Die Domain ist bereits in Bearbeitung. Bitte versuchen Sie es später."
+
+#: bookwyrm/forms.py:378
 msgid "A user with this email already exists."
 msgstr "Es existiert bereits ein Benutzer*inkonto mit dieser E-Mail-Adresse."
 
-#: bookwyrm/forms.py:379
+#: bookwyrm/forms.py:392
 msgid "One Day"
 msgstr "Ein Tag"
 
-#: bookwyrm/forms.py:380
+#: bookwyrm/forms.py:393
 msgid "One Week"
 msgstr "Eine Woche"
 
-#: bookwyrm/forms.py:381
+#: bookwyrm/forms.py:394
 msgid "One Month"
 msgstr "Ein Monat"
 
-#: bookwyrm/forms.py:382
+#: bookwyrm/forms.py:395
 msgid "Does Not Expire"
 msgstr "Läuft nicht ab"
 
-#: bookwyrm/forms.py:386
+#: bookwyrm/forms.py:399
 #, python-brace-format
 msgid "{i} uses"
 msgstr "{i}-mal verwendbar"
 
-#: bookwyrm/forms.py:387
+#: bookwyrm/forms.py:400
 msgid "Unlimited"
 msgstr "Unbegrenzt"
 
-#: bookwyrm/forms.py:489
+#: bookwyrm/forms.py:502
 msgid "List Order"
 msgstr "Reihenfolge der Liste"
 
-#: bookwyrm/forms.py:490
+#: bookwyrm/forms.py:503
 msgid "Book Title"
 msgstr "Buchtitel"
 
-#: bookwyrm/forms.py:491 bookwyrm/templates/shelf/shelf.html:155
+#: bookwyrm/forms.py:504 bookwyrm/templates/shelf/shelf.html:155
 #: bookwyrm/templates/shelf/shelf.html:187
 #: bookwyrm/templates/snippets/create_status/review.html:32
 msgid "Rating"
 msgstr "Bewertung"
 
-#: bookwyrm/forms.py:493 bookwyrm/templates/lists/list.html:177
+#: bookwyrm/forms.py:506 bookwyrm/templates/lists/list.html:177
 msgid "Sort By"
 msgstr "Sortieren nach"
 
-#: bookwyrm/forms.py:497
+#: bookwyrm/forms.py:510
 msgid "Ascending"
 msgstr "Aufsteigend"
 
-#: bookwyrm/forms.py:498
+#: bookwyrm/forms.py:511
 msgid "Descending"
 msgstr "Absteigend"
 
-#: bookwyrm/forms.py:511
+#: bookwyrm/forms.py:524
 msgid "Reading finish date cannot be before start date."
 msgstr "Enddatum darf nicht vor dem Startdatum liegen."
 
@@ -284,7 +292,7 @@ msgstr "Português Europeu (Portugiesisch)"
 
 #: bookwyrm/settings.py:258
 msgid "Swedish (Svenska)"
-msgstr ""
+msgstr "Swedish (Schwedisch)"
 
 #: bookwyrm/settings.py:259
 msgid "简体中文 (Simplified Chinese)"
@@ -4677,4 +4685,3 @@ msgid "Load %(count)d unread status"
 msgid_plural "Load %(count)d unread statuses"
 msgstr[0] "Lade %(count)d ungelesene Statusmeldung"
 msgstr[1] "Lade %(count)d ungelesene Statusmeldungen"
-
