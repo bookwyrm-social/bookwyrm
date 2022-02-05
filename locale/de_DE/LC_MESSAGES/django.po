@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-01-30 18:17+0000\n"
-"PO-Revision-Date: 2022-01-30 19:38\n"
+"POT-Creation-Date: 2022-02-02 20:09+0000\n"
+"PO-Revision-Date: 2022-02-04 21:01\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: German\n"
 "Language: de\n"
@@ -19,11 +19,11 @@ msgstr ""
 
 #: bookwyrm/forms.py:239
 msgid "Domain is blocked. Don't try this url again."
-msgstr "Die Domäne ist blockiert. Versuchen Sie diese Url nicht mehr."
+msgstr ""
 
 #: bookwyrm/forms.py:241
 msgid "Domain already pending. Please try later."
-msgstr "Die Domain ist bereits in Bearbeitung. Bitte versuchen Sie es später."
+msgstr ""
 
 #: bookwyrm/forms.py:378
 msgid "A user with this email already exists."
@@ -148,26 +148,26 @@ msgstr "Föderiert"
 msgid "Blocked"
 msgstr "Blockiert"
 
-#: bookwyrm/models/fields.py:29
+#: bookwyrm/models/fields.py:27
 #, python-format
 msgid "%(value)s is not a valid remote_id"
 msgstr "%(value)s ist keine gültige remote_id"
 
-#: bookwyrm/models/fields.py:38 bookwyrm/models/fields.py:47
+#: bookwyrm/models/fields.py:36 bookwyrm/models/fields.py:45
 #, python-format
 msgid "%(value)s is not a valid username"
 msgstr "%(value)s ist kein gültiger Benutzer*inname"
 
-#: bookwyrm/models/fields.py:183 bookwyrm/templates/layout.html:170
+#: bookwyrm/models/fields.py:181 bookwyrm/templates/layout.html:170
 #: bookwyrm/templates/ostatus/error.html:29
 msgid "username"
 msgstr "Benutzer*inname"
 
-#: bookwyrm/models/fields.py:188
+#: bookwyrm/models/fields.py:186
 msgid "A user with that username already exists."
 msgstr "Dieser Benutzer*inname ist bereits vergeben."
 
-#: bookwyrm/models/fields.py:207
+#: bookwyrm/models/fields.py:205
 #: bookwyrm/templates/snippets/privacy-icons.html:3
 #: bookwyrm/templates/snippets/privacy-icons.html:4
 #: bookwyrm/templates/snippets/privacy_select.html:11
@@ -175,7 +175,7 @@ msgstr "Dieser Benutzer*inname ist bereits vergeben."
 msgid "Public"
 msgstr "Öffentlich"
 
-#: bookwyrm/models/fields.py:208
+#: bookwyrm/models/fields.py:206
 #: bookwyrm/templates/snippets/privacy-icons.html:7
 #: bookwyrm/templates/snippets/privacy-icons.html:8
 #: bookwyrm/templates/snippets/privacy_select.html:14
@@ -183,14 +183,14 @@ msgstr "Öffentlich"
 msgid "Unlisted"
 msgstr "Ungelistet"
 
-#: bookwyrm/models/fields.py:209
+#: bookwyrm/models/fields.py:207
 #: bookwyrm/templates/snippets/privacy_select.html:17
 #: bookwyrm/templates/user/relationships/followers.html:6
 #: bookwyrm/templates/user/relationships/layout.html:11
 msgid "Followers"
 msgstr "Follower*innen"
 
-#: bookwyrm/models/fields.py:210
+#: bookwyrm/models/fields.py:208
 #: bookwyrm/templates/snippets/create_status/post_options_block.html:8
 #: bookwyrm/templates/snippets/privacy-icons.html:15
 #: bookwyrm/templates/snippets/privacy-icons.html:16
@@ -291,8 +291,8 @@ msgid "Português Europeu (European Portuguese)"
 msgstr "Português Europeu (Portugiesisch)"
 
 #: bookwyrm/settings.py:258
-msgid "Swedish (Svenska)"
-msgstr "Swedish (Schwedisch)"
+msgid "Svenska (Swedish)"
+msgstr "Svenska (Schwedisch)"
 
 #: bookwyrm/settings.py:259
 msgid "简体中文 (Simplified Chinese)"
@@ -377,7 +377,7 @@ msgstr "Administration"
 #: bookwyrm/templates/about/about.html:131
 #: bookwyrm/templates/settings/users/user_moderation_actions.html:14
 #: bookwyrm/templates/snippets/status/status_options.html:35
-#: bookwyrm/templates/snippets/user_options.html:13
+#: bookwyrm/templates/snippets/user_options.html:14
 msgid "Send direct message"
 msgstr "Direktnachricht senden"
 
@@ -1025,7 +1025,7 @@ msgid "Physical Properties"
 msgstr "Physikalische Eigenschaften"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:199
-#: bookwyrm/templates/book/editions/format_filter.html:5
+#: bookwyrm/templates/book/editions/format_filter.html:6
 msgid "Format:"
 msgstr "Format:"
 
@@ -1063,17 +1063,17 @@ msgstr "Ausgaben von  %(book_title)s"
 msgid "Editions of <a href=\"%(work_path)s\">\"%(work_title)s\"</a>"
 msgstr "Ausgaben von <a href=\"%(work_path)s\">\"%(work_title)s\"</a>"
 
-#: bookwyrm/templates/book/editions/format_filter.html:8
-#: bookwyrm/templates/book/editions/language_filter.html:8
+#: bookwyrm/templates/book/editions/format_filter.html:9
+#: bookwyrm/templates/book/editions/language_filter.html:9
 msgid "Any"
 msgstr "Beliebig(e)"
 
-#: bookwyrm/templates/book/editions/language_filter.html:5
+#: bookwyrm/templates/book/editions/language_filter.html:6
 #: bookwyrm/templates/preferences/edit_user.html:95
 msgid "Language:"
 msgstr "Sprache:"
 
-#: bookwyrm/templates/book/editions/search_filter.html:5
+#: bookwyrm/templates/book/editions/search_filter.html:6
 msgid "Search editions"
 msgstr "Ausgaben suchen"
 
@@ -4116,7 +4116,7 @@ msgstr "Filter werden angewendet"
 msgid "Clear filters"
 msgstr "Filter zurücksetzen"
 
-#: bookwyrm/templates/snippets/filters_panel/filters_panel.html:42
+#: bookwyrm/templates/snippets/filters_panel/filters_panel.html:43
 msgid "Apply filters"
 msgstr "Filter anwenden"
 
@@ -4685,3 +4685,4 @@ msgid "Load %(count)d unread status"
 msgid_plural "Load %(count)d unread statuses"
 msgstr[0] "Lade %(count)d ungelesene Statusmeldung"
 msgstr[1] "Lade %(count)d ungelesene Statusmeldungen"
+
