@@ -49,7 +49,7 @@ services:
     networks:
       - main
     ports:
-      - 8000:8000
+      - 8000
   redis_activity:
     image: redis
     command: redis-server --requirepass ${REDIS_ACTIVITY_PASSWORD} --appendonly yes --port ${REDIS_ACTIVITY_PORT}
@@ -86,10 +86,10 @@ services:
     restart: on-failure
   flower:
     build: .
-    command: celery -A celerywyrm flower
+    command: celery -A celerywyrm flower --basic_auth=${FLOWER_USER}:${FLOWER_PASSWORD}
     env_file: .env
     ports:
-      - ${FLOWER_PORT}:${FLOWER_PORT}
+      - ${FLOWER_PORT}
     volumes:
       - .:/app
     networks:
