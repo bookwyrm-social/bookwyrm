@@ -33,6 +33,11 @@ class BookwyrmConfig(AppConfig):
     verbose_name = "BookWyrm"
 
     def ready(self):
+        if settings.OTEL_EXPORTER_OTLP_ENDPOINT:
+            from bookwyrm.telemetry import open_telemetry
+
+            open_telemetry.instrumentDjango()
+
         if settings.ENABLE_PREVIEW_IMAGES and settings.FONTS:
             # Download any fonts that we don't have yet
             logger.debug("Downloading fonts..")
