@@ -28,7 +28,7 @@ class Author(View):
 
         books = models.Work.objects.filter(
             Q(authors=author) | Q(editions__authors=author)
-        ).distinct()
+        ).order_by("-published_date").distinct()
 
         paginated = Paginator(books, PAGE_LENGTH)
         page = paginated.get_page(request.GET.get("page"))
