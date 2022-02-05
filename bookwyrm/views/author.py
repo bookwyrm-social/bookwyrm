@@ -26,9 +26,11 @@ class Author(View):
         if is_api_request(request):
             return ActivitypubResponse(author.to_activity())
 
-        books = models.Work.objects.filter(
-            Q(authors=author) | Q(editions__authors=author)
-        ).order_by("-published_date").distinct()
+        books = (
+            models.Work.objects.filter(Q(authors=author) | Q(editions__authors=author))
+            .order_by("-published_date")
+            .distinct()
+        )
 
         paginated = Paginator(books, PAGE_LENGTH)
         page = paginated.get_page(request.GET.get("page"))
