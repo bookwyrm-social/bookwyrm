@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-02-05 02:20+0000\n"
-"PO-Revision-Date: 2022-02-07 09:05\n"
+"PO-Revision-Date: 2022-02-07 10:17\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Italian\n"
 "Language: it\n"
@@ -524,8 +524,8 @@ msgstr "…e il più lungo"
 #, python-format
 msgid "%(display_name)s set a goal of reading %(goal)s book in %(year)s,<br /> and achieved %(goal_percent)s%% of that goal"
 msgid_plural "%(display_name)s set a goal of reading %(goal)s books in %(year)s,<br /> and achieved %(goal_percent)s%% of that goal"
-msgstr[0] "%(display_name)s ha fissato un obiettivo di leggere %(goal)s libro inel %(year)s,<br /> e ha raggiunto %(goal_percent)s%% di questo obiettivo"
-msgstr[1] "%(display_name)s ha fissato un obiettivo di leggere %(goal)s libri nel %(year)s,<br /> e ha raggiunto %(goal_percent)s%% di questo obiettivo"
+msgstr[0] "%(display_name)s ha fissato un obiettivo di %(goal)s libro da leggere nel %(year)s,<br /> e ha raggiunto il %(goal_percent)s%% di questo obiettivo"
+msgstr[1] "%(display_name)s ha fissato un obiettivo di %(goal)s libri da leggere nel %(year)s,<br /> e ha raggiunto %(goal_percent)s%% di questo obiettivo"
 
 #: bookwyrm/templates/annual_summary/layout.html:209
 msgid "Way to go!"
@@ -957,11 +957,11 @@ msgstr "Sottotitolo:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:50
 msgid "Series:"
-msgstr "Serie:"
+msgstr "Collana:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:60
 msgid "Series number:"
-msgstr "Numero serie:"
+msgstr "Numero collana:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:71
 msgid "Languages:"
@@ -2105,7 +2105,7 @@ msgstr "Libri recenti"
 
 #: bookwyrm/templates/landing/layout.html:17
 msgid "Decentralized"
-msgstr "Decentralizzata"
+msgstr "Decentralizzato"
 
 #: bookwyrm/templates/landing/layout.html:23
 msgid "Friendly"
@@ -4171,8 +4171,8 @@ msgstr[1] "%(rating)s stelle"
 #, python-format
 msgid "set a goal to read %(counter)s book in %(year)s"
 msgid_plural "set a goal to read %(counter)s books in %(year)s"
-msgstr[0] "impostare un obiettivo per leggere %(counter)s libro nel %(year)s"
-msgstr[1] "impostare un obiettivo per leggere %(counter)s libri nel %(year)s"
+msgstr[0] "vorrebbe leggere %(counter)s libro nel %(year)s"
+msgstr[1] "vorrebbe leggere %(counter)s libri nel %(year)s"
 
 #: bookwyrm/templates/snippets/generated_status/rating.html:3
 #, python-format
@@ -4196,7 +4196,7 @@ msgstr "Recensione di \"%(book_title)s\": %(review_title)s"
 #: bookwyrm/templates/snippets/goal_form.html:4
 #, python-format
 msgid "Set a goal for how many books you'll finish reading in %(year)s, and track your progress throughout the year."
-msgstr "Imposta un obiettivo per quanti libri finirai di leggere nel %(year)s e traccia i tuoi progressi durante tutto l'anno."
+msgstr "Imposta un obiettivo di quanti libri ti piacerebbe leggere nel %(year)s e traccia i tuoi progressi durante tutto l'anno."
 
 #: bookwyrm/templates/snippets/goal_form.html:16
 msgid "Reading goal:"
