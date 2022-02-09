@@ -143,6 +143,8 @@ case "$CMD" in
         runweb python manage.py migrate
         runweb python manage.py collectstatic --no-input
         docker-compose up -d
+        docker-compose restart web
+        docker-compose restart celery_worker
         ;;
     populate_streams)
         runweb python manage.py populate_streams "$@"
