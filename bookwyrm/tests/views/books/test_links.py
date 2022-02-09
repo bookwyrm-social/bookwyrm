@@ -84,12 +84,10 @@ class LinkViews(TestCase):
         self.assertEqual(
             activity["object"]["fileLinks"][0]["href"], "https://www.example.com"
         )
-        self.assertEqual(
-            activity["object"]["fileLinks"][0]["mediaType"], "HTML"
-        )
+        self.assertEqual(activity["object"]["fileLinks"][0]["mediaType"], "HTML")
         self.assertEqual(
             activity["object"]["fileLinks"][0]["attributedTo"],
-            self.local_user.remote_id
+            self.local_user.remote_id,
         )
 
         link = models.FileLink.objects.get()

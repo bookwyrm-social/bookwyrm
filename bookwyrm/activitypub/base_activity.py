@@ -306,6 +306,7 @@ class Link(ActivityObject):
         omit = ("id", "type", "@context")
         return super().serialize(omit=omit)
 
+
 @dataclass(init=False)
 class Mention(Link):
     """a subtype of Link for mentioning an actor"""
