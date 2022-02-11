@@ -9,7 +9,7 @@
             {% if announcement.event_date %}
             <strong>{{ announcement.event_date|naturalday|title }}:</strong>
             {% endif %}
-            {{ announcement.preview }}
+            {{ announcement.preview|safe }}
         </div>
         {% if announcement.content %}
         <div class="column is-narrow pb-0">
