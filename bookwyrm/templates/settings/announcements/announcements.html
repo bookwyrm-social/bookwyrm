@@ -5,16 +5,15 @@
 {% block header %}{% trans "Announcements" %}{% endblock %}
 
 {% block edit-button %}
-{% trans "Create Announcement" as button_text %}
-{% include 'snippets/toggle/open_button.html' with controls_text="create_announcement" icon_with_text="plus" text=button_text focus="create_announcement_header" %}
+<a href="{% url 'settings-announcements-edit' %}">
+    {% trans "Create Announcement" as text %}
+    <span class="icon icon-plus" title="{{ text }}" aria-hidden="true"></span>
+    <span class="is-sr-only-mobile">{{ text }}</span>
+</a>
 {% endblock %}
 
 {% block panel %}
-<form name="create-announcement" method="post" action="{% url 'settings-announcements' %}" class="block">
-    {% include 'settings/announcements/announcement_form.html' with controls_text="create_announcement" %}
-</form>
-
-<div class="block">
+<div class="block table-container">
     <table class="table is-striped">
         <tr>
             <th>
