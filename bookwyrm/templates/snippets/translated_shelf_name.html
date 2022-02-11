@@ -7,6 +7,8 @@
     {% trans "Currently Reading" %}
 {% elif shelf.identifier == 'read' %}
     {% trans "Read" %}
+{% elif shelf.identifier == 'partially-read' %}
+    {% trans "Partially Read" %}
 {% else %}
     {{ shelf.name }}
 {% endif %}

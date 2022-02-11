@@ -372,6 +372,10 @@ class User(OrderedCollectionPageMixin, AbstractUser):
                 "name": "Read",
                 "identifier": "read",
             },
+            {
+                "name": "Partially Read",
+                "identifier": "partially-read",
+            },
         ]
 
         for shelf in shelves:
