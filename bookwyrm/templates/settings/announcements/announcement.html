@@ -6,7 +6,6 @@
 
 {% block header %}
 {% trans "Announcement" %}
-<a href="{% url 'settings-announcements' %}" class="has-text-weight-normal help">{% trans "Back to list" %}</a>
 {% endblock %}
 
 {% block edit-button %}
@@ -14,7 +13,7 @@
     <div class="control">
         <a class="button" href="{% url 'settings-announcements-edit' announcement.id %}">
             <span class="icon icon-pencil m-0-mobile" aria-hidden="true"></span>
-            <span class="is-sr-only-mobile">{% trans "Edit Announcement" %}</span>
+            <span class="is-sr-only-mobile">{% trans "Edit" %}</span>
         </a>
     </div>
     <form class="control" action="{% url 'settings-announcements-delete' announcement.id %}" method="post">
@@ -27,8 +26,20 @@
 </div>
 {% endblock %}
 
-{% block panel %}
+{% block breadcrumbs %}
+<nav class="breadcrumb subtitle" aria-label="breadcrumbs">
+    <ul>
+        <li><a href="{% url 'settings-announcements' %}">{% trans "Announcements" %}</a></li>
+        <li class="is-active">
+            <a href="#" aria-current="page">
+                {{ announcement.preview|truncatechars:30 }}
+            </a>
+        </li>
+    </ul>
+</nav>
+{% endblock %}
 
+{% block panel %}
 <div class="block content">
     <dl>
         <dt class="is-pulled-left mr-5 has-text-weight-bold">{% trans "Visible:" %}</dt>

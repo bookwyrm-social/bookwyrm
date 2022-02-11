@@ -2,11 +2,31 @@
 {% load i18n %}
 
 {% block header %}
-{% if announcement %}
-{% trans "Edit Announcement" %}
-{% else %}
-{% trans "Create Announcement" %}
-{% endif %}
+    {% if announcement %}
+        {% trans "Edit Announcement" %}
+    {% else %}
+        {% trans "Create Announcement" %}
+    {% endif %}
+{% endblock %}
+
+{% block breadcrumbs %}
+<nav class="breadcrumb subtitle" aria-label="breadcrumbs">
+    <ul>
+        <li><a href="{% url 'settings-announcements' %}">{% trans "Announcements" %}</a></li>
+        {% if announcement %}
+        <li>
+            <a href="{% url 'settings-announcements' announcement.id %}">
+                {{ announcement.preview|truncatechars:30 }}
+            </a>
+        </li>
+        {% endif %}
+        <li class="is-active">
+            <a href="#" aria-current="page">
+                Edit
+            </a>
+        </li>
+    </ul>
+</nav>
 {% endblock %}
 
 {% block panel %}
