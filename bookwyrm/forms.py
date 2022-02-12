@@ -238,6 +238,7 @@ class FileLinkForm(CustomForm):
         if models.LinkDomain.objects.filter(domain=domain).exists():
             status = models.LinkDomain.objects.get(domain=domain).status
             if status == "blocked":
+                # pylint: disable=line-too-long
                 self.add_error(
                     "url",
                     _(
@@ -247,6 +248,7 @@ class FileLinkForm(CustomForm):
             elif models.FileLink.objects.filter(
                 url=url, book=book, filetype=filetype
             ).exists():
+                # pylint: disable=line-too-long
                 self.add_error(
                     "url",
                     _(
