@@ -1,0 +1,15 @@
+FROM python:3.9
+
+ENV PYTHONUNBUFFERED 1
+
+RUN mkdir /app /app/static /app/images
+
+WORKDIR /app
+
+COPY package.json requirements.txt /app/
+RUN pip install black
+
+RUN apt-get update && apt-get install -y curl
+RUN curl -sL https://deb.nodesource.com/setup_16.x | bash -
+RUN apt-get install -y nodejs
+RUN npm install .
