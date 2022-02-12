@@ -135,7 +135,7 @@ case "$CMD" in
         makeitblack
         ;;
     prettier)
-        npx prettier --write bookwyrm/static/js/*.js
+        npx prettier --write bookwyrm/static/js/*.js bookwyrm/static/css/*.css
         ;;
     update)
         git pull

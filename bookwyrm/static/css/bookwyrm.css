@@ -575,8 +575,12 @@ details[open].details-panel summary .details-close {
  ******************************************************************************/
 
 @keyframes turning {
-    from { transform: rotateZ(0deg); }
-    to { transform: rotateZ(360deg); }
+    from {
+        transform: rotateZ(0deg);
+    }
+    to {
+        transform: rotateZ(360deg);
+    }
 }
 
 .is-processing .icon-spinner::before {
