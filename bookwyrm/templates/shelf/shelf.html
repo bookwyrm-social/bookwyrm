@@ -151,7 +151,7 @@
                         {% if is_self %}
                     <th>{% trans "Shelved"  as text %}{% include 'snippets/table-sort-header.html' with field="shelved_date" sort=sort text=text %}</th>
                     <th>{% trans "Started"  as text %}{% include 'snippets/table-sort-header.html' with field="start_date" sort=sort text=text %}</th>
-                    <th>{% trans "Finished"  as text %}{% include 'snippets/table-sort-header.html' with field="finish_date" sort=sort text=text %}</th>
+		    <th>{% if shelf.identifier == 'read' %}{% trans "Finished"  as text %}{% else %}{% trans "Until"  as text %}{% endif %}{% include 'snippets/table-sort-header.html' with field="finish_date" sort=sort text=text %}</th>
                         {% endif %}
                     <th>{% trans "Rating" as text %}{% include 'snippets/table-sort-header.html' with field="rating" sort=sort text=text %}</th>
                     {% endif %}
@@ -181,7 +181,7 @@
                     <td data-title="{% trans "Started" %}">
                         {{ book.start_date|naturalday|default_if_none:""}}
                     </td>
-                    <td data-title="{% trans "Finished" %}">
+		    <td data-title="{% if shelf.identifier == 'read' %}{% trans "Finished"  as text %}{% else %}{% trans "Until" as text %}{% endif %}">
                         {{ book.finish_date|naturalday|default_if_none:""}}
                     </td>
                         {% endif %}
