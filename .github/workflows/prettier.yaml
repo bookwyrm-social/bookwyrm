@@ -21,4 +21,4 @@ jobs:
 
       # See .stylelintignore for files that are not linted.
       - name: Run Prettier
-        run: npx prettier --check bookwyrm/static/js/*.js
+        run: npx prettier --check bookwyrm/static/js/*.js --check bookwyrm/static/css/*.css
