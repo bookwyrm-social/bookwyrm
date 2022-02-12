@@ -32,7 +32,15 @@ class BookwyrmConfig(AppConfig):
     name = "bookwyrm"
     verbose_name = "BookWyrm"
 
+    # pylint: disable=no-self-use
     def ready(self):
+        """set up OTLP and preview image files, if desired"""
+        if settings.OTEL_EXPORTER_OTLP_ENDPOINT:
+            # pylint: disable=import-outside-toplevel
+            from bookwyrm.telemetry import open_telemetry
+
+            open_telemetry.instrumentDjango()
+
         if settings.ENABLE_PREVIEW_IMAGES and settings.FONTS:
             # Download any fonts that we don't have yet
             logger.debug("Downloading fonts..")
