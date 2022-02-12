@@ -17,9 +17,9 @@ class Shelf(OrderedCollectionMixin, BookWyrmModel):
     TO_READ = "to-read"
     READING = "reading"
     READ_FINISHED = "read"
-    PARTIALLY_READ = "partially-read"
+    STOPPED_READING = "stopped-reading"
 
-    READ_STATUS_IDENTIFIERS = (TO_READ, READING, READ_FINISHED, PARTIALLY_READ)
+    READ_STATUS_IDENTIFIERS = (TO_READ, READING, READ_FINISHED, STOPPED_READING)
 
     name = fields.CharField(max_length=100)
     identifier = models.CharField(max_length=100)

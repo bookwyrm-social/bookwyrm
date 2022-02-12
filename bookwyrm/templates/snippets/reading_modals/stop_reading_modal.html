@@ -4,12 +4,12 @@
 
 {% block modal-title %}
 {% blocktrans trimmed with book_title=book|book_title %}
-Partially Read "<em>{{ book_title }}</em>"
+Stop Reading "<em>{{ book_title }}</em>"
 {% endblocktrans %}
 {% endblock %}
 
 {% block modal-form-open %}
-<form name="partially-read-{{ uuid }}" action="{% url 'reading-status' 'stop' book.id %}" method="post" {% if not refresh %}class="submit-status"{% endif %}>
+<form name="stop-reading-{{ uuid }}" action="{% url 'reading-status' 'stop' book.id %}" method="post" {% if not refresh %}class="submit-status"{% endif %}>
 {% csrf_token %}
 <input type="hidden" name="id" value="{{ readthrough.id }}">
 <input type="hidden" name="reading_status" value="stop">
@@ -38,5 +38,5 @@ Partially Read "<em>{{ book_title }}</em>"
 {% endblock %}
 
 {% block form %}
-{% include "snippets/reading_modals/form.html" with optional=True type="partially_read_model" %}
+{% include "snippets/reading_modals/form.html" with optional=True type="stop_modal" %}
 {% endblock %}

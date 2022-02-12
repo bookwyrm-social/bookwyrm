@@ -373,8 +373,8 @@ class User(OrderedCollectionPageMixin, AbstractUser):
                 "identifier": "read",
             },
             {
-                "name": "Partially Read",
-                "identifier": "partially-read",
+                "name": "Stopped Reading",
+                "identifier": "stopped-reading",
             },
         ]
 

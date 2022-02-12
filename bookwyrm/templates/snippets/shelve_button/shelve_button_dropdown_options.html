@@ -26,11 +26,11 @@
             {% join "finish_reading" button_uuid as modal_id %}
             {% include 'snippets/shelve_button/modal_button.html' with class=class fallback_url=fallback_url %}
 
-        {% elif shelf.identifier == 'partially-read' %}
+        {% elif shelf.identifier == 'stopped-reading' %}
 
-            {% trans "Partially read" as button_text %}
+            {% trans "Stop reading" as button_text %}
             {% url 'reading-status' 'stop' book.id as fallback_url %}
-            {% join "partially_read" button_uuid as modal_id %}
+            {% join "stop_reading" button_uuid as modal_id %}
             {% include 'snippets/shelve_button/modal_button.html' with class=class fallback_url=fallback_url %}
 
         {% elif shelf.identifier == 'to-read' %}

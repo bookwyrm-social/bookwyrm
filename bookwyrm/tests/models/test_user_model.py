@@ -58,12 +58,12 @@ class User(TestCase):
         self.assertTrue("To Read" in names)
         self.assertTrue("Currently Reading" in names)
         self.assertTrue("Read" in names)
-        self.assertTrue("Partially Read" in names)
+        self.assertTrue("Stopped Reading" in names)
         ids = [s.identifier for s in shelves]
         self.assertTrue("to-read" in ids)
         self.assertTrue("reading" in ids)
         self.assertTrue("read" in ids)
-        self.assertTrue("partially-read" in ids)
+        self.assertTrue("stopped-reading" in ids)
 
     def test_activitypub_serialize(self):
         activity = self.user.to_activity()

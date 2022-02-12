@@ -42,7 +42,7 @@ class ReadingStatus(View):
             "want": models.Shelf.TO_READ,
             "start": models.Shelf.READING,
             "finish": models.Shelf.READ_FINISHED,
-            "stop": models.Shelf.PARTIALLY_READ,
+            "stop": models.Shelf.STOPPED_READING,
         }.get(status)
         if not identifier:
             return HttpResponseBadRequest()
