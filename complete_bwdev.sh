@@ -21,6 +21,8 @@ build
 clean
 black
 prettier
+stylelint
+formatters
 populate_streams
 populate_lists_streams
 populate_suggestions

@@ -137,6 +137,14 @@ case "$CMD" in
     prettier)
         npx prettier --write bookwyrm/static/js/*.js
         ;;
+    stylelint)
+        npx stylelint bookwyrm/static/**/*.css --fix
+        ;;
+    formatters)
+        makeitblack
+        npx prettier --write bookwyrm/static/js/*.js
+        npx stylelint bookwyrm/static/**/*.css --fix
+        ;;
     update)
         git pull
         docker-compose build
@@ -212,6 +220,8 @@ case "$CMD" in
         echo "    clean"
         echo "    black"
         echo "    prettier"
+        echo "    stylelint"
+        echo "    formatters"
         echo "    populate_streams [--stream=<stream name>]"
         echo "    populate_suggestions"
         echo "    generate_thumbnails"
