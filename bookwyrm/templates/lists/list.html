@@ -80,7 +80,7 @@
                                 <div class="content">
                                     <header>
                                         {% url 'user-feed' item.user|username as user_path %}
-                                        {% blocktrans trimmed with username=user.display_name %}
+                                        {% blocktrans trimmed with username=item.user.display_name %}
                                         <a href="{{ user_path }}">{{ username }}</a> says:
                                         {% endblocktrans %}
                                     </header>
