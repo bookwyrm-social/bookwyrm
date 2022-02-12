@@ -78,6 +78,23 @@ case "$CMD" in
     build)
         docker-compose build
         ;;
+    clean)
+        clean
+        ;;
+    black)
+        makeitblack
+        ;;
+    prettier)
+        npx prettier --write bookwyrm/static/js/*.js
+        ;;
+    stylelint)
+        npx stylelint bookwyrm/static/**/*.css --fix
+        ;;
+    formatters)
+        makeitblack
+        npx prettier --write bookwyrm/static/js/*.js
+        npx stylelint bookwyrm/static/**/*.css --fix
+        ;;
     update)
         git pull
         docker-compose build
