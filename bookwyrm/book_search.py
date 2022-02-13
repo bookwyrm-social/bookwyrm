@@ -12,9 +12,6 @@ from bookwyrm.settings import MEDIA_FULL_URL
 
 # pylint: disable=arguments-differ
 def search(query, min_confidence=0, filters=None, return_first=False):
-    # check if query is isbn
-    if isbn_check(query):
-        query = query.replace('-','')
     """search your local database"""
     filters = filters or []
     if not query:
@@ -134,32 +131,6 @@ def search_title_author(query, min_confidence, *filters, return_first=False):
             return result
         list_results.append(result)
     return list_results
-
-
-def isbn_check(query):
-    n = query.replace('-','')
-    if len(n) == 13:
-        # Multiply every other digit by  3
-        # Add these numbers and the other digits
-        product = (sum(int(ch) for ch in n[::2]) 
-                + sum(int(ch) * 3 for ch in n[1::2]))
-        if product % 10 == 0:
-            return True
-    elif len(n) == 10:
-        if n[0:8].isdigit() and (n[9].isdigit() or n[9].lower() == "x"):
-            product = 0
-            # Iterate through code_string
-            for i in range(9):
-                # for each character, multiply by a different decreasing number: 10 - x
-                product = product + int(n[i]) * (10 - i)
-            # Handle last character
-            if n[9].lower() == "x":
-                product += 10
-            else:
-                product += int(n[9])
-            if product % 11 == 0:
-                return True
-    return False
 
 
 @dataclass
