@@ -25,7 +25,7 @@ class Search(View):
         """that search bar up top"""
         query = request.GET.get("q")
         # check if query is isbn
-        query =  isbn_check(query)
+        query = isbn_check(query)
         min_confidence = request.GET.get("min_confidence", 0)
         search_type = request.GET.get("type")
         search_remote = (
@@ -128,26 +128,26 @@ def list_search(query, viewer, *_):
 
 
 def isbn_check(query):
-    n = query.replace('-','').replace(' ', '')
-    if len(n) == 13:
-        # Multiply every other digit by  3
-        # Add these numbers and the other digits
-        product = (sum(int(ch) for ch in n[::2]) 
-                + sum(int(ch) * 3 for ch in n[1::2]))
-        if product % 10 == 0:
-            return n
-    elif len(n) == 10:
-        if n[0:8].isdigit() and (n[9].isdigit() or n[9].lower() == "x"):
-            product = 0
-            # Iterate through code_string
-            for i in range(9):
-                # for each character, multiply by a different decreasing number: 10 - x
-                product = product + int(n[i]) * (10 - i)
-            # Handle last character
-            if n[9].lower() == "x":
-                product += 10
-            else:
-                product += int(n[9])
-            if product % 11 == 0:
-                return n
+    if query:
+        su_num = query.replace("-", "").replace(" ", "")
+        if len(su_num) == 13:
+            # Multiply every other digit by  3
+            # Add these numbers and the other digits
+            product = sum(int(ch) for ch in su_num[::2]) + sum(int(ch) * 3 for ch in su_num[1::2])
+            if product % 10 == 0:
+                return su_num
+        elif len(su_num) == 10:
+            if su_num[0:8].isdigit() and (su_num[9].isdigit() or su_num[9].lower() == "x"):
+                product = 0
+                # Iterate through code_string
+                for i in range(9):
+                    # for each character, multiply by a different decreasing number: 10 - x
+                    product = product + int(su_num[i]) * (10 - i)
+                # Handle last character
+                if su_num[9].lower() == "x":
+                    product += 10
+                else:
+                    product += int(su_num[9])
+                if product % 11 == 0:
+                    return su_num
     return query

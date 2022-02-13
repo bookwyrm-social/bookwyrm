@@ -28,24 +28,6 @@ class BookSearch(TestCase):
             openlibrary_key="hello",
         )
 
-        # isbn13 entry
-        self.third_edition = models.Edition.objects.create(
-            title="Python Testing",
-            parent_work=self.work,
-            isbn_13="9781680502404",
-            physical_format="Paperback",
-            published_date=datetime.datetime(2017, 9, 1, 0, 0, tzinfo=timezone.utc),
-        )
-
-        # isbn10 entry
-        self.fourth_edition = models.Edition.objects.create(
-            title="Pride and Prejudice: Jane Austen",
-            parent_work=self.work,
-            isbn_13="190962165X",
-            physical_format="Paperback",
-            published_date=datetime.datetime(2017, 9, 1, 0, 0, tzinfo=timezone.utc),
-        )
-
     def test_search(self):
         """search for a book in the db"""
         # title/author
@@ -57,18 +39,6 @@ class BookSearch(TestCase):
         results = book_search.search("0000000000")
         self.assertEqual(len(results), 1)
         self.assertEqual(results[0], self.first_edition)
-        
-        results = book_search.search("9781680502404")
-        self.assertEqual(len(results), 1)
-        self.assertEqual(results[0], self.third_edition)
-
-        results = book_search.search("9-781-68050-2-404")
-        self.assertEqual(len(results), 1)
-        self.assertEqual(results[0], self.third_edition)
-
-        results = book_search.search("1-9096-2165-X")
-        self.assertEqual(len(results), 1)
-        self.assertEqual(results[0], self.fourth_edition)
 
         # identifier
         results = book_search.search("hello")
