@@ -268,7 +268,7 @@ class FileLinkForm(CustomForm):
                         self.add_error(
                             "url",
                             _(
-                                """This url throes status code %i and can't be added 
+                                """This url throws status code %i and can't be added 
                                 to list"""
                                 % response.status_code
                             ),
