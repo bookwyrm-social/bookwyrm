@@ -128,16 +128,21 @@ def list_search(query, viewer, *_):
 
 
 def isbn_check(query):
+    """isbn10 or isbn13 check, if so remove separators"""
     if query:
         su_num = query.replace("-", "").replace(" ", "")
         if len(su_num) == 13:
             # Multiply every other digit by  3
             # Add these numbers and the other digits
-            product = sum(int(ch) for ch in su_num[::2]) + sum(int(ch) * 3 for ch in su_num[1::2])
+            product = sum(int(ch) for ch in su_num[::2]) + sum(
+                int(ch) * 3 for ch in su_num[1::2]
+            )
             if product % 10 == 0:
                 return su_num
         elif len(su_num) == 10:
-            if su_num[0:8].isdigit() and (su_num[9].isdigit() or su_num[9].lower() == "x"):
+            if su_num[0:8].isdigit() and (
+                su_num[9].isdigit() or su_num[9].lower() == "x"
+            ):
                 product = 0
                 # Iterate through code_string
                 for i in range(9):
