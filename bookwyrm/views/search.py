@@ -130,8 +130,8 @@ def list_search(query, viewer, *_):
 def isbn_check(query):
     """isbn10 or isbn13 check, if so remove separators"""
     if query:
-        su_num = query.replace("-", "").replace(" ", "")
-        if len(su_num) == 13:
+        su_num = re.sub(r"(?<=\d)\D(?=\d|[xX])", "", query)
+        if len(su_num) == 13 and su_num.isdecimal():
             # Multiply every other digit by  3
             # Add these numbers and the other digits
             product = sum(int(ch) for ch in su_num[::2]) + sum(
@@ -139,20 +139,21 @@ def isbn_check(query):
             )
             if product % 10 == 0:
                 return su_num
-        elif len(su_num) == 10:
-            if su_num[0:8].isdigit() and (
-                su_num[9].isdigit() or su_num[9].lower() == "x"
-            ):
-                product = 0
-                # Iterate through code_string
-                for i in range(9):
-                    # for each character, multiply by a different decreasing number: 10 - x
-                    product = product + int(su_num[i]) * (10 - i)
-                # Handle last character
-                if su_num[9].lower() == "x":
-                    product += 10
-                else:
-                    product += int(su_num[9])
-                if product % 11 == 0:
-                    return su_num
+        elif (
+            len(su_num) == 10
+            and su_num[:-1].isdecimal()
+            and (su_num[-1].isdecimal() or su_num[-1].lower() == "x")
+        ):
+            product = 0
+            # Iterate through code_string
+            for i in range(9):
+                # for each character, multiply by a different decreasing number: 10 - x
+                product = product + int(su_num[i]) * (10 - i)
+            # Handle last character
+            if su_num[9].lower() == "x":
+                product += 10
+            else:
+                product += int(su_num[9])
+            if product % 11 == 0:
+                return su_num
     return query
