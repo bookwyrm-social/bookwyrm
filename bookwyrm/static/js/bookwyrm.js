@@ -47,6 +47,10 @@ let BookWyrm = new (class {
             .forEach((node) =>
                 node.addEventListener("toggle", this.handleDetailsDropdown.bind(this))
             );
+
+        document
+            .querySelector("#barcode_scanner_modal")
+            .addEventListener("open", this.openBarcodeScanner.bind(this));
     }
 
     /**
@@ -427,9 +431,11 @@ let BookWyrm = new (class {
             });
 
             modalElement.addEventListener("keydown", handleFocusTrap);
+            modalElement.dispatchEvent(new Event('open'));
         }
 
         function handleModalClose(modalElement) {
+            modalElement.dispatchEvent(new Event('close'));
             modalElement.removeEventListener("keydown", handleFocusTrap);
             htmlElement.classList.remove("is-clipped");
             modalElement.classList.remove("is-active");
@@ -631,5 +637,58 @@ let BookWyrm = new (class {
                 event.preventDefault();
             }
         }
+    }
+
+    openBarcodeScanner(event) {
+        /*function onScanSuccess(decodedText, decodedResult) {
+            alert(`${decodedText}`, decodedResult);
+        }
+
+        function onScanFailure(error) {
+            alert(error);
+        }*/
+
+        Quagga.init({
+            inputStream : {
+                name: "Live",
+                type: "LiveStream",
+                target: "#barcode_scanner"
+            },
+            decoder : {
+                readers: [
+                    "ean_reader",
+                    {
+                        format: "ean_reader",
+                        config: {
+                            supplements: [ "ean_2_reader", "ean_5_reader" ]
+                        }
+                    }
+                ],
+                debug: {
+                    drawBoundingBox: true,
+                    drawScanline: true,
+                    showPattern: true,
+                },
+                multiple: false
+            },
+            debug: true
+        }, function(err) {
+            if (err) {
+                console.log(err);
+                return;
+            }
+
+            console.log('started');
+            Quagga.start();
+        });
+
+        Quagga.onDetected(function(result) {
+            var code = result.codeResult.code;
+
+            location.href = `search?q=${code}`;
+            Quagga.stop();
+
+            console.log(code);
+        });
     }
 })();

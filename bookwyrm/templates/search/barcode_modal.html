@@ -1,0 +1,14 @@
+{% extends 'components/modal.html' %}
+{% load i18n %}
+
+{% block modal-title %}
+{% blocktrans %}
+Scan Barcode
+{% endblocktrans %}
+{% endblock %}
+
+{% block modal-body %}
+    <div id="barcode_scanner"></div>
+{% endblock %}
+
+
