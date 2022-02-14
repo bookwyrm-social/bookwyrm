@@ -20,10 +20,10 @@ Stop Reading "<em>{{ book_title }}</em>"
 <div class="columns">
     <div class="column is-half">
         <div class="field">
-            <label class="label" for="finish_id_start_date_{{ uuid }}">
+            <label class="label" for="stop_id_start_date_{{ uuid }}">
                 {% trans "Started reading" %}
             </label>
-            <input type="date" name="start_date" class="input" id="finish_id_start_date_{{ uuid }}" value="{{ readthrough.start_date | date:"Y-m-d" }}">
+            <input type="date" name="start_date" class="input" id="stop_id_start_date_{{ uuid }}" value="{{ readthrough.start_date | date:"Y-m-d" }}">
         </div>
     </div>
     <div class="column is-half">
