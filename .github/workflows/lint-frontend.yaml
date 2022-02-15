@@ -22,7 +22,7 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Install modules
-        run: yarn
+        run: yarn dev-tools
 
       # See .stylelintignore for files that are not linted.
       - name: Run stylelint

@@ -6,7 +6,7 @@ RUN mkdir /app /app/static /app/images
 
 WORKDIR /app
 
-COPY package.json requirements.txt /app/
+COPY package.json requirements.txt .stylelintrc.js .stylelintignore /app/
 RUN pip install black
 
 RUN apt-get update && apt-get install -y curl

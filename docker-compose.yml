@@ -85,7 +85,7 @@ services:
       - redis_broker
     restart: on-failure
   dev-tools:
-    build: dev-tools-docker
+    build: dev-tools
     env_file: .env
     volumes:
       -  .:/app
