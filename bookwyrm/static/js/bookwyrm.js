@@ -49,7 +49,7 @@ let BookWyrm = new (class {
             );
 
         document
-            .querySelector("#barcode_scanner_modal")
+            .querySelector("#barcode-scanner-modal")
             .addEventListener("open", this.openBarcodeScanner.bind(this));
     }
 
@@ -640,19 +640,83 @@ let BookWyrm = new (class {
     }
 
     openBarcodeScanner(event) {
-        /*function onScanSuccess(decodedText, decodedResult) {
-            alert(`${decodedText}`, decodedResult);
+        const scannerNode = document.getElementById("barcode-scanner");
+        const statusNode = document.getElementById("barcode-status");
+        const cameraListNode = document.getElementById("barcode-camera-list");
+
+        let changeListener = cameraListNode.addEventListener('change', (event) => {
+            // TODO
+             //event.target.value
+        });
+
+        function toggleStatus(status) {
+            for (const child of statusNode.children) {
+                BookWyrm.toggleContainer(child, !child.classList.contains(status));
+            }
         }
 
-        function onScanFailure(error) {
-            alert(error);
-        }*/
+        function cleanup() {
+            Quagga.stop();
+            scannerNode.replaceChildren();
+            cameraListNode.removeEventListener('change', changeListener);
+        }
+
+        Quagga.onProcessed((result) => {
+            const drawingCtx = Quagga.canvas.ctx.overlay;
+            const drawingCanvas = Quagga.canvas.dom.overlay;
+
+            if (result) {
+                if (result.boxes) {
+                    drawingCtx.clearRect(0, 0, parseInt(drawingCanvas.getAttribute("width")), parseInt(drawingCanvas.getAttribute("height")));
+                    result.boxes.filter((box) => box !== result.box).forEach((box) => {
+                        Quagga.ImageDebug.drawPath(box, {x: 0, y: 1}, drawingCtx, {color: "green", lineWidth: 2});
+                    });
+                }
+
+                if (result.box) {
+                    Quagga.ImageDebug.drawPath(result.box, {x: 0, y: 1}, drawingCtx, {color: "#00F", lineWidth: 2});
+                }
+
+                if (result.codeResult && result.codeResult.code) {
+                    Quagga.ImageDebug.drawPath(result.line, {x: 'x', y: 'y'}, drawingCtx, {color: 'red', lineWidth: 3});
+                }
+            }
+        });
+
+        Quagga.onDetected((result) => {
+            const code = result.codeResult.code;
+
+            statusNode.querySelector('.isbn').innerText = code;
+            toggleStatus('found');
+
+            const search = new Url('search');
+            search.searchParams.set('q', code);
+
+            cleanup();
+            location.assign(search);
+        });
+
+        event.target.addEventListener('close', cleanup, { once: true });
+
+        toggleStatus('grant-access');
+
+        // Clear camera list
+        cameraListNode.replaceChildren();
 
         Quagga.init({
             inputStream : {
                 name: "Live",
                 type: "LiveStream",
-                target: "#barcode_scanner"
+                target: scannerNode,
+                constraints: {
+                    facingMode: "environment",
+                },
+                area: {
+                    top: "25%",
+                    right: "25%",
+                    left: "25%",
+                    bottom: "25%",
+                }
             },
             decoder : {
                 readers: [
@@ -664,31 +728,32 @@ let BookWyrm = new (class {
                         }
                     }
                 ],
-                debug: {
-                    drawBoundingBox: true,
-                    drawScanline: true,
-                    showPattern: true,
-                },
                 multiple: false
             },
-            debug: true
-        }, function(err) {
+        }, (err) => {
             if (err) {
                 console.log(err);
+                toggleStatus('access-denied');
                 return;
             }
 
-            console.log('started');
+            const stream = Quagga.CameraAccess.getActiveStreamLabel();
+            Quagga.CameraAccess.enumerateVideoDevices().then((devices) => {
+                for (const device of devices) {
+                    const child = document.createElement('option');
+                    child.value = device.deviceId || device.id;
+                    child.innerText = device.label.slice(0, 30);
+
+                    if (stream === child.value) {
+                        child.selected = true;
+                    }
+
+                    cameraListNode.appendChild(child);
+                }
+            });
+
             Quagga.start();
-        });
-
-        Quagga.onDetected(function(result) {
-            var code = result.codeResult.code;
-
-            location.href = `search?q=${code}`;
-            Quagga.stop();
-
-            console.log(code);
+            toggleStatus('scanning');
         });
     }
 })();
