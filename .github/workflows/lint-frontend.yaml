@@ -8,7 +8,7 @@ on:
       - '.github/workflows/**'
       - 'static/**'
       - '.eslintrc'
-      - '.stylelintrc'
+      - '.stylelintrc.js'
   pull_request:
     branches: [ main, ci, frontend ]
 
@@ -24,9 +24,6 @@ jobs:
       - name: Install modules
         run: npm install dev-tools
 
-      - name: Yarn install
-        run: yarn
-
       # See .stylelintignore for files that are not linted.
       - name: Run stylelint
         run: >
@@ -37,5 +34,5 @@ jobs:
       # See .eslintignore for files that are not linted.
       - name: Run ESLint
         run: >
-          yarn eslint bookwyrm/static \
+          npx eslint bookwyrm/static \
             --ext .js,.jsx,.ts,.tsx
