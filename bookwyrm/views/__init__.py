@@ -1,6 +1,7 @@
 """ make sure all our nice views are available """
 # site admin
-from .admin.announcements import Announcements, Announcement, delete_announcement
+from .admin.announcements import Announcements, Announcement
+from .admin.announcements import EditAnnouncement, delete_announcement
 from .admin.dashboard import Dashboard
 from .admin.federation import Federation, FederatedServer
 from .admin.federation import AddFederatedServer, ImportServerBlocklist
