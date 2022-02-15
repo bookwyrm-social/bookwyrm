@@ -24,6 +24,9 @@ jobs:
       - name: Install modules
         run: npm install dev-tools
 
+      - name: Yarn install
+        run: yarn
+
       # See .stylelintignore for files that are not linted.
       - name: Run stylelint
         run: >
