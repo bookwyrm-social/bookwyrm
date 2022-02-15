@@ -22,7 +22,8 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Install modules
-        run: yarn dev-tools
+        run: npm install dev-tools
+        run: yarn
 
       # See .stylelintignore for files that are not linted.
       - name: Run stylelint
