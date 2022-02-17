@@ -6,9 +6,9 @@
 <head>
     <title>{% block title %}BookWyrm{% endblock %} - {{ site.name }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="{% static "css/vendor/bulma.min.css" %}">
-    <link rel="stylesheet" href="{% static "css/vendor/icons.css" %}">
-    <link rel="stylesheet" href="{% static "css/bookwyrm.css" %}">
+    <link rel="stylesheet" href="{% static 'css/vendor/bulma.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/vendor/icons.css' %}">
+    <link rel="stylesheet" href="{% static 'css/bookwyrm.css' %}">
 
     <link rel="search" type="application/opensearchdescription+xml" href="{% url 'opensearch' %}" title="{% blocktrans with site_name=site.name %}{{ site_name }} search{% endblocktrans %}" />
 
@@ -209,8 +209,11 @@
 
 <div class="section is-flex-grow-1">
     <div class="container">
+        {# almost every view needs to know the user shelves #}
+        {% with request.user.shelf_set.all as user_shelves %}
         {% block content %}
         {% endblock %}
+        {% endwith %}
     </div>
 </div>
 
@@ -268,3 +271,4 @@
 
 </body>
 </html>
+
