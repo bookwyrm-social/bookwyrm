@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-02-02 20:09+0000\n"
-"PO-Revision-Date: 2022-02-04 21:00\n"
+"POT-Creation-Date: 2022-02-05 02:20+0000\n"
+"PO-Revision-Date: 2022-02-06 22:33\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Swedish\n"
 "Language: sv\n"
@@ -17,70 +17,70 @@ msgstr ""
 "X-Crowdin-File: /[bookwyrm-social.bookwyrm] main/locale/en_US/LC_MESSAGES/django.po\n"
 "X-Crowdin-File-ID: 1553\n"
 
-#: bookwyrm/forms.py:239
-msgid "Domain is blocked. Don't try this url again."
-msgstr ""
+#: bookwyrm/forms.py:245
+msgid "This domain is blocked. Please contact your administrator if you think this is an error."
+msgstr "Den här domänen är blockerad. Vänligen kontakta din administratör om du tror att det här är felaktigt."
 
-#: bookwyrm/forms.py:241
-msgid "Domain already pending. Please try later."
-msgstr ""
+#: bookwyrm/forms.py:255
+msgid "This link with file type has already been added for this book. If it is not visible, the domain is still pending."
+msgstr "Denna länk med filtyp har redan lagts till för denna bok. Om den inte är synlig så är domänen fortfarande väntande."
 
-#: bookwyrm/forms.py:378
+#: bookwyrm/forms.py:394
 msgid "A user with this email already exists."
 msgstr "En användare med den här e-postadressen existerar redan."
 
-#: bookwyrm/forms.py:392
+#: bookwyrm/forms.py:408
 msgid "One Day"
 msgstr "En dag"
 
-#: bookwyrm/forms.py:393
+#: bookwyrm/forms.py:409
 msgid "One Week"
 msgstr "En vecka"
 
-#: bookwyrm/forms.py:394
+#: bookwyrm/forms.py:410
 msgid "One Month"
 msgstr "En månad"
 
-#: bookwyrm/forms.py:395
+#: bookwyrm/forms.py:411
 msgid "Does Not Expire"
 msgstr "Slutar inte gälla"
 
-#: bookwyrm/forms.py:399
+#: bookwyrm/forms.py:415
 #, python-brace-format
 msgid "{i} uses"
 msgstr "{i} använder"
 
-#: bookwyrm/forms.py:400
+#: bookwyrm/forms.py:416
 msgid "Unlimited"
 msgstr "Obegränsad"
 
-#: bookwyrm/forms.py:502
+#: bookwyrm/forms.py:518
 msgid "List Order"
 msgstr "Listordning"
 
-#: bookwyrm/forms.py:503
+#: bookwyrm/forms.py:519
 msgid "Book Title"
 msgstr "Bokens titel"
 
-#: bookwyrm/forms.py:504 bookwyrm/templates/shelf/shelf.html:155
+#: bookwyrm/forms.py:520 bookwyrm/templates/shelf/shelf.html:155
 #: bookwyrm/templates/shelf/shelf.html:187
 #: bookwyrm/templates/snippets/create_status/review.html:32
 msgid "Rating"
 msgstr "Betyg"
 
-#: bookwyrm/forms.py:506 bookwyrm/templates/lists/list.html:177
+#: bookwyrm/forms.py:522 bookwyrm/templates/lists/list.html:175
 msgid "Sort By"
 msgstr "Sortera efter"
 
-#: bookwyrm/forms.py:510
+#: bookwyrm/forms.py:526
 msgid "Ascending"
 msgstr "Stigande"
 
-#: bookwyrm/forms.py:511
+#: bookwyrm/forms.py:527
 msgid "Descending"
 msgstr "Fallande"
 
-#: bookwyrm/forms.py:524
+#: bookwyrm/forms.py:540
 msgid "Reading finish date cannot be before start date."
 msgstr "Slutdatum för läsning kan inte vara före startdatum."
 
@@ -232,73 +232,73 @@ msgstr "Citationer"
 msgid "Everything else"
 msgstr "Allt annat"
 
-#: bookwyrm/settings.py:173
+#: bookwyrm/settings.py:190
 msgid "Home Timeline"
 msgstr "Tidslinje för Hem"
 
-#: bookwyrm/settings.py:173
+#: bookwyrm/settings.py:190
 msgid "Home"
 msgstr "Hem"
 
-#: bookwyrm/settings.py:174
+#: bookwyrm/settings.py:191
 msgid "Books Timeline"
 msgstr "Tidslinjer för böcker"
 
-#: bookwyrm/settings.py:174 bookwyrm/templates/search/layout.html:21
+#: bookwyrm/settings.py:191 bookwyrm/templates/search/layout.html:21
 #: bookwyrm/templates/search/layout.html:42
 #: bookwyrm/templates/user/layout.html:91
 msgid "Books"
 msgstr "Böcker"
 
-#: bookwyrm/settings.py:248
+#: bookwyrm/settings.py:265
 msgid "English"
 msgstr "Engelska"
 
-#: bookwyrm/settings.py:249
+#: bookwyrm/settings.py:266
 msgid "Deutsch (German)"
 msgstr "Tyska (Tysk)"
 
-#: bookwyrm/settings.py:250
+#: bookwyrm/settings.py:267
 msgid "Español (Spanish)"
 msgstr "Spanska (Spansk)"
 
-#: bookwyrm/settings.py:251
+#: bookwyrm/settings.py:268
 msgid "Galego (Galician)"
 msgstr "Galego (Gallisk)"
 
-#: bookwyrm/settings.py:252
+#: bookwyrm/settings.py:269
 msgid "Italiano (Italian)"
 msgstr "Italienska (Italiensk)"
 
-#: bookwyrm/settings.py:253
+#: bookwyrm/settings.py:270
 msgid "Français (French)"
 msgstr "Franska (Fransk)"
 
-#: bookwyrm/settings.py:254
+#: bookwyrm/settings.py:271
 msgid "Lietuvių (Lithuanian)"
 msgstr "Litauiska (Litauisk)"
 
-#: bookwyrm/settings.py:255
+#: bookwyrm/settings.py:272
 msgid "Norsk (Norwegian)"
 msgstr "Norska (Norska)"
 
-#: bookwyrm/settings.py:256
+#: bookwyrm/settings.py:273
 msgid "Português do Brasil (Brazilian Portuguese)"
 msgstr "Português d Brasil (Brasiliansk Portugisiska)"
 
-#: bookwyrm/settings.py:257
+#: bookwyrm/settings.py:274
 msgid "Português Europeu (European Portuguese)"
 msgstr "Português Europeu (Europeisk Portugisiska)"
 
-#: bookwyrm/settings.py:258
+#: bookwyrm/settings.py:275
 msgid "Svenska (Swedish)"
 msgstr "Svenska (Svenska)"
 
-#: bookwyrm/settings.py:259
+#: bookwyrm/settings.py:276
 msgid "简体中文 (Simplified Chinese)"
 msgstr "简体中文 (Förenklad Kinesiska)"
 
-#: bookwyrm/settings.py:260
+#: bookwyrm/settings.py:277
 msgid "繁體中文 (Traditional Chinese)"
 msgstr "繁體中文 (Traditionell Kinesiska)"
 
@@ -436,7 +436,7 @@ msgid "Copy address"
 msgstr "Kopiera adress"
 
 #: bookwyrm/templates/annual_summary/layout.html:68
-#: bookwyrm/templates/lists/list.html:269
+#: bookwyrm/templates/lists/list.html:267
 msgid "Copied!"
 msgstr "Kopierades!"
 
@@ -721,17 +721,17 @@ msgstr "Spara"
 #: bookwyrm/templates/book/cover_add_modal.html:32
 #: bookwyrm/templates/book/edit/edit_book.html:123
 #: bookwyrm/templates/book/edit/edit_book.html:126
-#: bookwyrm/templates/book/file_links/add_link_modal.html:60
+#: bookwyrm/templates/book/file_links/add_link_modal.html:59
 #: bookwyrm/templates/book/file_links/verification_modal.html:21
 #: bookwyrm/templates/book/sync_modal.html:23
 #: bookwyrm/templates/groups/delete_group_modal.html:17
 #: bookwyrm/templates/lists/add_item_modal.html:42
 #: bookwyrm/templates/lists/delete_list_modal.html:18
 #: bookwyrm/templates/readthrough/delete_readthrough_modal.html:23
-#: bookwyrm/templates/readthrough/readthrough_modal.html:74
+#: bookwyrm/templates/readthrough/readthrough_modal.html:73
 #: bookwyrm/templates/settings/federation/instance.html:88
 #: bookwyrm/templates/settings/link_domains/edit_domain_modal.html:22
-#: bookwyrm/templates/snippets/report_modal.html:54
+#: bookwyrm/templates/snippets/report_modal.html:53
 msgid "Cancel"
 msgstr "Avbryt"
 
@@ -838,14 +838,14 @@ msgstr "Platser"
 msgid "Lists"
 msgstr "Listor"
 
-#: bookwyrm/templates/book/book.html:359
+#: bookwyrm/templates/book/book.html:360
 msgid "Add to list"
 msgstr "Lägg till i listan"
 
-#: bookwyrm/templates/book/book.html:369
+#: bookwyrm/templates/book/book.html:370
 #: bookwyrm/templates/book/cover_add_modal.html:31
 #: bookwyrm/templates/lists/add_item_modal.html:37
-#: bookwyrm/templates/lists/list.html:247
+#: bookwyrm/templates/lists/list.html:245
 #: bookwyrm/templates/settings/email_blocklist/domain_form.html:24
 #: bookwyrm/templates/settings/ip_blocklist/ip_address_form.html:31
 msgid "Add"
@@ -1226,7 +1226,7 @@ msgstr "betygsatte den"
 #: bookwyrm/templates/book/sync_modal.html:15
 #, python-format
 msgid "Loading data will connect to <strong>%(source_name)s</strong> and check for any metadata about this book which aren't present here. Existing metadata will not be overwritten."
-msgstr ""
+msgstr "Den laddade datan kommer att ansluta till <strong>%(source_name)s</strong> och söka efter eventuell metadata om den här boken som för närvarande inte finns här. Befintlig metadata kommer inte att skrivas över."
 
 #: bookwyrm/templates/components/tooltip.html:3
 msgid "Help"
@@ -1659,7 +1659,7 @@ msgid "What are you reading?"
 msgstr "Vad läser du?"
 
 #: bookwyrm/templates/get_started/books.html:9
-#: bookwyrm/templates/layout.html:47 bookwyrm/templates/lists/list.html:205
+#: bookwyrm/templates/layout.html:47 bookwyrm/templates/lists/list.html:203
 msgid "Search for a book"
 msgstr "Sök efter en bok"
 
@@ -1679,7 +1679,7 @@ msgstr "Du kan lägga till böcker när du börjar använda %(site_name)s."
 #: bookwyrm/templates/get_started/users.html:19
 #: bookwyrm/templates/groups/members.html:15
 #: bookwyrm/templates/groups/members.html:16 bookwyrm/templates/layout.html:53
-#: bookwyrm/templates/layout.html:54 bookwyrm/templates/lists/list.html:209
+#: bookwyrm/templates/layout.html:54 bookwyrm/templates/lists/list.html:207
 #: bookwyrm/templates/search/layout.html:4
 #: bookwyrm/templates/search/layout.html:9
 msgid "Search"
@@ -1695,7 +1695,7 @@ msgid "Popular on %(site_name)s"
 msgstr "Populära i %(site_name)s"
 
 #: bookwyrm/templates/get_started/books.html:58
-#: bookwyrm/templates/lists/list.html:222
+#: bookwyrm/templates/lists/list.html:220
 msgid "No books found"
 msgstr "Inga böcker hittades"
 
@@ -2266,7 +2266,7 @@ msgid "Suggest \"<em>%(title)s</em>\" for this list"
 msgstr "Föreslå \"<em>%(title)s</em>\" för den här listan"
 
 #: bookwyrm/templates/lists/add_item_modal.html:39
-#: bookwyrm/templates/lists/list.html:249
+#: bookwyrm/templates/lists/list.html:247
 msgid "Suggest"
 msgstr "Föreslå"
 
@@ -2413,72 +2413,72 @@ msgstr "Du föreslog framgångsrikt en bok för den här listan!"
 msgid "You successfully added a book to this list!"
 msgstr "Du lade framgångsrikt till en bok i här listan!"
 
-#: bookwyrm/templates/lists/list.html:96
+#: bookwyrm/templates/lists/list.html:94
 msgid "Edit notes"
 msgstr "Redigera anteckningar"
 
-#: bookwyrm/templates/lists/list.html:111
+#: bookwyrm/templates/lists/list.html:109
 msgid "Add notes"
 msgstr "Lägg till anteckningar"
 
-#: bookwyrm/templates/lists/list.html:123
+#: bookwyrm/templates/lists/list.html:121
 #, python-format
 msgid "Added by <a href=\"%(user_path)s\">%(username)s</a>"
 msgstr "Lades till av <a href=\"%(user_path)s\">%(username)s</a>"
 
-#: bookwyrm/templates/lists/list.html:138
+#: bookwyrm/templates/lists/list.html:136
 msgid "List position"
 msgstr "Listans plats"
 
-#: bookwyrm/templates/lists/list.html:144
+#: bookwyrm/templates/lists/list.html:142
 #: bookwyrm/templates/settings/link_domains/edit_domain_modal.html:21
 msgid "Set"
 msgstr "Ställ in"
 
-#: bookwyrm/templates/lists/list.html:159
+#: bookwyrm/templates/lists/list.html:157
 #: bookwyrm/templates/snippets/remove_from_group_button.html:20
 msgid "Remove"
 msgstr "Ta bort"
 
-#: bookwyrm/templates/lists/list.html:173
-#: bookwyrm/templates/lists/list.html:190
+#: bookwyrm/templates/lists/list.html:171
+#: bookwyrm/templates/lists/list.html:188
 msgid "Sort List"
 msgstr "Sortera lista"
 
-#: bookwyrm/templates/lists/list.html:183
+#: bookwyrm/templates/lists/list.html:181
 msgid "Direction"
 msgstr "Riktning"
 
-#: bookwyrm/templates/lists/list.html:197
+#: bookwyrm/templates/lists/list.html:195
 msgid "Add Books"
 msgstr "Lägg till böcker"
 
-#: bookwyrm/templates/lists/list.html:199
+#: bookwyrm/templates/lists/list.html:197
 msgid "Suggest Books"
 msgstr "Föreslå böcker"
 
-#: bookwyrm/templates/lists/list.html:210
+#: bookwyrm/templates/lists/list.html:208
 msgid "search"
 msgstr "sök"
 
-#: bookwyrm/templates/lists/list.html:216
+#: bookwyrm/templates/lists/list.html:214
 msgid "Clear search"
 msgstr "Rensa sökning"
 
-#: bookwyrm/templates/lists/list.html:221
+#: bookwyrm/templates/lists/list.html:219
 #, python-format
 msgid "No books found matching the query \"%(query)s\""
 msgstr "Inga böcker hittades som matchar frågan \"%(query)s\""
 
-#: bookwyrm/templates/lists/list.html:260
+#: bookwyrm/templates/lists/list.html:258
 msgid "Embed this list on a website"
 msgstr "Bädda in den här listan på en hemsida"
 
-#: bookwyrm/templates/lists/list.html:268
+#: bookwyrm/templates/lists/list.html:266
 msgid "Copy embed code"
 msgstr "Kopiera inbäddad kod"
 
-#: bookwyrm/templates/lists/list.html:270
+#: bookwyrm/templates/lists/list.html:268
 #, python-format
 msgid "%(list_name)s, a list by %(owner)s on %(site_name)s"
 msgstr "%(list_name)s, en lista av %(owner)s på %(site_name)s"
@@ -4683,6 +4683,6 @@ msgstr "Status-uppdateringar från {obj.display_name}"
 #, python-format
 msgid "Load %(count)d unread status"
 msgid_plural "Load %(count)d unread statuses"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Ladda %(count)d o-läst status"
+msgstr[1] "Ladda %(count)d o-lästa statusar"
 
