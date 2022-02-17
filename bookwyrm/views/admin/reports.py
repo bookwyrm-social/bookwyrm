@@ -58,6 +58,7 @@ class ReportAdmin(View):
         """load a report"""
         data = {
             "report": get_object_or_404(models.Report, id=report_id),
+            "group_form": forms.UserGroupForm(),
         }
         return TemplateResponse(request, "settings/reports/report.html", data)
 

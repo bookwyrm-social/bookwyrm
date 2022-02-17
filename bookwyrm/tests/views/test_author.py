@@ -53,6 +53,43 @@ class AuthorViews(TestCase):
         """there are so many views, this just makes sure it LOADS"""
         view = views.Author.as_view()
         author = models.Author.objects.create(name="Jessica")
+        self.book.authors.add(author)
+        request = self.factory.get("")
+        request.user = self.local_user
+        with patch("bookwyrm.views.author.is_api_request") as is_api:
+            is_api.return_value = False
+            result = view(request, author.id)
+        self.assertIsInstance(result, TemplateResponse)
+        validate_html(result.render())
+        self.assertEqual(result.status_code, 200)
+
+    def test_author_page_edition_author(self):
+        """there are so many views, this just makes sure it LOADS"""
+        view = views.Author.as_view()
+        another_book = models.Edition.objects.create(
+            title="Example Edition",
+            remote_id="https://example.com/book/1",
+            parent_work=self.work,
+            isbn_13="9780300112511",
+        )
+        author = models.Author.objects.create(name="Jessica")
+        self.book.authors.add(author)
+        request = self.factory.get("")
+        request.user = self.local_user
+        with patch("bookwyrm.views.author.is_api_request") as is_api:
+            is_api.return_value = False
+            result = view(request, author.id)
+        books = result.context_data["books"]
+        self.assertEqual(books.object_list.count(), 1)
+
+        self.assertIsInstance(result, TemplateResponse)
+        validate_html(result.render())
+        self.assertEqual(result.status_code, 200)
+
+    def test_author_page_empty(self):
+        """there are so many views, this just makes sure it LOADS"""
+        view = views.Author.as_view()
+        author = models.Author.objects.create(name="Jessica")
         request = self.factory.get("")
         request.user = self.local_user
         with patch("bookwyrm.views.author.is_api_request") as is_api:

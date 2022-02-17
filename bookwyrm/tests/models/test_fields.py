@@ -430,7 +430,7 @@ class ModelFields(TestCase):
         output = instance.field_to_activity(user.avatar)
         self.assertIsNotNone(
             re.match(
-                fr"https:\/\/{DOMAIN}\/.*\.jpg",
+                rf"https:\/\/{DOMAIN}\/.*\.jpg",
                 output.url,
             )
         )
@@ -443,18 +443,17 @@ class ModelFields(TestCase):
         image_file = pathlib.Path(__file__).parent.joinpath(
             "../../static/images/default_avi.jpg"
         )
-        image = Image.open(image_file)
-        output = BytesIO()
-        image.save(output, format=image.format)
-
         instance = fields.ImageField()
 
-        responses.add(
-            responses.GET,
-            "http://www.example.com/image.jpg",
-            body=image.tobytes(),
-            status=200,
-        )
+        with open(image_file, "rb") as image_data:
+            responses.add(
+                responses.GET,
+                "http://www.example.com/image.jpg",
+                body=image_data.read(),
+                status=200,
+                content_type="image/jpeg",
+                stream=True,
+            )
         loaded_image = instance.field_from_activity("http://www.example.com/image.jpg")
         self.assertIsInstance(loaded_image, list)
         self.assertIsInstance(loaded_image[1], ContentFile)
@@ -465,18 +464,18 @@ class ModelFields(TestCase):
         image_file = pathlib.Path(__file__).parent.joinpath(
             "../../static/images/default_avi.jpg"
         )
-        image = Image.open(image_file)
-        output = BytesIO()
-        image.save(output, format=image.format)
 
         instance = fields.ImageField(activitypub_field="cover", name="cover")
 
-        responses.add(
-            responses.GET,
-            "http://www.example.com/image.jpg",
-            body=image.tobytes(),
-            status=200,
-        )
+        with open(image_file, "rb") as image_data:
+            responses.add(
+                responses.GET,
+                "http://www.example.com/image.jpg",
+                body=image_data.read(),
+                content_type="image/jpeg",
+                status=200,
+                stream=True,
+            )
         book = Edition.objects.create(title="hello")
 
         MockActivity = namedtuple("MockActivity", ("cover"))
@@ -491,18 +490,18 @@ class ModelFields(TestCase):
         image_file = pathlib.Path(__file__).parent.joinpath(
             "../../static/images/default_avi.jpg"
         )
-        image = Image.open(image_file)
-        output = BytesIO()
-        image.save(output, format=image.format)
 
         instance = fields.ImageField(activitypub_field="cover", name="cover")
 
-        responses.add(
-            responses.GET,
-            "http://www.example.com/image.jpg",
-            body=image.tobytes(),
-            status=200,
-        )
+        with open(image_file, "rb") as image_data:
+            responses.add(
+                responses.GET,
+                "http://www.example.com/image.jpg",
+                body=image_data.read(),
+                status=200,
+                content_type="image/jpeg",
+                stream=True,
+            )
         book = Edition.objects.create(title="hello")
 
         MockActivity = namedtuple("MockActivity", ("cover"))
@@ -565,18 +564,18 @@ class ModelFields(TestCase):
         another_image_file = pathlib.Path(__file__).parent.joinpath(
             "../../static/images/logo.png"
         )
-        another_image = Image.open(another_image_file)
-        another_output = BytesIO()
-        another_image.save(another_output, format=another_image.format)
 
         instance = fields.ImageField(activitypub_field="cover", name="cover")
 
-        responses.add(
-            responses.GET,
-            "http://www.example.com/image.jpg",
-            body=another_image.tobytes(),
-            status=200,
-        )
+        with open(another_image_file, "rb") as another_image:
+            responses.add(
+                responses.GET,
+                "http://www.example.com/image.jpg",
+                body=another_image.read(),
+                status=200,
+                content_type="image/jpeg",
+                stream=True,
+            )
 
         MockActivity = namedtuple("MockActivity", ("cover"))
         mock_activity = MockActivity("http://www.example.com/image.jpg")

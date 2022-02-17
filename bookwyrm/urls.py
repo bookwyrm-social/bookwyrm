@@ -34,9 +34,11 @@ urlpatterns = [
         TemplateView.as_view(template_name="robots.txt", content_type="text/plain"),
     ),
     # federation endpoints
-    re_path(r"^inbox/?$", views.Inbox.as_view()),
-    re_path(rf"{LOCAL_USER_PATH}/inbox/?$", views.Inbox.as_view()),
-    re_path(rf"{LOCAL_USER_PATH}/outbox/?$", views.Outbox.as_view()),
+    re_path(r"^inbox/?$", views.Inbox.as_view(), name="inbox"),
+    re_path(rf"{LOCAL_USER_PATH}/inbox/?$", views.Inbox.as_view(), name="user_inbox"),
+    re_path(
+        rf"{LOCAL_USER_PATH}/outbox/?$", views.Outbox.as_view(), name="user_outbox"
+    ),
     re_path(r"^\.well-known/webfinger/?$", views.webfinger),
     re_path(r"^\.well-known/nodeinfo/?$", views.nodeinfo_pointer),
     re_path(r"^\.well-known/host-meta/?$", views.host_meta),
@@ -46,9 +48,15 @@ urlpatterns = [
     re_path(r"^opensearch.xml$", views.opensearch, name="opensearch"),
     re_path(r"^ostatus_subscribe/?$", views.ostatus_follow_request),
     # polling updates
-    re_path("^api/updates/notifications/?$", views.get_notification_count),
     re_path(
-        "^api/updates/stream/(?P<stream>[a-z]+)/?$", views.get_unread_status_string
+        "^api/updates/notifications/?$",
+        views.get_notification_count,
+        name="notification-updates",
+    ),
+    re_path(
+        "^api/updates/stream/(?P<stream>[a-z]+)/?$",
+        views.get_unread_status_string,
+        name="stream-updates",
     ),
     # authentication
     re_path(r"^login/?$", views.Login.as_view(), name="login"),
@@ -84,6 +92,16 @@ urlpatterns = [
         r"^settings/announcements/(?P<announcement_id>\d+)/?$",
         views.Announcement.as_view(),
         name="settings-announcements",
+    ),
+    re_path(
+        r"^settings/announcements/create/?$",
+        views.EditAnnouncement.as_view(),
+        name="settings-announcements-edit",
+    ),
+    re_path(
+        r"^settings/announcements/(?P<announcement_id>\d+)/edit/?$",
+        views.EditAnnouncement.as_view(),
+        name="settings-announcements-edit",
     ),
     re_path(
         r"^settings/announcements/(?P<announcement_id>\d+)/delete/?$",
@@ -149,7 +167,9 @@ urlpatterns = [
     re_path(
         r"^invite-request/?$", views.InviteRequest.as_view(), name="invite-request"
     ),
-    re_path(r"^invite/(?P<code>[A-Za-z0-9]+)/?$", views.Invite.as_view()),
+    re_path(
+        r"^invite/(?P<code>[A-Za-z0-9]+)/?$", views.Invite.as_view(), name="invite"
+    ),
     re_path(
         r"^settings/email-blocklist/?$",
         views.EmailBlocklist.as_view(),
