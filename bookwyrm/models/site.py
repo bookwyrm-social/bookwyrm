@@ -1,6 +1,7 @@
 """ the particulars for this instance of BookWyrm """
 import datetime
 from urllib.parse import urljoin
+import uuid
 
 from django.db import models, IntegrityError
 from django.dispatch import receiver
@@ -23,6 +24,10 @@ class SiteSettings(models.Model):
     )
     instance_description = models.TextField(default="This instance has no description.")
     instance_short_description = models.CharField(max_length=255, blank=True, null=True)
+
+    # admin setup options
+    install_mode = models.BooleanField(default=False)
+    admin_code = models.CharField(max_length=50, default=uuid.uuid4)
 
     # about page
     registration_closed_text = models.TextField(
