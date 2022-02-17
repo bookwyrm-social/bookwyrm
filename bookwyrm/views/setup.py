@@ -8,10 +8,41 @@ from django.template.response import TemplateResponse
 from django.views import View
 
 from bookwyrm import forms, models
-from bookwyrm.settings import DOMAIN
+from bookwyrm import settings
 
 
 # pylint: disable= no-self-use
+class InstanceConfig(View):
+    """make sure the instance looks correct before adding any data"""
+
+    def get(self, request):
+        """Check out this cool instance"""
+        # only allow this view when an instance is being configured
+        site = models.SiteSettings.objects.get()
+        if not site.install_mode:
+            raise PermissionDenied()
+
+        # check for possible problems with the instance configuration
+        warnings = {}
+        warnings["debug"] = settings.DEBUG
+        warnings["protocol_in_domain"] = settings.DOMAIN.startswith("http")
+
+        data = {
+            "warnings": warnings,
+            "info": {
+                "domain": settings.DOMAIN,
+                "version": settings.VERSION,
+                "use_https": settings.USE_HTTPS,
+                "language": settings.LANGUAGE_CODE,
+                "use_s3": settings.USE_S3,
+                "email_sender": f"{settings.EMAIL_SENDER_NAME}@{settings.EMAIL_SENDER_DOMAIN}",
+                "preview_images": settings.ENABLE_PREVIEW_IMAGES,
+                "thumbnails": settings.ENABLE_THUMBNAIL_GENERATION,
+            },
+        }
+        return TemplateResponse(request, "setup/config.html", data)
+
+
 class CreateAdmin(View):
     """manage things like the instance name"""
 
@@ -39,7 +70,7 @@ class CreateAdmin(View):
             return TemplateResponse(request, "setup/admin.html", data)
 
         localname = form.data["localname"].strip()
-        username = f"{localname}@{DOMAIN}"
+        username = f"{localname}@{settings.DOMAIN}"
 
         user = models.User.objects.create_superuser(
             username,
