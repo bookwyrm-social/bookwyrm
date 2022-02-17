@@ -22,8 +22,7 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Install modules
-        run: npm install stylelint stylelint-config-recommended stylelint-config-standard \
-          stylelint-order eslint
+        run: npm install stylelint stylelint-config-recommended stylelint-config-standard stylelint-order eslint
 
       # See .stylelintignore for files that are not linted.
       - name: Run stylelint
