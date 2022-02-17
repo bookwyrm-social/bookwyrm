@@ -43,7 +43,7 @@ class SiteSettings(models.Model):
     privacy_policy = models.TextField(default="Add a privacy policy here.")
 
     # registration
-    allow_registration = models.BooleanField(default=True)
+    allow_registration = models.BooleanField(default=False)
     allow_invite_requests = models.BooleanField(default=True)
     require_confirm_email = models.BooleanField(default=True)
 
