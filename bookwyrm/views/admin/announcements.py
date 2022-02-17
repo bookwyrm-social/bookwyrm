@@ -45,23 +45,6 @@ class Announcements(View):
             request, "settings/announcements/announcements.html", data
         )
 
-    def post(self, request):
-        """edit the site settings"""
-        form = forms.AnnouncementForm(request.POST)
-        if form.is_valid():
-            form.save()
-            # reset the create form
-            form = forms.AnnouncementForm()
-        data = {
-            "announcements": Paginator(
-                models.Announcement.objects.order_by("-created_date"), PAGE_LENGTH
-            ).get_page(request.GET.get("page")),
-            "form": form,
-        }
-        return TemplateResponse(
-            request, "settings/announcements/announcements.html", data
-        )
-
 
 @method_decorator(login_required, name="dispatch")
 @method_decorator(
@@ -76,26 +59,51 @@ class Announcement(View):
         announcement = get_object_or_404(models.Announcement, id=announcement_id)
         data = {
             "announcement": announcement,
-            "form": forms.AnnouncementForm(instance=announcement),
         }
         return TemplateResponse(
             request, "settings/announcements/announcement.html", data
         )
 
-    def post(self, request, announcement_id):
-        """edit announcement"""
-        announcement = get_object_or_404(models.Announcement, id=announcement_id)
-        form = forms.AnnouncementForm(request.POST, instance=announcement)
-        if form.is_valid():
-            announcement = form.save()
-            form = forms.AnnouncementForm(instance=announcement)
+
+@method_decorator(login_required, name="dispatch")
+@method_decorator(
+    permission_required("bookwyrm.edit_instance_settings", raise_exception=True),
+    name="dispatch",
+)
+class EditAnnouncement(View):
+    """Create of edit an announcement"""
+
+    def get(self, request, announcement_id=None):
+        """announcement forms"""
+        announcement = None
+        if announcement_id:
+            announcement = get_object_or_404(models.Announcement, id=announcement_id)
+
         data = {
             "announcement": announcement,
-            "form": form,
+            "form": forms.AnnouncementForm(instance=announcement),
         }
         return TemplateResponse(
-            request, "settings/announcements/announcement.html", data
+            request, "settings/announcements/edit_announcement.html", data
         )
+
+    def post(self, request, announcement_id=None):
+        """edit announcement"""
+        announcement = None
+        if announcement_id:
+            announcement = get_object_or_404(models.Announcement, id=announcement_id)
+
+        form = forms.AnnouncementForm(request.POST, instance=announcement)
+        if not form.is_valid():
+            data = {
+                "announcement": announcement,
+                "form": form,
+            }
+            return TemplateResponse(
+                request, "settings/announcements/edit_announcement.html", data
+            )
+        announcement = form.save()
+        return redirect("settings-announcements", announcement.id)
 
 
 @login_required

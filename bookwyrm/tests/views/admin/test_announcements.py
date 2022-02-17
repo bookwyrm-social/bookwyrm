@@ -74,11 +74,12 @@ class AnnouncementViews(TestCase):
 
     def test_create_announcement(self):
         """create a new announcement"""
-        view = views.Announcements.as_view()
+        view = views.EditAnnouncement.as_view()
         form = forms.AnnouncementForm()
         form.data["preview"] = "hi hi"
         form.data["start_date"] = "2021-05-20"
         form.data["user"] = self.local_user.id
+        form.data["display_type"] = "warning-light"
 
         request = self.factory.post("", form.data)
         request.user = self.local_user
@@ -97,11 +98,12 @@ class AnnouncementViews(TestCase):
         announcement = models.Announcement.objects.create(
             preview="hi", user=self.local_user
         )
-        view = views.Announcement.as_view()
+        view = views.EditAnnouncement.as_view()
         form = forms.AnnouncementForm(instance=announcement)
         form.data["preview"] = "hi hi"
         form.data["start_date"] = "2021-05-20"
         form.data["user"] = self.local_user.id
+        form.data["display_type"] = "warning-light"
 
         request = self.factory.post("", form.data)
         request.user = self.local_user

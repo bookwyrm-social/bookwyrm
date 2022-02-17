@@ -319,7 +319,7 @@ details.details-panel summary {
     position: relative;
 }
 
-details.details-panel summary .details-close {
+details summary .details-close {
     position: absolute;
     right: 0;
     top: 0;
@@ -327,7 +327,7 @@ details.details-panel summary .details-close {
     transition: transform 0.2s ease;
 }
 
-details[open].details-panel summary .details-close {
+details[open] summary .details-close {
     transform: rotate(0deg);
 }
 
