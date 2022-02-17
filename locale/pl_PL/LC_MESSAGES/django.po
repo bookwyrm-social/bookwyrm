@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-02-05 02:20+0000\n"
-"PO-Revision-Date: 2022-02-05 03:16\n"
+"POT-Creation-Date: 2022-02-17 16:58+0000\n"
+"PO-Revision-Date: 2022-02-17 19:39\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Polish\n"
 "Language: pl\n"
@@ -91,6 +91,31 @@ msgstr "Błąd wczytywania książki"
 #: bookwyrm/importers/importer.py:154
 msgid "Could not find a match for book"
 msgstr "Nie znaleziono pasującej książki"
+
+#: bookwyrm/models/announcement.py:11
+msgid "None"
+msgstr ""
+
+#: bookwyrm/models/announcement.py:12
+msgid "Primary"
+msgstr ""
+
+#: bookwyrm/models/announcement.py:13
+msgid "Success"
+msgstr ""
+
+#: bookwyrm/models/announcement.py:14
+#: bookwyrm/templates/settings/invites/manage_invites.html:47
+msgid "Link"
+msgstr ""
+
+#: bookwyrm/models/announcement.py:15
+msgid "Warning"
+msgstr ""
+
+#: bookwyrm/models/announcement.py:16
+msgid "Danger"
+msgstr ""
 
 #: bookwyrm/models/base_model.py:17 bookwyrm/models/link.py:72
 #: bookwyrm/templates/import/import_status.html:200
@@ -713,7 +738,7 @@ msgstr ""
 #: bookwyrm/templates/lists/form.html:130
 #: bookwyrm/templates/preferences/edit_user.html:124
 #: bookwyrm/templates/readthrough/readthrough_modal.html:72
-#: bookwyrm/templates/settings/announcements/announcement_form.html:76
+#: bookwyrm/templates/settings/announcements/edit_announcement.html:120
 #: bookwyrm/templates/settings/federation/edit_instance.html:82
 #: bookwyrm/templates/settings/federation/instance.html:87
 #: bookwyrm/templates/settings/site.html:133
@@ -901,7 +926,6 @@ msgstr "Podgląd okładki"
 #: bookwyrm/templates/feed/suggested_books.html:62
 #: bookwyrm/templates/get_started/layout.html:25
 #: bookwyrm/templates/get_started/layout.html:58
-#: bookwyrm/templates/snippets/announcement.html:18
 msgid "Close"
 msgstr "Zamknij"
 
@@ -1108,7 +1132,7 @@ msgid "Availability:"
 msgstr ""
 
 #: bookwyrm/templates/book/file_links/edit_links.html:5
-#: bookwyrm/templates/book/file_links/edit_links.html:22
+#: bookwyrm/templates/book/file_links/edit_links.html:21
 #: bookwyrm/templates/book/file_links/links.html:53
 msgid "Edit links"
 msgstr ""
@@ -1143,7 +1167,7 @@ msgstr ""
 
 #: bookwyrm/templates/book/file_links/edit_links.html:36
 #: bookwyrm/templates/import/import_status.html:127
-#: bookwyrm/templates/settings/announcements/announcements.html:38
+#: bookwyrm/templates/settings/announcements/announcements.html:37
 #: bookwyrm/templates/settings/federation/instance_list.html:46
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:44
 #: bookwyrm/templates/settings/invites/status_filter.html:5
@@ -1153,6 +1177,7 @@ msgid "Status"
 msgstr "Status"
 
 #: bookwyrm/templates/book/file_links/edit_links.html:37
+#: bookwyrm/templates/settings/announcements/announcements.html:41
 #: bookwyrm/templates/settings/federation/instance.html:94
 #: bookwyrm/templates/settings/reports/report_links_table.html:6
 msgid "Actions"
@@ -1328,7 +1353,7 @@ msgstr ""
 #: bookwyrm/templates/feed/goal_card.html:17
 #: bookwyrm/templates/feed/summary_card.html:12
 #: bookwyrm/templates/feed/summary_card.html:14
-#: bookwyrm/templates/snippets/announcement.html:34
+#: bookwyrm/templates/snippets/announcement.html:31
 msgid "Dismiss message"
 msgstr ""
 
@@ -1753,6 +1778,7 @@ msgstr "Wyświetlana nazwa:"
 
 #: bookwyrm/templates/get_started/profile.html:29
 #: bookwyrm/templates/preferences/edit_user.html:47
+#: bookwyrm/templates/settings/announcements/edit_announcement.html:49
 msgid "Summary:"
 msgstr "Podsumowanie:"
 
@@ -1808,7 +1834,8 @@ msgstr "Tej czynności nie można cofnąć"
 #: bookwyrm/templates/groups/delete_group_modal.html:15
 #: bookwyrm/templates/lists/delete_list_modal.html:15
 #: bookwyrm/templates/readthrough/delete_readthrough_modal.html:21
-#: bookwyrm/templates/settings/announcements/announcement.html:20
+#: bookwyrm/templates/settings/announcements/announcement.html:23
+#: bookwyrm/templates/settings/announcements/announcements.html:56
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:49
 #: bookwyrm/templates/settings/ip_blocklist/ip_blocklist.html:36
 #: bookwyrm/templates/snippets/follow_request_buttons.html:12
@@ -2232,7 +2259,7 @@ msgstr "Ustawienia"
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:15
 #: bookwyrm/templates/settings/invites/manage_invites.html:3
 #: bookwyrm/templates/settings/invites/manage_invites.html:15
-#: bookwyrm/templates/settings/layout.html:40
+#: bookwyrm/templates/settings/layout.html:42
 msgid "Invites"
 msgstr "Zaproszenia"
 
@@ -3016,7 +3043,7 @@ msgstr ""
 #: bookwyrm/templates/search/layout.html:46
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:27
 #: bookwyrm/templates/settings/federation/instance_list.html:44
-#: bookwyrm/templates/settings/layout.html:34
+#: bookwyrm/templates/settings/layout.html:36
 #: bookwyrm/templates/settings/users/user_admin.html:3
 #: bookwyrm/templates/settings/users/user_admin.html:10
 msgid "Users"
@@ -3027,105 +3054,115 @@ msgstr ""
 msgid "No results found for \"%(query)s\""
 msgstr ""
 
-#: bookwyrm/templates/settings/announcements/announcement.html:3
-#: bookwyrm/templates/settings/announcements/announcement.html:6
+#: bookwyrm/templates/settings/announcements/announcement.html:5
+#: bookwyrm/templates/settings/announcements/announcement.html:8
 msgid "Announcement"
 msgstr ""
 
-#: bookwyrm/templates/settings/announcements/announcement.html:7
-#: bookwyrm/templates/settings/federation/instance.html:13
-msgid "Back to list"
+#: bookwyrm/templates/settings/announcements/announcement.html:16
+#: bookwyrm/templates/settings/federation/instance.html:75
+#: bookwyrm/templates/snippets/status/status_options.html:25
+msgid "Edit"
 msgstr ""
 
-#: bookwyrm/templates/settings/announcements/announcement.html:11
-#: bookwyrm/templates/settings/announcements/announcement_form.html:6
-msgid "Edit Announcement"
+#: bookwyrm/templates/settings/announcements/announcement.html:32
+#: bookwyrm/templates/settings/announcements/announcements.html:3
+#: bookwyrm/templates/settings/announcements/announcements.html:5
+#: bookwyrm/templates/settings/announcements/edit_announcement.html:15
+#: bookwyrm/templates/settings/layout.html:78
+msgid "Announcements"
 msgstr ""
 
-#: bookwyrm/templates/settings/announcements/announcement.html:34
+#: bookwyrm/templates/settings/announcements/announcement.html:45
 msgid "Visible:"
 msgstr ""
 
-#: bookwyrm/templates/settings/announcements/announcement.html:38
+#: bookwyrm/templates/settings/announcements/announcement.html:49
 msgid "True"
 msgstr ""
 
-#: bookwyrm/templates/settings/announcements/announcement.html:40
+#: bookwyrm/templates/settings/announcements/announcement.html:51
 msgid "False"
 msgstr ""
 
-#: bookwyrm/templates/settings/announcements/announcement.html:46
-#: bookwyrm/templates/settings/announcements/announcement_form.html:44
+#: bookwyrm/templates/settings/announcements/announcement.html:57
+#: bookwyrm/templates/settings/announcements/edit_announcement.html:79
 #: bookwyrm/templates/settings/dashboard/dashboard.html:82
 msgid "Start date:"
 msgstr ""
 
-#: bookwyrm/templates/settings/announcements/announcement.html:51
-#: bookwyrm/templates/settings/announcements/announcement_form.html:54
+#: bookwyrm/templates/settings/announcements/announcement.html:62
+#: bookwyrm/templates/settings/announcements/edit_announcement.html:89
 #: bookwyrm/templates/settings/dashboard/dashboard.html:88
 msgid "End date:"
 msgstr ""
 
-#: bookwyrm/templates/settings/announcements/announcement.html:55
-#: bookwyrm/templates/settings/announcements/announcement_form.html:64
+#: bookwyrm/templates/settings/announcements/announcement.html:66
+#: bookwyrm/templates/settings/announcements/edit_announcement.html:109
 msgid "Active:"
 msgstr ""
 
-#: bookwyrm/templates/settings/announcements/announcement_form.html:8
-#: bookwyrm/templates/settings/announcements/announcements.html:8
+#: bookwyrm/templates/settings/announcements/announcements.html:9
+#: bookwyrm/templates/settings/announcements/edit_announcement.html:8
 msgid "Create Announcement"
 msgstr ""
 
-#: bookwyrm/templates/settings/announcements/announcement_form.html:17
-msgid "Preview:"
-msgstr ""
-
-#: bookwyrm/templates/settings/announcements/announcement_form.html:25
-msgid "Content:"
-msgstr ""
-
-#: bookwyrm/templates/settings/announcements/announcement_form.html:33
-msgid "Event date:"
-msgstr ""
-
-#: bookwyrm/templates/settings/announcements/announcements.html:3
-#: bookwyrm/templates/settings/announcements/announcements.html:5
-#: bookwyrm/templates/settings/layout.html:76
-msgid "Announcements"
-msgstr ""
-
-#: bookwyrm/templates/settings/announcements/announcements.html:22
+#: bookwyrm/templates/settings/announcements/announcements.html:21
 #: bookwyrm/templates/settings/federation/instance_list.html:36
 msgid "Date added"
 msgstr ""
 
-#: bookwyrm/templates/settings/announcements/announcements.html:26
+#: bookwyrm/templates/settings/announcements/announcements.html:25
 msgid "Preview"
 msgstr ""
 
-#: bookwyrm/templates/settings/announcements/announcements.html:30
+#: bookwyrm/templates/settings/announcements/announcements.html:29
 msgid "Start date"
 msgstr ""
 
-#: bookwyrm/templates/settings/announcements/announcements.html:34
+#: bookwyrm/templates/settings/announcements/announcements.html:33
 msgid "End date"
 msgstr ""
 
-#: bookwyrm/templates/settings/announcements/announcements.html:48
+#: bookwyrm/templates/settings/announcements/announcements.html:50
 msgid "active"
 msgstr ""
 
-#: bookwyrm/templates/settings/announcements/announcements.html:48
+#: bookwyrm/templates/settings/announcements/announcements.html:50
 msgid "inactive"
 msgstr ""
 
-#: bookwyrm/templates/settings/announcements/announcements.html:52
+#: bookwyrm/templates/settings/announcements/announcements.html:63
 msgid "No announcements found"
+msgstr ""
+
+#: bookwyrm/templates/settings/announcements/edit_announcement.html:6
+msgid "Edit Announcement"
+msgstr ""
+
+#: bookwyrm/templates/settings/announcements/edit_announcement.html:45
+msgid "Announcement content"
+msgstr ""
+
+#: bookwyrm/templates/settings/announcements/edit_announcement.html:57
+msgid "Details:"
+msgstr ""
+
+#: bookwyrm/templates/settings/announcements/edit_announcement.html:65
+msgid "Event date:"
+msgstr ""
+
+#: bookwyrm/templates/settings/announcements/edit_announcement.html:73
+msgid "Display settings"
+msgstr ""
+
+#: bookwyrm/templates/settings/announcements/edit_announcement.html:98
+msgid "Color:"
 msgstr ""
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:6
 #: bookwyrm/templates/settings/dashboard/dashboard.html:8
-#: bookwyrm/templates/settings/layout.html:26
+#: bookwyrm/templates/settings/layout.html:28
 msgid "Dashboard"
 msgstr ""
 
@@ -3226,7 +3263,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:5
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:7
-#: bookwyrm/templates/settings/layout.html:59
+#: bookwyrm/templates/settings/layout.html:61
 msgid "Email Blocklist"
 msgstr "Lista blokowania e-maili"
 
@@ -3294,6 +3331,10 @@ msgstr ""
 msgid "Version:"
 msgstr ""
 
+#: bookwyrm/templates/settings/federation/instance.html:13
+msgid "Back to list"
+msgstr ""
+
 #: bookwyrm/templates/settings/federation/instance.html:19
 msgid "Details"
 msgstr ""
@@ -3332,11 +3373,6 @@ msgstr ""
 #: bookwyrm/templates/settings/federation/instance.html:72
 #: bookwyrm/templates/settings/users/user_info.html:110
 msgid "Notes"
-msgstr ""
-
-#: bookwyrm/templates/settings/federation/instance.html:75
-#: bookwyrm/templates/snippets/status/status_options.html:25
-msgid "Edit"
 msgstr ""
 
 #: bookwyrm/templates/settings/federation/instance.html:79
@@ -3381,7 +3417,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/federation/instance_list.html:3
 #: bookwyrm/templates/settings/federation/instance_list.html:5
-#: bookwyrm/templates/settings/layout.html:45
+#: bookwyrm/templates/settings/layout.html:47
 msgid "Federated Instances"
 msgstr ""
 
@@ -3484,10 +3520,6 @@ msgstr ""
 msgid "Create Invite"
 msgstr ""
 
-#: bookwyrm/templates/settings/invites/manage_invites.html:47
-msgid "Link"
-msgstr ""
-
 #: bookwyrm/templates/settings/invites/manage_invites.html:48
 msgid "Expires"
 msgstr ""
@@ -3519,7 +3551,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/ip_blocklist/ip_blocklist.html:5
 #: bookwyrm/templates/settings/ip_blocklist/ip_blocklist.html:7
-#: bookwyrm/templates/settings/layout.html:63
+#: bookwyrm/templates/settings/layout.html:65
 msgid "IP Address Blocklist"
 msgstr ""
 
@@ -3543,31 +3575,31 @@ msgstr ""
 msgid "Administration"
 msgstr ""
 
-#: bookwyrm/templates/settings/layout.html:29
+#: bookwyrm/templates/settings/layout.html:31
 msgid "Manage Users"
 msgstr ""
 
-#: bookwyrm/templates/settings/layout.html:51
+#: bookwyrm/templates/settings/layout.html:53
 msgid "Moderation"
 msgstr ""
 
-#: bookwyrm/templates/settings/layout.html:55
+#: bookwyrm/templates/settings/layout.html:57
 #: bookwyrm/templates/settings/reports/reports.html:8
 #: bookwyrm/templates/settings/reports/reports.html:17
 msgid "Reports"
 msgstr ""
 
-#: bookwyrm/templates/settings/layout.html:67
+#: bookwyrm/templates/settings/layout.html:69
 #: bookwyrm/templates/settings/link_domains/link_domains.html:5
 #: bookwyrm/templates/settings/link_domains/link_domains.html:7
 msgid "Link Domains"
 msgstr ""
 
-#: bookwyrm/templates/settings/layout.html:72
+#: bookwyrm/templates/settings/layout.html:74
 msgid "Instance Settings"
 msgstr ""
 
-#: bookwyrm/templates/settings/layout.html:80
+#: bookwyrm/templates/settings/layout.html:82
 #: bookwyrm/templates/settings/site.html:4
 #: bookwyrm/templates/settings/site.html:6
 msgid "Site Settings"
@@ -3686,7 +3718,6 @@ msgid "Reports: <small>%(instance_name)s</small>"
 msgstr ""
 
 #: bookwyrm/templates/settings/reports/reports.html:25
-#: bookwyrm/templates/snippets/announcement.html:16
 msgid "Open"
 msgstr ""
 
@@ -4001,7 +4032,7 @@ msgstr ""
 msgid "Remove @%(username)s"
 msgstr ""
 
-#: bookwyrm/templates/snippets/announcement.html:31
+#: bookwyrm/templates/snippets/announcement.html:28
 #, python-format
 msgid "Posted by <a href=\"%(user_path)s\">%(username)s</a>"
 msgstr ""
