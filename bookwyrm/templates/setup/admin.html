@@ -3,7 +3,9 @@
 
 {% block header %}
     <h1 class="title">{% trans "Setup admin user" %}</h1>
-    <div class="subtitle">Your account a user and an admin</div>
+    <div class="subtitle">
+        {% trans "Your account a user and an admin" %}
+    </div>
 {% endblock %}
 
 {% block panel %}
@@ -12,13 +14,37 @@
         <div class="box has-background-primary-light">
             <h2 class="title is-4">{% trans "Create your account" %}</h2>
             <form name="register" method="post" action="/register">
+                <div class="field">
+                    <label class="label" for="id_admin_key">
+                        {% trans "Admin key:" %}
+                    </label>
+                    <div class="control">
+                        <input
+                            type="password"
+                            name="admin_key"
+                            class="input"
+                            id="id_admin_key"
+                            aria-describedby="desc_admin_key"
+                            required
+                        >
+                        <p class="help" id="desc_admin_key">
+                        {% blocktrans trimmed %}
+                            An admin key was created when you installed BookWyrm.
+                            You can get your admin key by running <code>./bw-dev admin-code</code> from the command line on your server.
+                        {% endblocktrans %}
+                        </p>
+                    </div>
+                </div>
                 {% include 'snippets/register_form.html' %}
             </form>
         </div>
     </div>
     <div class="column">
         <p>
-            {% trans "As an admin, you'll be able to configure the instance name and information, and moderate your instance. This means you will have access to private information about your users, and are responsible for repsonding to reports of bad behavior or spam." %}
+        {% blocktrans trimmed %}
+            As an admin, you'll be able to configure the instance name and information, and moderate your instance.
+            This means you will have access to private information about your users, and are responsible for repsonding to reports of bad behavior or spam.
+        {% endblocktrans %}
         </p>
         <p>
             {% trans "Once the instance is set up, you can promote other users to moderator or admin roles from the admin panel." %}
