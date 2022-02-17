@@ -17,7 +17,7 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Install modules
-        run: npm install dev-tools
+        run: npm install prettier
 
       - name: Run Prettier
         run: npx prettier --check bookwyrm/static/js/*.js
