@@ -17,4 +17,7 @@ class Command(BaseCommand):
     # pylint: disable=unused-argument
     def handle(self, *args, **options):
         """execute init"""
+        self.stdout.write("*******************************************")
+        self.stdout.write("Use this code to create your admin account:")
         self.stdout.write(get_admin_code())
+        self.stdout.write("*******************************************")
