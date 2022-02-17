@@ -3,9 +3,11 @@ from django.core.management.base import BaseCommand
 
 from bookwyrm import models
 
+
 def get_admin_code():
     """get that code"""
     return models.SiteSettings.objects.get().admin_code
+
 
 class Command(BaseCommand):
     """command-line options"""

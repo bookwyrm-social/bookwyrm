@@ -59,9 +59,7 @@ class RegisterForm(CustomForm):
         cleaned_data = super().clean()
         localname = cleaned_data.get("localname").strip()
         if models.User.objects.filter(localname=localname).first():
-            self.add_error(
-                "localname", _("User with this username already exists")
-            )
+            self.add_error("localname", _("User with this username already exists"))
 
 
 class RatingForm(CustomForm):

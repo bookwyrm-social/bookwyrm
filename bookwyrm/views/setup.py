@@ -22,9 +22,7 @@ class CreateAdmin(View):
         if not site.install_mode:
             raise PermissionDenied()
 
-        data = {
-            "register_form": forms.RegisterForm()
-        }
+        data = {"register_form": forms.RegisterForm()}
         return TemplateResponse(request, "setup/admin.html", data)
 
     @transaction.atomic

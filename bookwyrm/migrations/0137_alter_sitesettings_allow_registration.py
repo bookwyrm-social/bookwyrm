@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bookwyrm', '0136_auto_20220217_1708'),
+        ("bookwyrm", "0136_auto_20220217_1708"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='sitesettings',
-            name='allow_registration',
+            model_name="sitesettings",
+            name="allow_registration",
             field=models.BooleanField(default=False),
         ),
     ]
