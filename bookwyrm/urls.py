@@ -60,7 +60,7 @@ urlpatterns = [
     ),
     # instance setup
     re_path(r"^setup/?$", views.InstanceConfig.as_view(), name="setup"),
-    re_path(r"^setup/admin?$", views.CreateAdmin.as_view(), name="setup-admin"),
+    re_path(r"^setup/admin/?$", views.CreateAdmin.as_view(), name="setup-admin"),
     # authentication
     re_path(r"^login/?$", views.Login.as_view(), name="login"),
     re_path(r"^login/(?P<confirmed>confirmed)/?$", views.Login.as_view(), name="login"),
