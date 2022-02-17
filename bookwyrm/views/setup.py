@@ -64,7 +64,7 @@ class CreateAdmin(View):
     @transaction.atomic
     def post(self, request):
         """Create that user"""
-        site = models.SiteSettings.get()
+        site = models.SiteSettings.objects.get()
         # you can't create an admin user if you're in config mode
         if not site.install_mode:
             raise PermissionDenied()

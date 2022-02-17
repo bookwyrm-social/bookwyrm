@@ -101,7 +101,7 @@ case "$CMD" in
         docker-compose restart celery_worker
         ;;
     pytest)
-        runweb pytest --no-cov-on-fail "$@"
+        runweb --no-deps pytest --no-cov-on-fail "$@"
         ;;
     collectstatic)
         runweb python manage.py collectstatic --no-input
