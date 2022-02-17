@@ -23,6 +23,30 @@
     </div>
     {% endif %}
 
+    {% if warnings.invalid_domain %}
+    <div class="notification is-danger is-flex is-align-items-start">
+        <span class="icon icon-warning is-size-4 pr-3" aria-hidden="true"></span>
+        <span>
+            {% blocktrans trimmed %}
+            Your domain appears to be misconfigured.
+            It should not include protocol or slashes.
+            {% endblocktrans %}
+        </span>
+    </div>
+    {% endif %}
+
+    {% if warnings.protocol %}
+    <div class="notification is-danger is-flex is-align-items-start">
+        <span class="icon icon-warning is-size-4 pr-3" aria-hidden="true"></span>
+        <span>
+            {% blocktrans trimmed %}
+            You are running BookWyrm in production mode without https.
+            <strong>USE_HTTPS</strong> should be enabled in production.
+            {% endblocktrans %}
+        </span>
+    </div>
+    {% endif %}
+
     <div class="columns">
         <div class="column is-half is-flex is-flex-direction-column">
             <h2 class="title is-4">{% trans "Settings" %}</h2>
@@ -82,14 +106,14 @@
                     </dd>
 
                     <dt class="is-pulled-left mr-5 has-text-weight-bold">
-                        {% trans "Enable preview images" %}
+                        {% trans "Enable preview images:" %}
                     </dt>
                     <dd>
                         {{ info.preview_images|yesno }}
                     </dd>
 
                     <dt class="is-pulled-left mr-5 has-text-weight-bold">
-                        {% trans "Enable image thumbnails" %}
+                        {% trans "Enable image thumbnails:" %}
                     </dt>
                     <dd>
                         {{ info.thumbnails|yesno }}
@@ -104,7 +128,7 @@
     <h2 class="title is-4">{% trans "Does everything look right?" %}</h2>
     <p class="subtitle help">
         {% blocktrans trimmed %}
-            This is your last change to set your domain and protocol.
+            This is your last chance to set your domain and protocol.
         {% endblocktrans %}
     </p>
 

@@ -1,4 +1,6 @@
 """ Installation wizard 🧙 """
+import re
+
 from django.contrib.auth import login
 from django.contrib.auth.models import Group
 from django.core.exceptions import PermissionDenied
@@ -9,6 +11,7 @@ from django.views import View
 
 from bookwyrm import forms, models
 from bookwyrm import settings
+from bookwyrm.utils import regex
 
 
 # pylint: disable= no-self-use
@@ -25,8 +28,10 @@ class InstanceConfig(View):
         # check for possible problems with the instance configuration
         warnings = {}
         warnings["debug"] = settings.DEBUG
-        warnings["protocol_in_domain"] = settings.DOMAIN.startswith("http")
+        warnings["invalid_domain"] = not re.match(rf"^{regex.DOMAIN}$", settings.DOMAIN)
+        warnings["protocol"] = not settings.DEBUG and not settings.USE_HTTPS
 
+        # pylint: disable=line-too-long
         data = {
             "warnings": warnings,
             "info": {
