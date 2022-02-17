@@ -1,14 +1,33 @@
 {% extends 'setup/layout.html' %}
 {% load i18n %}
 
-{% block title %}
-    {% trans "Create admin user" %}
-{% endblock %}
-
 {% block header %}
-    {% trans "Create admin user" %}
+    <h1 class="title">{% trans "Setup admin user" %}</h1>
+    <div class="subtitle">Your account a user and an admin</div>
 {% endblock %}
 
 {% block panel %}
-hi
+<div class="columns content">
+    <div class="column is-half">
+        <div class="box has-background-primary-light">
+            <h2 class="title is-4">{% trans "Create your account" %}</h2>
+            <form name="register" method="post" action="/register">
+                {% include 'snippets/register_form.html' %}
+            </form>
+        </div>
+    </div>
+    <div class="column">
+        <p>
+            {% trans "As an admin, you'll be able to configure the instance name and information, and moderate your instance. This means you will have access to private information about your users, and are responsible for repsonding to reports of bad behavior or spam." %}
+        </p>
+        <p>
+            {% trans "Once the instance is set up, you can promote other users to moderator or admin roles from the admin panel." %}
+        </p>
+        <p>
+            <a href="https://docs.joinbookwyrm.com/moderation.html" target="_blank">
+                {% trans "Learn more about moderation" %}
+            </a>
+        </p>
+    </div>
+</div>
 {% endblock %}
