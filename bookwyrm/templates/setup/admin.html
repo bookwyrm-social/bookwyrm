@@ -13,7 +13,7 @@
     <div class="column is-half">
         <div class="box has-background-primary-light">
             <h2 class="title is-4">{% trans "Create your account" %}</h2>
-            <form name="register" method="post" action="/register">
+            <form name="register" method="post" action="{% url 'setup' %}">
                 <div class="field">
                     <label class="label" for="id_admin_key">
                         {% trans "Admin key:" %}
