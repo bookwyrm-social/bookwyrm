@@ -25,6 +25,10 @@ class Register(View):
     def post(self, request):
         """join the server"""
         settings = models.SiteSettings.get()
+        # no registration allowed when the site is being installed
+        if settings.install_mode:
+            raise PermissionDenied()
+
         if not settings.allow_registration:
             invite_code = request.POST.get("invite_code")
 
