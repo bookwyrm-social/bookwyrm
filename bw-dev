@@ -197,6 +197,9 @@ case "$CMD" in
             --endpoint-url ${AWS_S3_ENDPOINT_URL}\
             --cors-configuration file:///bw/$config_file" "$@"
         ;;
+    admin_code)
+        runweb python manage.py admin_code
+        ;;
     runweb)
         runweb "$@"
         ;;

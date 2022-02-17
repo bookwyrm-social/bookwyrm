@@ -30,4 +30,5 @@ generate_thumbnails
 generate_preview_images
 copy_media_to_s3
 set_cors_to_s3
+admin_code
 runweb" -o bashdefault -o default bw-dev
