@@ -7,42 +7,52 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bookwyrm', '0134_announcement_display_type'),
+        ("bookwyrm", "0134_announcement_display_type"),
     ]
 
     operations = [
         migrations.RenameField(
-            model_name='author',
-            old_name='viaf_id',
-            new_name='viaf',
+            model_name="author",
+            old_name="viaf_id",
+            new_name="viaf",
         ),
         migrations.RemoveField(
-            model_name='edition',
-            name='asin',
+            model_name="edition",
+            name="asin",
         ),
         migrations.AddField(
-            model_name='author',
-            name='asin',
-            field=bookwyrm.models.fields.CharField(blank=True, max_length=255, null=True),
+            model_name="author",
+            name="asin",
+            field=bookwyrm.models.fields.CharField(
+                blank=True, max_length=255, null=True
+            ),
         ),
         migrations.AddField(
-            model_name='author',
-            name='wikidata',
-            field=bookwyrm.models.fields.CharField(blank=True, max_length=255, null=True),
+            model_name="author",
+            name="wikidata",
+            field=bookwyrm.models.fields.CharField(
+                blank=True, max_length=255, null=True
+            ),
         ),
         migrations.AddField(
-            model_name='book',
-            name='asin',
-            field=bookwyrm.models.fields.CharField(blank=True, max_length=255, null=True),
+            model_name="book",
+            name="asin",
+            field=bookwyrm.models.fields.CharField(
+                blank=True, max_length=255, null=True
+            ),
         ),
         migrations.AddField(
-            model_name='book',
-            name='viaf',
-            field=bookwyrm.models.fields.CharField(blank=True, max_length=255, null=True),
+            model_name="book",
+            name="viaf",
+            field=bookwyrm.models.fields.CharField(
+                blank=True, max_length=255, null=True
+            ),
         ),
         migrations.AddField(
-            model_name='book',
-            name='wikidata',
-            field=bookwyrm.models.fields.CharField(blank=True, max_length=255, null=True),
+            model_name="book",
+            name="wikidata",
+            field=bookwyrm.models.fields.CharField(
+                blank=True, max_length=255, null=True
+            ),
         ),
     ]
