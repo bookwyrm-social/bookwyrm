@@ -4,8 +4,8 @@ from django.test import TestCase
 import responses
 
 from bookwyrm import models
-from bookwyrm.connectors import abstract_connector
-from bookwyrm.connectors.abstract_connector import Mapping
+from bookwyrm.connectors import abstract_connector, ConnectorException
+from bookwyrm.connectors.abstract_connector import Mapping, get_data
 from bookwyrm.settings import DOMAIN
 
 
@@ -163,3 +163,11 @@ class AbstractConnector(TestCase):
         author.refresh_from_db()
         self.assertEqual(author.name, "Test")
         self.assertEqual(author.isni, "hi")
+
+    def test_get_data_invalid_url(self):
+        """load json data from an arbitrary url"""
+        with self.assertRaises(ConnectorException):
+            get_data("file://hello.com/image/jpg")
+
+        with self.assertRaises(ConnectorException):
+            get_data("http://127.0.0.1/image/jpg")

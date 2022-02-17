@@ -85,6 +85,7 @@ class ListViews(TestCase):
                 user=self.local_user,
                 book=self.book,
                 approved=True,
+                notes="hello",
                 order=1,
             )
 
@@ -178,6 +179,7 @@ class ListViews(TestCase):
                 book_list=self.list,
                 user=self.local_user,
                 book=self.book,
+                notes="hi hello",
                 approved=True,
                 order=1,
             )

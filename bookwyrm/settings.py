@@ -9,7 +9,7 @@ from django.utils.translation import gettext_lazy as _
 env = Env()
 env.read_env()
 DOMAIN = env("DOMAIN")
-VERSION = "0.2.0"
+VERSION = "0.3.0"
 
 PAGE_LENGTH = env("PAGE_LENGTH", 15)
 DEFAULT_LANGUAGE = env("DEFAULT_LANGUAGE", "English")
@@ -35,6 +35,9 @@ LOCALE_PATHS = [
 ]
 LANGUAGE_COOKIE_NAME = env.str("LANGUAGE_COOKIE_NAME", "django_language")
 
+STATIC_ROOT = os.path.join(BASE_DIR, env("STATIC_ROOT", "static"))
+MEDIA_ROOT = os.path.join(BASE_DIR, env("MEDIA_ROOT", "images"))
+
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
 # Preview image
@@ -44,6 +47,17 @@ PREVIEW_TEXT_COLOR = env.str("PREVIEW_TEXT_COLOR", "#363636")
 PREVIEW_IMG_WIDTH = env.int("PREVIEW_IMG_WIDTH", 1200)
 PREVIEW_IMG_HEIGHT = env.int("PREVIEW_IMG_HEIGHT", 630)
 PREVIEW_DEFAULT_COVER_COLOR = env.str("PREVIEW_DEFAULT_COVER_COLOR", "#002549")
+PREVIEW_DEFAULT_FONT = env.str("PREVIEW_DEFAULT_FONT", "Source Han Sans")
+
+FONTS = {
+    # pylint: disable=line-too-long
+    "Source Han Sans": {
+        "directory": "source_han_sans",
+        "filename": "SourceHanSans-VF.ttf.ttc",
+        "url": "https://github.com/adobe-fonts/source-han-sans/raw/release/Variable/OTC/SourceHanSans-VF.ttf.ttc",
+    }
+}
+FONT_DIR = os.path.join(STATIC_ROOT, "fonts")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
@@ -150,6 +164,9 @@ LOGGING = {
             "handlers": ["console", "mail_admins"],
             "level": LOG_LEVEL,
         },
+        "django.utils.autoreload": {
+            "level": "INFO",
+        },
         # Add a bookwyrm-specific logger
         "bookwyrm": {
             "handlers": ["console"],
@@ -255,7 +272,7 @@ LANGUAGES = [
     ("no-no", _("Norsk (Norwegian)")),
     ("pt-br", _("Português do Brasil (Brazilian Portuguese)")),
     ("pt-pt", _("Português Europeu (European Portuguese)")),
-    ("sv-se", _("Swedish (Svenska)")),
+    ("sv-se", _("Svenska (Swedish)")),
     ("zh-hans", _("简体中文 (Simplified Chinese)")),
     ("zh-hant", _("繁體中文 (Traditional Chinese)")),
 ]
@@ -311,13 +328,12 @@ if USE_S3:
     MEDIA_FULL_URL = MEDIA_URL
     STATIC_FULL_URL = STATIC_URL
     DEFAULT_FILE_STORAGE = "bookwyrm.storage_backends.ImagesStorage"
-    # I don't know if it's used, but the site crashes without it
-    STATIC_ROOT = os.path.join(BASE_DIR, env("STATIC_ROOT", "static"))
-    MEDIA_ROOT = os.path.join(BASE_DIR, env("MEDIA_ROOT", "images"))
 else:
     STATIC_URL = "/static/"
-    STATIC_ROOT = os.path.join(BASE_DIR, env("STATIC_ROOT", "static"))
     MEDIA_URL = "/images/"
     MEDIA_FULL_URL = f"{PROTOCOL}://{DOMAIN}{MEDIA_URL}"
     STATIC_FULL_URL = f"{PROTOCOL}://{DOMAIN}{STATIC_URL}"
-    MEDIA_ROOT = os.path.join(BASE_DIR, env("MEDIA_ROOT", "images"))
+
+OTEL_EXPORTER_OTLP_ENDPOINT = env("OTEL_EXPORTER_OTLP_ENDPOINT", None)
+OTEL_EXPORTER_OTLP_HEADERS = env("OTEL_EXPORTER_OTLP_HEADERS", None)
+OTEL_SERVICE_NAME = env("OTEL_SERVICE_NAME", None)
