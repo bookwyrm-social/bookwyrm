@@ -67,7 +67,7 @@ SECRET_KEY = env("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool("DEBUG", True)
-USE_HTTPS = env.bool("USE_HTTPS", False)
+USE_HTTPS = env.bool("USE_HTTPS", not DEBUG)
 
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", ["*"])
 
