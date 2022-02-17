@@ -5,16 +5,15 @@
 {% block header %}{% trans "Announcements" %}{% endblock %}
 
 {% block edit-button %}
-{% trans "Create Announcement" as button_text %}
-{% include 'snippets/toggle/open_button.html' with controls_text="create_announcement" icon_with_text="plus" text=button_text focus="create_announcement_header" %}
+<a href="{% url 'settings-announcements-edit' %}">
+    {% trans "Create Announcement" as text %}
+    <span class="icon icon-plus" title="{{ text }}" aria-hidden="true"></span>
+    <span class="is-sr-only-mobile">{{ text }}</span>
+</a>
 {% endblock %}
 
 {% block panel %}
-<form name="create-announcement" method="post" action="{% url 'settings-announcements' %}" class="block">
-    {% include 'settings/announcements/announcement_form.html' with controls_text="create_announcement" %}
-</form>
-
-<div class="block">
+<div class="block table-container">
     <table class="table is-striped">
         <tr>
             <th>
@@ -38,6 +37,9 @@
                 {% trans "Status" as text %}
                 {% include 'snippets/table-sort-header.html' with field="active" sort=sort text=text %}
             </th>
+            <th>
+                {% trans "Actions" %}
+            </th>
         </tr>
         {% for announcement in announcements %}
         <tr>
@@ -46,6 +48,15 @@
             <td>{{ announcement.start_date|naturaltime|default:'' }}</td>
             <td>{{ announcement.end_date|naturaltime|default:'' }}</td>
             <td>{% if announcement.active %}{% trans "active" %}{% else %}{% trans "inactive" %}{% endif %}</td>
+            <td>
+                <form class="control" action="{% url 'settings-announcements-delete' announcement.id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="button is-danger is-light is-small">
+                        <span class="icon icon-x m-0-mobile" aria-hidden="true"></span>
+                        <span class="is-sr-only-mobile">{% trans "Delete" %}</span>
+                    </button>
+                </form>
+            </td>
         </tr>
         {% endfor %}
         {% if not announcements %}

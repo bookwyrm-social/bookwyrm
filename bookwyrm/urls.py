@@ -94,6 +94,16 @@ urlpatterns = [
         name="settings-announcements",
     ),
     re_path(
+        r"^settings/announcements/create/?$",
+        views.EditAnnouncement.as_view(),
+        name="settings-announcements-edit",
+    ),
+    re_path(
+        r"^settings/announcements/(?P<announcement_id>\d+)/edit/?$",
+        views.EditAnnouncement.as_view(),
+        name="settings-announcements-edit",
+    ),
+    re_path(
         r"^settings/announcements/(?P<announcement_id>\d+)/delete/?$",
         views.delete_announcement,
         name="settings-announcements-delete",
