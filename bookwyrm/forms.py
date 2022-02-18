@@ -440,7 +440,7 @@ class GoalForm(CustomForm):
 class SiteForm(CustomForm):
     class Meta:
         model = models.SiteSettings
-        exclude = []
+        exclude = ["admin_code", "install_mode"]
         widgets = {
             "instance_short_description": forms.TextInput(
                 attrs={"aria-describedby": "desc_instance_short_description"}
