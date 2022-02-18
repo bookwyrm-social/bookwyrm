@@ -33,3 +33,11 @@ class IPBlocklist(models.Model):
         """default sorting"""
 
         ordering = ("-created_date",)
+
+
+class AutoFlag(models.Model):
+    """rules to automatically flag suspicious activity"""
+    created_by = models.ForeignKey("User", on_delete=models.PROTECT)
+    flag_users = models.BooleanField(default=False)
+    flag_statuses = models.BooleanField(default=False)
+    string_match = models.CharField(max_length=200)
