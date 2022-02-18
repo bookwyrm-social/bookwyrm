@@ -187,7 +187,7 @@ button .button-invisible-overlay {
     align-items: center;
     flex-direction: column;
     justify-content: center;
-    background: rgba(0, 0, 0, 66%);
+    background: rgba(0, 0, 0, 0.66);
     color: white;
     opacity: 0;
     transition: opacity 0.2s ease;
@@ -283,7 +283,7 @@ details.dropdown .dropdown-menu a:focus-visible {
 
 @media only screen and (max-width: 768px) {
     details.dropdown[open] summary.dropdown-trigger::before {
-        background-color: rgba(0, 0, 0, 50%);
+        background-color: rgba(0, 0, 0, 0.5);
         z-index: 30;
     }
 
@@ -486,14 +486,14 @@ details.dropdown .dropdown-menu a:focus-visible {
  ******************************************************************************/
 
 details.details-panel {
-    box-shadow: 0 0 0 1px rgba(0, 0, 0, 10%);
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.10);
     transition: box-shadow 0.2s ease;
     padding: 0.75rem;
 }
 
 details[open].details-panel,
 details.details-panel:hover {
-    box-shadow: 0 0 0 1px rgba(0, 0, 0, 20%);
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.20);
 }
 
 details.details-panel summary {
@@ -514,7 +514,7 @@ details[open] summary .details-close {
 
 @media only screen and (min-width: 769px) {
     .details-panel .filters-field:not(:last-child) {
-        border-right: 1px solid rgba(0, 0, 0, 10%);
+        border-right: 1px solid rgba(0, 0, 0, 0.10);
         margin-top: 0.75rem;
         margin-bottom: 0.75rem;
         padding-top: 0.25rem;
