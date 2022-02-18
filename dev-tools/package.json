@@ -1,18 +1,23 @@
 {
   "scripts": {
-    "watch:static": "yarn watch \"./bw-dev collectstatic\" bookwyrm/static/**"
+    "watch:static": "yarn watch \"./bw-dev collectstatic\" bookwyrm/static/**",
+    "css-build": "node-sass --omit-source-map-url ../bookwyrm/static/sass/bookwyrm.scss ../bookwyrm/static/css/vendor/bulma.min.css --style compressed",
+    "css-watch": "npm run css-build -- --watch",
+    "start": "npm run css-watch"
   },
   "devDependencies": {
+    "bulma": "^0.9.3",
     "eslint": "^8.9.0",
+    "merge": "2.1.1",
+    "node-sass": "^7.0.1",
+    "postcss": "^8.4.6",
     "prettier": "2.5.1",
     "stylelint": "^14.5.0",
+    "stylelint-config-recommended": "^7.0.0",
+    "stylelint-config-standard": "^25.0.0",
+    "stylelint-order": "^5.0.0",
     "watch": "^0.13.0"
   },
   "dependencies": {
-    "merge": "2.1.1",
-    "postcss": "^8.4.6",
-    "stylelint-config-recommended": "^7.0.0",
-    "stylelint-config-standard": "^25.0.0",
-    "stylelint-order": "^5.0.0"
   }
 }

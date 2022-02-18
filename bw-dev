@@ -151,6 +151,9 @@ case "$CMD" in
             npx prettier --write bookwyrm/static/js/*.js && \
             npx stylelint bookwyrm/static/css/*.css --fix --config dev-tools/.stylelintrc.js
         ;;
+    build_sass)
+        docker-compose run --rm dev-tools npm --prefix dev-tools run css-build
+        ;;
     update)
         git pull
         docker-compose build

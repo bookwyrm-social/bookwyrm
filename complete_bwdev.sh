@@ -23,6 +23,7 @@ black
 prettier
 stylelint
 formatters
+build_sass
 populate_streams
 populate_lists_streams
 populate_suggestions
