@@ -21,8 +21,8 @@ function runweb {
     docker-compose run --rm web "$@"
 }
 
-function execdb {
-    docker-compose exec db $@
+function rundb {
+    docker-compose run --rm db $@
 }
 
 function execweb {
@@ -30,12 +30,15 @@ function execweb {
 }
 
 function initdb {
-    runweb python manage.py migrate
     runweb python manage.py initdb "$@"
 }
 
-function makeitblack {
-    docker-compose run --rm dev-tools black celerywyrm bookwyrm
+function migrate {
+    runweb python manage.py migrate "$@"
+}
+
+function admin_code {
+    runweb python manage.py admin_code
 }
 
 function awscommand {
@@ -65,16 +68,17 @@ case "$CMD" in
         docker-compose run --rm --service-ports web
         ;;
     initdb)
-        initdb "$@"
+        initdb "@"
         ;;
     resetdb)
         clean
         # Start just the DB so no one else is using it
         docker-compose up --build -d db
-        execdb dropdb -U ${POSTGRES_USER} ${POSTGRES_DB}
-        execdb createdb -U ${POSTGRES_USER} ${POSTGRES_DB}
+        rundb dropdb -U ${POSTGRES_USER} ${POSTGRES_DB}
+        rundb createdb -U ${POSTGRES_USER} ${POSTGRES_DB}
         # Now start up web so we can run the migrations
         docker-compose up --build -d web
+        migrate
         initdb
         clean
         ;;
@@ -82,7 +86,7 @@ case "$CMD" in
         runweb python manage.py makemigrations "$@"
         ;;
     migrate)
-        runweb python manage.py migrate "$@"
+        migrate "$@"
         ;;
     bash)
         runweb bash
@@ -91,13 +95,13 @@ case "$CMD" in
         runweb python manage.py shell
         ;;
     dbshell)
-        execdb psql -U ${POSTGRES_USER} ${POSTGRES_DB}
+        rundb psql -U ${POSTGRES_USER} ${POSTGRES_DB}
         ;;
     restart_celery)
         docker-compose restart celery_worker
         ;;
     pytest)
-        runweb pytest --no-cov-on-fail "$@"
+        runweb --no-deps pytest --no-cov-on-fail "$@"
         ;;
     collectstatic)
         runweb python manage.py collectstatic --no-input
@@ -132,7 +136,7 @@ case "$CMD" in
         clean
         ;;
     black)
-        makeitblack
+        docker-compose run --rm dev-tools black celerywyrm bookwyrm
         ;;
     prettier)
         docker-compose run --rm dev-tools npx prettier --write bookwyrm/static/js/*.js
@@ -197,6 +201,15 @@ case "$CMD" in
             --endpoint-url ${AWS_S3_ENDPOINT_URL}\
             --cors-configuration file:///bw/$config_file" "$@"
         ;;
+    admin_code)
+        admin_code
+        ;;
+    setup)
+        migrate
+        initdb
+        runweb python manage.py collectstatic --no-input
+        admin_code
+        ;;
     runweb)
         runweb "$@"
         ;;
@@ -225,6 +238,7 @@ case "$CMD" in
         echo "    stylelint"
         echo "    formatters"
         echo "    populate_streams [--stream=<stream name>]"
+        echo "    populate_lists_streams"
         echo "    populate_suggestions"
         echo "    generate_thumbnails"
         echo "    generate_preview_images [--all]"

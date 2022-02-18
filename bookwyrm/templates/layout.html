@@ -32,6 +32,7 @@
     {% block head_links %}{% endblock %}
 </head>
 <body>
+{% block body %}
 <nav class="navbar" aria-label="main navigation">
     <div class="container">
         <div class="navbar-brand">
@@ -208,11 +209,8 @@
 
 <div class="section is-flex-grow-1">
     <div class="container">
-        {# almost every view needs to know the user shelves #}
-        {% with request.user.shelf_set.all as user_shelves %}
         {% block content %}
         {% endblock %}
-        {% endwith %}
     </div>
 </div>
 
@@ -256,6 +254,7 @@
         </div>
     </div>
 </footer>
+{% endblock %}
 
 <script>
     var csrf_token = '{{ csrf_token }}';

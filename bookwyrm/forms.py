@@ -54,6 +54,13 @@ class RegisterForm(CustomForm):
         help_texts = {f: None for f in fields}
         widgets = {"password": PasswordInput()}
 
+    def clean(self):
+        """Check if the username is taken"""
+        cleaned_data = super().clean()
+        localname = cleaned_data.get("localname").strip()
+        if models.User.objects.filter(localname=localname).first():
+            self.add_error("localname", _("User with this username already exists"))
+
 
 class RatingForm(CustomForm):
     class Meta:

@@ -113,6 +113,7 @@ from .reading import ReadingStatus
 from .report import Report
 from .rss_feed import RssFeed
 from .search import Search
+from .setup import InstanceConfig, CreateAdmin
 from .status import CreateStatus, EditStatus, DeleteStatus, update_progress
 from .status import edit_readthrough
 from .updates import get_notification_count, get_unread_status_string
