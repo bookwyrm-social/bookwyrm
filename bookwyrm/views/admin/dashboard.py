@@ -115,7 +115,9 @@ class Dashboard(View):
         try:
             release = get_data(settings.RELEASE_API, timeout=3)
             available_version = release.get("tag_name", None)
-            if available_version and version.parse(available_version) > version.parse(settings.VERSION):
+            if available_version and version.parse(available_version) > version.parse(
+                settings.VERSION
+            ):
                 data["current_version"] = settings.VERSION
                 data["available_version"] = available_version
         except ConnectorException:
