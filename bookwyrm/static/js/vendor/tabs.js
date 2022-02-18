@@ -11,17 +11,17 @@ class TabGroup {
         this.container = container;
 
         this.tablist = this.container.querySelector('[role="tablist"]');
-        this.buttons = this.tablist.querySelectorAll('[role="tab"]');
+        this.tabs = this.tablist.querySelectorAll('[role="tab"]');
         this.panels = this.container.querySelectorAll(':scope > [role="tabpanel"]');
         this.delay = this.determineDelay();
 
-        if(!this.tablist || !this.buttons.length || !this.panels.length) {
+        if(!this.tablist || !this.tabs.length || !this.panels.length) {
             return;
         }
 
         this.keys = this.keys();
         this.direction = this.direction();
-        this.initButtons();
+        this.initTabs();
         this.initPanels();
     }
 
@@ -46,17 +46,21 @@ class TabGroup {
         };
     }
 
-    initButtons() {
+    initTabs() {
         let count = 0;
-        for(let button of this.buttons) {
-            let isSelected = button.getAttribute("aria-selected") === "true";
-            button.setAttribute("tabindex", isSelected ? "0" : "-1");
+        for(let tab of this.tabs) {
+            let isSelected = tab.getAttribute("aria-selected") === "true";
+            tab.setAttribute("tabindex", isSelected ? "0" : "-1");
 
-            button.addEventListener('click', this.clickEventListener.bind(this));
-            button.addEventListener('keydown', this.keydownEventListener.bind(this));
-            button.addEventListener('keyup', this.keyupEventListener.bind(this));
+            tab.addEventListener('click', this.clickEventListener.bind(this));
+            tab.addEventListener('keydown', this.keydownEventListener.bind(this));
+            tab.addEventListener('keyup', this.keyupEventListener.bind(this));
 
-            button.index = count++;
+            if (isSelected) {
+                tab.scrollIntoView();
+            }
+
+            tab.index = count++;
         }
     }
 
@@ -73,11 +77,11 @@ class TabGroup {
     }
 
     clickEventListener(event) {
-        let button = event.target.closest('a');
+        let tab = event.target.closest('[role="tab"]');
 
         event.preventDefault();
 
-        this.activateTab(button, false);
+        this.activateTab(tab, false);
     }
 
     // Handle keydown on tabs
@@ -88,12 +92,12 @@ class TabGroup {
             case this.keys.end:
                 event.preventDefault();
                 // Activate last tab
-                this.activateTab(this.buttons[this.buttons.length - 1]);
+                this.activateTab(this.tabs[this.tabs.length - 1]);
                 break;
             case this.keys.home:
                 event.preventDefault();
                 // Activate first tab
-                this.activateTab(this.buttons[0]);
+                this.activateTab(this.tabs[0]);
                 break;
 
             // Up and down are in keydown
@@ -147,15 +151,15 @@ class TabGroup {
     switchTabOnArrowPress(event) {
         var pressed = event.keyCode;
 
-        for (let button of this.buttons) {
-            button.addEventListener('focus', this.focusEventHandler.bind(this));
+        for (let tab of this.tabs) {
+            tab.addEventListener('focus', this.focusEventHandler.bind(this));
         }
 
         if (this.direction[pressed]) {
             var target = event.target;
             if (target.index !== undefined) {
-                if (this.buttons[target.index + this.direction[pressed]]) {
-                    this.buttons[target.index + this.direction[pressed]].focus();
+                if (this.tabs[target.index + this.direction[pressed]]) {
+                    this.tabs[target.index + this.direction[pressed]].focus();
                 }
                 else if (pressed === this.keys.left || pressed === this.keys.up) {
                     this.focusLastTab();
@@ -184,8 +188,8 @@ class TabGroup {
         // Set the tab as selected
         tab.setAttribute('aria-selected', 'true');
 
-        // Give the tab parent an is-active class
-        tab.parentNode.classList.add('is-active');
+        // Give the tab is-active class
+        tab.classList.add('is-active');
 
         // Get the value of aria-controls (which is an ID)
         var controls = tab.getAttribute('aria-controls');
@@ -201,11 +205,11 @@ class TabGroup {
 
     // Deactivate all tabs and tab panels
     deactivateTabs() {
-        for (let button of this.buttons) {
-            button.parentNode.classList.remove('is-active');
-            button.setAttribute('tabindex', '-1');
-            button.setAttribute('aria-selected', 'false');
-            button.removeEventListener('focus', this.focusEventHandler.bind(this));
+        for (let tab of this.tabs) {
+            tab.classList.remove('is-active');
+            tab.setAttribute('tabindex', '-1');
+            tab.setAttribute('aria-selected', 'false');
+            tab.removeEventListener('focus', this.focusEventHandler.bind(this));
         }
 
         for (let panel of this.panels) {
@@ -214,11 +218,11 @@ class TabGroup {
     }
 
     focusFirstTab() {
-        this.buttons[0].focus();
+        this.tabs[0].focus();
     }
 
     focusLastTab() {
-        this.buttons[this.buttons.length - 1].focus();
+        this.tabs[this.tabs.length - 1].focus();
     }
 
     // Determine whether there should be a delay

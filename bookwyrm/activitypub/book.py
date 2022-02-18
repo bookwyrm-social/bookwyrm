@@ -16,6 +16,9 @@ class BookData(ActivityObject):
     librarythingKey: str = None
     goodreadsKey: str = None
     bnfId: str = None
+    viaf: str = None
+    wikidata: str = None
+    asin: str = None
     lastEditedBy: str = None
     links: List[str] = field(default_factory=lambda: [])
     fileLinks: List[str] = field(default_factory=lambda: [])
@@ -27,8 +30,8 @@ class Book(BookData):
     """serializes an edition or work, abstract"""
 
     title: str
-    sortTitle: str = ""
-    subtitle: str = ""
+    sortTitle: str = None
+    subtitle: str = None
     description: str = ""
     languages: List[str] = field(default_factory=lambda: [])
     series: str = ""
@@ -53,7 +56,6 @@ class Edition(Book):
     isbn10: str = ""
     isbn13: str = ""
     oclcNumber: str = ""
-    asin: str = ""
     pages: int = None
     physicalFormat: str = ""
     physicalFormatDetail: str = ""

@@ -68,7 +68,30 @@ class Connector(AbstractConnector):
             Mapping("born", remote_field="birth_date"),
             Mapping("died", remote_field="death_date"),
             Mapping("bio", formatter=get_description),
-            Mapping("isni", remote_field="remote_ids", formatter=get_isni),
+            Mapping(
+                "isni",
+                remote_field="remote_ids",
+                formatter=lambda b: get_dict_field(b, "isni"),
+            ),
+            Mapping(
+                "asin",
+                remote_field="remote_ids",
+                formatter=lambda b: get_dict_field(b, "amazon"),
+            ),
+            Mapping(
+                "viaf",
+                remote_field="remote_ids",
+                formatter=lambda b: get_dict_field(b, "viaf"),
+            ),
+            Mapping(
+                "wikidata",
+                remote_field="remote_ids",
+                formatter=lambda b: get_dict_field(b, "wikidata"),
+            ),
+            Mapping(
+                "wikipedia_link", remote_field="links", formatter=get_wikipedia_link
+            ),
+            Mapping("inventaire_id", remote_field="links", formatter=get_inventaire_id),
         ]
 
     def get_book_data(self, remote_id):
@@ -227,11 +250,38 @@ def get_languages(language_blob):
     return langs
 
 
-def get_isni(remote_ids_blob):
+def get_dict_field(blob, field_name):
     """extract the isni from the remote id data for the author"""
-    if not remote_ids_blob or not isinstance(remote_ids_blob, dict):
+    if not blob or not isinstance(blob, dict):
         return None
-    return remote_ids_blob.get("isni")
+    return blob.get(field_name)
+
+
+def get_wikipedia_link(links):
+    """extract wikipedia links"""
+    if not isinstance(links, list):
+        return None
+
+    for link in links:
+        if not isinstance(link, dict):
+            continue
+        if link.get("title") == "wikipedia":
+            return link.get("url")
+    return None
+
+
+def get_inventaire_id(links):
+    """extract and format inventaire ids"""
+    if not isinstance(links, list):
+        return None
+
+    for link in links:
+        if not isinstance(link, dict):
+            continue
+        if link.get("title") == "inventaire.io":
+            iv_link = link.get("url")
+            return iv_link.split("/")[-1]
+    return None
 
 
 def pick_default_edition(options):

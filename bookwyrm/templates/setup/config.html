@@ -1,0 +1,154 @@
+{% extends 'setup/layout.html' %}
+{% load i18n %}
+
+{% block header %}
+    <h1 class="title">{% trans "Instance Configuration" %}</h1>
+    <div class="subtitle">
+        {% trans "Make sure everything looks right before proceeding" %}
+    </div>
+{% endblock %}
+
+{% block panel %}
+
+<div class="block content">
+    {% if warnings.debug %}
+    <div class="notification is-danger is-flex is-align-items-start">
+        <span class="icon icon-warning is-size-4 pr-3" aria-hidden="true"></span>
+        <span>
+            {% blocktrans trimmed %}
+            You are running BookWyrm in <strong>debug</strong> mode.
+            This should <strong>never</strong> be used in a production environment.
+            {% endblocktrans %}
+        </span>
+    </div>
+    {% endif %}
+
+    {% if warnings.invalid_domain %}
+    <div class="notification is-danger is-flex is-align-items-start">
+        <span class="icon icon-warning is-size-4 pr-3" aria-hidden="true"></span>
+        <span>
+            {% blocktrans trimmed %}
+            Your domain appears to be misconfigured.
+            It should not include protocol or slashes.
+            {% endblocktrans %}
+        </span>
+    </div>
+    {% endif %}
+
+    {% if warnings.protocol %}
+    <div class="notification is-danger is-flex is-align-items-start">
+        <span class="icon icon-warning is-size-4 pr-3" aria-hidden="true"></span>
+        <span>
+            {% blocktrans trimmed %}
+            You are running BookWyrm in production mode without https.
+            <strong>USE_HTTPS</strong> should be enabled in production.
+            {% endblocktrans %}
+        </span>
+    </div>
+    {% endif %}
+
+    <div class="columns">
+        <div class="column is-half is-flex is-flex-direction-column">
+            <h2 class="title is-4">{% trans "Settings" %}</h2>
+            <div class="notification is-flex-grow-1">
+                <dl>
+                    <dt class="is-pulled-left mr-5 has-text-weight-bold">
+                        {% trans "Instance domain:" %}
+                    </dt>
+                    <dd>
+                        {{ info.domain }}
+                    </dd>
+
+                    <dt class="is-pulled-left mr-5 has-text-weight-bold">
+                        {% trans "Protocol:" %}
+                    </dt>
+                    <dd>
+                        {% if info.use_https %}
+                        <span class="tag is-success">https</span>
+                        {% else %}
+                        <span class="tag is-danger">http</span>
+                        {% endif %}
+                    </dd>
+
+                    <dt class="is-pulled-left mr-5 has-text-weight-bold">
+                        {% trans "Software version:" %}
+                    </dt>
+                    <dd>
+                        {{ info.version }}
+                    </dd>
+
+                    <dt class="is-pulled-left mr-5 has-text-weight-bold">
+                        {% trans "Using S3:" %}
+                    </dt>
+                    <dd>
+                        {{ info.use_s3|yesno }}
+                    </dd>
+                </dl>
+            </div>
+        </div>
+
+        <div class="column is-half is-flex is-flex-direction-column">
+            <h2 class="title is-4">{% trans "Display" %}</h2>
+            <div class="notification is-flex-grow-1">
+                <dl>
+                    <dt class="is-pulled-left mr-5 has-text-weight-bold">
+                        {% trans "Default interface language:" %}
+                    </dt>
+                    <dd>
+                        {{ info.language }}
+                    </dd>
+
+                    <dt class="is-pulled-left mr-5 has-text-weight-bold">
+                        {% trans "Email sender:" %}
+                    </dt>
+                    <dd>
+                        {{ info.email_sender }}
+                    </dd>
+
+                    <dt class="is-pulled-left mr-5 has-text-weight-bold">
+                        {% trans "Enable preview images:" %}
+                    </dt>
+                    <dd>
+                        {{ info.preview_images|yesno }}
+                    </dd>
+
+                    <dt class="is-pulled-left mr-5 has-text-weight-bold">
+                        {% trans "Enable image thumbnails:" %}
+                    </dt>
+                    <dd>
+                        {{ info.thumbnails|yesno }}
+                    </dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="block content">
+    <h2 class="title is-4">{% trans "Does everything look right?" %}</h2>
+    <p class="subtitle help">
+        {% blocktrans trimmed %}
+            This is your last chance to set your domain and protocol.
+        {% endblocktrans %}
+    </p>
+
+    <div class="box">
+        <div class="control">
+            <a class="button is-primary" href="{% url 'setup-admin' %}">
+                <span class="icon icon-check" aria-hidden="true"></span>
+                <span>{% trans "Continue" %}</span>
+            </a>
+        </div>
+
+        <p>
+            {% blocktrans trimmed %}
+                You can change your instance settings in the <code>.env</code> file on your server.
+            {% endblocktrans %}
+            <a href="https://docs.joinbookwyrm.com/installing-in-production.html" target="_blank">
+                {% trans "View installation instructions" %}
+            </a>
+        </p>
+    </div>
+</div>
+
+{% endblock %}

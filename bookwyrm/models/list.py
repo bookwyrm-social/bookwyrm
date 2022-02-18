@@ -142,7 +142,7 @@ class ListItem(CollectionItemMixin, BookWyrmModel):
     user = fields.ForeignKey(
         "User", on_delete=models.PROTECT, activitypub_field="actor"
     )
-    notes = fields.TextField(blank=True, null=True, max_length=300)
+    notes = fields.HtmlField(blank=True, null=True, max_length=300)
     approved = models.BooleanField(default=True)
     order = fields.IntegerField()
     endorsement = models.ManyToManyField("User", related_name="endorsers")

@@ -7,6 +7,7 @@ from bookwyrm import settings
 r = redis.Redis(
     host=settings.REDIS_ACTIVITY_HOST,
     port=settings.REDIS_ACTIVITY_PORT,
+    password=settings.REDIS_ACTIVITY_PASSWORD,
     db=settings.REDIS_ACTIVITY_DB_INDEX,
 )
 

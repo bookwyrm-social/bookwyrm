@@ -9,7 +9,12 @@ from django.utils.translation import gettext_lazy as _
 env = Env()
 env.read_env()
 DOMAIN = env("DOMAIN")
-VERSION = "0.2.1"
+VERSION = "0.3.0"
+
+RELEASE_API = env(
+    "RELEASE_API",
+    "https://api.github.com/repos/bookwyrm-social/bookwyrm/releases/latest",
+)
 
 PAGE_LENGTH = env("PAGE_LENGTH", 15)
 DEFAULT_LANGUAGE = env("DEFAULT_LANGUAGE", "English")
@@ -67,7 +72,7 @@ SECRET_KEY = env("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool("DEBUG", True)
-USE_HTTPS = env.bool("USE_HTTPS", False)
+USE_HTTPS = env.bool("USE_HTTPS", not DEBUG)
 
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", ["*"])
 
@@ -333,3 +338,7 @@ else:
     MEDIA_URL = "/images/"
     MEDIA_FULL_URL = f"{PROTOCOL}://{DOMAIN}{MEDIA_URL}"
     STATIC_FULL_URL = f"{PROTOCOL}://{DOMAIN}{STATIC_URL}"
+
+OTEL_EXPORTER_OTLP_ENDPOINT = env("OTEL_EXPORTER_OTLP_ENDPOINT", None)
+OTEL_EXPORTER_OTLP_HEADERS = env("OTEL_EXPORTER_OTLP_HEADERS", None)
+OTEL_SERVICE_NAME = env("OTEL_SERVICE_NAME", None)
