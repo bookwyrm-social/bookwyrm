@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-02-18 03:55+0000\n"
-"PO-Revision-Date: 2022-02-18 05:32\n"
+"PO-Revision-Date: 2022-02-18 06:34\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Portuguese, Brazilian\n"
 "Language: pt\n"
@@ -19,7 +19,7 @@ msgstr ""
 
 #: bookwyrm/forms.py:62
 msgid "User with this username already exists"
-msgstr ""
+msgstr "Um usuário com este nome já existe"
 
 #: bookwyrm/forms.py:252
 msgid "This domain is blocked. Please contact your administrator if you think this is an error."
@@ -2925,7 +2925,7 @@ msgstr "Começar \"%(book_title)s\""
 #: bookwyrm/templates/reading_progress/stop.html:5
 #, python-format
 msgid "Stop \"%(book_title)s\""
-msgstr ""
+msgstr "Parar \"%(book_title)s\""
 
 #: bookwyrm/templates/reading_progress/want.html:5
 #, python-format
@@ -3201,7 +3201,7 @@ msgstr[1] "%(display_count)s pedidos de convite"
 #: bookwyrm/templates/settings/dashboard/dashboard.html:79
 #, python-format
 msgid "An update is available! You're running v%(current)s and the latest release is %(available)s."
-msgstr ""
+msgstr "Há uma atualização disponível! Você está usando a v%(current)s e o último lançamento é %(available)s."
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:88
 msgid "Instance Activity"
@@ -3740,11 +3740,11 @@ msgstr "Cadastro"
 
 #: bookwyrm/templates/settings/site.html:22
 msgid "Settings saved"
-msgstr ""
+msgstr "Configurações salvas"
 
 #: bookwyrm/templates/settings/site.html:31
 msgid "Unable to save settings"
-msgstr ""
+msgstr "Configurações não salvas"
 
 #: bookwyrm/templates/settings/site.html:42
 msgid "Instance Name:"
@@ -3955,91 +3955,91 @@ msgstr "Nível de acesso:"
 
 #: bookwyrm/templates/setup/admin.html:5
 msgid "Set up BookWyrm"
-msgstr ""
+msgstr "Configurar a BookWyrm"
 
 #: bookwyrm/templates/setup/admin.html:7
 msgid "Your account as a user and an admin"
-msgstr ""
+msgstr "Sua conta enquanto usuário e administrador"
 
 #: bookwyrm/templates/setup/admin.html:13
 msgid "Create your account"
-msgstr ""
+msgstr "Crie sua conta"
 
 #: bookwyrm/templates/setup/admin.html:20
 msgid "Admin key:"
-msgstr ""
+msgstr "Chave de administração:"
 
 #: bookwyrm/templates/setup/admin.html:32
 msgid "An admin key was created when you installed BookWyrm. You can get your admin key by running <code>./bw-dev admin_code</code> from the command line on your server."
-msgstr ""
+msgstr "Uma chave de administração foi criada quando você instalou a BookWyrm. Você pode consultar a sua executando <code>./bw-dev admin_code</code> na linha de comando de seu servidor."
 
 #: bookwyrm/templates/setup/admin.html:45
 msgid "As an admin, you'll be able to configure the instance name and information, and moderate your instance. This means you will have access to private information about your users, and are responsible for responding to reports of bad behavior or spam."
-msgstr ""
+msgstr "Como administrador/a você poderá configurar o nome da instância e a descrição, além de moderá-la. Isso quer dizer que você terá acesso a informações particulares de seus usuários e se tornará responsável por analisar denúncias de mau comportamento e spam."
 
 #: bookwyrm/templates/setup/admin.html:51
 msgid "Once the instance is set up, you can promote other users to moderator or admin roles from the admin panel."
-msgstr ""
+msgstr "Uma vez configurada a instância você poderá promover outros usuários a papeis de moderação ou administração no painel administrativo."
 
 #: bookwyrm/templates/setup/admin.html:55
 msgid "Learn more about moderation"
-msgstr ""
+msgstr "Aprenda mais sobre moderação"
 
 #: bookwyrm/templates/setup/config.html:5
 msgid "Instance Configuration"
-msgstr ""
+msgstr "Configuração da instância"
 
 #: bookwyrm/templates/setup/config.html:7
 msgid "Make sure everything looks right before proceeding"
-msgstr ""
+msgstr "Certifique-se de que tudo está correto antes de prosseguir"
 
 #: bookwyrm/templates/setup/config.html:18
 msgid "You are running BookWyrm in <strong>debug</strong> mode. This should <strong>never</strong> be used in a production environment."
-msgstr ""
+msgstr "Você está rodando a BookWyrm no modo <strong>debug</strong>, que <strong>nunca</strong> deve ser usado em um ambiente de produção."
 
 #: bookwyrm/templates/setup/config.html:30
 msgid "Your domain appears to be misconfigured. It should not include protocol or slashes."
-msgstr ""
+msgstr "Seu domínio parece estar mal configurado. Ele não deve incluir protocolo nem barras."
 
 #: bookwyrm/templates/setup/config.html:42
 msgid "You are running BookWyrm in production mode without https. <strong>USE_HTTPS</strong> should be enabled in production."
-msgstr ""
+msgstr "Você está rodando a BookWyrm em produção sem https. <strong>USE_HTTPS</strong> deve ser habilitado em produção."
 
 #: bookwyrm/templates/setup/config.html:56
 msgid "Instance domain:"
-msgstr ""
+msgstr "Domínio da instância:"
 
 #: bookwyrm/templates/setup/config.html:63
 msgid "Protocol:"
-msgstr ""
+msgstr "Protocolo:"
 
 #: bookwyrm/templates/setup/config.html:81
 msgid "Using S3:"
-msgstr ""
+msgstr "Usar S3:"
 
 #: bookwyrm/templates/setup/config.html:91
 msgid "Display"
-msgstr ""
+msgstr "Exibir"
 
 #: bookwyrm/templates/setup/config.html:95
 msgid "Default interface language:"
-msgstr ""
+msgstr "Idioma padrão da interface:"
 
 #: bookwyrm/templates/setup/config.html:102
 msgid "Email sender:"
-msgstr ""
+msgstr "Remetente dos emails:"
 
 #: bookwyrm/templates/setup/config.html:109
 msgid "Enable preview images:"
-msgstr ""
+msgstr "Ativar imagens na pré-visualização:"
 
 #: bookwyrm/templates/setup/config.html:116
 msgid "Enable image thumbnails:"
-msgstr ""
+msgstr "Ativar miniaturas de imagens:"
 
 #: bookwyrm/templates/setup/config.html:128
 msgid "Does everything look right?"
-msgstr ""
+msgstr "Tudo está correto?"
 
 #: bookwyrm/templates/setup/config.html:130
 msgid "This is your last chance to set your domain and protocol."
