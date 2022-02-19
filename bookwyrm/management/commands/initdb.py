@@ -120,6 +120,7 @@ def init_settings():
     models.SiteSettings.objects.create(
         support_link="https://www.patreon.com/bookwyrm",
         support_title="Patreon",
+        install_mode=True,
     )
 
 

@@ -1,17 +1,20 @@
 {% extends 'settings/layout.html' %}
-{% load i18n %}{% load humanize %}
+{% load i18n %}
+{% load humanize %}
+
 {% block title %}{% trans "Announcement" %} - {{ announcement.preview }}{% endblock %}
 
 {% block header %}
 {% trans "Announcement" %}
-<a href="{% url 'settings-announcements' %}" class="has-text-weight-normal help">{% trans "Back to list" %}</a>
 {% endblock %}
 
 {% block edit-button %}
-{% trans "Edit Announcement" as button_text %}
 <div class="field has-addons">
     <div class="control">
-        {% include 'snippets/toggle/open_button.html' with controls_text="edit_announcement" icon_with_text="pencil" text=button_text focus="edit_announcement_header" %}
+        <a class="button" href="{% url 'settings-announcements-edit' announcement.id %}">
+            <span class="icon icon-pencil m-0-mobile" aria-hidden="true"></span>
+            <span class="is-sr-only-mobile">{% trans "Edit" %}</span>
+        </a>
     </div>
     <form class="control" action="{% url 'settings-announcements-delete' announcement.id %}" method="post">
         {% csrf_token %}
@@ -23,12 +26,20 @@
 </div>
 {% endblock %}
 
+{% block breadcrumbs %}
+<nav class="breadcrumb subtitle" aria-label="breadcrumbs">
+    <ul>
+        <li><a href="{% url 'settings-announcements' %}">{% trans "Announcements" %}</a></li>
+        <li class="is-active">
+            <a href="#" aria-current="page">
+                {{ announcement.preview|truncatechars:30 }}
+            </a>
+        </li>
+    </ul>
+</nav>
+{% endblock %}
+
 {% block panel %}
-
-<form name="edit-announcement" method="post" action="{% url 'settings-announcements' announcement.id %}" class="block">
-    {% include 'settings/announcements/announcement_form.html' with controls_text="edit_announcement" %}
-</form>
-
 <div class="block content">
     <dl>
         <dt class="is-pulled-left mr-5 has-text-weight-bold">{% trans "Visible:" %}</dt>

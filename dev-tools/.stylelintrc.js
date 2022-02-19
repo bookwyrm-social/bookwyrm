@@ -16,5 +16,6 @@ module.exports = {
         "property-no-vendor-prefix": null,
         "color-function-notation": null,
         "declaration-block-no-redundant-longhand-properties": null,
+        "no-descending-specificity": null
     }
 };

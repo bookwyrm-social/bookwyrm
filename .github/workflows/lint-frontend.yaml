@@ -8,7 +8,7 @@ on:
       - '.github/workflows/**'
       - 'static/**'
       - '.eslintrc'
-      - '.stylelintrc'
+      - '.stylelintrc.js'
   pull_request:
     branches: [ main, ci, frontend ]
 
@@ -22,17 +22,16 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Install modules
-        run: yarn
+        run: npm install stylelint stylelint-config-recommended stylelint-config-standard stylelint-order eslint
 
       # See .stylelintignore for files that are not linted.
       - name: Run stylelint
         run: >
-          yarn stylelint bookwyrm/static/**/*.css \
-            --report-needless-disables \
-            --report-invalid-scope-disables
+          npx stylelint bookwyrm/static/css/*.css \
+            --config dev-tools/.stylelintrc.js
 
       # See .eslintignore for files that are not linted.
       - name: Run ESLint
         run: >
-          yarn eslint bookwyrm/static \
+          npx eslint bookwyrm/static \
             --ext .js,.jsx,.ts,.tsx

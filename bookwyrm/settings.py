@@ -11,6 +11,11 @@ env.read_env()
 DOMAIN = env("DOMAIN")
 VERSION = "0.3.0"
 
+RELEASE_API = env(
+    "RELEASE_API",
+    "https://api.github.com/repos/bookwyrm-social/bookwyrm/releases/latest",
+)
+
 PAGE_LENGTH = env("PAGE_LENGTH", 15)
 DEFAULT_LANGUAGE = env("DEFAULT_LANGUAGE", "English")
 
@@ -67,7 +72,7 @@ SECRET_KEY = env("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool("DEBUG", True)
-USE_HTTPS = env.bool("USE_HTTPS", False)
+USE_HTTPS = env.bool("USE_HTTPS", not DEBUG)
 
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", ["*"])
 

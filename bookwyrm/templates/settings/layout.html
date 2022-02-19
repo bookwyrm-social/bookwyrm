@@ -9,12 +9,14 @@
     <div class="columns is-mobile">
         <div class="column">
             <h1 class="title">{% block header %}{% endblock %}</h1>
+            {% block breadcrumbs %}{% endblock %}
         </div>
         <div class="column is-narrow">
             {% block edit-button %}{% endblock %}
         </div>
     </div>
 </header>
+
 
 <div class="block columns">
     <nav class="menu column is-one-quarter">
