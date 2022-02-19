@@ -123,7 +123,7 @@
                 </div>
 
                 {% if request.user.is_authenticated and user.id != request.user.id %}
-                <div class="has-background-white-bis card-footer">
+                <div class="has-background-tertiary card-footer">
                     <div class="card-footer-item">
                         {% include 'snippets/follow_button.html' with user=user minimal=True %}
                     </div>

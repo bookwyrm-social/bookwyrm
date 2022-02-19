@@ -16,7 +16,7 @@
 }
 
 .bw-tabs::before {
-    border-bottom-color: #dbdbdb;
+    border-bottom-color: $border;
     border-bottom-style: solid;
     border-bottom-width: 1px;
     bottom: 0;
@@ -31,10 +31,10 @@
 
 .bw-tabs a {
     align-items: center;
-    border-bottom-color: #dbdbdb;
+    border-bottom-color: $border;
     border-bottom-style: solid;
     border-bottom-width: 1px;
-    color: #4a4a4a;
+    color: $text;
     display: flex;
     justify-content: center;
     margin-bottom: -1px;
@@ -44,12 +44,12 @@
 
 .bw-tabs a:hover {
     border-bottom-color: transparent;
-    color: #363636;
+    color: $text;
 }
 
 .bw-tabs a.is-active {
     border-bottom-color: transparent;
-    color: #3273dc;
+    color: $link;
 }
 
 .bw-tabs.is-left {
@@ -86,14 +86,14 @@
 }
 
 .bw-tabs.is-boxed a:hover {
-    background-color: #f5f5f5;
-    border-bottom-color: #dbdbdb;
+    background-color: $background-secondary;
+    border-bottom-color: $border-hover;
 }
 
 .bw-tabs.is-boxed a.is-active {
-    background-color: #fff;
-    border-color: #dbdbdb;
-    border-bottom-color: #fff !important;
+    background-color: $background-primary;
+    border-color: $border;
+    border-bottom-color: $border !important;
 }
 
 .bw-tabs.is-fullwidth a {
@@ -102,7 +102,7 @@
 }
 
 .bw-tabs.is-toggle a {
-    border-color: #dbdbdb;
+    border-color: $border;
     border-style: solid;
     border-width: 1px;
     margin-bottom: 0;
@@ -110,8 +110,8 @@
 }
 
 .bw-tabs.is-toggle a:hover {
-    background-color: #f5f5f5;
-    border-color: #b5b5b5;
+    background-color: $background-secondary;
+    border-color: $border;
     z-index: 2;
 }
 
@@ -130,9 +130,9 @@
 }
 
 .bw-tabs.is-toggle a.is-active {
-    background-color: #3273dc;
-    border-color: #3273dc;
-    color: #fff;
+    background-color: $link;
+    border-color: $link;
+    color: $text;
     z-index: 1;
 }
 
@@ -172,5 +172,5 @@
     position: absolute;
     top: calc(-0.75rem - 0.75rem);
     left: 0;
-    color: #4a4a4a;
+    color: $text;
 }
