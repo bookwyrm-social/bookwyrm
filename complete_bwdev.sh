@@ -23,8 +23,7 @@ black
 prettier
 stylelint
 formatters
-css_build
-css_watch
+compilescss
 collectstatic_watch
 populate_streams
 populate_lists_streams

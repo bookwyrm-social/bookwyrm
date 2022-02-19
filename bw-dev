@@ -151,11 +151,9 @@ case "$CMD" in
             npx prettier --write bookwyrm/static/js/*.js && \
             npx stylelint bookwyrm/static/css/*.scss --fix --config dev-tools/.stylelintrc.js
         ;;
-    css_build)
-        docker-compose run --rm dev-tools npm --prefix dev-tools run css-build
-        ;;
-    css_watch)
-        docker-compose run --rm dev-tools npm --prefix dev-tools run css-build -- --watch
+    compilescss)
+        runweb python manage.py compilescss && \
+            python manage.py collectstatic --no-input
         ;;
     collectstatic_watch)
         npm run --prefix dev-tools watch:static
@@ -246,8 +244,7 @@ case "$CMD" in
         echo "    prettier"
         echo "    stylelint"
         echo "    formatters"
-        echo "    css_build"
-        echo "    css_watch"
+        echo "    compilescss"
         echo "    collectstatic_watch"
         echo "    populate_streams [--stream=<stream name>]"
         echo "    populate_lists_streams"

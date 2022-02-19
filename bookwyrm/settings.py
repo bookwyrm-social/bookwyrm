@@ -193,7 +193,10 @@ SASS_PROCESSOR_INCLUDE_FILE_PATTERN = r"^.+\.[s]{0,1}(?:a|c)ss$"
 SASS_PROCESSOR_INCLUDE_DIRS = [
     os.path.join(BASE_DIR, ".css-config-sample"),
 ]
-SASS_OUTPUT_STYLE = "compressed"
+
+# minify css is production but not dev
+if not DEBUG:
+    SASS_OUTPUT_STYLE = "compressed"
 
 WSGI_APPLICATION = "bookwyrm.wsgi.application"
 
