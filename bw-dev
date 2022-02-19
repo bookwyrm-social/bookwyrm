@@ -152,8 +152,8 @@ case "$CMD" in
             npx stylelint bookwyrm/static/css/*.scss --fix --config dev-tools/.stylelintrc.js
         ;;
     compilescss)
-        runweb python manage.py compilescss && \
-            python manage.py collectstatic --no-input
+        runweb python manage.py compilescss
+        runweb python manage.py collectstatic --no-input
         ;;
     collectstatic_watch)
         npm run --prefix dev-tools watch:static
