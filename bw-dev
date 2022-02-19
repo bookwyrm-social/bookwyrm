@@ -143,13 +143,20 @@ case "$CMD" in
         ;;
     stylelint)
         docker-compose run --rm dev-tools npx stylelint \
-            bookwyrm/static/css/*.css --fix \
+            bookwyrm/static/css/*.scss --fix \
             --config dev-tools/.stylelintrc.js
         ;;
     formatters)
         docker-compose run --rm dev-tools black celerywyrm bookwyrm && \
             npx prettier --write bookwyrm/static/js/*.js && \
-            npx stylelint bookwyrm/static/css/*.css --fix --config dev-tools/.stylelintrc.js
+            npx stylelint bookwyrm/static/css/*.scss --fix --config dev-tools/.stylelintrc.js
+        ;;
+    compilescss)
+        runweb python manage.py compilescss
+        runweb python manage.py collectstatic --no-input
+        ;;
+    collectstatic_watch)
+        npm run --prefix dev-tools watch:static
         ;;
     update)
         git pull
@@ -237,6 +244,8 @@ case "$CMD" in
         echo "    prettier"
         echo "    stylelint"
         echo "    formatters"
+        echo "    compilescss"
+        echo "    collectstatic_watch"
         echo "    populate_streams [--stream=<stream name>]"
         echo "    populate_lists_streams"
         echo "    populate_suggestions"

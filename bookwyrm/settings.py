@@ -6,6 +6,8 @@ import requests
 from django.utils.translation import gettext_lazy as _
 
 
+# pylint: disable=line-too-long
+
 env = Env()
 env.read_env()
 DOMAIN = env("DOMAIN")
@@ -55,7 +57,6 @@ PREVIEW_DEFAULT_COVER_COLOR = env.str("PREVIEW_DEFAULT_COVER_COLOR", "#002549")
 PREVIEW_DEFAULT_FONT = env.str("PREVIEW_DEFAULT_FONT", "Source Han Sans")
 
 FONTS = {
-    # pylint: disable=line-too-long
     "Source Han Sans": {
         "directory": "source_han_sans",
         "filename": "SourceHanSans-VF.ttf.ttc",
@@ -87,6 +88,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django.contrib.humanize",
     "django_rename_app",
+    "sass_processor",
     "bookwyrm",
     "celery",
     "imagekit",
@@ -180,6 +182,21 @@ LOGGING = {
     },
 }
 
+STATICFILES_FINDERS = [
+    "django.contrib.staticfiles.finders.FileSystemFinder",
+    "django.contrib.staticfiles.finders.AppDirectoriesFinder",
+    "sass_processor.finders.CssFinder",
+]
+
+SASS_PROCESSOR_INCLUDE_FILE_PATTERN = r"^.+\.[s]{0,1}(?:a|c)ss$"
+
+SASS_PROCESSOR_INCLUDE_DIRS = [
+    os.path.join(BASE_DIR, ".css-config-sample"),
+]
+
+# minify css is production but not dev
+if not DEBUG:
+    SASS_OUTPUT_STYLE = "compressed"
 
 WSGI_APPLICATION = "bookwyrm.wsgi.application"
 
@@ -210,7 +227,6 @@ if env("USE_DUMMY_CACHE", False):
         }
     }
 else:
-    # pylint: disable=line-too-long
     CACHES = {
         "default": {
             "BACKEND": "django_redis.cache.RedisCache",
@@ -245,7 +261,6 @@ AUTH_USER_MODEL = "bookwyrm.User"
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
 
-# pylint: disable=line-too-long
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
