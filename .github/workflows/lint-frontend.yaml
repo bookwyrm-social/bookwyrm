@@ -27,7 +27,7 @@ jobs:
       # See .stylelintignore for files that are not linted.
       - name: Run stylelint
         run: >
-          npx stylelint bookwyrm/static/css/*.scss \
+          npx stylelint bookwyrm/static/css/*.scss bookwyrm/static/css/bookwyrm/**/*.scss \
             --config dev-tools/.stylelintrc.js
 
       # See .eslintignore for files that are not linted.

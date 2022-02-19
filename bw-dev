@@ -143,13 +143,15 @@ case "$CMD" in
         ;;
     stylelint)
         docker-compose run --rm dev-tools npx stylelint \
-            bookwyrm/static/css/*.scss --fix \
+            bookwyrm/static/css/bookwyrm.scss bookwyrm/static/css/bookwyrm/**/*.scss --fix \
             --config dev-tools/.stylelintrc.js
         ;;
     formatters)
-        docker-compose run --rm dev-tools black celerywyrm bookwyrm && \
-            npx prettier --write bookwyrm/static/js/*.js && \
-            npx stylelint bookwyrm/static/css/*.scss --fix --config dev-tools/.stylelintrc.js
+        docker-compose run --rm dev-tools black celerywyrm bookwyrm
+        docker-compose run --rm dev-tools npx prettier --write bookwyrm/static/js/*.js
+        docker-compose run --rm dev-tools npx stylelint \
+            bookwyrm/static/css/bookwyrm.scss bookwyrm/static/css/bookwyrm/**/*.scss --fix \
+            --config dev-tools/.stylelintrc.js
         ;;
     compilescss)
         runweb python manage.py compilescss
