@@ -11,7 +11,7 @@ from django.utils.translation import gettext_lazy as _
 env = Env()
 env.read_env()
 DOMAIN = env("DOMAIN")
-VERSION = "0.3.0"
+VERSION = "0.3.1"
 
 RELEASE_API = env(
     "RELEASE_API",
@@ -21,7 +21,7 @@ RELEASE_API = env(
 PAGE_LENGTH = env("PAGE_LENGTH", 15)
 DEFAULT_LANGUAGE = env("DEFAULT_LANGUAGE", "English")
 
-JS_CACHE = "7eb9174b"
+JS_CACHE = "a60e5a55"
 
 # email
 EMAIL_BACKEND = env("EMAIL_BACKEND", "django.core.mail.backends.smtp.EmailBackend")
