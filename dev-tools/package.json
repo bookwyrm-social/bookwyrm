@@ -1,15 +1,11 @@
 {
   "scripts": {
-    "css-build": "node-sass --omit-source-map-url ../bookwyrm/sass/bookwyrm.scss ../bookwyrm/static/css/bookwyrm.min.css --output-style=compressed",
-    "css-watch": "npm run css-build -- --watch",
     "watch:static": "watch \"cd .. && ./bw-dev collectstatic\" ../bookwyrm/static/**"
   },
   "devDependencies": {
     "bulma": "^0.9.3",
     "eslint": "^8.9.0",
     "merge": "2.1.1",
-    "node-sass": "^7.0.1",
-    "postcss": "^8.4.6",
     "prettier": "2.5.1",
     "stylelint": "^14.5.0",
     "stylelint-config-recommended": "^7.0.0",
