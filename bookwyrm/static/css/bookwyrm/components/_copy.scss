@@ -1,0 +1,30 @@
+/* Copy
+ ******************************************************************************/
+
+.horizontal-copy {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.horizontal-copy textarea {
+    min-width: initial;
+    white-space: nowrap;
+}
+
+.horizontal-copy button {
+    align-self: stretch;
+    height: unset;
+}
+
+.vertical-copy {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+}
+
+.vertical-copy button {
+    width: 100%;
+}
