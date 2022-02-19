@@ -79,14 +79,14 @@ details.dropdown .dropdown-menu a:focus-visible {
  ******************************************************************************/
 
 details.details-panel {
-    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 0 1px $border;
     transition: box-shadow 0.2s ease;
     padding: 0.75rem;
 }
 
 details[open].details-panel,
 details.details-panel:hover {
-    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 0 0 1px $border;
 }
 
 details.details-panel summary {
@@ -107,7 +107,7 @@ details[open] summary .details-close {
 
 @media only screen and (min-width: 769px) {
     .details-panel .filters-field:not(:last-child) {
-        border-right: 1px solid rgba(0, 0, 0, 0.1);
+        border-right: 1px solid $border;
         margin-top: 0.75rem;
         margin-bottom: 0.75rem;
         padding-top: 0.25rem;
