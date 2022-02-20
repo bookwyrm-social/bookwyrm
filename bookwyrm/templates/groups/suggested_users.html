@@ -8,7 +8,7 @@
     </h2>
     <div class="column is-flex is-flex-grow-0">
         {% for user in suggested_users %}
-        <div class="box has-text-centered is-shadowless has-background-white-bis m-2">
+        <div class="box has-text-centered is-shadowless has-background-tertiary m-2">
             <a href="{{ user.local_path }}" class="has-text-black">
                 {% include 'snippets/avatar.html' with user=user large=True %}
                 <span title="{{ user.display_name }}" class="is-block is-6 has-text-weight-bold">{{ user.display_name|truncatechars:10 }}</span>

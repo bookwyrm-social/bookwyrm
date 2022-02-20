@@ -1,0 +1,116 @@
+/** General `details` element styles
+ ******************************************************************************/
+
+details summary {
+    cursor: pointer;
+}
+
+summary::-webkit-details-marker {
+    display: none;
+}
+
+details summary::marker {
+    content: none;
+}
+
+details.detail-pinned-button summary {
+    position: absolute;
+    right: 0;
+}
+
+details.detail-pinned-button form {
+    float: left;
+    width: 100%;
+    margin-top: 1em;
+}
+
+/** Dropdown w/ Details element
+ ******************************************************************************/
+
+details.dropdown[open] summary.dropdown-trigger::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+details.dropdown .dropdown-menu {
+    display: block !important;
+}
+
+details.dropdown .dropdown-menu button {
+    /* Fix weird Safari defaults */
+    box-sizing: border-box;
+}
+
+details.dropdown .dropdown-menu button:focus-visible,
+details.dropdown .dropdown-menu a:focus-visible {
+    outline-style: auto;
+    outline-offset: -2px;
+}
+
+@media only screen and (max-width: 768px) {
+    details.dropdown[open] summary.dropdown-trigger::before {
+        background-color: rgba($scheme-invert, 0.5);
+        z-index: 30;
+    }
+
+    details .dropdown-menu {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        pointer-events: none;
+        z-index: 100;
+    }
+
+    details .dropdown-menu > * {
+        pointer-events: all;
+    }
+}
+
+/** Details panel
+ ******************************************************************************/
+
+details.details-panel {
+    box-shadow: 0 0 0 1px $border;
+    transition: box-shadow 0.2s ease;
+    padding: 0.75rem;
+}
+
+details[open].details-panel,
+details.details-panel:hover {
+    box-shadow: 0 0 0 1px $border;
+}
+
+details.details-panel summary {
+    position: relative;
+}
+
+details summary .details-close {
+    position: absolute;
+    right: 0;
+    top: 0;
+    transform: rotate(45deg);
+    transition: transform 0.2s ease;
+}
+
+details[open] summary .details-close {
+    transform: rotate(0deg);
+}
+
+@media only screen and (min-width: 769px) {
+    .details-panel .filters-field:not(:last-child) {
+        border-right: 1px solid $border;
+        margin-top: 0.75rem;
+        margin-bottom: 0.75rem;
+        padding-top: 0.25rem;
+        padding-bottom: 0.25rem;
+    }
+}
