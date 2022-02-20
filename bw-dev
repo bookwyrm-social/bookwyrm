@@ -101,7 +101,7 @@ case "$CMD" in
         docker-compose restart celery_worker
         ;;
     pytest)
-        runweb --no-deps pytest --no-cov-on-fail "$@"
+        runweb pytest --no-cov-on-fail "$@"
         ;;
     collectstatic)
         runweb python manage.py collectstatic --no-input
@@ -143,13 +143,22 @@ case "$CMD" in
         ;;
     stylelint)
         docker-compose run --rm dev-tools npx stylelint \
-            bookwyrm/static/css/*.css --fix \
+            bookwyrm/static/css/bookwyrm.scss bookwyrm/static/css/bookwyrm/**/*.scss --fix \
             --config dev-tools/.stylelintrc.js
         ;;
     formatters)
-        docker-compose run --rm dev-tools black celerywyrm bookwyrm && \
-            npx prettier --write bookwyrm/static/js/*.js && \
-            npx stylelint bookwyrm/static/css/*.css --fix --config dev-tools/.stylelintrc.js
+        docker-compose run --rm dev-tools black celerywyrm bookwyrm
+        docker-compose run --rm dev-tools npx prettier --write bookwyrm/static/js/*.js
+        docker-compose run --rm dev-tools npx stylelint \
+            bookwyrm/static/css/bookwyrm.scss bookwyrm/static/css/bookwyrm/**/*.scss --fix \
+            --config dev-tools/.stylelintrc.js
+        ;;
+    compilescss)
+        runweb python manage.py compilescss
+        runweb python manage.py collectstatic --no-input
+        ;;
+    collectstatic_watch)
+        npm run --prefix dev-tools watch:static
         ;;
     update)
         git pull
@@ -237,6 +246,8 @@ case "$CMD" in
         echo "    prettier"
         echo "    stylelint"
         echo "    formatters"
+        echo "    compilescss"
+        echo "    collectstatic_watch"
         echo "    populate_streams [--stream=<stream name>]"
         echo "    populate_lists_streams"
         echo "    populate_suggestions"

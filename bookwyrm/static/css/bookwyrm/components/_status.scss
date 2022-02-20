@@ -1,0 +1,57 @@
+/** Statuses: Quotes
+ *
+ * \e906: icon-quote-open
+ * \e905: icon-quote-close
+ *
+ * The `content` class on the blockquote allows to apply styles to markdown
+ * generated HTML in the quote: https://bulma.io/documentation/elements/content/
+ *
+ * ```html
+ * <div class="quote block">
+ *     <blockquote dir="auto" class="content mb-2">
+ *         User generated quote in markdown…
+ *     </blockquote>
+ *
+ *     <p> — <a…>Book Title</a> by <a…class="author">Author</a></p>
+ * </div>
+ * ```
+ ******************************************************************************/
+
+.quote > blockquote {
+    position: relative;
+    padding-left: 2em;
+}
+
+.quote > blockquote::before,
+.quote > blockquote::after {
+    font-family: icomoon; /* stylelint-disable font-family-no-missing-generic-family-keyword */
+    position: absolute;
+}
+
+.quote > blockquote::before {
+    content: "\e907"; /* icon-quote-open */
+    top: 0;
+    left: 0;
+}
+
+.quote > blockquote::after {
+    content: "\e906"; /* icon-quote-close */
+    right: 0;
+}
+
+/* Threads
+ ******************************************************************************/
+
+.thread .is-main .card {
+    box-shadow: 0 0.5em 1em -0.125em rgba($link, 0.35), 0 0 0 1px rgba($link, 0.02);
+}
+
+.thread::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    top: 0;
+    bottom: 0;
+    left: 2.5em;
+    border-left: 2px solid $border;
+}

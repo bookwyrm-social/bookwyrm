@@ -1,0 +1,36 @@
+/* Books grid
+ ******************************************************************************/
+
+.books-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    align-items: end;
+    justify-items: stretch;
+}
+
+.books-grid > .is-big {
+    grid-column: span 2;
+    grid-row: span 2;
+    justify-self: stretch;
+}
+
+.books-grid .book-cover {
+    width: 100%;
+}
+
+.books-grid .book-title {
+    --height-basis: 1.35rem;
+
+    display: block;
+    margin-top: 0.5rem;
+    line-height: var(--height-basis);
+    min-height: calc(2 * var(--height-basis));
+}
+
+@media only screen and (min-width: 769px) {
+    .books-grid {
+        gap: 1.5rem;
+        grid-template-columns: repeat(auto-fill, minmax(8em, 1fr));
+    }
+}

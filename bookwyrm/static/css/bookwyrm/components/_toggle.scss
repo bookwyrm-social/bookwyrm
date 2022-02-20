@@ -1,0 +1,45 @@
+/** Toggles
+ ******************************************************************************/
+
+.toggle-button[aria-pressed="true"],
+.toggle-button[aria-pressed="true"]:hover {
+    background-color: hsl(171deg, 100%, 41%);
+    color: white;
+}
+
+.hide-active[aria-pressed="true"],
+.hide-inactive[aria-pressed="false"] {
+    display: none;
+}
+
+.transition-x.is-hidden,
+.transition-y.is-hidden {
+    display: block !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    width: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: auto;
+}
+
+.transition-x,
+.transition-y {
+    transition-duration: 0.5s;
+    transition-timing-function: ease;
+}
+
+.transition-x {
+    transition-property: width, margin-left, margin-right, padding-left, padding-right;
+}
+
+.transition-y {
+    transition-property: height, margin-top, margin-bottom, padding-top, padding-bottom;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .transition-x,
+    .transition-y {
+        transition-duration: 0.001ms !important;
+    }
+}

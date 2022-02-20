@@ -1,0 +1,47 @@
+/* Book list
+ ******************************************************************************/
+
+ol.ordered-list {
+    list-style: none;
+    counter-reset: list-counter;
+}
+
+ol.ordered-list li {
+    counter-increment: list-counter;
+}
+
+ol.ordered-list li::before {
+    content: counter(list-counter);
+    position: absolute;
+    left: -20px;
+    width: 20px;
+    height: 24px;
+    background-color: $scheme-main;
+    border: 1px solid $border;
+    border-right: 0;
+    border-top-left-radius: 2px;
+    border-top-right-radius: 2px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: $text-light;
+    font-size: 0.8em;
+    font-weight: bold;
+}
+
+@media only screen and (max-width: 768px) {
+    ol.ordered-list li::before {
+        left: 0;
+        z-index: 1;
+        border: 0;
+        border-right: 1px solid $border;
+        border-bottom: 1px solid $border;
+        border-radius: 0;
+        border-bottom-right-radius: 2px;
+    }
+}
+
+.overflow-wrap-anywhere {
+    overflow-wrap: anywhere;
+    min-width: 10em;
+}

@@ -1,0 +1,159 @@
+/** Imports
+ ******************************************************************************/
+@import "components/avatar";
+@import "components/book_cover";
+@import "components/book_grid";
+@import "components/book_list";
+@import "components/book_preview_table";
+@import "components/breadcrumbs";
+@import "components/copy";
+@import "components/details";
+@import "components/file_input";
+@import "components/live_message";
+@import "components/shelving";
+@import "components/stars";
+@import "components/status";
+@import "components/tabs";
+@import "components/toggle";
+
+@import "overrides/bulma_overrides";
+
+@import "utilities/a11y";
+@import "utilities/alignments";
+@import "utilities/colors";
+@import "utilities/size";
+@import "utilities/spacings";
+@import "utilities/transitions";
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+button {
+    border: none;
+    margin: 0;
+    padding: 0;
+    width: auto;
+    overflow: visible;
+    background: transparent;
+
+    /* inherit font, color & alignment from ancestor */
+    color: inherit;
+    font: inherit;
+    text-align: inherit;
+
+    /* Normalize `line-height`. Cannot be changed from `normal` in Firefox 4+. */
+    line-height: normal;
+
+    /* Corrects font smoothing for webkit */
+    -webkit-font-smoothing: inherit;
+    -moz-osx-font-smoothing: inherit;
+
+    /* Corrects inability to style clickable `input` types in iOS */
+    -webkit-appearance: none;
+
+    /* Generalizes pointer cursor */
+    cursor: pointer;
+}
+
+button::-moz-focus-inner {
+    /* Remove excess padding and border in Firefox 4+ */
+    border: 0;
+    padding: 0;
+}
+
+/* Better accessibility for keyboard users */
+*:focus-visible {
+    outline-style: auto !important;
+}
+
+/** Utilities not covered by Bulma
+ ******************************************************************************/
+
+
+.tag.is-small {
+    height: auto;
+}
+
+.button.is-transparent {
+    background-color: transparent;
+}
+
+.card.is-stretchable {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.card.is-stretchable .card-content {
+    flex-grow: 1;
+}
+
+.preserve-whitespace p {
+    white-space: pre-wrap !important;
+}
+
+.display-inline p {
+    display: inline !important;
+}
+
+button .button-invisible-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    padding: 1rem;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    background: rgba($scheme-invert, 0.66);
+    color: white;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+button:hover .button-invisible-overlay,
+button:active .button-invisible-overlay,
+button:focus-visible .button-invisible-overlay {
+    opacity: 1;
+}
+
+
+
+/** Tooltips
+ ******************************************************************************/
+
+.tooltip {
+    width: 100%;
+}
+
+/** States
+ ******************************************************************************/
+
+/* "disabled" for non-buttons */
+
+.is-disabled {
+    background-color: $pagination-disabled-background-color;
+    border-color: $pagination-disabled-border-color;
+    box-shadow: none;
+    color: $pagination-disabled-color;
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+
+/* Notifications page
+ ******************************************************************************/
+
+.notification a.icon {
+    text-decoration: none !important;
+}

@@ -19,7 +19,7 @@
         {% blocktrans with site_name=site.name %}Welcome to {{ site_name }}!{% endblocktrans %}
     </h2>
 
-    <p class="subtitle notification has-background-primary-light">
+    <p class="subtitle notification has-background-primary-highlight">
         {% blocktrans trimmed with site_name=site.name %}
             {{ site_name }} is part of <em>BookWyrm</em>, a network of independent, self-directed communities for readers.
             While you can interact seamlessly with users anywhere in the <a href="https://joinbookwyrm.com/instances/" target="_blank">BookWyrm network</a>, this community is unique.
@@ -107,7 +107,7 @@
         <div class="column">
             <div class="card is-stretchable">
                 {% with role=user.groups.first.name %}
-                <div class="card-header {% if role == "moderator" %}has-background-info-light{% else %}has-background-success-light{% endif %}">
+                <div class="card-header {% if role == "moderator" %}has-background-info-highlight{% else %}has-background-success-highlight{% endif %}">
                     <span class="card-header-title is-size-7 pt-1 pb-1">
                         {% if role == "moderator" %}
                             {% trans "Moderator" %}
@@ -123,7 +123,7 @@
                 </div>
 
                 {% if request.user.is_authenticated and user.id != request.user.id %}
-                <div class="has-background-white-bis card-footer">
+                <div class="has-background-tertiary card-footer">
                     <div class="card-footer-item">
                         {% include 'snippets/follow_button.html' with user=user minimal=True %}
                     </div>
