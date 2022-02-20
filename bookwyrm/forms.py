@@ -243,34 +243,30 @@ class FileLinkForm(CustomForm):
         filetype = cleaned_data.get("filetype")
         book = cleaned_data.get("book")
         domain = urlparse(url).netloc
-        
+
         try:
             response = requests.head(url, timeout=3)
-            
+
             if response.status_code in range(300, 308):
                 headers = response.headers
-                url_redirect = headers['Location']
+                url_redirect = headers["Location"]
                 print(url_redirect)
-            
+
                 response = requests.head(url_redirect, timeout=3)
-            if (
-                int(response.status_code) < 200
-                or int(response.status_code) > 299
-            ):
+            if int(response.status_code) < 200 or int(response.status_code) > 299:
                 # status code between 200 and 399 should be fine
                 self.add_error(
                     "url",
                     _(
-                        """This url throws status code %i and can't be added 
+                        f"""This url throws status code {response.status_code} and can't be added 
                         to list"""
-                        % response.status_code
                     ),
                 )
-        except:
+        except Exception as e:
             self.add_error(
                 "url", _("This domain does not exist. Please check your entry.")
             )
-            
+
         if models.LinkDomain.objects.filter(domain=domain).exists():
             status = models.LinkDomain.objects.get(domain=domain).status
             if status == "blocked":
