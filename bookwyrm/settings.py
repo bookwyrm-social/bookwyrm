@@ -87,7 +87,6 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.humanize",
-    "django_rename_app",
     "sass_processor",
     "bookwyrm",
     "celery",
