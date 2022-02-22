@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-02-18 03:55+0000\n"
-"PO-Revision-Date: 2022-02-18 07:52\n"
+"PO-Revision-Date: 2022-02-22 05:34\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Galician\n"
 "Language: gl\n"
@@ -1476,7 +1476,7 @@ msgstr "Confirmar email"
 #: bookwyrm/templates/email/confirm/html_content.html:15
 #, python-format
 msgid "Or enter the code \"<code>%(confirmation_code)s</code>\" at login."
-msgstr "Ou escribe o código \"<code>%(confirmation_code)s</code>\" na páxina de conexión."
+msgstr "Ou escribe o código \"<code>%(confirmation_code)s</code>\" na páxina de acceso."
 
 #: bookwyrm/templates/email/confirm/subject.html:2
 msgid "Please confirm your email"
@@ -1485,7 +1485,7 @@ msgstr "Por favor confirma o teu email"
 #: bookwyrm/templates/email/confirm/text_content.html:10
 #, python-format
 msgid "Or enter the code \"%(confirmation_code)s\" at login."
-msgstr "Ou escribe o código \"%(confirmation_code)s\" na páxina de conexión."
+msgstr "Ou escribe o código \"%(confirmation_code)s\" na páxina de acceso."
 
 #: bookwyrm/templates/email/html_layout.html:15
 #: bookwyrm/templates/email/text_layout.html:2
@@ -1546,7 +1546,7 @@ msgstr "Nova denuncia en %(site_name)s"
 #: bookwyrm/templates/email/password_reset/text_content.html:4
 #, python-format
 msgid "You requested to reset your %(site_name)s password. Click the link below to set a new password and log in to your account."
-msgstr "Solicitaches restablecer o contrasinal en %(site_name)s. Preme na ligazón para establecer un novo contrasinal e conectarte á túa conta."
+msgstr "Solicitaches restablecer o contrasinal en %(site_name)s. Preme na ligazón para establecer un novo contrasinal e acceder á túa conta."
 
 #: bookwyrm/templates/email/password_reset/html_content.html:9
 #: bookwyrm/templates/landing/password_reset.html:4
@@ -2173,13 +2173,13 @@ msgstr "A túa Conta"
 
 #: bookwyrm/templates/landing/login.html:4
 msgid "Login"
-msgstr "Conectar"
+msgstr "Acceder"
 
 #: bookwyrm/templates/landing/login.html:7
 #: bookwyrm/templates/landing/login.html:36 bookwyrm/templates/layout.html:179
 #: bookwyrm/templates/ostatus/error.html:37
 msgid "Log in"
-msgstr "Conecta"
+msgstr "Accede"
 
 #: bookwyrm/templates/landing/login.html:15
 msgid "Success! Email address confirmed."
@@ -2785,7 +2785,7 @@ msgstr "Esta ligazón abre unha ventá emerxente"
 #: bookwyrm/templates/ostatus/subscribe.html:8
 #, python-format
 msgid "Log in to %(sitename)s"
-msgstr "Conectar con %(sitename)s"
+msgstr "Entrar en %(sitename)s"
 
 #: bookwyrm/templates/ostatus/subscribe.html:10
 #, python-format
@@ -2804,7 +2804,7 @@ msgstr "Oioioi..."
 
 #: bookwyrm/templates/ostatus/subscribe.html:20
 msgid "Let's log in first..."
-msgstr "Primeiro hai que conectar..."
+msgstr "Primeiro hai que acceder..."
 
 #: bookwyrm/templates/ostatus/subscribe.html:51
 #, python-format
@@ -3021,7 +3021,7 @@ msgstr "Engadir un libro manualmente"
 
 #: bookwyrm/templates/search/book.html:115
 msgid "Log in to import or add books."
-msgstr "Conéctate para importar ou engadir libros."
+msgstr "Accede para importar ou engadir libros."
 
 #: bookwyrm/templates/search/layout.html:16
 msgid "Search query"
@@ -4835,7 +4835,7 @@ msgstr "Non é un ficheiro csv válido"
 
 #: bookwyrm/views/landing/login.py:70
 msgid "Username or password are incorrect"
-msgstr "O nome de usuaria ou contrasinal non son correctos"
+msgstr "As credenciais non son correctas"
 
 #: bookwyrm/views/landing/password.py:32
 msgid "No user with that email address was found."
