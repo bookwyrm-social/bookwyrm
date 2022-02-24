@@ -1,6 +1,13 @@
 """ Lets try NOT to sell viagra """
-from django.db import models
+from functools import reduce
+import operator
 
+from django.apps import apps
+from django.db import models
+from django.db.models import Q
+from django.utils.translation import gettext_lazy as _
+
+from bookwyrm.tasks import app
 from .user import User
 
 
@@ -37,7 +44,67 @@ class IPBlocklist(models.Model):
 
 class AutoMod(models.Model):
     """rules to automatically flag suspicious activity"""
+
     string_match = models.CharField(max_length=200, unique=True)
     flag_users = models.BooleanField(default=True)
     flag_statuses = models.BooleanField(default=True)
     created_by = models.ForeignKey("User", on_delete=models.PROTECT)
+
+
+@app.task(queue="low_priority")
+def automod_task():
+    """Create reports"""
+    if not AutoMod.objects.exists():
+        return
+    reporter = AutoMod.objects.first().created_by
+    automod_users(reporter)
+    automod_statuses(reporter)
+
+
+def automod_users(reporter):
+    """check users for moderation flags"""
+    user_rules = AutoMod.objects.filter(flag_users=True).values_list(
+        "string_match", flat=True
+    )
+
+    filters = [{"username__icontains": r} for r in user_rules]
+    users = User.objects.filter(
+        reduce(operator.or_, (Q(**f) for f in filters)),
+        is_active=True,
+        report__isnull=True, # don't flag users that already have reports
+    ).values_list("id", flat=True)
+
+    report_model = apps.get_model("bookwyrm", "Report", require_ready=True)
+
+    report_model.objects.bulk_create([
+        report_model(
+            reporter=reporter,
+            note=_("Automatically generated report"),
+            user=u,
+        ) for u in users
+    ])
+
+
+def automod_statuses(reporter):
+    """ check statues for moderation flags """
+    status_rules = AutoMod.objects.filter(flag_statuses=True).values_list(
+        "string_match", flat=True
+    )
+
+    filters = [{"content__icontains": r} for r in status_rules]
+    status_model = apps.get_model("bookwyrm", "Status", require_ready=True)
+    statuses = status_model.objects.filter(
+        reduce(operator.or_, (Q(**f) for f in filters)),
+        deleted=False,
+        report__isnull=True, # don't flag statuses that already have reports
+    )
+
+    report_model = apps.get_model("bookwyrm", "Report", require_ready=True)
+    report_model.objects.bulk_create([
+        report_model(
+            reporter=reporter,
+            note=_("Automatically generated report"),
+            user=s.user,
+            statuses=[s.id],
+        ) for s in statuses
+    ])
