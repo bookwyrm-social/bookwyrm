@@ -35,9 +35,9 @@ class IPBlocklist(models.Model):
         ordering = ("-created_date",)
 
 
-class AutoFlag(models.Model):
+class AutoMod(models.Model):
     """rules to automatically flag suspicious activity"""
+    string_match = models.CharField(max_length=200, unique=True)
+    flag_users = models.BooleanField(default=True)
+    flag_statuses = models.BooleanField(default=True)
     created_by = models.ForeignKey("User", on_delete=models.PROTECT)
-    flag_users = models.BooleanField(default=False)
-    flag_statuses = models.BooleanField(default=False)
-    string_match = models.CharField(max_length=200)

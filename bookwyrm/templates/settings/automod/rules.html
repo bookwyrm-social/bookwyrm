@@ -1,0 +1,91 @@
+{% extends 'settings/layout.html' %}
+{% load i18n %}
+{% load utilities %}
+
+{% block title %}
+{% trans "Auto-moderation rules" %}
+{% endblock %}
+
+{% block header %}
+{% trans "Auto-moderation rules" %}
+{% endblock %}
+
+{% block panel %}
+
+<div class="notification content">
+    <p>
+        {% trans "Auto-moderation rules will create reports for any user or status with fields matching the provided string." %}
+        {% trans "At this time, reports are <em>not</em> being generated automatically, and you must manually trigger a scan." %}
+    </p>
+    <button class="button is-warning">{% trans "Run scan" %}</button>
+</div>
+
+{% if success %}
+<div class="notification is-success is-light">
+    <span class="icon icon-check" aria-hidden="true"></span>
+    <span>
+        {% trans "Successfully added rule" %}
+    </span>
+</div>
+{% endif %}
+
+<div class="block table-container">
+    <table class="table is-striped">
+        <form action="{% url 'settings-automod' %}" method="POST">
+            {% csrf_token %}
+            <input type="hidden" value="{{ request.user.id }}" name="created_by">
+            <tr>
+                <th>
+                    <label for="id_string_match">{% trans "String match" %}</label>
+                </th>
+                <th>
+                    <label for="id_flag_users">{% trans "Flag users" %}</label>
+                </th>
+                <th>
+                    <label for+"id_flag_statuses">{% trans "Flag statuses" %}</label>
+                </th>
+                <th>
+                </th>
+            </tr>
+            <tr>
+                <td>
+                    {{ form.string_match }}
+                    {% include 'snippets/form_errors.html' with errors_list=form.string_match.errors id="desc_string_match" %}
+                </td>
+                <td>
+                    {{ form.flag_users }}
+                </td>
+                <td>
+                    {{ form.flag_statuses }}
+                </td>
+                <td>
+                    <button type="submit" class="button is-primary">{% trans "Add rule" %}</button>
+                </td>
+            </tr>
+        </form>
+        {% for rule in rules %}
+        <tr>
+            <td>
+                <code>{{ rule.string_match }}</code>
+            </td>
+            <td>
+                {{ rule.flag_users|yesno }}
+            </td>
+            <td>
+                {{ rule.flag_statuses|yesno }}
+            </td>
+            <td>
+                <form action="{% url 'settings-automod-delete' rule.id %}" method="POST">
+                    {% csrf_token %}
+                    <button type="submit" class="button is-danger is-light">
+                        <span class="icon icon-x m-0-mobile" aria-hidden="true"></span>
+                        <span class="is-sr-only-mobile">{% trans "Remove rule" %}</span>
+                    </button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+{% endblock %}
+
