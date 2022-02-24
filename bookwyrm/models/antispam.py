@@ -85,12 +85,18 @@ def automod_users(reporter):
         "string_match", flat=True
     )
 
-    filters = [{"username__icontains": r} for r in user_rules]
-    users = User.objects.filter(
-        reduce(operator.or_, (Q(**f) for f in filters)),
-        is_active=True,
-        report__isnull=True,  # don't flag users that already have reports
-    ).values_list("id", flat=True)
+    filters = []
+    for field in ["username", "summary", "name"]:
+        filters += [{f"{field}__icontains": r} for r in user_rules]
+    users = (
+        User.objects.filter(
+            reduce(operator.or_, (Q(**f) for f in filters)),
+            is_active=True,
+            report__isnull=True,  # don't flag users that already have reports
+        )
+        .distinct()
+        .values_list("id", flat=True)
+    )
 
     report_model = apps.get_model("bookwyrm", "Report", require_ready=True)
 
@@ -112,13 +118,16 @@ def automod_statuses(reporter):
         "string_match", flat=True
     )
 
-    filters = [{"content__icontains": r} for r in status_rules]
+    filters = []
+    for field in ["content", "content_warning", "quotation__quote", "review__name"]:
+        filters += [{f"{field}__icontains": r} for r in status_rules]
+
     status_model = apps.get_model("bookwyrm", "Status", require_ready=True)
     statuses = status_model.objects.filter(
         reduce(operator.or_, (Q(**f) for f in filters)),
         deleted=False,
         report__isnull=True,  # don't flag statuses that already have reports
-    )
+    ).distinct()
 
     report_model = apps.get_model("bookwyrm", "Report", require_ready=True)
     return report_model.objects.bulk_create(
