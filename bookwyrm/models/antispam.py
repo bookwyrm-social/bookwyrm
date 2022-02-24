@@ -57,8 +57,26 @@ def automod_task():
     if not AutoMod.objects.exists():
         return
     reporter = AutoMod.objects.first().created_by
-    automod_users(reporter)
-    automod_statuses(reporter)
+    reports = automod_users(reporter) + automod_statuses(reporter)
+    if reports:
+        admins = User.objects.filter(
+            models.Q(user_permissions__name__in=["moderate_user", "moderate_post"])
+            | models.Q(is_superuser=True)
+        ).all()
+        notification_model = apps.get_model(
+            "bookwyrm", "Notification", require_ready=True
+        )
+        for admin in admins:
+            notification_model.objects.bulk_create(
+                [
+                    notification_model(
+                        user=admin,
+                        related_report=r,
+                        notification_type="REPORT",
+                    )
+                    for r in reports
+                ]
+            )
 
 
 def automod_users(reporter):
@@ -76,7 +94,7 @@ def automod_users(reporter):
 
     report_model = apps.get_model("bookwyrm", "Report", require_ready=True)
 
-    report_model.objects.bulk_create(
+    return report_model.objects.bulk_create(
         [
             report_model(
                 reporter=reporter,
@@ -103,7 +121,7 @@ def automod_statuses(reporter):
     )
 
     report_model = apps.get_model("bookwyrm", "Report", require_ready=True)
-    report_model.objects.bulk_create(
+    return report_model.objects.bulk_create(
         [
             report_model(
                 reporter=reporter,

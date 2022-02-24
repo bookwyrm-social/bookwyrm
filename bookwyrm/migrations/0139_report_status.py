@@ -13,6 +13,7 @@ def set_report_statuses(apps, schema_editor):
         report.status = report.statuses.first()
         report.save()
 
+
 def set_reverse(apps, schema_editor):
     """copy over status fields"""
     db_alias = schema_editor.connection.alias
@@ -21,17 +22,24 @@ def set_reverse(apps, schema_editor):
     for report in reports:
         report.statuses.set(report.status)
 
+
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bookwyrm', '0138_automod'),
+        ("bookwyrm", "0138_automod"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='report',
-            name='status',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, related_name='reports', to='bookwyrm.status'),
+            model_name="report",
+            name="status",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                related_name="reports",
+                to="bookwyrm.status",
+            ),
         ),
         migrations.RunPython(set_report_statuses, reverse_code=set_reverse),
     ]
