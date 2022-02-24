@@ -109,7 +109,7 @@ def automod_statuses(reporter):
                 reporter=reporter,
                 note=_("Automatically generated report"),
                 user=s.user,
-                statuses=[s.id],
+                status=s,
             )
             for s in statuses
         ]
