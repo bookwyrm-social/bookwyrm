@@ -42,12 +42,23 @@ class AutoMod(View):
         }
         return TemplateResponse(request, "settings/automod/rules.html", data)
 
+
 @require_POST
 @permission_required("bookwyrm.moderate_user", raise_exception=True)
 @permission_required("bookwyrm.moderate_post", raise_exception=True)
 # pylint: disable=unused-argument
 def automod_delete(request, rule_id):
-    """ Remove a rule """
+    """Remove a rule"""
     rule = get_object_or_404(models.AutoMod, id=rule_id)
     rule.delete()
+    return redirect("settings-automod")
+
+
+@require_POST
+@permission_required("bookwyrm.moderate_user", raise_exception=True)
+@permission_required("bookwyrm.moderate_post", raise_exception=True)
+# pylint: disable=unused-argument
+def run_automod(request):
+    """run scan"""
+    models.automod_task.delay()
     return redirect("settings-automod")

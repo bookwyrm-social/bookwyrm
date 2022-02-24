@@ -2,7 +2,7 @@
 # site admin
 from .admin.announcements import Announcements, Announcement
 from .admin.announcements import EditAnnouncement, delete_announcement
-from .admin.automod import AutoMod, automod_delete
+from .admin.automod import AutoMod, automod_delete, run_automod
 from .admin.dashboard import Dashboard
 from .admin.federation import Federation, FederatedServer
 from .admin.federation import AddFederatedServer, ImportServerBlocklist

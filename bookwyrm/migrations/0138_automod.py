@@ -8,18 +8,32 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bookwyrm', '0137_alter_sitesettings_allow_registration'),
+        ("bookwyrm", "0137_alter_sitesettings_allow_registration"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='AutoMod',
+            name="AutoMod",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('string_match', models.CharField(max_length=200, unique=True)),
-                ('flag_users', models.BooleanField(default=True)),
-                ('flag_statuses', models.BooleanField(default=True)),
-                ('created_by', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("string_match", models.CharField(max_length=200, unique=True)),
+                ("flag_users", models.BooleanField(default=True)),
+                ("flag_statuses", models.BooleanField(default=True)),
+                (
+                    "created_by",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
     ]

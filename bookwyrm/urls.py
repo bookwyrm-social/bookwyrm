@@ -216,7 +216,12 @@ urlpatterns = [
     ),
     # auto-moderation rules
     re_path(r"^settings/automod/?$", views.AutoMod.as_view(), name="settings-automod"),
-    re_path(r"^settings/automod/(?P<rule_id>\d+)/delete?$", views.automod_delete, name="settings-automod-delete"),
+    re_path(
+        r"^settings/automod/(?P<rule_id>\d+)/delete?$",
+        views.automod_delete,
+        name="settings-automod-delete",
+    ),
+    re_path(r"^settings/automod/run?$", views.run_automod, name="settings-automod-run"),
     # moderation
     re_path(
         r"^settings/reports/?$", views.ReportsAdmin.as_view(), name="settings-reports"
