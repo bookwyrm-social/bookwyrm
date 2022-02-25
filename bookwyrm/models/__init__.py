@@ -29,7 +29,7 @@ from .import_job import ImportJob, ImportItem
 from .site import SiteSettings, SiteInvite
 from .site import PasswordReset, InviteRequest
 from .announcement import Announcement
-from .antispam import EmailBlocklist, IPBlocklist
+from .antispam import EmailBlocklist, IPBlocklist, AutoMod, automod_task
 
 from .notification import Notification
 

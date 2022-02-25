@@ -495,7 +495,7 @@ class GroupForm(CustomForm):
 class ReportForm(CustomForm):
     class Meta:
         model = models.Report
-        fields = ["user", "reporter", "statuses", "links", "note"]
+        fields = ["user", "reporter", "status", "links", "note"]
 
 
 class EmailBlocklistForm(CustomForm):
@@ -550,3 +550,9 @@ class ReadThroughForm(CustomForm):
     class Meta:
         model = models.ReadThrough
         fields = ["user", "book", "start_date", "finish_date"]
+
+
+class AutoModRuleForm(CustomForm):
+    class Meta:
+        model = models.AutoMod
+        fields = ["string_match", "flag_users", "flag_statuses", "created_by"]
