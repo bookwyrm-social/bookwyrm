@@ -48,8 +48,10 @@ class TabGroup {
 
     initTabs() {
         let count = 0;
+
         for (let tab of this.tabs) {
             let isSelected = tab.getAttribute("aria-selected") === "true";
+
             tab.setAttribute("tabindex", isSelected ? "0" : "-1");
 
             tab.addEventListener("click", this.clickEventListener.bind(this));
@@ -64,6 +66,7 @@ class TabGroup {
         let selectedPanelId = this.tablist
             .querySelector('[role="tab"][aria-selected="true"]')
             .getAttribute("aria-controls");
+
         for (let panel of this.panels) {
             if (panel.getAttribute("id") !== selectedPanelId) {
                 panel.setAttribute("hidden", "");
@@ -82,16 +85,18 @@ class TabGroup {
 
     // Handle keydown on tabs
     keydownEventListener(event) {
-        var key = event.keyCode;
+        const key = event.keyCode;
 
         switch (key) {
             case this.keys.end:
                 event.preventDefault();
+
                 // Activate last tab
                 this.activateTab(this.tabs[this.tabs.length - 1]);
                 break;
             case this.keys.home:
                 event.preventDefault();
+
                 // Activate first tab
                 this.activateTab(this.tabs[0]);
                 break;
@@ -107,7 +112,7 @@ class TabGroup {
 
     // Handle keyup on tabs
     keyupEventListener(event) {
-        var key = event.keyCode;
+        const key = event.keyCode;
 
         switch (key) {
             case this.keys.left:
@@ -121,9 +126,9 @@ class TabGroup {
     // only up and down arrow should function.
     // In all other cases only left and right arrow function.
     determineOrientation(event) {
-        var key = event.keyCode;
-        var vertical = this.tablist.getAttribute("aria-orientation") == "vertical";
-        var proceed = false;
+        const key = event.keyCode;
+        const vertical = this.tablist.getAttribute("aria-orientation") == "vertical";
+        let proceed = false;
 
         if (vertical) {
             if (key === this.keys.up || key === this.keys.down) {
@@ -144,14 +149,15 @@ class TabGroup {
     // Either focus the next, previous, first, or last tab
     // depending on key pressed
     switchTabOnArrowPress(event) {
-        var pressed = event.keyCode;
+        const pressed = event.keyCode;
 
         for (let tab of this.tabs) {
             tab.addEventListener("focus", this.focusEventHandler.bind(this));
         }
 
         if (this.direction[pressed]) {
-            var target = event.target;
+            const target = event.target;
+
             if (target.index !== undefined) {
                 if (this.tabs[target.index + this.direction[pressed]]) {
                     this.tabs[target.index + this.direction[pressed]].focus();
@@ -185,7 +191,7 @@ class TabGroup {
         tab.classList.add("is-active");
 
         // Get the value of aria-controls (which is an ID)
-        var controls = tab.getAttribute("aria-controls");
+        const controls = tab.getAttribute("aria-controls");
 
         // Remove hidden attribute from tab panel to make it visible
         document.getElementById(controls).removeAttribute("hidden");
@@ -221,11 +227,12 @@ class TabGroup {
     // Determine whether there should be a delay
     // when user navigates with the arrow keys
     determineDelay() {
-        var hasDelay = this.tablist.hasAttribute("data-delay");
-        var delay = 0;
+        const hasDelay = this.tablist.hasAttribute("data-delay");
+        let delay = 0;
 
         if (hasDelay) {
-            var delayValue = this.tablist.getAttribute("data-delay");
+            const delayValue = this.tablist.getAttribute("data-delay");
+
             if (delayValue) {
                 delay = delayValue;
             } else {
@@ -238,7 +245,7 @@ class TabGroup {
     }
 
     focusEventHandler(event) {
-        var target = event.target;
+        const target = event.target;
 
         setTimeout(this.checkTabFocus.bind(this), this.delay, target);
     }
