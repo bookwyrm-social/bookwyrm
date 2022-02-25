@@ -93,6 +93,7 @@ def automod_users(reporter):
     users = User.objects.filter(
         reduce(operator.or_, (Q(**f) for f in filters)),
         is_active=True,
+        local=True,
         report__isnull=True,  # don't flag users that already have reports
     ).distinct()
 
@@ -127,6 +128,7 @@ def automod_statuses(reporter):
     statuses = status_model.objects.filter(
         reduce(operator.or_, (Q(**f) for f in filters)),
         deleted=False,
+        local=True,
         report__isnull=True,  # don't flag statuses that already have reports
     ).distinct()
 
