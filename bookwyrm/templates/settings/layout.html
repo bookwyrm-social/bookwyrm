@@ -57,6 +57,10 @@
                 <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Reports" %}</a>
             </li>
             <li>
+                {% url 'settings-automod' as url %}
+                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Auto-moderation rules" %}</a>
+            </li>
+            <li>
                 {% url 'settings-email-blocks' as url %}
                 <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Email Blocklist" %}</a>
             </li>

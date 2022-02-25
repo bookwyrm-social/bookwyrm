@@ -1,7 +1,9 @@
 {% load cache %}
+{% load i18n %}
 
 {# Three day cache #}
-{% cache 259200 generated_note_header status.id %}
+{% get_current_language as LANGUAGE_CODE %}
+{% cache 259200 generated_note_header LANGUAGE_CODE status.id %}
 {% if status.content == 'wants to read' %}
     {% include 'snippets/status/headers/to_read.html' with book=status.mention_books.first %}
 {% elif status.content == 'finished reading' %}

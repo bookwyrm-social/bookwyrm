@@ -31,7 +31,7 @@
 {# things you can do to other people's statuses #}
 <li role="menuitem" class="dropdown-item p-0">
     <span class="control">
-        <a href="{% url 'direct-messages-user' status.user|username %}" class="button is-small is-white is-radiusless is-fullwidth">
+        <a href="{% url 'direct-messages-user' status.user|username %}" class="button is-small has-background-body is-radiusless is-fullwidth">
             {% trans "Send direct message" %}
         </a>
     </span>
