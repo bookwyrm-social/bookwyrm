@@ -1,8 +1,9 @@
 """ non-interactive pages """
+from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.views import View
 
-from bookwyrm import forms
+from bookwyrm import forms, models
 from bookwyrm.views.feed import Feed
 
 
@@ -15,6 +16,11 @@ class Home(View):
         if request.user.is_authenticated:
             feed_view = Feed.as_view()
             return feed_view(request, "home")
+        site = models.SiteSettings.objects.get()
+
+        if site.install_mode:
+            return redirect("setup")
+
         landing_view = Landing.as_view()
         return landing_view(request)
 

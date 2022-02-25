@@ -78,7 +78,7 @@
             {% endif %}
         </div>
         {% else %}
-        <div class="tile is-child box has-background-white-bis">
+        <div class="tile is-child box has-background-tertiary">
             <h2 class="title is-4">{% trans "Your Account" %}</h2>
             {% include 'user/user_preview.html' with user=request.user %}
             {% if request.user.summary %}

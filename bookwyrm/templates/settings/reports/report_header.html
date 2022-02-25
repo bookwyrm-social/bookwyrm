@@ -1,7 +1,7 @@
 {% load i18n %}
 {% load utilities %}
 
-{% if report.statuses.exists %}
+{% if report.status %}
 
 {% blocktrans trimmed with report_id=report.id username=report.user|username %}
 Report #{{ report_id }}: Status posted by @{{ username }}

@@ -8,7 +8,7 @@
         <div class="box is-flex-grow-1">
             {% include 'user/user_preview.html' with user=user %}
             {% if user.summary %}
-            <div class="box content has-background-white-ter is-shadowless">
+            <div class="box content has-background-secondary is-shadowless">
                 {{ user.summary|to_markdown|safe }}
             </div>
             {% endif %}
@@ -108,7 +108,7 @@
             </dl>
             {% if server.notes %}
             <h5>{% trans "Notes" %}</h5>
-            <div class="box content has-background-white-ter is-shadowless">
+            <div class="box content has-background-secondary is-shadowless">
                 {{ server.notes }}
             </div>
             {% endif %}

@@ -48,6 +48,7 @@
         </a>
     </div>
     {% endif %}
+
     {% if pending_domains %}
     <div class="column">
         <a href="{% url 'settings-link-domain' %}" class="notification is-primary is-block">
@@ -59,13 +60,24 @@
         </a>
     </div>
     {% endif %}
+
     {% if not site.allow_registration and site.allow_invite_requests and invite_requests %}
     <div class="column">
-        <a href="{% url 'settings-invite-requests' %}" class="notification is-block is-success is-light">
+        <a href="{% url 'settings-invite-requests' %}" class="notification is-block is-success">
             {% blocktrans trimmed count counter=invite_requests with display_count=invite_requests|intcomma %}
             {{ display_count }} invite request
             {% plural %}
             {{ display_count }} invite requests
+            {% endblocktrans %}
+        </a>
+    </div>
+    {% endif %}
+
+    {% if current_version %}
+    <div class="column">
+        <a href="https://docs.joinbookwyrm.com/updating-your-instance.html" class="notification is-block is-warning" target="_blank">
+            {% blocktrans trimmed with current=current_version available=available_version %}
+            An update is available! You're running v{{ current }} and the latest release is {{ available }}.
             {% endblocktrans %}
         </a>
     </div>
@@ -75,7 +87,7 @@
 <div class="block content">
     <h2>{% trans "Instance Activity" %}</h2>
 
-    <form method="get" action="{% url 'settings-dashboard' %}" class="notification has-background-white-bis scroll-x">
+    <form method="get" action="{% url 'settings-dashboard' %}" class="notification has-background-tertiary scroll-x">
         <div class="is-flex is-align-items-flex-end">
             <div class="ml-1 mr-1">
                 <label class="label" for="id_start">

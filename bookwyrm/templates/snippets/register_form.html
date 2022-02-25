@@ -3,27 +3,61 @@
 <div class="field">
     <label class="label" for="id_localname_register">{% trans "Username:" %}</label>
     <div class="control">
-        <input type="text" name="localname" maxlength="150" class="input" required="" id="id_localname_register" value="{% if register_form.localname.value %}{{ register_form.localname.value }}{% endif %}" aria-describedby="desc_localname_register">
-        
-        {% include 'snippets/form_errors.html' with errors_list=register_form.localname.errors id="desc_localname_register" %}
+        <input
+            type="text"
+            name="localname"
+            maxlength="150"
+            class="input"
+            required=""
+            id="id_localname_register"
+            value="{% if register_form.localname.value %}{{ register_form.localname.value }}{% endif %}"
+            aria-describedby="desc_localname_register_panel"
+        >
+        <div id="desc_localname_register_panel">
+            <p class="help">
+                {% trans "Choose wisely! Your username cannot be changed." %}
+            </p>
+
+            {% include 'snippets/form_errors.html' with errors_list=register_form.localname.errors id="desc_localname_register" %}
+        </div>
     </div>
 </div>
+
 <div class="field">
     <label class="label" for="id_email_register">{% trans "Email address:" %}</label>
     <div class="control">
-        <input type="email" name="email" maxlength="254" class="input" id="id_email_register" value="{% if register_form.email.value %}{{ register_form.email.value }}{% endif %}" required aria-describedby="desc_email_register">
+        <input
+            type="email"
+            name="email"
+            maxlength="254"
+            class="input"
+            id="id_email_register"
+            value="{% if register_form.email.value %}{{ register_form.email.value }}{% endif %}"
+            required
+            aria-describedby="desc_email_register"
+        >
 
         {% include 'snippets/form_errors.html' with errors_list=register_form.email.errors id="desc_email_register" %}
     </div>
 </div>
+
 <div class="field">
     <label class="label" for="id_password_register">{% trans "Password:" %}</label>
     <div class="control">
-        <input type="password" name="password" maxlength="128" class="input" required="" id="id_password_register" aria-describedby="desc_password_register">
+        <input
+            type="password"
+            name="password"
+            maxlength="128"
+            class="input"
+            required=""
+            id="id_password_register"
+            aria-describedby="desc_password_register"
+        >
         
         {% include 'snippets/form_errors.html' with errors_list=register_form.password.errors id="desc_password_register" %}
     </div>
 </div>
+
 <div class="field is-grouped">
     <div class="control">
         <button class="button is-primary" type="submit">

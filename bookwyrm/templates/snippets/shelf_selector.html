@@ -23,7 +23,7 @@
         <input type="hidden" name="change-shelf-from" value="{{ current.identifier }}">
         <input type="hidden" name="shelf" value="{{ shelf.identifier }}">
 
-        <button class="button is-fullwidth is-small shelf-option is-radiusless is-white" type="submit" {% if shelf.identifier == current.identifier %}disabled{% endif %}>
+        <button class="button is-fullwidth is-small shelf-option is-radiusless has-background-body" type="submit" {% if shelf.identifier == current.identifier %}disabled{% endif %}>
             <span>
                 {% include "snippets/translated_shelf_name.html" with shelf=shelf %}
             </span>
@@ -32,7 +32,7 @@
 </li>
 {% else%}
 {% comparison_bool shelf.identifier active_shelf.shelf.identifier as is_current %}
-{% with button_class="is-fullwidth is-small shelf-option is-radiusless is-white" %}
+{% with button_class="is-fullwidth is-small shelf-option is-radiusless has-background-body" %}
 <li role="menuitem" class="dropdown-item p-0">
 {% if shelf.identifier == 'reading' %}
 
