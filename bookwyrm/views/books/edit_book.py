@@ -9,6 +9,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.utils.datastructures import MultiValueDictKeyError
 from django.utils.decorators import method_decorator
+from django.views.decorators.http import require_POST
 from django.views import View
 
 from bookwyrm import book_search, forms, models
@@ -143,6 +144,15 @@ class EditBook(View):
                 book.cover.save(*image, save=False)
         book.save()
         return redirect(f"/book/{book.id}")
+
+
+@require_POST
+@permission_required("bookwyrm.edit_book", raise_exception=True)
+def create_book_from_data(request):
+    """create a book with starter data"""
+    data = {"form": forms.EditionForm(request.POST)}
+    return TemplateResponse(request, "book/edit/edit_book.html", data)
+
 
 
 @method_decorator(login_required, name="dispatch")
