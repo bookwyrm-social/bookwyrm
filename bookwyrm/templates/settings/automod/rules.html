@@ -33,63 +33,98 @@
 </div>
 {% endif %}
 
-<div class="block table-container">
-    <table class="table is-striped">
+<div class="block content">
+    <h2 class="title is-4">{% trans "Add Rule" %}</h2>
+    <div class="box">
         <form action="{% url 'settings-automod' %}" method="POST">
             {% csrf_token %}
             <input type="hidden" value="{{ request.user.id }}" name="created_by">
-            <tr>
-                <th>
-                    <label for="id_string_match">{% trans "String match" %}</label>
-                </th>
-                <th>
-                    <label for="id_flag_users">{% trans "Flag users" %}</label>
-                </th>
-                <th>
-                    <label for="id_flag_statuses">{% trans "Flag statuses" %}</label>
-                </th>
-                <th>
-                </th>
-            </tr>
-            <tr>
-                <td>
-                    {{ form.string_match }}
-                    {% include 'snippets/form_errors.html' with errors_list=form.string_match.errors id="desc_string_match" %}
-                </td>
-                <td>
-                    {{ form.flag_users }}
-                </td>
-                <td>
-                    {{ form.flag_statuses }}
-                </td>
-                <td>
-                    <button type="submit" class="button is-primary">{% trans "Add rule" %}</button>
-                </td>
-            </tr>
+
+            <div class="columns">
+                <div class="column">
+                    <div class="field">
+                        <label class="label" for="id_string_match">{% trans "String match" %}</label>
+                        {{ form.string_match }}
+                        {% include 'snippets/form_errors.html' with errors_list=form.string_match.errors id="desc_string_match" %}
+                    </div>
+                </div>
+
+                <div class="column">
+                    <div class="field">
+                        <label class="label" for="id_flag_users">
+                            {{ form.flag_users }}
+                            {% trans "Flag users" %}
+                        </label>
+                    </div>
+
+                    <div class="field">
+                        <label class="label" for="id_flag_statuses">
+                            {{ form.flag_statuses }}
+                            {% trans "Flag statuses" %}
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="field">
+                <button type="submit" class="button is-primary">{% trans "Add rule" %}</button>
+            </div>
         </form>
-        {% for rule in rules %}
-        <tr>
-            <td>
-                <code>{{ rule.string_match }}</code>
-            </td>
-            <td>
-                {{ rule.flag_users|yesno }}
-            </td>
-            <td>
-                {{ rule.flag_statuses|yesno }}
-            </td>
-            <td>
-                <form action="{% url 'settings-automod-delete' rule.id %}" method="POST">
-                    {% csrf_token %}
-                    <button type="submit" class="button is-danger is-light">
-                        <span class="icon icon-x m-0-mobile" aria-hidden="true"></span>
-                        <span class="is-sr-only-mobile">{% trans "Remove rule" %}</span>
-                    </button>
-                </form>
-            </td>
-        </tr>
-        {% endfor %}
-    </table>
+    </div>
+</div>
+
+<div class="block content">
+    <h2 class="title is-4">{% trans "Current Rules" %}</h2>
+    <details class="details-panel">
+        <summary>
+            <span class="title is-5" role="heading" aria-level="3">
+                {% trans "Show rules" %} ({{ rules.count }})
+            </span>
+            <span class="details-close icon icon-x" aria-hidden="true"></span>
+        </summary>
+
+        <div class="table-container">
+            <table class="table is-striped">
+                <tr>
+                    <th>
+                        <label for="id_string_match">{% trans "String match" %}</label>
+                    </th>
+                    <th>
+                        <label for="id_flag_users">{% trans "Flag users" %}</label>
+                    </th>
+                    <th>
+                        <label for="id_flag_statuses">{% trans "Flag statuses" %}</label>
+                    </th>
+                    <th>
+                    </th>
+                </tr>
+                {% for rule in rules %}
+                <tr>
+                    <td>
+                        <code>{{ rule.string_match }}</code>
+                    </td>
+                    <td>
+                        {{ rule.flag_users|yesno }}
+                    </td>
+                    <td>
+                        {{ rule.flag_statuses|yesno }}
+                    </td>
+                    <td>
+                        <form action="{% url 'settings-automod-delete' rule.id %}" method="POST">
+                            {% csrf_token %}
+                            <div class="control">
+                                <button type="submit" class="button is-danger is-light is-small">
+                                    <span class="icon icon-x m-0-mobile" aria-hidden="true"></span>
+                                    <span class="is-sr-only-mobile">{% trans "Remove rule" %}</span>
+                                </button>
+                            </div>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </details>
 </div>
 {% endblock %}
 
