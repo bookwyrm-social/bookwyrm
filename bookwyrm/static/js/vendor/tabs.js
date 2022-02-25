@@ -56,10 +56,6 @@ class TabGroup {
             tab.addEventListener('keydown', this.keydownEventListener.bind(this));
             tab.addEventListener('keyup', this.keyupEventListener.bind(this));
 
-            if (isSelected) {
-                tab.scrollIntoView();
-            }
-
             tab.index = count++;
         }
     }
