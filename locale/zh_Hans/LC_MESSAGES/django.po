@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-02-18 03:55+0000\n"
-"PO-Revision-Date: 2022-02-18 05:31\n"
+"PO-Revision-Date: 2022-02-25 14:25\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Chinese Simplified\n"
 "Language: zh\n"
@@ -19,7 +19,7 @@ msgstr ""
 
 #: bookwyrm/forms.py:62
 msgid "User with this username already exists"
-msgstr ""
+msgstr "使用此用户名的用户已存在"
 
 #: bookwyrm/forms.py:252
 msgid "This domain is blocked. Please contact your administrator if you think this is an error."
@@ -98,15 +98,15 @@ msgstr "找不到匹配的书"
 
 #: bookwyrm/models/announcement.py:11
 msgid "None"
-msgstr ""
+msgstr "暂无"
 
 #: bookwyrm/models/announcement.py:12
 msgid "Primary"
-msgstr ""
+msgstr "初级"
 
 #: bookwyrm/models/announcement.py:13
 msgid "Success"
-msgstr ""
+msgstr "成功"
 
 #: bookwyrm/models/announcement.py:14
 #: bookwyrm/templates/settings/invites/manage_invites.html:47
@@ -115,11 +115,11 @@ msgstr "链接"
 
 #: bookwyrm/models/announcement.py:15
 msgid "Warning"
-msgstr ""
+msgstr "警告"
 
 #: bookwyrm/models/announcement.py:16
 msgid "Danger"
-msgstr ""
+msgstr "危险"
 
 #: bookwyrm/models/base_model.py:17 bookwyrm/models/link.py:72
 #: bookwyrm/templates/import/import_status.html:200
@@ -2914,7 +2914,7 @@ msgstr "开始《%(book_title)s》"
 #: bookwyrm/templates/reading_progress/stop.html:5
 #, python-format
 msgid "Stop \"%(book_title)s\""
-msgstr ""
+msgstr "停止《%(book_title)s》"
 
 #: bookwyrm/templates/reading_progress/want.html:5
 #, python-format
@@ -3123,11 +3123,11 @@ msgstr "编辑公告"
 
 #: bookwyrm/templates/settings/announcements/edit_announcement.html:45
 msgid "Announcement content"
-msgstr ""
+msgstr "公告内容"
 
 #: bookwyrm/templates/settings/announcements/edit_announcement.html:57
 msgid "Details:"
-msgstr ""
+msgstr "详细："
 
 #: bookwyrm/templates/settings/announcements/edit_announcement.html:65
 msgid "Event date:"
@@ -3135,11 +3135,11 @@ msgstr "事件日期:"
 
 #: bookwyrm/templates/settings/announcements/edit_announcement.html:73
 msgid "Display settings"
-msgstr ""
+msgstr "显示设置"
 
 #: bookwyrm/templates/settings/announcements/edit_announcement.html:98
 msgid "Color:"
-msgstr ""
+msgstr "颜色："
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:6
 #: bookwyrm/templates/settings/dashboard/dashboard.html:8
@@ -3187,7 +3187,7 @@ msgstr[0] "%(display_count)s 条邀请请求"
 #: bookwyrm/templates/settings/dashboard/dashboard.html:79
 #, python-format
 msgid "An update is available! You're running v%(current)s and the latest release is %(available)s."
-msgstr ""
+msgstr "有可用的更新！最新版本为：%(available)s，但你当前运行的版本为：%(current)s。"
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:88
 msgid "Instance Activity"
@@ -3725,11 +3725,11 @@ msgstr "注册"
 
 #: bookwyrm/templates/settings/site.html:22
 msgid "Settings saved"
-msgstr ""
+msgstr "设置已保存"
 
 #: bookwyrm/templates/settings/site.html:31
 msgid "Unable to save settings"
-msgstr ""
+msgstr "无法保存设置"
 
 #: bookwyrm/templates/settings/site.html:42
 msgid "Instance Name:"
@@ -3940,27 +3940,27 @@ msgstr "访问级别:"
 
 #: bookwyrm/templates/setup/admin.html:5
 msgid "Set up BookWyrm"
-msgstr ""
+msgstr "设置 BookWyrm"
 
 #: bookwyrm/templates/setup/admin.html:7
 msgid "Your account as a user and an admin"
-msgstr ""
+msgstr "您作为用户和管理员的账户"
 
 #: bookwyrm/templates/setup/admin.html:13
 msgid "Create your account"
-msgstr ""
+msgstr "创建您的账号"
 
 #: bookwyrm/templates/setup/admin.html:20
 msgid "Admin key:"
-msgstr ""
+msgstr "管理员密钥："
 
 #: bookwyrm/templates/setup/admin.html:32
 msgid "An admin key was created when you installed BookWyrm. You can get your admin key by running <code>./bw-dev admin_code</code> from the command line on your server."
-msgstr ""
+msgstr "当您安装BookWyrm后会创建一个管理员密钥。您可以通过来自你的服务器上的命令行运行<code>bw-dev admin_code</code>获取你的管理员密钥。"
 
 #: bookwyrm/templates/setup/admin.html:45
 msgid "As an admin, you'll be able to configure the instance name and information, and moderate your instance. This means you will have access to private information about your users, and are responsible for responding to reports of bad behavior or spam."
-msgstr ""
+msgstr "作为管理员，您能够配置实例的名称和信息，并管理您的实例。 这意味着您可以访问有关您的用户的私密信息，并且有责任应对不良行为或垃圾信息。"
 
 #: bookwyrm/templates/setup/admin.html:51
 msgid "Once the instance is set up, you can promote other users to moderator or admin roles from the admin panel."
