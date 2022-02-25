@@ -262,7 +262,7 @@ class FileLinkForm(CustomForm):
                         to list"""
                     ),
                 )
-        except Exception as e:
+        except:
             self.add_error(
                 "url", _("This domain does not exist. Please check your entry.")
             )
