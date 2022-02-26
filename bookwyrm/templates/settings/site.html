@@ -8,7 +8,7 @@
 {% block site-subtabs %}
 <ul class="menu-list">
     <li><a href="#instance-info">{% trans "Instance Info" %}</a></li>
-    <li><a href="#images">{% trans "Images" %}</a></li>
+    <li><a href="#display">{% trans "Display" %}</a></li>
     <li><a href="#footer">{% trans "Footer Content" %}</a></li>
     <li><a href="#registration">{% trans "Registration" %}</a></li>
 </ul>
@@ -68,20 +68,35 @@
 
     <hr aria-hidden="true">
 
-    <section class="block" id="images">
-        <h2 class="title is-4">{% trans "Images" %}</h2>
-        <div class="box is-flex">
-            <div>
-                <label class="label" for="id_logo">{% trans "Logo:" %}</label>
-                {{ site_form.logo }}
+    <section class="block" id="display">
+        <h2 class="title is-4">{% trans "Display" %}</h2>
+        <div class="box">
+            <h3 class="title is-5">{% trans "Images" %}</h3>
+            <div class="block is-flex">
+                <div>
+                    <label class="label" for="id_logo">{% trans "Logo:" %}</label>
+                    {{ site_form.logo }}
+                </div>
+                <div>
+                    <label class="label" for="id_logo_small">{% trans "Logo small:" %}</label>
+                    {{ site_form.logo_small }}
+                </div>
+                <div>
+                    <label class="label" for="id_favicon">{% trans "Favicon:" %}</label>
+                    {{ site_form.favicon }}
+                </div>
             </div>
-            <div>
-                <label class="label" for="id_logo_small">{% trans "Logo small:" %}</label>
-                {{ site_form.logo_small }}
-            </div>
-            <div>
-                <label class="label" for="id_favicon">{% trans "Favicon:" %}</label>
-                {{ site_form.favicon }}
+
+            <h3 class="title is-5">{% trans "Themes" %}</h3>
+            <div class="block">
+                <label class="label" for="id_default_theme">
+                    {% trans "Default theme:" %}
+                </label>
+                <div class="select">
+                    {{ site_form.default_theme }}
+                </div>
+
+                <button type="button" class="button">{% trans "Upload theme" %}</button>
             </div>
         </div>
     </section>

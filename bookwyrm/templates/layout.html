@@ -8,7 +8,7 @@
 <head>
     <title>{% block title %}BookWyrm{% endblock %} - {{ site.name }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="{% sass_src 'css/bookwyrm.scss' %}" rel="stylesheet" type="text/css" />
+    <link href="{% sass_src 'css/light.scss' %}" rel="stylesheet" type="text/css" />
 
     <link rel="search" type="application/opensearchdescription+xml" href="{% url 'opensearch' %}" title="{% blocktrans with site_name=site.name %}{{ site_name }} search{% endblocktrans %}" />
 

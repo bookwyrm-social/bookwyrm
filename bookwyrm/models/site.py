@@ -3,6 +3,7 @@ import datetime
 from urllib.parse import urljoin
 import uuid
 
+from django.core.validators import FileExtensionValidator
 from django.db import models, IntegrityError
 from django.dispatch import receiver
 from django.utils import timezone
@@ -24,6 +25,9 @@ class SiteSettings(models.Model):
     )
     instance_description = models.TextField(default="This instance has no description.")
     instance_short_description = models.CharField(max_length=255, blank=True, null=True)
+    default_theme = models.ForeignKey(
+        "Theme", null=True, blank=True, on_delete=models.SET_NULL
+    )
 
     # admin setup options
     install_mode = models.BooleanField(default=False)
@@ -102,6 +106,29 @@ class SiteSettings(models.Model):
                 is_active=True, deactivation_reason=None
             )
         super().save(*args, **kwargs)
+
+
+class Theme(models.Model):
+    """Theme files"""
+
+    created_date = models.DateTimeField(auto_now_add=True)
+    name = models.CharField(max_length=10, unique=True)
+    theme_file = models.FileField(
+        upload_to="css/",
+        validators=[FileExtensionValidator(["scss", "sass"])],
+        null=True,
+    )
+    path = models.CharField(max_length=50, blank=True, null=True)
+
+    @classmethod
+    def get_theme(cls, user):
+        """get the theme given the user/site"""
+        if user and user.theme:
+            return user.theme.path
+        site = SiteSettings.objects.get()
+        if site.theme:
+            return site.theme.path
+        return "light.scss"
 
 
 class SiteInvite(models.Model):
