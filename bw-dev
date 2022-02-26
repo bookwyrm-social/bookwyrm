@@ -215,6 +215,7 @@ case "$CMD" in
         ;;
     setup)
         migrate
+        migrate django_celery_beat
         initdb
         runweb python manage.py collectstatic --no-input
         admin_code
