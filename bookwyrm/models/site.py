@@ -112,7 +112,7 @@ class Theme(models.Model):
     """Theme files"""
 
     created_date = models.DateTimeField(auto_now_add=True)
-    name = models.CharField(max_length=10, unique=True)
+    name = models.CharField(max_length=50, unique=True)
     theme_file = models.FileField(
         upload_to="css/",
         validators=[FileExtensionValidator(["scss", "sass"])],
@@ -120,15 +120,13 @@ class Theme(models.Model):
     )
     path = models.CharField(max_length=50, blank=True, null=True)
 
-    @classmethod
-    def get_theme(cls, user):
+    def __str__(self):
+        return self.name
+
+    @property
+    def theme_path(self):
         """get the theme given the user/site"""
-        if user and user.theme:
-            return user.theme.path
-        site = SiteSettings.objects.get()
-        if site.theme:
-            return site.theme.path
-        return "light.scss"
+        return self.theme_file.path if self.theme_file else self.path
 
 
 class SiteInvite(models.Model):
