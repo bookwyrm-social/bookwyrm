@@ -3,6 +3,7 @@
 import bookwyrm.models.fields
 from django.db import migrations
 
+
 def add_shelves(apps, schema_editor):
     """add any superusers to the "admin" group"""
 
