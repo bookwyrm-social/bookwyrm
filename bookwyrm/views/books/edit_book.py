@@ -39,42 +39,20 @@ class EditBook(View):
         data = {"book": book, "form": forms.EditionForm(instance=book)}
         return TemplateResponse(request, "book/edit/edit_book.html", data)
 
-    # pylint: disable=too-many-locals
     def post(self, request, book_id):
         """edit a book cool"""
-        # returns None if no match is found
-        book = models.Edition.objects.filter(id=book_id).first()
+        book = get_object_or_404(models.Edition, id=book_id)
         form = forms.EditionForm(request.POST, request.FILES, instance=book)
 
         data = {"book": book, "form": form}
         if not form.is_valid():
-            print("FORM NOT VALID", form.errors)
             return TemplateResponse(request, "book/edit/edit_book.html", data)
 
         data = add_authors(request, data)
 
         # either of the above cases requires additional confirmation
         if data.get("add_author"):
-            # creting a book or adding an author to a book needs another step
-            data["confirm_mode"] = True
-            # this isn't preserved because it isn't part of the form obj
-            data["remove_authors"] = request.POST.getlist("remove_authors")
-            data["cover_url"] = request.POST.get("cover-url")
-
-            # make sure the dates are passed in as datetime, they're currently a string
-            # QueryDicts are immutable, we need to copy
-            formcopy = data["form"].data.copy()
-            try:
-                formcopy["first_published_date"] = dateparse(
-                    formcopy["first_published_date"]
-                )
-            except (MultiValueDictKeyError, ValueError):
-                pass
-            try:
-                formcopy["published_date"] = dateparse(formcopy["published_date"])
-            except (MultiValueDictKeyError, ValueError):
-                pass
-            data["form"].data = formcopy
+            data = copy_form(data)
             return TemplateResponse(request, "book/edit/edit_book.html", data)
 
         remove_authors = request.POST.getlist("remove_authors")
@@ -110,62 +88,70 @@ class CreateBook(View):
         """create a new book"""
         # returns None if no match is found
         form = forms.EditionForm(request.POST, request.FILES)
-
         data = {"form": form}
+
+        # collect data provided by the work or import item
+        parent_work_id = request.POST.get("parent_work")
+        authors = None
+        if request.POST.get("authors"):
+            author_ids = findall(r"\d+", request.POST["authors"])
+            authors = models.Author.objects.filter(id__in=author_ids)
+
+        # fake book in case we need to keep editing
+        if parent_work_id:
+            data["book"] = {
+                "parent_work": {"id": parent_work_id},
+                "authors": authors,
+            }
+
         if not form.is_valid():
-            print(form.errors)
             return TemplateResponse(request, "book/edit/edit_book.html", data)
 
         data = add_authors(request, data)
-        author_text = ", ".join(data.get("add_author", []))
 
         # check if this is an edition of an existing work
+        author_text = ", ".join(data.get("add_author", []))
         data["book_matches"] = book_search.search(
             f'{form.cleaned_data.get("title")} {author_text}',
             min_confidence=0.1,
         )[:5]
 
-        parent_work_id = request.POST.get("parent_work")
-        if not parent_work_id or data.get("add_authors"):
-            # creting a book or adding an author to a book needs another step
-            data["confirm_mode"] = True
-            # this isn't preserved because it isn't part of the form obj
-            data["remove_authors"] = request.POST.getlist("remove_authors")
-            data["cover_url"] = request.POST.get("cover-url")
-
-            # make sure the dates are passed in as datetime, they're currently a string
-            # QueryDicts are immutable, we need to copy
-            formcopy = data["form"].data.copy()
-            formcopy["parent_work"] = parent_work_id
-            try:
-                formcopy["first_published_date"] = dateparse(
-                    formcopy["first_published_date"]
-                )
-            except (MultiValueDictKeyError, ValueError):
-                pass
-            try:
-                formcopy["published_date"] = dateparse(formcopy["published_date"])
-            except (MultiValueDictKeyError, ValueError):
-                pass
-            data["form"].data = formcopy
+        # go to confirm mode
+        if not parent_work_id or data.get("add_author"):
+            data = copy_form(data)
             return TemplateResponse(request, "book/edit/edit_book.html", data)
 
-        book = form.save()
-        parent_work = get_object_or_404(models.Work, id=parent_work_id)
-        book.parent_work = parent_work
+        with transaction.atomic():
+            book = form.save()
+            parent_work = get_object_or_404(models.Work, id=parent_work_id)
+            book.parent_work = parent_work
 
-        if request.POST.get("authors"):
-            author_ids = findall(r"\d+", request.POST["authors"])
-            # django can't parse the authors form element
-            book.authors.add(*models.Author.objects.filter(id__in=author_ids))
+            if authors:
+                book.authors.add(*authors)
 
-        url = request.POST.get("cover-url")
-        if url:
-            image = set_cover_from_url(url)
-            if image:
-                book.cover.save(*image, save=False)
-        book.save()
+            url = request.POST.get("cover-url")
+            if url:
+                image = set_cover_from_url(url)
+                if image:
+                    book.cover.save(*image, save=False)
+
+            book.save()
         return redirect(f"/book/{book.id}")
+
+
+def copy_form(data):
+    """helper to re-create the date fields in the form"""
+    formcopy = data["form"].data.copy()
+    try:
+        formcopy["first_published_date"] = dateparse(formcopy["first_published_date"])
+    except (MultiValueDictKeyError, ValueError):
+        pass
+    try:
+        formcopy["published_date"] = dateparse(formcopy["published_date"])
+    except (MultiValueDictKeyError, ValueError):
+        pass
+    data["form"].data = formcopy
+    return data
 
 
 def add_authors(request, data):
@@ -177,6 +163,12 @@ def add_authors(request, data):
     data["add_author"] = add_author
     data["author_matches"] = []
     data["isni_matches"] = []
+
+    # creting a book or adding an author to a book needs another step
+    data["confirm_mode"] = True
+    # this isn't preserved because it isn't part of the form obj
+    data["remove_authors"] = request.POST.getlist("remove_authors")
+    data["cover_url"] = request.POST.get("cover-url")
 
     for author in add_author:
         # filter out empty author fields
@@ -255,6 +247,13 @@ class ConfirmEditBook(View):
         with transaction.atomic():
             # save book
             book = form.save()
+
+            # add known authors
+            authors = None
+            if request.POST.get("authors"):
+                author_ids = findall(r"\d+", request.POST["authors"])
+                authors = models.Author.objects.filter(id__in=author_ids)
+                book.authors.add(*authors)
 
             # get or create author as needed
             for i in range(int(request.POST.get("author-match-count", 0))):
