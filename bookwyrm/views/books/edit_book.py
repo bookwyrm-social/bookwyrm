@@ -150,7 +150,7 @@ class CreateBook(View):
             data["form"].data = formcopy
             return TemplateResponse(request, "book/edit/edit_book.html", data)
 
-        book = form.save(commit=False)
+        book = form.save()
         parent_work = get_object_or_404(models.Work, id=parent_work_id)
         book.parent_work = parent_work
 
