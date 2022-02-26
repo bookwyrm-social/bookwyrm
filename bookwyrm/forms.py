@@ -264,17 +264,40 @@ class FileLinkForm(CustomForm):
                 )
 
 
+class EditionFromWorkForm(CustomForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # make all fields hidden
+        for visible in self.visible_fields():
+            visible.field.widget = forms.HiddenInput()
+
+    class Meta:
+        model = models.Work
+        fields = [
+            "title",
+            "subtitle",
+            "authors",
+            "description",
+            "languages",
+            "series",
+            "series_number",
+            "subjects",
+            "subject_places",
+            "cover",
+            "first_published_date",
+        ]
+
 class EditionForm(CustomForm):
     class Meta:
         model = models.Edition
         exclude = [
+            "authors",
+            "parent_work",
             "remote_id",
             "origin_id",
             "created_date",
             "updated_date",
             "edition_rank",
-            "authors",
-            "parent_work",
             "shelves",
             "connector",
             "search_vector",
