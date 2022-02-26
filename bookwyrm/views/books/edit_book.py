@@ -157,9 +157,7 @@ class CreateBook(View):
         if request.POST.get("authors"):
             author_ids = findall(r"\d+", request.POST["authors"])
             # django can't parse the authors form element
-            book.authors.add(
-                *models.Author.objects.filter(id__in=author_ids)
-            )
+            book.authors.add(*models.Author.objects.filter(id__in=author_ids))
 
         url = request.POST.get("cover-url")
         if url:
@@ -168,6 +166,7 @@ class CreateBook(View):
                 book.cover.save(*image, save=False)
         book.save()
         return redirect(f"/book/{book.id}")
+
 
 def add_authors(request, data):
     """helper for adding authors"""
@@ -184,9 +183,7 @@ def add_authors(request, data):
         if not author:
             continue
         # check for existing authors
-        vector = SearchVector("name", weight="A") + SearchVector(
-            "aliases", weight="B"
-        )
+        vector = SearchVector("name", weight="A") + SearchVector("aliases", weight="B")
 
         author_matches = (
             models.Author.objects.annotate(search=vector)
@@ -229,9 +226,7 @@ def create_book_from_data(request):
     author_ids = findall(r"\d+", request.POST.get("authors"))
     book = {
         "parent_work": {"id": request.POST.get("parent_work")},
-        "authors": models.Author.objects.filter(
-            id__in=author_ids
-        ).all(),
+        "authors": models.Author.objects.filter(id__in=author_ids).all(),
     }
 
     data = {"book": book, "form": forms.EditionForm(request.POST)}

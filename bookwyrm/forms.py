@@ -287,6 +287,7 @@ class EditionFromWorkForm(CustomForm):
             "first_published_date",
         ]
 
+
 class EditionForm(CustomForm):
     class Meta:
         model = models.Edition
