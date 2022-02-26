@@ -18,8 +18,10 @@
         {% trans "Auto-moderation rules will create reports for any local user or status with fields matching the provided string." %}
         {% trans "Users or statuses that have already been reported (regardless of whether the report was resolved) will not be flagged." %}
     </p>
+</div>
+<div class="box block">
     {% if task %}
-    <dl>
+    <dl class="block">
         <dt class="is-pulled-left mr-5 has-text-weight-bold">
             {% trans "Schedule:" %}
         </dt>
@@ -51,7 +53,7 @@
         </dd>
     </dl>
 
-    <div class="is-flex is-justify-content-space-between">
+    <div class="is-flex is-justify-content-space-between block">
         <form name="unschedule-scan" method="POST" action="{% url 'settings-automod-unschedule' task.id %}">
             {% csrf_token %}
             <button class="button is-danger">{% trans "Delete schedule" %}</button>
@@ -64,9 +66,29 @@
     </div>
 
     {% else %}
+    <h2 class="title is-4">{% trans "Schedule scan" %}</h2>
     <form name="schedule-scan" method="POST" action="{% url 'settings-automod-schedule' %}">
         {% csrf_token %}
-        {{ task_form.as_p }}
+        <div class="field">
+            <label class="label" for="id_every">
+                {{ task_form.every.label }}
+            </label>
+            {{ task_form.every }}
+            <p class="help" id="desc_every">
+                {{ task_form.every.help_text }}
+            </p>
+        </div>
+        <div class="field">
+            <label class="label" for="id_period">
+            {{ task_form.period.label }}
+            </label>
+            <div class="select">
+                {{ task_form.period }}
+            </div>
+            <p class="help" id="desc_period">
+                {{ task_form.period.help_text }}
+            </p>
+        </div>
         <button class="button is-warning">{% trans "Schedule scan" %}</button>
     </form>
     {% endif %}

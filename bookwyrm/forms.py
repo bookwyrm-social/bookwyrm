@@ -563,3 +563,8 @@ class IntervalScheduleForm(CustomForm):
     class Meta:
         model = IntervalSchedule
         fields = ["every", "period"]
+
+        widgets = {
+            "every": forms.NumberInput(attrs={"aria-describedby": "desc_every"}),
+            "period": forms.Select(attrs={"aria-describedby": "desc_period"}),
+        }
