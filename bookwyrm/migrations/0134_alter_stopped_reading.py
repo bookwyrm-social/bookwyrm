@@ -3,6 +3,22 @@
 import bookwyrm.models.fields
 from django.db import migrations
 
+def add_shelves(apps, schema_editor):
+    """add any superusers to the "admin" group"""
+
+    db_alias = schema_editor.connection.alias
+    shelf_model = apps.get_model("bookwyrm", "Shelf")
+
+    users = apps.get_model("bookwyrm", "User")
+    local_users = users.objects.using(db_alias).filter(local=True)
+    for user in local_users:
+        shelf_model.using(db_alias)(
+            name="Stopped reading",
+            identifier=Shelf.STOPPED_READING,
+            user=user,
+            editable=False,
+        ).save(broadcast=False)
+
 
 class Migration(migrations.Migration):
 
@@ -56,4 +72,5 @@ class Migration(migrations.Migration):
                 null=True,
             ),
         ),
+        migrations.RunPython(add_shelves, reverse_code=migrations.RunPython.noop),
     ]
