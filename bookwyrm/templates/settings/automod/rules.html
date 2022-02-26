@@ -50,6 +50,19 @@
             </span>
         </dd>
     </dl>
+
+    <div class="is-flex is-justify-content-space-between">
+        <form name="unschedule-scan" method="POST" action="{% url 'settings-automod-unschedule' task.id %}">
+            {% csrf_token %}
+            <button class="button is-danger">{% trans "Delete schedule" %}</button>
+        </form>
+        <form name="run-scan" method="POST" action="{% url 'settings-automod-run' %}">
+            {% csrf_token %}
+            <button class="button">{% trans "Run now" %}</button>
+            <p class="help">{% trans "Last run date will not be updated" %}</p>
+        </form>
+    </div>
+
     {% else %}
     <form name="schedule-scan" method="POST" action="{% url 'settings-automod-schedule' %}">
         {% csrf_token %}

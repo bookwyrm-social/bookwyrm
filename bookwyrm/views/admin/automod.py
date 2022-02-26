@@ -68,10 +68,19 @@ def schedule_automod_task(request):
 @permission_required("bookwyrm.moderate_user", raise_exception=True)
 @permission_required("bookwyrm.moderate_post", raise_exception=True)
 # pylint: disable=unused-argument
+def unschedule_automod_task(request, task_id):
+    """unscheduler"""
+    get_object_or_404(PeriodicTask, id=task_id).delete()
+    return redirect("settings-automod")
+
+
+@require_POST
+@permission_required("bookwyrm.moderate_user", raise_exception=True)
+@permission_required("bookwyrm.moderate_post", raise_exception=True)
+# pylint: disable=unused-argument
 def automod_delete(request, rule_id):
     """Remove a rule"""
-    rule = get_object_or_404(models.AutoMod, id=rule_id)
-    rule.delete()
+    get_object_or_404(models.AutoMod, id=rule_id).delete()
     return redirect("settings-automod")
 
 

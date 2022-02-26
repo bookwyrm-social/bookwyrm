@@ -227,6 +227,11 @@ urlpatterns = [
         name="settings-automod-schedule",
     ),
     re_path(
+        r"^settings/automod/unschedule/(?P<task_id>\d+)/?$",
+        views.unschedule_automod_task,
+        name="settings-automod-unschedule",
+    ),
+    re_path(
         r"^settings/automod/run/?$", views.run_automod, name="settings-automod-run"
     ),
     # moderation
