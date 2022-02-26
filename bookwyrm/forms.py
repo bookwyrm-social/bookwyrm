@@ -8,6 +8,7 @@ from django.forms import ModelForm, PasswordInput, widgets, ChoiceField
 from django.forms.widgets import Textarea
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+from django_celery_beat.models import IntervalSchedule
 
 from bookwyrm import models
 from bookwyrm.models.fields import ClearableFileInputWithWarning
@@ -556,3 +557,9 @@ class AutoModRuleForm(CustomForm):
     class Meta:
         model = models.AutoMod
         fields = ["string_match", "flag_users", "flag_statuses", "created_by"]
+
+
+class IntervalScheduleForm(CustomForm):
+    class Meta:
+        model = IntervalSchedule
+        fields = ["every", "period"]
