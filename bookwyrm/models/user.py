@@ -136,6 +136,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     updated_date = models.DateTimeField(auto_now=True)
     last_active_date = models.DateTimeField(default=timezone.now)
     manually_approves_followers = fields.BooleanField(default=False)
+    theme = models.ForeignKey("Theme", null=True, blank=True, on_delete=models.SET_NULL)
 
     # options to turn features on and off
     show_goal = models.BooleanField(default=True)
@@ -171,6 +172,17 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     name_field = "username"
     property_fields = [("following_link", "following")]
     field_tracker = FieldTracker(fields=["name", "avatar"])
+
+    @property
+    def get_theme(self):
+        """get the theme given the user/site"""
+        if self.theme:
+            return self.theme.path
+        site_model = apps.get_model("bookwyrm", "SiteSettings", require_ready=True)
+        site = site_model.objects.get()
+        if site.default_theme:
+            return site.default_theme.path
+        return "css/themes/bookwyrm-light.scss"
 
     @property
     def confirmation_link(self):

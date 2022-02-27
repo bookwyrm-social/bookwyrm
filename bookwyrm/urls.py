@@ -86,6 +86,7 @@ urlpatterns = [
         r"^settings/dashboard/?$", views.Dashboard.as_view(), name="settings-dashboard"
     ),
     re_path(r"^settings/site-settings/?$", views.Site.as_view(), name="settings-site"),
+    re_path(r"^settings/themes/?$", views.Themes.as_view(), name="settings-themes"),
     re_path(
         r"^settings/announcements/?$",
         views.Announcements.as_view(),
