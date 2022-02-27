@@ -2,7 +2,7 @@
 /* Barcode scanner CSS */
 #barcode-scanner {
     position: relative;
-    min-height: 200px;
+    min-height: 450px;
 
     .drawingBuffer {
         position: absolute;
@@ -13,12 +13,6 @@
     }
 }
 
-#barcode-status {
-    :dir(ltr) .select {
-        float: right;
-    }
-
-    :dir(rtl) .select {
-        float: left;
-    }
+#barcode-status .select {
+    float: right;
 }
