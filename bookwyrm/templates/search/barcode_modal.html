@@ -25,8 +25,8 @@
             <span>{% trans "Align your book's barcode with the camera." %}</span>
         </div>
         <div class="found is-hidden">
-            <span class="is-size-5">{% trans "ISBN scanned, searching..." context "barcode scanner" %}</span><br/>
-            <span class="isbn"></span>
+            <span class="is-size-5">{% trans "ISBN scanned" context "barcode scanner" %}</span><br/>
+            {% trans "Searching for book:" context "followed by ISBN" %} <span class="isbn"></span>...
         </div>
     </div>
 {% endblock %}
