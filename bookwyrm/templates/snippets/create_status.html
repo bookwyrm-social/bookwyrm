@@ -4,42 +4,37 @@
 
 {% with status_type=request.GET.status_type %}
 <div class="tab-group">
-    <div class="tabs is-boxed" role="tablist">
-        <ul>
-            <li class="{% if status_type == 'review' or not status_type %}is-active{% endif %}">
-                <a
-                    href="{{ request.path }}?status_type=review&book={{ book.id }}"
-                    id="tab_review_{{ book.id }}"
-                    role="tab"
-                    aria-selected="{% if status_type == 'review' or not status_type %}true{% else %}false{% endif %}"
-                    aria-controls="review_{{ book.id }}"
-                    data-category="tab-option-{{ book.id }}">
-                    {% trans "Review" %}
-                </a>
-            </li>
-            <li class="{% if status_type == 'comment' %}is-active{% endif %}">
-                <a
-                    href="{{ request.path }}?status_type=comment&book={{ book.id}}"
-                    id="tab_comment_{{ book.id }}"
-                    role="tab"
-                    aria-selected="{% if status_type == 'comment' %}true{% else %}false{% endif %}"
-                    aria-controls="comment_{{ book.id}}"
-                    data-category="tab-option-{{ book.id }}">
-                    {% trans "Comment" %}
-                </a>
-            </li>
-            <li class="{% if status_type == 'quote' %}is-active{% endif %}">
-                <a
-                    href="{{ request.path }}?status_type=quote&book={{ book.id }}"
-                    id="tab_quote_{{ book.id }}"
-                    role="tab"
-                    aria-selected="{% if status_type == 'quote' %}true{% else %}false{% endif %}"
-                    aria-controls="quote_{{ book.id }}"
-                    data-category="tab-option-{{ book.id }}">
-                    {% trans "Quote" %}
-                </a>
-            </li>
-        </ul>
+    <div class="bw-tabs is-boxed" role="tablist">
+        <a
+            class="{% if status_type == 'review' or not status_type %}is-active{% endif %}"
+            role="tab"
+            href="{{ request.path }}?status_type=review&book={{ book.id }}"
+            id="tab_review_{{ book.id }}"
+            aria-selected="{% if status_type == 'review' or not status_type %}true{% else %}false{% endif %}"
+            aria-controls="review_{{ book.id }}"
+            data-category="tab-option-{{ book.id }}">
+            {% trans "Review" %}
+        </a>
+        <a
+            class="{% if status_type == 'comment' %}is-active{% endif %}"
+            role="tab"
+            href="{{ request.path }}?status_type=comment&book={{ book.id}}"
+            id="tab_comment_{{ book.id }}"
+            aria-selected="{% if status_type == 'comment' %}true{% else %}false{% endif %}"
+            aria-controls="comment_{{ book.id}}"
+            data-category="tab-option-{{ book.id }}">
+            {% trans "Comment" %}
+        </a>
+        <a
+            class="{% if status_type == 'quote' %}is-active{% endif %}"
+            role="tab"
+            href="{{ request.path }}?status_type=quote&book={{ book.id }}"
+            id="tab_quote_{{ book.id }}"
+            aria-selected="{% if status_type == 'quote' %}true{% else %}false{% endif %}"
+            aria-controls="quote_{{ book.id }}"
+            data-category="tab-option-{{ book.id }}">
+            {% trans "Quote" %}
+        </a>
     </div>
 
     <div class="tab-option-{{ book.id }}" id="review_{{ book.id }}" role="tabpanel" aria-labelledby="tab_review_{{ book.id }}" {% if status_type and status_type != "review" %}hidden{% endif %}>

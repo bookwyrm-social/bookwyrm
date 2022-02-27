@@ -15,6 +15,24 @@
 {% endblock %}
 
 {% block panel %}
+{% if success %}
+<div class="notification is-success is-light">
+    <span class="icon icon-check" aria-hidden="true"></span>
+    <span>
+        {% trans "Settings saved" %}
+    </span>
+</div>
+{% endif %}
+
+{% if site_form.errors %}
+<div class="notification is-danger is-light">
+    <span class="icon icon-x" aria-hidden="true"></span>
+    <span>
+        {% trans "Unable to save settings" %}
+    </span>
+</div>
+{% endif %}
+
 <form action="{% url 'settings-site' %}" method="POST" class="content" enctype="multipart/form-data">
     {% csrf_token %}
     <section class="block" id="instance_info">

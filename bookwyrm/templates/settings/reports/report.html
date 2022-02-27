@@ -1,6 +1,7 @@
 {% extends 'settings/layout.html' %}
 {% load i18n %}
 {% load humanize %}
+{% load feed_page_tags %}
 
 {% block title %}
 {% include "settings/reports/report_header.html" with report=report %}
@@ -21,7 +22,7 @@
     <details class="details-panel box">
         <summary>
             <span class="title is-4">{% trans "Message reporter" %}</span>
-            <span class="details-close icon icon-x" aria-hidden></span>
+            <span class="details-close icon icon-x" aria-hidden="true"></span>
         </summary>
         <div class="box">
             {% trans "Update on your report:" as dm_template %}
@@ -30,20 +31,14 @@
     </details>
 </div>
 
-{% if report.statuses.exists %}
+{% if report.status %}
 <div class="block">
-    <h3 class="title is-4">{% trans "Reported statuses" %}</h3>
-    <ul>
-        {% for status in report.statuses.select_subclasses.all %}
-        <li>
-            {% if status.deleted %}
-            <em>{% trans "Status has been deleted" %}</em>
-            {% else %}
-            {% include 'snippets/status/status.html' with status=status moderation_mode=True %}
-            {% endif %}
-        </li>
-        {% endfor %}
-    </ul>
+    <h3 class="title is-4">{% trans "Reported status" %}</h3>
+    {% if report.status.deleted %}
+    <em>{% trans "Status has been deleted" %}</em>
+    {% else %}
+    {% include 'snippets/status/status.html' with status=report.status|load_subclass moderation_mode=True %}
+    {% endif %}
 </div>
 {% endif %}
 

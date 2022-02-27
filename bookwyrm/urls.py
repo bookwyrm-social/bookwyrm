@@ -58,6 +58,9 @@ urlpatterns = [
         views.get_unread_status_string,
         name="stream-updates",
     ),
+    # instance setup
+    re_path(r"^setup/?$", views.InstanceConfig.as_view(), name="setup"),
+    re_path(r"^setup/admin/?$", views.CreateAdmin.as_view(), name="setup-admin"),
     # authentication
     re_path(r"^login/?$", views.Login.as_view(), name="login"),
     re_path(r"^login/(?P<confirmed>confirmed)/?$", views.Login.as_view(), name="login"),
@@ -92,6 +95,16 @@ urlpatterns = [
         r"^settings/announcements/(?P<announcement_id>\d+)/?$",
         views.Announcement.as_view(),
         name="settings-announcements",
+    ),
+    re_path(
+        r"^settings/announcements/create/?$",
+        views.EditAnnouncement.as_view(),
+        name="settings-announcements-edit",
+    ),
+    re_path(
+        r"^settings/announcements/(?P<announcement_id>\d+)/edit/?$",
+        views.EditAnnouncement.as_view(),
+        name="settings-announcements-edit",
     ),
     re_path(
         r"^settings/announcements/(?P<announcement_id>\d+)/delete/?$",
@@ -201,6 +214,14 @@ urlpatterns = [
         views.IPBlocklist.as_view(),
         name="settings-ip-blocks-delete",
     ),
+    # auto-moderation rules
+    re_path(r"^settings/automod/?$", views.AutoMod.as_view(), name="settings-automod"),
+    re_path(
+        r"^settings/automod/(?P<rule_id>\d+)/delete?$",
+        views.automod_delete,
+        name="settings-automod-delete",
+    ),
+    re_path(r"^settings/automod/run?$", views.run_automod, name="settings-automod-run"),
     # moderation
     re_path(
         r"^settings/reports/?$", views.ReportsAdmin.as_view(), name="settings-reports"

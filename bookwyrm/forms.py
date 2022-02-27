@@ -54,6 +54,13 @@ class RegisterForm(CustomForm):
         help_texts = {f: None for f in fields}
         widgets = {"password": PasswordInput()}
 
+    def clean(self):
+        """Check if the username is taken"""
+        cleaned_data = super().clean()
+        localname = cleaned_data.get("localname").strip()
+        if models.User.objects.filter(localname=localname).first():
+            self.add_error("localname", _("User with this username already exists"))
+
 
 class RatingForm(CustomForm):
     class Meta:
@@ -433,7 +440,7 @@ class GoalForm(CustomForm):
 class SiteForm(CustomForm):
     class Meta:
         model = models.SiteSettings
-        exclude = []
+        exclude = ["admin_code", "install_mode"]
         widgets = {
             "instance_short_description": forms.TextInput(
                 attrs={"aria-describedby": "desc_instance_short_description"}
@@ -488,7 +495,7 @@ class GroupForm(CustomForm):
 class ReportForm(CustomForm):
     class Meta:
         model = models.Report
-        fields = ["user", "reporter", "statuses", "links", "note"]
+        fields = ["user", "reporter", "status", "links", "note"]
 
 
 class EmailBlocklistForm(CustomForm):
@@ -543,3 +550,9 @@ class ReadThroughForm(CustomForm):
     class Meta:
         model = models.ReadThrough
         fields = ["user", "book", "start_date", "finish_date"]
+
+
+class AutoModRuleForm(CustomForm):
+    class Meta:
+        model = models.AutoMod
+        fields = ["string_match", "flag_users", "flag_statuses", "created_by"]

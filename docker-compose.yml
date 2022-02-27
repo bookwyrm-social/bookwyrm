@@ -84,6 +84,11 @@ services:
       - db
       - redis_broker
     restart: on-failure
+  dev-tools:
+    build: dev-tools
+    env_file: .env
+    volumes:
+      - .:/app
 volumes:
   pgdata:
   static_volume:
