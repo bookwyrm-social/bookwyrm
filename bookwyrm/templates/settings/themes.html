@@ -16,21 +16,24 @@
 {% endif %}
 
 <section class="block">
-    <div class="notification">
-        <p>
-            <strong>{% trans "Default theme:" %}</strong> {{ site.default_theme.name }}
-        </p>
-
-        <p>
-            <a href="{% url 'settings-site' %}#display">
-                {% trans "Set default theme" %}
-            </a>
-        </p>
+    <div class="notification content">
+        <h2 class="title is-5">{% trans "How to add a theme" %}</h2>
+        <ol>
+            <li>
+                {% trans "Copy the theme file into the <code>bookwyrm/static/css/</code> directory on your server from the command line." %}
+            </li>
+            <li>
+                {% trans "Run <code>./bw-dev compilescss</code>." %}
+            </li>
+            <li>
+                {% trans "Add the file name using the form below to make it available in the application interface." %}
+            </li>
+        </ol>
     </div>
 </section>
 
 <section class="block content">
-    <h2 class="title is-4">{% trans "Upload theme" %}</h2>
+    <h2 class="title is-4">{% trans "Add theme" %}</h2>
 
     {% if theme_form.errors %}
     <div class="notification is-danger is-light">
@@ -60,17 +63,17 @@
             </div>
 
             <div class="column">
-                <label class="label" for="id_theme_file">
-                    {% trans "Theme file" %}
+                <label class="label" for="id_path">
+                    {% trans "Theme filename" %}
                 </label>
                 <div class="control">
-                    {{ theme_form.theme_file }}
-                    {% include 'snippets/form_errors.html' with errors_list=theme_form.theme_file.errors id="desc_theme_file" %}
+                    {{ theme_form.path }}
+                    {% include 'snippets/form_errors.html' with errors_list=theme_form.path.errors id="desc_path" %}
                 </div>
             </div>
         </div>
 
-        <button type="submit" class="button">{% trans "Upload theme" %}</button>
+        <button type="submit" class="button">{% trans "Add theme" %}</button>
     </form>
 </section>
 
@@ -92,13 +95,11 @@
             {% for theme in themes %}
             <tr>
                 <td>{{ theme.name }}</td>
-                <td><code>{{ theme.theme_path }}</code></td>
+                <td><code>{{ theme.path }}</code></td>
                 <td>
-                    {% if theme.theme_file %}
                     <form>
-                        <button type="submit" class="button is-danger is-light">{% trans "Delete" %}</button>
+                        <button type="submit" class="button is-danger is-light">{% trans "Remove theme" %}</button>
                     </form>
-                    {% endif %}
                 </td>
             </tr>
             {% endfor %}

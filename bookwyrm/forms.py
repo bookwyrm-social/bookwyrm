@@ -466,9 +466,7 @@ class ThemeForm(CustomForm):
         fields = ["name", "path"]
         widgets = {
             "name": forms.TextInput(attrs={"aria-describedby": "desc_name"}),
-            "path": ClearableFileInputWithWarning(
-                attrs={"aria-describedby": "desc_path"}
-            ),
+            "path": forms.TextInput(attrs={"aria-describedby": "desc_path", "placeholder": _("example-theme.scss")}),
         }
 
 
