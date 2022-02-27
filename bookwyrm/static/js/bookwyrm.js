@@ -655,6 +655,8 @@ let BookWyrm = new (class {
         }
 
         function initBarcodes(cameraId = null) {
+            toggleStatus('grant-access');
+
             if (!cameraId) {
                 cameraId = sessionStorage.getItem('preferredCam');
             } else {
@@ -777,7 +779,6 @@ let BookWyrm = new (class {
 
         event.target.addEventListener('close', cleanup, { once: true });
 
-        toggleStatus('grant-access');
         initBarcodes();
     }
 })();
