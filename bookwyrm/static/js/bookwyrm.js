@@ -689,7 +689,7 @@ let BookWyrm = new (class {
             statusNode.querySelector('.isbn').innerText = code;
             toggleStatus('found');
 
-            const search = new Url('search');
+            const search = new URL('/search', document.location);
             search.searchParams.set('q', code);
 
             cleanup();
