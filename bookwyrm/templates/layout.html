@@ -9,7 +9,7 @@
     <title>{% block title %}BookWyrm{% endblock %} - {{ site.name }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     {% with theme_path=user.get_theme %}
-    <link href="{% sass_src theme_path %}" rel="stylesheet" type="text/css" />
+    <link href="{% sass_src 'css/themes/bookwyrm-light.scss' %}" rel="stylesheet" type="text/css" />
     {% endwith %}
 
     <link rel="search" type="application/opensearchdescription+xml" href="{% url 'opensearch' %}" title="{% blocktrans with site_name=site.name %}{{ site_name }} search{% endblocktrans %}" />

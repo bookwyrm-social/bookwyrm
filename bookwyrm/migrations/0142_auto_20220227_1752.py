@@ -10,11 +10,11 @@ def add_default_themes(apps, schema_editor):
     theme_model = apps.get_model("bookwyrm", "Theme")
     theme_model.objects.using(db_alias).create(
         name="BookWyrm Light",
-        path="bookwyrm-light.scss",
+        path="css/themes/bookwyrm-light.scss",
     )
     theme_model.objects.using(db_alias).create(
         name="BookWyrm Dark",
-        path="bookwyrm-dark.scss",
+        path="css/themes/bookwyrm-dark.scss",
     )
 
 

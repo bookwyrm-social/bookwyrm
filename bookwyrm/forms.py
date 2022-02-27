@@ -4,6 +4,8 @@ from collections import defaultdict
 from urllib.parse import urlparse
 
 from django import forms
+from django.contrib.staticfiles.utils import get_files
+from django.contrib.staticfiles.storage import StaticFilesStorage
 from django.forms import ModelForm, PasswordInput, widgets, ChoiceField
 from django.forms.widgets import Textarea
 from django.utils import timezone
@@ -460,13 +462,22 @@ class SiteThemeForm(CustomForm):
         fields = ["default_theme"]
 
 
+def get_theme_choices():
+    """static files"""
+    choices = list(get_files(StaticFilesStorage(), location="css/themes"))
+    current = models.Theme.objects.values_list("path", flat=True)
+    return [(c, c) for c in choices if c not in current and c[-5:] == ".scss"]
+
+
 class ThemeForm(CustomForm):
     class Meta:
         model = models.Theme
         fields = ["name", "path"]
         widgets = {
             "name": forms.TextInput(attrs={"aria-describedby": "desc_name"}),
-            "path": forms.TextInput(attrs={"aria-describedby": "desc_path", "placeholder": _("example-theme.scss")}),
+            "path": forms.Select(
+                attrs={"aria-describedby": "desc_path"}, choices=get_theme_choices()
+            ),
         }
 
 

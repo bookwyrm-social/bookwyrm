@@ -20,7 +20,7 @@
         <h2 class="title is-5">{% trans "How to add a theme" %}</h2>
         <ol>
             <li>
-                {% trans "Copy the theme file into the <code>bookwyrm/static/css/</code> directory on your server from the command line." %}
+                {% trans "Copy the theme file into the <code>bookwyrm/static/css/themes</code> directory on your server from the command line." %}
             </li>
             <li>
                 {% trans "Run <code>./bw-dev compilescss</code>." %}
@@ -67,7 +67,9 @@
                     {% trans "Theme filename" %}
                 </label>
                 <div class="control">
-                    {{ theme_form.path }}
+                    <div class="select">
+                        {{ theme_form.path }}
+                    </div>
                     {% include 'snippets/form_errors.html' with errors_list=theme_form.path.errors id="desc_path" %}
                 </div>
             </div>
