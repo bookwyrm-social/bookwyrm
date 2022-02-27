@@ -21,6 +21,7 @@ from .admin.reports import (
     moderator_delete_user,
 )
 from .admin.site import Site
+from .admin.themes import Themes
 from .admin.user_admin import UserAdmin, UserAdminList
 
 # user preferences

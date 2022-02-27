@@ -176,14 +176,14 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     @property
     def get_theme(self):
         """get the theme given the user/site"""
+        path = "bookwyrm-light.scss"
         if self.theme:
-            path = self.theme.theme_path
+            path = self.theme.path
         else:
             site_model = apps.get_model("bookwyrm", "SiteSettings", require_ready=True)
             site = site_model.objects.get()
             if site.default_theme:
-                path = site.default_theme.theme_path
-        path = path or "light.scss"
+                path = site.default_theme.path
         return f"css/{path}"
 
     @property

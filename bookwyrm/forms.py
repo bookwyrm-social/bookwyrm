@@ -454,6 +454,24 @@ class SiteForm(CustomForm):
         }
 
 
+class SiteThemeForm(CustomForm):
+    class Meta:
+        model = models.SiteSettings
+        fields = ["default_theme"]
+
+
+class ThemeForm(CustomForm):
+    class Meta:
+        model = models.Theme
+        fields = ["name", "path"]
+        widgets = {
+            "name": forms.TextInput(attrs={"aria-describedby": "desc_name"}),
+            "path": ClearableFileInputWithWarning(
+                attrs={"aria-describedby": "desc_path"}
+            ),
+        }
+
+
 class AnnouncementForm(CustomForm):
     class Meta:
         model = models.Announcement

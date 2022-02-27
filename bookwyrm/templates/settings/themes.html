@@ -1,0 +1,109 @@
+{% extends 'settings/layout.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Themes" %}{% endblock %}
+
+{% block header %}{% trans "Themes" %}{% endblock %}
+
+{% block panel %}
+{% if success %}
+<div class="notification is-success is-light">
+    <span class="icon icon-check" aria-hidden="true"></span>
+    <span>
+        {% trans "Successfully added theme" %}
+    </span>
+</div>
+{% endif %}
+
+<section class="block">
+    <div class="notification">
+        <p>
+            <strong>{% trans "Default theme:" %}</strong> {{ site.default_theme.name }}
+        </p>
+
+        <p>
+            <a href="{% url 'settings-site' %}#display">
+                {% trans "Set default theme" %}
+            </a>
+        </p>
+    </div>
+</section>
+
+<section class="block content">
+    <h2 class="title is-4">{% trans "Upload theme" %}</h2>
+
+    {% if theme_form.errors %}
+    <div class="notification is-danger is-light">
+        <span class="icon icon-x" aria-hidden="true"></span>
+        <span>
+            {% trans "Unable to save theme" %}
+        </span>
+    </div>
+    {% endif %}
+
+    <form
+        method="POST"
+        action="{% url 'settings-themes' %}"
+        class="box"
+        enctype="multipart/form-data"
+    >
+        {% csrf_token %}
+        <div class="columns">
+            <div class="column is-half">
+                <label class="label" for="id_name">
+                    {% trans "Theme name" %}
+                </label>
+                <div class="control">
+                    {{ theme_form.name }}
+                    {% include 'snippets/form_errors.html' with errors_list=theme_form.name.errors id="desc_name" %}
+                </div>
+            </div>
+
+            <div class="column">
+                <label class="label" for="id_theme_file">
+                    {% trans "Theme file" %}
+                </label>
+                <div class="control">
+                    {{ theme_form.theme_file }}
+                    {% include 'snippets/form_errors.html' with errors_list=theme_form.theme_file.errors id="desc_theme_file" %}
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" class="button">{% trans "Upload theme" %}</button>
+    </form>
+</section>
+
+<section class="block content">
+    <h2 class="title is-4">{% trans "Available Themes" %}</h2>
+    <div class="table-container">
+        <table class="table is-striped">
+            <tr>
+                <th>
+                    {% trans "Theme name" %}
+                </th>
+                <th>
+                    {% trans "File" %}
+                </th>
+                <th>
+                    {% trans "Actions" %}
+                </th>
+            </tr>
+            {% for theme in themes %}
+            <tr>
+                <td>{{ theme.name }}</td>
+                <td><code>{{ theme.theme_path }}</code></td>
+                <td>
+                    {% if theme.theme_file %}
+                    <form>
+                        <button type="submit" class="button is-danger is-light">{% trans "Delete" %}</button>
+                    </form>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</section>
+
+{% endblock %}

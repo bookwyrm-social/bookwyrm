@@ -3,7 +3,6 @@ import datetime
 from urllib.parse import urljoin
 import uuid
 
-from django.core.validators import FileExtensionValidator
 from django.db import models, IntegrityError
 from django.dispatch import receiver
 from django.utils import timezone
@@ -113,21 +112,11 @@ class Theme(models.Model):
 
     created_date = models.DateTimeField(auto_now_add=True)
     name = models.CharField(max_length=50, unique=True)
-    theme_file = models.FileField(
-        upload_to="css/",
-        validators=[FileExtensionValidator(["scss", "sass"])],
-        null=True,
-    )
-    path = models.CharField(max_length=50, blank=True, null=True)
+    path = models.CharField(max_length=50, unique=True)
 
     def __str__(self):
         # pylint: disable=invalid-str-returned
         return self.name
-
-    @property
-    def theme_path(self):
-        """get the theme given the user/site"""
-        return self.theme_file.path if self.theme_file else self.path
 
 
 class SiteInvite(models.Model):

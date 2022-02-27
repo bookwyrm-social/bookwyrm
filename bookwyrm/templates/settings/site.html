@@ -33,7 +33,12 @@
 </div>
 {% endif %}
 
-<form action="{% url 'settings-site' %}" method="POST" class="content" enctype="multipart/form-data">
+<form
+    action="{% url 'settings-site' %}"
+    method="POST"
+    class="content"
+    enctype="multipart/form-data"
+>
     {% csrf_token %}
     <section class="block" id="instance_info">
         <h2 class="title is-4">{% trans "Instance Info" %}</h2>
@@ -95,8 +100,6 @@
                 <div class="select">
                     {{ site_form.default_theme }}
                 </div>
-
-                <button type="button" class="button">{% trans "Upload theme" %}</button>
             </div>
         </div>
     </section>
