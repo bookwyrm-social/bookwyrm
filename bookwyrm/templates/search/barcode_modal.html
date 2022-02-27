@@ -8,9 +8,17 @@
 {% endblock %}
 
 {% block modal-body %}
-    <div id="barcode-scanner" class="block"></div>
+    <div class="block">
+        <div id="barcode-scanner"></div>
+    </div>
+
+    <div id="barcode-camera-list" class="select is-small">
+        <select>
+        </select>
+    </div>
     
     <div id="barcode-status" class="block">
+        
         <div class="grant-access is-hidden">
             <span class="icon icon-lock"></span>
             <span class="is-size-5">{% trans "Requesting camera..." %}</span></br>
@@ -22,10 +30,6 @@
             <span>{% trans "Could not access camera" %}</span>
         </div>
         <div class="scanning is-hidden">
-            <div class="select is-small">
-                <select id="barcode-camera-list">
-                </select>
-            </div>
             <span class="icon icon-barcode"></span>
             <span class="is-size-5">{% trans "Scanning..." context "barcode scanner" %}</span><br/>
             <span>{% trans "Align your book's barcode with the camera." %}</span>

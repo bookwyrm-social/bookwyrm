@@ -642,7 +642,7 @@ let BookWyrm = new (class {
     openBarcodeScanner(event) {
         const scannerNode = document.getElementById("barcode-scanner");
         const statusNode = document.getElementById("barcode-status");
-        const cameraListNode = document.getElementById("barcode-camera-list");
+        const cameraListNode = document.querySelector("#barcode-camera-list > select");
 
         cameraListNode.addEventListener('change', onChangeCamera);
 
