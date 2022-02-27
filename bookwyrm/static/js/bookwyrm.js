@@ -644,9 +644,11 @@ let BookWyrm = new (class {
         const statusNode = document.getElementById("barcode-status");
         const cameraListNode = document.getElementById("barcode-camera-list");
 
-        let changeListener = cameraListNode.addEventListener('change', (event) => {
+        cameraListNode.addEventListener('change', onChangeCamera);
+
+        function onChangeCamera(event) {
              initBarcodes(event.target.value);
-        });
+        }
 
         function toggleStatus(status) {
             for (const child of statusNode.children) {
@@ -724,7 +726,7 @@ let BookWyrm = new (class {
 
         function cleanup(clearDrawing = true) {
             Quagga.stop();
-            cameraListNode.removeEventListener('change', changeListener);
+            cameraListNode.removeEventListener('change', onChangeCamera);
 
             if (clearDrawing) {
                 scannerNode.replaceChildren();
