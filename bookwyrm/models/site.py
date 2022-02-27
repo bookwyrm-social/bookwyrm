@@ -121,6 +121,7 @@ class Theme(models.Model):
     path = models.CharField(max_length=50, blank=True, null=True)
 
     def __str__(self):
+        # pylint: disable=invalid-str-returned
         return self.name
 
     @property
