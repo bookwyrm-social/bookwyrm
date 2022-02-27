@@ -687,6 +687,7 @@ let BookWyrm = new (class {
                 },
             }, (err) => {
                 if (err) {
+                    scannerNode.replaceChildren();
                     console.log(err);
                     toggleStatus('access-denied');
                     return;
