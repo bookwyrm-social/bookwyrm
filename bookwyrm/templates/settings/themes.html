@@ -50,6 +50,12 @@
         class="box"
         enctype="multipart/form-data"
     >
+    {% if not choices %}
+    <div class="notification is-warning">
+        {% trans "No available theme files detected" %}
+    </div>
+    {% endif %}
+    <fieldset {% if not choices %}disabled{% endif %}>
         {% csrf_token %}
         <div class="columns">
             <div class="column is-half">
@@ -68,7 +74,18 @@
                 </label>
                 <div class="control">
                     <div class="select">
-                        {{ theme_form.path }}
+                        <select
+                            name="path"
+                            aria-describedby="desc_path"
+                            class=""
+                            id="id_path"
+                        >
+                            {% for choice in choices %}
+                            <option value="{{ choice }}">
+                                {{ choice }}
+                            </option>
+                            {% endfor %}
+                        </select>
                     </div>
                     {% include 'snippets/form_errors.html' with errors_list=theme_form.path.errors id="desc_path" %}
                 </div>
@@ -76,6 +93,7 @@
         </div>
 
         <button type="submit" class="button">{% trans "Add theme" %}</button>
+    </fieldset>
     </form>
 </section>
 
