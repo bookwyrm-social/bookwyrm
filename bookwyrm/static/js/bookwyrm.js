@@ -655,10 +655,13 @@ let BookWyrm = new (class {
             }
         }
 
-        function cleanup() {
+        function cleanup(clearDrawing = true) {
             Quagga.stop();
-            scannerNode.replaceChildren();
             cameraListNode.removeEventListener('change', changeListener);
+
+            if (clearDrawing) {
+                scannerNode.replaceChildren();
+            }
         }
 
         Quagga.onProcessed((result) => {
@@ -683,7 +686,14 @@ let BookWyrm = new (class {
             }
         });
 
+        let lastDetection = null;
         Quagga.onDetected((result) => {
+            // Detect the same code twice as an extra check to avoid bogus scans.
+            if (lastDetection === null || lastDetection !== result.codeResult.code) {
+                lastDetection = result.codeResult.code;
+                return;
+            }
+
             const code = result.codeResult.code;
 
             statusNode.querySelector('.isbn').innerText = code;
@@ -692,7 +702,7 @@ let BookWyrm = new (class {
             const search = new URL('/search', document.location);
             search.searchParams.set('q', code);
 
-            cleanup();
+            cleanup(false);
             location.assign(search);
         });
 
@@ -711,12 +721,6 @@ let BookWyrm = new (class {
                 constraints: {
                     facingMode: "environment",
                 },
-                area: {
-                    top: "25%",
-                    right: "25%",
-                    left: "25%",
-                    bottom: "25%",
-                }
             },
             decoder : {
                 readers: [
