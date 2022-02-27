@@ -53,7 +53,7 @@ details.dropdown .dropdown-menu a:focus-visible {
 
 @media only screen and (max-width: 768px) {
     details.dropdown[open] summary.dropdown-trigger::before {
-        background-color: rgba($scheme-invert, 0.5);
+        background-color: $modal-background-background-color;
         z-index: 30;
     }
 
