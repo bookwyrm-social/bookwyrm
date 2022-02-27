@@ -431,11 +431,11 @@ let BookWyrm = new (class {
             });
 
             modalElement.addEventListener("keydown", handleFocusTrap);
-            modalElement.dispatchEvent(new Event('open'));
+            modalElement.dispatchEvent(new Event("open"));
         }
 
         function handleModalClose(modalElement) {
-            modalElement.dispatchEvent(new Event('close'));
+            modalElement.dispatchEvent(new Event("close"));
             modalElement.removeEventListener("keydown", handleFocusTrap);
             htmlElement.classList.remove("is-clipped");
             modalElement.classList.remove("is-active");
@@ -644,10 +644,10 @@ let BookWyrm = new (class {
         const statusNode = document.getElementById("barcode-status");
         const cameraListNode = document.querySelector("#barcode-camera-list > select");
 
-        cameraListNode.addEventListener('change', onChangeCamera);
+        cameraListNode.addEventListener("change", onChangeCamera);
 
         function onChangeCamera(event) {
-             initBarcodes(event.target.value);
+            initBarcodes(event.target.value);
         }
 
         function toggleStatus(status) {
@@ -657,76 +657,79 @@ let BookWyrm = new (class {
         }
 
         function initBarcodes(cameraId = null) {
-            toggleStatus('grant-access');
+            toggleStatus("grant-access");
 
             if (!cameraId) {
-                cameraId = sessionStorage.getItem('preferredCam');
+                cameraId = sessionStorage.getItem("preferredCam");
             } else {
-                sessionStorage.setItem('preferredCam', cameraId);
+                sessionStorage.setItem("preferredCam", cameraId);
             }
 
             scannerNode.replaceChildren();
             Quagga.stop();
-            Quagga.init({
-                inputStream : {
-                    name: "Live",
-                    type: "LiveStream",
-                    target: scannerNode,
-                    constraints: {
-                        facingMode: "environment",
-                        deviceId: cameraId,
+            Quagga.init(
+                {
+                    inputStream: {
+                        name: "Live",
+                        type: "LiveStream",
+                        target: scannerNode,
+                        constraints: {
+                            facingMode: "environment",
+                            deviceId: cameraId,
+                        },
+                    },
+                    decoder: {
+                        readers: [
+                            "ean_reader",
+                            {
+                                format: "ean_reader",
+                                config: {
+                                    supplements: ["ean_2_reader", "ean_5_reader"],
+                                },
+                            },
+                        ],
+                        multiple: false,
                     },
                 },
-                decoder : {
-                    readers: [
-                        "ean_reader",
-                        {
-                            format: "ean_reader",
-                            config: {
-                                supplements: [ "ean_2_reader", "ean_5_reader" ]
-                            }
-                        }
-                    ],
-                    multiple: false
-                },
-            }, (err) => {
-                if (err) {
-                    scannerNode.replaceChildren();
-                    console.log(err);
-                    toggleStatus('access-denied');
-                    return;
-                }
-
-                let activeId = null;
-                const track = Quagga.CameraAccess.getActiveTrack();
-                if (track) {
-                    activeId = track.getSettings().deviceId;
-                }
-
-                Quagga.CameraAccess.enumerateVideoDevices().then((devices) => {
-                    cameraListNode.replaceChildren();
-
-                    for (const device of devices) {
-                        const child = document.createElement('option');
-                        child.value = device.deviceId;
-                        child.innerText = device.label.slice(0, 30);
-
-                        if (activeId === child.value) {
-                            child.selected = true;
-                        }
-
-                        cameraListNode.appendChild(child);
+                (err) => {
+                    if (err) {
+                        scannerNode.replaceChildren();
+                        console.log(err);
+                        toggleStatus("access-denied");
+                        return;
                     }
-                });
 
-                toggleStatus('scanning');
-                Quagga.start();
-            });
+                    let activeId = null;
+                    const track = Quagga.CameraAccess.getActiveTrack();
+                    if (track) {
+                        activeId = track.getSettings().deviceId;
+                    }
+
+                    Quagga.CameraAccess.enumerateVideoDevices().then((devices) => {
+                        cameraListNode.replaceChildren();
+
+                        for (const device of devices) {
+                            const child = document.createElement("option");
+                            child.value = device.deviceId;
+                            child.innerText = device.label.slice(0, 30);
+
+                            if (activeId === child.value) {
+                                child.selected = true;
+                            }
+
+                            cameraListNode.appendChild(child);
+                        }
+                    });
+
+                    toggleStatus("scanning");
+                    Quagga.start();
+                }
+            );
         }
 
         function cleanup(clearDrawing = true) {
             Quagga.stop();
-            cameraListNode.removeEventListener('change', onChangeCamera);
+            cameraListNode.removeEventListener("change", onChangeCamera);
 
             if (clearDrawing) {
                 scannerNode.replaceChildren();
@@ -739,18 +742,34 @@ let BookWyrm = new (class {
 
             if (result) {
                 if (result.boxes) {
-                    drawingCtx.clearRect(0, 0, parseInt(drawingCanvas.getAttribute("width")), parseInt(drawingCanvas.getAttribute("height")));
-                    result.boxes.filter((box) => box !== result.box).forEach((box) => {
-                        Quagga.ImageDebug.drawPath(box, {x: 0, y: 1}, drawingCtx, {color: "green", lineWidth: 2});
-                    });
+                    drawingCtx.clearRect(
+                        0,
+                        0,
+                        parseInt(drawingCanvas.getAttribute("width")),
+                        parseInt(drawingCanvas.getAttribute("height"))
+                    );
+                    result.boxes
+                        .filter((box) => box !== result.box)
+                        .forEach((box) => {
+                            Quagga.ImageDebug.drawPath(box, { x: 0, y: 1 }, drawingCtx, {
+                                color: "green",
+                                lineWidth: 2,
+                            });
+                        });
                 }
 
                 if (result.box) {
-                    Quagga.ImageDebug.drawPath(result.box, {x: 0, y: 1}, drawingCtx, {color: "#00F", lineWidth: 2});
+                    Quagga.ImageDebug.drawPath(result.box, { x: 0, y: 1 }, drawingCtx, {
+                        color: "#00F",
+                        lineWidth: 2,
+                    });
                 }
 
                 if (result.codeResult && result.codeResult.code) {
-                    Quagga.ImageDebug.drawPath(result.line, {x: 'x', y: 'y'}, drawingCtx, {color: 'red', lineWidth: 3});
+                    Quagga.ImageDebug.drawPath(result.line, { x: "x", y: "y" }, drawingCtx, {
+                        color: "red",
+                        lineWidth: 3,
+                    });
                 }
             }
         });
@@ -769,17 +788,17 @@ let BookWyrm = new (class {
 
             const code = result.codeResult.code;
 
-            statusNode.querySelector('.isbn').innerText = code;
-            toggleStatus('found');
+            statusNode.querySelector(".isbn").innerText = code;
+            toggleStatus("found");
 
-            const search = new URL('/search', document.location);
-            search.searchParams.set('q', code);
+            const search = new URL("/search", document.location);
+            search.searchParams.set("q", code);
 
             cleanup(false);
             location.assign(search);
         });
 
-        event.target.addEventListener('close', cleanup, { once: true });
+        event.target.addEventListener("close", cleanup, { once: true });
 
         initBarcodes();
     }
