@@ -645,14 +645,78 @@ let BookWyrm = new (class {
         const cameraListNode = document.getElementById("barcode-camera-list");
 
         let changeListener = cameraListNode.addEventListener('change', (event) => {
-            // TODO
-             //event.target.value
+             initBarcodes(event.target.value);
         });
 
         function toggleStatus(status) {
             for (const child of statusNode.children) {
                 BookWyrm.toggleContainer(child, !child.classList.contains(status));
             }
+        }
+
+        function initBarcodes(cameraId = null) {
+            if (!cameraId) {
+                cameraId = sessionStorage.getItem('preferredCam');
+            } else {
+                sessionStorage.setItem('preferredCam', cameraId);
+            }
+
+            scannerNode.replaceChildren();
+            Quagga.stop();
+            Quagga.init({
+                inputStream : {
+                    name: "Live",
+                    type: "LiveStream",
+                    target: scannerNode,
+                    constraints: {
+                        facingMode: "environment",
+                        deviceId: cameraId,
+                    },
+                },
+                decoder : {
+                    readers: [
+                        "ean_reader",
+                        {
+                            format: "ean_reader",
+                            config: {
+                                supplements: [ "ean_2_reader", "ean_5_reader" ]
+                            }
+                        }
+                    ],
+                    multiple: false
+                },
+            }, (err) => {
+                if (err) {
+                    console.log(err);
+                    toggleStatus('access-denied');
+                    return;
+                }
+
+                let activeId = null;
+                const track = Quagga.CameraAccess.getActiveTrack();
+                if (track) {
+                    activeId = track.getSettings().deviceId;
+                }
+
+                Quagga.CameraAccess.enumerateVideoDevices().then((devices) => {
+                    cameraListNode.replaceChildren();
+
+                    for (const device of devices) {
+                        const child = document.createElement('option');
+                        child.value = device.deviceId;
+                        child.innerText = device.label.slice(0, 30);
+
+                        if (activeId === child.value) {
+                            child.selected = true;
+                        }
+
+                        cameraListNode.appendChild(child);
+                    }
+                });
+
+                toggleStatus('scanning');
+                Quagga.start();
+            });
         }
 
         function cleanup(clearDrawing = true) {
@@ -709,55 +773,6 @@ let BookWyrm = new (class {
         event.target.addEventListener('close', cleanup, { once: true });
 
         toggleStatus('grant-access');
-
-        // Clear camera list
-        cameraListNode.replaceChildren();
-
-        Quagga.init({
-            inputStream : {
-                name: "Live",
-                type: "LiveStream",
-                target: scannerNode,
-                constraints: {
-                    facingMode: "environment",
-                },
-            },
-            decoder : {
-                readers: [
-                    "ean_reader",
-                    {
-                        format: "ean_reader",
-                        config: {
-                            supplements: [ "ean_2_reader", "ean_5_reader" ]
-                        }
-                    }
-                ],
-                multiple: false
-            },
-        }, (err) => {
-            if (err) {
-                console.log(err);
-                toggleStatus('access-denied');
-                return;
-            }
-
-            const stream = Quagga.CameraAccess.getActiveStreamLabel();
-            Quagga.CameraAccess.enumerateVideoDevices().then((devices) => {
-                for (const device of devices) {
-                    const child = document.createElement('option');
-                    child.value = device.deviceId || device.id;
-                    child.innerText = device.label.slice(0, 30);
-
-                    if (stream === child.value) {
-                        child.selected = true;
-                    }
-
-                    cameraListNode.appendChild(child);
-                }
-            });
-
-            Quagga.start();
-            toggleStatus('scanning');
-        });
+        initBarcodes();
     }
 })();
