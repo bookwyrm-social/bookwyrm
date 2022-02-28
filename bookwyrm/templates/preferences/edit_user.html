@@ -97,6 +97,12 @@
                     {{ form.preferred_language }}
                 </div>
             </div>
+            <div class="field">
+                <label class="label" for="id_them">{% trans "Theme:" %}</label>
+                <div class="select">
+                    {{ form.theme }}
+                </div>
+            </div>
         </div>
     </section>
 
@@ -109,6 +115,12 @@
                 <label class="checkbox label" for="id_manually_approves_followers">
                     {{ form.manually_approves_followers }}
                     {% trans "Manually approve followers" %}
+                </label>
+            </div>
+            <div class="field">
+                <label class="checkbox label" for="id_hide_follows">
+                    {{ form.hide_follows }}
+                    {% trans "Hide followers and following on profile" %}
                 </label>
             </div>
             <div class="field">

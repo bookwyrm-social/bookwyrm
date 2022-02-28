@@ -39,4 +39,5 @@ class Person(ActivityObject):
     bookwyrmUser: bool = False
     manuallyApprovesFollowers: str = False
     discoverable: str = False
+    hideFollows: str = False
     type: str = "Person"

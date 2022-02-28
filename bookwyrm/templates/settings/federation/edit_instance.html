@@ -4,7 +4,19 @@
 
 {% block header %}
 {% trans "Add instance" %}
-<a href="{% url 'settings-federation' %}" class="has-text-weight-normal help">{% trans "Back to instance list" %}</a>
+{% endblock %}
+
+{% block breadcrumbs %}
+<nav class="breadcrumb subtitle" aria-label="breadcrumbs">
+    <ul>
+        <li><a href="{% url 'settings-federation' %}">{% trans "Federated Instances" %}</a></li>
+        <li class="is-active">
+            <a href="#" aria-current="page">
+                {% trans "Add instance" %}
+            </a>
+        </li>
+    </ul>
+</nav>
 {% endblock %}
 
 {% block panel %}
@@ -73,9 +85,13 @@
         <label class="label" for="id_notes">
             {% trans "Notes:" %}
         </label>
-        <textarea name="notes" cols="40" rows="5" class="textarea" id="id_notes">
-            {{ form.notes.value|default:'' }}
-        </textarea>
+        <textarea
+            name="notes"
+            cols="40"
+            rows="5"
+            class="textarea"
+            id="id_notes"
+        >{{ form.notes.value|default:'' }}</textarea>
     </div>
 
     <button type="submit" class="button is-primary">
