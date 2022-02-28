@@ -5,6 +5,12 @@
 
 {% block header %}{% trans "Themes" %}{% endblock %}
 
+{% block breadcrumbs %}
+<a class="subtitle help is-link" href="{% url 'settings-site' %}/#display">
+    {% trans "Set instance default theme" %}
+</a>
+{% endblock %}
+
 {% block panel %}
 {% if success %}
 <div class="notification is-success is-light">
