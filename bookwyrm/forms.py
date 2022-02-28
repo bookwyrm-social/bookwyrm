@@ -155,6 +155,7 @@ class EditUserForm(CustomForm):
             "discoverable",
             "preferred_timezone",
             "preferred_language",
+            "theme",
         ]
         help_texts = {f: None for f in fields}
         widgets = {
