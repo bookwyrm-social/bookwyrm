@@ -153,6 +153,7 @@ class EditUserForm(CustomForm):
             "manually_approves_followers",
             "default_post_privacy",
             "discoverable",
+            "hide_follows",
             "preferred_timezone",
             "preferred_language",
         ]

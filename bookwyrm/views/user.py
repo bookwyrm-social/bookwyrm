@@ -1,5 +1,6 @@
 """ non-interactive pages """
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator
 from django.db.models import Q, Count
 from django.http import Http404
@@ -105,6 +106,9 @@ class Followers(View):
         if is_api_request(request):
             return ActivitypubResponse(user.to_followers_activity(**request.GET))
 
+        if user.hide_follows:
+            raise PermissionDenied()
+
         followers = annotate_if_follows(request.user, user.followers)
         paginated = Paginator(followers.all(), PAGE_LENGTH)
         data = {
@@ -124,6 +128,9 @@ class Following(View):
 
         if is_api_request(request):
             return ActivitypubResponse(user.to_following_activity(**request.GET))
+
+        if user.hide_follows:
+            raise PermissionDenied()
 
         following = annotate_if_follows(request.user, user.following)
         paginated = Paginator(following.all(), PAGE_LENGTH)
