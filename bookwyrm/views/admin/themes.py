@@ -1,5 +1,7 @@
 """ manage themes """
 from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.staticfiles.utils import get_files
+from django.contrib.staticfiles.storage import StaticFilesStorage
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
 from django.views import View
@@ -18,21 +20,29 @@ class Themes(View):
 
     def get(self, request):
         """view existing themes and set defaults"""
-        data = {
-            "themes": models.Theme.objects.all(),
-            "theme_form": forms.ThemeForm(),
-        }
-        return TemplateResponse(request, "settings/themes.html", data)
+        return TemplateResponse(request, "settings/themes.html", get_view_data())
 
     def post(self, request):
         """edit the site settings"""
         form = forms.ThemeForm(request.POST, request.FILES)
-        data = {
-            "themes": models.Theme.objects.all(),
-            "theme_form": form,
-        }
         if form.is_valid():
             form.save()
+
+        data = get_view_data()
+
+        if not form.is_valid():
+            data["theme_form"] = form
+        else:
             data["success"] = True
-            data["theme_form"] = forms.ThemeForm()
         return TemplateResponse(request, "settings/themes.html", data)
+
+
+def get_view_data():
+    """data for view"""
+    choices = list(get_files(StaticFilesStorage(), location="css/themes"))
+    current = models.Theme.objects.values_list("path", flat=True)
+    return {
+        "themes": models.Theme.objects.all(),
+        "choices": [c for c in choices if c not in current and c[-5:] == ".scss"],
+        "theme_form": forms.ThemeForm(),
+    }
