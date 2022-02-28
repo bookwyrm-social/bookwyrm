@@ -1,11 +1,10 @@
 """ book list views"""
 from typing import Optional
-from urllib.parse import urlencode
 
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator
-from django.db import IntegrityError, transaction
+from django.db import transaction
 from django.db.models import Avg, DecimalField, Q, Max
 from django.db.models.functions import Coalesce
 from django.http import HttpResponseBadRequest, HttpResponse
@@ -26,7 +25,7 @@ from bookwyrm.views.helpers import is_api_request
 class List(View):
     """book list page"""
 
-    def get(self, request, list_id):
+    def get(self, request, list_id, add_failed=False, add_succeeded=True):
         """display a book list"""
         book_list = get_object_or_404(models.List, id=list_id)
         book_list.raise_visible_to_user(request.user)
@@ -110,6 +109,8 @@ class List(View):
                 {"direction": direction, "sort_by": sort_by}
             ),
             "embed_url": embed_url,
+            "add_failed": add_failed,
+            "add_succeeded": add_succeeded,
         }
         return TemplateResponse(request, "lists/list.html", data)
 
@@ -179,8 +180,8 @@ def add_book(request):
 
     form = forms.ListItemForm(request.POST)
     if not form.is_valid():
-        # this shouldn't happen, there aren't validated fields
-        raise Exception(form.errors)
+        return List().get(request, book_list.id, add_failed=True)
+
     item = form.save(commit=False)
 
     if book_list.curation == "curated":
@@ -196,17 +197,9 @@ def add_book(request):
         ) or 0
         increment_order_in_reverse(book_list.id, order_max + 1)
     item.order = order_max + 1
+    item.save()
 
-    try:
-        item.save()
-    except IntegrityError:
-        # if the book is already on the list, don't flip out
-        pass
-
-    path = reverse("list", args=[book_list.id])
-    params = request.GET.copy()
-    params["updated"] = True
-    return redirect(f"{path}?{urlencode(params)}")
+    return List().get(request, book_list.id, add_succeeded=True)
 
 
 @require_POST
