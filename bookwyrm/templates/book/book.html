@@ -352,7 +352,7 @@
                 {% endfor %}
                 </ul>
 
-                {% if request.user.list_set.exists %}
+                {% if list_options.exists %}
                 <form name="list-add" method="post" action="{% url 'list-add-book' %}">
                     {% csrf_token %}
                     <input type="hidden" name="book" value="{{ book.id }}">
@@ -361,7 +361,7 @@
                     <div class="field has-addons">
                         <div class="select control is-clipped">
                             <select name="book_list" id="id_list">
-                                {% for list in user.list_set.all %}
+                                {% for list in list_options %}
                                 <option value="{{ list.id }}">{{ list.name }}</option>
                                 {% endfor %}
                             </select>
@@ -386,6 +386,6 @@
 {% endblock %}
 
 {% block scripts %}
-<script src="{% static "js/vendor/tabs.js" %}?v={{ js_cache }}"></script>
+<script src="{% static "js/tabs.js" %}?v={{ js_cache }}"></script>
 <script src="{% static "js/autocomplete.js" %}?v={{ js_cache }}"></script>
 {% endblock %}
