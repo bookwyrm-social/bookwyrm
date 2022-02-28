@@ -123,8 +123,12 @@
                 <td>{{ theme.name }}</td>
                 <td><code>{{ theme.path }}</code></td>
                 <td>
-                    <form>
-                        <button type="submit" class="button is-danger is-light">{% trans "Remove theme" %}</button>
+                    <form method="POST" action="{% url 'settings-themes-delete' theme.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="button is-danger is-light is-small">
+                            <span class="icon icon-x" aria-hideen="true"></span>
+                            <span>{% trans "Remove theme" %}</span>
+                        </button>
                     </form>
                 </td>
             </tr>

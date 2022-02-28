@@ -2,9 +2,11 @@
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.staticfiles.utils import get_files
 from django.contrib.staticfiles.storage import StaticFilesStorage
+from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
 from django.views import View
+from django.views.decorators.http import require_POST
 
 from bookwyrm import forms, models
 
@@ -46,3 +48,12 @@ def get_view_data():
         "choices": [c for c in choices if c not in current and c[-5:] == ".scss"],
         "theme_form": forms.ThemeForm(),
     }
+
+
+@require_POST
+@permission_required("bookwyrm.edit_instance_settings", raise_exception=True)
+# pylint: disable=unused-argument
+def delete_theme(request, theme_id):
+    """Remove a theme"""
+    get_object_or_404(models.Theme, id=theme_id).delete()
+    return redirect("settings-themes")
