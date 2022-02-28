@@ -37,6 +37,12 @@ class Federation(View):
         page = paginated.get_page(request.GET.get("page"))
 
         data = {
+            "federated_count": models.FederatedServer.objects.filter(
+                status="federated"
+            ).count(),
+            "blocked_count": models.FederatedServer.objects.filter(
+                status="blocked"
+            ).count(),
             "servers": page,
             "page_range": paginated.get_elided_page_range(
                 page.number, on_each_side=2, on_ends=1
