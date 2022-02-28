@@ -38,7 +38,8 @@ def get_translated_shelf_name(shelf):
     """produced translated shelf nidentifierame"""
     if not shelf:
         return ""
-    identifier = shelf.identifier
+    # support obj or dict
+    identifier = shelf["identifier"] if isinstance(shelf, dict) else shelf.identifier
     if identifier == "all":
         return _("All books")
     if identifier == "to-read":
@@ -47,7 +48,7 @@ def get_translated_shelf_name(shelf):
         return _("Currently Reading")
     if identifier == "read":
         return _("Read")
-    return shelf.name
+    return shelf["name"] if isinstance(shelf, dict) else shelf.name
 
 
 @register.simple_tag(takes_context=True)
