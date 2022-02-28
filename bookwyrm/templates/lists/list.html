@@ -30,7 +30,14 @@
 
 <div class="columns mt-3">
     <section class="column is-three-quarters">
-        {% if add_succeeded %}
+        {% if add_failed %}
+        <div class="notification is-danger is-light">
+            <span class="icon icon-x" aria-hidden="true"></span>
+            <span>
+                {% trans "That book is already on this list." %}
+            </span>
+        </div>
+        {% elif add_succeeded %}
         <div class="notification is-success is-light">
             <span class="icon icon-check" aria-hidden="true"></span>
             <span>
@@ -39,14 +46,6 @@
                 {% else %}
                     {% trans "You successfully added a book to this list!" %}
                 {% endif %}
-            </span>
-        </div>
-        {% endif %}
-        {% if add_failed %}
-        <div class="notification is-danger is-light">
-            <span class="icon icon-x" aria-hidden="true"></span>
-            <span>
-                {% trans "That book is already on this list." %}
             </span>
         </div>
         {% endif %}
