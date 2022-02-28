@@ -227,7 +227,7 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
     @classmethod
     def privacy_filter(cls, viewer, privacy_levels=None):
         queryset = super().privacy_filter(viewer, privacy_levels=privacy_levels)
-        return queryset.filter(deleted=False)
+        return queryset.filter(deleted=False, user__is_active=True)
 
     @classmethod
     def direct_filter(cls, queryset, viewer):
