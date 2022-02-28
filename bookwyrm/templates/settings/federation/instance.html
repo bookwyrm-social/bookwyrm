@@ -11,6 +11,13 @@
 {% endif %}
 {% endblock %}
 
+{% block edit-button %}
+<form name="reload" method="POST" action="{% url 'settings-federated-server-refresh' server.id %}">
+    {% csrf_token %}
+    <button class="button" type="submit">{% trans "Refresh data" %}</button>
+</form>
+{% endblock %}
+
 {% block breadcrumbs %}
 <nav class="breadcrumb subtitle" aria-label="breadcrumbs">
     <ul>
