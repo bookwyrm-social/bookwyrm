@@ -71,7 +71,9 @@
         {% csrf_token %}
         <input type="hidden" name="book" value="{{ book.id }}">
         <input type="hidden" name="shelf" value="{{ user_shelf.id }}">
-        <button class="button is-fullwidth is-small is-radiusless is-danger is-light" type="submit">{% trans "Remove from" %} {{ user_shelf.name }}</button>
+        <button class="button is-fullwidth is-small is-radiusless is-danger is-light" type="submit">
+            {% blocktrans with name=user_shelf|translate_shelf_name %}Remove from {{ name }}{% endblocktrans %}
+        </button>
     </form>
 </li>
 {% endif %}

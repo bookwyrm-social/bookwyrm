@@ -153,8 +153,10 @@ class EditUserForm(CustomForm):
             "manually_approves_followers",
             "default_post_privacy",
             "discoverable",
+            "hide_follows",
             "preferred_timezone",
             "preferred_language",
+            "theme",
         ]
         help_texts = {f: None for f in fields}
         widgets = {
@@ -451,6 +453,22 @@ class SiteForm(CustomForm):
             "invite_request_text": forms.Textarea(
                 attrs={"aria-describedby": "desc_invite_request_text"}
             ),
+        }
+
+
+class SiteThemeForm(CustomForm):
+    class Meta:
+        model = models.SiteSettings
+        fields = ["default_theme"]
+
+
+class ThemeForm(CustomForm):
+    class Meta:
+        model = models.Theme
+        fields = ["name", "path"]
+        widgets = {
+            "name": forms.TextInput(attrs={"aria-describedby": "desc_name"}),
+            "path": forms.Select(attrs={"aria-describedby": "desc_path"}),
         }
 
 

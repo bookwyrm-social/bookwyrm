@@ -9,8 +9,26 @@
 
 {% if server.status == "blocked" %}<span class="icon icon-x has-text-danger is-size-5" title="{% trans 'Blocked' %}"><span class="is-sr-only">{% trans "Blocked" %}</span></span>
 {% endif %}
+{% endblock %}
 
-<a href="{% url 'settings-federation' %}" class="has-text-weight-normal help">{% trans "Back to list" %}</a>
+{% block edit-button %}
+<form name="reload" method="POST" action="{% url 'settings-federated-server-refresh' server.id %}">
+    {% csrf_token %}
+    <button class="button" type="submit">{% trans "Refresh data" %}</button>
+</form>
+{% endblock %}
+
+{% block breadcrumbs %}
+<nav class="breadcrumb subtitle" aria-label="breadcrumbs">
+    <ul>
+        <li><a href="{% url 'settings-federation' %}">{% trans "Federated Instances" %}</a></li>
+        <li class="is-active">
+            <a href="#" aria-current="page">
+                {{ server.server_name }}
+            </a>
+        </li>
+    </ul>
+</nav>
 {% endblock %}
 
 {% block panel %}
