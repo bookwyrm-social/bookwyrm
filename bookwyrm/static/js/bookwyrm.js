@@ -1,5 +1,5 @@
 /* exported BookWyrm */
-/* globals TabGroup */
+/* globals TabGroup, Quagga */
 
 let BookWyrm = new (class {
     constructor() {
@@ -696,11 +696,13 @@ let BookWyrm = new (class {
                         scannerNode.replaceChildren();
                         console.log(err);
                         toggleStatus("access-denied");
+
                         return;
                     }
 
                     let activeId = null;
                     const track = Quagga.CameraAccess.getActiveTrack();
+
                     if (track) {
                         activeId = track.getSettings().deviceId;
                     }
@@ -710,6 +712,7 @@ let BookWyrm = new (class {
 
                         for (const device of devices) {
                             const child = document.createElement("option");
+
                             child.value = device.deviceId;
                             child.innerText = device.label.slice(0, 30);
 
@@ -776,11 +779,13 @@ let BookWyrm = new (class {
 
         let lastDetection = null;
         let numDetected = 0;
+
         Quagga.onDetected((result) => {
             // Detect the same code 3 times as an extra check to avoid bogus scans.
             if (lastDetection === null || lastDetection !== result.codeResult.code) {
                 numDetected = 1;
                 lastDetection = result.codeResult.code;
+
                 return;
             } else if (numDetected++ < 3) {
                 return;
@@ -792,6 +797,7 @@ let BookWyrm = new (class {
             toggleStatus("found");
 
             const search = new URL("/search", document.location);
+
             search.searchParams.set("q", code);
 
             cleanup(false);
