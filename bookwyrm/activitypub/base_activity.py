@@ -232,7 +232,7 @@ def set_related_field(
     model_field = getattr(model, related_field_name)
     if hasattr(model_field, "activitypub_field"):
         setattr(activity, getattr(model_field, "activitypub_field"), instance.remote_id)
-    item = activity.to_model()
+    item = activity.to_model(model=model)
 
     # if the related field isn't serialized (attachments on Status), then
     # we have to set it post-creation
@@ -348,6 +348,7 @@ class Link(ActivityObject):
     mediaType: str = None
     id: str = None
     attributedTo: str = None
+    availability: str = None
     type: str = "Link"
 
     def serialize(self, **kwargs):

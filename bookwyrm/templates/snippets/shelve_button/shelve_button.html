@@ -1,13 +1,14 @@
-{% load bookwyrm_tags %}
 {% load utilities %}
+{% load shelf_tags %}
 
 {% if request.user.is_authenticated %}
 
 {% with book.id|uuid as uuid %}
 {% active_shelf book as active_shelf %}
 {% latest_read_through book request.user as readthrough %}
+{% with active_shelf_book=active_shelf.book %}
 <div class="field has-addons mb-0 has-text-weight-normal" data-shelve-button-book="{{ book.id }}">
-    {% if switch_mode and active_shelf.book != book %}
+    {% if switch_mode and active_shelf_book != book %}
     <div class="control">
         {% include 'snippets/switch_edition_button.html' with edition=book size='is-small' %}
     </div>
@@ -20,16 +21,17 @@
 </div>
 
 {% join "want_to_read" uuid as modal_id %}
-{% include 'snippets/reading_modals/want_to_read_modal.html' with book=active_shelf.book id=modal_id class="" %}
+{% include 'snippets/reading_modals/want_to_read_modal.html' with book=active_shelf_book id=modal_id class="" %}
 
 {% join "start_reading" uuid as modal_id %}
-{% include 'snippets/reading_modals/start_reading_modal.html' with book=active_shelf.book id=modal_id class="" %}
+{% include 'snippets/reading_modals/start_reading_modal.html' with book=active_shelf_book id=modal_id class="" %}
 
 {% join "finish_reading" uuid as modal_id %}
-{% include 'snippets/reading_modals/finish_reading_modal.html' with book=active_shelf.book id=modal_id readthrough=readthrough class="" %}
+{% include 'snippets/reading_modals/finish_reading_modal.html' with book=active_shelf_book id=modal_id readthrough=readthrough class="" %}
 
 {% join "progress_update" uuid as modal_id %}
-{% include 'snippets/reading_modals/progress_update_modal.html' with book=active_shelf.book id=modal_id readthrough=readthrough class="" %}
+{% include 'snippets/reading_modals/progress_update_modal.html' with book=active_shelf_book id=modal_id readthrough=readthrough class="" %}
 
+{% endwith %}
 {% endwith %}
 {% endif %}

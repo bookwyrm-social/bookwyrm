@@ -1,10 +1,12 @@
 """ make sure all our nice views are available """
 # site admin
-from .admin.announcements import Announcements, Announcement, delete_announcement
+from .admin.announcements import Announcements, Announcement
+from .admin.announcements import EditAnnouncement, delete_announcement
+from .admin.automod import AutoMod, automod_delete, run_automod
 from .admin.dashboard import Dashboard
 from .admin.federation import Federation, FederatedServer
 from .admin.federation import AddFederatedServer, ImportServerBlocklist
-from .admin.federation import block_server, unblock_server
+from .admin.federation import block_server, unblock_server, refresh_server
 from .admin.email_blocklist import EmailBlocklist
 from .admin.ip_blocklist import IPBlocklist
 from .admin.invite import ManageInvites, Invite, InviteRequest
@@ -37,7 +39,7 @@ from .books.books import (
 from .books.books import update_book_from_remote
 from .books.edit_book import EditBook, ConfirmEditBook
 from .books.editions import Editions, switch_edition
-from .books.links import BookFileLinks, AddFileLink
+from .books.links import BookFileLinks, AddFileLink, delete_link
 
 # landing
 from .landing.about import about, privacy, conduct
@@ -59,6 +61,21 @@ from .imports.manually_review import (
     ImportManualReview,
     approve_import_item,
     delete_import_item,
+)
+
+# lists
+from .list.curate import Curate
+from .list.embed import unsafe_embed_list
+from .list.list_item import ListItem
+from .list.lists import Lists, SavedLists, UserLists
+from .list.list import (
+    List,
+    save_list,
+    unsave_list,
+    delete_list,
+    add_book,
+    remove_book,
+    set_book_position,
 )
 
 # misc views
@@ -90,8 +107,6 @@ from .group import (
 from .inbox import Inbox
 from .interaction import Favorite, Unfavorite, Boost, Unboost
 from .isbn import Isbn
-from .list import Lists, SavedLists, List, Curate, UserLists
-from .list import save_list, unsave_list, delete_list, unsafe_embed_list
 from .notifications import Notifications
 from .outbox import Outbox
 from .reading import ReadThrough, delete_readthrough, delete_progressupdate
@@ -99,9 +114,10 @@ from .reading import ReadingStatus
 from .report import Report
 from .rss_feed import RssFeed
 from .search import Search
+from .setup import InstanceConfig, CreateAdmin
 from .status import CreateStatus, EditStatus, DeleteStatus, update_progress
 from .status import edit_readthrough
-from .updates import get_notification_count, get_unread_status_count
+from .updates import get_notification_count, get_unread_status_string
 from .user import User, Followers, Following, hide_suggestions, user_redirect
 from .wellknown import *
 from .annual_summary import (

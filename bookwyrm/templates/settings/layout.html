@@ -9,12 +9,14 @@
     <div class="columns is-mobile">
         <div class="column">
             <h1 class="title">{% block header %}{% endblock %}</h1>
+            {% block breadcrumbs %}{% endblock %}
         </div>
         <div class="column is-narrow">
             {% block edit-button %}{% endblock %}
         </div>
     </div>
 </header>
+
 
 <div class="block columns">
     <nav class="menu column is-one-quarter">
@@ -53,6 +55,10 @@
             <li>
                 {% url 'settings-reports' as url %}
                 <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Reports" %}</a>
+            </li>
+            <li>
+                {% url 'settings-automod' as url %}
+                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Auto-moderation rules" %}</a>
             </li>
             <li>
                 {% url 'settings-email-blocks' as url %}

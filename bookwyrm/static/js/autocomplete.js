@@ -42,6 +42,8 @@
 
     function getSuggestions(input, trie) {
         // Follow the trie through the provided input
+        input = input.toLowerCase();
+
         input.split("").forEach((letter) => {
             if (!trie) {
                 return;
@@ -153,6 +155,23 @@ const tries = {
                                 e: {
                                     x: {
                                         t: "Plaintext",
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+            r: {
+                i: {
+                    n: {
+                        t: {
+                            " ": {
+                                b: {
+                                    o: {
+                                        o: {
+                                            k: "Print book",
+                                        },
                                     },
                                 },
                             },

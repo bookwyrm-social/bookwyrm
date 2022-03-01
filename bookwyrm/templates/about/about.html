@@ -2,7 +2,7 @@
 {% load humanize %}
 {% load i18n %}
 {% load utilities %}
-{% load bookwyrm_tags %}
+{% load landing_page_tags %}
 {% load cache %}
 
 {% block title %}
@@ -12,13 +12,14 @@
 {% block about_content %}
 {# seven day cache #}
 {% cache 604800 about_page %}
+
 {% get_book_superlatives as superlatives %}
 <section class="content pb-4">
     <h2>
         {% blocktrans with site_name=site.name %}Welcome to {{ site_name }}!{% endblocktrans %}
     </h2>
 
-    <p class="subtitle notification has-background-primary-light">
+    <p class="subtitle notification has-background-primary-highlight">
         {% blocktrans trimmed with site_name=site.name %}
             {{ site_name }} is part of <em>BookWyrm</em>, a network of independent, self-directed communities for readers.
             While you can interact seamlessly with users anywhere in the <a href="https://joinbookwyrm.com/instances/" target="_blank">BookWyrm network</a>, this community is unique.
@@ -26,8 +27,8 @@
     </p>
 
     <div class="columns">
-        {% if top_rated %}
-        {% with book=superlatives.top_rated.default_edition rating=top_rated.rating %}
+        {% if superlatives.top_rated %}
+        {% with book=superlatives.top_rated.default_edition rating=superlatives.top_rated.rating %}
         <div class="column is-one-third is-flex">
             <div class="media notification">
                 <div class="media-left">
@@ -45,7 +46,7 @@
         {% endwith %}
         {% endif %}
 
-        {% if wanted %}
+        {% if superlatives.wanted %}
         {% with book=superlatives.wanted.default_edition %}
         <div class="column is-one-third is-flex">
             <div class="media notification">
@@ -64,7 +65,7 @@
         {% endwith %}
         {% endif %}
 
-        {% if controversial %}
+        {% if superlatives.controversial %}
         {% with book=superlatives.controversial.default_edition %}
         <div class="column is-one-third is-flex">
             <div class="media notification">
@@ -95,7 +96,7 @@
         <h2 class="title is-3">{% trans "Meet your admins" %}</h2>
         <p>
         {% url "conduct" as coc_path %}
-        {% blocktrans with site_name=site.name %}
+        {% blocktrans trimmed with site_name=site.name %}
             {{ site_name }}'s moderators and administrators keep the site up and running, enforce the <a href="coc_path">code of conduct</a>, and respond when users report spam and bad behavior.
         {% endblocktrans %}
         </p>
@@ -106,7 +107,7 @@
         <div class="column">
             <div class="card is-stretchable">
                 {% with role=user.groups.first.name %}
-                <div class="card-header {% if role == "moderator" %}has-background-info-light{% else %}has-background-success-light{% endif %}">
+                <div class="card-header {% if role == "moderator" %}has-background-info-highlight{% else %}has-background-success-highlight{% endif %}">
                     <span class="card-header-title is-size-7 pt-1 pb-1">
                         {% if role == "moderator" %}
                             {% trans "Moderator" %}
@@ -122,7 +123,7 @@
                 </div>
 
                 {% if request.user.is_authenticated and user.id != request.user.id %}
-                <div class="has-background-white-bis card-footer">
+                <div class="has-background-tertiary card-footer">
                     <div class="card-footer-item">
                         {% include 'snippets/follow_button.html' with user=user minimal=True %}
                     </div>

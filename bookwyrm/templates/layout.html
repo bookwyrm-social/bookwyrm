@@ -1,14 +1,14 @@
 {% load layout %}
 {% load i18n %}
 {% load static %}
+{% load sass_tags %}
+
 <!DOCTYPE html>
 <html lang="{% get_lang %}">
 <head>
     <title>{% block title %}BookWyrm{% endblock %} - {{ site.name }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="{% static "css/vendor/bulma.min.css" %}">
-    <link rel="stylesheet" href="{% static "css/vendor/icons.css" %}">
-    <link rel="stylesheet" href="{% static "css/bookwyrm.css" %}">
+    <link href="{% sass_src 'css/bookwyrm.scss' %}" rel="stylesheet" type="text/css" />
 
     <link rel="search" type="application/opensearchdescription+xml" href="{% url 'opensearch' %}" title="{% blocktrans with site_name=site.name %}{{ site_name }} search{% endblocktrans %}" />
 
@@ -32,6 +32,7 @@
     {% block head_links %}{% endblock %}
 </head>
 <body>
+{% block body %}
 <nav class="navbar" aria-label="main navigation">
     <div class="container">
         <div class="navbar-brand">
@@ -206,7 +207,7 @@
 </div>
 {% endif %}
 
-<div class="section is-flex-grow-1">
+<main class="section is-flex-grow-1">
     <div class="container">
         {# almost every view needs to know the user shelves #}
         {% with request.user.shelf_set.all as user_shelves %}
@@ -214,7 +215,7 @@
         {% endblock %}
         {% endwith %}
     </div>
-</div>
+</main>
 
 <div role="region" aria-live="polite" id="live-messages">
     <p id="status-success-message" class="live-message is-sr-only is-hidden">{% trans "Successfully posted status" %}</p>
@@ -256,6 +257,7 @@
         </div>
     </div>
 </footer>
+{% endblock %}
 
 <script>
     var csrf_token = '{{ csrf_token }}';

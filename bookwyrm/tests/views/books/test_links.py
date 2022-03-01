@@ -67,6 +67,7 @@ class LinkViews(TestCase):
         form.data["filetype"] = "HTML"
         form.data["book"] = self.book.id
         form.data["added_by"] = self.local_user.id
+        form.data["availability"] = "loan"
 
         request = self.factory.post("", form.data)
         request.user = self.local_user
@@ -79,6 +80,15 @@ class LinkViews(TestCase):
         activity = json.loads(mock.call_args[1]["args"][1])
         self.assertEqual(activity["type"], "Update")
         self.assertEqual(activity["object"]["type"], "Edition")
+        self.assertIsInstance(activity["object"]["fileLinks"], list)
+        self.assertEqual(
+            activity["object"]["fileLinks"][0]["href"], "https://www.example.com"
+        )
+        self.assertEqual(activity["object"]["fileLinks"][0]["mediaType"], "HTML")
+        self.assertEqual(
+            activity["object"]["fileLinks"][0]["attributedTo"],
+            self.local_user.remote_id,
+        )
 
         link = models.FileLink.objects.get()
         self.assertEqual(link.name, "www.example.com")
@@ -87,3 +97,59 @@ class LinkViews(TestCase):
 
         self.book.refresh_from_db()
         self.assertEqual(self.book.file_links.first(), link)
+
+    def test_book_links(self):
+        """there are so many views, this just makes sure it LOADS"""
+        view = views.BookFileLinks.as_view()
+        models.FileLink.objects.create(
+            book=self.book,
+            added_by=self.local_user,
+            url="https://www.hello.com",
+        )
+        request = self.factory.get("")
+        request.user = self.local_user
+        result = view(request, self.book.id)
+        self.assertEqual(result.status_code, 200)
+        validate_html(result.render())
+
+    def test_book_links_post(self):
+        """there are so many views, this just makes sure it LOADS"""
+        link = models.FileLink.objects.create(
+            book=self.book,
+            added_by=self.local_user,
+            url="https://www.hello.com",
+        )
+        view = views.BookFileLinks.as_view()
+        form = forms.FileLinkForm()
+        form.data["url"] = link.url
+        form.data["filetype"] = "HTML"
+        form.data["book"] = self.book.id
+        form.data["added_by"] = self.local_user.id
+        form.data["availability"] = "loan"
+
+        request = self.factory.post("", form.data)
+        request.user = self.local_user
+        view(request, self.book.id, link.id)
+
+        link.refresh_from_db()
+        self.assertEqual(link.filetype, "HTML")
+        self.assertEqual(link.availability, "loan")
+
+    def test_delete_link(self):
+        """remove a link"""
+        link = models.FileLink.objects.create(
+            book=self.book,
+            added_by=self.local_user,
+            url="https://www.hello.com",
+        )
+        form = forms.FileLinkForm()
+        form.data["url"] = "https://www.example.com"
+        form.data["filetype"] = "HTML"
+        form.data["book"] = self.book.id
+        form.data["added_by"] = self.local_user.id
+        form.data["availability"] = "loan"
+
+        request = self.factory.post("", form.data)
+        request.user = self.local_user
+        views.delete_link(request, self.book.id, link.id)
+        self.assertFalse(models.FileLink.objects.exists())

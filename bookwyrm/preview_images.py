@@ -4,6 +4,7 @@ import os
 import textwrap
 from io import BytesIO
 from uuid import uuid4
+import logging
 
 import colorsys
 from colorthief import ColorThief
@@ -17,34 +18,49 @@ from django.db.models import Avg
 from bookwyrm import models, settings
 from bookwyrm.tasks import app
 
+logger = logging.getLogger(__name__)
 
 IMG_WIDTH = settings.PREVIEW_IMG_WIDTH
 IMG_HEIGHT = settings.PREVIEW_IMG_HEIGHT
 BG_COLOR = settings.PREVIEW_BG_COLOR
 TEXT_COLOR = settings.PREVIEW_TEXT_COLOR
 DEFAULT_COVER_COLOR = settings.PREVIEW_DEFAULT_COVER_COLOR
+DEFAULT_FONT = settings.PREVIEW_DEFAULT_FONT
 TRANSPARENT_COLOR = (0, 0, 0, 0)
 
 margin = math.floor(IMG_HEIGHT / 10)
 gutter = math.floor(margin / 2)
 inner_img_height = math.floor(IMG_HEIGHT * 0.8)
 inner_img_width = math.floor(inner_img_height * 0.7)
-font_dir = os.path.join(settings.STATIC_ROOT, "fonts/public_sans")
 
 
-def get_font(font_name, size=28):
-    """Loads custom font"""
-    if font_name == "light":
-        font_path = os.path.join(font_dir, "PublicSans-Light.ttf")
-    if font_name == "regular":
-        font_path = os.path.join(font_dir, "PublicSans-Regular.ttf")
-    elif font_name == "bold":
-        font_path = os.path.join(font_dir, "PublicSans-Bold.ttf")
+def get_imagefont(name, size):
+    """Loads an ImageFont based on config"""
+    try:
+        config = settings.FONTS[name]
+        path = os.path.join(settings.FONT_DIR, config["directory"], config["filename"])
+        return ImageFont.truetype(path, size)
+    except KeyError:
+        logger.error("Font %s not found in config", name)
+    except OSError:
+        logger.error("Could not load font %s from file", name)
+
+    return ImageFont.load_default()
+
+
+def get_font(weight, size=28):
+    """Gets a custom font with the given weight and size"""
+    font = get_imagefont(DEFAULT_FONT, size)
 
     try:
-        font = ImageFont.truetype(font_path, size)
-    except OSError:
-        font = ImageFont.load_default()
+        if weight == "light":
+            font.set_variation_by_name("Light")
+        if weight == "bold":
+            font.set_variation_by_name("Bold")
+        if weight == "regular":
+            font.set_variation_by_name("Regular")
+    except AttributeError:
+        pass
 
     return font
 

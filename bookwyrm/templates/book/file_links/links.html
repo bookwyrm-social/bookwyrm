@@ -1,5 +1,5 @@
 {% load i18n %}
-{% load bookwyrm_tags %}
+{% load book_display_tags %}
 {% load utilities %}
 
 {% get_book_file_links book as links %}
@@ -28,8 +28,14 @@
     {% for link in links.all %}
     {% join "verify" link.id as verify_modal %}
     <li>
-        <a href="{{ link.url }}" rel="noopener" target="_blank" title="{{ link.url }}" data-modal-open="{{ verify_modal }}">{{ link.name }}</a>
+        <a href="{{ link.url }}" rel="noopener noreferrer" target="_blank" title="{{ link.url }}" data-modal-open="{{ verify_modal }}">{{ link.name }}</a>
         ({{ link.filetype }})
+
+        {% if link.availability != "free" %}
+        <p class="help">
+            {{ link.get_availability_display }}
+        </p>
+        {% endif %}
     </li>
     {% endfor %}
 </ul>
@@ -46,7 +52,7 @@
     <span class="icon icon-pencil" aria-hidden="true"></span>
     <span>{% trans "Edit links" %}</span>
 </a>
-{% include 'book/file_links/add_link_modal.html' with book=book id="add-links" %}
 {% endif %}
+{% include 'book/file_links/add_link_modal.html' with book=book id="add-links" %}
 
 {% endif %}

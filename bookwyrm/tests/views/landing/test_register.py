@@ -37,7 +37,7 @@ class RegisterViews(TestCase):
         self.anonymous_user.is_authenticated = False
 
         self.settings = models.SiteSettings.objects.create(
-            id=1, require_confirm_email=False
+            id=1, require_confirm_email=False, allow_registration=True
         )
 
     def test_get_redirect(self, *_):

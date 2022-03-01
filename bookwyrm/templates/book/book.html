@@ -1,6 +1,6 @@
 {% extends 'layout.html' %}
 {% load i18n %}
-{% load bookwyrm_tags %}
+{% load book_display_tags %}
 {% load humanize %}
 {% load utilities %}
 {% load static %}
@@ -122,7 +122,7 @@
                 {% trans "Load data" as button_text %}
                 {% if book.openlibrary_key %}
                 <p>
-                    <a href="{{ book.openlibrary_link }}" target="_blank" rel="noopener">
+                    <a href="{{ book.openlibrary_link }}" target="_blank" rel="noopener noreferrer">
                         {% trans "View on OpenLibrary" %}
                     </a>
                     {% if request.user.is_authenticated and perms.bookwyrm.edit_book %}
@@ -136,7 +136,7 @@
                 {% endif %}
                 {% if book.inventaire_id %}
                 <p>
-                    <a href="{{ book.inventaire_link }}" target="_blank" rel="noopener">
+                    <a href="{{ book.inventaire_link }}" target="_blank" rel="noopener noreferrer">
                         {% trans "View on Inventaire" %}
                     </a>
 
@@ -352,15 +352,16 @@
                 {% endfor %}
                 </ul>
 
-                {% if request.user.list_set.exists %}
+                {% if list_options.exists %}
                 <form name="list-add" method="post" action="{% url 'list-add-book' %}">
                     {% csrf_token %}
                     <input type="hidden" name="book" value="{{ book.id }}">
+                    <input type="hidden" name="user" value="{{ request.user.id }}">
                     <label class="label" for="id_list">{% trans "Add to list" %}</label>
                     <div class="field has-addons">
                         <div class="select control is-clipped">
-                            <select name="list" id="id_list">
-                                {% for list in user.list_set.all %}
+                            <select name="book_list" id="id_list">
+                                {% for list in list_options %}
                                 <option value="{{ list.id }}">{{ list.name }}</option>
                                 {% endfor %}
                             </select>
@@ -385,6 +386,6 @@
 {% endblock %}
 
 {% block scripts %}
-<script src="{% static "js/vendor/tabs.js" %}?v={{ js_cache }}"></script>
+<script src="{% static "js/tabs.js" %}?v={{ js_cache }}"></script>
 <script src="{% static "js/autocomplete.js" %}?v={{ js_cache }}"></script>
 {% endblock %}

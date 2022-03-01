@@ -1,0 +1,33 @@
+@media only screen and (max-width: 768px) {
+    .is-sr-only-mobile {
+        border: none !important;
+        clip: rect(0, 0, 0, 0) !important;
+        height: 0.01em !important;
+        overflow: hidden !important;
+        padding: 0 !important;
+        position: absolute !important;
+        white-space: nowrap !important;
+        width: 0.01em !important;
+    }
+
+    .m-0-mobile {
+        margin: 0 !important;
+    }
+
+    .card-footer.is-stacked-mobile {
+        flex-direction: column;
+    }
+
+    .card-footer.is-stacked-mobile .card-footer-item:not(:last-child) {
+        border-bottom: 1px solid $background-tertiary;
+        border-right: 0;
+    }
+
+    .is-flex-direction-row-mobile {
+        flex-direction: row !important;
+    }
+
+    .is-flex-direction-column-mobile {
+        flex-direction: column !important;
+    }
+}

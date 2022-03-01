@@ -1,12 +1,10 @@
 {% spaceless %}
 
-{% load bookwyrm_tags %}
+{% load book_display_tags %}
 {% load markdown %}
 {% load i18n %}
-{% load cache %}
 
 {% if not hide_book %}
-    {% cache 259200 generated_status_book status.id %}
     {% with book=status.book|default:status.mention_books.first %}
         <div class="columns is-mobile is-gapless">
             <a class="column is-cover is-narrow" href="{{ book.local_path }}">
@@ -26,7 +24,6 @@
             </div>
         </div>
     {% endwith %}
-    {% endcache %}
 {% endif %}
 
 {% endspaceless %}

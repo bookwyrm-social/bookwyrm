@@ -36,13 +36,13 @@
             <header class="column">
                 <h2 class="title is-5">
                     {{ domain.name }}
-                    (<a href="http://{{ domain.domain }}" target="_blank" rel="noopener">{{ domain.domain }}</a>)
+                    (<a href="http://{{ domain.domain }}" target="_blank" rel="noopener noreferrer">{{ domain.domain }}</a>)
                 </h2>
             </header>
             <div class="column is-narrow">
                 <button type="button" class="button" data-modal-open="{{ domain_modal }}">
                     <span class="icon icon-pencil m-0-mobile" aria-hidden="treu"></span>
-                    <span>{% trans "Set display name" %}</span>
+                    <span class="is-sr-only-mobile">{% trans "Set display name" %}</span>
                 </button>
             </div>
         </div>
@@ -53,7 +53,7 @@
                         {% trans "View links" %}
                         ({{ domain.links.count }})
                     </span>
-                    <span class="details-close icon icon-x" aria-hidden></span>
+                    <span class="details-close icon icon-x" aria-hidden="true"></span>
                 </summary>
 
                 <div class="table-container mt-4">

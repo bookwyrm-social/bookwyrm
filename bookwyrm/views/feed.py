@@ -62,7 +62,6 @@ class Feed(View):
                 "streams": STREAMS,
                 "goal_form": forms.GoalForm(),
                 "feed_status_types_options": FeedFilterChoices,
-                "allowed_status_types": request.user.feed_status_types,
                 "filters_applied": filters_applied,
                 "path": f"/{tab['key']}",
                 "annual_summary_year": get_annual_summary_year(),

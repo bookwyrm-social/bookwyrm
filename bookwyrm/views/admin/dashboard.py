@@ -1,6 +1,7 @@
 """ instance overview """
 from datetime import timedelta
 from dateutil.parser import parse
+from packaging import version
 
 from django.contrib.auth.decorators import login_required, permission_required
 from django.db.models import Q
@@ -9,7 +10,9 @@ from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views import View
 
-from bookwyrm import models
+from bookwyrm import models, settings
+from bookwyrm.connectors.abstract_connector import get_data
+from bookwyrm.connectors.connector_manager import ConnectorException
 
 
 # pylint: disable= no-self-use
@@ -107,6 +110,19 @@ class Dashboard(View):
             "register_stats": register_chart.get_chart(start, end, interval),
             "works_stats": works_chart.get_chart(start, end, interval),
         }
+
+        # check version
+        try:
+            release = get_data(settings.RELEASE_API, timeout=3)
+            available_version = release.get("tag_name", None)
+            if available_version and version.parse(available_version) > version.parse(
+                settings.VERSION
+            ):
+                data["current_version"] = settings.VERSION
+                data["available_version"] = available_version
+        except ConnectorException:
+            pass
+
         return TemplateResponse(request, "settings/dashboard/dashboard.html", data)
 
 

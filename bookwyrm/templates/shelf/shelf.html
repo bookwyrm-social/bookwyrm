@@ -1,5 +1,5 @@
 {% extends 'layout.html' %}
-{% load bookwyrm_tags %}
+{% load shelf_tags %}
 {% load utilities %}
 {% load humanize %}
 {% load i18n %}
@@ -45,7 +45,7 @@
                         href="{{ shelf_tab.local_path }}"
                         {% if shelf_tab.identifier == shelf.identifier %} aria-current="page"{% endif %}
                     >
-                        {% include 'user/books_header.html' with shelf=shelf_tab %}
+                        {% include "snippets/translated_shelf_name.html" with shelf=shelf_tab %}
                     </a>
                 </li>
                 {% endfor %}
@@ -92,7 +92,7 @@
                 </span>
                 {% with count=books.paginator.count %}
                 {% if count %}
-                <p class="help">
+                <span class="help">
                     {% blocktrans trimmed count counter=count with formatted_count=count|intcomma %}
                         {{ formatted_count }} book
                     {% plural %}
@@ -104,7 +104,7 @@
                         (showing {{ start }}-{{ end }})
                         {% endblocktrans %}
                     {% endif %}
-                </p>
+                </span>
                 {% endif %}
                 {% endwith %}
             </h2>

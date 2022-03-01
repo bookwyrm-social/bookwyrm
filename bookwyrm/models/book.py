@@ -46,6 +46,15 @@ class BookDataModel(ObjectMixin, BookWyrmModel):
     bnf_id = fields.CharField(  # Bibliothèque nationale de France
         max_length=255, blank=True, null=True, deduplication_field=True
     )
+    viaf = fields.CharField(
+        max_length=255, blank=True, null=True, deduplication_field=True
+    )
+    wikidata = fields.CharField(
+        max_length=255, blank=True, null=True, deduplication_field=True
+    )
+    asin = fields.CharField(
+        max_length=255, blank=True, null=True, deduplication_field=True
+    )
     search_vector = SearchVectorField(null=True)
 
     last_edited_by = fields.ForeignKey(
@@ -271,9 +280,6 @@ class Edition(Book):
     oclc_number = fields.CharField(
         max_length=255, blank=True, null=True, deduplication_field=True
     )
-    asin = fields.CharField(
-        max_length=255, blank=True, null=True, deduplication_field=True
-    )
     pages = fields.IntegerField(blank=True, null=True)
     physical_format = fields.CharField(
         max_length=255, choices=FormatChoices, null=True, blank=True
@@ -341,6 +347,11 @@ class Edition(Book):
 
         # set rank
         self.edition_rank = self.get_rank()
+
+        # clear author cache
+        if self.id:
+            for author_id in self.authors.values_list("id", flat=True):
+                cache.delete(f"author-books-{author_id}")
 
         return super().save(*args, **kwargs)
 

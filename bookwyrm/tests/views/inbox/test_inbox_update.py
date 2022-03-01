@@ -6,7 +6,6 @@ from unittest.mock import patch
 from django.test import TestCase
 
 from bookwyrm import models, views
-from bookwyrm.activitypub.base_activity import set_related_field
 
 
 # pylint: disable=too-many-public-methods
