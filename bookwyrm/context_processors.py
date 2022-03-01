@@ -10,7 +10,11 @@ def site_settings(request):  # pylint: disable=unused-argument
 
     site = models.SiteSettings.objects.get()
     theme = "css/themes/bookwyrm-light.scss"
-    if hasattr(request, "user") and request.user.is_authenticated and request.user.theme:
+    if (
+        hasattr(request, "user")
+        and request.user.is_authenticated
+        and request.user.theme
+    ):
         theme = request.user.theme.path
     elif site.default_theme:
         theme = site.default_theme.path
