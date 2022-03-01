@@ -54,7 +54,6 @@ class AutoMod(models.Model):
 @app.task(queue="low_priority")
 def automod_task():
     """Create reports"""
-    print("TASK!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
     if not AutoMod.objects.exists():
         return
     reporter = AutoMod.objects.first().created_by
