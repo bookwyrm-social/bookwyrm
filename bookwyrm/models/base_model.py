@@ -40,7 +40,7 @@ class BookWyrmModel(models.Model):
         base_path = f"https://{DOMAIN}"
         if hasattr(self, "user"):
             base_path = f"{base_path}{self.user.local_path}"
-        
+
         model_name = type(self).__name__.lower()
         return f"{base_path}/{model_name}/{self.id}"
 

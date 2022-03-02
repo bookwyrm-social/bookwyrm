@@ -203,6 +203,7 @@ def filter_stream_by_status_type(activities, allowed_types=None):
 
     return activities
 
+
 def maybe_redirect_local_path(request, model):
     """
     if the request had an invalid path, return a permanent redirect response to the correct one, including a slug if any.
@@ -211,7 +212,7 @@ def maybe_redirect_local_path(request, model):
     if request.path == model.local_path:
         return False
 
-    new_path = model.local_path 
+    new_path = model.local_path
     if len(request.GET) > 0:
         new_path = f"{model.local_path}?{request.GET.urlencode()}"
 

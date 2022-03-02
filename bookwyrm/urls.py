@@ -404,7 +404,9 @@ urlpatterns = [
     re_path(r"^list/?$", views.Lists.as_view(), name="lists"),
     re_path(r"^list/saved/?$", views.SavedLists.as_view(), name="saved-lists"),
     re_path(rf"^list/(?P<list_id>\d+)(\.json)?/?$", views.List.as_view(), name="list"),
-    re_path(rf"^list/(?P<list_id>\d+){regex.SLUG}/?$", views.List.as_view(), name="list"),
+    re_path(
+        rf"^list/(?P<list_id>\d+){regex.SLUG}/?$", views.List.as_view(), name="list"
+    ),
     re_path(
         r"^list/(?P<list_id>\d+)/item/(?P<list_item>\d+)/?$",
         views.ListItem.as_view(),
@@ -561,7 +563,9 @@ urlpatterns = [
         rf"^author/(?P<author_id>\d+)(.json)?/?$", views.Author.as_view(), name="author"
     ),
     re_path(
-        rf"^author/(?P<author_id>\d+){regex.SLUG}/?$", views.Author.as_view(), name="author"
+        rf"^author/(?P<author_id>\d+){regex.SLUG}/?$",
+        views.Author.as_view(),
+        name="author",
     ),
     re_path(
         r"^author/(?P<author_id>\d+)/edit/?$",

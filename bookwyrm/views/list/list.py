@@ -37,7 +37,7 @@ class List(View):
             return ActivitypubResponse(book_list.to_activity(**request.GET))
 
         if r := maybe_redirect_local_path(request, book_list):
-            return r;
+            return r
 
         query = request.GET.get("q")
         suggestions = None

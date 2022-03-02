@@ -30,7 +30,11 @@ class Book(View):
             )
             return ActivitypubResponse(book.to_activity())
 
-        user_statuses = kwargs.get("user_statuses", False) if request.user.is_authenticated else False
+        user_statuses = (
+            kwargs.get("user_statuses", False)
+            if request.user.is_authenticated
+            else False
+        )
 
         # it's safe to use this OR because edition and work and subclasses of the same
         # table, so they never have clashing IDs
