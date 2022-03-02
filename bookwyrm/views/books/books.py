@@ -22,7 +22,7 @@ from bookwyrm.views.helpers import is_api_request
 class Book(View):
     """a book! this is the stuff"""
 
-    def get(self, request, book_id, user_statuses=False):
+    def get(self, request, book_id, **kwargs):
         """info about a book"""
         if is_api_request(request):
             book = get_object_or_404(
@@ -30,7 +30,7 @@ class Book(View):
             )
             return ActivitypubResponse(book.to_activity())
 
-        user_statuses = user_statuses if request.user.is_authenticated else False
+        user_statuses = kwargs.get("user_statuses", False) if request.user.is_authenticated else False
 
         # it's safe to use this OR because edition and work and subclasses of the same
         # table, so they never have clashing IDs

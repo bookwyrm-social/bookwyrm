@@ -113,7 +113,7 @@ class DirectMessage(View):
 class Status(View):
     """get posting"""
 
-    def get(self, request, username, status_id):
+    def get(self, request, username, status_id, slug=None):
         """display a particular status (and replies, etc)"""
         user = get_user_from_username(request.user, username)
         status = get_object_or_404(

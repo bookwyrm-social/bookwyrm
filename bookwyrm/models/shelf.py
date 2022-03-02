@@ -59,7 +59,7 @@ class Shelf(OrderedCollectionMixin, BookWyrmModel):
         """can the shelf be safely deleted?"""
         return self.editable and not self.shelfbook_set.exists()
 
-    def get_remote_id(self):
+    def get_permalink(self):
         """shelf identifier instead of id"""
         base_path = self.user.remote_id
         identifier = self.identifier or self.get_identifier()

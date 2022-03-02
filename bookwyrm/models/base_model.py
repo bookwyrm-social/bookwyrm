@@ -8,6 +8,7 @@ from django.db.models import Q
 from django.dispatch import receiver
 from django.http import Http404
 from django.utils.translation import gettext_lazy as _
+from django.utils.text import slugify
 
 from bookwyrm.settings import DOMAIN
 from .fields import RemoteIdField
@@ -34,13 +35,30 @@ class BookWyrmModel(models.Model):
     updated_date = models.DateTimeField(auto_now=True)
     remote_id = RemoteIdField(null=True, activitypub_field="id")
 
-    def get_remote_id(self):
-        """generate a url that resolves to the local object"""
+    def get_permalink(self):
+        """generate the url that resolves to the local object, without a slug"""
         base_path = f"https://{DOMAIN}"
         if hasattr(self, "user"):
             base_path = f"{base_path}{self.user.local_path}"
+        
         model_name = type(self).__name__.lower()
         return f"{base_path}/{model_name}/{self.id}"
+
+    def get_remote_id(self):
+        """generate a url that resolves to the local object, with a slug suffix"""
+        path = self.get_permalink()
+
+        name = None
+        if hasattr(self, "name_field"):
+            name = getattr(self, self.name_field)
+        elif hasattr(self, "name"):
+            name = self.name
+
+        if name:
+            slug = slugify(name)
+            path = f"{path}/s/{slug}"
+
+        return path
 
     class Meta:
         """this is just here to provide default fields for other models"""

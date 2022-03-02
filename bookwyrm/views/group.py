@@ -20,7 +20,7 @@ from .helpers import get_user_from_username
 class Group(View):
     """group page"""
 
-    def get(self, request, group_id):
+    def get(self, request, group_id, slug=None):
         """display a group"""
 
         group = get_object_or_404(models.Group, id=group_id)
@@ -80,7 +80,7 @@ class Group(View):
 class UserGroups(View):
     """a user's groups page"""
 
-    def get(self, request, username):
+    def get(self, request, username, slug=None):
         """display a group"""
         user = get_user_from_username(request.user, username)
         groups = (

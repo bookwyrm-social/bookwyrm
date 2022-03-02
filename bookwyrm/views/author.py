@@ -19,7 +19,7 @@ from bookwyrm.views.helpers import is_api_request
 class Author(View):
     """this person wrote a book"""
 
-    def get(self, request, author_id):
+    def get(self, request, author_id, slug=None):
         """landing page for an author"""
         author = get_object_or_404(models.Author, id=author_id)
 

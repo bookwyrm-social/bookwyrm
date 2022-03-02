@@ -49,7 +49,7 @@ class List(OrderedCollectionMixin, BookWyrmModel):
     embed_key = models.UUIDField(unique=True, null=True, editable=False)
     activity_serializer = activitypub.BookList
 
-    def get_remote_id(self):
+    def get_permalink(self):
         """don't want the user to be in there in this case"""
         return f"https://{DOMAIN}/list/{self.id}"
 

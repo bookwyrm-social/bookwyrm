@@ -25,8 +25,11 @@ from bookwyrm.views.helpers import is_api_request
 class List(View):
     """book list page"""
 
-    def get(self, request, list_id, add_failed=False, add_succeeded=False):
+    def get(self, request, list_id, **kwargs):
         """display a book list"""
+        add_failed = kwargs.get("add_failed", False)
+        add_succeeded = kwargs.get("add_succeeded", False)
+
         book_list = get_object_or_404(models.List, id=list_id)
         book_list.raise_visible_to_user(request.user)
 

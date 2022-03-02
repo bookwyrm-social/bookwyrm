@@ -15,7 +15,7 @@
 
     <nav class="breadcrumb subtitle" aria-label="breadcrumbs">
         <ul>
-            <li><a href="{% url 'book' book.id %}">{{ book|book_title }}</a></li>
+            <li><a href="{% url 'book' book.id book.name|slugify %}">{{ book|book_title }}</a></li>
             <li class="is-active">
                 <a href="#" aria-current="page">
                     {% trans "Edit links" %}

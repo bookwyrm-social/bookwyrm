@@ -396,7 +396,7 @@ class KeyPair(ActivitypubMixin, BookWyrmModel):
     activity_serializer = activitypub.PublicKey
     serialize_reverse_fields = [("owner", "owner", "id")]
 
-    def get_remote_id(self):
+    def get_permalink(self):
         # self.owner is set by the OneToOneField on User
         return f"{self.owner.remote_id}/#main-key"
 
@@ -430,7 +430,7 @@ class AnnualGoal(BookWyrmModel):
 
         unique_together = ("user", "year")
 
-    def get_remote_id(self):
+    def get_permalink(self):
         """put the year in the path"""
         return f"{self.user.remote_id}/goal/{self.year}"
 

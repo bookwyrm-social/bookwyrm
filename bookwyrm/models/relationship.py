@@ -62,7 +62,7 @@ class UserRelationship(BookWyrmModel):
             ),
         ]
 
-    def get_remote_id(self):
+    def get_permalink(self):
         """use shelf identifier in remote_id"""
         base_path = self.user_subject.remote_id
         return f"{base_path}#follows/{self.id}"

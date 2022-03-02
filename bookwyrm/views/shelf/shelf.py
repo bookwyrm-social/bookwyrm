@@ -21,8 +21,9 @@ from bookwyrm.views.helpers import is_api_request, get_user_from_username
 class Shelf(View):
     """shelf page"""
 
-    def get(self, request, username, shelf_identifier=None):
+    def get(self, request, username, **kwargs):
         """display a shelf"""
+        shelf_identifier = kwargs.get("shelf_identifier")
         user = get_user_from_username(request.user, username)
 
         is_self = user == request.user
