@@ -211,7 +211,7 @@ def maybe_redirect_local_path(request, model):
     """
 
     # don't redirect empty path for unit tests which currently have this
-    if request.path == "" or request.path == model.local_path:
+    if request.path == "/" or request.path == model.local_path:
         return False
 
     new_path = model.local_path
