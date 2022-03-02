@@ -14,7 +14,7 @@ from django.db.models.functions import Greatest
 
 from bookwyrm import forms, models
 from bookwyrm.suggested_users import suggested_users
-from .helpers import get_user_from_username
+from .helpers import get_user_from_username, maybe_redirect_local_path
 
 # pylint: disable=no-self-use
 class Group(View):
@@ -25,6 +25,10 @@ class Group(View):
 
         group = get_object_or_404(models.Group, id=group_id)
         group.raise_visible_to_user(request.user)
+
+        if r := maybe_redirect_local_path(request, group):
+            return r
+
         lists = (
             models.List.privacy_filter(request.user)
             .filter(group=group)

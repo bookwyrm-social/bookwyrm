@@ -14,7 +14,7 @@ from django.views import View
 from bookwyrm import forms, models
 from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.settings import PAGE_LENGTH
-from bookwyrm.views.helpers import is_api_request, get_user_from_username
+from bookwyrm.views.helpers import is_api_request, get_user_from_username, maybe_redirect_local_path
 
 
 # pylint: disable=no-self-use
@@ -55,6 +55,9 @@ class Shelf(View):
 
         if is_api_request(request) and shelf_identifier:
             return ActivitypubResponse(shelf.to_activity(**request.GET))
+
+        if r := maybe_redirect_local_path(request, shelf):
+            return r
 
         reviews = models.Review.objects
         if not is_self:

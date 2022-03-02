@@ -12,7 +12,7 @@ from bookwyrm import forms, models
 from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.connectors import connector_manager
 from bookwyrm.settings import PAGE_LENGTH
-from bookwyrm.views.helpers import is_api_request
+from bookwyrm.views.helpers import is_api_request, maybe_redirect_local_path
 
 
 # pylint: disable= no-self-use
@@ -25,6 +25,9 @@ class Author(View):
 
         if is_api_request(request):
             return ActivitypubResponse(author.to_activity())
+
+        if r := maybe_redirect_local_path(request, author):
+            return r
 
         books = (
             models.Work.objects.filter(Q(authors=author) | Q(editions__authors=author))

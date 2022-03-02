@@ -18,7 +18,7 @@ from django.views.decorators.http import require_POST
 from bookwyrm import book_search, forms, models
 from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.settings import PAGE_LENGTH
-from bookwyrm.views.helpers import is_api_request
+from bookwyrm.views.helpers import is_api_request, maybe_redirect_local_path
 
 
 # pylint: disable=no-self-use
@@ -35,6 +35,9 @@ class List(View):
 
         if is_api_request(request):
             return ActivitypubResponse(book_list.to_activity(**request.GET))
+
+        if r := maybe_redirect_local_path(request, book_list):
+            return r;
 
         query = request.GET.get("q")
         suggestions = None

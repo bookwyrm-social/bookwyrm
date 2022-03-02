@@ -15,7 +15,7 @@ from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.connectors import connector_manager
 from bookwyrm.connectors.abstract_connector import get_image
 from bookwyrm.settings import PAGE_LENGTH
-from bookwyrm.views.helpers import is_api_request
+from bookwyrm.views.helpers import is_api_request, maybe_redirect_local_path
 
 
 # pylint: disable=no-self-use
@@ -42,6 +42,9 @@ class Book(View):
             .prefetch_related("authors", "file_links")
             .first()
         )
+
+        if r := maybe_redirect_local_path(request, book):
+            return r
 
         if not book or not book.parent_work:
             raise Http404()

@@ -15,7 +15,7 @@ from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.settings import PAGE_LENGTH, STREAMS
 from bookwyrm.suggested_users import suggested_users
 from .helpers import filter_stream_by_status_type, get_user_from_username
-from .helpers import is_api_request, is_bookwyrm_request
+from .helpers import is_api_request, is_bookwyrm_request, maybe_redirect_local_path
 from .annual_summary import get_annual_summary_year
 
 
@@ -129,6 +129,9 @@ class Status(View):
             return ActivitypubResponse(
                 status.to_activity(pure=not is_bookwyrm_request(request))
             )
+
+        if r := maybe_redirect_local_path(request, status):
+            return r
 
         visible_thread = (
             models.Status.privacy_filter(request.user)
