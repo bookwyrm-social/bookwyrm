@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block form %}
-<form name="edit-list" method="post" action="{% url 'list' list_id=list.id slug=list.name|slugify %}">
+<form name="edit-list" method="post" action="{% url 'list' list.id %}">
     {% include 'lists/form.html' %}
 </form>
 {% include "lists/delete_list_modal.html" with id="delete_list" %}
