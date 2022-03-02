@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-02-18 03:55+0000\n"
-"PO-Revision-Date: 2022-02-18 06:34\n"
+"POT-Creation-Date: 2022-02-25 20:12+0000\n"
+"PO-Revision-Date: 2022-02-27 16:14\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Italian\n"
 "Language: it\n"
@@ -120,6 +120,10 @@ msgstr "Avviso"
 #: bookwyrm/models/announcement.py:16
 msgid "Danger"
 msgstr "Attenzione"
+
+#: bookwyrm/models/antispam.py:106 bookwyrm/models/antispam.py:140
+msgid "Automatically generated report"
+msgstr "Rapporto generato automaticamente"
 
 #: bookwyrm/models/base_model.py:17 bookwyrm/models/link.py:72
 #: bookwyrm/templates/import/import_status.html:200
@@ -261,73 +265,73 @@ msgstr "Citazioni"
 msgid "Everything else"
 msgstr "Tutto il resto"
 
-#: bookwyrm/settings.py:195
+#: bookwyrm/settings.py:211
 msgid "Home Timeline"
 msgstr "La tua timeline"
 
-#: bookwyrm/settings.py:195
+#: bookwyrm/settings.py:211
 msgid "Home"
 msgstr "Home"
 
-#: bookwyrm/settings.py:196
+#: bookwyrm/settings.py:212
 msgid "Books Timeline"
 msgstr "Timeline dei libri"
 
-#: bookwyrm/settings.py:196 bookwyrm/templates/search/layout.html:21
+#: bookwyrm/settings.py:212 bookwyrm/templates/search/layout.html:21
 #: bookwyrm/templates/search/layout.html:42
 #: bookwyrm/templates/user/layout.html:91
 msgid "Books"
 msgstr "Libri"
 
-#: bookwyrm/settings.py:270
+#: bookwyrm/settings.py:284
 msgid "English"
 msgstr "English (Inglese)"
 
-#: bookwyrm/settings.py:271
+#: bookwyrm/settings.py:285
 msgid "Deutsch (German)"
 msgstr "Deutsch (Tedesco)"
 
-#: bookwyrm/settings.py:272
+#: bookwyrm/settings.py:286
 msgid "Español (Spanish)"
 msgstr "Español (Spagnolo)"
 
-#: bookwyrm/settings.py:273
+#: bookwyrm/settings.py:287
 msgid "Galego (Galician)"
 msgstr "Galego (Galiziano)"
 
-#: bookwyrm/settings.py:274
+#: bookwyrm/settings.py:288
 msgid "Italiano (Italian)"
 msgstr "Italiano (Italiano)"
 
-#: bookwyrm/settings.py:275
+#: bookwyrm/settings.py:289
 msgid "Français (French)"
 msgstr "Français (Francese)"
 
-#: bookwyrm/settings.py:276
+#: bookwyrm/settings.py:290
 msgid "Lietuvių (Lithuanian)"
 msgstr "Lietuvių (Lituano)"
 
-#: bookwyrm/settings.py:277
+#: bookwyrm/settings.py:291
 msgid "Norsk (Norwegian)"
 msgstr "Norsk (Norvegese)"
 
-#: bookwyrm/settings.py:278
+#: bookwyrm/settings.py:292
 msgid "Português do Brasil (Brazilian Portuguese)"
 msgstr "Português do Brasil (Portoghese Brasiliano)"
 
-#: bookwyrm/settings.py:279
+#: bookwyrm/settings.py:293
 msgid "Português Europeu (European Portuguese)"
 msgstr "Português Europeu (Portoghese europeo)"
 
-#: bookwyrm/settings.py:280
+#: bookwyrm/settings.py:294
 msgid "Svenska (Swedish)"
 msgstr "Svenska (Svedese)"
 
-#: bookwyrm/settings.py:281
+#: bookwyrm/settings.py:295
 msgid "简体中文 (Simplified Chinese)"
 msgstr "简体中文 (Cinese Semplificato)"
 
-#: bookwyrm/settings.py:282
+#: bookwyrm/settings.py:296
 msgid "繁體中文 (Traditional Chinese)"
 msgstr "繁體中文 (Cinese Tradizionale)"
 
@@ -2922,11 +2926,6 @@ msgstr "Termina \"%(book_title)s\""
 msgid "Start \"%(book_title)s\""
 msgstr "Inizia \"%(book_title)s\""
 
-#: bookwyrm/templates/reading_progress/stop.html:5
-#, python-format
-msgid "Stop \"%(book_title)s\""
-msgstr "Termina \"%(book_title)s\""
-
 #: bookwyrm/templates/reading_progress/want.html:5
 #, python-format
 msgid "Want to Read \"%(book_title)s\""
@@ -3061,7 +3060,7 @@ msgstr "Modifica"
 #: bookwyrm/templates/settings/announcements/announcements.html:3
 #: bookwyrm/templates/settings/announcements/announcements.html:5
 #: bookwyrm/templates/settings/announcements/edit_announcement.html:15
-#: bookwyrm/templates/settings/layout.html:78
+#: bookwyrm/templates/settings/layout.html:82
 msgid "Announcements"
 msgstr "Annunci"
 
@@ -3151,6 +3150,67 @@ msgstr "Impostazioni di visualizzazione"
 #: bookwyrm/templates/settings/announcements/edit_announcement.html:98
 msgid "Color:"
 msgstr "Colore:"
+
+#: bookwyrm/templates/settings/automod/rules.html:6
+#: bookwyrm/templates/settings/automod/rules.html:10
+#: bookwyrm/templates/settings/layout.html:61
+msgid "Auto-moderation rules"
+msgstr "Regole di moderazione automatica"
+
+#: bookwyrm/templates/settings/automod/rules.html:17
+msgid "Auto-moderation rules will create reports for any local user or status with fields matching the provided string."
+msgstr "Le regole di auto-moderazione creeranno report per qualsiasi utente locale o stato con campi corrispondenti alla stringa fornita."
+
+#: bookwyrm/templates/settings/automod/rules.html:18
+msgid "Users or statuses that have already been reported (regardless of whether the report was resolved) will not be flagged."
+msgstr "Gli utenti o gli stati che sono già stati segnalati (a prescindere dal fatto che il report sia stato risolto) non verranno contrassegnati."
+
+#: bookwyrm/templates/settings/automod/rules.html:19
+msgid "At this time, reports are <em>not</em> being generated automatically, and you must manually trigger a scan."
+msgstr "In questo momento, i report <em>non</em> vengono generati automaticamente; devi attivare manualmente una scansione."
+
+#: bookwyrm/templates/settings/automod/rules.html:23
+msgid "Run scan"
+msgstr "Avvia scansione"
+
+#: bookwyrm/templates/settings/automod/rules.html:31
+msgid "Successfully added rule"
+msgstr "Regola aggiunta con successo"
+
+#: bookwyrm/templates/settings/automod/rules.html:37
+msgid "Add Rule"
+msgstr "Aggiungi regola"
+
+#: bookwyrm/templates/settings/automod/rules.html:46
+#: bookwyrm/templates/settings/automod/rules.html:90
+msgid "String match"
+msgstr "Corrispondenza stringa"
+
+#: bookwyrm/templates/settings/automod/rules.html:56
+#: bookwyrm/templates/settings/automod/rules.html:93
+msgid "Flag users"
+msgstr "Contrassegna utenti"
+
+#: bookwyrm/templates/settings/automod/rules.html:63
+#: bookwyrm/templates/settings/automod/rules.html:96
+msgid "Flag statuses"
+msgstr "Segnala stati"
+
+#: bookwyrm/templates/settings/automod/rules.html:70
+msgid "Add rule"
+msgstr "Aggiungi regola"
+
+#: bookwyrm/templates/settings/automod/rules.html:77
+msgid "Current Rules"
+msgstr "Regole Attuali"
+
+#: bookwyrm/templates/settings/automod/rules.html:81
+msgid "Show rules"
+msgstr "Mostra regole"
+
+#: bookwyrm/templates/settings/automod/rules.html:118
+msgid "Remove rule"
+msgstr "Rimuovi regola"
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:6
 #: bookwyrm/templates/settings/dashboard/dashboard.html:8
@@ -3254,7 +3314,7 @@ msgstr "Dominio:"
 
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:5
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:7
-#: bookwyrm/templates/settings/layout.html:61
+#: bookwyrm/templates/settings/layout.html:65
 msgid "Email Blocklist"
 msgstr "Lista email bloccate"
 
@@ -3540,7 +3600,7 @@ msgstr "Indirizzo IP:"
 
 #: bookwyrm/templates/settings/ip_blocklist/ip_blocklist.html:5
 #: bookwyrm/templates/settings/ip_blocklist/ip_blocklist.html:7
-#: bookwyrm/templates/settings/layout.html:65
+#: bookwyrm/templates/settings/layout.html:69
 msgid "IP Address Blocklist"
 msgstr "Elenco Indirizzo IP bloccati"
 
@@ -3578,17 +3638,17 @@ msgstr "Moderazione"
 msgid "Reports"
 msgstr "Reports"
 
-#: bookwyrm/templates/settings/layout.html:69
+#: bookwyrm/templates/settings/layout.html:73
 #: bookwyrm/templates/settings/link_domains/link_domains.html:5
 #: bookwyrm/templates/settings/link_domains/link_domains.html:7
 msgid "Link Domains"
 msgstr "Link ai domini"
 
-#: bookwyrm/templates/settings/layout.html:74
+#: bookwyrm/templates/settings/layout.html:78
 msgid "Instance Settings"
 msgstr "Impostazioni dell'istanza"
 
-#: bookwyrm/templates/settings/layout.html:82
+#: bookwyrm/templates/settings/layout.html:86
 #: bookwyrm/templates/settings/site.html:4
 #: bookwyrm/templates/settings/site.html:6
 msgid "Site Settings"
@@ -3627,35 +3687,35 @@ msgstr "Nessun dominio attualmente bloccato"
 msgid "No links available for this domain."
 msgstr "Nessun collegamento disponibile per questo libro."
 
-#: bookwyrm/templates/settings/reports/report.html:11
+#: bookwyrm/templates/settings/reports/report.html:12
 msgid "Back to reports"
 msgstr "Tornare all'elenco dei report"
 
-#: bookwyrm/templates/settings/reports/report.html:23
+#: bookwyrm/templates/settings/reports/report.html:24
 msgid "Message reporter"
 msgstr "Messaggio segnalato"
 
-#: bookwyrm/templates/settings/reports/report.html:27
+#: bookwyrm/templates/settings/reports/report.html:28
 msgid "Update on your report:"
 msgstr "Aggiornamento sul tuo rapporto:"
 
-#: bookwyrm/templates/settings/reports/report.html:35
-msgid "Reported statuses"
+#: bookwyrm/templates/settings/reports/report.html:36
+msgid "Reported status"
 msgstr "Stati segnalati"
 
-#: bookwyrm/templates/settings/reports/report.html:40
+#: bookwyrm/templates/settings/reports/report.html:38
 msgid "Status has been deleted"
 msgstr "Lo stato è stato eliminato"
 
-#: bookwyrm/templates/settings/reports/report.html:52
+#: bookwyrm/templates/settings/reports/report.html:47
 msgid "Reported links"
 msgstr "Collegamenti segnalati"
 
-#: bookwyrm/templates/settings/reports/report.html:68
+#: bookwyrm/templates/settings/reports/report.html:63
 msgid "Moderator Comments"
 msgstr "Commenti del moderatore"
 
-#: bookwyrm/templates/settings/reports/report.html:89
+#: bookwyrm/templates/settings/reports/report.html:84
 #: bookwyrm/templates/snippets/create_status.html:26
 msgid "Comment"
 msgstr "Commenta"
