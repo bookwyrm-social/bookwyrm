@@ -440,17 +440,7 @@ urlpatterns = [
         name="shelf",
     ),
     re_path(
-        rf"^{USER_PATH}/(shelf|books)/(?P<shelf_identifier>[\w-]+){regex.SLUG}/?$",
-        views.Shelf.as_view(),
-        name="shelf",
-    ),
-    re_path(
         rf"^{LOCAL_USER_PATH}/(books|shelf)/(?P<shelf_identifier>[\w-]+)(.json)?/?$",
-        views.Shelf.as_view(),
-        name="shelf",
-    ),
-    re_path(
-        rf"^{LOCAL_USER_PATH}/(books|shelf)/(?P<shelf_identifier>[\w-]+){regex.SLUG}/?$",
         views.Shelf.as_view(),
         name="shelf",
     ),
