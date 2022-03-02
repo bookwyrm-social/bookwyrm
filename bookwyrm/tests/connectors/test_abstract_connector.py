@@ -89,7 +89,7 @@ class AbstractConnector(TestCase):
     def test_get_or_create_book_existing(self):
         """find an existing book by remote/origin id"""
         self.assertEqual(models.Book.objects.count(), 1)
-        self.assertEqual(self.book.remote_id, f"https://{DOMAIN}/book/{self.book.id}")
+        self.assertEqual(self.book.remote_id, f"https://{DOMAIN}/book/{self.book.id}/s/test-book")
         self.assertEqual(self.book.origin_id, "https://example.com/book/1234")
 
         # dedupe by origin id

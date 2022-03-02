@@ -48,7 +48,7 @@ class IsbnViews(TestCase):
         data = json.loads(response.content)
         self.assertEqual(len(data), 1)
         self.assertEqual(data[0]["title"], "Test Book")
-        self.assertEqual(data[0]["key"], f"https://{DOMAIN}/book/{self.book.id}")
+        self.assertEqual(data[0]["key"], f"https://{DOMAIN}/book/{self.book.id}/s/test-book")
 
     def test_isbn_html_response(self):
         """searches local data only and returns book data in json format"""
