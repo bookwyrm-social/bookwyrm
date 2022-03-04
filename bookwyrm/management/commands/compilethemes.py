@@ -19,7 +19,7 @@ class Command(BaseCommand):
         """compile themes"""
         storage = StaticFilesStorage()
         theme_files = list(get_files(storage, location="css/themes"))
-        theme_files = [t for t in theme_files if t[-5:] == '.scss']
+        theme_files = [t for t in theme_files if t[-5:] == ".scss"]
         for filename in theme_files:
             path = storage.path(filename)
             content = sass.compile(
@@ -27,6 +27,6 @@ class Command(BaseCommand):
                 include_paths=SassProcessor.include_paths,
             )
             basename, _ = os.path.splitext(path)
-            destination_filename = basename + '.css'
+            destination_filename = basename + ".css"
             print(f"saving f{destination_filename}")
             storage.save(destination_filename, ContentFile(content))
