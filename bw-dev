@@ -107,7 +107,7 @@ case "$CMD" in
             --config dev-tools/.stylelintrc.js
         ;;
     compilescss)
-        runweb python manage.py compilescss
+        runweb python manage.py compilethemes
         runweb python manage.py collectstatic --no-input
         ;;
     collectstatic_watch)
