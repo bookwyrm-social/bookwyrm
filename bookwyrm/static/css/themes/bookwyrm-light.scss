@@ -47,7 +47,13 @@ $link-active: $grey-darker;
 $background: $background-secondary;
 $menu-item-active-background-color: $link-background;
 
+/* misc */
+$invisible-overlay-background-color: rgba($scheme-invert, 0.66);
+
 /* Fonts
  ******************************************************************************/
 $family-primary: $family-sans-serif;
 $family-secondary: $family-sans-serif;
+
+@import "../bookwyrm.scss";
+@import "../vendor/icons.css";

@@ -10,7 +10,7 @@
 {% block profile-tabs %}
 <ul class="menu-list">
     <li><a href="#profile">{% trans "Profile" %}</a></li>
-    <li><a href="#display-preferences">{% trans "Display preferences" %}</a></li>
+    <li><a href="#display-preferences">{% trans "Display" %}</a></li>
     <li><a href="#privacy">{% trans "Privacy" %}</a></li>
 </ul>
 {% endblock %}
@@ -61,7 +61,7 @@
     <hr aria-hidden="true">
 
     <section class="block" id="display-preferences">
-        <h2 class="title is-4">{% trans "Display preferences" %}</h2>
+        <h2 class="title is-4">{% trans "Display" %}</h2>
         <div class="box">
             <div class="field">
                 <label class="checkbox label" for="id_show_goal">
@@ -97,6 +97,12 @@
                     {{ form.preferred_language }}
                 </div>
             </div>
+            <div class="field">
+                <label class="label" for="id_them">{% trans "Theme:" %}</label>
+                <div class="select">
+                    {{ form.theme }}
+                </div>
+            </div>
         </div>
     </section>
 
@@ -109,6 +115,12 @@
                 <label class="checkbox label" for="id_manually_approves_followers">
                     {{ form.manually_approves_followers }}
                     {% trans "Manually approve followers" %}
+                </label>
+            </div>
+            <div class="field">
+                <label class="checkbox label" for="id_hide_follows">
+                    {{ form.hide_follows }}
+                    {% trans "Hide followers and following on profile" %}
                 </label>
             </div>
             <div class="field">

@@ -11,6 +11,7 @@ from django.views.decorators.http import require_POST
 
 from bookwyrm import forms, models
 from bookwyrm.settings import PAGE_LENGTH
+from bookwyrm.models.user import get_or_create_remote_server
 
 
 # pylint: disable= no-self-use
@@ -37,6 +38,12 @@ class Federation(View):
         page = paginated.get_page(request.GET.get("page"))
 
         data = {
+            "federated_count": models.FederatedServer.objects.filter(
+                status="federated"
+            ).count(),
+            "blocked_count": models.FederatedServer.objects.filter(
+                status="blocked"
+            ).count(),
             "servers": page,
             "page_range": paginated.get_elided_page_range(
                 page.number, on_each_side=2, on_ends=1
@@ -156,4 +163,15 @@ def unblock_server(request, server):
     """unblock a server"""
     server = get_object_or_404(models.FederatedServer, id=server)
     server.unblock()
+    return redirect("settings-federated-server", server.id)
+
+
+@login_required
+@require_POST
+@permission_required("bookwyrm.control_federation", raise_exception=True)
+# pylint: disable=unused-argument
+def refresh_server(request, server):
+    """unblock a server"""
+    server = get_object_or_404(models.FederatedServer, id=server)
+    get_or_create_remote_server(server.server_name, refresh=True)
     return redirect("settings-federated-server", server.id)

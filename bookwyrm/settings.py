@@ -11,7 +11,7 @@ from django.utils.translation import gettext_lazy as _
 env = Env()
 env.read_env()
 DOMAIN = env("DOMAIN")
-VERSION = "0.3.1"
+VERSION = "0.3.2"
 
 RELEASE_API = env(
     "RELEASE_API",
@@ -21,7 +21,7 @@ RELEASE_API = env(
 PAGE_LENGTH = env("PAGE_LENGTH", 15)
 DEFAULT_LANGUAGE = env("DEFAULT_LANGUAGE", "English")
 
-JS_CACHE = "c7144efb"
+JS_CACHE = "c7154efb"
 
 # email
 EMAIL_BACKEND = env("EMAIL_BACKEND", "django.core.mail.backends.smtp.EmailBackend")
@@ -188,10 +188,6 @@ STATICFILES_FINDERS = [
 ]
 
 SASS_PROCESSOR_INCLUDE_FILE_PATTERN = r"^.+\.[s]{0,1}(?:a|c)ss$"
-
-SASS_PROCESSOR_INCLUDE_DIRS = [
-    os.path.join(BASE_DIR, ".css-config-sample"),
-]
 
 # minify css is production but not dev
 if not DEBUG:
