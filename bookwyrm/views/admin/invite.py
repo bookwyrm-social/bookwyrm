@@ -96,7 +96,7 @@ class ManageInviteRequests(View):
             "created_date",
             "invite__times_used",
             "invite__invitees__created_date",
-			"answer"
+            "answer"
         ]
         # pylint: disable=consider-using-f-string
         if not sort in sort_fields + ["-{:s}".format(f) for f in sort_fields]:
@@ -172,7 +172,6 @@ class InviteRequest(View):
         if form.is_valid():
             received = True
             form.save()
-		#answer = 
 
         data = {
             "request_form": form,
