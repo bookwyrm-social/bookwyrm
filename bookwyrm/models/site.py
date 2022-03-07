@@ -48,8 +48,14 @@ class SiteSettings(models.Model):
     # registration
     allow_registration = models.BooleanField(default=False)
     allow_invite_requests = models.BooleanField(default=True)
+    invite_request_question = models.BooleanField(default=False)
     require_confirm_email = models.BooleanField(default=True)
 
+    invite_question_text = models.CharField(
+		max_length=255,
+		null=not(invite_request_question),
+        default="What is your favourite book?"
+	)
     # images
     logo = models.ImageField(upload_to="logos/", null=True, blank=True)
     logo_small = models.ImageField(upload_to="logos/", null=True, blank=True)
@@ -149,6 +155,7 @@ class InviteRequest(BookWyrmModel):
     invite = models.ForeignKey(
         SiteInvite, on_delete=models.SET_NULL, null=True, blank=True
     )
+    answer = models.TextField(max_length=50, unique=False, null=False)
     invite_sent = models.BooleanField(default=False)
     ignored = models.BooleanField(default=False)
 

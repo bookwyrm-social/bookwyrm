@@ -56,6 +56,7 @@ class Register(View):
         localname = form.data["localname"].strip()
         email = form.data["email"]
         password = form.data["password"]
+        answer = form.data["answer"]
 
         # make sure the email isn't blocked as spam
         email_domain = email.split("@")[-1]
@@ -68,6 +69,7 @@ class Register(View):
             username,
             email,
             password,
+            answer=answer,
             localname=localname,
             local=True,
             deactivation_reason="pending" if settings.require_confirm_email else None,

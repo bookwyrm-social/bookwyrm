@@ -1,4 +1,5 @@
 """ using django model forms """
+from dataclasses import field
 import datetime
 from collections import defaultdict
 from urllib.parse import urlparse
@@ -404,7 +405,7 @@ class InviteRequestForm(CustomForm):
 
     class Meta:
         model = models.InviteRequest
-        fields = ["email"]
+        fields = ["email", "answer"]
 
 
 class CreateInviteForm(CustomForm):
