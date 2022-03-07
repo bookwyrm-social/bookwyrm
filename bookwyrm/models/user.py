@@ -1,5 +1,6 @@
 """ database schema for user data """
 import re
+import string
 from urllib.parse import urlparse
 
 from django.apps import apps
@@ -52,6 +53,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
 
     username = fields.UsernameField()
     email = models.EmailField(unique=True, null=True)
+    answer = fields.TextField(max_length=500, blank=True)
 
     key_pair = fields.OneToOneField(
         "KeyPair",

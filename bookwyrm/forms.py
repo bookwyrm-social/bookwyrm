@@ -1,4 +1,5 @@
 """ using django model forms """
+from dataclasses import field
 import datetime
 from collections import defaultdict
 from urllib.parse import urlparse
@@ -50,7 +51,7 @@ class LoginForm(CustomForm):
 class RegisterForm(CustomForm):
     class Meta:
         model = models.User
-        fields = ["localname", "email", "password"]
+        fields = ["localname", "email", "password", "answer"]
         help_texts = {f: None for f in fields}
         widgets = {"password": PasswordInput()}
 
@@ -404,7 +405,7 @@ class InviteRequestForm(CustomForm):
 
     class Meta:
         model = models.InviteRequest
-        fields = ["email"]
+        fields = ["email", "answer"]
 
 
 class CreateInviteForm(CustomForm):
