@@ -53,7 +53,6 @@ class User(OrderedCollectionPageMixin, AbstractUser):
 
     username = fields.UsernameField()
     email = models.EmailField(unique=True, null=True)
-    answer = fields.TextField(max_length=500, blank=True)
 
     key_pair = fields.OneToOneField(
         "KeyPair",
