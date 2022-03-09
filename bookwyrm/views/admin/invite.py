@@ -96,7 +96,7 @@ class ManageInviteRequests(View):
             "created_date",
             "invite__times_used",
             "invite__invitees__created_date",
-            "answer"
+            "answer",
         ]
         # pylint: disable=consider-using-f-string
         if not sort in sort_fields + ["-{:s}".format(f) for f in sort_fields]:
@@ -145,7 +145,6 @@ class ManageInviteRequests(View):
             models.InviteRequest, id=request.POST.get("invite-request")
         )
 
-		
         # only create a new invite if one doesn't exist already (resending)
         if not invite_request.invite:
             invite_request.invite = models.SiteInvite.objects.create(
@@ -173,10 +172,7 @@ class InviteRequest(View):
             received = True
             form.save()
 
-        data = {
-            "request_form": form,
-            "request_received": received
-        }
+        data = {"request_form": form, "request_received": received}
         return TemplateResponse(request, "landing/landing.html", data)
 
 
