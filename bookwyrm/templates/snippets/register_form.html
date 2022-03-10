@@ -53,12 +53,12 @@
             id="id_password_register"
             aria-describedby="desc_password_register"
         >
-        
+
         {% include 'snippets/form_errors.html' with errors_list=register_form.password.errors id="desc_password_register" %}
     </div>
 </div>
 
-<div class="field is-grouped">
+<div class="field">
     <div class="control">
         <button class="button is-primary" type="submit">
             {% trans "Sign Up" %}
