@@ -7,11 +7,15 @@
     <div class="column is-two-thirds">
         <div class="field">
             <label class="label" for="id_name">{% trans "Name:" %}</label>
-            {{ list_form.name }}
+            <div class="control">
+                {{ list_form.name }}
+            </div>
         </div>
         <div class="field">
             <label class="label" for="id_description">{% trans "Description:" %}</label>
-            {{ list_form.description }}
+            <div class="control">
+                {{ list_form.description }}
+            </div>
         </div>
     </div>
     <div class="column">

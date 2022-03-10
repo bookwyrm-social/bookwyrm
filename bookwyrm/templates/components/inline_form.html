@@ -1,15 +1,15 @@
 {% load i18n %}
-<section class="card {% if not visible %}is-hidden {% endif %}{{ class }}" id="{{ controls_text }}{% if controls_uid %}-{{ controls_uid }}{% endif %}">
-    <header class="card-header has-background-secondary">
-        <h2 class="card-header-title" tabindex="0" id="{{ controls_text }}{% if controls_uid %}-{{ controls_uid }}{% endif %}_header">
-            {% block header %}{% endblock %}
-        </h2>
-        <span class="card-header-icon">
-            {% trans "Close" as button_text %}
-            {% include 'snippets/toggle/toggle_button.html' with label=button_text class="delete" nonbutton=True controls_text=controls_text %}
-        </span>
-    </header>
-    <section class="card-content content">
+<details
+    class="details-panel box"
+    {% if visible %}open{% endif %}
+    open
+>
+    <summary role="heading" aria-level="2">
+        <span class="title is-5">{% block header %}{% endblock %}</span>
+        <span class="details-close icon icon-x" aria-hidden="true"></span>
+    </summary>
+
+    <section class="{{ class }} mt-2">
         {% block form %}{% endblock %}
     </section>
-</section>
+</details>
