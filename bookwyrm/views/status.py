@@ -85,9 +85,7 @@ class CreateStatus(View):
         if hasattr(status, "quote"):
             status.raw_quote = status.quote
 
-        if not status.sensitive and status.content_warning:
-            # the cw text field remains populated when you click "remove"
-            status.content_warning = None
+        status.sensitive = status.content_warning not in [None, ""]
         status.save(broadcast=False)
 
         # inspect the text for user tags
