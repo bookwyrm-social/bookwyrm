@@ -52,7 +52,7 @@ class Views(TestCase):
         data = json.loads(response.content)
         self.assertEqual(len(data), 1)
         self.assertEqual(data[0]["title"], "Test Book")
-        self.assertEqual(data[0]["key"], f"https://{DOMAIN}/book/{self.book.id}/s/test-book")
+        self.assertEqual(data[0]["key"], f"https://{DOMAIN}/book/{self.book.id}")
 
     def test_search_no_query(self):
         """just the search page"""
