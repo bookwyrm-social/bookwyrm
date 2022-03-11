@@ -35,7 +35,7 @@ class BookWyrmModel(models.Model):
     updated_date = models.DateTimeField(auto_now=True)
     remote_id = RemoteIdField(null=True, activitypub_field="id")
 
-    def get_permalink(self):
+    def get_remote_id(self):
         """generate the url that resolves to the local object, without a slug"""
         base_path = f"https://{DOMAIN}"
         if hasattr(self, "user"):
@@ -44,9 +44,16 @@ class BookWyrmModel(models.Model):
         model_name = type(self).__name__.lower()
         return f"{base_path}/{model_name}/{self.id}"
 
-    def get_remote_id(self):
-        """generate a url that resolves to the local object, with a slug suffix"""
-        path = self.get_permalink()
+
+    class Meta:
+        """this is just here to provide default fields for other models"""
+
+        abstract = True
+
+    @property
+    def local_path(self):
+        """how to link to this object in the local app, with a slug"""
+        local = self.get_remote_id().replace(f"https://{DOMAIN}", "")
 
         name = None
         if hasattr(self, "name_field"):
@@ -56,19 +63,9 @@ class BookWyrmModel(models.Model):
 
         if name:
             slug = slugify(name)
-            path = f"{path}/s/{slug}"
+            local = f"{local}/s/{slug}"
 
-        return path
-
-    class Meta:
-        """this is just here to provide default fields for other models"""
-
-        abstract = True
-
-    @property
-    def local_path(self):
-        """how to link to this object in the local app"""
-        return self.get_remote_id().replace(f"https://{DOMAIN}", "")
+        return local
 
     def raise_visible_to_user(self, viewer):
         """is a user authorized to view an object?"""

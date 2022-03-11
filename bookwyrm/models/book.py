@@ -203,7 +203,7 @@ class Book(BookDataModel):
 
         return super().save(*args, **kwargs)
 
-    def get_permalink(self):
+    def get_remote_id(self):
         """editions and works both use "book" instead of model_name"""
         return f"https://{DOMAIN}/book/{self.id}"
 

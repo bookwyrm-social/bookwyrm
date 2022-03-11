@@ -21,7 +21,7 @@ class Report(BookWyrmModel):
     links = models.ManyToManyField("Link", blank=True)
     resolved = models.BooleanField(default=False)
 
-    def get_permalink(self):
+    def get_remote_id(self):
         return f"https://{DOMAIN}/settings/reports/{self.id}"
 
     class Meta:

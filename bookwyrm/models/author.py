@@ -55,7 +55,7 @@ class Author(BookDataModel):
         """generate the url from the openlibrary id"""
         return f"https://openlibrary.org/authors/{self.openlibrary_key}"
 
-    def get_permalink(self):
+    def get_remote_id(self):
         """editions and works both use "book" instead of model_name"""
         return f"https://{DOMAIN}/author/{self.id}"
 

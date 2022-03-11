@@ -16,7 +16,7 @@ class Group(BookWyrmModel):
     description = fields.TextField(blank=True, null=True)
     privacy = fields.PrivacyField()
 
-    def get_permalink(self):
+    def get_remote_id(self):
         """don't want the user to be in there in this case"""
         return f"https://{DOMAIN}/group/{self.id}"
 
