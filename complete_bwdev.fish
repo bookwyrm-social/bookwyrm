@@ -81,7 +81,6 @@ function __bw_complete_subcommand -a cmd
 end
 
 __bw_complete_subcommand "up" -a "(docker-compose config --service)"
-__bw_complete_subcommand "migrate"
 __bw_complete_subcommand "pytest" -a "bookwyrm/tests/**.py"
 __bw_complete_subcommand "populate_streams" -a "--stream=" -d "pick a single stream to populate"
 __bw_complete_subcommand "populate_streams" -l stream -a "home local books"
