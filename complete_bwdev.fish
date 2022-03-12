@@ -40,7 +40,6 @@ function __bw_complete -a cmds cmd desc
     complete -f -c bw-dev -n "not __fish_seen_subcommand_from $cmds" -a $cmd -d $desc
 end
 
-
 __bw_complete "$commands" "up"                      "bring one or all service(s) up"
 __bw_complete "$commands" "service_ports_web"       "run command on the web container with its portsenabled and mapped"
 __bw_complete "$commands" "initdb"                  "initialize database"
@@ -76,22 +75,16 @@ __bw_complete "$commands" "setup"                   "perform first-time setup"
 __bw_complete "$commands" "admin_code"              "get the admin code"
 __bw_complete "$commands" "runweb"                  "run a command on the web container"
 
-complete -f -c bw-dev -n "__fish_seen_subcommand_from up"\
-    -a "(docker-compose config --service)"
 
-complete -x -c bw-dev -n "__fish_seen_subcommand_from migrate"
+function __bw_complete_subcommand -a cmd
+	complete -f -c bw-dev -n "__fish_seen_subcommand_from $cmd" $argv[2..-1]
+end
 
-complete -x -c bw-dev -n "__fish_seen_subcommand_from pytest"\
-    -a "bookwyrm/tests/**.py"
-
-complete -x -c bw-dev -n "__fish_seen_subcommand_from populate_streams"\
-	-a "--stream=" -d "pick a single stream to populate"
-
-complete -x -c bw-dev -n "__fish_seen_subcommand_from populate_streams"\
-    -l stream -a "home local books"
-
-complete -x -c bw-dev -n "__fish_seen_subcommand_from generate_preview_images"\
-	-a "--all" -d "Generates images for ALL types: site, users and books. Can use a lot of computing power."
-
-complete -x -c bw-dev -n "__fish_seen_subcommand_from set_cors_to_s3"\
-	-a "**.json"
+__bw_complete_subcommand "up" -a "(docker-compose config --service)"
+__bw_complete_subcommand "migrate"
+__bw_complete_subcommand "pytest" -a "bookwyrm/tests/**.py"
+__bw_complete_subcommand "populate_streams" -a "--stream=" -d "pick a single stream to populate"
+__bw_complete_subcommand "populate_streams" -l stream -a "home local books"
+__bw_complete_subcommand "generate_preview_images" -a "--all"\
+	-d "Generates images for ALL types: site, users and books. Can use a lot of computing power."
+__bw_complete_subcommand "set_cors_to_s3" -a "**.json"
