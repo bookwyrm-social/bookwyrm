@@ -372,7 +372,7 @@ urlpatterns = [
     # groups
     re_path(rf"{USER_PATH}/groups/?$", views.UserGroups.as_view(), name="user-groups"),
     re_path(
-        rf"^group/(?P<group_id>\d+)(.json)?/?$", views.Group.as_view(), name="group"
+        r"^group/(?P<group_id>\d+)(.json)?/?$", views.Group.as_view(), name="group"
     ),
     re_path(
         rf"^group/(?P<group_id>\d+){regex.SLUG}/?$", views.Group.as_view(), name="group"
@@ -403,7 +403,7 @@ urlpatterns = [
     re_path(rf"{USER_PATH}/lists/?$", views.UserLists.as_view(), name="user-lists"),
     re_path(r"^list/?$", views.Lists.as_view(), name="lists"),
     re_path(r"^list/saved/?$", views.SavedLists.as_view(), name="saved-lists"),
-    re_path(rf"^list/(?P<list_id>\d+)(\.json)?/?$", views.List.as_view(), name="list"),
+    re_path(r"^list/(?P<list_id>\d+)(\.json)?/?$", views.List.as_view(), name="list"),
     re_path(
         rf"^list/(?P<list_id>\d+){regex.SLUG}/?$", views.List.as_view(), name="list"
     ),
@@ -560,7 +560,7 @@ urlpatterns = [
     re_path(r"^isbn/(?P<isbn>\d+)(.json)?/?$", views.Isbn.as_view()),
     # author
     re_path(
-        rf"^author/(?P<author_id>\d+)(.json)?/?$", views.Author.as_view(), name="author"
+        r"^author/(?P<author_id>\d+)(.json)?/?$", views.Author.as_view(), name="author"
     ),
     re_path(
         rf"^author/(?P<author_id>\d+){regex.SLUG}/?$",

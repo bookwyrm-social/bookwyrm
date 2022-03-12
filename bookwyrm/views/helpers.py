@@ -206,12 +206,13 @@ def filter_stream_by_status_type(activities, allowed_types=None):
 
 def maybe_redirect_local_path(request, model):
     """
-    if the request had an invalid path, return a permanent redirect response to the correct one, including a slug if any.
+    if the request had an invalid path, return a permanent redirect response to the
+    correct one, including a slug if any.
     if path is valid, returns False.
     """
 
     # don't redirect empty path for unit tests which currently have this
-    if request.path == "/" or request.path == model.local_path:
+    if request.path in ("/", model.local_path):
         return False
 
     new_path = model.local_path
