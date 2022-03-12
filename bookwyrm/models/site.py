@@ -53,7 +53,7 @@ class SiteSettings(models.Model):
 
     invite_question_text = models.CharField(
         max_length=255,
-        null=not (invite_request_question),
+        blank=True,
         default="What is your favourite book?",
     )
     # images
@@ -110,6 +110,9 @@ class SiteSettings(models.Model):
             User.objects.filter(is_active=False, deactivation_reason="pending").update(
                 is_active=True, deactivation_reason=None
             )
+        """if invite_request_question is enabled, make sure invite_question_text is not empty"""
+        if not self.invite_question_text:
+            self.invite_question_text = "What is your favourite book?"
         super().save(*args, **kwargs)
 
 
