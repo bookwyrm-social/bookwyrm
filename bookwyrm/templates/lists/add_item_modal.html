@@ -32,14 +32,16 @@
 {% endblock %}
 
 {% block modal-footer %}
-<button type="submit" class="button is-link">
-    {% if list.curation == 'open' or request.user == list.user or list.group|is_member:request.user %}
-        {% trans "Add" %}
-    {% else %}
-        {% trans "Suggest" %}
-    {% endif %}
-</button>
-<button type="button" class="button" data-modal-close>{% trans "Cancel" %}</button>
+<div class="buttons is-right is-flex-grow-1">
+    <button type="button" class="button" data-modal-close>{% trans "Cancel" %}</button>
+    <button type="submit" class="button is-link">
+        {% if list.curation == 'open' or request.user == list.user or list.group|is_member:request.user %}
+            {% trans "Add" %}
+        {% else %}
+            {% trans "Suggest" %}
+        {% endif %}
+    </button>
+</div>
 {% endblock %}
 
 {% block modal-form-close %}</form>{% endblock %}
