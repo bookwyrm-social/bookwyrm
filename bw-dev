@@ -225,6 +225,7 @@ case "$CMD" in
     *)
         set +x # No need to echo echo
         echo "Unrecognised command. Try:"
+        echo "    setup"
         echo "    up [container]"
         echo "    service_ports_web"
         echo "    initdb"
