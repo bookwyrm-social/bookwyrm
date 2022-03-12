@@ -44,7 +44,6 @@ class BookWyrmModel(models.Model):
         model_name = type(self).__name__.lower()
         return f"{base_path}/{model_name}/{self.id}"
 
-
     class Meta:
         """this is just here to provide default fields for other models"""
 

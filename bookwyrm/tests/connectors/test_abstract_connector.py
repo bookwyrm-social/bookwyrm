@@ -104,7 +104,7 @@ class AbstractConnector(TestCase):
 
         self.assertEqual(models.Book.objects.count(), 1)
         self.assertEqual(result, self.book)
-        
+
     @responses.activate
     def test_get_or_create_book_deduped(self):
         """load remote data and deduplicate"""
