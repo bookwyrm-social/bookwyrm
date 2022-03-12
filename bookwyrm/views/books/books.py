@@ -50,7 +50,9 @@ class Book(View):
         if not book or not book.parent_work:
             raise Http404()
 
-        if redirect_local_path := not user_statuses and maybe_redirect_local_path(request, book):
+        if redirect_local_path := not user_statuses and maybe_redirect_local_path(
+            request, book
+        ):
             return redirect_local_path
 
         # all reviews for all editions of the book
