@@ -131,8 +131,8 @@ class Status(View):
                 status.to_activity(pure=not is_bookwyrm_request(request))
             )
 
-        if redirect := maybe_redirect_local_path(request, status):
-            return redirect
+        if redirect_local_path := maybe_redirect_local_path(request, status):
+            return redirect_local_path
 
         visible_thread = (
             models.Status.privacy_filter(request.user)

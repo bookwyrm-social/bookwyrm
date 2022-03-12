@@ -27,8 +27,8 @@ class Group(View):
         group = get_object_or_404(models.Group, id=group_id)
         group.raise_visible_to_user(request.user)
 
-        if redirect := maybe_redirect_local_path(request, group):
-            return redirect
+        if redirect_local_path := maybe_redirect_local_path(request, group):
+            return redirect_local_path
 
         lists = (
             models.List.privacy_filter(request.user)

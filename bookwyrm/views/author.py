@@ -27,8 +27,8 @@ class Author(View):
         if is_api_request(request):
             return ActivitypubResponse(author.to_activity())
 
-        if redirect := maybe_redirect_local_path(request, author):
-            return redirect
+        if redirect_local_path := maybe_redirect_local_path(request, author):
+            return redirect_local_path
 
         books = (
             models.Work.objects.filter(Q(authors=author) | Q(editions__authors=author))
