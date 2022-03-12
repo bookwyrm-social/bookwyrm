@@ -20,6 +20,7 @@ from .helpers import get_user_from_username, maybe_redirect_local_path
 class Group(View):
     """group page"""
 
+    # pylint: disable=unused-argument
     def get(self, request, group_id, slug=None):
         """display a group"""
 
@@ -84,6 +85,7 @@ class Group(View):
 class UserGroups(View):
     """a user's groups page"""
 
+    # pylint: disable=unused-argument
     def get(self, request, username, slug=None):
         """display a group"""
         user = get_user_from_username(request.user, username)

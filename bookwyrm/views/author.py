@@ -19,6 +19,7 @@ from bookwyrm.views.helpers import is_api_request, maybe_redirect_local_path
 class Author(View):
     """this person wrote a book"""
 
+    # pylint: disable=unused-argument
     def get(self, request, author_id, slug=None):
         """landing page for an author"""
         author = get_object_or_404(models.Author, id=author_id)
