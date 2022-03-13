@@ -468,7 +468,12 @@ class ThemeForm(CustomForm):
         fields = ["name", "path"]
         widgets = {
             "name": forms.TextInput(attrs={"aria-describedby": "desc_name"}),
-            "path": forms.Select(attrs={"aria-describedby": "desc_path"}),
+            "path": forms.TextInput(
+                attrs={
+                    "aria-describedby": "desc_path",
+                    "placeholder": "css/themes/theme-name.scss",
+                }
+            ),
         }
 
 
