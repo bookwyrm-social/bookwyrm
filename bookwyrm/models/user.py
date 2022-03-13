@@ -1,6 +1,5 @@
 """ database schema for user data """
 import re
-import string
 from urllib.parse import urlparse
 
 from django.apps import apps
