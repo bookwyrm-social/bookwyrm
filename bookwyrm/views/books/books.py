@@ -12,7 +12,7 @@ from django.views.decorators.http import require_POST
 
 from bookwyrm import forms, models
 from bookwyrm.activitypub import ActivitypubResponse
-from bookwyrm.connectors import connector_manager
+from bookwyrm.connectors import connector_manager, ConnectorException
 from bookwyrm.connectors.abstract_connector import get_image
 from bookwyrm.settings import PAGE_LENGTH
 from bookwyrm.views.helpers import is_api_request
@@ -191,6 +191,10 @@ def update_book_from_remote(request, book_id, connector_identifier):
     )
     book = get_object_or_404(models.Book.objects.select_subclasses(), id=book_id)
 
-    connector.update_book_from_remote(book)
+    try:
+        connector.update_book_from_remote(book)
+    except ConnectorException:
+        # the remote source isn't available or doesn't know this book
+        pass
 
     return redirect("book", book.id)
