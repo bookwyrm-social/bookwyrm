@@ -6,24 +6,26 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bookwyrm', '0144_alter_announcement_display_type'),
+        ("bookwyrm", "0144_alter_announcement_display_type"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='inviterequest',
-            name='answer',
-            field=models.TextField(default='Foundation by Isaac Azimov', max_length=50),
+            model_name="inviterequest",
+            name="answer",
+            field=models.TextField(default="Foundation by Isaac Azimov", max_length=50),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='sitesettings',
-            name='invite_question_text',
-            field=models.CharField(blank=True, default='What is your favourite book?', max_length=255),
+            model_name="sitesettings",
+            name="invite_question_text",
+            field=models.CharField(
+                blank=True, default="What is your favourite book?", max_length=255
+            ),
         ),
         migrations.AddField(
-            model_name='sitesettings',
-            name='invite_request_question',
+            model_name="sitesettings",
+            name="invite_request_question",
             field=models.BooleanField(default=False),
         ),
     ]
