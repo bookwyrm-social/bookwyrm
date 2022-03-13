@@ -56,8 +56,16 @@
                             </span>
                         </button>
                     </div>
+                    <div class="control">
+                        <button class="button" type="button" data-modal-open="barcode-scanner-modal">
+                            <span class="icon icon-barcode" title="{% trans 'Scan Barcode' %}">
+                                <span class="is-sr-only">{% trans "Scan Barcode" %}</span>
+                            </span>
+                        </button>
+                    </div>
                 </div>
             </form>
+            {% include "search/barcode_modal.html" with id="barcode-scanner-modal" %}
 
             <button type="button" tabindex="0" class="navbar-burger pulldown-menu my-4" data-controls="main_nav" aria-expanded="false">
                 <i class="icon icon-dots-three-vertical" aria-hidden="true"></i>
@@ -266,6 +274,7 @@
 <script src="{% static "js/bookwyrm.js" %}?v={{ js_cache }}"></script>
 <script src="{% static "js/localstorage.js" %}?v={{ js_cache }}"></script>
 <script src="{% static "js/status_cache.js" %}?v={{ js_cache }}"></script>
+<script src="{% static "js/vendor/quagga.min.js" %}?v={{ js_cache }}"></script>
 
 {% block scripts %}{% endblock %}
 
