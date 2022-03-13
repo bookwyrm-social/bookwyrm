@@ -52,6 +52,8 @@ class SiteSettings(models.Model):
     require_confirm_email = models.BooleanField(default=True)
 
     invite_question_text = models.CharField(
+        max_length=255,
+        blank=True,
         default="What is your favourite book?",
         max_length=255,
 #		null=False if invite_request_question is False else True,
@@ -109,7 +111,11 @@ class SiteSettings(models.Model):
         """if require_confirm_email is disabled, make sure no users are pending"""
         if not self.require_confirm_email:
             User.objects.filter(is_active=False, deactivation_reason="pending").update(
-                is_active=True, deactivation_reason=None)
+                is_active=True, deactivation_reason=None
+            )
+        """if invite_request_question is enabled, make sure invite_question_text is not empty"""
+        if not self.invite_question_text:
+            self.invite_question_text = "What is your favourite book?"
         super().save(*args, **kwargs)
 
 
