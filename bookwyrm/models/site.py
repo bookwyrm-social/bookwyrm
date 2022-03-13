@@ -52,12 +52,7 @@ class SiteSettings(models.Model):
     require_confirm_email = models.BooleanField(default=True)
 
     invite_question_text = models.CharField(
-        max_length=255,
-        blank=True,
-        default="What is your favourite book?",
-        max_length=255,
-#		null=False if invite_request_question is False else True,
-#		blank=False if invite_request_question is False else True
+        max_length=255, blank=True, default="What is your favourite book?"
     )
     # images
     logo = models.ImageField(upload_to="logos/", null=True, blank=True)
