@@ -12,6 +12,15 @@
 {% endblock %}
 
 {% block content %}
+{% if update_error %}
+<div class="notification is-danger is-light">
+    <span class="icon icon-x" aria-hidden="true"></span>
+    <span>
+        {% trans "Unable to connect to remote source." %}
+    </span>
+</div>
+{% endif %}
+
 {% with user_authenticated=request.user.is_authenticated can_edit_book=perms.bookwyrm.edit_book %}
 <div class="block" itemscope itemtype="https://schema.org/Book">
     <div class="columns is-mobile">

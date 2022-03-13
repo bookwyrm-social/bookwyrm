@@ -22,7 +22,7 @@ from bookwyrm.views.helpers import is_api_request
 class Book(View):
     """a book! this is the stuff"""
 
-    def get(self, request, book_id, user_statuses=False):
+    def get(self, request, book_id, user_statuses=False, update_error=False):
         """info about a book"""
         if is_api_request(request):
             book = get_object_or_404(
@@ -80,6 +80,7 @@ class Book(View):
             else None,
             "rating": reviews.aggregate(Avg("rating"))["rating__avg"],
             "lists": lists,
+            "update_error": update_error,
         }
 
         if request.user.is_authenticated:
@@ -195,6 +196,6 @@ def update_book_from_remote(request, book_id, connector_identifier):
         connector.update_book_from_remote(book)
     except ConnectorException:
         # the remote source isn't available or doesn't know this book
-        pass
+        return Book().get(request, book_id, update_error=True)
 
     return redirect("book", book.id)
