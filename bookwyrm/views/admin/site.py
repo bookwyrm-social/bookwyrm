@@ -29,7 +29,7 @@ class Site(View):
         if not form.is_valid():
             data = {"site_form": form}
             return TemplateResponse(request, "settings/site.html", data)
-        form.save()
+        site = form.save()
 
         data = {"site_form": forms.SiteForm(instance=site), "success": True}
         return TemplateResponse(request, "settings/site.html", data)

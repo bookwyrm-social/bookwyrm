@@ -30,13 +30,23 @@
 
 <div class="columns mt-3">
     <section class="column is-three-quarters">
-        {% if request.GET.updated %}
-        <div class="notification is-primary">
-            {% if list.curation != "open" and request.user != list.user and not list.group|is_member:request.user %}
-            {% trans "You successfully suggested a book for this list!" %}
-            {% else %}
-            {% trans "You successfully added a book to this list!" %}
-            {% endif %}
+        {% if add_failed %}
+        <div class="notification is-danger is-light">
+            <span class="icon icon-x" aria-hidden="true"></span>
+            <span>
+                {% trans "That book is already on this list." %}
+            </span>
+        </div>
+        {% elif add_succeeded %}
+        <div class="notification is-success is-light">
+            <span class="icon icon-check" aria-hidden="true"></span>
+            <span>
+                {% if list.curation != "open" and request.user != list.user and not list.group|is_member:request.user %}
+                    {% trans "You successfully suggested a book for this list!" %}
+                {% else %}
+                    {% trans "You successfully added a book to this list!" %}
+                {% endif %}
+            </span>
         </div>
         {% endif %}
 
@@ -107,7 +117,7 @@
                                 <summary>
                                     <span role="heading" aria-level="3">
                                         {% trans "Add notes" %}
-                                        <span class="details-close icon icon-plus" aria-hidden="true"></span>
+                                        <span class="details-close icon icon-x" aria-hidden="true"></span>
                                     </span>
                                 </summary>
                                 {% include "lists/edit_item_form.html" with book=item.book %}

@@ -86,6 +86,12 @@ urlpatterns = [
         r"^settings/dashboard/?$", views.Dashboard.as_view(), name="settings-dashboard"
     ),
     re_path(r"^settings/site-settings/?$", views.Site.as_view(), name="settings-site"),
+    re_path(r"^settings/themes/?$", views.Themes.as_view(), name="settings-themes"),
+    re_path(
+        r"^settings/themes/(?P<theme_id>\d+)/delete/?$",
+        views.delete_theme,
+        name="settings-themes-delete",
+    ),
     re_path(
         r"^settings/announcements/?$",
         views.Announcements.as_view(),
@@ -120,6 +126,11 @@ urlpatterns = [
         r"^settings/users/?$", views.UserAdminList.as_view(), name="settings-users"
     ),
     re_path(
+        r"^settings/users/(?P<status>(local|federated))\/?$",
+        views.UserAdminList.as_view(),
+        name="settings-users",
+    ),
+    re_path(
         r"^settings/users/(?P<user>\d+)/?$",
         views.UserAdmin.as_view(),
         name="settings-user",
@@ -143,6 +154,11 @@ urlpatterns = [
         r"^settings/federation/(?P<server>\d+)/unblock/?$",
         views.unblock_server,
         name="settings-federated-server-unblock",
+    ),
+    re_path(
+        r"^settings/federation/(?P<server>\d+)/refresh/?$",
+        views.refresh_server,
+        name="settings-federated-server-refresh",
     ),
     re_path(
         r"^settings/federation/add/?$",

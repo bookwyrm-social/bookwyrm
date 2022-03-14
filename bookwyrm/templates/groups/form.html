@@ -16,18 +16,21 @@
 </div>
 <div class="is-flex">
     {% if group.id %}
-    <div class="is-flex-grow-1">
+    <div>
         <button type="button" data-modal-open="delete_group" class="button is-danger">
             {% trans "Delete group" %}
         </button>
     </div>
     {% endif %}
-    <div class="field has-addons">
-        <div class="control">
-            {% include 'snippets/privacy_select_no_followers.html' with current=group.privacy %}
-        </div>
-        <div class="control">
-            <button type="submit" class="button is-primary">{% trans "Save" %}</button>
+
+    <div class="is-flex is-flex-grow-1 is-justify-content-flex-end">
+        <div class="field has-addons">
+            <div class="control">
+                {% include 'snippets/privacy_select_no_followers.html' with current=group.privacy %}
+            </div>
+            <div class="control">
+                <button type="submit" class="button is-primary">{% trans "Save" %}</button>
+            </div>
         </div>
     </div>
 </div>

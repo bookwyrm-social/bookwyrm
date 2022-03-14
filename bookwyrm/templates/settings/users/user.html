@@ -1,10 +1,23 @@
 {% extends 'settings/layout.html' %}
 {% load i18n %}
+{% load utilities %}
 
 {% block title %}{{ user.username }}{% endblock %}
 {% block header %}
 {{ user.username }}
-<a class="help has-text-weight-normal" href="{% url 'settings-users' %}">{% trans "Back to users" %}</a>
+{% endblock %}
+
+{% block breadcrumbs %}
+<nav class="breadcrumb subtitle" aria-label="breadcrumbs">
+    <ul>
+        <li><a href="{% url 'settings-users' %}">{% trans "Users" %}</a></li>
+        <li class="is-active">
+            <a href="#" aria-current="page">
+                {{ user|username }}
+            </a>
+        </li>
+    </ul>
+</nav>
 {% endblock %}
 
 {% block panel %}

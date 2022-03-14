@@ -7,7 +7,7 @@ from .admin.automod import schedule_automod_task, unschedule_automod_task
 from .admin.dashboard import Dashboard
 from .admin.federation import Federation, FederatedServer
 from .admin.federation import AddFederatedServer, ImportServerBlocklist
-from .admin.federation import block_server, unblock_server
+from .admin.federation import block_server, unblock_server, refresh_server
 from .admin.email_blocklist import EmailBlocklist
 from .admin.ip_blocklist import IPBlocklist
 from .admin.invite import ManageInvites, Invite, InviteRequest
@@ -22,6 +22,7 @@ from .admin.reports import (
     moderator_delete_user,
 )
 from .admin.site import Site
+from .admin.themes import Themes, delete_theme
 from .admin.user_admin import UserAdmin, UserAdminList
 
 # user preferences
