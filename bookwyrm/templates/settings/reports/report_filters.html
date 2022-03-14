@@ -2,11 +2,6 @@
 
 {% block filter_fields %}
 {% include 'settings/users/username_filter.html' %}
-
-{% if status != "local" %}
+{% include 'directory/community_filter.html' %}
 {% include 'settings/users/server_filter.html' %}
-{% else %}
-{% include 'settings/users/email_filter.html' %}
-{% endif %}
-
 {% endblock %}
