@@ -87,12 +87,16 @@
                     <label class="label is-sr-only" for="id_add_subject={% if not forloop.first %}-{{forloop.counter}}{% endif %}">
                         {% trans "Add subject" %}
                     </label>
-                    <div class="field has-addons">
+                    <div class="field has-addons" id="subject_field_wrapper_{{ forloop.counter }}">
                         <div class="control is-expanded">
                             <input id="id_add_subject-{{ forloop.counter }}" type="text" name="subject-" value="{{ subject }}" class="input">
                         </div>
                         <div class="control">
-                            <button class="button is-danger is-light" type="button">
+                            <button
+                                class="button is-danger is-light"
+                                type="button"
+                                data-remove="subject_field_wrapper_{{ forloop.counter }}"
+                            >
                                 <span class="icon icon-x" title="{% trans 'Remove' %}">
                                     <span class="is-sr-only">{% trans "Remove" %}</span>
                                 </span>
