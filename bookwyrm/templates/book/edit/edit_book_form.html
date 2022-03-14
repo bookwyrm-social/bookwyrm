@@ -89,7 +89,13 @@
                     </label>
                     <div class="field has-addons" id="subject_field_wrapper_{{ forloop.counter }}">
                         <div class="control is-expanded">
-                            <input id="id_add_subject-{{ forloop.counter }}" type="text" name="subject-" value="{{ subject }}" class="input">
+                            <input
+                                id="id_add_subject-{{ forloop.counter }}"
+                                type="text"
+                                name="subjects"
+                                value="{{ subject }}"
+                                class="input"
+                            >
                         </div>
                         <div class="control">
                             <button
@@ -97,21 +103,30 @@
                                 type="button"
                                 data-remove="subject_field_wrapper_{{ forloop.counter }}"
                             >
-                                <span class="icon icon-x" title="{% trans 'Remove' %}">
-                                    <span class="is-sr-only">{% trans "Remove" %}</span>
+                                {% trans "Remove subject" as text %}
+                                <span class="icon icon-x" title="{{ text }}">
+                                    <span class="is-sr-only">{{ text }}</span>
                                 </span>
                             </button>
                         </div>
                     </div>
                     {% endfor %}
-                    <input class="input" type="text" name="add_subject" id="id_add_subject" value="{{ subject }}" {% if confirm_mode %}readonly{% endif %}>
+                    <input
+                        class="input"
+                        type="text"
+                        name="subjects"
+                        id="id_add_subject"
+                        value="{{ subject }}"
+                        {% if confirm_mode %}readonly{% endif %}
+                    >
 
                     {% include 'snippets/form_errors.html' with errors_list=form.subjects.errors id="desc_subjects" %}
                 </div>
 
                 <span class="help">
                     <button class="button is-small" type="button" data-duplicate="id_add_subject" id="another_subject_field">
-                        {% trans "Add Another Subject" %}
+                        <span class="icon icon-plus" aria-hidden="true"></span>
+                        <span>{% trans "Add Another Subject" %}</span>
                     </button>
                 </span>
             </div>
@@ -186,7 +201,12 @@
                     <input class="input" type="text" name="add_author" id="id_add_author" placeholder="{% trans 'Jane Doe' %}" value="{{ author }}" {% if confirm_mode %}readonly{% endif %}>
                     {% endfor %}
                 </div>
-                <span class="help"><button class="button is-small" type="button" data-duplicate="id_add_author" id="another_author_field">{% trans "Add Another Author" %}</button></span>
+                <span class="help">
+                    <button class="button is-small" type="button" data-duplicate="id_add_author" id="another_author_field">
+                        <span class="icon icon-plus" aria-hidden="true"></span>
+                        <span>{% trans "Add Another Author" %}</span>
+                    </button>
+                </span>
             </div>
         </section>
     </div>
