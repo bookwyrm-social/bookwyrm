@@ -2,6 +2,7 @@
 import datetime
 from collections import defaultdict
 from urllib.parse import urlparse
+import requests
 
 from django import forms
 from django.forms import ModelForm, PasswordInput, widgets, ChoiceField
@@ -244,6 +245,30 @@ class FileLinkForm(CustomForm):
         filetype = cleaned_data.get("filetype")
         book = cleaned_data.get("book")
         domain = urlparse(url).netloc
+
+        try:
+            response = requests.head(url, timeout=3)
+
+            if response.status_code in range(300, 308):
+                headers = response.headers
+                url_redirect = headers["Location"]
+                print(url_redirect)
+
+                response = requests.head(url_redirect, timeout=3)
+            if int(response.status_code) < 200 or int(response.status_code) > 299:
+                # status code between 200 and 399 should be fine
+                self.add_error(
+                    "url",
+                    _(
+                        f"""This url throws status code {response.status_code} and can't be added 
+                        to list"""
+                    ),
+                )
+        except:
+            self.add_error(
+                "url", _("This domain does not exist. Please check your entry.")
+            )
+
         if models.LinkDomain.objects.filter(domain=domain).exists():
             status = models.LinkDomain.objects.get(domain=domain).status
             if status == "blocked":
@@ -251,7 +276,8 @@ class FileLinkForm(CustomForm):
                 self.add_error(
                     "url",
                     _(
-                        "This domain is blocked. Please contact your administrator if you think this is an error."
+                        """This domain is blocked. Please contact your administrator 
+                        if you think this is an error."""
                     ),
                 )
             elif models.FileLink.objects.filter(
@@ -261,7 +287,8 @@ class FileLinkForm(CustomForm):
                 self.add_error(
                     "url",
                     _(
-                        "This link with file type has already been added for this book. If it is not visible, the domain is still pending."
+                        """This link with file type has already been added for this book. 
+                        If it is not visible, the domain is still pending."""
                     ),
                 )
 
