@@ -77,6 +77,18 @@
                     
                     {% include 'snippets/form_errors.html' with errors_list=form.languages.errors id="desc_languages" %}
                 </div>
+
+                <div class="field">
+                    <label class="label" for="id_subjects">
+                        {% trans "Subjects:" %}
+                    </label>
+                    {{ form.subjects }}
+                    <span class="help" id="desc_subjects_help">
+                        {% trans "Separate multiple values with commas." %}
+                    </span>
+
+                    {% include 'snippets/form_errors.html' with errors_list=form.subjects.errors id="desc_subjects" %}
+                </div>
             </div>
         </section>
 

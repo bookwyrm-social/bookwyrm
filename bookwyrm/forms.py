@@ -296,6 +296,9 @@ class EditionForm(CustomForm):
             "languages": forms.TextInput(
                 attrs={"aria-describedby": "desc_languages_help desc_languages"}
             ),
+            "subjects": forms.TextInput(
+                attrs={"aria-describedby": "desc_subjects_help desc_subjects"}
+            ),
             "publishers": forms.TextInput(
                 attrs={"aria-describedby": "desc_publishers_help desc_publishers"}
             ),
