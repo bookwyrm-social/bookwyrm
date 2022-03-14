@@ -1,4 +1,5 @@
 {% load i18n %}
+{% load static %}
 
 {% if form.non_field_errors %}
 <div class="block">
@@ -302,3 +303,7 @@
         </section>
     </div>
 </div>
+
+{% block scripts %}
+<script src="{% static "js/forms.js" %}"></script>
+{% endblock %}
