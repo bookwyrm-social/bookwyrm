@@ -14,6 +14,14 @@ class CoverForm(CustomForm):
         help_texts = {f: None for f in fields}
 
 
+class ArrayWidget(forms.widgets.TextInput):
+    # pylint: disable=unused-argument
+    # pylint: disable=no-self-use
+    def value_from_datadict(self, data, files, name):
+        """get all values for this name"""
+        return [i for i in data.getlist(name) if i]
+
+
 class EditionForm(CustomForm):
     class Meta:
         model = models.Edition
@@ -41,11 +49,9 @@ class EditionForm(CustomForm):
             "series_number": forms.TextInput(
                 attrs={"aria-describedby": "desc_series_number"}
             ),
+            "subjects": ArrayWidget(),
             "languages": forms.TextInput(
                 attrs={"aria-describedby": "desc_languages_help desc_languages"}
-            ),
-            "subjects": forms.TextInput(
-                attrs={"aria-describedby": "desc_subjects"}
             ),
             "publishers": forms.TextInput(
                 attrs={"aria-describedby": "desc_publishers_help desc_publishers"}
