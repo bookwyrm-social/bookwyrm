@@ -27,6 +27,7 @@ class SiteSettings(models.Model):
     default_theme = models.ForeignKey(
         "Theme", null=True, blank=True, on_delete=models.SET_NULL
     )
+    version = models.CharField(null=True, blank=True, max_length=10)
 
     # admin setup options
     install_mode = models.BooleanField(default=False)

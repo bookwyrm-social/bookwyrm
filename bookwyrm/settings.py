@@ -11,7 +11,7 @@ from django.utils.translation import gettext_lazy as _
 env = Env()
 env.read_env()
 DOMAIN = env("DOMAIN")
-VERSION = "0.3.3"
+VERSION = "0.3.4"
 
 RELEASE_API = env(
     "RELEASE_API",
@@ -90,6 +90,7 @@ INSTALLED_APPS = [
     "sass_processor",
     "bookwyrm",
     "celery",
+    "django_celery_beat",
     "imagekit",
     "storages",
 ]
