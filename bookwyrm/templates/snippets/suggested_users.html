@@ -11,7 +11,7 @@
                 <span title="@{{ user|username }}" class="is-block pb-3">@{{ user|username|truncatechars:8 }}</span>
             </a>
             {% include 'snippets/follow_button.html' with user=user minimal=True %}
-            {% if user.mutuals %}
+            {% if user.mutuals and not user.hide_follows %}
             <p class="help">
                 {% blocktrans trimmed with mutuals=user.mutuals|intcomma count counter=user.mutuals %}
                 {{ mutuals }} follower you follow

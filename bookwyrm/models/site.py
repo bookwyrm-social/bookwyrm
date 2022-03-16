@@ -24,6 +24,10 @@ class SiteSettings(models.Model):
     )
     instance_description = models.TextField(default="This instance has no description.")
     instance_short_description = models.CharField(max_length=255, blank=True, null=True)
+    default_theme = models.ForeignKey(
+        "Theme", null=True, blank=True, on_delete=models.SET_NULL
+    )
+    version = models.CharField(null=True, blank=True, max_length=10)
 
     # admin setup options
     install_mode = models.BooleanField(default=False)
@@ -102,6 +106,18 @@ class SiteSettings(models.Model):
                 is_active=True, deactivation_reason=None
             )
         super().save(*args, **kwargs)
+
+
+class Theme(models.Model):
+    """Theme files"""
+
+    created_date = models.DateTimeField(auto_now_add=True)
+    name = models.CharField(max_length=50, unique=True)
+    path = models.CharField(max_length=50, unique=True)
+
+    def __str__(self):
+        # pylint: disable=invalid-str-returned
+        return self.name
 
 
 class SiteInvite(models.Model):

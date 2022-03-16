@@ -19,7 +19,7 @@ from bookwyrm.settings import PAGE_LENGTH
 class UserAdminList(View):
     """admin view of users on this server"""
 
-    def get(self, request):
+    def get(self, request, status="local"):
         """list of users"""
         filters = {}
         server = request.GET.get("server")
@@ -36,6 +36,8 @@ class UserAdminList(View):
         email = request.GET.get("email")
         if email:
             filters["email__endswith"] = email
+
+        filters["local"] = status == "local"
 
         users = models.User.objects.filter(**filters)
 
@@ -56,6 +58,7 @@ class UserAdminList(View):
             "users": paginated.get_page(request.GET.get("page")),
             "sort": sort,
             "server": server,
+            "status": status,
         }
         return TemplateResponse(request, "settings/users/user_admin.html", data)
 

@@ -17,7 +17,7 @@
     <label class="label" for="id_description_{{ uuid }}">{% trans "Description:" %}</label>
     <textarea name="description" cols="40" rows="5" maxlength="500" class="textarea" id="id_description_{{ uuid }}">{{ form.description.value|default:'' }}</textarea>
 </div>
-<div class="field has-addons">
+<div class="field has-addons is-justify-content-end">
     <div class="control">
         {% include 'snippets/privacy_select.html' with current=privacy %}
     </div>

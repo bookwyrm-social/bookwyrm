@@ -58,8 +58,12 @@ class Editions(View):
             )
 
         paginated = Paginator(editions, PAGE_LENGTH)
+        page = paginated.get_page(request.GET.get("page"))
         data = {
-            "editions": paginated.get_page(request.GET.get("page")),
+            "editions": page,
+            "page_range": paginated.get_elided_page_range(
+                page.number, on_each_side=2, on_ends=1
+            ),
             "work": work,
             "work_form": forms.EditionFromWorkForm(instance=work),
             "languages": languages,

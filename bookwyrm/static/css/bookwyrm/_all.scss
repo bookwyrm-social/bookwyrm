@@ -1,6 +1,7 @@
 /** Imports
  ******************************************************************************/
 @import "components/avatar";
+@import "components/barcode";
 @import "components/book_cover";
 @import "components/book_grid";
 @import "components/book_list";
@@ -115,7 +116,7 @@ button .button-invisible-overlay {
     align-items: center;
     flex-direction: column;
     justify-content: center;
-    background: rgba($scheme-invert, 0.66);
+    background: $invisible-overlay-background-color;
     color: white;
     opacity: 0;
     transition: opacity 0.2s ease;

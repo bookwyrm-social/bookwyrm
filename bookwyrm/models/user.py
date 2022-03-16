@@ -136,6 +136,8 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     updated_date = models.DateTimeField(auto_now=True)
     last_active_date = models.DateTimeField(default=timezone.now)
     manually_approves_followers = fields.BooleanField(default=False)
+    theme = models.ForeignKey("Theme", null=True, blank=True, on_delete=models.SET_NULL)
+    hide_follows = fields.BooleanField(default=False)
 
     # options to turn features on and off
     show_goal = models.BooleanField(default=True)
@@ -478,10 +480,13 @@ def set_remote_server(user_id):
         get_remote_reviews.delay(user.outbox)
 
 
-def get_or_create_remote_server(domain):
+def get_or_create_remote_server(domain, refresh=False):
     """get info on a remote server"""
+    server = FederatedServer()
     try:
-        return FederatedServer.objects.get(server_name=domain)
+        server = FederatedServer.objects.get(server_name=domain)
+        if not refresh:
+            return server
     except FederatedServer.DoesNotExist:
         pass
 
@@ -496,13 +501,15 @@ def get_or_create_remote_server(domain):
         application_type = data.get("software", {}).get("name")
         application_version = data.get("software", {}).get("version")
     except ConnectorException:
+        if server.id:
+            return server
         application_type = application_version = None
 
-    server = FederatedServer.objects.create(
-        server_name=domain,
-        application_type=application_type,
-        application_version=application_version,
-    )
+    server.server_name = domain
+    server.application_type = application_type
+    server.application_version = application_version
+
+    server.save()
     return server
 
 
