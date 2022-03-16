@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-03-14 19:30+0000\n"
-"PO-Revision-Date: 2022-03-16 18:31\n"
+"PO-Revision-Date: 2022-03-16 19:30\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Italian\n"
 "Language: it\n"
@@ -1004,7 +1004,7 @@ msgstr "Lingue:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:84
 msgid "Subjects:"
-msgstr ""
+msgstr "Argomenti:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:98
 msgid "Publication"
@@ -1669,7 +1669,7 @@ msgstr "Scopri le tue statistiche per %(year)s!"
 #: bookwyrm/templates/get_started/book_preview.html:6
 #, python-format
 msgid "Have you read %(book_title)s?"
-msgstr "Hai letto %(book_title)s?"
+msgstr "Hai già letto %(book_title)s?"
 
 #: bookwyrm/templates/get_started/book_preview.html:7
 msgid "Add to your books"
@@ -2244,7 +2244,7 @@ msgstr "Cerca un libro, un utente o una lista"
 
 #: bookwyrm/templates/layout.html:61 bookwyrm/templates/layout.html:62
 msgid "Scan Barcode"
-msgstr ""
+msgstr "Scansiona codice a barre"
 
 #: bookwyrm/templates/layout.html:72
 msgid "Main navigation menu"
@@ -3033,38 +3033,40 @@ msgstr "Report"
 msgid "\n"
 "        Scan Barcode\n"
 "    "
-msgstr ""
+msgstr "\n"
+"        Scansiona codice a barre\n"
+"    "
 
 #: bookwyrm/templates/search/barcode_modal.html:23
 msgid "Requesting camera..."
-msgstr ""
+msgstr "Richiesta fotocamera..."
 
 #: bookwyrm/templates/search/barcode_modal.html:24
 msgid "Grant access to the camera to scan a book's barcode."
-msgstr ""
+msgstr "Concedi l'accesso alla fotocamera per scansionare il codice a barre di un libro."
 
 #: bookwyrm/templates/search/barcode_modal.html:29
 msgid "Could not access camera"
-msgstr ""
+msgstr "Impossibile accedere alla fotocamera"
 
 #: bookwyrm/templates/search/barcode_modal.html:33
 msgctxt "barcode scanner"
 msgid "Scanning..."
-msgstr ""
+msgstr "Ricerca in corso..."
 
 #: bookwyrm/templates/search/barcode_modal.html:34
 msgid "Align your book's barcode with the camera."
-msgstr ""
+msgstr "Allinea il codice a barre del tuo libro con la fotocamera."
 
 #: bookwyrm/templates/search/barcode_modal.html:38
 msgctxt "barcode scanner"
 msgid "ISBN scanned"
-msgstr ""
+msgstr "ISBN scansionato"
 
 #: bookwyrm/templates/search/barcode_modal.html:39
 msgctxt "followed by ISBN"
 msgid "Searching for book:"
-msgstr ""
+msgstr "Ricerca libro:"
 
 #: bookwyrm/templates/search/book.html:44
 msgid "Results from"
@@ -3980,7 +3982,7 @@ msgstr "Copia il file del tema nella directory <code>bookwyrm/static/css/themes<
 
 #: bookwyrm/templates/settings/themes.html:32
 msgid "Run <code>./bw-dev collectstatic</code>."
-msgstr ""
+msgstr "Esegui <code>./bw-dev collectstatic</code>."
 
 #: bookwyrm/templates/settings/themes.html:35
 msgid "Add the file name using the form below to make it available in the application interface."
@@ -4337,7 +4339,7 @@ msgstr "Nessuna copertina"
 #: bookwyrm/templates/snippets/book_titleby.html:11
 #, python-format
 msgid "<a href=\"%(path)s\">%(title)s</a> by"
-msgstr "<a href=\"%(path)s\">%(title)s</a> da"
+msgstr "<a href=\"%(path)s\">%(title)s</a> di"
 
 #: bookwyrm/templates/snippets/boost_button.html:20
 #: bookwyrm/templates/snippets/boost_button.html:21
@@ -4394,7 +4396,7 @@ msgstr "Includi avviso spoiler"
 
 #: bookwyrm/templates/snippets/create_status/content_warning_field.html:18
 msgid "Spoilers/content warnings:"
-msgstr ""
+msgstr "Contenuto dell'avviso:"
 
 #: bookwyrm/templates/snippets/create_status/content_warning_field.html:27
 msgid "Spoilers ahead!"
