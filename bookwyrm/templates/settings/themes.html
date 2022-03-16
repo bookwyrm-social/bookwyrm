@@ -29,7 +29,7 @@
                 {% trans "Copy the theme file into the <code>bookwyrm/static/css/themes</code> directory on your server from the command line." %}
             </li>
             <li>
-                {% trans "Run <code>./bw-dev compilescss</code>." %}
+                {% trans "Run <code>./bw-dev collectstatic</code>." %}
             </li>
             <li>
                 {% trans "Add the file name using the form below to make it available in the application interface." %}
@@ -56,12 +56,7 @@
         class="box"
         enctype="multipart/form-data"
     >
-    {% if not choices %}
-    <div class="notification is-warning">
-        {% trans "No available theme files detected" %}
-    </div>
-    {% endif %}
-    <fieldset {% if not choices %}disabled{% endif %}>
+    <fieldset>
         {% csrf_token %}
         <div class="columns">
             <div class="column is-half">
@@ -79,20 +74,7 @@
                     {% trans "Theme filename" %}
                 </label>
                 <div class="control">
-                    <div class="select">
-                        <select
-                            name="path"
-                            aria-describedby="desc_path"
-                            class=""
-                            id="id_path"
-                        >
-                            {% for choice in choices %}
-                            <option value="{{ choice }}">
-                                {{ choice }}
-                            </option>
-                            {% endfor %}
-                        </select>
-                    </div>
+                    {{ theme_form.path }}
                     {% include 'snippets/form_errors.html' with errors_list=theme_form.path.errors id="desc_path" %}
                 </div>
             </div>

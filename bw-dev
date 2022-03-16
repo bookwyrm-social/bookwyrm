@@ -154,7 +154,7 @@ case "$CMD" in
             --config dev-tools/.stylelintrc.js
         ;;
     compilescss)
-        runweb python manage.py compilethemes
+        runweb python manage.py compilescss
         runweb python manage.py collectstatic --no-input
         ;;
     collectstatic_watch)
@@ -163,6 +163,7 @@ case "$CMD" in
     update)
         git pull
         docker-compose build
+        ./update.sh
         runweb python manage.py migrate
         runweb python manage.py collectstatic --no-input
         docker-compose up -d
@@ -215,6 +216,7 @@ case "$CMD" in
         ;;
     setup)
         migrate
+        migrate django_celery_beat
         initdb
         runweb python manage.py collectstatic --no-input
         admin_code
@@ -225,6 +227,7 @@ case "$CMD" in
     *)
         set +x # No need to echo echo
         echo "Unrecognised command. Try:"
+        echo "    setup"
         echo "    up [container]"
         echo "    service_ports_web"
         echo "    initdb"
