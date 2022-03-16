@@ -90,6 +90,7 @@ INSTALLED_APPS = [
     "sass_processor",
     "bookwyrm",
     "celery",
+    "django_celery_beat",
     "imagekit",
     "storages",
 ]
