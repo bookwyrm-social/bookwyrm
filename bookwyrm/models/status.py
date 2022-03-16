@@ -265,7 +265,7 @@ class GeneratedNote(Status):
 
 
 ReadingStatusChoices = models.TextChoices(
-    "ReadingStatusChoices", ["to-read", "reading", "read"]
+    "ReadingStatusChoices", ["to-read", "reading", "read", "stopped-reading"]
 )
 
 

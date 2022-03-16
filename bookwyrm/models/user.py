@@ -374,6 +374,10 @@ class User(OrderedCollectionPageMixin, AbstractUser):
                 "name": "Read",
                 "identifier": "read",
             },
+            {
+                "name": "Stopped Reading",
+                "identifier": "stopped-reading",
+            },
         ]
 
         for shelf in shelves:

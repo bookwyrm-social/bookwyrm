@@ -10,6 +10,7 @@
                 {% if shelf.identifier == 'to-read' %}{% trans "To Read" %}
                 {% elif shelf.identifier == 'reading' %}{% trans "Currently Reading" %}
                 {% elif shelf.identifier == 'read' %}{% trans "Read" %}
+                {% elif shelf.identifier == 'stopped-reading' %}{% trans "Stopped Reading" %}
                 {% else %}{{ shelf.name }}{% endif %}
             </option>
             {% endfor %}

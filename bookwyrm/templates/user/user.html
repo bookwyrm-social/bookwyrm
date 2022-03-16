@@ -33,8 +33,9 @@
                 {% if shelf.name == 'To Read' %}{% trans "To Read" %}
                 {% elif shelf.name == 'Currently Reading' %}{% trans "Currently Reading" %}
                 {% elif shelf.name == 'Read' %}{% trans "Read" %}
+                {% elif shelf.name == 'Stopped Reading' %}{% trans "Stopped Reading" %}
                 {% else %}{{ shelf.name }}{% endif %}
-                {% if shelf.size > 3 %}<small>(<a href="{{ shelf.local_path }}">{% blocktrans with size=shelf.size %}View all {{ size }}{% endblocktrans %}</a>)</small>{% endif %}
+                {% if shelf.size > 4 %}<small>(<a href="{{ shelf.local_path }}">{% blocktrans with size=shelf.size %}View all {{ size }}{% endblocktrans %}</a>)</small>{% endif %}
             </h3>
             <div class="is-mobile field is-grouped">
             {% for book in shelf.books %}
