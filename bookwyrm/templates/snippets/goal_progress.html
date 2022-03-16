@@ -4,7 +4,7 @@
 {% with goal.progress as progress %}
 <p>
     {% if progress.percent >= 100 %}
-        {% trans "Success!" %}
+        {% trans "Success!" context "Goal successfully completed" %}
     {% elif progress.percent %}
         {% blocktrans with percent=progress.percent %}{{ percent }}% complete!{% endblocktrans %}
     {% endif %}
