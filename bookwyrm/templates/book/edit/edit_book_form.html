@@ -10,6 +10,8 @@
 {% csrf_token %}
 
 <input type="hidden" name="last_edited_by" value="{{ request.user.id }}">
+<input type="hidden" name="parent_work" value="{% firstof book.parent_work.id form.parent_work %}">
+
 <div class="columns">
     <div class="column is-half">
         <section class="block">
@@ -175,6 +177,8 @@
             </h2>
             <div class="box">
                 {% if book.authors.exists %}
+                {# preserve authors if the book is unsaved #}
+                <input type="hidden" name="authors" value="{% for author in book.authors %}{{ author.id }},{% endfor %}">
                 <fieldset>
                     {% for author in book.authors.all %}
                     <div class="is-flex is-justify-content-space-between">
