@@ -85,3 +85,27 @@ class EditionForm(CustomForm):
             ),
             "ASIN": forms.TextInput(attrs={"aria-describedby": "desc_ASIN"}),
         }
+
+
+class EditionFromWorkForm(CustomForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # make all fields hidden
+        for visible in self.visible_fields():
+            visible.field.widget = forms.HiddenInput()
+
+    class Meta:
+        model = models.Work
+        fields = [
+            "title",
+            "subtitle",
+            "authors",
+            "description",
+            "languages",
+            "series",
+            "series_number",
+            "subjects",
+            "subject_places",
+            "cover",
+            "first_published_date",
+        ]

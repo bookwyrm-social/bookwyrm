@@ -5,6 +5,7 @@ from django import forms
 from django.forms import widgets
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+from django_celery_beat.models import IntervalSchedule
 
 from bookwyrm import models
 from .custom_form import CustomForm
@@ -127,3 +128,14 @@ class AutoModRuleForm(CustomForm):
     class Meta:
         model = models.AutoMod
         fields = ["string_match", "flag_users", "flag_statuses", "created_by"]
+
+
+class IntervalScheduleForm(CustomForm):
+    class Meta:
+        model = IntervalSchedule
+        fields = ["every", "period"]
+
+        widgets = {
+            "every": forms.NumberInput(attrs={"aria-describedby": "desc_every"}),
+            "period": forms.Select(attrs={"aria-describedby": "desc_period"}),
+        }

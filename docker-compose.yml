@@ -84,6 +84,19 @@ services:
       - db
       - redis_broker
     restart: on-failure
+  celery_beat:
+    env_file: .env
+    build: .
+    networks:
+      - main
+    command: celery -A celerywyrm beat -l INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler
+    volumes:
+      - .:/app
+      - static_volume:/app/static
+      - media_volume:/app/images
+    depends_on:
+      - celery_worker
+    restart: on-failure
   flower:
     build: .
     command: celery -A celerywyrm flower --basic_auth=${FLOWER_USER}:${FLOWER_PASSWORD}

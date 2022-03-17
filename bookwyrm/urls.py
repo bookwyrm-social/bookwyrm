@@ -233,11 +233,23 @@ urlpatterns = [
     # auto-moderation rules
     re_path(r"^settings/automod/?$", views.AutoMod.as_view(), name="settings-automod"),
     re_path(
-        r"^settings/automod/(?P<rule_id>\d+)/delete?$",
+        r"^settings/automod/(?P<rule_id>\d+)/delete/?$",
         views.automod_delete,
         name="settings-automod-delete",
     ),
-    re_path(r"^settings/automod/run?$", views.run_automod, name="settings-automod-run"),
+    re_path(
+        r"^settings/automod/schedule/?$",
+        views.schedule_automod_task,
+        name="settings-automod-schedule",
+    ),
+    re_path(
+        r"^settings/automod/unschedule/(?P<task_id>\d+)/?$",
+        views.unschedule_automod_task,
+        name="settings-automod-unschedule",
+    ),
+    re_path(
+        r"^settings/automod/run/?$", views.run_automod, name="settings-automod-run"
+    ),
     # moderation
     re_path(
         r"^settings/reports/?$", views.ReportsAdmin.as_view(), name="settings-reports"
@@ -512,7 +524,10 @@ urlpatterns = [
     ),
     re_path(rf"{BOOK_PATH}/edit/?$", views.EditBook.as_view(), name="edit-book"),
     re_path(rf"{BOOK_PATH}/confirm/?$", views.ConfirmEditBook.as_view()),
-    re_path(r"^create-book/?$", views.EditBook.as_view(), name="create-book"),
+    re_path(
+        r"^create-book/data/?$", views.create_book_from_data, name="create-book-data"
+    ),
+    re_path(r"^create-book/?$", views.CreateBook.as_view(), name="create-book"),
     re_path(r"^create-book/confirm/?$", views.ConfirmEditBook.as_view()),
     re_path(rf"{BOOK_PATH}/editions(.json)?/?$", views.Editions.as_view()),
     re_path(

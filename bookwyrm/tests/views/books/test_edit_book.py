@@ -60,7 +60,7 @@ class EditBookViews(TestCase):
 
     def test_edit_book_create_page(self):
         """there are so many views, this just makes sure it LOADS"""
-        view = views.EditBook.as_view()
+        view = views.CreateBook.as_view()
         request = self.factory.get("")
         request.user = self.local_user
         request.user.is_superuser = True

@@ -11,7 +11,7 @@ from django.template.response import TemplateResponse
 from django.views import View
 from django.views.decorators.http import require_POST
 
-from bookwyrm import models
+from bookwyrm import forms, models
 from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.settings import PAGE_LENGTH
 from bookwyrm.views.helpers import is_api_request
@@ -65,6 +65,7 @@ class Editions(View):
                 page.number, on_each_side=2, on_ends=1
             ),
             "work": work,
+            "work_form": forms.EditionFromWorkForm(instance=work),
             "languages": languages,
             "formats": set(
                 e.physical_format.lower() for e in editions if e.physical_format

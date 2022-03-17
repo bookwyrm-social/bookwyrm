@@ -27,6 +27,7 @@ class SiteSettings(models.Model):
     default_theme = models.ForeignKey(
         "Theme", null=True, blank=True, on_delete=models.SET_NULL
     )
+    version = models.CharField(null=True, blank=True, max_length=10)
 
     # admin setup options
     install_mode = models.BooleanField(default=False)
@@ -48,8 +49,12 @@ class SiteSettings(models.Model):
     # registration
     allow_registration = models.BooleanField(default=False)
     allow_invite_requests = models.BooleanField(default=True)
+    invite_request_question = models.BooleanField(default=False)
     require_confirm_email = models.BooleanField(default=True)
 
+    invite_question_text = models.CharField(
+        max_length=255, blank=True, default="What is your favourite book?"
+    )
     # images
     logo = models.ImageField(upload_to="logos/", null=True, blank=True)
     logo_small = models.ImageField(upload_to="logos/", null=True, blank=True)
@@ -99,11 +104,14 @@ class SiteSettings(models.Model):
         return urljoin(STATIC_FULL_URL, default_path)
 
     def save(self, *args, **kwargs):
-        """if require_confirm_email is disabled, make sure no users are pending"""
+        """if require_confirm_email is disabled, make sure no users are pending,
+        if enabled, make sure invite_question_text is not empty"""
         if not self.require_confirm_email:
             User.objects.filter(is_active=False, deactivation_reason="pending").update(
                 is_active=True, deactivation_reason=None
             )
+        if not self.invite_question_text:
+            self.invite_question_text = "What is your favourite book?"
         super().save(*args, **kwargs)
 
 
@@ -149,6 +157,7 @@ class InviteRequest(BookWyrmModel):
     invite = models.ForeignKey(
         SiteInvite, on_delete=models.SET_NULL, null=True, blank=True
     )
+    answer = models.TextField(max_length=50, unique=False, null=True, blank=True)
     invite_sent = models.BooleanField(default=False)
     ignored = models.BooleanField(default=False)
 

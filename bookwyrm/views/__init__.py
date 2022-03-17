@@ -3,6 +3,7 @@
 from .admin.announcements import Announcements, Announcement
 from .admin.announcements import EditAnnouncement, delete_announcement
 from .admin.automod import AutoMod, automod_delete, run_automod
+from .admin.automod import schedule_automod_task, unschedule_automod_task
 from .admin.dashboard import Dashboard
 from .admin.federation import Federation, FederatedServer
 from .admin.federation import AddFederatedServer, ImportServerBlocklist
@@ -38,7 +39,12 @@ from .books.books import (
     resolve_book,
 )
 from .books.books import update_book_from_remote
-from .books.edit_book import EditBook, ConfirmEditBook
+from .books.edit_book import (
+    EditBook,
+    ConfirmEditBook,
+    CreateBook,
+    create_book_from_data,
+)
 from .books.editions import Editions, switch_edition
 from .books.links import BookFileLinks, AddFileLink, delete_link
 
