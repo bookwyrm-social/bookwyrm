@@ -86,6 +86,7 @@ class EditionForm(CustomForm):
             "ASIN": forms.TextInput(attrs={"aria-describedby": "desc_ASIN"}),
         }
 
+
 class EditionFromWorkForm(CustomForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
