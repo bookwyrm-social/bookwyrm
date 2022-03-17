@@ -57,7 +57,18 @@
 
     <form action="{% url 'create-book-data' %}" method="POST" name="add-edition-form">
         {% csrf_token %}
-        {{ work_form }}
+        {{ work_form.title }}
+        {{ work_form.subtitle }}
+        {{ work_form.authors }}
+        {{ work_form.description }}
+        {{ work_form.languages }}
+        {{ work_form.series }}
+        {{ work_form.cover }}
+        {{ work_form.first_published_date }}
+        {% for subject in work.subjects %}
+        <input type="hidden" name="subjects" value="{{ subject }}">
+        {% endfor %}
+
         <input type="hidden" name="parent_work" value="{{ work.id }}">
         <div>
             <button class="button is-small" type="submit">

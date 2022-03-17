@@ -219,6 +219,7 @@ def create_book_from_data(request):
     book = {
         "parent_work": {"id": request.POST.get("parent_work")},
         "authors": models.Author.objects.filter(id__in=author_ids).all(),
+        "subjects": request.POST.getlist("subjects"),
     }
 
     data = {"book": book, "form": forms.EditionForm(request.POST)}
