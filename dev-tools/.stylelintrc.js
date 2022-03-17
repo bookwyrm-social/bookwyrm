@@ -18,5 +18,13 @@ module.exports = {
         "declaration-block-no-redundant-longhand-properties": null,
         "no-descending-specificity": null,
         "alpha-value-notation": null
-    }
+    },
+    "overrides": [
+        {
+            "files": [ "../**/themes/bookwyrm-*.scss" ],
+            "rules": {
+                "no-invalid-position-at-import-rule": null
+            }
+        }
+    ]
 };
