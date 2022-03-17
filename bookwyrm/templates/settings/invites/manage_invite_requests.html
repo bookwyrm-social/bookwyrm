@@ -40,6 +40,9 @@
                 {% include 'snippets/table-sort-header.html' with field="invite__invitees__created_date" sort=sort text=text %}
             </th>
             <th>{% trans "Email" %}</th>
+            {% if site.invite_request_question %}
+                <th>{% trans "Answer" %}</th>
+            {% endif %}
             <th>
                 {% trans "Status" as text %}
                 {% include 'snippets/table-sort-header.html' with field="invite__times_used" sort=sort text=text %}
@@ -54,6 +57,9 @@
             <td>{{ req.created_date | naturaltime }}</td>
             <td>{{ req.invite.invitees.first.created_date | naturaltime }}</td>
             <td>{{ req.email }}</td>
+            {% if site.invite_request_question %}
+                <td>{{ req.answer }}</td>
+            {% endif %}
             <td>
                 {% if req.invite.times_used %}
                 {% trans "Accepted" %}
