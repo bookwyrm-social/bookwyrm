@@ -139,20 +139,20 @@ case "$CMD" in
         docker-compose run --rm dev-tools black celerywyrm bookwyrm
         ;;
     prettier)
-        docker-compose run --rm dev-tools npm exec --prefix=dev-tools/ -- prettier \
+        docker-compose run --rm dev-tools npm exec --prefix dev-tools -- prettier \
             --write bookwyrm/static/js/*.js
         ;;
     stylelint)
-        docker-compose run --rm dev-tools npm exec --prefix=dev-tools/ -- stylelint \
-            --fix --config=dev-tools/.stylelintrc.js --ignore-path=dev-tools/.stylelintignore \
+        docker-compose run --rm dev-tools npm exec --prefix dev-tools -- stylelint \
+            --fix --config dev-tools/.stylelintrc.js --ignore-path dev-tools/.stylelintignore \
             bookwyrm/static/css
         ;;
     formatters)
         docker-compose run --rm dev-tools black celerywyrm bookwyrm
-        docker-compose run --rm dev-tools npm exec --prefix=dev-tools/ -- prettier \
+        docker-compose run --rm dev-tools npm exec --prefix dev-tools -- prettier \
             --write bookwyrm/static/js/*.js
-        docker-compose run --rm dev-tools npm exec --prefix=dev-tools/ -- stylelint \
-            --fix --config=dev-tools/.stylelintrc.js --ignore-path=dev-tools/.stylelintignore \
+        docker-compose run --rm dev-tools npm exec --prefix dev-tools -- stylelint \
+            --fix --config dev-tools/.stylelintrc.js --ignore-path dev-tools/.stylelintignore \
             bookwyrm/static/css
         ;;
     compilescss)
