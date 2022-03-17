@@ -2,13 +2,14 @@ FROM python:3.9
 
 ENV PYTHONUNBUFFERED 1
 
-RUN mkdir /app
-WORKDIR /app
+WORKDIR /app/dev-tools
 
-COPY package.json requirements.txt .stylelintrc.js .stylelintignore /app/
+COPY package.json requirements.txt .stylelintrc.js .stylelintignore /app/dev-tools/
 RUN pip install -r requirements.txt
 
 RUN apt-get update && apt-get install -y curl
 RUN curl -sL https://deb.nodesource.com/setup_17.x | bash -
 RUN apt-get install -y nodejs && apt-get clean
 RUN npm install .
+
+WORKDIR /app
