@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-03-16 23:12+0000\n"
-"PO-Revision-Date: 2022-03-16 23:34\n"
+"POT-Creation-Date: 2022-03-17 16:15+0000\n"
+"PO-Revision-Date: 2022-03-17 17:07\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Romanian\n"
 "Language: ro\n"
@@ -245,7 +245,7 @@ msgstr "Disponibilă pentru împrumut"
 msgid "Approved"
 msgstr "Aprovat"
 
-#: bookwyrm/models/user.py:32 bookwyrm/templates/book/book.html:281
+#: bookwyrm/models/user.py:32 bookwyrm/templates/book/book.html:289
 msgid "Reviews"
 msgstr "Recenzii"
 
@@ -655,22 +655,22 @@ msgid "Edit Author:"
 msgstr "Editați autorul:"
 
 #: bookwyrm/templates/author/edit_author.html:13
-#: bookwyrm/templates/book/edit/edit_book.html:19
+#: bookwyrm/templates/book/edit/edit_book.html:25
 msgid "Added:"
 msgstr "Adăugat:"
 
 #: bookwyrm/templates/author/edit_author.html:14
-#: bookwyrm/templates/book/edit/edit_book.html:22
+#: bookwyrm/templates/book/edit/edit_book.html:28
 msgid "Updated:"
 msgstr "Actualizat:"
 
 #: bookwyrm/templates/author/edit_author.html:16
-#: bookwyrm/templates/book/edit/edit_book.html:26
+#: bookwyrm/templates/book/edit/edit_book.html:32
 msgid "Last edited by:"
 msgstr "Ultima dată modificat de:"
 
 #: bookwyrm/templates/author/edit_author.html:33
-#: bookwyrm/templates/book/edit/edit_book_form.html:17
+#: bookwyrm/templates/book/edit/edit_book_form.html:19
 msgid "Metadata"
 msgstr "Metadate"
 
@@ -682,8 +682,8 @@ msgid "Name:"
 msgstr "Nume:"
 
 #: bookwyrm/templates/author/edit_author.html:44
-#: bookwyrm/templates/book/edit/edit_book_form.html:76
-#: bookwyrm/templates/book/edit/edit_book_form.html:146
+#: bookwyrm/templates/book/edit/edit_book_form.html:78
+#: bookwyrm/templates/book/edit/edit_book_form.html:148
 msgid "Separate multiple values with commas."
 msgstr "Separați valori multiple prin virgulă."
 
@@ -712,7 +712,7 @@ msgid "Openlibrary key:"
 msgstr "Cheie OpenLibrary:"
 
 #: bookwyrm/templates/author/edit_author.html:84
-#: bookwyrm/templates/book/edit/edit_book_form.html:322
+#: bookwyrm/templates/book/edit/edit_book_form.html:326
 msgid "Inventaire ID:"
 msgstr "ID Inventaire:"
 
@@ -730,7 +730,7 @@ msgstr "ISNI:"
 
 #: bookwyrm/templates/author/edit_author.html:115
 #: bookwyrm/templates/book/book.html:202
-#: bookwyrm/templates/book/edit/edit_book.html:121
+#: bookwyrm/templates/book/edit/edit_book.html:127
 #: bookwyrm/templates/book/file_links/add_link_modal.html:60
 #: bookwyrm/templates/book/file_links/edit_links.html:82
 #: bookwyrm/templates/groups/form.html:32
@@ -742,7 +742,7 @@ msgstr "ISNI:"
 #: bookwyrm/templates/settings/announcements/edit_announcement.html:120
 #: bookwyrm/templates/settings/federation/edit_instance.html:98
 #: bookwyrm/templates/settings/federation/instance.html:105
-#: bookwyrm/templates/settings/site.html:169
+#: bookwyrm/templates/settings/site.html:181
 #: bookwyrm/templates/settings/users/user_moderation_actions.html:69
 #: bookwyrm/templates/shelf/form.html:25
 #: bookwyrm/templates/snippets/reading_modals/layout.html:18
@@ -753,8 +753,8 @@ msgstr "Salvați"
 #: bookwyrm/templates/author/sync_modal.html:23
 #: bookwyrm/templates/book/book.html:203
 #: bookwyrm/templates/book/cover_add_modal.html:33
-#: bookwyrm/templates/book/edit/edit_book.html:123
-#: bookwyrm/templates/book/edit/edit_book.html:126
+#: bookwyrm/templates/book/edit/edit_book.html:129
+#: bookwyrm/templates/book/edit/edit_book.html:132
 #: bookwyrm/templates/book/file_links/add_link_modal.html:59
 #: bookwyrm/templates/book/file_links/verification_modal.html:25
 #: bookwyrm/templates/book/sync_modal.html:23
@@ -776,7 +776,7 @@ msgid "Loading data will connect to <strong>%(source_name)s</strong> and check f
 msgstr "Încărcatul de date se va conecta la <strong>%(source_name)s</strong> și verifica orice metadate despre autor care nu sunt prezente aici. Metadatele existente nu vor fi suprascrise."
 
 #: bookwyrm/templates/author/sync_modal.html:24
-#: bookwyrm/templates/book/edit/edit_book.html:108
+#: bookwyrm/templates/book/edit/edit_book.html:114
 #: bookwyrm/templates/book/sync_modal.html:24
 #: bookwyrm/templates/groups/members.html:29
 #: bookwyrm/templates/landing/password_reset.html:42
@@ -817,58 +817,61 @@ msgid "Add Description"
 msgstr "Adăugați o descriere"
 
 #: bookwyrm/templates/book/book.html:198
-#: bookwyrm/templates/book/edit/edit_book_form.html:40
+#: bookwyrm/templates/book/edit/edit_book_form.html:42
 #: bookwyrm/templates/lists/form.html:13 bookwyrm/templates/shelf/form.html:17
 msgid "Description:"
 msgstr "Descriere:"
 
-#: bookwyrm/templates/book/book.html:212
+#: bookwyrm/templates/book/book.html:214
 #, python-format
-msgid "<a href=\"%(path)s/editions\">%(count)s editions</a>"
-msgstr "<a href=\"%(path)s/editions\">%(count)s ediții</a>"
+msgid "%(count)s edition"
+msgid_plural "%(count)s editions"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
 
-#: bookwyrm/templates/book/book.html:220
+#: bookwyrm/templates/book/book.html:228
 msgid "You have shelved this edition in:"
 msgstr "Ați pus această ediție pe raftul:"
 
-#: bookwyrm/templates/book/book.html:235
+#: bookwyrm/templates/book/book.html:243
 #, python-format
 msgid "A <a href=\"%(book_path)s\">different edition</a> of this book is on your <a href=\"%(shelf_path)s\">%(shelf_name)s</a> shelf."
 msgstr "O <a href=\"%(book_path)s\">ediție diferită</a> a acestei cărți este pe <a href=\"%(shelf_path)s\">%(shelf_name)s</a> raftul vostru."
 
-#: bookwyrm/templates/book/book.html:246
+#: bookwyrm/templates/book/book.html:254
 msgid "Your reading activity"
 msgstr "Activitatea dvs. de lectură"
 
-#: bookwyrm/templates/book/book.html:252
+#: bookwyrm/templates/book/book.html:260
 msgid "Add read dates"
 msgstr "Adăugați date de lectură"
 
-#: bookwyrm/templates/book/book.html:260
+#: bookwyrm/templates/book/book.html:268
 msgid "You don't have any reading activity for this book."
 msgstr "Nu aveți nicio activitate de lectură pentru această carte."
 
-#: bookwyrm/templates/book/book.html:286
+#: bookwyrm/templates/book/book.html:294
 msgid "Your reviews"
 msgstr "Recenziile dvs."
 
-#: bookwyrm/templates/book/book.html:292
+#: bookwyrm/templates/book/book.html:300
 msgid "Your comments"
 msgstr "Comentariile voastre"
 
-#: bookwyrm/templates/book/book.html:298
+#: bookwyrm/templates/book/book.html:306
 msgid "Your quotes"
 msgstr "Citatele dvs."
 
-#: bookwyrm/templates/book/book.html:334
+#: bookwyrm/templates/book/book.html:342
 msgid "Subjects"
 msgstr "Subiecte"
 
-#: bookwyrm/templates/book/book.html:346
+#: bookwyrm/templates/book/book.html:354
 msgid "Places"
 msgstr "Locuri"
 
-#: bookwyrm/templates/book/book.html:357
+#: bookwyrm/templates/book/book.html:365
 #: bookwyrm/templates/groups/group.html:19 bookwyrm/templates/layout.html:83
 #: bookwyrm/templates/lists/curate.html:8 bookwyrm/templates/lists/list.html:12
 #: bookwyrm/templates/lists/lists.html:5 bookwyrm/templates/lists/lists.html:12
@@ -878,11 +881,11 @@ msgstr "Locuri"
 msgid "Lists"
 msgstr "Liste"
 
-#: bookwyrm/templates/book/book.html:369
+#: bookwyrm/templates/book/book.html:377
 msgid "Add to list"
 msgstr "Adăugați la listă"
 
-#: bookwyrm/templates/book/book.html:379
+#: bookwyrm/templates/book/book.html:387
 #: bookwyrm/templates/book/cover_add_modal.html:32
 #: bookwyrm/templates/lists/add_item_modal.html:39
 #: bookwyrm/templates/lists/list.html:255
@@ -896,12 +899,12 @@ msgid "ISBN:"
 msgstr "ISBN:"
 
 #: bookwyrm/templates/book/book_identifiers.html:15
-#: bookwyrm/templates/book/edit/edit_book_form.html:331
+#: bookwyrm/templates/book/edit/edit_book_form.html:335
 msgid "OCLC Number:"
 msgstr "Număr OCLC:"
 
 #: bookwyrm/templates/book/book_identifiers.html:22
-#: bookwyrm/templates/book/edit/edit_book_form.html:340
+#: bookwyrm/templates/book/edit/edit_book_form.html:344
 msgid "ASIN:"
 msgstr "ASIN:"
 
@@ -910,12 +913,12 @@ msgid "Add cover"
 msgstr "Adăugați copertă"
 
 #: bookwyrm/templates/book/cover_add_modal.html:17
-#: bookwyrm/templates/book/edit/edit_book_form.html:230
+#: bookwyrm/templates/book/edit/edit_book_form.html:234
 msgid "Upload cover:"
 msgstr "Încărcați copertă:"
 
 #: bookwyrm/templates/book/cover_add_modal.html:23
-#: bookwyrm/templates/book/edit/edit_book_form.html:236
+#: bookwyrm/templates/book/edit/edit_book_form.html:240
 msgid "Load cover from url:"
 msgstr "Încărcați copertă de la URL-ul:"
 
@@ -934,177 +937,177 @@ msgstr "Previzualizarea coperții"
 msgid "Close"
 msgstr "Închideți"
 
-#: bookwyrm/templates/book/edit/edit_book.html:6
-#: bookwyrm/templates/book/edit/edit_book.html:12
+#: bookwyrm/templates/book/edit/edit_book.html:8
+#: bookwyrm/templates/book/edit/edit_book.html:18
 #, python-format
 msgid "Edit \"%(book_title)s\""
 msgstr "Editați „%(book_title)s”"
 
-#: bookwyrm/templates/book/edit/edit_book.html:6
-#: bookwyrm/templates/book/edit/edit_book.html:14
+#: bookwyrm/templates/book/edit/edit_book.html:10
+#: bookwyrm/templates/book/edit/edit_book.html:20
 msgid "Add Book"
 msgstr "Adăugați carte"
 
-#: bookwyrm/templates/book/edit/edit_book.html:48
+#: bookwyrm/templates/book/edit/edit_book.html:54
 msgid "Confirm Book Info"
 msgstr "Confirmați informațiile cărții"
 
-#: bookwyrm/templates/book/edit/edit_book.html:56
+#: bookwyrm/templates/book/edit/edit_book.html:62
 #, python-format
 msgid "Is \"%(name)s\" one of these authors?"
 msgstr "Este „%(name)s” unul dintre acești autori?"
 
-#: bookwyrm/templates/book/edit/edit_book.html:67
-#: bookwyrm/templates/book/edit/edit_book.html:69
+#: bookwyrm/templates/book/edit/edit_book.html:73
+#: bookwyrm/templates/book/edit/edit_book.html:75
 msgid "Author of "
 msgstr "Autor al "
 
-#: bookwyrm/templates/book/edit/edit_book.html:69
+#: bookwyrm/templates/book/edit/edit_book.html:75
 msgid "Find more information at isni.org"
 msgstr "Aflați mai multe la isni.org"
 
-#: bookwyrm/templates/book/edit/edit_book.html:79
+#: bookwyrm/templates/book/edit/edit_book.html:85
 msgid "This is a new author"
 msgstr "Acesta este un autor nou"
 
-#: bookwyrm/templates/book/edit/edit_book.html:86
+#: bookwyrm/templates/book/edit/edit_book.html:92
 #, python-format
 msgid "Creating a new author: %(name)s"
 msgstr "Creați un autor nou: %(name)s"
 
-#: bookwyrm/templates/book/edit/edit_book.html:93
+#: bookwyrm/templates/book/edit/edit_book.html:99
 msgid "Is this an edition of an existing work?"
 msgstr "Este această o ediție a unei opere existente?"
 
-#: bookwyrm/templates/book/edit/edit_book.html:101
+#: bookwyrm/templates/book/edit/edit_book.html:107
 msgid "This is a new work"
 msgstr "Aceasta este o operă nouă"
 
-#: bookwyrm/templates/book/edit/edit_book.html:110
+#: bookwyrm/templates/book/edit/edit_book.html:116
 #: bookwyrm/templates/feed/status.html:21
 msgid "Back"
 msgstr "Înapoi"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:22
+#: bookwyrm/templates/book/edit/edit_book_form.html:24
 #: bookwyrm/templates/snippets/create_status/review.html:15
 msgid "Title:"
 msgstr "Titlu:"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:31
+#: bookwyrm/templates/book/edit/edit_book_form.html:33
 msgid "Subtitle:"
 msgstr "Subtitlu:"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:51
+#: bookwyrm/templates/book/edit/edit_book_form.html:53
 msgid "Series:"
 msgstr "Serie:"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:61
+#: bookwyrm/templates/book/edit/edit_book_form.html:63
 msgid "Series number:"
 msgstr "Numărul din serie:"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:72
+#: bookwyrm/templates/book/edit/edit_book_form.html:74
 msgid "Languages:"
 msgstr "Limbi:"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:84
+#: bookwyrm/templates/book/edit/edit_book_form.html:86
 msgid "Subjects:"
 msgstr "Subiecte:"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:88
+#: bookwyrm/templates/book/edit/edit_book_form.html:90
 msgid "Add subject"
 msgstr ""
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:106
+#: bookwyrm/templates/book/edit/edit_book_form.html:108
 msgid "Remove subject"
 msgstr ""
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:129
+#: bookwyrm/templates/book/edit/edit_book_form.html:131
 msgid "Add Another Subject"
 msgstr ""
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:137
+#: bookwyrm/templates/book/edit/edit_book_form.html:139
 msgid "Publication"
 msgstr "Publicație"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:142
+#: bookwyrm/templates/book/edit/edit_book_form.html:144
 msgid "Publisher:"
 msgstr "Editor:"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:154
+#: bookwyrm/templates/book/edit/edit_book_form.html:156
 msgid "First published date:"
 msgstr "Prima dată de publicare:"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:163
+#: bookwyrm/templates/book/edit/edit_book_form.html:165
 msgid "Published date:"
 msgstr "Data de publicare:"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:174
+#: bookwyrm/templates/book/edit/edit_book_form.html:176
 msgid "Authors"
 msgstr "Autori"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:183
+#: bookwyrm/templates/book/edit/edit_book_form.html:187
 #, python-format
 msgid "Remove %(name)s"
 msgstr "Înlăturați %(name)s"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:186
+#: bookwyrm/templates/book/edit/edit_book_form.html:190
 #, python-format
 msgid "Author page for %(name)s"
 msgstr "Pagina de autori pentru %(name)s"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:194
+#: bookwyrm/templates/book/edit/edit_book_form.html:198
 msgid "Add Authors:"
 msgstr "Adăugați autori:"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:197
-#: bookwyrm/templates/book/edit/edit_book_form.html:200
+#: bookwyrm/templates/book/edit/edit_book_form.html:201
+#: bookwyrm/templates/book/edit/edit_book_form.html:204
 msgid "Add Author"
 msgstr "Adaugă autor"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:198
-#: bookwyrm/templates/book/edit/edit_book_form.html:201
+#: bookwyrm/templates/book/edit/edit_book_form.html:202
+#: bookwyrm/templates/book/edit/edit_book_form.html:205
 msgid "Jane Doe"
 msgstr "Necunoscut"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:207
+#: bookwyrm/templates/book/edit/edit_book_form.html:211
 msgid "Add Another Author"
 msgstr "Adăugați un alt autor"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:217
+#: bookwyrm/templates/book/edit/edit_book_form.html:221
 #: bookwyrm/templates/shelf/shelf.html:146
 msgid "Cover"
 msgstr "Copertă"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:249
+#: bookwyrm/templates/book/edit/edit_book_form.html:253
 msgid "Physical Properties"
 msgstr "Proprietăți fizice"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:256
+#: bookwyrm/templates/book/edit/edit_book_form.html:260
 #: bookwyrm/templates/book/editions/format_filter.html:6
 msgid "Format:"
 msgstr "Format:"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:268
+#: bookwyrm/templates/book/edit/edit_book_form.html:272
 msgid "Format details:"
 msgstr "Detalii de format:"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:279
+#: bookwyrm/templates/book/edit/edit_book_form.html:283
 msgid "Pages:"
 msgstr "Pagini:"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:290
+#: bookwyrm/templates/book/edit/edit_book_form.html:294
 msgid "Book Identifiers"
 msgstr "Date de identificare ale cărții"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:295
+#: bookwyrm/templates/book/edit/edit_book_form.html:299
 msgid "ISBN 13:"
 msgstr "ISBN 13:"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:304
+#: bookwyrm/templates/book/edit/edit_book_form.html:308
 msgid "ISBN 10:"
 msgstr "ISBN 10:"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:313
+#: bookwyrm/templates/book/edit/edit_book_form.html:317
 msgid "Openlibrary ID:"
 msgstr "ID OpenLibrary:"
 
@@ -1117,6 +1120,14 @@ msgstr "Ediții ale %(book_title)s"
 #, python-format
 msgid "Editions of <a href=\"%(work_path)s\">\"%(work_title)s\"</a>"
 msgstr "Ediții ale <a href=\"%(work_path)s\">%(work_title)s</a>"
+
+#: bookwyrm/templates/book/editions/editions.html:55
+msgid "Can't find the edition you're looking for?"
+msgstr ""
+
+#: bookwyrm/templates/book/editions/editions.html:75
+msgid "Add another edition"
+msgstr ""
 
 #: bookwyrm/templates/book/editions/format_filter.html:9
 #: bookwyrm/templates/book/editions/language_filter.html:9
@@ -1188,7 +1199,7 @@ msgstr "Domeniu"
 #: bookwyrm/templates/import/import_status.html:127
 #: bookwyrm/templates/settings/announcements/announcements.html:37
 #: bookwyrm/templates/settings/federation/instance_list.html:46
-#: bookwyrm/templates/settings/invites/manage_invite_requests.html:44
+#: bookwyrm/templates/settings/invites/manage_invite_requests.html:47
 #: bookwyrm/templates/settings/invites/status_filter.html:5
 #: bookwyrm/templates/settings/users/user_admin.html:52
 #: bookwyrm/templates/settings/users/user_info.html:20
@@ -1312,7 +1323,7 @@ msgid "Confirmation code:"
 msgstr "Cod de confirmare:"
 
 #: bookwyrm/templates/confirm_email/confirm_email.html:25
-#: bookwyrm/templates/landing/layout.html:73
+#: bookwyrm/templates/landing/layout.html:81
 #: bookwyrm/templates/settings/dashboard/dashboard.html:116
 #: bookwyrm/templates/snippets/report_modal.html:53
 msgid "Submit"
@@ -2197,7 +2208,7 @@ msgstr "Înscrierea la %(name)s este închisă"
 msgid "Thank you! Your request has been received."
 msgstr "Mulțumim! Cererea dvs. a fost primită."
 
-#: bookwyrm/templates/landing/layout.html:82
+#: bookwyrm/templates/landing/layout.html:90
 msgid "Your Account"
 msgstr "Contul dvs."
 
@@ -3618,50 +3629,54 @@ msgstr "Dată acceptată"
 msgid "Email"
 msgstr "Email"
 
-#: bookwyrm/templates/settings/invites/manage_invite_requests.html:47
+#: bookwyrm/templates/settings/invites/manage_invite_requests.html:44
+msgid "Answer"
+msgstr ""
+
+#: bookwyrm/templates/settings/invites/manage_invite_requests.html:50
 msgid "Action"
 msgstr "Acțiune"
 
-#: bookwyrm/templates/settings/invites/manage_invite_requests.html:50
+#: bookwyrm/templates/settings/invites/manage_invite_requests.html:53
 msgid "No requests"
 msgstr "Nicio cerere"
 
-#: bookwyrm/templates/settings/invites/manage_invite_requests.html:59
+#: bookwyrm/templates/settings/invites/manage_invite_requests.html:65
 #: bookwyrm/templates/settings/invites/status_filter.html:16
 msgid "Accepted"
 msgstr "Acceptată"
 
-#: bookwyrm/templates/settings/invites/manage_invite_requests.html:61
+#: bookwyrm/templates/settings/invites/manage_invite_requests.html:67
 #: bookwyrm/templates/settings/invites/status_filter.html:12
 msgid "Sent"
 msgstr "Trimisă"
 
-#: bookwyrm/templates/settings/invites/manage_invite_requests.html:63
+#: bookwyrm/templates/settings/invites/manage_invite_requests.html:69
 #: bookwyrm/templates/settings/invites/status_filter.html:8
 msgid "Requested"
 msgstr "Solicitată"
 
-#: bookwyrm/templates/settings/invites/manage_invite_requests.html:73
+#: bookwyrm/templates/settings/invites/manage_invite_requests.html:79
 msgid "Send invite"
 msgstr "Trimiteți invitație"
 
-#: bookwyrm/templates/settings/invites/manage_invite_requests.html:75
+#: bookwyrm/templates/settings/invites/manage_invite_requests.html:81
 msgid "Re-send invite"
 msgstr "Retrimiteți invitație"
 
-#: bookwyrm/templates/settings/invites/manage_invite_requests.html:95
+#: bookwyrm/templates/settings/invites/manage_invite_requests.html:101
 msgid "Ignore"
 msgstr "Ignorați"
 
-#: bookwyrm/templates/settings/invites/manage_invite_requests.html:97
+#: bookwyrm/templates/settings/invites/manage_invite_requests.html:103
 msgid "Un-ignore"
 msgstr "Nu mai ignorați"
 
-#: bookwyrm/templates/settings/invites/manage_invite_requests.html:108
+#: bookwyrm/templates/settings/invites/manage_invite_requests.html:114
 msgid "Back to pending requests"
 msgstr "Înapoi la cererile în așteptare"
 
-#: bookwyrm/templates/settings/invites/manage_invite_requests.html:110
+#: bookwyrm/templates/settings/invites/manage_invite_requests.html:116
 msgid "View ignored requests"
 msgstr "Vizualizați cererile ignorate"
 
@@ -3993,18 +4008,26 @@ msgid "Allow invite requests"
 msgstr ""
 
 #: bookwyrm/templates/settings/site.html:151
-msgid "Require users to confirm email address"
-msgstr ""
-
-#: bookwyrm/templates/settings/site.html:153
-msgid "(Recommended if registration is open)"
+msgid "Set a question for invite requests"
 msgstr ""
 
 #: bookwyrm/templates/settings/site.html:156
+msgid "Question:"
+msgstr ""
+
+#: bookwyrm/templates/settings/site.html:163
+msgid "Require users to confirm email address"
+msgstr ""
+
+#: bookwyrm/templates/settings/site.html:165
+msgid "(Recommended if registration is open)"
+msgstr ""
+
+#: bookwyrm/templates/settings/site.html:168
 msgid "Registration closed text:"
 msgstr ""
 
-#: bookwyrm/templates/settings/site.html:160
+#: bookwyrm/templates/settings/site.html:172
 msgid "Invite request text:"
 msgstr ""
 
