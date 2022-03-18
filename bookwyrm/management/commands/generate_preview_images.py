@@ -10,7 +10,9 @@ class Command(BaseCommand):
 
     help = "Generate preview images"
 
+    # pylint: disable=no-self-use
     def add_arguments(self, parser):
+        """options for how the command is run"""
         parser.add_argument(
             "--all",
             "-a",
@@ -38,6 +40,7 @@ class Command(BaseCommand):
         preview_images.generate_site_preview_image_task.delay()
         self.stdout.write(" OK 🖼")
 
+        # pylint: disable=consider-using-f-string
         if options["all"]:
             # Users
             users = models.User.objects.filter(

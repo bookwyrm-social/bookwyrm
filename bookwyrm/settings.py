@@ -7,15 +7,22 @@ from urllib.parse import quote as urlencode
 from django.utils.translation import gettext_lazy as _
 
 
+# pylint: disable=line-too-long
+
 env = Env()
 env.read_env()
 DOMAIN = env("DOMAIN")
-VERSION = "0.2.0"
+VERSION = "0.3.4"
+
+RELEASE_API = env(
+    "RELEASE_API",
+    "https://api.github.com/repos/bookwyrm-social/bookwyrm/releases/latest",
+)
 
 PAGE_LENGTH = env("PAGE_LENGTH", 15)
 DEFAULT_LANGUAGE = env("DEFAULT_LANGUAGE", "English")
 
-JS_CACHE = "7b5303af"
+JS_CACHE = "bc93172a"
 
 # email
 EMAIL_BACKEND = env("EMAIL_BACKEND", "django.core.mail.backends.smtp.EmailBackend")
@@ -36,6 +43,9 @@ LOCALE_PATHS = [
 ]
 LANGUAGE_COOKIE_NAME = env.str("LANGUAGE_COOKIE_NAME", "django_language")
 
+STATIC_ROOT = os.path.join(BASE_DIR, env("STATIC_ROOT", "static"))
+MEDIA_ROOT = os.path.join(BASE_DIR, env("MEDIA_ROOT", "images"))
+
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
 # Preview image
@@ -45,6 +55,16 @@ PREVIEW_TEXT_COLOR = env.str("PREVIEW_TEXT_COLOR", "#363636")
 PREVIEW_IMG_WIDTH = env.int("PREVIEW_IMG_WIDTH", 1200)
 PREVIEW_IMG_HEIGHT = env.int("PREVIEW_IMG_HEIGHT", 630)
 PREVIEW_DEFAULT_COVER_COLOR = env.str("PREVIEW_DEFAULT_COVER_COLOR", "#002549")
+PREVIEW_DEFAULT_FONT = env.str("PREVIEW_DEFAULT_FONT", "Source Han Sans")
+
+FONTS = {
+    "Source Han Sans": {
+        "directory": "source_han_sans",
+        "filename": "SourceHanSans-VF.ttf.ttc",
+        "url": "https://github.com/adobe-fonts/source-han-sans/raw/release/Variable/OTC/SourceHanSans-VF.ttf.ttc",
+    }
+}
+FONT_DIR = os.path.join(STATIC_ROOT, "fonts")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
@@ -54,7 +74,7 @@ SECRET_KEY = env("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool("DEBUG", True)
-USE_HTTPS = env.bool("USE_HTTPS", False)
+USE_HTTPS = env.bool("USE_HTTPS", not DEBUG)
 
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", ["*"])
 
@@ -68,9 +88,10 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.humanize",
-    "django_rename_app",
+    "sass_processor",
     "bookwyrm",
     "celery",
+    "django_celery_beat",
     "imagekit",
     "storages",
 ]
@@ -151,6 +172,9 @@ LOGGING = {
             "handlers": ["console", "mail_admins"],
             "level": LOG_LEVEL,
         },
+        "django.utils.autoreload": {
+            "level": "INFO",
+        },
         # Add a bookwyrm-specific logger
         "bookwyrm": {
             "handlers": ["console"],
@@ -159,6 +183,18 @@ LOGGING = {
     },
 }
 
+STATICFILES_FINDERS = [
+    "django.contrib.staticfiles.finders.FileSystemFinder",
+    "django.contrib.staticfiles.finders.AppDirectoriesFinder",
+    "sass_processor.finders.CssFinder",
+]
+
+SASS_PROCESSOR_INCLUDE_FILE_PATTERN = r"^.+\.[s]{0,1}(?:a|c)ss$"
+SASS_PROCESSOR_ENABLED = True
+
+# minify css is production but not dev
+if not DEBUG:
+    SASS_OUTPUT_STYLE = "compressed"
 
 WSGI_APPLICATION = "bookwyrm.wsgi.application"
 
@@ -189,7 +225,6 @@ if env("USE_DUMMY_CACHE", False):
         }
     }
 else:
-    # pylint: disable=line-too-long
     CACHES = {
         "default": {
             "BACKEND": "django_redis.cache.RedisCache",
@@ -224,7 +259,6 @@ AUTH_USER_MODEL = "bookwyrm.User"
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
 
-# pylint: disable=line-too-long
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
@@ -256,7 +290,7 @@ LANGUAGES = [
     ("no-no", _("Norsk (Norwegian)")),
     ("pt-br", _("Português do Brasil (Brazilian Portuguese)")),
     ("pt-pt", _("Português Europeu (European Portuguese)")),
-    ("sv-se", _("Swedish (Svenska)")),
+    ("sv-se", _("Svenska (Swedish)")),
     ("zh-hans", _("简体中文 (Simplified Chinese)")),
     ("zh-hant", _("繁體中文 (Traditional Chinese)")),
 ]
@@ -312,13 +346,12 @@ if USE_S3:
     MEDIA_FULL_URL = MEDIA_URL
     STATIC_FULL_URL = STATIC_URL
     DEFAULT_FILE_STORAGE = "bookwyrm.storage_backends.ImagesStorage"
-    # I don't know if it's used, but the site crashes without it
-    STATIC_ROOT = os.path.join(BASE_DIR, env("STATIC_ROOT", "static"))
-    MEDIA_ROOT = os.path.join(BASE_DIR, env("MEDIA_ROOT", "images"))
 else:
     STATIC_URL = "/static/"
-    STATIC_ROOT = os.path.join(BASE_DIR, env("STATIC_ROOT", "static"))
     MEDIA_URL = "/images/"
     MEDIA_FULL_URL = f"{PROTOCOL}://{DOMAIN}{MEDIA_URL}"
     STATIC_FULL_URL = f"{PROTOCOL}://{DOMAIN}{STATIC_URL}"
-    MEDIA_ROOT = os.path.join(BASE_DIR, env("MEDIA_ROOT", "images"))
+
+OTEL_EXPORTER_OTLP_ENDPOINT = env("OTEL_EXPORTER_OTLP_ENDPOINT", None)
+OTEL_EXPORTER_OTLP_HEADERS = env("OTEL_EXPORTER_OTLP_HEADERS", None)
+OTEL_SERVICE_NAME = env("OTEL_SERVICE_NAME", None)

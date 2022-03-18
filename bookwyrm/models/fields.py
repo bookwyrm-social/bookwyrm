@@ -1,6 +1,5 @@
 """ activitypub-aware django model fields """
 from dataclasses import MISSING
-import imghdr
 import re
 from uuid import uuid4
 from urllib.parse import urljoin
@@ -9,7 +8,6 @@ import dateutil.parser
 from dateutil.parser import ParserError
 from django.contrib.postgres.fields import ArrayField as DjangoArrayField
 from django.core.exceptions import ValidationError
-from django.core.files.base import ContentFile
 from django.db import models
 from django.forms import ClearableFileInput, ImageField as DjangoImageField
 from django.utils import timezone
@@ -443,12 +441,10 @@ class ImageField(ActivitypubFieldMixin, models.ImageField):
         except ValidationError:
             return None
 
-        response = get_image(url)
-        if not response:
+        image_content, extension = get_image(url)
+        if not image_content:
             return None
 
-        image_content = ContentFile(response.content)
-        extension = imghdr.what(None, image_content.read()) or ""
         image_name = f"{uuid4()}.{extension}"
         return [image_name, image_content]
 

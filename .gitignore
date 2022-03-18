@@ -16,6 +16,9 @@
 # BookWyrm
 .env
 /images/
+bookwyrm/static/css/bookwyrm.css
+bookwyrm/static/css/themes/
+!bookwyrm/static/css/themes/bookwyrm-*.scss
 
 # Testing
 .coverage
@@ -24,7 +27,9 @@
 .idea
 
 #Node tools
-/node_modules/
+node_modules/
+package-lock.json
+yarn.lock
 
 #nginx
 nginx/default.conf

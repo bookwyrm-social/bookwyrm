@@ -8,7 +8,7 @@
         <div class="box is-flex-grow-1">
             {% include 'user/user_preview.html' with user=user %}
             {% if user.summary %}
-            <div class="box content has-background-white-ter is-shadowless">
+            <div class="box content has-background-secondary is-shadowless">
                 {{ user.summary|to_markdown|safe }}
             </div>
             {% endif %}
@@ -71,14 +71,14 @@
                 <dd>{{ user.last_active_date }}</dd>
 
                 <dt class="is-pulled-left mr-5">{% trans "Manually approved followers:" %}</dt>
-                <dd>{{ user.manually_approves_followers }}</dd>
+                <dd>{{ user.manually_approves_followers|yesno }}</dd>
 
                 <dt class="is-pulled-left mr-5">{% trans "Discoverable:" %}</dt>
-                <dd>{{ user.discoverable }}</dd>
+                <dd>{{ user.discoverable|yesno }}</dd>
 
                 {% if not user.is_active %}
                 <dt class="is-pulled-left mr-5">{% trans "Deactivation reason:" %}</dt>
-                <dd>{{ user.deactivation_reason }}</dd>
+                <dd>{{ user.get_deactivation_reason_display }}</dd>
                 {% endif %}
 
                 {% if not user.is_active and user.deactivation_reason == "pending" %}
@@ -104,11 +104,11 @@
                 <dd>{{ server.application_version }}</dd>
 
                 <dt class="is-pulled-left mr-5">{% trans "Status:" %}</dt>
-                <dd>{{ server.status }}</dd>
+                <dd>{{ server.get_status_display }}</dd>
             </dl>
             {% if server.notes %}
             <h5>{% trans "Notes" %}</h5>
-            <div class="box content has-background-white-ter is-shadowless">
+            <div class="box content has-background-secondary is-shadowless">
                 {{ server.notes }}
             </div>
             {% endif %}

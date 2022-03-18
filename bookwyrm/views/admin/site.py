@@ -1,6 +1,5 @@
 """ manage site settings """
 from django.contrib.auth.decorators import login_required, permission_required
-from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
 from django.views import View
@@ -30,9 +29,10 @@ class Site(View):
         if not form.is_valid():
             data = {"site_form": form}
             return TemplateResponse(request, "settings/site.html", data)
-        form.save()
+        site = form.save()
 
-        return redirect("settings-site")
+        data = {"site_form": forms.SiteForm(instance=site), "success": True}
+        return TemplateResponse(request, "settings/site.html", data)
 
 
 @login_required

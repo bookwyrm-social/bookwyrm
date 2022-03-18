@@ -1,7 +1,6 @@
 """ testing models """
 from dateutil.parser import parse
 
-from imagekit.models import ImageSpecField
 from django.test import TestCase
 from django.utils import timezone
 

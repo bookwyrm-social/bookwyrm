@@ -1,14 +1,14 @@
 {% load layout %}
+{% load sass_tags %}
 {% load i18n %}
 {% load static %}
+
 <!DOCTYPE html>
 <html lang="{% get_lang %}">
 <head>
     <title>{% block title %}BookWyrm{% endblock %} - {{ site.name }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="{% static "css/vendor/bulma.min.css" %}">
-    <link rel="stylesheet" href="{% static "css/vendor/icons.css" %}">
-    <link rel="stylesheet" href="{% static "css/bookwyrm.css" %}">
+    <link href="{% sass_src site_theme %}" rel="stylesheet" type="text/css" />
 
     <link rel="search" type="application/opensearchdescription+xml" href="{% url 'opensearch' %}" title="{% blocktrans with site_name=site.name %}{{ site_name }} search{% endblocktrans %}" />
 
@@ -32,6 +32,7 @@
     {% block head_links %}{% endblock %}
 </head>
 <body>
+{% block body %}
 <nav class="navbar" aria-label="main navigation">
     <div class="container">
         <div class="navbar-brand">
@@ -55,8 +56,16 @@
                             </span>
                         </button>
                     </div>
+                    <div class="control">
+                        <button class="button" type="button" data-modal-open="barcode-scanner-modal">
+                            <span class="icon icon-barcode" title="{% trans 'Scan Barcode' %}">
+                                <span class="is-sr-only">{% trans "Scan Barcode" %}</span>
+                            </span>
+                        </button>
+                    </div>
                 </div>
             </form>
+            {% include "search/barcode_modal.html" with id="barcode-scanner-modal" %}
 
             <button type="button" tabindex="0" class="navbar-burger pulldown-menu my-4" data-controls="main_nav" aria-expanded="false">
                 <i class="icon icon-dots-three-vertical" aria-hidden="true"></i>
@@ -206,7 +215,7 @@
 </div>
 {% endif %}
 
-<div class="section is-flex-grow-1">
+<main class="section is-flex-grow-1">
     <div class="container">
         {# almost every view needs to know the user shelves #}
         {% with request.user.shelf_set.all as user_shelves %}
@@ -214,7 +223,7 @@
         {% endblock %}
         {% endwith %}
     </div>
-</div>
+</main>
 
 <div role="region" aria-live="polite" id="live-messages">
     <p id="status-success-message" class="live-message is-sr-only is-hidden">{% trans "Successfully posted status" %}</p>
@@ -256,6 +265,7 @@
         </div>
     </div>
 </footer>
+{% endblock %}
 
 <script>
     var csrf_token = '{{ csrf_token }}';
@@ -264,6 +274,7 @@
 <script src="{% static "js/bookwyrm.js" %}?v={{ js_cache }}"></script>
 <script src="{% static "js/localstorage.js" %}?v={{ js_cache }}"></script>
 <script src="{% static "js/status_cache.js" %}?v={{ js_cache }}"></script>
+<script src="{% static "js/vendor/quagga.min.js" %}?v={{ js_cache }}"></script>
 
 {% block scripts %}{% endblock %}
 

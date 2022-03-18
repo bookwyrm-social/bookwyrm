@@ -58,6 +58,9 @@ urlpatterns = [
         views.get_unread_status_string,
         name="stream-updates",
     ),
+    # instance setup
+    re_path(r"^setup/?$", views.InstanceConfig.as_view(), name="setup"),
+    re_path(r"^setup/admin/?$", views.CreateAdmin.as_view(), name="setup-admin"),
     # authentication
     re_path(r"^login/?$", views.Login.as_view(), name="login"),
     re_path(r"^login/(?P<confirmed>confirmed)/?$", views.Login.as_view(), name="login"),
@@ -83,6 +86,12 @@ urlpatterns = [
         r"^settings/dashboard/?$", views.Dashboard.as_view(), name="settings-dashboard"
     ),
     re_path(r"^settings/site-settings/?$", views.Site.as_view(), name="settings-site"),
+    re_path(r"^settings/themes/?$", views.Themes.as_view(), name="settings-themes"),
+    re_path(
+        r"^settings/themes/(?P<theme_id>\d+)/delete/?$",
+        views.delete_theme,
+        name="settings-themes-delete",
+    ),
     re_path(
         r"^settings/announcements/?$",
         views.Announcements.as_view(),
@@ -92,6 +101,16 @@ urlpatterns = [
         r"^settings/announcements/(?P<announcement_id>\d+)/?$",
         views.Announcement.as_view(),
         name="settings-announcements",
+    ),
+    re_path(
+        r"^settings/announcements/create/?$",
+        views.EditAnnouncement.as_view(),
+        name="settings-announcements-edit",
+    ),
+    re_path(
+        r"^settings/announcements/(?P<announcement_id>\d+)/edit/?$",
+        views.EditAnnouncement.as_view(),
+        name="settings-announcements-edit",
     ),
     re_path(
         r"^settings/announcements/(?P<announcement_id>\d+)/delete/?$",
@@ -105,6 +124,11 @@ urlpatterns = [
     ),
     re_path(
         r"^settings/users/?$", views.UserAdminList.as_view(), name="settings-users"
+    ),
+    re_path(
+        r"^settings/users/(?P<status>(local|federated))\/?$",
+        views.UserAdminList.as_view(),
+        name="settings-users",
     ),
     re_path(
         r"^settings/users/(?P<user>\d+)/?$",
@@ -130,6 +154,11 @@ urlpatterns = [
         r"^settings/federation/(?P<server>\d+)/unblock/?$",
         views.unblock_server,
         name="settings-federated-server-unblock",
+    ),
+    re_path(
+        r"^settings/federation/(?P<server>\d+)/refresh/?$",
+        views.refresh_server,
+        name="settings-federated-server-refresh",
     ),
     re_path(
         r"^settings/federation/add/?$",
@@ -200,6 +229,26 @@ urlpatterns = [
         r"^settings/ip-blocks/(?P<block_id>\d+)/delete/?$",
         views.IPBlocklist.as_view(),
         name="settings-ip-blocks-delete",
+    ),
+    # auto-moderation rules
+    re_path(r"^settings/automod/?$", views.AutoMod.as_view(), name="settings-automod"),
+    re_path(
+        r"^settings/automod/(?P<rule_id>\d+)/delete/?$",
+        views.automod_delete,
+        name="settings-automod-delete",
+    ),
+    re_path(
+        r"^settings/automod/schedule/?$",
+        views.schedule_automod_task,
+        name="settings-automod-schedule",
+    ),
+    re_path(
+        r"^settings/automod/unschedule/(?P<task_id>\d+)/?$",
+        views.unschedule_automod_task,
+        name="settings-automod-unschedule",
+    ),
+    re_path(
+        r"^settings/automod/run/?$", views.run_automod, name="settings-automod-run"
     ),
     # moderation
     re_path(
@@ -475,7 +524,10 @@ urlpatterns = [
     ),
     re_path(rf"{BOOK_PATH}/edit/?$", views.EditBook.as_view(), name="edit-book"),
     re_path(rf"{BOOK_PATH}/confirm/?$", views.ConfirmEditBook.as_view()),
-    re_path(r"^create-book/?$", views.EditBook.as_view(), name="create-book"),
+    re_path(
+        r"^create-book/data/?$", views.create_book_from_data, name="create-book-data"
+    ),
+    re_path(r"^create-book/?$", views.CreateBook.as_view(), name="create-book"),
     re_path(r"^create-book/confirm/?$", views.ConfirmEditBook.as_view()),
     re_path(rf"{BOOK_PATH}/editions(.json)?/?$", views.Editions.as_view()),
     re_path(

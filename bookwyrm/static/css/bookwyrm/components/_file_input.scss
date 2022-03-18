@@ -1,0 +1,28 @@
+/** File input styles
+ ******************************************************************************/
+
+input[type="file"]::file-selector-button {
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    background-color: $scheme-main;
+    border-radius: 4px;
+    border: 1px solid $border;
+    box-shadow: none;
+    color: $text;
+    cursor: pointer;
+    font-size: 1rem;
+    height: 2.5em;
+    justify-content: center;
+    line-height: 1.5;
+    padding-bottom: calc(0.5em - 1px);
+    padding-left: 1em;
+    padding-right: 1em;
+    padding-top: calc(0.5em - 1px);
+    text-align: center;
+    white-space: nowrap;
+}
+
+input[type="file"]::file-selector-button:hover {
+    border-color: $border-hover;
+    color: text;
+}

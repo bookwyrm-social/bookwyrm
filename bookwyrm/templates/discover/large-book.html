@@ -30,7 +30,7 @@
         <div class="column mt-3-mobile ml-3-tablet">
             <div class="media block mb-2">
                 <figure class="media-left" aria-hidden="true">
-                    <a class="image is-48x48" href="{{ status.user.local_path }}">
+                    <a class="image is-48x48" href="{{ status.user.local_path }}" tabindex="-1">
                         {% include 'snippets/avatar.html' with user=status.user ariaHide="true" medium="true" %}
                     </a>
                 </figure>
@@ -45,7 +45,7 @@
                 {% include 'snippets/follow_button.html' with user=status.user show_username=True minimal=True %}
             </div>
 
-            <div class="notification has-background-white p-2 mb-2 clip-text">
+            <div class="notification has-background-body p-2 mb-2 clip-text">
                 {% include "snippets/status/content_status.html" with hide_book=True trim_length=70 hide_more=True %}
             </div>
             <a href="{{ status.remote_id }}">

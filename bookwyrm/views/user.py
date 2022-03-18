@@ -1,5 +1,6 @@
 """ non-interactive pages """
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator
 from django.db.models import Q, Count
 from django.http import Http404
@@ -31,12 +32,17 @@ class User(View):
         shelf_preview = []
 
         # only show shelves that should be visible
-        shelves = user.shelf_set
         is_self = request.user.id == user.id
         if not is_self:
-            shelves = models.Shelf.privacy_filter(
-                request.user, privacy_levels=["public", "followers"]
-            ).filter(user=user, books__isnull=False)
+            shelves = (
+                models.Shelf.privacy_filter(
+                    request.user, privacy_levels=["public", "followers"]
+                )
+                .filter(user=user, books__isnull=False)
+                .distinct()
+            )
+        else:
+            shelves = user.shelf_set.filter(books__isnull=False).distinct()
 
         for user_shelf in shelves.all()[:3]:
             shelf_preview.append(
@@ -100,6 +106,9 @@ class Followers(View):
         if is_api_request(request):
             return ActivitypubResponse(user.to_followers_activity(**request.GET))
 
+        if user.hide_follows:
+            raise PermissionDenied()
+
         followers = annotate_if_follows(request.user, user.followers)
         paginated = Paginator(followers.all(), PAGE_LENGTH)
         data = {
@@ -119,6 +128,9 @@ class Following(View):
 
         if is_api_request(request):
             return ActivitypubResponse(user.to_following_activity(**request.GET))
+
+        if user.hide_follows:
+            raise PermissionDenied()
 
         following = annotate_if_follows(request.user, user.following)
         paginated = Paginator(following.all(), PAGE_LENGTH)

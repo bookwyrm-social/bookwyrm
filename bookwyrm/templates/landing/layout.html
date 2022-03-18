@@ -70,6 +70,14 @@
 
                             {% include 'snippets/form_errors.html' with errors_list=request_form.email.errors id="desc_request_email" %}
                         </div>
+                        {% if site.invite_request_question %}
+                            <div class="block">
+                                <label for="id_answer_register" class="label">{{ site.invite_question_text }}</label>
+                                <input type="answer" name="answer" maxlength="50" class="input" required="true" id="id_answer_register" aria-describedby="desc_answer_register">
+                                {% include 'snippets/form_errors.html' with errors_list=request_form.answer.errors id="desc_answer_register" %}
+                            </div>
+                        {% endif %}
+
                         <button type="submit" class="button is-link">{% trans "Submit" %}</button>
                     </form>
                 {% endif %}
@@ -78,7 +86,7 @@
             {% endif %}
         </div>
         {% else %}
-        <div class="tile is-child box has-background-white-bis">
+        <div class="tile is-child box has-background-tertiary">
             <h2 class="title is-4">{% trans "Your Account" %}</h2>
             {% include 'user/user_preview.html' with user=request.user %}
             {% if request.user.summary %}

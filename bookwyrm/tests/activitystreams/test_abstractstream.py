@@ -1,6 +1,9 @@
 """ testing activitystreams """
+from datetime import datetime
 from unittest.mock import patch
 from django.test import TestCase
+from django.utils import timezone
+
 from bookwyrm import activitystreams, models
 
 
@@ -51,12 +54,62 @@ class Activitystreams(TestCase):
         """the abstract base class for stream objects"""
         self.assertEqual(
             self.test_stream.stream_id(self.local_user),
-            "{}-test".format(self.local_user.id),
+            f"{self.local_user.id}-test",
         )
         self.assertEqual(
             self.test_stream.unread_id(self.local_user),
-            "{}-test-unread".format(self.local_user.id),
+            f"{self.local_user.id}-test-unread",
         )
+
+    def test_unread_by_status_type_id(self, *_):
+        """stream for status type"""
+        self.assertEqual(
+            self.test_stream.unread_by_status_type_id(self.local_user),
+            f"{self.local_user.id}-test-unread-by-type",
+        )
+
+    def test_get_rank(self, *_):
+        """sort order"""
+        date = datetime(2022, 1, 28, 0, 0, tzinfo=timezone.utc)
+        status = models.Status.objects.create(
+            user=self.remote_user,
+            content="hi",
+            privacy="direct",
+            published_date=date,
+        )
+        self.assertEqual(
+            str(self.test_stream.get_rank(status)),
+            "1643328000.0",
+        )
+
+    def test_get_activity_stream(self, *_):
+        """load statuses"""
+        status = models.Status.objects.create(
+            user=self.remote_user,
+            content="hi",
+            privacy="direct",
+        )
+        status2 = models.Comment.objects.create(
+            user=self.remote_user,
+            content="hi",
+            privacy="direct",
+            book=self.book,
+        )
+        models.Comment.objects.create(
+            user=self.remote_user,
+            content="hi",
+            privacy="direct",
+            book=self.book,
+        )
+        with patch("bookwyrm.activitystreams.r.set"), patch(
+            "bookwyrm.activitystreams.r.delete"
+        ), patch("bookwyrm.activitystreams.ActivityStream.get_store") as redis_mock:
+            redis_mock.return_value = [status.id, status2.id]
+            result = self.test_stream.get_activity_stream(self.local_user)
+        self.assertEqual(result.count(), 2)
+        self.assertEqual(result.first(), status2)
+        self.assertEqual(result.last(), status)
+        self.assertIsInstance(result.first(), models.Comment)
 
     def test_abstractstream_get_audience(self, *_):
         """get a list of users that should see a status"""

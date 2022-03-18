@@ -22,8 +22,8 @@
 {% csrf_token %}
 <input type="hidden" name="reporter" value="{{ request.user.id }}">
 <input type="hidden" name="user" value="{{ user.id }}">
-{% if status %}
-<input type="hidden" name="statuses" value="{{ status_id }}">
+{% if status_id %}
+<input type="hidden" name="status" value="{{ status_id }}">
 {% endif %}
 {% if link %}
 <input type="hidden" name="links" value="{{ link.id }}">
@@ -48,12 +48,10 @@
 
 
 {% block modal-footer %}
-
-<button class="button is-success" type="submit">{% trans "Submit" %}</button>
-{% if not static %}
+<div class="buttons is-right is-flex-grow-1">
     <button type="button" class="button" data-modal-close>{% trans "Cancel" %}</button>
-{% endif %}
-
+    <button class="button is-success" type="submit">{% trans "Submit" %}</button>
+</div>
 {% endblock %}
 
 {% block modal-form-close %}</form>{% endblock %}

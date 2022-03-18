@@ -1,0 +1,49 @@
+/* Book preview table
+ ******************************************************************************/
+
+.book-preview td {
+    vertical-align: middle;
+}
+
+@media only screen and (max-width: 768px) {
+    table.is-mobile,
+    table.is-mobile tbody {
+        display: block;
+    }
+
+    table.is-mobile tr {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        border-top: 1px solid $border;
+    }
+
+    table.is-mobile td {
+        display: block;
+        box-sizing: border-box;
+        flex: 1 0 100%;
+        order: 2;
+        border-bottom: 0;
+    }
+
+    table.is-mobile td.book-preview-top-row {
+        order: 1;
+        flex-basis: auto;
+    }
+
+    table.is-mobile td[data-title]:not(:empty)::before {
+        content: attr(data-title);
+        display: block;
+        font-size: 0.75em;
+        font-weight: bold;
+    }
+
+    table.is-mobile td:empty {
+        padding: 0;
+    }
+
+    table.is-mobile th,
+    table.is-mobile thead {
+        display: none;
+    }
+}

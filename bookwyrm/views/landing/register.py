@@ -25,6 +25,10 @@ class Register(View):
     def post(self, request):
         """join the server"""
         settings = models.SiteSettings.get()
+        # no registration allowed when the site is being installed
+        if settings.install_mode:
+            raise PermissionDenied()
+
         if not settings.allow_registration:
             invite_code = request.POST.get("invite_code")
 
@@ -38,9 +42,16 @@ class Register(View):
             invite = None
 
         form = forms.RegisterForm(request.POST)
-        errors = False
         if not form.is_valid():
-            errors = True
+            data = {
+                "login_form": forms.LoginForm(),
+                "register_form": form,
+                "invite": invite,
+                "valid": invite.valid() if invite else True,
+            }
+            if invite:
+                return TemplateResponse(request, "landing/invite.html", data)
+            return TemplateResponse(request, "landing/login.html", data)
 
         localname = form.data["localname"].strip()
         email = form.data["email"]
@@ -51,22 +62,6 @@ class Register(View):
         if models.EmailBlocklist.objects.filter(domain=email_domain).exists():
             # treat this like a successful registration, but don't do anything
             return redirect("confirm-email")
-
-        # check localname and email uniqueness
-        if models.User.objects.filter(localname=localname).first():
-            form.errors["localname"] = ["User with this username already exists"]
-            errors = True
-
-        if errors:
-            data = {
-                "login_form": forms.LoginForm(),
-                "register_form": form,
-                "invite": invite,
-                "valid": invite.valid() if invite else True,
-            }
-            if invite:
-                return TemplateResponse(request, "landing/invite.html", data)
-            return TemplateResponse(request, "landing/login.html", data)
 
         username = f"{localname}@{DOMAIN}"
         user = models.User.objects.create_user(

@@ -1,0 +1,26 @@
+/* Barcode scanner CSS */
+#barcode-scanner {
+    position: relative;
+    max-width: 100%;
+    text-align: center;
+    height: calc(70vh - 200px);
+
+    video {
+        height: calc(70vh - 200px);
+        max-width: 100%;
+    }
+
+    canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        margin: auto;
+        height: calc(70vh - 200px);
+        max-width: 100%;
+    }
+}
+
+#barcode-camera-list {
+    float: right;
+}

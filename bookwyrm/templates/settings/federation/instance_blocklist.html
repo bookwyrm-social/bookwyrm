@@ -4,7 +4,19 @@
 
 {% block header %}
 {% trans "Import Blocklist" %}
-<a href="{% url 'settings-federation' %}" class="has-text-weight-normal help">{% trans "Back to instance list" %}</a>
+{% endblock %}
+
+{% block breadcrumbs %}
+<nav class="breadcrumb subtitle" aria-label="breadcrumbs">
+    <ul>
+        <li><a href="{% url 'settings-federation' %}">{% trans "Federated Instances" %}</a></li>
+        <li class="is-active">
+            <a href="#" aria-current="page">
+                {% trans "Import Blocklist" %}
+            </a>
+        </li>
+    </ul>
+</nav>
 {% endblock %}
 
 {% block panel %}
