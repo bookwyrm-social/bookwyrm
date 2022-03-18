@@ -178,7 +178,7 @@
             <div class="box">
                 {% if book.authors.exists %}
                 {# preserve authors if the book is unsaved #}
-                <input type="hidden" name="authors" value="{% for author in book.authors %}{{ author.id }},{% endfor %}">
+                <input type="hidden" name="authors" value="{% for author in book.authors.all %}{{ author.id }},{% endfor %}">
                 <fieldset>
                     {% for author in book.authors.all %}
                     <div class="is-flex is-justify-content-space-between">
