@@ -1,8 +1,8 @@
 """ bookwyrm settings and configuration """
 import os
-from environs import Env
 from urllib.parse import quote as urlencode
 
+from environs import Env
 import requests
 from django.utils.translation import gettext_lazy as _
 
