@@ -17,7 +17,14 @@
 {% endblock %}
 
 {% block modal-form-open %}
-<form name="add-readthrough-{{ readthrough.id }}" action="/create-readthrough" method="post">
+<form
+    name="add-readthrough-{{ readthrough.id }}"
+    {% if readthrough.id %}
+    action="{% url 'edit-readthrough' %}"
+    {% else %}
+    action="{% url 'create-readthrough' %}"
+    {% endif %}
+    method="POST">
 {% endblock %}
 
 {% block modal-body %}
