@@ -22,11 +22,13 @@
             aria-described-by="id_email_errors"
             required
         >
+        {% if error %}
         <div id="id_email_errors">
             <p class="help is-danger">
                 {% trans "No user matching this email address found." %}
             </p>
         </div>
+        {% endif %}
     </div>
 </div>
 {% endblock %}
