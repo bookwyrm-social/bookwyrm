@@ -130,6 +130,7 @@ class ConfirmEmail(View):
 
 class ResendConfirmEmail(View):
     """you probably didn't get the email because celery is slow but you can try this"""
+
     def get(self, request, error=False):
         """resend link landing page"""
         return TemplateResponse(request, "confirm_email/resend.html", {"error": error})
