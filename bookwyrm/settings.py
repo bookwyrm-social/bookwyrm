@@ -1,9 +1,9 @@
 """ bookwyrm settings and configuration """
 import os
 from environs import Env
+from urllib.parse import quote as urlencode
 
 import requests
-from urllib.parse import quote as urlencode
 from django.utils.translation import gettext_lazy as _
 
 
