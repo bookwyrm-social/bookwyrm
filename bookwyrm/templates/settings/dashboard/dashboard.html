@@ -10,26 +10,26 @@
 {% block panel %}
 
 <div class="columns block has-text-centered is-mobile is-multiline">
-    <div class="column is-3-desktop is-6-mobile">
-        <div class="notification">
+    <div class="column is-3-desktop is-6-mobile is-flex">
+        <div class="notification is-flex-grow-1">
             <h3>{% trans "Total users" %}</h3>
             <p class="title is-5">{{ users|intcomma }}</p>
         </div>
     </div>
-    <div class="column is-3-desktop is-6-mobile">
-        <div class="notification">
+    <div class="column is-3-desktop is-6-mobil is-flexe">
+        <div class="notification is-flex-grow-1">
             <h3>{% trans "Active this month" %}</h3>
             <p class="title is-5">{{ active_users|intcomma }}</p>
         </div>
     </div>
-    <div class="column is-3-desktop is-6-mobile">
-        <div class="notification">
+    <div class="column is-3-desktop is-6-mobile is-flex">
+        <div class="notification is-flex-grow-1">
             <h3>{% trans "Statuses" %}</h3>
             <p class="title is-5">{{ statuses|intcomma }}</p>
         </div>
     </div>
-    <div class="column is-3-desktop is-6-mobile">
-        <div class="notification">
+    <div class="column is-3-desktop is-6-mobile is-flex">
+        <div class="notification is-flex-grow-1">
             <h3>{% trans "Works" %}</h3>
             <p class="title is-5">{{ works|intcomma }}</p>
         </div>
@@ -38,8 +38,8 @@
 
 <div class="columns block is-multiline">
     {% if reports %}
-    <div class="column">
-        <a href="{% url 'settings-reports' %}" class="notification is-warning is-block">
+    <div class="column is-flex">
+        <a href="{% url 'settings-reports' %}" class="notification is-warning is-block is-flex-grow-1">
             {% blocktrans trimmed count counter=reports with display_count=reports|intcomma %}
             {{ display_count }} open report
             {% plural %}
@@ -50,8 +50,8 @@
     {% endif %}
 
     {% if pending_domains %}
-    <div class="column">
-        <a href="{% url 'settings-link-domain' %}" class="notification is-primary is-block">
+    <div class="column is-flex">
+        <a href="{% url 'settings-link-domain' %}" class="notification is-primary is-block is-flex-grow-1">
             {% blocktrans trimmed count counter=pending_domains with display_count=pending_domains|intcomma %}
             {{ display_count }} domain needs review
             {% plural %}
@@ -62,8 +62,8 @@
     {% endif %}
 
     {% if not site.allow_registration and site.allow_invite_requests and invite_requests %}
-    <div class="column">
-        <a href="{% url 'settings-invite-requests' %}" class="notification is-block is-success">
+    <div class="column is-flex">
+        <a href="{% url 'settings-invite-requests' %}" class="notification is-block is-success is-flex-grow-1">
             {% blocktrans trimmed count counter=invite_requests with display_count=invite_requests|intcomma %}
             {{ display_count }} invite request
             {% plural %}
@@ -74,8 +74,8 @@
     {% endif %}
 
     {% if current_version %}
-    <div class="column">
-        <a href="https://docs.joinbookwyrm.com/updating-your-instance.html" class="notification is-block is-warning" target="_blank">
+    <div class="column is-flex">
+        <a href="https://docs.joinbookwyrm.com/updating-your-instance.html" class="notification is-block is-warning is-flex-grow-1" target="_blank">
             {% blocktrans trimmed with current=current_version available=available_version %}
             An update is available! You're running v{{ current }} and the latest release is {{ available }}.
             {% endblocktrans %}
