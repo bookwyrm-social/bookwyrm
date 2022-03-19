@@ -1,0 +1,122 @@
+{% extends 'settings/layout.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Themes" %}{% endblock %}
+
+{% block header %}{% trans "Themes" %}{% endblock %}
+
+{% block breadcrumbs %}
+<a class="subtitle help is-link" href="{% url 'settings-site' %}/#display">
+    {% trans "Set instance default theme" %}
+</a>
+{% endblock %}
+
+{% block panel %}
+{% if success %}
+<div class="notification is-success is-light">
+    <span class="icon icon-check" aria-hidden="true"></span>
+    <span>
+        {% trans "Successfully added theme" %}
+    </span>
+</div>
+{% endif %}
+
+<section class="block">
+    <div class="notification content">
+        <h2 class="title is-5">{% trans "How to add a theme" %}</h2>
+        <ol>
+            <li>
+                {% trans "Copy the theme file into the <code>bookwyrm/static/css/themes</code> directory on your server from the command line." %}
+            </li>
+            <li>
+                {% trans "Run <code>./bw-dev collectstatic</code>." %}
+            </li>
+            <li>
+                {% trans "Add the file name using the form below to make it available in the application interface." %}
+            </li>
+        </ol>
+    </div>
+</section>
+
+<section class="block content">
+    <h2 class="title is-4">{% trans "Add theme" %}</h2>
+
+    {% if theme_form.errors %}
+    <div class="notification is-danger is-light">
+        <span class="icon icon-x" aria-hidden="true"></span>
+        <span>
+            {% trans "Unable to save theme" %}
+        </span>
+    </div>
+    {% endif %}
+
+    <form
+        method="POST"
+        action="{% url 'settings-themes' %}"
+        class="box"
+        enctype="multipart/form-data"
+    >
+    <fieldset>
+        {% csrf_token %}
+        <div class="columns">
+            <div class="column is-half">
+                <label class="label" for="id_name">
+                    {% trans "Theme name" %}
+                </label>
+                <div class="control">
+                    {{ theme_form.name }}
+                    {% include 'snippets/form_errors.html' with errors_list=theme_form.name.errors id="desc_name" %}
+                </div>
+            </div>
+
+            <div class="column">
+                <label class="label" for="id_path">
+                    {% trans "Theme filename" %}
+                </label>
+                <div class="control">
+                    {{ theme_form.path }}
+                    {% include 'snippets/form_errors.html' with errors_list=theme_form.path.errors id="desc_path" %}
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" class="button">{% trans "Add theme" %}</button>
+    </fieldset>
+    </form>
+</section>
+
+<section class="block content">
+    <h2 class="title is-4">{% trans "Available Themes" %}</h2>
+    <div class="table-container">
+        <table class="table is-striped is-fullwidth">
+            <tr>
+                <th>
+                    {% trans "Theme name" %}
+                </th>
+                <th>
+                    {% trans "File" %}
+                </th>
+                <th>
+                    {% trans "Actions" %}
+                </th>
+            </tr>
+            {% for theme in themes %}
+            <tr>
+                <td>{{ theme.name }}</td>
+                <td><code>{{ theme.path }}</code></td>
+                <td>
+                    <form method="POST" action="{% url 'settings-themes-delete' theme.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="button is-danger is-light is-small">
+                            <span class="icon icon-x" aria-hideen="true"></span>
+                            <span>{% trans "Remove theme" %}</span>
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</section>
+
+{% endblock %}

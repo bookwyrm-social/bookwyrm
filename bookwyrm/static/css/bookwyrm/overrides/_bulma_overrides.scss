@@ -1,0 +1,61 @@
+.image {
+    overflow: hidden;
+}
+
+.navbar .logo {
+    max-height: 50px;
+}
+
+.card {
+    overflow: visible;
+}
+
+.card.has-border {
+    border: 1px solid $border;
+}
+
+.scroll-x {
+    overflow: hidden;
+    overflow-x: auto;
+}
+
+.modal-card {
+    pointer-events: none;
+}
+
+.modal-card > * {
+    pointer-events: all;
+}
+
+/* stylelint-disable no-descending-specificity */
+.modal-card:focus {
+    outline-style: auto;
+}
+
+.modal-card:focus:not(:focus-visible) {
+    outline-style: initial;
+}
+
+.modal-card:focus-visible {
+    outline-style: auto;
+}
+/* stylelint-enable no-descending-specificity */
+
+.modal-card.is-fullwidth {
+    min-width: 75% !important;
+}
+
+@media only screen and (min-width: 769px) {
+    .modal-card.is-thin {
+        width: 350px !important;
+    }
+}
+
+.modal-card-body {
+    max-height: 70vh;
+}
+
+.clip-text {
+    max-height: 35em;
+    overflow: hidden;
+}

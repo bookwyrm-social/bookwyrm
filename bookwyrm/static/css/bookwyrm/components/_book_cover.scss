@@ -1,0 +1,70 @@
+/** Book covers
+ *
+ * - .is-cover gives the behaviour of the cover and its surrounding. (optional)
+ * - .cover-container gives the dimensions and position (for borders, image and other elements).
+ * - .book-cover is positioned and sized based on its container.
+ *
+ * To have the cover within specific dimensions, specify a width or height for
+ * standard bulma’s named breapoints:
+ *
+ * `is-(w|h)-(auto|xs|s|m|l|xl|xxl)[-(mobile|tablet|desktop)]`
+ *
+ * The cover will be centered horizontally and vertically within those dimensions.
+ *
+ * When using `.column.is-N`, add `.is-w-auto` to the container so that the flex
+ * calculations are not biased by the default `max-content`.
+ ******************************************************************************/
+
+.column.is-cover {
+    flex-grow: 0 !important;
+}
+
+.column.is-cover,
+.column.is-cover + .column {
+    flex-basis: auto !important;
+}
+
+.cover-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    width: max-content;
+    max-width: 100%;
+    overflow: hidden;
+}
+
+/* Book cover
+ * -------------------------------------------------------------------------- */
+
+.book-cover {
+    display: block;
+    max-width: 100%;
+    max-height: 100%;
+
+    /* Useful when stretching under-sized images. */
+    image-rendering: optimizequality;
+    image-rendering: smooth;
+}
+
+/* Cover caption
+ * -------------------------------------------------------------------------- */
+
+.no-cover .cover-caption {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    padding: 0.5em;
+    font-size: 0.75em;
+    color: white;
+    background-color: $no-cover-color;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 1em;
+    white-space: initial;
+    text-align: center;
+}

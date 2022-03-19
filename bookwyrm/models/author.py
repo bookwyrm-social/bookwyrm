@@ -21,9 +21,6 @@ class Author(BookDataModel):
     isni = fields.CharField(
         max_length=255, blank=True, null=True, deduplication_field=True
     )
-    viaf_id = fields.CharField(
-        max_length=255, blank=True, null=True, deduplication_field=True
-    )
     gutenberg_id = fields.CharField(
         max_length=255, blank=True, null=True, deduplication_field=True
     )

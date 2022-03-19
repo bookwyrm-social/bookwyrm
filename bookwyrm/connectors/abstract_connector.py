@@ -131,7 +131,7 @@ class AbstractConnector(AbstractMinimalConnector):
             try:
                 work_data = self.get_work_from_edition_data(data)
             except (KeyError, ConnectorException) as err:
-                logger.exception(err)
+                logger.info(err)
                 work_data = data
 
         if not work_data or not edition_data:
@@ -270,7 +270,7 @@ def get_data(url, params=None, timeout=10):
             timeout=timeout,
         )
     except RequestException as err:
-        logger.exception(err)
+        logger.info(err)
         raise ConnectorException(err)
 
     if not resp.ok:
@@ -278,7 +278,7 @@ def get_data(url, params=None, timeout=10):
     try:
         data = resp.json()
     except ValueError as err:
-        logger.exception(err)
+        logger.info(err)
         raise ConnectorException(err)
 
     return data
@@ -296,7 +296,7 @@ def get_image(url, timeout=10):
             timeout=timeout,
         )
     except RequestException as err:
-        logger.exception(err)
+        logger.info(err)
         return None, None
 
     if not resp.ok:
@@ -305,7 +305,7 @@ def get_image(url, timeout=10):
     image_content = ContentFile(resp.content)
     extension = imghdr.what(None, image_content.read())
     if not extension:
-        logger.exception("File requested was not an image: %s", url)
+        logger.info("File requested was not an image: %s", url)
         return None, None
 
     return image_content, extension

@@ -39,7 +39,7 @@ def search(query, min_confidence=0.1, return_first=False):
             try:
                 result_set = connector.isbn_search(isbn)
             except Exception as err:  # pylint: disable=broad-except
-                logger.exception(err)
+                logger.info(err)
                 # if this fails, we can still try regular search
 
         # if no isbn search results, we fallback to generic search
@@ -48,7 +48,7 @@ def search(query, min_confidence=0.1, return_first=False):
                 result_set = connector.search(query, min_confidence=min_confidence)
             except Exception as err:  # pylint: disable=broad-except
                 # we don't want *any* error to crash the whole search page
-                logger.exception(err)
+                logger.info(err)
                 continue
 
         if return_first and result_set:

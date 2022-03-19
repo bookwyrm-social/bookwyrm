@@ -1,6 +1,7 @@
 """ the particulars for this instance of BookWyrm """
 import datetime
 from urllib.parse import urljoin
+import uuid
 
 from django.db import models, IntegrityError
 from django.dispatch import receiver
@@ -23,6 +24,14 @@ class SiteSettings(models.Model):
     )
     instance_description = models.TextField(default="This instance has no description.")
     instance_short_description = models.CharField(max_length=255, blank=True, null=True)
+    default_theme = models.ForeignKey(
+        "Theme", null=True, blank=True, on_delete=models.SET_NULL
+    )
+    version = models.CharField(null=True, blank=True, max_length=10)
+
+    # admin setup options
+    install_mode = models.BooleanField(default=False)
+    admin_code = models.CharField(max_length=50, default=uuid.uuid4)
 
     # about page
     registration_closed_text = models.TextField(
@@ -38,10 +47,14 @@ class SiteSettings(models.Model):
     privacy_policy = models.TextField(default="Add a privacy policy here.")
 
     # registration
-    allow_registration = models.BooleanField(default=True)
+    allow_registration = models.BooleanField(default=False)
     allow_invite_requests = models.BooleanField(default=True)
+    invite_request_question = models.BooleanField(default=False)
     require_confirm_email = models.BooleanField(default=True)
 
+    invite_question_text = models.CharField(
+        max_length=255, blank=True, default="What is your favourite book?"
+    )
     # images
     logo = models.ImageField(upload_to="logos/", null=True, blank=True)
     logo_small = models.ImageField(upload_to="logos/", null=True, blank=True)
@@ -91,12 +104,27 @@ class SiteSettings(models.Model):
         return urljoin(STATIC_FULL_URL, default_path)
 
     def save(self, *args, **kwargs):
-        """if require_confirm_email is disabled, make sure no users are pending"""
+        """if require_confirm_email is disabled, make sure no users are pending,
+        if enabled, make sure invite_question_text is not empty"""
         if not self.require_confirm_email:
             User.objects.filter(is_active=False, deactivation_reason="pending").update(
                 is_active=True, deactivation_reason=None
             )
+        if not self.invite_question_text:
+            self.invite_question_text = "What is your favourite book?"
         super().save(*args, **kwargs)
+
+
+class Theme(models.Model):
+    """Theme files"""
+
+    created_date = models.DateTimeField(auto_now_add=True)
+    name = models.CharField(max_length=50, unique=True)
+    path = models.CharField(max_length=50, unique=True)
+
+    def __str__(self):
+        # pylint: disable=invalid-str-returned
+        return self.name
 
 
 class SiteInvite(models.Model):
@@ -129,6 +157,7 @@ class InviteRequest(BookWyrmModel):
     invite = models.ForeignKey(
         SiteInvite, on_delete=models.SET_NULL, null=True, blank=True
     )
+    answer = models.TextField(max_length=50, unique=False, null=True, blank=True)
     invite_sent = models.BooleanField(default=False)
     ignored = models.BooleanField(default=False)
 

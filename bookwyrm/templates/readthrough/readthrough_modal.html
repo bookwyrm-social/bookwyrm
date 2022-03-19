@@ -17,7 +17,14 @@
 {% endblock %}
 
 {% block modal-form-open %}
-<form name="add-readthrough-{{ readthrough.id }}" action="/create-readthrough" method="post">
+<form
+    name="add-readthrough-{{ readthrough.id }}"
+    {% if readthrough.id %}
+    action="{% url 'edit-readthrough' %}"
+    {% else %}
+    action="{% url 'create-readthrough' %}"
+    {% endif %}
+    method="POST">
 {% endblock %}
 
 {% block modal-body %}
@@ -69,8 +76,10 @@
 {% endblock %}
 
 {% block modal-footer %}
-<button class="button is-primary" type="submit">{% trans "Save" %}</button>
-<button type="button" class="button" data-modal-close>{% trans "Cancel" %}</button>
+<div class="buttons is-right is-flex-grow-1">
+    <button type="button" class="button" data-modal-close>{% trans "Cancel" %}</button>
+    <button class="button is-primary" type="submit">{% trans "Save" %}</button>
+</div>
 {% endblock %}
 
 {% block modal-form-close %}

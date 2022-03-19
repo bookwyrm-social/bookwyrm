@@ -12,6 +12,15 @@
 {% endblock %}
 
 {% block content %}
+{% if update_error %}
+<div class="notification is-danger is-light">
+    <span class="icon icon-x" aria-hidden="true"></span>
+    <span>
+        {% trans "Unable to connect to remote source." %}
+    </span>
+</div>
+{% endif %}
+
 {% with user_authenticated=request.user.is_authenticated can_edit_book=perms.bookwyrm.edit_book %}
 <div class="block" itemscope itemtype="https://schema.org/Book">
     <div class="columns is-mobile">
@@ -199,9 +208,17 @@
                 {% endif %}
 
 
-                {% if book.parent_work.editions.count > 1 %}
-                <p>{% blocktrans with path=book.parent_work.local_path count=book.parent_work.editions.count %}<a href="{{ path }}/editions">{{ count }} editions</a>{% endblocktrans %}</p>
-                {% endif %}
+                {% with work=book.parent_work %}
+                <p>
+                    <a href="{{ work.local_path }}/editions">
+                        {% blocktrans trimmed count counter=work.editions.count with count=work.editions.count|intcomma %}
+                            {{ count }} edition
+                            {% plural %}
+                            {{ count }} editions
+                        {% endblocktrans %}
+                    </a>
+                </p>
+                {% endwith %}
             </div>
 
             {# user's relationship to the book #}
@@ -352,7 +369,7 @@
                 {% endfor %}
                 </ul>
 
-                {% if request.user.list_set.exists %}
+                {% if list_options.exists %}
                 <form name="list-add" method="post" action="{% url 'list-add-book' %}">
                     {% csrf_token %}
                     <input type="hidden" name="book" value="{{ book.id }}">
@@ -361,7 +378,7 @@
                     <div class="field has-addons">
                         <div class="select control is-clipped">
                             <select name="book_list" id="id_list">
-                                {% for list in user.list_set.all %}
+                                {% for list in list_options %}
                                 <option value="{{ list.id }}">{{ list.name }}</option>
                                 {% endfor %}
                             </select>
@@ -386,6 +403,6 @@
 {% endblock %}
 
 {% block scripts %}
-<script src="{% static "js/vendor/tabs.js" %}?v={{ js_cache }}"></script>
+<script src="{% static "js/tabs.js" %}?v={{ js_cache }}"></script>
 <script src="{% static "js/autocomplete.js" %}?v={{ js_cache }}"></script>
 {% endblock %}

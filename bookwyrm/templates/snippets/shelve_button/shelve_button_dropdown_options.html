@@ -63,7 +63,7 @@
         <input type="hidden" name="book" value="{{ active_shelf.book.id }}">
         <input type="hidden" name="shelf" value="{{ active_shelf.shelf.id }}">
         <button class="button is-fullwidth is-small{% if dropdown %} is-radiusless{% endif %} is-danger is-light" type="submit">
-            {% blocktrans with name=active_shelf.shelf.name %}Remove from {{ name }}{% endblocktrans %}
+            {% blocktrans with name=active_shelf.shelf|translate_shelf_name %}Remove from {{ name }}{% endblocktrans %}
         </button>
     </form>
 </li>

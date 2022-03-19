@@ -1,7 +1,6 @@
 """ the good people stuff! the authors! """
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.paginator import Paginator
-from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
@@ -27,8 +26,8 @@ class Author(View):
             return ActivitypubResponse(author.to_activity())
 
         books = (
-            models.Work.objects.filter(Q(authors=author) | Q(editions__authors=author))
-            .order_by("-published_date")
+            models.Work.objects.filter(editions__authors=author)
+            .order_by("created_date")
             .distinct()
         )
 
