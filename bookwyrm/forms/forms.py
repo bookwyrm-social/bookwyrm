@@ -45,7 +45,7 @@ class ReportForm(CustomForm):
 
 class ReadThroughForm(CustomForm):
     def clean(self):
-        """make sure the email isn't in use by a registered user"""
+        """don't let readthroughs end before they start"""
         cleaned_data = super().clean()
         start_date = cleaned_data.get("start_date")
         finish_date = cleaned_data.get("finish_date")
