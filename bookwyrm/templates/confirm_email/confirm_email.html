@@ -29,9 +29,16 @@
             </section>
 
             <section class="block">
-                {% trans "Can't find your code?" as button_text %}
-                {% include "snippets/toggle/open_button.html" with text=button_text controls_text="resend_form" focus="resend_form_header" %}
-                {% include "confirm_email/resend_form.html" with controls_text="resend_form" %}
+                <form name="fallback" method="GET" action="{% url 'resend-link' %}" autocomplete="off">
+                    <button
+                        type="submit"
+                        class="button"
+                        data-modal-open="resend_form"
+                    >
+                        {% trans "Can't find your code?" %}
+                    </button>
+                </form>
+                {% include "confirm_email/resend_modal.html" with id="resend_form" %}
             </section>
         </div>
     </div>

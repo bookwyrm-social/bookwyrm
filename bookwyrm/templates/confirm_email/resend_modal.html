@@ -1,0 +1,44 @@
+{% extends "components/modal.html" %}
+{% load i18n %}
+
+{% block modal-title %}
+{% trans "Resend confirmation link" %}
+{% endblock %}
+
+{% block modal-form-open %}
+<form name="resend" method="post" action="{% url 'resend-link' %}">
+{% endblock %}
+
+{% block modal-body %}
+{% csrf_token %}
+<div class="field">
+    <label class="label" for="email">{% trans "Email address:" %}</label>
+    <div class="control">
+        <input
+            type="email"
+            name="email"
+            class="input"
+            id="email"
+            aria-described-by="id_email_errors"
+            required
+        >
+        {% if error %}
+        <div id="id_email_errors">
+            <p class="help is-danger">
+                {% trans "No user matching this email address found." %}
+            </p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block modal-footer %}
+    <div class="control">
+        <button class="button is-link">{% trans "Resend link" %}</button>
+    </div>
+{% endblock %}
+
+{% block modal-form-close %}
+</form>
+{% endblock %}
