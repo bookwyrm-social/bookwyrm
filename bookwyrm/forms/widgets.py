@@ -1,8 +1,10 @@
 """ using django model forms """
 from django import forms
 
+
 class ArrayWidget(forms.widgets.TextInput):
     """Inputs for postgres array fields"""
+
     # pylint: disable=unused-argument
     # pylint: disable=no-self-use
     def value_from_datadict(self, data, files, name):
@@ -12,6 +14,7 @@ class ArrayWidget(forms.widgets.TextInput):
 
 class Select(forms.Select):
     """custom template for select widget"""
+
     template_name = "widgets/select.html"
 
 
@@ -19,6 +22,7 @@ class SelectDateWidget(forms.SelectDateWidget):
     """
     A widget that splits date input into two <select> boxes and a numerical year.
     """
+
     template_name = "widgets/addon_multiwidget.html"
     select_widget = Select
 
@@ -33,7 +37,7 @@ class SelectDateWidget(forms.SelectDateWidget):
             attrs={
                 **context["widget"]["attrs"],
                 "id": f"id_{year_name}",
-                "class": "input"
+                "class": "input",
             },
         )
         month_choices = list(self.months.items())
