@@ -1,13 +1,11 @@
 """ the good stuff! the books! """
 from re import sub, findall
-from dateutil.parser import parse as dateparse
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.postgres.search import SearchRank, SearchVector
 from django.db import transaction
 from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
-from django.utils.datastructures import MultiValueDictKeyError
 from django.utils.decorators import method_decorator
 from django.views.decorators.http import require_POST
 from django.views import View
@@ -52,7 +50,6 @@ class EditBook(View):
 
         # either of the above cases requires additional confirmation
         if data.get("add_author"):
-            data = copy_form(data)
             return TemplateResponse(request, "book/edit/edit_book.html", data)
 
         remove_authors = request.POST.getlist("remove_authors")
@@ -118,7 +115,6 @@ class CreateBook(View):
 
         # go to confirm mode
         if not parent_work_id or data.get("add_author"):
-            data = copy_form(data)
             return TemplateResponse(request, "book/edit/edit_book.html", data)
 
         with transaction.atomic():
@@ -137,21 +133,6 @@ class CreateBook(View):
 
             book.save()
         return redirect(f"/book/{book.id}")
-
-
-def copy_form(data):
-    """helper to re-create the date fields in the form"""
-    formcopy = data["form"].data.copy()
-    try:
-        formcopy["first_published_date"] = dateparse(formcopy["first_published_date"])
-    except (MultiValueDictKeyError, ValueError):
-        pass
-    try:
-        formcopy["published_date"] = dateparse(formcopy["published_date"])
-    except (MultiValueDictKeyError, ValueError):
-        pass
-    data["form"].data = formcopy
-    return data
 
 
 def add_authors(request, data):
