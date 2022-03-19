@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-03-17 16:15+0000\n"
-"PO-Revision-Date: 2022-03-17 17:06\n"
+"PO-Revision-Date: 2022-03-19 07:21\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Chinese Simplified\n"
 "Language: zh\n"
@@ -778,7 +778,7 @@ msgstr "确认"
 
 #: bookwyrm/templates/book/book.html:19
 msgid "Unable to connect to remote source."
-msgstr ""
+msgstr "无法联系远程资源。"
 
 #: bookwyrm/templates/book/book.html:64 bookwyrm/templates/book/book.html:65
 msgid "Edit Book"
@@ -816,7 +816,7 @@ msgstr "描述:"
 #, python-format
 msgid "%(count)s edition"
 msgid_plural "%(count)s editions"
-msgstr[0] ""
+msgstr[0] "%(count)s 版次"
 
 #: bookwyrm/templates/book/book.html:228
 msgid "You have shelved this edition in:"
@@ -999,19 +999,19 @@ msgstr "语言:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:86
 msgid "Subjects:"
-msgstr ""
+msgstr "主题："
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:90
 msgid "Add subject"
-msgstr ""
+msgstr "添加主题"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:108
 msgid "Remove subject"
-msgstr ""
+msgstr "移除主题"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:131
 msgid "Add Another Subject"
-msgstr ""
+msgstr "添加新用户"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:139
 msgid "Publication"
@@ -1111,11 +1111,11 @@ msgstr "<a href=\"%(work_path)s\">《%(work_title)s》</a> 的各版本"
 
 #: bookwyrm/templates/book/editions/editions.html:55
 msgid "Can't find the edition you're looking for?"
-msgstr ""
+msgstr "找不到你想找的版次？"
 
 #: bookwyrm/templates/book/editions/editions.html:75
 msgid "Add another edition"
-msgstr ""
+msgstr "新增其它版次"
 
 #: bookwyrm/templates/book/editions/format_filter.html:9
 #: bookwyrm/templates/book/editions/language_filter.html:9
@@ -1160,7 +1160,7 @@ msgstr "编辑链接"
 #: bookwyrm/templates/book/file_links/edit_links.html:11
 #, python-format
 msgid "Links for \"<em>%(title)s</em>\""
-msgstr ""
+msgstr "\"<em>%(title)s</em>\"的链接"
 
 #: bookwyrm/templates/book/file_links/edit_links.html:32
 #: bookwyrm/templates/settings/link_domains/link_table.html:6
@@ -2249,7 +2249,7 @@ msgstr "搜索书籍、用户或列表"
 
 #: bookwyrm/templates/layout.html:61 bookwyrm/templates/layout.html:62
 msgid "Scan Barcode"
-msgstr ""
+msgstr "扫描条形码"
 
 #: bookwyrm/templates/layout.html:72
 msgid "Main navigation menu"
@@ -3038,38 +3038,40 @@ msgstr "报告"
 msgid "\n"
 "        Scan Barcode\n"
 "    "
-msgstr ""
+msgstr "\n"
+"        扫描条码\n"
+"    "
 
 #: bookwyrm/templates/search/barcode_modal.html:23
 msgid "Requesting camera..."
-msgstr ""
+msgstr "正在启用摄像头..."
 
 #: bookwyrm/templates/search/barcode_modal.html:24
 msgid "Grant access to the camera to scan a book's barcode."
-msgstr ""
+msgstr "允许访问相机以扫描书条码。"
 
 #: bookwyrm/templates/search/barcode_modal.html:29
 msgid "Could not access camera"
-msgstr ""
+msgstr "无法使用摄像头"
 
 #: bookwyrm/templates/search/barcode_modal.html:33
 msgctxt "barcode scanner"
 msgid "Scanning..."
-msgstr ""
+msgstr "正在扫描..."
 
 #: bookwyrm/templates/search/barcode_modal.html:34
 msgid "Align your book's barcode with the camera."
-msgstr ""
+msgstr "使您的书条码与相机对齐。"
 
 #: bookwyrm/templates/search/barcode_modal.html:38
 msgctxt "barcode scanner"
 msgid "ISBN scanned"
-msgstr ""
+msgstr "ISBN 扫描"
 
 #: bookwyrm/templates/search/barcode_modal.html:39
 msgctxt "followed by ISBN"
 msgid "Searching for book:"
-msgstr ""
+msgstr "搜索书目："
 
 #: bookwyrm/templates/search/book.html:44
 msgid "Results from"
@@ -3237,36 +3239,36 @@ msgstr "已经报告的用户或状态（无论举报是否得到解决）将不
 
 #: bookwyrm/templates/settings/automod/rules.html:26
 msgid "Schedule:"
-msgstr ""
+msgstr "定时计划："
 
 #: bookwyrm/templates/settings/automod/rules.html:33
 msgid "Last run:"
-msgstr ""
+msgstr "上次运行："
 
 #: bookwyrm/templates/settings/automod/rules.html:40
 msgid "Total run count:"
-msgstr ""
+msgstr "行数总计："
 
 #: bookwyrm/templates/settings/automod/rules.html:47
 msgid "Enabled:"
-msgstr ""
+msgstr "已启用："
 
 #: bookwyrm/templates/settings/automod/rules.html:59
 msgid "Delete schedule"
-msgstr ""
+msgstr "删除定时计划"
 
 #: bookwyrm/templates/settings/automod/rules.html:63
 msgid "Run now"
-msgstr ""
+msgstr "立即运行"
 
 #: bookwyrm/templates/settings/automod/rules.html:64
 msgid "Last run date will not be updated"
-msgstr ""
+msgstr "最后运行日期将不会被更新"
 
 #: bookwyrm/templates/settings/automod/rules.html:69
 #: bookwyrm/templates/settings/automod/rules.html:92
 msgid "Schedule scan"
-msgstr ""
+msgstr "定时扫描"
 
 #: bookwyrm/templates/settings/automod/rules.html:101
 msgid "Successfully added rule"
@@ -3599,7 +3601,7 @@ msgstr "邮箱"
 
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:44
 msgid "Answer"
-msgstr ""
+msgstr "答案"
 
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:50
 msgid "Action"
@@ -3977,11 +3979,11 @@ msgstr "允许请求邀请"
 
 #: bookwyrm/templates/settings/site.html:151
 msgid "Set a question for invite requests"
-msgstr ""
+msgstr "设置一个邀请请求问题"
 
 #: bookwyrm/templates/settings/site.html:156
 msgid "Question:"
-msgstr ""
+msgstr "问题："
 
 #: bookwyrm/templates/settings/site.html:163
 msgid "Require users to confirm email address"
@@ -4017,7 +4019,7 @@ msgstr "从命令行将主题文件复制到您服务器上的 <code>bookwym/sta
 
 #: bookwyrm/templates/settings/themes.html:32
 msgid "Run <code>./bw-dev collectstatic</code>."
-msgstr ""
+msgstr "运行 <code>./bw-dev collectstatic</code>。"
 
 #: bookwyrm/templates/settings/themes.html:35
 msgid "Add the file name using the form below to make it available in the application interface."
@@ -4598,7 +4600,7 @@ msgstr "设置目标"
 #: bookwyrm/templates/snippets/goal_progress.html:7
 msgctxt "Goal successfully completed"
 msgid "Success!"
-msgstr ""
+msgstr "成功！"
 
 #: bookwyrm/templates/snippets/goal_progress.html:9
 #, python-format
