@@ -370,6 +370,8 @@ urlpatterns = [
         views.delete_import_item,
         name="import-delete",
     ),
+    # export
+    re_path(r"^export/?$", views.export_user_book_data, name="export"),
     # users
     re_path(rf"{USER_PATH}\.json$", views.User.as_view()),
     re_path(rf"{USER_PATH}/?$", views.User.as_view(), name="user-feed"),

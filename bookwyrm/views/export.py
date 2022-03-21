@@ -3,7 +3,7 @@ import csv
 
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
-from django.http import StreamingHttpResponse
+from django.http import StreamingHttpResponse, JsonResponse
 from django.views.decorators.http import require_GET
 
 from bookwyrm import models
@@ -40,6 +40,7 @@ def export_user_book_data(request):
 
     pseudo_buffer = Echo()
     writer = csv.writer(pseudo_buffer)
+    # for testing: return JsonResponse(list(generator), safe=False)
     return StreamingHttpResponse(
         (writer.writerow(row) for row in generator),
         content_type="text/csv",
@@ -54,7 +55,7 @@ def csv_row_generator(books):
         for f in models.Edition._meta.get_fields()  # pylint: disable=protected-access
         if getattr(f, "deduplication_field", False)
     ]
-    fields = ["title"] + deduplication_fields
+    fields = ["title"] + deduplication_fields + ["author_text"]
     yield fields
     for book in books:
         yield [getattr(book, field, "") or "" for field in fields]
