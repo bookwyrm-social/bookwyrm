@@ -52,7 +52,8 @@ from .books.links import BookFileLinks, AddFileLink, delete_link
 from .landing.about import about, privacy, conduct
 from .landing.landing import Home, Landing
 from .landing.login import Login, Logout
-from .landing.register import Register, ConfirmEmail, ConfirmEmailCode, resend_link
+from .landing.register import Register
+from .landing.register import ConfirmEmail, ConfirmEmailCode, ResendConfirmEmail
 from .landing.password import PasswordResetRequest, PasswordReset
 
 # shelves

@@ -71,7 +71,7 @@ urlpatterns = [
         views.ConfirmEmailCode.as_view(),
         name="confirm-email-code",
     ),
-    re_path(r"^resend-link/?$", views.resend_link, name="resend-link"),
+    re_path(r"^resend-link/?$", views.ResendConfirmEmail.as_view(), name="resend-link"),
     re_path(r"^logout/?$", views.Logout.as_view(), name="logout"),
     re_path(
         r"^password-reset/?$",
