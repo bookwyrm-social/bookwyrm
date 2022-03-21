@@ -36,11 +36,12 @@ def export_user_book_data(request):
         .distinct()
     )
 
-    generator = csv_row_generator(data)
+    generator = csv_row_generator(data, request.user)
 
     pseudo_buffer = Echo()
     writer = csv.writer(pseudo_buffer)
-    # for testing: return JsonResponse(list(generator), safe=False)
+    # for testing:
+    return JsonResponse(list(generator), safe=False)
     return StreamingHttpResponse(
         (writer.writerow(row) for row in generator),
         content_type="text/csv",
@@ -48,14 +49,18 @@ def export_user_book_data(request):
     )
 
 
-def csv_row_generator(books):
+def csv_row_generator(books, user):
     """generate a csv entry for the user's book"""
     deduplication_fields = [
         f.name
         for f in models.Edition._meta.get_fields()  # pylint: disable=protected-access
         if getattr(f, "deduplication_field", False)
     ]
-    fields = ["title"] + deduplication_fields + ["author_text"]
+    fields = ["title", "author_text"] + deduplication_fields + ["rating"]
     yield fields
     for book in books:
+        review = models.Review.objects.filter(
+            user=user, book=book, rating__isnull=False
+        ).first()
+        book.rating = review.rating if review else None
         yield [getattr(book, field, "") or "" for field in fields]
