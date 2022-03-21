@@ -41,7 +41,7 @@ def export_user_book_data(request):
     pseudo_buffer = Echo()
     writer = csv.writer(pseudo_buffer)
     # for testing:
-    return JsonResponse(list(generator), safe=False)
+    # return JsonResponse(list(generator), safe=False)
     return StreamingHttpResponse(
         (writer.writerow(row) for row in generator),
         content_type="text/csv",
@@ -56,11 +56,25 @@ def csv_row_generator(books, user):
         for f in models.Edition._meta.get_fields()  # pylint: disable=protected-access
         if getattr(f, "deduplication_field", False)
     ]
-    fields = ["title", "author_text"] + deduplication_fields + ["rating"]
+    fields = (
+        ["title", "author_text"]
+        + deduplication_fields
+        + ["rating", "review_name", "review_cw", "review_content"]
+    )
     yield fields
     for book in books:
-        review = models.Review.objects.filter(
+        # I think this is more efficient than doing a subquery in the view? but idk
+        review_rating = models.Review.objects.filter(
             user=user, book=book, rating__isnull=False
-        ).first()
-        book.rating = review.rating if review else None
+        ).order_by("-published_date").first()
+
+        book.rating = review_rating.rating if review_rating else None
+
+        review = models.Review.objects.filter(
+            user=user, book=book, content__isnull=False
+        ).order_by("-published_date").first()
+        if review:
+            book.review_name = review.name
+            book.review_cw = review.content_warning
+            book.review_content = review.raw_content
         yield [getattr(book, field, "") or "" for field in fields]
