@@ -67,7 +67,7 @@
 <div class="content block">
     <h2 class="title">{% trans "Recent Imports" %}</h2>
     {% if not jobs %}
-    <p>{% trans "No recent imports" %}</p>
+    <p><em>{% trans "No recent imports" %}</em></p>
     {% endif %}
     <ul>
         {% for job in jobs %}
