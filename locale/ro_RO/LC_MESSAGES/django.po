@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-03-17 16:15+0000\n"
-"PO-Revision-Date: 2022-03-17 17:07\n"
+"PO-Revision-Date: 2022-03-22 10:05\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Romanian\n"
 "Language: ro\n"
@@ -828,7 +828,7 @@ msgid "%(count)s edition"
 msgid_plural "%(count)s editions"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
+msgstr[2] "%(count)s ediții"
 
 #: bookwyrm/templates/book/book.html:228
 msgid "You have shelved this edition in:"
@@ -1015,15 +1015,15 @@ msgstr "Subiecte:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:90
 msgid "Add subject"
-msgstr ""
+msgstr "Adăugați subiect"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:108
 msgid "Remove subject"
-msgstr ""
+msgstr "Înlăturați subiect"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:131
 msgid "Add Another Subject"
-msgstr ""
+msgstr "Adăugați un alt subiect"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:139
 msgid "Publication"
@@ -1123,11 +1123,11 @@ msgstr "Ediții ale <a href=\"%(work_path)s\">%(work_title)s</a>"
 
 #: bookwyrm/templates/book/editions/editions.html:55
 msgid "Can't find the edition you're looking for?"
-msgstr ""
+msgstr "Nu găsiți ediția pe care o căutați?"
 
 #: bookwyrm/templates/book/editions/editions.html:75
 msgid "Add another edition"
-msgstr ""
+msgstr "Adăugați o altă ediție"
 
 #: bookwyrm/templates/book/editions/format_filter.html:9
 #: bookwyrm/templates/book/editions/language_filter.html:9
@@ -1172,7 +1172,7 @@ msgstr "Editați legături"
 #: bookwyrm/templates/book/file_links/edit_links.html:11
 #, python-format
 msgid "Links for \"<em>%(title)s</em>\""
-msgstr ""
+msgstr "Legături pentru „<em>%(title)s</em>”"
 
 #: bookwyrm/templates/book/file_links/edit_links.html:32
 #: bookwyrm/templates/settings/link_domains/link_table.html:6
@@ -2332,205 +2332,205 @@ msgstr "Susțineți %(site_name)s la <a href=\"%(support_link)s\" target=\"_blan
 
 #: bookwyrm/templates/layout.html:257
 msgid "BookWyrm's source code is freely available. You can contribute or report issues on <a href=\"https://github.com/mouse-reeve/bookwyrm\">GitHub</a>."
-msgstr ""
+msgstr "Codul sursă a lui BookWyrm este disponibil gratuit. Puteți contribui sau raporta probleme la <a href=\"https://github.com/mouse-reeve/bookwyrm\">GitHub</a>."
 
 #: bookwyrm/templates/lists/add_item_modal.html:8
 #, python-format
 msgid "Add \"<em>%(title)s</em>\" to this list"
-msgstr ""
+msgstr "Adăugați „<em>%(title)s</em>” la listă"
 
 #: bookwyrm/templates/lists/add_item_modal.html:12
 #, python-format
 msgid "Suggest \"<em>%(title)s</em>\" for this list"
-msgstr ""
+msgstr "Sugerați „<em>%(title)s</em>” pentru această listă"
 
 #: bookwyrm/templates/lists/add_item_modal.html:41
 #: bookwyrm/templates/lists/list.html:257
 msgid "Suggest"
-msgstr ""
+msgstr "Sugerați"
 
 #: bookwyrm/templates/lists/bookmark_button.html:30
 msgid "Un-save"
-msgstr ""
+msgstr "Revocați salvarea"
 
 #: bookwyrm/templates/lists/created_text.html:5
 #, python-format
 msgid "Created by <a href=\"%(userpath)s\">%(username)s</a> and managed by <a href=\"%(grouppath)s\">%(groupname)s</a>"
-msgstr ""
+msgstr "Creat de <a href=\"%(userpath)s\">%(username)s</a> și gestionat de <a href=\"%(grouppath)s\">%(groupname)s</a>"
 
 #: bookwyrm/templates/lists/created_text.html:7
 #, python-format
 msgid "Created and curated by <a href=\"%(path)s\">%(username)s</a>"
-msgstr ""
+msgstr "Creat și moderat de <a href=\"%(path)s\">%(username)s</a>"
 
 #: bookwyrm/templates/lists/created_text.html:9
 #, python-format
 msgid "Created by <a href=\"%(path)s\">%(username)s</a>"
-msgstr ""
+msgstr "Creat de <a href=\"%(path)s\">%(username)s</a>"
 
 #: bookwyrm/templates/lists/curate.html:12
 msgid "Curate"
-msgstr ""
+msgstr "Organizați"
 
 #: bookwyrm/templates/lists/curate.html:21
 msgid "Pending Books"
-msgstr ""
+msgstr "Cărți în așteptare"
 
 #: bookwyrm/templates/lists/curate.html:24
 msgid "You're all set!"
-msgstr ""
+msgstr "Totul este gata!"
 
 #: bookwyrm/templates/lists/curate.html:45
 #: bookwyrm/templates/lists/list.html:93
 #, python-format
 msgid "<a href=\"%(user_path)s\">%(username)s</a> says:"
-msgstr ""
+msgstr "<a href=\"%(user_path)s\">%(username)s</a> spune:"
 
 #: bookwyrm/templates/lists/curate.html:55
 msgid "Suggested by"
-msgstr ""
+msgstr "Sugerat de"
 
 #: bookwyrm/templates/lists/curate.html:77
 msgid "Discard"
-msgstr ""
+msgstr "Renunțați"
 
 #: bookwyrm/templates/lists/delete_list_modal.html:4
 msgid "Delete this list?"
-msgstr ""
+msgstr "Ștergeți această listă?"
 
 #: bookwyrm/templates/lists/edit_form.html:5
 #: bookwyrm/templates/lists/layout.html:17
 msgid "Edit List"
-msgstr ""
+msgstr "Editați listă"
 
 #: bookwyrm/templates/lists/embed-list.html:8
 #, python-format
 msgid "%(list_name)s, a list by %(owner)s"
-msgstr ""
+msgstr "%(list_name)s, o listă de %(owner)s"
 
 #: bookwyrm/templates/lists/embed-list.html:18
 #, python-format
 msgid "on <a href=\"/\">%(site_name)s</a>"
-msgstr ""
+msgstr "în <a href=\"/\">%(site_name)s</a>"
 
 #: bookwyrm/templates/lists/embed-list.html:27
 #: bookwyrm/templates/lists/list.html:54
 msgid "This list is currently empty"
-msgstr ""
+msgstr "Această listă este momentan vidă"
 
 #: bookwyrm/templates/lists/form.html:19
 msgid "List curation:"
-msgstr ""
+msgstr "Organizați listă:"
 
 #: bookwyrm/templates/lists/form.html:31
 msgid "Closed"
-msgstr ""
+msgstr "Închis"
 
 #: bookwyrm/templates/lists/form.html:34
 msgid "Only you can add and remove books to this list"
-msgstr ""
+msgstr "Doar dvs. puteți adăuga sau înlătura cărți din această listă"
 
 #: bookwyrm/templates/lists/form.html:48
 msgid "Curated"
-msgstr ""
+msgstr "Modificată"
 
 #: bookwyrm/templates/lists/form.html:51
 msgid "Anyone can suggest books, subject to your approval"
-msgstr ""
+msgstr "Oricine poate sugera cărți, dvs. trebuie să le acceptați"
 
 #: bookwyrm/templates/lists/form.html:65
 msgctxt "curation type"
 msgid "Open"
-msgstr ""
+msgstr "Deschis"
 
 #: bookwyrm/templates/lists/form.html:68
 msgid "Anyone can add books to this list"
-msgstr ""
+msgstr "Oricine poate adăuga cărți la această listă"
 
 #: bookwyrm/templates/lists/form.html:82
 msgid "Group"
-msgstr ""
+msgstr "Grup"
 
 #: bookwyrm/templates/lists/form.html:85
 msgid "Group members can add to and remove from this list"
-msgstr ""
+msgstr "Membrii grupului pot adăuga sau înlătura din această listă"
 
 #: bookwyrm/templates/lists/form.html:90
 msgid "Select Group"
-msgstr ""
+msgstr "Selectați grup"
 
 #: bookwyrm/templates/lists/form.html:94
 msgid "Select a group"
-msgstr ""
+msgstr "Selectați un grup"
 
 #: bookwyrm/templates/lists/form.html:105
 msgid "You don't have any Groups yet!"
-msgstr ""
+msgstr "Nu aveți încă un grup!"
 
 #: bookwyrm/templates/lists/form.html:107
 msgid "Create a Group"
-msgstr ""
+msgstr "Creați un grup"
 
 #: bookwyrm/templates/lists/form.html:121
 msgid "Delete list"
-msgstr ""
+msgstr "Ștergeți listă"
 
 #: bookwyrm/templates/lists/item_notes_field.html:7
 #: bookwyrm/templates/settings/federation/edit_instance.html:86
 msgid "Notes:"
-msgstr ""
+msgstr "Note:"
 
 #: bookwyrm/templates/lists/item_notes_field.html:19
 msgid "An optional note that will be displayed with the book."
-msgstr ""
+msgstr "O notă opțională poate fi afișată cu cartea."
 
 #: bookwyrm/templates/lists/list.html:37
 msgid "That book is already on this list."
-msgstr ""
+msgstr "Cartea aceasta este deja pe listă."
 
 #: bookwyrm/templates/lists/list.html:45
 msgid "You successfully suggested a book for this list!"
-msgstr ""
+msgstr "Ați sugerat cu succes o carte pentru această listă!"
 
 #: bookwyrm/templates/lists/list.html:47
 msgid "You successfully added a book to this list!"
-msgstr ""
+msgstr "Ați adăugat cu succes o carte la această listă!"
 
 #: bookwyrm/templates/lists/list.html:104
 msgid "Edit notes"
-msgstr ""
+msgstr "Editați note"
 
 #: bookwyrm/templates/lists/list.html:119
 msgid "Add notes"
-msgstr ""
+msgstr "Adăugați notă"
 
 #: bookwyrm/templates/lists/list.html:131
 #, python-format
 msgid "Added by <a href=\"%(user_path)s\">%(username)s</a>"
-msgstr ""
+msgstr "Adăugat de <a href=\"%(user_path)s\">%(username)s</a>"
 
 #: bookwyrm/templates/lists/list.html:146
 msgid "List position"
-msgstr ""
+msgstr "Poziția listei"
 
 #: bookwyrm/templates/lists/list.html:152
 #: bookwyrm/templates/settings/link_domains/edit_domain_modal.html:23
 msgid "Set"
-msgstr ""
+msgstr "Stabiliți"
 
 #: bookwyrm/templates/lists/list.html:167
 #: bookwyrm/templates/snippets/remove_from_group_button.html:20
 msgid "Remove"
-msgstr ""
+msgstr "Înlăturați"
 
 #: bookwyrm/templates/lists/list.html:181
 #: bookwyrm/templates/lists/list.html:198
 msgid "Sort List"
-msgstr ""
+msgstr "Sortați listă"
 
 #: bookwyrm/templates/lists/list.html:191
 msgid "Direction"
-msgstr ""
+msgstr "Direcție"
 
 #: bookwyrm/templates/lists/list.html:205
 msgid "Add Books"
@@ -2769,63 +2769,63 @@ msgstr "<strong>%(account)s</strong> nu a putut fi găsit sau <code>%(remote_dom
 #: bookwyrm/templates/ostatus/error.html:17
 #, python-format
 msgid "<strong>%(account)s</strong> was found but <code>%(remote_domain)s</code> does not support 'remote follow'"
-msgstr ""
+msgstr "<strong>%(account)s</strong> a fost găsit dar <code>%(remote_domain)s</code> nu suportă „urmărirea la distanță”"
 
 #: bookwyrm/templates/ostatus/error.html:18
 #, python-format
 msgid "Try searching for <strong>%(user)s</strong> on <code>%(remote_domain)s</code> instead"
-msgstr ""
+msgstr "Încercați în schimb să căutați <strong>%(user)s</strong> la <code>%(remote_domain)s</code>"
 
 #: bookwyrm/templates/ostatus/error.html:46
 #, python-format
 msgid "Something went wrong trying to follow <strong>%(account)s</strong>"
-msgstr ""
+msgstr "Ceva nu a funcționat încercând să urmăriți <strong>%(account)s</strong>"
 
 #: bookwyrm/templates/ostatus/error.html:47
 msgid "Check you have the correct username before trying again."
-msgstr ""
+msgstr "Verificați că numele de utilizator este corect înainte de a încerca din nou."
 
 #: bookwyrm/templates/ostatus/error.html:51
 #, python-format
 msgid "You have blocked <strong>%(account)s</strong>"
-msgstr ""
+msgstr "Ați blocat <strong>%(account)s</strong>"
 
 #: bookwyrm/templates/ostatus/error.html:55
 #, python-format
 msgid "<strong>%(account)s</strong> has blocked you"
-msgstr ""
+msgstr "<strong>%(account)s</strong> v-a blocat"
 
 #: bookwyrm/templates/ostatus/error.html:59
 #, python-format
 msgid "You are already following <strong>%(account)s</strong>"
-msgstr ""
+msgstr "Îl urmăriți deja pe <strong>%(account)s</strong>"
 
 #: bookwyrm/templates/ostatus/error.html:63
 #, python-format
 msgid "You have already requested to follow <strong>%(account)s</strong>"
-msgstr ""
+msgstr "Ați solicitat deja să-l urmăriți pe <strong>%(account)s</strong>"
 
 #: bookwyrm/templates/ostatus/remote_follow.html:6
 #, python-format
 msgid "Follow %(username)s on the fediverse"
-msgstr ""
+msgstr "Urmăriți %(username)s pe Fediverse"
 
 #: bookwyrm/templates/ostatus/remote_follow.html:33
 #, python-format
 msgid "Follow %(username)s from another Fediverse account like BookWyrm, Mastodon, or Pleroma."
-msgstr ""
+msgstr "Urmăriți %(username)s cu un alt cont Fediverse precum BookWyrm, Mastodon sau Pleroma."
 
 #: bookwyrm/templates/ostatus/remote_follow.html:40
 msgid "User handle to follow from:"
-msgstr ""
+msgstr "Cont cu care să-l urmăriți:"
 
 #: bookwyrm/templates/ostatus/remote_follow.html:42
 msgid "Follow!"
-msgstr ""
+msgstr "Urmăriți!"
 
 #: bookwyrm/templates/ostatus/remote_follow_button.html:8
 msgid "Follow on Fediverse"
-msgstr ""
+msgstr "Urmăriți pe Fediverse"
 
 #: bookwyrm/templates/ostatus/remote_follow_button.html:12
 msgid "This link opens in a pop-up window"
@@ -2994,25 +2994,25 @@ msgstr ""
 #: bookwyrm/templates/readthrough/delete_readthrough_modal.html:8
 #, python-format
 msgid "You are deleting this readthrough and its %(count)s associated progress updates."
-msgstr ""
+msgstr "Sunteți pe cale de a șterge acest rezumat și %(count)s actualizări asociate progresului."
 
 #: bookwyrm/templates/readthrough/readthrough.html:6
 #: bookwyrm/templates/readthrough/readthrough_modal.html:8
 #, python-format
 msgid "Update read dates for \"<em>%(title)s</em>\""
-msgstr ""
+msgstr "Actualizați datele de lectură pentru „<em>%(title)s</em>”"
 
 #: bookwyrm/templates/readthrough/readthrough_form.html:10
 #: bookwyrm/templates/readthrough/readthrough_modal.html:31
 #: bookwyrm/templates/snippets/reading_modals/finish_reading_modal.html:24
 #: bookwyrm/templates/snippets/reading_modals/start_reading_modal.html:21
 msgid "Started reading"
-msgstr ""
+msgstr "A început lectura"
 
 #: bookwyrm/templates/readthrough/readthrough_form.html:18
 #: bookwyrm/templates/readthrough/readthrough_modal.html:49
 msgid "Progress"
-msgstr ""
+msgstr "Progres"
 
 #: bookwyrm/templates/readthrough/readthrough_form.html:24
 #: bookwyrm/templates/readthrough/readthrough_modal.html:56
@@ -3062,38 +3062,39 @@ msgstr "Raportați"
 msgid "\n"
 "        Scan Barcode\n"
 "    "
-msgstr ""
+msgstr "\n"
+"Scanați codul de bare    "
 
 #: bookwyrm/templates/search/barcode_modal.html:23
 msgid "Requesting camera..."
-msgstr ""
+msgstr "În așteptarea camerei foto..."
 
 #: bookwyrm/templates/search/barcode_modal.html:24
 msgid "Grant access to the camera to scan a book's barcode."
-msgstr ""
+msgstr "Acordați acces camerei foto pentru a scana codul de bare al cărții."
 
 #: bookwyrm/templates/search/barcode_modal.html:29
 msgid "Could not access camera"
-msgstr ""
+msgstr "Camera foto nu a putut fi accesată"
 
 #: bookwyrm/templates/search/barcode_modal.html:33
 msgctxt "barcode scanner"
 msgid "Scanning..."
-msgstr ""
+msgstr "Se scanează..."
 
 #: bookwyrm/templates/search/barcode_modal.html:34
 msgid "Align your book's barcode with the camera."
-msgstr ""
+msgstr "Poziționați codul de bare al cărții în fața camerei foto."
 
 #: bookwyrm/templates/search/barcode_modal.html:38
 msgctxt "barcode scanner"
 msgid "ISBN scanned"
-msgstr ""
+msgstr "Cod ISBN scanat"
 
 #: bookwyrm/templates/search/barcode_modal.html:39
 msgctxt "followed by ISBN"
 msgid "Searching for book:"
-msgstr ""
+msgstr "Căutați o carte:"
 
 #: bookwyrm/templates/search/book.html:44
 msgid "Results from"
@@ -3249,7 +3250,7 @@ msgstr "Culoare:"
 #: bookwyrm/templates/settings/automod/rules.html:11
 #: bookwyrm/templates/settings/layout.html:61
 msgid "Auto-moderation rules"
-msgstr ""
+msgstr "Reguli de auto-moderare"
 
 #: bookwyrm/templates/settings/automod/rules.html:18
 msgid "Auto-moderation rules will create reports for any local user or status with fields matching the provided string."
