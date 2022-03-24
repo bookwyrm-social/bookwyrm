@@ -133,7 +133,9 @@ class UserFollowRequest(ActivitypubMixin, UserRelationship):
                 user_object=self.user_subject,
             )
         ).exists():
-            raise IntegrityError()
+            raise IntegrityError(
+                "Attempting to follow blocked user", self.user_subject, self.user_object
+            )
         super().save(*args, **kwargs)
 
         if broadcast and self.user_subject.local and not self.user_object.local:

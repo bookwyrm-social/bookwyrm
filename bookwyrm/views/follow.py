@@ -2,7 +2,6 @@
 import urllib.parse
 import re
 from django.contrib.auth.decorators import login_required
-from django.db import IntegrityError
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.views.decorators.http import require_POST
@@ -23,16 +22,14 @@ def follow(request):
     username = request.POST["user"]
     to_follow = get_user_from_username(request.user, username)
 
-    try:
-        models.UserFollowRequest.objects.create(
-            user_subject=request.user,
-            user_object=to_follow,
-        )
-    except IntegrityError:
-        pass
-
-    if request.GET.get("next"):
-        return redirect(request.GET.get("next", "/"))
+    follow_request, created = models.UserFollowRequest.objects.get_or_create(
+        user_subject=request.user,
+        user_object=to_follow,
+    )
+    if not created:
+        # this request probably failed to connect with the remote
+        # that means we should save to trigger a re-broadcast
+        follow_request.save()
 
     return redirect(to_follow.local_path)
 
