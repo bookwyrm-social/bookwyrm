@@ -115,9 +115,12 @@ class ListsStream(RedisStore):
 @receiver(signals.post_save, sender=models.List)
 # pylint: disable=unused-argument
 def add_list_on_create(sender, instance, created, *args, **kwargs):
-    """add newly created lists streamsstreams"""
+    """add newly created lists streams"""
     if not created:
+        # the privacy may have changed, so we need to re-do the whole thing
+        remove_list_task.delay(instance.id, re_add=True)
         return
+
     # when creating new things, gotta wait on the transaction
     transaction.on_commit(lambda: add_list_on_create_command(instance.id))
 
@@ -217,7 +220,7 @@ def populate_lists_task(user_id):
 
 
 @app.task(queue=MEDIUM)
-def remove_list_task(list_id):
+def remove_list_task(list_id, re_add=False):
     """remove a list from any stream it might be in"""
     stores = models.User.objects.filter(local=True, is_active=True).values_list(
         "id", flat=True
@@ -226,6 +229,9 @@ def remove_list_task(list_id):
     # delete for every store
     stores = [ListsStream().stream_id(idx) for idx in stores]
     ListsStream().remove_object_from_related_stores(list_id, stores=stores)
+
+    if re_add:
+        add_list_task.delay(list_id)
 
 
 @app.task(queue=HIGH)
