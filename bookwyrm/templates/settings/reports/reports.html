@@ -44,5 +44,6 @@
     {% endfor %}
 </div>
 
+{% include 'snippets/pagination.html' with page=reports path=request.path %}
 {% endblock %}
 

@@ -1,5 +1,6 @@
 """ moderation via flagged posts and users """
 from django.contrib.auth.decorators import login_required, permission_required
+from django.core.paginator import Paginator
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
@@ -7,6 +8,7 @@ from django.utils.decorators import method_decorator
 from django.views import View
 
 from bookwyrm import forms, models
+from bookwyrm.settings import PAGE_LENGTH
 
 
 # pylint: disable=no-self-use
@@ -34,10 +36,17 @@ class ReportsAdmin(View):
         if username:
             filters["user__username__icontains"] = username
         filters["resolved"] = resolved
+
+        reports = models.Report.objects.filter(**filters)
+        paginated = Paginator(reports, PAGE_LENGTH)
+        page = paginated.get_page(request.GET.get("page"))
         data = {
             "resolved": resolved,
             "server": server,
-            "reports": models.Report.objects.filter(**filters),
+            "reports": page,
+            "page_range": paginated.get_elided_page_range(
+                page.number, on_each_side=2, on_ends=1
+            ),
         }
         return TemplateResponse(request, "settings/reports/reports.html", data)
 
