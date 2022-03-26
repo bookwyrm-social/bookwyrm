@@ -21,7 +21,7 @@
         <p><a href="{{ user.remote_id }}">{{ user.username }}</a></p>
         <p>{% blocktrans with date=user.created_date|naturaltime %}Joined {{ date }}{% endblocktrans %}</p>
         <p>
-            {% if request.user.id == user.id %}
+            {% if request.user.id == user.id or admin_mode %}
 
                 <a href="{% url 'user-followers' user|username %}">{% blocktrans count counter=user.followers.count %}{{ counter }} follower{% plural %}{{ counter }} followers{% endblocktrans %}</a>,
                 <a href="{% url 'user-following' user|username %}">{% blocktrans with counter=user.following.count %}{{ counter }} following{% endblocktrans %}</a>
