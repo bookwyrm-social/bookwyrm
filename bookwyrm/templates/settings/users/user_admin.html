@@ -1,5 +1,7 @@
 {% extends 'settings/layout.html' %}
 {% load i18n %}
+{% load utilities %}
+
 {% block title %}{% trans "Users" %}{% endblock %}
 
 {% block header %}
@@ -15,46 +17,82 @@
 
 {% include 'settings/users/user_admin_filters.html' %}
 
-<table class="table is-striped">
-    <tr>
-        {% url 'settings-users' as url %}
-        <th>
-            {% trans "Username" as text %}
-            {% include 'snippets/table-sort-header.html' with field="username" sort=sort text=text %}
-        </th>
-        <th>
-            {% trans "Date Added" as text %}
-            {% include 'snippets/table-sort-header.html' with field="created_date" sort=sort text=text %}
-        </th>
-        <th>
-            {% trans "Last Active" as text %}
-            {% include 'snippets/table-sort-header.html' with field="last_active_date" sort=sort text=text %}
-        </th>
-        <th>
-            {% trans "Status" as text %}
-            {% include 'snippets/table-sort-header.html' with field="is_active" sort=sort text=text %}
-        </th>
-        <th>
-            {% trans "Remote instance" as text %}
-            {% include 'snippets/table-sort-header.html' with field="federated_server__server_name" sort=sort text=text %}
-        </th>
-    </tr>
-    {% for user in users %}
-    <tr>
-        <td><a href="{% url 'settings-user' user.id %}">{{ user.username }}</a></td>
-        <td>{{ user.created_date }}</td>
-        <td>{{ user.last_active_date }}</td>
-        <td>{% if user.is_active %}{% trans "Active" %}{% else %}{% trans "Inactive" %}{% endif %}</td>
-        <td>
-            {% if user.federated_server %}
-            <a href="{% url 'settings-federated-server' user.federated_server.id %}">{{ user.federated_server.server_name }}</a>
-            {% elif not user.local %}
-            <em>{% trans "Not set" %}</em>
+<div class="block">
+    <div class="tabs">
+        <ul>
+            {% url 'settings-users' as url %}
+            <li {% if request.path in url %}class="is-active" aria-current="page"{% endif %}>
+                <a href="{{ url }}">{% trans "Local users" %}</a>
+            </li>
+            {% url 'settings-users' status="federated" as url %}
+            <li {% if url in request.path %}class="is-active" aria-current="page"{% endif %}>
+                <a href="{{ url }}">{% trans "Federated community" %}</a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<div class="table-container block">
+    <table class="table is-striped is-fullwidth">
+        <tr>
+            {% url 'settings-users' as url %}
+            <th>
+                {% trans "Username" as text %}
+                {% include 'snippets/table-sort-header.html' with field="username" sort=sort text=text %}
+            </th>
+            <th>
+                {% trans "Date Added" as text %}
+                {% include 'snippets/table-sort-header.html' with field="created_date" sort=sort text=text %}
+            </th>
+            <th>
+                {% trans "Last Active" as text %}
+                {% include 'snippets/table-sort-header.html' with field="last_active_date" sort=sort text=text %}
+            </th>
+            <th>
+                {% trans "Status" as text %}
+                {% include 'snippets/table-sort-header.html' with field="is_active" sort=sort text=text %}
+            </th>
+            {% if status != "local" %}
+            <th>
+                {% trans "Remote instance" as text %}
+                {% include 'snippets/table-sort-header.html' with field="federated_server__server_name" sort=sort text=text %}
+            </th>
             {% endif %}
-        </td>
-    </tr>
-    {% endfor %}
-</table>
+        </tr>
+        {% for user in users %}
+        <tr>
+            <td class="overflow-wrap-anywhere">
+                <a href="{% url 'settings-user' user.id %}">{{ user|username }}</a>
+            </td>
+            <td>{{ user.created_date }}</td>
+            <td>{{ user.last_active_date }}</td>
+            <td>
+                {% if user.is_active %}
+                    <span class="tag is-success" aria-hidden="true">
+                        <span class="icon icon-check"></span>
+                    </span>
+                    {% trans "Active" %}
+                {% else %}
+                    <span class="tag is-warning" aria-hidden="true">
+                        <span class="icon icon-x"></span>
+                    </span>
+                    {% trans "Inactive" %}
+                    <span class="help">({{ user.get_deactivation_reason_display }})</span>
+                {% endif %}
+            </td>
+            {% if status != "local" %}
+            <td>
+                {% if user.federated_server %}
+                <a href="{% url 'settings-federated-server' user.federated_server.id %}">{{ user.federated_server.server_name }}</a>
+                {% else %}
+                <em>{% trans "Not set" %}</em>
+                {% endif %}
+            </td>
+            {% endif %}
+        </tr>
+        {% endfor %}
+    </table>
+</div>
 
 {% include 'snippets/pagination.html' with page=users path=request.path %}
 {% endblock %}

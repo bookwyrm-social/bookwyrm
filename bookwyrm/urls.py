@@ -36,9 +36,11 @@ urlpatterns = [
         TemplateView.as_view(template_name="robots.txt", content_type="text/plain"),
     ),
     # federation endpoints
-    re_path(r"^inbox/?$", views.Inbox.as_view()),
-    re_path(rf"{LOCAL_USER_PATH}/inbox/?$", views.Inbox.as_view()),
-    re_path(rf"{LOCAL_USER_PATH}/outbox/?$", views.Outbox.as_view()),
+    re_path(r"^inbox/?$", views.Inbox.as_view(), name="inbox"),
+    re_path(rf"{LOCAL_USER_PATH}/inbox/?$", views.Inbox.as_view(), name="user_inbox"),
+    re_path(
+        rf"{LOCAL_USER_PATH}/outbox/?$", views.Outbox.as_view(), name="user_outbox"
+    ),
     re_path(r"^\.well-known/webfinger/?$", views.webfinger),
     re_path(r"^\.well-known/nodeinfo/?$", views.nodeinfo_pointer),
     re_path(r"^\.well-known/host-meta/?$", views.host_meta),
@@ -48,10 +50,19 @@ urlpatterns = [
     re_path(r"^opensearch.xml$", views.opensearch, name="opensearch"),
     re_path(r"^ostatus_subscribe/?$", views.ostatus_follow_request),
     # polling updates
-    re_path("^api/updates/notifications/?$", views.get_notification_count),
     re_path(
-        "^api/updates/stream/(?P<stream>[a-z]+)/?$", views.get_unread_status_string
+        "^api/updates/notifications/?$",
+        views.get_notification_count,
+        name="notification-updates",
     ),
+    re_path(
+        "^api/updates/stream/(?P<stream>[a-z]+)/?$",
+        views.get_unread_status_string,
+        name="stream-updates",
+    ),
+    # instance setup
+    re_path(r"^setup/?$", views.InstanceConfig.as_view(), name="setup"),
+    re_path(r"^setup/admin/?$", views.CreateAdmin.as_view(), name="setup-admin"),
     # authentication
     re_path(r"^login/?$", views.Login.as_view(), name="login"),
     re_path(r"^login/(?P<confirmed>confirmed)/?$", views.Login.as_view(), name="login"),
@@ -62,7 +73,7 @@ urlpatterns = [
         views.ConfirmEmailCode.as_view(),
         name="confirm-email-code",
     ),
-    re_path(r"^resend-link/?$", views.resend_link, name="resend-link"),
+    re_path(r"^resend-link/?$", views.ResendConfirmEmail.as_view(), name="resend-link"),
     re_path(r"^logout/?$", views.Logout.as_view(), name="logout"),
     re_path(
         r"^password-reset/?$",
@@ -77,6 +88,12 @@ urlpatterns = [
         r"^settings/dashboard/?$", views.Dashboard.as_view(), name="settings-dashboard"
     ),
     re_path(r"^settings/site-settings/?$", views.Site.as_view(), name="settings-site"),
+    re_path(r"^settings/themes/?$", views.Themes.as_view(), name="settings-themes"),
+    re_path(
+        r"^settings/themes/(?P<theme_id>\d+)/delete/?$",
+        views.delete_theme,
+        name="settings-themes-delete",
+    ),
     re_path(
         r"^settings/announcements/?$",
         views.Announcements.as_view(),
@@ -86,6 +103,16 @@ urlpatterns = [
         r"^settings/announcements/(?P<announcement_id>\d+)/?$",
         views.Announcement.as_view(),
         name="settings-announcements",
+    ),
+    re_path(
+        r"^settings/announcements/create/?$",
+        views.EditAnnouncement.as_view(),
+        name="settings-announcements-edit",
+    ),
+    re_path(
+        r"^settings/announcements/(?P<announcement_id>\d+)/edit/?$",
+        views.EditAnnouncement.as_view(),
+        name="settings-announcements-edit",
     ),
     re_path(
         r"^settings/announcements/(?P<announcement_id>\d+)/delete/?$",
@@ -99,6 +126,11 @@ urlpatterns = [
     ),
     re_path(
         r"^settings/users/?$", views.UserAdminList.as_view(), name="settings-users"
+    ),
+    re_path(
+        r"^settings/users/(?P<status>(local|federated))\/?$",
+        views.UserAdminList.as_view(),
+        name="settings-users",
     ),
     re_path(
         r"^settings/users/(?P<user>\d+)/?$",
@@ -126,6 +158,11 @@ urlpatterns = [
         name="settings-federated-server-unblock",
     ),
     re_path(
+        r"^settings/federation/(?P<server>\d+)/refresh/?$",
+        views.refresh_server,
+        name="settings-federated-server-refresh",
+    ),
+    re_path(
         r"^settings/federation/add/?$",
         views.AddFederatedServer.as_view(),
         name="settings-add-federated-server",
@@ -151,7 +188,9 @@ urlpatterns = [
     re_path(
         r"^invite-request/?$", views.InviteRequest.as_view(), name="invite-request"
     ),
-    re_path(r"^invite/(?P<code>[A-Za-z0-9]+)/?$", views.Invite.as_view()),
+    re_path(
+        r"^invite/(?P<code>[A-Za-z0-9]+)/?$", views.Invite.as_view(), name="invite"
+    ),
     re_path(
         r"^settings/email-blocklist/?$",
         views.EmailBlocklist.as_view(),
@@ -192,6 +231,26 @@ urlpatterns = [
         r"^settings/ip-blocks/(?P<block_id>\d+)/delete/?$",
         views.IPBlocklist.as_view(),
         name="settings-ip-blocks-delete",
+    ),
+    # auto-moderation rules
+    re_path(r"^settings/automod/?$", views.AutoMod.as_view(), name="settings-automod"),
+    re_path(
+        r"^settings/automod/(?P<rule_id>\d+)/delete/?$",
+        views.automod_delete,
+        name="settings-automod-delete",
+    ),
+    re_path(
+        r"^settings/automod/schedule/?$",
+        views.schedule_automod_task,
+        name="settings-automod-schedule",
+    ),
+    re_path(
+        r"^settings/automod/unschedule/(?P<task_id>\d+)/?$",
+        views.unschedule_automod_task,
+        name="settings-automod-unschedule",
+    ),
+    re_path(
+        r"^settings/automod/run/?$", views.run_automod, name="settings-automod-run"
     ),
     # moderation
     re_path(
@@ -418,6 +477,12 @@ urlpatterns = [
         views.ChangePassword.as_view(),
         name="prefs-password",
     ),
+    re_path(r"^preferences/export/?$", views.Export.as_view(), name="prefs-export"),
+    re_path(
+        r"^preferences/export/file/?$",
+        views.export_user_book_data,
+        name="prefs-export-file",
+    ),
     re_path(r"^preferences/delete/?$", views.DeleteUser.as_view(), name="prefs-delete"),
     re_path(r"^preferences/block/?$", views.Block.as_view(), name="prefs-block"),
     re_path(r"^block/(?P<user_id>\d+)/?$", views.Block.as_view()),
@@ -467,7 +532,10 @@ urlpatterns = [
     ),
     re_path(rf"{BOOK_PATH}/edit/?$", views.EditBook.as_view(), name="edit-book"),
     re_path(rf"{BOOK_PATH}/confirm/?$", views.ConfirmEditBook.as_view()),
-    re_path(r"^create-book/?$", views.EditBook.as_view(), name="create-book"),
+    re_path(
+        r"^create-book/data/?$", views.create_book_from_data, name="create-book-data"
+    ),
+    re_path(r"^create-book/?$", views.CreateBook.as_view(), name="create-book"),
     re_path(r"^create-book/confirm/?$", views.ConfirmEditBook.as_view()),
     re_path(rf"{BOOK_PATH}/editions(.json)?/?$", views.Editions.as_view()),
     re_path(

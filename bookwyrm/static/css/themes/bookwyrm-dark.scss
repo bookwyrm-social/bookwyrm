@@ -1,0 +1,88 @@
+@import "../vendor/bulma/sass/utilities/initial-variables.sass";
+
+/* Colors
+ ******************************************************************************/
+
+/* states */
+$primary: #005e50;
+$primary-light: #1d2b28;
+$info: #1f4666;
+$success: #246447;
+$success-light: #0d2f1e;
+$warning: #8b6c15;
+$warning-light: #372e13;
+$danger: #872538;
+$danger-light: #481922;
+$light: #393939;
+$red: #ffa1b4;
+
+/* book cover standins */
+$no-cover-color: #002549;
+
+/* background colors */
+$scheme-main: rgb(24, 27, 28);
+$scheme-invert: #fff;
+$scheme-main-bis: rgb(28, 30, 32);
+$scheme-main-ter: rgb(32, 34, 36);
+$background-body: rgb(24, 27, 28);
+$background-secondary: rgb(28, 30, 32);
+$background-tertiary: rgb(32, 34, 36);
+$modal-background-background-color: rgba($black, 0.8);
+$scrollbar-track: $background-secondary;
+$scrollbar-thumb: $light;
+
+/* highlight colors */
+$primary-highlight: $primary;
+$info-highlight: $info;
+$success-highlight: $success;
+
+/* borders */
+$border: #2b3031;
+$border-light: #444;
+$border-hover: #51595d;
+
+/* text */
+$text: $grey-lightest;
+$text-light: $grey-lighter;
+$text-strong: $white-ter;
+
+/* links */
+$link: #2e7eb9;
+$link-background: $background-tertiary;
+$link-hover: $white-bis;
+$link-hover-border: #51595d;
+$link-focus: $white-bis;
+$link-active: $white-bis;
+
+/* bulma overrides */
+$background: $background-secondary;
+$menu-item-active-background-color: $link-background;
+$navbar-dropdown-item-hover-color: $white;
+
+/* These element's colors are hardcoded, probably a bug in bulma? */
+@media screen and (min-width: 769px) {
+    .navbar-dropdown {
+        box-shadow: 0 8px 8px rgba($black, 0.2) !important;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .navbar-menu {
+        box-shadow: 0 8px 8px rgba($black, 0.2) !important;
+    }
+}
+
+/* misc */
+$shadow: 0 0.5em 1em -0.125em rgba($black, 0.2), 0 0px 0 1px rgba($black, 0.02);
+$card-header-shadow: 0 0.125em 0.25em rgba($black, 0.1);
+$invisible-overlay-background-color: rgba($black, 0.66);
+$progress-value-background-color: $border-light;
+
+/* Fonts
+ ******************************************************************************/
+$family-primary: $family-sans-serif;
+$family-secondary: $family-sans-serif;
+
+
+@import "../bookwyrm.scss";
+@import "../vendor/icons.css";

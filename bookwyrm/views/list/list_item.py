@@ -5,6 +5,7 @@ from django.utils.decorators import method_decorator
 from django.views import View
 
 from bookwyrm import forms, models
+from bookwyrm.views.status import to_markdown
 
 
 # pylint: disable=no-self-use
@@ -18,5 +19,9 @@ class ListItem(View):
         list_item.raise_not_editable(request.user)
         form = forms.ListItemForm(request.POST, instance=list_item)
         if form.is_valid():
-            form.save()
+            item = form.save(commit=False)
+            item.notes = to_markdown(item.notes)
+            item.save()
+        else:
+            raise Exception(form.errors)
         return redirect("list", list_item.book_list.id)

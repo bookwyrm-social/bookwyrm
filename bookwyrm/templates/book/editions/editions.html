@@ -46,7 +46,36 @@
     {% endfor %}
 </div>
 
-<div>
+<div class="block">
     {% include 'snippets/pagination.html' with page=editions path=request.path %}
 </div>
+
+<div class="block has-text-centered help">
+    <p>
+        {% trans "Can't find the edition you're looking for?" %}
+    </p>
+
+    <form action="{% url 'create-book-data' %}" method="POST" name="add-edition-form">
+        {% csrf_token %}
+        {{ work_form.title }}
+        {{ work_form.subtitle }}
+        {{ work_form.authors }}
+        {{ work_form.description }}
+        {{ work_form.languages }}
+        {{ work_form.series }}
+        {{ work_form.cover }}
+        {{ work_form.first_published_date }}
+        {% for subject in work.subjects %}
+        <input type="hidden" name="subjects" value="{{ subject }}">
+        {% endfor %}
+
+        <input type="hidden" name="parent_work" value="{{ work.id }}">
+        <div>
+            <button class="button is-small" type="submit">
+                {% trans "Add another edition" %}
+            </button>
+        </div>
+    </form>
+</div>
+
 {% endblock %}

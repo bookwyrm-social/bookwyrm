@@ -24,12 +24,20 @@ class Sanitizer(TestCase):
         self.assertEqual(input_text, output)
 
     def test_valid_html_attrs(self):
-        """and don't remove attributes"""
+        """and don't remove useful attributes"""
         input_text = '<a href="fish.com">yes    </a> <i>html</i>'
         parser = InputHtmlParser()
         parser.feed(input_text)
         output = parser.get_output()
         self.assertEqual(input_text, output)
+
+    def test_valid_html_invalid_attrs(self):
+        """do remove un-approved attributes"""
+        input_text = '<a href="fish.com" fish="hello">yes    </a> <i>html</i>'
+        parser = InputHtmlParser()
+        parser.feed(input_text)
+        output = parser.get_output()
+        self.assertEqual(output, '<a href="fish.com">yes    </a> <i>html</i>')
 
     def test_invalid_html(self):
         """remove all html when the html is malformed"""

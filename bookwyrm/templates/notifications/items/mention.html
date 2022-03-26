@@ -48,7 +48,7 @@
 
 
 {% block preview %}
-<div class="notification py-2 {% if notification.id in unread %}is-primary is-light{% else %}has-background-white has-text-black{% endif %}">
+<div class="notification py-2 {% if notification.id in unread %}is-primary is-light{% else %}has-background-body has-text-black{% endif %}">
     <div class="columns">
         <div class="column is-clipped">
             {% include 'snippets/status_preview.html' with status=related_status %}

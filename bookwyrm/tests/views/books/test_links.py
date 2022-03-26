@@ -80,6 +80,15 @@ class LinkViews(TestCase):
         activity = json.loads(mock.call_args[1]["args"][1])
         self.assertEqual(activity["type"], "Update")
         self.assertEqual(activity["object"]["type"], "Edition")
+        self.assertIsInstance(activity["object"]["fileLinks"], list)
+        self.assertEqual(
+            activity["object"]["fileLinks"][0]["href"], "https://www.example.com"
+        )
+        self.assertEqual(activity["object"]["fileLinks"][0]["mediaType"], "HTML")
+        self.assertEqual(
+            activity["object"]["fileLinks"][0]["attributedTo"],
+            self.local_user.remote_id,
+        )
 
         link = models.FileLink.objects.get()
         self.assertEqual(link.name, "www.example.com")

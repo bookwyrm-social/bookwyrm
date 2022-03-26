@@ -30,13 +30,23 @@
 
 <div class="columns mt-3">
     <section class="column is-three-quarters">
-        {% if request.GET.updated %}
-        <div class="notification is-primary">
-            {% if list.curation != "open" and request.user != list.user and not list.group|is_member:request.user %}
-            {% trans "You successfully suggested a book for this list!" %}
-            {% else %}
-            {% trans "You successfully added a book to this list!" %}
-            {% endif %}
+        {% if add_failed %}
+        <div class="notification is-danger is-light">
+            <span class="icon icon-x" aria-hidden="true"></span>
+            <span>
+                {% trans "That book is already on this list." %}
+            </span>
+        </div>
+        {% elif add_succeeded %}
+        <div class="notification is-success is-light">
+            <span class="icon icon-check" aria-hidden="true"></span>
+            <span>
+                {% if list.curation != "open" and request.user != list.user and not list.group|is_member:request.user %}
+                    {% trans "You successfully suggested a book for this list!" %}
+                {% else %}
+                    {% trans "You successfully added a book to this list!" %}
+                {% endif %}
+            </span>
         </div>
         {% endif %}
 
@@ -52,7 +62,7 @@
                         <div class="columns is-mobile">
                             <div class="column is-narrow is-cover">
                                 <a href="{{ item.book.local_path }}" aria-hidden="true">
-                                    {% include 'snippets/book_cover.html' with cover_class='is-w-auto is-h-m-tablet is-align-items-flex-start' size='medium' %}
+                                    {% include 'snippets/book_cover.html' with cover_class='is-w-auto is-h-m-mobile is-h-m-tablet is-align-items-flex-start' size='medium' %}
                                 </a>
                             </div>
 
@@ -79,14 +89,12 @@
                             <div class="media-content">
                                 <div class="content">
                                     <header>
-                                        {% url 'user-feed' user|username as user_path %}
-                                        {% blocktrans trimmed with username=user.display_name %}
+                                        {% url 'user-feed' item.user|username as user_path %}
+                                        {% blocktrans trimmed with username=item.user.display_name %}
                                         <a href="{{ user_path }}">{{ username }}</a> says:
                                         {% endblocktrans %}
                                     </header>
-                                    <p>
-                                        {{ item.notes|to_markdown|safe }}
-                                    </p>
+                                    {{ item.notes|to_markdown|safe }}
                                 </div>
                                 {% if item.user == request.user %}
                                 <div>
@@ -94,10 +102,10 @@
                                         <summary>
                                             <span role="heading" aria-level="3">
                                                 {% trans "Edit notes" %}
-                                                <span class="details-close icon icon-pencil" aria-hidden></span>
+                                                <span class="details-close icon icon-pencil" aria-hidden="true"></span>
                                             </span>
                                         </summary>
-                                        {% include "lists/edit_item_form.html" %}
+                                        {% include "lists/edit_item_form.html" with book=item.book %}
                                     </details>
                                 </div>
                                 {% endif %}
@@ -109,15 +117,15 @@
                                 <summary>
                                     <span role="heading" aria-level="3">
                                         {% trans "Add notes" %}
-                                        <span class="details-close icon icon-plus" aria-hidden></span>
+                                        <span class="details-close icon icon-x" aria-hidden="true"></span>
                                     </span>
                                 </summary>
-                                {% include "lists/edit_item_form.html" %}
+                                {% include "lists/edit_item_form.html" with book=item.book %}
                             </details>
                         </div>
                         {% endif %}
                     </div>
-                    <div class="card-footer is-stacked-mobile has-background-white-bis is-align-items-stretch">
+                    <div class="card-footer is-stacked-mobile has-background-tertiary is-align-items-stretch">
                         <div class="card-footer-item">
                             <p>
                                 {% blocktrans trimmed with username=item.user.display_name user_path=item.user.local_path %}

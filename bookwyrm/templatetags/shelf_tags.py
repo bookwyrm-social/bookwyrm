@@ -1,5 +1,6 @@
 """ Filters and tags related to shelving books """
 from django import template
+from django.utils.translation import gettext_lazy as _
 
 from bookwyrm import models
 from bookwyrm.utils import cache
@@ -32,26 +33,41 @@ def get_next_shelf(current_shelf):
     return "to-read"
 
 
+@register.filter(name="translate_shelf_name")
+def get_translated_shelf_name(shelf):
+    """produced translated shelf nidentifierame"""
+    if not shelf:
+        return ""
+    # support obj or dict
+    identifier = shelf["identifier"] if isinstance(shelf, dict) else shelf.identifier
+    if identifier == "all":
+        return _("All books")
+    if identifier == "to-read":
+        return _("To Read")
+    if identifier == "reading":
+        return _("Currently Reading")
+    if identifier == "read":
+        return _("Read")
+    return shelf["name"] if isinstance(shelf, dict) else shelf.name
+
+
 @register.simple_tag(takes_context=True)
 def active_shelf(context, book):
     """check what shelf a user has a book on, if any"""
     user = context["request"].user
-    return (
-        cache.get_or_set(
-            f"active_shelf-{user.id}-{book.id}",
-            lambda u, b: (
-                models.ShelfBook.objects.filter(
-                    shelf__user=u,
-                    book__parent_work__editions=b,
-                ).first()
-                or False
-            ),
-            user,
-            book,
-            timeout=15552000,
-        )
-        or {"book": book}
-    )
+    return cache.get_or_set(
+        f"active_shelf-{user.id}-{book.id}",
+        lambda u, b: (
+            models.ShelfBook.objects.filter(
+                shelf__user=u,
+                book__parent_work__editions=b,
+            ).first()
+            or False
+        ),
+        user,
+        book,
+        timeout=15552000,
+    ) or {"book": book}
 
 
 @register.simple_tag(takes_context=False)

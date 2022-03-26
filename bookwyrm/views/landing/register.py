@@ -5,7 +5,6 @@ from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
 from django.views import View
-from django.views.decorators.http import require_POST
 from django.views.decorators.debug import sensitive_variables, sensitive_post_parameters
 
 from bookwyrm import emailing, forms, models
@@ -25,6 +24,10 @@ class Register(View):
     def post(self, request):
         """join the server"""
         settings = models.SiteSettings.get()
+        # no registration allowed when the site is being installed
+        if settings.install_mode:
+            raise PermissionDenied()
+
         if not settings.allow_registration:
             invite_code = request.POST.get("invite_code")
 
@@ -38,9 +41,16 @@ class Register(View):
             invite = None
 
         form = forms.RegisterForm(request.POST)
-        errors = False
         if not form.is_valid():
-            errors = True
+            data = {
+                "login_form": forms.LoginForm(),
+                "register_form": form,
+                "invite": invite,
+                "valid": invite.valid() if invite else True,
+            }
+            if invite:
+                return TemplateResponse(request, "landing/invite.html", data)
+            return TemplateResponse(request, "landing/login.html", data)
 
         localname = form.data["localname"].strip()
         email = form.data["email"]
@@ -51,22 +61,6 @@ class Register(View):
         if models.EmailBlocklist.objects.filter(domain=email_domain).exists():
             # treat this like a successful registration, but don't do anything
             return redirect("confirm-email")
-
-        # check localname and email uniqueness
-        if models.User.objects.filter(localname=localname).first():
-            form.errors["localname"] = ["User with this username already exists"]
-            errors = True
-
-        if errors:
-            data = {
-                "login_form": forms.LoginForm(),
-                "register_form": form,
-                "invite": invite,
-                "valid": invite.valid() if invite else True,
-            }
-            if invite:
-                return TemplateResponse(request, "landing/invite.html", data)
-            return TemplateResponse(request, "landing/login.html", data)
 
         username = f"{localname}@{DOMAIN}"
         user = models.User.objects.create_user(
@@ -134,12 +128,22 @@ class ConfirmEmail(View):
         return ConfirmEmailCode().get(request, code)
 
 
-@require_POST
-def resend_link(request):
-    """resend confirmation link"""
-    email = request.POST.get("email")
-    user = get_object_or_404(models.User, email=email)
-    emailing.email_confirmation_email(user)
-    return TemplateResponse(
-        request, "confirm_email/confirm_email.html", {"valid": True}
-    )
+class ResendConfirmEmail(View):
+    """you probably didn't get the email because celery is slow but you can try this"""
+
+    def get(self, request, error=False):
+        """resend link landing page"""
+        return TemplateResponse(request, "confirm_email/resend.html", {"error": error})
+
+    def post(self, request):
+        """resend confirmation link"""
+        email = request.POST.get("email")
+        try:
+            user = models.User.objects.get(email=email)
+        except models.User.DoesNotExist:
+            return self.get(request, error=True)
+
+        emailing.email_confirmation_email(user)
+        return TemplateResponse(
+            request, "confirm_email/confirm_email.html", {"valid": True}
+        )

@@ -1,0 +1,10 @@
+{% extends 'landing/layout.html' %}
+{% load i18n %}
+
+{% block title %}
+{% trans "Resend confirmation link" %}
+{% endblock %}
+
+{% block content %}
+{% include "confirm_email/resend_modal.html" with active=True static=True id="resend-modal" %}
+{% endblock %}
