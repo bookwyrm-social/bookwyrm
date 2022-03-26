@@ -39,12 +39,12 @@ class UserRelationship(BookWyrmModel):
 
     def save(self, *args, **kwargs):
         """clear the template cache"""
-        clear_cache(self.user_subject, self.user_subject)
+        clear_cache(self.user_subject, self.user_object)
         super().save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
         """clear the template cache"""
-        clear_cache(self.user_subject, self.user_subject)
+        clear_cache(self.user_subject, self.user_object)
         super().delete(*args, **kwargs)
 
     class Meta:
@@ -89,7 +89,9 @@ class UserFollows(ActivityMixin, UserRelationship):
                 user_object=self.user_subject,
             )
         ).exists():
-            raise IntegrityError()
+            raise IntegrityError(
+                "Attempting to follow blocked user", self.user_subject, self.user_object
+            )
         # don't broadcast this type of relationship -- accepts and requests
         # are handled by the UserFollowRequest model
         super().save(*args, broadcast=False, **kwargs)
@@ -97,12 +99,12 @@ class UserFollows(ActivityMixin, UserRelationship):
     @classmethod
     def from_request(cls, follow_request):
         """converts a follow request into a follow relationship"""
-        print("from!!", cls)
-        return cls.objects.create(
+        obj, _ = cls.objects.get_or_create(
             user_subject=follow_request.user_subject,
             user_object=follow_request.user_object,
             remote_id=follow_request.remote_id,
         )
+        return obj
 
 
 class UserFollowRequest(ActivitypubMixin, UserRelationship):
@@ -115,7 +117,6 @@ class UserFollowRequest(ActivitypubMixin, UserRelationship):
         """make sure the follow or block relationship doesn't already exist"""
         # if there's a request for a follow that already exists, accept it
         # without changing the local database state
-        print("UHHH????")
         if UserFollows.objects.filter(
             user_subject=self.user_subject,
             user_object=self.user_object,
@@ -137,7 +138,6 @@ class UserFollowRequest(ActivitypubMixin, UserRelationship):
             raise IntegrityError(
                 "Attempting to follow blocked user", self.user_subject, self.user_object
             )
-        print("super save!")
         super().save(*args, **kwargs)
 
         if broadcast and self.user_subject.local and not self.user_object.local:
@@ -146,12 +146,10 @@ class UserFollowRequest(ActivitypubMixin, UserRelationship):
         if self.user_object.local:
             manually_approves = self.user_object.manually_approves_followers
             if not manually_approves:
-                print("accept")
                 self.accept()
 
             model = apps.get_model("bookwyrm.Notification", require_ready=True)
             notification_type = "FOLLOW_REQUEST" if manually_approves else "FOLLOW"
-            print("notification")
             model.objects.create(
                 user=self.user_object,
                 related_user=self.user_subject,
@@ -179,9 +177,9 @@ class UserFollowRequest(ActivitypubMixin, UserRelationship):
             return
 
         with transaction.atomic():
-            print("from request")
             UserFollows.from_request(self)
-            self.delete()
+            if self.id:
+                self.delete()
 
     def reject(self):
         """generate a Reject for this follow request"""
