@@ -213,6 +213,7 @@ class UserBlocks(ActivityMixin, UserRelationship):
             | Q(user_subject=self.user_object, user_object=self.user_subject)
         ).delete()
 
+
 def clear_cache(user_subject, user_object):
     """clear relationship cache"""
     cache.delete_many(
