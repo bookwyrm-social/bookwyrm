@@ -479,7 +479,7 @@ urlpatterns = [
     re_path(
         r"^preferences/export/file/?$",
         views.export_user_book_data,
-        name="prefs-export-file"
+        name="prefs-export-file",
     ),
     re_path(r"^preferences/delete/?$", views.DeleteUser.as_view(), name="prefs-delete"),
     re_path(r"^preferences/block/?$", views.Block.as_view(), name="prefs-block"),
