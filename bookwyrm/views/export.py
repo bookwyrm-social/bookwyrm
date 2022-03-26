@@ -3,7 +3,7 @@ import csv
 
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
-from django.http import StreamingHttpResponse, JsonResponse
+from django.http import StreamingHttpResponse
 from django.views.decorators.http import require_GET
 
 from bookwyrm import models
@@ -40,7 +40,8 @@ def export_user_book_data(request):
 
     pseudo_buffer = Echo()
     writer = csv.writer(pseudo_buffer)
-    # for testing:
+    # for testing, if you want to see the results in the browser:
+    # from django.http import JsonResponse
     # return JsonResponse(list(generator), safe=False)
     return StreamingHttpResponse(
         (writer.writerow(row) for row in generator),

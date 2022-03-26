@@ -6,6 +6,7 @@ from django.test import TestCase
 from django.test.client import RequestFactory
 
 from bookwyrm import models, views
+from bookwyrm.tests.validate_html import validate_html
 
 
 @patch("bookwyrm.activitystreams.add_book_statuses_task.delay")
@@ -39,7 +40,14 @@ class ExportViews(TestCase):
             bnf_id="beep",
         )
 
-    def test_export(self, *_):
+    def tst_export_get(self, *_):
+        """request export"""
+        request = self.factory.get("")
+        request.user = self.local_user
+        result = views.Export.as_view()(request)
+        validate_html(result.render())
+
+    def test_export_file(self, *_):
         """simple export"""
         models.ShelfBook.objects.create(
             shelf=self.local_user.shelf_set.first(),
@@ -55,9 +63,9 @@ class ExportViews(TestCase):
         # pylint: disable=line-too-long
         self.assertEqual(
             result[0],
-            b"title,remote_id,openlibrary_key,inventaire_id,librarything_key,goodreads_key,bnf_id,viaf,wikidata,asin,isbn_10,isbn_13,oclc_number\r\n",
+            b"title,author_text,remote_id,openlibrary_key,inventaire_id,librarything_key,goodreads_key,bnf_id,viaf,wikidata,asin,isbn_10,isbn_13,oclc_number,rating,review_name,review_cw,review_content\r\n",
         )
         expected = (
-            f"Test Book,{self.book.remote_id},,,,,beep,,,,123456789X,9781234567890,\r\n"
+            f"Test Book,,{self.book.remote_id},,,,,beep,,,,123456789X,9781234567890,,,,,\r\n"
         )
         self.assertEqual(result[1].decode("utf-8"), expected)
