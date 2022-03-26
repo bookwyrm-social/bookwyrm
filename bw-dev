@@ -82,6 +82,9 @@ case "$CMD" in
     collectstatic)
         runweb python manage.py collectstatic --no-input
         ;;
+    compilemessages)
+        runweb django-admin compilemessages --ignore venv $@
+        ;;
     build)
         docker-compose build
         ;;
@@ -190,6 +193,7 @@ case "$CMD" in
         echo "    dbshell"
         echo "    restart_celery"
         echo "    collectstatic"
+        echo "    compilemessages"
         echo "    build"
         echo "    clean"
         echo "    populate_streams [--stream=<stream name>]"
