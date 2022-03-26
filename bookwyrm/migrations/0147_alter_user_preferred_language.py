@@ -6,13 +6,33 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bookwyrm', '0146_auto_20220316_2352'),
+        ("bookwyrm", "0146_auto_20220316_2352"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='user',
-            name='preferred_language',
-            field=models.CharField(blank=True, choices=[('en-us', 'English'), ('de-de', 'Deutsch (German)'), ('es-es', 'Español (Spanish)'), ('gl-es', 'Galego (Galician)'), ('it-it', 'Italiano (Italian)'), ('fr-fr', 'Français (French)'), ('lt-lt', 'Lietuvių (Lithuanian)'), ('no-no', 'Norsk (Norwegian)'), ('pt-br', 'Português do Brasil (Brazilian Portuguese)'), ('pt-pt', 'Português Europeu (European Portuguese)'), ('ro-ro', 'Română (Romanian)'), ('sv-se', 'Svenska (Swedish)'), ('zh-hans', '简体中文 (Simplified Chinese)'), ('zh-hant', '繁體中文 (Traditional Chinese)')], max_length=255, null=True),
+            model_name="user",
+            name="preferred_language",
+            field=models.CharField(
+                blank=True,
+                choices=[
+                    ("en-us", "English"),
+                    ("de-de", "Deutsch (German)"),
+                    ("es-es", "Español (Spanish)"),
+                    ("gl-es", "Galego (Galician)"),
+                    ("it-it", "Italiano (Italian)"),
+                    ("fr-fr", "Français (French)"),
+                    ("lt-lt", "Lietuvių (Lithuanian)"),
+                    ("no-no", "Norsk (Norwegian)"),
+                    ("pt-br", "Português do Brasil (Brazilian Portuguese)"),
+                    ("pt-pt", "Português Europeu (European Portuguese)"),
+                    ("ro-ro", "Română (Romanian)"),
+                    ("sv-se", "Svenska (Swedish)"),
+                    ("zh-hans", "简体中文 (Simplified Chinese)"),
+                    ("zh-hant", "繁體中文 (Traditional Chinese)"),
+                ],
+                max_length=255,
+                null=True,
+            ),
         ),
     ]
