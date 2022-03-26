@@ -4,20 +4,21 @@ import csv
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.http import StreamingHttpResponse
+from django.template.response import TemplateResponse
+from django.views import View
+from django.utils.decorators import method_decorator
 from django.views.decorators.http import require_GET
 
 from bookwyrm import models
 
+# pylint: disable=no-self-use
+@method_decorator(login_required, name="dispatch")
+class Export(View):
+    """Let users export data"""
 
-class Echo:
-    """An object that implements just the write method of the file-like
-    interface. (https://docs.djangoproject.com/en/3.2/howto/outputting-csv/)
-    """
-
-    # pylint: disable=no-self-use
-    def write(self, value):
-        """Write the value by returning it, instead of storing in a buffer."""
-        return value
+    def get(self, request):
+        """Request csv file"""
+        return TemplateResponse(request, "preferences/export.html")
 
 
 @login_required
@@ -83,3 +84,14 @@ def csv_row_generator(books, user):
             book.review_cw = review.content_warning
             book.review_content = review.raw_content
         yield [getattr(book, field, "") or "" for field in fields]
+
+
+class Echo:
+    """An object that implements just the write method of the file-like
+    interface. (https://docs.djangoproject.com/en/3.2/howto/outputting-csv/)
+    """
+
+    # pylint: disable=no-self-use
+    def write(self, value):
+        """Write the value by returning it, instead of storing in a buffer."""
+        return value

@@ -24,6 +24,17 @@
                 <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Delete Account" %}</a>
             </li>
         </ul>
+        <h2 class="menu-label">{% trans "Data" %}</h2>
+        <ul class="menu-list">
+            <li>
+                {% url 'import' as url %}
+                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Import" %}</a>
+            </li>
+            <li>
+                {% url 'prefs-export' as url %}
+                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "CSV export" %}</a>
+            </li>
+        </ul>
         <h2 class="menu-label">{% trans "Relationships" %}</h2>
         <ul class="menu-list">
             <li>

@@ -370,8 +370,6 @@ urlpatterns = [
         views.delete_import_item,
         name="import-delete",
     ),
-    # export
-    re_path(r"^export/?$", views.export_user_book_data, name="export"),
     # users
     re_path(rf"{USER_PATH}\.json$", views.User.as_view()),
     re_path(rf"{USER_PATH}/?$", views.User.as_view(), name="user-feed"),
@@ -476,6 +474,12 @@ urlpatterns = [
         r"^preferences/password/?$",
         views.ChangePassword.as_view(),
         name="prefs-password",
+    ),
+    re_path(r"^preferences/export/?$", views.Export.as_view(), name="prefs-export"),
+    re_path(
+        r"^preferences/export/file/?$",
+        views.export_user_book_data,
+        name="prefs-export-file"
     ),
     re_path(r"^preferences/delete/?$", views.DeleteUser.as_view(), name="prefs-delete"),
     re_path(r"^preferences/block/?$", views.Block.as_view(), name="prefs-block"),
