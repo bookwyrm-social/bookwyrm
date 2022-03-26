@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-03-17 16:15+0000\n"
-"PO-Revision-Date: 2022-03-25 23:08\n"
+"PO-Revision-Date: 2022-03-26 00:32\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Swedish\n"
 "Language: sv\n"
@@ -1017,7 +1017,7 @@ msgstr "Ta bort ämne"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:131
 msgid "Add Another Subject"
-msgstr ""
+msgstr "Lägg till ett annat ämne"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:139
 msgid "Publication"
@@ -1117,11 +1117,11 @@ msgstr "Utgåvor av <a href=\"%(work_path)s\">\"%(work_title)s\"</a>"
 
 #: bookwyrm/templates/book/editions/editions.html:55
 msgid "Can't find the edition you're looking for?"
-msgstr ""
+msgstr "Kan du inte hitta versionen som du letar efter?"
 
 #: bookwyrm/templates/book/editions/editions.html:75
 msgid "Add another edition"
-msgstr ""
+msgstr "Lägg till en annan version"
 
 #: bookwyrm/templates/book/editions/format_filter.html:9
 #: bookwyrm/templates/book/editions/language_filter.html:9
@@ -1166,7 +1166,7 @@ msgstr "Redigera länkar"
 #: bookwyrm/templates/book/file_links/edit_links.html:11
 #, python-format
 msgid "Links for \"<em>%(title)s</em>\""
-msgstr ""
+msgstr "Länkar för \"<em>%(title)s</em>\""
 
 #: bookwyrm/templates/book/file_links/edit_links.html:32
 #: bookwyrm/templates/settings/link_domains/link_table.html:6
@@ -2261,7 +2261,7 @@ msgstr "Sök efter en bok, användare eller lista"
 
 #: bookwyrm/templates/layout.html:61 bookwyrm/templates/layout.html:62
 msgid "Scan Barcode"
-msgstr ""
+msgstr "Skanna streckkod"
 
 #: bookwyrm/templates/layout.html:72
 msgid "Main navigation menu"
@@ -2946,7 +2946,7 @@ msgstr "Godkänn följare manuellt"
 
 #: bookwyrm/templates/preferences/edit_user.html:123
 msgid "Hide followers and following on profile"
-msgstr ""
+msgstr "Göm följare och följningar på profilen"
 
 #: bookwyrm/templates/preferences/edit_user.html:128
 msgid "Default post privacy:"
@@ -3050,38 +3050,40 @@ msgstr "Rapport"
 msgid "\n"
 "        Scan Barcode\n"
 "    "
-msgstr ""
+msgstr "\n"
+"Skanna streckkod\n"
+"    "
 
 #: bookwyrm/templates/search/barcode_modal.html:23
 msgid "Requesting camera..."
-msgstr ""
+msgstr "Begär kamera..."
 
 #: bookwyrm/templates/search/barcode_modal.html:24
 msgid "Grant access to the camera to scan a book's barcode."
-msgstr ""
+msgstr "Bevilja åtkomst till kameran för att skanna en boks streckkod."
 
 #: bookwyrm/templates/search/barcode_modal.html:29
 msgid "Could not access camera"
-msgstr ""
+msgstr "Kunde inte komma åt kameran"
 
 #: bookwyrm/templates/search/barcode_modal.html:33
 msgctxt "barcode scanner"
 msgid "Scanning..."
-msgstr ""
+msgstr "Skannar..."
 
 #: bookwyrm/templates/search/barcode_modal.html:34
 msgid "Align your book's barcode with the camera."
-msgstr ""
+msgstr "Justera din boks streckkod med kameran."
 
 #: bookwyrm/templates/search/barcode_modal.html:38
 msgctxt "barcode scanner"
 msgid "ISBN scanned"
-msgstr ""
+msgstr "ISBN skannades"
 
 #: bookwyrm/templates/search/barcode_modal.html:39
 msgctxt "followed by ISBN"
 msgid "Searching for book:"
-msgstr ""
+msgstr "Söker efter bok:"
 
 #: bookwyrm/templates/search/book.html:44
 msgid "Results from"
@@ -3249,11 +3251,11 @@ msgstr ""
 
 #: bookwyrm/templates/settings/automod/rules.html:26
 msgid "Schedule:"
-msgstr ""
+msgstr "Schema:"
 
 #: bookwyrm/templates/settings/automod/rules.html:33
 msgid "Last run:"
-msgstr ""
+msgstr "Kördes senast:"
 
 #: bookwyrm/templates/settings/automod/rules.html:40
 msgid "Total run count:"
@@ -3261,15 +3263,15 @@ msgstr ""
 
 #: bookwyrm/templates/settings/automod/rules.html:47
 msgid "Enabled:"
-msgstr ""
+msgstr "Aktiverad:"
 
 #: bookwyrm/templates/settings/automod/rules.html:59
 msgid "Delete schedule"
-msgstr ""
+msgstr "Ta bort schema"
 
 #: bookwyrm/templates/settings/automod/rules.html:63
 msgid "Run now"
-msgstr ""
+msgstr "Kör nu"
 
 #: bookwyrm/templates/settings/automod/rules.html:64
 msgid "Last run date will not be updated"
@@ -3278,7 +3280,7 @@ msgstr ""
 #: bookwyrm/templates/settings/automod/rules.html:69
 #: bookwyrm/templates/settings/automod/rules.html:92
 msgid "Schedule scan"
-msgstr ""
+msgstr "Schemalägg skanning"
 
 #: bookwyrm/templates/settings/automod/rules.html:101
 msgid "Successfully added rule"
@@ -3615,7 +3617,7 @@ msgstr "E-postadress"
 
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:44
 msgid "Answer"
-msgstr ""
+msgstr "Svar"
 
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:50
 msgid "Action"
@@ -3770,7 +3772,7 @@ msgstr "Inställningar för sidan"
 #: bookwyrm/templates/settings/themes.html:4
 #: bookwyrm/templates/settings/themes.html:6
 msgid "Themes"
-msgstr ""
+msgstr "Teman"
 
 #: bookwyrm/templates/settings/link_domains/edit_domain_modal.html:5
 #, python-format
@@ -3965,7 +3967,7 @@ msgstr "Favikon:"
 
 #: bookwyrm/templates/settings/site.html:98
 msgid "Default theme:"
-msgstr ""
+msgstr "Standardtema:"
 
 #: bookwyrm/templates/settings/site.html:113
 msgid "Support link:"
@@ -3997,7 +3999,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/site.html:156
 msgid "Question:"
-msgstr ""
+msgstr "Fråga:"
 
 #: bookwyrm/templates/settings/site.html:163
 msgid "Require users to confirm email address"
@@ -4025,7 +4027,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/themes.html:26
 msgid "How to add a theme"
-msgstr ""
+msgstr "Hur man lägger till ett tema"
 
 #: bookwyrm/templates/settings/themes.html:29
 msgid "Copy the theme file into the <code>bookwyrm/static/css/themes</code> directory on your server from the command line."
