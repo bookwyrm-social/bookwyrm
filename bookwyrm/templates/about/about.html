@@ -99,7 +99,7 @@
         <p>
         {% url "conduct" as coc_path %}
         {% blocktrans trimmed with site_name=site.name %}
-            {{ site_name }}'s moderators and administrators keep the site up and running, enforce the <a href="coc_path">code of conduct</a>, and respond when users report spam and bad behavior.
+            {{ site_name }}'s moderators and administrators keep the site up and running, enforce the <a href="{{ coc_path }}">code of conduct</a>, and respond when users report spam and bad behavior.
         {% endblocktrans %}
         </p>
     </header>
