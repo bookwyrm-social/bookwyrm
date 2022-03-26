@@ -64,15 +64,19 @@ def csv_row_generator(books, user):
     yield fields
     for book in books:
         # I think this is more efficient than doing a subquery in the view? but idk
-        review_rating = models.Review.objects.filter(
-            user=user, book=book, rating__isnull=False
-        ).order_by("-published_date").first()
+        review_rating = (
+            models.Review.objects.filter(user=user, book=book, rating__isnull=False)
+            .order_by("-published_date")
+            .first()
+        )
 
         book.rating = review_rating.rating if review_rating else None
 
-        review = models.Review.objects.filter(
-            user=user, book=book, content__isnull=False
-        ).order_by("-published_date").first()
+        review = (
+            models.Review.objects.filter(user=user, book=book, content__isnull=False)
+            .order_by("-published_date")
+            .first()
+        )
         if review:
             book.review_name = review.name
             book.review_cw = review.content_warning
