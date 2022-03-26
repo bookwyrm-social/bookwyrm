@@ -33,7 +33,7 @@
 </div>
 
 <div class="table-container block">
-    <table class="table is-striped">
+    <table class="table is-striped is-fullwidth">
         <tr>
             {% url 'settings-users' as url %}
             <th>
@@ -61,10 +61,25 @@
         </tr>
         {% for user in users %}
         <tr>
-            <td><a href="{% url 'settings-user' user.id %}">{{ user|username }}</a></td>
+            <td class="overflow-wrap-anywhere">
+                <a href="{% url 'settings-user' user.id %}">{{ user|username }}</a>
+            </td>
             <td>{{ user.created_date }}</td>
             <td>{{ user.last_active_date }}</td>
-            <td>{% if user.is_active %}{% trans "Active" %}{% else %}{% trans "Inactive" %}{% endif %}</td>
+            <td>
+                {% if user.is_active %}
+                    <span class="tag is-success" aria-hidden="true">
+                        <span class="icon icon-check"></span>
+                    </span>
+                    {% trans "Active" %}
+                {% else %}
+                    <span class="tag is-warning" aria-hidden="true">
+                        <span class="icon icon-x"></span>
+                    </span>
+                    {% trans "Inactive" %}
+                    <span class="help">({{ user.get_deactivation_reason_display }})</span>
+                {% endif %}
+            </td>
             {% if status != "local" %}
             <td>
                 {% if user.federated_server %}

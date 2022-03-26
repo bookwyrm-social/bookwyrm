@@ -4,6 +4,7 @@ from django import forms
 from bookwyrm import models
 from bookwyrm.models.fields import ClearableFileInputWithWarning
 from .custom_form import CustomForm
+from .widgets import ArrayWidget, SelectDateWidget, Select
 
 
 # pylint: disable=missing-class-docstring
@@ -12,14 +13,6 @@ class CoverForm(CustomForm):
         model = models.Book
         fields = ["cover"]
         help_texts = {f: None for f in fields}
-
-
-class ArrayWidget(forms.widgets.TextInput):
-    # pylint: disable=unused-argument
-    # pylint: disable=no-self-use
-    def value_from_datadict(self, data, files, name):
-        """get all values for this name"""
-        return [i for i in data.getlist(name) if i]
 
 
 class EditionForm(CustomForm):
@@ -56,16 +49,16 @@ class EditionForm(CustomForm):
             "publishers": forms.TextInput(
                 attrs={"aria-describedby": "desc_publishers_help desc_publishers"}
             ),
-            "first_published_date": forms.SelectDateWidget(
+            "first_published_date": SelectDateWidget(
                 attrs={"aria-describedby": "desc_first_published_date"}
             ),
-            "published_date": forms.SelectDateWidget(
+            "published_date": SelectDateWidget(
                 attrs={"aria-describedby": "desc_published_date"}
             ),
             "cover": ClearableFileInputWithWarning(
                 attrs={"aria-describedby": "desc_cover"}
             ),
-            "physical_format": forms.Select(
+            "physical_format": Select(
                 attrs={"aria-describedby": "desc_physical_format"}
             ),
             "physical_format_detail": forms.TextInput(
@@ -85,3 +78,27 @@ class EditionForm(CustomForm):
             ),
             "ASIN": forms.TextInput(attrs={"aria-describedby": "desc_ASIN"}),
         }
+
+
+class EditionFromWorkForm(CustomForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # make all fields hidden
+        for visible in self.visible_fields():
+            visible.field.widget = forms.HiddenInput()
+
+    class Meta:
+        model = models.Work
+        fields = [
+            "title",
+            "subtitle",
+            "authors",
+            "description",
+            "languages",
+            "series",
+            "series_number",
+            "subjects",
+            "subject_places",
+            "cover",
+            "first_published_date",
+        ]

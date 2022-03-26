@@ -2,12 +2,12 @@
 import urllib.parse
 import re
 from django.contrib.auth.decorators import login_required
-from django.db import IntegrityError
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.views.decorators.http import require_POST
 
 from bookwyrm import models
+from bookwyrm.models.relationship import clear_cache
 from .helpers import (
     get_user_from_username,
     handle_remote_webfinger,
@@ -22,17 +22,17 @@ def follow(request):
     """follow another user, here or abroad"""
     username = request.POST["user"]
     to_follow = get_user_from_username(request.user, username)
+    clear_cache(request.user, to_follow)
 
-    try:
-        models.UserFollowRequest.objects.create(
-            user_subject=request.user,
-            user_object=to_follow,
-        )
-    except IntegrityError:
-        pass
+    follow_request, created = models.UserFollowRequest.objects.get_or_create(
+        user_subject=request.user,
+        user_object=to_follow,
+    )
 
-    if request.GET.get("next"):
-        return redirect(request.GET.get("next", "/"))
+    if not created:
+        # this request probably failed to connect with the remote
+        # that means we should save to trigger a re-broadcast
+        follow_request.save()
 
     return redirect(to_follow.local_path)
 
@@ -49,14 +49,14 @@ def unfollow(request):
             user_subject=request.user, user_object=to_unfollow
         ).delete()
     except models.UserFollows.DoesNotExist:
-        pass
+        clear_cache(request.user, to_unfollow)
 
     try:
         models.UserFollowRequest.objects.get(
             user_subject=request.user, user_object=to_unfollow
         ).delete()
     except models.UserFollowRequest.DoesNotExist:
-        pass
+        clear_cache(request.user, to_unfollow)
 
     # this is handled with ajax so it shouldn't really matter
     return redirect(request.headers.get("Referer", "/"))

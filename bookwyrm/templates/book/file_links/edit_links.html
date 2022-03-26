@@ -8,7 +8,7 @@
 
 <header class="block">
     <h1 class="title">
-        {% blocktrans with title=book|book_title %}
+        {% blocktrans trimmed with title=book|book_title %}
         Links for "<em>{{ title }}</em>"
         {% endblocktrans %}
     </h1>
