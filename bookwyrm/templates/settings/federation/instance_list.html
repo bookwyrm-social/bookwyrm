@@ -37,6 +37,10 @@
             {% include 'snippets/table-sort-header.html' with field="created_date" sort=sort text=text %}
         </th>
         <th>
+            {% trans "Last updated" as text %}
+            {% include 'snippets/table-sort-header.html' with field="updated_date" sort=sort text=text %}
+        </th>
+        <th>
             {% trans "Software" as text %}
             {% include 'snippets/table-sort-header.html' with field="application_type" sort=sort text=text %}
         </th>
@@ -47,7 +51,8 @@
     {% for server in servers %}
     <tr>
         <td><a href="{% url 'settings-federated-server' server.id %}">{{ server.server_name }}</a></td>
-        <td>{{ server.created_date }}</td>
+        <td>{{ server.created_date|date:'Y-m-d' }}</td>
+        <td>{{ server.updated_date|date:'Y-m-d' }}</td>
         <td>
         {% if server.application_type %}
             {{ server.application_type }}

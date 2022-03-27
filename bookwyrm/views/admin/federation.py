@@ -28,7 +28,9 @@ class Federation(View):
         servers = models.FederatedServer.objects.filter(status=status)
 
         sort = request.GET.get("sort")
-        sort_fields = ["created_date", "application_type", "server_name"]
+        sort_fields = [
+            "created_date", "updated_date", "application_type", "server_name"
+        ]
 
         if not sort in sort_fields + [f"-{f}" for f in sort_fields]:
             sort = "-created_date"
