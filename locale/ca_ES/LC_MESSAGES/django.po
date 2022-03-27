@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-03-26 20:16+0000\n"
-"PO-Revision-Date: 2022-03-26 22:30\n"
+"PO-Revision-Date: 2022-03-27 22:18\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Catalan\n"
 "Language: ca\n"
@@ -321,7 +321,7 @@ msgstr "Português Europeu (Portuguès europeu)"
 
 #: bookwyrm/settings.py:292
 msgid "Română (Romanian)"
-msgstr ""
+msgstr "Română (romanès)"
 
 #: bookwyrm/settings.py:293
 msgid "Svenska (Swedish)"
@@ -379,16 +379,16 @@ msgstr "<a href=\"%(book_path)s\"><em>%(title)s</em></a> és el llibre preferit 
 #: bookwyrm/templates/about/about.html:61
 #, python-format
 msgid "More %(site_name)s users want to read <a href=\"%(book_path)s\"><em>%(title)s</em></a> than any other book."
-msgstr ""
+msgstr "El llibre que volen llegir la majoria de membres de %(site_name)s és <a href=\"%(book_path)s\"><em>%(title)s</em></a>."
 
 #: bookwyrm/templates/about/about.html:80
 #, python-format
 msgid "<a href=\"%(book_path)s\"><em>%(title)s</em></a> has the most divisive ratings of any book on %(site_name)s."
-msgstr ""
+msgstr "<a href=\"%(book_path)s\"><em>%(title)s</em></a> es el llibre amb valoracions més dispars a %(site_name)s."
 
 #: bookwyrm/templates/about/about.html:91
 msgid "Track your reading, talk about books, write reviews, and discover what to read next. Always ad-free, anti-corporate, and community-oriented, BookWyrm is human-scale software, designed to stay small and personal. If you have feature requests, bug reports, or grand dreams, <a href='https://joinbookwyrm.com/get-involved' target='_blank'>reach out</a> and make yourself heard."
-msgstr ""
+msgstr "Feu seguiment de les teves lectures, parla sobre llibres, escriu valoracions i descobriu properes lectures. Bookwyrm és un programari d'escala humana, dissenyat per a ser petit i personal i amb el compromís de no tenir mai publicitat, ser anticorporatiu i orientat a la comunitat. Si teniu suggeriments de característiques noves, informes d'errors o grans projectes, <a href='https://joinbookwyrm.com/get-involved' target='_blank>mireu com implicar-vos</a> i feu-vos sentir."
 
 #: bookwyrm/templates/about/about.html:98
 msgid "Meet your admins"
@@ -476,11 +476,11 @@ msgstr "Copiat"
 
 #: bookwyrm/templates/annual_summary/layout.html:77
 msgid "Sharing status: <strong>public with key</strong>"
-msgstr ""
+msgstr "Nivell de compartició: <strong>public amb clau</strong>"
 
 #: bookwyrm/templates/annual_summary/layout.html:78
 msgid "The page can be seen by anyone with the complete address."
-msgstr ""
+msgstr "Aquesta pàgina pot ser vista per qualsevol qui tingui l'adreça complerta."
 
 #: bookwyrm/templates/annual_summary/layout.html:83
 msgid "Make page private"
@@ -500,12 +500,12 @@ msgstr "Feu aquesta pàgina pública"
 
 #: bookwyrm/templates/annual_summary/layout.html:99
 msgid "When you make your page private, the old key won’t give access to the page anymore. A new key will be created if the page is once again made public."
-msgstr ""
+msgstr "En fer la vostra pàgina privada, la clau anterior deixarà de donarà accès. Caldrà generar una nova clau si mai torneu a fer la pàgina pública."
 
 #: bookwyrm/templates/annual_summary/layout.html:112
 #, python-format
 msgid "Sadly %(display_name)s didn’t finish any books in %(year)s"
-msgstr ""
+msgstr "Malauradament %(display_name)s no ha acabat de llegir cap llibre a %(year)s"
 
 #: bookwyrm/templates/annual_summary/layout.html:118
 #, python-format
@@ -563,7 +563,7 @@ msgstr[1] ""
 
 #: bookwyrm/templates/annual_summary/layout.html:209
 msgid "Way to go!"
-msgstr ""
+msgstr "Ben fet!"
 
 #: bookwyrm/templates/annual_summary/layout.html:224
 #, python-format
@@ -709,7 +709,7 @@ msgstr "Identificadors de l'autoria"
 
 #: bookwyrm/templates/author/edit_author.html:77
 msgid "Openlibrary key:"
-msgstr ""
+msgstr "Clau d'OpenLibrary:"
 
 #: bookwyrm/templates/author/edit_author.html:84
 #: bookwyrm/templates/book/edit/edit_book_form.html:323
@@ -718,7 +718,7 @@ msgstr "ID a l'Inventaire:"
 
 #: bookwyrm/templates/author/edit_author.html:91
 msgid "Librarything key:"
-msgstr ""
+msgstr "Clau de Librarything:"
 
 #: bookwyrm/templates/author/edit_author.html:98
 msgid "Goodreads key:"
@@ -726,7 +726,7 @@ msgstr "Identificador a Goodreads:"
 
 #: bookwyrm/templates/author/edit_author.html:105
 msgid "ISNI:"
-msgstr ""
+msgstr "ISNI:"
 
 #: bookwyrm/templates/author/edit_author.html:115
 #: bookwyrm/templates/book/book.html:202
@@ -825,8 +825,8 @@ msgstr "Descripció:"
 #, python-format
 msgid "%(count)s edition"
 msgid_plural "%(count)s editions"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(count)s edició"
+msgstr[1] "%(count)s edicions"
 
 #: bookwyrm/templates/book/book.html:228
 msgid "You have shelved this edition in:"
@@ -839,11 +839,11 @@ msgstr ""
 
 #: bookwyrm/templates/book/book.html:254
 msgid "Your reading activity"
-msgstr ""
+msgstr "Les vostres lectures"
 
 #: bookwyrm/templates/book/book.html:260
 msgid "Add read dates"
-msgstr ""
+msgstr "Afegiu dates de lectura"
 
 #: bookwyrm/templates/book/book.html:268
 msgid "You don't have any reading activity for this book."
@@ -851,11 +851,11 @@ msgstr ""
 
 #: bookwyrm/templates/book/book.html:294
 msgid "Your reviews"
-msgstr ""
+msgstr "Les vostres ressenyes"
 
 #: bookwyrm/templates/book/book.html:300
 msgid "Your comments"
-msgstr ""
+msgstr "El vostres comentaris"
 
 #: bookwyrm/templates/book/book.html:306
 msgid "Your quotes"
@@ -1012,15 +1012,15 @@ msgstr "Temes:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:90
 msgid "Add subject"
-msgstr ""
+msgstr "Afegiu un tema"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:108
 msgid "Remove subject"
-msgstr ""
+msgstr "Elimineu un tema"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:131
 msgid "Add Another Subject"
-msgstr ""
+msgstr "Afegiu un altre tema"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:139
 msgid "Publication"
@@ -1050,7 +1050,7 @@ msgstr "Elimineu %(name)s"
 #: bookwyrm/templates/book/edit/edit_book_form.html:189
 #, python-format
 msgid "Author page for %(name)s"
-msgstr ""
+msgstr "Pàgina de l'autor de %(name)s"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:197
 msgid "Add Authors:"
@@ -1124,21 +1124,21 @@ msgstr ""
 
 #: bookwyrm/templates/book/editions/editions.html:75
 msgid "Add another edition"
-msgstr ""
+msgstr "Afegiu una altra edició"
 
 #: bookwyrm/templates/book/editions/format_filter.html:9
 #: bookwyrm/templates/book/editions/language_filter.html:9
 msgid "Any"
-msgstr ""
+msgstr "Qualsevol"
 
 #: bookwyrm/templates/book/editions/language_filter.html:6
 #: bookwyrm/templates/preferences/edit_user.html:95
 msgid "Language:"
-msgstr ""
+msgstr "Idioma:"
 
 #: bookwyrm/templates/book/editions/search_filter.html:6
 msgid "Search editions"
-msgstr ""
+msgstr "Cerqueu edicions"
 
 #: bookwyrm/templates/book/file_links/add_link_modal.html:6
 msgid "Add file link"
@@ -1150,21 +1150,21 @@ msgstr ""
 
 #: bookwyrm/templates/book/file_links/add_link_modal.html:24
 msgid "URL:"
-msgstr ""
+msgstr "URL:"
 
 #: bookwyrm/templates/book/file_links/add_link_modal.html:29
 msgid "File type:"
-msgstr ""
+msgstr "Tipus de fitxer:"
 
 #: bookwyrm/templates/book/file_links/add_link_modal.html:48
 msgid "Availability:"
-msgstr ""
+msgstr "Disponibilitat:"
 
 #: bookwyrm/templates/book/file_links/edit_links.html:5
 #: bookwyrm/templates/book/file_links/edit_links.html:21
 #: bookwyrm/templates/book/file_links/links.html:53
 msgid "Edit links"
-msgstr ""
+msgstr "Edita l'enllaç"
 
 #: bookwyrm/templates/book/file_links/edit_links.html:11
 #, python-format
@@ -1174,23 +1174,23 @@ msgstr ""
 #: bookwyrm/templates/book/file_links/edit_links.html:32
 #: bookwyrm/templates/settings/link_domains/link_table.html:6
 msgid "URL"
-msgstr ""
+msgstr "URL"
 
 #: bookwyrm/templates/book/file_links/edit_links.html:33
 #: bookwyrm/templates/settings/link_domains/link_table.html:7
 msgid "Added by"
-msgstr ""
+msgstr "Afegit per"
 
 #: bookwyrm/templates/book/file_links/edit_links.html:34
 #: bookwyrm/templates/settings/link_domains/link_table.html:8
 msgid "Filetype"
-msgstr ""
+msgstr "Tipus d'arxiu"
 
 #: bookwyrm/templates/book/file_links/edit_links.html:35
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:25
 #: bookwyrm/templates/settings/reports/report_links_table.html:5
 msgid "Domain"
-msgstr ""
+msgstr "Domini"
 
 #: bookwyrm/templates/book/file_links/edit_links.html:36
 #: bookwyrm/templates/import/import_status.html:127
@@ -1201,7 +1201,7 @@ msgstr ""
 #: bookwyrm/templates/settings/users/user_admin.html:52
 #: bookwyrm/templates/settings/users/user_info.html:24
 msgid "Status"
-msgstr ""
+msgstr "Estat"
 
 #: bookwyrm/templates/book/file_links/edit_links.html:37
 #: bookwyrm/templates/settings/announcements/announcements.html:41
@@ -1209,37 +1209,37 @@ msgstr ""
 #: bookwyrm/templates/settings/reports/report_links_table.html:6
 #: bookwyrm/templates/settings/themes.html:100
 msgid "Actions"
-msgstr ""
+msgstr "Accions"
 
 #: bookwyrm/templates/book/file_links/edit_links.html:53
 #: bookwyrm/templates/book/file_links/verification_modal.html:22
 msgid "Report spam"
-msgstr ""
+msgstr "Marqueu com a brossa"
 
 #: bookwyrm/templates/book/file_links/edit_links.html:97
 msgid "No links available for this book."
-msgstr ""
+msgstr "No hi ha enllaços disponibles per aquest llibre."
 
 #: bookwyrm/templates/book/file_links/edit_links.html:108
 #: bookwyrm/templates/book/file_links/links.html:18
 msgid "Add link to file"
-msgstr ""
+msgstr "Afegiu enllaç a fitxer"
 
 #: bookwyrm/templates/book/file_links/file_link_page.html:6
 msgid "File Links"
-msgstr ""
+msgstr "Enllaços a fitxers"
 
 #: bookwyrm/templates/book/file_links/links.html:9
 msgid "Get a copy"
-msgstr ""
+msgstr "Obtingeu una còpia"
 
 #: bookwyrm/templates/book/file_links/links.html:47
 msgid "No links available"
-msgstr ""
+msgstr "No hi ha enllaços disponibles"
 
 #: bookwyrm/templates/book/file_links/verification_modal.html:5
 msgid "Leaving BookWyrm"
-msgstr ""
+msgstr "Sortint de BookWyrm"
 
 #: bookwyrm/templates/book/file_links/verification_modal.html:11
 #, python-format
@@ -1249,7 +1249,7 @@ msgstr ""
 #: bookwyrm/templates/book/file_links/verification_modal.html:26
 #: bookwyrm/templates/setup/config.html:139
 msgid "Continue"
-msgstr ""
+msgstr "Continueu"
 
 #: bookwyrm/templates/book/publisher_info.html:23
 #, python-format
@@ -1259,31 +1259,31 @@ msgstr ""
 #: bookwyrm/templates/book/publisher_info.html:25
 #, python-format
 msgid "%(pages)s pages"
-msgstr ""
+msgstr "%(pages)s pàgines"
 
 #: bookwyrm/templates/book/publisher_info.html:38
 #, python-format
 msgid "%(languages)s language"
-msgstr ""
+msgstr "%(languages)s idioma"
 
 #: bookwyrm/templates/book/publisher_info.html:65
 #, python-format
 msgid "Published %(date)s by %(publisher)s."
-msgstr ""
+msgstr "Publicat el %(date)s per %(publisher)s."
 
 #: bookwyrm/templates/book/publisher_info.html:67
 #, python-format
 msgid "Published %(date)s"
-msgstr ""
+msgstr "Publicat el %(date)s"
 
 #: bookwyrm/templates/book/publisher_info.html:69
 #, python-format
 msgid "Published by %(publisher)s."
-msgstr ""
+msgstr "Publicat per %(publisher)s."
 
 #: bookwyrm/templates/book/rating.html:13
 msgid "rated it"
-msgstr ""
+msgstr "el va valorar amb"
 
 #: bookwyrm/templates/book/sync_modal.html:15
 #, python-format
@@ -1296,11 +1296,11 @@ msgstr ""
 
 #: bookwyrm/templates/confirm_email/confirm_email.html:4
 msgid "Confirm email"
-msgstr ""
+msgstr "Confirmeu el correu electrònic"
 
 #: bookwyrm/templates/confirm_email/confirm_email.html:7
 msgid "Confirm your email address"
-msgstr ""
+msgstr "Confirmeu la teva adreça de correu electrònic"
 
 #: bookwyrm/templates/confirm_email/confirm_email.html:13
 msgid "A confirmation code has been sent to the email address you used to register your account."
@@ -1313,18 +1313,18 @@ msgstr ""
 #: bookwyrm/templates/confirm_email/confirm_email.html:19
 #: bookwyrm/templates/settings/users/user_info.html:92
 msgid "Confirmation code:"
-msgstr ""
+msgstr "Codi de confirmació:"
 
 #: bookwyrm/templates/confirm_email/confirm_email.html:25
 #: bookwyrm/templates/landing/layout.html:81
 #: bookwyrm/templates/settings/dashboard/dashboard.html:116
 #: bookwyrm/templates/snippets/report_modal.html:53
 msgid "Submit"
-msgstr ""
+msgstr "Envieu"
 
 #: bookwyrm/templates/confirm_email/confirm_email.html:38
 msgid "Can't find your code?"
-msgstr ""
+msgstr "No podeu trobar el vostre codi?"
 
 #: bookwyrm/templates/confirm_email/resend.html:5
 #: bookwyrm/templates/confirm_email/resend_modal.html:5
@@ -1337,7 +1337,7 @@ msgstr ""
 #: bookwyrm/templates/preferences/edit_user.html:53
 #: bookwyrm/templates/snippets/register_form.html:27
 msgid "Email address:"
-msgstr ""
+msgstr "Adreça de correu electrònic:"
 
 #: bookwyrm/templates/confirm_email/resend_modal.html:28
 msgid "No user matching this email address found."
@@ -1391,15 +1391,15 @@ msgstr ""
 
 #: bookwyrm/templates/directory/sort_filter.html:5
 msgid "Order by"
-msgstr ""
+msgstr "Ordeneu per"
 
 #: bookwyrm/templates/directory/sort_filter.html:9
 msgid "Recently active"
-msgstr ""
+msgstr "Actiu recentment"
 
 #: bookwyrm/templates/directory/sort_filter.html:10
 msgid "Suggested"
-msgstr ""
+msgstr "Suggerit"
 
 #: bookwyrm/templates/directory/user_card.html:17
 #: bookwyrm/templates/directory/user_card.html:18
@@ -1412,7 +1412,7 @@ msgstr ""
 #: bookwyrm/templates/user/user_preview.html:16
 #: bookwyrm/templates/user/user_preview.html:17
 msgid "Locked account"
-msgstr ""
+msgstr "Compte bloquejat"
 
 #: bookwyrm/templates/directory/user_card.html:40
 msgid "follower you follow"
@@ -1436,7 +1436,7 @@ msgstr ""
 
 #: bookwyrm/templates/directory/user_type_filter.html:5
 msgid "User type"
-msgstr ""
+msgstr "Tipus d'usuari"
 
 #: bookwyrm/templates/directory/user_type_filter.html:8
 msgid "BookWyrm users"
@@ -1533,7 +1533,7 @@ msgstr ""
 
 #: bookwyrm/templates/email/html_layout.html:23
 msgid "Email preference"
-msgstr ""
+msgstr "Preferències de correu electrònic"
 
 #: bookwyrm/templates/email/invite/html_content.html:6
 #: bookwyrm/templates/email/invite/subject.html:2
@@ -1569,7 +1569,7 @@ msgstr ""
 #: bookwyrm/templates/email/moderation_report/html_content.html:9
 #: bookwyrm/templates/email/moderation_report/text_content.html:7
 msgid "View report"
-msgstr ""
+msgstr "Veieu l'informe"
 
 #: bookwyrm/templates/email/moderation_report/subject.html:2
 #, python-format
