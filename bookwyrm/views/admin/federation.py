@@ -29,10 +29,10 @@ class Federation(View):
 
         sort = request.GET.get("sort")
         sort_fields = ["created_date", "application_type", "server_name"]
-        # pylint: disable=consider-using-f-string
-        if not sort in sort_fields + ["-{:s}".format(f) for f in sort_fields]:
+
+        if not sort in sort_fields + [f"-{f}" for f in sort_fields]:
             sort = "-created_date"
-        servers = servers.order_by(sort)
+        servers = servers.order_by(sort, "-created_date")
 
         paginated = Paginator(servers, PAGE_LENGTH)
         page = paginated.get_page(request.GET.get("page"))

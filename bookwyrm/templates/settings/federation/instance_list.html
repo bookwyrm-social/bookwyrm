@@ -43,7 +43,6 @@
         <th>
             {% trans "Users" %}
         </th>
-        <th>{% trans "Status" %}</th>
     </tr>
     {% for server in servers %}
     <tr>
@@ -56,7 +55,6 @@
         {% endif %}
         </td>
         <td>{{ server.user_set.count }}</td>
-        <td>{{ server.get_status_display }}</td>
     </tr>
     {% endfor %}
     {% if not servers %}
