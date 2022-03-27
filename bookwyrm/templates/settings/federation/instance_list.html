@@ -12,6 +12,9 @@
 {% endblock %}
 
 {% block panel %}
+
+{% include 'settings/federation/instance_filters.html' %}
+
 <div class="tabs">
     <ul>
         {% url 'settings-federation' status='federated' as url %}

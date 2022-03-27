@@ -25,13 +25,20 @@ class Federation(View):
 
     def get(self, request, status="federated"):
         """list of servers"""
-        servers = models.FederatedServer.objects.filter(status=status)
+
+        filters = {}
+        if software := request.GET.get("application_type"):
+            filters["application_type"] = software
+
+        servers = models.FederatedServer.objects.filter(status=status, **filters)
 
         sort = request.GET.get("sort")
         sort_fields = [
-            "created_date", "updated_date", "application_type", "server_name"
+            "created_date",
+            "updated_date",
+            "application_type",
+            "server_name",
         ]
-
         if not sort in sort_fields + [f"-{f}" for f in sort_fields]:
             sort = "-created_date"
         servers = servers.order_by(sort, "-created_date")
@@ -51,6 +58,9 @@ class Federation(View):
                 page.number, on_each_side=2, on_ends=1
             ),
             "sort": sort,
+            "software_options": models.FederatedServer.objects.values_list(
+                "application_type", flat=True
+            ).distinct(),
             "form": forms.ServerForm(),
         }
         return TemplateResponse(request, "settings/federation/instance_list.html", data)
