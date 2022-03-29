@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-03-26 20:16+0000\n"
-"PO-Revision-Date: 2022-03-28 23:01\n"
+"PO-Revision-Date: 2022-03-29 00:02\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Finnish\n"
 "Language: fi\n"
@@ -426,7 +426,7 @@ msgstr "Aktiivisia käyttäjiä:"
 
 #: bookwyrm/templates/about/layout.html:15
 msgid "Statuses posted:"
-msgstr "Julkaisuja:"
+msgstr "Tilapäivityksiä:"
 
 #: bookwyrm/templates/about/layout.html:19
 #: bookwyrm/templates/setup/config.html:74
@@ -1292,7 +1292,7 @@ msgstr "Tietoja ladattaessa muodostetaan yhteys lähteeseen <strong>%(source_nam
 
 #: bookwyrm/templates/compose.html:5 bookwyrm/templates/compose.html:8
 msgid "Edit status"
-msgstr "Muokkaa tilaa"
+msgstr "Muokkaa tilapäivitystä"
 
 #: bookwyrm/templates/confirm_email/confirm_email.html:4
 msgid "Confirm email"
@@ -1495,7 +1495,7 @@ msgstr "Uutta %(site_name)s-yhteisössä"
 #: bookwyrm/templates/discover/large-book.html:52
 #: bookwyrm/templates/discover/small-book.html:36
 msgid "View status"
-msgstr "Näytä julkaisu"
+msgstr "Näytä tilapäivitys"
 
 #: bookwyrm/templates/email/confirm/html_content.html:6
 #: bookwyrm/templates/email/confirm/text_content.html:4
@@ -1638,7 +1638,7 @@ msgstr "Ei tapahtumia. Seuraa muita käyttäjiä"
 
 #: bookwyrm/templates/feed/feed.html:55
 msgid "Alternatively, you can try enabling more status types"
-msgstr "Voit myös ottaa uusia julkaisutyyppejä käyttöön"
+msgstr "Voit myös ottaa uusia tilapäivityslajeja käyttöön"
 
 #: bookwyrm/templates/feed/goal_card.html:6
 #: bookwyrm/templates/feed/layout.html:15
@@ -2316,11 +2316,11 @@ msgstr "Liity"
 
 #: bookwyrm/templates/layout.html:229
 msgid "Successfully posted status"
-msgstr "Tilajulkaisu onnistui"
+msgstr "Tilapäivitys onnistui"
 
 #: bookwyrm/templates/layout.html:230
 msgid "Error posting status"
-msgstr "Virhe tilajulkaisussa"
+msgstr "Virhe tilapäivityksessä"
 
 #: bookwyrm/templates/layout.html:246
 msgid "Documentation"
@@ -2616,7 +2616,7 @@ msgstr "buustasi <a href=\"%(related_path)s\">lainaustasi teoksesta <em>%(book_t
 #: bookwyrm/templates/notifications/items/boost.html:37
 #, python-format
 msgid "boosted your <a href=\"%(related_path)s\">status</a>"
-msgstr "buustasi <a href=\"%(related_path)s\">tilajulkaisuasi</a>"
+msgstr "buustasi <a href=\"%(related_path)s\">tilapäivitystäsi</a>"
 
 #: bookwyrm/templates/notifications/items/fav.html:19
 #, python-format
@@ -2636,7 +2636,7 @@ msgstr "tykkäsi <a href=\"%(related_path)s\">lainauksestasi teoksesta <em>%(boo
 #: bookwyrm/templates/notifications/items/fav.html:37
 #, python-format
 msgid "liked your <a href=\"%(related_path)s\">status</a>"
-msgstr "tykkäsi <a href=\"%(related_path)s\">tilajulkaisustasi</a>"
+msgstr "tykkäsi <a href=\"%(related_path)s\">tilapäivityksestäsi</a>"
 
 #: bookwyrm/templates/notifications/items/follow.html:15
 msgid "followed you"
@@ -2684,7 +2684,7 @@ msgstr "mainitsi sinut <a href=\"%(related_path)s\">lainauksessa teoksesta <em>%
 #: bookwyrm/templates/notifications/items/mention.html:38
 #, python-format
 msgid "mentioned you in a <a href=\"%(related_path)s\">status</a>"
-msgstr "mainitsi sinut <a href=\"%(related_path)s\">tilajulkaisussa</a>"
+msgstr "mainitsi sinut <a href=\"%(related_path)s\">tilapäivityksessä</a>"
 
 #: bookwyrm/templates/notifications/items/remove.html:17
 #, python-format
@@ -2704,173 +2704,173 @@ msgstr "<a href=\"%(related_path)s\">vastasi</a> <a href=\"%(parent_path)s\">arv
 #: bookwyrm/templates/notifications/items/reply.html:27
 #, python-format
 msgid "<a href=\"%(related_path)s\">replied</a> to your <a href=\"%(parent_path)s\">comment on <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_path)s\">vastasi</a> <a href=\"%(parent_path)s\">teosta <em>%(book_title)s</em> koskevaan kommenttiisi</a>"
 
 #: bookwyrm/templates/notifications/items/reply.html:33
 #, python-format
 msgid "<a href=\"%(related_path)s\">replied</a> to your <a href=\"%(parent_path)s\">quote from <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_path)s\">vastasi</a> <a href=\"%(parent_path)s\">lainaukseesi teoksesta <em>%(book_title)s</em></a>"
 
 #: bookwyrm/templates/notifications/items/reply.html:39
 #, python-format
 msgid "<a href=\"%(related_path)s\">replied</a> to your <a href=\"%(parent_path)s\">status</a>"
-msgstr ""
+msgstr "<a href=\"%(related_path)s\">vastasi</a> <a href=\"%(parent_path)s\">tilapäivitykseesi</a>"
 
 #: bookwyrm/templates/notifications/items/report.html:15
 #, python-format
 msgid "A new <a href=\"%(path)s\">report</a> needs moderation."
-msgstr ""
+msgstr "Uusi <a href=\"%(path)s\">raportti</a> odottaa moderointipäätöstä."
 
 #: bookwyrm/templates/notifications/items/update.html:16
 #, python-format
 msgid "has changed the privacy level for <a href=\"%(group_path)s\">%(group_name)s</a>"
-msgstr ""
+msgstr "on muuttanut ryhmän <a href=\"%(group_path)s\">%(group_name)s</a> yksityisyysasetusta"
 
 #: bookwyrm/templates/notifications/items/update.html:20
 #, python-format
 msgid "has changed the name of <a href=\"%(group_path)s\">%(group_name)s</a>"
-msgstr ""
+msgstr "on muuttanut ryhmän <a href=\"%(group_path)s\">%(group_name)s</a> nimeä"
 
 #: bookwyrm/templates/notifications/items/update.html:24
 #, python-format
 msgid "has changed the description of <a href=\"%(group_path)s\">%(group_name)s</a>"
-msgstr ""
+msgstr "on muuttanut ryhmän <a href=\"%(group_path)s\">%(group_name)s</a> kuvausta"
 
 #: bookwyrm/templates/notifications/notifications_page.html:18
 msgid "Delete notifications"
-msgstr ""
+msgstr "Poista ilmoitukset"
 
 #: bookwyrm/templates/notifications/notifications_page.html:29
 msgid "All"
-msgstr ""
+msgstr "Kaikki"
 
 #: bookwyrm/templates/notifications/notifications_page.html:33
 msgid "Mentions"
-msgstr ""
+msgstr "Maininnat"
 
 #: bookwyrm/templates/notifications/notifications_page.html:45
 msgid "You're all caught up!"
-msgstr ""
+msgstr "Olet ajan tasalla!"
 
 #: bookwyrm/templates/ostatus/error.html:7
 #, python-format
 msgid "<strong>%(account)s</strong> is not a valid username"
-msgstr ""
+msgstr "Käyttäjänimi <strong>%(account)s</strong> ei kelpaa"
 
 #: bookwyrm/templates/ostatus/error.html:8
 #: bookwyrm/templates/ostatus/error.html:13
 msgid "Check you have the correct username before trying again"
-msgstr ""
+msgstr "Tarkista, että käytät oikeaa käyttäjänimeä, ja yritä uudelleen"
 
 #: bookwyrm/templates/ostatus/error.html:12
 #, python-format
 msgid "<strong>%(account)s</strong> could not be found or <code>%(remote_domain)s</code> does not support identity discovery"
-msgstr ""
+msgstr "Käyttäjätiliä <strong>%(account)s</strong> ei löytynyt, tai <code>%(remote_domain)s</code> ei salli käyttäjätilien etsimistä"
 
 #: bookwyrm/templates/ostatus/error.html:17
 #, python-format
 msgid "<strong>%(account)s</strong> was found but <code>%(remote_domain)s</code> does not support 'remote follow'"
-msgstr ""
+msgstr "<strong>%(account)s</strong> löytyi, mutta <code>%(remote_domain)s</code> ei salli etäseuraajia"
 
 #: bookwyrm/templates/ostatus/error.html:18
 #, python-format
 msgid "Try searching for <strong>%(user)s</strong> on <code>%(remote_domain)s</code> instead"
-msgstr ""
+msgstr "Kokeile hakea käyttäjää <strong>%(user)s</strong> suoraan palvelimelta <code>%(remote_domain)s</code>"
 
 #: bookwyrm/templates/ostatus/error.html:46
 #, python-format
 msgid "Something went wrong trying to follow <strong>%(account)s</strong>"
-msgstr ""
+msgstr "Käyttäjätilin <strong>%(account)s</strong> seuraamisessa tapahtui virhe"
 
 #: bookwyrm/templates/ostatus/error.html:47
 msgid "Check you have the correct username before trying again."
-msgstr ""
+msgstr "Tarkista, että käytät oikeaa käyttäjänimeä, ja yritä uudelleen."
 
 #: bookwyrm/templates/ostatus/error.html:51
 #, python-format
 msgid "You have blocked <strong>%(account)s</strong>"
-msgstr ""
+msgstr "Olet estänyt käyttäjän <strong>%(account)s</strong>"
 
 #: bookwyrm/templates/ostatus/error.html:55
 #, python-format
 msgid "<strong>%(account)s</strong> has blocked you"
-msgstr ""
+msgstr "<strong>%(account)s</strong> on estänyt sinut"
 
 #: bookwyrm/templates/ostatus/error.html:59
 #, python-format
 msgid "You are already following <strong>%(account)s</strong>"
-msgstr ""
+msgstr "Seuraat jo käyttäjää <strong>%(account)s</strong>"
 
 #: bookwyrm/templates/ostatus/error.html:63
 #, python-format
 msgid "You have already requested to follow <strong>%(account)s</strong>"
-msgstr ""
+msgstr "Olet jo pyytänyt saada seurata käyttäjää <strong>%(account)s</strong>"
 
 #: bookwyrm/templates/ostatus/remote_follow.html:6
 #, python-format
 msgid "Follow %(username)s on the fediverse"
-msgstr ""
+msgstr "Seuraa käyttäjää %(username)s fediversumissa"
 
 #: bookwyrm/templates/ostatus/remote_follow.html:33
 #, python-format
 msgid "Follow %(username)s from another Fediverse account like BookWyrm, Mastodon, or Pleroma."
-msgstr ""
+msgstr "Seuraa käyttäjää %(username)s toisen fediversumissa (esim. BookWyrm-, Mastodon- tai Pleroma-palvelimella) sijaitsevan käyttäjätilin kautta."
 
 #: bookwyrm/templates/ostatus/remote_follow.html:40
 msgid "User handle to follow from:"
-msgstr ""
+msgstr "Seurattavan käyttäjän käyttäjätunnus:"
 
 #: bookwyrm/templates/ostatus/remote_follow.html:42
 msgid "Follow!"
-msgstr ""
+msgstr "Seuraa"
 
 #: bookwyrm/templates/ostatus/remote_follow_button.html:8
 msgid "Follow on Fediverse"
-msgstr ""
+msgstr "Seuraa fediversumissa"
 
 #: bookwyrm/templates/ostatus/remote_follow_button.html:12
 msgid "This link opens in a pop-up window"
-msgstr ""
+msgstr "Linkki avautuu ponnahdusikkunassa"
 
 #: bookwyrm/templates/ostatus/subscribe.html:8
 #, python-format
 msgid "Log in to %(sitename)s"
-msgstr ""
+msgstr "Kirjaudu palveluun %(sitename)s"
 
 #: bookwyrm/templates/ostatus/subscribe.html:10
 #, python-format
 msgid "Error following from %(sitename)s"
-msgstr ""
+msgstr "Virhe seurattaessa palvelusta %(sitename)s"
 
 #: bookwyrm/templates/ostatus/subscribe.html:12
 #: bookwyrm/templates/ostatus/subscribe.html:22
 #, python-format
 msgid "Follow from %(sitename)s"
-msgstr ""
+msgstr "Seuraa palvelusta %(sitename)s"
 
 #: bookwyrm/templates/ostatus/subscribe.html:18
 msgid "Uh oh..."
-msgstr ""
+msgstr "No jopas..."
 
 #: bookwyrm/templates/ostatus/subscribe.html:20
 msgid "Let's log in first..."
-msgstr ""
+msgstr "Kirjaudutaan ensin sisään..."
 
 #: bookwyrm/templates/ostatus/subscribe.html:51
 #, python-format
 msgid "Follow %(username)s"
-msgstr ""
+msgstr "Seuraa käyttäjää %(username)s"
 
 #: bookwyrm/templates/ostatus/success.html:28
 #, python-format
 msgid "You are now following %(display_name)s!"
-msgstr ""
+msgstr "Seuraat nyt käyttäjää %(display_name)s!"
 
 #: bookwyrm/templates/preferences/blocks.html:4
 #: bookwyrm/templates/preferences/blocks.html:7
 #: bookwyrm/templates/preferences/layout.html:42
 msgid "Blocked Users"
-msgstr ""
+msgstr "Estetyt käyttäjät"
 
 #: bookwyrm/templates/preferences/blocks.html:12
 msgid "No users currently blocked."
@@ -3121,27 +3121,27 @@ msgstr ""
 
 #: bookwyrm/templates/search/book.html:80
 msgid "Import book"
-msgstr ""
+msgstr "Tuo kirja"
 
 #: bookwyrm/templates/search/book.html:106
 msgid "Load results from other catalogues"
-msgstr ""
+msgstr "Lataa tuloksia muista katalogeista"
 
 #: bookwyrm/templates/search/book.html:110
 msgid "Manually add book"
-msgstr ""
+msgstr "Lisää kirja käsin"
 
 #: bookwyrm/templates/search/book.html:115
 msgid "Log in to import or add books."
-msgstr ""
+msgstr "Kirjojen tuonti tai lisääminen edellyttää sisäänkirjautumista."
 
 #: bookwyrm/templates/search/layout.html:16
 msgid "Search query"
-msgstr ""
+msgstr "Hakulauseke"
 
 #: bookwyrm/templates/search/layout.html:19
 msgid "Search type"
-msgstr ""
+msgstr "Hakutyyppi"
 
 #: bookwyrm/templates/search/layout.html:23
 #: bookwyrm/templates/search/layout.html:46
@@ -3152,23 +3152,23 @@ msgstr ""
 #: bookwyrm/templates/settings/users/user_admin.html:5
 #: bookwyrm/templates/settings/users/user_admin.html:12
 msgid "Users"
-msgstr ""
+msgstr "Käyttäjät"
 
 #: bookwyrm/templates/search/layout.html:58
 #, python-format
 msgid "No results found for \"%(query)s\""
-msgstr ""
+msgstr "Ei tuloksia hakulausekkeella ”%(query)s”"
 
 #: bookwyrm/templates/settings/announcements/announcement.html:5
 #: bookwyrm/templates/settings/announcements/announcement.html:8
 msgid "Announcement"
-msgstr ""
+msgstr "Tiedote"
 
 #: bookwyrm/templates/settings/announcements/announcement.html:16
 #: bookwyrm/templates/settings/federation/instance.html:93
 #: bookwyrm/templates/snippets/status/status_options.html:25
 msgid "Edit"
-msgstr ""
+msgstr "Muokkaa"
 
 #: bookwyrm/templates/settings/announcements/announcement.html:32
 #: bookwyrm/templates/settings/announcements/announcements.html:3
@@ -3176,11 +3176,11 @@ msgstr ""
 #: bookwyrm/templates/settings/announcements/edit_announcement.html:15
 #: bookwyrm/templates/settings/layout.html:82
 msgid "Announcements"
-msgstr ""
+msgstr "Tiedotteet"
 
 #: bookwyrm/templates/settings/announcements/announcement.html:45
 msgid "Visible:"
-msgstr ""
+msgstr "Näkyvyys:"
 
 #: bookwyrm/templates/settings/announcements/announcement.html:49
 msgid "True"
@@ -3387,95 +3387,95 @@ msgstr[1] ""
 #, python-format
 msgid "%(display_count)s domain needs review"
 msgid_plural "%(display_count)s domains need review"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(display_count)s verkkotunnus vaatii tarkistusta"
+msgstr[1] "%(display_count)s verkkotunnusta vaatii tarkistusta"
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:67
 #, python-format
 msgid "%(display_count)s invite request"
 msgid_plural "%(display_count)s invite requests"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(display_count)s kutsupyyntö"
+msgstr[1] "%(display_count)s kutsupyyntöä"
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:79
 #, python-format
 msgid "An update is available! You're running v%(current)s and the latest release is %(available)s."
-msgstr ""
+msgstr "Päivitys saatavilla! Käytössäsi on versio %(current)s, ja viimeisin julkaistu versio on %(available)s."
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:88
 msgid "Instance Activity"
-msgstr ""
+msgstr "Palvelimen aktiivisuus"
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:106
 msgid "Interval:"
-msgstr ""
+msgstr "Aikaväli:"
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:110
 msgid "Days"
-msgstr ""
+msgstr "päivä"
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:111
 msgid "Weeks"
-msgstr ""
+msgstr "viikko"
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:129
 msgid "User signup activity"
-msgstr ""
+msgstr "Rekisteröityneitä käyttäjiä"
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:135
 msgid "Status activity"
-msgstr ""
+msgstr "Tilapäivityksiä"
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:141
 msgid "Works created"
-msgstr ""
+msgstr "Luotuja teoksia"
 
 #: bookwyrm/templates/settings/dashboard/registration_chart.html:10
 msgid "Registrations"
-msgstr ""
+msgstr "Rekisteröitymisiä"
 
 #: bookwyrm/templates/settings/dashboard/status_chart.html:11
 msgid "Statuses posted"
-msgstr ""
+msgstr "Tilapäivityksiä"
 
 #: bookwyrm/templates/settings/dashboard/user_chart.html:11
 msgid "Total"
-msgstr ""
+msgstr "Yhteensä"
 
 #: bookwyrm/templates/settings/email_blocklist/domain_form.html:5
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:10
 msgid "Add domain"
-msgstr ""
+msgstr "Lisää verkkotunnus"
 
 #: bookwyrm/templates/settings/email_blocklist/domain_form.html:11
 msgid "Domain:"
-msgstr ""
+msgstr "Verkkotunnus:"
 
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:5
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:7
 #: bookwyrm/templates/settings/layout.html:65
 msgid "Email Blocklist"
-msgstr ""
+msgstr "Sähköpostiestolista"
 
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:18
 msgid "When someone tries to register with an email from this domain, no account will be created. The registration process will appear to have worked."
-msgstr ""
+msgstr "Yritykset rekisteröityä tätä verkkotunnusta käyttävillä sähköpostiosoitteilla eivät johda käyttäjätilin luomiseen, mutta rekisteröitymisen annetaan ymmärtää onnistuneen."
 
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:29
 #: bookwyrm/templates/settings/ip_blocklist/ip_blocklist.html:27
 msgid "Options"
-msgstr ""
+msgstr "Valinnat"
 
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:38
 #, python-format
 msgid "%(display_count)s user"
 msgid_plural "%(display_count)s users"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(display_count)s käyttäjä"
+msgstr[1] "%(display_count)s käyttäjää"
 
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:59
 msgid "No email domains currently blocked"
-msgstr ""
+msgstr "Ei estettyjä sähköpostiverkkotunnuksia"
 
 #: bookwyrm/templates/settings/federation/edit_instance.html:3
 #: bookwyrm/templates/settings/federation/edit_instance.html:6
@@ -3486,7 +3486,7 @@ msgstr ""
 #: bookwyrm/templates/settings/federation/instance_list.html:9
 #: bookwyrm/templates/settings/federation/instance_list.html:10
 msgid "Add instance"
-msgstr ""
+msgstr "Lisää instanssi"
 
 #: bookwyrm/templates/settings/federation/edit_instance.html:12
 #: bookwyrm/templates/settings/federation/instance.html:24
@@ -3495,138 +3495,138 @@ msgstr ""
 #: bookwyrm/templates/settings/federation/instance_list.html:5
 #: bookwyrm/templates/settings/layout.html:47
 msgid "Federated Instances"
-msgstr ""
+msgstr "Federoituvat instanssit"
 
 #: bookwyrm/templates/settings/federation/edit_instance.html:28
 #: bookwyrm/templates/settings/federation/instance_blocklist.html:28
 msgid "Import block list"
-msgstr ""
+msgstr "Tuo estolista"
 
 #: bookwyrm/templates/settings/federation/edit_instance.html:43
 msgid "Instance:"
-msgstr ""
+msgstr "Instanssi:"
 
 #: bookwyrm/templates/settings/federation/edit_instance.html:52
 #: bookwyrm/templates/settings/federation/instance.html:46
 #: bookwyrm/templates/settings/users/user_info.html:113
 msgid "Status:"
-msgstr ""
+msgstr "Tila:"
 
 #: bookwyrm/templates/settings/federation/edit_instance.html:66
 #: bookwyrm/templates/settings/federation/instance.html:40
 #: bookwyrm/templates/settings/users/user_info.html:107
 msgid "Software:"
-msgstr ""
+msgstr "Ohjelmisto:"
 
 #: bookwyrm/templates/settings/federation/edit_instance.html:76
 #: bookwyrm/templates/settings/federation/instance.html:43
 #: bookwyrm/templates/settings/users/user_info.html:110
 msgid "Version:"
-msgstr ""
+msgstr "Versio:"
 
 #: bookwyrm/templates/settings/federation/instance.html:17
 msgid "Refresh data"
-msgstr ""
+msgstr "Päivitä tiedot"
 
 #: bookwyrm/templates/settings/federation/instance.html:37
 msgid "Details"
-msgstr ""
+msgstr "Lisätiedot"
 
 #: bookwyrm/templates/settings/federation/instance.html:53
 #: bookwyrm/templates/user/layout.html:67
 msgid "Activity"
-msgstr ""
+msgstr "Aktiivisuus"
 
 #: bookwyrm/templates/settings/federation/instance.html:56
 msgid "Users:"
-msgstr ""
+msgstr "Käyttäjiä:"
 
 #: bookwyrm/templates/settings/federation/instance.html:59
 #: bookwyrm/templates/settings/federation/instance.html:65
 msgid "View all"
-msgstr ""
+msgstr "Näytä kaikki"
 
 #: bookwyrm/templates/settings/federation/instance.html:62
 #: bookwyrm/templates/settings/users/user_info.html:60
 msgid "Reports:"
-msgstr ""
+msgstr "Raportteja:"
 
 #: bookwyrm/templates/settings/federation/instance.html:68
 msgid "Followed by us:"
-msgstr ""
+msgstr "Täältä seurattavia:"
 
 #: bookwyrm/templates/settings/federation/instance.html:73
 msgid "Followed by them:"
-msgstr ""
+msgstr "Sieltä seurattavia:"
 
 #: bookwyrm/templates/settings/federation/instance.html:78
 msgid "Blocked by us:"
-msgstr ""
+msgstr "Täältä estettyjä:"
 
 #: bookwyrm/templates/settings/federation/instance.html:90
 #: bookwyrm/templates/settings/users/user_info.html:117
 msgid "Notes"
-msgstr ""
+msgstr "Merkintöjä"
 
 #: bookwyrm/templates/settings/federation/instance.html:97
 msgid "<em>No notes</em>"
-msgstr ""
+msgstr "<em>Ei merkintöjä</em>"
 
 #: bookwyrm/templates/settings/federation/instance.html:116
 #: bookwyrm/templates/settings/link_domains/link_domains.html:87
 #: bookwyrm/templates/snippets/block_button.html:5
 msgid "Block"
-msgstr ""
+msgstr "Estä"
 
 #: bookwyrm/templates/settings/federation/instance.html:117
 msgid "All users from this instance will be deactivated."
-msgstr ""
+msgstr "Kaikki tämän instanssin käyttäjät estetään."
 
 #: bookwyrm/templates/settings/federation/instance.html:122
 #: bookwyrm/templates/snippets/block_button.html:10
 msgid "Un-block"
-msgstr ""
+msgstr "Poista esto"
 
 #: bookwyrm/templates/settings/federation/instance.html:123
 msgid "All users from this instance will be re-activated."
-msgstr ""
+msgstr "Kaikkien tämän instanssin käyttäjien esto poistetaan."
 
 #: bookwyrm/templates/settings/federation/instance_blocklist.html:6
 #: bookwyrm/templates/settings/federation/instance_blocklist.html:15
 msgid "Import Blocklist"
-msgstr ""
+msgstr "Tuo estolista"
 
 #: bookwyrm/templates/settings/federation/instance_blocklist.html:38
 msgid "Success!"
-msgstr ""
+msgstr "Onnistui!"
 
 #: bookwyrm/templates/settings/federation/instance_blocklist.html:42
 msgid "Successfully blocked:"
-msgstr ""
+msgstr "Onnistuneesti estetyt:"
 
 #: bookwyrm/templates/settings/federation/instance_blocklist.html:44
 msgid "Failed:"
-msgstr ""
+msgstr "Epäonnistuneet:"
 
 #: bookwyrm/templates/settings/federation/instance_list.html:32
 #: bookwyrm/templates/settings/users/server_filter.html:5
 msgid "Instance name"
-msgstr ""
+msgstr "Instanssin nimi"
 
 #: bookwyrm/templates/settings/federation/instance_list.html:40
 msgid "Software"
-msgstr ""
+msgstr "Ohjelmisto"
 
 #: bookwyrm/templates/settings/federation/instance_list.html:63
 msgid "No instances found"
-msgstr ""
+msgstr "Instansseja ei löytynyt"
 
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:4
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:11
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:25
 #: bookwyrm/templates/settings/invites/manage_invites.html:11
 msgid "Invite Requests"
-msgstr ""
+msgstr "Kutsupyynnöt"
 
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:23
 msgid "Ignored Invite Requests"
