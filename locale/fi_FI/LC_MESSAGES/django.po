@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-03-26 20:16+0000\n"
-"PO-Revision-Date: 2022-03-30 18:17\n"
+"PO-Revision-Date: 2022-03-30 19:31\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Finnish\n"
 "Language: fi\n"
@@ -1667,7 +1667,7 @@ msgstr "Ei kirjoja. Kokeile hakea kirjoja"
 
 #: bookwyrm/templates/feed/suggested_books.html:13
 msgid "Do you have book data from another service like GoodReads?"
-msgstr "Haluatko käyttää toisesta palvelusta, esimerkiksi GoodReadsista, tuotuja kirjojen tietoja?"
+msgstr "Haluatko käyttää toisesta palvelusta, esimerkiksi Goodreadsista, tuotuja kirjojen tietoja?"
 
 #: bookwyrm/templates/feed/suggested_books.html:16
 msgid "Import your reading history"
@@ -2601,22 +2601,22 @@ msgstr "ehdotti teosta <em><a href=\"%(book_path)s\">%(book_title)s</a></em> lis
 #: bookwyrm/templates/notifications/items/boost.html:19
 #, python-format
 msgid "boosted your <a href=\"%(related_path)s\">review of <em>%(book_title)s</em></a>"
-msgstr "buustasi <a href=\"%(related_path)s\">arviotasi teoksesta <em>%(book_title)s</em></a>"
+msgstr "kaiutti <a href=\"%(related_path)s\">arviotasi teoksesta <em>%(book_title)s</em></a>"
 
 #: bookwyrm/templates/notifications/items/boost.html:25
 #, python-format
 msgid "boosted your <a href=\"%(related_path)s\">comment on<em>%(book_title)s</em></a>"
-msgstr "buustasi <a href=\"%(related_path)s\">teokseen <em>%(book_title)s</em> liittyvää kommenttiasi</a>"
+msgstr "kaiutti <a href=\"%(related_path)s\">teokseen <em>%(book_title)s</em> liittyvää kommenttiasi</a>"
 
 #: bookwyrm/templates/notifications/items/boost.html:31
 #, python-format
 msgid "boosted your <a href=\"%(related_path)s\">quote from <em>%(book_title)s</em></a>"
-msgstr "buustasi <a href=\"%(related_path)s\">lainaustasi teoksesta <em>%(book_title)s</em></a>"
+msgstr "kaiutti <a href=\"%(related_path)s\">lainaustasi teoksesta <em>%(book_title)s</em></a>"
 
 #: bookwyrm/templates/notifications/items/boost.html:37
 #, python-format
 msgid "boosted your <a href=\"%(related_path)s\">status</a>"
-msgstr "buustasi <a href=\"%(related_path)s\">tilapäivitystäsi</a>"
+msgstr "kaiutti <a href=\"%(related_path)s\">tilapäivitystäsi</a>"
 
 #: bookwyrm/templates/notifications/items/fav.html:19
 #, python-format
@@ -2835,18 +2835,18 @@ msgstr "Linkki avautuu ponnahdusikkunassa"
 #: bookwyrm/templates/ostatus/subscribe.html:8
 #, python-format
 msgid "Log in to %(sitename)s"
-msgstr "Kirjaudu palveluun %(sitename)s"
+msgstr "Kirjaudu palvelimelle %(sitename)s"
 
 #: bookwyrm/templates/ostatus/subscribe.html:10
 #, python-format
 msgid "Error following from %(sitename)s"
-msgstr "Virhe seurattaessa palvelusta %(sitename)s"
+msgstr "Virhe seurattaessa palvelimelta %(sitename)s"
 
 #: bookwyrm/templates/ostatus/subscribe.html:12
 #: bookwyrm/templates/ostatus/subscribe.html:22
 #, python-format
 msgid "Follow from %(sitename)s"
-msgstr "Seuraa palvelusta %(sitename)s"
+msgstr "Seuraa palvelimelta %(sitename)s"
 
 #: bookwyrm/templates/ostatus/subscribe.html:18
 msgid "Uh oh..."
@@ -3486,7 +3486,7 @@ msgstr "Ei estettyjä sähköpostiverkkotunnuksia"
 #: bookwyrm/templates/settings/federation/instance_list.html:9
 #: bookwyrm/templates/settings/federation/instance_list.html:10
 msgid "Add instance"
-msgstr "Lisää instanssi"
+msgstr "Lisää palvelin"
 
 #: bookwyrm/templates/settings/federation/edit_instance.html:12
 #: bookwyrm/templates/settings/federation/instance.html:24
@@ -3495,7 +3495,7 @@ msgstr "Lisää instanssi"
 #: bookwyrm/templates/settings/federation/instance_list.html:5
 #: bookwyrm/templates/settings/layout.html:47
 msgid "Federated Instances"
-msgstr "Federoituvat instanssit"
+msgstr "Federoituvat palvelimet"
 
 #: bookwyrm/templates/settings/federation/edit_instance.html:28
 #: bookwyrm/templates/settings/federation/instance_blocklist.html:28
@@ -3504,7 +3504,7 @@ msgstr "Tuo estolista"
 
 #: bookwyrm/templates/settings/federation/edit_instance.html:43
 msgid "Instance:"
-msgstr "Instanssi:"
+msgstr "Palvelin:"
 
 #: bookwyrm/templates/settings/federation/edit_instance.html:52
 #: bookwyrm/templates/settings/federation/instance.html:46
@@ -3580,7 +3580,7 @@ msgstr "Estä"
 
 #: bookwyrm/templates/settings/federation/instance.html:117
 msgid "All users from this instance will be deactivated."
-msgstr "Kaikki tämän instanssin käyttäjät estetään."
+msgstr "Kaikki palvelimen käyttäjät estetään."
 
 #: bookwyrm/templates/settings/federation/instance.html:122
 #: bookwyrm/templates/snippets/block_button.html:10
@@ -3589,7 +3589,7 @@ msgstr "Poista esto"
 
 #: bookwyrm/templates/settings/federation/instance.html:123
 msgid "All users from this instance will be re-activated."
-msgstr "Kaikkien tämän instanssin käyttäjien esto poistetaan."
+msgstr "Kaikkien palvelimen käyttäjien esto poistetaan."
 
 #: bookwyrm/templates/settings/federation/instance_blocklist.html:6
 #: bookwyrm/templates/settings/federation/instance_blocklist.html:15
@@ -3611,7 +3611,7 @@ msgstr "Epäonnistuneet:"
 #: bookwyrm/templates/settings/federation/instance_list.html:32
 #: bookwyrm/templates/settings/users/server_filter.html:5
 msgid "Instance name"
-msgstr "Instanssin nimi"
+msgstr "Palvelimen nimi"
 
 #: bookwyrm/templates/settings/federation/instance_list.html:40
 msgid "Software"
@@ -3619,7 +3619,7 @@ msgstr "Ohjelmisto"
 
 #: bookwyrm/templates/settings/federation/instance_list.html:63
 msgid "No instances found"
-msgstr "Instansseja ei löytynyt"
+msgstr "Palvelimia ei löytynyt"
 
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:4
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:11
@@ -3931,7 +3931,7 @@ msgstr "Ei raportteja."
 #: bookwyrm/templates/settings/site.html:10
 #: bookwyrm/templates/settings/site.html:44
 msgid "Instance Info"
-msgstr "Tietoja instanssista"
+msgstr "Tietoja palvelimesta"
 
 #: bookwyrm/templates/settings/site.html:12
 #: bookwyrm/templates/settings/site.html:110
@@ -3953,15 +3953,15 @@ msgstr "Asetuksia ei voi tallentaa"
 
 #: bookwyrm/templates/settings/site.html:47
 msgid "Instance Name:"
-msgstr "Instanssin nimi:"
+msgstr "Palvelimen nimi:"
 
 #: bookwyrm/templates/settings/site.html:51
 msgid "Tagline:"
-msgstr "Iskulause:"
+msgstr "Motto:"
 
 #: bookwyrm/templates/settings/site.html:55
 msgid "Instance description:"
-msgstr "Instanssin kuvaus:"
+msgstr "Palvelimen kuvaus:"
 
 #: bookwyrm/templates/settings/site.html:59
 msgid "Short description:"
@@ -3969,7 +3969,7 @@ msgstr "Lyhyt kuvaus:"
 
 #: bookwyrm/templates/settings/site.html:60
 msgid "Used when the instance is previewed on joinbookwyrm.com. Does not support HTML or Markdown."
-msgstr "Käytetään instanssin esittelyyn joinbookwyrm.com-sivustolla. Ei tue HTML- tai Markdown-muotoiluja."
+msgstr "Käytetään palvelimen esittelyyn joinbookwyrm.com-sivustolla. Ei tue HTML- tai Markdown-muotoiluja."
 
 #: bookwyrm/templates/settings/site.html:64
 msgid "Code of conduct:"
@@ -4049,7 +4049,7 @@ msgstr "Kutsupyyntökehote ja -ohje:"
 
 #: bookwyrm/templates/settings/themes.html:10
 msgid "Set instance default theme"
-msgstr "Aseta instanssin oletusteema"
+msgstr "Aseta palvelimen oletusteema"
 
 #: bookwyrm/templates/settings/themes.html:19
 msgid "Successfully added theme"
@@ -4135,7 +4135,7 @@ msgstr "Viimeksi paikalla"
 
 #: bookwyrm/templates/settings/users/user_admin.html:57
 msgid "Remote instance"
-msgstr "Etäinstanssi"
+msgstr "Etäpalvelin"
 
 #: bookwyrm/templates/settings/users/user_admin.html:74
 #: bookwyrm/templates/settings/users/user_info.html:28
@@ -4246,7 +4246,7 @@ msgstr "Luo käyttäjätili"
 
 #: bookwyrm/templates/setup/admin.html:20
 msgid "Admin key:"
-msgstr "Ylläpitäjän avain:"
+msgstr "Ylläpitoavain:"
 
 #: bookwyrm/templates/setup/admin.html:32
 msgid "An admin key was created when you installed BookWyrm. You can get your admin key by running <code>./bw-dev admin_code</code> from the command line on your server."
@@ -4274,7 +4274,7 @@ msgstr "Varmista, että asetukset näyttävät oikealta"
 
 #: bookwyrm/templates/setup/config.html:18
 msgid "You are running BookWyrm in <strong>debug</strong> mode. This should <strong>never</strong> be used in a production environment."
-msgstr "BookWyrm on käytössä <strong>vianmääritystilassa</strong>. Sitä ei <strong>milloinkaan</strong> saa käyttää tuotantoympäristössä."
+msgstr "BookWyrm on käytössä <strong>vianmääritystilassa</strong>. Sitä <strong>ei milloinkaan</strong> saa käyttää tuotantoympäristössä."
 
 #: bookwyrm/templates/setup/config.html:30
 msgid "Your domain appears to be misconfigured. It should not include protocol or slashes."
@@ -4322,23 +4322,23 @@ msgstr "Nyt on viimeinen hetki määrittää verkkotunnus ja protokolla."
 
 #: bookwyrm/templates/setup/config.html:144
 msgid "You can change your instance settings in the <code>.env</code> file on your server."
-msgstr ""
+msgstr "Palvelimen asetuksia voi muuttaa palvelimen <code>.env</code>-tiedostossa."
 
 #: bookwyrm/templates/setup/config.html:148
 msgid "View installation instructions"
-msgstr ""
+msgstr "Näytä asennusohjeet"
 
 #: bookwyrm/templates/setup/layout.html:5
 msgid "Instance Setup"
-msgstr ""
+msgstr "Palvelimen määritys"
 
 #: bookwyrm/templates/setup/layout.html:15
 msgid "Installing BookWyrm"
-msgstr ""
+msgstr "BookWyrmin asennus"
 
 #: bookwyrm/templates/setup/layout.html:18
 msgid "Need help?"
-msgstr ""
+msgstr "Tarvitsetko apua?"
 
 #: bookwyrm/templates/shelf/create_shelf_form.html:5
 #: bookwyrm/templates/shelf/shelf.html:72
@@ -4435,12 +4435,12 @@ msgstr "<a href=\"%(path)s\">%(title)s</a> tekijältä"
 #: bookwyrm/templates/snippets/boost_button.html:20
 #: bookwyrm/templates/snippets/boost_button.html:21
 msgid "Boost"
-msgstr "Buustaa"
+msgstr "Kaiuta"
 
 #: bookwyrm/templates/snippets/boost_button.html:33
 #: bookwyrm/templates/snippets/boost_button.html:34
 msgid "Un-boost"
-msgstr "Peru buustaus"
+msgstr "Peru kaiutus"
 
 #: bookwyrm/templates/snippets/create_status.html:36
 msgid "Quote"
@@ -4468,123 +4468,123 @@ msgstr "prosenttia"
 #: bookwyrm/templates/snippets/create_status/comment.html:66
 #, python-format
 msgid "of %(pages)s pages"
-msgstr ""
+msgstr "yhteensä %(pages)s sivua"
 
 #: bookwyrm/templates/snippets/create_status/content_field.html:18
 #: bookwyrm/templates/snippets/status/layout.html:34
 #: bookwyrm/templates/snippets/status/layout.html:53
 #: bookwyrm/templates/snippets/status/layout.html:54
 msgid "Reply"
-msgstr ""
+msgstr "Vastaa"
 
 #: bookwyrm/templates/snippets/create_status/content_field.html:18
 msgid "Content"
-msgstr ""
+msgstr "Sisältö"
 
 #: bookwyrm/templates/snippets/create_status/content_warning_field.html:9
 msgid "Include spoiler alert"
-msgstr ""
+msgstr "Lisää sisältövaroitus"
 
 #: bookwyrm/templates/snippets/create_status/content_warning_field.html:18
 msgid "Spoilers/content warnings:"
-msgstr ""
+msgstr "Sisältövaroitukset:"
 
 #: bookwyrm/templates/snippets/create_status/content_warning_field.html:27
 msgid "Spoilers ahead!"
-msgstr ""
+msgstr "Juonipaljastuksia!"
 
 #: bookwyrm/templates/snippets/create_status/layout.html:45
 #: bookwyrm/templates/snippets/reading_modals/form.html:7
 msgid "Comment:"
-msgstr ""
+msgstr "Kommentti:"
 
 #: bookwyrm/templates/snippets/create_status/post_options_block.html:18
 msgid "Post"
-msgstr ""
+msgstr "Julkaise"
 
 #: bookwyrm/templates/snippets/create_status/quotation.html:16
 msgid "Quote:"
-msgstr ""
+msgstr "Lainaus:"
 
 #: bookwyrm/templates/snippets/create_status/quotation.html:24
 #, python-format
 msgid "An excerpt from '%(book_title)s'"
-msgstr ""
+msgstr "Lainaus teoksesta ”%(book_title)s”"
 
 #: bookwyrm/templates/snippets/create_status/quotation.html:31
 msgid "Position:"
-msgstr ""
+msgstr "Sijainti:"
 
 #: bookwyrm/templates/snippets/create_status/quotation.html:44
 msgid "On page:"
-msgstr ""
+msgstr "Sivulla:"
 
 #: bookwyrm/templates/snippets/create_status/quotation.html:50
 msgid "At percent:"
-msgstr ""
+msgstr "Prosenttikohdassa:"
 
 #: bookwyrm/templates/snippets/create_status/review.html:24
 #, python-format
 msgid "Your review of '%(book_title)s'"
-msgstr ""
+msgstr "Arviosi teoksesta ”%(book_title)s”"
 
 #: bookwyrm/templates/snippets/create_status/review.html:39
 msgid "Review:"
-msgstr ""
+msgstr "Arvio:"
 
 #: bookwyrm/templates/snippets/fav_button.html:16
 #: bookwyrm/templates/snippets/fav_button.html:17
 msgid "Like"
-msgstr ""
+msgstr "Tykkää"
 
 #: bookwyrm/templates/snippets/fav_button.html:30
 #: bookwyrm/templates/snippets/fav_button.html:31
 msgid "Un-like"
-msgstr ""
+msgstr "Poista tykkäys"
 
 #: bookwyrm/templates/snippets/filters_panel/filters_panel.html:5
 msgid "Filters"
-msgstr ""
+msgstr "Suodattimet"
 
 #: bookwyrm/templates/snippets/filters_panel/filters_panel.html:10
 #: bookwyrm/templates/snippets/filters_panel/filters_panel.html:17
 msgid "Filters are applied"
-msgstr ""
+msgstr "Suodattimia käytössä"
 
 #: bookwyrm/templates/snippets/filters_panel/filters_panel.html:20
 msgid "Clear filters"
-msgstr ""
+msgstr "Poista suodattimet"
 
 #: bookwyrm/templates/snippets/filters_panel/filters_panel.html:43
 msgid "Apply filters"
-msgstr ""
+msgstr "Käytä suodattimia"
 
 #: bookwyrm/templates/snippets/follow_button.html:20
 #, python-format
 msgid "Follow @%(username)s"
-msgstr ""
+msgstr "Seuraa käyttäjää @%(username)s"
 
 #: bookwyrm/templates/snippets/follow_button.html:22
 msgid "Follow"
-msgstr ""
+msgstr "Seuraa"
 
 #: bookwyrm/templates/snippets/follow_button.html:31
 msgid "Undo follow request"
-msgstr ""
+msgstr "Peruuta seuraamispyyntö"
 
 #: bookwyrm/templates/snippets/follow_button.html:36
 #, python-format
 msgid "Unfollow @%(username)s"
-msgstr ""
+msgstr "Lopeta käyttäjän @%(username)s seuraaminen"
 
 #: bookwyrm/templates/snippets/follow_button.html:38
 msgid "Unfollow"
-msgstr ""
+msgstr "Lopeta seuraaminen"
 
 #: bookwyrm/templates/snippets/follow_request_buttons.html:7
 #: bookwyrm/templates/snippets/join_invitation_buttons.html:9
 msgid "Accept"
-msgstr ""
+msgstr "Hyväksy"
 
 #: bookwyrm/templates/snippets/form_rate_stars.html:20
 #: bookwyrm/templates/snippets/stars.html:13
@@ -4610,32 +4610,32 @@ msgstr[1] "%(rating)s tähteä"
 #, python-format
 msgid "set a goal to read %(counter)s book in %(year)s"
 msgid_plural "set a goal to read %(counter)s books in %(year)s"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "asetti tavoitteeksi lukea %(counter)s kirjan vuonna %(year)s"
+msgstr[1] "asetti tavoitteeksi lukea %(counter)s kirjaa vuonna %(year)s"
 
 #: bookwyrm/templates/snippets/generated_status/rating.html:3
 #, python-format
 msgid "rated <em><a href=\"%(path)s\">%(title)s</a></em>: %(display_rating)s star"
 msgid_plural "rated <em><a href=\"%(path)s\">%(title)s</a></em>: %(display_rating)s stars"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "arvosteli teoksen <em><a href=\"%(path)s\">%(title)s</a></em>: %(display_rating)s tähti"
+msgstr[1] "arvosteli teoksen <em><a href=\"%(path)s\">%(title)s</a></em>: %(display_rating)s tähteä"
 
 #: bookwyrm/templates/snippets/generated_status/review_pure_name.html:4
 #, python-format
 msgid "Review of \"%(book_title)s\" (%(display_rating)s star): %(review_title)s"
 msgid_plural "Review of \"%(book_title)s\" (%(display_rating)s stars): %(review_title)s"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Arvio teoksesta ”%(book_title)s” (%(display_rating)s tähti): %(review_title)s"
+msgstr[1] "Arvio teoksesta ”%(book_title)s” (%(display_rating)s tähteä): %(review_title)s"
 
 #: bookwyrm/templates/snippets/generated_status/review_pure_name.html:12
 #, python-format
 msgid "Review of \"%(book_title)s\": %(review_title)s"
-msgstr ""
+msgstr "Arvio teoksesta: ”%(book_title)s”: %(review_title)s"
 
 #: bookwyrm/templates/snippets/goal_form.html:4
 #, python-format
 msgid "Set a goal for how many books you'll finish reading in %(year)s, and track your progress throughout the year."
-msgstr ""
+msgstr "Aseta tavoite, kuinka monta kirjaa haluat lukea vuonna %(year)s, ja seuraa tavoitteen etenemistä."
 
 #: bookwyrm/templates/snippets/goal_form.html:16
 msgid "Reading goal:"
@@ -4767,7 +4767,7 @@ msgstr "Ilmoitus lähetetään sivuston %(site_name)s moderaattoreiden tarkistet
 
 #: bookwyrm/templates/snippets/report_modal.html:36
 msgid "Links from this domain will be removed until your report has been reviewed."
-msgstr "Linkit tähän verkkotunnukseen poistetaan, kunnes raportti on tarkistettu."
+msgstr "Tästä verkkotunnuksesta saapuvat linkit poistetaan, kunnes raportti on tarkistettu."
 
 #: bookwyrm/templates/snippets/report_modal.html:41
 msgid "More info about this report:"
@@ -4831,37 +4831,37 @@ msgstr "Avaa kuva uudessa ikkunassa"
 
 #: bookwyrm/templates/snippets/status/content_status.html:145
 msgid "Hide status"
-msgstr ""
+msgstr "Piilota tilapäivitys"
 
 #: bookwyrm/templates/snippets/status/header.html:45
 #, python-format
 msgid "edited %(date)s"
-msgstr ""
+msgstr "muokattu %(date)s"
 
 #: bookwyrm/templates/snippets/status/headers/comment.html:8
 #, python-format
 msgid "commented on <a href=\"%(book_path)s\">%(book)s</a> by <a href=\"%(author_path)s\">%(author_name)s</a>"
-msgstr ""
+msgstr "kommentoi teosta <a href=\"%(author_path)s\">%(author_name)s</a>: <a href=\"%(book_path)s\">%(book)s</a>"
 
 #: bookwyrm/templates/snippets/status/headers/comment.html:15
 #, python-format
 msgid "commented on <a href=\"%(book_path)s\">%(book)s</a>"
-msgstr ""
+msgstr "kommentoi teosta <a href=\"%(book_path)s\">%(book)s</a>"
 
 #: bookwyrm/templates/snippets/status/headers/note.html:8
 #, python-format
 msgid "replied to <a href=\"%(user_path)s\">%(username)s</a>'s <a href=\"%(status_path)s\">status</a>"
-msgstr ""
+msgstr "vastasi käyttäjän <a href=\"%(user_path)s\">%(username)s</a> <a href=\"%(status_path)s\">tilapäivitykseen</a>"
 
 #: bookwyrm/templates/snippets/status/headers/quotation.html:8
 #, python-format
 msgid "quoted <a href=\"%(book_path)s\">%(book)s</a> by <a href=\"%(author_path)s\">%(author_name)s</a>"
-msgstr ""
+msgstr "lainasi teosta <a href=\"%(author_path)s\">%(author_name)s</a>: <a href=\"%(book_path)s\">%(book)s</a>"
 
 #: bookwyrm/templates/snippets/status/headers/quotation.html:15
 #, python-format
 msgid "quoted <a href=\"%(book_path)s\">%(book)s</a>"
-msgstr ""
+msgstr "lainasi teosta <a href=\"%(book_path)s\">%(book)s</a>"
 
 #: bookwyrm/templates/snippets/status/headers/rating.html:3
 #, python-format
@@ -4916,7 +4916,7 @@ msgstr "Poista tilapäivitys"
 #: bookwyrm/templates/snippets/status/layout.html:57
 #: bookwyrm/templates/snippets/status/layout.html:58
 msgid "Boost status"
-msgstr "Buustaa tilapäivitystä"
+msgstr "Kaiuta tilapäivitystä"
 
 #: bookwyrm/templates/snippets/status/layout.html:61
 #: bookwyrm/templates/snippets/status/layout.html:62
@@ -4925,7 +4925,7 @@ msgstr "Tykkää tilapäivityksestä"
 
 #: bookwyrm/templates/snippets/status/status.html:10
 msgid "boosted"
-msgstr "buustattu"
+msgstr "kaiutettu"
 
 #: bookwyrm/templates/snippets/status/status_options.html:7
 #: bookwyrm/templates/snippets/user_options.html:7
@@ -5067,7 +5067,7 @@ msgstr "Ei toimintaa!"
 #: bookwyrm/templates/user/user_preview.html:22
 #, python-format
 msgid "Joined %(date)s"
-msgstr "Liittyi %(date)s"
+msgstr "Liittynyt %(date)s"
 
 #: bookwyrm/templates/user/user_preview.html:26
 #, python-format
