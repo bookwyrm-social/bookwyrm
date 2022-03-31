@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-03-26 17:00+0000\n"
-"PO-Revision-Date: 2022-03-26 18:02\n"
+"POT-Creation-Date: 2022-03-26 20:16+0000\n"
+"PO-Revision-Date: 2022-03-26 22:30\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Romanian\n"
 "Language: ro\n"
@@ -396,8 +396,8 @@ msgstr "Întâlniți-vă adminii"
 
 #: bookwyrm/templates/about/about.html:101
 #, python-format
-msgid "%(site_name)s's moderators and administrators keep the site up and running, enforce the <a href=\"coc_path\">code of conduct</a>, and respond when users report spam and bad behavior."
-msgstr "Moderatorii și administratorii %(site_name)s mențin site-ul în picioare, impun <a href=\"coc_path\">codul de conduită</a> și răspund când utilizatorii raportează spam și comportament neadecvat."
+msgid "%(site_name)s's moderators and administrators keep the site up and running, enforce the <a href=\"%(coc_path)s\">code of conduct</a>, and respond when users report spam and bad behavior."
+msgstr ""
 
 #: bookwyrm/templates/about/about.html:115
 msgid "Moderator"
@@ -1994,6 +1994,7 @@ msgid "Privacy setting for imported reviews:"
 msgstr "Setare de confidențialitate pentru recenziile importate:"
 
 #: bookwyrm/templates/import/import.html:63
+#: bookwyrm/templates/preferences/layout.html:31
 #: bookwyrm/templates/settings/federation/instance_blocklist.html:76
 msgid "Import"
 msgstr "Importați"
@@ -2879,7 +2880,7 @@ msgstr "Sunteți acum abonat la %(display_name)s!"
 
 #: bookwyrm/templates/preferences/blocks.html:4
 #: bookwyrm/templates/preferences/blocks.html:7
-#: bookwyrm/templates/preferences/layout.html:31
+#: bookwyrm/templates/preferences/layout.html:42
 msgid "Blocked Users"
 msgstr "Utilizatori blocați"
 
@@ -2976,11 +2977,28 @@ msgstr "Ascundeți urmăritorii pe profil"
 msgid "Default post privacy:"
 msgstr "Confidențialitatea implicită a postărilor:"
 
+#: bookwyrm/templates/preferences/export.html:4
+#: bookwyrm/templates/preferences/export.html:7
+msgid "CSV Export"
+msgstr ""
+
+#: bookwyrm/templates/preferences/export.html:13
+msgid "Your export will include all the books on your shelves, books you have reviewed, and books with reading activity."
+msgstr ""
+
 #: bookwyrm/templates/preferences/layout.html:11
 msgid "Account"
 msgstr "Cont"
 
 #: bookwyrm/templates/preferences/layout.html:27
+msgid "Data"
+msgstr ""
+
+#: bookwyrm/templates/preferences/layout.html:35
+msgid "CSV export"
+msgstr ""
+
+#: bookwyrm/templates/preferences/layout.html:38
 msgid "Relationships"
 msgstr "Relații"
 

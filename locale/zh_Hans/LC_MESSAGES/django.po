@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-03-26 17:00+0000\n"
-"PO-Revision-Date: 2022-03-26 18:02\n"
+"POT-Creation-Date: 2022-03-26 20:16+0000\n"
+"PO-Revision-Date: 2022-03-27 01:36\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Chinese Simplified\n"
 "Language: zh\n"
@@ -321,7 +321,7 @@ msgstr "Português Europeu（欧洲葡萄牙语）"
 
 #: bookwyrm/settings.py:292
 msgid "Română (Romanian)"
-msgstr ""
+msgstr "Română （罗马尼亚语）"
 
 #: bookwyrm/settings.py:293
 msgid "Svenska (Swedish)"
@@ -396,8 +396,8 @@ msgstr "遇见您的管理员"
 
 #: bookwyrm/templates/about/about.html:101
 #, python-format
-msgid "%(site_name)s's moderators and administrators keep the site up and running, enforce the <a href=\"coc_path\">code of conduct</a>, and respond when users report spam and bad behavior."
-msgstr "%(site_name)s 的仲裁员和管理员负责维持站点运行， 执行<a href=\"coc_path\">行为守则</a>，并在用户报告垃圾邮件和不良行为时做出回应。"
+msgid "%(site_name)s's moderators and administrators keep the site up and running, enforce the <a href=\"%(coc_path)s\">code of conduct</a>, and respond when users report spam and bad behavior."
+msgstr "%(site_name)s 的仲裁员和管理员负责维持站点运行， 执行 <a href=\"%(coc_path)s\">行为守则</a>，并在用户报告垃圾邮件和不良行为时做出回应。"
 
 #: bookwyrm/templates/about/about.html:115
 msgid "Moderator"
@@ -1335,7 +1335,7 @@ msgstr "邮箱地址:"
 
 #: bookwyrm/templates/confirm_email/resend_modal.html:28
 msgid "No user matching this email address found."
-msgstr ""
+msgstr "没有找到与此电子邮件地址相匹配的用户。"
 
 #: bookwyrm/templates/confirm_email/resend_modal.html:38
 msgid "Resend link"
@@ -1659,11 +1659,11 @@ msgstr "现在这里还没有任何书目！尝试着从搜索某本书开始吧
 
 #: bookwyrm/templates/feed/suggested_books.html:13
 msgid "Do you have book data from another service like GoodReads?"
-msgstr ""
+msgstr "你有来自其他服务如GoodReads的图书数据吗？"
 
 #: bookwyrm/templates/feed/suggested_books.html:16
 msgid "Import your reading history"
-msgstr ""
+msgstr "导入您的阅读历史"
 
 #: bookwyrm/templates/feed/suggested_users.html:5
 #: bookwyrm/templates/get_started/users.html:6
@@ -1974,6 +1974,7 @@ msgid "Privacy setting for imported reviews:"
 msgstr "导入书评的隐私设定"
 
 #: bookwyrm/templates/import/import.html:63
+#: bookwyrm/templates/preferences/layout.html:31
 #: bookwyrm/templates/settings/federation/instance_blocklist.html:76
 msgid "Import"
 msgstr "导入"
@@ -2855,7 +2856,7 @@ msgstr "您正在关注 %(display_name)s！"
 
 #: bookwyrm/templates/preferences/blocks.html:4
 #: bookwyrm/templates/preferences/blocks.html:7
-#: bookwyrm/templates/preferences/layout.html:31
+#: bookwyrm/templates/preferences/layout.html:42
 msgid "Blocked Users"
 msgstr "屏蔽的用户"
 
@@ -2952,11 +2953,28 @@ msgstr "隐藏关注者并在个人资料中关注"
 msgid "Default post privacy:"
 msgstr "默认发文隐私:"
 
+#: bookwyrm/templates/preferences/export.html:4
+#: bookwyrm/templates/preferences/export.html:7
+msgid "CSV Export"
+msgstr "CSV导出"
+
+#: bookwyrm/templates/preferences/export.html:13
+msgid "Your export will include all the books on your shelves, books you have reviewed, and books with reading activity."
+msgstr "你的导出将包括你书架上的所有书籍，你评论过的书籍，以及有阅读活动的书籍。"
+
 #: bookwyrm/templates/preferences/layout.html:11
 msgid "Account"
 msgstr "帐号"
 
 #: bookwyrm/templates/preferences/layout.html:27
+msgid "Data"
+msgstr "数据"
+
+#: bookwyrm/templates/preferences/layout.html:35
+msgid "CSV export"
+msgstr "CSV 导出"
+
+#: bookwyrm/templates/preferences/layout.html:38
 msgid "Relationships"
 msgstr "关系"
 
@@ -4124,7 +4142,7 @@ msgstr "查看用户个人资料"
 
 #: bookwyrm/templates/settings/users/user_info.html:19
 msgid "Go to user admin"
-msgstr ""
+msgstr "转到用户管理员"
 
 #: bookwyrm/templates/settings/users/user_info.html:40
 msgid "Local"
@@ -4152,7 +4170,7 @@ msgstr "被屏蔽次数："
 
 #: bookwyrm/templates/settings/users/user_info.html:74
 msgid "Date added:"
-msgstr ""
+msgstr "添加日期："
 
 #: bookwyrm/templates/settings/users/user_info.html:77
 msgid "Last active date:"
