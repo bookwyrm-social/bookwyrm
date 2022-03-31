@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-03-26 20:16+0000\n"
-"PO-Revision-Date: 2022-03-31 06:09\n"
+"PO-Revision-Date: 2022-03-31 07:13\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Swedish\n"
 "Language: sv\n"
@@ -349,7 +349,7 @@ msgstr "Hoppsan!"
 
 #: bookwyrm/templates/500.html:8
 msgid "Server Error"
-msgstr "Server-fel"
+msgstr "Serverfel"
 
 #: bookwyrm/templates/500.html:9
 msgid "Something went wrong! Sorry about that."
@@ -369,12 +369,12 @@ msgstr "Välkommen till %(site_name)s!"
 #: bookwyrm/templates/about/about.html:24
 #, python-format
 msgid "%(site_name)s is part of <em>BookWyrm</em>, a network of independent, self-directed communities for readers. While you can interact seamlessly with users anywhere in the <a href=\"https://joinbookwyrm.com/instances/\" target=\"_blank\">BookWyrm network</a>, this community is unique."
-msgstr "%(site_name)s är en del av <em>BookWyrm</em>, ett nätverk av oberoende, självstyrda gemenskaper för läsare. Medan du kan interagera sömlöst med användare var som helst i <a href=\"https://joinbookwyrm.com/instances/\" target=\"_blank\">BookWyrm-nätverket</a>så är den här gemenskapen unik."
+msgstr "%(site_name)s är en del av <em>BookWyrm</em>, ett nätverk av oberoende, självstyrda gemenskaper för läsare. Du kan interagera sömlöst med användare var som helst i <a href=\"https://joinbookwyrm.com/instances/\" target=\"_blank\">BookWyrm-nätverket</a>, men den här gemenskapen är unik."
 
 #: bookwyrm/templates/about/about.html:42
 #, python-format
 msgid "<a href=\"%(book_path)s\"><em>%(title)s</em></a> is %(site_name)s's most beloved book, with an average rating of %(rating)s out of 5."
-msgstr "<a href=\"%(book_path)s\"><em>%(title)s</em></a> är %(site_name)s's mest omtyckta bok med ett genomsnittligt betyg på %(rating)s utav 5."
+msgstr "<a href=\"%(book_path)s\"><em>%(title)s</em></a> är %(site_name)s's mest omtyckta bok med ett genomsnittligt betyg på %(rating)s av 5."
 
 #: bookwyrm/templates/about/about.html:61
 #, python-format
@@ -384,11 +384,11 @@ msgstr "Flera %(site_name)s användare vill läsa <a href=\"%(book_path)s\"><em>
 #: bookwyrm/templates/about/about.html:80
 #, python-format
 msgid "<a href=\"%(book_path)s\"><em>%(title)s</em></a> has the most divisive ratings of any book on %(site_name)s."
-msgstr "<a href=\"%(book_path)s\"><em>%(title)s</em></a> har de mest splittrade betygen av alla böcker på %(site_name)s."
+msgstr "<a href=\"%(book_path)s\"><em>%(title)s</em></a> har det mest splittrande betyget av alla böcker på %(site_name)s."
 
 #: bookwyrm/templates/about/about.html:91
 msgid "Track your reading, talk about books, write reviews, and discover what to read next. Always ad-free, anti-corporate, and community-oriented, BookWyrm is human-scale software, designed to stay small and personal. If you have feature requests, bug reports, or grand dreams, <a href='https://joinbookwyrm.com/get-involved' target='_blank'>reach out</a> and make yourself heard."
-msgstr "Följ din läsning, prata om böcker, skriv recensioner och upptäck vad som ska läsas härnäst. BookWyrm är alltid annonsfri, företagsfientlig och gemenskapsorienterad, och är en mänsklig programvara som är utformad för att förbli liten och personlig. Om du har förfrågningar om funktioner, felrapporter eller storslagna drömmar, <a href='https://joinbookwyrm.com/get-involved' target='_blank'>ta kontakt</a> och gör dig själv hörd."
+msgstr "Följ ditt läsande, prata om böcker, skriv recensioner och upptäck vad som kan läsas härnäst. BookWyrm är alltid annonsfri, företagsfientlig och gemenskapsorienterad och är en mänsklig programvara som är utformad för att förbli liten och personlig. Om du har förfrågningar om funktioner, felrapporter eller storslagna drömmar, <a href='https://joinbookwyrm.com/get-involved' target='_blank'>ta kontakt</a> och gör dig själv hörd."
 
 #: bookwyrm/templates/about/about.html:98
 msgid "Meet your admins"
@@ -449,17 +449,17 @@ msgstr "Integritetspolicy"
 #: bookwyrm/templates/feed/summary_card.html:8
 #, python-format
 msgid "%(year)s in the books"
-msgstr "%(year)s i böckerna"
+msgstr "%(year)s i böcker"
 
 #: bookwyrm/templates/annual_summary/layout.html:43
 #, python-format
 msgid "%(year)s <em>in the books</em>"
-msgstr "%(year)s <em>i böckerna</em>"
+msgstr "%(year)s <em>i böcker</em>"
 
 #: bookwyrm/templates/annual_summary/layout.html:47
 #, python-format
 msgid "<em>%(display_name)s’s</em> year of reading"
-msgstr "<em>%(display_name)s's</em>år av läsning"
+msgstr "<em>%(display_name)s's</em> läsår"
 
 #: bookwyrm/templates/annual_summary/layout.html:53
 msgid "Share this page"
@@ -488,7 +488,7 @@ msgstr "Gör sidan privat"
 
 #: bookwyrm/templates/annual_summary/layout.html:89
 msgid "Sharing status: <strong>private</strong>"
-msgstr "Delar status: <strong>privat</strong>"
+msgstr "Delaningsstatus: <strong>privat</strong>"
 
 #: bookwyrm/templates/annual_summary/layout.html:90
 msgid "The page is private, only you can see it."
@@ -505,14 +505,14 @@ msgstr "När du gör din sida privat så kan inte den gamla nyckeln ge åtkomst 
 #: bookwyrm/templates/annual_summary/layout.html:112
 #, python-format
 msgid "Sadly %(display_name)s didn’t finish any books in %(year)s"
-msgstr "%(display_name)s avslutade tyvärr inte några böcker under %(year)s"
+msgstr "%(display_name)s läste tyvärr inte färdigt några böcker under %(year)s"
 
 #: bookwyrm/templates/annual_summary/layout.html:118
 #, python-format
 msgid "In %(year)s, %(display_name)s read %(books_total)s book<br />for a total of %(pages_total)s pages!"
 msgid_plural "In %(year)s, %(display_name)s read %(books_total)s books<br />for a total of %(pages_total)s pages!"
 msgstr[0] "Under %(year)s så läste %(display_name)s %(books_total)s bok<br />, totalt %(pages_total)s sidor!"
-msgstr[1] "Under %(year)s så läste %(display_name)s %(books_total)s böcker<br />, totalt %(pages_total)s sidor!"
+msgstr[1] "Under %(year)s läste %(display_name)s %(books_total)s böcker<br />, totalt %(pages_total)s sidor!"
 
 #: bookwyrm/templates/annual_summary/layout.html:124
 msgid "That’s great!"
@@ -584,7 +584,7 @@ msgstr "Deras betyg: <strong>%(rating)s</strong>"
 #: bookwyrm/templates/annual_summary/layout.html:268
 #, python-format
 msgid "All the books %(display_name)s read in %(year)s"
-msgstr "Alla böcker %(display_name)s som har lästs under %(year)s"
+msgstr "Alla böcker %(display_name)s läste under %(year)s"
 
 #: bookwyrm/templates/author/author.html:18
 #: bookwyrm/templates/author/author.html:19
@@ -648,7 +648,7 @@ msgstr "Visa i Goodreads"
 #: bookwyrm/templates/author/author.html:141
 #, python-format
 msgid "Books by %(name)s"
-msgstr "Böcker efter %(name)s"
+msgstr "Böcker av %(name)s"
 
 #: bookwyrm/templates/author/edit_author.html:5
 msgid "Edit Author:"
@@ -685,7 +685,7 @@ msgstr "Namn:"
 #: bookwyrm/templates/book/edit/edit_book_form.html:78
 #: bookwyrm/templates/book/edit/edit_book_form.html:148
 msgid "Separate multiple values with commas."
-msgstr "Separera flertalet värden med kommatecken."
+msgstr "Separera flera värden med kommatecken."
 
 #: bookwyrm/templates/author/edit_author.html:50
 msgid "Bio:"
@@ -830,7 +830,7 @@ msgstr[1] ""
 
 #: bookwyrm/templates/book/book.html:228
 msgid "You have shelved this edition in:"
-msgstr "Du har lagt den här versionen i hylla:"
+msgstr "Du har lagt den här utgåvan i hylla:"
 
 #: bookwyrm/templates/book/book.html:243
 #, python-format
@@ -859,7 +859,7 @@ msgstr "Dina kommentarer"
 
 #: bookwyrm/templates/book/book.html:306
 msgid "Your quotes"
-msgstr "Dina citationer"
+msgstr "Dina citat"
 
 #: bookwyrm/templates/book/book.html:342
 msgid "Subjects"
@@ -978,7 +978,7 @@ msgstr "Är det här en version av ett redan befintligt verk?"
 
 #: bookwyrm/templates/book/edit/edit_book.html:107
 msgid "This is a new work"
-msgstr "Det här är ett ny verk"
+msgstr "Det här är ett nytt verk"
 
 #: bookwyrm/templates/book/edit/edit_book.html:116
 #: bookwyrm/templates/feed/status.html:21
@@ -992,11 +992,11 @@ msgstr "Titel:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:33
 msgid "Subtitle:"
-msgstr "Undertext:"
+msgstr "Undertitel:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:53
 msgid "Series:"
-msgstr "Serier:"
+msgstr "Serie:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:63
 msgid "Series number:"
@@ -1024,7 +1024,7 @@ msgstr "Lägg till ett annat ämne"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:139
 msgid "Publication"
-msgstr "Publicering"
+msgstr "Publikation"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:144
 msgid "Publisher:"
@@ -1120,11 +1120,11 @@ msgstr "Utgåvor av <a href=\"%(work_path)s\">\"%(work_title)s\"</a>"
 
 #: bookwyrm/templates/book/editions/editions.html:55
 msgid "Can't find the edition you're looking for?"
-msgstr "Kan du inte hitta versionen som du letar efter?"
+msgstr "Kan du inte hitta utgåvan som du letar efter?"
 
 #: bookwyrm/templates/book/editions/editions.html:75
 msgid "Add another edition"
-msgstr "Lägg till en annan version"
+msgstr "Lägg till en annan utgåva"
 
 #: bookwyrm/templates/book/editions/format_filter.html:9
 #: bookwyrm/templates/book/editions/language_filter.html:9
@@ -1244,7 +1244,7 @@ msgstr "Lämnar BookWyrm"
 #: bookwyrm/templates/book/file_links/verification_modal.html:11
 #, python-format
 msgid "This link is taking you to: <code>%(link_url)s</code>.<br> Is that where you'd like to go?"
-msgstr "Den här länken tar dig till: <code>%(link_url)s</code>.<br> Är det dit du vill åka?"
+msgstr "Den här länken tar dig till: <code>%(link_url)s</code>.<br> Är det dit du vill?"
 
 #: bookwyrm/templates/book/file_links/verification_modal.html:26
 #: bookwyrm/templates/setup/config.html:139
@@ -1264,7 +1264,7 @@ msgstr "%(pages)s sidor"
 #: bookwyrm/templates/book/publisher_info.html:38
 #, python-format
 msgid "%(languages)s language"
-msgstr "%(languages)s språk"
+msgstr "På %(languages)s"
 
 #: bookwyrm/templates/book/publisher_info.html:65
 #, python-format
@@ -1454,7 +1454,7 @@ msgstr "<a href=\"%(user_path)s\">%(username)s</a> vill läsa <a href=\"%(book_p
 #: bookwyrm/templates/discover/card-header.html:13
 #, python-format
 msgid "<a href=\"%(user_path)s\">%(username)s</a> finished reading <a href=\"%(book_path)s\">%(book_title)s</a>"
-msgstr "<a href=\"%(user_path)s\">%(username)s</a> slutade läsa <a href=\"%(book_path)s\">%(book_title)s</a>"
+msgstr "<a href=\"%(user_path)s\">%(username)s</a> läste klart <a href=\"%(book_path)s\">%(book_title)s</a>"
 
 #: bookwyrm/templates/discover/card-header.html:18
 #, python-format
@@ -1645,7 +1645,7 @@ msgstr "Alternativt så kan du prova att aktivera fler status-typer"
 #: bookwyrm/templates/user/goal_form.html:6
 #, python-format
 msgid "%(year)s Reading Goal"
-msgstr "%(year)s läs-mål"
+msgstr "%(year)s läsmål"
 
 #: bookwyrm/templates/feed/goal_card.html:18
 #, python-format
@@ -1823,7 +1823,7 @@ msgstr "Lite om dig själv"
 #: bookwyrm/templates/get_started/profile.html:43
 #: bookwyrm/templates/preferences/edit_user.html:27
 msgid "Avatar:"
-msgstr "Avatar:"
+msgstr "Profilbild:"
 
 #: bookwyrm/templates/get_started/profile.html:52
 msgid "Manually approve followers:"
@@ -2028,20 +2028,20 @@ msgstr "Uppdatera"
 #, python-format
 msgid "%(display_counter)s item needs manual approval."
 msgid_plural "%(display_counter)s items need manual approval."
-msgstr[0] "%(display_counter)s artikel behöver manuellt godkännande."
-msgstr[1] "%(display_counter)s artiklar behöver manuellt godkännande."
+msgstr[0] "%(display_counter)s objekt behöver manuellt godkännande."
+msgstr[1] "%(display_counter)s objekt behöver manuellt godkännande."
 
 #: bookwyrm/templates/import/import_status.html:76
 #: bookwyrm/templates/import/manual_review.html:8
 msgid "Review items"
-msgstr "Recensera objekt"
+msgstr "Granska objekt"
 
 #: bookwyrm/templates/import/import_status.html:82
 #, python-format
 msgid "%(display_counter)s item failed to import."
 msgid_plural "%(display_counter)s items failed to import."
-msgstr[0] "%(display_counter)s föremål kunde inte importeras."
-msgstr[1] "%(display_counter)s föremål kunde inte importeras."
+msgstr[0] "%(display_counter)s objekt kunde inte importeras."
+msgstr[1] "%(display_counter)s objekt kunde inte importeras."
 
 #: bookwyrm/templates/import/import_status.html:88
 msgid "View and troubleshoot failed items"
@@ -2375,7 +2375,7 @@ msgstr "Kurera"
 
 #: bookwyrm/templates/lists/curate.html:21
 msgid "Pending Books"
-msgstr "Böcker som väntar"
+msgstr "Väntande böcker"
 
 #: bookwyrm/templates/lists/curate.html:24
 msgid "You're all set!"
@@ -2421,7 +2421,7 @@ msgstr "Den här listan är för närvarande tom"
 
 #: bookwyrm/templates/lists/form.html:19
 msgid "List curation:"
-msgstr "Listans kurering:"
+msgstr "Listans kuratering:"
 
 #: bookwyrm/templates/lists/form.html:31
 msgid "Closed"
@@ -2433,7 +2433,7 @@ msgstr "Endast du kan lägga till och ta bort böcker till den här listan"
 
 #: bookwyrm/templates/lists/form.html:48
 msgid "Curated"
-msgstr "Kurerad"
+msgstr "Kuraterad"
 
 #: bookwyrm/templates/lists/form.html:51
 msgid "Anyone can suggest books, subject to your approval"
@@ -2487,7 +2487,7 @@ msgstr "En valfri anteckning som kommer att visas med boken."
 
 #: bookwyrm/templates/lists/list.html:37
 msgid "That book is already on this list."
-msgstr "Den där finns redan i den här listan."
+msgstr "Denna bok finns redan i den här listan."
 
 #: bookwyrm/templates/lists/list.html:45
 msgid "You successfully suggested a book for this list!"
@@ -2531,7 +2531,7 @@ msgstr "Sortera lista"
 
 #: bookwyrm/templates/lists/list.html:191
 msgid "Direction"
-msgstr "Riktning"
+msgstr "Ordning"
 
 #: bookwyrm/templates/lists/list.html:205
 msgid "Add Books"
