@@ -25,14 +25,23 @@ class Federation(View):
 
     def get(self, request, status="federated"):
         """list of servers"""
-        servers = models.FederatedServer.objects.filter(status=status)
+
+        filters = {}
+        if software := request.GET.get("application_type"):
+            filters["application_type"] = software
+
+        servers = models.FederatedServer.objects.filter(status=status, **filters)
 
         sort = request.GET.get("sort")
-        sort_fields = ["created_date", "application_type", "server_name"]
-        # pylint: disable=consider-using-f-string
-        if not sort in sort_fields + ["-{:s}".format(f) for f in sort_fields]:
+        sort_fields = [
+            "created_date",
+            "updated_date",
+            "application_type",
+            "server_name",
+        ]
+        if not sort in sort_fields + [f"-{f}" for f in sort_fields]:
             sort = "-created_date"
-        servers = servers.order_by(sort)
+        servers = servers.order_by(sort, "-created_date")
 
         paginated = Paginator(servers, PAGE_LENGTH)
         page = paginated.get_page(request.GET.get("page"))
@@ -49,6 +58,9 @@ class Federation(View):
                 page.number, on_each_side=2, on_ends=1
             ),
             "sort": sort,
+            "software_options": models.FederatedServer.objects.values_list(
+                "application_type", flat=True
+            ).distinct(),
             "form": forms.ServerForm(),
         }
         return TemplateResponse(request, "settings/federation/instance_list.html", data)

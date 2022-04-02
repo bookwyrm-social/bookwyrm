@@ -105,16 +105,6 @@ def init_connectors():
     )
 
 
-def init_federated_servers():
-    """big no to nazis"""
-    built_in_blocks = ["gab.ai", "gab.com"]
-    for server in built_in_blocks:
-        models.FederatedServer.objects.create(
-            server_name=server,
-            status="blocked",
-        )
-
-
 def init_settings():
     """info about the instance"""
     models.SiteSettings.objects.create(
@@ -163,7 +153,6 @@ class Command(BaseCommand):
             "group",
             "permission",
             "connector",
-            "federatedserver",
             "settings",
             "linkdomain",
         ]
@@ -176,8 +165,6 @@ class Command(BaseCommand):
             init_permissions()
         if not limit or limit == "connector":
             init_connectors()
-        if not limit or limit == "federatedserver":
-            init_federated_servers()
         if not limit or limit == "settings":
             init_settings()
         if not limit or limit == "linkdomain":

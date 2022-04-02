@@ -1,0 +1,19 @@
+{% extends 'snippets/filters_panel/filter_field.html' %}
+{% load i18n %}
+
+{% block filter %}
+<label class="label" for="id_server">{% trans "Software" %}</label>
+<div class="control">
+    <div class="select">
+        <select name="application_type">
+            <option value="">-----</option>
+            {% for option in software_options %}
+            {% if option %}
+            <option value="{{ option }}">{{ option }}</option>
+            {% endif %}
+            {% endfor %}
+        </select>
+    </div>
+</div>
+{% endblock %}
+

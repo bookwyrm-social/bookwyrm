@@ -12,6 +12,9 @@
 {% endblock %}
 
 {% block panel %}
+
+{% include 'settings/federation/instance_filters.html' %}
+
 <div class="tabs">
     <ul>
         {% url 'settings-federation' status='federated' as url %}
@@ -37,18 +40,22 @@
             {% include 'snippets/table-sort-header.html' with field="created_date" sort=sort text=text %}
         </th>
         <th>
+            {% trans "Last updated" as text %}
+            {% include 'snippets/table-sort-header.html' with field="updated_date" sort=sort text=text %}
+        </th>
+        <th>
             {% trans "Software" as text %}
             {% include 'snippets/table-sort-header.html' with field="application_type" sort=sort text=text %}
         </th>
         <th>
             {% trans "Users" %}
         </th>
-        <th>{% trans "Status" %}</th>
     </tr>
     {% for server in servers %}
     <tr>
         <td><a href="{% url 'settings-federated-server' server.id %}">{{ server.server_name }}</a></td>
-        <td>{{ server.created_date }}</td>
+        <td>{{ server.created_date|date:'Y-m-d' }}</td>
+        <td>{{ server.updated_date|date:'Y-m-d' }}</td>
         <td>
         {% if server.application_type %}
             {{ server.application_type }}
@@ -56,7 +63,6 @@
         {% endif %}
         </td>
         <td>{{ server.user_set.count }}</td>
-        <td>{{ server.get_status_display }}</td>
     </tr>
     {% endfor %}
     {% if not servers %}
