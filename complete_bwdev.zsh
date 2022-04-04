@@ -1,4 +1,6 @@
 #/usr/bin/env bash
+autoload bashcompinit
+bashcompinit
 complete -W "up
 service_ports_web
 initdb
