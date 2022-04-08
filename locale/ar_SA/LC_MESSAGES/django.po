@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-04-04 22:19+0000\n"
-"PO-Revision-Date: 2022-04-04 23:28\n"
+"POT-Creation-Date: 2022-04-08 21:00+0000\n"
+"PO-Revision-Date: 2022-04-08 21:50\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Arabic\n"
 "Language: ar\n"
@@ -187,7 +187,7 @@ msgstr ""
 msgid "%(value)s is not a valid username"
 msgstr ""
 
-#: bookwyrm/models/fields.py:181 bookwyrm/templates/layout.html:179
+#: bookwyrm/models/fields.py:181 bookwyrm/templates/layout.html:123
 #: bookwyrm/templates/ostatus/error.html:29
 msgid "username"
 msgstr "اسم المستخدم"
@@ -407,7 +407,7 @@ msgstr ""
 msgid "Moderator"
 msgstr "مُشرف"
 
-#: bookwyrm/templates/about/about.html:117 bookwyrm/templates/layout.html:140
+#: bookwyrm/templates/about/about.html:117 bookwyrm/templates/user_menu.html:63
 msgid "Admin"
 msgstr "المدير"
 
@@ -438,7 +438,7 @@ msgid "Software version:"
 msgstr "إصدار البرنامج:"
 
 #: bookwyrm/templates/about/layout.html:30
-#: bookwyrm/templates/embed-layout.html:34 bookwyrm/templates/layout.html:238
+#: bookwyrm/templates/embed-layout.html:34 bookwyrm/templates/layout.html:182
 #, python-format
 msgid "About %(site_name)s"
 msgstr "عن %(site_name)s"
@@ -1390,7 +1390,7 @@ msgstr "المجتمع الفيدرالي"
 
 #: bookwyrm/templates/directory/directory.html:4
 #: bookwyrm/templates/directory/directory.html:9
-#: bookwyrm/templates/layout.html:109
+#: bookwyrm/templates/user_menu.html:30
 msgid "Directory"
 msgstr "الدليل"
 
@@ -1641,13 +1641,13 @@ msgstr ""
 msgid "%(site_name)s home page"
 msgstr ""
 
-#: bookwyrm/templates/embed-layout.html:40 bookwyrm/templates/layout.html:242
+#: bookwyrm/templates/embed-layout.html:40 bookwyrm/templates/layout.html:186
 msgid "Contact site admin"
 msgstr ""
 
 #: bookwyrm/templates/embed-layout.html:46
-msgid "Join Bookwyrm"
-msgstr "انضم إلى BookWyrm"
+msgid "Join BookWyrm"
+msgstr ""
 
 #: bookwyrm/templates/feed/direct_messages.html:8
 #, python-format
@@ -1655,7 +1655,7 @@ msgid "Direct Messages with <a href=\"%(path)s\">%(username)s</a>"
 msgstr "الرسائل المباشرة مع <a href=\"%(path)s\">%(username)s</a>"
 
 #: bookwyrm/templates/feed/direct_messages.html:10
-#: bookwyrm/templates/layout.html:119
+#: bookwyrm/templates/user_menu.html:40
 msgid "Direct Messages"
 msgstr "الرسائل المباشرة"
 
@@ -1692,7 +1692,7 @@ msgid "Updates"
 msgstr "التحديثات"
 
 #: bookwyrm/templates/feed/suggested_books.html:6
-#: bookwyrm/templates/layout.html:114
+#: bookwyrm/templates/user_menu.html:35
 msgid "Your Books"
 msgstr "كتبك"
 
@@ -2269,7 +2269,7 @@ msgid "Login"
 msgstr "الولوج"
 
 #: bookwyrm/templates/landing/login.html:7
-#: bookwyrm/templates/landing/login.html:36 bookwyrm/templates/layout.html:187
+#: bookwyrm/templates/landing/login.html:36 bookwyrm/templates/layout.html:131
 #: bookwyrm/templates/ostatus/error.html:37
 msgid "Log in"
 msgstr "تسجيل الدخول"
@@ -2278,7 +2278,7 @@ msgstr "تسجيل الدخول"
 msgid "Success! Email address confirmed."
 msgstr ""
 
-#: bookwyrm/templates/landing/login.html:21 bookwyrm/templates/layout.html:178
+#: bookwyrm/templates/landing/login.html:21 bookwyrm/templates/layout.html:122
 #: bookwyrm/templates/ostatus/error.html:28
 #: bookwyrm/templates/snippets/register_form.html:4
 msgid "Username:"
@@ -2286,12 +2286,12 @@ msgstr "اسم المستخدم:"
 
 #: bookwyrm/templates/landing/login.html:27
 #: bookwyrm/templates/landing/password_reset.html:26
-#: bookwyrm/templates/layout.html:182 bookwyrm/templates/ostatus/error.html:32
+#: bookwyrm/templates/layout.html:126 bookwyrm/templates/ostatus/error.html:32
 #: bookwyrm/templates/snippets/register_form.html:45
 msgid "Password:"
 msgstr "الكلمة السرية:"
 
-#: bookwyrm/templates/landing/login.html:39 bookwyrm/templates/layout.html:184
+#: bookwyrm/templates/landing/login.html:39 bookwyrm/templates/layout.html:128
 #: bookwyrm/templates/ostatus/error.html:34
 msgid "Forgot your password?"
 msgstr "نسيت كلمة المرور الخاصة بك؟"
@@ -2335,54 +2335,38 @@ msgstr ""
 msgid "Feed"
 msgstr ""
 
-#: bookwyrm/templates/layout.html:124 bookwyrm/templates/setup/config.html:52
-msgid "Settings"
-msgstr "الإعدادات"
-
-#: bookwyrm/templates/layout.html:133
-#: bookwyrm/templates/settings/invites/manage_invite_requests.html:15
-#: bookwyrm/templates/settings/invites/manage_invites.html:3
-#: bookwyrm/templates/settings/invites/manage_invites.html:15
-#: bookwyrm/templates/settings/layout.html:42
-msgid "Invites"
-msgstr "الدعوات"
-
-#: bookwyrm/templates/layout.html:147
-msgid "Log out"
-msgstr "الخروج"
-
-#: bookwyrm/templates/layout.html:155 bookwyrm/templates/layout.html:156
+#: bookwyrm/templates/layout.html:99 bookwyrm/templates/layout.html:100
 #: bookwyrm/templates/notifications/notifications_page.html:5
 #: bookwyrm/templates/notifications/notifications_page.html:10
 msgid "Notifications"
 msgstr "الإشعارات"
 
-#: bookwyrm/templates/layout.html:183 bookwyrm/templates/ostatus/error.html:33
+#: bookwyrm/templates/layout.html:127 bookwyrm/templates/ostatus/error.html:33
 msgid "password"
 msgstr "كلمة المرور"
 
-#: bookwyrm/templates/layout.html:195
+#: bookwyrm/templates/layout.html:139
 msgid "Join"
 msgstr "إنضم"
 
-#: bookwyrm/templates/layout.html:229
+#: bookwyrm/templates/layout.html:173
 msgid "Successfully posted status"
 msgstr ""
 
-#: bookwyrm/templates/layout.html:230
+#: bookwyrm/templates/layout.html:174
 msgid "Error posting status"
 msgstr ""
 
-#: bookwyrm/templates/layout.html:246
+#: bookwyrm/templates/layout.html:190
 msgid "Documentation"
 msgstr ""
 
-#: bookwyrm/templates/layout.html:253
+#: bookwyrm/templates/layout.html:197
 #, python-format
 msgid "Support %(site_name)s on <a href=\"%(support_link)s\" target=\"_blank\">%(support_title)s</a>"
 msgstr ""
 
-#: bookwyrm/templates/layout.html:257
+#: bookwyrm/templates/layout.html:201
 msgid "BookWyrm's source code is freely available. You can contribute or report issues on <a href=\"https://github.com/mouse-reeve/bookwyrm\">GitHub</a>."
 msgstr ""
 
@@ -2963,6 +2947,7 @@ msgstr "تعديل الملف الشخصي"
 #: bookwyrm/templates/preferences/edit_user.html:12
 #: bookwyrm/templates/preferences/edit_user.html:25
 #: bookwyrm/templates/settings/users/user_info.html:7
+#: bookwyrm/templates/user_menu.html:25
 msgid "Profile"
 msgstr "الملف الشخصي"
 
@@ -3698,6 +3683,14 @@ msgstr ""
 msgid "Invite Requests"
 msgstr ""
 
+#: bookwyrm/templates/settings/invites/manage_invite_requests.html:15
+#: bookwyrm/templates/settings/invites/manage_invites.html:3
+#: bookwyrm/templates/settings/invites/manage_invites.html:15
+#: bookwyrm/templates/settings/layout.html:42
+#: bookwyrm/templates/user_menu.html:56
+msgid "Invites"
+msgstr "الدعوات"
+
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:23
 msgid "Ignored Invite Requests"
 msgstr ""
@@ -4353,6 +4346,10 @@ msgstr ""
 #: bookwyrm/templates/setup/config.html:42
 msgid "You are running BookWyrm in production mode without https. <strong>USE_HTTPS</strong> should be enabled in production."
 msgstr ""
+
+#: bookwyrm/templates/setup/config.html:52 bookwyrm/templates/user_menu.html:45
+msgid "Settings"
+msgstr "الإعدادات"
 
 #: bookwyrm/templates/setup/config.html:56
 msgid "Instance domain:"
@@ -5197,6 +5194,14 @@ msgstr[5] ""
 #: bookwyrm/templates/user/user_preview.html:43
 msgid "No followers you follow"
 msgstr ""
+
+#: bookwyrm/templates/user_menu.html:7
+msgid "View profile and more"
+msgstr ""
+
+#: bookwyrm/templates/user_menu.html:72
+msgid "Log out"
+msgstr "الخروج"
 
 #: bookwyrm/templates/widgets/clearable_file_input_with_warning.html:28
 msgid "File exceeds maximum size: 10MB"
