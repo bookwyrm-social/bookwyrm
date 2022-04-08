@@ -45,9 +45,11 @@
                     {% trans 'Settings' %}
                 </a>
             </li>
+
             {% if perms.bookwyrm.create_invites or perms.moderate_user %}
-            <li class="navbar-divider" role="presentation" aria-hidden="true"->&nbsp;</li>
+            <li class="navbar-divider" role="presentation" aria-hidden="true">&nbsp;</li>
             {% endif %}
+
             {% if perms.bookwyrm.create_invites and not site.allow_registration %}
             <li role="menuitem">
                 <a href="{% url 'settings-invite-requests' %}" class="navbar-item">
@@ -62,7 +64,9 @@
                 </a>
             </li>
             {% endif %}
+
             <li class="navbar-divider" role="presentation" aria-hidden="true">&nbsp;</li>
+
             <li role="menuitem">
                 <a href="{% url 'logout' %}" class="navbar-item">
                     {% trans 'Log out' %}
