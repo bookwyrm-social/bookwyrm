@@ -22,7 +22,6 @@ class Notifications(View):
                 "related_import",
                 "related_report",
                 "related_user",
-                "related_book",
                 "related_list_item",
                 "related_list_item__book",
             )

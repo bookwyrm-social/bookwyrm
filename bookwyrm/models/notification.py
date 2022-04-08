@@ -15,7 +15,6 @@ class Notification(BookWyrmModel):
     """you've been tagged, liked, followed, etc"""
 
     user = models.ForeignKey("User", on_delete=models.CASCADE)
-    related_book = models.ForeignKey("Edition", on_delete=models.CASCADE, null=True)
     related_user = models.ForeignKey(
         "User", on_delete=models.CASCADE, null=True, related_name="related_user"
     )
@@ -38,7 +37,6 @@ class Notification(BookWyrmModel):
         # there's probably a better way to do this
         if self.__class__.objects.filter(
             user=self.user,
-            related_book=self.related_book,
             related_user=self.related_user,
             related_group=self.related_group,
             related_status=self.related_status,
