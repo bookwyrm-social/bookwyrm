@@ -139,7 +139,7 @@ class ViewsHelpers(TestCase):
         }
         responses.add(
             responses.GET,
-            "https://example.com/.well-known/webfinger?resource=acct:%s" % username,
+            f"https://example.com/.well-known/webfinger?resource=acct:{username}",
             json=wellknown,
             status=200,
         )

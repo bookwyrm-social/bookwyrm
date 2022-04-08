@@ -125,7 +125,7 @@ class ActivitypubFieldMixin:
         """model_field_name to activitypubFieldName"""
         if self.activitypub_field:
             return self.activitypub_field
-        name = self.name.split(".")[-1]
+        name = self.name.rsplit(".", maxsplit=1)[-1]
         components = name.split("_")
         return components[0] + "".join(x.title() for x in components[1:])
 
