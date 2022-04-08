@@ -161,6 +161,7 @@ class ModelFields(TestCase):
         @dataclass(init=False)
         class TestActivity(ActivityObject):
             """real simple mock"""
+
             # pylint: disbale=invalid-name
             to: List[str]
             cc: List[str]
