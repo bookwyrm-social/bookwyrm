@@ -83,7 +83,7 @@ class UserViews(TestCase):
     def test_user_page_domain(self):
         """when the user domain has dashes in it"""
         with patch("bookwyrm.models.user.set_remote_server"):
-            self.remote_user = models.User.objects.create_user(
+            models.User.objects.create_user(
                 "nutria",
                 "",
                 "nutriaword",
