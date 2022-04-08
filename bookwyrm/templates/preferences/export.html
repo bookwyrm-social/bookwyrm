@@ -1,0 +1,22 @@
+{% extends 'preferences/layout.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "CSV Export" %}{% endblock %}
+
+{% block header %}
+{% trans "CSV Export" %}
+{% endblock %}
+
+{% block panel %}
+<div class="block content">
+    <p class="notification">
+        {% trans "Your export will include all the books on your shelves, books you have reviewed, and books with reading activity." %}
+    </p>
+    <p>
+        <a href="{% url 'prefs-export-file' %}" class="button">
+            <span class="icon icon-download" aria-hidden="true"></span>
+            <span>Download file</span>
+        </a>
+    </p>
+</div>
+{% endblock %}
