@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-04-04 22:19+0000\n"
-"PO-Revision-Date: 2022-04-04 23:28\n"
+"POT-Creation-Date: 2022-04-08 21:00+0000\n"
+"PO-Revision-Date: 2022-04-08 21:50\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Chinese Simplified\n"
 "Language: zh\n"
@@ -187,7 +187,7 @@ msgstr "%(value)s 不是有效的 remote_id"
 msgid "%(value)s is not a valid username"
 msgstr "%(value)s 不是有效的用户名"
 
-#: bookwyrm/models/fields.py:181 bookwyrm/templates/layout.html:179
+#: bookwyrm/models/fields.py:181 bookwyrm/templates/layout.html:123
 #: bookwyrm/templates/ostatus/error.html:29
 msgid "username"
 msgstr "用户名"
@@ -407,7 +407,7 @@ msgstr "%(site_name)s 的仲裁员和管理员负责维持站点运行， 执行
 msgid "Moderator"
 msgstr "仲裁员"
 
-#: bookwyrm/templates/about/about.html:117 bookwyrm/templates/layout.html:140
+#: bookwyrm/templates/about/about.html:117 bookwyrm/templates/user_menu.html:63
 msgid "Admin"
 msgstr "管理员"
 
@@ -438,7 +438,7 @@ msgid "Software version:"
 msgstr "软件版本："
 
 #: bookwyrm/templates/about/layout.html:30
-#: bookwyrm/templates/embed-layout.html:34 bookwyrm/templates/layout.html:238
+#: bookwyrm/templates/embed-layout.html:34 bookwyrm/templates/layout.html:182
 #, python-format
 msgid "About %(site_name)s"
 msgstr "关于 %(site_name)s"
@@ -1360,7 +1360,7 @@ msgstr "跨站社区"
 
 #: bookwyrm/templates/directory/directory.html:4
 #: bookwyrm/templates/directory/directory.html:9
-#: bookwyrm/templates/layout.html:109
+#: bookwyrm/templates/user_menu.html:30
 msgid "Directory"
 msgstr "目录"
 
@@ -1601,13 +1601,13 @@ msgstr "重置你在 %(site_name)s 的密码"
 msgid "%(site_name)s home page"
 msgstr "%(site_name)s 首页"
 
-#: bookwyrm/templates/embed-layout.html:40 bookwyrm/templates/layout.html:242
+#: bookwyrm/templates/embed-layout.html:40 bookwyrm/templates/layout.html:186
 msgid "Contact site admin"
 msgstr "联系站点管理员"
 
 #: bookwyrm/templates/embed-layout.html:46
-msgid "Join Bookwyrm"
-msgstr "加入 BookWyrm"
+msgid "Join BookWyrm"
+msgstr ""
 
 #: bookwyrm/templates/feed/direct_messages.html:8
 #, python-format
@@ -1615,7 +1615,7 @@ msgid "Direct Messages with <a href=\"%(path)s\">%(username)s</a>"
 msgstr "与 <a href=\"%(path)s\">%(username)s</a> 私信"
 
 #: bookwyrm/templates/feed/direct_messages.html:10
-#: bookwyrm/templates/layout.html:119
+#: bookwyrm/templates/user_menu.html:40
 msgid "Direct Messages"
 msgstr "私信"
 
@@ -1652,7 +1652,7 @@ msgid "Updates"
 msgstr "更新"
 
 #: bookwyrm/templates/feed/suggested_books.html:6
-#: bookwyrm/templates/layout.html:114
+#: bookwyrm/templates/user_menu.html:35
 msgid "Your Books"
 msgstr "你的书目"
 
@@ -2209,7 +2209,7 @@ msgid "Login"
 msgstr "登录"
 
 #: bookwyrm/templates/landing/login.html:7
-#: bookwyrm/templates/landing/login.html:36 bookwyrm/templates/layout.html:187
+#: bookwyrm/templates/landing/login.html:36 bookwyrm/templates/layout.html:131
 #: bookwyrm/templates/ostatus/error.html:37
 msgid "Log in"
 msgstr "登录"
@@ -2218,7 +2218,7 @@ msgstr "登录"
 msgid "Success! Email address confirmed."
 msgstr "成功！邮箱地址已确认。"
 
-#: bookwyrm/templates/landing/login.html:21 bookwyrm/templates/layout.html:178
+#: bookwyrm/templates/landing/login.html:21 bookwyrm/templates/layout.html:122
 #: bookwyrm/templates/ostatus/error.html:28
 #: bookwyrm/templates/snippets/register_form.html:4
 msgid "Username:"
@@ -2226,12 +2226,12 @@ msgstr "用户名:"
 
 #: bookwyrm/templates/landing/login.html:27
 #: bookwyrm/templates/landing/password_reset.html:26
-#: bookwyrm/templates/layout.html:182 bookwyrm/templates/ostatus/error.html:32
+#: bookwyrm/templates/layout.html:126 bookwyrm/templates/ostatus/error.html:32
 #: bookwyrm/templates/snippets/register_form.html:45
 msgid "Password:"
 msgstr "密码:"
 
-#: bookwyrm/templates/landing/login.html:39 bookwyrm/templates/layout.html:184
+#: bookwyrm/templates/landing/login.html:39 bookwyrm/templates/layout.html:128
 #: bookwyrm/templates/ostatus/error.html:34
 msgid "Forgot your password?"
 msgstr "忘记了密码？"
@@ -2275,54 +2275,38 @@ msgstr "主导航菜单"
 msgid "Feed"
 msgstr "动态"
 
-#: bookwyrm/templates/layout.html:124 bookwyrm/templates/setup/config.html:52
-msgid "Settings"
-msgstr "设置"
-
-#: bookwyrm/templates/layout.html:133
-#: bookwyrm/templates/settings/invites/manage_invite_requests.html:15
-#: bookwyrm/templates/settings/invites/manage_invites.html:3
-#: bookwyrm/templates/settings/invites/manage_invites.html:15
-#: bookwyrm/templates/settings/layout.html:42
-msgid "Invites"
-msgstr "邀请"
-
-#: bookwyrm/templates/layout.html:147
-msgid "Log out"
-msgstr "登出"
-
-#: bookwyrm/templates/layout.html:155 bookwyrm/templates/layout.html:156
+#: bookwyrm/templates/layout.html:99 bookwyrm/templates/layout.html:100
 #: bookwyrm/templates/notifications/notifications_page.html:5
 #: bookwyrm/templates/notifications/notifications_page.html:10
 msgid "Notifications"
 msgstr "通知"
 
-#: bookwyrm/templates/layout.html:183 bookwyrm/templates/ostatus/error.html:33
+#: bookwyrm/templates/layout.html:127 bookwyrm/templates/ostatus/error.html:33
 msgid "password"
 msgstr "密码"
 
-#: bookwyrm/templates/layout.html:195
+#: bookwyrm/templates/layout.html:139
 msgid "Join"
 msgstr "加入"
 
-#: bookwyrm/templates/layout.html:229
+#: bookwyrm/templates/layout.html:173
 msgid "Successfully posted status"
 msgstr "成功发布的状态"
 
-#: bookwyrm/templates/layout.html:230
+#: bookwyrm/templates/layout.html:174
 msgid "Error posting status"
 msgstr "发布状态时出错"
 
-#: bookwyrm/templates/layout.html:246
+#: bookwyrm/templates/layout.html:190
 msgid "Documentation"
 msgstr "文档"
 
-#: bookwyrm/templates/layout.html:253
+#: bookwyrm/templates/layout.html:197
 #, python-format
 msgid "Support %(site_name)s on <a href=\"%(support_link)s\" target=\"_blank\">%(support_title)s</a>"
 msgstr "在 <a href=\"%(support_link)s\" target=\"_blank\">%(support_title)s</a> 上支持 %(site_name)s"
 
-#: bookwyrm/templates/layout.html:257
+#: bookwyrm/templates/layout.html:201
 msgid "BookWyrm's source code is freely available. You can contribute or report issues on <a href=\"https://github.com/mouse-reeve/bookwyrm\">GitHub</a>."
 msgstr "BookWyrm 是开源软件。你可以在 <a href=\"https://github.com/mouse-reeve/bookwyrm\">GitHub</a> 贡献或报告问题。"
 
@@ -2903,6 +2887,7 @@ msgstr "编辑个人资料"
 #: bookwyrm/templates/preferences/edit_user.html:12
 #: bookwyrm/templates/preferences/edit_user.html:25
 #: bookwyrm/templates/settings/users/user_info.html:7
+#: bookwyrm/templates/user_menu.html:25
 msgid "Profile"
 msgstr "个人资料"
 
@@ -3620,6 +3605,14 @@ msgstr "未找到实例"
 msgid "Invite Requests"
 msgstr "邀请请求"
 
+#: bookwyrm/templates/settings/invites/manage_invite_requests.html:15
+#: bookwyrm/templates/settings/invites/manage_invites.html:3
+#: bookwyrm/templates/settings/invites/manage_invites.html:15
+#: bookwyrm/templates/settings/layout.html:42
+#: bookwyrm/templates/user_menu.html:56
+msgid "Invites"
+msgstr "邀请"
+
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:23
 msgid "Ignored Invite Requests"
 msgstr "已忽略的邀请请求"
@@ -4275,6 +4268,10 @@ msgstr "你的域名似乎配置出错了。它不应该包括协议或斜杠。
 #: bookwyrm/templates/setup/config.html:42
 msgid "You are running BookWyrm in production mode without https. <strong>USE_HTTPS</strong> should be enabled in production."
 msgstr "您正在没有https的实际使用模式下运行BookWyrm，<strong>USE_HTTPS</strong>应该在实际使用中启用。"
+
+#: bookwyrm/templates/setup/config.html:52 bookwyrm/templates/user_menu.html:45
+msgid "Settings"
+msgstr "设置"
 
 #: bookwyrm/templates/setup/config.html:56
 msgid "Instance domain:"
@@ -5074,6 +5071,14 @@ msgstr[0] "%(mutuals_display)s 个你也关注的关注者"
 #: bookwyrm/templates/user/user_preview.html:43
 msgid "No followers you follow"
 msgstr "没有你关注的关注者"
+
+#: bookwyrm/templates/user_menu.html:7
+msgid "View profile and more"
+msgstr ""
+
+#: bookwyrm/templates/user_menu.html:72
+msgid "Log out"
+msgstr "登出"
 
 #: bookwyrm/templates/widgets/clearable_file_input_with_warning.html:28
 msgid "File exceeds maximum size: 10MB"
