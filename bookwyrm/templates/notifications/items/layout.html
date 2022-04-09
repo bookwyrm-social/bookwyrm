@@ -1,7 +1,7 @@
 {% load notification_page_tags %}
 {% related_status notification as related_status %}
 <div class="notification {% if notification.id in unread %}has-background-primary{% endif %}">
-    <div class="columns is-mobile {% if notification.id in unread %}has-text-white{% else %}has-text-grey{% endif %}">
+    <div class="columns is-mobile {% if notification.id in unread %}has-text-white{% else %}has-text-more-muted{% endif %}">
         <div class="column is-narrow is-size-3">
             <a class="icon" href="{% block primary_link %}{% endblock %}">
                 {% block icon %}{% endblock %}
