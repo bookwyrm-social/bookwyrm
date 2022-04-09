@@ -5,7 +5,6 @@ from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
 from django.views import View
-from django.views.decorators.http import require_POST
 from django.views.decorators.debug import sensitive_variables, sensitive_post_parameters
 
 from bookwyrm import emailing, forms, models
@@ -129,12 +128,22 @@ class ConfirmEmail(View):
         return ConfirmEmailCode().get(request, code)
 
 
-@require_POST
-def resend_link(request):
-    """resend confirmation link"""
-    email = request.POST.get("email")
-    user = get_object_or_404(models.User, email=email)
-    emailing.email_confirmation_email(user)
-    return TemplateResponse(
-        request, "confirm_email/confirm_email.html", {"valid": True}
-    )
+class ResendConfirmEmail(View):
+    """you probably didn't get the email because celery is slow but you can try this"""
+
+    def get(self, request, error=False):
+        """resend link landing page"""
+        return TemplateResponse(request, "confirm_email/resend.html", {"error": error})
+
+    def post(self, request):
+        """resend confirmation link"""
+        email = request.POST.get("email")
+        try:
+            user = models.User.objects.get(email=email)
+        except models.User.DoesNotExist:
+            return self.get(request, error=True)
+
+        emailing.email_confirmation_email(user)
+        return TemplateResponse(
+            request, "confirm_email/confirm_email.html", {"valid": True}
+        )

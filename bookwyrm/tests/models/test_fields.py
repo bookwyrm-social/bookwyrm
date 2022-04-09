@@ -162,6 +162,7 @@ class ModelFields(TestCase):
         class TestActivity(ActivityObject):
             """real simple mock"""
 
+            # pylint: disable=invalid-name
             to: List[str]
             cc: List[str]
             id: str = "http://hi.com"

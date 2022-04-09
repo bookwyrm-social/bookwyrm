@@ -3,18 +3,24 @@
 {% load humanize %}
 {% load utilities %}
 
-{% block title %}{% if book %}{% blocktrans with book_title=book.title %}Edit "{{ book_title }}"{% endblocktrans %}{% else %}{% trans "Add Book" %}{% endif %}{% endblock %}
+{% block title %}
+    {% if book.title %}
+        {% blocktrans with book_title=book.title %}Edit "{{ book_title }}"{% endblocktrans %}
+    {% else %}
+        {% trans "Add Book" %}
+    {% endif %}
+{% endblock %}
 
 {% block content %}
 <header class="block">
     <h1 class="title level-left">
-        {% if book %}
+        {% if book.title %}
         {% blocktrans with book_title=book.title %}Edit "{{ book_title }}"{% endblocktrans %}
         {% else %}
         {% trans "Add Book" %}
         {% endif %}
     </h1>
-    {% if book %}
+    {% if book.created_date %}
     <dl>
         <dt class="is-pulled-left mr-5 has-text-weight-semibold">{% trans "Added:" %}</dt>
         <dd class="ml-2">{{ book.created_date | naturaltime }}</dd>
@@ -33,7 +39,7 @@
 
 <form
     class="block"
-    {% if book %}
+    {% if book.id %}
         name="edit-book"
         action="{{ book.local_path }}/{% if confirm_mode %}confirm{% else %}edit{% endif %}"
     {% else %}
@@ -97,7 +103,7 @@
                             <input type="radio" name="parent_work" value="{{ match.parent_work.id }}"> {{ match.parent_work.title }}
                         </label>
                         {% endfor %}
-                        <label>
+                        <label class="label mt-2">
                             <input type="radio" name="parent_work" value="0" required> {% trans "This is a new work" %}
                         </label>
                     </fieldset>
@@ -119,7 +125,7 @@
     {% if not confirm_mode %}
     <div class="block">
         <button class="button is-primary" type="submit">{% trans "Save" %}</button>
-        {% if book %}
+        {% if book.id %}
         <a class="button" href="{{ book.local_path }}">{% trans "Cancel" %}</a>
         {% else %}
         <a href="/" class="button" data-back>

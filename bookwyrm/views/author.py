@@ -1,7 +1,6 @@
 """ the good people stuff! the authors! """
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.paginator import Paginator
-from django.db.models import Avg, Q
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
@@ -31,9 +30,8 @@ class Author(View):
             return redirect_local_path
 
         books = (
-            models.Work.objects.filter(Q(authors=author) | Q(editions__authors=author))
-            .annotate(Avg("editions__review__rating"))
-            .order_by("editions__review__rating__avg")
+            models.Work.objects.filter(editions__authors=author)
+            .order_by("created_date")
             .distinct()
         )
 

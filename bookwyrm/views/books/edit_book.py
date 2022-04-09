@@ -1,14 +1,13 @@
 """ the good stuff! the books! """
-from re import sub
-from dateutil.parser import parse as dateparse
+from re import sub, findall
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.postgres.search import SearchRank, SearchVector
 from django.db import transaction
 from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
-from django.utils.datastructures import MultiValueDictKeyError
 from django.utils.decorators import method_decorator
+from django.views.decorators.http import require_POST
 from django.views import View
 
 from bookwyrm import book_search, forms, models
@@ -30,105 +29,27 @@ from .books import set_cover_from_url
 class EditBook(View):
     """edit a book"""
 
-    def get(self, request, book_id=None):
+    def get(self, request, book_id):
         """info about a book"""
-        book = None
-        if book_id:
-            book = get_edition(book_id)
-            if not book.description:
-                book.description = book.parent_work.description
+        book = get_edition(book_id)
+        if not book.description:
+            book.description = book.parent_work.description
         data = {"book": book, "form": forms.EditionForm(instance=book)}
         return TemplateResponse(request, "book/edit/edit_book.html", data)
 
-    # pylint: disable=too-many-locals
-    def post(self, request, book_id=None):
+    def post(self, request, book_id):
         """edit a book cool"""
-        # returns None if no match is found
-        book = models.Edition.objects.filter(id=book_id).first()
+        book = get_object_or_404(models.Edition, id=book_id)
         form = forms.EditionForm(request.POST, request.FILES, instance=book)
 
         data = {"book": book, "form": form}
         if not form.is_valid():
             return TemplateResponse(request, "book/edit/edit_book.html", data)
 
-        # filter out empty author fields
-        add_author = [author for author in request.POST.getlist("add_author") if author]
-        if add_author:
-            data["add_author"] = add_author
-            data["author_matches"] = []
-            data["isni_matches"] = []
-
-            for author in add_author:
-                if not author:
-                    continue
-                # check for existing authors
-                vector = SearchVector("name", weight="A") + SearchVector(
-                    "aliases", weight="B"
-                )
-
-                author_matches = (
-                    models.Author.objects.annotate(search=vector)
-                    .annotate(rank=SearchRank(vector, author))
-                    .filter(rank__gt=0.4)
-                    .order_by("-rank")[:5]
-                )
-
-                isni_authors = find_authors_by_name(
-                    author, description=True
-                )  # find matches from ISNI API
-
-                # dedupe isni authors we already have in the DB
-                exists = [
-                    i
-                    for i in isni_authors
-                    for a in author_matches
-                    if sub(r"\D", "", str(i.isni)) == sub(r"\D", "", str(a.isni))
-                ]
-
-                # pylint: disable=cell-var-from-loop
-                matches = list(filter(lambda x: x not in exists, isni_authors))
-                # combine existing and isni authors
-                matches.extend(author_matches)
-
-                data["author_matches"].append(
-                    {
-                        "name": author.strip(),
-                        "matches": matches,
-                        "existing_isnis": exists,
-                    }
-                )
-
-        # we're creating a new book
-        if not book:
-            # check if this is an edition of an existing work
-            author_text = book.author_text if book else add_author
-            data["book_matches"] = book_search.search(
-                f'{form.cleaned_data.get("title")} {author_text}',
-                min_confidence=0.5,
-            )[:5]
+        data = add_authors(request, data)
 
         # either of the above cases requires additional confirmation
-        if add_author or not book:
-            # creting a book or adding an author to a book needs another step
-            data["confirm_mode"] = True
-            # this isn't preserved because it isn't part of the form obj
-            data["remove_authors"] = request.POST.getlist("remove_authors")
-            data["cover_url"] = request.POST.get("cover-url")
-
-            # make sure the dates are passed in as datetime, they're currently a string
-            # QueryDicts are immutable, we need to copy
-            formcopy = data["form"].data.copy()
-            try:
-                formcopy["first_published_date"] = dateparse(
-                    formcopy["first_published_date"]
-                )
-            except (MultiValueDictKeyError, ValueError):
-                pass
-            try:
-                formcopy["published_date"] = dateparse(formcopy["published_date"])
-            except (MultiValueDictKeyError, ValueError):
-                pass
-            data["form"].data = formcopy
+        if data.get("add_author"):
             return TemplateResponse(request, "book/edit/edit_book.html", data)
 
         remove_authors = request.POST.getlist("remove_authors")
@@ -136,13 +57,154 @@ class EditBook(View):
             book.authors.remove(author_id)
 
         book = form.save(commit=False)
+
         url = request.POST.get("cover-url")
         if url:
             image = set_cover_from_url(url)
             if image:
                 book.cover.save(*image, save=False)
+
         book.save()
         return redirect(f"/book/{book.id}")
+
+
+@method_decorator(login_required, name="dispatch")
+@method_decorator(
+    permission_required("bookwyrm.edit_book", raise_exception=True), name="dispatch"
+)
+class CreateBook(View):
+    """brand new book"""
+
+    def get(self, request):
+        """info about a book"""
+        data = {"form": forms.EditionForm()}
+        return TemplateResponse(request, "book/edit/edit_book.html", data)
+
+    # pylint: disable=too-many-locals
+    def post(self, request):
+        """create a new book"""
+        # returns None if no match is found
+        form = forms.EditionForm(request.POST, request.FILES)
+        data = {"form": form}
+
+        # collect data provided by the work or import item
+        parent_work_id = request.POST.get("parent_work")
+        authors = None
+        if request.POST.get("authors"):
+            author_ids = findall(r"\d+", request.POST["authors"])
+            authors = models.Author.objects.filter(id__in=author_ids)
+
+        # fake book in case we need to keep editing
+        if parent_work_id:
+            data["book"] = {
+                "parent_work": {"id": parent_work_id},
+                "authors": authors,
+            }
+
+        if not form.is_valid():
+            return TemplateResponse(request, "book/edit/edit_book.html", data)
+
+        data = add_authors(request, data)
+
+        # check if this is an edition of an existing work
+        author_text = ", ".join(data.get("add_author", []))
+        data["book_matches"] = book_search.search(
+            f'{form.cleaned_data.get("title")} {author_text}',
+            min_confidence=0.1,
+        )[:5]
+
+        # go to confirm mode
+        if not parent_work_id or data.get("add_author"):
+            return TemplateResponse(request, "book/edit/edit_book.html", data)
+
+        with transaction.atomic():
+            book = form.save()
+            parent_work = get_object_or_404(models.Work, id=parent_work_id)
+            book.parent_work = parent_work
+
+            if authors:
+                book.authors.add(*authors)
+
+            url = request.POST.get("cover-url")
+            if url:
+                image = set_cover_from_url(url)
+                if image:
+                    book.cover.save(*image, save=False)
+
+            book.save()
+        return redirect(f"/book/{book.id}")
+
+
+def add_authors(request, data):
+    """helper for adding authors"""
+    add_author = [author for author in request.POST.getlist("add_author") if author]
+    if not add_author:
+        return data
+
+    data["add_author"] = add_author
+    data["author_matches"] = []
+    data["isni_matches"] = []
+
+    # creting a book or adding an author to a book needs another step
+    data["confirm_mode"] = True
+    # this isn't preserved because it isn't part of the form obj
+    data["remove_authors"] = request.POST.getlist("remove_authors")
+    data["cover_url"] = request.POST.get("cover-url")
+
+    for author in add_author:
+        # filter out empty author fields
+        if not author:
+            continue
+        # check for existing authors
+        vector = SearchVector("name", weight="A") + SearchVector("aliases", weight="B")
+
+        author_matches = (
+            models.Author.objects.annotate(search=vector)
+            .annotate(rank=SearchRank(vector, author))
+            .filter(rank__gt=0.4)
+            .order_by("-rank")[:5]
+        )
+
+        isni_authors = find_authors_by_name(
+            author, description=True
+        )  # find matches from ISNI API
+
+        # dedupe isni authors we already have in the DB
+        exists = [
+            i
+            for i in isni_authors
+            for a in author_matches
+            if sub(r"\D", "", str(i.isni)) == sub(r"\D", "", str(a.isni))
+        ]
+
+        # pylint: disable=cell-var-from-loop
+        matches = list(filter(lambda x: x not in exists, isni_authors))
+        # combine existing and isni authors
+        matches.extend(author_matches)
+
+        data["author_matches"].append(
+            {
+                "name": author.strip(),
+                "matches": matches,
+                "existing_isnis": exists,
+            }
+        )
+        return data
+
+
+@require_POST
+@permission_required("bookwyrm.edit_book", raise_exception=True)
+def create_book_from_data(request):
+    """create a book with starter data"""
+    author_ids = findall(r"\d+", request.POST.get("authors"))
+    book = {
+        "parent_work": {"id": request.POST.get("parent_work")},
+        "authors": models.Author.objects.filter(id__in=author_ids).all(),
+        "subjects": request.POST.getlist("subjects"),
+    }
+
+    data = {"book": book, "form": forms.EditionForm(request.POST)}
+    return TemplateResponse(request, "book/edit/edit_book.html", data)
 
 
 @method_decorator(login_required, name="dispatch")
@@ -167,6 +229,13 @@ class ConfirmEditBook(View):
         with transaction.atomic():
             # save book
             book = form.save()
+
+            # add known authors
+            authors = None
+            if request.POST.get("authors"):
+                author_ids = findall(r"\d+", request.POST["authors"])
+                authors = models.Author.objects.filter(id__in=author_ids)
+                book.authors.add(*authors)
 
             # get or create author as needed
             for i in range(int(request.POST.get("author-match-count", 0))):
@@ -201,7 +270,7 @@ class ConfirmEditBook(View):
                 book.authors.add(author)
 
             # create work, if needed
-            if not book_id:
+            if not book.parent_work:
                 work_match = request.POST.get("parent_work")
                 if work_match and work_match != "0":
                     work = get_object_or_404(models.Work, id=work_match)

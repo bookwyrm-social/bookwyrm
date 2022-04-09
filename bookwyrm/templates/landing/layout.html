@@ -70,6 +70,14 @@
 
                             {% include 'snippets/form_errors.html' with errors_list=request_form.email.errors id="desc_request_email" %}
                         </div>
+                        {% if site.invite_request_question %}
+                            <div class="block">
+                                <label for="id_answer_register" class="label">{{ site.invite_question_text }}</label>
+                                <input type="answer" name="answer" maxlength="50" class="input" required="true" id="id_answer_register" aria-describedby="desc_answer_register">
+                                {% include 'snippets/form_errors.html' with errors_list=request_form.answer.errors id="desc_answer_register" %}
+                            </div>
+                        {% endif %}
+
                         <button type="submit" class="button is-link">{% trans "Submit" %}</button>
                     </form>
                 {% endif %}

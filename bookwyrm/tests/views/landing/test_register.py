@@ -360,10 +360,17 @@ class RegisterViews(TestCase):
         result = view(request)
         validate_html(result.render())
 
-    def test_resend_link(self, *_):
+    def test_resend_link_get(self, *_):
+        """try again"""
+        request = self.factory.get("")
+        request.user = self.anonymous_user
+        result = views.ResendConfirmEmail.as_view()(request)
+        validate_html(result.render())
+
+    def test_resend_link_post(self, *_):
         """try again"""
         request = self.factory.post("", {"email": "mouse@mouse.com"})
         request.user = self.anonymous_user
         with patch("bookwyrm.emailing.send_email.delay") as mock:
-            views.resend_link(request)
+            views.ResendConfirmEmail.as_view()(request)
         self.assertEqual(mock.call_count, 1)
