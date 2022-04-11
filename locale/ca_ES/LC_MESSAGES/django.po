@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-04-08 21:00+0000\n"
-"PO-Revision-Date: 2022-04-11 19:05\n"
+"PO-Revision-Date: 2022-04-11 20:03\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Catalan\n"
 "Language: ca\n"
@@ -515,8 +515,8 @@ msgstr "Malauradament %(display_name)s no ha acabat de llegir cap llibre a %(yea
 #, python-format
 msgid "In %(year)s, %(display_name)s read %(books_total)s book<br />for a total of %(pages_total)s pages!"
 msgid_plural "In %(year)s, %(display_name)s read %(books_total)s books<br />for a total of %(pages_total)s pages!"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "El %(year)s %(display_name)s ha llegit %(books_total)s llibre<br />i un total de %(pages_total)s pàgines!"
+msgstr[1] "El %(year)s %(display_name)s ha llegit %(books_total)s llibres<br />i un total de %(pages_total)s pàgines!"
 
 #: bookwyrm/templates/annual_summary/layout.html:124
 msgid "That’s great!"
@@ -525,14 +525,14 @@ msgstr "Genial!"
 #: bookwyrm/templates/annual_summary/layout.html:127
 #, python-format
 msgid "That makes an average of %(pages)s pages per book."
-msgstr ""
+msgstr "Això fa una mitjana de %(pages)s pàgines per llibre."
 
 #: bookwyrm/templates/annual_summary/layout.html:132
 #, python-format
 msgid "(%(no_page_number)s book doesn’t have pages)"
 msgid_plural "(%(no_page_number)s books don’t have pages)"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "(%(no_page_number)s llibre no té pàgines)"
+msgstr[1] "(%(no_page_number)s llibres no tenen pàgines)"
 
 #: bookwyrm/templates/annual_summary/layout.html:148
 msgid "Their shortest read this year…"
@@ -552,7 +552,7 @@ msgstr "per"
 #: bookwyrm/templates/annual_summary/layout.html:182
 #, python-format
 msgid "<strong>%(pages)s</strong> pages"
-msgstr ""
+msgstr "<strong>%(pages)s</strong> pàgines"
 
 #: bookwyrm/templates/annual_summary/layout.html:169
 msgid "…and the longest"
@@ -1352,7 +1352,7 @@ msgstr ""
 
 #: bookwyrm/templates/directory/community_filter.html:5
 msgid "Community"
-msgstr ""
+msgstr "Comunitat"
 
 #: bookwyrm/templates/directory/community_filter.html:8
 #: bookwyrm/templates/settings/users/user_admin.html:25
@@ -1372,7 +1372,7 @@ msgstr "Directori"
 
 #: bookwyrm/templates/directory/directory.html:17
 msgid "Make your profile discoverable to other BookWyrm users."
-msgstr ""
+msgstr "Feu que el vostre perfil sigui reconeixible per altres usuaris de BookWyrm."
 
 #: bookwyrm/templates/directory/directory.html:21
 msgid "Join Directory"
@@ -1381,7 +1381,7 @@ msgstr "Afegiu-vos al directori"
 #: bookwyrm/templates/directory/directory.html:24
 #, python-format
 msgid "You can opt-out at any time in your <a href=\"%(path)s\">profile settings.</a>"
-msgstr ""
+msgstr "Podeu dir que no en qualsevol moment al vostre <a href=\"%(path)s\">perfil d'usuari</a>"
 
 #: bookwyrm/templates/directory/directory.html:29
 #: bookwyrm/templates/directory/directory.html:31
@@ -1390,7 +1390,7 @@ msgstr ""
 #: bookwyrm/templates/feed/summary_card.html:14
 #: bookwyrm/templates/snippets/announcement.html:31
 msgid "Dismiss message"
-msgstr ""
+msgstr "Descarteu el missatge"
 
 #: bookwyrm/templates/directory/sort_filter.html:5
 msgid "Order by"
@@ -1431,7 +1431,7 @@ msgstr[1] "llibres als teus prestatges"
 
 #: bookwyrm/templates/directory/user_card.html:55
 msgid "posts"
-msgstr ""
+msgstr "publicacions"
 
 #: bookwyrm/templates/directory/user_card.html:61
 msgid "last active"
@@ -1527,12 +1527,12 @@ msgstr ""
 #: bookwyrm/templates/email/html_layout.html:15
 #: bookwyrm/templates/email/text_layout.html:2
 msgid "Hi there,"
-msgstr ""
+msgstr "Hola,"
 
 #: bookwyrm/templates/email/html_layout.html:21
 #, python-format
 msgid "BookWyrm hosted on <a style=\"color: #3273dc;\" href=\"https://%(domain)s\">%(site_name)s</a>"
-msgstr ""
+msgstr "BookWyrm allotjat a <a style=\"color: #3273dc;\" href=\"https://%(domain)s\">%(site_name)s</a>"
 
 #: bookwyrm/templates/email/html_layout.html:23
 msgid "Email preference"
@@ -1542,11 +1542,11 @@ msgstr "Preferències de correu electrònic"
 #: bookwyrm/templates/email/invite/subject.html:2
 #, python-format
 msgid "You're invited to join %(site_name)s!"
-msgstr ""
+msgstr "T'han convidat a unir-te a %(site_name)s!"
 
 #: bookwyrm/templates/email/invite/html_content.html:9
 msgid "Join Now"
-msgstr ""
+msgstr "Uniu-vos-hi ara"
 
 #: bookwyrm/templates/email/invite/html_content.html:15
 #, python-format
