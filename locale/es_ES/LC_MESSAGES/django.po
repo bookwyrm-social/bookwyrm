@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-04-08 21:00+0000\n"
-"PO-Revision-Date: 2022-04-25 19:20\n"
+"PO-Revision-Date: 2022-04-25 20:28\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Spanish\n"
 "Language: es\n"
@@ -293,7 +293,7 @@ msgstr "Español"
 
 #: bookwyrm/settings.py:285
 msgid "Galego (Galician)"
-msgstr "Galego (Gallego)"
+msgstr "Galego (gallego)"
 
 #: bookwyrm/settings.py:286
 msgid "Italiano (Italian)"
@@ -313,11 +313,11 @@ msgstr "Lietuvių (Lituano)"
 
 #: bookwyrm/settings.py:290
 msgid "Norsk (Norwegian)"
-msgstr "Norsk (Noruego)"
+msgstr "Norsk (noruego)"
 
 #: bookwyrm/settings.py:291
 msgid "Português do Brasil (Brazilian Portuguese)"
-msgstr "Português do Brasil (Portugués brasileño)"
+msgstr "Português do Brasil (portugués brasileño)"
 
 #: bookwyrm/settings.py:292
 msgid "Português Europeu (European Portuguese)"
@@ -834,7 +834,7 @@ msgstr[1] "%(count)s ediciones"
 
 #: bookwyrm/templates/book/book.html:228
 msgid "You have shelved this edition in:"
-msgstr "Has guardado esta edición en la estantería de:"
+msgstr "Has guardado esta edición en:"
 
 #: bookwyrm/templates/book/book.html:243
 #, python-format
@@ -1670,11 +1670,11 @@ msgstr "¡No hay ningún libro aquí ahorita! Busca a un libro para empezar"
 
 #: bookwyrm/templates/feed/suggested_books.html:13
 msgid "Do you have book data from another service like GoodReads?"
-msgstr ""
+msgstr "¿Tienes datos de otros servicios como GoodReads?"
 
 #: bookwyrm/templates/feed/suggested_books.html:16
 msgid "Import your reading history"
-msgstr ""
+msgstr "Importa tu historial de lectura"
 
 #: bookwyrm/templates/feed/suggested_users.html:5
 #: bookwyrm/templates/get_started/users.html:6
@@ -2277,7 +2277,7 @@ msgstr "Buscar un libro o un usuario o una lista"
 
 #: bookwyrm/templates/layout.html:61 bookwyrm/templates/layout.html:62
 msgid "Scan Barcode"
-msgstr ""
+msgstr "Escanear código de barras"
 
 #: bookwyrm/templates/layout.html:72
 msgid "Main navigation menu"
@@ -2474,7 +2474,7 @@ msgstr "Una nota opcional que se mostrará con el libro."
 
 #: bookwyrm/templates/lists/list.html:37
 msgid "That book is already on this list."
-msgstr ""
+msgstr "El libro ya está en la lista."
 
 #: bookwyrm/templates/lists/list.html:45
 msgid "You successfully suggested a book for this list!"
@@ -2939,7 +2939,7 @@ msgstr "Huso horario preferido:"
 
 #: bookwyrm/templates/preferences/edit_user.html:101
 msgid "Theme:"
-msgstr ""
+msgstr "Tema:"
 
 #: bookwyrm/templates/preferences/edit_user.html:117
 msgid "Manually approve followers"
@@ -2947,7 +2947,7 @@ msgstr "Aprobar seguidores manualmente"
 
 #: bookwyrm/templates/preferences/edit_user.html:123
 msgid "Hide followers and following on profile"
-msgstr ""
+msgstr "Ocultar a quién sigo y quién me sigue en el perfil."
 
 #: bookwyrm/templates/preferences/edit_user.html:128
 msgid "Default post privacy:"
@@ -2956,11 +2956,11 @@ msgstr "Privacidad de publicación por defecto:"
 #: bookwyrm/templates/preferences/export.html:4
 #: bookwyrm/templates/preferences/export.html:7
 msgid "CSV Export"
-msgstr ""
+msgstr "Exportar CSV"
 
 #: bookwyrm/templates/preferences/export.html:13
 msgid "Your export will include all the books on your shelves, books you have reviewed, and books with reading activity."
-msgstr ""
+msgstr "Se exportarán todos los libros que tengas en las estanterías, las reseñas y los libros que estés leyendo."
 
 #: bookwyrm/templates/preferences/layout.html:11
 msgid "Account"
@@ -3068,38 +3068,40 @@ msgstr "Reportar"
 msgid "\n"
 "        Scan Barcode\n"
 "    "
-msgstr ""
+msgstr "\n"
+"        Escanear código de barras\n"
+"    "
 
 #: bookwyrm/templates/search/barcode_modal.html:23
 msgid "Requesting camera..."
-msgstr ""
+msgstr "Solicitando acceso a cámara..."
 
 #: bookwyrm/templates/search/barcode_modal.html:24
 msgid "Grant access to the camera to scan a book's barcode."
-msgstr ""
+msgstr "Otorga acceso a la cámara para poder escanear el código de barras de tus libros."
 
 #: bookwyrm/templates/search/barcode_modal.html:29
 msgid "Could not access camera"
-msgstr ""
+msgstr "No se ha podido acceder a la cámara."
 
 #: bookwyrm/templates/search/barcode_modal.html:33
 msgctxt "barcode scanner"
 msgid "Scanning..."
-msgstr ""
+msgstr "Escaneando..."
 
 #: bookwyrm/templates/search/barcode_modal.html:34
 msgid "Align your book's barcode with the camera."
-msgstr ""
+msgstr "Alinea el código de barras del libro con la cámara."
 
 #: bookwyrm/templates/search/barcode_modal.html:38
 msgctxt "barcode scanner"
 msgid "ISBN scanned"
-msgstr ""
+msgstr "Se ha escaneado el ISBN."
 
 #: bookwyrm/templates/search/barcode_modal.html:39
 msgctxt "followed by ISBN"
 msgid "Searching for book:"
-msgstr ""
+msgstr "Buscando libro:"
 
 #: bookwyrm/templates/search/book.html:44
 msgid "Results from"
@@ -3237,7 +3239,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/announcements/edit_announcement.html:57
 msgid "Details:"
-msgstr ""
+msgstr "Información:"
 
 #: bookwyrm/templates/settings/announcements/edit_announcement.html:65
 msgid "Event date:"
@@ -3245,17 +3247,17 @@ msgstr "Fecha de evento:"
 
 #: bookwyrm/templates/settings/announcements/edit_announcement.html:73
 msgid "Display settings"
-msgstr ""
+msgstr "Ajustes de visualización"
 
 #: bookwyrm/templates/settings/announcements/edit_announcement.html:98
 msgid "Color:"
-msgstr ""
+msgstr "Color:"
 
 #: bookwyrm/templates/settings/automod/rules.html:7
 #: bookwyrm/templates/settings/automod/rules.html:11
 #: bookwyrm/templates/settings/layout.html:61
 msgid "Auto-moderation rules"
-msgstr ""
+msgstr "Reglas de automoderación"
 
 #: bookwyrm/templates/settings/automod/rules.html:18
 msgid "Auto-moderation rules will create reports for any local user or status with fields matching the provided string."
@@ -3267,7 +3269,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/automod/rules.html:26
 msgid "Schedule:"
-msgstr ""
+msgstr "Programar:"
 
 #: bookwyrm/templates/settings/automod/rules.html:33
 msgid "Last run:"
@@ -3304,7 +3306,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/automod/rules.html:107
 msgid "Add Rule"
-msgstr ""
+msgstr "Añadir regla"
 
 #: bookwyrm/templates/settings/automod/rules.html:116
 #: bookwyrm/templates/settings/automod/rules.html:160
@@ -4241,23 +4243,23 @@ msgstr ""
 
 #: bookwyrm/templates/setup/admin.html:13
 msgid "Create your account"
-msgstr ""
+msgstr "Crear cuenta"
 
 #: bookwyrm/templates/setup/admin.html:20
 msgid "Admin key:"
-msgstr ""
+msgstr "Contraseña de administrador:"
 
 #: bookwyrm/templates/setup/admin.html:32
 msgid "An admin key was created when you installed BookWyrm. You can get your admin key by running <code>./bw-dev admin_code</code> from the command line on your server."
-msgstr ""
+msgstr "Al instalar BookWyrm, creaste una contraseña de administrador. Para obtenerla, usa el código <code>./bw-dev admin_code</code> en la línea de comandos de tu servidor."
 
 #: bookwyrm/templates/setup/admin.html:45
 msgid "As an admin, you'll be able to configure the instance name and information, and moderate your instance. This means you will have access to private information about your users, and are responsible for responding to reports of bad behavior or spam."
-msgstr ""
+msgstr "Como admin, podrás configurar el nombre y descripción de la instancia, además de moderarla. Eso quiere decir que tienes acceso a información privada de tus usuarios y eres responsable de responder a denuncias y actuar ante comportamientos inadecuados o spam."
 
 #: bookwyrm/templates/setup/admin.html:51
 msgid "Once the instance is set up, you can promote other users to moderator or admin roles from the admin panel."
-msgstr ""
+msgstr "Cuando la instancia esté lista, podrás otorgar permisos de moderación o administración a otres usuaries desde el panel de administración."
 
 #: bookwyrm/templates/setup/admin.html:55
 msgid "Learn more about moderation"
@@ -4265,7 +4267,7 @@ msgstr ""
 
 #: bookwyrm/templates/setup/config.html:5
 msgid "Instance Configuration"
-msgstr ""
+msgstr "Configurar instancia"
 
 #: bookwyrm/templates/setup/config.html:7
 msgid "Make sure everything looks right before proceeding"
@@ -4293,7 +4295,7 @@ msgstr ""
 
 #: bookwyrm/templates/setup/config.html:63
 msgid "Protocol:"
-msgstr ""
+msgstr "Protocolo:"
 
 #: bookwyrm/templates/setup/config.html:81
 msgid "Using S3:"
