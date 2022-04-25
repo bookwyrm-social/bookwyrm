@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-04-08 21:00+0000\n"
-"PO-Revision-Date: 2022-04-09 15:13\n"
+"PO-Revision-Date: 2022-04-25 19:20\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Spanish\n"
 "Language: es\n"
@@ -48,7 +48,7 @@ msgstr "La fecha final de lectura no puede ser anterior a la fecha de inicio."
 
 #: bookwyrm/forms/landing.py:32
 msgid "User with this username already exists"
-msgstr ""
+msgstr "Este nombre de usuario ya está en uso."
 
 #: bookwyrm/forms/landing.py:41
 msgid "A user with this email already exists."
@@ -102,7 +102,7 @@ msgstr ""
 
 #: bookwyrm/models/announcement.py:12
 msgid "Success"
-msgstr ""
+msgstr "Hecho"
 
 #: bookwyrm/models/announcement.py:13
 #: bookwyrm/templates/settings/invites/manage_invites.html:47
@@ -111,15 +111,15 @@ msgstr "Enlace"
 
 #: bookwyrm/models/announcement.py:14
 msgid "Warning"
-msgstr ""
+msgstr "Aviso"
 
 #: bookwyrm/models/announcement.py:15
 msgid "Danger"
-msgstr ""
+msgstr "Peligro"
 
 #: bookwyrm/models/antispam.py:106 bookwyrm/models/antispam.py:140
 msgid "Automatically generated report"
-msgstr ""
+msgstr "Informe generado automáticamente"
 
 #: bookwyrm/models/base_model.py:17 bookwyrm/models/link.py:72
 #: bookwyrm/templates/import/import_status.html:200
@@ -301,7 +301,7 @@ msgstr "Italiano"
 
 #: bookwyrm/settings.py:287
 msgid "Suomi (Finnish)"
-msgstr ""
+msgstr "Suomi (finés)"
 
 #: bookwyrm/settings.py:288
 msgid "Français (French)"
@@ -325,7 +325,7 @@ msgstr "Português Europeu (Portugués europeo)"
 
 #: bookwyrm/settings.py:293
 msgid "Română (Romanian)"
-msgstr ""
+msgstr "Română (rumano)"
 
 #: bookwyrm/settings.py:294
 msgid "Svenska (Swedish)"
@@ -790,7 +790,7 @@ msgstr "Confirmar"
 
 #: bookwyrm/templates/book/book.html:19
 msgid "Unable to connect to remote source."
-msgstr ""
+msgstr "No se ha podido conectar con la fuente remota."
 
 #: bookwyrm/templates/book/book.html:64 bookwyrm/templates/book/book.html:65
 msgid "Edit Book"
@@ -830,7 +830,7 @@ msgstr "Descripción:"
 msgid "%(count)s edition"
 msgid_plural "%(count)s editions"
 msgstr[0] ""
-msgstr[1] ""
+msgstr[1] "%(count)s ediciones"
 
 #: bookwyrm/templates/book/book.html:228
 msgid "You have shelved this edition in:"
@@ -1012,19 +1012,19 @@ msgstr "Idiomas:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:86
 msgid "Subjects:"
-msgstr ""
+msgstr "Temas:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:90
 msgid "Add subject"
-msgstr ""
+msgstr "Añadir tema"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:108
 msgid "Remove subject"
-msgstr ""
+msgstr "Quitar tema"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:131
 msgid "Add Another Subject"
-msgstr ""
+msgstr "Añadir otro tema"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:139
 msgid "Publication"
@@ -1124,11 +1124,11 @@ msgstr "Ediciones de <a href=\"%(work_path)s\">\"%(work_title)s\"</a>"
 
 #: bookwyrm/templates/book/editions/editions.html:55
 msgid "Can't find the edition you're looking for?"
-msgstr ""
+msgstr "¿No encuentras la edición que buscas?"
 
 #: bookwyrm/templates/book/editions/editions.html:75
 msgid "Add another edition"
-msgstr ""
+msgstr "Añadir edición"
 
 #: bookwyrm/templates/book/editions/format_filter.html:9
 #: bookwyrm/templates/book/editions/language_filter.html:9
@@ -1173,7 +1173,7 @@ msgstr "Editar enlaces"
 #: bookwyrm/templates/book/file_links/edit_links.html:11
 #, python-format
 msgid "Links for \"<em>%(title)s</em>\""
-msgstr ""
+msgstr "Enlaces para «<em>%(title)s</em>»"
 
 #: bookwyrm/templates/book/file_links/edit_links.html:32
 #: bookwyrm/templates/settings/link_domains/link_table.html:6
@@ -1344,7 +1344,7 @@ msgstr "Dirección de correo electrónico:"
 
 #: bookwyrm/templates/confirm_email/resend_modal.html:28
 msgid "No user matching this email address found."
-msgstr ""
+msgstr "No hay usuarios con esta dirección de correo electrónico."
 
 #: bookwyrm/templates/confirm_email/resend_modal.html:38
 msgid "Resend link"
@@ -1615,7 +1615,7 @@ msgstr "Comuníquese con el administrador del sitio"
 
 #: bookwyrm/templates/embed-layout.html:46
 msgid "Join BookWyrm"
-msgstr ""
+msgstr "Únete a BookWyrm"
 
 #: bookwyrm/templates/feed/direct_messages.html:8
 #, python-format
