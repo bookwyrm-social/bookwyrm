@@ -17,7 +17,7 @@ class User(TestCase):
             "bookwyrm.activitystreams.populate_stream_task.delay"
         ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
             self.user = models.User.objects.create_user(
-                "mouse@%s" % DOMAIN,
+                f"mouse@{DOMAIN}",
                 "mouse@mouse.mouse",
                 "mouseword",
                 local=True,
@@ -107,7 +107,7 @@ class User(TestCase):
     def test_get_or_create_remote_server(self):
         responses.add(
             responses.GET,
-            "https://%s/.well-known/nodeinfo" % DOMAIN,
+            f"https://{DOMAIN}/.well-known/nodeinfo",
             json={"links": [{"href": "http://www.example.com"}, {}]},
         )
         responses.add(
@@ -124,7 +124,7 @@ class User(TestCase):
     @responses.activate
     def test_get_or_create_remote_server_no_wellknown(self):
         responses.add(
-            responses.GET, "https://%s/.well-known/nodeinfo" % DOMAIN, status=404
+            responses.GET, f"https://{DOMAIN}/.well-known/nodeinfo", status=404
         )
 
         server = models.user.get_or_create_remote_server(DOMAIN)
@@ -136,7 +136,7 @@ class User(TestCase):
     def test_get_or_create_remote_server_no_links(self):
         responses.add(
             responses.GET,
-            "https://%s/.well-known/nodeinfo" % DOMAIN,
+            f"https://{DOMAIN}/.well-known/nodeinfo",
             json={"links": [{"href": "http://www.example.com"}, {}]},
         )
         responses.add(responses.GET, "http://www.example.com", status=404)
@@ -150,7 +150,7 @@ class User(TestCase):
     def test_get_or_create_remote_server_unknown_format(self):
         responses.add(
             responses.GET,
-            "https://%s/.well-known/nodeinfo" % DOMAIN,
+            f"https://{DOMAIN}/.well-known/nodeinfo",
             json={"links": [{"href": "http://www.example.com"}, {}]},
         )
         responses.add(responses.GET, "http://www.example.com", json={"fish": "salmon"})

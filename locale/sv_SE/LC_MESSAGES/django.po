@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-03-26 20:16+0000\n"
-"PO-Revision-Date: 2022-03-31 07:13\n"
+"POT-Creation-Date: 2022-04-08 21:00+0000\n"
+"PO-Revision-Date: 2022-04-08 21:50\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Swedish\n"
 "Language: sv\n"
@@ -165,14 +165,14 @@ msgstr "Pocketbok"
 
 #: bookwyrm/models/federated_server.py:11
 #: bookwyrm/templates/settings/federation/edit_instance.html:55
-#: bookwyrm/templates/settings/federation/instance_list.html:19
+#: bookwyrm/templates/settings/federation/instance_list.html:22
 msgid "Federated"
 msgstr "Federerad"
 
 #: bookwyrm/models/federated_server.py:12 bookwyrm/models/link.py:71
 #: bookwyrm/templates/settings/federation/edit_instance.html:56
 #: bookwyrm/templates/settings/federation/instance.html:10
-#: bookwyrm/templates/settings/federation/instance_list.html:23
+#: bookwyrm/templates/settings/federation/instance_list.html:26
 #: bookwyrm/templates/settings/link_domains/link_domains.html:27
 msgid "Blocked"
 msgstr "Blockerad"
@@ -187,7 +187,7 @@ msgstr "%(value)s är inte ett giltigt remote_id"
 msgid "%(value)s is not a valid username"
 msgstr "%(value)s är inte ett giltigt användarnamn"
 
-#: bookwyrm/models/fields.py:181 bookwyrm/templates/layout.html:179
+#: bookwyrm/models/fields.py:181 bookwyrm/templates/layout.html:123
 #: bookwyrm/templates/ostatus/error.html:29
 msgid "username"
 msgstr "användarnamn"
@@ -300,38 +300,42 @@ msgid "Italiano (Italian)"
 msgstr "Italienska (Italiensk)"
 
 #: bookwyrm/settings.py:287
+msgid "Suomi (Finnish)"
+msgstr "Finland (Finska)"
+
+#: bookwyrm/settings.py:288
 msgid "Français (French)"
 msgstr "Franska (Fransk)"
 
-#: bookwyrm/settings.py:288
+#: bookwyrm/settings.py:289
 msgid "Lietuvių (Lithuanian)"
 msgstr "Litauiska (Litauisk)"
 
-#: bookwyrm/settings.py:289
+#: bookwyrm/settings.py:290
 msgid "Norsk (Norwegian)"
 msgstr "Norska (Norska)"
 
-#: bookwyrm/settings.py:290
+#: bookwyrm/settings.py:291
 msgid "Português do Brasil (Brazilian Portuguese)"
 msgstr "Português d Brasil (Brasiliansk Portugisiska)"
 
-#: bookwyrm/settings.py:291
+#: bookwyrm/settings.py:292
 msgid "Português Europeu (European Portuguese)"
 msgstr "Português Europeu (Europeisk Portugisiska)"
 
-#: bookwyrm/settings.py:292
-msgid "Română (Romanian)"
-msgstr ""
-
 #: bookwyrm/settings.py:293
+msgid "Română (Romanian)"
+msgstr "Rumänien (Rumänska)"
+
+#: bookwyrm/settings.py:294
 msgid "Svenska (Swedish)"
 msgstr "Svenska (Svenska)"
 
-#: bookwyrm/settings.py:294
+#: bookwyrm/settings.py:295
 msgid "简体中文 (Simplified Chinese)"
 msgstr "简体中文 (Förenklad Kinesiska)"
 
-#: bookwyrm/settings.py:295
+#: bookwyrm/settings.py:296
 msgid "繁體中文 (Traditional Chinese)"
 msgstr "繁體中文 (Traditionell Kinesiska)"
 
@@ -397,13 +401,13 @@ msgstr "Träffa dina administratörer"
 #: bookwyrm/templates/about/about.html:101
 #, python-format
 msgid "%(site_name)s's moderators and administrators keep the site up and running, enforce the <a href=\"%(coc_path)s\">code of conduct</a>, and respond when users report spam and bad behavior."
-msgstr ""
+msgstr "%(site_name)s's moderatorer och administratörer håller hemsidan uppe och fungerande, upprätthåller <a href=\"%(coc_path)s\">uppförandekoden</a> och svarar när användarna rapporterar skräppost och dåligt uppförande."
 
 #: bookwyrm/templates/about/about.html:115
 msgid "Moderator"
 msgstr "Moderator"
 
-#: bookwyrm/templates/about/about.html:117 bookwyrm/templates/layout.html:140
+#: bookwyrm/templates/about/about.html:117 bookwyrm/templates/user_menu.html:63
 msgid "Admin"
 msgstr "Administratör"
 
@@ -434,7 +438,7 @@ msgid "Software version:"
 msgstr "Programvaruversion:"
 
 #: bookwyrm/templates/about/layout.html:30
-#: bookwyrm/templates/embed-layout.html:34 bookwyrm/templates/layout.html:238
+#: bookwyrm/templates/embed-layout.html:34 bookwyrm/templates/layout.html:182
 #, python-format
 msgid "About %(site_name)s"
 msgstr "Om %(site_name)s"
@@ -786,7 +790,7 @@ msgstr "Bekräfta"
 
 #: bookwyrm/templates/book/book.html:19
 msgid "Unable to connect to remote source."
-msgstr ""
+msgstr "Kunde inte ansluta till fjärrkälla."
 
 #: bookwyrm/templates/book/book.html:64 bookwyrm/templates/book/book.html:65
 msgid "Edit Book"
@@ -825,8 +829,8 @@ msgstr "Beskrivning:"
 #, python-format
 msgid "%(count)s edition"
 msgid_plural "%(count)s editions"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(count)s utgåva"
+msgstr[1] "%(count)s utgåvor"
 
 #: bookwyrm/templates/book/book.html:228
 msgid "You have shelved this edition in:"
@@ -1195,7 +1199,6 @@ msgstr "Domän"
 #: bookwyrm/templates/book/file_links/edit_links.html:36
 #: bookwyrm/templates/import/import_status.html:127
 #: bookwyrm/templates/settings/announcements/announcements.html:37
-#: bookwyrm/templates/settings/federation/instance_list.html:46
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:47
 #: bookwyrm/templates/settings/invites/status_filter.html:5
 #: bookwyrm/templates/settings/users/user_admin.html:52
@@ -1341,7 +1344,7 @@ msgstr "E-postadress:"
 
 #: bookwyrm/templates/confirm_email/resend_modal.html:28
 msgid "No user matching this email address found."
-msgstr ""
+msgstr "Ingen användare hittades med den här e-postadressen."
 
 #: bookwyrm/templates/confirm_email/resend_modal.html:38
 msgid "Resend link"
@@ -1363,7 +1366,7 @@ msgstr "Federerad gemenskap"
 
 #: bookwyrm/templates/directory/directory.html:4
 #: bookwyrm/templates/directory/directory.html:9
-#: bookwyrm/templates/layout.html:109
+#: bookwyrm/templates/user_menu.html:30
 msgid "Directory"
 msgstr "Mapp"
 
@@ -1606,13 +1609,13 @@ msgstr "Återställ lösenordet för %(site_name)s"
 msgid "%(site_name)s home page"
 msgstr "Hemsida för %(site_name)s"
 
-#: bookwyrm/templates/embed-layout.html:40 bookwyrm/templates/layout.html:242
+#: bookwyrm/templates/embed-layout.html:40 bookwyrm/templates/layout.html:186
 msgid "Contact site admin"
 msgstr "Kontakta webbplatsens administratör"
 
 #: bookwyrm/templates/embed-layout.html:46
-msgid "Join Bookwyrm"
-msgstr "Gå med i BookWyrm"
+msgid "Join BookWyrm"
+msgstr ""
 
 #: bookwyrm/templates/feed/direct_messages.html:8
 #, python-format
@@ -1620,7 +1623,7 @@ msgid "Direct Messages with <a href=\"%(path)s\">%(username)s</a>"
 msgstr "Direktmeddelanden med <a href=\"%(path)s\">%(username)s</a>"
 
 #: bookwyrm/templates/feed/direct_messages.html:10
-#: bookwyrm/templates/layout.html:119
+#: bookwyrm/templates/user_menu.html:40
 msgid "Direct Messages"
 msgstr "Direktmeddelanden"
 
@@ -1657,7 +1660,7 @@ msgid "Updates"
 msgstr "Uppdateringar"
 
 #: bookwyrm/templates/feed/suggested_books.html:6
-#: bookwyrm/templates/layout.html:114
+#: bookwyrm/templates/user_menu.html:35
 msgid "Your Books"
 msgstr "Dina böcker"
 
@@ -1667,7 +1670,7 @@ msgstr "Det finns inga böcker här ännu! Försök att söka efter en bok för 
 
 #: bookwyrm/templates/feed/suggested_books.html:13
 msgid "Do you have book data from another service like GoodReads?"
-msgstr ""
+msgstr "Har du bok-data från en annan tjänst liknande som GoodReads?"
 
 #: bookwyrm/templates/feed/suggested_books.html:16
 msgid "Import your reading history"
@@ -2218,7 +2221,7 @@ msgid "Login"
 msgstr "Inloggning"
 
 #: bookwyrm/templates/landing/login.html:7
-#: bookwyrm/templates/landing/login.html:36 bookwyrm/templates/layout.html:187
+#: bookwyrm/templates/landing/login.html:36 bookwyrm/templates/layout.html:131
 #: bookwyrm/templates/ostatus/error.html:37
 msgid "Log in"
 msgstr "Logga in"
@@ -2227,7 +2230,7 @@ msgstr "Logga in"
 msgid "Success! Email address confirmed."
 msgstr "Lyckades! E-postadressen bekräftades."
 
-#: bookwyrm/templates/landing/login.html:21 bookwyrm/templates/layout.html:178
+#: bookwyrm/templates/landing/login.html:21 bookwyrm/templates/layout.html:122
 #: bookwyrm/templates/ostatus/error.html:28
 #: bookwyrm/templates/snippets/register_form.html:4
 msgid "Username:"
@@ -2235,12 +2238,12 @@ msgstr "Användarnamn:"
 
 #: bookwyrm/templates/landing/login.html:27
 #: bookwyrm/templates/landing/password_reset.html:26
-#: bookwyrm/templates/layout.html:182 bookwyrm/templates/ostatus/error.html:32
+#: bookwyrm/templates/layout.html:126 bookwyrm/templates/ostatus/error.html:32
 #: bookwyrm/templates/snippets/register_form.html:45
 msgid "Password:"
 msgstr "Lösenord:"
 
-#: bookwyrm/templates/landing/login.html:39 bookwyrm/templates/layout.html:184
+#: bookwyrm/templates/landing/login.html:39 bookwyrm/templates/layout.html:128
 #: bookwyrm/templates/ostatus/error.html:34
 msgid "Forgot your password?"
 msgstr "Glömt ditt lösenord?"
@@ -2284,54 +2287,38 @@ msgstr "Huvudsaklig navigeringsmeny"
 msgid "Feed"
 msgstr "Flöde"
 
-#: bookwyrm/templates/layout.html:124 bookwyrm/templates/setup/config.html:52
-msgid "Settings"
-msgstr "Inställningar"
-
-#: bookwyrm/templates/layout.html:133
-#: bookwyrm/templates/settings/invites/manage_invite_requests.html:15
-#: bookwyrm/templates/settings/invites/manage_invites.html:3
-#: bookwyrm/templates/settings/invites/manage_invites.html:15
-#: bookwyrm/templates/settings/layout.html:42
-msgid "Invites"
-msgstr "Inbjudningar"
-
-#: bookwyrm/templates/layout.html:147
-msgid "Log out"
-msgstr "Logga ut"
-
-#: bookwyrm/templates/layout.html:155 bookwyrm/templates/layout.html:156
+#: bookwyrm/templates/layout.html:99 bookwyrm/templates/layout.html:100
 #: bookwyrm/templates/notifications/notifications_page.html:5
 #: bookwyrm/templates/notifications/notifications_page.html:10
 msgid "Notifications"
 msgstr "Aviseringar"
 
-#: bookwyrm/templates/layout.html:183 bookwyrm/templates/ostatus/error.html:33
+#: bookwyrm/templates/layout.html:127 bookwyrm/templates/ostatus/error.html:33
 msgid "password"
 msgstr "lösenord"
 
-#: bookwyrm/templates/layout.html:195
+#: bookwyrm/templates/layout.html:139
 msgid "Join"
 msgstr "Gå med"
 
-#: bookwyrm/templates/layout.html:229
+#: bookwyrm/templates/layout.html:173
 msgid "Successfully posted status"
 msgstr "Statusen har publicerats"
 
-#: bookwyrm/templates/layout.html:230
+#: bookwyrm/templates/layout.html:174
 msgid "Error posting status"
 msgstr "Fel uppstod när statusen skulle publiceras"
 
-#: bookwyrm/templates/layout.html:246
+#: bookwyrm/templates/layout.html:190
 msgid "Documentation"
 msgstr "Dokumentation"
 
-#: bookwyrm/templates/layout.html:253
+#: bookwyrm/templates/layout.html:197
 #, python-format
 msgid "Support %(site_name)s on <a href=\"%(support_link)s\" target=\"_blank\">%(support_title)s</a>"
 msgstr "Stötta %(site_name)s på <a href=\"%(support_link)s\" target=\"_blank\">%(support_title)s</a>"
 
-#: bookwyrm/templates/layout.html:257
+#: bookwyrm/templates/layout.html:201
 msgid "BookWyrm's source code is freely available. You can contribute or report issues on <a href=\"https://github.com/mouse-reeve/bookwyrm\">GitHub</a>."
 msgstr "BookWyrm's källkod är fritt tillgängligt. Du kan bidra eller rapportera problem på <a href=\"https://github.com/mouse-reeve/bookwyrm\">GitHub</a>."
 
@@ -2912,6 +2899,7 @@ msgstr "Redigera profil"
 #: bookwyrm/templates/preferences/edit_user.html:12
 #: bookwyrm/templates/preferences/edit_user.html:25
 #: bookwyrm/templates/settings/users/user_info.html:7
+#: bookwyrm/templates/user_menu.html:25
 msgid "Profile"
 msgstr "Profil"
 
@@ -3146,7 +3134,7 @@ msgstr "Typ av sökning"
 #: bookwyrm/templates/search/layout.html:23
 #: bookwyrm/templates/search/layout.html:46
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:27
-#: bookwyrm/templates/settings/federation/instance_list.html:44
+#: bookwyrm/templates/settings/federation/instance_list.html:51
 #: bookwyrm/templates/settings/layout.html:36
 #: bookwyrm/templates/settings/users/user.html:13
 #: bookwyrm/templates/settings/users/user_admin.html:5
@@ -3213,7 +3201,7 @@ msgid "Create Announcement"
 msgstr "Skapa ett tillkännagivande"
 
 #: bookwyrm/templates/settings/announcements/announcements.html:21
-#: bookwyrm/templates/settings/federation/instance_list.html:36
+#: bookwyrm/templates/settings/federation/instance_list.html:39
 msgid "Date added"
 msgstr "Datumet lades till"
 
@@ -3608,16 +3596,21 @@ msgstr "Blockerades framgångsrikt:"
 msgid "Failed:"
 msgstr "Misslyckades:"
 
-#: bookwyrm/templates/settings/federation/instance_list.html:32
+#: bookwyrm/templates/settings/federation/instance_list.html:35
 #: bookwyrm/templates/settings/users/server_filter.html:5
 msgid "Instance name"
 msgstr "Namn på instans"
 
-#: bookwyrm/templates/settings/federation/instance_list.html:40
+#: bookwyrm/templates/settings/federation/instance_list.html:43
+msgid "Last updated"
+msgstr "Uppdaterades senast"
+
+#: bookwyrm/templates/settings/federation/instance_list.html:47
+#: bookwyrm/templates/settings/federation/software_filter.html:5
 msgid "Software"
 msgstr "Mjukvara"
 
-#: bookwyrm/templates/settings/federation/instance_list.html:63
+#: bookwyrm/templates/settings/federation/instance_list.html:69
 msgid "No instances found"
 msgstr "Inga instanser hittades"
 
@@ -3627,6 +3620,14 @@ msgstr "Inga instanser hittades"
 #: bookwyrm/templates/settings/invites/manage_invites.html:11
 msgid "Invite Requests"
 msgstr "Inbjudningsförfrågningar"
+
+#: bookwyrm/templates/settings/invites/manage_invite_requests.html:15
+#: bookwyrm/templates/settings/invites/manage_invites.html:3
+#: bookwyrm/templates/settings/invites/manage_invites.html:15
+#: bookwyrm/templates/settings/layout.html:42
+#: bookwyrm/templates/user_menu.html:56
+msgid "Invites"
+msgstr "Inbjudningar"
 
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:23
 msgid "Ignored Invite Requests"
@@ -4283,6 +4284,10 @@ msgstr "Din domän verkar vara felkonfigurerad. Den bör inte inkludera protokol
 #: bookwyrm/templates/setup/config.html:42
 msgid "You are running BookWyrm in production mode without https. <strong>USE_HTTPS</strong> should be enabled in production."
 msgstr "Du kör BookWyrm i produktionsläge utan https. <strong>USE_HTTPS</strong> bör aktiveras i konfigureringen."
+
+#: bookwyrm/templates/setup/config.html:52 bookwyrm/templates/user_menu.html:45
+msgid "Settings"
+msgstr "Inställningar"
 
 #: bookwyrm/templates/setup/config.html:56
 msgid "Instance domain:"
@@ -5091,6 +5096,14 @@ msgstr[1] "%(mutuals_display)s följare som du följer"
 #: bookwyrm/templates/user/user_preview.html:43
 msgid "No followers you follow"
 msgstr "Inga följare som du följer"
+
+#: bookwyrm/templates/user_menu.html:7
+msgid "View profile and more"
+msgstr ""
+
+#: bookwyrm/templates/user_menu.html:72
+msgid "Log out"
+msgstr "Logga ut"
 
 #: bookwyrm/templates/widgets/clearable_file_input_with_warning.html:28
 msgid "File exceeds maximum size: 10MB"

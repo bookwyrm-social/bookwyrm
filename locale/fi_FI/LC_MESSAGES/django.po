@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-03-26 20:16+0000\n"
-"PO-Revision-Date: 2022-03-31 15:40\n"
+"POT-Creation-Date: 2022-04-08 21:00+0000\n"
+"PO-Revision-Date: 2022-04-11 04:29\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Finnish\n"
 "Language: fi\n"
@@ -165,14 +165,14 @@ msgstr "Pehmeäkantinen"
 
 #: bookwyrm/models/federated_server.py:11
 #: bookwyrm/templates/settings/federation/edit_instance.html:55
-#: bookwyrm/templates/settings/federation/instance_list.html:19
+#: bookwyrm/templates/settings/federation/instance_list.html:22
 msgid "Federated"
 msgstr "Federoitu"
 
 #: bookwyrm/models/federated_server.py:12 bookwyrm/models/link.py:71
 #: bookwyrm/templates/settings/federation/edit_instance.html:56
 #: bookwyrm/templates/settings/federation/instance.html:10
-#: bookwyrm/templates/settings/federation/instance_list.html:23
+#: bookwyrm/templates/settings/federation/instance_list.html:26
 #: bookwyrm/templates/settings/link_domains/link_domains.html:27
 msgid "Blocked"
 msgstr "Estetty"
@@ -187,7 +187,7 @@ msgstr "%(value)s ei ole kelvollinen remote_id"
 msgid "%(value)s is not a valid username"
 msgstr "%(value)s ei ole kelvollinen käyttäjänimi"
 
-#: bookwyrm/models/fields.py:181 bookwyrm/templates/layout.html:179
+#: bookwyrm/models/fields.py:181 bookwyrm/templates/layout.html:123
 #: bookwyrm/templates/ostatus/error.html:29
 msgid "username"
 msgstr "käyttäjänimi"
@@ -293,45 +293,49 @@ msgstr "Español (espanja)"
 
 #: bookwyrm/settings.py:285
 msgid "Galego (Galician)"
-msgstr "Galego (galicia)"
+msgstr "Galego (galego)"
 
 #: bookwyrm/settings.py:286
 msgid "Italiano (Italian)"
 msgstr "Italiano (italia)"
 
 #: bookwyrm/settings.py:287
+msgid "Suomi (Finnish)"
+msgstr "suomi"
+
+#: bookwyrm/settings.py:288
 msgid "Français (French)"
 msgstr "Français (ranska)"
 
-#: bookwyrm/settings.py:288
+#: bookwyrm/settings.py:289
 msgid "Lietuvių (Lithuanian)"
 msgstr "Lietuvių (liettua)"
 
-#: bookwyrm/settings.py:289
+#: bookwyrm/settings.py:290
 msgid "Norsk (Norwegian)"
 msgstr "Norsk (norja)"
 
-#: bookwyrm/settings.py:290
+#: bookwyrm/settings.py:291
 msgid "Português do Brasil (Brazilian Portuguese)"
 msgstr "Português do Brasil (brasilianportugali)"
 
-#: bookwyrm/settings.py:291
+#: bookwyrm/settings.py:292
 msgid "Português Europeu (European Portuguese)"
 msgstr "Português Europeu (portugali)"
 
-#: bookwyrm/settings.py:292
+#: bookwyrm/settings.py:293
 msgid "Română (Romanian)"
 msgstr "Română (romania)"
 
-#: bookwyrm/settings.py:293
+#: bookwyrm/settings.py:294
 msgid "Svenska (Swedish)"
 msgstr "Svenska (ruotsi)"
 
-#: bookwyrm/settings.py:294
+#: bookwyrm/settings.py:295
 msgid "简体中文 (Simplified Chinese)"
 msgstr "简体中文 (yksinkertaistettu kiina)"
 
-#: bookwyrm/settings.py:295
+#: bookwyrm/settings.py:296
 msgid "繁體中文 (Traditional Chinese)"
 msgstr "繁體中文 (perinteinen kiina)"
 
@@ -403,7 +407,7 @@ msgstr "%(site_name)s pyörii moderaattorien ja ylläpitäjien työllä. He myö
 msgid "Moderator"
 msgstr "Moderaattori"
 
-#: bookwyrm/templates/about/about.html:117 bookwyrm/templates/layout.html:140
+#: bookwyrm/templates/about/about.html:117 bookwyrm/templates/user_menu.html:63
 msgid "Admin"
 msgstr "Ylläpitäjä"
 
@@ -434,7 +438,7 @@ msgid "Software version:"
 msgstr "Ohjelmistoversio:"
 
 #: bookwyrm/templates/about/layout.html:30
-#: bookwyrm/templates/embed-layout.html:34 bookwyrm/templates/layout.html:238
+#: bookwyrm/templates/embed-layout.html:34 bookwyrm/templates/layout.html:182
 #, python-format
 msgid "About %(site_name)s"
 msgstr "%(site_name)s — tietoja"
@@ -1195,7 +1199,6 @@ msgstr "Verkkotunnus"
 #: bookwyrm/templates/book/file_links/edit_links.html:36
 #: bookwyrm/templates/import/import_status.html:127
 #: bookwyrm/templates/settings/announcements/announcements.html:37
-#: bookwyrm/templates/settings/federation/instance_list.html:46
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:47
 #: bookwyrm/templates/settings/invites/status_filter.html:5
 #: bookwyrm/templates/settings/users/user_admin.html:52
@@ -1363,7 +1366,7 @@ msgstr "Yhteisö fediversumissa"
 
 #: bookwyrm/templates/directory/directory.html:4
 #: bookwyrm/templates/directory/directory.html:9
-#: bookwyrm/templates/layout.html:109
+#: bookwyrm/templates/user_menu.html:30
 msgid "Directory"
 msgstr "Hakemisto"
 
@@ -1606,12 +1609,12 @@ msgstr "Palauta %(site_name)s-salasanasi"
 msgid "%(site_name)s home page"
 msgstr "%(site_name)s — etusivu"
 
-#: bookwyrm/templates/embed-layout.html:40 bookwyrm/templates/layout.html:242
+#: bookwyrm/templates/embed-layout.html:40 bookwyrm/templates/layout.html:186
 msgid "Contact site admin"
 msgstr "Ota yhteyttä ylläpitäjään"
 
 #: bookwyrm/templates/embed-layout.html:46
-msgid "Join Bookwyrm"
+msgid "Join BookWyrm"
 msgstr "Liity BookWyrmiin"
 
 #: bookwyrm/templates/feed/direct_messages.html:8
@@ -1620,7 +1623,7 @@ msgid "Direct Messages with <a href=\"%(path)s\">%(username)s</a>"
 msgstr "Yksityisviestit käyttäjän <a href=\"%(path)s\">%(username)s</a> kanssa"
 
 #: bookwyrm/templates/feed/direct_messages.html:10
-#: bookwyrm/templates/layout.html:119
+#: bookwyrm/templates/user_menu.html:40
 msgid "Direct Messages"
 msgstr "Yksityisviestit"
 
@@ -1657,7 +1660,7 @@ msgid "Updates"
 msgstr "Päivitykset"
 
 #: bookwyrm/templates/feed/suggested_books.html:6
-#: bookwyrm/templates/layout.html:114
+#: bookwyrm/templates/user_menu.html:35
 msgid "Your Books"
 msgstr "Omat kirjat"
 
@@ -2218,7 +2221,7 @@ msgid "Login"
 msgstr "Kirjaudu sisään"
 
 #: bookwyrm/templates/landing/login.html:7
-#: bookwyrm/templates/landing/login.html:36 bookwyrm/templates/layout.html:187
+#: bookwyrm/templates/landing/login.html:36 bookwyrm/templates/layout.html:131
 #: bookwyrm/templates/ostatus/error.html:37
 msgid "Log in"
 msgstr "Kirjaudu sisään"
@@ -2227,7 +2230,7 @@ msgstr "Kirjaudu sisään"
 msgid "Success! Email address confirmed."
 msgstr "Sähköpostiosoite vahvistettu."
 
-#: bookwyrm/templates/landing/login.html:21 bookwyrm/templates/layout.html:178
+#: bookwyrm/templates/landing/login.html:21 bookwyrm/templates/layout.html:122
 #: bookwyrm/templates/ostatus/error.html:28
 #: bookwyrm/templates/snippets/register_form.html:4
 msgid "Username:"
@@ -2235,12 +2238,12 @@ msgstr "Käyttäjänimi:"
 
 #: bookwyrm/templates/landing/login.html:27
 #: bookwyrm/templates/landing/password_reset.html:26
-#: bookwyrm/templates/layout.html:182 bookwyrm/templates/ostatus/error.html:32
+#: bookwyrm/templates/layout.html:126 bookwyrm/templates/ostatus/error.html:32
 #: bookwyrm/templates/snippets/register_form.html:45
 msgid "Password:"
 msgstr "Salasana:"
 
-#: bookwyrm/templates/landing/login.html:39 bookwyrm/templates/layout.html:184
+#: bookwyrm/templates/landing/login.html:39 bookwyrm/templates/layout.html:128
 #: bookwyrm/templates/ostatus/error.html:34
 msgid "Forgot your password?"
 msgstr "Unohtuiko salasana?"
@@ -2284,54 +2287,38 @@ msgstr "Päävalikko"
 msgid "Feed"
 msgstr "Syöte"
 
-#: bookwyrm/templates/layout.html:124 bookwyrm/templates/setup/config.html:52
-msgid "Settings"
-msgstr "Asetukset"
-
-#: bookwyrm/templates/layout.html:133
-#: bookwyrm/templates/settings/invites/manage_invite_requests.html:15
-#: bookwyrm/templates/settings/invites/manage_invites.html:3
-#: bookwyrm/templates/settings/invites/manage_invites.html:15
-#: bookwyrm/templates/settings/layout.html:42
-msgid "Invites"
-msgstr "Kutsut"
-
-#: bookwyrm/templates/layout.html:147
-msgid "Log out"
-msgstr "Kirjaudu ulos"
-
-#: bookwyrm/templates/layout.html:155 bookwyrm/templates/layout.html:156
+#: bookwyrm/templates/layout.html:99 bookwyrm/templates/layout.html:100
 #: bookwyrm/templates/notifications/notifications_page.html:5
 #: bookwyrm/templates/notifications/notifications_page.html:10
 msgid "Notifications"
 msgstr "Ilmoitukset"
 
-#: bookwyrm/templates/layout.html:183 bookwyrm/templates/ostatus/error.html:33
+#: bookwyrm/templates/layout.html:127 bookwyrm/templates/ostatus/error.html:33
 msgid "password"
 msgstr "salasana"
 
-#: bookwyrm/templates/layout.html:195
+#: bookwyrm/templates/layout.html:139
 msgid "Join"
 msgstr "Liity"
 
-#: bookwyrm/templates/layout.html:229
+#: bookwyrm/templates/layout.html:173
 msgid "Successfully posted status"
 msgstr "Tilapäivitys onnistui"
 
-#: bookwyrm/templates/layout.html:230
+#: bookwyrm/templates/layout.html:174
 msgid "Error posting status"
 msgstr "Virhe tilapäivityksessä"
 
-#: bookwyrm/templates/layout.html:246
+#: bookwyrm/templates/layout.html:190
 msgid "Documentation"
 msgstr "Käyttöohjeet"
 
-#: bookwyrm/templates/layout.html:253
+#: bookwyrm/templates/layout.html:197
 #, python-format
 msgid "Support %(site_name)s on <a href=\"%(support_link)s\" target=\"_blank\">%(support_title)s</a>"
 msgstr "Tue %(site_name)s-sivustoa osoitteessa <a href=\"%(support_link)s\" target=\"_blank\">%(support_title)s</a>"
 
-#: bookwyrm/templates/layout.html:257
+#: bookwyrm/templates/layout.html:201
 msgid "BookWyrm's source code is freely available. You can contribute or report issues on <a href=\"https://github.com/mouse-reeve/bookwyrm\">GitHub</a>."
 msgstr "BookWyrmin lähdekoodi on avointa. Kehitystyöhön voi osallistua ja ongelmista voi ilmoittaa <a href=\"https://github.com/mouse-reeve/bookwyrm\">GitHubissa</a>."
 
@@ -2912,6 +2899,7 @@ msgstr "Muokkaa profiilia"
 #: bookwyrm/templates/preferences/edit_user.html:12
 #: bookwyrm/templates/preferences/edit_user.html:25
 #: bookwyrm/templates/settings/users/user_info.html:7
+#: bookwyrm/templates/user_menu.html:25
 msgid "Profile"
 msgstr "Profiili"
 
@@ -3146,7 +3134,7 @@ msgstr "Hakutyyppi"
 #: bookwyrm/templates/search/layout.html:23
 #: bookwyrm/templates/search/layout.html:46
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:27
-#: bookwyrm/templates/settings/federation/instance_list.html:44
+#: bookwyrm/templates/settings/federation/instance_list.html:51
 #: bookwyrm/templates/settings/layout.html:36
 #: bookwyrm/templates/settings/users/user.html:13
 #: bookwyrm/templates/settings/users/user_admin.html:5
@@ -3213,7 +3201,7 @@ msgid "Create Announcement"
 msgstr "Luo tiedote"
 
 #: bookwyrm/templates/settings/announcements/announcements.html:21
-#: bookwyrm/templates/settings/federation/instance_list.html:36
+#: bookwyrm/templates/settings/federation/instance_list.html:39
 msgid "Date added"
 msgstr "Lisätty"
 
@@ -3608,16 +3596,21 @@ msgstr "Onnistuneesti estetyt:"
 msgid "Failed:"
 msgstr "Epäonnistuneet:"
 
-#: bookwyrm/templates/settings/federation/instance_list.html:32
+#: bookwyrm/templates/settings/federation/instance_list.html:35
 #: bookwyrm/templates/settings/users/server_filter.html:5
 msgid "Instance name"
 msgstr "Palvelimen nimi"
 
-#: bookwyrm/templates/settings/federation/instance_list.html:40
+#: bookwyrm/templates/settings/federation/instance_list.html:43
+msgid "Last updated"
+msgstr "Viimeisin päivitys"
+
+#: bookwyrm/templates/settings/federation/instance_list.html:47
+#: bookwyrm/templates/settings/federation/software_filter.html:5
 msgid "Software"
 msgstr "Ohjelmisto"
 
-#: bookwyrm/templates/settings/federation/instance_list.html:63
+#: bookwyrm/templates/settings/federation/instance_list.html:69
 msgid "No instances found"
 msgstr "Palvelimia ei löytynyt"
 
@@ -3627,6 +3620,14 @@ msgstr "Palvelimia ei löytynyt"
 #: bookwyrm/templates/settings/invites/manage_invites.html:11
 msgid "Invite Requests"
 msgstr "Kutsupyynnöt"
+
+#: bookwyrm/templates/settings/invites/manage_invite_requests.html:15
+#: bookwyrm/templates/settings/invites/manage_invites.html:3
+#: bookwyrm/templates/settings/invites/manage_invites.html:15
+#: bookwyrm/templates/settings/layout.html:42
+#: bookwyrm/templates/user_menu.html:56
+msgid "Invites"
+msgstr "Kutsut"
 
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:23
 msgid "Ignored Invite Requests"
@@ -4284,6 +4285,10 @@ msgstr "Verkkotunnus näyttää väärin muotoillulta. Siinä ei saa olla protok
 msgid "You are running BookWyrm in production mode without https. <strong>USE_HTTPS</strong> should be enabled in production."
 msgstr "BookWyrm on tuotantokäytössä ilman https-protokollaa. Tuotantokäytössä tulee ottaa käyttöön <strong>USE_HTTPS</strong>-valinta."
 
+#: bookwyrm/templates/setup/config.html:52 bookwyrm/templates/user_menu.html:45
+msgid "Settings"
+msgstr "Asetukset"
+
 #: bookwyrm/templates/setup/config.html:56
 msgid "Instance domain:"
 msgstr "Palvelimen verkkotunnus:"
@@ -4851,7 +4856,7 @@ msgstr "kommentoi teosta <a href=\"%(book_path)s\">%(book)s</a>"
 #: bookwyrm/templates/snippets/status/headers/note.html:8
 #, python-format
 msgid "replied to <a href=\"%(user_path)s\">%(username)s</a>'s <a href=\"%(status_path)s\">status</a>"
-msgstr "vastasi käyttäjän <a href=\"%(user_path)s\">%(username)s</a> <a href=\"%(status_path)s\">tilapäivitykseen</a>"
+msgstr "vastasi käyttäjän <a href=\"%(user_path)s\">%(username)s</a> <a href=\"%(status_path)s\"> tilapäivitykseen</a>"
 
 #: bookwyrm/templates/snippets/status/headers/quotation.html:8
 #, python-format
@@ -4925,7 +4930,7 @@ msgstr "Tykkää tilapäivityksestä"
 
 #: bookwyrm/templates/snippets/status/status.html:10
 msgid "boosted"
-msgstr "kaiutettu"
+msgstr "kaiutti"
 
 #: bookwyrm/templates/snippets/status/status_options.html:7
 #: bookwyrm/templates/snippets/user_options.html:7
@@ -5091,6 +5096,14 @@ msgstr[1] "%(mutuals_display)s seuraajaa, joita seuraat itse"
 #: bookwyrm/templates/user/user_preview.html:43
 msgid "No followers you follow"
 msgstr "Ei seuraajia, joita seuraat itse"
+
+#: bookwyrm/templates/user_menu.html:7
+msgid "View profile and more"
+msgstr "Näytä profiili ja muita tietoja"
+
+#: bookwyrm/templates/user_menu.html:72
+msgid "Log out"
+msgstr "Kirjaudu ulos"
 
 #: bookwyrm/templates/widgets/clearable_file_input_with_warning.html:28
 msgid "File exceeds maximum size: 10MB"
