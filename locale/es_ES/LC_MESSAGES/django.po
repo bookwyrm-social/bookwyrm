@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-04-08 21:00+0000\n"
-"PO-Revision-Date: 2022-04-25 20:28\n"
+"PO-Revision-Date: 2022-04-26 10:36\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Spanish\n"
 "Language: es\n"
@@ -401,7 +401,7 @@ msgstr "Conoce a tus administradores"
 #: bookwyrm/templates/about/about.html:101
 #, python-format
 msgid "%(site_name)s's moderators and administrators keep the site up and running, enforce the <a href=\"%(coc_path)s\">code of conduct</a>, and respond when users report spam and bad behavior."
-msgstr "Los moderadores y administradores de %(site_name)s mantienen el sitio en funcionamiento, hacen cumplir el <a href=\"%(coc_path)s\">código de conducta</a> y responden cuando los usuarios informan de spam y mal comportamiento."
+msgstr "Los moderadores y administradores de %(site_name)s mantienen el sitio en funcionamiento, hacen cumplir el <a href=\"%(coc_path)s\">Código de conducta</a> y responden cuando les usuaries informan de spam y mal comportamiento."
 
 #: bookwyrm/templates/about/about.html:115
 msgid "Moderator"
@@ -2909,7 +2909,7 @@ msgstr "Perfil"
 #: bookwyrm/templates/settings/site.html:77
 #: bookwyrm/templates/setup/config.html:91
 msgid "Display"
-msgstr ""
+msgstr "Apariencia"
 
 #: bookwyrm/templates/preferences/edit_user.html:14
 #: bookwyrm/templates/preferences/edit_user.html:112
@@ -3247,7 +3247,7 @@ msgstr "Fecha de evento:"
 
 #: bookwyrm/templates/settings/announcements/edit_announcement.html:73
 msgid "Display settings"
-msgstr "Ajustes de visualización"
+msgstr "Configurar apariencia"
 
 #: bookwyrm/templates/settings/announcements/edit_announcement.html:98
 msgid "Color:"
@@ -3261,11 +3261,11 @@ msgstr "Reglas de automoderación"
 
 #: bookwyrm/templates/settings/automod/rules.html:18
 msgid "Auto-moderation rules will create reports for any local user or status with fields matching the provided string."
-msgstr ""
+msgstr "Las reglas de automoderación crearán informes sobre cualquier usuarie local o estado que coincidan con la cadena proporcionada."
 
 #: bookwyrm/templates/settings/automod/rules.html:19
 msgid "Users or statuses that have already been reported (regardless of whether the report was resolved) will not be flagged."
-msgstr ""
+msgstr "No se marcarán les usuaries que ya hayan sido denunciades (sin importar si la denuncia se ha resuelto)."
 
 #: bookwyrm/templates/settings/automod/rules.html:26
 msgid "Schedule:"
@@ -3273,11 +3273,11 @@ msgstr "Programar:"
 
 #: bookwyrm/templates/settings/automod/rules.html:33
 msgid "Last run:"
-msgstr ""
+msgstr "Última ejecución:"
 
 #: bookwyrm/templates/settings/automod/rules.html:40
 msgid "Total run count:"
-msgstr ""
+msgstr "Ejecuciones totales:"
 
 #: bookwyrm/templates/settings/automod/rules.html:47
 msgid "Enabled:"
@@ -3285,24 +3285,24 @@ msgstr ""
 
 #: bookwyrm/templates/settings/automod/rules.html:59
 msgid "Delete schedule"
-msgstr ""
+msgstr "Eliminar programación"
 
 #: bookwyrm/templates/settings/automod/rules.html:63
 msgid "Run now"
-msgstr ""
+msgstr "Ejecutar"
 
 #: bookwyrm/templates/settings/automod/rules.html:64
 msgid "Last run date will not be updated"
-msgstr ""
+msgstr "La última ejecución no se actualizará"
 
 #: bookwyrm/templates/settings/automod/rules.html:69
 #: bookwyrm/templates/settings/automod/rules.html:92
 msgid "Schedule scan"
-msgstr ""
+msgstr "Programar escaneo"
 
 #: bookwyrm/templates/settings/automod/rules.html:101
 msgid "Successfully added rule"
-msgstr ""
+msgstr "Regla añadida correctamente"
 
 #: bookwyrm/templates/settings/automod/rules.html:107
 msgid "Add Rule"
@@ -3311,33 +3311,33 @@ msgstr "Añadir regla"
 #: bookwyrm/templates/settings/automod/rules.html:116
 #: bookwyrm/templates/settings/automod/rules.html:160
 msgid "String match"
-msgstr ""
+msgstr "Coincidencia de cadena"
 
 #: bookwyrm/templates/settings/automod/rules.html:126
 #: bookwyrm/templates/settings/automod/rules.html:163
 msgid "Flag users"
-msgstr ""
+msgstr "Marcar usuaries"
 
 #: bookwyrm/templates/settings/automod/rules.html:133
 #: bookwyrm/templates/settings/automod/rules.html:166
 msgid "Flag statuses"
-msgstr ""
+msgstr "Marcar estados"
 
 #: bookwyrm/templates/settings/automod/rules.html:140
 msgid "Add rule"
-msgstr ""
+msgstr "Añadir regla"
 
 #: bookwyrm/templates/settings/automod/rules.html:147
 msgid "Current Rules"
-msgstr ""
+msgstr "Reglas actuales"
 
 #: bookwyrm/templates/settings/automod/rules.html:151
 msgid "Show rules"
-msgstr ""
+msgstr "Mostrar reglas"
 
 #: bookwyrm/templates/settings/automod/rules.html:188
 msgid "Remove rule"
-msgstr ""
+msgstr "Quitar regla"
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:6
 #: bookwyrm/templates/settings/dashboard/dashboard.html:8
@@ -3388,7 +3388,7 @@ msgstr[1] "%(display_count)s solicitaciones de invitado"
 #: bookwyrm/templates/settings/dashboard/dashboard.html:79
 #, python-format
 msgid "An update is available! You're running v%(current)s and the latest release is %(available)s."
-msgstr ""
+msgstr "Hay una actualización disponible. La versión que estás usando es la %(current)s, mientras que la actual es %(available)s."
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:88
 msgid "Instance Activity"
@@ -3514,7 +3514,7 @@ msgstr "Versión:"
 
 #: bookwyrm/templates/settings/federation/instance.html:17
 msgid "Refresh data"
-msgstr ""
+msgstr "Actualizar"
 
 #: bookwyrm/templates/settings/federation/instance.html:37
 msgid "Details"
@@ -3603,7 +3603,7 @@ msgstr "Nombre de instancia"
 
 #: bookwyrm/templates/settings/federation/instance_list.html:43
 msgid "Last updated"
-msgstr ""
+msgstr "Última actualización"
 
 #: bookwyrm/templates/settings/federation/instance_list.html:47
 #: bookwyrm/templates/settings/federation/software_filter.html:5
@@ -3648,7 +3648,7 @@ msgstr "Correo electronico"
 
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:44
 msgid "Answer"
-msgstr ""
+msgstr "Responder"
 
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:50
 msgid "Action"
@@ -3803,7 +3803,7 @@ msgstr "Configuración de sitio"
 #: bookwyrm/templates/settings/themes.html:4
 #: bookwyrm/templates/settings/themes.html:6
 msgid "Themes"
-msgstr ""
+msgstr "Temas"
 
 #: bookwyrm/templates/settings/link_domains/edit_domain_modal.html:5
 #, python-format
@@ -3852,7 +3852,7 @@ msgstr "Actualización de tu denuncia:"
 
 #: bookwyrm/templates/settings/reports/report.html:36
 msgid "Reported status"
-msgstr ""
+msgstr "Estado denunciado"
 
 #: bookwyrm/templates/settings/reports/report.html:38
 msgid "Status has been deleted"
@@ -3946,11 +3946,11 @@ msgstr "Registración"
 
 #: bookwyrm/templates/settings/site.html:22
 msgid "Settings saved"
-msgstr ""
+msgstr "Configuración guardada"
 
 #: bookwyrm/templates/settings/site.html:31
 msgid "Unable to save settings"
-msgstr ""
+msgstr "No se ha podido guardar la configuración."
 
 #: bookwyrm/templates/settings/site.html:47
 msgid "Instance Name:"
@@ -3998,7 +3998,7 @@ msgstr "Favicon:"
 
 #: bookwyrm/templates/settings/site.html:98
 msgid "Default theme:"
-msgstr ""
+msgstr "Tema por defecto:"
 
 #: bookwyrm/templates/settings/site.html:113
 msgid "Support link:"
@@ -4034,11 +4034,11 @@ msgstr "Permitir solicitudes de invitación"
 
 #: bookwyrm/templates/settings/site.html:158
 msgid "Set a question for invite requests"
-msgstr ""
+msgstr "Establece una pregunta para las solicitudes de invitación."
 
 #: bookwyrm/templates/settings/site.html:163
 msgid "Question:"
-msgstr ""
+msgstr "Pregunta:"
 
 #: bookwyrm/templates/settings/site.html:168
 msgid "Registration closed text:"
@@ -4050,57 +4050,57 @@ msgstr "Texto de solicitud de invitación:"
 
 #: bookwyrm/templates/settings/themes.html:10
 msgid "Set instance default theme"
-msgstr ""
+msgstr "Usar tema por defecto de la instancia"
 
 #: bookwyrm/templates/settings/themes.html:19
 msgid "Successfully added theme"
-msgstr ""
+msgstr "El tema se ha añadido."
 
 #: bookwyrm/templates/settings/themes.html:26
 msgid "How to add a theme"
-msgstr ""
+msgstr "¿Cómo añadir un tema?"
 
 #: bookwyrm/templates/settings/themes.html:29
 msgid "Copy the theme file into the <code>bookwyrm/static/css/themes</code> directory on your server from the command line."
-msgstr ""
+msgstr "Copia el nombre de archivo al directorio <code>bookwyrm/static/css/themes</code> en tu servidor desde la línea de comandos."
 
 #: bookwyrm/templates/settings/themes.html:32
 msgid "Run <code>./bw-dev collectstatic</code>."
-msgstr ""
+msgstr "Introduce <code>./bw-dev collectstatic</code>."
 
 #: bookwyrm/templates/settings/themes.html:35
 msgid "Add the file name using the form below to make it available in the application interface."
-msgstr ""
+msgstr "Añade el nombre de archivo del formulario que aparece acontinuación para que esté disponible en la aplicación."
 
 #: bookwyrm/templates/settings/themes.html:42
 #: bookwyrm/templates/settings/themes.html:83
 msgid "Add theme"
-msgstr ""
+msgstr "Añadir tema"
 
 #: bookwyrm/templates/settings/themes.html:48
 msgid "Unable to save theme"
-msgstr ""
+msgstr "No se ha podido guardar el tema."
 
 #: bookwyrm/templates/settings/themes.html:64
 #: bookwyrm/templates/settings/themes.html:94
 msgid "Theme name"
-msgstr ""
+msgstr "Nombrar tema"
 
 #: bookwyrm/templates/settings/themes.html:74
 msgid "Theme filename"
-msgstr ""
+msgstr "Nombre de archivo del tema"
 
 #: bookwyrm/templates/settings/themes.html:89
 msgid "Available Themes"
-msgstr ""
+msgstr "Temas disponibles"
 
 #: bookwyrm/templates/settings/themes.html:97
 msgid "File"
-msgstr ""
+msgstr "Archivo"
 
 #: bookwyrm/templates/settings/themes.html:112
 msgid "Remove theme"
-msgstr ""
+msgstr "Quitar tema"
 
 #: bookwyrm/templates/settings/users/delete_user_form.html:5
 #: bookwyrm/templates/settings/users/user_moderation_actions.html:32
@@ -4159,7 +4159,7 @@ msgstr "Ver perfil de usuario"
 
 #: bookwyrm/templates/settings/users/user_info.html:19
 msgid "Go to user admin"
-msgstr ""
+msgstr "Ve a Administración de usuaries"
 
 #: bookwyrm/templates/settings/users/user_info.html:40
 msgid "Local"
@@ -4239,7 +4239,7 @@ msgstr ""
 
 #: bookwyrm/templates/setup/admin.html:7
 msgid "Your account as a user and an admin"
-msgstr ""
+msgstr "Esta cuenta es de usuarie y admin."
 
 #: bookwyrm/templates/setup/admin.html:13
 msgid "Create your account"
@@ -4275,7 +4275,7 @@ msgstr ""
 
 #: bookwyrm/templates/setup/config.html:18
 msgid "You are running BookWyrm in <strong>debug</strong> mode. This should <strong>never</strong> be used in a production environment."
-msgstr ""
+msgstr "Estás ejecutando BookWyrm en modo <strong>debug</strong>. Este modo <strong>no</strong> debería usarse en un entrono de producción."
 
 #: bookwyrm/templates/setup/config.html:30
 msgid "Your domain appears to be misconfigured. It should not include protocol or slashes."
@@ -4283,7 +4283,7 @@ msgstr ""
 
 #: bookwyrm/templates/setup/config.html:42
 msgid "You are running BookWyrm in production mode without https. <strong>USE_HTTPS</strong> should be enabled in production."
-msgstr ""
+msgstr "Estás ejecutando BookWyrm en modo producción sin https. Activa <strong>USE_HTTPS</strong>."
 
 #: bookwyrm/templates/setup/config.html:52 bookwyrm/templates/user_menu.html:45
 msgid "Settings"
@@ -4327,7 +4327,7 @@ msgstr ""
 
 #: bookwyrm/templates/setup/config.html:144
 msgid "You can change your instance settings in the <code>.env</code> file on your server."
-msgstr ""
+msgstr "Puedes cambiar la configuración de tu instancia en el archivo <code>.env</code> de tu servidor."
 
 #: bookwyrm/templates/setup/config.html:148
 msgid "View installation instructions"
