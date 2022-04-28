@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-04-08 21:00+0000\n"
-"PO-Revision-Date: 2022-04-08 21:50\n"
+"PO-Revision-Date: 2022-04-28 13:46\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Polish\n"
 "Language: pl\n"
@@ -60,7 +60,7 @@ msgstr "Ta domena jest zablokowana. Skontaktuj się z administratorem, jeśli uw
 
 #: bookwyrm/forms/links.py:46
 msgid "This link with file type has already been added for this book. If it is not visible, the domain is still pending."
-msgstr ""
+msgstr "Ten odnośnik z typem pliku został już dodany do tej książki. Jeśli nie jest on widoczny, domena jest nadal sprawdzana."
 
 #: bookwyrm/forms/lists.py:26
 msgid "List Order"
@@ -230,20 +230,20 @@ msgstr ""
 
 #: bookwyrm/models/link.py:51
 msgid "Free"
-msgstr ""
+msgstr "Bezpłatne"
 
 #: bookwyrm/models/link.py:52
 msgid "Purchasable"
-msgstr ""
+msgstr "Do kupienia"
 
 #: bookwyrm/models/link.py:53
 msgid "Available for loan"
-msgstr ""
+msgstr "Do wypożyczenia"
 
 #: bookwyrm/models/link.py:70
 #: bookwyrm/templates/settings/link_domains/link_domains.html:23
 msgid "Approved"
-msgstr ""
+msgstr "Zatwierdzone"
 
 #: bookwyrm/models/user.py:32 bookwyrm/templates/book/book.html:289
 msgid "Reviews"
@@ -556,7 +556,7 @@ msgstr "autorstwa"
 #: bookwyrm/templates/annual_summary/layout.html:182
 #, python-format
 msgid "<strong>%(pages)s</strong> pages"
-msgstr ""
+msgstr "<strong>%(pages)s</strong> stron"
 
 #: bookwyrm/templates/annual_summary/layout.html:169
 msgid "…and the longest"
@@ -637,7 +637,7 @@ msgstr ""
 #: bookwyrm/templates/book/book.html:131
 #: bookwyrm/templates/book/sync_modal.html:5
 msgid "Load data"
-msgstr ""
+msgstr "Wczytaj dane"
 
 #: bookwyrm/templates/author/author.html:87
 #: bookwyrm/templates/book/book.html:135
@@ -806,7 +806,7 @@ msgstr "Edytuj książkę"
 
 #: bookwyrm/templates/book/book.html:88 bookwyrm/templates/book/book.html:91
 msgid "Click to add cover"
-msgstr ""
+msgstr "Naciśnij, aby dodać okładkę"
 
 #: bookwyrm/templates/book/book.html:97
 msgid "Failed to load cover"
@@ -814,7 +814,7 @@ msgstr "Błąd wczytywania okładki"
 
 #: bookwyrm/templates/book/book.html:108
 msgid "Click to enlarge"
-msgstr ""
+msgstr "Naciśnij, aby powiększyć"
 
 #: bookwyrm/templates/book/book.html:179
 #, python-format
@@ -1166,15 +1166,15 @@ msgstr ""
 
 #: bookwyrm/templates/book/file_links/add_link_modal.html:24
 msgid "URL:"
-msgstr ""
+msgstr "Adres URL:"
 
 #: bookwyrm/templates/book/file_links/add_link_modal.html:29
 msgid "File type:"
-msgstr ""
+msgstr "Typ pliku:"
 
 #: bookwyrm/templates/book/file_links/add_link_modal.html:48
 msgid "Availability:"
-msgstr ""
+msgstr "Dostępność:"
 
 #: bookwyrm/templates/book/file_links/edit_links.html:5
 #: bookwyrm/templates/book/file_links/edit_links.html:21
@@ -1190,23 +1190,23 @@ msgstr ""
 #: bookwyrm/templates/book/file_links/edit_links.html:32
 #: bookwyrm/templates/settings/link_domains/link_table.html:6
 msgid "URL"
-msgstr ""
+msgstr "Adres URL"
 
 #: bookwyrm/templates/book/file_links/edit_links.html:33
 #: bookwyrm/templates/settings/link_domains/link_table.html:7
 msgid "Added by"
-msgstr ""
+msgstr "Dodane przez"
 
 #: bookwyrm/templates/book/file_links/edit_links.html:34
 #: bookwyrm/templates/settings/link_domains/link_table.html:8
 msgid "Filetype"
-msgstr ""
+msgstr "Typ pliku"
 
 #: bookwyrm/templates/book/file_links/edit_links.html:35
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:25
 #: bookwyrm/templates/settings/reports/report_links_table.html:5
 msgid "Domain"
-msgstr ""
+msgstr "Domena"
 
 #: bookwyrm/templates/book/file_links/edit_links.html:36
 #: bookwyrm/templates/import/import_status.html:127
@@ -1229,7 +1229,7 @@ msgstr ""
 #: bookwyrm/templates/book/file_links/edit_links.html:53
 #: bookwyrm/templates/book/file_links/verification_modal.html:22
 msgid "Report spam"
-msgstr ""
+msgstr "Zgłoś spam"
 
 #: bookwyrm/templates/book/file_links/edit_links.html:97
 msgid "No links available for this book."
@@ -1264,7 +1264,7 @@ msgstr ""
 #: bookwyrm/templates/book/file_links/verification_modal.html:26
 #: bookwyrm/templates/setup/config.html:139
 msgid "Continue"
-msgstr ""
+msgstr "Kontynuuj"
 
 #: bookwyrm/templates/book/publisher_info.html:23
 #, python-format
@@ -2301,7 +2301,7 @@ msgstr ""
 
 #: bookwyrm/templates/layout.html:61 bookwyrm/templates/layout.html:62
 msgid "Scan Barcode"
-msgstr ""
+msgstr "Skanuj kod kreskowy"
 
 #: bookwyrm/templates/layout.html:72
 msgid "Main navigation menu"
@@ -2323,7 +2323,7 @@ msgstr "hasło"
 
 #: bookwyrm/templates/layout.html:139
 msgid "Join"
-msgstr ""
+msgstr "Dołącz"
 
 #: bookwyrm/templates/layout.html:173
 msgid "Successfully posted status"
