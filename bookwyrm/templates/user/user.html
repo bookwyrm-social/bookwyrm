@@ -84,4 +84,18 @@
     {% include 'snippets/pagination.html' with page=activities path=user.local_path anchor="#feed" %}
 </div>
 
+{% if is_self %}
+<div>
+    <div class="columns is-mobile">
+        <h2 class="title column">{% trans "Stats" %}</h2>
+    </div>
+    <div class="is-mobile field is-grouped">
+    {% for shelf in shelves %}
+    {% for book in shelf.books %}
+    {{ book.published_date.year }}
+    {% endfor %}
+    {% endfor %}
+    </div>
+</div>
+{% endif %}
 {% endblock %}
