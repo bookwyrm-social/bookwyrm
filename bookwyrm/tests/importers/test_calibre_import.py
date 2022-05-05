@@ -46,11 +46,15 @@ class CalibreImport(TestCase):
         )
         self.assertEqual(len(import_items), 1)
         self.assertEqual(import_items[0].index, 0)
-        self.assertEqual(import_items[0].normalized_data["title"], "That Ain't Witchcraft")
+        self.assertEqual(
+            import_items[0].normalized_data["title"], "That Ain't Witchcraft"
+        )
 
     def test_handle_imported_book(self, *_):
         """calibre import added a book, this adds related connections"""
-        shelf = self.local_user.shelf_set.filter(identifier=models.Shelf.TO_READ).first()
+        shelf = self.local_user.shelf_set.filter(
+            identifier=models.Shelf.TO_READ
+        ).first()
         self.assertIsNone(shelf.books.first())
 
         import_job = self.importer.create_job(
