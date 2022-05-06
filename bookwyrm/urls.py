@@ -445,6 +445,12 @@ urlpatterns = [
         views.unsafe_embed_list,
         name="embed-list",
     ),
+    # User statistics
+    re_path(
+        rf"{USER_PATH}/statistics/?$",
+        views.Statistics.as_view(),
+        name="user-statistics",
+    ),
     # User books
     re_path(rf"{USER_PATH}/books/?$", views.Shelf.as_view(), name="user-shelves"),
     re_path(

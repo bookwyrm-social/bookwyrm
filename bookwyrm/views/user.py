@@ -142,6 +142,49 @@ class Following(View):
         return TemplateResponse(request, "user/relationships/following.html", data)
 
 
+class Statistics(View):
+    """get statistics about user"""
+
+    def get(self, request, username):
+        """show statistics to oneself"""
+        # TODO: How to handle ActivitypubResponse here?
+
+        user = get_user_from_username(request.user, username)
+        is_self = request.user.id == user.id
+
+        shelf_preview = []
+
+        # only show shelves that should be visible
+        is_self = request.user.id == user.id
+        if not is_self:
+            shelves = (
+                models.Shelf.privacy_filter(
+                    request.user, privacy_levels=["public", "followers"]
+                )
+                .filter(user=user, books__isnull=False)
+                .distinct()
+            )
+        else:
+            shelves = user.shelf_set.filter(books__isnull=False).distinct()
+
+        for user_shelf in shelves.all()[:3]:
+            shelf_preview.append(
+                {
+                    "name": user_shelf.name,
+                    "local_path": user_shelf.local_path,
+                    "books": user_shelf.books.all()[:3],
+                    "size": user_shelf.books.count(),
+                }
+            )
+
+        data = {
+            "user": user,
+            "is_self": is_self,
+            "shelves": shelf_preview,
+        }
+        return TemplateResponse(request, "user/statistics.html", data)
+
+
 def annotate_if_follows(user, queryset):
     """Sort a list of users by if you follow them"""
     if not user.is_authenticated:
