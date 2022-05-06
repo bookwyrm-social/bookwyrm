@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-04-08 21:00+0000\n"
-"PO-Revision-Date: 2022-04-08 21:50\n"
+"PO-Revision-Date: 2022-05-06 18:20\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Portuguese\n"
 "Language: pt\n"
@@ -44,11 +44,11 @@ msgstr "Ilimitado"
 
 #: bookwyrm/forms/forms.py:54
 msgid "Reading finish date cannot be before start date."
-msgstr ""
+msgstr "A data final de leitura não pode ser anterior à data de início."
 
 #: bookwyrm/forms/landing.py:32
 msgid "User with this username already exists"
-msgstr ""
+msgstr "Já existe um utilizador com este nome"
 
 #: bookwyrm/forms/landing.py:41
 msgid "A user with this email already exists."
@@ -1726,7 +1726,7 @@ msgstr "Leituras atuais"
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_options.html:12
 #: bookwyrm/templates/user/user.html:35 bookwyrm/templatetags/shelf_tags.py:50
 msgid "Read"
-msgstr "Ler"
+msgstr "Lido"
 
 #: bookwyrm/templates/get_started/books.html:6
 msgid "What are you reading?"
@@ -1972,7 +1972,7 @@ msgstr "Origem dos dados:"
 
 #: bookwyrm/templates/import/import.html:39
 msgid "You can download your Goodreads data from the <a href=\"https://www.goodreads.com/review/import\" target=\"_blank\" rel=\"noopener noreferrer\">Import/Export page</a> of your Goodreads account."
-msgstr ""
+msgstr "Podes fazer download dos teus dados do Goodreads na <a href=\"https://www.goodreads.com/review/import\" target=\"_blank\" rel=\"noopener noreferrer\">Importar/Exportar página</a> da tua conta do Goodreads."
 
 #: bookwyrm/templates/import/import.html:44
 msgid "Data file:"
@@ -2474,7 +2474,7 @@ msgstr ""
 
 #: bookwyrm/templates/lists/list.html:37
 msgid "That book is already on this list."
-msgstr ""
+msgstr "Esse livro já está nesta lista."
 
 #: bookwyrm/templates/lists/list.html:45
 msgid "You successfully suggested a book for this list!"
@@ -2960,7 +2960,7 @@ msgstr ""
 
 #: bookwyrm/templates/preferences/export.html:13
 msgid "Your export will include all the books on your shelves, books you have reviewed, and books with reading activity."
-msgstr ""
+msgstr "A exportação incluirá todos os livros das tuas prateleiras, livros que tu já avaliaste e livros com a atividade da leitura."
 
 #: bookwyrm/templates/preferences/layout.html:11
 msgid "Account"
@@ -3006,7 +3006,7 @@ msgstr "Estás a apagar esta leitura e suas atualizações de progresso %(count)
 #: bookwyrm/templates/readthrough/readthrough_modal.html:8
 #, python-format
 msgid "Update read dates for \"<em>%(title)s</em>\""
-msgstr ""
+msgstr "Atualizar datas de leitura para \"<em>%(title)s</em>\""
 
 #: bookwyrm/templates/readthrough/readthrough_form.html:10
 #: bookwyrm/templates/readthrough/readthrough_modal.html:38
@@ -3057,7 +3057,7 @@ msgstr "Excluir estas datas de leitura"
 #: bookwyrm/templates/readthrough/readthrough_modal.html:12
 #, python-format
 msgid "Add read dates for \"<em>%(title)s</em>\""
-msgstr ""
+msgstr "Adicionar datas de leitura para \"<em>%(title)s</em>\""
 
 #: bookwyrm/templates/report.html:5
 #: bookwyrm/templates/snippets/report_button.html:13
@@ -3263,7 +3263,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/automod/rules.html:19
 msgid "Users or statuses that have already been reported (regardless of whether the report was resolved) will not be flagged."
-msgstr ""
+msgstr "Os utilizadores ou status que já foram reportados (independentemente de o relatório ter sido resolvido) não serão sinalizados."
 
 #: bookwyrm/templates/settings/automod/rules.html:26
 msgid "Schedule:"
@@ -4874,7 +4874,7 @@ msgstr "avaliou <a href=\"%(book_path)s\">%(book)s</a>:"
 #: bookwyrm/templates/snippets/status/headers/read.html:10
 #, python-format
 msgid "finished reading <a href=\"%(book_path)s\">%(book)s</a> by <a href=\"%(author_path)s\">%(author_name)s</a>"
-msgstr ""
+msgstr "acabou de ler <a href=\"%(book_path)s\">%(book)s</a> por <a href=\"%(author_path)s\">%(author_name)s</a>"
 
 #: bookwyrm/templates/snippets/status/headers/read.html:17
 #, python-format
@@ -4884,7 +4884,7 @@ msgstr "terminou de ler <a href=\"%(book_path)s\">%(book)s</a>"
 #: bookwyrm/templates/snippets/status/headers/reading.html:10
 #, python-format
 msgid "started reading <a href=\"%(book_path)s\">%(book)s</a> by <a href=\"%(author_path)s\">%(author_name)s</a>"
-msgstr ""
+msgstr "começou a ler <a href=\"%(book_path)s\">%(book)s</a> por <a href=\"%(author_path)s\">%(author_name)s</a>"
 
 #: bookwyrm/templates/snippets/status/headers/reading.html:17
 #, python-format
@@ -4904,12 +4904,12 @@ msgstr "criticou <a href=\"%(book_path)s\">%(book)s</a>"
 #: bookwyrm/templates/snippets/status/headers/to_read.html:10
 #, python-format
 msgid "wants to read <a href=\"%(book_path)s\">%(book)s</a> by <a href=\"%(author_path)s\">%(author_name)s</a>"
-msgstr ""
+msgstr "quer ler <a href=\"%(book_path)s\">%(book)s</a> por <a href=\"%(author_path)s\">%(author_name)s</a>"
 
 #: bookwyrm/templates/snippets/status/headers/to_read.html:17
 #, python-format
 msgid "wants to read <a href=\"%(book_path)s\">%(book)s</a>"
-msgstr ""
+msgstr "quer ler <a href=\"%(book_path)s\">%(book)s</a>"
 
 #: bookwyrm/templates/snippets/status/layout.html:24
 #: bookwyrm/templates/snippets/status/status_options.html:17
