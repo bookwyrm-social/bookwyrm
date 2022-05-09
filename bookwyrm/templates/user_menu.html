@@ -21,7 +21,7 @@
             role="menu"
         >
             <li role="menuitem">
-                <a href="{% url 'user-feed' user|username %}" class="navbar-item">
+                <a href="{% url 'user-feed' request.user.localname %}" class="navbar-item">
                     {% trans "Profile" %}
                 </a>
             </li>
