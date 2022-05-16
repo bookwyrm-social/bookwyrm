@@ -14,17 +14,22 @@ from django.db.models.functions import Greatest
 
 from bookwyrm import forms, models
 from bookwyrm.suggested_users import suggested_users
-from .helpers import get_user_from_username
+from .helpers import get_user_from_username, maybe_redirect_local_path
 
 # pylint: disable=no-self-use
 class Group(View):
     """group page"""
 
-    def get(self, request, group_id):
+    # pylint: disable=unused-argument
+    def get(self, request, group_id, slug=None):
         """display a group"""
 
         group = get_object_or_404(models.Group, id=group_id)
         group.raise_visible_to_user(request.user)
+
+        if redirect_local_path := maybe_redirect_local_path(request, group):
+            return redirect_local_path
+
         lists = (
             models.List.privacy_filter(request.user)
             .filter(group=group)
@@ -80,7 +85,8 @@ class Group(View):
 class UserGroups(View):
     """a user's groups page"""
 
-    def get(self, request, username):
+    # pylint: disable=unused-argument
+    def get(self, request, username, slug=None):
         """display a group"""
         user = get_user_from_username(request.user, username)
         groups = (

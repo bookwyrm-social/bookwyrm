@@ -8,6 +8,7 @@ from dateutil.parser import ParserError
 from requests import HTTPError
 from django.db.models import Q
 from django.conf import settings as django_settings
+from django.shortcuts import redirect
 from django.http import Http404
 from django.utils import translation
 
@@ -201,3 +202,21 @@ def filter_stream_by_status_type(activities, allowed_types=None):
         )
 
     return activities
+
+
+def maybe_redirect_local_path(request, model):
+    """
+    if the request had an invalid path, return a permanent redirect response to the
+    correct one, including a slug if any.
+    if path is valid, returns False.
+    """
+
+    # don't redirect empty path for unit tests which currently have this
+    if request.path in ("/", model.local_path):
+        return False
+
+    new_path = model.local_path
+    if len(request.GET) > 0:
+        new_path = f"{model.local_path}?{request.GET.urlencode()}"
+
+    return redirect(new_path, permanent=True)
