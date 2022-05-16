@@ -8,6 +8,7 @@ from django.db.models import Q
 from django.dispatch import receiver
 from django.http import Http404
 from django.utils.translation import gettext_lazy as _
+from django.utils.text import slugify
 
 from bookwyrm.settings import DOMAIN
 from .fields import RemoteIdField
@@ -35,10 +36,11 @@ class BookWyrmModel(models.Model):
     remote_id = RemoteIdField(null=True, activitypub_field="id")
 
     def get_remote_id(self):
-        """generate a url that resolves to the local object"""
+        """generate the url that resolves to the local object, without a slug"""
         base_path = f"https://{DOMAIN}"
         if hasattr(self, "user"):
             base_path = f"{base_path}{self.user.local_path}"
+
         model_name = type(self).__name__.lower()
         return f"{base_path}/{model_name}/{self.id}"
 
@@ -49,8 +51,20 @@ class BookWyrmModel(models.Model):
 
     @property
     def local_path(self):
-        """how to link to this object in the local app"""
-        return self.get_remote_id().replace(f"https://{DOMAIN}", "")
+        """how to link to this object in the local app, with a slug"""
+        local = self.get_remote_id().replace(f"https://{DOMAIN}", "")
+
+        name = None
+        if hasattr(self, "name_field"):
+            name = getattr(self, self.name_field)
+        elif hasattr(self, "name"):
+            name = self.name
+
+        if name:
+            slug = slugify(name)
+            local = f"{local}/s/{slug}"
+
+        return local
 
     def raise_visible_to_user(self, viewer):
         """is a user authorized to view an object?"""

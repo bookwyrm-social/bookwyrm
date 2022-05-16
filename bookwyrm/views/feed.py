@@ -15,7 +15,7 @@ from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.settings import PAGE_LENGTH, STREAMS
 from bookwyrm.suggested_users import suggested_users
 from .helpers import filter_stream_by_status_type, get_user_from_username
-from .helpers import is_api_request, is_bookwyrm_request
+from .helpers import is_api_request, is_bookwyrm_request, maybe_redirect_local_path
 from .annual_summary import get_annual_summary_year
 
 
@@ -113,7 +113,8 @@ class DirectMessage(View):
 class Status(View):
     """get posting"""
 
-    def get(self, request, username, status_id):
+    # pylint: disable=unused-argument
+    def get(self, request, username, status_id, slug=None):
         """display a particular status (and replies, etc)"""
         user = get_user_from_username(request.user, username)
         status = get_object_or_404(
@@ -129,6 +130,9 @@ class Status(View):
             return ActivitypubResponse(
                 status.to_activity(pure=not is_bookwyrm_request(request))
             )
+
+        if redirect_local_path := maybe_redirect_local_path(request, status):
+            return redirect_local_path
 
         visible_thread = (
             models.Status.privacy_filter(request.user)

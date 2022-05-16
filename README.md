@@ -16,7 +16,7 @@ If you'd like to join an instance, you can check out the [instances](https://joi
 
 
 ## Contributing
-See [contributing](https://docs.joinbookwyrm.com/how-to-contribute.html) for code, translation or monetary contributions.
+See [contributing](https://docs.joinbookwyrm.com/contributing.html) for code, translation or monetary contributions.
 
 ## About BookWyrm
 ### What it is and isn't
@@ -76,4 +76,4 @@ Deployment
 
 
 ## Set up BookWyrm
-The [documentation website](https://docs.joinbookwyrm.com/) has instruction on how to set up BookWyrm in a [developer environment](https://docs.joinbookwyrm.com/developer-environment.html) or [production](https://docs.joinbookwyrm.com/installing-in-production.html).
+The [documentation website](https://docs.joinbookwyrm.com/) has instruction on how to set up BookWyrm in a [developer environment](https://docs.joinbookwyrm.com/install-dev.html) or [production](https://docs.joinbookwyrm.com/install-prod.html).
