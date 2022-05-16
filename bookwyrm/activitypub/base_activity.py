@@ -43,7 +43,7 @@ def naive_parse(activity_objects, activity_json, serializer=None):
             serializer = activity_objects[activity_type]
         except KeyError as err:
             # we know this exists and that we can't handle it
-            if activity_type in ["Question"]:
+            if activity_type in ["Question", "Article"]:
                 return None
             raise ActivitySerializerError(err)
 
