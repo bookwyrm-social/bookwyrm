@@ -208,15 +208,43 @@ class InboxCreate(TestCase):
         self.assertEqual(book_list.description, "summary text")
         self.assertEqual(book_list.remote_id, "https://example.com/list/22")
 
-    def test_create_unsupported_type(self, *_):
+    def test_create_unsupported_type_question(self, *_):
         """ignore activities we know we can't handle"""
         activity = self.create_json
         activity["object"] = {
             "id": "https://example.com/status/887",
             "type": "Question",
         }
-        # just observer how it doesn't throw an error
+        # just observe how it doesn't throw an error
         views.inbox.activity_task(activity)
+
+    def test_create_unsupported_type_article(self, *_):
+        """special case in unsupported type because we do know what it is"""
+        activity = self.create_json
+        activity["object"] = {
+            "id": "https://example.com/status/887",
+            "type": "Article",
+            "name": "hello",
+            "published": "2021-04-29T21:27:30.014235+00:00",
+            "attributedTo": "https://example.com/user/mouse",
+            "to": ["https://www.w3.org/ns/activitystreams#Public"],
+            "cc": ["https://example.com/user/mouse/followers"],
+            "sensitive": False,
+            "@context": "https://www.w3.org/ns/activitystreams",
+        }
+        # just observe how it doesn't throw an error
+        views.inbox.activity_task(activity)
+
+    def test_create_unsupported_type_unknown(self, *_):
+        """Something truly unexpected should throw an error"""
+        activity = self.create_json
+        activity["object"] = {
+            "id": "https://example.com/status/887",
+            "type": "Blaaaah",
+        }
+        # error this time
+        with self.assertRaises(ActivitySerializerError):
+            views.inbox.activity_task(activity)
 
     def test_create_unknown_type(self, *_):
         """ignore activities we know we've never heard of"""
