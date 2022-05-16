@@ -28,6 +28,7 @@ from .admin.user_admin import UserAdmin, UserAdminList
 # user preferences
 from .preferences.change_password import ChangePassword
 from .preferences.edit_user import EditUser
+from .preferences.export import Export, export_user_book_data
 from .preferences.delete_user import DeleteUser
 from .preferences.block import Block, unblock
 

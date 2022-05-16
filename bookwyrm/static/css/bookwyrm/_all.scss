@@ -36,6 +36,18 @@ body {
     flex-direction: column;
 }
 
+::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+}
+::-webkit-scrollbar-thumb {
+    background: $scrollbar-thumb;
+    border-radius: 0.5em;
+}
+::-webkit-scrollbar-track {
+    background: $scrollbar-track;
+}
+
 button {
     border: none;
     margin: 0;
