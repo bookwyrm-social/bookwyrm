@@ -14,28 +14,32 @@
         <div class="column is-half">
 
             <div class="field">
-                <label class="label is-pulled-left" for="source">
+                <label class="label" for="source">
                     {% trans "Data source:" %}
                 </label>
-                {% include 'import/tooltip.html' with controls_text="goodreads-tooltip" %}
+
+                <div class="select">
+                    <select name="source" id="source" aria-describedby="desc_source">
+                        <option value="Goodreads" {% if current == 'Goodreads' %}selected{% endif %}>
+                            Goodreads (CSV)
+                        </option>
+                        <option value="Storygraph" {% if current == 'Storygraph' %}selected{% endif %}>
+                            Storygraph (CSV)
+                        </option>
+                        <option value="LibraryThing" {% if current == 'LibraryThing' %}selected{% endif %}>
+                            LibraryThing (TSV)
+                        </option>
+                        <option value="OpenLibrary" {% if current == 'OpenLibrary' %}selected{% endif %}>
+                            OpenLibrary (CSV)
+                        </option>
+                    </select>
+                </div>
+
+                <p class="help" id="desc_source">
+                    {% trans 'You can download your Goodreads data from the <a href="https://www.goodreads.com/review/import" target="_blank" rel="noopener noreferrer">Import/Export page</a> of your Goodreads account.' %}
+                </p>
             </div>
 
-            <div class="select block">
-                <select name="source" id="source">
-                    <option value="Goodreads" {% if current == 'Goodreads' %}selected{% endif %}>
-                        Goodreads (CSV)
-                    </option>
-                    <option value="Storygraph" {% if current == 'Storygraph' %}selected{% endif %}>
-                        Storygraph (CSV)
-                    </option>
-                    <option value="LibraryThing" {% if current == 'LibraryThing' %}selected{% endif %}>
-                        LibraryThing (TSV)
-                    </option>
-                    <option value="OpenLibrary" {% if current == 'OpenLibrary' %}selected{% endif %}>
-                        OpenLibrary (CSV)
-                    </option>
-                </select>
-            </div>
             <div class="field">
                 <label class="label" for="id_csv_file">{% trans "Data file:" %}</label>
                 {{ import_form.csv_file }}
@@ -63,7 +67,7 @@
 <div class="content block">
     <h2 class="title">{% trans "Recent Imports" %}</h2>
     {% if not jobs %}
-    <p>{% trans "No recent imports" %}</p>
+    <p><em>{% trans "No recent imports" %}</em></p>
     {% endif %}
     <ul>
         {% for job in jobs %}

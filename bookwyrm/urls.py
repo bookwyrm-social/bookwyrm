@@ -71,7 +71,7 @@ urlpatterns = [
         views.ConfirmEmailCode.as_view(),
         name="confirm-email-code",
     ),
-    re_path(r"^resend-link/?$", views.resend_link, name="resend-link"),
+    re_path(r"^resend-link/?$", views.ResendConfirmEmail.as_view(), name="resend-link"),
     re_path(r"^logout/?$", views.Logout.as_view(), name="logout"),
     re_path(
         r"^password-reset/?$",
@@ -474,6 +474,12 @@ urlpatterns = [
         r"^preferences/password/?$",
         views.ChangePassword.as_view(),
         name="prefs-password",
+    ),
+    re_path(r"^preferences/export/?$", views.Export.as_view(), name="prefs-export"),
+    re_path(
+        r"^preferences/export/file/?$",
+        views.export_user_book_data,
+        name="prefs-export-file",
     ),
     re_path(r"^preferences/delete/?$", views.DeleteUser.as_view(), name="prefs-delete"),
     re_path(r"^preferences/block/?$", views.Block.as_view(), name="prefs-block"),

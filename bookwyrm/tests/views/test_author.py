@@ -66,7 +66,7 @@ class AuthorViews(TestCase):
     def test_author_page_edition_author(self):
         """there are so many views, this just makes sure it LOADS"""
         view = views.Author.as_view()
-        another_book = models.Edition.objects.create(
+        models.Edition.objects.create(
             title="Example Edition",
             remote_id="https://example.com/book/1",
             parent_work=self.work,

@@ -21,6 +21,7 @@
 
     <div class="field">
         <input type="text" name="address" maxlength="255" class="input" required="" id="id_address" placeholder="190.0.2.0/24" aria-describedby="desc_address">
+        <p class="help">{% trans "You can block IP ranges using CIDR syntax." %}</p>
     </div>
 
     {% include 'snippets/form_errors.html' with errors_list=form.address.errors id="desc_address" %}

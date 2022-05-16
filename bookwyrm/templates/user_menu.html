@@ -1,0 +1,77 @@
+{% load utilities %}
+{% load i18n %}
+
+<details class="dropdown" id="navbar-dropdown">
+    <summary
+        class="is-relative pulldown-menu dropdown-trigger"
+        aria-label="{% trans 'View profile and more' %}"
+        role="button"
+        aria-haspopup="menu"
+    >
+        <span class="">
+            {% include 'snippets/avatar.html' with user=request.user %}
+            <span class="ml-2">{{ request.user.display_name }}</span>
+        </span>
+        <span class="icon icon-arrow-down is-hidden-mobile" aria-hidden="true"></span>
+    </summary>
+
+    <div class="dropdown-menu">
+        <ul
+            class="dropdown-content"
+            role="menu"
+        >
+            <li role="menuitem">
+                <a href="{% url 'user-feed' request.user.localname %}" class="navbar-item">
+                    {% trans "Profile" %}
+                </a>
+            </li>
+            <li role="menuitem">
+                <a href="{% url 'directory' %}" class="navbar-item">
+                    {% trans "Directory" %}
+                </a>
+            </li>
+            <li role="menuitem">
+                <a href="{% url 'user-shelves' request.user.localname %}" class="navbar-item">
+                    {% trans 'Your Books' %}
+                </a>
+            </li>
+            <li role="menuitem">
+                <a href="{% url 'direct-messages' %}" class="navbar-item">
+                    {% trans "Direct Messages" %}
+                </a>
+            </li>
+            <li role="menuitem">
+                <a href="{% url 'prefs-profile' %}" class="navbar-item">
+                    {% trans 'Settings' %}
+                </a>
+            </li>
+
+            {% if perms.bookwyrm.create_invites or perms.moderate_user %}
+            <li class="navbar-divider" role="presentation" aria-hidden="true">&nbsp;</li>
+            {% endif %}
+
+            {% if perms.bookwyrm.create_invites and not site.allow_registration %}
+            <li role="menuitem">
+                <a href="{% url 'settings-invite-requests' %}" class="navbar-item">
+                    {% trans 'Invites' %}
+                </a>
+            </li>
+            {% endif %}
+            {% if perms.bookwyrm.moderate_user %}
+            <li role="menuitem">
+                <a href="{% url 'settings-dashboard' %}" class="navbar-item">
+                    {% trans 'Admin' %}
+                </a>
+            </li>
+            {% endif %}
+
+            <li class="navbar-divider" role="presentation" aria-hidden="true">&nbsp;</li>
+
+            <li role="menuitem">
+                <a href="{% url 'logout' %}" class="navbar-item">
+                    {% trans 'Log out' %}
+                </a>
+            </li>
+        </ul>
+    </div>
+</details>

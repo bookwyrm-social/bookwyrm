@@ -140,6 +140,13 @@
                 </label>
             </div>
             <div class="field">
+                <label class="label mb-0" for="id_require_confirm_email">
+                    {{ site_form.require_confirm_email }}
+                    {% trans "Require users to confirm email address" %}
+                </label>
+                <p class="help" id="desc_require_confirm_email">{% trans "(Recommended if registration is open)" %}</p>
+            </div>
+            <div class="field">
                 <label class="label" for="id_allow_invite_requests">
                     {{ site_form.allow_invite_requests }}
                     {% trans "Allow invite requests" %}
@@ -158,20 +165,13 @@
                     </label>
                 </div>
             <div class="field">
-                <label class="label mb-0" for="id_require_confirm_email">
-                    {{ site_form.require_confirm_email }}
-                    {% trans "Require users to confirm email address" %}
-                </label>
-                <p class="help" id="desc_require_confirm_email">{% trans "(Recommended if registration is open)" %}</p>
-            </div>
-            <div class="field">
                 <label class="label" for="id_registration_closed_text">{% trans "Registration closed text:" %}</label>
                 {{ site_form.registration_closed_text }}
             </div>
             <div class="field">
                 <label class="label" for="id_invite_request_text">{% trans "Invite request text:" %}</label>
                 {{ site_form.invite_request_text }}
-    
+
                 {% include 'snippets/form_errors.html' with errors_list=site_form.invite_request_text.errors id="desc_invite_request_text" %}
             </div>
         </div>

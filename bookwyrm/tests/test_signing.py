@@ -64,8 +64,8 @@ class Signature(TestCase):
 
     def send(self, signature, now, data, digest):
         """test request"""
-        c = Client()
-        return c.post(
+        client = Client()
+        return client.post(
             urlsplit(self.rat.inbox).path,
             data=data,
             content_type="application/json",

@@ -51,12 +51,12 @@
 
 
 {% block preview %}
-<div class="notification py-2 {% if notification.id in unread %}is-primary is-light{% else %}has-background-body has-text-black{% endif %}">
+<div class="notification py-2 {% if notification.id in unread %}is-primary is-light{% else %}has-background-body has-text-default{% endif %}">
     <div class="columns">
         <div class="column is-clipped">
             {% include 'snippets/status_preview.html' with status=related_status %}
         </div>
-        <div class="column is-narrow has-text-black">
+        <div class="column is-narrow has-text-default">
             {{ related_status.published_date|timesince }}
             {% include 'snippets/privacy-icons.html' with item=related_status %}
         </div>
