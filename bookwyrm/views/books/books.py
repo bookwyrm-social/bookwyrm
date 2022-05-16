@@ -15,14 +15,14 @@ from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.connectors import connector_manager, ConnectorException
 from bookwyrm.connectors.abstract_connector import get_image
 from bookwyrm.settings import PAGE_LENGTH
-from bookwyrm.views.helpers import is_api_request
+from bookwyrm.views.helpers import is_api_request, maybe_redirect_local_path
 
 
 # pylint: disable=no-self-use
 class Book(View):
     """a book! this is the stuff"""
 
-    def get(self, request, book_id, user_statuses=False, update_error=False):
+    def get(self, request, book_id, **kwargs):
         """info about a book"""
         if is_api_request(request):
             book = get_object_or_404(
@@ -30,7 +30,11 @@ class Book(View):
             )
             return ActivitypubResponse(book.to_activity())
 
-        user_statuses = user_statuses if request.user.is_authenticated else False
+        user_statuses = (
+            kwargs.get("user_statuses", False)
+            if request.user.is_authenticated
+            else False
+        )
 
         # it's safe to use this OR because edition and work and subclasses of the same
         # table, so they never have clashing IDs
@@ -45,6 +49,11 @@ class Book(View):
 
         if not book or not book.parent_work:
             raise Http404()
+
+        if redirect_local_path := not user_statuses and maybe_redirect_local_path(
+            request, book
+        ):
+            return redirect_local_path
 
         # all reviews for all editions of the book
         reviews = models.Review.privacy_filter(request.user).filter(
@@ -80,7 +89,7 @@ class Book(View):
             else None,
             "rating": reviews.aggregate(Avg("rating"))["rating__avg"],
             "lists": lists,
-            "update_error": update_error,
+            "update_error": kwargs.get("update_error", False),
         }
 
         if request.user.is_authenticated:

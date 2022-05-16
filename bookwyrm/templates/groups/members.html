@@ -38,7 +38,7 @@
     {% for membership in group.memberships.all %}
     {% with member=membership.user %}
     <div class="box has-text-centered is-shadowless has-background-tertiary my-2 mx-2 member_{{ member.id }}">
-        <a href="{{ member.local_path }}" class="has-text-black">
+        <a href="{{ member.local_path }}" class="has-text-default">
             {% include 'snippets/avatar.html' with user=member large=True %}
             <span title="{{ member.display_name }}" class="is-block is-6 has-text-weight-bold">{{ member.display_name|truncatechars:10 }}</span>
             <span title="@{{ member|username }}" class="is-block pb-3">@{{ member|username|truncatechars:8 }}</span>

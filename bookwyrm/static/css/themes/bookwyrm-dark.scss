@@ -53,6 +53,7 @@ $link-hover: $white-bis;
 $link-hover-border: #51595d;
 $link-focus: $white-bis;
 $link-active: $white-bis;
+$link-light: #0d1c26;
 
 /* bulma overrides */
 $background: $background-secondary;
@@ -83,6 +84,13 @@ $progress-value-background-color: $border-light;
 $family-primary: $family-sans-serif;
 $family-secondary: $family-sans-serif;
 
+.has-text-muted {
+    color: $grey-lighter !important;
+}
+
+.has-text-more-muted {
+    color: $grey-light !important;
+}
 
 @import "../bookwyrm.scss";
 @import "../vendor/icons.css";

@@ -101,6 +101,7 @@ class AbstractConnector(TestCase):
         result = self.connector.get_or_create_book(
             f"https://{DOMAIN}/book/{self.book.id}"
         )
+
         self.assertEqual(models.Book.objects.count(), 1)
         self.assertEqual(result, self.book)
 

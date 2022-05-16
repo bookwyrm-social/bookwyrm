@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-03-17 16:15+0000\n"
-"PO-Revision-Date: 2022-03-17 17:06\n"
+"POT-Creation-Date: 2022-04-08 21:00+0000\n"
+"PO-Revision-Date: 2022-04-10 07:54\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Lithuanian\n"
 "Language: lt\n"
@@ -48,7 +48,7 @@ msgstr "Skaitymo pabaigos data negali būti prieš skaitymo pradžios datą."
 
 #: bookwyrm/forms/landing.py:32
 msgid "User with this username already exists"
-msgstr ""
+msgstr "Toks naudotojo vardas jau egzistuoja"
 
 #: bookwyrm/forms/landing.py:41
 msgid "A user with this email already exists."
@@ -56,11 +56,11 @@ msgstr "Vartotojas su šiuo el. pašto adresu jau yra."
 
 #: bookwyrm/forms/links.py:36
 msgid "This domain is blocked. Please contact your administrator if you think this is an error."
-msgstr ""
+msgstr "Šis domenas užblokuotas. Jei manote, kad tai klaida, susisiekite su savo administratoriumi."
 
 #: bookwyrm/forms/links.py:46
 msgid "This link with file type has already been added for this book. If it is not visible, the domain is still pending."
-msgstr ""
+msgstr "Ši nuoroda su failo tipu knygai jau buvo pridėta. Jei nematote, reiškia dar laukiama domeno."
 
 #: bookwyrm/forms/lists.py:26
 msgid "List Order"
@@ -98,11 +98,11 @@ msgstr "Nepavyko rasti tokios knygos"
 
 #: bookwyrm/models/announcement.py:11
 msgid "Primary"
-msgstr ""
+msgstr "Pirminis"
 
 #: bookwyrm/models/announcement.py:12
 msgid "Success"
-msgstr ""
+msgstr "Sėkmingai"
 
 #: bookwyrm/models/announcement.py:13
 #: bookwyrm/templates/settings/invites/manage_invites.html:47
@@ -111,15 +111,15 @@ msgstr "Nuoroda"
 
 #: bookwyrm/models/announcement.py:14
 msgid "Warning"
-msgstr ""
+msgstr "Įspėjimas"
 
 #: bookwyrm/models/announcement.py:15
 msgid "Danger"
-msgstr ""
+msgstr "Pavojus"
 
 #: bookwyrm/models/antispam.py:106 bookwyrm/models/antispam.py:140
 msgid "Automatically generated report"
-msgstr ""
+msgstr "Automatiškai sugeneruota ataskaita"
 
 #: bookwyrm/models/base_model.py:17 bookwyrm/models/link.py:72
 #: bookwyrm/templates/import/import_status.html:200
@@ -165,14 +165,14 @@ msgstr "Knyga minkštais viršeliais"
 
 #: bookwyrm/models/federated_server.py:11
 #: bookwyrm/templates/settings/federation/edit_instance.html:55
-#: bookwyrm/templates/settings/federation/instance_list.html:19
+#: bookwyrm/templates/settings/federation/instance_list.html:22
 msgid "Federated"
 msgstr "Susijungę"
 
 #: bookwyrm/models/federated_server.py:12 bookwyrm/models/link.py:71
 #: bookwyrm/templates/settings/federation/edit_instance.html:56
 #: bookwyrm/templates/settings/federation/instance.html:10
-#: bookwyrm/templates/settings/federation/instance_list.html:23
+#: bookwyrm/templates/settings/federation/instance_list.html:26
 #: bookwyrm/templates/settings/link_domains/link_domains.html:27
 msgid "Blocked"
 msgstr "Užblokuoti"
@@ -187,7 +187,7 @@ msgstr "%(value)s yra negaliojantis remote_id"
 msgid "%(value)s is not a valid username"
 msgstr "%(value)s yra negaliojantis naudotojo vardas"
 
-#: bookwyrm/models/fields.py:181 bookwyrm/templates/layout.html:179
+#: bookwyrm/models/fields.py:181 bookwyrm/templates/layout.html:123
 #: bookwyrm/templates/ostatus/error.html:29
 msgid "username"
 msgstr "naudotojo vardas"
@@ -300,34 +300,42 @@ msgid "Italiano (Italian)"
 msgstr "Italų (Italian)"
 
 #: bookwyrm/settings.py:287
+msgid "Suomi (Finnish)"
+msgstr "Suomi (suomių)"
+
+#: bookwyrm/settings.py:288
 msgid "Français (French)"
 msgstr "Français (Prancūzų)"
 
-#: bookwyrm/settings.py:288
+#: bookwyrm/settings.py:289
 msgid "Lietuvių (Lithuanian)"
 msgstr "Lietuvių"
 
-#: bookwyrm/settings.py:289
+#: bookwyrm/settings.py:290
 msgid "Norsk (Norwegian)"
 msgstr "Norvegų (Norwegian)"
 
-#: bookwyrm/settings.py:290
+#: bookwyrm/settings.py:291
 msgid "Português do Brasil (Brazilian Portuguese)"
 msgstr "Português brasileiro (Brazilijos portugalų)"
 
-#: bookwyrm/settings.py:291
+#: bookwyrm/settings.py:292
 msgid "Português Europeu (European Portuguese)"
 msgstr "Português Europeu (Europos portugalų)"
 
-#: bookwyrm/settings.py:292
+#: bookwyrm/settings.py:293
+msgid "Română (Romanian)"
+msgstr "Română (rumunų)"
+
+#: bookwyrm/settings.py:294
 msgid "Svenska (Swedish)"
 msgstr "Svenska (Švedų)"
 
-#: bookwyrm/settings.py:293
+#: bookwyrm/settings.py:295
 msgid "简体中文 (Simplified Chinese)"
 msgstr "简体中文 (Supaprastinta kinų)"
 
-#: bookwyrm/settings.py:294
+#: bookwyrm/settings.py:296
 msgid "繁體中文 (Traditional Chinese)"
 msgstr "繁體中文 (Tradicinė kinų)"
 
@@ -392,14 +400,14 @@ msgstr "Šio serverio administratoriai"
 
 #: bookwyrm/templates/about/about.html:101
 #, python-format
-msgid "%(site_name)s's moderators and administrators keep the site up and running, enforce the <a href=\"coc_path\">code of conduct</a>, and respond when users report spam and bad behavior."
-msgstr "Svetainės %(site_name)s moderatoriai ir administratoriai nuolat atnaujina puslapį, laikosi <a href=\"coc_path\">elgsenos susitarimo</a> ir atsako, kai naudotojai praneša apie brukalą ir blogą elgesį."
+msgid "%(site_name)s's moderators and administrators keep the site up and running, enforce the <a href=\"%(coc_path)s\">code of conduct</a>, and respond when users report spam and bad behavior."
+msgstr "Svetainės %(site_name)s moderatoriai ir administratoriai nuolat atnaujina puslapį, laikosi <a href=\"%(coc_path)s\">elgsenos susitarimo</a> ir atsako, kai naudotojai praneša apie brukalą ir blogą elgesį."
 
 #: bookwyrm/templates/about/about.html:115
 msgid "Moderator"
 msgstr "Moderatorius"
 
-#: bookwyrm/templates/about/about.html:117 bookwyrm/templates/layout.html:140
+#: bookwyrm/templates/about/about.html:117 bookwyrm/templates/user_menu.html:63
 msgid "Admin"
 msgstr "Administravimas"
 
@@ -430,7 +438,7 @@ msgid "Software version:"
 msgstr "Serverio programinės įrangos versija:"
 
 #: bookwyrm/templates/about/layout.html:30
-#: bookwyrm/templates/embed-layout.html:34 bookwyrm/templates/layout.html:238
+#: bookwyrm/templates/embed-layout.html:34 bookwyrm/templates/layout.html:182
 #, python-format
 msgid "About %(site_name)s"
 msgstr "Apie %(site_name)s"
@@ -716,7 +724,7 @@ msgid "Openlibrary key:"
 msgstr "„Openlibrary“ raktas:"
 
 #: bookwyrm/templates/author/edit_author.html:84
-#: bookwyrm/templates/book/edit/edit_book_form.html:326
+#: bookwyrm/templates/book/edit/edit_book_form.html:323
 msgid "Inventaire ID:"
 msgstr "„Inventaire“ ID:"
 
@@ -742,7 +750,7 @@ msgstr "ISNI:"
 #: bookwyrm/templates/lists/edit_item_form.html:15
 #: bookwyrm/templates/lists/form.html:130
 #: bookwyrm/templates/preferences/edit_user.html:136
-#: bookwyrm/templates/readthrough/readthrough_modal.html:74
+#: bookwyrm/templates/readthrough/readthrough_modal.html:81
 #: bookwyrm/templates/settings/announcements/edit_announcement.html:120
 #: bookwyrm/templates/settings/federation/edit_instance.html:98
 #: bookwyrm/templates/settings/federation/instance.html:105
@@ -766,7 +774,7 @@ msgstr "Išsaugoti"
 #: bookwyrm/templates/lists/add_item_modal.html:36
 #: bookwyrm/templates/lists/delete_list_modal.html:16
 #: bookwyrm/templates/readthrough/delete_readthrough_modal.html:27
-#: bookwyrm/templates/readthrough/readthrough_modal.html:73
+#: bookwyrm/templates/readthrough/readthrough_modal.html:80
 #: bookwyrm/templates/search/barcode_modal.html:45
 #: bookwyrm/templates/settings/federation/instance.html:106
 #: bookwyrm/templates/settings/link_domains/edit_domain_modal.html:22
@@ -790,7 +798,7 @@ msgstr "Patvirtinti"
 
 #: bookwyrm/templates/book/book.html:19
 msgid "Unable to connect to remote source."
-msgstr ""
+msgstr "Nepavyksta prisijungti prie nuotolinio šaltinio."
 
 #: bookwyrm/templates/book/book.html:64 bookwyrm/templates/book/book.html:65
 msgid "Edit Book"
@@ -831,10 +839,10 @@ msgstr "Aprašymas:"
 #, python-format
 msgid "%(count)s edition"
 msgid_plural "%(count)s editions"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "%(count)s leidimas"
+msgstr[1] "%(count)s leidimai"
+msgstr[2] "%(count)s leidimai"
+msgstr[3] "%(count)s leidimai"
 
 #: bookwyrm/templates/book/book.html:228
 msgid "You have shelved this edition in:"
@@ -896,7 +904,7 @@ msgstr "Pridėti prie sąrašo"
 #: bookwyrm/templates/lists/add_item_modal.html:39
 #: bookwyrm/templates/lists/list.html:255
 #: bookwyrm/templates/settings/email_blocklist/domain_form.html:24
-#: bookwyrm/templates/settings/ip_blocklist/ip_address_form.html:31
+#: bookwyrm/templates/settings/ip_blocklist/ip_address_form.html:32
 msgid "Add"
 msgstr "Pridėti"
 
@@ -905,12 +913,12 @@ msgid "ISBN:"
 msgstr "ISBN:"
 
 #: bookwyrm/templates/book/book_identifiers.html:15
-#: bookwyrm/templates/book/edit/edit_book_form.html:335
+#: bookwyrm/templates/book/edit/edit_book_form.html:332
 msgid "OCLC Number:"
 msgstr "OCLC numeris:"
 
 #: bookwyrm/templates/book/book_identifiers.html:22
-#: bookwyrm/templates/book/edit/edit_book_form.html:344
+#: bookwyrm/templates/book/edit/edit_book_form.html:341
 msgid "ASIN:"
 msgstr "ASIN:"
 
@@ -919,12 +927,12 @@ msgid "Add cover"
 msgstr "Pridėti viršelį"
 
 #: bookwyrm/templates/book/cover_add_modal.html:17
-#: bookwyrm/templates/book/edit/edit_book_form.html:234
+#: bookwyrm/templates/book/edit/edit_book_form.html:233
 msgid "Upload cover:"
 msgstr "Įkelti viršelį:"
 
 #: bookwyrm/templates/book/cover_add_modal.html:23
-#: bookwyrm/templates/book/edit/edit_book_form.html:240
+#: bookwyrm/templates/book/edit/edit_book_form.html:239
 msgid "Load cover from url:"
 msgstr "Įkelti viršelį iš url:"
 
@@ -936,8 +944,7 @@ msgstr "Peržiūrėti knygos viršelį"
 #: bookwyrm/templates/components/inline_form.html:8
 #: bookwyrm/templates/components/modal.html:13
 #: bookwyrm/templates/components/modal.html:30
-#: bookwyrm/templates/components/tooltip.html:7
-#: bookwyrm/templates/feed/suggested_books.html:55
+#: bookwyrm/templates/feed/suggested_books.html:67
 #: bookwyrm/templates/get_started/layout.html:25
 #: bookwyrm/templates/get_started/layout.html:58
 msgid "Close"
@@ -1017,19 +1024,19 @@ msgstr "Kalbos:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:86
 msgid "Subjects:"
-msgstr ""
+msgstr "Temos:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:90
 msgid "Add subject"
-msgstr ""
+msgstr "Pridėti temą"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:108
 msgid "Remove subject"
-msgstr ""
+msgstr "Pašalinti temą"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:131
 msgid "Add Another Subject"
-msgstr ""
+msgstr "Pridėti kitą temą"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:139
 msgid "Publication"
@@ -1043,77 +1050,77 @@ msgstr "Leidėjas:"
 msgid "First published date:"
 msgstr "Pirmoji publikavimo data:"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:165
+#: bookwyrm/templates/book/edit/edit_book_form.html:164
 msgid "Published date:"
 msgstr "Publikavimo data:"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:176
+#: bookwyrm/templates/book/edit/edit_book_form.html:175
 msgid "Authors"
 msgstr "Autoriai"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:187
+#: bookwyrm/templates/book/edit/edit_book_form.html:186
 #, python-format
 msgid "Remove %(name)s"
 msgstr "Pašalinti %(name)s"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:190
+#: bookwyrm/templates/book/edit/edit_book_form.html:189
 #, python-format
 msgid "Author page for %(name)s"
 msgstr "Autoriaus puslapis %(name)s"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:198
+#: bookwyrm/templates/book/edit/edit_book_form.html:197
 msgid "Add Authors:"
 msgstr "Pridėti autorius:"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:201
-#: bookwyrm/templates/book/edit/edit_book_form.html:204
+#: bookwyrm/templates/book/edit/edit_book_form.html:200
+#: bookwyrm/templates/book/edit/edit_book_form.html:203
 msgid "Add Author"
 msgstr "Pridėti autorių"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:202
-#: bookwyrm/templates/book/edit/edit_book_form.html:205
+#: bookwyrm/templates/book/edit/edit_book_form.html:201
+#: bookwyrm/templates/book/edit/edit_book_form.html:204
 msgid "Jane Doe"
 msgstr "Jonas Jonaitė"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:211
+#: bookwyrm/templates/book/edit/edit_book_form.html:210
 msgid "Add Another Author"
 msgstr "Pridėti dar vieną autorių"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:221
+#: bookwyrm/templates/book/edit/edit_book_form.html:220
 #: bookwyrm/templates/shelf/shelf.html:146
 msgid "Cover"
 msgstr "Viršelis"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:253
+#: bookwyrm/templates/book/edit/edit_book_form.html:252
 msgid "Physical Properties"
 msgstr "Fizinės savybės"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:260
+#: bookwyrm/templates/book/edit/edit_book_form.html:259
 #: bookwyrm/templates/book/editions/format_filter.html:6
 msgid "Format:"
 msgstr "Formatas:"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:272
+#: bookwyrm/templates/book/edit/edit_book_form.html:269
 msgid "Format details:"
 msgstr "Informacija apie formatą:"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:283
+#: bookwyrm/templates/book/edit/edit_book_form.html:280
 msgid "Pages:"
 msgstr "Puslapiai:"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:294
+#: bookwyrm/templates/book/edit/edit_book_form.html:291
 msgid "Book Identifiers"
 msgstr "Knygos identifikatoriai"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:299
+#: bookwyrm/templates/book/edit/edit_book_form.html:296
 msgid "ISBN 13:"
 msgstr "ISBN 13:"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:308
+#: bookwyrm/templates/book/edit/edit_book_form.html:305
 msgid "ISBN 10:"
 msgstr "ISBN 10:"
 
-#: bookwyrm/templates/book/edit/edit_book_form.html:317
+#: bookwyrm/templates/book/edit/edit_book_form.html:314
 msgid "Openlibrary ID:"
 msgstr "„Openlibrary“ ID:"
 
@@ -1129,11 +1136,11 @@ msgstr "<a href=\"%(work_path)s\">\"%(work_title)s\"</a> leidimai"
 
 #: bookwyrm/templates/book/editions/editions.html:55
 msgid "Can't find the edition you're looking for?"
-msgstr ""
+msgstr "Nepavyksta rasti norimo leidimo?"
 
 #: bookwyrm/templates/book/editions/editions.html:75
 msgid "Add another edition"
-msgstr ""
+msgstr "Pridėti kitą leidimą"
 
 #: bookwyrm/templates/book/editions/format_filter.html:9
 #: bookwyrm/templates/book/editions/language_filter.html:9
@@ -1178,7 +1185,7 @@ msgstr "Redaguoti nuorodas"
 #: bookwyrm/templates/book/file_links/edit_links.html:11
 #, python-format
 msgid "Links for \"<em>%(title)s</em>\""
-msgstr ""
+msgstr "Nuorodos, skirtos „<em>%(title)s</em>“"
 
 #: bookwyrm/templates/book/file_links/edit_links.html:32
 #: bookwyrm/templates/settings/link_domains/link_table.html:6
@@ -1204,11 +1211,10 @@ msgstr "Domenas"
 #: bookwyrm/templates/book/file_links/edit_links.html:36
 #: bookwyrm/templates/import/import_status.html:127
 #: bookwyrm/templates/settings/announcements/announcements.html:37
-#: bookwyrm/templates/settings/federation/instance_list.html:46
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:47
 #: bookwyrm/templates/settings/invites/status_filter.html:5
 #: bookwyrm/templates/settings/users/user_admin.html:52
-#: bookwyrm/templates/settings/users/user_info.html:20
+#: bookwyrm/templates/settings/users/user_info.html:24
 msgid "Status"
 msgstr "Būsena"
 
@@ -1299,10 +1305,6 @@ msgstr "įvertino"
 msgid "Loading data will connect to <strong>%(source_name)s</strong> and check for any metadata about this book which aren't present here. Existing metadata will not be overwritten."
 msgstr "Duomenų įkėlimas prisijungs prie <strong>%(source_name)s</strong> ir patikrins ar nėra naujos informacijos apie šią knygą. Esantys metaduomenys nebus perrašomi."
 
-#: bookwyrm/templates/components/tooltip.html:3
-msgid "Help"
-msgstr "Pagalba"
-
 #: bookwyrm/templates/compose.html:5 bookwyrm/templates/compose.html:8
 msgid "Edit status"
 msgstr "Redagavimo būsena"
@@ -1324,7 +1326,7 @@ msgid "Sorry! We couldn't find that code."
 msgstr "Deja, šio kodo neradome."
 
 #: bookwyrm/templates/confirm_email/confirm_email.html:19
-#: bookwyrm/templates/settings/users/user_info.html:85
+#: bookwyrm/templates/settings/users/user_info.html:92
 msgid "Confirmation code:"
 msgstr "Patvirtinimo kodas:"
 
@@ -1335,15 +1337,16 @@ msgstr "Patvirtinimo kodas:"
 msgid "Submit"
 msgstr "Siųsti"
 
-#: bookwyrm/templates/confirm_email/confirm_email.html:32
+#: bookwyrm/templates/confirm_email/confirm_email.html:38
 msgid "Can't find your code?"
 msgstr "Nerandate savo kodo?"
 
-#: bookwyrm/templates/confirm_email/resend_form.html:4
+#: bookwyrm/templates/confirm_email/resend.html:5
+#: bookwyrm/templates/confirm_email/resend_modal.html:5
 msgid "Resend confirmation link"
 msgstr "Dar kartą išsiųsti patvirtinimo nuorodą"
 
-#: bookwyrm/templates/confirm_email/resend_form.html:11
+#: bookwyrm/templates/confirm_email/resend_modal.html:15
 #: bookwyrm/templates/landing/layout.html:68
 #: bookwyrm/templates/landing/password_reset_request.html:18
 #: bookwyrm/templates/preferences/edit_user.html:53
@@ -1351,7 +1354,11 @@ msgstr "Dar kartą išsiųsti patvirtinimo nuorodą"
 msgid "Email address:"
 msgstr "El. pašto adresas:"
 
-#: bookwyrm/templates/confirm_email/resend_form.html:17
+#: bookwyrm/templates/confirm_email/resend_modal.html:28
+msgid "No user matching this email address found."
+msgstr "Naudotojas su šiuo el. pašto adresu nerastas."
+
+#: bookwyrm/templates/confirm_email/resend_modal.html:38
 msgid "Resend link"
 msgstr "Dar kartą išsiųsti nuorodą"
 
@@ -1371,7 +1378,7 @@ msgstr "Sujungta bendruomenė"
 
 #: bookwyrm/templates/directory/directory.html:4
 #: bookwyrm/templates/directory/directory.html:9
-#: bookwyrm/templates/layout.html:109
+#: bookwyrm/templates/user_menu.html:30
 msgid "Directory"
 msgstr "Bendruomenė"
 
@@ -1618,13 +1625,13 @@ msgstr "Keisti %(site_name)s slaptažodį"
 msgid "%(site_name)s home page"
 msgstr "%(site_name)s pagrindinis puslapis"
 
-#: bookwyrm/templates/embed-layout.html:40 bookwyrm/templates/layout.html:242
+#: bookwyrm/templates/embed-layout.html:40 bookwyrm/templates/layout.html:186
 msgid "Contact site admin"
 msgstr "Puslapio administratorius"
 
 #: bookwyrm/templates/embed-layout.html:46
-msgid "Join Bookwyrm"
-msgstr "Prisijunkite prie „Bookwyrm“"
+msgid "Join BookWyrm"
+msgstr "Prisijunkite prie „BookWyrm“"
 
 #: bookwyrm/templates/feed/direct_messages.html:8
 #, python-format
@@ -1632,7 +1639,7 @@ msgid "Direct Messages with <a href=\"%(path)s\">%(username)s</a>"
 msgstr "Asmeninis susirašinėjimas su <a href=\"%(path)s\">%(username)s</a>"
 
 #: bookwyrm/templates/feed/direct_messages.html:10
-#: bookwyrm/templates/layout.html:119
+#: bookwyrm/templates/user_menu.html:40
 msgid "Direct Messages"
 msgstr "Asmeninės žinutės"
 
@@ -1669,13 +1676,21 @@ msgid "Updates"
 msgstr "Atnaujinimai"
 
 #: bookwyrm/templates/feed/suggested_books.html:6
-#: bookwyrm/templates/layout.html:114
+#: bookwyrm/templates/user_menu.html:35
 msgid "Your Books"
 msgstr "Jūsų knygos"
 
-#: bookwyrm/templates/feed/suggested_books.html:8
+#: bookwyrm/templates/feed/suggested_books.html:10
 msgid "There are no books here right now! Try searching for a book to get started"
 msgstr "Knygų neturite. Raskite knygą ir pradėkite."
+
+#: bookwyrm/templates/feed/suggested_books.html:13
+msgid "Do you have book data from another service like GoodReads?"
+msgstr "Ar turite su knygomis susijusių duomenų iš kitų paslaugų tiekėjų, pvz., „GoodReads“?"
+
+#: bookwyrm/templates/feed/suggested_books.html:16
+msgid "Import your reading history"
+msgstr "Importuokite savo skaitymo istoriją"
 
 #: bookwyrm/templates/feed/suggested_users.html:5
 #: bookwyrm/templates/get_started/users.html:6
@@ -1975,28 +1990,33 @@ msgstr "Importuoti knygas"
 msgid "Data source:"
 msgstr "Duomenų šaltinis:"
 
-#: bookwyrm/templates/import/import.html:40
+#: bookwyrm/templates/import/import.html:39
+msgid "You can download your Goodreads data from the <a href=\"https://www.goodreads.com/review/import\" target=\"_blank\" rel=\"noopener noreferrer\">Import/Export page</a> of your Goodreads account."
+msgstr "Galite atsisiųsti savo „Goodreads“ duomenis iš <a href=\"https://www.goodreads.com/review/import\" target=\"_blank\" rel=\"noopener noreferrer\">Importavimo ir eksportavimo puslapio</a>, esančio jūsų „Goodreads“ paskyroje."
+
+#: bookwyrm/templates/import/import.html:44
 msgid "Data file:"
 msgstr "Duomenų failas:"
 
-#: bookwyrm/templates/import/import.html:48
+#: bookwyrm/templates/import/import.html:52
 msgid "Include reviews"
 msgstr "Įtraukti atsiliepimus"
 
-#: bookwyrm/templates/import/import.html:53
+#: bookwyrm/templates/import/import.html:57
 msgid "Privacy setting for imported reviews:"
 msgstr "Privatumo nustatymai svarbiems atsiliepimams:"
 
-#: bookwyrm/templates/import/import.html:59
+#: bookwyrm/templates/import/import.html:63
+#: bookwyrm/templates/preferences/layout.html:31
 #: bookwyrm/templates/settings/federation/instance_blocklist.html:76
 msgid "Import"
 msgstr "Importuoti"
 
-#: bookwyrm/templates/import/import.html:64
+#: bookwyrm/templates/import/import.html:68
 msgid "Recent Imports"
 msgstr "Pastaruoju metu importuota"
 
-#: bookwyrm/templates/import/import.html:66
+#: bookwyrm/templates/import/import.html:70
 msgid "No recent imports"
 msgstr "Pastaruoju metu neimportuota"
 
@@ -2140,10 +2160,6 @@ msgstr "Patvirtinti"
 msgid "Reject"
 msgstr "Atmesti"
 
-#: bookwyrm/templates/import/tooltip.html:6
-msgid "You can download your Goodreads data from the <a href=\"https://www.goodreads.com/review/import\" target=\"_blank\" rel=\"noopener noreferrer\">Import/Export page</a> of your Goodreads account."
-msgstr "Galite atsisiųsti savo „Goodreads“ duomenis iš <a href=\"https://www.goodreads.com/review/import\" target=\"_blank\" rel=\"noopener noreferrer\">Importavimo ir eksportavimo puslapio</a>, esančio jūsų „Goodreads“ paskyroje."
-
 #: bookwyrm/templates/import/troubleshoot.html:7
 msgid "Failed items"
 msgstr "Nepavykę elementai"
@@ -2229,7 +2245,7 @@ msgid "Login"
 msgstr "Prisijungti"
 
 #: bookwyrm/templates/landing/login.html:7
-#: bookwyrm/templates/landing/login.html:36 bookwyrm/templates/layout.html:187
+#: bookwyrm/templates/landing/login.html:36 bookwyrm/templates/layout.html:131
 #: bookwyrm/templates/ostatus/error.html:37
 msgid "Log in"
 msgstr "Prisijunkite"
@@ -2238,7 +2254,7 @@ msgstr "Prisijunkite"
 msgid "Success! Email address confirmed."
 msgstr "Džiugu, el. pašto adresas patvirtintas."
 
-#: bookwyrm/templates/landing/login.html:21 bookwyrm/templates/layout.html:178
+#: bookwyrm/templates/landing/login.html:21 bookwyrm/templates/layout.html:122
 #: bookwyrm/templates/ostatus/error.html:28
 #: bookwyrm/templates/snippets/register_form.html:4
 msgid "Username:"
@@ -2246,12 +2262,12 @@ msgstr "Naudotojo vardas:"
 
 #: bookwyrm/templates/landing/login.html:27
 #: bookwyrm/templates/landing/password_reset.html:26
-#: bookwyrm/templates/layout.html:182 bookwyrm/templates/ostatus/error.html:32
+#: bookwyrm/templates/layout.html:126 bookwyrm/templates/ostatus/error.html:32
 #: bookwyrm/templates/snippets/register_form.html:45
 msgid "Password:"
 msgstr "Slaptažodis:"
 
-#: bookwyrm/templates/landing/login.html:39 bookwyrm/templates/layout.html:184
+#: bookwyrm/templates/landing/login.html:39 bookwyrm/templates/layout.html:128
 #: bookwyrm/templates/ostatus/error.html:34
 msgid "Forgot your password?"
 msgstr "Pamiršote slaptažodį?"
@@ -2285,7 +2301,7 @@ msgstr "Ieškoti knygos, naudotojo arba sąrašo"
 
 #: bookwyrm/templates/layout.html:61 bookwyrm/templates/layout.html:62
 msgid "Scan Barcode"
-msgstr ""
+msgstr "Skenuoti brūkšninį kodą"
 
 #: bookwyrm/templates/layout.html:72
 msgid "Main navigation menu"
@@ -2295,54 +2311,38 @@ msgstr "Pagrindinis navigacijos meniu"
 msgid "Feed"
 msgstr "Srautas"
 
-#: bookwyrm/templates/layout.html:124 bookwyrm/templates/setup/config.html:52
-msgid "Settings"
-msgstr "Nustatymai"
-
-#: bookwyrm/templates/layout.html:133
-#: bookwyrm/templates/settings/invites/manage_invite_requests.html:15
-#: bookwyrm/templates/settings/invites/manage_invites.html:3
-#: bookwyrm/templates/settings/invites/manage_invites.html:15
-#: bookwyrm/templates/settings/layout.html:42
-msgid "Invites"
-msgstr "Pakvietimai"
-
-#: bookwyrm/templates/layout.html:147
-msgid "Log out"
-msgstr "Atsijungti"
-
-#: bookwyrm/templates/layout.html:155 bookwyrm/templates/layout.html:156
+#: bookwyrm/templates/layout.html:99 bookwyrm/templates/layout.html:100
 #: bookwyrm/templates/notifications/notifications_page.html:5
 #: bookwyrm/templates/notifications/notifications_page.html:10
 msgid "Notifications"
 msgstr "Pranešimai"
 
-#: bookwyrm/templates/layout.html:183 bookwyrm/templates/ostatus/error.html:33
+#: bookwyrm/templates/layout.html:127 bookwyrm/templates/ostatus/error.html:33
 msgid "password"
 msgstr "slaptažodis"
 
-#: bookwyrm/templates/layout.html:195
+#: bookwyrm/templates/layout.html:139
 msgid "Join"
 msgstr "Prisijungti"
 
-#: bookwyrm/templates/layout.html:229
+#: bookwyrm/templates/layout.html:173
 msgid "Successfully posted status"
 msgstr "Būsena publikuota sėkmingai"
 
-#: bookwyrm/templates/layout.html:230
+#: bookwyrm/templates/layout.html:174
 msgid "Error posting status"
 msgstr "Klaida, publikuojant būseną"
 
-#: bookwyrm/templates/layout.html:246
+#: bookwyrm/templates/layout.html:190
 msgid "Documentation"
 msgstr "Dokumentacija"
 
-#: bookwyrm/templates/layout.html:253
+#: bookwyrm/templates/layout.html:197
 #, python-format
 msgid "Support %(site_name)s on <a href=\"%(support_link)s\" target=\"_blank\">%(support_title)s</a>"
 msgstr "Paremkite %(site_name)s per <a href=\"%(support_link)s\" target=\"_blank\">%(support_title)s</a>"
 
-#: bookwyrm/templates/layout.html:257
+#: bookwyrm/templates/layout.html:201
 msgid "BookWyrm's source code is freely available. You can contribute or report issues on <a href=\"https://github.com/mouse-reeve/bookwyrm\">GitHub</a>."
 msgstr "„BookWyrm“ šaltinio kodas yra laisvai prieinamas. Galite prisidėti arba pranešti apie klaidas per <a href=\"https://github.com/mouse-reeve/bookwyrm\">GitHub</a>."
 
@@ -2498,7 +2498,7 @@ msgstr "Papildomi užrašai, kurie rodomi kartu su knyga."
 
 #: bookwyrm/templates/lists/list.html:37
 msgid "That book is already on this list."
-msgstr ""
+msgstr "Knyga jau yra sąraše."
 
 #: bookwyrm/templates/lists/list.html:45
 msgid "You successfully suggested a book for this list!"
@@ -2879,7 +2879,7 @@ msgstr "Dabar sekate %(display_name)s!"
 
 #: bookwyrm/templates/preferences/blocks.html:4
 #: bookwyrm/templates/preferences/blocks.html:7
-#: bookwyrm/templates/preferences/layout.html:31
+#: bookwyrm/templates/preferences/layout.html:42
 msgid "Blocked Users"
 msgstr "Blokuoti nariai"
 
@@ -2923,6 +2923,7 @@ msgstr "Redaguoti paskyrą"
 #: bookwyrm/templates/preferences/edit_user.html:12
 #: bookwyrm/templates/preferences/edit_user.html:25
 #: bookwyrm/templates/settings/users/user_info.html:7
+#: bookwyrm/templates/user_menu.html:25
 msgid "Profile"
 msgstr "Paskyra"
 
@@ -2932,7 +2933,7 @@ msgstr "Paskyra"
 #: bookwyrm/templates/settings/site.html:77
 #: bookwyrm/templates/setup/config.html:91
 msgid "Display"
-msgstr ""
+msgstr "Rodyti"
 
 #: bookwyrm/templates/preferences/edit_user.html:14
 #: bookwyrm/templates/preferences/edit_user.html:112
@@ -2962,7 +2963,7 @@ msgstr "Laiko juosta: "
 
 #: bookwyrm/templates/preferences/edit_user.html:101
 msgid "Theme:"
-msgstr ""
+msgstr "Grafinis apvalkalas:"
 
 #: bookwyrm/templates/preferences/edit_user.html:117
 msgid "Manually approve followers"
@@ -2970,17 +2971,34 @@ msgstr "Noriu tvirtinti sekėjus"
 
 #: bookwyrm/templates/preferences/edit_user.html:123
 msgid "Hide followers and following on profile"
-msgstr ""
+msgstr "Slėpti paskyros sekėjus"
 
 #: bookwyrm/templates/preferences/edit_user.html:128
 msgid "Default post privacy:"
 msgstr "Numatytasis įrašo privatumas:"
+
+#: bookwyrm/templates/preferences/export.html:4
+#: bookwyrm/templates/preferences/export.html:7
+msgid "CSV Export"
+msgstr "CSV eksportas"
+
+#: bookwyrm/templates/preferences/export.html:13
+msgid "Your export will include all the books on your shelves, books you have reviewed, and books with reading activity."
+msgstr "Į eksportavimą įeis visos jūsų lentynose esančios knygos, peržiūrėtos knygos bei tos, kurias neseniai skaitėte."
 
 #: bookwyrm/templates/preferences/layout.html:11
 msgid "Account"
 msgstr "Paskyra"
 
 #: bookwyrm/templates/preferences/layout.html:27
+msgid "Data"
+msgstr "Duomenys"
+
+#: bookwyrm/templates/preferences/layout.html:35
+msgid "CSV export"
+msgstr "CSV eksportas"
+
+#: bookwyrm/templates/preferences/layout.html:38
 msgid "Relationships"
 msgstr "Sąsajos"
 
@@ -3015,19 +3033,19 @@ msgid "Update read dates for \"<em>%(title)s</em>\""
 msgstr "Atnaujinkite knygos „<em>%(title)s</em>“ skaitymo datas"
 
 #: bookwyrm/templates/readthrough/readthrough_form.html:10
-#: bookwyrm/templates/readthrough/readthrough_modal.html:31
+#: bookwyrm/templates/readthrough/readthrough_modal.html:38
 #: bookwyrm/templates/snippets/reading_modals/finish_reading_modal.html:24
 #: bookwyrm/templates/snippets/reading_modals/start_reading_modal.html:21
 msgid "Started reading"
 msgstr "Pradėjo skaityti"
 
 #: bookwyrm/templates/readthrough/readthrough_form.html:18
-#: bookwyrm/templates/readthrough/readthrough_modal.html:49
+#: bookwyrm/templates/readthrough/readthrough_modal.html:56
 msgid "Progress"
 msgstr "Progresas"
 
 #: bookwyrm/templates/readthrough/readthrough_form.html:24
-#: bookwyrm/templates/readthrough/readthrough_modal.html:56
+#: bookwyrm/templates/readthrough/readthrough_modal.html:63
 #: bookwyrm/templates/snippets/reading_modals/finish_reading_modal.html:32
 msgid "Finished reading"
 msgstr "Baigta skaityti"
@@ -3074,38 +3092,40 @@ msgstr "Pranešti"
 msgid "\n"
 "        Scan Barcode\n"
 "    "
-msgstr ""
+msgstr "\n"
+"        Nuskaityti barkodą\n"
+"    "
 
 #: bookwyrm/templates/search/barcode_modal.html:23
 msgid "Requesting camera..."
-msgstr ""
+msgstr "Reikia kameros..."
 
 #: bookwyrm/templates/search/barcode_modal.html:24
 msgid "Grant access to the camera to scan a book's barcode."
-msgstr ""
+msgstr "Suteikite prieigą prie kameros, kad galėtumėte nuskaityti knygos barkodą."
 
 #: bookwyrm/templates/search/barcode_modal.html:29
 msgid "Could not access camera"
-msgstr ""
+msgstr "Nepavyko pasiekti kameros"
 
 #: bookwyrm/templates/search/barcode_modal.html:33
 msgctxt "barcode scanner"
 msgid "Scanning..."
-msgstr ""
+msgstr "Skenuojama..."
 
 #: bookwyrm/templates/search/barcode_modal.html:34
 msgid "Align your book's barcode with the camera."
-msgstr ""
+msgstr "Kamerą laikykite virš barkodo."
 
 #: bookwyrm/templates/search/barcode_modal.html:38
 msgctxt "barcode scanner"
 msgid "ISBN scanned"
-msgstr ""
+msgstr "ISBN nuskaitytas"
 
 #: bookwyrm/templates/search/barcode_modal.html:39
 msgctxt "followed by ISBN"
 msgid "Searching for book:"
-msgstr ""
+msgstr "Ieškoma knygos:"
 
 #: bookwyrm/templates/search/book.html:44
 msgid "Results from"
@@ -3138,7 +3158,7 @@ msgstr "Paieškos tipas"
 #: bookwyrm/templates/search/layout.html:23
 #: bookwyrm/templates/search/layout.html:46
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:27
-#: bookwyrm/templates/settings/federation/instance_list.html:44
+#: bookwyrm/templates/settings/federation/instance_list.html:51
 #: bookwyrm/templates/settings/layout.html:36
 #: bookwyrm/templates/settings/users/user.html:13
 #: bookwyrm/templates/settings/users/user_admin.html:5
@@ -3205,7 +3225,7 @@ msgid "Create Announcement"
 msgstr "Sukurti pranešimą"
 
 #: bookwyrm/templates/settings/announcements/announcements.html:21
-#: bookwyrm/templates/settings/federation/instance_list.html:36
+#: bookwyrm/templates/settings/federation/instance_list.html:39
 msgid "Date added"
 msgstr "Pridėjimo data"
 
@@ -3239,11 +3259,11 @@ msgstr "Redaguoti pranešimą"
 
 #: bookwyrm/templates/settings/announcements/edit_announcement.html:45
 msgid "Announcement content"
-msgstr ""
+msgstr "Pranešimo turinys"
 
 #: bookwyrm/templates/settings/announcements/edit_announcement.html:57
 msgid "Details:"
-msgstr ""
+msgstr "Išsami informacija:"
 
 #: bookwyrm/templates/settings/announcements/edit_announcement.html:65
 msgid "Event date:"
@@ -3251,97 +3271,97 @@ msgstr "Įvykio data:"
 
 #: bookwyrm/templates/settings/announcements/edit_announcement.html:73
 msgid "Display settings"
-msgstr ""
+msgstr "Ekrano nustatymai"
 
 #: bookwyrm/templates/settings/announcements/edit_announcement.html:98
 msgid "Color:"
-msgstr ""
+msgstr "Spalva:"
 
 #: bookwyrm/templates/settings/automod/rules.html:7
 #: bookwyrm/templates/settings/automod/rules.html:11
 #: bookwyrm/templates/settings/layout.html:61
 msgid "Auto-moderation rules"
-msgstr ""
+msgstr "Automatinio moderavimo taisyklės"
 
 #: bookwyrm/templates/settings/automod/rules.html:18
 msgid "Auto-moderation rules will create reports for any local user or status with fields matching the provided string."
-msgstr ""
+msgstr "Automatinio moderavimo taisyklės sukurs ataskaitas bet kokiam naudotojui arba būsenai su laukeliais, kurie atitinka pateiktą informaciją."
 
 #: bookwyrm/templates/settings/automod/rules.html:19
 msgid "Users or statuses that have already been reported (regardless of whether the report was resolved) will not be flagged."
-msgstr ""
+msgstr "Nebus žymimi naudotojai arba būsenos, apie kurias jau pranešta (nepaisant to, ar pranešimas jau išspręstas ir uždarytas)."
 
 #: bookwyrm/templates/settings/automod/rules.html:26
 msgid "Schedule:"
-msgstr ""
+msgstr "Tvarkaraštis:"
 
 #: bookwyrm/templates/settings/automod/rules.html:33
 msgid "Last run:"
-msgstr ""
+msgstr "Pastarąjį kartą leista:"
 
 #: bookwyrm/templates/settings/automod/rules.html:40
 msgid "Total run count:"
-msgstr ""
+msgstr "Iš viso leista kartų:"
 
 #: bookwyrm/templates/settings/automod/rules.html:47
 msgid "Enabled:"
-msgstr ""
+msgstr "Įjungta:"
 
 #: bookwyrm/templates/settings/automod/rules.html:59
 msgid "Delete schedule"
-msgstr ""
+msgstr "Ištrinti tvarkaraštį"
 
 #: bookwyrm/templates/settings/automod/rules.html:63
 msgid "Run now"
-msgstr ""
+msgstr "Paleisti dabar"
 
 #: bookwyrm/templates/settings/automod/rules.html:64
 msgid "Last run date will not be updated"
-msgstr ""
+msgstr "Pastarojo leidimo data nebus atnaujinta"
 
 #: bookwyrm/templates/settings/automod/rules.html:69
 #: bookwyrm/templates/settings/automod/rules.html:92
 msgid "Schedule scan"
-msgstr ""
+msgstr "Nustatyti skanavimą"
 
 #: bookwyrm/templates/settings/automod/rules.html:101
 msgid "Successfully added rule"
-msgstr ""
+msgstr "Taisyklė pridėta sėkmingai"
 
 #: bookwyrm/templates/settings/automod/rules.html:107
 msgid "Add Rule"
-msgstr ""
+msgstr "Pridėti taisyklę"
 
 #: bookwyrm/templates/settings/automod/rules.html:116
 #: bookwyrm/templates/settings/automod/rules.html:160
 msgid "String match"
-msgstr ""
+msgstr "Eilutės sutapimas"
 
 #: bookwyrm/templates/settings/automod/rules.html:126
 #: bookwyrm/templates/settings/automod/rules.html:163
 msgid "Flag users"
-msgstr ""
+msgstr "Pažymėti naudotojus"
 
 #: bookwyrm/templates/settings/automod/rules.html:133
 #: bookwyrm/templates/settings/automod/rules.html:166
 msgid "Flag statuses"
-msgstr ""
+msgstr "Žymėjimo būsenos"
 
 #: bookwyrm/templates/settings/automod/rules.html:140
 msgid "Add rule"
-msgstr ""
+msgstr "Pridėti taisyklę"
 
 #: bookwyrm/templates/settings/automod/rules.html:147
 msgid "Current Rules"
-msgstr ""
+msgstr "Esamos taisyklės"
 
 #: bookwyrm/templates/settings/automod/rules.html:151
 msgid "Show rules"
-msgstr ""
+msgstr "Rodyti taisykles"
 
 #: bookwyrm/templates/settings/automod/rules.html:188
 msgid "Remove rule"
-msgstr ""
+msgstr "Pašalinti taisyklę"
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:6
 #: bookwyrm/templates/settings/dashboard/dashboard.html:8
@@ -3398,7 +3418,7 @@ msgstr[3] "%(display_count)s prašymai pakviesti"
 #: bookwyrm/templates/settings/dashboard/dashboard.html:79
 #, python-format
 msgid "An update is available! You're running v%(current)s and the latest release is %(available)s."
-msgstr ""
+msgstr "Jau yra naujinys. Jūsų versija – %(current)s, o naujausia –%(available)s."
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:88
 msgid "Instance Activity"
@@ -3508,25 +3528,25 @@ msgstr "Serveris:"
 
 #: bookwyrm/templates/settings/federation/edit_instance.html:52
 #: bookwyrm/templates/settings/federation/instance.html:46
-#: bookwyrm/templates/settings/users/user_info.html:106
+#: bookwyrm/templates/settings/users/user_info.html:113
 msgid "Status:"
 msgstr "Būsena:"
 
 #: bookwyrm/templates/settings/federation/edit_instance.html:66
 #: bookwyrm/templates/settings/federation/instance.html:40
-#: bookwyrm/templates/settings/users/user_info.html:100
+#: bookwyrm/templates/settings/users/user_info.html:107
 msgid "Software:"
 msgstr "Programinė įranga:"
 
 #: bookwyrm/templates/settings/federation/edit_instance.html:76
 #: bookwyrm/templates/settings/federation/instance.html:43
-#: bookwyrm/templates/settings/users/user_info.html:103
+#: bookwyrm/templates/settings/users/user_info.html:110
 msgid "Version:"
 msgstr "Versija:"
 
 #: bookwyrm/templates/settings/federation/instance.html:17
 msgid "Refresh data"
-msgstr ""
+msgstr "Atnaujinti duomenis"
 
 #: bookwyrm/templates/settings/federation/instance.html:37
 msgid "Details"
@@ -3547,7 +3567,7 @@ msgid "View all"
 msgstr "Žiūrėti viską"
 
 #: bookwyrm/templates/settings/federation/instance.html:62
-#: bookwyrm/templates/settings/users/user_info.html:56
+#: bookwyrm/templates/settings/users/user_info.html:60
 msgid "Reports:"
 msgstr "Pranešimai:"
 
@@ -3564,7 +3584,7 @@ msgid "Blocked by us:"
 msgstr "Blokuojame:"
 
 #: bookwyrm/templates/settings/federation/instance.html:90
-#: bookwyrm/templates/settings/users/user_info.html:110
+#: bookwyrm/templates/settings/users/user_info.html:117
 msgid "Notes"
 msgstr "Užrašai"
 
@@ -3608,16 +3628,21 @@ msgstr "Sėkmingai užblokuota:"
 msgid "Failed:"
 msgstr "Nepavyko:"
 
-#: bookwyrm/templates/settings/federation/instance_list.html:32
+#: bookwyrm/templates/settings/federation/instance_list.html:35
 #: bookwyrm/templates/settings/users/server_filter.html:5
 msgid "Instance name"
 msgstr "Serverio pavadinimas"
 
-#: bookwyrm/templates/settings/federation/instance_list.html:40
+#: bookwyrm/templates/settings/federation/instance_list.html:43
+msgid "Last updated"
+msgstr "Paskutinį kartą atnaujinta"
+
+#: bookwyrm/templates/settings/federation/instance_list.html:47
+#: bookwyrm/templates/settings/federation/software_filter.html:5
 msgid "Software"
 msgstr "Programinė įranga"
 
-#: bookwyrm/templates/settings/federation/instance_list.html:63
+#: bookwyrm/templates/settings/federation/instance_list.html:69
 msgid "No instances found"
 msgstr "Serverių nerasta"
 
@@ -3627,6 +3652,14 @@ msgstr "Serverių nerasta"
 #: bookwyrm/templates/settings/invites/manage_invites.html:11
 msgid "Invite Requests"
 msgstr "Kvietimo prašymai"
+
+#: bookwyrm/templates/settings/invites/manage_invite_requests.html:15
+#: bookwyrm/templates/settings/invites/manage_invites.html:3
+#: bookwyrm/templates/settings/invites/manage_invites.html:15
+#: bookwyrm/templates/settings/layout.html:42
+#: bookwyrm/templates/user_menu.html:56
+msgid "Invites"
+msgstr "Pakvietimai"
 
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:23
 msgid "Ignored Invite Requests"
@@ -3647,7 +3680,7 @@ msgstr "El. paštas"
 
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:44
 msgid "Answer"
-msgstr ""
+msgstr "Atsakyti"
 
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:50
 msgid "Action"
@@ -3741,6 +3774,10 @@ msgstr "Atsargiai naudokite IP adresų blokus. Rekomenduojame juos naudoti tik l
 msgid "IP Address:"
 msgstr "IP adresas:"
 
+#: bookwyrm/templates/settings/ip_blocklist/ip_address_form.html:24
+msgid "You can block IP ranges using CIDR syntax."
+msgstr "IP rėžius galite blokuoti naudodami CIDR sintaksę."
+
 #: bookwyrm/templates/settings/ip_blocklist/ip_blocklist.html:5
 #: bookwyrm/templates/settings/ip_blocklist/ip_blocklist.html:7
 #: bookwyrm/templates/settings/layout.html:69
@@ -3758,10 +3795,6 @@ msgstr "Adresas"
 #: bookwyrm/templates/settings/ip_blocklist/ip_blocklist.html:46
 msgid "No IP addresses currently blocked"
 msgstr "Šiuo metu neblokuojamas joks IP adresas"
-
-#: bookwyrm/templates/settings/ip_blocklist/ip_tooltip.html:6
-msgid "You can block IP ranges using CIDR syntax."
-msgstr "IP rėžius galite blokuoti naudodami CIDR sintaksę."
 
 #: bookwyrm/templates/settings/layout.html:4
 msgid "Administration"
@@ -3802,7 +3835,7 @@ msgstr "Puslapio nustatymai"
 #: bookwyrm/templates/settings/themes.html:4
 #: bookwyrm/templates/settings/themes.html:6
 msgid "Themes"
-msgstr ""
+msgstr "Temos"
 
 #: bookwyrm/templates/settings/link_domains/edit_domain_modal.html:5
 #, python-format
@@ -3851,7 +3884,7 @@ msgstr "Naujausia informacija apie jūsų pranešimą:"
 
 #: bookwyrm/templates/settings/reports/report.html:36
 msgid "Reported status"
-msgstr ""
+msgstr "Pranešta būsena"
 
 #: bookwyrm/templates/settings/reports/report.html:38
 msgid "Status has been deleted"
@@ -3945,11 +3978,11 @@ msgstr "Registracija"
 
 #: bookwyrm/templates/settings/site.html:22
 msgid "Settings saved"
-msgstr ""
+msgstr "Nustatymai išsaugoti"
 
 #: bookwyrm/templates/settings/site.html:31
 msgid "Unable to save settings"
-msgstr ""
+msgstr "Nepavyko išsaugoti nustatymų"
 
 #: bookwyrm/templates/settings/site.html:47
 msgid "Instance Name:"
@@ -3997,7 +4030,7 @@ msgstr "Puslapio ikonėlė:"
 
 #: bookwyrm/templates/settings/site.html:98
 msgid "Default theme:"
-msgstr ""
+msgstr "Numatytoji tema:"
 
 #: bookwyrm/templates/settings/site.html:113
 msgid "Support link:"
@@ -4020,24 +4053,24 @@ msgid "Allow registration"
 msgstr "Leisti registruotis"
 
 #: bookwyrm/templates/settings/site.html:145
-msgid "Allow invite requests"
-msgstr "Leisti prašyti kvietimų"
-
-#: bookwyrm/templates/settings/site.html:151
-msgid "Set a question for invite requests"
-msgstr ""
-
-#: bookwyrm/templates/settings/site.html:156
-msgid "Question:"
-msgstr ""
-
-#: bookwyrm/templates/settings/site.html:163
 msgid "Require users to confirm email address"
 msgstr "Reikalauti el. pašto patvirtinimo"
 
-#: bookwyrm/templates/settings/site.html:165
+#: bookwyrm/templates/settings/site.html:147
 msgid "(Recommended if registration is open)"
 msgstr "(Rekomenduojama, jei leidžiama registruotis)"
+
+#: bookwyrm/templates/settings/site.html:152
+msgid "Allow invite requests"
+msgstr "Leisti prašyti kvietimų"
+
+#: bookwyrm/templates/settings/site.html:158
+msgid "Set a question for invite requests"
+msgstr "Kvietimo užklausoms parinkite klausimą"
+
+#: bookwyrm/templates/settings/site.html:163
+msgid "Question:"
+msgstr "Klausimas:"
 
 #: bookwyrm/templates/settings/site.html:168
 msgid "Registration closed text:"
@@ -4049,57 +4082,57 @@ msgstr "Kvietimo prašymo tekstas:"
 
 #: bookwyrm/templates/settings/themes.html:10
 msgid "Set instance default theme"
-msgstr ""
+msgstr "Nustatyti numatytąją serverio temą"
 
 #: bookwyrm/templates/settings/themes.html:19
 msgid "Successfully added theme"
-msgstr ""
+msgstr "Tema pridėta sėkmingai"
 
 #: bookwyrm/templates/settings/themes.html:26
 msgid "How to add a theme"
-msgstr ""
+msgstr "Kaip pridėti temą"
 
 #: bookwyrm/templates/settings/themes.html:29
 msgid "Copy the theme file into the <code>bookwyrm/static/css/themes</code> directory on your server from the command line."
-msgstr ""
+msgstr "Nukopijuokite fialus į serverio katalogą <code>bookwyrm/static/css/themes</code> iš komandinės eilutės."
 
 #: bookwyrm/templates/settings/themes.html:32
 msgid "Run <code>./bw-dev collectstatic</code>."
-msgstr ""
+msgstr "Paleiskite <code>./bw-dev collectstatic</code>."
 
 #: bookwyrm/templates/settings/themes.html:35
 msgid "Add the file name using the form below to make it available in the application interface."
-msgstr ""
+msgstr "Pridėkite failo pavadinimą, naudodamiesi žemiau esančia forma, kad jis atsirastų programėlėje."
 
 #: bookwyrm/templates/settings/themes.html:42
 #: bookwyrm/templates/settings/themes.html:83
 msgid "Add theme"
-msgstr ""
+msgstr "Pridėti temą"
 
 #: bookwyrm/templates/settings/themes.html:48
 msgid "Unable to save theme"
-msgstr ""
+msgstr "Nepavyko išsaugoti temos"
 
 #: bookwyrm/templates/settings/themes.html:64
 #: bookwyrm/templates/settings/themes.html:94
 msgid "Theme name"
-msgstr ""
+msgstr "Temos pavadinimas"
 
 #: bookwyrm/templates/settings/themes.html:74
 msgid "Theme filename"
-msgstr ""
+msgstr "Temos failo vardas"
 
 #: bookwyrm/templates/settings/themes.html:89
 msgid "Available Themes"
-msgstr ""
+msgstr "Galimos temos"
 
 #: bookwyrm/templates/settings/themes.html:97
 msgid "File"
-msgstr ""
+msgstr "Failas"
 
 #: bookwyrm/templates/settings/themes.html:112
 msgid "Remove theme"
-msgstr ""
+msgstr "Pašalinti temą"
 
 #: bookwyrm/templates/settings/users/delete_user_form.html:5
 #: bookwyrm/templates/settings/users/user_moderation_actions.html:32
@@ -4137,18 +4170,18 @@ msgstr "Paskutinį kartą aktyvus"
 msgid "Remote instance"
 msgstr "Nutolęs serveris"
 
-#: bookwyrm/templates/settings/users/user_admin.html:67
-#: bookwyrm/templates/settings/users/user_info.html:24
+#: bookwyrm/templates/settings/users/user_admin.html:74
+#: bookwyrm/templates/settings/users/user_info.html:28
 msgid "Active"
 msgstr "Aktyvus"
 
-#: bookwyrm/templates/settings/users/user_admin.html:67
-#: bookwyrm/templates/settings/users/user_info.html:28
+#: bookwyrm/templates/settings/users/user_admin.html:79
+#: bookwyrm/templates/settings/users/user_info.html:32
 msgid "Inactive"
 msgstr "Neaktyvus"
 
-#: bookwyrm/templates/settings/users/user_admin.html:73
-#: bookwyrm/templates/settings/users/user_info.html:120
+#: bookwyrm/templates/settings/users/user_admin.html:88
+#: bookwyrm/templates/settings/users/user_info.html:127
 msgid "Not set"
 msgstr "Nenustatytas"
 
@@ -4156,51 +4189,59 @@ msgstr "Nenustatytas"
 msgid "View user profile"
 msgstr "Peržiūrėti nario paskyrą"
 
-#: bookwyrm/templates/settings/users/user_info.html:36
+#: bookwyrm/templates/settings/users/user_info.html:19
+msgid "Go to user admin"
+msgstr "Eiti į administratoriaus naudotoją"
+
+#: bookwyrm/templates/settings/users/user_info.html:40
 msgid "Local"
 msgstr "Vietinis"
 
-#: bookwyrm/templates/settings/users/user_info.html:38
+#: bookwyrm/templates/settings/users/user_info.html:42
 msgid "Remote"
 msgstr "Nutolęs"
 
-#: bookwyrm/templates/settings/users/user_info.html:47
+#: bookwyrm/templates/settings/users/user_info.html:51
 msgid "User details"
 msgstr "Vartotojo duomenys"
 
-#: bookwyrm/templates/settings/users/user_info.html:51
+#: bookwyrm/templates/settings/users/user_info.html:55
 msgid "Email:"
 msgstr "El. paštas:"
 
-#: bookwyrm/templates/settings/users/user_info.html:61
+#: bookwyrm/templates/settings/users/user_info.html:65
 msgid "(View reports)"
 msgstr "(Peržiūrėti ataskaitas)"
 
-#: bookwyrm/templates/settings/users/user_info.html:67
+#: bookwyrm/templates/settings/users/user_info.html:71
 msgid "Blocked by count:"
 msgstr "Užblokavę:"
 
-#: bookwyrm/templates/settings/users/user_info.html:70
+#: bookwyrm/templates/settings/users/user_info.html:74
+msgid "Date added:"
+msgstr "Pridėjimo data:"
+
+#: bookwyrm/templates/settings/users/user_info.html:77
 msgid "Last active date:"
 msgstr "Paskutinį kartą aktyvus:"
 
-#: bookwyrm/templates/settings/users/user_info.html:73
+#: bookwyrm/templates/settings/users/user_info.html:80
 msgid "Manually approved followers:"
 msgstr "Patvirtinti sekėjai:"
 
-#: bookwyrm/templates/settings/users/user_info.html:76
+#: bookwyrm/templates/settings/users/user_info.html:83
 msgid "Discoverable:"
 msgstr "Aptinkama:"
 
-#: bookwyrm/templates/settings/users/user_info.html:80
+#: bookwyrm/templates/settings/users/user_info.html:87
 msgid "Deactivation reason:"
 msgstr "Išjungimo priežastis:"
 
-#: bookwyrm/templates/settings/users/user_info.html:95
+#: bookwyrm/templates/settings/users/user_info.html:102
 msgid "Instance details"
 msgstr "Serverio informacija"
 
-#: bookwyrm/templates/settings/users/user_info.html:117
+#: bookwyrm/templates/settings/users/user_info.html:124
 msgid "View instance"
 msgstr "Peržiūrėti serverį"
 
@@ -4226,111 +4267,115 @@ msgstr "Priėjimo lygis:"
 
 #: bookwyrm/templates/setup/admin.html:5
 msgid "Set up BookWyrm"
-msgstr ""
+msgstr "Nustatyti „BookWyrm“"
 
 #: bookwyrm/templates/setup/admin.html:7
 msgid "Your account as a user and an admin"
-msgstr ""
+msgstr "Jūsų, kaip naudotojo ir administratoriaus paskyra"
 
 #: bookwyrm/templates/setup/admin.html:13
 msgid "Create your account"
-msgstr ""
+msgstr "Kurti paskyrą"
 
 #: bookwyrm/templates/setup/admin.html:20
 msgid "Admin key:"
-msgstr ""
+msgstr "Administratoriaus raktas:"
 
 #: bookwyrm/templates/setup/admin.html:32
 msgid "An admin key was created when you installed BookWyrm. You can get your admin key by running <code>./bw-dev admin_code</code> from the command line on your server."
-msgstr ""
+msgstr "„BookWyrm“ buvo sukurtas ir įdiegtas administratoriaus raktas. Savo administratoriaus raktą galite gauti, paleisdami <code>./bw-dev admin_code</code> iš komandinės eilutės, esančios savo serveryje."
 
 #: bookwyrm/templates/setup/admin.html:45
 msgid "As an admin, you'll be able to configure the instance name and information, and moderate your instance. This means you will have access to private information about your users, and are responsible for responding to reports of bad behavior or spam."
-msgstr ""
+msgstr "Kaip administratorius galėsite konfigūruoti serverio vardą ir informaciją, keisti nustatymus. Tai reiškia, kad turėsite prieigą prie asmeninės naudotojų informacijos ir būsite atsakingi už pranešimų apie blogą elgesį arba brukalus administravimą."
 
 #: bookwyrm/templates/setup/admin.html:51
 msgid "Once the instance is set up, you can promote other users to moderator or admin roles from the admin panel."
-msgstr ""
+msgstr "Kai viską nustatysite, administratoriaus valdymo panelėje galėsite ir kitus naudotojus paskirti moderatoriais arba administratoriais."
 
 #: bookwyrm/templates/setup/admin.html:55
 msgid "Learn more about moderation"
-msgstr ""
+msgstr "Sužinokite daugiau apie moderavimą"
 
 #: bookwyrm/templates/setup/config.html:5
 msgid "Instance Configuration"
-msgstr ""
+msgstr "Serverio konfigūravimas"
 
 #: bookwyrm/templates/setup/config.html:7
 msgid "Make sure everything looks right before proceeding"
-msgstr ""
+msgstr "Prieš tęsdami įsitikinkite, kad viskas atrodo gerai"
 
 #: bookwyrm/templates/setup/config.html:18
 msgid "You are running BookWyrm in <strong>debug</strong> mode. This should <strong>never</strong> be used in a production environment."
-msgstr ""
+msgstr "„BookWyrm“ paleistas <strong>debug</strong> būsenoje. To <strong>niekada</strong> neturėtumėte naudoti produkcinėje aplinkoje."
 
 #: bookwyrm/templates/setup/config.html:30
 msgid "Your domain appears to be misconfigured. It should not include protocol or slashes."
-msgstr ""
+msgstr "Atrodo, kad jūsų domenas nesukonfigūruotas. Į jį neturėtų įeiti protokolas arba pasvirieji brūkšniai."
 
 #: bookwyrm/templates/setup/config.html:42
 msgid "You are running BookWyrm in production mode without https. <strong>USE_HTTPS</strong> should be enabled in production."
-msgstr ""
+msgstr "„BookWyrm“ leidžiate produkcinėje būsenoje be https. Produkcinėje aplinkoje turi būti įjungtas<strong>USE_HTTPS</strong>."
+
+#: bookwyrm/templates/setup/config.html:52 bookwyrm/templates/user_menu.html:45
+msgid "Settings"
+msgstr "Nustatymai"
 
 #: bookwyrm/templates/setup/config.html:56
 msgid "Instance domain:"
-msgstr ""
+msgstr "Serverio informacija:"
 
 #: bookwyrm/templates/setup/config.html:63
 msgid "Protocol:"
-msgstr ""
+msgstr "Protokolas:"
 
 #: bookwyrm/templates/setup/config.html:81
 msgid "Using S3:"
-msgstr ""
+msgstr "Naudojama S3:"
 
 #: bookwyrm/templates/setup/config.html:95
 msgid "Default interface language:"
-msgstr ""
+msgstr "Įprastinė sąsajos kalba:"
 
 #: bookwyrm/templates/setup/config.html:102
 msgid "Email sender:"
-msgstr ""
+msgstr "El. pašto siuntėjas:"
 
 #: bookwyrm/templates/setup/config.html:109
 msgid "Enable preview images:"
-msgstr ""
+msgstr "Įjungti paveikslėlių peržiūrą:"
 
 #: bookwyrm/templates/setup/config.html:116
 msgid "Enable image thumbnails:"
-msgstr ""
+msgstr "Įjungti paveikslėlių miniatūras:"
 
 #: bookwyrm/templates/setup/config.html:128
 msgid "Does everything look right?"
-msgstr ""
+msgstr "Ar viskas atrodo gerai?"
 
 #: bookwyrm/templates/setup/config.html:130
 msgid "This is your last chance to set your domain and protocol."
-msgstr ""
+msgstr "Tai paskutinė galimybė nustatyti savo domeną ir protokolą."
 
 #: bookwyrm/templates/setup/config.html:144
 msgid "You can change your instance settings in the <code>.env</code> file on your server."
-msgstr ""
+msgstr "Nustatymus galite pakeisti <code>.env</code> faile, esančiame jūsų serveryje."
 
 #: bookwyrm/templates/setup/config.html:148
 msgid "View installation instructions"
-msgstr ""
+msgstr "Žiūrėti diegimo instrukcijas"
 
 #: bookwyrm/templates/setup/layout.html:5
 msgid "Instance Setup"
-msgstr ""
+msgstr "Serverio nustatymai"
 
 #: bookwyrm/templates/setup/layout.html:15
 msgid "Installing BookWyrm"
-msgstr ""
+msgstr "Diegiamas „BookWyrm“"
 
 #: bookwyrm/templates/setup/layout.html:18
 msgid "Need help?"
-msgstr ""
+msgstr "Reikia pagalbos?"
 
 #: bookwyrm/templates/shelf/create_shelf_form.html:5
 #: bookwyrm/templates/shelf/shelf.html:72
@@ -4447,7 +4492,7 @@ msgid "Some thoughts on the book"
 msgstr "Mintys apie knygą"
 
 #: bookwyrm/templates/snippets/create_status/comment.html:27
-#: bookwyrm/templates/snippets/reading_modals/progress_update_modal.html:17
+#: bookwyrm/templates/snippets/reading_modals/progress_update_modal.html:18
 msgid "Progress:"
 msgstr "Progresas:"
 
@@ -4483,7 +4528,7 @@ msgstr "Įdėti įspėjimą apie turinio atskleidimą"
 
 #: bookwyrm/templates/snippets/create_status/content_warning_field.html:18
 msgid "Spoilers/content warnings:"
-msgstr ""
+msgstr "Įspėjimas apie atskleistą turinį:"
 
 #: bookwyrm/templates/snippets/create_status/content_warning_field.html:27
 msgid "Spoilers ahead!"
@@ -4667,7 +4712,7 @@ msgstr "Nustatyti tikslą"
 #: bookwyrm/templates/snippets/goal_progress.html:7
 msgctxt "Goal successfully completed"
 msgid "Success!"
-msgstr ""
+msgstr "Sėkmingai!"
 
 #: bookwyrm/templates/snippets/goal_progress.html:9
 #, python-format
@@ -4745,7 +4790,7 @@ msgstr "Noriu perskaityti „<em>%(book_title)s</em>“"
 
 #: bookwyrm/templates/snippets/register_form.html:18
 msgid "Choose wisely! Your username cannot be changed."
-msgstr ""
+msgstr "Rinkitės išmintingai! Naudotojo vardo negalima pakeisti."
 
 #: bookwyrm/templates/snippets/register_form.html:64
 msgid "Sign Up"
@@ -5101,6 +5146,14 @@ msgstr[3] "%(mutuals_display)s sekėjai, kuriuos sekate jūs"
 #: bookwyrm/templates/user/user_preview.html:43
 msgid "No followers you follow"
 msgstr "Jūs kartu nieko nesekate"
+
+#: bookwyrm/templates/user_menu.html:7
+msgid "View profile and more"
+msgstr "Žiūrėti paskyrą ir dar daugiau"
+
+#: bookwyrm/templates/user_menu.html:72
+msgid "Log out"
+msgstr "Atsijungti"
 
 #: bookwyrm/templates/widgets/clearable_file_input_with_warning.html:28
 msgid "File exceeds maximum size: 10MB"
