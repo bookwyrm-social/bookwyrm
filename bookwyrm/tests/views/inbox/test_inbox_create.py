@@ -219,7 +219,7 @@ class InboxCreate(TestCase):
         views.inbox.activity_task(activity)
 
     def test_create_unsupported_type_article(self, *_):
-        """ special case in unsupported type because we do know what it is"""
+        """special case in unsupported type because we do know what it is"""
         activity = self.create_json
         activity["object"] = {
             "id": "https://example.com/status/887",
