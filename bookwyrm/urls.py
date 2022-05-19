@@ -537,12 +537,20 @@ urlpatterns = [
         name="book-user-statuses",
     ),
     re_path(rf"{BOOK_PATH}/edit/?$", views.EditBook.as_view(), name="edit-book"),
-    re_path(rf"{BOOK_PATH}/confirm/?$", views.ConfirmEditBook.as_view()),
+    re_path(
+        rf"{BOOK_PATH}/confirm/?$",
+        views.ConfirmEditBook.as_view(),
+        name="edit-book-confirm",
+    ),
     re_path(
         r"^create-book/data/?$", views.create_book_from_data, name="create-book-data"
     ),
     re_path(r"^create-book/?$", views.CreateBook.as_view(), name="create-book"),
-    re_path(r"^create-book/confirm/?$", views.ConfirmEditBook.as_view()),
+    re_path(
+        r"^create-book/confirm/?$",
+        views.ConfirmEditBook.as_view(),
+        name="create-book-confirm",
+    ),
     re_path(rf"{BOOK_PATH}/editions(.json)?/?$", views.Editions.as_view()),
     re_path(
         r"^upload-cover/(?P<book_id>\d+)/?$", views.upload_cover, name="upload-cover"

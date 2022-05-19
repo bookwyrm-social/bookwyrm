@@ -41,10 +41,18 @@
     class="block"
     {% if book.id %}
         name="edit-book"
-        action="{{ book.local_path }}/{% if confirm_mode %}confirm{% else %}edit{% endif %}"
+        {% if confirm_mode %}
+        action="{% url 'edit-book-confirm' book.id %}"
+        {% else %}
+        action="{% url 'edit-book' book.id %}"
+        {% endif %}
     {% else %}
         name="create-book"
-        action="/create-book{% if confirm_mode %}/confirm{% endif %}"
+        {% if confirm_mode %}
+        action="{% url 'create-book-confirm' %}"
+        {% else %}
+        action="{% url 'create-book' %}"
+        {% endif %}
     {% endif %}
     method="post"
     enctype="multipart/form-data"
