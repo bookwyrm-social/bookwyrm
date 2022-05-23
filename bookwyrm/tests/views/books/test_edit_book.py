@@ -233,4 +233,4 @@ class EditBookViews(TestCase):
         self.assertEqual(result["add_author"], ["Sappho", "Some Guy"])
         self.assertEqual(len(result["author_matches"]), 2)
         self.assertEqual(result["author_matches"][0]["name"], "Sappho")
-        self.assertEqual(result["author_matches"][2]["name"], "Some Guy")
+        self.assertEqual(result["author_matches"][1]["name"], "Some Guy")

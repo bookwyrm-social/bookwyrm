@@ -189,7 +189,7 @@ def add_authors(request, data):
                 "existing_isnis": exists,
             }
         )
-        return data
+    return data
 
 
 @require_POST
