@@ -15,8 +15,8 @@ class CalibreImporter(Importer):
         row_mappings_guesses = []
 
         for field, mapping in self.row_mappings_guesses:
-            if field in ('date_added',):
-                row_mappings_guesses.append((field, mapping + ['timestamp']))
+            if field in ("date_added",):
+                row_mappings_guesses.append((field, mapping + ["timestamp"]))
             else:
                 row_mappings_guesses.append((field, mapping))
 
