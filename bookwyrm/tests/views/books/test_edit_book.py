@@ -9,6 +9,7 @@ from django.test import TestCase
 from django.test.client import RequestFactory
 
 from bookwyrm import forms, models, views
+from bookwyrm.views.books.edit_book import add_authors
 from bookwyrm.tests.validate_html import validate_html
 from bookwyrm.tests.views.books.test_book import _setup_cover_url
 
@@ -214,3 +215,22 @@ class EditBookViews(TestCase):
 
         self.book.refresh_from_db()
         self.assertTrue(self.book.cover)
+
+    def test_add_authors_helper(self):
+        """converts form input into author matches"""
+        form = forms.EditionForm(instance=self.book)
+        form.data["title"] = "New Title"
+        form.data["last_edited_by"] = self.local_user.id
+        form.data["add_author"] = ["Sappho", "Some Guy"]
+        request = self.factory.post("", form.data)
+        request.user = self.local_user
+
+        with patch("bookwyrm.utils.isni.find_authors_by_name") as mock:
+            mock.return_value = []
+            result = add_authors(request, form.data)
+
+        self.assertTrue(result["confirm_mode"])
+        self.assertEqual(result["add_author"], ["Sappho", "Some Guy"])
+        self.assertEqual(len(result["author_matches"]), 2)
+        self.assertEqual(result["author_matches"][0]["name"], "Sappho")
+        self.assertEqual(result["author_matches"][1]["name"], "Some Guy")
