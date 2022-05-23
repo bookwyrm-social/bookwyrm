@@ -260,7 +260,7 @@ def _wrapped(text):
 def to_markdown(content):
     """catch links and convert to markdown"""
     content = format_links(content)
-    content = content.replace("#", "\\#")
+    content = re.sub(r"\B#", "\\#", content)
     content = markdown(content)
     # sanitize resulting html
     sanitizer = InputHtmlParser()
