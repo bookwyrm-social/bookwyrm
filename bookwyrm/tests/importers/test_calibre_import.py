@@ -1,32 +1,25 @@
 """ testing import """
 import pathlib
 from unittest.mock import patch
-import datetime
-import pytz
 
 from django.test import TestCase
 
 from bookwyrm import models
-from bookwyrm.importers import OpenLibraryImporter
+from bookwyrm.importers import CalibreImporter
 from bookwyrm.importers.importer import handle_imported_book
-
-
-def make_date(*args):
-    """helper function to easily generate a date obj"""
-    return datetime.datetime(*args, tzinfo=pytz.UTC)
 
 
 # pylint: disable=consider-using-with
 @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
 @patch("bookwyrm.activitystreams.populate_stream_task.delay")
 @patch("bookwyrm.activitystreams.add_book_statuses_task.delay")
-class OpenLibraryImport(TestCase):
-    """importing from openlibrary csv"""
+class CalibreImport(TestCase):
+    """importing from Calibre csv"""
 
     def setUp(self):
         """use a test csv"""
-        self.importer = OpenLibraryImporter()
-        datafile = pathlib.Path(__file__).parent.joinpath("../data/openlibrary.csv")
+        self.importer = CalibreImporter()
+        datafile = pathlib.Path(__file__).parent.joinpath("../data/calibre.csv")
         self.csv = open(datafile, "r", encoding=self.importer.encoding)
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
@@ -51,27 +44,16 @@ class OpenLibraryImport(TestCase):
         import_items = (
             models.ImportItem.objects.filter(job=import_job).order_by("index").all()
         )
-        self.assertEqual(len(import_items), 4)
+        self.assertEqual(len(import_items), 1)
         self.assertEqual(import_items[0].index, 0)
-        self.assertEqual(import_items[0].data["Work Id"], "OL102749W")
-        self.assertEqual(import_items[1].data["Work Id"], "OL361393W")
-        self.assertEqual(import_items[1].data["Edition Id"], "OL7798182M")
-
-        self.assertEqual(import_items[0].normalized_data["shelf"], "reading")
-        self.assertEqual(import_items[0].normalized_data["openlibrary_key"], "")
         self.assertEqual(
-            import_items[0].normalized_data["openlibrary_work_key"], "OL102749W"
+            import_items[0].normalized_data["title"], "That Ain't Witchcraft"
         )
-        self.assertEqual(
-            import_items[1].normalized_data["openlibrary_key"], "OL7798182M"
-        )
-        self.assertEqual(import_items[2].normalized_data["shelf"], "to-read")
-        self.assertEqual(import_items[3].normalized_data["shelf"], "read")
 
     def test_handle_imported_book(self, *_):
-        """openlibrary import added a book, this adds related connections"""
+        """calibre import added a book, this adds related connections"""
         shelf = self.local_user.shelf_set.filter(
-            identifier=models.Shelf.READING
+            identifier=models.Shelf.TO_READ
         ).first()
         self.assertIsNone(shelf.books.first())
 
