@@ -299,6 +299,12 @@ http://www.fish.com/"""
         result = views.status.to_markdown(text)
         self.assertEqual(result, '<p><a href="http://fish.com">hi</a> ' "is rad</p>")
 
+    def test_to_markdown_hashtag(self, *_):
+        """hashtags not titles"""
+        text = "#cool"
+        result = views.status.to_markdown(text)
+        self.assertEqual(result, "<p>#cool</p>")
+
     def test_delete_status(self, mock, *_):
         """marks a status as deleted"""
         view = views.DeleteStatus.as_view()
