@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-04-08 21:00+0000\n"
-"PO-Revision-Date: 2022-05-14 12:42\n"
+"PO-Revision-Date: 2022-05-16 21:13\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Romanian\n"
 "Language: ro\n"
@@ -515,9 +515,9 @@ msgstr "Din păcate %(display_name)s nu a terminat nicio carte în %(year)s"
 #, python-format
 msgid "In %(year)s, %(display_name)s read %(books_total)s book<br />for a total of %(pages_total)s pages!"
 msgid_plural "In %(year)s, %(display_name)s read %(books_total)s books<br />for a total of %(pages_total)s pages!"
-msgstr[0] ""
+msgstr[0] "În %(year)s, %(display_name)s a citit %(books_total)s carte<br />pentru un total de %(pages_total)s pagini!"
 msgstr[1] ""
-msgstr[2] "În %(year)s, %(display_name)s a citit %(books_total)s cărți<br />pentru un total de %(pages_total)s de pagini!"
+msgstr[2] "În %(year)s, %(display_name)s a citit %(books_total)s cărți<br />pentru un total de %(pages_total)s pagini!"
 
 #: bookwyrm/templates/annual_summary/layout.html:124
 msgid "That’s great!"
@@ -532,7 +532,7 @@ msgstr "Asta înseamnă o medie de %(pages)s de pagini pe carte."
 #, python-format
 msgid "(%(no_page_number)s book doesn’t have pages)"
 msgid_plural "(%(no_page_number)s books don’t have pages)"
-msgstr[0] ""
+msgstr[0] "(cartea %(no_page_number)s nu are pagini)"
 msgstr[1] ""
 msgstr[2] "(cărțile %(no_page_number)s nu au pagini)"
 
@@ -576,9 +576,9 @@ msgstr "Felicitări!"
 #, python-format
 msgid "%(display_name)s left %(ratings_total)s rating, <br />their average rating is %(rating_average)s"
 msgid_plural "%(display_name)s left %(ratings_total)s ratings, <br />their average rating is %(rating_average)s"
-msgstr[0] ""
+msgstr[0] "%(display_name)s a lăsat %(ratings_total)s recenzie, <br />ratingul său mediu este %(rating_average)s"
 msgstr[1] ""
-msgstr[2] "%(display_name)s a lăsat recenzii de %(ratings_total)s, <br />ratingul său mediu este %(rating_average)s"
+msgstr[2] "%(display_name)s a lăsat %(ratings_total)s recenzii, <br />ratingul său mediu este %(rating_average)s"
 
 #: bookwyrm/templates/annual_summary/layout.html:238
 msgid "Their best rated review"
@@ -816,7 +816,7 @@ msgstr "Clic pentru a mări"
 #, python-format
 msgid "(%(review_count)s review)"
 msgid_plural "(%(review_count)s reviews)"
-msgstr[0] ""
+msgstr[0] "(%(review_count)s recenzie)"
 msgstr[1] ""
 msgstr[2] "(%(review_count)s recenzii)"
 
@@ -834,7 +834,7 @@ msgstr "Descriere:"
 #, python-format
 msgid "%(count)s edition"
 msgid_plural "%(count)s editions"
-msgstr[0] ""
+msgstr[0] "%(count)s ediție"
 msgstr[1] ""
 msgstr[2] "%(count)s ediții"
 
@@ -3379,7 +3379,7 @@ msgstr "Opere"
 #, python-format
 msgid "%(display_count)s open report"
 msgid_plural "%(display_count)s open reports"
-msgstr[0] ""
+msgstr[0] "%(display_count)s raport deschis"
 msgstr[1] ""
 msgstr[2] "%(display_count)s raporturi dechise"
 
