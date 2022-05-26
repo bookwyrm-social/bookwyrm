@@ -31,7 +31,7 @@ def get_next_shelf(current_shelf):
     if current_shelf == "read":
         return "complete"
     if current_shelf == "stopped-reading":
-        return "stopped-reading"
+        return "stopped-reading-complete"
     return "to-read"
 
 
