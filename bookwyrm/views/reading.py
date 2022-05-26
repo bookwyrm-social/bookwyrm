@@ -92,6 +92,7 @@ class ReadingStatus(View):
             desired_shelf.identifier,
             start_date=request.POST.get("start_date"),
             finish_date=request.POST.get("finish_date"),
+            stopped_date=request.POST.get("stopped_date"),
         )
 
         # post about it (if you want)
@@ -160,8 +161,9 @@ class ReadThrough(View):
 
 
 @transaction.atomic
+# pylint: disable=too-many-arguments
 def update_readthrough_on_shelve(
-    user, annotated_book, status, start_date=None, finish_date=None
+    user, annotated_book, status, start_date=None, finish_date=None, stopped_date=None
 ):
     """update the current readthrough for a book when it is re-shelved"""
     # there *should* only be one of current active readthrough, but it's a list
@@ -183,8 +185,9 @@ def update_readthrough_on_shelve(
         )
     # santiize and set dates
     active_readthrough.start_date = load_date_in_user_tz_as_utc(start_date, user)
-    # if the finish date is set, the readthrough will be automatically set as inactive
+    # if the stop or finish date is set, the readthrough will be set as inactive
     active_readthrough.finish_date = load_date_in_user_tz_as_utc(finish_date, user)
+    active_readthrough.stopped_date = load_date_in_user_tz_as_utc(stopped_date, user)
 
     active_readthrough.save()
 

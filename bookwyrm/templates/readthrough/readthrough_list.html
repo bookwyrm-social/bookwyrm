@@ -8,7 +8,7 @@
             <div class="column">
                 {% trans "Progress Updates:" %}
                 <ul>
-                    {% if readthrough.finish_date or readthrough.progress %}
+                    {% if readthrough.finish_date or readthrough.stopped_date or readthrough.progress %}
                     <li>
                         {% if readthrough.finish_date %}
                             {{ readthrough.finish_date | localtime | naturalday }}: {% trans "finished" %}
