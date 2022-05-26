@@ -12,7 +12,7 @@ Stop Reading "<em>{{ book_title }}</em>"
 <form name="stop-reading-{{ uuid }}" action="{% url 'reading-status' 'stop' book.id %}" method="post" {% if not refresh %}class="submit-status"{% endif %}>
 {% csrf_token %}
 <input type="hidden" name="id" value="{{ readthrough.id }}">
-<input type="hidden" name="reading_status" value="stop">
+<input type="hidden" name="reading_status" value="stopped-reading">
 <input type="hidden" name="shelf" value="{{ move_from }}">
 {% endblock %}
 
