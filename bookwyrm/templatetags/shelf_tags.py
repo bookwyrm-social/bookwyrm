@@ -30,6 +30,8 @@ def get_next_shelf(current_shelf):
         return "read"
     if current_shelf == "read":
         return "complete"
+    if current_shelf == "stopped-reading":
+        return "stopped-readingt"
     return "to-read"
 
 
