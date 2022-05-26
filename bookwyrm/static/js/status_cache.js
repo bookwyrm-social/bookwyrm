@@ -203,6 +203,8 @@ let StatusCache = new (class {
             .forEach((item) => (item.disabled = false));
 
         next_identifier = next_identifier == "complete" ? "read" : next_identifier;
+        next_identifier =
+            next_identifier == "stopped-reading-complete" ? "stopped-reading" : next_identifier;
 
         // Disable the current state
         button.querySelector(

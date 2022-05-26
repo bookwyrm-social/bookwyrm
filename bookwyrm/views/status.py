@@ -1,5 +1,6 @@
 """ what are we here for if not for posting """
 import re
+import logging
 from urllib.parse import urlparse
 
 from django.contrib.auth.decorators import login_required
@@ -20,6 +21,8 @@ from bookwyrm.settings import DOMAIN
 from bookwyrm.utils import regex
 from .helpers import handle_remote_webfinger, is_api_request
 from .helpers import load_date_in_user_tz_as_utc
+
+logger = logging.getLogger(__name__)
 
 
 # pylint: disable= no-self-use
@@ -72,11 +75,14 @@ class CreateStatus(View):
             form = getattr(forms, f"{status_type}Form")(
                 request.POST, instance=existing_status
             )
-        except AttributeError:
+        except AttributeError as err:
+            logger.exception(err)
             return HttpResponseBadRequest()
+
         if not form.is_valid():
             if is_api_request(request):
-                return HttpResponse(status=500)
+                logger.exception(form.errors)
+                return HttpResponseBadRequest()
             return redirect(request.headers.get("Referer", "/"))
 
         status = form.save(commit=False)

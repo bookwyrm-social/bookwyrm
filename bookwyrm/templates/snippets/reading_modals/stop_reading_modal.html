@@ -12,7 +12,7 @@ Stop Reading "<em>{{ book_title }}</em>"
 <form name="stop-reading-{{ uuid }}" action="{% url 'reading-status' 'stop' book.id %}" method="post" {% if not refresh %}class="submit-status"{% endif %}>
 {% csrf_token %}
 <input type="hidden" name="id" value="{{ readthrough.id }}">
-<input type="hidden" name="reading_status" value="stop">
+<input type="hidden" name="reading_status" value="stopped-reading">
 <input type="hidden" name="shelf" value="{{ move_from }}">
 {% endblock %}
 
@@ -29,9 +29,9 @@ Stop Reading "<em>{{ book_title }}</em>"
     <div class="column is-half">
         <div class="field">
             <label class="label" for="id_read_until_date_{{ uuid }}">
-                {% trans "Read until" %}
+                {% trans "Stopped reading" %}
             </label>
-            <input type="date" name="finish_date" class="input" id="id_read_until_date_{{ uuid }}" value="{% now "Y-m-d" %}">
+            <input type="date" name="stopped_date" class="input" id="id_read_until_date_{{ uuid }}" value="{% now "Y-m-d" %}">
         </div>
     </div>
 </div>
