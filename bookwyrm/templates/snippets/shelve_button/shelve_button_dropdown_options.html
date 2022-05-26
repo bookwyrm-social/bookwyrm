@@ -6,6 +6,7 @@
 
 {% for shelf in shelves %}
 {% comparison_bool shelf.identifier active_shelf.shelf.identifier as is_current %}
+    {% if not is_current %}
     <li role="menuitem" class="dropdown-item p-0">
         <div
             class="{% if next_shelf_identifier == shelf.identifier %}is-hidden{% endif %}"
@@ -53,6 +54,7 @@
         {% endif %}
         </div>
     </li>
+    {% endif %}
 {% endfor %}
 
 {% if readthrough and active_shelf.shelf.identifier != 'read' %}
