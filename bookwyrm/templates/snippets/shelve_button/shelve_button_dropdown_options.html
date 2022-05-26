@@ -9,7 +9,7 @@
     {% if not is_current %}
     <li role="menuitem" class="dropdown-item p-0">
         <div
-            class="{% if next_shelf_identifier == shelf.identifier %}is-hidden{% endif %}"
+                class="{% if next_shelf_identifier == shelf.identifier %}is-hidden{% elif shelf.identifier == 'stopped-reading' and active_shelf.shelf.identifier != "reading" %}is-hidden{% endif %}"
             data-shelf-dropdown-identifier="{{ shelf.identifier }}"
             data-shelf-next="{{ shelf.identifier|next_shelf }}"
         >
