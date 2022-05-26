@@ -1,4 +1,5 @@
 """ the good stuff! the books! """
+import logging
 from django.contrib.auth.decorators import login_required
 from django.core.cache import cache
 from django.db import transaction
@@ -14,6 +15,8 @@ from bookwyrm.views.shelf.shelf_actions import unshelve
 from .status import CreateStatus
 from .helpers import get_edition, handle_reading_status, is_api_request
 from .helpers import load_date_in_user_tz_as_utc
+
+logger = logging.getLogger(__name__)
 
 
 # pylint: disable=no-self-use
@@ -36,6 +39,7 @@ class ReadingStatus(View):
         # redirect if we're already on this shelf
         return TemplateResponse(request, f"reading_progress/{template}", {"book": book})
 
+    @transaction.atomic
     def post(self, request, status, book_id):
         """Change the state of a book by shelving it and adding reading dates"""
         identifier = {
@@ -45,6 +49,7 @@ class ReadingStatus(View):
             "stop": models.Shelf.STOPPED_READING,
         }.get(status)
         if not identifier:
+            logger.exception("Invalid reading status type: %s", status)
             return HttpResponseBadRequest()
 
         # invalidate related caches
