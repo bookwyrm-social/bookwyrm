@@ -462,6 +462,8 @@ class Status(TestCase):
     @responses.activate
     def test_ignore_activity_boost(self, *_):
         """don't bother with most remote statuses"""
+        responses.add(responses.GET, "http://fish.com/nothing")
+
         activity = activitypub.Announce(
             id="http://www.faraway.com/boost/12",
             actor=self.remote_user.remote_id,
