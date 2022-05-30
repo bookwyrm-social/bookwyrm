@@ -12,7 +12,7 @@ from django.db.models import signals
 from requests import HTTPError
 
 from bookwyrm import book_search, models
-from bookwyrm.settings import SEARCH_TIMEOUT
+from bookwyrm.settings import SEARCH_TIMEOUT, USER_AGENT
 from bookwyrm.tasks import app
 
 logger = logging.getLogger(__name__)
@@ -25,12 +25,19 @@ class ConnectorException(HTTPError):
 async def async_connector_search(query, items, params):
     """Try a number of requests simultaneously"""
     timeout = aiohttp.ClientTimeout(total=SEARCH_TIMEOUT)
+    # pylint: disable=line-too-long
+    headers = {
+        "Accept": (
+            'application/json, application/activity+json, application/ld+json; profile="https://www.w3.org/ns/activitystreams"; charset=utf-8'
+        ),
+        "User-Agent": USER_AGENT,
+    }
     async with aiohttp.ClientSession(timeout=timeout) as session:
         for url, connector in items:
             url = connector.get_search_url(query)
             # raise_not_valid_url(url)
 
-            async with session.get(url, params=params) as response:
+            async with session.get(url, headers=headers, params=params) as response:
                 print("Status:", response.status)
                 print(response.ok)
                 print("Content-type:", response.headers["content-type"])
