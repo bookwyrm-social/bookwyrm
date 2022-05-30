@@ -622,7 +622,7 @@ urlpatterns = [
         name="reading-status-update",
     ),
     re_path(
-        r"^reading-status/(?P<status>want|start|finish)/(?P<book_id>\d+)/?$",
+        r"^reading-status/(?P<status>want|start|finish|stop)/(?P<book_id>\d+)/?$",
         views.ReadingStatus.as_view(),
         name="reading-status",
     ),

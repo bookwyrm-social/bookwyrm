@@ -13,6 +13,15 @@
     </button>
 </div>
 
+<div
+    class="{% if next_shelf_identifier != 'stopped-reading-complete' %}is-hidden{% endif %}"
+    data-shelf-identifier="stopped-reading-complete"
+>
+    <button type="button" class="button {{ class }}" disabled>
+        <span>{% trans "Stopped reading" %}</span>
+    </button>
+</div>
+
 {% for shelf in shelves %}
     <div
         class="{% if next_shelf_identifier != shelf.identifier %}is-hidden{% endif %}"
@@ -31,6 +40,14 @@
             {% trans "Finish reading" as button_text %}
             {% url 'reading-status' 'finish' book.id as fallback_url %}
             {% join "finish_reading" button_uuid as modal_id %}
+            {% include 'snippets/shelve_button/modal_button.html' with class=class fallback_url=fallback_url %}
+
+
+    {% elif shelf.identifier == 'stopped-reading' %}
+
+            {% trans "Stop reading" as button_text %}
+            {% url 'reading-status' 'finish' book.id as fallback_url %}
+            {% join "stop_reading" button_uuid as modal_id %}
             {% include 'snippets/shelve_button/modal_button.html' with class=class fallback_url=fallback_url %}
 
     {% elif shelf.identifier == 'to-read' %}

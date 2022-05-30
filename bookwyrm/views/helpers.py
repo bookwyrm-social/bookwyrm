@@ -138,6 +138,7 @@ def handle_reading_status(user, shelf, book, privacy):
             "to-read": "wants to read",
             "reading": "started reading",
             "read": "finished reading",
+            "stopped-reading": "stopped reading",
         }[shelf.identifier]
     except KeyError:
         # it's a non-standard shelf, don't worry about it

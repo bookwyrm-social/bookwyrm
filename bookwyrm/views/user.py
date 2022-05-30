@@ -106,7 +106,7 @@ class Followers(View):
         if is_api_request(request):
             return ActivitypubResponse(user.to_followers_activity(**request.GET))
 
-        if user.hide_follows:
+        if user.hide_follows and user != request.user:
             raise PermissionDenied()
 
         followers = annotate_if_follows(request.user, user.followers)
@@ -129,7 +129,7 @@ class Following(View):
         if is_api_request(request):
             return ActivitypubResponse(user.to_following_activity(**request.GET))
 
-        if user.hide_follows:
+        if user.hide_follows and user != request.user:
             raise PermissionDenied()
 
         following = annotate_if_follows(request.user, user.following)

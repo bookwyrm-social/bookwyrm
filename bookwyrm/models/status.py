@@ -116,11 +116,8 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
     def ignore_activity(cls, activity):  # pylint: disable=too-many-return-statements
         """keep notes if they are replies to existing statuses"""
         if activity.type == "Announce":
-            try:
-                boosted = activitypub.resolve_remote_id(
-                    activity.object, get_activity=True
-                )
-            except activitypub.ActivitySerializerError:
+            boosted = activitypub.resolve_remote_id(activity.object, get_activity=True)
+            if not boosted:
                 # if we can't load the status, definitely ignore it
                 return True
             # keep the boost if we would keep the status
@@ -265,7 +262,7 @@ class GeneratedNote(Status):
 
 
 ReadingStatusChoices = models.TextChoices(
-    "ReadingStatusChoices", ["to-read", "reading", "read"]
+    "ReadingStatusChoices", ["to-read", "reading", "read", "stopped-reading"]
 )
 
 

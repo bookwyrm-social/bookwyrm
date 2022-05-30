@@ -29,6 +29,9 @@
 {% join "finish_reading" uuid as modal_id %}
 {% include 'snippets/reading_modals/finish_reading_modal.html' with book=active_shelf_book id=modal_id readthrough=readthrough class="" %}
 
+{% join "stop_reading" uuid as modal_id %}
+{% include 'snippets/reading_modals/stop_reading_modal.html' with book=active_shelf_book id=modal_id readthrough=readthrough class="" %}
+
 {% join "progress_update" uuid as modal_id %}
 {% include 'snippets/reading_modals/progress_update_modal.html' with book=active_shelf_book id=modal_id readthrough=readthrough class="" %}
 
