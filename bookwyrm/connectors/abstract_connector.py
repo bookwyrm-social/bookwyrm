@@ -48,20 +48,18 @@ class AbstractMinimalConnector(ABC):
         # searched as free text. This, instead, only searches isbn if it's isbn-y
         return f"{self.search_url}{query}"
 
-    def process_search_response(self, query, data):
+    def process_search_response(self, query, data, min_confidence):
         """Format the search results based on the formt of the query"""
-        # TODO: inventaire min confidence
-        parser = self.parse_search_data
         if maybe_isbn(query):
-            parser = self.parse_isbn_search_data
-        return list(parser(data))[:10]
+            return list(self.parse_isbn_search_data(data))[:10]
+        return list(self.parse_search_data(data, min_confidence))[:10]
 
     @abstractmethod
     def get_or_create_book(self, remote_id):
         """pull up a book record by whatever means possible"""
 
     @abstractmethod
-    def parse_search_data(self, data):
+    def parse_search_data(self, data, min_confidence):
         """turn the result json from a search into a list"""
 
     @abstractmethod

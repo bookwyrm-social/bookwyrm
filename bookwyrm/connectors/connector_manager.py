@@ -22,7 +22,7 @@ class ConnectorException(HTTPError):
     """when the connector can't do what was asked"""
 
 
-async def get_results(session, url, params, query, connector):
+async def get_results(session, url, min_confidence, query, connector):
     """try this specific connector"""
     # pylint: disable=line-too-long
     headers = {
@@ -31,6 +31,7 @@ async def get_results(session, url, params, query, connector):
         ),
         "User-Agent": USER_AGENT,
     }
+    params = {"min_confidence": min_confidence}
     try:
         async with session.get(url, headers=headers, params=params) as response:
             if not response.ok:
@@ -45,7 +46,7 @@ async def get_results(session, url, params, query, connector):
 
             return {
                 "connector": connector,
-                "results": connector.process_search_response(query, raw_data),
+                "results": connector.process_search_response(query, raw_data, min_confidence),
             }
     except asyncio.TimeoutError:
         logger.info("Connection timed out for url: %s", url)
@@ -53,7 +54,7 @@ async def get_results(session, url, params, query, connector):
         logger.exception(err)
 
 
-async def async_connector_search(query, items, params):
+async def async_connector_search(query, items, min_confidence):
     """Try a number of requests simultaneously"""
     timeout = aiohttp.ClientTimeout(total=SEARCH_TIMEOUT)
     async with aiohttp.ClientSession(timeout=timeout) as session:
@@ -61,7 +62,7 @@ async def async_connector_search(query, items, params):
         for url, connector in items:
             tasks.append(
                 asyncio.ensure_future(
-                    get_results(session, url, params, query, connector)
+                    get_results(session, url, min_confidence, query, connector)
                 )
             )
 
@@ -87,8 +88,7 @@ def search(query, min_confidence=0.1, return_first=False):
         items.append((url, connector))
 
     # load as many results as we can
-    params = {"min_confidence": min_confidence}
-    results = asyncio.run(async_connector_search(query, items, params))
+    results = asyncio.run(async_connector_search(query, items, min_confidence))
 
     if return_first:
         # find the best result from all the responses and return that

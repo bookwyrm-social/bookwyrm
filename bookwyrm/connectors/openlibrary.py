@@ -152,7 +152,7 @@ class Connector(AbstractConnector):
         image_name = f"{cover_id}-{size}.jpg"
         return f"{self.covers_url}/b/id/{image_name}"
 
-    def parse_search_data(self, data):
+    def parse_search_data(self, data, min_confidence):
         for search_result in data.get("docs"):
             # build the remote id from the openlibrary key
             key = self.books_url + search_result["key"]

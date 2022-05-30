@@ -77,13 +77,15 @@ class Connector(AbstractConnector):
             **{k: data.get(k) for k in ["uri", "image", "labels", "sitelinks", "type"]},
         }
 
-    def parse_search_data(self, data):
+    def parse_search_data(self, data, min_confidence):
         for search_result in data.get("results", []):
             images = search_result.get("image")
             cover = f"{self.covers_url}/img/entities/{images[0]}" if images else None
             # a deeply messy translation of inventaire's scores
             confidence = float(search_result.get("_score", 0.1))
             confidence = 0.1 if confidence < 150 else 0.999
+            if confidence < min_confidence:
+                continue
             yield SearchResult(
                 title=search_result.get("label"),
                 key=self.get_remote_id(search_result.get("uri")),
