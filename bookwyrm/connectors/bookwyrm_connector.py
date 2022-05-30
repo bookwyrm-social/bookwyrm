@@ -17,4 +17,5 @@ class Connector(AbstractMinimalConnector):
 
     def parse_isbn_search_data(self, data):
         for search_result in data:
-            yield self.format_search_result(search_result)
+            search_result["connector"] = self
+            yield SearchResult(**search_result)

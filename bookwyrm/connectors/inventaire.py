@@ -78,7 +78,7 @@ class Connector(AbstractConnector):
         }
 
     def parse_search_data(self, data):
-        for search_result in data.get("results"):
+        for search_result in data.get("results", []):
             images = search_result.get("image")
             cover = f"{self.covers_url}/img/entities/{images[0]}" if images else None
             # a deeply messy translation of inventaire's scores
@@ -96,7 +96,9 @@ class Connector(AbstractConnector):
 
     def parse_isbn_search_data(self, data):
         """got some daaaata"""
-        results = data.get("entities", [])
+        results = data.get("entities")
+        if not results:
+            return
         for search_result in list(results.values()):
             title = search_result.get("claims", {}).get("wdt:P1476", [])
             if not title:
