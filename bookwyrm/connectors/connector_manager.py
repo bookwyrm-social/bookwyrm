@@ -22,13 +22,13 @@ class ConnectorException(HTTPError):
     """when the connector can't do what was asked"""
 
 
-async def async_connector_search(query, connectors, params):
+async def async_connector_search(query, items, params):
     """Try a number of requests simultaneously"""
     timeout = aiohttp.ClientTimeout(total=SEARCH_TIMEOUT)
     async with aiohttp.ClientSession(timeout=timeout) as session:
-        for connector in connectors:
+        for url, connector in items:
             url = connector.get_search_url(query)
-            raise_not_valid_url(url)
+            # raise_not_valid_url(url)
 
             async with session.get(url, params=params) as response:
                 print("Status:", response.status)
@@ -36,7 +36,7 @@ async def async_connector_search(query, connectors, params):
                 print("Content-type:", response.headers["content-type"])
 
                 raw_response = await response.json()
-                yield {
+                return {
                     "connector": connector,
                     "results": connector.process_search_response(query, raw_response),
                 }
@@ -48,11 +48,18 @@ def search(query, min_confidence=0.1, return_first=False):
         return []
     results = []
 
-    connectors = list(get_connectors())
+    items = []
+    for connector in get_connectors():
+        # get the search url from the connector before sending
+        url = connector.get_search_url(query)
+        # check the URL is valid
+        raise_not_valid_url(url)
+        items.append((url, connector))
 
     # load as many results as we can
     params = {"min_confidence": min_confidence}
-    results = asyncio.run(async_connector_search(query, connectors, params))
+    results = asyncio.run(async_connector_search(query, items, params))
+    raise Exception("Hi")
 
     if return_first:
         # find the best result from all the responses and return that
