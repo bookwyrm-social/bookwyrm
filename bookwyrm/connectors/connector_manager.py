@@ -33,12 +33,12 @@ async def async_connector_search(query, connectors, params):
             async with session.get(url, params=params) as response:
                 print("Status:", response.status)
                 print(response.ok)
-                print("Content-type:", response.headers['content-type'])
+                print("Content-type:", response.headers["content-type"])
 
                 raw_response = await response.json()
                 yield {
                     "connector": connector,
-                    "results": connector.parse_search_data(raw_response)
+                    "results": connector.process_search_response(query, raw_response),
                 }
 
 
@@ -47,7 +47,6 @@ def search(query, min_confidence=0.1, return_first=False):
     if not query:
         return []
     results = []
-
 
     connectors = list(get_connectors())
 

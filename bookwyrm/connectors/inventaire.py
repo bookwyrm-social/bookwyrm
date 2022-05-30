@@ -77,14 +77,6 @@ class Connector(AbstractConnector):
             **{k: data.get(k) for k in ["uri", "image", "labels", "sitelinks", "type"]},
         }
 
-    def search(self, query, min_confidence=None):  # pylint: disable=arguments-differ
-        """overrides default search function with confidence ranking"""
-        results = super().search(query)
-        if min_confidence:
-            # filter the search results after the fact
-            return [r for r in results if r.confidence >= min_confidence]
-        return results
-
     def parse_search_data(self, data):
         return data.get("results")
 
