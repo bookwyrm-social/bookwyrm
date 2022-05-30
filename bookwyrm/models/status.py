@@ -374,7 +374,7 @@ class Review(BookStatus):
     def save(self, *args, **kwargs):
         """clear rating caches"""
         if self.book.parent_work:
-            cache.delete(f"book-rating-{self.book.parent_work.id}-*")
+            cache.delete(f"book-rating-{self.book.parent_work.id}")
         super().save(*args, **kwargs)
 
 

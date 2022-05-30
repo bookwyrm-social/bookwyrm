@@ -13,10 +13,10 @@ register = template.Library()
 def get_rating(book, user):
     """get the overall rating of a book"""
     return cache.get_or_set(
-        f"book-rating-{book.parent_work.id}-{user.id}",
-        lambda u, b: models.Review.privacy_filter(u)
-        .filter(book__parent_work__editions=b, rating__gt=0)
-        .aggregate(Avg("rating"))["rating__avg"]
+        f"book-rating-{book.parent_work.id}",
+        lambda u, b: models.Review.objects.filter(
+            book__parent_work__editions=b, rating__gt=0
+        ).aggregate(Avg("rating"))["rating__avg"]
         or 0,
         user,
         book,
