@@ -11,14 +11,10 @@ class Connector(AbstractMinimalConnector):
         return activitypub.resolve_remote_id(remote_id, model=models.Edition)
 
     def parse_search_data(self, data):
-        return data
-
-    def format_search_result(self, search_result):
-        search_result["connector"] = self
-        return SearchResult(**search_result)
+        for search_result in data:
+            search_result["connector"] = self
+            yield SearchResult(**search_result)
 
     def parse_isbn_search_data(self, data):
-        return data
-
-    def format_isbn_search_result(self, search_result):
-        return self.format_search_result(search_result)
+        for search_result in data:
+            yield self.format_search_result(search_result)

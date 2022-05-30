@@ -52,11 +52,9 @@ class AbstractMinimalConnector(ABC):
         """Format the search results based on the formt of the query"""
         # TODO: inventaire min confidence
         parser = self.parse_search_data
-        formatter = self.format_search_result
         if maybe_isbn(query):
             parser = self.parse_isbn_search_data
-            formatter = self.format_isbn_search_result
-        return [formatter(doc) for doc in parser(data)[:10]]
+        return list(parser(data))[:10]
 
     @abstractmethod
     def get_or_create_book(self, remote_id):
@@ -67,16 +65,8 @@ class AbstractMinimalConnector(ABC):
         """turn the result json from a search into a list"""
 
     @abstractmethod
-    def format_search_result(self, search_result):
-        """create a SearchResult obj from json"""
-
-    @abstractmethod
     def parse_isbn_search_data(self, data):
         """turn the result json from a search into a list"""
-
-    @abstractmethod
-    def format_isbn_search_result(self, search_result):
-        """create a SearchResult obj from json"""
 
 
 class AbstractConnector(AbstractMinimalConnector):
