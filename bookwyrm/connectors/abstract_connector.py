@@ -1,9 +1,8 @@
 """ functionality outline for a book data connector """
 from abc import ABC, abstractmethod
 import imghdr
-import ipaddress
 import logging
-from urllib.parse import urlparse
+import re
 
 from django.core.files.base import ContentFile
 from django.db import transaction
@@ -11,7 +10,7 @@ import requests
 from requests.exceptions import RequestException
 
 from bookwyrm import activitypub, models, settings
-from .connector_manager import load_more_data, ConnectorException
+from .connector_manager import load_more_data, ConnectorException, raise_not_valid_url
 from .format_mappings import format_mappings
 
 
@@ -38,6 +37,18 @@ class AbstractMinimalConnector(ABC):
         ]
         for field in self_fields:
             setattr(self, field, getattr(info, field))
+
+    def get_search_url(self, query):
+        """ format the query url """
+        # Check if the query resembles an ISBN
+        isbn = re.sub(r"[\W_]", "", query) # removes filler characters
+        maybe_isbn = len(isbn) in [10, 13]  # ISBN10 or ISBN13
+        if maybe_isbn and self.isbn_search_url and self.isbn_search_url != "":
+            return f"{self.isbn_search_url}{query}"
+
+        # NOTE: previously, we tried searching isbn and if that produces no results,
+        # searched as free text. This, instead, only searches isbn if it's isbn-y
+        return f"{self.search_url}{query}"
 
     def search(self, query, min_confidence=None, timeout=settings.QUERY_TIMEOUT):
         """free text search"""
@@ -254,9 +265,6 @@ def get_data(url, params=None, timeout=10):
     # check if the url is blocked
     raise_not_valid_url(url)
 
-    if models.FederatedServer.is_blocked(url):
-        raise ConnectorException(f"Attempting to load data from blocked url: {url}")
-
     try:
         resp = requests.get(
             url,
@@ -309,20 +317,6 @@ def get_image(url, timeout=10):
         return None, None
 
     return image_content, extension
-
-
-def raise_not_valid_url(url):
-    """do some basic reality checks on the url"""
-    parsed = urlparse(url)
-    if not parsed.scheme in ["http", "https"]:
-        raise ConnectorException("Invalid scheme: ", url)
-
-    try:
-        ipaddress.ip_address(parsed.netloc)
-        raise ConnectorException("Provided url is an IP address: ", url)
-    except ValueError:
-        # it's not an IP address, which is good
-        pass
 
 
 class Mapping:

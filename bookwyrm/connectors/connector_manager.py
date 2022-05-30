@@ -1,10 +1,11 @@
 """ interface with whatever connectors the app has """
-from datetime import datetime
+import asyncio
 import importlib
+import ipaddress
 import logging
-import re
 from urllib.parse import urlparse
 
+import aiohttp
 from django.dispatch import receiver
 from django.db.models import signals
 
@@ -21,52 +22,42 @@ class ConnectorException(HTTPError):
     """when the connector can't do what was asked"""
 
 
+async def async_connector_search(query, connectors, params):
+    """Try a number of requests simultaneously"""
+    timeout = aiohttp.ClientTimeout(total=SEARCH_TIMEOUT)
+    async with aiohttp.ClientSession(timeout=timeout) as session:
+        for connector in connectors:
+            url = connector.get_search_url(query)
+            raise_not_valid_url(url)
+
+            async with session.get(url, params=params) as response:
+                print("Status:", response.status)
+                print(response.ok)
+                print("Content-type:", response.headers['content-type'])
+
+                raw_response = await response.json()
+                yield {
+                    "connector": connector,
+                    "results": connector.parse_search_data(raw_response)
+                }
+
+
 def search(query, min_confidence=0.1, return_first=False):
     """find books based on arbitary keywords"""
     if not query:
         return []
     results = []
 
-    # Have we got a ISBN ?
-    isbn = re.sub(r"[\W_]", "", query)
-    maybe_isbn = len(isbn) in [10, 13]  # ISBN10 or ISBN13
 
-    start_time = datetime.now()
-    for connector in get_connectors():
-        result_set = None
-        if maybe_isbn and connector.isbn_search_url and connector.isbn_search_url != "":
-            # Search on ISBN
-            try:
-                result_set = connector.isbn_search(isbn)
-            except Exception as err:  # pylint: disable=broad-except
-                logger.info(err)
-                # if this fails, we can still try regular search
+    connectors = list(get_connectors())
 
-        # if no isbn search results, we fallback to generic search
-        if not result_set:
-            try:
-                result_set = connector.search(query, min_confidence=min_confidence)
-            except Exception as err:  # pylint: disable=broad-except
-                # we don't want *any* error to crash the whole search page
-                logger.info(err)
-                continue
-
-        if return_first and result_set:
-            # if we found anything, return it
-            return result_set[0]
-
-        if result_set:
-            results.append(
-                {
-                    "connector": connector,
-                    "results": result_set,
-                }
-            )
-        if (datetime.now() - start_time).seconds >= SEARCH_TIMEOUT:
-            break
+    # load as many results as we can
+    params = {"min_confidence": min_confidence}
+    results = asyncio.run(async_connector_search(query, connectors, params))
 
     if return_first:
-        return None
+        # find the best result from all the responses and return that
+        raise Exception("Not implemented yet")
 
     return results
 
@@ -133,3 +124,20 @@ def create_connector(sender, instance, created, *args, **kwargs):
     """create a connector to an external bookwyrm server"""
     if instance.application_type == "bookwyrm":
         get_or_create_connector(f"https://{instance.server_name}")
+
+
+def raise_not_valid_url(url):
+    """do some basic reality checks on the url"""
+    parsed = urlparse(url)
+    if not parsed.scheme in ["http", "https"]:
+        raise ConnectorException("Invalid scheme: ", url)
+
+    try:
+        ipaddress.ip_address(parsed.netloc)
+        raise ConnectorException("Provided url is an IP address: ", url)
+    except ValueError:
+        # it's not an IP address, which is good
+        pass
+
+    if models.FederatedServer.is_blocked(url):
+        raise ConnectorException(f"Attempting to load data from blocked url: {url}")
