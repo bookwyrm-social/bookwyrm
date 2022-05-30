@@ -12,7 +12,7 @@ from django.db.models import signals
 from requests import HTTPError
 
 from bookwyrm import book_search, models
-from bookwyrm.settings import QUERY_TIMEOUT, USER_AGENT
+from bookwyrm.settings import SEARCH_TIMEOUT, USER_AGENT
 from bookwyrm.tasks import app
 
 logger = logging.getLogger(__name__)
@@ -33,23 +33,29 @@ async def get_results(session, url, params, query, connector):
     }
     try:
         async with session.get(url, headers=headers, params=params) as response:
+            if not response.ok:
+                logger.info("Unable to connect to %s: %s", url, response.reason)
+                return
+
             try:
                 raw_data = await response.json()
             except aiohttp.client_exceptions.ContentTypeError as err:
                 logger.exception(err)
-                return None
+                return
 
             return {
                 "connector": connector,
                 "results": connector.process_search_response(query, raw_data),
             }
     except asyncio.TimeoutError:
-        logger.exception("Connection timout for url: %s", url)
+        logger.info("Connection timed out for url: %s", url)
+    except aiohttp.ClientError as err:
+        logger.exception(err)
 
 
 async def async_connector_search(query, items, params):
     """Try a number of requests simultaneously"""
-    timeout = aiohttp.ClientTimeout(total=QUERY_TIMEOUT)
+    timeout = aiohttp.ClientTimeout(total=SEARCH_TIMEOUT)
     async with aiohttp.ClientSession(timeout=timeout) as session:
         tasks = []
         for url, connector in items:
@@ -73,8 +79,11 @@ def search(query, min_confidence=0.1, return_first=False):
     for connector in get_connectors():
         # get the search url from the connector before sending
         url = connector.get_search_url(query)
-        # check the URL is valid
-        raise_not_valid_url(url)
+        try:
+            raise_not_valid_url(url)
+        except ConnectorException:
+            # if this URL is invalid we should skip it and move on
+            continue
         items.append((url, connector))
 
     # load as many results as we can
@@ -83,7 +92,7 @@ def search(query, min_confidence=0.1, return_first=False):
 
     if return_first:
         # find the best result from all the responses and return that
-        raise Exception("Not implemented yet")
+        raise Exception("Not implemented yet")  # TODO
 
     # failed requests will return None, so filter those out
     return [r for r in results if r]
