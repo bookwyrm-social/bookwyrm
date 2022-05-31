@@ -46,7 +46,9 @@ async def get_results(session, url, min_confidence, query, connector):
 
             return {
                 "connector": connector,
-                "results": connector.process_search_response(query, raw_data, min_confidence),
+                "results": connector.process_search_response(
+                    query, raw_data, min_confidence
+                ),
             }
     except asyncio.TimeoutError:
         logger.info("Connection timed out for url: %s", url)

@@ -73,7 +73,7 @@ class Inventaire(TestCase):
         )
         search_results = json.loads(search_file.read_bytes())
 
-        formatted = list(self.connector.parse_search_data(search_results))[0]
+        formatted = list(self.connector.parse_search_data(search_results, 0))[0]
 
         self.assertEqual(formatted.title, "The Stories of Vladimir Nabokov")
         self.assertEqual(
