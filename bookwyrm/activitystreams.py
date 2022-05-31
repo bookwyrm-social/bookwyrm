@@ -303,6 +303,10 @@ def add_status_on_create_command(sender, instance, created):
     ) or instance.created_date < instance.published_date - timedelta(days=1):
         priority = LOW
 
+    # don't add imported statuses to feeds
+    if models.ImportItem.objects.exists(linked_review=instance):
+        return
+
     add_status_task.apply_async(
         args=(instance.id,),
         kwargs={"increment_unread": created},
