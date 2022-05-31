@@ -105,7 +105,7 @@ class BookSearch(TestCase):
             def get_or_create_book(self, remote_id):
                 pass
 
-            def parse_search_data(self, data):
+            def parse_search_data(self, data, min_confidence):
                 return data
 
             def parse_isbn_search_data(self, data):

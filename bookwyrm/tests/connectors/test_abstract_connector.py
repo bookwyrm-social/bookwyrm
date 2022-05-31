@@ -42,7 +42,7 @@ class AbstractConnector(TestCase):
 
             generated_remote_link_field = "openlibrary_link"
 
-            def parse_search_data(self, data):
+            def parse_search_data(self, data, min_confidence):
                 return data
 
             def parse_isbn_search_data(self, data):
