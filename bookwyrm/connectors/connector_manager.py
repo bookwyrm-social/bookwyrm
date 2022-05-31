@@ -91,13 +91,16 @@ def search(query, min_confidence=0.1, return_first=False):
 
     # load as many results as we can
     results = asyncio.run(async_connector_search(query, items, min_confidence))
+    results = [r for r in results if r]
 
     if return_first:
         # find the best result from all the responses and return that
-        raise Exception("Not implemented yet")  # TODO
+        all_results = [r for con in results for r in con["results"]]
+        all_results = sorted(all_results, key=lambda r: r.confidence, reverse=True)
+        return all_results[0]
 
     # failed requests will return None, so filter those out
-    return [r for r in results if r]
+    return results
 
 
 def first_search_result(query, min_confidence=0.1):
