@@ -97,7 +97,7 @@ def search(query, min_confidence=0.1, return_first=False):
         # find the best result from all the responses and return that
         all_results = [r for con in results for r in con["results"]]
         all_results = sorted(all_results, key=lambda r: r.confidence, reverse=True)
-        return all_results[0]
+        return all_results[0] if all_results else None
 
     # failed requests will return None, so filter those out
     return results
