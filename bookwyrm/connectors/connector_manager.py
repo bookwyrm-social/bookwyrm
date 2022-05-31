@@ -86,6 +86,7 @@ def search(query, min_confidence=0.1, return_first=False):
             raise_not_valid_url(url)
         except ConnectorException:
             # if this URL is invalid we should skip it and move on
+            logger.info("Request denied to blocked domain: %s", url)
             continue
         items.append((url, connector))
 
