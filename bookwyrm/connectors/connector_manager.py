@@ -152,6 +152,15 @@ def load_more_data(connector_id, book_id):
     connector.expand_book_data(book)
 
 
+@app.task(queue="low_priority")
+def create_edition_task(connector_id, work_id, data):
+    """separate task for each of the 10,000 editions of LoTR"""
+    connector_info = models.Connector.objects.get(id=connector_id)
+    connector = load_connector(connector_info)
+    work = models.Work.objects.select_subclasses().get(id=work_id)
+    connector.create_edition_from_data(work, data)
+
+
 def load_connector(connector_info):
     """instantiate the connector class"""
     connector = importlib.import_module(
