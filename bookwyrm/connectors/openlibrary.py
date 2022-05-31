@@ -153,12 +153,17 @@ class Connector(AbstractConnector):
         return f"{self.covers_url}/b/id/{image_name}"
 
     def parse_search_data(self, data, min_confidence):
-        for search_result in data.get("docs"):
+        for idx, search_result in enumerate(data.get("docs")):
             # build the remote id from the openlibrary key
             key = self.books_url + search_result["key"]
             author = search_result.get("author_name") or ["Unknown"]
             cover_blob = search_result.get("cover_i")
             cover = self.get_cover_url([cover_blob], size="M") if cover_blob else None
+
+            # OL doesn't provide confidence, but it does sort by an internal ranking, so
+            # this confidence value is relative to the list position
+            confidence = 1 / (idx + 1)
+
             yield SearchResult(
                 title=search_result.get("title"),
                 key=key,
@@ -166,6 +171,7 @@ class Connector(AbstractConnector):
                 connector=self,
                 year=search_result.get("first_publish_year"),
                 cover=cover,
+                confidence=confidence,
             )
 
     def parse_isbn_search_data(self, data):
