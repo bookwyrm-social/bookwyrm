@@ -1,6 +1,5 @@
 """ testing book data connectors """
 from django.test import TestCase
-import responses
 
 from bookwyrm import models
 from bookwyrm.connectors import abstract_connector
@@ -25,17 +24,11 @@ class AbstractConnector(TestCase):
         class TestConnector(abstract_connector.AbstractMinimalConnector):
             """nothing added here"""
 
-            def format_search_result(self, search_result):
-                return search_result
-
             def get_or_create_book(self, remote_id):
                 pass
 
-            def parse_search_data(self, data):
+            def parse_search_data(self, data, min_confidence):
                 return data
-
-            def format_isbn_search_result(self, search_result):
-                return search_result
 
             def parse_isbn_search_data(self, data):
                 return data
@@ -53,45 +46,6 @@ class AbstractConnector(TestCase):
         self.assertEqual(connector.isbn_search_url, "https://example.com/isbn?q=")
         self.assertIsNone(connector.name)
         self.assertEqual(connector.identifier, "example.com")
-
-    @responses.activate
-    def test_search(self):
-        """makes an http request to the outside service"""
-        responses.add(
-            responses.GET,
-            "https://example.com/search?q=a%20book%20title",
-            json=["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l"],
-            status=200,
-        )
-        results = self.test_connector.search("a book title")
-        self.assertEqual(len(results), 10)
-        self.assertEqual(results[0], "a")
-        self.assertEqual(results[1], "b")
-        self.assertEqual(results[2], "c")
-
-    @responses.activate
-    def test_search_min_confidence(self):
-        """makes an http request to the outside service"""
-        responses.add(
-            responses.GET,
-            "https://example.com/search?q=a%20book%20title&min_confidence=1",
-            json=["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l"],
-            status=200,
-        )
-        results = self.test_connector.search("a book title", min_confidence=1)
-        self.assertEqual(len(results), 10)
-
-    @responses.activate
-    def test_isbn_search(self):
-        """makes an http request to the outside service"""
-        responses.add(
-            responses.GET,
-            "https://example.com/isbn?q=123456",
-            json=["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l"],
-            status=200,
-        )
-        results = self.test_connector.isbn_search("123456")
-        self.assertEqual(len(results), 10)
 
     def test_create_mapping(self):
         """maps remote fields for book data to bookwyrm activitypub fields"""
