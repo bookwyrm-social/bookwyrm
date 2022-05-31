@@ -304,7 +304,7 @@ def add_status_on_create_command(sender, instance, created):
         priority = LOW
 
     # don't add imported statuses to feeds
-    if models.ImportItem.objects.exists(linked_review=instance):
+    if models.ImportItem.objects.filter(linked_review=instance).exists():
         return
 
     add_status_task.apply_async(
