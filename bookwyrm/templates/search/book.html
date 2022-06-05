@@ -36,7 +36,7 @@
     {% if result_set.results %}
     <section class="mb-5">
         {% if not result_set.connector.local %}
-        <details class="details-panel box" {% if forloop.first %}open{% endif %}>
+        <details class="details-panel box" open>
         {% endif %}
             {% if not result_set.connector.local %}
             <summary class="is-flex is-align-items-center is-flex-wrap-wrap is-gap-2">
