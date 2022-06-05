@@ -281,7 +281,7 @@ http://www.fish.com/"""
         result = views.status.to_markdown(text)
         self.assertEqual(
             result,
-            '<p><em>hi</em> and <a href="http://fish.com">fish.com</a> ' "is rad</p>",
+            '<p><em>hi</em> and <a href="http://fish.com">fish.com</a> is rad</p>',
         )
 
     def test_to_markdown_detect_url(self, *_):
@@ -297,7 +297,7 @@ http://www.fish.com/"""
         """this is mostly handled in other places, but nonetheless"""
         text = "[hi](http://fish.com) is <marquee>rad</marquee>"
         result = views.status.to_markdown(text)
-        self.assertEqual(result, '<p><a href="http://fish.com">hi</a> ' "is rad</p>")
+        self.assertEqual(result, '<p><a href="http://fish.com">hi</a> is rad</p>')
 
     def test_delete_status(self, mock, *_):
         """marks a status as deleted"""
