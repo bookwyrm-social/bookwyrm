@@ -195,7 +195,7 @@ class ImportJob(TestCase):
             ) as search:
                 search.return_value = result
                 with patch(
-                    "bookwyrm.connectors.openlibrary.Connector." "get_authors_from_data"
+                    "bookwyrm.connectors.openlibrary.Connector.get_authors_from_data"
                 ):
                     book = item.get_book_from_identifier()
 

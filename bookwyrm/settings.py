@@ -212,7 +212,7 @@ STREAMS = [
 
 # Search configuration
 # total time in seconds that the instance will spend searching connectors
-SEARCH_TIMEOUT = int(env("SEARCH_TIMEOUT", 15))
+SEARCH_TIMEOUT = int(env("SEARCH_TIMEOUT", 8))
 # timeout for a query to an individual connector
 QUERY_TIMEOUT = int(env("QUERY_TIMEOUT", 5))
 
