@@ -56,12 +56,12 @@ class Command(BaseCommand):
             self.stdout.write(" OK 🖼")
 
             # Books
-            book_ids = [
-                values["id"]
-                for values in models.Book.objects.select_subclasses()
+            book_ids = (
+                models.Book.objects.select_subclasses()
                 .filter()
-                .values("id")
-            ]
+                .values_list("id", flat=True)
+            )
+
             self.stdout.write(
                 "   → Book preview images ({}): ".format(len(book_ids)), ending=""
             )
