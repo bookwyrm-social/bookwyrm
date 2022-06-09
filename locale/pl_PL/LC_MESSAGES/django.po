@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-05-31 23:50+0000\n"
-"PO-Revision-Date: 2022-06-01 00:55\n"
+"PO-Revision-Date: 2022-06-09 13:02\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Polish\n"
 "Language: pl\n"
@@ -48,7 +48,7 @@ msgstr "Data ukończenia czytania musi mieć miejsce po dacie rozpoczęcia."
 
 #: bookwyrm/forms/forms.py:59
 msgid "Reading stopped date cannot be before start date."
-msgstr ""
+msgstr "Data ukończenia czytania musi mieć miejsce po dacie rozpoczęcia."
 
 #: bookwyrm/forms/landing.py:32
 msgid "User with this username already exists"
@@ -137,11 +137,11 @@ msgstr ""
 
 #: bookwyrm/models/base_model.py:20
 msgid "Moderator suspension"
-msgstr ""
+msgstr "Zawieszone przez moderatora"
 
 #: bookwyrm/models/base_model.py:21
 msgid "Moderator deletion"
-msgstr ""
+msgstr "Usunięte przez moderatora"
 
 #: bookwyrm/models/base_model.py:22
 msgid "Domain block"
@@ -504,7 +504,7 @@ msgstr "Ta strona jest prywatna i tylko Ty ją widzisz."
 
 #: bookwyrm/templates/annual_summary/layout.html:95
 msgid "Make page public"
-msgstr ""
+msgstr "Opublikuj stronę"
 
 #: bookwyrm/templates/annual_summary/layout.html:99
 msgid "When you make your page private, the old key won’t give access to the page anymore. A new key will be created if the page is once again made public."
@@ -537,10 +537,10 @@ msgstr "Przekłada się to na średnio %(pages)s stron na książkę."
 #, python-format
 msgid "(%(no_page_number)s book doesn’t have pages)"
 msgid_plural "(%(no_page_number)s books don’t have pages)"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "(%(no_page_number)s książka nie ma żadnych stron)"
+msgstr[1] "(%(no_page_number)s książki nie mają żadnych stron)"
+msgstr[2] "(%(no_page_number)s książek nie ma żadnych stron)"
+msgstr[3] "(%(no_page_number)s książek nie ma żadnych stron)"
 
 #: bookwyrm/templates/annual_summary/layout.html:148
 msgid "Their shortest read this year…"
@@ -626,7 +626,7 @@ msgstr "Data śmierci:"
 
 #: bookwyrm/templates/author/author.html:65
 msgid "External links"
-msgstr ""
+msgstr "Zewnętrzne odnośniki"
 
 #: bookwyrm/templates/author/author.html:70
 msgid "Wikipedia"
