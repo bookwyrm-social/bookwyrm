@@ -28,6 +28,29 @@ homeTour.addSteps([
             ],
         },
         {
+            text: "Search book records by scanning an ISBN barcode using your camera.",
+            title: "Barcode reader",
+            attachTo: {
+                element: ".icon-barcode",
+                on: "bottom",
+            },
+            buttons: [
+                {
+                    action() {
+                        return this.back();
+                    },
+                    secondary: true,
+                    text: "Back",
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: "Next",
+                },
+            ],
+        },
+        {
             text: "The latest books to be added to your reading shelves will be shown here.",
             title: "Your Books",
             attachTo: {
@@ -97,6 +120,18 @@ homeTour.addSteps([
             ],
         }
 ]);
+
+// TODO: User Profile
+// TODO: Groups
+    // TODO: creating groups and adding users
+    // TODO: visibility
+// TODO: Lists
+    // TODO: creating lists and adding books
+    // TODO: visibility - followers-only
+// TODO: Books
+    // TODO: reading status shelves
+    // TODO: creating a shelf
+    // TODO: importing
 
 function startTour(tourName) {
     if (tourName === 'home') {
