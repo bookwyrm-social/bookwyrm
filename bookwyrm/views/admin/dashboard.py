@@ -103,7 +103,7 @@ class Dashboard(View):
                 status="pending"
             ).count(),
             "invite_requests": models.InviteRequest.objects.filter(
-                ignored=False, invite_sent=False
+                ignored=False, invite__isnull=True
             ).count(),
             "user_stats": user_chart.get_chart(start, end, interval),
             "status_stats": status_chart.get_chart(start, end, interval),

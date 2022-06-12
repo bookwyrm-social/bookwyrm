@@ -18,20 +18,26 @@ from django.views.decorators.http import require_POST
 from bookwyrm import book_search, forms, models
 from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.settings import PAGE_LENGTH
-from bookwyrm.views.helpers import is_api_request
+from bookwyrm.views.helpers import is_api_request, maybe_redirect_local_path
 
 
 # pylint: disable=no-self-use
 class List(View):
     """book list page"""
 
-    def get(self, request, list_id, add_failed=False, add_succeeded=False):
+    def get(self, request, list_id, **kwargs):
         """display a book list"""
+        add_failed = kwargs.get("add_failed", False)
+        add_succeeded = kwargs.get("add_succeeded", False)
+
         book_list = get_object_or_404(models.List, id=list_id)
         book_list.raise_visible_to_user(request.user)
 
         if is_api_request(request):
             return ActivitypubResponse(book_list.to_activity(**request.GET))
+
+        if r := maybe_redirect_local_path(request, book_list):
+            return r
 
         query = request.GET.get("q")
         suggestions = None

@@ -11,7 +11,7 @@ from django.utils.translation import gettext_lazy as _
 env = Env()
 env.read_env()
 DOMAIN = env("DOMAIN")
-VERSION = "0.3.4"
+VERSION = "0.4.0"
 
 RELEASE_API = env(
     "RELEASE_API",
@@ -21,7 +21,7 @@ RELEASE_API = env(
 PAGE_LENGTH = env("PAGE_LENGTH", 15)
 DEFAULT_LANGUAGE = env("DEFAULT_LANGUAGE", "English")
 
-JS_CACHE = "bc93172a"
+JS_CACHE = "e678183b"
 
 # email
 EMAIL_BACKEND = env("EMAIL_BACKEND", "django.core.mail.backends.smtp.EmailBackend")
@@ -212,7 +212,7 @@ STREAMS = [
 
 # Search configuration
 # total time in seconds that the instance will spend searching connectors
-SEARCH_TIMEOUT = int(env("SEARCH_TIMEOUT", 15))
+SEARCH_TIMEOUT = int(env("SEARCH_TIMEOUT", 8))
 # timeout for a query to an individual connector
 QUERY_TIMEOUT = int(env("QUERY_TIMEOUT", 5))
 
@@ -284,11 +284,13 @@ LANGUAGES = [
     ("es-es", _("Español (Spanish)")),
     ("gl-es", _("Galego (Galician)")),
     ("it-it", _("Italiano (Italian)")),
+    ("fi-fi", _("Suomi (Finnish)")),
     ("fr-fr", _("Français (French)")),
     ("lt-lt", _("Lietuvių (Lithuanian)")),
     ("no-no", _("Norsk (Norwegian)")),
     ("pt-br", _("Português do Brasil (Brazilian Portuguese)")),
     ("pt-pt", _("Português Europeu (European Portuguese)")),
+    ("ro-ro", _("Română (Romanian)")),
     ("sv-se", _("Svenska (Swedish)")),
     ("zh-hans", _("简体中文 (Simplified Chinese)")),
     ("zh-hant", _("繁體中文 (Traditional Chinese)")),

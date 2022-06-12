@@ -9,21 +9,18 @@ Social reading and reviewing, decentralized with ActivityPub
     - [What it is and isn't](#what-it-is-and-isnt)
     - [The role of federation](#the-role-of-federation)
     - [Features](#features)
-- [Book data](#book-data)
-- [Set up Bookwyrm](#set-up-bookwyrm)
+- [Set up BookWyrm](#set-up-bookwyrm)
 
 ## Joining BookWyrm
-BookWyrm is still a young piece of software, and isn't at the level of stability and feature-richness that you'd find in a production-ready application. But it does what it says on the box! If you'd like to join an instance, you can check out the [instances](https://joinbookwyrm.com/instances/) list.
-
-You can request an invite by entering your email address at https://bookwyrm.social.
+If you'd like to join an instance, you can check out the [instances](https://joinbookwyrm.com/instances/) list.
 
 
 ## Contributing
-See [contributing](https://docs.joinbookwyrm.com/how-to-contribute.html) for code, translation or monetary contributions.
+See [contributing](https://docs.joinbookwyrm.com/contributing.html) for code, translation or monetary contributions.
 
 ## About BookWyrm
 ### What it is and isn't
-BookWyrm is a platform for social reading! You can use it to track what you're reading, review books, and follow your friends. It isn't primarily meant for cataloguing or as a data-source for books, but it does do both of those things to some degree.
+BookWyrm is a platform for social reading. You can use it to track what you're reading, review books, and follow your friends. It isn't primarily meant for cataloguing or as a data-source for books, but it does do both of those things to some degree.
 
 ### The role of federation
 BookWyrm is built on [ActivityPub](http://activitypub.rocks/). With ActivityPub, it inter-operates with different instances of BookWyrm, and other ActivityPub compliant services, like Mastodon. This means you can run an instance for your book club, and still follow your friend who posts on a server devoted to 20th century Russian speculative fiction. It also means that your friend on mastodon can read and comment on a book review that you post on your BookWyrm instance.
@@ -78,8 +75,5 @@ Deployment
 - [Nginx](https://nginx.org/en/) HTTP server
 
 
-## Book data
-The application is set up to share book and author data between instances, and get book data from arbitrary outside sources. Right now, the only connector is to OpenLibrary, but other connectors could be written.
-
-## Set up Bookwyrm
-The [documentation website](https://docs.joinbookwyrm.com/) has instruction on how to set up Bookwyrm in a [developer environment](https://docs.joinbookwyrm.com/developer-environment.html) or [production](https://docs.joinbookwyrm.com/installing-in-production.html).
+## Set up BookWyrm
+The [documentation website](https://docs.joinbookwyrm.com/) has instruction on how to set up BookWyrm in a [developer environment](https://docs.joinbookwyrm.com/install-dev.html) or [production](https://docs.joinbookwyrm.com/install-prod.html).

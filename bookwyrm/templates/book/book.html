@@ -208,9 +208,17 @@
                 {% endif %}
 
 
-                {% if book.parent_work.editions.count > 1 %}
-                <p>{% blocktrans with path=book.parent_work.local_path count=book.parent_work.editions.count %}<a href="{{ path }}/editions">{{ count }} editions</a>{% endblocktrans %}</p>
-                {% endif %}
+                {% with work=book.parent_work %}
+                <p>
+                    <a href="{{ work.local_path }}/editions">
+                        {% blocktrans trimmed count counter=work.editions.count with count=work.editions.count|intcomma %}
+                            {{ count }} edition
+                            {% plural %}
+                            {{ count }} editions
+                        {% endblocktrans %}
+                    </a>
+                </p>
+                {% endwith %}
             </div>
 
             {# user's relationship to the book #}
@@ -276,7 +284,7 @@
                 {% if user_statuses.review_count or user_statuses.comment_count or user_statuses.quotation_count %}
                 <nav class="tabs">
                     <ul>
-                        {% url 'book' book.id as tab_url %}
+                        {% url 'book' book.id book.name|slugify as tab_url %}
                         <li {% if tab_url == request.path %}class="is-active"{% endif %}>
                             <a href="{{ tab_url }}#reviews">{% trans "Reviews" %} ({{ review_count }})</a>
                         </li>

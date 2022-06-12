@@ -27,6 +27,7 @@ class ReadThrough(BookWyrmModel):
     )
     start_date = models.DateTimeField(blank=True, null=True)
     finish_date = models.DateTimeField(blank=True, null=True)
+    stopped_date = models.DateTimeField(blank=True, null=True)
     is_active = models.BooleanField(default=True)
 
     def save(self, *args, **kwargs):
@@ -34,7 +35,7 @@ class ReadThrough(BookWyrmModel):
         cache.delete(f"latest_read_through-{self.user.id}-{self.book.id}")
         self.user.update_active_date()
         # an active readthrough must have an unset finish date
-        if self.finish_date:
+        if self.finish_date or self.stopped_date:
             self.is_active = False
         super().save(*args, **kwargs)
 

@@ -176,8 +176,8 @@ class Book(BookDataModel):
         """properties of this edition, as a string"""
         items = [
             self.physical_format if hasattr(self, "physical_format") else None,
-            self.languages[0] + " language"
-            if self.languages and self.languages[0] != "English"
+            f"{self.languages[0]} language"
+            if self.languages and self.languages[0] and self.languages[0] != "English"
             else None,
             str(self.published_date.year) if self.published_date else None,
             ", ".join(self.publishers) if hasattr(self, "publishers") else None,

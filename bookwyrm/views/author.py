@@ -1,7 +1,6 @@
 """ the good people stuff! the authors! """
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.paginator import Paginator
-from django.db.models import Avg, Q
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
@@ -12,24 +11,27 @@ from bookwyrm import forms, models
 from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.connectors import connector_manager
 from bookwyrm.settings import PAGE_LENGTH
-from bookwyrm.views.helpers import is_api_request
+from bookwyrm.views.helpers import is_api_request, maybe_redirect_local_path
 
 
 # pylint: disable= no-self-use
 class Author(View):
     """this person wrote a book"""
 
-    def get(self, request, author_id):
+    # pylint: disable=unused-argument
+    def get(self, request, author_id, slug=None):
         """landing page for an author"""
         author = get_object_or_404(models.Author, id=author_id)
 
         if is_api_request(request):
             return ActivitypubResponse(author.to_activity())
 
+        if redirect_local_path := maybe_redirect_local_path(request, author):
+            return redirect_local_path
+
         books = (
-            models.Work.objects.filter(Q(authors=author) | Q(editions__authors=author))
-            .annotate(Avg("editions__review__rating"))
-            .order_by("editions__review__rating__avg")
+            models.Work.objects.filter(editions__authors=author)
+            .order_by("created_date")
             .distinct()
         )
 

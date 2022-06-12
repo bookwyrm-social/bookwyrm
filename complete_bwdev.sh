@@ -1,7 +1,4 @@
 #/usr/bin/env bash
-# for zsh, run:
-# autoload bashcompinit
-# bashcompinit
 complete -W "up
 service_ports_web
 initdb

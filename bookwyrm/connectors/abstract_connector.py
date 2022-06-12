@@ -1,9 +1,8 @@
 """ functionality outline for a book data connector """
 from abc import ABC, abstractmethod
 import imghdr
-import ipaddress
 import logging
-from urllib.parse import urlparse
+import re
 
 from django.core.files.base import ContentFile
 from django.db import transaction
@@ -11,7 +10,7 @@ import requests
 from requests.exceptions import RequestException
 
 from bookwyrm import activitypub, models, settings
-from .connector_manager import load_more_data, ConnectorException
+from .connector_manager import load_more_data, ConnectorException, raise_not_valid_url
 from .format_mappings import format_mappings
 
 
@@ -39,61 +38,33 @@ class AbstractMinimalConnector(ABC):
         for field in self_fields:
             setattr(self, field, getattr(info, field))
 
-    def search(self, query, min_confidence=None, timeout=settings.QUERY_TIMEOUT):
-        """free text search"""
-        params = {}
-        if min_confidence:
-            params["min_confidence"] = min_confidence
+    def get_search_url(self, query):
+        """format the query url"""
+        # Check if the query resembles an ISBN
+        if maybe_isbn(query) and self.isbn_search_url and self.isbn_search_url != "":
+            return f"{self.isbn_search_url}{query}"
 
-        data = self.get_search_data(
-            f"{self.search_url}{query}",
-            params=params,
-            timeout=timeout,
-        )
-        results = []
+        # NOTE: previously, we tried searching isbn and if that produces no results,
+        # searched as free text. This, instead, only searches isbn if it's isbn-y
+        return f"{self.search_url}{query}"
 
-        for doc in self.parse_search_data(data)[:10]:
-            results.append(self.format_search_result(doc))
-        return results
-
-    def isbn_search(self, query, timeout=settings.QUERY_TIMEOUT):
-        """isbn search"""
-        params = {}
-        data = self.get_search_data(
-            f"{self.isbn_search_url}{query}",
-            params=params,
-            timeout=timeout,
-        )
-        results = []
-
-        # this shouldn't be returning mutliple results, but just in case
-        for doc in self.parse_isbn_search_data(data)[:10]:
-            results.append(self.format_isbn_search_result(doc))
-        return results
-
-    def get_search_data(self, remote_id, **kwargs):  # pylint: disable=no-self-use
-        """this allows connectors to override the default behavior"""
-        return get_data(remote_id, **kwargs)
+    def process_search_response(self, query, data, min_confidence):
+        """Format the search results based on the formt of the query"""
+        if maybe_isbn(query):
+            return list(self.parse_isbn_search_data(data))[:10]
+        return list(self.parse_search_data(data, min_confidence))[:10]
 
     @abstractmethod
     def get_or_create_book(self, remote_id):
         """pull up a book record by whatever means possible"""
 
     @abstractmethod
-    def parse_search_data(self, data):
+    def parse_search_data(self, data, min_confidence):
         """turn the result json from a search into a list"""
-
-    @abstractmethod
-    def format_search_result(self, search_result):
-        """create a SearchResult obj from json"""
 
     @abstractmethod
     def parse_isbn_search_data(self, data):
         """turn the result json from a search into a list"""
-
-    @abstractmethod
-    def format_isbn_search_result(self, search_result):
-        """create a SearchResult obj from json"""
 
 
 class AbstractConnector(AbstractMinimalConnector):
@@ -254,9 +225,6 @@ def get_data(url, params=None, timeout=10):
     # check if the url is blocked
     raise_not_valid_url(url)
 
-    if models.FederatedServer.is_blocked(url):
-        raise ConnectorException(f"Attempting to load data from blocked url: {url}")
-
     try:
         resp = requests.get(
             url,
@@ -311,20 +279,6 @@ def get_image(url, timeout=10):
     return image_content, extension
 
 
-def raise_not_valid_url(url):
-    """do some basic reality checks on the url"""
-    parsed = urlparse(url)
-    if not parsed.scheme in ["http", "https"]:
-        raise ConnectorException("Invalid scheme: ", url)
-
-    try:
-        ipaddress.ip_address(parsed.netloc)
-        raise ConnectorException("Provided url is an IP address: ", url)
-    except ValueError:
-        # it's not an IP address, which is good
-        pass
-
-
 class Mapping:
     """associate a local database field with a field in an external dataset"""
 
@@ -366,3 +320,9 @@ def unique_physical_format(format_text):
         # try a direct match, so saving this would be redundant
         return None
     return format_text
+
+
+def maybe_isbn(query):
+    """check if a query looks like an isbn"""
+    isbn = re.sub(r"[\W_]", "", query)  # removes filler characters
+    return len(isbn) in [10, 13]  # ISBN10 or ISBN13

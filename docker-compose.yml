@@ -3,6 +3,7 @@ version: '3'
 services:
   nginx:
     image: nginx:latest
+    restart: unless-stopped
     ports:
       - 1333:80
     depends_on:

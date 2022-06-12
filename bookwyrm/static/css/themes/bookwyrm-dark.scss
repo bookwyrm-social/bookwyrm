@@ -8,7 +8,9 @@ $primary: #005e50;
 $primary-light: #1d2b28;
 $info: #1f4666;
 $success: #246447;
+$success-light: #0d2f1e;
 $warning: #8b6c15;
+$warning-light: #372e13;
 $danger: #872538;
 $danger-light: #481922;
 $light: #393939;
@@ -26,6 +28,8 @@ $background-body: rgb(24, 27, 28);
 $background-secondary: rgb(28, 30, 32);
 $background-tertiary: rgb(32, 34, 36);
 $modal-background-background-color: rgba($black, 0.8);
+$scrollbar-track: $background-secondary;
+$scrollbar-thumb: $light;
 
 /* highlight colors */
 $primary-highlight: $primary;
@@ -49,6 +53,7 @@ $link-hover: $white-bis;
 $link-hover-border: #51595d;
 $link-focus: $white-bis;
 $link-active: $white-bis;
+$link-light: #0d1c26;
 
 /* bulma overrides */
 $background: $background-secondary;
@@ -78,6 +83,14 @@ $progress-value-background-color: $border-light;
  ******************************************************************************/
 $family-primary: $family-sans-serif;
 $family-secondary: $family-sans-serif;
+
+.has-text-muted {
+    color: $grey-lighter !important;
+}
+
+.has-text-more-muted {
+    color: $grey-light !important;
+}
 
 @import "../bookwyrm";
 @import "../vendor/icons.css";

@@ -11,6 +11,7 @@ from django.views import View
 
 from bookwyrm import forms, models
 from bookwyrm.importers import (
+    CalibreImporter,
     LibrarythingImporter,
     GoodreadsImporter,
     StorygraphImporter,
@@ -52,6 +53,8 @@ class Import(View):
             importer = StorygraphImporter()
         elif source == "OpenLibrary":
             importer = OpenLibraryImporter()
+        elif source == "Calibre":
+            importer = CalibreImporter()
         else:
             # Default : Goodreads
             importer = GoodreadsImporter()

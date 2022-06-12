@@ -62,7 +62,9 @@ class StorygraphImport(TestCase):
 
     def test_handle_imported_book(self, *_):
         """storygraph import added a book, this adds related connections"""
-        shelf = self.local_user.shelf_set.filter(identifier="to-read").first()
+        shelf = self.local_user.shelf_set.filter(
+            identifier=models.Shelf.TO_READ
+        ).first()
         self.assertIsNone(shelf.books.first())
 
         import_job = self.importer.create_job(

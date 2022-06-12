@@ -4,7 +4,10 @@ from bookwyrm import models
 
 
 class Author(TestCase):
+    """serialize author tests"""
+
     def setUp(self):
+        """initial data"""
         self.book = models.Edition.objects.create(
             title="Example Edition",
             remote_id="https://example.com/book/1",
@@ -16,6 +19,7 @@ class Author(TestCase):
         )
 
     def test_serialize_model(self):
+        """check presense of author fields"""
         activity = self.author.to_activity()
         self.assertEqual(activity["id"], self.author.remote_id)
         self.assertIsInstance(activity["aliases"], list)

@@ -89,7 +89,7 @@ def init_connectors():
         covers_url="https://inventaire.io",
         search_url="https://inventaire.io/api/search?types=works&types=works&search=",
         isbn_search_url="https://inventaire.io/api/entities?action=by-uris&uris=isbn%3A",
-        priority=3,
+        priority=1,
     )
 
     models.Connector.objects.create(
@@ -101,18 +101,8 @@ def init_connectors():
         covers_url="https://covers.openlibrary.org",
         search_url="https://openlibrary.org/search?q=",
         isbn_search_url="https://openlibrary.org/api/books?jscmd=data&format=json&bibkeys=ISBN:",
-        priority=3,
+        priority=1,
     )
-
-
-def init_federated_servers():
-    """big no to nazis"""
-    built_in_blocks = ["gab.ai", "gab.com"]
-    for server in built_in_blocks:
-        models.FederatedServer.objects.create(
-            server_name=server,
-            status="blocked",
-        )
 
 
 def init_settings():
@@ -163,7 +153,6 @@ class Command(BaseCommand):
             "group",
             "permission",
             "connector",
-            "federatedserver",
             "settings",
             "linkdomain",
         ]
@@ -176,8 +165,6 @@ class Command(BaseCommand):
             init_permissions()
         if not limit or limit == "connector":
             init_connectors()
-        if not limit or limit == "federatedserver":
-            init_federated_servers()
         if not limit or limit == "settings":
             init_settings()
         if not limit or limit == "linkdomain":

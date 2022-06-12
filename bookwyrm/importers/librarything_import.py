@@ -1,5 +1,8 @@
 """ handle reading a tsv from librarything """
 import re
+
+from bookwyrm.models import Shelf
+
 from . import Importer
 
 
@@ -21,7 +24,7 @@ class LibrarythingImporter(Importer):
 
     def get_shelf(self, normalized_row):
         if normalized_row["date_finished"]:
-            return "read"
+            return Shelf.READ_FINISHED
         if normalized_row["date_started"]:
-            return "reading"
-        return "to-read"
+            return Shelf.READING
+        return Shelf.TO_READ

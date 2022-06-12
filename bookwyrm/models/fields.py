@@ -125,7 +125,7 @@ class ActivitypubFieldMixin:
         """model_field_name to activitypubFieldName"""
         if self.activitypub_field:
             return self.activitypub_field
-        name = self.name.split(".")[-1]
+        name = self.name.rsplit(".", maxsplit=1)[-1]
         components = name.split("_")
         return components[0] + "".join(x.title() for x in components[1:])
 
@@ -389,7 +389,7 @@ class ImageField(ActivitypubFieldMixin, models.ImageField):
         self.alt_field = alt_field
         super().__init__(*args, **kwargs)
 
-    # pylint: disable=arguments-differ
+    # pylint: disable=arguments-differ,arguments-renamed
     def set_field_from_activity(self, instance, data, save=True, overwrite=True):
         """helper function for assinging a value to the field"""
         value = getattr(data, self.get_activitypub_field())

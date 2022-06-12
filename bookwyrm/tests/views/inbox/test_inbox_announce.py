@@ -61,7 +61,7 @@ class InboxActivities(TestCase):
         self.assertEqual(models.Notification.objects.count(), 0)
         activity = {
             "type": "Announce",
-            "id": "%s/boost" % self.status.remote_id,
+            "id": f"{self.status.remote_id}/boost",
             "actor": self.remote_user.remote_id,
             "object": self.status.remote_id,
             "to": ["https://www.w3.org/ns/activitystreams#public"],
@@ -94,7 +94,7 @@ class InboxActivities(TestCase):
         self.assertEqual(models.Notification.objects.count(), 0)
         activity = {
             "type": "Announce",
-            "id": "%s/boost" % self.status.remote_id,
+            "id": f"{self.status.remote_id}/boost",
             "actor": self.remote_user.remote_id,
             "object": "https://remote.com/status/1",
             "to": ["https://www.w3.org/ns/activitystreams#public"],

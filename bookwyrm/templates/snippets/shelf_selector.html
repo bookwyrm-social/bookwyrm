@@ -49,6 +49,13 @@
 {% join "finish_reading" uuid as modal_id %}
 {% include 'snippets/shelve_button/modal_button.html' with class=button_class fallback_url=fallback_url %}
 
+{% elif shelf.identifier == 'stopped-reading' %}
+
+{% trans "Stopped reading" as button_text %}
+{% url 'reading-status' 'stop' book.id as fallback_url %}
+{% join "stop_reading" uuid as modal_id %}
+{% include 'snippets/shelve_button/modal_button.html' with class=button_class fallback_url=fallback_url %}
+
 {% elif shelf.identifier == 'to-read' %}
 
 {% trans "Want to read" as button_text %}
@@ -98,6 +105,9 @@
 
 {% join "finish_reading" uuid as modal_id %}
 {% include 'snippets/reading_modals/finish_reading_modal.html' with book=active_shelf.book id=modal_id move_from=current.id readthrough=readthrough refresh=True class="" %}
+
+{% join "stop_reading" uuid as modal_id %}
+{% include 'snippets/reading_modals/stop_reading_modal.html' with book=active_shelf.book id=modal_id move_from=current.id readthrough=readthrough refresh=True class="" %}
 
 {% endwith %}
 {% endblock %}
