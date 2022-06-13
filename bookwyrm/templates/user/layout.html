@@ -99,9 +99,3 @@
 {% block panel %}{% endblock %}
 
 {% endblock %}
-
-{% block scripts %}
-{% if user.show_guided_tour %}
-    {% include 'guided_tour/user_profile.html' %}
-{% endif %}
-{% endblock %}
