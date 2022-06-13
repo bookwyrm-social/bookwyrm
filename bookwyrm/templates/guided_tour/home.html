@@ -7,12 +7,10 @@
         fetch('guided-tour/False', {
             headers: {
                 'X-CSRFToken': csrftoken,
-                'Content-Type': 'application/json'
             },
             method: 'POST', 
             redirect: 'follow',
             mode: 'same-origin',
-            body: 'tour=False'
         })
         .then( resp => {console.log(resp.statusText) })
     }
@@ -30,6 +28,7 @@
                 buttons: [
                     {
                         action() {
+                            disableTour();
                             return this.next();
                         },
                         secondary: true,
@@ -55,8 +54,7 @@
                 buttons: [
                     {
                         action() {
-                            this.complete()
-                            return disableTour();
+                            return this.complete()
                         },
                         text: "{% trans 'Ok' %}",
                         classes: "is-success",
@@ -118,7 +116,30 @@
             ],
         },
         {
-            text: "{% trans 'The latest books to be added to your reading shelves will be shown here.' %}",
+            text: "{% trans 'Use these links to discover the latest news from your feed, lists of books by topic, and the latest happenings on this Bookwyrm server!' %}",
+            title: "{% trans 'Navigation Bar' %}",
+            attachTo: {
+                element: ".navbar-start",
+                on: "bottom",
+            },
+            buttons: [
+                {
+                    action() {
+                        return this.back();
+                    },
+                    secondary: true,
+                    text: "{% trans 'Back' %}",
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: "{% trans 'Next' %}",
+                },
+            ],
+        },
+        {
+            text: "{% trans 'Books on your reading status shelves will be shown here.' %}",
             title: "{% trans 'Your Books' %}",
             attachTo: {
                 element: "#suggested_books_block",
