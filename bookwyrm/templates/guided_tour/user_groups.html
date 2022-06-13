@@ -1,0 +1,136 @@
+{% load i18n %}
+{% csrf_token %}
+
+<script>
+    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    function disableTour() {
+        fetch('/guided-tour/False', {
+            headers: {
+                'X-CSRFToken': csrftoken,
+            },
+            method: 'POST', 
+            redirect: 'follow',
+            mode: 'same-origin',
+        })
+        .then( resp => {console.log(resp.statusText) })
+    }
+    const tour = new Shepherd.Tour({
+        exitOnEsc: true,
+    });
+
+    tour.addSteps([
+        {
+            text: "{% trans 'You can create or join a group with other users. Groups can share group-curated book lists, and in future will be able to do other things.' %}",
+            title: "{% trans 'Groups' %}",
+            buttons: [
+                {
+                    action() {
+                        disableTour();
+                        return this.complete();
+                    },
+                    secondary: true,
+                    text: "{% trans 'End Tour' %}",
+                    classes: "is-danger",
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: "{% trans 'Next' %}",
+                },
+            ],
+        },
+        {
+            text: "{% trans 'Let\'s click the button to create a new group!' %}\
+                    <br><br>\
+                    {% trans 'Then click ' %}\
+                    <code>{% trans 'Next' %}</code> \
+                    {% trans 'to continue the tour.' %}",
+            title: "{% trans 'Create group' %}",
+            attachTo: {
+                element: "#create_group_button",
+                on: "left-start",
+            },
+            buttons: [
+                {
+                    action() {
+                        return this.back();
+                    },
+                    secondary: true,
+                    text: "{% trans 'Back' %}",
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: "{% trans 'Next' %}",
+                },
+            ],
+        },
+        {
+            text: "{% trans 'Give your group a name and describe what it is about. You can make user groups for any purpose - a reading group, a bunch of friends, whatever!' %}",
+            title: "{% trans 'Creating a group' %}",
+            attachTo: {
+                element: "#create_group_header",
+                on: "right",
+            },
+            buttons: [
+                {
+                    action() {
+                        return this.back();
+                    },
+                    secondary: true,
+                    text: "{% trans 'Back' %}",
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: "{% trans 'Next' %}",
+                },
+            ],
+        },
+        {
+            text: "{% trans 'Groups can be ' %}\
+                    <code>{% trans 'Public' %}</code>,\
+                    <code>{% trans 'Unlisted' %}</code>,\
+                    {% trans 'or ' %}\
+                    <code>{% trans 'Private' %}</code><br><br>\
+                    {% trans 'Anyone can see and join a public group. Unlisted groups are currently exactly the same as public groups. Private groups can only be seen by members of the group.' %}",
+            title: "{% trans 'Group visibility' %}",
+            attachTo: {
+                element: "privacy_select_button",
+                on: "left",
+            },
+            buttons: [
+                {
+                    action() {
+                        return this.back();
+                    },
+                    secondary: true,
+                    text: "{% trans 'Back' %}",
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: "{% trans 'Next' %}",
+                },
+            ],
+        },
+        {
+            text: "{% trans 'Once you\'re happy with how your group is set up, click the \'Save\' button.' %}",
+            title: "{% trans '' %}",
+            buttons: [
+                {
+                    action() {
+                        return this.complete();
+                    },
+                    text: "{% trans 'Ok' %}",
+                },
+            ],
+        },
+    ])
+
+    tour.start()
+</script>
