@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-05-31 23:50+0000\n"
-"PO-Revision-Date: 2022-06-01 00:55\n"
+"PO-Revision-Date: 2022-06-13 00:19\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Japanese\n"
 "Language: ja\n"
@@ -44,23 +44,23 @@ msgstr "無制限"
 
 #: bookwyrm/forms/forms.py:54
 msgid "Reading finish date cannot be before start date."
-msgstr ""
+msgstr "読み終えた日は読み始めた日より前にすることはできません。"
 
 #: bookwyrm/forms/forms.py:59
 msgid "Reading stopped date cannot be before start date."
-msgstr ""
+msgstr "読み止めた日は読み始めた日より前にすることはできません"
 
 #: bookwyrm/forms/landing.py:32
 msgid "User with this username already exists"
-msgstr ""
+msgstr "このユーザー名のユーザーはすでに存在します。"
 
 #: bookwyrm/forms/landing.py:41
 msgid "A user with this email already exists."
-msgstr ""
+msgstr "このメールのユーザーはすでに存在します。"
 
 #: bookwyrm/forms/links.py:36
 msgid "This domain is blocked. Please contact your administrator if you think this is an error."
-msgstr ""
+msgstr "このドメインはブロックされています。これがエラーだと思われる場合は管理者に問い合わせてください。"
 
 #: bookwyrm/forms/links.py:46
 msgid "This link with file type has already been added for this book. If it is not visible, the domain is still pending."
@@ -94,7 +94,7 @@ msgstr "降順"
 
 #: bookwyrm/importers/importer.py:145 bookwyrm/importers/importer.py:167
 msgid "Error loading book"
-msgstr ""
+msgstr "本の読み込みエラー"
 
 #: bookwyrm/importers/importer.py:154
 msgid "Could not find a match for book"
@@ -106,7 +106,7 @@ msgstr ""
 
 #: bookwyrm/models/announcement.py:12
 msgid "Success"
-msgstr ""
+msgstr "成功"
 
 #: bookwyrm/models/announcement.py:13
 #: bookwyrm/templates/settings/invites/manage_invites.html:47
@@ -115,7 +115,7 @@ msgstr ""
 
 #: bookwyrm/models/announcement.py:14
 msgid "Warning"
-msgstr ""
+msgstr "警告"
 
 #: bookwyrm/models/announcement.py:15
 msgid "Danger"
@@ -123,7 +123,7 @@ msgstr ""
 
 #: bookwyrm/models/antispam.py:106 bookwyrm/models/antispam.py:140
 msgid "Automatically generated report"
-msgstr ""
+msgstr "自動生成されたレポート"
 
 #: bookwyrm/models/base_model.py:18 bookwyrm/models/link.py:72
 #: bookwyrm/templates/import/import_status.html:200
@@ -137,7 +137,7 @@ msgstr "自己削除"
 
 #: bookwyrm/models/base_model.py:20
 msgid "Moderator suspension"
-msgstr ""
+msgstr "モデレーターによる休止"
 
 #: bookwyrm/models/base_model.py:21
 msgid "Moderator deletion"
@@ -145,7 +145,7 @@ msgstr "モデレーターによる削除"
 
 #: bookwyrm/models/base_model.py:22
 msgid "Domain block"
-msgstr ""
+msgstr "ドメインブロック"
 
 #: bookwyrm/models/book.py:262
 msgid "Audiobook"
@@ -171,7 +171,7 @@ msgstr "ペーパーバック"
 #: bookwyrm/templates/settings/federation/edit_instance.html:55
 #: bookwyrm/templates/settings/federation/instance_list.html:22
 msgid "Federated"
-msgstr ""
+msgstr "連合"
 
 #: bookwyrm/models/federated_server.py:12 bookwyrm/models/link.py:71
 #: bookwyrm/templates/settings/federation/edit_instance.html:56
@@ -198,7 +198,7 @@ msgstr "ユーザー名"
 
 #: bookwyrm/models/fields.py:186
 msgid "A user with that username already exists."
-msgstr ""
+msgstr "このユーザー名のユーザーはすでに存在します。"
 
 #: bookwyrm/models/fields.py:205
 #: bookwyrm/templates/snippets/privacy-icons.html:3
@@ -206,7 +206,7 @@ msgstr ""
 #: bookwyrm/templates/snippets/privacy_select.html:11
 #: bookwyrm/templates/snippets/privacy_select_no_followers.html:11
 msgid "Public"
-msgstr ""
+msgstr "公開"
 
 #: bookwyrm/models/fields.py:206
 #: bookwyrm/templates/snippets/privacy-icons.html:7
@@ -214,14 +214,14 @@ msgstr ""
 #: bookwyrm/templates/snippets/privacy_select.html:14
 #: bookwyrm/templates/snippets/privacy_select_no_followers.html:14
 msgid "Unlisted"
-msgstr ""
+msgstr "未収載"
 
 #: bookwyrm/models/fields.py:207
 #: bookwyrm/templates/snippets/privacy_select.html:17
 #: bookwyrm/templates/user/relationships/followers.html:6
 #: bookwyrm/templates/user/relationships/layout.html:11
 msgid "Followers"
-msgstr ""
+msgstr "フォロワー"
 
 #: bookwyrm/models/fields.py:208
 #: bookwyrm/templates/snippets/create_status/post_options_block.html:6
@@ -230,7 +230,7 @@ msgstr ""
 #: bookwyrm/templates/snippets/privacy_select.html:20
 #: bookwyrm/templates/snippets/privacy_select_no_followers.html:17
 msgid "Private"
-msgstr ""
+msgstr "非公開"
 
 #: bookwyrm/models/link.py:51
 msgid "Free"
@@ -238,16 +238,16 @@ msgstr ""
 
 #: bookwyrm/models/link.py:52
 msgid "Purchasable"
-msgstr ""
+msgstr "購入可能"
 
 #: bookwyrm/models/link.py:53
 msgid "Available for loan"
-msgstr ""
+msgstr "貸出可能"
 
 #: bookwyrm/models/link.py:70
 #: bookwyrm/templates/settings/link_domains/link_domains.html:23
 msgid "Approved"
-msgstr ""
+msgstr "承認済"
 
 #: bookwyrm/models/user.py:32 bookwyrm/templates/book/book.html:289
 msgid "Reviews"
@@ -255,33 +255,33 @@ msgstr ""
 
 #: bookwyrm/models/user.py:33
 msgid "Comments"
-msgstr ""
+msgstr "コメント"
 
 #: bookwyrm/models/user.py:34
 msgid "Quotations"
-msgstr ""
+msgstr "引用"
 
 #: bookwyrm/models/user.py:35
 msgid "Everything else"
-msgstr ""
+msgstr "他のすべて"
 
 #: bookwyrm/settings.py:209
 msgid "Home Timeline"
-msgstr ""
+msgstr "ホームタイムライン"
 
 #: bookwyrm/settings.py:209
 msgid "Home"
-msgstr ""
+msgstr "ホーム"
 
 #: bookwyrm/settings.py:210
 msgid "Books Timeline"
-msgstr ""
+msgstr "本のタイムライン"
 
 #: bookwyrm/settings.py:210 bookwyrm/templates/search/layout.html:21
 #: bookwyrm/templates/search/layout.html:42
 #: bookwyrm/templates/user/layout.html:91
 msgid "Books"
-msgstr ""
+msgstr "本"
 
 #: bookwyrm/settings.py:282
 msgid "English"
@@ -345,28 +345,28 @@ msgstr ""
 
 #: bookwyrm/templates/404.html:4 bookwyrm/templates/404.html:8
 msgid "Not Found"
-msgstr ""
+msgstr "見つかりませんでした"
 
 #: bookwyrm/templates/404.html:9
 msgid "The page you requested doesn't seem to exist!"
-msgstr ""
+msgstr "リクエストしたページは存在しません"
 
 #: bookwyrm/templates/500.html:4
 msgid "Oops!"
-msgstr ""
+msgstr "おっと！"
 
 #: bookwyrm/templates/500.html:8
 msgid "Server Error"
-msgstr ""
+msgstr "サーバーエラー"
 
 #: bookwyrm/templates/500.html:9
 msgid "Something went wrong! Sorry about that."
-msgstr ""
+msgstr "何か問題が発生しました！ 申し訳ありません。"
 
 #: bookwyrm/templates/about/about.html:9
 #: bookwyrm/templates/about/layout.html:35
 msgid "About"
-msgstr ""
+msgstr "概要"
 
 #: bookwyrm/templates/about/about.html:20
 #: bookwyrm/templates/get_started/layout.html:20
