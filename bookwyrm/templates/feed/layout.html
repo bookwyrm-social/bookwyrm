@@ -32,4 +32,10 @@
 
 {% block scripts %}
 <script src="{% static "js/tabs.js" %}?v={{ js_cache }}"></script>
+
+<!-- guided tour -->
+{% if user.show_guided_tour %}
+    {% include 'guided_tour/home.html' %}
+{% endif %}
+
 {% endblock %}

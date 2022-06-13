@@ -1,0 +1,192 @@
+{% load i18n %}
+{% csrf_token %}
+
+<script>
+    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    function disableTour() {
+        fetch('guided-tour/False', {
+            headers: {
+                'X-CSRFToken': csrftoken,
+                'Content-Type': 'application/json'
+            },
+            method: 'POST', 
+            redirect: 'follow',
+            mode: 'same-origin',
+            body: 'tour=False'
+        })
+        .then( resp => {console.log(resp.statusText) })
+    }
+
+    const initiateTour = new Shepherd.Tour({
+        exitOnEsc: true,
+    });
+
+    initiateTour.addSteps([
+        {
+            text: "{% trans 'Welcome to Bookwyrm!' %} \
+                <br><br> \
+                {% trans 'Would you like to take the guided tour to help you get started?' %}",
+                title: "{% trans 'Guided Tour' %}",
+                buttons: [
+                    {
+                        action() {
+                            return this.next();
+                        },
+                        secondary: true,
+                        text: "{% trans 'No thanks' %}",
+                        classes: "is-danger",
+                    },
+                    {
+                        action() {
+                            this.cancel();
+                            return homeTour.start()
+                        },
+                        text: "{% trans 'Yes please!' %}",
+                    },
+                ],
+        },
+        {
+            text: "{% trans 'If  you ever change your mind, just click on the Guided Tour link to start your tour' %}",
+                title: "{% trans 'Guided Tour' %}",
+                attachTo: {
+                    element: "#tour_button",
+                    on: "left-start",
+                },
+                buttons: [
+                    {
+                        action() {
+                            this.complete()
+                            return disableTour();
+                        },
+                        text: "{% trans 'Ok' %}",
+                        classes: "is-success",
+                    }
+                ],
+        }
+    ])
+
+    const homeTour = new Shepherd.Tour({
+            exitOnEsc: true,
+        });
+    
+    homeTour.addSteps([
+        {
+            text: "{% trans 'Search for books, users, or lists using this search box.' %}",
+            title: "{% trans 'Search box' %}",
+            attachTo: {
+                element: "#search_input",
+                on: "bottom",
+            },
+            buttons: [
+                {
+                    action() {
+                        return this.cancel();
+                    },
+                    secondary: true,
+                    text: "{% trans 'Cancel' %}",
+                    classes: "is-danger",
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: "{% trans 'Next' %}",
+                },
+            ],
+        },
+        {
+            text: "{% trans 'Search book records by scanning an ISBN barcode using your camera.' %}",
+            title: "{% trans 'Barcode reader' %}",
+            attachTo: {
+                element: ".icon-barcode",
+                on: "bottom",
+            },
+            buttons: [
+                {
+                    action() {
+                        return this.back();
+                    },
+                    secondary: true,
+                    text: "{% trans 'Back' %}",
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: "{% trans 'Next' %}",
+                },
+            ],
+        },
+        {
+            text: "{% trans 'The latest books to be added to your reading shelves will be shown here.' %}",
+            title: "{% trans 'Your Books' %}",
+            attachTo: {
+                element: "#suggested_books_block",
+                on: "right",
+            },
+            buttons: [
+            {
+                    action() {
+                        return this.back();
+                    },
+                    secondary: true,
+                    text: "{% trans 'Back' %}",
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: "{% trans 'Next' %}",
+                },
+            ],
+        },
+        {
+            text: "{% trans 'This bell will light up when you have a new notification. When it does, click on it to find out what exciting thing has happened!' %}",
+            title: "{% trans 'Notifications' %}",
+            attachTo: {
+                element: '[href="/notifications"]',
+                on: "left-end",
+            },
+            buttons: [
+            {
+                    action() {
+                        return this.back();
+                    },
+                    secondary: true,
+                    text: "{% trans 'Back' %}",
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: "{% trans 'Next' %}",
+                },
+            ],
+        },
+        {
+            text: "{% trans 'Your profile, books, direct messages, and settings can be accessed by clicking on your name here.<br><br>Try selecting <code>Profile</code> from the drop down menu to continue the tour.' %}",
+            title: "{% trans 'Profile and settings menu' %}",
+            attachTo: {
+                element: "#navbar-dropdown",
+                on: "left-end",
+            },
+            buttons: [
+                {
+                    action() {
+                        return this.back();
+                    },
+                    secondary: true,
+                    text: "{% trans 'Back' %}",
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: "{% trans 'Ok' %}",
+                },
+            ],
+        }
+    ]);
+
+    initiateTour.start()
+</script>
