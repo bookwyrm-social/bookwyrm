@@ -1,0 +1,136 @@
+{% load i18n %}
+
+<script>
+    const tour = new Shepherd.Tour({
+        exitOnEsc: true,
+    });
+
+    tour.addSteps([
+        {
+            text: "{% trans 'This is your user profile. All your latest activities will be listed here, as well as links to your reading goal, groups, lists, and shelves. Other Bookwyrm users can see this page too - though exactly what they can see depends on your settings.' %}",
+            title: "{% trans 'User Profile' %}",
+            buttons: [
+                {
+                    action() {
+                        return this.cancel();
+                    },
+                    secondary: true,
+                    text: "{% trans 'Cancel' %}",
+                    classes: "is-danger",
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: "{% trans 'Next' %}",
+                },
+            ],
+        },
+        {
+            text: "{% trans 'This tab shows everything you have read towards your annual reading goal, or allows you to set one. You do not have to set a reading goal if that\'s not your thing!' %}",
+            title: "{% trans 'Reading Goal' %}",
+            attachTo: {
+                element: "#reading_goal_tab",
+                on: "right",
+            },
+            buttons: [
+                {
+                    action() {
+                        return this.back();
+                    },
+                    secondary: true,
+                    text: "{% trans 'Back' %}",
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: "{% trans 'Next' %}",
+                },
+            ],
+        },
+        {
+            text: "{% trans 'The Books tab shows your books, on various shelves.' %}",
+            title: "{% trans 'Books' %}",
+            attachTo: {
+                element: "#shelves_tab",
+                on: "right",
+            },
+            buttons: [
+                {
+                    action() {
+                        return this.back();
+                    },
+                    secondary: true,
+                    text: "{% trans 'Back' %}",
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: "{% trans 'Next' %}",
+                },
+            ],
+        },
+        {
+            text: "{% trans 'Here you can see your lists, or create a new one. A list is a collection of books that have something in common.' %}",
+            title: "{% trans 'Lists' %}",
+            attachTo: {
+                element: "#lists_tab",
+                on: "right",
+            },
+            buttons: [
+                {
+                    action() {
+                        return this.back();
+                    },
+                    secondary: true,
+                    text: "{% trans 'Back' %}",
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: "{% trans 'Next' %}",
+                },
+            ],
+        },
+        {
+            text: "{% trans 'Here you can see your groups, or create a new one. A group brings together Bookwyrm users and allows them to curate lists together.' %}",
+            title: "{% trans 'Groups' %}",
+            attachTo: {
+                element: "#groups_tab",
+                on: "right",
+            },
+            buttons: [
+                {
+                    action() {
+                        return this.back();
+                    },
+                    secondary: true,
+                    text: "{% trans 'Back' %}",
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: "{% trans 'Next' %}",
+                },
+            ],
+        },
+        {
+            text: "{% trans 'Now that you have seen the basics of your profile page, we\'re going to explore some of these concepts. Start by clicking on' %}<code>{% trans 'Groups' %}</code>.",
+            title: "{% trans 'Groups' %}",
+            buttons: [
+                {
+                    action() {
+                        return this.complete();
+                    },
+                    text: "{% trans 'Ok' %}",
+                },
+            ],
+        },
+    ])
+
+    tour.start()
+</script>
