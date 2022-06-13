@@ -4,7 +4,7 @@
 <script>
     const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
     function disableTour() {
-        fetch('guided-tour/False', {
+        fetch('/guided-tour/False', {
             headers: {
                 'X-CSRFToken': csrftoken,
             },
@@ -76,14 +76,6 @@
                 on: "bottom",
             },
             buttons: [
-                {
-                    action() {
-                        return this.cancel();
-                    },
-                    secondary: true,
-                    text: "{% trans 'Cancel' %}",
-                    classes: "is-danger",
-                },
                 {
                     action() {
                         return this.next();
