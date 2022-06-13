@@ -85,10 +85,6 @@
                 <a href="{% url 'discover' %}" class="navbar-item mt-3 py-0">
                     {% trans "Discover" %}
                 </a>
-                {% if has_tour %}
-                <button id="tour_button" class="button is-inverted is-ghost navbar-item mt-5" onclick="startTour('home')"> {% trans "Help" %}
-                </button>
-                {% endif %}
                 {% endif %}
             </div>
 
@@ -193,6 +189,11 @@
                 <p>
                     <a href="https://docs.joinbookwyrm.com/">{% trans "Documentation" %}</a>
                 </p>
+                {% if request.user.is_authenticated %}
+                <p id="tour_button">
+                    <a href="/guided-tour/?tour=True">{% trans "Guided Tour" %}</a>
+                </p>
+                {% endif %}
             </div>
             <div class="column content is-two-fifth">
                 {% if site.support_link %}
@@ -224,7 +225,6 @@
 <script src="{% static "js/status_cache.js" %}?v={{ js_cache }}"></script>
 <script src="{% static "js/vendor/quagga.min.js" %}?v={{ js_cache }}"></script>
 <script src="{% static "js/vendor/shepherd.min.js" %}?v={{ js_cache }}"></script>
-<script src="{% static "js/tour.js" %}?v={{ js_cache }}"></script>
 
 {% block scripts %}{% endblock %}
 
