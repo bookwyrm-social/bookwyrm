@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-05-31 23:50+0000\n"
-"PO-Revision-Date: 2022-06-13 10:14\n"
+"PO-Revision-Date: 2022-06-14 05:27\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Japanese\n"
 "Language: ja\n"
@@ -2257,7 +2257,7 @@ msgstr "パスワード（確認用）:"
 
 #: bookwyrm/templates/landing/password_reset_request.html:14
 msgid "A link to reset your password will be sent to your email address"
-msgstr "パスワードをリセットするためのリンクがあなたのメールアドレスに送信されました。"
+msgstr "パスワードをリセットするためのリンクがあなたのメールアドレスに送信されます。"
 
 #: bookwyrm/templates/landing/password_reset_request.html:28
 msgid "Reset password"
@@ -3069,39 +3069,41 @@ msgstr ""
 #: bookwyrm/templates/report.html:5
 #: bookwyrm/templates/snippets/report_button.html:13
 msgid "Report"
-msgstr ""
+msgstr "通報"
 
 #: bookwyrm/templates/search/barcode_modal.html:5
 msgid "\n"
 "        Scan Barcode\n"
 "    "
-msgstr ""
+msgstr "\n"
+"        バーコードをスキャン\n"
+"    "
 
 #: bookwyrm/templates/search/barcode_modal.html:23
 msgid "Requesting camera..."
-msgstr ""
+msgstr "カメラへのアクセスを要求しています..."
 
 #: bookwyrm/templates/search/barcode_modal.html:24
 msgid "Grant access to the camera to scan a book's barcode."
-msgstr ""
+msgstr "カメラに対して、本のバーコードをスキャンするためのアクセスを許可してください。"
 
 #: bookwyrm/templates/search/barcode_modal.html:29
 msgid "Could not access camera"
-msgstr ""
+msgstr "カメラへのアクセスができませんでした"
 
 #: bookwyrm/templates/search/barcode_modal.html:33
 msgctxt "barcode scanner"
 msgid "Scanning..."
-msgstr ""
+msgstr "読み込み中..."
 
 #: bookwyrm/templates/search/barcode_modal.html:34
 msgid "Align your book's barcode with the camera."
-msgstr ""
+msgstr "本のバーコードをカメラに合わせてください。"
 
 #: bookwyrm/templates/search/barcode_modal.html:38
 msgctxt "barcode scanner"
 msgid "ISBN scanned"
-msgstr ""
+msgstr "ISBNをスキャンしました"
 
 #: bookwyrm/templates/search/barcode_modal.html:39
 msgctxt "followed by ISBN"
@@ -3114,27 +3116,27 @@ msgstr ""
 
 #: bookwyrm/templates/search/book.html:80
 msgid "Import book"
-msgstr ""
+msgstr "本をインポート"
 
 #: bookwyrm/templates/search/book.html:106
 msgid "Load results from other catalogues"
-msgstr ""
+msgstr "その他のカタログから結果を読み込む"
 
 #: bookwyrm/templates/search/book.html:110
 msgid "Manually add book"
-msgstr ""
+msgstr "本を手動で追加"
 
 #: bookwyrm/templates/search/book.html:115
 msgid "Log in to import or add books."
-msgstr ""
+msgstr "本をインポートまたは追加するにはログインしてください。"
 
 #: bookwyrm/templates/search/layout.html:16
 msgid "Search query"
-msgstr ""
+msgstr "検索クエリ"
 
 #: bookwyrm/templates/search/layout.html:19
 msgid "Search type"
-msgstr ""
+msgstr "検索タイプ"
 
 #: bookwyrm/templates/search/layout.html:23
 #: bookwyrm/templates/search/layout.html:46
@@ -3145,17 +3147,17 @@ msgstr ""
 #: bookwyrm/templates/settings/users/user_admin.html:5
 #: bookwyrm/templates/settings/users/user_admin.html:12
 msgid "Users"
-msgstr ""
+msgstr "ユーザー"
 
 #: bookwyrm/templates/search/layout.html:58
 #, python-format
 msgid "No results found for \"%(query)s\""
-msgstr ""
+msgstr "\"%(query)s\" に対する結果はありません"
 
 #: bookwyrm/templates/settings/announcements/announcement.html:5
 #: bookwyrm/templates/settings/announcements/announcement.html:8
 msgid "Announcement"
-msgstr ""
+msgstr "お知らせ"
 
 #: bookwyrm/templates/settings/announcements/announcement.html:16
 #: bookwyrm/templates/settings/federation/instance.html:93
@@ -3511,7 +3513,7 @@ msgstr ""
 #: bookwyrm/templates/settings/federation/instance.html:43
 #: bookwyrm/templates/settings/users/user_info.html:110
 msgid "Version:"
-msgstr ""
+msgstr "バージョン:"
 
 #: bookwyrm/templates/settings/federation/instance.html:17
 msgid "Refresh data"
@@ -3519,26 +3521,26 @@ msgstr ""
 
 #: bookwyrm/templates/settings/federation/instance.html:37
 msgid "Details"
-msgstr ""
+msgstr "詳細"
 
 #: bookwyrm/templates/settings/federation/instance.html:53
 #: bookwyrm/templates/user/layout.html:67
 msgid "Activity"
-msgstr ""
+msgstr "アクティビティ"
 
 #: bookwyrm/templates/settings/federation/instance.html:56
 msgid "Users:"
-msgstr ""
+msgstr "ユーザー:"
 
 #: bookwyrm/templates/settings/federation/instance.html:59
 #: bookwyrm/templates/settings/federation/instance.html:65
 msgid "View all"
-msgstr ""
+msgstr "全て表示"
 
 #: bookwyrm/templates/settings/federation/instance.html:62
 #: bookwyrm/templates/settings/users/user_info.html:60
 msgid "Reports:"
-msgstr ""
+msgstr "通報:"
 
 #: bookwyrm/templates/settings/federation/instance.html:68
 msgid "Followed by us:"
@@ -3555,35 +3557,35 @@ msgstr ""
 #: bookwyrm/templates/settings/federation/instance.html:90
 #: bookwyrm/templates/settings/users/user_info.html:117
 msgid "Notes"
-msgstr ""
+msgstr "ノート"
 
 #: bookwyrm/templates/settings/federation/instance.html:97
 msgid "<em>No notes</em>"
-msgstr ""
+msgstr "<em>ノートはありません。</em>"
 
 #: bookwyrm/templates/settings/federation/instance.html:116
 #: bookwyrm/templates/settings/link_domains/link_domains.html:87
 #: bookwyrm/templates/snippets/block_button.html:5
 msgid "Block"
-msgstr ""
+msgstr "ブロック"
 
 #: bookwyrm/templates/settings/federation/instance.html:117
 msgid "All users from this instance will be deactivated."
-msgstr ""
+msgstr "このインスタンスのすべてのユーザーが無効化されます。"
 
 #: bookwyrm/templates/settings/federation/instance.html:122
 #: bookwyrm/templates/snippets/block_button.html:10
 msgid "Un-block"
-msgstr ""
+msgstr "ブロック解除"
 
 #: bookwyrm/templates/settings/federation/instance.html:123
 msgid "All users from this instance will be re-activated."
-msgstr ""
+msgstr "このインスタンスのすべてのユーザーが再アクティブ化されます。"
 
 #: bookwyrm/templates/settings/federation/instance_blocklist.html:6
 #: bookwyrm/templates/settings/federation/instance_blocklist.html:15
 msgid "Import Blocklist"
-msgstr ""
+msgstr "ブロックリストのインポート"
 
 #: bookwyrm/templates/settings/federation/instance_blocklist.html:38
 msgid "Success!"
@@ -3591,36 +3593,36 @@ msgstr ""
 
 #: bookwyrm/templates/settings/federation/instance_blocklist.html:42
 msgid "Successfully blocked:"
-msgstr ""
+msgstr "ブロックに成功しました:"
 
 #: bookwyrm/templates/settings/federation/instance_blocklist.html:44
 msgid "Failed:"
-msgstr ""
+msgstr "失敗:"
 
 #: bookwyrm/templates/settings/federation/instance_list.html:35
 #: bookwyrm/templates/settings/users/server_filter.html:5
 msgid "Instance name"
-msgstr ""
+msgstr "インスタンス名"
 
 #: bookwyrm/templates/settings/federation/instance_list.html:43
 msgid "Last updated"
-msgstr ""
+msgstr "最終更新日時"
 
 #: bookwyrm/templates/settings/federation/instance_list.html:47
 #: bookwyrm/templates/settings/federation/software_filter.html:5
 msgid "Software"
-msgstr ""
+msgstr "ソフトウェア"
 
 #: bookwyrm/templates/settings/federation/instance_list.html:69
 msgid "No instances found"
-msgstr ""
+msgstr "インスタンスが見つかりません"
 
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:4
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:11
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:25
 #: bookwyrm/templates/settings/invites/manage_invites.html:11
 msgid "Invite Requests"
-msgstr ""
+msgstr "招待リクエスト"
 
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:15
 #: bookwyrm/templates/settings/invites/manage_invites.html:3
@@ -3640,12 +3642,12 @@ msgstr ""
 
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:39
 msgid "Date accepted"
-msgstr ""
+msgstr "受理日"
 
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:42
 #: bookwyrm/templates/settings/users/email_filter.html:5
 msgid "Email"
-msgstr ""
+msgstr "メールアドレス"
 
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:44
 msgid "Answer"
@@ -3653,7 +3655,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:50
 msgid "Action"
-msgstr ""
+msgstr "操作"
 
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:53
 msgid "No requests"
@@ -3662,12 +3664,12 @@ msgstr ""
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:65
 #: bookwyrm/templates/settings/invites/status_filter.html:16
 msgid "Accepted"
-msgstr ""
+msgstr "承認済み"
 
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:67
 #: bookwyrm/templates/settings/invites/status_filter.html:12
 msgid "Sent"
-msgstr ""
+msgstr "送信済み"
 
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:69
 #: bookwyrm/templates/settings/invites/status_filter.html:8
@@ -3676,106 +3678,106 @@ msgstr ""
 
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:79
 msgid "Send invite"
-msgstr ""
+msgstr "招待を送信する"
 
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:81
 msgid "Re-send invite"
-msgstr ""
+msgstr "招待を再送信する"
 
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:101
 msgid "Ignore"
-msgstr ""
+msgstr "無視"
 
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:103
 msgid "Un-ignore"
-msgstr ""
+msgstr "取り消し"
 
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:114
 msgid "Back to pending requests"
-msgstr ""
+msgstr "保留中の招待リクエストに戻る"
 
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:116
 msgid "View ignored requests"
-msgstr ""
+msgstr "無視された招待リクエストを表示"
 
 #: bookwyrm/templates/settings/invites/manage_invites.html:21
 msgid "Generate New Invite"
-msgstr ""
+msgstr "新しい招待を作成"
 
 #: bookwyrm/templates/settings/invites/manage_invites.html:27
 msgid "Expiry:"
-msgstr ""
+msgstr "有効期限:"
 
 #: bookwyrm/templates/settings/invites/manage_invites.html:33
 msgid "Use limit:"
-msgstr ""
+msgstr "使用上限:"
 
 #: bookwyrm/templates/settings/invites/manage_invites.html:40
 msgid "Create Invite"
-msgstr ""
+msgstr "招待を作成"
 
 #: bookwyrm/templates/settings/invites/manage_invites.html:48
 msgid "Expires"
-msgstr ""
+msgstr "有効期限"
 
 #: bookwyrm/templates/settings/invites/manage_invites.html:49
 msgid "Max uses"
-msgstr ""
+msgstr "使用上限"
 
 #: bookwyrm/templates/settings/invites/manage_invites.html:50
 msgid "Times used"
-msgstr ""
+msgstr "使用された回数"
 
 #: bookwyrm/templates/settings/invites/manage_invites.html:53
 msgid "No active invites"
-msgstr ""
+msgstr "アクティブな招待はありません"
 
 #: bookwyrm/templates/settings/ip_blocklist/ip_address_form.html:5
 #: bookwyrm/templates/settings/ip_blocklist/ip_blocklist.html:10
 msgid "Add IP address"
-msgstr ""
+msgstr "IPアドレスを追加"
 
 #: bookwyrm/templates/settings/ip_blocklist/ip_address_form.html:11
 msgid "Use IP address blocks with caution, and consider using blocks only temporarily, as IP addresses are often shared or change hands. If you block your own IP, you will not be able to access this page."
-msgstr ""
+msgstr "IPアドレスのブロックは慎重に使用し、IPアドレスの共有や変更が頻繁に行われるため、ブロックの使用は一時的なものにとどめることを検討してください。ご自身のIPをブロックすると、このページにアクセスできなくなります。"
 
 #: bookwyrm/templates/settings/ip_blocklist/ip_address_form.html:18
 msgid "IP Address:"
-msgstr ""
+msgstr "IPアドレス:"
 
 #: bookwyrm/templates/settings/ip_blocklist/ip_address_form.html:24
 msgid "You can block IP ranges using CIDR syntax."
-msgstr ""
+msgstr "CIDR構文を使用して、IP範囲をブロックすることができます。"
 
 #: bookwyrm/templates/settings/ip_blocklist/ip_blocklist.html:5
 #: bookwyrm/templates/settings/ip_blocklist/ip_blocklist.html:7
 #: bookwyrm/templates/settings/layout.html:69
 msgid "IP Address Blocklist"
-msgstr ""
+msgstr "IPアドレスブロックリスト"
 
 #: bookwyrm/templates/settings/ip_blocklist/ip_blocklist.html:18
 msgid "Any traffic from this IP address will get a 404 response when trying to access any part of the application."
-msgstr ""
+msgstr "このIPアドレスからのトラフィックには、404エラーを返します。"
 
 #: bookwyrm/templates/settings/ip_blocklist/ip_blocklist.html:24
 msgid "Address"
-msgstr ""
+msgstr "アドレス"
 
 #: bookwyrm/templates/settings/ip_blocklist/ip_blocklist.html:46
 msgid "No IP addresses currently blocked"
-msgstr ""
+msgstr "現在ブロックしているIPアドレスはありません"
 
 #: bookwyrm/templates/settings/layout.html:4
 msgid "Administration"
-msgstr ""
+msgstr "管理"
 
 #: bookwyrm/templates/settings/layout.html:31
 msgid "Manage Users"
-msgstr ""
+msgstr "ユーザーの管理"
 
 #: bookwyrm/templates/settings/layout.html:53
 msgid "Moderation"
-msgstr ""
+msgstr "モデレーション"
 
 #: bookwyrm/templates/settings/layout.html:57
 #: bookwyrm/templates/settings/reports/reports.html:8
@@ -3943,19 +3945,19 @@ msgstr ""
 #: bookwyrm/templates/settings/site.html:13
 #: bookwyrm/templates/settings/site.html:134
 msgid "Registration"
-msgstr ""
+msgstr "登録"
 
 #: bookwyrm/templates/settings/site.html:22
 msgid "Settings saved"
-msgstr ""
+msgstr "保存しました"
 
 #: bookwyrm/templates/settings/site.html:31
 msgid "Unable to save settings"
-msgstr ""
+msgstr "保存できませんでした"
 
 #: bookwyrm/templates/settings/site.html:47
 msgid "Instance Name:"
-msgstr ""
+msgstr "インスタンス名:"
 
 #: bookwyrm/templates/settings/site.html:51
 msgid "Tagline:"
@@ -3963,87 +3965,87 @@ msgstr ""
 
 #: bookwyrm/templates/settings/site.html:55
 msgid "Instance description:"
-msgstr ""
+msgstr "インスタンスの説明:"
 
 #: bookwyrm/templates/settings/site.html:59
 msgid "Short description:"
-msgstr ""
+msgstr "短い説明:"
 
 #: bookwyrm/templates/settings/site.html:60
 msgid "Used when the instance is previewed on joinbookwyrm.com. Does not support HTML or Markdown."
-msgstr ""
+msgstr "joinbookwyrm.comでインスタンスがプレビューされるときに使用されます。HTMLやMarkdownは使用できません。"
 
 #: bookwyrm/templates/settings/site.html:64
 msgid "Code of conduct:"
-msgstr ""
+msgstr "行動規範:"
 
 #: bookwyrm/templates/settings/site.html:68
 msgid "Privacy Policy:"
-msgstr ""
+msgstr "プライバシーポリシー:"
 
 #: bookwyrm/templates/settings/site.html:79
 msgid "Images"
-msgstr ""
+msgstr "画像"
 
 #: bookwyrm/templates/settings/site.html:82
 msgid "Logo:"
-msgstr ""
+msgstr "ロゴ:"
 
 #: bookwyrm/templates/settings/site.html:86
 msgid "Logo small:"
-msgstr ""
+msgstr "小さいロゴ:"
 
 #: bookwyrm/templates/settings/site.html:90
 msgid "Favicon:"
-msgstr ""
+msgstr "ファビコン:"
 
 #: bookwyrm/templates/settings/site.html:98
 msgid "Default theme:"
-msgstr ""
+msgstr "デフォルトテーマ:"
 
 #: bookwyrm/templates/settings/site.html:113
 msgid "Support link:"
-msgstr ""
+msgstr "サポートリンク:"
 
 #: bookwyrm/templates/settings/site.html:117
 msgid "Support title:"
-msgstr ""
+msgstr "サポートタイトル:"
 
 #: bookwyrm/templates/settings/site.html:121
 msgid "Admin email:"
-msgstr ""
+msgstr "管理者のメールアドレス:"
 
 #: bookwyrm/templates/settings/site.html:125
 msgid "Additional info:"
-msgstr ""
+msgstr "追加情報:"
 
 #: bookwyrm/templates/settings/site.html:139
 msgid "Allow registration"
-msgstr ""
+msgstr "登録を許可する"
 
 #: bookwyrm/templates/settings/site.html:145
 msgid "Require users to confirm email address"
-msgstr ""
+msgstr "電子メールアドレスの確認をユーザーに要求する"
 
 #: bookwyrm/templates/settings/site.html:147
 msgid "(Recommended if registration is open)"
-msgstr ""
+msgstr "(登録が可能な場合は推奨)"
 
 #: bookwyrm/templates/settings/site.html:152
 msgid "Allow invite requests"
-msgstr ""
+msgstr "招待リクエストを許可する"
 
 #: bookwyrm/templates/settings/site.html:158
 msgid "Set a question for invite requests"
-msgstr ""
+msgstr "招待リクエストの質問を設定する"
 
 #: bookwyrm/templates/settings/site.html:163
 msgid "Question:"
-msgstr ""
+msgstr "質問:"
 
 #: bookwyrm/templates/settings/site.html:168
 msgid "Registration closed text:"
-msgstr ""
+msgstr "登録が閉じられた時のテキスト:"
 
 #: bookwyrm/templates/settings/site.html:172
 msgid "Invite request text:"
@@ -4176,11 +4178,11 @@ msgstr ""
 
 #: bookwyrm/templates/settings/users/user_info.html:55
 msgid "Email:"
-msgstr ""
+msgstr "メールアドレス:"
 
 #: bookwyrm/templates/settings/users/user_info.html:65
 msgid "(View reports)"
-msgstr ""
+msgstr "(通報を見る)"
 
 #: bookwyrm/templates/settings/users/user_info.html:71
 msgid "Blocked by count:"
@@ -4324,15 +4326,15 @@ msgstr ""
 
 #: bookwyrm/templates/setup/config.html:130
 msgid "This is your last chance to set your domain and protocol."
-msgstr ""
+msgstr "ドメインとプロトコルを設定する最後のチャンスです。"
 
 #: bookwyrm/templates/setup/config.html:144
 msgid "You can change your instance settings in the <code>.env</code> file on your server."
-msgstr ""
+msgstr "インスタンスの設定は、サーバー上の <code>.env</code> ファイルで変更することができます。"
 
 #: bookwyrm/templates/setup/config.html:148
 msgid "View installation instructions"
-msgstr ""
+msgstr "インストールの手順を見る"
 
 #: bookwyrm/templates/setup/layout.html:5
 msgid "Instance Setup"
@@ -4349,20 +4351,20 @@ msgstr ""
 #: bookwyrm/templates/shelf/create_shelf_form.html:5
 #: bookwyrm/templates/shelf/shelf.html:72
 msgid "Create shelf"
-msgstr ""
+msgstr "本棚を作成"
 
 #: bookwyrm/templates/shelf/edit_shelf_form.html:5
 msgid "Edit Shelf"
-msgstr ""
+msgstr "本棚を編集"
 
 #: bookwyrm/templates/shelf/shelf.html:24
 msgid "User profile"
-msgstr ""
+msgstr "ユーザープロフィール"
 
 #: bookwyrm/templates/shelf/shelf.html:39
 #: bookwyrm/templatetags/shelf_tags.py:46 bookwyrm/views/shelf/shelf.py:53
 msgid "All books"
-msgstr ""
+msgstr "全ての本"
 
 #: bookwyrm/templates/shelf/shelf.html:97
 #, python-format
@@ -4405,15 +4407,15 @@ msgstr ""
 
 #: bookwyrm/templates/shelf/shelf.html:210
 msgid "This shelf is empty."
-msgstr ""
+msgstr "この本棚は空です。"
 
 #: bookwyrm/templates/snippets/add_to_group_button.html:16
 msgid "Invite"
-msgstr ""
+msgstr "招待"
 
 #: bookwyrm/templates/snippets/add_to_group_button.html:25
 msgid "Uninvite"
-msgstr ""
+msgstr "招待を取り消す"
 
 #: bookwyrm/templates/snippets/add_to_group_button.html:29
 #, python-format
@@ -5147,21 +5149,21 @@ msgstr "ユーザー名またはパスワードが正しくありません。"
 
 #: bookwyrm/views/landing/password.py:32
 msgid "No user with that email address was found."
-msgstr "このメールアドレスのユーザーが見つかりませんでした。"
+msgstr "その電子メールアドレスを持つユーザーは見つかりませんでした。"
 
 #: bookwyrm/views/landing/password.py:43
 #, python-brace-format
 msgid "A password reset link was sent to {email}"
-msgstr "{email} にパスワードリセットリンクを送信しました"
+msgstr "パスワードリセットリンクが {email} に送信されました"
 
 #: bookwyrm/views/rss_feed.py:34
 #, python-brace-format
 msgid "Status updates from {obj.display_name}"
-msgstr "{obj.display_name} からステータスの更新"
+msgstr "{obj.display_name} からのステータス更新"
 
 #: bookwyrm/views/updates.py:45
 #, python-format
 msgid "Load %(count)d unread status"
 msgid_plural "Load %(count)d unread statuses"
-msgstr[0] "%(count)d 件の未読ステータスを読み込む"
+msgstr[0] "%(count)d 個の未読ステータスを読み込む"
 
