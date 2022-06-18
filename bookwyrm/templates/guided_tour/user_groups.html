@@ -99,7 +99,7 @@
                     {% trans 'Anyone can see and join a public group. Unlisted groups are currently exactly the same as public groups. Private groups can only be seen by members of the group.' %}",
             title: "{% trans 'Group visibility' %}",
             attachTo: {
-                element: "privacy_select_button",
+                element: "#privacy_select_button",
                 on: "left",
             },
             buttons: [
@@ -120,7 +120,7 @@
         },
         {
             text: "{% trans 'Once you\'re happy with how your group is set up, click the \'Save\' button.' %}",
-            title: "{% trans '' %}",
+            title: "{% trans 'Save your group' %}",
             buttons: [
                 {
                     action() {
