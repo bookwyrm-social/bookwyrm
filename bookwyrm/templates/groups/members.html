@@ -10,7 +10,7 @@
         <div class="control">
             <input type="text" name="user_query" value="{{ request.GET.user_query }}" class="input" placeholder="{% trans 'Search to add a user' %}" aria-label="{% trans 'Search to add a user' %}">
         </div>
-        <div class="control">
+        <div class="control" id="group_member_search_button">
             <button class="button" type="submit">
                 <span class="icon icon-search" title="{% trans 'Search' %}">
                     <span class="is-sr-only">{% trans "Search" %}</span>

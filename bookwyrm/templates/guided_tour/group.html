@@ -1,0 +1,131 @@
+{% load i18n %}
+{% csrf_token %}
+
+<script>
+    // TODO: put this with the token back in general layout so it can be called from any tour
+    // TODO: account for smaller screen view in all tours
+    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    function disableTour() {
+        fetch('/guided-tour/False', {
+            headers: {
+                'X-CSRFToken': csrftoken,
+            },
+            method: 'POST', 
+            redirect: 'follow',
+            mode: 'same-origin',
+        })
+        .then( resp => {console.log(resp.statusText) })
+    }
+    const tour = new Shepherd.Tour({
+        exitOnEsc: true,
+    });
+
+    tour.addSteps([
+        {
+            text: "{% trans 'This is the home page of your new group! This is where you can add and remove users, create user-curated lists, and edit the group details.' %}",
+            title: "{% trans 'Your group' %}",
+            buttons: [
+                {
+                    action() {
+                        disableTour();
+                        return this.complete();
+                    },
+                    secondary: true,
+                    text: "{% trans 'End Tour' %}",
+                    classes: "is-danger",
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: "{% trans 'Next' %}",
+                },
+            ],
+        },
+        {
+            text: "{% trans 'Use this search box to find users to join your group. Currently users must be invited by the group owner.' %}",
+            title: "{% trans 'Find users' %}",
+            attachTo: {
+                element: "#group_member_search_button",
+                on: "right",
+            },
+            buttons: [
+                {
+                    action() {
+                        return this.back();
+                    },
+                    secondary: true,
+                    text: "{% trans 'Back' %}",
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: "{% trans 'Next' %}",
+                },
+            ],
+        },
+        {
+            text: "{% trans 'Your group members will appear here. The group owner is marked with a star symbol.' %}",
+            title: "{% trans 'Group members' %}",
+            attachTo: {
+                element: '[title="Manager"]',
+                on: "right",
+            },
+            buttons: [
+                {
+                    action() {
+                        return this.back();
+                    },
+                    secondary: true,
+                    text: "{% trans 'Back' %}",
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: "{% trans 'Next' %}",
+                },
+            ],
+        },
+        {
+            text: "{% trans 'Groups can have group-curated lists. We haven\'t discussed lists yet, so now let\s fix that.' %}\
+            <br><br>\
+            {% trans 'Click on the button to create a list.' %}",
+            title: "{% trans 'Group lists' %}",
+            attachTo: {
+                element: "#create_group_list_button",
+                on: "right",
+            },
+            buttons: [
+                {
+                    action() {
+                        return this.back();
+                    },
+                    secondary: true,
+                    text: "{% trans 'Back' %}",
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: "{% trans 'Next' %}",
+                },
+            ],
+        },
+        {
+            text: "{% trans 'todo' %}",
+            title: "{% trans 'TODO' %}",
+            buttons: [
+                {
+                    action() {
+                        return this.complete();
+                    },
+                    text: "{% trans 'Ok' %}",
+                },
+            ],
+        },
+    ])
+
+    tour.start()
+</script>
