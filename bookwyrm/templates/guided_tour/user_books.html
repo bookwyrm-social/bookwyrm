@@ -7,8 +7,8 @@
 
     tour.addSteps([
         {
-            text: "{% trans 'This is the home page of your new group! This is where you can add and remove users, create user-curated lists, and edit the group details.' %}",
-            title: "{% trans 'Your group' %}",
+            text: "{% trans 'ffff' %}",
+            title: "{% trans 'bbbb' %}",
             buttons: [
                 {
                     action() {
@@ -17,7 +17,7 @@
                     },
                     secondary: true,
                     text: "{% trans 'End Tour' %}",
-                    classes: "is-danger guided-tour-cancel-button",
+                    classes: "is-danger",
                 },
                 {
                     action() {
@@ -28,11 +28,11 @@
             ],
         },
         {
-            text: "{% trans 'Use this search box to find users to join your group. Currently users must be invited by the group owner.' %}",
-            title: "{% trans 'Find users' %}",
+            text: "{% trans 'These are your book shelves.' %}",
+            title: "{% trans 'Shelves' %}",
             attachTo: {
-                element: "#group_member_search_button",
-                on: "right",
+                element: "#user-shelves",
+                on: "top",
             },
             buttons: [
                 {
@@ -51,11 +51,11 @@
             ],
         },
         {
-            text: "{% trans 'Your group members will appear here. The group owner is marked with a star symbol.' %}",
-            title: "{% trans 'Group members' %}",
+            text: "{% trans 'The BLAH are default shelves that are used to indicate the reading status of books. A book can only be assigned to one of these shelves at any given moment e.g. a  book is not allowed to be on both the Currently Reading and the To Read shelves. Usually Bookwyrm will automatically allocate a book to one of these shelves when you change the reading status of the book.' %}",
+            title: "{% trans 'Creating a group' %}",
             attachTo: {
-                element: '[title="Manager"]',
-                on: "right",
+                element: "#user-shelves",
+                on: "bottom-start",
             },
             buttons: [
                 {
@@ -74,13 +74,16 @@
             ],
         },
         {
-            text: "{% trans 'Groups can have group-curated lists. We haven\'t discussed lists yet, so now let\s fix that.' %}\
-            <br><br>\
-            {% trans 'Click on the button to create a list.' %}",
-            title: "{% trans 'Group lists' %}",
+            text: "{% trans 'Groups can be ' %}\
+                    <code>{% trans 'Public' %}</code>,\
+                    <code>{% trans 'Unlisted' %}</code>,\
+                    {% trans 'or ' %}\
+                    <code>{% trans 'Private' %}</code><br><br>\
+                    {% trans 'Anyone can see and join a public group. Unlisted groups are currently exactly the same as public groups. Private groups can only be seen by members of the group.' %}",
+            title: "{% trans 'Group visibility' %}",
             attachTo: {
-                element: "#create_group_list_button",
-                on: "right",
+                element: "#privacy_select_button",
+                on: "left",
             },
             buttons: [
                 {
@@ -99,8 +102,8 @@
             ],
         },
         {
-            text: "{% trans 'todo' %}",
-            title: "{% trans 'TODO' %}",
+            text: "{% trans 'Once you\'re happy with how your group is set up, click the \'Save\' button.' %}",
+            title: "{% trans 'Save your group' %}",
             buttons: [
                 {
                     action() {
