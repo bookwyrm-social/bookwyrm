@@ -32,7 +32,7 @@
 
 <nav class="block columns is-mobile scroll-x">
     <div class="column pr-0">
-        <div class="tabs">
+        <div class="tabs" id="user-shelves">
             <ul>
                 <li class="{% if shelf.identifier == 'all' %}is-active{% endif %}">
                     <a href="{% url 'user-shelves' user|username %}"{% if shelf.identifier == 'all' %} aria-current="page"{% endif %}>
@@ -215,4 +215,10 @@
 <div>
     {% include 'snippets/pagination.html' with page=books path=request.path %}
 </div>
+{% endblock %}
+
+{% block scripts %}
+{% if user.show_guided_tour %}
+    {% include 'guided_tour/user_books.html' %}
+{% endif %}
 {% endblock %}
