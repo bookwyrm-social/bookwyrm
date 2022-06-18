@@ -1,19 +1,6 @@
 {% load i18n %}
-{% csrf_token %}
 
 <script>
-    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-    function disableTour() {
-        fetch('/guided-tour/False', {
-            headers: {
-                'X-CSRFToken': csrftoken,
-            },
-            method: 'POST', 
-            redirect: 'follow',
-            mode: 'same-origin',
-        })
-        .then( resp => {console.log(resp.statusText) })
-    }
     const tour = new Shepherd.Tour({
         exitOnEsc: true,
     });
@@ -25,7 +12,7 @@
             buttons: [
                 {
                     action() {
-                        disableTour();
+                        disableGuidedTour(csrf_token);
                         return this.complete();
                     },
                     secondary: true,

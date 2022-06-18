@@ -1,21 +1,19 @@
 {% load i18n %}
 {% csrf_token %}
 
+<!-- TODO: account for smaller screen view in all tours -->
+<!-- 
+    order of tour:
+    1. home page
+    2. profile
+    3. books (shelves)
+    4. lists
+    5. groups
+    6. direct messages
+    7. settings
+ -->
+
 <script>
-    // TODO: put this with the token back in general layout so it can be called from any tour
-    // TODO: account for smaller screen view in all tours
-    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-    function disableTour() {
-        fetch('/guided-tour/False', {
-            headers: {
-                'X-CSRFToken': csrftoken,
-            },
-            method: 'POST', 
-            redirect: 'follow',
-            mode: 'same-origin',
-        })
-        .then( resp => {console.log(resp.statusText) })
-    }
     const tour = new Shepherd.Tour({
         exitOnEsc: true,
     });
@@ -27,12 +25,12 @@
             buttons: [
                 {
                     action() {
-                        disableTour();
+                        disableGuidedTour(csrf_token);
                         return this.complete();
                     },
                     secondary: true,
                     text: "{% trans 'End Tour' %}",
-                    classes: "is-danger",
+                    classes: "is-danger guided-tour-cancel-button",
                 },
                 {
                     action() {
