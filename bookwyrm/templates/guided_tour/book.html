@@ -1,0 +1,149 @@
+{% load i18n %}
+
+<script>
+    const tour = new Shepherd.Tour({
+        exitOnEsc: true,
+    });
+
+    tour.addSteps([
+        {
+            text: "{% trans 'This is home page of a book. Let\s see what you can do while you are here!' %}",
+            title: "{% trans 'Book page' %}",
+            buttons: [
+                {
+                    action() {
+                        disableGuidedTour(csrf_token);
+                        return this.complete();
+                    },
+                    secondary: true,
+                    text: "{% trans 'End Tour' %}",
+                    classes: "is-danger",
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: "{% trans 'Next' %}",
+                },
+            ],
+        },
+        {
+            text: "{% trans 'This is where you can set a reading status for this book. You can press the button to move to the next stage, or use the drop down button to select the reading status you want to set.' %}",
+            title: "{% trans 'Reading status' %}",
+            attachTo: {
+                element: "div[data-shelve-button-book]",
+                on: "right",
+            },
+            buttons: [
+                {
+                    action() {
+                        return this.back();
+                    },
+                    secondary: true,
+                    text: "{% trans 'Back' %}",
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: "{% trans 'Next' %}",
+                },
+            ],
+        },
+        {
+            text: "{% trans 'There can be multiple editions of a book, in various formats or languages. You may wish to view a different edition (for example if you are setting a reading status). ' %}",
+            title: "{% trans 'Other editions' %}",
+            attachTo: {
+                element: "#other-editions-link",
+                on: "top-start",
+            },
+            buttons: [
+                {
+                    action() {
+                        return this.back();
+                    },
+                    secondary: true,
+                    text: "{% trans 'Back' %}",
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: "{% trans 'Next' %}",
+                },
+            ],
+        },
+        {
+            text: "{% trans 'Some ebooks can be downloaded for free from external sources. They will be shown here.' %}",
+            title: "{% trans 'Download links' %}",
+            attachTo: {
+                element: "#book-file-links",
+                on: "left",
+            },
+            buttons: [
+                {
+                    action() {
+                        return this.back();
+                    },
+                    secondary: true,
+                    text: "{% trans 'Back' %}",
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: "{% trans 'Next' %}",
+                },
+            ],
+        },
+        {
+            text: "{% trans 'If you have already read this book you can add your reading dates here. Note that adding read-through dates manually will not automatically add them to your ' %}\
+            <code>\
+            {% trans 'Read' %}\
+            </code>\
+            {% trans ' or '%}\
+            <code>\
+            {% trans 'Reading' %}\
+            </code>\
+            {% trans ' shelves.'%}",
+            title: "{% trans 'Add readthrough dates' %}",
+            attachTo: {
+                element: "button[data-modal-open='add-readthrough']",
+                on: "top",
+            },
+            buttons: [
+                {
+                    action() {
+                        return this.back();
+                    },
+                    secondary: true,
+                    text: "{% trans 'Back' %}",
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: "{% trans 'Next' %}",
+                },
+            ],
+        },
+        {
+            text: "{% trans 'Let\'s continue the tour by selecting \'Your Books\' from the drop down menu.' %}",
+            title: "{% trans 'Next' %}",
+            attachTo: {
+                element: "summary[aria-label='View profile and more']",
+                on: "left",
+            },
+            buttons: [
+                {
+                    action() {
+                        return this.complete();
+                    },
+                    text: "{% trans 'Ok' %}",
+                },
+            ],
+        },
+    ])
+
+    tour.start()
+</script>

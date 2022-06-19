@@ -210,7 +210,7 @@
 
                 {% with work=book.parent_work %}
                 <p>
-                    <a href="{{ work.local_path }}/editions">
+                    <a href="{{ work.local_path }}/editions" id="other-editions-link">
                         {% blocktrans trimmed count counter=work.editions.count with count=work.editions.count|intcomma %}
                             {{ count }} edition
                             {% plural %}
@@ -392,7 +392,7 @@
             </section>
             {% endif %}
 
-            <section class="content block">
+            <section class="content block" id="book-file-links">
                 {% include "book/file_links/links.html" %}
             </section>
         </div>
@@ -405,4 +405,7 @@
 {% block scripts %}
 <script src="{% static "js/tabs.js" %}?v={{ js_cache }}"></script>
 <script src="{% static "js/autocomplete.js" %}?v={{ js_cache }}"></script>
+{% if user.show_guided_tour %}
+    {% include 'guided_tour/book.html' %}
+{% endif %}
 {% endblock %}
