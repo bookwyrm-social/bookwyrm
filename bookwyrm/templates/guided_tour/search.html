@@ -1,0 +1,191 @@
+{% load i18n %}
+
+<script>
+
+    let localResult = document.querySelector(".local-book-search-result");
+    let remoteResult = document.querySelector(".remote-book-search-result");
+    let otherCatalogues = document.querySelector("#load-from-other-catalogues");
+    let manuallyAdd = document.querySelector("#manually-add-book");
+    const tour = new Shepherd.Tour({
+        exitOnEsc: true,
+    });
+
+    console.log("remote", remoteResult)
+
+    if (remoteResult) {
+        tour.addStep(
+        {
+            text: "{% trans 'If the book you are looking for is available on a remote catalogue such as Open Library, click on' %}\
+            <code>\
+            {% trans 'Import book' %}\
+            </code>.",
+            title: "{% trans 'Searching' %}",
+            attachTo: {
+                element: ".remote-book-search-result",
+                on: "top",
+            },
+            buttons: [
+                {
+                    action() {
+                        disableGuidedTour(csrf_token);
+                        return this.complete();
+                    },
+                    secondary: true,
+                    text: "{% trans 'End Tour' %}",
+                    classes: "is-danger guided-tour-cancel-button",
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: "{% trans 'Next' %}",
+                },
+            ],
+        });
+    } else if (localResult) {
+    tour.addStep(
+        {
+            text: "{% trans 'If the book you are looking for is already on this server, you can click on the title to go to the book\'s page.' %}",
+            title: "{% trans 'Searching' %}",
+            attachTo: {
+                element: ".local-book-search-result",
+                on: "top",
+            },
+            buttons: [
+                {
+                    action() {
+                        disableGuidedTour(csrf_token);
+                        return this.complete();
+                    },
+                    secondary: true,
+                    text: "{% trans 'End Tour' %}",
+                    classes: "is-danger guided-tour-cancel-button",
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: "{% trans 'Next' %}",
+                },
+            ],
+        });
+    }
+
+    if (otherCatalogues) {
+        tour.addStep({
+            text: "{% trans 'If the book you are looking for is not listed, try loading more records from other sources like Open Library or Inventaire.' %}",
+            title: "{% trans 'Load more records' %}",
+            attachTo: {
+                element: "#load-from-other-catalogues",
+                on: "right",
+            },
+            buttons: [
+                {
+                    action() {
+                        return this.back();
+                    },
+                    secondary: true,
+                    text: "{% trans 'Back' %}",
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: "{% trans 'Next' %}",
+                },
+            ],
+        })
+    }
+
+    if (manuallyAdd) {
+        tour.addSteps([ 
+            {
+            text: "{% trans 'If your book is not in the results, try adjusting your search terms.' %}",
+            title: "{% trans 'Search again' %}",
+            attachTo: {
+                element: '#search-page-input',
+                on: "right",
+            },
+            buttons: [
+                    {
+                        action() {
+                            return this.back();
+                        },
+                        secondary: true,
+                        text: "{% trans 'Back' %}",
+                    },
+                    {
+                        action() {
+                            return this.next();
+                        },
+                        text: "{% trans 'Next' %}",
+                    },
+                ],
+            },
+            {
+            text: "{% trans 'If you still cannot find your book, you can add a record manually.' %}",
+            title: "{% trans 'Add a record manally' %}",
+            attachTo: {
+                element: "#manually-add-book",
+                on: "right",
+            },
+            buttons: [
+                {
+                    action() {
+                        return this.back();
+                    },
+                    secondary: true,
+                    text: "{% trans 'Back' %}",
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: "{% trans 'Next' %}",
+                },
+            ],
+        }])
+    }
+
+    tour.start()
+</script>
+
+
+
+    // {
+    //     text: "{% trans 'Groups can have group-curated lists. We haven\'t discussed lists yet, so now let\s fix that.' %}\
+    //     <br><br>\
+    //     {% trans 'Click on the button to create a list.' %}",
+    //     title: "{% trans 'Group lists' %}",
+    //     attachTo: {
+    //         element: "#create_group_list_button",
+    //         on: "right",
+    //     },
+    //     buttons: [
+    //         {
+    //             action() {
+    //                 return this.back();
+    //             },
+    //             secondary: true,
+    //             text: "{% trans 'Back' %}",
+    //         },
+    //         {
+    //             action() {
+    //                 return this.next();
+    //             },
+    //             text: "{% trans 'Next' %}",
+    //         },
+    //     ],
+    // },
+    // {
+    //     text: "{% trans 'todo' %}",
+    //     title: "{% trans 'TODO' %}",
+    //     buttons: [
+    //         {
+    //             action() {
+    //                 return this.complete();
+    //             },
+    //             text: "{% trans 'Ok' %}",
+    //         },
+    //     ],
+    // },

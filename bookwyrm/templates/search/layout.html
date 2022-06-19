@@ -13,7 +13,7 @@
 <form class="block" action="{% url 'search' %}" method="GET">
     <div class="field has-addons">
         <div class="control">
-            <input type="text" class="input" name="q" value="{{ query }}" aria-label="{% trans 'Search query' %}">
+            <input type="text" class="input" name="q" value="{{ query }}" aria-label="{% trans 'Search query' %}" id="search-page-input">
         </div>
         <div class="control">
             <div class="select" aria-label="{% trans 'Search type' %}">
@@ -52,7 +52,7 @@
     </ul>
 </nav>
 
-<section class="block">
+<section class="block" id="search-results-block">
     {% if not results %}
     <p>
         <em>{% blocktrans %}No results found for "{{ query }}"{% endblocktrans %}</em>
@@ -67,4 +67,10 @@
 </section>
 {% endif %}
 
+{% endblock %}
+
+{% block scripts %}
+{% if user.show_guided_tour %}
+    {% include 'guided_tour/search.html' %}
+{% endif %}
 {% endblock %}
