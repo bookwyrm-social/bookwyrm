@@ -114,15 +114,20 @@ class ListsStream(RedisStore):
 
 @receiver(signals.post_save, sender=models.List)
 # pylint: disable=unused-argument
-def add_list_on_create(sender, instance, created, *args, **kwargs):
+def add_list_on_create(sender, instance, created, *args, update_fields=None, **kwargs):
     """add newly created lists streams"""
-    if not created:
-        # the privacy may have changed, so we need to re-do the whole thing
-        remove_list_task.delay(instance.id, re_add=True)
+    if created:
+        # when creating new things, gotta wait on the transaction
+        transaction.on_commit(lambda: add_list_on_create_command(instance.id))
         return
 
-    # when creating new things, gotta wait on the transaction
-    transaction.on_commit(lambda: add_list_on_create_command(instance.id))
+    # if update_fields was specified, we can check if privacy was updated, but if
+    # it wasn't specified (ie, by an activitypub update), there's no way to know
+    if update_fields and "privacy" not in update_fields:
+        return
+
+    # the privacy may have changed, so we need to re-do the whole thing
+    remove_list_task.delay(instance.id, re_add=True)
 
 
 @receiver(signals.post_delete, sender=models.List)
