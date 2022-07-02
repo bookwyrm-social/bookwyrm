@@ -22,19 +22,16 @@ class UserAdminList(View):
     def get(self, request, status="local"):
         """list of users"""
         filters = {}
-        server = request.GET.get("server")
-        if server:
+        if server := request.GET.get("server"):
             server = models.FederatedServer.objects.filter(server_name=server).first()
             filters["federated_server"] = server
             filters["federated_server__isnull"] = False
-        username = request.GET.get("username")
-        if username:
+        if username := request.GET.get("username"):
             filters["username__icontains"] = username
         scope = request.GET.get("scope")
         if scope and scope == "local":
             filters["local"] = True
-        email = request.GET.get("email")
-        if email:
+        if email := request.GET.get("email"):
             filters["email__endswith"] = email
 
         filters["local"] = status == "local"
