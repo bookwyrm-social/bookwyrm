@@ -1,0 +1,179 @@
+{% load i18n %}
+
+<script>
+    const tour = new Shepherd.Tour({
+        exitOnEsc: true,
+    });
+
+    tour.addSteps([
+        {
+            text: "{% trans 'This is the lists page where you can discover book lists created by any user. A List is a collection of books, similar to a shelf, but you can add any book to a list regardless of whether it is also on one of your shelves or whether you have read it.' %}",
+            title: "{% trans 'Lists' %}",
+            buttons: [
+                {
+                    action() {
+                        disableGuidedTour(csrf_token);
+                        return this.complete();
+                    },
+                    secondary: true,
+                    text: "{% trans 'End Tour' %}",
+                    classes: "is-danger",
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: "{% trans 'Next' %}",
+                },
+            ],
+        },
+        {
+            text: "{% trans 'Let\'s create a new list. Click this button, then ' %}\
+                    <code>\
+                    {% trans 'Next' %}\
+                    </code>",
+            title: "{% trans 'Creating a new list' %}",
+            attachTo: {
+                element: "#create-list-button",
+                on: "left",
+            },
+            buttons: [
+                {
+                    action() {
+                        return this.back();
+                    },
+                    secondary: true,
+                    text: "{% trans 'Back' %}",
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: "{% trans 'Next' %}",
+                },
+            ],
+        },
+        {
+            text: "{% trans 'Give your list a name and can optionally give it a description to help other people understand what your list is about.' %}",
+            title: "{% trans 'Creating a new list' %}",
+            attachTo: {
+                element: "[for='id_name']",
+                on: "top",
+            },
+            buttons: [
+                {
+                    action() {
+                        return this.back();
+                    },
+                    secondary: true,
+                    text: "{% trans 'Back' %}",
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: "{% trans 'Next' %}",
+                },
+            ],
+        },
+        {
+            text: "{% trans 'Choose who can see your list here. List privacy can be ' %}\
+            <strong>\
+                {% trans 'Public' %}\
+            </strong>\
+            {% trans ' (everyone can see), ' %}\
+            <strong>\
+                {% trans 'Unlisted' %}\
+            </strong>\
+            {% trans ' (everyone can see, but it doesn\'t appear on the list discovery page), ' %}\
+            <strong>\
+                {% trans 'Followers' %}\
+            </strong>\
+            {% trans ' (only your followers can see), or ' %}\
+            <strong>\
+                {% trans 'Private' %}\
+            </strong>\
+            {% trans '  (only you can see)' %}",
+            title: "{% trans 'List privacy' %}",
+            attachTo: {
+                element: "#tour-privacy-select",
+                on: "left",
+            },
+            buttons: [
+                {
+                    action() {
+                        return this.back();
+                    },
+                    secondary: true,
+                    text: "{% trans 'Back' %}",
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: "{% trans 'Next' %}",
+                },
+            ],
+        },
+        {
+            text: "{% trans 'You can also decide how your list is to be curated - only by you, by anyone, or by a group. Select ' %}\
+            <strong>\
+            {% trans 'Group' %}\
+            </strong>\
+            {% trans ' and then ' %}\
+            <code>\
+            {% trans 'Next' %}\
+            </code>",
+            title: "{% trans 'List curation' %}",
+            attachTo: {
+                element: "#list-curation-legend",
+                on: "left",
+            },
+            buttons: [
+                {
+                    action() {
+                        return this.back();
+                    },
+                    secondary: true,
+                    text: "{% trans 'Back' %}",
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: "{% trans 'Next' %}",
+                },
+            ],
+        },
+        {
+            text: "{% trans 'You need to be a member of a group before you can crtae a group-curated list. Let\'s take a look at groups now! Click on ' %}\
+            <strong>\
+                {% trans 'Create a Group' %}\
+            </strong>\
+            {% trans ' to continue the tour.' %}",
+            title: "{% trans 'Groups' %}",
+            attachTo: {
+                element: "#tour-no-groups-yet",
+                on: "left",
+            },
+            buttons: [
+                {
+                    action() {
+                        return this.back();
+                    },
+                    secondary: true,
+                    text: "{% trans 'Back' %}",
+                },
+                {
+                    action() {
+                        this.complete();
+                    },
+                    text: "{% trans 'Ok' %}",
+                    classes: "is-success",
+                },
+            ]
+        }
+    ])
+
+    tour.start()
+</script>
