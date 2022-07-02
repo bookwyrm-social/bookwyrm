@@ -1,12 +1,15 @@
 """ basics for an activitypub serializer """
 from dataclasses import dataclass, fields, MISSING
 from json import JSONEncoder
+import logging
 
 from django.apps import apps
 from django.db import IntegrityError, transaction
 
 from bookwyrm.connectors import ConnectorException, get_data
 from bookwyrm.tasks import app
+
+logger = logging.getLogger(__name__)
 
 
 class ActivitySerializerError(ValueError):
@@ -39,12 +42,12 @@ def naive_parse(activity_objects, activity_json, serializer=None):
             activity_json["type"] = "PublicKey"
 
         activity_type = activity_json.get("type")
+        if activity_type in ["Question", "Article"]:
+            return None
         try:
             serializer = activity_objects[activity_type]
         except KeyError as err:
             # we know this exists and that we can't handle it
-            if activity_type in ["Question"]:
-                return None
             raise ActivitySerializerError(err)
 
     return serializer(activity_objects=activity_objects, **activity_json)
@@ -65,7 +68,7 @@ class ActivityObject:
             try:
                 value = kwargs[field.name]
                 if value in (None, MISSING, {}):
-                    raise KeyError()
+                    raise KeyError("Missing required field", field.name)
                 try:
                     is_subclass = issubclass(field.type, ActivityObject)
                 except TypeError:
@@ -268,9 +271,9 @@ def resolve_remote_id(
     try:
         data = get_data(remote_id)
     except ConnectorException:
-        raise ActivitySerializerError(
-            f"Could not connect to host for remote_id: {remote_id}"
-        )
+        logger.exception("Could not connect to host for remote_id: %s", remote_id)
+        return None
+
     # determine the model implicitly, if not provided
     # or if it's a model with subclasses like Status, check again
     if not model or hasattr(model.objects, "select_subclasses"):

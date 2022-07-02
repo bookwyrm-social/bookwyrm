@@ -115,6 +115,7 @@ class CreateBook(View):
 
         # go to confirm mode
         if not parent_work_id or data.get("add_author"):
+            data["confirm_mode"] = True
             return TemplateResponse(request, "book/edit/edit_book.html", data)
 
         with transaction.atomic():
@@ -189,7 +190,7 @@ def add_authors(request, data):
                 "existing_isnis": exists,
             }
         )
-        return data
+    return data
 
 
 @require_POST

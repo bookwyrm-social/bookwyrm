@@ -175,9 +175,15 @@ class ImportItem(models.Model):
     def date_added(self):
         """when the book was added to this dataset"""
         if self.normalized_data.get("date_added"):
-            return timezone.make_aware(
-                dateutil.parser.parse(self.normalized_data.get("date_added"))
+            parsed_date_added = dateutil.parser.parse(
+                self.normalized_data.get("date_added")
             )
+
+            if timezone.is_aware(parsed_date_added):
+                # Keep timezone if import already had one
+                return parsed_date_added
+
+            return timezone.make_aware(parsed_date_added)
         return None
 
     @property

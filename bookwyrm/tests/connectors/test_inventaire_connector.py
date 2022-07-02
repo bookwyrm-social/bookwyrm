@@ -66,38 +66,14 @@ class Inventaire(TestCase):
         with self.assertRaises(ConnectorException):
             self.connector.get_book_data("https://test.url/ok")
 
-    @responses.activate
-    def test_search(self):
-        """min confidence filtering"""
-        responses.add(
-            responses.GET,
-            "https://inventaire.io/search?q=hi",
-            json={
-                "results": [
-                    {
-                        "_score": 200,
-                        "label": "hello",
-                    },
-                    {
-                        "_score": 100,
-                        "label": "hi",
-                    },
-                ],
-            },
-        )
-        results = self.connector.search("hi", min_confidence=0.5)
-        self.assertEqual(len(results), 1)
-        self.assertEqual(results[0].title, "hello")
-
-    def test_format_search_result(self):
+    def test_parse_search_data(self):
         """json to search result objs"""
         search_file = pathlib.Path(__file__).parent.joinpath(
             "../data/inventaire_search.json"
         )
         search_results = json.loads(search_file.read_bytes())
 
-        results = self.connector.parse_search_data(search_results)
-        formatted = self.connector.format_search_result(results[0])
+        formatted = list(self.connector.parse_search_data(search_results, 0))[0]
 
         self.assertEqual(formatted.title, "The Stories of Vladimir Nabokov")
         self.assertEqual(
@@ -178,15 +154,14 @@ class Inventaire(TestCase):
         result = self.connector.resolve_keys(keys)
         self.assertEqual(result, ["epistolary novel", "crime novel"])
 
-    def test_isbn_search(self):
+    def test_pase_isbn_search_data(self):
         """another search type"""
         search_file = pathlib.Path(__file__).parent.joinpath(
             "../data/inventaire_isbn_search.json"
         )
         search_results = json.loads(search_file.read_bytes())
 
-        results = self.connector.parse_isbn_search_data(search_results)
-        formatted = self.connector.format_isbn_search_result(results[0])
+        formatted = list(self.connector.parse_isbn_search_data(search_results))[0]
 
         self.assertEqual(formatted.title, "L'homme aux cercles bleus")
         self.assertEqual(
@@ -198,24 +173,11 @@ class Inventaire(TestCase):
             "https://covers.inventaire.io/img/entities/12345",
         )
 
-    def test_isbn_search_empty(self):
+    def test_parse_isbn_search_data_empty(self):
         """another search type"""
         search_results = {}
-        results = self.connector.parse_isbn_search_data(search_results)
+        results = list(self.connector.parse_isbn_search_data(search_results))
         self.assertEqual(results, [])
-
-    def test_isbn_search_no_title(self):
-        """another search type"""
-        search_file = pathlib.Path(__file__).parent.joinpath(
-            "../data/inventaire_isbn_search.json"
-        )
-        search_results = json.loads(search_file.read_bytes())
-        search_results["entities"]["isbn:9782290349229"]["claims"]["wdt:P1476"] = None
-
-        result = self.connector.format_isbn_search_result(
-            search_results.get("entities")
-        )
-        self.assertIsNone(result)
 
     def test_is_work_data(self):
         """is it a work"""
