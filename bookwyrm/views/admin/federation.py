@@ -60,7 +60,7 @@ class Federation(View):
             "sort": sort,
             "software_options": models.FederatedServer.objects.values_list(
                 "application_type", flat=True
-            ).distinct(),
+            ).distinct().order_by("application_type"),
             "form": forms.ServerForm(),
         }
         return TemplateResponse(request, "settings/federation/instance_list.html", data)
