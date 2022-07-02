@@ -5,7 +5,6 @@
  */
 
 function disableGuidedTour(csrf_token) {
-    console.log(csrf_token);
     fetch('/guided-tour/False', {
         headers: {
             'X-CSRFToken': csrf_token,
