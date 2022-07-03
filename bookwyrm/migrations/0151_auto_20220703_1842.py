@@ -5,7 +5,7 @@ from django.db.models import OuterRef, Subquery, F, Q
 
 
 # TODO: test this
-def set_reading_status(apps, schema_editor):
+def set_read_status(apps, schema_editor):
     """Infer the correct reading status from the existing readthrough data"""
     db_alias = schema_editor.connection.alias
     readthrough_model = apps.get_model("bookwyrm", "ReadThrough")
@@ -19,17 +19,17 @@ def set_reading_status(apps, schema_editor):
             finish_date__isnull=True,
             stopped_date__isnull=True,
         )
-    ).update(reading_status="reading")
+    ).update(read_status="reading")
 
     # if it has finished date, it's read. strictly speaking this is unnecessary if all
     # is well because this is the default value.
     readthrough_model.objects.using(db_alias).filter(
         finished_date__isnull=False
-    ).update(reading_status="read")
+    ).update(read_status="read")
 
     # if it has a stopped date, it's stopped
     readthrough_model.objects.using(db_alias).filter(stooped_date__isnull=False).update(
-        reading_status="stopped-reading"
+        read_status="stopped-reading"
     )
 
     # no to-read readthroughs currently exist
@@ -57,7 +57,7 @@ def set_reading_status(apps, schema_editor):
     readthrough_model.objects.bulk_create(
         [
             readthrough_model(
-                reading_status=sb.shelf.identifier,
+                read_status=sb.shelf.identifier,
                 book=sb.book,
                 user=sb.shelf.user,
             )
@@ -80,7 +80,7 @@ def unmerge_finish_stopped_dates(apps, schema_editor):
     db_alias = schema_editor.connection.alias
     readthrough_model = apps.get_model("bookwyrm", "ReadThrough")
     readthrough_model.objects.using(db_alias).filter(
-        reading_status="stopped-reading",
+        read_status="stopped-reading",
         finish_date__isnull=False,
     ).update(stopped_date=F("finish_date"))
 
@@ -106,7 +106,6 @@ class Migration(migrations.Migration):
                 max_length=20,
             ),
         ),
-        # RunPython: set status correctly
         migrations.RemoveField(
             model_name="readthrough",
             name="is_active",
