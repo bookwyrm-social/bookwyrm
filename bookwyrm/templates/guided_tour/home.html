@@ -163,7 +163,9 @@ homeTour.addSteps([
         ],
     },
     {
-        text: "{% trans 'Your profile, books, direct messages, and settings can be accessed by clicking on your name here.<br><br>Try selecting <code>Profile</code> from the drop down menu to continue the tour.' %}",
+        text: "{% trans 'Your profile, books, direct messages, and settings can be accessed by clicking on your name here.' %}\
+        <br><br>\
+        {% trans 'Try selecting <code>Profile</code> from the drop down menu to continue the tour.' %}",
         title: "{% trans 'Profile and settings menu' %}",
         attachTo: {
             element: "#navbar-dropdown",

@@ -123,7 +123,7 @@
                 ],
             },
             {
-            text: "{% trans 'If you still cannot find your book, you can add a record manually.' %}",
+            text: "{% trans 'If you still can\'t find your book, you can add a record manually.' %}",
             title: "{% trans 'Add a record manally' %}",
             attachTo: {
                 element: "#manually-add-book",
@@ -146,6 +146,26 @@
             ],
         }])
     }
+
+    tour.addStep({
+            text: "{% trans 'Import, manually add, or view an existing book to continue the tour.' %}",
+            title: "{% trans 'Continue the tour' %}",
+            buttons: [
+                {
+                    action() {
+                        return this.back();
+                    },
+                    secondary: true,
+                    text: "{% trans 'Back' %}",
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: "{% trans 'Ok' %}",
+                },
+            ],
+        })
 
     tour.start()
 </script>

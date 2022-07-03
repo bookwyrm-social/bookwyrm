@@ -106,7 +106,9 @@
             ],
         },
         {
-            text: "{% trans 'Once you\'re happy with how your group is set up, click the \'Save\' button.' %}",
+            text: "{% trans 'Once you\'re happy with how your group is set up, click the ' %}\
+            <code>{% trans 'Save' %}</code>\
+            {% trans ' button to continue the tour.' %}",
             title: "{% trans 'Save your group' %}",
             buttons: [
                 {

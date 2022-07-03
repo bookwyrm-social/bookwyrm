@@ -1,6 +1,9 @@
 {% load i18n %}
 
 <script>
+
+    let existingGroup = document.querySelector("#group");
+
     const tour = new Shepherd.Tour({
         exitOnEsc: true,
     });
@@ -116,7 +119,9 @@
             ],
         },
         {
-            text: "{% trans 'You can also decide how your list is to be curated - only by you, by anyone, or by a group. Select ' %}\
+            text: "{% trans 'You can also decide how your list is to be curated - only by you, by anyone, or by a group.' %}\
+            <br/><br/>\
+            {% trans 'Select ' %}\
             <strong>\
             {% trans 'Group' %}\
             </strong>\
@@ -145,8 +150,39 @@
                 },
             ],
         },
-        {
-            text: "{% trans 'You need to be a member of a group before you can crtae a group-curated list. Let\'s take a look at groups now! Click on ' %}\
+    ])
+
+    if (existingGroup) {
+        tour.addStep({
+            text: "{% trans 'It looks like you already know how to create a group. Go to your group page from the ' %}\
+            <code>\
+                {% trans 'Groups' %}\
+            </code>\
+            {% trans ' tab on your profile page to complete the tour.' %}",
+            title: "{% trans 'Groups' %}",
+            attachTo: {
+                element: "#group",
+                on: "left",
+            },
+            buttons: [
+                {
+                    action() {
+                        return this.back();
+                    },
+                    secondary: true,
+                    text: "{% trans 'Back' %}",
+                },
+                {
+                    action() {
+                        this.complete();
+                    },
+                    text: "{% trans 'Ok' %}"
+                },
+            ]
+        })
+    } else {
+        tour.addStep({
+            text: "{% trans 'You need to be a member of a group before you can create a group-curated list. Let\'s take a look at groups now! Click on ' %}\
             <strong>\
                 {% trans 'Create a Group' %}\
             </strong>\
@@ -168,12 +204,11 @@
                     action() {
                         this.complete();
                     },
-                    text: "{% trans 'Ok' %}",
-                    classes: "is-success",
+                    text: "{% trans 'Ok' %}"
                 },
             ]
-        }
-    ])
+        })
+    }
 
     tour.start()
 </script>

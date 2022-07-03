@@ -33,7 +33,11 @@
             <code>{% trans 'Read' %}</code>,\
             {% trans ' and ' %}\
             <code>{% trans 'Stopped Reading' %}</code> \
-            {% trans 'are default shelves that are used to indicate the reading status of books. A book can only be assigned to one of these shelves at any given moment e.g. a  book is not allowed to be on both the Currently Reading and the To Read shelves. Usually Bookwyrm will automatically allocate a book to one of these shelves when you change the reading status of the book.' %}\
+            {% trans 'are default shelves used to indicate the current reading status of books. A book can only be assigned to one of these shelves at any given moment e.g. a  book is not allowed to be on both the ' %}\
+            <code>{% trans 'Currently Reading' %}</code>, \
+            {% trans ' and the ' %}\
+            <code>{% trans 'To Read' %}</code>, \
+            {% trans ' shelves. When you change the reading status of a book it will automatically be moved to the matching shelf.' %}\
             ",
             title: "{% trans 'Creating a group' %}",
             attachTo: {
@@ -103,11 +107,15 @@
             ],
         },
         {
-            text: "{% trans 'Now that we have explored your shelves, let\'s take a look at a related concept: book lists!' %}",
+            text: "{% trans 'Now that we\'ve explored book shelves, let\'s take a look at a related concept: book lists! Click on the ' %}\
+            <code>\
+            {% trans 'Lists' %}\
+            </code>\
+            {% trans ' link here to continue the tour.' %}",
             title: "{% trans 'Lists' %}",
             attachTo: {
                 element: "[href='/list']",
-                on: "bottom",
+                on: "right",
             },
             buttons: [
                 {
@@ -120,10 +128,8 @@
                 {
                     action() {
                         this.complete();
-                        return window.location.href = '/list'
                     },
-                    text: "{% trans 'I\'m ready!' %}",
-                    classes: "is-success",
+                    text: "{% trans 'Ok' %}"
                 },
             ]
         }
