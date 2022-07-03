@@ -4,7 +4,9 @@
  * @return {undefined}
  */
 
+ /* eslint-disable no-unused-vars */
 function disableGuidedTour(csrf_token) {
+    'use strict'
     fetch("/guided-tour/False", {
         headers: {
             "X-CSRFToken": csrf_token,

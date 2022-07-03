@@ -7,13 +7,13 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bookwyrm', '0150_readthrough_stopped_date'),
+        ("bookwyrm", "0150_readthrough_stopped_date"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='user',
-            name='show_guided_tour',
+            model_name="user",
+            name="show_guided_tour",
             field=bookwyrm.models.fields.BooleanField(default=True),
         ),
     ]
