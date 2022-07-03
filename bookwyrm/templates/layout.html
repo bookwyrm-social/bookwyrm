@@ -192,6 +192,7 @@
                 {% if request.user.is_authenticated %}
                 <p id="tour-begin">
                     <a href="/guided-tour/True">{% trans "Guided Tour" %}</a>
+                    <noscript>(requires JavaScript)</noscript>
                 </p>
                 {% endif %}
             </div>
