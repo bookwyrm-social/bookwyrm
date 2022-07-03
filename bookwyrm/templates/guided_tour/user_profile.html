@@ -7,7 +7,7 @@ const tour = new Shepherd.Tour({
 
 tour.addSteps([
     {
-        text: "{% trans 'This is your user profile. All your latest activities will be listed here, as well as links to your reading goal, groups, lists, and shelves. Other Bookwyrm users can see parts of this page too - what they can see depends on your privacy settings.' %}",
+        text: "{% trans 'This is your user profile. All your latest activities will be listed here. Other Bookwyrm users can see parts of this page too - what they can see depends on your privacy settings.' %}",
         title: "{% trans 'User Profile' %}",
         buttons: [
             {
@@ -31,7 +31,7 @@ tour.addSteps([
         text: "{% trans 'This tab shows everything you have read towards your annual reading goal, or allows you to set one. You don\'t have to set a reading goal if that\'s not your thing!' %}",
         title: "{% trans 'Reading Goal' %}",
         attachTo: {
-            element: "#reading_goal_tab",
+            element: "#tour-reading-goal",
             on: "right",
         },
         buttons: [
@@ -54,7 +54,7 @@ tour.addSteps([
         text: "{% trans 'Here you can see your groups, or create a new one. A group brings together Bookwyrm users and allows them to curate lists together.' %}",
         title: "{% trans 'Groups' %}",
         attachTo: {
-            element: "#groups_tab",
+            element: "#tour-groups-tab",
             on: "right",
         },
         buttons: [
@@ -77,7 +77,7 @@ tour.addSteps([
         text: "{% trans 'You can see your lists, or create a new one, here. A list is a collection of books that have something in common.' %}",
         title: "{% trans 'Lists' %}",
         attachTo: {
-            element: "#lists_tab",
+            element: "#tour-lists-tab",
             on: "right",
         },
         buttons: [
@@ -100,7 +100,7 @@ tour.addSteps([
         text: "{% trans 'The Books tab shows your book shelves. We\'ll explore this next.' %}",
         title: "{% trans 'Books' %}",
         attachTo: {
-            element: "#shelves_tab",
+            element: "#tour-shelves-tab",
             on: "right",
         },
         buttons: [
@@ -123,7 +123,7 @@ tour.addSteps([
         text: "{% trans 'Now you understand the basics of your profile page, let\s add a book to your shelves. Search for a title or author here to continue the tour.' %}",
         title: "{% trans 'Find a book' %}",
         attachTo: {
-            element: "#search_input",
+            element: "#tour-search",
             on: "right",
         },
         buttons: [

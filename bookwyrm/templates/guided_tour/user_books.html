@@ -41,7 +41,7 @@
             ",
             title: "{% trans 'Creating a group' %}",
             attachTo: {
-                element: "#user-shelves",
+                element: "#tour-user-shelves",
                 on: "bottom-start",
             },
             buttons: [
@@ -64,7 +64,7 @@
             text: "{% trans 'You can create additional custom shelves to organise your books. A book on a custom shelf can be on any number of other shelves simultaneously, including one of the default reading status shelves' %}",
             title: "{% trans 'Adding custom shelves.' %}",
             attachTo: {
-                element: "[data-controls='create_shelf_form']",
+                element: "#tour-create-shelf",
                 on: "left",
             },
             buttons: [
@@ -87,7 +87,7 @@
             text: "{% trans 'If you have an export file from another service like Goodreads or LibraryThing, you can import your books and shelves here.' %}",
             title: "{% trans 'Import from another service' %}",
             attachTo: {
-                element: "[href='/import']",
+                element: "#tour-import-books",
                 on: "left",
             },
             buttons: [
@@ -114,7 +114,7 @@
             {% trans ' link here to continue the tour.' %}",
             title: "{% trans 'Lists' %}",
             attachTo: {
-                element: "[href='/list']",
+                element: "#tour-navbar-start",
                 on: "right",
             },
             buttons: [

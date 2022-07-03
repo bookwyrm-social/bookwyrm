@@ -31,7 +31,7 @@
             text: "{% trans 'This is where you can set a reading status for this book. You can press the button to move to the next stage, or use the drop down button to select the reading status you want to set.' %}",
             title: "{% trans 'Reading status' %}",
             attachTo: {
-                element: "div[data-shelve-button-book]",
+                element: "#tour-shelve-button",
                 on: "right",
             },
             buttons: [
@@ -62,7 +62,7 @@
             {% trans ' shelves. Got a favourite you re-read every year? We\'ve got you covered - you can add multiple read dates for the same book 😀' %}",
             title: "{% trans 'Add readthrough dates' %}",
             attachTo: {
-                element: "button[data-modal-open='add-readthrough']",
+                element: "#tour-add-readthrough",
                 on: "top",
             },
             buttons: [
@@ -82,10 +82,10 @@
             ],
         },
         {
-            text: "{% trans 'There can be multiple editions of a book, in various formats or languages. You may wish to view a different edition (for example if you are setting a reading status). ' %}",
+            text: "{% trans 'There can be multiple editions of a book, in various formats or languages. You can choose which edition you want to view or set a reading status for.' %}",
             title: "{% trans 'Other editions' %}",
             attachTo: {
-                element: "#other-editions-link",
+                element: "#tour-other-editions-link",
                 on: "top-start",
             },
             buttons: [
@@ -108,7 +108,7 @@
             text: "{% trans 'Some ebooks can be downloaded for free from external sources. They will be shown here.' %}",
             title: "{% trans 'Download links' %}",
             attachTo: {
-                element: "#book-file-links",
+                element: "#tour-book-file-links",
                 on: "left",
             },
             buttons: [
@@ -128,7 +128,11 @@
             ],
         },
         {
-            text: "{% trans 'Let\'s continue the tour by selecting \'Your Books\' from the drop down menu.' %}",
+            text: "{% trans 'Let\'s continue the tour by selecting ' %}\
+            <code>\
+            {% trans 'Your books' %}\
+            </code>\
+            {% trans ' from the drop down menu.' %}",
             title: "{% trans 'Next' %}",
             attachTo: {
                 element: "summary[aria-label='View profile and more']",

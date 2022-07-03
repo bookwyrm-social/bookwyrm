@@ -6,7 +6,7 @@
 <div class="columns">
     <div class="column is-two-thirds">
         <div class="field">
-            <label class="label" for="id_name">{% trans "Name:" %}</label>
+            <label class="label" for="id_name" id="tour-list-name">{% trans "Name:" %}</label>
             {{ list_form.name }}
         </div>
         <div class="field">
@@ -16,7 +16,7 @@
     </div>
     <div class="column">
         <fieldset class="field">
-            <legend class="label" id="list-curation-legend">{% trans "List curation:" %}</legend>
+            <legend class="label" id="tour-list-curation">{% trans "List curation:" %}</legend>
 
             <div class="field" data-hides="list_group_selector">
                 <input

@@ -35,7 +35,7 @@
                     {% trans 'to continue the tour.' %}",
             title: "{% trans 'Create group' %}",
             attachTo: {
-                element: "#create_group_button",
+                element: "#tour-create-group",
                 on: "left-start",
             },
             buttons: [
@@ -58,7 +58,7 @@
             text: "{% trans 'Give your group a name and describe what it is about. You can make user groups for any purpose - a reading group, a bunch of friends, whatever!' %}",
             title: "{% trans 'Creating a group' %}",
             attachTo: {
-                element: "#create_group_header",
+                element: "#tour-group-name",
                 on: "right",
             },
             buttons: [
@@ -78,15 +78,11 @@
             ],
         },
         {
-            text: "{% trans 'Groups can be ' %}\
-                    <code>{% trans 'Public' %}</code>,\
-                    <code>{% trans 'Unlisted' %}</code>,\
-                    {% trans 'or ' %}\
-                    <code>{% trans 'Private' %}</code><br><br>\
-                    {% trans 'Anyone can see and join a public group. Unlisted groups are currently exactly the same as public groups. Private groups can only be seen by members of the group.' %}",
+            text: "{% trans 'Groups have privacy settings just like Lists, except that group privacy cannot be ' %}\
+            <code>{% trans 'Followers' %}</code>.",
             title: "{% trans 'Group visibility' %}",
             attachTo: {
-                element: "#privacy_select_button",
+                element: "#tour-privacy",
                 on: "left",
             },
             buttons: [

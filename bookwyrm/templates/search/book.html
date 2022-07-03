@@ -7,7 +7,7 @@
 {% with results|first as local_results %}
 <ul class="block">
 {% for result in local_results.results %}
-    <li class="pd-4 mb-5 local-book-search-result">
+    <li class="pd-4 mb-5 local-book-search-result" id="tour-local-book-search-result">
         <div class="columns is-mobile is-gapless mb-0">
             <div class="column is-cover">
                 {% include 'snippets/book_cover.html' with book=result cover_class='is-w-xs is-h-xs' %}
@@ -39,7 +39,7 @@
         <details class="details-panel box" open>
         {% endif %}
             {% if not result_set.connector.local %}
-            <summary class="is-flex is-align-items-center is-flex-wrap-wrap is-gap-2 remote-book-search-result">
+            <summary class="is-flex is-align-items-center is-flex-wrap-wrap is-gap-2 remote-book-search-result" id="tour-remote-search-result">
                 <span class="mb-0 title is-5">
                     {% trans 'Results from' %}
                     <a href="{{ result_set.connector.base_url }}" target="_blank">{{ result_set.connector.name|default:result_set.connector.identifier }}</a>
@@ -102,11 +102,11 @@
 <p class="block">
     {% if request.user.is_authenticated %}
         {% if not remote %}
-        <a href="{{ request.path }}?q={{ query }}&type=book&remote=true" id="load-from-other-catalogues">
+        <a href="{{ request.path }}?q={{ query }}&type=book&remote=true" id="tour-load-from-other-catalogues">
             {% trans "Load results from other catalogues" %}
         </a>
         {% else %}
-        <a href="{% url 'create-book' %}" id="manually-add-book">
+        <a href="{% url 'create-book' %}" id="tour-manually-add-book">
             {% trans "Manually add book" %}
         </a>
         {% endif %}

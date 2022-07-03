@@ -5,7 +5,7 @@
     <div class="column is-two-thirds">
         <input type="hidden" name="user" value="{{ request.user.id }}" />
         <div class="field">
-            <label class="label" for="group_form_id_name">{% trans "Group Name:" %}</label>
+            <label class="label" for="group_form_id_name" id="tour-group-name">{% trans "Group Name:" %}</label>
             {{ group_form.name }}
         </div>
         <div class="field">
