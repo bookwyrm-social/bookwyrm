@@ -1,5 +1,7 @@
 """ instance overview """
 from datetime import timedelta
+import re
+
 from dateutil.parser import parse
 from packaging import version
 
@@ -13,6 +15,7 @@ from django.views import View
 from bookwyrm import models, settings
 from bookwyrm.connectors.abstract_connector import get_data
 from bookwyrm.connectors.connector_manager import ConnectorException
+from bookwyrm.utils import regex
 
 
 # pylint: disable= no-self-use
@@ -88,6 +91,10 @@ class Dashboard(View):
             },
         )
 
+        email_config_error = re.findall(
+            r"[\s\@]", settings.EMAIL_SENDER_DOMAIN
+        ) or not re.match(regex.DOMAIN, settings.EMAIL_SENDER_DOMAIN)
+
         data = {
             "start": start.strftime("%Y-%m-%d"),
             "end": end.strftime("%Y-%m-%d"),
@@ -109,6 +116,8 @@ class Dashboard(View):
             "status_stats": status_chart.get_chart(start, end, interval),
             "register_stats": register_chart.get_chart(start, end, interval),
             "works_stats": works_chart.get_chart(start, end, interval),
+            "email_config_error": email_config_error,
+            "email_sender": f"{settings.EMAIL_SENDER_NAME}@{settings.EMAIL_SENDER_DOMAIN}",
         }
 
         # check version
