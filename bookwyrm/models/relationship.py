@@ -218,7 +218,7 @@ def clear_cache(user_subject, user_object):
     """clear relationship cache"""
     cache.delete_many(
         [
-            f"relationship-{user_subject.id}-{user_object.id}",
-            f"relationship-{user_object.id}-{user_subject.id}",
+            f"cached-relationship-{user_subject.id}-{user_object.id}",
+            f"cached-relationship-{user_object.id}-{user_subject.id}",
         ]
     )
