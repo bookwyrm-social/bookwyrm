@@ -5,12 +5,12 @@
  */
 
 function disableGuidedTour(csrf_token) {
-    fetch('/guided-tour/False', {
+    fetch("/guided-tour/False", {
         headers: {
-            'X-CSRFToken': csrf_token,
+            "X-CSRFToken": csrf_token,
         },
-        method: 'POST', 
-        redirect: 'follow',
-        mode: 'same-origin',
-    })
+        method: "POST",
+        redirect: "follow",
+        mode: "same-origin",
+    });
 }
