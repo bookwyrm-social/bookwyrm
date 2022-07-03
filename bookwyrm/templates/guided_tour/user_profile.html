@@ -129,6 +129,13 @@ tour.addSteps([
         buttons: [
             {
                 action() {
+                    return this.back();
+                },
+                secondary: true,
+                text: "{% trans 'Back' %}",
+            },
+            {
+                action() {
                     return this.complete();
                 },
                 text: "{% trans 'Ok' %}",
