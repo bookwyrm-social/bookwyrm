@@ -46,9 +46,3 @@ class Sanitizer(TestCase):
         input_text = "<div>  yes <i>html</i></div>"
         output = clean(input_text)
         self.assertEqual("  yes <i>html</i>", output)
-
-    def test_escaped_bracket(self):
-        """remove &gt; and &lt;"""
-        input_text = "&lt;dev&gt;hi&lt;/div&gt;"
-        output = clean(input_text)
-        self.assertEqual("hi", output)
