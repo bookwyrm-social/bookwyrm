@@ -3,7 +3,7 @@ from html.parser import HTMLParser
 
 
 class InputHtmlParser(HTMLParser):  # pylint: disable=abstract-method
-    """Removes any html that isn't allowed_tagsed from a block"""
+    """Removes any html that isn't in allowed_tags from a block"""
 
     def __init__(self):
         HTMLParser.__init__(self)

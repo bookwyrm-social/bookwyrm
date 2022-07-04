@@ -31,7 +31,7 @@
         {% if user.summary %}
         {% spaceless %}
         <div class="column box has-background-tertiary content preserve-whitespace">
-            {{ user.summary|to_markdown|safe }}
+            {{ user.summary|striptags }}
         </div>
         {% endspaceless %}
         {% endif %}
