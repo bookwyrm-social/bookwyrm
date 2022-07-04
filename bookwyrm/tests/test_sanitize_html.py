@@ -32,14 +32,14 @@ class Sanitizer(TestCase):
         self.assertEqual(output, '<a href="fish.com">yes    </a> <i>html</i>')
 
     def test_invalid_html(self):
-        """remove all html when the html is malformed"""
+        """don't allow malformed html"""
         input_text = "<b>yes  <i>html</i>"
         output = clean(input_text)
-        self.assertEqual("yes  html", output)
+        self.assertEqual("<b>yes  <i>html</i></b>", output)
 
         input_text = "yes <i></b>html   </i>"
         output = clean(input_text)
-        self.assertEqual("yes html   ", output)
+        self.assertEqual("yes <i>html   </i>", output)
 
     def test_disallowed_html(self):
         """remove disallowed html but keep allowed html"""

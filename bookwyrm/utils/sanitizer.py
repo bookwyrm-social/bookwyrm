@@ -22,4 +22,5 @@ def clean(input_text):
             "li",
         ],
         attributes=["href", "rel", "src", "alt"],
+        strip=True,
     )
