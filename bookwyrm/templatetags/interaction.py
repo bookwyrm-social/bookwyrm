@@ -42,7 +42,7 @@ def get_relationship(context, user_object):
     """caches the relationship between the logged in user and another user"""
     user = context["request"].user
     return get_or_set(
-        f"relationship-{user.id}-{user_object.id}",
+        f"cached-relationship-{user.id}-{user_object.id}",
         get_relationship_name,
         user,
         user_object,
@@ -61,6 +61,6 @@ def get_relationship_name(user, user_object):
         types["is_blocked"] = True
     elif user_object in user.following.all():
         types["is_following"] = True
-    elif user_object in user.follower_requests.all():
+    elif user in user_object.follower_requests.all():
         types["is_follow_pending"] = True
     return types

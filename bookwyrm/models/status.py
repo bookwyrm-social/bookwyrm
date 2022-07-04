@@ -303,10 +303,17 @@ class Comment(BookStatus):
     @property
     def pure_content(self):
         """indicate the book in question for mastodon (or w/e) users"""
-        return (
-            f'{self.content}<p>(comment on <a href="{self.book.remote_id}">'
-            f'"{self.book.title}"</a>)</p>'
-        )
+        if self.progress_mode == "PG" and self.progress and (self.progress > 0):
+            return_value = (
+                f'{self.content}<p>(comment on <a href="{self.book.remote_id}">'
+                f'"{self.book.title}"</a>, page {self.progress})</p>'
+            )
+        else:
+            return_value = (
+                f'{self.content}<p>(comment on <a href="{self.book.remote_id}">'
+                f'"{self.book.title}"</a>)</p>'
+            )
+        return return_value
 
     activity_serializer = activitypub.Comment
 
@@ -332,10 +339,17 @@ class Quotation(BookStatus):
         """indicate the book in question for mastodon (or w/e) users"""
         quote = re.sub(r"^<p>", '<p>"', self.quote)
         quote = re.sub(r"</p>$", '"</p>', quote)
-        return (
-            f'{quote} <p>-- <a href="{self.book.remote_id}">'
-            f'"{self.book.title}"</a></p>{self.content}'
-        )
+        if self.position_mode == "PG" and self.position and (self.position > 0):
+            return_value = (
+                f'{quote} <p>-- <a href="{self.book.remote_id}">'
+                f'"{self.book.title}"</a>, page {self.position}</p>{self.content}'
+            )
+        else:
+            return_value = (
+                f'{quote} <p>-- <a href="{self.book.remote_id}">'
+                f'"{self.book.title}"</a></p>{self.content}'
+            )
+        return return_value
 
     activity_serializer = activitypub.Quotation
 

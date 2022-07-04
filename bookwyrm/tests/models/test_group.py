@@ -80,7 +80,9 @@ class Group(TestCase):
         """follower-only group booklists should not be excluded from group booklist
         listing for group members who do not follower list owner"""
 
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
+        with patch(
+            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+        ), patch("bookwyrm.lists_stream.remove_list_task.delay"):
             followers_list = models.List.objects.create(
                 name="Followers List",
                 curation="group",
@@ -101,8 +103,9 @@ class Group(TestCase):
         """private group booklists should not be excluded from group booklist listing
         for group members"""
 
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
-
+        with patch(
+            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+        ), patch("bookwyrm.lists_stream.remove_list_task.delay"):
             private_list = models.List.objects.create(
                 name="Private List",
                 privacy="direct",

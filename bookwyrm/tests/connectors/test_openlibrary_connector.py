@@ -211,7 +211,7 @@ class Openlibrary(TestCase):
             status=200,
         )
         with patch(
-            "bookwyrm.connectors.openlibrary.Connector." "get_authors_from_data"
+            "bookwyrm.connectors.openlibrary.Connector.get_authors_from_data"
         ) as mock:
             mock.return_value = []
             result = self.connector.create_edition_from_data(work, self.edition_data)
