@@ -25,10 +25,12 @@ class NotificationViews(TestCase):
                 local=True,
                 localname="mouse",
             )
+            self.another_user = models.User.objects.create_user(
+                "rat", "rat@rat.rat", "ratword", local=True, localname="rat"
+            )
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             self.status = models.Status.objects.create(
-                content="hi",
-                user=self.local_user,
+                content="hi", user=self.local_user
             )
         models.SiteSettings.objects.create()
 
@@ -44,25 +46,29 @@ class NotificationViews(TestCase):
 
     def test_notifications_page_notifications(self):
         """there are so many views, this just makes sure it LOADS"""
-        models.Notification.objects.create(
-            user=self.local_user,
+        models.Notification.notify(
+            self.local_user,
+            self.another_user,
             notification_type="FAVORITE",
             related_status=self.status,
         )
-        models.Notification.objects.create(
-            user=self.local_user,
+        models.Notification.notify(
+            self.local_user,
+            self.another_user,
             notification_type="BOOST",
             related_status=self.status,
         )
-        models.Notification.objects.create(
-            user=self.local_user,
+        models.Notification.notify(
+            self.local_user,
+            self.another_user,
             notification_type="MENTION",
             related_status=self.status,
         )
         self.status.reply_parent = self.status
         self.status.save(broadcast=False)
-        models.Notification.objects.create(
-            user=self.local_user,
+        models.Notification.notify(
+            self.local_user,
+            self.another_user,
             notification_type="REPLY",
             related_status=self.status,
         )
