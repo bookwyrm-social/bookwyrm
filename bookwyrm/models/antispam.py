@@ -69,7 +69,7 @@ def automod_task():
     with transaction.atomic():
         for admin in admins:
             notification, _ = notification_model.objects.get_or_create(
-                user=admin, notification_type="REPORT", unread=True
+                user=admin, notification_type=notification_model.REPORT, unread=True
             )
             notification.related_repors.add(reports)
 

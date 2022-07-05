@@ -166,7 +166,7 @@ class ListItem(CollectionItemMixin, BookWyrmModel):
                 user=list_owner,
                 related_user=self.user,
                 related_list_item=self,
-                notification_type="ADD",
+                notification_type=model.ADD,
             )
 
         if self.book_list.group:
@@ -176,7 +176,7 @@ class ListItem(CollectionItemMixin, BookWyrmModel):
                         user=membership.user,
                         related_user=self.user,
                         related_list_item=self,
-                        notification_type="ADD",
+                        notification_type=model.ADD,
                     )
 
     def raise_not_deletable(self, viewer):

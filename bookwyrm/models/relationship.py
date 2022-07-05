@@ -149,10 +149,12 @@ class UserFollowRequest(ActivitypubMixin, UserRelationship):
                 self.accept()
 
             model = apps.get_model("bookwyrm.Notification", require_ready=True)
-            notification_type = "FOLLOW_REQUEST" if manually_approves else "FOLLOW"
-            model.objects.create(
-                user=self.user_object,
-                related_user=self.user_subject,
+            notification_type = (
+                model.FOLLOW_REQUEST if manually_approves else model.FOLLOW
+            )
+            model.notify(
+                self.user_object,
+                self.user_subject,
                 notification_type=notification_type,
             )
 

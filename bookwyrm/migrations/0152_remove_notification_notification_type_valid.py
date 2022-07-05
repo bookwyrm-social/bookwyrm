@@ -6,12 +6,12 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bookwyrm', '0151_auto_20220705_0049'),
+        ("bookwyrm", "0151_auto_20220705_0049"),
     ]
 
     operations = [
         migrations.RemoveConstraint(
-            model_name='notification',
-            name='notification_type_valid',
+            model_name="notification",
+            name="notification_type_valid",
         ),
     ]
