@@ -61,7 +61,7 @@ class Notification(BookWyrmModel):
             return
         notification, _ = cls.objects.get_or_create(user=user, **kwargs)
         notification.related_users.add(related_user)
-        notification.unread = True
+        notification.read = False
         notification.save()
 
     @classmethod
@@ -72,7 +72,7 @@ class Notification(BookWyrmModel):
         except Notification.DoesNotExist:
             return
         notification.related_users.remove(related_user)
-        if not notification.related_users.exists():
+        if not notification.related_users.count():
             notification.delete()
 
 
@@ -202,7 +202,7 @@ def notify_admins_on_report(sender, instance, *args, **kwargs):
         notification, _ = Notification.objects.get_or_create(
             user=admin,
             notification_type=Notification.REPORT,
-            unread=True,
+            read=False,
         )
         notification.related_reports.add(instance)
 
