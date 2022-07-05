@@ -142,12 +142,11 @@ class GroupMemberInvitation(models.Model):
 
         # now send the invite
         model = apps.get_model("bookwyrm.Notification", require_ready=True)
-        notification_type = "INVITE"
-        model.objects.create(
-            user=self.user,
-            related_user=self.group.user,
+        model.notify(
+            self.user,
+            self.group.user,
             related_group=self.group,
-            notification_type=notification_type,
+            notification_type="INVITE",
         )
 
     @transaction.atomic
@@ -157,9 +156,9 @@ class GroupMemberInvitation(models.Model):
 
         model = apps.get_model("bookwyrm.Notification", require_ready=True)
         # tell the group owner
-        model.objects.create(
-            user=self.group.user,
-            related_user=self.user,
+        model.notify(
+            self.group.user,
+            self.user,
             related_group=self.group,
             notification_type="ACCEPT",
         )
@@ -168,9 +167,9 @@ class GroupMemberInvitation(models.Model):
         for membership in self.group.memberships.all():
             member = membership.user
             if member not in (self.user, self.group.user):
-                model.objects.create(
-                    user=member,
-                    related_user=self.user,
+                model.notify(
+                    member,
+                    self.user,
                     related_group=self.group,
                     notification_type="JOIN",
                 )
