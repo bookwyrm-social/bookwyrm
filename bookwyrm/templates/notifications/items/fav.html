@@ -34,7 +34,7 @@
         {% else %}
 
         {% blocktrans trimmed %}
-        <a href="{{ related_user_link }}">{{ related_user }}</a> and {{ other_user_count }} others liked your <a href="{{ related_path }}">review of <em>{{ book_title }}</em></a>
+        <a href="{{ related_user_link }}">{{ related_user }}</a> and {{ other_user_display_count }} others liked your <a href="{{ related_path }}">review of <em>{{ book_title }}</em></a>
         {% endblocktrans %}
 
         {% endif %}
@@ -57,7 +57,7 @@
         {% else %}
 
         {% blocktrans trimmed %}
-        <a href="{{ related_user_link }}">{{ related_user }}</a> and {{ other_user_count }} others liked your <a href="{{ related_path }}">comment on <em>{{ book_title }}</em></a>
+        <a href="{{ related_user_link }}">{{ related_user }}</a> and {{ other_user_display_count }} others liked your <a href="{{ related_path }}">comment on <em>{{ book_title }}</em></a>
         {% endblocktrans %}
 
         {% endif %}
@@ -80,7 +80,7 @@
         {% else %}
 
         {% blocktrans trimmed %}
-        <a href="{{ related_user_link }}">{{ related_user }}</a> and {{ other_user_count }} others liked your <a href="{{ related_path }}">quote from <em>{{ book_title }}</em></a>
+        <a href="{{ related_user_link }}">{{ related_user }}</a> and {{ other_user_display_count }} others liked your <a href="{{ related_path }}">quote from <em>{{ book_title }}</em></a>
         {% endblocktrans %}
 
         {% endif %}
@@ -103,7 +103,7 @@
         {% else %}
 
         {% blocktrans trimmed %}
-        <a href="{{ related_user_link }}">{{ related_user }}</a> and {{ other_user_count }} others liked your <a href="{{ related_path }}">status</a>
+        <a href="{{ related_user_link }}">{{ related_user }}</a> and {{ other_user_display_count }} others liked your <a href="{{ related_path }}">status</a>
         {% endblocktrans %}
 
         {% endif %}
