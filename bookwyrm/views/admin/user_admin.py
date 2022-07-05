@@ -77,8 +77,13 @@ class UserAdmin(View):
     def post(self, request, user):
         """update user group"""
         user = get_object_or_404(models.User, id=user)
-        form = forms.UserGroupForm(request.POST, instance=user)
-        if form.is_valid():
-            form.save()
+
+        if request.POST.get("groups") == "":
+            user.groups.set([])
+            form = forms.UserGroupForm(instance=user)
+        else:
+            form = forms.UserGroupForm(request.POST, instance=user)
+            if form.is_valid():
+                form.save()
         data = {"user": user, "group_form": form}
         return TemplateResponse(request, "settings/users/user.html", data)
