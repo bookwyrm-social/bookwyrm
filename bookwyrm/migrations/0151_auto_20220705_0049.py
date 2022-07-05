@@ -18,13 +18,6 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name="notification",
-            name="related_groups",
-            field=models.ManyToManyField(
-                related_name="notifications", to="bookwyrm.Group"
-            ),
-        ),
-        migrations.AddField(
-            model_name="notification",
             name="related_list_items",
             field=models.ManyToManyField(
                 related_name="notifications", to="bookwyrm.ListItem"
@@ -40,16 +33,6 @@ class Migration(migrations.Migration):
             name="related_users",
             field=models.ManyToManyField(
                 related_name="notifications", to=settings.AUTH_USER_MODEL
-            ),
-        ),
-        migrations.AlterField(
-            model_name="notification",
-            name="related_group",
-            field=models.ForeignKey(
-                null=True,
-                on_delete=django.db.models.deletion.CASCADE,
-                related_name="notifications_temp",
-                to="bookwyrm.group",
             ),
         ),
         migrations.AlterField(
@@ -79,11 +62,6 @@ class Migration(migrations.Migration):
             FROM bookwyrm_notification
                 WHERE bookwyrm_notification.related_user_id IS NOT NULL;
 
-            INSERT INTO bookwyrm_notification_related_groups (notification_id, group_id)
-            SELECT id, related_group_id
-            FROM bookwyrm_notification
-                WHERE bookwyrm_notification.related_group_id IS NOT NULL;
-
             INSERT INTO bookwyrm_notification_related_list_items (notification_id, listitem_id)
             SELECT id, related_list_item_id
             FROM bookwyrm_notification
@@ -96,10 +74,6 @@ class Migration(migrations.Migration):
 
             """,
             reverse_sql=migrations.RunSQL.noop,
-        ),
-        migrations.RemoveField(
-            model_name="notification",
-            name="related_group",
         ),
         migrations.RemoveField(
             model_name="notification",

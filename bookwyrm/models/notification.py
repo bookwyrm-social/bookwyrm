@@ -43,8 +43,8 @@ class Notification(BookWyrmModel):
     related_users = models.ManyToManyField(
         "User", symmetrical=False, related_name="notifications"
     )
-    related_groups = models.ManyToManyField(
-        "Group", symmetrical=False, related_name="notifications"
+    related_group = models.ForeignKey(
+        "Group", on_delete=models.CASCADE, null=True, related_name="notifications"
     )
     related_status = models.ForeignKey("Status", on_delete=models.CASCADE, null=True)
     related_import = models.ForeignKey("ImportJob", on_delete=models.CASCADE, null=True)
