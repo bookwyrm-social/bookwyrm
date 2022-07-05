@@ -23,7 +23,9 @@ class List(TestCase):
 
     def test_remote_id(self, _):
         """shelves use custom remote ids"""
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
+        with patch(
+            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+        ), patch("bookwyrm.lists_stream.remove_list_task.delay"):
             book_list = models.List.objects.create(
                 name="Test List", user=self.local_user
             )
@@ -32,7 +34,9 @@ class List(TestCase):
 
     def test_to_activity(self, _):
         """jsonify it"""
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
+        with patch(
+            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+        ), patch("bookwyrm.lists_stream.remove_list_task.delay"):
             book_list = models.List.objects.create(
                 name="Test List", user=self.local_user
             )
@@ -46,7 +50,9 @@ class List(TestCase):
 
     def test_list_item(self, _):
         """a list entry"""
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
+        with patch(
+            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+        ), patch("bookwyrm.lists_stream.remove_list_task.delay"):
             book_list = models.List.objects.create(
                 name="Test List", user=self.local_user, privacy="unlisted"
             )
@@ -64,7 +70,9 @@ class List(TestCase):
 
     def test_list_item_pending(self, _):
         """a list entry"""
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
+        with patch(
+            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+        ), patch("bookwyrm.lists_stream.remove_list_task.delay"):
             book_list = models.List.objects.create(
                 name="Test List", user=self.local_user
             )
@@ -84,7 +92,9 @@ class List(TestCase):
 
     def test_embed_key(self, _):
         """embed_key should never be empty"""
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
+        with patch(
+            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+        ), patch("bookwyrm.lists_stream.remove_list_task.delay"):
             book_list = models.List.objects.create(
                 name="Test List", user=self.local_user
             )

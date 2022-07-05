@@ -122,21 +122,11 @@ class Openlibrary(TestCase):
         self.assertEqual(result, "https://covers.openlibrary.org/b/id/image-L.jpg")
 
     def test_parse_search_result(self):
-        """extract the results from the search json response"""
-        datafile = pathlib.Path(__file__).parent.joinpath("../data/ol_search.json")
-        search_data = json.loads(datafile.read_bytes())
-        result = self.connector.parse_search_data(search_data)
-        self.assertIsInstance(result, list)
-        self.assertEqual(len(result), 2)
-
-    def test_format_search_result(self):
         """translate json from openlibrary into SearchResult"""
         datafile = pathlib.Path(__file__).parent.joinpath("../data/ol_search.json")
         search_data = json.loads(datafile.read_bytes())
-        results = self.connector.parse_search_data(search_data)
-        self.assertIsInstance(results, list)
+        result = list(self.connector.parse_search_data(search_data, 0))[0]
 
-        result = self.connector.format_search_result(results[0])
         self.assertIsInstance(result, SearchResult)
         self.assertEqual(result.title, "This Is How You Lose the Time War")
         self.assertEqual(result.key, "https://openlibrary.org/works/OL20639540W")
@@ -148,18 +138,10 @@ class Openlibrary(TestCase):
         """extract the results from the search json response"""
         datafile = pathlib.Path(__file__).parent.joinpath("../data/ol_isbn_search.json")
         search_data = json.loads(datafile.read_bytes())
-        result = self.connector.parse_isbn_search_data(search_data)
-        self.assertIsInstance(result, list)
+        result = list(self.connector.parse_isbn_search_data(search_data))
         self.assertEqual(len(result), 1)
 
-    def test_format_isbn_search_result(self):
-        """translate json from openlibrary into SearchResult"""
-        datafile = pathlib.Path(__file__).parent.joinpath("../data/ol_isbn_search.json")
-        search_data = json.loads(datafile.read_bytes())
-        results = self.connector.parse_isbn_search_data(search_data)
-        self.assertIsInstance(results, list)
-
-        result = self.connector.format_isbn_search_result(results[0])
+        result = result[0]
         self.assertIsInstance(result, SearchResult)
         self.assertEqual(result.title, "Les ombres errantes")
         self.assertEqual(result.key, "https://openlibrary.org/books/OL16262504M")
@@ -229,7 +211,7 @@ class Openlibrary(TestCase):
             status=200,
         )
         with patch(
-            "bookwyrm.connectors.openlibrary.Connector." "get_authors_from_data"
+            "bookwyrm.connectors.openlibrary.Connector.get_authors_from_data"
         ) as mock:
             mock.return_value = []
             result = self.connector.create_edition_from_data(work, self.edition_data)

@@ -84,7 +84,9 @@ class GoodreadsImport(TestCase):
 
     def test_handle_imported_book(self, *_):
         """goodreads import added a book, this adds related connections"""
-        shelf = self.local_user.shelf_set.filter(identifier="read").first()
+        shelf = self.local_user.shelf_set.filter(
+            identifier=models.Shelf.READ_FINISHED
+        ).first()
         self.assertIsNone(shelf.books.first())
 
         import_job = self.importer.create_job(

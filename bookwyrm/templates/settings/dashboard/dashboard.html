@@ -37,6 +37,17 @@
 </div>
 
 <div class="columns block is-multiline">
+    {% if email_config_error %}
+    <div class="column is-flex">
+        <span class="notification is-warning is-block is-flex-grow-1">
+            {% blocktrans trimmed %}
+            Your outgoing email address, <code>{{ email_sender }}</code>, may be misconfigured.
+            {% endblocktrans %}
+            {% trans "Check the <code>EMAIL_SENDER_NAME</code> and <code>EMAIL_SENDER_DOMAIN</code> in your <code>.env</code>." %}
+        </span>
+    </div>
+    {% endif %}
+
     {% if reports %}
     <div class="column is-flex">
         <a href="{% url 'settings-reports' %}" class="notification is-warning is-block is-flex-grow-1">

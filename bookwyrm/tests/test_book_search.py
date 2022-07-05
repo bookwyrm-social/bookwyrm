@@ -102,17 +102,11 @@ class BookSearch(TestCase):
         class TestConnector(AbstractMinimalConnector):
             """nothing added here"""
 
-            def format_search_result(self, search_result):
-                return search_result
-
             def get_or_create_book(self, remote_id):
                 pass
 
-            def parse_search_data(self, data):
+            def parse_search_data(self, data, min_confidence):
                 return data
-
-            def format_isbn_search_result(self, search_result):
-                return search_result
 
             def parse_isbn_search_data(self, data):
                 return data

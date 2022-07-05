@@ -23,3 +23,8 @@
 .has-background-tertiary {
     background-color: $background-tertiary !important;
 }
+
+/* Workaround for dark theme as .has-text-black doesn't give desired effect. */
+.has-text-default {
+    color: $text !important;
+}

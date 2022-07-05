@@ -129,7 +129,7 @@ class List(OrderedCollectionMixin, BookWyrmModel):
         """on save, update embed_key and avoid clash with existing code"""
         if not self.embed_key:
             self.embed_key = uuid.uuid4()
-        return super().save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
 
 class ListItem(CollectionItemMixin, BookWyrmModel):
@@ -156,7 +156,7 @@ class ListItem(CollectionItemMixin, BookWyrmModel):
         super().save(*args, **kwargs)
         # tick the updated date on the parent list
         self.book_list.updated_date = timezone.now()
-        self.book_list.save(broadcast=False)
+        self.book_list.save(broadcast=False, update_fields=["updated_date"])
 
         list_owner = self.book_list.user
         model = apps.get_model("bookwyrm.Notification", require_ready=True)

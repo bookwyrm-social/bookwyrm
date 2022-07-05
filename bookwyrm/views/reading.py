@@ -1,4 +1,5 @@
 """ the good stuff! the books! """
+import logging
 from django.contrib.auth.decorators import login_required
 from django.core.cache import cache
 from django.db import transaction
@@ -15,6 +16,8 @@ from .status import CreateStatus
 from .helpers import get_edition, handle_reading_status, is_api_request
 from .helpers import load_date_in_user_tz_as_utc
 
+logger = logging.getLogger(__name__)
+
 
 # pylint: disable=no-self-use
 # pylint: disable=too-many-return-statements
@@ -29,20 +32,24 @@ class ReadingStatus(View):
             "want": "want.html",
             "start": "start.html",
             "finish": "finish.html",
+            "stop": "stop.html",
         }.get(status)
         if not template:
             return HttpResponseNotFound()
         # redirect if we're already on this shelf
         return TemplateResponse(request, f"reading_progress/{template}", {"book": book})
 
+    @transaction.atomic
     def post(self, request, status, book_id):
         """Change the state of a book by shelving it and adding reading dates"""
         identifier = {
             "want": models.Shelf.TO_READ,
             "start": models.Shelf.READING,
             "finish": models.Shelf.READ_FINISHED,
+            "stop": models.Shelf.STOPPED_READING,
         }.get(status)
         if not identifier:
+            logger.exception("Invalid reading status type: %s", status)
             return HttpResponseBadRequest()
 
         # invalidate related caches
@@ -85,6 +92,7 @@ class ReadingStatus(View):
             desired_shelf.identifier,
             start_date=request.POST.get("start_date"),
             finish_date=request.POST.get("finish_date"),
+            stopped_date=request.POST.get("stopped_date"),
         )
 
         # post about it (if you want)
@@ -153,8 +161,9 @@ class ReadThrough(View):
 
 
 @transaction.atomic
+# pylint: disable=too-many-arguments
 def update_readthrough_on_shelve(
-    user, annotated_book, status, start_date=None, finish_date=None
+    user, annotated_book, status, start_date=None, finish_date=None, stopped_date=None
 ):
     """update the current readthrough for a book when it is re-shelved"""
     # there *should* only be one of current active readthrough, but it's a list
@@ -176,8 +185,9 @@ def update_readthrough_on_shelve(
         )
     # santiize and set dates
     active_readthrough.start_date = load_date_in_user_tz_as_utc(start_date, user)
-    # if the finish date is set, the readthrough will be automatically set as inactive
+    # if the stop or finish date is set, the readthrough will be set as inactive
     active_readthrough.finish_date = load_date_in_user_tz_as_utc(finish_date, user)
+    active_readthrough.stopped_date = load_date_in_user_tz_as_utc(stopped_date, user)
 
     active_readthrough.save()
 

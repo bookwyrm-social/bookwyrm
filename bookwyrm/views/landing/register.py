@@ -91,8 +91,11 @@ class ConfirmEmailCode(View):
     def get(self, request, code):  # pylint: disable=unused-argument
         """you got the code! good work"""
         settings = models.SiteSettings.get()
-        if request.user.is_authenticated or not settings.require_confirm_email:
+        if request.user.is_authenticated:
             return redirect("/")
+
+        if not settings.require_confirm_email:
+            return redirect("login")
 
         # look up the user associated with this code
         try:

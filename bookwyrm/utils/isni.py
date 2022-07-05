@@ -106,7 +106,7 @@ def find_authors_by_name(name_string, description=False):
 
             if titles:
                 # some of the "titles" in ISNI are a little ...iffy
-                # '@' is used by ISNI/OCLC to index the starting point ignoring stop words
+                # @ is used by ISNI/OCLC to index the starting point ignoring stop words
                 # (e.g. "The @Government of no one")
                 title_elements = [
                     e
