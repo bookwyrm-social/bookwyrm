@@ -34,11 +34,30 @@
 
     {% endblocktrans %}
     {% else %}
-    {% blocktrans trimmed %}
 
-    liked your <a href="{{ related_path }}">status</a>
+        {% if other_user_count == 0 %}
 
-    {% endblocktrans %}
+        {% blocktrans trimmed %}
+        <a href="{{ related_user_link }}">{{ related_user }}</a> liked your <a href="{{ related_path }}">status</a>
+        {% endblocktrans %}
+
+        {% elif other_user_count == 1 %}
+
+        {% blocktrans trimmed %}
+        <a href="{{ related_user_link }}">{{ related_user }}</a>
+        and
+        <a href="{{ second_user_link }}">{{ second_user }}</a>
+        liked your <a href="{{ related_path }}">status</a>
+        {% endblocktrans %}
+
+        {% else %}
+
+        {% blocktrans trimmed %}
+        <a href="{{ related_user_link }}">{{ related_user }}</a> and {{ other_user_count }} others liked your <a href="{{ related_path }}">status</a>
+        {% endblocktrans %}
+
+        {% endif %}
+
     {% endif %}
 
     {% endwith %}

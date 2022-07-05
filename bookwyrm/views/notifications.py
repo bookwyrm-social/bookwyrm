@@ -15,9 +15,12 @@ class Notifications(View):
         """people are interacting with you, get hyped"""
         notifications = (
             request.user.notification_set.all()
-            .order_by("-created_date")
+            .order_by("-updated_date")
+            .select_related(
+                "related_status",
+                "related_group",
+            )
             .prefetch_related(
-                "related_statuses",
                 "related_import",
                 "related_reports",
                 "related_users",
