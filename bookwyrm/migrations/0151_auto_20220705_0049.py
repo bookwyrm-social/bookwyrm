@@ -8,13 +8,13 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bookwyrm', '0150_readthrough_stopped_date'),
+        ("bookwyrm", "0150_readthrough_stopped_date"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='notification',
-            name='related_book',
+            model_name="notification",
+            name="related_book",
         ),
         migrations.AddField(
             model_name="notification",

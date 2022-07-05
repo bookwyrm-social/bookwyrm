@@ -39,10 +39,7 @@ class Notification(BookWyrmModel):
         """Create a notification"""
         if not user.local or user == related_user:
             return
-        notification, _ = cls.objects.get_or_create(
-            user=user,
-            **kwargs
-        )
+        notification, _ = cls.objects.get_or_create(user=user, **kwargs)
         notification.related_users.add(related_user)
         notification.unread = True
         notification.save()
@@ -92,7 +89,7 @@ def notify_on_unfav(sender, instance, *args, **kwargs):
         instance.status.user,
         instance.user,
         related_status=instance.status,
-        notification_type="FAVORITE"
+        notification_type="FAVORITE",
     )
 
 
@@ -195,5 +192,6 @@ def notify_admins_on_report(sender, instance, *args, **kwargs):
         notification, _ = Notification.objects.get_or_create(
             user=admin,
             notification_type="REPORT",
+            unread=True,
         )
         notification.related_reports.add(instance)
