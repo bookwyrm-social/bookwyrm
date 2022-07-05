@@ -1,5 +1,4 @@
 """ defines relationships between users """
-from django.apps import apps
 from django.core.cache import cache
 from django.db import models, transaction, IntegrityError
 from django.db.models import Q
@@ -147,16 +146,6 @@ class UserFollowRequest(ActivitypubMixin, UserRelationship):
             manually_approves = self.user_object.manually_approves_followers
             if not manually_approves:
                 self.accept()
-
-            model = apps.get_model("bookwyrm.Notification", require_ready=True)
-            notification_type = (
-                model.FOLLOW_REQUEST if manually_approves else model.FOLLOW
-            )
-            model.notify(
-                self.user_object,
-                self.user_subject,
-                notification_type=notification_type,
-            )
 
     def get_accept_reject_id(self, status):
         """get id for sending an accept or reject of a local user"""

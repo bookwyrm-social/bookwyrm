@@ -3,7 +3,7 @@ from django.db import models, transaction
 from django.dispatch import receiver
 from .base_model import BookWyrmModel
 from . import Boost, Favorite, GroupMemberInvitation, ImportJob, ListItem, Report
-from . import Status, User
+from . import Status, User, UserFollowRequest
 
 
 class Notification(BookWyrmModel):
@@ -257,3 +257,34 @@ def notify_user_on_list_item_add(sender, instance, created, *args, **kwargs):
         for membership in instance.book_list.group.memberships.all():
             if membership.user != instance.user:
                 Notification.notify_list_item(membership.user, instance)
+
+
+@receiver(models.signals.post_save, sender=UserFollowRequest)
+@transaction.atomic
+# pylint: disable=unused-argument
+def notify_user_on_follow(sender, instance, created, *args, **kwargs):
+    """Someone added to your list"""
+    if not created or not instance.user_object.local:
+        return
+
+    manually_approves = instance.user_object.manually_approves_followers
+    if manually_approves:
+        # don't group notifications
+        notification = Notification.objects.filter(
+            user=instance.user_object,
+            related_users=instance.user_subject,
+            notification_type=Notification.FOLLOW_REQUEST,
+        ).first()
+        if not notification:
+            notification = Notification.objects.create(
+                user=instance.user_object, notification_type=Notification.FOLLOW_REQUEST
+            )
+        notification.related_users.set([instance.user_subject])
+        notification.read = False
+        notification.save()
+    else:
+        Notification.notify(
+            instance.user_object,
+            instance.user_subject,
+            notification_type=Notification.FOLLOW,
+        )
