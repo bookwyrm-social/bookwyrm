@@ -33,6 +33,31 @@ class Notification(BookWyrmModel):
     )
     related_reports = models.ManyToManyField("Report", symmetrical=False)
 
+    @classmethod
+    @transaction.atomic
+    def notify(cls, user, related_user, **kwargs):
+        """Create a notification"""
+        if not user.local or user == related_user:
+            return
+        notification, _ = cls.objects.get_or_create(
+            user=user,
+            **kwargs
+        )
+        notification.related_users.add(related_user)
+        notification.unread = True
+        notification.save()
+
+    @classmethod
+    def unnotify(cls, user, related_user, **kwargs):
+        """Remove a user from a notification and delete it if that was the only user"""
+        try:
+            notification = cls.objects.filter(user=user, **kwargs).get()
+        except Notification.DoesNotExist:
+            return
+        notification.related_users.remove(related_user)
+        if not notification.related_users.exists():
+            notification.delete()
+
     class Meta:
         """checks if notifcation is in enum list for valid types"""
 
@@ -49,14 +74,12 @@ class Notification(BookWyrmModel):
 # pylint: disable=unused-argument
 def notify_on_fav(sender, instance, *args, **kwargs):
     """someone liked your content, you ARE loved"""
-    if not instance.status.user.local or instance.status.user == instance.user:
-        return
-    notification, _ = Notification.objects.get_or_create(
-        user=instance.status.user,
-        notification_type="FAVORITE",
+    Notification.notify(
+        instance.status.user,
+        instance.user,
         related_status=instance.status,
+        notification_type="FAVORITE",
     )
-    notification.related_users.add(instance.user)
 
 
 @receiver(models.signals.post_delete, sender=Favorite)
@@ -65,21 +88,16 @@ def notify_on_unfav(sender, instance, *args, **kwargs):
     """oops, didn't like that after all"""
     if not instance.status.user.local:
         return
-    try:
-        notification = Notification.objects.filter(
-            user=instance.status.user,
-            related_users=instance.user,
-            related_status=instance.status,
-            notification_type="FAVORITE",
-        ).get()
-    except Notification.DoesNotExist:
-        return
-    notification.related_users.remove(instance.user)
-    if not notification.related_users.exists():
-        notification.delete()
+    Notification.unnotify(
+        instance.status.user,
+        instance.user,
+        related_status=instance.status,
+        notification_type="FAVORITE"
+    )
 
 
 @receiver(models.signals.post_save)
+@transaction.atomic
 # pylint: disable=unused-argument
 def notify_user_on_mention(sender, instance, *args, **kwargs):
     """creating and deleting statuses with @ mentions and replies"""
@@ -95,27 +113,29 @@ def notify_user_on_mention(sender, instance, *args, **kwargs):
         and instance.reply_parent.user != instance.user
         and instance.reply_parent.user.local
     ):
-        Notification.objects.create(
-            user=instance.reply_parent.user,
-            notification_type="REPLY",
-            related_user=instance.user,
+        Notification.notify(
+            instance.reply_parent.user,
+            instance.user,
             related_status=instance,
+            notification_type="REPLY",
         )
+
     for mention_user in instance.mention_users.all():
         # avoid double-notifying about this status
         if not mention_user.local or (
             instance.reply_parent and mention_user == instance.reply_parent.user
         ):
             continue
-        Notification.objects.create(
-            user=mention_user,
+        Notification.notify(
+            mention_user,
+            instance.user,
             notification_type="MENTION",
-            related_user=instance.user,
             related_status=instance,
         )
 
 
 @receiver(models.signals.post_save, sender=Boost)
+@transaction.atomic
 # pylint: disable=unused-argument
 def notify_user_on_boost(sender, instance, *args, **kwargs):
     """boosting a status"""
@@ -125,10 +145,10 @@ def notify_user_on_boost(sender, instance, *args, **kwargs):
     ):
         return
 
-    Notification.objects.create(
-        user=instance.boosted_status.user,
+    Notification.notify(
+        instance.boosted_status.user,
+        instance.user,
         related_status=instance.boosted_status,
-        related_user=instance.user,
         notification_type="BOOST",
     )
 
@@ -137,12 +157,12 @@ def notify_user_on_boost(sender, instance, *args, **kwargs):
 # pylint: disable=unused-argument
 def notify_user_on_unboost(sender, instance, *args, **kwargs):
     """unboosting a status"""
-    Notification.objects.filter(
-        user=instance.boosted_status.user,
+    Notification.unnotify(
+        instance.boosted_status.user,
+        instance.user,
         related_status=instance.boosted_status,
-        related_user=instance.user,
         notification_type="BOOST",
-    ).delete()
+    )
 
 
 @receiver(models.signals.post_save, sender=ImportJob)
@@ -162,6 +182,7 @@ def notify_user_on_import_complete(
 
 
 @receiver(models.signals.post_save, sender=Report)
+@transaction.atomic
 # pylint: disable=unused-argument
 def notify_admins_on_report(sender, instance, *args, **kwargs):
     """something is up, make sure the admins know"""
@@ -171,8 +192,8 @@ def notify_admins_on_report(sender, instance, *args, **kwargs):
         | models.Q(is_superuser=True)
     ).all()
     for admin in admins:
-        Notification.objects.create(
+        notification, _ = Notification.objects.get_or_create(
             user=admin,
-            related_report=instance,
             notification_type="REPORT",
         )
+        notification.related_reports.add(instance)
