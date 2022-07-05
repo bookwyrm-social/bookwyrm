@@ -2,7 +2,7 @@
 from django.db import models, transaction
 from django.dispatch import receiver
 from .base_model import BookWyrmModel
-from . import Boost, Favorite, ImportJob, Report, Status, User
+from . import Boost, Favorite, GroupMemberInvitation, ImportJob, Report, Status, User
 
 
 class Notification(BookWyrmModel):
@@ -205,3 +205,16 @@ def notify_admins_on_report(sender, instance, *args, **kwargs):
             unread=True,
         )
         notification.related_reports.add(instance)
+
+
+@receiver(models.signals.post_save, sender=GroupMemberInvitation)
+@transaction.atomic
+# pylint: disable=unused-argument
+def notify_user_on_group_invite(sender, instance, *args, **kwargs):
+    """Cool kids club here we come"""
+    Notification.notify(
+        instance.user,
+        instance.group.user,
+        related_group=instance.group,
+        notification_type=Notification.INVITE,
+    )

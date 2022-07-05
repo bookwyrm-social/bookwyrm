@@ -140,15 +140,6 @@ class GroupMemberInvitation(models.Model):
         # make an invitation
         super().save(*args, **kwargs)
 
-        # now send the invite
-        model = apps.get_model("bookwyrm.Notification", require_ready=True)
-        model.notify(
-            self.user,
-            self.group.user,
-            related_group=self.group,
-            notification_type="INVITE",
-        )
-
     @transaction.atomic
     def accept(self):
         """turn this request into the real deal"""
@@ -160,7 +151,7 @@ class GroupMemberInvitation(models.Model):
             self.group.user,
             self.user,
             related_group=self.group,
-            notification_type="ACCEPT",
+            notification_type=model.ACCEPT,
         )
 
         # let the other members know about it
@@ -171,10 +162,9 @@ class GroupMemberInvitation(models.Model):
                     member,
                     self.user,
                     related_group=self.group,
-                    notification_type="JOIN",
+                    notification_type=model.JOIN,
                 )
 
     def reject(self):
         """generate a Reject for this membership request"""
-
         self.delete()
