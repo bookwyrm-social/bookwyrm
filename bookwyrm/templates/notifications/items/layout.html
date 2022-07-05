@@ -1,4 +1,5 @@
 {% load notification_page_tags %}
+{% load humanize %}
 {% related_status notification as related_status %}
 
 {% with related_users=notification.related_users.all %}
@@ -40,7 +41,7 @@
                     {% with related_user_link=related_users.first.local_path %}
                     {% with second_user=related_users.all.1.display_name %}
                     {% with second_user_link=related_users.all.1.local_path %}
-                    {% with other_user_count=notification.related_users.count|add:"-1" %}
+                    {% with other_user_count=notification.related_users.count|add:"-1"|intcomma %}
                         {% block description %}{% endblock %}
                     {% endwith %}
                     {% endwith %}
