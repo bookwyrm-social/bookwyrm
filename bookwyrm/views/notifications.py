@@ -16,14 +16,12 @@ class Notifications(View):
         notifications = (
             request.user.notification_set.all()
             .order_by("-created_date")
-            .select_related(
-                "related_status",
-                "related_status__reply_parent",
+            .prefetch_related(
+                "related_statuses",
                 "related_import",
-                "related_report",
-                "related_user",
-                "related_list_item",
-                "related_list_item__book",
+                "related_reports",
+                "related_users",
+                "related_list_items",
             )
         )
         if notification_type == "mentions":
