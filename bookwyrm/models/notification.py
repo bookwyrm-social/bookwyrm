@@ -57,10 +57,11 @@ class Notification(BookWyrmModel):
     @transaction.atomic
     def notify(cls, user, related_user, **kwargs):
         """Create a notification"""
-        if not user.local or user == related_user:
+        if related_user and (not user.local or user == related_user):
             return
         notification, _ = cls.objects.get_or_create(user=user, **kwargs)
-        notification.related_users.add(related_user)
+        if related_user:
+            notification.related_users.add(related_user)
         notification.read = False
         notification.save()
 
