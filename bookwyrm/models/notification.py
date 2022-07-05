@@ -2,7 +2,8 @@
 from django.db import models, transaction
 from django.dispatch import receiver
 from .base_model import BookWyrmModel
-from . import Boost, Favorite, GroupMemberInvitation, ImportJob, Report, Status, User
+from . import Boost, Favorite, GroupMemberInvitation, ImportJob, ListItem, Report
+from . import Status, User
 
 
 class Notification(BookWyrmModel):
@@ -219,3 +220,32 @@ def notify_user_on_group_invite(sender, instance, *args, **kwargs):
         related_group=instance.group,
         notification_type=Notification.INVITE,
     )
+
+
+@receiver(models.signals.post_save, sender=ListItem)
+@transaction.atomic
+# pylint: disable=unused-argument
+def notify_user_on_list_item_add(sender, instance, created, *args, **kwargs):
+    """Someone added to your list"""
+    if not created:
+        return
+
+    list_owner = instance.book_list.user
+    # create a notification if somoene ELSE added to a local user's list
+    if list_owner.local and list_owner != instance.user:
+        Notification.notify(
+            list_owner,
+            instance.user,
+            related_list_item=instance,
+            notification_type=Notification.ADD
+        )
+
+    if instance.book_list.group:
+        for membership in instance.book_list.group.memberships.all():
+            if membership.user != instance.user:
+                Notification.notify(
+                    membership.user,
+                    instance.user,
+                    related_list_item=instance,
+                    notification_type=Notification.ADD,
+                )
