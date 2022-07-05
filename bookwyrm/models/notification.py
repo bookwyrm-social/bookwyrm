@@ -4,15 +4,35 @@ from django.dispatch import receiver
 from .base_model import BookWyrmModel
 from . import Boost, Favorite, ImportJob, Report, Status, User
 
-# pylint: disable=line-too-long
-NotificationType = models.TextChoices(
-    "NotificationType",
-    "FAVORITE REPLY MENTION TAG FOLLOW FOLLOW_REQUEST BOOST IMPORT ADD REPORT INVITE ACCEPT JOIN LEAVE REMOVE GROUP_PRIVACY GROUP_NAME GROUP_DESCRIPTION",
-)
-
 
 class Notification(BookWyrmModel):
     """you've been tagged, liked, followed, etc"""
+
+    FAVORITE = "FAVORITE"
+    REPLY = "REPLY"
+    MENTION = "MENTION"
+    TAG = "TAG"
+    FOLLOW = "FOLLOW"
+    FOLLOW_REQUEST = "FOLLOW_REQUEST"
+    BOOST = "BOOST"
+    IMPORT = "IMPORT"
+    ADD = "ADD"
+    REPORT = "REPORT"
+    INVITE = "INVITE"
+    ACCEPT = "ACCEPT"
+    JOIN = "JOIN"
+    LEAVE = "LEAVE"
+    REMOVE = "REMOVE"
+    GROUP_PRIVACY = "GROUP_PRIVACY"
+    GROUP_NAME = "GROUP_NAME"
+    GROUP_DESCRIPTION = "GROUP_DESCRIPTION"
+
+    # pylint: disable=line-too-long
+    NotificationType = models.TextChoices(
+        # there has got be a better way to do this
+        "NotificationType",
+        f"{FAVORITE} {REPLY} {MENTION} {TAG} {FOLLOW} {FOLLOW_REQUEST} {BOOST} {IMPORT} {ADD} {REPORT} {INVITE} {ACCEPT} {JOIN} {LEAVE} {REMOVE} {GROUP_PRIVACY} {GROUP_NAME} {GROUP_DESCRIPTION}",
+    )
 
     user = models.ForeignKey("User", on_delete=models.CASCADE)
     read = models.BooleanField(default=False)
@@ -55,16 +75,6 @@ class Notification(BookWyrmModel):
         if not notification.related_users.exists():
             notification.delete()
 
-    class Meta:
-        """checks if notifcation is in enum list for valid types"""
-
-        constraints = [
-            models.CheckConstraint(
-                check=models.Q(notification_type__in=NotificationType.values),
-                name="notification_type_valid",
-            )
-        ]
-
 
 @receiver(models.signals.post_save, sender=Favorite)
 @transaction.atomic()
@@ -75,7 +85,7 @@ def notify_on_fav(sender, instance, *args, **kwargs):
         instance.status.user,
         instance.user,
         related_status=instance.status,
-        notification_type="FAVORITE",
+        notification_type=Notification.FAVORITE,
     )
 
 
@@ -89,7 +99,7 @@ def notify_on_unfav(sender, instance, *args, **kwargs):
         instance.status.user,
         instance.user,
         related_status=instance.status,
-        notification_type="FAVORITE",
+        notification_type=Notification.FAVORITE,
     )
 
 
@@ -114,7 +124,7 @@ def notify_user_on_mention(sender, instance, *args, **kwargs):
             instance.reply_parent.user,
             instance.user,
             related_status=instance,
-            notification_type="REPLY",
+            notification_type=Notification.REPLY,
         )
 
     for mention_user in instance.mention_users.all():
@@ -126,7 +136,7 @@ def notify_user_on_mention(sender, instance, *args, **kwargs):
         Notification.notify(
             mention_user,
             instance.user,
-            notification_type="MENTION",
+            notification_type=Notification.MENTION,
             related_status=instance,
         )
 
@@ -146,7 +156,7 @@ def notify_user_on_boost(sender, instance, *args, **kwargs):
         instance.boosted_status.user,
         instance.user,
         related_status=instance.boosted_status,
-        notification_type="BOOST",
+        notification_type=Notification.BOOST,
     )
 
 
@@ -158,7 +168,7 @@ def notify_user_on_unboost(sender, instance, *args, **kwargs):
         instance.boosted_status.user,
         instance.user,
         related_status=instance.boosted_status,
-        notification_type="BOOST",
+        notification_type=Notification.BOOST,
     )
 
 
@@ -173,7 +183,7 @@ def notify_user_on_import_complete(
         return
     Notification.objects.create(
         user=instance.user,
-        notification_type="IMPORT",
+        notification_type=Notification.IMPORT,
         related_import=instance,
     )
 
@@ -191,7 +201,7 @@ def notify_admins_on_report(sender, instance, *args, **kwargs):
     for admin in admins:
         notification, _ = Notification.objects.get_or_create(
             user=admin,
-            notification_type="REPORT",
+            notification_type=Notification.REPORT,
             unread=True,
         )
         notification.related_reports.add(instance)
