@@ -67,6 +67,27 @@ class Notification(BookWyrmModel):
         notification.save()
 
     @classmethod
+    @transaction.atomic
+    def notify_list_item(cls, user, list_item):
+        """ Group the notifications around the list items, not the user """
+        related_user = list_item.user
+        notification = cls.objects.filter(
+            user=user,
+            related_users=related_user,
+            related_list_items__book_list=list_item.book_list,
+            notification_type=Notification.ADD
+        ).first()
+        if not notification:
+            notification = cls.objects.create(
+                user=user,
+                notification_type=Notification.ADD
+            )
+            notification.related_users.add(related_user)
+        notification.related_list_items.add(list_item)
+        notification.read = False
+        notification.save()
+
+    @classmethod
     def unnotify(cls, user, related_user, **kwargs):
         """Remove a user from a notification and delete it if that was the only user"""
         try:
@@ -79,7 +100,6 @@ class Notification(BookWyrmModel):
 
 
 @receiver(models.signals.post_save, sender=Favorite)
-@transaction.atomic()
 # pylint: disable=unused-argument
 def notify_on_fav(sender, instance, *args, **kwargs):
     """someone liked your content, you ARE loved"""
@@ -144,7 +164,6 @@ def notify_user_on_mention(sender, instance, *args, **kwargs):
 
 
 @receiver(models.signals.post_save, sender=Boost)
-@transaction.atomic
 # pylint: disable=unused-argument
 def notify_user_on_boost(sender, instance, *args, **kwargs):
     """boosting a status"""
@@ -210,7 +229,6 @@ def notify_admins_on_report(sender, instance, *args, **kwargs):
 
 
 @receiver(models.signals.post_save, sender=GroupMemberInvitation)
-@transaction.atomic
 # pylint: disable=unused-argument
 def notify_user_on_group_invite(sender, instance, *args, **kwargs):
     """Cool kids club here we come"""
@@ -233,19 +251,16 @@ def notify_user_on_list_item_add(sender, instance, created, *args, **kwargs):
     list_owner = instance.book_list.user
     # create a notification if somoene ELSE added to a local user's list
     if list_owner.local and list_owner != instance.user:
-        Notification.notify(
+        # keep the related_user singular, group the items
+        Notification.notify_list_item(
             list_owner,
-            instance.user,
-            related_list_item=instance,
-            notification_type=Notification.ADD
+            instance
         )
 
     if instance.book_list.group:
         for membership in instance.book_list.group.memberships.all():
             if membership.user != instance.user:
-                Notification.notify(
+                Notification.notify_list_item(
                     membership.user,
-                    instance.user,
-                    related_list_item=instance,
-                    notification_type=Notification.ADD,
+                    instance
                 )

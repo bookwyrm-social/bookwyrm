@@ -150,7 +150,7 @@ class ListItem(CollectionItemMixin, BookWyrmModel):
     collection_field = "book_list"
 
     def save(self, *args, **kwargs):
-        """create a notification too"""
+        """Update the list's date"""
         super().save(*args, **kwargs)
         # tick the updated date on the parent list
         self.book_list.updated_date = timezone.now()
