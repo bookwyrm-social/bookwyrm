@@ -69,18 +69,17 @@ class Notification(BookWyrmModel):
     @classmethod
     @transaction.atomic
     def notify_list_item(cls, user, list_item):
-        """ Group the notifications around the list items, not the user """
+        """Group the notifications around the list items, not the user"""
         related_user = list_item.user
         notification = cls.objects.filter(
             user=user,
             related_users=related_user,
             related_list_items__book_list=list_item.book_list,
-            notification_type=Notification.ADD
+            notification_type=Notification.ADD,
         ).first()
         if not notification:
             notification = cls.objects.create(
-                user=user,
-                notification_type=Notification.ADD
+                user=user, notification_type=Notification.ADD
             )
             notification.related_users.add(related_user)
         notification.related_list_items.add(list_item)
@@ -252,15 +251,9 @@ def notify_user_on_list_item_add(sender, instance, created, *args, **kwargs):
     # create a notification if somoene ELSE added to a local user's list
     if list_owner.local and list_owner != instance.user:
         # keep the related_user singular, group the items
-        Notification.notify_list_item(
-            list_owner,
-            instance
-        )
+        Notification.notify_list_item(list_owner, instance)
 
     if instance.book_list.group:
         for membership in instance.book_list.group.memberships.all():
             if membership.user != instance.user:
-                Notification.notify_list_item(
-                    membership.user,
-                    instance
-                )
+                Notification.notify_list_item(membership.user, instance)

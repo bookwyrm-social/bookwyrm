@@ -156,7 +156,6 @@ class ListItem(CollectionItemMixin, BookWyrmModel):
         self.book_list.updated_date = timezone.now()
         self.book_list.save(broadcast=False, update_fields=["updated_date"])
 
-
     def raise_not_deletable(self, viewer):
         """the associated user OR the list owner can delete"""
         if self.book_list.user == viewer:
