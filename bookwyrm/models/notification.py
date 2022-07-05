@@ -1,5 +1,5 @@
 """ alert a user to activity """
-from django.db import models
+from django.db import models, transaction
 from django.dispatch import receiver
 from .base_model import BookWyrmModel
 from . import Boost, Favorite, ImportJob, Report, Status, User
@@ -26,9 +26,7 @@ class Notification(BookWyrmModel):
     related_groups = models.ManyToManyField(
         "Group", symmetrical=False, related_name="notifications"
     )
-    related_statuses = models.ManyToManyField(
-        "Status", symmetrical=False, related_name="notifications"
-    )
+    related_status = models.ForeignKey("Status", on_delete=models.CASCADE, null=True)
     related_import = models.ForeignKey("ImportJob", on_delete=models.CASCADE, null=True)
     related_list_items = models.ManyToManyField(
         "ListItem", symmetrical=False, related_name="notifications"
@@ -47,17 +45,18 @@ class Notification(BookWyrmModel):
 
 
 @receiver(models.signals.post_save, sender=Favorite)
+@transaction.atomic()
 # pylint: disable=unused-argument
 def notify_on_fav(sender, instance, *args, **kwargs):
     """someone liked your content, you ARE loved"""
     if not instance.status.user.local or instance.status.user == instance.user:
         return
-    Notification.objects.create(
+    notification, _ = Notification.objects.get_or_create(
         user=instance.status.user,
         notification_type="FAVORITE",
-        related_user=instance.user,
         related_status=instance.status,
     )
+    notification.related_users.add(instance.user)
 
 
 @receiver(models.signals.post_delete, sender=Favorite)
@@ -66,12 +65,18 @@ def notify_on_unfav(sender, instance, *args, **kwargs):
     """oops, didn't like that after all"""
     if not instance.status.user.local:
         return
-    Notification.objects.filter(
-        user=instance.status.user,
-        related_user=instance.user,
-        related_status=instance.status,
-        notification_type="FAVORITE",
-    ).delete()
+    try:
+        notification = Notification.objects.filter(
+            user=instance.status.user,
+            related_users=instance.user,
+            related_status=instance.status,
+            notification_type="FAVORITE",
+        ).get()
+    except Notification.DoesNotExist:
+        return
+    notification.related_users.remove(instance.user)
+    if not notification.related_users.exists():
+        notification.delete()
 
 
 @receiver(models.signals.post_save)

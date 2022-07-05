@@ -37,13 +37,6 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name="notification",
-            name="related_statuses",
-            field=models.ManyToManyField(
-                related_name="notifications", to="bookwyrm.Status"
-            ),
-        ),
-        migrations.AddField(
-            model_name="notification",
             name="related_users",
             field=models.ManyToManyField(
                 related_name="notifications", to=settings.AUTH_USER_MODEL
@@ -81,11 +74,6 @@ class Migration(migrations.Migration):
         ),
         migrations.RunSQL(
             sql="""
-            INSERT INTO bookwyrm_notification_related_statuses (notification_id, status_id)
-            SELECT id, related_status_id
-            FROM bookwyrm_notification
-                WHERE bookwyrm_notification.related_status_id IS NOT NULL;
-
             INSERT INTO bookwyrm_notification_related_users (notification_id, user_id)
             SELECT id, related_user_id
             FROM bookwyrm_notification
@@ -120,10 +108,6 @@ class Migration(migrations.Migration):
         migrations.RemoveField(
             model_name="notification",
             name="related_report",
-        ),
-        migrations.RemoveField(
-            model_name="notification",
-            name="related_status",
         ),
         migrations.RemoveField(
             model_name="notification",
