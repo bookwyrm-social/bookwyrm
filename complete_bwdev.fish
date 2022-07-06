@@ -18,7 +18,6 @@ makemessages \
 compilemessages \
 update_locales \
 build \
-clean \
 black \
 prettier \
 stylelint \
@@ -56,7 +55,6 @@ __bw_complete "$commands" "makemessages"            "extract all localizable mes
 __bw_complete "$commands" "compilemessages"         "compile .po localization files to .mo"
 __bw_complete "$commands" "update_locales"          "run makemessages and compilemessages for the en_US and additional locales"
 __bw_complete "$commands" "build"                   "build the containers"
-__bw_complete "$commands" "clean"                   "bring the cluster down and remove all containers"
 __bw_complete "$commands" "black"                   "run Python code formatting tool"
 __bw_complete "$commands" "prettier"                "run JavaScript code formatting tool"
 __bw_complete "$commands" "stylelint"               "run SCSS linting tool"

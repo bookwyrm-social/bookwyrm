@@ -17,7 +17,6 @@ makemessages
 compilemessages
 update_locales
 build
-clean
 black
 prettier
 stylelint
