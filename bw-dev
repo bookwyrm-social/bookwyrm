@@ -103,6 +103,9 @@ case "$CMD" in
     pytest)
         runweb pytest --no-cov-on-fail "$@"
         ;;
+    pytest_coverage_report)
+        runweb pytest -n 3 --cov-report term-missing "$@"
+        ;;
     collectstatic)
         runweb python manage.py collectstatic --no-input
         ;;
