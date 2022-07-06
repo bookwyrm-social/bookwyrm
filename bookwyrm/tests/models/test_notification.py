@@ -137,3 +137,47 @@ class Notification(TestCase):
         self.assertEqual(notification.related_users.count(), 1)
         self.assertEqual(notification.related_users.first(), self.remote_user)
         self.assertEqual(notification.related_list_items.count(), 2)
+
+    def test_unnotify(self):
+        """Remove a notification"""
+        models.Notification.notify(
+            self.local_user,
+            self.remote_user,
+            notification_type=models.Notification.FAVORITE,
+        )
+        self.assertTrue(models.Notification.objects.exists())
+
+        models.Notification.unnotify(
+            self.local_user,
+            self.remote_user,
+            notification_type=models.Notification.FAVORITE,
+        )
+        self.assertFalse(models.Notification.objects.exists())
+
+    def test_unnotify_multiple_users(self):
+        """Remove a notification"""
+        models.Notification.notify(
+            self.local_user,
+            self.remote_user,
+            notification_type=models.Notification.FAVORITE,
+        )
+        models.Notification.notify(
+            self.local_user,
+            self.another_user,
+            notification_type=models.Notification.FAVORITE,
+        )
+        self.assertTrue(models.Notification.objects.exists())
+
+        models.Notification.unnotify(
+            self.local_user,
+            self.remote_user,
+            notification_type=models.Notification.FAVORITE,
+        )
+        self.assertTrue(models.Notification.objects.exists())
+
+        models.Notification.unnotify(
+            self.local_user,
+            self.another_user,
+            notification_type=models.Notification.FAVORITE,
+        )
+        self.assertFalse(models.Notification.objects.exists())
