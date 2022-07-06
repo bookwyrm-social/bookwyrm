@@ -19,7 +19,7 @@ Is that where you'd like to go?
 {% block modal-footer %}
 {% if request.user.is_authenticated %}
 <div class="is-flex-grow-1">
-    <a href="{% url 'report-link' link.added_by.id link.id %}">{% trans "Report spam" %}</a>
+    <a href="{% url 'report-link' link.id %}">{% trans "Report spam" %}</a>
 </div>
 
 <button type="button" class="button" data-modal-close>{% trans "Cancel" %}</button>
