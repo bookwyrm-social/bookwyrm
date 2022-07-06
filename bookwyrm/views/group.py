@@ -244,7 +244,7 @@ def remove_member(request):
 
         memberships = models.GroupMember.objects.filter(group=group)
         model = apps.get_model("bookwyrm.Notification", require_ready=True)
-        notification_type = models.LEAVE if user == request.user else model.REMOVE
+        notification_type = model.LEAVE if user == request.user else model.REMOVE
         # let the other members know about it
         for membership in memberships:
             member = membership.user

@@ -280,7 +280,6 @@ class GroupViews(TestCase):
         self.assertEqual(notification.related_group, self.testgroup)
         self.assertEqual(notification.notification_type, "LEAVE")
 
-
     def test_accept_membership(self, _):
         """accept an invite"""
         models.GroupMemberInvitation.objects.create(
