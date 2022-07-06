@@ -53,6 +53,11 @@ class AutomodViews(TestCase):
         request.user.is_superuser = True
 
         result = view(request)
+
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
+
+        rule = models.AutoMod.objects.get()
+        self.assertTrue(rule.flag_users)
+        self.assertFalse(rule.flag_statuses)
