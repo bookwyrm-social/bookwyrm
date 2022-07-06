@@ -148,13 +148,6 @@ def handle_reading_status(user, shelf, book, privacy):
     status.save()
 
 
-def is_blocked(viewer, user):
-    """is this viewer blocked by the user?"""
-    if viewer.is_authenticated and viewer in user.blocks.all():
-        return True
-    return False
-
-
 def load_date_in_user_tz_as_utc(date_str: str, user: models.User) -> datetime:
     """ensures that data is stored consistently in the UTC timezone"""
     if not date_str:
