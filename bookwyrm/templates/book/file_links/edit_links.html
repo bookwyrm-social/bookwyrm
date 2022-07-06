@@ -54,7 +54,7 @@
                 <td>
                     {{ link.domain.name }}
                     <p>
-                        <a href="{% url 'report-link' 0 link.id %}">{% trans "Report spam" %}</a>
+                        <a href="{% url 'report-link' link.id %}">{% trans "Report spam" %}</a>
                     </p>
                 </td>
                 <td>
