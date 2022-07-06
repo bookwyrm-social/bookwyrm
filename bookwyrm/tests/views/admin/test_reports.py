@@ -6,7 +6,7 @@ from django.template.response import TemplateResponse
 from django.test import TestCase
 from django.test.client import RequestFactory
 
-from bookwyrm import forms, models, views
+from bookwyrm import models, views
 from bookwyrm.tests.validate_html import validate_html
 
 
