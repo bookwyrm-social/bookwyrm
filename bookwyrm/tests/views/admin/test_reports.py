@@ -6,7 +6,7 @@ from django.template.response import TemplateResponse
 from django.test import TestCase
 from django.test.client import RequestFactory
 
-from bookwyrm import forms, models, views
+from bookwyrm import models, views
 from bookwyrm.tests.validate_html import validate_html
 
 
@@ -88,52 +88,6 @@ class ReportViews(TestCase):
         self.assertEqual(comment.user, self.local_user)
         self.assertEqual(comment.note, "hi")
         self.assertEqual(comment.report, report)
-
-    def test_report_modal_view(self):
-        """a user reports another user"""
-        request = self.factory.get("")
-        request.user = self.local_user
-        result = views.Report.as_view()(request, self.local_user.id)
-
-        validate_html(result.render())
-
-    def test_make_report(self):
-        """a user reports another user"""
-        form = forms.ReportForm()
-        form.data["reporter"] = self.local_user.id
-        form.data["user"] = self.rat.id
-        request = self.factory.post("", form.data)
-        request.user = self.local_user
-
-        views.Report.as_view()(request)
-
-        report = models.Report.objects.get()
-        self.assertEqual(report.reporter, self.local_user)
-        self.assertEqual(report.user, self.rat)
-
-    def test_report_link(self):
-        """a user reports a link as spam"""
-        book = models.Edition.objects.create(title="hi")
-        link = models.FileLink.objects.create(
-            book=book, added_by=self.local_user, url="https://skdjfs.sdf"
-        )
-        domain = link.domain
-        domain.status = "approved"
-        domain.save()
-
-        form = forms.ReportForm()
-        form.data["reporter"] = self.local_user.id
-        form.data["user"] = self.rat.id
-        form.data["links"] = link.id
-        request = self.factory.post("", form.data)
-        request.user = self.local_user
-
-        views.Report.as_view()(request)
-
-        report = models.Report.objects.get()
-        domain.refresh_from_db()
-        self.assertEqual(report.links.first().id, link.id)
-        self.assertEqual(domain.status, "pending")
 
     def test_resolve_report(self):
         """toggle report resolution status"""

@@ -4,7 +4,7 @@ from .custom_form import CustomForm
 
 
 # pylint: disable=missing-class-docstring
-class GroupForm(CustomForm):
+class UserGroupForm(CustomForm):
     class Meta:
-        model = models.Group
-        fields = ["user", "privacy", "name", "description"]
+        model = models.User
+        fields = ["groups"]

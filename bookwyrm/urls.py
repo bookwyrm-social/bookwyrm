@@ -287,7 +287,7 @@ urlpatterns = [
         name="report-status",
     ),
     re_path(
-        r"^report/(?P<user_id>\d+)/link/(?P<link_id>\d+)?$",
+        r"^report/link/(?P<link_id>\d+)?$",
         views.Report.as_view(),
         name="report-link",
     ),

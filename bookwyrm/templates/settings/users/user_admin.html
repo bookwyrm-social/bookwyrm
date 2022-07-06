@@ -72,6 +72,12 @@
                         <span class="icon icon-check"></span>
                     </span>
                     {% trans "Active" %}
+                {% elif user.deactivation_reason == "moderator_deletion" or user.deactivation_reason == "self_deletion" %}
+                    <span class="tag is-danger" aria-hidden="true">
+                        <span class="icon icon-x"></span>
+                    </span>
+                    {% trans "Deleted" %}
+                    <span class="help">({{ user.get_deactivation_reason_display }})</span>
                 {% else %}
                     <span class="tag is-warning" aria-hidden="true">
                         <span class="icon icon-x"></span>
