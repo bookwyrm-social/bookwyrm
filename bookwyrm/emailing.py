@@ -45,7 +45,8 @@ def moderation_report_email(report):
     """a report was created"""
     data = email_data()
     data["reporter"] = report.reporter.localname or report.reporter.username
-    data["reportee"] = report.user.localname or report.user.username
+    if report.user:
+        data["reportee"] = report.user.localname or report.user.username
     data["report_link"] = report.remote_id
 
     for admin in models.User.objects.filter(

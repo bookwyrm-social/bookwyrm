@@ -42,7 +42,11 @@
                     <a href="{{ link.url }}" target="_blank" rel="noopener noreferrer">{{ link.url }}</a>
                 </td>
                 <td>
+                    {% if link.added_by %}
                     <a href="{% url 'user-feed' link.added_by.id %}">{{ link.added_by.display_name }}</a>
+                    {% else %}
+                    <em>{% trans "Unknown user" %}</em>
+                    {% endif %}
                 </td>
                 <td>
                     {{ link.filelink.filetype }}
@@ -50,7 +54,7 @@
                 <td>
                     {{ link.domain.name }}
                     <p>
-                        <a href="{% url 'report-link' link.added_by.id link.id %}">{% trans "Report spam" %}</a>
+                        <a href="{% url 'report-link' link.id %}">{% trans "Report spam" %}</a>
                     </p>
                 </td>
                 <td>
