@@ -112,7 +112,17 @@ class ViewsHelpers(TestCase):
         request = self.factory.get("", {"q": "Test Book"}, HTTP_USER_AGENT=USER_AGENT)
         self.assertTrue(views.helpers.is_bookwyrm_request(request))
 
-    def test_existing_user(self, *_):
+    def test_handle_remote_webfinger_invalid(self, *_):
+        """Various ways you can send a bad query"""
+        # if there's no query, there's no result
+        result = views.helpers.handle_remote_webfinger(None)
+        self.assertIsNone(result)
+
+        # malformed user
+        result = views.helpers.handle_remote_webfinger("noatsymbol")
+        self.assertIsNone(result)
+
+    def test_handle_remote_webfinger_existing_user(self, *_):
         """simple database lookup by username"""
         result = views.helpers.handle_remote_webfinger("@mouse@local.com")
         self.assertEqual(result, self.local_user)
@@ -124,7 +134,19 @@ class ViewsHelpers(TestCase):
         self.assertEqual(result, self.local_user)
 
     @responses.activate
-    def test_load_user(self, *_):
+    def test_handle_remote_webfinger_load_user_invalid_result(self, *_):
+        """find a remote user using webfinger, but fail"""
+        username = "mouse@example.com"
+        responses.add(
+            responses.GET,
+            f"https://example.com/.well-known/webfinger?resource=acct:{username}",
+            status=500,
+        )
+        result = views.helpers.handle_remote_webfinger("@mouse@example.com")
+        self.assertIsNone(result)
+
+    @responses.activate
+    def test_handle_remote_webfinger_load_user(self, *_):
         """find a remote user using webfinger"""
         username = "mouse@example.com"
         wellknown = {
@@ -154,7 +176,7 @@ class ViewsHelpers(TestCase):
             self.assertIsInstance(result, models.User)
             self.assertEqual(result.username, "mouse@example.com")
 
-    def test_user_on_blocked_server(self, *_):
+    def test_handler_remote_webfinger_user_on_blocked_server(self, *_):
         """find a remote user using webfinger"""
         models.FederatedServer.objects.create(
             server_name="example.com", status="blocked"
@@ -162,6 +184,38 @@ class ViewsHelpers(TestCase):
 
         result = views.helpers.handle_remote_webfinger("@mouse@example.com")
         self.assertIsNone(result)
+
+    @responses.activate
+    def test_subscribe_remote_webfinger(self, *_):
+        """remote subscribe templates"""
+        query = "mouse@example.com"
+        response = {
+            "subject": f"acct:{query}",
+            "links": [
+                {
+                    "rel": "self",
+                    "type": "application/activity+json",
+                    "href": "https://example.com/user/mouse",
+                    "template": "hi",
+                },
+                {
+                    "rel": "http://ostatus.org/schema/1.0/subscribe",
+                    "type": "application/activity+json",
+                    "href": "https://example.com/user/mouse",
+                    "template": "hello",
+                },
+            ],
+        }
+        responses.add(
+            responses.GET,
+            f"https://example.com/.well-known/webfinger?resource=acct:{query}",
+            json=response,
+            status=200,
+        )
+        template = views.helpers.subscribe_remote_webfinger(query)
+        self.assertEqual(template, "hello")
+        template = views.helpers.subscribe_remote_webfinger(f"@{query}")
+        self.assertEqual(template, "hello")
 
     def test_handle_reading_status_to_read(self, *_):
         """posts shelve activities"""

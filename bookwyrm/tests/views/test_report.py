@@ -53,9 +53,7 @@ class ReportViews(TestCase):
         request = self.factory.get("")
         request.user = self.local_user
         result = views.Report.as_view()(
-            request,
-            user_id=self.local_user.id,
-            status_id=self.status.id
+            request, user_id=self.local_user.id, status_id=self.status.id
         )
 
         validate_html(result.render())
@@ -68,10 +66,7 @@ class ReportViews(TestCase):
         )
         request = self.factory.get("")
         request.user = self.local_user
-        result = views.Report.as_view()(
-            request,
-            link_id=link.id
-        )
+        result = views.Report.as_view()(request, link_id=link.id)
 
         validate_html(result.render())
 
