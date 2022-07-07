@@ -222,8 +222,12 @@ def notify_user_on_import_complete(
 @receiver(models.signals.post_save, sender=Report)
 @transaction.atomic
 # pylint: disable=unused-argument
-def notify_admins_on_report(sender, instance, *args, **kwargs):
+def notify_admins_on_report(sender, instance, created, *args, **kwargs):
     """something is up, make sure the admins know"""
+    if not created:
+        # otherwise you'll get a notification when you resolve a report
+        return
+
     # moderators and superusers should be notified
     admins = User.objects.filter(
         models.Q(user_permissions__name__in=["moderate_user", "moderate_post"])
