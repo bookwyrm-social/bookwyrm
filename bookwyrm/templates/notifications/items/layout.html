@@ -27,31 +27,29 @@
             </div>
             {% endif %}
             <div class="block content">
-                <p>
-                    {% if related_user_count == 1 %}
-                        {% with user=related_users.first %}
-                        {% spaceless %}
-                            <a href="{{ user.local_path }}" class="mr-2">
-                                {% include 'snippets/avatar.html' with user=user %}
-                            </a>
-                            {% endspaceless %}
-                        {% endwith %}
-                    {% endif %}
+                {% if related_user_count == 1 %}
+                    {% with user=related_users.first %}
+                    {% spaceless %}
+                        <a href="{{ user.local_path }}" class="mr-2">
+                            {% include 'snippets/avatar.html' with user=user %}
+                        </a>
+                        {% endspaceless %}
+                    {% endwith %}
+                {% endif %}
 
-                    {% with related_user=related_users.first.display_name %}
-                    {% with related_user_link=related_users.first.local_path %}
-                    {% with second_user=related_users.1.display_name %}
-                    {% with second_user_link=related_users.1.local_path %}
-                    {% with other_user_count=related_user_count|add:"-1" %}
-                    {% with other_user_display_count=other_user_count|intcomma %}
-                        {% block description %}{% endblock %}
-                    {% endwith %}
-                    {% endwith %}
-                    {% endwith %}
-                    {% endwith %}
-                    {% endwith %}
-                    {% endwith %}
-                </p>
+                {% with related_user=related_users.first.display_name %}
+                {% with related_user_link=related_users.first.local_path %}
+                {% with second_user=related_users.1.display_name %}
+                {% with second_user_link=related_users.1.local_path %}
+                {% with other_user_count=related_user_count|add:"-1" %}
+                {% with other_user_display_count=other_user_count|intcomma %}
+                    {% block description %}{% endblock %}
+                {% endwith %}
+                {% endwith %}
+                {% endwith %}
+                {% endwith %}
+                {% endwith %}
+                {% endwith %}
             </div>
 
             {% if related_status %}

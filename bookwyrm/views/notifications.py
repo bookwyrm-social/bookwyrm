@@ -18,10 +18,11 @@ class Notifications(View):
             .order_by("-updated_date")
             .select_related(
                 "related_status",
+                "related_status__reply_parent",
                 "related_group",
+                "related_import",
             )
             .prefetch_related(
-                "related_import",
                 "related_reports",
                 "related_users",
                 "related_list_items",

@@ -3,6 +3,10 @@
 {% load i18n %}
 {% load utilities %}
 
+{% block primary_link %}{% spaceless %}
+{% url 'user-followers' request.user.localname %}
+{% endspaceless %}{% endblock %}
+
 {% block icon %}
 <span class="icon icon-local"></span>
 {% endblock %}
