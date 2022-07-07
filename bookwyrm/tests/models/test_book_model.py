@@ -103,15 +103,16 @@ class Book(TestCase):
 
     def test_thumbnail_fields(self):
         """Just hit them"""
-        settings.ENABLE_THUMBNAIL_GENERATION = True
         image_file = pathlib.Path(__file__).parent.joinpath(
             "../../static/images/default_avi.jpg"
         )
         image = Image.open(image_file)
         output = BytesIO()
         image.save(output, format=image.format)
+
         book = models.Edition.objects.create(title="hello")
         book.cover.save("test.jpg", ContentFile(output.getvalue()))
+
         self.assertIsNotNone(book.cover_bw_book_xsmall_webp.url)
         self.assertIsNotNone(book.cover_bw_book_xsmall_jpg.url)
         self.assertIsNotNone(book.cover_bw_book_small_webp.url)
