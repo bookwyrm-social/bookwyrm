@@ -17,7 +17,7 @@ def get_is_book_on_shelf(book, shelf):
         lambda b, s: s.books.filter(id=b.id).exists(),
         book,
         shelf,
-        timeout=15552000,
+        timeout=60 * 60,  # just cache this for an hour
     )
 
 
@@ -68,7 +68,7 @@ def active_shelf(context, book):
         ),
         user,
         book,
-        timeout=15552000,
+        timeout=60 * 60,
     ) or {"book": book}
 
 
@@ -85,5 +85,5 @@ def latest_read_through(book, user):
         ),
         user,
         book,
-        timeout=15552000,
+        timeout=60 * 60,
     )
