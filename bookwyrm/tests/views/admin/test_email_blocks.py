@@ -1,11 +1,13 @@
 """ test for app action functionality """
 from unittest.mock import patch
 
+from django.contrib.auth.models import Group
 from django.template.response import TemplateResponse
 from django.test import TestCase
 from django.test.client import RequestFactory
 
 from bookwyrm import models, views
+from bookwyrm.management.commands import initdb
 from bookwyrm.tests.validate_html import validate_html
 
 
@@ -25,6 +27,10 @@ class EmailBlocklistViews(TestCase):
                 local=True,
                 localname="mouse",
             )
+        initdb.init_groups()
+        initdb.init_permissions()
+        group = Group.objects.get(name="moderator")
+        self.local_user.groups.set([group])
 
         models.SiteSettings.objects.create()
 
@@ -33,7 +39,6 @@ class EmailBlocklistViews(TestCase):
         view = views.EmailBlocklist.as_view()
         request = self.factory.get("")
         request.user = self.local_user
-        request.user.is_superuser = True
 
         result = view(request)
 
@@ -46,7 +51,6 @@ class EmailBlocklistViews(TestCase):
         view = views.EmailBlocklist.as_view()
         request = self.factory.post("", {"domain": "gmail.com"})
         request.user = self.local_user
-        request.user.is_superuser = True
 
         result = view(request)
 
@@ -65,7 +69,6 @@ class EmailBlocklistViews(TestCase):
         view = views.EmailBlocklist.as_view()
         request = self.factory.post("")
         request.user = self.local_user
-        request.user.is_superuser = True
 
         result = view(request, domain_id=domain.id)
         self.assertEqual(result.status_code, 302)

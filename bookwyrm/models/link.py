@@ -84,7 +84,7 @@ class LinkDomain(BookWyrmModel):
     )
 
     def raise_not_editable(self, viewer):
-        if viewer.has_perm("moderate_post"):
+        if viewer.has_perm("bookwyrm.moderate_post"):
             return
         raise PermissionDenied()
 
