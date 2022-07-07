@@ -19,25 +19,25 @@
     {% if related_status.status_type == 'Review' %}
     {% blocktrans trimmed %}
 
-        mentioned you in a <a href="{{ related_path }}">review of <em>{{ book_title }}</em></a>
+        <a href="{{ related_user_link }}">{{ related_user }}</a> mentioned you in a <a href="{{ related_path }}">review of <em>{{ book_title }}</em></a>
 
     {% endblocktrans %}
     {% elif related_status.status_type == 'Comment' %}
     {% blocktrans trimmed %}
 
-        mentioned you in a <a href="{{ related_path }}">comment on <em>{{ book_title }}</em></a>
+        <a href="{{ related_user_link }}">{{ related_user }}</a> mentioned you in a <a href="{{ related_path }}">comment on <em>{{ book_title }}</em></a>
 
     {% endblocktrans %}
     {% elif related_status.status_type == 'Quotation' %}
     {% blocktrans trimmed %}
 
-        mentioned you in a <a href="{{ related_path }}">quote from <em>{{ book_title }}</em></a>
+        <a href="{{ related_user_link }}">{{ related_user }}</a> mentioned you in a <a href="{{ related_path }}">quote from <em>{{ book_title }}</em></a>
 
     {% endblocktrans %}
     {% else %}
     {% blocktrans trimmed %}
 
-        mentioned you in a <a href="{{ related_path }}">status</a>
+        <a href="{{ related_user_link }}">{{ related_user }}</a> mentioned you in a <a href="{{ related_path }}">status</a>
 
     {% endblocktrans %}
     {% endif %}

@@ -3,7 +3,6 @@ from django.contrib.auth import login
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
-from django.utils.translation import gettext_lazy as _
 from django.views import View
 
 from bookwyrm import models
@@ -24,12 +23,13 @@ class PasswordResetRequest(View):
     def post(self, request):
         """create a password reset token"""
         email = request.POST.get("email")
+        data = {"sent_message": True, "email": email}
         try:
             user = models.User.viewer_aware_objects(request.user).get(
                 email=email, email__isnull=False
             )
         except models.User.DoesNotExist:
-            data = {"error": _("No user with that email address was found.")}
+            # Showing an error message would leak whether or not this email is in use
             return TemplateResponse(
                 request, "landing/password_reset_request.html", data
             )
@@ -40,7 +40,6 @@ class PasswordResetRequest(View):
         # create a new reset code
         code = models.PasswordReset.objects.create(user=user)
         password_reset_email(code)
-        data = {"message": _(f"A password reset link was sent to {email}")}
         return TemplateResponse(request, "landing/password_reset_request.html", data)
 
 

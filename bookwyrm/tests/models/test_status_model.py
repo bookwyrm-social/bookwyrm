@@ -394,18 +394,6 @@ class Status(TestCase):
         self.assertEqual(activity["type"], "Announce")
         self.assertEqual(activity, boost.to_activity(pure=True))
 
-    def test_notification(self, *_):
-        """a simple model"""
-        notification = models.Notification.objects.create(
-            user=self.local_user, notification_type="FAVORITE"
-        )
-        self.assertFalse(notification.read)
-
-        with self.assertRaises(IntegrityError):
-            models.Notification.objects.create(
-                user=self.local_user, notification_type="GLORB"
-            )
-
     # pylint: disable=unused-argument
     def test_create_broadcast(self, one, two, broadcast_mock, *_):
         """should send out two verions of a status on create"""
