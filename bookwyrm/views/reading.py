@@ -52,9 +52,6 @@ class ReadingStatus(View):
             logger.exception("Invalid reading status type: %s", status)
             return HttpResponseBadRequest()
 
-        # invalidate related caches
-        cache.delete(f"active_shelf-{request.user.id}-{book_id}")
-
         desired_shelf = get_object_or_404(
             models.Shelf, identifier=identifier, user=request.user
         )
@@ -63,6 +60,14 @@ class ReadingStatus(View):
             models.Edition.viewer_aware_objects(request.user)
             .prefetch_related("shelfbook_set__shelf")
             .get(id=book_id)
+        )
+
+        # invalidate related caches
+        cache.delete_many(
+            [
+                f"active_shelf-{request.user.id}-{ed}"
+                for ed in book.parent_work.editions.values_list("id", flat=True)
+            ]
         )
 
         # gets the first shelf that indicates a reading status, or None
