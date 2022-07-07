@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-05-31 23:50+0000\n"
-"PO-Revision-Date: 2022-06-19 10:11\n"
+"POT-Creation-Date: 2022-06-30 16:55+0000\n"
+"PO-Revision-Date: 2022-07-01 10:01\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: German\n"
 "Language: de\n"
@@ -123,7 +123,7 @@ msgstr "Gefahr"
 
 #: bookwyrm/models/antispam.py:106 bookwyrm/models/antispam.py:140
 msgid "Automatically generated report"
-msgstr "Automatisch generierter Report"
+msgstr "Automatisch generierter Bericht"
 
 #: bookwyrm/models/base_model.py:18 bookwyrm/models/link.py:72
 #: bookwyrm/templates/import/import_status.html:200
@@ -405,7 +405,7 @@ msgstr "Lerne deine Admins kennen"
 #: bookwyrm/templates/about/about.html:101
 #, python-format
 msgid "%(site_name)s's moderators and administrators keep the site up and running, enforce the <a href=\"%(coc_path)s\">code of conduct</a>, and respond when users report spam and bad behavior."
-msgstr "Die Moderator*innen und Administrator*innen von %(site_name)s halten diese Seite am Laufen. Beachte den <a href=\"%(coc_path)s\">Verhaltenskodex</a> und melde, wenn andere Benutzer*innen dagegen verstoßen oder Spam verbreiten."
+msgstr "Die Moderator*innen und Administrator*innen von %(site_name)s halten diese Seite am Laufen, setzen den <a href=\"%(coc_path)s\">Verhaltenskodex</a> durch und reagieren, wenn Benutzer*innen Spam oder schlechtes Verhalten melden."
 
 #: bookwyrm/templates/about/about.html:115
 msgid "Moderator"
@@ -467,7 +467,7 @@ msgstr "<em>Rückblick</em> auf %(year)s"
 #: bookwyrm/templates/annual_summary/layout.html:47
 #, python-format
 msgid "<em>%(display_name)s’s</em> year of reading"
-msgstr "Lektürejahr für <em>%(display_name)s</em>"
+msgstr "<em>%(display_name)ss</em> Lesejahr"
 
 #: bookwyrm/templates/annual_summary/layout.html:53
 msgid "Share this page"
@@ -1016,19 +1016,19 @@ msgstr "Sprachen:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:86
 msgid "Subjects:"
-msgstr "Betreff:"
+msgstr "Themen:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:90
 msgid "Add subject"
-msgstr "Betreff hinzufügen"
+msgstr "Thema hinzufügen"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:108
 msgid "Remove subject"
-msgstr "Betreff entfernen"
+msgstr "Thema entfernen"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:131
 msgid "Add Another Subject"
-msgstr "Weiteren Betreff hinzufügen"
+msgstr "Weiteres Thema hinzufügen"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:139
 msgid "Publication"
@@ -1128,7 +1128,7 @@ msgstr "Ausgaben von <a href=\"%(work_path)s\">\"%(work_title)s\"</a>"
 
 #: bookwyrm/templates/book/editions/editions.html:55
 msgid "Can't find the edition you're looking for?"
-msgstr "Sie können die gesuchte Auflage nicht finden?"
+msgstr "Du kannst die gesuchte Auflage nicht finden?"
 
 #: bookwyrm/templates/book/editions/editions.html:75
 msgid "Add another edition"
@@ -1611,7 +1611,7 @@ msgstr "Passwort für %(site_name)s zurücksetzen"
 #: bookwyrm/templates/setup/layout.html:12
 #, python-format
 msgid "%(site_name)s home page"
-msgstr "%(site_name)s-Startseite"
+msgstr "%(site_name)s Startseite"
 
 #: bookwyrm/templates/embed-layout.html:40 bookwyrm/templates/layout.html:186
 msgid "Contact site admin"
@@ -1674,11 +1674,11 @@ msgstr "Hier sind noch keine Bücher! Versuche, nach Büchern zu suchen, um losz
 
 #: bookwyrm/templates/feed/suggested_books.html:13
 msgid "Do you have book data from another service like GoodReads?"
-msgstr "Haben Sie Buchdaten von einem anderen Service wie GoodReads?"
+msgstr "Hast Du Buchdaten von einem anderen Service wie GoodReads?"
 
 #: bookwyrm/templates/feed/suggested_books.html:16
 msgid "Import your reading history"
-msgstr "Importieren Sie Ihren Leseverlauf"
+msgstr "Importiere Deinen Leseverlauf"
 
 #: bookwyrm/templates/feed/suggested_users.html:5
 #: bookwyrm/templates/get_started/users.html:6
@@ -2499,7 +2499,7 @@ msgstr "Notizen bearbeiten"
 
 #: bookwyrm/templates/lists/list.html:119
 msgid "Add notes"
-msgstr "Notiz hinzufügen"
+msgstr "Notizen hinzufügen"
 
 #: bookwyrm/templates/lists/list.html:131
 #, python-format
@@ -3407,7 +3407,7 @@ msgstr[1] "%(display_count)s Einladungsanfragen"
 #: bookwyrm/templates/settings/dashboard/dashboard.html:79
 #, python-format
 msgid "An update is available! You're running v%(current)s and the latest release is %(available)s."
-msgstr "Ein Update ist verfügbar! Sie verwenden v%(current)s, die neueste Version ist %(available)s."
+msgstr "Ein Update ist verfügbar! Du verwendest v%(current)s, die neueste Version ist %(available)s."
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:88
 msgid "Instance Activity"
@@ -4870,11 +4870,15 @@ msgstr "(Seite %(page)s)"
 msgid "(%(percent)s%%)"
 msgstr "(%(percent)s%%)"
 
-#: bookwyrm/templates/snippets/status/content_status.html:126
+#: bookwyrm/templates/snippets/status/content_status.html:116
+msgid "page"
+msgstr ""
+
+#: bookwyrm/templates/snippets/status/content_status.html:129
 msgid "Open image in new window"
 msgstr "Bild in neuem Fenster öffnen"
 
-#: bookwyrm/templates/snippets/status/content_status.html:145
+#: bookwyrm/templates/snippets/status/content_status.html:148
 msgid "Hide status"
 msgstr "Status ausblenden"
 
