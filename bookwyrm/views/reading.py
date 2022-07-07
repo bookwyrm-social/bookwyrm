@@ -63,11 +63,12 @@ class ReadingStatus(View):
         )
 
         # invalidate related caches
-        cache.delete_many([
-            f"active_shelf-{request.user.id}-{ed}"
-            for ed in book.parent_work.editions.values_list("id", flat=True)
-        ])
-
+        cache.delete_many(
+            [
+                f"active_shelf-{request.user.id}-{ed}"
+                for ed in book.parent_work.editions.values_list("id", flat=True)
+            ]
+        )
 
         # gets the first shelf that indicates a reading status, or None
         shelves = [

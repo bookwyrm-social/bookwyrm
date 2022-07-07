@@ -104,18 +104,24 @@ class ShelfBook(CollectionItemMixin, BookWyrmModel):
             self.user = self.shelf.user
         if self.id and self.user.local:
             # remove all caches related to all editions of this book
-            cache.delete_many([
-                f"book-on-shelf-{book.id}-{self.shelf.id}"
-                for book in self.book.parent_work.editions.all()
-            ])
+            cache.delete_many(
+                [
+                    f"book-on-shelf-{book.id}-{self.shelf.id}"
+                    for book in self.book.parent_work.editions.all()
+                ]
+            )
         super().save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
         if self.id and self.user.local:
-            cache.delete_many([
-                f"book-on-shelf-{book}-{self.shelf.id}"
-                for book in self.book.parent_work.editions.values_list("id", flat=True)
-            ])
+            cache.delete_many(
+                [
+                    f"book-on-shelf-{book}-{self.shelf.id}"
+                    for book in self.book.parent_work.editions.values_list(
+                        "id", flat=True
+                    )
+                ]
+            )
         super().delete(*args, **kwargs)
 
     class Meta:
