@@ -9,16 +9,27 @@ from . import Status, User, UserFollowRequest
 class Notification(BookWyrmModel):
     """you've been tagged, liked, followed, etc"""
 
+    # Status interactions
     FAVORITE = "FAVORITE"
+    BOOST = "BOOST"
     REPLY = "REPLY"
     MENTION = "MENTION"
     TAG = "TAG"
+
+    # Relationships
     FOLLOW = "FOLLOW"
     FOLLOW_REQUEST = "FOLLOW_REQUEST"
-    BOOST = "BOOST"
+
+    # Imports
     IMPORT = "IMPORT"
+
+    # List activity
     ADD = "ADD"
+
+    # Admin
     REPORT = "REPORT"
+
+    # Groups
     INVITE = "INVITE"
     ACCEPT = "ACCEPT"
     JOIN = "JOIN"
