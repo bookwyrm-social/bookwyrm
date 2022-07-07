@@ -60,7 +60,7 @@ class InteractionViews(TestCase):
         notification = models.Notification.objects.get()
         self.assertEqual(notification.notification_type, "FAVORITE")
         self.assertEqual(notification.user, self.local_user)
-        self.assertEqual(notification.related_user, self.remote_user)
+        self.assertEqual(notification.related_users.first(), self.remote_user)
 
     def test_unfavorite(self, *_):
         """unfav a status"""
@@ -98,7 +98,7 @@ class InteractionViews(TestCase):
         notification = models.Notification.objects.get()
         self.assertEqual(notification.notification_type, "BOOST")
         self.assertEqual(notification.user, self.local_user)
-        self.assertEqual(notification.related_user, self.remote_user)
+        self.assertEqual(notification.related_users.first(), self.remote_user)
         self.assertEqual(notification.related_status, status)
 
     def test_self_boost(self, *_):

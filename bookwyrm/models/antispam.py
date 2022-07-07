@@ -3,7 +3,7 @@ from functools import reduce
 import operator
 
 from django.apps import apps
-from django.db import models
+from django.db import models, transaction
 from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 
@@ -58,25 +58,20 @@ def automod_task():
         return
     reporter = AutoMod.objects.first().created_by
     reports = automod_users(reporter) + automod_statuses(reporter)
-    if reports:
-        admins = User.objects.filter(
-            models.Q(user_permissions__name__in=["moderate_user", "moderate_post"])
-            | models.Q(is_superuser=True)
-        ).all()
-        notification_model = apps.get_model(
-            "bookwyrm", "Notification", require_ready=True
-        )
+    if not reports:
+        return
+
+    admins = User.objects.filter(
+        models.Q(user_permissions__name__in=["moderate_user", "moderate_post"])
+        | models.Q(is_superuser=True)
+    ).all()
+    notification_model = apps.get_model("bookwyrm", "Notification", require_ready=True)
+    with transaction.atomic():
         for admin in admins:
-            notification_model.objects.bulk_create(
-                [
-                    notification_model(
-                        user=admin,
-                        related_report=r,
-                        notification_type="REPORT",
-                    )
-                    for r in reports
-                ]
+            notification, _ = notification_model.objects.get_or_create(
+                user=admin, notification_type=notification_model.REPORT, read=False
             )
+            notification.related_repors.add(reports)
 
 
 def automod_users(reporter):
