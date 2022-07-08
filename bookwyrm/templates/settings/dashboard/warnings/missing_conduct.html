@@ -1,9 +1,7 @@
 {% extends 'settings/dashboard/warnings/layout.html' %}
 {% load i18n %}
 
-{% block warning_link %}
-{% url 'settings-site' %}#instance-info
-{% endblock %}
+{% block warning_link %}{% url 'settings-site' %}#instance-info{% endblock %}
 
 {% block warning_text %}
 
