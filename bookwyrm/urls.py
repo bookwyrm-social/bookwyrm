@@ -126,7 +126,7 @@ urlpatterns = [
         r"^settings/users/?$", views.UserAdminList.as_view(), name="settings-users"
     ),
     re_path(
-        r"^settings/users/(?P<status>(local|federated))\/?$",
+        r"^settings/users/(?P<status>(local|federated|deleted))\/?$",
         views.UserAdminList.as_view(),
         name="settings-users",
     ),

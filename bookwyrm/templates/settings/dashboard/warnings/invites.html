@@ -1,0 +1,15 @@
+{% extends 'settings/dashboard/warnings/layout.html' %}
+{% load i18n %}
+{% load humanize %}
+
+{% block warning_link %}{% url 'settings-invite-requests' %}{% endblock %}
+
+{% block warning_text %}
+
+{% blocktrans trimmed count counter=invite_requests with display_count=invite_requests|intcomma %}
+{{ display_count }} invite request
+{% plural %}
+{{ display_count }} invite requests
+{% endblocktrans %}
+
+{% endblock %}
