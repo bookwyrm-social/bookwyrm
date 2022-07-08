@@ -43,7 +43,7 @@ class Dashboard(View):
         ] = f"{settings.EMAIL_SENDER_NAME}@{settings.EMAIL_SENDER_DOMAIN}"
 
         site = models.SiteSettings.objects.get()
-        # other warnings
+        # pylint: disable=protected-access
         data["missing_conduct"] = (
             not site.code_of_conduct
             or site.code_of_conduct
