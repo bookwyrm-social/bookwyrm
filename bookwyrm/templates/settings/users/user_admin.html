@@ -36,7 +36,7 @@
     <table class="table is-striped is-fullwidth">
         <tr>
             {% url 'settings-users' as url %}
-            <th>
+            <th colspan="2">
                 {% trans "Username" as text %}
                 {% include 'snippets/table-sort-header.html' with field="username" sort=sort text=text %}
             </th>
@@ -61,7 +61,10 @@
         </tr>
         {% for user in users %}
         <tr>
-            <td class="overflow-wrap-anywhere">
+            <td class="pr-0">
+                {% include 'snippets/avatar.html' with user=user %}
+            </td>
+            <td class="overflow-wrap-anywhere pl-1">
                 <a href="{% url 'settings-user' user.id %}">{{ user|username }}</a>
             </td>
             <td>{{ user.created_date }}</td>
