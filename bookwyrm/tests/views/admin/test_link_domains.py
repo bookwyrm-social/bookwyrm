@@ -1,11 +1,13 @@
 """ test for app action functionality """
 from unittest.mock import patch
 
+from django.contrib.auth.models import Group
 from django.template.response import TemplateResponse
 from django.test import TestCase
 from django.test.client import RequestFactory
 
 from bookwyrm import models, views
+from bookwyrm.management.commands import initdb
 from bookwyrm.tests.validate_html import validate_html
 
 
@@ -25,6 +27,11 @@ class LinkDomainViews(TestCase):
                 local=True,
                 localname="mouse",
             )
+        initdb.init_groups()
+        initdb.init_permissions()
+        group = Group.objects.get(name="moderator")
+        self.local_user.groups.set([group])
+
         self.book = models.Edition.objects.create(title="hello")
         models.FileLink.objects.create(
             book=self.book,
@@ -39,7 +46,6 @@ class LinkDomainViews(TestCase):
         view = views.LinkDomain.as_view()
         request = self.factory.get("")
         request.user = self.local_user
-        request.user.is_superuser = True
 
         result = view(request, "pending")
 
@@ -55,7 +61,6 @@ class LinkDomainViews(TestCase):
         view = views.LinkDomain.as_view()
         request = self.factory.post("", {"name": "ugh"})
         request.user = self.local_user
-        request.user.is_superuser = True
 
         result = view(request, "pending", domain.id)
         self.assertEqual(result.status_code, 302)
@@ -71,7 +76,6 @@ class LinkDomainViews(TestCase):
         view = views.update_domain_status
         request = self.factory.post("")
         request.user = self.local_user
-        request.user.is_superuser = True
 
         result = view(request, domain.id, "approved")
         self.assertEqual(result.status_code, 302)

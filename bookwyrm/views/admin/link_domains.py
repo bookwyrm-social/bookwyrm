@@ -45,6 +45,7 @@ class LinkDomain(View):
 
 @require_POST
 @login_required
+@permission_required("bookwyrm.moderate_user")
 def update_domain_status(request, domain_id, status):
     """This domain seems fine"""
     domain = get_object_or_404(models.LinkDomain, id=domain_id)

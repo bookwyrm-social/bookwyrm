@@ -13,8 +13,34 @@
 
 {% block description %}
 
+{% if other_user_count == 0 %}
+
     {% blocktrans trimmed with group_name=notification.related_group.name group_path=notification.related_group.local_path %}
-    accepted your invitation to join group "<a href="{{ group_path }}">{{ group_name }}</a>"
+    <a href="{{ related_user_link }}">{{ related_user }}</a>
+    accepted your invitation to join group
+    "<a href="{{ group_path }}">{{ group_name }}</a>"
     {% endblocktrans %}
+
+{% elif other_user_count == 1 %}
+
+    {% blocktrans trimmed with group_name=notification.related_group.name group_path=notification.related_group.local_path %}
+    <a href="{{ related_user_link }}">{{ related_user }}</a>
+    and
+    <a href="{{ second_user_link }}">{{ second_user }}</a>
+    accepted your invitation to join group
+    "<a href="{{ group_path }}">{{ group_name }}</a>"
+    {% endblocktrans %}
+
+{% else %}
+
+    {% blocktrans trimmed with group_name=notification.related_group.name group_path=notification.related_group.local_path %}
+    <a href="{{ related_user_link }}">{{ related_user }}</a>
+    and
+    {{ other_user_display_count }} others
+    accepted your invitation to join group
+    "<a href="{{ group_path }}">{{ group_name }}</a>"
+    {% endblocktrans %}
+
+{% endif %}
 
 {% endblock %}

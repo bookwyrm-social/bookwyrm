@@ -3,13 +3,19 @@
 {% load i18n %}
 {% load utilities %}
 
+{% block primary_link %}{% spaceless %}
+{% url 'user-followers' request.user.localname %}
+{% endspaceless %}{% endblock %}
+
 {% block icon %}
 <span class="icon icon-local"></span>
 {% endblock %}
 
 {% block description %}
-    {% trans "sent you a follow request" %}
+    {% blocktrans trimmed %}
+    <a href="{{ related_user_link }}">{{ related_user }}</a> sent you a follow request
+    {% endblocktrans %}
     <div class="row shrink">
-        {% include 'snippets/follow_request_buttons.html' with user=notification.related_user %}
+        {% include 'snippets/follow_request_buttons.html' with user=notification.related_users.first %}
     </div>
 {% endblock %}

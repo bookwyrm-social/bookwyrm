@@ -55,5 +55,6 @@ jobs:
         EMAIL_HOST_PASSWORD: ""
         EMAIL_USE_TLS: true
         ENABLE_PREVIEW_IMAGES: false
+        ENABLE_THUMBNAIL_GENERATION: true
       run: |
         pytest -n 3

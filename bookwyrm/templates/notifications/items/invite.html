@@ -12,11 +12,15 @@
 {% endblock %}
 
 {% block description %}
+
 {% blocktrans trimmed with group_name=notification.related_group.name group_path=notification.related_group.local_path %}
-invited you to join the group "<a href="{{ group_path }}">{{ group_name }}</a>"
+    <a href="{{ related_user_link }}">{{ related_user }}</a>
+    invited you to join the group
+    "<a href="{{ group_path }}">{{ group_name }}</a>"
 {% endblocktrans %}
+
 <div class="row shrink">
     {% include 'snippets/join_invitation_buttons.html' with group=notification.related_group %}
 </div>
-{% endblock %}
 
+{% endblock %}
