@@ -45,6 +45,22 @@
     {% include 'settings/dashboard/warnings/update_version.html' with warning_level="warning" fullwidth=True %}
     {% endif %}
 
+    {% if missing_privacy or missing_conduct %}
+    <div class="column is-12 columns m-0 p-0">
+        {% if missing_privacy %}
+        {% include 'settings/dashboard/warnings/missing_privacy.html' with warning_level="danger" %}
+        {% endif %}
+
+        {% if missing_conduct %}
+        {% include 'settings/dashboard/warnings/missing_conduct.html' with warning_level="warning" %}
+        {% endif %}
+    </div>
+    {% endif %}
+
+    {% if current_version %}
+    {% include 'settings/dashboard/warnings/update_version.html' with warning_level="warning" fullwidth=True %}
+    {% endif %}
+
     {% if reports %}
     {% include 'settings/dashboard/warnings/reports.html' with warning_level="warning" %}
     {% endif %}

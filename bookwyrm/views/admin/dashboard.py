@@ -42,6 +42,19 @@ class Dashboard(View):
             "email_sender"
         ] = f"{settings.EMAIL_SENDER_NAME}@{settings.EMAIL_SENDER_DOMAIN}"
 
+        site = models.SiteSettings.objects.get()
+        # other warnings
+        data["missing_conduct"] = (
+            not site.code_of_conduct
+            or site.code_of_conduct
+            == site._meta.get_field("code_of_conduct").get_default()
+        )
+        data["missing_privacy"] = (
+            not site.privacy_policy
+            or site.privacy_policy
+            == site._meta.get_field("privacy_policy").get_default()
+        )
+
         # check version
         try:
             release = get_data(settings.RELEASE_API, timeout=3)
