@@ -42,7 +42,7 @@
             <form class="navbar-item column is-align-items-start pt-5" action="{% url 'search' %}">
                 <div class="field has-addons">
                     <div class="control">
-                        {% if user.is_authenticated %}
+                        {% if request.user.is_authenticated %}
                             {% trans "Search for a book, user, or list" as search_placeholder %}
                         {% else %}
                             {% trans "Search for a book" as search_placeholder %}
@@ -76,14 +76,14 @@
         <div class="navbar-menu" id="main_nav">
             <div class="navbar-start">
                 {% if request.user.is_authenticated %}
-                <a href="/#feed" class="navbar-item mt-3 py-0">
-                    {% trans "Feed" %}
-                </a>
                 <a href="{% url 'lists' %}" class="navbar-item mt-3 py-0">
                     {% trans "Lists" %}
                 </a>
                 <a href="{% url 'discover' %}" class="navbar-item mt-3 py-0">
                     {% trans "Discover" %}
+                </a>
+                <a href="{% url 'user-shelves' request.user.localname %}" class="navbar-item mt-3 py-0">
+                    {% trans "Your Books" %}
                 </a>
                 {% endif %}
             </div>
