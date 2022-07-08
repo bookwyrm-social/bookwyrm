@@ -86,7 +86,7 @@
 
     {% if current_version %}
     <div class="column is-flex">
-        <a href="https://docs.joinbookwyrm.com/updating-your-instance.html" class="notification is-block is-warning is-flex-grow-1" target="_blank">
+        <a href="https://docs.joinbookwyrm.com/updating.html" class="notification is-block is-warning is-flex-grow-1" target="_blank">
             {% blocktrans trimmed with current=current_version available=available_version %}
             An update is available! You're running v{{ current }} and the latest release is {{ available }}.
             {% endblocktrans %}
