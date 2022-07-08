@@ -60,6 +60,12 @@ class User(View):
                 request.user,
             )
             .filter(user=user)
+            .exclude(
+                privacy="direct",
+                review__isnull=True,
+                comment__isnull=True,
+                quotation__isnull=True,
+            )
             .select_related(
                 "user",
                 "reply_parent",
