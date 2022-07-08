@@ -24,6 +24,10 @@
             <li {% if request.path in url %}class="is-active" aria-current="page"{% endif %}>
                 <a href="{{ url }}">{% trans "Local users" %}</a>
             </li>
+            {% url 'settings-users' status="deleted" as url %}
+            <li {% if url in request.path %}class="is-active" aria-current="page"{% endif %}>
+                <a href="{{ url }}">{% trans "Deleted users" %}</a>
+            </li>
             {% url 'settings-users' status="federated" as url %}
             <li {% if url in request.path %}class="is-active" aria-current="page"{% endif %}>
                 <a href="{{ url }}">{% trans "Federated community" %}</a>
@@ -52,7 +56,7 @@
                 {% trans "Status" as text %}
                 {% include 'snippets/table-sort-header.html' with field="is_active" sort=sort text=text %}
             </th>
-            {% if status != "local" %}
+            {% if status == "federated" %}
             <th>
                 {% trans "Remote instance" as text %}
                 {% include 'snippets/table-sort-header.html' with field="federated_server__server_name" sort=sort text=text %}
@@ -89,7 +93,7 @@
                     <span class="help">({{ user.get_deactivation_reason_display }})</span>
                 {% endif %}
             </td>
-            {% if status != "local" %}
+            {% if status == "federated" %}
             <td>
                 {% if user.federated_server %}
                 <a href="{% url 'settings-federated-server' user.federated_server.id %}">{{ user.federated_server.server_name }}</a>
