@@ -114,10 +114,9 @@ class Book(BookDataModel):
     subject_places = fields.ArrayField(
         models.CharField(max_length=255), blank=True, null=True, default=list
     )
-    authors = fields.ManyToManyField("Author")
-    # authors = fields.ManyToManyField(
-    #    "Author", through="BookAuthor", through_fields=("book", "author")
-    # )
+    authors = fields.ManyToManyField(
+        "Author", through="BookAuthor", through_fields=("book", "author")
+    )
     cover = fields.ImageField(
         upload_to="covers/", blank=True, null=True, alt_field="alt_text"
     )
