@@ -17,6 +17,7 @@
     @extend .message-body;
     @extend .is-info.is-light;
     border-color: $info-light;
+    border-radius: 0 0 4px 4px;
 }
 
 .shepherd-cancel-icon{background:transparent;border:none;color:hsla(0,0%,50%,.75);cursor:pointer;font-size:2em;font-weight:400;margin:0;padding:0;transition:color .5s ease}.shepherd-cancel-icon:hover{color:rgba(0,0,0,.75)}.shepherd-has-title .shepherd-content .shepherd-cancel-icon{color:hsla(0,0%,50%,.75)}.shepherd-has-title .shepherd-content .shepherd-cancel-icon:hover{color:rgba(0,0,0,.75)}
@@ -29,6 +30,7 @@
 .shepherd-text {
     @extend .message-body;
     @extend .is-info.is-light;
+    border-radius: 0;
 }
 
 .shepherd-content {
