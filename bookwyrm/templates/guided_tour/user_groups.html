@@ -28,16 +28,13 @@
             ],
         },
         {
-            text: "{% trans 'Let\'s click the button to create a new group!' %}\
-                    <br><br>\
-                    {% trans 'Then click ' %}\
-                    <code>{% trans 'Next' %}</code> \
-                    {% trans 'to continue the tour.' %}",
+            text: "{% trans 'Let\'s create a new group!<p class=\'notification is-warning is-light mt-3\'>Click this button, then <strong>Next</strong> to continue the tour</p>' %}",
             title: "{% trans 'Create group' %}",
             attachTo: {
                 element: "#tour-create-group",
                 on: "left-start",
             },
+            highlightClass: 'tour-element-highlight',
             buttons: [
                 {
                     action() {
@@ -78,8 +75,7 @@
             ],
         },
         {
-            text: "{% trans 'Groups have privacy settings just like Lists, except that group privacy cannot be ' %}\
-            <code>{% trans 'Followers' %}</code>.",
+            text: "{% trans 'Groups have privacy settings just like Lists, except that group privacy cannot be <strong>Followers</strong>.' %}",
             title: "{% trans 'Group visibility' %}",
             attachTo: {
                 element: "#tour-privacy",
@@ -102,9 +98,7 @@
             ],
         },
         {
-            text: "{% trans 'Once you\'re happy with how your group is set up, click the ' %}\
-            <code>{% trans 'Save' %}</code>\
-            {% trans ' button to continue the tour.' %}",
+            text: "{% trans 'Once you\'re happy with how everything is set up, click the <strong>Save</strong> button to create your new group.<p class=\'notification is-warning is-light mt-3\'>Create and save a group to continue the tour.</p>' %}",
             title: "{% trans 'Save your group' %}",
             buttons: [
                 {
