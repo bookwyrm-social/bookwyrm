@@ -41,7 +41,6 @@ initiateTour.addSteps([
                         return this.complete()
                     },
                     text: "{% trans 'Ok' %}",
-                    classes: "is-success",
                 }
             ],
     }
@@ -122,6 +121,30 @@ homeTour.addSteps([
         attachTo: {
             element: "#tour-suggested-books",
             on: "right",
+        },
+        highlightClass: 'tour-element-highlight',
+        buttons: [
+        {
+                action() {
+                    return this.back();
+                },
+                secondary: true,
+                text: "{% trans 'Back' %}",
+            },
+            {
+                action() {
+                    return this.next();
+                },
+                text: "{% trans 'Next' %}",
+            },
+        ],
+    },
+    {
+        text: "{% trans 'Updates from people you are following will appear on your timeline here.<br><br>The <strong>Books</strong> tab shows just the updates about reading activity.' %}",
+        title: "{% trans 'Timelines' %}",
+        attachTo: {
+            element: "#feed",
+            on: "left",
         },
         highlightClass: 'tour-element-highlight',
         buttons: [
