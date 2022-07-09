@@ -7,7 +7,7 @@
 {% active_shelf book as active_shelf %}
 {% latest_read_through book request.user as readthrough %}
 {% with active_shelf_book=active_shelf.book %}
-<div class="field has-addons mb-0 has-text-weight-normal" data-shelve-button-book="{{ book.id }}" id="tour-shelve-button">
+<div class="field has-addons mb-0 has-text-weight-normal" data-shelve-button-book="{{ book.id }}">
     {% if switch_mode and active_shelf_book != book %}
     <div class="control">
         {% include 'snippets/switch_edition_button.html' with edition=book size='is-small' %}
