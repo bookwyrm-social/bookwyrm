@@ -7,9 +7,7 @@ const initiateTour = new Shepherd.Tour({
 
 initiateTour.addSteps([
     {
-        text: "{% trans 'Welcome to Bookwyrm!' %} \
-            <br><br> \
-            {% trans 'Would you like to take the guided tour to help you get started?' %}",
+        text: "{% trans 'Welcome to Bookwyrm!<br><br>Would you like to take the guided tour to help you get started?' %}",
             title: "{% trans 'Guided Tour' %}",
             buttons: [
                 {
@@ -61,6 +59,7 @@ homeTour.addSteps([
             element: "#tour-search",
             on: "bottom",
         },
+        highlightClass: 'tour-element-highlight',
         buttons: [
             {
                 action() {
@@ -100,6 +99,7 @@ homeTour.addSteps([
             element: "#tour-navbar-start",
             on: "bottom",
         },
+        highlightClass: 'tour-element-highlight',
         buttons: [
             {
                 action() {
@@ -123,6 +123,7 @@ homeTour.addSteps([
             element: "#tour-suggested-books",
             on: "right",
         },
+        highlightClass: 'tour-element-highlight',
         buttons: [
         {
                 action() {
@@ -163,9 +164,7 @@ homeTour.addSteps([
         ],
     },
     {
-        text: "{% trans 'Your profile, books, direct messages, and settings can be accessed by clicking on your name here.' %}\
-        <br><br>\
-        {% trans 'Try selecting <code>Profile</code> from the drop down menu to continue the tour.' %}",
+        text: "{% trans 'Your profile, books, direct messages, and settings can be accessed by clicking on your name here.<p class=\'notification is-warning is-light\'>Try selecting <strong>Profile</strong> from the drop down menu to continue the tour.</p>' %}",
         title: "{% trans 'Profile and settings menu' %}",
         attachTo: {
             element: "#navbar-dropdown",
