@@ -97,25 +97,29 @@
             ],
         },
         {
-            text: "{% trans 'Thanks for taking the tour. There\'s lots more to explore, but now you are familiar with the basics needed to enjoy Bookwyrm. Happy reading!' %}",
-            title: "{% trans 'You\'re ready!' %}",
-            buttons: [
-                {
-                    action() {
-                        return this.back();
-                    },
-                    secondary: true,
-                    text: "{% trans 'Back' %}",
-                },
-                {
-                    action() {
-                        disableGuidedTour(csrf_token);
-                        return this.complete();
-                    },
-                    text: "{% trans 'Finish tour' %}",
-                },
-            ],
+        text: "{% trans 'You\'re nearly done.<p class=\'notification is-warning is-light mt-3\'>Select <strong>Direct Messages</strong> from the drop down menu to finish the tour.</p>' %}",
+        title: "{% trans 'Profile and settings menu' %}",
+        attachTo: {
+            element: "#navbar-dropdown",
+            on: "left-end",
         },
+        scrollTo: true,
+        buttons: [
+            {
+                action() {
+                    return this.back();
+                },
+                secondary: true,
+                text: "{% trans 'Back' %}",
+            },
+            {
+                action() {
+                    return this.next();
+                },
+                text: "{% trans 'Ok' %}",
+            },
+        ],
+    }
     ])
 
     tour.start()
