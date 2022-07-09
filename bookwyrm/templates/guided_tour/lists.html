@@ -1,8 +1,8 @@
 {% load i18n %}
+{% load utilities %}
+{% load user_page_tags %}
 
 <script>
-
-    let existingGroup = document.querySelector("#group");
 
     const tour = new Shepherd.Tour({
         exitOnEsc: true,
@@ -10,7 +10,7 @@
 
     tour.addSteps([
         {
-            text: "{% trans 'This is the lists page where you can discover book lists created by any user. A List is a collection of books, similar to a shelf, but you can add any book to a list regardless of whether it is also on one of your shelves or whether you have read it.' %}",
+            text: "{% trans 'This is the lists page where you can discover book lists created by any user. A List is a collection of books, similar to a shelf.<br><br>Shelves are for organising books for yourself, whereas Lists are generally for sharing with others.' %}",
             title: "{% trans 'Lists' %}",
             buttons: [
                 {
@@ -31,15 +31,13 @@
             ],
         },
         {
-            text: "{% trans 'Let\'s create a new list. Click this button, then ' %}\
-                    <code>\
-                    {% trans 'Next' %}\
-                    </code>",
+            text: "{% trans 'Let\'s see how to create a new list.<p class=\'notification is-warning is-light mt-3\'>Click this button, then <strong>Next</strong> to continue the tour</p>' %}",
             title: "{% trans 'Creating a new list' %}",
             attachTo: {
                 element: "#tour-create-list",
                 on: "left",
             },
+            highlightClass: 'tour-element-highlight',
             buttons: [
                 {
                     action() {
@@ -57,7 +55,7 @@
             ],
         },
         {
-            text: "{% trans 'Give your list a name and can optionally give it a description to help other people understand what your list is about.' %}",
+            text: "{% trans 'You must give your list a name and can optionally give it a description to help other people understand what your list is about.' %}",
             title: "{% trans 'Creating a new list' %}",
             attachTo: {
                 element: "#tour-list-name",
@@ -80,23 +78,7 @@
             ],
         },
         {
-            text: "{% trans 'Choose who can see your list here. List privacy can be ' %}\
-            <strong>\
-                {% trans 'Public' %}\
-            </strong>\
-            {% trans ' (everyone can see), ' %}\
-            <strong>\
-                {% trans 'Unlisted' %}\
-            </strong>\
-            {% trans ' (everyone can see, but it doesn\'t appear on the list discovery page), ' %}\
-            <strong>\
-                {% trans 'Followers' %}\
-            </strong>\
-            {% trans ' (only your followers can see), or ' %}\
-            <strong>\
-                {% trans 'Private' %}\
-            </strong>\
-            {% trans '  (only you can see)' %}",
+            text: "{% trans 'Choose who can see your list here. List privacy can be <strong>Public</strong> (everyone can see), <strong>Unlisted</strong> (everyone can see, but it doesn\'t appear on the list discovery page), <strong>Followers</strong> (only your followers can see), or <strong>Private</strong> (only you can see)' %}",
             title: "{% trans 'List privacy' %}",
             attachTo: {
                 element: "#tour-privacy-select",
@@ -119,16 +101,7 @@
             ],
         },
         {
-            text: "{% trans 'You can also decide how your list is to be curated - only by you, by anyone, or by a group.' %}\
-            <br/><br/>\
-            {% trans 'Select ' %}\
-            <strong>\
-            {% trans 'Group' %}\
-            </strong>\
-            {% trans ' and then ' %}\
-            <code>\
-            {% trans 'Next' %}\
-            </code>",
+            text: "{% trans 'You can also decide how your list is to be curated - only by you, by anyone, or by a group.' %}",
             title: "{% trans 'List curation' %}",
             attachTo: {
                 element: "#tour-list-curation",
@@ -150,65 +123,27 @@
                 },
             ],
         },
+        {
+            text: "{% trans 'Next in our tour we will explore Groups!' %}",
+            title: "{% trans 'Next: Groups' %}",
+            buttons: [
+                {
+                    action() {
+                        return this.back();
+                    },
+                    secondary: true,
+                    text: "{% trans 'Back' %}",
+                },
+                {
+                    action() {
+                        this.complete();
+                        window.location = "{% url 'user-groups' user|username %}"
+                    },
+                    text: "{% trans 'Take me there' %}"
+                },
+            ]
+        }
     ])
-
-    if (existingGroup) {
-        tour.addStep({
-            text: "{% trans 'It looks like you already know how to create a group. Go to your group page from the ' %}\
-            <code>\
-                {% trans 'Groups' %}\
-            </code>\
-            {% trans ' tab on your profile page to complete the tour.' %}",
-            title: "{% trans 'Groups' %}",
-            attachTo: {
-                element: "#group",
-                on: "left",
-            },
-            buttons: [
-                {
-                    action() {
-                        return this.back();
-                    },
-                    secondary: true,
-                    text: "{% trans 'Back' %}",
-                },
-                {
-                    action() {
-                        this.complete();
-                    },
-                    text: "{% trans 'Ok' %}"
-                },
-            ]
-        })
-    } else {
-        tour.addStep({
-            text: "{% trans 'You need to be a member of a group before you can create a group-curated list. Let\'s take a look at groups now! Click on ' %}\
-            <strong>\
-                {% trans 'Create a Group' %}\
-            </strong>\
-            {% trans ' to continue the tour.' %}",
-            title: "{% trans 'Groups' %}",
-            attachTo: {
-                element: "#tour-no-groups-yet",
-                on: "left",
-            },
-            buttons: [
-                {
-                    action() {
-                        return this.back();
-                    },
-                    secondary: true,
-                    text: "{% trans 'Back' %}",
-                },
-                {
-                    action() {
-                        this.complete();
-                    },
-                    text: "{% trans 'Ok' %}"
-                },
-            ]
-        })
-    }
 
     tour.start()
 </script>
