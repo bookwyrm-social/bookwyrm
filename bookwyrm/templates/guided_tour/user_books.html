@@ -28,17 +28,7 @@
             ],
         },
         {
-            text: "<code>{% trans 'To Read' %}</code>, \
-            <code>{% trans 'Currently Reading' %}</code>, \
-            <code>{% trans 'Read' %}</code>,\
-            {% trans ' and ' %}\
-            <code>{% trans 'Stopped Reading' %}</code> \
-            {% trans 'are default shelves used to indicate the current reading status of books. A book can only be assigned to one of these shelves at any given moment e.g. a  book is not allowed to be on both the ' %}\
-            <code>{% trans 'Currently Reading' %}</code>, \
-            {% trans ' and the ' %}\
-            <code>{% trans 'To Read' %}</code>, \
-            {% trans ' shelves. When you change the reading status of a book it will automatically be moved to the matching shelf.' %}\
-            ",
+            text: "{% trans '<strong>To Read</strong>, <strong>Currently Reading</strong>, <strong>Read</strong>, and <strong>Stopped Reading</strong> are default shelves used to indicate the current reading status of books. A book can only be assigned to one of these shelves at any given moment e.g. a  book is not allowed to be on both the <strong>Currently Reading</strong>, and the <strong>To Read</strong> shelves. When you change the reading status of a book it will automatically be moved to the matching shelf.' %}",
             title: "{% trans 'Reading status shelves' %}",
             attachTo: {
                 element: "#tour-user-shelves",
@@ -107,16 +97,13 @@
             ],
         },
         {
-            text: "{% trans 'Now that we\'ve explored book shelves, let\'s take a look at a related concept: book lists! Click on the ' %}\
-            <code>\
-            {% trans 'Lists' %}\
-            </code>\
-            {% trans ' link here to continue the tour.' %}",
+            text: "{% trans 'Now that we\'ve explored book shelves, let\'s take a look at a related concept: book lists!<p class=\'notification is-warning is-light mt-3\'>Click on the <strong>Lists</strong> link here to continue the tour.' %}",
             title: "{% trans 'Lists' %}",
             attachTo: {
                 element: "#tour-navbar-start",
                 on: "right",
             },
+            highlightClass: 'tour-element-highlight',
             buttons: [
                 {
                     action() {
