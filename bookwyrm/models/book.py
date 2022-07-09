@@ -115,6 +115,9 @@ class Book(BookDataModel):
         models.CharField(max_length=255), blank=True, null=True, default=list
     )
     authors = fields.ManyToManyField("Author")
+    # authors = fields.ManyToManyField(
+    #    "Author", through="BookAuthor", through_fields=("book", "author")
+    # )
     cover = fields.ImageField(
         upload_to="covers/", blank=True, null=True, alt_field="alt_text"
     )
@@ -435,3 +438,29 @@ def preview_image(instance, *args, **kwargs):
         transaction.on_commit(
             lambda: generate_edition_preview_image_task.delay(instance.id)
         )
+
+
+AuthorTypes = [
+    ("author", _("Author")),
+    ("contributor", _("Contributor")),
+    ("translator", _("Translator")),
+    ("illustrator", _("Illustrator")),
+    ("editor", _("Editor")),
+    ("Other", _("Other")),
+]
+
+
+class BookAuthor(BookWyrmModel):
+    """The join table between authors and books"""
+
+    book = fields.ForeignKey("Book", on_delete=models.CASCADE)
+    author = fields.ForeignKey("Author", on_delete=models.CASCADE)
+    author_type = models.CharField(
+        max_length=255, choices=AuthorTypes, default="author"
+    )
+    author_type_detail = models.CharField(max_length=100, blank=True, null=True)
+
+    class Meta:
+        """Table characteristics"""
+
+        unique_together = ("book", "author", "author_type")
