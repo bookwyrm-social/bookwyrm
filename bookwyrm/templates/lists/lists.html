@@ -56,7 +56,7 @@
 {% endblock %}
 
 {% block scripts %}
-{% if user.show_guided_tour %}
+{% if request.user.show_guided_tour %}
     {% include 'guided_tour/lists.html' %}
 {% endif %}
 {% endblock %}

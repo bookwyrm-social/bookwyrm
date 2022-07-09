@@ -82,7 +82,7 @@
 {% endblock %}
 
 {% block scripts %}
-{% if user.show_guided_tour %}
+{% if request.user.show_guided_tour %}
     {% include 'guided_tour/group.html' %}
 {% endif %}
 {% endblock %}
