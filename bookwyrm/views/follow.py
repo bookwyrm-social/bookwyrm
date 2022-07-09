@@ -15,7 +15,7 @@ from .helpers import (
     handle_remote_webfinger,
     subscribe_remote_webfinger,
     WebFingerError,
-    is_api_request
+    is_api_request,
 )
 
 
