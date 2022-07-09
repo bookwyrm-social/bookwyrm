@@ -1,12 +1,14 @@
 """ test for app action functionality """
 from unittest.mock import patch
 
+from django.contrib.auth.models import Group
 from django.template.response import TemplateResponse
 from django.test import TestCase
 from django.test.client import RequestFactory
 from django_celery_beat.models import PeriodicTask, IntervalSchedule
 
 from bookwyrm import forms, models, views
+from bookwyrm.management.commands import initdb
 from bookwyrm.tests.validate_html import validate_html
 
 
@@ -26,6 +28,10 @@ class AutomodViews(TestCase):
                 local=True,
                 localname="mouse",
             )
+        initdb.init_groups()
+        initdb.init_permissions()
+        group = Group.objects.get(name="moderator")
+        self.local_user.groups.set([group])
         models.SiteSettings.objects.create()
 
     def test_automod_rules_get(self):
@@ -40,7 +46,6 @@ class AutomodViews(TestCase):
         view = views.AutoMod.as_view()
         request = self.factory.get("")
         request.user = self.local_user
-        request.user.is_superuser = True
 
         result = view(request)
         self.assertIsInstance(result, TemplateResponse)
@@ -58,7 +63,6 @@ class AutomodViews(TestCase):
         view = views.AutoMod.as_view()
         request = self.factory.get("")
         request.user = self.local_user
-        request.user.is_superuser = True
 
         result = view(request)
         self.assertIsInstance(result, TemplateResponse)
@@ -70,7 +74,6 @@ class AutomodViews(TestCase):
         view = views.AutoMod.as_view()
         request = self.factory.get("")
         request.user = self.local_user
-        request.user.is_superuser = True
 
         result = view(request)
         self.assertIsInstance(result, TemplateResponse)
@@ -88,7 +91,6 @@ class AutomodViews(TestCase):
         view = views.AutoMod.as_view()
         request = self.factory.post("", form.data)
         request.user = self.local_user
-        request.user.is_superuser = True
 
         result = view(request)
 
@@ -109,7 +111,6 @@ class AutomodViews(TestCase):
         form.data["period"] = "days"
         request = self.factory.post("", form.data)
         request.user = self.local_user
-        request.user.is_superuser = True
 
         response = views.schedule_automod_task(request)
         self.assertEqual(response.status_code, 302)

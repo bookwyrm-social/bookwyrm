@@ -132,7 +132,7 @@ class BookWyrmModel(models.Model):
             return
 
         # but generally moderators can delete other people's stuff
-        if self.user == viewer or viewer.has_perm("moderate_post"):
+        if self.user == viewer or viewer.has_perm("bookwyrm.moderate_post"):
             return
 
         raise PermissionDenied()

@@ -22,21 +22,25 @@ class UserAdminList(View):
     def get(self, request, status="local"):
         """list of users"""
         filters = {}
+        exclusions = {}
         if server := request.GET.get("server"):
             server = models.FederatedServer.objects.filter(server_name=server).first()
             filters["federated_server"] = server
             filters["federated_server__isnull"] = False
+
         if username := request.GET.get("username"):
             filters["username__icontains"] = username
-        scope = request.GET.get("scope")
-        if scope and scope == "local":
-            filters["local"] = True
+
         if email := request.GET.get("email"):
             filters["email__endswith"] = email
 
-        filters["local"] = status == "local"
+        filters["local"] = status in ["local", "deleted"]
+        if status == "deleted":
+            filters["deactivation_reason__icontains"] = "deletion"
+        else:
+            exclusions["deactivation_reason__icontains"] = "deletion"
 
-        users = models.User.objects.filter(**filters)
+        users = models.User.objects.filter(**filters).exclude(**exclusions)
 
         sort = request.GET.get("sort", "-created_date")
         sort_fields = [
@@ -62,7 +66,7 @@ class UserAdminList(View):
 
 @method_decorator(login_required, name="dispatch")
 @method_decorator(
-    permission_required("bookwyrm.moderate_users", raise_exception=True),
+    permission_required("bookwyrm.moderate_user", raise_exception=True),
     name="dispatch",
 )
 class UserAdmin(View):

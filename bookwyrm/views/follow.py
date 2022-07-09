@@ -1,7 +1,9 @@
 """ views for actions you can take in the application """
 import urllib.parse
 import re
+
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.views.decorators.http import require_POST
@@ -13,6 +15,7 @@ from .helpers import (
     handle_remote_webfinger,
     subscribe_remote_webfinger,
     WebFingerError,
+    is_api_request,
 )
 
 
@@ -34,6 +37,8 @@ def follow(request):
         # that means we should save to trigger a re-broadcast
         follow_request.save()
 
+    if is_api_request(request):
+        return HttpResponse()
     return redirect(to_follow.local_path)
 
 
@@ -58,8 +63,10 @@ def unfollow(request):
     except models.UserFollowRequest.DoesNotExist:
         clear_cache(request.user, to_unfollow)
 
+    if is_api_request(request):
+        return HttpResponse()
     # this is handled with ajax so it shouldn't really matter
-    return redirect(request.headers.get("Referer", "/"))
+    return redirect("/")
 
 
 @login_required

@@ -2,11 +2,13 @@
 import json
 from unittest.mock import patch
 
+from django.contrib.auth.models import Group
 from django.template.response import TemplateResponse
 from django.test import TestCase
 from django.test.client import RequestFactory
 
 from bookwyrm import models, views
+from bookwyrm.management.commands import initdb
 from bookwyrm.tests.validate_html import validate_html
 
 
@@ -33,6 +35,10 @@ class ReportViews(TestCase):
                 local=True,
                 localname="rat",
             )
+        initdb.init_groups()
+        initdb.init_permissions()
+        group = Group.objects.get(name="moderator")
+        self.local_user.groups.set([group])
         models.SiteSettings.objects.create()
 
     def test_reports_page(self):
@@ -40,7 +46,6 @@ class ReportViews(TestCase):
         view = views.ReportsAdmin.as_view()
         request = self.factory.get("")
         request.user = self.local_user
-        request.user.is_superuser = True
 
         result = view(request)
         self.assertIsInstance(result, TemplateResponse)
@@ -52,7 +57,6 @@ class ReportViews(TestCase):
         view = views.ReportsAdmin.as_view()
         request = self.factory.get("")
         request.user = self.local_user
-        request.user.is_superuser = True
         models.Report.objects.create(reporter=self.local_user, user=self.rat)
 
         result = view(request)
@@ -65,7 +69,6 @@ class ReportViews(TestCase):
         view = views.ReportAdmin.as_view()
         request = self.factory.get("")
         request.user = self.local_user
-        request.user.is_superuser = True
         report = models.Report.objects.create(reporter=self.local_user, user=self.rat)
 
         result = view(request, report.id)
@@ -79,7 +82,6 @@ class ReportViews(TestCase):
         view = views.ReportAdmin.as_view()
         request = self.factory.post("", {"note": "hi"})
         request.user = self.local_user
-        request.user.is_superuser = True
         report = models.Report.objects.create(reporter=self.local_user, user=self.rat)
 
         view(request, report.id)
@@ -95,7 +97,6 @@ class ReportViews(TestCase):
         self.assertFalse(report.resolved)
         request = self.factory.post("")
         request.user = self.local_user
-        request.user.is_superuser = True
 
         # resolve
         views.resolve_report(request, report.id)
@@ -115,7 +116,6 @@ class ReportViews(TestCase):
         self.assertTrue(self.rat.is_active)
         request = self.factory.post("")
         request.user = self.local_user
-        request.user.is_superuser = True
 
         # de-activate
         views.suspend_user(request, self.rat.id)
@@ -134,7 +134,6 @@ class ReportViews(TestCase):
         self.assertTrue(self.rat.is_active)
         request = self.factory.post("", {"password": "password"})
         request.user = self.local_user
-        request.user.is_superuser = True
 
         # de-activate
         with patch(

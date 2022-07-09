@@ -1,10 +1,13 @@
 """ test for app action functionality """
 from unittest.mock import patch
+
+from django.contrib.auth.models import Group
 from django.template.response import TemplateResponse
 from django.test import TestCase
 from django.test.client import RequestFactory
 
 from bookwyrm import forms, models, views
+from bookwyrm.management.commands import initdb
 from bookwyrm.tests.validate_html import validate_html
 
 
@@ -24,6 +27,10 @@ class SiteSettingsViews(TestCase):
                 local=True,
                 localname="mouse",
             )
+        initdb.init_groups()
+        initdb.init_permissions()
+        group = Group.objects.get(name="admin")
+        self.local_user.groups.set([group])
 
         self.site = models.SiteSettings.objects.create()
 
@@ -32,7 +39,7 @@ class SiteSettingsViews(TestCase):
         view = views.Site.as_view()
         request = self.factory.get("")
         request.user = self.local_user
-        request.user.is_superuser = True
+
         result = view(request)
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
@@ -51,7 +58,6 @@ class SiteSettingsViews(TestCase):
         form.data["privacy_policy"] = "blah"
         request = self.factory.post("", form.data)
         request.user = self.local_user
-        request.user.is_superuser = True
 
         result = view(request)
 
@@ -68,7 +74,6 @@ class SiteSettingsViews(TestCase):
         form = forms.SiteForm()
         request = self.factory.post("", form.data)
         request.user = self.local_user
-        request.user.is_superuser = True
 
         result = view(request)
 
