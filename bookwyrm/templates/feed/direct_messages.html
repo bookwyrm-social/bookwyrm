@@ -13,7 +13,7 @@
     {% if partner %}<p class="subtitle"><a href="{% url 'direct-messages' %}"><span class="icon icon-arrow-left" aria-hidden="true"></span> {% trans "All messages" %}</a></p>{% endif %}
 </header>
 
-<div class="box">
+<div class="box" id="tour-dm-box">
     {% include 'snippets/create_status/status.html' with type="direct" uuid=1 mention=partner %}
 </div>
 
