@@ -34,6 +34,7 @@
                 element: "#tour-shelve-button",
                 on: "right",
             },
+            highlightClass: 'tour-element-highlight',
             buttons: [
                 {
                     action() {
@@ -51,20 +52,13 @@
             ],
         },
         {
-            text: "{% trans 'You can also manually add reading dates here. Unlike changing the reading status using the previous method, adding read-through dates manually will not automatically add them to your ' %}\
-            <code>\
-            {% trans 'Read' %}\
-            </code>\
-            {% trans ' or '%}\
-            <code>\
-            {% trans 'Reading' %}\
-            </code>\
-            {% trans ' shelves. Got a favourite you re-read every year? We\'ve got you covered - you can add multiple read dates for the same book 😀' %}",
-            title: "{% trans 'Add readthrough dates' %}",
+            text: "{% trans 'You can also manually add reading dates here. Unlike changing the reading status using the previous method, adding dates manually will not automatically add them to your <strong>Read</strong> or <strong>Reading</strong> shelves.<br><br>Got a favourite you re-read every year? We\'ve got you covered - you can add multiple read dates for the same book 😀' %}",
+            title: "{% trans 'Add read dates' %}",
             attachTo: {
                 element: "#tour-add-readthrough",
                 on: "top",
             },
+            highlightClass: 'tour-element-highlight',
             buttons: [
                 {
                     action() {
@@ -82,11 +76,11 @@
             ],
         },
         {
-            text: "{% trans 'There can be multiple editions of a book, in various formats or languages. You can choose which edition you want to view or set a reading status for.' %}",
+            text: "{% trans 'There can be multiple editions of a book, in various formats or languages. You can choose which edition you want to use.' %}",
             title: "{% trans 'Other editions' %}",
             attachTo: {
                 element: "#tour-other-editions-link",
-                on: "top-start",
+                on: "left",
             },
             buttons: [
                 {
@@ -111,6 +105,7 @@
                 element: "#tour-book-file-links",
                 on: "left",
             },
+            highlightClass: 'tour-element-highlight',
             buttons: [
                 {
                     action() {
@@ -128,16 +123,12 @@
             ],
         },
         {
-            text: "{% trans 'Let\'s continue the tour by selecting ' %}\
-            <code>\
-            {% trans 'Your books' %}\
-            </code>\
-            {% trans ' from the drop down menu.' %}",
+            text: "{% trans '<p class=\'notification is-warning is-light mt-3\'> Continue the tour by selecting <strong>Your books</strong> from the drop down menu.</p>' %}",
             title: "{% trans 'Next' %}",
             attachTo: {
-                element: "summary[aria-label='View profile and more']",
-                on: "left",
-            },
+            element: "#navbar-dropdown",
+            on: "left-end",
+        },
             buttons: [
                 {
                     action() {
