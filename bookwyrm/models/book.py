@@ -462,4 +462,5 @@ class BookAuthor(BookWyrmModel):
     class Meta:
         """Table characteristics"""
 
+        db_table = "bookwyrm_book_authors"
         unique_together = ("book", "author", "author_type")
