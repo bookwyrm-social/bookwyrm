@@ -143,7 +143,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     show_goal = models.BooleanField(default=True)
     show_suggested_users = models.BooleanField(default=True)
     discoverable = fields.BooleanField(default=False)
-    show_guided_tour = fields.BooleanField(default=True)
+    show_guided_tour = models.BooleanField(default=True)
 
     # feed options
     feed_status_types = ArrayField(
