@@ -3,12 +3,14 @@ import os
 import json
 from unittest.mock import patch
 
+from django.contrib.auth.models import Group
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.template.response import TemplateResponse
 from django.test import TestCase
 from django.test.client import RequestFactory
 
 from bookwyrm import forms, models, views
+from bookwyrm.management.commands import initdb
 from bookwyrm.tests.validate_html import validate_html
 
 
@@ -38,6 +40,10 @@ class FederationViews(TestCase):
                 inbox="https://example.com/users/rat/inbox",
                 outbox="https://example.com/users/rat/outbox",
             )
+        initdb.init_groups()
+        initdb.init_permissions()
+        group = Group.objects.get(name="moderator")
+        self.local_user.groups.set([group])
 
         models.SiteSettings.objects.create()
 
@@ -46,7 +52,7 @@ class FederationViews(TestCase):
         view = views.Federation.as_view()
         request = self.factory.get("")
         request.user = self.local_user
-        request.user.is_superuser = True
+
         result = view(request)
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
@@ -58,7 +64,6 @@ class FederationViews(TestCase):
         view = views.FederatedServer.as_view()
         request = self.factory.get("")
         request.user = self.local_user
-        request.user.is_superuser = True
 
         result = view(request, server.id)
         self.assertIsInstance(result, TemplateResponse)
@@ -81,7 +86,6 @@ class FederationViews(TestCase):
         view = views.block_server
         request = self.factory.post("")
         request.user = self.local_user
-        request.user.is_superuser = True
 
         with patch("bookwyrm.suggested_users.bulk_remove_instance_task.delay") as mock:
             view(request, server.id)
@@ -121,7 +125,6 @@ class FederationViews(TestCase):
 
         request = self.factory.post("")
         request.user = self.local_user
-        request.user.is_superuser = True
 
         with patch("bookwyrm.suggested_users.bulk_add_instance_task.delay") as mock:
             views.unblock_server(request, server.id)
@@ -147,7 +150,6 @@ class FederationViews(TestCase):
         view = views.AddFederatedServer.as_view()
         request = self.factory.get("")
         request.user = self.local_user
-        request.user.is_superuser = True
 
         result = view(request)
         self.assertIsInstance(result, TemplateResponse)
@@ -164,7 +166,6 @@ class FederationViews(TestCase):
         view = views.AddFederatedServer.as_view()
         request = self.factory.post("", form.data)
         request.user = self.local_user
-        request.user.is_superuser = True
 
         view(request)
         server = models.FederatedServer.objects.get()
@@ -196,7 +197,6 @@ class FederationViews(TestCase):
             },
         )
         request.user = self.local_user
-        request.user.is_superuser = True
 
         view(request)
         server.refresh_from_db()

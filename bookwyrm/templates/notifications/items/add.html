@@ -1,14 +1,16 @@
 {% extends 'notifications/items/layout.html' %}
-
 {% load i18n %}
 {% load utilities %}
+{% load humanize %}
 
 {% block primary_link %}{% spaceless %}
-{% if notification.related_list_item.approved %}
-    {{ notification.related_list_item.book_list.local_path }}
+{% with related_list=notification.related_list_items.first.book_list %}
+{% if related_list.curation != "curated" %}
+    {{ related_list.local_path }}
 {% else %}
-    {% url 'list-curate' notification.related_list_item.book_list.id %}
+    {% url 'list-curate' related_list.id %}
 {% endif %}
+{% endwith %}
 {% endspaceless %}{% endblock %}
 
 {% block icon %}
@@ -16,25 +18,89 @@
 {% endblock %}
 
 {% block description %}
-{% with book_path=notification.related_list_item.book.local_path %}
-{% with book_title=notification.related_list_item.book|book_title %}
-{% with list_name=notification.related_list_item.book_list.name %}
+{% with related_list=notification.related_list_items.first.book_list %}
+{% with book_path=notification.related_list_items.first.book.local_path %}
+{% with book_title=notification.related_list_items.first.book|book_title %}
+{% with second_book_path=notification.related_list_items.all.1.book.local_path %}
+{% with second_book_title=notification.related_list_items.all.1.book|book_title %}
+{% with list_name=related_list.name %}
 
-    {% if notification.related_list_item.approved %}
-    {% blocktrans trimmed with list_path=notification.related_list_item.book_list.local_path %}
+{% url 'list' related_list.id as list_path %}
+{% url 'list-curate' related_list.id as list_curate_path %}
 
-    added <em><a href="{{ book_path }}">{{ book_title }}</a></em> to your list "<a href="{{ list_path }}">{{ list_name }}</a>"
-
-    {% endblocktrans %}
+{% if notification.related_list_items.count == 1 %}
+    {% if related_list.curation != "curated" %}
+        {% blocktrans trimmed %}
+        <a href="{{ related_user_link }}">{{ related_user }}</a>
+        added <em><a href="{{ book_path }}">{{ book_title }}</a></em>
+        to your list "<a href="{{ list_path }}">{{ list_name }}</a>"
+        {% endblocktrans %}
     {% else %}
-    {% url 'list-curate' notification.related_list_item.book_list.id as list_path %}
-    {% blocktrans trimmed with list_path=list_path %}
-
-    suggested adding <em><a href="{{ book_path }}">{{ book_title }}</a></em> to your list "<a href="{{ list_path }}">{{ list_name }}</a>"
-
-    {% endblocktrans %}
+        {% blocktrans trimmed %}
+        <a href="{{ related_user_link }}">{{ related_user }}</a>
+        suggested adding <em><a href="{{ book_path }}">{{ book_title }}</a></em>
+        to your list "<a href="{{ list_curate_path }}">{{ list_name }}</a>"
+        {% endblocktrans %}
     {% endif %}
+{% elif notification.related_list_items.count == 2 %}
+    {% if related_list.curation != "curated" %}
+        {% blocktrans trimmed %}
+        <a href="{{ related_user_link }}">{{ related_user }}</a>
+        added <em><a href="{{ book_path }}">{{ book_title }}</a></em>
+        and <em><a href="{{ second_book_path }}">{{ second_book_title }}</a></em>
+        to your list "<a href="{{ list_path }}">{{ list_name }}</a>"
+        {% endblocktrans %}
+    {% else %}
+        {% blocktrans trimmed %}
+        <a href="{{ related_user_link }}">{{ related_user }}</a>
+        suggested adding <em><a href="{{ book_path }}">{{ book_title }}</a></em>
+        and <em><a href="{{ second_book_path }}">{{ second_book_title }}</a></em>
+        to your list "<a href="{{ list_curate_path }}">{{ list_name }}</a>"
+        {% endblocktrans %}
+    {% endif %}
+{% else %}
+    {% with count=notification.related_list_items.count|add:"-2" %}
+    {% with display_count=count|intcomma %}
+    {% if related_list.curation != "curated" %}
 
+        {% blocktrans trimmed count counter=count %}
+        <a href="{{ related_user_link }}">{{ related_user }}</a>
+        added <em><a href="{{ book_path }}">{{ book_title }}</a></em>,
+        <em><a href="{{ second_book_path }}">{{ second_book_title }}</a></em>,
+        and {{ display_count }} other book
+        to your list "<a href="{{ list_path }}">{{ list_name }}</a>"
+        {% plural %}
+        <a href="{{ related_user_link }}">{{ related_user }}</a>
+        added <em><a href="{{ book_path }}">{{ book_title }}</a></em>,
+        <em><a href="{{ second_book_path }}">{{ second_book_title }}</a></em>,
+        and {{ display_count }} other books
+        to your list "<a href="{{ list_path }}">{{ list_name }}</a>"
+        {% endblocktrans %}
+
+    {% else %}
+
+        {% blocktrans trimmed count counter=count %}
+        <a href="{{ related_user_link }}">{{ related_user }}</a>
+        suggested adding <em><a href="{{ book_path }}">{{ book_title }}</a></em>,
+        <em><a href="{{ second_book_path }}">{{ second_book_title }}</a></em>,
+        and {{ display_count }} other book
+        to your list "<a href="{{ list_curate_path }}">{{ list_name }}</a>"
+        {% plural %}
+        <a href="{{ related_user_link }}">{{ related_user }}</a>
+        suggested adding <em><a href="{{ book_path }}">{{ book_title }}</a></em>,
+        <em><a href="{{ second_book_path }}">{{ second_book_title }}</a></em>,
+        and {{ display_count }} other books
+        to your list "<a href="{{ list_curate_path }}">{{ list_name }}</a>"
+        {% endblocktrans %}
+
+    {% endif %}
+    {% endwith %}
+    {% endwith %}
+{% endif %}
+
+{% endwith %}
+{% endwith %}
+{% endwith %}
 {% endwith %}
 {% endwith %}
 {% endwith %}

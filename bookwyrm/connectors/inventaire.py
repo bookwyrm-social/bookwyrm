@@ -160,12 +160,13 @@ class Connector(AbstractConnector):
 
     def create_edition_from_data(self, work, edition_data, instance=None):
         """pass in the url as data and then call the version in abstract connector"""
-        try:
-            data = self.get_book_data(edition_data)
-        except ConnectorException:
-            # who, indeed, knows
-            return
-        super().create_edition_from_data(work, data, instance=instance)
+        if isinstance(edition_data, str):
+            try:
+                edition_data = self.get_book_data(edition_data)
+            except ConnectorException:
+                # who, indeed, knows
+                return
+        super().create_edition_from_data(work, edition_data, instance=instance)
 
     def get_cover_url(self, cover_blob, *_):
         """format the relative cover url into an absolute one:

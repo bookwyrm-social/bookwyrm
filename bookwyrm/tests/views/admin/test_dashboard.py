@@ -1,10 +1,13 @@
 """ test for app action functionality """
 from unittest.mock import patch
+
+from django.contrib.auth.models import Group
 from django.template.response import TemplateResponse
 from django.test import TestCase
 from django.test.client import RequestFactory
 
 from bookwyrm import models, views
+from bookwyrm.management.commands import initdb
 from bookwyrm.tests.validate_html import validate_html
 
 
@@ -24,6 +27,10 @@ class DashboardViews(TestCase):
                 local=True,
                 localname="mouse",
             )
+        initdb.init_groups()
+        initdb.init_permissions()
+        group = Group.objects.get(name="moderator")
+        self.local_user.groups.set([group])
 
         models.SiteSettings.objects.create()
 
@@ -32,7 +39,7 @@ class DashboardViews(TestCase):
         view = views.Dashboard.as_view()
         request = self.factory.get("")
         request.user = self.local_user
-        request.user.is_superuser = True
+
         result = view(request)
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())

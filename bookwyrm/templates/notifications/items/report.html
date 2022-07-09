@@ -1,9 +1,9 @@
 {% extends 'notifications/items/layout.html' %}
-
+{% load humanize %}
 {% load i18n %}
 
 {% block primary_link %}{% spaceless %}
-    {% url 'settings-report' notification.related_report.id %}
+{% url 'settings-reports' %}
 {% endspaceless %}{% endblock %}
 
 {% block icon %}
@@ -11,6 +11,10 @@
 {% endblock %}
 
 {% block description %}
-    {% url 'settings-report' notification.related_report.id as path %}
-    {% blocktrans %}A new <a href="{{ path }}">report</a> needs moderation.{% endblocktrans %}
+    {% url 'settings-reports' as path %}
+    {% blocktrans trimmed count counter=notification.related_reports.count with display_count=notification.related_reports.count|intcomma %}
+    A new <a href="{{ path }}">report</a> needs moderation
+    {% plural %}
+    {{ display_count }} new <a href="{{ path }}">reports</a> need moderation
+    {% endblocktrans %}
 {% endblock %}

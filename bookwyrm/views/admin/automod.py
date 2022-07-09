@@ -33,8 +33,7 @@ class AutoMod(View):
     def post(self, request):
         """add rule"""
         form = forms.AutoModRuleForm(request.POST)
-        success = form.is_valid()
-        if success:
+        if form.is_valid():
             form.save()
             form = forms.AutoModRuleForm()
 

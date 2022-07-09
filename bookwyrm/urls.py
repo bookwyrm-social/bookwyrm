@@ -126,7 +126,7 @@ urlpatterns = [
         r"^settings/users/?$", views.UserAdminList.as_view(), name="settings-users"
     ),
     re_path(
-        r"^settings/users/(?P<status>(local|federated))\/?$",
+        r"^settings/users/(?P<status>(local|federated|deleted))\/?$",
         views.UserAdminList.as_view(),
         name="settings-users",
     ),
@@ -287,7 +287,7 @@ urlpatterns = [
         name="report-status",
     ),
     re_path(
-        r"^report/(?P<user_id>\d+)/link/(?P<link_id>\d+)?$",
+        r"^report/link/(?P<link_id>\d+)?$",
         views.Report.as_view(),
         name="report-link",
     ),
