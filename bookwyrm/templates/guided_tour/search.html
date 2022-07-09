@@ -15,10 +15,7 @@
     if (remoteResult) {
         tour.addStep(
         {
-            text: "{% trans 'If the book you are looking for is available on a remote catalogue such as Open Library, click on' %}\
-            <code>\
-            {% trans 'Import book' %}\
-            </code>.",
+            text: "{% trans 'If the book you are looking for is available on a remote catalogue such as Open Library, click on <strong>Import book</strong>.",
             title: "{% trans 'Searching' %}",
             attachTo: {
                 element: "#tour-remote-search-result",
@@ -129,6 +126,7 @@
                 element: "#tour-manually-add-book",
                 on: "right",
             },
+            scrollTo: true,
             buttons: [
                 {
                     action() {
@@ -148,7 +146,7 @@
     }
 
     tour.addStep({
-            text: "{% trans 'Import, manually add, or view an existing book to continue the tour.' %}",
+            text: "{% trans '<p class=\'notification is-warning is-light mt-3\'>Import, manually add, or view an existing book to continue the tour.<p>' %}",
             title: "{% trans 'Continue the tour' %}",
             buttons: [
                 {
