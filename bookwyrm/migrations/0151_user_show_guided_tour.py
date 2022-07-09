@@ -3,10 +3,12 @@
 import bookwyrm.models.fields
 from django.db import migrations
 
+
 def existing_users_default(apps, schema_editor):
     db_alias = schema_editor.connection.alias
     user_model = apps.get_model("bookwyrm", "User")
     user_model.objects.using(db_alias).filter(local=True).update(show_guided_tour=False)
+
 
 class Migration(migrations.Migration):
 
@@ -22,4 +24,3 @@ class Migration(migrations.Migration):
         ),
         migrations.RunPython(existing_users_default, migrations.RunPython.noop),
     ]
-
