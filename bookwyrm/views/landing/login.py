@@ -77,7 +77,7 @@ class Login(View):
 class Logout(View):
     """log out"""
 
-    def get(self, request):
+    def post(self, request):
         """done with this place! outa here!"""
         logout(request)
         return redirect("/")
