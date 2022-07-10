@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-07-08 22:40+0000\n"
-"PO-Revision-Date: 2022-07-10 18:51\n"
+"PO-Revision-Date: 2022-07-10 20:21\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: German\n"
 "Language: de\n"
@@ -2641,18 +2641,18 @@ msgstr[1] "<a href=\"%(related_user_link)s\">%(related_user)s</a> hat <em><a hre
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> suggested adding <em><a href=\"%(book_path)s\">%(book_title)s</a></em>, <em><a href=\"%(second_book_path)s\">%(second_book_title)s</a></em>, and %(display_count)s other book to your list \"<a href=\"%(list_curate_path)s\">%(list_name)s</a>\""
 msgid_plural "<a href=\"%(related_user_link)s\">%(related_user)s</a> suggested adding <em><a href=\"%(book_path)s\">%(book_title)s</a></em>, <em><a href=\"%(second_book_path)s\">%(second_book_title)s</a></em>, and %(display_count)s other books to your list \"<a href=\"%(list_curate_path)s\">%(list_name)s</a>\""
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "<a href=\"%(related_user_link)s\">%(related_user)s</a> schlug vor, <em><a href=\"%(book_path)s\">%(book_title)s</a></em>, <em><a href=\"%(second_book_path)s\">%(second_book_title)s</a></em>, und %(display_count)s weitere Bücher an Ihre Liste \"<a href=\"%(list_curate_path)s\">%(list_name)s</a>\" hinzuzufügen"
+msgstr[1] "<a href=\"%(related_user_link)s\">%(related_user)s</a> schlug vor, <em><a href=\"%(book_path)s\">%(book_title)s</a></em>, <em><a href=\"%(second_book_path)s\">%(second_book_title)s</a></em>, und %(display_count)s weitere Bücher an Ihre Liste \"<a href=\"%(list_curate_path)s\">%(list_name)s</a>\" hinzuzufügen"
 
 #: bookwyrm/templates/notifications/items/boost.html:21
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> boosted your <a href=\"%(related_path)s\">review of <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> hat Ihre <a href=\"%(related_path)s\">Rezension von <em>%(book_title)s</em></a> geteilt"
 
 #: bookwyrm/templates/notifications/items/boost.html:27
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and <a href=\"%(second_user_link)s\">%(second_user)s</a> boosted your <a href=\"%(related_path)s\">review of <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> und <a href=\"%(second_user_link)s\">%(second_user)s</a> haben Ihre <a href=\"%(related_path)s\">Rezension von <em>%(book_title)s</em></a> geteilt"
 
 #: bookwyrm/templates/notifications/items/boost.html:36
 #, python-format
@@ -2868,8 +2868,8 @@ msgstr ""
 #, python-format
 msgid "A new <a href=\"%(path)s\">report</a> needs moderation"
 msgid_plural "%(display_count)s new <a href=\"%(path)s\">reports</a> need moderation"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Ein neuer <a href=\"%(path)s\">-Bericht</a> muss moderiert werden"
+msgstr[1] "%(display_count)s neue <a href=\"%(path)s\">Berichte</a> müssen moderiert werden"
 
 #: bookwyrm/templates/notifications/items/update.html:16
 #, python-format
