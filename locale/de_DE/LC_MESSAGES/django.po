@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-07-08 22:40+0000\n"
-"PO-Revision-Date: 2022-07-10 03:50\n"
+"PO-Revision-Date: 2022-07-10 16:56\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: German\n"
 "Language: de\n"
@@ -48,7 +48,7 @@ msgstr "Enddatum darf nicht vor dem Startdatum liegen."
 
 #: bookwyrm/forms/forms.py:59
 msgid "Reading stopped date cannot be before start date."
-msgstr ""
+msgstr "Das Datum für Lesen gestoppt kann nicht vor dem Lesestart sein."
 
 #: bookwyrm/forms/landing.py:32
 msgid "User with this username already exists"
@@ -1221,7 +1221,7 @@ msgstr "Aktionen"
 #: bookwyrm/templates/book/file_links/edit_links.html:48
 #: bookwyrm/templates/settings/link_domains/link_table.html:21
 msgid "Unknown user"
-msgstr ""
+msgstr "Unbekannter Benutzer"
 
 #: bookwyrm/templates/book/file_links/edit_links.html:57
 #: bookwyrm/templates/book/file_links/verification_modal.html:22
@@ -1746,7 +1746,7 @@ msgstr "Gelesen"
 #: bookwyrm/templates/get_started/book_preview.html:13
 #: bookwyrm/templates/shelf/shelf.html:89 bookwyrm/templates/user/user.html:36
 msgid "Stopped Reading"
-msgstr ""
+msgstr "Lesen gestoppt"
 
 #: bookwyrm/templates/get_started/books.html:6
 msgid "What are you reading?"
@@ -2281,7 +2281,7 @@ msgstr "Passwort bestätigen:"
 #: bookwyrm/templates/landing/password_reset_request.html:14
 #, python-format
 msgid "A password reset link will be sent to <strong>%(email)s</strong> if there is an account using that email address."
-msgstr ""
+msgstr "Ein Link zum Zurücksetzen des Passworts wird an <strong>%(email)s</strong> gesendet, wenn ein Konto mit dieser E-Mail-Adresse existiert."
 
 #: bookwyrm/templates/landing/password_reset_request.html:20
 msgid "A link to reset your password will be sent to your email address"
@@ -3154,7 +3154,7 @@ msgstr "„%(book_title)s“ beginnen"
 #: bookwyrm/templates/reading_progress/stop.html:5
 #, python-format
 msgid "Stop Reading \"%(book_title)s\""
-msgstr ""
+msgstr "Höre auf zu lesen \"%(book_title)s\""
 
 #: bookwyrm/templates/reading_progress/want.html:5
 #, python-format
@@ -3205,7 +3205,7 @@ msgstr "abgeschlossen"
 
 #: bookwyrm/templates/readthrough/readthrough_list.html:16
 msgid "stopped"
-msgstr ""
+msgstr "gestoppt"
 
 #: bookwyrm/templates/readthrough/readthrough_list.html:27
 msgid "Show all updates"
@@ -3430,7 +3430,7 @@ msgstr "Farbe:"
 #: bookwyrm/templates/settings/automod/rules.html:11
 #: bookwyrm/templates/settings/layout.html:61
 msgid "Auto-moderation rules"
-msgstr ""
+msgstr "Regeln für automatische Moderation"
 
 #: bookwyrm/templates/settings/automod/rules.html:18
 msgid "Auto-moderation rules will create reports for any local user or status with fields matching the provided string."
@@ -3450,11 +3450,11 @@ msgstr "Letzte Ausführung:"
 
 #: bookwyrm/templates/settings/automod/rules.html:40
 msgid "Total run count:"
-msgstr ""
+msgstr "Gesamtanzahl:"
 
 #: bookwyrm/templates/settings/automod/rules.html:47
 msgid "Enabled:"
-msgstr ""
+msgstr "Aktiviert:"
 
 #: bookwyrm/templates/settings/automod/rules.html:59
 msgid "Delete schedule"
@@ -3484,7 +3484,7 @@ msgstr "Regel hinzufügen"
 #: bookwyrm/templates/settings/automod/rules.html:116
 #: bookwyrm/templates/settings/automod/rules.html:160
 msgid "String match"
-msgstr ""
+msgstr "Zeichenfolgenübereinstimmung"
 
 #: bookwyrm/templates/settings/automod/rules.html:126
 #: bookwyrm/templates/settings/automod/rules.html:163
@@ -4034,7 +4034,7 @@ msgstr "Zurück zu den Meldungen"
 
 #: bookwyrm/templates/settings/reports/report.html:24
 msgid "Message reporter"
-msgstr ""
+msgstr "Nachrichtenmelder"
 
 #: bookwyrm/templates/settings/reports/report.html:28
 msgid "Update on your report:"
@@ -4318,7 +4318,7 @@ msgstr "Benutzer*innen: <small>%(instance_name)s</small>"
 
 #: bookwyrm/templates/settings/users/user_admin.html:29
 msgid "Deleted users"
-msgstr ""
+msgstr "Gelöschte Benutzer"
 
 #: bookwyrm/templates/settings/users/user_admin.html:44
 #: bookwyrm/templates/settings/users/username_filter.html:5
@@ -4344,7 +4344,7 @@ msgstr "Aktiv"
 
 #: bookwyrm/templates/settings/users/user_admin.html:86
 msgid "Deleted"
-msgstr ""
+msgstr "Gelöscht"
 
 #: bookwyrm/templates/settings/users/user_admin.html:92
 #: bookwyrm/templates/settings/users/user_info.html:32
@@ -4362,7 +4362,7 @@ msgstr "Benutzer*inprofil anzeigen"
 
 #: bookwyrm/templates/settings/users/user_info.html:19
 msgid "Go to user admin"
-msgstr ""
+msgstr "Gehe zur Benutzerverwaltung"
 
 #: bookwyrm/templates/settings/users/user_info.html:40
 msgid "Local"
@@ -4442,15 +4442,15 @@ msgstr "BookWyrm einrichten"
 
 #: bookwyrm/templates/setup/admin.html:7
 msgid "Your account as a user and an admin"
-msgstr ""
+msgstr "Ihr Konto als Benutzer und Admin"
 
 #: bookwyrm/templates/setup/admin.html:13
 msgid "Create your account"
-msgstr ""
+msgstr "Erstelle einen Account"
 
 #: bookwyrm/templates/setup/admin.html:20
 msgid "Admin key:"
-msgstr ""
+msgstr "Adminschlüssel:"
 
 #: bookwyrm/templates/setup/admin.html:32
 msgid "An admin key was created when you installed BookWyrm. You can get your admin key by running <code>./bw-dev admin_code</code> from the command line on your server."
@@ -4502,15 +4502,15 @@ msgstr "Protokoll:"
 
 #: bookwyrm/templates/setup/config.html:81
 msgid "Using S3:"
-msgstr ""
+msgstr "S3 benutzen:"
 
 #: bookwyrm/templates/setup/config.html:95
 msgid "Default interface language:"
-msgstr ""
+msgstr "Standardsprache der Benutzeroberfläche:"
 
 #: bookwyrm/templates/setup/config.html:102
 msgid "Email sender:"
-msgstr ""
+msgstr "E-Mail-Absender:"
 
 #: bookwyrm/templates/setup/config.html:109
 msgid "Enable preview images:"
@@ -4542,7 +4542,7 @@ msgstr "Instanzeinstellungen"
 
 #: bookwyrm/templates/setup/layout.html:15
 msgid "Installing BookWyrm"
-msgstr ""
+msgstr "Installiere BookWyrm"
 
 #: bookwyrm/templates/setup/layout.html:18
 msgid "Need help?"
@@ -5030,7 +5030,7 @@ msgstr "Mehr Regale"
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_dropdown_options.html:31
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_options.html:48
 msgid "Stop reading"
-msgstr ""
+msgstr "Aufhören zu lesen"
 
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_options.html:40
 msgid "Finish reading"
