@@ -102,50 +102,32 @@ class User(View):
         return TemplateResponse(request, "user/user.html", data)
 
 
-class Followers(View):
-    """list of followers view"""
+class Relationship(View):
+    """list of followers/following view"""
 
-    def get(self, request, username):
+    def get(self, request, username, direction):
         """list of followers"""
         user = get_user_from_username(request.user, username)
 
         if is_api_request(request):
-            return ActivitypubResponse(user.to_followers_activity(**request.GET))
-
-        if user.hide_follows and user != request.user:
-            raise PermissionDenied()
-
-        followers = annotate_if_follows(request.user, user.followers)
-        paginated = Paginator(followers.all(), PAGE_LENGTH)
-        data = {
-            "user": user,
-            "is_self": request.user.id == user.id,
-            "follow_list": paginated.get_page(request.GET.get("page")),
-        }
-        return TemplateResponse(request, "user/relationships/followers.html", data)
-
-
-class Following(View):
-    """list of following view"""
-
-    def get(self, request, username):
-        """list of followers"""
-        user = get_user_from_username(request.user, username)
-
-        if is_api_request(request):
+            if direction == "followers":
+                return ActivitypubResponse(user.to_followers_activity(**request.GET))
             return ActivitypubResponse(user.to_following_activity(**request.GET))
 
+
         if user.hide_follows and user != request.user:
             raise PermissionDenied()
 
-        following = annotate_if_follows(request.user, user.following)
-        paginated = Paginator(following.all(), PAGE_LENGTH)
+        annotation_queryset = user.followers if direction == "followers" else user.following
+        follows = annotate_if_follows(request.user, annotation_queryset)
+
+        paginated = Paginator(follows.all(), PAGE_LENGTH)
         data = {
             "user": user,
             "is_self": request.user.id == user.id,
             "follow_list": paginated.get_page(request.GET.get("page")),
         }
-        return TemplateResponse(request, "user/relationships/following.html", data)
+        return TemplateResponse(request, f"user/relationships/{direction}.html", data)
 
 
 def annotate_if_follows(user, queryset):
