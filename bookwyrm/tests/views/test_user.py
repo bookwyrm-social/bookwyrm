@@ -116,7 +116,7 @@ class UserViews(TestCase):
 
     def test_followers_page(self):
         """there are so many views, this just makes sure it LOADS"""
-        view = views.Followers.as_view()
+        view = views.Relationships.as_view()
         request = self.factory.get("")
         request.user = self.local_user
         with patch("bookwyrm.views.user.is_api_request") as is_api:
@@ -134,7 +134,7 @@ class UserViews(TestCase):
 
     def test_followers_page_anonymous(self):
         """there are so many views, this just makes sure it LOADS"""
-        view = views.Followers.as_view()
+        view = views.Relationships.as_view()
         request = self.factory.get("")
         request.user = self.anonymous_user
         with patch("bookwyrm.views.user.is_api_request") as is_api:
@@ -148,7 +148,7 @@ class UserViews(TestCase):
     @patch("bookwyrm.activitystreams.populate_stream_task.delay")
     def test_followers_page_blocked(self, *_):
         """there are so many views, this just makes sure it LOADS"""
-        view = views.Followers.as_view()
+        view = views.Relationships.as_view()
         request = self.factory.get("")
         request.user = self.local_user
         self.rat.blocks.add(self.local_user)
@@ -159,7 +159,7 @@ class UserViews(TestCase):
 
     def test_following_page(self):
         """there are so many views, this just makes sure it LOADS"""
-        view = views.Following.as_view()
+        view = views.Relationships.as_view()
         request = self.factory.get("")
         request.user = self.local_user
         with patch("bookwyrm.views.user.is_api_request") as is_api:
@@ -177,7 +177,7 @@ class UserViews(TestCase):
 
     def test_following_page_anonymous(self):
         """there are so many views, this just makes sure it LOADS"""
-        view = views.Following.as_view()
+        view = views.Relationships.as_view()
         request = self.factory.get("")
         request.user = self.anonymous_user
         with patch("bookwyrm.views.user.is_api_request") as is_api:
@@ -189,7 +189,7 @@ class UserViews(TestCase):
 
     def test_following_page_blocked(self):
         """there are so many views, this just makes sure it LOADS"""
-        view = views.Following.as_view()
+        view = views.Relationships.as_view()
         request = self.factory.get("")
         request.user = self.local_user
         self.rat.blocks.add(self.local_user)
