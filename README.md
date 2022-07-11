@@ -27,7 +27,7 @@ Federation makes it possible to have small, self-determining communities, in con
 
 ## Features
 
-### Posting about books
+### Post about books
 Compose reviews, comment on what you're reading, and post quotes from books. You can converse with other BookWyrm users across the network about what they're reading.
 
 ### Track reading activity
