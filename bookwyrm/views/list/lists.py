@@ -13,7 +13,7 @@ from bookwyrm.views.helpers import get_user_from_username
 
 # pylint: disable=no-self-use
 class Lists(View):
-    """book list page"""
+    """List of lists view"""
 
     def get(self, request):
         """display a book list"""
@@ -21,12 +21,20 @@ class Lists(View):
         paginated = Paginator(lists, 12)
         data = {
             "lists": paginated.get_page(request.GET.get("page")),
-            "list_form": forms.ListForm(),
-            "path": "/list",
         }
         return TemplateResponse(request, "lists/lists.html", data)
 
-    @method_decorator(login_required, name="dispatch")
+@method_decorator(login_required, name="dispatch")
+class CreateList(View):
+    """Add a new list"""
+
+    def get(self, request):
+        """display a book list"""
+        data = {
+            "list_form": forms.ListForm(),
+        }
+        return TemplateResponse(request, "lists/lists.html", data)
+
     # pylint: disable=unused-argument
     def post(self, request):
         """create a book_list"""

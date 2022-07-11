@@ -377,7 +377,7 @@ urlpatterns = [
     re_path(rf"{USER_PATH}/rss/?$", views.rss_feed.RssFeed(), name="user-rss"),
     re_path(
         rf"{USER_PATH}/(?P<direction>)(followers|following)(.json)?/?$",
-        views.Relationship.as_view(),
+        views.Relationships.as_view(),
         name="user-relationships",
     ),
     re_path(r"^hide-suggestions/?$", views.hide_suggestions, name="hide-suggestions"),
