@@ -114,11 +114,12 @@ class Relationship(View):
                 return ActivitypubResponse(user.to_followers_activity(**request.GET))
             return ActivitypubResponse(user.to_following_activity(**request.GET))
 
-
         if user.hide_follows and user != request.user:
             raise PermissionDenied()
 
-        annotation_queryset = user.followers if direction == "followers" else user.following
+        annotation_queryset = (
+            user.followers if direction == "followers" else user.following
+        )
         follows = annotate_if_follows(request.user, annotation_queryset)
 
         paginated = Paginator(follows.all(), PAGE_LENGTH)
