@@ -11,7 +11,7 @@ from .helpers import get_user_from_username, is_api_request
 
 
 # pylint: disable=no-self-use
-class Relationship(View):
+class Relationships(View):
     """list of followers/following view"""
 
     def get(self, request, username, direction):
