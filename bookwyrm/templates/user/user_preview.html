@@ -23,8 +23,8 @@
         <p>
             {% if request.user.id == user.id or admin_mode %}
 
-                <a href="{% url 'user-relationships' 'followers' user|username %}">{% blocktrans count counter=user.followers.count %}{{ counter }} follower{% plural %}{{ counter }} followers{% endblocktrans %}</a>,
-                <a href="{% url 'user-relationships' 'following' user|username %}">{% blocktrans with counter=user.following.count %}{{ counter }} following{% endblocktrans %}</a>
+                <a href="{% url 'user-relationships' user|username 'followers' %}">{% blocktrans count counter=user.followers.count %}{{ counter }} follower{% plural %}{{ counter }} followers{% endblocktrans %}</a>,
+                <a href="{% url 'user-relationships' user|username 'following' %}">{% blocktrans with counter=user.following.count %}{{ counter }} following{% endblocktrans %}</a>
 
             {% elif request.user.is_authenticated %}
 
@@ -34,7 +34,7 @@
                     {% endif %}
                 {% else %}
                     {% mutuals_count user as mutuals %}
-                    <a href="{% url 'user-relationships' 'followers' user|username %}">
+                    <a href="{% url 'user-relationships' user|username 'followers' %}">
                         {% if mutuals %}
                             {% blocktrans with mutuals_display=mutuals|intcomma count counter=mutuals %}{{ mutuals_display }} follower you follow{% plural %}{{ mutuals_display }} followers you follow{% endblocktrans %}
                         {% elif request.user in user.following.all %}
