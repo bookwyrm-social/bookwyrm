@@ -121,7 +121,7 @@ class UserViews(TestCase):
         request.user = self.local_user
         with patch("bookwyrm.views.user.is_api_request") as is_api:
             is_api.return_value = False
-            result = view(request, "mouse")
+            result = view(request, "mouse", "followers")
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
@@ -139,7 +139,7 @@ class UserViews(TestCase):
         request.user = self.anonymous_user
         with patch("bookwyrm.views.user.is_api_request") as is_api:
             is_api.return_value = False
-            result = view(request, "mouse")
+            result = view(request, "mouse", "followers")
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
@@ -155,7 +155,7 @@ class UserViews(TestCase):
         with patch("bookwyrm.views.user.is_api_request") as is_api:
             is_api.return_value = False
             with self.assertRaises(Http404):
-                view(request, "rat")
+                view(request, "rat", "followers")
 
     def test_following_page(self):
         """there are so many views, this just makes sure it LOADS"""
@@ -164,7 +164,7 @@ class UserViews(TestCase):
         request.user = self.local_user
         with patch("bookwyrm.views.user.is_api_request") as is_api:
             is_api.return_value = False
-            result = view(request, "mouse")
+            result = view(request, "mouse", "following")
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
@@ -182,7 +182,7 @@ class UserViews(TestCase):
         request.user = self.anonymous_user
         with patch("bookwyrm.views.user.is_api_request") as is_api:
             is_api.return_value = False
-            result = view(request, "mouse")
+            result = view(request, "mouse", "following")
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
@@ -196,7 +196,7 @@ class UserViews(TestCase):
         with patch("bookwyrm.views.user.is_api_request") as is_api:
             is_api.return_value = False
             with self.assertRaises(Http404):
-                view(request, "rat")
+                view(request, "rat", "following")
 
     def test_hide_suggestions(self):
         """update suggestions settings"""

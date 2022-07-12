@@ -24,6 +24,7 @@ class Lists(View):
         }
         return TemplateResponse(request, "lists/lists.html", data)
 
+
 @method_decorator(login_required, name="dispatch")
 class CreateList(View):
     """Add a new list"""
