@@ -53,7 +53,7 @@ async def get_results(session, url, min_confidence, query, connector):
     except asyncio.TimeoutError:
         logger.info("Connection timed out for url: %s", url)
     except aiohttp.ClientError as err:
-        logger.exception(err)
+        logger.info(err)
 
 
 async def async_connector_search(query, items, min_confidence):
