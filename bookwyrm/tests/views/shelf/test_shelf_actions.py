@@ -32,6 +32,14 @@ class ShelfActionViews(TestCase):
                 localname="mouse",
                 remote_id="https://example.com/users/mouse",
             )
+            self.another_user = models.User.objects.create_user(
+                "rat@local.com",
+                "rat@rat.com",
+                "ratword",
+                local=True,
+                localname="rat",
+                remote_id="https://example.com/users/rat",
+            )
         self.work = models.Work.objects.create(title="Test Work")
         self.book = models.Edition.objects.create(
             title="Example Edition",
@@ -164,6 +172,20 @@ class ShelfActionViews(TestCase):
         self.assertEqual(shelf.privacy, "unlisted")
         self.assertEqual(shelf.description, "desc")
         self.assertEqual(shelf.user, self.local_user)
+
+    def test_create_shelf_wrong_user(self, *_):
+        """a brand new custom shelf"""
+        form = forms.ShelfForm()
+        form.data["user"] = self.another_user.id
+        form.data["name"] = "new shelf name"
+        form.data["description"] = "desc"
+        form.data["privacy"] = "unlisted"
+        request = self.factory.post("", form.data)
+        request.user = self.local_user
+
+        views.create_shelf(request)
+
+        self.assertIsNone(models.Shelf.objects.filter(name="new shelf name"))
 
     def test_delete_shelf(self, *_):
         """delete a brand new custom shelf"""
