@@ -376,7 +376,7 @@ urlpatterns = [
     re_path(rf"^@(?P<username>{regex.USERNAME})$", views.user_redirect),
     re_path(rf"{USER_PATH}/rss/?$", views.rss_feed.RssFeed(), name="user-rss"),
     re_path(
-        rf"{USER_PATH}/(?P<direction>)(followers|following)(.json)?/?$",
+        rf"{USER_PATH}/(?P<direction>(followers|following))(.json)?/?$",
         views.Relationships.as_view(),
         name="user-relationships",
     ),
