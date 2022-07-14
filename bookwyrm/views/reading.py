@@ -79,13 +79,11 @@ class ReadingStatus(View):
         current_status_shelfbook = shelves[0] if shelves else None
 
         # checking the referer prevents redirecting back to the modal page
-        referer = request.headers.get("Referer", "/")
-        referer = "/" if "reading-status" in referer else referer
         if current_status_shelfbook is not None:
             if current_status_shelfbook.shelf.identifier != desired_shelf.identifier:
                 current_status_shelfbook.delete()
             else:  # It already was on the shelf
-                return redirect(referer)
+                return redirect("/")
 
         models.ShelfBook.objects.create(
             book=book, shelf=desired_shelf, user=request.user
@@ -123,7 +121,7 @@ class ReadingStatus(View):
         if is_api_request(request):
             return HttpResponse()
 
-        return redirect(referer)
+        return redirect("/")
 
 
 @method_decorator(login_required, name="dispatch")
@@ -205,7 +203,7 @@ def delete_readthrough(request):
     readthrough.raise_not_deletable(request.user)
 
     readthrough.delete()
-    return redirect(request.headers.get("Referer", "/"))
+    return redirect("/")
 
 
 @login_required
@@ -216,4 +214,4 @@ def delete_progressupdate(request):
     update.raise_not_deletable(request.user)
 
     update.delete()
-    return redirect(request.headers.get("Referer", "/"))
+    return redirect("/")
