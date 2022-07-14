@@ -183,9 +183,9 @@ class ShelfActionViews(TestCase):
         request = self.factory.post("", form.data)
         request.user = self.local_user
 
-        views.create_shelf(request)
+        with self.assertRaises(PermissionDenied):
+            views.create_shelf(request)
 
-        self.assertIsNone(models.Shelf.objects.filter(name="new shelf name"))
 
     def test_delete_shelf(self, *_):
         """delete a brand new custom shelf"""
