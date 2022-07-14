@@ -15,7 +15,9 @@ def create_shelf(request):
     if not form.is_valid():
         return redirect(request.headers.get("Referer", "/"))
 
-    shelf = form.save()
+    shelf = form.save(commit=False)
+    shelf.raise_not_editable(request.user)
+    shelf.save()
     return redirect(shelf.local_path)
 
 
