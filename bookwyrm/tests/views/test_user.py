@@ -122,13 +122,15 @@ class UserViews(TestCase):
         with patch("bookwyrm.views.user.is_api_request") as is_api:
             is_api.return_value = False
             result = view(request, "mouse", "followers")
+
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
         with patch("bookwyrm.views.user.is_api_request") as is_api:
             is_api.return_value = True
-            result = view(request, "mouse")
+            result = view(request, "mouse", "followers")
+
         self.assertIsInstance(result, ActivitypubResponse)
         self.assertEqual(result.status_code, 200)
 
@@ -140,6 +142,7 @@ class UserViews(TestCase):
         with patch("bookwyrm.views.user.is_api_request") as is_api:
             is_api.return_value = False
             result = view(request, "mouse", "followers")
+
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
@@ -165,13 +168,15 @@ class UserViews(TestCase):
         with patch("bookwyrm.views.user.is_api_request") as is_api:
             is_api.return_value = False
             result = view(request, "mouse", "following")
+
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
         with patch("bookwyrm.views.user.is_api_request") as is_api:
             is_api.return_value = True
-            result = view(request, "mouse")
+            result = view(request, "mouse", "following")
+
         self.assertIsInstance(result, ActivitypubResponse)
         self.assertEqual(result.status_code, 200)
 
@@ -183,6 +188,7 @@ class UserViews(TestCase):
         with patch("bookwyrm.views.user.is_api_request") as is_api:
             is_api.return_value = False
             result = view(request, "mouse", "following")
+
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)

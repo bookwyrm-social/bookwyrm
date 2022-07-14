@@ -140,7 +140,7 @@ class ListViews(TestCase):
 
     def test_lists_create(self):
         """create list view"""
-        view = views.Lists.as_view()
+        view = views.CreateList.as_view()
         request = self.factory.post(
             "",
             {
