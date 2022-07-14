@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-07-11 15:53+0000\n"
-"PO-Revision-Date: 2022-07-11 16:22\n"
+"PO-Revision-Date: 2022-07-14 05:48\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Galician\n"
 "Language: gl\n"
@@ -2281,7 +2281,7 @@ msgstr "Confirma o contrasinal:"
 #: bookwyrm/templates/landing/password_reset_request.html:14
 #, python-format
 msgid "A password reset link will be sent to <strong>%(email)s</strong> if there is an account using that email address."
-msgstr ""
+msgstr "Imos enviar a <strong>%(email)s</strong> unha ligazón para restablecer o contrasinal se existe unha conta que usa ese enderezo."
 
 #: bookwyrm/templates/landing/password_reset_request.html:20
 msgid "A link to reset your password will be sent to your email address"
@@ -2598,12 +2598,12 @@ msgstr "Listas gardadas"
 #: bookwyrm/templates/notifications/items/accept.html:18
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> accepted your invitation to join group \"<a href=\"%(group_path)s\">%(group_name)s</a>\""
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> aceptou o teu convite para unirte ao grupo \"<a href=\"%(group_path)s\">%(group_name)s</a>\""
 
 #: bookwyrm/templates/notifications/items/accept.html:26
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and <a href=\"%(second_user_link)s\">%(second_user)s</a> accepted your invitation to join group \"<a href=\"%(group_path)s\">%(group_name)s</a>\""
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> e<a href=\"%(second_user_link)s\">%(second_user)s</a> aceptaron o teu convite para unirse ao grupo \"<a href=\"%(group_path)s\">%(group_name)s</a>\""
 
 #: bookwyrm/templates/notifications/items/accept.html:36
 #, python-format
@@ -3140,7 +3140,7 @@ msgstr "A exportación incluirá tódolos libros dos estantes, libros que recens
 
 #: bookwyrm/templates/preferences/export.html:20
 msgid "Download file"
-msgstr ""
+msgstr "Descargar ficheiro"
 
 #: bookwyrm/templates/preferences/layout.html:11
 msgid "Account"
@@ -3604,11 +3604,11 @@ msgstr[1] "hai que revisar %(display_count)s dominios"
 #: bookwyrm/templates/settings/dashboard/warnings/email_config.html:8
 #, python-format
 msgid "Your outgoing email address, <code>%(email_sender)s</code>, may be misconfigured."
-msgstr ""
+msgstr "O enderezo de envío de emails, <code>%(email_sender)s</code>, podería estar mal configurado."
 
 #: bookwyrm/templates/settings/dashboard/warnings/email_config.html:11
 msgid "Check the <code>EMAIL_SENDER_NAME</code> and <code>EMAIL_SENDER_DOMAIN</code> in your <code>.env</code> file."
-msgstr ""
+msgstr "Comproba o <code>EMAIL_SENDER_NAME</code> e <code>EMAIL_SENDER_DOMAIN</code> no teu ficheiro <code>.env</code>."
 
 #: bookwyrm/templates/settings/dashboard/warnings/invites.html:9
 #, python-format
@@ -3619,11 +3619,11 @@ msgstr[1] "%(display_count)s solicitudes de convite"
 
 #: bookwyrm/templates/settings/dashboard/warnings/missing_conduct.html:8
 msgid "Your instance is missing a code of conduct."
-msgstr ""
+msgstr "A túa instancia non ten código de conduta."
 
 #: bookwyrm/templates/settings/dashboard/warnings/missing_privacy.html:8
 msgid "Your instance is missing a privacy policy."
-msgstr ""
+msgstr "A túa instancia non ten política de privacidade."
 
 #: bookwyrm/templates/settings/dashboard/warnings/reports.html:9
 #, python-format
@@ -4091,7 +4091,7 @@ msgstr "Denuncia #%(report_id)s: Ligazón engadida por @%(username)s"
 #: bookwyrm/templates/settings/reports/report_header.html:17
 #, python-format
 msgid "Report #%(report_id)s: Link domain"
-msgstr ""
+msgstr "Denuncia #%(report_id)s: Dominio na ligazón"
 
 #: bookwyrm/templates/settings/reports/report_header.html:24
 #, python-format
@@ -4335,7 +4335,7 @@ msgstr "Usuarias: <small>%(instance_name)s</small>"
 
 #: bookwyrm/templates/settings/users/user_admin.html:29
 msgid "Deleted users"
-msgstr ""
+msgstr "Usuarias eliminadas"
 
 #: bookwyrm/templates/settings/users/user_admin.html:44
 #: bookwyrm/templates/settings/users/username_filter.html:5
@@ -4361,7 +4361,7 @@ msgstr "Activa"
 
 #: bookwyrm/templates/settings/users/user_admin.html:86
 msgid "Deleted"
-msgstr ""
+msgstr "Eliminada"
 
 #: bookwyrm/templates/settings/users/user_admin.html:92
 #: bookwyrm/templates/settings/users/user_info.html:32
@@ -5371,11 +5371,11 @@ msgstr "As credenciais non son correctas"
 
 #: bookwyrm/views/preferences/change_password.py:35
 msgid "Incorrect password"
-msgstr ""
+msgstr "Contrasinal incorrecto"
 
 #: bookwyrm/views/preferences/change_password.py:42
 msgid "Password does not match"
-msgstr ""
+msgstr "O contrasinal non concorda"
 
 #: bookwyrm/views/rss_feed.py:34
 #, python-brace-format
