@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-07-14 23:57+0000\n"
-"PO-Revision-Date: 2022-07-15 16:40\n"
+"POT-Creation-Date: 2022-07-15 19:29+0000\n"
+"PO-Revision-Date: 2022-07-15 19:48\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Danish\n"
 "Language: da\n"
@@ -42,6 +42,14 @@ msgstr ""
 msgid "Unlimited"
 msgstr ""
 
+#: bookwyrm/forms/edit_user.py:89
+msgid "Incorrect password"
+msgstr ""
+
+#: bookwyrm/forms/edit_user.py:96 bookwyrm/forms/landing.py:71
+msgid "Password does not match"
+msgstr ""
+
 #: bookwyrm/forms/forms.py:54
 msgid "Reading finish date cannot be before start date."
 msgstr ""
@@ -50,11 +58,11 @@ msgstr ""
 msgid "Reading stopped date cannot be before start date."
 msgstr ""
 
-#: bookwyrm/forms/landing.py:32
+#: bookwyrm/forms/landing.py:38
 msgid "User with this username already exists"
 msgstr ""
 
-#: bookwyrm/forms/landing.py:41
+#: bookwyrm/forms/landing.py:47
 msgid "A user with this email already exists."
 msgstr ""
 
@@ -288,58 +296,62 @@ msgid "English"
 msgstr ""
 
 #: bookwyrm/settings.py:283
-msgid "Deutsch (German)"
+msgid "Català (Catalan)"
 msgstr ""
 
 #: bookwyrm/settings.py:284
-msgid "Español (Spanish)"
+msgid "Deutsch (German)"
 msgstr ""
 
 #: bookwyrm/settings.py:285
-msgid "Galego (Galician)"
+msgid "Español (Spanish)"
 msgstr ""
 
 #: bookwyrm/settings.py:286
-msgid "Italiano (Italian)"
+msgid "Galego (Galician)"
 msgstr ""
 
 #: bookwyrm/settings.py:287
-msgid "Suomi (Finnish)"
+msgid "Italiano (Italian)"
 msgstr ""
 
 #: bookwyrm/settings.py:288
-msgid "Français (French)"
+msgid "Suomi (Finnish)"
 msgstr ""
 
 #: bookwyrm/settings.py:289
-msgid "Lietuvių (Lithuanian)"
+msgid "Français (French)"
 msgstr ""
 
 #: bookwyrm/settings.py:290
-msgid "Norsk (Norwegian)"
+msgid "Lietuvių (Lithuanian)"
 msgstr ""
 
 #: bookwyrm/settings.py:291
-msgid "Português do Brasil (Brazilian Portuguese)"
+msgid "Norsk (Norwegian)"
 msgstr ""
 
 #: bookwyrm/settings.py:292
-msgid "Português Europeu (European Portuguese)"
+msgid "Português do Brasil (Brazilian Portuguese)"
 msgstr ""
 
 #: bookwyrm/settings.py:293
-msgid "Română (Romanian)"
+msgid "Português Europeu (European Portuguese)"
 msgstr ""
 
 #: bookwyrm/settings.py:294
-msgid "Svenska (Swedish)"
+msgid "Română (Romanian)"
 msgstr ""
 
 #: bookwyrm/settings.py:295
-msgid "简体中文 (Simplified Chinese)"
+msgid "Svenska (Swedish)"
 msgstr ""
 
 #: bookwyrm/settings.py:296
+msgid "简体中文 (Simplified Chinese)"
+msgstr ""
+
+#: bookwyrm/settings.py:297
 msgid "繁體中文 (Traditional Chinese)"
 msgstr ""
 
@@ -787,7 +799,7 @@ msgstr ""
 #: bookwyrm/templates/book/edit/edit_book.html:122
 #: bookwyrm/templates/book/sync_modal.html:24
 #: bookwyrm/templates/groups/members.html:29
-#: bookwyrm/templates/landing/password_reset.html:42
+#: bookwyrm/templates/landing/password_reset.html:52
 #: bookwyrm/templates/snippets/remove_from_group_button.html:17
 msgid "Confirm"
 msgstr ""
@@ -2268,8 +2280,8 @@ msgstr ""
 msgid "More about this site"
 msgstr ""
 
-#: bookwyrm/templates/landing/password_reset.html:34
-#: bookwyrm/templates/preferences/change_password.html:40
+#: bookwyrm/templates/landing/password_reset.html:43
+#: bookwyrm/templates/preferences/change_password.html:33
 #: bookwyrm/templates/preferences/delete_user.html:20
 msgid "Confirm password:"
 msgstr ""
@@ -3029,7 +3041,7 @@ msgstr ""
 
 #: bookwyrm/templates/preferences/change_password.html:4
 #: bookwyrm/templates/preferences/change_password.html:7
-#: bookwyrm/templates/preferences/change_password.html:52
+#: bookwyrm/templates/preferences/change_password.html:37
 #: bookwyrm/templates/preferences/layout.html:20
 msgid "Change Password"
 msgstr ""
@@ -3042,7 +3054,7 @@ msgstr ""
 msgid "Current password:"
 msgstr ""
 
-#: bookwyrm/templates/preferences/change_password.html:36
+#: bookwyrm/templates/preferences/change_password.html:28
 msgid "New password:"
 msgstr ""
 
@@ -5361,14 +5373,6 @@ msgstr ""
 
 #: bookwyrm/views/landing/login.py:70
 msgid "Username or password are incorrect"
-msgstr ""
-
-#: bookwyrm/views/preferences/change_password.py:35
-msgid "Incorrect password"
-msgstr ""
-
-#: bookwyrm/views/preferences/change_password.py:42
-msgid "Password does not match"
 msgstr ""
 
 #: bookwyrm/views/rss_feed.py:34
