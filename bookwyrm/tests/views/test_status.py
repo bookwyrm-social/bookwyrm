@@ -75,6 +75,22 @@ class StatusViews(TestCase):
         self.assertEqual(status.book, self.book)
         self.assertIsNone(status.edited_date)
 
+    def test_create_status_wrong_user(self, *_):
+        """You can't compose statuses for someone else"""
+        view = views.CreateStatus.as_view()
+        form = forms.CommentForm(
+            {
+                "content": "hi",
+                "user": self.remote_user.id,
+                "book": self.book.id,
+                "privacy": "public",
+            }
+        )
+        request = self.factory.post("", form.data)
+        request.user = self.local_user
+        with self.assertRaises(PermissionDenied):
+            view(request, "comment")
+
     def test_create_status_reply(self, *_):
         """create a status in reply to an existing status"""
         view = views.CreateStatus.as_view()

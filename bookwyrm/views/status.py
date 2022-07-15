@@ -85,6 +85,7 @@ class CreateStatus(View):
             return redirect("/")
 
         status = form.save(commit=False)
+        status.raise_not_editable(request.user)
         # save the plain, unformatted version of the status for future editing
         status.raw_content = status.content
         if hasattr(status, "quote"):
