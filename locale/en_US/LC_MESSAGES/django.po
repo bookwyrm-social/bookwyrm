@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-07-14 23:57+0000\n"
+"POT-Creation-Date: 2022-07-15 19:21+0000\n"
 "PO-Revision-Date: 2021-02-28 17:19-0800\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: English <LL@li.org>\n"
@@ -43,6 +43,14 @@ msgstr ""
 msgid "Unlimited"
 msgstr ""
 
+#: bookwyrm/forms/edit_user.py:89
+msgid "Incorrect password"
+msgstr ""
+
+#: bookwyrm/forms/edit_user.py:96 bookwyrm/forms/landing.py:71
+msgid "Password does not match"
+msgstr ""
+
 #: bookwyrm/forms/forms.py:54
 msgid "Reading finish date cannot be before start date."
 msgstr ""
@@ -51,11 +59,11 @@ msgstr ""
 msgid "Reading stopped date cannot be before start date."
 msgstr ""
 
-#: bookwyrm/forms/landing.py:32
+#: bookwyrm/forms/landing.py:38
 msgid "User with this username already exists"
 msgstr ""
 
-#: bookwyrm/forms/landing.py:41
+#: bookwyrm/forms/landing.py:47
 msgid "A user with this email already exists."
 msgstr ""
 
@@ -788,7 +796,7 @@ msgstr ""
 #: bookwyrm/templates/book/edit/edit_book.html:122
 #: bookwyrm/templates/book/sync_modal.html:24
 #: bookwyrm/templates/groups/members.html:29
-#: bookwyrm/templates/landing/password_reset.html:42
+#: bookwyrm/templates/landing/password_reset.html:52
 #: bookwyrm/templates/snippets/remove_from_group_button.html:17
 msgid "Confirm"
 msgstr ""
@@ -2269,8 +2277,8 @@ msgstr ""
 msgid "More about this site"
 msgstr ""
 
-#: bookwyrm/templates/landing/password_reset.html:34
-#: bookwyrm/templates/preferences/change_password.html:40
+#: bookwyrm/templates/landing/password_reset.html:43
+#: bookwyrm/templates/preferences/change_password.html:33
 #: bookwyrm/templates/preferences/delete_user.html:20
 msgid "Confirm password:"
 msgstr ""
@@ -3030,7 +3038,7 @@ msgstr ""
 
 #: bookwyrm/templates/preferences/change_password.html:4
 #: bookwyrm/templates/preferences/change_password.html:7
-#: bookwyrm/templates/preferences/change_password.html:52
+#: bookwyrm/templates/preferences/change_password.html:37
 #: bookwyrm/templates/preferences/layout.html:20
 msgid "Change Password"
 msgstr ""
@@ -3043,7 +3051,7 @@ msgstr ""
 msgid "Current password:"
 msgstr ""
 
-#: bookwyrm/templates/preferences/change_password.html:36
+#: bookwyrm/templates/preferences/change_password.html:28
 msgid "New password:"
 msgstr ""
 
@@ -5363,14 +5371,6 @@ msgstr ""
 
 #: bookwyrm/views/landing/login.py:70
 msgid "Username or password are incorrect"
-msgstr ""
-
-#: bookwyrm/views/preferences/change_password.py:35
-msgid "Incorrect password"
-msgstr ""
-
-#: bookwyrm/views/preferences/change_password.py:42
-msgid "Password does not match"
 msgstr ""
 
 #: bookwyrm/views/rss_feed.py:34
