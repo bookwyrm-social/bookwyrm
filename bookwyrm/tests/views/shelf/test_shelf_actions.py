@@ -32,6 +32,14 @@ class ShelfActionViews(TestCase):
                 localname="mouse",
                 remote_id="https://example.com/users/mouse",
             )
+            self.another_user = models.User.objects.create_user(
+                "rat@local.com",
+                "rat@rat.com",
+                "ratword",
+                local=True,
+                localname="rat",
+                remote_id="https://example.com/users/rat",
+            )
         self.work = models.Work.objects.create(title="Test Work")
         self.book = models.Edition.objects.create(
             title="Example Edition",
@@ -66,7 +74,7 @@ class ShelfActionViews(TestCase):
 
     def test_shelve_to_read(self, *_):
         """special behavior for the to-read shelf"""
-        shelf = models.Shelf.objects.get(identifier="to-read")
+        shelf = models.Shelf.objects.get(user=self.local_user, identifier="to-read")
         request = self.factory.post(
             "", {"book": self.book.id, "shelf": shelf.identifier}
         )
@@ -79,7 +87,7 @@ class ShelfActionViews(TestCase):
 
     def test_shelve_reading(self, *_):
         """special behavior for the reading shelf"""
-        shelf = models.Shelf.objects.get(identifier="reading")
+        shelf = models.Shelf.objects.get(user=self.local_user, identifier="reading")
         request = self.factory.post(
             "", {"book": self.book.id, "shelf": shelf.identifier}
         )
@@ -92,7 +100,7 @@ class ShelfActionViews(TestCase):
 
     def test_shelve_read(self, *_):
         """special behavior for the read shelf"""
-        shelf = models.Shelf.objects.get(identifier="read")
+        shelf = models.Shelf.objects.get(user=self.local_user, identifier="read")
         request = self.factory.post(
             "", {"book": self.book.id, "shelf": shelf.identifier}
         )
@@ -105,11 +113,13 @@ class ShelfActionViews(TestCase):
 
     def test_shelve_read_with_change_shelf(self, *_):
         """special behavior for the read shelf"""
-        previous_shelf = models.Shelf.objects.get(identifier="reading")
+        previous_shelf = models.Shelf.objects.get(
+            user=self.local_user, identifier="reading"
+        )
         models.ShelfBook.objects.create(
             shelf=previous_shelf, user=self.local_user, book=self.book
         )
-        shelf = models.Shelf.objects.get(identifier="read")
+        shelf = models.Shelf.objects.get(user=self.local_user, identifier="read")
 
         request = self.factory.post(
             "",
@@ -160,10 +170,23 @@ class ShelfActionViews(TestCase):
 
         views.create_shelf(request)
 
-        shelf = models.Shelf.objects.get(name="new shelf name")
+        shelf = models.Shelf.objects.get(user=self.local_user, name="new shelf name")
         self.assertEqual(shelf.privacy, "unlisted")
         self.assertEqual(shelf.description, "desc")
         self.assertEqual(shelf.user, self.local_user)
+
+    def test_create_shelf_wrong_user(self, *_):
+        """a brand new custom shelf"""
+        form = forms.ShelfForm()
+        form.data["user"] = self.another_user.id
+        form.data["name"] = "new shelf name"
+        form.data["description"] = "desc"
+        form.data["privacy"] = "unlisted"
+        request = self.factory.post("", form.data)
+        request.user = self.local_user
+
+        with self.assertRaises(PermissionDenied):
+            views.create_shelf(request)
 
     def test_delete_shelf(self, *_):
         """delete a brand new custom shelf"""
@@ -177,18 +200,8 @@ class ShelfActionViews(TestCase):
 
     def test_delete_shelf_unauthorized(self, *_):
         """delete a brand new custom shelf"""
-        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
-            "bookwyrm.activitystreams.populate_stream_task.delay"
-        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
-            rat = models.User.objects.create_user(
-                "rat@local.com",
-                "rat@mouse.mouse",
-                "password",
-                local=True,
-                localname="rat",
-            )
         request = self.factory.post("")
-        request.user = rat
+        request.user = self.another_user
 
         with self.assertRaises(PermissionDenied):
             views.delete_shelf(request, self.shelf.id)

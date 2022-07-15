@@ -134,19 +134,19 @@ class ConfirmEmail(View):
 class ResendConfirmEmail(View):
     """you probably didn't get the email because celery is slow but you can try this"""
 
-    def get(self, request, error=False):
+    def get(self, request):
         """resend link landing page"""
-        return TemplateResponse(request, "confirm_email/resend.html", {"error": error})
+        return TemplateResponse(request, "confirm_email/resend.html")
 
     def post(self, request):
         """resend confirmation link"""
         email = request.POST.get("email")
         try:
             user = models.User.objects.get(email=email)
+            emailing.email_confirmation_email(user)
         except models.User.DoesNotExist:
-            return self.get(request, error=True)
+            pass
 
-        emailing.email_confirmation_email(user)
         return TemplateResponse(
             request, "confirm_email/confirm_email.html", {"valid": True}
         )
