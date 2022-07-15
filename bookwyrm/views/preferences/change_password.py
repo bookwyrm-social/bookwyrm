@@ -19,10 +19,10 @@ class ChangePassword(View):
         data = {"form": forms.ChangePasswordForm()}
         return TemplateResponse(request, "preferences/change_password.html", data)
 
-    @sensitive_variables("new_password")
+    @method_decorator(sensitive_variables("new_password"))
     @method_decorator(sensitive_post_parameters("current_password"))
     @method_decorator(sensitive_post_parameters("password"))
-    @method_decorator(sensitive_post_parameters("confirm__password"))
+    @method_decorator(sensitive_post_parameters("confirm_password"))
     def post(self, request):
         """allow a user to change their password"""
         form = forms.ChangePasswordForm(request.POST, instance=request.user)
