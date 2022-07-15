@@ -2,7 +2,7 @@
 {% load humanize %}
 {% related_status notification as related_status %}
 
-{% with related_users=notification.related_users.all.distinct %}
+{% get_related_users notification as related_users %}
 {% with related_user_count=notification.related_users.count %}
 <div class="notification {% if notification.id in unread %}has-background-primary{% endif %}">
     <div class="columns is-mobile {% if notification.id in unread %}has-text-white{% else %}has-text-more-muted{% endif %}">
@@ -16,7 +16,7 @@
             {% if related_user_count > 1 %}
             <div class="block">
                 <ul class="is-flex">
-                    {% for user in related_users|slice:10 %}
+                    {% for user in related_users %}
                     <li class="mr-2">
                         <a href="{{ user.local_path }}">
                             {% include 'snippets/avatar.html' with user=user %}
@@ -28,7 +28,7 @@
             {% endif %}
             <div class="block content">
                 {% if related_user_count == 1 %}
-                    {% with user=related_users.first %}
+                    {% with user=related_users.0 %}
                     {% spaceless %}
                         <a href="{{ user.local_path }}" class="mr-2">
                             {% include 'snippets/avatar.html' with user=user %}
@@ -37,8 +37,8 @@
                     {% endwith %}
                 {% endif %}
 
-                {% with related_user=related_users.first.display_name %}
-                {% with related_user_link=related_users.first.local_path %}
+                {% with related_user=related_users.0.display_name %}
+                {% with related_user_link=related_users.0.local_path %}
                 {% with second_user=related_users.1.display_name %}
                 {% with second_user_link=related_users.1.local_path %}
                 {% with other_user_count=related_user_count|add:"-1" %}
@@ -60,5 +60,4 @@
         </div>
     </div>
 </div>
-{% endwith %}
 {% endwith %}

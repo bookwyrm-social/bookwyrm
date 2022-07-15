@@ -300,8 +300,10 @@ def notify_user_on_follow(sender, instance, created, *args, **kwargs):
         notification.read = False
         notification.save()
     else:
+        # Only group unread follows
         Notification.notify(
             instance.user_object,
             instance.user_subject,
             notification_type=Notification.FOLLOW,
+            read=False,
         )
