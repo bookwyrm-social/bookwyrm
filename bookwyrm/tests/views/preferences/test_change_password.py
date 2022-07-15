@@ -46,8 +46,8 @@ class ChangePasswordViews(TestCase):
             "",
             {
                 "current_password": "password",
-                "password": "hi",
-                "confirm-password": "hi",
+                "password": "longwordsecure",
+                "confirm_password": "longwordsecure",
             },
         )
         request.user = self.local_user
@@ -64,8 +64,8 @@ class ChangePasswordViews(TestCase):
             "",
             {
                 "current_password": "not my password",
-                "password": "hi",
-                "confirm-password": "hihi",
+                "password": "longwordsecure",
+                "confirm_password": "hihi",
             },
         )
         request.user = self.local_user
@@ -81,8 +81,25 @@ class ChangePasswordViews(TestCase):
             "",
             {
                 "current_password": "password",
+                "password": "longwordsecure",
+                "confirm_password": "hihi",
+            },
+        )
+        request.user = self.local_user
+        result = view(request)
+        validate_html(result.render())
+        self.assertEqual(self.local_user.password, password_hash)
+
+    def test_password_change_invalid(self):
+        """change password"""
+        view = views.ChangePassword.as_view()
+        password_hash = self.local_user.password
+        request = self.factory.post(
+            "",
+            {
+                "current_password": "password",
                 "password": "hi",
-                "confirm-password": "hihi",
+                "confirm_password": "hi",
             },
         )
         request.user = self.local_user
