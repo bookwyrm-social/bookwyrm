@@ -12,3 +12,9 @@ def related_status(notification):
     if not notification.related_status:
         return None
     return load_subclass(notification.related_status)
+
+
+@register.simple_tag(takes_context=False)
+def get_related_users(notification):
+    """Who actually was it who liked your post"""
+    return list(reversed(list(notification.related_users.distinct())))[:10]

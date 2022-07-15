@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-07-07 17:47+0000\n"
-"PO-Revision-Date: 2022-07-07 18:12\n"
+"POT-Creation-Date: 2022-07-11 15:53+0000\n"
+"PO-Revision-Date: 2022-07-11 16:22\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Spanish\n"
 "Language: es\n"
@@ -48,7 +48,7 @@ msgstr "La fecha final de lectura no puede ser anterior a la fecha de inicio."
 
 #: bookwyrm/forms/forms.py:59
 msgid "Reading stopped date cannot be before start date."
-msgstr ""
+msgstr "La fecha final de lectura no puede ser anterior a la fecha de inicio."
 
 #: bookwyrm/forms/landing.py:32
 msgid "User with this username already exists"
@@ -1205,7 +1205,7 @@ msgstr "Dominio"
 #: bookwyrm/templates/settings/announcements/announcements.html:37
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:47
 #: bookwyrm/templates/settings/invites/status_filter.html:5
-#: bookwyrm/templates/settings/users/user_admin.html:52
+#: bookwyrm/templates/settings/users/user_admin.html:56
 #: bookwyrm/templates/settings/users/user_info.html:24
 msgid "Status"
 msgstr "Estado"
@@ -1221,7 +1221,7 @@ msgstr "Acciones"
 #: bookwyrm/templates/book/file_links/edit_links.html:48
 #: bookwyrm/templates/settings/link_domains/link_table.html:21
 msgid "Unknown user"
-msgstr ""
+msgstr "Usuario/a desconocido/a"
 
 #: bookwyrm/templates/book/file_links/edit_links.html:57
 #: bookwyrm/templates/book/file_links/verification_modal.html:22
@@ -1329,7 +1329,7 @@ msgstr "Código de confirmación:"
 
 #: bookwyrm/templates/confirm_email/confirm_email.html:25
 #: bookwyrm/templates/landing/layout.html:81
-#: bookwyrm/templates/settings/dashboard/dashboard.html:127
+#: bookwyrm/templates/settings/dashboard/dashboard.html:106
 #: bookwyrm/templates/snippets/report_modal.html:53
 msgid "Submit"
 msgstr "Enviar"
@@ -1369,7 +1369,7 @@ msgid "Local users"
 msgstr "Usuarios locales"
 
 #: bookwyrm/templates/directory/community_filter.html:12
-#: bookwyrm/templates/settings/users/user_admin.html:29
+#: bookwyrm/templates/settings/users/user_admin.html:33
 msgid "Federated community"
 msgstr "Comunidad federada"
 
@@ -1746,7 +1746,7 @@ msgstr "Leído"
 #: bookwyrm/templates/get_started/book_preview.html:13
 #: bookwyrm/templates/shelf/shelf.html:89 bookwyrm/templates/user/user.html:36
 msgid "Stopped Reading"
-msgstr ""
+msgstr "Lectura interrumpida"
 
 #: bookwyrm/templates/get_started/books.html:6
 msgid "What are you reading?"
@@ -2273,7 +2273,7 @@ msgid "More about this site"
 msgstr "Más sobre este sitio"
 
 #: bookwyrm/templates/landing/password_reset.html:34
-#: bookwyrm/templates/preferences/change_password.html:18
+#: bookwyrm/templates/preferences/change_password.html:40
 #: bookwyrm/templates/preferences/delete_user.html:20
 msgid "Confirm password:"
 msgstr "Confirmar contraseña:"
@@ -2281,7 +2281,7 @@ msgstr "Confirmar contraseña:"
 #: bookwyrm/templates/landing/password_reset_request.html:14
 #, python-format
 msgid "A password reset link will be sent to <strong>%(email)s</strong> if there is an account using that email address."
-msgstr ""
+msgstr "Se enviará un enlace para restablecer la contraseña a <strong>%(email)s</strong> si hay una cuenta usando esa dirección de correo electrónico."
 
 #: bookwyrm/templates/landing/password_reset_request.html:20
 msgid "A link to reset your password will be sent to your email address"
@@ -2598,7 +2598,7 @@ msgstr "Listas guardadas"
 #: bookwyrm/templates/notifications/items/accept.html:18
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> accepted your invitation to join group \"<a href=\"%(group_path)s\">%(group_name)s</a>\""
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> aceptó su invitación para unirse al grupo \"<a href=\"%(group_path)s\">%(group_name)s</a>\""
 
 #: bookwyrm/templates/notifications/items/accept.html:26
 #, python-format
@@ -2871,6 +2871,11 @@ msgid_plural "%(display_count)s new <a href=\"%(path)s\">reports</a> need modera
 msgstr[0] ""
 msgstr[1] ""
 
+#: bookwyrm/templates/notifications/items/status_preview.html:4
+#: bookwyrm/templates/snippets/status/content_status.html:73
+msgid "Content warning"
+msgstr "Advertencia de contenido"
+
 #: bookwyrm/templates/notifications/items/update.html:16
 #, python-format
 msgid "has changed the privacy level for <a href=\"%(group_path)s\">%(group_name)s</a>"
@@ -3028,12 +3033,20 @@ msgstr "No hay ningún usuario bloqueado actualmente."
 
 #: bookwyrm/templates/preferences/change_password.html:4
 #: bookwyrm/templates/preferences/change_password.html:7
-#: bookwyrm/templates/preferences/change_password.html:21
+#: bookwyrm/templates/preferences/change_password.html:52
 #: bookwyrm/templates/preferences/layout.html:20
 msgid "Change Password"
 msgstr "Cambiar contraseña"
 
-#: bookwyrm/templates/preferences/change_password.html:14
+#: bookwyrm/templates/preferences/change_password.html:15
+msgid "Successfully changed password"
+msgstr ""
+
+#: bookwyrm/templates/preferences/change_password.html:22
+msgid "Current password:"
+msgstr ""
+
+#: bookwyrm/templates/preferences/change_password.html:36
 msgid "New password:"
 msgstr "Nueva contraseña:"
 
@@ -3124,6 +3137,10 @@ msgstr "Exportar CSV"
 #: bookwyrm/templates/preferences/export.html:13
 msgid "Your export will include all the books on your shelves, books you have reviewed, and books with reading activity."
 msgstr "Se exportarán todos los libros que tengas en las estanterías, las reseñas y los libros que estés leyendo."
+
+#: bookwyrm/templates/preferences/export.html:20
+msgid "Download file"
+msgstr ""
 
 #: bookwyrm/templates/preferences/layout.html:11
 msgid "Account"
@@ -3353,13 +3370,13 @@ msgstr "Falso"
 
 #: bookwyrm/templates/settings/announcements/announcement.html:57
 #: bookwyrm/templates/settings/announcements/edit_announcement.html:79
-#: bookwyrm/templates/settings/dashboard/dashboard.html:105
+#: bookwyrm/templates/settings/dashboard/dashboard.html:84
 msgid "Start date:"
 msgstr "Fecha de inicio:"
 
 #: bookwyrm/templates/settings/announcements/announcement.html:62
 #: bookwyrm/templates/settings/announcements/edit_announcement.html:89
-#: bookwyrm/templates/settings/dashboard/dashboard.html:111
+#: bookwyrm/templates/settings/dashboard/dashboard.html:90
 msgid "End date:"
 msgstr "Fecha final:"
 
@@ -3519,7 +3536,7 @@ msgid "Dashboard"
 msgstr "Tablero"
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:15
-#: bookwyrm/templates/settings/dashboard/dashboard.html:134
+#: bookwyrm/templates/settings/dashboard/dashboard.html:113
 msgid "Total users"
 msgstr "Número de usuarios"
 
@@ -3537,66 +3554,31 @@ msgstr "Estados"
 msgid "Works"
 msgstr "Obras"
 
-#: bookwyrm/templates/settings/dashboard/dashboard.html:43
-#, python-format
-msgid "Your outgoing email address, <code>%(email_sender)s</code>, may be misconfigured."
-msgstr ""
-
-#: bookwyrm/templates/settings/dashboard/dashboard.html:46
-msgid "Check the <code>EMAIL_SENDER_NAME</code> and <code>EMAIL_SENDER_DOMAIN</code> in your <code>.env</code>."
-msgstr ""
-
-#: bookwyrm/templates/settings/dashboard/dashboard.html:54
-#, python-format
-msgid "%(display_count)s open report"
-msgid_plural "%(display_count)s open reports"
-msgstr[0] "%(display_count)s informe abierto"
-msgstr[1] "%(display_count)s informes abiertos"
-
-#: bookwyrm/templates/settings/dashboard/dashboard.html:66
-#, python-format
-msgid "%(display_count)s domain needs review"
-msgid_plural "%(display_count)s domains need review"
-msgstr[0] "%(display_count)s dominio necesita revisión"
-msgstr[1] "%(display_count)s dominios necesitan revisión"
-
 #: bookwyrm/templates/settings/dashboard/dashboard.html:78
-#, python-format
-msgid "%(display_count)s invite request"
-msgid_plural "%(display_count)s invite requests"
-msgstr[0] "%(display_count)s solicitación de invitado"
-msgstr[1] "%(display_count)s solicitaciones de invitado"
-
-#: bookwyrm/templates/settings/dashboard/dashboard.html:90
-#, python-format
-msgid "An update is available! You're running v%(current)s and the latest release is %(available)s."
-msgstr "Hay una actualización disponible. La versión que estás usando es la %(current)s, mientras que la actual es %(available)s."
-
-#: bookwyrm/templates/settings/dashboard/dashboard.html:99
 msgid "Instance Activity"
 msgstr "Actividad de instancia"
 
-#: bookwyrm/templates/settings/dashboard/dashboard.html:117
+#: bookwyrm/templates/settings/dashboard/dashboard.html:96
 msgid "Interval:"
 msgstr "Intervalo:"
 
-#: bookwyrm/templates/settings/dashboard/dashboard.html:121
+#: bookwyrm/templates/settings/dashboard/dashboard.html:100
 msgid "Days"
 msgstr "Dias"
 
-#: bookwyrm/templates/settings/dashboard/dashboard.html:122
+#: bookwyrm/templates/settings/dashboard/dashboard.html:101
 msgid "Weeks"
 msgstr "Semanas"
 
-#: bookwyrm/templates/settings/dashboard/dashboard.html:140
+#: bookwyrm/templates/settings/dashboard/dashboard.html:119
 msgid "User signup activity"
 msgstr "Actividad de inscripciones de usuarios"
 
-#: bookwyrm/templates/settings/dashboard/dashboard.html:146
+#: bookwyrm/templates/settings/dashboard/dashboard.html:125
 msgid "Status activity"
 msgstr "Actividad de estado"
 
-#: bookwyrm/templates/settings/dashboard/dashboard.html:152
+#: bookwyrm/templates/settings/dashboard/dashboard.html:131
 msgid "Works created"
 msgstr "Obras creadas"
 
@@ -3611,6 +3593,49 @@ msgstr "Estados publicados"
 #: bookwyrm/templates/settings/dashboard/user_chart.html:11
 msgid "Total"
 msgstr "Suma"
+
+#: bookwyrm/templates/settings/dashboard/warnings/domain_review.html:9
+#, python-format
+msgid "%(display_count)s domain needs review"
+msgid_plural "%(display_count)s domains need review"
+msgstr[0] "%(display_count)s dominio necesita revisión"
+msgstr[1] "%(display_count)s dominios necesitan revisión"
+
+#: bookwyrm/templates/settings/dashboard/warnings/email_config.html:8
+#, python-format
+msgid "Your outgoing email address, <code>%(email_sender)s</code>, may be misconfigured."
+msgstr ""
+
+#: bookwyrm/templates/settings/dashboard/warnings/email_config.html:11
+msgid "Check the <code>EMAIL_SENDER_NAME</code> and <code>EMAIL_SENDER_DOMAIN</code> in your <code>.env</code> file."
+msgstr ""
+
+#: bookwyrm/templates/settings/dashboard/warnings/invites.html:9
+#, python-format
+msgid "%(display_count)s invite request"
+msgid_plural "%(display_count)s invite requests"
+msgstr[0] "%(display_count)s solicitación de invitado"
+msgstr[1] "%(display_count)s solicitaciones de invitado"
+
+#: bookwyrm/templates/settings/dashboard/warnings/missing_conduct.html:8
+msgid "Your instance is missing a code of conduct."
+msgstr ""
+
+#: bookwyrm/templates/settings/dashboard/warnings/missing_privacy.html:8
+msgid "Your instance is missing a privacy policy."
+msgstr ""
+
+#: bookwyrm/templates/settings/dashboard/warnings/reports.html:9
+#, python-format
+msgid "%(display_count)s open report"
+msgid_plural "%(display_count)s open reports"
+msgstr[0] "%(display_count)s informe abierto"
+msgstr[1] "%(display_count)s informes abiertos"
+
+#: bookwyrm/templates/settings/dashboard/warnings/update_version.html:8
+#, python-format
+msgid "An update is available! You're running v%(current)s and the latest release is %(available)s."
+msgstr "Hay una actualización disponible. La versión que estás usando es la %(current)s, mientras que la actual es %(available)s."
 
 #: bookwyrm/templates/settings/email_blocklist/domain_form.html:5
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:10
@@ -4308,38 +4333,42 @@ msgstr "Tu contraseña:"
 msgid "Users: <small>%(instance_name)s</small>"
 msgstr "Usuarios <small>%(instance_name)s</small>"
 
-#: bookwyrm/templates/settings/users/user_admin.html:40
+#: bookwyrm/templates/settings/users/user_admin.html:29
+msgid "Deleted users"
+msgstr ""
+
+#: bookwyrm/templates/settings/users/user_admin.html:44
 #: bookwyrm/templates/settings/users/username_filter.html:5
 msgid "Username"
 msgstr "Nombre de usuario"
 
-#: bookwyrm/templates/settings/users/user_admin.html:44
+#: bookwyrm/templates/settings/users/user_admin.html:48
 msgid "Date Added"
 msgstr "Fecha agregada"
 
-#: bookwyrm/templates/settings/users/user_admin.html:48
+#: bookwyrm/templates/settings/users/user_admin.html:52
 msgid "Last Active"
 msgstr "Actividad reciente"
 
-#: bookwyrm/templates/settings/users/user_admin.html:57
+#: bookwyrm/templates/settings/users/user_admin.html:61
 msgid "Remote instance"
 msgstr "Instancia remota"
 
-#: bookwyrm/templates/settings/users/user_admin.html:74
+#: bookwyrm/templates/settings/users/user_admin.html:81
 #: bookwyrm/templates/settings/users/user_info.html:28
 msgid "Active"
 msgstr "Activo"
 
-#: bookwyrm/templates/settings/users/user_admin.html:79
+#: bookwyrm/templates/settings/users/user_admin.html:86
 msgid "Deleted"
 msgstr ""
 
-#: bookwyrm/templates/settings/users/user_admin.html:85
+#: bookwyrm/templates/settings/users/user_admin.html:92
 #: bookwyrm/templates/settings/users/user_info.html:32
 msgid "Inactive"
 msgstr "Inactivo"
 
-#: bookwyrm/templates/settings/users/user_admin.html:94
+#: bookwyrm/templates/settings/users/user_admin.html:101
 #: bookwyrm/templates/settings/users/user_info.html:127
 msgid "Not set"
 msgstr "No establecido"
@@ -5024,10 +5053,6 @@ msgstr ""
 msgid "Finish reading"
 msgstr "Terminar de leer"
 
-#: bookwyrm/templates/snippets/status/content_status.html:73
-msgid "Content warning"
-msgstr "Advertencia de contenido"
-
 #: bookwyrm/templates/snippets/status/content_status.html:80
 msgid "Show status"
 msgstr "Mostrar estado"
@@ -5323,7 +5348,7 @@ msgstr "No le sigue nadie que tu sigas"
 msgid "View profile and more"
 msgstr "Ver perfil y más"
 
-#: bookwyrm/templates/user_menu.html:72
+#: bookwyrm/templates/user_menu.html:78
 msgid "Log out"
 msgstr "Cerrar sesión"
 
@@ -5343,6 +5368,14 @@ msgstr "No un archivo csv válido"
 #: bookwyrm/views/landing/login.py:70
 msgid "Username or password are incorrect"
 msgstr "Nombre de usuario o contraseña es incorrecta"
+
+#: bookwyrm/views/preferences/change_password.py:35
+msgid "Incorrect password"
+msgstr ""
+
+#: bookwyrm/views/preferences/change_password.py:42
+msgid "Password does not match"
+msgstr ""
 
 #: bookwyrm/views/rss_feed.py:34
 #, python-brace-format

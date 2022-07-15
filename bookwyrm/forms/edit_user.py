@@ -1,5 +1,8 @@
 """ using django model forms """
 from django import forms
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError
+from django.utils.translation import gettext_lazy as _
 
 from bookwyrm import models
 from bookwyrm.models.fields import ClearableFileInputWithWarning
@@ -66,3 +69,33 @@ class DeleteUserForm(CustomForm):
     class Meta:
         model = models.User
         fields = ["password"]
+
+
+class ChangePasswordForm(CustomForm):
+    current_password = forms.CharField(widget=forms.PasswordInput)
+    confirm_password = forms.CharField(widget=forms.PasswordInput)
+
+    class Meta:
+        model = models.User
+        fields = ["password"]
+        widgets = {
+            "password": forms.PasswordInput(),
+        }
+
+    def clean(self):
+        """Make sure passwords match and are valid"""
+        current_password = self.data.get("current_password")
+        if not self.instance.check_password(current_password):
+            self.add_error("current_password", _("Incorrect password"))
+
+        cleaned_data = super().clean()
+        new_password = cleaned_data.get("password")
+        confirm_password = self.data.get("confirm_password")
+
+        if new_password != confirm_password:
+            self.add_error("confirm_password", _("Password does not match"))
+
+        try:
+            validate_password(new_password)
+        except ValidationError as err:
+            self.add_error("password", err)
