@@ -10,12 +10,13 @@ from bookwyrm.settings import DOMAIN
 from bookwyrm.tests.validate_html import validate_html
 
 
-# pylint: disable=invalid-name
 @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
 @patch("bookwyrm.activitystreams.populate_stream_task.delay")
 @patch("bookwyrm.lists_stream.populate_lists_task.delay")
 @patch("bookwyrm.activitystreams.remove_status_task.delay")
 @patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
+# pylint: disable=invalid-name
+# pylint: disable=too-many-public-methods
 class StatusViews(TestCase):
     """viewing and creating statuses"""
 
