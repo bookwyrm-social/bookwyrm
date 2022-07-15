@@ -1,4 +1,6 @@
 """ Forms for the landing pages """
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError
 from django.forms import PasswordInput
 from django.utils.translation import gettext_lazy as _
 
@@ -28,6 +30,10 @@ class RegisterForm(CustomForm):
         """Check if the username is taken"""
         cleaned_data = super().clean()
         localname = cleaned_data.get("localname").strip()
+        try:
+            validate_password(cleaned_data.get("password"))
+        except ValidationError as err:
+            self.add_error("password", err)
         if models.User.objects.filter(localname=localname).first():
             self.add_error("localname", _("User with this username already exists"))
 
