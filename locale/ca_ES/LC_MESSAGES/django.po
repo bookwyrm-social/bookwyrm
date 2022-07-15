@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-07-14 23:57+0000\n"
-"PO-Revision-Date: 2022-07-15 16:40\n"
+"POT-Creation-Date: 2022-07-15 19:29+0000\n"
+"PO-Revision-Date: 2022-07-15 19:48\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Catalan\n"
 "Language: ca\n"
@@ -42,6 +42,14 @@ msgstr "{i} usos"
 msgid "Unlimited"
 msgstr "Il·limitat"
 
+#: bookwyrm/forms/edit_user.py:89
+msgid "Incorrect password"
+msgstr ""
+
+#: bookwyrm/forms/edit_user.py:96 bookwyrm/forms/landing.py:71
+msgid "Password does not match"
+msgstr ""
+
 #: bookwyrm/forms/forms.py:54
 msgid "Reading finish date cannot be before start date."
 msgstr "La data de finalització de lectura no pot ser anterior a la d'inici."
@@ -50,11 +58,11 @@ msgstr "La data de finalització de lectura no pot ser anterior a la d'inici."
 msgid "Reading stopped date cannot be before start date."
 msgstr "La data de finalització de lectura no pot ser anterior a la d'inici."
 
-#: bookwyrm/forms/landing.py:32
+#: bookwyrm/forms/landing.py:38
 msgid "User with this username already exists"
 msgstr "Ja existeix un usuari amb aquest nom d'usuari"
 
-#: bookwyrm/forms/landing.py:41
+#: bookwyrm/forms/landing.py:47
 msgid "A user with this email already exists."
 msgstr "Ja existeix un usuari amb aquesta adreça electrònica."
 
@@ -288,58 +296,62 @@ msgid "English"
 msgstr "Anglès (English)"
 
 #: bookwyrm/settings.py:283
+msgid "Català (Catalan)"
+msgstr ""
+
+#: bookwyrm/settings.py:284
 msgid "Deutsch (German)"
 msgstr "Deutsch (Alemany)"
 
-#: bookwyrm/settings.py:284
+#: bookwyrm/settings.py:285
 msgid "Español (Spanish)"
 msgstr "Español (espanyol)"
 
-#: bookwyrm/settings.py:285
+#: bookwyrm/settings.py:286
 msgid "Galego (Galician)"
 msgstr "Galego (gallec)"
 
-#: bookwyrm/settings.py:286
+#: bookwyrm/settings.py:287
 msgid "Italiano (Italian)"
 msgstr "Italiano (italià)"
 
-#: bookwyrm/settings.py:287
+#: bookwyrm/settings.py:288
 msgid "Suomi (Finnish)"
 msgstr "Suomi (finès)"
 
-#: bookwyrm/settings.py:288
+#: bookwyrm/settings.py:289
 msgid "Français (French)"
 msgstr "Français (francès)"
 
-#: bookwyrm/settings.py:289
+#: bookwyrm/settings.py:290
 msgid "Lietuvių (Lithuanian)"
 msgstr "Lietuvių (Lituà)"
 
-#: bookwyrm/settings.py:290
+#: bookwyrm/settings.py:291
 msgid "Norsk (Norwegian)"
 msgstr "Norsk (noruec)"
 
-#: bookwyrm/settings.py:291
+#: bookwyrm/settings.py:292
 msgid "Português do Brasil (Brazilian Portuguese)"
 msgstr "Português do Brasil (portuguès del Brasil)"
 
-#: bookwyrm/settings.py:292
+#: bookwyrm/settings.py:293
 msgid "Português Europeu (European Portuguese)"
 msgstr "Português Europeu (Portuguès europeu)"
 
-#: bookwyrm/settings.py:293
+#: bookwyrm/settings.py:294
 msgid "Română (Romanian)"
 msgstr "Română (romanès)"
 
-#: bookwyrm/settings.py:294
+#: bookwyrm/settings.py:295
 msgid "Svenska (Swedish)"
 msgstr "Svenska (suec)"
 
-#: bookwyrm/settings.py:295
+#: bookwyrm/settings.py:296
 msgid "简体中文 (Simplified Chinese)"
 msgstr "简体中文 (xinès simplificat)"
 
-#: bookwyrm/settings.py:296
+#: bookwyrm/settings.py:297
 msgid "繁體中文 (Traditional Chinese)"
 msgstr "繁體中文 (xinès tradicional)"
 
@@ -787,7 +799,7 @@ msgstr "La càrrega de les dades es connectarà a <strong>%(source_name)s</stron
 #: bookwyrm/templates/book/edit/edit_book.html:122
 #: bookwyrm/templates/book/sync_modal.html:24
 #: bookwyrm/templates/groups/members.html:29
-#: bookwyrm/templates/landing/password_reset.html:42
+#: bookwyrm/templates/landing/password_reset.html:52
 #: bookwyrm/templates/snippets/remove_from_group_button.html:17
 msgid "Confirm"
 msgstr "Confirmeu"
@@ -2025,7 +2037,7 @@ msgstr "Importa l'estat"
 #: bookwyrm/templates/import/import_status.html:13
 #: bookwyrm/templates/import/import_status.html:27
 msgid "Retry Status"
-msgstr ""
+msgstr "Estat del reintent"
 
 #: bookwyrm/templates/import/import_status.html:22
 msgid "Imports"
@@ -2268,8 +2280,8 @@ msgstr "Has oblidat la teva contrasenya?"
 msgid "More about this site"
 msgstr "Més sobre aquest lloc"
 
-#: bookwyrm/templates/landing/password_reset.html:34
-#: bookwyrm/templates/preferences/change_password.html:40
+#: bookwyrm/templates/landing/password_reset.html:43
+#: bookwyrm/templates/preferences/change_password.html:33
 #: bookwyrm/templates/preferences/delete_user.html:20
 msgid "Confirm password:"
 msgstr "Confirma la contrasenya:"
@@ -2594,111 +2606,111 @@ msgstr "Llistes desades"
 #: bookwyrm/templates/notifications/items/accept.html:18
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> accepted your invitation to join group \"<a href=\"%(group_path)s\">%(group_name)s</a>\""
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> ha acceptat la vostra invitació per 'unir-vos al grup \"<a href=\"%(group_path)s\">%(group_name)s</a>\""
 
 #: bookwyrm/templates/notifications/items/accept.html:26
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and <a href=\"%(second_user_link)s\">%(second_user)s</a> accepted your invitation to join group \"<a href=\"%(group_path)s\">%(group_name)s</a>\""
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> and <a href=\"%(second_user_link)s\">%(second_user)s</a> ha acceptat la vostra invitació per unir-se al grup \"<a href=\"%(group_path)s\">%(group_name)s</a>\""
 
 #: bookwyrm/templates/notifications/items/accept.html:36
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and %(other_user_display_count)s others accepted your invitation to join group \"<a href=\"%(group_path)s\">%(group_name)s</a>\""
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> i %(other_user_display_count)s altres han acceptat la vostra invitació per unir-se al grup \"<a href=\"%(group_path)s\">%(group_name)s</a>\""
 
 #: bookwyrm/templates/notifications/items/add.html:33
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> added <em><a href=\"%(book_path)s\">%(book_title)s</a></em> to your list \"<a href=\"%(list_path)s\">%(list_name)s</a>\""
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> ha afegit <em><a href=\"%(book_path)s\">%(book_title)s</a></em> a la vostra llista \"<a href=\"%(list_path)s\">%(list_name)s</a>\""
 
 #: bookwyrm/templates/notifications/items/add.html:39
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> suggested adding <em><a href=\"%(book_path)s\">%(book_title)s</a></em> to your list \"<a href=\"%(list_curate_path)s\">%(list_name)s</a>\""
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> ha suggerit afegir <em><a href=\"%(book_path)s\">%(book_title)s</a></em> a la vostra llista \"<a href=\"%(list_curate_path)s\">%(list_name)s</a>\""
 
 #: bookwyrm/templates/notifications/items/add.html:47
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> added <em><a href=\"%(book_path)s\">%(book_title)s</a></em> and <em><a href=\"%(second_book_path)s\">%(second_book_title)s</a></em> to your list \"<a href=\"%(list_path)s\">%(list_name)s</a>\""
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> ha afegit <em><a href=\"%(book_path)s\">%(book_title)s</a></em> i <em><a href=\"%(second_book_path)s\">%(second_book_title)s</a></em> a la vostra llista \"<a href=\"%(list_path)s\">%(list_name)s</a>\""
 
 #: bookwyrm/templates/notifications/items/add.html:54
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> suggested adding <em><a href=\"%(book_path)s\">%(book_title)s</a></em> and <em><a href=\"%(second_book_path)s\">%(second_book_title)s</a></em> to your list \"<a href=\"%(list_curate_path)s\">%(list_name)s</a>\""
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> ha suggerit afegir <em><a href=\"%(book_path)s\">%(book_title)s</a></em> i <em><a href=\"%(second_book_path)s\">%(second_book_title)s</a></em> a la vostra llista \"<a href=\"%(list_curate_path)s\">%(list_name)s</a>\""
 
 #: bookwyrm/templates/notifications/items/add.html:66
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> added <em><a href=\"%(book_path)s\">%(book_title)s</a></em>, <em><a href=\"%(second_book_path)s\">%(second_book_title)s</a></em>, and %(display_count)s other book to your list \"<a href=\"%(list_path)s\">%(list_name)s</a>\""
 msgid_plural "<a href=\"%(related_user_link)s\">%(related_user)s</a> added <em><a href=\"%(book_path)s\">%(book_title)s</a></em>, <em><a href=\"%(second_book_path)s\">%(second_book_title)s</a></em>, and %(display_count)s other books to your list \"<a href=\"%(list_path)s\">%(list_name)s</a>\""
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "<a href=\"%(related_user_link)s\">%(related_user)s</a> ha afegit <em><a href=\"%(book_path)s\">%(book_title)s</a></em>, <em><a href=\"%(second_book_path)s\">%(second_book_title)s</a></em>, i %(display_count)s altre llibre a la vostra llista \"<a href=\"%(list_path)s\">%(list_name)s</a>\""
+msgstr[1] "<a href=\"%(related_user_link)s\">%(related_user)s</a> ha afegit <em><a href=\"%(book_path)s\">%(book_title)s</a></em>, <em><a href=\"%(second_book_path)s\">%(second_book_title)s</a></em>, i %(display_count)s altres llibres a la vostra llista \"<a href=\"%(list_path)s\">%(list_name)s</a>\""
 
 #: bookwyrm/templates/notifications/items/add.html:82
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> suggested adding <em><a href=\"%(book_path)s\">%(book_title)s</a></em>, <em><a href=\"%(second_book_path)s\">%(second_book_title)s</a></em>, and %(display_count)s other book to your list \"<a href=\"%(list_curate_path)s\">%(list_name)s</a>\""
 msgid_plural "<a href=\"%(related_user_link)s\">%(related_user)s</a> suggested adding <em><a href=\"%(book_path)s\">%(book_title)s</a></em>, <em><a href=\"%(second_book_path)s\">%(second_book_title)s</a></em>, and %(display_count)s other books to your list \"<a href=\"%(list_curate_path)s\">%(list_name)s</a>\""
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "<a href=\"%(related_user_link)s\">%(related_user)s</a> ha suggerit afegir <em><a href=\"%(book_path)s\">%(book_title)s</a></em>, <em><a href=\"%(second_book_path)s\">%(second_book_title)s</a></em>, i %(display_count)s altre llibre a la vostra llista \"<a href=\"%(list_curate_path)s\">%(list_name)s</a>\""
+msgstr[1] "<a href=\"%(related_user_link)s\">%(related_user)s</a> ha suggerit afegir <em><a href=\"%(book_path)s\">%(book_title)s</a></em>, <em><a href=\"%(second_book_path)s\">%(second_book_title)s</a></em>, i %(display_count)s altres llibres a la vostra llista \"<a href=\"%(list_curate_path)s\">%(list_name)s</a>\""
 
 #: bookwyrm/templates/notifications/items/boost.html:21
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> boosted your <a href=\"%(related_path)s\">review of <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> ha impulsat la vostra <a href=\"%(related_path)s\">ressenya de <em>%(book_title)s</em></a>"
 
 #: bookwyrm/templates/notifications/items/boost.html:27
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and <a href=\"%(second_user_link)s\">%(second_user)s</a> boosted your <a href=\"%(related_path)s\">review of <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> i <a href=\"%(second_user_link)s\">%(second_user)s</a> han impulsat la vostra <a href=\"%(related_path)s\">ressenya de <em>%(book_title)s</em></a>"
 
 #: bookwyrm/templates/notifications/items/boost.html:36
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and %(other_user_display_count)s others boosted your <a href=\"%(related_path)s\">review of <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> i %(other_user_display_count)s altres han impulsat la vostra <a href=\"%(related_path)s\">ressenya de <em>%(book_title)s</em></a>"
 
 #: bookwyrm/templates/notifications/items/boost.html:44
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> boosted your <a href=\"%(related_path)s\">comment on <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> ha impulsat el vostre <a href=\"%(related_path)s\">comentari sobre <em>%(book_title)s</em></a>"
 
 #: bookwyrm/templates/notifications/items/boost.html:50
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and <a href=\"%(second_user_link)s\">%(second_user)s</a> boosted your <a href=\"%(related_path)s\">comment on <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> i <a href=\"%(second_user_link)s\">%(second_user)s</a> han impulsat el vostre <a href=\"%(related_path)s\">comentari sobre <em>%(book_title)s</em></a>"
 
 #: bookwyrm/templates/notifications/items/boost.html:59
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and %(other_user_display_count)s others boosted your <a href=\"%(related_path)s\">comment on <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> i %(other_user_display_count)s altres han impulsat el vostre <a href=\"%(related_path)s\">comentari sobre <em>%(book_title)s</em></a>"
 
 #: bookwyrm/templates/notifications/items/boost.html:67
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> boosted your <a href=\"%(related_path)s\">quote from <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> ha impulsat la vostra <a href=\"%(related_path)s\">cita de <em>%(book_title)s</em></a>"
 
 #: bookwyrm/templates/notifications/items/boost.html:73
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and <a href=\"%(second_user_link)s\">%(second_user)s</a> boosted your <a href=\"%(related_path)s\">quote from <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> i <a href=\"%(second_user_link)s\">%(second_user)s</a> han impulsat la vostra <a href=\"%(related_path)s\">cita de <em>%(book_title)s</em></a>"
 
 #: bookwyrm/templates/notifications/items/boost.html:82
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and %(other_user_display_count)s others boosted your <a href=\"%(related_path)s\">quote from <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> i %(other_user_display_count)s altres han impulsat la vostra <a href=\"%(related_path)s\">cita de <em>%(book_title)s</em></a>"
 
 #: bookwyrm/templates/notifications/items/boost.html:90
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> boosted your <a href=\"%(related_path)s\">status</a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> ha impulsat el vostre <a href=\"%(related_path)s\">estat</a>"
 
 #: bookwyrm/templates/notifications/items/boost.html:96
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and <a href=\"%(second_user_link)s\">%(second_user)s</a> boosted your <a href=\"%(related_path)s\">status</a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> i <a href=\"%(second_user_link)s\">%(second_user)s</a> han impulsat el vostre <a href=\"%(related_path)s\">estat</a>"
 
 #: bookwyrm/templates/notifications/items/boost.html:105
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and %(other_user_display_count)s others boosted your <a href=\"%(related_path)s\">status</a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> i %(other_user_display_count)s altres han impulsat el vostre <a href=\"%(related_path)s\">estat</a>"
 
 #: bookwyrm/templates/notifications/items/fav.html:21
 #, python-format
@@ -2783,7 +2795,7 @@ msgstr ""
 #: bookwyrm/templates/notifications/items/import.html:14
 #, python-format
 msgid "Your <a href=\"%(url)s\">import</a> completed."
-msgstr ""
+msgstr "S'ha completat el vostre <a href=\"%(url)s\">import</a>."
 
 #: bookwyrm/templates/notifications/items/invite.html:16
 #, python-format
@@ -2833,12 +2845,12 @@ msgstr ""
 #: bookwyrm/templates/notifications/items/remove.html:17
 #, python-format
 msgid "has been removed from your group \"<a href=\"%(group_path)s\">%(group_name)s</a>\""
-msgstr ""
+msgstr "ha estat eliminat del vostre grup \"<a href=\"%(group_path)s\">%(group_name)s</a>\""
 
 #: bookwyrm/templates/notifications/items/remove.html:23
 #, python-format
 msgid "You have been removed from the \"<a href=\"%(group_path)s\">%(group_name)s</a>\" group"
-msgstr ""
+msgstr "Has estat eliminat del grup <a href=\"%(group_path)s\">%(group_name)s</a>"
 
 #: bookwyrm/templates/notifications/items/reply.html:21
 #, python-format
@@ -3029,7 +3041,7 @@ msgstr "Actualment no hi ha usuaris bloquejats."
 
 #: bookwyrm/templates/preferences/change_password.html:4
 #: bookwyrm/templates/preferences/change_password.html:7
-#: bookwyrm/templates/preferences/change_password.html:52
+#: bookwyrm/templates/preferences/change_password.html:37
 #: bookwyrm/templates/preferences/layout.html:20
 msgid "Change Password"
 msgstr "Canvia la contrasenya"
@@ -3042,7 +3054,7 @@ msgstr "La contrasenya ha estat canviada satisfactòriament"
 msgid "Current password:"
 msgstr "Contrasenya actual:"
 
-#: bookwyrm/templates/preferences/change_password.html:36
+#: bookwyrm/templates/preferences/change_password.html:28
 msgid "New password:"
 msgstr "Nova Contrasenya:"
 
@@ -3619,19 +3631,19 @@ msgstr ""
 
 #: bookwyrm/templates/settings/dashboard/warnings/missing_privacy.html:8
 msgid "Your instance is missing a privacy policy."
-msgstr ""
+msgstr "A la vostra instància li falta una política de privacitat."
 
 #: bookwyrm/templates/settings/dashboard/warnings/reports.html:9
 #, python-format
 msgid "%(display_count)s open report"
 msgid_plural "%(display_count)s open reports"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(display_count)s informe obert"
+msgstr[1] "%(display_count)s informes oberts"
 
 #: bookwyrm/templates/settings/dashboard/warnings/update_version.html:8
 #, python-format
 msgid "An update is available! You're running v%(current)s and the latest release is %(available)s."
-msgstr ""
+msgstr "Hi ha una actualització disponible! Esteu fent servir la versió %(current)s i l'última és la %(available)s."
 
 #: bookwyrm/templates/settings/email_blocklist/domain_form.html:5
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:10
@@ -3650,7 +3662,7 @@ msgstr "Llista d'adreces de correu bloquejades"
 
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:18
 msgid "When someone tries to register with an email from this domain, no account will be created. The registration process will appear to have worked."
-msgstr ""
+msgstr "Quan algú intenta registrar-se amb un correu electrònic d'aquest domini, no es crearà cap compte. El procés de registre semblarà que ha funcionat."
 
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:29
 #: bookwyrm/templates/settings/ip_blocklist/ip_blocklist.html:27
@@ -3785,7 +3797,7 @@ msgstr "Tots els usuaris d'aquesta instància seran reactivats."
 #: bookwyrm/templates/settings/federation/instance_blocklist.html:6
 #: bookwyrm/templates/settings/federation/instance_blocklist.html:15
 msgid "Import Blocklist"
-msgstr ""
+msgstr "Importa llista de bloqueig"
 
 #: bookwyrm/templates/settings/federation/instance_blocklist.html:38
 msgid "Success!"
@@ -3890,11 +3902,11 @@ msgstr "Ignora"
 
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:103
 msgid "Un-ignore"
-msgstr ""
+msgstr "Deixa d'ignorar"
 
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:114
 msgid "Back to pending requests"
-msgstr ""
+msgstr "Torna a les sol·licituds pendents"
 
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:116
 msgid "View ignored requests"
@@ -5363,14 +5375,6 @@ msgstr ""
 
 #: bookwyrm/views/landing/login.py:70
 msgid "Username or password are incorrect"
-msgstr ""
-
-#: bookwyrm/views/preferences/change_password.py:35
-msgid "Incorrect password"
-msgstr ""
-
-#: bookwyrm/views/preferences/change_password.py:42
-msgid "Password does not match"
 msgstr ""
 
 #: bookwyrm/views/rss_feed.py:34
