@@ -122,6 +122,17 @@ class RegisterViews(TestCase):
         self.assertEqual(models.User.objects.count(), 1)
         validate_html(response.render())
 
+    def test_register_invalid_password(self, *_):
+        """gotta have an email"""
+        view = views.Register.as_view()
+        self.assertEqual(models.User.objects.count(), 1)
+        request = self.factory.post(
+            "register/", {"localname": "nutria", "password": "password", "email": "aa"}
+        )
+        response = view(request)
+        self.assertEqual(models.User.objects.count(), 1)
+        validate_html(response.render())
+
     def test_register_error_and_invite(self, *_):
         """redirect to the invite page"""
         view = views.Register.as_view()
