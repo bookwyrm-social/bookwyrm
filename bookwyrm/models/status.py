@@ -218,7 +218,8 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         """certain types of status aren't editable"""
         # first, the standard raise
         super().raise_not_editable(viewer)
-        if isinstance(self, (GeneratedNote, ReviewRating)):
+        # if it's an edit (not a create) you can only edit content statuses
+        if self.id and isinstance(self, (GeneratedNote, ReviewRating)):
             raise PermissionDenied()
 
     @classmethod
