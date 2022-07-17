@@ -97,13 +97,8 @@
             ],
         },
         {
-        text: "{% trans 'You\'re nearly done with the tour!<p class=\'notification is-warning is-light mt-3\'>Select <strong>Direct Messages</strong> from the drop down menu to finish the tour.</p>' %}",
-        title: "{% trans 'Next: Sending Messages' %}",
-        attachTo: {
-            element: "#navbar-dropdown",
-            on: "left-end",
-        },
-        scrollTo: true,
+        text: "{% trans 'Congratulations, you\'ve finished the tour! Now you know the basics, but there is lots more to explore on your own. Happy reading!' %}",
+        title: "{% trans 'Finish' %}",
         buttons: [
             {
                 action() {
@@ -114,11 +109,12 @@
             },
             {
                 action() {
+                    disableGuidedTour(csrf_token);
                     return this.next();
                 },
-                text: "{% trans 'Ok' %}",
+                text: "{% trans 'End tour' %}",
             },
-        ],
+            ],
     }
     ])
 

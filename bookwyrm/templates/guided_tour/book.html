@@ -99,6 +99,153 @@
             ],
         },
         {
+            text: "{% trans 'You can post a review, comment, or quote here.' %}",
+            title: "{% trans 'Share your thoughts' %}",
+            attachTo: {
+                element: ".tour-review-comment-quote",
+                on: "top",
+            },
+            highlightClass: 'tour-element-highlight',
+            scrollTo: true,
+            buttons: [
+                {
+                    action() {
+                        return this.back();
+                    },
+                    secondary: true,
+                    text: "{% trans 'Back' %}",
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: "{% trans 'Next' %}",
+                },
+            ],
+        },
+        {
+            text: "{% trans 'If you have read this book you can post a review including an optional star rating' %}",
+            title: "{% trans 'Post a review' %}",
+            attachTo: {
+                element: "[id^=tab_review]",
+                on: "top",
+            },
+            highlightClass: 'tour-element-highlight',
+            buttons: [
+                {
+                    action() {
+                        return this.back();
+                    },
+                    secondary: true,
+                    text: "{% trans 'Back' %}",
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: "{% trans 'Next' %}",
+                },
+            ],
+        },
+        {
+            text: "{% trans 'You can share your thoughts on this book generally with a simple comment' %}",
+            title: "{% trans 'Post a comment' %}",
+            attachTo: {
+                element: "[id^=tab_comment]",
+                on: "top",
+            },
+            highlightClass: 'tour-element-highlight',
+            buttons: [
+                {
+                    action() {
+                        return this.back();
+                    },
+                    secondary: true,
+                    text: "{% trans 'Back' %}",
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: "{% trans 'Next' %}",
+                },
+            ],
+        },
+        {
+            text: "{% trans 'Just read some perfect prose? Let the world know by sharing a quote!' %}",
+            title: "{% trans 'Share a quote' %}",
+            attachTo: {
+                element: "[id^=tab_quote]",
+                on: "top",
+            },
+            highlightClass: 'tour-element-highlight',
+            buttons: [
+                {
+                    action() {
+                        return this.back();
+                    },
+                    secondary: true,
+                    text: "{% trans 'Back' %}",
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: "{% trans 'Next' %}",
+                },
+            ],
+        },
+        {
+            text: "{% trans 'If your review or comment might ruin the book for someone who hasn\'t read it yet, you can hide your post behind a <strong>spoiler alert</strong>' %}",
+            title: "{% trans 'Spoiler alerts' %}",
+            attachTo: {
+                element: "",
+                element: "[id^=form_review] > .tour-spoiler-alert",
+                on: "top",
+            },
+            highlightClass: 'tour-element-highlight',
+            buttons: [
+                {
+                    action() {
+                        return this.back();
+                    },
+                    secondary: true,
+                    text: "{% trans 'Back' %}",
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: "{% trans 'Next' %}",
+                },
+            ],
+        },
+        {
+            text: "{% trans 'Choose who can see your post here. Post privacy can be <strong>Public</strong> (everyone can see), <strong>Unlisted</strong> (everyone can see, but it doesn\'t appear in public feeds or discovery pages), <strong>Followers</strong> (only your followers can see), or <strong>Private</strong> (only you can see)' %}",
+            title: "{% trans 'Post privacy' %}",
+            attachTo: {
+                // TODO:
+                element: "[id^=form_review] [id^=privacy_]",
+                on: "left",
+            },
+            scrollTo: true,
+            buttons: [
+                {
+                    action() {
+                        return this.back();
+                    },
+                    secondary: true,
+                    text: "{% trans 'Back' %}",
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: "{% trans 'Next' %}",
+                },
+            ],
+        },
+        {
             text: "{% trans 'Some ebooks can be downloaded for free from external sources. They will be shown here.' %}",
             title: "{% trans 'Download links' %}",
             attachTo: {
@@ -106,6 +253,7 @@
                 on: "left",
             },
             highlightClass: 'tour-element-highlight',
+            scrollTo: true,
             buttons: [
                 {
                     action() {
@@ -126,9 +274,15 @@
             text: "{% trans '<p class=\'notification is-warning is-light mt-3\'> Continue the tour by selecting <strong>Your books</strong> from the drop down menu.</p>' %}",
             title: "{% trans 'Next' %}",
             attachTo: {
-            element: "#navbar-dropdown",
-            on: "left-end",
-        },
+                element: () => {
+                let menu = document.querySelector('#navbar-dropdown')
+                let display = window.getComputedStyle(menu).display;
+                console.log(display)
+                return display == 'flex' ? '#navbar-dropdown' : '.navbar-burger';
+            },
+                on: "left-end",
+            },
+            scrollTo: true,
             buttons: [
                 {
                     action() {

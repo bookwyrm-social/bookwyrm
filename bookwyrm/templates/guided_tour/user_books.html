@@ -101,7 +101,12 @@
             text: "{% trans 'Now that we\'ve explored book shelves, let\'s take a look at a related concept: book lists!<p class=\'notification is-warning is-light mt-3\'>Click on the <strong>Lists</strong> link here to continue the tour.' %}",
             title: "{% trans 'Lists' %}",
             attachTo: {
-                element: "#tour-navbar-start",
+                element: () => {
+                    let menu = document.querySelector('#tour-navbar-start')
+                    let display = window.getComputedStyle(menu).display;
+                    console.log(display);
+                    return display == 'flex' ? '#tour-navbar-start' : '.navbar-burger';
+                },
                 on: "right",
             },
             highlightClass: 'tour-element-highlight',
