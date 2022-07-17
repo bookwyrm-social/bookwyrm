@@ -224,7 +224,6 @@
             text: "{% trans 'Choose who can see your post here. Post privacy can be <strong>Public</strong> (everyone can see), <strong>Unlisted</strong> (everyone can see, but it doesn\'t appear in public feeds or discovery pages), <strong>Followers</strong> (only your followers can see), or <strong>Private</strong> (only you can see)' %}",
             title: "{% trans 'Post privacy' %}",
             attachTo: {
-                // TODO:
                 element: "[id^=form_review] [id^=privacy_]",
                 on: "left",
             },
@@ -277,7 +276,6 @@
                 element: () => {
                 let menu = document.querySelector('#navbar-dropdown')
                 let display = window.getComputedStyle(menu).display;
-                console.log(display)
                 return display == 'flex' ? '#navbar-dropdown' : '.navbar-burger';
             },
                 on: "left-end",
