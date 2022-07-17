@@ -104,7 +104,6 @@
                 element: () => {
                     let menu = document.querySelector('#tour-navbar-start')
                     let display = window.getComputedStyle(menu).display;
-                    console.log(display);
                     return display == 'flex' ? '#tour-navbar-start' : '.navbar-burger';
                 },
                 on: "right",
