@@ -13,9 +13,11 @@ def create_shelf(request):
     """user generated shelves"""
     form = forms.ShelfForm(request.POST)
     if not form.is_valid():
-        return redirect(request.headers.get("Referer", "/"))
+        return redirect("user-shelves", request.user.localname)
 
-    shelf = form.save()
+    shelf = form.save(commit=False)
+    shelf.raise_not_editable(request.user)
+    shelf.save()
     return redirect(shelf.local_path)
 
 
@@ -70,7 +72,7 @@ def shelve(request):
             ):
                 current_read_status_shelfbook.delete()
             else:  # It is already on the shelf
-                return redirect(request.headers.get("Referer", "/"))
+                return redirect("/")
 
         # create the new shelf-book entry
         models.ShelfBook.objects.create(
@@ -86,7 +88,7 @@ def shelve(request):
         # Might be good to alert, or reject the action?
         except IntegrityError:
             pass
-    return redirect(request.headers.get("Referer", "/"))
+    return redirect("/")
 
 
 @login_required
@@ -100,4 +102,4 @@ def unshelve(request, book_id=False):
     )
     shelf_book.raise_not_deletable(request.user)
     shelf_book.delete()
-    return redirect(request.headers.get("Referer", "/"))
+    return redirect("/")

@@ -76,6 +76,17 @@ class Notification(TestCase):
         notification.refresh_from_db()
         self.assertEqual(notification.related_users.count(), 2)
 
+    def test_notify_grouping_with_dupes(self):
+        """If there are multiple options to group with, don't cause an error"""
+        models.Notification.objects.create(
+            user=self.local_user, notification_type="FAVORITE"
+        )
+        models.Notification.objects.create(
+            user=self.local_user, notification_type="FAVORITE"
+        )
+        models.Notification.notify(self.local_user, None, notification_type="FAVORITE")
+        self.assertEqual(models.Notification.objects.count(), 2)
+
     def test_notify_remote(self):
         """Don't create notifications for remote users"""
         models.Notification.notify(

@@ -1,4 +1,17 @@
-{% if status.content %}
+{% load i18n %}
+{% if status.content_warning %}
+
+{% trans "Content warning" as text %}
+<span>
+    <span class="icon icon-warning is-size-5" title="{{ text }}">
+        <span class="is-sr-only">{{ text }}</span>
+    </span>
+
+    <a href="{{ status.local_path }}">
+        {{ status.content_warning }}
+    </a>
+</span>
+{% elif status.content %}
 <a href="{{ status.local_path }}">
     {{ status.content | safe | truncatewords_html:10 }}{% if status.mention_books %} <em>{{ status.mention_books.first.title }}</em>{% endif %}
 </a>
