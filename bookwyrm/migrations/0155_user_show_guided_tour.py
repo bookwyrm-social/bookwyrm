@@ -12,7 +12,7 @@ def existing_users_default(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("bookwyrm", "0153_merge_20220706_2141"),
+        ("bookwyrm", "0154_alter_user_preferred_language"),
     ]
 
     operations = [
