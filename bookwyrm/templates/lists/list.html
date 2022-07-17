@@ -180,7 +180,7 @@
         <h2 class="title is-5">
             {% trans "Sort List" %}
         </h2>
-        <form name="sort" action="{% url 'list' list.id %}" method="GET" class="block">
+        <form name="sort" action="{% url 'list' list_id=list.id slug=list.name|slugify %}" method="GET" class="block">
             <div class="field">
                 <label class="label" for="id_sort_by">{% trans "Sort By" %}</label>
                 <div class="select is-fullwidth">
@@ -207,7 +207,7 @@
                 {% trans "Suggest Books" %}
             {% endif %}
         </h2>
-        <form name="search" action="{% url 'list' list.id %}" method="GET" class="block">
+        <form name="search" action="{% url 'list' list_id=list.id slug=list.name|slugify %}" method="GET" class="block">
             <div class="field has-addons">
                 <div class="control">
                     <input aria-label="{% trans 'Search for a book' %}" class="input" type="text" name="q" placeholder="{% trans 'Search for a book' %}" value="{{ query }}">
@@ -221,7 +221,7 @@
                 </div>
             </div>
             {% if query %}
-            <p class="help"><a href="{% url 'list' list.id %}">{% trans "Clear search" %}</a></p>
+            <p class="help"><a href="{% url 'list' list_id=list.id slug=list.name|slugify %}">{% trans "Clear search" %}</a></p>
             {% endif %}
         </form>
         {% if not suggested_books %}

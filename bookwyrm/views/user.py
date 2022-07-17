@@ -60,6 +60,12 @@ class User(View):
                 request.user,
             )
             .filter(user=user)
+            .exclude(
+                privacy="direct",
+                review__isnull=True,
+                comment__isnull=True,
+                quotation__isnull=True,
+            )
             .select_related(
                 "user",
                 "reply_parent",
@@ -106,7 +112,7 @@ class Followers(View):
         if is_api_request(request):
             return ActivitypubResponse(user.to_followers_activity(**request.GET))
 
-        if user.hide_follows:
+        if user.hide_follows and user != request.user:
             raise PermissionDenied()
 
         followers = annotate_if_follows(request.user, user.followers)
@@ -129,7 +135,7 @@ class Following(View):
         if is_api_request(request):
             return ActivitypubResponse(user.to_following_activity(**request.GET))
 
-        if user.hide_follows:
+        if user.hide_follows and user != request.user:
             raise PermissionDenied()
 
         following = annotate_if_follows(request.user, user.following)
@@ -201,7 +207,7 @@ def hide_suggestions(request):
     """not everyone wants user suggestions"""
     request.user.show_suggested_users = False
     request.user.save(broadcast=False, update_fields=["show_suggested_users"])
-    return redirect(request.headers.get("Referer", "/"))
+    return redirect("/")
 
 
 # pylint: disable=unused-argument

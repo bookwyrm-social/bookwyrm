@@ -1,6 +1,10 @@
 """ testing activitystreams """
+from datetime import datetime, timedelta
 from unittest.mock import patch
+
 from django.test import TestCase
+from django.utils import timezone
+
 from bookwyrm import activitystreams, models
 
 
@@ -61,6 +65,39 @@ class ActivitystreamsSignals(TestCase):
         args = mock.call_args[1]
         self.assertEqual(args["args"][0], status.id)
         self.assertEqual(args["queue"], "high_priority")
+
+    def test_add_status_on_create_created_low_priority(self, *_):
+        """a new statuses has entered"""
+        # created later than publication
+        status = models.Status.objects.create(
+            user=self.remote_user,
+            content="hi",
+            privacy="public",
+            created_date=datetime(2022, 5, 16, tzinfo=timezone.utc),
+            published_date=datetime(2022, 5, 14, tzinfo=timezone.utc),
+        )
+        with patch("bookwyrm.activitystreams.add_status_task.apply_async") as mock:
+            activitystreams.add_status_on_create_command(models.Status, status, False)
+
+        self.assertEqual(mock.call_count, 1)
+        args = mock.call_args[1]
+        self.assertEqual(args["args"][0], status.id)
+        self.assertEqual(args["queue"], "low_priority")
+
+        # published later than yesterday
+        status = models.Status.objects.create(
+            user=self.remote_user,
+            content="hi",
+            privacy="public",
+            published_date=timezone.now() - timedelta(days=1),
+        )
+        with patch("bookwyrm.activitystreams.add_status_task.apply_async") as mock:
+            activitystreams.add_status_on_create_command(models.Status, status, False)
+
+        self.assertEqual(mock.call_count, 1)
+        args = mock.call_args[1]
+        self.assertEqual(args["args"][0], status.id)
+        self.assertEqual(args["queue"], "low_priority")
 
     def test_populate_streams_on_account_create_command(self, *_):
         """create streams for a user"""

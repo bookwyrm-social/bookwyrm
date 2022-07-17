@@ -284,7 +284,7 @@
                 {% if user_statuses.review_count or user_statuses.comment_count or user_statuses.quotation_count %}
                 <nav class="tabs">
                     <ul>
-                        {% url 'book' book.id as tab_url %}
+                        {% url 'book' book.id book.name|slugify as tab_url %}
                         <li {% if tab_url == request.path %}class="is-active"{% endif %}>
                             <a href="{{ tab_url }}#reviews">{% trans "Reviews" %} ({{ review_count }})</a>
                         </li>

@@ -1,5 +1,4 @@
 """ defines relationships between users """
-from django.apps import apps
 from django.core.cache import cache
 from django.db import models, transaction, IntegrityError
 from django.db.models import Q
@@ -148,14 +147,6 @@ class UserFollowRequest(ActivitypubMixin, UserRelationship):
             if not manually_approves:
                 self.accept()
 
-            model = apps.get_model("bookwyrm.Notification", require_ready=True)
-            notification_type = "FOLLOW_REQUEST" if manually_approves else "FOLLOW"
-            model.objects.create(
-                user=self.user_object,
-                related_user=self.user_subject,
-                notification_type=notification_type,
-            )
-
     def get_accept_reject_id(self, status):
         """get id for sending an accept or reject of a local user"""
 
@@ -218,7 +209,7 @@ def clear_cache(user_subject, user_object):
     """clear relationship cache"""
     cache.delete_many(
         [
-            f"relationship-{user_subject.id}-{user_object.id}",
-            f"relationship-{user_object.id}-{user_subject.id}",
+            f"cached-relationship-{user_subject.id}-{user_object.id}",
+            f"cached-relationship-{user_object.id}-{user_subject.id}",
         ]
     )

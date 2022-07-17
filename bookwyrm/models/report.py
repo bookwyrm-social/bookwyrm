@@ -11,7 +11,7 @@ class Report(BookWyrmModel):
         "User", related_name="reporter", on_delete=models.PROTECT
     )
     note = models.TextField(null=True, blank=True)
-    user = models.ForeignKey("User", on_delete=models.PROTECT)
+    user = models.ForeignKey("User", on_delete=models.PROTECT, null=True, blank=True)
     status = models.ForeignKey(
         "Status",
         null=True,

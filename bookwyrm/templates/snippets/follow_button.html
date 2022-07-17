@@ -26,7 +26,7 @@
         <form action="{% url 'unfollow' %}" method="POST" class="interaction follow_{{ user.id }} {% if not relationship.is_following and not relationship.is_follow_pending %}is-hidden{%endif %}" data-id="follow_{{ user.id }}">
             {% csrf_token %}
             <input type="hidden" name="user" value="{{ user.username }}">
-            {% if user.manually_approves_followers and not relationship.is_following %}
+            {% if relationship.is_follow_pending %}
             <button class="button is-small is-danger is-light" type="submit">
                 {% trans "Undo follow request" %}
             </button>

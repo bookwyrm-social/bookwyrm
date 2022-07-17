@@ -1,6 +1,5 @@
 """ test for app action functionality """
 import json
-import pathlib
 from unittest.mock import patch
 
 from django.contrib.auth.models import AnonymousUser
@@ -8,9 +7,9 @@ from django.http import JsonResponse
 from django.template.response import TemplateResponse
 from django.test import TestCase
 from django.test.client import RequestFactory
-import responses
 
 from bookwyrm import models, views
+from bookwyrm.book_search import SearchResult
 from bookwyrm.settings import DOMAIN
 from bookwyrm.tests.validate_html import validate_html
 
@@ -65,12 +64,11 @@ class Views(TestCase):
         self.assertIsInstance(response, TemplateResponse)
         validate_html(response.render())
 
-    @responses.activate
     def test_search_books(self):
         """searches remote connectors"""
         view = views.Search.as_view()
 
-        models.Connector.objects.create(
+        connector = models.Connector.objects.create(
             identifier="example.com",
             connector_file="openlibrary",
             base_url="https://example.com",
@@ -78,26 +76,24 @@ class Views(TestCase):
             covers_url="https://example.com/covers",
             search_url="https://example.com/search?q=",
         )
-        datafile = pathlib.Path(__file__).parent.joinpath("../data/ol_search.json")
-        search_data = json.loads(datafile.read_bytes())
-        responses.add(
-            responses.GET, "https://example.com/search?q=Test%20Book", json=search_data
-        )
+        mock_result = SearchResult(title="Mock Book", connector=connector, key="hello")
 
         request = self.factory.get("", {"q": "Test Book", "remote": True})
         request.user = self.local_user
         with patch("bookwyrm.views.search.is_api_request") as is_api:
             is_api.return_value = False
-            response = view(request)
+            with patch("bookwyrm.connectors.connector_manager.search") as remote_search:
+                remote_search.return_value = [
+                    {"results": [mock_result], "connector": connector}
+                ]
+                response = view(request)
+
         self.assertIsInstance(response, TemplateResponse)
         validate_html(response.render())
         connector_results = response.context_data["results"]
         self.assertEqual(len(connector_results), 2)
         self.assertEqual(connector_results[0]["results"][0].title, "Test Book")
-        self.assertEqual(
-            connector_results[1]["results"][0].title,
-            "This Is How You Lose the Time War",
-        )
+        self.assertEqual(connector_results[1]["results"][0].title, "Mock Book")
 
         # don't search remote
         request = self.factory.get("", {"q": "Test Book", "remote": True})
@@ -106,7 +102,11 @@ class Views(TestCase):
         request.user = anonymous_user
         with patch("bookwyrm.views.search.is_api_request") as is_api:
             is_api.return_value = False
-            response = view(request)
+            with patch("bookwyrm.connectors.connector_manager.search") as remote_search:
+                remote_search.return_value = [
+                    {"results": [mock_result], "connector": connector}
+                ]
+                response = view(request)
         self.assertIsInstance(response, TemplateResponse)
         validate_html(response.render())
         connector_results = response.context_data["results"]
@@ -140,7 +140,9 @@ class Views(TestCase):
 
     def test_search_lists(self):
         """searches remote connectors"""
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
+        with patch(
+            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+        ), patch("bookwyrm.lists_stream.remove_list_task.delay"):
             booklist = models.List.objects.create(
                 user=self.local_user, name="test list"
             )

@@ -1,4 +1,5 @@
 """ style fixes and lookups for templates """
+from collections import namedtuple
 import re
 from unittest.mock import patch
 
@@ -61,3 +62,18 @@ class UtilitiesTags(TestCase):
         self.assertEqual(utilities.get_title(self.book), "Test Book")
         book = models.Edition.objects.create(title="Oh", subtitle="oh my")
         self.assertEqual(utilities.get_title(book), "Oh: oh my")
+
+    def test_comparison_bool(self, *_):
+        """just a simple comparison"""
+        self.assertTrue(utilities.comparison_bool("a", "a"))
+        self.assertFalse(utilities.comparison_bool("a", "b"))
+
+        self.assertFalse(utilities.comparison_bool("a", "a", reverse=True))
+        self.assertTrue(utilities.comparison_bool("a", "b", reverse=True))
+
+    def test_truncatepath(self, *_):
+        """truncate a path"""
+        ValueMock = namedtuple("Value", ("name"))
+        value = ValueMock("home/one/two/three/four")
+        self.assertEqual(utilities.truncatepath(value, 2), "home/…ur")
+        self.assertEqual(utilities.truncatepath(value, "a"), "four")

@@ -53,7 +53,12 @@ class ReadThroughForm(CustomForm):
             self.add_error(
                 "finish_date", _("Reading finish date cannot be before start date.")
             )
+        stopped_date = cleaned_data.get("stopped_date")
+        if start_date and stopped_date and start_date > stopped_date:
+            self.add_error(
+                "stopped_date", _("Reading stopped date cannot be before start date.")
+            )
 
     class Meta:
         model = models.ReadThrough
-        fields = ["user", "book", "start_date", "finish_date"]
+        fields = ["user", "book", "start_date", "finish_date", "stopped_date"]

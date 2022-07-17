@@ -103,6 +103,9 @@ case "$CMD" in
     pytest)
         runweb pytest --no-cov-on-fail "$@"
         ;;
+    pytest_coverage_report)
+        runweb pytest -n 3 --cov-report term-missing "$@"
+        ;;
     collectstatic)
         runweb python manage.py collectstatic --no-input
         ;;
@@ -114,6 +117,7 @@ case "$CMD" in
         ;;
     update_locales)
         git fetch origin l10n_main:l10n_main
+        git checkout l10n_main locale/ca_ES
         git checkout l10n_main locale/de_DE
         git checkout l10n_main locale/es_ES
         git checkout l10n_main locale/fi_FI
@@ -140,6 +144,10 @@ case "$CMD" in
     black)
         docker-compose run --rm dev-tools black celerywyrm bookwyrm
         ;;
+    pylint)
+        # pylint depends on having the app dependencies in place, so we run it in the web container
+        runweb pylint bookwyrm/
+        ;;
     prettier)
         docker-compose run --rm dev-tools npx prettier --write bookwyrm/static/js/*.js
         ;;
@@ -149,6 +157,7 @@ case "$CMD" in
             --config dev-tools/.stylelintrc.js
         ;;
     formatters)
+        runweb pylint bookwyrm/
         docker-compose run --rm dev-tools black celerywyrm bookwyrm
         docker-compose run --rm dev-tools npx prettier --write bookwyrm/static/js/*.js
         docker-compose run --rm dev-tools npx stylelint \

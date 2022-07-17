@@ -40,7 +40,8 @@ class RatingTags(TestCase):
 
     @patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
     def test_get_rating(self, *_):
-        """privacy filtered rating"""
+        """privacy filtered rating. Commented versions are how it ought to work with
+        subjective ratings, which are currenly not used for performance reasons."""
         # follows-only: not included
         models.ReviewRating.objects.create(
             user=self.remote_user,
@@ -48,7 +49,8 @@ class RatingTags(TestCase):
             book=self.book,
             privacy="followers",
         )
-        self.assertEqual(rating_tags.get_rating(self.book, self.local_user), 0)
+        # self.assertEqual(rating_tags.get_rating(self.book, self.local_user), 0)
+        self.assertEqual(rating_tags.get_rating(self.book, self.local_user), 5)
 
         # public: included
         models.ReviewRating.objects.create(

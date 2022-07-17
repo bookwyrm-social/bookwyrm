@@ -70,7 +70,7 @@ class Goal(View):
                 privacy=goal.privacy,
             )
 
-        return redirect(request.headers.get("Referer", "/"))
+        return redirect("user-goal", request.user.localname, year)
 
 
 @require_POST
@@ -79,4 +79,4 @@ def hide_goal(request):
     """don't keep bugging people to set a goal"""
     request.user.show_goal = False
     request.user.save(broadcast=False, update_fields=["show_goal"])
-    return redirect(request.headers.get("Referer", "/"))
+    return redirect("/")
