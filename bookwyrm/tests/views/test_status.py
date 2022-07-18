@@ -76,6 +76,28 @@ class StatusViews(TestCase):
         self.assertEqual(status.book, self.book)
         self.assertIsNone(status.edited_date)
 
+    def test_create_status_rating(self, *_):
+        """create a status"""
+        view = views.CreateStatus.as_view()
+        form = forms.RatingForm(
+            {
+                "user": self.local_user.id,
+                "rating": 4,
+                "book": self.book.id,
+                "privacy": "public",
+            }
+        )
+        request = self.factory.post("", form.data)
+        request.user = self.local_user
+
+        view(request, "rating")
+
+        status = models.ReviewRating.objects.get()
+        self.assertEqual(status.user, self.local_user)
+        self.assertEqual(status.book, self.book)
+        self.assertEqual(status.rating, 4.0)
+        self.assertIsNone(status.edited_date)
+
     def test_create_status_wrong_user(self, *_):
         """You can't compose statuses for someone else"""
         view = views.CreateStatus.as_view()
