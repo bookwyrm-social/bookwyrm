@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-07-08 22:40+0000\n"
-"PO-Revision-Date: 2022-07-08 23:40\n"
+"POT-Creation-Date: 2022-07-14 23:57+0000\n"
+"PO-Revision-Date: 2022-07-15 16:39\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Swedish\n"
 "Language: sv\n"
@@ -1351,11 +1351,7 @@ msgstr "Skicka bekräftelselänken igen"
 msgid "Email address:"
 msgstr "E-postadress:"
 
-#: bookwyrm/templates/confirm_email/resend_modal.html:28
-msgid "No user matching this email address found."
-msgstr "Ingen användare hittades med den här e-postadressen."
-
-#: bookwyrm/templates/confirm_email/resend_modal.html:38
+#: bookwyrm/templates/confirm_email/resend_modal.html:30
 msgid "Resend link"
 msgstr "Skicka länken igen"
 
@@ -2273,7 +2269,7 @@ msgid "More about this site"
 msgstr "Mer om den här sidan"
 
 #: bookwyrm/templates/landing/password_reset.html:34
-#: bookwyrm/templates/preferences/change_password.html:18
+#: bookwyrm/templates/preferences/change_password.html:40
 #: bookwyrm/templates/preferences/delete_user.html:20
 msgid "Confirm password:"
 msgstr "Bekräfta lösenordet:"
@@ -2871,6 +2867,11 @@ msgid_plural "%(display_count)s new <a href=\"%(path)s\">reports</a> need modera
 msgstr[0] ""
 msgstr[1] ""
 
+#: bookwyrm/templates/notifications/items/status_preview.html:4
+#: bookwyrm/templates/snippets/status/content_status.html:73
+msgid "Content warning"
+msgstr "Innehållsvarning"
+
 #: bookwyrm/templates/notifications/items/update.html:16
 #, python-format
 msgid "has changed the privacy level for <a href=\"%(group_path)s\">%(group_name)s</a>"
@@ -3028,12 +3029,20 @@ msgstr "Inga användare är för närvarande blockerade."
 
 #: bookwyrm/templates/preferences/change_password.html:4
 #: bookwyrm/templates/preferences/change_password.html:7
-#: bookwyrm/templates/preferences/change_password.html:21
+#: bookwyrm/templates/preferences/change_password.html:52
 #: bookwyrm/templates/preferences/layout.html:20
 msgid "Change Password"
 msgstr "Ändra lösenord"
 
-#: bookwyrm/templates/preferences/change_password.html:14
+#: bookwyrm/templates/preferences/change_password.html:15
+msgid "Successfully changed password"
+msgstr ""
+
+#: bookwyrm/templates/preferences/change_password.html:22
+msgid "Current password:"
+msgstr ""
+
+#: bookwyrm/templates/preferences/change_password.html:36
 msgid "New password:"
 msgstr "Nytt lösenord:"
 
@@ -3124,6 +3133,10 @@ msgstr "CSV-export"
 #: bookwyrm/templates/preferences/export.html:13
 msgid "Your export will include all the books on your shelves, books you have reviewed, and books with reading activity."
 msgstr "Din export inkluderar alla böcker som du har på din hylla, har recenserat och böcker med läsaktivitet."
+
+#: bookwyrm/templates/preferences/export.html:20
+msgid "Download file"
+msgstr ""
 
 #: bookwyrm/templates/preferences/layout.html:11
 msgid "Account"
@@ -5036,10 +5049,6 @@ msgstr ""
 msgid "Finish reading"
 msgstr "Sluta läs"
 
-#: bookwyrm/templates/snippets/status/content_status.html:73
-msgid "Content warning"
-msgstr "Innehållsvarning"
-
 #: bookwyrm/templates/snippets/status/content_status.html:80
 msgid "Show status"
 msgstr "Visa status"
@@ -5335,7 +5344,7 @@ msgstr "Inga följare som du följer"
 msgid "View profile and more"
 msgstr ""
 
-#: bookwyrm/templates/user_menu.html:72
+#: bookwyrm/templates/user_menu.html:78
 msgid "Log out"
 msgstr "Logga ut"
 
@@ -5355,6 +5364,14 @@ msgstr "Inte en giltig csv-fil"
 #: bookwyrm/views/landing/login.py:70
 msgid "Username or password are incorrect"
 msgstr "Användarnamnet eller lösenordet är felaktigt"
+
+#: bookwyrm/views/preferences/change_password.py:35
+msgid "Incorrect password"
+msgstr ""
+
+#: bookwyrm/views/preferences/change_password.py:42
+msgid "Password does not match"
+msgstr ""
 
 #: bookwyrm/views/rss_feed.py:34
 #, python-brace-format

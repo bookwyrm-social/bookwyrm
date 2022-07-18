@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-07-08 22:40+0000\n"
-"PO-Revision-Date: 2022-07-08 23:40\n"
+"POT-Creation-Date: 2022-07-14 23:57+0000\n"
+"PO-Revision-Date: 2022-07-15 16:39\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Chinese Simplified\n"
 "Language: zh\n"
@@ -1345,11 +1345,7 @@ msgstr "重新发送确认链接"
 msgid "Email address:"
 msgstr "邮箱地址:"
 
-#: bookwyrm/templates/confirm_email/resend_modal.html:28
-msgid "No user matching this email address found."
-msgstr "没有找到与此电子邮件地址相匹配的用户。"
-
-#: bookwyrm/templates/confirm_email/resend_modal.html:38
+#: bookwyrm/templates/confirm_email/resend_modal.html:30
 msgid "Resend link"
 msgstr "重新发送链接"
 
@@ -2261,7 +2257,7 @@ msgid "More about this site"
 msgstr "更多关于本站点的信息"
 
 #: bookwyrm/templates/landing/password_reset.html:34
-#: bookwyrm/templates/preferences/change_password.html:18
+#: bookwyrm/templates/preferences/change_password.html:40
 #: bookwyrm/templates/preferences/delete_user.html:20
 msgid "Confirm password:"
 msgstr "确认密码:"
@@ -2856,6 +2852,11 @@ msgid "A new <a href=\"%(path)s\">report</a> needs moderation"
 msgid_plural "%(display_count)s new <a href=\"%(path)s\">reports</a> need moderation"
 msgstr[0] ""
 
+#: bookwyrm/templates/notifications/items/status_preview.html:4
+#: bookwyrm/templates/snippets/status/content_status.html:73
+msgid "Content warning"
+msgstr "内容警告"
+
 #: bookwyrm/templates/notifications/items/update.html:16
 #, python-format
 msgid "has changed the privacy level for <a href=\"%(group_path)s\">%(group_name)s</a>"
@@ -3013,12 +3014,20 @@ msgstr "当前没有被屏蔽的用户。"
 
 #: bookwyrm/templates/preferences/change_password.html:4
 #: bookwyrm/templates/preferences/change_password.html:7
-#: bookwyrm/templates/preferences/change_password.html:21
+#: bookwyrm/templates/preferences/change_password.html:52
 #: bookwyrm/templates/preferences/layout.html:20
 msgid "Change Password"
 msgstr "更改密码"
 
-#: bookwyrm/templates/preferences/change_password.html:14
+#: bookwyrm/templates/preferences/change_password.html:15
+msgid "Successfully changed password"
+msgstr ""
+
+#: bookwyrm/templates/preferences/change_password.html:22
+msgid "Current password:"
+msgstr ""
+
+#: bookwyrm/templates/preferences/change_password.html:36
 msgid "New password:"
 msgstr "新密码:"
 
@@ -3109,6 +3118,10 @@ msgstr "CSV导出"
 #: bookwyrm/templates/preferences/export.html:13
 msgid "Your export will include all the books on your shelves, books you have reviewed, and books with reading activity."
 msgstr "你的导出将包括你书架上的所有书籍，你评论过的书籍，以及有阅读活动的书籍。"
+
+#: bookwyrm/templates/preferences/export.html:20
+msgid "Download file"
+msgstr ""
 
 #: bookwyrm/templates/preferences/layout.html:11
 msgid "Account"
@@ -5010,10 +5023,6 @@ msgstr ""
 msgid "Finish reading"
 msgstr "完成阅读"
 
-#: bookwyrm/templates/snippets/status/content_status.html:73
-msgid "Content warning"
-msgstr "内容警告"
-
 #: bookwyrm/templates/snippets/status/content_status.html:80
 msgid "Show status"
 msgstr "显示状态"
@@ -5307,7 +5316,7 @@ msgstr "没有你关注的关注者"
 msgid "View profile and more"
 msgstr "查看档案和其他"
 
-#: bookwyrm/templates/user_menu.html:72
+#: bookwyrm/templates/user_menu.html:78
 msgid "Log out"
 msgstr "登出"
 
@@ -5327,6 +5336,14 @@ msgstr "不是有效的 csv 文件"
 #: bookwyrm/views/landing/login.py:70
 msgid "Username or password are incorrect"
 msgstr "用户名或密码不正确"
+
+#: bookwyrm/views/preferences/change_password.py:35
+msgid "Incorrect password"
+msgstr ""
+
+#: bookwyrm/views/preferences/change_password.py:42
+msgid "Password does not match"
+msgstr ""
 
 #: bookwyrm/views/rss_feed.py:34
 #, python-brace-format

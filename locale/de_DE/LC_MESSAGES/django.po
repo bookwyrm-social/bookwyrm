@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-07-08 22:40+0000\n"
-"PO-Revision-Date: 2022-07-10 22:16\n"
+"POT-Creation-Date: 2022-07-14 23:57+0000\n"
+"PO-Revision-Date: 2022-07-15 16:39\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: German\n"
 "Language: de\n"
@@ -471,7 +471,7 @@ msgstr "Lektürejahr für <em>%(display_name)s</em>"
 
 #: bookwyrm/templates/annual_summary/layout.html:53
 msgid "Share this page"
-msgstr "Teile diese Seite mit Anderen"
+msgstr "Teile diese Seite"
 
 #: bookwyrm/templates/annual_summary/layout.html:67
 msgid "Copy address"
@@ -1351,11 +1351,7 @@ msgstr "Bestätigungslink erneut senden"
 msgid "Email address:"
 msgstr "E-Mail-Adresse:"
 
-#: bookwyrm/templates/confirm_email/resend_modal.html:28
-msgid "No user matching this email address found."
-msgstr "Es wurde kein*e Benutzer*in mit dieser E-Mail-Adresse gefunden."
-
-#: bookwyrm/templates/confirm_email/resend_modal.html:38
+#: bookwyrm/templates/confirm_email/resend_modal.html:30
 msgid "Resend link"
 msgstr "Link erneut senden"
 
@@ -1726,7 +1722,7 @@ msgstr "Zu deinen Büchern hinzufügen"
 #: bookwyrm/templates/shelf/shelf.html:86 bookwyrm/templates/user/user.html:33
 #: bookwyrm/templatetags/shelf_tags.py:48
 msgid "To Read"
-msgstr "Zu lesen"
+msgstr "Leseliste"
 
 #: bookwyrm/templates/get_started/book_preview.html:11
 #: bookwyrm/templates/shelf/shelf.html:87 bookwyrm/templates/user/user.html:34
@@ -2273,7 +2269,7 @@ msgid "More about this site"
 msgstr "Mehr über diese Seite"
 
 #: bookwyrm/templates/landing/password_reset.html:34
-#: bookwyrm/templates/preferences/change_password.html:18
+#: bookwyrm/templates/preferences/change_password.html:40
 #: bookwyrm/templates/preferences/delete_user.html:20
 msgid "Confirm password:"
 msgstr "Passwort bestätigen:"
@@ -2667,27 +2663,27 @@ msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> hat deinen <a hre
 #: bookwyrm/templates/notifications/items/boost.html:50
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and <a href=\"%(second_user_link)s\">%(second_user)s</a> boosted your <a href=\"%(related_path)s\">comment on <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> und <a href=\"%(second_user_link)s\">%(second_user)s</a> haben deinen <a href=\"%(related_path)s\">Kommentar über <em>%(book_title)s</em></a> geteilt"
 
 #: bookwyrm/templates/notifications/items/boost.html:59
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and %(other_user_display_count)s others boosted your <a href=\"%(related_path)s\">comment on <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> und %(other_user_display_count)s andere haben deinen <a href=\"%(related_path)s\">Kommentar über <em>%(book_title)s</em></a> geteilt"
 
 #: bookwyrm/templates/notifications/items/boost.html:67
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> boosted your <a href=\"%(related_path)s\">quote from <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> hat dein <a href=\"%(related_path)s\">Zitat aus <em>%(book_title)s</em></a> geteilt"
 
 #: bookwyrm/templates/notifications/items/boost.html:73
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and <a href=\"%(second_user_link)s\">%(second_user)s</a> boosted your <a href=\"%(related_path)s\">quote from <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> und <a href=\"%(second_user_link)s\">%(second_user)s</a> haben dein <a href=\"%(related_path)s\">Zitat über <em>%(book_title)s</em></a> geteilt"
 
 #: bookwyrm/templates/notifications/items/boost.html:82
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and %(other_user_display_count)s others boosted your <a href=\"%(related_path)s\">quote from <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> und %(other_user_display_count)s andere haben dein <a href=\"%(related_path)s\">Zitat aus <em>%(book_title)s</em></a> geteilt"
 
 #: bookwyrm/templates/notifications/items/boost.html:90
 #, python-format
@@ -2712,57 +2708,57 @@ msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> gefällt Ihre <a 
 #: bookwyrm/templates/notifications/items/fav.html:27
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and <a href=\"%(second_user_link)s\">%(second_user)s</a> liked your <a href=\"%(related_path)s\">review of <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> und <a href=\"%(second_user_link)s\">%(second_user)s</a> haben deine <a href=\"%(related_path)s\">Rezension über <em>%(book_title)s</em></a> favorisiert"
 
 #: bookwyrm/templates/notifications/items/fav.html:36
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and %(other_user_display_count)s others liked your <a href=\"%(related_path)s\">review of <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> und %(other_user_display_count)s andere haben deine <a href=\"%(related_path)s\">Rezension über <em>%(book_title)s</em></a> favorisiert"
 
 #: bookwyrm/templates/notifications/items/fav.html:44
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> liked your <a href=\"%(related_path)s\">comment on <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> hat deinen <a href=\"%(related_path)s\">Kommentar über <em>%(book_title)s</em></a> favorisiert"
 
 #: bookwyrm/templates/notifications/items/fav.html:50
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and <a href=\"%(second_user_link)s\">%(second_user)s</a> liked your <a href=\"%(related_path)s\">comment on <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> und <a href=\"%(second_user_link)s\">%(second_user)s</a> haben deinen <a href=\"%(related_path)s\">Kommentar über <em>%(book_title)s</em></a> favorisiert"
 
 #: bookwyrm/templates/notifications/items/fav.html:59
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and %(other_user_display_count)s others liked your <a href=\"%(related_path)s\">comment on <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> und %(other_user_display_count)s andere haben deinen <a href=\"%(related_path)s\">Kommentar über <em>%(book_title)s</em></a> favorisiert"
 
 #: bookwyrm/templates/notifications/items/fav.html:67
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> liked your <a href=\"%(related_path)s\">quote from <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> hat dein <a href=\"%(related_path)s\">Zitat aus <em>%(book_title)s</em></a> favorisiert"
 
 #: bookwyrm/templates/notifications/items/fav.html:73
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and <a href=\"%(second_user_link)s\">%(second_user)s</a> liked your <a href=\"%(related_path)s\">quote from <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> und <a href=\"%(second_user_link)s\">%(second_user)s</a> haben dein <a href=\"%(related_path)s\">Zitat über <em>%(book_title)s</em></a> favorisiert"
 
 #: bookwyrm/templates/notifications/items/fav.html:82
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and %(other_user_display_count)s others liked your <a href=\"%(related_path)s\">quote from <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> und %(other_user_display_count)s andere haben dein <a href=\"%(related_path)s\">Zitat aus <em>%(book_title)s</em></a> favorisiert"
 
 #: bookwyrm/templates/notifications/items/fav.html:90
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> liked your <a href=\"%(related_path)s\">status</a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> hat deinen <a href=\"%(related_path)s\">Status</a> favorisiert"
 
 #: bookwyrm/templates/notifications/items/fav.html:96
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and <a href=\"%(second_user_link)s\">%(second_user)s</a> liked your <a href=\"%(related_path)s\">status</a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> und <a href=\"%(second_user_link)s\">%(second_user)s</a> haben deinen <a href=\"%(related_path)s\">Status</a> favorisiert"
 
 #: bookwyrm/templates/notifications/items/fav.html:105
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and %(other_user_display_count)s others liked your <a href=\"%(related_path)s\">status</a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> und %(other_user_display_count)s andere haben deinen <a href=\"%(related_path)s\">Status</a> favorisiert"
 
 #: bookwyrm/templates/notifications/items/follow.html:16
 #, python-format
@@ -2807,32 +2803,32 @@ msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> hat Ihre Gruppe \
 #: bookwyrm/templates/notifications/items/leave.html:26
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and <a href=\"%(second_user_link)s\">%(second_user)s</a> have left your group \"<a href=\"%(group_path)s\">%(group_name)s</a>\""
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> und <a href=\"%(second_user_link)s\">%(second_user)s</a> haben deine Gruppe \"<a href=\"%(group_path)s\">%(group_name)s</a>\" verlassen"
 
 #: bookwyrm/templates/notifications/items/leave.html:36
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and %(other_user_display_count)s others have left your group \"<a href=\"%(group_path)s\">%(group_name)s</a>\""
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> und %(other_user_display_count)s andere haben deine Gruppe \"<a href=\"%(group_path)s\">%(group_name)s</a>\" verlassen"
 
 #: bookwyrm/templates/notifications/items/mention.html:20
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> mentioned you in a <a href=\"%(related_path)s\">review of <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> hat dich in einer <a href=\"%(related_path)s\">Rezension über <em>%(book_title)s</em></a> erwähnt"
 
 #: bookwyrm/templates/notifications/items/mention.html:26
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> mentioned you in a <a href=\"%(related_path)s\">comment on <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> hat dich in einem <a href=\"%(related_path)s\">Kommmentar über <em>%(book_title)s</em></a> erwähnt"
 
 #: bookwyrm/templates/notifications/items/mention.html:32
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> mentioned you in a <a href=\"%(related_path)s\">quote from <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> hat dich in einem <a href=\"%(related_path)s\">Zitat aus <em>%(book_title)s</em></a> erwähnt"
 
 #: bookwyrm/templates/notifications/items/mention.html:38
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> mentioned you in a <a href=\"%(related_path)s\">status</a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> hat dich in einem <a href=\"%(related_path)s\">Status</a> erwähnt"
 
 #: bookwyrm/templates/notifications/items/remove.html:17
 #, python-format
@@ -2847,22 +2843,22 @@ msgstr "Du wurdest aus der Gruppe „<a href=\"%(group_path)s\">%(group_name)s</
 #: bookwyrm/templates/notifications/items/reply.html:21
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> <a href=\"%(related_path)s\">replied</a> to your <a href=\"%(parent_path)s\">review of <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> hat auf deine <a href=\"%(parent_path)s\">Rezension über <em>%(book_title)s</em></a> <a href=\"%(related_path)s\">geantwortet</a>"
 
 #: bookwyrm/templates/notifications/items/reply.html:27
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> <a href=\"%(related_path)s\">replied</a> to your <a href=\"%(parent_path)s\">comment on <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> hat auf deinen <a href=\"%(parent_path)s\">Kommentar über <em>%(book_title)s</em></a> <a href=\"%(related_path)s\">geantwortet</a>"
 
 #: bookwyrm/templates/notifications/items/reply.html:33
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> <a href=\"%(related_path)s\">replied</a> to your <a href=\"%(parent_path)s\">quote from <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> hat auf dein <a href=\"%(parent_path)s\">Zitat aus <em>%(book_title)s</em></a> <a href=\"%(related_path)s\">geantwortet</a>"
 
 #: bookwyrm/templates/notifications/items/reply.html:39
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> <a href=\"%(related_path)s\">replied</a> to your <a href=\"%(parent_path)s\">status</a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> hat auf deinen <a href=\"%(parent_path)s\">Status</a> <a href=\"%(related_path)s\">geantwortet</a>"
 
 #: bookwyrm/templates/notifications/items/report.html:15
 #, python-format
@@ -2870,6 +2866,11 @@ msgid "A new <a href=\"%(path)s\">report</a> needs moderation"
 msgid_plural "%(display_count)s new <a href=\"%(path)s\">reports</a> need moderation"
 msgstr[0] "Ein neuer <a href=\"%(path)s\">-Bericht</a> muss moderiert werden"
 msgstr[1] "%(display_count)s neue <a href=\"%(path)s\">Berichte</a> müssen moderiert werden"
+
+#: bookwyrm/templates/notifications/items/status_preview.html:4
+#: bookwyrm/templates/snippets/status/content_status.html:73
+msgid "Content warning"
+msgstr "Inhaltswarnung"
 
 #: bookwyrm/templates/notifications/items/update.html:16
 #, python-format
@@ -3028,12 +3029,20 @@ msgstr "Momentan keine Benutzer*innen gesperrt."
 
 #: bookwyrm/templates/preferences/change_password.html:4
 #: bookwyrm/templates/preferences/change_password.html:7
-#: bookwyrm/templates/preferences/change_password.html:21
+#: bookwyrm/templates/preferences/change_password.html:52
 #: bookwyrm/templates/preferences/layout.html:20
 msgid "Change Password"
 msgstr "Passwort ändern"
 
-#: bookwyrm/templates/preferences/change_password.html:14
+#: bookwyrm/templates/preferences/change_password.html:15
+msgid "Successfully changed password"
+msgstr "Passwort erfolgreich geändert"
+
+#: bookwyrm/templates/preferences/change_password.html:22
+msgid "Current password:"
+msgstr "Aktuelles Passwort:"
+
+#: bookwyrm/templates/preferences/change_password.html:36
 msgid "New password:"
 msgstr "Neues Passwort:"
 
@@ -3124,6 +3133,10 @@ msgstr "CSV-Export"
 #: bookwyrm/templates/preferences/export.html:13
 msgid "Your export will include all the books on your shelves, books you have reviewed, and books with reading activity."
 msgstr "Ihr Export enthält alle Bücher in Ihren Regalen, Bücher die Sie bewertet haben und Bücher mit Leseaktivität."
+
+#: bookwyrm/templates/preferences/export.html:20
+msgid "Download file"
+msgstr "Datei herunterladen"
 
 #: bookwyrm/templates/preferences/layout.html:11
 msgid "Account"
@@ -5036,10 +5049,6 @@ msgstr "Aufhören zu lesen"
 msgid "Finish reading"
 msgstr "Lesen abschließen"
 
-#: bookwyrm/templates/snippets/status/content_status.html:73
-msgid "Content warning"
-msgstr "Inhaltswarnung"
-
 #: bookwyrm/templates/snippets/status/content_status.html:80
 msgid "Show status"
 msgstr "Status anzeigen"
@@ -5335,7 +5344,7 @@ msgstr "Keine Follower*innen, denen du folgst"
 msgid "View profile and more"
 msgstr "Profil und mehr ansehen"
 
-#: bookwyrm/templates/user_menu.html:72
+#: bookwyrm/templates/user_menu.html:78
 msgid "Log out"
 msgstr "Abmelden"
 
@@ -5355,6 +5364,14 @@ msgstr "Keine gültige CSV-Datei"
 #: bookwyrm/views/landing/login.py:70
 msgid "Username or password are incorrect"
 msgstr "Benutzer*inname oder Passwort falsch"
+
+#: bookwyrm/views/preferences/change_password.py:35
+msgid "Incorrect password"
+msgstr "Falsches Passwort"
+
+#: bookwyrm/views/preferences/change_password.py:42
+msgid "Password does not match"
+msgstr "Passwort stimmt nicht überein"
 
 #: bookwyrm/views/rss_feed.py:34
 #, python-brace-format
