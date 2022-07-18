@@ -117,6 +117,7 @@ case "$CMD" in
         ;;
     update_locales)
         git fetch origin l10n_main:l10n_main
+        git checkout l10n_main locale/ca_ES
         git checkout l10n_main locale/de_DE
         git checkout l10n_main locale/es_ES
         git checkout l10n_main locale/fi_FI
