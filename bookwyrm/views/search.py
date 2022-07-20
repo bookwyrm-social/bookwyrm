@@ -23,6 +23,9 @@ class Search(View):
 
     def get(self, request):
         """that search bar up top"""
+
+        print("Entering the SEARCH FUNCTION")
+        
         query = request.GET.get("q")
         # check if query is isbn
         query = isbn_check(query)

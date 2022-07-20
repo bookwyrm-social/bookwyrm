@@ -26,6 +26,18 @@ from .activitypub_mixin import OrderedCollectionPageMixin, ObjectMixin
 from .base_model import BookWyrmModel
 from . import fields
 
+class Genre(models.Model):
+    '''This is a model where we can define genres for books.'''
+    '''TODO: Add ManytoMany field on books which contain this certain genre.'''
+    genre_name = models.CharField(max_length=40)
+    description = models.CharField(max_length=500)
+
+    def __str__(self):
+        return self.genre_name
+ 
+    @property
+    def genre_desc(self):
+        return self.description
 
 class BookDataModel(ObjectMixin, BookWyrmModel):
     """fields shared between editable book data (books, works, authors)"""
@@ -108,6 +120,9 @@ class Book(BookDataModel):
     )
     series = fields.TextField(max_length=255, blank=True, null=True)
     series_number = fields.CharField(max_length=255, blank=True, null=True)
+
+    genres = fields.ManyToManyField(Genre, blank=True)
+
     subjects = fields.ArrayField(
         models.CharField(max_length=255), blank=True, null=True, default=list
     )
@@ -375,6 +390,7 @@ class Edition(Book):
             ),
         )
         return queryset
+
 
 
 def isbn_10_to_13(isbn_10):
