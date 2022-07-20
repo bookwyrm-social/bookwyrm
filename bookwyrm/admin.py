@@ -5,4 +5,11 @@ from bookwyrm import models
 admin.site.register(models.User)
 admin.site.register(models.FederatedServer)
 admin.site.register(models.Connector)
+admin.site.register(models.book.Genre)
 admin.site.register(models.Book)
+
+#class BookAdmin(admin.ModelAdmin):
+#    model = models.Book
+#    filter_horizontal = ('genres',)
+
+#admin.site.register(BookAdmin)
