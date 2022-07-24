@@ -175,6 +175,11 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     field_tracker = FieldTracker(fields=["name", "avatar"])
 
     @property
+    def active_follower_requests(self):
+        """Follow requests from active users"""
+        return self.follower_requests.filter(is_active=True)
+
+    @property
     def confirmation_link(self):
         """helper for generating confirmation links"""
         link = site_link()
