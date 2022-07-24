@@ -43,7 +43,7 @@
     {% include 'ostatus/remote_follow_button.html' with user=user %}
     {% endif %}
 
-    {% if is_self and user.follower_requests.all %}
+    {% if is_self and user.active_follower_requests.all %}
     <div class="follow-requests">
         <h2>{% trans "Follow Requests" %}</h2>
         {% for requester in user.follower_requests.all %}
