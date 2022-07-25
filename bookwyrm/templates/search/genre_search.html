@@ -6,7 +6,6 @@
 {% block content %}
 
 <div class="block">
-    <h1>Hi.</h1>
     <form action="" method="POST"> {% csrf_token %}
         <select multiple="multiple"  name="genres" id="genres" size="5">
             {% for genre in genre_tags %}
@@ -15,6 +14,11 @@
         </select>
         <button class="btn btn-primary" type="submit">Create</button>
     </form>
+    <div>
+        {% for book in listed_books %}
+        <h1>{{book.title}}</h1>
+        {% endfor %}
+    </div>
 </div>
 
 {% endblock %}
