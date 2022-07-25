@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-07-15 19:29+0000\n"
-"PO-Revision-Date: 2022-07-15 19:48\n"
+"PO-Revision-Date: 2022-07-25 08:01\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Polish\n"
 "Language: pl\n"
@@ -114,7 +114,7 @@ msgstr "Podstawowy"
 
 #: bookwyrm/models/announcement.py:12
 msgid "Success"
-msgstr ""
+msgstr "Powodzenie"
 
 #: bookwyrm/models/announcement.py:13
 #: bookwyrm/templates/settings/invites/manage_invites.html:47
@@ -141,7 +141,7 @@ msgstr "Oczekujące"
 
 #: bookwyrm/models/base_model.py:19
 msgid "Self deletion"
-msgstr ""
+msgstr "Usunięte samodzielnie"
 
 #: bookwyrm/models/base_model.py:20
 msgid "Moderator suspension"
@@ -165,21 +165,21 @@ msgstr "eBook"
 
 #: bookwyrm/models/book.py:264
 msgid "Graphic novel"
-msgstr ""
+msgstr "Powieść ilustrowana"
 
 #: bookwyrm/models/book.py:265
 msgid "Hardcover"
-msgstr ""
+msgstr "Twarda oprawa"
 
 #: bookwyrm/models/book.py:266
 msgid "Paperback"
-msgstr ""
+msgstr "Miękka oprawa"
 
 #: bookwyrm/models/federated_server.py:11
 #: bookwyrm/templates/settings/federation/edit_instance.html:55
 #: bookwyrm/templates/settings/federation/instance_list.html:22
 msgid "Federated"
-msgstr ""
+msgstr "Federacja"
 
 #: bookwyrm/models/federated_server.py:12 bookwyrm/models/link.py:71
 #: bookwyrm/templates/settings/federation/edit_instance.html:56
@@ -297,7 +297,7 @@ msgstr "Angielski"
 
 #: bookwyrm/settings.py:283
 msgid "Català (Catalan)"
-msgstr ""
+msgstr "Català (Kataloński)"
 
 #: bookwyrm/settings.py:284
 msgid "Deutsch (German)"
@@ -408,7 +408,7 @@ msgstr "<a href=\"%(book_path)s\"><em>%(title)s</em></a> ma najbardziej podzielo
 
 #: bookwyrm/templates/about/about.html:91
 msgid "Track your reading, talk about books, write reviews, and discover what to read next. Always ad-free, anti-corporate, and community-oriented, BookWyrm is human-scale software, designed to stay small and personal. If you have feature requests, bug reports, or grand dreams, <a href='https://joinbookwyrm.com/get-involved' target='_blank'>reach out</a> and make yourself heard."
-msgstr ""
+msgstr "Bądź na bieżąco ze swoim czytaniem, dyskutuj o książkach, pisz recenzje oraz odkryj swoją następną książkę. Na zawsze bez reklam, przeciw korporacjom oraz skupione na społeczności, BookWyrm to oprogramowanie dla ludzi zaprojektowane, aby pozostać małym oraz osobistym. Jeśli masz sugestie funkcji, chcesz zgłosić błąd lub podzielić się marzeniami, <a href='https://joinbookwyrm.com/get-involved' target='_blank'>podejmij działanie</a> i spraw, aby Twój głos został usłyszany."
 
 #: bookwyrm/templates/about/about.html:98
 msgid "Meet your admins"
@@ -417,7 +417,7 @@ msgstr "Poznaj swoich administratorów"
 #: bookwyrm/templates/about/about.html:101
 #, python-format
 msgid "%(site_name)s's moderators and administrators keep the site up and running, enforce the <a href=\"%(coc_path)s\">code of conduct</a>, and respond when users report spam and bad behavior."
-msgstr ""
+msgstr "Moderatorzy oraz administratorzy %(site_name)s odpowiadają za prawidłowe funkcjonowanie witryny, nadzorują przestrzeganie <a href=\"%(coc_path)s\">regulaminu</a> oraz odpowiadają na zgłoszenia spamu lub nieodpowiedniego zachowania."
 
 #: bookwyrm/templates/about/about.html:115
 msgid "Moderator"
@@ -446,7 +446,7 @@ msgstr "Aktywni użytkownicy:"
 
 #: bookwyrm/templates/about/layout.html:15
 msgid "Statuses posted:"
-msgstr ""
+msgstr "Zamieszczonych statusów:"
 
 #: bookwyrm/templates/about/layout.html:19
 #: bookwyrm/templates/setup/config.html:74
@@ -496,19 +496,19 @@ msgstr "Skopiowano!"
 
 #: bookwyrm/templates/annual_summary/layout.html:77
 msgid "Sharing status: <strong>public with key</strong>"
-msgstr ""
+msgstr "Status udostępniania <strong>publiczne przez odnośnik</strong>"
 
 #: bookwyrm/templates/annual_summary/layout.html:78
 msgid "The page can be seen by anyone with the complete address."
-msgstr "Ta strona oraz jej pełny adres są widoczne dla każdego."
+msgstr "Tę stronę może zobaczyć każdy, kto ma do niej odnośnik."
 
 #: bookwyrm/templates/annual_summary/layout.html:83
 msgid "Make page private"
-msgstr ""
+msgstr "Cofnij publikację strony"
 
 #: bookwyrm/templates/annual_summary/layout.html:89
 msgid "Sharing status: <strong>private</strong>"
-msgstr ""
+msgstr "Status udostępniania: <strong>prywatne</strong>"
 
 #: bookwyrm/templates/annual_summary/layout.html:90
 msgid "The page is private, only you can see it."
@@ -520,7 +520,7 @@ msgstr "Opublikuj stronę"
 
 #: bookwyrm/templates/annual_summary/layout.html:99
 msgid "When you make your page private, the old key won’t give access to the page anymore. A new key will be created if the page is once again made public."
-msgstr ""
+msgstr "Gdy ustawisz swoją stronę jako prywatną, poprzedni odnośnik nie będzie już do niej kierował. Zostanie utworzony nowy odnośnik, jeśli ponownie opublikujesz stronę."
 
 #: bookwyrm/templates/annual_summary/layout.html:112
 #, python-format
@@ -538,7 +538,7 @@ msgstr[3] ""
 
 #: bookwyrm/templates/annual_summary/layout.html:124
 msgid "That’s great!"
-msgstr ""
+msgstr "To świetnie!"
 
 #: bookwyrm/templates/annual_summary/layout.html:127
 #, python-format
