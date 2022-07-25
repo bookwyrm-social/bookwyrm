@@ -1,9 +1,20 @@
-{% extends 'search/layout.html' %}
+{% extends 'layout.html' %}
+{% load i18n %}
 
-{% block panel %}
+{% block title %}{% trans "Genres" %}{% endblock %}
 
-<div class="columns is-multiline">
-<h1>Hi.</h1>
+{% block content %}
+
+<div class="block">
+    <h1>Hi.</h1>
+    <form action="" method="POST"> {% csrf_token %}
+        <select multiple="multiple"  name="genres" id="genres" size="5">
+            {% for genre in genre_tags %}
+                <option value="{{genre.id}}">{{genre.genre_name}}</option>
+            {% endfor %}
+        </select>
+        <button class="btn btn-primary" type="submit">Create</button>
+    </form>
 </div>
 
 {% endblock %}
