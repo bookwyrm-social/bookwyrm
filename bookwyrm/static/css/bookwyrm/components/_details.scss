@@ -53,7 +53,7 @@ details.dropdown .dropdown-menu a:focus-visible {
 
 @media only screen and (max-width: 768px) {
     details.dropdown[open] summary.dropdown-trigger::before {
-        background-color: rgba($scheme-invert, 0.5);
+        background-color: $modal-background-background-color;
         z-index: 30;
     }
 
@@ -113,4 +113,18 @@ details[open] summary .details-close {
         padding-top: 0.25rem;
         padding-bottom: 0.25rem;
     }
+}
+
+/** Navbar details
+ ******************************************************************************/
+
+#navbar-dropdown .navbar-item {
+    color: $text;
+    font-size: 0.875rem;
+    padding: 0.375rem 3rem 0.375rem 1rem;
+    white-space: nowrap;
+}
+
+#navbar-dropdown .navbar-item:hover {
+    background-color: $background-secondary;
 }

@@ -1,4 +1,5 @@
 {% load i18n %}
+{% load static %}
 
 {% if form.non_field_errors %}
 <div class="block">
@@ -9,6 +10,8 @@
 {% csrf_token %}
 
 <input type="hidden" name="last_edited_by" value="{{ request.user.id }}">
+<input type="hidden" name="parent_work" value="{% firstof book.parent_work.id form.parent_work %}">
+
 <div class="columns">
     <div class="column is-half">
         <section class="block">
@@ -21,7 +24,7 @@
                         {% trans "Title:" %}
                     </label>
                     <input type="text" name="title" value="{{ form.title.value|default:'' }}" maxlength="255" class="input" required="" id="id_title" aria-describedby="desc_title">
-                    
+
                     {% include 'snippets/form_errors.html' with errors_list=form.title.errors id="desc_title" %}
                 </div>
 
@@ -30,7 +33,7 @@
                         {% trans "Subtitle:" %}
                     </label>
                     <input type="text" name="subtitle" value="{{ form.subtitle.value|default:'' }}" maxlength="255" class="input" id="id_subtitle" aria-describedby="desc_subtitle">
-                    
+
                     {% include 'snippets/form_errors.html' with errors_list=form.subtitle.errors id="desc_subtitle" %}
                 </div>
 
@@ -39,7 +42,7 @@
                         {% trans "Description:" %}
                     </label>
                     {{ form.description }}
-                    
+
                     {% include 'snippets/form_errors.html' with errors_list=form.description.errors id="desc_description" %}
                 </div>
 
@@ -50,7 +53,7 @@
                                 {% trans "Series:" %}
                             </label>
                             <input type="text" class="input" name="series" id="id_series" value="{{ form.series.value|default:'' }}" aria-describedby="desc_series">
-                            
+
                             {% include 'snippets/form_errors.html' with errors_list=form.series.errors id="desc_series" %}
                         </div>
                     </div>
@@ -60,7 +63,7 @@
                                 {% trans "Series number:" %}
                             </label>
                             {{ form.series_number }}
-                            
+
                             {% include 'snippets/form_errors.html' with errors_list=form.series_number.errors id="desc_series_number" %}
                         </div>
                     </div>
@@ -74,9 +77,60 @@
                     <span class="help" id="desc_languages_help">
                         {% trans "Separate multiple values with commas." %}
                     </span>
-                    
+
                     {% include 'snippets/form_errors.html' with errors_list=form.languages.errors id="desc_languages" %}
                 </div>
+
+                <div>
+                    <label class="label" for="id_add_subjects">
+                        {% trans "Subjects:" %}
+                    </label>
+                    {% for subject in book.subjects %}
+                    <label class="label is-sr-only" for="id_add_subject={% if not forloop.first %}-{{forloop.counter}}{% endif %}">
+                        {% trans "Add subject" %}
+                    </label>
+                    <div class="field has-addons" id="subject_field_wrapper_{{ forloop.counter }}">
+                        <div class="control is-expanded">
+                            <input
+                                id="id_add_subject-{{ forloop.counter }}"
+                                type="text"
+                                name="subjects"
+                                value="{{ subject }}"
+                                class="input"
+                            >
+                        </div>
+                        <div class="control">
+                            <button
+                                class="button is-danger is-light"
+                                type="button"
+                                data-remove="subject_field_wrapper_{{ forloop.counter }}"
+                            >
+                                {% trans "Remove subject" as text %}
+                                <span class="icon icon-x" title="{{ text }}">
+                                    <span class="is-sr-only">{{ text }}</span>
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    <input
+                        class="input"
+                        type="text"
+                        name="subjects"
+                        id="id_add_subject"
+                        value="{{ subject }}"
+                        {% if confirm_mode %}readonly{% endif %}
+                    >
+
+                    {% include 'snippets/form_errors.html' with errors_list=form.subjects.errors id="desc_subjects" %}
+                </div>
+
+                <span class="help">
+                    <button class="button is-small" type="button" data-duplicate="id_add_subject" id="another_subject_field">
+                        <span class="icon icon-plus" aria-hidden="true"></span>
+                        <span>{% trans "Add Another Subject" %}</span>
+                    </button>
+                </span>
             </div>
         </section>
 
@@ -93,7 +147,7 @@
                     <span class="help" id="desc_publishers_help">
                         {% trans "Separate multiple values with commas." %}
                     </span>
-                    
+
                     {% include 'snippets/form_errors.html' with errors_list=form.publishers.errors id="desc_publishers" %}
                 </div>
 
@@ -101,8 +155,7 @@
                     <label class="label" for="id_first_published_date">
                         {% trans "First published date:" %}
                     </label>
-                    <input type="date" name="first_published_date" class="input" id="id_first_published_date"{% if form.first_published_date.value %} value="{{ form.first_published_date.value|date:'Y-m-d' }}"{% endif %} aria-describedby="desc_first_published_date">
-                    
+                    {{ form.first_published_date }}
                     {% include 'snippets/form_errors.html' with errors_list=form.first_published_date.errors id="desc_first_published_date" %}
                 </div>
 
@@ -110,8 +163,8 @@
                     <label class="label" for="id_published_date">
                         {% trans "Published date:" %}
                     </label>
-                    <input type="date" name="published_date" class="input" id="id_published_date"{% if form.published_date.value %} value="{{ form.published_date.value|date:'Y-m-d'}}"{% endif %} aria-describedby="desc_published_date">
-                    
+                    {{ form.published_date }}
+
                     {% include 'snippets/form_errors.html' with errors_list=form.published_date.errors id="desc_published_date" %}
                 </div>
             </div>
@@ -123,6 +176,8 @@
             </h2>
             <div class="box">
                 {% if book.authors.exists %}
+                {# preserve authors if the book is unsaved #}
+                <input type="hidden" name="authors" value="{% for author in book.authors.all %}{{ author.id }},{% endfor %}">
                 <fieldset>
                     {% for author in book.authors.all %}
                     <div class="is-flex is-justify-content-space-between">
@@ -149,7 +204,12 @@
                     <input class="input" type="text" name="add_author" id="id_add_author" placeholder="{% trans 'Jane Doe' %}" value="{{ author }}" {% if confirm_mode %}readonly{% endif %}>
                     {% endfor %}
                 </div>
-                <span class="help"><button class="button is-small" type="button" data-duplicate="id_add_author" id="another_author_field">{% trans "Add Another Author" %}</button></span>
+                <span class="help">
+                    <button class="button is-small" type="button" data-duplicate="id_add_author" id="another_author_field">
+                        <span class="icon icon-plus" aria-hidden="true"></span>
+                        <span>{% trans "Add Another Author" %}</span>
+                    </button>
+                </span>
             </div>
         </section>
     </div>
@@ -180,7 +240,7 @@
                             </label>
                             <input class="input" name="cover-url" id="id_cover_url" type="url" value="{{ cover_url|default:'' }}" aria-describedby="desc_cover">
                         </div>
-                        
+
                         {% include 'snippets/form_errors.html' with errors_list=form.cover.errors id="desc_cover" %}
                     </div>
                 </div>
@@ -198,10 +258,8 @@
                             <label class="label" for="id_physical_format">
                                 {% trans "Format:" %}
                             </label>
-                            <div class="select">
-                                {{ form.physical_format }}
-                            </div>
-                            
+                            {{ form.physical_format }}
+
                             {% include 'snippets/form_errors.html' with errors_list=form.physical_format.errors id="desc_physical_format" %}
                         </div>
                     </div>
@@ -211,7 +269,7 @@
                                 {% trans "Format details:" %}
                             </label>
                             {{ form.physical_format_detail }}
-                            
+
                             {% include 'snippets/form_errors.html' with errors_list=form.physical_format_detail.errors id="desc_physical_format_detail" %}
                         </div>
                     </div>
@@ -222,7 +280,7 @@
                         {% trans "Pages:" %}
                     </label>
                     {{ form.pages }}
-                    
+
                     {% include 'snippets/form_errors.html' with errors_list=form.pages.errors id="desc_pages" %}
                 </div>
             </div>
@@ -238,7 +296,7 @@
                         {% trans "ISBN 13:" %}
                     </label>
                     {{ form.isbn_13 }}
-                    
+
                     {% include 'snippets/form_errors.html' with errors_list=form.isbn_13.errors id="desc_isbn_13" %}
                 </div>
 
@@ -247,7 +305,7 @@
                         {% trans "ISBN 10:" %}
                     </label>
                     {{ form.isbn_10 }}
-                    
+
                     {% include 'snippets/form_errors.html' with errors_list=form.isbn_10.errors id="desc_isbn_10" %}
                 </div>
 
@@ -256,7 +314,7 @@
                         {% trans "Openlibrary ID:" %}
                     </label>
                     {{ form.openlibrary_key }}
-                    
+
                     {% include 'snippets/form_errors.html' with errors_list=form.openlibrary_key.errors id="desc_openlibrary_key" %}
                 </div>
 
@@ -265,7 +323,7 @@
                         {% trans "Inventaire ID:" %}
                     </label>
                     {{ form.inventaire_id }}
-                    
+
                     {% include 'snippets/form_errors.html' with errors_list=form.inventaire_id.errors id="desc_inventaire_id" %}
                 </div>
 
@@ -274,7 +332,7 @@
                         {% trans "OCLC Number:" %}
                     </label>
                     {{ form.oclc_number }}
-                    
+
                     {% include 'snippets/form_errors.html' with errors_list=form.oclc_number.errors id="desc_oclc_number" %}
                 </div>
 
@@ -283,10 +341,14 @@
                         {% trans "ASIN:" %}
                     </label>
                     {{ form.asin }}
-                    
+
                     {% include 'snippets/form_errors.html' with errors_list=form.ASIN.errors id="desc_ASIN" %}
                 </div>
             </div>
         </section>
     </div>
 </div>
+
+{% block scripts %}
+<script src="{% static "js/forms.js" %}"></script>
+{% endblock %}

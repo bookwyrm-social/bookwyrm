@@ -19,8 +19,10 @@
 {% endblock %}
 
 {% block modal-footer %}
-<button class="button is-primary" type="submit">{% trans "Confirm" %}</button>
-<button type="button" class="button" data-modal-close>{% trans "Cancel" %}</button>
+<div class="buttons is-right is-flex-grow-1">
+    <button type="button" class="button" data-modal-close>{% trans "Cancel" %}</button>
+    <button class="button is-primary" type="submit">{% trans "Confirm" %}</button>
+</div>
 {% endblock %}
 
 {% block modal-form-close %}</form>{% endblock %}

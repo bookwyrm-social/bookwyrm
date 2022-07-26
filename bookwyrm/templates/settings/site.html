@@ -8,7 +8,7 @@
 {% block site-subtabs %}
 <ul class="menu-list">
     <li><a href="#instance-info">{% trans "Instance Info" %}</a></li>
-    <li><a href="#images">{% trans "Images" %}</a></li>
+    <li><a href="#display">{% trans "Display" %}</a></li>
     <li><a href="#footer">{% trans "Footer Content" %}</a></li>
     <li><a href="#registration">{% trans "Registration" %}</a></li>
 </ul>
@@ -33,7 +33,12 @@
 </div>
 {% endif %}
 
-<form action="{% url 'settings-site' %}" method="POST" class="content" enctype="multipart/form-data">
+<form
+    action="{% url 'settings-site' %}"
+    method="POST"
+    class="content"
+    enctype="multipart/form-data"
+>
     {% csrf_token %}
     <section class="block" id="instance_info">
         <h2 class="title is-4">{% trans "Instance Info" %}</h2>
@@ -68,20 +73,33 @@
 
     <hr aria-hidden="true">
 
-    <section class="block" id="images">
-        <h2 class="title is-4">{% trans "Images" %}</h2>
-        <div class="box is-flex">
-            <div>
-                <label class="label" for="id_logo">{% trans "Logo:" %}</label>
-                {{ site_form.logo }}
+    <section class="block" id="display">
+        <h2 class="title is-4">{% trans "Display" %}</h2>
+        <div class="box">
+            <h3 class="title is-5">{% trans "Images" %}</h3>
+            <div class="block is-flex">
+                <div>
+                    <label class="label" for="id_logo">{% trans "Logo:" %}</label>
+                    {{ site_form.logo }}
+                </div>
+                <div>
+                    <label class="label" for="id_logo_small">{% trans "Logo small:" %}</label>
+                    {{ site_form.logo_small }}
+                </div>
+                <div>
+                    <label class="label" for="id_favicon">{% trans "Favicon:" %}</label>
+                    {{ site_form.favicon }}
+                </div>
             </div>
-            <div>
-                <label class="label" for="id_logo_small">{% trans "Logo small:" %}</label>
-                {{ site_form.logo_small }}
-            </div>
-            <div>
-                <label class="label" for="id_favicon">{% trans "Favicon:" %}</label>
-                {{ site_form.favicon }}
+
+            <h3 class="title is-5">{% trans "Themes" %}</h3>
+            <div class="block">
+                <label class="label" for="id_default_theme">
+                    {% trans "Default theme:" %}
+                </label>
+                <div class="select">
+                    {{ site_form.default_theme }}
+                </div>
             </div>
         </div>
     </section>
@@ -122,12 +140,6 @@
                 </label>
             </div>
             <div class="field">
-                <label class="label" for="id_allow_invite_requests">
-                    {{ site_form.allow_invite_requests }}
-                    {% trans "Allow invite requests" %}
-                </label>
-            </div>
-            <div class="field">
                 <label class="label mb-0" for="id_require_confirm_email">
                     {{ site_form.require_confirm_email }}
                     {% trans "Require users to confirm email address" %}
@@ -135,13 +147,31 @@
                 <p class="help" id="desc_require_confirm_email">{% trans "(Recommended if registration is open)" %}</p>
             </div>
             <div class="field">
+                <label class="label" for="id_allow_invite_requests">
+                    {{ site_form.allow_invite_requests }}
+                    {% trans "Allow invite requests" %}
+                </label>
+            </div>
+            <div class="field">
+                <label class="label" for="id_invite_requests_question">
+                    {{ site_form.invite_request_question }}
+                    {% trans "Set a question for invite requests" %}
+                </label>
+            </div>
+                <div class="field">
+                    <label class="label" for="id_invite_question_text">
+                        {% trans "Question:" %}
+                        {{ site_form.invite_question_text }}
+                    </label>
+                </div>
+            <div class="field">
                 <label class="label" for="id_registration_closed_text">{% trans "Registration closed text:" %}</label>
                 {{ site_form.registration_closed_text }}
             </div>
             <div class="field">
                 <label class="label" for="id_invite_request_text">{% trans "Invite request text:" %}</label>
                 {{ site_form.invite_request_text }}
-    
+
                 {% include 'snippets/form_errors.html' with errors_list=site_form.invite_request_text.errors id="desc_invite_request_text" %}
             </div>
         </div>

@@ -1,5 +1,5 @@
 /* exported BookWyrm */
-/* globals TabGroup */
+/* globals TabGroup, Quagga */
 
 let BookWyrm = new (class {
     constructor() {
@@ -39,14 +39,14 @@ let BookWyrm = new (class {
             .forEach((node) => node.addEventListener("click", this.handleModalButton.bind(this)));
 
         document
-            .querySelectorAll("[data-duplicate]")
-            .forEach((node) => node.addEventListener("click", this.duplicateInput.bind(this)));
-
-        document
             .querySelectorAll("details.dropdown")
             .forEach((node) =>
                 node.addEventListener("toggle", this.handleDetailsDropdown.bind(this))
             );
+
+        document
+            .querySelector("#barcode-scanner-modal")
+            .addEventListener("open", this.openBarcodeScanner.bind(this));
     }
 
     /**
@@ -427,9 +427,11 @@ let BookWyrm = new (class {
             });
 
             modalElement.addEventListener("keydown", handleFocusTrap);
+            modalElement.dispatchEvent(new Event("open"));
         }
 
         function handleModalClose(modalElement) {
+            modalElement.dispatchEvent(new Event("close"));
             modalElement.removeEventListener("keydown", handleFocusTrap);
             htmlElement.classList.remove("is-clipped");
             modalElement.classList.remove("is-active");
@@ -487,26 +489,6 @@ let BookWyrm = new (class {
      */
     displayPopUp(url, windowName) {
         window.open(url, windowName, "left=100,top=100,width=430,height=600");
-    }
-
-    duplicateInput(event) {
-        const trigger = event.currentTarget;
-        const input_id = trigger.dataset.duplicate;
-        const orig = document.getElementById(input_id);
-        const parent = orig.parentNode;
-        const new_count = parent.querySelectorAll("input").length + 1;
-
-        let input = orig.cloneNode();
-
-        input.id += "-" + new_count;
-        input.value = "";
-
-        let label = parent.querySelector("label").cloneNode();
-
-        label.setAttribute("for", input.id);
-
-        parent.appendChild(label);
-        parent.appendChild(input);
     }
 
     /**
@@ -631,5 +613,175 @@ let BookWyrm = new (class {
                 event.preventDefault();
             }
         }
+    }
+
+    openBarcodeScanner(event) {
+        const scannerNode = document.getElementById("barcode-scanner");
+        const statusNode = document.getElementById("barcode-status");
+        const cameraListNode = document.querySelector("#barcode-camera-list > select");
+
+        cameraListNode.addEventListener("change", onChangeCamera);
+
+        function onChangeCamera(event) {
+            initBarcodes(event.target.value);
+        }
+
+        function toggleStatus(status) {
+            for (const child of statusNode.children) {
+                BookWyrm.toggleContainer(child, !child.classList.contains(status));
+            }
+        }
+
+        function initBarcodes(cameraId = null) {
+            toggleStatus("grant-access");
+
+            if (!cameraId) {
+                cameraId = sessionStorage.getItem("preferredCam");
+            } else {
+                sessionStorage.setItem("preferredCam", cameraId);
+            }
+
+            scannerNode.replaceChildren();
+            Quagga.stop();
+            Quagga.init(
+                {
+                    inputStream: {
+                        name: "Live",
+                        type: "LiveStream",
+                        target: scannerNode,
+                        constraints: {
+                            facingMode: "environment",
+                            deviceId: cameraId,
+                        },
+                    },
+                    decoder: {
+                        readers: [
+                            "ean_reader",
+                            {
+                                format: "ean_reader",
+                                config: {
+                                    supplements: ["ean_2_reader", "ean_5_reader"],
+                                },
+                            },
+                        ],
+                        multiple: false,
+                    },
+                },
+                (err) => {
+                    if (err) {
+                        scannerNode.replaceChildren();
+                        console.log(err);
+                        toggleStatus("access-denied");
+
+                        return;
+                    }
+
+                    let activeId = null;
+                    const track = Quagga.CameraAccess.getActiveTrack();
+
+                    if (track) {
+                        activeId = track.getSettings().deviceId;
+                    }
+
+                    Quagga.CameraAccess.enumerateVideoDevices().then((devices) => {
+                        cameraListNode.replaceChildren();
+
+                        for (const device of devices) {
+                            const child = document.createElement("option");
+
+                            child.value = device.deviceId;
+                            child.innerText = device.label.slice(0, 30);
+
+                            if (activeId === child.value) {
+                                child.selected = true;
+                            }
+
+                            cameraListNode.appendChild(child);
+                        }
+                    });
+
+                    toggleStatus("scanning");
+                    Quagga.start();
+                }
+            );
+        }
+
+        function cleanup(clearDrawing = true) {
+            Quagga.stop();
+            cameraListNode.removeEventListener("change", onChangeCamera);
+
+            if (clearDrawing) {
+                scannerNode.replaceChildren();
+            }
+        }
+
+        Quagga.onProcessed((result) => {
+            const drawingCtx = Quagga.canvas.ctx.overlay;
+            const drawingCanvas = Quagga.canvas.dom.overlay;
+
+            if (result) {
+                if (result.boxes) {
+                    drawingCtx.clearRect(
+                        0,
+                        0,
+                        parseInt(drawingCanvas.getAttribute("width")),
+                        parseInt(drawingCanvas.getAttribute("height"))
+                    );
+                    result.boxes
+                        .filter((box) => box !== result.box)
+                        .forEach((box) => {
+                            Quagga.ImageDebug.drawPath(box, { x: 0, y: 1 }, drawingCtx, {
+                                color: "green",
+                                lineWidth: 2,
+                            });
+                        });
+                }
+
+                if (result.box) {
+                    Quagga.ImageDebug.drawPath(result.box, { x: 0, y: 1 }, drawingCtx, {
+                        color: "#00F",
+                        lineWidth: 2,
+                    });
+                }
+
+                if (result.codeResult && result.codeResult.code) {
+                    Quagga.ImageDebug.drawPath(result.line, { x: "x", y: "y" }, drawingCtx, {
+                        color: "red",
+                        lineWidth: 3,
+                    });
+                }
+            }
+        });
+
+        let lastDetection = null;
+        let numDetected = 0;
+
+        Quagga.onDetected((result) => {
+            // Detect the same code 3 times as an extra check to avoid bogus scans.
+            if (lastDetection === null || lastDetection !== result.codeResult.code) {
+                numDetected = 1;
+                lastDetection = result.codeResult.code;
+
+                return;
+            } else if (numDetected++ < 3) {
+                return;
+            }
+
+            const code = result.codeResult.code;
+
+            statusNode.querySelector(".isbn").innerText = code;
+            toggleStatus("found");
+
+            const search = new URL("/search", document.location);
+
+            search.searchParams.set("q", code);
+
+            cleanup(false);
+            location.assign(search);
+        });
+
+        event.target.addEventListener("close", cleanup, { once: true });
+
+        initBarcodes();
     }
 })();

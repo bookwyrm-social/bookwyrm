@@ -5,7 +5,19 @@
 <section class="block">
     <h2 class="title is-4">{% trans "Your Books" %}</h2>
     {% if not suggested_books %}
-    <p>{% trans "There are no books here right now! Try searching for a book to get started" %}</p>
+
+    <div class="content">
+        <p>{% trans "There are no books here right now! Try searching for a book to get started" %}</p>
+
+        <div class="box has-background-link-light">
+            <p>{% trans "Do you have book data from another service like GoodReads?" %}</p>
+            <a href="{% url 'import' %}">
+                <span class="icon icon-list" aria-hidden="true"></span>
+                {% trans "Import your reading history" %}
+            </a>
+        </div>
+    </div>
+
     {% else %}
     {% with active_book=request.GET.book %}
     <div class="tab-group">

@@ -1,8 +1,6 @@
 {% load i18n %}
-<div class="columns mt-1">
-    <div class="field has-addons column">
-        {% include "snippets/create_status/content_warning_toggle.html" %}
-        <div class="control">
+<div class="field has-addons is-justify-content-end">
+    <div class="control">
         {% if type == 'direct' %}
             <input type="hidden" name="privacy" value="direct">
             <button type="button" class="button" aria-label="Privacy" disabled>{% trans "Private" %}</button>
@@ -13,13 +11,11 @@
             {% include 'snippets/privacy_select.html' with current=reply_parent.privacy %}
             {% endif %}
         {% endif %}
-        </div>
     </div>
-    <div class="column is-narrow control">
+    <div class="control">
         <button class="button is-link" type="submit">
             <span class="icon icon-spinner" aria-hidden="true"></span>
             <span>{% trans "Post" %}</span>
         </button>
     </div>
 </div>
-

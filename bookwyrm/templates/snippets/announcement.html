@@ -1,7 +1,7 @@
 {% load humanize %}{% load i18n %}{% load utilities %}
 {% with announcement.id|uuid as uuid %}
 <aside
-        class="notification mb-1 p-3{% if not admin_mode %} is-hidden{% endif %} transition-y has-background-{{ announcement.display_type }}"
+        class="notification mb-1 p-3{% if not admin_mode %} is-hidden{% endif %} transition-y {% if announcement.display_type %}has-background-{{ announcement.display_type }}{% endif %}"
     {% if not admin_mode %}data-hide="hide_announcement_{{ announcement.id }}"{% endif %}
 >
     <details>

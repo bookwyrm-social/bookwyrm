@@ -32,9 +32,10 @@ class ListsStreamSignals(TestCase):
 
     def test_add_list_on_create_command(self, _):
         """a new lists has entered"""
-        book_list = models.List.objects.create(
-            user=self.remote_user, name="hi", privacy="public"
-        )
+        with patch("bookwyrm.lists_stream.remove_list_task.delay"):
+            book_list = models.List.objects.create(
+                user=self.remote_user, name="hi", privacy="public"
+            )
         with patch("bookwyrm.lists_stream.add_list_task.delay") as mock:
             lists_stream.add_list_on_create_command(book_list.id)
         self.assertEqual(mock.call_count, 1)
@@ -43,9 +44,10 @@ class ListsStreamSignals(TestCase):
 
     def test_remove_list_on_delete(self, _):
         """delete a list"""
-        book_list = models.List.objects.create(
-            user=self.remote_user, name="hi", privacy="public"
-        )
+        with patch("bookwyrm.lists_stream.remove_list_task.delay"):
+            book_list = models.List.objects.create(
+                user=self.remote_user, name="hi", privacy="public"
+            )
         with patch("bookwyrm.lists_stream.remove_list_task.delay") as mock:
             lists_stream.remove_list_on_delete(models.List, book_list)
         args = mock.call_args[0]

@@ -4,7 +4,7 @@
 {% load utilities %}
 
 {% block primary_link %}{% spaceless %}
-    {{ notification.related_user.local_path }}
+{% url 'user-followers' request.user.localname %}
 {% endspaceless %}{% endblock %}
 
 {% block icon %}
@@ -12,6 +12,19 @@
 {% endblock %}
 
 {% block description %}
-    {% trans "followed you" %}
-    {% include 'snippets/follow_button.html' with user=notification.related_user %}
+{% if related_user_count == 1 %}
+    {% blocktrans trimmed %}
+    <a href="{{ related_user_link }}">{{ related_user }}</a> followed you
+    {% endblocktrans %}
+{% elif related_user_count == 2 %}
+    {% blocktrans trimmed %}
+    <a href="{{ related_user_link }}">{{ related_user }}</a> and
+    <a href="{{ second_user_link }}">{{ second_user }}</a> followed you
+    {% endblocktrans %}
+{% else %}
+    {% blocktrans trimmed %}
+    <a href="{{ related_user_link }}">{{ related_user }}</a> and {{ other_user_display_count }} others followed you
+    {% endblocktrans %}
+{% endif %}
+
 {% endblock %}

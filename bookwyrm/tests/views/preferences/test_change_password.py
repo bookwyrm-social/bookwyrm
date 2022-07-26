@@ -42,17 +42,71 @@ class ChangePasswordViews(TestCase):
         """change password"""
         view = views.ChangePassword.as_view()
         password_hash = self.local_user.password
-        request = self.factory.post("", {"password": "hi", "confirm-password": "hi"})
+        request = self.factory.post(
+            "",
+            {
+                "current_password": "password",
+                "password": "longwordsecure",
+                "confirm_password": "longwordsecure",
+            },
+        )
         request.user = self.local_user
         with patch("bookwyrm.views.preferences.change_password.login"):
-            view(request)
+            result = view(request)
+        validate_html(result.render())
+        self.local_user.refresh_from_db()
         self.assertNotEqual(self.local_user.password, password_hash)
+
+    def test_password_change_wrong_current(self):
+        """change password"""
+        view = views.ChangePassword.as_view()
+        password_hash = self.local_user.password
+        request = self.factory.post(
+            "",
+            {
+                "current_password": "not my password",
+                "password": "longwordsecure",
+                "confirm_password": "hihi",
+            },
+        )
+        request.user = self.local_user
+        result = view(request)
+        validate_html(result.render())
+        self.local_user.refresh_from_db()
+        self.assertEqual(self.local_user.password, password_hash)
 
     def test_password_change_mismatch(self):
         """change password"""
         view = views.ChangePassword.as_view()
         password_hash = self.local_user.password
-        request = self.factory.post("", {"password": "hi", "confirm-password": "hihi"})
+        request = self.factory.post(
+            "",
+            {
+                "current_password": "password",
+                "password": "longwordsecure",
+                "confirm_password": "hihi",
+            },
+        )
         request.user = self.local_user
-        view(request)
+        result = view(request)
+        validate_html(result.render())
+        self.local_user.refresh_from_db()
+        self.assertEqual(self.local_user.password, password_hash)
+
+    def test_password_change_invalid(self):
+        """change password"""
+        view = views.ChangePassword.as_view()
+        password_hash = self.local_user.password
+        request = self.factory.post(
+            "",
+            {
+                "current_password": "password",
+                "password": "hi",
+                "confirm_password": "hi",
+            },
+        )
+        request.user = self.local_user
+        result = view(request)
+        validate_html(result.render())
+        self.local_user.refresh_from_db()
         self.assertEqual(self.local_user.password, password_hash)

@@ -14,23 +14,25 @@
 {% cache 604800 about_page %}
 
 {% get_book_superlatives as superlatives %}
-<section class="content pb-4">
-    <h2>
-        {% blocktrans with site_name=site.name %}Welcome to {{ site_name }}!{% endblocktrans %}
-    </h2>
+<section class=" pb-4">
+    <div class="content">
+        <h2>
+            {% blocktrans with site_name=site.name %}Welcome to {{ site_name }}!{% endblocktrans %}
+        </h2>
 
-    <p class="subtitle notification has-background-primary-highlight">
-        {% blocktrans trimmed with site_name=site.name %}
-            {{ site_name }} is part of <em>BookWyrm</em>, a network of independent, self-directed communities for readers.
-            While you can interact seamlessly with users anywhere in the <a href="https://joinbookwyrm.com/instances/" target="_blank">BookWyrm network</a>, this community is unique.
-        {% endblocktrans %}
-    </p>
+        <p class="subtitle notification has-background-primary-highlight">
+            {% blocktrans trimmed with site_name=site.name %}
+                {{ site_name }} is part of <em>BookWyrm</em>, a network of independent, self-directed communities for readers.
+                While you can interact seamlessly with users anywhere in the <a href="https://joinbookwyrm.com/instances/" target="_blank">BookWyrm network</a>, this community is unique.
+            {% endblocktrans %}
+        </p>
+    </div>
 
     <div class="columns">
         {% if superlatives.top_rated %}
         {% with book=superlatives.top_rated.default_edition rating=superlatives.top_rated.rating %}
         <div class="column is-one-third is-flex">
-            <div class="media notification">
+            <div class="media notification is-clipped">
                 <div class="media-left">
                     <a href="{{ book.local_path }}">
                         {% include 'snippets/book_cover.html' with book=book cover_class='is-h-m' size='medium' aria='show' %}
@@ -49,7 +51,7 @@
         {% if superlatives.wanted %}
         {% with book=superlatives.wanted.default_edition %}
         <div class="column is-one-third is-flex">
-            <div class="media notification">
+            <div class="media notification is-clipped">
                 <div class="media-left">
                     <a href="{{ book.local_path }}">
                         {% include 'snippets/book_cover.html' with book=book cover_class='is-h-m' size='medium' aria='show' %}
@@ -68,7 +70,7 @@
         {% if superlatives.controversial %}
         {% with book=superlatives.controversial.default_edition %}
         <div class="column is-one-third is-flex">
-            <div class="media notification">
+            <div class="media notification is-clipped">
                 <div class="media-left">
                     <a href="{{ book.local_path }}">
                         {% include 'snippets/book_cover.html' with book=book cover_class='is-h-m' size='medium' aria='show' %}
@@ -97,7 +99,7 @@
         <p>
         {% url "conduct" as coc_path %}
         {% blocktrans trimmed with site_name=site.name %}
-            {{ site_name }}'s moderators and administrators keep the site up and running, enforce the <a href="coc_path">code of conduct</a>, and respond when users report spam and bad behavior.
+            {{ site_name }}'s moderators and administrators keep the site up and running, enforce the <a href="{{ coc_path }}">code of conduct</a>, and respond when users report spam and bad behavior.
         {% endblocktrans %}
         </p>
     </header>

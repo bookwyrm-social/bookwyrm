@@ -30,7 +30,7 @@
     </ul>
 </div>
 
-{% include 'settings/users/user_admin_filters.html' %}
+{% include 'settings/reports/report_filters.html' %}
 
 <div class="block">
     {% if not reports %}
@@ -44,5 +44,6 @@
     {% endfor %}
 </div>
 
+{% include 'snippets/pagination.html' with page=reports path=request.path %}
 {% endblock %}
 

@@ -4,7 +4,7 @@
 {% with goal.progress as progress %}
 <p>
     {% if progress.percent >= 100 %}
-        {% trans "Success!" %}
+        {% trans "Success!" context "Goal successfully completed" %}
     {% elif progress.percent %}
         {% blocktrans with percent=progress.percent %}{{ percent }}% complete!{% endblocktrans %}
     {% endif %}
@@ -14,6 +14,11 @@
     {% blocktrans with username=goal.user.display_name read_count=progress.count|intcomma goal_count=goal.goal|intcomma path=goal.local_path %}{{ username }} has read <a href="{{ path }}">{{ read_count }} of {{ goal_count}} books</a>.{% endblocktrans %}
     {% endif %}
 </p>
-<progress class="progress is-large" value="{{ progress.count }}" max="{{ goal.goal }}" aria-hidden="true">{{ progress.percent }}%</progress>
+<progress
+    class="progress is-large is-primary"
+    value="{{ progress.count }}"
+    max="{{ goal.goal }}"
+    aria-hidden="true"
+>{{ progress.percent }}%</progress>
 
 {% endwith %}

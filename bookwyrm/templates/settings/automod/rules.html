@@ -1,5 +1,6 @@
 {% extends 'settings/layout.html' %}
 {% load i18n %}
+{% load humanize %}
 {% load utilities %}
 
 {% block title %}
@@ -16,12 +17,81 @@
     <p>
         {% trans "Auto-moderation rules will create reports for any local user or status with fields matching the provided string." %}
         {% trans "Users or statuses that have already been reported (regardless of whether the report was resolved) will not be flagged." %}
-        {% trans "At this time, reports are <em>not</em> being generated automatically, and you must manually trigger a scan." %}
     </p>
-    <form name="run-scan" method="POST" action="{% url 'settings-automod-run' %}">
+</div>
+<div class="box block">
+    {% if task %}
+    <dl class="block">
+        <dt class="is-pulled-left mr-5 has-text-weight-bold">
+            {% trans "Schedule:" %}
+        </dt>
+        <dd>
+            {{ task.schedule }}
+        </dd>
+
+        <dt class="is-pulled-left mr-5 has-text-weight-bold">
+            {% trans "Last run:" %}
+        </dt>
+        <dd>
+            {{ task.last_run_at|naturaltime }}
+        </dd>
+
+        <dt class="is-pulled-left mr-5 has-text-weight-bold">
+            {% trans "Total run count:" %}
+        </dt>
+        <dd>
+            {{ task.total_run_count }}
+        </dd>
+
+        <dt class="is-pulled-left mr-5 has-text-weight-bold">
+            {% trans "Enabled:" %}
+        </dt>
+        <dd>
+            <span class="tag {% if task.enabled %}is-success{% else %}is-danger{% endif %}">
+                {{ task.enabled|yesno }}
+            </span>
+        </dd>
+    </dl>
+
+    <div class="is-flex is-justify-content-space-between block">
+        <form name="unschedule-scan" method="POST" action="{% url 'settings-automod-unschedule' task.id %}">
+            {% csrf_token %}
+            <button class="button is-danger">{% trans "Delete schedule" %}</button>
+        </form>
+        <form name="run-scan" method="POST" action="{% url 'settings-automod-run' %}">
+            {% csrf_token %}
+            <button class="button">{% trans "Run now" %}</button>
+            <p class="help">{% trans "Last run date will not be updated" %}</p>
+        </form>
+    </div>
+
+    {% else %}
+    <h2 class="title is-4">{% trans "Schedule scan" %}</h2>
+    <form name="schedule-scan" method="POST" action="{% url 'settings-automod-schedule' %}">
         {% csrf_token %}
-        <button class="button is-warning">{% trans "Run scan" %}</button>
+        <div class="field">
+            <label class="label" for="id_every">
+                {{ task_form.every.label }}
+            </label>
+            {{ task_form.every }}
+            <p class="help" id="desc_every">
+                {{ task_form.every.help_text }}
+            </p>
+        </div>
+        <div class="field">
+            <label class="label" for="id_period">
+            {{ task_form.period.label }}
+            </label>
+            <div class="select">
+                {{ task_form.period }}
+            </div>
+            <p class="help" id="desc_period">
+                {{ task_form.period.help_text }}
+            </p>
+        </div>
+        <button class="button is-warning">{% trans "Schedule scan" %}</button>
     </form>
+    {% endif %}
 </div>
 
 {% if success %}
@@ -84,7 +154,7 @@
         </summary>
 
         <div class="table-container">
-            <table class="table is-striped">
+            <table class="table is-striped is-fullwidth">
                 <tr>
                     <th>
                         <label for="id_string_match">{% trans "String match" %}</label>

@@ -8,8 +8,20 @@ def site_settings(request):  # pylint: disable=unused-argument
     if not request.is_secure():
         request_protocol = "http://"
 
+    site = models.SiteSettings.objects.get()
+    theme = "css/themes/bookwyrm-light.scss"
+    if (
+        hasattr(request, "user")
+        and request.user.is_authenticated
+        and request.user.theme
+    ):
+        theme = request.user.theme.path
+    elif site.default_theme:
+        theme = site.default_theme.path
+
     return {
-        "site": models.SiteSettings.objects.get(),
+        "site": site,
+        "site_theme": theme,
         "active_announcements": models.Announcement.active_announcements(),
         "thumbnail_generation_enabled": settings.ENABLE_THUMBNAIL_GENERATION,
         "media_full_url": settings.MEDIA_FULL_URL,

@@ -71,7 +71,7 @@ urlpatterns = [
         views.ConfirmEmailCode.as_view(),
         name="confirm-email-code",
     ),
-    re_path(r"^resend-link/?$", views.resend_link, name="resend-link"),
+    re_path(r"^resend-link/?$", views.ResendConfirmEmail.as_view(), name="resend-link"),
     re_path(r"^logout/?$", views.Logout.as_view(), name="logout"),
     re_path(
         r"^password-reset/?$",
@@ -86,6 +86,12 @@ urlpatterns = [
         r"^settings/dashboard/?$", views.Dashboard.as_view(), name="settings-dashboard"
     ),
     re_path(r"^settings/site-settings/?$", views.Site.as_view(), name="settings-site"),
+    re_path(r"^settings/themes/?$", views.Themes.as_view(), name="settings-themes"),
+    re_path(
+        r"^settings/themes/(?P<theme_id>\d+)/delete/?$",
+        views.delete_theme,
+        name="settings-themes-delete",
+    ),
     re_path(
         r"^settings/announcements/?$",
         views.Announcements.as_view(),
@@ -118,6 +124,11 @@ urlpatterns = [
     ),
     re_path(
         r"^settings/users/?$", views.UserAdminList.as_view(), name="settings-users"
+    ),
+    re_path(
+        r"^settings/users/(?P<status>(local|federated|deleted))\/?$",
+        views.UserAdminList.as_view(),
+        name="settings-users",
     ),
     re_path(
         r"^settings/users/(?P<user>\d+)/?$",
@@ -222,11 +233,23 @@ urlpatterns = [
     # auto-moderation rules
     re_path(r"^settings/automod/?$", views.AutoMod.as_view(), name="settings-automod"),
     re_path(
-        r"^settings/automod/(?P<rule_id>\d+)/delete?$",
+        r"^settings/automod/(?P<rule_id>\d+)/delete/?$",
         views.automod_delete,
         name="settings-automod-delete",
     ),
-    re_path(r"^settings/automod/run?$", views.run_automod, name="settings-automod-run"),
+    re_path(
+        r"^settings/automod/schedule/?$",
+        views.schedule_automod_task,
+        name="settings-automod-schedule",
+    ),
+    re_path(
+        r"^settings/automod/unschedule/(?P<task_id>\d+)/?$",
+        views.unschedule_automod_task,
+        name="settings-automod-unschedule",
+    ),
+    re_path(
+        r"^settings/automod/run/?$", views.run_automod, name="settings-automod-run"
+    ),
     # moderation
     re_path(
         r"^settings/reports/?$", views.ReportsAdmin.as_view(), name="settings-reports"
@@ -264,7 +287,7 @@ urlpatterns = [
         name="report-status",
     ),
     re_path(
-        r"^report/(?P<user_id>\d+)/link/(?P<link_id>\d+)?$",
+        r"^report/link/(?P<link_id>\d+)?$",
         views.Report.as_view(),
         name="report-link",
     ),
@@ -369,6 +392,9 @@ urlpatterns = [
         r"^group/(?P<group_id>\d+)(.json)?/?$", views.Group.as_view(), name="group"
     ),
     re_path(
+        rf"^group/(?P<group_id>\d+){regex.SLUG}/?$", views.Group.as_view(), name="group"
+    ),
+    re_path(
         r"^group/delete/(?P<group_id>\d+)/?$", views.delete_group, name="delete-group"
     ),
     re_path(
@@ -394,7 +420,10 @@ urlpatterns = [
     re_path(rf"{USER_PATH}/lists/?$", views.UserLists.as_view(), name="user-lists"),
     re_path(r"^list/?$", views.Lists.as_view(), name="lists"),
     re_path(r"^list/saved/?$", views.SavedLists.as_view(), name="saved-lists"),
-    re_path(r"^list/(?P<list_id>\d+)(.json)?/?$", views.List.as_view(), name="list"),
+    re_path(r"^list/(?P<list_id>\d+)(\.json)?/?$", views.List.as_view(), name="list"),
+    re_path(
+        rf"^list/(?P<list_id>\d+){regex.SLUG}/?$", views.List.as_view(), name="list"
+    ),
     re_path(
         r"^list/(?P<list_id>\d+)/item/(?P<list_item>\d+)/?$",
         views.ListItem.as_view(),
@@ -452,12 +481,14 @@ urlpatterns = [
         views.ChangePassword.as_view(),
         name="prefs-password",
     ),
+    re_path(r"^preferences/export/?$", views.Export.as_view(), name="prefs-export"),
     re_path(r"^preferences/delete/?$", views.DeleteUser.as_view(), name="prefs-delete"),
     re_path(r"^preferences/block/?$", views.Block.as_view(), name="prefs-block"),
     re_path(r"^block/(?P<user_id>\d+)/?$", views.Block.as_view()),
     re_path(r"^unblock/(?P<user_id>\d+)/?$", views.unblock),
     # statuses
     re_path(rf"{STATUS_PATH}(.json)?/?$", views.Status.as_view(), name="status"),
+    re_path(rf"{STATUS_PATH}{regex.SLUG}/?$", views.Status.as_view(), name="status"),
     re_path(rf"{STATUS_PATH}/activity/?$", views.Status.as_view(), name="status"),
     re_path(
         rf"{STATUS_PATH}/replies(.json)?/?$", views.Replies.as_view(), name="replies"
@@ -494,15 +525,27 @@ urlpatterns = [
     re_path(r"^unboost/(?P<status_id>\d+)/?$", views.Unboost.as_view()),
     # books
     re_path(rf"{BOOK_PATH}(.json)?/?$", views.Book.as_view(), name="book"),
+    re_path(rf"{BOOK_PATH}{regex.SLUG}/?$", views.Book.as_view(), name="book"),
     re_path(
         rf"{BOOK_PATH}/(?P<user_statuses>review|comment|quote)/?$",
         views.Book.as_view(),
         name="book-user-statuses",
     ),
     re_path(rf"{BOOK_PATH}/edit/?$", views.EditBook.as_view(), name="edit-book"),
-    re_path(rf"{BOOK_PATH}/confirm/?$", views.ConfirmEditBook.as_view()),
-    re_path(r"^create-book/?$", views.EditBook.as_view(), name="create-book"),
-    re_path(r"^create-book/confirm/?$", views.ConfirmEditBook.as_view()),
+    re_path(
+        rf"{BOOK_PATH}/confirm/?$",
+        views.ConfirmEditBook.as_view(),
+        name="edit-book-confirm",
+    ),
+    re_path(
+        r"^create-book/data/?$", views.create_book_from_data, name="create-book-data"
+    ),
+    re_path(r"^create-book/?$", views.CreateBook.as_view(), name="create-book"),
+    re_path(
+        r"^create-book/confirm/?$",
+        views.ConfirmEditBook.as_view(),
+        name="create-book-confirm",
+    ),
     re_path(rf"{BOOK_PATH}/editions(.json)?/?$", views.Editions.as_view()),
     re_path(
         r"^upload-cover/(?P<book_id>\d+)/?$", views.upload_cover, name="upload-cover"
@@ -549,6 +592,11 @@ urlpatterns = [
         r"^author/(?P<author_id>\d+)(.json)?/?$", views.Author.as_view(), name="author"
     ),
     re_path(
+        rf"^author/(?P<author_id>\d+){regex.SLUG}/?$",
+        views.Author.as_view(),
+        name="author",
+    ),
+    re_path(
         r"^author/(?P<author_id>\d+)/edit/?$",
         views.EditAuthor.as_view(),
         name="edit-author",
@@ -569,7 +617,7 @@ urlpatterns = [
         name="reading-status-update",
     ),
     re_path(
-        r"^reading-status/(?P<status>want|start|finish)/(?P<book_id>\d+)/?$",
+        r"^reading-status/(?P<status>want|start|finish|stop)/(?P<book_id>\d+)/?$",
         views.ReadingStatus.as_view(),
         name="reading-status",
     ),

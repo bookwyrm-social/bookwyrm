@@ -9,6 +9,7 @@ from django.test import TestCase
 from django.test.client import RequestFactory
 
 from bookwyrm import forms, models, views
+from bookwyrm.views.books.edit_book import add_authors
 from bookwyrm.tests.validate_html import validate_html
 from bookwyrm.tests.views.books.test_book import _setup_cover_url
 
@@ -47,7 +48,7 @@ class EditBookViews(TestCase):
 
         models.SiteSettings.objects.create()
 
-    def test_edit_book_page(self):
+    def test_edit_book_get(self):
         """there are so many views, this just makes sure it LOADS"""
         view = views.EditBook.as_view()
         request = self.factory.get("")
@@ -58,18 +59,7 @@ class EditBookViews(TestCase):
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
-    def test_edit_book_create_page(self):
-        """there are so many views, this just makes sure it LOADS"""
-        view = views.EditBook.as_view()
-        request = self.factory.get("")
-        request.user = self.local_user
-        request.user.is_superuser = True
-        result = view(request)
-        self.assertIsInstance(result, TemplateResponse)
-        validate_html(result.render())
-        self.assertEqual(result.status_code, 200)
-
-    def test_edit_book(self):
+    def test_edit_book_post(self):
         """lets a user edit a book"""
         view = views.EditBook.as_view()
         self.local_user.groups.add(self.group)
@@ -84,6 +74,23 @@ class EditBookViews(TestCase):
 
         self.book.refresh_from_db()
         self.assertEqual(self.book.title, "New Title")
+
+    def test_edit_book_post_invalid(self):
+        """book form is invalid"""
+        view = views.EditBook.as_view()
+        self.local_user.groups.add(self.group)
+        form = forms.EditionForm(instance=self.book)
+        form.data["title"] = ""
+        form.data["last_edited_by"] = self.local_user.id
+        request = self.factory.post("", form.data)
+        request.user = self.local_user
+
+        result = view(request, self.book.id)
+        validate_html(result.render())
+        self.assertEqual(result.status_code, 200)
+        # Title is unchanged
+        self.book.refresh_from_db()
+        self.assertEqual(self.book.title, "Example Edition")
 
     def test_edit_book_add_author(self):
         """lets a user edit a book with new authors"""
@@ -214,3 +221,68 @@ class EditBookViews(TestCase):
 
         self.book.refresh_from_db()
         self.assertTrue(self.book.cover)
+
+    def test_add_authors_helper(self):
+        """converts form input into author matches"""
+        form = forms.EditionForm(instance=self.book)
+        form.data["title"] = "New Title"
+        form.data["last_edited_by"] = self.local_user.id
+        form.data["add_author"] = ["Sappho", "Some Guy"]
+        request = self.factory.post("", form.data)
+        request.user = self.local_user
+
+        with patch("bookwyrm.utils.isni.find_authors_by_name") as mock:
+            mock.return_value = []
+            result = add_authors(request, form.data)
+
+        self.assertTrue(result["confirm_mode"])
+        self.assertEqual(result["add_author"], ["Sappho", "Some Guy"])
+        self.assertEqual(len(result["author_matches"]), 2)
+        self.assertEqual(result["author_matches"][0]["name"], "Sappho")
+        self.assertEqual(result["author_matches"][1]["name"], "Some Guy")
+
+    def test_create_book_get(self):
+        """there are so many views, this just makes sure it LOADS"""
+        view = views.CreateBook.as_view()
+        request = self.factory.get("")
+        request.user = self.local_user
+        request.user.is_superuser = True
+        result = view(request)
+        self.assertIsInstance(result, TemplateResponse)
+        validate_html(result.render())
+        self.assertEqual(result.status_code, 200)
+
+    def test_create_book_post_existing_work(self):
+        """Adding an edition to an existing work"""
+        author = models.Author.objects.create(name="Sappho")
+        view = views.CreateBook.as_view()
+        form = forms.EditionForm()
+        form.data["title"] = "A Title"
+        form.data["parent_work"] = self.work.id
+        form.data["authors"] = [author.id]
+        form.data["last_edited_by"] = self.local_user.id
+        request = self.factory.post("", form.data)
+        request.user = self.local_user
+        request.user.is_superuser = True
+
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
+            result = view(request)
+        self.assertEqual(result.status_code, 302)
+
+        new_edition = models.Edition.objects.get(title="A Title")
+        self.assertEqual(new_edition.parent_work, self.work)
+        self.assertEqual(new_edition.authors.first(), author)
+
+    def test_create_book_post_invalid(self):
+        """book form is invalid"""
+        view = views.CreateBook.as_view()
+        self.local_user.groups.add(self.group)
+        form = forms.EditionForm(instance=self.book)
+        form.data["title"] = ""
+        form.data["last_edited_by"] = self.local_user.id
+        request = self.factory.post("", form.data)
+        request.user = self.local_user
+
+        result = view(request)
+        validate_html(result.render())
+        self.assertEqual(result.status_code, 200)

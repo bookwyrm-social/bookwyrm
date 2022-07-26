@@ -1,22 +1,33 @@
 {% load i18n %}
-<div
-    class="field{% if not reply_parent.content_warning and not draft.content_warning %} is-hidden{% endif %}"
-    id="spoilers_{{ uuid }}{{ local_uuid }}"
->
-    <label
-        class="label"
-        for="id_content_warning_{{ uuid }}{{ local_uuid }}"
+<div class="field is-relative">
+    <details
+        {% if reply_parent.content_warning or draft.content_warning %}open{% endif %}
     >
-        {% trans "Content warning:" %}
-    </label>
-    <input
-        type="text"
-        name="content_warning"
-        maxlength="255"
-        class="input"
-        id="id_content_warning_{{ uuid }}{{ local_uuid }}"
-        placeholder="{% trans 'Spoilers ahead!' %}"
-        value="{% firstof draft.content_warning reply_parent.content_warning '' %}"
-        {% if not draft %}data-cache-draft="id_content_warning_{{ book.id }}_{{ type }}"{% endif %}
-    >
+        <summary class="is-flex">
+            <span class="icon icon-warning is-size-5 mr-1" aria-hidden="true"></span>
+            <span>
+                {% trans "Include spoiler alert" %}
+            </span>
+            <span class="details-close icon icon-x" aria-hidden="true"></span>
+        </summary>
+
+        <label
+            class="label"
+            for="id_content_warning_{{ uuid }}{{ local_uuid }}"
+        >
+            {% trans "Spoilers/content warnings:" %}
+        </label>
+        <div class="control">
+            <input
+                type="text"
+                name="content_warning"
+                maxlength="255"
+                class="input"
+                id="id_content_warning_{{ uuid }}{{ local_uuid }}"
+                placeholder="{% trans 'Spoilers ahead!' %}"
+                value="{% firstof draft.content_warning reply_parent.content_warning '' %}"
+                {% if not draft %}data-cache-draft="id_content_warning_{{ book.id }}_{{ type }}"{% endif %}
+            >
+        </div>
+    </details>
 </div>

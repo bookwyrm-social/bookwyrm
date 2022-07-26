@@ -136,6 +136,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     updated_date = models.DateTimeField(auto_now=True)
     last_active_date = models.DateTimeField(default=timezone.now)
     manually_approves_followers = fields.BooleanField(default=False)
+    theme = models.ForeignKey("Theme", null=True, blank=True, on_delete=models.SET_NULL)
     hide_follows = fields.BooleanField(default=False)
 
     # options to turn features on and off
@@ -172,6 +173,11 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     name_field = "username"
     property_fields = [("following_link", "following")]
     field_tracker = FieldTracker(fields=["name", "avatar"])
+
+    @property
+    def active_follower_requests(self):
+        """Follow requests from active users"""
+        return self.follower_requests.filter(is_active=True)
 
     @property
     def confirmation_link(self):
@@ -372,6 +378,10 @@ class User(OrderedCollectionPageMixin, AbstractUser):
             {
                 "name": "Read",
                 "identifier": "read",
+            },
+            {
+                "name": "Stopped Reading",
+                "identifier": "stopped-reading",
             },
         ]
 

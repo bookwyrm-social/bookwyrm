@@ -14,17 +14,22 @@ from django.db.models.functions import Greatest
 
 from bookwyrm import forms, models
 from bookwyrm.suggested_users import suggested_users
-from .helpers import get_user_from_username
+from .helpers import get_user_from_username, maybe_redirect_local_path
 
 # pylint: disable=no-self-use
 class Group(View):
     """group page"""
 
-    def get(self, request, group_id):
+    # pylint: disable=unused-argument
+    def get(self, request, group_id, slug=None):
         """display a group"""
 
         group = get_object_or_404(models.Group, id=group_id)
         group.raise_visible_to_user(request.user)
+
+        if redirect_local_path := maybe_redirect_local_path(request, group):
+            return redirect_local_path
+
         lists = (
             models.List.privacy_filter(request.user)
             .filter(group=group)
@@ -54,11 +59,11 @@ class Group(View):
         model = apps.get_model("bookwyrm.Notification", require_ready=True)
         for field in form.changed_data:
             notification_type = (
-                "GROUP_PRIVACY"
+                model.GROUP_PRIVACY
                 if field == "privacy"
-                else "GROUP_NAME"
+                else model.GROUP_NAME
                 if field == "name"
-                else "GROUP_DESCRIPTION"
+                else model.GROUP_DESCRIPTION
                 if field == "description"
                 else None
             )
@@ -66,9 +71,9 @@ class Group(View):
                 for membership in memberships:
                     member = membership.user
                     if member != request.user:
-                        model.objects.create(
-                            user=member,
-                            related_user=request.user,
+                        model.notify(
+                            member,
+                            request.user,
                             related_group=user_group,
                             notification_type=notification_type,
                         )
@@ -80,7 +85,8 @@ class Group(View):
 class UserGroups(View):
     """a user's groups page"""
 
-    def get(self, request, username):
+    # pylint: disable=unused-argument
+    def get(self, request, username, slug=None):
         """display a group"""
         user = get_user_from_username(request.user, username)
         groups = (
@@ -238,24 +244,22 @@ def remove_member(request):
 
         memberships = models.GroupMember.objects.filter(group=group)
         model = apps.get_model("bookwyrm.Notification", require_ready=True)
-        notification_type = "LEAVE" if user == request.user else "REMOVE"
+        notification_type = model.LEAVE if user == request.user else model.REMOVE
         # let the other members know about it
         for membership in memberships:
             member = membership.user
             if member != request.user:
-                model.objects.create(
-                    user=member,
-                    related_user=user,
+                model.notify(
+                    member,
+                    user,
                     related_group=group,
                     notification_type=notification_type,
                 )
 
         # let the user (now ex-member) know as well, if they were removed
-        if notification_type == "REMOVE":
-            model.objects.create(
-                user=user,
-                related_group=group,
-                notification_type=notification_type,
+        if notification_type == model.REMOVE:
+            model.notify(
+                user, None, related_group=group, notification_type=notification_type
             )
 
     return redirect(group.local_path)

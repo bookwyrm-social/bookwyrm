@@ -1,14 +1,14 @@
 {% load layout %}
+{% load sass_tags %}
 {% load i18n %}
 {% load static %}
-{% load sass_tags %}
 
 <!DOCTYPE html>
 <html lang="{% get_lang %}">
 <head>
     <title>{% block title %}BookWyrm{% endblock %} - {{ site.name }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="{% sass_src 'css/bookwyrm.scss' %}" rel="stylesheet" type="text/css" />
+    <link href="{% sass_src site_theme %}" rel="stylesheet" type="text/css" />
 
     <link rel="search" type="application/opensearchdescription+xml" href="{% url 'opensearch' %}" title="{% blocktrans with site_name=site.name %}{{ site_name }} search{% endblocktrans %}" />
 
@@ -56,8 +56,16 @@
                             </span>
                         </button>
                     </div>
+                    <div class="control">
+                        <button class="button" type="button" data-modal-open="barcode-scanner-modal">
+                            <span class="icon icon-barcode" title="{% trans 'Scan Barcode' %}">
+                                <span class="is-sr-only">{% trans "Scan Barcode" %}</span>
+                            </span>
+                        </button>
+                    </div>
                 </div>
             </form>
+            {% include "search/barcode_modal.html" with id="barcode-scanner-modal" %}
 
             <button type="button" tabindex="0" class="navbar-burger pulldown-menu my-4" data-controls="main_nav" aria-expanded="false">
                 <i class="icon icon-dots-three-vertical" aria-hidden="true"></i>
@@ -82,64 +90,8 @@
 
             <div class="navbar-end">
             {% if request.user.is_authenticated %}
-                <div class="navbar-item mt-3 py-0 has-dropdown is-hoverable">
-                    <a
-                        href="{{ request.user.local_path }}"
-                        class="navbar-link pulldown-menu"
-                        role="button"
-                        aria-expanded="false"
-                        tabindex="0"
-                        aria-haspopup="true"
-                        aria-controls="navbar-dropdown"
-                    >
-                        {% include 'snippets/avatar.html' with user=request.user %}
-                        <span class="ml-2">{{ request.user.display_name }}</span>
-                    </a>
-                    <ul class="navbar-dropdown" id="navbar_dropdown">
-                        <li>
-                            <a href="{% url 'directory' %}" class="navbar-item">
-                                {% trans "Directory" %}
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{% url 'user-shelves' request.user.localname %}" class="navbar-item">
-                                {% trans 'Your Books' %}
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{% url 'direct-messages' %}" class="navbar-item">
-                                {% trans "Direct Messages" %}
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{% url 'prefs-profile' %}" class="navbar-item">
-                                {% trans 'Settings' %}
-                            </a>
-                        </li>
-                        {% if perms.bookwyrm.create_invites or perms.moderate_user %}
-                        <li class="navbar-divider" role="presentation">&nbsp;</li>
-                        {% endif %}
-                        {% if perms.bookwyrm.create_invites and not site.allow_registration %}
-                        <li>
-                            <a href="{% url 'settings-invite-requests' %}" class="navbar-item">
-                                {% trans 'Invites' %}
-                            </a>
-                        </li>
-                        {% endif %}
-                        {% if perms.bookwyrm.moderate_user %}
-                        <li>
-                            <a href="{% url 'settings-dashboard' %}" class="navbar-item">
-                                {% trans 'Admin' %}
-                            </a>
-                        </li>
-                        {% endif %}
-                        <li class="navbar-divider" role="presentation">&nbsp;</li>
-                        <li>
-                            <a href="{% url 'logout' %}" class="navbar-item">
-                                {% trans 'Log out' %}
-                            </a>
-                        </li>
-                    </ul>
+                <div class="navbar-item mt-3 py-0">
+                    {% include 'user_menu.html' %}
                 </div>
                 <div class="navbar-item mt-3 py-0">
                     <a href="{% url 'notifications' %}" class="tags has-addons">
@@ -266,6 +218,7 @@
 <script src="{% static "js/bookwyrm.js" %}?v={{ js_cache }}"></script>
 <script src="{% static "js/localstorage.js" %}?v={{ js_cache }}"></script>
 <script src="{% static "js/status_cache.js" %}?v={{ js_cache }}"></script>
+<script src="{% static "js/vendor/quagga.min.js" %}?v={{ js_cache }}"></script>
 
 {% block scripts %}{% endblock %}
 

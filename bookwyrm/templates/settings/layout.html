@@ -86,10 +86,14 @@
                 <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Site Settings" %}</a>
                 {% block site-subtabs %}{% endblock %}
             </li>
+            <li>
+                {% url 'settings-themes' as url %}
+                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Themes" %}</a>
+            </li>
         </ul>
         {% endif %}
     </nav>
-    <div class="column">
+    <div class="column is-clipped">
         {% block panel %}{% endblock %}
     </div>
 </div>

@@ -16,11 +16,15 @@ def get_book_superlatives():
         models.Work.objects.annotate(
             rating=Avg(
                 "editions__review__rating",
-                filter=Q(editions__review__local=True, editions__review__deleted=False),
+                filter=Q(
+                    editions__review__user__local=True, editions__review__deleted=False
+                ),
             ),
             rating_count=Count(
                 "editions__review",
-                filter=Q(editions__review__local=True, editions__review__deleted=False),
+                filter=Q(
+                    editions__review__user__local=True, editions__review__deleted=False
+                ),
             ),
         )
         .annotate(weighted=F("rating") * F("rating_count") / total_ratings)
@@ -33,11 +37,15 @@ def get_book_superlatives():
         models.Work.objects.annotate(
             deviation=StdDev(
                 "editions__review__rating",
-                filter=Q(editions__review__local=True, editions__review__deleted=False),
+                filter=Q(
+                    editions__review__user__local=True, editions__review__deleted=False
+                ),
             ),
             rating_count=Count(
                 "editions__review",
-                filter=Q(editions__review__local=True, editions__review__deleted=False),
+                filter=Q(
+                    editions__review__user__local=True, editions__review__deleted=False
+                ),
             ),
         )
         .annotate(weighted=F("deviation") * F("rating_count") / total_ratings)

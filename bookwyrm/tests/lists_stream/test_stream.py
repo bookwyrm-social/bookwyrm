@@ -11,6 +11,7 @@ from bookwyrm import lists_stream, models
 @patch("bookwyrm.activitystreams.add_book_statuses_task.delay")
 @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
 @patch("bookwyrm.activitystreams.populate_stream_task.delay")
+@patch("bookwyrm.lists_stream.remove_list_task.delay")
 class ListsStream(TestCase):
     """using redis to build activity streams"""
 

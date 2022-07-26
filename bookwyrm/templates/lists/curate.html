@@ -6,7 +6,7 @@
 <nav class="breadcrumb subtitle" aria-label="breadcrumbs">
     <ul>
         <li><a href="{% url 'lists' %}">{% trans "Lists" %}</a></li>
-        <li><a href="{% url 'list' list.id %}">{{ list.name|truncatechars:30 }}</a></li>
+        <li><a href="{% url 'list' list_id=list.id slug=list.name|slugify %}">{{ list.name|truncatechars:30 }}</a></li>
         <li class="is-active">
             <a href="#" aria-current="page">
                 {% trans "Curate" %}

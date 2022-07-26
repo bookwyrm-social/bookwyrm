@@ -19,11 +19,11 @@ def download_file(url, destination):
             with open(destination, "b+w") as outfile:
                 outfile.write(stream.read())
     except (urllib.error.HTTPError, urllib.error.URLError):
-        logger.error("Failed to download file %s", url)
+        logger.info("Failed to download file %s", url)
     except OSError:
-        logger.error("Couldn't open font file %s for writing", destination)
+        logger.info("Couldn't open font file %s for writing", destination)
     except:  # pylint: disable=bare-except
-        logger.exception("Unknown error in file download")
+        logger.info("Unknown error in file download")
 
 
 class BookwyrmConfig(AppConfig):

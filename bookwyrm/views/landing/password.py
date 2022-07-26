@@ -3,10 +3,9 @@ from django.contrib.auth import login
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
-from django.utils.translation import gettext_lazy as _
 from django.views import View
 
-from bookwyrm import models
+from bookwyrm import forms, models
 from bookwyrm.emailing import password_reset_email
 
 
@@ -24,12 +23,13 @@ class PasswordResetRequest(View):
     def post(self, request):
         """create a password reset token"""
         email = request.POST.get("email")
+        data = {"sent_message": True, "email": email}
         try:
             user = models.User.viewer_aware_objects(request.user).get(
                 email=email, email__isnull=False
             )
         except models.User.DoesNotExist:
-            data = {"error": _("No user with that email address was found.")}
+            # Showing an error message would leak whether or not this email is in use
             return TemplateResponse(
                 request, "landing/password_reset_request.html", data
             )
@@ -40,7 +40,6 @@ class PasswordResetRequest(View):
         # create a new reset code
         code = models.PasswordReset.objects.create(user=user)
         password_reset_email(code)
-        data = {"message": _(f"A password reset link was sent to {email}")}
         return TemplateResponse(request, "landing/password_reset_request.html", data)
 
 
@@ -58,7 +57,8 @@ class PasswordReset(View):
         except models.PasswordReset.DoesNotExist:
             raise PermissionDenied()
 
-        return TemplateResponse(request, "landing/password_reset.html", {"code": code})
+        data = {"code": code, "form": forms.PasswordResetForm()}
+        return TemplateResponse(request, "landing/password_reset.html", data)
 
     def post(self, request, code):
         """allow a user to change their password through an emailed token"""
@@ -69,14 +69,12 @@ class PasswordReset(View):
             return TemplateResponse(request, "landing/password_reset.html", data)
 
         user = reset_code.user
-
-        new_password = request.POST.get("password")
-        confirm_password = request.POST.get("confirm-password")
-
-        if new_password != confirm_password:
-            data = {"errors": ["Passwords do not match"]}
+        form = forms.PasswordResetForm(request.POST, instance=user)
+        if not form.is_valid():
+            data = {"code": code, "form": form}
             return TemplateResponse(request, "landing/password_reset.html", data)
 
+        new_password = form.cleaned_data["password"]
         user.set_password(new_password)
         user.save(broadcast=False, update_fields=["password"])
         login(request, user)

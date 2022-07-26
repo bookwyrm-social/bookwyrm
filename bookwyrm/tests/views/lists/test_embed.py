@@ -36,7 +36,9 @@ class ListViews(TestCase):
             parent_work=work,
         )
 
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
+        with patch(
+            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+        ), patch("bookwyrm.lists_stream.remove_list_task.delay"):
             self.list = models.List.objects.create(
                 name="Test List", user=self.local_user
             )

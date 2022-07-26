@@ -8,7 +8,6 @@ from .base_model import BookWyrmModel
 
 
 DisplayTypes = [
-    ("white-ter", _("None")),
     ("primary-light", _("Primary")),
     ("success-light", _("Success")),
     ("link-light", _("Link")),
@@ -28,11 +27,7 @@ class Announcement(BookWyrmModel):
     end_date = models.DateTimeField(blank=True, null=True)
     active = models.BooleanField(default=True)
     display_type = models.CharField(
-        max_length=20,
-        blank=False,
-        null=False,
-        choices=DisplayTypes,
-        default="white-ter",
+        max_length=20, choices=DisplayTypes, null=True, blank=True
     )
 
     @classmethod

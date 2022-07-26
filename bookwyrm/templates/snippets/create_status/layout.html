@@ -37,8 +37,6 @@ reply_parent: the Status object this post will be in reply to, if applicable
     {% endif %}
     {% endblock %}
 
-    {% include "snippets/create_status/content_warning_field.html" %}
-
     {# fields that go between the content warnings and the content field (ie, quote) #}
     {% block pre_content_additions %}{% endblock %}
 
@@ -54,6 +52,8 @@ reply_parent: the Status object this post will be in reply to, if applicable
 
     {# additional fields that go after the content block (ie, progress) #}
     {% block post_content_additions %}{% endblock %}
+
+    {% include "snippets/create_status/content_warning_field.html" %}
 
     {% block options_block %}
     {# cw, post privacy, and submit button #}

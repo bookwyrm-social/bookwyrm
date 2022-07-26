@@ -7,6 +7,7 @@ from django.test import TestCase
 from django.test.client import RequestFactory
 
 from bookwyrm import models, views
+from bookwyrm.management.commands import initdb
 from bookwyrm.tests.validate_html import validate_html
 
 
@@ -26,6 +27,10 @@ class UserAdminViews(TestCase):
                 local=True,
                 localname="mouse",
             )
+        initdb.init_groups()
+        initdb.init_permissions()
+        group = Group.objects.get(name="moderator")
+        self.local_user.groups.set([group])
         models.SiteSettings.objects.create()
 
     def test_user_admin_list_page(self):
@@ -33,7 +38,7 @@ class UserAdminViews(TestCase):
         view = views.UserAdminList.as_view()
         request = self.factory.get("")
         request.user = self.local_user
-        request.user.is_superuser = True
+
         result = view(request)
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
@@ -44,7 +49,6 @@ class UserAdminViews(TestCase):
         view = views.UserAdmin.as_view()
         request = self.factory.get("")
         request.user = self.local_user
-        request.user.is_superuser = True
 
         result = view(request, self.local_user.id)
 
@@ -57,15 +61,14 @@ class UserAdminViews(TestCase):
     @patch("bookwyrm.suggested_users.remove_user_task.delay")
     def test_user_admin_page_post(self, *_):
         """set the user's group"""
-        group = Group.objects.create(name="editor")
+        group = Group.objects.get(name="editor")
         self.assertEqual(
-            list(self.local_user.groups.values_list("name", flat=True)), []
+            list(self.local_user.groups.values_list("name", flat=True)), ["moderator"]
         )
 
         view = views.UserAdmin.as_view()
         request = self.factory.post("", {"groups": [group.id]})
         request.user = self.local_user
-        request.user.is_superuser = True
 
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             result = view(request, self.local_user.id)

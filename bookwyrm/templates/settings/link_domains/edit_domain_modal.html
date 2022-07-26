@@ -18,8 +18,10 @@
 {% endblock %}
 
 {% block modal-footer %}
-<button type="submit" class="button is-primary">{% trans "Set" %}</button>
-<button type="button" class="button" data-modal-close>{% trans "Cancel" %}</button>
+<div class="buttons is-right is-flex-grow-1">
+    <button type="button" class="button" data-modal-close>{% trans "Cancel" %}</button>
+    <button type="submit" class="button is-primary">{% trans "Set" %}</button>
+</div>
 {% endblock %}
 
 {% block modal-form-close %}</form>{% endblock %}

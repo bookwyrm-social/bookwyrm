@@ -5,7 +5,7 @@ from bookwyrm import models
 from bookwyrm.book_search import SearchResult
 from .abstract_connector import AbstractConnector, Mapping
 from .abstract_connector import get_data, infer_physical_format, unique_physical_format
-from .connector_manager import ConnectorException
+from .connector_manager import ConnectorException, create_edition_task
 from .openlibrary_languages import languages
 
 
@@ -152,39 +152,41 @@ class Connector(AbstractConnector):
         image_name = f"{cover_id}-{size}.jpg"
         return f"{self.covers_url}/b/id/{image_name}"
 
-    def parse_search_data(self, data):
-        return data.get("docs")
+    def parse_search_data(self, data, min_confidence):
+        for idx, search_result in enumerate(data.get("docs")):
+            # build the remote id from the openlibrary key
+            key = self.books_url + search_result["key"]
+            author = search_result.get("author_name") or ["Unknown"]
+            cover_blob = search_result.get("cover_i")
+            cover = self.get_cover_url([cover_blob], size="M") if cover_blob else None
 
-    def format_search_result(self, search_result):
-        # build the remote id from the openlibrary key
-        key = self.books_url + search_result["key"]
-        author = search_result.get("author_name") or ["Unknown"]
-        cover_blob = search_result.get("cover_i")
-        cover = self.get_cover_url([cover_blob], size="M") if cover_blob else None
-        return SearchResult(
-            title=search_result.get("title"),
-            key=key,
-            author=", ".join(author),
-            connector=self,
-            year=search_result.get("first_publish_year"),
-            cover=cover,
-        )
+            # OL doesn't provide confidence, but it does sort by an internal ranking, so
+            # this confidence value is relative to the list position
+            confidence = 1 / (idx + 1)
+
+            yield SearchResult(
+                title=search_result.get("title"),
+                key=key,
+                author=", ".join(author),
+                connector=self,
+                year=search_result.get("first_publish_year"),
+                cover=cover,
+                confidence=confidence,
+            )
 
     def parse_isbn_search_data(self, data):
-        return list(data.values())
-
-    def format_isbn_search_result(self, search_result):
-        # build the remote id from the openlibrary key
-        key = self.books_url + search_result["key"]
-        authors = search_result.get("authors") or [{"name": "Unknown"}]
-        author_names = [author.get("name") for author in authors]
-        return SearchResult(
-            title=search_result.get("title"),
-            key=key,
-            author=", ".join(author_names),
-            connector=self,
-            year=search_result.get("publish_date"),
-        )
+        for search_result in list(data.values()):
+            # build the remote id from the openlibrary key
+            key = self.books_url + search_result["key"]
+            authors = search_result.get("authors") or [{"name": "Unknown"}]
+            author_names = [author.get("name") for author in authors]
+            yield SearchResult(
+                title=search_result.get("title"),
+                key=key,
+                author=", ".join(author_names),
+                connector=self,
+                year=search_result.get("publish_date"),
+            )
 
     def load_edition_data(self, olkey):
         """query openlibrary for editions of a work"""
@@ -208,7 +210,7 @@ class Connector(AbstractConnector):
             # does this edition have ANY interesting data?
             if ignore_edition(edition_data):
                 continue
-            self.create_edition_from_data(work, edition_data)
+            create_edition_task.delay(self.connector.id, work.id, edition_data)
 
 
 def ignore_edition(edition_data):

@@ -38,7 +38,7 @@ class BaseModel(TestCase):
 
     def test_remote_id(self):
         """these should be generated"""
-        self.test_model.id = 1
+        self.test_model.id = 1  # pylint: disable=invalid-name
         expected = self.test_model.get_remote_id()
         self.assertEqual(expected, f"https://{DOMAIN}/bookwyrmtestmodel/1")
 

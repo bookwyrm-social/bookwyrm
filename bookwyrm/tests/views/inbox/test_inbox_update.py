@@ -50,7 +50,9 @@ class InboxUpdate(TestCase):
 
     def test_update_list(self):
         """a new list"""
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
+        with patch(
+            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+        ), patch("bookwyrm.lists_stream.remove_list_task.delay"):
             book_list = models.List.objects.create(
                 name="hi", remote_id="https://example.com/list/22", user=self.local_user
             )
@@ -69,7 +71,8 @@ class InboxUpdate(TestCase):
             "curation": "curated",
             "@context": "https://www.w3.org/ns/activitystreams",
         }
-        views.inbox.activity_task(activity)
+        with patch("bookwyrm.lists_stream.remove_list_task.delay"):
+            views.inbox.activity_task(activity)
         book_list.refresh_from_db()
         self.assertEqual(book_list.name, "Test List")
         self.assertEqual(book_list.curation, "curated")

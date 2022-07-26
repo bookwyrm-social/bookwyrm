@@ -26,7 +26,7 @@ from .group import Group, GroupMember, GroupMemberInvitation
 
 from .import_job import ImportJob, ImportItem
 
-from .site import SiteSettings, SiteInvite
+from .site import SiteSettings, Theme, SiteInvite
 from .site import PasswordReset, InviteRequest
 from .announcement import Announcement
 from .antispam import EmailBlocklist, IPBlocklist, AutoMod, automod_task
