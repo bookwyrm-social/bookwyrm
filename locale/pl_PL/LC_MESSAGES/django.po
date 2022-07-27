@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-07-15 19:29+0000\n"
-"PO-Revision-Date: 2022-07-25 08:59\n"
+"PO-Revision-Date: 2022-07-27 10:26\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Polish\n"
 "Language: pl\n"
@@ -153,7 +153,7 @@ msgstr "Usunięte przez moderatora"
 
 #: bookwyrm/models/base_model.py:22
 msgid "Domain block"
-msgstr ""
+msgstr "Blokada domeny"
 
 #: bookwyrm/models/book.py:262
 msgid "Audiobook"
@@ -1397,20 +1397,20 @@ msgstr ""
 #: bookwyrm/templates/directory/directory.html:9
 #: bookwyrm/templates/user_menu.html:30
 msgid "Directory"
-msgstr ""
+msgstr "Katalog"
 
 #: bookwyrm/templates/directory/directory.html:17
 msgid "Make your profile discoverable to other BookWyrm users."
-msgstr ""
+msgstr "Pozwól pozostałym użytkownikom BookWyrm na odkrycie Twojego profilu."
 
 #: bookwyrm/templates/directory/directory.html:21
 msgid "Join Directory"
-msgstr ""
+msgstr "Dołącz do katalogu"
 
 #: bookwyrm/templates/directory/directory.html:24
 #, python-format
 msgid "You can opt-out at any time in your <a href=\"%(path)s\">profile settings.</a>"
-msgstr ""
+msgstr "Możesz zrezygnować w dowolnym momencie poprzez <a href=\"%(path)s\">ustawienia profilu.</a>"
 
 #: bookwyrm/templates/directory/directory.html:29
 #: bookwyrm/templates/directory/directory.html:31
@@ -1726,7 +1726,7 @@ msgstr "Nie pokazuj sugerowanych użytkowników"
 
 #: bookwyrm/templates/feed/suggested_users.html:14
 msgid "View directory"
-msgstr ""
+msgstr "Zobacz katalog"
 
 #: bookwyrm/templates/feed/summary_card.html:21
 msgid "The end of the year is the best moment to take stock of all the books read during the last 12 months. How many pages have you read? Which book is your best-rated of the year? We compiled these stats, and more!"
@@ -2373,30 +2373,30 @@ msgstr "Dokumentacja"
 #: bookwyrm/templates/layout.html:197
 #, python-format
 msgid "Support %(site_name)s on <a href=\"%(support_link)s\" target=\"_blank\">%(support_title)s</a>"
-msgstr ""
+msgstr "Wspieraj %(site_name)s na <a href=\"%(support_link)s\" target=\"_blank\">%(support_title)s</a>"
 
 #: bookwyrm/templates/layout.html:201
 msgid "BookWyrm's source code is freely available. You can contribute or report issues on <a href=\"https://github.com/mouse-reeve/bookwyrm\">GitHub</a>."
-msgstr ""
+msgstr "Kod źródłowy BookWyrm jest ogólnodostępny. Możesz udzielić się lub zgłosić problem na <a href=\"https://github.com/mouse-reeve/bookwyrm\">GitHub</a>."
 
 #: bookwyrm/templates/lists/add_item_modal.html:8
 #, python-format
 msgid "Add \"<em>%(title)s</em>\" to this list"
-msgstr ""
+msgstr "Dodaj \"<em>%(title)s</em>\" do tej listy"
 
 #: bookwyrm/templates/lists/add_item_modal.html:12
 #, python-format
 msgid "Suggest \"<em>%(title)s</em>\" for this list"
-msgstr ""
+msgstr "Zaproponuj \"<em>%(title)s</em>\" dla tej listy"
 
 #: bookwyrm/templates/lists/add_item_modal.html:41
 #: bookwyrm/templates/lists/list.html:257
 msgid "Suggest"
-msgstr ""
+msgstr "Zaproponuj"
 
 #: bookwyrm/templates/lists/bookmark_button.html:30
 msgid "Un-save"
-msgstr ""
+msgstr "Anuluj zapisanie"
 
 #: bookwyrm/templates/lists/created_text.html:5
 #, python-format
@@ -2406,34 +2406,34 @@ msgstr "Utworzone przez <a href=\"%(userpath)s\">%(username)s</a> i zarządzane 
 #: bookwyrm/templates/lists/created_text.html:7
 #, python-format
 msgid "Created and curated by <a href=\"%(path)s\">%(username)s</a>"
-msgstr ""
+msgstr "Stworzone i nadzorowane przez <a href=\"%(path)s\">%(username)s</a>"
 
 #: bookwyrm/templates/lists/created_text.html:9
 #, python-format
 msgid "Created by <a href=\"%(path)s\">%(username)s</a>"
-msgstr ""
+msgstr "Stworzone przez <a href=\"%(path)s\">%(username)s</a>"
 
 #: bookwyrm/templates/lists/curate.html:12
 msgid "Curate"
-msgstr ""
+msgstr "Nadzór"
 
 #: bookwyrm/templates/lists/curate.html:21
 msgid "Pending Books"
-msgstr ""
+msgstr "Oczekujące książki"
 
 #: bookwyrm/templates/lists/curate.html:24
 msgid "You're all set!"
-msgstr ""
+msgstr "Wszystko gotowe!"
 
 #: bookwyrm/templates/lists/curate.html:45
 #: bookwyrm/templates/lists/list.html:93
 #, python-format
 msgid "<a href=\"%(user_path)s\">%(username)s</a> says:"
-msgstr ""
+msgstr "<a href=\"%(user_path)s\">%(username)s</a> pisze:"
 
 #: bookwyrm/templates/lists/curate.html:55
 msgid "Suggested by"
-msgstr ""
+msgstr "Zaproponowane przez"
 
 #: bookwyrm/templates/lists/curate.html:77
 msgid "Discard"
@@ -2630,130 +2630,130 @@ msgstr ""
 #: bookwyrm/templates/notifications/items/accept.html:18
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> accepted your invitation to join group \"<a href=\"%(group_path)s\">%(group_name)s</a>\""
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> przyjmuje Twoje zaproszenie do grupy \"<a href=\"%(group_path)s\">%(group_name)s</a>\""
 
 #: bookwyrm/templates/notifications/items/accept.html:26
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and <a href=\"%(second_user_link)s\">%(second_user)s</a> accepted your invitation to join group \"<a href=\"%(group_path)s\">%(group_name)s</a>\""
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> oraz <a href=\"%(second_user_link)s\">%(second_user)s</a> przyjmują Twoje zaproszenie do grupy \"<a href=\"%(group_path)s\">%(group_name)s</a>\""
 
 #: bookwyrm/templates/notifications/items/accept.html:36
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and %(other_user_display_count)s others accepted your invitation to join group \"<a href=\"%(group_path)s\">%(group_name)s</a>\""
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> i jeszcze %(other_user_display_count)s osób przyjmują Twoje zaproszenie do grupy \"<a href=\"%(group_path)s\">%(group_name)s</a>\""
 
 #: bookwyrm/templates/notifications/items/add.html:33
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> added <em><a href=\"%(book_path)s\">%(book_title)s</a></em> to your list \"<a href=\"%(list_path)s\">%(list_name)s</a>\""
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> dodaje <em><a href=\"%(book_path)s\">%(book_title)s</a></em> do Twojej listy \"<a href=\"%(list_path)s\">%(list_name)s</a>\""
 
 #: bookwyrm/templates/notifications/items/add.html:39
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> suggested adding <em><a href=\"%(book_path)s\">%(book_title)s</a></em> to your list \"<a href=\"%(list_curate_path)s\">%(list_name)s</a>\""
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> proponuje dodanie <em><a href=\"%(book_path)s\">%(book_title)s</a></em> do Twojej listy \"<a href=\"%(list_curate_path)s\">%(list_name)s</a>\""
 
 #: bookwyrm/templates/notifications/items/add.html:47
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> added <em><a href=\"%(book_path)s\">%(book_title)s</a></em> and <em><a href=\"%(second_book_path)s\">%(second_book_title)s</a></em> to your list \"<a href=\"%(list_path)s\">%(list_name)s</a>\""
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> dodaje <em><a href=\"%(book_path)s\">%(book_title)s</a></em> oraz <em><a href=\"%(second_book_path)s\">%(second_book_title)s</a></em> do Twojej listy \"<a href=\"%(list_path)s\">%(list_name)s</a>\""
 
 #: bookwyrm/templates/notifications/items/add.html:54
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> suggested adding <em><a href=\"%(book_path)s\">%(book_title)s</a></em> and <em><a href=\"%(second_book_path)s\">%(second_book_title)s</a></em> to your list \"<a href=\"%(list_curate_path)s\">%(list_name)s</a>\""
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> proponuje dodanie <em><a href=\"%(book_path)s\">%(book_title)s</a></em> oraz <em><a href=\"%(second_book_path)s\">%(second_book_title)s</a></em> do Twojej listy \"<a href=\"%(list_curate_path)s\">%(list_name)s</a>\""
 
 #: bookwyrm/templates/notifications/items/add.html:66
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> added <em><a href=\"%(book_path)s\">%(book_title)s</a></em>, <em><a href=\"%(second_book_path)s\">%(second_book_title)s</a></em>, and %(display_count)s other book to your list \"<a href=\"%(list_path)s\">%(list_name)s</a>\""
 msgid_plural "<a href=\"%(related_user_link)s\">%(related_user)s</a> added <em><a href=\"%(book_path)s\">%(book_title)s</a></em>, <em><a href=\"%(second_book_path)s\">%(second_book_title)s</a></em>, and %(display_count)s other books to your list \"<a href=\"%(list_path)s\">%(list_name)s</a>\""
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "<a href=\"%(related_user_link)s\">%(related_user)s</a> dodaje <em><a href=\"%(book_path)s\">%(book_title)s</a></em>, <em><a href=\"%(second_book_path)s\">%(second_book_title)s</a></em> oraz jeszcze %(display_count)s książkę do Twojej listy \"<a href=\"%(list_path)s\">%(list_name)s</a>\""
+msgstr[1] "<a href=\"%(related_user_link)s\">%(related_user)s</a> dodaje <em><a href=\"%(book_path)s\">%(book_title)s</a></em>, <em><a href=\"%(second_book_path)s\">%(second_book_title)s</a></em> oraz jeszcze %(display_count)s książki do Twojej listy \"<a href=\"%(list_path)s\">%(list_name)s</a>\""
+msgstr[2] "<a href=\"%(related_user_link)s\">%(related_user)s</a> dodaje <em><a href=\"%(book_path)s\">%(book_title)s</a></em>, <em><a href=\"%(second_book_path)s\">%(second_book_title)s</a></em> oraz jeszcze %(display_count)s książek do Twojej listy \"<a href=\"%(list_path)s\">%(list_name)s</a>\""
+msgstr[3] "<a href=\"%(related_user_link)s\">%(related_user)s</a> dodaje <em><a href=\"%(book_path)s\">%(book_title)s</a></em>, <em><a href=\"%(second_book_path)s\">%(second_book_title)s</a></em> oraz jeszcze %(display_count)s książek do Twojej listy \"<a href=\"%(list_path)s\">%(list_name)s</a>\""
 
 #: bookwyrm/templates/notifications/items/add.html:82
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> suggested adding <em><a href=\"%(book_path)s\">%(book_title)s</a></em>, <em><a href=\"%(second_book_path)s\">%(second_book_title)s</a></em>, and %(display_count)s other book to your list \"<a href=\"%(list_curate_path)s\">%(list_name)s</a>\""
 msgid_plural "<a href=\"%(related_user_link)s\">%(related_user)s</a> suggested adding <em><a href=\"%(book_path)s\">%(book_title)s</a></em>, <em><a href=\"%(second_book_path)s\">%(second_book_title)s</a></em>, and %(display_count)s other books to your list \"<a href=\"%(list_curate_path)s\">%(list_name)s</a>\""
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "<a href=\"%(related_user_link)s\">%(related_user)s</a> proponuje dodanie <em><a href=\"%(book_path)s\">%(book_title)s</a></em>, <em><a href=\"%(second_book_path)s\">%(second_book_title)s</a></em> oraz jeszcze %(display_count)s książki do Twojej listy \"<a href=\"%(list_curate_path)s\">%(list_name)s</a>\""
+msgstr[1] "<a href=\"%(related_user_link)s\">%(related_user)s</a> proponuje dodanie <em><a href=\"%(book_path)s\">%(book_title)s</a></em>, <em><a href=\"%(second_book_path)s\">%(second_book_title)s</a></em> oraz jeszcze %(display_count)s książek do Twojej listy \"<a href=\"%(list_curate_path)s\">%(list_name)s</a>\""
+msgstr[2] "<a href=\"%(related_user_link)s\">%(related_user)s</a> proponuje dodanie <em><a href=\"%(book_path)s\">%(book_title)s</a></em>, <em><a href=\"%(second_book_path)s\">%(second_book_title)s</a></em> oraz jeszcze %(display_count)s książek do Twojej listy \"<a href=\"%(list_curate_path)s\">%(list_name)s</a>\""
+msgstr[3] "<a href=\"%(related_user_link)s\">%(related_user)s</a> proponuje dodanie <em><a href=\"%(book_path)s\">%(book_title)s</a></em>, <em><a href=\"%(second_book_path)s\">%(second_book_title)s</a></em> oraz jeszcze %(display_count)s książek do Twojej listy \"<a href=\"%(list_curate_path)s\">%(list_name)s</a>\""
 
 #: bookwyrm/templates/notifications/items/boost.html:21
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> boosted your <a href=\"%(related_path)s\">review of <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> promuje Twoją<a href=\"%(related_path)s\">recenzję <em>%(book_title)s</em></a>"
 
 #: bookwyrm/templates/notifications/items/boost.html:27
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and <a href=\"%(second_user_link)s\">%(second_user)s</a> boosted your <a href=\"%(related_path)s\">review of <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> oraz <a href=\"%(second_user_link)s\">%(second_user)s</a> promują Twoją <a href=\"%(related_path)s\">recenzję <em>%(book_title)s</em></a>"
 
 #: bookwyrm/templates/notifications/items/boost.html:36
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and %(other_user_display_count)s others boosted your <a href=\"%(related_path)s\">review of <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> i jeszcze %(other_user_display_count)s osób promują Twoją <a href=\"%(related_path)s\">recenzję <em>%(book_title)s</em></a>"
 
 #: bookwyrm/templates/notifications/items/boost.html:44
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> boosted your <a href=\"%(related_path)s\">comment on <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> promuje Twój <a href=\"%(related_path)s\">komentarz do <em>%(book_title)s</em></a>"
 
 #: bookwyrm/templates/notifications/items/boost.html:50
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and <a href=\"%(second_user_link)s\">%(second_user)s</a> boosted your <a href=\"%(related_path)s\">comment on <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> oraz <a href=\"%(second_user_link)s\">%(second_user)s</a> promują Twój <a href=\"%(related_path)s\">komentarz do <em>%(book_title)s</em></a>"
 
 #: bookwyrm/templates/notifications/items/boost.html:59
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and %(other_user_display_count)s others boosted your <a href=\"%(related_path)s\">comment on <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> i jeszcze %(other_user_display_count)s osób promują Twój <a href=\"%(related_path)s\">komentarz do <em>%(book_title)s</em></a>"
 
 #: bookwyrm/templates/notifications/items/boost.html:67
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> boosted your <a href=\"%(related_path)s\">quote from <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> promuje Twój <a href=\"%(related_path)s\">cytat z <em>%(book_title)s</em></a>"
 
 #: bookwyrm/templates/notifications/items/boost.html:73
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and <a href=\"%(second_user_link)s\">%(second_user)s</a> boosted your <a href=\"%(related_path)s\">quote from <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> oraz <a href=\"%(second_user_link)s\">%(second_user)s</a> promują Twój <a href=\"%(related_path)s\">cytat z <em>%(book_title)s</em></a>"
 
 #: bookwyrm/templates/notifications/items/boost.html:82
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and %(other_user_display_count)s others boosted your <a href=\"%(related_path)s\">quote from <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> i jeszcze %(other_user_display_count)s osób promują Twój <a href=\"%(related_path)s\">cytat z <em>%(book_title)s</em></a>"
 
 #: bookwyrm/templates/notifications/items/boost.html:90
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> boosted your <a href=\"%(related_path)s\">status</a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> promuje Twój <a href=\"%(related_path)s\">status</a>"
 
 #: bookwyrm/templates/notifications/items/boost.html:96
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and <a href=\"%(second_user_link)s\">%(second_user)s</a> boosted your <a href=\"%(related_path)s\">status</a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> oraz <a href=\"%(second_user_link)s\">%(second_user)s</a> promują Twój <a href=\"%(related_path)s\">status</a>"
 
 #: bookwyrm/templates/notifications/items/boost.html:105
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and %(other_user_display_count)s others boosted your <a href=\"%(related_path)s\">status</a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> i jeszcze %(other_user_display_count)s osób promują Twój <a href=\"%(related_path)s\">status</a>"
 
 #: bookwyrm/templates/notifications/items/fav.html:21
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> liked your <a href=\"%(related_path)s\">review of <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> lubi Twoją <a href=\"%(related_path)s\">recenzję <em>%(book_title)s</em></a>"
 
 #: bookwyrm/templates/notifications/items/fav.html:27
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and <a href=\"%(second_user_link)s\">%(second_user)s</a> liked your <a href=\"%(related_path)s\">review of <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> oraz <a href=\"%(second_user_link)s\">%(second_user)s</a> lubią Twoją <a href=\"%(related_path)s\">recenzję <em>%(book_title)s</em></a>"
 
 #: bookwyrm/templates/notifications/items/fav.html:36
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and %(other_user_display_count)s others liked your <a href=\"%(related_path)s\">review of <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> i jeszcze %(other_user_display_count)s osób lubią Twoją <a href=\"%(related_path)s\">recenzję <em>%(book_title)s</em></a>"
 
 #: bookwyrm/templates/notifications/items/fav.html:44
 #, python-format
