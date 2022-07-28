@@ -1,6 +1,5 @@
 {% extends 'layout.html' %}
 {% load i18n %}
-{% load static %}
 
 {% block title %}{% trans "Updates" %}{% endblock %}
 
@@ -30,6 +29,4 @@
 </div>
 {% endblock %}
 
-{% block scripts %}
-<script src="{% static "js/tabs.js" %}?v={{ js_cache }}"></script>
-{% endblock %}
+

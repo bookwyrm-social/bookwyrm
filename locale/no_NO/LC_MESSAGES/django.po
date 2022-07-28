@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-07-07 17:47+0000\n"
-"PO-Revision-Date: 2022-07-07 18:12\n"
+"POT-Creation-Date: 2022-07-15 19:29+0000\n"
+"PO-Revision-Date: 2022-07-15 19:48\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Norwegian\n"
 "Language: no\n"
@@ -42,6 +42,14 @@ msgstr "{i} ganger"
 msgid "Unlimited"
 msgstr "Ubegrenset"
 
+#: bookwyrm/forms/edit_user.py:89
+msgid "Incorrect password"
+msgstr ""
+
+#: bookwyrm/forms/edit_user.py:96 bookwyrm/forms/landing.py:71
+msgid "Password does not match"
+msgstr ""
+
 #: bookwyrm/forms/forms.py:54
 msgid "Reading finish date cannot be before start date."
 msgstr "Sluttdato kan ikke være før startdato."
@@ -50,11 +58,11 @@ msgstr "Sluttdato kan ikke være før startdato."
 msgid "Reading stopped date cannot be before start date."
 msgstr ""
 
-#: bookwyrm/forms/landing.py:32
+#: bookwyrm/forms/landing.py:38
 msgid "User with this username already exists"
 msgstr ""
 
-#: bookwyrm/forms/landing.py:41
+#: bookwyrm/forms/landing.py:47
 msgid "A user with this email already exists."
 msgstr "Den e-postadressen er allerede registrert."
 
@@ -288,58 +296,62 @@ msgid "English"
 msgstr "English (Engelsk)"
 
 #: bookwyrm/settings.py:283
+msgid "Català (Catalan)"
+msgstr ""
+
+#: bookwyrm/settings.py:284
 msgid "Deutsch (German)"
 msgstr "Deutsch (Tysk)"
 
-#: bookwyrm/settings.py:284
+#: bookwyrm/settings.py:285
 msgid "Español (Spanish)"
 msgstr "Español (Spansk)"
 
-#: bookwyrm/settings.py:285
+#: bookwyrm/settings.py:286
 msgid "Galego (Galician)"
 msgstr "Galego (Gallisk)"
 
-#: bookwyrm/settings.py:286
+#: bookwyrm/settings.py:287
 msgid "Italiano (Italian)"
 msgstr "Italiano (Italiensk)"
 
-#: bookwyrm/settings.py:287
+#: bookwyrm/settings.py:288
 msgid "Suomi (Finnish)"
 msgstr ""
 
-#: bookwyrm/settings.py:288
+#: bookwyrm/settings.py:289
 msgid "Français (French)"
 msgstr "Français (Fransk)"
 
-#: bookwyrm/settings.py:289
+#: bookwyrm/settings.py:290
 msgid "Lietuvių (Lithuanian)"
 msgstr "Lietuvių (Litauisk)"
 
-#: bookwyrm/settings.py:290
+#: bookwyrm/settings.py:291
 msgid "Norsk (Norwegian)"
 msgstr "Norsk (Norsk)"
 
-#: bookwyrm/settings.py:291
+#: bookwyrm/settings.py:292
 msgid "Português do Brasil (Brazilian Portuguese)"
 msgstr "Português - Brasil (Brasiliansk portugisisk)"
 
-#: bookwyrm/settings.py:292
+#: bookwyrm/settings.py:293
 msgid "Português Europeu (European Portuguese)"
 msgstr "Português Europeu (Europeisk Portugisisk)"
 
-#: bookwyrm/settings.py:293
+#: bookwyrm/settings.py:294
 msgid "Română (Romanian)"
 msgstr ""
 
-#: bookwyrm/settings.py:294
+#: bookwyrm/settings.py:295
 msgid "Svenska (Swedish)"
 msgstr "Svenska (Svensk)"
 
-#: bookwyrm/settings.py:295
+#: bookwyrm/settings.py:296
 msgid "简体中文 (Simplified Chinese)"
 msgstr "简体中文 (Forenklet kinesisk)"
 
-#: bookwyrm/settings.py:296
+#: bookwyrm/settings.py:297
 msgid "繁體中文 (Traditional Chinese)"
 msgstr "繁體中文 (Tradisjonelt kinesisk)"
 
@@ -787,7 +799,7 @@ msgstr "Laster inn data kobler til <strong>%(source_name)s</strong> og finner me
 #: bookwyrm/templates/book/edit/edit_book.html:122
 #: bookwyrm/templates/book/sync_modal.html:24
 #: bookwyrm/templates/groups/members.html:29
-#: bookwyrm/templates/landing/password_reset.html:42
+#: bookwyrm/templates/landing/password_reset.html:52
 #: bookwyrm/templates/snippets/remove_from_group_button.html:17
 msgid "Confirm"
 msgstr "Bekreft"
@@ -1205,7 +1217,7 @@ msgstr "Domene"
 #: bookwyrm/templates/settings/announcements/announcements.html:37
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:47
 #: bookwyrm/templates/settings/invites/status_filter.html:5
-#: bookwyrm/templates/settings/users/user_admin.html:52
+#: bookwyrm/templates/settings/users/user_admin.html:56
 #: bookwyrm/templates/settings/users/user_info.html:24
 msgid "Status"
 msgstr "Status"
@@ -1329,7 +1341,7 @@ msgstr "Bekreftelseskode:"
 
 #: bookwyrm/templates/confirm_email/confirm_email.html:25
 #: bookwyrm/templates/landing/layout.html:81
-#: bookwyrm/templates/settings/dashboard/dashboard.html:127
+#: bookwyrm/templates/settings/dashboard/dashboard.html:106
 #: bookwyrm/templates/snippets/report_modal.html:53
 msgid "Submit"
 msgstr "Send inn"
@@ -1351,11 +1363,7 @@ msgstr "Send e-post på nytt"
 msgid "Email address:"
 msgstr "E-post adresse:"
 
-#: bookwyrm/templates/confirm_email/resend_modal.html:28
-msgid "No user matching this email address found."
-msgstr ""
-
-#: bookwyrm/templates/confirm_email/resend_modal.html:38
+#: bookwyrm/templates/confirm_email/resend_modal.html:30
 msgid "Resend link"
 msgstr "Send lenke igjen"
 
@@ -1369,7 +1377,7 @@ msgid "Local users"
 msgstr "Lokale medlemmer"
 
 #: bookwyrm/templates/directory/community_filter.html:12
-#: bookwyrm/templates/settings/users/user_admin.html:29
+#: bookwyrm/templates/settings/users/user_admin.html:33
 msgid "Federated community"
 msgstr "Føderte samfunn"
 
@@ -2272,8 +2280,8 @@ msgstr "Glemt passord?"
 msgid "More about this site"
 msgstr "Om dette nettstedet"
 
-#: bookwyrm/templates/landing/password_reset.html:34
-#: bookwyrm/templates/preferences/change_password.html:18
+#: bookwyrm/templates/landing/password_reset.html:43
+#: bookwyrm/templates/preferences/change_password.html:33
 #: bookwyrm/templates/preferences/delete_user.html:20
 msgid "Confirm password:"
 msgstr "Gjenta passordet:"
@@ -2871,6 +2879,11 @@ msgid_plural "%(display_count)s new <a href=\"%(path)s\">reports</a> need modera
 msgstr[0] ""
 msgstr[1] ""
 
+#: bookwyrm/templates/notifications/items/status_preview.html:4
+#: bookwyrm/templates/snippets/status/content_status.html:73
+msgid "Content warning"
+msgstr "Varsel om følsomt innhold"
+
 #: bookwyrm/templates/notifications/items/update.html:16
 #, python-format
 msgid "has changed the privacy level for <a href=\"%(group_path)s\">%(group_name)s</a>"
@@ -3028,12 +3041,20 @@ msgstr "Ingen brukere er for tiden blokkert."
 
 #: bookwyrm/templates/preferences/change_password.html:4
 #: bookwyrm/templates/preferences/change_password.html:7
-#: bookwyrm/templates/preferences/change_password.html:21
+#: bookwyrm/templates/preferences/change_password.html:37
 #: bookwyrm/templates/preferences/layout.html:20
 msgid "Change Password"
 msgstr "Endre passord"
 
-#: bookwyrm/templates/preferences/change_password.html:14
+#: bookwyrm/templates/preferences/change_password.html:15
+msgid "Successfully changed password"
+msgstr ""
+
+#: bookwyrm/templates/preferences/change_password.html:22
+msgid "Current password:"
+msgstr ""
+
+#: bookwyrm/templates/preferences/change_password.html:28
 msgid "New password:"
 msgstr "Nytt passord:"
 
@@ -3123,6 +3144,10 @@ msgstr ""
 
 #: bookwyrm/templates/preferences/export.html:13
 msgid "Your export will include all the books on your shelves, books you have reviewed, and books with reading activity."
+msgstr ""
+
+#: bookwyrm/templates/preferences/export.html:20
+msgid "Download file"
 msgstr ""
 
 #: bookwyrm/templates/preferences/layout.html:11
@@ -3351,13 +3376,13 @@ msgstr "Usant"
 
 #: bookwyrm/templates/settings/announcements/announcement.html:57
 #: bookwyrm/templates/settings/announcements/edit_announcement.html:79
-#: bookwyrm/templates/settings/dashboard/dashboard.html:105
+#: bookwyrm/templates/settings/dashboard/dashboard.html:84
 msgid "Start date:"
 msgstr "Startdato:"
 
 #: bookwyrm/templates/settings/announcements/announcement.html:62
 #: bookwyrm/templates/settings/announcements/edit_announcement.html:89
-#: bookwyrm/templates/settings/dashboard/dashboard.html:111
+#: bookwyrm/templates/settings/dashboard/dashboard.html:90
 msgid "End date:"
 msgstr "Sluttdato:"
 
@@ -3517,7 +3542,7 @@ msgid "Dashboard"
 msgstr "Kontrollpanel"
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:15
-#: bookwyrm/templates/settings/dashboard/dashboard.html:134
+#: bookwyrm/templates/settings/dashboard/dashboard.html:113
 msgid "Total users"
 msgstr "Totalt antall brukere"
 
@@ -3535,66 +3560,31 @@ msgstr "Statuser"
 msgid "Works"
 msgstr "Verker"
 
-#: bookwyrm/templates/settings/dashboard/dashboard.html:43
-#, python-format
-msgid "Your outgoing email address, <code>%(email_sender)s</code>, may be misconfigured."
-msgstr ""
-
-#: bookwyrm/templates/settings/dashboard/dashboard.html:46
-msgid "Check the <code>EMAIL_SENDER_NAME</code> and <code>EMAIL_SENDER_DOMAIN</code> in your <code>.env</code>."
-msgstr ""
-
-#: bookwyrm/templates/settings/dashboard/dashboard.html:54
-#, python-format
-msgid "%(display_count)s open report"
-msgid_plural "%(display_count)s open reports"
-msgstr[0] "%(display_count)s åpen rapport"
-msgstr[1] "%(display_count)s åpne rapporter"
-
-#: bookwyrm/templates/settings/dashboard/dashboard.html:66
-#, python-format
-msgid "%(display_count)s domain needs review"
-msgid_plural "%(display_count)s domains need review"
-msgstr[0] "%(display_count)s domene må godkjennes"
-msgstr[1] "%(display_count)s domener må godkjennes"
-
 #: bookwyrm/templates/settings/dashboard/dashboard.html:78
-#, python-format
-msgid "%(display_count)s invite request"
-msgid_plural "%(display_count)s invite requests"
-msgstr[0] "%(display_count)s invitasjonsforespørsel"
-msgstr[1] "%(display_count)s invitasjonsforespørsler"
-
-#: bookwyrm/templates/settings/dashboard/dashboard.html:90
-#, python-format
-msgid "An update is available! You're running v%(current)s and the latest release is %(available)s."
-msgstr ""
-
-#: bookwyrm/templates/settings/dashboard/dashboard.html:99
 msgid "Instance Activity"
 msgstr "Instansaktivitet"
 
-#: bookwyrm/templates/settings/dashboard/dashboard.html:117
+#: bookwyrm/templates/settings/dashboard/dashboard.html:96
 msgid "Interval:"
 msgstr "Intervall:"
 
-#: bookwyrm/templates/settings/dashboard/dashboard.html:121
+#: bookwyrm/templates/settings/dashboard/dashboard.html:100
 msgid "Days"
 msgstr "Dager"
 
-#: bookwyrm/templates/settings/dashboard/dashboard.html:122
+#: bookwyrm/templates/settings/dashboard/dashboard.html:101
 msgid "Weeks"
 msgstr "Uker"
 
-#: bookwyrm/templates/settings/dashboard/dashboard.html:140
+#: bookwyrm/templates/settings/dashboard/dashboard.html:119
 msgid "User signup activity"
 msgstr "Brukerregistreringsaktivitet"
 
-#: bookwyrm/templates/settings/dashboard/dashboard.html:146
+#: bookwyrm/templates/settings/dashboard/dashboard.html:125
 msgid "Status activity"
 msgstr "Statusaktivitet"
 
-#: bookwyrm/templates/settings/dashboard/dashboard.html:152
+#: bookwyrm/templates/settings/dashboard/dashboard.html:131
 msgid "Works created"
 msgstr "Verker laget"
 
@@ -3609,6 +3599,49 @@ msgstr "Statuser lagt ut"
 #: bookwyrm/templates/settings/dashboard/user_chart.html:11
 msgid "Total"
 msgstr "Totalt"
+
+#: bookwyrm/templates/settings/dashboard/warnings/domain_review.html:9
+#, python-format
+msgid "%(display_count)s domain needs review"
+msgid_plural "%(display_count)s domains need review"
+msgstr[0] "%(display_count)s domene må godkjennes"
+msgstr[1] "%(display_count)s domener må godkjennes"
+
+#: bookwyrm/templates/settings/dashboard/warnings/email_config.html:8
+#, python-format
+msgid "Your outgoing email address, <code>%(email_sender)s</code>, may be misconfigured."
+msgstr ""
+
+#: bookwyrm/templates/settings/dashboard/warnings/email_config.html:11
+msgid "Check the <code>EMAIL_SENDER_NAME</code> and <code>EMAIL_SENDER_DOMAIN</code> in your <code>.env</code> file."
+msgstr ""
+
+#: bookwyrm/templates/settings/dashboard/warnings/invites.html:9
+#, python-format
+msgid "%(display_count)s invite request"
+msgid_plural "%(display_count)s invite requests"
+msgstr[0] "%(display_count)s invitasjonsforespørsel"
+msgstr[1] "%(display_count)s invitasjonsforespørsler"
+
+#: bookwyrm/templates/settings/dashboard/warnings/missing_conduct.html:8
+msgid "Your instance is missing a code of conduct."
+msgstr ""
+
+#: bookwyrm/templates/settings/dashboard/warnings/missing_privacy.html:8
+msgid "Your instance is missing a privacy policy."
+msgstr ""
+
+#: bookwyrm/templates/settings/dashboard/warnings/reports.html:9
+#, python-format
+msgid "%(display_count)s open report"
+msgid_plural "%(display_count)s open reports"
+msgstr[0] "%(display_count)s åpen rapport"
+msgstr[1] "%(display_count)s åpne rapporter"
+
+#: bookwyrm/templates/settings/dashboard/warnings/update_version.html:8
+#, python-format
+msgid "An update is available! You're running v%(current)s and the latest release is %(available)s."
+msgstr ""
 
 #: bookwyrm/templates/settings/email_blocklist/domain_form.html:5
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:10
@@ -4306,38 +4339,42 @@ msgstr "Passordet ditt:"
 msgid "Users: <small>%(instance_name)s</small>"
 msgstr "Medlemmer: <small>%(instance_name)s</small>"
 
-#: bookwyrm/templates/settings/users/user_admin.html:40
+#: bookwyrm/templates/settings/users/user_admin.html:29
+msgid "Deleted users"
+msgstr ""
+
+#: bookwyrm/templates/settings/users/user_admin.html:44
 #: bookwyrm/templates/settings/users/username_filter.html:5
 msgid "Username"
 msgstr "Brukernavn"
 
-#: bookwyrm/templates/settings/users/user_admin.html:44
+#: bookwyrm/templates/settings/users/user_admin.html:48
 msgid "Date Added"
 msgstr "Lagt til dato"
 
-#: bookwyrm/templates/settings/users/user_admin.html:48
+#: bookwyrm/templates/settings/users/user_admin.html:52
 msgid "Last Active"
 msgstr "Sist aktiv"
 
-#: bookwyrm/templates/settings/users/user_admin.html:57
+#: bookwyrm/templates/settings/users/user_admin.html:61
 msgid "Remote instance"
 msgstr "Ekstern instans"
 
-#: bookwyrm/templates/settings/users/user_admin.html:74
+#: bookwyrm/templates/settings/users/user_admin.html:81
 #: bookwyrm/templates/settings/users/user_info.html:28
 msgid "Active"
 msgstr "Aktiv"
 
-#: bookwyrm/templates/settings/users/user_admin.html:79
+#: bookwyrm/templates/settings/users/user_admin.html:86
 msgid "Deleted"
 msgstr ""
 
-#: bookwyrm/templates/settings/users/user_admin.html:85
+#: bookwyrm/templates/settings/users/user_admin.html:92
 #: bookwyrm/templates/settings/users/user_info.html:32
 msgid "Inactive"
 msgstr "Inaktiv"
 
-#: bookwyrm/templates/settings/users/user_admin.html:94
+#: bookwyrm/templates/settings/users/user_admin.html:101
 #: bookwyrm/templates/settings/users/user_info.html:127
 msgid "Not set"
 msgstr "Ikke angitt"
@@ -5022,10 +5059,6 @@ msgstr ""
 msgid "Finish reading"
 msgstr "Fullfør lesing"
 
-#: bookwyrm/templates/snippets/status/content_status.html:73
-msgid "Content warning"
-msgstr "Varsel om følsomt innhold"
-
 #: bookwyrm/templates/snippets/status/content_status.html:80
 msgid "Show status"
 msgstr "Vis status"
@@ -5321,7 +5354,7 @@ msgstr "Ingen følgere du følger"
 msgid "View profile and more"
 msgstr ""
 
-#: bookwyrm/templates/user_menu.html:72
+#: bookwyrm/templates/user_menu.html:78
 msgid "Log out"
 msgstr "Logg ut"
 

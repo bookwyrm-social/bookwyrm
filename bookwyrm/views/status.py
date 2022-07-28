@@ -82,9 +82,10 @@ class CreateStatus(View):
             if is_api_request(request):
                 logger.exception(form.errors)
                 return HttpResponseBadRequest()
-            return redirect(request.headers.get("Referer", "/"))
+            return redirect("/")
 
         status = form.save(commit=False)
+        status.raise_not_editable(request.user)
         # save the plain, unformatted version of the status for future editing
         status.raw_content = status.content
         if hasattr(status, "quote"):
@@ -146,7 +147,7 @@ class DeleteStatus(View):
 
         # perform deletion
         status.delete()
-        return redirect(request.headers.get("Referer", "/"))
+        return redirect("/")
 
 
 @login_required
@@ -195,7 +196,7 @@ def edit_readthrough(request):
 
     if is_api_request(request):
         return HttpResponse()
-    return redirect(request.headers.get("Referer", "/"))
+    return redirect("/")
 
 
 def find_mentions(content):

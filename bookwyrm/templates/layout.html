@@ -47,7 +47,7 @@
                         {% else %}
                             {% trans "Search for a book" as search_placeholder %}
                         {% endif %}
-                        <input aria-label="{{ search_placeholder }}" id="search_input" class="input" type="text" name="q" placeholder="{{ search_placeholder }}" value="{{ query }}">
+                        <input aria-label="{{ search_placeholder }}" id="tour-search" class="input" type="text" name="q" placeholder="{{ search_placeholder }}" value="{{ query }}">
                     </div>
                     <div class="control">
                         <button class="button" type="submit">
@@ -58,7 +58,7 @@
                     </div>
                     <div class="control">
                         <button class="button" type="button" data-modal-open="barcode-scanner-modal">
-                            <span class="icon icon-barcode" title="{% trans 'Scan Barcode' %}">
+                            <span class="icon icon-barcode" title="{% trans 'Scan Barcode' %}" id="tour-barcode">
                                 <span class="is-sr-only">{% trans "Scan Barcode" %}</span>
                             </span>
                         </button>
@@ -74,7 +74,7 @@
         </div>
 
         <div class="navbar-menu" id="main_nav">
-            <div class="navbar-start">
+            <div class="navbar-start" id="tour-navbar-start">
                 {% if request.user.is_authenticated %}
                 <a href="{% url 'lists' %}" class="navbar-item mt-3 py-0">
                     {% trans "Lists" %}
@@ -94,7 +94,7 @@
                     {% include 'user_menu.html' %}
                 </div>
                 <div class="navbar-item mt-3 py-0">
-                    <a href="{% url 'notifications' %}" class="tags has-addons">
+                    <a href="{% url 'notifications' %}" class="tags has-addons" id="tour-notifications">
                         <span class="tag is-medium">
                             <span class="icon icon-bell" title="{% trans 'Notifications' %}">
                                 <span class="is-sr-only">{% trans "Notifications" %}</span>
@@ -189,6 +189,12 @@
                 <p>
                     <a href="https://docs.joinbookwyrm.com/">{% trans "Documentation" %}</a>
                 </p>
+                {% if request.user.is_authenticated %}
+                <p id="tour-begin">
+                    <a href="/guided-tour/True">{% trans "Guided Tour" %}</a>
+                    <noscript>(requires JavaScript)</noscript>
+                </p>
+                {% endif %}
             </div>
             <div class="column content is-two-fifth">
                 {% if site.support_link %}
@@ -219,6 +225,8 @@
 <script src="{% static "js/localstorage.js" %}?v={{ js_cache }}"></script>
 <script src="{% static "js/status_cache.js" %}?v={{ js_cache }}"></script>
 <script src="{% static "js/vendor/quagga.min.js" %}?v={{ js_cache }}"></script>
+<script src="{% static "js/vendor/shepherd.min.js" %}?v={{ js_cache }}"></script>
+<script src="{% static "js/guided_tour.js" %}?v={{ js_cache }}"></script>
 
 {% block scripts %}{% endblock %}
 

@@ -482,11 +482,6 @@ urlpatterns = [
         name="prefs-password",
     ),
     re_path(r"^preferences/export/?$", views.Export.as_view(), name="prefs-export"),
-    re_path(
-        r"^preferences/export/file/?$",
-        views.export_user_book_data,
-        name="prefs-export-file",
-    ),
     re_path(r"^preferences/delete/?$", views.DeleteUser.as_view(), name="prefs-delete"),
     re_path(r"^preferences/block/?$", views.Block.as_view(), name="prefs-block"),
     re_path(r"^block/(?P<user_id>\d+)/?$", views.Block.as_view()),
@@ -650,4 +645,5 @@ urlpatterns = [
     re_path(
         r"^summary_revoke_key/?$", views.summary_revoke_key, name="summary-revoke-key"
     ),
+    path("guided-tour/<tour>", views.toggle_guided_tour),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

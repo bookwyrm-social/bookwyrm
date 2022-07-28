@@ -71,7 +71,9 @@ class Notification(BookWyrmModel):
         """Create a notification"""
         if related_user and (not user.local or user == related_user):
             return
-        notification, _ = cls.objects.get_or_create(user=user, **kwargs)
+        notification = cls.objects.filter(user=user, **kwargs).first()
+        if not notification:
+            notification = cls.objects.create(user=user, **kwargs)
         if related_user:
             notification.related_users.add(related_user)
         notification.read = False
@@ -298,8 +300,10 @@ def notify_user_on_follow(sender, instance, created, *args, **kwargs):
         notification.read = False
         notification.save()
     else:
+        # Only group unread follows
         Notification.notify(
             instance.user_object,
             instance.user_subject,
             notification_type=Notification.FOLLOW,
+            read=False,
         )

@@ -28,7 +28,7 @@ class Favorite(View):
 
         if is_api_request(request):
             return HttpResponse()
-        return redirect(request.headers.get("Referer", "/"))
+        return redirect("/")
 
 
 @method_decorator(login_required, name="dispatch")
@@ -48,7 +48,7 @@ class Unfavorite(View):
         favorite.delete()
         if is_api_request(request):
             return HttpResponse()
-        return redirect(request.headers.get("Referer", "/"))
+        return redirect("/")
 
 
 @method_decorator(login_required, name="dispatch")
@@ -67,7 +67,7 @@ class Boost(View):
             boosted_status=status, user=request.user
         ).exists():
             # you already boosted that.
-            return redirect(request.headers.get("Referer", "/"))
+            return redirect("/")
 
         models.Boost.objects.create(
             boosted_status=status,
@@ -76,7 +76,7 @@ class Boost(View):
         )
         if is_api_request(request):
             return HttpResponse()
-        return redirect(request.headers.get("Referer", "/"))
+        return redirect("/")
 
 
 @method_decorator(login_required, name="dispatch")
@@ -94,4 +94,4 @@ class Unboost(View):
         boost.delete()
         if is_api_request(request):
             return HttpResponse()
-        return redirect(request.headers.get("Referer", "/"))
+        return redirect("/")

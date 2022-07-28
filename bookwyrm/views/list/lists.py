@@ -17,7 +17,10 @@ class Lists(View):
 
     def get(self, request):
         """display a book list"""
-        lists = ListsStream().get_list_stream(request.user)
+        if request.user.is_authenticated:
+            lists = ListsStream().get_list_stream(request.user)
+        else:
+            lists = models.List.objects.filter(privacy="public")
         paginated = Paginator(lists, 12)
         data = {
             "lists": paginated.get_page(request.GET.get("page")),

@@ -5,7 +5,7 @@ from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.views import View
 
-from bookwyrm import models
+from bookwyrm import forms, models
 from bookwyrm.emailing import password_reset_email
 
 
@@ -57,7 +57,8 @@ class PasswordReset(View):
         except models.PasswordReset.DoesNotExist:
             raise PermissionDenied()
 
-        return TemplateResponse(request, "landing/password_reset.html", {"code": code})
+        data = {"code": code, "form": forms.PasswordResetForm()}
+        return TemplateResponse(request, "landing/password_reset.html", data)
 
     def post(self, request, code):
         """allow a user to change their password through an emailed token"""
@@ -68,14 +69,12 @@ class PasswordReset(View):
             return TemplateResponse(request, "landing/password_reset.html", data)
 
         user = reset_code.user
-
-        new_password = request.POST.get("password")
-        confirm_password = request.POST.get("confirm-password")
-
-        if new_password != confirm_password:
-            data = {"errors": ["Passwords do not match"]}
+        form = forms.PasswordResetForm(request.POST, instance=user)
+        if not form.is_valid():
+            data = {"code": code, "form": form}
             return TemplateResponse(request, "landing/password_reset.html", data)
 
+        new_password = form.cleaned_data["password"]
         user.set_password(new_password)
         user.save(broadcast=False, update_fields=["password"])
         login(request, user)

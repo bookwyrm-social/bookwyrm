@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-07-07 17:47+0000\n"
-"PO-Revision-Date: 2022-07-07 18:12\n"
+"POT-Creation-Date: 2022-07-15 19:29+0000\n"
+"PO-Revision-Date: 2022-07-15 19:48\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Romanian\n"
 "Language: ro\n"
@@ -42,6 +42,14 @@ msgstr "{i} utilizări"
 msgid "Unlimited"
 msgstr "Nelimitat"
 
+#: bookwyrm/forms/edit_user.py:89
+msgid "Incorrect password"
+msgstr ""
+
+#: bookwyrm/forms/edit_user.py:96 bookwyrm/forms/landing.py:71
+msgid "Password does not match"
+msgstr ""
+
 #: bookwyrm/forms/forms.py:54
 msgid "Reading finish date cannot be before start date."
 msgstr "Data de terminare a lecturii nu poate fi înainte de data de început."
@@ -50,11 +58,11 @@ msgstr "Data de terminare a lecturii nu poate fi înainte de data de început."
 msgid "Reading stopped date cannot be before start date."
 msgstr ""
 
-#: bookwyrm/forms/landing.py:32
+#: bookwyrm/forms/landing.py:38
 msgid "User with this username already exists"
 msgstr "Un utilizator cu acest nume există deja"
 
-#: bookwyrm/forms/landing.py:41
+#: bookwyrm/forms/landing.py:47
 msgid "A user with this email already exists."
 msgstr "Un utilizator cu această adresă de email există deja."
 
@@ -288,58 +296,62 @@ msgid "English"
 msgstr "English (engleză)"
 
 #: bookwyrm/settings.py:283
+msgid "Català (Catalan)"
+msgstr ""
+
+#: bookwyrm/settings.py:284
 msgid "Deutsch (German)"
 msgstr "Deutsch (germană)"
 
-#: bookwyrm/settings.py:284
+#: bookwyrm/settings.py:285
 msgid "Español (Spanish)"
 msgstr "Español (spaniolă)"
 
-#: bookwyrm/settings.py:285
+#: bookwyrm/settings.py:286
 msgid "Galego (Galician)"
 msgstr "Galego (galiciană)"
 
-#: bookwyrm/settings.py:286
+#: bookwyrm/settings.py:287
 msgid "Italiano (Italian)"
 msgstr "Italiano (italiană)"
 
-#: bookwyrm/settings.py:287
+#: bookwyrm/settings.py:288
 msgid "Suomi (Finnish)"
 msgstr "Suomi (finlandeză)"
 
-#: bookwyrm/settings.py:288
+#: bookwyrm/settings.py:289
 msgid "Français (French)"
 msgstr "Français (franceză)"
 
-#: bookwyrm/settings.py:289
+#: bookwyrm/settings.py:290
 msgid "Lietuvių (Lithuanian)"
 msgstr "Lietuvių (lituaniană)"
 
-#: bookwyrm/settings.py:290
+#: bookwyrm/settings.py:291
 msgid "Norsk (Norwegian)"
 msgstr "Norsk (norvegiană)"
 
-#: bookwyrm/settings.py:291
+#: bookwyrm/settings.py:292
 msgid "Português do Brasil (Brazilian Portuguese)"
 msgstr "Português do Brasil (portugheză braziliană)"
 
-#: bookwyrm/settings.py:292
+#: bookwyrm/settings.py:293
 msgid "Português Europeu (European Portuguese)"
 msgstr "Português Europeu (portugheză europeană)"
 
-#: bookwyrm/settings.py:293
+#: bookwyrm/settings.py:294
 msgid "Română (Romanian)"
 msgstr "Română (română)"
 
-#: bookwyrm/settings.py:294
+#: bookwyrm/settings.py:295
 msgid "Svenska (Swedish)"
 msgstr "Svenska (suedeză)"
 
-#: bookwyrm/settings.py:295
+#: bookwyrm/settings.py:296
 msgid "简体中文 (Simplified Chinese)"
 msgstr "简体中文 (chineză simplificată)"
 
-#: bookwyrm/settings.py:296
+#: bookwyrm/settings.py:297
 msgid "繁體中文 (Traditional Chinese)"
 msgstr "繁體中文 (chineză tradițională)"
 
@@ -791,7 +803,7 @@ msgstr "Încărcatul de date se va conecta la <strong>%(source_name)s</strong> �
 #: bookwyrm/templates/book/edit/edit_book.html:122
 #: bookwyrm/templates/book/sync_modal.html:24
 #: bookwyrm/templates/groups/members.html:29
-#: bookwyrm/templates/landing/password_reset.html:42
+#: bookwyrm/templates/landing/password_reset.html:52
 #: bookwyrm/templates/snippets/remove_from_group_button.html:17
 msgid "Confirm"
 msgstr "Confirmați"
@@ -1211,7 +1223,7 @@ msgstr "Domeniu"
 #: bookwyrm/templates/settings/announcements/announcements.html:37
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:47
 #: bookwyrm/templates/settings/invites/status_filter.html:5
-#: bookwyrm/templates/settings/users/user_admin.html:52
+#: bookwyrm/templates/settings/users/user_admin.html:56
 #: bookwyrm/templates/settings/users/user_info.html:24
 msgid "Status"
 msgstr "Status"
@@ -1335,7 +1347,7 @@ msgstr "Cod de confirmare:"
 
 #: bookwyrm/templates/confirm_email/confirm_email.html:25
 #: bookwyrm/templates/landing/layout.html:81
-#: bookwyrm/templates/settings/dashboard/dashboard.html:127
+#: bookwyrm/templates/settings/dashboard/dashboard.html:106
 #: bookwyrm/templates/snippets/report_modal.html:53
 msgid "Submit"
 msgstr "Trimiteți"
@@ -1357,11 +1369,7 @@ msgstr "Retrimiteți legătura de confirmare"
 msgid "Email address:"
 msgstr "Adresa de email:"
 
-#: bookwyrm/templates/confirm_email/resend_modal.html:28
-msgid "No user matching this email address found."
-msgstr "Nu s-a găsit niciun utilizator care să corespundă acestei adrese de e-mail."
-
-#: bookwyrm/templates/confirm_email/resend_modal.html:38
+#: bookwyrm/templates/confirm_email/resend_modal.html:30
 msgid "Resend link"
 msgstr "Retrimiteți legătura"
 
@@ -1375,7 +1383,7 @@ msgid "Local users"
 msgstr "Utilizatori locali"
 
 #: bookwyrm/templates/directory/community_filter.html:12
-#: bookwyrm/templates/settings/users/user_admin.html:29
+#: bookwyrm/templates/settings/users/user_admin.html:33
 msgid "Federated community"
 msgstr "Comunitate federată"
 
@@ -2284,8 +2292,8 @@ msgstr "Parolă uitată?"
 msgid "More about this site"
 msgstr "Mai multe despre acest site"
 
-#: bookwyrm/templates/landing/password_reset.html:34
-#: bookwyrm/templates/preferences/change_password.html:18
+#: bookwyrm/templates/landing/password_reset.html:43
+#: bookwyrm/templates/preferences/change_password.html:33
 #: bookwyrm/templates/preferences/delete_user.html:20
 msgid "Confirm password:"
 msgstr "Confirmați parola:"
@@ -2886,6 +2894,11 @@ msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
 
+#: bookwyrm/templates/notifications/items/status_preview.html:4
+#: bookwyrm/templates/snippets/status/content_status.html:73
+msgid "Content warning"
+msgstr "Avertisment de conținut"
+
 #: bookwyrm/templates/notifications/items/update.html:16
 #, python-format
 msgid "has changed the privacy level for <a href=\"%(group_path)s\">%(group_name)s</a>"
@@ -3043,12 +3056,20 @@ msgstr "Niciun utilizator blocat."
 
 #: bookwyrm/templates/preferences/change_password.html:4
 #: bookwyrm/templates/preferences/change_password.html:7
-#: bookwyrm/templates/preferences/change_password.html:21
+#: bookwyrm/templates/preferences/change_password.html:37
 #: bookwyrm/templates/preferences/layout.html:20
 msgid "Change Password"
 msgstr "Schimbați parola"
 
-#: bookwyrm/templates/preferences/change_password.html:14
+#: bookwyrm/templates/preferences/change_password.html:15
+msgid "Successfully changed password"
+msgstr ""
+
+#: bookwyrm/templates/preferences/change_password.html:22
+msgid "Current password:"
+msgstr ""
+
+#: bookwyrm/templates/preferences/change_password.html:28
 msgid "New password:"
 msgstr "Parolă nouă:"
 
@@ -3139,6 +3160,10 @@ msgstr "Export CSV"
 #: bookwyrm/templates/preferences/export.html:13
 msgid "Your export will include all the books on your shelves, books you have reviewed, and books with reading activity."
 msgstr "Exportul dvs. va include toate cărțile de pe etajerele dvs., cărți pe care le-ați revizuit și cărți cu activitate de lectură."
+
+#: bookwyrm/templates/preferences/export.html:20
+msgid "Download file"
+msgstr ""
 
 #: bookwyrm/templates/preferences/layout.html:11
 msgid "Account"
@@ -3367,13 +3392,13 @@ msgstr "Fals"
 
 #: bookwyrm/templates/settings/announcements/announcement.html:57
 #: bookwyrm/templates/settings/announcements/edit_announcement.html:79
-#: bookwyrm/templates/settings/dashboard/dashboard.html:105
+#: bookwyrm/templates/settings/dashboard/dashboard.html:84
 msgid "Start date:"
 msgstr "Data de început:"
 
 #: bookwyrm/templates/settings/announcements/announcement.html:62
 #: bookwyrm/templates/settings/announcements/edit_announcement.html:89
-#: bookwyrm/templates/settings/dashboard/dashboard.html:111
+#: bookwyrm/templates/settings/dashboard/dashboard.html:90
 msgid "End date:"
 msgstr "Data de sfârșit:"
 
@@ -3533,7 +3558,7 @@ msgid "Dashboard"
 msgstr "Tablou de bord"
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:15
-#: bookwyrm/templates/settings/dashboard/dashboard.html:134
+#: bookwyrm/templates/settings/dashboard/dashboard.html:113
 msgid "Total users"
 msgstr "Număr total de utilizatori"
 
@@ -3551,69 +3576,31 @@ msgstr "Statusuri"
 msgid "Works"
 msgstr "Opere"
 
-#: bookwyrm/templates/settings/dashboard/dashboard.html:43
-#, python-format
-msgid "Your outgoing email address, <code>%(email_sender)s</code>, may be misconfigured."
-msgstr ""
-
-#: bookwyrm/templates/settings/dashboard/dashboard.html:46
-msgid "Check the <code>EMAIL_SENDER_NAME</code> and <code>EMAIL_SENDER_DOMAIN</code> in your <code>.env</code>."
-msgstr ""
-
-#: bookwyrm/templates/settings/dashboard/dashboard.html:54
-#, python-format
-msgid "%(display_count)s open report"
-msgid_plural "%(display_count)s open reports"
-msgstr[0] "%(display_count)s raport deschis"
-msgstr[1] ""
-msgstr[2] "%(display_count)s raporturi dechise"
-
-#: bookwyrm/templates/settings/dashboard/dashboard.html:66
-#, python-format
-msgid "%(display_count)s domain needs review"
-msgid_plural "%(display_count)s domains need review"
-msgstr[0] "%(display_count)s domeniu care necesită revizuire"
-msgstr[1] ""
-msgstr[2] "%(display_count)s domenii care necesită revizii"
-
 #: bookwyrm/templates/settings/dashboard/dashboard.html:78
-#, python-format
-msgid "%(display_count)s invite request"
-msgid_plural "%(display_count)s invite requests"
-msgstr[0] "%(display_count)s cerere de invitare"
-msgstr[1] ""
-msgstr[2] "%(display_count)s cereri de invitare"
-
-#: bookwyrm/templates/settings/dashboard/dashboard.html:90
-#, python-format
-msgid "An update is available! You're running v%(current)s and the latest release is %(available)s."
-msgstr "O actualizare este disponibilă! Rulați în prezent v%(current)s, iar cea mai nouă versiune este %(available)s."
-
-#: bookwyrm/templates/settings/dashboard/dashboard.html:99
 msgid "Instance Activity"
 msgstr "Activitatea instanței"
 
-#: bookwyrm/templates/settings/dashboard/dashboard.html:117
+#: bookwyrm/templates/settings/dashboard/dashboard.html:96
 msgid "Interval:"
 msgstr "Interval:"
 
-#: bookwyrm/templates/settings/dashboard/dashboard.html:121
+#: bookwyrm/templates/settings/dashboard/dashboard.html:100
 msgid "Days"
 msgstr "Zile"
 
-#: bookwyrm/templates/settings/dashboard/dashboard.html:122
+#: bookwyrm/templates/settings/dashboard/dashboard.html:101
 msgid "Weeks"
 msgstr "Săptămâni"
 
-#: bookwyrm/templates/settings/dashboard/dashboard.html:140
+#: bookwyrm/templates/settings/dashboard/dashboard.html:119
 msgid "User signup activity"
 msgstr "Activitate de înscriere a utilizatorilor"
 
-#: bookwyrm/templates/settings/dashboard/dashboard.html:146
+#: bookwyrm/templates/settings/dashboard/dashboard.html:125
 msgid "Status activity"
 msgstr "Activitate stare"
 
-#: bookwyrm/templates/settings/dashboard/dashboard.html:152
+#: bookwyrm/templates/settings/dashboard/dashboard.html:131
 msgid "Works created"
 msgstr "Opere create"
 
@@ -3628,6 +3615,52 @@ msgstr "Stări publicate"
 #: bookwyrm/templates/settings/dashboard/user_chart.html:11
 msgid "Total"
 msgstr "Total"
+
+#: bookwyrm/templates/settings/dashboard/warnings/domain_review.html:9
+#, python-format
+msgid "%(display_count)s domain needs review"
+msgid_plural "%(display_count)s domains need review"
+msgstr[0] "%(display_count)s domeniu care necesită revizuire"
+msgstr[1] ""
+msgstr[2] "%(display_count)s domenii care necesită revizii"
+
+#: bookwyrm/templates/settings/dashboard/warnings/email_config.html:8
+#, python-format
+msgid "Your outgoing email address, <code>%(email_sender)s</code>, may be misconfigured."
+msgstr ""
+
+#: bookwyrm/templates/settings/dashboard/warnings/email_config.html:11
+msgid "Check the <code>EMAIL_SENDER_NAME</code> and <code>EMAIL_SENDER_DOMAIN</code> in your <code>.env</code> file."
+msgstr ""
+
+#: bookwyrm/templates/settings/dashboard/warnings/invites.html:9
+#, python-format
+msgid "%(display_count)s invite request"
+msgid_plural "%(display_count)s invite requests"
+msgstr[0] "%(display_count)s cerere de invitare"
+msgstr[1] ""
+msgstr[2] "%(display_count)s cereri de invitare"
+
+#: bookwyrm/templates/settings/dashboard/warnings/missing_conduct.html:8
+msgid "Your instance is missing a code of conduct."
+msgstr ""
+
+#: bookwyrm/templates/settings/dashboard/warnings/missing_privacy.html:8
+msgid "Your instance is missing a privacy policy."
+msgstr ""
+
+#: bookwyrm/templates/settings/dashboard/warnings/reports.html:9
+#, python-format
+msgid "%(display_count)s open report"
+msgid_plural "%(display_count)s open reports"
+msgstr[0] "%(display_count)s raport deschis"
+msgstr[1] ""
+msgstr[2] "%(display_count)s raporturi dechise"
+
+#: bookwyrm/templates/settings/dashboard/warnings/update_version.html:8
+#, python-format
+msgid "An update is available! You're running v%(current)s and the latest release is %(available)s."
+msgstr "O actualizare este disponibilă! Rulați în prezent v%(current)s, iar cea mai nouă versiune este %(available)s."
 
 #: bookwyrm/templates/settings/email_blocklist/domain_form.html:5
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:10
@@ -4326,38 +4359,42 @@ msgstr "Parola dvs.:"
 msgid "Users: <small>%(instance_name)s</small>"
 msgstr "Utilizatori: <small>%(instance_name)s</small>"
 
-#: bookwyrm/templates/settings/users/user_admin.html:40
+#: bookwyrm/templates/settings/users/user_admin.html:29
+msgid "Deleted users"
+msgstr ""
+
+#: bookwyrm/templates/settings/users/user_admin.html:44
 #: bookwyrm/templates/settings/users/username_filter.html:5
 msgid "Username"
 msgstr "Nume de utilizator"
 
-#: bookwyrm/templates/settings/users/user_admin.html:44
+#: bookwyrm/templates/settings/users/user_admin.html:48
 msgid "Date Added"
 msgstr "Data adăugării"
 
-#: bookwyrm/templates/settings/users/user_admin.html:48
+#: bookwyrm/templates/settings/users/user_admin.html:52
 msgid "Last Active"
 msgstr "Ultima dată activ(ă)"
 
-#: bookwyrm/templates/settings/users/user_admin.html:57
+#: bookwyrm/templates/settings/users/user_admin.html:61
 msgid "Remote instance"
 msgstr "Instanță la distanță"
 
-#: bookwyrm/templates/settings/users/user_admin.html:74
+#: bookwyrm/templates/settings/users/user_admin.html:81
 #: bookwyrm/templates/settings/users/user_info.html:28
 msgid "Active"
 msgstr "Activ"
 
-#: bookwyrm/templates/settings/users/user_admin.html:79
+#: bookwyrm/templates/settings/users/user_admin.html:86
 msgid "Deleted"
 msgstr ""
 
-#: bookwyrm/templates/settings/users/user_admin.html:85
+#: bookwyrm/templates/settings/users/user_admin.html:92
 #: bookwyrm/templates/settings/users/user_info.html:32
 msgid "Inactive"
 msgstr "Inactiv"
 
-#: bookwyrm/templates/settings/users/user_admin.html:94
+#: bookwyrm/templates/settings/users/user_admin.html:101
 #: bookwyrm/templates/settings/users/user_info.html:127
 msgid "Not set"
 msgstr "Neconfigurat"
@@ -5050,10 +5087,6 @@ msgstr ""
 msgid "Finish reading"
 msgstr "Terminați de citit"
 
-#: bookwyrm/templates/snippets/status/content_status.html:73
-msgid "Content warning"
-msgstr "Avertisment de conținut"
-
 #: bookwyrm/templates/snippets/status/content_status.html:80
 msgid "Show status"
 msgstr "Arătați stare"
@@ -5351,7 +5384,7 @@ msgstr "Niciun urmăritor pe care îl urmărești"
 msgid "View profile and more"
 msgstr "Vizualizați profil și multe altele"
 
-#: bookwyrm/templates/user_menu.html:72
+#: bookwyrm/templates/user_menu.html:78
 msgid "Log out"
 msgstr "Deconectați-vă"
 

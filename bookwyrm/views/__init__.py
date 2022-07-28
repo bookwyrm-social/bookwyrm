@@ -28,7 +28,7 @@ from .admin.user_admin import UserAdmin, UserAdminList
 # user preferences
 from .preferences.change_password import ChangePassword
 from .preferences.edit_user import EditUser
-from .preferences.export import Export, export_user_book_data
+from .preferences.export import Export
 from .preferences.delete_user import DeleteUser
 from .preferences.block import Block, unblock
 
@@ -127,7 +127,14 @@ from .setup import InstanceConfig, CreateAdmin
 from .status import CreateStatus, EditStatus, DeleteStatus, update_progress
 from .status import edit_readthrough
 from .updates import get_notification_count, get_unread_status_string
-from .user import User, Followers, Following, hide_suggestions, user_redirect
+from .user import (
+    User,
+    Followers,
+    Following,
+    hide_suggestions,
+    user_redirect,
+    toggle_guided_tour,
+)
 from .wellknown import *
 from .annual_summary import (
     AnnualSummary,
