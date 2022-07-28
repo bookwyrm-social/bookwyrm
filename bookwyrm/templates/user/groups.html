@@ -13,7 +13,7 @@
         </h1>
     </div>
     {% if is_self %}
-    <div class="column is-narrow">
+    <div class="column is-narrow" id="tour-create-group">
         {% trans "Create group" as button_text %}
         {% include 'snippets/toggle/open_button.html' with controls_text="create_group" icon_with_text="plus" text=button_text %}
     </div>
@@ -34,4 +34,10 @@
 <div>
     {% include 'snippets/pagination.html' with page=user.memberships path=path %}
 </div>
+{% endblock %}
+
+{% block scripts %}
+{% if request.user.show_guided_tour %}
+    {% include 'guided_tour/user_groups.html' %}
+{% endif %}
 {% endblock %}
