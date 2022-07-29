@@ -6,8 +6,8 @@ const initiateTour = new Shepherd.Tour({
 });
 
 function checkResponsiveState(anchor) {
-    let menu = document.querySelector('#navbar-dropdown');		
-    let display = window.getComputedStyle(menu).display;	
+    let menu = document.querySelector('#navbar-dropdown');
+    let display = window.getComputedStyle(menu).display;
     return display == 'flex' ? anchor : '.navbar-burger';
 }
 
@@ -76,7 +76,7 @@ homeTour.addSteps([
         ],
     },
     {
-        text: "{% trans 'Search book records by scanning an ISBN barcode using your device\'s camera - great when you\'re in the bookstore or library!' %}",
+        text: `{% trans "Search book records by scanning an ISBN barcode using your device's camera - great when you're in the bookstore or library!" %}`,
         title: "{% trans 'Barcode reader' %}",
         attachTo: {
             element: "#tour-barcode",
@@ -197,7 +197,7 @@ homeTour.addSteps([
         ],
     },
     {
-        text: "{% trans 'Your profile, books, direct messages, and settings can be accessed by clicking on your name in the menu here.<p class=\'notification is-warning is-light mt-3\'>Try selecting <strong>Profile</strong> from the drop down menu to continue the tour.</p>' %}",
+            eext: `{% trans "Your profile, books, direct messages, and settings can be accessed by clicking on your name in the menu here." %} <p class="notification is-warning is-light mt-3">{% trans "Try selecting <strong>Profile</strong> from the drop down menu to continue the tour." %}</p>' %}`,
         title: "{% trans 'Profile and settings menu' %}",
         attachTo: {
             element: checkResponsiveState('#navbar-dropdown'),

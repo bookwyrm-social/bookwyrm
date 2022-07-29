@@ -28,7 +28,7 @@ tour.addSteps([
         ],
     },
     {
-        text: "{% trans 'This tab shows everything you have read towards your annual reading goal, or allows you to set one. You don\'t have to set a reading goal if that\'s not your thing!' %}",
+        text: `{% trans "This tab shows everything you have read towards your annual reading goal, or allows you to set one. You don't have to set a reading goal if that's not your thing!" %}`,
         title: "{% trans 'Reading Goal' %}",
         attachTo: {
             element: "#tour-reading-goal",
@@ -97,7 +97,7 @@ tour.addSteps([
         ],
     },
     {
-        text: "{% trans 'The Books tab shows your book shelves. We\'ll explore this later in the tour.' %}",
+        text: `{% trans "The Books tab shows your book shelves. We'll explore this later in the tour." %}`,
         title: "{% trans 'Books' %}",
         attachTo: {
             element: "#tour-shelves-tab",
@@ -120,7 +120,7 @@ tour.addSteps([
         ],
     },
     {
-        text: "{% trans 'Now you understand the basics of your profile page, let\s add a book to your shelves.<p class=\'notification is-warning is-light mt-3\'>Search for a title or author to continue the tour.</p>' %}",
+            text: `{% trans "Now you understand the basics of your profile page, let's add a book to your shelves." %}<p class="notification is-warning is-light mt-3">{% trans "Search for a title or author to continue the tour." %}</p>`,
         title: "{% trans 'Find a book' %}",
         attachTo: {
             element: "#tour-search",

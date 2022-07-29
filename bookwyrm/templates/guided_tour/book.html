@@ -7,7 +7,7 @@
 
     tour.addSteps([
         {
-            text: "{% trans 'This is home page of a book. Let\'s see what you can do while you\'re here!' %}",
+            text: `{% trans "This is home page of a book. Let's see what you can do while you're here!" %}`,
             title: "{% trans 'Book page' %}",
             buttons: [
                 {
@@ -52,7 +52,7 @@
             ],
         },
         {
-            text: "{% trans 'You can also manually add reading dates here. Unlike changing the reading status using the previous method, adding dates manually will not automatically add them to your <strong>Read</strong> or <strong>Reading</strong> shelves.<br><br>Got a favourite you re-read every year? We\'ve got you covered - you can add multiple read dates for the same book 😀' %}",
+            text: `{% trans "You can also manually add reading dates here. Unlike changing the reading status using the previous method, adding dates manually will not automatically add them to your <strong>Read</strong> or <strong>Reading</strong> shelves." %}<br><br>{% trans "Got a favourite you re-read every year? We've got you covered - you can add multiple read dates for the same book 😀" %}`,
             title: "{% trans 'Add read dates' %}",
             attachTo: {
                 element: "#tour-add-readthrough",
@@ -196,7 +196,7 @@
             ],
         },
         {
-            text: "{% trans 'If your review or comment might ruin the book for someone who hasn\'t read it yet, you can hide your post behind a <strong>spoiler alert</strong>' %}",
+            text: `{% trans "If your review or comment might ruin the book for someone who hasn't read it yet, you can hide your post behind a <strong>spoiler alert</strong>" %}`,
             title: "{% trans 'Spoiler alerts' %}",
             attachTo: {
                 element: "",
@@ -221,7 +221,7 @@
             ],
         },
         {
-            text: "{% trans 'Choose who can see your post here. Post privacy can be <strong>Public</strong> (everyone can see), <strong>Unlisted</strong> (everyone can see, but it doesn\'t appear in public feeds or discovery pages), <strong>Followers</strong> (only your followers can see), or <strong>Private</strong> (only you can see)' %}",
+            text: `{% trans "Choose who can see your post here. Post privacy can be <strong>Public</strong> (everyone can see), <strong>Unlisted</strong> (everyone can see, but it doesn't appear in public feeds or discovery pages), <strong>Followers</strong> (only your followers can see), or <strong>Private</strong> (only you can see)" %}`,
             title: "{% trans 'Post privacy' %}",
             attachTo: {
                 element: "[id^=form_review] [id^=privacy_]",
@@ -270,7 +270,7 @@
             ],
         },
         {
-            text: "{% trans '<p class=\'notification is-warning is-light mt-3\'> Continue the tour by selecting <strong>Your books</strong> from the drop down menu.</p>' %}",
+            text: '<p class="notification is-warning is-light mt-3">{% trans "Continue the tour by selecting <strong>Your books</strong> from the drop down menu." %}</p>',
             title: "{% trans 'Next' %}",
             attachTo: {
                 element: () => {

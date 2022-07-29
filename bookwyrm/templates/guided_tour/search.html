@@ -40,7 +40,7 @@
     } else if (localResult) {
     tour.addStep(
         {
-            text: "{% trans 'If the book you are looking for is already on this Bookwyrm instance, you can click on the title to go to the book\'s page.' %}",
+            text: `{% trans "If the book you are looking for is already on this Bookwyrm instance, you can click on the title to go to the book's page." %}`,
             title: "{% trans 'Searching' %}",
             attachTo: {
                 element: "#tour-local-book-search-result",
@@ -118,7 +118,7 @@
                 ],
             },
             {
-            text: "{% trans 'If you still can\'t find your book, you can add a record manually.' %}",
+            text: `{% trans "If you still can't find your book, you can add a record manually." %}`,
             title: "{% trans 'Add a record manally' %}",
             attachTo: {
                 element: "#tour-manually-add-book",
@@ -144,7 +144,7 @@
     }
 
     tour.addStep({
-            text: "{% trans '<p class=\'notification is-warning is-light mt-3\'>Import, manually add, or view an existing book to continue the tour.<p>' %}",
+            text: '<p class="notification is-warning is-light mt-3">{% trans "Import, manually add, or view an existing book to continue the tour." %}<p>',
             title: "{% trans 'Continue the tour' %}",
             buttons: [
                 {
