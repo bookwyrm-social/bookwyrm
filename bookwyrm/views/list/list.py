@@ -36,11 +36,8 @@ class List(View):
         if is_api_request(request):
             return ActivitypubResponse(book_list.to_activity(**request.GET))
 
-        if r := maybe_redirect_local_path(request, book_list):
-            return r
-
-        query = request.GET.get("q")
-        suggestions = None
+        if redirect_option := maybe_redirect_local_path(request, book_list):
+            return redirect_option
 
         items = book_list.listitem_set.filter(approved=True).prefetch_related(
             "user", "book", "book__authors"
@@ -48,26 +45,6 @@ class List(View):
         items = sort_list(request, items)
 
         paginated = Paginator(items, PAGE_LENGTH)
-
-        if query and request.user.is_authenticated:
-            # search for books
-            suggestions = book_search.search(
-                query,
-                filters=[~Q(parent_work__editions__in=book_list.books.all())],
-            )
-        elif request.user.is_authenticated:
-            # just suggest whatever books are nearby
-            suggestions = request.user.shelfbook_set.filter(
-                ~Q(book__in=book_list.books.all())
-            )
-            suggestions = [s.book for s in suggestions[:5]]
-            if len(suggestions) < 5:
-                suggestions += [
-                    s.default_edition
-                    for s in models.Work.objects.filter(
-                        ~Q(editions__in=book_list.books.all()),
-                    ).order_by("-updated_date")
-                ][: 5 - len(suggestions)]
 
         page = paginated.get_page(request.GET.get("page"))
 
@@ -78,6 +55,7 @@ class List(View):
         if request.GET:
             embed_url = f"{embed_url}?{request.GET.urlencode()}"
 
+        query = request.GET.get("q", "")
         data = {
             "list": book_list,
             "items": page,
@@ -85,14 +63,18 @@ class List(View):
                 page.number, on_each_side=2, on_ends=1
             ),
             "pending_count": book_list.listitem_set.filter(approved=False).count(),
-            "suggested_books": suggestions,
             "list_form": forms.ListForm(instance=book_list),
-            "query": query or "",
+            "query": query,
             "sort_form": forms.SortListForm(request.GET),
             "embed_url": embed_url,
             "add_failed": add_failed,
             "add_succeeded": add_succeeded,
         }
+
+        if request.user.is_authenticated:
+            data["suggested_books"] = get_list_suggestions(
+                book_list, request.user, query=query
+            )
         return TemplateResponse(request, "lists/list.html", data)
 
     @method_decorator(login_required, name="dispatch")
@@ -111,6 +93,27 @@ class List(View):
             book_list.save(broadcast=False)
 
         return redirect(book_list.local_path)
+
+
+def get_list_suggestions(book_list, user, query=None):
+    """What books might a user want to add to a list"""
+    if query:
+        # search for books
+        return book_search.search(
+            query,
+            filters=[~Q(parent_work__editions__in=book_list.books.all())],
+        )
+    # just suggest whatever books are nearby
+    suggestions = user.shelfbook_set.filter(~Q(book__in=book_list.books.all()))
+    suggestions = [s.book for s in suggestions[:5]]
+    if len(suggestions) < 5:
+        suggestions += [
+            s.default_edition
+            for s in models.Work.objects.filter(
+                ~Q(editions__in=book_list.books.all()),
+            ).order_by("-updated_date")
+        ][: 5 - len(suggestions)]
+    return suggestions
 
 
 def sort_list(request, items):
