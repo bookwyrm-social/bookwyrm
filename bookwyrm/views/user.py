@@ -106,10 +106,19 @@ def hide_suggestions(request):
     """not everyone wants user suggestions"""
     request.user.show_suggested_users = False
     request.user.save(broadcast=False, update_fields=["show_suggested_users"])
-    return redirect(request.headers.get("Referer", "/"))
+    return redirect("/")
 
 
 # pylint: disable=unused-argument
 def user_redirect(request, username):
     """redirect to a user's feed"""
     return redirect("user-feed", username=username)
+
+
+@login_required
+def toggle_guided_tour(request, tour):
+    """most people don't want a tour every time they load a page"""
+
+    request.user.show_guided_tour = tour
+    request.user.save(broadcast=False, update_fields=["show_guided_tour"])
+    return redirect("/")

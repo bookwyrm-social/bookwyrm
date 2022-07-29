@@ -143,6 +143,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     show_goal = models.BooleanField(default=True)
     show_suggested_users = models.BooleanField(default=True)
     discoverable = fields.BooleanField(default=False)
+    show_guided_tour = models.BooleanField(default=True)
 
     # feed options
     feed_status_types = ArrayField(
@@ -173,6 +174,11 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     name_field = "username"
     property_fields = [("following_link", "following")]
     field_tracker = FieldTracker(fields=["name", "avatar"])
+
+    @property
+    def active_follower_requests(self):
+        """Follow requests from active users"""
+        return self.follower_requests.filter(is_active=True)
 
     @property
     def confirmation_link(self):

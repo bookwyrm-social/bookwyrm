@@ -1,0 +1,303 @@
+{% load i18n %}
+
+<script>
+    const tour = new Shepherd.Tour({
+        exitOnEsc: true,
+    });
+
+    tour.addSteps([
+        {
+            text: `{% trans "This is home page of a book. Let's see what you can do while you're here!" %}`,
+            title: "{% trans 'Book page' %}",
+            buttons: [
+                {
+                    action() {
+                        disableGuidedTour(csrf_token);
+                        return this.complete();
+                    },
+                    secondary: true,
+                    text: "{% trans 'End Tour' %}",
+                    classes: "is-danger",
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: "{% trans 'Next' %}",
+                },
+            ],
+        },
+        {
+            text: "{% trans 'This is where you can set a reading status for this book. You can press the button to move to the next stage, or use the drop down button to select the reading status you want to set.' %}",
+            title: "{% trans 'Reading status' %}",
+            attachTo: {
+                element: "#tour-shelve-button",
+                on: "right",
+            },
+            highlightClass: 'tour-element-highlight',
+            buttons: [
+                {
+                    action() {
+                        return this.back();
+                    },
+                    secondary: true,
+                    text: "{% trans 'Back' %}",
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: "{% trans 'Next' %}",
+                },
+            ],
+        },
+        {
+            text: `{% trans "You can also manually add reading dates here. Unlike changing the reading status using the previous method, adding dates manually will not automatically add them to your <strong>Read</strong> or <strong>Reading</strong> shelves." %}<br><br>{% trans "Got a favourite you re-read every year? We've got you covered - you can add multiple read dates for the same book 😀" %}`,
+            title: "{% trans 'Add read dates' %}",
+            attachTo: {
+                element: "#tour-add-readthrough",
+                on: "top",
+            },
+            highlightClass: 'tour-element-highlight',
+            buttons: [
+                {
+                    action() {
+                        return this.back();
+                    },
+                    secondary: true,
+                    text: "{% trans 'Back' %}",
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: "{% trans 'Next' %}",
+                },
+            ],
+        },
+        {
+            text: "{% trans 'There can be multiple editions of a book, in various formats or languages. You can choose which edition you want to use.' %}",
+            title: "{% trans 'Other editions' %}",
+            attachTo: {
+                element: "#tour-other-editions-link",
+                on: "left",
+            },
+            buttons: [
+                {
+                    action() {
+                        return this.back();
+                    },
+                    secondary: true,
+                    text: "{% trans 'Back' %}",
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: "{% trans 'Next' %}",
+                },
+            ],
+        },
+        {
+            text: "{% trans 'You can post a review, comment, or quote here.' %}",
+            title: "{% trans 'Share your thoughts' %}",
+            attachTo: {
+                element: ".tour-review-comment-quote",
+                on: "top",
+            },
+            highlightClass: 'tour-element-highlight',
+            scrollTo: true,
+            buttons: [
+                {
+                    action() {
+                        return this.back();
+                    },
+                    secondary: true,
+                    text: "{% trans 'Back' %}",
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: "{% trans 'Next' %}",
+                },
+            ],
+        },
+        {
+            text: "{% trans 'If you have read this book you can post a review including an optional star rating' %}",
+            title: "{% trans 'Post a review' %}",
+            attachTo: {
+                element: "[id^=tab_review]",
+                on: "top",
+            },
+            highlightClass: 'tour-element-highlight',
+            buttons: [
+                {
+                    action() {
+                        return this.back();
+                    },
+                    secondary: true,
+                    text: "{% trans 'Back' %}",
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: "{% trans 'Next' %}",
+                },
+            ],
+        },
+        {
+            text: "{% trans 'You can share your thoughts on this book generally with a simple comment' %}",
+            title: "{% trans 'Post a comment' %}",
+            attachTo: {
+                element: "[id^=tab_comment]",
+                on: "top",
+            },
+            highlightClass: 'tour-element-highlight',
+            buttons: [
+                {
+                    action() {
+                        return this.back();
+                    },
+                    secondary: true,
+                    text: "{% trans 'Back' %}",
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: "{% trans 'Next' %}",
+                },
+            ],
+        },
+        {
+            text: "{% trans 'Just read some perfect prose? Let the world know by sharing a quote!' %}",
+            title: "{% trans 'Share a quote' %}",
+            attachTo: {
+                element: "[id^=tab_quote]",
+                on: "top",
+            },
+            highlightClass: 'tour-element-highlight',
+            buttons: [
+                {
+                    action() {
+                        return this.back();
+                    },
+                    secondary: true,
+                    text: "{% trans 'Back' %}",
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: "{% trans 'Next' %}",
+                },
+            ],
+        },
+        {
+            text: `{% trans "If your review or comment might ruin the book for someone who hasn't read it yet, you can hide your post behind a <strong>spoiler alert</strong>" %}`,
+            title: "{% trans 'Spoiler alerts' %}",
+            attachTo: {
+                element: "",
+                element: "[id^=form_review] > .tour-spoiler-alert",
+                on: "top",
+            },
+            highlightClass: 'tour-element-highlight',
+            buttons: [
+                {
+                    action() {
+                        return this.back();
+                    },
+                    secondary: true,
+                    text: "{% trans 'Back' %}",
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: "{% trans 'Next' %}",
+                },
+            ],
+        },
+        {
+            text: `{% trans "Choose who can see your post here. Post privacy can be <strong>Public</strong> (everyone can see), <strong>Unlisted</strong> (everyone can see, but it doesn't appear in public feeds or discovery pages), <strong>Followers</strong> (only your followers can see), or <strong>Private</strong> (only you can see)" %}`,
+            title: "{% trans 'Post privacy' %}",
+            attachTo: {
+                element: "[id^=form_review] [id^=privacy_]",
+                on: "left",
+            },
+            scrollTo: true,
+            buttons: [
+                {
+                    action() {
+                        return this.back();
+                    },
+                    secondary: true,
+                    text: "{% trans 'Back' %}",
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: "{% trans 'Next' %}",
+                },
+            ],
+        },
+        {
+            text: "{% trans 'Some ebooks can be downloaded for free from external sources. They will be shown here.' %}",
+            title: "{% trans 'Download links' %}",
+            attachTo: {
+                element: "#tour-book-file-links",
+                on: "left",
+            },
+            highlightClass: 'tour-element-highlight',
+            scrollTo: true,
+            buttons: [
+                {
+                    action() {
+                        return this.back();
+                    },
+                    secondary: true,
+                    text: "{% trans 'Back' %}",
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: "{% trans 'Next' %}",
+                },
+            ],
+        },
+        {
+            text: '<p class="notification is-warning is-light mt-3">{% trans "Continue the tour by selecting <strong>Your books</strong> from the drop down menu." %}</p>',
+            title: "{% trans 'Next' %}",
+            attachTo: {
+                element: () => {
+                let menu = document.querySelector('#navbar-dropdown')
+                let display = window.getComputedStyle(menu).display;
+                return display == 'flex' ? '#navbar-dropdown' : '.navbar-burger';
+            },
+                on: "left-end",
+            },
+            scrollTo: true,
+            buttons: [
+                {
+                    action() {
+                        return this.back();
+                    },
+                    secondary: true,
+                    text: "{% trans 'Back' %}",
+                },
+                {
+                    action() {
+                        return this.complete();
+                    },
+                    text: "{% trans 'Ok' %}",
+                },
+            ],
+        },
+    ])
+
+    tour.start()
+</script>
