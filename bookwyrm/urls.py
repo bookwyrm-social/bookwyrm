@@ -647,4 +647,5 @@ urlpatterns = [
     re_path(
         r"^summary_revoke_key/?$", views.summary_revoke_key, name="summary-revoke-key"
     ),
+    path("guided-tour/<tour>", views.toggle_guided_tour),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
