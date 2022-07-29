@@ -3,6 +3,7 @@ import json
 from unittest.mock import patch
 
 from django.contrib.auth.models import AnonymousUser
+from django.core.exceptions import PermissionDenied
 from django.template.response import TemplateResponse
 from django.test import TestCase
 from django.test.client import RequestFactory
@@ -27,6 +28,9 @@ class ListViews(TestCase):
                 local=True,
                 localname="mouse",
                 remote_id="https://example.com/users/mouse",
+            )
+            self.another_user = models.User.objects.create_user(
+                "rat@local.com", "rat@rat.com", "ratword", local=True, localname="rat"
             )
         self.anonymous_user = AnonymousUser
         self.anonymous_user.is_authenticated = False
@@ -167,3 +171,20 @@ class ListViews(TestCase):
         self.assertEqual(new_list.description, "wow")
         self.assertEqual(new_list.privacy, "unlisted")
         self.assertEqual(new_list.curation, "open")
+
+    def test_lists_create_permission_denied(self):
+        """create list view"""
+        view = views.Lists.as_view()
+        request = self.factory.post(
+            "",
+            {
+                "name": "A list",
+                "description": "wow",
+                "privacy": "unlisted",
+                "curation": "open",
+                "user": self.local_user.id,
+            },
+        )
+        request.user = self.another_user
+        with self.assertRaises(PermissionDenied):
+            view(request)

@@ -1,0 +1,167 @@
+{% load i18n %}
+
+<script>
+
+    let localResult = document.querySelector(".local-book-search-result");
+    let remoteResult = document.querySelector(".remote-book-search-result");
+    let otherCatalogues = document.querySelector("#tour-load-from-other-catalogues");
+    let manuallyAdd = document.querySelector("#tour-manually-add-book");
+    const tour = new Shepherd.Tour({
+        exitOnEsc: true,
+    });
+
+    if (remoteResult) {
+        tour.addStep(
+        {
+            text: "{% trans 'If the book you are looking for is available on a remote catalogue such as Open Library, click on <strong>Import book</strong>.' %}",
+            title: "{% trans 'Searching' %}",
+            attachTo: {
+                element: "#tour-remote-search-result",
+                on: "top",
+            },
+            buttons: [
+                {
+                    action() {
+                        disableGuidedTour(csrf_token);
+                        return this.complete();
+                    },
+                    secondary: true,
+                    text: "{% trans 'End Tour' %}",
+                    classes: "is-danger guided-tour-cancel-button",
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: "{% trans 'Next' %}",
+                },
+            ],
+        });
+    } else if (localResult) {
+    tour.addStep(
+        {
+            text: `{% trans "If the book you are looking for is already on this Bookwyrm instance, you can click on the title to go to the book's page." %}`,
+            title: "{% trans 'Searching' %}",
+            attachTo: {
+                element: "#tour-local-book-search-result",
+                on: "top",
+            },
+            buttons: [
+                {
+                    action() {
+                        disableGuidedTour(csrf_token);
+                        return this.complete();
+                    },
+                    secondary: true,
+                    text: "{% trans 'End Tour' %}",
+                    classes: "is-danger guided-tour-cancel-button",
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: "{% trans 'Next' %}",
+                },
+            ],
+        });
+    }
+
+    if (otherCatalogues) {
+        tour.addStep({
+            text: "{% trans 'If the book you are looking for is not listed, try loading more records from other sources like Open Library or Inventaire.' %}",
+            title: "{% trans 'Load more records' %}",
+            attachTo: {
+                element: "#tour-load-from-other-catalogues",
+                on: "right",
+            },
+            buttons: [
+                {
+                    action() {
+                        return this.back();
+                    },
+                    secondary: true,
+                    text: "{% trans 'Back' %}",
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: "{% trans 'Next' %}",
+                },
+            ],
+        })
+    }
+
+    if (manuallyAdd) {
+        tour.addSteps([ 
+            {
+            text: "{% trans 'If your book is not in the results, try adjusting your search terms.' %}",
+            title: "{% trans 'Search again' %}",
+            attachTo: {
+                element: '#tour-search-page-input',
+                on: "right",
+            },
+            buttons: [
+                    {
+                        action() {
+                            return this.back();
+                        },
+                        secondary: true,
+                        text: "{% trans 'Back' %}",
+                    },
+                    {
+                        action() {
+                            return this.next();
+                        },
+                        text: "{% trans 'Next' %}",
+                    },
+                ],
+            },
+            {
+            text: `{% trans "If you still can't find your book, you can add a record manually." %}`,
+            title: "{% trans 'Add a record manally' %}",
+            attachTo: {
+                element: "#tour-manually-add-book",
+                on: "right",
+            },
+            scrollTo: true,
+            buttons: [
+                {
+                    action() {
+                        return this.back();
+                    },
+                    secondary: true,
+                    text: "{% trans 'Back' %}",
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: "{% trans 'Next' %}",
+                },
+            ],
+        }])
+    }
+
+    tour.addStep({
+            text: '<p class="notification is-warning is-light mt-3">{% trans "Import, manually add, or view an existing book to continue the tour." %}<p>',
+            title: "{% trans 'Continue the tour' %}",
+            buttons: [
+                {
+                    action() {
+                        return this.back();
+                    },
+                    secondary: true,
+                    text: "{% trans 'Back' %}",
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: "{% trans 'Ok' %}",
+                },
+            ],
+        })
+
+    tour.start()
+</script>

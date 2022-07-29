@@ -10,7 +10,7 @@
         <div class="control">
             <input type="text" name="user_query" value="{{ request.GET.user_query }}" class="input" placeholder="{% trans 'Search to add a user' %}" aria-label="{% trans 'Search to add a user' %}">
         </div>
-        <div class="control">
+        <div class="control" id="tour-group-member-search">
             <button class="button" type="submit">
                 <span class="icon icon-search" title="{% trans 'Search' %}">
                     <span class="is-sr-only">{% trans "Search" %}</span>
@@ -44,7 +44,7 @@
             <span title="@{{ member|username }}" class="is-block pb-3">@{{ member|username|truncatechars:8 }}</span>
         </a>
         {% if group.user == member %}
-        <span class="icon icon-star-full" title="Manager">
+        <span class="icon icon-star-full" title="Manager" id="tour-group-owner">
             <span class="is-sr-only">Manager</span>
         </span>
         {% endif %}
