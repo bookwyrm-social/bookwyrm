@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-07-29 18:24+0000\n"
-"PO-Revision-Date: 2022-07-29 20:00\n"
+"PO-Revision-Date: 2022-07-31 16:53\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Norwegian\n"
 "Language: no\n"
@@ -44,11 +44,11 @@ msgstr "Ubegrenset"
 
 #: bookwyrm/forms/edit_user.py:89
 msgid "Incorrect password"
-msgstr ""
+msgstr "Feil passord"
 
 #: bookwyrm/forms/edit_user.py:96 bookwyrm/forms/landing.py:71
 msgid "Password does not match"
-msgstr ""
+msgstr "Passordet samsvarer ikke"
 
 #: bookwyrm/forms/forms.py:54
 msgid "Reading finish date cannot be before start date."
@@ -56,11 +56,11 @@ msgstr "Sluttdato kan ikke være før startdato."
 
 #: bookwyrm/forms/forms.py:59
 msgid "Reading stopped date cannot be before start date."
-msgstr ""
+msgstr "Stoppdato for lesing kan ikke være før startdato."
 
 #: bookwyrm/forms/landing.py:38
 msgid "User with this username already exists"
-msgstr ""
+msgstr "En bruker med det brukernavnet finnes allerede"
 
 #: bookwyrm/forms/landing.py:47
 msgid "A user with this email already exists."
@@ -68,11 +68,11 @@ msgstr "Den e-postadressen er allerede registrert."
 
 #: bookwyrm/forms/links.py:36
 msgid "This domain is blocked. Please contact your administrator if you think this is an error."
-msgstr ""
+msgstr "Dette domenet er blokkert. Kontakt systemansvarlig hvis du tror dette er en feil."
 
 #: bookwyrm/forms/links.py:46
 msgid "This link with file type has already been added for this book. If it is not visible, the domain is still pending."
-msgstr ""
+msgstr "Denne lenka med filtype har allerede blitt lagt til for denne boka. Hvis lenka ikke er synlig er domenet fortsatt under behandling."
 
 #: bookwyrm/forms/lists.py:26
 msgid "List Order"
@@ -110,11 +110,11 @@ msgstr "Fant ikke den boka"
 
 #: bookwyrm/models/announcement.py:11
 msgid "Primary"
-msgstr ""
+msgstr "Primær"
 
 #: bookwyrm/models/announcement.py:12
 msgid "Success"
-msgstr ""
+msgstr "Vellykket"
 
 #: bookwyrm/models/announcement.py:13
 #: bookwyrm/templates/settings/invites/manage_invites.html:47
@@ -123,15 +123,15 @@ msgstr "Lenke"
 
 #: bookwyrm/models/announcement.py:14
 msgid "Warning"
-msgstr ""
+msgstr "Advarsel"
 
 #: bookwyrm/models/announcement.py:15
 msgid "Danger"
-msgstr ""
+msgstr "Fare"
 
 #: bookwyrm/models/antispam.py:101 bookwyrm/models/antispam.py:135
 msgid "Automatically generated report"
-msgstr ""
+msgstr "Automatisk generert rapport"
 
 #: bookwyrm/models/base_model.py:18 bookwyrm/models/link.py:72
 #: bookwyrm/templates/import/import_status.html:200
@@ -299,7 +299,7 @@ msgstr "English (Engelsk)"
 
 #: bookwyrm/settings.py:283
 msgid "Català (Catalan)"
-msgstr ""
+msgstr "Català (katalansk)"
 
 #: bookwyrm/settings.py:284
 msgid "Deutsch (German)"
@@ -319,7 +319,7 @@ msgstr "Italiano (Italiensk)"
 
 #: bookwyrm/settings.py:288
 msgid "Suomi (Finnish)"
-msgstr ""
+msgstr "Suomi (finsk)"
 
 #: bookwyrm/settings.py:289
 msgid "Français (French)"
@@ -343,7 +343,7 @@ msgstr "Português Europeu (Europeisk Portugisisk)"
 
 #: bookwyrm/settings.py:294
 msgid "Română (Romanian)"
-msgstr ""
+msgstr "Română (romansk)"
 
 #: bookwyrm/settings.py:295
 msgid "Svenska (Swedish)"
@@ -808,7 +808,7 @@ msgstr "Bekreft"
 
 #: bookwyrm/templates/book/book.html:19
 msgid "Unable to connect to remote source."
-msgstr ""
+msgstr "Kunne ikke koble til ekstern kilde."
 
 #: bookwyrm/templates/book/book.html:64 bookwyrm/templates/book/book.html:65
 msgid "Edit Book"
@@ -848,7 +848,7 @@ msgstr "Beskrivelse:"
 msgid "%(count)s edition"
 msgid_plural "%(count)s editions"
 msgstr[0] ""
-msgstr[1] ""
+msgstr[1] "%(count)s utgaver"
 
 #: bookwyrm/templates/book/book.html:228
 msgid "You have shelved this edition in:"
@@ -1078,19 +1078,19 @@ msgstr "Språk:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:86
 msgid "Subjects:"
-msgstr ""
+msgstr "Emner:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:90
 msgid "Add subject"
-msgstr ""
+msgstr "Legg til emne"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:108
 msgid "Remove subject"
-msgstr ""
+msgstr "Fjern emne"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:131
 msgid "Add Another Subject"
-msgstr ""
+msgstr "Legg til et emne"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:139
 msgid "Publication"
@@ -1190,11 +1190,11 @@ msgstr "Utgaver av <a href=\"%(work_path)s\">\"%(work_title)s\"</a>"
 
 #: bookwyrm/templates/book/editions/editions.html:55
 msgid "Can't find the edition you're looking for?"
-msgstr ""
+msgstr "Fant du ikke utgaven du lette etter?"
 
 #: bookwyrm/templates/book/editions/editions.html:75
 msgid "Add another edition"
-msgstr ""
+msgstr "Legg til en utgave"
 
 #: bookwyrm/templates/book/editions/format_filter.html:9
 #: bookwyrm/templates/book/editions/language_filter.html:9
@@ -1239,7 +1239,7 @@ msgstr "Rediger lenker"
 #: bookwyrm/templates/book/file_links/edit_links.html:11
 #, python-format
 msgid "Links for \"<em>%(title)s</em>\""
-msgstr ""
+msgstr "Lenker for \"<em>%(title)s</em>\""
 
 #: bookwyrm/templates/book/file_links/edit_links.html:32
 #: bookwyrm/templates/settings/link_domains/link_table.html:6
@@ -1283,7 +1283,7 @@ msgstr "Handlinger"
 #: bookwyrm/templates/book/file_links/edit_links.html:48
 #: bookwyrm/templates/settings/link_domains/link_table.html:21
 msgid "Unknown user"
-msgstr ""
+msgstr "Ukjent bruker"
 
 #: bookwyrm/templates/book/file_links/edit_links.html:57
 #: bookwyrm/templates/book/file_links/verification_modal.html:22
@@ -1634,13 +1634,13 @@ msgstr "Lær mer om %(site_name)s:"
 #: bookwyrm/templates/email/moderation_report/text_content.html:6
 #, python-format
 msgid "@%(reporter)s has flagged a link domain for moderation."
-msgstr ""
+msgstr "@%(reporter)s har angitt en lenke til det domenet for moderering."
 
 #: bookwyrm/templates/email/moderation_report/html_content.html:14
 #: bookwyrm/templates/email/moderation_report/text_content.html:10
 #, python-format
 msgid "@%(reporter)s has flagged behavior by @%(reportee)s for moderation."
-msgstr ""
+msgstr "@%(reporter)s har flagget @%(reportee)s sin adferd for moderering."
 
 #: bookwyrm/templates/email/moderation_report/html_content.html:21
 #: bookwyrm/templates/email/moderation_report/text_content.html:15
@@ -1688,7 +1688,7 @@ msgstr "Kontakt administrator"
 
 #: bookwyrm/templates/embed-layout.html:46
 msgid "Join BookWyrm"
-msgstr ""
+msgstr "Bli med i BookWyrm"
 
 #: bookwyrm/templates/feed/direct_messages.html:8
 #, python-format
@@ -1744,11 +1744,11 @@ msgstr "Det er ingen bøker her nå! Prøv å søke etter en bok for å komme i 
 
 #: bookwyrm/templates/feed/suggested_books.html:13
 msgid "Do you have book data from another service like GoodReads?"
-msgstr ""
+msgstr "Har du bokdata fra en annen tjeneste som GoodRead?"
 
 #: bookwyrm/templates/feed/suggested_books.html:16
 msgid "Import your reading history"
-msgstr ""
+msgstr "Importer lesehistorikken din"
 
 #: bookwyrm/templates/feed/suggested_users.html:5
 #: bookwyrm/templates/get_started/users.html:6
@@ -1805,7 +1805,7 @@ msgstr "Lest"
 #: bookwyrm/templates/get_started/book_preview.html:13
 #: bookwyrm/templates/shelf/shelf.html:89 bookwyrm/templates/user/user.html:36
 msgid "Stopped Reading"
-msgstr ""
+msgstr "Stoppet lesing"
 
 #: bookwyrm/templates/get_started/books.html:6
 msgid "What are you reading?"
@@ -2043,11 +2043,11 @@ msgstr "Forvalter"
 
 #: bookwyrm/templates/guided_tour/book.html:10
 msgid "This is home page of a book. Let's see what you can do while you're here!"
-msgstr ""
+msgstr "Dette er hjemmesiden til en bok. La oss se hva du kan gjøre mens du er her!"
 
 #: bookwyrm/templates/guided_tour/book.html:11
 msgid "Book page"
-msgstr ""
+msgstr "Bokside"
 
 #: bookwyrm/templates/guided_tour/book.html:19
 #: bookwyrm/templates/guided_tour/group.html:19
@@ -2058,7 +2058,7 @@ msgstr ""
 #: bookwyrm/templates/guided_tour/user_groups.html:19
 #: bookwyrm/templates/guided_tour/user_profile.html:19
 msgid "End Tour"
-msgstr ""
+msgstr "Avslutt omvisning"
 
 #: bookwyrm/templates/guided_tour/book.html:26
 #: bookwyrm/templates/guided_tour/book.html:50
@@ -2111,15 +2111,15 @@ msgstr "Neste"
 
 #: bookwyrm/templates/guided_tour/book.html:31
 msgid "This is where you can set a reading status for this book. You can press the button to move to the next stage, or use the drop down button to select the reading status you want to set."
-msgstr ""
+msgstr "Her kan du sette lesestatus for denne boka. Du kan trykke på knappen for å flytte til neste steg, eller bruk nedtrekksknappen for å sette lesestatusen du vil angi."
 
 #: bookwyrm/templates/guided_tour/book.html:32
 msgid "Reading status"
-msgstr ""
+msgstr "Lesestatus"
 
 #: bookwyrm/templates/guided_tour/book.html:55
 msgid "You can also manually add reading dates here. Unlike changing the reading status using the previous method, adding dates manually will not automatically add them to your <strong>Read</strong> or <strong>Reading</strong> shelves."
-msgstr ""
+msgstr "Du kan også manuelt legge til lesedato her. I motsetning til å endre lesestatus i forrige metode, å legge til datoer manuelt vil ikke automatisk legge bøkene til på <strong>Les</strong> eller <strong>Lese</strong> hyllene dine."
 
 #: bookwyrm/templates/guided_tour/book.html:55
 msgid "Got a favourite you re-read every year? We've got you covered - you can add multiple read dates for the same book 😀"
