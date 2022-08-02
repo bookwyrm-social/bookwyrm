@@ -32,7 +32,7 @@
 
 <nav class="block columns is-mobile scroll-x">
     <div class="column pr-0">
-        <div class="tabs">
+        <div class="tabs" id="tour-user-shelves">
             <ul>
                 <li class="{% if shelf.identifier == 'all' %}is-active{% endif %}">
                     <a href="{% url 'user-shelves' user|username %}"{% if shelf.identifier == 'all' %} aria-current="page"{% endif %}>
@@ -59,7 +59,7 @@
         <div class="tabs">
             <ul>
                 <li>
-                    <a href="{% url 'import' %}">
+                    <a href="{% url 'import' %}" id="tour-import-books">
                         <span class="icon icon-list" aria-hidden="true"></span>
                         <span>{% trans "Import Books" %}</span>
                     </a>
@@ -68,7 +68,7 @@
         </div>
     </div>
 
-    <div class="column is-narrow">
+    <div class="column is-narrow" id="tour-create-shelf">
         {% trans "Create shelf" as button_text %}
         {% include 'snippets/toggle/open_button.html' with text=button_text icon_with_text="plus" controls_text="create_shelf_form" focus="create_shelf_form_header" %}
     </div>
@@ -86,6 +86,7 @@
                 {% if shelf.identifier == 'to-read' %}{% trans "To Read" %}
                 {% elif shelf.identifier == 'reading' %}{% trans "Currently Reading" %}
                 {% elif shelf.identifier == 'read' %}{% trans "Read" %}
+                {% elif shelf.identifier == 'stopped-reading' %}{% trans "Stopped Reading" %}
                 {% else %}{{ shelf.name }}{% endif %}
                 <span class="subtitle">
                     {% include 'snippets/privacy-icons.html' with item=shelf %}
@@ -150,7 +151,7 @@
                         {% if is_self %}
                     <th>{% trans "Shelved"  as text %}{% include 'snippets/table-sort-header.html' with field="shelved_date" sort=sort text=text %}</th>
                     <th>{% trans "Started"  as text %}{% include 'snippets/table-sort-header.html' with field="start_date" sort=sort text=text %}</th>
-                    <th>{% trans "Finished"  as text %}{% include 'snippets/table-sort-header.html' with field="finish_date" sort=sort text=text %}</th>
+                    <th>{% if shelf.identifier == 'read' %}{% trans "Finished"  as text %}{% else %}{% trans "Until"  as text %}{% endif %}{% include 'snippets/table-sort-header.html' with field="finish_date" sort=sort text=text %}</th>
                         {% endif %}
                     <th>{% trans "Rating" as text %}{% include 'snippets/table-sort-header.html' with field="rating" sort=sort text=text %}</th>
                     {% endif %}
@@ -180,7 +181,7 @@
                     <td data-title="{% trans "Started" %}">
                         {{ book.start_date|naturalday|default_if_none:""}}
                     </td>
-                    <td data-title="{% trans "Finished" %}">
+                    <td data-title="{% if shelf.identifier == 'read' %}{% trans "Finished"  as text %}{% else %}{% trans "Until" as text %}{% endif %}">
                         {{ book.finish_date|naturalday|default_if_none:""}}
                     </td>
                         {% endif %}
@@ -214,4 +215,10 @@
 <div>
     {% include 'snippets/pagination.html' with page=books path=request.path %}
 </div>
+{% endblock %}
+
+{% block scripts %}
+{% if request.user.show_guided_tour %}
+    {% include 'guided_tour/user_books.html' %}
+{% endif %}
 {% endblock %}

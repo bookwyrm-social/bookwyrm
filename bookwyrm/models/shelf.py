@@ -18,8 +18,9 @@ class Shelf(OrderedCollectionMixin, BookWyrmModel):
     TO_READ = "to-read"
     READING = "reading"
     READ_FINISHED = "read"
+    STOPPED_READING = "stopped-reading"
 
-    READ_STATUS_IDENTIFIERS = (TO_READ, READING, READ_FINISHED)
+    READ_STATUS_IDENTIFIERS = (TO_READ, READING, READ_FINISHED, STOPPED_READING)
 
     name = fields.CharField(max_length=100)
     identifier = models.CharField(max_length=100)
@@ -102,12 +103,25 @@ class ShelfBook(CollectionItemMixin, BookWyrmModel):
         if not self.user:
             self.user = self.shelf.user
         if self.id and self.user.local:
-            cache.delete(f"book-on-shelf-{self.book.id}-{self.shelf.id}")
+            # remove all caches related to all editions of this book
+            cache.delete_many(
+                [
+                    f"book-on-shelf-{book.id}-{self.shelf.id}"
+                    for book in self.book.parent_work.editions.all()
+                ]
+            )
         super().save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
         if self.id and self.user.local:
-            cache.delete(f"book-on-shelf-{self.book.id}-{self.shelf.id}")
+            cache.delete_many(
+                [
+                    f"book-on-shelf-{book}-{self.shelf.id}"
+                    for book in self.book.parent_work.editions.values_list(
+                        "id", flat=True
+                    )
+                ]
+            )
         super().delete(*args, **kwargs)
 
     class Meta:

@@ -6,7 +6,6 @@ from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
 from django.views import View
-from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.debug import sensitive_variables, sensitive_post_parameters
 
 from bookwyrm import forms, models
@@ -15,7 +14,6 @@ from bookwyrm.views.helpers import set_language
 
 
 # pylint: disable=no-self-use
-@method_decorator(csrf_exempt, name="dispatch")
 class Login(View):
     """authenticate an existing user"""
 
@@ -58,7 +56,7 @@ class Login(View):
             user.update_active_date()
             if request.POST.get("first_login"):
                 return set_language(user, redirect("get-started-profile"))
-            return set_language(user, redirect(request.GET.get("next", "/")))
+            return set_language(user, redirect("/"))
 
         # maybe the user is pending email confirmation
         if models.User.objects.filter(
@@ -77,7 +75,7 @@ class Login(View):
 class Logout(View):
     """log out"""
 
-    def get(self, request):
+    def post(self, request):
         """done with this place! outa here!"""
         logout(request)
         return redirect("/")

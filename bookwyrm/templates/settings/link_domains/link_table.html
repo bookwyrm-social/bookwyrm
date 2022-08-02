@@ -15,7 +15,11 @@
             <a href="{{ link.url }}" target="_blank" rel="noopener noreferrer">{{ link.url }}</a>
         </td>
         <td>
+            {% if link.added_by %}
             <a href="{% url 'settings-user' link.added_by.id %}">@{{ link.added_by|username }}</a>
+            {% else %}
+            <em>{% trans "Unknown user" %}</em>
+            {% endif %}
         </td>
         <td>
             {% if link.filelink.filetype %}

@@ -46,7 +46,7 @@ def get_relationship(context, user_object):
         get_relationship_name,
         user,
         user_object,
-        timeout=259200,
+        timeout=60 * 60,
     )
 
 
@@ -61,6 +61,6 @@ def get_relationship_name(user, user_object):
         types["is_blocked"] = True
     elif user_object in user.following.all():
         types["is_following"] = True
-    elif user_object in user.follower_requests.all():
+    elif user in user_object.follower_requests.all():
         types["is_follow_pending"] = True
     return types

@@ -138,6 +138,7 @@ def handle_reading_status(user, shelf, book, privacy):
             "to-read": "wants to read",
             "reading": "started reading",
             "read": "finished reading",
+            "stopped-reading": "stopped reading",
         }[shelf.identifier]
     except KeyError:
         # it's a non-standard shelf, don't worry about it
@@ -145,13 +146,6 @@ def handle_reading_status(user, shelf, book, privacy):
 
     status = create_generated_note(user, message, mention_books=[book], privacy=privacy)
     status.save()
-
-
-def is_blocked(viewer, user):
-    """is this viewer blocked by the user?"""
-    if viewer.is_authenticated and viewer in user.blocks.all():
-        return True
-    return False
 
 
 def load_date_in_user_tz_as_utc(date_str: str, user: models.User) -> datetime:

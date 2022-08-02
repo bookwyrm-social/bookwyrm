@@ -1,17 +1,18 @@
 """ interface with whatever connectors the app has """
-from datetime import datetime
+import asyncio
 import importlib
+import ipaddress
 import logging
-import re
 from urllib.parse import urlparse
 
+import aiohttp
 from django.dispatch import receiver
 from django.db.models import signals
 
 from requests import HTTPError
 
 from bookwyrm import book_search, models
-from bookwyrm.settings import SEARCH_TIMEOUT
+from bookwyrm.settings import SEARCH_TIMEOUT, USER_AGENT
 from bookwyrm.tasks import app
 
 logger = logging.getLogger(__name__)
@@ -21,53 +22,85 @@ class ConnectorException(HTTPError):
     """when the connector can't do what was asked"""
 
 
+async def get_results(session, url, min_confidence, query, connector):
+    """try this specific connector"""
+    # pylint: disable=line-too-long
+    headers = {
+        "Accept": (
+            'application/json, application/activity+json, application/ld+json; profile="https://www.w3.org/ns/activitystreams"; charset=utf-8'
+        ),
+        "User-Agent": USER_AGENT,
+    }
+    params = {"min_confidence": min_confidence}
+    try:
+        async with session.get(url, headers=headers, params=params) as response:
+            if not response.ok:
+                logger.info("Unable to connect to %s: %s", url, response.reason)
+                return
+
+            try:
+                raw_data = await response.json()
+            except aiohttp.client_exceptions.ContentTypeError as err:
+                logger.exception(err)
+                return
+
+            return {
+                "connector": connector,
+                "results": connector.process_search_response(
+                    query, raw_data, min_confidence
+                ),
+            }
+    except asyncio.TimeoutError:
+        logger.info("Connection timed out for url: %s", url)
+    except aiohttp.ClientError as err:
+        logger.info(err)
+
+
+async def async_connector_search(query, items, min_confidence):
+    """Try a number of requests simultaneously"""
+    timeout = aiohttp.ClientTimeout(total=SEARCH_TIMEOUT)
+    async with aiohttp.ClientSession(timeout=timeout) as session:
+        tasks = []
+        for url, connector in items:
+            tasks.append(
+                asyncio.ensure_future(
+                    get_results(session, url, min_confidence, query, connector)
+                )
+            )
+
+        results = await asyncio.gather(*tasks)
+        return results
+
+
 def search(query, min_confidence=0.1, return_first=False):
     """find books based on arbitary keywords"""
     if not query:
         return []
     results = []
 
-    # Have we got a ISBN ?
-    isbn = re.sub(r"[\W_]", "", query)
-    maybe_isbn = len(isbn) in [10, 13]  # ISBN10 or ISBN13
-
-    start_time = datetime.now()
+    items = []
     for connector in get_connectors():
-        result_set = None
-        if maybe_isbn and connector.isbn_search_url and connector.isbn_search_url != "":
-            # Search on ISBN
-            try:
-                result_set = connector.isbn_search(isbn)
-            except Exception as err:  # pylint: disable=broad-except
-                logger.info(err)
-                # if this fails, we can still try regular search
+        # get the search url from the connector before sending
+        url = connector.get_search_url(query)
+        try:
+            raise_not_valid_url(url)
+        except ConnectorException:
+            # if this URL is invalid we should skip it and move on
+            logger.info("Request denied to blocked domain: %s", url)
+            continue
+        items.append((url, connector))
 
-        # if no isbn search results, we fallback to generic search
-        if not result_set:
-            try:
-                result_set = connector.search(query, min_confidence=min_confidence)
-            except Exception as err:  # pylint: disable=broad-except
-                # we don't want *any* error to crash the whole search page
-                logger.info(err)
-                continue
-
-        if return_first and result_set:
-            # if we found anything, return it
-            return result_set[0]
-
-        if result_set:
-            results.append(
-                {
-                    "connector": connector,
-                    "results": result_set,
-                }
-            )
-        if (datetime.now() - start_time).seconds >= SEARCH_TIMEOUT:
-            break
+    # load as many results as we can
+    results = asyncio.run(async_connector_search(query, items, min_confidence))
+    results = [r for r in results if r]
 
     if return_first:
-        return None
+        # find the best result from all the responses and return that
+        all_results = [r for con in results for r in con["results"]]
+        all_results = sorted(all_results, key=lambda r: r.confidence, reverse=True)
+        return all_results[0] if all_results else None
 
+    # failed requests will return None, so filter those out
     return results
 
 
@@ -119,6 +152,15 @@ def load_more_data(connector_id, book_id):
     connector.expand_book_data(book)
 
 
+@app.task(queue="low_priority")
+def create_edition_task(connector_id, work_id, data):
+    """separate task for each of the 10,000 editions of LoTR"""
+    connector_info = models.Connector.objects.get(id=connector_id)
+    connector = load_connector(connector_info)
+    work = models.Work.objects.select_subclasses().get(id=work_id)
+    connector.create_edition_from_data(work, data)
+
+
 def load_connector(connector_info):
     """instantiate the connector class"""
     connector = importlib.import_module(
@@ -133,3 +175,20 @@ def create_connector(sender, instance, created, *args, **kwargs):
     """create a connector to an external bookwyrm server"""
     if instance.application_type == "bookwyrm":
         get_or_create_connector(f"https://{instance.server_name}")
+
+
+def raise_not_valid_url(url):
+    """do some basic reality checks on the url"""
+    parsed = urlparse(url)
+    if not parsed.scheme in ["http", "https"]:
+        raise ConnectorException("Invalid scheme: ", url)
+
+    try:
+        ipaddress.ip_address(parsed.netloc)
+        raise ConnectorException("Provided url is an IP address: ", url)
+    except ValueError:
+        # it's not an IP address, which is good
+        pass
+
+    if models.FederatedServer.is_blocked(url):
+        raise ConnectorException(f"Attempting to load data from blocked url: {url}")

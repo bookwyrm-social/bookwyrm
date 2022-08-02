@@ -22,24 +22,25 @@ class UserAdminList(View):
     def get(self, request, status="local"):
         """list of users"""
         filters = {}
-        server = request.GET.get("server")
-        if server:
+        exclusions = {}
+        if server := request.GET.get("server"):
             server = models.FederatedServer.objects.filter(server_name=server).first()
             filters["federated_server"] = server
             filters["federated_server__isnull"] = False
-        username = request.GET.get("username")
-        if username:
+
+        if username := request.GET.get("username"):
             filters["username__icontains"] = username
-        scope = request.GET.get("scope")
-        if scope and scope == "local":
-            filters["local"] = True
-        email = request.GET.get("email")
-        if email:
+
+        if email := request.GET.get("email"):
             filters["email__endswith"] = email
 
-        filters["local"] = status == "local"
+        filters["local"] = status in ["local", "deleted"]
+        if status == "deleted":
+            filters["deactivation_reason__icontains"] = "deletion"
+        else:
+            exclusions["deactivation_reason__icontains"] = "deletion"
 
-        users = models.User.objects.filter(**filters)
+        users = models.User.objects.filter(**filters).exclude(**exclusions)
 
         sort = request.GET.get("sort", "-created_date")
         sort_fields = [
@@ -65,7 +66,7 @@ class UserAdminList(View):
 
 @method_decorator(login_required, name="dispatch")
 @method_decorator(
-    permission_required("bookwyrm.moderate_users", raise_exception=True),
+    permission_required("bookwyrm.moderate_user", raise_exception=True),
     name="dispatch",
 )
 class UserAdmin(View):
@@ -80,8 +81,13 @@ class UserAdmin(View):
     def post(self, request, user):
         """update user group"""
         user = get_object_or_404(models.User, id=user)
-        form = forms.UserGroupForm(request.POST, instance=user)
-        if form.is_valid():
-            form.save()
+
+        if request.POST.get("groups") == "":
+            user.groups.set([])
+            form = forms.UserGroupForm(instance=user)
+        else:
+            form = forms.UserGroupForm(request.POST, instance=user)
+            if form.is_valid():
+                form.save()
         data = {"user": user, "group_form": form}
         return TemplateResponse(request, "settings/users/user.html", data)

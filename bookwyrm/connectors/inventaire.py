@@ -5,7 +5,7 @@ from bookwyrm import models
 from bookwyrm.book_search import SearchResult
 from .abstract_connector import AbstractConnector, Mapping
 from .abstract_connector import get_data
-from .connector_manager import ConnectorException
+from .connector_manager import ConnectorException, create_edition_task
 
 
 class Connector(AbstractConnector):
@@ -77,53 +77,42 @@ class Connector(AbstractConnector):
             **{k: data.get(k) for k in ["uri", "image", "labels", "sitelinks", "type"]},
         }
 
-    def search(self, query, min_confidence=None):  # pylint: disable=arguments-differ
-        """overrides default search function with confidence ranking"""
-        results = super().search(query)
-        if min_confidence:
-            # filter the search results after the fact
-            return [r for r in results if r.confidence >= min_confidence]
-        return results
-
-    def parse_search_data(self, data):
-        return data.get("results")
-
-    def format_search_result(self, search_result):
-        images = search_result.get("image")
-        cover = f"{self.covers_url}/img/entities/{images[0]}" if images else None
-        # a deeply messy translation of inventaire's scores
-        confidence = float(search_result.get("_score", 0.1))
-        confidence = 0.1 if confidence < 150 else 0.999
-        return SearchResult(
-            title=search_result.get("label"),
-            key=self.get_remote_id(search_result.get("uri")),
-            author=search_result.get("description"),
-            view_link=f"{self.base_url}/entity/{search_result.get('uri')}",
-            cover=cover,
-            confidence=confidence,
-            connector=self,
-        )
+    def parse_search_data(self, data, min_confidence):
+        for search_result in data.get("results", []):
+            images = search_result.get("image")
+            cover = f"{self.covers_url}/img/entities/{images[0]}" if images else None
+            # a deeply messy translation of inventaire's scores
+            confidence = float(search_result.get("_score", 0.1))
+            confidence = 0.1 if confidence < 150 else 0.999
+            if confidence < min_confidence:
+                continue
+            yield SearchResult(
+                title=search_result.get("label"),
+                key=self.get_remote_id(search_result.get("uri")),
+                author=search_result.get("description"),
+                view_link=f"{self.base_url}/entity/{search_result.get('uri')}",
+                cover=cover,
+                confidence=confidence,
+                connector=self,
+            )
 
     def parse_isbn_search_data(self, data):
         """got some daaaata"""
         results = data.get("entities")
         if not results:
-            return []
-        return list(results.values())
-
-    def format_isbn_search_result(self, search_result):
-        """totally different format than a regular search result"""
-        title = search_result.get("claims", {}).get("wdt:P1476", [])
-        if not title:
-            return None
-        return SearchResult(
-            title=title[0],
-            key=self.get_remote_id(search_result.get("uri")),
-            author=search_result.get("description"),
-            view_link=f"{self.base_url}/entity/{search_result.get('uri')}",
-            cover=self.get_cover_url(search_result.get("image")),
-            connector=self,
-        )
+            return
+        for search_result in list(results.values()):
+            title = search_result.get("claims", {}).get("wdt:P1476", [])
+            if not title:
+                continue
+            yield SearchResult(
+                title=title[0],
+                key=self.get_remote_id(search_result.get("uri")),
+                author=search_result.get("description"),
+                view_link=f"{self.base_url}/entity/{search_result.get('uri')}",
+                cover=self.get_cover_url(search_result.get("image")),
+                connector=self,
+            )
 
     def is_work_data(self, data):
         return data.get("type") == "work"
@@ -167,12 +156,17 @@ class Connector(AbstractConnector):
 
         for edition_uri in edition_options.get("uris"):
             remote_id = self.get_remote_id(edition_uri)
+            create_edition_task.delay(self.connector.id, work.id, remote_id)
+
+    def create_edition_from_data(self, work, edition_data, instance=None):
+        """pass in the url as data and then call the version in abstract connector"""
+        if isinstance(edition_data, str):
             try:
-                data = self.get_book_data(remote_id)
+                edition_data = self.get_book_data(edition_data)
             except ConnectorException:
                 # who, indeed, knows
-                continue
-            self.create_edition_from_data(work, data)
+                return
+        super().create_edition_from_data(work, edition_data, instance=instance)
 
     def get_cover_url(self, cover_blob, *_):
         """format the relative cover url into an absolute one:

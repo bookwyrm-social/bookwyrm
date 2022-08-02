@@ -34,6 +34,7 @@ class PostgresTriggers(TestCase):
         )
         book.authors.add(author)
         book.refresh_from_db()
+        # pylint: disable=line-too-long
         self.assertEqual(
             book.search_vector,
             "'cool':5B 'goodby':3A 'long':2A 'name':9 'rays':7C 'seri':8 'the':6C 'wow':4B",

@@ -1,5 +1,6 @@
 {% extends 'feed/layout.html' %}
 {% load i18n %}
+{% load static %}
 
 {% block panel %}
 
@@ -71,5 +72,14 @@
     {% include 'snippets/status/status.html' with status=activity %}
 </div>
 {% endfor %}
+
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static "js/tabs.js" %}?v={{ js_cache }}"></script>
+
+{% if request.user.show_guided_tour %}
+    {% include 'guided_tour/home.html' %}
+{% endif %}
 
 {% endblock %}

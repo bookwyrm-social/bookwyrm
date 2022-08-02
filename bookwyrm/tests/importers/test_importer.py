@@ -174,7 +174,9 @@ class GenericImporter(TestCase):
 
     def test_handle_imported_book(self, *_):
         """import added a book, this adds related connections"""
-        shelf = self.local_user.shelf_set.filter(identifier="read").first()
+        shelf = self.local_user.shelf_set.filter(
+            identifier=models.Shelf.READ_FINISHED
+        ).first()
         self.assertIsNone(shelf.books.first())
 
         import_job = self.importer.create_job(
@@ -193,7 +195,9 @@ class GenericImporter(TestCase):
     def test_handle_imported_book_already_shelved(self, *_):
         """import added a book, this adds related connections"""
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
-            shelf = self.local_user.shelf_set.filter(identifier="to-read").first()
+            shelf = self.local_user.shelf_set.filter(
+                identifier=models.Shelf.TO_READ
+            ).first()
             models.ShelfBook.objects.create(
                 shelf=shelf,
                 user=self.local_user,
@@ -217,12 +221,16 @@ class GenericImporter(TestCase):
             shelf.shelfbook_set.first().shelved_date, make_date(2020, 2, 2)
         )
         self.assertIsNone(
-            self.local_user.shelf_set.get(identifier="read").books.first()
+            self.local_user.shelf_set.get(
+                identifier=models.Shelf.READ_FINISHED
+            ).books.first()
         )
 
     def test_handle_import_twice(self, *_):
         """re-importing books"""
-        shelf = self.local_user.shelf_set.filter(identifier="read").first()
+        shelf = self.local_user.shelf_set.filter(
+            identifier=models.Shelf.READ_FINISHED
+        ).first()
         import_job = self.importer.create_job(
             self.local_user, self.csv, False, "public"
         )

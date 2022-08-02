@@ -1,0 +1,5 @@
+<div class="column is-flex{% if fullwidth %} is-12{% endif %}">
+    <a href="{% block warning_link %}{% endblock %}" class="notification is-{{ warning_level }} is-block is-flex-grow-1">
+        {% block warning_text %}{% endblock %}
+    </a>
+</div>

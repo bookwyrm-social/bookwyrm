@@ -1,6 +1,10 @@
 """ testing models """
-from dateutil.parser import parse
+from io import BytesIO
+import pathlib
 
+from dateutil.parser import parse
+from PIL import Image
+from django.core.files.base import ContentFile
 from django.test import TestCase
 from django.utils import timezone
 
@@ -96,3 +100,28 @@ class Book(TestCase):
         self.first_edition.description = "hi"
         self.first_edition.save()
         self.assertEqual(self.first_edition.edition_rank, 1)
+
+    def test_thumbnail_fields(self):
+        """Just hit them"""
+        image_file = pathlib.Path(__file__).parent.joinpath(
+            "../../static/images/default_avi.jpg"
+        )
+        image = Image.open(image_file)
+        output = BytesIO()
+        image.save(output, format=image.format)
+
+        book = models.Edition.objects.create(title="hello")
+        book.cover.save("test.jpg", ContentFile(output.getvalue()))
+
+        self.assertIsNotNone(book.cover_bw_book_xsmall_webp.url)
+        self.assertIsNotNone(book.cover_bw_book_xsmall_jpg.url)
+        self.assertIsNotNone(book.cover_bw_book_small_webp.url)
+        self.assertIsNotNone(book.cover_bw_book_small_jpg.url)
+        self.assertIsNotNone(book.cover_bw_book_medium_webp.url)
+        self.assertIsNotNone(book.cover_bw_book_medium_jpg.url)
+        self.assertIsNotNone(book.cover_bw_book_large_webp.url)
+        self.assertIsNotNone(book.cover_bw_book_large_jpg.url)
+        self.assertIsNotNone(book.cover_bw_book_xlarge_webp.url)
+        self.assertIsNotNone(book.cover_bw_book_xlarge_jpg.url)
+        self.assertIsNotNone(book.cover_bw_book_xxlarge_webp.url)
+        self.assertIsNotNone(book.cover_bw_book_xxlarge_jpg.url)

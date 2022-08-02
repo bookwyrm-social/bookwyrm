@@ -8,7 +8,7 @@
 {% comparison_bool shelf.identifier active_shelf.shelf.identifier as is_current %}
     <li role="menuitem" class="dropdown-item p-0">
         <div
-            class="{% if next_shelf_identifier == shelf.identifier %}is-hidden{% endif %}"
+            class="{% if is_current or next_shelf_identifier == shelf.identifier %}is-hidden{% elif shelf.identifier == 'stopped-reading' and active_shelf.shelf.identifier != "reading" %}is-hidden{% endif %}"
             data-shelf-dropdown-identifier="{{ shelf.identifier }}"
             data-shelf-next="{{ shelf.identifier|next_shelf }}"
         >
@@ -24,6 +24,13 @@
             {% trans "Read" as button_text %}
             {% url 'reading-status' 'finish' book.id as fallback_url %}
             {% join "finish_reading" button_uuid as modal_id %}
+            {% include 'snippets/shelve_button/modal_button.html' with class=class fallback_url=fallback_url %}
+
+        {% elif shelf.identifier == 'stopped-reading' %}
+
+            {% trans "Stop reading" as button_text %}
+            {% url 'reading-status' 'stop' book.id as fallback_url %}
+            {% join "stop_reading" button_uuid as modal_id %}
             {% include 'snippets/shelve_button/modal_button.html' with class=class fallback_url=fallback_url %}
 
         {% elif shelf.identifier == 'to-read' %}

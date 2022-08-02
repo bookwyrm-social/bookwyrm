@@ -16,29 +16,98 @@
     {% with related_status.local_path as related_path %}
 
     {% if related_status.status_type == 'Review' %}
-    {% blocktrans trimmed %}
+        {% if other_user_count == 0 %}
 
-    liked your <a href="{{ related_path }}">review of <em>{{ book_title }}</em></a>
+        {% blocktrans trimmed %}
+        <a href="{{ related_user_link }}">{{ related_user }}</a> liked your <a href="{{ related_path }}">review of <em>{{ book_title }}</em></a>
+        {% endblocktrans %}
 
-    {% endblocktrans %}
+        {% elif other_user_count == 1 %}
+
+        {% blocktrans trimmed %}
+        <a href="{{ related_user_link }}">{{ related_user }}</a>
+        and
+        <a href="{{ second_user_link }}">{{ second_user }}</a>
+        liked your <a href="{{ related_path }}">review of <em>{{ book_title }}</em></a>
+        {% endblocktrans %}
+
+        {% else %}
+
+        {% blocktrans trimmed %}
+        <a href="{{ related_user_link }}">{{ related_user }}</a> and {{ other_user_display_count }} others liked your <a href="{{ related_path }}">review of <em>{{ book_title }}</em></a>
+        {% endblocktrans %}
+
+        {% endif %}
     {% elif related_status.status_type == 'Comment' %}
-    {% blocktrans trimmed %}
+        {% if other_user_count == 0 %}
 
-    liked your <a href="{{ related_path }}">comment on <em>{{ book_title }}</em></a>
+        {% blocktrans trimmed %}
+        <a href="{{ related_user_link }}">{{ related_user }}</a> liked your <a href="{{ related_path }}">comment on <em>{{ book_title }}</em></a>
+        {% endblocktrans %}
 
-    {% endblocktrans %}
+        {% elif other_user_count == 1 %}
+
+        {% blocktrans trimmed %}
+        <a href="{{ related_user_link }}">{{ related_user }}</a>
+        and
+        <a href="{{ second_user_link }}">{{ second_user }}</a>
+        liked your <a href="{{ related_path }}">comment on <em>{{ book_title }}</em></a>
+        {% endblocktrans %}
+
+        {% else %}
+
+        {% blocktrans trimmed %}
+        <a href="{{ related_user_link }}">{{ related_user }}</a> and {{ other_user_display_count }} others liked your <a href="{{ related_path }}">comment on <em>{{ book_title }}</em></a>
+        {% endblocktrans %}
+
+        {% endif %}
     {% elif related_status.status_type == 'Quotation' %}
-    {% blocktrans trimmed %}
+        {% if other_user_count == 0 %}
 
-    liked your <a href="{{ related_path }}">quote from <em>{{ book_title }}</em></a>
+        {% blocktrans trimmed %}
+        <a href="{{ related_user_link }}">{{ related_user }}</a> liked your <a href="{{ related_path }}">quote from <em>{{ book_title }}</em></a>
+        {% endblocktrans %}
 
-    {% endblocktrans %}
+        {% elif other_user_count == 1 %}
+
+        {% blocktrans trimmed %}
+        <a href="{{ related_user_link }}">{{ related_user }}</a>
+        and
+        <a href="{{ second_user_link }}">{{ second_user }}</a>
+        liked your <a href="{{ related_path }}">quote from <em>{{ book_title }}</em></a>
+        {% endblocktrans %}
+
+        {% else %}
+
+        {% blocktrans trimmed %}
+        <a href="{{ related_user_link }}">{{ related_user }}</a> and {{ other_user_display_count }} others liked your <a href="{{ related_path }}">quote from <em>{{ book_title }}</em></a>
+        {% endblocktrans %}
+
+        {% endif %}
     {% else %}
-    {% blocktrans trimmed %}
+        {% if other_user_count == 0 %}
 
-    liked your <a href="{{ related_path }}">status</a>
+        {% blocktrans trimmed %}
+        <a href="{{ related_user_link }}">{{ related_user }}</a> liked your <a href="{{ related_path }}">status</a>
+        {% endblocktrans %}
 
-    {% endblocktrans %}
+        {% elif other_user_count == 1 %}
+
+        {% blocktrans trimmed %}
+        <a href="{{ related_user_link }}">{{ related_user }}</a>
+        and
+        <a href="{{ second_user_link }}">{{ second_user }}</a>
+        liked your <a href="{{ related_path }}">status</a>
+        {% endblocktrans %}
+
+        {% else %}
+
+        {% blocktrans trimmed %}
+        <a href="{{ related_user_link }}">{{ related_user }}</a> and {{ other_user_display_count }} others liked your <a href="{{ related_path }}">status</a>
+        {% endblocktrans %}
+
+        {% endif %}
+
     {% endif %}
 
     {% endwith %}
@@ -50,7 +119,7 @@
 <div class="notification py-2 {% if notification.id in unread %}is-primary is-light{% else %}has-background-body has-text-muted{% endif %}">
     <div class="columns">
         <div class="column is-clipped">
-            {% include 'snippets/status_preview.html' with status=related_status %}
+            {% include 'notifications/items/status_preview.html' with status=related_status %}
         </div>
         <div class="column is-narrow has-text-muted">
             {{ related_status.published_date|timesince }}

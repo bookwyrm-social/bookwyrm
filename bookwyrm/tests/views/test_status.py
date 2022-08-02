@@ -10,12 +10,13 @@ from bookwyrm.settings import DOMAIN
 from bookwyrm.tests.validate_html import validate_html
 
 
-# pylint: disable=invalid-name
 @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
 @patch("bookwyrm.activitystreams.populate_stream_task.delay")
 @patch("bookwyrm.lists_stream.populate_lists_task.delay")
 @patch("bookwyrm.activitystreams.remove_status_task.delay")
 @patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
+# pylint: disable=invalid-name
+# pylint: disable=too-many-public-methods
 class StatusViews(TestCase):
     """viewing and creating statuses"""
 
@@ -74,6 +75,44 @@ class StatusViews(TestCase):
         self.assertEqual(status.user, self.local_user)
         self.assertEqual(status.book, self.book)
         self.assertIsNone(status.edited_date)
+
+    def test_create_status_rating(self, *_):
+        """create a status"""
+        view = views.CreateStatus.as_view()
+        form = forms.RatingForm(
+            {
+                "user": self.local_user.id,
+                "rating": 4,
+                "book": self.book.id,
+                "privacy": "public",
+            }
+        )
+        request = self.factory.post("", form.data)
+        request.user = self.local_user
+
+        view(request, "rating")
+
+        status = models.ReviewRating.objects.get()
+        self.assertEqual(status.user, self.local_user)
+        self.assertEqual(status.book, self.book)
+        self.assertEqual(status.rating, 4.0)
+        self.assertIsNone(status.edited_date)
+
+    def test_create_status_wrong_user(self, *_):
+        """You can't compose statuses for someone else"""
+        view = views.CreateStatus.as_view()
+        form = forms.CommentForm(
+            {
+                "content": "hi",
+                "user": self.remote_user.id,
+                "book": self.book.id,
+                "privacy": "public",
+            }
+        )
+        request = self.factory.post("", form.data)
+        request.user = self.local_user
+        with self.assertRaises(PermissionDenied):
+            view(request, "comment")
 
     def test_create_status_reply(self, *_):
         """create a status in reply to an existing status"""
@@ -281,7 +320,7 @@ http://www.fish.com/"""
         result = views.status.to_markdown(text)
         self.assertEqual(
             result,
-            '<p><em>hi</em> and <a href="http://fish.com">fish.com</a> ' "is rad</p>",
+            '<p><em>hi</em> and <a href="http://fish.com">fish.com</a> is rad</p>',
         )
 
     def test_to_markdown_detect_url(self, *_):
@@ -297,7 +336,7 @@ http://www.fish.com/"""
         """this is mostly handled in other places, but nonetheless"""
         text = "[hi](http://fish.com) is <marquee>rad</marquee>"
         result = views.status.to_markdown(text)
-        self.assertEqual(result, '<p><a href="http://fish.com">hi</a> ' "is rad</p>")
+        self.assertEqual(result, '<p><a href="http://fish.com">hi</a> is rad</p>')
 
     def test_delete_status(self, mock, *_):
         """marks a status as deleted"""

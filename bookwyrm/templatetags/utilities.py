@@ -53,7 +53,7 @@ def comparison_bool(str1, str2, reverse=False):
 
 @register.filter(is_safe=True)
 def truncatepath(value, arg):
-    """Truncate a path by removing all directories except the first and truncating ."""
+    """Truncate a path by removing all directories except the first and truncating"""
     path = os.path.normpath(value.name)
     path_list = path.split(os.sep)
     try:

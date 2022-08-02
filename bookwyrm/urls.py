@@ -128,7 +128,7 @@ urlpatterns = [
         r"^settings/users/?$", views.UserAdminList.as_view(), name="settings-users"
     ),
     re_path(
-        r"^settings/users/(?P<status>(local|federated))\/?$",
+        r"^settings/users/(?P<status>(local|federated|deleted))\/?$",
         views.UserAdminList.as_view(),
         name="settings-users",
     ),
@@ -289,7 +289,7 @@ urlpatterns = [
         name="report-status",
     ),
     re_path(
-        r"^report/(?P<user_id>\d+)/link/(?P<link_id>\d+)?$",
+        r"^report/link/(?P<link_id>\d+)?$",
         views.Report.as_view(),
         name="report-link",
     ),
@@ -378,14 +378,9 @@ urlpatterns = [
     re_path(rf"^@(?P<username>{regex.USERNAME})$", views.user_redirect),
     re_path(rf"{USER_PATH}/rss/?$", views.rss_feed.RssFeed(), name="user-rss"),
     re_path(
-        rf"{USER_PATH}/followers(.json)?/?$",
-        views.Followers.as_view(),
-        name="user-followers",
-    ),
-    re_path(
-        rf"{USER_PATH}/following(.json)?/?$",
-        views.Following.as_view(),
-        name="user-following",
+        rf"{USER_PATH}/(?P<direction>(followers|following))(.json)?/?$",
+        views.Relationships.as_view(),
+        name="user-relationships",
     ),
     re_path(r"^hide-suggestions/?$", views.hide_suggestions, name="hide-suggestions"),
     # groups
@@ -484,11 +479,6 @@ urlpatterns = [
         name="prefs-password",
     ),
     re_path(r"^preferences/export/?$", views.Export.as_view(), name="prefs-export"),
-    re_path(
-        r"^preferences/export/file/?$",
-        views.export_user_book_data,
-        name="prefs-export-file",
-    ),
     re_path(r"^preferences/delete/?$", views.DeleteUser.as_view(), name="prefs-delete"),
     re_path(r"^preferences/block/?$", views.Block.as_view(), name="prefs-block"),
     re_path(r"^block/(?P<user_id>\d+)/?$", views.Block.as_view()),
@@ -539,12 +529,20 @@ urlpatterns = [
         name="book-user-statuses",
     ),
     re_path(rf"{BOOK_PATH}/edit/?$", views.EditBook.as_view(), name="edit-book"),
-    re_path(rf"{BOOK_PATH}/confirm/?$", views.ConfirmEditBook.as_view()),
+    re_path(
+        rf"{BOOK_PATH}/confirm/?$",
+        views.ConfirmEditBook.as_view(),
+        name="edit-book-confirm",
+    ),
     re_path(
         r"^create-book/data/?$", views.create_book_from_data, name="create-book-data"
     ),
     re_path(r"^create-book/?$", views.CreateBook.as_view(), name="create-book"),
-    re_path(r"^create-book/confirm/?$", views.ConfirmEditBook.as_view()),
+    re_path(
+        r"^create-book/confirm/?$",
+        views.ConfirmEditBook.as_view(),
+        name="create-book-confirm",
+    ),
     re_path(rf"{BOOK_PATH}/editions(.json)?/?$", views.Editions.as_view()),
     re_path(
         r"^upload-cover/(?P<book_id>\d+)/?$", views.upload_cover, name="upload-cover"
@@ -616,7 +614,7 @@ urlpatterns = [
         name="reading-status-update",
     ),
     re_path(
-        r"^reading-status/(?P<status>want|start|finish)/(?P<book_id>\d+)/?$",
+        r"^reading-status/(?P<status>want|start|finish|stop)/(?P<book_id>\d+)/?$",
         views.ReadingStatus.as_view(),
         name="reading-status",
     ),
@@ -644,5 +642,6 @@ urlpatterns = [
     re_path(
         r"^summary_revoke_key/?$", views.summary_revoke_key, name="summary-revoke-key"
     ),
+    path("guided-tour/<tour>", views.toggle_guided_tour),
     path("__debug__/", include(debug_toolbar.urls)),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

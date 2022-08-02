@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-04-08 21:00+0000\n"
-"PO-Revision-Date: 2022-04-08 21:50\n"
+"POT-Creation-Date: 2022-07-29 18:24+0000\n"
+"PO-Revision-Date: 2022-07-31 16:53\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Norwegian\n"
 "Language: no\n"
@@ -42,25 +42,37 @@ msgstr "{i} ganger"
 msgid "Unlimited"
 msgstr "Ubegrenset"
 
+#: bookwyrm/forms/edit_user.py:89
+msgid "Incorrect password"
+msgstr "Feil passord"
+
+#: bookwyrm/forms/edit_user.py:96 bookwyrm/forms/landing.py:71
+msgid "Password does not match"
+msgstr "Passordet samsvarer ikke"
+
 #: bookwyrm/forms/forms.py:54
 msgid "Reading finish date cannot be before start date."
 msgstr "Sluttdato kan ikke være før startdato."
 
-#: bookwyrm/forms/landing.py:32
-msgid "User with this username already exists"
-msgstr ""
+#: bookwyrm/forms/forms.py:59
+msgid "Reading stopped date cannot be before start date."
+msgstr "Stoppdato for lesing kan ikke være før startdato."
 
-#: bookwyrm/forms/landing.py:41
+#: bookwyrm/forms/landing.py:38
+msgid "User with this username already exists"
+msgstr "En bruker med det brukernavnet finnes allerede"
+
+#: bookwyrm/forms/landing.py:47
 msgid "A user with this email already exists."
 msgstr "Den e-postadressen er allerede registrert."
 
 #: bookwyrm/forms/links.py:36
 msgid "This domain is blocked. Please contact your administrator if you think this is an error."
-msgstr ""
+msgstr "Dette domenet er blokkert. Kontakt systemansvarlig hvis du tror dette er en feil."
 
 #: bookwyrm/forms/links.py:46
 msgid "This link with file type has already been added for this book. If it is not visible, the domain is still pending."
-msgstr ""
+msgstr "Denne lenka med filtype har allerede blitt lagt til for denne boka. Hvis lenka ikke er synlig er domenet fortsatt under behandling."
 
 #: bookwyrm/forms/lists.py:26
 msgid "List Order"
@@ -70,8 +82,8 @@ msgstr "Liste rekkefølge"
 msgid "Book Title"
 msgstr "Boktittel"
 
-#: bookwyrm/forms/lists.py:28 bookwyrm/templates/shelf/shelf.html:155
-#: bookwyrm/templates/shelf/shelf.html:187
+#: bookwyrm/forms/lists.py:28 bookwyrm/templates/shelf/shelf.html:156
+#: bookwyrm/templates/shelf/shelf.html:188
 #: bookwyrm/templates/snippets/create_status/review.html:32
 msgid "Rating"
 msgstr "Vurdering"
@@ -98,11 +110,11 @@ msgstr "Fant ikke den boka"
 
 #: bookwyrm/models/announcement.py:11
 msgid "Primary"
-msgstr ""
+msgstr "Primær"
 
 #: bookwyrm/models/announcement.py:12
 msgid "Success"
-msgstr ""
+msgstr "Vellykket"
 
 #: bookwyrm/models/announcement.py:13
 #: bookwyrm/templates/settings/invites/manage_invites.html:47
@@ -111,35 +123,35 @@ msgstr "Lenke"
 
 #: bookwyrm/models/announcement.py:14
 msgid "Warning"
-msgstr ""
+msgstr "Advarsel"
 
 #: bookwyrm/models/announcement.py:15
 msgid "Danger"
-msgstr ""
+msgstr "Fare"
 
-#: bookwyrm/models/antispam.py:106 bookwyrm/models/antispam.py:140
+#: bookwyrm/models/antispam.py:101 bookwyrm/models/antispam.py:135
 msgid "Automatically generated report"
-msgstr ""
+msgstr "Automatisk generert rapport"
 
-#: bookwyrm/models/base_model.py:17 bookwyrm/models/link.py:72
+#: bookwyrm/models/base_model.py:18 bookwyrm/models/link.py:72
 #: bookwyrm/templates/import/import_status.html:200
 #: bookwyrm/templates/settings/link_domains/link_domains.html:19
 msgid "Pending"
 msgstr "Avventer"
 
-#: bookwyrm/models/base_model.py:18
+#: bookwyrm/models/base_model.py:19
 msgid "Self deletion"
 msgstr "Selvsletting"
 
-#: bookwyrm/models/base_model.py:19
+#: bookwyrm/models/base_model.py:20
 msgid "Moderator suspension"
 msgstr "Moderatør suspensjon"
 
-#: bookwyrm/models/base_model.py:20
+#: bookwyrm/models/base_model.py:21
 msgid "Moderator deletion"
 msgstr "Moderatør sletting"
 
-#: bookwyrm/models/base_model.py:21
+#: bookwyrm/models/base_model.py:22
 msgid "Domain block"
 msgstr "Domeneblokkering"
 
@@ -273,7 +285,9 @@ msgstr "Hjem"
 msgid "Books Timeline"
 msgstr "Boktidslinja"
 
-#: bookwyrm/settings.py:210 bookwyrm/templates/search/layout.html:21
+#: bookwyrm/settings.py:210
+#: bookwyrm/templates/guided_tour/user_profile.html:101
+#: bookwyrm/templates/search/layout.html:21
 #: bookwyrm/templates/search/layout.html:42
 #: bookwyrm/templates/user/layout.html:91
 msgid "Books"
@@ -284,58 +298,62 @@ msgid "English"
 msgstr "English (Engelsk)"
 
 #: bookwyrm/settings.py:283
+msgid "Català (Catalan)"
+msgstr "Català (katalansk)"
+
+#: bookwyrm/settings.py:284
 msgid "Deutsch (German)"
 msgstr "Deutsch (Tysk)"
 
-#: bookwyrm/settings.py:284
+#: bookwyrm/settings.py:285
 msgid "Español (Spanish)"
 msgstr "Español (Spansk)"
 
-#: bookwyrm/settings.py:285
+#: bookwyrm/settings.py:286
 msgid "Galego (Galician)"
 msgstr "Galego (Gallisk)"
 
-#: bookwyrm/settings.py:286
+#: bookwyrm/settings.py:287
 msgid "Italiano (Italian)"
 msgstr "Italiano (Italiensk)"
 
-#: bookwyrm/settings.py:287
-msgid "Suomi (Finnish)"
-msgstr ""
-
 #: bookwyrm/settings.py:288
+msgid "Suomi (Finnish)"
+msgstr "Suomi (finsk)"
+
+#: bookwyrm/settings.py:289
 msgid "Français (French)"
 msgstr "Français (Fransk)"
 
-#: bookwyrm/settings.py:289
+#: bookwyrm/settings.py:290
 msgid "Lietuvių (Lithuanian)"
 msgstr "Lietuvių (Litauisk)"
 
-#: bookwyrm/settings.py:290
+#: bookwyrm/settings.py:291
 msgid "Norsk (Norwegian)"
 msgstr "Norsk (Norsk)"
 
-#: bookwyrm/settings.py:291
+#: bookwyrm/settings.py:292
 msgid "Português do Brasil (Brazilian Portuguese)"
 msgstr "Português - Brasil (Brasiliansk portugisisk)"
 
-#: bookwyrm/settings.py:292
+#: bookwyrm/settings.py:293
 msgid "Português Europeu (European Portuguese)"
 msgstr "Português Europeu (Europeisk Portugisisk)"
 
-#: bookwyrm/settings.py:293
-msgid "Română (Romanian)"
-msgstr ""
-
 #: bookwyrm/settings.py:294
+msgid "Română (Romanian)"
+msgstr "Română (romansk)"
+
+#: bookwyrm/settings.py:295
 msgid "Svenska (Swedish)"
 msgstr "Svenska (Svensk)"
 
-#: bookwyrm/settings.py:295
+#: bookwyrm/settings.py:296
 msgid "简体中文 (Simplified Chinese)"
 msgstr "简体中文 (Forenklet kinesisk)"
 
-#: bookwyrm/settings.py:296
+#: bookwyrm/settings.py:297
 msgid "繁體中文 (Traditional Chinese)"
 msgstr "繁體中文 (Tradisjonelt kinesisk)"
 
@@ -734,9 +752,9 @@ msgstr "ISNI:"
 
 #: bookwyrm/templates/author/edit_author.html:115
 #: bookwyrm/templates/book/book.html:202
-#: bookwyrm/templates/book/edit/edit_book.html:127
+#: bookwyrm/templates/book/edit/edit_book.html:135
 #: bookwyrm/templates/book/file_links/add_link_modal.html:60
-#: bookwyrm/templates/book/file_links/edit_links.html:82
+#: bookwyrm/templates/book/file_links/edit_links.html:86
 #: bookwyrm/templates/groups/form.html:32
 #: bookwyrm/templates/lists/bookmark_button.html:15
 #: bookwyrm/templates/lists/edit_item_form.html:15
@@ -757,8 +775,8 @@ msgstr "Lagre"
 #: bookwyrm/templates/author/sync_modal.html:23
 #: bookwyrm/templates/book/book.html:203
 #: bookwyrm/templates/book/cover_add_modal.html:33
-#: bookwyrm/templates/book/edit/edit_book.html:129
-#: bookwyrm/templates/book/edit/edit_book.html:132
+#: bookwyrm/templates/book/edit/edit_book.html:137
+#: bookwyrm/templates/book/edit/edit_book.html:140
 #: bookwyrm/templates/book/file_links/add_link_modal.html:59
 #: bookwyrm/templates/book/file_links/verification_modal.html:25
 #: bookwyrm/templates/book/sync_modal.html:23
@@ -780,17 +798,17 @@ msgid "Loading data will connect to <strong>%(source_name)s</strong> and check f
 msgstr "Laster inn data kobler til <strong>%(source_name)s</strong> og finner metadata om denne forfatteren som enda ikke finnes her. Eksisterende metadata vil ikke bli overskrevet."
 
 #: bookwyrm/templates/author/sync_modal.html:24
-#: bookwyrm/templates/book/edit/edit_book.html:114
+#: bookwyrm/templates/book/edit/edit_book.html:122
 #: bookwyrm/templates/book/sync_modal.html:24
 #: bookwyrm/templates/groups/members.html:29
-#: bookwyrm/templates/landing/password_reset.html:42
+#: bookwyrm/templates/landing/password_reset.html:52
 #: bookwyrm/templates/snippets/remove_from_group_button.html:17
 msgid "Confirm"
 msgstr "Bekreft"
 
 #: bookwyrm/templates/book/book.html:19
 msgid "Unable to connect to remote source."
-msgstr ""
+msgstr "Kunne ikke koble til ekstern kilde."
 
 #: bookwyrm/templates/book/book.html:64 bookwyrm/templates/book/book.html:65
 msgid "Edit Book"
@@ -830,7 +848,7 @@ msgstr "Beskrivelse:"
 msgid "%(count)s edition"
 msgid_plural "%(count)s editions"
 msgstr[0] ""
-msgstr[1] ""
+msgstr[1] "%(count)s utgaver"
 
 #: bookwyrm/templates/book/book.html:228
 msgid "You have shelved this edition in:"
@@ -846,6 +864,7 @@ msgid "Your reading activity"
 msgstr "Din leseaktivitet"
 
 #: bookwyrm/templates/book/book.html:260
+#: bookwyrm/templates/guided_tour/book.html:56
 msgid "Add read dates"
 msgstr "Legg til lesedatoer"
 
@@ -874,9 +893,13 @@ msgid "Places"
 msgstr "Steder"
 
 #: bookwyrm/templates/book/book.html:365
-#: bookwyrm/templates/groups/group.html:19 bookwyrm/templates/layout.html:83
-#: bookwyrm/templates/lists/curate.html:8 bookwyrm/templates/lists/list.html:12
-#: bookwyrm/templates/lists/lists.html:5 bookwyrm/templates/lists/lists.html:12
+#: bookwyrm/templates/groups/group.html:19
+#: bookwyrm/templates/guided_tour/lists.html:14
+#: bookwyrm/templates/guided_tour/user_books.html:102
+#: bookwyrm/templates/guided_tour/user_profile.html:78
+#: bookwyrm/templates/layout.html:83 bookwyrm/templates/lists/curate.html:8
+#: bookwyrm/templates/lists/list.html:12 bookwyrm/templates/lists/lists.html:5
+#: bookwyrm/templates/lists/lists.html:12
 #: bookwyrm/templates/search/layout.html:25
 #: bookwyrm/templates/search/layout.html:50
 #: bookwyrm/templates/user/layout.html:85
@@ -949,43 +972,86 @@ msgstr "Rediger \"%(book_title)s"
 msgid "Add Book"
 msgstr "Legg til bok"
 
-#: bookwyrm/templates/book/edit/edit_book.html:54
+#: bookwyrm/templates/book/edit/edit_book.html:62
 msgid "Confirm Book Info"
 msgstr "Bekreft bokinformasjon"
 
-#: bookwyrm/templates/book/edit/edit_book.html:62
+#: bookwyrm/templates/book/edit/edit_book.html:70
 #, python-format
 msgid "Is \"%(name)s\" one of these authors?"
 msgstr "Er \"%(name)s\" en av disse forfatterne?"
 
-#: bookwyrm/templates/book/edit/edit_book.html:73
-#: bookwyrm/templates/book/edit/edit_book.html:75
+#: bookwyrm/templates/book/edit/edit_book.html:81
+#: bookwyrm/templates/book/edit/edit_book.html:83
 msgid "Author of "
 msgstr "Forfatter av "
 
-#: bookwyrm/templates/book/edit/edit_book.html:75
+#: bookwyrm/templates/book/edit/edit_book.html:83
 msgid "Find more information at isni.org"
 msgstr "Finn mer informasjon på isni.org"
 
-#: bookwyrm/templates/book/edit/edit_book.html:85
+#: bookwyrm/templates/book/edit/edit_book.html:93
 msgid "This is a new author"
 msgstr "Dette er en ny forfatter"
 
-#: bookwyrm/templates/book/edit/edit_book.html:92
+#: bookwyrm/templates/book/edit/edit_book.html:100
 #, python-format
 msgid "Creating a new author: %(name)s"
 msgstr "Oppretter en ny forfatter: %(name)s"
 
-#: bookwyrm/templates/book/edit/edit_book.html:99
+#: bookwyrm/templates/book/edit/edit_book.html:107
 msgid "Is this an edition of an existing work?"
 msgstr "Er dette en utgave av et eksisterende verk?"
 
-#: bookwyrm/templates/book/edit/edit_book.html:107
+#: bookwyrm/templates/book/edit/edit_book.html:115
 msgid "This is a new work"
 msgstr "Dette er et nytt verk"
 
-#: bookwyrm/templates/book/edit/edit_book.html:116
+#: bookwyrm/templates/book/edit/edit_book.html:124
 #: bookwyrm/templates/feed/status.html:21
+#: bookwyrm/templates/guided_tour/book.html:44
+#: bookwyrm/templates/guided_tour/book.html:68
+#: bookwyrm/templates/guided_tour/book.html:91
+#: bookwyrm/templates/guided_tour/book.html:116
+#: bookwyrm/templates/guided_tour/book.html:140
+#: bookwyrm/templates/guided_tour/book.html:164
+#: bookwyrm/templates/guided_tour/book.html:188
+#: bookwyrm/templates/guided_tour/book.html:213
+#: bookwyrm/templates/guided_tour/book.html:237
+#: bookwyrm/templates/guided_tour/book.html:262
+#: bookwyrm/templates/guided_tour/book.html:290
+#: bookwyrm/templates/guided_tour/group.html:43
+#: bookwyrm/templates/guided_tour/group.html:66
+#: bookwyrm/templates/guided_tour/group.html:89
+#: bookwyrm/templates/guided_tour/group.html:108
+#: bookwyrm/templates/guided_tour/home.html:91
+#: bookwyrm/templates/guided_tour/home.html:115
+#: bookwyrm/templates/guided_tour/home.html:140
+#: bookwyrm/templates/guided_tour/home.html:165
+#: bookwyrm/templates/guided_tour/home.html:189
+#: bookwyrm/templates/guided_tour/home.html:212
+#: bookwyrm/templates/guided_tour/lists.html:47
+#: bookwyrm/templates/guided_tour/lists.html:70
+#: bookwyrm/templates/guided_tour/lists.html:94
+#: bookwyrm/templates/guided_tour/lists.html:117
+#: bookwyrm/templates/guided_tour/lists.html:136
+#: bookwyrm/templates/guided_tour/search.html:83
+#: bookwyrm/templates/guided_tour/search.html:110
+#: bookwyrm/templates/guided_tour/search.html:134
+#: bookwyrm/templates/guided_tour/search.html:155
+#: bookwyrm/templates/guided_tour/user_books.html:44
+#: bookwyrm/templates/guided_tour/user_books.html:67
+#: bookwyrm/templates/guided_tour/user_books.html:90
+#: bookwyrm/templates/guided_tour/user_books.html:118
+#: bookwyrm/templates/guided_tour/user_groups.html:44
+#: bookwyrm/templates/guided_tour/user_groups.html:67
+#: bookwyrm/templates/guided_tour/user_groups.html:91
+#: bookwyrm/templates/guided_tour/user_groups.html:110
+#: bookwyrm/templates/guided_tour/user_profile.html:43
+#: bookwyrm/templates/guided_tour/user_profile.html:66
+#: bookwyrm/templates/guided_tour/user_profile.html:89
+#: bookwyrm/templates/guided_tour/user_profile.html:112
+#: bookwyrm/templates/guided_tour/user_profile.html:135
 msgid "Back"
 msgstr "Tilbake"
 
@@ -1012,19 +1078,19 @@ msgstr "Språk:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:86
 msgid "Subjects:"
-msgstr ""
+msgstr "Emner:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:90
 msgid "Add subject"
-msgstr ""
+msgstr "Legg til emne"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:108
 msgid "Remove subject"
-msgstr ""
+msgstr "Fjern emne"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:131
 msgid "Add Another Subject"
-msgstr ""
+msgstr "Legg til et emne"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:139
 msgid "Publication"
@@ -1075,7 +1141,7 @@ msgid "Add Another Author"
 msgstr "Legg til enda en forfatter"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:220
-#: bookwyrm/templates/shelf/shelf.html:146
+#: bookwyrm/templates/shelf/shelf.html:147
 msgid "Cover"
 msgstr "Omslag"
 
@@ -1124,11 +1190,11 @@ msgstr "Utgaver av <a href=\"%(work_path)s\">\"%(work_title)s\"</a>"
 
 #: bookwyrm/templates/book/editions/editions.html:55
 msgid "Can't find the edition you're looking for?"
-msgstr ""
+msgstr "Fant du ikke utgaven du lette etter?"
 
 #: bookwyrm/templates/book/editions/editions.html:75
 msgid "Add another edition"
-msgstr ""
+msgstr "Legg til en utgave"
 
 #: bookwyrm/templates/book/editions/format_filter.html:9
 #: bookwyrm/templates/book/editions/language_filter.html:9
@@ -1173,7 +1239,7 @@ msgstr "Rediger lenker"
 #: bookwyrm/templates/book/file_links/edit_links.html:11
 #, python-format
 msgid "Links for \"<em>%(title)s</em>\""
-msgstr ""
+msgstr "Lenker for \"<em>%(title)s</em>\""
 
 #: bookwyrm/templates/book/file_links/edit_links.html:32
 #: bookwyrm/templates/settings/link_domains/link_table.html:6
@@ -1201,7 +1267,7 @@ msgstr "Domene"
 #: bookwyrm/templates/settings/announcements/announcements.html:37
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:47
 #: bookwyrm/templates/settings/invites/status_filter.html:5
-#: bookwyrm/templates/settings/users/user_admin.html:52
+#: bookwyrm/templates/settings/users/user_admin.html:56
 #: bookwyrm/templates/settings/users/user_info.html:24
 msgid "Status"
 msgstr "Status"
@@ -1214,16 +1280,21 @@ msgstr "Status"
 msgid "Actions"
 msgstr "Handlinger"
 
-#: bookwyrm/templates/book/file_links/edit_links.html:53
+#: bookwyrm/templates/book/file_links/edit_links.html:48
+#: bookwyrm/templates/settings/link_domains/link_table.html:21
+msgid "Unknown user"
+msgstr "Ukjent bruker"
+
+#: bookwyrm/templates/book/file_links/edit_links.html:57
 #: bookwyrm/templates/book/file_links/verification_modal.html:22
 msgid "Report spam"
 msgstr "Rapporter spam"
 
-#: bookwyrm/templates/book/file_links/edit_links.html:97
+#: bookwyrm/templates/book/file_links/edit_links.html:101
 msgid "No links available for this book."
 msgstr "Ingen lenker er tilgjengelig for denne boka."
 
-#: bookwyrm/templates/book/file_links/edit_links.html:108
+#: bookwyrm/templates/book/file_links/edit_links.html:112
 #: bookwyrm/templates/book/file_links/links.html:18
 msgid "Add link to file"
 msgstr "Legg til lenke til fil"
@@ -1320,7 +1391,7 @@ msgstr "Bekreftelseskode:"
 
 #: bookwyrm/templates/confirm_email/confirm_email.html:25
 #: bookwyrm/templates/landing/layout.html:81
-#: bookwyrm/templates/settings/dashboard/dashboard.html:116
+#: bookwyrm/templates/settings/dashboard/dashboard.html:106
 #: bookwyrm/templates/snippets/report_modal.html:53
 msgid "Submit"
 msgstr "Send inn"
@@ -1336,17 +1407,13 @@ msgstr "Send e-post på nytt"
 
 #: bookwyrm/templates/confirm_email/resend_modal.html:15
 #: bookwyrm/templates/landing/layout.html:68
-#: bookwyrm/templates/landing/password_reset_request.html:18
+#: bookwyrm/templates/landing/password_reset_request.html:24
 #: bookwyrm/templates/preferences/edit_user.html:53
 #: bookwyrm/templates/snippets/register_form.html:27
 msgid "Email address:"
 msgstr "E-post adresse:"
 
-#: bookwyrm/templates/confirm_email/resend_modal.html:28
-msgid "No user matching this email address found."
-msgstr ""
-
-#: bookwyrm/templates/confirm_email/resend_modal.html:38
+#: bookwyrm/templates/confirm_email/resend_modal.html:30
 msgid "Resend link"
 msgstr "Send lenke igjen"
 
@@ -1360,7 +1427,7 @@ msgid "Local users"
 msgstr "Lokale medlemmer"
 
 #: bookwyrm/templates/directory/community_filter.html:12
-#: bookwyrm/templates/settings/users/user_admin.html:29
+#: bookwyrm/templates/settings/users/user_admin.html:33
 msgid "Federated community"
 msgstr "Føderte samfunn"
 
@@ -1563,14 +1630,20 @@ msgstr "Du har blitt invitert til å delta i %(site_name)s! Klikk på lenken ned
 msgid "Learn more about %(site_name)s:"
 msgstr "Lær mer om %(site_name)s:"
 
-#: bookwyrm/templates/email/moderation_report/html_content.html:6
-#: bookwyrm/templates/email/moderation_report/text_content.html:5
+#: bookwyrm/templates/email/moderation_report/html_content.html:8
+#: bookwyrm/templates/email/moderation_report/text_content.html:6
 #, python-format
-msgid "@%(reporter)s has flagged behavior by @%(reportee)s for moderation. "
-msgstr "@%(reporter)s har flagget @%(reportee)s sin adferd for moderering. "
+msgid "@%(reporter)s has flagged a link domain for moderation."
+msgstr "@%(reporter)s har angitt en lenke til det domenet for moderering."
 
-#: bookwyrm/templates/email/moderation_report/html_content.html:9
-#: bookwyrm/templates/email/moderation_report/text_content.html:7
+#: bookwyrm/templates/email/moderation_report/html_content.html:14
+#: bookwyrm/templates/email/moderation_report/text_content.html:10
+#, python-format
+msgid "@%(reporter)s has flagged behavior by @%(reportee)s for moderation."
+msgstr "@%(reporter)s har flagget @%(reportee)s sin adferd for moderering."
+
+#: bookwyrm/templates/email/moderation_report/html_content.html:21
+#: bookwyrm/templates/email/moderation_report/text_content.html:15
 msgid "View report"
 msgstr "Vis rapport"
 
@@ -1615,7 +1688,7 @@ msgstr "Kontakt administrator"
 
 #: bookwyrm/templates/embed-layout.html:46
 msgid "Join BookWyrm"
-msgstr ""
+msgstr "Bli med i BookWyrm"
 
 #: bookwyrm/templates/feed/direct_messages.html:8
 #, python-format
@@ -1635,16 +1708,16 @@ msgstr "Alle meldinger"
 msgid "You have no messages right now."
 msgstr "Du har ingen meldinger."
 
-#: bookwyrm/templates/feed/feed.html:54
+#: bookwyrm/templates/feed/feed.html:55
 msgid "There aren't any activities right now! Try following a user to get started"
 msgstr "Det er ingen aktiviteter akkurat nå! Prøv å følge en bruker for å komme i gang"
 
-#: bookwyrm/templates/feed/feed.html:55
+#: bookwyrm/templates/feed/feed.html:56
 msgid "Alternatively, you can try enabling more status types"
 msgstr "Eller, du kan prøve å aktivere flere statustyper"
 
 #: bookwyrm/templates/feed/goal_card.html:6
-#: bookwyrm/templates/feed/layout.html:15
+#: bookwyrm/templates/feed/layout.html:14
 #: bookwyrm/templates/user/goal_form.html:6
 #, python-format
 msgid "%(year)s Reading Goal"
@@ -1655,11 +1728,12 @@ msgstr "%(year)s lesemål"
 msgid "You can set or change your reading goal any time from your <a href=\"%(path)s\">profile page</a>"
 msgstr "Du kan sette eller endre lesemål når som helst fra <a href=\"%(path)s\">profilsida di</a>"
 
-#: bookwyrm/templates/feed/layout.html:5
+#: bookwyrm/templates/feed/layout.html:4
 msgid "Updates"
 msgstr "Oppdateringer"
 
 #: bookwyrm/templates/feed/suggested_books.html:6
+#: bookwyrm/templates/guided_tour/home.html:127
 #: bookwyrm/templates/user_menu.html:35
 msgid "Your Books"
 msgstr "Bøkene dine"
@@ -1670,11 +1744,11 @@ msgstr "Det er ingen bøker her nå! Prøv å søke etter en bok for å komme i 
 
 #: bookwyrm/templates/feed/suggested_books.html:13
 msgid "Do you have book data from another service like GoodReads?"
-msgstr ""
+msgstr "Har du bokdata fra en annen tjeneste som GoodRead?"
 
 #: bookwyrm/templates/feed/suggested_books.html:16
 msgid "Import your reading history"
-msgstr ""
+msgstr "Importer lesehistorikken din"
 
 #: bookwyrm/templates/feed/suggested_users.html:5
 #: bookwyrm/templates/get_started/users.html:6
@@ -1709,13 +1783,13 @@ msgstr "Legg til i bøkene dine"
 
 #: bookwyrm/templates/get_started/book_preview.html:10
 #: bookwyrm/templates/shelf/shelf.html:86 bookwyrm/templates/user/user.html:33
-#: bookwyrm/templatetags/shelf_tags.py:46
+#: bookwyrm/templatetags/shelf_tags.py:48
 msgid "To Read"
 msgstr "Å lese"
 
 #: bookwyrm/templates/get_started/book_preview.html:11
 #: bookwyrm/templates/shelf/shelf.html:87 bookwyrm/templates/user/user.html:34
-#: bookwyrm/templatetags/shelf_tags.py:48
+#: bookwyrm/templatetags/shelf_tags.py:50
 msgid "Currently Reading"
 msgstr "Leser nå"
 
@@ -1724,9 +1798,14 @@ msgstr "Leser nå"
 #: bookwyrm/templates/snippets/shelf_selector.html:47
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_dropdown_options.html:24
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_options.html:12
-#: bookwyrm/templates/user/user.html:35 bookwyrm/templatetags/shelf_tags.py:50
+#: bookwyrm/templates/user/user.html:35 bookwyrm/templatetags/shelf_tags.py:52
 msgid "Read"
 msgstr "Lest"
+
+#: bookwyrm/templates/get_started/book_preview.html:13
+#: bookwyrm/templates/shelf/shelf.html:89 bookwyrm/templates/user/user.html:36
+msgid "Stopped Reading"
+msgstr "Stoppet lesing"
 
 #: bookwyrm/templates/get_started/books.html:6
 msgid "What are you reading?"
@@ -1805,6 +1884,7 @@ msgid "Skip this step"
 msgstr "Hopp over dette"
 
 #: bookwyrm/templates/get_started/layout.html:54
+#: bookwyrm/templates/guided_tour/group.html:101
 msgid "Finish"
 msgstr "Fullfør"
 
@@ -1850,6 +1930,7 @@ msgid "No users found for \"%(query)s\""
 msgstr "Ingen medlemmer funnet for \"%(query)s\""
 
 #: bookwyrm/templates/groups/create_form.html:5
+#: bookwyrm/templates/guided_tour/user_groups.html:32
 #: bookwyrm/templates/user/groups.html:17
 msgid "Create group"
 msgstr "Opprett gruppe"
@@ -1960,6 +2041,518 @@ msgstr "Ingen potensielle medlemmer funnet for \"%(user_query)s"
 msgid "Manager"
 msgstr "Forvalter"
 
+#: bookwyrm/templates/guided_tour/book.html:10
+msgid "This is home page of a book. Let's see what you can do while you're here!"
+msgstr "Dette er hjemmesiden til en bok. La oss se hva du kan gjøre mens du er her!"
+
+#: bookwyrm/templates/guided_tour/book.html:11
+msgid "Book page"
+msgstr "Bokside"
+
+#: bookwyrm/templates/guided_tour/book.html:19
+#: bookwyrm/templates/guided_tour/group.html:19
+#: bookwyrm/templates/guided_tour/lists.html:22
+#: bookwyrm/templates/guided_tour/search.html:29
+#: bookwyrm/templates/guided_tour/search.html:56
+#: bookwyrm/templates/guided_tour/user_books.html:19
+#: bookwyrm/templates/guided_tour/user_groups.html:19
+#: bookwyrm/templates/guided_tour/user_profile.html:19
+msgid "End Tour"
+msgstr "Avslutt omvisning"
+
+#: bookwyrm/templates/guided_tour/book.html:26
+#: bookwyrm/templates/guided_tour/book.html:50
+#: bookwyrm/templates/guided_tour/book.html:74
+#: bookwyrm/templates/guided_tour/book.html:97
+#: bookwyrm/templates/guided_tour/book.html:122
+#: bookwyrm/templates/guided_tour/book.html:146
+#: bookwyrm/templates/guided_tour/book.html:170
+#: bookwyrm/templates/guided_tour/book.html:194
+#: bookwyrm/templates/guided_tour/book.html:219
+#: bookwyrm/templates/guided_tour/book.html:243
+#: bookwyrm/templates/guided_tour/book.html:268
+#: bookwyrm/templates/guided_tour/book.html:274
+#: bookwyrm/templates/guided_tour/group.html:26
+#: bookwyrm/templates/guided_tour/group.html:49
+#: bookwyrm/templates/guided_tour/group.html:72
+#: bookwyrm/templates/guided_tour/group.html:95
+#: bookwyrm/templates/guided_tour/home.html:74
+#: bookwyrm/templates/guided_tour/home.html:97
+#: bookwyrm/templates/guided_tour/home.html:121
+#: bookwyrm/templates/guided_tour/home.html:146
+#: bookwyrm/templates/guided_tour/home.html:171
+#: bookwyrm/templates/guided_tour/home.html:195
+#: bookwyrm/templates/guided_tour/lists.html:29
+#: bookwyrm/templates/guided_tour/lists.html:53
+#: bookwyrm/templates/guided_tour/lists.html:76
+#: bookwyrm/templates/guided_tour/lists.html:100
+#: bookwyrm/templates/guided_tour/lists.html:123
+#: bookwyrm/templates/guided_tour/search.html:36
+#: bookwyrm/templates/guided_tour/search.html:63
+#: bookwyrm/templates/guided_tour/search.html:89
+#: bookwyrm/templates/guided_tour/search.html:116
+#: bookwyrm/templates/guided_tour/search.html:140
+#: bookwyrm/templates/guided_tour/user_books.html:26
+#: bookwyrm/templates/guided_tour/user_books.html:50
+#: bookwyrm/templates/guided_tour/user_books.html:73
+#: bookwyrm/templates/guided_tour/user_books.html:96
+#: bookwyrm/templates/guided_tour/user_groups.html:26
+#: bookwyrm/templates/guided_tour/user_groups.html:50
+#: bookwyrm/templates/guided_tour/user_groups.html:73
+#: bookwyrm/templates/guided_tour/user_groups.html:97
+#: bookwyrm/templates/guided_tour/user_profile.html:26
+#: bookwyrm/templates/guided_tour/user_profile.html:49
+#: bookwyrm/templates/guided_tour/user_profile.html:72
+#: bookwyrm/templates/guided_tour/user_profile.html:95
+#: bookwyrm/templates/guided_tour/user_profile.html:118
+#: bookwyrm/templates/snippets/pagination.html:23
+msgid "Next"
+msgstr "Neste"
+
+#: bookwyrm/templates/guided_tour/book.html:31
+msgid "This is where you can set a reading status for this book. You can press the button to move to the next stage, or use the drop down button to select the reading status you want to set."
+msgstr "Her kan du sette lesestatus for denne boka. Du kan trykke på knappen for å flytte til neste steg, eller bruk nedtrekksknappen for å sette lesestatusen du vil angi."
+
+#: bookwyrm/templates/guided_tour/book.html:32
+msgid "Reading status"
+msgstr "Lesestatus"
+
+#: bookwyrm/templates/guided_tour/book.html:55
+msgid "You can also manually add reading dates here. Unlike changing the reading status using the previous method, adding dates manually will not automatically add them to your <strong>Read</strong> or <strong>Reading</strong> shelves."
+msgstr "Du kan også manuelt legge til lesedato her. I motsetning til å endre lesestatus i forrige metode, å legge til datoer manuelt vil ikke automatisk legge bøkene til på <strong>Les</strong> eller <strong>Lese</strong> hyllene dine."
+
+#: bookwyrm/templates/guided_tour/book.html:55
+msgid "Got a favourite you re-read every year? We've got you covered - you can add multiple read dates for the same book 😀"
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/book.html:79
+msgid "There can be multiple editions of a book, in various formats or languages. You can choose which edition you want to use."
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/book.html:80
+msgid "Other editions"
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/book.html:102
+msgid "You can post a review, comment, or quote here."
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/book.html:103
+msgid "Share your thoughts"
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/book.html:127
+msgid "If you have read this book you can post a review including an optional star rating"
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/book.html:128
+msgid "Post a review"
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/book.html:151
+msgid "You can share your thoughts on this book generally with a simple comment"
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/book.html:152
+msgid "Post a comment"
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/book.html:175
+msgid "Just read some perfect prose? Let the world know by sharing a quote!"
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/book.html:176
+msgid "Share a quote"
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/book.html:199
+msgid "If your review or comment might ruin the book for someone who hasn't read it yet, you can hide your post behind a <strong>spoiler alert</strong>"
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/book.html:200
+msgid "Spoiler alerts"
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/book.html:224
+msgid "Choose who can see your post here. Post privacy can be <strong>Public</strong> (everyone can see), <strong>Unlisted</strong> (everyone can see, but it doesn't appear in public feeds or discovery pages), <strong>Followers</strong> (only your followers can see), or <strong>Private</strong> (only you can see)"
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/book.html:225
+#: bookwyrm/templates/snippets/privacy_select.html:6
+#: bookwyrm/templates/snippets/privacy_select_no_followers.html:6
+msgid "Post privacy"
+msgstr "Delingsinstilling for post"
+
+#: bookwyrm/templates/guided_tour/book.html:248
+msgid "Some ebooks can be downloaded for free from external sources. They will be shown here."
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/book.html:249
+msgid "Download links"
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/book.html:273
+msgid "Continue the tour by selecting <strong>Your books</strong> from the drop down menu."
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/book.html:296
+#: bookwyrm/templates/guided_tour/home.html:50
+#: bookwyrm/templates/guided_tour/home.html:218
+#: bookwyrm/templates/guided_tour/search.html:161
+#: bookwyrm/templates/guided_tour/user_books.html:124
+#: bookwyrm/templates/guided_tour/user_groups.html:116
+#: bookwyrm/templates/guided_tour/user_profile.html:141
+msgid "Ok"
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/group.html:10
+msgid "Welcome to the page for your group! This is where you can add and remove users, create user-curated lists, and edit the group details."
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/group.html:11
+msgid "Your group"
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/group.html:31
+msgid "Use this search box to find users to join your group. Currently users must be members of the same Bookwyrm instance and be invited by the group owner."
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/group.html:32
+msgid "Find users"
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/group.html:54
+msgid "Your group members will appear here. The group owner is marked with a star symbol."
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/group.html:55
+msgid "Group members"
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/group.html:77
+msgid "As well as creating lists from the Lists page, you can create a group-curated list here on the group's homepage. Any member of the group can create a list curated by group members."
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/group.html:78
+msgid "Group lists"
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/group.html:100
+msgid "Congratulations, you've finished the tour! Now you know the basics, but there is lots more to explore on your own. Happy reading!"
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/group.html:115
+msgid "End tour"
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/home.html:16
+msgid "Welcome to Bookwyrm!<br><br>Would you like to take the guided tour to help you get started?"
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/home.html:17
+#: bookwyrm/templates/guided_tour/home.html:39
+#: bookwyrm/templates/layout.html:194
+msgid "Guided Tour"
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/home.html:25
+msgid "No thanks"
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/home.html:33
+msgid "Yes please!"
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/home.html:38
+msgid "If  you ever change your mind, just click on the Guided Tour link to start your tour"
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/home.html:62
+msgid "Search for books, users, or lists using this search box."
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/home.html:63
+msgid "Search box"
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/home.html:79
+msgid "Search book records by scanning an ISBN barcode using your device's camera - great when you're in the bookstore or library!"
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/home.html:80
+msgid "Barcode reader"
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/home.html:102
+msgid "Use the <strong>Feed</strong>, <strong>Lists</strong> and <strong>Discover</strong> links to discover the latest news from your feed, lists of books by topic, and the latest happenings on this Bookwyrm server!"
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/home.html:103
+msgid "Navigation Bar"
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/home.html:126
+msgid "Books on your reading status shelves will be shown here."
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/home.html:151
+msgid "Updates from people you are following will appear in your <strong>Home</strong> timeline.<br><br>The <strong>Books</strong> tab shows activity from anyone, related to your books."
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/home.html:152
+msgid "Timelines"
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/home.html:176
+msgid "The bell will light up when you have a new notification. When it does, click on it to find out what exciting thing has happened!"
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/home.html:177
+#: bookwyrm/templates/layout.html:99 bookwyrm/templates/layout.html:100
+#: bookwyrm/templates/notifications/notifications_page.html:5
+#: bookwyrm/templates/notifications/notifications_page.html:10
+msgid "Notifications"
+msgstr "Varsler"
+
+#: bookwyrm/templates/guided_tour/home.html:200
+msgid "Your profile, books, direct messages, and settings can be accessed by clicking on your name in the menu here."
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/home.html:200
+msgid "Try selecting <strong>Profile</strong> from the drop down menu to continue the tour."
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/home.html:201
+msgid "Profile and settings menu"
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/lists.html:13
+msgid "This is the lists page where you can discover book lists created by any user. A List is a collection of books, similar to a shelf."
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/lists.html:13
+msgid "Shelves are for organising books for yourself, whereas Lists are generally for sharing with others."
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/lists.html:34
+msgid "Let's see how to create a new list."
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/lists.html:34
+msgid "Click the <strong>Create List</strong> button, then <strong>Next</strong> to continue the tour"
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/lists.html:35
+#: bookwyrm/templates/guided_tour/lists.html:59
+msgid "Creating a new list"
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/lists.html:58
+msgid "You must give your list a name and can optionally give it a description to help other people understand what your list is about."
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/lists.html:81
+msgid "Choose who can see your list here. List privacy options work just like we saw when posting book reviews. This is a common pattern throughout Bookwyrm."
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/lists.html:82
+msgid "List privacy"
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/lists.html:105
+msgid "You can also decide how your list is to be curated - only by you, by anyone, or by a group."
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/lists.html:106
+msgid "List curation"
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/lists.html:128
+msgid "Next in our tour we will explore Groups!"
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/lists.html:129
+msgid "Next: Groups"
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/lists.html:143
+msgid "Take me there"
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/search.html:16
+msgid "If the book you are looking for is available on a remote catalogue such as Open Library, click on <strong>Import book</strong>."
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/search.html:17
+#: bookwyrm/templates/guided_tour/search.html:44
+msgid "Searching"
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/search.html:43
+msgid "If the book you are looking for is already on this Bookwyrm instance, you can click on the title to go to the book's page."
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/search.html:71
+msgid "If the book you are looking for is not listed, try loading more records from other sources like Open Library or Inventaire."
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/search.html:72
+msgid "Load more records"
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/search.html:98
+msgid "If your book is not in the results, try adjusting your search terms."
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/search.html:99
+msgid "Search again"
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/search.html:121
+msgid "If you still can't find your book, you can add a record manually."
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/search.html:122
+msgid "Add a record manally"
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/search.html:147
+msgid "Import, manually add, or view an existing book to continue the tour."
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/search.html:148
+msgid "Continue the tour"
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/user_books.html:10
+msgid "This is the page where your books are listed, organised into shelves."
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/user_books.html:11
+#: bookwyrm/templates/user/books_header.html:4
+msgid "Your books"
+msgstr "Dine bøker"
+
+#: bookwyrm/templates/guided_tour/user_books.html:31
+msgid "<strong>To Read</strong>, <strong>Currently Reading</strong>, <strong>Read</strong>, and <strong>Stopped Reading</strong> are default shelves. When you change the reading status of a book it will automatically be moved to the matching shelf. A book can only be on one default shelf at a time."
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/user_books.html:32
+msgid "Reading status shelves"
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/user_books.html:55
+msgid "You can create additional custom shelves to organise your books. A book on a custom shelf can be on any number of other shelves simultaneously, including one of the default reading status shelves"
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/user_books.html:56
+msgid "Adding custom shelves."
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/user_books.html:78
+msgid "If you have an export file from another service like Goodreads or LibraryThing, you can import it here."
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/user_books.html:79
+msgid "Import from another service"
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/user_books.html:101
+msgid "Now that we've explored book shelves, let's take a look at a related concept: book lists!"
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/user_books.html:101
+msgid "Click on the <strong>Lists</strong> link here to continue the tour."
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/user_groups.html:10
+msgid "You can create or join a group with other users. Groups can share group-curated book lists, and in future will be able to do other things."
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/user_groups.html:11
+#: bookwyrm/templates/guided_tour/user_profile.html:55
+#: bookwyrm/templates/user/layout.html:79
+msgid "Groups"
+msgstr "Grupper"
+
+#: bookwyrm/templates/guided_tour/user_groups.html:31
+msgid "Let's create a new group!"
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/user_groups.html:31
+msgid "Click the <strong>Create group</strong> button, then <strong>Next</strong> to continue the tour"
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/user_groups.html:55
+msgid "Give your group a name and describe what it is about. You can make user groups for any purpose - a reading group, a bunch of friends, whatever!"
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/user_groups.html:56
+msgid "Creating a group"
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/user_groups.html:78
+msgid "Groups have privacy settings just like posts and lists, except that group privacy cannot be <strong>Followers</strong>."
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/user_groups.html:79
+msgid "Group visibility"
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/user_groups.html:102
+msgid "Once you're happy with how everything is set up, click the <strong>Save</strong> button to create your new group."
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/user_groups.html:102
+msgid "Create and save a group to continue the tour."
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/user_groups.html:103
+msgid "Save your group"
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/user_profile.html:10
+msgid "This is your user profile. All your latest activities will be listed here. Other Bookwyrm users can see parts of this page too - what they can see depends on your privacy settings."
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/user_profile.html:11
+#: bookwyrm/templates/user/layout.html:19 bookwyrm/templates/user/user.html:10
+msgid "User Profile"
+msgstr "Brukerprofil"
+
+#: bookwyrm/templates/guided_tour/user_profile.html:31
+msgid "This tab shows everything you have read towards your annual reading goal, or allows you to set one. You don't have to set a reading goal if that's not your thing!"
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/user_profile.html:32
+#: bookwyrm/templates/user/layout.html:73
+msgid "Reading Goal"
+msgstr "Lesemål"
+
+#: bookwyrm/templates/guided_tour/user_profile.html:54
+msgid "Here you can see your groups, or create a new one. A group brings together Bookwyrm users and allows them to curate lists together."
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/user_profile.html:77
+msgid "You can see your lists, or create a new one, here. A list is a collection of books that have something in common."
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/user_profile.html:100
+msgid "The Books tab shows your book shelves. We'll explore this later in the tour."
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/user_profile.html:123
+msgid "Now you understand the basics of your profile page, let's add a book to your shelves."
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/user_profile.html:123
+msgid "Search for a title or author to continue the tour."
+msgstr ""
+
+#: bookwyrm/templates/guided_tour/user_profile.html:124
+msgid "Find a book"
+msgstr ""
+
 #: bookwyrm/templates/import/import.html:5
 #: bookwyrm/templates/import/import.html:9
 #: bookwyrm/templates/shelf/shelf.html:64
@@ -1970,33 +2563,33 @@ msgstr "Importer bøker"
 msgid "Data source:"
 msgstr "Datakilde:"
 
-#: bookwyrm/templates/import/import.html:39
+#: bookwyrm/templates/import/import.html:42
 msgid "You can download your Goodreads data from the <a href=\"https://www.goodreads.com/review/import\" target=\"_blank\" rel=\"noopener noreferrer\">Import/Export page</a> of your Goodreads account."
 msgstr "Du kan laste ned Goodread-dataene dine fra <a href=\"https://www.goodreads.com/review/import\" target=\"_blank\" rel=\"noopener noreferrer\">Import/Export sida</a> på Goodread-kontoen din."
 
-#: bookwyrm/templates/import/import.html:44
+#: bookwyrm/templates/import/import.html:47
 msgid "Data file:"
 msgstr "Datafil:"
 
-#: bookwyrm/templates/import/import.html:52
+#: bookwyrm/templates/import/import.html:55
 msgid "Include reviews"
 msgstr "Inkluder anmeldelser"
 
-#: bookwyrm/templates/import/import.html:57
+#: bookwyrm/templates/import/import.html:60
 msgid "Privacy setting for imported reviews:"
 msgstr "Personverninnstilling for importerte anmeldelser:"
 
-#: bookwyrm/templates/import/import.html:63
+#: bookwyrm/templates/import/import.html:66
 #: bookwyrm/templates/preferences/layout.html:31
 #: bookwyrm/templates/settings/federation/instance_blocklist.html:76
 msgid "Import"
 msgstr "Importér"
 
-#: bookwyrm/templates/import/import.html:68
+#: bookwyrm/templates/import/import.html:71
 msgid "Recent Imports"
 msgstr "Nylig importer"
 
-#: bookwyrm/templates/import/import.html:70
+#: bookwyrm/templates/import/import.html:73
 msgid "No recent imports"
 msgstr "Ingen nylige importer"
 
@@ -2055,8 +2648,8 @@ msgid "Row"
 msgstr "Rad"
 
 #: bookwyrm/templates/import/import_status.html:103
-#: bookwyrm/templates/shelf/shelf.html:147
-#: bookwyrm/templates/shelf/shelf.html:169
+#: bookwyrm/templates/shelf/shelf.html:148
+#: bookwyrm/templates/shelf/shelf.html:170
 msgid "Title"
 msgstr "Tittel"
 
@@ -2069,8 +2662,8 @@ msgid "Openlibrary key"
 msgstr "Openlibrary nøkkel"
 
 #: bookwyrm/templates/import/import_status.html:114
-#: bookwyrm/templates/shelf/shelf.html:148
-#: bookwyrm/templates/shelf/shelf.html:172
+#: bookwyrm/templates/shelf/shelf.html:149
+#: bookwyrm/templates/shelf/shelf.html:173
 msgid "Author"
 msgstr "Forfatter"
 
@@ -2252,17 +2845,22 @@ msgstr "Glemt passord?"
 msgid "More about this site"
 msgstr "Om dette nettstedet"
 
-#: bookwyrm/templates/landing/password_reset.html:34
-#: bookwyrm/templates/preferences/change_password.html:18
+#: bookwyrm/templates/landing/password_reset.html:43
+#: bookwyrm/templates/preferences/change_password.html:33
 #: bookwyrm/templates/preferences/delete_user.html:20
 msgid "Confirm password:"
 msgstr "Gjenta passordet:"
 
 #: bookwyrm/templates/landing/password_reset_request.html:14
+#, python-format
+msgid "A password reset link will be sent to <strong>%(email)s</strong> if there is an account using that email address."
+msgstr ""
+
+#: bookwyrm/templates/landing/password_reset_request.html:20
 msgid "A link to reset your password will be sent to your email address"
 msgstr "Lenke som lar deg lage nytt passord blir sendt til e-postadressen din"
 
-#: bookwyrm/templates/landing/password_reset_request.html:28
+#: bookwyrm/templates/landing/password_reset_request.html:34
 msgid "Reset password"
 msgstr "Nullstill passordet"
 
@@ -2287,12 +2885,6 @@ msgstr "Hovednavigasjonsmeny"
 msgid "Feed"
 msgstr "Strøm"
 
-#: bookwyrm/templates/layout.html:99 bookwyrm/templates/layout.html:100
-#: bookwyrm/templates/notifications/notifications_page.html:5
-#: bookwyrm/templates/notifications/notifications_page.html:10
-msgid "Notifications"
-msgstr "Varsler"
-
 #: bookwyrm/templates/layout.html:127 bookwyrm/templates/ostatus/error.html:33
 msgid "password"
 msgstr "passord"
@@ -2313,12 +2905,12 @@ msgstr "Feil ved lagring av status"
 msgid "Documentation"
 msgstr "Dokumentasjon"
 
-#: bookwyrm/templates/layout.html:197
+#: bookwyrm/templates/layout.html:203
 #, python-format
 msgid "Support %(site_name)s on <a href=\"%(support_link)s\" target=\"_blank\">%(support_title)s</a>"
 msgstr "Støtt %(site_name)s på <a href=\"%(support_link)s\" target=\"_blank\">%(support_title)s</a>"
 
-#: bookwyrm/templates/layout.html:201
+#: bookwyrm/templates/layout.html:207
 msgid "BookWyrm's source code is freely available. You can contribute or report issues on <a href=\"https://github.com/mouse-reeve/bookwyrm\">GitHub</a>."
 msgstr "BookWyrms kildekode er fritt tilgjengelig. Du kan bidra eller rapportere problemer på <a href=\"https://github.com/mouse-reeve/bookwyrm\">GitHub</a>."
 
@@ -2570,108 +3162,244 @@ msgstr "Alle lister"
 msgid "Saved Lists"
 msgstr "Lagrede lister"
 
-#: bookwyrm/templates/notifications/items/accept.html:16
+#: bookwyrm/templates/notifications/items/accept.html:18
 #, python-format
-msgid "accepted your invitation to join group \"<a href=\"%(group_path)s\">%(group_name)s</a>\""
-msgstr "aksepterte invitasjonen din om å bli med i gruppa \"<a href=\"%(group_path)s\">%(group_name)s</a>\""
+msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> accepted your invitation to join group \"<a href=\"%(group_path)s\">%(group_name)s</a>\""
+msgstr ""
 
-#: bookwyrm/templates/notifications/items/add.html:24
+#: bookwyrm/templates/notifications/items/accept.html:26
 #, python-format
-msgid "added <em><a href=\"%(book_path)s\">%(book_title)s</a></em> to your list \"<a href=\"%(list_path)s\">%(list_name)s</a>\""
-msgstr "la til <em><a href=\"%(book_path)s\">%(book_title)s</a></em> i lista di \"<a href=\"%(list_path)s\">%(list_name)s</a>\""
+msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and <a href=\"%(second_user_link)s\">%(second_user)s</a> accepted your invitation to join group \"<a href=\"%(group_path)s\">%(group_name)s</a>\""
+msgstr ""
 
-#: bookwyrm/templates/notifications/items/add.html:31
+#: bookwyrm/templates/notifications/items/accept.html:36
 #, python-format
-msgid "suggested adding <em><a href=\"%(book_path)s\">%(book_title)s</a></em> to your list \"<a href=\"%(list_path)s\">%(list_name)s</a>\""
-msgstr "foreslo å legge til <em><a href=\"%(book_path)s\">%(book_title)s</a></em> i lista di \"<a href=\"%(list_path)s\">%(list_name)s</a>\""
+msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and %(other_user_display_count)s others accepted your invitation to join group \"<a href=\"%(group_path)s\">%(group_name)s</a>\""
+msgstr ""
 
-#: bookwyrm/templates/notifications/items/boost.html:19
+#: bookwyrm/templates/notifications/items/add.html:33
 #, python-format
-msgid "boosted your <a href=\"%(related_path)s\">review of <em>%(book_title)s</em></a>"
-msgstr "støttet <a href=\"%(related_path)s\">anmeldelsen din av <em>%(book_title)s</em></a>"
+msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> added <em><a href=\"%(book_path)s\">%(book_title)s</a></em> to your list \"<a href=\"%(list_path)s\">%(list_name)s</a>\""
+msgstr ""
 
-#: bookwyrm/templates/notifications/items/boost.html:25
+#: bookwyrm/templates/notifications/items/add.html:39
 #, python-format
-msgid "boosted your <a href=\"%(related_path)s\">comment on<em>%(book_title)s</em></a>"
-msgstr "støttet <a href=\"%(related_path)s\">kommentaren din til <em>%(book_title)s</em></a>"
+msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> suggested adding <em><a href=\"%(book_path)s\">%(book_title)s</a></em> to your list \"<a href=\"%(list_curate_path)s\">%(list_name)s</a>\""
+msgstr ""
 
-#: bookwyrm/templates/notifications/items/boost.html:31
+#: bookwyrm/templates/notifications/items/add.html:47
 #, python-format
-msgid "boosted your <a href=\"%(related_path)s\">quote from <em>%(book_title)s</em></a>"
-msgstr "støttet <a href=\"%(related_path)s\">sitatet ditt fra <em>%(book_title)s</em></a>"
+msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> added <em><a href=\"%(book_path)s\">%(book_title)s</a></em> and <em><a href=\"%(second_book_path)s\">%(second_book_title)s</a></em> to your list \"<a href=\"%(list_path)s\">%(list_name)s</a>\""
+msgstr ""
 
-#: bookwyrm/templates/notifications/items/boost.html:37
+#: bookwyrm/templates/notifications/items/add.html:54
 #, python-format
-msgid "boosted your <a href=\"%(related_path)s\">status</a>"
-msgstr "støttet <a href=\"%(related_path)s\">-statusen din</a>"
+msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> suggested adding <em><a href=\"%(book_path)s\">%(book_title)s</a></em> and <em><a href=\"%(second_book_path)s\">%(second_book_title)s</a></em> to your list \"<a href=\"%(list_curate_path)s\">%(list_name)s</a>\""
+msgstr ""
 
-#: bookwyrm/templates/notifications/items/fav.html:19
+#: bookwyrm/templates/notifications/items/add.html:66
 #, python-format
-msgid "liked your <a href=\"%(related_path)s\">review of <em>%(book_title)s</em></a>"
-msgstr "likte <a href=\"%(related_path)s\">anmeldelsen din av <em>%(book_title)s</em></a>"
+msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> added <em><a href=\"%(book_path)s\">%(book_title)s</a></em>, <em><a href=\"%(second_book_path)s\">%(second_book_title)s</a></em>, and %(display_count)s other book to your list \"<a href=\"%(list_path)s\">%(list_name)s</a>\""
+msgid_plural "<a href=\"%(related_user_link)s\">%(related_user)s</a> added <em><a href=\"%(book_path)s\">%(book_title)s</a></em>, <em><a href=\"%(second_book_path)s\">%(second_book_title)s</a></em>, and %(display_count)s other books to your list \"<a href=\"%(list_path)s\">%(list_name)s</a>\""
+msgstr[0] ""
+msgstr[1] ""
 
-#: bookwyrm/templates/notifications/items/fav.html:25
+#: bookwyrm/templates/notifications/items/add.html:82
 #, python-format
-msgid "liked your <a href=\"%(related_path)s\">comment on <em>%(book_title)s</em></a>"
-msgstr "likte <a href=\"%(related_path)s\">kommentaren din om <em>%(book_title)s</em></a>"
+msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> suggested adding <em><a href=\"%(book_path)s\">%(book_title)s</a></em>, <em><a href=\"%(second_book_path)s\">%(second_book_title)s</a></em>, and %(display_count)s other book to your list \"<a href=\"%(list_curate_path)s\">%(list_name)s</a>\""
+msgid_plural "<a href=\"%(related_user_link)s\">%(related_user)s</a> suggested adding <em><a href=\"%(book_path)s\">%(book_title)s</a></em>, <em><a href=\"%(second_book_path)s\">%(second_book_title)s</a></em>, and %(display_count)s other books to your list \"<a href=\"%(list_curate_path)s\">%(list_name)s</a>\""
+msgstr[0] ""
+msgstr[1] ""
 
-#: bookwyrm/templates/notifications/items/fav.html:31
+#: bookwyrm/templates/notifications/items/boost.html:21
 #, python-format
-msgid "liked your <a href=\"%(related_path)s\">quote from <em>%(book_title)s</em></a>"
-msgstr "likte <a href=\"%(related_path)s\">sitatet ditt fra <em>%(book_title)s</em></a>"
+msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> boosted your <a href=\"%(related_path)s\">review of <em>%(book_title)s</em></a>"
+msgstr ""
 
-#: bookwyrm/templates/notifications/items/fav.html:37
+#: bookwyrm/templates/notifications/items/boost.html:27
 #, python-format
-msgid "liked your <a href=\"%(related_path)s\">status</a>"
-msgstr "likte <a href=\"%(related_path)s\">statusen din</a>"
+msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and <a href=\"%(second_user_link)s\">%(second_user)s</a> boosted your <a href=\"%(related_path)s\">review of <em>%(book_title)s</em></a>"
+msgstr ""
 
-#: bookwyrm/templates/notifications/items/follow.html:15
-msgid "followed you"
-msgstr "følger deg"
+#: bookwyrm/templates/notifications/items/boost.html:36
+#, python-format
+msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and %(other_user_display_count)s others boosted your <a href=\"%(related_path)s\">review of <em>%(book_title)s</em></a>"
+msgstr ""
 
-#: bookwyrm/templates/notifications/items/follow_request.html:11
-msgid "sent you a follow request"
-msgstr "har sendt deg en følgeforespørsel"
+#: bookwyrm/templates/notifications/items/boost.html:44
+#, python-format
+msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> boosted your <a href=\"%(related_path)s\">comment on <em>%(book_title)s</em></a>"
+msgstr ""
+
+#: bookwyrm/templates/notifications/items/boost.html:50
+#, python-format
+msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and <a href=\"%(second_user_link)s\">%(second_user)s</a> boosted your <a href=\"%(related_path)s\">comment on <em>%(book_title)s</em></a>"
+msgstr ""
+
+#: bookwyrm/templates/notifications/items/boost.html:59
+#, python-format
+msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and %(other_user_display_count)s others boosted your <a href=\"%(related_path)s\">comment on <em>%(book_title)s</em></a>"
+msgstr ""
+
+#: bookwyrm/templates/notifications/items/boost.html:67
+#, python-format
+msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> boosted your <a href=\"%(related_path)s\">quote from <em>%(book_title)s</em></a>"
+msgstr ""
+
+#: bookwyrm/templates/notifications/items/boost.html:73
+#, python-format
+msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and <a href=\"%(second_user_link)s\">%(second_user)s</a> boosted your <a href=\"%(related_path)s\">quote from <em>%(book_title)s</em></a>"
+msgstr ""
+
+#: bookwyrm/templates/notifications/items/boost.html:82
+#, python-format
+msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and %(other_user_display_count)s others boosted your <a href=\"%(related_path)s\">quote from <em>%(book_title)s</em></a>"
+msgstr ""
+
+#: bookwyrm/templates/notifications/items/boost.html:90
+#, python-format
+msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> boosted your <a href=\"%(related_path)s\">status</a>"
+msgstr ""
+
+#: bookwyrm/templates/notifications/items/boost.html:96
+#, python-format
+msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and <a href=\"%(second_user_link)s\">%(second_user)s</a> boosted your <a href=\"%(related_path)s\">status</a>"
+msgstr ""
+
+#: bookwyrm/templates/notifications/items/boost.html:105
+#, python-format
+msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and %(other_user_display_count)s others boosted your <a href=\"%(related_path)s\">status</a>"
+msgstr ""
+
+#: bookwyrm/templates/notifications/items/fav.html:21
+#, python-format
+msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> liked your <a href=\"%(related_path)s\">review of <em>%(book_title)s</em></a>"
+msgstr ""
+
+#: bookwyrm/templates/notifications/items/fav.html:27
+#, python-format
+msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and <a href=\"%(second_user_link)s\">%(second_user)s</a> liked your <a href=\"%(related_path)s\">review of <em>%(book_title)s</em></a>"
+msgstr ""
+
+#: bookwyrm/templates/notifications/items/fav.html:36
+#, python-format
+msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and %(other_user_display_count)s others liked your <a href=\"%(related_path)s\">review of <em>%(book_title)s</em></a>"
+msgstr ""
+
+#: bookwyrm/templates/notifications/items/fav.html:44
+#, python-format
+msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> liked your <a href=\"%(related_path)s\">comment on <em>%(book_title)s</em></a>"
+msgstr ""
+
+#: bookwyrm/templates/notifications/items/fav.html:50
+#, python-format
+msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and <a href=\"%(second_user_link)s\">%(second_user)s</a> liked your <a href=\"%(related_path)s\">comment on <em>%(book_title)s</em></a>"
+msgstr ""
+
+#: bookwyrm/templates/notifications/items/fav.html:59
+#, python-format
+msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and %(other_user_display_count)s others liked your <a href=\"%(related_path)s\">comment on <em>%(book_title)s</em></a>"
+msgstr ""
+
+#: bookwyrm/templates/notifications/items/fav.html:67
+#, python-format
+msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> liked your <a href=\"%(related_path)s\">quote from <em>%(book_title)s</em></a>"
+msgstr ""
+
+#: bookwyrm/templates/notifications/items/fav.html:73
+#, python-format
+msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and <a href=\"%(second_user_link)s\">%(second_user)s</a> liked your <a href=\"%(related_path)s\">quote from <em>%(book_title)s</em></a>"
+msgstr ""
+
+#: bookwyrm/templates/notifications/items/fav.html:82
+#, python-format
+msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and %(other_user_display_count)s others liked your <a href=\"%(related_path)s\">quote from <em>%(book_title)s</em></a>"
+msgstr ""
+
+#: bookwyrm/templates/notifications/items/fav.html:90
+#, python-format
+msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> liked your <a href=\"%(related_path)s\">status</a>"
+msgstr ""
+
+#: bookwyrm/templates/notifications/items/fav.html:96
+#, python-format
+msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and <a href=\"%(second_user_link)s\">%(second_user)s</a> liked your <a href=\"%(related_path)s\">status</a>"
+msgstr ""
+
+#: bookwyrm/templates/notifications/items/fav.html:105
+#, python-format
+msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and %(other_user_display_count)s others liked your <a href=\"%(related_path)s\">status</a>"
+msgstr ""
+
+#: bookwyrm/templates/notifications/items/follow.html:16
+#, python-format
+msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> followed you"
+msgstr ""
+
+#: bookwyrm/templates/notifications/items/follow.html:20
+#, python-format
+msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and <a href=\"%(second_user_link)s\">%(second_user)s</a> followed you"
+msgstr ""
+
+#: bookwyrm/templates/notifications/items/follow.html:25
+#, python-format
+msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and %(other_user_display_count)s others followed you"
+msgstr ""
+
+#: bookwyrm/templates/notifications/items/follow_request.html:15
+#, python-format
+msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> sent you a follow request"
+msgstr ""
 
 #: bookwyrm/templates/notifications/items/import.html:14
 #, python-format
 msgid "Your <a href=\"%(url)s\">import</a> completed."
 msgstr "<a href=\"%(url)s\">Importen din</a> er fullført."
 
-#: bookwyrm/templates/notifications/items/invite.html:15
+#: bookwyrm/templates/notifications/items/invite.html:16
 #, python-format
-msgid "invited you to join the group \"<a href=\"%(group_path)s\">%(group_name)s</a>\""
-msgstr "inviterte deg til å bli med i gruppa \"<a href=\"%(group_path)s\">%(group_name)s</a>\""
+msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> invited you to join the group \"<a href=\"%(group_path)s\">%(group_name)s</a>\""
+msgstr ""
 
 #: bookwyrm/templates/notifications/items/join.html:16
 #, python-format
 msgid "has joined your group \"<a href=\"%(group_path)s\">%(group_name)s</a>\""
 msgstr "har blitt med i gruppa di \"<a href=\"%(group_path)s\">%(group_name)s</a>\""
 
-#: bookwyrm/templates/notifications/items/leave.html:16
+#: bookwyrm/templates/notifications/items/leave.html:18
 #, python-format
-msgid "has left your group \"<a href=\"%(group_path)s\">%(group_name)s</a>\""
-msgstr "har forlatt gruppa di\"<a href=\"%(group_path)s\">%(group_name)s</a>\""
+msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> has left your group \"<a href=\"%(group_path)s\">%(group_name)s</a>\""
+msgstr ""
+
+#: bookwyrm/templates/notifications/items/leave.html:26
+#, python-format
+msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and <a href=\"%(second_user_link)s\">%(second_user)s</a> have left your group \"<a href=\"%(group_path)s\">%(group_name)s</a>\""
+msgstr ""
+
+#: bookwyrm/templates/notifications/items/leave.html:36
+#, python-format
+msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and %(other_user_display_count)s others have left your group \"<a href=\"%(group_path)s\">%(group_name)s</a>\""
+msgstr ""
 
 #: bookwyrm/templates/notifications/items/mention.html:20
 #, python-format
-msgid "mentioned you in a <a href=\"%(related_path)s\">review of <em>%(book_title)s</em></a>"
-msgstr "nevnte deg i en <a href=\"%(related_path)s\">anmeldelse av <em>%(book_title)s</em></a>"
+msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> mentioned you in a <a href=\"%(related_path)s\">review of <em>%(book_title)s</em></a>"
+msgstr ""
 
 #: bookwyrm/templates/notifications/items/mention.html:26
 #, python-format
-msgid "mentioned you in a <a href=\"%(related_path)s\">comment on <em>%(book_title)s</em></a>"
-msgstr "nevnte deg i en <a href=\"%(related_path)s\">kommentar til <em>%(book_title)s</em></a>"
+msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> mentioned you in a <a href=\"%(related_path)s\">comment on <em>%(book_title)s</em></a>"
+msgstr ""
 
 #: bookwyrm/templates/notifications/items/mention.html:32
 #, python-format
-msgid "mentioned you in a <a href=\"%(related_path)s\">quote from <em>%(book_title)s</em></a>"
-msgstr "nevnte deg i et <a href=\"%(related_path)s\">sitat fra <em>%(book_title)s</em></a>"
+msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> mentioned you in a <a href=\"%(related_path)s\">quote from <em>%(book_title)s</em></a>"
+msgstr ""
 
 #: bookwyrm/templates/notifications/items/mention.html:38
 #, python-format
-msgid "mentioned you in a <a href=\"%(related_path)s\">status</a>"
-msgstr "nevnte deg i en <a href=\"%(related_path)s\">status</a>"
+msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> mentioned you in a <a href=\"%(related_path)s\">status</a>"
+msgstr ""
 
 #: bookwyrm/templates/notifications/items/remove.html:17
 #, python-format
@@ -2685,28 +3413,35 @@ msgstr "Du er fjernet fra <a href=\"%(group_path)s\">%(group_name)s</a> -gruppa"
 
 #: bookwyrm/templates/notifications/items/reply.html:21
 #, python-format
-msgid "<a href=\"%(related_path)s\">replied</a> to your <a href=\"%(parent_path)s\">review of <em>%(book_title)s</em></a>"
-msgstr "<a href=\"%(related_path)s\">svarte på</a> <a href=\"%(parent_path)s\">anmeldelse din av <em>%(book_title)s</em></a>"
+msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> <a href=\"%(related_path)s\">replied</a> to your <a href=\"%(parent_path)s\">review of <em>%(book_title)s</em></a>"
+msgstr ""
 
 #: bookwyrm/templates/notifications/items/reply.html:27
 #, python-format
-msgid "<a href=\"%(related_path)s\">replied</a> to your <a href=\"%(parent_path)s\">comment on <em>%(book_title)s</em></a>"
-msgstr "<a href=\"%(related_path)s\">svarte på</a> <a href=\"%(parent_path)s\"> kommentaren din til <em>%(book_title)s</em></a>"
+msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> <a href=\"%(related_path)s\">replied</a> to your <a href=\"%(parent_path)s\">comment on <em>%(book_title)s</em></a>"
+msgstr ""
 
 #: bookwyrm/templates/notifications/items/reply.html:33
 #, python-format
-msgid "<a href=\"%(related_path)s\">replied</a> to your <a href=\"%(parent_path)s\">quote from <em>%(book_title)s</em></a>"
-msgstr "<a href=\"%(related_path)s\">svarte på</a> <a href=\"%(parent_path)s\">sitatet ditt fra <em>%(book_title)s</em></a>"
+msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> <a href=\"%(related_path)s\">replied</a> to your <a href=\"%(parent_path)s\">quote from <em>%(book_title)s</em></a>"
+msgstr ""
 
 #: bookwyrm/templates/notifications/items/reply.html:39
 #, python-format
-msgid "<a href=\"%(related_path)s\">replied</a> to your <a href=\"%(parent_path)s\">status</a>"
-msgstr "<a href=\"%(related_path)s\">svarte på</a> <a href=\"%(parent_path)s\">statusoppdateringen din</a>"
+msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> <a href=\"%(related_path)s\">replied</a> to your <a href=\"%(parent_path)s\">status</a>"
+msgstr ""
 
 #: bookwyrm/templates/notifications/items/report.html:15
 #, python-format
-msgid "A new <a href=\"%(path)s\">report</a> needs moderation."
-msgstr "En ny <a href=\"%(path)s\">rapport</a> må gjennom moderering."
+msgid "A new <a href=\"%(path)s\">report</a> needs moderation"
+msgid_plural "%(display_count)s new <a href=\"%(path)s\">reports</a> need moderation"
+msgstr[0] ""
+msgstr[1] ""
+
+#: bookwyrm/templates/notifications/items/status_preview.html:4
+#: bookwyrm/templates/snippets/status/content_status.html:73
+msgid "Content warning"
+msgstr "Varsel om følsomt innhold"
 
 #: bookwyrm/templates/notifications/items/update.html:16
 #, python-format
@@ -2865,12 +3600,20 @@ msgstr "Ingen brukere er for tiden blokkert."
 
 #: bookwyrm/templates/preferences/change_password.html:4
 #: bookwyrm/templates/preferences/change_password.html:7
-#: bookwyrm/templates/preferences/change_password.html:21
+#: bookwyrm/templates/preferences/change_password.html:37
 #: bookwyrm/templates/preferences/layout.html:20
 msgid "Change Password"
 msgstr "Endre passord"
 
-#: bookwyrm/templates/preferences/change_password.html:14
+#: bookwyrm/templates/preferences/change_password.html:15
+msgid "Successfully changed password"
+msgstr ""
+
+#: bookwyrm/templates/preferences/change_password.html:22
+msgid "Current password:"
+msgstr ""
+
+#: bookwyrm/templates/preferences/change_password.html:28
 msgid "New password:"
 msgstr "Nytt passord:"
 
@@ -2962,6 +3705,10 @@ msgstr ""
 msgid "Your export will include all the books on your shelves, books you have reviewed, and books with reading activity."
 msgstr ""
 
+#: bookwyrm/templates/preferences/export.html:20
+msgid "Download file"
+msgstr ""
+
 #: bookwyrm/templates/preferences/layout.html:11
 msgid "Account"
 msgstr "Konto"
@@ -2988,6 +3735,11 @@ msgstr "Fullfør \"%(book_title)s\""
 msgid "Start \"%(book_title)s\""
 msgstr "Start \"%(book_title)s"
 
+#: bookwyrm/templates/reading_progress/stop.html:5
+#, python-format
+msgid "Stop Reading \"%(book_title)s\""
+msgstr ""
+
 #: bookwyrm/templates/reading_progress/want.html:5
 #, python-format
 msgid "Want to Read \"%(book_title)s\""
@@ -3012,6 +3764,7 @@ msgstr "Oppdatér lesedatoer for \"<em>%(title)s</em>\""
 #: bookwyrm/templates/readthrough/readthrough_modal.html:38
 #: bookwyrm/templates/snippets/reading_modals/finish_reading_modal.html:24
 #: bookwyrm/templates/snippets/reading_modals/start_reading_modal.html:21
+#: bookwyrm/templates/snippets/reading_modals/stop_reading_modal.html:24
 msgid "Started reading"
 msgstr "Begynte å lese"
 
@@ -3020,7 +3773,7 @@ msgstr "Begynte å lese"
 msgid "Progress"
 msgstr "Fremdrift"
 
-#: bookwyrm/templates/readthrough/readthrough_form.html:24
+#: bookwyrm/templates/readthrough/readthrough_form.html:25
 #: bookwyrm/templates/readthrough/readthrough_modal.html:63
 #: bookwyrm/templates/snippets/reading_modals/finish_reading_modal.html:32
 msgid "Finished reading"
@@ -3034,23 +3787,27 @@ msgstr "Fremdriftsoppdateringer:"
 msgid "finished"
 msgstr "ferdig"
 
-#: bookwyrm/templates/readthrough/readthrough_list.html:25
+#: bookwyrm/templates/readthrough/readthrough_list.html:16
+msgid "stopped"
+msgstr ""
+
+#: bookwyrm/templates/readthrough/readthrough_list.html:27
 msgid "Show all updates"
 msgstr "Vis alle oppdateringer"
 
-#: bookwyrm/templates/readthrough/readthrough_list.html:41
+#: bookwyrm/templates/readthrough/readthrough_list.html:43
 msgid "Delete this progress update"
 msgstr "Slett denne fremgangsoppdateringen"
 
-#: bookwyrm/templates/readthrough/readthrough_list.html:53
+#: bookwyrm/templates/readthrough/readthrough_list.html:55
 msgid "started"
 msgstr "startet"
 
-#: bookwyrm/templates/readthrough/readthrough_list.html:60
+#: bookwyrm/templates/readthrough/readthrough_list.html:62
 msgid "Edit read dates"
 msgstr "Rediger lesedatoer"
 
-#: bookwyrm/templates/readthrough/readthrough_list.html:68
+#: bookwyrm/templates/readthrough/readthrough_list.html:70
 msgid "Delete these read dates"
 msgstr "Slett disse lesedatoene"
 
@@ -3178,13 +3935,13 @@ msgstr "Usant"
 
 #: bookwyrm/templates/settings/announcements/announcement.html:57
 #: bookwyrm/templates/settings/announcements/edit_announcement.html:79
-#: bookwyrm/templates/settings/dashboard/dashboard.html:94
+#: bookwyrm/templates/settings/dashboard/dashboard.html:84
 msgid "Start date:"
 msgstr "Startdato:"
 
 #: bookwyrm/templates/settings/announcements/announcement.html:62
 #: bookwyrm/templates/settings/announcements/edit_announcement.html:89
-#: bookwyrm/templates/settings/dashboard/dashboard.html:100
+#: bookwyrm/templates/settings/dashboard/dashboard.html:90
 msgid "End date:"
 msgstr "Sluttdato:"
 
@@ -3344,7 +4101,7 @@ msgid "Dashboard"
 msgstr "Kontrollpanel"
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:15
-#: bookwyrm/templates/settings/dashboard/dashboard.html:123
+#: bookwyrm/templates/settings/dashboard/dashboard.html:113
 msgid "Total users"
 msgstr "Totalt antall brukere"
 
@@ -3362,57 +4119,31 @@ msgstr "Statuser"
 msgid "Works"
 msgstr "Verker"
 
-#: bookwyrm/templates/settings/dashboard/dashboard.html:43
-#, python-format
-msgid "%(display_count)s open report"
-msgid_plural "%(display_count)s open reports"
-msgstr[0] "%(display_count)s åpen rapport"
-msgstr[1] "%(display_count)s åpne rapporter"
-
-#: bookwyrm/templates/settings/dashboard/dashboard.html:55
-#, python-format
-msgid "%(display_count)s domain needs review"
-msgid_plural "%(display_count)s domains need review"
-msgstr[0] "%(display_count)s domene må godkjennes"
-msgstr[1] "%(display_count)s domener må godkjennes"
-
-#: bookwyrm/templates/settings/dashboard/dashboard.html:67
-#, python-format
-msgid "%(display_count)s invite request"
-msgid_plural "%(display_count)s invite requests"
-msgstr[0] "%(display_count)s invitasjonsforespørsel"
-msgstr[1] "%(display_count)s invitasjonsforespørsler"
-
-#: bookwyrm/templates/settings/dashboard/dashboard.html:79
-#, python-format
-msgid "An update is available! You're running v%(current)s and the latest release is %(available)s."
-msgstr ""
-
-#: bookwyrm/templates/settings/dashboard/dashboard.html:88
+#: bookwyrm/templates/settings/dashboard/dashboard.html:78
 msgid "Instance Activity"
 msgstr "Instansaktivitet"
 
-#: bookwyrm/templates/settings/dashboard/dashboard.html:106
+#: bookwyrm/templates/settings/dashboard/dashboard.html:96
 msgid "Interval:"
 msgstr "Intervall:"
 
-#: bookwyrm/templates/settings/dashboard/dashboard.html:110
+#: bookwyrm/templates/settings/dashboard/dashboard.html:100
 msgid "Days"
 msgstr "Dager"
 
-#: bookwyrm/templates/settings/dashboard/dashboard.html:111
+#: bookwyrm/templates/settings/dashboard/dashboard.html:101
 msgid "Weeks"
 msgstr "Uker"
 
-#: bookwyrm/templates/settings/dashboard/dashboard.html:129
+#: bookwyrm/templates/settings/dashboard/dashboard.html:119
 msgid "User signup activity"
 msgstr "Brukerregistreringsaktivitet"
 
-#: bookwyrm/templates/settings/dashboard/dashboard.html:135
+#: bookwyrm/templates/settings/dashboard/dashboard.html:125
 msgid "Status activity"
 msgstr "Statusaktivitet"
 
-#: bookwyrm/templates/settings/dashboard/dashboard.html:141
+#: bookwyrm/templates/settings/dashboard/dashboard.html:131
 msgid "Works created"
 msgstr "Verker laget"
 
@@ -3427,6 +4158,49 @@ msgstr "Statuser lagt ut"
 #: bookwyrm/templates/settings/dashboard/user_chart.html:11
 msgid "Total"
 msgstr "Totalt"
+
+#: bookwyrm/templates/settings/dashboard/warnings/domain_review.html:9
+#, python-format
+msgid "%(display_count)s domain needs review"
+msgid_plural "%(display_count)s domains need review"
+msgstr[0] "%(display_count)s domene må godkjennes"
+msgstr[1] "%(display_count)s domener må godkjennes"
+
+#: bookwyrm/templates/settings/dashboard/warnings/email_config.html:8
+#, python-format
+msgid "Your outgoing email address, <code>%(email_sender)s</code>, may be misconfigured."
+msgstr ""
+
+#: bookwyrm/templates/settings/dashboard/warnings/email_config.html:11
+msgid "Check the <code>EMAIL_SENDER_NAME</code> and <code>EMAIL_SENDER_DOMAIN</code> in your <code>.env</code> file."
+msgstr ""
+
+#: bookwyrm/templates/settings/dashboard/warnings/invites.html:9
+#, python-format
+msgid "%(display_count)s invite request"
+msgid_plural "%(display_count)s invite requests"
+msgstr[0] "%(display_count)s invitasjonsforespørsel"
+msgstr[1] "%(display_count)s invitasjonsforespørsler"
+
+#: bookwyrm/templates/settings/dashboard/warnings/missing_conduct.html:8
+msgid "Your instance is missing a code of conduct."
+msgstr ""
+
+#: bookwyrm/templates/settings/dashboard/warnings/missing_privacy.html:8
+msgid "Your instance is missing a privacy policy."
+msgstr ""
+
+#: bookwyrm/templates/settings/dashboard/warnings/reports.html:9
+#, python-format
+msgid "%(display_count)s open report"
+msgid_plural "%(display_count)s open reports"
+msgstr[0] "%(display_count)s åpen rapport"
+msgstr[1] "%(display_count)s åpne rapporter"
+
+#: bookwyrm/templates/settings/dashboard/warnings/update_version.html:8
+#, python-format
+msgid "An update is available! You're running v%(current)s and the latest release is %(available)s."
+msgstr ""
 
 #: bookwyrm/templates/settings/email_blocklist/domain_form.html:5
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:10
@@ -3832,7 +4606,7 @@ msgstr "Ingen domener venter for tiden på godkjenning"
 msgid "No domains currently blocked"
 msgstr "Ingen domener er for øyeblikket blokkert"
 
-#: bookwyrm/templates/settings/link_domains/link_table.html:39
+#: bookwyrm/templates/settings/link_domains/link_table.html:43
 msgid "No links available for this domain."
 msgstr "Ingen lenker tilgjengelig til dette domenet."
 
@@ -3860,11 +4634,11 @@ msgstr "Status er slettet"
 msgid "Reported links"
 msgstr "Rapporterte lenker"
 
-#: bookwyrm/templates/settings/reports/report.html:63
+#: bookwyrm/templates/settings/reports/report.html:65
 msgid "Moderator Comments"
 msgstr "Moderatorkommentarer"
 
-#: bookwyrm/templates/settings/reports/report.html:84
+#: bookwyrm/templates/settings/reports/report.html:86
 #: bookwyrm/templates/snippets/create_status.html:26
 msgid "Comment"
 msgstr "Kommentar"
@@ -3874,12 +4648,17 @@ msgstr "Kommentar"
 msgid "Report #%(report_id)s: Status posted by @%(username)s"
 msgstr "Rapportér #%(report_id)s: Status postet av @%(username)s"
 
-#: bookwyrm/templates/settings/reports/report_header.html:12
+#: bookwyrm/templates/settings/reports/report_header.html:13
 #, python-format
 msgid "Report #%(report_id)s: Link added by @%(username)s"
 msgstr "Rapportér #%(report_id)s: Lenke lagt til av @%(username)s"
 
-#: bookwyrm/templates/settings/reports/report_header.html:18
+#: bookwyrm/templates/settings/reports/report_header.html:17
+#, python-format
+msgid "Report #%(report_id)s: Link domain"
+msgstr ""
+
+#: bookwyrm/templates/settings/reports/report_header.html:24
 #, python-format
 msgid "Report #%(report_id)s: User @%(username)s"
 msgstr "Rapportér #%(report_id)s: bruker @%(username)s"
@@ -4119,34 +4898,42 @@ msgstr "Passordet ditt:"
 msgid "Users: <small>%(instance_name)s</small>"
 msgstr "Medlemmer: <small>%(instance_name)s</small>"
 
-#: bookwyrm/templates/settings/users/user_admin.html:40
+#: bookwyrm/templates/settings/users/user_admin.html:29
+msgid "Deleted users"
+msgstr ""
+
+#: bookwyrm/templates/settings/users/user_admin.html:44
 #: bookwyrm/templates/settings/users/username_filter.html:5
 msgid "Username"
 msgstr "Brukernavn"
 
-#: bookwyrm/templates/settings/users/user_admin.html:44
+#: bookwyrm/templates/settings/users/user_admin.html:48
 msgid "Date Added"
 msgstr "Lagt til dato"
 
-#: bookwyrm/templates/settings/users/user_admin.html:48
+#: bookwyrm/templates/settings/users/user_admin.html:52
 msgid "Last Active"
 msgstr "Sist aktiv"
 
-#: bookwyrm/templates/settings/users/user_admin.html:57
+#: bookwyrm/templates/settings/users/user_admin.html:61
 msgid "Remote instance"
 msgstr "Ekstern instans"
 
-#: bookwyrm/templates/settings/users/user_admin.html:74
+#: bookwyrm/templates/settings/users/user_admin.html:81
 #: bookwyrm/templates/settings/users/user_info.html:28
 msgid "Active"
 msgstr "Aktiv"
 
-#: bookwyrm/templates/settings/users/user_admin.html:79
+#: bookwyrm/templates/settings/users/user_admin.html:86
+msgid "Deleted"
+msgstr ""
+
+#: bookwyrm/templates/settings/users/user_admin.html:92
 #: bookwyrm/templates/settings/users/user_info.html:32
 msgid "Inactive"
 msgstr "Inaktiv"
 
-#: bookwyrm/templates/settings/users/user_admin.html:88
+#: bookwyrm/templates/settings/users/user_admin.html:101
 #: bookwyrm/templates/settings/users/user_info.html:127
 msgid "Not set"
 msgstr "Ikke angitt"
@@ -4357,46 +5144,51 @@ msgid "User profile"
 msgstr "Brukerprofil"
 
 #: bookwyrm/templates/shelf/shelf.html:39
-#: bookwyrm/templatetags/shelf_tags.py:44 bookwyrm/views/shelf/shelf.py:53
+#: bookwyrm/templatetags/shelf_tags.py:46 bookwyrm/views/shelf/shelf.py:53
 msgid "All books"
 msgstr "Alle bøker"
 
-#: bookwyrm/templates/shelf/shelf.html:96
+#: bookwyrm/templates/shelf/shelf.html:97
 #, python-format
 msgid "%(formatted_count)s book"
 msgid_plural "%(formatted_count)s books"
 msgstr[0] "%(formatted_count)s bok"
 msgstr[1] "%(formatted_count)s bøker"
 
-#: bookwyrm/templates/shelf/shelf.html:103
+#: bookwyrm/templates/shelf/shelf.html:104
 #, python-format
 msgid "(showing %(start)s-%(end)s)"
 msgstr "(viser %(start)s-%(end)s)"
 
-#: bookwyrm/templates/shelf/shelf.html:115
+#: bookwyrm/templates/shelf/shelf.html:116
 msgid "Edit shelf"
 msgstr "Rediger hylle"
 
-#: bookwyrm/templates/shelf/shelf.html:123
+#: bookwyrm/templates/shelf/shelf.html:124
 msgid "Delete shelf"
 msgstr "Slett hylle"
 
-#: bookwyrm/templates/shelf/shelf.html:151
-#: bookwyrm/templates/shelf/shelf.html:177
+#: bookwyrm/templates/shelf/shelf.html:152
+#: bookwyrm/templates/shelf/shelf.html:178
 msgid "Shelved"
 msgstr "Lagt på hylla"
 
-#: bookwyrm/templates/shelf/shelf.html:152
-#: bookwyrm/templates/shelf/shelf.html:180
+#: bookwyrm/templates/shelf/shelf.html:153
+#: bookwyrm/templates/shelf/shelf.html:181
 msgid "Started"
 msgstr "Startet"
 
-#: bookwyrm/templates/shelf/shelf.html:153
-#: bookwyrm/templates/shelf/shelf.html:183
+#: bookwyrm/templates/shelf/shelf.html:154
+#: bookwyrm/templates/shelf/shelf.html:184
 msgid "Finished"
 msgstr "Fullført"
 
-#: bookwyrm/templates/shelf/shelf.html:209
+#: bookwyrm/templates/shelf/shelf.html:154
+#: bookwyrm/templates/shelf/shelf.html:184
+msgid "Until"
+msgstr ""
+
+#: bookwyrm/templates/shelf/shelf.html:210
 msgid "This shelf is empty."
 msgstr "Denne hylla er tom."
 
@@ -4695,18 +5487,9 @@ msgstr "side %(page)s"
 msgid "Previous"
 msgstr "Forrige"
 
-#: bookwyrm/templates/snippets/pagination.html:23
-msgid "Next"
-msgstr "Neste"
-
 #: bookwyrm/templates/snippets/privacy-icons.html:12
 msgid "Followers-only"
 msgstr "Kun følgere"
-
-#: bookwyrm/templates/snippets/privacy_select.html:6
-#: bookwyrm/templates/snippets/privacy_select_no_followers.html:6
-msgid "Post privacy"
-msgstr "Delingsinstilling for post"
 
 #: bookwyrm/templates/snippets/rate_action.html:5
 msgid "Leave a rating"
@@ -4726,7 +5509,7 @@ msgid "(Optional)"
 msgstr "(Valgfritt)"
 
 #: bookwyrm/templates/snippets/reading_modals/progress_update_modal.html:6
-#: bookwyrm/templates/snippets/shelve_button/shelve_button_dropdown_options.html:54
+#: bookwyrm/templates/snippets/shelve_button/shelve_button_dropdown_options.html:61
 msgid "Update progress"
 msgstr "Oppdater fremgang"
 
@@ -4734,6 +5517,17 @@ msgstr "Oppdater fremgang"
 #, python-format
 msgid "Start \"<em>%(book_title)s</em>\""
 msgstr "Start \"<em>%(book_title)s</em>\""
+
+#: bookwyrm/templates/snippets/reading_modals/stop_reading_modal.html:6
+#, python-format
+msgid "Stop Reading \"<em>%(book_title)s</em>\""
+msgstr ""
+
+#: bookwyrm/templates/snippets/reading_modals/stop_reading_modal.html:32
+#: bookwyrm/templates/snippets/shelf_selector.html:54
+#: bookwyrm/templates/snippets/shelve_button/shelve_button_options.html:21
+msgid "Stopped reading"
+msgstr ""
 
 #: bookwyrm/templates/snippets/reading_modals/want_to_read_modal.html:6
 #, python-format
@@ -4782,23 +5576,23 @@ msgstr "Flytt bok"
 
 #: bookwyrm/templates/snippets/shelf_selector.html:39
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_dropdown_options.html:17
-#: bookwyrm/templates/snippets/shelve_button/shelve_button_options.html:24
+#: bookwyrm/templates/snippets/shelve_button/shelve_button_options.html:33
 msgid "Start reading"
 msgstr "Begynn å lese"
 
-#: bookwyrm/templates/snippets/shelf_selector.html:54
-#: bookwyrm/templates/snippets/shelve_button/shelve_button_dropdown_options.html:31
-#: bookwyrm/templates/snippets/shelve_button/shelve_button_options.html:38
+#: bookwyrm/templates/snippets/shelf_selector.html:61
+#: bookwyrm/templates/snippets/shelve_button/shelve_button_dropdown_options.html:38
+#: bookwyrm/templates/snippets/shelve_button/shelve_button_options.html:55
 msgid "Want to read"
 msgstr "Ønsker å lese"
 
-#: bookwyrm/templates/snippets/shelf_selector.html:75
-#: bookwyrm/templates/snippets/shelve_button/shelve_button_dropdown_options.html:66
+#: bookwyrm/templates/snippets/shelf_selector.html:82
+#: bookwyrm/templates/snippets/shelve_button/shelve_button_dropdown_options.html:73
 #, python-format
 msgid "Remove from %(name)s"
 msgstr "Fjern fra %(name)s"
 
-#: bookwyrm/templates/snippets/shelf_selector.html:88
+#: bookwyrm/templates/snippets/shelf_selector.html:95
 msgid "Remove from"
 msgstr "Fjern fra"
 
@@ -4806,13 +5600,14 @@ msgstr "Fjern fra"
 msgid "More shelves"
 msgstr "Flere hyller"
 
-#: bookwyrm/templates/snippets/shelve_button/shelve_button_options.html:31
+#: bookwyrm/templates/snippets/shelve_button/shelve_button_dropdown_options.html:31
+#: bookwyrm/templates/snippets/shelve_button/shelve_button_options.html:48
+msgid "Stop reading"
+msgstr ""
+
+#: bookwyrm/templates/snippets/shelve_button/shelve_button_options.html:40
 msgid "Finish reading"
 msgstr "Fullfør lesing"
-
-#: bookwyrm/templates/snippets/status/content_status.html:73
-msgid "Content warning"
-msgstr "Varsel om følsomt innhold"
 
 #: bookwyrm/templates/snippets/status/content_status.html:80
 msgid "Show status"
@@ -4901,6 +5696,16 @@ msgstr "anmeldte <a href=\"%(book_path)s\">%(book)s</a> av <a href=\"%(author_pa
 msgid "reviewed <a href=\"%(book_path)s\">%(book)s</a>"
 msgstr "anmeldte <a href=\"%(book_path)s\">%(book)s</a>"
 
+#: bookwyrm/templates/snippets/status/headers/stopped_reading.html:10
+#, python-format
+msgid "stopped reading <a href=\"%(book_path)s\">%(book)s</a> by <a href=\"%(author_path)s\">%(author_name)s</a>"
+msgstr ""
+
+#: bookwyrm/templates/snippets/status/headers/stopped_reading.html:17
+#, python-format
+msgid "stopped reading <a href=\"%(book_path)s\">%(book)s</a>"
+msgstr ""
+
 #: bookwyrm/templates/snippets/status/headers/to_read.html:10
 #, python-format
 msgid "wants to read <a href=\"%(book_path)s\">%(book)s</a> by <a href=\"%(author_path)s\">%(author_name)s</a>"
@@ -4955,10 +5760,6 @@ msgstr "Vis mer"
 msgid "Show less"
 msgstr "Vis mindre"
 
-#: bookwyrm/templates/user/books_header.html:4
-msgid "Your books"
-msgstr "Dine bøker"
-
 #: bookwyrm/templates/user/books_header.html:9
 #, python-format
 msgid "%(username)s's books"
@@ -4997,21 +5798,9 @@ msgstr "Gruppene dine"
 msgid "Groups: %(username)s"
 msgstr "Grupper: %(username)s"
 
-#: bookwyrm/templates/user/layout.html:19 bookwyrm/templates/user/user.html:10
-msgid "User Profile"
-msgstr "Brukerprofil"
-
 #: bookwyrm/templates/user/layout.html:48
 msgid "Follow Requests"
 msgstr "Følgeforespørsler"
-
-#: bookwyrm/templates/user/layout.html:73
-msgid "Reading Goal"
-msgstr "Lesemål"
-
-#: bookwyrm/templates/user/layout.html:79
-msgid "Groups"
-msgstr "Grupper"
 
 #: bookwyrm/templates/user/lists.html:11
 #, python-format
@@ -5041,29 +5830,29 @@ msgstr "%(username)s følger ingen andre medlemmer"
 msgid "Edit profile"
 msgstr "Rediger profil"
 
-#: bookwyrm/templates/user/user.html:37
+#: bookwyrm/templates/user/user.html:38
 #, python-format
 msgid "View all %(size)s"
 msgstr "Vis alle %(size)s"
 
-#: bookwyrm/templates/user/user.html:51
+#: bookwyrm/templates/user/user.html:52
 msgid "View all books"
 msgstr "Se alle bøker"
 
-#: bookwyrm/templates/user/user.html:58
+#: bookwyrm/templates/user/user.html:59
 #, python-format
 msgid "%(current_year)s Reading Goal"
 msgstr "%(current_year)s lesemål"
 
-#: bookwyrm/templates/user/user.html:65
+#: bookwyrm/templates/user/user.html:66
 msgid "User Activity"
 msgstr "Brukeraktivitet"
 
-#: bookwyrm/templates/user/user.html:69
+#: bookwyrm/templates/user/user.html:70
 msgid "RSS feed"
 msgstr "RSS strøm"
 
-#: bookwyrm/templates/user/user.html:80
+#: bookwyrm/templates/user/user.html:81
 msgid "No activities yet!"
 msgstr "Ingen aktivitet enda!"
 
@@ -5099,7 +5888,7 @@ msgstr "Ingen følgere du følger"
 msgid "View profile and more"
 msgstr ""
 
-#: bookwyrm/templates/user_menu.html:72
+#: bookwyrm/templates/user_menu.html:78
 msgid "Log out"
 msgstr "Logg ut"
 
@@ -5112,22 +5901,13 @@ msgstr "Filen overskrider maksimal størrelse: 10MB"
 msgid "%(title)s: %(subtitle)s"
 msgstr "%(title)s: %(subtitle)s"
 
-#: bookwyrm/views/imports/import_data.py:67
+#: bookwyrm/views/imports/import_data.py:70
 msgid "Not a valid csv file"
 msgstr "Ikke en gyldig csv-fil"
 
 #: bookwyrm/views/landing/login.py:70
 msgid "Username or password are incorrect"
 msgstr "Feil brukernavn eller passord"
-
-#: bookwyrm/views/landing/password.py:32
-msgid "No user with that email address was found."
-msgstr "Ingen bruker med den e-postadressen ble funnet."
-
-#: bookwyrm/views/landing/password.py:43
-#, python-brace-format
-msgid "A password reset link was sent to {email}"
-msgstr "En lenke for tilbakestilling av passord er sendt til {email}"
 
 #: bookwyrm/views/rss_feed.py:34
 #, python-brace-format
