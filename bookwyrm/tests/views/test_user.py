@@ -116,30 +116,38 @@ class UserViews(TestCase):
 
     def test_followers_page(self):
         """there are so many views, this just makes sure it LOADS"""
-        view = views.Followers.as_view()
+        view = views.Relationships.as_view()
         request = self.factory.get("")
         request.user = self.local_user
         with patch("bookwyrm.views.user.is_api_request") as is_api:
             is_api.return_value = False
-            result = view(request, "mouse")
+            result = view(request, "mouse", "followers")
+
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
-        with patch("bookwyrm.views.user.is_api_request") as is_api:
+    def test_followers_page_ap(self):
+        """JSON response"""
+        view = views.Relationships.as_view()
+        request = self.factory.get("")
+        request.user = self.local_user
+        with patch("bookwyrm.views.relationships.is_api_request") as is_api:
             is_api.return_value = True
-            result = view(request, "mouse")
+            result = view(request, "mouse", "followers")
+
         self.assertIsInstance(result, ActivitypubResponse)
         self.assertEqual(result.status_code, 200)
 
     def test_followers_page_anonymous(self):
         """there are so many views, this just makes sure it LOADS"""
-        view = views.Followers.as_view()
+        view = views.Relationships.as_view()
         request = self.factory.get("")
         request.user = self.anonymous_user
         with patch("bookwyrm.views.user.is_api_request") as is_api:
             is_api.return_value = False
-            result = view(request, "mouse")
+            result = view(request, "mouse", "followers")
+
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
@@ -148,55 +156,63 @@ class UserViews(TestCase):
     @patch("bookwyrm.activitystreams.populate_stream_task.delay")
     def test_followers_page_blocked(self, *_):
         """there are so many views, this just makes sure it LOADS"""
-        view = views.Followers.as_view()
+        view = views.Relationships.as_view()
         request = self.factory.get("")
         request.user = self.local_user
         self.rat.blocks.add(self.local_user)
         with patch("bookwyrm.views.user.is_api_request") as is_api:
             is_api.return_value = False
             with self.assertRaises(Http404):
-                view(request, "rat")
+                view(request, "rat", "followers")
 
     def test_following_page(self):
         """there are so many views, this just makes sure it LOADS"""
-        view = views.Following.as_view()
+        view = views.Relationships.as_view()
         request = self.factory.get("")
         request.user = self.local_user
         with patch("bookwyrm.views.user.is_api_request") as is_api:
             is_api.return_value = False
-            result = view(request, "mouse")
+            result = view(request, "mouse", "following")
+
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
-        with patch("bookwyrm.views.user.is_api_request") as is_api:
+    def test_following_page_json(self):
+        """there are so many views, this just makes sure it LOADS"""
+        view = views.Relationships.as_view()
+        request = self.factory.get("")
+        request.user = self.local_user
+        with patch("bookwyrm.views.relationships.is_api_request") as is_api:
             is_api.return_value = True
-            result = view(request, "mouse")
+            result = view(request, "mouse", "following")
+
         self.assertIsInstance(result, ActivitypubResponse)
         self.assertEqual(result.status_code, 200)
 
     def test_following_page_anonymous(self):
         """there are so many views, this just makes sure it LOADS"""
-        view = views.Following.as_view()
+        view = views.Relationships.as_view()
         request = self.factory.get("")
         request.user = self.anonymous_user
         with patch("bookwyrm.views.user.is_api_request") as is_api:
             is_api.return_value = False
-            result = view(request, "mouse")
+            result = view(request, "mouse", "following")
+
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
     def test_following_page_blocked(self):
         """there are so many views, this just makes sure it LOADS"""
-        view = views.Following.as_view()
+        view = views.Relationships.as_view()
         request = self.factory.get("")
         request.user = self.local_user
         self.rat.blocks.add(self.local_user)
         with patch("bookwyrm.views.user.is_api_request") as is_api:
             is_api.return_value = False
             with self.assertRaises(Http404):
-                view(request, "rat")
+                view(request, "rat", "following")
 
     def test_hide_suggestions(self):
         """update suggestions settings"""
