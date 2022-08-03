@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-07-28 18:11+0000\n"
-"PO-Revision-Date: 2022-07-28 19:14\n"
+"POT-Creation-Date: 2022-07-29 18:24+0000\n"
+"PO-Revision-Date: 2022-07-31 10:35\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Romanian\n"
 "Language: ro\n"
@@ -44,11 +44,11 @@ msgstr "Nelimitat"
 
 #: bookwyrm/forms/edit_user.py:89
 msgid "Incorrect password"
-msgstr ""
+msgstr "Parolă incorectă"
 
 #: bookwyrm/forms/edit_user.py:96 bookwyrm/forms/landing.py:71
 msgid "Password does not match"
-msgstr ""
+msgstr "Parola nu se potrivește"
 
 #: bookwyrm/forms/forms.py:54
 msgid "Reading finish date cannot be before start date."
@@ -56,7 +56,7 @@ msgstr "Data de terminare a lecturii nu poate fi înainte de data de început."
 
 #: bookwyrm/forms/forms.py:59
 msgid "Reading stopped date cannot be before start date."
-msgstr ""
+msgstr "Data de sfârșit a lecturii nu poate fi înainte de data de început."
 
 #: bookwyrm/forms/landing.py:38
 msgid "User with this username already exists"
@@ -299,7 +299,7 @@ msgstr "English (engleză)"
 
 #: bookwyrm/settings.py:283
 msgid "Català (Catalan)"
-msgstr ""
+msgstr "Català (catalană)"
 
 #: bookwyrm/settings.py:284
 msgid "Deutsch (German)"
@@ -485,7 +485,7 @@ msgstr "Anul de lectură a <em>%(display_name)s</em>"
 
 #: bookwyrm/templates/annual_summary/layout.html:53
 msgid "Share this page"
-msgstr "Partajați această pagină"
+msgstr "Împărtășiți această pagină"
 
 #: bookwyrm/templates/annual_summary/layout.html:67
 msgid "Copy address"
@@ -498,7 +498,7 @@ msgstr "Copiat!"
 
 #: bookwyrm/templates/annual_summary/layout.html:77
 msgid "Sharing status: <strong>public with key</strong>"
-msgstr "Partajați statusul: <strong>public cu cheie</strong>"
+msgstr "Împărtășiți starea: <strong>public cu cheie</strong>"
 
 #: bookwyrm/templates/annual_summary/layout.html:78
 msgid "The page can be seen by anyone with the complete address."
@@ -510,7 +510,7 @@ msgstr "Faceți pagina privată"
 
 #: bookwyrm/templates/annual_summary/layout.html:89
 msgid "Sharing status: <strong>private</strong>"
-msgstr "Partajați statusul: <strong>privat</strong>"
+msgstr "Împărtășiți starea: <strong>privat</strong>"
 
 #: bookwyrm/templates/annual_summary/layout.html:90
 msgid "The page is private, only you can see it."
@@ -1289,7 +1289,7 @@ msgstr "Acțiuni"
 #: bookwyrm/templates/book/file_links/edit_links.html:48
 #: bookwyrm/templates/settings/link_domains/link_table.html:21
 msgid "Unknown user"
-msgstr ""
+msgstr "Utilizator necunoscut"
 
 #: bookwyrm/templates/book/file_links/edit_links.html:57
 #: bookwyrm/templates/book/file_links/verification_modal.html:22
@@ -1642,13 +1642,13 @@ msgstr "Aflați mai multe despre %(site_name)s:"
 #: bookwyrm/templates/email/moderation_report/text_content.html:6
 #, python-format
 msgid "@%(reporter)s has flagged a link domain for moderation."
-msgstr ""
+msgstr "@%(reporter)s a marcat o legătură de domeniu spre moderare."
 
 #: bookwyrm/templates/email/moderation_report/html_content.html:14
 #: bookwyrm/templates/email/moderation_report/text_content.html:10
 #, python-format
 msgid "@%(reporter)s has flagged behavior by @%(reportee)s for moderation."
-msgstr ""
+msgstr "@%(reporter)s a marcat comportamentul (lui) @%(reportee)s spre moderare."
 
 #: bookwyrm/templates/email/moderation_report/html_content.html:21
 #: bookwyrm/templates/email/moderation_report/text_content.html:15
@@ -1813,7 +1813,7 @@ msgstr "Citite"
 #: bookwyrm/templates/get_started/book_preview.html:13
 #: bookwyrm/templates/shelf/shelf.html:89 bookwyrm/templates/user/user.html:36
 msgid "Stopped Reading"
-msgstr ""
+msgstr "Lectură oprită"
 
 #: bookwyrm/templates/get_started/books.html:6
 msgid "What are you reading?"
@@ -2052,12 +2052,12 @@ msgid "Manager"
 msgstr "Administrator"
 
 #: bookwyrm/templates/guided_tour/book.html:10
-msgid "This is home page of a book. Let\\"
-msgstr ""
+msgid "This is home page of a book. Let's see what you can do while you're here!"
+msgstr "Aceasta este pagina principală a unei cărți. Să vedem ceea ce puteți face cât timp sunteți aici!"
 
 #: bookwyrm/templates/guided_tour/book.html:11
 msgid "Book page"
-msgstr ""
+msgstr "Pagină de carte"
 
 #: bookwyrm/templates/guided_tour/book.html:19
 #: bookwyrm/templates/guided_tour/group.html:19
@@ -2068,7 +2068,7 @@ msgstr ""
 #: bookwyrm/templates/guided_tour/user_groups.html:19
 #: bookwyrm/templates/guided_tour/user_profile.html:19
 msgid "End Tour"
-msgstr ""
+msgstr "Sfârșitul turului"
 
 #: bookwyrm/templates/guided_tour/book.html:26
 #: bookwyrm/templates/guided_tour/book.html:50
@@ -2121,67 +2121,71 @@ msgstr "Înainte"
 
 #: bookwyrm/templates/guided_tour/book.html:31
 msgid "This is where you can set a reading status for this book. You can press the button to move to the next stage, or use the drop down button to select the reading status you want to set."
-msgstr ""
+msgstr "Aici puteți configura o stare de lectură pentru această carte. Puteți apăsa butonul pentru a trece la următoarea etapă sau să folosiți butonul de derulare pentru a selecta starea de lectură pe care o doriți."
 
 #: bookwyrm/templates/guided_tour/book.html:32
 msgid "Reading status"
-msgstr ""
+msgstr "Starea de citire"
 
 #: bookwyrm/templates/guided_tour/book.html:55
-msgid "You can also manually add reading dates here. Unlike changing the reading status using the previous method, adding dates manually will not automatically add them to your <strong>Read</strong> or <strong>Reading</strong> shelves.<br><br>Got a favourite you re-read every year? We\\"
-msgstr ""
+msgid "You can also manually add reading dates here. Unlike changing the reading status using the previous method, adding dates manually will not automatically add them to your <strong>Read</strong> or <strong>Reading</strong> shelves."
+msgstr "Puteți adăuga de asemenea datele de lectură aici. Spre deosebire de schimbatul stării de lectură folosind metoda precedentă, adăugatul datelor manual nu le va adăuga automat pe rafturile dvs. <strong>Read</strong> sau <strong>Reading</strong>."
+
+#: bookwyrm/templates/guided_tour/book.html:55
+msgid "Got a favourite you re-read every year? We've got you covered - you can add multiple read dates for the same book 😀"
+msgstr "Aveți o carte favorită pe care o citiți în fiecare an? Nu vă faceți griji - puteți adăuga date de lectură multiple pentru aceeași carte 😀"
 
 #: bookwyrm/templates/guided_tour/book.html:79
 msgid "There can be multiple editions of a book, in various formats or languages. You can choose which edition you want to use."
-msgstr ""
+msgstr "Pot exista multiple ediții ale unei cărți, în diferite formate și limbi. Puteți alege ediția pe care doriți să o folosiți."
 
 #: bookwyrm/templates/guided_tour/book.html:80
 msgid "Other editions"
-msgstr ""
+msgstr "Alte ediții"
 
 #: bookwyrm/templates/guided_tour/book.html:102
 msgid "You can post a review, comment, or quote here."
-msgstr ""
+msgstr "Puteți publica o recenzie, un comentariu sau un citat aici."
 
 #: bookwyrm/templates/guided_tour/book.html:103
 msgid "Share your thoughts"
-msgstr ""
+msgstr "Împărtășiți-vă gândurile"
 
 #: bookwyrm/templates/guided_tour/book.html:127
 msgid "If you have read this book you can post a review including an optional star rating"
-msgstr ""
+msgstr "Dacă ați citit această carte puteți publica o recenzie incluzând o evaluare opțională cu stele"
 
 #: bookwyrm/templates/guided_tour/book.html:128
 msgid "Post a review"
-msgstr ""
+msgstr "Publicați o recenzie"
 
 #: bookwyrm/templates/guided_tour/book.html:151
 msgid "You can share your thoughts on this book generally with a simple comment"
-msgstr ""
+msgstr "Puteți în general să vă împărtășiți gândurile despre această carte cu un simplu comentariu"
 
 #: bookwyrm/templates/guided_tour/book.html:152
 msgid "Post a comment"
-msgstr ""
+msgstr "Publicați un comentariu"
 
 #: bookwyrm/templates/guided_tour/book.html:175
 msgid "Just read some perfect prose? Let the world know by sharing a quote!"
-msgstr ""
+msgstr "Tocmai ați citit o proză perfectă? Înștiințați lumea partajând un citat!"
 
 #: bookwyrm/templates/guided_tour/book.html:176
 msgid "Share a quote"
-msgstr ""
+msgstr "Împărtășiți un citat"
 
 #: bookwyrm/templates/guided_tour/book.html:199
-msgid "If your review or comment might ruin the book for someone who hasn\\"
-msgstr ""
+msgid "If your review or comment might ruin the book for someone who hasn't read it yet, you can hide your post behind a <strong>spoiler alert</strong>"
+msgstr "Dacă recenzia dvs. sau comentariul ar putea ruina cartea pentru cineva cineva care încă nu a citit-o, puteți să vă ascundeți publicația în spatele unei <strong>alerte de divulgare</strong> (spoiler alert)"
 
 #: bookwyrm/templates/guided_tour/book.html:200
 msgid "Spoiler alerts"
-msgstr ""
+msgstr "Alerte de divulgare"
 
 #: bookwyrm/templates/guided_tour/book.html:224
-msgid "Choose who can see your post here. Post privacy can be <strong>Public</strong> (everyone can see), <strong>Unlisted</strong> (everyone can see, but it doesn\\"
-msgstr ""
+msgid "Choose who can see your post here. Post privacy can be <strong>Public</strong> (everyone can see), <strong>Unlisted</strong> (everyone can see, but it doesn't appear in public feeds or discovery pages), <strong>Followers</strong> (only your followers can see), or <strong>Private</strong> (only you can see)"
+msgstr "Alegeți aici cine poate să vă vadă publicația. Confidențialitatea postărilor poate fi <strong>Publică</strong> (toată lumea poate să o vadă), <strong>Nelistată</strong> (toată lumea poate să o vadă, dar nu apare în fluxurile publice sau pe paginile de descoperire), <strong>Urmăritori</strong> (numai urmăritorii dvs. pot să o vadă), sau <strong>Privată</strong> (numai dvs. puteți să o vedeți)"
 
 #: bookwyrm/templates/guided_tour/book.html:225
 #: bookwyrm/templates/snippets/privacy_select.html:6
@@ -2191,16 +2195,15 @@ msgstr "Confidențialitatea postării"
 
 #: bookwyrm/templates/guided_tour/book.html:248
 msgid "Some ebooks can be downloaded for free from external sources. They will be shown here."
-msgstr ""
+msgstr "Unele cărți digitale pot fi descărcate gratuit din surse externe. Ele vor fi afișate aici."
 
 #: bookwyrm/templates/guided_tour/book.html:249
 msgid "Download links"
-msgstr ""
+msgstr "Legături de descărcare"
 
 #: bookwyrm/templates/guided_tour/book.html:273
-#: bookwyrm/templates/guided_tour/search.html:147
-msgid "<p class=\\"
-msgstr ""
+msgid "Continue the tour by selecting <strong>Your books</strong> from the drop down menu."
+msgstr "Continuați turul selectând <strong>Cărțile dvs.</strong> din meniul derulant."
 
 #: bookwyrm/templates/guided_tour/book.html:296
 #: bookwyrm/templates/guided_tour/home.html:50
@@ -2210,109 +2213,109 @@ msgstr ""
 #: bookwyrm/templates/guided_tour/user_groups.html:116
 #: bookwyrm/templates/guided_tour/user_profile.html:141
 msgid "Ok"
-msgstr ""
+msgstr "OK"
 
 #: bookwyrm/templates/guided_tour/group.html:10
 msgid "Welcome to the page for your group! This is where you can add and remove users, create user-curated lists, and edit the group details."
-msgstr ""
+msgstr "Bine ați venit pe pagina pentru grupul dvs.! Aici puteți adăuga sau înlătura utilizatori, crea liste cu utilizatori interziși și edita detaliile grupului."
 
 #: bookwyrm/templates/guided_tour/group.html:11
 msgid "Your group"
-msgstr ""
+msgstr "Grupul dvs."
 
 #: bookwyrm/templates/guided_tour/group.html:31
 msgid "Use this search box to find users to join your group. Currently users must be members of the same Bookwyrm instance and be invited by the group owner."
-msgstr ""
+msgstr "Folosiți acest câmp de căutare pentru a găsi utilizatori care să vi se alăture grupului dvs.. Momentan, utilizatorii trebuie să fie membrii ai aceleași instanțe de Bookwyrm și să fie invitați de deținătorul grupului."
 
 #: bookwyrm/templates/guided_tour/group.html:32
 msgid "Find users"
-msgstr ""
+msgstr "Căutați utilizatori"
 
 #: bookwyrm/templates/guided_tour/group.html:54
 msgid "Your group members will appear here. The group owner is marked with a star symbol."
-msgstr ""
+msgstr "Membrii grupului dvs. vor apărea aici. Deținătorul grupului este marcat cu un simbol în formă de stea."
 
 #: bookwyrm/templates/guided_tour/group.html:55
 msgid "Group members"
-msgstr ""
+msgstr "Membrii grupului"
 
 #: bookwyrm/templates/guided_tour/group.html:77
-msgid "As well as creating lists from the Lists page, you can create a group-curated list here on the group\\"
-msgstr ""
+msgid "As well as creating lists from the Lists page, you can create a group-curated list here on the group's homepage. Any member of the group can create a list curated by group members."
+msgstr "Pe lânngă creatul de liste din pagina Liste, puteți crea o listă selectivă de grupuri aici pe pagina principală a grupului. Orice membru al grupului poate crea o listă selectivă cu membrii grupului."
 
 #: bookwyrm/templates/guided_tour/group.html:78
 msgid "Group lists"
-msgstr ""
+msgstr "Liste de grupuri"
 
 #: bookwyrm/templates/guided_tour/group.html:100
-msgid "Congratulations, you\\"
-msgstr ""
+msgid "Congratulations, you've finished the tour! Now you know the basics, but there is lots more to explore on your own. Happy reading!"
+msgstr "Felicitări, ați terminat turul! Acum cunoașteți bazele, dar încă mai sunt multe de explorat pe cont propriu. Lectură plăcută!"
 
 #: bookwyrm/templates/guided_tour/group.html:115
 msgid "End tour"
-msgstr ""
+msgstr "Sfârșitul turului"
 
 #: bookwyrm/templates/guided_tour/home.html:16
 msgid "Welcome to Bookwyrm!<br><br>Would you like to take the guided tour to help you get started?"
-msgstr ""
+msgstr "Bine ați venit în Bookwyrm!<br><br>Ați dori să parcurgeți un tur ghidat pentru a vă ajuta să începeți?"
 
 #: bookwyrm/templates/guided_tour/home.html:17
 #: bookwyrm/templates/guided_tour/home.html:39
 #: bookwyrm/templates/layout.html:194
 msgid "Guided Tour"
-msgstr ""
+msgstr "Tur ghidat"
 
 #: bookwyrm/templates/guided_tour/home.html:25
 msgid "No thanks"
-msgstr ""
+msgstr "Nu mulțumesc"
 
 #: bookwyrm/templates/guided_tour/home.html:33
 msgid "Yes please!"
-msgstr ""
+msgstr "Da, vă rog!"
 
 #: bookwyrm/templates/guided_tour/home.html:38
 msgid "If  you ever change your mind, just click on the Guided Tour link to start your tour"
-msgstr ""
+msgstr "Dacă vreodată vă răzgândiți, doar apăsați pe legătura Tur Ghidat pentru a începe turul dvs."
 
 #: bookwyrm/templates/guided_tour/home.html:62
 msgid "Search for books, users, or lists using this search box."
-msgstr ""
+msgstr "Căutați cărți, utilizatori sau liste folosind acest câmp de căutare."
 
 #: bookwyrm/templates/guided_tour/home.html:63
 msgid "Search box"
-msgstr ""
+msgstr "Câmp de căutare"
 
 #: bookwyrm/templates/guided_tour/home.html:79
-msgid "Search book records by scanning an ISBN barcode using your device\\"
-msgstr ""
+msgid "Search book records by scanning an ISBN barcode using your device's camera - great when you're in the bookstore or library!"
+msgstr "Căutați înregistrări de cărți scanând codul de bare ISBN folosind camera dispozitivului dvs. - grozav când sunteți într-o librărie sau bibliotecă!"
 
 #: bookwyrm/templates/guided_tour/home.html:80
 msgid "Barcode reader"
-msgstr ""
+msgstr "Cititor de cod de bare"
 
 #: bookwyrm/templates/guided_tour/home.html:102
 msgid "Use the <strong>Feed</strong>, <strong>Lists</strong> and <strong>Discover</strong> links to discover the latest news from your feed, lists of books by topic, and the latest happenings on this Bookwyrm server!"
-msgstr ""
+msgstr "Folosiți legăturile <strong>Flux</strong>, <strong>Liste</strong> și <strong>Descoperiți</strong> pentru a descoperi ultimele știri de pe fluxul dvs., listele de cărți după subiect și ultimele întâmplări de pe acest server de Bookwyrm!"
 
 #: bookwyrm/templates/guided_tour/home.html:103
 msgid "Navigation Bar"
-msgstr ""
+msgstr "Bara de navigare"
 
 #: bookwyrm/templates/guided_tour/home.html:126
 msgid "Books on your reading status shelves will be shown here."
-msgstr ""
+msgstr "Cărțile de pe rafturile dvs. cu starea lecturii vor fi afișate aici."
 
 #: bookwyrm/templates/guided_tour/home.html:151
 msgid "Updates from people you are following will appear in your <strong>Home</strong> timeline.<br><br>The <strong>Books</strong> tab shows activity from anyone, related to your books."
-msgstr ""
+msgstr "Actualizările de la oameni pe care îi urmăriți vor apărea în cronologia dvs. <strong>Acasă</strong>.<br><br>Tabul <strong>Cărți</strong> afișează activitatea de la oricine, în legătură cu cărțile dvs.."
 
 #: bookwyrm/templates/guided_tour/home.html:152
 msgid "Timelines"
-msgstr ""
+msgstr "Cronologii"
 
 #: bookwyrm/templates/guided_tour/home.html:176
 msgid "The bell will light up when you have a new notification. When it does, click on it to find out what exciting thing has happened!"
-msgstr ""
+msgstr "Clopoțelul se va aprinde când aveți o notificare nouă. Când o face, apăsați-l pentru a descoperi ce lucru interesant s-a întâmplat!"
 
 #: bookwyrm/templates/guided_tour/home.html:177
 #: bookwyrm/templates/layout.html:99 bookwyrm/templates/layout.html:100
@@ -2322,103 +2325,118 @@ msgid "Notifications"
 msgstr "Notificări"
 
 #: bookwyrm/templates/guided_tour/home.html:200
-msgid "Your profile, books, direct messages, and settings can be accessed by clicking on your name in the menu here.<p class=\\"
-msgstr ""
+msgid "Your profile, books, direct messages, and settings can be accessed by clicking on your name in the menu here."
+msgstr "Profilul dvs., cărțile, mesajele directe și setările pot fi accesate făcând clic pe numele dvs. în meniul de aici."
+
+#: bookwyrm/templates/guided_tour/home.html:200
+msgid "Try selecting <strong>Profile</strong> from the drop down menu to continue the tour."
+msgstr "Încercați să selectați <strong>Profile</strong> din meniul derulant pentru a continua turul."
 
 #: bookwyrm/templates/guided_tour/home.html:201
 msgid "Profile and settings menu"
-msgstr ""
+msgstr "Meniul de profil și setări"
 
 #: bookwyrm/templates/guided_tour/lists.html:13
-msgid "This is the lists page where you can discover book lists created by any user. A List is a collection of books, similar to a shelf.<br><br>Shelves are for organising books for yourself, whereas Lists are generally for sharing with others."
-msgstr ""
+msgid "This is the lists page where you can discover book lists created by any user. A List is a collection of books, similar to a shelf."
+msgstr "Aceasta este pagina cu liste unde puteți descoperi liste de cărți create de către orice utilizator. O listă este o colecție de cărți, similară unui raft."
+
+#: bookwyrm/templates/guided_tour/lists.html:13
+msgid "Shelves are for organising books for yourself, whereas Lists are generally for sharing with others."
+msgstr "Rafturile sunt pentru organizarea cărților pentru dvs., în timp ce listele sunt în general pentru a împărtăși cu alții."
 
 #: bookwyrm/templates/guided_tour/lists.html:34
-#: bookwyrm/templates/guided_tour/user_groups.html:31
-msgid "Let\\"
-msgstr ""
+msgid "Let's see how to create a new list."
+msgstr "Să vedem cum se creează o nouă listă."
+
+#: bookwyrm/templates/guided_tour/lists.html:34
+msgid "Click the <strong>Create List</strong> button, then <strong>Next</strong> to continue the tour"
+msgstr "Apăsați butonul <strong>Creați listă</strong>, apoi <strong>Următorul</strong> pentru a continua turul"
 
 #: bookwyrm/templates/guided_tour/lists.html:35
 #: bookwyrm/templates/guided_tour/lists.html:59
 msgid "Creating a new list"
-msgstr ""
+msgstr "Creați o listă nouă"
 
 #: bookwyrm/templates/guided_tour/lists.html:58
 msgid "You must give your list a name and can optionally give it a description to help other people understand what your list is about."
-msgstr ""
+msgstr "Trebuie să dați listei dvs. un nume și opțional o descriere pentru a ajuta alte persoane să înțeleagă despre ce este lista dvs.."
 
 #: bookwyrm/templates/guided_tour/lists.html:81
 msgid "Choose who can see your list here. List privacy options work just like we saw when posting book reviews. This is a common pattern throughout Bookwyrm."
-msgstr ""
+msgstr "Alegeți aici cine poate să vă vadă lista. Opțiunile de confidențialitate pentru liste funcționează exact cum am văzut la publicarea unei recenzii de cărți. Acesta este un tipar comun în tot Bookwyrm."
 
 #: bookwyrm/templates/guided_tour/lists.html:82
 msgid "List privacy"
-msgstr ""
+msgstr "Confidențialitatea listei"
 
 #: bookwyrm/templates/guided_tour/lists.html:105
 msgid "You can also decide how your list is to be curated - only by you, by anyone, or by a group."
-msgstr ""
+msgstr "Puteți de asemenea decide cum va fi tratată lista dvs. - doar de dvs., de orice sau de grup."
 
 #: bookwyrm/templates/guided_tour/lists.html:106
 msgid "List curation"
-msgstr ""
+msgstr "Selecție de liste"
 
 #: bookwyrm/templates/guided_tour/lists.html:128
 msgid "Next in our tour we will explore Groups!"
-msgstr ""
+msgstr "În continuare în turul nostru vom explora grupurile!"
 
 #: bookwyrm/templates/guided_tour/lists.html:129
 msgid "Next: Groups"
-msgstr ""
+msgstr "În continuare: grupuri"
 
 #: bookwyrm/templates/guided_tour/lists.html:143
 msgid "Take me there"
-msgstr ""
+msgstr "Duceți-mă acolo"
 
 #: bookwyrm/templates/guided_tour/search.html:16
 msgid "If the book you are looking for is available on a remote catalogue such as Open Library, click on <strong>Import book</strong>."
-msgstr ""
+msgstr "Dacă cartea pe care o căutați este disponibilă într-un catalog distant precum Open Library, apăsați pe <strong>Importați carte</strong>."
 
 #: bookwyrm/templates/guided_tour/search.html:17
 #: bookwyrm/templates/guided_tour/search.html:44
 msgid "Searching"
-msgstr ""
+msgstr "Căutând"
 
 #: bookwyrm/templates/guided_tour/search.html:43
-msgid "If the book you are looking for is already on this Bookwyrm instance, you can click on the title to go to the book\\"
-msgstr ""
+msgid "If the book you are looking for is already on this Bookwyrm instance, you can click on the title to go to the book's page."
+msgstr "Dacă cartea pe care o căutați este deja pe această instanță de Bookwyrm, puteți face clic pe titlu pentru a merge pe pagina cărții."
 
 #: bookwyrm/templates/guided_tour/search.html:71
 msgid "If the book you are looking for is not listed, try loading more records from other sources like Open Library or Inventaire."
-msgstr ""
+msgstr "Dacă cartea pe care o căutați nu este listată, încercați să încărcați mai multe înregistrări din alte surse precum Open Library sau Inventaire."
 
 #: bookwyrm/templates/guided_tour/search.html:72
 msgid "Load more records"
-msgstr ""
+msgstr "Încărcați mai multe înregistrări"
 
 #: bookwyrm/templates/guided_tour/search.html:98
 msgid "If your book is not in the results, try adjusting your search terms."
-msgstr ""
+msgstr "Dacă cartea dvs. nu este în rezultate, încercați să ajustați termenii de căutare."
 
 #: bookwyrm/templates/guided_tour/search.html:99
 msgid "Search again"
-msgstr ""
+msgstr "Căutați din nou"
 
 #: bookwyrm/templates/guided_tour/search.html:121
-msgid "If you still can\\"
-msgstr ""
+msgid "If you still can't find your book, you can add a record manually."
+msgstr "Dacă încă nu puteți cartea dvs., puteți adăuga o înregistrare manual."
 
 #: bookwyrm/templates/guided_tour/search.html:122
 msgid "Add a record manally"
-msgstr ""
+msgstr "Adăugați o înregistrare manual"
+
+#: bookwyrm/templates/guided_tour/search.html:147
+msgid "Import, manually add, or view an existing book to continue the tour."
+msgstr "Importați, adăugați manual, sau vizualizați o carte existentă pentru a continua turul."
 
 #: bookwyrm/templates/guided_tour/search.html:148
 msgid "Continue the tour"
-msgstr ""
+msgstr "Continuați turul"
 
 #: bookwyrm/templates/guided_tour/user_books.html:10
 msgid "This is the page where your books are listed, organised into shelves."
-msgstr ""
+msgstr "Aceasta este pagina unde cărțile dvs. sunt listate, organizate pe rafturi."
 
 #: bookwyrm/templates/guided_tour/user_books.html:11
 #: bookwyrm/templates/user/books_header.html:4
@@ -2427,35 +2445,39 @@ msgstr "Cărțile dvs."
 
 #: bookwyrm/templates/guided_tour/user_books.html:31
 msgid "<strong>To Read</strong>, <strong>Currently Reading</strong>, <strong>Read</strong>, and <strong>Stopped Reading</strong> are default shelves. When you change the reading status of a book it will automatically be moved to the matching shelf. A book can only be on one default shelf at a time."
-msgstr ""
+msgstr "<strong>De citit</strong>, <strong>În curs de lectură</strong>, <strong>Citite</strong> și <strong>Oprit din citit</strong> sunt rafturile implicite. Când schimbați starea de lectură a unei cărți, ea va fi mutată automat pe raftul corespunzător. O carte nu poate fi decât pe un singur raft implicit în același timp."
 
 #: bookwyrm/templates/guided_tour/user_books.html:32
 msgid "Reading status shelves"
-msgstr ""
+msgstr "Rafturile cu stări de lectură"
 
 #: bookwyrm/templates/guided_tour/user_books.html:55
 msgid "You can create additional custom shelves to organise your books. A book on a custom shelf can be on any number of other shelves simultaneously, including one of the default reading status shelves"
-msgstr ""
+msgstr "Puteți crea rafturi personalizate adiționale pentru a organiza cărțile dvs.. O carte poate fi pe orice număr de rafturi personalizate"
 
 #: bookwyrm/templates/guided_tour/user_books.html:56
 msgid "Adding custom shelves."
-msgstr ""
+msgstr "Adăugați rafturi personalizate."
 
 #: bookwyrm/templates/guided_tour/user_books.html:78
 msgid "If you have an export file from another service like Goodreads or LibraryThing, you can import it here."
-msgstr ""
+msgstr "Dacă aveți un fișier de export precum un alt serviciu ca Goodreads sau LibraryThing, puteți să-l importați aici."
 
 #: bookwyrm/templates/guided_tour/user_books.html:79
 msgid "Import from another service"
-msgstr ""
+msgstr "Importați dintr-un alt serviciu"
 
 #: bookwyrm/templates/guided_tour/user_books.html:101
-msgid "Now that we\\"
-msgstr ""
+msgid "Now that we've explored book shelves, let's take a look at a related concept: book lists!"
+msgstr "Acum că am explorat rafturile de cărți, să aruncăm o privire la un concept asemănător: listele de cărți!"
+
+#: bookwyrm/templates/guided_tour/user_books.html:101
+msgid "Click on the <strong>Lists</strong> link here to continue the tour."
+msgstr "Clic aici pe legătura <strong>Liste</strong> pentru a continua turul."
 
 #: bookwyrm/templates/guided_tour/user_groups.html:10
 msgid "You can create or join a group with other users. Groups can share group-curated book lists, and in future will be able to do other things."
-msgstr ""
+msgstr "Puteți crea sau vă alătura unui grup cu alți utilizatori. Grupurile pot distribui liste de grup selective cu cărți și în viitor vor putea să facă și alte lucruri."
 
 #: bookwyrm/templates/guided_tour/user_groups.html:11
 #: bookwyrm/templates/guided_tour/user_profile.html:55
@@ -2463,33 +2485,45 @@ msgstr ""
 msgid "Groups"
 msgstr "Grupuri"
 
+#: bookwyrm/templates/guided_tour/user_groups.html:31
+msgid "Let's create a new group!"
+msgstr "Să creăm un grup!"
+
+#: bookwyrm/templates/guided_tour/user_groups.html:31
+msgid "Click the <strong>Create group</strong> button, then <strong>Next</strong> to continue the tour"
+msgstr "Clic pe butonul <strong>Creați grup</strong>, apoi <strong>Următorul</strong> pentru a continua turul"
+
 #: bookwyrm/templates/guided_tour/user_groups.html:55
 msgid "Give your group a name and describe what it is about. You can make user groups for any purpose - a reading group, a bunch of friends, whatever!"
-msgstr ""
+msgstr "Dați grupului dvs. un nume și o descriere despre ceea ce este. Puteți face un grup de utilizatori pentru orice scop: un grup de lectură, un grup de prieteni, orice!"
 
 #: bookwyrm/templates/guided_tour/user_groups.html:56
 msgid "Creating a group"
-msgstr ""
+msgstr "Se creează un grup"
 
 #: bookwyrm/templates/guided_tour/user_groups.html:78
 msgid "Groups have privacy settings just like posts and lists, except that group privacy cannot be <strong>Followers</strong>."
-msgstr ""
+msgstr "Grupurile au setări de confidențialitate ca publicațiile sau listele, exceptând că nu poate fi ales nivelul <strong>Urmăritori</strong>."
 
 #: bookwyrm/templates/guided_tour/user_groups.html:79
 msgid "Group visibility"
-msgstr ""
+msgstr "Vizibilitatea grupului"
 
 #: bookwyrm/templates/guided_tour/user_groups.html:102
-msgid "Once you\\"
-msgstr ""
+msgid "Once you're happy with how everything is set up, click the <strong>Save</strong> button to create your new group."
+msgstr "Odată ce sunteți mulțumit cu configurările, clic pe butonul <strong>Salvați</strong> pentru a crea noul grup al dvs.."
+
+#: bookwyrm/templates/guided_tour/user_groups.html:102
+msgid "Create and save a group to continue the tour."
+msgstr "Creați și salvați un grup pentru a continua turul."
 
 #: bookwyrm/templates/guided_tour/user_groups.html:103
 msgid "Save your group"
-msgstr ""
+msgstr "Salvați-vă grupul"
 
 #: bookwyrm/templates/guided_tour/user_profile.html:10
 msgid "This is your user profile. All your latest activities will be listed here. Other Bookwyrm users can see parts of this page too - what they can see depends on your privacy settings."
-msgstr ""
+msgstr "Acesta este profilul dvs. de utilizator. Cele mai recente activități ale dvs. vor fi listate aici. Alți utilizatori BookWyrm pot vedea părți din această pagină de asemenea - ceea ce văd depinde de setările dvs. de confidențialitate."
 
 #: bookwyrm/templates/guided_tour/user_profile.html:11
 #: bookwyrm/templates/user/layout.html:19 bookwyrm/templates/user/user.html:10
@@ -2497,8 +2531,8 @@ msgid "User Profile"
 msgstr "Profilul utilizatorului"
 
 #: bookwyrm/templates/guided_tour/user_profile.html:31
-msgid "This tab shows everything you have read towards your annual reading goal, or allows you to set one. You don\\"
-msgstr ""
+msgid "This tab shows everything you have read towards your annual reading goal, or allows you to set one. You don't have to set a reading goal if that's not your thing!"
+msgstr "Această fereastră arată tot ce ați citit pentru a vă atinge obiectivul dvs. anual de lectură sau vă permite să stabiliți unul. Nu trebuie să vă fixați un obiectiv de lectură dacă nu este genul vostru!"
 
 #: bookwyrm/templates/guided_tour/user_profile.html:32
 #: bookwyrm/templates/user/layout.html:73
@@ -2507,23 +2541,27 @@ msgstr "Obiectiv de lectură"
 
 #: bookwyrm/templates/guided_tour/user_profile.html:54
 msgid "Here you can see your groups, or create a new one. A group brings together Bookwyrm users and allows them to curate lists together."
-msgstr ""
+msgstr "Aici puteți vedea grupurile dvs. sau crea unul nou. Un grup aduce împreună utilizatori BookWyrm și le permite să trateze liste împreună."
 
 #: bookwyrm/templates/guided_tour/user_profile.html:77
 msgid "You can see your lists, or create a new one, here. A list is a collection of books that have something in common."
-msgstr ""
+msgstr "Aici puteți vedea listele dvs. sau crea una nouă. O listă este o colecție de cărți care au ceva în comun."
 
 #: bookwyrm/templates/guided_tour/user_profile.html:100
-msgid "The Books tab shows your book shelves. We\\"
-msgstr ""
+msgid "The Books tab shows your book shelves. We'll explore this later in the tour."
+msgstr "Tab-ul Cărți arată rafturile cărților dvs.. Vom explora asta mai târziu în tur."
 
 #: bookwyrm/templates/guided_tour/user_profile.html:123
-msgid "Now you understand the basics of your profile page, let\\s add a book to your shelves.<p class=\\"
-msgstr ""
+msgid "Now you understand the basics of your profile page, let's add a book to your shelves."
+msgstr "Acum înțelegeți bazele paginii profilului dvs.. Să adăugăm o carte pe rafturile dvs.."
+
+#: bookwyrm/templates/guided_tour/user_profile.html:123
+msgid "Search for a title or author to continue the tour."
+msgstr "Căutați un titlu sau un autor pentru a continua turul."
 
 #: bookwyrm/templates/guided_tour/user_profile.html:124
 msgid "Find a book"
-msgstr ""
+msgstr "Căutați o carte"
 
 #: bookwyrm/templates/import/import.html:5
 #: bookwyrm/templates/import/import.html:9
@@ -2828,7 +2866,7 @@ msgstr "Confirmați parola:"
 #: bookwyrm/templates/landing/password_reset_request.html:14
 #, python-format
 msgid "A password reset link will be sent to <strong>%(email)s</strong> if there is an account using that email address."
-msgstr ""
+msgstr "O legătură de resetare a parolei va fi trimis la <strong>%(email)s</strong> dacă există un cont ce folosește această adresă de email."
 
 #: bookwyrm/templates/landing/password_reset_request.html:20
 msgid "A link to reset your password will be sent to your email address"
@@ -3139,37 +3177,37 @@ msgstr "Listele salvate"
 #: bookwyrm/templates/notifications/items/accept.html:18
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> accepted your invitation to join group \"<a href=\"%(group_path)s\">%(group_name)s</a>\""
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> a accepta invitați dvs. pentru a se alătura grupului „<a href=\"%(group_path)s\">%(group_name)s</a>”"
 
 #: bookwyrm/templates/notifications/items/accept.html:26
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and <a href=\"%(second_user_link)s\">%(second_user)s</a> accepted your invitation to join group \"<a href=\"%(group_path)s\">%(group_name)s</a>\""
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> și <a href=\"%(second_user_link)s\">%(second_user)s</a> au acceptat invitația dvs. pentru a se alătura grupului „<a href=\"%(group_path)s\">%(group_name)s</a>”"
 
 #: bookwyrm/templates/notifications/items/accept.html:36
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and %(other_user_display_count)s others accepted your invitation to join group \"<a href=\"%(group_path)s\">%(group_name)s</a>\""
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> și alți %(other_user_display_count)s au acceptat invitația dvs. pentru a se alătura grupului „<a href=\"%(group_path)s\">%(group_name)s</a>”"
 
 #: bookwyrm/templates/notifications/items/add.html:33
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> added <em><a href=\"%(book_path)s\">%(book_title)s</a></em> to your list \"<a href=\"%(list_path)s\">%(list_name)s</a>\""
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> a adăugat <em><a href=\"%(book_path)s\">%(book_title)s</a></em> pe lista dvs. „<a href=\"%(list_path)s\">%(list_name)s</a>”"
 
 #: bookwyrm/templates/notifications/items/add.html:39
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> suggested adding <em><a href=\"%(book_path)s\">%(book_title)s</a></em> to your list \"<a href=\"%(list_curate_path)s\">%(list_name)s</a>\""
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> a sugerat adăugarea <em><a href=\"%(book_path)s\">%(book_title)s</a></em> la lista dvs. „<a href=\"%(list_curate_path)s\">%(list_name)s</a>”"
 
 #: bookwyrm/templates/notifications/items/add.html:47
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> added <em><a href=\"%(book_path)s\">%(book_title)s</a></em> and <em><a href=\"%(second_book_path)s\">%(second_book_title)s</a></em> to your list \"<a href=\"%(list_path)s\">%(list_name)s</a>\""
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> a adăugat <em><a href=\"%(book_path)s\">%(book_title)s</a></em> și <em><a href=\"%(second_book_path)s\">%(second_book_title)s</a></em> la lista dvs. „<a href=\"%(list_path)s\">%(list_name)s</a>”"
 
 #: bookwyrm/templates/notifications/items/add.html:54
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> suggested adding <em><a href=\"%(book_path)s\">%(book_title)s</a></em> and <em><a href=\"%(second_book_path)s\">%(second_book_title)s</a></em> to your list \"<a href=\"%(list_curate_path)s\">%(list_name)s</a>\""
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> a sugerat adăugarea <em><a href=\"%(book_path)s\">%(book_title)s</a></em> și <em><a href=\"%(second_book_path)s\">%(second_book_title)s</a></em> la lista dvs. „<a href=\"%(list_curate_path)s\">%(list_name)s</a>”"
 
 #: bookwyrm/templates/notifications/items/add.html:66
 #, python-format
@@ -3177,7 +3215,7 @@ msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> added <em><a href=
 msgid_plural "<a href=\"%(related_user_link)s\">%(related_user)s</a> added <em><a href=\"%(book_path)s\">%(book_title)s</a></em>, <em><a href=\"%(second_book_path)s\">%(second_book_title)s</a></em>, and %(display_count)s other books to your list \"<a href=\"%(list_path)s\">%(list_name)s</a>\""
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
+msgstr[2] "<a href=\"%(related_user_link)s\">%(related_user)s</a> a adăugat <em><a href=\"%(book_path)s\">%(book_title)s</a></em>, <em><a href=\"%(second_book_path)s\">%(second_book_title)s</a></em> și alte %(display_count)s cărți la lista dvs. „<a href=\"%(list_path)s\">%(list_name)s</a>”"
 
 #: bookwyrm/templates/notifications/items/add.html:82
 #, python-format
@@ -3185,147 +3223,147 @@ msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> suggested adding <
 msgid_plural "<a href=\"%(related_user_link)s\">%(related_user)s</a> suggested adding <em><a href=\"%(book_path)s\">%(book_title)s</a></em>, <em><a href=\"%(second_book_path)s\">%(second_book_title)s</a></em>, and %(display_count)s other books to your list \"<a href=\"%(list_curate_path)s\">%(list_name)s</a>\""
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
+msgstr[2] "<a href=\"%(related_user_link)s\">%(related_user)s</a> a sugerat adăugarea <em><a href=\"%(book_path)s\">%(book_title)s</a></em>, <em><a href=\"%(second_book_path)s\">%(second_book_title)s</a></em> și a altor %(display_count)s cărți la lista dvs. „<a href=\"%(list_curate_path)s\">%(list_name)s</a>”"
 
 #: bookwyrm/templates/notifications/items/boost.html:21
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> boosted your <a href=\"%(related_path)s\">review of <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> a distribuit <a href=\"%(related_path)s\">recenzia dvs. despre <em>%(book_title)s</em></a>"
 
 #: bookwyrm/templates/notifications/items/boost.html:27
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and <a href=\"%(second_user_link)s\">%(second_user)s</a> boosted your <a href=\"%(related_path)s\">review of <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> și <a href=\"%(second_user_link)s\">%(second_user)s</a> au distribuit <a href=\"%(related_path)s\">recenzia dvs. despre <em>%(book_title)s</em></a>"
 
 #: bookwyrm/templates/notifications/items/boost.html:36
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and %(other_user_display_count)s others boosted your <a href=\"%(related_path)s\">review of <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> și alți %(other_user_display_count)s au distribuit <a href=\"%(related_path)s\">recenzia dvs. despre <em>%(book_title)s</em></a>"
 
 #: bookwyrm/templates/notifications/items/boost.html:44
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> boosted your <a href=\"%(related_path)s\">comment on <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> a distribuit <a href=\"%(related_path)s\">comentariul dvs. despre <em>%(book_title)s</em></a>"
 
 #: bookwyrm/templates/notifications/items/boost.html:50
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and <a href=\"%(second_user_link)s\">%(second_user)s</a> boosted your <a href=\"%(related_path)s\">comment on <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> și <a href=\"%(second_user_link)s\">%(second_user)s</a> au distribuit <a href=\"%(related_path)s\">comentariul dvs. despre <em>%(book_title)s</em></a>"
 
 #: bookwyrm/templates/notifications/items/boost.html:59
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and %(other_user_display_count)s others boosted your <a href=\"%(related_path)s\">comment on <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> și alți %(other_user_display_count)s au distribuit <a href=\"%(related_path)s\">comentariul dvs. despre <em>%(book_title)s</em></a>"
 
 #: bookwyrm/templates/notifications/items/boost.html:67
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> boosted your <a href=\"%(related_path)s\">quote from <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> a distribuit <a href=\"%(related_path)s\">citatul dvs. din <em>%(book_title)s</em></a>"
 
 #: bookwyrm/templates/notifications/items/boost.html:73
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and <a href=\"%(second_user_link)s\">%(second_user)s</a> boosted your <a href=\"%(related_path)s\">quote from <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> și <a href=\"%(second_user_link)s\">%(second_user)s</a> au distribuit <a href=\"%(related_path)s\">citatul dvs. din <em>%(book_title)s</em></a>"
 
 #: bookwyrm/templates/notifications/items/boost.html:82
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and %(other_user_display_count)s others boosted your <a href=\"%(related_path)s\">quote from <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> și alți %(other_user_display_count)s au distribuit <a href=\"%(related_path)s\">citatul dvs. din <em>%(book_title)s</em></a>"
 
 #: bookwyrm/templates/notifications/items/boost.html:90
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> boosted your <a href=\"%(related_path)s\">status</a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> a distribuit <a href=\"%(related_path)s\">starea dvs.</a>"
 
 #: bookwyrm/templates/notifications/items/boost.html:96
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and <a href=\"%(second_user_link)s\">%(second_user)s</a> boosted your <a href=\"%(related_path)s\">status</a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> și <a href=\"%(second_user_link)s\">%(second_user)s</a> au distribuit <a href=\"%(related_path)s\">starea dvs.</a>"
 
 #: bookwyrm/templates/notifications/items/boost.html:105
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and %(other_user_display_count)s others boosted your <a href=\"%(related_path)s\">status</a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> și alți %(other_user_display_count)s au distribuit <a href=\"%(related_path)s\">starea dvs.</a>"
 
 #: bookwyrm/templates/notifications/items/fav.html:21
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> liked your <a href=\"%(related_path)s\">review of <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> i-a plăcut <a href=\"%(related_path)s\">recenzia dvs. despre <em>%(book_title)s</em></a>"
 
 #: bookwyrm/templates/notifications/items/fav.html:27
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and <a href=\"%(second_user_link)s\">%(second_user)s</a> liked your <a href=\"%(related_path)s\">review of <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> și <a href=\"%(second_user_link)s\">%(second_user)s</a> le-a plăcut <a href=\"%(related_path)s\">recenzia dvs. despre <em>%(book_title)s</em></a>"
 
 #: bookwyrm/templates/notifications/items/fav.html:36
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and %(other_user_display_count)s others liked your <a href=\"%(related_path)s\">review of <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> și altor %(other_user_display_count)s le-a plăcut <a href=\"%(related_path)s\">recenzia dvs. despre <em>%(book_title)s</em></a>"
 
 #: bookwyrm/templates/notifications/items/fav.html:44
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> liked your <a href=\"%(related_path)s\">comment on <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> i-a plăcut <a href=\"%(related_path)s\">comentariul dvs. despre <em>%(book_title)s</em></a>"
 
 #: bookwyrm/templates/notifications/items/fav.html:50
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and <a href=\"%(second_user_link)s\">%(second_user)s</a> liked your <a href=\"%(related_path)s\">comment on <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> și <a href=\"%(second_user_link)s\">%(second_user)s</a> le-a plăcut <a href=\"%(related_path)s\">comentariul dvs. despre <em>%(book_title)s</em></a>"
 
 #: bookwyrm/templates/notifications/items/fav.html:59
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and %(other_user_display_count)s others liked your <a href=\"%(related_path)s\">comment on <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> și altor %(other_user_display_count)s le-a plăcut <a href=\"%(related_path)s\">comentariul dvs. despre <em>%(book_title)s</em></a>"
 
 #: bookwyrm/templates/notifications/items/fav.html:67
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> liked your <a href=\"%(related_path)s\">quote from <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> i-a plăcut <a href=\"%(related_path)s\">citatul dvs. din <em>%(book_title)s</em></a>"
 
 #: bookwyrm/templates/notifications/items/fav.html:73
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and <a href=\"%(second_user_link)s\">%(second_user)s</a> liked your <a href=\"%(related_path)s\">quote from <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> și <a href=\"%(second_user_link)s\">%(second_user)s</a> le-a plăcut <a href=\"%(related_path)s\">citatul dvs. din <em>%(book_title)s</em></a>"
 
 #: bookwyrm/templates/notifications/items/fav.html:82
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and %(other_user_display_count)s others liked your <a href=\"%(related_path)s\">quote from <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> și altor %(other_user_display_count)s le-a plăcut <a href=\"%(related_path)s\">citatul dvs. din <em>%(book_title)s</em></a>"
 
 #: bookwyrm/templates/notifications/items/fav.html:90
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> liked your <a href=\"%(related_path)s\">status</a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> i-a plăcut <a href=\"%(related_path)s\">starea</a>"
 
 #: bookwyrm/templates/notifications/items/fav.html:96
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and <a href=\"%(second_user_link)s\">%(second_user)s</a> liked your <a href=\"%(related_path)s\">status</a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> și <a href=\"%(second_user_link)s\">%(second_user)s</a> le-au plăcut <a href=\"%(related_path)s\">starea dvs.</a>"
 
 #: bookwyrm/templates/notifications/items/fav.html:105
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and %(other_user_display_count)s others liked your <a href=\"%(related_path)s\">status</a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> și altor %(other_user_display_count)s le-a plăcut <a href=\"%(related_path)s\">starea dvs.</a>"
 
 #: bookwyrm/templates/notifications/items/follow.html:16
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> followed you"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> vă urmărește"
 
 #: bookwyrm/templates/notifications/items/follow.html:20
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and <a href=\"%(second_user_link)s\">%(second_user)s</a> followed you"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> și <a href=\"%(second_user_link)s\">%(second_user)s</a> vă urmăresc"
 
 #: bookwyrm/templates/notifications/items/follow.html:25
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and %(other_user_display_count)s others followed you"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> și alți %(other_user_display_count)s vă urmăresc"
 
 #: bookwyrm/templates/notifications/items/follow_request.html:15
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> sent you a follow request"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> v-a trimis o cerere de urmărire"
 
 #: bookwyrm/templates/notifications/items/import.html:14
 #, python-format
@@ -3335,7 +3373,7 @@ msgstr "<a href=\"%(url)s\">importul</a> dvs. s-a terminat."
 #: bookwyrm/templates/notifications/items/invite.html:16
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> invited you to join the group \"<a href=\"%(group_path)s\">%(group_name)s</a>\""
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> v-a invitat să vă alăturați grupului „<a href=\"%(group_path)s\">%(group_name)s</a>”"
 
 #: bookwyrm/templates/notifications/items/join.html:16
 #, python-format
@@ -3345,37 +3383,37 @@ msgstr "s-a alăturat grupului dvs „<a href=\"%(group_path)s\">%(group_name)s<
 #: bookwyrm/templates/notifications/items/leave.html:18
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> has left your group \"<a href=\"%(group_path)s\">%(group_name)s</a>\""
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> a părăsit grupul dvs. „<a href=\"%(group_path)s\">%(group_name)s</a>”"
 
 #: bookwyrm/templates/notifications/items/leave.html:26
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and <a href=\"%(second_user_link)s\">%(second_user)s</a> have left your group \"<a href=\"%(group_path)s\">%(group_name)s</a>\""
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> și <a href=\"%(second_user_link)s\">%(second_user)s</a> au părăsit grupul dvs. „<a href=\"%(group_path)s\">%(group_name)s</a>”"
 
 #: bookwyrm/templates/notifications/items/leave.html:36
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and %(other_user_display_count)s others have left your group \"<a href=\"%(group_path)s\">%(group_name)s</a>\""
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> și alți %(other_user_display_count)s au părăsit grupul dvs. „<a href=\"%(group_path)s\">%(group_name)s</a>”"
 
 #: bookwyrm/templates/notifications/items/mention.html:20
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> mentioned you in a <a href=\"%(related_path)s\">review of <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> v-a menționat într-o <a href=\"%(related_path)s\">recenzie a <em>%(book_title)s</em></a>"
 
 #: bookwyrm/templates/notifications/items/mention.html:26
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> mentioned you in a <a href=\"%(related_path)s\">comment on <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> v-a menționat într-un <a href=\"%(related_path)s\">comentariu despre <em>%(book_title)s</em></a>"
 
 #: bookwyrm/templates/notifications/items/mention.html:32
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> mentioned you in a <a href=\"%(related_path)s\">quote from <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> v-a menționat într-un <a href=\"%(related_path)s\">citat despre <em>%(book_title)s</em></a>"
 
 #: bookwyrm/templates/notifications/items/mention.html:38
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> mentioned you in a <a href=\"%(related_path)s\">status</a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> v-a menționat într-o <a href=\"%(related_path)s\">stare</a>"
 
 #: bookwyrm/templates/notifications/items/remove.html:17
 #, python-format
@@ -3390,22 +3428,22 @@ msgstr "Ați fost înlăturat de la grupul „<a href=\"%(group_path)s\">%(group
 #: bookwyrm/templates/notifications/items/reply.html:21
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> <a href=\"%(related_path)s\">replied</a> to your <a href=\"%(parent_path)s\">review of <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> <a href=\"%(related_path)s\">a răspuns</a> la <a href=\"%(parent_path)s\">recenzia dvs. a <em>%(book_title)s</em></a>"
 
 #: bookwyrm/templates/notifications/items/reply.html:27
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> <a href=\"%(related_path)s\">replied</a> to your <a href=\"%(parent_path)s\">comment on <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> <a href=\"%(related_path)s\">a răspuns</a> la <a href=\"%(parent_path)s\">comentariul dvs. despre <em>%(book_title)s</em></a>"
 
 #: bookwyrm/templates/notifications/items/reply.html:33
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> <a href=\"%(related_path)s\">replied</a> to your <a href=\"%(parent_path)s\">quote from <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> <a href=\"%(related_path)s\">a răspuns</a> la <a href=\"%(parent_path)s\">citatul dvs. din <em>%(book_title)s</em></a>"
 
 #: bookwyrm/templates/notifications/items/reply.html:39
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> <a href=\"%(related_path)s\">replied</a> to your <a href=\"%(parent_path)s\">status</a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> <a href=\"%(related_path)s\">a răspuns</a> la <a href=\"%(parent_path)s\">starea dvs.</a>"
 
 #: bookwyrm/templates/notifications/items/report.html:15
 #, python-format
@@ -3413,7 +3451,7 @@ msgid "A new <a href=\"%(path)s\">report</a> needs moderation"
 msgid_plural "%(display_count)s new <a href=\"%(path)s\">reports</a> need moderation"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
+msgstr[2] "%(display_count)s noi <a href=\"%(path)s\">rapoarte</a> au nevoie de moderare"
 
 #: bookwyrm/templates/notifications/items/status_preview.html:4
 #: bookwyrm/templates/snippets/status/content_status.html:73
@@ -3584,11 +3622,11 @@ msgstr "Schimbați parola"
 
 #: bookwyrm/templates/preferences/change_password.html:15
 msgid "Successfully changed password"
-msgstr ""
+msgstr "Parolă schimbată cu succes"
 
 #: bookwyrm/templates/preferences/change_password.html:22
 msgid "Current password:"
-msgstr ""
+msgstr "Parola curentă:"
 
 #: bookwyrm/templates/preferences/change_password.html:28
 msgid "New password:"
@@ -3684,7 +3722,7 @@ msgstr "Exportul dvs. va include toate cărțile de pe etajerele dvs., cărți p
 
 #: bookwyrm/templates/preferences/export.html:20
 msgid "Download file"
-msgstr ""
+msgstr "Descărcați fișierul"
 
 #: bookwyrm/templates/preferences/layout.html:11
 msgid "Account"
@@ -3715,7 +3753,7 @@ msgstr "Începeți „%(book_title)s”"
 #: bookwyrm/templates/reading_progress/stop.html:5
 #, python-format
 msgid "Stop Reading \"%(book_title)s\""
-msgstr ""
+msgstr "Opriți lectura „%(book_title)s”"
 
 #: bookwyrm/templates/reading_progress/want.html:5
 #, python-format
@@ -3766,7 +3804,7 @@ msgstr "terminat"
 
 #: bookwyrm/templates/readthrough/readthrough_list.html:16
 msgid "stopped"
-msgstr ""
+msgstr "oprită"
 
 #: bookwyrm/templates/readthrough/readthrough_list.html:27
 msgid "Show all updates"
@@ -3994,11 +4032,11 @@ msgstr "Reguli de auto-moderare"
 
 #: bookwyrm/templates/settings/automod/rules.html:18
 msgid "Auto-moderation rules will create reports for any local user or status with fields matching the provided string."
-msgstr "Regulile de auto-moderare vor crea raporturi pentru orice utilizator local sau statut ale cărui câmpuri se potrivesc cu șirul de caractere furnizat."
+msgstr "Regulile de auto-moderare vor crea raporturi pentru orice utilizator local sau stare ale cărui câmpuri se potrivesc cu șirul de caractere furnizat."
 
 #: bookwyrm/templates/settings/automod/rules.html:19
 msgid "Users or statuses that have already been reported (regardless of whether the report was resolved) will not be flagged."
-msgstr "Utilizatorii sau statuturile care au fost deja raportate (indiferent dacă raportul a fost rezolvat sau nu) nu vor fi marcați."
+msgstr "Utilizatorii sau stările care au fost deja raportate (indiferent dacă raportul a fost rezolvat sau nu) nu vor fi marcați."
 
 #: bookwyrm/templates/settings/automod/rules.html:26
 msgid "Schedule:"
@@ -4054,7 +4092,7 @@ msgstr "Semnalați utilizatori"
 #: bookwyrm/templates/settings/automod/rules.html:133
 #: bookwyrm/templates/settings/automod/rules.html:166
 msgid "Flag statuses"
-msgstr "Semnalați statutele"
+msgstr "Semnalați stările"
 
 #: bookwyrm/templates/settings/automod/rules.html:140
 msgid "Add rule"
@@ -4148,11 +4186,11 @@ msgstr[2] "%(display_count)s domenii care necesită revizii"
 #: bookwyrm/templates/settings/dashboard/warnings/email_config.html:8
 #, python-format
 msgid "Your outgoing email address, <code>%(email_sender)s</code>, may be misconfigured."
-msgstr ""
+msgstr "Este posibil ca adresa dvs. de email de ieșire <code>%(email_sender)s</code> să fie configurată greșit."
 
 #: bookwyrm/templates/settings/dashboard/warnings/email_config.html:11
 msgid "Check the <code>EMAIL_SENDER_NAME</code> and <code>EMAIL_SENDER_DOMAIN</code> in your <code>.env</code> file."
-msgstr ""
+msgstr "Verificați <code>EMAIL_SENDER_NAME</code> și <code>EMAIL_SENDER_DOMAIN</code> în fișierul dvs. <code>.env</code>."
 
 #: bookwyrm/templates/settings/dashboard/warnings/invites.html:9
 #, python-format
@@ -4164,11 +4202,11 @@ msgstr[2] "%(display_count)s cereri de invitare"
 
 #: bookwyrm/templates/settings/dashboard/warnings/missing_conduct.html:8
 msgid "Your instance is missing a code of conduct."
-msgstr ""
+msgstr "Instanței dvs. îi lipsește un cod de conduită."
 
 #: bookwyrm/templates/settings/dashboard/warnings/missing_privacy.html:8
 msgid "Your instance is missing a privacy policy."
-msgstr ""
+msgstr "Instanței dvs. îi lipsește o politică de confidențialitate."
 
 #: bookwyrm/templates/settings/dashboard/warnings/reports.html:9
 #, python-format
@@ -4252,7 +4290,7 @@ msgstr "Instanță:"
 #: bookwyrm/templates/settings/federation/instance.html:46
 #: bookwyrm/templates/settings/users/user_info.html:113
 msgid "Status:"
-msgstr "Statut:"
+msgstr "Stare:"
 
 #: bookwyrm/templates/settings/federation/edit_instance.html:66
 #: bookwyrm/templates/settings/federation/instance.html:40
@@ -4490,7 +4528,7 @@ msgstr "Adăugați adresa IP"
 
 #: bookwyrm/templates/settings/ip_blocklist/ip_address_form.html:11
 msgid "Use IP address blocks with caution, and consider using blocks only temporarily, as IP addresses are often shared or change hands. If you block your own IP, you will not be able to access this page."
-msgstr "Folosiți blocaj IP cu precauție și luați în calcul numai utilizarea temporală, întrucât adresele IP sunt deseori partajate sau schimbate. Dacă vă blocați propria adresa IP, nu veți mai putea accesa această pagină."
+msgstr "Folosiți blocajul IP cu precauție și luați în calcul numai utilizarea temporală, întrucât adresele IP sunt deseori împărtășite sau schimbate. Dacă vă blocați propria adresa IP, nu veți mai putea accesa această pagină."
 
 #: bookwyrm/templates/settings/ip_blocklist/ip_address_form.html:18
 msgid "IP Address:"
@@ -4628,7 +4666,7 @@ msgstr "Comentariu"
 #: bookwyrm/templates/settings/reports/report_header.html:6
 #, python-format
 msgid "Report #%(report_id)s: Status posted by @%(username)s"
-msgstr "Raport #%(report_id)s: statut postat de @%(username)s"
+msgstr "Raport #%(report_id)s: stare postată de @%(username)s"
 
 #: bookwyrm/templates/settings/reports/report_header.html:13
 #, python-format
@@ -4638,7 +4676,7 @@ msgstr "Raport #%(report_id)s: legătură adăugată de @%(username)s"
 #: bookwyrm/templates/settings/reports/report_header.html:17
 #, python-format
 msgid "Report #%(report_id)s: Link domain"
-msgstr ""
+msgstr "Raportul #%(report_id)s: domeniu de legătură"
 
 #: bookwyrm/templates/settings/reports/report_header.html:24
 #, python-format
@@ -4882,7 +4920,7 @@ msgstr "Utilizatori: <small>%(instance_name)s</small>"
 
 #: bookwyrm/templates/settings/users/user_admin.html:29
 msgid "Deleted users"
-msgstr ""
+msgstr "Utilizatori șterși"
 
 #: bookwyrm/templates/settings/users/user_admin.html:44
 #: bookwyrm/templates/settings/users/username_filter.html:5
@@ -4908,7 +4946,7 @@ msgstr "Activ"
 
 #: bookwyrm/templates/settings/users/user_admin.html:86
 msgid "Deleted"
-msgstr ""
+msgstr "Șters"
 
 #: bookwyrm/templates/settings/users/user_admin.html:92
 #: bookwyrm/templates/settings/users/user_info.html:32
@@ -5170,7 +5208,7 @@ msgstr "Terminată"
 #: bookwyrm/templates/shelf/shelf.html:154
 #: bookwyrm/templates/shelf/shelf.html:184
 msgid "Until"
-msgstr ""
+msgstr "Până la"
 
 #: bookwyrm/templates/shelf/shelf.html:210
 msgid "This shelf is empty."
@@ -5215,12 +5253,12 @@ msgstr "<a href=\"%(path)s\">%(title)s</a> de"
 #: bookwyrm/templates/snippets/boost_button.html:20
 #: bookwyrm/templates/snippets/boost_button.html:21
 msgid "Boost"
-msgstr "Partajați"
+msgstr "Distribuiți"
 
 #: bookwyrm/templates/snippets/boost_button.html:33
 #: bookwyrm/templates/snippets/boost_button.html:34
 msgid "Un-boost"
-msgstr "Nu mai partajați"
+msgstr "Nu mai distribuiți"
 
 #: bookwyrm/templates/snippets/create_status.html:36
 msgid "Quote"
@@ -5511,13 +5549,13 @@ msgstr "Începeți „<em>%(book_title)s</em>”"
 #: bookwyrm/templates/snippets/reading_modals/stop_reading_modal.html:6
 #, python-format
 msgid "Stop Reading \"<em>%(book_title)s</em>\""
-msgstr ""
+msgstr "Opriți lectura „<em>%(book_title)s</em>”"
 
 #: bookwyrm/templates/snippets/reading_modals/stop_reading_modal.html:32
 #: bookwyrm/templates/snippets/shelf_selector.html:54
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_options.html:21
 msgid "Stopped reading"
-msgstr ""
+msgstr "Lectură oprită"
 
 #: bookwyrm/templates/snippets/reading_modals/want_to_read_modal.html:6
 #, python-format
@@ -5593,7 +5631,7 @@ msgstr "Mai multe rafturi"
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_dropdown_options.html:31
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_options.html:48
 msgid "Stop reading"
-msgstr ""
+msgstr "Opriți lectura"
 
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_options.html:40
 msgid "Finish reading"
@@ -5689,12 +5727,12 @@ msgstr "a evaluat <a href=\"%(book_path)s\">%(book)s</a>"
 #: bookwyrm/templates/snippets/status/headers/stopped_reading.html:10
 #, python-format
 msgid "stopped reading <a href=\"%(book_path)s\">%(book)s</a> by <a href=\"%(author_path)s\">%(author_name)s</a>"
-msgstr ""
+msgstr "lectură oprită <a href=\"%(book_path)s\">%(book)s</a> de <a href=\"%(author_path)s\">%(author_name)s</a>"
 
 #: bookwyrm/templates/snippets/status/headers/stopped_reading.html:17
 #, python-format
 msgid "stopped reading <a href=\"%(book_path)s\">%(book)s</a>"
-msgstr ""
+msgstr "lectură oprită <a href=\"%(book_path)s\">%(book)s</a>"
 
 #: bookwyrm/templates/snippets/status/headers/to_read.html:10
 #, python-format
@@ -5714,7 +5752,7 @@ msgstr "Ștergeți stare"
 #: bookwyrm/templates/snippets/status/layout.html:57
 #: bookwyrm/templates/snippets/status/layout.html:58
 msgid "Boost status"
-msgstr "Partajați stare"
+msgstr "Starea distribuirii"
 
 #: bookwyrm/templates/snippets/status/layout.html:61
 #: bookwyrm/templates/snippets/status/layout.html:62
@@ -5723,7 +5761,7 @@ msgstr "Îmi place starea"
 
 #: bookwyrm/templates/snippets/status/status.html:10
 msgid "boosted"
-msgstr "partajat"
+msgstr "distribuit"
 
 #: bookwyrm/templates/snippets/status/status_options.html:7
 #: bookwyrm/templates/snippets/user_options.html:7

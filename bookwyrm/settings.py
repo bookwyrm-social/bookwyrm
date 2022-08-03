@@ -289,6 +289,7 @@ LANGUAGES = [
     ("fr-fr", _("Français (French)")),
     ("lt-lt", _("Lietuvių (Lithuanian)")),
     ("no-no", _("Norsk (Norwegian)")),
+    ("pl-pl", _("Polski (Polish)")),
     ("pt-br", _("Português do Brasil (Brazilian Portuguese)")),
     ("pt-pt", _("Português Europeu (European Portuguese)")),
     ("ro-ro", _("Română (Romanian)")),
