@@ -16,7 +16,7 @@
     </form>
     <div>
         {% for book in listed_books %}
-        <h1>{{book.title}}</h1>
+        <h1>{{book.title}}</h1> <a href={{book.local_path}}>View</a>
         {% endfor %}
     </div>
 </div>
