@@ -49,9 +49,8 @@ def api_book_search(request):
     min_confidence = request.GET.get("min_confidence", 0)
     # only return local book results via json so we don't cascade
     book_results = search(query, min_confidence=min_confidence)
-    return JsonResponse(
-        [format_search_result(r) for r in book_results], safe=False
-    )
+    return JsonResponse([format_search_result(r) for r in book_results], safe=False)
+
 
 def book_search(request):
     """the real business is elsewhere"""
@@ -59,9 +58,7 @@ def book_search(request):
     # check if query is isbn
     query = isbn_check(query)
     min_confidence = request.GET.get("min_confidence", 0)
-    search_remote = (
-        request.GET.get("remote", False) and request.user.is_authenticated
-    )
+    search_remote = request.GET.get("remote", False) and request.user.is_authenticated
 
     # try a local-only search
     local_results = search(query, min_confidence=min_confidence)
@@ -74,7 +71,7 @@ def book_search(request):
         "remote": search_remote,
         "page_range": paginated.get_elided_page_range(
             page.number, on_each_side=2, on_ends=1
-        )
+        ),
     }
     # if a logged in user requested remote results or got no local results, try remote
     if request.user.is_authenticated and (not local_results or search_remote):
