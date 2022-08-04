@@ -3,10 +3,9 @@
 
 {% block panel %}
 
-{% if results %}
-{% with results|first as local_results %}
+{% if results or remote_results %}
 <ul class="block">
-{% for result in local_results.results %}
+{% for result in results %}
     <li class="pd-4 mb-5 local-book-search-result" id="tour-local-book-search-result">
         <div class="columns is-mobile is-gapless mb-0">
             <div class="column is-cover">
@@ -29,16 +28,12 @@
     </li>
 {% endfor %}
 </ul>
-{% endwith %}
 
 <div class="block">
-{% for result_set in results|slice:"1:" %}
+{% for result_set in remote_results %}
     {% if result_set.results %}
     <section class="mb-5">
-        {% if not result_set.connector.local %}
         <details class="details-panel box" open>
-        {% endif %}
-            {% if not result_set.connector.local %}
             <summary class="is-flex is-align-items-center is-flex-wrap-wrap is-gap-2 remote-book-search-result" id="tour-remote-search-result">
                 <span class="mb-0 title is-5">
                     {% trans 'Results from' %}
@@ -47,7 +42,6 @@
 
                 <span class="details-close icon icon-x" aria-hidden="true"></span>
             </summary>
-            {% endif %}
 
         <div class="mt-5">
             <div class="is-flex is-flex-direction-row-reverse">
@@ -88,17 +82,15 @@
                 </ul>
             </div>
         </div>
-        {% if not result_set.connector.local %}
         </details>
-        {% endif %}
     </section>
     {% endif %}
     {% endfor %}
 </div>
-
-
 {% endif %}
+{% endblock %}
 
+{% block search_footer %}
 <p class="block">
     {% if request.user.is_authenticated %}
         {% if not remote %}
