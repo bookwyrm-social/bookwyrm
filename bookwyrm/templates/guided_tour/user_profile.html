@@ -1,0 +1,148 @@
+{% load i18n %}
+
+<script>
+const tour = new Shepherd.Tour({
+    exitOnEsc: true,
+});
+
+tour.addSteps([
+    {
+        text: "{% trans 'This is your user profile. All your latest activities will be listed here. Other Bookwyrm users can see parts of this page too - what they can see depends on your privacy settings.' %}",
+        title: "{% trans 'User Profile' %}",
+        buttons: [
+            {
+                action() {
+                    disableGuidedTour(csrf_token);
+                    return this.complete();
+                },
+                secondary: true,
+                text: "{% trans 'End Tour' %}",
+                classes: "is-danger",
+            },
+            {
+                action() {
+                    return this.next();
+                },
+                text: "{% trans 'Next' %}",
+            },
+        ],
+    },
+    {
+        text: `{% trans "This tab shows everything you have read towards your annual reading goal, or allows you to set one. You don't have to set a reading goal if that's not your thing!" %}`,
+        title: "{% trans 'Reading Goal' %}",
+        attachTo: {
+            element: "#tour-reading-goal",
+            on: "right",
+        },
+        buttons: [
+            {
+                action() {
+                    return this.back();
+                },
+                secondary: true,
+                text: "{% trans 'Back' %}",
+            },
+            {
+                action() {
+                    return this.next();
+                },
+                text: "{% trans 'Next' %}",
+            },
+        ],
+    },
+    {
+        text: "{% trans 'Here you can see your groups, or create a new one. A group brings together Bookwyrm users and allows them to curate lists together.' %}",
+        title: "{% trans 'Groups' %}",
+        attachTo: {
+            element: "#tour-groups-tab",
+            on: "right",
+        },
+        buttons: [
+            {
+                action() {
+                    return this.back();
+                },
+                secondary: true,
+                text: "{% trans 'Back' %}",
+            },
+            {
+                action() {
+                    return this.next();
+                },
+                text: "{% trans 'Next' %}",
+            },
+        ],
+    },
+    {
+        text: "{% trans 'You can see your lists, or create a new one, here. A list is a collection of books that have something in common.' %}",
+        title: "{% trans 'Lists' %}",
+        attachTo: {
+            element: "#tour-lists-tab",
+            on: "right",
+        },
+        buttons: [
+            {
+                action() {
+                    return this.back();
+                },
+                secondary: true,
+                text: "{% trans 'Back' %}",
+            },
+            {
+                action() {
+                    return this.next();
+                },
+                text: "{% trans 'Next' %}",
+            },
+        ],
+    },
+    {
+        text: `{% trans "The Books tab shows your book shelves. We'll explore this later in the tour." %}`,
+        title: "{% trans 'Books' %}",
+        attachTo: {
+            element: "#tour-shelves-tab",
+            on: "right",
+        },
+        buttons: [
+            {
+                action() {
+                    return this.back();
+                },
+                secondary: true,
+                text: "{% trans 'Back' %}",
+            },
+            {
+                action() {
+                    return this.next();
+                },
+                text: "{% trans 'Next' %}",
+            },
+        ],
+    },
+    {
+        text: `{% trans "Now you understand the basics of your profile page, let's add a book to your shelves." %}<p class="notification is-warning is-light mt-3">{% trans "Search for a title or author to continue the tour." %}</p>`,
+        title: "{% trans 'Find a book' %}",
+        attachTo: {
+            element: "#tour-search",
+            on: "right",
+        },
+        buttons: [
+            {
+                action() {
+                    return this.back();
+                },
+                secondary: true,
+                text: "{% trans 'Back' %}",
+            },
+            {
+                action() {
+                    return this.complete();
+                },
+                text: "{% trans 'Ok' %}",
+            },
+        ],
+    },
+])
+
+tour.start()
+</script>

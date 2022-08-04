@@ -65,6 +65,7 @@ class Feed(View):
                 "filters_applied": filters_applied,
                 "path": f"/{tab['key']}",
                 "annual_summary_year": get_annual_summary_year(),
+                "has_tour": True,
             },
         }
         return TemplateResponse(request, "feed/feed.html", data)

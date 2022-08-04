@@ -1,0 +1,150 @@
+{% load i18n %}
+{% load utilities %}
+{% load user_page_tags %}
+
+<script>
+
+    const tour = new Shepherd.Tour({
+        exitOnEsc: true,
+    });
+
+    tour.addSteps([
+        {
+            text: "{% trans 'This is the lists page where you can discover book lists created by any user. A List is a collection of books, similar to a shelf.' %}<br><br>{% trans 'Shelves are for organising books for yourself, whereas Lists are generally for sharing with others.' %}",
+            title: "{% trans 'Lists' %}",
+            buttons: [
+                {
+                    action() {
+                        disableGuidedTour(csrf_token);
+                        return this.complete();
+                    },
+                    secondary: true,
+                    text: "{% trans 'End Tour' %}",
+                    classes: "is-danger",
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: "{% trans 'Next' %}",
+                },
+            ],
+        },
+        {
+            text: `{% trans "Let's see how to create a new list." %}<p class="notification is-warning is-light mt-3">{% trans "Click the <strong>Create List</strong> button, then <strong>Next</strong> to continue the tour" %}</p>`,
+            title: "{% trans 'Creating a new list' %}",
+            attachTo: {
+                element: "#tour-create-list",
+                on: "left",
+            },
+            highlightClass: 'tour-element-highlight',
+            buttons: [
+                {
+                    action() {
+                        return this.back();
+                    },
+                    secondary: true,
+                    text: "{% trans 'Back' %}",
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: "{% trans 'Next' %}",
+                },
+            ],
+        },
+        {
+            text: "{% trans 'You must give your list a name and can optionally give it a description to help other people understand what your list is about.' %}",
+            title: "{% trans 'Creating a new list' %}",
+            attachTo: {
+                element: "#tour-list-name",
+                on: "top",
+            },
+            buttons: [
+                {
+                    action() {
+                        return this.back();
+                    },
+                    secondary: true,
+                    text: "{% trans 'Back' %}",
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: "{% trans 'Next' %}",
+                },
+            ],
+        },
+        {
+            text: "{% trans 'Choose who can see your list here. List privacy options work just like we saw when posting book reviews. This is a common pattern throughout Bookwyrm.' %}",
+            title: "{% trans 'List privacy' %}",
+            attachTo: {
+                element: "#tour-privacy-select",
+                on: "left",
+            },
+            scrollTo: true,
+            buttons: [
+                {
+                    action() {
+                        return this.back();
+                    },
+                    secondary: true,
+                    text: "{% trans 'Back' %}",
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: "{% trans 'Next' %}",
+                },
+            ],
+        },
+        {
+            text: "{% trans 'You can also decide how your list is to be curated - only by you, by anyone, or by a group.' %}",
+            title: "{% trans 'List curation' %}",
+            attachTo: {
+                element: "#tour-list-curation",
+                on: "left",
+            },
+            buttons: [
+                {
+                    action() {
+                        return this.back();
+                    },
+                    secondary: true,
+                    text: "{% trans 'Back' %}",
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: "{% trans 'Next' %}",
+                },
+            ],
+        },
+        {
+            text: "{% trans 'Next in our tour we will explore Groups!' %}",
+            title: "{% trans 'Next: Groups' %}",
+            buttons: [
+                {
+                    action() {
+                        return this.back();
+                    },
+                    secondary: true,
+                    text: "{% trans 'Back' %}",
+                },
+                {
+                    action() {
+                        this.complete();
+                        window.location = "{% url 'user-groups' user|username %}"
+                    },
+                    text: "{% trans 'Take me there' %}"
+                },
+            ]
+        }
+    ])
+
+    tour.start()
+</script>

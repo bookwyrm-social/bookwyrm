@@ -17,7 +17,10 @@ class Lists(View):
 
     def get(self, request):
         """display a book list"""
-        lists = ListsStream().get_list_stream(request.user)
+        if request.user.is_authenticated:
+            lists = ListsStream().get_list_stream(request.user)
+        else:
+            lists = models.List.objects.filter(privacy="public")
         paginated = Paginator(lists, 12)
         data = {
             "lists": paginated.get_page(request.GET.get("page")),
@@ -33,11 +36,13 @@ class Lists(View):
         form = forms.ListForm(request.POST)
         if not form.is_valid():
             return redirect("lists")
-        book_list = form.save()
+        book_list = form.save(commit=False)
+        book_list.raise_not_editable(request.user)
+
         # list should not have a group if it is not group curated
         if not book_list.curation == "group":
             book_list.group = None
-            book_list.save(broadcast=False)
+        book_list.save()
 
         return redirect(book_list.local_path)
 
