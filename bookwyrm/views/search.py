@@ -65,14 +65,16 @@ def book_search(request):
 
     # try a local-only search
     local_results = search(query, min_confidence=min_confidence)
-    paginated = Paginator(local_results, PAGE_LENGTH).get_page(
-        request.GET.get("page")
-    )
+    paginated = Paginator(local_results, PAGE_LENGTH)
+    page = paginated.get_page(request.GET.get("page"))
     data = {
         "query": query,
-        "results": paginated,
+        "results": page,
         "type": "book",
-        "remote": search_remote
+        "remote": search_remote,
+        "page_range": paginated.get_elided_page_range(
+            page.number, on_each_side=2, on_ends=1
+        )
     }
     # if a logged in user requested remote results or got no local results, try remote
     if request.user.is_authenticated and (not local_results or search_remote):
@@ -96,7 +98,7 @@ def user_search(request):
     if re.match(regex.FULL_USERNAME, query):
         handle_remote_webfinger(query)
 
-    data["results"] = (
+    results = (
         models.User.viewer_aware_objects(viewer)
         .annotate(
             similarity=Greatest(
@@ -109,6 +111,12 @@ def user_search(request):
         )
         .order_by("-similarity")
     )
+    paginated = Paginator(results, PAGE_LENGTH)
+    page = paginated.get_page(request.GET.get("page"))
+    data["results"] = page
+    data["page_range"] = paginated.get_elided_page_range(
+        page.number, on_each_side=2, on_ends=1
+    )
     return TemplateResponse(request, "search/user.html", data)
 
 
@@ -116,7 +124,7 @@ def list_search(request):
     """any relevent lists?"""
     query = request.GET.get("q")
     data = {"query": query, "type": "list"}
-    data["results"] = (
+    results = (
         models.List.privacy_filter(
             request.user,
             privacy_levels=["public", "followers"],
@@ -131,6 +139,12 @@ def list_search(request):
             similarity__gt=0.1,
         )
         .order_by("-similarity")
+    )
+    paginated = Paginator(results, PAGE_LENGTH)
+    page = paginated.get_page(request.GET.get("page"))
+    data["results"] = page
+    data["page_range"] = paginated.get_elided_page_range(
+        page.number, on_each_side=2, on_ends=1
     )
     return TemplateResponse(request, "search/list.html", data)
 
