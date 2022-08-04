@@ -23,8 +23,11 @@ trap showerr EXIT
 source .env
 trap - EXIT
 
-# show commands as they're executed
-set -x
+function clean {
+    docker-compose stop
+    docker-compose rm -f
+}
+
 function runweb {
     docker-compose run --rm web "$@"
 }
@@ -263,16 +266,28 @@ case "$CMD" in
         echo "Unrecognised command. Try:"
         echo "    setup"
         echo "    up [container]"
+        echo "    service_ports_web"
         echo "    initdb"
+        echo "    resetdb"
         echo "    makemigrations [migration]"
         echo "    migrate [migration]"
         echo "    bash"
         echo "    shell"
         echo "    dbshell"
         echo "    restart_celery"
+        echo "    pytest [path]"
         echo "    collectstatic"
-        echo "    compilemessages"
+        echo "    makemessages"
+        echo "    compilemessages [locale]"
+        echo "    update_locales"
         echo "    build"
+        echo "    clean"
+        echo "    black"
+        echo "    prettier"
+        echo "    stylelint"
+        echo "    formatters"
+        echo "    compilescss"
+        echo "    collectstatic_watch"
         echo "    populate_streams [--stream=<stream name>]"
         echo "    populate_lists_streams"
         echo "    populate_suggestions"
