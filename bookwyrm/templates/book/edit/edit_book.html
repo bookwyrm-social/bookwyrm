@@ -82,7 +82,7 @@
                                     Author of <em>{{ book_title }}</em>
                                 {% endblocktrans %}</a>
                             {% else %}
-                                <a href="{{ match.id }}" target="_blank" rel="nofollow noopener noreferrer">{% if alt_title %}{% blocktrans trimmed %{
+                                <a href="{{ match.id }}" target="_blank" rel="nofollow noopener noreferrer">{% if alt_title %}{% blocktrans trimmed %}
                                     Author of <em>{{ alt_title }}</em>
                                 {% endblocktrans %}{% else %}{% trans "Find more information at isni.org" %}{% endif %}</a>
                             {% endif %}
