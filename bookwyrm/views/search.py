@@ -52,7 +52,9 @@ def api_book_search(request):
     min_confidence = request.GET.get("min_confidence", 0)
     # only return local book results via json so we don't cascade
     book_results = search(query, min_confidence=min_confidence)
-    return JsonResponse([format_search_result(r) for r in book_results], safe=False)
+    return JsonResponse(
+        [format_search_result(r) for r in book_results[:10]], safe=False
+    )
 
 
 def book_search(request):
