@@ -27,6 +27,9 @@ class Search(View):
             return api_book_search(request)
 
         query = request.GET.get("q")
+        if not query:
+            return TemplateResponse(request, "search/book.html")
+
         search_type = request.GET.get("type")
         if query and not search_type:
             search_type = "user" if "@" in query else "book"
