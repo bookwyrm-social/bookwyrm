@@ -23,22 +23,14 @@ class Search(View):
 
     def get(self, request):
         """that search bar up top"""
-        query = request.GET.get("q")
-        # check if query is isbn
-        query = isbn_check(query)
-        min_confidence = request.GET.get("min_confidence", 0)
-        search_type = request.GET.get("type")
-        search_remote = (
-            request.GET.get("remote", False) and request.user.is_authenticated
-        )
-
         if is_api_request(request):
-            # only return local book results via json so we don't cascade
-            book_results = search(query, min_confidence=min_confidence)
-            return JsonResponse(
-                [format_search_result(r) for r in book_results], safe=False
-            )
+            return api_book_search(request)
 
+        query = request.GET.get("q")
+        if not query:
+            return TemplateResponse(request, "search/book.html")
+
+        search_type = request.GET.get("type")
         if query and not search_type:
             search_type = "user" if "@" in query else "book"
 
@@ -50,49 +42,65 @@ class Search(View):
         if not search_type in endpoints:
             search_type = "book"
 
-        data = {
-            "query": query or "",
-            "type": search_type,
-            "remote": search_remote,
-        }
-        if query:
-            results, search_remote = endpoints[search_type](
-                query, request.user, min_confidence, search_remote
-            )
-            if results:
-                paginated = Paginator(results, PAGE_LENGTH).get_page(
-                    request.GET.get("page")
-                )
-                data["results"] = paginated
-                data["remote"] = search_remote
-
-        return TemplateResponse(request, f"search/{search_type}.html", data)
+        return endpoints[search_type](request)
 
 
-def book_search(query, user, min_confidence, search_remote=False):
+def api_book_search(request):
+    """Return books via API response"""
+    query = request.GET.get("q")
+    query = isbn_check(query)
+    min_confidence = request.GET.get("min_confidence", 0)
+    # only return local book results via json so we don't cascade
+    book_results = search(query, min_confidence=min_confidence)
+    return JsonResponse(
+        [format_search_result(r) for r in book_results[:10]], safe=False
+    )
+
+
+def book_search(request):
     """the real business is elsewhere"""
+    query = request.GET.get("q")
+    # check if query is isbn
+    query = isbn_check(query)
+    min_confidence = request.GET.get("min_confidence", 0)
+    search_remote = request.GET.get("remote", False) and request.user.is_authenticated
+
     # try a local-only search
-    results = [{"results": search(query, min_confidence=min_confidence)}]
-    if not user.is_authenticated or (results[0]["results"] and not search_remote):
-        return results, False
+    local_results = search(query, min_confidence=min_confidence)
+    paginated = Paginator(local_results, PAGE_LENGTH)
+    page = paginated.get_page(request.GET.get("page"))
+    data = {
+        "query": query,
+        "results": page,
+        "type": "book",
+        "remote": search_remote,
+        "page_range": paginated.get_elided_page_range(
+            page.number, on_each_side=2, on_ends=1
+        ),
+    }
+    # if a logged in user requested remote results or got no local results, try remote
+    if request.user.is_authenticated and (not local_results or search_remote):
+        data["remote_results"] = connector_manager.search(
+            query, min_confidence=min_confidence
+        )
+    return TemplateResponse(request, "search/book.html", data)
 
-    # if there were no local results, or the request was for remote, search all sources
-    results += connector_manager.search(query, min_confidence=min_confidence)
-    return results, True
 
-
-def user_search(query, viewer, *_):
+def user_search(request):
     """cool kids members only user search"""
+    viewer = request.user
+    query = request.GET.get("q")
+    data = {"type": "user", "query": query}
     # logged out viewers can't search users
     if not viewer.is_authenticated:
-        return models.User.objects.none(), None
+        return TemplateResponse(request, "search/user.html", data)
 
     # use webfinger for mastodon style account@domain.com username to load the user if
     # they don't exist locally (handle_remote_webfinger will check the db)
     if re.match(regex.FULL_USERNAME, query):
         handle_remote_webfinger(query)
 
-    return (
+    results = (
         models.User.viewer_aware_objects(viewer)
         .annotate(
             similarity=Greatest(
@@ -104,14 +112,23 @@ def user_search(query, viewer, *_):
             similarity__gt=0.5,
         )
         .order_by("-similarity")
-    ), None
+    )
+    paginated = Paginator(results, PAGE_LENGTH)
+    page = paginated.get_page(request.GET.get("page"))
+    data["results"] = page
+    data["page_range"] = paginated.get_elided_page_range(
+        page.number, on_each_side=2, on_ends=1
+    )
+    return TemplateResponse(request, "search/user.html", data)
 
 
-def list_search(query, viewer, *_):
+def list_search(request):
     """any relevent lists?"""
-    return (
+    query = request.GET.get("q")
+    data = {"query": query, "type": "list"}
+    results = (
         models.List.privacy_filter(
-            viewer,
+            request.user,
             privacy_levels=["public", "followers"],
         )
         .annotate(
@@ -124,7 +141,14 @@ def list_search(query, viewer, *_):
             similarity__gt=0.1,
         )
         .order_by("-similarity")
-    ), None
+    )
+    paginated = Paginator(results, PAGE_LENGTH)
+    page = paginated.get_page(request.GET.get("page"))
+    data["results"] = page
+    data["page_range"] = paginated.get_elided_page_range(
+        page.number, on_each_side=2, on_ends=1
+    )
+    return TemplateResponse(request, "search/list.html", data)
 
 
 def isbn_check(query):
