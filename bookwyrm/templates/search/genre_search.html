@@ -12,11 +12,14 @@
                 <option value="{{genre.id}}">{{genre.genre_name}}</option>
             {% endfor %}
         </select>
-        <button class="btn btn-primary" type="submit">Create</button>
+        <button class="btn btn-primary" type="submit">Search</button>
     </form>
     <div>
         {% for book in listed_books %}
-        <h1>{{book.title}}</h1> <a href={{book.local_path}}>View</a>
+            <ul>
+                <li><a href={{book.local_path}}>{{book.title}}</a></li>
+            </ul>
+        
         {% endfor %}
     </div>
 </div>
