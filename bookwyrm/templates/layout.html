@@ -67,9 +67,27 @@
             </form>
             {% include "search/barcode_modal.html" with id="barcode-scanner-modal" %}
 
-            <button type="button" tabindex="0" class="navbar-burger pulldown-menu my-4" data-controls="main_nav" aria-expanded="false">
-                <i class="icon icon-dots-three-vertical" aria-hidden="true"></i>
-                <span class="is-sr-only">{% trans "Main navigation menu" %}</span>
+            <button
+                type="button"
+                tabindex="0"
+                class="navbar-burger pulldown-menu my-4 is-flex-touch is-align-items-center is-justify-content-center"
+                data-controls="main_nav"
+                aria-expanded="false"
+                aria-label="{% trans 'Main navigation menu' %}"
+            >
+                <i class="icon-dots-three-vertical" aria-hidden="true"></i>
+
+                {% with request.user.unread_notification_count as notification_count %}
+                <strong
+                    class="{% if not notification_count %}is-hidden {% elif request.user.has_unread_mentions %}is-danger {% else %}is-primary {% endif %} tag is-small px-1"
+                    data-poll-wrapper
+                >
+                    <span class="is-sr-only">{% trans "Notifications" %}</span>
+                    <strong data-poll="notifications" class="has-text-white">
+                        {{ notification_count }}
+                    </strong>
+                </strong>
+                {% endwith %}
             </button>
         </div>
 
