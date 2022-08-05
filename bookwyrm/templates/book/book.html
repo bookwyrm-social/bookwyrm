@@ -131,7 +131,7 @@
                 {% trans "Load data" as button_text %}
                 {% if book.openlibrary_key %}
                 <p>
-                    <a href="{{ book.openlibrary_link }}" target="_blank" rel="noopener noreferrer">
+                    <a href="{{ book.openlibrary_link }}" target="_blank" rel="nofollow noopener noreferrer">
                         {% trans "View on OpenLibrary" %}
                     </a>
                     {% if request.user.is_authenticated and perms.bookwyrm.edit_book %}
@@ -145,7 +145,7 @@
                 {% endif %}
                 {% if book.inventaire_id %}
                 <p>
-                    <a href="{{ book.inventaire_link }}" target="_blank" rel="noopener noreferrer">
+                    <a href="{{ book.inventaire_link }}" target="_blank" rel="nofollow noopener noreferrer">
                         {% trans "View on Inventaire" %}
                     </a>
 
