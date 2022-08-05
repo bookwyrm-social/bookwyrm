@@ -28,7 +28,6 @@ def validate_html(html):
     validator = HtmlValidator()
     # will raise exceptions
     validator.feed(str(html.content))
-    raise Exception()
 
 
 class HtmlValidator(HTMLParser):  # pylint: disable=abstract-method
