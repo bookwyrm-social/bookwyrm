@@ -17,7 +17,7 @@ from bookwyrm.tests.validate_html import validate_html
 class Views(TestCase):
     """tag views"""
 
-    def setUp(self):
+    def setUp(self):  # pylint: disable=invalid-name
         """we need basic test data and mocks"""
         self.factory = RequestFactory()
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
@@ -90,13 +90,29 @@ class Views(TestCase):
 
         self.assertIsInstance(response, TemplateResponse)
         validate_html(response.render())
-        connector_results = response.context_data["results"]
-        self.assertEqual(len(connector_results), 2)
-        self.assertEqual(connector_results[0]["results"][0].title, "Test Book")
-        self.assertEqual(connector_results[1]["results"][0].title, "Mock Book")
 
-        # don't search remote
+        local_results = response.context_data["results"]
+        self.assertEqual(local_results[0].title, "Test Book")
+
+        connector_results = response.context_data["remote_results"]
+        self.assertEqual(connector_results[0]["results"][0].title, "Mock Book")
+
+    def test_search_book_anonymous(self):
+        """Don't search remote for logged out user"""
+        view = views.Search.as_view()
+
+        connector = models.Connector.objects.create(
+            identifier="example.com",
+            connector_file="openlibrary",
+            base_url="https://example.com",
+            books_url="https://example.com/books",
+            covers_url="https://example.com/covers",
+            search_url="https://example.com/search?q=",
+        )
+        mock_result = SearchResult(title="Mock Book", connector=connector, key="hello")
+
         request = self.factory.get("", {"q": "Test Book", "remote": True})
+
         anonymous_user = AnonymousUser
         anonymous_user.is_authenticated = False
         request.user = anonymous_user
@@ -107,11 +123,15 @@ class Views(TestCase):
                     {"results": [mock_result], "connector": connector}
                 ]
                 response = view(request)
+
         self.assertIsInstance(response, TemplateResponse)
         validate_html(response.render())
-        connector_results = response.context_data["results"]
-        self.assertEqual(len(connector_results), 1)
-        self.assertEqual(connector_results[0]["results"][0].title, "Test Book")
+
+        local_results = response.context_data["results"]
+        self.assertEqual(local_results[0].title, "Test Book")
+
+        connector_results = response.context_data.get("remote_results")
+        self.assertIsNone(connector_results)
 
     def test_search_users(self):
         """searches remote connectors"""
