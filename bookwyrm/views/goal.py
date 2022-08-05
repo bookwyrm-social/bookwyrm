@@ -48,8 +48,6 @@ class Goal(View):
         year = int(year)
         user = get_user_from_username(request.user, username)
         goal = models.AnnualGoal.objects.filter(year=year, user=user).first()
-        if goal:
-            goal.raise_not_editable(request.user)
 
         form = forms.GoalForm(request.POST, instance=goal)
         if not form.is_valid():
@@ -59,7 +57,7 @@ class Goal(View):
                 "year": year,
             }
             return TemplateResponse(request, "user/goal.html", data)
-        goal = form.save()
+        goal = form.save(request)
 
         if request.POST.get("post-status"):
             # create status, if appropriate

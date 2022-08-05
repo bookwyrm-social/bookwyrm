@@ -24,3 +24,8 @@ class CustomForm(ModelForm):
                 input_type = "textarea"
                 visible.field.widget.attrs["rows"] = 5
             visible.field.widget.attrs["class"] = css_classes[input_type]
+
+    def save(self, request, *args, **kwargs):
+        """Save and check perms"""
+        self.instance.raise_not_editable(request.user)
+        return super().save(*args, **kwargs)
