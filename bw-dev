@@ -189,10 +189,6 @@ case "$CMD" in
             bookwyrm/static/css/bookwyrm.scss bookwyrm/static/css/bookwyrm/**/*.scss --fix \
             --config dev-tools/.stylelintrc.js
         ;;
-    compilescss)
-        runweb python manage.py compilescss
-        runweb python manage.py collectstatic --no-input
-        ;;
     collectstatic_watch)
         prod_error
         npm run --prefix dev-tools watch:static
@@ -286,7 +282,6 @@ case "$CMD" in
         echo "    prettier"
         echo "    stylelint"
         echo "    formatters"
-        echo "    compilescss"
         echo "    collectstatic_watch"
         echo "    populate_streams [--stream=<stream name>]"
         echo "    populate_lists_streams"
