@@ -7,13 +7,14 @@ from django.test import TestCase
 from django.test.client import RequestFactory
 
 from bookwyrm import models, views
+from bookwyrm.tests.validate_html import validate_html
 from bookwyrm.settings import DOMAIN
 
 
 class IsbnViews(TestCase):
     """tag views"""
 
-    def setUp(self):
+    def setUp(self):  # pylint: disable=invalid-name
         """we need basic test data and mocks"""
         self.factory = RequestFactory()
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
@@ -58,4 +59,4 @@ class IsbnViews(TestCase):
             is_api.return_value = False
             response = view(request, isbn="1234567890123")
         self.assertEqual(response.status_code, 200)
-        response.render()
+        validate_html(response.render())
