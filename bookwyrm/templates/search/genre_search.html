@@ -1,0 +1,27 @@
+{% extends 'layout.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Genres" %}{% endblock %}
+
+{% block content %}
+
+<div class="block">
+    <form action="" method="POST"> {% csrf_token %}
+        <select multiple="multiple"  name="genres" id="genres" size="5">
+            {% for genre in genre_tags %}
+                <option value="{{genre.id}}">{{genre.genre_name}}</option>
+            {% endfor %}
+        </select>
+        <button class="btn btn-primary" type="submit">Search</button>
+    </form>
+    <div>
+        {% for book in listed_books %}
+            <ul>
+                <li><a href={{book.local_path}}>{{book.title}}</a></li>
+            </ul>
+        
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

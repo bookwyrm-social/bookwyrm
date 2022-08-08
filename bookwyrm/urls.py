@@ -6,6 +6,7 @@ from django.views.generic.base import TemplateView
 
 from bookwyrm import settings, views
 from bookwyrm.utils import regex
+from bookwyrm.views.search_genre import SearchGenre
 
 USER_PATH = rf"^user/(?P<username>{regex.USERNAME})"
 LOCAL_USER_PATH = rf"^user/(?P<username>{regex.LOCALNAME})"
@@ -29,6 +30,7 @@ STREAMS = "|".join(s["key"] for s in settings.STREAMS)
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("genresearch/", SearchGenre.as_view(), name="genre-search"),
     path(
         "robots.txt",
         TemplateView.as_view(template_name="robots.txt", content_type="text/plain"),

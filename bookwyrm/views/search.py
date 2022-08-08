@@ -23,6 +23,7 @@ class Search(View):
 
     def get(self, request):
         """that search bar up top"""
+
         if is_api_request(request):
             return api_book_search(request)
 

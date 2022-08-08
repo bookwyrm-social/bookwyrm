@@ -7,10 +7,16 @@ admin.site.register(models.User)
 admin.site.register(models.FederatedServer)
 admin.site.register(models.Connector)
 admin.site.register(models.book.Genre)
-#admin.site.register(models.Book)
 
-class BookAdmin(admin.ModelAdmin):
-    model = models.Book
+
+class EditionAdmin(admin.ModelAdmin):
+    model = models.Edition
     filter_horizontal = ('genres',)
 
-admin.site.register(models.Book, BookAdmin)
+class WorksAdmin(admin.ModelAdmin):
+    model = models.Work
+    filter_horizontal = ('genres',)
+
+admin.site.register(models.Edition, EditionAdmin)
+admin.site.register(models.Work, WorksAdmin)
+
