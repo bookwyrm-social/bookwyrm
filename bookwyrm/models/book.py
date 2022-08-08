@@ -121,7 +121,9 @@ class Book(BookDataModel):
     series = fields.TextField(max_length=255, blank=True, null=True)
     series_number = fields.CharField(max_length=255, blank=True, null=True)
 
-    genres = models.ManyToManyField(Genre, blank=True, null=True)
+
+    genres = fields.ManyToManyField(Genre, blank=True)
+
 
     subjects = fields.ArrayField(
         models.CharField(max_length=255), blank=True, null=True, default=list

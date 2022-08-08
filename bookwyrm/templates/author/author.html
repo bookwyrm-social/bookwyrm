@@ -66,7 +66,7 @@
             <div class="box">
                 {% if author.wikipedia_link %}
                 <div>
-                    <a itemprop="sameAs" href="{{ author.wikipedia_link }}" rel="noopener noreferrer" target="_blank">
+                    <a itemprop="sameAs" href="{{ author.wikipedia_link }}" rel="nofollow noopener noreferrer" target="_blank">
                         {% trans "Wikipedia" %}
                     </a>
                 </div>
@@ -74,7 +74,7 @@
 
                 {% if author.isni %}
                 <div class="mt-1">
-                    <a itemprop="sameAs" href="{{ author.isni_link }}" rel="noopener noreferrer" target="_blank">
+                    <a itemprop="sameAs" href="{{ author.isni_link }}" rel="nofollow noopener noreferrer" target="_blank">
                         {% trans "View ISNI record" %}
                     </a>
                 </div>
@@ -83,7 +83,7 @@
                 {% trans "Load data" as button_text %}
                 {% if author.openlibrary_key %}
                 <div class="mt-1 is-flex">
-                    <a class="mr-3" itemprop="sameAs" href="{{ author.openlibrary_link }}" target="_blank" rel="noopener noreferrer">
+                    <a class="mr-3" itemprop="sameAs" href="{{ author.openlibrary_link }}" target="_blank" rel="nofollow noopener noreferrer">
                         {% trans "View on OpenLibrary" %}
                     </a>
                     {% if request.user.is_authenticated and perms.bookwyrm.edit_book %}
@@ -98,7 +98,7 @@
 
                 {% if author.inventaire_id %}
                 <div class="mt-1 is-flex">
-                    <a class="mr-3" itemprop="sameAs" href="{{ author.inventaire_link }}" target="_blank" rel="noopener noreferrer">
+                    <a class="mr-3" itemprop="sameAs" href="{{ author.inventaire_link }}" target="_blank" rel="nofollow noopener noreferrer">
                         {% trans "View on Inventaire" %}
                     </a>
 
@@ -114,7 +114,7 @@
 
                 {% if author.librarything_key %}
                 <div class="mt-1">
-                    <a itemprop="sameAs" href="https://www.librarything.com/author/{{ author.librarything_key }}" target="_blank" rel="noopener noreferrer">
+                    <a itemprop="sameAs" href="https://www.librarything.com/author/{{ author.librarything_key }}" target="_blank" rel="nofollow noopener noreferrer">
                         {% trans "View on LibraryThing" %}
                     </a>
                 </div>
@@ -122,7 +122,7 @@
 
                 {% if author.goodreads_key %}
                 <div>
-                    <a itemprop="sameAs" href="https://www.goodreads.com/author/show/{{ author.goodreads_key }}" target="_blank" rel="noopener noreferrer">
+                    <a itemprop="sameAs" href="https://www.goodreads.com/author/show/{{ author.goodreads_key }}" target="_blank" rel="nofollow noopener noreferrer">
                         {% trans "View on Goodreads" %}
                     </a>
                 </div>

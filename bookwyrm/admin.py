@@ -19,3 +19,4 @@ class WorksAdmin(admin.ModelAdmin):
 
 admin.site.register(models.Edition, EditionAdmin)
 admin.site.register(models.Work, WorksAdmin)
+

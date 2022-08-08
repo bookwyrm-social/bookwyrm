@@ -1,5 +1,6 @@
 {% extends 'layout.html' %}
 {% load i18n %}
+{% load humanize %}
 
 {% block title %}{% trans "Search" %}{% endblock %}
 
@@ -53,17 +54,24 @@
 </nav>
 
 <section class="block" id="search-results-block">
-    {% if not results %}
-    <p>
+    <p class="block">
+        {% if not results %}
         <em>{% blocktrans %}No results found for "{{ query }}"{% endblocktrans %}</em>
+        {% else %}
+        <em>{% blocktrans trimmed count counter=results.paginator.count with result_count=results.paginator.count|intcomma %}
+            {{ result_count }} result found
+            {% plural %}
+            {{ result_count }} results found
+        {% endblocktrans %}</em>
+        {% endif %}
     </p>
-    {% endif %}
     {% block panel %}
     {% endblock %}
 
-    <div>
+    <div class="block">
         {% include 'snippets/pagination.html' with page=results path=request.path %}
     </div>
+    {% block search_footer %}{% endblock %}
 </section>
 {% endif %}
 
