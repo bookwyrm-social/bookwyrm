@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-08-05 16:02+0000\n"
-"PO-Revision-Date: 2022-08-05 17:15\n"
+"PO-Revision-Date: 2022-08-09 07:58\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Polish\n"
 "Language: pl\n"
@@ -335,7 +335,7 @@ msgstr "Norsk (Norweski)"
 
 #: bookwyrm/settings.py:292
 msgid "Polski (Polish)"
-msgstr ""
+msgstr "Polski"
 
 #: bookwyrm/settings.py:293
 msgid "Português do Brasil (Brazilian Portuguese)"
@@ -4839,15 +4839,15 @@ msgstr "Dodatkowe informacje:"
 
 #: bookwyrm/templates/settings/site.html:139
 msgid "Allow registration"
-msgstr ""
+msgstr "Zezwól na rejestrację"
 
 #: bookwyrm/templates/settings/site.html:145
 msgid "Require users to confirm email address"
-msgstr ""
+msgstr "Wymagaj od użytkowników potwierdzenia adresu e-mail"
 
 #: bookwyrm/templates/settings/site.html:147
 msgid "(Recommended if registration is open)"
-msgstr ""
+msgstr "(Zalecane, gdy rejestracja jest otwarta)"
 
 #: bookwyrm/templates/settings/site.html:152
 msgid "Allow invite requests"
@@ -4883,7 +4883,7 @@ msgstr "Jak dodać motyw"
 
 #: bookwyrm/templates/settings/themes.html:29
 msgid "Copy the theme file into the <code>bookwyrm/static/css/themes</code> directory on your server from the command line."
-msgstr ""
+msgstr "Skopiuj przez wiersz polecenia plik motywu do katalogu <code>bookwyrm/static/css/themes</code> na swoim serwerze."
 
 #: bookwyrm/templates/settings/themes.html:32
 msgid "Run <code>./bw-dev collectstatic</code>."
@@ -5261,10 +5261,10 @@ msgstr "Opublikowane przez <a href=\"%(user_path)s\">%(username)s</a>"
 #, python-format
 msgid "and %(remainder_count_display)s other"
 msgid_plural "and %(remainder_count_display)s others"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "i jeszcze %(remainder_count_display)s"
+msgstr[1] "i jeszcze %(remainder_count_display)s"
+msgstr[2] "i jeszcze %(remainder_count_display)s"
+msgstr[3] "i jeszcze %(remainder_count_display)s"
 
 #: bookwyrm/templates/snippets/book_cover.html:61
 msgid "No cover"
@@ -5457,33 +5457,33 @@ msgstr[3] "%(rating)s gwiazdek"
 #, python-format
 msgid "set a goal to read %(counter)s book in %(year)s"
 msgid_plural "set a goal to read %(counter)s books in %(year)s"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "ustawia cel przeczytać %(counter)s książkę w %(year)s roku"
+msgstr[1] "ustawia cel przeczytać %(counter)s książki w %(year)s roku"
+msgstr[2] "ustawia cel przeczytać %(counter)s książek w %(year)s roku"
+msgstr[3] "ustawia cel przeczytać %(counter)s książek w %(year)s roku"
 
 #: bookwyrm/templates/snippets/generated_status/rating.html:3
 #, python-format
 msgid "rated <em><a href=\"%(path)s\">%(title)s</a></em>: %(display_rating)s star"
 msgid_plural "rated <em><a href=\"%(path)s\">%(title)s</a></em>: %(display_rating)s stars"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "ocenia <em><a href=\"%(path)s\">%(title)s</a></em>: %(display_rating)s gwiazdka"
+msgstr[1] "ocenia <em><a href=\"%(path)s\">%(title)s</a></em>: %(display_rating)s gwiazdki"
+msgstr[2] "ocenia <em><a href=\"%(path)s\">%(title)s</a></em>: %(display_rating)s gwiazdek"
+msgstr[3] "ocenia <em><a href=\"%(path)s\">%(title)s</a></em>: %(display_rating)s gwiazdek"
 
 #: bookwyrm/templates/snippets/generated_status/review_pure_name.html:4
 #, python-format
 msgid "Review of \"%(book_title)s\" (%(display_rating)s star): %(review_title)s"
 msgid_plural "Review of \"%(book_title)s\" (%(display_rating)s stars): %(review_title)s"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Recenzja \"%(book_title)s\" (%(display_rating)s gwiazdka): %(review_title)s"
+msgstr[1] "Recenzja \"%(book_title)s\" (%(display_rating)s gwiazdki): %(review_title)s"
+msgstr[2] "Recenzja \"%(book_title)s\" (%(display_rating)s gwiazdek): %(review_title)s"
+msgstr[3] "Recenzja \"%(book_title)s\" (%(display_rating)s gwiazdek): %(review_title)s"
 
 #: bookwyrm/templates/snippets/generated_status/review_pure_name.html:12
 #, python-format
 msgid "Review of \"%(book_title)s\": %(review_title)s"
-msgstr ""
+msgstr "Recenzja \"%(book_title)s\": %(review_title)s"
 
 #: bookwyrm/templates/snippets/goal_form.html:4
 #, python-format
@@ -5569,7 +5569,7 @@ msgstr "(opcjonalnie)"
 #: bookwyrm/templates/snippets/reading_modals/progress_update_modal.html:6
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_dropdown_options.html:61
 msgid "Update progress"
-msgstr ""
+msgstr "Aktualizuj postęp"
 
 #: bookwyrm/templates/snippets/reading_modals/start_reading_modal.html:6
 #, python-format
@@ -5800,15 +5800,15 @@ msgstr "Więcej opcji"
 
 #: bookwyrm/templates/snippets/switch_edition_button.html:5
 msgid "Switch to this edition"
-msgstr ""
+msgstr "Przełącz na to wydanie"
 
 #: bookwyrm/templates/snippets/table-sort-header.html:6
 msgid "Sorted ascending"
-msgstr ""
+msgstr "Sortowane rosnąco"
 
 #: bookwyrm/templates/snippets/table-sort-header.html:10
 msgid "Sorted descending"
-msgstr ""
+msgstr "Sortowane malejąco"
 
 #: bookwyrm/templates/snippets/trimmed_text.html:17
 msgid "Show more"
@@ -5912,7 +5912,7 @@ msgstr "Kanał RSS"
 
 #: bookwyrm/templates/user/user.html:81
 msgid "No activities yet!"
-msgstr ""
+msgstr "Jeszcze brak aktywności!"
 
 #: bookwyrm/templates/user/user_preview.html:22
 #, python-format
@@ -5944,11 +5944,11 @@ msgstr[3] ""
 
 #: bookwyrm/templates/user/user_preview.html:49
 msgid "No followers you follow"
-msgstr ""
+msgstr "Brak obserwujących, których obserwujesz"
 
 #: bookwyrm/templates/user_menu.html:7
 msgid "View profile and more"
-msgstr ""
+msgstr "Zobacz profil i więcej"
 
 #: bookwyrm/templates/user_menu.html:78
 msgid "Log out"
@@ -5974,14 +5974,14 @@ msgstr "Niepoprawna nazwa użytkownika lub hasło"
 #: bookwyrm/views/rss_feed.py:34
 #, python-brace-format
 msgid "Status updates from {obj.display_name}"
-msgstr ""
+msgstr "Aktualizacje statusu od {obj.display_name}"
 
 #: bookwyrm/views/updates.py:45
 #, python-format
 msgid "Load %(count)d unread status"
 msgid_plural "Load %(count)d unread statuses"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Wczytaj %(count)d nieprzeczytany status"
+msgstr[1] "Wczytaj %(count)d nieprzeczytane statusy"
+msgstr[2] "Wczytaj %(count)d nieprzeczytanych statusów"
+msgstr[3] "Wczytaj %(count)d nieprzeczytanych statusów"
 
