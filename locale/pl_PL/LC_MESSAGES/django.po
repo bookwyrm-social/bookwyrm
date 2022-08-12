@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-08-05 16:02+0000\n"
-"PO-Revision-Date: 2022-08-11 11:28\n"
+"PO-Revision-Date: 2022-08-12 09:22\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Polish\n"
 "Language: pl\n"
@@ -601,10 +601,10 @@ msgstr "Tak trzymaj!"
 #, python-format
 msgid "%(display_name)s left %(ratings_total)s rating, <br />their average rating is %(rating_average)s"
 msgid_plural "%(display_name)s left %(ratings_total)s ratings, <br />their average rating is %(rating_average)s"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "%(display_name)s dodaje %(ratings_total)s ocenę, <br />a ich średnia ocena wynosi %(rating_average)s"
+msgstr[1] "%(display_name)s dodaje %(ratings_total)s oceny, <br />a ich średnia ocena wynosi %(rating_average)s"
+msgstr[2] "%(display_name)s dodaje %(ratings_total)s ocen, <br />a ich średnia ocena wynosi %(rating_average)s"
+msgstr[3] "%(display_name)s dodaje %(ratings_total)s ocen, <br />a ich średnia ocena wynosi %(rating_average)s"
 
 #: bookwyrm/templates/annual_summary/layout.html:238
 msgid "Their best rated review"
@@ -2818,7 +2818,7 @@ msgstr ""
 #: bookwyrm/templates/landing/layout.html:46
 #, python-format
 msgid "Join %(name)s"
-msgstr ""
+msgstr "Dołącz do %(name)s"
 
 #: bookwyrm/templates/landing/layout.html:48
 msgid "Request an Invitation"
@@ -2831,7 +2831,7 @@ msgstr ""
 
 #: bookwyrm/templates/landing/layout.html:61
 msgid "Thank you! Your request has been received."
-msgstr ""
+msgstr "Dziękujemy! Otrzymaliśmy Twoją prośbę."
 
 #: bookwyrm/templates/landing/layout.html:90
 msgid "Your Account"
@@ -2907,11 +2907,11 @@ msgstr "Skanuj kod kreskowy"
 
 #: bookwyrm/templates/layout.html:72
 msgid "Main navigation menu"
-msgstr ""
+msgstr "Główne menu nawigacji"
 
 #: bookwyrm/templates/layout.html:80
 msgid "Feed"
-msgstr ""
+msgstr "Kanał"
 
 #: bookwyrm/templates/layout.html:127 bookwyrm/templates/ostatus/error.html:33
 msgid "password"
@@ -2923,11 +2923,11 @@ msgstr "Dołącz"
 
 #: bookwyrm/templates/layout.html:173
 msgid "Successfully posted status"
-msgstr ""
+msgstr "Status został zamieszczony"
 
 #: bookwyrm/templates/layout.html:174
 msgid "Error posting status"
-msgstr ""
+msgstr "Błąd zamieszczania statusu"
 
 #: bookwyrm/templates/layout.html:190
 msgid "Documentation"
@@ -3000,7 +3000,7 @@ msgstr "Zaproponowane przez"
 
 #: bookwyrm/templates/lists/curate.html:77
 msgid "Discard"
-msgstr ""
+msgstr "Odrzuć"
 
 #: bookwyrm/templates/lists/delete_list_modal.html:4
 msgid "Delete this list?"
@@ -3014,12 +3014,12 @@ msgstr "Edytuj listę"
 #: bookwyrm/templates/lists/embed-list.html:8
 #, python-format
 msgid "%(list_name)s, a list by %(owner)s"
-msgstr ""
+msgstr "%(list_name)s, lista autorstwa %(owner)s"
 
 #: bookwyrm/templates/lists/embed-list.html:18
 #, python-format
 msgid "on <a href=\"/\">%(site_name)s</a>"
-msgstr ""
+msgstr "na <a href=\"/\">%(site_name)s</a>"
 
 #: bookwyrm/templates/lists/embed-list.html:27
 #: bookwyrm/templates/lists/list.html:54
@@ -3142,53 +3142,53 @@ msgstr ""
 
 #: bookwyrm/templates/lists/list.html:205
 msgid "Add Books"
-msgstr ""
+msgstr "Dodaj książki"
 
 #: bookwyrm/templates/lists/list.html:207
 msgid "Suggest Books"
-msgstr ""
+msgstr "Zaproponuj książki"
 
 #: bookwyrm/templates/lists/list.html:218
 msgid "search"
-msgstr ""
+msgstr "szukaj"
 
 #: bookwyrm/templates/lists/list.html:224
 msgid "Clear search"
-msgstr ""
+msgstr "Wyczyść wyszukiwanie"
 
 #: bookwyrm/templates/lists/list.html:229
 #, python-format
 msgid "No books found matching the query \"%(query)s\""
-msgstr ""
+msgstr "Brak książek dla wyszukiwania \"%(query)s\""
 
 #: bookwyrm/templates/lists/list.html:268
 msgid "Embed this list on a website"
-msgstr ""
+msgstr "Osadź tę listę na stronie internetowej"
 
 #: bookwyrm/templates/lists/list.html:276
 msgid "Copy embed code"
-msgstr ""
+msgstr "Kopiuj kod osadzenia"
 
 #: bookwyrm/templates/lists/list.html:278
 #, python-format
 msgid "%(list_name)s, a list by %(owner)s on %(site_name)s"
-msgstr ""
+msgstr "%(list_name)s, lista autorstwa %(owner)s na %(site_name)s"
 
 #: bookwyrm/templates/lists/list_items.html:15
 msgid "Saved"
-msgstr ""
+msgstr "Zapisane"
 
 #: bookwyrm/templates/lists/lists.html:14 bookwyrm/templates/user/lists.html:9
 msgid "Your Lists"
-msgstr ""
+msgstr "Twoje listy"
 
 #: bookwyrm/templates/lists/lists.html:36
 msgid "All Lists"
-msgstr ""
+msgstr "Wszystkie listy"
 
 #: bookwyrm/templates/lists/lists.html:40
 msgid "Saved Lists"
-msgstr ""
+msgstr "Zapisane listy"
 
 #: bookwyrm/templates/notifications/items/accept.html:18
 #, python-format
@@ -3526,12 +3526,12 @@ msgstr "Nie można znaleźć <strong>%(account)s</strong> lub <code>%(remote_dom
 #: bookwyrm/templates/ostatus/error.html:17
 #, python-format
 msgid "<strong>%(account)s</strong> was found but <code>%(remote_domain)s</code> does not support 'remote follow'"
-msgstr ""
+msgstr "Znaleziono <strong>%(account)s</strong>, ale <code>%(remote_domain)s</code> nie obsługuje 'zdalnego obserwowania'"
 
 #: bookwyrm/templates/ostatus/error.html:18
 #, python-format
 msgid "Try searching for <strong>%(user)s</strong> on <code>%(remote_domain)s</code> instead"
-msgstr ""
+msgstr "Zamiast tego, spróbuj wyszukać <strong>%(user)s</strong> na <code>%(remote_domain)s</code>"
 
 #: bookwyrm/templates/ostatus/error.html:46
 #, python-format
@@ -3757,7 +3757,7 @@ msgstr "Eksport CSV"
 
 #: bookwyrm/templates/preferences/layout.html:38
 msgid "Relationships"
-msgstr ""
+msgstr "Relacje"
 
 #: bookwyrm/templates/reading_progress/finish.html:5
 #, python-format
@@ -4139,16 +4139,16 @@ msgstr "Panel"
 #: bookwyrm/templates/settings/dashboard/dashboard.html:15
 #: bookwyrm/templates/settings/dashboard/dashboard.html:113
 msgid "Total users"
-msgstr ""
+msgstr "Użytkowników w sumie"
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:21
 #: bookwyrm/templates/settings/dashboard/user_chart.html:16
 msgid "Active this month"
-msgstr ""
+msgstr "Aktywnych w tym miesiącu"
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:27
 msgid "Statuses"
-msgstr ""
+msgstr "Statusów"
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:33
 #: bookwyrm/templates/settings/dashboard/works_chart.html:11
@@ -4157,11 +4157,11 @@ msgstr ""
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:78
 msgid "Instance Activity"
-msgstr ""
+msgstr "Aktywność instancji"
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:96
 msgid "Interval:"
-msgstr ""
+msgstr "Częstotliwość:"
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:100
 msgid "Days"
@@ -4406,7 +4406,7 @@ msgstr "Udało się!"
 
 #: bookwyrm/templates/settings/federation/instance_blocklist.html:42
 msgid "Successfully blocked:"
-msgstr ""
+msgstr "Pomyślnie zablokowane:"
 
 #: bookwyrm/templates/settings/federation/instance_blocklist.html:44
 msgid "Failed:"
@@ -4519,27 +4519,27 @@ msgstr ""
 
 #: bookwyrm/templates/settings/invites/manage_invites.html:27
 msgid "Expiry:"
-msgstr ""
+msgstr "Wygaśnięcie:"
 
 #: bookwyrm/templates/settings/invites/manage_invites.html:33
 msgid "Use limit:"
-msgstr ""
+msgstr "Limit użyć:"
 
 #: bookwyrm/templates/settings/invites/manage_invites.html:40
 msgid "Create Invite"
-msgstr ""
+msgstr "Utwórz zaproszenie"
 
 #: bookwyrm/templates/settings/invites/manage_invites.html:48
 msgid "Expires"
-msgstr ""
+msgstr "Wygasa"
 
 #: bookwyrm/templates/settings/invites/manage_invites.html:49
 msgid "Max uses"
-msgstr ""
+msgstr "Limit użyć"
 
 #: bookwyrm/templates/settings/invites/manage_invites.html:50
 msgid "Times used"
-msgstr ""
+msgstr "Liczba użyć"
 
 #: bookwyrm/templates/settings/invites/manage_invites.html:53
 msgid "No active invites"
@@ -4582,21 +4582,21 @@ msgstr "Brak obecnie blokowanych adresów IP"
 
 #: bookwyrm/templates/settings/layout.html:4
 msgid "Administration"
-msgstr ""
+msgstr "Administracja"
 
 #: bookwyrm/templates/settings/layout.html:31
 msgid "Manage Users"
-msgstr ""
+msgstr "Zarządzaj użytkownikami"
 
 #: bookwyrm/templates/settings/layout.html:53
 msgid "Moderation"
-msgstr ""
+msgstr "Moderacja"
 
 #: bookwyrm/templates/settings/layout.html:57
 #: bookwyrm/templates/settings/reports/reports.html:8
 #: bookwyrm/templates/settings/reports/reports.html:17
 msgid "Reports"
-msgstr ""
+msgstr "Zgłoszenia"
 
 #: bookwyrm/templates/settings/layout.html:73
 #: bookwyrm/templates/settings/link_domains/link_domains.html:5
