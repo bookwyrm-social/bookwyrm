@@ -90,6 +90,7 @@ def user_search(request):
     """cool kids members only user search"""
     viewer = request.user
     query = request.GET.get("q")
+    query = query.strip()
     data = {"type": "user", "query": query}
     # logged out viewers can't search users
     if not viewer.is_authenticated:
