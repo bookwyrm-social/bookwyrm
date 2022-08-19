@@ -8,7 +8,12 @@ register = template.Library()
 @register.filter(name="book_description")
 def get_book_description(book):
     """use the work's text if the book doesn't have it"""
-    return book.description or book.parent_work.description
+    if book.description:
+        return book.description
+    if book.parent_work:
+        # this shoud always be true
+        return book.parent_work.description
+    return None
 
 
 @register.simple_tag(takes_context=False)
