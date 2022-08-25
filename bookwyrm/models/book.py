@@ -46,6 +46,13 @@ class Genre(models.Model):
     @property
     def genre_desc(self):
         return self.description
+
+    def save(self, *args, **kwargs):
+        
+        if self.immutable:
+            raise ValueError("This genre is immutable and cannot be changed.")
+        super(Genre, self).save(*args, **kwargs)
+
         
 
 class BookDataModel(ObjectMixin, BookWyrmModel):
