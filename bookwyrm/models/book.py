@@ -26,11 +26,19 @@ from .activitypub_mixin import OrderedCollectionPageMixin, ObjectMixin
 from .base_model import BookWyrmModel
 from . import fields
 
+class GenreManager(models.Manager):
+    def create_genre(self, genre_name, description, immutable):
+        genre = self.create(genre_name=genre_name, description=description, immutable=immutable)
+        return genre
+
 class Genre(models.Model):
     '''This is a model where we can define genres for books.'''
     '''TODO: Add ManytoMany field on books which contain this certain genre.'''
     genre_name = models.CharField(max_length=40)
     description = models.CharField(max_length=500)
+    immutable = models.BooleanField(default=False)
+
+    objects = GenreManager()
 
     def __str__(self):
         return self.genre_name
@@ -38,6 +46,7 @@ class Genre(models.Model):
     @property
     def genre_desc(self):
         return self.description
+        
 
 class BookDataModel(ObjectMixin, BookWyrmModel):
     """fields shared between editable book data (books, works, authors)"""

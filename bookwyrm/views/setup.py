@@ -13,6 +13,10 @@ from bookwyrm import forms, models
 from bookwyrm import settings
 from bookwyrm.utils import regex
 
+from bookwyrm.settings import (
+    DEFAULT_GENRES,
+)
+
 
 # pylint: disable= no-self-use
 class InstanceConfig(View):
@@ -77,6 +81,8 @@ class CreateAdmin(View):
         localname = form.data["localname"].strip()
         username = f"{localname}@{settings.DOMAIN}"
 
+        self.create_default_genres(self, request)
+
         user = models.User.objects.create_superuser(
             username,
             form.data["email"],
@@ -97,3 +103,10 @@ class CreateAdmin(View):
         site.install_mode = False
         site.save()
         return redirect("settings-site")
+
+    def create_default_genres(self, request):
+        """Create the immutable genres that will be present everywhere."""
+        for genre_name in DEFAULT_GENRES:
+            action_genre = models.Genre.objects.create_genre(genre_name, DEFAULT_GENRES[genre_name], True)
+            action_genre.save()
+

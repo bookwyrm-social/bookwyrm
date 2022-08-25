@@ -13,6 +13,8 @@ from django.views.generic import (
     TemplateView,
 )
 
+
+
 class SearchGenre(TemplateView):
     template_name = 'search/genre_search.html'
 
@@ -49,5 +51,3 @@ class SearchGenre(TemplateView):
         context['genre_tags'] = Genre.objects.all()
         context['listed_books'] = activeBooks
         return context
-
-    
