@@ -38,7 +38,9 @@ class Genre(models.Model):
     description = models.CharField(max_length=500)
     immutable = models.BooleanField(default=False)
 
+
     objects = GenreManager()
+
 
     def __str__(self):
         return self.genre_name
@@ -49,10 +51,20 @@ class Genre(models.Model):
 
     def save(self, *args, **kwargs):
         
+        
         if self.immutable:
             raise ValueError("This genre is immutable and cannot be changed.")
+
         super(Genre, self).save(*args, **kwargs)
 
+class ImmutableGenre(Genre):
+    '''A proxy model for immutable genres so it can actually save itself and not cause an interdimensional rift.'''
+    '''Immutable genres SHOULD ONLY EVER BE CREATED UPON THE CREATION OF THE INSTANCE'''
+    class Meta:
+        proxy = True
+
+    def save(self, *args, **kwargs):
+        super(Genre, self).save(*args, **kwargs)
         
 
 class BookDataModel(ObjectMixin, BookWyrmModel):

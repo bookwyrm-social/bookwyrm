@@ -81,7 +81,7 @@ class CreateAdmin(View):
         localname = form.data["localname"].strip()
         username = f"{localname}@{settings.DOMAIN}"
 
-        self.create_default_genres(self, request)
+        self.create_default_genres(request)
 
         user = models.User.objects.create_superuser(
             username,
@@ -107,6 +107,7 @@ class CreateAdmin(View):
     def create_default_genres(self, request):
         """Create the immutable genres that will be present everywhere."""
         for genre_name in DEFAULT_GENRES:
-            action_genre = models.Genre.objects.create_genre(genre_name, DEFAULT_GENRES[genre_name], True)
+            action_genre = models.ImmutableGenre.objects.create_genre(genre_name, DEFAULT_GENRES[genre_name], True)
             action_genre.save()
+
 
