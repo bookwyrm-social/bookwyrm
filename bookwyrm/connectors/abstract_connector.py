@@ -44,9 +44,8 @@ class AbstractMinimalConnector(ABC):
         if maybe_isbn(query) and self.isbn_search_url and self.isbn_search_url != "":
             # Up-case the ISBN string to ensure any 'X' check-digit is correct
             # If the ISBN has only 9 characters, prepend missing zero
-            query = query.upper().rjust(10, '0')
-            return f"{self.isbn_search_url}{query}"
-
+            normalized_query = query.strip().upper().rjust(10, '0')
+            return f"{self.isbn_search_url}{normalized_query}"
         # NOTE: previously, we tried searching isbn and if that produces no results,
         # searched as free text. This, instead, only searches isbn if it's isbn-y
         return f"{self.search_url}{query}"
