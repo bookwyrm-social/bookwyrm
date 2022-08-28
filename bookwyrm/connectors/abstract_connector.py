@@ -44,7 +44,7 @@ class AbstractMinimalConnector(ABC):
         if maybe_isbn(query) and self.isbn_search_url and self.isbn_search_url != "":
             # Up-case the ISBN string to ensure any 'X' check-digit is correct
             # If the ISBN has only 9 characters, prepend missing zero
-            normalized_query = query.strip().upper().rjust(10, '0')
+            normalized_query = query.strip().upper().rjust(10, "0")
             return f"{self.isbn_search_url}{normalized_query}"
         # NOTE: previously, we tried searching isbn and if that produces no results,
         # searched as free text. This, instead, only searches isbn if it's isbn-y
@@ -328,6 +328,10 @@ def maybe_isbn(query):
     """check if a query looks like an isbn"""
     isbn = re.sub(r"[\W_]", "", query)  # removes filler characters
     # ISBNs must be numeric except an ISBN10 checkdigit can be 'X'
-    if not isbn.rstrip('X').isnumeric():
+    if not isbn.rstrip("X").isnumeric():
         return False
-    return len(isbn) in [9, 10, 13]  # ISBN10 or ISBN13, or maybe   ISBN10 missing a prepended zero
+    return len(isbn) in [
+        9,
+        10,
+        13,
+    ]  # ISBN10 or ISBN13, or maybe   ISBN10 missing a prepended zero
