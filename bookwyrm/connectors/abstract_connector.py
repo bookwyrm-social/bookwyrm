@@ -42,6 +42,9 @@ class AbstractMinimalConnector(ABC):
         """format the query url"""
         # Check if the query resembles an ISBN
         if maybe_isbn(query) and self.isbn_search_url and self.isbn_search_url != "":
+            # Up-case the ISBN string to ensure any 'X' check-digit is correct
+            # If the ISBN has only 9 characters, prepend missing zero
+            query = query.upper().rjust(10, '0')
             return f"{self.isbn_search_url}{query}"
 
         # NOTE: previously, we tried searching isbn and if that produces no results,
@@ -325,4 +328,7 @@ def unique_physical_format(format_text):
 def maybe_isbn(query):
     """check if a query looks like an isbn"""
     isbn = re.sub(r"[\W_]", "", query)  # removes filler characters
-    return len(isbn) in [10, 13]  # ISBN10 or ISBN13
+    # ISBNs must be numeric except an ISBN10 checkdigit can be 'X'
+    if not isbn.rstrip('X').isnumeric():
+        return False
+    return len(isbn) in [9, 10, 13]  # ISBN10 or ISBN13, or maybe   ISBN10 missing a prepended zero

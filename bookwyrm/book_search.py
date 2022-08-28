@@ -30,7 +30,9 @@ def isbn_search(query):
     """search your local database"""
     if not query:
         return []
-
+    # Up-case the ISBN string to ensure any 'X' check-digit is correct
+    # If the ISBN has only 9 characters, prepend missing zero
+    query = query.upper().rjust(10, '0')
     filters = [{f: query} for f in ["isbn_10", "isbn_13"]]
     results = models.Edition.objects.filter(
         reduce(operator.or_, (Q(**f) for f in filters))
