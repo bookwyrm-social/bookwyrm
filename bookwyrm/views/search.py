@@ -83,6 +83,7 @@ def book_search(request):
         data["remote_results"] = connector_manager.search(
             query, min_confidence=min_confidence
         )
+        data["remote"] = True
     return TemplateResponse(request, "search/book.html", data)
 
 
