@@ -84,16 +84,14 @@ case "$CMD" in
         ;;
     resetdb)
         prod_error
-        clean
-        # Start just the DB so no one else is using it
-        docker-compose up --build -d db
-        rundb dropdb -U ${POSTGRES_USER} ${POSTGRES_DB}
-        rundb createdb -U ${POSTGRES_USER} ${POSTGRES_DB}
-        # Now start up web so we can run the migrations
-        docker-compose up --build -d web
+        docker-compose rm -svf
+        docker volume rm -f bookwyrm_media_volume bookwyrm_pgdata bookwyrm_redis_activity_data bookwyrm_redis_broker_data bookwyrm_static_volume
+        docker-compose build
         migrate
+        migrate django_celery_beat
         initdb
-        clean
+        runweb python manage.py collectstatic --no-input
+        admin_code
         ;;
     makemigrations)
         prod_error
@@ -189,10 +187,6 @@ case "$CMD" in
             bookwyrm/static/css/bookwyrm.scss bookwyrm/static/css/bookwyrm/**/*.scss --fix \
             --config dev-tools/.stylelintrc.js
         ;;
-    compilescss)
-        runweb python manage.py compilescss
-        runweb python manage.py collectstatic --no-input
-        ;;
     collectstatic_watch)
         prod_error
         npm run --prefix dev-tools watch:static
@@ -286,7 +280,6 @@ case "$CMD" in
         echo "    prettier"
         echo "    stylelint"
         echo "    formatters"
-        echo "    compilescss"
         echo "    collectstatic_watch"
         echo "    populate_streams [--stream=<stream name>]"
         echo "    populate_lists_streams"

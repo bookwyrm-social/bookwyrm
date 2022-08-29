@@ -83,6 +83,7 @@ def book_search(request):
         data["remote_results"] = connector_manager.search(
             query, min_confidence=min_confidence
         )
+        data["remote"] = True
     return TemplateResponse(request, "search/book.html", data)
 
 
@@ -90,6 +91,7 @@ def user_search(request):
     """cool kids members only user search"""
     viewer = request.user
     query = request.GET.get("q")
+    query = query.strip()
     data = {"type": "user", "query": query}
     # logged out viewers can't search users
     if not viewer.is_authenticated:

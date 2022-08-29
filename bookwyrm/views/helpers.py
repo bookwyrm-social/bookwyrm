@@ -59,7 +59,7 @@ def is_bookwyrm_request(request):
     return True
 
 
-def handle_remote_webfinger(query):
+def handle_remote_webfinger(query, unknown_only=False):
     """webfingerin' other servers"""
     user = None
 
@@ -75,6 +75,11 @@ def handle_remote_webfinger(query):
 
     try:
         user = models.User.objects.get(username__iexact=query)
+
+        if unknown_only:
+            # In this case, we only want to know about previously undiscovered users
+            # So the fact that we found a match in the database means no results
+            return None
     except models.User.DoesNotExist:
         url = f"https://{domain}/.well-known/webfinger?resource=acct:{query}"
         try:
