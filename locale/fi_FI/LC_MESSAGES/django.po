@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-08-02 17:52+0000\n"
-"PO-Revision-Date: 2022-08-05 01:09\n"
+"POT-Creation-Date: 2022-08-05 16:02+0000\n"
+"PO-Revision-Date: 2022-08-06 00:30\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Finnish\n"
 "Language: fi\n"
@@ -2011,8 +2011,8 @@ msgstr "Poistu ryhmästä"
 #: bookwyrm/templates/groups/members.html:54
 #: bookwyrm/templates/groups/suggested_users.html:35
 #: bookwyrm/templates/snippets/suggested_users.html:31
-#: bookwyrm/templates/user/user_preview.html:33
-#: bookwyrm/templates/user/user_preview.html:41
+#: bookwyrm/templates/user/user_preview.html:39
+#: bookwyrm/templates/user/user_preview.html:47
 msgid "Follows you"
 msgstr "Seuraa sinua"
 
@@ -2439,39 +2439,39 @@ msgstr "Omat kirjat"
 
 #: bookwyrm/templates/guided_tour/user_books.html:31
 msgid "<strong>To Read</strong>, <strong>Currently Reading</strong>, <strong>Read</strong>, and <strong>Stopped Reading</strong> are default shelves. When you change the reading status of a book it will automatically be moved to the matching shelf. A book can only be on one default shelf at a time."
-msgstr ""
+msgstr "<strong>Lukujono</strong>, <strong>Luettavana</strong>, <strong>Luettu</strong> ja <strong>Keskeytetty</strong> ovat oletushyllyjä. Kun kirjan lukuvaihetta muutetaan, se siirtyy automaattisesti vaihetta vastaavaan hyllyyn. Kirja voi olla samanaikaisesti vain yhdessä oletushyllyssä."
 
 #: bookwyrm/templates/guided_tour/user_books.html:32
 msgid "Reading status shelves"
-msgstr ""
+msgstr "Lukuvaiheen mukaiset hyllyt"
 
 #: bookwyrm/templates/guided_tour/user_books.html:55
 msgid "You can create additional custom shelves to organise your books. A book on a custom shelf can be on any number of other shelves simultaneously, including one of the default reading status shelves"
-msgstr ""
+msgstr "Kirjojen järjestelyä varten voi luoda lisähyllyjä. Kirja voi olla samanaikaisesti useammassakin lisähyllyssä sekä yhdessä lukuvaiheen mukaisessa oletushyllyssä"
 
 #: bookwyrm/templates/guided_tour/user_books.html:56
 msgid "Adding custom shelves."
-msgstr ""
+msgstr "Lisähyllyjen lisääminen."
 
 #: bookwyrm/templates/guided_tour/user_books.html:78
 msgid "If you have an export file from another service like Goodreads or LibraryThing, you can import it here."
-msgstr ""
+msgstr "Tätä kautta voi tuoda tietoja toisesta palvelusta, esimerkiksi Goodreadsista tai LibraryThingistä."
 
 #: bookwyrm/templates/guided_tour/user_books.html:79
 msgid "Import from another service"
-msgstr ""
+msgstr "Tuo toisesta palvelusta"
 
 #: bookwyrm/templates/guided_tour/user_books.html:101
 msgid "Now that we've explored book shelves, let's take a look at a related concept: book lists!"
-msgstr ""
+msgstr "Nyt kun hyllyt ovat tulleet tutuksi, vilkaistaan toista, hieman erilaista käsitettä: kirjalistoja."
 
 #: bookwyrm/templates/guided_tour/user_books.html:101
 msgid "Click on the <strong>Lists</strong> link here to continue the tour."
-msgstr ""
+msgstr "Jatka esittelykierrosta painamalla <strong>Listat</strong>-linkkiä."
 
 #: bookwyrm/templates/guided_tour/user_groups.html:10
 msgid "You can create or join a group with other users. Groups can share group-curated book lists, and in future will be able to do other things."
-msgstr ""
+msgstr "Voit luoda ryhmän tai liittyä muiden käyttäjien ryhmiin. Ryhmissä voidaan yhdessä kuratoida kirjalistoja, ja ajan mittaan ryhmiin lisätään uusia toimintoja."
 
 #: bookwyrm/templates/guided_tour/user_groups.html:11
 #: bookwyrm/templates/guided_tour/user_profile.html:55
@@ -2481,43 +2481,43 @@ msgstr "Ryhmät"
 
 #: bookwyrm/templates/guided_tour/user_groups.html:31
 msgid "Let's create a new group!"
-msgstr ""
+msgstr "Luodaanpa uusi ryhmä!"
 
 #: bookwyrm/templates/guided_tour/user_groups.html:31
 msgid "Click the <strong>Create group</strong> button, then <strong>Next</strong> to continue the tour"
-msgstr ""
+msgstr "Jatka esittelykierrosta painamalla ensin <strong>Luo ryhmä</strong> -painiketta ja sen jälkeen <strong>Seuraava</strong>"
 
 #: bookwyrm/templates/guided_tour/user_groups.html:55
 msgid "Give your group a name and describe what it is about. You can make user groups for any purpose - a reading group, a bunch of friends, whatever!"
-msgstr ""
+msgstr "Anna ryhmälle nimi ja kirjoita sille kuvaus. Käyttäjäryhmiä voi luoda monenlaisiin tarkoituksiin: lukupiiriä varten, kaveriporukalle jne."
 
 #: bookwyrm/templates/guided_tour/user_groups.html:56
 msgid "Creating a group"
-msgstr ""
+msgstr "Ryhmän luominen"
 
 #: bookwyrm/templates/guided_tour/user_groups.html:78
 msgid "Groups have privacy settings just like posts and lists, except that group privacy cannot be <strong>Followers</strong>."
-msgstr ""
+msgstr "Ryhmien näkyvyysasetukset ovat muuten vastaavat kuin julkaisuilla ja listoilla, mutta ryhmän näkyvyytenä ei voi olla <strong>Seuraajat</strong>."
 
 #: bookwyrm/templates/guided_tour/user_groups.html:79
 msgid "Group visibility"
-msgstr ""
+msgstr "Ryhmän näkyvyys"
 
 #: bookwyrm/templates/guided_tour/user_groups.html:102
 msgid "Once you're happy with how everything is set up, click the <strong>Save</strong> button to create your new group."
-msgstr ""
+msgstr "Kun asetukset näyttävät hyvältä, luo ryhmä painamalla <strong>Tallenna</strong>-painiketta."
 
 #: bookwyrm/templates/guided_tour/user_groups.html:102
 msgid "Create and save a group to continue the tour."
-msgstr ""
+msgstr "Jatka esittelykierrosta luomalla ja tallentamalla ryhmä."
 
 #: bookwyrm/templates/guided_tour/user_groups.html:103
 msgid "Save your group"
-msgstr ""
+msgstr "Tallenna ryhmä"
 
 #: bookwyrm/templates/guided_tour/user_profile.html:10
 msgid "This is your user profile. All your latest activities will be listed here. Other Bookwyrm users can see parts of this page too - what they can see depends on your privacy settings."
-msgstr ""
+msgstr "Tämä on käyttäjäprofiilisi. Tässä näytetään viimeaikainen toimintasi. Muut BookWyrm-käyttäjät voivat myös katsella tätä sivua, mutta näkyvyysasetuksistasi riippuu, mitä heille näytetään."
 
 #: bookwyrm/templates/guided_tour/user_profile.html:11
 #: bookwyrm/templates/user/layout.html:19 bookwyrm/templates/user/user.html:10
@@ -2526,7 +2526,7 @@ msgstr "Käyttäjäprofiili"
 
 #: bookwyrm/templates/guided_tour/user_profile.html:31
 msgid "This tab shows everything you have read towards your annual reading goal, or allows you to set one. You don't have to set a reading goal if that's not your thing!"
-msgstr ""
+msgstr "Tällä välilehdellä asetetaan vuoden lukutavoite ja näytetään sen eteneminen. Lukutavoitetta ei tietenkään ole mikään pakko asettaa."
 
 #: bookwyrm/templates/guided_tour/user_profile.html:32
 #: bookwyrm/templates/user/layout.html:73
@@ -2535,23 +2535,23 @@ msgstr "Lukutavoite"
 
 #: bookwyrm/templates/guided_tour/user_profile.html:54
 msgid "Here you can see your groups, or create a new one. A group brings together Bookwyrm users and allows them to curate lists together."
-msgstr ""
+msgstr "Tässä näytetään omat ryhmäsi, ja tätä kautta voit myös luoda uusia ryhmiä. Ryhmät toimivat BookWyrm-käyttäjien kohtauspaikkoina, ja ryhmät voivat kuratoida listoja yhdessä."
 
 #: bookwyrm/templates/guided_tour/user_profile.html:77
 msgid "You can see your lists, or create a new one, here. A list is a collection of books that have something in common."
-msgstr ""
+msgstr "Tässä näytetään listasi, ja tätä kautta voi myös luoda uusia listoja. Lista on jollakin tavalla samankaltaisten kirjojen kokoelma."
 
 #: bookwyrm/templates/guided_tour/user_profile.html:100
 msgid "The Books tab shows your book shelves. We'll explore this later in the tour."
-msgstr ""
+msgstr "Kirjat-välilehdellä näytetään omat kirjahyllysi. Katsotaan niitä tarkemmin esittelykierroksen myöhemmässä vaiheessa."
 
 #: bookwyrm/templates/guided_tour/user_profile.html:123
 msgid "Now you understand the basics of your profile page, let's add a book to your shelves."
-msgstr ""
+msgstr "Nyt kun profiilisivun perusasiat ovat tulleet tutuiksi, voidaan vaikka lisätä johonkin hyllyyn kirja."
 
 #: bookwyrm/templates/guided_tour/user_profile.html:123
 msgid "Search for a title or author to continue the tour."
-msgstr ""
+msgstr "Jatka esittelykierrosta hakemalla jotakin kirjaa tai kirjailijaa."
 
 #: bookwyrm/templates/guided_tour/user_profile.html:124
 msgid "Find a book"
@@ -5874,19 +5874,19 @@ msgid_plural "%(counter)s followers"
 msgstr[0] "%(counter)s seuraaja"
 msgstr[1] "%(counter)s seuraajaa"
 
-#: bookwyrm/templates/user/user_preview.html:27
+#: bookwyrm/templates/user/user_preview.html:31
 #, python-format
 msgid "%(counter)s following"
 msgstr "%(counter)s seurattavaa"
 
-#: bookwyrm/templates/user/user_preview.html:39
+#: bookwyrm/templates/user/user_preview.html:45
 #, python-format
 msgid "%(mutuals_display)s follower you follow"
 msgid_plural "%(mutuals_display)s followers you follow"
 msgstr[0] "%(mutuals_display)s seuraaja, jota seuraat itse"
 msgstr[1] "%(mutuals_display)s seuraajaa, joita seuraat itse"
 
-#: bookwyrm/templates/user/user_preview.html:43
+#: bookwyrm/templates/user/user_preview.html:49
 msgid "No followers you follow"
 msgstr "Ei seuraajia, joita seuraat itse"
 
