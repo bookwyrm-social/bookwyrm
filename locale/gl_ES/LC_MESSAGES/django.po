@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-08-29 20:43+0000\n"
-"PO-Revision-Date: 2022-08-29 22:37\n"
+"PO-Revision-Date: 2022-08-30 02:45\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Galician\n"
 "Language: gl\n"
@@ -395,7 +395,7 @@ msgstr "Sexas ben vida a %(site_name)s!"
 #: bookwyrm/templates/about/about.html:24
 #, python-format
 msgid "%(site_name)s is part of <em>BookWyrm</em>, a network of independent, self-directed communities for readers. While you can interact seamlessly with users anywhere in the <a href=\"https://joinbookwyrm.com/instances/\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">BookWyrm network</a>, this community is unique."
-msgstr ""
+msgstr "%(site_name)s é parte de <em>BookWyrm</em>, unha rede independente, auto-xestionada de comunidades de persoas lectoras. Aínda que podes interactuar con outras usuarias da <a href=\"https://joinbookwyrm.com/instances/\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">rede BookWyrm</a>, esta comunidade é única."
 
 #: bookwyrm/templates/about/about.html:44
 #, python-format
@@ -414,7 +414,7 @@ msgstr "<a href=\"%(book_path)s\"><em>%(title)s</em></a> é o libro con valoraci
 
 #: bookwyrm/templates/about/about.html:93
 msgid "Track your reading, talk about books, write reviews, and discover what to read next. Always ad-free, anti-corporate, and community-oriented, BookWyrm is human-scale software, designed to stay small and personal. If you have feature requests, bug reports, or grand dreams, <a href=\"https://joinbookwyrm.com/get-involved\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">reach out</a> and make yourself heard."
-msgstr ""
+msgstr "Rexistra as túas lecturas, conversa acerca dos libros, escribe recensións e descubre próximas lecturas. Sempre sen publicidade, anti-corporacións e orientado á comunidade, BookWyrm é software a escala humana, deseñado para ser pequeno e persoal. Se queres propoñer novas ferramentas, informar de fallos, ou colaborar, <a href=\"https://joinbookwyrm.com/get-involved\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">contacta con nós</a> e deixa oír a túa voz."
 
 #: bookwyrm/templates/about/about.html:103
 msgid "Meet your admins"
@@ -988,12 +988,12 @@ msgstr "É \"%(name)s\" un destas autoras?"
 #: bookwyrm/templates/book/edit/edit_book.html:81
 #, python-format
 msgid "Author of <em>%(book_title)s</em>"
-msgstr ""
+msgstr "Autora de <em>%(book_title)s</em>"
 
 #: bookwyrm/templates/book/edit/edit_book.html:85
 #, python-format
 msgid "Author of <em>%(alt_title)s</em>"
-msgstr ""
+msgstr "Autora de <em>%(alt_title)s</em>"
 
 #: bookwyrm/templates/book/edit/edit_book.html:87
 msgid "Find more information at isni.org"
@@ -2575,7 +2575,7 @@ msgstr "Fonte de datos:"
 
 #: bookwyrm/templates/import/import.html:42
 msgid "You can download your Goodreads data from the <a href=\"https://www.goodreads.com/review/import\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">Import/Export page</a> of your Goodreads account."
-msgstr ""
+msgstr "Podes descargar os teus datos de Goodreads desde a <a href=\"https://www.goodreads.com/review/import\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">páxina de Exportación/Importación</a> da túa conta Goodreads."
 
 #: bookwyrm/templates/import/import.html:51
 msgid "Data file:"
@@ -2918,11 +2918,11 @@ msgstr "Documentación"
 #: bookwyrm/templates/layout.html:221
 #, python-format
 msgid "Support %(site_name)s on <a href=\"%(support_link)s\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">%(support_title)s</a>"
-msgstr ""
+msgstr "Axuda a %(site_name)s en <a href=\"%(support_link)s\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">%(support_title)s</a>"
 
 #: bookwyrm/templates/layout.html:228
 msgid "BookWyrm's source code is freely available. You can contribute or report issues on <a href=\"https://github.com/bookwyrm-social/bookwyrm\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">GitHub</a>."
-msgstr ""
+msgstr "O código fonte de BookWyrm é público. Podes colaborar ou informar de problemas en <a href=\"https://github.com/bookwyrm-social/bookwyrm\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">GitHub</a>."
 
 #: bookwyrm/templates/lists/add_item_modal.html:8
 #, python-format
@@ -3918,8 +3918,8 @@ msgstr "Sen resultados para \"%(query)s\""
 #, python-format
 msgid "%(result_count)s result found"
 msgid_plural "%(result_count)s results found"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Atopouse %(result_count)s resultado"
+msgstr[1] "Atopáronse %(result_count)s resultados"
 
 #: bookwyrm/templates/settings/announcements/announcement.html:5
 #: bookwyrm/templates/settings/announcements/announcement.html:8
@@ -4389,7 +4389,7 @@ msgstr "Fallou:"
 
 #: bookwyrm/templates/settings/federation/instance_blocklist.html:62
 msgid "Expects a json file in the format provided by <a href=\"https://fediblock.org/\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">FediBlock</a>, with a list of entries that have <code>instance</code> and <code>url</code> fields. For example:"
-msgstr ""
+msgstr "É de esperar un ficheiro json no formato proporcionado por <a href=\"https://fediblock.org/\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">Fediblock</a>, cunha lista de entradas que teña campos para <code>instancia</code> e <code>url</code>. Por exemplo:"
 
 #: bookwyrm/templates/settings/federation/instance_list.html:35
 #: bookwyrm/templates/settings/users/server_filter.html:5
