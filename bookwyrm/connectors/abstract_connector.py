@@ -328,10 +328,10 @@ def maybe_isbn(query):
     """check if a query looks like an isbn"""
     isbn = re.sub(r"[\W_]", "", query)  # removes filler characters
     # ISBNs must be numeric except an ISBN10 checkdigit can be 'X'
-    if not isbn.rstrip("X").isnumeric():
+    if not isbn.upper().rstrip("X").isnumeric():
         return False
     return len(isbn) in [
         9,
         10,
         13,
-    ]  # ISBN10 or ISBN13, or maybe   ISBN10 missing a prepended zero
+    ]  # ISBN10 or ISBN13, or maybe ISBN10 missing a leading zero
