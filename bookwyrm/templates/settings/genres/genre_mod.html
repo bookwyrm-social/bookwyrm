@@ -9,10 +9,9 @@
 {% block breadcrumbs %}
 <nav class="breadcrumb subtitle" aria-label="breadcrumbs">
     <ul>
-        <li><a href="{% url 'settings-federation' %}">{% trans "Federated Instances" %}</a></li>
         <li class="is-active">
             <a href="#" aria-current="page">
-                {% trans "Add Genres" %}
+                {% trans "Manage Genres Home" %}
             </a>
         </li>
     </ul>
@@ -21,18 +20,7 @@
 
 {% block panel %}
 
-<div class="tabs">
-    <ul>
-        {% url 'settings-import-blocklist' as url %}
-        <li {% if url in request.path %}class="is-active" aria-current="page"{% endif %}>
-            <a href="{{ url }}">{% trans "Import block list" %}</a>
-        </li>
-        {% url 'settings-add-federated-server' as url %}
-        <li {% if url in request.path %}class="is-active" aria-current="page"{% endif %}>
-            <a href="{{ url }}">{% trans "Add instance" %}</a>
-        </li>
-    </ul>
-</div>
+    <p>{{ object.genre_name }}</p>
 
 
 

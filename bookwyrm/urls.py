@@ -135,7 +135,7 @@ urlpatterns = [
     ),
 
     re_path(
-        r"^settings/genres/(?P<genre_id>\d+)/?$", views.ModifyGenre.as_view(), name="settings-genres-mod"
+        r"^settings/genres/(?P<pk>\d+)/?$", views.ModifyGenre.as_view(), name="settings-genres-mod"
     ),
 
     re_path(
