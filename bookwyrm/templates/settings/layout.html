@@ -87,6 +87,10 @@
                 {% block site-subtabs %}{% endblock %}
             </li>
             <li>
+                {% url 'settings-genres' as url %}
+                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Genres" %}</a>
+            </li>
+            <li>
                 {% url 'settings-themes' as url %}
                 <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Themes" %}</a>
             </li>

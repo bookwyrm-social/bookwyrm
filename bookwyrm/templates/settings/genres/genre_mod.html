@@ -1,12 +1,39 @@
-{% extends 'layout.html' %}
+{% extends 'settings/layout.html' %}
 {% load i18n %}
+{% block title %}{% trans "Manage Genres" %}{% endblock %}
 
-{% block title %}{% trans "Mod" %}{% endblock %}
+{% block header %}
+{% trans "Manage Genres" %}
+{% endblock %}
 
-{% block content %}
+{% block breadcrumbs %}
+<nav class="breadcrumb subtitle" aria-label="breadcrumbs">
+    <ul>
+        <li><a href="{% url 'settings-federation' %}">{% trans "Federated Instances" %}</a></li>
+        <li class="is-active">
+            <a href="#" aria-current="page">
+                {% trans "Add Genres" %}
+            </a>
+        </li>
+    </ul>
+</nav>
+{% endblock %}
 
-<div class="block">
-    Hello Sirs
+{% block panel %}
+
+<div class="tabs">
+    <ul>
+        {% url 'settings-import-blocklist' as url %}
+        <li {% if url in request.path %}class="is-active" aria-current="page"{% endif %}>
+            <a href="{{ url }}">{% trans "Import block list" %}</a>
+        </li>
+        {% url 'settings-add-federated-server' as url %}
+        <li {% if url in request.path %}class="is-active" aria-current="page"{% endif %}>
+            <a href="{{ url }}">{% trans "Add instance" %}</a>
+        </li>
+    </ul>
 </div>
+
+
 
 {% endblock %}

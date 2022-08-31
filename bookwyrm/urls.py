@@ -129,11 +129,11 @@ urlpatterns = [
     ),
 
     re_path(
-        r"^settings/genres/?$", views.ManageGenreHome.as_view(), name="genres-home"
+        r"^settings/genres/?$", views.ManageGenreHome.as_view(), name="settings-genres"
     ),
 
     re_path(
-        r"^settings/mod_genre/?$", views.ModifyGenre.as_view(), name="genres-mod"
+        r"^settings/genres/add/?$", views.ModifyGenre.as_view(), name="settings-genres-mod"
     ),
 
     re_path(
