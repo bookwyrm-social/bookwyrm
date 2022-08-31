@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-08-29 20:43+0000\n"
-"PO-Revision-Date: 2022-08-29 22:37\n"
+"PO-Revision-Date: 2022-08-31 16:43\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: French\n"
 "Language: fr\n"
@@ -395,7 +395,7 @@ msgstr "Bienvenue sur %(site_name)s !"
 #: bookwyrm/templates/about/about.html:24
 #, python-format
 msgid "%(site_name)s is part of <em>BookWyrm</em>, a network of independent, self-directed communities for readers. While you can interact seamlessly with users anywhere in the <a href=\"https://joinbookwyrm.com/instances/\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">BookWyrm network</a>, this community is unique."
-msgstr ""
+msgstr "%(site_name)s est sur <em>BookWyrm</em>, un réseau de communautés indépendantes et autogérées, à destination des lecteurs. Bien que vous puissiez interagir sans limite avec n’importe quel compte dans le <a href=\"https://joinbookwyrm.com/instances/\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">réseau BookWyrm</a>, cette communauté est unique."
 
 #: bookwyrm/templates/about/about.html:44
 #, python-format
@@ -414,7 +414,7 @@ msgstr "<a href=\"%(book_path)s\"><em>%(title)s</em></a> divise les critiques pl
 
 #: bookwyrm/templates/about/about.html:93
 msgid "Track your reading, talk about books, write reviews, and discover what to read next. Always ad-free, anti-corporate, and community-oriented, BookWyrm is human-scale software, designed to stay small and personal. If you have feature requests, bug reports, or grand dreams, <a href=\"https://joinbookwyrm.com/get-involved\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">reach out</a> and make yourself heard."
-msgstr ""
+msgstr "Gardez trace de vos lectures, parlez de livres, écrivez des commentaires et découvrez quoi lire ensuite. BookWyrm est un logiciel à échelle humaine, sans publicité, anti-capitaliste et axé sur la communauté, conçu pour rester petit et personnel. Si vous avez des demandes de fonctionnalités, des rapports de bogue ou des rêves grandioses, <a href=\"https://joinbookwyrm.com/get-involved\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">rejoignez-nous</a> et faites-vous entendre."
 
 #: bookwyrm/templates/about/about.html:103
 msgid "Meet your admins"
@@ -988,12 +988,12 @@ msgstr "Est-ce que \"%(name)s\" fait partie de ces auteurs ou autrices ?"
 #: bookwyrm/templates/book/edit/edit_book.html:81
 #, python-format
 msgid "Author of <em>%(book_title)s</em>"
-msgstr ""
+msgstr "Auteur·ice de <em>%(book_title)s</em>"
 
 #: bookwyrm/templates/book/edit/edit_book.html:85
 #, python-format
 msgid "Author of <em>%(alt_title)s</em>"
-msgstr ""
+msgstr "Auteur·ice de <em>%(alt_title)s</em>"
 
 #: bookwyrm/templates/book/edit/edit_book.html:87
 msgid "Find more information at isni.org"
@@ -2575,7 +2575,7 @@ msgstr "Source de données :"
 
 #: bookwyrm/templates/import/import.html:42
 msgid "You can download your Goodreads data from the <a href=\"https://www.goodreads.com/review/import\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">Import/Export page</a> of your Goodreads account."
-msgstr ""
+msgstr "Vous pouvez télécharger vos données Goodreads depuis la page <a href=\"https://www.goodreads.com/review/import\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">Import/Export</a> de votre compte Goodreads."
 
 #: bookwyrm/templates/import/import.html:51
 msgid "Data file:"
@@ -2918,11 +2918,11 @@ msgstr "Documentation"
 #: bookwyrm/templates/layout.html:221
 #, python-format
 msgid "Support %(site_name)s on <a href=\"%(support_link)s\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">%(support_title)s</a>"
-msgstr ""
+msgstr "Soutenez %(site_name)s sur <a href=\"%(support_link)s\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">%(support_title)s</a>"
 
 #: bookwyrm/templates/layout.html:228
 msgid "BookWyrm's source code is freely available. You can contribute or report issues on <a href=\"https://github.com/bookwyrm-social/bookwyrm\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">GitHub</a>."
-msgstr ""
+msgstr "Le code source de BookWyrm est librement disponible. Vous pouvez contribuer ou rapporter des problèmes sur <a href=\"https://github.com/bookwyrm-social/bookwyrm\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">GitHub</a>."
 
 #: bookwyrm/templates/lists/add_item_modal.html:8
 #, python-format
@@ -3918,8 +3918,8 @@ msgstr "Aucun résultat pour « %(query)s »"
 #, python-format
 msgid "%(result_count)s result found"
 msgid_plural "%(result_count)s results found"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(result_count)s résultat trouvé"
+msgstr[1] "%(result_count)s résultats trouvés"
 
 #: bookwyrm/templates/settings/announcements/announcement.html:5
 #: bookwyrm/templates/settings/announcements/announcement.html:8
@@ -4389,7 +4389,7 @@ msgstr "Échec :"
 
 #: bookwyrm/templates/settings/federation/instance_blocklist.html:62
 msgid "Expects a json file in the format provided by <a href=\"https://fediblock.org/\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">FediBlock</a>, with a list of entries that have <code>instance</code> and <code>url</code> fields. For example:"
-msgstr ""
+msgstr "Attend un fichier json au format fourni par <a href=\"https://fediblock.org/\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">FediBlock</a>, avec une liste d'entrées qui ont des champs <code>instance</code> et <code>url</code> . Par exemple :"
 
 #: bookwyrm/templates/settings/federation/instance_list.html:35
 #: bookwyrm/templates/settings/users/server_filter.html:5
