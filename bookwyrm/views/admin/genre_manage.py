@@ -11,13 +11,17 @@ from django.template.response import TemplateResponse
 from django.views import View
 from django.views.generic import (
     TemplateView,
+    ListView,
+    DetailView,
 )
 
 
 
-class ManageGenreHome(TemplateView):
+class ManageGenreHome(ListView):
     template_name = 'settings/genres/genre_manage_home.html'
+    model = Genre
 
-class ModifyGenre(TemplateView):
+class ModifyGenre(DetailView):
     template_name = 'settings/genres/genre_mod.html'
+    model = Genre
 

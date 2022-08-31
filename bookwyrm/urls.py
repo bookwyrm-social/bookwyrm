@@ -35,6 +35,8 @@ urlpatterns = [
         "robots.txt",
         TemplateView.as_view(template_name="robots.txt", content_type="text/plain"),
     ),
+
+
     # federation endpoints
     re_path(r"^inbox/?$", views.Inbox.as_view(), name="inbox"),
     re_path(rf"{LOCAL_USER_PATH}/inbox/?$", views.Inbox.as_view(), name="user_inbox"),
@@ -133,7 +135,7 @@ urlpatterns = [
     ),
 
     re_path(
-        r"^settings/genres/add/?$", views.ModifyGenre.as_view(), name="settings-genres-mod"
+        r"^settings/genres/(?P<genre_id>\d+)/?$", views.ModifyGenre.as_view(), name="settings-genres-mod"
     ),
 
     re_path(
