@@ -127,6 +127,15 @@ urlpatterns = [
     re_path(
         r"^settings/users/?$", views.UserAdminList.as_view(), name="settings-users"
     ),
+
+    re_path(
+        r"^settings/genres/?$", views.ManageGenreHome.as_view(), name="genres-home"
+    ),
+
+    re_path(
+        r"^settings/mod_genre/?$", views.ModifyGenre.as_view(), name="genres-mod"
+    ),
+
     re_path(
         r"^settings/users/(?P<status>(local|federated|deleted))\/?$",
         views.UserAdminList.as_view(),

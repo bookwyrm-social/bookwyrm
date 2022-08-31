@@ -15,6 +15,9 @@ from django.views.generic import (
 
 
 
-class ManageGenre(TemplateView):
-    template_name = 'search/genre_search.html'
+class ManageGenreHome(TemplateView):
+    template_name = 'settings/genres/genre_manage_home.html'
+
+class ModifyGenre(TemplateView):
+    template_name = 'settings/genres/genre_mod.html'
 
