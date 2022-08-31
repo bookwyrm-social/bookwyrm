@@ -2,6 +2,13 @@
 {% load i18n %}
 {% block title %}{% trans "Manage Genres" %}{% endblock %}
 
+{% block edit-button %}
+<a href="{% url 'settings-genres-add' %}">
+    <span class="icon icon-plus" title="{% trans 'Add genre' %}" aria-hidden="True"></span>
+    <span class="is-hidden-mobile">{% trans "Add genre" %}</span>
+</a>
+{% endblock %}
+
 {% block header %}
 {% trans "Manage Genres" %}
 {% endblock %}
@@ -28,7 +35,11 @@
         {% for genre in object_list %}
         <tr>
             <td class="overflow-wrap-anywhere pl-1">
-                <a href="{% url 'settings-genres-mod' genre.id %}">{{ genre.genre_name }}</a>
+                {% if genre.immutable %}
+                    <p>{{ genre.genre_name }} - Immutable</p>
+                {% else %}
+                    <a href="{% url 'settings-genres-mod' genre.id %}">{{ genre.genre_name }}</a>
+                {% endif %}
             </td>
         </tr>
         {% endfor %}
