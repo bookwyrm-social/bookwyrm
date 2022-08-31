@@ -358,3 +358,11 @@ else:
 OTEL_EXPORTER_OTLP_ENDPOINT = env("OTEL_EXPORTER_OTLP_ENDPOINT", None)
 OTEL_EXPORTER_OTLP_HEADERS = env("OTEL_EXPORTER_OTLP_HEADERS", None)
 OTEL_SERVICE_NAME = env("OTEL_SERVICE_NAME", None)
+
+DEFAULT_GENRES = {
+    "Action" : "Books that are action packed and full of excitment.",
+    "Adventure" : "Books that lead the reader to a New World.",
+    "Drama": "Exciting, emotional, or unexpected series of events or set of circumstances.",
+    "Mystery": "A novel dealing with a puzzling crime.",
+    "Sci-fi": "Fiction that deals principally with the impact of actual or imagined science upon society or individuals.",
+}
