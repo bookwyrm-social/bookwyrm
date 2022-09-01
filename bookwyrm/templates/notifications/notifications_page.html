@@ -10,6 +10,7 @@
         <h1 class="title">{% trans "Notifications" %}</h1>
     </div>
 
+    {% if notifications %}
     <form name="clear" action="/notifications" method="POST" class="column is-narrow">
         {% csrf_token %}
         {% spaceless %}
@@ -19,6 +20,7 @@
         </button>
         {% endspaceless %}
     </form>
+    {% endif %}
 </header>
 
 <div class="block">
