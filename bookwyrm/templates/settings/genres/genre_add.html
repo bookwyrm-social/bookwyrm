@@ -21,8 +21,44 @@
 {% block panel %}
 
     <form method="post">{% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" value="Create">
+        <div class="field">
+
+            {{ form.as_p }}
+        </div>
+        
+        <button type="submit" class="button is-primary">  {% trans "Save" %} </button>
     </form>
+    <!-- <form method="POST">
+        {% csrf_token %}
+        <div class="columns">
+
+            <div class="column is-half">
+                <div class="field" for="{{ form.genre_name.id_for_label }}">
+                    <label class="label">
+                        {% trans "Genre name:" %}
+                    </label>
+                    <input type="text" name="genre_name" maxlength="255" class="input"  >
+                    
+                </div>
+            </div>
+        </div>
+
+        <div class="field">
+            <label class="label" for="{{ form.genre_description.id_for_label }}">
+                {% trans "Genre description:" %}
+            </label>
+            <textarea
+                name="desc"
+                cols="40"
+                rows="5"
+                class="textarea"
+                id="desc_genre"
+            >{{ form.notes.value|default:'' }}</textarea>
+        </div>
+    
+        <button type="submit" class="button is-primary">
+            {% trans "Save" %}
+        </button>
+    </form> -->
 
 {% endblock %}
