@@ -14,6 +14,7 @@ from django.views.generic import (
     CreateView,
     ListView,
     UpdateView,
+    DeleteView,
 )
 
 
@@ -32,4 +33,9 @@ class CreateGenre(CreateView):
     model = Genre
     success_url = reverse_lazy('settings-genres')
     fields = ['genre_name', 'description']
+
+class RemoveGenre(DeleteView):
+    template_name = 'settings/genres/genre_delete.html'
+    model = Genre
+    success_url = reverse_lazy('settings-genres')
 

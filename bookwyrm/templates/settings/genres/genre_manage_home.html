@@ -36,9 +36,16 @@
         <tr>
             <td class="overflow-wrap-anywhere pl-1">
                 {% if genre.immutable %}
-                    <p>{{ genre.genre_name }} - Immutable</p>
+                    <p>{{ genre.genre_name }}</p>
                 {% else %}
                     <a href="{% url 'settings-genres-mod' genre.id %}">{{ genre.genre_name }}</a>
+                {% endif %}
+            </td>
+            <td>
+                {% if genre.immutable %}
+                    <p>Immutable</p>
+                {% else %}
+                    <a href="{% url 'settings-genres-remove' genre.id %}">Delete</a>
                 {% endif %}
             </td>
         </tr>

@@ -139,6 +139,10 @@ urlpatterns = [
     ),
 
     re_path(
+        r"^settings/genres/(?P<pk>\d+)/delete/?$", views.RemoveGenre.as_view(), name="settings-genres-remove"
+    ),
+
+    re_path(
         r"^settings/genres/(?P<pk>\d+)/?$", views.ModifyGenre.as_view(), name="settings-genres-mod"
     ),
 
