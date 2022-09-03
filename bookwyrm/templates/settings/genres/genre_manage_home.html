@@ -30,6 +30,37 @@
 <div class="table-container block">
     <table class="table is-striped is-fullwidth">
         <tr>
+            {% url 'settings-genres' as url %}
+            <th colspan="2">
+                {% trans "Genre" as text %}
+                {% include 'snippets/table-sort-header.html' with field="genre" sort=sort text=text %}
+            </th>
+        </tr>
+        {% for genre in object_list %}
+        <tr>
+
+            <td class="overflow-wrap-anywhere pl-1">
+                <a href="{% url 'settings-genres-mod' genre.id %}">{{ genre.genre_name }}</a>
+            </td>
+            <td>
+                {% if not genre.immutable %}
+                    <span class="tag is-success" aria-hidden="true">
+                        <span class="icon icon-check"></span>
+                    </span>
+                    {% trans "Can be modified!" %}
+                {% else %}
+                    <span class="tag is-danger" aria-hidden="true">
+                        <span class="icon icon-x"></span>
+                    </span>
+                    {% trans "Immutable" %}
+                {% endif %}
+            </td>
+
+        </tr>
+        {% endfor %}
+    </table>
+<!--    <table class="table is-striped is-fullwidth">
+        <tr>
 
         </tr>
         {% for genre in object_list %}
@@ -50,7 +81,7 @@
             </td>
         </tr>
         {% endfor %}
-    </table>
+    </table> -->
 </div>
 
 
