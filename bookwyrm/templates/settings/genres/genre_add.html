@@ -22,11 +22,10 @@
 
     <form method="post">{% csrf_token %}
         <div class="field">
-
             {{ form.as_p }}
         </div>
         
-        <button type="submit" class="button is-primary">  {% trans "Save" %} </button>
+        <button type="submit" class="button is-primary">  {% trans "Create" %} </button>
     </form>
     <!-- <form method="POST">
         {% csrf_token %}

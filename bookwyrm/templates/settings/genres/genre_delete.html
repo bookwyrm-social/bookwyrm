@@ -21,9 +21,12 @@
 {% block panel %}
 
     <form method="post">{% csrf_token %}
-        <p>Are you sure you want to delete "{{ object }}"?</p>
+        <p>Are you sure you want to delete "{{ object }}"? Every book that had this genre will lose it!</p>
         {{ form }}
-        <input type="submit" value="Delete">
+        <button type="submit" class="button is-danger is-light">{% trans "Delete" %}</button>
+    </form>
+    <form method="POST" action="{% url 'settings-genres' %}">
+        <button type="submit" class="button is-primary">  {% trans "Return" %} </button>
     </form>
 
 {% endblock %}

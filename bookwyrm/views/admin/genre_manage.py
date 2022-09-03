@@ -26,8 +26,10 @@ class ManageGenreHome(ListView):
 
 class ModifyGenre(UpdateView):
     template_name = 'settings/genres/genre_mod.html'
-    fields = ['genre_name', 'description']
+    #fields = ['genre_name', 'description']
     model = Genre
+    form_class = GenreForm
+    success_url = reverse_lazy('settings-genres')
 
 class CreateGenre(CreateView):
     template_name = 'settings/genres/genre_add.html'

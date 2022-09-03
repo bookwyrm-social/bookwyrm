@@ -19,12 +19,44 @@
 {% endblock %}
 
 {% block panel %}
+    {% if genre.immutable %}
+        <p>This genre is immutable and cannot be modified.</p>
+    {% else %}
+        <div class="block columns">
+            <div class="column is-flex is-flex-direction-column">
+                <h4 class="title is-4">Editing {{ object.genre_name }}</h4>
+                <div class="box content is-flex-grow-1">
+                    <dl>
+                        <form method="post">{% csrf_token %}
+                            <div class="field">
+                                {{ form.as_p }}
+                            </div>
+                            
+                            <button type="submit" class="button is-primary">  {% trans "Save" %} </button>
+                        </form> 
+                    </dl>
+                </div>
+            </div>
+            <div class="column is-flex is-flex-direction-column">
+                <h4 class="title is-4">Genre Actions</h4>
+                <div class="box content is-flex-grow-1">
+                    <dl>
+                        <form method="POST" action="{% url 'settings-genres-remove' genre.id %}">{% csrf_token %}
+                            
+                            <button type="submit" class="button is-danger is-light">{% trans "Delete Genre" %}</button>
+                        </form> 
+                    </dl>
+                </div>
+            </div>
+        </div>
+    {% endif %}
 
-    <p>{{ object.genre_name }}</p>
-
-    <form method="post">{% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" value="Update">
-    </form>
+    <!-- <form method="post">{% csrf_token %}
+        <div class="field">
+            {{ form.as_p }}
+        </div>
+        
+        <button type="submit" class="button is-primary">  {% trans "Save" %} </button>
+    </form> -->
 
 {% endblock %}
