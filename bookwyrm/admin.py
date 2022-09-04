@@ -7,6 +7,7 @@ admin.site.register(models.User)
 admin.site.register(models.FederatedServer)
 admin.site.register(models.Connector)
 admin.site.register(models.book.Genre)
+admin.site.register(models.notification.GenreNotification)
 
 
 class EditionAdmin(admin.ModelAdmin):
@@ -19,4 +20,3 @@ class WorksAdmin(admin.ModelAdmin):
 
 admin.site.register(models.Edition, EditionAdmin)
 admin.site.register(models.Work, WorksAdmin)
-

@@ -1,10 +1,41 @@
 """ alert a user to activity """
 from django.db import models, transaction
+from django.utils import timezone
 from django.dispatch import receiver
 from .base_model import BookWyrmModel
+from .book import Genre
 from . import Boost, Favorite, GroupMemberInvitation, ImportJob, ListItem, Report
-from . import Status, User, UserFollowRequest
+from . import Status, User, UserFollowRequest, Book
 
+class GenreNotification(models.Model):
+    """a book has been added to a genre you follow"""
+    to_user = models.ForeignKey(User, related_name="notification_to", on_delete=models.CASCADE, null=True)
+    from_genre = models.ForeignKey(Genre, related_name="notification_from", on_delete=models.CASCADE, null=True)
+    book = models.ForeignKey(Book, related_name="+", on_delete=models.CASCADE, null=True, blank=True)
+    created = models.DateTimeField(default=timezone.now)
+    unread = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ("-created",)
+        #Speed up notifcation queries
+        index_together = ("to_user","unread")
+
+class GenreNotificationQuerySet(models.query.QuerySet):
+    def unread(self):
+        return self.filter(unread=True)
+
+    def read(self):
+        return self.filter(unread=False)
+
+    def mark_all_as_read(self, to_user):
+        qs = self.unread(True)
+        if to_user:
+            qs = qs.filter(to_user=to_user)
+        return qs.update(unread=True)
+
+    def delete_all(self, to_user):
+        qs = qs.filter(to_user=to_user)
+        delete()
 
 class Notification(BookWyrmModel):
     """you've been tagged, liked, followed, etc"""
