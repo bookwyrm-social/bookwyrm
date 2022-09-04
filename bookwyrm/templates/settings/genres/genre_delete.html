@@ -1,0 +1,32 @@
+{% extends 'settings/layout.html' %}
+{% load i18n %}
+{% block title %}{% trans "Manage Genres" %}{% endblock %}
+
+{% block header %}
+{% trans "Manage Genres" %}
+{% endblock %}
+
+{% block breadcrumbs %}
+<nav class="breadcrumb subtitle" aria-label="breadcrumbs">
+    <ul>
+        <li class="is-active">
+            <a href="#" aria-current="page">
+                {% trans "Manage Genres Home" %}
+            </a>
+        </li>
+    </ul>
+</nav>
+{% endblock %}
+
+{% block panel %}
+
+    <form method="post">{% csrf_token %}
+        <p>Are you sure you want to delete "{{ object }}"? Every book that had this genre will lose it!</p>
+        {{ form }}
+        <button type="submit" class="button is-danger is-light">{% trans "Delete" %}</button>
+    </form>
+    <form method="POST" action="{% url 'settings-genres' %}">
+        <button type="submit" class="button is-primary">  {% trans "Return" %} </button>
+    </form>
+
+{% endblock %}

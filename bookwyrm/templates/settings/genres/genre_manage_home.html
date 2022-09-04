@@ -1,0 +1,79 @@
+{% extends 'settings/layout.html' %}
+{% load i18n %}
+{% block title %}{% trans "Manage Genres" %}{% endblock %}
+
+{% block edit-button %}
+<a href="{% url 'settings-genres-add' %}">
+    <span class="icon icon-plus" title="{% trans 'Add genre' %}" aria-hidden="True"></span>
+    <span class="is-hidden-mobile">{% trans "Add genre" %}</span>
+</a>
+{% endblock %}
+
+{% block header %}
+{% trans "Manage Genres" %}
+{% endblock %}
+
+
+
+{% block panel %}
+
+<div class="table-container block">
+    <table class="table is-striped is-fullwidth">
+        <tr>
+            {% url 'settings-genres' as url %}
+            <th colspan="2">
+                {% trans "Genre" as text %}
+                {% include 'snippets/table-sort-header.html' with field="genre" sort=sort text=text %}
+            </th>
+        </tr>
+        {% for genre in object_list %}
+        <tr>
+
+            <td class="overflow-wrap-anywhere pl-1">
+                <a href="{% url 'settings-genres-mod' genre.id %}">{{ genre.genre_name }}</a>
+            </td>
+            <td>
+                {% if not genre.immutable %}
+                    <span class="tag is-success" aria-hidden="true">
+                        <span class="icon icon-check"></span>
+                    </span>
+                    {% trans "Can be modified!" %}
+                {% else %}
+                    <span class="tag is-danger" aria-hidden="true">
+                        <span class="icon icon-x"></span>
+                    </span>
+                    {% trans "Immutable" %}
+                {% endif %}
+            </td>
+
+        </tr>
+        {% endfor %}
+    </table>
+<!--    <table class="table is-striped is-fullwidth">
+        <tr>
+
+        </tr>
+        {% for genre in object_list %}
+        <tr>
+            <td class="overflow-wrap-anywhere pl-1">
+                {% if genre.immutable %}
+                    <p>{{ genre.genre_name }}</p>
+                {% else %}
+                    <a href="{% url 'settings-genres-mod' genre.id %}">{{ genre.genre_name }}</a>
+                {% endif %}
+            </td>
+            <td>
+                {% if genre.immutable %}
+                    <p>Immutable</p>
+                {% else %}
+                    <a href="{% url 'settings-genres-remove' genre.id %}">Delete</a>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table> -->
+</div>
+
+
+
+{% endblock %}
