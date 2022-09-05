@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-08-29 20:43+0000\n"
-"PO-Revision-Date: 2022-09-05 16:42\n"
+"PO-Revision-Date: 2022-09-05 17:46\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Japanese\n"
 "Language: ja\n"
@@ -592,7 +592,7 @@ msgstr "その調子！"
 #, python-format
 msgid "%(display_name)s left %(ratings_total)s rating, <br />their average rating is %(rating_average)s"
 msgid_plural "%(display_name)s left %(ratings_total)s ratings, <br />their average rating is %(rating_average)s"
-msgstr[0] ""
+msgstr[0] "%(display_name)s は%(ratings_total)s個の評価をし、<br />その平均は%(rating_average)sでした。"
 
 #: bookwyrm/templates/annual_summary/layout.html:238
 msgid "Their best rated review"
@@ -601,12 +601,12 @@ msgstr "最高評価のレビュー"
 #: bookwyrm/templates/annual_summary/layout.html:251
 #, python-format
 msgid "Their rating: <strong>%(rating)s</strong>"
-msgstr ""
+msgstr "評価: <strong>%(rating)s</strong>"
 
 #: bookwyrm/templates/annual_summary/layout.html:268
 #, python-format
 msgid "All the books %(display_name)s read in %(year)s"
-msgstr ""
+msgstr "%(display_name)s が%(year)s年に読んだすべての本"
 
 #: bookwyrm/templates/author/author.html:18
 #: bookwyrm/templates/author/author.html:19
@@ -620,7 +620,7 @@ msgstr "著者の詳細"
 #: bookwyrm/templates/author/author.html:39
 #: bookwyrm/templates/author/edit_author.html:42
 msgid "Aliases:"
-msgstr ""
+msgstr "別名:"
 
 #: bookwyrm/templates/author/author.html:48
 msgid "Born:"
@@ -670,7 +670,7 @@ msgstr "Goodreadsで表示"
 #: bookwyrm/templates/author/author.html:141
 #, python-format
 msgid "Books by %(name)s"
-msgstr ""
+msgstr "%(name)s による本"
 
 #: bookwyrm/templates/author/edit_author.html:5
 msgid "Edit Author:"
@@ -679,7 +679,7 @@ msgstr "著者を編集:"
 #: bookwyrm/templates/author/edit_author.html:13
 #: bookwyrm/templates/book/edit/edit_book.html:25
 msgid "Added:"
-msgstr ""
+msgstr "追加日:"
 
 #: bookwyrm/templates/author/edit_author.html:14
 #: bookwyrm/templates/book/edit/edit_book.html:28
@@ -701,17 +701,17 @@ msgstr "メタデータ"
 #: bookwyrm/templates/settings/link_domains/edit_domain_modal.html:14
 #: bookwyrm/templates/shelf/form.html:9
 msgid "Name:"
-msgstr ""
+msgstr "名前:"
 
 #: bookwyrm/templates/author/edit_author.html:44
 #: bookwyrm/templates/book/edit/edit_book_form.html:78
 #: bookwyrm/templates/book/edit/edit_book_form.html:148
 msgid "Separate multiple values with commas."
-msgstr ""
+msgstr "複数ある場合はコンマで区切ってください。"
 
 #: bookwyrm/templates/author/edit_author.html:50
 msgid "Bio:"
-msgstr ""
+msgstr "個人紹介:"
 
 #: bookwyrm/templates/author/edit_author.html:56
 msgid "Wikipedia link:"
@@ -795,7 +795,7 @@ msgstr "キャンセル"
 #: bookwyrm/templates/author/sync_modal.html:15
 #, python-format
 msgid "Loading data will connect to <strong>%(source_name)s</strong> and check for any metadata about this author which aren't present here. Existing metadata will not be overwritten."
-msgstr ""
+msgstr "データのロードでは、 <strong>%(source_name)s</strong> に接続し、この著者に関するここにないメタデータを取得します。 既存のメタデータは上書きされません。"
 
 #: bookwyrm/templates/author/sync_modal.html:24
 #: bookwyrm/templates/book/edit/edit_book.html:126
@@ -808,7 +808,7 @@ msgstr "確認"
 
 #: bookwyrm/templates/book/book.html:19
 msgid "Unable to connect to remote source."
-msgstr ""
+msgstr "リモートの情報源に接続できませんでした。"
 
 #: bookwyrm/templates/book/book.html:64 bookwyrm/templates/book/book.html:65
 msgid "Edit Book"
@@ -830,7 +830,7 @@ msgstr "クリックして拡大"
 #, python-format
 msgid "(%(review_count)s review)"
 msgid_plural "(%(review_count)s reviews)"
-msgstr[0] ""
+msgstr[0] "(%(review_count)s件のレビュー)"
 
 #: bookwyrm/templates/book/book.html:191
 msgid "Add Description"
@@ -846,25 +846,25 @@ msgstr "概要:"
 #, python-format
 msgid "%(count)s edition"
 msgid_plural "%(count)s editions"
-msgstr[0] ""
+msgstr[0] "%(count)s個の版"
 
 #: bookwyrm/templates/book/book.html:228
 msgid "You have shelved this edition in:"
-msgstr ""
+msgstr "次の本棚に既に追加されています:"
 
 #: bookwyrm/templates/book/book.html:243
 #, python-format
 msgid "A <a href=\"%(book_path)s\">different edition</a> of this book is on your <a href=\"%(shelf_path)s\">%(shelf_name)s</a> shelf."
-msgstr ""
+msgstr "この本の<a href=\"%(book_path)s\">別の版</a>があなたの本棚 <a href=\"%(shelf_path)s\">%(shelf_name)s</a> にあります。"
 
 #: bookwyrm/templates/book/book.html:254
 msgid "Your reading activity"
-msgstr ""
+msgstr "あなたの読書活動"
 
 #: bookwyrm/templates/book/book.html:260
 #: bookwyrm/templates/guided_tour/book.html:56
 msgid "Add read dates"
-msgstr ""
+msgstr "読了日を追加"
 
 #: bookwyrm/templates/book/book.html:268
 msgid "You don't have any reading activity for this book."
@@ -888,7 +888,7 @@ msgstr "タイトル"
 
 #: bookwyrm/templates/book/book.html:354
 msgid "Places"
-msgstr ""
+msgstr "場所"
 
 #: bookwyrm/templates/book/book.html:365
 #: bookwyrm/templates/groups/group.html:19
@@ -977,38 +977,38 @@ msgstr "この本の情報を確認する"
 #: bookwyrm/templates/book/edit/edit_book.html:70
 #, python-format
 msgid "Is \"%(name)s\" one of these authors?"
-msgstr ""
+msgstr "「%(name)s」は以下の著者のいずれかですか？"
 
 #: bookwyrm/templates/book/edit/edit_book.html:81
 #, python-format
 msgid "Author of <em>%(book_title)s</em>"
-msgstr ""
+msgstr "<em>%(book_title)s</em> の著者"
 
 #: bookwyrm/templates/book/edit/edit_book.html:85
 #, python-format
 msgid "Author of <em>%(alt_title)s</em>"
-msgstr ""
+msgstr "<em>%(alt_title)s</em> の著者"
 
 #: bookwyrm/templates/book/edit/edit_book.html:87
 msgid "Find more information at isni.org"
-msgstr ""
+msgstr "isni.org で詳細を見る"
 
 #: bookwyrm/templates/book/edit/edit_book.html:97
 msgid "This is a new author"
-msgstr ""
+msgstr "これは新しい著者です"
 
 #: bookwyrm/templates/book/edit/edit_book.html:104
 #, python-format
 msgid "Creating a new author: %(name)s"
-msgstr ""
+msgstr "新しい著者を作成: %(name)s"
 
 #: bookwyrm/templates/book/edit/edit_book.html:111
 msgid "Is this an edition of an existing work?"
-msgstr ""
+msgstr "これは既存の作品の版ですか？"
 
 #: bookwyrm/templates/book/edit/edit_book.html:119
 msgid "This is a new work"
-msgstr ""
+msgstr "これは新しい作品です"
 
 #: bookwyrm/templates/book/edit/edit_book.html:128
 #: bookwyrm/templates/feed/status.html:21
@@ -1097,7 +1097,7 @@ msgstr "別のタイトルを加える"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:139
 msgid "Publication"
-msgstr ""
+msgstr "出版"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:144
 msgid "Publisher:"
@@ -1150,7 +1150,7 @@ msgstr "カバー画像"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:252
 msgid "Physical Properties"
-msgstr ""
+msgstr "物理的なプロパティ"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:259
 #: bookwyrm/templates/book/editions/format_filter.html:6
@@ -1163,11 +1163,11 @@ msgstr "フォーマットの詳細:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:280
 msgid "Pages:"
-msgstr ""
+msgstr "ページ数:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:291
 msgid "Book Identifiers"
-msgstr ""
+msgstr "書籍識別子"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:296
 msgid "ISBN 13:"
@@ -1184,7 +1184,7 @@ msgstr "OpenlibraryのID:"
 #: bookwyrm/templates/book/editions/editions.html:4
 #, python-format
 msgid "Editions of %(book_title)s"
-msgstr ""
+msgstr "%(book_title)s の版"
 
 #: bookwyrm/templates/book/editions/editions.html:8
 #, python-format
@@ -1624,24 +1624,24 @@ msgstr ""
 #: bookwyrm/templates/email/invite/text_content.html:4
 #, python-format
 msgid "You're invited to join %(site_name)s! Click the link below to create an account."
-msgstr ""
+msgstr "あなたは %(site_name)s に招待されました！ 下のリンクをクリックしてアカウントを作成してください。"
 
 #: bookwyrm/templates/email/invite/text_content.html:8
 #, python-format
 msgid "Learn more about %(site_name)s:"
-msgstr ""
+msgstr "%(site_name)s についてもっと詳しく:"
 
 #: bookwyrm/templates/email/moderation_report/html_content.html:8
 #: bookwyrm/templates/email/moderation_report/text_content.html:6
 #, python-format
 msgid "@%(reporter)s has flagged a link domain for moderation."
-msgstr ""
+msgstr "@%(reporter)s がモデレーションによりリンクを通報しました。"
 
 #: bookwyrm/templates/email/moderation_report/html_content.html:14
 #: bookwyrm/templates/email/moderation_report/text_content.html:10
 #, python-format
 msgid "@%(reporter)s has flagged behavior by @%(reportee)s for moderation."
-msgstr ""
+msgstr "@%(reporter)s がモデレーションにより @%(reportee)s の行動を通報しました。"
 
 #: bookwyrm/templates/email/moderation_report/html_content.html:21
 #: bookwyrm/templates/email/moderation_report/text_content.html:15
@@ -1657,7 +1657,7 @@ msgstr "%(site_name)sへの新しい通報"
 #: bookwyrm/templates/email/password_reset/text_content.html:4
 #, python-format
 msgid "You requested to reset your %(site_name)s password. Click the link below to set a new password and log in to your account."
-msgstr ""
+msgstr "%(site_name)s におけるパスワードのリセットをリクエストしました。以下のリンクをクリックして新しいパスワードを設定してからアカウントにログインしてください。"
 
 #: bookwyrm/templates/email/password_reset/html_content.html:9
 #: bookwyrm/templates/landing/password_reset.html:4
@@ -1685,7 +1685,7 @@ msgstr "%(site_name)s のホームページ"
 
 #: bookwyrm/templates/embed-layout.html:40 bookwyrm/templates/layout.html:204
 msgid "Contact site admin"
-msgstr ""
+msgstr "管理者に連絡する"
 
 #: bookwyrm/templates/embed-layout.html:46
 msgid "Join BookWyrm"
@@ -1727,11 +1727,11 @@ msgstr "%(year)s の読書目標"
 #: bookwyrm/templates/feed/goal_card.html:18
 #, python-format
 msgid "You can set or change your reading goal any time from your <a href=\"%(path)s\">profile page</a>"
-msgstr ""
+msgstr "<a href=\"%(path)s\">プロフィールページ</a>から、読書目標をいつでも設定または変更できます。"
 
 #: bookwyrm/templates/feed/layout.html:4
 msgid "Updates"
-msgstr ""
+msgstr "更新情報"
 
 #: bookwyrm/templates/feed/suggested_books.html:6
 #: bookwyrm/templates/guided_tour/home.html:127
@@ -1766,17 +1766,17 @@ msgstr "ディレクトリを表示"
 
 #: bookwyrm/templates/feed/summary_card.html:21
 msgid "The end of the year is the best moment to take stock of all the books read during the last 12 months. How many pages have you read? Which book is your best-rated of the year? We compiled these stats, and more!"
-msgstr ""
+msgstr "年末は、この12ヶ月で読んだすべての本を振り返るのに最適な時期です。何ページ読みましたか？今年一番の評価だった本は？さまざまな統計をまとめました！"
 
 #: bookwyrm/templates/feed/summary_card.html:26
 #, python-format
 msgid "Discover your stats for %(year)s!"
-msgstr ""
+msgstr "%(year)s年のあなたの統計を見ましょう！"
 
 #: bookwyrm/templates/get_started/book_preview.html:6
 #, python-format
 msgid "Have you read %(book_title)s?"
-msgstr ""
+msgstr "%(book_title)s を読みましたか？"
 
 #: bookwyrm/templates/get_started/book_preview.html:7
 msgid "Add to your books"
@@ -1786,13 +1786,13 @@ msgstr "あなたの本に追加"
 #: bookwyrm/templates/shelf/shelf.html:86 bookwyrm/templates/user/user.html:33
 #: bookwyrm/templatetags/shelf_tags.py:48
 msgid "To Read"
-msgstr ""
+msgstr "あとで読む"
 
 #: bookwyrm/templates/get_started/book_preview.html:11
 #: bookwyrm/templates/shelf/shelf.html:87 bookwyrm/templates/user/user.html:34
 #: bookwyrm/templatetags/shelf_tags.py:50
 msgid "Currently Reading"
-msgstr ""
+msgstr "読んでいる"
 
 #: bookwyrm/templates/get_started/book_preview.html:12
 #: bookwyrm/templates/shelf/shelf.html:88
@@ -1806,11 +1806,11 @@ msgstr "読む"
 #: bookwyrm/templates/get_started/book_preview.html:13
 #: bookwyrm/templates/shelf/shelf.html:89 bookwyrm/templates/user/user.html:36
 msgid "Stopped Reading"
-msgstr ""
+msgstr "読むのをやめた"
 
 #: bookwyrm/templates/get_started/books.html:6
 msgid "What are you reading?"
-msgstr ""
+msgstr "何を読んでいますか？"
 
 #: bookwyrm/templates/get_started/books.html:9
 #: bookwyrm/templates/layout.html:48 bookwyrm/templates/lists/list.html:213
@@ -1820,12 +1820,12 @@ msgstr "本を検索"
 #: bookwyrm/templates/get_started/books.html:11
 #, python-format
 msgid "No books found for \"%(query)s\""
-msgstr ""
+msgstr "「%(query)s」に該当する本は見つかりませんでした"
 
 #: bookwyrm/templates/get_started/books.html:11
 #, python-format
 msgid "You can add books when you start using %(site_name)s."
-msgstr ""
+msgstr "%(site_name)s を使い始めると、本を追加できます。"
 
 #: bookwyrm/templates/get_started/books.html:16
 #: bookwyrm/templates/get_started/books.html:17
@@ -1865,7 +1865,7 @@ msgstr "ようこそ！"
 
 #: bookwyrm/templates/get_started/layout.html:22
 msgid "These are some first steps to get you started."
-msgstr ""
+msgstr "使い始めるにあたって、最初のステップがいくつかあります。"
 
 #: bookwyrm/templates/get_started/layout.html:36
 #: bookwyrm/templates/get_started/profile.html:6
@@ -1898,11 +1898,11 @@ msgstr "表示名:"
 #: bookwyrm/templates/preferences/edit_user.html:47
 #: bookwyrm/templates/settings/announcements/edit_announcement.html:49
 msgid "Summary:"
-msgstr ""
+msgstr "概要:"
 
 #: bookwyrm/templates/get_started/profile.html:34
 msgid "A little bit about you"
-msgstr ""
+msgstr "あなたについて、もうちょっと"
 
 #: bookwyrm/templates/get_started/profile.html:43
 #: bookwyrm/templates/preferences/edit_user.html:27
@@ -1915,20 +1915,20 @@ msgstr "フォロワーを手動で承認する:"
 
 #: bookwyrm/templates/get_started/profile.html:58
 msgid "Show this account in suggested users:"
-msgstr ""
+msgstr "このアカウントを提案されたユーザとして表示する:"
 
 #: bookwyrm/templates/get_started/profile.html:62
 msgid "Your account will show up in the directory, and may be recommended to other BookWyrm users."
-msgstr ""
+msgstr "あなたのアカウントはディレクトリに表示され、他の BookWyrm ユーザーにおすすめされることがあります。"
 
 #: bookwyrm/templates/get_started/users.html:11
 msgid "Search for a user"
-msgstr ""
+msgstr "ユーザーを検索"
 
 #: bookwyrm/templates/get_started/users.html:13
 #, python-format
 msgid "No users found for \"%(query)s\""
-msgstr ""
+msgstr "「%(query)s」に該当するユーザーは見つかりませんでした"
 
 #: bookwyrm/templates/groups/create_form.html:5
 #: bookwyrm/templates/guided_tour/user_groups.html:32
@@ -1939,7 +1939,7 @@ msgstr "グループを作成"
 #: bookwyrm/templates/groups/created_text.html:4
 #, python-format
 msgid "Managed by <a href=\"%(path)s\">%(username)s</a>"
-msgstr ""
+msgstr "<a href=\"%(path)s\">%(username)s</a> によって管理されています"
 
 #: bookwyrm/templates/groups/delete_group_modal.html:4
 msgid "Delete this group?"
@@ -1981,7 +1981,7 @@ msgstr "グループを削除"
 
 #: bookwyrm/templates/groups/group.html:21
 msgid "Members of this group can create group-curated lists."
-msgstr ""
+msgstr "このグループのメンバーは、グループによるキュレーションリストを作成することができます。"
 
 #: bookwyrm/templates/groups/group.html:26
 #: bookwyrm/templates/lists/create_form.html:5
@@ -1999,7 +1999,7 @@ msgstr "グループを編集"
 
 #: bookwyrm/templates/groups/members.html:11
 msgid "Search to add a user"
-msgstr ""
+msgstr "追加するユーザーを検索"
 
 #: bookwyrm/templates/groups/members.html:32
 msgid "Leave group"
@@ -2022,31 +2022,31 @@ msgstr "新しいメンバーを加えましょう！"
 #, python-format
 msgid "%(mutuals)s follower you follow"
 msgid_plural "%(mutuals)s followers you follow"
-msgstr[0] ""
+msgstr[0] "%(mutuals)s人の相互フォロワー"
 
 #: bookwyrm/templates/groups/suggested_users.html:27
 #: bookwyrm/templates/snippets/suggested_users.html:23
 #, python-format
 msgid "%(shared_books)s book on your shelves"
 msgid_plural "%(shared_books)s books on your shelves"
-msgstr[0] ""
+msgstr[0] "あなたの本棚のうち%(shared_books)s冊を読んでいます"
 
 #: bookwyrm/templates/groups/suggested_users.html:43
 #, python-format
 msgid "No potential members found for \"%(user_query)s\""
-msgstr ""
+msgstr "「%(user_query)s」の潜在的なメンバーが見つかりませんでした。"
 
 #: bookwyrm/templates/groups/user_groups.html:15
 msgid "Manager"
-msgstr ""
+msgstr "管理者"
 
 #: bookwyrm/templates/guided_tour/book.html:10
 msgid "This is home page of a book. Let's see what you can do while you're here!"
-msgstr ""
+msgstr "ここは本のホームページです。ここで何ができるか見てみましょう！"
 
 #: bookwyrm/templates/guided_tour/book.html:11
 msgid "Book page"
-msgstr ""
+msgstr "本のページ"
 
 #: bookwyrm/templates/guided_tour/book.html:19
 #: bookwyrm/templates/guided_tour/group.html:19
@@ -2110,71 +2110,71 @@ msgstr "次"
 
 #: bookwyrm/templates/guided_tour/book.html:31
 msgid "This is where you can set a reading status for this book. You can press the button to move to the next stage, or use the drop down button to select the reading status you want to set."
-msgstr ""
+msgstr "ここでは本の読書状態を設定できます。ボタンを押して次の段階に移行したり、ドロップダウンボタンから読書状態を選択して設定できます。"
 
 #: bookwyrm/templates/guided_tour/book.html:32
 msgid "Reading status"
-msgstr ""
+msgstr "読書状態"
 
 #: bookwyrm/templates/guided_tour/book.html:55
 msgid "You can also manually add reading dates here. Unlike changing the reading status using the previous method, adding dates manually will not automatically add them to your <strong>Read</strong> or <strong>Reading</strong> shelves."
-msgstr ""
+msgstr "ここでは手動で日付を設定することもできます。先の方法で読書状態を変更するのとは異なり、手動で日付を追加すると本は<strong>読了</strong>や<strong>読んでいる</strong>の本棚に自動で追加されません。"
 
 #: bookwyrm/templates/guided_tour/book.html:55
 msgid "Got a favourite you re-read every year? We've got you covered - you can add multiple read dates for the same book 😀"
-msgstr ""
+msgstr "毎年読み直すお気に入りがありますか？大丈夫です——同じ本に複数の読了日を追加できます😀"
 
 #: bookwyrm/templates/guided_tour/book.html:79
 msgid "There can be multiple editions of a book, in various formats or languages. You can choose which edition you want to use."
-msgstr ""
+msgstr "本には様々な形式や言語で複数の版があるかもしれません。どの版を使うか選択できます。"
 
 #: bookwyrm/templates/guided_tour/book.html:80
 msgid "Other editions"
-msgstr ""
+msgstr "他の版"
 
 #: bookwyrm/templates/guided_tour/book.html:102
 msgid "You can post a review, comment, or quote here."
-msgstr ""
+msgstr "ここではレビュー、コメント、引用を投稿できます。"
 
 #: bookwyrm/templates/guided_tour/book.html:103
 msgid "Share your thoughts"
-msgstr ""
+msgstr "意見をシェアする"
 
 #: bookwyrm/templates/guided_tour/book.html:127
 msgid "If you have read this book you can post a review including an optional star rating"
-msgstr ""
+msgstr "この本を読み終えたら、レビューを投稿できます。☆による評価は省略できます。"
 
 #: bookwyrm/templates/guided_tour/book.html:128
 msgid "Post a review"
-msgstr ""
+msgstr "レビューを投稿する"
 
 #: bookwyrm/templates/guided_tour/book.html:151
 msgid "You can share your thoughts on this book generally with a simple comment"
-msgstr ""
+msgstr "この本について思ったことを簡単なコメントで共有できます"
 
 #: bookwyrm/templates/guided_tour/book.html:152
 msgid "Post a comment"
-msgstr "コメントを投稿"
+msgstr "コメントを投稿する"
 
 #: bookwyrm/templates/guided_tour/book.html:175
 msgid "Just read some perfect prose? Let the world know by sharing a quote!"
-msgstr ""
+msgstr "ちょうどすばらしい文章に出会ったところですか？引用をシェアして世界に届けましょう！"
 
 #: bookwyrm/templates/guided_tour/book.html:176
 msgid "Share a quote"
-msgstr ""
+msgstr "引用を共有する"
 
 #: bookwyrm/templates/guided_tour/book.html:199
 msgid "If your review or comment might ruin the book for someone who hasn't read it yet, you can hide your post behind a <strong>spoiler alert</strong>"
-msgstr ""
+msgstr "レビューやコメントが未読の人の体験を台無しにしてしまうかもしれないなら、<strong>ネタバレ注意</strong> で投稿を隠すことができます。"
 
 #: bookwyrm/templates/guided_tour/book.html:200
 msgid "Spoiler alerts"
-msgstr ""
+msgstr "ネタバレ注意"
 
 #: bookwyrm/templates/guided_tour/book.html:224
 msgid "Choose who can see your post here. Post privacy can be <strong>Public</strong> (everyone can see), <strong>Unlisted</strong> (everyone can see, but it doesn't appear in public feeds or discovery pages), <strong>Followers</strong> (only your followers can see), or <strong>Private</strong> (only you can see)"
-msgstr ""
+msgstr "投稿を閲覧できる人の範囲を選択しましょう。投稿範囲は <strong>公開</strong> (全員が閲覧可能)、<strong>未収載</strong> (誰でも閲覧可能ですが、公開フィードやディスカバリーページには流れません)、<strong>フォロワー</strong> (あなたのフォロワーのみが閲覧可能)、または<strong>非公開</strong> (あなたのみが閲覧可能) から選択できます。"
 
 #: bookwyrm/templates/guided_tour/book.html:225
 #: bookwyrm/templates/snippets/privacy_select.html:6
@@ -2184,7 +2184,7 @@ msgstr "投稿範囲"
 
 #: bookwyrm/templates/guided_tour/book.html:248
 msgid "Some ebooks can be downloaded for free from external sources. They will be shown here."
-msgstr ""
+msgstr "一部の電子書籍は外部から無料でダウンロードできることがあり、そういったものはここに表示されます。"
 
 #: bookwyrm/templates/guided_tour/book.html:249
 msgid "Download links"
