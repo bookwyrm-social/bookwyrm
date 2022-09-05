@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-08-29 20:43+0000\n"
-"PO-Revision-Date: 2022-09-05 15:46\n"
+"PO-Revision-Date: 2022-09-05 16:42\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Japanese\n"
 "Language: ja\n"
@@ -72,7 +72,7 @@ msgstr "このドメインはブロックされています。これがエラー
 
 #: bookwyrm/forms/links.py:46
 msgid "This link with file type has already been added for this book. If it is not visible, the domain is still pending."
-msgstr ""
+msgstr "このファイルタイプのリンクは既にこの本に追加されています。表示されていない場合は、ドメインが保留中です。"
 
 #: bookwyrm/forms/lists.py:26
 msgid "List Order"
@@ -110,7 +110,7 @@ msgstr "該当の本に一致するものが見つかりませんでした"
 
 #: bookwyrm/models/announcement.py:11
 msgid "Primary"
-msgstr ""
+msgstr "標準"
 
 #: bookwyrm/models/announcement.py:12
 msgid "Success"
@@ -127,7 +127,7 @@ msgstr "警告"
 
 #: bookwyrm/models/announcement.py:15
 msgid "Danger"
-msgstr ""
+msgstr "危険"
 
 #: bookwyrm/models/antispam.py:101 bookwyrm/models/antispam.py:135
 msgid "Automatically generated report"
@@ -242,7 +242,7 @@ msgstr "非公開"
 
 #: bookwyrm/models/link.py:51
 msgid "Free"
-msgstr ""
+msgstr "無料"
 
 #: bookwyrm/models/link.py:52
 msgid "Purchasable"
@@ -395,26 +395,26 @@ msgstr "%(site_name)sへようこそ！"
 #: bookwyrm/templates/about/about.html:24
 #, python-format
 msgid "%(site_name)s is part of <em>BookWyrm</em>, a network of independent, self-directed communities for readers. While you can interact seamlessly with users anywhere in the <a href=\"https://joinbookwyrm.com/instances/\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">BookWyrm network</a>, this community is unique."
-msgstr ""
+msgstr "%(site_name)s は、読者のための独立した自発的なコミュニティ <em>BookWyrm</em> の一部です。 <a href=\"https://joinbookwyrm.com/instances/\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">BookWyrm ネットワーク</a>内のどのユーザともシームレスに交流できますが、このコミュニティは唯一です。"
 
 #: bookwyrm/templates/about/about.html:44
 #, python-format
 msgid "<a href=\"%(book_path)s\"><em>%(title)s</em></a> is %(site_name)s's most beloved book, with an average rating of %(rating)s out of 5."
-msgstr ""
+msgstr "<a href=\"%(book_path)s\"><em>%(title)s</em></a>は %(site_name)s で最も愛されている本で、平均評価は5段階中%(rating)sです。"
 
 #: bookwyrm/templates/about/about.html:63
 #, python-format
 msgid "More %(site_name)s users want to read <a href=\"%(book_path)s\"><em>%(title)s</em></a> than any other book."
-msgstr ""
+msgstr "%(site_name)s ユーザでは、 <a href=\"%(book_path)s\"><em>%(title)s</em></a> を読みたがっている人が他のどの本よりも多くいます。"
 
 #: bookwyrm/templates/about/about.html:82
 #, python-format
 msgid "<a href=\"%(book_path)s\"><em>%(title)s</em></a> has the most divisive ratings of any book on %(site_name)s."
-msgstr ""
+msgstr "%(site_name)s では、 <a href=\"%(book_path)s\"><em>%(title)s</em></a> が最も評価が分かれています。"
 
 #: bookwyrm/templates/about/about.html:93
 msgid "Track your reading, talk about books, write reviews, and discover what to read next. Always ad-free, anti-corporate, and community-oriented, BookWyrm is human-scale software, designed to stay small and personal. If you have feature requests, bug reports, or grand dreams, <a href=\"https://joinbookwyrm.com/get-involved\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">reach out</a> and make yourself heard."
-msgstr ""
+msgstr "読書を記録し、本について話し、レビューを書き、次に読む本を見付けましょう。広告一切なしで大企業に支配されないコミュニティ志向の BookWyrm は、小さく個人的なものに保たれている、人の使いやすいソフトウェアです。機能リクエスト、バグ報告、壮大な夢などをお持ちでしたら、<a href=\"https://joinbookwyrm.com/get-involved\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">プロジェクトに参加</a>してあなたの声をお聞かせください。"
 
 #: bookwyrm/templates/about/about.html:103
 msgid "Meet your admins"
@@ -423,7 +423,7 @@ msgstr "管理者の紹介"
 #: bookwyrm/templates/about/about.html:106
 #, python-format
 msgid "%(site_name)s's moderators and administrators keep the site up and running, enforce the <a href=\"%(coc_path)s\">code of conduct</a>, and respond when users report spam and bad behavior."
-msgstr ""
+msgstr "%(site_name)s のモデレータと管理者はサイトを維持し、<a href=\"%(coc_path)s\">行動規範</a>の遵守を徹底し、ユーザがスパムや悪意ある行動を通報したとき対処します。"
 
 #: bookwyrm/templates/about/about.html:120
 msgid "Moderator"
@@ -452,7 +452,7 @@ msgstr "アクティブユーザー:"
 
 #: bookwyrm/templates/about/layout.html:15
 msgid "Statuses posted:"
-msgstr ""
+msgstr "投稿数:"
 
 #: bookwyrm/templates/about/layout.html:19
 #: bookwyrm/templates/setup/config.html:74
@@ -475,17 +475,17 @@ msgstr "プライバシーポリシー"
 #: bookwyrm/templates/feed/summary_card.html:8
 #, python-format
 msgid "%(year)s in the books"
-msgstr ""
+msgstr "本で見る%(year)s年"
 
 #: bookwyrm/templates/annual_summary/layout.html:43
 #, python-format
 msgid "%(year)s <em>in the books</em>"
-msgstr ""
+msgstr "<em>本で見る</em> %(year)s年"
 
 #: bookwyrm/templates/annual_summary/layout.html:47
 #, python-format
 msgid "<em>%(display_name)s’s</em> year of reading"
-msgstr ""
+msgstr "<em>%(display_name)s</em> 読書の1年"
 
 #: bookwyrm/templates/annual_summary/layout.html:53
 msgid "Share this page"
@@ -502,11 +502,11 @@ msgstr "コピーしました"
 
 #: bookwyrm/templates/annual_summary/layout.html:77
 msgid "Sharing status: <strong>public with key</strong>"
-msgstr ""
+msgstr "共有状態: <strong>URL限定公開</strong>"
 
 #: bookwyrm/templates/annual_summary/layout.html:78
 msgid "The page can be seen by anyone with the complete address."
-msgstr ""
+msgstr "URL を知っている人であればこのページを誰でも見ることができます。"
 
 #: bookwyrm/templates/annual_summary/layout.html:83
 msgid "Make page private"
@@ -514,11 +514,11 @@ msgstr "ページを非公開にする"
 
 #: bookwyrm/templates/annual_summary/layout.html:89
 msgid "Sharing status: <strong>private</strong>"
-msgstr ""
+msgstr "共有状態: <strong>非公開</strong>"
 
 #: bookwyrm/templates/annual_summary/layout.html:90
 msgid "The page is private, only you can see it."
-msgstr ""
+msgstr "このページは非公開で、あなたのみが見ることができます。"
 
 #: bookwyrm/templates/annual_summary/layout.html:95
 msgid "Make page public"
@@ -526,37 +526,37 @@ msgstr "ページを公開する"
 
 #: bookwyrm/templates/annual_summary/layout.html:99
 msgid "When you make your page private, the old key won’t give access to the page anymore. A new key will be created if the page is once again made public."
-msgstr ""
+msgstr "ページを非公開にすると、古い URL ではこのページにアクセスできなくなります。もう一度ページを公開すると、新しい URL が生成されます。"
 
 #: bookwyrm/templates/annual_summary/layout.html:112
 #, python-format
 msgid "Sadly %(display_name)s didn’t finish any books in %(year)s"
-msgstr ""
+msgstr "残念ながら %(display_name)s は%(year)s年に一冊も本を読み終えませんでした。"
 
 #: bookwyrm/templates/annual_summary/layout.html:118
 #, python-format
 msgid "In %(year)s, %(display_name)s read %(books_total)s book<br />for a total of %(pages_total)s pages!"
 msgid_plural "In %(year)s, %(display_name)s read %(books_total)s books<br />for a total of %(pages_total)s pages!"
-msgstr[0] ""
+msgstr[0] "%(year)s年、 %(display_name)s は%(books_total)s冊<br />合計%(pages_total)sページを読みました！"
 
 #: bookwyrm/templates/annual_summary/layout.html:124
 msgid "That’s great!"
-msgstr ""
+msgstr "すごい！"
 
 #: bookwyrm/templates/annual_summary/layout.html:127
 #, python-format
 msgid "That makes an average of %(pages)s pages per book."
-msgstr ""
+msgstr "1冊あたり%(pages)sページです。"
 
 #: bookwyrm/templates/annual_summary/layout.html:132
 #, python-format
 msgid "(%(no_page_number)s book doesn’t have pages)"
 msgid_plural "(%(no_page_number)s books don’t have pages)"
-msgstr[0] ""
+msgstr[0] "(%(no_page_number)s冊はページ数情報がありません。)"
 
 #: bookwyrm/templates/annual_summary/layout.html:148
 msgid "Their shortest read this year…"
-msgstr ""
+msgstr "最も短かった読み物……"
 
 #: bookwyrm/templates/annual_summary/layout.html:155
 #: bookwyrm/templates/annual_summary/layout.html:176
@@ -566,7 +566,7 @@ msgstr ""
 #: bookwyrm/templates/landing/large-book.html:26
 #: bookwyrm/templates/landing/small-book.html:18
 msgid "by"
-msgstr ""
+msgstr "著者:"
 
 #: bookwyrm/templates/annual_summary/layout.html:161
 #: bookwyrm/templates/annual_summary/layout.html:182
@@ -576,13 +576,13 @@ msgstr "<strong>%(pages)s</strong> ページ"
 
 #: bookwyrm/templates/annual_summary/layout.html:169
 msgid "…and the longest"
-msgstr ""
+msgstr "……それから、最も長い読み物"
 
 #: bookwyrm/templates/annual_summary/layout.html:200
 #, python-format
 msgid "%(display_name)s set a goal of reading %(goal)s book in %(year)s,<br /> and achieved %(goal_percent)s%% of that goal"
 msgid_plural "%(display_name)s set a goal of reading %(goal)s books in %(year)s,<br /> and achieved %(goal_percent)s%% of that goal"
-msgstr[0] ""
+msgstr[0] "%(display_name)s は%(year)s年に%(goal)s冊の本を読むという目標を立て、<br />目標の %(goal_percent)s%% を達成しました。"
 
 #: bookwyrm/templates/annual_summary/layout.html:209
 msgid "Way to go!"
