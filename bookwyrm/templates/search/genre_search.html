@@ -5,15 +5,44 @@
 
 {% block content %}
 
+<head>
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css">
+    <script src="http://code.jquery.com/jquery-1.8.3.js"></script>
+    <script src="http://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.4.2/chosen.jquery.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.4.2/chosen.css">
+</head>
+
+
+
+<script type="text/javascript">
+    $(function() {
+        $(".chosen-select").chosen()
+    });
+</script>
+
+
 <div class="block">
-    <form action="" method="POST"> {% csrf_token %}
+    <!-- <form action="" method="POST"> {% csrf_token %}
         <select multiple="multiple"  name="genres" id="genres" size="5">
             {% for genre in genre_tags %}
                 <option value="{{genre.id}}">{{genre.genre_name}}</option>
             {% endfor %}
         </select>
         <button class="btn btn-primary" type="submit">Search</button>
+    </form> -->
+
+    <form method="POST"> {% csrf_token %}
+        <select data-placeholder="Begin typing a name to filter..." multiple class="chosen-select" name="genres" id="genres">
+          <option value=""></option>
+          {% for genre in genre_tags %}
+            <option value="{{genre.id}}">{{genre.genre_name}}</option>
+          {% endfor %}
+        </select>
+        <button class="btn btn-primary" type="submit">Search</button>
     </form>
+
+
     <div>
         {% for book in listed_books %}
             <ul>
