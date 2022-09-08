@@ -195,7 +195,7 @@ def add_book(request):
     if not form.is_valid():
         return List().get(request, book_list.id, add_failed=True)
 
-    item = form.save(commit=False)
+    item = form.save(request, commit=False)
 
     if book_list.curation == "curated":
         # make a pending entry at the end of the list

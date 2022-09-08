@@ -38,7 +38,7 @@ class GetStartedProfile(View):
         if not form.is_valid():
             data = {"form": form, "next": "get-started-books"}
             return TemplateResponse(request, "get_started/profile.html", data)
-        save_user_form(form)
+        save_user_form(request, form)
         return redirect(self.next_view)
 
 
