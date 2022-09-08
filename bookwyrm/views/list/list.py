@@ -241,7 +241,6 @@ def set_book_position(request, list_item_id):
     special care with the unique ordering per list.
     """
     list_item = get_object_or_404(models.ListItem, id=list_item_id)
-    list_item.book_list.raise_not_editable(request.user)
     try:
         int_position = int(request.POST.get("position"))
     except ValueError:

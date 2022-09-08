@@ -34,7 +34,6 @@ class EditStatus(View):
         status = get_object_or_404(
             models.Status.objects.select_subclasses(), id=status_id
         )
-        status.raise_not_editable(request.user)
 
         status_type = "reply" if status.reply_parent else status.status_type.lower()
         data = {
@@ -163,7 +162,6 @@ def edit_readthrough(request):
     """can't use the form because the dates are too finnicky"""
     # TODO: remove this, it duplicates the code in the ReadThrough view
     readthrough = get_object_or_404(models.ReadThrough, id=request.POST.get("id"))
-    readthrough.raise_not_editable(request.user)
 
     readthrough.start_date = load_date_in_user_tz_as_utc(
         request.POST.get("start_date"), request.user
