@@ -5,6 +5,7 @@ from .author import *
 from .books import *
 from .edit_user import *
 from .forms import *
+from .genres import *
 from .groups import *
 from .landing import *
 from .links import *

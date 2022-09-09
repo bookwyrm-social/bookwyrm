@@ -27,17 +27,16 @@ from .base_model import BookWyrmModel
 from . import fields
 
 class GenreManager(models.Manager):
-    def create_genre(self, genre_name, description, immutable):
-        genre = self.create(genre_name=genre_name, description=description, immutable=immutable)
+    def create_genre(self, genre_name, description):
+        genre = self.create(genre_name=genre_name, description=description)
         return genre
 
 class Genre(models.Model):
     '''This is a model where we can define genres for books.'''
     '''TODO: Add ManytoMany field on books which contain this certain genre.'''
-    genre_name = models.CharField(max_length=40)
-    description = models.CharField(max_length=500)
+    genre_name = fields.CharField(max_length=40)
+    description = fields.CharField(max_length=500)
     immutable = models.BooleanField(default=False)
-
 
     objects = GenreManager()
 
@@ -49,17 +48,17 @@ class Genre(models.Model):
     def genre_desc(self):
         return self.description
 
-    def save(self, *args, **kwargs):
-        
-        
-        if self.immutable:
-            raise ValueError("This genre is immutable and cannot be changed.")
-
-        super(Genre, self).save(*args, **kwargs)
+    #def save(self, *args, **kwargs):
+    #    
+    #    
+    #    if self.immutable:
+    #        raise ValueError("This genre is immutable and cannot be changed.")
+    #
+    #    super(Genre, self).save(*args, **kwargs)
 
 class ImmutableGenre(Genre):
-    '''A proxy model for immutable genres so it can actually save itself and not cause an interdimensional rift.'''
-    '''Immutable genres SHOULD ONLY EVER BE CREATED UPON THE CREATION OF THE INSTANCE'''
+#    '''A proxy model for immutable genres so it can actually save itself and not cause an interdimensional rift.'''
+#    '''Immutable genres SHOULD ONLY EVER BE CREATED UPON THE CREATION OF THE INSTANCE'''
     class Meta:
         proxy = True
 
@@ -150,7 +149,7 @@ class Book(BookDataModel):
     series_number = fields.CharField(max_length=255, blank=True, null=True)
 
 
-    genres = fields.ManyToManyField(Genre, blank=True)
+    genres = models.ManyToManyField(Genre, blank=True)
 
 
     subjects = fields.ArrayField(
@@ -268,6 +267,7 @@ class Book(BookDataModel):
 
 class Work(OrderedCollectionPageMixin, Book):
     """a work (an abstract concept of a book that manifests in an edition)"""
+
 
     # library of congress catalog control number
     lccn = fields.CharField(

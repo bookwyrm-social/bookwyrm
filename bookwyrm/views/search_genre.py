@@ -21,6 +21,7 @@ class SearchGenre(TemplateView):
     active_genres = []
 
     def post(self, request, *args, **kwargs):
+        '''Get the genres the user has selected.'''
         testList = request.POST.getlist('genres')
 
         for item in testList:
@@ -33,20 +34,30 @@ class SearchGenre(TemplateView):
         return render(request, self.template_name, context)
 
     def get(self, request, *args, **kwargs):
+        '''Render our template to the user. It will have a list of all available genres.'''
         context = self.get_context_data(**kwargs)
         return self.render_to_response(context)
 
     def get_context_data(self,*args, **kwargs):
+        '''Get our genre list and put them on the page. If the user made a query, also display the books.'''
         context = super(SearchGenre, self).get_context_data(*args,**kwargs)
 
-        try:
-            activeBooks = Book.objects.filter(genres = self.active_genres[0])
-            for item in activeBooks:
-                print(activeBooks)
-            print("Active books successful")
-        except:
+        if(len(self.active_genres)):
             activeBooks = []
-            print("Oh no, catatrophic failure! JIMMY, FETCH MY SUB")
+            for gen in self.active_genres:
+                print("Item successful captured!")
+                activeBooks.extend(Book.objects.filter(genres = gen))
+
+            #activeBooks = Book.objects.filter(genres = self.active_genres[0])
+            print("Printing this enter:" + self.active_genres[0])
+            for item in activeBooks:
+                print(item)
+            print("Active books successful")
+        else:
+            activeBooks = []
+            print("Empty List") 
+
+
 
         context['genre_tags'] = Genre.objects.all()
         context['listed_books'] = activeBooks
