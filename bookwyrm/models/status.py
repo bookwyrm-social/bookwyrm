@@ -363,7 +363,7 @@ class Review(BookStatus):
         default=None,
         null=True,
         blank=True,
-        validators=[MinValueValidator(1), MaxValueValidator(5)],
+        validators=[MinValueValidator(0.5), MaxValueValidator(5)],
         decimal_places=2,
         max_digits=3,
     )
