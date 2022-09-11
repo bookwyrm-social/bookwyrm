@@ -32,7 +32,13 @@ from .preferences.edit_user import EditUser
 from .preferences.export import Export
 from .preferences.delete_user import DeleteUser
 from .preferences.block import Block, unblock
-from .preferences.two_factor_auth import Edit2FA, Confirm2FA, Disable2FA, LoginWith2FA, Prompt2FA
+from .preferences.two_factor_auth import (
+    Edit2FA,
+    Confirm2FA,
+    Disable2FA,
+    LoginWith2FA,
+    Prompt2FA,
+)
 
 # books
 from .books.books import (

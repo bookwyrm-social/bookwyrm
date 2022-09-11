@@ -96,17 +96,24 @@ class LoginWith2FA(View):
 
     def post(self, request):
         """Check 2FA code and allow/disallow login"""
-        user = models.User.objects.get(username=request.POST.get('2fa_user'))
+        user = models.User.objects.get(username=request.POST.get("2fa_user"))
         form = forms.Confirm2FAForm(request.POST, instance=user)
         if not form.is_valid():
             time.sleep(2)  # make life slightly harder for bots
-            data = {"form": form, "2fa_user": user, "error": "Code does not match, try again"}
-            return TemplateResponse(request, "two_factor_auth/two_factor_login.html", data)
+            data = {
+                "form": form,
+                "2fa_user": user,
+                "error": "Code does not match, try again",
+            }
+            return TemplateResponse(
+                request, "two_factor_auth/two_factor_login.html", data
+            )
 
         # log the user in - we are bypassing standard login
         login(request, user)
         user.update_active_date()
         return set_language(user, redirect("/"))
+
 
 class Prompt2FA(View):
     """Alert user to the existence of 2FA"""

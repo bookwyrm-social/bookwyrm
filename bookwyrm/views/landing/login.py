@@ -54,7 +54,11 @@ class Login(View):
             # if 2fa is set, don't log them in until they enter the right code
             if user.two_factor_auth == True:
                 form = forms.Confirm2FAForm(request.GET, user)
-                return TemplateResponse(request, "two_factor_auth/two_factor_login.html", {"form": form, "2fa_user": user})
+                return TemplateResponse(
+                    request,
+                    "two_factor_auth/two_factor_login.html",
+                    {"form": form, "2fa_user": user},
+                )
 
             # otherwise, successful login
             login(request, user)
@@ -83,6 +87,7 @@ class Login(View):
         register_form = forms.RegisterForm()
         data = {"login_form": login_form, "register_form": register_form}
         return TemplateResponse(request, "landing/login.html", data)
+
 
 @method_decorator(login_required, name="dispatch")
 class Logout(View):
