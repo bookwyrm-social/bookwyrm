@@ -1,0 +1,104 @@
+{% load layout %}
+{% load sass_tags %}
+{% load i18n %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="{% get_lang %}">
+<head>
+    <title>{% block title %}BookWyrm{% endblock %} - {{ site.name }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="{% sass_src site_theme %}" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    <nav class="navbar" aria-label="main navigation">
+        <div class="container">
+            <div class="navbar-brand">
+                <a class="navbar-item" href="/">
+                    <img class="image logo" src="{% if site.logo_small %}{% get_media_prefix %}{{ site.logo_small }}{% else %}{% static "images/logo-small.png" %}{% endif %}" alt="{% blocktrans with site_name=site.name %}{{ site_name }} home page{% endblocktrans %}">
+                </a>
+            </div>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="columns is-multiline is-centered">
+            <div class="column">
+                <header class="block">
+                    {% block header %}
+                    <h1 class="title">
+                        {% trans "2FA check" %}
+                    </h1>
+                    {% endblock %}
+                </header>
+                {% if error %}
+                <div class="notification is-danger is-light">
+                    <!-- TODO: how do we translate dynamic errors? -->
+                    <span>
+                        {{ error }}
+                    </span>
+                </div>
+                {% endif %}
+                <div class="is-centered">
+                    <form name="confirm-2fa" action="{% url 'login-with-2fa' %}" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="field">
+                            <label class="label" for="id_otp">{% trans "Enter the code from your authenticator app:" %}</label>
+                            {{ form.otp }}
+                            {% include 'snippets/form_errors.html' with errors_list=form.current_password.errors id="desc_current_password" %}
+                        </div>
+                        <button class="button is-primary" type="submit">{% trans "Confirm and Log In" %}</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer class="footer">
+        <div class="container">
+            <div class="columns">
+                <div class="column is-one-fifth">
+                    <p>
+                    <a href="{% url 'about' %}">{% blocktrans with site_name=site.name %}About {{ site_name }}{% endblocktrans %}</a>
+                    </p>
+                    {% if site.admin_email %}
+                    <p>
+                        <a href="mailto:{{ site.admin_email }}">{% trans "Contact site admin" %}</a>
+                    </p>
+                    {% endif %}
+                    <p>
+                        <a href="https://docs.joinbookwyrm.com/">{% trans "Documentation" %}</a>
+                    </p>
+                    {% if request.user.is_authenticated %}
+                    <p id="tour-begin">
+                        <a href="/guided-tour/True">{% trans "Guided Tour" %}</a>
+                        <noscript>(requires JavaScript)</noscript>
+                    </p>
+                    {% endif %}
+                </div>
+                <div class="column content is-two-fifth">
+                    {% if site.support_link %}
+                    <p>
+                        <span class="icon icon-heart"></span>
+                        {% blocktrans trimmed with site_name=site.name support_link=site.support_link support_title=site.support_title %}
+                            Support {{ site_name }} on
+                            <a href="{{ support_link }}" target="_blank" rel="nofollow noopener noreferrer">{{ support_title }}</a>
+                        {% endblocktrans %}
+                    </p>
+                    {% endif %}
+                    <p>
+                    {% blocktrans trimmed %}
+                        BookWyrm's source code is freely available. You can contribute or report issues on
+                        <a href="https://github.com/bookwyrm-social/bookwyrm" target="_blank" rel="nofollow noopener noreferrer">GitHub</a>.
+                    {% endblocktrans %}
+                    </p>
+                </div>
+                {% if site.footer_item %}
+                <div class="column">
+                    <p>{{ site.footer_item|safe }}</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

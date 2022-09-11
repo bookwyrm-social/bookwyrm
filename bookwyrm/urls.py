@@ -494,6 +494,11 @@ urlpatterns = [
         views.Disable2FA.as_view(),
         name="disable-2fa",
     ),
+    re_path(
+        r"^login-2FA-check/?$",
+        views.LoginWith2FA.as_view(),
+        name="login-with-2fa",
+    ),
     re_path(r"^preferences/export/?$", views.Export.as_view(), name="prefs-export"),
     re_path(r"^preferences/delete/?$", views.DeleteUser.as_view(), name="prefs-delete"),
     re_path(r"^preferences/block/?$", views.Block.as_view(), name="prefs-block"),

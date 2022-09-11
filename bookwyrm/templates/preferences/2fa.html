@@ -29,7 +29,7 @@
                 {{ qrcode | safe }}
             </svg>
         </div>
-        <div class="field ">
+        <div class="field">
             <label class="label" for="id_otp">{% trans "Enter the code from your authenticator app:" %}</label>
             {{ form.otp }}
             {% include 'snippets/form_errors.html' with errors_list=form.current_password.errors id="desc_current_password" %}

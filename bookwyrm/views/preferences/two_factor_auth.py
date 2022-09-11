@@ -1,11 +1,8 @@
 """ class views for 2FA management """
-import base64
-import io
-from pipes import Template
-from turtle import fillcolor
 import pyotp
 import qrcode
 import qrcode.image.svg
+import time
 
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
@@ -13,7 +10,7 @@ from django.template.response import TemplateResponse
 from django.shortcuts import redirect
 from django.utils.decorators import method_decorator
 from django.views import View
-from django.views.decorators.debug import sensitive_variables, sensitive_post_parameters
+from django.views.decorators.debug import sensitive_post_parameters
 
 from bookwyrm import forms
 from bookwyrm.settings import DOMAIN
@@ -91,3 +88,24 @@ class Disable2FA(View):
         request.user.save(broadcast=False, update_fields=["two_factor_auth"])
         data = {"form": forms.ConfirmPasswordForm(), "success": True}
         return TemplateResponse(request, "preferences/2fa.html", data)
+
+
+class LoginWith2FA(View):
+    """Check 2FA code matches before allowing login"""
+
+    def get(self, request):
+        """Load 2FA checking page"""
+        form = forms.Confirm2FAForm(request.GET, instance=request.user)
+        return TemplateResponse(request, "two_factor_login.html", {"form": form})
+
+    def post(self, request):
+        """Check 2FA code and allow/disallow login"""
+        form = forms.Confirm2FAForm(request.POST, instance=request.user)
+
+        if not form.is_valid():
+            time.sleep(2)  # make life harder for bots
+            data = {"form": form, "error": "Code does not match, try again"}
+            return TemplateResponse(request, "two_factor_login.html", data)
+
+        # TODO: actually log the user in - we will be bypassing normal login
+        return redirect("/")
