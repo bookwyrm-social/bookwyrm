@@ -22,32 +22,20 @@
     </nav>
     <div class="container">
         <div class="columns is-multiline is-centered">
-            <div class="column">
+            <div class="column is-one-third">
                 <header class="block">
                     {% block header %}
                     <h1 class="title">
-                        {% trans "2FA check" %}
+                        {% trans "2FA is available" %}
                     </h1>
                     {% endblock %}
                 </header>
-                {% if error %}
-                <div class="notification is-danger is-light">
-                    <!-- TODO: how do we translate dynamic errors? -->
-                    <span>
-                        {{ error }}
-                    </span>
-                </div>
-                {% endif %}
                 <div class="is-centered">
-                    <form name="confirm-2fa" action="{% url 'login-with-2fa' %}" method="post" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        <div class="field">
-                            <label class="label" for="id_otp">{% trans "Enter the code from your authenticator app:" %}</label>
-                            {{ form.otp }}
-                            {% include 'snippets/form_errors.html' with errors_list=form.current_password.errors id="desc_current_password" %}
-                        </div>
-                        <button class="button is-primary" type="submit">{% trans "Confirm and Log In" %}</button>
-                    </form>
+                    <p>You can secure your account by setting up two factor authentication in your user preferences. This will require a one-time code from your phone in addition to your password each time you log in.</p>
+                    <div class="block is-centered">
+                        <a class="button is-warning" href="/">No thanks</a>
+                        <a class="button is-primary" href="/preferences/2fa">Set up 2FA</a>
+                    </div>
                 </div>
             </div>
         </div>
