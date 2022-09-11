@@ -29,6 +29,7 @@ class Login(View):
         }
         return TemplateResponse(request, "landing/login.html", data)
 
+    #pylint: disable=too-many-return-statements
     @sensitive_variables("password")
     @method_decorator(sensitive_post_parameters("password"))
     def post(self, request):
@@ -52,7 +53,7 @@ class Login(View):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             # if 2fa is set, don't log them in until they enter the right code
-            if user.two_factor_auth == True:
+            if user.two_factor_auth is True:
                 form = forms.Confirm2FAForm(request.GET, user)
                 return TemplateResponse(
                     request,
@@ -66,7 +67,7 @@ class Login(View):
             if request.POST.get("first_login"):
                 return set_language(user, redirect("get-started-profile"))
 
-            if user.two_factor_auth == None:
+            if user.two_factor_auth is None:
                 # set to false so this page doesn't pop up again
                 user.two_factor_auth = False
                 user.save(broadcast=False, update_fields=["two_factor_auth"])

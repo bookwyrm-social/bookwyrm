@@ -4,11 +4,11 @@ from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
+import pyotp
+
 from bookwyrm import models
 from bookwyrm.models.fields import ClearableFileInputWithWarning
 from .custom_form import CustomForm
-
-import pyotp
 
 # pylint: disable=missing-class-docstring
 class EditUserForm(CustomForm):

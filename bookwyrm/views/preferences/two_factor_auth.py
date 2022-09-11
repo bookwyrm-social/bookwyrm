@@ -1,8 +1,8 @@
 """ class views for 2FA management """
+import time
 import pyotp
 import qrcode
 import qrcode.image.svg
-import time
 
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
@@ -52,10 +52,10 @@ class Edit2FA(View):
         provisioning_url = pyotp.totp.TOTP(otp_secret).provisioning_uri(
             name=user.localname, issuer_name=DOMAIN
         )
-        qr = qrcode.QRCode(image_factory=qrcode.image.svg.SvgPathImage)
-        qr.add_data(provisioning_url)
-        qr.make(fit=True)
-        img = qr.make_image(attrib={"fill": "black"})
+        qr_code = qrcode.QRCode(image_factory=qrcode.image.svg.SvgPathImage)
+        qr_code.add_data(provisioning_url)
+        qr_code.make(fit=True)
+        img = qr_code.make_image(attrib={"fill": "black"})
         return img.to_string()
 
 
@@ -119,4 +119,5 @@ class Prompt2FA(View):
     """Alert user to the existence of 2FA"""
 
     def get(self, request):
+        """Alert user to the existence of 2FA"""
         return TemplateResponse(request, "two_factor_auth/two_factor_prompt.html")
