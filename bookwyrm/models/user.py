@@ -178,7 +178,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     # two factor authentication
     two_factor_auth = models.BooleanField(default=None, blank=True, null=True)
     otp_secret = models.CharField(max_length=32, default=None, blank=True, null=True)
-    htop_count = models.IntegerField(default=0, blank=True, null=True)
+    hotp_count = models.IntegerField(default=0, blank=True, null=True)
 
     @property
     def active_follower_requests(self):
