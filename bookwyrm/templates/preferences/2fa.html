@@ -1,0 +1,55 @@
+{% extends 'preferences/layout.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Two Factor Authentication" %}{% endblock %}
+
+{% block header %}
+{% trans "Two Factor Authentication" %}
+{% endblock %}
+
+{% block panel %}
+<div class="block">
+    {% if success %}
+    <div class="notification is-success is-light">
+        <span class="icon icon-check" aria-hidden="true"></span>
+        <span>
+            {% trans "Successfully updated 2FA settings" %}
+        </span>
+    </div>
+    {% endif %}
+    {% if request.user.two_factor_auth %}
+    <p>Two Factor Authentication is active on your account.</p>
+    <a class="button is-danger" href="{% url 'disable-2fa' %}">{% trans "Disable 2FA" %}</a>
+    {% elif password_confirmed %}
+    <form name="confirm-2fa" action="{% url 'conf-2fa' %}" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+        <p>Scan the QR code with your authentication app and then enter the code from  your app below to confirm your app is set up.</p>
+        <div>
+            <svg width="200" height="200" xmlns="http://www.w3.org/2000/svg">
+                {{ qrcode | safe }}
+            </svg>
+        </div>
+        <div class="field ">
+            <label class="label" for="id_otp">{% trans "Enter the code from your authenticator app:" %}</label>
+            {{ form.otp }}
+            {% include 'snippets/form_errors.html' with errors_list=form.current_password.errors id="desc_current_password" %}
+        </div>
+        <button class="button is-primary" type="submit">{% trans "Confirm" %}</button>
+    </form>
+    {% else %}
+    <p class="">
+        {% trans "You can make your account more secure by using Two Factor Authentication (2FA). This will require you to enter a one-time code using a phone app like <em>Authy</em>, <em>Google Authenticator</em> or <em>Microsoft Authenticator</em> each time you log in." %}
+    </p>
+    <p> {% trans "Confirm your password to begin setting up 2FA." %}</p>
+    <form name="confirm-password" action="{% url 'prefs-2fa' %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+        <div class="field">
+            <label class="label" for="id_password">{% trans "Password:" %}</label>
+            {{ form.password }}
+            {% include 'snippets/form_errors.html' with errors_list=form.current_password.errors id="desc_current_password" %}
+        </div>
+        <button class="button is-primary" type="submit">{% trans "Set up 2FA" %}</button>
+    </form>
+    {% endif %}
+</div>
+{% endblock %}
