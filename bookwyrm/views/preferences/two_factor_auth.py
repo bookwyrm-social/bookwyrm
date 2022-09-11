@@ -12,8 +12,9 @@ from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.debug import sensitive_post_parameters
 
-from bookwyrm import forms
+from bookwyrm import forms, models
 from bookwyrm.settings import DOMAIN
+from bookwyrm.views.helpers import set_language
 
 # pylint: disable= no-self-use
 @method_decorator(login_required, name="dispatch")
@@ -54,7 +55,7 @@ class Edit2FA(View):
         qr = qrcode.QRCode(image_factory=qrcode.image.svg.SvgPathImage)
         qr.add_data(provisioning_url)
         qr.make(fit=True)
-        img = qr.make_image(attrib={"fill": "black", "background": "white"})
+        img = qr.make_image(attrib={"fill": "black"})
         return img.to_string()
 
 
@@ -93,19 +94,22 @@ class Disable2FA(View):
 class LoginWith2FA(View):
     """Check 2FA code matches before allowing login"""
 
-    def get(self, request):
-        """Load 2FA checking page"""
-        form = forms.Confirm2FAForm(request.GET, instance=request.user)
-        return TemplateResponse(request, "two_factor_login.html", {"form": form})
-
     def post(self, request):
         """Check 2FA code and allow/disallow login"""
-        form = forms.Confirm2FAForm(request.POST, instance=request.user)
-
+        user = models.User.objects.get(username=request.POST.get('2fa_user'))
+        form = forms.Confirm2FAForm(request.POST, instance=user)
         if not form.is_valid():
-            time.sleep(2)  # make life harder for bots
-            data = {"form": form, "error": "Code does not match, try again"}
-            return TemplateResponse(request, "two_factor_login.html", data)
+            time.sleep(2)  # make life slightly harder for bots
+            data = {"form": form, "2fa_user": user, "error": "Code does not match, try again"}
+            return TemplateResponse(request, "two_factor_auth/two_factor_login.html", data)
 
-        # TODO: actually log the user in - we will be bypassing normal login
-        return redirect("/")
+        # log the user in - we are bypassing standard login
+        login(request, user)
+        user.update_active_date()
+        return set_language(user, redirect("/"))
+
+class Prompt2FA(View):
+    """Alert user to the existence of 2FA"""
+
+    def get(self, request):
+        return TemplateResponse(request, "two_factor_auth/two_factor_prompt.html")
