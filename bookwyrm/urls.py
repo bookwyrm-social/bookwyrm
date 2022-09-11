@@ -479,6 +479,21 @@ urlpatterns = [
         views.ChangePassword.as_view(),
         name="prefs-password",
     ),
+    re_path(
+        r"^preferences/2fa/?$",
+        views.Edit2FA.as_view(),
+        name="prefs-2fa",
+    ),
+    re_path(
+        r"^preferences/confirm-2fa/?$",
+        views.Confirm2FA.as_view(),
+        name="conf-2fa",
+    ),
+    re_path(
+        r"^preferences/disable-2fa/?$",
+        views.Disable2FA.as_view(),
+        name="disable-2fa",
+    ),
     re_path(r"^preferences/export/?$", views.Export.as_view(), name="prefs-export"),
     re_path(r"^preferences/delete/?$", views.DeleteUser.as_view(), name="prefs-delete"),
     re_path(r"^preferences/block/?$", views.Block.as_view(), name="prefs-block"),

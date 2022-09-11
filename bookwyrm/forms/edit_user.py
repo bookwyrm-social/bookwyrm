@@ -8,6 +8,7 @@ from bookwyrm import models
 from bookwyrm.models.fields import ClearableFileInputWithWarning
 from .custom_form import CustomForm
 
+import pyotp
 
 # pylint: disable=missing-class-docstring
 class EditUserForm(CustomForm):
@@ -99,3 +100,37 @@ class ChangePasswordForm(CustomForm):
             validate_password(new_password)
         except ValidationError as err:
             self.add_error("password", err)
+
+
+class ConfirmPasswordForm(CustomForm):
+    password = forms.CharField(widget=forms.PasswordInput)
+
+    class Meta:
+        model = models.User
+        fields = ["password"]
+        widgets = {
+            "password": forms.PasswordInput(),
+        }
+
+    def clean(self):
+        """Make sure password is correct"""
+        password = self.data.get("password")
+
+        if not self.instance.check_password(password):
+            self.add_error("password", _("Incorrect Password"))
+
+
+class Confirm2FAForm(CustomForm):
+    otp = forms.CharField(max_length=6, min_length=6, widget=forms.TextInput)
+
+    class Meta:
+        model = models.User
+        fields = ["otp_secret"]
+
+    def clean(self):
+        """Check otp matches"""
+        otp = self.data.get("otp")
+        totp = pyotp.TOTP(self.instance.otp_secret)
+
+        if not totp.verify(otp):
+            self.add_error("otp", _("Code does not match"))
