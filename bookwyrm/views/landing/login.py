@@ -51,11 +51,25 @@ class Login(View):
         # perform authentication
         user = authenticate(request, username=username, password=password)
         if user is not None:
-            # successful login
+            # if 2fa is set, don't log them in until they enter the right code
+            if user.two_factor_auth == True:
+                form = forms.Confirm2FAForm(request.GET, user)
+                return TemplateResponse(request, "two_factor_auth/two_factor_login.html", {"form": form, "2fa_user": user})
+
+            # otherwise, successful login
             login(request, user)
             user.update_active_date()
             if request.POST.get("first_login"):
                 return set_language(user, redirect("get-started-profile"))
+
+            if user.two_factor_auth == None:
+                # set to false so this page doesn't pop up again
+                user.two_factor_auth = False
+                user.save(broadcast=False, update_fields=["two_factor_auth"])
+
+                # show the 2fa prompt page
+                return set_language(user, redirect("prompt-2fa"))
+
             return set_language(user, redirect("/"))
 
         # maybe the user is pending email confirmation
@@ -69,7 +83,6 @@ class Login(View):
         register_form = forms.RegisterForm()
         data = {"login_form": login_form, "register_form": register_form}
         return TemplateResponse(request, "landing/login.html", data)
-
 
 @method_decorator(login_required, name="dispatch")
 class Logout(View):
