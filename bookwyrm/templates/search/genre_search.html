@@ -32,6 +32,17 @@
             <button class="btn btn-primary" type="submit">Search</button>
         </form> -->
 
+        <div class="control">
+            <label class="radio">
+              <input type="radio" name="search_buttons">
+              Must include all selected genres
+            </label>
+            <label class="radio">
+              <input type="radio" name="search_buttons">
+              Can include any of the selected genres
+            </label>
+        </div>
+
         <select data-placeholder="Click to start selecting genres!" multiple class="chosen-select" name="genres" id="genres">
             <option value=""></option>
             {% for genre in genre_tags %}

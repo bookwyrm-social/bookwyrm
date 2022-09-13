@@ -42,13 +42,26 @@ class SearchGenre(TemplateView):
         '''Get our genre list and put them on the page. If the user made a query, also display the books.'''
         context = super(SearchGenre, self).get_context_data(*args,**kwargs)
 
+        # Check if there's actually a genre selected.
         if(len(self.active_genres)):
             activeBooks = []
-            for gen in self.active_genres:
-                print("Item successful captured!")
-                activeBooks.extend(Book.objects.filter(genres = gen))
+            if True:    
+                base_qs = Book.objects.all()
+                for gen in self.active_genres:
+                    activeBooks = base_qs.filter(genres__pk__contains=gen)
+            else:
+                for gen in self.active_genres:
+                    print("Item successful captured!")
 
-            #activeBooks = Book.objects.filter(genres = self.active_genres[0])
+                    #if True:
+                    #    filterGenres = []
+                    #    for filterGen in self.active_genres:
+                    #        filterGenres.append(filterGen)
+
+                    #activeBooks.extend(Book.objects.filter(genres = gen))
+                    activeBooks.extend(Book.objects.filter(genres = gen))
+
+
             print("Printing this enter:" + self.active_genres[0])
             for item in activeBooks:
                 print(item)
@@ -62,3 +75,4 @@ class SearchGenre(TemplateView):
         context['genre_tags'] = Genre.objects.all()
         context['listed_books'] = activeBooks
         return context
+
