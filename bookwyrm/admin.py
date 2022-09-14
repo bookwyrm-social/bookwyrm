@@ -8,6 +8,10 @@ admin.site.register(models.FederatedServer)
 admin.site.register(models.Connector)
 admin.site.register(models.book.Genre)
 admin.site.register(models.notification.GenreNotification)
+admin.site.register(models.notification.FollowedGenre)
+admin.site.register(models.notification.Notification)
+
+
 
 
 class EditionAdmin(admin.ModelAdmin):

@@ -1,0 +1,20 @@
+{% extends 'notifications/items/layout.html' %}
+
+{% load i18n %}
+{% load utilities %}
+
+{% block primary_link %}{% spaceless %}
+{% url 'user-relationships' request.user.localname 'followers' %}
+{% endspaceless %}{% endblock %}
+
+{% block icon %}
+<span class="icon icon-local"></span>
+{% endblock %}
+
+{% block description %}
+  A new book was added to the <a href="{{ related_user_link }}">{{ related_user }}</a> genre
+{% endblocktrans %}
+
+{% endif %}
+
+{% endblock %}

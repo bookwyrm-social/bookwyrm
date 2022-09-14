@@ -3,22 +3,38 @@ from django.db import models, transaction
 from django.utils import timezone
 from django.dispatch import receiver
 from .base_model import BookWyrmModel
-from .book import Genre
+from .book import Genre, Book, Work
 from . import Boost, Favorite, GroupMemberInvitation, ImportJob, ListItem, Report
 from . import Status, User, UserFollowRequest, Book
 
-class GenreNotification(models.Model):
+class GenreNotification(BookWyrmModel):
     """a book has been added to a genre you follow"""
-    to_user = models.ForeignKey(User, related_name="notification_to", on_delete=models.CASCADE, null=True)
     from_genre = models.ForeignKey(Genre, related_name="notification_from", on_delete=models.CASCADE, null=True)
+    related_users = models.ManyToManyField("User", symmetrical=False, related_name="notifications_to", null=True)
     book = models.ForeignKey(Book, related_name="+", on_delete=models.CASCADE, null=True, blank=True)
     created = models.DateTimeField(default=timezone.now)
-    unread = models.BooleanField(default=True)
+    read = models.BooleanField(default=False)
+    GENRE = "GENRE"
 
     class Meta:
         ordering = ("-created",)
         #Speed up notifcation queries
-        index_together = ("to_user","unread")
+        #index_together = ("related_users","read")
+        abstract = False
+
+    @classmethod
+    @transaction.atomic
+    def notify(cls, genre, related_user, **kwargs):
+        """Create a notification"""
+        if related_user and (not user.local or user == related_user):
+            return
+        notification = cls.objects.filter(user=user, **kwargs).first()
+        if not notification:
+            notification = cls.objects.create(user=user, **kwargs)
+        if related_user:
+            notification.related_users.add(related_user)
+        notification.read = False
+        notification.save()
 
 class GenreNotificationQuerySet(models.query.QuerySet):
     def unread(self):
@@ -36,6 +52,11 @@ class GenreNotificationQuerySet(models.query.QuerySet):
     def delete_all(self, to_user):
         qs = qs.filter(to_user=to_user)
         delete()
+
+class FollowedGenre(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    genre = models.ManyToManyField(Genre, null = True)
+    created = models.DateTimeField(default=timezone.now)
 
 class Notification(BookWyrmModel):
     """you've been tagged, liked, followed, etc"""
@@ -140,8 +161,52 @@ class Notification(BookWyrmModel):
         notification.related_users.remove(related_user)
         if not notification.related_users.count():
             notification.delete()
+#--------------------------------------------------------------------------
+@receiver(models.signals.post_save, sender=Work)
+# pylint: disable=unused-argument
+def notify_user_on_genre_activity(
+    sender, instance, *args, update_fields=None, **kwargs
+):
+    """we imported your books! aren't you proud of us"""
+    #update_fields = update_fields or []
+    #if not instance.genre or "complete" not in update_fields:
+    #    return
+    Notification.objects.create(
+        user=instance.last_edited_by,
+        notification_type=Notification.FOLLOW_REQUEST,
+    )
 
+@receiver(models.signals.post_save, sender=Work)
+# pylint: disable=unused-argument
+def notify_on_fav(sender, instance, *args, **kwargs):
+    """someone liked your content, you ARE loved"""
+    Notification.notify(
+        instance.status.user,
+        instance.last_edited_by,
+        related_status=instance.status,
+        notification_type=Notification.FAVORITE,
+    )
 
+@receiver(models.signals.post_save, sender=ListItem)
+@transaction.atomic
+# pylint: disable=unused-argument
+def notify_user_on_list_item_add(sender, instance, created, *args, **kwargs):
+    """Someone added to your list"""
+    if not created:
+        return
+    list_owner = instance.book_list.user
+    genre = instance.genre;
+    users = FollowedGenre.objects.filter(genre)
+    # create a notification if somoene ELSE added to a local user's list
+    if list_owner.local and list_owner != instance.user:
+        # keep the related_user singular, group the items
+        Notification.notify_list_item(list_owner, instance)
+
+    if instance.book_list.group:
+        for membership in instance.book_list.group.memberships.all():
+            if membership.user != instance.user:
+                Notification.notify_list_item(membership.user, instance)
+#--------------------------------------------------------------------------
 @receiver(models.signals.post_save, sender=Favorite)
 # pylint: disable=unused-argument
 def notify_on_fav(sender, instance, *args, **kwargs):
