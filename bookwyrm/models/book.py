@@ -43,14 +43,14 @@ class Genre(models.Model):
 
     def __str__(self):
         return self.genre_name
- 
+
     @property
     def genre_desc(self):
         return self.description
 
     #def save(self, *args, **kwargs):
-    #    
-    #    
+    #
+    #
     #    if self.immutable:
     #        raise ValueError("This genre is immutable and cannot be changed.")
     #
@@ -64,7 +64,7 @@ class ImmutableGenre(Genre):
 
     def save(self, *args, **kwargs):
         super(Genre, self).save(*args, **kwargs)
-        
+
 
 class BookDataModel(ObjectMixin, BookWyrmModel):
     """fields shared between editable book data (books, works, authors)"""

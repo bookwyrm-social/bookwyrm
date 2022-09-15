@@ -3,7 +3,7 @@ from django.db import models, transaction
 from django.utils import timezone
 from django.dispatch import receiver
 from .base_model import BookWyrmModel
-from .book import Genre, Book, Work
+from .book import Genre, Book, Work, Edition
 from . import Boost, Favorite, GroupMemberInvitation, ImportJob, ListItem, Report
 from . import Status, User, UserFollowRequest, Book
 
@@ -54,8 +54,8 @@ class GenreNotificationQuerySet(models.query.QuerySet):
         delete()
 
 class FollowedGenre(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    genre = models.ManyToManyField(Genre, null = True)
+    user = models.ForeignKey("User", on_delete=models.CASCADE)
+    genres = models.ManyToManyField(Genre, blank=True)
     created = models.DateTimeField(default=timezone.now)
 
 class Notification(BookWyrmModel):
@@ -67,6 +67,9 @@ class Notification(BookWyrmModel):
     REPLY = "REPLY"
     MENTION = "MENTION"
     TAG = "TAG"
+
+    # Genre update
+    GENRE = "GENRE"
 
     # Relationships
     FOLLOW = "FOLLOW"
@@ -95,7 +98,7 @@ class Notification(BookWyrmModel):
     NotificationType = models.TextChoices(
         # there has got be a better way to do this
         "NotificationType",
-        f"{FAVORITE} {REPLY} {MENTION} {TAG} {FOLLOW} {FOLLOW_REQUEST} {BOOST} {IMPORT} {ADD} {REPORT} {INVITE} {ACCEPT} {JOIN} {LEAVE} {REMOVE} {GROUP_PRIVACY} {GROUP_NAME} {GROUP_DESCRIPTION}",
+        f"{GENRE} {FAVORITE} {REPLY} {MENTION} {TAG} {FOLLOW} {FOLLOW_REQUEST} {BOOST} {IMPORT} {ADD} {REPORT} {INVITE} {ACCEPT} {JOIN} {LEAVE} {REMOVE} {GROUP_PRIVACY} {GROUP_NAME} {GROUP_DESCRIPTION}",
     )
 
     user = models.ForeignKey("User", on_delete=models.CASCADE)
@@ -103,6 +106,8 @@ class Notification(BookWyrmModel):
     notification_type = models.CharField(
         max_length=255, choices=NotificationType.choices
     )
+
+    related_genre = models.ForeignKey("Genre", on_delete=models.CASCADE, null=True, related_name="notifications")
 
     related_users = models.ManyToManyField(
         "User", symmetrical=False, related_name="notifications"
@@ -128,6 +133,17 @@ class Notification(BookWyrmModel):
             notification = cls.objects.create(user=user, **kwargs)
         if related_user:
             notification.related_users.add(related_user)
+        notification.read = False
+        notification.save()
+
+    """Create genre notification - UPDATE"""
+    @classmethod
+    @transaction.atomic
+    def notify_genre_update(cls, users, **kwargs):
+        """Notify on genre activity"""
+        notification = cls.objects.create(**kwargs)
+        for user in users:
+            notification.related_users.add(user.user)
         notification.read = False
         notification.save()
 
@@ -161,52 +177,21 @@ class Notification(BookWyrmModel):
         notification.related_users.remove(related_user)
         if not notification.related_users.count():
             notification.delete()
-#--------------------------------------------------------------------------
-@receiver(models.signals.post_save, sender=Work)
-# pylint: disable=unused-argument
-def notify_user_on_genre_activity(
-    sender, instance, *args, update_fields=None, **kwargs
-):
-    """we imported your books! aren't you proud of us"""
-    #update_fields = update_fields or []
-    #if not instance.genre or "complete" not in update_fields:
-    #    return
-    Notification.objects.create(
-        user=instance.last_edited_by,
-        notification_type=Notification.FOLLOW_REQUEST,
-    )
 
-@receiver(models.signals.post_save, sender=Work)
-# pylint: disable=unused-argument
-def notify_on_fav(sender, instance, *args, **kwargs):
-    """someone liked your content, you ARE loved"""
-    Notification.notify(
-        instance.status.user,
-        instance.last_edited_by,
-        related_status=instance.status,
-        notification_type=Notification.FAVORITE,
-    )
+"""Receiver for genre update - UPDATE"""
+@receiver(models.signals.m2m_changed, sender=Edition.genres.through)
+def genre_update(sender, instance, action, pk_set, reverse, **kwargs):
+    if action == "post_add":
+        for key in pk_set:
+            genre = Genre.objects.get(pk=key)
+            users = FollowedGenre.objects.filter(genres=genre)
+            Notification.notify_genre_update(users,
+            user = instance.last_edited_by,
+            related_genre=genre,
+            notification_type=Notification.GENRE
+            )
 
-@receiver(models.signals.post_save, sender=ListItem)
-@transaction.atomic
-# pylint: disable=unused-argument
-def notify_user_on_list_item_add(sender, instance, created, *args, **kwargs):
-    """Someone added to your list"""
-    if not created:
-        return
-    list_owner = instance.book_list.user
-    genre = instance.genre;
-    users = FollowedGenre.objects.filter(genre)
-    # create a notification if somoene ELSE added to a local user's list
-    if list_owner.local and list_owner != instance.user:
-        # keep the related_user singular, group the items
-        Notification.notify_list_item(list_owner, instance)
 
-    if instance.book_list.group:
-        for membership in instance.book_list.group.memberships.all():
-            if membership.user != instance.user:
-                Notification.notify_list_item(membership.user, instance)
-#--------------------------------------------------------------------------
 @receiver(models.signals.post_save, sender=Favorite)
 # pylint: disable=unused-argument
 def notify_on_fav(sender, instance, *args, **kwargs):
