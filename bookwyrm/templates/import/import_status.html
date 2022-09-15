@@ -41,7 +41,7 @@
         </dl>
     </div>
 
-    {% if not job.complete %}
+    {% if not job.complete and show_progress %}
     <div class="box is-processing">
         <div class="block">
             <span class="icon icon-spinner is-pulled-left" aria-hidden="true"></span>
@@ -94,7 +94,7 @@
 <div class="block">
     {% block actions %}{% endblock %}
     <div class="table-container">
-        <table class="table is-striped">
+        <table class="table is-striped is-fullwidth">
             <tr>
                 <th>
                     {% trans "Row" %}
@@ -137,6 +137,13 @@
                 </td>
             </tr>
             {% else %}
+            {% if not items %}
+            <tr>
+                <td colspan="6">
+                    <em>{% trans "No items currently need review" %}</em>
+                </td>
+            </tr>
+            {% endif %}
             {% for item in items %}
             <tr>
                 {% block index_col %}
