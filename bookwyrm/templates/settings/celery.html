@@ -1,0 +1,59 @@
+{% extends 'settings/layout.html' %}
+{% load humanize %}
+{% load i18n %}
+{% load celery_tags %}
+
+{% block title %}{% trans "Celery Status" %}{% endblock %}
+
+{% block header %}{% trans "Celery Status" %}{% endblock %}
+
+{% block panel %}
+
+{% if stats %}
+<section class="block content">
+    <h2>{% trans "Workers" %}</h2>
+
+    {% for worker_name, worker in stats.items %}
+    <div class="box">
+        <h3>{{ worker_name }}</h3>
+        {% trans "Uptime:" %} {{ worker.uptime|uptime }}
+    </div>
+    {% endfor %}
+</section>
+
+
+<section class="block content">
+    <h2>{% trans "Active Tasks" %}</h2>
+    {% for worker in active_tasks.values %}
+        <div class="table-container">
+            <table class="table is-striped is-fullwidth">
+                <tr>
+                    <th>{% trans "ID" %}</th>
+                    <th>{% trans "Task name" %}</th>
+                    <th>{% trans "Start time" %}</th>
+                    <th>{% trans "Priority" %}</th>
+                </tr>
+                    {% for task in worker %}
+                    <tr>
+                        <td>{{ task.id }}</td>
+                        <td>{{ task.name|shortname }}</td>
+                        <td>{{ task.time_start|datestamp }} (UTC)</td>
+                        <td>{{ task.delivery_info.routing_key }}</td>
+                    </tr>
+                    {% endfor %}
+            </table>
+        </div>
+    {% endfor %}
+</section>
+
+{% else %}
+
+<div class="notification is-danger is-flex is-align-items-start">
+    <span class="icon icon-warning is-size-4 pr-3" aria-hidden="true"></span>
+    <span>
+        {% trans "Could not connect to Celery" %}
+    </span>
+</div>
+{% endif %}
+
+{% endblock %}

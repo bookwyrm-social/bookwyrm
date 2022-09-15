@@ -291,6 +291,9 @@ urlpatterns = [
         views.Report.as_view(),
         name="report-link",
     ),
+    re_path(
+        r"^settings/celery/?$", views.CeleryStatus.as_view(), name="settings-celery"
+    ),
     # landing pages
     re_path(r"^about/?$", views.about, name="about"),
     re_path(r"^privacy/?$", views.privacy, name="privacy"),
