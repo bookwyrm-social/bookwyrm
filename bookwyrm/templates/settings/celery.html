@@ -55,14 +55,21 @@
                     <th>{% trans "Run time" %}</th>
                     <th>{% trans "Priority" %}</th>
                 </tr>
-                    {% for task in worker %}
-                    <tr>
-                        <td>{{ task.id }}</td>
-                        <td>{{ task.name|shortname }}</td>
-                        <td>{{ task.time_start|runtime }}</td>
-                        <td>{{ task.delivery_info.routing_key }}</td>
-                    </tr>
-                    {% endfor %}
+                {% if not worker %}
+                <tr>
+                    <td colspan="4">
+                        <em>{% trans "No active tasks" %}</em>
+                    </td>
+                </tr>
+                {% endif %}
+                {% for task in worker %}
+                <tr>
+                    <td>{{ task.id }}</td>
+                    <td>{{ task.name|shortname }}</td>
+                    <td>{{ task.time_start|runtime }}</td>
+                    <td>{{ task.delivery_info.routing_key }}</td>
+                </tr>
+                {% endfor %}
             </table>
         </div>
     {% endfor %}
@@ -72,7 +79,7 @@
     <h2>{% trans "Workers" %}</h2>
 
     {% for worker_name, worker in stats.items %}
-    <div class="box">
+    <div class="notification">
         <h3>{{ worker_name }}</h3>
         {% trans "Uptime:" %} {{ worker.uptime|uptime }}
     </div>
