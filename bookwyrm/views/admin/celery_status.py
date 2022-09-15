@@ -1,4 +1,4 @@
-""" manage site settings """
+""" celery status """
 from django.contrib.auth.decorators import login_required, permission_required
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
@@ -14,10 +14,10 @@ from bookwyrm.tasks import app as celery
     name="dispatch",
 )
 class CeleryStatus(View):
-    """manage things like the instance name"""
+    """Are your tasks running? Well you'd better go catch them"""
 
     def get(self, request):
-        """edit form"""
+        """See workers and active tasks"""
         inspect = celery.control.inspect()
         data = {"stats": inspect.stats(), "active_tasks": inspect.active()}
         return TemplateResponse(request, "settings/celery.html", data)
