@@ -12,10 +12,10 @@ def uptime(seconds):
     return str(datetime.timedelta(seconds=seconds))
 
 
-@register.filter(name="datestamp")
-def get_date(timestamp):
-    """Go from a string timestamp to a date object"""
-    return datetime.datetime.fromtimestamp(timestamp)
+@register.filter(name="runtime")
+def runtime(timestamp):
+    """How long has it been?"""
+    return datetime.datetime.now() - datetime.datetime.fromtimestamp(timestamp)
 
 
 @register.filter(name="shortname")
