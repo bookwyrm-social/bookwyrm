@@ -77,7 +77,13 @@
                             ({% firstof result.first_published_date.year result.published_date.year %})
                         {% endif %}
                     </p>
-                    
+                    <p>
+                        {% for gena in result.genres.all %}
+                            <strong>
+                                {{gena.genre_name}}
+                            </strong>
+                        {% endfor %}
+                    </p>
                 </div>
             </div>
             </li>
