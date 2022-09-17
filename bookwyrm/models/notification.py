@@ -22,20 +22,6 @@ class GenreNotification(BookWyrmModel):
         #index_together = ("related_users","read")
         abstract = False
 
-    @classmethod
-    @transaction.atomic
-    def notify(cls, genre, related_user, **kwargs):
-        """Create a notification"""
-        if related_user and (not user.local or user == related_user):
-            return
-        notification = cls.objects.filter(user=user, **kwargs).first()
-        if not notification:
-            notification = cls.objects.create(user=user, **kwargs)
-        if related_user:
-            notification.related_users.add(related_user)
-        notification.read = False
-        notification.save()
-
 class GenreNotificationQuerySet(models.query.QuerySet):
     def unread(self):
         return self.filter(unread=True)

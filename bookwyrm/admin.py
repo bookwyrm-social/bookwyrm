@@ -3,7 +3,12 @@ from django.contrib import admin
 from bookwyrm import models
 from django.contrib.auth.admin import UserAdmin
 
-admin.site.register(models.User)
+
+class UserAdmin(admin.ModelAdmin):
+    model = models.User
+    filter_horizontal = ('followed_genres',)
+
+admin.site.register(models.User, UserAdmin)
 admin.site.register(models.FederatedServer)
 admin.site.register(models.Connector)
 admin.site.register(models.book.Genre)

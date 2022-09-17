@@ -25,6 +25,7 @@ from .activitypub_mixin import OrderedCollectionPageMixin, ActivitypubMixin
 from .base_model import BookWyrmModel, DeactivationReason, new_access_code
 from .federated_server import FederatedServer
 from . import fields
+from .book import Genre
 
 
 FeedFilterChoices = [
@@ -110,6 +111,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         through_fields=("user_subject", "user_object"),
         related_name="follower_requests",
     )
+    followed_genres = models.ManyToManyField("Genre", related_name="followed_genres", blank=True)
     blocks = models.ManyToManyField(
         "self",
         symmetrical=False,
@@ -280,6 +282,16 @@ class User(OrderedCollectionPageMixin, AbstractUser):
             id_only=True,
             **kwargs,
         )
+
+    #def follow_genre(self, *args, **kwargs):
+        #genre = Genre.objects.get(id=)
+        #if genre not in self.followed_genres:
+        #    self.followed_genres.add(genre)
+
+    #def unfollow_genre(self, *args, **kwargs):
+        #genre = Genre.objects.get(id=)
+        #if genre in self.followed_genres:
+            #self.followed_genres.remove(genre)
 
     def to_activity(self, **kwargs):
         """override default AP serializer to add context object
