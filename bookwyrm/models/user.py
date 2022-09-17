@@ -283,15 +283,15 @@ class User(OrderedCollectionPageMixin, AbstractUser):
             **kwargs,
         )
 
-    #def follow_genre(self, *args, **kwargs):
-        #genre = Genre.objects.get(id=)
-        #if genre not in self.followed_genres:
-        #    self.followed_genres.add(genre)
+    def follow_genre(self, *args, **kwargs):
+        genre = Genre.objects.get(id=genre_id)
+        if genre not in self.followed_genres:
+            self.followed_genres.add(genre)
 
-    #def unfollow_genre(self, *args, **kwargs):
-        #genre = Genre.objects.get(id=)
-        #if genre in self.followed_genres:
-            #self.followed_genres.remove(genre)
+    def unfollow_genre(self, *args, **kwargs):
+        genre = Genre.objects.get(id=genre_id)
+        if genre in self.followed_genres:
+            self.followed_genres.remove(genre)
 
     def to_activity(self, **kwargs):
         """override default AP serializer to add context object
