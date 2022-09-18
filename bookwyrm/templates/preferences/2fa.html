@@ -60,15 +60,19 @@
         {% trans "You can make your account more secure by using Two Factor Authentication (2FA). This will require you to enter a one-time code using a phone app like <em>Authy</em>, <em>Google Authenticator</em> or <em>Microsoft Authenticator</em> each time you log in." %}
     </p>
     <p> {% trans "Confirm your password to begin setting up 2FA." %}</p>
-    <form name="confirm-password" action="{% url 'prefs-2fa' %}" method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-        <div class="field">
-            <label class="label" for="id_password">{% trans "Password:" %}</label>
-            {{ form.password }}
-            {% include 'snippets/form_errors.html' with errors_list=form.password.errors id="desc_password" %}
+    <div class="columns">
+        <div class="column is-one-third">
+            <form name="confirm-password" action="{% url 'prefs-2fa' %}" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+            <div class="field">
+                <label class="label" for="id_password">{% trans "Password:" %}</label>
+                {{ form.password }}
+                {% include 'snippets/form_errors.html' with errors_list=form.password.errors id="desc_password" %}
+            </div>
+            <button class="button is-primary" type="submit">{% trans "Set up 2FA" %}</button>
+        </form>
         </div>
-        <button class="button is-primary" type="submit">{% trans "Set up 2FA" %}</button>
-    </form>
+    </div>
     {% endif %}
 </div>
 {% endblock %}
