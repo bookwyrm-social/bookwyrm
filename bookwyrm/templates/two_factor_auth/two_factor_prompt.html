@@ -21,8 +21,8 @@
         </div>
     </nav>
     <div class="container">
-        <div class="columns is-multiline is-centered">
-            <div class="column is-one-third">
+        <div class="columns is-multiline is-centered hero is-fullheight is-vcentered">
+            <div class="column is-one-third m-4">
                 <header class="block">
                     {% block header %}
                     <h1 class="title">
@@ -30,10 +30,10 @@
                     </h1>
                     {% endblock %}
                 </header>
-                <div class="is-centered">
-                    <p>You can secure your account by setting up two factor authentication in your user preferences. This will require a one-time code from your phone in addition to your password each time you log in.</p>
-                    <div class="block is-centered">
-                        <a class="button is-warning" href="/">No thanks</a>
+                <div class="is-centered p-2">
+                    <p class="block">You can secure your account by setting up two factor authentication in your user preferences. This will require a one-time code from your phone in addition to your password each time you log in.</p>
+                    <div class="block has-text-centered">
+                        <a class="button" href="/">No thanks</a>
                         <a class="button is-primary" href="/preferences/2fa">Set up 2FA</a>
                     </div>
                 </div>
