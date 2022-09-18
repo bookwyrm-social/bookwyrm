@@ -30,23 +30,14 @@
                     </h1>
                     {% endblock %}
                 </header>
-                {% if error %}
-                <div class="notification is-danger is-light">
-                    <!-- TODO: how do we translate dynamic errors? -->
-                    <span>
-                        {{ error }}
-                    </span>
-                </div>
-                {% endif %}
                 <div class="is-centered">
                     <form name="confirm-2fa" action="{% url 'login-with-2fa' %}" method="post" enctype="multipart/form-data">
                         {% csrf_token %}
                         <div class="field">
                             <label class="label" for="id_otp">{% trans "Enter the code from your authenticator app:" %}</label>
                             {{ form.otp }}
-                            {% include 'snippets/form_errors.html' with errors_list=form.current_password.errors id="desc_current_password" %}
+                            {% include 'snippets/form_errors.html' with errors_list=form.otp.errors id="desc_otp" %}
                         </div>
-                        <input name="2fa_user" value="{{ 2fa_user }}" hidden>
                         <button class="button is-primary" type="submit">{% trans "Confirm and Log In" %}</button>
                     </form>
                 </div>

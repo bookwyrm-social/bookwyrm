@@ -4,8 +4,6 @@ from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
-import pyotp
-
 from bookwyrm import models
 from bookwyrm.models.fields import ClearableFileInputWithWarning
 from .custom_form import CustomForm
@@ -118,32 +116,3 @@ class ConfirmPasswordForm(CustomForm):
 
         if not self.instance.check_password(password):
             self.add_error("password", _("Incorrect Password"))
-
-
-class Confirm2FAForm(CustomForm):
-    otp = forms.CharField(max_length=6, min_length=6, widget=forms.TextInput)
-
-    # IDK if we need this?
-    class Meta:
-        model = models.User
-        fields = ["otp_secret"]
-
-    def clean(self):
-        """Check otp matches"""
-        otp = self.data.get("otp")
-        totp = pyotp.TOTP(self.instance.otp_secret)
-
-        if not totp.verify(otp):
-            # maybe it's a backup code?
-            hotp = pyotp.HOTP(self.instance.otp_secret)
-            hotp_count = (
-                self.instance.hotp_count if self.instance.hotp_count is not None else 0
-            )
-
-            if not hotp.verify(otp, hotp_count):
-                self.add_error("otp", _("Code does not match"))
-
-            # TODO: backup codes
-            # increment the user hotp_count if it was an HOTP
-            # self.instance.hotp_count = hotp_count + 1
-            # self.instance.save(broadcast=False, update_fields=["hotp_count"])

@@ -1,4 +1,5 @@
 """ class views for 2FA management """
+from datetime import datetime, timedelta
 import time
 import pyotp
 import qrcode
@@ -94,17 +95,31 @@ class Disable2FA(View):
 class LoginWith2FA(View):
     """Check 2FA code matches before allowing login"""
 
+    def get(self, request):
+        """Display 2FA form"""
+
+        data = {"form": forms.Confirm2FAForm()}
+        return TemplateResponse(request, "two_factor_auth/two_factor_login.html", data)
+
     def post(self, request):
         """Check 2FA code and allow/disallow login"""
-        user = models.User.objects.get(username=request.POST.get("2fa_user"))
+        user = models.User.objects.get(username=request.session["2fa_user"])
+        elapsed_time = datetime.now() - request.session["2fa_auth_time"]
         form = forms.Confirm2FAForm(request.POST, instance=user)
+        # don't allow the login credentials to last too long before completing login
+        if elapsed_time > timedelta(seconds=60):
+            request.session["2fa_user"] = None
+            request.session["2fa_auth_time"] = 0
+            return redirect("/")
         if not form.is_valid():
-            time.sleep(2)  # make life slightly harder for bots
-            data = {
-                "form": form,
-                "2fa_user": user,
-                "error": "Code does not match, try again",
-            }
+            # make life harder for bots
+            # humans are unlikely to get it wrong more than twice
+            if not request.session["2fa_attempts"]:
+                request.session["2fa_attempts"] = 0
+            request.session["2fa_attempts"] = request.session["2fa_attempts"] + 1
+            time.sleep(2 ** request.session["2fa_attempts"])
+
+            data = {"form": form, "2fa_user": user}
             return TemplateResponse(
                 request, "two_factor_auth/two_factor_login.html", data
             )

@@ -1,4 +1,5 @@
 """ class views for login/register views """
+from datetime import datetime
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
@@ -29,7 +30,7 @@ class Login(View):
         }
         return TemplateResponse(request, "landing/login.html", data)
 
-    #pylint: disable=too-many-return-statements
+    # pylint: disable=too-many-return-statements
     @sensitive_variables("password")
     @method_decorator(sensitive_post_parameters("password"))
     def post(self, request):
@@ -54,12 +55,9 @@ class Login(View):
         if user is not None:
             # if 2fa is set, don't log them in until they enter the right code
             if user.two_factor_auth is True:
-                form = forms.Confirm2FAForm(request.GET, user)
-                return TemplateResponse(
-                    request,
-                    "two_factor_auth/two_factor_login.html",
-                    {"form": form, "2fa_user": user},
-                )
+                request.session["2fa_user"] = user.username
+                request.session["2fa_auth_time"] = datetime.now()
+                return redirect("login-with-2fa")
 
             # otherwise, successful login
             login(request, user)
