@@ -107,7 +107,7 @@ class CreateAdmin(View):
     def create_default_genres(self, request):
         """Create the immutable genres. Cannot be changed, of course."""
         for genre_name in DEFAULT_GENRES:
-            action_genre = models.ImmutableGenre.objects.create_genre(genre_name, DEFAULT_GENRES[genre_name], True)
+            action_genre = models.Genre.objects.create_genre(genre_name, DEFAULT_GENRES[genre_name])
             action_genre.save()
 
 
