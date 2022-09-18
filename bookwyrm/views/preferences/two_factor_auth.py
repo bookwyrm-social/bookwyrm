@@ -31,11 +31,10 @@ class Edit2FA(View):
     def post(self, request):
         """check the user's password"""
         form = forms.ConfirmPasswordForm(request.POST, instance=request.user)
-        # TODO: display an error
         if not form.is_valid():
             data = {"form": form}
             return TemplateResponse(request, "preferences/2fa.html", data)
-        qr_form = forms.Confirm2FAForm(request.POST, instance=request.user)
+        qr_form = forms.Confirm2FAForm()
         data = {
             "password_confirmed": True,
             "qrcode": self.create_qr_code(request.user),
@@ -66,10 +65,15 @@ class Confirm2FA(View):
     def post(self, request):
         """confirm the 2FA works before requiring it"""
         form = forms.Confirm2FAForm(request.POST, instance=request.user)
-        # TODO: show an error here
+
         if not form.is_valid():
-            data = {"form": form}
-            return redirect("prefs-2fa")
+            data = {
+                "password_confirmed": True,
+                "qrcode": Edit2FA.create_qr_code(self, request.user),
+                "form": form,
+            }
+            return TemplateResponse(request, "preferences/2fa.html", data)
+
         # set the user's 2FA setting on
         request.user.two_factor_auth = True
         request.user.save(broadcast=False, update_fields=["two_factor_auth"])

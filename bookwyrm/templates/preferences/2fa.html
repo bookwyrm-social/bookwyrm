@@ -32,7 +32,7 @@
         <div class="field">
             <label class="label" for="id_otp">{% trans "Enter the code from your authenticator app:" %}</label>
             {{ form.otp }}
-            {% include 'snippets/form_errors.html' with errors_list=form.current_password.errors id="desc_current_password" %}
+            {% include 'snippets/form_errors.html' with errors_list=form.otp.errors id="desc_otp" %}
         </div>
         <button class="button is-primary" type="submit">{% trans "Confirm" %}</button>
     </form>
@@ -46,7 +46,7 @@
         <div class="field">
             <label class="label" for="id_password">{% trans "Password:" %}</label>
             {{ form.password }}
-            {% include 'snippets/form_errors.html' with errors_list=form.current_password.errors id="desc_current_password" %}
+            {% include 'snippets/form_errors.html' with errors_list=form.password.errors id="desc_password" %}
         </div>
         <button class="button is-primary" type="submit">{% trans "Set up 2FA" %}</button>
     </form>
