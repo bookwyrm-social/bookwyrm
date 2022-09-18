@@ -59,6 +59,7 @@ class Edit2FA(View):
         return img.to_string()
 
 
+@method_decorator(login_required, name="dispatch")
 class Confirm2FA(View):
     """confirm user's 2FA settings"""
 
@@ -81,6 +82,7 @@ class Confirm2FA(View):
         return TemplateResponse(request, "preferences/2fa.html", data)
 
 
+@method_decorator(login_required, name="dispatch")
 class Disable2FA(View):
     """Turn off 2FA on this user account"""
 
@@ -118,7 +120,7 @@ class LoginWith2FA(View):
         if not form.is_valid():
             # make life harder for bots
             # humans are unlikely to get it wrong more than twice
-            if not request.session["2fa_attempts"]:
+            if "2fa_attempts" not in request.session:
                 request.session["2fa_attempts"] = 0
             request.session["2fa_attempts"] = request.session["2fa_attempts"] + 1
             time.sleep(2 ** request.session["2fa_attempts"])
@@ -132,6 +134,36 @@ class LoginWith2FA(View):
         login(request, user)
         user.update_active_date()
         return set_language(user, redirect("/"))
+
+
+@method_decorator(login_required, name="dispatch")
+class GenerateBackupCodes(View):
+    """Generate and display backup 2FA codes"""
+
+    def get(self, request):
+        """Generate and display backup 2FA codes"""
+        data = {"backup_codes": self.generate_backup_codes(request.user)}
+        return TemplateResponse(request, "preferences/2fa.html", data)
+
+    def generate_backup_codes(self, user):
+        """generate fresh backup codes for 2FA"""
+
+        # create fresh hotp secrets and count
+        hotp_secret = pyotp.random_base32()
+        user.hotp_count = 0
+        # save the secret to the user record
+        user.hotp_secret = hotp_secret
+        user.save(broadcast=False, update_fields=["hotp_count", "hotp_secret"])
+
+        # generate codes
+        hotp = pyotp.HOTP(hotp_secret)
+        counter = 0
+        codes = []
+        while counter < 10:
+            codes.append(hotp.at(counter))
+            counter = counter + 1
+
+        return codes
 
 
 class Prompt2FA(View):

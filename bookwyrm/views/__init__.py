@@ -36,6 +36,7 @@ from .preferences.two_factor_auth import (
     Edit2FA,
     Confirm2FA,
     Disable2FA,
+    GenerateBackupCodes,
     LoginWith2FA,
     Prompt2FA,
 )

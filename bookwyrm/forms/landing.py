@@ -79,7 +79,9 @@ class PasswordResetForm(CustomForm):
 
 
 class Confirm2FAForm(CustomForm):
-    otp = forms.CharField(max_length=6, min_length=6, widget=forms.TextInput)
+    otp = forms.CharField(
+        max_length=6, min_length=6, widget=forms.TextInput(attrs={"autofocus": True})
+    )
 
     class Meta:
         model = models.User
@@ -91,16 +93,23 @@ class Confirm2FAForm(CustomForm):
         totp = pyotp.TOTP(self.instance.otp_secret)
 
         if not totp.verify(otp):
-            # maybe it's a backup code?
-            hotp = pyotp.HOTP(self.instance.otp_secret)
-            hotp_count = (
-                self.instance.hotp_count if self.instance.hotp_count is not None else 0
-            )
 
-            if not hotp.verify(otp, hotp_count):
-                self.add_error("otp", _("Code does not match"))
+            if self.instance.hotp_secret:
+                # maybe it's a backup code?
+                hotp = pyotp.HOTP(self.instance.hotp_secret)
+                hotp_count = (
+                    self.instance.hotp_count
+                    if self.instance.hotp_count is not None
+                    else 0
+                )
 
-            # TODO: backup codes
-            # increment the user hotp_count if it was an HOTP
-            # self.instance.hotp_count = hotp_count + 1
-            # self.instance.save(broadcast=False, update_fields=["hotp_count"])
+                if not hotp.verify(otp, hotp_count):
+                    self.add_error("otp", _("Incorrect code"))
+
+                # increment the user hotp_count
+                else:
+                    self.instance.hotp_count = hotp_count + 1
+                    self.instance.save(broadcast=False, update_fields=["hotp_count"])
+
+            else:
+                self.add_error("otp", _("Incorrect code"))

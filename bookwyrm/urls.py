@@ -485,6 +485,11 @@ urlpatterns = [
         name="prefs-2fa",
     ),
     re_path(
+        r"^preferences/2fa-backup-codes/?$",
+        views.GenerateBackupCodes.as_view(),
+        name="generate-2fa-backup-codes",
+    ),
+    re_path(
         r"^preferences/confirm-2fa/?$",
         views.Confirm2FA.as_view(),
         name="conf-2fa",
