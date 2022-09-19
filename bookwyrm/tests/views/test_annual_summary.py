@@ -21,6 +21,7 @@ def make_date(*args):
 class AnnualSummary(TestCase):
     """views"""
 
+    # pylint: disable=invalid-name
     def setUp(self):
         """we need basic test data and mocks"""
         self.factory = RequestFactory()
@@ -151,3 +152,27 @@ class AnnualSummary(TestCase):
 
         self.assertEqual(result.status_code, 302)
         self.assertEqual(result.url, "/user/mouse/2020-in-the-books")
+
+    def test_summary_add_key(self, *_):
+        """add shareable key"""
+        self.assertFalse("2022" in self.local_user.summary_keys.keys())
+
+        request = self.factory.post("", {"year": "2022"})
+        request.user = self.local_user
+
+        result = views.summary_add_key(request)
+
+        self.assertEqual(result.status_code, 302)
+        self.assertIsNotNone(self.local_user.summary_keys["2022"])
+
+    def test_summary_revoke_key(self, *_):
+        """add shareable key"""
+        self.assertTrue("2020" in self.local_user.summary_keys.keys())
+
+        request = self.factory.post("", {"year": "2020"})
+        request.user = self.local_user
+
+        result = views.summary_revoke_key(request)
+
+        self.assertEqual(result.status_code, 302)
+        self.assertFalse("2020" in self.local_user.summary_keys.keys())
