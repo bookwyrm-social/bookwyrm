@@ -3,6 +3,7 @@ from functools import reduce
 import operator
 
 from django.apps import apps
+from django.core.exceptions import PermissionDenied
 from django.db import models, transaction
 from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
@@ -12,7 +13,21 @@ from .base_model import BookWyrmModel
 from .user import User
 
 
-class EmailBlocklist(BookWyrmModel):
+class AdminModel(BookWyrmModel):
+    """Overrides the permissions methods"""
+
+    class Meta:
+        """this is just here to provide default fields for other models"""
+
+        abstract = True
+
+    def raise_not_editable(self, viewer):
+        if viewer.has_perm("bookwyrm.moderate_user"):
+            return
+        raise PermissionDenied()
+
+
+class EmailBlocklist(AdminModel):
     """blocked email addresses"""
 
     domain = models.CharField(max_length=255, unique=True)
@@ -29,7 +44,7 @@ class EmailBlocklist(BookWyrmModel):
         return User.objects.filter(email__endswith=f"@{self.domain}")
 
 
-class IPBlocklist(BookWyrmModel):
+class IPBlocklist(AdminModel):
     """blocked ip addresses"""
 
     address = models.CharField(max_length=255, unique=True)
@@ -41,7 +56,7 @@ class IPBlocklist(BookWyrmModel):
         ordering = ("-created_date",)
 
 
-class AutoMod(BookWyrmModel):
+class AutoMod(AdminModel):
     """rules to automatically flag suspicious activity"""
 
     string_match = models.CharField(max_length=200, unique=True)

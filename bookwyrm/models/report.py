@@ -25,7 +25,7 @@ class Report(BookWyrmModel):
 
     def raise_not_editable(self, viewer):
         """instead of user being the owner field, it's reporter"""
-        if self.reporter == viewer:
+        if self.reporter == viewer or viewer.has_perm("bookwyrm.moderate_user"):
             return
         raise PermissionDenied()
 
