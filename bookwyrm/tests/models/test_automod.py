@@ -27,7 +27,7 @@ class AutomodModel(TestCase):
                 "password",
                 local=True,
                 localname="mouse",
-                is_superuser=True
+                is_superuser=True,
             )
 
     def test_automod_task_no_rules(self, *_):
