@@ -3,6 +3,7 @@ import datetime
 from urllib.parse import urljoin
 import uuid
 
+from django.core.exceptions import PermissionDenied
 from django.db import models, IntegrityError
 from django.dispatch import receiver
 from django.utils import timezone
@@ -113,6 +114,13 @@ class SiteSettings(models.Model):
         if not self.invite_question_text:
             self.invite_question_text = "What is your favourite book?"
         super().save(*args, **kwargs)
+
+    # pylint: disable=no-self-use
+    def raise_not_editable(self, viewer):
+        """Check if the user has the right permissions"""
+        if viewer.has_perm("bookwyrm.edit_instance_settings"):
+            return
+        raise PermissionDenied()
 
 
 class Theme(models.Model):
