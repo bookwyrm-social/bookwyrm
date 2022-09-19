@@ -68,7 +68,7 @@ def automod_task():
             notification, _ = notification_model.objects.get_or_create(
                 user=admin, notification_type=notification_model.REPORT, read=False
             )
-            notification.related_repors.add(reports)
+            notification.related_reports.set(reports)
 
 
 def automod_users(reporter):
