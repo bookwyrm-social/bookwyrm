@@ -119,7 +119,7 @@ class ImportServerBlocklist(View):
                     server_name=server_name,
                 )
                 server.notes = info_link
-                server.save(request)
+                server.save()
                 server.block()
             success_count += 1
         data = {"failed": failed, "succeeded": success_count}
