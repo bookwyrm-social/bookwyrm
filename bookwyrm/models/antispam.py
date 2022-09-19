@@ -8,13 +8,13 @@ from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 
 from bookwyrm.tasks import app
+from .base_model import BookWyrmModel
 from .user import User
 
 
-class EmailBlocklist(models.Model):
+class EmailBlocklist(BookWyrmModel):
     """blocked email addresses"""
 
-    created_date = models.DateTimeField(auto_now_add=True)
     domain = models.CharField(max_length=255, unique=True)
     is_active = models.BooleanField(default=True)
 
@@ -29,10 +29,9 @@ class EmailBlocklist(models.Model):
         return User.objects.filter(email__endswith=f"@{self.domain}")
 
 
-class IPBlocklist(models.Model):
+class IPBlocklist(BookWyrmModel):
     """blocked ip addresses"""
 
-    created_date = models.DateTimeField(auto_now_add=True)
     address = models.CharField(max_length=255, unique=True)
     is_active = models.BooleanField(default=True)
 
@@ -42,7 +41,7 @@ class IPBlocklist(models.Model):
         ordering = ("-created_date",)
 
 
-class AutoMod(models.Model):
+class AutoMod(BookWyrmModel):
     """rules to automatically flag suspicious activity"""
 
     string_match = models.CharField(max_length=200, unique=True)
