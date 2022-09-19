@@ -14,6 +14,7 @@ from bookwyrm.models.antispam import automod_task
 class AutomodModel(TestCase):
     """every response to a get request, html or json"""
 
+    # pylint: disable=invalid-name
     def setUp(self):
         """we need basic test data and mocks"""
         self.factory = RequestFactory()
@@ -26,6 +27,7 @@ class AutomodModel(TestCase):
                 "password",
                 local=True,
                 localname="mouse",
+                is_superuser=True,
             )
 
     def test_automod_task_no_rules(self, *_):
@@ -33,6 +35,7 @@ class AutomodModel(TestCase):
         self.assertFalse(models.Report.objects.exists())
         automod_task()
         self.assertFalse(models.Report.objects.exists())
+        self.assertFalse(models.Notification.objects.exists())
 
     def test_automod_task_user(self, *_):
         """scan activity"""
@@ -52,6 +55,7 @@ class AutomodModel(TestCase):
         reports = models.Report.objects.all()
         self.assertEqual(reports.count(), 1)
         self.assertEqual(reports.first().user, self.local_user)
+        self.assertEqual(models.Notification.objects.count(), 1)
 
     def test_automod_status(self, *_):
         """scan activity"""
@@ -73,3 +77,4 @@ class AutomodModel(TestCase):
         self.assertEqual(reports.count(), 1)
         self.assertEqual(reports.first().status, status)
         self.assertEqual(reports.first().user, self.local_user)
+        self.assertEqual(models.Notification.objects.count(), 1)
