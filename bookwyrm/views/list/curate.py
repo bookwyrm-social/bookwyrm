@@ -31,7 +31,6 @@ class Curate(View):
     def post(self, request, list_id):
         """edit a book_list"""
         book_list = get_object_or_404(models.List, id=list_id)
-        book_list.raise_not_editable(request.user)
 
         suggestion = get_object_or_404(models.ListItem, id=request.POST.get("item"))
         approved = request.POST.get("approved") == "true"

@@ -5,6 +5,7 @@ from urllib.parse import urlparse
 from django.apps import apps
 from django.contrib.auth.models import AbstractUser, Group
 from django.contrib.postgres.fields import ArrayField, CICharField
+from django.core.exceptions import PermissionDenied
 from django.dispatch import receiver
 from django.db import models, transaction
 from django.utils import timezone
@@ -400,6 +401,12 @@ class User(OrderedCollectionPageMixin, AbstractUser):
                 user=self,
                 editable=False,
             ).save(broadcast=False)
+
+    def raise_not_editable(self, viewer):
+        """Who can edit the user object?"""
+        if self == viewer or viewer.has_perm("bookwyrm.moderate_user"):
+            return
+        raise PermissionDenied()
 
 
 class KeyPair(ActivitypubMixin, BookWyrmModel):

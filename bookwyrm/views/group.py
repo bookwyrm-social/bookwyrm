@@ -52,7 +52,7 @@ class Group(View):
         form = forms.GroupForm(request.POST, instance=user_group)
         if not form.is_valid():
             return redirect("group", user_group.id)
-        user_group = form.save()
+        user_group = form.save(request)
 
         # let the other members know something about the group changed
         memberships = models.GroupMember.objects.filter(group=user_group)
@@ -113,10 +113,8 @@ class UserGroups(View):
         if not form.is_valid():
             return redirect(request.user.local_path + "/groups")
 
-        group = form.save(commit=False)
-        group.raise_not_editable(request.user)
         with transaction.atomic():
-            group.save()
+            group = form.save(request)
             # add the creator as a group member
             models.GroupMember.objects.create(group=group, user=request.user)
         return redirect("group", group.id)
@@ -129,10 +127,13 @@ class FindUsers(View):
     # this is mostly borrowed from the Get Started friend finder
 
     def get(self, request, group_id):
-        """basic profile info"""
+        """Search for a user to add the a group, or load suggested users cache"""
         user_query = request.GET.get("user_query")
         group = get_object_or_404(models.Group, id=group_id)
+
+        # only users who can edit can add users
         group.raise_not_editable(request.user)
+
         lists = (
             models.List.privacy_filter(request.user)
             .filter(group=group)

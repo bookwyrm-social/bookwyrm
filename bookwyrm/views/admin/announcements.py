@@ -102,7 +102,7 @@ class EditAnnouncement(View):
             return TemplateResponse(
                 request, "settings/announcements/edit_announcement.html", data
             )
-        announcement = form.save()
+        announcement = form.save(request)
         return redirect("settings-announcements", announcement.id)
 
 

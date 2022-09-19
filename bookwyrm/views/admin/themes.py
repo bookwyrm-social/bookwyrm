@@ -24,9 +24,9 @@ class Themes(View):
 
     def post(self, request):
         """edit the site settings"""
-        form = forms.ThemeForm(request.POST, request.FILES)
+        form = forms.ThemeForm(request.POST)
         if form.is_valid():
-            form.save()
+            form.save(request)
 
         data = get_view_data()
 

@@ -88,6 +88,6 @@ class UserAdmin(View):
         else:
             form = forms.UserGroupForm(request.POST, instance=user)
             if form.is_valid():
-                form.save()
+                form.save(request)
         data = {"user": user, "group_form": form}
         return TemplateResponse(request, "settings/users/user.html", data)
