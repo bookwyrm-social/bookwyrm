@@ -146,6 +146,13 @@ class SiteInvite(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     invitees = models.ManyToManyField(User, related_name="invitees")
 
+    # pylint: disable=no-self-use
+    def raise_not_editable(self, viewer):
+        """Admins only"""
+        if viewer.has_perm("bookwyrm.create_invites"):
+            return
+        raise PermissionDenied()
+
     def valid(self):
         """make sure it hasn't expired or been used"""
         return (self.expiry is None or self.expiry > timezone.now()) and (
@@ -168,6 +175,12 @@ class InviteRequest(BookWyrmModel):
     answer = models.TextField(max_length=50, unique=False, null=True, blank=True)
     invite_sent = models.BooleanField(default=False)
     ignored = models.BooleanField(default=False)
+
+    def raise_not_editable(self, viewer):
+        """Only check perms on edit, not create"""
+        if not self.id or viewer.has_perm("bookwyrm.create_invites"):
+            return
+        raise PermissionDenied()
 
     def save(self, *args, **kwargs):
         """don't create a request for a registered email"""
