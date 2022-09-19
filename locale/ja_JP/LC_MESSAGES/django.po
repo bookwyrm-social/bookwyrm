@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-08-29 20:43+0000\n"
-"PO-Revision-Date: 2022-09-19 14:44\n"
+"POT-Creation-Date: 2022-09-19 15:02+0000\n"
+"PO-Revision-Date: 2022-09-19 16:04\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Japanese\n"
 "Language: ja\n"
@@ -134,7 +134,7 @@ msgid "Automatically generated report"
 msgstr "自動生成されたレポート"
 
 #: bookwyrm/models/base_model.py:18 bookwyrm/models/link.py:72
-#: bookwyrm/templates/import/import_status.html:200
+#: bookwyrm/templates/import/import_status.html:207
 #: bookwyrm/templates/settings/link_domains/link_domains.html:19
 msgid "Pending"
 msgstr "保留中"
@@ -1432,26 +1432,26 @@ msgstr "ローカルのユーザー"
 #: bookwyrm/templates/directory/community_filter.html:12
 #: bookwyrm/templates/settings/users/user_admin.html:33
 msgid "Federated community"
-msgstr ""
+msgstr "連合コミュニティ"
 
 #: bookwyrm/templates/directory/directory.html:4
 #: bookwyrm/templates/directory/directory.html:9
 #: bookwyrm/templates/user_menu.html:30
 msgid "Directory"
-msgstr ""
+msgstr "ディレクトリ"
 
 #: bookwyrm/templates/directory/directory.html:17
 msgid "Make your profile discoverable to other BookWyrm users."
-msgstr ""
+msgstr "あなたのプロフィールを他のBookWyrmユーザーが見つけられるようにします。"
 
 #: bookwyrm/templates/directory/directory.html:21
 msgid "Join Directory"
-msgstr ""
+msgstr "ディレクトリに参加"
 
 #: bookwyrm/templates/directory/directory.html:24
 #, python-format
 msgid "You can opt-out at any time in your <a href=\"%(path)s\">profile settings.</a>"
-msgstr ""
+msgstr "<a href=\"%(path)s\">プロフィ─ル設定</a> で、いつでもディレクトリから抜ける事ができます。"
 
 #: bookwyrm/templates/directory/directory.html:29
 #: bookwyrm/templates/directory/directory.html:31
@@ -1468,11 +1468,11 @@ msgstr "並び順"
 
 #: bookwyrm/templates/directory/sort_filter.html:9
 msgid "Recently active"
-msgstr ""
+msgstr "最近活動していたユーザー"
 
 #: bookwyrm/templates/directory/sort_filter.html:10
 msgid "Suggested"
-msgstr ""
+msgstr "おすすめのユーザー"
 
 #: bookwyrm/templates/directory/user_card.html:17
 #: bookwyrm/templates/directory/user_card.html:18
@@ -2684,27 +2684,31 @@ msgstr "本"
 msgid "Import preview unavailable."
 msgstr ""
 
-#: bookwyrm/templates/import/import_status.html:172
+#: bookwyrm/templates/import/import_status.html:143
+msgid "No items currently need review"
+msgstr ""
+
+#: bookwyrm/templates/import/import_status.html:179
 msgid "View imported review"
 msgstr ""
 
-#: bookwyrm/templates/import/import_status.html:186
+#: bookwyrm/templates/import/import_status.html:193
 msgid "Imported"
 msgstr "インポートされました"
 
-#: bookwyrm/templates/import/import_status.html:192
+#: bookwyrm/templates/import/import_status.html:199
 msgid "Needs manual review"
 msgstr ""
 
-#: bookwyrm/templates/import/import_status.html:205
+#: bookwyrm/templates/import/import_status.html:212
 msgid "Retry"
 msgstr "再試行"
 
-#: bookwyrm/templates/import/import_status.html:223
+#: bookwyrm/templates/import/import_status.html:230
 msgid "This import is in an old format that is no longer supported. If you would like to troubleshoot missing items from this import, click the button below to update the import format."
 msgstr ""
 
-#: bookwyrm/templates/import/import_status.html:225
+#: bookwyrm/templates/import/import_status.html:232
 msgid "Update import"
 msgstr ""
 
@@ -3453,19 +3457,19 @@ msgstr ""
 msgid "has changed the description of <a href=\"%(group_path)s\">%(group_name)s</a>"
 msgstr ""
 
-#: bookwyrm/templates/notifications/notifications_page.html:18
+#: bookwyrm/templates/notifications/notifications_page.html:19
 msgid "Delete notifications"
 msgstr "通知を削除"
 
-#: bookwyrm/templates/notifications/notifications_page.html:29
+#: bookwyrm/templates/notifications/notifications_page.html:31
 msgid "All"
 msgstr "全て"
 
-#: bookwyrm/templates/notifications/notifications_page.html:33
+#: bookwyrm/templates/notifications/notifications_page.html:35
 msgid "Mentions"
 msgstr "メンション"
 
-#: bookwyrm/templates/notifications/notifications_page.html:45
+#: bookwyrm/templates/notifications/notifications_page.html:47
 msgid "You're all caught up!"
 msgstr ""
 
@@ -3587,11 +3591,11 @@ msgstr ""
 #: bookwyrm/templates/preferences/blocks.html:7
 #: bookwyrm/templates/preferences/layout.html:42
 msgid "Blocked Users"
-msgstr ""
+msgstr "ブロックしたユーザー"
 
 #: bookwyrm/templates/preferences/blocks.html:12
 msgid "No users currently blocked."
-msgstr ""
+msgstr "現在ブロックしたユーザーはいません。"
 
 #: bookwyrm/templates/preferences/change_password.html:4
 #: bookwyrm/templates/preferences/change_password.html:7
@@ -3626,7 +3630,7 @@ msgstr "アカウントを完全に削除する"
 
 #: bookwyrm/templates/preferences/delete_user.html:14
 msgid "Deleting your account cannot be undone. The username will not be available to register in the future."
-msgstr ""
+msgstr "アカウントの削除を取り消すことはできません。あなたのユーザーネームは、今後アカウント登録の際に利用できなくなります。"
 
 #: bookwyrm/templates/preferences/edit_user.html:4
 #: bookwyrm/templates/preferences/edit_user.html:7
@@ -3660,65 +3664,65 @@ msgstr ""
 
 #: bookwyrm/templates/preferences/edit_user.html:75
 msgid "Show suggested users"
-msgstr ""
+msgstr "おすすめユーザーを表示する"
 
 #: bookwyrm/templates/preferences/edit_user.html:81
 msgid "Show this account in suggested users"
-msgstr ""
+msgstr "このアカウントをおすすめユーザとして表示する"
 
 #: bookwyrm/templates/preferences/edit_user.html:85
 #, python-format
 msgid "Your account will show up in the <a href=\"%(path)s\">directory</a>, and may be recommended to other BookWyrm users."
-msgstr ""
+msgstr "あなたのアカウントは<a href=\"%(path)s\">ディレクトリ</a>に表示され、他のBookWyrmユーザーにおすすめされることがあります。"
 
 #: bookwyrm/templates/preferences/edit_user.html:89
 msgid "Preferred Timezone: "
-msgstr ""
+msgstr "望ましいタイムゾーン: "
 
 #: bookwyrm/templates/preferences/edit_user.html:101
 msgid "Theme:"
-msgstr ""
+msgstr "テーマ:"
 
 #: bookwyrm/templates/preferences/edit_user.html:117
 msgid "Manually approve followers"
-msgstr ""
+msgstr "フォロワーを手動で承認する"
 
 #: bookwyrm/templates/preferences/edit_user.html:123
 msgid "Hide followers and following on profile"
-msgstr ""
+msgstr "プロフィールのフォロワーとフォローを非表示にする"
 
 #: bookwyrm/templates/preferences/edit_user.html:128
 msgid "Default post privacy:"
-msgstr ""
+msgstr "デフォルトの投稿範囲:"
 
 #: bookwyrm/templates/preferences/export.html:4
 #: bookwyrm/templates/preferences/export.html:7
 msgid "CSV Export"
-msgstr ""
+msgstr "CSVエクスポート"
 
 #: bookwyrm/templates/preferences/export.html:13
 msgid "Your export will include all the books on your shelves, books you have reviewed, and books with reading activity."
-msgstr ""
+msgstr "エクスポートファイルには、あなたの棚のすべての本、レビューした本、そして読書活動をした本が含まれます。"
 
 #: bookwyrm/templates/preferences/export.html:20
 msgid "Download file"
-msgstr ""
+msgstr "ファイルをダウンロード"
 
 #: bookwyrm/templates/preferences/layout.html:11
 msgid "Account"
-msgstr ""
+msgstr "アカウント"
 
 #: bookwyrm/templates/preferences/layout.html:27
 msgid "Data"
-msgstr ""
+msgstr "データ"
 
 #: bookwyrm/templates/preferences/layout.html:35
 msgid "CSV export"
-msgstr ""
+msgstr "CSVエクスポート"
 
 #: bookwyrm/templates/preferences/layout.html:38
 msgid "Relationships"
-msgstr ""
+msgstr "他ユーザーとの関係"
 
 #: bookwyrm/templates/reading_progress/finish.html:5
 #, python-format
@@ -3920,7 +3924,7 @@ msgstr "編集"
 #: bookwyrm/templates/settings/announcements/announcements.html:3
 #: bookwyrm/templates/settings/announcements/announcements.html:5
 #: bookwyrm/templates/settings/announcements/edit_announcement.html:15
-#: bookwyrm/templates/settings/layout.html:82
+#: bookwyrm/templates/settings/layout.html:91
 msgid "Announcements"
 msgstr "お知らせ"
 
@@ -4095,6 +4099,71 @@ msgstr ""
 
 #: bookwyrm/templates/settings/automod/rules.html:188
 msgid "Remove rule"
+msgstr ""
+
+#: bookwyrm/templates/settings/celery.html:6
+#: bookwyrm/templates/settings/celery.html:8
+msgid "Celery Status"
+msgstr ""
+
+#: bookwyrm/templates/settings/celery.html:14
+msgid "Queues"
+msgstr ""
+
+#: bookwyrm/templates/settings/celery.html:18
+msgid "Low priority"
+msgstr ""
+
+#: bookwyrm/templates/settings/celery.html:24
+msgid "Medium priority"
+msgstr ""
+
+#: bookwyrm/templates/settings/celery.html:30
+msgid "High priority"
+msgstr ""
+
+#: bookwyrm/templates/settings/celery.html:40
+msgid "Could not connect to Redis broker"
+msgstr ""
+
+#: bookwyrm/templates/settings/celery.html:48
+msgid "Active Tasks"
+msgstr ""
+
+#: bookwyrm/templates/settings/celery.html:53
+msgid "ID"
+msgstr ""
+
+#: bookwyrm/templates/settings/celery.html:54
+msgid "Task name"
+msgstr ""
+
+#: bookwyrm/templates/settings/celery.html:55
+msgid "Run time"
+msgstr ""
+
+#: bookwyrm/templates/settings/celery.html:56
+msgid "Priority"
+msgstr ""
+
+#: bookwyrm/templates/settings/celery.html:61
+msgid "No active tasks"
+msgstr ""
+
+#: bookwyrm/templates/settings/celery.html:79
+msgid "Workers"
+msgstr ""
+
+#: bookwyrm/templates/settings/celery.html:84
+msgid "Uptime:"
+msgstr ""
+
+#: bookwyrm/templates/settings/celery.html:94
+msgid "Could not connect to Celery"
+msgstr ""
+
+#: bookwyrm/templates/settings/celery.html:101
+msgid "Errors"
 msgstr ""
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:6
@@ -4564,16 +4633,24 @@ msgid "Link Domains"
 msgstr ""
 
 #: bookwyrm/templates/settings/layout.html:78
+msgid "System"
+msgstr ""
+
+#: bookwyrm/templates/settings/layout.html:82
+msgid "Celery status"
+msgstr ""
+
+#: bookwyrm/templates/settings/layout.html:87
 msgid "Instance Settings"
 msgstr ""
 
-#: bookwyrm/templates/settings/layout.html:86
+#: bookwyrm/templates/settings/layout.html:95
 #: bookwyrm/templates/settings/site.html:4
 #: bookwyrm/templates/settings/site.html:6
 msgid "Site Settings"
 msgstr "サイト設定"
 
-#: bookwyrm/templates/settings/layout.html:91
+#: bookwyrm/templates/settings/layout.html:100
 #: bookwyrm/templates/settings/site.html:95
 #: bookwyrm/templates/settings/themes.html:4
 #: bookwyrm/templates/settings/themes.html:6
@@ -4951,7 +5028,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/users/user_info.html:40
 msgid "Local"
-msgstr ""
+msgstr "ローカル"
 
 #: bookwyrm/templates/settings/users/user_info.html:42
 msgid "Remote"
@@ -4979,7 +5056,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/users/user_info.html:77
 msgid "Last active date:"
-msgstr ""
+msgstr "最後の活動日:"
 
 #: bookwyrm/templates/settings/users/user_info.html:80
 msgid "Manually approved followers:"
@@ -5003,7 +5080,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/users/user_moderation_actions.html:5
 msgid "Permanently deleted"
-msgstr ""
+msgstr "完全に削除されました"
 
 #: bookwyrm/templates/settings/users/user_moderation_actions.html:8
 msgid "User Actions"
@@ -5292,7 +5369,7 @@ msgstr ""
 #: bookwyrm/templates/snippets/create_status/layout.html:45
 #: bookwyrm/templates/snippets/reading_modals/form.html:7
 msgid "Comment:"
-msgstr ""
+msgstr "コメント:"
 
 #: bookwyrm/templates/snippets/create_status/post_options_block.html:18
 msgid "Post"
