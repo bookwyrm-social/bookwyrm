@@ -61,10 +61,7 @@ def automod_task():
     if not reports:
         return
 
-    admins = User.objects.filter(
-        models.Q(user_permissions__name__in=["moderate_user", "moderate_post"])
-        | models.Q(is_superuser=True)
-    ).all()
+    admins = User.admins()
     notification_model = apps.get_model("bookwyrm", "Notification", require_ready=True)
     with transaction.atomic():
         for admin in admins:
