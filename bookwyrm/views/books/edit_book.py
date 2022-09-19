@@ -56,7 +56,7 @@ class EditBook(View):
         for author_id in remove_authors:
             book.authors.remove(author_id)
 
-        book = form.save(commit=False)
+        book = form.save(request, commit=False)
 
         url = request.POST.get("cover-url")
         if url:
