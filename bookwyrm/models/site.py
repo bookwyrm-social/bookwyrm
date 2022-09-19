@@ -16,7 +16,23 @@ from .user import User
 from .fields import get_absolute_url
 
 
-class SiteSettings(models.Model):
+class SiteModel(models.Model):
+    """we just need edit perms"""
+
+    class Meta:
+        """this is just here to provide default fields for other models"""
+
+        abstract = True
+
+    # pylint: disable=no-self-use
+    def raise_not_editable(self, viewer):
+        """Check if the user has the right permissions"""
+        if viewer.has_perm("bookwyrm.edit_instance_settings"):
+            return
+        raise PermissionDenied()
+
+
+class SiteSettings(SiteModel):
     """customized settings for this instance"""
 
     name = models.CharField(default="BookWyrm", max_length=100)
@@ -115,15 +131,8 @@ class SiteSettings(models.Model):
             self.invite_question_text = "What is your favourite book?"
         super().save(*args, **kwargs)
 
-    # pylint: disable=no-self-use
-    def raise_not_editable(self, viewer):
-        """Check if the user has the right permissions"""
-        if viewer.has_perm("bookwyrm.edit_instance_settings"):
-            return
-        raise PermissionDenied()
 
-
-class Theme(models.Model):
+class Theme(SiteModel):
     """Theme files"""
 
     created_date = models.DateTimeField(auto_now_add=True)
