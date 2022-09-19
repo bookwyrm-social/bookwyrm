@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-08-29 20:43+0000\n"
-"PO-Revision-Date: 2022-08-29 22:38\n"
+"POT-Creation-Date: 2022-09-19 15:02+0000\n"
+"PO-Revision-Date: 2022-09-19 16:04\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Greek\n"
 "Language: el\n"
@@ -134,7 +134,7 @@ msgid "Automatically generated report"
 msgstr "Αυτόματη δημιουργία αναφοράς"
 
 #: bookwyrm/models/base_model.py:18 bookwyrm/models/link.py:72
-#: bookwyrm/templates/import/import_status.html:200
+#: bookwyrm/templates/import/import_status.html:207
 #: bookwyrm/templates/settings/link_domains/link_domains.html:19
 msgid "Pending"
 msgstr "Σε εκκρεμότητα"
@@ -2696,27 +2696,31 @@ msgstr ""
 msgid "Import preview unavailable."
 msgstr ""
 
-#: bookwyrm/templates/import/import_status.html:172
+#: bookwyrm/templates/import/import_status.html:143
+msgid "No items currently need review"
+msgstr ""
+
+#: bookwyrm/templates/import/import_status.html:179
 msgid "View imported review"
 msgstr ""
 
-#: bookwyrm/templates/import/import_status.html:186
+#: bookwyrm/templates/import/import_status.html:193
 msgid "Imported"
 msgstr ""
 
-#: bookwyrm/templates/import/import_status.html:192
+#: bookwyrm/templates/import/import_status.html:199
 msgid "Needs manual review"
 msgstr ""
 
-#: bookwyrm/templates/import/import_status.html:205
+#: bookwyrm/templates/import/import_status.html:212
 msgid "Retry"
 msgstr ""
 
-#: bookwyrm/templates/import/import_status.html:223
+#: bookwyrm/templates/import/import_status.html:230
 msgid "This import is in an old format that is no longer supported. If you would like to troubleshoot missing items from this import, click the button below to update the import format."
 msgstr ""
 
-#: bookwyrm/templates/import/import_status.html:225
+#: bookwyrm/templates/import/import_status.html:232
 msgid "Update import"
 msgstr ""
 
@@ -3468,19 +3472,19 @@ msgstr "άλλαξε το όνομα <a href=\"%(group_path)s\">%(group_name)s</
 msgid "has changed the description of <a href=\"%(group_path)s\">%(group_name)s</a>"
 msgstr "έχει αλλάξει η περιγραφή του <a href=\"%(group_path)s\">%(group_name)s</a>"
 
-#: bookwyrm/templates/notifications/notifications_page.html:18
+#: bookwyrm/templates/notifications/notifications_page.html:19
 msgid "Delete notifications"
 msgstr "Διαγραφή ειδοποιήσεων"
 
-#: bookwyrm/templates/notifications/notifications_page.html:29
+#: bookwyrm/templates/notifications/notifications_page.html:31
 msgid "All"
 msgstr "Όλα"
 
-#: bookwyrm/templates/notifications/notifications_page.html:33
+#: bookwyrm/templates/notifications/notifications_page.html:35
 msgid "Mentions"
 msgstr "Αναφορές"
 
-#: bookwyrm/templates/notifications/notifications_page.html:45
+#: bookwyrm/templates/notifications/notifications_page.html:47
 msgid "You're all caught up!"
 msgstr ""
 
@@ -3936,7 +3940,7 @@ msgstr "Επεξεργασία"
 #: bookwyrm/templates/settings/announcements/announcements.html:3
 #: bookwyrm/templates/settings/announcements/announcements.html:5
 #: bookwyrm/templates/settings/announcements/edit_announcement.html:15
-#: bookwyrm/templates/settings/layout.html:82
+#: bookwyrm/templates/settings/layout.html:91
 msgid "Announcements"
 msgstr "Ανακοινώσεις"
 
@@ -4112,6 +4116,71 @@ msgstr "Εμφάνιση κανόνων"
 #: bookwyrm/templates/settings/automod/rules.html:188
 msgid "Remove rule"
 msgstr "Αφαίρεση κανόνα"
+
+#: bookwyrm/templates/settings/celery.html:6
+#: bookwyrm/templates/settings/celery.html:8
+msgid "Celery Status"
+msgstr ""
+
+#: bookwyrm/templates/settings/celery.html:14
+msgid "Queues"
+msgstr ""
+
+#: bookwyrm/templates/settings/celery.html:18
+msgid "Low priority"
+msgstr ""
+
+#: bookwyrm/templates/settings/celery.html:24
+msgid "Medium priority"
+msgstr ""
+
+#: bookwyrm/templates/settings/celery.html:30
+msgid "High priority"
+msgstr ""
+
+#: bookwyrm/templates/settings/celery.html:40
+msgid "Could not connect to Redis broker"
+msgstr ""
+
+#: bookwyrm/templates/settings/celery.html:48
+msgid "Active Tasks"
+msgstr ""
+
+#: bookwyrm/templates/settings/celery.html:53
+msgid "ID"
+msgstr ""
+
+#: bookwyrm/templates/settings/celery.html:54
+msgid "Task name"
+msgstr ""
+
+#: bookwyrm/templates/settings/celery.html:55
+msgid "Run time"
+msgstr ""
+
+#: bookwyrm/templates/settings/celery.html:56
+msgid "Priority"
+msgstr ""
+
+#: bookwyrm/templates/settings/celery.html:61
+msgid "No active tasks"
+msgstr ""
+
+#: bookwyrm/templates/settings/celery.html:79
+msgid "Workers"
+msgstr ""
+
+#: bookwyrm/templates/settings/celery.html:84
+msgid "Uptime:"
+msgstr ""
+
+#: bookwyrm/templates/settings/celery.html:94
+msgid "Could not connect to Celery"
+msgstr ""
+
+#: bookwyrm/templates/settings/celery.html:101
+msgid "Errors"
+msgstr ""
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:6
 #: bookwyrm/templates/settings/dashboard/dashboard.html:8
@@ -4584,16 +4653,24 @@ msgid "Link Domains"
 msgstr ""
 
 #: bookwyrm/templates/settings/layout.html:78
+msgid "System"
+msgstr ""
+
+#: bookwyrm/templates/settings/layout.html:82
+msgid "Celery status"
+msgstr ""
+
+#: bookwyrm/templates/settings/layout.html:87
 msgid "Instance Settings"
 msgstr ""
 
-#: bookwyrm/templates/settings/layout.html:86
+#: bookwyrm/templates/settings/layout.html:95
 #: bookwyrm/templates/settings/site.html:4
 #: bookwyrm/templates/settings/site.html:6
 msgid "Site Settings"
 msgstr ""
 
-#: bookwyrm/templates/settings/layout.html:91
+#: bookwyrm/templates/settings/layout.html:100
 #: bookwyrm/templates/settings/site.html:95
 #: bookwyrm/templates/settings/themes.html:4
 #: bookwyrm/templates/settings/themes.html:6
