@@ -117,6 +117,17 @@ class ActivityStream(RedisStore):
                 Q(id=status.user.id)  # if the user is the post's author
                 | Q(id__in=status.mention_users.all())  # if the user is mentioned
             )
+
+        # don't show replies to statuses the user can't see
+        elif status.reply_parent and status.reply_parent.privacy == "followers":
+            audience = audience.filter(
+                Q(id=status.user.id)  # if the user is the post's author
+                | Q(id=status.reply_parent.user.id)  # if the user is the OG author
+                | (
+                    Q(following=status.user) & Q(following=status.reply_parent.user)
+                )  # if the user is following both authors
+            ).distinct()
+
         # only visible to the poster's followers and tagged users
         elif status.privacy == "followers":
             audience = audience.filter(

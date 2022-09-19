@@ -291,6 +291,9 @@ urlpatterns = [
         views.Report.as_view(),
         name="report-link",
     ),
+    re_path(
+        r"^settings/celery/?$", views.CeleryStatus.as_view(), name="settings-celery"
+    ),
     # landing pages
     re_path(r"^about/?$", views.about, name="about"),
     re_path(r"^privacy/?$", views.privacy, name="privacy"),
@@ -581,7 +584,7 @@ urlpatterns = [
         name="author-update-remote",
     ),
     # isbn
-    re_path(r"^isbn/(?P<isbn>\d+)(.json)?/?$", views.Isbn.as_view()),
+    re_path(r"^isbn/(?P<isbn>[\dxX]+)(.json)?/?$", views.Isbn.as_view()),
     # author
     re_path(
         r"^author/(?P<author_id>\d+)(.json)?/?$", views.Author.as_view(), name="author"

@@ -6,6 +6,7 @@ from urllib.parse import urlparse
 from django.contrib.auth.decorators import login_required
 from django.core.validators import URLValidator
 from django.core.exceptions import ValidationError
+from django.db.models import Q
 from django.http import HttpResponse, HttpResponseBadRequest, Http404
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
@@ -16,7 +17,6 @@ from django.views.decorators.http import require_POST
 
 from markdown import markdown
 from bookwyrm import forms, models
-from bookwyrm.settings import DOMAIN
 from bookwyrm.utils import regex, sanitizer
 from .helpers import handle_remote_webfinger, is_api_request
 from .helpers import load_date_in_user_tz_as_utc
@@ -93,14 +93,16 @@ class CreateStatus(View):
 
         # inspect the text for user tags
         content = status.content
-        for (mention_text, mention_user) in find_mentions(content):
+        for (mention_text, mention_user) in find_mentions(
+            request.user, content
+        ).items():
             # add them to status mentions fk
             status.mention_users.add(mention_user)
 
             # turn the mention into a link
             content = re.sub(
-                rf"{mention_text}([^@]|$)",
-                rf'<a href="{mention_user.remote_id}">{mention_text}</a>\g<1>',
+                rf"{mention_text}\b(?!@)",
+                rf'<a href="{mention_user.remote_id}">{mention_text}</a>',
                 content,
             )
         # add reply parent to mentions
@@ -195,22 +197,35 @@ def edit_readthrough(request):
     return redirect("/")
 
 
-def find_mentions(content):
+def find_mentions(user, content):
     """detect @mentions in raw status content"""
     if not content:
-        return
-    for match in re.finditer(regex.STRICT_USERNAME, content):
-        username = match.group().strip().split("@")[1:]
-        if len(username) == 1:
-            # this looks like a local user (@user), fill in the domain
-            username.append(DOMAIN)
-        username = "@".join(username)
+        return {}
+    # The regex has nested match groups, so the 0th entry has the full (outer) match
+    # And beacuse the strict username starts with @, the username is 1st char onward
+    usernames = [m[0][1:] for m in re.findall(regex.STRICT_USERNAME, content)]
 
-        mention_user = handle_remote_webfinger(username)
+    known_users = (
+        models.User.viewer_aware_objects(user)
+        .filter(Q(username__in=usernames) | Q(localname__in=usernames))
+        .distinct()
+    )
+    # Prepare a lookup based on both username and localname
+    username_dict = {
+        **{f"@{u.username}": u for u in known_users},
+        **{f"@{u.localname}": u for u in known_users.filter(local=True)},
+    }
+
+    # Users not captured here could be blocked or not yet loaded on the server
+    not_found = set(usernames) - set(username_dict.keys())
+    for username in not_found:
+        mention_user = handle_remote_webfinger(username, unknown_only=True)
         if not mention_user:
-            # we can ignore users we don't know about
+            # this user is blocked or can't be found
             continue
-        yield (match.group(), mention_user)
+        username_dict[f"@{mention_user.username}"] = mention_user
+        username_dict[f"@{mention_user.localname}"] = mention_user
+    return username_dict
 
 
 def format_links(content):

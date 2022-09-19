@@ -42,7 +42,7 @@
         <div class="columns is-mobile">
             {% with guess=item.book_guess %}
             <div class="column is-narrow">
-                <a href="{{ item.book.local_path }}" target="_blank">
+                <a href="{{ item.book.local_path }}" target="_blank" rel="nofollow noopener noreferrer">
                     {% include 'snippets/book_cover.html' with book=guess cover_class='is-h-s' size='small' %}
                 </a>
             </div>

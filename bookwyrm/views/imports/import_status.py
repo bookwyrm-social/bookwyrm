@@ -47,6 +47,7 @@ class ImportStatus(View):
             "page_range": paginated.get_elided_page_range(
                 page.number, on_each_side=2, on_ends=1
             ),
+            "show_progress": True,
             "item_count": item_count,
             "complete_count": item_count - pending_item_count,
             "percent": math.floor(  # pylint: disable=c-extension-no-member
