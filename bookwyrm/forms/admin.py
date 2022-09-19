@@ -141,6 +141,7 @@ class IntervalScheduleForm(StyledForm):
             "period": forms.Select(attrs={"aria-describedby": "desc_period"}),
         }
 
+    # pylint: disable=arguments-differ
     def save(self, request, *args, **kwargs):
         """This is an outside model so the perms check works differently"""
         if not request.user.has_perm("bookwyrm.moderate_user"):
