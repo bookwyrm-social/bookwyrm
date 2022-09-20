@@ -147,6 +147,10 @@ urlpatterns = [
     ),
 
     re_path(
+        r"^genres/(?P<pk>\d+)/?$", views.GenreDetailView.as_view(), name="genre-view"
+    ),
+
+    re_path(
         r"^settings/users/(?P<status>(local|federated|deleted))\/?$",
         views.UserAdminList.as_view(),
         name="settings-users",

@@ -16,6 +16,6 @@ from django.views.generic import (
     ListView,
 )
 
-class ManageGenreHome(DetailView):
+class GenreDetailView(DetailView):
     template_name = 'genre/test.html'
     model = Genre
