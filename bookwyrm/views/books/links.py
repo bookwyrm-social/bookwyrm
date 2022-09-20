@@ -34,7 +34,7 @@ class BookFileLinks(View):
         """Edit a link"""
         link = get_object_or_404(models.FileLink, id=link_id, book=book_id)
         form = forms.FileLinkForm(request.POST, instance=link)
-        form.save()
+        form.save(request)
         return self.get(request, book_id)
 
 
@@ -76,7 +76,7 @@ class AddFileLink(View):
                 request, "book/file_links/file_link_page.html", data
             )
 
-        link = form.save()
+        link = form.save(request)
         book.file_links.add(link)
         book.last_edited_by = request.user
         book.save()

@@ -56,7 +56,7 @@ class EditBook(View):
         for author_id in remove_authors:
             book.authors.remove(author_id)
 
-        book = form.save(commit=False)
+        book = form.save(request, commit=False)
 
         url = request.POST.get("cover-url")
         if url:
@@ -119,7 +119,7 @@ class CreateBook(View):
             return TemplateResponse(request, "book/edit/edit_book.html", data)
 
         with transaction.atomic():
-            book = form.save()
+            book = form.save(request)
             parent_work = get_object_or_404(models.Work, id=parent_work_id)
             book.parent_work = parent_work
 
@@ -229,7 +229,7 @@ class ConfirmEditBook(View):
 
         with transaction.atomic():
             # save book
-            book = form.save()
+            book = form.save(request)
 
             # add known authors
             authors = None

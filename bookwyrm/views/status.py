@@ -34,7 +34,6 @@ class EditStatus(View):
         status = get_object_or_404(
             models.Status.objects.select_subclasses(), id=status_id
         )
-        status.raise_not_editable(request.user)
 
         status_type = "reply" if status.reply_parent else status.status_type.lower()
         data = {
@@ -65,7 +64,6 @@ class CreateStatus(View):
             existing_status = get_object_or_404(
                 models.Status.objects.select_subclasses(), id=existing_status_id
             )
-            existing_status.raise_not_editable(request.user)
             existing_status.edited_date = timezone.now()
 
         status_type = status_type[0].upper() + status_type[1:]
@@ -84,8 +82,7 @@ class CreateStatus(View):
                 return HttpResponseBadRequest()
             return redirect("/")
 
-        status = form.save(commit=False)
-        status.raise_not_editable(request.user)
+        status = form.save(request)
         # save the plain, unformatted version of the status for future editing
         status.raw_content = status.content
         if hasattr(status, "quote"):
@@ -167,7 +164,6 @@ def edit_readthrough(request):
     """can't use the form because the dates are too finnicky"""
     # TODO: remove this, it duplicates the code in the ReadThrough view
     readthrough = get_object_or_404(models.ReadThrough, id=request.POST.get("id"))
-    readthrough.raise_not_editable(request.user)
 
     readthrough.start_date = load_date_in_user_tz_as_utc(
         request.POST.get("start_date"), request.user

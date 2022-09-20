@@ -40,7 +40,7 @@ class IPBlocklist(View):
             return TemplateResponse(
                 request, "settings/ip_blocklist/ip_blocklist.html", data
             )
-        form.save()
+        form.save(request)
 
         data["form"] = forms.IPBlocklistForm()
         return TemplateResponse(

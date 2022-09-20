@@ -4,7 +4,7 @@ from django.forms import ModelForm
 from django.forms.widgets import Textarea
 
 
-class CustomForm(ModelForm):
+class StyledForm(ModelForm):
     """add css classes to the forms"""
 
     def __init__(self, *args, **kwargs):
@@ -16,7 +16,7 @@ class CustomForm(ModelForm):
         css_classes["checkbox"] = "checkbox"
         css_classes["textarea"] = "textarea"
         # pylint: disable=super-with-arguments
-        super(CustomForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         for visible in self.visible_fields():
             if hasattr(visible.field.widget, "input_type"):
                 input_type = visible.field.widget.input_type
@@ -24,3 +24,13 @@ class CustomForm(ModelForm):
                 input_type = "textarea"
                 visible.field.widget.attrs["rows"] = 5
             visible.field.widget.attrs["class"] = css_classes[input_type]
+
+
+class CustomForm(StyledForm):
+    """Check permissions on save"""
+
+    # pylint: disable=arguments-differ
+    def save(self, request, *args, **kwargs):
+        """Save and check perms"""
+        self.instance.raise_not_editable(request.user)
+        return super().save(*args, **kwargs)
