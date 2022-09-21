@@ -12,7 +12,6 @@ admin.site.register(models.User, UserAdmin)
 admin.site.register(models.FederatedServer)
 admin.site.register(models.Connector)
 admin.site.register(models.book.Genre)
-admin.site.register(models.notification.GenreNotification)
 
 class FollowedGenreAdmin(admin.ModelAdmin):
     model = models.notification.FollowedGenre
