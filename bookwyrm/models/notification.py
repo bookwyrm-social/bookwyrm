@@ -231,10 +231,7 @@ def notify_admins_on_report(sender, instance, created, *args, **kwargs):
         return
 
     # moderators and superusers should be notified
-    admins = User.objects.filter(
-        models.Q(user_permissions__name__in=["moderate_user", "moderate_post"])
-        | models.Q(is_superuser=True)
-    ).all()
+    admins = User.admins()
     for admin in admins:
         notification, _ = Notification.objects.get_or_create(
             user=admin,

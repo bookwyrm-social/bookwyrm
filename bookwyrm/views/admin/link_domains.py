@@ -39,7 +39,7 @@ class LinkDomain(View):
         """Set display name"""
         domain = get_object_or_404(models.LinkDomain, id=domain_id)
         form = forms.LinkDomainForm(request.POST, instance=domain)
-        form.save()
+        form.save(request)
         return redirect("settings-link-domain", status=status)
 
 

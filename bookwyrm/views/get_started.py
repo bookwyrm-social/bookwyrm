@@ -38,7 +38,7 @@ class GetStartedProfile(View):
         if not form.is_valid():
             data = {"form": form, "next": "get-started-books"}
             return TemplateResponse(request, "get_started/profile.html", data)
-        save_user_form(form)
+        save_user_form(request, form)
         return redirect(self.next_view)
 
 
@@ -82,7 +82,6 @@ class GetStartedBooks(View):
         for (book_id, shelf_id) in shelve_actions:
             book = get_object_or_404(models.Edition, id=book_id)
             shelf = get_object_or_404(models.Shelf, id=shelf_id)
-            shelf.raise_not_editable(request.user)
 
             models.ShelfBook.objects.create(book=book, shelf=shelf, user=request.user)
         return redirect(self.next_view)
