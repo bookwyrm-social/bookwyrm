@@ -1,10 +1,48 @@
 """ alert a user to activity """
 from django.db import models, transaction
+from django.utils import timezone
 from django.dispatch import receiver
 from .base_model import BookWyrmModel
+from .book import Genre, Book, Work, Edition
 from . import Boost, Favorite, GroupMemberInvitation, ImportJob, ListItem, Report
-from . import Status, User, UserFollowRequest
+from . import Status, User, UserFollowRequest, Book
 
+class GenreNotification(BookWyrmModel):
+    """a book has been added to a genre you follow"""
+    from_genre = models.ForeignKey(Genre, related_name="notification_from", on_delete=models.CASCADE, null=True)
+    related_users = models.ManyToManyField("User", symmetrical=False, related_name="notifications_to", null=True)
+    book = models.ForeignKey(Book, related_name="+", on_delete=models.CASCADE, null=True, blank=True)
+    created = models.DateTimeField(default=timezone.now)
+    read = models.BooleanField(default=False)
+    GENRE = "GENRE"
+
+    class Meta:
+        ordering = ("-created",)
+        #Speed up notifcation queries
+        #index_together = ("related_users","read")
+        abstract = False
+
+class GenreNotificationQuerySet(models.query.QuerySet):
+    def unread(self):
+        return self.filter(unread=True)
+
+    def read(self):
+        return self.filter(unread=False)
+
+    def mark_all_as_read(self, to_user):
+        qs = self.unread(True)
+        if to_user:
+            qs = qs.filter(to_user=to_user)
+        return qs.update(unread=True)
+
+    def delete_all(self, to_user):
+        qs = qs.filter(to_user=to_user)
+        delete()
+
+class FollowedGenre(models.Model):
+    user = models.ForeignKey("User", on_delete=models.CASCADE)
+    genres = models.ManyToManyField(Genre, blank=True)
+    created = models.DateTimeField(default=timezone.now)
 
 class Notification(BookWyrmModel):
     """you've been tagged, liked, followed, etc"""
@@ -15,6 +53,9 @@ class Notification(BookWyrmModel):
     REPLY = "REPLY"
     MENTION = "MENTION"
     TAG = "TAG"
+
+    # Genre update
+    GENRE = "GENRE"
 
     # Relationships
     FOLLOW = "FOLLOW"
@@ -43,7 +84,7 @@ class Notification(BookWyrmModel):
     NotificationType = models.TextChoices(
         # there has got be a better way to do this
         "NotificationType",
-        f"{FAVORITE} {REPLY} {MENTION} {TAG} {FOLLOW} {FOLLOW_REQUEST} {BOOST} {IMPORT} {ADD} {REPORT} {INVITE} {ACCEPT} {JOIN} {LEAVE} {REMOVE} {GROUP_PRIVACY} {GROUP_NAME} {GROUP_DESCRIPTION}",
+        f"{GENRE} {FAVORITE} {REPLY} {MENTION} {TAG} {FOLLOW} {FOLLOW_REQUEST} {BOOST} {IMPORT} {ADD} {REPORT} {INVITE} {ACCEPT} {JOIN} {LEAVE} {REMOVE} {GROUP_PRIVACY} {GROUP_NAME} {GROUP_DESCRIPTION}",
     )
 
     user = models.ForeignKey("User", on_delete=models.CASCADE)
@@ -51,6 +92,8 @@ class Notification(BookWyrmModel):
     notification_type = models.CharField(
         max_length=255, choices=NotificationType.choices
     )
+
+    related_genre = models.ForeignKey("Genre", on_delete=models.CASCADE, null=True, related_name="notifications")
 
     related_users = models.ManyToManyField(
         "User", symmetrical=False, related_name="notifications"
@@ -76,6 +119,17 @@ class Notification(BookWyrmModel):
             notification = cls.objects.create(user=user, **kwargs)
         if related_user:
             notification.related_users.add(related_user)
+        notification.read = False
+        notification.save()
+
+    """Create genre notification - UPDATE"""
+    @classmethod
+    @transaction.atomic
+    def notify_genre_update(cls, users, **kwargs):
+        """Notify on genre activity"""
+        notification = cls.objects.create(**kwargs)
+        for user in users:
+            notification.related_users.add(user.user)
         notification.read = False
         notification.save()
 
@@ -109,6 +163,19 @@ class Notification(BookWyrmModel):
         notification.related_users.remove(related_user)
         if not notification.related_users.count():
             notification.delete()
+
+"""Receiver for genre update - UPDATE"""
+@receiver(models.signals.m2m_changed, sender=Edition.genres.through)
+def genre_update(sender, instance, action, pk_set, reverse, **kwargs):
+    if action == "post_add":
+        for key in pk_set:
+            genre = Genre.objects.get(pk=key)
+            users = FollowedGenre.objects.filter(genres=genre)
+            Notification.notify_genre_update(users,
+            user = instance.last_edited_by,
+            related_genre=genre,
+            notification_type=Notification.GENRE
+            )
 
 
 @receiver(models.signals.post_save, sender=Favorite)
