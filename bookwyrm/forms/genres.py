@@ -5,14 +5,14 @@ from django.utils.translation import gettext_lazy as _
 from django_celery_beat.models import IntervalSchedule
 
 from bookwyrm import models
-from .custom_form import CustomForm
+from .custom_form import StyledForm
 
-class GenreForm(CustomForm):
+class GenreForm(StyledForm):
 
     class Meta:
         model = models.Genre
 
-        fields = "__all__"
+        fields = ('genre_name', 'description')
 
         widgets = {
             "genre_name": forms.TextInput(attrs={"aria-describedby": "desc_name"}),
