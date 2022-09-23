@@ -46,6 +46,9 @@ class Genre(models.Model):
     def genre_desc(self):
         return self.description
 
+    #def save(self, request, *args, **kwargs):
+    #    super(Genre, self).save(request, *args, **kwargs)
+
         
 
 class BookDataModel(ObjectMixin, BookWyrmModel):
