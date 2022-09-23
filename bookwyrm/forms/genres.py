@@ -8,9 +8,11 @@ from bookwyrm import models
 from .custom_form import CustomForm
 
 class GenreForm(CustomForm):
+
     class Meta:
         model = models.Genre
-        exclude = ["immutable"]
+
+        fields = "__all__"
 
         widgets = {
             "genre_name": forms.TextInput(attrs={"aria-describedby": "desc_name"}),
