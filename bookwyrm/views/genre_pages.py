@@ -1,3 +1,4 @@
+from gc import get_objects
 from django.contrib.postgres.search import TrigramSimilarity
 
 from django.shortcuts import get_object_or_404, render
@@ -29,3 +30,9 @@ class GenreDetailView(DetailView):
 
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+
+        context = super().get_context_data(**kwargs)
+        context['demo_books'] = Book.objects.filter(genres = self.get_object())[:4]
+        return context
