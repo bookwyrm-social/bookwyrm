@@ -17,5 +17,15 @@ from django.views.generic import (
 )
 
 class GenreDetailView(DetailView):
-    template_name = 'genre/test.html'
+    template_name = 'genre/genre_detail_page.html'
     model = Genre
+
+    def post(self, request, *args, **kwargs):
+        '''Get the genres the user has selected.'''
+
+        #buttonSelection = request.POST.get("search_buttons")
+        context = self.get_context_data()
+        return render(request, self.template_name, context)
+
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
