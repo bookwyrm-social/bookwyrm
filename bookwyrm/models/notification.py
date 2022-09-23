@@ -93,6 +93,7 @@ class Notification(BookWyrmModel):
         max_length=255, choices=NotificationType.choices
     )
 
+    related_book = models.ForeignKey("Work", on_delete=models.CASCADE, null=True, related_name="notifications")
     related_genre = models.ForeignKey("Genre", on_delete=models.CASCADE, null=True, related_name="notifications")
 
     related_users = models.ManyToManyField(
@@ -165,7 +166,7 @@ class Notification(BookWyrmModel):
             notification.delete()
 
 """Receiver for genre update - UPDATE"""
-@receiver(models.signals.m2m_changed, sender=Edition.genres.through)
+@receiver(models.signals.m2m_changed, sender=Work.genres.through)
 def genre_update(sender, instance, action, pk_set, reverse, **kwargs):
     if action == "post_add":
         for key in pk_set:
@@ -173,6 +174,7 @@ def genre_update(sender, instance, action, pk_set, reverse, **kwargs):
             users = FollowedGenre.objects.filter(genres=genre)
             Notification.notify_genre_update(users,
             user = instance.last_edited_by,
+            related_book = instance,
             related_genre=genre,
             notification_type=Notification.GENRE
             )

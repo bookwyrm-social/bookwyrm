@@ -25,6 +25,7 @@ STATUS_TYPES_STRING = "|".join(status_types)
 STATUS_PATH = rf"{USER_PATH}/({STATUS_TYPES_STRING})/(?P<status_id>\d+)"
 
 BOOK_PATH = r"^book/(?P<book_id>\d+)"
+GENRE_PATH = r"^genre/(?P<pk>\d+)"
 
 STREAMS = "|".join(s["key"] for s in settings.STREAMS)
 
@@ -149,6 +150,8 @@ urlpatterns = [
     re_path(
         r"^genres/(?P<pk>\d+)/?$", views.GenreDetailView.as_view(), name="genre-view"
     ),
+    re_path(rf"{GENRE_PATH}(.json)?/?$", views.GenreDetailView.as_view(), name="genre-view"),
+    re_path(rf"{GENRE_PATH}{regex.SLUG}/?$", views.GenreDetailView.as_view(), name="genre-view"),
 
     re_path(
         r"^settings/users/(?P<status>(local|federated|deleted))\/?$",
