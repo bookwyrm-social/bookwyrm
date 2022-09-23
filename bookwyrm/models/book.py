@@ -33,10 +33,8 @@ class GenreManager(models.Manager):
 
 class Genre(models.Model):
     '''This is a model where we can define genres for books.'''
-    '''TODO: Add ManytoMany field on books which contain this certain genre.'''
     genre_name = fields.CharField(max_length=40)
     description = fields.CharField(max_length=500)
-    immutable = models.BooleanField(default=False)
 
     objects = GenreManager()
 
@@ -48,22 +46,6 @@ class Genre(models.Model):
     def genre_desc(self):
         return self.description
 
-    #def save(self, *args, **kwargs):
-    #    
-    #    
-    #    if self.immutable:
-    #        raise ValueError("This genre is immutable and cannot be changed.")
-    #
-    #    super(Genre, self).save(*args, **kwargs)
-
-class ImmutableGenre(Genre):
-#    '''A proxy model for immutable genres so it can actually save itself and not cause an interdimensional rift.'''
-#    '''Immutable genres SHOULD ONLY EVER BE CREATED UPON THE CREATION OF THE INSTANCE'''
-    class Meta:
-        proxy = True
-
-    def save(self, *args, **kwargs):
-        super(Genre, self).save(*args, **kwargs)
         
 
 class BookDataModel(ObjectMixin, BookWyrmModel):
