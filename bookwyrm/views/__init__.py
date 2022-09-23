@@ -90,6 +90,7 @@ from .list.list import (
 )
 
 # misc views
+from .genre_pages import GenreDetailView
 from .author import Author, EditAuthor, update_author_from_remote
 from .directory import Directory
 from .discover import Discover

@@ -2,7 +2,7 @@
 import inspect
 import sys
 
-from .book import Book, Work, Edition, BookDataModel, Genre, ImmutableGenre
+from .book import Book, Work, Edition, BookDataModel, Genre
 from .author import Author
 from .link import Link, FileLink, LinkDomain
 from .connector import Connector
