@@ -11,6 +11,9 @@
     <div class="column is-flex is-flex-direction-column">
         <h4 class="title is-4">Actions</h4>
         <div class="box content is-flex-grow-1">
+            <p>
+                {{ object.description }}
+            </p>
             <dl>
                 <form method="post">{% csrf_token %}
                     <button type="submit" class="button is-primary">  {% trans "Follow" %} </button>
