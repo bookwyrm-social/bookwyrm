@@ -52,9 +52,9 @@ class ManageInvites(View):
         if not form.is_valid():
             return HttpResponseBadRequest(f"ERRORS: {form.errors}")
 
-        invite = form.save(commit=False)
+        invite = form.save(request, commit=False)
         invite.user = request.user
-        invite.save()
+        invite.save(request)
 
         paginated = Paginator(
             models.SiteInvite.objects.filter(user=request.user).order_by(
@@ -170,7 +170,7 @@ class InviteRequest(View):
         received = False
         if form.is_valid():
             received = True
-            form.save()
+            form.save(request)
 
         data = {"request_form": form, "request_received": received}
         return TemplateResponse(request, "landing/landing.html", data)

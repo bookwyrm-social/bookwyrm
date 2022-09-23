@@ -81,13 +81,12 @@ class List(View):
     def post(self, request, list_id):
         """edit a list"""
         book_list = get_object_or_404(models.List, id=list_id)
-        book_list.raise_not_editable(request.user)
 
         form = forms.ListForm(request.POST, instance=book_list)
         if not form.is_valid():
             # this shouldn't happen
             raise Exception(form.errors)
-        book_list = form.save()
+        book_list = form.save(request)
         if not book_list.curation == "group":
             book_list.group = None
             book_list.save(broadcast=False)
@@ -196,7 +195,7 @@ def add_book(request):
     if not form.is_valid():
         return List().get(request, book_list.id, add_failed=True)
 
-    item = form.save(commit=False)
+    item = form.save(request, commit=False)
 
     if book_list.curation == "curated":
         # make a pending entry at the end of the list
@@ -242,7 +241,6 @@ def set_book_position(request, list_item_id):
     special care with the unique ordering per list.
     """
     list_item = get_object_or_404(models.ListItem, id=list_item_id)
-    list_item.book_list.raise_not_editable(request.user)
     try:
         int_position = int(request.POST.get("position"))
     except ValueError:

@@ -41,7 +41,7 @@ class Genre(models.Model):
 
     def __str__(self):
         return self.genre_name
-
+ 
     @property
     def genre_desc(self):
         return self.description

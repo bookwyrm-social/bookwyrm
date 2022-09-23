@@ -40,7 +40,7 @@ class EmailBlocklist(View):
             return TemplateResponse(
                 request, "settings/email_blocklist/email_blocklist.html", data
             )
-        form.save()
+        form.save(request)
 
         data["form"] = forms.EmailBlocklistForm()
         return TemplateResponse(

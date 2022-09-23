@@ -2,13 +2,14 @@
 import datetime
 
 from django import forms
+from django.core.exceptions import PermissionDenied
 from django.forms import widgets
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django_celery_beat.models import IntervalSchedule
 
 from bookwyrm import models
-from .custom_form import CustomForm
+from .custom_form import CustomForm, StyledForm
 
 
 # pylint: disable=missing-class-docstring
@@ -130,7 +131,7 @@ class AutoModRuleForm(CustomForm):
         fields = ["string_match", "flag_users", "flag_statuses", "created_by"]
 
 
-class IntervalScheduleForm(CustomForm):
+class IntervalScheduleForm(StyledForm):
     class Meta:
         model = IntervalSchedule
         fields = ["every", "period"]
@@ -139,3 +140,10 @@ class IntervalScheduleForm(CustomForm):
             "every": forms.NumberInput(attrs={"aria-describedby": "desc_every"}),
             "period": forms.Select(attrs={"aria-describedby": "desc_period"}),
         }
+
+    # pylint: disable=arguments-differ
+    def save(self, request, *args, **kwargs):
+        """This is an outside model so the perms check works differently"""
+        if not request.user.has_perm("bookwyrm.moderate_user"):
+            raise PermissionDenied()
+        return super().save(*args, **kwargs)
