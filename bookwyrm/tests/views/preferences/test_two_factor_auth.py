@@ -1,8 +1,7 @@
 """ test for app two factor auth functionality """
 from unittest.mock import patch
-import pyotp
-from datetime import datetime
 import time
+import pyotp
 
 from django.contrib.auth.models import AnonymousUser
 from django.contrib.sessions.middleware import SessionMiddleware
@@ -11,7 +10,6 @@ from django.test import TestCase
 from django.test.client import RequestFactory
 
 from bookwyrm import forms, models, views
-from bookwyrm.tests.validate_html import validate_html
 
 # pylint: disable=too-many-public-methods
 @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
@@ -112,30 +110,29 @@ class TwoFactorViews(TestCase):
         self.assertIsInstance(result, TemplateResponse)
         self.assertEqual(result.status_code, 200)
 
-    def test_post_login_with_2fa(self, *_):
-        """check 2FA login works"""
-        # NOTE this throws a redis error.
-        # Possibly because the function it tests wants to check the user database?
-        # can we mock that?
-        # view = views.LoginWith2FA.as_view()
-        # form = forms.Confirm2FAForm()
-        # totp = pyotp.TOTP('UEWMVJHO23G5XLMVSOCL6TNTSSACJH2X')
+    # def test_post_login_with_2fa(self, *_):
+    #     """check 2FA login works"""
+    # NOTE this throws a redis error.
+    # Possibly because the function it tests wants to check the user database?
+    # can we mock that?
+    # view = views.LoginWith2FA.as_view()
+    # form = forms.Confirm2FAForm()
+    # totp = pyotp.TOTP('UEWMVJHO23G5XLMVSOCL6TNTSSACJH2X')
 
-        # form.data["otp"] = totp.now()
-        # request = self.factory.post("", form.data)
-        # request.user = self.local_user
+    # form.data["otp"] = totp.now()
+    # request = self.factory.post("", form.data)
+    # request.user = self.local_user
 
-        # middleware = SessionMiddleware(request)
-        # middleware.process_request(request)
-        # request.session['2fa_auth_time'] = time.time()
-        # request.session['2fa_user'] = self.local_user.username
-        # request.session.save()
+    # middleware = SessionMiddleware(request)
+    # middleware.process_request(request)
+    # request.session['2fa_auth_time'] = time.time()
+    # request.session['2fa_user'] = self.local_user.username
+    # request.session.save()
 
-        # with patch("bookwyrm.views.preferences.two_factor_auth.LoginWith2FA"):
-        #     result = view(request)
-        # self.assertIsInstance(result, TemplateResponse)
-        # self.assertEqual(result.status_code, 200)
-        pass
+    # with patch("bookwyrm.views.preferences.two_factor_auth.LoginWith2FA"):
+    #     result = view(request)
+    # self.assertIsInstance(result, TemplateResponse)
+    # self.assertEqual(result.status_code, 200)
 
     def test_post_login_with_2fa_wrong_code(self, *_):
         """check 2FA login fails"""
@@ -179,24 +176,20 @@ class TwoFactorViews(TestCase):
         self.assertEqual(result.url, "/")
         self.assertEqual(result.status_code, 302)
 
+    def test_get_generate_backup_codes(self, *_):
+        """there are so many views, this just makes sure it LOADS"""
+        view = views.GenerateBackupCodes.as_view()
+        request = self.factory.get("")
+        request.user = self.local_user
+        result = view(request)
+        self.assertIsInstance(result, TemplateResponse)
+        self.assertEqual(result.status_code, 200)
 
-"""
-Edit2FA
-    - get ✔
-    - post ✔
-    - create_qr_code
-Confirm2FA
-    - post ✔
-Disable2FA
-    - get ✔
-    - post ✔
-LoginWith2FA
-    - get ✔
-    - post ✔
-GenerateBackupCodes
-    - get
-    - generate_backup_codes
-Prompt2FA
-    - get
-
-"""
+    def test_get_prompt_2fa(self, *_):
+        """there are so many views, this just makes sure it LOADS"""
+        view = views.Prompt2FA.as_view()
+        request = self.factory.get("")
+        request.user = self.local_user
+        result = view(request)
+        self.assertIsInstance(result, TemplateResponse)
+        self.assertEqual(result.status_code, 200)
