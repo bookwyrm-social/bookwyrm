@@ -6,28 +6,28 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bookwyrm', '0158_auto_20220919_1634'),
+        ("bookwyrm", "0158_auto_20220919_1634"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='user',
-            name='hotp_count',
+            model_name="user",
+            name="hotp_count",
             field=models.IntegerField(blank=True, default=0, null=True),
         ),
         migrations.AddField(
-            model_name='user',
-            name='hotp_secret',
+            model_name="user",
+            name="hotp_secret",
             field=models.CharField(blank=True, default=None, max_length=32, null=True),
         ),
         migrations.AddField(
-            model_name='user',
-            name='otp_secret',
+            model_name="user",
+            name="otp_secret",
             field=models.CharField(blank=True, default=None, max_length=32, null=True),
         ),
         migrations.AddField(
-            model_name='user',
-            name='two_factor_auth',
+            model_name="user",
+            name="two_factor_auth",
             field=models.BooleanField(blank=True, default=None, null=True),
         ),
     ]
