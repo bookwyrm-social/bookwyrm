@@ -1,5 +1,6 @@
 """ class views for login/register views """
-from datetime import datetime
+import time
+
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
@@ -56,7 +57,7 @@ class Login(View):
             # if 2fa is set, don't log them in until they enter the right code
             if user.two_factor_auth is True:
                 request.session["2fa_user"] = user.username
-                request.session["2fa_auth_time"] = datetime.now()
+                request.session["2fa_auth_time"] = time.time()
                 return redirect("login-with-2fa")
 
             # otherwise, successful login
