@@ -1,0 +1,26 @@
+{% load interaction %}
+{% load utilities %}
+{% load i18n %}
+
+
+{% with request.user|followed:object as followed %}
+<form
+    name="follow"
+    action="{% url 'follow-genre' object.id %}"
+    method="POST"
+    class="{% if followed %}is-hidden{% endif %}"
+>
+    {% csrf_token %}
+    <button type="submit" class="button is-primary">  {% trans "Follow" %} </button>
+</form>
+
+<form
+    name="unfollow"
+    action="{% url 'unfollow-genre' object.id %}"
+    method="POST"
+    class="{% if not followed %}is-hidden{% endif %}"
+>
+    {% csrf_token %}
+    <button type="submit" class="button is-danger">  {% trans "Unfollow" %} </button>
+</form>
+{% endwith %}

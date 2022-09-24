@@ -549,6 +549,10 @@ urlpatterns = [
     ),
     re_path(r"^boost/(?P<status_id>\d+)/?$", views.Boost.as_view()),
     re_path(r"^unboost/(?P<status_id>\d+)/?$", views.Unboost.as_view()),
+    re_path(r"^follow/(?P<pk>\d+)/?$", views.interaction.FollowGenre.as_view(), name="follow-genre"),
+    re_path(
+        r"^unfollow/(?P<pk>\d+)/?$", views.interaction.UnFollowGenre.as_view(), name="unfollow-genre"
+    ),
     # books
     re_path(rf"{BOOK_PATH}(.json)?/?$", views.Book.as_view(), name="book"),
     re_path(rf"{BOOK_PATH}{regex.SLUG}/?$", views.Book.as_view(), name="book"),

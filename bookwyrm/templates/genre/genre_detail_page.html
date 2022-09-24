@@ -15,9 +15,7 @@
                 {{ object.description }}
             </p>
             <dl>
-                <form method="post">{% csrf_token %}
-                    <button type="submit" class="button is-primary">  {% trans "Follow" %} </button>
-                </form> 
+                {% include 'snippets/genre_follow_button.html' with book=result %}
             </dl>
         </div>
     </div>

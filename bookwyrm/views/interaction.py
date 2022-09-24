@@ -50,6 +50,29 @@ class Unfavorite(View):
             return HttpResponse()
         return redirect("/")
 
+@method_decorator(login_required, name="dispatch")
+class FollowGenre(View):
+    """like a status"""
+
+    def post(self, request, pk):
+        """follow a genre"""
+        genre = models.Genre.objects.get(id=pk)
+        user = models.User.objects.get(id=request.user.id)
+        user.followed_genres.add(genre)
+        return redirect("genre-view", pk=genre.id)
+
+
+@method_decorator(login_required, name="dispatch")
+class UnFollowGenre(View):
+    """unfollow a genre"""
+
+    def post(self, request, pk):
+        """unlike a status"""
+        genre = models.Genre.objects.get(id=pk)
+        user = models.User.objects.get(id=request.user.id)
+        user.followed_genres.remove(genre)
+        return redirect("genre-view", pk=genre.id)
+
 
 @method_decorator(login_required, name="dispatch")
 class Boost(View):
