@@ -34,8 +34,7 @@ class TwoFactorViews(TestCase):
                 two_factor_auth=True,
                 otp_secret="UEWMVJHO23G5XLMVSOCL6TNTSSACJH2X",
                 hotp_secret="DRMNMOU7ZRKH5YPW7PADOEYUF7MRIH46",
-                hotp_count=0
-
+                hotp_count=0,
             )
         self.anonymous_user = AnonymousUser
         self.anonymous_user.is_authenticated = False
@@ -74,7 +73,7 @@ class TwoFactorViews(TestCase):
         """check 2FA login works"""
         view = views.Confirm2FA.as_view()
         form = forms.Confirm2FAForm()
-        totp = pyotp.TOTP('UEWMVJHO23G5XLMVSOCL6TNTSSACJH2X')
+        totp = pyotp.TOTP("UEWMVJHO23G5XLMVSOCL6TNTSSACJH2X")
         form.data["otp"] = totp.now()
         request = self.factory.post("", form.data)
         request.user = self.local_user
@@ -83,7 +82,6 @@ class TwoFactorViews(TestCase):
             result = view(request)
         self.assertIsInstance(result, TemplateResponse)
         self.assertEqual(result.status_code, 200)
-
 
     def test_get_disable_2fa(self, *_):
         """there are so many views, this just makes sure it LOADS"""
@@ -149,8 +147,8 @@ class TwoFactorViews(TestCase):
 
         middleware = SessionMiddleware(request)
         middleware.process_request(request)
-        request.session['2fa_auth_time'] = time.time()
-        request.session['2fa_user'] = self.local_user.username
+        request.session["2fa_auth_time"] = time.time()
+        request.session["2fa_user"] = self.local_user.username
         request.session.save()
 
         with patch("bookwyrm.views.preferences.two_factor_auth.LoginWith2FA"):
@@ -158,14 +156,14 @@ class TwoFactorViews(TestCase):
         self.assertEqual(result.status_code, 200)
         self.assertEqual(
             result.context_data["form"]["otp"].errors[0],
-            'Incorrect code',
+            "Incorrect code",
         )
 
     def test_post_login_with_2fa_expired(self, *_):
         """check 2FA login fails"""
         view = views.LoginWith2FA.as_view()
         form = forms.Confirm2FAForm()
-        totp = pyotp.TOTP('UEWMVJHO23G5XLMVSOCL6TNTSSACJH2X')
+        totp = pyotp.TOTP("UEWMVJHO23G5XLMVSOCL6TNTSSACJH2X")
 
         form.data["otp"] = totp.now()
         request = self.factory.post("", form.data)
@@ -173,13 +171,14 @@ class TwoFactorViews(TestCase):
 
         middleware = SessionMiddleware(request)
         middleware.process_request(request)
-        request.session['2fa_user'] = self.local_user.username
-        request.session['2fa_auth_time'] = "1663977030"
+        request.session["2fa_user"] = self.local_user.username
+        request.session["2fa_auth_time"] = "1663977030"
 
         with patch("bookwyrm.views.preferences.two_factor_auth.LoginWith2FA"):
             result = view(request)
         self.assertEqual(result.url, "/")
         self.assertEqual(result.status_code, 302)
+
 
 """
 Edit2FA

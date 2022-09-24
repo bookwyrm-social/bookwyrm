@@ -29,7 +29,7 @@ class LoginViews(TestCase):
                 "password",
                 local=True,
                 localname="mouse",
-                two_factor_auth=False
+                two_factor_auth=False,
             )
             self.rat = models.User.objects.create_user(
                 "rat@your.domain.here",
@@ -44,7 +44,7 @@ class LoginViews(TestCase):
                 "password",
                 local=True,
                 localname="badger",
-                two_factor_auth=True
+                two_factor_auth=True,
             )
         self.anonymous_user = AnonymousUser
         self.anonymous_user.is_authenticated = False

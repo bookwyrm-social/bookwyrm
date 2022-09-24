@@ -109,7 +109,9 @@ class LoginWith2FA(View):
     def post(self, request):
         """Check 2FA code and allow/disallow login"""
         user = models.User.objects.get(username=request.session["2fa_user"])
-        elapsed_time = datetime.now() - datetime.fromtimestamp(int(request.session["2fa_auth_time"]))
+        elapsed_time = datetime.now() - datetime.fromtimestamp(
+            int(request.session["2fa_auth_time"])
+        )
         form = forms.Confirm2FAForm(request.POST, instance=user)
         # don't allow the login credentials to last too long before completing login
         if elapsed_time > timedelta(seconds=60):
