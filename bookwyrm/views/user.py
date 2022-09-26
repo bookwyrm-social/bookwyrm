@@ -143,16 +143,6 @@ class Statistics(View):
         return TemplateResponse(request, "user/statistics.html", data)
 
 
-def annotate_if_follows(user, queryset):
-    """Sort a list of users by if you follow them"""
-    if not user.is_authenticated:
-        return queryset.order_by("-created_date")
-
-    return queryset.annotate(
-        request_user_follows=Count("followers", filter=Q(followers=user))
-    ).order_by("-request_user_follows", "-created_date")
-
-
 @require_POST
 @login_required
 def hide_suggestions(request):
