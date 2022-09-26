@@ -4,7 +4,7 @@
 {% load utilities %}
 
 {% block primary_link %}{% spaceless %}
-{% url 'user-followers' request.user.localname %}
+{% url 'user-relationships' request.user.localname 'followers' %}
 {% endspaceless %}{% endblock %}
 
 {% block icon %}

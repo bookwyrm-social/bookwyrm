@@ -1,0 +1,123 @@
+{% load i18n %}
+
+<script>
+    const tour = new Shepherd.Tour({
+        exitOnEsc: true,
+    });
+
+    tour.addSteps([
+        {
+            text: "{% trans 'You can create or join a group with other users. Groups can share group-curated book lists, and in future will be able to do other things.' %}",
+            title: "{% trans 'Groups' %}",
+            buttons: [
+                {
+                    action() {
+                        disableGuidedTour(csrf_token);
+                        return this.complete();
+                    },
+                    secondary: true,
+                    text: "{% trans 'End Tour' %}",
+                    classes: "is-danger",
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: "{% trans 'Next' %}",
+                },
+            ],
+        },
+        {
+            text: `{% trans "Let's create a new group!" %}<p class="notification is-warning is-light mt-3">{% trans "Click the <strong>Create group</strong> button, then <strong>Next</strong> to continue the tour" %}</p>`,
+            title: "{% trans 'Create group' %}",
+            attachTo: {
+                element: "#tour-create-group",
+                on: "left-start",
+            },
+            highlightClass: 'tour-element-highlight',
+            buttons: [
+                {
+                    action() {
+                        return this.back();
+                    },
+                    secondary: true,
+                    text: "{% trans 'Back' %}",
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: "{% trans 'Next' %}",
+                },
+            ],
+        },
+        {
+            text: "{% trans 'Give your group a name and describe what it is about. You can make user groups for any purpose - a reading group, a bunch of friends, whatever!' %}",
+            title: "{% trans 'Creating a group' %}",
+            attachTo: {
+                element: "#tour-group-name",
+                on: "right",
+            },
+            buttons: [
+                {
+                    action() {
+                        return this.back();
+                    },
+                    secondary: true,
+                    text: "{% trans 'Back' %}",
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: "{% trans 'Next' %}",
+                },
+            ],
+        },
+        {
+            text: "{% trans 'Groups have privacy settings just like posts and lists, except that group privacy cannot be <strong>Followers</strong>.' %}",
+            title: "{% trans 'Group visibility' %}",
+            attachTo: {
+                element: "#tour-privacy",
+                on: "left",
+            },
+            scrollTo: true,
+            buttons: [
+                {
+                    action() {
+                        return this.back();
+                    },
+                    secondary: true,
+                    text: "{% trans 'Back' %}",
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: "{% trans 'Next' %}",
+                },
+            ],
+        },
+        {
+            text: `{% trans "Once you're happy with how everything is set up, click the <strong>Save</strong> button to create your new group." %}<p class="notification is-warning is-light mt-3">{% trans "Create and save a group to continue the tour." %}</p>`,
+            title: "{% trans 'Save your group' %}",
+            buttons: [
+                {
+                    action() {
+                        return this.back();
+                    },
+                    secondary: true,
+                    text: "{% trans 'Back' %}",
+                },
+                {
+                    action() {
+                        return this.complete();
+                    },
+                    text: "{% trans 'Ok' %}",
+                },
+            ],
+        },
+    ])
+
+    tour.start()
+</script>

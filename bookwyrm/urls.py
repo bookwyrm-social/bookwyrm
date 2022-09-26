@@ -291,6 +291,9 @@ urlpatterns = [
         views.Report.as_view(),
         name="report-link",
     ),
+    re_path(
+        r"^settings/celery/?$", views.CeleryStatus.as_view(), name="settings-celery"
+    ),
     # landing pages
     re_path(r"^about/?$", views.about, name="about"),
     re_path(r"^privacy/?$", views.privacy, name="privacy"),
@@ -376,14 +379,9 @@ urlpatterns = [
     re_path(rf"^@(?P<username>{regex.USERNAME})$", views.user_redirect),
     re_path(rf"{USER_PATH}/rss/?$", views.rss_feed.RssFeed(), name="user-rss"),
     re_path(
-        rf"{USER_PATH}/followers(.json)?/?$",
-        views.Followers.as_view(),
-        name="user-followers",
-    ),
-    re_path(
-        rf"{USER_PATH}/following(.json)?/?$",
-        views.Following.as_view(),
-        name="user-following",
+        rf"{USER_PATH}/(?P<direction>(followers|following))(.json)?/?$",
+        views.Relationships.as_view(),
+        name="user-relationships",
     ),
     re_path(r"^hide-suggestions/?$", views.hide_suggestions, name="hide-suggestions"),
     # groups
@@ -592,7 +590,7 @@ urlpatterns = [
         name="author-update-remote",
     ),
     # isbn
-    re_path(r"^isbn/(?P<isbn>\d+)(.json)?/?$", views.Isbn.as_view()),
+    re_path(r"^isbn/(?P<isbn>[\dxX]+)(.json)?/?$", views.Isbn.as_view()),
     # author
     re_path(
         r"^author/(?P<author_id>\d+)(.json)?/?$", views.Author.as_view(), name="author"
@@ -651,4 +649,5 @@ urlpatterns = [
     re_path(
         r"^summary_revoke_key/?$", views.summary_revoke_key, name="summary-revoke-key"
     ),
+    path("guided-tour/<tour>", views.toggle_guided_tour),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

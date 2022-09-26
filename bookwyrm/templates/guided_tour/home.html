@@ -1,0 +1,225 @@
+{% load i18n %}
+
+<script>
+const initiateTour = new Shepherd.Tour({
+    exitOnEsc: true,
+});
+
+function checkResponsiveState(anchor) {
+    let menu = document.querySelector('#navbar-dropdown');
+    let display = window.getComputedStyle(menu).display;
+    return display == 'flex' ? anchor : '.navbar-burger';
+}
+
+initiateTour.addSteps([
+    {
+        text: "{% trans 'Welcome to Bookwyrm!<br><br>Would you like to take the guided tour to help you get started?' %}",
+            title: "{% trans 'Guided Tour' %}",
+            buttons: [
+                {
+                    action() {
+                        disableGuidedTour(csrf_token);
+                        return this.next();
+                    },
+                    secondary: true,
+                    text: "{% trans 'No thanks' %}",
+                    classes: "is-danger",
+                },
+                {
+                    action() {
+                        this.cancel();
+                        return homeTour.start()
+                    },
+                    text: "{% trans 'Yes please!' %}",
+                },
+            ],
+    },
+    {
+        text: "{% trans 'If  you ever change your mind, just click on the Guided Tour link to start your tour' %}",
+            title: "{% trans 'Guided Tour' %}",
+            attachTo: {
+                element: "#tour-begin",
+                on: "left-start",
+            },
+            scrollTo: true,
+            buttons: [
+                {
+                    action() {
+                        return this.complete()
+                    },
+                    text: "{% trans 'Ok' %}",
+                }
+            ],
+    }
+])
+
+const homeTour = new Shepherd.Tour({
+        exitOnEsc: true,
+    });
+
+homeTour.addSteps([
+    {
+        text: "{% trans 'Search for books, users, or lists using this search box.' %}",
+        title: "{% trans 'Search box' %}",
+        attachTo: {
+            element: "#tour-search",
+            on: "bottom",
+        },
+        highlightClass: 'tour-element-highlight',
+        buttons: [
+            {
+                action() {
+                    return this.next();
+                },
+                text: "{% trans 'Next' %}",
+            },
+        ],
+    },
+    {
+        text: `{% trans "Search book records by scanning an ISBN barcode using your device's camera - great when you're in the bookstore or library!" %}`,
+        title: "{% trans 'Barcode reader' %}",
+        attachTo: {
+            element: "#tour-barcode",
+            on: "bottom",
+        },
+        buttons: [
+            {
+                action() {
+                    return this.back();
+                },
+                secondary: true,
+                text: "{% trans 'Back' %}",
+            },
+            {
+                action() {
+                    return this.next();
+                },
+                text: "{% trans 'Next' %}",
+            },
+        ],
+    },
+    {
+        text: "{% trans 'Use the <strong>Feed</strong>, <strong>Lists</strong> and <strong>Discover</strong> links to discover the latest news from your feed, lists of books by topic, and the latest happenings on this Bookwyrm server!' %}",
+        title: "{% trans 'Navigation Bar' %}",
+        attachTo: {
+            element: checkResponsiveState('#tour-navbar-start'),
+            on: "left",
+        },
+        highlightClass: 'tour-element-highlight',
+        buttons: [
+            {
+                action() {
+                    return this.back();
+                },
+                secondary: true,
+                text: "{% trans 'Back' %}",
+            },
+            {
+                action() {
+                    return this.next();
+                },
+                text: "{% trans 'Next' %}",
+            },
+        ],
+    },
+    {
+        text: "{% trans 'Books on your reading status shelves will be shown here.' %}",
+        title: "{% trans 'Your Books' %}",
+        attachTo: {
+            element: "#tour-suggested-books",
+            on: "right",
+        },
+        highlightClass: 'tour-element-highlight',
+        scrollTo: true,
+        buttons: [
+        {
+                action() {
+                    return this.back();
+                },
+                secondary: true,
+                text: "{% trans 'Back' %}",
+            },
+            {
+                action() {
+                    return this.next();
+                },
+                text: "{% trans 'Next' %}",
+            },
+        ],
+    },
+    {
+        text: "{% trans 'Updates from people you are following will appear in your <strong>Home</strong> timeline.<br><br>The <strong>Books</strong> tab shows activity from anyone, related to your books.' %}",
+        title: "{% trans 'Timelines' %}",
+        attachTo: {
+            element: "#feed",
+            on: "left",
+        },
+        highlightClass: 'tour-element-highlight',
+				scrollTo: true,
+        buttons: [
+        {
+                action() {
+                    return this.back();
+                },
+                secondary: true,
+                text: "{% trans 'Back' %}",
+            },
+            {
+                action() {
+                    return this.next();
+                },
+                text: "{% trans 'Next' %}",
+            },
+        ],
+    },
+    {
+        text: "{% trans 'The bell will light up when you have a new notification. When it does, click on it to find out what exciting thing has happened!' %}",
+        title: "{% trans 'Notifications' %}",
+        attachTo: {
+            element: checkResponsiveState('#tour-notifications'),
+            on: "left-end",
+        },
+        scrollTo: true,
+        buttons: [
+        {
+                action() {
+                    return this.back();
+                },
+                secondary: true,
+                text: "{% trans 'Back' %}",
+            },
+            {
+                action() {
+                    return this.next();
+                },
+                text: "{% trans 'Next' %}",
+            },
+        ],
+    },
+    {
+        text: `{% trans "Your profile, books, direct messages, and settings can be accessed by clicking on your name in the menu here." %} <p class="notification is-warning is-light mt-3">{% trans "Try selecting <strong>Profile</strong> from the drop down menu to continue the tour." %}</p>`,
+        title: "{% trans 'Profile and settings menu' %}",
+        attachTo: {
+            element: checkResponsiveState('#navbar-dropdown'),
+            on: "left-end",
+        },
+        buttons: [
+            {
+                action() {
+                    return this.back();
+                },
+                secondary: true,
+                text: "{% trans 'Back' %}",
+            },
+            {
+                action() {
+                    return this.next();
+                },
+                text: "{% trans 'Ok' %}",
+            },
+        ],
+    }
+]);
+
+initiateTour.start()
+</script>

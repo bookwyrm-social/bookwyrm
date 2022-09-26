@@ -4,6 +4,7 @@ from .admin.announcements import Announcements, Announcement
 from .admin.announcements import EditAnnouncement, delete_announcement
 from .admin.automod import AutoMod, automod_delete, run_automod
 from .admin.automod import schedule_automod_task, unschedule_automod_task
+from .admin.celery_status import CeleryStatus
 from .admin.dashboard import Dashboard
 from .admin.federation import Federation, FederatedServer
 from .admin.federation import AddFederatedServer, ImportServerBlocklist
@@ -129,12 +130,12 @@ from .status import edit_readthrough
 from .updates import get_notification_count, get_unread_status_string
 from .user import (
     User,
-    Followers,
-    Following,
     Statistics,
     hide_suggestions,
     user_redirect,
+    toggle_guided_tour,
 )
+from .relationships import Relationships
 from .wellknown import *
 from .annual_summary import (
     AnnualSummary,

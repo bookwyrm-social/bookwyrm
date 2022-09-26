@@ -14,6 +14,8 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="annualgoal",
             name="year",
-            field=models.IntegerField(default=bookwyrm.models.user.get_current_year),
+            field=models.IntegerField(
+                default=bookwyrm.models.annual_goal.get_current_year
+            ),
         ),
     ]

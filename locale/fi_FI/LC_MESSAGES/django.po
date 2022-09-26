@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-07-14 23:57+0000\n"
-"PO-Revision-Date: 2022-07-15 16:40\n"
+"POT-Creation-Date: 2022-08-29 20:43+0000\n"
+"PO-Revision-Date: 2022-08-29 22:38\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Finnish\n"
 "Language: fi\n"
@@ -42,6 +42,14 @@ msgstr "{i} käyttökertaa"
 msgid "Unlimited"
 msgstr "rajattomasti"
 
+#: bookwyrm/forms/edit_user.py:89
+msgid "Incorrect password"
+msgstr "Väärä salasana"
+
+#: bookwyrm/forms/edit_user.py:96 bookwyrm/forms/landing.py:71
+msgid "Password does not match"
+msgstr "Salasanat eivät täsmää"
+
 #: bookwyrm/forms/forms.py:54
 msgid "Reading finish date cannot be before start date."
 msgstr "Lopetuspäivä ei voi olla ennen aloituspäivää."
@@ -50,11 +58,11 @@ msgstr "Lopetuspäivä ei voi olla ennen aloituspäivää."
 msgid "Reading stopped date cannot be before start date."
 msgstr "Keskeytyspäivä ei voi olla ennen aloituspäivää."
 
-#: bookwyrm/forms/landing.py:32
+#: bookwyrm/forms/landing.py:38
 msgid "User with this username already exists"
 msgstr "Käyttäjänimi on jo varattu"
 
-#: bookwyrm/forms/landing.py:41
+#: bookwyrm/forms/landing.py:47
 msgid "A user with this email already exists."
 msgstr "Sähköpostiosoite on jo jonkun käyttäjän käytössä."
 
@@ -191,7 +199,7 @@ msgstr "%(value)s ei ole kelvollinen remote_id"
 msgid "%(value)s is not a valid username"
 msgstr "%(value)s ei ole kelvollinen käyttäjänimi"
 
-#: bookwyrm/models/fields.py:181 bookwyrm/templates/layout.html:123
+#: bookwyrm/models/fields.py:181 bookwyrm/templates/layout.html:141
 #: bookwyrm/templates/ostatus/error.html:29
 msgid "username"
 msgstr "käyttäjänimi"
@@ -249,19 +257,19 @@ msgstr "Lainattavissa"
 msgid "Approved"
 msgstr "Hyväksytty"
 
-#: bookwyrm/models/user.py:32 bookwyrm/templates/book/book.html:289
+#: bookwyrm/models/user.py:31 bookwyrm/templates/book/book.html:289
 msgid "Reviews"
 msgstr "Arviot"
 
-#: bookwyrm/models/user.py:33
+#: bookwyrm/models/user.py:32
 msgid "Comments"
 msgstr "Kommentit"
 
-#: bookwyrm/models/user.py:34
+#: bookwyrm/models/user.py:33
 msgid "Quotations"
 msgstr "Lainaukset"
 
-#: bookwyrm/models/user.py:35
+#: bookwyrm/models/user.py:34
 msgid "Everything else"
 msgstr "Muut"
 
@@ -277,8 +285,10 @@ msgstr "Etusivu"
 msgid "Books Timeline"
 msgstr "Kirjavirta"
 
-#: bookwyrm/settings.py:210 bookwyrm/templates/search/layout.html:21
-#: bookwyrm/templates/search/layout.html:42
+#: bookwyrm/settings.py:210
+#: bookwyrm/templates/guided_tour/user_profile.html:101
+#: bookwyrm/templates/search/layout.html:22
+#: bookwyrm/templates/search/layout.html:43
 #: bookwyrm/templates/user/layout.html:91
 msgid "Books"
 msgstr "Kirjat"
@@ -288,58 +298,66 @@ msgid "English"
 msgstr "English (englanti)"
 
 #: bookwyrm/settings.py:283
+msgid "Català (Catalan)"
+msgstr "Català (katalaani)"
+
+#: bookwyrm/settings.py:284
 msgid "Deutsch (German)"
 msgstr "Deutsch (saksa)"
 
-#: bookwyrm/settings.py:284
+#: bookwyrm/settings.py:285
 msgid "Español (Spanish)"
 msgstr "Español (espanja)"
 
-#: bookwyrm/settings.py:285
+#: bookwyrm/settings.py:286
 msgid "Galego (Galician)"
 msgstr "Galego (galego)"
 
-#: bookwyrm/settings.py:286
+#: bookwyrm/settings.py:287
 msgid "Italiano (Italian)"
 msgstr "Italiano (italia)"
 
-#: bookwyrm/settings.py:287
+#: bookwyrm/settings.py:288
 msgid "Suomi (Finnish)"
 msgstr "suomi"
 
-#: bookwyrm/settings.py:288
+#: bookwyrm/settings.py:289
 msgid "Français (French)"
 msgstr "Français (ranska)"
 
-#: bookwyrm/settings.py:289
+#: bookwyrm/settings.py:290
 msgid "Lietuvių (Lithuanian)"
 msgstr "Lietuvių (liettua)"
 
-#: bookwyrm/settings.py:290
+#: bookwyrm/settings.py:291
 msgid "Norsk (Norwegian)"
 msgstr "Norsk (norja)"
 
-#: bookwyrm/settings.py:291
+#: bookwyrm/settings.py:292
+msgid "Polski (Polish)"
+msgstr "Polski (puola)"
+
+#: bookwyrm/settings.py:293
 msgid "Português do Brasil (Brazilian Portuguese)"
 msgstr "Português do Brasil (brasilianportugali)"
 
-#: bookwyrm/settings.py:292
+#: bookwyrm/settings.py:294
 msgid "Português Europeu (European Portuguese)"
 msgstr "Português Europeu (portugali)"
 
-#: bookwyrm/settings.py:293
+#: bookwyrm/settings.py:295
 msgid "Română (Romanian)"
 msgstr "Română (romania)"
 
-#: bookwyrm/settings.py:294
+#: bookwyrm/settings.py:296
 msgid "Svenska (Swedish)"
 msgstr "Svenska (ruotsi)"
 
-#: bookwyrm/settings.py:295
+#: bookwyrm/settings.py:297
 msgid "简体中文 (Simplified Chinese)"
 msgstr "简体中文 (yksinkertaistettu kiina)"
 
-#: bookwyrm/settings.py:296
+#: bookwyrm/settings.py:298
 msgid "繁體中文 (Traditional Chinese)"
 msgstr "繁體中文 (perinteinen kiina)"
 
@@ -376,46 +394,46 @@ msgstr "Tämä on %(site_name)s"
 
 #: bookwyrm/templates/about/about.html:24
 #, python-format
-msgid "%(site_name)s is part of <em>BookWyrm</em>, a network of independent, self-directed communities for readers. While you can interact seamlessly with users anywhere in the <a href=\"https://joinbookwyrm.com/instances/\" target=\"_blank\">BookWyrm network</a>, this community is unique."
-msgstr "%(site_name)s on osa itsenäisten ja itseohjautuvien lukijayhteisöjen <em>BookWyrm</em>-verkostoa. Vaikka yhteisömme on ihan omanlaisensa, kauttamme voi olla vaivattomasti yhteydessä kaikkiin <a href=\"https://joinbookwyrm.com/instances/\" target=\"_blank\">BookWyrm-verkoston</a> käyttäjiin."
+msgid "%(site_name)s is part of <em>BookWyrm</em>, a network of independent, self-directed communities for readers. While you can interact seamlessly with users anywhere in the <a href=\"https://joinbookwyrm.com/instances/\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">BookWyrm network</a>, this community is unique."
+msgstr ""
 
-#: bookwyrm/templates/about/about.html:42
+#: bookwyrm/templates/about/about.html:44
 #, python-format
 msgid "<a href=\"%(book_path)s\"><em>%(title)s</em></a> is %(site_name)s's most beloved book, with an average rating of %(rating)s out of 5."
 msgstr "<a href=\"%(book_path)s\"><em>%(title)s</em></a> on %(site_name)s-yhteisön pidetyin kirja: sen keskimääräinen arvosana on %(rating)s/5 tähteä."
 
-#: bookwyrm/templates/about/about.html:61
+#: bookwyrm/templates/about/about.html:63
 #, python-format
 msgid "More %(site_name)s users want to read <a href=\"%(book_path)s\"><em>%(title)s</em></a> than any other book."
 msgstr "Monet %(site_name)s-yhteisössä haluavat lukea mm. teoksen <a href=\"%(book_path)s\"><em>%(title)s</em></a>."
 
-#: bookwyrm/templates/about/about.html:80
+#: bookwyrm/templates/about/about.html:82
 #, python-format
 msgid "<a href=\"%(book_path)s\"><em>%(title)s</em></a> has the most divisive ratings of any book on %(site_name)s."
 msgstr "<a href=\"%(book_path)s\"><em>%(title)s</em></a> jakaa %(site_name)s-yhteisön mielipiteitä kaikkein eniten."
 
-#: bookwyrm/templates/about/about.html:91
-msgid "Track your reading, talk about books, write reviews, and discover what to read next. Always ad-free, anti-corporate, and community-oriented, BookWyrm is human-scale software, designed to stay small and personal. If you have feature requests, bug reports, or grand dreams, <a href='https://joinbookwyrm.com/get-involved' target='_blank'>reach out</a> and make yourself heard."
-msgstr "Täällä voit pitää kirjaa lukemistasi kirjoista, keskustella kirjoista, kirjoittaa arvioita ja etsiä uutta luettavaa. Täällä ei ole mainoksia eikä korporaatioita, täällä ollaan pienimuotoisia ja ihmisläheisiä. Jos sinulla on BookWyrm-alustaan liittyviä ehdotuksia tai visioita uusista ominaisuuksista tai haluat raportoida virheistä ohjelmistokoodissa, <a href='https://joinbookwyrm.com/get-involved' target='_blank'>ota toki yhteyttä</a>."
+#: bookwyrm/templates/about/about.html:93
+msgid "Track your reading, talk about books, write reviews, and discover what to read next. Always ad-free, anti-corporate, and community-oriented, BookWyrm is human-scale software, designed to stay small and personal. If you have feature requests, bug reports, or grand dreams, <a href=\"https://joinbookwyrm.com/get-involved\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">reach out</a> and make yourself heard."
+msgstr ""
 
-#: bookwyrm/templates/about/about.html:98
+#: bookwyrm/templates/about/about.html:103
 msgid "Meet your admins"
 msgstr "Ylläpitäjät"
 
-#: bookwyrm/templates/about/about.html:101
+#: bookwyrm/templates/about/about.html:106
 #, python-format
 msgid "%(site_name)s's moderators and administrators keep the site up and running, enforce the <a href=\"%(coc_path)s\">code of conduct</a>, and respond when users report spam and bad behavior."
 msgstr "%(site_name)s pyörii moderaattorien ja ylläpitäjien työllä. He myös valvovat <a href=\"%(coc_path)s\">käyttöehtojen</a> noudattamista ja reagoivat käyttäjien tekemiin ilmoituksiin."
 
-#: bookwyrm/templates/about/about.html:115
+#: bookwyrm/templates/about/about.html:120
 msgid "Moderator"
 msgstr "Moderaattori"
 
-#: bookwyrm/templates/about/about.html:117 bookwyrm/templates/user_menu.html:63
+#: bookwyrm/templates/about/about.html:122 bookwyrm/templates/user_menu.html:63
 msgid "Admin"
 msgstr "Ylläpitäjä"
 
-#: bookwyrm/templates/about/about.html:133
+#: bookwyrm/templates/about/about.html:138
 #: bookwyrm/templates/settings/users/user_moderation_actions.html:14
 #: bookwyrm/templates/snippets/status/status_options.html:35
 #: bookwyrm/templates/snippets/user_options.html:14
@@ -442,7 +460,7 @@ msgid "Software version:"
 msgstr "Ohjelmistoversio:"
 
 #: bookwyrm/templates/about/layout.html:30
-#: bookwyrm/templates/embed-layout.html:34 bookwyrm/templates/layout.html:182
+#: bookwyrm/templates/embed-layout.html:34 bookwyrm/templates/layout.html:200
 #, python-format
 msgid "About %(site_name)s"
 msgstr "%(site_name)s — tietoja"
@@ -738,7 +756,7 @@ msgstr "ISNI:"
 
 #: bookwyrm/templates/author/edit_author.html:115
 #: bookwyrm/templates/book/book.html:202
-#: bookwyrm/templates/book/edit/edit_book.html:135
+#: bookwyrm/templates/book/edit/edit_book.html:139
 #: bookwyrm/templates/book/file_links/add_link_modal.html:60
 #: bookwyrm/templates/book/file_links/edit_links.html:86
 #: bookwyrm/templates/groups/form.html:32
@@ -761,8 +779,8 @@ msgstr "Tallenna"
 #: bookwyrm/templates/author/sync_modal.html:23
 #: bookwyrm/templates/book/book.html:203
 #: bookwyrm/templates/book/cover_add_modal.html:33
-#: bookwyrm/templates/book/edit/edit_book.html:137
-#: bookwyrm/templates/book/edit/edit_book.html:140
+#: bookwyrm/templates/book/edit/edit_book.html:141
+#: bookwyrm/templates/book/edit/edit_book.html:144
 #: bookwyrm/templates/book/file_links/add_link_modal.html:59
 #: bookwyrm/templates/book/file_links/verification_modal.html:25
 #: bookwyrm/templates/book/sync_modal.html:23
@@ -784,10 +802,10 @@ msgid "Loading data will connect to <strong>%(source_name)s</strong> and check f
 msgstr "Tietoja ladattaessa muodostetaan yhteys lähteeseen <strong>%(source_name)s</strong> ja sieltä haetaan metatietoja, joita ei vielä ole täällä. Olemassa olevia metatietoja ei korvata uusilla."
 
 #: bookwyrm/templates/author/sync_modal.html:24
-#: bookwyrm/templates/book/edit/edit_book.html:122
+#: bookwyrm/templates/book/edit/edit_book.html:126
 #: bookwyrm/templates/book/sync_modal.html:24
 #: bookwyrm/templates/groups/members.html:29
-#: bookwyrm/templates/landing/password_reset.html:42
+#: bookwyrm/templates/landing/password_reset.html:52
 #: bookwyrm/templates/snippets/remove_from_group_button.html:17
 msgid "Confirm"
 msgstr "Vahvista"
@@ -850,6 +868,7 @@ msgid "Your reading activity"
 msgstr "Oma lukutoiminta"
 
 #: bookwyrm/templates/book/book.html:260
+#: bookwyrm/templates/guided_tour/book.html:56
 msgid "Add read dates"
 msgstr "Lisää lukupäivämäärät"
 
@@ -878,11 +897,15 @@ msgid "Places"
 msgstr "Paikat"
 
 #: bookwyrm/templates/book/book.html:365
-#: bookwyrm/templates/groups/group.html:19 bookwyrm/templates/layout.html:83
-#: bookwyrm/templates/lists/curate.html:8 bookwyrm/templates/lists/list.html:12
-#: bookwyrm/templates/lists/lists.html:5 bookwyrm/templates/lists/lists.html:12
-#: bookwyrm/templates/search/layout.html:25
-#: bookwyrm/templates/search/layout.html:50
+#: bookwyrm/templates/groups/group.html:19
+#: bookwyrm/templates/guided_tour/lists.html:14
+#: bookwyrm/templates/guided_tour/user_books.html:102
+#: bookwyrm/templates/guided_tour/user_profile.html:78
+#: bookwyrm/templates/layout.html:101 bookwyrm/templates/lists/curate.html:8
+#: bookwyrm/templates/lists/list.html:12 bookwyrm/templates/lists/lists.html:5
+#: bookwyrm/templates/lists/lists.html:12
+#: bookwyrm/templates/search/layout.html:26
+#: bookwyrm/templates/search/layout.html:51
 #: bookwyrm/templates/user/layout.html:85
 msgid "Lists"
 msgstr "Listat"
@@ -963,33 +986,81 @@ msgid "Is \"%(name)s\" one of these authors?"
 msgstr "Onko ”%(name)s” joku seuraavista tekijöistä?"
 
 #: bookwyrm/templates/book/edit/edit_book.html:81
-#: bookwyrm/templates/book/edit/edit_book.html:83
-msgid "Author of "
-msgstr "Tekijänä teoksessa "
+#, python-format
+msgid "Author of <em>%(book_title)s</em>"
+msgstr ""
 
-#: bookwyrm/templates/book/edit/edit_book.html:83
+#: bookwyrm/templates/book/edit/edit_book.html:85
+#, python-format
+msgid "Author of <em>%(alt_title)s</em>"
+msgstr ""
+
+#: bookwyrm/templates/book/edit/edit_book.html:87
 msgid "Find more information at isni.org"
 msgstr "Lisätietoja osoitteessa isni.org"
 
-#: bookwyrm/templates/book/edit/edit_book.html:93
+#: bookwyrm/templates/book/edit/edit_book.html:97
 msgid "This is a new author"
 msgstr "Uusi tekijä"
 
-#: bookwyrm/templates/book/edit/edit_book.html:100
+#: bookwyrm/templates/book/edit/edit_book.html:104
 #, python-format
 msgid "Creating a new author: %(name)s"
 msgstr "Luodaan uusi tekijä: %(name)s"
 
-#: bookwyrm/templates/book/edit/edit_book.html:107
+#: bookwyrm/templates/book/edit/edit_book.html:111
 msgid "Is this an edition of an existing work?"
 msgstr "Onko tämä aiemmin lisätyn teoksen laitos?"
 
-#: bookwyrm/templates/book/edit/edit_book.html:115
+#: bookwyrm/templates/book/edit/edit_book.html:119
 msgid "This is a new work"
 msgstr "Uusi teos"
 
-#: bookwyrm/templates/book/edit/edit_book.html:124
+#: bookwyrm/templates/book/edit/edit_book.html:128
 #: bookwyrm/templates/feed/status.html:21
+#: bookwyrm/templates/guided_tour/book.html:44
+#: bookwyrm/templates/guided_tour/book.html:68
+#: bookwyrm/templates/guided_tour/book.html:91
+#: bookwyrm/templates/guided_tour/book.html:116
+#: bookwyrm/templates/guided_tour/book.html:140
+#: bookwyrm/templates/guided_tour/book.html:164
+#: bookwyrm/templates/guided_tour/book.html:188
+#: bookwyrm/templates/guided_tour/book.html:213
+#: bookwyrm/templates/guided_tour/book.html:237
+#: bookwyrm/templates/guided_tour/book.html:262
+#: bookwyrm/templates/guided_tour/book.html:290
+#: bookwyrm/templates/guided_tour/group.html:43
+#: bookwyrm/templates/guided_tour/group.html:66
+#: bookwyrm/templates/guided_tour/group.html:89
+#: bookwyrm/templates/guided_tour/group.html:108
+#: bookwyrm/templates/guided_tour/home.html:91
+#: bookwyrm/templates/guided_tour/home.html:115
+#: bookwyrm/templates/guided_tour/home.html:140
+#: bookwyrm/templates/guided_tour/home.html:165
+#: bookwyrm/templates/guided_tour/home.html:189
+#: bookwyrm/templates/guided_tour/home.html:212
+#: bookwyrm/templates/guided_tour/lists.html:47
+#: bookwyrm/templates/guided_tour/lists.html:70
+#: bookwyrm/templates/guided_tour/lists.html:94
+#: bookwyrm/templates/guided_tour/lists.html:117
+#: bookwyrm/templates/guided_tour/lists.html:136
+#: bookwyrm/templates/guided_tour/search.html:83
+#: bookwyrm/templates/guided_tour/search.html:110
+#: bookwyrm/templates/guided_tour/search.html:134
+#: bookwyrm/templates/guided_tour/search.html:155
+#: bookwyrm/templates/guided_tour/user_books.html:44
+#: bookwyrm/templates/guided_tour/user_books.html:67
+#: bookwyrm/templates/guided_tour/user_books.html:90
+#: bookwyrm/templates/guided_tour/user_books.html:118
+#: bookwyrm/templates/guided_tour/user_groups.html:44
+#: bookwyrm/templates/guided_tour/user_groups.html:67
+#: bookwyrm/templates/guided_tour/user_groups.html:91
+#: bookwyrm/templates/guided_tour/user_groups.html:110
+#: bookwyrm/templates/guided_tour/user_profile.html:43
+#: bookwyrm/templates/guided_tour/user_profile.html:66
+#: bookwyrm/templates/guided_tour/user_profile.html:89
+#: bookwyrm/templates/guided_tour/user_profile.html:112
+#: bookwyrm/templates/guided_tour/user_profile.html:135
 msgid "Back"
 msgstr "Takaisin"
 
@@ -1329,7 +1400,7 @@ msgstr "Vahvistuskoodi:"
 
 #: bookwyrm/templates/confirm_email/confirm_email.html:25
 #: bookwyrm/templates/landing/layout.html:81
-#: bookwyrm/templates/settings/dashboard/dashboard.html:106
+#: bookwyrm/templates/settings/dashboard/dashboard.html:102
 #: bookwyrm/templates/snippets/report_modal.html:53
 msgid "Submit"
 msgstr "Lähetä"
@@ -1491,7 +1562,7 @@ msgstr "<a href=\"%(user_path)s\">%(username)s</a> lainasi teosta <a href=\"%(bo
 
 #: bookwyrm/templates/discover/discover.html:4
 #: bookwyrm/templates/discover/discover.html:10
-#: bookwyrm/templates/layout.html:86
+#: bookwyrm/templates/layout.html:104
 msgid "Discover"
 msgstr "Tutustu"
 
@@ -1615,12 +1686,12 @@ msgid "Reset your %(site_name)s password"
 msgstr "Palauta %(site_name)s-salasanasi"
 
 #: bookwyrm/templates/embed-layout.html:21 bookwyrm/templates/layout.html:40
-#: bookwyrm/templates/setup/layout.html:12
+#: bookwyrm/templates/setup/layout.html:15
 #, python-format
 msgid "%(site_name)s home page"
 msgstr "%(site_name)s — etusivu"
 
-#: bookwyrm/templates/embed-layout.html:40 bookwyrm/templates/layout.html:186
+#: bookwyrm/templates/embed-layout.html:40 bookwyrm/templates/layout.html:204
 msgid "Contact site admin"
 msgstr "Ota yhteyttä ylläpitäjään"
 
@@ -1646,16 +1717,16 @@ msgstr "Kaikki viestit"
 msgid "You have no messages right now."
 msgstr "Ei viestejä."
 
-#: bookwyrm/templates/feed/feed.html:54
+#: bookwyrm/templates/feed/feed.html:55
 msgid "There aren't any activities right now! Try following a user to get started"
 msgstr "Ei tapahtumia. Seuraa muita käyttäjiä"
 
-#: bookwyrm/templates/feed/feed.html:55
+#: bookwyrm/templates/feed/feed.html:56
 msgid "Alternatively, you can try enabling more status types"
 msgstr "Voit myös ottaa uusia tilapäivityslajeja käyttöön"
 
 #: bookwyrm/templates/feed/goal_card.html:6
-#: bookwyrm/templates/feed/layout.html:15
+#: bookwyrm/templates/feed/layout.html:14
 #: bookwyrm/templates/user/goal_form.html:6
 #, python-format
 msgid "%(year)s Reading Goal"
@@ -1666,11 +1737,12 @@ msgstr "Lukutavoite vuodelle %(year)s"
 msgid "You can set or change your reading goal any time from your <a href=\"%(path)s\">profile page</a>"
 msgstr "Lukutavoitteen voi milloin tahansa asettaa vaikka uudelleen oman <a href=\"%(path)s\">profiilisivun</a> kautta"
 
-#: bookwyrm/templates/feed/layout.html:5
+#: bookwyrm/templates/feed/layout.html:4
 msgid "Updates"
 msgstr "Päivitykset"
 
 #: bookwyrm/templates/feed/suggested_books.html:6
+#: bookwyrm/templates/guided_tour/home.html:127
 #: bookwyrm/templates/user_menu.html:35
 msgid "Your Books"
 msgstr "Omat kirjat"
@@ -1770,8 +1842,8 @@ msgstr "Voit lisätä kirjoja, kun olet liittynyt %(site_name)s-yhteisöön."
 #: bookwyrm/templates/groups/members.html:15
 #: bookwyrm/templates/groups/members.html:16 bookwyrm/templates/layout.html:54
 #: bookwyrm/templates/layout.html:55 bookwyrm/templates/lists/list.html:217
-#: bookwyrm/templates/search/layout.html:4
-#: bookwyrm/templates/search/layout.html:9
+#: bookwyrm/templates/search/layout.html:5
+#: bookwyrm/templates/search/layout.html:10
 msgid "Search"
 msgstr "Haku"
 
@@ -1821,6 +1893,7 @@ msgid "Skip this step"
 msgstr "Ohita"
 
 #: bookwyrm/templates/get_started/layout.html:54
+#: bookwyrm/templates/guided_tour/group.html:101
 msgid "Finish"
 msgstr "Valmis"
 
@@ -1866,6 +1939,7 @@ msgid "No users found for \"%(query)s\""
 msgstr "Hakulausekkeella ”%(query)s” ei löytynyt käyttäjiä"
 
 #: bookwyrm/templates/groups/create_form.html:5
+#: bookwyrm/templates/guided_tour/user_groups.html:32
 #: bookwyrm/templates/user/groups.html:17
 msgid "Create group"
 msgstr "Luo ryhmä"
@@ -1942,8 +2016,8 @@ msgstr "Poistu ryhmästä"
 #: bookwyrm/templates/groups/members.html:54
 #: bookwyrm/templates/groups/suggested_users.html:35
 #: bookwyrm/templates/snippets/suggested_users.html:31
-#: bookwyrm/templates/user/user_preview.html:33
-#: bookwyrm/templates/user/user_preview.html:41
+#: bookwyrm/templates/user/user_preview.html:39
+#: bookwyrm/templates/user/user_preview.html:47
 msgid "Follows you"
 msgstr "Seuraa sinua"
 
@@ -1976,6 +2050,519 @@ msgstr "Hakulausekkeella ”%(user_query)s” ei löydy mahdollisia jäseniä"
 msgid "Manager"
 msgstr "Hallinnoija"
 
+#: bookwyrm/templates/guided_tour/book.html:10
+msgid "This is home page of a book. Let's see what you can do while you're here!"
+msgstr "Tämä on kirjakohtainen sivu. Katsotaan, mitä kaikkea sivulta löytyy."
+
+#: bookwyrm/templates/guided_tour/book.html:11
+msgid "Book page"
+msgstr "Kirjasivu"
+
+#: bookwyrm/templates/guided_tour/book.html:19
+#: bookwyrm/templates/guided_tour/group.html:19
+#: bookwyrm/templates/guided_tour/lists.html:22
+#: bookwyrm/templates/guided_tour/search.html:29
+#: bookwyrm/templates/guided_tour/search.html:56
+#: bookwyrm/templates/guided_tour/user_books.html:19
+#: bookwyrm/templates/guided_tour/user_groups.html:19
+#: bookwyrm/templates/guided_tour/user_profile.html:19
+msgid "End Tour"
+msgstr "Lopeta esittely"
+
+#: bookwyrm/templates/guided_tour/book.html:26
+#: bookwyrm/templates/guided_tour/book.html:50
+#: bookwyrm/templates/guided_tour/book.html:74
+#: bookwyrm/templates/guided_tour/book.html:97
+#: bookwyrm/templates/guided_tour/book.html:122
+#: bookwyrm/templates/guided_tour/book.html:146
+#: bookwyrm/templates/guided_tour/book.html:170
+#: bookwyrm/templates/guided_tour/book.html:194
+#: bookwyrm/templates/guided_tour/book.html:219
+#: bookwyrm/templates/guided_tour/book.html:243
+#: bookwyrm/templates/guided_tour/book.html:268
+#: bookwyrm/templates/guided_tour/book.html:274
+#: bookwyrm/templates/guided_tour/group.html:26
+#: bookwyrm/templates/guided_tour/group.html:49
+#: bookwyrm/templates/guided_tour/group.html:72
+#: bookwyrm/templates/guided_tour/group.html:95
+#: bookwyrm/templates/guided_tour/home.html:74
+#: bookwyrm/templates/guided_tour/home.html:97
+#: bookwyrm/templates/guided_tour/home.html:121
+#: bookwyrm/templates/guided_tour/home.html:146
+#: bookwyrm/templates/guided_tour/home.html:171
+#: bookwyrm/templates/guided_tour/home.html:195
+#: bookwyrm/templates/guided_tour/lists.html:29
+#: bookwyrm/templates/guided_tour/lists.html:53
+#: bookwyrm/templates/guided_tour/lists.html:76
+#: bookwyrm/templates/guided_tour/lists.html:100
+#: bookwyrm/templates/guided_tour/lists.html:123
+#: bookwyrm/templates/guided_tour/search.html:36
+#: bookwyrm/templates/guided_tour/search.html:63
+#: bookwyrm/templates/guided_tour/search.html:89
+#: bookwyrm/templates/guided_tour/search.html:116
+#: bookwyrm/templates/guided_tour/search.html:140
+#: bookwyrm/templates/guided_tour/user_books.html:26
+#: bookwyrm/templates/guided_tour/user_books.html:50
+#: bookwyrm/templates/guided_tour/user_books.html:73
+#: bookwyrm/templates/guided_tour/user_books.html:96
+#: bookwyrm/templates/guided_tour/user_groups.html:26
+#: bookwyrm/templates/guided_tour/user_groups.html:50
+#: bookwyrm/templates/guided_tour/user_groups.html:73
+#: bookwyrm/templates/guided_tour/user_groups.html:97
+#: bookwyrm/templates/guided_tour/user_profile.html:26
+#: bookwyrm/templates/guided_tour/user_profile.html:49
+#: bookwyrm/templates/guided_tour/user_profile.html:72
+#: bookwyrm/templates/guided_tour/user_profile.html:95
+#: bookwyrm/templates/guided_tour/user_profile.html:118
+#: bookwyrm/templates/snippets/pagination.html:23
+msgid "Next"
+msgstr "Seuraava"
+
+#: bookwyrm/templates/guided_tour/book.html:31
+msgid "This is where you can set a reading status for this book. You can press the button to move to the next stage, or use the drop down button to select the reading status you want to set."
+msgstr "Tässä voi asettaa kirjan lukuvaiheen. Painiketta painamalla voi siirtyä seuraavaan vaiheeseen, tai halutun vaiheen voi valita pudotusvalikosta."
+
+#: bookwyrm/templates/guided_tour/book.html:32
+msgid "Reading status"
+msgstr "Lukuvaihe"
+
+#: bookwyrm/templates/guided_tour/book.html:55
+msgid "You can also manually add reading dates here. Unlike changing the reading status using the previous method, adding dates manually will not automatically add them to your <strong>Read</strong> or <strong>Reading</strong> shelves."
+msgstr "Lukupäivämäärät voi lisätä myös manuaalisesti. Päivämäärien lisääminen näin ei lisää teosta automaattisesti <strong>Luettu</strong>- tai <strong>Luettavana</strong>-hyllyyn."
+
+#: bookwyrm/templates/guided_tour/book.html:55
+msgid "Got a favourite you re-read every year? We've got you covered - you can add multiple read dates for the same book 😀"
+msgstr "Lempikirjan voi lukea vaikka joka vuosi, ja samalle kirjalle voi lisätä useita lukupäivämääriä! 😀"
+
+#: bookwyrm/templates/guided_tour/book.html:79
+msgid "There can be multiple editions of a book, in various formats or languages. You can choose which edition you want to use."
+msgstr "Kirjasta voi olla useita eri laitoksia eri julkaisumuodoissa ja eri kielillä. Tästä voi valita halutun laitoksen."
+
+#: bookwyrm/templates/guided_tour/book.html:80
+msgid "Other editions"
+msgstr "Muut laitokset"
+
+#: bookwyrm/templates/guided_tour/book.html:102
+msgid "You can post a review, comment, or quote here."
+msgstr "Tässä voi julkaista arvion, kommentin tai lainauksen."
+
+#: bookwyrm/templates/guided_tour/book.html:103
+msgid "Share your thoughts"
+msgstr "Jaa ajatuksesi"
+
+#: bookwyrm/templates/guided_tour/book.html:127
+msgid "If you have read this book you can post a review including an optional star rating"
+msgstr "Luetusta kirjasta voi julkaista arvion sekä antaa sille halutessaan tähtiarvosanan"
+
+#: bookwyrm/templates/guided_tour/book.html:128
+msgid "Post a review"
+msgstr "Julkaise arvio"
+
+#: bookwyrm/templates/guided_tour/book.html:151
+msgid "You can share your thoughts on this book generally with a simple comment"
+msgstr "Kirjaa koskevia yleisiä ajatuksia voi jakaa kommentissa"
+
+#: bookwyrm/templates/guided_tour/book.html:152
+msgid "Post a comment"
+msgstr "Julkaise kommentti"
+
+#: bookwyrm/templates/guided_tour/book.html:175
+msgid "Just read some perfect prose? Let the world know by sharing a quote!"
+msgstr "Löytyikö täydellinen kiteytys? Sen voi jakaa lainauksena muillekin!"
+
+#: bookwyrm/templates/guided_tour/book.html:176
+msgid "Share a quote"
+msgstr "Julkaise lainaus"
+
+#: bookwyrm/templates/guided_tour/book.html:199
+msgid "If your review or comment might ruin the book for someone who hasn't read it yet, you can hide your post behind a <strong>spoiler alert</strong>"
+msgstr "Jos arvio tai kommentti voi paljastaa kirjasta liikaa sellaiselle, joka ei ole sitä vielä lukenut, arvion tai kommentin voi piilottaa <strong>sisältövaroituksen</strong> taakse"
+
+#: bookwyrm/templates/guided_tour/book.html:200
+msgid "Spoiler alerts"
+msgstr "Sisältövaroitukset"
+
+#: bookwyrm/templates/guided_tour/book.html:224
+msgid "Choose who can see your post here. Post privacy can be <strong>Public</strong> (everyone can see), <strong>Unlisted</strong> (everyone can see, but it doesn't appear in public feeds or discovery pages), <strong>Followers</strong> (only your followers can see), or <strong>Private</strong> (only you can see)"
+msgstr "Tässä voi valita julkaisun näkyvyyden. Näkyvyysasetuksena voi olla <strong>Julkinen</strong> (näkyy kaikille), <strong>Ei jakelua</strong> (näkyy kaikille, muttei julkaista julkisilla aikajanoilla tai esittelysivuilla), <strong>Seuraajat</strong> (näkyy vain omille seuraajille) tai <strong>Yksityinen</strong> (näkyy vain itselle)"
+
+#: bookwyrm/templates/guided_tour/book.html:225
+#: bookwyrm/templates/snippets/privacy_select.html:6
+#: bookwyrm/templates/snippets/privacy_select_no_followers.html:6
+msgid "Post privacy"
+msgstr "Julkaisun näkyvyys"
+
+#: bookwyrm/templates/guided_tour/book.html:248
+msgid "Some ebooks can be downloaded for free from external sources. They will be shown here."
+msgstr "Joitakin e-kirjoja voi ladata maksutta ulkopuolisista lähteistä. Latauslinkit näytetään tässä."
+
+#: bookwyrm/templates/guided_tour/book.html:249
+msgid "Download links"
+msgstr "Latauslinkit"
+
+#: bookwyrm/templates/guided_tour/book.html:273
+msgid "Continue the tour by selecting <strong>Your books</strong> from the drop down menu."
+msgstr "Jatka esittelyä valitsemalla pudotusvalikosta <strong>Omat kirjat</strong>."
+
+#: bookwyrm/templates/guided_tour/book.html:296
+#: bookwyrm/templates/guided_tour/home.html:50
+#: bookwyrm/templates/guided_tour/home.html:218
+#: bookwyrm/templates/guided_tour/search.html:161
+#: bookwyrm/templates/guided_tour/user_books.html:124
+#: bookwyrm/templates/guided_tour/user_groups.html:116
+#: bookwyrm/templates/guided_tour/user_profile.html:141
+msgid "Ok"
+msgstr "Ok"
+
+#: bookwyrm/templates/guided_tour/group.html:10
+msgid "Welcome to the page for your group! This is where you can add and remove users, create user-curated lists, and edit the group details."
+msgstr "Tervetuloa oman ryhmäsi sivulle! Tällä sivulla ryhmään voi lisätä tai siitä voi poistaa käyttäjiä, luoda käyttäjien kuratoimia listoja sekä muokata ryhmän tietoja."
+
+#: bookwyrm/templates/guided_tour/group.html:11
+msgid "Your group"
+msgstr "Oma ryhmä"
+
+#: bookwyrm/templates/guided_tour/group.html:31
+msgid "Use this search box to find users to join your group. Currently users must be members of the same Bookwyrm instance and be invited by the group owner."
+msgstr "Hakukentän avulla voi etsiä käyttäjiä lisättäväksi ryhmään. Tällä hetkellä lisättävien käyttäjien tulee olla käyttäjinä samalla BookWyrm-palvelimella sekä saada kutsu ryhmän hallinnoijalta."
+
+#: bookwyrm/templates/guided_tour/group.html:32
+msgid "Find users"
+msgstr "Etsi käyttäjiä"
+
+#: bookwyrm/templates/guided_tour/group.html:54
+msgid "Your group members will appear here. The group owner is marked with a star symbol."
+msgstr "Tässä näkyvät ryhmän jäsenet. Ryhmän hallinnoijaa merkitään tähdellä."
+
+#: bookwyrm/templates/guided_tour/group.html:55
+msgid "Group members"
+msgstr "Ryhmän jäsenet"
+
+#: bookwyrm/templates/guided_tour/group.html:77
+msgid "As well as creating lists from the Lists page, you can create a group-curated list here on the group's homepage. Any member of the group can create a list curated by group members."
+msgstr "Ryhmäsivun kautta voi luoda ryhmän kuratoimia listoja samaan tapaan kuin niitä luodaan listasivun kautta. Jokainen ryhmän jäsen voi luota ryhmän jäsenten kuratoimia listoja."
+
+#: bookwyrm/templates/guided_tour/group.html:78
+msgid "Group lists"
+msgstr "Ryhmän listat"
+
+#: bookwyrm/templates/guided_tour/group.html:100
+msgid "Congratulations, you've finished the tour! Now you know the basics, but there is lots more to explore on your own. Happy reading!"
+msgstr "Esittelykierros on päättynyt! Perustoiminnot on nyt käyty läpi, ja muihin ominaisuuksiin voit tutustua itseksesi. Lukuiloa!"
+
+#: bookwyrm/templates/guided_tour/group.html:115
+msgid "End tour"
+msgstr "Lopeta esittely"
+
+#: bookwyrm/templates/guided_tour/home.html:16
+msgid "Welcome to Bookwyrm!<br><br>Would you like to take the guided tour to help you get started?"
+msgstr "Tervetuloa BookWyrmin käyttäjäksi!<br><br>Haluatko esittelykierroksen?"
+
+#: bookwyrm/templates/guided_tour/home.html:17
+#: bookwyrm/templates/guided_tour/home.html:39
+#: bookwyrm/templates/layout.html:212
+msgid "Guided Tour"
+msgstr "Esittelykierros"
+
+#: bookwyrm/templates/guided_tour/home.html:25
+msgid "No thanks"
+msgstr "Ei kiitos"
+
+#: bookwyrm/templates/guided_tour/home.html:33
+msgid "Yes please!"
+msgstr "Kyllä kiitos!"
+
+#: bookwyrm/templates/guided_tour/home.html:38
+msgid "If  you ever change your mind, just click on the Guided Tour link to start your tour"
+msgstr "Jos mielesi muuttuu, voit katsella esittelyn painamalla Esittelykierros-linkkiä"
+
+#: bookwyrm/templates/guided_tour/home.html:62
+msgid "Search for books, users, or lists using this search box."
+msgstr "Tällä hakukentällä voi hakea kirjoja, käyttäjiä tai listoja."
+
+#: bookwyrm/templates/guided_tour/home.html:63
+msgid "Search box"
+msgstr "Hakukenttä"
+
+#: bookwyrm/templates/guided_tour/home.html:79
+msgid "Search book records by scanning an ISBN barcode using your device's camera - great when you're in the bookstore or library!"
+msgstr "Kirjatietueita voi hakea skannaamalla ISBN-viivakoodin laitteen kameralla — erinomainen toiminto kirjakaupassa tai kirjastossa!"
+
+#: bookwyrm/templates/guided_tour/home.html:80
+msgid "Barcode reader"
+msgstr "Viivakoodinlukija"
+
+#: bookwyrm/templates/guided_tour/home.html:102
+msgid "Use the <strong>Feed</strong>, <strong>Lists</strong> and <strong>Discover</strong> links to discover the latest news from your feed, lists of books by topic, and the latest happenings on this Bookwyrm server!"
+msgstr "<strong>Syöte</strong>, <strong>Listat</strong> ja <strong>Tutustu</strong> auttavat löytämään uusimmat kirjapäivitykset, aiheenmukaisia kirjalistoja sekä tämän BookWyrm-palvelimen uusimpia tapahtumia."
+
+#: bookwyrm/templates/guided_tour/home.html:103
+msgid "Navigation Bar"
+msgstr "Toiminnot sivustolla liikkumiseen"
+
+#: bookwyrm/templates/guided_tour/home.html:126
+msgid "Books on your reading status shelves will be shown here."
+msgstr "Tässä näytetään eri lukuvaiheissa olevat kirjat."
+
+#: bookwyrm/templates/guided_tour/home.html:151
+msgid "Updates from people you are following will appear in your <strong>Home</strong> timeline.<br><br>The <strong>Books</strong> tab shows activity from anyone, related to your books."
+msgstr "Seuraamiesi henkilöiden päivitykset näytetään <strong>Etusivulla</strong>.<br><br><strong>Kirjat</strong>-välilehdellä näytetään kaikenlaisia kirjoihisi liittyviä päivityksiä."
+
+#: bookwyrm/templates/guided_tour/home.html:152
+msgid "Timelines"
+msgstr "Aikajanat"
+
+#: bookwyrm/templates/guided_tour/home.html:176
+msgid "The bell will light up when you have a new notification. When it does, click on it to find out what exciting thing has happened!"
+msgstr "Kellokuvake ilmoittaa uusista ilmoituksista. Ilmoituksia pääsee lukemaan kellokuvaketta painamalla."
+
+#: bookwyrm/templates/guided_tour/home.html:177
+#: bookwyrm/templates/layout.html:85 bookwyrm/templates/layout.html:117
+#: bookwyrm/templates/layout.html:118
+#: bookwyrm/templates/notifications/notifications_page.html:5
+#: bookwyrm/templates/notifications/notifications_page.html:10
+msgid "Notifications"
+msgstr "Ilmoitukset"
+
+#: bookwyrm/templates/guided_tour/home.html:200
+msgid "Your profile, books, direct messages, and settings can be accessed by clicking on your name in the menu here."
+msgstr "Omaa profiilia, kirjoja, yksityisviestejä ja asetuksia voi tarkastella tämän valikon kautta. Valikko avautuu nimeä painamalla."
+
+#: bookwyrm/templates/guided_tour/home.html:200
+msgid "Try selecting <strong>Profile</strong> from the drop down menu to continue the tour."
+msgstr "Jatka esittelykierrosta valitsemalla valikosta <strong>Profiili</strong>."
+
+#: bookwyrm/templates/guided_tour/home.html:201
+msgid "Profile and settings menu"
+msgstr "Profiili- ja asetusvalikko"
+
+#: bookwyrm/templates/guided_tour/lists.html:13
+msgid "This is the lists page where you can discover book lists created by any user. A List is a collection of books, similar to a shelf."
+msgstr "Listasivun kautta voi tarkastella käyttäjien luomia kirjalistoja. Listat ovat ikään kuin kirjahyllyjä."
+
+#: bookwyrm/templates/guided_tour/lists.html:13
+msgid "Shelves are for organising books for yourself, whereas Lists are generally for sharing with others."
+msgstr "Hyllyjä käytetään omien kirjojen organisointiin, kun taas listat on tarkoitettu jaettavaksi muiden kanssa."
+
+#: bookwyrm/templates/guided_tour/lists.html:34
+msgid "Let's see how to create a new list."
+msgstr "Katsotaanpa, kuinka luodaan uusi lista."
+
+#: bookwyrm/templates/guided_tour/lists.html:34
+msgid "Click the <strong>Create List</strong> button, then <strong>Next</strong> to continue the tour"
+msgstr "Jatka esittelykierrosta painamalla <strong>Luo lista</strong> -painiketta ja sen jälkeen <strong>Seuraava</strong>-painiketta"
+
+#: bookwyrm/templates/guided_tour/lists.html:35
+#: bookwyrm/templates/guided_tour/lists.html:59
+msgid "Creating a new list"
+msgstr "Uuden listan luominen"
+
+#: bookwyrm/templates/guided_tour/lists.html:58
+msgid "You must give your list a name and can optionally give it a description to help other people understand what your list is about."
+msgstr "Listalle on annettava nimi, minkä lisäksi sille voi kirjoittaa listan tarkoitusta selventävän kuvauksen."
+
+#: bookwyrm/templates/guided_tour/lists.html:81
+msgid "Choose who can see your list here. List privacy options work just like we saw when posting book reviews. This is a common pattern throughout Bookwyrm."
+msgstr "Tästä valitaan listan näkyvyys. Näkyvyysvalinnat toimivat samalla tavoin kuin kirja-arvioiden kohdalla. Tällainen toistuvuus on BookWyrmissä tavallista."
+
+#: bookwyrm/templates/guided_tour/lists.html:82
+msgid "List privacy"
+msgstr "Listan näkyvyys"
+
+#: bookwyrm/templates/guided_tour/lists.html:105
+msgid "You can also decide how your list is to be curated - only by you, by anyone, or by a group."
+msgstr "Tästä valitaan myös, kuka voi kuratoida listaa — vain sinä, kuka tahansa tai jonkin tietyn ryhmän jäsenet."
+
+#: bookwyrm/templates/guided_tour/lists.html:106
+msgid "List curation"
+msgstr "Listan kuratointi"
+
+#: bookwyrm/templates/guided_tour/lists.html:128
+msgid "Next in our tour we will explore Groups!"
+msgstr "Seuraavaksi tutustumme ryhmiin!"
+
+#: bookwyrm/templates/guided_tour/lists.html:129
+msgid "Next: Groups"
+msgstr "Seuraavaksi: Ryhmät"
+
+#: bookwyrm/templates/guided_tour/lists.html:143
+msgid "Take me there"
+msgstr "Jatka"
+
+#: bookwyrm/templates/guided_tour/search.html:16
+msgid "If the book you are looking for is available on a remote catalogue such as Open Library, click on <strong>Import book</strong>."
+msgstr "Jos haettu kirja löytyy etätietokannasta, esimerkiksi Open Librarysta, paina <strong>Tuo kirja</strong>."
+
+#: bookwyrm/templates/guided_tour/search.html:17
+#: bookwyrm/templates/guided_tour/search.html:44
+msgid "Searching"
+msgstr "Haetaan"
+
+#: bookwyrm/templates/guided_tour/search.html:43
+msgid "If the book you are looking for is already on this Bookwyrm instance, you can click on the title to go to the book's page."
+msgstr "Jos haettu kirja löytyy jo tämän BookWyrm-palvelimen tietokannasta, kirjan sivulle voi siirtyä painamalla kirjan nimeä."
+
+#: bookwyrm/templates/guided_tour/search.html:71
+msgid "If the book you are looking for is not listed, try loading more records from other sources like Open Library or Inventaire."
+msgstr "Jos haettua kirjaa ei löydy tietokannasta, kokeile ladata lisää tietueita muista lähteistä, esimerkiksi Open Librarysta tai Inventairesta."
+
+#: bookwyrm/templates/guided_tour/search.html:72
+msgid "Load more records"
+msgstr "Lataa lisää tietueita"
+
+#: bookwyrm/templates/guided_tour/search.html:98
+msgid "If your book is not in the results, try adjusting your search terms."
+msgstr "Jos kirjaa ei löydy, kokeile muokata hakulauseketta."
+
+#: bookwyrm/templates/guided_tour/search.html:99
+msgid "Search again"
+msgstr "Hae uudelleen"
+
+#: bookwyrm/templates/guided_tour/search.html:121
+msgid "If you still can't find your book, you can add a record manually."
+msgstr "Jos kirjaa ei edelleenkään löydy, sen voi lisätä käsin."
+
+#: bookwyrm/templates/guided_tour/search.html:122
+msgid "Add a record manally"
+msgstr "Lisää tietue käsin"
+
+#: bookwyrm/templates/guided_tour/search.html:147
+msgid "Import, manually add, or view an existing book to continue the tour."
+msgstr "Jatka esittelykierrosta tuomalla kirja, lisäämällä sellainen käsin tai siirtymällä tietokannasta jo löytyvän kirjan tietoihin."
+
+#: bookwyrm/templates/guided_tour/search.html:148
+msgid "Continue the tour"
+msgstr "Jatka esittelykierrosta"
+
+#: bookwyrm/templates/guided_tour/user_books.html:10
+msgid "This is the page where your books are listed, organised into shelves."
+msgstr "Tällä sivulla listataan omat kirjasi hylly hyllyltä."
+
+#: bookwyrm/templates/guided_tour/user_books.html:11
+#: bookwyrm/templates/user/books_header.html:4
+msgid "Your books"
+msgstr "Omat kirjat"
+
+#: bookwyrm/templates/guided_tour/user_books.html:31
+msgid "<strong>To Read</strong>, <strong>Currently Reading</strong>, <strong>Read</strong>, and <strong>Stopped Reading</strong> are default shelves. When you change the reading status of a book it will automatically be moved to the matching shelf. A book can only be on one default shelf at a time."
+msgstr "<strong>Lukujono</strong>, <strong>Luettavana</strong>, <strong>Luettu</strong> ja <strong>Keskeytetty</strong> ovat oletushyllyjä. Kun kirjan lukuvaihetta muutetaan, se siirtyy automaattisesti vaihetta vastaavaan hyllyyn. Kirja voi olla samanaikaisesti vain yhdessä oletushyllyssä."
+
+#: bookwyrm/templates/guided_tour/user_books.html:32
+msgid "Reading status shelves"
+msgstr "Lukuvaiheen mukaiset hyllyt"
+
+#: bookwyrm/templates/guided_tour/user_books.html:55
+msgid "You can create additional custom shelves to organise your books. A book on a custom shelf can be on any number of other shelves simultaneously, including one of the default reading status shelves"
+msgstr "Kirjojen järjestelyä varten voi luoda lisähyllyjä. Kirja voi olla samanaikaisesti useammassakin lisähyllyssä sekä yhdessä lukuvaiheen mukaisessa oletushyllyssä"
+
+#: bookwyrm/templates/guided_tour/user_books.html:56
+msgid "Adding custom shelves."
+msgstr "Lisähyllyjen lisääminen."
+
+#: bookwyrm/templates/guided_tour/user_books.html:78
+msgid "If you have an export file from another service like Goodreads or LibraryThing, you can import it here."
+msgstr "Tätä kautta voi tuoda tietoja toisesta palvelusta, esimerkiksi Goodreadsista tai LibraryThingistä."
+
+#: bookwyrm/templates/guided_tour/user_books.html:79
+msgid "Import from another service"
+msgstr "Tuo toisesta palvelusta"
+
+#: bookwyrm/templates/guided_tour/user_books.html:101
+msgid "Now that we've explored book shelves, let's take a look at a related concept: book lists!"
+msgstr "Nyt kun hyllyt ovat tulleet tutuksi, vilkaistaan toista, hieman erilaista käsitettä: kirjalistoja."
+
+#: bookwyrm/templates/guided_tour/user_books.html:101
+msgid "Click on the <strong>Lists</strong> link here to continue the tour."
+msgstr "Jatka esittelykierrosta painamalla <strong>Listat</strong>-linkkiä."
+
+#: bookwyrm/templates/guided_tour/user_groups.html:10
+msgid "You can create or join a group with other users. Groups can share group-curated book lists, and in future will be able to do other things."
+msgstr "Voit luoda ryhmän tai liittyä muiden käyttäjien ryhmiin. Ryhmissä voidaan yhdessä kuratoida kirjalistoja, ja ajan mittaan ryhmiin lisätään uusia toimintoja."
+
+#: bookwyrm/templates/guided_tour/user_groups.html:11
+#: bookwyrm/templates/guided_tour/user_profile.html:55
+#: bookwyrm/templates/user/layout.html:79
+msgid "Groups"
+msgstr "Ryhmät"
+
+#: bookwyrm/templates/guided_tour/user_groups.html:31
+msgid "Let's create a new group!"
+msgstr "Luodaanpa uusi ryhmä!"
+
+#: bookwyrm/templates/guided_tour/user_groups.html:31
+msgid "Click the <strong>Create group</strong> button, then <strong>Next</strong> to continue the tour"
+msgstr "Jatka esittelykierrosta painamalla ensin <strong>Luo ryhmä</strong> -painiketta ja sen jälkeen <strong>Seuraava</strong>"
+
+#: bookwyrm/templates/guided_tour/user_groups.html:55
+msgid "Give your group a name and describe what it is about. You can make user groups for any purpose - a reading group, a bunch of friends, whatever!"
+msgstr "Anna ryhmälle nimi ja kirjoita sille kuvaus. Käyttäjäryhmiä voi luoda monenlaisiin tarkoituksiin: lukupiiriä varten, kaveriporukalle jne."
+
+#: bookwyrm/templates/guided_tour/user_groups.html:56
+msgid "Creating a group"
+msgstr "Ryhmän luominen"
+
+#: bookwyrm/templates/guided_tour/user_groups.html:78
+msgid "Groups have privacy settings just like posts and lists, except that group privacy cannot be <strong>Followers</strong>."
+msgstr "Ryhmien näkyvyysasetukset ovat muuten vastaavat kuin julkaisuilla ja listoilla, mutta ryhmän näkyvyytenä ei voi olla <strong>Seuraajat</strong>."
+
+#: bookwyrm/templates/guided_tour/user_groups.html:79
+msgid "Group visibility"
+msgstr "Ryhmän näkyvyys"
+
+#: bookwyrm/templates/guided_tour/user_groups.html:102
+msgid "Once you're happy with how everything is set up, click the <strong>Save</strong> button to create your new group."
+msgstr "Kun asetukset näyttävät hyvältä, luo ryhmä painamalla <strong>Tallenna</strong>-painiketta."
+
+#: bookwyrm/templates/guided_tour/user_groups.html:102
+msgid "Create and save a group to continue the tour."
+msgstr "Jatka esittelykierrosta luomalla ja tallentamalla ryhmä."
+
+#: bookwyrm/templates/guided_tour/user_groups.html:103
+msgid "Save your group"
+msgstr "Tallenna ryhmä"
+
+#: bookwyrm/templates/guided_tour/user_profile.html:10
+msgid "This is your user profile. All your latest activities will be listed here. Other Bookwyrm users can see parts of this page too - what they can see depends on your privacy settings."
+msgstr "Tämä on käyttäjäprofiilisi. Tässä näytetään viimeaikainen toimintasi. Muut BookWyrm-käyttäjät voivat myös katsella tätä sivua, mutta näkyvyysasetuksistasi riippuu, mitä heille näytetään."
+
+#: bookwyrm/templates/guided_tour/user_profile.html:11
+#: bookwyrm/templates/user/layout.html:19 bookwyrm/templates/user/user.html:10
+msgid "User Profile"
+msgstr "Käyttäjäprofiili"
+
+#: bookwyrm/templates/guided_tour/user_profile.html:31
+msgid "This tab shows everything you have read towards your annual reading goal, or allows you to set one. You don't have to set a reading goal if that's not your thing!"
+msgstr "Tällä välilehdellä asetetaan vuoden lukutavoite ja näytetään sen eteneminen. Lukutavoitetta ei tietenkään ole mikään pakko asettaa."
+
+#: bookwyrm/templates/guided_tour/user_profile.html:32
+#: bookwyrm/templates/user/layout.html:73
+msgid "Reading Goal"
+msgstr "Lukutavoite"
+
+#: bookwyrm/templates/guided_tour/user_profile.html:54
+msgid "Here you can see your groups, or create a new one. A group brings together Bookwyrm users and allows them to curate lists together."
+msgstr "Tässä näytetään omat ryhmäsi, ja tätä kautta voit myös luoda uusia ryhmiä. Ryhmät toimivat BookWyrm-käyttäjien kohtauspaikkoina, ja ryhmät voivat kuratoida listoja yhdessä."
+
+#: bookwyrm/templates/guided_tour/user_profile.html:77
+msgid "You can see your lists, or create a new one, here. A list is a collection of books that have something in common."
+msgstr "Tässä näytetään listasi, ja tätä kautta voi myös luoda uusia listoja. Lista on jollakin tavalla samankaltaisten kirjojen kokoelma."
+
+#: bookwyrm/templates/guided_tour/user_profile.html:100
+msgid "The Books tab shows your book shelves. We'll explore this later in the tour."
+msgstr "Kirjat-välilehdellä näytetään omat kirjahyllysi. Katsotaan niitä tarkemmin esittelykierroksen myöhemmässä vaiheessa."
+
+#: bookwyrm/templates/guided_tour/user_profile.html:123
+msgid "Now you understand the basics of your profile page, let's add a book to your shelves."
+msgstr "Nyt kun profiilisivun perusasiat ovat tulleet tutuiksi, voidaan vaikka lisätä johonkin hyllyyn kirja."
+
+#: bookwyrm/templates/guided_tour/user_profile.html:123
+msgid "Search for a title or author to continue the tour."
+msgstr "Jatka esittelykierrosta hakemalla jotakin kirjaa tai kirjailijaa."
+
+#: bookwyrm/templates/guided_tour/user_profile.html:124
+msgid "Find a book"
+msgstr "Etsi kirja"
+
 #: bookwyrm/templates/import/import.html:5
 #: bookwyrm/templates/import/import.html:9
 #: bookwyrm/templates/shelf/shelf.html:64
@@ -1987,32 +2574,32 @@ msgid "Data source:"
 msgstr "Tietolähde:"
 
 #: bookwyrm/templates/import/import.html:42
-msgid "You can download your Goodreads data from the <a href=\"https://www.goodreads.com/review/import\" target=\"_blank\" rel=\"noopener noreferrer\">Import/Export page</a> of your Goodreads account."
-msgstr "Goodreads-tiedot voi ladata Goodreads-käyttäjätilin <a href=\"https://www.goodreads.com/review/import\" target=\"_blank\" rel=\"noopener noreferrer\">Import/Export-sivun</a> kautta."
+msgid "You can download your Goodreads data from the <a href=\"https://www.goodreads.com/review/import\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">Import/Export page</a> of your Goodreads account."
+msgstr ""
 
-#: bookwyrm/templates/import/import.html:47
+#: bookwyrm/templates/import/import.html:51
 msgid "Data file:"
 msgstr "Datatiedosto:"
 
-#: bookwyrm/templates/import/import.html:55
+#: bookwyrm/templates/import/import.html:59
 msgid "Include reviews"
 msgstr "Myös arviot"
 
-#: bookwyrm/templates/import/import.html:60
+#: bookwyrm/templates/import/import.html:64
 msgid "Privacy setting for imported reviews:"
 msgstr "Tuotavien arvioiden yksityisyysvalinta:"
 
-#: bookwyrm/templates/import/import.html:66
+#: bookwyrm/templates/import/import.html:70
 #: bookwyrm/templates/preferences/layout.html:31
-#: bookwyrm/templates/settings/federation/instance_blocklist.html:76
+#: bookwyrm/templates/settings/federation/instance_blocklist.html:78
 msgid "Import"
 msgstr "Tuo"
 
-#: bookwyrm/templates/import/import.html:71
+#: bookwyrm/templates/import/import.html:75
 msgid "Recent Imports"
 msgstr "Viimeksi tuotu"
 
-#: bookwyrm/templates/import/import.html:73
+#: bookwyrm/templates/import/import.html:77
 msgid "No recent imports"
 msgstr "Ei viimeaikaisia tuonteja"
 
@@ -2237,7 +2824,7 @@ msgid "Login"
 msgstr "Kirjaudu sisään"
 
 #: bookwyrm/templates/landing/login.html:7
-#: bookwyrm/templates/landing/login.html:36 bookwyrm/templates/layout.html:131
+#: bookwyrm/templates/landing/login.html:36 bookwyrm/templates/layout.html:149
 #: bookwyrm/templates/ostatus/error.html:37
 msgid "Log in"
 msgstr "Kirjaudu sisään"
@@ -2246,7 +2833,7 @@ msgstr "Kirjaudu sisään"
 msgid "Success! Email address confirmed."
 msgstr "Sähköpostiosoite vahvistettu."
 
-#: bookwyrm/templates/landing/login.html:21 bookwyrm/templates/layout.html:122
+#: bookwyrm/templates/landing/login.html:21 bookwyrm/templates/layout.html:140
 #: bookwyrm/templates/ostatus/error.html:28
 #: bookwyrm/templates/snippets/register_form.html:4
 msgid "Username:"
@@ -2254,12 +2841,12 @@ msgstr "Käyttäjänimi:"
 
 #: bookwyrm/templates/landing/login.html:27
 #: bookwyrm/templates/landing/password_reset.html:26
-#: bookwyrm/templates/layout.html:126 bookwyrm/templates/ostatus/error.html:32
+#: bookwyrm/templates/layout.html:144 bookwyrm/templates/ostatus/error.html:32
 #: bookwyrm/templates/snippets/register_form.html:45
 msgid "Password:"
 msgstr "Salasana:"
 
-#: bookwyrm/templates/landing/login.html:39 bookwyrm/templates/layout.html:128
+#: bookwyrm/templates/landing/login.html:39 bookwyrm/templates/layout.html:146
 #: bookwyrm/templates/ostatus/error.html:34
 msgid "Forgot your password?"
 msgstr "Unohtuiko salasana?"
@@ -2268,8 +2855,8 @@ msgstr "Unohtuiko salasana?"
 msgid "More about this site"
 msgstr "Tietoja sivustosta"
 
-#: bookwyrm/templates/landing/password_reset.html:34
-#: bookwyrm/templates/preferences/change_password.html:40
+#: bookwyrm/templates/landing/password_reset.html:43
+#: bookwyrm/templates/preferences/change_password.html:33
 #: bookwyrm/templates/preferences/delete_user.html:20
 msgid "Confirm password:"
 msgstr "Vahvista salasana:"
@@ -2300,48 +2887,42 @@ msgstr "Hae kirjaa, käyttäjää tai listaa"
 msgid "Scan Barcode"
 msgstr "Skannaa viivakoodi"
 
-#: bookwyrm/templates/layout.html:72
+#: bookwyrm/templates/layout.html:76
 msgid "Main navigation menu"
 msgstr "Päävalikko"
 
-#: bookwyrm/templates/layout.html:80
+#: bookwyrm/templates/layout.html:98
 msgid "Feed"
 msgstr "Syöte"
 
-#: bookwyrm/templates/layout.html:99 bookwyrm/templates/layout.html:100
-#: bookwyrm/templates/notifications/notifications_page.html:5
-#: bookwyrm/templates/notifications/notifications_page.html:10
-msgid "Notifications"
-msgstr "Ilmoitukset"
-
-#: bookwyrm/templates/layout.html:127 bookwyrm/templates/ostatus/error.html:33
+#: bookwyrm/templates/layout.html:145 bookwyrm/templates/ostatus/error.html:33
 msgid "password"
 msgstr "salasana"
 
-#: bookwyrm/templates/layout.html:139
+#: bookwyrm/templates/layout.html:157
 msgid "Join"
 msgstr "Liity"
 
-#: bookwyrm/templates/layout.html:173
+#: bookwyrm/templates/layout.html:191
 msgid "Successfully posted status"
 msgstr "Tilapäivitys onnistui"
 
-#: bookwyrm/templates/layout.html:174
+#: bookwyrm/templates/layout.html:192
 msgid "Error posting status"
 msgstr "Virhe tilapäivityksessä"
 
-#: bookwyrm/templates/layout.html:190
+#: bookwyrm/templates/layout.html:208
 msgid "Documentation"
 msgstr "Käyttöohjeet"
 
-#: bookwyrm/templates/layout.html:197
+#: bookwyrm/templates/layout.html:221
 #, python-format
-msgid "Support %(site_name)s on <a href=\"%(support_link)s\" target=\"_blank\">%(support_title)s</a>"
-msgstr "Tue %(site_name)s-sivustoa osoitteessa <a href=\"%(support_link)s\" target=\"_blank\">%(support_title)s</a>"
+msgid "Support %(site_name)s on <a href=\"%(support_link)s\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">%(support_title)s</a>"
+msgstr ""
 
-#: bookwyrm/templates/layout.html:201
-msgid "BookWyrm's source code is freely available. You can contribute or report issues on <a href=\"https://github.com/mouse-reeve/bookwyrm\">GitHub</a>."
-msgstr "BookWyrmin lähdekoodi on avointa. Kehitystyöhön voi osallistua ja ongelmista voi ilmoittaa <a href=\"https://github.com/mouse-reeve/bookwyrm\">GitHubissa</a>."
+#: bookwyrm/templates/layout.html:228
+msgid "BookWyrm's source code is freely available. You can contribute or report issues on <a href=\"https://github.com/bookwyrm-social/bookwyrm\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">GitHub</a>."
+msgstr ""
 
 #: bookwyrm/templates/lists/add_item_modal.html:8
 #, python-format
@@ -2975,11 +3556,11 @@ msgstr "Seurattavan käyttäjän käyttäjätunnus:"
 msgid "Follow!"
 msgstr "Seuraa"
 
-#: bookwyrm/templates/ostatus/remote_follow_button.html:8
+#: bookwyrm/templates/ostatus/remote_follow_button.html:15
 msgid "Follow on Fediverse"
 msgstr "Seuraa fediversumissa"
 
-#: bookwyrm/templates/ostatus/remote_follow_button.html:12
+#: bookwyrm/templates/ostatus/remote_follow_button.html:19
 msgid "This link opens in a pop-up window"
 msgstr "Linkki avautuu ponnahdusikkunassa"
 
@@ -3029,7 +3610,7 @@ msgstr "Ei estettyjä käyttäjiä."
 
 #: bookwyrm/templates/preferences/change_password.html:4
 #: bookwyrm/templates/preferences/change_password.html:7
-#: bookwyrm/templates/preferences/change_password.html:52
+#: bookwyrm/templates/preferences/change_password.html:37
 #: bookwyrm/templates/preferences/layout.html:20
 msgid "Change Password"
 msgstr "Vaihda salasana"
@@ -3042,7 +3623,7 @@ msgstr "Salasanan vaihto onnistui"
 msgid "Current password:"
 msgstr "Nykyinen salasana:"
 
-#: bookwyrm/templates/preferences/change_password.html:36
+#: bookwyrm/templates/preferences/change_password.html:28
 msgid "New password:"
 msgstr "Uusi salasana:"
 
@@ -3206,7 +3787,7 @@ msgstr "Eteneminen"
 #: bookwyrm/templates/readthrough/readthrough_modal.html:63
 #: bookwyrm/templates/snippets/reading_modals/finish_reading_modal.html:32
 msgid "Finished reading"
-msgstr "Lopetti lukemisen"
+msgstr "Luki loppuun"
 
 #: bookwyrm/templates/readthrough/readthrough_list.html:9
 msgid "Progress Updates:"
@@ -3289,36 +3870,36 @@ msgctxt "followed by ISBN"
 msgid "Searching for book:"
 msgstr "Haetaan kirjaa:"
 
-#: bookwyrm/templates/search/book.html:44
+#: bookwyrm/templates/search/book.html:39
 msgid "Results from"
 msgstr "Tulokset lähteestä"
 
-#: bookwyrm/templates/search/book.html:80
+#: bookwyrm/templates/search/book.html:78
 msgid "Import book"
 msgstr "Tuo kirja"
 
-#: bookwyrm/templates/search/book.html:106
+#: bookwyrm/templates/search/book.html:102
 msgid "Load results from other catalogues"
 msgstr "Lataa tuloksia muista katalogeista"
 
-#: bookwyrm/templates/search/book.html:110
+#: bookwyrm/templates/search/book.html:106
 msgid "Manually add book"
 msgstr "Lisää kirja käsin"
 
-#: bookwyrm/templates/search/book.html:115
+#: bookwyrm/templates/search/book.html:111
 msgid "Log in to import or add books."
 msgstr "Kirjojen tuonti tai lisääminen edellyttää sisäänkirjautumista."
 
-#: bookwyrm/templates/search/layout.html:16
+#: bookwyrm/templates/search/layout.html:17
 msgid "Search query"
 msgstr "Hakulauseke"
 
-#: bookwyrm/templates/search/layout.html:19
+#: bookwyrm/templates/search/layout.html:20
 msgid "Search type"
 msgstr "Hakutyyppi"
 
-#: bookwyrm/templates/search/layout.html:23
-#: bookwyrm/templates/search/layout.html:46
+#: bookwyrm/templates/search/layout.html:24
+#: bookwyrm/templates/search/layout.html:47
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:27
 #: bookwyrm/templates/settings/federation/instance_list.html:51
 #: bookwyrm/templates/settings/layout.html:36
@@ -3328,10 +3909,17 @@ msgstr "Hakutyyppi"
 msgid "Users"
 msgstr "Käyttäjät"
 
-#: bookwyrm/templates/search/layout.html:58
+#: bookwyrm/templates/search/layout.html:59
 #, python-format
 msgid "No results found for \"%(query)s\""
 msgstr "Ei tuloksia hakulausekkeella ”%(query)s”"
+
+#: bookwyrm/templates/search/layout.html:61
+#, python-format
+msgid "%(result_count)s result found"
+msgid_plural "%(result_count)s results found"
+msgstr[0] ""
+msgstr[1] ""
 
 #: bookwyrm/templates/settings/announcements/announcement.html:5
 #: bookwyrm/templates/settings/announcements/announcement.html:8
@@ -3366,13 +3954,13 @@ msgstr "Epätosi"
 
 #: bookwyrm/templates/settings/announcements/announcement.html:57
 #: bookwyrm/templates/settings/announcements/edit_announcement.html:79
-#: bookwyrm/templates/settings/dashboard/dashboard.html:84
+#: bookwyrm/templates/settings/dashboard/dashboard.html:80
 msgid "Start date:"
 msgstr "Alkaen:"
 
 #: bookwyrm/templates/settings/announcements/announcement.html:62
 #: bookwyrm/templates/settings/announcements/edit_announcement.html:89
-#: bookwyrm/templates/settings/dashboard/dashboard.html:90
+#: bookwyrm/templates/settings/dashboard/dashboard.html:86
 msgid "End date:"
 msgstr "Päättyen:"
 
@@ -3532,7 +4120,7 @@ msgid "Dashboard"
 msgstr "Kojelauta"
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:15
-#: bookwyrm/templates/settings/dashboard/dashboard.html:113
+#: bookwyrm/templates/settings/dashboard/dashboard.html:109
 msgid "Total users"
 msgstr "Käyttäjiä yhteensä"
 
@@ -3550,31 +4138,31 @@ msgstr "Tilapäivityksiä"
 msgid "Works"
 msgstr "Teoksia"
 
-#: bookwyrm/templates/settings/dashboard/dashboard.html:78
+#: bookwyrm/templates/settings/dashboard/dashboard.html:74
 msgid "Instance Activity"
 msgstr "Palvelimen aktiivisuus"
 
-#: bookwyrm/templates/settings/dashboard/dashboard.html:96
+#: bookwyrm/templates/settings/dashboard/dashboard.html:92
 msgid "Interval:"
 msgstr "Aikaväli:"
 
-#: bookwyrm/templates/settings/dashboard/dashboard.html:100
+#: bookwyrm/templates/settings/dashboard/dashboard.html:96
 msgid "Days"
 msgstr "päivä"
 
-#: bookwyrm/templates/settings/dashboard/dashboard.html:101
+#: bookwyrm/templates/settings/dashboard/dashboard.html:97
 msgid "Weeks"
 msgstr "viikko"
 
-#: bookwyrm/templates/settings/dashboard/dashboard.html:119
+#: bookwyrm/templates/settings/dashboard/dashboard.html:115
 msgid "User signup activity"
 msgstr "Rekisteröityneitä käyttäjiä"
 
-#: bookwyrm/templates/settings/dashboard/dashboard.html:125
+#: bookwyrm/templates/settings/dashboard/dashboard.html:121
 msgid "Status activity"
 msgstr "Tilapäivityksiä"
 
-#: bookwyrm/templates/settings/dashboard/dashboard.html:131
+#: bookwyrm/templates/settings/dashboard/dashboard.html:127
 msgid "Works created"
 msgstr "Luotuja teoksia"
 
@@ -3799,6 +4387,10 @@ msgstr "Onnistuneesti estetyt:"
 msgid "Failed:"
 msgstr "Epäonnistuneet:"
 
+#: bookwyrm/templates/settings/federation/instance_blocklist.html:62
+msgid "Expects a json file in the format provided by <a href=\"https://fediblock.org/\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">FediBlock</a>, with a list of entries that have <code>instance</code> and <code>url</code> fields. For example:"
+msgstr ""
+
 #: bookwyrm/templates/settings/federation/instance_list.html:35
 #: bookwyrm/templates/settings/users/server_filter.html:5
 msgid "Instance name"
@@ -3882,7 +4474,7 @@ msgstr "Lähetä kutsu"
 
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:81
 msgid "Re-send invite"
-msgstr "Lähetä kutsu uudelleen"
+msgstr "Uusi kutsu"
 
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:101
 msgid "Ignore"
@@ -4553,11 +5145,11 @@ msgstr "Näytä asennusohjeet"
 msgid "Instance Setup"
 msgstr "Palvelimen määritys"
 
-#: bookwyrm/templates/setup/layout.html:15
+#: bookwyrm/templates/setup/layout.html:19
 msgid "Installing BookWyrm"
 msgstr "BookWyrmin asennus"
 
-#: bookwyrm/templates/setup/layout.html:18
+#: bookwyrm/templates/setup/layout.html:22
 msgid "Need help?"
 msgstr "Tarvitsetko apua?"
 
@@ -4612,7 +5204,7 @@ msgstr "Aloitettu"
 #: bookwyrm/templates/shelf/shelf.html:154
 #: bookwyrm/templates/shelf/shelf.html:184
 msgid "Finished"
-msgstr "Lopetettu"
+msgstr "Luettu"
 
 #: bookwyrm/templates/shelf/shelf.html:154
 #: bookwyrm/templates/shelf/shelf.html:184
@@ -4918,18 +5510,9 @@ msgstr "sivu %(page)s"
 msgid "Previous"
 msgstr "Edellinen"
 
-#: bookwyrm/templates/snippets/pagination.html:23
-msgid "Next"
-msgstr "Seuraava"
-
 #: bookwyrm/templates/snippets/privacy-icons.html:12
 msgid "Followers-only"
 msgstr "Vain seuraajille"
-
-#: bookwyrm/templates/snippets/privacy_select.html:6
-#: bookwyrm/templates/snippets/privacy_select_no_followers.html:6
-msgid "Post privacy"
-msgstr "Julkaisun näkyvyys"
 
 #: bookwyrm/templates/snippets/rate_action.html:5
 msgid "Leave a rating"
@@ -5047,7 +5630,7 @@ msgstr "Keskeytä lukeminen"
 
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_options.html:40
 msgid "Finish reading"
-msgstr "Lopeta lukeminen"
+msgstr "Luettu kokonaan"
 
 #: bookwyrm/templates/snippets/status/content_status.html:80
 msgid "Show status"
@@ -5063,11 +5646,11 @@ msgstr "(Sivu %(page)s)"
 msgid "(%(percent)s%%)"
 msgstr "(%(percent)s %%)"
 
-#: bookwyrm/templates/snippets/status/content_status.html:126
+#: bookwyrm/templates/snippets/status/content_status.html:127
 msgid "Open image in new window"
 msgstr "Avaa kuva uudessa ikkunassa"
 
-#: bookwyrm/templates/snippets/status/content_status.html:145
+#: bookwyrm/templates/snippets/status/content_status.html:146
 msgid "Hide status"
 msgstr "Piilota tilapäivitys"
 
@@ -5109,12 +5692,12 @@ msgstr "arvosteli teoksen <a href=\"%(book_path)s\">%(book)s</a>:"
 #: bookwyrm/templates/snippets/status/headers/read.html:10
 #, python-format
 msgid "finished reading <a href=\"%(book_path)s\">%(book)s</a> by <a href=\"%(author_path)s\">%(author_name)s</a>"
-msgstr "lopetti teoksen <a href=\"%(author_path)s\">%(author_name)s</a>: <a href=\"%(book_path)s\">%(book)s</a> lukemisen"
+msgstr "luki teoksen <a href=\"%(author_path)s\">%(author_name)s</a>: <a href=\"%(book_path)s\">%(book)s</a> loppuun"
 
 #: bookwyrm/templates/snippets/status/headers/read.html:17
 #, python-format
 msgid "finished reading <a href=\"%(book_path)s\">%(book)s</a>"
-msgstr "lopetti teoksen <a href=\"%(book_path)s\">%(book)s</a> lukemisen"
+msgstr "luki teoksen <a href=\"%(book_path)s\">%(book)s</a> loppuun"
 
 #: bookwyrm/templates/snippets/status/headers/reading.html:10
 #, python-format
@@ -5200,10 +5783,6 @@ msgstr "Näytä lisää"
 msgid "Show less"
 msgstr "Näytä vähemmän"
 
-#: bookwyrm/templates/user/books_header.html:4
-msgid "Your books"
-msgstr "Omat kirjat"
-
 #: bookwyrm/templates/user/books_header.html:9
 #, python-format
 msgid "%(username)s's books"
@@ -5242,21 +5821,9 @@ msgstr "Omat ryhmät"
 msgid "Groups: %(username)s"
 msgstr "Ryhmät: %(username)s"
 
-#: bookwyrm/templates/user/layout.html:19 bookwyrm/templates/user/user.html:10
-msgid "User Profile"
-msgstr "Käyttäjäprofiili"
-
 #: bookwyrm/templates/user/layout.html:48
 msgid "Follow Requests"
 msgstr "Seuraamispyynnöt"
-
-#: bookwyrm/templates/user/layout.html:73
-msgid "Reading Goal"
-msgstr "Lukutavoite"
-
-#: bookwyrm/templates/user/layout.html:79
-msgid "Groups"
-msgstr "Ryhmät"
 
 #: bookwyrm/templates/user/lists.html:11
 #, python-format
@@ -5324,19 +5891,19 @@ msgid_plural "%(counter)s followers"
 msgstr[0] "%(counter)s seuraaja"
 msgstr[1] "%(counter)s seuraajaa"
 
-#: bookwyrm/templates/user/user_preview.html:27
+#: bookwyrm/templates/user/user_preview.html:31
 #, python-format
 msgid "%(counter)s following"
 msgstr "%(counter)s seurattavaa"
 
-#: bookwyrm/templates/user/user_preview.html:39
+#: bookwyrm/templates/user/user_preview.html:45
 #, python-format
 msgid "%(mutuals_display)s follower you follow"
 msgid_plural "%(mutuals_display)s followers you follow"
 msgstr[0] "%(mutuals_display)s seuraaja, jota seuraat itse"
 msgstr[1] "%(mutuals_display)s seuraajaa, joita seuraat itse"
 
-#: bookwyrm/templates/user/user_preview.html:43
+#: bookwyrm/templates/user/user_preview.html:49
 msgid "No followers you follow"
 msgstr "Ei seuraajia, joita seuraat itse"
 
@@ -5361,17 +5928,9 @@ msgstr "%(title)s: %(subtitle)s"
 msgid "Not a valid csv file"
 msgstr "Epäkelpo csv-tiedosto"
 
-#: bookwyrm/views/landing/login.py:70
+#: bookwyrm/views/landing/login.py:68
 msgid "Username or password are incorrect"
 msgstr "Käyttäjänimi tai salasana on virheellinen"
-
-#: bookwyrm/views/preferences/change_password.py:35
-msgid "Incorrect password"
-msgstr "Väärä salasana"
-
-#: bookwyrm/views/preferences/change_password.py:42
-msgid "Password does not match"
-msgstr "Salasanat eivät täsmää"
 
 #: bookwyrm/views/rss_feed.py:34
 #, python-brace-format

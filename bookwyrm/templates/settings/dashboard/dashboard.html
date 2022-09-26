@@ -57,10 +57,6 @@
     </div>
     {% endif %}
 
-    {% if current_version %}
-    {% include 'settings/dashboard/warnings/update_version.html' with warning_level="warning" fullwidth=True %}
-    {% endif %}
-
     {% if reports %}
     {% include 'settings/dashboard/warnings/reports.html' with warning_level="warning" %}
     {% endif %}

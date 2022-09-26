@@ -11,7 +11,7 @@ from django.utils.translation import gettext_lazy as _
 env = Env()
 env.read_env()
 DOMAIN = env("DOMAIN")
-VERSION = "0.4.4"
+VERSION = "0.4.5"
 
 RELEASE_API = env(
     "RELEASE_API",
@@ -289,6 +289,7 @@ LANGUAGES = [
     ("fr-fr", _("Français (French)")),
     ("lt-lt", _("Lietuvių (Lithuanian)")),
     ("no-no", _("Norsk (Norwegian)")),
+    ("pl-pl", _("Polski (Polish)")),
     ("pt-br", _("Português do Brasil (Brazilian Portuguese)")),
     ("pt-pt", _("Português Europeu (European Portuguese)")),
     ("ro-ro", _("Română (Romanian)")),

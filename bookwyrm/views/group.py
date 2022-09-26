@@ -1,7 +1,7 @@
 """group views"""
 from django.apps import apps
 from django.contrib.auth.decorators import login_required
-from django.db import IntegrityError
+from django.db import IntegrityError, transaction
 from django.core.paginator import Paginator
 from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect
@@ -52,7 +52,7 @@ class Group(View):
         form = forms.GroupForm(request.POST, instance=user_group)
         if not form.is_valid():
             return redirect("group", user_group.id)
-        user_group = form.save()
+        user_group = form.save(request)
 
         # let the other members know something about the group changed
         memberships = models.GroupMember.objects.filter(group=user_group)
@@ -112,9 +112,11 @@ class UserGroups(View):
         form = forms.GroupForm(request.POST)
         if not form.is_valid():
             return redirect(request.user.local_path + "/groups")
-        group = form.save()
-        # add the creator as a group member
-        models.GroupMember.objects.create(group=group, user=request.user)
+
+        with transaction.atomic():
+            group = form.save(request)
+            # add the creator as a group member
+            models.GroupMember.objects.create(group=group, user=request.user)
         return redirect("group", group.id)
 
 
@@ -125,9 +127,13 @@ class FindUsers(View):
     # this is mostly borrowed from the Get Started friend finder
 
     def get(self, request, group_id):
-        """basic profile info"""
+        """Search for a user to add the a group, or load suggested users cache"""
         user_query = request.GET.get("user_query")
         group = get_object_or_404(models.Group, id=group_id)
+
+        # only users who can edit can add users
+        group.raise_not_editable(request.user)
+
         lists = (
             models.List.privacy_filter(request.user)
             .filter(group=group)
@@ -183,10 +189,11 @@ def delete_group(request, group_id):
     # only the owner can delete a group
     group.raise_not_deletable(request.user)
 
-    # deal with any group lists
-    models.List.objects.filter(group=group).update(curation="closed", group=None)
+    with transaction.atomic():
+        # deal with any group lists
+        models.List.objects.filter(group=group).update(curation="closed", group=None)
 
-    group.delete()
+        group.delete()
     return redirect(request.user.local_path + "/groups")
 
 

@@ -3,11 +3,10 @@
 
 {% block panel %}
 
-{% if results %}
-{% with results|first as local_results %}
+{% if results or remote_results %}
 <ul class="block">
-{% for result in local_results.results %}
-    <li class="pd-4 mb-5">
+{% for result in results %}
+    <li class="pd-4 mb-5 local-book-search-result" id="tour-local-book-search-result">
         <div class="columns is-mobile is-gapless mb-0">
             <div class="column is-cover">
                 {% include 'snippets/book_cover.html' with book=result cover_class='is-w-xs is-h-xs' %}
@@ -29,25 +28,24 @@
     </li>
 {% endfor %}
 </ul>
-{% endwith %}
 
 <div class="block">
-{% for result_set in results|slice:"1:" %}
+{% for result_set in remote_results %}
     {% if result_set.results %}
     <section class="mb-5">
-        {% if not result_set.connector.local %}
         <details class="details-panel box" open>
-        {% endif %}
-            {% if not result_set.connector.local %}
-            <summary class="is-flex is-align-items-center is-flex-wrap-wrap is-gap-2">
+            <summary class="is-flex is-align-items-center is-flex-wrap-wrap is-gap-2 remote-book-search-result" id="tour-remote-search-result">
                 <span class="mb-0 title is-5">
                     {% trans 'Results from' %}
-                    <a href="{{ result_set.connector.base_url }}" target="_blank">{{ result_set.connector.name|default:result_set.connector.identifier }}</a>
+                    <a
+                        href="{{ result_set.connector.base_url }}"
+                        target="_blank"
+                        rel="nofollow noopener noreferrer"
+                    >{{ result_set.connector.name|default:result_set.connector.identifier }}</a>
                 </span>
 
                 <span class="details-close icon icon-x" aria-hidden="true"></span>
             </summary>
-            {% endif %}
 
         <div class="mt-5">
             <div class="is-flex is-flex-direction-row-reverse">
@@ -63,7 +61,7 @@
                                         <strong>
                                             <a
                                                 href="{{ result.view_link|default:result.key }}"
-                                                rel="noopener noreferrer"
+                                                rel="nofollow noopener noreferrer"
                                                 target="_blank"
                                             >{{ result.title }}</a>
                                         </strong>
@@ -88,25 +86,23 @@
                 </ul>
             </div>
         </div>
-        {% if not result_set.connector.local %}
         </details>
-        {% endif %}
     </section>
     {% endif %}
     {% endfor %}
 </div>
-
-
 {% endif %}
+{% endblock %}
 
+{% block search_footer %}
 <p class="block">
     {% if request.user.is_authenticated %}
         {% if not remote %}
-        <a href="{{ request.path }}?q={{ query }}&type=book&remote=true">
+        <a href="{{ request.path }}?q={{ query }}&type=book&remote=true" id="tour-load-from-other-catalogues">
             {% trans "Load results from other catalogues" %}
         </a>
         {% else %}
-        <a href="{% url 'create-book' %}">
+        <a href="{% url 'create-book' %}" id="tour-manually-add-book">
             {% trans "Manually add book" %}
         </a>
         {% endif %}

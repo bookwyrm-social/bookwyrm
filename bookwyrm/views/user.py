@@ -1,8 +1,6 @@
-""" non-interactive pages """
+""" The user profile """
 from django.contrib.auth.decorators import login_required
-from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator
-from django.db.models import Q, Count
 from django.http import Http404
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
@@ -102,52 +100,6 @@ class User(View):
         return TemplateResponse(request, "user/user.html", data)
 
 
-class Followers(View):
-    """list of followers view"""
-
-    def get(self, request, username):
-        """list of followers"""
-        user = get_user_from_username(request.user, username)
-
-        if is_api_request(request):
-            return ActivitypubResponse(user.to_followers_activity(**request.GET))
-
-        if user.hide_follows and user != request.user:
-            raise PermissionDenied()
-
-        followers = annotate_if_follows(request.user, user.followers)
-        paginated = Paginator(followers.all(), PAGE_LENGTH)
-        data = {
-            "user": user,
-            "is_self": request.user.id == user.id,
-            "follow_list": paginated.get_page(request.GET.get("page")),
-        }
-        return TemplateResponse(request, "user/relationships/followers.html", data)
-
-
-class Following(View):
-    """list of following view"""
-
-    def get(self, request, username):
-        """list of followers"""
-        user = get_user_from_username(request.user, username)
-
-        if is_api_request(request):
-            return ActivitypubResponse(user.to_following_activity(**request.GET))
-
-        if user.hide_follows and user != request.user:
-            raise PermissionDenied()
-
-        following = annotate_if_follows(request.user, user.following)
-        paginated = Paginator(following.all(), PAGE_LENGTH)
-        data = {
-            "user": user,
-            "is_self": request.user.id == user.id,
-            "follow_list": paginated.get_page(request.GET.get("page")),
-        }
-        return TemplateResponse(request, "user/relationships/following.html", data)
-
-
 class Statistics(View):
     """get statistics about user"""
 
@@ -214,3 +166,12 @@ def hide_suggestions(request):
 def user_redirect(request, username):
     """redirect to a user's feed"""
     return redirect("user-feed", username=username)
+
+
+@login_required
+def toggle_guided_tour(request, tour):
+    """most people don't want a tour every time they load a page"""
+
+    request.user.show_guided_tour = tour
+    request.user.save(broadcast=False, update_fields=["show_guided_tour"])
+    return redirect("/")
