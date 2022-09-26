@@ -129,8 +129,6 @@ class Notification(BookWyrmModel):
     def notify_genre_update(cls, users, **kwargs):
         """Notify on genre activity"""
         notification = cls.objects.create(**kwargs)
-        for user in users:
-            notification.related_users.add(user.user)
         notification.read = False
         notification.save()
 
@@ -171,13 +169,14 @@ def genre_update(sender, instance, action, pk_set, reverse, **kwargs):
     if action == "post_add":
         for key in pk_set:
             genre = Genre.objects.get(pk=key)
-            users = FollowedGenre.objects.filter(genres=genre)
-            Notification.notify_genre_update(users,
-            user = instance.last_edited_by,
-            related_book = instance,
-            related_genre=genre,
-            notification_type=Notification.GENRE
-            )
+            users = User.objects.filter(followed_genres=genre)
+            for user in users:
+                Notification.notify_genre_update(users,
+                user = user,
+                related_book = instance,
+                related_genre=genre,
+                notification_type=Notification.GENRE
+                )
 
 
 @receiver(models.signals.post_save, sender=Favorite)
