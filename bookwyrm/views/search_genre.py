@@ -2,7 +2,7 @@ from django.contrib.postgres.search import TrigramSimilarity
 
 from django.shortcuts import get_object_or_404, render
 
-from bookwyrm.models.book import Genre, Book
+from bookwyrm.models.book import Genre, Book, Work, Edition
 
 from django.core.paginator import Paginator
 from django.db.models.functions import Greatest
@@ -19,7 +19,7 @@ class SearchGenre(TemplateView):
     template_name = 'search/genre_search.html'
 
     active_genres = []
-    search_is_AND = False
+    search_active_option = ""
 
     def post(self, request, *args, **kwargs):
         '''Get the genres the user has selected.'''
@@ -33,11 +33,8 @@ class SearchGenre(TemplateView):
 
         buttonSelection = request.POST.get("search_buttons")
         print(buttonSelection)
-        if buttonSelection == "search_and":
-            self.search_is_AND = True
-            print("AND searching activated")
-        else:
-            self.search_is_AND = False
+        self.search_active_option = buttonSelection
+        print(self.search_active_option)
 
         context = self.get_context_data()
         return render(request, self.template_name, context)
@@ -53,29 +50,32 @@ class SearchGenre(TemplateView):
 
         # Check if there's actually a genre selected.
         if(len(self.active_genres)):
+
             activeBooks = []
-            if self.search_is_AND:
+            #AND Searching
+            if self.search_active_option == "search_and":
+
                 print("Searching using AND")
-                base_qs = Book.objects.all()
+                base_qs = Work.objects.all()
                 for gen in self.active_genres:
                     activeBooks = base_qs.filter(genres__pk__contains=gen)
-            else:
+            #OR searching
+            elif self.search_active_option == "search_or":
+
                 for gen in self.active_genres:
                     print("Item successful captured!")
-
-                    #if True:
-                    #    filterGenres = []
-                    #    for filterGen in self.active_genres:
-                    #        filterGenres.append(filterGen)
-
-                    #activeBooks.extend(Book.objects.filter(genres = gen))
-                    activeBooks.extend(Book.objects.filter(genres = gen))
+                    activeBooks.extend(Work.objects.filter(genres = gen))
+            #EXCLUDE searching
+            elif self.search_active_option == "search_exclude":
+                base_qs = Work.objects.all()
+                activeBooks = self.exclude_book(base_qs)
 
 
             print("Printing this enter:" + self.active_genres[0])
             for item in activeBooks:
                 print(item)
             print("Active books successful")
+
         else:
             activeBooks = []
             print("Empty List") 
@@ -85,4 +85,20 @@ class SearchGenre(TemplateView):
         context['genre_tags'] = Genre.objects.all()
         context['listed_books'] = activeBooks
         return context
+
+    def exclude_book(self, base_qa_list):
+        modified_list = base_qa_list
+
+        for i in range(len(base_qa_list)):
+            for gen in self.active_genres:
+                for subgen in modified_list[i].genres.all():
+                    if(1 == subgen.genre_name):
+                        modified_list.remove(i)
+                        continue
+
+
+        return modified_list
+
+
+
 

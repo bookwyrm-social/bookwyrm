@@ -21,10 +21,12 @@ from django.views.generic import (
 
 
 class ManageGenreHome(ListView):
+    '''Get a list of all of our genres in the admin page.'''
     template_name = 'settings/genres/genre_manage_home.html'
     model = Genre
 
 class ModifyGenre(UpdateView):
+    '''Seperate page for modifying each genre in admin page.'''
     template_name = 'settings/genres/genre_mod.html'
     model = Genre
     form_class = GenreForm
