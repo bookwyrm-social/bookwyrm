@@ -68,7 +68,7 @@ class SearchGenre(TemplateView):
             #EXCLUDE searching
             elif self.search_active_option == "search_exclude":
                 base_qs = Work.objects.all()
-                activeBooks = self.exclude_book(base_qs)
+                activeBooks = Work.objects.exclude(genres__pk__in = self.active_genres)
 
 
             print("Printing this enter:" + self.active_genres[0])
@@ -86,18 +86,6 @@ class SearchGenre(TemplateView):
         context['listed_books'] = activeBooks
         return context
 
-    def exclude_book(self, base_qa_list):
-        modified_list = base_qa_list
-
-        for i in range(len(base_qa_list)):
-            for gen in self.active_genres:
-                for subgen in modified_list[i].genres.all():
-                    if(1 == subgen.genre_name):
-                        modified_list.remove(i)
-                        continue
-
-
-        return modified_list
 
 
 
