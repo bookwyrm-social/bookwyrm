@@ -80,11 +80,6 @@ class UtilitiesTags(TestCase):
         self.assertEqual(utilities.truncatepath(value, 2), "home/…ur")
         self.assertEqual(utilities.truncatepath(value, "a"), "four")
 
-    def test_get_book_cover_thumbnail(self, *_):
-        """get book cover thumbnail"""
-        result = utilities.get_book_cover_thumbnail(self.book)
-        self.assertEqual(result, "images/no_cover.jpg")
-
     def test_get_isni_bio(self, *_):
         """get ISNI bio"""
         DataMock = namedtuple("Data", ("bio", "isni"))
