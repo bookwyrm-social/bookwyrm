@@ -32,6 +32,17 @@
             <button class="btn btn-primary" type="submit">Search</button>
         </form> -->
 
+        <div class="control">
+            <label class="radio">
+              <input type="radio" name="search_buttons" value="search_and">
+              Must include all selected genres
+            </label>
+            <label class="radio">
+              <input type="radio" name="search_buttons" value="search_or">
+              Can include any of the selected genres
+            </label>
+        </div>
+
         <select data-placeholder="Click to start selecting genres!" multiple class="chosen-select" name="genres" id="genres">
             <option value=""></option>
             {% for genre in genre_tags %}
@@ -47,33 +58,37 @@
 
 </form>
 <div>
-
-    {% for book in listed_books %}
-        <ul class="is-flex-grow-1">
-            <li>
-                <div class="columns is-mobile is-gapless">
-                    {% if book.cover %}
-                    {% include 'snippets/book_cover.html' with size='medium' size_mobile='small' book=book cover_class='is-h-m-mobile' %}
-                    {% include 'book/cover_show_modal.html' with book=book id="cover_show_modal" %}
-                    {% endif %}
-                    <div class="column is-10 ml-3">
-                        <p>
-                            <strong>
-                                <a
-                                    href="{{book.local_path}}"
-                                    rel="nofollow noopener noreferrer"
-                                    target="_blank"
-                                >{{ book.title }}</a>
-                            </strong>
-                        </p>
-                        <p>
-                            {{ book.author }}
-                        </p>
-                    </div>
+    <ul class="block">
+    {% for result in listed_books %}
+        <li class="pd-4 mb-5 local-book-search-result" id="tour-local-book-search-result">
+            <div class="columns is-mobile is-gapless mb-0">
+                <div class="column is-cover">
+                    {% include 'snippets/book_cover.html' with book=result cover_class='is-w-xs is-h-xs' %}
                 </div>
+    
+                <div class="column is-10 ml-3">
+                    <p>
+                        <strong>
+                            {% include "snippets/book_titleby.html" with book=result %}
+                        </strong>
+                    </p>
+                    <p>
+                        {% if result.first_published_date or result.published_date %}
+                            ({% firstof result.first_published_date.year result.published_date.year %})
+                        {% endif %}
+                    </p>
+                    <p>
+                        {% for gena in result.genres.all %}
+                            <strong>
+                                {{gena.genre_name}}
+                            </strong>
+                        {% endfor %}
+                    </p>
+                </div>
+            </div>
             </li>
-        </ul>
     
     {% endfor %}
+    </ul>
 </div>
 {% endblock %}

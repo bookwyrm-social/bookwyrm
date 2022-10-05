@@ -33,37 +33,46 @@ class GenreManager(models.Manager):
 
 class Genre(models.Model):
     '''This is a model where we can define genres for books.'''
-    '''TODO: Add ManytoMany field on books which contain this certain genre.'''
     genre_name = fields.CharField(max_length=40)
     description = fields.CharField(max_length=500)
-    immutable = models.BooleanField(default=False)
-
+    remote_id = fields.RemoteIdField(null=True, activitypub_field="id")
     objects = GenreManager()
-
 
     def __str__(self):
         return self.genre_name
-
+ 
     @property
     def genre_desc(self):
         return self.description
 
-    #def save(self, *args, **kwargs):
-    #
-    #
-    #    if self.immutable:
-    #        raise ValueError("This genre is immutable and cannot be changed.")
-    #
-    #    super(Genre, self).save(*args, **kwargs)
+    def get_remote_id(self):
+        """generate the url that resolves to the local object, without a slug"""
+        base_path = f"https://{DOMAIN}"
+        if hasattr(self, "user"):
+            base_path = f"{base_path}{self.user.local_path}"
 
-class ImmutableGenre(Genre):
-#    '''A proxy model for immutable genres so it can actually save itself and not cause an interdimensional rift.'''
-#    '''Immutable genres SHOULD ONLY EVER BE CREATED UPON THE CREATION OF THE INSTANCE'''
-    class Meta:
-        proxy = True
+        model_name = type(self).__name__.lower()
+        return f"{base_path}/{model_name}/{self.id}"
 
-    def save(self, *args, **kwargs):
-        super(Genre, self).save(*args, **kwargs)
+    @property
+    def local_path(self):
+        """how to link to this object in the local app, with a slug"""
+        local = self.get_remote_id().replace(f"https://{DOMAIN}", "")
+
+        name = None
+        if hasattr(self, "name_field"):
+            name = getattr(self, self.name_field)
+        elif hasattr(self, "name"):
+            name = self.name
+
+        if name:
+            slug = slugify(name)
+            local = f"{local}/s/{slug}"
+
+        return local
+
+    #def save(self, request, *args, **kwargs):
+    #    super(Genre, self).save(request, *args, **kwargs)
 
 
 class BookDataModel(ObjectMixin, BookWyrmModel):

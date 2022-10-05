@@ -1,0 +1,59 @@
+{% extends 'layout.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Genre" %}{% endblock %}
+
+{% block content %}
+
+<h4 class="title is-4">Viewing "{{ object.genre_name }}"</h4>
+
+<div class="block columns">
+    <div class="column is-flex is-flex-direction-column">
+        <h4 class="title is-4">Actions</h4>
+        <div class="box content is-flex-grow-1">
+            <p>
+                {{ object.description }}
+            </p>
+            <dl>
+                {% include 'snippets/genre_follow_button.html' with book=result %}
+            </dl>
+        </div>
+    </div>
+</div>
+
+<h4 class="title is-4">Here are some books that contain {{ object.genre_name }}!</h4>
+<ul class="block">
+    {% for result in demo_books %}
+        <li class="pd-4 mb-5 local-book-search-result" id="tour-local-book-search-result">
+            <div class="columns is-mobile is-gapless mb-0">
+                <div class="column is-cover">
+                    {% include 'snippets/book_cover.html' with book=result cover_class='is-w-xs is-h-xs' %}
+                </div>
+    
+                <div class="column is-10 ml-3">
+                    <p>
+                        <strong>
+                            {% include "snippets/book_titleby.html" with book=result %}
+                        </strong>
+                    </p>
+                    <p>
+                        {% if result.first_published_date or result.published_date %}
+                            ({% firstof result.first_published_date.year result.published_date.year %})
+                        {% endif %}
+                    </p>
+                    <p>
+                        {% for gena in result.genres.all %}
+                            <strong>
+                                {{gena.genre_name}}
+                            </strong>
+                        {% endfor %}
+                    </p>
+                </div>
+            </div>
+        </li>
+    
+    {% endfor %}
+</ul>
+
+
+{% endblock %}

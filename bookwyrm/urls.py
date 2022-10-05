@@ -25,6 +25,7 @@ STATUS_TYPES_STRING = "|".join(status_types)
 STATUS_PATH = rf"{USER_PATH}/({STATUS_TYPES_STRING})/(?P<status_id>\d+)"
 
 BOOK_PATH = r"^book/(?P<book_id>\d+)"
+GENRE_PATH = r"^genre/(?P<pk>\d+)"
 
 STREAMS = "|".join(s["key"] for s in settings.STREAMS)
 
@@ -145,6 +146,12 @@ urlpatterns = [
     re_path(
         r"^settings/genres/(?P<pk>\d+)/?$", views.ModifyGenre.as_view(), name="settings-genres-mod"
     ),
+
+    re_path(
+        r"^genres/(?P<pk>\d+)/?$", views.GenreDetailView.as_view(), name="genre-view"
+    ),
+    re_path(rf"{GENRE_PATH}(.json)?/?$", views.GenreDetailView.as_view(), name="genre-view"),
+    re_path(rf"{GENRE_PATH}{regex.SLUG}/?$", views.GenreDetailView.as_view(), name="genre-view"),
 
     re_path(
         r"^settings/users/(?P<status>(local|federated|deleted))\/?$",
@@ -542,6 +549,10 @@ urlpatterns = [
     ),
     re_path(r"^boost/(?P<status_id>\d+)/?$", views.Boost.as_view()),
     re_path(r"^unboost/(?P<status_id>\d+)/?$", views.Unboost.as_view()),
+    re_path(r"^follow/(?P<pk>\d+)/?$", views.interaction.FollowGenre.as_view(), name="follow-genre"),
+    re_path(
+        r"^unfollow/(?P<pk>\d+)/?$", views.interaction.UnFollowGenre.as_view(), name="unfollow-genre"
+    ),
     # books
     re_path(rf"{BOOK_PATH}(.json)?/?$", views.Book.as_view(), name="book"),
     re_path(rf"{BOOK_PATH}{regex.SLUG}/?$", views.Book.as_view(), name="book"),

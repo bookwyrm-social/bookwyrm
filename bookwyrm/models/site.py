@@ -3,6 +3,7 @@ import datetime
 from urllib.parse import urljoin
 import uuid
 
+from django.core.exceptions import PermissionDenied
 from django.db import models, IntegrityError
 from django.dispatch import receiver
 from django.utils import timezone
@@ -15,7 +16,23 @@ from .user import User
 from .fields import get_absolute_url
 
 
-class SiteSettings(models.Model):
+class SiteModel(models.Model):
+    """we just need edit perms"""
+
+    class Meta:
+        """this is just here to provide default fields for other models"""
+
+        abstract = True
+
+    # pylint: disable=no-self-use
+    def raise_not_editable(self, viewer):
+        """Check if the user has the right permissions"""
+        if viewer.has_perm("bookwyrm.edit_instance_settings"):
+            return
+        raise PermissionDenied()
+
+
+class SiteSettings(SiteModel):
     """customized settings for this instance"""
 
     name = models.CharField(default="BookWyrm", max_length=100)
@@ -115,7 +132,7 @@ class SiteSettings(models.Model):
         super().save(*args, **kwargs)
 
 
-class Theme(models.Model):
+class Theme(SiteModel):
     """Theme files"""
 
     created_date = models.DateTimeField(auto_now_add=True)
@@ -137,6 +154,13 @@ class SiteInvite(models.Model):
     times_used = models.IntegerField(default=0)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     invitees = models.ManyToManyField(User, related_name="invitees")
+
+    # pylint: disable=no-self-use
+    def raise_not_editable(self, viewer):
+        """Admins only"""
+        if viewer.has_perm("bookwyrm.create_invites"):
+            return
+        raise PermissionDenied()
 
     def valid(self):
         """make sure it hasn't expired or been used"""
@@ -160,6 +184,12 @@ class InviteRequest(BookWyrmModel):
     answer = models.TextField(max_length=50, unique=False, null=True, blank=True)
     invite_sent = models.BooleanField(default=False)
     ignored = models.BooleanField(default=False)
+
+    def raise_not_editable(self, viewer):
+        """Only check perms on edit, not create"""
+        if not self.id or viewer.has_perm("bookwyrm.create_invites"):
+            return
+        raise PermissionDenied()
 
     def save(self, *args, **kwargs):
         """don't create a request for a registered email"""
