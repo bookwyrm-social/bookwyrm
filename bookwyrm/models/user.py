@@ -5,7 +5,6 @@ from urllib.parse import urlparse
 from django.apps import apps
 from django.contrib.auth.models import AbstractUser, Group
 from django.contrib.postgres.fields import ArrayField, CICharField
-from django.core.exceptions import PermissionDenied
 from django.dispatch import receiver
 from django.db import models, transaction
 from django.utils import timezone
@@ -26,6 +25,7 @@ from .activitypub_mixin import OrderedCollectionPageMixin, ActivitypubMixin
 from .base_model import BookWyrmModel, DeactivationReason, new_access_code
 from .federated_server import FederatedServer
 from . import fields
+from .book import Genre
 
 
 FeedFilterChoices = [
@@ -111,6 +111,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         through_fields=("user_subject", "user_object"),
         related_name="follower_requests",
     )
+    followed_genres = models.ManyToManyField("Genre", related_name="followed_genres", blank=True)
     blocks = models.ManyToManyField(
         "self",
         symmetrical=False,
@@ -232,14 +233,6 @@ class User(OrderedCollectionPageMixin, AbstractUser):
             queryset = queryset.exclude(blocks=viewer)
         return queryset
 
-    @classmethod
-    def admins(cls):
-        """Get a queryset of the admins for this instance"""
-        return cls.objects.filter(
-            models.Q(user_permissions__name__in=["moderate_user", "moderate_post"])
-            | models.Q(is_superuser=True)
-        )
-
     def update_active_date(self):
         """this user is here! they are doing things!"""
         self.last_active_date = timezone.now()
@@ -289,6 +282,16 @@ class User(OrderedCollectionPageMixin, AbstractUser):
             id_only=True,
             **kwargs,
         )
+
+    def follow_genre(self, *args, **kwargs):
+        genre = Genre.objects.get(id=genre_id)
+        if genre not in self.followed_genres:
+            self.followed_genres.add(genre)
+
+    def unfollow_genre(self, *args, **kwargs):
+        genre = Genre.objects.get(id=genre_id)
+        if genre in self.followed_genres:
+            self.followed_genres.remove(genre)
 
     def to_activity(self, **kwargs):
         """override default AP serializer to add context object
@@ -401,12 +404,6 @@ class User(OrderedCollectionPageMixin, AbstractUser):
                 user=self,
                 editable=False,
             ).save(broadcast=False)
-
-    def raise_not_editable(self, viewer):
-        """Who can edit the user object?"""
-        if self == viewer or viewer.has_perm("bookwyrm.moderate_user"):
-            return
-        raise PermissionDenied()
 
 
 class KeyPair(ActivitypubMixin, BookWyrmModel):

@@ -1,6 +1,8 @@
 {# load the right template #}
 {% if notification.notification_type == 'MENTION' %}
     {% include 'notifications/items/mention.html' %}
+{% elif notification.notification_type == 'GENRE' %}
+    {% include 'notifications/items/genre.html' %}
 {% elif notification.notification_type == 'REPLY' %}
     {% include 'notifications/items/reply.html' %}
 {% elif notification.notification_type == 'BOOST' %}
