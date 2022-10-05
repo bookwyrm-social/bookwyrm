@@ -35,9 +35,8 @@ class Genre(models.Model):
     '''This is a model where we can define genres for books.'''
     genre_name = fields.CharField(max_length=40)
     description = fields.CharField(max_length=500)
-
+    remote_id = fields.RemoteIdField(null=True, activitypub_field="id")
     objects = GenreManager()
-
 
     def __str__(self):
         return self.genre_name
@@ -75,7 +74,6 @@ class Genre(models.Model):
     #def save(self, request, *args, **kwargs):
     #    super(Genre, self).save(request, *args, **kwargs)
 
-        
 
 class BookDataModel(ObjectMixin, BookWyrmModel):
     """fields shared between editable book data (books, works, authors)"""
