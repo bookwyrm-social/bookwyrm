@@ -5,11 +5,27 @@
 {% block title %}{% trans "Search" %}{% endblock %}
 
 {% block content %}
+
+<head>
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css">
+    <script src="http://code.jquery.com/jquery-1.8.3.js"></script>
+    <script src="http://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.4.2/chosen.jquery.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.4.2/chosen.css">
+</head>
+
+<script type="text/javascript">
+    $(function() {
+        $(".chosen-select").chosen({width: "70%"})
+    });
+</script>
+
 <div class="block">
     <h1 class="title">
         {% blocktrans %}Search{% endblocktrans %}
     </h1>
 </div>
+
 
 <form class="block" action="{% url 'search' %}" method="GET">
     <div class="field has-addons">
@@ -20,6 +36,7 @@
             <div class="select" aria-label="{% trans 'Search type' %}">
                 <select name="type">
                     <option value="book" {% if type == "book" %}selected{% endif %}>{% trans "Books" %}</option>
+                    <option value="genre" {% if type == "genre" %}selected{% endif %}>{% trans "Genres" %}</option>
                     {% if request.user.is_authenticated %}
                     <option value="user" {% if type == "user" %}selected{% endif %}>{% trans "Users" %}</option>
                     {% endif %}
@@ -34,6 +51,42 @@
             </button>
         </div>
     </div>
+
+
+
+</form>
+
+<form method="GET"> {% csrf_token %}
+    <div class="field">
+
+        <div class="control">
+            <label class="radio">
+                <input type="radio" name="search_buttons" value="search_and">
+                Must include all selected genres
+            </label>
+            <label class="radio">
+                <input type="radio" name="search_buttons" value="search_or">
+                Can include any of the selected genres
+            </label>
+            <label class="radio">
+                <input type="radio" name="search_buttons" value="search_exclude">
+                Exclude specified genres
+            </label>
+        </div>
+
+        <select data-placeholder="Click to start selecting genres!" multiple class="chosen-select" name="genres" id="genres">
+            <option value=""></option>
+            {% for genre in genre_tags %}
+            <option value="{{genre.id}}">{{genre.genre_name}}</option>
+            {% endfor %}
+        </select>
+
+    </div>
+    <div class="field">
+        <button class="button is-primary" type="submit">Search</button>
+    </div>
+
+
 </form>
 
 {% if query %}
@@ -52,6 +105,7 @@
         </li>
     </ul>
 </nav>
+
 
 <section class="block" id="search-results-block">
     <p class="block">

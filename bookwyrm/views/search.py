@@ -23,13 +23,18 @@ class Search(View):
 
     def get(self, request):
         """that search bar up top"""
+        context = {}
+        context["genre_tags"] = models.Genre.objects.all()
+        return TemplateResponse(request, "search/book.html", context)
 
         if is_api_request(request):
             return api_book_search(request)
 
         query = request.GET.get("q")
         if not query:
-            return TemplateResponse(request, "search/book.html")
+            context = {}
+            context["genre_tags"] = models.Genre.objects.all()
+            return TemplateResponse(request, "search/book.html", context)
 
         search_type = request.GET.get("type")
         if query and not search_type:
@@ -39,6 +44,7 @@ class Search(View):
             "book": book_search,
             "user": user_search,
             "list": list_search,
+            #"genre": genre_search,
         }
         if not search_type in endpoints:
             search_type = "book"
@@ -57,6 +63,20 @@ def api_book_search(request):
         [format_search_result(r) for r in book_results[:10]], safe=False
     )
 
+def genre_search(request):
+    local_results = models.Work.objects.all()
+    paginated = Paginator(local_results, PAGE_LENGTH)
+    page = paginated.get_page(request.GET.get("page"))
+    data = {
+        "genre_tags": models.Genre.objects.all(),
+        "results": page,
+        "type": "book",
+        "page_range": paginated.get_elided_page_range(
+            page.number, on_each_side=2, on_ends=1
+        ),
+    }
+    
+    return TemplateResponse(request, "search/book.html", data)
 
 def book_search(request):
     """the real business is elsewhere"""
