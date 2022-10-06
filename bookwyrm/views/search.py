@@ -10,7 +10,7 @@ from django.views import View
 
 from bookwyrm import models
 from bookwyrm.connectors import connector_manager
-from bookwyrm.book_search import search, format_search_result
+from bookwyrm.book_search import search, format_search_result, search_genre
 from bookwyrm.settings import PAGE_LENGTH
 from bookwyrm.utils import regex
 from .helpers import is_api_request
@@ -23,9 +23,6 @@ class Search(View):
 
     def get(self, request):
         """that search bar up top"""
-        context = {}
-        context["genre_tags"] = models.Genre.objects.all()
-        return TemplateResponse(request, "search/book.html", context)
 
         if is_api_request(request):
             return api_book_search(request)
@@ -44,7 +41,7 @@ class Search(View):
             "book": book_search,
             "user": user_search,
             "list": list_search,
-            #"genre": genre_search,
+            "genre": genre_search,
         }
         if not search_type in endpoints:
             search_type = "book"
@@ -64,11 +61,20 @@ def api_book_search(request):
     )
 
 def genre_search(request):
-    local_results = models.Work.objects.all()
+    genre_list = request.GET.getlist('genres')
+    query = request.GET.get("q")
+    query = isbn_check(query)
+
+    #local_results = models.Edition.objects.all()
+    min_confidence = request.GET.get("min_confidence", 0)
+    local_results = search_genre(genre_list, "search_or")
+
+
     paginated = Paginator(local_results, PAGE_LENGTH)
     page = paginated.get_page(request.GET.get("page"))
     data = {
         "genre_tags": models.Genre.objects.all(),
+        "query": query,
         "results": page,
         "type": "book",
         "page_range": paginated.get_elided_page_range(
