@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-10-04 18:03+0000\n"
-"PO-Revision-Date: 2022-10-08 13:42\n"
+"PO-Revision-Date: 2022-10-08 14:41\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Japanese\n"
 "Language: ja\n"
@@ -1219,7 +1219,7 @@ msgstr "ファイルのリンクを追加"
 
 #: bookwyrm/templates/book/file_links/add_link_modal.html:19
 msgid "Links from unknown domains will need to be approved by a moderator before they are added."
-msgstr ""
+msgstr "不明なドメインからのリンクは、追加される前にモデレーターから承認される必要があります。"
 
 #: bookwyrm/templates/book/file_links/add_link_modal.html:24
 msgid "URL:"
@@ -2914,7 +2914,7 @@ msgstr "%(site_name)s を<a href=\"%(support_link)s\" target=\"_blank\" rel=\"no
 
 #: bookwyrm/templates/layout.html:228
 msgid "BookWyrm's source code is freely available. You can contribute or report issues on <a href=\"https://github.com/bookwyrm-social/bookwyrm\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">GitHub</a>."
-msgstr ""
+msgstr "BookWyrmのソースコードは自由に利用できます。また、<a href=\"https://github.com/bookwyrm-social/bookwyrm\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">GitHub</a> でコントリビュートしたり、問題等を報告することができます。"
 
 #: bookwyrm/templates/lists/add_item_modal.html:8
 #, python-format
@@ -3154,7 +3154,7 @@ msgstr ""
 
 #: bookwyrm/templates/lists/lists.html:14 bookwyrm/templates/user/lists.html:9
 msgid "Your Lists"
-msgstr ""
+msgstr "あなたのリスト"
 
 #: bookwyrm/templates/lists/lists.html:36
 msgid "All Lists"
@@ -3354,7 +3354,7 @@ msgstr ""
 #: bookwyrm/templates/notifications/items/import.html:14
 #, python-format
 msgid "Your <a href=\"%(url)s\">import</a> completed."
-msgstr ""
+msgstr "<a href=\"%(url)s\">インポート</a> が完了しました。"
 
 #: bookwyrm/templates/notifications/items/invite.html:16
 #, python-format
@@ -3471,7 +3471,7 @@ msgstr "メンション"
 
 #: bookwyrm/templates/notifications/notifications_page.html:47
 msgid "You're all caught up!"
-msgstr ""
+msgstr "全ての通知を既読済みです！"
 
 #: bookwyrm/templates/ostatus/error.html:7
 #, python-format
@@ -3765,7 +3765,7 @@ msgstr ""
 #: bookwyrm/templates/snippets/reading_modals/start_reading_modal.html:21
 #: bookwyrm/templates/snippets/reading_modals/stop_reading_modal.html:24
 msgid "Started reading"
-msgstr ""
+msgstr "読み始めた日"
 
 #: bookwyrm/templates/readthrough/readthrough_form.html:18
 #: bookwyrm/templates/readthrough/readthrough_modal.html:56
@@ -3776,7 +3776,7 @@ msgstr ""
 #: bookwyrm/templates/readthrough/readthrough_modal.html:63
 #: bookwyrm/templates/snippets/reading_modals/finish_reading_modal.html:32
 msgid "Finished reading"
-msgstr ""
+msgstr "読み終えた日"
 
 #: bookwyrm/templates/readthrough/readthrough_list.html:9
 msgid "Progress Updates:"
@@ -4708,7 +4708,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/reports/report.html:38
 msgid "Status has been deleted"
-msgstr ""
+msgstr "投稿は削除されました"
 
 #: bookwyrm/templates/settings/reports/report.html:47
 msgid "Reported links"
@@ -5011,7 +5011,7 @@ msgstr ""
 #: bookwyrm/templates/settings/users/user_admin.html:92
 #: bookwyrm/templates/settings/users/user_info.html:32
 msgid "Inactive"
-msgstr ""
+msgstr "非アクティブ"
 
 #: bookwyrm/templates/settings/users/user_admin.html:101
 #: bookwyrm/templates/settings/users/user_info.html:127
@@ -5313,7 +5313,7 @@ msgstr "ブースト"
 #: bookwyrm/templates/snippets/boost_button.html:33
 #: bookwyrm/templates/snippets/boost_button.html:34
 msgid "Un-boost"
-msgstr "ブーストの取り消し"
+msgstr "ブーストを取り消す"
 
 #: bookwyrm/templates/snippets/create_status.html:36
 msgid "Quote"
@@ -5326,12 +5326,12 @@ msgstr ""
 #: bookwyrm/templates/snippets/create_status/comment.html:27
 #: bookwyrm/templates/snippets/reading_modals/progress_update_modal.html:18
 msgid "Progress:"
-msgstr ""
+msgstr "進捗:"
 
 #: bookwyrm/templates/snippets/create_status/comment.html:53
 #: bookwyrm/templates/snippets/progress_field.html:18
 msgid "pages"
-msgstr ""
+msgstr "ページ"
 
 #: bookwyrm/templates/snippets/create_status/comment.html:59
 #: bookwyrm/templates/snippets/progress_field.html:23
@@ -5341,7 +5341,7 @@ msgstr "パーセント"
 #: bookwyrm/templates/snippets/create_status/comment.html:66
 #, python-format
 msgid "of %(pages)s pages"
-msgstr ""
+msgstr "%(pages)s ページの内"
 
 #: bookwyrm/templates/snippets/create_status/content_field.html:18
 #: bookwyrm/templates/snippets/status/layout.html:34
@@ -5356,15 +5356,15 @@ msgstr "コンテンツ"
 
 #: bookwyrm/templates/snippets/create_status/content_warning_field.html:9
 msgid "Include spoiler alert"
-msgstr ""
+msgstr "ネタバレ警告を含める"
 
 #: bookwyrm/templates/snippets/create_status/content_warning_field.html:18
 msgid "Spoilers/content warnings:"
-msgstr ""
+msgstr "ネタバレ/コンテンツへの警告:"
 
 #: bookwyrm/templates/snippets/create_status/content_warning_field.html:27
 msgid "Spoilers ahead!"
-msgstr ""
+msgstr "ネタバレ注意！"
 
 #: bookwyrm/templates/snippets/create_status/layout.html:45
 #: bookwyrm/templates/snippets/reading_modals/form.html:7
@@ -5377,7 +5377,7 @@ msgstr ""
 
 #: bookwyrm/templates/snippets/create_status/quotation.html:16
 msgid "Quote:"
-msgstr ""
+msgstr "引用:"
 
 #: bookwyrm/templates/snippets/create_status/quotation.html:24
 #, python-format
@@ -5386,15 +5386,15 @@ msgstr ""
 
 #: bookwyrm/templates/snippets/create_status/quotation.html:31
 msgid "Position:"
-msgstr ""
+msgstr "引用元:"
 
 #: bookwyrm/templates/snippets/create_status/quotation.html:44
 msgid "On page:"
-msgstr ""
+msgstr "ページ:"
 
 #: bookwyrm/templates/snippets/create_status/quotation.html:50
 msgid "At percent:"
-msgstr ""
+msgstr "パーセント:"
 
 #: bookwyrm/templates/snippets/create_status/review.html:24
 #, python-format
@@ -5413,7 +5413,7 @@ msgstr ""
 #: bookwyrm/templates/snippets/fav_button.html:30
 #: bookwyrm/templates/snippets/fav_button.html:31
 msgid "Un-like"
-msgstr ""
+msgstr "いいねを取り消す"
 
 #: bookwyrm/templates/snippets/filters_panel/filters_panel.html:5
 msgid "Filters"
@@ -5507,7 +5507,7 @@ msgstr ""
 
 #: bookwyrm/templates/snippets/goal_form.html:16
 msgid "Reading goal:"
-msgstr ""
+msgstr "読書目標:"
 
 #: bookwyrm/templates/snippets/goal_form.html:21
 msgid "books"
@@ -5618,7 +5618,7 @@ msgstr "新規登録"
 #: bookwyrm/templates/snippets/report_modal.html:8
 #, python-format
 msgid "Report @%(username)s's status"
-msgstr ""
+msgstr "@%(username)s の投稿を通報"
 
 #: bookwyrm/templates/snippets/report_modal.html:10
 #, python-format
@@ -5633,7 +5633,7 @@ msgstr "@%(username)s を通報"
 #: bookwyrm/templates/snippets/report_modal.html:34
 #, python-format
 msgid "This report will be sent to %(site_name)s's moderators for review."
-msgstr ""
+msgstr "この通報内容は %(site_name)sのモデレーターにレビューのために送信されます。"
 
 #: bookwyrm/templates/snippets/report_modal.html:36
 msgid "Links from this domain will be removed until your report has been reviewed."
@@ -5641,7 +5641,7 @@ msgstr ""
 
 #: bookwyrm/templates/snippets/report_modal.html:41
 msgid "More info about this report:"
-msgstr "この通報に関する詳細:"
+msgstr "この通報についての詳細:"
 
 #: bookwyrm/templates/snippets/shelf_selector.html:7
 msgid "Move book"
@@ -5892,7 +5892,7 @@ msgstr "%(username)s にはフォロワーがいません。"
 #: bookwyrm/templates/user/relationships/following.html:6
 #: bookwyrm/templates/user/relationships/layout.html:15
 msgid "Following"
-msgstr "フォロー中"
+msgstr "フォロー"
 
 #: bookwyrm/templates/user/relationships/following.html:12
 #, python-format
@@ -5906,7 +5906,7 @@ msgstr "プロフィールを編集"
 #: bookwyrm/templates/user/user.html:38
 #, python-format
 msgid "View all %(size)s"
-msgstr ""
+msgstr "%(size)s 冊を全て表示"
 
 #: bookwyrm/templates/user/user.html:52
 msgid "View all books"
@@ -5915,7 +5915,7 @@ msgstr "すべての本を表示"
 #: bookwyrm/templates/user/user.html:59
 #, python-format
 msgid "%(current_year)s Reading Goal"
-msgstr "%(current_year)s の読書目標"
+msgstr "%(current_year)s 年の読書目標"
 
 #: bookwyrm/templates/user/user.html:66
 msgid "User Activity"
@@ -5989,5 +5989,5 @@ msgstr "{obj.display_name} からのステータス更新"
 #, python-format
 msgid "Load %(count)d unread status"
 msgid_plural "Load %(count)d unread statuses"
-msgstr[0] "%(count)d 個の未読ステータスを読み込む"
+msgstr[0] "%(count)d 件の未読投稿を読み込む"
 
