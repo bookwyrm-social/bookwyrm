@@ -52,7 +52,7 @@ class Unfavorite(View):
 
 @method_decorator(login_required, name="dispatch")
 class FollowGenre(View):
-    """like a status"""
+    """follow a genre"""
 
     def post(self, request, pk):
         """follow a genre"""

@@ -74,6 +74,9 @@ from .imports.manually_review import (
     delete_import_item,
 )
 
+# genres
+from  .genre.genre import Genres, FollowedGenres
+
 # lists
 from .list.curate import Curate
 from .list.embed import unsafe_embed_list

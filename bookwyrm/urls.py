@@ -8,6 +8,7 @@ from bookwyrm import settings, views
 from bookwyrm.utils import regex
 from bookwyrm.views.search_genre import SearchGenre
 
+
 USER_PATH = rf"^user/(?P<username>{regex.USERNAME})"
 LOCAL_USER_PATH = rf"^user/(?P<username>{regex.LOCALNAME})"
 
@@ -442,6 +443,11 @@ urlpatterns = [
         views.reject_membership,
         name="reject-group-invitation",
     ),
+    # genres
+    re_path(r"^genres/?$", views.Genres.as_view(), name="genres"),
+    re_path(r"^genres/followed/?$", views.FollowedGenres.as_view(), name="followed-genres"),
+    re_path(r"^genres/follow/(?P<pk>\d+)/?$", views.Genres.FollowGenre.as_view(), name="genres-follow-genre"),
+    re_path(r"^genres/unfollow/(?P<pk>\d+)/?$", views.Genres.UnFollowGenre.as_view(), name="genres-unfollow-genre"),
     # lists
     re_path(rf"{USER_PATH}/lists/?$", views.UserLists.as_view(), name="user-lists"),
     re_path(r"^list/?$", views.Lists.as_view(), name="lists"),
