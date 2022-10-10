@@ -42,7 +42,7 @@ class Author(BookDataModel):
                 for book in self.book_set.values_list("id", flat=True)
             ]
             cache.delete_many(cache_keys)
-        
+
         # normalize isni format
         if self.isni:
             self.isni = re.sub(r"\s", "", self.isni)
