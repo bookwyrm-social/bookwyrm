@@ -59,13 +59,13 @@ class ReadThroughForm(CustomForm):
                 "stopped_date", _("Reading stopped date cannot be before start date.")
             )
         current_time = datetime.datetime.now()
-        if current_time < stopped_date:
+        if stopped_date is not None and current_time.timestamp() < stopped_date.timestamp():
             self.add_error(
                 "stopped_date", _("Reading stopped date cannot be in the future.")
             )
-        if current_time < finish_date:
+        if finish_date is not None and current_time.timestamp() < finish_date.timestamp():
             self.add_error(
-                "finished_date", _("Reading finished date cannot be in the future.")
+                "finish_date", _("Reading finished date cannot be in the future.")
             )
 
     class Meta:
