@@ -6,7 +6,7 @@ from django.utils.translation import gettext_lazy as _
 from bookwyrm import models
 from bookwyrm.models.user import FeedFilterChoices
 from .custom_form import CustomForm
-
+import datetime
 
 # pylint: disable=missing-class-docstring
 class FeedStatusTypesForm(CustomForm):
@@ -57,6 +57,15 @@ class ReadThroughForm(CustomForm):
         if start_date and stopped_date and start_date > stopped_date:
             self.add_error(
                 "stopped_date", _("Reading stopped date cannot be before start date.")
+            )
+        current_time = datetime.datetime.now()
+        if current_time < stopped_date:
+            self.add_error(
+                "stopped_date", _("Reading stopped date cannot be in the future.")
+            )
+        if current_time < finish_date:
+            self.add_error(
+                "finished_date", _("Reading finished date cannot be in the future.")
             )
 
     class Meta:
