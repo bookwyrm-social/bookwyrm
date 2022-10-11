@@ -68,7 +68,7 @@ class EditAuthor(View):
         if not form.is_valid():
             data = {"author": author, "form": form}
             return TemplateResponse(request, "author/edit_author.html", data)
-        author = form.save()
+        author = form.save(request)
 
         return redirect(f"/author/{author.id}")
 
