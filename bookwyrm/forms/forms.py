@@ -1,4 +1,5 @@
 """ using django model forms """
+import datetime
 from django import forms
 from django.forms import widgets
 from django.utils.translation import gettext_lazy as _
@@ -6,7 +7,6 @@ from django.utils.translation import gettext_lazy as _
 from bookwyrm import models
 from bookwyrm.models.user import FeedFilterChoices
 from .custom_form import CustomForm
-import datetime
 
 # pylint: disable=missing-class-docstring
 class FeedStatusTypesForm(CustomForm):
@@ -77,3 +77,4 @@ class ReadThroughForm(CustomForm):
     class Meta:
         model = models.ReadThrough
         fields = ["user", "book", "start_date", "finish_date", "stopped_date"]
+
