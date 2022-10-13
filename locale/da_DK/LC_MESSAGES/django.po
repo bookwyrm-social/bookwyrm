@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-10-04 18:03+0000\n"
-"PO-Revision-Date: 2022-10-13 19:42\n"
+"PO-Revision-Date: 2022-10-13 21:12\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Danish\n"
 "Language: da\n"
@@ -56,112 +56,112 @@ msgstr "Læsning slutdato kan ikke være før startdato."
 
 #: bookwyrm/forms/forms.py:59
 msgid "Reading stopped date cannot be before start date."
-msgstr ""
+msgstr "Læsning slutdato kan ikke være før startdato."
 
 #: bookwyrm/forms/landing.py:38
 msgid "User with this username already exists"
-msgstr ""
+msgstr "Der findes allerede en bruger med dette brugernavn"
 
 #: bookwyrm/forms/landing.py:47
 msgid "A user with this email already exists."
-msgstr ""
+msgstr "Der findes allerede en bruger med denne e-mailadresse."
 
 #: bookwyrm/forms/links.py:36
 msgid "This domain is blocked. Please contact your administrator if you think this is an error."
-msgstr ""
+msgstr "Dette domæne er blokeret. Kontakt venligst din administrator, hvis du mener, at dette er en fejl."
 
 #: bookwyrm/forms/links.py:46
 msgid "This link with file type has already been added for this book. If it is not visible, the domain is still pending."
-msgstr ""
+msgstr "Dette link med filtype er allerede blevet tilføjet for denne bog. Hvis det ikke er synligt, er domænet stadig ventende."
 
 #: bookwyrm/forms/lists.py:26
 msgid "List Order"
-msgstr ""
+msgstr "Listesortering"
 
 #: bookwyrm/forms/lists.py:27
 msgid "Book Title"
-msgstr ""
+msgstr "Bogtitel"
 
 #: bookwyrm/forms/lists.py:28 bookwyrm/templates/shelf/shelf.html:156
 #: bookwyrm/templates/shelf/shelf.html:188
 #: bookwyrm/templates/snippets/create_status/review.html:32
 msgid "Rating"
-msgstr ""
+msgstr "Bedømmelse"
 
 #: bookwyrm/forms/lists.py:30 bookwyrm/templates/lists/list.html:185
 msgid "Sort By"
-msgstr ""
+msgstr "Sortér efter"
 
 #: bookwyrm/forms/lists.py:34
 msgid "Ascending"
-msgstr ""
+msgstr "Stigende"
 
 #: bookwyrm/forms/lists.py:35
 msgid "Descending"
-msgstr ""
+msgstr "Faldende"
 
 #: bookwyrm/importers/importer.py:145 bookwyrm/importers/importer.py:167
 msgid "Error loading book"
-msgstr ""
+msgstr "Fejl under indlæsning af bog"
 
 #: bookwyrm/importers/importer.py:154
 msgid "Could not find a match for book"
-msgstr ""
+msgstr "Kunne ikke finde en match til bogen"
 
 #: bookwyrm/models/announcement.py:11
 msgid "Primary"
-msgstr ""
+msgstr "Primær"
 
 #: bookwyrm/models/announcement.py:12
 msgid "Success"
-msgstr ""
+msgstr "Fuldført"
 
 #: bookwyrm/models/announcement.py:13
 #: bookwyrm/templates/settings/invites/manage_invites.html:47
 msgid "Link"
-msgstr ""
+msgstr "Link"
 
 #: bookwyrm/models/announcement.py:14
 msgid "Warning"
-msgstr ""
+msgstr "Advarsel"
 
 #: bookwyrm/models/announcement.py:15
 msgid "Danger"
-msgstr ""
+msgstr "Fare"
 
 #: bookwyrm/models/antispam.py:112 bookwyrm/models/antispam.py:146
 msgid "Automatically generated report"
-msgstr ""
+msgstr "Automatisk genereret rapport"
 
 #: bookwyrm/models/base_model.py:18 bookwyrm/models/link.py:72
 #: bookwyrm/templates/import/import_status.html:207
 #: bookwyrm/templates/settings/link_domains/link_domains.html:19
 msgid "Pending"
-msgstr ""
+msgstr "Afventende"
 
 #: bookwyrm/models/base_model.py:19
 msgid "Self deletion"
-msgstr ""
+msgstr "Selvsletning"
 
 #: bookwyrm/models/base_model.py:20
 msgid "Moderator suspension"
-msgstr ""
+msgstr "Suspenderet af moderator"
 
 #: bookwyrm/models/base_model.py:21
 msgid "Moderator deletion"
-msgstr ""
+msgstr "Slettet af moderator"
 
 #: bookwyrm/models/base_model.py:22
 msgid "Domain block"
-msgstr ""
+msgstr "Domæne blokering"
 
 #: bookwyrm/models/book.py:262
 msgid "Audiobook"
-msgstr ""
+msgstr "Lydbog"
 
 #: bookwyrm/models/book.py:263
 msgid "eBook"
-msgstr ""
+msgstr "e-bog"
 
 #: bookwyrm/models/book.py:264
 msgid "Graphic novel"
@@ -169,17 +169,17 @@ msgstr ""
 
 #: bookwyrm/models/book.py:265
 msgid "Hardcover"
-msgstr ""
+msgstr "Hardcover"
 
 #: bookwyrm/models/book.py:266
 msgid "Paperback"
-msgstr ""
+msgstr "Paperback"
 
 #: bookwyrm/models/federated_server.py:11
 #: bookwyrm/templates/settings/federation/edit_instance.html:55
 #: bookwyrm/templates/settings/federation/instance_list.html:22
 msgid "Federated"
-msgstr ""
+msgstr "Fødereret"
 
 #: bookwyrm/models/federated_server.py:12 bookwyrm/models/link.py:71
 #: bookwyrm/templates/settings/federation/edit_instance.html:56
@@ -187,26 +187,26 @@ msgstr ""
 #: bookwyrm/templates/settings/federation/instance_list.html:26
 #: bookwyrm/templates/settings/link_domains/link_domains.html:27
 msgid "Blocked"
-msgstr ""
+msgstr "Blokeret"
 
 #: bookwyrm/models/fields.py:27
 #, python-format
 msgid "%(value)s is not a valid remote_id"
-msgstr ""
+msgstr "%(value)s er ikke en gyldig remote_id"
 
 #: bookwyrm/models/fields.py:36 bookwyrm/models/fields.py:45
 #, python-format
 msgid "%(value)s is not a valid username"
-msgstr ""
+msgstr "%(value)s er ikke et gyldigt brugernavn"
 
 #: bookwyrm/models/fields.py:181 bookwyrm/templates/layout.html:141
 #: bookwyrm/templates/ostatus/error.html:29
 msgid "username"
-msgstr ""
+msgstr "brugernavn"
 
 #: bookwyrm/models/fields.py:186
 msgid "A user with that username already exists."
-msgstr ""
+msgstr "Der findes allerede en bruger med dette brugernavn."
 
 #: bookwyrm/models/fields.py:205
 #: bookwyrm/templates/snippets/privacy-icons.html:3
@@ -214,7 +214,7 @@ msgstr ""
 #: bookwyrm/templates/snippets/privacy_select.html:11
 #: bookwyrm/templates/snippets/privacy_select_no_followers.html:11
 msgid "Public"
-msgstr ""
+msgstr "Offentlig"
 
 #: bookwyrm/models/fields.py:206
 #: bookwyrm/templates/snippets/privacy-icons.html:7
@@ -222,14 +222,14 @@ msgstr ""
 #: bookwyrm/templates/snippets/privacy_select.html:14
 #: bookwyrm/templates/snippets/privacy_select_no_followers.html:14
 msgid "Unlisted"
-msgstr ""
+msgstr "Ikke oplistet"
 
 #: bookwyrm/models/fields.py:207
 #: bookwyrm/templates/snippets/privacy_select.html:17
 #: bookwyrm/templates/user/relationships/followers.html:6
 #: bookwyrm/templates/user/relationships/layout.html:11
 msgid "Followers"
-msgstr ""
+msgstr "Følgere"
 
 #: bookwyrm/models/fields.py:208
 #: bookwyrm/templates/snippets/create_status/post_options_block.html:6
@@ -238,52 +238,52 @@ msgstr ""
 #: bookwyrm/templates/snippets/privacy_select.html:20
 #: bookwyrm/templates/snippets/privacy_select_no_followers.html:17
 msgid "Private"
-msgstr ""
+msgstr "Privat"
 
 #: bookwyrm/models/link.py:51
 msgid "Free"
-msgstr ""
+msgstr "Gratis"
 
 #: bookwyrm/models/link.py:52
 msgid "Purchasable"
-msgstr ""
+msgstr "Kan købes"
 
 #: bookwyrm/models/link.py:53
 msgid "Available for loan"
-msgstr ""
+msgstr "Tilgængelig for lån"
 
 #: bookwyrm/models/link.py:70
 #: bookwyrm/templates/settings/link_domains/link_domains.html:23
 msgid "Approved"
-msgstr ""
+msgstr "Godkendt"
 
 #: bookwyrm/models/user.py:32 bookwyrm/templates/book/book.html:289
 msgid "Reviews"
-msgstr ""
+msgstr "Anmeldelser"
 
 #: bookwyrm/models/user.py:33
 msgid "Comments"
-msgstr ""
+msgstr "Kommentarer"
 
 #: bookwyrm/models/user.py:34
 msgid "Quotations"
-msgstr ""
+msgstr "Citater"
 
 #: bookwyrm/models/user.py:35
 msgid "Everything else"
-msgstr ""
+msgstr "Alt det andet"
 
 #: bookwyrm/settings.py:209
 msgid "Home Timeline"
-msgstr ""
+msgstr "Hjem-tidslinje"
 
 #: bookwyrm/settings.py:209
 msgid "Home"
-msgstr ""
+msgstr "Hjem"
 
 #: bookwyrm/settings.py:210
 msgid "Books Timeline"
-msgstr ""
+msgstr "Bøger Tidslinje"
 
 #: bookwyrm/settings.py:210
 #: bookwyrm/templates/guided_tour/user_profile.html:101
@@ -291,79 +291,79 @@ msgstr ""
 #: bookwyrm/templates/search/layout.html:43
 #: bookwyrm/templates/user/layout.html:91
 msgid "Books"
-msgstr ""
+msgstr "Bøger"
 
 #: bookwyrm/settings.py:282
 msgid "English"
-msgstr ""
+msgstr "Engelsk"
 
 #: bookwyrm/settings.py:283
 msgid "Català (Catalan)"
-msgstr ""
+msgstr "Català (catalansk)"
 
 #: bookwyrm/settings.py:284
 msgid "Deutsch (German)"
-msgstr ""
+msgstr "Deutsch (tysk)"
 
 #: bookwyrm/settings.py:285
 msgid "Español (Spanish)"
-msgstr ""
+msgstr "Español (spansk)"
 
 #: bookwyrm/settings.py:286
 msgid "Galego (Galician)"
-msgstr ""
+msgstr "Galego (galicisk)"
 
 #: bookwyrm/settings.py:287
 msgid "Italiano (Italian)"
-msgstr ""
+msgstr "Italiano (italiensk)"
 
 #: bookwyrm/settings.py:288
 msgid "Suomi (Finnish)"
-msgstr ""
+msgstr "Suomi (finsk)"
 
 #: bookwyrm/settings.py:289
 msgid "Français (French)"
-msgstr ""
+msgstr "Français (fransk)"
 
 #: bookwyrm/settings.py:290
 msgid "Lietuvių (Lithuanian)"
-msgstr ""
+msgstr "Lietuviuţ(litauisk)"
 
 #: bookwyrm/settings.py:291
 msgid "Norsk (Norwegian)"
-msgstr ""
+msgstr "Norsk (norsk)"
 
 #: bookwyrm/settings.py:292
 msgid "Polski (Polish)"
-msgstr ""
+msgstr "Polski (polsk)"
 
 #: bookwyrm/settings.py:293
 msgid "Português do Brasil (Brazilian Portuguese)"
-msgstr ""
+msgstr "Português (Brasil) (brasiliansk portugisisk)"
 
 #: bookwyrm/settings.py:294
 msgid "Português Europeu (European Portuguese)"
-msgstr ""
+msgstr "Português Europeu (European Portuguese)"
 
 #: bookwyrm/settings.py:295
 msgid "Română (Romanian)"
-msgstr ""
+msgstr "Română (rumænsk)"
 
 #: bookwyrm/settings.py:296
 msgid "Svenska (Swedish)"
-msgstr ""
+msgstr "Svenska (svensk)"
 
 #: bookwyrm/settings.py:297
 msgid "简体中文 (Simplified Chinese)"
-msgstr ""
+msgstr "简体中文 (forenklet kinesisk)"
 
 #: bookwyrm/settings.py:298
 msgid "繁體中文 (Traditional Chinese)"
-msgstr ""
+msgstr "繁體中文 (traditionelt kinesisk)"
 
 #: bookwyrm/templates/404.html:4 bookwyrm/templates/404.html:8
 msgid "Not Found"
-msgstr ""
+msgstr "Ikke fundet"
 
 #: bookwyrm/templates/404.html:9
 msgid "The page you requested doesn't seem to exist!"
@@ -605,17 +605,17 @@ msgstr ""
 #: bookwyrm/templates/annual_summary/layout.html:251
 #, python-format
 msgid "Their rating: <strong>%(rating)s</strong>"
-msgstr ""
+msgstr "Deres bedømmelse: <strong>%(rating)s</strong>"
 
 #: bookwyrm/templates/annual_summary/layout.html:268
 #, python-format
 msgid "All the books %(display_name)s read in %(year)s"
-msgstr ""
+msgstr "Alle bøger %(display_name)s læst i %(year)s"
 
 #: bookwyrm/templates/author/author.html:18
 #: bookwyrm/templates/author/author.html:19
 msgid "Edit Author"
-msgstr ""
+msgstr "Rediger forfatter"
 
 #: bookwyrm/templates/author/author.html:35
 msgid "Author details"
