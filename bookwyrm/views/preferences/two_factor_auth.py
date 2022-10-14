@@ -110,7 +110,7 @@ class LoginWith2FA(View):
         """Check 2FA code and allow/disallow login"""
         try:
             user = models.User.objects.get(username=request.session["2fa_user"])
-        except:
+        except Exception:
             request.session["2fa_auth_time"] = 0
             return HttpResponseBadRequest("Invalid user")
 
