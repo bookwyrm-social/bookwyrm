@@ -1,6 +1,5 @@
 """ class views for 2FA management """
 from datetime import datetime, timedelta
-import time
 import pyotp
 import qrcode
 import qrcode.image.svg
