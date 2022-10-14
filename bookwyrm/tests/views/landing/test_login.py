@@ -137,7 +137,7 @@ class LoginViews(TestCase):
 
         with patch("bookwyrm.views.landing.login.login"):
             result = view(request)
-        self.assertEqual(result.url, "/login-2FA-prompt")
+        self.assertEqual(result.url, "/2fa-prompt")
         self.assertEqual(result.status_code, 302)
 
     def test_login_post_with_2fa(self, *_):
@@ -154,5 +154,5 @@ class LoginViews(TestCase):
 
         with patch("bookwyrm.views.landing.login.login"):
             result = view(request)
-        self.assertEqual(result.url, "/login-2FA-check")
+        self.assertEqual(result.url, "/2fa-check")
         self.assertEqual(result.status_code, 302)
