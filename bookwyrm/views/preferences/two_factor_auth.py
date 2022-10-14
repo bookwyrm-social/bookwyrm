@@ -56,7 +56,7 @@ class Edit2FA(View):
         qr_code.add_data(provisioning_url)
         qr_code.make(fit=True)
         img = qr_code.make_image(attrib={"fill": "black"})
-        return str(img.to_string(), 'utf-8') # to_string() returns a byte string
+        return str(img.to_string(), "utf-8")  # to_string() returns a byte string
 
 
 @method_decorator(login_required, name="dispatch")
@@ -112,7 +112,11 @@ class LoginWith2FA(View):
             request.session["2fa_auth_time"] = 0
             return redirect("/")
         user = models.User.objects.get(username=request.session["2fa_user"])
-        session_time = int(request.session["2fa_auth_time"]) if request.session["2fa_auth_time"] else 0
+        session_time = (
+            int(request.session["2fa_auth_time"])
+            if request.session["2fa_auth_time"]
+            else 0
+        )
         elapsed_time = datetime.now() - datetime.fromtimestamp(session_time)
         form = forms.Confirm2FAForm(request.POST, instance=user)
         # don't allow the login credentials to last too long before completing login
