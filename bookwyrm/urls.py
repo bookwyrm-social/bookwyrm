@@ -500,12 +500,12 @@ urlpatterns = [
         name="disable-2fa",
     ),
     re_path(
-        r"^login-2FA-check/?$",
+        r"^2fa-check/?$",
         views.LoginWith2FA.as_view(),
         name="login-with-2fa",
     ),
     re_path(
-        r"^login-2FA-prompt/?$",
+        r"^2fa-prompt/?$",
         views.Prompt2FA.as_view(),
         name="prompt-2fa",
     ),
