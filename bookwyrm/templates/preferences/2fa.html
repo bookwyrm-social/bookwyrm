@@ -32,7 +32,7 @@
     </div>
     {% elif request.user.two_factor_auth %}
     <div class="block">
-        <p>Two Factor Authentication is active on your account.</p>
+        <p>{% trans "Two Factor Authentication is active on your account." %}</p>
         <a class="button is-danger" href="{% url 'disable-2fa' %}">{% trans "Disable 2FA" %}</a>
     </div>
     <div class="block">
@@ -42,21 +42,21 @@
     {% elif password_confirmed %}
     <form name="confirm-2fa" action="{% url 'conf-2fa' %}" method="post" enctype="multipart/form-data">
     {% csrf_token %}
-        <p>Scan the QR code with your authentication app and then enter the code from  your app below to confirm your app is set up.</p>
-        <div>
-            <svg width="200" height="200" style="background: white;" xmlns="http://www.w3.org/2000/svg">
-                {{ qrcode | safe }}
-            </svg>
+        <p>{% trans "Scan the QR code with your authentication app and then enter the code from  your app below to confirm your app is set up." %}</p>
+        <div class="columns">
+            <section class="column is-narrow">
+                <figure class="m-4">{{ qrcode | safe }}</figure>
+                <div class="field">
+                    <label class="label" for="id_otp">{% trans "Enter the code from your app:" %}</label>
+                    {{ form.otp }}
+                    {% include 'snippets/form_errors.html' with errors_list=form.otp.errors id="desc_otp" %}
+                </div>
+                <button class="button is-primary" type="submit">{% trans "Confirm" %}</button>
+            </section>
         </div>
-        <div class="field">
-            <label class="label" for="id_otp">{% trans "Enter the code from your authenticator app:" %}</label>
-            {{ form.otp }}
-            {% include 'snippets/form_errors.html' with errors_list=form.otp.errors id="desc_otp" %}
-        </div>
-        <button class="button is-primary" type="submit">{% trans "Confirm" %}</button>
     </form>
     {% else %}
-    <p class="">
+    <p>
         {% trans "You can make your account more secure by using Two Factor Authentication (2FA). This will require you to enter a one-time code using a phone app like <em>Authy</em>, <em>Google Authenticator</em> or <em>Microsoft Authenticator</em> each time you log in." %}
     </p>
     <p> {% trans "Confirm your password to begin setting up 2FA." %}</p>
