@@ -77,4 +77,3 @@ class ReadThroughForm(CustomForm):
     class Meta:
         model = models.ReadThrough
         fields = ["user", "book", "start_date", "finish_date", "stopped_date"]
-
