@@ -6,6 +6,7 @@ import qrcode.image.svg
 
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponseBadRequest
 from django.template.response import TemplateResponse
 from django.shortcuts import redirect
@@ -109,8 +110,8 @@ class LoginWith2FA(View):
     def post(self, request):
         """Check 2FA code and allow/disallow login"""
         try:
-            user = models.User.objects.get(username=request.session["2fa_user"])
-        except Exception:
+            user = models.User.objects.get(username=request.session.get("2fa_user"))
+        except ObjectDoesNotExist:
             request.session["2fa_auth_time"] = 0
             return HttpResponseBadRequest("Invalid user")
 
