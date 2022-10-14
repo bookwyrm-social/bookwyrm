@@ -55,7 +55,7 @@ class Login(View):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             # if 2fa is set, don't log them in until they enter the right code
-            if user.two_factor_auth is True:
+            if user.two_factor_auth:
                 request.session["2fa_user"] = user.username
                 request.session["2fa_auth_time"] = time.time()
                 return redirect("login-with-2fa")

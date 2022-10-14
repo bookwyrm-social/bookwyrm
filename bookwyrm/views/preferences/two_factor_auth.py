@@ -14,7 +14,7 @@ from django.views import View
 from django.views.decorators.debug import sensitive_post_parameters
 
 from bookwyrm import forms, models
-from bookwyrm.settings import DOMAIN
+from bookwyrm.settings import DOMAIN, TWO_FACTOR_LOGIN_MAX_SECONDS
 from bookwyrm.views.helpers import set_language
 
 # pylint: disable= no-self-use
@@ -56,7 +56,7 @@ class Edit2FA(View):
         qr_code.add_data(provisioning_url)
         qr_code.make(fit=True)
         img = qr_code.make_image(attrib={"fill": "black"})
-        return img.to_string()
+        return str(img.to_string(), 'utf-8') # to_string() returns a byte string
 
 
 @method_decorator(login_required, name="dispatch")
@@ -108,24 +108,19 @@ class LoginWith2FA(View):
 
     def post(self, request):
         """Check 2FA code and allow/disallow login"""
+        if "2fa_user" not in request.session:
+            request.session["2fa_auth_time"] = 0
+            return redirect("/")
         user = models.User.objects.get(username=request.session["2fa_user"])
-        elapsed_time = datetime.now() - datetime.fromtimestamp(
-            int(request.session["2fa_auth_time"])
-        )
+        session_time = int(request.session["2fa_auth_time"]) if request.session["2fa_auth_time"] else 0
+        elapsed_time = datetime.now() - datetime.fromtimestamp(session_time)
         form = forms.Confirm2FAForm(request.POST, instance=user)
         # don't allow the login credentials to last too long before completing login
-        if elapsed_time > timedelta(seconds=60):
+        if elapsed_time > timedelta(seconds=TWO_FACTOR_LOGIN_MAX_SECONDS):
             request.session["2fa_user"] = None
             request.session["2fa_auth_time"] = 0
             return redirect("/")
         if not form.is_valid():
-            # make life harder for bots
-            # humans are unlikely to get it wrong more than twice
-            if "2fa_attempts" not in request.session:
-                request.session["2fa_attempts"] = 0
-            request.session["2fa_attempts"] = request.session["2fa_attempts"] + 1
-            time.sleep(2 ** request.session["2fa_attempts"])
-
             data = {"form": form, "2fa_user": user}
             return TemplateResponse(
                 request, "two_factor_auth/two_factor_login.html", data
