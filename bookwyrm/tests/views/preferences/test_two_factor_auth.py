@@ -110,29 +110,29 @@ class TwoFactorViews(TestCase):
         self.assertIsInstance(result, TemplateResponse)
         self.assertEqual(result.status_code, 200)
 
-    # def test_post_login_with_2fa(self, *_):
-    #     """check 2FA login works"""
-    # NOTE this throws a redis error.
-    # Possibly because the function it tests wants to check the user database?
-    # can we mock that?
-    # view = views.LoginWith2FA.as_view()
-    # form = forms.Confirm2FAForm()
-    # totp = pyotp.TOTP('UEWMVJHO23G5XLMVSOCL6TNTSSACJH2X')
+    def test_post_login_with_2fa(self, *_):
+        """check 2FA login works"""
+        view = views.LoginWith2FA.as_view()
+        form = forms.Confirm2FAForm()
+        totp = pyotp.TOTP("UEWMVJHO23G5XLMVSOCL6TNTSSACJH2X")
 
-    # form.data["otp"] = totp.now()
-    # request = self.factory.post("", form.data)
-    # request.user = self.local_user
+        form.data["otp"] = totp.now()
+        request = self.factory.post("", form.data)
+        request.user = self.local_user
 
-    # middleware = SessionMiddleware(request)
-    # middleware.process_request(request)
-    # request.session['2fa_auth_time'] = time.time()
-    # request.session['2fa_user'] = self.local_user.username
-    # request.session.save()
+        middleware = SessionMiddleware(request)
+        middleware.process_request(request)
+        request.session["2fa_auth_time"] = time.time()
+        request.session["2fa_user"] = self.local_user.username
+        request.session.save()
 
-    # with patch("bookwyrm.views.preferences.two_factor_auth.LoginWith2FA"):
-    #     result = view(request)
-    # self.assertIsInstance(result, TemplateResponse)
-    # self.assertEqual(result.status_code, 200)
+        with patch("bookwyrm.views.preferences.two_factor_auth.LoginWith2FA"), patch(
+            "bookwyrm.views.preferences.two_factor_auth.login"
+        ):
+            result = view(request)
+        self.assertEqual(result.url, "/")
+        self.assertEqual(result.status_code, 302)
+        self.assertTrue(request.user.is_authenticated)
 
     def test_post_login_with_2fa_wrong_code(self, *_):
         """check 2FA login fails"""
