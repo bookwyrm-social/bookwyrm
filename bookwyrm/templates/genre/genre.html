@@ -14,14 +14,14 @@
     </div>
     {% if request.user.is_authenticated %}
     <div class="column is-narrow" id="tour-create-list">
-        {% trans "Create List" as button_text %}
+        {% trans "Suggest Genre" as button_text %}
         {% include 'snippets/toggle/open_button.html' with controls_text="create_list" icon_with_text="plus" text=button_text focus="create_list_header" %}
     </div>
     {% endif %}
 </header>
 {% if request.user.is_authenticated %}
 <div class="block">
-    {% include 'lists/create_form.html' with controls_text="create_list" %}
+    {% include 'genre/create_form.html' with controls_text="create_list" %}
 </div>
 {% endif %}
 
@@ -50,10 +50,4 @@
 </div>
 {% endif %}
 
-{% endblock %}
-
-{% block scripts %}
-{% if request.user.show_guided_tour %}
-    {% include 'guided_tour/lists.html' %}
-{% endif %}
 {% endblock %}
