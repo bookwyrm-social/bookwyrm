@@ -24,11 +24,16 @@ class Search(View):
     def get(self, request):
         """that search bar up top"""
 
+        
+
         if is_api_request(request):
+            print("Returning API book search.")
             return api_book_search(request)
 
         query = request.GET.get("q")
-        if not query:
+        genre_query = request.GET.get("genres")
+        if not query and not genre_query:
+            print("Exited because nothing was selected.")
             context = {}
             context["genre_tags"] = models.Genre.objects.all()
             return TemplateResponse(request, "search/book.html", context)
@@ -36,6 +41,8 @@ class Search(View):
         search_type = request.GET.get("type")
         if query and not search_type:
             search_type = "user" if "@" in query else "book"
+
+        print("Looking up this type: " + search_type)
 
         endpoints = {
             "book": book_search,
@@ -61,19 +68,25 @@ def api_book_search(request):
     )
 
 def genre_search(request):
+    print("Entered the genre search function")
     genre_list = request.GET.getlist('genres')
+    buttonSelection = request.GET.get("search_buttons")
+
+    gen_query = request.GET.get("genres")
     query = request.GET.get("q")
     query = isbn_check(query)
 
+    print(buttonSelection)
     #local_results = models.Edition.objects.all()
     min_confidence = request.GET.get("min_confidence", 0)
-    local_results = search_genre(genre_list, "search_or")
+    local_results = search_genre(genre_list, buttonSelection)
 
 
     paginated = Paginator(local_results, PAGE_LENGTH)
     page = paginated.get_page(request.GET.get("page"))
     data = {
         "genre_tags": models.Genre.objects.all(),
+        "gen_query": gen_query,
         "query": query,
         "results": page,
         "type": "book",

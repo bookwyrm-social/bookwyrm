@@ -68,7 +68,7 @@
             </label>
         </div>
 
-        <select data-placeholder="Click to start selecting genres!" multiple class="chosen-select" name="genres" id="genres">
+        <select data-placeholder="Click to start selecting genres!" multiple class="chosen-select" name="genres" id="genres" value="{{ gen_query }}">
             <option value=""></option>
             {% for genre in genre_tags %}
             <option value="{{genre.id}}">{{genre.genre_name}}</option>
@@ -84,7 +84,7 @@
 </form>
 
 
-{% if query %}
+{% if query or gen_query%}
 <nav class="tabs">
     <ul>
         <li{% if type == "book" %} class="is-active"{% endif %}>
