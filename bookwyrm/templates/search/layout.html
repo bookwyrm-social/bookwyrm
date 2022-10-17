@@ -20,6 +20,29 @@
     });
 </script>
 
+<script>
+    $(document).ready(function() {
+
+        if($("#type-list").val() != "genre") {
+            $("#gen-search-bar").hide();
+        }
+
+        $("#type-list").on('change', function() {
+            //Show the genre search bar if the user has that selected in the list.
+            //Otherwise, hide it.
+            if($(this).val() == "genre") {
+                //alert("OH NOOOO!!!! THAT SUCKS");
+                $("#gen-search-bar").show();
+            } else {
+                $("#gen-search-bar").hide();
+            }
+            //alert($(this).val());
+        });
+    });
+
+
+</script>
+
 <div class="block">
     <h1 class="title">
         {% blocktrans %}Search{% endblocktrans %}
@@ -34,7 +57,7 @@
         </div>
         <div class="control">
             <div class="select" aria-label="{% trans 'Search type' %}">
-                <select name="type">
+                <select name="type" id="type-list">
                     <option value="book" {% if type == "book" %}selected{% endif %}>{% trans "Books" %}</option>
                     <option value="genre" {% if type == "genre" %}selected{% endif %}>{% trans "Genres" %}</option>
                     {% if request.user.is_authenticated %}
@@ -51,7 +74,7 @@
             </button>
         </div>
     </div>
-    <div class="field">
+    <div class="field" id="gen-search-bar">
 
         <div class="control">
             <label class="radio">
@@ -75,9 +98,6 @@
             {% endfor %}
         </select>
 
-    </div>
-    <div class="field">
-        <button class="button is-primary" type="submit">Search</button>
     </div>
 
 
