@@ -55,15 +55,15 @@
 
         <div class="control">
             <label class="radio">
-                <input type="radio" name="search_buttons" value="search_and">
+                <input type="radio" name="search_buttons" value="search_and" {% if btn_select == "search_and" %}checked{% endif %}>
                 Must include all selected genres
             </label>
             <label class="radio">
-                <input type="radio" name="search_buttons" value="search_or">
+                <input type="radio" name="search_buttons" value="search_or" {% if btn_select == "search_or" %}checked{% endif %}>
                 Can include any of the selected genres
             </label>
             <label class="radio">
-                <input type="radio" name="search_buttons" value="search_exclude">
+                <input type="radio" name="search_buttons" value="search_exclude" {% if btn_select == "search_exclude" %}checked{% endif %}>
                 Exclude specified genres
             </label>
         </div>
@@ -89,6 +89,15 @@
     <ul>
         <li{% if type == "book" %} class="is-active"{% endif %}>
             <a href="{% url 'search' %}?q={{ query }}&type=book">{% trans "Books" %}</a>
+        </li>
+        <li{% if type == "genre" %} class="is-active"{% endif %}>
+            <a href="{% url 'search' %}?q=&type=genre&search_buttons={{ btn_select }}
+
+            {% for genrenum in gen_list %}
+            &genres={{ genrenum }}
+            {% endfor %}
+
+            ">{% trans "Genres" %}</a>
         </li>
         {% if request.user.is_authenticated %}
         <li{% if type == "user" %} class="is-active"{% endif %}>

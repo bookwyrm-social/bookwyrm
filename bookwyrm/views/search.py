@@ -87,9 +87,11 @@ def genre_search(request):
     data = {
         "genre_tags": models.Genre.objects.all(),
         "gen_query": gen_query,
+        "gen_list": genre_list,
+        "btn_select": buttonSelection,
         "query": query,
         "results": page,
-        "type": "book",
+        "type": "genre",
         "page_range": paginated.get_elided_page_range(
             page.number, on_each_side=2, on_ends=1
         ),
