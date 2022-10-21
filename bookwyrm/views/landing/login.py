@@ -1,4 +1,6 @@
 """ class views for login/register views """
+import time
+
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
@@ -29,6 +31,7 @@ class Login(View):
         }
         return TemplateResponse(request, "landing/login.html", data)
 
+    # pylint: disable=too-many-return-statements
     @sensitive_variables("password")
     @method_decorator(sensitive_post_parameters("password"))
     def post(self, request):
@@ -51,11 +54,26 @@ class Login(View):
         # perform authentication
         user = authenticate(request, username=username, password=password)
         if user is not None:
-            # successful login
+            # if 2fa is set, don't log them in until they enter the right code
+            if user.two_factor_auth:
+                request.session["2fa_user"] = user.username
+                request.session["2fa_auth_time"] = time.time()
+                return redirect("login-with-2fa")
+
+            # otherwise, successful login
             login(request, user)
             user.update_active_date()
             if request.POST.get("first_login"):
                 return set_language(user, redirect("get-started-profile"))
+
+            if user.two_factor_auth is None:
+                # set to false so this page doesn't pop up again
+                user.two_factor_auth = False
+                user.save(broadcast=False, update_fields=["two_factor_auth"])
+
+                # show the 2fa prompt page
+                return set_language(user, redirect("prompt-2fa"))
+
             return set_language(user, redirect("/"))
 
         # maybe the user is pending email confirmation
