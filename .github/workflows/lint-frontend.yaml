@@ -25,10 +25,10 @@ jobs:
         run: npm install stylelint stylelint-config-recommended stylelint-config-standard stylelint-order eslint
 
       # See .stylelintignore for files that are not linted.
-      - name: Run stylelint
-        run: >
-          npx stylelint bookwyrm/static/css/*.scss bookwyrm/static/css/bookwyrm/**/*.scss \
-            --config dev-tools/.stylelintrc.js
+      # - name: Run stylelint
+      #   run: >
+      #     npx stylelint bookwyrm/static/css/*.scss bookwyrm/static/css/bookwyrm/**/*.scss \
+      #       --config dev-tools/.stylelintrc.js
 
       # See .eslintignore for files that are not linted.
       - name: Run ESLint
