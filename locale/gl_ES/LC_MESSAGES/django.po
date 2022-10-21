@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-09-19 15:02+0000\n"
-"PO-Revision-Date: 2022-09-21 04:46\n"
+"POT-Creation-Date: 2022-10-04 18:03+0000\n"
+"PO-Revision-Date: 2022-10-15 16:03\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Galician\n"
 "Language: gl\n"
@@ -17,28 +17,28 @@ msgstr ""
 "X-Crowdin-File: /[bookwyrm-social.bookwyrm] main/locale/en_US/LC_MESSAGES/django.po\n"
 "X-Crowdin-File-ID: 1553\n"
 
-#: bookwyrm/forms/admin.py:41
+#: bookwyrm/forms/admin.py:42
 msgid "One Day"
 msgstr "Un día"
 
-#: bookwyrm/forms/admin.py:42
+#: bookwyrm/forms/admin.py:43
 msgid "One Week"
 msgstr "Unha semana"
 
-#: bookwyrm/forms/admin.py:43
+#: bookwyrm/forms/admin.py:44
 msgid "One Month"
 msgstr "Un mes"
 
-#: bookwyrm/forms/admin.py:44
+#: bookwyrm/forms/admin.py:45
 msgid "Does Not Expire"
 msgstr "Non caduca"
 
-#: bookwyrm/forms/admin.py:48
+#: bookwyrm/forms/admin.py:49
 #, python-brace-format
 msgid "{i} uses"
 msgstr "{i} usos"
 
-#: bookwyrm/forms/admin.py:49
+#: bookwyrm/forms/admin.py:50
 msgid "Unlimited"
 msgstr "Sen límite"
 
@@ -129,7 +129,7 @@ msgstr "Advertencia"
 msgid "Danger"
 msgstr "Perigo"
 
-#: bookwyrm/models/antispam.py:101 bookwyrm/models/antispam.py:135
+#: bookwyrm/models/antispam.py:112 bookwyrm/models/antispam.py:146
 msgid "Automatically generated report"
 msgstr "Denuncia creada automáticamente"
 
@@ -257,19 +257,19 @@ msgstr "Dispoñible para aluguer"
 msgid "Approved"
 msgstr "Aprobado"
 
-#: bookwyrm/models/user.py:31 bookwyrm/templates/book/book.html:289
+#: bookwyrm/models/user.py:32 bookwyrm/templates/book/book.html:289
 msgid "Reviews"
 msgstr "Recensións"
 
-#: bookwyrm/models/user.py:32
+#: bookwyrm/models/user.py:33
 msgid "Comments"
 msgstr "Comentarios"
 
-#: bookwyrm/models/user.py:33
+#: bookwyrm/models/user.py:34
 msgid "Quotations"
 msgstr "Citas"
 
-#: bookwyrm/models/user.py:34
+#: bookwyrm/models/user.py:35
 msgid "Everything else"
 msgstr "As outras cousas"
 
@@ -1285,7 +1285,7 @@ msgstr "Estado"
 #: bookwyrm/templates/settings/announcements/announcements.html:41
 #: bookwyrm/templates/settings/federation/instance.html:112
 #: bookwyrm/templates/settings/reports/report_links_table.html:6
-#: bookwyrm/templates/settings/themes.html:100
+#: bookwyrm/templates/settings/themes.html:99
 msgid "Actions"
 msgstr "Accións"
 
@@ -2202,7 +2202,7 @@ msgstr "Ligazóns de descarga"
 
 #: bookwyrm/templates/guided_tour/book.html:273
 msgid "Continue the tour by selecting <strong>Your books</strong> from the drop down menu."
-msgstr ""
+msgstr "Continúa co titorial seleccionando <strong>Os teus libros</strong> do menú despregable."
 
 #: bookwyrm/templates/guided_tour/book.html:296
 #: bookwyrm/templates/guided_tour/home.html:50
@@ -2216,27 +2216,27 @@ msgstr "Ok"
 
 #: bookwyrm/templates/guided_tour/group.html:10
 msgid "Welcome to the page for your group! This is where you can add and remove users, create user-curated lists, and edit the group details."
-msgstr ""
+msgstr "Benvida á páxina do teu grupo! Aquí podes engadir e quitar usuarias, crear listas xestionadas por usuarias e editar os detalles do grupo."
 
 #: bookwyrm/templates/guided_tour/group.html:11
 msgid "Your group"
-msgstr ""
+msgstr "O teu grupo"
 
 #: bookwyrm/templates/guided_tour/group.html:31
 msgid "Use this search box to find users to join your group. Currently users must be members of the same Bookwyrm instance and be invited by the group owner."
-msgstr ""
+msgstr "Usa esta caixa de busca para atopar usuarias para incluir no teu grupo. Por agora as usuarias deben pertencer á mesma instancia de Bookwyrm e ser convidadas pola administradora do grupo."
 
 #: bookwyrm/templates/guided_tour/group.html:32
 msgid "Find users"
-msgstr ""
+msgstr "Atopar usuarias"
 
 #: bookwyrm/templates/guided_tour/group.html:54
 msgid "Your group members will appear here. The group owner is marked with a star symbol."
-msgstr ""
+msgstr "Aquí aparecerán as integrantes do grupo. A dona do grupo está marcada co símbolo dunha estrela."
 
 #: bookwyrm/templates/guided_tour/group.html:55
 msgid "Group members"
-msgstr ""
+msgstr "Integrantes do grupo"
 
 #: bookwyrm/templates/guided_tour/group.html:77
 msgid "As well as creating lists from the Lists page, you can create a group-curated list here on the group's homepage. Any member of the group can create a list curated by group members."
@@ -2423,8 +2423,8 @@ msgid "If you still can't find your book, you can add a record manually."
 msgstr ""
 
 #: bookwyrm/templates/guided_tour/search.html:122
-msgid "Add a record manally"
-msgstr ""
+msgid "Add a record manually"
+msgstr "Crear rexistro manualmente"
 
 #: bookwyrm/templates/guided_tour/search.html:147
 msgid "Import, manually add, or view an existing book to continue the tour."
@@ -4950,7 +4950,7 @@ msgid "Add the file name using the form below to make it available in the applic
 msgstr "Engade o nome de ficheiro usando o formulario inferior para que esté dispoñible na interface da aplicación."
 
 #: bookwyrm/templates/settings/themes.html:42
-#: bookwyrm/templates/settings/themes.html:83
+#: bookwyrm/templates/settings/themes.html:82
 msgid "Add theme"
 msgstr "Engadir decorado"
 
@@ -4958,24 +4958,24 @@ msgstr "Engadir decorado"
 msgid "Unable to save theme"
 msgstr "Non se gardou o decorado"
 
-#: bookwyrm/templates/settings/themes.html:64
-#: bookwyrm/templates/settings/themes.html:94
+#: bookwyrm/templates/settings/themes.html:63
+#: bookwyrm/templates/settings/themes.html:93
 msgid "Theme name"
 msgstr "Nome do decorado"
 
-#: bookwyrm/templates/settings/themes.html:74
+#: bookwyrm/templates/settings/themes.html:73
 msgid "Theme filename"
 msgstr "Nome de ficheiro do decorado"
 
-#: bookwyrm/templates/settings/themes.html:89
+#: bookwyrm/templates/settings/themes.html:88
 msgid "Available Themes"
 msgstr "Decorados dispoñibles"
 
-#: bookwyrm/templates/settings/themes.html:97
+#: bookwyrm/templates/settings/themes.html:96
 msgid "File"
 msgstr "Ficheiro"
 
-#: bookwyrm/templates/settings/themes.html:112
+#: bookwyrm/templates/settings/themes.html:111
 msgid "Remove theme"
 msgstr "Eliminar decorado"
 
