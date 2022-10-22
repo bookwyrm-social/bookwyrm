@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-10-21 21:11+0000\n"
-"PO-Revision-Date: 2022-10-22 14:27\n"
+"PO-Revision-Date: 2022-10-22 15:28\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Welsh\n"
 "Language: cy\n"
@@ -68,7 +68,7 @@ msgstr "Ni all dyddiad atal darllen fod yn y dyfodol."
 
 #: bookwyrm/forms/forms.py:74
 msgid "Reading finished date cannot be in the future."
-msgstr ""
+msgstr "Ni all dyddiad gorffen darllen fod yn y dyfodol."
 
 #: bookwyrm/forms/landing.py:40
 msgid "User with this username already exists"
@@ -80,7 +80,7 @@ msgstr "Defnyddiwr gyda'r e-bost hwn eisoes yn bodoli."
 
 #: bookwyrm/forms/landing.py:107 bookwyrm/forms/landing.py:115
 msgid "Incorrect code"
-msgstr ""
+msgstr "Côd anghywir"
 
 #: bookwyrm/forms/links.py:36
 msgid "This domain is blocked. Please contact your administrator if you think this is an error."
@@ -1409,53 +1409,53 @@ msgstr "Cyhoeddwyd gan %(publisher)s."
 
 #: bookwyrm/templates/book/rating.html:13
 msgid "rated it"
-msgstr ""
+msgstr "graddio fe"
 
 #: bookwyrm/templates/book/sync_modal.html:15
 #, python-format
 msgid "Loading data will connect to <strong>%(source_name)s</strong> and check for any metadata about this book which aren't present here. Existing metadata will not be overwritten."
-msgstr ""
+msgstr "Bydd llwytho data yn cysylltu â <strong>%(source_name)s</strong> ac yn gwirio am unrhyw fetadata am y llyfr hwn nad yw'n bresennol yma. Ni fydd metadata presennol yn cael ei drosysgrifo."
 
 #: bookwyrm/templates/compose.html:5 bookwyrm/templates/compose.html:8
 msgid "Edit status"
-msgstr ""
+msgstr "Golygu statws"
 
 #: bookwyrm/templates/confirm_email/confirm_email.html:4
 msgid "Confirm email"
-msgstr ""
+msgstr "Cadarnhau e-bost"
 
 #: bookwyrm/templates/confirm_email/confirm_email.html:7
 msgid "Confirm your email address"
-msgstr ""
+msgstr "Cadarnhau cyfeiriad e-bost"
 
 #: bookwyrm/templates/confirm_email/confirm_email.html:13
 msgid "A confirmation code has been sent to the email address you used to register your account."
-msgstr ""
+msgstr "Mae côd cadarnhau wedi'i anfon i'r cyfeiriad e-bost a ddefnyddiwyd gennych i gofrestru'ch cyfrif."
 
 #: bookwyrm/templates/confirm_email/confirm_email.html:15
 msgid "Sorry! We couldn't find that code."
-msgstr ""
+msgstr "Mae'n ddrwg gennym, ni allem ddod o hyd i'r côd honno."
 
 #: bookwyrm/templates/confirm_email/confirm_email.html:19
 #: bookwyrm/templates/settings/users/user_info.html:92
 msgid "Confirmation code:"
-msgstr ""
+msgstr "Côd cadarnhau:"
 
 #: bookwyrm/templates/confirm_email/confirm_email.html:25
 #: bookwyrm/templates/landing/layout.html:81
 #: bookwyrm/templates/settings/dashboard/dashboard.html:102
 #: bookwyrm/templates/snippets/report_modal.html:53
 msgid "Submit"
-msgstr ""
+msgstr "Cyflwyno"
 
 #: bookwyrm/templates/confirm_email/confirm_email.html:38
 msgid "Can't find your code?"
-msgstr ""
+msgstr "Methu dod o hyd i'ch côd?"
 
 #: bookwyrm/templates/confirm_email/resend.html:5
 #: bookwyrm/templates/confirm_email/resend_modal.html:5
 msgid "Resend confirmation link"
-msgstr ""
+msgstr "Ail-anfon dolen cadarnhau"
 
 #: bookwyrm/templates/confirm_email/resend_modal.html:15
 #: bookwyrm/templates/landing/layout.html:68
@@ -1463,44 +1463,44 @@ msgstr ""
 #: bookwyrm/templates/preferences/edit_user.html:53
 #: bookwyrm/templates/snippets/register_form.html:27
 msgid "Email address:"
-msgstr ""
+msgstr "Cyfeiriad e-bost:"
 
 #: bookwyrm/templates/confirm_email/resend_modal.html:30
 msgid "Resend link"
-msgstr ""
+msgstr "Ail-anfon dolen"
 
 #: bookwyrm/templates/directory/community_filter.html:5
 msgid "Community"
-msgstr ""
+msgstr "Cymdeithas"
 
 #: bookwyrm/templates/directory/community_filter.html:8
 #: bookwyrm/templates/settings/users/user_admin.html:25
 msgid "Local users"
-msgstr ""
+msgstr "Defnyddwyr lleol"
 
 #: bookwyrm/templates/directory/community_filter.html:12
 #: bookwyrm/templates/settings/users/user_admin.html:33
 msgid "Federated community"
-msgstr ""
+msgstr "Cymuned ffedereidiwyd"
 
 #: bookwyrm/templates/directory/directory.html:4
 #: bookwyrm/templates/directory/directory.html:9
 #: bookwyrm/templates/user_menu.html:30
 msgid "Directory"
-msgstr ""
+msgstr "Cyfeiriadur"
 
 #: bookwyrm/templates/directory/directory.html:17
 msgid "Make your profile discoverable to other BookWyrm users."
-msgstr ""
+msgstr "Gwnewch eich proffil yn ddarganfyddadwy i ddefnyddwyr BookWyrm eraill."
 
 #: bookwyrm/templates/directory/directory.html:21
 msgid "Join Directory"
-msgstr ""
+msgstr "Ymuno a Cyfeiriadur"
 
 #: bookwyrm/templates/directory/directory.html:24
 #, python-format
 msgid "You can opt-out at any time in your <a href=\"%(path)s\">profile settings.</a>"
-msgstr ""
+msgstr "Gallwch optio allan unrhyw bryd yn eich <a href=\"%(path)s\">gosodiadau proffil.</a>"
 
 #: bookwyrm/templates/directory/directory.html:29
 #: bookwyrm/templates/directory/directory.html:31
@@ -1509,19 +1509,19 @@ msgstr ""
 #: bookwyrm/templates/feed/summary_card.html:14
 #: bookwyrm/templates/snippets/announcement.html:31
 msgid "Dismiss message"
-msgstr ""
+msgstr "Diystyru'r neges"
 
 #: bookwyrm/templates/directory/sort_filter.html:5
 msgid "Order by"
-msgstr ""
+msgstr "Trefnu gan"
 
 #: bookwyrm/templates/directory/sort_filter.html:9
 msgid "Recently active"
-msgstr ""
+msgstr "Yn weithgar yn ddiweddar"
 
 #: bookwyrm/templates/directory/sort_filter.html:10
 msgid "Suggested"
-msgstr ""
+msgstr "Awgrymwyd"
 
 #: bookwyrm/templates/directory/user_card.html:17
 #: bookwyrm/templates/directory/user_card.html:18
@@ -1534,7 +1534,7 @@ msgstr ""
 #: bookwyrm/templates/user/user_preview.html:16
 #: bookwyrm/templates/user/user_preview.html:17
 msgid "Locked account"
-msgstr ""
+msgstr "Cyfrif wedi'i gloi"
 
 #: bookwyrm/templates/directory/user_card.html:40
 msgid "follower you follow"
@@ -1544,7 +1544,7 @@ msgstr[1] ""
 msgstr[2] ""
 msgstr[3] ""
 msgstr[4] ""
-msgstr[5] ""
+msgstr[5] "dilynwyr rydych chi'n eu dilyn"
 
 #: bookwyrm/templates/directory/user_card.html:47
 msgid "book on your shelves"
@@ -1694,13 +1694,13 @@ msgstr "Dysgwch rhagor am %(site_name)s:"
 #: bookwyrm/templates/email/moderation_report/text_content.html:6
 #, python-format
 msgid "@%(reporter)s has flagged a link domain for moderation."
-msgstr ""
+msgstr "Mae @%(reporter)s wedi fflagio parth cyswllt i'w gymedroli."
 
 #: bookwyrm/templates/email/moderation_report/html_content.html:14
 #: bookwyrm/templates/email/moderation_report/text_content.html:10
 #, python-format
 msgid "@%(reporter)s has flagged behavior by @%(reportee)s for moderation."
-msgstr ""
+msgstr "Mae @%(reporter)s wedi nodi ymddygiad i'w cymedroli gan @%(reportee)s."
 
 #: bookwyrm/templates/email/moderation_report/html_content.html:21
 #: bookwyrm/templates/email/moderation_report/text_content.html:15
@@ -1751,7 +1751,7 @@ msgstr "Cysylltwch â gweinyddwr y safle"
 
 #: bookwyrm/templates/embed-layout.html:46
 msgid "Join BookWyrm"
-msgstr ""
+msgstr "Ymunwch â Bookwyrm"
 
 #: bookwyrm/templates/feed/direct_messages.html:8
 #, python-format
@@ -1807,11 +1807,11 @@ msgstr "Does dim llyfrau fan hyn eto! Chwiliwch am lyfr i gychwyn arni"
 
 #: bookwyrm/templates/feed/suggested_books.html:13
 msgid "Do you have book data from another service like GoodReads?"
-msgstr ""
+msgstr "Oes gennych chi ddata llyfrau o wasanaeth arall fel GoodReads?"
 
 #: bookwyrm/templates/feed/suggested_books.html:16
 msgid "Import your reading history"
-msgstr ""
+msgstr "Mewnforio eich hanes darllen"
 
 #: bookwyrm/templates/feed/suggested_users.html:5
 #: bookwyrm/templates/get_started/users.html:6
@@ -1868,7 +1868,7 @@ msgstr "Wedi'i ddarllen"
 #: bookwyrm/templates/get_started/book_preview.html:13
 #: bookwyrm/templates/shelf/shelf.html:89 bookwyrm/templates/user/user.html:36
 msgid "Stopped Reading"
-msgstr ""
+msgstr "Wedi stopio darllen"
 
 #: bookwyrm/templates/get_started/books.html:6
 msgid "What are you reading?"
@@ -1996,7 +1996,7 @@ msgstr "Dim defnyddwyr am \"%(query)s\""
 #: bookwyrm/templates/guided_tour/user_groups.html:32
 #: bookwyrm/templates/user/groups.html:17
 msgid "Create group"
-msgstr ""
+msgstr "Creu grŵp"
 
 #: bookwyrm/templates/groups/created_text.html:4
 #, python-format
