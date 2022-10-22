@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-10-21 21:11+0000\n"
-"PO-Revision-Date: 2022-10-21 21:25\n"
+"PO-Revision-Date: 2022-10-22 05:55\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Galician\n"
 "Language: gl\n"
@@ -52,7 +52,7 @@ msgstr "O contrasinal non concorda"
 
 #: bookwyrm/forms/edit_user.py:118
 msgid "Incorrect Password"
-msgstr ""
+msgstr "Contrasinal incorrecto"
 
 #: bookwyrm/forms/forms.py:54
 msgid "Reading finish date cannot be before start date."
@@ -64,11 +64,11 @@ msgstr "A data do fin da lectura non pode ser anterior á de inicio."
 
 #: bookwyrm/forms/forms.py:67
 msgid "Reading stopped date cannot be in the future."
-msgstr ""
+msgstr "A data de deixar a lectura non pode ser futura."
 
 #: bookwyrm/forms/forms.py:74
 msgid "Reading finished date cannot be in the future."
-msgstr ""
+msgstr "A data de fin da lectura non pode ser futura."
 
 #: bookwyrm/forms/landing.py:40
 msgid "User with this username already exists"
@@ -80,7 +80,7 @@ msgstr "Xa existe unha usuaria con este email."
 
 #: bookwyrm/forms/landing.py:107 bookwyrm/forms/landing.py:115
 msgid "Incorrect code"
-msgstr ""
+msgstr "Código incorrecto"
 
 #: bookwyrm/forms/links.py:36
 msgid "This domain is blocked. Please contact your administrator if you think this is an error."
@@ -3634,58 +3634,58 @@ msgstr "Estás a seguir a %(display_name)s!"
 #: bookwyrm/templates/preferences/2fa.html:7
 #: bookwyrm/templates/preferences/layout.html:24
 msgid "Two Factor Authentication"
-msgstr ""
+msgstr "Autenticación con dous factores"
 
 #: bookwyrm/templates/preferences/2fa.html:16
 msgid "Successfully updated 2FA settings"
-msgstr ""
+msgstr "Axustes 2FA actualizados correctamente"
 
 #: bookwyrm/templates/preferences/2fa.html:24
 msgid "Write down or copy and paste these codes somewhere safe."
-msgstr ""
+msgstr "Escribe ou copia estos códigos nalgún lugar seguro."
 
 #: bookwyrm/templates/preferences/2fa.html:25
 msgid "You must use them in order, and they will not be displayed again."
-msgstr ""
+msgstr "Telos que utilizar en orde, e non volverán a ser mostrados."
 
 #: bookwyrm/templates/preferences/2fa.html:35
 msgid "Two Factor Authentication is active on your account."
-msgstr ""
+msgstr "O Segundo Factor de Autenticación está activado para a túa conta."
 
 #: bookwyrm/templates/preferences/2fa.html:36
 #: bookwyrm/templates/preferences/disable-2fa.html:4
 #: bookwyrm/templates/preferences/disable-2fa.html:7
 msgid "Disable 2FA"
-msgstr ""
+msgstr "Desactivar 2FA"
 
 #: bookwyrm/templates/preferences/2fa.html:39
 msgid "You can generate backup codes to use in case you do not have access to your authentication app. If you generate new codes, any backup codes previously generated will no longer work."
-msgstr ""
+msgstr "Podes crear códigos de apoio para usar en caso de que non teñas acceso á app de autenticación. Podes crear novos códigos, pero os códigos antigos deixarán de ser válidos."
 
 #: bookwyrm/templates/preferences/2fa.html:40
 msgid "Generate backup codes"
-msgstr ""
+msgstr "Crear códigos de apoio"
 
 #: bookwyrm/templates/preferences/2fa.html:45
 msgid "Scan the QR code with your authentication app and then enter the code from  your app below to confirm your app is set up."
-msgstr ""
+msgstr "Escanea o código QR coa túa app de autenticación e escribe aquí o código que apareza nela para confirmar que configuraches a app."
 
 #: bookwyrm/templates/preferences/2fa.html:50
 msgid "Enter the code from your app:"
-msgstr ""
+msgstr "Escribe o código da túa app:"
 
 #: bookwyrm/templates/preferences/2fa.html:60
 msgid "You can make your account more secure by using Two Factor Authentication (2FA). This will require you to enter a one-time code using a phone app like <em>Authy</em>, <em>Google Authenticator</em> or <em>Microsoft Authenticator</em> each time you log in."
-msgstr ""
+msgstr "Podes mellorar a seguridade da túa conta usando un Segundo Factor de Autenticación (2FA). Pediráseche un código temporal de un só uso procedente dunha app como <em>Authy</em>, <em>Google Authenticator</em> ou <em>Microsoft Authenticator</em> cada vez que accedas."
 
 #: bookwyrm/templates/preferences/2fa.html:62
 msgid "Confirm your password to begin setting up 2FA."
-msgstr ""
+msgstr "Confirma o teu contrasinal para comezar a usar 2FA."
 
 #: bookwyrm/templates/preferences/2fa.html:72
 #: bookwyrm/templates/two_factor_auth/two_factor_prompt.html:37
 msgid "Set up 2FA"
-msgstr ""
+msgstr "Configurar 2FA"
 
 #: bookwyrm/templates/preferences/blocks.html:4
 #: bookwyrm/templates/preferences/blocks.html:7
@@ -3734,15 +3734,15 @@ msgstr "Se eliminas a conta non haberá volta atrás. O nome de usuaria non esta
 
 #: bookwyrm/templates/preferences/disable-2fa.html:12
 msgid "Disable Two Factor Authentication"
-msgstr ""
+msgstr "Desactivar o Segundo Factor de Autenticación"
 
 #: bookwyrm/templates/preferences/disable-2fa.html:14
 msgid "Disabling 2FA will allow anyone with your username and password to log in to your account."
-msgstr ""
+msgstr "Ao desactivar 2FA calquera que coñeza o teu contrasinal e identificador poderá acceder á túa conta."
 
 #: bookwyrm/templates/preferences/disable-2fa.html:20
 msgid "Turn off 2FA"
-msgstr ""
+msgstr "Desactivar 2FA"
 
 #: bookwyrm/templates/preferences/edit_user.html:4
 #: bookwyrm/templates/preferences/edit_user.html:7
@@ -5959,23 +5959,23 @@ msgstr "Mostrar menos"
 
 #: bookwyrm/templates/two_factor_auth/two_factor_login.html:29
 msgid "2FA check"
-msgstr ""
+msgstr "Comprobación 2FA"
 
 #: bookwyrm/templates/two_factor_auth/two_factor_login.html:37
 msgid "Enter the code from your authenticator app:"
-msgstr ""
+msgstr "Escribe o código da túa app de autenticación:"
 
 #: bookwyrm/templates/two_factor_auth/two_factor_login.html:41
 msgid "Confirm and Log In"
-msgstr ""
+msgstr "Confirma e Accede"
 
 #: bookwyrm/templates/two_factor_auth/two_factor_prompt.html:29
 msgid "2FA is available"
-msgstr ""
+msgstr "2FA está dispoñible"
 
 #: bookwyrm/templates/two_factor_auth/two_factor_prompt.html:34
 msgid "You can secure your account by setting up two factor authentication in your user preferences. This will require a one-time code from your phone in addition to your password each time you log in."
-msgstr ""
+msgstr "Podes mellorar a seguridade da túa conta establecendo un segundo factor de autenticación nas preferencias da conta. Pediraseche un código temporal dun só uso procedente da túa app xunto con contrasinal cada vez que inicies sesión."
 
 #: bookwyrm/templates/user/books_header.html:9
 #, python-format
