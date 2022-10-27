@@ -362,9 +362,29 @@ OTEL_SERVICE_NAME = env("OTEL_SERVICE_NAME", None)
 TWO_FACTOR_LOGIN_MAX_SECONDS = 60
 
 DEFAULT_GENRES = {
-    "Action" : "Books that are action packed and full of excitment.",
+    "Action" : "Books that are action packed and full of excitement.",
     "Adventure" : "Books that lead the reader to a New World.",
     "Drama": "Exciting, emotional, or unexpected series of events or set of circumstances.",
     "Mystery": "A novel dealing with a puzzling crime.",
     "Sci-fi": "Fiction that deals principally with the impact of actual or imagined science upon society or individuals.",
+    "Fantasy" : "Books untethered from scientific and societal laws and limited only by imagination. ",
+    "Dystopian" : "A genre of science fiction set in societies viewed as worse than the one in which we live.",
+    "Romance" : "Lighthearted, optimistic, emotionally satisfying novels centered around love stories between two people.",
+    "Horror" : "Novels that scare, startle, shock, and repulse readers.",
+    "Historical Fiction" : "Novels that takes place in the past with balanced realism and creativity.",
+    "Autobiography" : "A self-written account of one's own life.",
+    "Biography" : "An account of a person's life written by someone else. ",
+    "Cooking" : "Non-fiction books that includes a collection of recipes and/ or cooking techniques.",
+    "Art" : "Books about the technical aspect of art, artist themselves, or the history and meaning behind pieces and collections of art.",
+    "Self-Help / Personal Development" : "Based on one's own effort and resources to achieve things and goals without relying on the help of others.",
+    "History" : "Events of significant change that happened in the past and the discovery, collection, presentation, and organization of the information.",
+    "Crafts & Hobbies" : "Books about ideas, different types of crafts, and the skills and supplies necessary to do them.",
+    "Travel" : "Books about places and destinations one might want to visit during their travels.",
+    "Education" : "Educational books in the form of textbooks and educational materials. ",
+    "Religion & Spirituality" : "The organization of collective beliefs, culture, and world views.",
+    "Business" : "Books about the management and running of a business, or in the financial aspects of a business.",
+    "Comedy" : "Books about a series of funny or comical events or scenes that are intended to make the reader laugh.",
+    "Families & Relationships" : "Helpful, and sometimes humorous, guides to help with various stages and types of relationships.",
+    "Political" : "Stories that provide commentary on political events, systems, and theories through a narrative tone.",
+    "Health & Fitness" : "Exercises and other things one can do to keep their body healthy and fit."
 }
