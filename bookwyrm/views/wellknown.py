@@ -33,7 +33,7 @@ def webfinger(request):
                 },
                 {
                     "rel": "http://ostatus.org/schema/1.0/subscribe",
-                    "template": f"https://{DOMAIN}/ostatus_subscribe?acct={{uri}}",
+                    "template": f"http://{DOMAIN}/ostatus_subscribe?acct={{uri}}",
                 },
             ],
         }
@@ -48,7 +48,7 @@ def nodeinfo_pointer(_):
             "links": [
                 {
                     "rel": "http://nodeinfo.diaspora.software/ns/schema/2.0",
-                    "href": f"https://{DOMAIN}/nodeinfo/2.0",
+                    "href": f"http://{DOMAIN}/nodeinfo/2.0",
                 }
             ]
         }

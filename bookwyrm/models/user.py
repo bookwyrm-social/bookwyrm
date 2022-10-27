@@ -459,7 +459,8 @@ def get_or_create_remote_server(domain, refresh=False):
         pass
 
     try:
-        data = get_data(f"https://{domain}/.well-known/nodeinfo")
+        data = get_data(f"http://{domain}/.well-known/nodeinfo")
+        print("WE GOT THIS OHOHOHOOH" + data)
         try:
             nodeinfo_url = data.get("links")[0].get("href")
         except (TypeError, KeyError):
