@@ -8,10 +8,12 @@ class Connector(AbstractMinimalConnector):
     """this is basically just for search"""
 
     def get_or_create_book(self, remote_id):
+        print("Getting/Creating book from Bookwyrm Connector")
         return activitypub.resolve_remote_id(remote_id, model=models.Edition)
 
     def parse_search_data(self, data, min_confidence):
         for search_result in data:
+            print("Parsing book from Bookwyrm Connector")
             search_result["connector"] = self
             yield SearchResult(**search_result)
 
