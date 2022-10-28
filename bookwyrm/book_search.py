@@ -185,6 +185,7 @@ class SearchResult:
     title: str
     key: str
     connector: object
+    #genres: str[str]
     view_link: str = None
     author: str = None
     year: str = None
