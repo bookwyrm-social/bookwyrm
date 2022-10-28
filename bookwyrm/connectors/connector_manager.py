@@ -34,6 +34,10 @@ async def get_results(session, url, min_confidence, query, connector):
     params = {"min_confidence": min_confidence}
     try:
         async with session.get(url, headers=headers, params=params) as response:
+            print("-----------------------------------")
+            print(headers)
+            print(url)
+            print("-----------------------------------")
             if not response.ok:
                 logger.info("Unable to connect to %s: %s", url, response.reason)
                 return
@@ -43,7 +47,9 @@ async def get_results(session, url, min_confidence, query, connector):
             except aiohttp.client_exceptions.ContentTypeError as err:
                 logger.exception(err)
                 return
-
+            print("-----------------------------------")
+            print(raw_data)
+            print("-----------------------------------")
             return {
                 "connector": connector,
                 "results": connector.process_search_response(
