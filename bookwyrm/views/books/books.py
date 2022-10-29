@@ -25,6 +25,7 @@ class Book(View):
     def get(self, request, book_id, **kwargs):
         """info about a book"""
         if is_api_request(request):
+            print("HOOOLY SHIT IT'S THE HECKIN ACTIVITYPUB JSON OH NO NO NO ACTIVITYPUB BROS")
             book = get_object_or_404(
                 models.Book.objects.select_subclasses(), id=book_id
             )

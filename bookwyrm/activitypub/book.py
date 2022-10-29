@@ -36,6 +36,7 @@ class Book(BookData):
     languages: List[str] = field(default_factory=lambda: [])
     series: str = ""
     seriesNumber: str = ""
+    #genres: List[str] = field(default_factory=lambda: [])
     subjects: List[str] = field(default_factory=lambda: [])
     subjectPlaces: List[str] = field(default_factory=lambda: [])
 
@@ -90,3 +91,12 @@ class Author(BookData):
     bio: str = ""
     wikipediaLink: str = ""
     type: str = "Author"
+
+
+# pylint: disable=invalid-name
+@dataclass(init=False)
+class GenreData(ActivityObject):
+    """shared fields for all categories"""
+    description: str = ""
+    genre_name: str = ""
+    type: str = "Genre"

@@ -65,6 +65,7 @@ class ActivityObject:
         dataclass, which it ignores. Any field in the dataclass is required or
         has a default value"""
         for field in fields(self):
+
             try:
                 value = kwargs[field.name]
                 if value in (None, MISSING, {}):
@@ -90,6 +91,9 @@ class ActivityObject:
                     raise ActivitySerializerError(
                         f"Missing required field: {field.name}"
                     )
+                print("--------")
+                print(field.name)
+                print(value)
                 value = field.default
             setattr(self, field.name, value)
 
