@@ -6,20 +6,20 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bookwyrm', '0161_auto_20221005_2254'),
+        ("bookwyrm", "0161_auto_20221005_2254"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='genre',
-            name='created_date',
+            model_name="genre",
+            name="created_date",
         ),
         migrations.RemoveField(
-            model_name='genre',
-            name='remote_id',
+            model_name="genre",
+            name="remote_id",
         ),
         migrations.RemoveField(
-            model_name='genre',
-            name='updated_date',
+            model_name="genre",
+            name="updated_date",
         ),
     ]

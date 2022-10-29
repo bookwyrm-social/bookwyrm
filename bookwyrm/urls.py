@@ -36,8 +36,6 @@ urlpatterns = [
         "robots.txt",
         TemplateView.as_view(template_name="robots.txt", content_type="text/plain"),
     ),
-
-
     # federation endpoints
     re_path(r"^inbox/?$", views.Inbox.as_view(), name="inbox"),
     re_path(rf"{LOCAL_USER_PATH}/inbox/?$", views.Inbox.as_view(), name="user_inbox"),
@@ -130,29 +128,35 @@ urlpatterns = [
     re_path(
         r"^settings/users/?$", views.UserAdminList.as_view(), name="settings-users"
     ),
-
     re_path(
         r"^settings/genres/?$", views.ManageGenreHome.as_view(), name="settings-genres"
     ),
-
     re_path(
-        r"^settings/genres/add/?$", views.CreateGenre.as_view(), name="settings-genres-add"
+        r"^settings/genres/add/?$",
+        views.CreateGenre.as_view(),
+        name="settings-genres-add",
     ),
-
     re_path(
-        r"^settings/genres/(?P<pk>\d+)/delete/?$", views.RemoveGenre.as_view(), name="settings-genres-remove"
+        r"^settings/genres/(?P<pk>\d+)/delete/?$",
+        views.RemoveGenre.as_view(),
+        name="settings-genres-remove",
     ),
-
     re_path(
-        r"^settings/genres/(?P<pk>\d+)/?$", views.ModifyGenre.as_view(), name="settings-genres-mod"
+        r"^settings/genres/(?P<pk>\d+)/?$",
+        views.ModifyGenre.as_view(),
+        name="settings-genres-mod",
     ),
-
     re_path(
         r"^genres/(?P<pk>\d+)/?$", views.GenreDetailView.as_view(), name="genre-view"
     ),
-    re_path(rf"{GENRE_PATH}(.json)?/?$", views.GenreDetailView.as_view(), name="genre-view"),
-    re_path(rf"{GENRE_PATH}{regex.SLUG}/?$", views.GenreDetailView.as_view(), name="genre-view"),
-
+    re_path(
+        rf"{GENRE_PATH}(.json)?/?$", views.GenreDetailView.as_view(), name="genre-view"
+    ),
+    re_path(
+        rf"{GENRE_PATH}{regex.SLUG}/?$",
+        views.GenreDetailView.as_view(),
+        name="genre-view",
+    ),
     re_path(
         r"^settings/users/(?P<status>(local|federated|deleted))\/?$",
         views.UserAdminList.as_view(),
@@ -579,9 +583,15 @@ urlpatterns = [
     ),
     re_path(r"^boost/(?P<status_id>\d+)/?$", views.Boost.as_view()),
     re_path(r"^unboost/(?P<status_id>\d+)/?$", views.Unboost.as_view()),
-    re_path(r"^follow/(?P<pk>\d+)/?$", views.interaction.FollowGenre.as_view(), name="follow-genre"),
     re_path(
-        r"^unfollow/(?P<pk>\d+)/?$", views.interaction.UnFollowGenre.as_view(), name="unfollow-genre"
+        r"^follow/(?P<pk>\d+)/?$",
+        views.interaction.FollowGenre.as_view(),
+        name="follow-genre",
+    ),
+    re_path(
+        r"^unfollow/(?P<pk>\d+)/?$",
+        views.interaction.UnFollowGenre.as_view(),
+        name="unfollow-genre",
     ),
     # books
     re_path(rf"{BOOK_PATH}(.json)?/?$", views.Book.as_view(), name="book"),
