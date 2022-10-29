@@ -5,11 +5,50 @@
 {% block title %}{% trans "Search" %}{% endblock %}
 
 {% block content %}
+
+<head>
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css">
+    <script src="http://code.jquery.com/jquery-1.8.3.js"></script>
+    <script src="http://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.4.2/chosen.jquery.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.4.2/chosen.css">
+</head>
+
+<script type="text/javascript">
+    $(function() {
+        $(".chosen-select").chosen({width: "70%"})
+    });
+</script>
+
+<script>
+    $(document).ready(function() {
+
+        if($("#type-list").val() != "genre") {
+            $("#gen-search-bar").hide();
+        }
+
+        $("#type-list").on('change', function() {
+            //Show the genre search bar if the user has that selected in the list.
+            //Otherwise, hide it.
+            if($(this).val() == "genre") {
+                //alert("OH NOOOO!!!! THAT SUCKS");
+                $("#gen-search-bar").show();
+            } else {
+                $("#gen-search-bar").hide();
+            }
+            //alert($(this).val());
+        });
+    });
+
+
+</script>
+
 <div class="block">
     <h1 class="title">
         {% blocktrans %}Search{% endblocktrans %}
     </h1>
 </div>
+
 
 <form class="block" action="{% url 'search' %}" method="GET">
     <div class="field has-addons">
@@ -18,8 +57,9 @@
         </div>
         <div class="control">
             <div class="select" aria-label="{% trans 'Search type' %}">
-                <select name="type">
+                <select name="type" id="type-list">
                     <option value="book" {% if type == "book" %}selected{% endif %}>{% trans "Books" %}</option>
+                    <option value="genre" {% if type == "genre" %}selected{% endif %}>{% trans "Genres" %}</option>
                     {% if request.user.is_authenticated %}
                     <option value="user" {% if type == "user" %}selected{% endif %}>{% trans "Users" %}</option>
                     {% endif %}
@@ -34,13 +74,50 @@
             </button>
         </div>
     </div>
+    <div class="field" id="gen-search-bar">
+
+        <div class="control">
+            <label class="radio">
+                <input type="radio" name="search_buttons" value="search_and" {% if btn_select == "search_and" %}checked{% endif %}>
+                Must include all selected genres
+            </label>
+            <label class="radio">
+                <input type="radio" name="search_buttons" value="search_or" {% if btn_select == "search_or" %}checked{% endif %}>
+                Can include any of the selected genres
+            </label>
+            <label class="radio">
+                <input type="radio" name="search_buttons" value="search_exclude" {% if btn_select == "search_exclude" %}checked{% endif %}>
+                Exclude specified genres
+            </label>
+        </div>
+
+        <select data-placeholder="Click to start selecting genres!" multiple class="chosen-select" name="genres" id="genres" value="{{ gen_query }}">
+            <option value=""></option>
+            {% for genre in genre_tags %}
+            <option value="{{genre.id}}">{{genre.genre_name}}</option>
+            {% endfor %}
+        </select>
+
+    </div>
+
+
 </form>
 
-{% if query %}
+
+{% if query or gen_query%}
 <nav class="tabs">
     <ul>
         <li{% if type == "book" %} class="is-active"{% endif %}>
             <a href="{% url 'search' %}?q={{ query }}&type=book">{% trans "Books" %}</a>
+        </li>
+        <li{% if type == "genre" %} class="is-active"{% endif %}>
+            <a href="{% url 'search' %}?q=&type=genre&search_buttons={{ btn_select }}
+
+            {% for genrenum in gen_list %}
+            &genres={{ genrenum }}
+            {% endfor %}
+
+            ">{% trans "Genres" %}</a>
         </li>
         {% if request.user.is_authenticated %}
         <li{% if type == "user" %} class="is-active"{% endif %}>
@@ -52,6 +129,7 @@
         </li>
     </ul>
 </nav>
+
 
 <section class="block" id="search-results-block">
     <p class="block">

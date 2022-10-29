@@ -25,6 +25,7 @@ STATUS_TYPES_STRING = "|".join(status_types)
 STATUS_PATH = rf"{USER_PATH}/({STATUS_TYPES_STRING})/(?P<status_id>\d+)"
 
 BOOK_PATH = r"^book/(?P<book_id>\d+)"
+GENRE_PATH = r"^genre/(?P<pk>\d+)"
 
 STREAMS = "|".join(s["key"] for s in settings.STREAMS)
 
@@ -149,6 +150,8 @@ urlpatterns = [
     re_path(
         r"^genres/(?P<pk>\d+)/?$", views.GenreDetailView.as_view(), name="genre-view"
     ),
+    re_path(rf"{GENRE_PATH}(.json)?/?$", views.GenreDetailView.as_view(), name="genre-view"),
+    re_path(rf"{GENRE_PATH}{regex.SLUG}/?$", views.GenreDetailView.as_view(), name="genre-view"),
 
     re_path(
         r"^settings/users/(?P<status>(local|federated|deleted))\/?$",
@@ -504,6 +507,36 @@ urlpatterns = [
         views.ChangePassword.as_view(),
         name="prefs-password",
     ),
+    re_path(
+        r"^preferences/2fa/?$",
+        views.Edit2FA.as_view(),
+        name="prefs-2fa",
+    ),
+    re_path(
+        r"^preferences/2fa-backup-codes/?$",
+        views.GenerateBackupCodes.as_view(),
+        name="generate-2fa-backup-codes",
+    ),
+    re_path(
+        r"^preferences/confirm-2fa/?$",
+        views.Confirm2FA.as_view(),
+        name="conf-2fa",
+    ),
+    re_path(
+        r"^preferences/disable-2fa/?$",
+        views.Disable2FA.as_view(),
+        name="disable-2fa",
+    ),
+    re_path(
+        r"^2fa-check/?$",
+        views.LoginWith2FA.as_view(),
+        name="login-with-2fa",
+    ),
+    re_path(
+        r"^2fa-prompt/?$",
+        views.Prompt2FA.as_view(),
+        name="prompt-2fa",
+    ),
     re_path(r"^preferences/export/?$", views.Export.as_view(), name="prefs-export"),
     re_path(r"^preferences/delete/?$", views.DeleteUser.as_view(), name="prefs-delete"),
     re_path(r"^preferences/block/?$", views.Block.as_view(), name="prefs-block"),
@@ -546,6 +579,10 @@ urlpatterns = [
     ),
     re_path(r"^boost/(?P<status_id>\d+)/?$", views.Boost.as_view()),
     re_path(r"^unboost/(?P<status_id>\d+)/?$", views.Unboost.as_view()),
+    re_path(r"^follow/(?P<pk>\d+)/?$", views.interaction.FollowGenre.as_view(), name="follow-genre"),
+    re_path(
+        r"^unfollow/(?P<pk>\d+)/?$", views.interaction.UnFollowGenre.as_view(), name="unfollow-genre"
+    ),
     # books
     re_path(rf"{BOOK_PATH}(.json)?/?$", views.Book.as_view(), name="book"),
     re_path(rf"{BOOK_PATH}{regex.SLUG}/?$", views.Book.as_view(), name="book"),
