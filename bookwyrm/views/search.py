@@ -24,8 +24,6 @@ class Search(View):
     def get(self, request):
         """that search bar up top"""
 
-        
-
         if is_api_request(request):
             print("Returning API book search.")
             return api_book_search(request)
@@ -67,9 +65,10 @@ def api_book_search(request):
         [format_search_result(r) for r in book_results[:10]], safe=False
     )
 
+
 def genre_search(request):
     print("Entered the genre search function")
-    genre_list = request.GET.getlist('genres')
+    genre_list = request.GET.getlist("genres")
     buttonSelection = request.GET.get("search_buttons")
 
     gen_query = request.GET.get("genres")
@@ -77,10 +76,9 @@ def genre_search(request):
     query = isbn_check(query)
 
     print(buttonSelection)
-    #local_results = models.Edition.objects.all()
+    # local_results = models.Edition.objects.all()
     min_confidence = request.GET.get("min_confidence", 0)
     local_results = search_genre(genre_list, buttonSelection)
-
 
     paginated = Paginator(local_results, PAGE_LENGTH)
     page = paginated.get_page(request.GET.get("page"))
@@ -96,8 +94,9 @@ def genre_search(request):
             page.number, on_each_side=2, on_ends=1
         ),
     }
-    
+
     return TemplateResponse(request, "search/book.html", data)
+
 
 def book_search(request):
     """the real business is elsewhere"""

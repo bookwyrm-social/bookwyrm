@@ -111,7 +111,9 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         through_fields=("user_subject", "user_object"),
         related_name="follower_requests",
     )
-    followed_genres = models.ManyToManyField("Genre", related_name="followed_genres", blank=True)
+    followed_genres = models.ManyToManyField(
+        "Genre", related_name="followed_genres", blank=True
+    )
     blocks = models.ManyToManyField(
         "self",
         symmetrical=False,

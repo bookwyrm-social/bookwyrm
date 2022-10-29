@@ -17,14 +17,15 @@ from django.views.generic import (
     ListView,
 )
 
+
 class GenreDetailView(DetailView):
-    template_name = 'genre/genre_detail_page.html'
+    template_name = "genre/genre_detail_page.html"
     model = Genre
 
     def post(self, request, *args, **kwargs):
-        '''Get the genres the user has selected.'''
+        """Get the genres the user has selected."""
 
-        #buttonSelection = request.POST.get("search_buttons")
+        # buttonSelection = request.POST.get("search_buttons")
         context = self.get_context_data()
         return render(request, self.template_name, context)
 
@@ -34,5 +35,5 @@ class GenreDetailView(DetailView):
     def get_context_data(self, **kwargs):
 
         context = super().get_context_data(**kwargs)
-        context['demo_books'] = Book.objects.filter(genres = self.get_object())[:4]
+        context["demo_books"] = Book.objects.filter(genres=self.get_object())[:4]
         return context
