@@ -21,7 +21,7 @@ from django.views.generic import (
 
 class ManageGenreHome(ListView):
     """Get a list of all of our genres in the admin page."""
-
+    paginate_by = 15
     template_name = "settings/genres/genre_manage_home.html"
     model = Genre
 
