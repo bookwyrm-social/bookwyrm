@@ -107,7 +107,7 @@ class CreateAdmin(View):
     def create_default_genres(self, request):
         """Create the initial genres. Can be changed, of course."""
         for genre_name in DEFAULT_GENRES:
-            action_genre = models.Genre.objects.create_genre(
+            genre = models.Genre.objects.create_genre(
                 genre_name, DEFAULT_GENRES[genre_name]
             )
-            action_genre.save()
+            genre.save()
