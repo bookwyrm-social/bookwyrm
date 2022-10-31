@@ -22,12 +22,11 @@ from .activitypub_mixin import OrderedCollectionPageMixin, ObjectMixin
 from .base_model import BookWyrmModel
 from . import fields
 
-MINIMUM_VOTES = 100
-
 # This will be a local class, always. Nothing to do with ActivityPub.
 class SuggestedGenre(models.Model):
     '''When users suggest a genre, it will create an instance of this class and begin counting votes.
        Restrictions on how many times a user can suggest a genre is still up for discussion.'''
+    MINIMUM_VOTES = 100
     name = fields.CharField(max_length=40)
     description = fields.CharField(max_length=500)
     votes = fields.IntegerField(Default = 1)
