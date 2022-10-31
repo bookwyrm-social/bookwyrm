@@ -5,6 +5,7 @@ from django.shortcuts import get_object_or_404, render
 from bookwyrm.models.book import Genre, Book
 from bookwyrm.models.suggestions import SuggestedGenre
 from bookwyrm.forms import SuggestionForm, GenreForm
+from django.shortcuts import redirect
 
 from django.urls import reverse_lazy
 from django.core.paginator import Paginator
@@ -27,11 +28,17 @@ class GenreSuggestionsHome(ListView):
     model = SuggestedGenre
 
 
-class ApproveGenre(CreateView):
-    template_name = "settings/genres/genre_add.html"
-    model = Genre
-    form_class = GenreForm
-    success_url = reverse_lazy("settings-genres")
+class ApproveSuggestion(View):
+    """approve a suggestion"""
+
+    def post(self, request, pk):
+        """follow a genre"""
+        
+        suggestion = SuggestedGenre.objects.get(id=id)
+        genre = Genre.objects.create_genre(suggestion.name, suggestion.description)
+        genre.save()
+        SuggestedGenre.object.delete(id=pk)
+        return redirect("settings-suggestions")
 
 
 class ModifySuggestion(UpdateView):

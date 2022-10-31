@@ -149,6 +149,11 @@ urlpatterns = [
     re_path(
         r"^settings/suggestions/?$", views.GenreSuggestionsHome.as_view(), name="settings-suggestions"
     ),
+       re_path(
+        r"^settings/suggestions/approve/?$",
+        views.ApproveSuggestion.as_view(),
+        name="settings-suggestions-approve",
+    ),
     re_path(
         r"^settings/suggestions/(?P<pk>\d+)/delete/?$",
         views.RemoveSuggestion.as_view(),

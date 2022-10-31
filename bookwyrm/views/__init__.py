@@ -26,7 +26,7 @@ from .admin.site import Site
 from .admin.themes import Themes, delete_theme
 from .admin.user_admin import UserAdmin, UserAdminList
 from .admin.genre_manage import ModifyGenre, ManageGenreHome, CreateGenre, RemoveGenre
-from .admin.genre_suggestions import GenreSuggestionsHome, ModifySuggestion, RemoveSuggestion
+from .admin.genre_suggestions import GenreSuggestionsHome, ModifySuggestion, RemoveSuggestion, ApproveSuggestion
 
 # user preferences
 from .preferences.change_password import ChangePassword
