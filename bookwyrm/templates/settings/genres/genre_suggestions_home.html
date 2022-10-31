@@ -3,10 +3,13 @@
 {% block title %}{% trans "Genre Suggestions" %}{% endblock %}
 
 {% block edit-button %}
-<a href="{% url 'settings-genres-add' %}">
-    <span class="icon icon-plus" title="{% trans 'Add genre' %}" aria-hidden="True"></span>
-    <span class="is-hidden-mobile">{% trans "Add genre" %}</span>
-</a>
+
+    <span class="is-hidden-mobile">{% trans "Minimum Votes: " %}
+        <form method="POST">{% csrf_token %}
+            <button type="submit" class="button is-success is-small">{% trans "Save" %}</button>
+        </form> 
+    </span>
+
 {% endblock %}
 
 {% block header %}

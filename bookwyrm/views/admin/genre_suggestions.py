@@ -5,8 +5,8 @@ from django.utils.decorators import method_decorator
 from django.shortcuts import get_object_or_404, render
 
 from bookwyrm.models.book import Genre, Book
-from bookwyrm.models.suggestions import SuggestedGenre
-from bookwyrm.forms import SuggestionForm, GenreForm
+from bookwyrm.models.suggestions import SuggestedGenre, MinimumVotesSetting
+from bookwyrm.forms import SuggestionForm, MinimumVotesForm
 from django.shortcuts import redirect
 
 from django.urls import reverse_lazy
@@ -37,10 +37,10 @@ class ApproveSuggestion(View):
     def post(self, request, pk):
         """approve a genre"""
         
-        suggestion = SuggestedGenre.objects.get(pk=id)
+        suggestion = SuggestedGenre.objects.get(id=pk)
         genre = Genre.objects.create_genre(suggestion.name, suggestion.description)
         genre.save()
-        SuggestedGenre.object.delete(id=pk)
+        suggestion.delete()
         return redirect("settings-suggestions")
 
 
@@ -56,4 +56,12 @@ class ModifySuggestion(UpdateView):
 class RemoveSuggestion(DeleteView):
     template_name = "settings/genres/suggestion_delete.html"
     model = SuggestedGenre
+    success_url = reverse_lazy("settings-suggestions")
+
+class ModifyMinimumVotes(UpdateView):
+    """Seperate page for modifying each genre in admin page."""
+
+    template_name = "settings/genres/genre_suggestions_home.html"
+    model = MinimumVotesSetting
+    form_class = MinimumVotesForm
     success_url = reverse_lazy("settings-suggestions")

@@ -24,3 +24,13 @@ class SuggestionForm(StyledForm):
                 }
             ),
         }
+
+class MinimumVotesForm(StyledForm):
+    class Meta:
+        model = models.MinimumVotesSetting
+
+        fields = ['minimum_votes']
+
+        widgets = {
+            'minimum_votes': forms.IntegerField(min_value=1, label_suffix='Minimum Votes')
+        }

@@ -149,8 +149,8 @@ urlpatterns = [
     re_path(
         r"^settings/suggestions/?$", views.GenreSuggestionsHome.as_view(), name="settings-suggestions"
     ),
-       re_path(
-        r"^settings/suggestions/approve/?$",
+    re_path(
+        r"^settings/suggestions/approve/(?P<pk>\d+)/?$",
         views.ApproveSuggestion.as_view(),
         name="settings-suggestions-approve",
     ),
@@ -163,6 +163,11 @@ urlpatterns = [
         r"^settings/suggestions/(?P<pk>\d+)/?$",
         views.ModifySuggestion.as_view(),
         name="settings-suggestions-mod",
+    ),
+    re_path(
+        r"^settings/suggestions/(?P<pk>\d+)/?$",
+        views.ModifyMinimumVotes.as_view(),
+        name="settings-suggestions-votes",
     ),
     re_path(
         r"^genres/(?P<pk>\d+)/?$", views.GenreDetailView.as_view(), name="genre-view"
