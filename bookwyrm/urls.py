@@ -146,8 +146,18 @@ urlpatterns = [
         views.ModifyGenre.as_view(),
         name="settings-genres-mod",
     ),
-      re_path(
-        r"^settings/suggestions/?$", views.ManageGenreHome.as_view(), name="settings-suggestions"
+    re_path(
+        r"^settings/suggestions/?$", views.GenreSuggestionsHome.as_view(), name="settings-suggestions"
+    ),
+    re_path(
+        r"^settings/suggestions/(?P<pk>\d+)/delete/?$",
+        views.RemoveSuggestion.as_view(),
+        name="settings-suggestions-remove"
+    ),
+    re_path(
+        r"^settings/suggestions/(?P<pk>\d+)/?$",
+        views.ModifySuggestion.as_view(),
+        name="settings-suggestions-mod",
     ),
     re_path(
         r"^genres/(?P<pk>\d+)/?$", views.GenreDetailView.as_view(), name="genre-view"

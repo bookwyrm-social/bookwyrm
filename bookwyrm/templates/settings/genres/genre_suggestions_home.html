@@ -21,25 +21,28 @@
     <table class="table is-striped is-fullwidth">
         <tr>
             {% url 'settings-suggestions' as url %}
-            <th colspan="2">
+            <th colspan="1">
                 {% trans "Genre" as text %}
                 {% include 'snippets/table-sort-header.html' with field="genre" sort=sort text=text %}
+            </th>
+            <th colspan="1">
+                <dl class="is-pulled-right">
+                    {% trans "Votes" as text %}
+                    {% include 'snippets/table-sort-header.html' with field="votes" sort=sort text=text %}
+                </dl>
             </th>
         </tr>
         {% for genre in object_list %}
         <tr>
 
             <td class="overflow-wrap-anywhere pl-1">
-                <a href="{% url 'settings-genres-mod' genre.id %}">{{ genre.genre_name }}</a>
+                <a href="{% url 'settings-suggestions-mod' genre.id %}">{{ genre.name }}</a>
             </td>
             <td>
-                <dl class="is-pulled-right">
-                    <span class="tag is-success" aria-hidden="true">
-                        <span class="icon icon-check"></span>
-                    </span>
+                <dl class="is-pulled-right pr-3">
+                    {{ genre.votes }}
                 </dl>
             </td>
-
         </tr>
         {% endfor %}
     </table>

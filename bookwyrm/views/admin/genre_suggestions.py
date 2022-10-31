@@ -4,7 +4,7 @@ from django.shortcuts import get_object_or_404, render
 
 from bookwyrm.models.book import Genre, Book
 from bookwyrm.models.suggestions import SuggestedGenre
-from bookwyrm.forms import GenreForm
+from bookwyrm.forms import SuggestionForm, GenreForm
 
 from django.urls import reverse_lazy
 from django.core.paginator import Paginator
@@ -24,26 +24,26 @@ class GenreSuggestionsHome(ListView):
     """Get a list of all suggested genres in the admin page."""
     paginate_by = 15
     template_name = "settings/genres/genre_suggestions_home.html"
-    model = Genre
+    model = SuggestedGenre
 
 
-class ModifySuggestion(UpdateView):
-    """Seperate page for modifying each genre in admin page."""
-
-    template_name = "settings/genres/genre_mod.html"
-    model = Genre
-    form_class = GenreForm
-    success_url = reverse_lazy("settings-genres")
-
-
-class CreateGenre(CreateView):
+class ApproveGenre(CreateView):
     template_name = "settings/genres/genre_add.html"
     model = Genre
     form_class = GenreForm
     success_url = reverse_lazy("settings-genres")
 
 
-class RemoveGenre(DeleteView):
-    template_name = "settings/genres/genre_delete.html"
-    model = Genre
-    success_url = reverse_lazy("settings-genres")
+class ModifySuggestion(UpdateView):
+    """Seperate page for modifying each genre in admin page."""
+
+    template_name = "settings/genres/suggestion_mod.html"
+    model = SuggestedGenre
+    form_class = SuggestionForm
+    success_url = reverse_lazy("settings-suggestions")
+
+
+class RemoveSuggestion(DeleteView):
+    template_name = "settings/genres/suggestion_delete.html"
+    model = SuggestedGenre
+    success_url = reverse_lazy("settings-suggestions")
