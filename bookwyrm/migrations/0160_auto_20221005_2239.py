@@ -8,43 +8,78 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bookwyrm', '0159_merge_0158_alter_book_genres_0158_auto_20220919_1634'),
+        ("bookwyrm", "0159_merge_0158_alter_book_genres_0158_auto_20220919_1634"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='notification',
-            name='related_book',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='notifications', to='bookwyrm.work'),
+            model_name="notification",
+            name="related_book",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="notifications",
+                to="bookwyrm.work",
+            ),
         ),
         migrations.AddField(
-            model_name='notification',
-            name='related_genre',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='notifications', to='bookwyrm.genre'),
+            model_name="notification",
+            name="related_genre",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="notifications",
+                to="bookwyrm.genre",
+            ),
         ),
         migrations.AddField(
-            model_name='user',
-            name='followed_genres',
-            field=models.ManyToManyField(blank=True, related_name='followed_genres', to='bookwyrm.Genre'),
+            model_name="user",
+            name="followed_genres",
+            field=models.ManyToManyField(
+                blank=True, related_name="followed_genres", to="bookwyrm.Genre"
+            ),
         ),
         migrations.AlterField(
-            model_name='book',
-            name='genres',
-            field=models.ManyToManyField(blank=True, to='bookwyrm.Genre'),
+            model_name="book",
+            name="genres",
+            field=models.ManyToManyField(blank=True, to="bookwyrm.Genre"),
         ),
         migrations.AlterField(
-            model_name='genre',
-            name='description',
+            model_name="genre",
+            name="description",
             field=bookwyrm.models.fields.CharField(max_length=500),
         ),
         migrations.AlterField(
-            model_name='genre',
-            name='genre_name',
+            model_name="genre",
+            name="genre_name",
             field=bookwyrm.models.fields.CharField(max_length=40),
         ),
         migrations.AlterField(
-            model_name='notification',
-            name='notification_type',
-            field=models.CharField(choices=[('GENRE', 'Genre'), ('FAVORITE', 'Favorite'), ('REPLY', 'Reply'), ('MENTION', 'Mention'), ('TAG', 'Tag'), ('FOLLOW', 'Follow'), ('FOLLOW_REQUEST', 'Follow Request'), ('BOOST', 'Boost'), ('IMPORT', 'Import'), ('ADD', 'Add'), ('REPORT', 'Report'), ('INVITE', 'Invite'), ('ACCEPT', 'Accept'), ('JOIN', 'Join'), ('LEAVE', 'Leave'), ('REMOVE', 'Remove'), ('GROUP_PRIVACY', 'Group Privacy'), ('GROUP_NAME', 'Group Name'), ('GROUP_DESCRIPTION', 'Group Description')], max_length=255),
+            model_name="notification",
+            name="notification_type",
+            field=models.CharField(
+                choices=[
+                    ("GENRE", "Genre"),
+                    ("FAVORITE", "Favorite"),
+                    ("REPLY", "Reply"),
+                    ("MENTION", "Mention"),
+                    ("TAG", "Tag"),
+                    ("FOLLOW", "Follow"),
+                    ("FOLLOW_REQUEST", "Follow Request"),
+                    ("BOOST", "Boost"),
+                    ("IMPORT", "Import"),
+                    ("ADD", "Add"),
+                    ("REPORT", "Report"),
+                    ("INVITE", "Invite"),
+                    ("ACCEPT", "Accept"),
+                    ("JOIN", "Join"),
+                    ("LEAVE", "Leave"),
+                    ("REMOVE", "Remove"),
+                    ("GROUP_PRIVACY", "Group Privacy"),
+                    ("GROUP_NAME", "Group Name"),
+                    ("GROUP_DESCRIPTION", "Group Description"),
+                ],
+                max_length=255,
+            ),
         ),
     ]

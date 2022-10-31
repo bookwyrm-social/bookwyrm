@@ -33,18 +33,20 @@
                 <a href="{% url 'settings-genres-mod' genre.id %}">{{ genre.genre_name }}</a>
             </td>
             <td>
-                <span class="tag is-success" aria-hidden="true">
-                    <span class="icon icon-check"></span>
-                </span>
-                <a href="{% url 'genre-view' genre.id %}">View Page</a>
+                <dl class="is-pulled-right">
+                    <span class="tag is-success" aria-hidden="true">
+                        <span class="icon icon-check"></span>
+                    </span>
+                    <a href="{% url 'genre-view' genre.id %}">View Page</a>
+                </dl>
             </td>
 
         </tr>
         {% endfor %}
     </table>
-
 </div>
 
-
-
+<div>
+    {% include 'snippets/pagination.html' with page=page_obj %}
+</div>
 {% endblock %}

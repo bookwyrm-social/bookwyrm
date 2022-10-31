@@ -26,13 +26,16 @@ from .activitypub_mixin import OrderedCollectionPageMixin, ObjectMixin
 from .base_model import BookWyrmModel
 from . import fields
 
+
 class GenreManager(models.Manager):
     def create_genre(self, genre_name, description):
         genre = self.create(genre_name=genre_name, description=description)
         return genre
 
+
 class Genre(models.Model):
-    '''This is a model where we can define genres for books.'''
+    """This is a model where we can define genres for books."""
+
     genre_name = fields.CharField(max_length=40)
     description = fields.CharField(max_length=500)
     remote_id = fields.RemoteIdField(null=True, activitypub_field="id")
@@ -40,7 +43,7 @@ class Genre(models.Model):
 
     def __str__(self):
         return self.genre_name
- 
+
     @property
     def genre_desc(self):
         return self.description
@@ -71,7 +74,7 @@ class Genre(models.Model):
 
         return local
 
-    #def save(self, request, *args, **kwargs):
+    # def save(self, request, *args, **kwargs):
     #    super(Genre, self).save(request, *args, **kwargs)
 
 
@@ -157,9 +160,7 @@ class Book(BookDataModel):
     series = fields.TextField(max_length=255, blank=True, null=True)
     series_number = fields.CharField(max_length=255, blank=True, null=True)
 
-
     genres = models.ManyToManyField(Genre, blank=True)
-
 
     subjects = fields.ArrayField(
         models.CharField(max_length=255), blank=True, null=True, default=list
@@ -276,7 +277,6 @@ class Book(BookDataModel):
 
 class Work(OrderedCollectionPageMixin, Book):
     """a work (an abstract concept of a book that manifests in an edition)"""
-
 
     # library of congress catalog control number
     lccn = fields.CharField(
@@ -429,7 +429,6 @@ class Edition(Book):
             ),
         )
         return queryset
-
 
 
 def isbn_10_to_13(isbn_10):

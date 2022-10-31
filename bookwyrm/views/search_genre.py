@@ -14,21 +14,20 @@ from django.views.generic import (
 )
 
 
-
 class SearchGenre(TemplateView):
-    template_name = 'search/genre_search.html'
+    template_name = "search/genre_search.html"
 
     active_genres = []
     search_active_option = ""
 
     def post(self, request, *args, **kwargs):
-        '''Get the genres the user has selected.'''
-        testList = request.POST.getlist('genres')
+        """Get the genres the user has selected."""
+        testList = request.POST.getlist("genres")
 
         for item in testList:
             print("Item successful captured!")
             print(item)
-        
+
         self.active_genres = testList
 
         buttonSelection = request.POST.get("search_buttons")
@@ -40,36 +39,35 @@ class SearchGenre(TemplateView):
         return render(request, self.template_name, context)
 
     def get(self, request, *args, **kwargs):
-        '''Render our template to the user. It will have a list of all available genres.'''
+        """Render our template to the user. It will have a list of all available genres."""
         context = self.get_context_data(**kwargs)
         return self.render_to_response(context)
 
-    def get_context_data(self,*args, **kwargs):
-        '''Get our genre list and put them on the page. If the user made a query, also display the books.'''
-        context = super(SearchGenre, self).get_context_data(*args,**kwargs)
+    def get_context_data(self, *args, **kwargs):
+        """Get our genre list and put them on the page. If the user made a query, also display the books."""
+        context = super(SearchGenre, self).get_context_data(*args, **kwargs)
 
         # Check if there's actually a genre selected.
-        if(len(self.active_genres)):
+        if len(self.active_genres):
 
             activeBooks = []
-            #AND Searching
+            # AND Searching
             if self.search_active_option == "search_and":
 
                 print("Searching using AND")
                 base_qs = Work.objects.all()
                 for gen in self.active_genres:
                     activeBooks = base_qs.filter(genres__pk__contains=gen)
-            #OR searching
+            # OR searching
             elif self.search_active_option == "search_or":
 
                 for gen in self.active_genres:
                     print("Item successful captured!")
-                    activeBooks.extend(Work.objects.filter(genres = gen))
-            #EXCLUDE searching
+                    activeBooks.extend(Work.objects.filter(genres=gen))
+            # EXCLUDE searching
             elif self.search_active_option == "search_exclude":
                 base_qs = Work.objects.all()
-                activeBooks = Work.objects.exclude(genres__pk__in = self.active_genres)
-
+                activeBooks = Work.objects.exclude(genres__pk__in=self.active_genres)
 
             print("Printing this enter:" + self.active_genres[0])
             for item in activeBooks:
@@ -78,15 +76,8 @@ class SearchGenre(TemplateView):
 
         else:
             activeBooks = []
-            print("Empty List") 
+            print("Empty List")
 
-
-
-        context['genre_tags'] = Genre.objects.all()
-        context['listed_books'] = activeBooks
+        context["genre_tags"] = Genre.objects.all()
+        context["listed_books"] = activeBooks
         return context
-
-
-
-
-

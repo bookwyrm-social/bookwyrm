@@ -11,11 +11,13 @@ admin.site.register(models.book.Genre)
 
 class EditionAdmin(admin.ModelAdmin):
     model = models.Edition
-    filter_horizontal = ('genres',)
+    filter_horizontal = ("genres",)
+
 
 class WorksAdmin(admin.ModelAdmin):
     model = models.Work
-    filter_horizontal = ('genres',)
+    filter_horizontal = ("genres",)
+
 
 admin.site.register(models.Edition, EditionAdmin)
 admin.site.register(models.Work, WorksAdmin)

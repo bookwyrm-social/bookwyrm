@@ -7,9 +7,11 @@ from bookwyrm.utils.cache import get_or_set
 
 register = template.Library()
 
-@register.filter(name='followed')
+
+@register.filter(name="followed")
 def followed(user, genre):
     return user.followed_genres.filter(genre_name=genre.genre_name).count() > 0
+
 
 @register.filter(name="liked")
 def get_user_liked(user, status):
