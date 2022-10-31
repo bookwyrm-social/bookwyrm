@@ -49,8 +49,7 @@ class SuggestedGenre(models.Model):
 class SuggestedBookGenre(models.Model):
     '''When users suggest a genre, it will create an instance of this class and begin counting votes.
        Restrictions on how many times a user can suggest a genre is still up for discussion.'''
-    name = fields.CharField(max_length=40)
-    description = fields.CharField(max_length=500)
+    genre = models.ForeignKey("Genre", on_delete=models.CASCADE, null=False)
     votes = fields.IntegerField(default = 1)
     book = models.ForeignKey("Work", on_delete=models.CASCADE, null=False)
     
@@ -60,6 +59,6 @@ class SuggestedBookGenre(models.Model):
     def autoApprove(self):
         '''If a certain category gets a certain number of votes, it will approve itself and create a new genre.'''
         if(self.votes > MinimumVotesSetting):
-            genre = Genre.objects.create_genre(self.name, self.description)
+            self.book = Genre.objects.create_genre(self.name, self.description)
             genre.save()
             self.delete()
