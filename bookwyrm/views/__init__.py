@@ -26,6 +26,7 @@ from .admin.site import Site
 from .admin.themes import Themes, delete_theme
 from .admin.user_admin import UserAdmin, UserAdminList
 from .admin.genre_manage import ModifyGenre, ManageGenreHome, CreateGenre, RemoveGenre
+from .admin.genre_suggestions import GenreSuggestionsHome, ModifySuggestion, RemoveSuggestion, ApproveSuggestion, ModifyMinimumVotes
 
 # user preferences
 from .preferences.change_password import ChangePassword
@@ -33,6 +34,14 @@ from .preferences.edit_user import EditUser
 from .preferences.export import Export
 from .preferences.delete_user import DeleteUser
 from .preferences.block import Block, unblock
+from .preferences.two_factor_auth import (
+    Edit2FA,
+    Confirm2FA,
+    Disable2FA,
+    GenerateBackupCodes,
+    LoginWith2FA,
+    Prompt2FA,
+)
 
 # books
 from .books.books import (

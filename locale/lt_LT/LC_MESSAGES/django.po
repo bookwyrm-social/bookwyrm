@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-08-29 20:43+0000\n"
-"PO-Revision-Date: 2022-08-29 22:37\n"
+"POT-Creation-Date: 2022-10-04 18:03+0000\n"
+"PO-Revision-Date: 2022-10-04 19:11\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Lithuanian\n"
 "Language: lt\n"
@@ -17,28 +17,28 @@ msgstr ""
 "X-Crowdin-File: /[bookwyrm-social.bookwyrm] main/locale/en_US/LC_MESSAGES/django.po\n"
 "X-Crowdin-File-ID: 1553\n"
 
-#: bookwyrm/forms/admin.py:41
+#: bookwyrm/forms/admin.py:42
 msgid "One Day"
 msgstr "Diena"
 
-#: bookwyrm/forms/admin.py:42
+#: bookwyrm/forms/admin.py:43
 msgid "One Week"
 msgstr "Savaitė"
 
-#: bookwyrm/forms/admin.py:43
+#: bookwyrm/forms/admin.py:44
 msgid "One Month"
 msgstr "Mėnuo"
 
-#: bookwyrm/forms/admin.py:44
+#: bookwyrm/forms/admin.py:45
 msgid "Does Not Expire"
 msgstr "Galiojimas nesibaigia"
 
-#: bookwyrm/forms/admin.py:48
+#: bookwyrm/forms/admin.py:49
 #, python-brace-format
 msgid "{i} uses"
 msgstr "{i} naudoja"
 
-#: bookwyrm/forms/admin.py:49
+#: bookwyrm/forms/admin.py:50
 msgid "Unlimited"
 msgstr "Neribota"
 
@@ -129,12 +129,12 @@ msgstr "Įspėjimas"
 msgid "Danger"
 msgstr "Pavojus"
 
-#: bookwyrm/models/antispam.py:101 bookwyrm/models/antispam.py:135
+#: bookwyrm/models/antispam.py:112 bookwyrm/models/antispam.py:146
 msgid "Automatically generated report"
 msgstr "Automatiškai sugeneruota ataskaita"
 
 #: bookwyrm/models/base_model.py:18 bookwyrm/models/link.py:72
-#: bookwyrm/templates/import/import_status.html:200
+#: bookwyrm/templates/import/import_status.html:207
 #: bookwyrm/templates/settings/link_domains/link_domains.html:19
 msgid "Pending"
 msgstr "Laukiama"
@@ -257,19 +257,19 @@ msgstr "Galima pasiskolinti"
 msgid "Approved"
 msgstr "Patvirtinti puslapiai"
 
-#: bookwyrm/models/user.py:31 bookwyrm/templates/book/book.html:289
+#: bookwyrm/models/user.py:32 bookwyrm/templates/book/book.html:289
 msgid "Reviews"
 msgstr "Apžvalgos"
 
-#: bookwyrm/models/user.py:32
+#: bookwyrm/models/user.py:33
 msgid "Comments"
 msgstr "Komentarai"
 
-#: bookwyrm/models/user.py:33
+#: bookwyrm/models/user.py:34
 msgid "Quotations"
 msgstr "Citatos"
 
-#: bookwyrm/models/user.py:34
+#: bookwyrm/models/user.py:35
 msgid "Everything else"
 msgstr "Visa kita"
 
@@ -1297,7 +1297,7 @@ msgstr "Būsena"
 #: bookwyrm/templates/settings/announcements/announcements.html:41
 #: bookwyrm/templates/settings/federation/instance.html:112
 #: bookwyrm/templates/settings/reports/report_links_table.html:6
-#: bookwyrm/templates/settings/themes.html:100
+#: bookwyrm/templates/settings/themes.html:99
 msgid "Actions"
 msgstr "Veiksmai"
 
@@ -2443,7 +2443,7 @@ msgid "If you still can't find your book, you can add a record manually."
 msgstr ""
 
 #: bookwyrm/templates/guided_tour/search.html:122
-msgid "Add a record manally"
+msgid "Add a record manually"
 msgstr ""
 
 #: bookwyrm/templates/guided_tour/search.html:147
@@ -2720,27 +2720,31 @@ msgstr "Knyga"
 msgid "Import preview unavailable."
 msgstr "Nepavyko įkelti peržiūros."
 
-#: bookwyrm/templates/import/import_status.html:172
+#: bookwyrm/templates/import/import_status.html:143
+msgid "No items currently need review"
+msgstr ""
+
+#: bookwyrm/templates/import/import_status.html:179
 msgid "View imported review"
 msgstr "Peržiūrėti įkeltą atsiliepimą"
 
-#: bookwyrm/templates/import/import_status.html:186
+#: bookwyrm/templates/import/import_status.html:193
 msgid "Imported"
 msgstr "Importuota"
 
-#: bookwyrm/templates/import/import_status.html:192
+#: bookwyrm/templates/import/import_status.html:199
 msgid "Needs manual review"
 msgstr "Reikalinga peržvelgti"
 
-#: bookwyrm/templates/import/import_status.html:205
+#: bookwyrm/templates/import/import_status.html:212
 msgid "Retry"
 msgstr "Bandyti dar kartą"
 
-#: bookwyrm/templates/import/import_status.html:223
+#: bookwyrm/templates/import/import_status.html:230
 msgid "This import is in an old format that is no longer supported. If you would like to troubleshoot missing items from this import, click the button below to update the import format."
 msgstr "Tai seno formato importas, kuris nebepalaikomas. Jei norite matyti importo metu praleistus elementus, spustelėkite žemiau esantį mygtuką ir atnaujinkite importavimo formatą."
 
-#: bookwyrm/templates/import/import_status.html:225
+#: bookwyrm/templates/import/import_status.html:232
 msgid "Update import"
 msgstr "Atnaujinti importą"
 
@@ -3498,19 +3502,19 @@ msgstr "pakeitė <a href=\"%(group_path)s\">%(group_name)s</a> pavadinimą"
 msgid "has changed the description of <a href=\"%(group_path)s\">%(group_name)s</a>"
 msgstr "pakeitė <a href=\"%(group_path)s\">%(group_name)s</a> aprašymą"
 
-#: bookwyrm/templates/notifications/notifications_page.html:18
+#: bookwyrm/templates/notifications/notifications_page.html:19
 msgid "Delete notifications"
 msgstr "Ištrinti pranešimus"
 
-#: bookwyrm/templates/notifications/notifications_page.html:29
+#: bookwyrm/templates/notifications/notifications_page.html:31
 msgid "All"
 msgstr "Visi"
 
-#: bookwyrm/templates/notifications/notifications_page.html:33
+#: bookwyrm/templates/notifications/notifications_page.html:35
 msgid "Mentions"
 msgstr "Paminėjimai"
 
-#: bookwyrm/templates/notifications/notifications_page.html:45
+#: bookwyrm/templates/notifications/notifications_page.html:47
 msgid "You're all caught up!"
 msgstr "Viską peržiūrėjote!"
 
@@ -3968,7 +3972,7 @@ msgstr "Redaguoti"
 #: bookwyrm/templates/settings/announcements/announcements.html:3
 #: bookwyrm/templates/settings/announcements/announcements.html:5
 #: bookwyrm/templates/settings/announcements/edit_announcement.html:15
-#: bookwyrm/templates/settings/layout.html:82
+#: bookwyrm/templates/settings/layout.html:91
 msgid "Announcements"
 msgstr "Pranešimai"
 
@@ -4144,6 +4148,71 @@ msgstr "Rodyti taisykles"
 #: bookwyrm/templates/settings/automod/rules.html:188
 msgid "Remove rule"
 msgstr "Pašalinti taisyklę"
+
+#: bookwyrm/templates/settings/celery.html:6
+#: bookwyrm/templates/settings/celery.html:8
+msgid "Celery Status"
+msgstr ""
+
+#: bookwyrm/templates/settings/celery.html:14
+msgid "Queues"
+msgstr ""
+
+#: bookwyrm/templates/settings/celery.html:18
+msgid "Low priority"
+msgstr ""
+
+#: bookwyrm/templates/settings/celery.html:24
+msgid "Medium priority"
+msgstr ""
+
+#: bookwyrm/templates/settings/celery.html:30
+msgid "High priority"
+msgstr ""
+
+#: bookwyrm/templates/settings/celery.html:40
+msgid "Could not connect to Redis broker"
+msgstr ""
+
+#: bookwyrm/templates/settings/celery.html:48
+msgid "Active Tasks"
+msgstr ""
+
+#: bookwyrm/templates/settings/celery.html:53
+msgid "ID"
+msgstr ""
+
+#: bookwyrm/templates/settings/celery.html:54
+msgid "Task name"
+msgstr ""
+
+#: bookwyrm/templates/settings/celery.html:55
+msgid "Run time"
+msgstr ""
+
+#: bookwyrm/templates/settings/celery.html:56
+msgid "Priority"
+msgstr ""
+
+#: bookwyrm/templates/settings/celery.html:61
+msgid "No active tasks"
+msgstr ""
+
+#: bookwyrm/templates/settings/celery.html:79
+msgid "Workers"
+msgstr ""
+
+#: bookwyrm/templates/settings/celery.html:84
+msgid "Uptime:"
+msgstr ""
+
+#: bookwyrm/templates/settings/celery.html:94
+msgid "Could not connect to Celery"
+msgstr ""
+
+#: bookwyrm/templates/settings/celery.html:101
+msgid "Errors"
+msgstr ""
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:6
 #: bookwyrm/templates/settings/dashboard/dashboard.html:8
@@ -4624,16 +4693,24 @@ msgid "Link Domains"
 msgstr "Nuorodų puslapiai"
 
 #: bookwyrm/templates/settings/layout.html:78
+msgid "System"
+msgstr ""
+
+#: bookwyrm/templates/settings/layout.html:82
+msgid "Celery status"
+msgstr ""
+
+#: bookwyrm/templates/settings/layout.html:87
 msgid "Instance Settings"
 msgstr "Serverio nustatymai"
 
-#: bookwyrm/templates/settings/layout.html:86
+#: bookwyrm/templates/settings/layout.html:95
 #: bookwyrm/templates/settings/site.html:4
 #: bookwyrm/templates/settings/site.html:6
 msgid "Site Settings"
 msgstr "Puslapio nustatymai"
 
-#: bookwyrm/templates/settings/layout.html:91
+#: bookwyrm/templates/settings/layout.html:100
 #: bookwyrm/templates/settings/site.html:95
 #: bookwyrm/templates/settings/themes.html:4
 #: bookwyrm/templates/settings/themes.html:6
@@ -4913,7 +4990,7 @@ msgid "Add the file name using the form below to make it available in the applic
 msgstr "Pridėkite failo pavadinimą, naudodamiesi žemiau esančia forma, kad jis atsirastų programėlėje."
 
 #: bookwyrm/templates/settings/themes.html:42
-#: bookwyrm/templates/settings/themes.html:83
+#: bookwyrm/templates/settings/themes.html:82
 msgid "Add theme"
 msgstr "Pridėti temą"
 
@@ -4921,24 +4998,24 @@ msgstr "Pridėti temą"
 msgid "Unable to save theme"
 msgstr "Nepavyko išsaugoti temos"
 
-#: bookwyrm/templates/settings/themes.html:64
-#: bookwyrm/templates/settings/themes.html:94
+#: bookwyrm/templates/settings/themes.html:63
+#: bookwyrm/templates/settings/themes.html:93
 msgid "Theme name"
 msgstr "Temos pavadinimas"
 
-#: bookwyrm/templates/settings/themes.html:74
+#: bookwyrm/templates/settings/themes.html:73
 msgid "Theme filename"
 msgstr "Temos failo vardas"
 
-#: bookwyrm/templates/settings/themes.html:89
+#: bookwyrm/templates/settings/themes.html:88
 msgid "Available Themes"
 msgstr "Galimos temos"
 
-#: bookwyrm/templates/settings/themes.html:97
+#: bookwyrm/templates/settings/themes.html:96
 msgid "File"
 msgstr "Failas"
 
-#: bookwyrm/templates/settings/themes.html:112
+#: bookwyrm/templates/settings/themes.html:111
 msgid "Remove theme"
 msgstr "Pašalinti temą"
 

@@ -50,6 +50,7 @@ class Unfavorite(View):
             return HttpResponse()
         return redirect("/")
 
+
 @method_decorator(login_required, name="dispatch")
 class FollowGenre(View):
     """follow a genre"""

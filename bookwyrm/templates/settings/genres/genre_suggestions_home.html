@@ -1,0 +1,57 @@
+{% extends 'settings/layout.html' %}
+{% load i18n %}
+{% block title %}{% trans "Genre Suggestions" %}{% endblock %}
+
+{% block edit-button %}
+
+    <span class="is-hidden-mobile">{% trans "Minimum Votes: " %}
+        <form method="POST">{% csrf_token %}
+            <button type="submit" class="button is-success is-small">{% trans "Save" %}</button>
+        </form> 
+    </span>
+
+{% endblock %}
+
+{% block header %}
+{% trans "Genre Suggestions" %}
+{% endblock %}
+
+
+
+{% block panel %}
+
+<div class="table-container block">
+    <table class="table is-striped is-fullwidth">
+        <tr>
+            {% url 'settings-suggestions' as url %}
+            <th colspan="1">
+                {% trans "Genre" as text %}
+                {% include 'snippets/table-sort-header.html' with field="genre" sort=sort text=text %}
+            </th>
+            <th colspan="1">
+                <dl class="is-pulled-right">
+                    {% trans "Votes" as text %}
+                    {% include 'snippets/table-sort-header.html' with field="votes" sort=sort text=text %}
+                </dl>
+            </th>
+        </tr>
+        {% for genre in object_list %}
+        <tr>
+
+            <td class="overflow-wrap-anywhere pl-1">
+                <a href="{% url 'settings-suggestions-mod' genre.id %}">{{ genre.name }}</a>
+            </td>
+            <td>
+                <dl class="is-pulled-right pr-3">
+                    {{ genre.votes }}
+                </dl>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+
+<div>
+    {% include 'snippets/pagination.html' with page=page_obj %}
+</div>
+{% endblock %}

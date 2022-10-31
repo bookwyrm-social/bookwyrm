@@ -7,13 +7,17 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bookwyrm', '0162_auto_20221005_2301'),
+        ("bookwyrm", "0162_auto_20221005_2301"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='genre',
-            name='remote_id',
-            field=bookwyrm.models.fields.RemoteIdField(max_length=255, null=True, validators=[bookwyrm.models.fields.validate_remote_id]),
+            model_name="genre",
+            name="remote_id",
+            field=bookwyrm.models.fields.RemoteIdField(
+                max_length=255,
+                null=True,
+                validators=[bookwyrm.models.fields.validate_remote_id],
+            ),
         ),
     ]

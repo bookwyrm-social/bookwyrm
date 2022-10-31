@@ -8,24 +8,30 @@ import django.utils.timezone
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bookwyrm', '0160_auto_20221005_2239'),
+        ("bookwyrm", "0160_auto_20221005_2239"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='genre',
-            name='created_date',
-            field=models.DateTimeField(auto_now_add=True, default=django.utils.timezone.now),
+            model_name="genre",
+            name="created_date",
+            field=models.DateTimeField(
+                auto_now_add=True, default=django.utils.timezone.now
+            ),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='genre',
-            name='remote_id',
-            field=bookwyrm.models.fields.RemoteIdField(max_length=255, null=True, validators=[bookwyrm.models.fields.validate_remote_id]),
+            model_name="genre",
+            name="remote_id",
+            field=bookwyrm.models.fields.RemoteIdField(
+                max_length=255,
+                null=True,
+                validators=[bookwyrm.models.fields.validate_remote_id],
+            ),
         ),
         migrations.AddField(
-            model_name='genre',
-            name='updated_date',
+            model_name="genre",
+            name="updated_date",
             field=models.DateTimeField(auto_now=True),
         ),
     ]

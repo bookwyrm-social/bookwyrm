@@ -10,7 +10,7 @@ from django.views import View
 
 from bookwyrm import models
 from bookwyrm.connectors import connector_manager
-from bookwyrm.book_search import search, format_search_result
+from bookwyrm.book_search import search, format_search_result, search_genre
 from bookwyrm.settings import PAGE_LENGTH
 from bookwyrm.utils import regex
 from .helpers import is_api_request
@@ -25,20 +25,28 @@ class Search(View):
         """that search bar up top"""
 
         if is_api_request(request):
+            print("Returning API book search.")
             return api_book_search(request)
 
         query = request.GET.get("q")
-        if not query:
-            return TemplateResponse(request, "search/book.html")
+        genre_query = request.GET.get("genres")
+        if not query and not genre_query:
+            print("Exited because nothing was selected.")
+            context = {}
+            context["genre_tags"] = models.Genre.objects.all()
+            return TemplateResponse(request, "search/book.html", context)
 
         search_type = request.GET.get("type")
         if query and not search_type:
             search_type = "user" if "@" in query else "book"
 
+        print("Looking up this type: " + search_type)
+
         endpoints = {
             "book": book_search,
             "user": user_search,
             "list": list_search,
+            "genre": genre_search,
         }
         if not search_type in endpoints:
             search_type = "book"
@@ -56,6 +64,38 @@ def api_book_search(request):
     return JsonResponse(
         [format_search_result(r) for r in book_results[:10]], safe=False
     )
+
+
+def genre_search(request):
+    print("Entered the genre search function")
+    genre_list = request.GET.getlist("genres")
+    buttonSelection = request.GET.get("search_buttons")
+
+    gen_query = request.GET.get("genres")
+    query = request.GET.get("q")
+    query = isbn_check(query)
+
+    print(buttonSelection)
+    # local_results = models.Edition.objects.all()
+    min_confidence = request.GET.get("min_confidence", 0)
+    local_results = search_genre(genre_list, buttonSelection)
+
+    paginated = Paginator(local_results, PAGE_LENGTH)
+    page = paginated.get_page(request.GET.get("page"))
+    data = {
+        "genre_tags": models.Genre.objects.all(),
+        "gen_query": gen_query,
+        "gen_list": genre_list,
+        "btn_select": buttonSelection,
+        "query": query,
+        "results": page,
+        "type": "genre",
+        "page_range": paginated.get_elided_page_range(
+            page.number, on_each_side=2, on_ends=1
+        ),
+    }
+
+    return TemplateResponse(request, "search/book.html", data)
 
 
 def book_search(request):

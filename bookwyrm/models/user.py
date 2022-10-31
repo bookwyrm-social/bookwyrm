@@ -111,7 +111,9 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         through_fields=("user_subject", "user_object"),
         related_name="follower_requests",
     )
-    followed_genres = models.ManyToManyField("Genre", related_name="followed_genres", blank=True)
+    followed_genres = models.ManyToManyField(
+        "Genre", related_name="followed_genres", blank=True
+    )
     blocks = models.ManyToManyField(
         "self",
         symmetrical=False,
@@ -175,6 +177,12 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     name_field = "username"
     property_fields = [("following_link", "following")]
     field_tracker = FieldTracker(fields=["name", "avatar"])
+
+    # two factor authentication
+    two_factor_auth = models.BooleanField(default=None, blank=True, null=True)
+    otp_secret = models.CharField(max_length=32, default=None, blank=True, null=True)
+    hotp_secret = models.CharField(max_length=32, default=None, blank=True, null=True)
+    hotp_count = models.IntegerField(default=0, blank=True, null=True)
 
     @property
     def active_follower_requests(self):

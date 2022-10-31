@@ -27,6 +27,43 @@ def search(query, min_confidence=0, filters=None, return_first=False):
     return results
 
 
+def search_genre(active_genres, search_active_option):
+    """Get our genre list and put them on the page. If the user made a query, also display the books."""
+
+    # Check if there's actually a genre selected.
+    if len(active_genres):
+
+        results = []
+        # AND Searching
+        if search_active_option == "search_and":
+
+            print("Searching using AND")
+            base_qs = models.Work.objects.all()
+            for gen in active_genres:
+                results = base_qs.filter(genres__pk__contains=gen)
+        # OR searching
+        elif search_active_option == "search_or":
+
+            for gen in active_genres:
+                print("Item successful captured!")
+                results.extend(models.Work.objects.filter(genres=gen))
+        # EXCLUDE searching
+        elif search_active_option == "search_exclude":
+            base_qs = models.Work.objects.all()
+            results = models.Work.objects.exclude(genres__pk__in=active_genres)
+
+        print("Printing this enter:" + active_genres[0])
+        for item in results:
+            print(item)
+        print("Active books successful")
+
+    else:
+        results = []
+        print("Empty List")
+
+    return results
+
+
 def isbn_search(query):
     """search your local database"""
     if not query:
