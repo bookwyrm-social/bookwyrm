@@ -1,4 +1,6 @@
 from django.contrib.postgres.search import TrigramSimilarity
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 
 from django.shortcuts import get_object_or_404, render
 
@@ -28,11 +30,12 @@ class GenreSuggestionsHome(ListView):
     model = SuggestedGenre
 
 
+@method_decorator(login_required, name="dispatch")
 class ApproveSuggestion(View):
     """approve a suggestion"""
 
     def post(self, request, pk):
-        """follow a genre"""
+        """approve a genre"""
         
         suggestion = SuggestedGenre.objects.get(pk=id)
         genre = Genre.objects.create_genre(suggestion.name, suggestion.description)
