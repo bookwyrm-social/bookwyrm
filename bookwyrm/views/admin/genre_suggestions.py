@@ -34,7 +34,7 @@ class ApproveSuggestion(View):
     def post(self, request, pk):
         """follow a genre"""
         
-        suggestion = SuggestedGenre.objects.get(id=id)
+        suggestion = SuggestedGenre.objects.get(pk=id)
         genre = Genre.objects.create_genre(suggestion.name, suggestion.description)
         genre.save()
         SuggestedGenre.object.delete(id=pk)

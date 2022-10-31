@@ -39,7 +39,7 @@
             <h4 class="title is-4">Suggestion Actions</h4>
             <div class="box content is-flex-grow-1">
                 <dl class="mb-3">
-                    <form method="POST" action="{% url 'settings-suggestions-approve' id=object.id %}">{% csrf_token %}
+                    <form method="POST" action="{% url 'settings-suggestions-approve' object.id %}">{% csrf_token %}
                         <button type="submit" class="button is-success is-light">{% trans "Approve Suggestion" %}</button>
                     </form> 
                 </dl> 
