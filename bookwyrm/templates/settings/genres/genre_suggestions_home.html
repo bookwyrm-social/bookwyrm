@@ -1,0 +1,51 @@
+{% extends 'settings/layout.html' %}
+{% load i18n %}
+{% block title %}{% trans "Genre Suggestions" %}{% endblock %}
+
+{% block edit-button %}
+<a href="{% url 'settings-genres-add' %}">
+    <span class="icon icon-plus" title="{% trans 'Add genre' %}" aria-hidden="True"></span>
+    <span class="is-hidden-mobile">{% trans "Add genre" %}</span>
+</a>
+{% endblock %}
+
+{% block header %}
+{% trans "Genre Suggestions" %}
+{% endblock %}
+
+
+
+{% block panel %}
+
+<div class="table-container block">
+    <table class="table is-striped is-fullwidth">
+        <tr>
+            {% url 'settings-suggestions' as url %}
+            <th colspan="2">
+                {% trans "Genre" as text %}
+                {% include 'snippets/table-sort-header.html' with field="genre" sort=sort text=text %}
+            </th>
+        </tr>
+        {% for genre in object_list %}
+        <tr>
+
+            <td class="overflow-wrap-anywhere pl-1">
+                <a href="{% url 'settings-genres-mod' genre.id %}">{{ genre.genre_name }}</a>
+            </td>
+            <td>
+                <dl class="is-pulled-right">
+                    <span class="tag is-success" aria-hidden="true">
+                        <span class="icon icon-check"></span>
+                    </span>
+                </dl>
+            </td>
+
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+
+<div>
+    {% include 'snippets/pagination.html' with page=page_obj %}
+</div>
+{% endblock %}

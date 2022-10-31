@@ -7,6 +7,7 @@ admin.site.register(models.User)
 admin.site.register(models.FederatedServer)
 admin.site.register(models.Connector)
 admin.site.register(models.book.Genre)
+admin.site.register(models.suggestions.SuggestedGenre)
 
 
 class EditionAdmin(admin.ModelAdmin):
