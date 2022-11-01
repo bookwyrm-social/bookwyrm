@@ -375,13 +375,21 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         # skip the logic in this class's save()
         super().save(*args, **kwargs)
 
-    def deactivate(self, *args, **kwargs):
+    def deactivate(self):
         """Disable the user but allow them to reactivate"""
         # pylint: disable=attribute-defined-outside-init
         self.is_active = False
         self.deactivation_reason = "self_deactivation"
         self.allow_reactivation = True
-        super().save(*args, **kwargs, broadcast=False)
+        super().save(broadcast=False)
+
+    def reactivate(self):
+        """Now you want to come back, huh?"""
+        # pylint: disable=attribute-defined-outside-init
+        self.is_active = True
+        self.deactivation_reason = None
+        self.allow_reactivation = False
+        super().save(broadcast=False)
 
     @property
     def local_path(self):

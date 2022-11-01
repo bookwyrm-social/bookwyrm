@@ -7,6 +7,7 @@ from django.utils.translation import gettext_lazy as _
 import pyotp
 
 from bookwyrm import models
+from bookwyrm.settings import DOMAIN
 from .custom_form import CustomForm
 
 
@@ -19,6 +20,22 @@ class LoginForm(CustomForm):
         widgets = {
             "password": forms.PasswordInput(),
         }
+
+    def infer_username(self):
+        """Users may enter their localname, username, or email"""
+        localname = self.data.get("localname")
+        username = None
+        if "@" in localname:  # looks like an email address to me
+            try:
+                return models.User.objects.get(email=localname).username
+            except models.User.DoesNotExist:  # maybe it's a full username?
+                return username
+        return f"{localname}@{DOMAIN}"
+
+    def add_invalid_password_error(self):
+        """We don't want to be too specific about this"""
+        # pylint: disable=attribute-defined-outside-init
+        self.non_field_errors = _("Username or password are incorrect")
 
 
 class RegisterForm(CustomForm):
