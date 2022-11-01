@@ -1,0 +1,12 @@
+{% extends 'components/inline_form.html' %}
+{% load i18n %}
+
+{% block header %}
+{% trans "Suggest Genre" %}
+{% endblock %}
+
+{% block form %}
+<form name="create-list" method="post" action="{% url 'lists' %}">
+    {% include 'genre/form.html' with curation_group=group %}
+</form>
+{% endblock %}

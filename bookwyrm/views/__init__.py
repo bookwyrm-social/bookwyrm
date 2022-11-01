@@ -35,7 +35,6 @@ from .admin.genre_suggestions import (
     RemoveBookSuggestion,
     ApproveBookSuggestion,
 )
-
 # user preferences
 from .preferences.change_password import ChangePassword
 from .preferences.edit_user import EditUser
@@ -90,6 +89,9 @@ from .imports.manually_review import (
     approve_import_item,
     delete_import_item,
 )
+
+# genres
+from  .genre.genre import Genres, FollowedGenres
 
 # lists
 from .list.curate import Curate

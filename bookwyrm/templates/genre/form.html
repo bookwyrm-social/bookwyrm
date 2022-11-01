@@ -1,0 +1,32 @@
+{% load i18n %}
+{% csrf_token %}
+{% load utilities %}
+<input type="hidden" name="user" value="{{ request.user.id }}">
+
+<div class="columns">
+    <div class="column is-full">
+        <div class="field">
+            <label class="label" for="id_name" id="tour-list-name">{% trans "Name:" %}</label>
+            {{ list_form.name }}
+        </div>
+        <div class="field">
+            <label class="label" for="id_description">{% trans "Description:" %}</label>
+            {{ list_form.description }}
+        </div>
+    </div>
+    
+</div>
+<div class="is-flex is-justify-content-end">
+    {% if list.id %}
+    <div class="is-flex-grow-1">
+        <button type="button" data-modal-open="delete_list" class="button is-danger">
+            {% trans "Delete list" %}
+        </button>
+    </div>
+    {% endif %}
+    <div class="field has-addons">
+        <div class="control">
+            <button type="submit" class="button is-primary">{% trans "Suggest" %}</button>
+        </div>
+    </div>
+</div>

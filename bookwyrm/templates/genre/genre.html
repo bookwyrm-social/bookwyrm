@@ -1,0 +1,53 @@
+{% extends 'layout.html' %}
+{% load utilities %}
+{% load i18n %}
+
+{% block title %}{% trans "Genres" %}{% endblock %}
+
+{% block content %}
+
+<header class="block columns is-mobile">
+    <div class="column">
+        <h1 class="title">
+            {% trans "Genres" %}
+        </h1>
+    </div>
+    {% if request.user.is_authenticated %}
+    <div class="column is-narrow" id="tour-create-list">
+        {% trans "Suggest Genre" as button_text %}
+        {% include 'snippets/toggle/open_button.html' with controls_text="create_list" icon_with_text="plus" text=button_text focus="create_list_header" %}
+    </div>
+    {% endif %}
+</header>
+{% if request.user.is_authenticated %}
+<div class="block">
+    {% include 'genre/create_form.html' with controls_text="create_list" %}
+</div>
+{% endif %}
+
+{% if request.user.is_authenticated %}
+<nav class="tabs">
+    <ul>
+        {% url 'genres' as url %}
+        <li{% if request.path in url %} class="is-active"{% endif %}>
+            <a href="{{ url }}">{% trans "All Genres" %}</a>
+        </li>
+        {% url 'followed-genres' as url %}
+        <li{% if url in request.path %} class="is-active"{% endif %}>
+            <a href="{{ url }}">{% trans "Followed Genres" %}</a>
+        </li>
+    </ul>
+</nav>
+{% endif %}
+
+{% if genres %}
+<section class="block">
+    {% include 'genre/genre_items.html' with genres=genres %}
+</section>
+
+<div>
+    {% include 'snippets/pagination.html' with page=genres path=path %}
+</div>
+{% endif %}
+
+{% endblock %}

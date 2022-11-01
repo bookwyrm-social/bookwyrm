@@ -4,6 +4,7 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django_celery_beat.models import IntervalSchedule
 from .widgets import Select
+
 from bookwyrm import models
 from .custom_form import StyledForm
 
