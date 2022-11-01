@@ -62,6 +62,7 @@ async def get_results(session, url, min_confidence, query, connector):
         logger.info(err)
 
 
+
 async def async_connector_search(query, items, min_confidence):
     """Try a number of requests simultaneously"""
     timeout = aiohttp.ClientTimeout(total=SEARCH_TIMEOUT)
@@ -79,7 +80,7 @@ async def async_connector_search(query, items, min_confidence):
 
 
 def search(query, min_confidence=0.1, return_first=False):
-    """find books based on arbitary keywords"""
+    """find books based on arbitary keywords or categories"""
     if not query:
         return []
     results = []
@@ -98,6 +99,37 @@ def search(query, min_confidence=0.1, return_first=False):
 
     # load as many results as we can
     results = asyncio.run(async_connector_search(query, items, min_confidence))
+    results = [r for r in results if r]
+
+    if return_first:
+        # find the best result from all the responses and return that
+        all_results = [r for con in results for r in con["results"]]
+        all_results = sorted(all_results, key=lambda r: r.confidence, reverse=True)
+        return all_results[0] if all_results else None
+
+    # failed requests will return None, so filter those out
+    return results
+
+def search_genre(genres, min_confidence=0.1, return_first=False):
+    """find books based on arbitary keywords or categories"""
+    if not genres:
+        return []
+    results = []
+
+    items = []
+    for connector in get_connectors():
+        # get the search url from the connector before sending
+        url = connector.get_search_url(genres)
+        try:
+            raise_not_valid_url(url)
+        except ConnectorException:
+            # if this URL is invalid we should skip it and move on
+            logger.info("Request denied to blocked domain: %s", url)
+            continue
+        items.append((url, connector))
+
+    # load as many results as we can
+    results = asyncio.run(async_connector_search(genres, items, min_confidence))
     results = [r for r in results if r]
 
     if return_first:

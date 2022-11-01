@@ -62,7 +62,6 @@ def api_book_search(request):
     min_confidence = request.GET.get("min_confidence", 0)
     # only return local book results via json so we don't cascade
     book_results = search(query, min_confidence=min_confidence)
-    print("Returning API book search. Bigly")
     return JsonResponse(
         [format_search_result(r) for r in book_results[:10]], safe=False
     )
@@ -71,6 +70,7 @@ def genre_search(request):
     print("Entered the genre search function")
     genre_list = request.GET.getlist('genres')
     buttonSelection = request.GET.get("search_buttons")
+    search_remote = request.GET.get("remote", False) and request.user.is_authenticated
 
     gen_query = request.GET.get("genres")
     query = request.GET.get("q")
@@ -91,11 +91,18 @@ def genre_search(request):
         "btn_select": buttonSelection,
         "query": query,
         "results": page,
+        "remote": search_remote,
         "type": "genre",
         "page_range": paginated.get_elided_page_range(
             page.number, on_each_side=2, on_ends=1
         ),
     }
+    if request.user.is_authenticated:
+        print("Calling the remote results for genres.")
+        data["remote_results"] = connector_manager.search_genre(
+            gen_query, min_confidence=min_confidence
+        )
+        data["remote"] = True
     
     return TemplateResponse(request, "search/book.html", data)
 
@@ -112,6 +119,7 @@ def book_search(request):
     paginated = Paginator(local_results, PAGE_LENGTH)
     page = paginated.get_page(request.GET.get("page"))
     data = {
+        "genre_tags": models.Genre.objects.all(),
         "query": query,
         "results": page,
         "type": "book",

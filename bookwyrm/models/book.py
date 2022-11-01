@@ -33,10 +33,10 @@ class GenreManager(models.Manager):
 
 class Genre(ObjectMixin, BookWyrmModel):
     '''This is a model where we can define genres for books.'''
-    genre_name = fields.CharField(max_length=40)
+    genre_name = fields.CharField(max_length=500)
     description = fields.CharField(max_length=500)
 
-    #name = fields.CharField(max_length=40, default = genre_name)
+    name = fields.CharField(max_length=500, default = genre_name)
 
     activity_serializer = activitypub.GenreData
     objects = GenreManager()
@@ -48,8 +48,9 @@ class Genre(ObjectMixin, BookWyrmModel):
     def genre_desc(self):
         return self.description
 
-    #def save(self, request, *args, **kwargs):
-    #    super(Genre, self).save(request, *args, **kwargs)
+    def save(self, *args, **kwargs):
+        self.name = self.genre_name
+        super(Genre, self).save( *args, **kwargs)
 
 
 class BookDataModel(ObjectMixin, BookWyrmModel):

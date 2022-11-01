@@ -99,4 +99,5 @@ class GenreData(ActivityObject):
     """shared fields for all categories"""
     description: str = ""
     genre_name: str = ""
+    name: str = ""
     type: str = "Genre"
