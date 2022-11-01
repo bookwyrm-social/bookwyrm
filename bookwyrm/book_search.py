@@ -37,7 +37,7 @@ def search_genre(active_genres, search_active_option):
         if search_active_option == "search_and":
 
             print("Searching using AND")
-            base_qs = models.Work.objects.all()
+            base_qs = models.Edition.objects.all()
             for gen in active_genres:
                 results = base_qs.filter(genres__pk__contains=gen)
         #OR searching
@@ -45,11 +45,11 @@ def search_genre(active_genres, search_active_option):
 
             for gen in active_genres:
                 print("Item successful captured!")
-                results.extend(models.Work.objects.filter(genres = gen))
+                results.extend(models.Edition.objects.filter(genres = gen))
         #EXCLUDE searching
         elif search_active_option == "search_exclude":
-            base_qs = models.Work.objects.all()
-            results = models.Work.objects.exclude(genres__pk__in = active_genres)
+            base_qs = models.Edition.objects.all()
+            results = models.Edition.objects.exclude(genres__pk__in = active_genres)
 
 
         print("Printing this enter:" + active_genres[0])

@@ -91,10 +91,10 @@ class ActivityObject:
                     raise ActivitySerializerError(
                         f"Missing required field: {field.name}"
                     )
+                value = field.default
                 print("--------")
                 print(field.name)
                 print(value)
-                value = field.default
             setattr(self, field.name, value)
 
     # pylint: disable=too-many-locals,too-many-branches,too-many-arguments
