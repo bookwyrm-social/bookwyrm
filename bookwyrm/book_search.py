@@ -37,19 +37,23 @@ def search_genre(active_genres, search_active_option):
         if search_active_option == "search_and":
 
             print("Searching using AND")
-            base_qs = models.Edition.objects.all()
+            base_qs = models.Work.objects.all()
             for gen in active_genres:
                 results = base_qs.filter(genres__pk__contains=gen)
+
+            results = get_first_edition_gen(results)
         #OR searching
         elif search_active_option == "search_or":
 
             for gen in active_genres:
                 print("Item successful captured!")
-                results.extend(models.Edition.objects.filter(genres = gen))
+                results.extend(models.Work.objects.filter(genres = gen))
+                results = get_first_edition_gen(results)
         #EXCLUDE searching
         elif search_active_option == "search_exclude":
-            base_qs = models.Edition.objects.all()
-            results = models.Edition.objects.exclude(genres__pk__in = active_genres)
+            base_qs = models.Work.objects.all()
+            results = models.Work.objects.exclude(genres__pk__in = active_genres)
+            results = get_first_edition_gen(results)
 
 
         print("Printing this enter:" + active_genres[0])
@@ -63,6 +67,13 @@ def search_genre(active_genres, search_active_option):
 
 
     return results
+
+def get_first_edition_gen(results):
+    list_result = []
+    for work in results:
+        list_result.append(work.default_edition)
+
+    return list_result
 
 
 def isbn_search(query):
