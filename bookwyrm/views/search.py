@@ -68,6 +68,10 @@ def api_book_search(request):
 
 def genre_search(request):
     print("Entered the genre search function")
+
+    if is_api_request(request):
+        return api_book_search(request)
+
     genre_list = request.GET.getlist("genres")
     buttonSelection = request.GET.get("search_buttons")
     search_remote = request.GET.get("remote", False) and request.user.is_authenticated
