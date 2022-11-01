@@ -40,6 +40,7 @@ async def get_results(session, url, min_confidence, query, connector):
             print("-----------------------------------")
             if not response.ok:
                 logger.info("Unable to connect to %s: %s", url, response.reason)
+                print("Unable to connect to %s: %s", url, response.reason)
                 return
 
             try:
@@ -117,9 +118,9 @@ def search_genre(genres, buttonSelection, min_confidence=0.1, return_first=False
         return []
     results = []
 
-    print("---------------urlgen---------------")
-    print(genres)
-    print("--------------------------------------------")
+    #print("---------------urlgen---------------")
+    #print(genres)
+    #print("--------------------------------------------")
 
     items = []
     for connector in get_connectors():
@@ -132,9 +133,9 @@ def search_genre(genres, buttonSelection, min_confidence=0.1, return_first=False
             logger.info("Request denied to blocked domain: %s", url)
             print("---------------This URL is NOT valid---------------")
             continue
-        print("---------------This URL is valid---------------")
-        print(url)
-        print("--------------------------------------------")
+        #print("---------------This URL is valid---------------")
+        #print(url)
+        #print("--------------------------------------------")
         items.append((url, connector))
 
     # load as many results as we can

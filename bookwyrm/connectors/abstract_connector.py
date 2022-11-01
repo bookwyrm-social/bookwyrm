@@ -63,9 +63,9 @@ class AbstractMinimalConnector(ABC):
         genreExtension = ""
         for gen in genres:
             genreExtension += "&genres=" + gen
-        print("---------------get_search_url---------------")
-        print(self.search_url)
-        print("--------------------------------------------")
+        #print("---------------get_search_url---------------")
+        #print(self.search_url)
+        #print("--------------------------------------------")
         final_url = self.search_url + typeSelection + genreExtension
         return final_url
 
