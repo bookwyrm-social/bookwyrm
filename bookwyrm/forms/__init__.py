@@ -11,4 +11,5 @@ from .landing import *
 from .links import *
 from .lists import *
 from .status import *
+from .suggestions import *
 from .user_admin import *

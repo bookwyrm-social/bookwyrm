@@ -147,6 +147,37 @@ urlpatterns = [
         name="settings-genres-mod",
     ),
     re_path(
+        r"^settings/suggestions/?$", views.GenreSuggestionsHome.as_view(), name="settings-suggestions"
+    ),
+    re_path(
+        r"^settings/suggestions/approve/(?P<pk>\d+)/?$",
+        views.ApproveSuggestion.as_view(),
+        name="settings-suggestions-approve",
+    ),
+    re_path(
+        r"^settings/suggestions/(?P<pk>\d+)/delete/?$",
+        views.RemoveSuggestion.as_view(),
+        name="settings-suggestions-remove"
+    ),
+    re_path(
+        r"^settings/suggestions/(?P<pk>\d+)/?$",
+        views.ModifySuggestion.as_view(),
+        name="settings-suggestions-mod",
+    ),
+    re_path(
+        r"^settings/book-suggestions/?$", views.BookGenreSuggestionsHome.as_view(), name="settings-book-suggestions"
+    ),
+    re_path(
+        r"^settings/book-suggestions/approve/(?P<pk>\d+)/?$",
+        views.ApproveBookSuggestion.as_view(),
+        name="settings-book-suggestions-approve",
+    ),
+    re_path(
+        r"^settings/book-suggestions/(?P<pk>\d+)/delete/?$",
+        views.RemoveBookSuggestion.as_view(),
+        name="settings-book-suggestions-remove"
+    ),
+    re_path(
         r"^genres/(?P<pk>\d+)/?$", views.GenreDetailView.as_view(), name="genre-view"
     ),
     re_path(
