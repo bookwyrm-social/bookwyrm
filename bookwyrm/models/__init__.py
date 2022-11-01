@@ -13,7 +13,7 @@ from .list import List, ListItem
 from .status import Status, GeneratedNote, Comment, Quotation
 from .status import Review, ReviewRating
 from .status import Boost
-from .suggestions import SuggestedGenre, MinimumVotesSetting
+from .suggestions import SuggestedGenre, MinimumVotesSetting, SuggestedBookGenre
 from .attachment import Image
 from .favorite import Favorite
 from .readthrough import ReadThrough, ProgressUpdate, ProgressMode

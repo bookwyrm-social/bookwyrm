@@ -9,10 +9,10 @@
 {% block breadcrumbs %}
 <nav class="breadcrumb subtitle" aria-label="breadcrumbs">
     <ul>
-        <li><a href="{% url 'settings-suggestions' %}">{% trans "Suggestions" %}</a></li>
+        <li><a href="{% url 'settings-book-suggestions' %}">{% trans "Book Suggestions" %}</a></li>
         <li class="is-active">
             <a href="#" aria-current="page">
-                {{ object.name }}
+                Suggestion
             </a>
         </li>
     </ul>
@@ -22,7 +22,7 @@
 {% block panel %}
     <div class="block columns">
         <div class="column is-flex is-flex-direction-column">
-            <h4 class="title is-4">Editing {{ object.name }}</h4>
+            <h4 class="title is-4">Editing Suggestion</h4>
             <div class="box content is-flex-grow-1">
                 <dl>
                     <form method="post">{% csrf_token %}
@@ -39,13 +39,13 @@
             <h4 class="title is-4">Suggestion Actions</h4>
             <div class="box content is-flex-grow-1">
                 <dl class="mb-3">
-                    <form method="POST" action="{% url 'settings-suggestions-approve' object.id %}">{% csrf_token %}
+                    <form method="POST" action="{% url 'settings-book-suggestions-approve' object.id %}">{% csrf_token %}
                         <button type="submit" class="button is-success is-light">{% trans "Approve Suggestion" %}</button>
                     </form> 
                 </dl> 
                 <dl>
-                    <form method="POST" action="{% url 'settings-suggestions-remove' object.id %}">{% csrf_token %}
-                        <button type="submit" class="button is-danger is-light">{% trans "Deny Suggestion" %}</button>
+                    <form method="POST" action="{% url 'settings-book-suggestions-remove' object.id %}">{% csrf_token %}
+                        <button type="submit" class="button is-danger is-light">{% trans "Delete Suggestion" %}</button>
                     </form>
                 </dl>
             </div>

@@ -1,12 +1,12 @@
 {% extends 'settings/layout.html' %}
 {% load i18n %}
-{% block title %}{% trans "Genre Suggestions" %}{% endblock %}
+{% block title %}{% trans "Book Genre Suggestions" %}{% endblock %}
 
 
 {% block edit-button %}
 
     <span class="is-hidden-mobile">
-        <form class="block" action="{% url 'settings-suggestions' %}" method="GET">
+        <form class="block" action="{% url 'settings-book-suggestions' %}" method="GET">
             <div class="field has-addons">
                 <p class="control pr-2">
                     {% trans "Minimum Votes: " %}
@@ -33,28 +33,30 @@
 {% block panel %}
 <nav class="tabs subtitle" aria-label="breadcrumbs">
     <ul>
-        <li class="is-active"><a href="{% url 'settings-suggestions' %}">{% trans "Genre Suggestions" %}</a></li>
-        <li><a href="{% url 'settings-book-suggestions' %}">{% trans "Book Suggestions" %}</a></li>
+        <li><a href="{% url 'settings-suggestions' %}">{% trans "Genre Suggestions" %}</a></li>
+        <li class="is-active"><a href="{% url 'settings-book-suggestions' %}">{% trans "Book Suggestions" %}</a></li>
     </ul>
 </nav>
 <div class="table-container block">
     <table class="table is-striped is-fullwidth">
         <tr>
-            {% url 'settings-suggestions' as url %}
+            {% url 'settings-book-suggestions' as url %}
             <th colspan="1">
                 {% trans "Genre" as text %}
                 {% include 'snippets/table-sort-header.html' with field="genre" sort=sort text=text %}
             </th>
             <th colspan="1">
-                <dl>
-                    {% trans "Votes" as text %}
-                    {% include 'snippets/table-sort-header.html' with field="votes" sort=sort text=text %}
-                </dl>
+                {% trans "Book" as text %}
+                {% include 'snippets/table-sort-header.html' with field="genre" sort=sort text=text %}
+            </th>
+            <th colspan="1">
+                {% trans "Votes" as text %}
+                {% include 'snippets/table-sort-header.html' with field="votes" sort=sort text=text %}
             </th>
             <th colspan="1">
                 <dl class="is-pulled-right">
                     {% trans "Actions" as text %}
-                    {% include 'snippets/table-sort-header.html' with field="actions" sort=sort text=text %}
+                    {% include 'snippets/table-sort-header.html' with field="Actions" sort=sort text=text %}
                 </dl>
             </th>
         </tr>
@@ -62,7 +64,14 @@
         <tr>
 
             <td class="overflow-wrap-anywhere pl-3">
-                <a href="{% url 'settings-suggestions-mod' suggestion.id %}">{{ suggestion.name }}</a>
+                {% blocktrans trimmed with genre_path=suggestion.genre.local_path genre_name=suggestion.genre.genre_name %}
+                <a href="{{ genre_path }}">{{ genre_name }}</a>
+                {% endblocktrans %}
+            </td>
+            <td class="overflow-wrap-anywhere pl-1">
+                {% blocktrans trimmed with book_path=suggestion.book.local_path book_name=suggestion.book.title %}
+                <a href="{{ book_path }}">{{ book_name }}</a>
+                {% endblocktrans %}
             </td>
             <td>
                 <dl class="pl-3">
@@ -70,16 +79,16 @@
                 </dl>
             </td>
             <td>
-                <dl class="is-pulled-right ml-2">
-                    <form method="POST" action="{% url 'settings-suggestions-remove' suggestion.id %}">{% csrf_token %}
+                <dl class="ml-2 is-pulled-right">
+                    <form method="POST" action="{% url 'settings-book-suggestions-remove' suggestion.id %}">{% csrf_token %}
                         <button type="submit" class="button is-danger is-small is-light">{% trans "Deny" %}</button>
                     </form>
                 </dl>
                 <dl class="is-pulled-right">
-                    <form method="POST" action="{% url 'settings-suggestions-approve' suggestion.id %}">{% csrf_token %}
+                    <form method="POST" action="{% url 'settings-book-suggestions-approve' suggestion.id %}">{% csrf_token %}
                         <button type="submit" class="button is-success is-small is-light">{% trans "Approve" %}</button>
                     </form> 
-                </dl> 
+                </dl>    
             </td>
         </tr>
         {% endfor %}

@@ -166,9 +166,17 @@ urlpatterns = [
         name="settings-suggestions-mod",
     ),
     re_path(
-        r"^settings/suggestions/(?P<pk>\d+)/?$",
-        views.ModifyMinimumVotes.as_view(),
-        name="settings-suggestions-votes",
+        r"^settings/book-suggestions/?$", views.BookGenreSuggestionsHome.as_view(), name="settings-book-suggestions"
+    ),
+    re_path(
+        r"^settings/book-suggestions/approve/(?P<pk>\d+)/?$",
+        views.ApproveBookSuggestion.as_view(),
+        name="settings-book-suggestions-approve",
+    ),
+    re_path(
+        r"^settings/book-suggestions/(?P<pk>\d+)/delete/?$",
+        views.RemoveBookSuggestion.as_view(),
+        name="settings-book-suggestions-remove"
     ),
     re_path(
         r"^genres/(?P<pk>\d+)/?$", views.GenreDetailView.as_view(), name="genre-view"
