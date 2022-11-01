@@ -48,7 +48,26 @@ class AbstractMinimalConnector(ABC):
             return f"{self.isbn_search_url}{normalized_query}"
         # NOTE: previously, we tried searching isbn and if that produces no results,
         # searched as free text. This, instead, only searches isbn if it's isbn-y
+
+        # search?q=&type=genre&search_buttons=search_or&genres=3&genres=5
+        print("---------------get_search_url---------------")
+        print(self.search_url)
+        print("--------------------------------------------")
         return f"{self.search_url}{query}"
+
+    def get_search_url_genre(self, genres, buttonSelection):
+        """format the query url"""
+        
+        # search?q=&type=genre&search_buttons=search_or&genres=3&genres=5
+        typeSelection = "&type=genre&search_buttons=" + buttonSelection
+        genreExtension = ""
+        for gen in genres:
+            genreExtension += "&genres=" + gen
+        print("---------------get_search_url---------------")
+        print(self.search_url)
+        print("--------------------------------------------")
+        final_url = self.search_url + typeSelection + genreExtension
+        return final_url
 
     def process_search_response(self, query, data, min_confidence):
         """Format the search results based on the formt of the query"""

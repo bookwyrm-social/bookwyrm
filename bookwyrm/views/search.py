@@ -68,7 +68,7 @@ def api_book_search(request):
 
 def genre_search(request):
     print("Entered the genre search function")
-    genre_list = request.GET.getlist('genres')
+    genre_list = request.GET.getlist("genres")
     buttonSelection = request.GET.get("search_buttons")
     search_remote = request.GET.get("remote", False) and request.user.is_authenticated
 
@@ -100,7 +100,7 @@ def genre_search(request):
     if request.user.is_authenticated:
         print("Calling the remote results for genres.")
         data["remote_results"] = connector_manager.search_genre(
-            gen_query, min_confidence=min_confidence
+            genre_list, buttonSelection, min_confidence=min_confidence
         )
         data["remote"] = True
     

@@ -35,8 +35,8 @@ async def get_results(session, url, min_confidence, query, connector):
     try:
         async with session.get(url, headers=headers, params=params) as response:
             print("-----------------------------------")
-            print(headers)
-            print(url)
+            #print(headers)
+            #print(url)
             print("-----------------------------------")
             if not response.ok:
                 logger.info("Unable to connect to %s: %s", url, response.reason)
@@ -48,7 +48,7 @@ async def get_results(session, url, min_confidence, query, connector):
                 logger.exception(err)
                 return
             print("-----------------------------------")
-            print(raw_data)
+            #print(raw_data)
             print("-----------------------------------")
             return {
                 "connector": connector,
@@ -89,6 +89,7 @@ def search(query, min_confidence=0.1, return_first=False):
     for connector in get_connectors():
         # get the search url from the connector before sending
         url = connector.get_search_url(query)
+        print(url)
         try:
             raise_not_valid_url(url)
         except ConnectorException:
@@ -110,16 +111,23 @@ def search(query, min_confidence=0.1, return_first=False):
     # failed requests will return None, so filter those out
     return results
 
-def search_genre(genres, min_confidence=0.1, return_first=False):
+def search_genre(genres, buttonSelection, min_confidence=0.1, return_first=False):
     """find books based on arbitary keywords or categories"""
     if not genres:
         return []
     results = []
 
+    print("---------------urlgen---------------")
+    print(genres)
+    print("--------------------------------------------")
+
     items = []
     for connector in get_connectors():
         # get the search url from the connector before sending
-        url = connector.get_search_url(genres)
+        url = connector.get_search_url_genre(genres, buttonSelection)
+        print("---------------connector---------------")
+        print(url)
+        print("--------------------------------------------")
         try:
             raise_not_valid_url(url)
         except ConnectorException:
@@ -129,7 +137,7 @@ def search_genre(genres, min_confidence=0.1, return_first=False):
         items.append((url, connector))
 
     # load as many results as we can
-    results = asyncio.run(async_connector_search(genres, items, min_confidence))
+    results = asyncio.run(async_connector_search(genres[0], items, min_confidence))
     results = [r for r in results if r]
 
     if return_first:
