@@ -148,6 +148,8 @@ def search_genre(genres, buttonSelection, min_confidence=0.1, return_first=False
 
     for resul in results:
         print("A SINGLE RESULT OR SOMETHIN WAS COUNFD ################################################")
+        print(resul)
+        print("################################################")
 
     # failed requests will return None, so filter those out
     return results
