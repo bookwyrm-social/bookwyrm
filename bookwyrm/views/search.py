@@ -24,9 +24,11 @@ class Search(View):
     def get(self, request):
         """that search bar up top"""
 
-        
+        search_type = request.GET.get("type")
 
         if is_api_request(request):
+            if(search_type == "genre"):
+                return api_book_search_genres(request)
             return api_book_search(request)
 
         query = request.GET.get("q")
@@ -37,7 +39,6 @@ class Search(View):
             context["genre_tags"] = models.Genre.objects.all()
             return TemplateResponse(request, "search/book.html", context)
 
-        search_type = request.GET.get("type")
         if query and not search_type:
             search_type = "user" if "@" in query else "book"
 
