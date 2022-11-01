@@ -30,7 +30,7 @@ from .admin.user_admin import UserAdmin, UserAdminList
 from .preferences.change_password import ChangePassword
 from .preferences.edit_user import EditUser
 from .preferences.export import Export
-from .preferences.delete_user import DeleteUser
+from .preferences.delete_user import DeleteUser, DeactivateUser
 from .preferences.block import Block, unblock
 from .preferences.two_factor_auth import (
     Edit2FA,

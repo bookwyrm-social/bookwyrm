@@ -47,6 +47,7 @@ def site_link():
     return f"{protocol}://{DOMAIN}"
 
 
+# pylint: disable=too-many-public-methods
 class User(OrderedCollectionPageMixin, AbstractUser):
     """a user who wants to read books"""
 
@@ -169,6 +170,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         max_length=255, choices=DeactivationReason, null=True, blank=True
     )
     deactivation_date = models.DateTimeField(null=True, blank=True)
+    allow_reactivation = models.BooleanField(default=False)
     confirmation_code = models.CharField(max_length=32, default=new_access_code)
 
     name_field = "username"
@@ -367,11 +369,19 @@ class User(OrderedCollectionPageMixin, AbstractUser):
             self.create_shelves()
 
     def delete(self, *args, **kwargs):
-        """deactivate rather than delete a user"""
+        """We don't actually delete the database entry"""
         # pylint: disable=attribute-defined-outside-init
         self.is_active = False
         # skip the logic in this class's save()
         super().save(*args, **kwargs)
+
+    def deactivate(self, *args, **kwargs):
+        """Disable the user but allow them to reactivate"""
+        # pylint: disable=attribute-defined-outside-init
+        self.is_active = False
+        self.deactivation_reason = "self_deactivation"
+        self.allow_reactivation = True
+        super().save(*args, **kwargs, broadcast=False)
 
     @property
     def local_path(self):
