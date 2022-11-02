@@ -1,6 +1,7 @@
 """ manage imports """
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.paginator import Paginator
+from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
 from django.views import View
@@ -29,5 +30,14 @@ class ImportList(View):
             "page_range": paginated.get_elided_page_range(
                 page.number, on_each_side=2, on_ends=1
             ),
+            "status": status,
         }
-        return TemplateResponse(request, "settings/imports.html", data)
+        return TemplateResponse(request, "settings/imports/imports.html", data)
+
+    # pylint: disable=unused-argument
+    def post(self, request, import_id):
+        """Mark an import as complete"""
+        import_job = get_object_or_404(models.ImportJob, id=import_id)
+        import_job.complete = True
+        import_job.save()
+        return redirect("settings-imports")

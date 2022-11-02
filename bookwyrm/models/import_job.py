@@ -53,6 +53,7 @@ class ImportJob(models.Model):
         """How many books do you want to import???"""
         return self.items.count()
 
+    @property
     def pending_item_count(self):
         """And how many pending items??"""
         return self.pending_items.count()

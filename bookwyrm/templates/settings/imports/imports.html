@@ -26,9 +26,11 @@
 </div>
 
 <div class="table-container block content">
+    {% if status == "active" %}
     <div class="notification is-warning">
         <p>{% trans "Marking an import as complete will <em>not</em> stop it." %}</p>
     </div>
+    {% endif %}
     <table class="table is-striped is-fullwidth">
         <tr>
             {% url 'settings-imports' as url %}
@@ -47,7 +49,9 @@
             <th>
                 {% trans "Pending items" %}
             </th>
+            {% if status == "active" %}
             <th>{% trans "Actions" %}</th>
+            {% endif %}
         </tr>
         {% for import in imports %}
         <tr>
@@ -58,11 +62,22 @@
             <td>{{ import.created_date }}</td>
             <td>{{ import.item_count }}</td>
             <td>{{ import.pending_item_count }}</td>
+            {% if status == "active" %}
             <td>
-                <button class="button is-danger">{% trans "Mark as complete" %}</button>
+                {% join "complete" import.id as modal_id %}
+                <button type="button" data-modal-open="{{ modal_id }}" class="button is-danger">{% trans "Mark as complete" %}</button>
+                {% include "settings/imports/complete_import_modal.html" with id=modal_id %}
             </td>
+            {% endif %}
         </tr>
         {% endfor %}
+        {% if not imports %}
+        <tr>
+            <td colspan="6">
+                <em>{% trans "No matching imports founds." %} </em>
+            </td>
+        </tr>
+        {% endif %}
     </table>
 </div>
 
