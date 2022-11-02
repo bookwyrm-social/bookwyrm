@@ -78,6 +78,12 @@
         <h2 class="menu-label">{% trans "System" %}</h2>
         <ul class="menu-list">
             <li>
+                {% url 'settings-imports' as url %}
+                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Imports" %}</a>
+            </li>
+        </ul>
+        <ul class="menu-list">
+            <li>
                 {% url 'settings-celery' as url %}
                 <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Celery status" %}</a>
             </li>
