@@ -15,7 +15,7 @@
             {% trans "Your account will be hidden. You can log back in at any time to re-activate your account." %}
         </p>
 
-        <form name="delete-user" action="{% url 'prefs-deactivate' %}" method="post">
+        <form name="deactivate-user" action="{% url 'prefs-deactivate' %}" method="post">
             {% csrf_token %}
             <button type="submit" class="button is-link">{% trans "Deactivate Account" %}</button>
         </form>
