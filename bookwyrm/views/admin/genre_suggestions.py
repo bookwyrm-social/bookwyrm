@@ -4,7 +4,7 @@ from django.utils.decorators import method_decorator
 
 from django.shortcuts import get_object_or_404, render
 
-from bookwyrm.models.book import Genre, Book
+from bookwyrm.models.book import Genre, Book, Edition
 from bookwyrm.models.suggestions import SuggestedGenre, MinimumVotesSetting, SuggestedBookGenre
 from bookwyrm.forms import SuggestionForm
 from django.shortcuts import redirect
@@ -12,6 +12,7 @@ from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.core.paginator import Paginator
 from django.db.models.functions import Greatest
+from django.db.models import Q
 from django.http import JsonResponse
 from django.template.response import TemplateResponse
 from django.views import View
@@ -119,6 +120,9 @@ class ApproveBookSuggestion(View):
         genre = suggestion.genre
         work = suggestion.book
         work.genres.add(genre)
+        editions = Edition.objects.filter(Q(parent_work=work))
+        for edition in editions:
+            edition.genres.add(genre)
         suggestion.delete()
         return redirect("settings-book-suggestions")
 
