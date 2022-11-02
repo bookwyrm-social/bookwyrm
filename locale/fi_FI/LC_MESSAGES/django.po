@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-10-21 21:11+0000\n"
-"PO-Revision-Date: 2022-11-02 22:21\n"
+"PO-Revision-Date: 2022-11-02 23:20\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Finnish\n"
 "Language: fi\n"
@@ -1836,7 +1836,7 @@ msgstr "Luettu"
 #: bookwyrm/templates/get_started/book_preview.html:13
 #: bookwyrm/templates/shelf/shelf.html:89 bookwyrm/templates/user/user.html:36
 msgid "Stopped Reading"
-msgstr "Keskeytti lukemisen"
+msgstr "Jäi kesken"
 
 #: bookwyrm/templates/get_started/books.html:6
 msgid "What are you reading?"
@@ -3660,32 +3660,32 @@ msgstr "Poista kaksivaiheinen tunnistautuminen käytöstä"
 
 #: bookwyrm/templates/preferences/2fa.html:39
 msgid "You can generate backup codes to use in case you do not have access to your authentication app. If you generate new codes, any backup codes previously generated will no longer work."
-msgstr ""
+msgstr "Voit luoda varakoodeja, joita voit käyttää, kun autentikointisovellus ei ole käytettävissä. Uusien koodien luonti mitätöi aiemmin luodut varakoodit."
 
 #: bookwyrm/templates/preferences/2fa.html:40
 msgid "Generate backup codes"
-msgstr ""
+msgstr "Luo varmistuskoodit"
 
 #: bookwyrm/templates/preferences/2fa.html:45
 msgid "Scan the QR code with your authentication app and then enter the code from  your app below to confirm your app is set up."
-msgstr ""
+msgstr "Vahvista autentikointisovellus skannaamalla QR-koodi sovelluksella ja syöttämällä alle sovelluksen antama koodi."
 
 #: bookwyrm/templates/preferences/2fa.html:50
 msgid "Enter the code from your app:"
-msgstr ""
+msgstr "Syötä sovelluksen antama koodi:"
 
 #: bookwyrm/templates/preferences/2fa.html:60
 msgid "You can make your account more secure by using Two Factor Authentication (2FA). This will require you to enter a one-time code using a phone app like <em>Authy</em>, <em>Google Authenticator</em> or <em>Microsoft Authenticator</em> each time you log in."
-msgstr ""
+msgstr "Voit lisätä tilisi turvallisuutta käyttämällä kaksivaiheista tunnistautumista (2FA). Se edellyttää jokaisen sisäänkirjautumisen yhteydessä kertakäyttöisen koodin syöttämistä. Vaatii puhelinsovelluksen, esim. <em>Authy</em>, <em>Google Authenticator</em> tai <em>Microsoft Authenticator</em>."
 
 #: bookwyrm/templates/preferences/2fa.html:62
 msgid "Confirm your password to begin setting up 2FA."
-msgstr ""
+msgstr "Aloita kaksivaiheisen tunnistautumisen käyttöönotto syöttämällä salasanasi."
 
 #: bookwyrm/templates/preferences/2fa.html:72
 #: bookwyrm/templates/two_factor_auth/two_factor_prompt.html:37
 msgid "Set up 2FA"
-msgstr ""
+msgstr "Ota kaksivaiheinen tunnistautuminen käyttöön"
 
 #: bookwyrm/templates/preferences/blocks.html:4
 #: bookwyrm/templates/preferences/blocks.html:7
@@ -3734,15 +3734,15 @@ msgstr "Käyttäjätilin poistamista ei voi perua. Käyttäjänimeä ei voi myö
 
 #: bookwyrm/templates/preferences/disable-2fa.html:12
 msgid "Disable Two Factor Authentication"
-msgstr ""
+msgstr "Poista kaksivaiheinen tunnistautuminen käytöstä"
 
 #: bookwyrm/templates/preferences/disable-2fa.html:14
 msgid "Disabling 2FA will allow anyone with your username and password to log in to your account."
-msgstr ""
+msgstr "Kun kaksivaiheinen tunnistautuminen ei ole käytössä, tilillesi voidaan kirjautua pelkällä käyttäjätunnuksella ja salasanalla."
 
 #: bookwyrm/templates/preferences/disable-2fa.html:20
 msgid "Turn off 2FA"
-msgstr ""
+msgstr "Poista kaksivaiheinen tunnistautuminen käytöstä"
 
 #: bookwyrm/templates/preferences/edit_user.html:4
 #: bookwyrm/templates/preferences/edit_user.html:7
@@ -5724,7 +5724,7 @@ msgstr "Keskeytä teoksen ”<em>%(book_title)s</em>” lukeminen"
 #: bookwyrm/templates/snippets/shelf_selector.html:54
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_options.html:21
 msgid "Stopped reading"
-msgstr "Keskeytti lukemisen"
+msgstr "Jäi kesken"
 
 #: bookwyrm/templates/snippets/reading_modals/want_to_read_modal.html:6
 #, python-format
@@ -5959,23 +5959,23 @@ msgstr "Näytä vähemmän"
 
 #: bookwyrm/templates/two_factor_auth/two_factor_login.html:29
 msgid "2FA check"
-msgstr ""
+msgstr "Kaksivaiheisen tunnistautumisen tarkistus"
 
 #: bookwyrm/templates/two_factor_auth/two_factor_login.html:37
 msgid "Enter the code from your authenticator app:"
-msgstr ""
+msgstr "Syötä autentikointisovelluksen antama koodi:"
 
 #: bookwyrm/templates/two_factor_auth/two_factor_login.html:41
 msgid "Confirm and Log In"
-msgstr ""
+msgstr "Vahvista ja kirjaudu sisään"
 
 #: bookwyrm/templates/two_factor_auth/two_factor_prompt.html:29
 msgid "2FA is available"
-msgstr ""
+msgstr "Kaksivaiheinen tunnistautuminen saatavilla"
 
 #: bookwyrm/templates/two_factor_auth/two_factor_prompt.html:34
 msgid "You can secure your account by setting up two factor authentication in your user preferences. This will require a one-time code from your phone in addition to your password each time you log in."
-msgstr ""
+msgstr "Voit parantaa tilisi turvallisuutta ottamalla käyttöön kaksivaiheisen tunnistautumisen. Se tapahtuu käyttäjäasetuksistasi. Kaksivaiheinen tunnistautuminen edellyttää salasanan lisäksi puhelinsovelluksen antaman kertakäyttöisen koodin käyttöä aina sisäänkirjauduttaessa."
 
 #: bookwyrm/templates/user/books_header.html:9
 #, python-format
