@@ -1,0 +1,71 @@
+{% extends 'settings/layout.html' %}
+{% load i18n %}
+{% load utilities %}
+
+{% block title %}{% trans "Imports" %}{% endblock %}
+
+{% block header %}
+{% trans "Imports" %}
+{% endblock %}
+
+{% block panel %}
+
+<div class="block">
+    <div class="tabs">
+        <ul>
+            {% url 'settings-imports' as url %}
+            <li {% if request.path in url %}class="is-active" aria-current="page"{% endif %}>
+                <a href="{{ url }}">{% trans "Active" %}</a>
+            </li>
+            {% url 'settings-imports' status="complete" as url %}
+            <li {% if url in request.path %}class="is-active" aria-current="page"{% endif %}>
+                <a href="{{ url }}">{% trans "Completed" %}</a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<div class="table-container block content">
+    <div class="notification is-warning">
+        <p>{% trans "Marking an import as complete will <em>not</em> stop it." %}</p>
+    </div>
+    <table class="table is-striped is-fullwidth">
+        <tr>
+            {% url 'settings-imports' as url %}
+            <th>
+                {% trans "ID" %}
+            </th>
+            <th>
+                {% trans "User" %}
+            </th>
+            <th>
+                {% trans "Date Created" %}
+            </th>
+            <th>
+                {% trans "Items" %}
+            </th>
+            <th>
+                {% trans "Pending items" %}
+            </th>
+            <th>{% trans "Actions" %}</th>
+        </tr>
+        {% for import in imports %}
+        <tr>
+            <td>{{ import.id }}</td>
+            <td class="overflow-wrap-anywhere">
+                <a href="{% url 'settings-user' user.id %}">{{ import.user|username }}</a>
+            </td>
+            <td>{{ import.created_date }}</td>
+            <td>{{ import.item_count }}</td>
+            <td>{{ import.pending_item_count }}</td>
+            <td>
+                <button class="button is-danger">{% trans "Mark as complete" %}</button>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+
+{% include 'snippets/pagination.html' with page=users path=request.path %}
+{% endblock %}
+
