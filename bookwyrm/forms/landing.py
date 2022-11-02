@@ -24,12 +24,11 @@ class LoginForm(CustomForm):
     def infer_username(self):
         """Users may enter their localname, username, or email"""
         localname = self.data.get("localname")
-        username = None
         if "@" in localname:  # looks like an email address to me
             try:
                 return models.User.objects.get(email=localname).username
             except models.User.DoesNotExist:  # maybe it's a full username?
-                return username
+                return localname
         return f"{localname}@{DOMAIN}"
 
     def add_invalid_password_error(self):
