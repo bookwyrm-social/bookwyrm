@@ -19,6 +19,8 @@ from bookwyrm import book_search, forms, models
 from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.settings import PAGE_LENGTH
 from bookwyrm.views.helpers import is_api_request, maybe_redirect_local_path
+from bookwyrm.forms.forms import VoteForm
+from bookwyrm.models import suggestions
 
 
 # pylint: disable=no-self-use
@@ -214,6 +216,37 @@ def add_book(request):
 
     return List().get(request, book_list.id, add_succeeded=True)
 
+@login_required
+@require_POST
+def genre_vote(request):
+    """genre vote"""
+    pk=request.POST.get("genre")
+    print(request.POST)
+    print('\n\n\n\n\n\n')
+    print(pk)
+    
+
+    genre = models.Genre.objects.get(id=pk)
+    book = get_object_or_404(models.Edition, id=request.POST.get("book_id"))
+    print(genre)
+    print('\n\n\n\n\n\n')
+    print(book.parent_work)
+    print('\n\n\n\n\n\n')
+
+    if suggestions.SuggestedBookGenre.objects.filter(genre=genre, book = book.parent_work).exists():
+        suggestion = suggestions.SuggestedBookGenre.objects.get(genre=genre, book = book.parent_work)
+        suggestion.votes += 1
+        suggestion.save()
+
+    else:
+        genre_vote = suggestions.SuggestedBookGenre.objects.create(genre=genre, book = book.parent_work)
+
+    
+  
+    # book.genres = genres
+    # book.save(update_fields=["genres"])
+
+    return redirect("book", book.id)
 
 @require_POST
 @login_required

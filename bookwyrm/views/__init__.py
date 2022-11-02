@@ -103,6 +103,7 @@ from .list.list import (
     save_list,
     unsave_list,
     delete_list,
+    genre_vote,
     add_book,
     remove_book,
     set_book_position,

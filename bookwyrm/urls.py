@@ -498,6 +498,9 @@ urlpatterns = [
     ),
     re_path(r"^list/delete/(?P<list_id>\d+)/?$", views.delete_list, name="delete-list"),
     re_path(r"^list/add-book/?$", views.add_book, name="list-add-book"),
+
+    re_path(r"^list/genre-vote/?$", views.genre_vote, name="genre-vote"),
+
     re_path(
         r"^list/(?P<list_id>\d+)/remove/?$",
         views.remove_book,

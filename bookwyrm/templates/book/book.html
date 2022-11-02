@@ -29,6 +29,12 @@
                 {{ book.title }}
             </h1>
 
+            {% if book.genres %}
+            <h2 class="subtitle title is-5" itemprop="name">
+                {% for genre_name in book.genres.all %}{{ genre_name }}<br/>{% endfor %}
+            </h2>
+            {% endif %}
+
             {% if book.subtitle or book.series %}
                 <p class="subtitle title is-5">
                     {% if book.subtitle %}
@@ -56,6 +62,24 @@
                     {% trans "by" %} {% include 'snippets/authors.html' with book=book %}
                 </div>
             {% endif %}
+        </div>
+
+        <div id="add_description_{{ book.id }}">
+            <form name="genre-vote" method="POST" action="{% url 'genre-vote' %}">
+                {% csrf_token %}
+                <p class="fields is-grouped">
+                    <label class="label" for="id_description_{{ book.id }}">{% trans "Make a genre suggestion:" %}</label>
+                    <select name="genre" cols="None" rows="None" class="select" id="id_description_{{ book.id }}">
+                        {% for i in genre_list %}<br/>
+                            <option value="{{ i.id }}">{{ i.genre_name }}</option>
+                        {% endfor %}
+                    </select>
+                </p>
+                <input type="hidden" name="book_id" value="{{ book.id }}">
+                <div class="control">
+                    <button type="submit" class="button is-link">{% trans "Suggest" %}</button>
+                </div>
+            </form>
         </div>
 
         {% if user_authenticated and can_edit_book %}
