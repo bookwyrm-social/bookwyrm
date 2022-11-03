@@ -236,7 +236,7 @@ class Book(BookDataModel):
 
     def get_remote_id(self):
         """editions and works both use "book" instead of model_name"""
-        return f"https://{DOMAIN}/book/{self.id}"
+        return f"http://{DOMAIN}/book/{self.id}"
 
     def __repr__(self):
         # pylint: disable=consider-using-f-string
