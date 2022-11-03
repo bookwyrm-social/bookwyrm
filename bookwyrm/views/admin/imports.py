@@ -22,7 +22,9 @@ class ImportList(View):
     def get(self, request, status="active"):
         """list of imports"""
         complete = status == "complete"
-        imports = models.ImportJob.objects.filter(complete=complete)
+        imports = models.ImportJob.objects.filter(complete=complete).order_by(
+            "created_date"
+        )
         paginated = Paginator(imports, PAGE_LENGTH)
         page = paginated.get_page(request.GET.get("page"))
         data = {
