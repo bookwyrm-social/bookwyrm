@@ -1,6 +1,7 @@
 {% extends 'settings/layout.html' %}
 {% load i18n %}
 {% load utilities %}
+{% load humanize %}
 
 {% block title %}{% trans "Imports" %}{% endblock %}
 
@@ -54,6 +55,12 @@
             <th>
                 {% trans "Pending items" %}
             </th>
+            <th>
+                {% trans "Successful items" %}
+            </th>
+            <th>
+                {% trans "Failed items" %}
+            </th>
             {% if status == "active" %}
             <th>{% trans "Actions" %}</th>
             {% endif %}
@@ -68,8 +75,10 @@
             {% if status != "active" %}
             <td>{{ import.updated_date }}</td>
             {% endif %}
-            <td>{{ import.item_count }}</td>
-            <td>{{ import.pending_item_count }}</td>
+            <td>{{ import.item_count|intcomma }}</td>
+            <td>{{ import.pending_item_count|intcomma }}</td>
+            <td>{{ import.successful_item_count|intcomma }}</td>
+            <td>{{ import.failed_item_count|intcomma }}</td>
             {% if status == "active" %}
             <td>
                 {% join "complete" import.id as modal_id %}
