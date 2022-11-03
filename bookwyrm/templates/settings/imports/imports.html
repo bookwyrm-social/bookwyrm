@@ -43,6 +43,11 @@
             <th>
                 {% trans "Date Created" %}
             </th>
+            {% if status != "active" %}
+            <th>
+                {% trans "Date Updated" %}
+            </th>
+            {% endif %}
             <th>
                 {% trans "Items" %}
             </th>
@@ -57,9 +62,12 @@
         <tr>
             <td>{{ import.id }}</td>
             <td class="overflow-wrap-anywhere">
-                <a href="{% url 'settings-user' user.id %}">{{ import.user|username }}</a>
+                <a href="{% url 'settings-user' import.user.id %}">{{ import.user|username }}</a>
             </td>
             <td>{{ import.created_date }}</td>
+            {% if status != "active" %}
+            <td>{{ import.updated_date }}</td>
+            {% endif %}
             <td>{{ import.item_count }}</td>
             <td>{{ import.pending_item_count }}</td>
             {% if status == "active" %}
@@ -81,6 +89,6 @@
     </table>
 </div>
 
-{% include 'snippets/pagination.html' with page=users path=request.path %}
+{% include 'snippets/pagination.html' with page=imports path=request.path %}
 {% endblock %}
 
