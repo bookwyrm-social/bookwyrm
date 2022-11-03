@@ -168,7 +168,7 @@
 </nav>
 
 {% if request.user.is_authenticated and active_announcements.exists %}
-<div class="block is-flex-grow-1">
+<div class="is-flex-grow-1">
     <div class="container">
         {% for announcement in active_announcements %}
         {% include 'snippets/announcement.html' with announcement=announcement %}

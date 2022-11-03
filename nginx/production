@@ -41,7 +41,7 @@ server {
 #         root /var/www/certbot;
 #     }
 #
-#     location ~ ^/(login|password-reset|resend-link) {
+#     location ~ ^/(login[^-/]|password-reset|resend-link|2fa-check) {
 #         limit_req zone=loginlimit;
 #
 #         proxy_pass http://web;

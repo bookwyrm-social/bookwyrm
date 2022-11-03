@@ -20,3 +20,9 @@ def get_book_description(book):
 def get_book_file_links(book):
     """links for a book"""
     return book.file_links.filter(domain__status="approved")
+
+
+@register.filter(name="author_edition")
+def get_author_edition(book, author):
+    """default edition for a book on the author page"""
+    return book.author_edition(author)

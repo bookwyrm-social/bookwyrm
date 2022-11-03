@@ -1,0 +1,23 @@
+{% extends 'preferences/layout.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Disable 2FA" %}{% endblock %}
+
+{% block header %}
+{% trans "Disable 2FA" %}
+{% endblock %}
+
+{% block panel %}
+<div class="block">
+    <h2 class="title is-4">{% trans "Disable Two Factor Authentication" %}</h2>
+    <p class="notification is-danger is-light">
+        {% trans "Disabling 2FA will allow anyone with your username and password to log in to your account." %}
+    </p>
+
+    <form name="disable-2fa" action="{% url 'disable-2fa' %}" method="post">
+        {% csrf_token %}
+        <a class="button" href="{% url 'prefs-2fa' %}">{% trans "Cancel" %}</a>
+        <button type="submit" class="button is-danger">{% trans "Turn off 2FA" %}</button>
+    </form>
+</div>
+{% endblock %}
