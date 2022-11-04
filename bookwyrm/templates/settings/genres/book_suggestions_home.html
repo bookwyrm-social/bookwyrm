@@ -69,7 +69,7 @@
                 {% endblocktrans %}
             </td>
             <td class="overflow-wrap-anywhere pl-1">
-                {% blocktrans trimmed with book_path=suggestion.book.local_path book_name=suggestion.book.title %}
+                {% blocktrans trimmed with book_path=suggestion.book.default_edition.local_path book_name=suggestion.book.title %}
                 <a href="{{ book_path }}">{{ book_name }}</a>
                 {% endblocktrans %}
             </td>

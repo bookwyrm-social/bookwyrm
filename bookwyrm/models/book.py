@@ -303,8 +303,6 @@ class Work(OrderedCollectionPageMixin, Book):
             **kwargs,
         )
 
-    def __str__(self):
-        return self.title
 
     activity_serializer = activitypub.Work
     serialize_reverse_fields = [

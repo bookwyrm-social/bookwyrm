@@ -5,7 +5,7 @@ from django.contrib.postgres.indexes import GinIndex
 from django.core.cache import cache
 from django.core.cache.utils import make_template_fragment_key
 from django.db import models, transaction
-from django.db.models import Prefetch
+from django.db.models import Prefetch, Q
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 from django.db.models.signals import post_migrate
@@ -20,7 +20,7 @@ from bookwyrm.settings import (
     ENABLE_THUMBNAIL_GENERATION,
 )
 
-from .book import Genre
+from .book import Genre, Edition
 from .activitypub_mixin import OrderedCollectionPageMixin, ObjectMixin
 from .base_model import BookWyrmModel
 from . import fields
@@ -42,7 +42,7 @@ class SuggestedGenre(models.Model):
 
     def autoApprove(self):
         '''If a certain category gets a certain number of votes, it will approve itself and create a new genre.'''
-        if(self.votes > MinimumVotesSetting.minimum_genre_votes):
+        if(self.votes >= MinimumVotesSetting.minimum_genre_votes):
             genre = Genre.objects.create_genre(self.name, self.description)
             genre.save()
             self.delete()
@@ -56,6 +56,11 @@ class SuggestedBookGenre(models.Model):
 
     def autoApprove(self):
         '''If a certain category gets a certain number of votes, it will approve itself and create a new genre.'''
-        if(self.votes > MinimumVotesSetting.minimum_book_votes):
-            self.work.genres.add(self.genre)
+        minimum_votes = MinimumVotesSetting.objects.get(id=1)
+
+        if self.votes >= minimum_votes.minimum_book_votes:
+            self.book.genres.add(self.genre)
+            editions = Edition.objects.filter(Q(parent_work=self.book))
+            for edition in editions:
+                edition.genres.add(self.genre)
             self.delete()
