@@ -48,6 +48,26 @@ class ImportJob(models.Model):
         """items that haven't been processed yet"""
         return self.items.filter(fail_reason__isnull=True, book__isnull=True)
 
+    @property
+    def item_count(self):
+        """How many books do you want to import???"""
+        return self.items.count()
+
+    @property
+    def pending_item_count(self):
+        """And how many pending items??"""
+        return self.pending_items.count()
+
+    @property
+    def successful_item_count(self):
+        """How many found a book?"""
+        return self.items.filter(book__isnull=False).count()
+
+    @property
+    def failed_item_count(self):
+        """How many found a book?"""
+        return self.items.filter(fail_reason__isnull=False).count()
+
 
 class ImportItem(models.Model):
     """a single line of a csv being imported"""

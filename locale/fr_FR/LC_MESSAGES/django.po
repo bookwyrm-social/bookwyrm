@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-04 18:03+0000\n"
-"PO-Revision-Date: 2022-10-14 17:46\n"
+"POT-Creation-Date: 2022-10-21 21:11+0000\n"
+"PO-Revision-Date: 2022-10-27 16:13\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: French\n"
 "Language: fr\n"
@@ -42,13 +42,17 @@ msgstr "{i} utilisations"
 msgid "Unlimited"
 msgstr "Sans limite"
 
-#: bookwyrm/forms/edit_user.py:89
+#: bookwyrm/forms/edit_user.py:88
 msgid "Incorrect password"
 msgstr "Mot de passe incorrect"
 
-#: bookwyrm/forms/edit_user.py:96 bookwyrm/forms/landing.py:71
+#: bookwyrm/forms/edit_user.py:95 bookwyrm/forms/landing.py:73
 msgid "Password does not match"
 msgstr "Le mot de passe ne correspond pas"
+
+#: bookwyrm/forms/edit_user.py:118
+msgid "Incorrect Password"
+msgstr "Mot de passe incorrect"
 
 #: bookwyrm/forms/forms.py:54
 msgid "Reading finish date cannot be before start date."
@@ -56,15 +60,27 @@ msgstr "La date de fin de lecture ne peut pas être antérieure à la date de d�
 
 #: bookwyrm/forms/forms.py:59
 msgid "Reading stopped date cannot be before start date."
-msgstr "La date de fin de lecture ne peut pas être antérieure à la date de début."
+msgstr "La date d’arrêt de lecture ne peut pas être antérieure à la date de début."
 
-#: bookwyrm/forms/landing.py:38
+#: bookwyrm/forms/forms.py:67
+msgid "Reading stopped date cannot be in the future."
+msgstr "La date d’arrêt de lecture ne peut pas être dans le futur."
+
+#: bookwyrm/forms/forms.py:74
+msgid "Reading finished date cannot be in the future."
+msgstr "La date de fin de lecture ne peut pas être dans le futur."
+
+#: bookwyrm/forms/landing.py:40
 msgid "User with this username already exists"
 msgstr "Un compte du même nom existe déjà"
 
-#: bookwyrm/forms/landing.py:47
+#: bookwyrm/forms/landing.py:49
 msgid "A user with this email already exists."
 msgstr "Cet email est déjà associé à un compte."
+
+#: bookwyrm/forms/landing.py:107 bookwyrm/forms/landing.py:115
+msgid "Incorrect code"
+msgstr "Code incorrect"
 
 #: bookwyrm/forms/links.py:36
 msgid "This domain is blocked. Please contact your administrator if you think this is an error."
@@ -145,11 +161,11 @@ msgstr "Auto-suppression"
 
 #: bookwyrm/models/base_model.py:20
 msgid "Moderator suspension"
-msgstr "Suspension du modérateur"
+msgstr "Suspension par un modérateur"
 
 #: bookwyrm/models/base_model.py:21
 msgid "Moderator deletion"
-msgstr "Suppression du modérateur"
+msgstr "Suppression par un modérateur"
 
 #: bookwyrm/models/base_model.py:22
 msgid "Domain block"
@@ -165,15 +181,15 @@ msgstr "eBook"
 
 #: bookwyrm/models/book.py:264
 msgid "Graphic novel"
-msgstr "Roman Graphique"
+msgstr "Roman graphique"
 
 #: bookwyrm/models/book.py:265
 msgid "Hardcover"
-msgstr "Couverture rigide"
+msgstr "Livre relié"
 
 #: bookwyrm/models/book.py:266
 msgid "Paperback"
-msgstr "Couverture souple"
+msgstr "Livre broché"
 
 #: bookwyrm/models/federated_server.py:11
 #: bookwyrm/templates/settings/federation/edit_instance.html:55
@@ -299,7 +315,7 @@ msgstr "English"
 
 #: bookwyrm/settings.py:283
 msgid "Català (Catalan)"
-msgstr "Català (catalan)"
+msgstr "Català (Catalan)"
 
 #: bookwyrm/settings.py:284
 msgid "Deutsch (German)"
@@ -315,11 +331,11 @@ msgstr "Galego (Galicien)"
 
 #: bookwyrm/settings.py:287
 msgid "Italiano (Italian)"
-msgstr "Italiano (italien)"
+msgstr "Italiano (Italien)"
 
 #: bookwyrm/settings.py:288
 msgid "Suomi (Finnish)"
-msgstr "Suomi (finnois)"
+msgstr "Suomi (Finnois)"
 
 #: bookwyrm/settings.py:289
 msgid "Français (French)"
@@ -331,11 +347,11 @@ msgstr "Lietuvių (Lituanien)"
 
 #: bookwyrm/settings.py:291
 msgid "Norsk (Norwegian)"
-msgstr "Norsk (norvégien)"
+msgstr "Norsk (Norvégien)"
 
 #: bookwyrm/settings.py:292
 msgid "Polski (Polish)"
-msgstr "Polski (polonais)"
+msgstr "Polski (Polonais)"
 
 #: bookwyrm/settings.py:293
 msgid "Português do Brasil (Brazilian Portuguese)"
@@ -347,7 +363,7 @@ msgstr "Português Europeu (Portugais européen)"
 
 #: bookwyrm/settings.py:295
 msgid "Română (Romanian)"
-msgstr "Română (roumain)"
+msgstr "Română (Roumain)"
 
 #: bookwyrm/settings.py:296
 msgid "Svenska (Swedish)"
@@ -414,7 +430,7 @@ msgstr "<a href=\"%(book_path)s\"><em>%(title)s</em></a> divise les critiques pl
 
 #: bookwyrm/templates/about/about.html:93
 msgid "Track your reading, talk about books, write reviews, and discover what to read next. Always ad-free, anti-corporate, and community-oriented, BookWyrm is human-scale software, designed to stay small and personal. If you have feature requests, bug reports, or grand dreams, <a href=\"https://joinbookwyrm.com/get-involved\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">reach out</a> and make yourself heard."
-msgstr "Gardez trace de vos lectures, parlez de livres, écrivez des commentaires et découvrez quoi lire ensuite. BookWyrm est un logiciel à échelle humaine, sans publicité, anti-capitaliste et axé sur la communauté, conçu pour rester petit et personnel. Si vous avez des demandes de fonctionnalités, des rapports de bogue ou des rêves grandioses, <a href=\"https://joinbookwyrm.com/get-involved\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">rejoignez-nous</a> et faites-vous entendre."
+msgstr "Gardez trace de vos lectures, parlez de livres, écrivez des critiques et découvrez quoi lire ensuite. BookWyrm est un logiciel à taille humaine, sans publicité, anti-capitaliste et axé sur la communauté, conçu pour rester petit et personnel. Si vous avez des demandes de fonctionnalités, des rapports de bogue ou des rêves grandioses, <a href=\"https://joinbookwyrm.com/get-involved\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">rejoignez-nous</a> et faites-vous entendre."
 
 #: bookwyrm/templates/about/about.html:103
 msgid "Meet your admins"
@@ -423,7 +439,7 @@ msgstr "Rencontrez vos admins"
 #: bookwyrm/templates/about/about.html:106
 #, python-format
 msgid "%(site_name)s's moderators and administrators keep the site up and running, enforce the <a href=\"%(coc_path)s\">code of conduct</a>, and respond when users report spam and bad behavior."
-msgstr "L’administration et la modération de %(site_name)s maintiennent le site opérationnel, font respecter le <a href=\"%(coc_path)s\">code de conduite</a>, et répondent lorsque les utilisateurs signalent le spam et les mauvais comportements."
+msgstr "L’administration et la modération de %(site_name)s maintiennent le site opérationnel, font respecter le <a href=\"%(coc_path)s\">code de conduite</a>, et interviennent lorsque les utilisateurs signalent du spam et des mauvais comportements."
 
 #: bookwyrm/templates/about/about.html:120
 msgid "Moderator"
@@ -461,6 +477,7 @@ msgstr "Version logicielle :"
 
 #: bookwyrm/templates/about/layout.html:30
 #: bookwyrm/templates/embed-layout.html:34 bookwyrm/templates/layout.html:200
+#: bookwyrm/templates/snippets/2fa_footer.html:8
 #, python-format
 msgid "About %(site_name)s"
 msgstr "À propos de %(site_name)s"
@@ -787,6 +804,7 @@ msgstr "Enregistrer"
 #: bookwyrm/templates/groups/delete_group_modal.html:15
 #: bookwyrm/templates/lists/add_item_modal.html:36
 #: bookwyrm/templates/lists/delete_list_modal.html:16
+#: bookwyrm/templates/preferences/disable-2fa.html:19
 #: bookwyrm/templates/readthrough/delete_readthrough_modal.html:27
 #: bookwyrm/templates/readthrough/readthrough_modal.html:80
 #: bookwyrm/templates/search/barcode_modal.html:45
@@ -806,6 +824,7 @@ msgstr "Le chargement des données se connectera à <strong>%(source_name)s</str
 #: bookwyrm/templates/book/sync_modal.html:24
 #: bookwyrm/templates/groups/members.html:29
 #: bookwyrm/templates/landing/password_reset.html:52
+#: bookwyrm/templates/preferences/2fa.html:54
 #: bookwyrm/templates/snippets/remove_from_group_button.html:17
 msgid "Confirm"
 msgstr "Confirmer"
@@ -1687,11 +1706,14 @@ msgstr "Réinitialiser votre mot de passe sur %(site_name)s"
 
 #: bookwyrm/templates/embed-layout.html:21 bookwyrm/templates/layout.html:40
 #: bookwyrm/templates/setup/layout.html:15
+#: bookwyrm/templates/two_factor_auth/two_factor_login.html:18
+#: bookwyrm/templates/two_factor_auth/two_factor_prompt.html:18
 #, python-format
 msgid "%(site_name)s home page"
 msgstr "%(site_name)s page d'accueil"
 
 #: bookwyrm/templates/embed-layout.html:40 bookwyrm/templates/layout.html:204
+#: bookwyrm/templates/snippets/2fa_footer.html:12
 msgid "Contact site admin"
 msgstr "Contacter l’administrateur du site"
 
@@ -2261,10 +2283,12 @@ msgstr "Bienvenue sur Bookwyrm!<br><br>Voulez-vous suivre la visite guidée pour
 #: bookwyrm/templates/guided_tour/home.html:17
 #: bookwyrm/templates/guided_tour/home.html:39
 #: bookwyrm/templates/layout.html:212
+#: bookwyrm/templates/snippets/2fa_footer.html:20
 msgid "Guided Tour"
 msgstr "Visite guidée"
 
 #: bookwyrm/templates/guided_tour/home.html:25
+#: bookwyrm/templates/two_factor_auth/two_factor_prompt.html:36
 msgid "No thanks"
 msgstr "Non merci"
 
@@ -2590,7 +2614,7 @@ msgid "Privacy setting for imported reviews:"
 msgstr "Confidentialité des critiques importées :"
 
 #: bookwyrm/templates/import/import.html:70
-#: bookwyrm/templates/preferences/layout.html:31
+#: bookwyrm/templates/preferences/layout.html:35
 #: bookwyrm/templates/settings/federation/instance_blocklist.html:78
 msgid "Import"
 msgstr "Importer"
@@ -2846,6 +2870,7 @@ msgstr "Nom du compte :"
 #: bookwyrm/templates/landing/login.html:27
 #: bookwyrm/templates/landing/password_reset.html:26
 #: bookwyrm/templates/layout.html:144 bookwyrm/templates/ostatus/error.html:32
+#: bookwyrm/templates/preferences/2fa.html:68
 #: bookwyrm/templates/snippets/register_form.html:45
 msgid "Password:"
 msgstr "Mot de passe :"
@@ -2916,15 +2941,18 @@ msgid "Error posting status"
 msgstr "Erreur lors de la publication"
 
 #: bookwyrm/templates/layout.html:208
+#: bookwyrm/templates/snippets/2fa_footer.html:16
 msgid "Documentation"
 msgstr "Documentation"
 
 #: bookwyrm/templates/layout.html:221
+#: bookwyrm/templates/snippets/2fa_footer.html:29
 #, python-format
 msgid "Support %(site_name)s on <a href=\"%(support_link)s\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">%(support_title)s</a>"
 msgstr "Soutenez %(site_name)s sur <a href=\"%(support_link)s\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">%(support_title)s</a>"
 
 #: bookwyrm/templates/layout.html:228
+#: bookwyrm/templates/snippets/2fa_footer.html:36
 msgid "BookWyrm's source code is freely available. You can contribute or report issues on <a href=\"https://github.com/bookwyrm-social/bookwyrm\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">GitHub</a>."
 msgstr "Le code source de BookWyrm est librement disponible. Vous pouvez contribuer ou rapporter des problèmes sur <a href=\"https://github.com/bookwyrm-social/bookwyrm\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">GitHub</a>."
 
@@ -3602,9 +3630,66 @@ msgstr "S’abonner à @%(username)s"
 msgid "You are now following %(display_name)s!"
 msgstr "Vous suivez maintenant %(display_name)s !"
 
+#: bookwyrm/templates/preferences/2fa.html:4
+#: bookwyrm/templates/preferences/2fa.html:7
+#: bookwyrm/templates/preferences/layout.html:24
+msgid "Two Factor Authentication"
+msgstr "Authentification à deux facteurs"
+
+#: bookwyrm/templates/preferences/2fa.html:16
+msgid "Successfully updated 2FA settings"
+msgstr "Paramètres 2FA mis à jour avec succès"
+
+#: bookwyrm/templates/preferences/2fa.html:24
+msgid "Write down or copy and paste these codes somewhere safe."
+msgstr "Recopiez ou collez ces codes dans un endroit sûr."
+
+#: bookwyrm/templates/preferences/2fa.html:25
+msgid "You must use them in order, and they will not be displayed again."
+msgstr "Vous devez les utiliser dans l'ordre et ils ne seront plus affichés."
+
+#: bookwyrm/templates/preferences/2fa.html:35
+msgid "Two Factor Authentication is active on your account."
+msgstr "L'authentification à deux facteurs est active sur votre compte."
+
+#: bookwyrm/templates/preferences/2fa.html:36
+#: bookwyrm/templates/preferences/disable-2fa.html:4
+#: bookwyrm/templates/preferences/disable-2fa.html:7
+msgid "Disable 2FA"
+msgstr "Désactiver l’authentification à deux facteurs"
+
+#: bookwyrm/templates/preferences/2fa.html:39
+msgid "You can generate backup codes to use in case you do not have access to your authentication app. If you generate new codes, any backup codes previously generated will no longer work."
+msgstr "Vous pouvez générer des codes de secours à utiliser si vous n'avez pas accès à votre application d'authentification. Si vous générez de nouveaux codes, tous les codes de secours précédemment générés ne fonctionneront plus."
+
+#: bookwyrm/templates/preferences/2fa.html:40
+msgid "Generate backup codes"
+msgstr "Générer des codes de secours"
+
+#: bookwyrm/templates/preferences/2fa.html:45
+msgid "Scan the QR code with your authentication app and then enter the code from  your app below to confirm your app is set up."
+msgstr "Scannez le code QR avec votre app d'authentification, puis saisissez ci-dessous le code de votre app pour confirmer que celle-ci est bien configurée."
+
+#: bookwyrm/templates/preferences/2fa.html:50
+msgid "Enter the code from your app:"
+msgstr "Entrez le code de votre app :"
+
+#: bookwyrm/templates/preferences/2fa.html:60
+msgid "You can make your account more secure by using Two Factor Authentication (2FA). This will require you to enter a one-time code using a phone app like <em>Authy</em>, <em>Google Authenticator</em> or <em>Microsoft Authenticator</em> each time you log in."
+msgstr "Vous pouvez sécuriser votre compte en utilisant l’authentification à deux facteurs (2FA). Cela vous demandera de saisir un code à usage unique en utilisant une app mobile comme <em>Authy</em>, <em>Google Authenticator</em> ou <em>Microsoft Authenticator</em> à chaque fois que vous vous connectez."
+
+#: bookwyrm/templates/preferences/2fa.html:62
+msgid "Confirm your password to begin setting up 2FA."
+msgstr "Confirmez votre mot de passe pour commencer à configurer l’authentification à deux facteur."
+
+#: bookwyrm/templates/preferences/2fa.html:72
+#: bookwyrm/templates/two_factor_auth/two_factor_prompt.html:37
+msgid "Set up 2FA"
+msgstr "Configurer l’authentification à deux facteurs"
+
 #: bookwyrm/templates/preferences/blocks.html:4
 #: bookwyrm/templates/preferences/blocks.html:7
-#: bookwyrm/templates/preferences/layout.html:42
+#: bookwyrm/templates/preferences/layout.html:46
 msgid "Blocked Users"
 msgstr "Comptes bloqués"
 
@@ -3634,7 +3719,7 @@ msgstr "Nouveau mot de passe :"
 #: bookwyrm/templates/preferences/delete_user.html:4
 #: bookwyrm/templates/preferences/delete_user.html:7
 #: bookwyrm/templates/preferences/delete_user.html:25
-#: bookwyrm/templates/preferences/layout.html:24
+#: bookwyrm/templates/preferences/layout.html:28
 #: bookwyrm/templates/settings/users/delete_user_form.html:22
 msgid "Delete Account"
 msgstr "Supprimer le compte"
@@ -3646,6 +3731,18 @@ msgstr "Supprimer définitivement le compte"
 #: bookwyrm/templates/preferences/delete_user.html:14
 msgid "Deleting your account cannot be undone. The username will not be available to register in the future."
 msgstr "La suppression de votre compte ne peut pas être annulée. Le nom d'utilisateur ne sera plus disponible pour vous enregistrer dans le futur."
+
+#: bookwyrm/templates/preferences/disable-2fa.html:12
+msgid "Disable Two Factor Authentication"
+msgstr "Désactiver l’authentification à deux facteurs"
+
+#: bookwyrm/templates/preferences/disable-2fa.html:14
+msgid "Disabling 2FA will allow anyone with your username and password to log in to your account."
+msgstr "La désactivation de l’authentification à deux facteur permettra à toute personne ayant votre nom d'utilisateur et votre mot de passe de se connecter à votre compte."
+
+#: bookwyrm/templates/preferences/disable-2fa.html:20
+msgid "Turn off 2FA"
+msgstr "Désactiver l’authentification à deux facteurs"
 
 #: bookwyrm/templates/preferences/edit_user.html:4
 #: bookwyrm/templates/preferences/edit_user.html:7
@@ -3727,15 +3824,15 @@ msgstr "Télécharger le fichier"
 msgid "Account"
 msgstr "Compte"
 
-#: bookwyrm/templates/preferences/layout.html:27
+#: bookwyrm/templates/preferences/layout.html:31
 msgid "Data"
 msgstr "Données"
 
-#: bookwyrm/templates/preferences/layout.html:35
+#: bookwyrm/templates/preferences/layout.html:39
 msgid "CSV export"
 msgstr "Export CSV"
 
-#: bookwyrm/templates/preferences/layout.html:38
+#: bookwyrm/templates/preferences/layout.html:42
 msgid "Relationships"
 msgstr "Relations"
 
@@ -5860,6 +5957,26 @@ msgstr "Déplier"
 msgid "Show less"
 msgstr "Replier"
 
+#: bookwyrm/templates/two_factor_auth/two_factor_login.html:29
+msgid "2FA check"
+msgstr "Vérification 2FA"
+
+#: bookwyrm/templates/two_factor_auth/two_factor_login.html:37
+msgid "Enter the code from your authenticator app:"
+msgstr "Entrez le code de votre app d’authentification :"
+
+#: bookwyrm/templates/two_factor_auth/two_factor_login.html:41
+msgid "Confirm and Log In"
+msgstr "Confirmer et se connecter"
+
+#: bookwyrm/templates/two_factor_auth/two_factor_prompt.html:29
+msgid "2FA is available"
+msgstr "2FA disponible"
+
+#: bookwyrm/templates/two_factor_auth/two_factor_prompt.html:34
+msgid "You can secure your account by setting up two factor authentication in your user preferences. This will require a one-time code from your phone in addition to your password each time you log in."
+msgstr "Vous pouvez sécuriser votre compte en configurant l’authentification à deux facteurs dans vos préférences utilisateur. Cela nécessitera un code unique de votre téléphone en plus de votre mot de passe chaque fois que vous vous connectez."
+
 #: bookwyrm/templates/user/books_header.html:9
 #, python-format
 msgid "%(username)s's books"
@@ -6005,7 +6122,7 @@ msgstr "%(title)s (%(subtitle)s)"
 msgid "Not a valid csv file"
 msgstr "Fichier CSV non valide"
 
-#: bookwyrm/views/landing/login.py:68
+#: bookwyrm/views/landing/login.py:86
 msgid "Username or password are incorrect"
 msgstr "Identifiant ou mot de passe incorrect"
 

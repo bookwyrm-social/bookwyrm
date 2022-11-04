@@ -11,7 +11,7 @@ from bookwyrm.management.commands import initdb
 from bookwyrm.tests.validate_html import validate_html
 
 
-class CeleryStatusViews(TestCase):
+class ImportsAdminViews(TestCase):
     """every response to a get request, html or json"""
 
     # pylint: disable=invalid-name
@@ -36,7 +36,7 @@ class CeleryStatusViews(TestCase):
 
     def test_celery_status_get(self):
         """there are so many views, this just makes sure it LOADS"""
-        view = views.CeleryStatus.as_view()
+        view = views.ImportList.as_view()
         request = self.factory.get("")
         request.user = self.local_user
 

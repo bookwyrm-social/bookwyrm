@@ -292,6 +292,16 @@ urlpatterns = [
         name="report-link",
     ),
     re_path(
+        r"^settings/imports/(?P<status>(complete|active))?/?$",
+        views.ImportList.as_view(),
+        name="settings-imports",
+    ),
+    re_path(
+        r"^settings/imports/(?P<import_id>\d+)/complete?$",
+        views.ImportList.as_view(),
+        name="settings-imports-complete",
+    ),
+    re_path(
         r"^settings/celery/?$", views.CeleryStatus.as_view(), name="settings-celery"
     ),
     # landing pages

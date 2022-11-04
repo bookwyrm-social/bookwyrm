@@ -3,6 +3,7 @@
 {% load markdown %}
 {% load humanize %}
 {% load utilities %}
+{% load book_display_tags %}
 
 {% block title %}{{ author.name }}{% endblock %}
 
@@ -141,7 +142,7 @@
         <h2 class="title is-4">{% blocktrans with name=author.name %}Books by {{ name }}{% endblocktrans %}</h2>
         <div class="columns is-multiline is-mobile">
         {% for book in books %}
-        {% with book=book.default_edition %}
+        {% with book=book|author_edition:author %}
             <div class="column is-one-fifth-tablet is-half-mobile is-flex is-flex-direction-column">
                 <div class="is-flex-grow-1">
                     {% include 'landing/small-book.html' with book=book %}
