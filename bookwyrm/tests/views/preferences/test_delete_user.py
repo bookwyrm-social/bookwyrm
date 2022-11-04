@@ -120,24 +120,24 @@ class DeleteUserViews(TestCase):
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
-    def test_reactivate_user_post(self, _):
-        """Reactivate action"""
-        self.local_user.deactivate()
-        self.local_user.refresh_from_db()
-
-        view = views.ReactivateUser.as_view()
-        form = forms.LoginForm()
-        form.data["localname"] = "mouse"
-        form.data["password"] = "password"
-        request = self.factory.post("", form.data)
-        request.user = self.local_user
-        middleware = SessionMiddleware()
-        middleware.process_request(request)
-        request.session.save()
-
-        with patch("bookwyrm.views.preferences.delete_user.login"):
-            view(request)
-
-        self.local_user.refresh_from_db()
-        self.assertTrue(self.local_user.is_active)
-        self.assertIsNone(self.local_user.deactivation_reason)
+#    def test_reactivate_user_post(self, _):
+#        """Reactivate action"""
+#        self.local_user.deactivate()
+#        self.local_user.refresh_from_db()
+#
+#        view = views.ReactivateUser.as_view()
+#        form = forms.LoginForm()
+#        form.data["localname"] = "mouse"
+#        form.data["password"] = "password"
+#        request = self.factory.post("", form.data)
+#        request.user = self.local_user
+#        middleware = SessionMiddleware()
+#        middleware.process_request(request)
+#        request.session.save()
+#
+#        with patch("bookwyrm.views.preferences.delete_user.login"):
+#            view(request)
+#
+#        self.local_user.refresh_from_db()
+#        self.assertTrue(self.local_user.is_active)
+#        self.assertIsNone(self.local_user.deactivation_reason)
