@@ -1,6 +1,4 @@
 """ import books from another app """
-import math
-
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator
@@ -38,7 +36,7 @@ class ImportStatus(View):
         fail_count = items.filter(
             fail_reason__isnull=False, book_guess__isnull=True
         ).count()
-        pending_item_count = job.pending_items.count()
+        pending_item_count = job.pending_item_count
         data = {
             "job": job,
             "items": page,
@@ -50,9 +48,7 @@ class ImportStatus(View):
             "show_progress": True,
             "item_count": item_count,
             "complete_count": item_count - pending_item_count,
-            "percent": math.floor(  # pylint: disable=c-extension-no-member
-                (item_count - pending_item_count) / item_count * 100
-            ),
+            "percent": job.percent_complete,
             # hours since last import item update
             "inactive_time": (job.updated_date - timezone.now()).seconds / 60 / 60,
             "legacy": not job.mappings,
