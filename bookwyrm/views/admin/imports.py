@@ -40,6 +40,5 @@ class ImportList(View):
     def post(self, request, import_id):
         """Mark an import as complete"""
         import_job = get_object_or_404(models.ImportJob, id=import_id)
-        import_job.complete = True
-        import_job.save()
+        import_job.stop_job()
         return redirect("settings-imports")
