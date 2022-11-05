@@ -25,7 +25,6 @@ class Migration(migrations.Migration):
                     ("complete", "Complete"),
                     ("stopped", "Stopped"),
                 ],
-                default="pending",
                 max_length=50,
                 null=True,
             ),
