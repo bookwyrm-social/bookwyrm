@@ -11,7 +11,7 @@ from django.views.decorators.http import require_POST
 
 from bookwyrm import models
 from bookwyrm.importers import GoodreadsImporter
-from bookwyrm.importers.importer import import_item_task
+from bookwyrm.models.import_job import import_item_task
 from bookwyrm.settings import PAGE_LENGTH
 
 # pylint: disable= no-self-use
@@ -73,4 +73,13 @@ def retry_item(request, job_id, item_id):
         models.ImportItem, id=item_id, job__id=job_id, job__user=request.user
     )
     import_item_task.delay(item.id)
+    return redirect("import-status", job_id)
+
+
+@login_required
+@require_POST
+def cancel_import(request, job_id):
+    """scrap that"""
+    job = get_object_or_404(models.ImportJob, id=job_id, job__user=request.user)
+    job.stop()
     return redirect("import-status", job_id)
