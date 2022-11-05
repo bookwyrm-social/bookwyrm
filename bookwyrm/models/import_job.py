@@ -1,4 +1,5 @@
 """ track progress of goodreads imports """
+import math
 import re
 import dateutil.parser
 
@@ -52,6 +53,14 @@ class ImportJob(models.Model):
     def item_count(self):
         """How many books do you want to import???"""
         return self.items.count()
+
+    @property
+    def percent_complete(self):
+        """How far along?"""
+        item_count = self.item_count
+        if not item_count:
+            return 0
+        return math.floor((item_count - self.pending_item_count) / item_count * 100)
 
     @property
     def pending_item_count(self):
