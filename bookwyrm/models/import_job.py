@@ -5,6 +5,7 @@ import dateutil.parser
 
 from django.db import models
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 
 from bookwyrm.connectors import connector_manager
 from bookwyrm.models import ReadThrough, User, Book, Edition
@@ -31,6 +32,14 @@ def construct_search_term(title, author):
     return " ".join([title, author])
 
 
+ImportStatuses = [
+    ("pending", _("Pending")),
+    ("active", _("Active")),
+    ("complete", _("Complete")),
+    ("stopped", _("Stopped")),
+]
+
+
 class ImportJob(models.Model):
     """entry for a specific request for book data import"""
 
@@ -39,10 +48,14 @@ class ImportJob(models.Model):
     updated_date = models.DateTimeField(default=timezone.now)
     include_reviews = models.BooleanField(default=True)
     mappings = models.JSONField()
-    complete = models.BooleanField(default=False)
     source = models.CharField(max_length=100)
     privacy = models.CharField(max_length=255, default="public", choices=PrivacyLevels)
     retry = models.BooleanField(default=False)
+
+    complete = models.BooleanField(default=False)
+    status = models.CharField(
+        max_length=50, choices=ImportStatuses, default="pending", null=True
+    )
 
     @property
     def pending_items(self):
@@ -95,6 +108,7 @@ class ImportItem(models.Model):
     linked_review = models.ForeignKey(
         "Review", on_delete=models.SET_NULL, null=True, blank=True
     )
+    task_id = models.CharField(max_length=200, null=True, blank=True)
 
     def update_job(self):
         """let the job know when the items get work done"""

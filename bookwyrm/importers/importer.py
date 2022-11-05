@@ -132,13 +132,19 @@ def start_import_task(job_id):
     job = ImportJob.objects.get(id=job_id)
     # these are sub-tasks so that one big task doesn't use up all the memory in celery
     for item in job.items.values_list("id", flat=True).all():
-        import_item_task.delay(item)
+        task = import_item_task.delay(item)
+        item.task_id = task.id
+        item.save()
 
 
 @app.task(queue="low_priority")
 def import_item_task(item_id):
     """resolve a row into a book"""
     item = models.ImportItem.objects.get(id=item_id)
+    # make sure the job has not been stopped
+    if item.job.complete:
+        return
+
     try:
         item.resolve()
     except Exception as err:  # pylint: disable=broad-except
