@@ -93,34 +93,34 @@ class DeleteUserViews(TestCase):
         self.assertFalse(self.local_user.is_active)
         self.assertEqual(self.local_user.deactivation_reason, "self_deletion")
 
+    #    def test_deactivate_user(self, _):
+    #        """Impermanent deletion"""
+    #        self.assertTrue(self.local_user.is_active)
+    #        view = views.DeactivateUser.as_view()
+    #        request = self.factory.post("")
+    #        request.user = self.local_user
+    #        middleware = SessionMiddleware()
+    #        middleware.process_request(request)
+    #        request.session.save()
+    #
+    #        view(request)
+    #
+    #        self.local_user.refresh_from_db()
+    #        self.assertFalse(self.local_user.is_active)
+    #        self.assertEqual(self.local_user.deactivation_reason, "self_deactivation")
 
-#    def test_deactivate_user(self, _):
-#        """Impermanent deletion"""
-#        self.assertTrue(self.local_user.is_active)
-#        view = views.DeactivateUser.as_view()
-#        request = self.factory.post("")
-#        request.user = self.local_user
-#        middleware = SessionMiddleware()
-#        middleware.process_request(request)
-#        request.session.save()
-#
-#        view(request)
-#
-#        self.local_user.refresh_from_db()
-#        self.assertFalse(self.local_user.is_active)
-#        self.assertEqual(self.local_user.deactivation_reason, "self_deactivation")
-#
-#    def test_reactivate_user_get(self, _):
-#        """Reactication page"""
-#        view = views.ReactivateUser.as_view()
-#        request = self.factory.get("")
-#        request.user = self.anonymous_user
-#
-#        result = view(request)
-#        self.assertIsInstance(result, TemplateResponse)
-#        validate_html(result.render())
-#        self.assertEqual(result.status_code, 200)
-#
+    def test_reactivate_user_get(self, _):
+        """Reactication page"""
+        view = views.ReactivateUser.as_view()
+        request = self.factory.get("")
+        request.user = self.anonymous_user
+
+        result = view(request)
+        self.assertIsInstance(result, TemplateResponse)
+        validate_html(result.render())
+        self.assertEqual(result.status_code, 200)
+
+
 #    def test_reactivate_user_post(self, _):
 #        """Reactivate action"""
 #        self.local_user.deactivate()
