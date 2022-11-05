@@ -58,6 +58,8 @@ class ImportJob(models.Model):
     def percent_complete(self):
         """How far along?"""
         item_count = self.item_count
+        if not item_count:
+            return 0
         return math.floor((item_count - self.pending_item_count) / item_count * 100)
 
     @property
