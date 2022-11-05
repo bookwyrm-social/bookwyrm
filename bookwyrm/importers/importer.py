@@ -135,6 +135,8 @@ def start_import_task(job_id):
         task = import_item_task.delay(item)
         item.task_id = task.id
         item.save()
+    job.status = "active"
+    job.save()
 
 
 @app.task(queue="low_priority")

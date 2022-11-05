@@ -116,8 +116,9 @@ class ImportItem(models.Model):
         job.updated_date = timezone.now()
         job.save()
         if not job.pending_items.exists() and not job.complete:
+            job.status = "complete"
             job.complete = True
-            job.save(update_fields=["complete"])
+            job.save(update_fields=["complete", "status"])
 
     def resolve(self):
         """try various ways to lookup a book"""
