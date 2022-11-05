@@ -89,14 +89,53 @@
 
 <div class="content block">
     <h2 class="title">{% trans "Recent Imports" %}</h2>
-    {% if not jobs %}
-    <p><em>{% trans "No recent imports" %}</em></p>
-    {% endif %}
-    <ul>
-        {% for job in jobs %}
-        <li><a href="{% url 'import-status' job.id %}">{{ job.created_date | naturaltime }}</a></li>
-        {% endfor %}
-    </ul>
+    <div class="table-container">
+        <table class="table is-striped is-fullwidth">
+            <tr>
+                <th>
+                    {% trans "Date Created" %}
+                </th>
+                <th>
+                    {% trans "Last Updated" %}
+                </th>
+                <th>
+                    {% trans "Items" %}
+                </th>
+                <th>
+                    {% trans "Status" %}
+                </th>
+            </tr>
+            {% if not jobs %}
+            <tr>
+                <td colspan="4">
+                    <em>{% trans "No recent imports" %}</em>
+                </td>
+            </tr>
+            {% endif %}
+            {% for job in jobs %}
+            <tr>
+                <td>
+                    <a href="{% url 'import-status' job.id %}">{{ job.created_date }}</a>
+                </td>
+                <td>{{ job.updated_date }}</td>
+                <td>{{ job.item_count|intcomma }}</td>
+                <td>
+                    {% if job.complete %}
+                    <span class="tag is-success">
+                        {% trans "Completed" %}
+                    </span>
+                    {% else %}
+                    <span class="tag is-warning">
+                        {% blocktrans trimmed with percent=job.percent_complete %}
+                            Active, {{ percent }}% complete
+                        {% endblocktrans %}
+                    </span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
 
     {% include 'snippets/pagination.html' with page=jobs path=request.path %}
 </div>
