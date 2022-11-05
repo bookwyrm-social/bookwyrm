@@ -78,8 +78,8 @@ def retry_item(request, job_id, item_id):
 
 @login_required
 @require_POST
-def cancel_import(request, job_id):
+def stop_import(request, job_id):
     """scrap that"""
-    job = get_object_or_404(models.ImportJob, id=job_id, job__user=request.user)
-    job.stop()
+    job = get_object_or_404(models.ImportJob, id=job_id, user=request.user)
+    job.stop_job()
     return redirect("import-status", job_id)
