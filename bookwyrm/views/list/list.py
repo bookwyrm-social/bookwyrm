@@ -221,17 +221,9 @@ def add_book(request):
 def genre_vote(request):
     """genre vote"""
     pk=request.POST.get("genre")
-    print(request.POST)
-    print('\n\n\n\n\n\n')
-    print(pk)
     
-
     genre = models.Genre.objects.get(id=pk)
     book = get_object_or_404(models.Edition, id=request.POST.get("book_id"))
-    print(genre)
-    print('\n\n\n\n\n\n')
-    print(book.parent_work)
-    print('\n\n\n\n\n\n')
 
     if suggestions.SuggestedBookGenre.objects.filter(genre=genre, book = book.parent_work).exists():
         suggestion = suggestions.SuggestedBookGenre.objects.get(genre=genre, book = book.parent_work)
@@ -241,12 +233,25 @@ def genre_vote(request):
     else:
         genre_vote = suggestions.SuggestedBookGenre.objects.create(genre=genre, book = book.parent_work)
 
-    
-  
-    # book.genres = genres
-    # book.save(update_fields=["genres"])
-
     return redirect("book", book.id)
+
+@login_required
+@require_POST
+def genre_suggestion(request):
+    """genre suggestion"""
+    name = request.POST.get("name")
+    description = request.POST.get("description")
+
+    if suggestions.SuggestedGenre.objects.filter(name=name).exists():
+        suggestion = suggestions.SuggestedGenre.objects.get(name=name)
+        suggestion.votes += 1
+        suggestion.save()
+
+    else:
+        genre_vote = suggestions.SuggestedGenre.objects.create(name=name, description = description)
+
+
+    return redirect("genres")
 
 @require_POST
 @login_required

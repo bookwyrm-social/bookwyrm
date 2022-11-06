@@ -500,6 +500,7 @@ urlpatterns = [
     re_path(r"^list/add-book/?$", views.add_book, name="list-add-book"),
 
     re_path(r"^list/genre-vote/?$", views.genre_vote, name="genre-vote"),
+    re_path(r"^list/genre-suggestion/?$", views.genre_suggestion, name="genre-suggestion"),
 
     re_path(
         r"^list/(?P<list_id>\d+)/remove/?$",
