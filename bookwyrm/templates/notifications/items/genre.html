@@ -13,7 +13,7 @@
 
 {% block description %}
 
-{% blocktrans trimmed with book_path=notification.related_book.local_path book_name=notification.related_book.title genre_name=notification.related_genre.genre_name genre_path=notification.related_genre.local_path %}
+{% blocktrans trimmed with book_path=notification.related_book.default_edition.local_path book_name=notification.related_book.title genre_name=notification.related_genre.genre_name genre_path=notification.related_genre.local_path %}
   <a href="{{ book_path }}">{{ book_name }}</a> was added to the <a href="{{ genre_path }}">{{ genre_name }}</a> genre
 {% endblocktrans %}
 

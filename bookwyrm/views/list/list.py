@@ -229,6 +229,7 @@ def genre_vote(request):
         suggestion = suggestions.SuggestedBookGenre.objects.get(genre=genre, book = book.parent_work)
         suggestion.votes += 1
         suggestion.save()
+        suggestion.autoApprove()
 
     else:
         genre_vote = suggestions.SuggestedBookGenre.objects.create(genre=genre, book = book.parent_work)
