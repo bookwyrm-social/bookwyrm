@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-11-07 19:14+0000\n"
-"PO-Revision-Date: 2022-11-07 19:53\n"
+"PO-Revision-Date: 2022-11-07 22:43\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Czech\n"
 "Language: cs\n"
@@ -36,23 +36,23 @@ msgstr "Nevyprší"
 #: bookwyrm/forms/admin.py:49
 #, python-brace-format
 msgid "{i} uses"
-msgstr ""
+msgstr "{i} použití"
 
 #: bookwyrm/forms/admin.py:50
 msgid "Unlimited"
-msgstr ""
+msgstr "Neomezené"
 
 #: bookwyrm/forms/edit_user.py:88
 msgid "Incorrect password"
-msgstr ""
+msgstr "Neplatné heslo"
 
 #: bookwyrm/forms/edit_user.py:95 bookwyrm/forms/landing.py:73
 msgid "Password does not match"
-msgstr ""
+msgstr "Heslo se neshoduje"
 
 #: bookwyrm/forms/edit_user.py:118
 msgid "Incorrect Password"
-msgstr ""
+msgstr "Chybné heslo"
 
 #: bookwyrm/forms/forms.py:54
 msgid "Reading finish date cannot be before start date."
@@ -60,15 +60,15 @@ msgstr "Datum dočtení nemůže být před datem začátku čtení."
 
 #: bookwyrm/forms/forms.py:59
 msgid "Reading stopped date cannot be before start date."
-msgstr ""
+msgstr "Datum dočtení nemůže být před datem začátku čtení."
 
 #: bookwyrm/forms/forms.py:67
 msgid "Reading stopped date cannot be in the future."
-msgstr ""
+msgstr "Datum ukončení čtení nemůže být v budoucnu."
 
 #: bookwyrm/forms/forms.py:74
 msgid "Reading finished date cannot be in the future."
-msgstr ""
+msgstr "Datum ukončení čtení nemůže být v budoucnu."
 
 #: bookwyrm/forms/landing.py:40
 msgid "User with this username already exists"
@@ -80,7 +80,7 @@ msgstr "Uživatel s tímto e-mailem již existuje."
 
 #: bookwyrm/forms/landing.py:107 bookwyrm/forms/landing.py:115
 msgid "Incorrect code"
-msgstr ""
+msgstr "Neplatný kód"
 
 #: bookwyrm/forms/links.py:36
 msgid "This domain is blocked. Please contact your administrator if you think this is an error."
@@ -88,11 +88,11 @@ msgstr "Tato doména je blokována. Pokud se domníváte, že se jedná o chybu,
 
 #: bookwyrm/forms/links.py:46
 msgid "This link with file type has already been added for this book. If it is not visible, the domain is still pending."
-msgstr ""
+msgstr "Tento odkaz s typem souboru již byl pro tuto knihu přidán. Pokud není viditelný, požadavek stále není vyřízený."
 
 #: bookwyrm/forms/lists.py:26
 msgid "List Order"
-msgstr ""
+msgstr "Pořadí seznamu"
 
 #: bookwyrm/forms/lists.py:27
 msgid "Book Title"
@@ -118,28 +118,28 @@ msgstr "Sestupně"
 
 #: bookwyrm/models/announcement.py:11
 msgid "Primary"
-msgstr ""
+msgstr "Hlavní"
 
 #: bookwyrm/models/announcement.py:12
 msgid "Success"
-msgstr ""
+msgstr "Úspěšně dokončeno"
 
 #: bookwyrm/models/announcement.py:13
 #: bookwyrm/templates/settings/invites/manage_invites.html:47
 msgid "Link"
-msgstr ""
+msgstr "Odkaz"
 
 #: bookwyrm/models/announcement.py:14
 msgid "Warning"
-msgstr ""
+msgstr "Upozornění"
 
 #: bookwyrm/models/announcement.py:15
 msgid "Danger"
-msgstr ""
+msgstr "Nebezpečí"
 
 #: bookwyrm/models/antispam.py:112 bookwyrm/models/antispam.py:146
 msgid "Automatically generated report"
-msgstr ""
+msgstr "Automaticky vygenerována zpráva"
 
 #: bookwyrm/models/base_model.py:18 bookwyrm/models/import_job.py:47
 #: bookwyrm/models/link.py:72 bookwyrm/templates/import/import_status.html:214
@@ -149,7 +149,7 @@ msgstr "Čekající"
 
 #: bookwyrm/models/base_model.py:19
 msgid "Self deletion"
-msgstr ""
+msgstr "Sebesmazání"
 
 #: bookwyrm/models/base_model.py:20
 msgid "Moderator suspension"
@@ -173,15 +173,15 @@ msgstr "Ekniha"
 
 #: bookwyrm/models/book.py:268
 msgid "Graphic novel"
-msgstr ""
+msgstr "Grafický román"
 
 #: bookwyrm/models/book.py:269
 msgid "Hardcover"
-msgstr ""
+msgstr "Pevná vazba"
 
 #: bookwyrm/models/book.py:270
 msgid "Paperback"
-msgstr ""
+msgstr "Měkká vazba"
 
 #: bookwyrm/models/federated_server.py:11
 #: bookwyrm/templates/settings/federation/edit_instance.html:55
@@ -195,17 +195,17 @@ msgstr "Federované"
 #: bookwyrm/templates/settings/federation/instance_list.html:26
 #: bookwyrm/templates/settings/link_domains/link_domains.html:27
 msgid "Blocked"
-msgstr ""
+msgstr "Blokováno"
 
 #: bookwyrm/models/fields.py:27
 #, python-format
 msgid "%(value)s is not a valid remote_id"
-msgstr ""
+msgstr "%(value)s není platný remote_id"
 
 #: bookwyrm/models/fields.py:36 bookwyrm/models/fields.py:45
 #, python-format
 msgid "%(value)s is not a valid username"
-msgstr ""
+msgstr "%(value)s není platné uživatelské jméno"
 
 #: bookwyrm/models/fields.py:181 bookwyrm/templates/layout.html:141
 #: bookwyrm/templates/ostatus/error.html:29
@@ -214,7 +214,7 @@ msgstr "uživatelské jméno"
 
 #: bookwyrm/models/fields.py:186
 msgid "A user with that username already exists."
-msgstr ""
+msgstr "Uživatel s tímto uživatelským jménem již existuje."
 
 #: bookwyrm/models/fields.py:205
 #: bookwyrm/templates/snippets/privacy-icons.html:3
@@ -230,7 +230,7 @@ msgstr "Veřejný"
 #: bookwyrm/templates/snippets/privacy_select.html:14
 #: bookwyrm/templates/snippets/privacy_select_no_followers.html:14
 msgid "Unlisted"
-msgstr ""
+msgstr "Skryté"
 
 #: bookwyrm/models/fields.py:207
 #: bookwyrm/templates/snippets/privacy_select.html:17
@@ -253,19 +253,19 @@ msgstr "Soukromý"
 #: bookwyrm/templates/settings/users/user_admin.html:81
 #: bookwyrm/templates/settings/users/user_info.html:28
 msgid "Active"
-msgstr ""
+msgstr "Aktivní"
 
 #: bookwyrm/models/import_job.py:49 bookwyrm/templates/import/import.html:138
 msgid "Complete"
-msgstr ""
+msgstr "Dokončeno"
 
 #: bookwyrm/models/import_job.py:50
 msgid "Stopped"
-msgstr ""
+msgstr "Zastaveno"
 
 #: bookwyrm/models/import_job.py:84 bookwyrm/models/import_job.py:92
 msgid "Import stopped"
-msgstr ""
+msgstr "Import byl zastaven"
 
 #: bookwyrm/models/import_job.py:359 bookwyrm/models/import_job.py:384
 msgid "Error loading book"
@@ -277,15 +277,15 @@ msgstr ""
 
 #: bookwyrm/models/link.py:51
 msgid "Free"
-msgstr ""
+msgstr "Zdarma"
 
 #: bookwyrm/models/link.py:52
 msgid "Purchasable"
-msgstr ""
+msgstr "Zakoupitelné"
 
 #: bookwyrm/models/link.py:53
 msgid "Available for loan"
-msgstr ""
+msgstr "Dostupné k zapůjčtení"
 
 #: bookwyrm/models/link.py:70
 #: bookwyrm/templates/settings/link_domains/link_domains.html:23
@@ -306,7 +306,7 @@ msgstr ""
 
 #: bookwyrm/models/user.py:35
 msgid "Everything else"
-msgstr ""
+msgstr "Vše ostatní"
 
 #: bookwyrm/settings.py:209
 msgid "Home Timeline"
@@ -318,7 +318,7 @@ msgstr "Domov"
 
 #: bookwyrm/settings.py:210
 msgid "Books Timeline"
-msgstr ""
+msgstr "Zeď knih"
 
 #: bookwyrm/settings.py:210
 #: bookwyrm/templates/guided_tour/user_profile.html:101
@@ -334,67 +334,67 @@ msgstr "Anglicky"
 
 #: bookwyrm/settings.py:283
 msgid "Català (Catalan)"
-msgstr ""
+msgstr "Català (katalánština)"
 
 #: bookwyrm/settings.py:284
 msgid "Deutsch (German)"
-msgstr ""
+msgstr "Deutsch (němčina)"
 
 #: bookwyrm/settings.py:285
 msgid "Español (Spanish)"
-msgstr ""
+msgstr "Español (španělština)"
 
 #: bookwyrm/settings.py:286
 msgid "Galego (Galician)"
-msgstr ""
+msgstr "Galego (galicijština)"
 
 #: bookwyrm/settings.py:287
 msgid "Italiano (Italian)"
-msgstr ""
+msgstr "Italiano (italština)"
 
 #: bookwyrm/settings.py:288
 msgid "Suomi (Finnish)"
-msgstr ""
+msgstr "Suomi (finština)"
 
 #: bookwyrm/settings.py:289
 msgid "Français (French)"
-msgstr ""
+msgstr "Français (francouzština)"
 
 #: bookwyrm/settings.py:290
 msgid "Lietuvių (Lithuanian)"
-msgstr ""
+msgstr "Lietuvių (litevština)"
 
 #: bookwyrm/settings.py:291
 msgid "Norsk (Norwegian)"
-msgstr ""
+msgstr "Norsk (norština)"
 
 #: bookwyrm/settings.py:292
 msgid "Polski (Polish)"
-msgstr ""
+msgstr "Polski (polština)"
 
 #: bookwyrm/settings.py:293
 msgid "Português do Brasil (Brazilian Portuguese)"
-msgstr ""
+msgstr "Português do Brasil (portugalština (Brazílie))"
 
 #: bookwyrm/settings.py:294
 msgid "Português Europeu (European Portuguese)"
-msgstr ""
+msgstr "Português Europeu (portugalština (Evropa))"
 
 #: bookwyrm/settings.py:295
 msgid "Română (Romanian)"
-msgstr ""
+msgstr "Română (rumunština)"
 
 #: bookwyrm/settings.py:296
 msgid "Svenska (Swedish)"
-msgstr ""
+msgstr "Svenska (švédština)"
 
 #: bookwyrm/settings.py:297
 msgid "简体中文 (Simplified Chinese)"
-msgstr ""
+msgstr "简体中文 (zjednodušená čínština)"
 
 #: bookwyrm/settings.py:298
 msgid "繁體中文 (Traditional Chinese)"
-msgstr ""
+msgstr "繁體中文 (tradiční čínština)"
 
 #: bookwyrm/templates/404.html:4 bookwyrm/templates/404.html:8
 msgid "Not Found"
@@ -406,7 +406,7 @@ msgstr "Vypadá to, že požadovaná stránka neexistuj!"
 
 #: bookwyrm/templates/500.html:4
 msgid "Oops!"
-msgstr ""
+msgstr "Jejda!"
 
 #: bookwyrm/templates/500.html:8
 msgid "Server Error"
@@ -425,7 +425,7 @@ msgstr ""
 #: bookwyrm/templates/get_started/layout.html:20
 #, python-format
 msgid "Welcome to %(site_name)s!"
-msgstr ""
+msgstr "Vítejte na %(site_name)s!"
 
 #: bookwyrm/templates/about/about.html:24
 #, python-format
@@ -453,7 +453,7 @@ msgstr ""
 
 #: bookwyrm/templates/about/about.html:103
 msgid "Meet your admins"
-msgstr ""
+msgstr "Seznamte se s vašimi administrátory"
 
 #: bookwyrm/templates/about/about.html:106
 #, python-format
@@ -479,7 +479,7 @@ msgstr "Poslat soukromou zprávu"
 #: bookwyrm/templates/about/conduct.html:9
 #: bookwyrm/templates/about/layout.html:41
 msgid "Code of Conduct"
-msgstr ""
+msgstr "Kodex chování"
 
 #: bookwyrm/templates/about/layout.html:11
 msgid "Active users:"
@@ -868,7 +868,7 @@ msgstr "Upravit knihu"
 
 #: bookwyrm/templates/book/book.html:88 bookwyrm/templates/book/book.html:91
 msgid "Click to add cover"
-msgstr ""
+msgstr "Klepnutím přidáte obal"
 
 #: bookwyrm/templates/book/book.html:97
 msgid "Failed to load cover"
@@ -876,7 +876,7 @@ msgstr "Nezdařilo se obálku načíst"
 
 #: bookwyrm/templates/book/book.html:108
 msgid "Click to enlarge"
-msgstr ""
+msgstr "Kliknutím zvětšíte"
 
 #: bookwyrm/templates/book/book.html:179
 #, python-format
@@ -922,11 +922,11 @@ msgstr "Vaše aktivita čtení"
 #: bookwyrm/templates/book/book.html:260
 #: bookwyrm/templates/guided_tour/book.html:56
 msgid "Add read dates"
-msgstr ""
+msgstr "Přidat datum přečtení"
 
 #: bookwyrm/templates/book/book.html:268
 msgid "You don't have any reading activity for this book."
-msgstr ""
+msgstr "Tuto knihu jste ještě nečetly."
 
 #: bookwyrm/templates/book/book.html:294
 msgid "Your reviews"
@@ -946,7 +946,7 @@ msgstr "Témata"
 
 #: bookwyrm/templates/book/book.html:354
 msgid "Places"
-msgstr ""
+msgstr "Místa"
 
 #: bookwyrm/templates/book/book.html:365
 #: bookwyrm/templates/groups/group.html:19
@@ -977,17 +977,17 @@ msgstr "Přidat"
 
 #: bookwyrm/templates/book/book_identifiers.html:8
 msgid "ISBN:"
-msgstr ""
+msgstr "ISBN:"
 
 #: bookwyrm/templates/book/book_identifiers.html:15
 #: bookwyrm/templates/book/edit/edit_book_form.html:332
 msgid "OCLC Number:"
-msgstr ""
+msgstr "OCLC číslo:"
 
 #: bookwyrm/templates/book/book_identifiers.html:22
 #: bookwyrm/templates/book/edit/edit_book_form.html:341
 msgid "ASIN:"
-msgstr ""
+msgstr "ASIN:"
 
 #: bookwyrm/templates/book/cover_add_modal.html:5
 msgid "Add cover"
