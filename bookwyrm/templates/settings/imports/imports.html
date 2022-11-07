@@ -29,15 +29,17 @@
 <div class="table-container block content">
     <table class="table is-striped is-fullwidth">
         <tr>
-            {% url 'settings-imports' as url %}
+            {% url 'settings-imports' status  as url %}
             <th>
                 {% trans "ID" %}
             </th>
             <th>
-                {% trans "User" %}
+                {% trans "User" as text %}
+                {% include 'snippets/table-sort-header.html' with field="user" sort=sort text=text %}
             </th>
             <th>
-                {% trans "Date Created" %}
+                {% trans "Date Created" as text %}
+                {% include 'snippets/table-sort-header.html' with field="created_date" sort=sort text=text %}
             </th>
             {% if status != "active" %}
             <th>
