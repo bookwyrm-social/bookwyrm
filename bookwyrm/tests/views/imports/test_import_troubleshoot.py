@@ -11,6 +11,7 @@ from bookwyrm import models, views
 class ImportTroubleshootViews(TestCase):
     """goodreads import views"""
 
+    # pylint: disable=invalid-name
     def setUp(self):
         """we need basic test data and mocks"""
         self.factory = RequestFactory()
