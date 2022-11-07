@@ -1,4 +1,5 @@
 """ test for app action functionality """
+from collections import namedtuple
 from unittest.mock import patch
 from django.template.response import TemplateResponse
 from django.test import TestCase
@@ -49,7 +50,9 @@ class ImportTroubleshootViews(TestCase):
         request = self.factory.post("")
         request.user = self.local_user
 
-        with patch("bookwyrm.importers.Importer.start_import"):
+        MockTask = namedtuple("Task", ("id"))
+        with patch("bookwyrm.models.import_job.start_import_task.delay") as mock:
+            mock.return_value = MockTask(123)
             view(request, import_job.id)
 
         self.assertEqual(models.ImportJob.objects.count(), 2)
