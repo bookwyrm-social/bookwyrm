@@ -97,6 +97,6 @@ class Import(View):
         except (UnicodeDecodeError, ValueError, KeyError):
             return HttpResponseBadRequest(_("Not a valid csv file"))
 
-        importer.start_import(job)
+        job.start_job()
 
         return redirect(f"/import/{job.id}")

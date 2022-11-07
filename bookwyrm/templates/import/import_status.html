@@ -66,6 +66,13 @@
     </div>
     {% endif %}
 
+    {% if not job.complete %}
+    <form name="stop-import" action="{% url 'import-stop' job.id %}" method="POST">
+        {% csrf_token %}
+        <button class="button is-danger" type="submit">{% trans "Stop import" %}</button>
+    </form>
+    {% endif %}
+
     {% if manual_review_count and not legacy %}
     <div class="notification">
         {% blocktrans trimmed count counter=manual_review_count with display_counter=manual_review_count|intcomma %}
