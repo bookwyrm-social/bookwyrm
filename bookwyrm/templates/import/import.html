@@ -120,17 +120,26 @@
                 <td>{{ job.updated_date }}</td>
                 <td>{{ job.item_count|intcomma }}</td>
                 <td>
-                    {% if job.complete %}
-                    <span class="tag is-success">
-                        {% trans "Completed" %}
+                    <span
+                        {% if job.status == "stopped" %}
+                        class="tag is-danger"
+                        {% elif job.status == "pending" %}
+                        class="tag is-warning"
+                        {% elif job.complete %}
+                        class="tag"
+                        {% else %}
+                        class="tag is-success"
+                        {% endif %}
+                    >
+                        {% if job.status %}
+                        {{ job.status }}
+                            {{ job.status_display }}
+                        {% elif job.complete %}
+                            {% trans "Complete" %}
+                        {% else %}
+                            {% trans "Active" %}
+                        {% endif %}
                     </span>
-                    {% else %}
-                    <span class="tag is-warning">
-                        {% blocktrans trimmed with percent=job.percent_complete %}
-                            Active, {{ percent }}% complete
-                        {% endblocktrans %}
-                    </span>
-                    {% endif %}
                 </td>
             </tr>
             {% endfor %}

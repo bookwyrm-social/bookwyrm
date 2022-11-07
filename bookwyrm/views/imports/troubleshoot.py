@@ -52,5 +52,5 @@ class ImportTroubleshoot(View):
             job,
             items,
         )
-        importer.start_import(job)
+        job.start_job()
         return redirect(f"/import/{job.id}")
