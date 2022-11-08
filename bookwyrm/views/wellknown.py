@@ -21,7 +21,7 @@ def webfinger(request):
 
     username = resource.replace("acct:", "")
     user = get_object_or_404(models.User, username__iexact=username)
-
+    #REPLACE WITH HTTPS
     return JsonResponse(
         {
             "subject": f"acct:{user.username}",
@@ -39,7 +39,7 @@ def webfinger(request):
         }
     )
 
-
+#REPLACE WITH HTTPS
 @require_GET
 def nodeinfo_pointer(_):
     """direct servers to nodeinfo"""
