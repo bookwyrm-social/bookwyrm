@@ -31,6 +31,9 @@ class Search(View):
                 return api_book_search_genres(request)
             return api_book_search(request)
 
+        test = connector_manager.get_external_genres()
+        
+
         query = request.GET.get("q")
         genre_query = request.GET.get("genres")
         if not query and not genre_query:
