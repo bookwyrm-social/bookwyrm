@@ -218,3 +218,26 @@ class SearchResult:
         serialized = asdict(self)
         del serialized["connector"]
         return serialized
+
+@dataclass
+class GenreResult:
+    """How our genre will look like when requesting it from another instance."""
+
+    id: str
+    genre_name: str
+    description: str
+    name: str
+    connector: object
+
+
+    def __repr__(self):
+        # pylint: disable=consider-using-f-string
+        return "<GenreInfo id={!r} genre_name={!r} name={!r} description={!r}>".format(
+            self.id, self.genre_name, self.name, self.description
+        )
+
+    def json(self):
+        """serialize a connector for json response"""
+        serialized = asdict(self)
+        del serialized["connector"]
+        return serialized

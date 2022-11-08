@@ -69,6 +69,18 @@ class AbstractMinimalConnector(ABC):
         final_url = self.search_url + typeSelection + genreExtension
         return final_url
 
+    def get_genrepage_url(self, genres):
+        """format the query url"""
+        #while True:
+        #    break
+        
+        genreExtension = "/genres/1"
+        #print("---------------get_search_url---------------")
+        #print(self.search_url)
+        #print("--------------------------------------------")
+        final_url = self.search_url + genreExtension
+        return final_url
+
     def process_search_response(self, query, data, min_confidence):
         """Format the search results based on the formt of the query"""
         if maybe_isbn(query):

@@ -67,6 +67,7 @@ def api_book_search(request):
         [format_search_result(r) for r in book_results[:10]], safe=False
     )
 
+#TODO: This can be refactored. We'll merge this into api_book_search later.
 def api_book_search_genres(request):
     """Return books via API response"""
     genre_list = request.GET.getlist("genres")

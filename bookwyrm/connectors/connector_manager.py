@@ -62,6 +62,46 @@ async def get_results(session, url, min_confidence, query, connector):
     except aiohttp.ClientError as err:
         logger.info(err)
 
+async def get_results_genres(session, url, min_confidence, query, connector):
+    """try this specific connector"""
+    # pylint: disable=line-too-long
+    headers = {
+        "Accept": (
+            'application/json, application/activity+json, application/ld+json; profile="https://www.w3.org/ns/activitystreams"; charset=utf-8'
+        ),
+        "User-Agent": USER_AGENT,
+    }
+    params = {"min_confidence": min_confidence}
+    try:
+        async with session.get(url, headers=headers, params=params) as response:
+            #print("-----------------------------------")
+            #print(headers)
+            #print(url)
+            #print("-----------------------------------")
+            if not response.ok:
+                logger.info("Unable to connect to %s: %s", url, response.reason)
+                print("Unable to connect to %s: %s", url, response.reason)
+                return
+
+            try:
+                raw_data = await response.json()
+            except aiohttp.client_exceptions.ContentTypeError as err:
+                logger.exception(err)
+                return
+            print("-----------------------------------")
+            print(raw_data)
+            print("-----------------------------------")
+            return {
+                "connector": connector,
+                "results": connector.process_search_response(
+                    query, raw_data, min_confidence
+                ),
+            }
+    except asyncio.TimeoutError:
+        logger.info("Connection timed out for url: %s", url)
+    except aiohttp.ClientError as err:
+        logger.info(err)
+
 
 
 async def async_connector_search(query, items, min_confidence):
@@ -154,6 +194,36 @@ def search_genre(genres, buttonSelection, min_confidence=0.1, return_first=False
         print("################################################")
 
     # failed requests will return None, so filter those out
+    return results
+
+def get_external_genres():
+    results = []
+
+    #print("---------------urlgen---------------")
+    #print(genres)
+    #print("--------------------------------------------")
+
+    items = []
+    for connector in get_connectors():
+        # get the search url from the connector before sending
+        url = connector.get_genrepage_url()
+        try:
+            raise_not_valid_url(url)
+        except ConnectorException:
+            # if this URL is invalid we should skip it and move on
+            # This should also exclude non-BookWyrm connectors
+            logger.info("Request denied to blocked domain: %s", url)
+            print("Genre request failed.")
+            continue
+        #print("---------------This URL is valid---------------")
+        #print(url)
+        #print("--------------------------------------------")
+        print("Genre request successful, url IS: " + url)
+        items.append((url, connector))
+
+    # load as many results as we can
+    results = asyncio.run(async_connector_search())
+    results = [r for r in results if r]
     return results
 
 

@@ -1,6 +1,6 @@
 """ using another bookwyrm instance as a source of book data """
 from bookwyrm import activitypub, models
-from bookwyrm.book_search import SearchResult
+from bookwyrm.book_search import SearchResult, GenreResult
 from .abstract_connector import AbstractMinimalConnector
 
 
@@ -16,6 +16,12 @@ class Connector(AbstractMinimalConnector):
             print("Parsing book from Bookwyrm Connector")
             search_result["connector"] = self
             yield SearchResult(**search_result)
+
+    def parse_genre_data(self, data):
+        for gen in data:
+            print("Parsing genre from Bookwyrm Connector")
+            gen["connector"] = self
+            yield GenreResult(**gen)
 
     def parse_isbn_search_data(self, data):
         for search_result in data:
