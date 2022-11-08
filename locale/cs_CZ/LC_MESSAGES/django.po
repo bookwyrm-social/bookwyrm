@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-11-07 19:14+0000\n"
-"PO-Revision-Date: 2022-11-08 00:13\n"
+"PO-Revision-Date: 2022-11-08 12:28\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Czech\n"
 "Language: cs\n"
@@ -153,11 +153,11 @@ msgstr "Sebesmazání"
 
 #: bookwyrm/models/base_model.py:20
 msgid "Moderator suspension"
-msgstr ""
+msgstr "Zablokován moderátorem"
 
 #: bookwyrm/models/base_model.py:21
 msgid "Moderator deletion"
-msgstr ""
+msgstr "Odstraněn moderátorem"
 
 #: bookwyrm/models/base_model.py:22
 msgid "Domain block"
@@ -290,7 +290,7 @@ msgstr "Dostupné k zapůjčtení"
 #: bookwyrm/models/link.py:70
 #: bookwyrm/templates/settings/link_domains/link_domains.html:23
 msgid "Approved"
-msgstr ""
+msgstr "Schváleno"
 
 #: bookwyrm/models/user.py:32 bookwyrm/templates/book/book.html:289
 msgid "Reviews"
@@ -302,7 +302,7 @@ msgstr "Komentáře"
 
 #: bookwyrm/models/user.py:34
 msgid "Quotations"
-msgstr ""
+msgstr "Citace"
 
 #: bookwyrm/models/user.py:35
 msgid "Everything else"
@@ -419,7 +419,7 @@ msgstr "Něco se pokazilo! Omlouváme se."
 #: bookwyrm/templates/about/about.html:9
 #: bookwyrm/templates/about/layout.html:35
 msgid "About"
-msgstr ""
+msgstr "Podrobnosti"
 
 #: bookwyrm/templates/about/about.html:20
 #: bookwyrm/templates/get_started/layout.html:20
@@ -430,17 +430,17 @@ msgstr "Vítejte na %(site_name)s!"
 #: bookwyrm/templates/about/about.html:24
 #, python-format
 msgid "%(site_name)s is part of <em>BookWyrm</em>, a network of independent, self-directed communities for readers. While you can interact seamlessly with users anywhere in the <a href=\"https://joinbookwyrm.com/instances/\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">BookWyrm network</a>, this community is unique."
-msgstr ""
+msgstr "%(site_name)s je součástí <em>BookWyrm</em>, sítě nezávislých samosprávných komunit pro čtenáře. Zatímco můžete bezproblémově komunikovat s uživateli kdekoli v <a href=\"https://joinbookwyrm.com/instances/\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">BookWyrmové síti</a>, tato komunita je jedinečná."
 
 #: bookwyrm/templates/about/about.html:44
 #, python-format
 msgid "<a href=\"%(book_path)s\"><em>%(title)s</em></a> is %(site_name)s's most beloved book, with an average rating of %(rating)s out of 5."
-msgstr ""
+msgstr "<a href=\"%(book_path)s\"><em>%(title)s</em></a> je nejmilovanější kniha na %(site_name)s s průměrným hodnocením %(rating)s z 5."
 
 #: bookwyrm/templates/about/about.html:63
 #, python-format
 msgid "More %(site_name)s users want to read <a href=\"%(book_path)s\"><em>%(title)s</em></a> than any other book."
-msgstr ""
+msgstr "Více %(site_name)s uživatelů chce přečíst <a href=\"%(book_path)s\"><em>%(title)s</em></a> než kteroukoliv jinou knihu."
 
 #: bookwyrm/templates/about/about.html:82
 #, python-format
@@ -449,7 +449,7 @@ msgstr ""
 
 #: bookwyrm/templates/about/about.html:93
 msgid "Track your reading, talk about books, write reviews, and discover what to read next. Always ad-free, anti-corporate, and community-oriented, BookWyrm is human-scale software, designed to stay small and personal. If you have feature requests, bug reports, or grand dreams, <a href=\"https://joinbookwyrm.com/get-involved\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">reach out</a> and make yourself heard."
-msgstr ""
+msgstr "Sledujte své čtení, mluvte o knihách, píšte recenze a objevte, co chcete číst dál. BookWyrm je bez reklam, proti korporátním a komunitně orientovaným software, který je navržen tak, aby zůstal malý i osobní. Máte-li žádosti o funkci, hlášení chyb nebo velkolepé sny, <a href=\"https://joinbookwyrm.com/get-involved\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">oslovte</a> a dejte se slyšet."
 
 #: bookwyrm/templates/about/about.html:103
 msgid "Meet your admins"
@@ -458,7 +458,7 @@ msgstr "Seznamte se s vašimi administrátory"
 #: bookwyrm/templates/about/about.html:106
 #, python-format
 msgid "%(site_name)s's moderators and administrators keep the site up and running, enforce the <a href=\"%(coc_path)s\">code of conduct</a>, and respond when users report spam and bad behavior."
-msgstr ""
+msgstr "Moderátoři a administrátoři %(site_name)s udržují tuto stránku v provozu, prosazuj <a href=\"%(coc_path)s\">kodex chování</a> a nahlašuj spam a špatné chování."
 
 #: bookwyrm/templates/about/about.html:120
 msgid "Moderator"
@@ -487,7 +487,7 @@ msgstr "Aktivní uživatelé:"
 
 #: bookwyrm/templates/about/layout.html:15
 msgid "Statuses posted:"
-msgstr ""
+msgstr "Publikované statusy:"
 
 #: bookwyrm/templates/about/layout.html:19
 #: bookwyrm/templates/setup/config.html:74
@@ -511,7 +511,7 @@ msgstr "Zásady ochrany osobních údajů"
 #: bookwyrm/templates/feed/summary_card.html:8
 #, python-format
 msgid "%(year)s in the books"
-msgstr ""
+msgstr "%(year)s v knihách"
 
 #: bookwyrm/templates/annual_summary/layout.html:43
 #, python-format
@@ -558,7 +558,7 @@ msgstr "Stránka je soukromá, jen vy ji můžete vidět."
 
 #: bookwyrm/templates/annual_summary/layout.html:95
 msgid "Make page public"
-msgstr ""
+msgstr "Zveřejnit stránku"
 
 #: bookwyrm/templates/annual_summary/layout.html:99
 msgid "When you make your page private, the old key won’t give access to the page anymore. A new key will be created if the page is once again made public."
@@ -585,7 +585,7 @@ msgstr "To je skvělé!"
 #: bookwyrm/templates/annual_summary/layout.html:127
 #, python-format
 msgid "That makes an average of %(pages)s pages per book."
-msgstr ""
+msgstr "To dělá v průměru %(pages)s stránek na knihu."
 
 #: bookwyrm/templates/annual_summary/layout.html:132
 #, python-format
@@ -631,7 +631,7 @@ msgstr[3] ""
 
 #: bookwyrm/templates/annual_summary/layout.html:209
 msgid "Way to go!"
-msgstr ""
+msgstr "Jen tak dál!"
 
 #: bookwyrm/templates/annual_summary/layout.html:224
 #, python-format
@@ -775,20 +775,20 @@ msgstr "Datum úmrtí:"
 
 #: bookwyrm/templates/author/edit_author.html:75
 msgid "Author Identifiers"
-msgstr ""
+msgstr "Identifikátory autora"
 
 #: bookwyrm/templates/author/edit_author.html:77
 msgid "Openlibrary key:"
-msgstr ""
+msgstr "Openlibrary klíč:"
 
 #: bookwyrm/templates/author/edit_author.html:84
 #: bookwyrm/templates/book/edit/edit_book_form.html:323
 msgid "Inventaire ID:"
-msgstr ""
+msgstr "Inventaire ID:"
 
 #: bookwyrm/templates/author/edit_author.html:91
 msgid "Librarything key:"
-msgstr ""
+msgstr "Librarything klíč:"
 
 #: bookwyrm/templates/author/edit_author.html:98
 msgid "Goodreads key:"
@@ -796,7 +796,7 @@ msgstr "Klíč Goodreads:"
 
 #: bookwyrm/templates/author/edit_author.html:105
 msgid "ISNI:"
-msgstr ""
+msgstr "ISNI:"
 
 #: bookwyrm/templates/author/edit_author.html:115
 #: bookwyrm/templates/book/book.html:202
@@ -845,7 +845,7 @@ msgstr "Zrušit"
 #: bookwyrm/templates/author/sync_modal.html:15
 #, python-format
 msgid "Loading data will connect to <strong>%(source_name)s</strong> and check for any metadata about this author which aren't present here. Existing metadata will not be overwritten."
-msgstr ""
+msgstr "Načítání dat se připojí k <strong>%(source_name)s</strong> a zkontrolujte metadata o tomto autorovi, která zde nejsou přítomna. Stávající metadata nebudou přepsána."
 
 #: bookwyrm/templates/author/sync_modal.html:24
 #: bookwyrm/templates/book/edit/edit_book.html:126
@@ -860,7 +860,7 @@ msgstr "Potvrdit"
 
 #: bookwyrm/templates/book/book.html:19
 msgid "Unable to connect to remote source."
-msgstr ""
+msgstr "Nelze se připojit ke vzdálenému zdroji."
 
 #: bookwyrm/templates/book/book.html:64 bookwyrm/templates/book/book.html:65
 msgid "Edit Book"
@@ -908,7 +908,7 @@ msgstr[3] "%(count)s vydání"
 
 #: bookwyrm/templates/book/book.html:228
 msgid "You have shelved this edition in:"
-msgstr ""
+msgstr "Toto vydání bylo odloženo v:"
 
 #: bookwyrm/templates/book/book.html:243
 #, python-format
@@ -1035,21 +1035,21 @@ msgstr "Potvrdit informace o knize"
 #: bookwyrm/templates/book/edit/edit_book.html:70
 #, python-format
 msgid "Is \"%(name)s\" one of these authors?"
-msgstr ""
+msgstr "Je \"%(name)s\" jedním z těchto autorů?"
 
 #: bookwyrm/templates/book/edit/edit_book.html:81
 #, python-format
 msgid "Author of <em>%(book_title)s</em>"
-msgstr ""
+msgstr "Autor <em>%(book_title)s</em>"
 
 #: bookwyrm/templates/book/edit/edit_book.html:85
 #, python-format
 msgid "Author of <em>%(alt_title)s</em>"
-msgstr ""
+msgstr "Autor <em>%(alt_title)s</em>"
 
 #: bookwyrm/templates/book/edit/edit_book.html:87
 msgid "Find more information at isni.org"
-msgstr ""
+msgstr "Další informace najdete na isni.org"
 
 #: bookwyrm/templates/book/edit/edit_book.html:97
 msgid "This is a new author"
@@ -1058,7 +1058,7 @@ msgstr "Tohle je nový autor"
 #: bookwyrm/templates/book/edit/edit_book.html:104
 #, python-format
 msgid "Creating a new author: %(name)s"
-msgstr ""
+msgstr "Vytvoření nového autora: %(name)s"
 
 #: bookwyrm/templates/book/edit/edit_book.html:111
 msgid "Is this an edition of an existing work?"
@@ -1066,7 +1066,7 @@ msgstr ""
 
 #: bookwyrm/templates/book/edit/edit_book.html:119
 msgid "This is a new work"
-msgstr ""
+msgstr "Toto je nová práce"
 
 #: bookwyrm/templates/book/edit/edit_book.html:128
 #: bookwyrm/templates/feed/status.html:21
@@ -1123,7 +1123,7 @@ msgstr "Název:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:33
 msgid "Subtitle:"
-msgstr ""
+msgstr "Podtitulek:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:53
 msgid "Series:"
@@ -1155,7 +1155,7 @@ msgstr ""
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:139
 msgid "Publication"
-msgstr ""
+msgstr "Datum publikace"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:144
 msgid "Publisher:"
@@ -1185,21 +1185,21 @@ msgstr "Stránka autora %(name)s"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:197
 msgid "Add Authors:"
-msgstr ""
+msgstr "Přidat autory:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:200
 #: bookwyrm/templates/book/edit/edit_book_form.html:203
 msgid "Add Author"
-msgstr ""
+msgstr "Přidat autora"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:201
 #: bookwyrm/templates/book/edit/edit_book_form.html:204
 msgid "Jane Doe"
-msgstr ""
+msgstr "Jane Doe"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:210
 msgid "Add Another Author"
-msgstr ""
+msgstr "Přidat dalšího autora"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:220
 #: bookwyrm/templates/shelf/shelf.html:147
@@ -1225,7 +1225,7 @@ msgstr "Stránek:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:291
 msgid "Book Identifiers"
-msgstr ""
+msgstr "Identifikátory knih"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:296
 msgid "ISBN 13:"
@@ -1237,30 +1237,30 @@ msgstr "ISBN 10:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:314
 msgid "Openlibrary ID:"
-msgstr ""
+msgstr "Openlibrary ID:"
 
 #: bookwyrm/templates/book/editions/editions.html:4
 #, python-format
 msgid "Editions of %(book_title)s"
-msgstr ""
+msgstr "Editace %(book_title)s"
 
 #: bookwyrm/templates/book/editions/editions.html:8
 #, python-format
 msgid "Editions of <a href=\"%(work_path)s\">\"%(work_title)s\"</a>"
-msgstr ""
+msgstr "Editace <a href=\"%(work_path)s\">\"%(work_title)s</a>"
 
 #: bookwyrm/templates/book/editions/editions.html:55
 msgid "Can't find the edition you're looking for?"
-msgstr ""
+msgstr "Nemůžete najít edici, kterou hledáte?"
 
 #: bookwyrm/templates/book/editions/editions.html:75
 msgid "Add another edition"
-msgstr ""
+msgstr "Přidat další edici"
 
 #: bookwyrm/templates/book/editions/format_filter.html:9
 #: bookwyrm/templates/book/editions/language_filter.html:9
 msgid "Any"
-msgstr ""
+msgstr "Jakýkoliv"
 
 #: bookwyrm/templates/book/editions/language_filter.html:6
 #: bookwyrm/templates/preferences/edit_user.html:95
@@ -1273,11 +1273,11 @@ msgstr "Vyhledávat edice"
 
 #: bookwyrm/templates/book/file_links/add_link_modal.html:6
 msgid "Add file link"
-msgstr ""
+msgstr "Přidat odkaz na soubor"
 
 #: bookwyrm/templates/book/file_links/add_link_modal.html:19
 msgid "Links from unknown domains will need to be approved by a moderator before they are added."
-msgstr ""
+msgstr "Odkazy z neznámých domén musí být před přidáním schváleny moderátorem."
 
 #: bookwyrm/templates/book/file_links/add_link_modal.html:24
 msgid "URL:"
@@ -3590,7 +3590,7 @@ msgstr[3] ""
 #: bookwyrm/templates/notifications/items/status_preview.html:4
 #: bookwyrm/templates/snippets/status/content_status.html:73
 msgid "Content warning"
-msgstr ""
+msgstr "Varování o obsahu"
 
 #: bookwyrm/templates/notifications/items/update.html:16
 #, python-format
@@ -5092,7 +5092,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/site.html:64
 msgid "Code of conduct:"
-msgstr ""
+msgstr "Kodex chování:"
 
 #: bookwyrm/templates/settings/site.html:68
 msgid "Privacy Policy:"
