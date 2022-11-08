@@ -29,6 +29,7 @@ class AbstractMinimalConnector(ABC):
         self_fields = [
             "base_url",
             "books_url",
+            "genres_url",
             "covers_url",
             "search_url",
             "isbn_search_url",
