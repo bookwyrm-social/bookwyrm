@@ -76,9 +76,6 @@ class AbstractMinimalConnector(ABC):
         #    break
         
         genreExtension = "/1"
-        #print("---------------get_search_url---------------")
-        #print(self.search_url)
-        #print("--------------------------------------------")
         final_url = self.genres_url + genreExtension
         return final_url
 
