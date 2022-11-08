@@ -258,6 +258,7 @@ def get_or_create_connector(remote_id):
             connector_file="bookwyrm_connector",
             base_url=f"https://{identifier}",
             books_url=f"https://{identifier}/book",
+            genres_url=f"https://{identifier}/genres",
             covers_url=f"https://{identifier}/images/covers",
             search_url=f"https://{identifier}/search?q=",
             priority=2,

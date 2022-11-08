@@ -74,11 +74,11 @@ class AbstractMinimalConnector(ABC):
         #while True:
         #    break
         
-        genreExtension = "/genres/1"
+        genreExtension = "/1"
         #print("---------------get_search_url---------------")
         #print(self.search_url)
         #print("--------------------------------------------")
-        final_url = self.search_url + genreExtension
+        final_url = self.genres_url + genreExtension
         return final_url
 
     def process_search_response(self, query, data, min_confidence):
