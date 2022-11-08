@@ -69,7 +69,7 @@ class AbstractMinimalConnector(ABC):
         final_url = self.search_url + typeSelection + genreExtension
         return final_url
 
-    def get_genrepage_url(self, genres):
+    def get_genrepage_url(self):
         """format the query url"""
         #while True:
         #    break
