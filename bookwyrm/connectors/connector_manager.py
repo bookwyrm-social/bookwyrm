@@ -222,8 +222,8 @@ def get_external_genres():
         items.append((url, connector))
 
     # load as many results as we can
-    results = asyncio.run(async_connector_search())
-    results = [r for r in results if r]
+    #results = asyncio.run(async_connector_search())
+    #results = [r for r in results if r]
     return results
 
 
