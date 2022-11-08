@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-11-07 19:14+0000\n"
-"PO-Revision-Date: 2022-11-07 22:43\n"
+"PO-Revision-Date: 2022-11-08 00:13\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Czech\n"
 "Language: cs\n"
@@ -273,7 +273,7 @@ msgstr "Chyba při načítání knihy"
 
 #: bookwyrm/models/import_job.py:368
 msgid "Could not find a match for book"
-msgstr ""
+msgstr "Nelze najít hledanou knihu"
 
 #: bookwyrm/models/link.py:51
 msgid "Free"
@@ -546,7 +546,7 @@ msgstr ""
 
 #: bookwyrm/templates/annual_summary/layout.html:83
 msgid "Make page private"
-msgstr ""
+msgstr "Nastavit stránku jako soukromou"
 
 #: bookwyrm/templates/annual_summary/layout.html:89
 msgid "Sharing status: <strong>private</strong>"
@@ -554,7 +554,7 @@ msgstr ""
 
 #: bookwyrm/templates/annual_summary/layout.html:90
 msgid "The page is private, only you can see it."
-msgstr ""
+msgstr "Stránka je soukromá, jen vy ji můžete vidět."
 
 #: bookwyrm/templates/annual_summary/layout.html:95
 msgid "Make page public"
@@ -663,12 +663,12 @@ msgstr "Upravit autora"
 
 #: bookwyrm/templates/author/author.html:36
 msgid "Author details"
-msgstr ""
+msgstr "Podrobnosti o autorovi"
 
 #: bookwyrm/templates/author/author.html:40
 #: bookwyrm/templates/author/edit_author.html:42
 msgid "Aliases:"
-msgstr ""
+msgstr "Aliasy:"
 
 #: bookwyrm/templates/author/author.html:49
 msgid "Born:"
@@ -742,7 +742,7 @@ msgstr "Naposledy upraveno od:"
 #: bookwyrm/templates/author/edit_author.html:33
 #: bookwyrm/templates/book/edit/edit_book_form.html:19
 msgid "Metadata"
-msgstr ""
+msgstr "Metadata"
 
 #: bookwyrm/templates/author/edit_author.html:35
 #: bookwyrm/templates/lists/form.html:9
@@ -755,7 +755,7 @@ msgstr "Jméno:"
 #: bookwyrm/templates/book/edit/edit_book_form.html:78
 #: bookwyrm/templates/book/edit/edit_book_form.html:148
 msgid "Separate multiple values with commas."
-msgstr ""
+msgstr "Oddělte více hodnot čárkami."
 
 #: bookwyrm/templates/author/edit_author.html:50
 msgid "Bio:"
@@ -763,7 +763,7 @@ msgstr "Životopis:"
 
 #: bookwyrm/templates/author/edit_author.html:56
 msgid "Wikipedia link:"
-msgstr ""
+msgstr "Odkaz na Wikipedii:"
 
 #: bookwyrm/templates/author/edit_author.html:61
 msgid "Birth date:"
@@ -792,7 +792,7 @@ msgstr ""
 
 #: bookwyrm/templates/author/edit_author.html:98
 msgid "Goodreads key:"
-msgstr ""
+msgstr "Klíč Goodreads:"
 
 #: bookwyrm/templates/author/edit_author.html:105
 msgid "ISNI:"
@@ -1159,15 +1159,15 @@ msgstr ""
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:144
 msgid "Publisher:"
-msgstr ""
+msgstr "Vydavatel:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:156
 msgid "First published date:"
-msgstr ""
+msgstr "Prvně vydáno:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:164
 msgid "Published date:"
-msgstr ""
+msgstr "Datum vydání:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:175
 msgid "Authors"
@@ -1176,12 +1176,12 @@ msgstr "Autoři"
 #: bookwyrm/templates/book/edit/edit_book_form.html:186
 #, python-format
 msgid "Remove %(name)s"
-msgstr ""
+msgstr "Odstranit %(name)s"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:189
 #, python-format
 msgid "Author page for %(name)s"
-msgstr ""
+msgstr "Stránka autora %(name)s"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:197
 msgid "Add Authors:"
@@ -1229,11 +1229,11 @@ msgstr ""
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:296
 msgid "ISBN 13:"
-msgstr ""
+msgstr "ISBN 13:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:305
 msgid "ISBN 10:"
-msgstr ""
+msgstr "ISBN 10:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:314
 msgid "Openlibrary ID:"
@@ -1281,15 +1281,15 @@ msgstr ""
 
 #: bookwyrm/templates/book/file_links/add_link_modal.html:24
 msgid "URL:"
-msgstr ""
+msgstr "URL:"
 
 #: bookwyrm/templates/book/file_links/add_link_modal.html:29
 msgid "File type:"
-msgstr ""
+msgstr "Typ souboru:"
 
 #: bookwyrm/templates/book/file_links/add_link_modal.html:48
 msgid "Availability:"
-msgstr ""
+msgstr "Dostupnost:"
 
 #: bookwyrm/templates/book/file_links/edit_links.html:5
 #: bookwyrm/templates/book/file_links/edit_links.html:21
@@ -1305,23 +1305,23 @@ msgstr ""
 #: bookwyrm/templates/book/file_links/edit_links.html:32
 #: bookwyrm/templates/settings/link_domains/link_table.html:6
 msgid "URL"
-msgstr ""
+msgstr "URL"
 
 #: bookwyrm/templates/book/file_links/edit_links.html:33
 #: bookwyrm/templates/settings/link_domains/link_table.html:7
 msgid "Added by"
-msgstr ""
+msgstr "Přidal/a"
 
 #: bookwyrm/templates/book/file_links/edit_links.html:34
 #: bookwyrm/templates/settings/link_domains/link_table.html:8
 msgid "Filetype"
-msgstr ""
+msgstr "Typ souboru"
 
 #: bookwyrm/templates/book/file_links/edit_links.html:35
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:25
 #: bookwyrm/templates/settings/reports/report_links_table.html:5
 msgid "Domain"
-msgstr ""
+msgstr "Doména"
 
 #: bookwyrm/templates/book/file_links/edit_links.html:36
 #: bookwyrm/templates/import/import.html:105
@@ -1346,12 +1346,12 @@ msgstr ""
 #: bookwyrm/templates/book/file_links/edit_links.html:48
 #: bookwyrm/templates/settings/link_domains/link_table.html:21
 msgid "Unknown user"
-msgstr ""
+msgstr "Neznámý uživatel"
 
 #: bookwyrm/templates/book/file_links/edit_links.html:57
 #: bookwyrm/templates/book/file_links/verification_modal.html:22
 msgid "Report spam"
-msgstr ""
+msgstr "Nahlásit spam"
 
 #: bookwyrm/templates/book/file_links/edit_links.html:101
 msgid "No links available for this book."
@@ -1360,7 +1360,7 @@ msgstr ""
 #: bookwyrm/templates/book/file_links/edit_links.html:112
 #: bookwyrm/templates/book/file_links/links.html:18
 msgid "Add link to file"
-msgstr ""
+msgstr "Přidat odkaz na soubor"
 
 #: bookwyrm/templates/book/file_links/file_link_page.html:6
 msgid "File Links"
@@ -1368,7 +1368,7 @@ msgstr ""
 
 #: bookwyrm/templates/book/file_links/links.html:9
 msgid "Get a copy"
-msgstr ""
+msgstr "Získat kopii"
 
 #: bookwyrm/templates/book/file_links/links.html:47
 msgid "No links available"
@@ -1386,7 +1386,7 @@ msgstr ""
 #: bookwyrm/templates/book/file_links/verification_modal.html:26
 #: bookwyrm/templates/setup/config.html:139
 msgid "Continue"
-msgstr ""
+msgstr "Pokračovat"
 
 #: bookwyrm/templates/book/publisher_info.html:23
 #, python-format
@@ -1642,7 +1642,7 @@ msgstr ""
 
 #: bookwyrm/templates/email/confirm/html_content.html:11
 msgid "Confirm Email"
-msgstr ""
+msgstr "Potvrdit e-mail"
 
 #: bookwyrm/templates/email/confirm/html_content.html:15
 #, python-format
@@ -1651,7 +1651,7 @@ msgstr ""
 
 #: bookwyrm/templates/email/confirm/subject.html:2
 msgid "Please confirm your email"
-msgstr ""
+msgstr "Potvrďte prosím svoji e-mailovou adresu"
 
 #: bookwyrm/templates/email/confirm/text_content.html:10
 #, python-format
@@ -1731,7 +1731,7 @@ msgstr ""
 #: bookwyrm/templates/landing/password_reset_request.html:4
 #: bookwyrm/templates/landing/password_reset_request.html:10
 msgid "Reset Password"
-msgstr ""
+msgstr "Obnovit heslo"
 
 #: bookwyrm/templates/email/password_reset/html_content.html:13
 #: bookwyrm/templates/email/password_reset/text_content.html:8
