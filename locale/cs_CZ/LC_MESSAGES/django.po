@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-11-07 19:14+0000\n"
-"PO-Revision-Date: 2022-11-08 19:39\n"
+"PO-Revision-Date: 2022-11-08 22:29\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Czech\n"
 "Language: cs\n"
@@ -644,12 +644,12 @@ msgstr[3] ""
 
 #: bookwyrm/templates/annual_summary/layout.html:238
 msgid "Their best rated review"
-msgstr ""
+msgstr "Jejich nejlepší hodnocení"
 
 #: bookwyrm/templates/annual_summary/layout.html:251
 #, python-format
 msgid "Their rating: <strong>%(rating)s</strong>"
-msgstr ""
+msgstr "Jejich hodnocení: <strong>%(rating)s</strong>"
 
 #: bookwyrm/templates/annual_summary/layout.html:268
 #, python-format
@@ -882,10 +882,10 @@ msgstr "Kliknutím zvětšíte"
 #, python-format
 msgid "(%(review_count)s review)"
 msgid_plural "(%(review_count)s reviews)"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "(%(review_count)s recenze)"
+msgstr[1] "(%(review_count)s recenze)"
+msgstr[2] "(%(review_count)s recenze)"
+msgstr[3] "(%(review_count)s hodnocení)"
 
 #: bookwyrm/templates/book/book.html:191
 msgid "Add Description"
@@ -1332,7 +1332,7 @@ msgstr "Doména"
 #: bookwyrm/templates/settings/users/user_admin.html:56
 #: bookwyrm/templates/settings/users/user_info.html:24
 msgid "Status"
-msgstr ""
+msgstr "Status"
 
 #: bookwyrm/templates/book/file_links/edit_links.html:37
 #: bookwyrm/templates/settings/announcements/announcements.html:41
@@ -1445,7 +1445,7 @@ msgstr ""
 
 #: bookwyrm/templates/confirm_email/confirm_email.html:15
 msgid "Sorry! We couldn't find that code."
-msgstr ""
+msgstr "Omlouváme se! Nenašli jsme tento kód."
 
 #: bookwyrm/templates/confirm_email/confirm_email.html:19
 #: bookwyrm/templates/settings/users/user_info.html:92
@@ -1545,7 +1545,7 @@ msgstr "Navrhované"
 #: bookwyrm/templates/user/user_preview.html:16
 #: bookwyrm/templates/user/user_preview.html:17
 msgid "Locked account"
-msgstr ""
+msgstr "Uzamčený účet"
 
 #: bookwyrm/templates/directory/user_card.html:40
 msgid "follower you follow"
@@ -1695,7 +1695,7 @@ msgstr ""
 #: bookwyrm/templates/email/invite/text_content.html:8
 #, python-format
 msgid "Learn more about %(site_name)s:"
-msgstr ""
+msgstr "Další informace o %(site_name)s:"
 
 #: bookwyrm/templates/email/moderation_report/html_content.html:8
 #: bookwyrm/templates/email/moderation_report/text_content.html:6
@@ -1723,7 +1723,7 @@ msgstr ""
 #: bookwyrm/templates/email/password_reset/text_content.html:4
 #, python-format
 msgid "You requested to reset your %(site_name)s password. Click the link below to set a new password and log in to your account."
-msgstr ""
+msgstr "Požádali jste o obnovení hesla %(site_name)s. Pro nastavení nového hesla a přihlášení k vašemu účtu klikněte na odkaz níže."
 
 #: bookwyrm/templates/email/password_reset/html_content.html:9
 #: bookwyrm/templates/landing/password_reset.html:4
@@ -1741,7 +1741,7 @@ msgstr ""
 #: bookwyrm/templates/email/password_reset/subject.html:2
 #, python-format
 msgid "Reset your %(site_name)s password"
-msgstr ""
+msgstr "Resetovat Vaše %(site_name)s heslo"
 
 #: bookwyrm/templates/embed-layout.html:21 bookwyrm/templates/layout.html:40
 #: bookwyrm/templates/setup/layout.html:15
@@ -1749,26 +1749,26 @@ msgstr ""
 #: bookwyrm/templates/two_factor_auth/two_factor_prompt.html:18
 #, python-format
 msgid "%(site_name)s home page"
-msgstr ""
+msgstr "%(site_name)s domovská stránka"
 
 #: bookwyrm/templates/embed-layout.html:40 bookwyrm/templates/layout.html:204
 #: bookwyrm/templates/snippets/2fa_footer.html:12
 msgid "Contact site admin"
-msgstr ""
+msgstr "Kontaktujte správce stránky"
 
 #: bookwyrm/templates/embed-layout.html:46
 msgid "Join BookWyrm"
-msgstr ""
+msgstr "Připojte se k BookWyrmu"
 
 #: bookwyrm/templates/feed/direct_messages.html:8
 #, python-format
 msgid "Direct Messages with <a href=\"%(path)s\">%(username)s</a>"
-msgstr ""
+msgstr "Soukromé zprávy s <a href=\"%(path)s\">%(username)s</a>"
 
 #: bookwyrm/templates/feed/direct_messages.html:10
 #: bookwyrm/templates/user_menu.html:40
 msgid "Direct Messages"
-msgstr ""
+msgstr "Soukromé zprávy"
 
 #: bookwyrm/templates/feed/direct_messages.html:13
 msgid "All messages"
@@ -1791,7 +1791,7 @@ msgstr ""
 #: bookwyrm/templates/user/goal_form.html:6
 #, python-format
 msgid "%(year)s Reading Goal"
-msgstr ""
+msgstr "%(year)s cíl pro čtení"
 
 #: bookwyrm/templates/feed/goal_card.html:18
 #, python-format
@@ -1800,7 +1800,7 @@ msgstr ""
 
 #: bookwyrm/templates/feed/layout.html:4
 msgid "Updates"
-msgstr ""
+msgstr "Aktualizace"
 
 #: bookwyrm/templates/feed/suggested_books.html:6
 #: bookwyrm/templates/guided_tour/home.html:127
@@ -1840,7 +1840,7 @@ msgstr ""
 #: bookwyrm/templates/feed/summary_card.html:26
 #, python-format
 msgid "Discover your stats for %(year)s!"
-msgstr ""
+msgstr "Objevte svoje statistiky za %(year)s!"
 
 #: bookwyrm/templates/get_started/book_preview.html:6
 #, python-format
@@ -1915,12 +1915,12 @@ msgstr ""
 #: bookwyrm/templates/get_started/books.html:46
 #, python-format
 msgid "Popular on %(site_name)s"
-msgstr ""
+msgstr "Populární na %(site_name)s"
 
 #: bookwyrm/templates/get_started/books.html:58
 #: bookwyrm/templates/lists/list.html:230
 msgid "No books found"
-msgstr ""
+msgstr "Nenalezeny žádné knihy"
 
 #: bookwyrm/templates/get_started/books.html:63
 #: bookwyrm/templates/get_started/profile.html:64
@@ -1976,7 +1976,7 @@ msgstr ""
 #: bookwyrm/templates/get_started/profile.html:43
 #: bookwyrm/templates/preferences/edit_user.html:27
 msgid "Avatar:"
-msgstr ""
+msgstr "Avatar:"
 
 #: bookwyrm/templates/get_started/profile.html:52
 msgid "Manually approve followers:"
@@ -2003,7 +2003,7 @@ msgstr ""
 #: bookwyrm/templates/guided_tour/user_groups.html:32
 #: bookwyrm/templates/user/groups.html:17
 msgid "Create group"
-msgstr ""
+msgstr "Vytvořit skupinu"
 
 #: bookwyrm/templates/groups/created_text.html:4
 #, python-format
