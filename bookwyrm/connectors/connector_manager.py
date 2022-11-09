@@ -11,8 +11,6 @@ from django.db.models import signals
 
 from requests import HTTPError
 
-from .bookwyrm_connector import Connector
-
 from bookwyrm import book_search, models
 from bookwyrm.settings import SEARCH_TIMEOUT, USER_AGENT
 from bookwyrm.tasks import app
@@ -126,10 +124,6 @@ async def async_connector_genre_info(items):
     async with aiohttp.ClientSession(timeout=timeout) as session:
         tasks = []
         for url, connector in items:
-            if(not isinstance(connector, Connector)):
-                #If our connector isn't a bookwyrm connector then forget about it!
-                #FORGET 'BOUT IT
-                continue
             tasks.append(
                 asyncio.ensure_future(
                     get_genres_info(session, url, connector)
