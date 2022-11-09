@@ -214,10 +214,6 @@ def search_genre(genres, buttonSelection, min_confidence=0.1, return_first=False
 def get_external_genres():
     results = []
 
-    #print("---------------urlgen---------------")
-    #print(genres)
-    #print("--------------------------------------------")
-
     items = []
     for connector in get_connectors():
         # get the search url from the connector before sending
@@ -230,9 +226,6 @@ def get_external_genres():
             logger.info("Request denied to blocked domain: %s", url)
             print("Genre request failed.")
             continue
-        #print("---------------This URL is valid---------------")
-        #print(url)
-        #print("--------------------------------------------")
         print("Genre request successful, url IS: " + url)
         items.append((url, connector))
 

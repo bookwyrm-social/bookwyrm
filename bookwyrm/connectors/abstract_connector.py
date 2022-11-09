@@ -72,12 +72,27 @@ class AbstractMinimalConnector(ABC):
 
     def get_genrepage_url(self):
         """format the query url"""
-        #while True:
-        #    break
+        final_url_list = []
+        tempCount = 0
+        while True:
+            #Temporary measure if it tries an infinite loop.
+            tempCount = tempCount + 1
+            if(tempCount > 100):
+                break
+            genreExtension = "/" + str(tempCount)
+            final_url = self.genres_url + genreExtension
+
+            try:
+                raise_not_valid_url(final_url)
+            except ConnectorException:
+                # if this URL is invalid we should BREAK the loop. Unlikely there's any genres after this.
+                print("Genre invalid. Exiting loop.")
+                break
+            final_url_list.append(final_url)
         
-        genreExtension = "/1"
-        final_url = self.genres_url + genreExtension
-        return final_url
+        #genreExtension = "/1"
+        print(final_url_list)
+        return final_url_list
 
     def process_search_response(self, query, data, min_confidence):
         """Format the search results based on the formt of the query"""
