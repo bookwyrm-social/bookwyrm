@@ -22,7 +22,7 @@ class Connector(AbstractMinimalConnector):
             print("Parsing genre from Bookwyrm Connector")
             #gen["connector"] = self
             print(gen)
-            yield GenreResult(**gen)
+            #yield GenreResult(**gen)
 
     def parse_isbn_search_data(self, data):
         for search_result in data:

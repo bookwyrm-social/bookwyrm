@@ -91,9 +91,10 @@ async def get_genres_info(session, url, connector):
             print("-----------------------------------")
             print(raw_data)
             print("-----------------------------------")
+            connector.parse_genre_data(raw_data)
             return {
                 "connector": connector,
-                "results": list(connector.parse_genre_data(raw_data))[:10],
+                #"results": list(connector.parse_genre_data(raw_data))[:10],
             }
     except asyncio.TimeoutError:
         logger.info("Connection timed out for url: %s", url)
