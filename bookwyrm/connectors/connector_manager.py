@@ -11,6 +11,8 @@ from django.db.models import signals
 
 from requests import HTTPError
 
+from .bookwyrm_connector import Connector
+
 from bookwyrm import book_search, models
 from bookwyrm.settings import SEARCH_TIMEOUT, USER_AGENT
 from bookwyrm.tasks import app
@@ -62,7 +64,7 @@ async def get_results(session, url, min_confidence, query, connector):
     except aiohttp.ClientError as err:
         logger.info(err)
 
-async def get_results_genres(session, url, min_confidence, query, connector):
+async def get_genres_info(session, url, connector):
     """try this specific connector"""
     # pylint: disable=line-too-long
     headers = {
@@ -71,7 +73,7 @@ async def get_results_genres(session, url, min_confidence, query, connector):
         ),
         "User-Agent": USER_AGENT,
     }
-    params = {"min_confidence": min_confidence}
+    params = {"min_confidence": ""}
     try:
         async with session.get(url, headers=headers, params=params) as response:
             #print("-----------------------------------")
@@ -93,9 +95,7 @@ async def get_results_genres(session, url, min_confidence, query, connector):
             print("-----------------------------------")
             return {
                 "connector": connector,
-                "results": connector.process_search_response(
-                    query, raw_data, min_confidence
-                ),
+                "results": list(connector.parse_search_data(raw_data))[:10],
             }
     except asyncio.TimeoutError:
         logger.info("Connection timed out for url: %s", url)
@@ -113,6 +113,26 @@ async def async_connector_search(query, items, min_confidence):
             tasks.append(
                 asyncio.ensure_future(
                     get_results(session, url, min_confidence, query, connector)
+                )
+            )
+
+        results = await asyncio.gather(*tasks)
+        return results
+
+async def async_connector_genre_info(items):
+    """Try a number of requests to get our list of categories"""
+    
+    timeout = aiohttp.ClientTimeout(total=SEARCH_TIMEOUT)
+    async with aiohttp.ClientSession(timeout=timeout) as session:
+        tasks = []
+        for url, connector in items:
+            if(not isinstance(connector, Connector)):
+                #If our connector isn't a bookwyrm connector then forget about it!
+                #FORGET 'BOUT IT
+                continue
+            tasks.append(
+                asyncio.ensure_future(
+                    get_genres_info(session, url, connector)
                 )
             )
 
@@ -222,7 +242,7 @@ def get_external_genres():
         items.append((url, connector))
 
     # load as many results as we can
-    #results = asyncio.run(async_connector_search())
+    results = asyncio.run(async_connector_search())
     #results = [r for r in results if r]
     return results
 
