@@ -254,7 +254,7 @@ def notify_user_on_import_complete(
     update_fields = update_fields or []
     if not instance.complete or "complete" not in update_fields:
         return
-    Notification.objects.create(
+    Notification.objects.get_or_create(
         user=instance.user,
         notification_type=Notification.IMPORT,
         related_import=instance,

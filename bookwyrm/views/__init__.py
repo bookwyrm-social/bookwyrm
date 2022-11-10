@@ -10,6 +10,7 @@ from .admin.federation import Federation, FederatedServer
 from .admin.federation import AddFederatedServer, ImportServerBlocklist
 from .admin.federation import block_server, unblock_server, refresh_server
 from .admin.email_blocklist import EmailBlocklist
+from .admin.imports import ImportList
 from .admin.ip_blocklist import IPBlocklist
 from .admin.invite import ManageInvites, Invite, InviteRequest
 from .admin.invite import ManageInviteRequests, ignore_invite_request
@@ -74,7 +75,7 @@ from .shelf.shelf_actions import shelve, unshelve
 
 # csv import
 from .imports.import_data import Import
-from .imports.import_status import ImportStatus, retry_item
+from .imports.import_status import ImportStatus, retry_item, stop_import
 from .imports.troubleshoot import ImportTroubleshoot
 from .imports.manually_review import (
     ImportManualReview,

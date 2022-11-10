@@ -11,6 +11,7 @@ from bookwyrm import models, views
 class ImportManualReviewViews(TestCase):
     """goodreads import views"""
 
+    # pylint: disable=invalid-name
     def setUp(self):
         """we need basic test data and mocks"""
         self.factory = RequestFactory()
@@ -59,7 +60,7 @@ class ImportManualReviewViews(TestCase):
         request = self.factory.post("")
         request.user = self.local_user
 
-        with patch("bookwyrm.importers.importer.import_item_task.delay") as mock:
+        with patch("bookwyrm.models.import_job.import_item_task.delay") as mock:
             views.approve_import_item(request, self.job.id, import_item.id)
         self.assertEqual(mock.call_count, 1)
         import_item.refresh_from_db()
