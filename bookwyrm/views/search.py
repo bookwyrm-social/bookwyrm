@@ -34,7 +34,7 @@ class Search(View):
         ext_gens = connector_manager.get_external_genres()
         print(str(len(ext_gens)))
 
-        print("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
+        #print("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
         #for i in test:
         #    print(i["results"].description)
         
@@ -63,7 +63,7 @@ class Search(View):
 
         if(search_type == "genre"):
             return endpoints[search_type](request, ext_gens)
-            
+
         return endpoints[search_type](request)
 
 

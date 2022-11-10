@@ -88,7 +88,7 @@ class AbstractMinimalConnector(ABC):
                 break
         
         #genreExtension = "/1"
-        print(final_url_list)
+        #print(final_url_list)
         return final_url_list
 
     def process_search_response(self, query, data, min_confidence):

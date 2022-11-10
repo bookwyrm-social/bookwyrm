@@ -19,13 +19,13 @@ class Connector(AbstractMinimalConnector):
 
     def parse_genre_data(self, data):
         print("Parsing genre from Bookwyrm Connector")
-        print(data["description"])
+        #print(data["description"])
         data["connector"] = self
         data["type"] = "Genre"
         #Delete context because it causes errors. What could go wrong?
         del data["@context"]
-        for item in data:
-            print(item)
+        #for item in data:
+        #    print(item)
         return GenreResult(**data)
         #for gen in data:
         #    #gen["connector"] = self

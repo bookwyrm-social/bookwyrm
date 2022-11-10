@@ -88,11 +88,11 @@ async def get_genres_info(session, url, connector):
             except aiohttp.client_exceptions.ContentTypeError as err:
                 logger.exception(err)
                 return
-            print("-----------------------------------")
-            print(raw_data)
-            print("-----------------------------------")
+            #print("-----------------------------------")
+            #print(raw_data)
+            #print("-----------------------------------")
             #test = connector.parse_genre_data(raw_data)
-            print("0000000000000000000000000000")
+            #print("0000000000000000000000000000")
             #print(test)
             return {
                 "connector": connector,
@@ -181,16 +181,18 @@ def search_genre(genres, buttonSelection, external_categories, min_confidence=0.
 
     items = []
     valid_categories = []
-    
-    for connector in get_connectors():
 
+    for connector in get_connectors():
+        print("Trying out connectors:")
+        print(connector)
         if(external_categories):
             for cat_connector in external_categories:
+                print(cat_connector[1])
                 if(cat_connector[1] == connector):
                     valid_categories.append(cat_connector)
                     print("Connectors match. We'll try to resolve these categories to their respective IDs in remote searching.")
                     break
-
+        print("#######################^^^^^^^^^^^^^^^^^^^")
         # get the search url from the connector before sending
         url = connector.get_search_url_genre(genres, buttonSelection)
         try:
