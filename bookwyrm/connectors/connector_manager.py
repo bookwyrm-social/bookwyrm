@@ -173,14 +173,24 @@ def search(query, min_confidence=0.1, return_first=False):
     # failed requests will return None, so filter those out
     return results
 
-def search_genre(genres, buttonSelection, min_confidence=0.1, return_first=False):
-    """find books based on arbitary keywords or categories"""
+def search_genre(genres, buttonSelection, external_categories, min_confidence=0.1, return_first=False):
+    """find books based on their genre"""
     if not genres:
         return []
     results = []
 
     items = []
+    valid_categories = []
+    
     for connector in get_connectors():
+
+        if(external_categories):
+            for cat_connector in external_categories:
+                if(cat_connector[1] == connector):
+                    valid_categories.append(cat_connector)
+                    print("Connectors match. We'll try to resolve these categories to their respective IDs in remote searching.")
+                    break
+
         # get the search url from the connector before sending
         url = connector.get_search_url_genre(genres, buttonSelection)
         try:
@@ -216,15 +226,6 @@ def get_external_genres():
     for connector in get_connectors():
         # get the search url from the connector before sending
         url = connector.get_genrepage_url()
-        #try:
-        #    raise_not_valid_url(url)
-        #except ConnectorException:
-        #    # if this URL is invalid we should skip it and move on
-        #    # This should also exclude non-BookWyrm connectors
-        #    logger.info("Request denied to blocked domain: %s", url)
-        #    print("Genre request failed.")
-        #    continue
-        #print("Genre request successful, url IS: " + url)
         items.append((url, connector))
 
     # load as many results as we can

@@ -31,8 +31,8 @@ class Search(View):
                 return api_book_search_genres(request)
             return api_book_search(request)
 
-        test = connector_manager.get_external_genres()
-        print(str(len(test)))
+        ext_gens = connector_manager.get_external_genres()
+        print(str(len(ext_gens)))
 
         print("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
         #for i in test:
@@ -61,6 +61,9 @@ class Search(View):
         if not search_type in endpoints:
             search_type = "book"
 
+        if(search_type == "genre"):
+            return endpoints[search_type](request, ext_gens)
+            
         return endpoints[search_type](request)
 
 
@@ -86,7 +89,7 @@ def api_book_search_genres(request):
         [format_search_result(r) for r in book_results[:10]], safe=False
     )
 
-def genre_search(request):
+def genre_search(request, external_genres):
     print("Entered the genre search function")
 
     if is_api_request(request):
@@ -124,7 +127,7 @@ def genre_search(request):
     if request.user.is_authenticated:
         print("Calling the remote results for genres.")
         data["remote_results"] = connector_manager.search_genre(
-            genre_list, buttonSelection, min_confidence=min_confidence
+            genre_list, buttonSelection, external_genres, min_confidence=min_confidence
         )
         data["remote"] = True
     
