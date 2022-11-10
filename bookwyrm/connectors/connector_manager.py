@@ -67,7 +67,7 @@ async def get_genres_info(session, url, connector):
     # pylint: disable=line-too-long
     headers = {
         "Accept": (
-            'application/json, application/activity+json, application/ld+json; charset=utf-8'
+            'application/json, application/activity+json, application/ld+json; profile="https://www.w3.org/ns/activitystreams"; charset=utf-8'
         ),
         "User-Agent": USER_AGENT,
     }
