@@ -227,6 +227,7 @@ class GenreResult:
     genre_name: str
     description: str
     name: str
+    type: str
     connector: object
 
 
