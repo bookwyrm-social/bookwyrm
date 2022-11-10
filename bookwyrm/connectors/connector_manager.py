@@ -121,7 +121,8 @@ async def async_connector_search(query, items, min_confidence):
         return results
 
 async def async_connector_genre_info(items):
-    """Try a number of requests to get our list of categories"""
+    """Try a number of requests to get our list of categories. Will return a tuple.
+       First element is a list of parsed genre info and the second element is the connector from where this was obtained."""
     
     timeout = aiohttp.ClientTimeout(total=SEARCH_TIMEOUT)
     async with aiohttp.ClientSession(timeout=timeout) as session:
@@ -135,6 +136,16 @@ async def async_connector_genre_info(items):
                 )
 
         results = await asyncio.gather(*tasks)
+
+        print("#@#@#@#@#@#@#@#@#@#@#@#@#@#@#@#@#@#@#@#@#@#@#")
+
+        for i in items:
+            print(i)
+
+        print(items[1])
+
+        print("#@#@#@#@#@#@#@#@#@#@#@#@#@#@#@#@#@#@#@#@#@#@#")
+
         final_results = (results, items[1])
         return final_results
 
