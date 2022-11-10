@@ -45,7 +45,9 @@ class Import(View):
 
         last_week = timezone.now() - datetime.timedelta(days=7)
         recent_avg = (
-            models.ImportJob.objects.filter(created_date__gte=last_week, complete=True)
+            models.ImportJob.objects.filter(
+                created_date__gte=last_week, status="complete"
+            )
             .annotate(
                 runtime=ExpressionWrapper(
                     F("updated_date") - F("created_date"),
@@ -58,9 +60,9 @@ class Import(View):
         if recent_avg:
             seconds = recent_avg.total_seconds()
             if seconds > 60**2:
-                data["recent_avg_hours"] = recent_avg.seconds / (60**2)
+                data["recent_avg_hours"] = seconds / (60**2)
             else:
-                data["recent_avg_minutes"] = recent_avg.seconds / 60
+                data["recent_avg_minutes"] = seconds / 60
 
         return TemplateResponse(request, "import/import.html", data)
 
