@@ -32,10 +32,11 @@ class Search(View):
             return api_book_search(request)
 
         test = connector_manager.get_external_genres()
-        test["results"]
+        print(test["results"].description)
         print("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
+        
         for i in test:
-            print(i["results"].description)
+            print(i)
         
 
         query = request.GET.get("q")
