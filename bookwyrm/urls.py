@@ -382,6 +382,11 @@ urlpatterns = [
         name="import-status",
     ),
     re_path(
+        r"^import/(?P<job_id>\d+)/stop/?$",
+        views.stop_import,
+        name="import-stop",
+    ),
+    re_path(
         r"^import/(?P<job_id>\d+)/retry/(?P<item_id>\d+)/?$",
         views.retry_item,
         name="import-item-retry",

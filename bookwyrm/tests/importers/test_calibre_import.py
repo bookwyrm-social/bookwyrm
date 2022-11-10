@@ -6,7 +6,7 @@ from django.test import TestCase
 
 from bookwyrm import models
 from bookwyrm.importers import CalibreImporter
-from bookwyrm.importers.importer import handle_imported_book
+from bookwyrm.models.import_job import handle_imported_book
 
 
 # pylint: disable=consider-using-with
@@ -16,6 +16,7 @@ from bookwyrm.importers.importer import handle_imported_book
 class CalibreImport(TestCase):
     """importing from Calibre csv"""
 
+    # pylint: disable=invalid-name
     def setUp(self):
         """use a test csv"""
         self.importer = CalibreImporter()

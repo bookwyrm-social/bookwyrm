@@ -1,6 +1,7 @@
 {% extends 'settings/layout.html' %}
 {% load i18n %}
 {% load utilities %}
+{% load humanize %}
 
 {% block title %}{% trans "Imports" %}{% endblock %}
 
@@ -26,28 +27,36 @@
 </div>
 
 <div class="table-container block content">
-    {% if status == "active" %}
-    <div class="notification is-warning">
-        <p>{% trans "Marking an import as complete will <em>not</em> stop it." %}</p>
-    </div>
-    {% endif %}
     <table class="table is-striped is-fullwidth">
         <tr>
-            {% url 'settings-imports' as url %}
+            {% url 'settings-imports' status  as url %}
             <th>
                 {% trans "ID" %}
             </th>
             <th>
-                {% trans "User" %}
+                {% trans "User" as text %}
+                {% include 'snippets/table-sort-header.html' with field="user" sort=sort text=text %}
             </th>
             <th>
-                {% trans "Date Created" %}
+                {% trans "Date Created" as text %}
+                {% include 'snippets/table-sort-header.html' with field="created_date" sort=sort text=text %}
             </th>
+            {% if status != "active" %}
+            <th>
+                {% trans "Date Updated" %}
+            </th>
+            {% endif %}
             <th>
                 {% trans "Items" %}
             </th>
             <th>
                 {% trans "Pending items" %}
+            </th>
+            <th>
+                {% trans "Successful items" %}
+            </th>
+            <th>
+                {% trans "Failed items" %}
             </th>
             {% if status == "active" %}
             <th>{% trans "Actions" %}</th>
@@ -57,15 +66,20 @@
         <tr>
             <td>{{ import.id }}</td>
             <td class="overflow-wrap-anywhere">
-                <a href="{% url 'settings-user' user.id %}">{{ import.user|username }}</a>
+                <a href="{% url 'settings-user' import.user.id %}">{{ import.user|username }}</a>
             </td>
             <td>{{ import.created_date }}</td>
-            <td>{{ import.item_count }}</td>
-            <td>{{ import.pending_item_count }}</td>
+            {% if status != "active" %}
+            <td>{{ import.updated_date }}</td>
+            {% endif %}
+            <td>{{ import.item_count|intcomma }}</td>
+            <td>{{ import.pending_item_count|intcomma }}</td>
+            <td>{{ import.successful_item_count|intcomma }}</td>
+            <td>{{ import.failed_item_count|intcomma }}</td>
             {% if status == "active" %}
             <td>
                 {% join "complete" import.id as modal_id %}
-                <button type="button" data-modal-open="{{ modal_id }}" class="button is-danger">{% trans "Mark as complete" %}</button>
+                <button type="button" data-modal-open="{{ modal_id }}" class="button is-danger">{% trans "Stop import" %}</button>
                 {% include "settings/imports/complete_import_modal.html" with id=modal_id %}
             </td>
             {% endif %}
@@ -74,13 +88,13 @@
         {% if not imports %}
         <tr>
             <td colspan="6">
-                <em>{% trans "No matching imports founds." %} </em>
+                <em>{% trans "No matching imports found." %} </em>
             </td>
         </tr>
         {% endif %}
     </table>
 </div>
 
-{% include 'snippets/pagination.html' with page=users path=request.path %}
+{% include 'snippets/pagination.html' with page=imports path=request.path %}
 {% endblock %}
 

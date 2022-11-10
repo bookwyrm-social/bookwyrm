@@ -14,6 +14,7 @@ from bookwyrm.tests.validate_html import validate_html
 class ImportViews(TestCase):
     """goodreads import views"""
 
+    # pylint: disable=invalid-name
     def setUp(self):
         """we need basic test data and mocks"""
         self.factory = RequestFactory()
@@ -84,7 +85,7 @@ class ImportViews(TestCase):
         request = self.factory.post("", form.data)
         request.user = self.local_user
 
-        with patch("bookwyrm.importers.Importer.start_import"):
+        with patch("bookwyrm.models.import_job.ImportJob.start_job"):
             view(request)
         job = models.ImportJob.objects.get()
         self.assertFalse(job.include_reviews)
@@ -102,6 +103,6 @@ class ImportViews(TestCase):
         )
         request = self.factory.post("")
         request.user = self.local_user
-        with patch("bookwyrm.importers.importer.import_item_task.delay") as mock:
+        with patch("bookwyrm.models.import_job.import_item_task.delay") as mock:
             views.retry_item(request, job.id, item.id)
         self.assertEqual(mock.call_count, 1)
