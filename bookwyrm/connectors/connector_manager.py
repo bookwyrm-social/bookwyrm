@@ -227,7 +227,7 @@ def get_external_genres():
         #    logger.info("Request denied to blocked domain: %s", url)
         #    print("Genre request failed.")
         #    continue
-        print("Genre request successful, url IS: " + url)
+        #print("Genre request successful, url IS: " + url)
         items.append((url, connector))
 
     # load as many results as we can
