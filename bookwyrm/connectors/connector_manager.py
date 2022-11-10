@@ -183,15 +183,19 @@ def search_genre(genres, buttonSelection, external_categories, min_confidence=0.
     valid_categories = []
 
     for connector in get_connectors():
-        print("Trying out connectors:")
-        print(connector)
-        if(external_categories):
-            for cat_connector in external_categories:
-                print(cat_connector[1])
-                if(cat_connector[1] == connector):
-                    valid_categories.append(cat_connector)
-                    print("Connectors match. We'll try to resolve these categories to their respective IDs in remote searching.")
-                    break
+        #print("Trying out connectors:")
+        #print(connector)
+        #if(external_categories):
+        #    for cat_connector in external_categories:
+        #        print(cat_connector[1])
+        #        if(cat_connector[1] == connector):
+        #            valid_categories.append(cat_connector)
+        #            print("Connectors match. We'll try to resolve these categories to their respective IDs in remote searching.")
+        #            break
+
+
+        valid_categories = get_external_genres_specific_connector(connector)
+        print(valid_categories)
         print("#######################^^^^^^^^^^^^^^^^^^^")
         # get the search url from the connector before sending
         url = connector.get_search_url_genre(genres, buttonSelection)
@@ -234,6 +238,26 @@ def get_external_genres():
     results = asyncio.run(async_connector_genre_info(items))
 
     fin_results.append(([r for r in results[0] if r], results[1]))
+    for i in fin_results:
+        print("ELEMENT OF TUPLE ---------------- ")
+        print(i)
+    return fin_results
+
+def get_external_genres_specific_connector(connector):
+    """Get information from a single federated bookwyrm instances."""
+    results = []
+    fin_results = []
+    items = []
+
+    # get the search url from the connector before sending
+    url = connector.get_genrepage_url()
+    items.append((url, connector))
+
+    # load as many results as we can
+    results = asyncio.run(async_connector_genre_info(items))
+
+    fin_results = [r for r in results if r]
+
     for i in fin_results:
         print("ELEMENT OF TUPLE ---------------- ")
         print(i)
