@@ -43,7 +43,7 @@
             {% url 'settings-suggestions' as url %}
             <th colspan="1">
                 {% trans "Genre" as text %}
-                {% include 'snippets/table-sort-header.html' with field="genre" sort=sort text=text %}
+                {% include 'snippets/table-sort-header.html' with field="name" sort=sort text=text %}
             </th>
             <th colspan="1">
                 <dl>
@@ -53,8 +53,7 @@
             </th>
             <th colspan="1">
                 <dl class="is-pulled-right">
-                    {% trans "Actions" as text %}
-                    {% include 'snippets/table-sort-header.html' with field="actions" sort=sort text=text %}
+                    <a>Actions</a>
                 </dl>
             </th>
         </tr>

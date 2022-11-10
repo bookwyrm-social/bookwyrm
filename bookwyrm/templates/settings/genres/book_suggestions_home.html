@@ -43,11 +43,11 @@
             {% url 'settings-book-suggestions' as url %}
             <th colspan="1">
                 {% trans "Genre" as text %}
-                {% include 'snippets/table-sort-header.html' with field="genre" sort=sort text=text %}
+                {% include 'snippets/table-sort-header.html' with field="genre__genre_name" sort=sort text=text %}
             </th>
             <th colspan="1">
                 {% trans "Book" as text %}
-                {% include 'snippets/table-sort-header.html' with field="genre" sort=sort text=text %}
+                {% include 'snippets/table-sort-header.html' with field="book__title" sort=sort text=text %}
             </th>
             <th colspan="1">
                 {% trans "Votes" as text %}
@@ -55,8 +55,7 @@
             </th>
             <th colspan="1">
                 <dl class="is-pulled-right">
-                    {% trans "Actions" as text %}
-                    {% include 'snippets/table-sort-header.html' with field="Actions" sort=sort text=text %}
+                    <a>Actions</a>
                 </dl>
             </th>
         </tr>

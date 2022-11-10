@@ -29,12 +29,6 @@
                 {{ book.title }}
             </h1>
 
-            {% if book.genres %}
-            <h2 class="subtitle title is-5" itemprop="name">
-                {% for genre_name in book.genres.all %}{{ genre_name }}<br/>{% endfor %}
-            </h2>
-            {% endif %}
-
             {% if book.subtitle or book.series %}
                 <p class="subtitle title is-5">
                     {% if book.subtitle %}
@@ -64,23 +58,6 @@
             {% endif %}
         </div>
 
-        <div id="add_description_{{ book.id }}">
-            <form name="genre-vote" method="POST" action="{% url 'genre-vote' %}">
-                {% csrf_token %}
-                <p class="fields is-grouped">
-                    <label class="label" for="id_description_{{ book.id }}">{% trans "Make a genre suggestion:" %}</label>
-                    <select name="genre" cols="None" rows="None" class="select" id="id_description_{{ book.id }}">
-                        {% for i in genre_list %}<br/>
-                            <option value="{{ i.id }}">{{ i.genre_name }}</option>
-                        {% endfor %}
-                    </select>
-                </p>
-                <input type="hidden" name="book_id" value="{{ book.id }}">
-                <div class="control">
-                    <button type="submit" class="button is-link">{% trans "Suggest" %}</button>
-                </div>
-            </form>
-        </div>
 
         {% if user_authenticated and can_edit_book %}
         <div class="column is-narrow">
@@ -137,12 +114,17 @@
 
             {% include 'snippets/rate_action.html' with user=request.user book=book %}
 
+            
             <div class="mb-3" id="tour-shelve-button">
                 {% include 'snippets/shelve_button/shelve_button.html' %}
             </div>
 
             <section class="is-clipped">
                 {% with book=book %}
+                    <div class="block mb-2">
+                        {% include 'book/genres.html' %}
+                    </div>
+
                     <div class="content">
                         {% include 'book/publisher_info.html' %}
                     </div>
@@ -187,6 +169,7 @@
 
         <div class="column is-three-fifths">
             <div class="block">
+                
                 <div
                     class="field is-grouped"
                     itemprop="aggregateRating"
@@ -294,6 +277,31 @@
                 {% for readthrough in readthroughs %}
                 {% include 'readthrough/readthrough_list.html' with readthrough=readthrough %}
                 {% endfor %}
+            </section>
+            <hr aria-hidden="true">
+
+            <section class="block">
+                <h2 class="title is-5">
+                    {% trans "Suggest a Genre:" %}
+                </h2>
+                <form name="genre-vote" method="POST" action="{% url 'genre-vote' %}">
+                    {% csrf_token %}
+                    <div class="field has-addons is-small">
+                        <p class="control">
+                            <div class="select is-small">
+                                <select name="genre" cols="None" rows="None" class="select" id="id_description_{{ book.id }}">
+                                    {% for i in genre_list %}<br/>
+                                        <option value="{{ i.id }}">{{ i.genre_name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </p>
+                        <p class="control">
+                            <button type="submit" class="button is-link is-small">{% trans "Suggest" %}</button>
+                        </p>
+                        <input type="hidden" name="book_id" value="{{ book.id }}">
+                    </div>
+                </form>
             </section>
             <hr aria-hidden="true">
 

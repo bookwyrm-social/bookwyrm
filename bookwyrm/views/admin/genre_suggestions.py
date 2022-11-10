@@ -29,6 +29,17 @@ class GenreSuggestionsHome(ListView):
     paginate_by = 15
     template_name = "settings/genres/genre_suggestions_home.html"
     model = SuggestedGenre
+    def get_ordering(self):
+        if self.request.GET.get('sort'):
+            order = self.request.GET.get('sort')
+            if order == 'votes':
+                ordering = '-' + order
+            else:
+                ordering = order
+            return ordering
+        else:
+            ordering = ['name']
+            return ordering
 
 
     def get(self, request, *args, **kwargs):
@@ -86,6 +97,17 @@ class BookGenreSuggestionsHome(ListView):
     paginate_by = 15
     template_name = "settings/genres/book_suggestions_home.html"
     model = SuggestedBookGenre
+    def get_ordering(self):
+        if self.request.GET.get('sort'):
+            order = self.request.GET.get('sort')
+            if order == 'votes':
+                ordering = '-' + order
+            else:
+                ordering = order
+            return ordering
+        else:
+            ordering = ['genre__genre_name']
+            return ordering
 
 
     def get(self, request, *args, **kwargs):
