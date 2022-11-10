@@ -44,11 +44,7 @@ class Import(View):
             ),
         }
 
-        seconds = get_or_set(
-            "avg-import-time",
-            get_average_import_time,
-            timeout=86400
-        )
+        seconds = get_or_set("avg-import-time", get_average_import_time, timeout=86400)
         if seconds > 60**2:
             data["recent_avg_hours"] = seconds / (60**2)
         elif seconds:
@@ -98,9 +94,7 @@ def get_average_import_time() -> float:
     """Helper to figure out how long imports are taking (returns seconds)"""
     last_week = timezone.now() - datetime.timedelta(days=7)
     recent_avg = (
-        models.ImportJob.objects.filter(
-            created_date__gte=last_week, status="complete"
-        )
+        models.ImportJob.objects.filter(created_date__gte=last_week, status="complete")
         .annotate(
             runtime=ExpressionWrapper(
                 F("updated_date") - F("created_date"),
@@ -113,4 +107,4 @@ def get_average_import_time() -> float:
 
     if recent_avg:
         return recent_avg.total_seconds()
-    return  None
+    return None
