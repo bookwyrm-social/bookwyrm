@@ -34,8 +34,8 @@ class Search(View):
         test = connector_manager.get_external_genres()
 
         print("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
-        for i in test:
-            print(i["results"].description)
+        #for i in test:
+        #    print(i["results"].description)
         
 
         query = request.GET.get("q")

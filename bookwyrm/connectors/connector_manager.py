@@ -135,7 +135,8 @@ async def async_connector_genre_info(items):
                 )
 
         results = await asyncio.gather(*tasks)
-        return results
+        final_results = (results, items[1])
+        return final_results
 
 
 def search(query, min_confidence=0.1, return_first=False):
@@ -215,6 +216,7 @@ def search_genre(genres, buttonSelection, min_confidence=0.1, return_first=False
     return results
 
 def get_external_genres():
+    """Get information from federated bookwyrm instances."""
     results = []
 
     items = []
@@ -234,6 +236,8 @@ def get_external_genres():
 
     # load as many results as we can
     results = asyncio.run(async_connector_genre_info(items))
+    for i in results:
+        print(i)
     results = [r for r in results if r]
     return results
 
