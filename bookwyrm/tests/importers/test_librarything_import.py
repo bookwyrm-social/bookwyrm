@@ -8,7 +8,7 @@ from django.test import TestCase
 
 from bookwyrm import models
 from bookwyrm.importers import LibrarythingImporter
-from bookwyrm.importers.importer import handle_imported_book
+from bookwyrm.models.import_job import handle_imported_book
 
 
 def make_date(*args):
@@ -23,6 +23,7 @@ def make_date(*args):
 class LibrarythingImport(TestCase):
     """importing from librarything tsv"""
 
+    # pylint: disable=invalid-name
     def setUp(self):
         """use a test tsv"""
         self.importer = LibrarythingImporter()

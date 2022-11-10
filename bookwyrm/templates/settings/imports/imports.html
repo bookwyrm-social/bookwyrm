@@ -27,22 +27,19 @@
 </div>
 
 <div class="table-container block content">
-    {% if status == "active" %}
-    <div class="notification is-warning">
-        <p>{% trans "Marking an import as complete will <em>not</em> stop it." %}</p>
-    </div>
-    {% endif %}
     <table class="table is-striped is-fullwidth">
         <tr>
-            {% url 'settings-imports' as url %}
+            {% url 'settings-imports' status  as url %}
             <th>
                 {% trans "ID" %}
             </th>
             <th>
-                {% trans "User" %}
+                {% trans "User" as text %}
+                {% include 'snippets/table-sort-header.html' with field="user" sort=sort text=text %}
             </th>
             <th>
-                {% trans "Date Created" %}
+                {% trans "Date Created" as text %}
+                {% include 'snippets/table-sort-header.html' with field="created_date" sort=sort text=text %}
             </th>
             {% if status != "active" %}
             <th>
@@ -82,7 +79,7 @@
             {% if status == "active" %}
             <td>
                 {% join "complete" import.id as modal_id %}
-                <button type="button" data-modal-open="{{ modal_id }}" class="button is-danger">{% trans "Mark as complete" %}</button>
+                <button type="button" data-modal-open="{{ modal_id }}" class="button is-danger">{% trans "Stop import" %}</button>
                 {% include "settings/imports/complete_import_modal.html" with id=modal_id %}
             </td>
             {% endif %}
@@ -91,7 +88,7 @@
         {% if not imports %}
         <tr>
             <td colspan="6">
-                <em>{% trans "No matching imports founds." %} </em>
+                <em>{% trans "No matching imports found." %} </em>
             </td>
         </tr>
         {% endif %}
