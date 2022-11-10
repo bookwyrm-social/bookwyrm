@@ -22,6 +22,7 @@ from bookwyrm.importers import (
     OpenLibraryImporter,
 )
 from bookwyrm.settings import PAGE_LENGTH
+from bookwyrm.utils.cache import get_or_set
 
 # pylint: disable= no-self-use
 @method_decorator(login_required, name="dispatch")
@@ -43,26 +44,15 @@ class Import(View):
             ),
         }
 
-        last_week = timezone.now() - datetime.timedelta(days=7)
-        recent_avg = (
-            models.ImportJob.objects.filter(
-                created_date__gte=last_week, status="complete"
-            )
-            .annotate(
-                runtime=ExpressionWrapper(
-                    F("updated_date") - F("created_date"),
-                    output_field=fields.DurationField(),
-                )
-            )
-            .aggregate(Avg("runtime"))
-            .get("runtime__avg")
+        seconds = get_or_set(
+            "avg-import-time",
+            get_average_import_time,
+            timeout=86400
         )
-        if recent_avg:
-            seconds = recent_avg.total_seconds()
-            if seconds > 60**2:
-                data["recent_avg_hours"] = seconds / (60**2)
-            else:
-                data["recent_avg_minutes"] = seconds / 60
+        if seconds > 60**2:
+            data["recent_avg_hours"] = seconds / (60**2)
+        elif seconds:
+            data["recent_avg_minutes"] = seconds / 60
 
         return TemplateResponse(request, "import/import.html", data)
 
@@ -102,3 +92,25 @@ class Import(View):
         job.start_job()
 
         return redirect(f"/import/{job.id}")
+
+
+def get_average_import_time() -> float:
+    """Helper to figure out how long imports are taking (returns seconds)"""
+    last_week = timezone.now() - datetime.timedelta(days=7)
+    recent_avg = (
+        models.ImportJob.objects.filter(
+            created_date__gte=last_week, status="complete"
+        )
+        .annotate(
+            runtime=ExpressionWrapper(
+                F("updated_date") - F("created_date"),
+                output_field=fields.DurationField(),
+            )
+        )
+        .aggregate(Avg("runtime"))
+        .get("runtime__avg")
+    )
+
+    if recent_avg:
+        return recent_avg.total_seconds()
+    return  None
