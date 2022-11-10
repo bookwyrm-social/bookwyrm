@@ -179,10 +179,6 @@ def search_genre(genres, buttonSelection, min_confidence=0.1, return_first=False
         return []
     results = []
 
-    #print("---------------urlgen---------------")
-    #print(genres)
-    #print("--------------------------------------------")
-
     items = []
     for connector in get_connectors():
         # get the search url from the connector before sending
@@ -209,18 +205,13 @@ def search_genre(genres, buttonSelection, min_confidence=0.1, return_first=False
         all_results = sorted(all_results, key=lambda r: r.confidence, reverse=True)
         return all_results[0] if all_results else None
 
-    for resul in results:
-        print("A SINGLE RESULT OR SOMETHIN WAS COUNFD ################################################")
-        print(resul)
-        print("################################################")
-
     # failed requests will return None, so filter those out
     return results
 
 def get_external_genres():
     """Get information from federated bookwyrm instances."""
     results = []
-
+    fin_results = []
     items = []
     for connector in get_connectors():
         # get the search url from the connector before sending
@@ -239,11 +230,17 @@ def get_external_genres():
     # load as many results as we can
     results = asyncio.run(async_connector_genre_info(items))
 
-    fin_results = ([r for r in results[0] if r], results[1])
+    fin_results.append(([r for r in results[0] if r], results[1]))
     for i in fin_results:
         print("ELEMENT OF TUPLE ---------------- ")
         print(i)
-    return results
+    return fin_results
+
+def get_possible_genres():
+    pass
+
+def resolve_genre_ids():
+    pass
 
 
 def first_search_result(query, min_confidence=0.1):
