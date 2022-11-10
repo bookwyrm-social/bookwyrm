@@ -137,7 +137,29 @@ async def async_connector_genre_info(items):
 
         results = await asyncio.gather(*tasks)
 
-        final_results = (results, items[1][1])
+        final_results = (results, items[1])
+        print("=-=-=-=-=-=-=-=-")
+        print(final_results)
+        return final_results
+
+async def async_connector_genre_info_single(items):
+    """Try a number of requests to get our list of categories. Will return a tuple.
+       First element is a list of parsed genre info and the second element is the connector from where this was obtained."""
+    
+    timeout = aiohttp.ClientTimeout(total=SEARCH_TIMEOUT)
+    async with aiohttp.ClientSession(timeout=timeout) as session:
+        tasks = []
+        for url, connector in items:
+            for actual_url in url:
+                tasks.append(
+                    asyncio.ensure_future(
+                        get_genres_info(session, actual_url, connector)
+                    )
+                )
+
+        results = await asyncio.gather(*tasks)
+
+        final_results = (results, items[1])
         return final_results
 
 
