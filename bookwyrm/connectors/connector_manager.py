@@ -125,11 +125,12 @@ async def async_connector_genre_info(items):
     async with aiohttp.ClientSession(timeout=timeout) as session:
         tasks = []
         for url, connector in items:
-            tasks.append(
-                asyncio.ensure_future(
-                    get_genres_info(session, url, connector)
+            for actual_url in url:
+                tasks.append(
+                    asyncio.ensure_future(
+                        get_genres_info(session, actual_url, connector)
+                    )
                 )
-            )
 
         results = await asyncio.gather(*tasks)
         return results
@@ -218,14 +219,14 @@ def get_external_genres():
     for connector in get_connectors():
         # get the search url from the connector before sending
         url = connector.get_genrepage_url()
-        try:
-            raise_not_valid_url(url)
-        except ConnectorException:
-            # if this URL is invalid we should skip it and move on
-            # This should also exclude non-BookWyrm connectors
-            logger.info("Request denied to blocked domain: %s", url)
-            print("Genre request failed.")
-            continue
+        #try:
+        #    raise_not_valid_url(url)
+        #except ConnectorException:
+        #    # if this URL is invalid we should skip it and move on
+        #    # This should also exclude non-BookWyrm connectors
+        #    logger.info("Request denied to blocked domain: %s", url)
+        #    print("Genre request failed.")
+        #    continue
         print("Genre request successful, url IS: " + url)
         items.append((url, connector))
 
