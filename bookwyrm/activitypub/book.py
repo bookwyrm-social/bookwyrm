@@ -100,4 +100,3 @@ class GenreData(ActivityObject):
     description: str = ""
     genre_name: str = ""
     name: str = ""
-    type: str = "Genre"
