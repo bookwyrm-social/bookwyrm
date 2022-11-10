@@ -94,7 +94,8 @@ def get_average_import_time() -> float:
     """Helper to figure out how long imports are taking (returns seconds)"""
     last_week = timezone.now() - datetime.timedelta(days=7)
     recent_avg = (
-        models.ImportJob.objects.filter(created_date__gte=last_week, status="complete")
+        models.ImportJob.objects.filter(created_date__gte=last_week, complete=True)
+        .exclude(status="stopped")
         .annotate(
             runtime=ExpressionWrapper(
                 F("updated_date") - F("created_date"),
