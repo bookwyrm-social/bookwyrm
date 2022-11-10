@@ -21,6 +21,7 @@ class Connector(AbstractMinimalConnector):
         print("Parsing genre from Bookwyrm Connector")
         print(data["description"])
         data["connector"] = self
+        data["type"] = "Genre"
         return GenreResult(**data)
         #for gen in data:
         #    #gen["connector"] = self
