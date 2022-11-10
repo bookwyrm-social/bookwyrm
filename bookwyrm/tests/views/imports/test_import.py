@@ -149,3 +149,26 @@ class ImportViews(TestCase):
         )
         result = views.imports.import_data.get_average_import_time()
         self.assertEqual(result, 3 * 60 * 60)
+
+    def test_get_average_import_time_ignore_stopped(self):
+        """Don't include stopped, do include no status"""
+        now = datetime.datetime.now()
+        two_hours_ago = now - datetime.timedelta(hours=2)
+        four_hours_ago = now - datetime.timedelta(hours=4)
+        models.ImportJob.objects.create(
+            user=self.local_user,
+            created_date=two_hours_ago,
+            updated_date=now,
+            status="stopped",
+            complete=True,
+            mappings={},
+        )
+        models.ImportJob.objects.create(
+            user=self.local_user,
+            created_date=four_hours_ago,
+            updated_date=now,
+            complete=True,
+            mappings={},
+        )
+        result = views.imports.import_data.get_average_import_time()
+        self.assertEqual(result, 4 * 60 * 60)
