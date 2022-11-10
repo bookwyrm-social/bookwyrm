@@ -109,7 +109,6 @@ class DeleteUserViews(TestCase):
         self.assertFalse(self.local_user.is_active)
         self.assertEqual(self.local_user.deactivation_reason, "self_deactivation")
 
-
     def test_reactivate_user_get(self, _):
         """Reactication page"""
         view = views.ReactivateUser.as_view()
@@ -120,7 +119,6 @@ class DeleteUserViews(TestCase):
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
-
 
     def test_reactivate_user_post(self, _):
         """Reactivate action"""
