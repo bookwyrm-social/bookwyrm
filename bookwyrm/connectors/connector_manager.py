@@ -237,8 +237,8 @@ def get_external_genres():
     # load as many results as we can
     results = asyncio.run(async_connector_genre_info(items))
 
-    results[0] = [r for r in results[0] if r]
-    for i in results:
+    fin_results = ([r for r in results[0] if r], results[1])
+    for i in fin_results:
         print("ELEMENT OF TUPLE ---------------- ")
         print(i)
     return results
