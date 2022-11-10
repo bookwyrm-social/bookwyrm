@@ -32,7 +32,7 @@ class Search(View):
             return api_book_search(request)
 
         test = connector_manager.get_external_genres()
-        print(test.count())
+        print(str(len(test)))
 
         print("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
         #for i in test:
