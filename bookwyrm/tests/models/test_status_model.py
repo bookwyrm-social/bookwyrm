@@ -224,12 +224,12 @@ class Status(TestCase):
             f'test content<p>(comment on <a href="{self.book.remote_id}">"Test Edition"</a>)</p>',
         )
         self.assertEqual(activity["attachment"][0].type, "Document")
-        #self.assertTrue(
+        # self.assertTrue(
         #    re.match(
         #        r"https:\/\/your.domain.here\/images\/covers\/test_[A-z0-9]+.jpg",
         #        activity["attachment"][0].url,
         #    )
-        #)
+        # )
         self.assertEqual(activity["attachment"][0].name, "Test Edition")
 
     def test_quotation_to_activity(self, *_):
