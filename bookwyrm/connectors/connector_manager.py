@@ -93,7 +93,7 @@ async def get_genres_info(session, url, connector):
             print("-----------------------------------")
             test = connector.parse_genre_data(raw_data)
             print("0000000000000000000000000000")
-            print(test)
+            print(test["description"])
             return {
                 "connector": connector,
                 #"results": list(connector.parse_genre_data(raw_data))[:10],
