@@ -142,7 +142,7 @@ async def async_connector_genre_info(items):
         for i in items:
             print(i)
 
-        print(items[1])
+        print(items[1][1])
 
         print("#@#@#@#@#@#@#@#@#@#@#@#@#@#@#@#@#@#@#@#@#@#@#")
 
