@@ -133,6 +133,9 @@ class LoginWith2FA(View):
                 request, "two_factor_auth/two_factor_login.html", data
             )
 
+        # is this a reactivate? let's go for it
+        if not user.is_active and user.allow_reactivation:
+            user.reactivate()
         # log the user in - we are bypassing standard login
         login(request, user)
         user.update_active_date()

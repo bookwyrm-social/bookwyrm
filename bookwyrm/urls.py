@@ -526,6 +526,16 @@ urlpatterns = [
     ),
     re_path(r"^preferences/export/?$", views.Export.as_view(), name="prefs-export"),
     re_path(r"^preferences/delete/?$", views.DeleteUser.as_view(), name="prefs-delete"),
+    re_path(
+        r"^preferences/deactivate/?$",
+        views.DeactivateUser.as_view(),
+        name="prefs-deactivate",
+    ),
+    re_path(
+        r"^preferences/reactivate/?$",
+        views.ReactivateUser.as_view(),
+        name="prefs-reactivate",
+    ),
     re_path(r"^preferences/block/?$", views.Block.as_view(), name="prefs-block"),
     re_path(r"^block/(?P<user_id>\d+)/?$", views.Block.as_view()),
     re_path(r"^unblock/(?P<user_id>\d+)/?$", views.unblock),
