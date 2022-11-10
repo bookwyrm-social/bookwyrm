@@ -22,7 +22,7 @@ class Connector(AbstractMinimalConnector):
         print(data["description"])
         data["connector"] = self
         data["type"] = "Genre"
-        return GenreResult(**data)
+        return GenreResult(data)
         #for gen in data:
         #    #gen["connector"] = self
         #    print(gen)

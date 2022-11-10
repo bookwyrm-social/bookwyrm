@@ -228,6 +228,7 @@ class GenreResult:
     description: str
     name: str
     type: str
+    context: str
     connector: object
 
 
