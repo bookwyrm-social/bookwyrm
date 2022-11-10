@@ -45,7 +45,7 @@ class Import(View):
         }
 
         seconds = get_or_set("avg-import-time", get_average_import_time, timeout=86400)
-        if seconds > 60**2:
+        if seconds and seconds > 60**2:
             data["recent_avg_hours"] = seconds / (60**2)
         elif seconds:
             data["recent_avg_minutes"] = seconds / 60
