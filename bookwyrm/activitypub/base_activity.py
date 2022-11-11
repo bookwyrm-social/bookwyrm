@@ -65,6 +65,7 @@ class ActivityObject:
         dataclass, which it ignores. Any field in the dataclass is required or
         has a default value"""
         for field in fields(self):
+
             try:
                 value = kwargs[field.name]
                 if value in (None, MISSING, {}):
@@ -91,6 +92,9 @@ class ActivityObject:
                         f"Missing required field: {field.name}"
                     )
                 value = field.default
+                print("--------")
+                print(field.name)
+                print(value)
             setattr(self, field.name, value)
 
     # pylint: disable=too-many-locals,too-many-branches,too-many-arguments

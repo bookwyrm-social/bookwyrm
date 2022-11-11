@@ -38,7 +38,8 @@ class BookWyrmModel(models.Model):
 
     def get_remote_id(self):
         """generate the url that resolves to the local object, without a slug"""
-        base_path = f"https://{DOMAIN}"
+        #REPLACE WITH HTTPS
+        base_path = f"http://{DOMAIN}"
         if hasattr(self, "user"):
             base_path = f"{base_path}{self.user.local_path}"
 
@@ -53,7 +54,8 @@ class BookWyrmModel(models.Model):
     @property
     def local_path(self):
         """how to link to this object in the local app, with a slug"""
-        local = self.get_remote_id().replace(f"https://{DOMAIN}", "")
+        #REPLACE WITH HTTPS
+        local = self.get_remote_id().replace(f"http://{DOMAIN}", "")
 
         name = None
         if hasattr(self, "name_field"):

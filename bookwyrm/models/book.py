@@ -33,12 +33,14 @@ class GenreManager(models.Manager):
         return genre
 
 
-class Genre(models.Model):
+class Genre(ObjectMixin, BookWyrmModel):
     """This is a model where we can define genres for books."""
-
-    genre_name = fields.CharField(max_length=40)
+    genre_name = fields.CharField(max_length=500)
     description = fields.CharField(max_length=500)
-    remote_id = fields.RemoteIdField(null=True, activitypub_field="id")
+
+    name = fields.CharField(max_length=500, default = genre_name)
+
+    activity_serializer = activitypub.GenreData
     objects = GenreManager()
 
     def __str__(self):
@@ -48,34 +50,10 @@ class Genre(models.Model):
     def genre_desc(self):
         return self.description
 
-    def get_remote_id(self):
-        """generate the url that resolves to the local object, without a slug"""
-        base_path = f"https://{DOMAIN}"
-        if hasattr(self, "user"):
-            base_path = f"{base_path}{self.user.local_path}"
 
-        model_name = type(self).__name__.lower()
-        return f"{base_path}/{model_name}/{self.id}"
-
-    @property
-    def local_path(self):
-        """how to link to this object in the local app, with a slug"""
-        local = self.get_remote_id().replace(f"https://{DOMAIN}", "")
-
-        name = None
-        if hasattr(self, "name_field"):
-            name = getattr(self, self.name_field)
-        elif hasattr(self, "name"):
-            name = self.name
-
-        if name:
-            slug = slugify(name)
-            local = f"{local}/s/{slug}"
-
-        return local
-
-    # def save(self, request, *args, **kwargs):
-    #    super(Genre, self).save(request, *args, **kwargs)
+    def save(self, *args, **kwargs):
+        self.name = self.genre_name
+        super(Genre, self).save( *args, **kwargs)
 
 
 class BookDataModel(ObjectMixin, BookWyrmModel):
@@ -259,7 +237,8 @@ class Book(BookDataModel):
 
     def get_remote_id(self):
         """editions and works both use "book" instead of model_name"""
-        return f"https://{DOMAIN}/book/{self.id}"
+        #REPLACE WITH HTTPS
+        return f"http://{DOMAIN}/book/{self.id}"
 
     def __repr__(self):
         # pylint: disable=consider-using-f-string

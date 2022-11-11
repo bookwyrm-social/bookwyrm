@@ -23,6 +23,7 @@ class Connector(BookWyrmModel):
 
     base_url = models.CharField(max_length=255)
     books_url = models.CharField(max_length=255)
+    genres_url = models.CharField(max_length=255)
     covers_url = models.CharField(max_length=255)
     search_url = models.CharField(max_length=255, null=True, blank=True)
     isbn_search_url = models.CharField(max_length=255, null=True, blank=True)
