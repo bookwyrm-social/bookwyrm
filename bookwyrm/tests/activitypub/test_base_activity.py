@@ -27,6 +27,7 @@ from bookwyrm import models
 class BaseActivity(TestCase):
     """the super class for model-linked activitypub dataclasses"""
 
+    # pylint: disable=invalid-name
     def setUp(self):
         """we're probably going to re-use this so why copy/paste"""
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
