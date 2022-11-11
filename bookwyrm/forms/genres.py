@@ -7,14 +7,20 @@ from django_celery_beat.models import IntervalSchedule
 from bookwyrm import models
 from .custom_form import StyledForm
 
-class GenreForm(StyledForm):
 
+class GenreForm(StyledForm):
     class Meta:
         model = models.Genre
 
-        fields = ('genre_name', 'description')
+        fields = ("genre_name", "description")
 
         widgets = {
             "genre_name": forms.TextInput(attrs={"aria-describedby": "desc_name"}),
-            "genre_description": forms.Textarea(attrs={"aria-describedby": "desc_desc", "class":"textarea", "cols":"40"}),
+            "genre_description": forms.Textarea(
+                attrs={
+                    "aria-describedby": "desc_desc",
+                    "class": "textarea",
+                    "cols": "40",
+                }
+            ),
         }

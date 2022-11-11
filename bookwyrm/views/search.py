@@ -78,6 +78,7 @@ def api_book_search(request):
         [format_search_result(r) for r in book_results[:10]], safe=False
     )
 
+
 #TODO: This can be refactored. We'll merge this into api_book_search later.
 def api_book_search_genres(request):
     """Return books via API response"""
@@ -95,6 +96,7 @@ def genre_search(request, external_genres):
     if is_api_request(request):
         return api_book_search_genres(request)
 
+
     genre_list = request.GET.getlist("genres")
     buttonSelection = request.GET.get("search_buttons")
     search_remote = request.GET.get("remote", False) and request.user.is_authenticated
@@ -104,10 +106,9 @@ def genre_search(request, external_genres):
     query = isbn_check(query)
 
     print(buttonSelection)
-    #local_results = models.Edition.objects.all()
+    # local_results = models.Edition.objects.all()
     min_confidence = request.GET.get("min_confidence", 0)
     local_results = search_genre(genre_list, buttonSelection)
-
 
     paginated = Paginator(local_results, PAGE_LENGTH)
     page = paginated.get_page(request.GET.get("page"))
@@ -124,14 +125,15 @@ def genre_search(request, external_genres):
             page.number, on_each_side=2, on_ends=1
         ),
     }
+
     if request.user.is_authenticated:
         print("Calling the remote results for genres.")
         data["remote_results"] = connector_manager.search_genre(
             genre_list, buttonSelection, external_genres, min_confidence=min_confidence
         )
         data["remote"] = True
-    
     return TemplateResponse(request, "search/book.html", data)
+
 
 def book_search(request):
     """the real business is elsewhere"""

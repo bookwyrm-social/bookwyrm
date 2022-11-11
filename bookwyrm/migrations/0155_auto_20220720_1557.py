@@ -7,21 +7,31 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bookwyrm', '0154_alter_user_preferred_language'),
+        ("bookwyrm", "0154_alter_user_preferred_language"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Genre',
+            name="Genre",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('genre_name', models.CharField(max_length=40)),
-                ('description', models.CharField(max_length=500)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("genre_name", models.CharField(max_length=40)),
+                ("description", models.CharField(max_length=500)),
             ],
         ),
         migrations.AddField(
-            model_name='book',
-            name='genres',
-            field=bookwyrm.models.fields.ManyToManyField(blank=True, to='bookwyrm.Genre'),
+            model_name="book",
+            name="genres",
+            field=bookwyrm.models.fields.ManyToManyField(
+                blank=True, to="bookwyrm.Genre"
+            ),
         ),
     ]

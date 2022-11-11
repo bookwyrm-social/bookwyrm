@@ -6,6 +6,7 @@ from .book import Genre, Work
 from . import Boost, Favorite, GroupMemberInvitation, ImportJob, ListItem, Report
 from . import Status, User, UserFollowRequest
 
+
 class Notification(BookWyrmModel):
     """you've been tagged, liked, followed, etc"""
 
@@ -55,8 +56,12 @@ class Notification(BookWyrmModel):
         max_length=255, choices=NotificationType.choices
     )
 
-    related_book = models.ForeignKey("Work", on_delete=models.CASCADE, null=True, related_name="notifications")
-    related_genre = models.ForeignKey("Genre", on_delete=models.CASCADE, null=True, related_name="notifications")
+    related_book = models.ForeignKey(
+        "Work", on_delete=models.CASCADE, null=True, related_name="notifications"
+    )
+    related_genre = models.ForeignKey(
+        "Genre", on_delete=models.CASCADE, null=True, related_name="notifications"
+    )
 
     related_users = models.ManyToManyField(
         "User", symmetrical=False, related_name="notifications"
@@ -86,6 +91,7 @@ class Notification(BookWyrmModel):
         notification.save()
 
     """Create genre notification - UPDATE"""
+
     @classmethod
     @transaction.atomic
     def notify_genre_update(cls, users, **kwargs):
@@ -125,7 +131,10 @@ class Notification(BookWyrmModel):
         if not notification.related_users.count():
             notification.delete()
 
+
 """Receiver for genre update - UPDATE"""
+
+
 @receiver(models.signals.m2m_changed, sender=Work.genres.through)
 def genre_update(sender, instance, action, pk_set, reverse, **kwargs):
     if action == "post_add":
@@ -133,11 +142,12 @@ def genre_update(sender, instance, action, pk_set, reverse, **kwargs):
             genre = Genre.objects.get(pk=key)
             users = User.objects.filter(followed_genres=genre)
             for user in users:
-                Notification.notify_genre_update(users,
-                user = user,
-                related_book = instance,
-                related_genre=genre,
-                notification_type=Notification.GENRE
+                Notification.notify_genre_update(
+                    users,
+                    user=user,
+                    related_book=instance,
+                    related_genre=genre,
+                    notification_type=Notification.GENRE,
                 )
 
 

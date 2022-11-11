@@ -26,21 +26,22 @@ def search(query, min_confidence=0, filters=None, return_first=False):
         )
     return results
 
+
 def search_genre(active_genres, search_active_option):
-    '''Get our genre list and put them on the page.'''
+    """Get our genre list and put them on the page. If the user made a query, also display the books."""
+
 
     # Check if there's actually a genre selected.
-    if(len(active_genres)):
+    if len(active_genres):
 
         results = []
-        #AND Searching
+        # AND Searching
         if search_active_option == "search_and":
 
             print("Searching using AND")
             base_qs = models.Work.objects.all()
             for gen in active_genres:
                 results = base_qs.filter(genres__pk__contains=gen)
-
             results = get_first_edition_gen(results)
         #OR searching
         elif search_active_option == "search_or":
@@ -63,8 +64,7 @@ def search_genre(active_genres, search_active_option):
 
     else:
         results = []
-        print("Empty List") 
-
+        print("Empty List")
 
     return results
 

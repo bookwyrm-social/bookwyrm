@@ -187,7 +187,6 @@ class BookWyrmModel(models.Model):
         return queryset.exclude(~Q(user=viewer), privacy="direct")
 
 
-
 @receiver(models.signals.post_save)
 # pylint: disable=unused-argument
 def set_remote_id(sender, instance, created, *args, **kwargs):
