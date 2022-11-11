@@ -70,7 +70,7 @@ class AbstractMinimalConnector(ABC):
         final_url = self.search_url + typeSelection + genreExtension
         return final_url
 
-    def resolve_genre_id(instance_genres, connector_genres):
+    def resolve_genre_id(instance_genres):
         pass
 
     def get_genrepage_url(self):
