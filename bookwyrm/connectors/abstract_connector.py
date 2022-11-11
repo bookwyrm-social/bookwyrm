@@ -75,7 +75,7 @@ class AbstractMinimalConnector(ABC):
         """Try to match names with the two genres and set the ID appropriately for the connector we're trying to get these books from."""
         id = instance_genre.pk
         for cat in external_genres:
-            if(cat["name"] == instance_genre.name):
+            if(cat["results"].name == instance_genre.name):
                 return cat["id"][-1]
 
         return str(id)
