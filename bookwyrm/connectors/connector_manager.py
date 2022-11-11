@@ -138,29 +138,9 @@ async def async_connector_genre_info(items):
         results = await asyncio.gather(*tasks)
 
         final_results = (results, items[1])
-        print("=-=-=-=-=-=-=-=-")
-        print(final_results)
-        return final_results
-
-async def async_connector_genre_info_single(items):
-    """Try a number of requests to get our list of categories. Will return a tuple.
-       First element is a list of parsed genre info and the second element is the connector from where this was obtained."""
-    
-    timeout = aiohttp.ClientTimeout(total=SEARCH_TIMEOUT)
-    async with aiohttp.ClientSession(timeout=timeout) as session:
-        tasks = []
-        for url, connector in items:
-            for actual_url in url:
-                tasks.append(
-                    asyncio.ensure_future(
-                        get_genres_info(session, actual_url, connector)
-                    )
-                )
-
-        results = await asyncio.gather(*tasks)
-
-        final_results = (results, items[1])
-        return final_results
+        #print("=-=-=-=-=-=-=-=-")
+        #print(final_results)
+        return results
 
 
 def search(query, min_confidence=0.1, return_first=False):
@@ -207,6 +187,10 @@ def search_genre(genres, buttonSelection, external_categories, min_confidence=0.
     for connector in get_connectors():
         #print("Trying out connectors:")
         #print(connector)
+        if(external_categories):
+            for category in external_categories:
+                if(category["connector"] == connector):
+                    print("GOOD SHIT THIS SHIT MATCHES WOOOOO!!!!")
         #if(external_categories):
         #    for cat_connector in external_categories:
         #        print(cat_connector[1])
@@ -259,7 +243,8 @@ def get_external_genres():
     # load as many results as we can
     results = asyncio.run(async_connector_genre_info(items))
 
-    fin_results.append(([r for r in results[0] if r], results[1]))
+    #fin_results.append(([r for r in results[0] if r], results[1]))
+    fin_results = [r for r in results if r]
     for i in fin_results:
         print("ELEMENT OF TUPLE ---------------- ")
         print(i)
