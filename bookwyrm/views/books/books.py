@@ -48,7 +48,7 @@ class Book(View):
         we = work.genres.all()
         w = list(we)
 
-        genre_list = models.Genre.objects.filter(~Q(genre_name__in = w))
+        genre_list = models.Genre.objects.filter(~Q(genre_name__in=w))
 
         # it's safe to use this OR because edition and work and subclasses of the same
         # table, so they never have clashing IDs
@@ -104,7 +104,7 @@ class Book(View):
             "rating": reviews.aggregate(Avg("rating"))["rating__avg"],
             "lists": lists,
             "update_error": kwargs.get("update_error", False),
-            "genre_list": genre_list
+            "genre_list": genre_list,
         }
 
         if request.user.is_authenticated:
@@ -193,22 +193,24 @@ def add_description(request, book_id):
 
     return redirect("book", book.id)
 
+
 @login_required
 @require_POST
 def genre_vote(request):
     """genre vote"""
-    genres=request.POST.get("genres")
+    genres = request.POST.get("genres")
 
     genre_vote = suggestions.SuggestedBookGenre(genre=genres)
 
     genre_vote.save()
 
     book = get_object_or_404(models.Edition, id=request.POST.get("book_id"))
-    
+
     # book.genres = genres
     # book.save(update_fields=["genres"])
 
     return redirect("book", book.id)
+
 
 @login_required
 @require_POST

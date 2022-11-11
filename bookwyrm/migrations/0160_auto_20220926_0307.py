@@ -7,23 +7,23 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bookwyrm', '0159_merge_0158_alter_book_genres_0158_auto_20220919_1634'),
+        ("bookwyrm", "0159_merge_0158_alter_book_genres_0158_auto_20220919_1634"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='book',
-            name='genres',
-            field=models.ManyToManyField(blank=True, to='bookwyrm.Genre'),
+            model_name="book",
+            name="genres",
+            field=models.ManyToManyField(blank=True, to="bookwyrm.Genre"),
         ),
         migrations.AlterField(
-            model_name='genre',
-            name='description',
+            model_name="genre",
+            name="description",
             field=bookwyrm.models.fields.CharField(max_length=500),
         ),
         migrations.AlterField(
-            model_name='genre',
-            name='genre_name',
+            model_name="genre",
+            name="genre_name",
             field=bookwyrm.models.fields.CharField(max_length=40),
         ),
     ]

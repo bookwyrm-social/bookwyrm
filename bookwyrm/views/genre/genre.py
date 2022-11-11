@@ -42,7 +42,7 @@ class Genres(View):
         book_list.save()
 
         return redirect(book_list.local_path)
-    
+
     @method_decorator(login_required, name="dispatch")
     class FollowGenre(View):
         """follow a genre"""
@@ -53,7 +53,6 @@ class Genres(View):
             user = models.User.objects.get(id=request.user.id)
             user.followed_genres.add(genre)
             return redirect("genres")
-
 
     @method_decorator(login_required, name="dispatch")
     class UnFollowGenre(View):

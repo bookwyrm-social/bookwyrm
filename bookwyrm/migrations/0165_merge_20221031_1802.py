@@ -6,9 +6,8 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bookwyrm', '0164_merge_0159_auto_20220924_0634_0163_genre_remote_id'),
-        ('bookwyrm', '0164_merge_20221031_1703'),
+        ("bookwyrm", "0164_merge_0159_auto_20220924_0634_0163_genre_remote_id"),
+        ("bookwyrm", "0164_merge_20221031_1703"),
     ]
 
-    operations = [
-    ]
+    operations = []
