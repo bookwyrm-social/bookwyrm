@@ -189,10 +189,11 @@ def search_genre(genres, buttonSelection, external_categories, min_confidence=0.
         #print(connector)
         print("#######################^^^^^^^^^^^^^^^^^^^")
         for category in external_categories:
-            print(category["connector"])
+            print(category["results"].connector)
             print(connector)
             if(category["connector"] == connector):
                 print("GOOD SHIT THIS SHIT MATCHES WOOOOO!!!!")
+                valid_categories.append(category)
         #if(external_categories):
         #    for cat_connector in external_categories:
         #        print(cat_connector[1])
@@ -202,8 +203,8 @@ def search_genre(genres, buttonSelection, external_categories, min_confidence=0.
         #            break
 
 
-        valid_categories = get_external_genres_specific_connector(connector)
-        print(valid_categories)
+        #valid_categories = get_external_genres_specific_connector(connector)
+        #print(valid_categories)
         print("#######################^^^^^^^^^^^^^^^^^^^")
         # get the search url from the connector before sending
         url = connector.get_search_url_genre(genres, buttonSelection)
