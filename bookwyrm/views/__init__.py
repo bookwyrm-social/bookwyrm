@@ -32,7 +32,7 @@ from .admin.genre_manage import ModifyGenre, ManageGenreHome, CreateGenre, Remov
 from .preferences.change_password import ChangePassword
 from .preferences.edit_user import EditUser
 from .preferences.export import Export
-from .preferences.delete_user import DeleteUser
+from .preferences.delete_user import DeleteUser, DeactivateUser, ReactivateUser
 from .preferences.block import Block, unblock
 from .preferences.two_factor_auth import (
     Edit2FA,
