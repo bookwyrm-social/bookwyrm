@@ -20,6 +20,9 @@ class FeedStatusTypesForm(CustomForm):
             ),
         }
 
+class VoteForm(CustomForm):
+    model = models.SuggestedGenre
+    fields = ["genres"]
 
 class ImportForm(forms.Form):
     csv_file = forms.FileField()

@@ -307,6 +307,7 @@ class Work(OrderedCollectionPageMixin, Book):
             **kwargs,
         )
 
+
     activity_serializer = activitypub.Work
     serialize_reverse_fields = [
         ("editions", "editions", "-edition_rank"),

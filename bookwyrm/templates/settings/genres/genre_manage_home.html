@@ -23,7 +23,7 @@
             {% url 'settings-genres' as url %}
             <th colspan="2">
                 {% trans "Genre" as text %}
-                {% include 'snippets/table-sort-header.html' with field="genre" sort=sort text=text %}
+                {% include 'snippets/table-sort-header.html' with field="genre_name" sort=sort text=text %}
             </th>
         </tr>
         {% for genre in object_list %}

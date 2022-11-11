@@ -24,10 +24,11 @@ class ManageGenreHome(ListView):
     paginate_by = 15
     template_name = "settings/genres/genre_manage_home.html"
     model = Genre
+    ordering = ['genre_name']
 
 
 class ModifyGenre(UpdateView):
-    """Seperate page for modifying each genre in admin page."""
+    """Separate page for modifying each genre in admin page."""
 
     template_name = "settings/genres/genre_mod.html"
     model = Genre
