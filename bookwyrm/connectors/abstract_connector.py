@@ -76,7 +76,7 @@ class AbstractMinimalConnector(ABC):
         id = instance_genre.pk
         for cat in external_genres:
             if(cat["results"].name == instance_genre.name):
-                return cat["id"][-1]
+                return cat["results"].id[-1]
 
         return str(id)
 
