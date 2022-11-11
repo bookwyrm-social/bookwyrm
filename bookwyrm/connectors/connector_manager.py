@@ -137,7 +137,7 @@ async def async_connector_genre_info(items):
 
         results = await asyncio.gather(*tasks)
 
-        final_results = (results, items[1])
+        #final_results = (results, items[1])
         #print("=-=-=-=-=-=-=-=-")
         #print(final_results)
         return results
