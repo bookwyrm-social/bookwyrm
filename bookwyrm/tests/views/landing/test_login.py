@@ -17,6 +17,7 @@ from bookwyrm.tests.validate_html import validate_html
 class LoginViews(TestCase):
     """login and password management"""
 
+    # pylint: disable=invalid-name
     def setUp(self):
         """we need basic test data and mocks"""
         self.factory = RequestFactory()
@@ -81,7 +82,7 @@ class LoginViews(TestCase):
         self.assertEqual(result.status_code, 302)
 
     def test_login_post_username(self, *_):
-        """there are so many views, this just makes sure it LOADS"""
+        """valid login where the user provides their user@domain.com username"""
         view = views.Login.as_view()
         form = forms.LoginForm()
         form.data["localname"] = "mouse@your.domain.here"
