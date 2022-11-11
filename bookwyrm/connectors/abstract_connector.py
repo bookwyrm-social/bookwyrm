@@ -55,23 +55,30 @@ class AbstractMinimalConnector(ABC):
         print(self.search_url)
         print("--------------------------------------------")
         return f"{self.search_url}{query}"
+        
 
-    def get_search_url_genre(self, genres, buttonSelection):
+    def get_search_url_genre(self, genres, buttonSelection, external_categories):
         """format the query url"""
         
         # search?q=&type=genre&search_buttons=search_or&genres=3&genres=5
         typeSelection = "&type=genre&search_buttons=" + buttonSelection
         genreExtension = ""
         for gen in genres:
-            genreExtension += "&genres=" + gen
+            genreExtension += "&genres=" + self.resolve_genre_id(models.Genre.objects.get(pk=gen))
         #print("---------------get_search_url---------------")
         #print(self.search_url)
         #print("--------------------------------------------")
         final_url = self.search_url + typeSelection + genreExtension
         return final_url
 
-    def resolve_genre_id(instance_genres):
-        pass
+    def resolve_genre_id(instance_genre, external_genres):
+        """Try to match names with the two genres and set the ID appropriately for the connector we're trying to get these books from."""
+        id = instance_genre.pk
+        for cat in external_genres:
+            if(cat["name"] == instance_genre.name):
+                return cat["id"][-1]
+
+        return id
 
     def get_genrepage_url(self):
         """format the genre url"""
