@@ -78,7 +78,7 @@ class AbstractMinimalConnector(ABC):
             if(cat["name"] == instance_genre.name):
                 return cat["id"][-1]
 
-        return id
+        return str(id)
 
     def get_genrepage_url(self):
         """format the genre url"""
