@@ -30,32 +30,36 @@ class MinimumVotesSetting(models.Model):
     minimum_genre_votes = models.IntegerField(default=10)
     minimum_book_votes = models.IntegerField(default=10)
 
+
 class SuggestedGenre(models.Model):
-    '''When users suggest a genre, it will create an instance of this class and begin counting votes.
-       Restrictions on how many times a user can suggest a genre is still up for discussion.'''
+    """When users suggest a genre, it will create an instance of this class and begin counting votes.
+    Restrictions on how many times a user can suggest a genre is still up for discussion."""
+
     name = fields.CharField(max_length=40)
     description = fields.CharField(max_length=500)
-    votes = fields.IntegerField(default = 1)
+    votes = fields.IntegerField(default=1)
 
     def __str__(self):
         return self.name
 
     def autoApprove(self):
-        '''If a certain category gets a certain number of votes, it will approve itself and create a new genre.'''
-        if(self.votes >= MinimumVotesSetting.minimum_genre_votes):
+        """If a certain category gets a certain number of votes, it will approve itself and create a new genre."""
+        if self.votes >= MinimumVotesSetting.minimum_genre_votes:
             genre = Genre.objects.create_genre(self.name, self.description)
             genre.save()
             self.delete()
 
+
 class SuggestedBookGenre(models.Model):
-    '''When users suggest a genre, it will create an instance of this class and begin counting votes.
-       Restrictions on how many times a user can suggest a genre is still up for discussion.'''
+    """When users suggest a genre, it will create an instance of this class and begin counting votes.
+    Restrictions on how many times a user can suggest a genre is still up for discussion."""
+
     genre = models.ForeignKey("Genre", on_delete=models.CASCADE, null=False)
-    votes = fields.IntegerField(default = 1)
+    votes = fields.IntegerField(default=1)
     book = models.ForeignKey("Work", on_delete=models.CASCADE, null=False)
 
     def autoApprove(self):
-        '''If a certain category gets a certain number of votes, it will approve itself and create a new genre.'''
+        """If a certain category gets a certain number of votes, it will approve itself and create a new genre."""
         minimum_votes = MinimumVotesSetting.objects.get(id=1)
 
         if self.votes >= minimum_votes.minimum_book_votes:

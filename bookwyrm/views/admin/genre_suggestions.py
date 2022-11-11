@@ -5,7 +5,11 @@ from django.utils.decorators import method_decorator
 from django.shortcuts import get_object_or_404, render
 
 from bookwyrm.models.book import Genre, Book, Edition
-from bookwyrm.models.suggestions import SuggestedGenre, MinimumVotesSetting, SuggestedBookGenre
+from bookwyrm.models.suggestions import (
+    SuggestedGenre,
+    MinimumVotesSetting,
+    SuggestedBookGenre,
+)
 from bookwyrm.forms import SuggestionForm
 from django.shortcuts import redirect
 
@@ -26,21 +30,22 @@ from django.views.generic import (
 
 class GenreSuggestionsHome(ListView):
     """Get a list of all suggested genres in the admin page."""
+
     paginate_by = 15
     template_name = "settings/genres/genre_suggestions_home.html"
     model = SuggestedGenre
+
     def get_ordering(self):
-        if self.request.GET.get('sort'):
-            order = self.request.GET.get('sort')
-            if order == 'votes':
-                ordering = '-' + order
+        if self.request.GET.get("sort"):
+            order = self.request.GET.get("sort")
+            if order == "votes":
+                ordering = "-" + order
             else:
                 ordering = order
             return ordering
         else:
-            ordering = ['name']
+            ordering = ["name"]
             return ordering
-
 
     def get(self, request, *args, **kwargs):
         min_vote = request.GET.get("minimum_gen_vote")
@@ -94,21 +99,22 @@ class RemoveSuggestion(DeleteView):
 
 class BookGenreSuggestionsHome(ListView):
     """Get a list of all suggested genres for books in the admin page."""
+
     paginate_by = 15
     template_name = "settings/genres/book_suggestions_home.html"
     model = SuggestedBookGenre
+
     def get_ordering(self):
-        if self.request.GET.get('sort'):
-            order = self.request.GET.get('sort')
-            if order == 'votes':
-                ordering = '-' + order
+        if self.request.GET.get("sort"):
+            order = self.request.GET.get("sort")
+            if order == "votes":
+                ordering = "-" + order
             else:
                 ordering = order
             return ordering
         else:
-            ordering = ['genre__genre_name']
+            ordering = ["genre__genre_name"]
             return ordering
-
 
     def get(self, request, *args, **kwargs):
         min_vote = request.GET.get("minimum_gen_vote")
