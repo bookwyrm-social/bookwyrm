@@ -189,6 +189,8 @@ def search_genre(genres, buttonSelection, external_categories, min_confidence=0.
         #print(connector)
         if(external_categories):
             for category in external_categories:
+                print(category["connector"])
+                print(connector)
                 if(category["connector"] == connector):
                     print("GOOD SHIT THIS SHIT MATCHES WOOOOO!!!!")
         #if(external_categories):
