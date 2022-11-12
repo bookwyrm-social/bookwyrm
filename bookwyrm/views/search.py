@@ -44,7 +44,8 @@ class Search(View):
         if not query and not genre_query:
             print("Exited because nothing was selected.")
             context = {}
-            context["genre_tags"] = models.Genre.objects.all()
+            context["genre_tags"] = get_valid_genres(ext_gens)
+            #context["genre_tags"] = models.Genre.objects.all()
             return TemplateResponse(request, "search/book.html", context)
 
         if query and not search_type:
@@ -66,6 +67,14 @@ class Search(View):
 
         return endpoints[search_type](request)
 
+def get_valid_genres(ext_gens):
+    cate_list = list(models.Genre.objects.all())
+
+    for i in ext_gens:
+        cate_list.append(models.Genre(genre_name=i["results"].name, name=i["results"].name, description=i["results"].description))
+        #print(i["results"].description)
+
+    return cate_list
 
 def api_book_search(request):
     """Return books via API response"""
