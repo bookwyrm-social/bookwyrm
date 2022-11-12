@@ -69,8 +69,18 @@ class Search(View):
 
 def get_valid_genres(ext_gens):
     cate_list = list(models.Genre.objects.all())
-
+    gen_exists = False
     for i in ext_gens:
+
+        for gen in cate_list:
+            if(gen.name == i["results"].name):
+                gen_exists = True
+                break
+
+        if gen_exists:
+            gen_exists = False
+            continue
+        
         cate_list.append(models.Genre(genre_name=i["results"].name, name=i["results"].name, description=i["results"].description))
         #print(i["results"].description)
 
