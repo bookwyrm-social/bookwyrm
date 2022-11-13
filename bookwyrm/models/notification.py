@@ -141,11 +141,16 @@ def genre_update(sender, instance, action, pk_set, reverse, **kwargs):
         for key in pk_set:
             genre = Genre.objects.get(pk=key)
             users = User.objects.filter(followed_genres=genre)
+            if isinstance(instance, Work):
+                book = instance;
+            else:
+                return
+
             for user in users:
                 Notification.notify_genre_update(
                     users,
                     user=user,
-                    related_book=instance,
+                    related_book=book,
                     related_genre=genre,
                     notification_type=Notification.GENRE,
                 )
