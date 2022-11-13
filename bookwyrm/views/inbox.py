@@ -14,7 +14,7 @@ from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 
 from bookwyrm import activitypub, models
-from bookwyrm.tasks import app
+from bookwyrm.tasks import app, MEDIUM
 from bookwyrm.signatures import Signature
 from bookwyrm.utils import regex
 
@@ -98,7 +98,7 @@ def raise_is_blocked_activity(activity_json):
         raise PermissionDenied()
 
 
-@app.task(queue="medium_priority")
+@app.task(queue=MEDIUM)
 def activity_task(activity_json):
     """do something with this json we think is legit"""
     # lets see if the activitypub module can make sense of this json
