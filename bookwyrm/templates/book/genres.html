@@ -1,0 +1,16 @@
+{% spaceless %}
+{% load i18n %}
+
+<p>{% trans "Genre:" %}</p>
+{% if book.genres %}
+<ul>
+    {% for genre_name in book.genres.all %}
+        <li>{{ genre_name }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+{% if not book.genres %}
+<p>No genre available</p>
+{% endif %}
+
+{% endspaceless %}

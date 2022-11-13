@@ -82,6 +82,8 @@ class CreateAdmin(View):
         username = f"{localname}@{settings.DOMAIN}"
 
         self.create_default_genres(request)
+        if not models.MinimumVotesSetting.objects.all().exists():
+            models.MinimumVotesSetting.objects.create()
 
         user = models.User.objects.create_superuser(
             username,

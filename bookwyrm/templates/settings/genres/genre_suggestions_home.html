@@ -1,0 +1,92 @@
+{% extends 'settings/layout.html' %}
+{% load i18n %}
+{% block title %}{% trans "Genre Suggestions" %}{% endblock %}
+
+
+{% block edit-button %}
+
+    <span class="is-hidden-mobile">
+        <form class="block" action="{% url 'settings-suggestions' %}" method="GET">
+            <div class="field has-addons">
+                <p class="control pr-2">
+                    {% trans "Minimum Votes: " %}
+                </p>
+                <div class="control">
+                    <input type="text" class="input is-small" name="minimum_gen_vote" value="{{ minimum_votes_get }}" aria-label="{% trans 'Update Minium Vote' %}">
+                </div>
+                <div class="control">
+                    <button type="submit" class="button is-success is-small">{% trans "Save" %}</button>
+                </div>
+            </div>
+
+        </form>
+    </span>
+
+{% endblock %}
+
+{% block header %}
+{% trans "Genre Suggestions" %}
+{% endblock %}
+
+
+
+{% block panel %}
+<nav class="tabs subtitle" aria-label="breadcrumbs">
+    <ul>
+        <li class="is-active"><a href="{% url 'settings-suggestions' %}">{% trans "Genre Suggestions" %}</a></li>
+        <li><a href="{% url 'settings-book-suggestions' %}">{% trans "Book Suggestions" %}</a></li>
+    </ul>
+</nav>
+<div class="table-container block">
+    <table class="table is-striped is-fullwidth">
+        <tr>
+            {% url 'settings-suggestions' as url %}
+            <th colspan="1">
+                {% trans "Genre" as text %}
+                {% include 'snippets/table-sort-header.html' with field="name" sort=sort text=text %}
+            </th>
+            <th colspan="1">
+                <dl>
+                    {% trans "Votes" as text %}
+                    {% include 'snippets/table-sort-header.html' with field="votes" sort=sort text=text %}
+                </dl>
+            </th>
+            <th colspan="1">
+                <dl class="is-pulled-right">
+                    <a>Actions</a>
+                </dl>
+            </th>
+        </tr>
+        {% for suggestion in object_list %}
+        <tr>
+
+            <td class="overflow-wrap-anywhere pl-3">
+                <a href="{% url 'settings-suggestions-mod' suggestion.id %}">{{ suggestion.name }}</a>
+            </td>
+            <td>
+                <dl class="pl-3">
+                    {{ suggestion.votes }}
+                </dl>
+            </td>
+            <td>
+                <dl class="is-pulled-right ml-2">
+                    <form method="POST" action="{% url 'settings-suggestions-remove' suggestion.id %}">{% csrf_token %}
+                        <button type="submit" class="button is-danger is-small is-light">{% trans "Deny" %}</button>
+                    </form>
+                </dl>
+                <dl class="is-pulled-right">
+                    <form method="POST" action="{% url 'settings-suggestions-approve' suggestion.id %}">{% csrf_token %}
+                        <button type="submit" class="button is-success is-small is-light">{% trans "Approve" %}</button>
+                    </form> 
+                </dl> 
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+
+
+<div>
+    {% include 'snippets/pagination.html' with page=page_obj %}
+</div>
+{% endblock %}

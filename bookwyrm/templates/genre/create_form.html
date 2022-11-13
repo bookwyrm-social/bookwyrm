@@ -1,0 +1,12 @@
+{% extends 'components/inline_form.html' %}
+{% load i18n %}
+
+{% block header %}
+{% trans "Suggest Genre" %}
+{% endblock %}
+
+{% block form %}
+<form name="genre-suggestion" method="post" action="{% url 'genre-suggestion' %}">
+    {% include 'genre/form.html' with curation_group=group %}
+</form>
+{% endblock %}

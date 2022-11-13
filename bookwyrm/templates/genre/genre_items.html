@@ -1,0 +1,23 @@
+{% load i18n %}
+{% load markdown %}
+{% load interaction %}
+
+<div class="columns is-multiline pl-2 pr-2">
+
+    <table class="table is-striped is-fullwidth">
+        {% for genre in genres %}
+        <tr>
+    
+            <td class="overflow-wrap-anywhere pl-3 mr-0">
+                <a href="{% url 'genre-view' genre.id %}">{{ genre.genre_name }}</a>
+            </td>
+            <td>
+                <dl class="is-pulled-right">
+                    {% include 'genre/follow_button.html' with object=genre %}
+                </dl>
+            </td>
+    
+        </tr>
+        {% endfor %}
+    </table>
+</div>
