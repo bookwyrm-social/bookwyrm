@@ -34,8 +34,13 @@ async def get_results(session, url, min_confidence, query, connector):
     params = {"min_confidence": min_confidence}
     try:
         async with session.get(url, headers=headers, params=params) as response:
+            #print("-----------------------------------")
+            #print(headers)
+            #print(url)
+            #print("-----------------------------------")
             if not response.ok:
                 logger.info("Unable to connect to %s: %s", url, response.reason)
+                print("Unable to connect to %s: %s", url, response.reason)
                 return
 
             try:
@@ -43,7 +48,9 @@ async def get_results(session, url, min_confidence, query, connector):
             except aiohttp.client_exceptions.ContentTypeError as err:
                 logger.exception(err)
                 return
-
+            #print("-----------------------------------")
+            #print(raw_data)
+            #print("-----------------------------------")
             return {
                 "connector": connector,
                 "results": connector.process_search_response(
@@ -54,6 +61,48 @@ async def get_results(session, url, min_confidence, query, connector):
         logger.info("Connection timed out for url: %s", url)
     except aiohttp.ClientError as err:
         logger.info(err)
+
+async def get_genres_info(session, url, connector):
+    """try this specific connector"""
+    # pylint: disable=line-too-long
+    headers = {
+        "Accept": (
+            'application/json, application/activity+json, application/ld+json; profile="https://www.w3.org/ns/activitystreams"; charset=utf-8'
+        ),
+        "User-Agent": USER_AGENT,
+    }
+    params = {"min_confidence": ""}
+    try:
+        async with session.get(url, headers=headers, params=params) as response:
+            #print("-----------------------------------")
+            #print(headers)
+            #print(url)
+            #print("-----------------------------------")
+            if not response.ok:
+                logger.info("Unable to connect to %s: %s", url, response.reason)
+                print("Unable to connect to %s: %s", url, response.reason)
+                return
+
+            try:
+                raw_data = await response.json()
+            except aiohttp.client_exceptions.ContentTypeError as err:
+                logger.exception(err)
+                return
+            #print("-----------------------------------")
+            #print(raw_data)
+            #print("-----------------------------------")
+            #test = connector.parse_genre_data(raw_data)
+            #print("0000000000000000000000000000")
+            #print(test)
+            return {
+                "connector": connector,
+                "results": connector.parse_genre_data(raw_data),
+            }
+    except asyncio.TimeoutError:
+        logger.info("Connection timed out for url: %s", url)
+    except aiohttp.ClientError as err:
+        logger.info(err)
+
 
 
 async def async_connector_search(query, items, min_confidence):
@@ -71,9 +120,31 @@ async def async_connector_search(query, items, min_confidence):
         results = await asyncio.gather(*tasks)
         return results
 
+async def async_connector_genre_info(items):
+    """Try a number of requests to get our list of categories. Will return a tuple.
+       First element is a list of parsed genre info and the second element is the connector from where this was obtained."""
+    
+    timeout = aiohttp.ClientTimeout(total=SEARCH_TIMEOUT)
+    async with aiohttp.ClientSession(timeout=timeout) as session:
+        tasks = []
+        for url, connector in items:
+            for actual_url in url:
+                tasks.append(
+                    asyncio.ensure_future(
+                        get_genres_info(session, actual_url, connector)
+                    )
+                )
+
+        results = await asyncio.gather(*tasks)
+
+        #final_results = (results, items[1])
+        #print("=-=-=-=-=-=-=-=-")
+        #print(final_results)
+        return results
+
 
 def search(query, min_confidence=0.1, return_first=False):
-    """find books based on arbitary keywords"""
+    """find books based on arbitary keywords or categories"""
     if not query:
         return []
     results = []
@@ -82,6 +153,7 @@ def search(query, min_confidence=0.1, return_first=False):
     for connector in get_connectors():
         # get the search url from the connector before sending
         url = connector.get_search_url(query)
+        #print(url)
         try:
             raise_not_valid_url(url)
         except ConnectorException:
@@ -102,6 +174,96 @@ def search(query, min_confidence=0.1, return_first=False):
 
     # failed requests will return None, so filter those out
     return results
+
+def search_genre(genres, buttonSelection, external_categories, min_confidence=0.1, return_first=False):
+    """find books based on their genre"""
+    if not genres:
+        return []
+    results = []
+
+    items = []
+    valid_categories = []
+
+    for connector in get_connectors():
+
+
+        valid_categories = get_external_genres_specific_connector(connector)
+        print(valid_categories)
+        for i in valid_categories:
+            print(i["results"].description)
+        print("#######################^^^^^^^^^^^^^^^^^^^")
+        # get the search url from the connector before sending
+        url = connector.get_search_url_genre(genres, buttonSelection, valid_categories)
+        try:
+            raise_not_valid_url(url)
+        except ConnectorException:
+            # if this URL is invalid we should skip it and move on
+            logger.info("Request denied to blocked domain: %s", url)
+            print("---------------This URL is NOT valid---------------")
+            continue
+        #print("---------------This URL is valid---------------")
+        #print(url)
+        #print("--------------------------------------------")
+        items.append((url, connector))
+
+    # load as many results as we can
+    results = asyncio.run(async_connector_search(genres[0], items, min_confidence))
+    results = [r for r in results if r]
+
+    if return_first:
+        # find the best result from all the responses and return that
+        all_results = [r for con in results for r in con["results"]]
+        all_results = sorted(all_results, key=lambda r: r.confidence, reverse=True)
+        return all_results[0] if all_results else None
+
+    # failed requests will return None, so filter those out
+    return results
+
+def get_external_genres():
+    """Get information from federated bookwyrm instances."""
+    results = []
+    fin_results = []
+    items = []
+    for connector in get_connectors():
+        # get the search url from the connector before sending
+        url = connector.get_genrepage_url()
+        items.append((url, connector))
+
+    # load as many results as we can
+    results = asyncio.run(async_connector_genre_info(items))
+
+    #fin_results.append(([r for r in results[0] if r], results[1]))
+    fin_results = [r for r in results if r]
+    for i in fin_results:
+        print("ELEMENT OF TUPLE ---------------- ")
+        print(i)
+    return fin_results
+
+def get_external_genres_specific_connector(connector):
+    """Get information from a single federated bookwyrm instances."""
+    results = []
+    fin_results = []
+    items = []
+
+    # get the search url from the connector before sending
+    url = connector.get_genrepage_url()
+    items.append((url, connector))
+
+    # load as many results as we can
+    results = asyncio.run(async_connector_genre_info(items))
+
+    fin_results = [r for r in results if r]
+
+    for i in fin_results:
+        print("ELEMENT OF TUPLE ---------------- ")
+        print(i)
+    return fin_results
+
+def get_possible_genres():
+    pass
+
+def resolve_genre_ids():
+    pass
 
 
 def first_search_result(query, min_confidence=0.1):
@@ -135,6 +297,7 @@ def get_or_create_connector(remote_id):
             connector_file="bookwyrm_connector",
             base_url=f"https://{identifier}",
             books_url=f"https://{identifier}/book",
+            genres_url=f"https://{identifier}/genres",
             covers_url=f"https://{identifier}/images/covers",
             search_url=f"https://{identifier}/search?q=",
             priority=2,

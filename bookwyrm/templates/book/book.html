@@ -369,13 +369,13 @@
             </div>
         </div>
         <div class="column is-one-fifth is-clipped">
-            {% if book.subjects %}
+            
+            {% if book.genres %}
                 <section class="content block">
                     <h2 class="title is-5">{% trans "Subjects" %}</h2>
-
                     <ul>
-                        {% for subject in book.subjects %}
-                            <li itemprop="about">{{ subject }}</li>
+                        {% for subject in book.genres.all %}
+                            <li itemprop="about">{{ subject.genre_name }}</li>
                         {% endfor %}
                     </ul>
                 </section>

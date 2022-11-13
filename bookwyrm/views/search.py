@@ -24,19 +24,30 @@ class Search(View):
     def get(self, request):
         """that search bar up top"""
 
+        search_type = request.GET.get("type")
+
         if is_api_request(request):
-            print("Returning API book search.")
+            if(search_type == "genre"):
+                return api_book_search_genres(request)
             return api_book_search(request)
+
+        ext_gens = connector_manager.get_external_genres()
+        print(str(len(ext_gens)))
+
+        print("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
+        for i in ext_gens:
+            print(i["results"].description)
+        
 
         query = request.GET.get("q")
         genre_query = request.GET.get("genres")
         if not query and not genre_query:
             print("Exited because nothing was selected.")
             context = {}
-            context["genre_tags"] = models.Genre.objects.all()
+            context["genre_tags"] = get_valid_genres(ext_gens)
+            #context["genre_tags"] = models.Genre.objects.all()
             return TemplateResponse(request, "search/book.html", context)
 
-        search_type = request.GET.get("type")
         if query and not search_type:
             search_type = "user" if "@" in query else "book"
 
@@ -51,8 +62,29 @@ class Search(View):
         if not search_type in endpoints:
             search_type = "book"
 
+        if(search_type == "genre"):
+            return endpoints[search_type](request, ext_gens)
+
         return endpoints[search_type](request)
 
+def get_valid_genres(ext_gens):
+    cate_list = list(models.Genre.objects.all())
+    gen_exists = False
+    for i in ext_gens:
+
+        for gen in cate_list:
+            if(gen.name == i["results"].name):
+                gen_exists = True
+                break
+
+        if gen_exists:
+            gen_exists = False
+            continue
+        
+        cate_list.append(models.Genre(genre_name=i["results"].name, name=i["results"].name, description=i["results"].description))
+        #print(i["results"].description)
+
+    return cate_list
 
 def api_book_search(request):
     """Return books via API response"""
@@ -66,10 +98,27 @@ def api_book_search(request):
     )
 
 
-def genre_search(request):
-    print("Entered the genre search function")
+#TODO: This can be refactored. We'll merge this into api_book_search later.
+def api_book_search_genres(request):
+    """Return books via API response"""
     genre_list = request.GET.getlist("genres")
     buttonSelection = request.GET.get("search_buttons")
+    # only return local book results via json so we don't cascade
+    book_results = search_genre(genre_list, buttonSelection)
+    return JsonResponse(
+        [format_search_result(r) for r in book_results[:10]], safe=False
+    )
+
+def genre_search(request, external_genres):
+    print("Entered the genre search function")
+
+    if is_api_request(request):
+        return api_book_search_genres(request)
+
+
+    genre_list = request.GET.getlist("genres")
+    buttonSelection = request.GET.get("search_buttons")
+    search_remote = request.GET.get("remote", False) and request.user.is_authenticated
 
     gen_query = request.GET.get("genres")
     query = request.GET.get("q")
@@ -89,12 +138,19 @@ def genre_search(request):
         "btn_select": buttonSelection,
         "query": query,
         "results": page,
+        "remote": search_remote,
         "type": "genre",
         "page_range": paginated.get_elided_page_range(
             page.number, on_each_side=2, on_ends=1
         ),
     }
 
+    if request.user.is_authenticated:
+        print("Calling the remote results for genres.")
+        data["remote_results"] = connector_manager.search_genre(
+            genre_list, buttonSelection, external_genres, min_confidence=min_confidence
+        )
+        data["remote"] = True
     return TemplateResponse(request, "search/book.html", data)
 
 
@@ -111,6 +167,7 @@ def book_search(request):
     paginated = Paginator(local_results, PAGE_LENGTH)
     page = paginated.get_page(request.GET.get("page"))
     data = {
+        "genre_tags": models.Genre.objects.all(),
         "query": query,
         "results": page,
         "type": "book",

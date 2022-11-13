@@ -16,6 +16,8 @@ from django.views.generic import (
     DetailView,
     ListView,
 )
+from bookwyrm.views.helpers import is_api_request, maybe_redirect_local_path
+from bookwyrm.activitypub import ActivitypubResponse
 
 
 class GenreDetailView(DetailView):
@@ -30,6 +32,12 @@ class GenreDetailView(DetailView):
         return render(request, self.template_name, context)
 
     def get(self, request, *args, **kwargs):
+        """info about a genre"""
+        if is_api_request(request):
+
+            
+            return ActivitypubResponse(super().get_object().to_activity())
+
         return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):

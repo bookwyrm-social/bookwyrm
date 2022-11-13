@@ -31,6 +31,7 @@ class Book(View):
     def get(self, request, book_id, **kwargs):
         """info about a book"""
         if is_api_request(request):
+            print("HOOOLY SHIT IT'S THE HECKIN ACTIVITYPUB JSON OH NO NO NO ACTIVITYPUB BROS")
             book = get_object_or_404(
                 models.Book.objects.select_subclasses(), id=book_id
             )
@@ -217,6 +218,7 @@ def genre_vote(request):
 def resolve_book(request):
     """figure out the local path to a book from a remote_id"""
     remote_id = request.POST.get("remote_id")
+    print(remote_id)
     connector = connector_manager.get_or_create_connector(remote_id)
     book = connector.get_or_create_book(remote_id)
 
