@@ -9,7 +9,7 @@ from django.views import View
 from django.views.decorators.http import require_POST
 
 from bookwyrm import models
-from bookwyrm.importers.importer import import_item_task
+from bookwyrm.models.import_job import import_item_task
 from bookwyrm.settings import PAGE_LENGTH
 
 # pylint: disable= no-self-use

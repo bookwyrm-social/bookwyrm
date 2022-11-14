@@ -2,6 +2,7 @@
 from unittest.mock import patch
 
 from django.contrib.auth.models import AnonymousUser
+from django.core.exceptions import PermissionDenied
 from django.http import Http404
 from django.template.response import TemplateResponse
 from django.test import TestCase
@@ -15,7 +16,7 @@ from bookwyrm.tests.validate_html import validate_html
 class GroupViews(TestCase):
     """view group and edit details"""
 
-    def setUp(self):
+    def setUp(self):  # pylint: disable=invalid-name
         """we need basic test data and mocks"""
         self.factory = RequestFactory()
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
@@ -128,6 +129,23 @@ class GroupViews(TestCase):
                 group=new_group, user=self.local_user
             ).exists()
         )
+
+    def test_group_create_permission_denied(self, _):
+        """create group view"""
+        view = views.UserGroups.as_view()
+        request = self.factory.post(
+            "",
+            {
+                "name": "A group",
+                "description": "wowzers",
+                "privacy": "unlisted",
+                "user": self.local_user.id,
+            },
+        )
+        request.user = self.rat
+
+        with self.assertRaises(PermissionDenied):
+            view(request, "username")
 
     def test_group_edit(self, _):
         """test editing a "group" database entry"""
@@ -256,6 +274,29 @@ class GroupViews(TestCase):
         self.assertEqual(notification.user, self.rat)
         self.assertEqual(notification.related_group, self.testgroup)
         self.assertEqual(notification.notification_type, "REMOVE")
+
+    def test_remove_member_remove_self(self, _):
+        """Leave a group"""
+        models.GroupMember.objects.create(
+            user=self.rat,
+            group=self.testgroup,
+        )
+        request = self.factory.post(
+            "",
+            {
+                "group": self.testgroup.id,
+                "user": self.rat.localname,
+            },
+        )
+        request.user = self.rat
+        result = views.remove_member(request)
+        self.assertEqual(result.status_code, 302)
+        self.assertEqual(models.GroupMember.objects.count(), 1)
+        self.assertEqual(models.GroupMember.objects.first().user, self.local_user)
+        notification = models.Notification.objects.get()
+        self.assertEqual(notification.user, self.local_user)
+        self.assertEqual(notification.related_group, self.testgroup)
+        self.assertEqual(notification.notification_type, "LEAVE")
 
     def test_accept_membership(self, _):
         """accept an invite"""

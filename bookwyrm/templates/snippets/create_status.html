@@ -3,7 +3,7 @@
 {% load utilities %}
 
 {% with status_type=request.GET.status_type %}
-<div class="tab-group">
+<div class="tab-group tour-review-comment-quote">
     <div class="bw-tabs is-boxed" role="tablist">
         <a
             class="{% if status_type == 'review' or not status_type %}is-active{% endif %}"

@@ -5,7 +5,7 @@ from urllib.parse import urlparse
 from django.apps import apps
 from django.contrib.auth.models import AbstractUser, Group
 from django.contrib.postgres.fields import ArrayField, CICharField
-from django.core.validators import MinValueValidator
+from django.core.exceptions import PermissionDenied
 from django.dispatch import receiver
 from django.db import models, transaction
 from django.utils import timezone
@@ -16,16 +16,16 @@ import pytz
 from bookwyrm import activitypub
 from bookwyrm.connectors import get_data, ConnectorException
 from bookwyrm.models.shelf import Shelf
-from bookwyrm.models.status import Status, Review
+from bookwyrm.models.status import Status
 from bookwyrm.preview_images import generate_user_preview_image_task
 from bookwyrm.settings import DOMAIN, ENABLE_PREVIEW_IMAGES, USE_HTTPS, LANGUAGES
 from bookwyrm.signatures import create_key_pair
-from bookwyrm.tasks import app
+from bookwyrm.tasks import app, LOW
 from bookwyrm.utils import regex
 from .activitypub_mixin import OrderedCollectionPageMixin, ActivitypubMixin
 from .base_model import BookWyrmModel, DeactivationReason, new_access_code
 from .federated_server import FederatedServer
-from . import fields, Review
+from . import fields
 
 
 FeedFilterChoices = [
@@ -47,6 +47,7 @@ def site_link():
     return f"{protocol}://{DOMAIN}"
 
 
+# pylint: disable=too-many-public-methods
 class User(OrderedCollectionPageMixin, AbstractUser):
     """a user who wants to read books"""
 
@@ -143,6 +144,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     show_goal = models.BooleanField(default=True)
     show_suggested_users = models.BooleanField(default=True)
     discoverable = fields.BooleanField(default=False)
+    show_guided_tour = models.BooleanField(default=True)
 
     # feed options
     feed_status_types = ArrayField(
@@ -168,11 +170,23 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         max_length=255, choices=DeactivationReason, null=True, blank=True
     )
     deactivation_date = models.DateTimeField(null=True, blank=True)
+    allow_reactivation = models.BooleanField(default=False)
     confirmation_code = models.CharField(max_length=32, default=new_access_code)
 
     name_field = "username"
     property_fields = [("following_link", "following")]
     field_tracker = FieldTracker(fields=["name", "avatar"])
+
+    # two factor authentication
+    two_factor_auth = models.BooleanField(default=None, blank=True, null=True)
+    otp_secret = models.CharField(max_length=32, default=None, blank=True, null=True)
+    hotp_secret = models.CharField(max_length=32, default=None, blank=True, null=True)
+    hotp_count = models.IntegerField(default=0, blank=True, null=True)
+
+    @property
+    def active_follower_requests(self):
+        """Follow requests from active users"""
+        return self.follower_requests.filter(is_active=True)
 
     @property
     def confirmation_link(self):
@@ -225,6 +239,14 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         if viewer and viewer.is_authenticated:
             queryset = queryset.exclude(blocks=viewer)
         return queryset
+
+    @classmethod
+    def admins(cls):
+        """Get a queryset of the admins for this instance"""
+        return cls.objects.filter(
+            models.Q(user_permissions__name__in=["moderate_user", "moderate_post"])
+            | models.Q(is_superuser=True)
+        )
 
     def update_active_date(self):
         """this user is here! they are doing things!"""
@@ -347,11 +369,27 @@ class User(OrderedCollectionPageMixin, AbstractUser):
             self.create_shelves()
 
     def delete(self, *args, **kwargs):
-        """deactivate rather than delete a user"""
+        """We don't actually delete the database entry"""
         # pylint: disable=attribute-defined-outside-init
         self.is_active = False
         # skip the logic in this class's save()
         super().save(*args, **kwargs)
+
+    def deactivate(self):
+        """Disable the user but allow them to reactivate"""
+        # pylint: disable=attribute-defined-outside-init
+        self.is_active = False
+        self.deactivation_reason = "self_deactivation"
+        self.allow_reactivation = True
+        super().save(broadcast=False)
+
+    def reactivate(self):
+        """Now you want to come back, huh?"""
+        # pylint: disable=attribute-defined-outside-init
+        self.is_active = True
+        self.deactivation_reason = None
+        self.allow_reactivation = False
+        super().save(broadcast=False)
 
     @property
     def local_path(self):
@@ -388,6 +426,12 @@ class User(OrderedCollectionPageMixin, AbstractUser):
                 editable=False,
             ).save(broadcast=False)
 
+    def raise_not_editable(self, viewer):
+        """Who can edit the user object?"""
+        if self == viewer or viewer.has_perm("bookwyrm.moderate_user"):
+            return
+        raise PermissionDenied()
+
 
 class KeyPair(ActivitypubMixin, BookWyrmModel):
     """public and private keys for a user"""
@@ -414,66 +458,7 @@ class KeyPair(ActivitypubMixin, BookWyrmModel):
         return super().save(*args, **kwargs)
 
 
-def get_current_year():
-    """sets default year for annual goal to this year"""
-    return timezone.now().year
-
-
-class AnnualGoal(BookWyrmModel):
-    """set a goal for how many books you read in a year"""
-
-    user = models.ForeignKey("User", on_delete=models.PROTECT)
-    goal = models.IntegerField(validators=[MinValueValidator(1)])
-    year = models.IntegerField(default=get_current_year)
-    privacy = models.CharField(
-        max_length=255, default="public", choices=fields.PrivacyLevels
-    )
-
-    class Meta:
-        """unqiueness constraint"""
-
-        unique_together = ("user", "year")
-
-    def get_remote_id(self):
-        """put the year in the path"""
-        return f"{self.user.remote_id}/goal/{self.year}"
-
-    @property
-    def books(self):
-        """the books you've read this year"""
-        return (
-            self.user.readthrough_set.filter(
-                finish_date__year__gte=self.year,
-                finish_date__year__lt=self.year + 1,
-            )
-            .order_by("-finish_date")
-            .all()
-        )
-
-    @property
-    def ratings(self):
-        """ratings for books read this year"""
-        book_ids = [r.book.id for r in self.books]
-        reviews = Review.objects.filter(
-            user=self.user,
-            book__in=book_ids,
-        )
-        return {r.book.id: r.rating for r in reviews}
-
-    @property
-    def progress(self):
-        """how many books you've read this year"""
-        count = self.user.readthrough_set.filter(
-            finish_date__year__gte=self.year,
-            finish_date__year__lt=self.year + 1,
-        ).count()
-        return {
-            "count": count,
-            "percent": int(float(count / self.goal) * 100),
-        }
-
-
-@app.task(queue="low_priority")
+@app.task(queue=LOW)
 def set_remote_server(user_id):
     """figure out the user's remote server in the background"""
     user = User.objects.get(id=user_id)
@@ -517,7 +502,7 @@ def get_or_create_remote_server(domain, refresh=False):
     return server
 
 
-@app.task(queue="low_priority")
+@app.task(queue=LOW)
 def get_remote_reviews(outbox):
     """ingest reviews by a new remote bookwyrm user"""
     outbox_page = outbox + "?page=true&type=Review"

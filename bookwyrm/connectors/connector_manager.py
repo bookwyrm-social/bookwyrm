@@ -13,7 +13,7 @@ from requests import HTTPError
 
 from bookwyrm import book_search, models
 from bookwyrm.settings import SEARCH_TIMEOUT, USER_AGENT
-from bookwyrm.tasks import app
+from bookwyrm.tasks import app, LOW
 
 logger = logging.getLogger(__name__)
 
@@ -53,7 +53,7 @@ async def get_results(session, url, min_confidence, query, connector):
     except asyncio.TimeoutError:
         logger.info("Connection timed out for url: %s", url)
     except aiohttp.ClientError as err:
-        logger.exception(err)
+        logger.info(err)
 
 
 async def async_connector_search(query, items, min_confidence):
@@ -143,13 +143,22 @@ def get_or_create_connector(remote_id):
     return load_connector(connector_info)
 
 
-@app.task(queue="low_priority")
+@app.task(queue=LOW)
 def load_more_data(connector_id, book_id):
     """background the work of getting all 10,000 editions of LoTR"""
     connector_info = models.Connector.objects.get(id=connector_id)
     connector = load_connector(connector_info)
     book = models.Book.objects.select_subclasses().get(id=book_id)
     connector.expand_book_data(book)
+
+
+@app.task(queue=LOW)
+def create_edition_task(connector_id, work_id, data):
+    """separate task for each of the 10,000 editions of LoTR"""
+    connector_info = models.Connector.objects.get(id=connector_id)
+    connector = load_connector(connector_info)
+    work = models.Work.objects.select_subclasses().get(id=work_id)
+    connector.create_edition_from_data(work, data)
 
 
 def load_connector(connector_info):

@@ -65,7 +65,9 @@ class ListViews(TestCase):
             parent_work=work_four,
         )
 
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
+        with patch(
+            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+        ), patch("bookwyrm.lists_stream.remove_list_task.delay"):
             self.list = models.List.objects.create(
                 name="Test List", user=self.local_user
             )
@@ -244,7 +246,7 @@ class ListViews(TestCase):
 
         with patch(
             "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
-        ) as mock:
+        ) as mock, patch("bookwyrm.lists_stream.remove_list_task.delay"):
             result = view(request, self.list.id)
 
         self.assertEqual(mock.call_count, 1)
@@ -596,7 +598,7 @@ class ListViews(TestCase):
     def test_add_book_outsider(self):
         """put a book on a list"""
         self.list.curation = "open"
-        self.list.save(broadcast=False)
+        self.list.save(broadcast=False, update_fields=["curation"])
         request = self.factory.post(
             "",
             {
@@ -625,7 +627,7 @@ class ListViews(TestCase):
     def test_add_book_pending(self):
         """put a book on a list awaiting approval"""
         self.list.curation = "curated"
-        self.list.save(broadcast=False)
+        self.list.save(broadcast=False, update_fields=["curation"])
         request = self.factory.post(
             "",
             {
@@ -658,7 +660,7 @@ class ListViews(TestCase):
     def test_add_book_self_curated(self):
         """put a book on a list automatically approved"""
         self.list.curation = "curated"
-        self.list.save(broadcast=False)
+        self.list.save(broadcast=False, update_fields=["curation"])
         request = self.factory.post(
             "",
             {
@@ -687,7 +689,7 @@ class ListViews(TestCase):
     def test_add_book_permission_denied(self):
         """you can't add to that list"""
         self.list.curation = "closed"
-        self.list.save(broadcast=False)
+        self.list.save(broadcast=False, update_fields=["curation"])
         request = self.factory.post(
             "",
             {

@@ -7,7 +7,6 @@ from django.http import StreamingHttpResponse
 from django.template.response import TemplateResponse
 from django.views import View
 from django.utils.decorators import method_decorator
-from django.views.decorators.http import require_GET
 
 from bookwyrm import models
 
@@ -20,35 +19,34 @@ class Export(View):
         """Request csv file"""
         return TemplateResponse(request, "preferences/export.html")
 
-
-@login_required
-@require_GET
-def export_user_book_data(request):
-    """Streaming the csv file of a user's book data"""
-    data = (
-        models.Edition.viewer_aware_objects(request.user)
-        .filter(
-            Q(shelves__user=request.user)
-            | Q(readthrough__user=request.user)
-            | Q(review__user=request.user)
-            | Q(comment__user=request.user)
-            | Q(quotation__user=request.user)
+    def post(self, request):
+        """Streaming the csv file of a user's book data"""
+        data = (
+            models.Edition.viewer_aware_objects(request.user)
+            .filter(
+                Q(shelves__user=request.user)
+                | Q(readthrough__user=request.user)
+                | Q(review__user=request.user)
+                | Q(comment__user=request.user)
+                | Q(quotation__user=request.user)
+            )
+            .distinct()
         )
-        .distinct()
-    )
 
-    generator = csv_row_generator(data, request.user)
+        generator = csv_row_generator(data, request.user)
 
-    pseudo_buffer = Echo()
-    writer = csv.writer(pseudo_buffer)
-    # for testing, if you want to see the results in the browser:
-    # from django.http import JsonResponse
-    # return JsonResponse(list(generator), safe=False)
-    return StreamingHttpResponse(
-        (writer.writerow(row) for row in generator),
-        content_type="text/csv",
-        headers={"Content-Disposition": 'attachment; filename="bookwyrm-export.csv"'},
-    )
+        pseudo_buffer = Echo()
+        writer = csv.writer(pseudo_buffer)
+        # for testing, if you want to see the results in the browser:
+        # from django.http import JsonResponse
+        # return JsonResponse(list(generator), safe=False)
+        return StreamingHttpResponse(
+            (writer.writerow(row) for row in generator),
+            content_type="text/csv",
+            headers={
+                "Content-Disposition": 'attachment; filename="bookwyrm-export.csv"'
+            },
+        )
 
 
 def csv_row_generator(books, user):

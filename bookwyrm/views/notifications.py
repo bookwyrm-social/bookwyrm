@@ -15,16 +15,17 @@ class Notifications(View):
         """people are interacting with you, get hyped"""
         notifications = (
             request.user.notification_set.all()
-            .order_by("-created_date")
+            .order_by("-updated_date")
             .select_related(
                 "related_status",
                 "related_status__reply_parent",
+                "related_group",
                 "related_import",
-                "related_report",
-                "related_user",
-                "related_book",
-                "related_list_item",
-                "related_list_item__book",
+            )
+            .prefetch_related(
+                "related_reports",
+                "related_users",
+                "related_list_items",
             )
         )
         if notification_type == "mentions":

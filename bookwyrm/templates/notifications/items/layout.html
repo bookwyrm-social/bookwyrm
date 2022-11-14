@@ -1,5 +1,9 @@
 {% load notification_page_tags %}
+{% load humanize %}
 {% related_status notification as related_status %}
+
+{% get_related_users notification as related_users %}
+{% with related_user_count=notification.related_users.count %}
 <div class="notification {% if notification.id in unread %}has-background-primary{% endif %}">
     <div class="columns is-mobile {% if notification.id in unread %}has-text-white{% else %}has-text-more-muted{% endif %}">
         <div class="column is-narrow is-size-3">
@@ -9,14 +13,43 @@
         </div>
 
         <div class="column is-clipped">
+            {% if related_user_count > 1 %}
+            <div class="block">
+                <ul class="is-flex">
+                    {% for user in related_users %}
+                    <li class="mr-2">
+                        <a href="{{ user.local_path }}">
+                            {% include 'snippets/avatar.html' with user=user %}
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
             <div class="block content">
-                <p>
-                    {% if notification.related_user %}
-                        <a href="{{ notification.related_user.local_path }}">{% include 'snippets/avatar.html' with user=notification.related_user %}
-                            {{ notification.related_user.display_name }}</a>
-                    {% endif %}
+                {% if related_user_count == 1 %}
+                    {% with user=related_users.0 %}
+                    {% spaceless %}
+                        <a href="{{ user.local_path }}" class="mr-2">
+                            {% include 'snippets/avatar.html' with user=user %}
+                        </a>
+                        {% endspaceless %}
+                    {% endwith %}
+                {% endif %}
+
+                {% with related_user=related_users.0.display_name %}
+                {% with related_user_link=related_users.0.local_path %}
+                {% with second_user=related_users.1.display_name %}
+                {% with second_user_link=related_users.1.local_path %}
+                {% with other_user_count=related_user_count|add:"-1" %}
+                {% with other_user_display_count=other_user_count|intcomma %}
                     {% block description %}{% endblock %}
-                </p>
+                {% endwith %}
+                {% endwith %}
+                {% endwith %}
+                {% endwith %}
+                {% endwith %}
+                {% endwith %}
             </div>
 
             {% if related_status %}
@@ -27,4 +60,4 @@
         </div>
     </div>
 </div>
-
+{% endwith %}

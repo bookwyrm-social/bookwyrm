@@ -16,7 +16,7 @@ from django.utils.encoding import filepath_to_uri
 
 from bookwyrm import activitypub
 from bookwyrm.connectors import get_image
-from bookwyrm.sanitize_html import InputHtmlParser
+from bookwyrm.utils.sanitizer import clean
 from bookwyrm.settings import MEDIA_FULL_URL
 
 
@@ -497,9 +497,7 @@ class HtmlField(ActivitypubFieldMixin, models.TextField):
     def field_from_activity(self, value):
         if not value or value == MISSING:
             return None
-        sanitizer = InputHtmlParser()
-        sanitizer.feed(value)
-        return sanitizer.get_output()
+        return clean(value)
 
 
 class ArrayField(ActivitypubFieldMixin, DjangoArrayField):

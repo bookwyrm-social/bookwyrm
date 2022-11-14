@@ -34,14 +34,14 @@ class EditUser(View):
             data = {"form": form, "user": request.user}
             return TemplateResponse(request, "preferences/edit_user.html", data)
 
-        user = save_user_form(form)
+        user = save_user_form(request, form)
 
         return set_language(user, redirect("user-feed", request.user.localname))
 
 
-def save_user_form(form):
+def save_user_form(request, form):
     """special handling for the user form"""
-    user = form.save(commit=False)
+    user = form.save(request, commit=False)
 
     if "avatar" in form.files:
         # crop and resize avatar upload

@@ -14,6 +14,7 @@ from bookwyrm.tests.validate_html import validate_html
 class InviteViews(TestCase):
     """every response to a get request, html or json"""
 
+    # pylint: disable=invalid-name
     def setUp(self):
         """we need basic test data and mocks"""
         self.factory = RequestFactory()
@@ -82,6 +83,7 @@ class InviteViews(TestCase):
 
         view = views.InviteRequest.as_view()
         request = self.factory.post("", form.data)
+        request.user = self.local_user
 
         result = view(request)
         validate_html(result.render())
@@ -96,6 +98,7 @@ class InviteViews(TestCase):
 
         view = views.InviteRequest.as_view()
         request = self.factory.post("", form.data)
+        request.user = self.local_user
 
         result = view(request)
         validate_html(result.render())
@@ -109,6 +112,7 @@ class InviteViews(TestCase):
         request = self.factory.get("")
         request.user = self.local_user
         request.user.is_superuser = True
+
         result = view(request)
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())

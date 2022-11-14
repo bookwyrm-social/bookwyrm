@@ -126,7 +126,7 @@ urlpatterns = [
         r"^settings/users/?$", views.UserAdminList.as_view(), name="settings-users"
     ),
     re_path(
-        r"^settings/users/(?P<status>(local|federated))\/?$",
+        r"^settings/users/(?P<status>(local|federated|deleted))\/?$",
         views.UserAdminList.as_view(),
         name="settings-users",
     ),
@@ -287,9 +287,22 @@ urlpatterns = [
         name="report-status",
     ),
     re_path(
-        r"^report/(?P<user_id>\d+)/link/(?P<link_id>\d+)?$",
+        r"^report/link/(?P<link_id>\d+)?$",
         views.Report.as_view(),
         name="report-link",
+    ),
+    re_path(
+        r"^settings/imports/(?P<status>(complete|active))?/?$",
+        views.ImportList.as_view(),
+        name="settings-imports",
+    ),
+    re_path(
+        r"^settings/imports/(?P<import_id>\d+)/complete?$",
+        views.ImportList.as_view(),
+        name="settings-imports-complete",
+    ),
+    re_path(
+        r"^settings/celery/?$", views.CeleryStatus.as_view(), name="settings-celery"
     ),
     # landing pages
     re_path(r"^about/?$", views.about, name="about"),
@@ -341,6 +354,11 @@ urlpatterns = [
         name="import-status",
     ),
     re_path(
+        r"^import/(?P<job_id>\d+)/stop/?$",
+        views.stop_import,
+        name="import-stop",
+    ),
+    re_path(
         r"^import/(?P<job_id>\d+)/retry/(?P<item_id>\d+)/?$",
         views.retry_item,
         name="import-item-retry",
@@ -376,14 +394,9 @@ urlpatterns = [
     re_path(rf"^@(?P<username>{regex.USERNAME})$", views.user_redirect),
     re_path(rf"{USER_PATH}/rss/?$", views.rss_feed.RssFeed(), name="user-rss"),
     re_path(
-        rf"{USER_PATH}/followers(.json)?/?$",
-        views.Followers.as_view(),
-        name="user-followers",
-    ),
-    re_path(
-        rf"{USER_PATH}/following(.json)?/?$",
-        views.Following.as_view(),
-        name="user-following",
+        rf"{USER_PATH}/(?P<direction>(followers|following))(.json)?/?$",
+        views.Relationships.as_view(),
+        name="user-relationships",
     ),
     re_path(r"^hide-suggestions/?$", views.hide_suggestions, name="hide-suggestions"),
     # groups
@@ -481,13 +494,48 @@ urlpatterns = [
         views.ChangePassword.as_view(),
         name="prefs-password",
     ),
-    re_path(r"^preferences/export/?$", views.Export.as_view(), name="prefs-export"),
     re_path(
-        r"^preferences/export/file/?$",
-        views.export_user_book_data,
-        name="prefs-export-file",
+        r"^preferences/2fa/?$",
+        views.Edit2FA.as_view(),
+        name="prefs-2fa",
     ),
+    re_path(
+        r"^preferences/2fa-backup-codes/?$",
+        views.GenerateBackupCodes.as_view(),
+        name="generate-2fa-backup-codes",
+    ),
+    re_path(
+        r"^preferences/confirm-2fa/?$",
+        views.Confirm2FA.as_view(),
+        name="conf-2fa",
+    ),
+    re_path(
+        r"^preferences/disable-2fa/?$",
+        views.Disable2FA.as_view(),
+        name="disable-2fa",
+    ),
+    re_path(
+        r"^2fa-check/?$",
+        views.LoginWith2FA.as_view(),
+        name="login-with-2fa",
+    ),
+    re_path(
+        r"^2fa-prompt/?$",
+        views.Prompt2FA.as_view(),
+        name="prompt-2fa",
+    ),
+    re_path(r"^preferences/export/?$", views.Export.as_view(), name="prefs-export"),
     re_path(r"^preferences/delete/?$", views.DeleteUser.as_view(), name="prefs-delete"),
+    re_path(
+        r"^preferences/deactivate/?$",
+        views.DeactivateUser.as_view(),
+        name="prefs-deactivate",
+    ),
+    re_path(
+        r"^preferences/reactivate/?$",
+        views.ReactivateUser.as_view(),
+        name="prefs-reactivate",
+    ),
     re_path(r"^preferences/block/?$", views.Block.as_view(), name="prefs-block"),
     re_path(r"^block/(?P<user_id>\d+)/?$", views.Block.as_view()),
     re_path(r"^unblock/(?P<user_id>\d+)/?$", views.unblock),
@@ -591,7 +639,7 @@ urlpatterns = [
         name="author-update-remote",
     ),
     # isbn
-    re_path(r"^isbn/(?P<isbn>\d+)(.json)?/?$", views.Isbn.as_view()),
+    re_path(r"^isbn/(?P<isbn>[\dxX]+)(.json)?/?$", views.Isbn.as_view()),
     # author
     re_path(
         r"^author/(?P<author_id>\d+)(.json)?/?$", views.Author.as_view(), name="author"
@@ -650,4 +698,5 @@ urlpatterns = [
     re_path(
         r"^summary_revoke_key/?$", views.summary_revoke_key, name="summary-revoke-key"
     ),
+    path("guided-tour/<tour>", views.toggle_guided_tour),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

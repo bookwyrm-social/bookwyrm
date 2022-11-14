@@ -112,9 +112,6 @@
                     {% with full=status.content|safe no_trim=status.content_warning itemprop="reviewBody" %}
                         {% include 'snippets/trimmed_text.html' %}
                     {% endwith %}
-                    {% if status.progress %}
-                    <div class="is-small is-italic has-text-right mr-3">{% trans "page" %} {{ status.progress }}</div>
-                    {% endif %}
                 {% endif %}
 
                 {% if status.attachments.exists %}
@@ -126,6 +123,7 @@
                                         <a
                                             href="{% get_media_prefix %}{{ attachment.image }}"
                                             target="_blank"
+                                            rel="nofollow noopener noreferrer"
                                             aria-label="{% trans 'Open image in new window' %}"
                                         >
                                             <img

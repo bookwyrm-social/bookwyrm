@@ -3,7 +3,7 @@ from django.core.mail import EmailMultiAlternatives
 from django.template.loader import get_template
 
 from bookwyrm import models, settings
-from bookwyrm.tasks import app
+from bookwyrm.tasks import app, HIGH
 from bookwyrm.settings import DOMAIN
 
 
@@ -23,7 +23,7 @@ def email_confirmation_email(user):
     data = email_data()
     data["confirmation_code"] = user.confirmation_code
     data["confirmation_link"] = user.confirmation_link
-    send_email.delay(user.email, *format_email("confirm", data))
+    send_email(user.email, *format_email("confirm", data))
 
 
 def invite_email(invite_request):
@@ -45,7 +45,8 @@ def moderation_report_email(report):
     """a report was created"""
     data = email_data()
     data["reporter"] = report.reporter.localname or report.reporter.username
-    data["reportee"] = report.user.localname or report.user.username
+    if report.user:
+        data["reportee"] = report.user.localname or report.user.username
     data["report_link"] = report.remote_id
 
     for admin in models.User.objects.filter(
@@ -67,7 +68,7 @@ def format_email(email_name, data):
     return (subject, html_content, text_content)
 
 
-@app.task(queue="high_priority")
+@app.task(queue=HIGH)
 def send_email(recipient, subject, html_content, text_content):
     """use a task to send the email"""
     email = EmailMultiAlternatives(

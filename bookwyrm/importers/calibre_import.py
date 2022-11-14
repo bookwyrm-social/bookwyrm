@@ -24,5 +24,5 @@ class CalibreImporter(Importer):
         super().__init__(*args, **kwargs)
 
     def get_shelf(self, normalized_row):
-        # Calibre export does not indicate which shelf to use. Go with a default one for now
+        # Calibre export does not indicate which shelf to use. Use a default one for now
         return Shelf.TO_READ

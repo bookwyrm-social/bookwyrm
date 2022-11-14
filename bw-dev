@@ -3,6 +3,17 @@
 # exit on errors
 set -e
 
+# check if we're in DEBUG mode
+DEBUG=$(sed <.env -ne 's/^DEBUG=//p')
+
+# disallow certain commands when debug is false
+function prod_error {
+    if [ "$DEBUG" != "true" ]; then
+        echo "This command is not safe to run in production environments"
+        exit 1
+    fi
+}
+
 # import our ENV variables
 # catch exits and give a friendly error message
 function showerr {
@@ -65,24 +76,25 @@ case "$CMD" in
         docker-compose up --build "$@"
         ;;
     service_ports_web)
+        prod_error
         docker-compose run --rm --service-ports web
         ;;
     initdb)
         initdb "@"
         ;;
     resetdb)
-        clean
-        # Start just the DB so no one else is using it
-        docker-compose up --build -d db
-        rundb dropdb -U ${POSTGRES_USER} ${POSTGRES_DB}
-        rundb createdb -U ${POSTGRES_USER} ${POSTGRES_DB}
-        # Now start up web so we can run the migrations
-        docker-compose up --build -d web
+        prod_error
+        docker-compose rm -svf
+        docker volume rm -f bookwyrm_media_volume bookwyrm_pgdata bookwyrm_redis_activity_data bookwyrm_redis_broker_data bookwyrm_static_volume
+        docker-compose build
         migrate
+        migrate django_celery_beat
         initdb
-        clean
+        runweb python manage.py collectstatic --no-input
+        admin_code
         ;;
     makemigrations)
+        prod_error
         runweb python manage.py makemigrations "$@"
         ;;
     migrate)
@@ -101,19 +113,27 @@ case "$CMD" in
         docker-compose restart celery_worker
         ;;
     pytest)
+        prod_error
         runweb pytest --no-cov-on-fail "$@"
+        ;;
+    pytest_coverage_report)
+        prod_error
+        runweb pytest -n 3 --cov-report term-missing "$@"
         ;;
     collectstatic)
         runweb python manage.py collectstatic --no-input
         ;;
     makemessages)
+        prod_error
         runweb django-admin makemessages --no-wrap --ignore=venv -l en_US $@
         ;;
     compilemessages)
         runweb django-admin compilemessages --ignore venv $@
         ;;
     update_locales)
+        prod_error
         git fetch origin l10n_main:l10n_main
+        git checkout l10n_main locale/ca_ES
         git checkout l10n_main locale/de_DE
         git checkout l10n_main locale/es_ES
         git checkout l10n_main locale/fi_FI
@@ -122,6 +142,7 @@ case "$CMD" in
         git checkout l10n_main locale/it_IT
         git checkout l10n_main locale/lt_LT
         git checkout l10n_main locale/no_NO
+        git checkout l10n_main locale/pl_PL
         git checkout l10n_main locale/pt_PT
         git checkout l10n_main locale/pt_BR
         git checkout l10n_main locale/ro_RO
@@ -135,25 +156,31 @@ case "$CMD" in
         docker-compose build
         ;;
     clean)
+        prod_error
         clean
         ;;
     black)
+        prod_error
         docker-compose run --rm dev-tools black celerywyrm bookwyrm
         ;;
     pylint)
+        prod_error
         # pylint depends on having the app dependencies in place, so we run it in the web container
         runweb pylint bookwyrm/
         ;;
     prettier)
+        prod_error
         docker-compose run --rm dev-tools npm exec --prefix dev-tools -- prettier \
             --write bookwyrm/static/js/*.js
         ;;
     stylelint)
+        prod_error
         docker-compose run --rm dev-tools npm exec --prefix dev-tools -- stylelint \
             --fix --config dev-tools/.stylelintrc.js --ignore-path dev-tools/.stylelintignore \
             bookwyrm/static/css
         ;;
     formatters)
+        prod_error
         runweb pylint bookwyrm/
         docker-compose run --rm dev-tools black celerywyrm bookwyrm
         docker-compose run --rm dev-tools npm exec --prefix dev-tools -- prettier \
@@ -162,11 +189,8 @@ case "$CMD" in
             --fix --config dev-tools/.stylelintrc.js --ignore-path dev-tools/.stylelintignore \
             bookwyrm/static/css
         ;;
-    compilescss)
-        runweb python manage.py compilescss
-        runweb python manage.py collectstatic --no-input
-        ;;
     collectstatic_watch)
+        prod_error
         npm run --prefix dev-tools watch:static
         ;;
     update)
@@ -258,7 +282,6 @@ case "$CMD" in
         echo "    prettier"
         echo "    stylelint"
         echo "    formatters"
-        echo "    compilescss"
         echo "    collectstatic_watch"
         echo "    populate_streams [--stream=<stream name>]"
         echo "    populate_lists_streams"

@@ -5,7 +5,7 @@ from bookwyrm import models
 from bookwyrm.book_search import SearchResult
 from .abstract_connector import AbstractConnector, Mapping
 from .abstract_connector import get_data
-from .connector_manager import ConnectorException
+from .connector_manager import ConnectorException, create_edition_task
 
 
 class Connector(AbstractConnector):
@@ -156,12 +156,17 @@ class Connector(AbstractConnector):
 
         for edition_uri in edition_options.get("uris"):
             remote_id = self.get_remote_id(edition_uri)
+            create_edition_task.delay(self.connector.id, work.id, remote_id)
+
+    def create_edition_from_data(self, work, edition_data, instance=None):
+        """pass in the url as data and then call the version in abstract connector"""
+        if isinstance(edition_data, str):
             try:
-                data = self.get_book_data(remote_id)
+                edition_data = self.get_book_data(edition_data)
             except ConnectorException:
                 # who, indeed, knows
-                continue
-            self.create_edition_from_data(work, data)
+                return
+        super().create_edition_from_data(work, edition_data, instance=instance)
 
     def get_cover_url(self, cover_blob, *_):
         """format the relative cover url into an absolute one:

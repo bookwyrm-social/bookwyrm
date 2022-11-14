@@ -33,9 +33,8 @@ class AutoMod(View):
     def post(self, request):
         """add rule"""
         form = forms.AutoModRuleForm(request.POST)
-        success = form.is_valid()
-        if success:
-            form.save()
+        if form.is_valid():
+            form.save(request)
             form = forms.AutoModRuleForm()
 
         data = automod_view_data()
@@ -55,7 +54,7 @@ def schedule_automod_task(request):
         return TemplateResponse(request, "settings/automod/rules.html", data)
 
     with transaction.atomic():
-        schedule = form.save()
+        schedule = form.save(request)
         PeriodicTask.objects.get_or_create(
             interval=schedule,
             name="automod-task",

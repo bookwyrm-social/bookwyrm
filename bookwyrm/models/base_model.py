@@ -17,6 +17,7 @@ from .fields import RemoteIdField
 DeactivationReason = [
     ("pending", _("Pending")),
     ("self_deletion", _("Self deletion")),
+    ("self_deactivation", _("Self deactivation")),
     ("moderator_suspension", _("Moderator suspension")),
     ("moderator_deletion", _("Moderator deletion")),
     ("domain_block", _("Domain block")),
@@ -132,7 +133,7 @@ class BookWyrmModel(models.Model):
             return
 
         # but generally moderators can delete other people's stuff
-        if self.user == viewer or viewer.has_perm("moderate_post"):
+        if self.user == viewer or viewer.has_perm("bookwyrm.moderate_post"):
             return
 
         raise PermissionDenied()

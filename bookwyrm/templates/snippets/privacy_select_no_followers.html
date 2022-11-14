@@ -1,6 +1,6 @@
 {% load i18n %}
 {% load utilities %}
-<div class="select {{ class }}">
+<div class="select {{ class }}" id="tour-privacy">
     {% firstof privacy_uuid 0|uuid as uuid %}
     {% if not no_label %}
     <label class="is-sr-only" for="privacy_{{ uuid }}">{% trans "Post privacy" %}</label>

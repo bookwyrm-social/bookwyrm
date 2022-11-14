@@ -1,4 +1,5 @@
 """ testing import """
+from collections import namedtuple
 import pathlib
 from unittest.mock import patch
 import datetime
@@ -9,8 +10,8 @@ import responses
 
 from bookwyrm import models
 from bookwyrm.importers import Importer
-from bookwyrm.importers.importer import start_import_task, import_item_task
-from bookwyrm.importers.importer import handle_imported_book
+from bookwyrm.models.import_job import start_import_task, import_item_task
+from bookwyrm.models.import_job import handle_imported_book
 
 
 def make_date(*args):
@@ -25,6 +26,7 @@ def make_date(*args):
 class GenericImporter(TestCase):
     """importing from csv"""
 
+    # pylint: disable=invalid-name
     def setUp(self):
         """use a test csv"""
 
@@ -103,9 +105,13 @@ class GenericImporter(TestCase):
         import_job = self.importer.create_job(
             self.local_user, self.csv, False, "unlisted"
         )
-        with patch("bookwyrm.importers.importer.start_import_task.delay") as mock:
-            self.importer.start_import(import_job)
+        MockTask = namedtuple("Task", ("id"))
+        with patch("bookwyrm.models.import_job.start_import_task.delay") as mock:
+            mock.return_value = MockTask(123)
+            import_job.start_job()
         self.assertEqual(mock.call_count, 1)
+        import_job.refresh_from_db()
+        self.assertEqual(import_job.task_id, "123")
 
     @responses.activate
     def test_start_import_task(self, *_):
@@ -114,7 +120,9 @@ class GenericImporter(TestCase):
             self.local_user, self.csv, False, "unlisted"
         )
 
-        with patch("bookwyrm.importers.importer.import_item_task.delay") as mock:
+        MockTask = namedtuple("Task", ("id"))
+        with patch("bookwyrm.models.import_job.import_item_task.delay") as mock:
+            mock.return_value = MockTask(123)
             start_import_task(import_job.id)
 
         self.assertEqual(mock.call_count, 4)

@@ -83,7 +83,7 @@ class ReportAdmin(View):
 
 
 @login_required
-@permission_required("bookwyrm_moderate_user")
+@permission_required("bookwyrm.moderate_user")
 def suspend_user(_, user_id):
     """mark an account as inactive"""
     user = get_object_or_404(models.User, id=user_id)
@@ -95,7 +95,7 @@ def suspend_user(_, user_id):
 
 
 @login_required
-@permission_required("bookwyrm_moderate_user")
+@permission_required("bookwyrm.moderate_user")
 def unsuspend_user(_, user_id):
     """mark an account as inactive"""
     user = get_object_or_404(models.User, id=user_id)
@@ -107,7 +107,7 @@ def unsuspend_user(_, user_id):
 
 
 @login_required
-@permission_required("bookwyrm_moderate_user")
+@permission_required("bookwyrm.moderate_user")
 def moderator_delete_user(request, user_id):
     """permanently delete a user"""
     user = get_object_or_404(models.User, id=user_id)
@@ -132,7 +132,7 @@ def moderator_delete_user(request, user_id):
 
 
 @login_required
-@permission_required("bookwyrm_moderate_post")
+@permission_required("bookwyrm.moderate_post")
 def resolve_report(_, report_id):
     """mark a report as (un)resolved"""
     report = get_object_or_404(models.Report, id=report_id)

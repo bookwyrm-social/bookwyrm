@@ -47,7 +47,7 @@
                         {% else %}
                             {% trans "Search for a book" as search_placeholder %}
                         {% endif %}
-                        <input aria-label="{{ search_placeholder }}" id="search_input" class="input" type="text" name="q" placeholder="{{ search_placeholder }}" value="{{ query }}">
+                        <input aria-label="{{ search_placeholder }}" id="tour-search" class="input" type="text" name="q" placeholder="{{ search_placeholder }}" value="{{ query }}">
                     </div>
                     <div class="control">
                         <button class="button" type="submit">
@@ -58,7 +58,7 @@
                     </div>
                     <div class="control">
                         <button class="button" type="button" data-modal-open="barcode-scanner-modal">
-                            <span class="icon icon-barcode" title="{% trans 'Scan Barcode' %}">
+                            <span class="icon icon-barcode" title="{% trans 'Scan Barcode' %}" id="tour-barcode">
                                 <span class="is-sr-only">{% trans "Scan Barcode" %}</span>
                             </span>
                         </button>
@@ -67,14 +67,32 @@
             </form>
             {% include "search/barcode_modal.html" with id="barcode-scanner-modal" %}
 
-            <button type="button" tabindex="0" class="navbar-burger pulldown-menu my-4" data-controls="main_nav" aria-expanded="false">
-                <i class="icon icon-dots-three-vertical" aria-hidden="true"></i>
-                <span class="is-sr-only">{% trans "Main navigation menu" %}</span>
+            <button
+                type="button"
+                tabindex="0"
+                class="navbar-burger pulldown-menu my-4 is-flex-touch is-align-items-center is-justify-content-center"
+                data-controls="main_nav"
+                aria-expanded="false"
+                aria-label="{% trans 'Main navigation menu' %}"
+            >
+                <i class="icon-dots-three-vertical" aria-hidden="true"></i>
+
+                {% with request.user.unread_notification_count as notification_count %}
+                <strong
+                    class="{% if not notification_count %}is-hidden {% elif request.user.has_unread_mentions %}is-danger {% else %}is-primary {% endif %} tag is-small px-1"
+                    data-poll-wrapper
+                >
+                    <span class="is-sr-only">{% trans "Notifications" %}</span>
+                    <strong data-poll="notifications" class="has-text-white">
+                        {{ notification_count }}
+                    </strong>
+                </strong>
+                {% endwith %}
             </button>
         </div>
 
         <div class="navbar-menu" id="main_nav">
-            <div class="navbar-start">
+            <div class="navbar-start" id="tour-navbar-start">
                 {% if request.user.is_authenticated %}
                 <a href="/#feed" class="navbar-item mt-3 py-0">
                     {% trans "Feed" %}
@@ -94,7 +112,7 @@
                     {% include 'user_menu.html' %}
                 </div>
                 <div class="navbar-item mt-3 py-0">
-                    <a href="{% url 'notifications' %}" class="tags has-addons">
+                    <a href="{% url 'notifications' %}" class="tags has-addons" id="tour-notifications">
                         <span class="tag is-medium">
                             <span class="icon icon-bell" title="{% trans 'Notifications' %}">
                                 <span class="is-sr-only">{% trans "Notifications" %}</span>
@@ -150,7 +168,7 @@
 </nav>
 
 {% if request.user.is_authenticated and active_announcements.exists %}
-<div class="block is-flex-grow-1">
+<div class="is-flex-grow-1">
     <div class="container">
         {% for announcement in active_announcements %}
         {% include 'snippets/announcement.html' with announcement=announcement %}
@@ -189,16 +207,28 @@
                 <p>
                     <a href="https://docs.joinbookwyrm.com/">{% trans "Documentation" %}</a>
                 </p>
+                {% if request.user.is_authenticated %}
+                <p id="tour-begin">
+                    <a href="/guided-tour/True">{% trans "Guided Tour" %}</a>
+                    <noscript>(requires JavaScript)</noscript>
+                </p>
+                {% endif %}
             </div>
             <div class="column content is-two-fifth">
                 {% if site.support_link %}
                 <p>
                     <span class="icon icon-heart"></span>
-                    {% blocktrans with site_name=site.name support_link=site.support_link support_title=site.support_title %}Support {{ site_name }} on <a href="{{ support_link }}" target="_blank">{{ support_title }}</a>{% endblocktrans %}
+                    {% blocktrans trimmed with site_name=site.name support_link=site.support_link support_title=site.support_title %}
+                        Support {{ site_name }} on
+                        <a href="{{ support_link }}" target="_blank" rel="nofollow noopener noreferrer">{{ support_title }}</a>
+                    {% endblocktrans %}
                 </p>
                 {% endif %}
                 <p>
-                {% blocktrans %}BookWyrm's source code is freely available. You can contribute or report issues on <a href="https://github.com/mouse-reeve/bookwyrm">GitHub</a>.{% endblocktrans %}
+                {% blocktrans trimmed %}
+                    BookWyrm's source code is freely available. You can contribute or report issues on
+                    <a href="https://github.com/bookwyrm-social/bookwyrm" target="_blank" rel="nofollow noopener noreferrer">GitHub</a>.
+                {% endblocktrans %}
                 </p>
             </div>
             {% if site.footer_item %}
@@ -219,6 +249,8 @@
 <script src="{% static "js/localstorage.js" %}?v={{ js_cache }}"></script>
 <script src="{% static "js/status_cache.js" %}?v={{ js_cache }}"></script>
 <script src="{% static "js/vendor/quagga.min.js" %}?v={{ js_cache }}"></script>
+<script src="{% static "js/vendor/shepherd.min.js" %}?v={{ js_cache }}"></script>
+<script src="{% static "js/guided_tour.js" %}?v={{ js_cache }}"></script>
 
 {% block scripts %}{% endblock %}
 

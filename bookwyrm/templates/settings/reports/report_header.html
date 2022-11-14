@@ -9,9 +9,15 @@ Report #{{ report_id }}: Status posted by @{{ username }}
 
 {% elif report.links.exists %}
 
-{% blocktrans trimmed with report_id=report.id username=report.user|username %}
-Report #{{ report_id }}: Link added by @{{ username }}
-{% endblocktrans %}
+    {% if report.user %}
+    {% blocktrans trimmed with report_id=report.id username=report.user|username %}
+    Report #{{ report_id }}: Link added by @{{ username }}
+    {% endblocktrans %}
+    {% else %}
+    {% blocktrans trimmed with report_id=report.id %}
+    Report #{{ report_id }}: Link domain
+    {% endblocktrans %}
+    {% endif %}
 
 {% else %}
 

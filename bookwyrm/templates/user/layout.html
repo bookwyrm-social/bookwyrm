@@ -43,7 +43,7 @@
     {% include 'ostatus/remote_follow_button.html' with user=user %}
     {% endif %}
 
-    {% if is_self and user.follower_requests.all %}
+    {% if is_self and user.active_follower_requests.all %}
     <div class="follow-requests">
         <h2>{% trans "Follow Requests" %}</h2>
         {% for requester in user.follower_requests.all %}
@@ -69,25 +69,25 @@
         {% if is_self or user.goal.exists %}
         {% now 'Y' as year %}
         {% url 'user-goal' user|username year as url %}
-        <li{% if url in request.path %} class="is-active"{% endif %}>
+        <li{% if url in request.path %} class="is-active"{% endif %} id="tour-reading-goal">
             <a href="{{ url }}">{% trans "Reading Goal" %}</a>
         </li>
         {% endif %}
         {% if is_self or user|has_groups %}
         {% url 'user-groups' user|username as url %}
-        <li{% if url in request.path %} class="is-active"{% endif %}>
+        <li{% if url in request.path %} class="is-active"{% endif %} id="tour-groups-tab">
             <a href="{{ url }}">{% trans "Groups" %}</a>
         </li>
         {% endif %}
         {% if is_self or user.list_set.exists %}
         {% url 'user-lists' user|username as url %}
-        <li{% if url in request.path %} class="is-active"{% endif %}>
+        <li{% if url in request.path %} class="is-active"{% endif %} id="tour-lists-tab">
             <a href="{{ url }}">{% trans "Lists" %}</a>
         </li>
         {% endif %}
         {% if user.shelf_set.exists %}
         {% url 'user-shelves' user|username as url %}
-        <li{% if url in request.path %} class="is-active"{% endif %}>
+        <li{% if url in request.path %} class="is-active"{% endif %} id="tour-shelves-tab">
             <a href="{{ url }}">{% trans "Books" %}</a>
         </li>
         {% endif %}

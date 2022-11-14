@@ -13,7 +13,7 @@ from bookwyrm.tests.validate_html import validate_html
 class LandingViews(TestCase):
     """pages you land on without really trying"""
 
-    def setUp(self):
+    def setUp(self):  # pylint: disable=invalid-name
         """we need basic test data and mocks"""
         self.factory = RequestFactory()
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(

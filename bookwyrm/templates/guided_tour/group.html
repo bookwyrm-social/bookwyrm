@@ -1,0 +1,122 @@
+{% load i18n %}
+
+<script>
+    const tour = new Shepherd.Tour({
+        exitOnEsc: true,
+    });
+
+    tour.addSteps([
+        {
+            text: "{% trans 'Welcome to the page for your group! This is where you can add and remove users, create user-curated lists, and edit the group details.' %}",
+            title: "{% trans 'Your group' %}",
+            buttons: [
+                {
+                    action() {
+                        disableGuidedTour(csrf_token);
+                        return this.complete();
+                    },
+                    secondary: true,
+                    text: "{% trans 'End Tour' %}",
+                    classes: "is-danger guided-tour-cancel-button",
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: "{% trans 'Next' %}",
+                },
+            ],
+        },
+        {
+            text: "{% trans 'Use this search box to find users to join your group. Currently users must be members of the same Bookwyrm instance and be invited by the group owner.' %}",
+            title: "{% trans 'Find users' %}",
+            attachTo: {
+                element: "#tour-group-member-search",
+                on: "right",
+            },
+            buttons: [
+                {
+                    action() {
+                        return this.back();
+                    },
+                    secondary: true,
+                    text: "{% trans 'Back' %}",
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: "{% trans 'Next' %}",
+                },
+            ],
+        },
+        {
+            text: "{% trans 'Your group members will appear here. The group owner is marked with a star symbol.' %}",
+            title: "{% trans 'Group members' %}",
+            attachTo: {
+                element: "#tour-group-owner",
+                on: "right",
+            },
+            buttons: [
+                {
+                    action() {
+                        return this.back();
+                    },
+                    secondary: true,
+                    text: "{% trans 'Back' %}",
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: "{% trans 'Next' %}",
+                },
+            ],
+        },
+        {
+            text: `{% trans "As well as creating lists from the Lists page, you can create a group-curated list here on the group's homepage. Any member of the group can create a list curated by group members." %}"`,
+            title: "{% trans 'Group lists' %}",
+            attachTo: {
+                element: "#tour-create-list",
+                on: "right",
+            },
+            buttons: [
+                {
+                    action() {
+                        return this.back();
+                    },
+                    secondary: true,
+                    text: "{% trans 'Back' %}",
+                },
+                {
+                    action() {
+                        return this.next();
+                    },
+                    text: "{% trans 'Next' %}",
+                },
+            ],
+        },
+        {
+            text: `{% trans "Congratulations, you've finished the tour! Now you know the basics, but there is lots more to explore on your own. Happy reading!" %}`,
+            title: "{% trans 'Finish' %}",
+            buttons: [
+                {
+                    action() {
+                        return this.back();
+                    },
+                    secondary: true,
+                    text: "{% trans 'Back' %}",
+                },
+                {
+                    action() {
+                        disableGuidedTour(csrf_token);
+                        return this.next();
+                    },
+                    text: "{% trans 'End tour' %}",
+                },
+            ],
+        }
+    ])
+
+    tour.start()
+</script>
