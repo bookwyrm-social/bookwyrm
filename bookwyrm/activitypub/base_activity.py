@@ -7,7 +7,7 @@ from django.apps import apps
 from django.db import IntegrityError, transaction
 
 from bookwyrm.connectors import ConnectorException, get_data
-from bookwyrm.tasks import app
+from bookwyrm.tasks import app, MEDIUM
 
 logger = logging.getLogger(__name__)
 
@@ -202,7 +202,7 @@ class ActivityObject:
         return data
 
 
-@app.task(queue="medium_priority")
+@app.task(queue=MEDIUM)
 @transaction.atomic
 def set_related_field(
     model_name, origin_model_name, related_field_name, related_remote_id, data
