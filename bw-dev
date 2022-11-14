@@ -166,7 +166,8 @@ case "$CMD" in
     pylint)
         prod_error
         # pylint depends on having the app dependencies in place, so we run it in the web container
-        runweb pylint bookwyrm/
+        # no-deps doesn't spin up other containers, such as databases, cause we don't need them here
+        docker-compose run --no-deps --rm web pylint bookwyrm/
         ;;
     prettier)
         prod_error
@@ -181,7 +182,9 @@ case "$CMD" in
         ;;
     formatters)
         prod_error
-        runweb pylint bookwyrm/
+        # Make sure we're up to date
+        docker-compose build dev-tools
+        docker-compose run --no-deps --rm web pylint bookwyrm/
         docker-compose run --rm dev-tools black /app/celerywyrm /app/bookwyrm
         docker-compose run --rm dev-tools npx prettier --write /app/bookwyrm/static/js/*.js
         docker-compose run --rm dev-tools npx stylelint \
