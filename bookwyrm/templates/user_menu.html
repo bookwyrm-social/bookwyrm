@@ -68,9 +68,15 @@
             <li class="navbar-divider" role="presentation" aria-hidden="true">&nbsp;</li>
 
             <li role="menuitem">
-                <a href="{% url 'logout' %}" class="navbar-item">
-                    {% trans 'Log out' %}
-                </a>
+                <form
+                    name="logout"
+                    method="POST"
+                    action="{% url 'logout' %}"
+                    class="navbar-item"
+                >
+                    {% csrf_token %}
+                    <button type="submit">{% trans 'Log out' %}</button>
+                </form>
             </li>
         </ul>
     </div>

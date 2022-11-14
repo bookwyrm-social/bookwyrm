@@ -5,7 +5,7 @@ from bookwyrm import models
 from bookwyrm.book_search import SearchResult
 from .abstract_connector import AbstractConnector, Mapping
 from .abstract_connector import get_data, infer_physical_format, unique_physical_format
-from .connector_manager import ConnectorException
+from .connector_manager import ConnectorException, create_edition_task
 from .openlibrary_languages import languages
 
 
@@ -210,7 +210,7 @@ class Connector(AbstractConnector):
             # does this edition have ANY interesting data?
             if ignore_edition(edition_data):
                 continue
-            self.create_edition_from_data(work, edition_data)
+            create_edition_task.delay(self.connector.id, work.id, edition_data)
 
 
 def ignore_edition(edition_data):

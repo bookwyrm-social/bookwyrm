@@ -56,7 +56,7 @@
                 <dt class="is-pulled-left mr-5">{% trans "Users:" %}</dt>
                 <dd>
                     {{ users.count }}
-                    {% if server.user_set.count %}(<a href="{% url 'settings-users' %}?server={{ server.server_name }}">{% trans "View all" %}</a>){% endif %}
+                    {% if server.user_set.count %}(<a href="{% url 'settings-users' status="federated" %}?server={{ server.server_name }}">{% trans "View all" %}</a>){% endif %}
                 </dd>
 
                 <dt class="is-pulled-left mr-5">{% trans "Reports:" %}</dt>

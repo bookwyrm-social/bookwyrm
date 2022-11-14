@@ -32,7 +32,7 @@
 
 <nav class="block columns is-mobile scroll-x">
     <div class="column pr-0">
-        <div class="tabs">
+        <div class="tabs" id="tour-user-shelves">
             <ul>
                 <li class="{% if shelf.identifier == 'all' %}is-active{% endif %}">
                     <a href="{% url 'user-shelves' user|username %}"{% if shelf.identifier == 'all' %} aria-current="page"{% endif %}>
@@ -59,7 +59,7 @@
         <div class="tabs">
             <ul>
                 <li>
-                    <a href="{% url 'import' %}">
+                    <a href="{% url 'import' %}" id="tour-import-books">
                         <span class="icon icon-list" aria-hidden="true"></span>
                         <span>{% trans "Import Books" %}</span>
                     </a>
@@ -68,7 +68,7 @@
         </div>
     </div>
 
-    <div class="column is-narrow">
+    <div class="column is-narrow" id="tour-create-shelf">
         {% trans "Create shelf" as button_text %}
         {% include 'snippets/toggle/open_button.html' with text=button_text icon_with_text="plus" controls_text="create_shelf_form" focus="create_shelf_form_header" %}
     </div>
@@ -215,4 +215,10 @@
 <div>
     {% include 'snippets/pagination.html' with page=books path=request.path %}
 </div>
+{% endblock %}
+
+{% block scripts %}
+{% if request.user.show_guided_tour %}
+    {% include 'guided_tour/user_books.html' %}
+{% endif %}
 {% endblock %}

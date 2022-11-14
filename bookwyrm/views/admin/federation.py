@@ -29,6 +29,8 @@ class Federation(View):
         filters = {}
         if software := request.GET.get("application_type"):
             filters["application_type"] = software
+        if server := request.GET.get("server"):
+            filters["server_name"] = server
 
         servers = models.FederatedServer.objects.filter(status=status, **filters)
 
@@ -60,7 +62,9 @@ class Federation(View):
             "sort": sort,
             "software_options": models.FederatedServer.objects.values_list(
                 "application_type", flat=True
-            ).distinct(),
+            )
+            .distinct()
+            .order_by("application_type"),
             "form": forms.ServerForm(),
         }
         return TemplateResponse(request, "settings/federation/instance_list.html", data)
@@ -82,7 +86,7 @@ class AddFederatedServer(View):
             return TemplateResponse(
                 request, "settings/federation/edit_instance.html", data
             )
-        server = form.save()
+        server = form.save(request)
         return redirect("settings-federated-server", server.id)
 
 
@@ -152,7 +156,7 @@ class FederatedServer(View):
         """update note"""
         server = get_object_or_404(models.FederatedServer, id=server)
         server.notes = request.POST.get("notes")
-        server.save()
+        server.save(request)
         return redirect("settings-federated-server", server.id)
 
 

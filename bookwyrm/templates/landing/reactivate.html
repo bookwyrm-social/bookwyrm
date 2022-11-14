@@ -1,0 +1,60 @@
+{% extends 'layout.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Reactivate Account" %}{% endblock %}
+
+{% block content %}
+<h1 class="title">{% trans "Reactivate Account" %}</h1>
+<div class="columns is-multiline">
+    <div class="column is-half">
+        {% if login_form.non_field_errors %}
+        <p class="notification is-danger">{{ login_form.non_field_errors }}</p>
+        {% endif %}
+
+        <form name="login-confirm" method="post" action="{% url 'prefs-reactivate' %}">
+            {% csrf_token %}
+            <div class="field">
+                <label class="label" for="id_localname_confirm">{% trans "Username:" %}</label>
+                <div class="control">
+                    <input type="text" name="localname" maxlength="255" class="input" required="" id="id_localname_confirm" value="{{ login_form.localname.value|default:'' }}">
+                </div>
+            </div>
+            <div class="field">
+                <label class="label" for="id_password_confirm">{% trans "Password:" %}</label>
+                <div class="control">
+                    <input type="password" name="password" maxlength="128" class="input" required="" id="id_password_confirm" aria-describedby="desc_password">
+                </div>
+
+                {% include 'snippets/form_errors.html' with errors_list=login_form.password.errors id="desc_password" %}
+            </div>
+            <div class="field is-grouped">
+                <div class="control">
+                    <button class="button is-primary" type="submit">{% trans "Reactivate account" %}</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    {% if site.allow_registration %}
+    <div class="column is-half">
+        <div class="box has-background-primary-light">
+            <h2 class="title">{% trans "Create an Account" %}</h2>
+            <form name="register" method="post" action="/register">
+                {% include 'snippets/register_form.html' %}
+            </form>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="column">
+        <div class="box">
+            {% include 'snippets/about.html' %}
+
+            <p class="block">
+            <a href="{% url 'about' %}">{% trans "More about this site" %}</a>
+            </p>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

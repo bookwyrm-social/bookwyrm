@@ -28,7 +28,7 @@
     {% for link in links.all %}
     {% join "verify" link.id as verify_modal %}
     <li>
-        <a href="{{ link.url }}" rel="noopener noreferrer" target="_blank" title="{{ link.url }}" data-modal-open="{{ verify_modal }}">{{ link.name }}</a>
+        <a href="{{ link.url }}" rel="nofollow noopener noreferrer" target="_blank" title="{{ link.url }}" data-modal-open="{{ verify_modal }}">{{ link.name }}</a>
         ({{ link.filetype }})
 
         {% if link.availability != "free" %}

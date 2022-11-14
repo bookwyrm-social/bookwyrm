@@ -1,12 +1,25 @@
 """ track progress of goodreads imports """
+import math
 import re
 import dateutil.parser
 
 from django.db import models
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 
 from bookwyrm.connectors import connector_manager
-from bookwyrm.models import ReadThrough, User, Book, Edition
+from bookwyrm.models import (
+    User,
+    Book,
+    Edition,
+    Work,
+    ShelfBook,
+    Shelf,
+    ReadThrough,
+    Review,
+    ReviewRating,
+)
+from bookwyrm.tasks import app, LOW
 from .fields import PrivacyLevels
 
 
@@ -30,6 +43,14 @@ def construct_search_term(title, author):
     return " ".join([title, author])
 
 
+ImportStatuses = [
+    ("pending", _("Pending")),
+    ("active", _("Active")),
+    ("complete", _("Complete")),
+    ("stopped", _("Stopped")),
+]
+
+
 class ImportJob(models.Model):
     """entry for a specific request for book data import"""
 
@@ -38,15 +59,77 @@ class ImportJob(models.Model):
     updated_date = models.DateTimeField(default=timezone.now)
     include_reviews = models.BooleanField(default=True)
     mappings = models.JSONField()
-    complete = models.BooleanField(default=False)
     source = models.CharField(max_length=100)
     privacy = models.CharField(max_length=255, default="public", choices=PrivacyLevels)
     retry = models.BooleanField(default=False)
+    task_id = models.CharField(max_length=200, null=True, blank=True)
+
+    complete = models.BooleanField(default=False)
+    status = models.CharField(
+        max_length=50, choices=ImportStatuses, default="pending", null=True
+    )
+
+    def start_job(self):
+        """Report that the job has started"""
+        task = start_import_task.delay(self.id)
+        self.task_id = task.id
+
+        self.status = "active"
+        self.save(update_fields=["status", "task_id"])
+
+    def complete_job(self):
+        """Report that the job has completed"""
+        self.status = "complete"
+        self.complete = True
+        self.pending_items.update(fail_reason=_("Import stopped"))
+        self.save(update_fields=["status", "complete"])
+
+    def stop_job(self):
+        """Stop the job"""
+        self.status = "stopped"
+        self.complete = True
+        self.save(update_fields=["status", "complete"])
+        self.pending_items.update(fail_reason=_("Import stopped"))
+
+        # stop starting
+        app.control.revoke(self.task_id, terminate=True)
+        tasks = self.pending_items.filter(task_id__isnull=False).values_list(
+            "task_id", flat=True
+        )
+        app.control.revoke(list(tasks))
 
     @property
     def pending_items(self):
         """items that haven't been processed yet"""
         return self.items.filter(fail_reason__isnull=True, book__isnull=True)
+
+    @property
+    def item_count(self):
+        """How many books do you want to import???"""
+        return self.items.count()
+
+    @property
+    def percent_complete(self):
+        """How far along?"""
+        item_count = self.item_count
+        if not item_count:
+            return 0
+        return math.floor((item_count - self.pending_item_count) / item_count * 100)
+
+    @property
+    def pending_item_count(self):
+        """And how many pending items??"""
+        return self.pending_items.count()
+
+    @property
+    def successful_item_count(self):
+        """How many found a book?"""
+        return self.items.filter(book__isnull=False).count()
+
+    @property
+    def failed_item_count(self):
+        """How many found a book?"""
+        return self.items.filter(fail_reason__isnull=False).count()
 
 
 class ImportItem(models.Model):
@@ -68,15 +151,18 @@ class ImportItem(models.Model):
     linked_review = models.ForeignKey(
         "Review", on_delete=models.SET_NULL, null=True, blank=True
     )
+    task_id = models.CharField(max_length=200, null=True, blank=True)
 
     def update_job(self):
         """let the job know when the items get work done"""
         job = self.job
+        if job.complete:
+            return
+
         job.updated_date = timezone.now()
         job.save()
         if not job.pending_items.exists() and not job.complete:
-            job.complete = True
-            job.save(update_fields=["complete"])
+            job.complete_job()
 
     def resolve(self):
         """try various ways to lookup a book"""
@@ -240,3 +326,136 @@ class ImportItem(models.Model):
         return "{} by {}".format(
             self.normalized_data.get("title"), self.normalized_data.get("authors")
         )
+
+
+@app.task(queue=LOW)
+def start_import_task(job_id):
+    """trigger the child tasks for each row"""
+    job = ImportJob.objects.get(id=job_id)
+    # don't start the job if it was stopped from the UI
+    if job.complete:
+        return
+
+    # these are sub-tasks so that one big task doesn't use up all the memory in celery
+    for item in job.items.all():
+        task = import_item_task.delay(item.id)
+        item.task_id = task.id
+        item.save()
+    job.status = "active"
+    job.save()
+
+
+@app.task(queue=LOW)
+def import_item_task(item_id):
+    """resolve a row into a book"""
+    item = ImportItem.objects.get(id=item_id)
+    # make sure the job has not been stopped
+    if item.job.complete:
+        return
+
+    try:
+        item.resolve()
+    except Exception as err:  # pylint: disable=broad-except
+        item.fail_reason = _("Error loading book")
+        item.save()
+        item.update_job()
+        raise err
+
+    if item.book:
+        # shelves book and handles reviews
+        handle_imported_book(item)
+    else:
+        item.fail_reason = _("Could not find a match for book")
+
+    item.save()
+    item.update_job()
+
+
+def handle_imported_book(item):
+    """process a csv and then post about it"""
+    job = item.job
+    if job.complete:
+        return
+
+    user = job.user
+    if isinstance(item.book, Work):
+        item.book = item.book.default_edition
+    if not item.book:
+        item.fail_reason = _("Error loading book")
+        item.save()
+        return
+    if not isinstance(item.book, Edition):
+        item.book = item.book.edition
+
+    existing_shelf = ShelfBook.objects.filter(book=item.book, user=user).exists()
+
+    # shelve the book if it hasn't been shelved already
+    if item.shelf and not existing_shelf:
+        desired_shelf = Shelf.objects.get(identifier=item.shelf, user=user)
+        shelved_date = item.date_added or timezone.now()
+        ShelfBook(
+            book=item.book, shelf=desired_shelf, user=user, shelved_date=shelved_date
+        ).save(priority=LOW)
+
+    for read in item.reads:
+        # check for an existing readthrough with the same dates
+        if ReadThrough.objects.filter(
+            user=user,
+            book=item.book,
+            start_date=read.start_date,
+            finish_date=read.finish_date,
+        ).exists():
+            continue
+        read.book = item.book
+        read.user = user
+        read.save()
+
+    if job.include_reviews and (item.rating or item.review) and not item.linked_review:
+        # we don't know the publication date of the review,
+        # but "now" is a bad guess
+        published_date_guess = item.date_read or item.date_added
+        if item.review:
+            # pylint: disable=consider-using-f-string
+            review_title = "Review of {!r} on {!r}".format(
+                item.book.title,
+                job.source,
+            )
+            review = Review.objects.filter(
+                user=user,
+                book=item.book,
+                name=review_title,
+                rating=item.rating,
+                published_date=published_date_guess,
+            ).first()
+            if not review:
+                review = Review(
+                    user=user,
+                    book=item.book,
+                    name=review_title,
+                    content=item.review,
+                    rating=item.rating,
+                    published_date=published_date_guess,
+                    privacy=job.privacy,
+                )
+                review.save(software="bookwyrm", priority=LOW)
+        else:
+            # just a rating
+            review = ReviewRating.objects.filter(
+                user=user,
+                book=item.book,
+                published_date=published_date_guess,
+                rating=item.rating,
+            ).first()
+            if not review:
+                review = ReviewRating(
+                    user=user,
+                    book=item.book,
+                    rating=item.rating,
+                    published_date=published_date_guess,
+                    privacy=job.privacy,
+                )
+                review.save(software="bookwyrm", priority=LOW)
+
+        # only broadcast this review to other bookwyrm instances
+        item.linked_review = review
+    item.save()

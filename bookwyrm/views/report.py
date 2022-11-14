@@ -13,9 +13,13 @@ from bookwyrm import emailing, forms, models
 class Report(View):
     """Make reports"""
 
-    def get(self, request, user_id, status_id=None, link_id=None):
+    def get(self, request, user_id=None, status_id=None, link_id=None):
         """static view of report modal"""
-        data = {"user": get_object_or_404(models.User, id=user_id)}
+        data = {"user": None}
+        if user_id:
+            # but normally we should have an error if the user is not found
+            data["user"] = get_object_or_404(models.User, id=user_id)
+
         if status_id:
             data["status"] = status_id
         if link_id:
@@ -29,7 +33,7 @@ class Report(View):
         if not form.is_valid():
             raise ValueError(form.errors)
 
-        report = form.save()
+        report = form.save(request)
         if report.links.exists():
             # revert the domain to pending
             domain = report.links.first().domain

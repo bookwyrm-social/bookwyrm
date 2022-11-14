@@ -2,15 +2,13 @@
 from django.db import transaction
 
 from bookwyrm import models
-from bookwyrm.sanitize_html import InputHtmlParser
+from bookwyrm.utils import sanitizer
 
 
 def create_generated_note(user, content, mention_books=None, privacy="public"):
     """a note created by the app about user activity"""
     # sanitize input html
-    parser = InputHtmlParser()
-    parser.feed(content)
-    content = parser.get_output()
+    content = sanitizer.clean(content)
 
     with transaction.atomic():
         # create but don't save

@@ -6,16 +6,18 @@ from django.test import TestCase
 from django.test.client import RequestFactory
 
 from bookwyrm import forms, models, views
+from bookwyrm.views.status import find_mentions
 from bookwyrm.settings import DOMAIN
 from bookwyrm.tests.validate_html import validate_html
 
 
-# pylint: disable=invalid-name
 @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
 @patch("bookwyrm.activitystreams.populate_stream_task.delay")
 @patch("bookwyrm.lists_stream.populate_lists_task.delay")
 @patch("bookwyrm.activitystreams.remove_status_task.delay")
 @patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
+# pylint: disable=invalid-name
+# pylint: disable=too-many-public-methods
 class StatusViews(TestCase):
     """viewing and creating statuses"""
 
@@ -32,6 +34,13 @@ class StatusViews(TestCase):
                 local=True,
                 localname="mouse",
                 remote_id="https://example.com/users/mouse",
+            )
+            self.another_user = models.User.objects.create_user(
+                f"nutria@{DOMAIN}",
+                "nutria@nutria.com",
+                "password",
+                local=True,
+                localname="nutria",
             )
         with patch("bookwyrm.models.user.set_remote_server"):
             self.remote_user = models.User.objects.create_user(
@@ -74,6 +83,44 @@ class StatusViews(TestCase):
         self.assertEqual(status.user, self.local_user)
         self.assertEqual(status.book, self.book)
         self.assertIsNone(status.edited_date)
+
+    def test_create_status_rating(self, *_):
+        """create a status"""
+        view = views.CreateStatus.as_view()
+        form = forms.RatingForm(
+            {
+                "user": self.local_user.id,
+                "rating": 4,
+                "book": self.book.id,
+                "privacy": "public",
+            }
+        )
+        request = self.factory.post("", form.data)
+        request.user = self.local_user
+
+        view(request, "rating")
+
+        status = models.ReviewRating.objects.get()
+        self.assertEqual(status.user, self.local_user)
+        self.assertEqual(status.book, self.book)
+        self.assertEqual(status.rating, 4.0)
+        self.assertIsNone(status.edited_date)
+
+    def test_create_status_wrong_user(self, *_):
+        """You can't compose statuses for someone else"""
+        view = views.CreateStatus.as_view()
+        form = forms.CommentForm(
+            {
+                "content": "hi",
+                "user": self.remote_user.id,
+                "book": self.book.id,
+                "privacy": "public",
+            }
+        )
+        request = self.factory.post("", form.data)
+        request.user = self.local_user
+        with self.assertRaises(PermissionDenied):
+            view(request, "comment")
 
     def test_create_status_reply(self, *_):
         """create a status in reply to an existing status"""
@@ -172,51 +219,66 @@ class StatusViews(TestCase):
         self.assertFalse(self.remote_user in reply.mention_users.all())
         self.assertTrue(self.local_user in reply.mention_users.all())
 
-    def test_find_mentions(self, *_):
+    def test_find_mentions_local(self, *_):
         """detect and look up @ mentions of users"""
-        user = models.User.objects.create_user(
-            f"nutria@{DOMAIN}",
-            "nutria@nutria.com",
-            "password",
-            local=True,
-            localname="nutria",
-        )
-        self.assertEqual(user.username, f"nutria@{DOMAIN}")
+        result = find_mentions(self.local_user, "@nutria")
+        self.assertEqual(result["@nutria"], self.another_user)
+        self.assertEqual(result[f"@nutria@{DOMAIN}"], self.another_user)
 
+        result = find_mentions(self.local_user, f"@nutria@{DOMAIN}")
+        self.assertEqual(result["@nutria"], self.another_user)
+        self.assertEqual(result[f"@nutria@{DOMAIN}"], self.another_user)
+
+        result = find_mentions(self.local_user, "leading text @nutria")
+        self.assertEqual(result["@nutria"], self.another_user)
+        self.assertEqual(result[f"@nutria@{DOMAIN}"], self.another_user)
+
+        result = find_mentions(self.local_user, "leading @nutria trailing")
+        self.assertEqual(result["@nutria"], self.another_user)
+        self.assertEqual(result[f"@nutria@{DOMAIN}"], self.another_user)
+
+        self.assertEqual(find_mentions(self.local_user, "leading@nutria"), {})
+
+    def test_find_mentions_remote(self, *_):
+        """detect and look up @ mentions of users"""
         self.assertEqual(
-            list(views.status.find_mentions("@nutria"))[0], ("@nutria", user)
-        )
-        self.assertEqual(
-            list(views.status.find_mentions("leading text @nutria"))[0],
-            ("@nutria", user),
-        )
-        self.assertEqual(
-            list(views.status.find_mentions("leading @nutria trailing text"))[0],
-            ("@nutria", user),
-        )
-        self.assertEqual(
-            list(views.status.find_mentions("@rat@example.com"))[0],
-            ("@rat@example.com", self.remote_user),
+            find_mentions(self.local_user, "@rat@example.com"),
+            {"@rat@example.com": self.remote_user},
         )
 
-        multiple = list(views.status.find_mentions("@nutria and @rat@example.com"))
-        self.assertEqual(multiple[0], ("@nutria", user))
-        self.assertEqual(multiple[1], ("@rat@example.com", self.remote_user))
+    def test_find_mentions_multiple(self, *_):
+        """detect and look up @ mentions of users"""
+        multiple = find_mentions(self.local_user, "@nutria and @rat@example.com")
+        self.assertEqual(multiple["@nutria"], self.another_user)
+        self.assertEqual(multiple[f"@nutria@{DOMAIN}"], self.another_user)
+        self.assertEqual(multiple["@rat@example.com"], self.remote_user)
+        self.assertIsNone(multiple.get("@rat"))
 
+    def test_find_mentions_unknown(self, *_):
+        """detect and look up @ mentions of users"""
+        multiple = find_mentions(self.local_user, "@nutria and @rdkjfgh")
+        self.assertEqual(multiple["@nutria"], self.another_user)
+        self.assertEqual(multiple[f"@nutria@{DOMAIN}"], self.another_user)
+
+    def test_find_mentions_blocked(self, *_):
+        """detect and look up @ mentions of users"""
+        self.another_user.blocks.add(self.local_user)
+
+        result = find_mentions(self.local_user, "@nutria hello")
+        self.assertEqual(result, {})
+
+    def test_find_mentions_unknown_remote(self, *_):
+        """mention a user that isn't in the database"""
         with patch("bookwyrm.views.status.handle_remote_webfinger") as rw:
-            rw.return_value = self.local_user
-            self.assertEqual(
-                list(views.status.find_mentions("@beep@beep.com"))[0],
-                ("@beep@beep.com", self.local_user),
-            )
+            rw.return_value = self.another_user
+            result = find_mentions(self.local_user, "@beep@beep.com")
+            self.assertEqual(result["@nutria"], self.another_user)
+            self.assertEqual(result[f"@nutria@{DOMAIN}"], self.another_user)
+
         with patch("bookwyrm.views.status.handle_remote_webfinger") as rw:
             rw.return_value = None
-            self.assertEqual(list(views.status.find_mentions("@beep@beep.com")), [])
-
-        self.assertEqual(
-            list(views.status.find_mentions(f"@nutria@{DOMAIN}"))[0],
-            (f"@nutria@{DOMAIN}", user),
-        )
+            result = find_mentions(self.local_user, "@beep@beep.com")
+            self.assertEqual(result, {})
 
     def test_format_links_simple_url(self, *_):
         """find and format urls into a tags"""

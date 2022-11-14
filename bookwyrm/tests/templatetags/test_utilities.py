@@ -1,4 +1,5 @@
 """ style fixes and lookups for templates """
+from collections import namedtuple
 import re
 from unittest.mock import patch
 
@@ -13,6 +14,7 @@ from bookwyrm.templatetags import utilities
 class UtilitiesTags(TestCase):
     """lotta different things here"""
 
+    # pylint: disable=invalid-name
     def setUp(self):
         """create some filler objects"""
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
@@ -33,6 +35,7 @@ class UtilitiesTags(TestCase):
                 remote_id="http://example.com/rat",
                 local=False,
             )
+        self.author = models.Author.objects.create(name="Jessica", isni="4")
         self.book = models.Edition.objects.create(title="Test Book")
 
     def test_get_uuid(self, *_):
@@ -61,3 +64,26 @@ class UtilitiesTags(TestCase):
         self.assertEqual(utilities.get_title(self.book), "Test Book")
         book = models.Edition.objects.create(title="Oh", subtitle="oh my")
         self.assertEqual(utilities.get_title(book), "Oh: oh my")
+
+    def test_comparison_bool(self, *_):
+        """just a simple comparison"""
+        self.assertTrue(utilities.comparison_bool("a", "a"))
+        self.assertFalse(utilities.comparison_bool("a", "b"))
+
+        self.assertFalse(utilities.comparison_bool("a", "a", reverse=True))
+        self.assertTrue(utilities.comparison_bool("a", "b", reverse=True))
+
+    def test_truncatepath(self, *_):
+        """truncate a path"""
+        ValueMock = namedtuple("Value", ("name"))
+        value = ValueMock("home/one/two/three/four")
+        self.assertEqual(utilities.truncatepath(value, 2), "home/…ur")
+        self.assertEqual(utilities.truncatepath(value, "a"), "four")
+
+    def test_get_isni_bio(self, *_):
+        """get ISNI bio"""
+        DataMock = namedtuple("Data", ("bio", "isni"))
+        data = [DataMock(r"One\Dtwo", "4"), DataMock("Not used", "4")]
+
+        result = utilities.get_isni_bio(data, self.author)
+        self.assertEqual(result, "Author of <em>One\\Dtwo</em>")

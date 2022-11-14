@@ -38,11 +38,12 @@ let BookWyrm = new (class {
             .querySelectorAll("[data-modal-open]")
             .forEach((node) => node.addEventListener("click", this.handleModalButton.bind(this)));
 
-        document
-            .querySelectorAll("details.dropdown")
-            .forEach((node) =>
-                node.addEventListener("toggle", this.handleDetailsDropdown.bind(this))
+        document.querySelectorAll("details.dropdown").forEach((node) => {
+            node.addEventListener("toggle", this.handleDetailsDropdown.bind(this));
+            node.querySelectorAll("[data-modal-open]").forEach((modal_node) =>
+                modal_node.addEventListener("click", () => (node.open = false))
             );
+        });
 
         document
             .querySelector("#barcode-scanner-modal")

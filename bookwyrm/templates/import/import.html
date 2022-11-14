@@ -7,12 +7,28 @@
 {% block content %}
 <div class="block">
     <h1 class="title">{% trans "Import Books" %}</h1>
+
+    {% if recent_avg_hours or recent_avg_minutes %}
+    <div class="notification">
+        <p>
+        {% if recent_avg_hours %}
+            {% blocktrans trimmed with hours=recent_avg_hours|floatformat:0|intcomma %}
+                On average, recent imports have taken {{ hours }} hours.
+            {% endblocktrans %}
+        {% else %}
+            {% blocktrans trimmed with minutes=recent_avg_minutes|floatformat:0|intcomma %}
+                On average, recent imports have taken {{ minutes }} minutes.
+            {% endblocktrans %}
+        {% endif %}
+        </p>
+    </div>
+    {% endif %}
+
     <form class="box" name="import" action="/import" method="post" enctype="multipart/form-data">
         {% csrf_token %}
 
         <div class="columns">
         <div class="column is-half">
-
             <div class="field">
                 <label class="label" for="source">
                     {% trans "Data source:" %}
@@ -21,25 +37,29 @@
                 <div class="select">
                     <select name="source" id="source" aria-describedby="desc_source">
                         <option value="Goodreads" {% if current == 'Goodreads' %}selected{% endif %}>
-                            Goodreads (CSV)
+                            {% trans "Goodreads (CSV)" %}
                         </option>
                         <option value="Storygraph" {% if current == 'Storygraph' %}selected{% endif %}>
-                            Storygraph (CSV)
+                            {% trans "Storygraph (CSV)" %}
                         </option>
                         <option value="LibraryThing" {% if current == 'LibraryThing' %}selected{% endif %}>
-                            LibraryThing (TSV)
+                        {% trans "LibraryThing (TSV)" %}
                         </option>
                         <option value="OpenLibrary" {% if current == 'OpenLibrary' %}selected{% endif %}>
-                            OpenLibrary (CSV)
+                            {% trans "OpenLibrary (CSV)" %}
                         </option>
                         <option value="Calibre" {% if current == 'Calibre' %}selected{% endif %}>
-                            Calibre (CSV)
+                            {% trans "Calibre (CSV)" %}
                         </option>
                     </select>
                 </div>
 
                 <p class="help" id="desc_source">
-                    {% trans 'You can download your Goodreads data from the <a href="https://www.goodreads.com/review/import" target="_blank" rel="noopener noreferrer">Import/Export page</a> of your Goodreads account.' %}
+                {% blocktrans trimmed %}
+                    You can download your Goodreads data from the
+                    <a href="https://www.goodreads.com/review/import" target="_blank" rel="nofollow noopener noreferrer">Import/Export page</a>
+                    of your Goodreads account.
+                {% endblocktrans %}
                 </p>
             </div>
 
@@ -69,13 +89,63 @@
 
 <div class="content block">
     <h2 class="title">{% trans "Recent Imports" %}</h2>
-    {% if not jobs %}
-    <p><em>{% trans "No recent imports" %}</em></p>
-    {% endif %}
-    <ul>
-        {% for job in jobs %}
-        <li><a href="{% url 'import-status' job.id %}">{{ job.created_date | naturaltime }}</a></li>
-        {% endfor %}
-    </ul>
+    <div class="table-container">
+        <table class="table is-striped is-fullwidth">
+            <tr>
+                <th>
+                    {% trans "Date Created" %}
+                </th>
+                <th>
+                    {% trans "Last Updated" %}
+                </th>
+                <th>
+                    {% trans "Items" %}
+                </th>
+                <th>
+                    {% trans "Status" %}
+                </th>
+            </tr>
+            {% if not jobs %}
+            <tr>
+                <td colspan="4">
+                    <em>{% trans "No recent imports" %}</em>
+                </td>
+            </tr>
+            {% endif %}
+            {% for job in jobs %}
+            <tr>
+                <td>
+                    <a href="{% url 'import-status' job.id %}">{{ job.created_date }}</a>
+                </td>
+                <td>{{ job.updated_date }}</td>
+                <td>{{ job.item_count|intcomma }}</td>
+                <td>
+                    <span
+                        {% if job.status == "stopped" %}
+                        class="tag is-danger"
+                        {% elif job.status == "pending" %}
+                        class="tag is-warning"
+                        {% elif job.complete %}
+                        class="tag"
+                        {% else %}
+                        class="tag is-success"
+                        {% endif %}
+                    >
+                        {% if job.status %}
+                        {{ job.status }}
+                            {{ job.status_display }}
+                        {% elif job.complete %}
+                            {% trans "Complete" %}
+                        {% else %}
+                            {% trans "Active" %}
+                        {% endif %}
+                    </span>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    {% include 'snippets/pagination.html' with page=jobs path=request.path %}
 </div>
 {% endblock %}

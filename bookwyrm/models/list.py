@@ -1,7 +1,6 @@
 """ make a list of books!! """
 import uuid
 
-from django.apps import apps
 from django.core.exceptions import PermissionDenied
 from django.db import models
 from django.db.models import Q
@@ -129,7 +128,7 @@ class List(OrderedCollectionMixin, BookWyrmModel):
         """on save, update embed_key and avoid clash with existing code"""
         if not self.embed_key:
             self.embed_key = uuid.uuid4()
-        return super().save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
 
 class ListItem(CollectionItemMixin, BookWyrmModel):
@@ -151,33 +150,11 @@ class ListItem(CollectionItemMixin, BookWyrmModel):
     collection_field = "book_list"
 
     def save(self, *args, **kwargs):
-        """create a notification too"""
-        created = not bool(self.id)
+        """Update the list's date"""
         super().save(*args, **kwargs)
         # tick the updated date on the parent list
         self.book_list.updated_date = timezone.now()
-        self.book_list.save(broadcast=False)
-
-        list_owner = self.book_list.user
-        model = apps.get_model("bookwyrm.Notification", require_ready=True)
-        # create a notification if somoene ELSE added to a local user's list
-        if created and list_owner.local and list_owner != self.user:
-            model.objects.create(
-                user=list_owner,
-                related_user=self.user,
-                related_list_item=self,
-                notification_type="ADD",
-            )
-
-        if self.book_list.group:
-            for membership in self.book_list.group.memberships.all():
-                if membership.user != self.user:
-                    model.objects.create(
-                        user=membership.user,
-                        related_user=self.user,
-                        related_list_item=self,
-                        notification_type="ADD",
-                    )
+        self.book_list.save(broadcast=False, update_fields=["updated_date"])
 
     def raise_not_deletable(self, viewer):
         """the associated user OR the list owner can delete"""
