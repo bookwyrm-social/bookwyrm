@@ -161,7 +161,7 @@ case "$CMD" in
         ;;
     black)
         prod_error
-        docker-compose run --rm dev-tools black celerywyrm bookwyrm
+        docker-compose run --rm dev-tools black /app/celerywyrm /app/bookwyrm
         ;;
     pylint)
         prod_error
@@ -170,22 +170,24 @@ case "$CMD" in
         ;;
     prettier)
         prod_error
-        docker-compose run --rm dev-tools npx prettier --write bookwyrm/static/js/*.js
+        docker-compose run --rm dev-tools npx prettier --write /app/bookwyrm/static/js/*.js
         ;;
     stylelint)
         prod_error
         docker-compose run --rm dev-tools npx stylelint \
-            bookwyrm/static/css/bookwyrm.scss bookwyrm/static/css/bookwyrm/**/*.scss --fix \
-            --config dev-tools/.stylelintrc.js
+            /app/bookwyrm/static/css/bookwyrm.scss \
+            /app/bookwyrm/static/css/bookwyrm/**/*.scss \
+            --fix --config .stylelintrc.js
         ;;
     formatters)
         prod_error
         runweb pylint bookwyrm/
-        docker-compose run --rm dev-tools black celerywyrm bookwyrm
-        docker-compose run --rm dev-tools npx prettier --write bookwyrm/static/js/*.js
+        docker-compose run --rm dev-tools black /app/celerywyrm /app/bookwyrm
+        docker-compose run --rm dev-tools npx prettier --write /app/bookwyrm/static/js/*.js
         docker-compose run --rm dev-tools npx stylelint \
-            bookwyrm/static/css/bookwyrm.scss bookwyrm/static/css/bookwyrm/**/*.scss --fix \
-            --config dev-tools/.stylelintrc.js
+            /app/bookwyrm/static/css/bookwyrm.scss \
+            /app/bookwyrm/static/css/bookwyrm/**/*.scss \
+            --fix --config .stylelintrc.js
         ;;
     collectstatic_watch)
         prod_error
