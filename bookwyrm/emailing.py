@@ -48,6 +48,7 @@ def moderation_report_email(report):
     if report.user:
         data["reportee"] = report.user.localname or report.user.username
     data["report_link"] = report.remote_id
+    data["link_domain"] = report.links.exists()
 
     for admin in models.User.objects.filter(
         groups__name__in=["admin", "moderator"]
