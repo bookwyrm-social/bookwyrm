@@ -3,9 +3,9 @@
 <footer class="footer">
     <div class="container">
         <div class="columns">
-            <div class="column is-one-fifth">
+            <div class="column is-2">
                 <p>
-                <a href="{% url 'about' %}">{% blocktrans with site_name=site.name %}About {{ site_name }}{% endblocktrans %}</a>
+                    <a href="{% url 'about' %}">{% blocktrans with site_name=site.name %}About {{ site_name }}{% endblocktrans %}</a>
                 </p>
                 {% if site.admin_email %}
                 <p>
@@ -22,7 +22,15 @@
                 </p>
                 {% endif %}
             </div>
-            <div class="column content is-two-fifth">
+            <div class="column is-2">
+                <p>
+                    <a href ="{% url 'privacy' %}">{% trans "Code of Conduct" %}</a>
+                </p>
+                <p>
+                    <a href ="{% url 'privacy' %}">{% trans "Privacy Policy" %}</a>
+                </p>
+            </div>
+            <div class="column content">
                 {% if site.support_link %}
                 <p>
                     <span class="icon icon-heart"></span>
@@ -40,7 +48,7 @@
                 </p>
             </div>
             {% if site.footer_item %}
-            <div class="column">
+            <div class="column is-4">
                 <p>{{ site.footer_item|safe }}</p>
             </div>
             {% endif %}
