@@ -26,7 +26,7 @@ STATUS_TYPES_STRING = "|".join(status_types)
 STATUS_PATH = rf"{USER_PATH}/({STATUS_TYPES_STRING})/(?P<status_id>\d+)"
 
 BOOK_PATH = r"^book/(?P<book_id>\d+)"
-GENRE_PATH = r"^genres/(?P<pk>\d+)"
+GENRE_PATH = r"^genre/(?P<pk>\d+)"
 
 STREAMS = "|".join(s["key"] for s in settings.STREAMS)
 
