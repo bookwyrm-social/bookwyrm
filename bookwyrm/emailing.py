@@ -3,7 +3,7 @@ from django.core.mail import EmailMultiAlternatives
 from django.template.loader import get_template
 
 from bookwyrm import models, settings
-from bookwyrm.tasks import app
+from bookwyrm.tasks import app, HIGH
 from bookwyrm.settings import DOMAIN
 
 
@@ -48,6 +48,7 @@ def moderation_report_email(report):
     if report.user:
         data["reportee"] = report.user.localname or report.user.username
     data["report_link"] = report.remote_id
+    data["link_domain"] = report.links.exists()
 
     for admin in models.User.objects.filter(
         groups__name__in=["admin", "moderator"]
@@ -68,7 +69,7 @@ def format_email(email_name, data):
     return (subject, html_content, text_content)
 
 
-@app.task(queue="high_priority")
+@app.task(queue=HIGH)
 def send_email(recipient, subject, html_content, text_content):
     """use a task to send the email"""
     email = EmailMultiAlternatives(
