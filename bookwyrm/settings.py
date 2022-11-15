@@ -147,6 +147,9 @@ LOGGING = {
         "require_debug_true": {
             "()": "django.utils.log.RequireDebugTrue",
         },
+        "ignore_missing_variable": {
+            "()": "bookwyrm.utils.log.IgnoreVariableDoesNotExist",
+        },
     },
     "handlers": {
         # Overrides the default handler to make it log to console
@@ -154,6 +157,7 @@ LOGGING = {
         # console if DEBUG=False)
         "console": {
             "level": LOG_LEVEL,
+            "filters": ["ignore_missing_variable"],
             "class": "logging.StreamHandler",
         },
         # This is copied as-is from the default logger, and is

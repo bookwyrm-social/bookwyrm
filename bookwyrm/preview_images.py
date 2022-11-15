@@ -16,7 +16,7 @@ from django.core.files.storage import default_storage
 from django.db.models import Avg
 
 from bookwyrm import models, settings
-from bookwyrm.tasks import app
+from bookwyrm.tasks import app, LOW
 
 logger = logging.getLogger(__name__)
 
@@ -401,7 +401,7 @@ def save_and_cleanup(image, instance=None):
 
 
 # pylint: disable=invalid-name
-@app.task(queue="low_priority")
+@app.task(queue=LOW)
 def generate_site_preview_image_task():
     """generate preview_image for the website"""
     if not settings.ENABLE_PREVIEW_IMAGES:
@@ -426,7 +426,7 @@ def generate_site_preview_image_task():
 
 
 # pylint: disable=invalid-name
-@app.task(queue="low_priority")
+@app.task(queue=LOW)
 def generate_edition_preview_image_task(book_id):
     """generate preview_image for a book"""
     if not settings.ENABLE_PREVIEW_IMAGES:
@@ -451,7 +451,7 @@ def generate_edition_preview_image_task(book_id):
     save_and_cleanup(image, instance=book)
 
 
-@app.task(queue="low_priority")
+@app.task(queue=LOW)
 def generate_user_preview_image_task(user_id):
     """generate preview_image for a book"""
     if not settings.ENABLE_PREVIEW_IMAGES:
