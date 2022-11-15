@@ -298,6 +298,12 @@ def add_status_on_create(sender, instance, created, *args, **kwargs):
         remove_status_task.delay(instance.id)
         return
 
+    # To avoid creating a zillion unnecessary tasks caused by re-saving the model,
+    # check if it's actually ready to send before we go. We're trusting this was
+    # set correctly by the inbox or view
+    if not instance.ready:
+        return
+
     # when creating new things, gotta wait on the transaction
     transaction.on_commit(
         lambda: add_status_on_create_command(sender, instance, created)
