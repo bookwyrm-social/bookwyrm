@@ -297,7 +297,7 @@ urlpatterns = [
         name="settings-imports",
     ),
     re_path(
-        r"^settings/imports/(?P<import_id>\d+)/complete?$",
+        r"^settings/imports/(?P<import_id>\d+)/complete/?$",
         views.ImportList.as_view(),
         name="settings-imports-complete",
     ),
