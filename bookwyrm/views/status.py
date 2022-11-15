@@ -82,13 +82,16 @@ class CreateStatus(View):
                 return HttpResponseBadRequest()
             return redirect("/")
 
-        status = form.save(request)
+        status = form.save(request, commit=False)
+        status.ready = False
         # save the plain, unformatted version of the status for future editing
         status.raw_content = status.content
         if hasattr(status, "quote"):
             status.raw_quote = status.quote
 
         status.sensitive = status.content_warning not in [None, ""]
+        # the status has to be saved now before we can add many to many fields
+        # like mentions
         status.save(broadcast=False)
 
         # inspect the text for user tags
@@ -119,6 +122,7 @@ class CreateStatus(View):
         if hasattr(status, "quote"):
             status.quote = to_markdown(status.quote)
 
+        status.ready = True
         status.save(created=created)
 
         # update a readthrough, if needed
