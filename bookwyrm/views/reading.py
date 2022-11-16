@@ -159,7 +159,7 @@ class ReadThrough(View):
                     models.ReadThrough, id=request.POST.get("id")
                 )
             return TemplateResponse(request, "readthrough/readthrough.html", data)
-        form.save()
+        form.save(request)
         return redirect("book", book_id)
 
 

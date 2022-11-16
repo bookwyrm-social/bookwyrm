@@ -1,0 +1,109 @@
+{% extends 'settings/layout.html' %}
+{% load humanize %}
+{% load i18n %}
+{% load celery_tags %}
+
+{% block title %}{% trans "Celery Status" %}{% endblock %}
+
+{% block header %}{% trans "Celery Status" %}{% endblock %}
+
+{% block panel %}
+
+{% if queues %}
+<section class="block content">
+    <h2>{% trans "Queues" %}</h2>
+    <div class="columns has-text-centered">
+        <div class="column is-4">
+            <div class="notification">
+                <p class="header">{% trans "Low priority" %}</p>
+                <p class="title is-5">{{ queues.low_priority|intcomma }}</p>
+            </div>
+        </div>
+        <div class="column is-4">
+            <div class="notification">
+                <p class="header">{% trans "Medium priority" %}</p>
+                <p class="title is-5">{{ queues.medium_priority|intcomma }}</p>
+            </div>
+        </div>
+        <div class="column is-4">
+            <div class="notification">
+                <p class="header">{% trans "High priority" %}</p>
+                <p class="title is-5">{{ queues.high_priority|intcomma }}</p>
+            </div>
+        </div>
+    </div>
+</section>
+{% else %}
+<div class="notification is-danger is-flex is-align-items-start">
+    <span class="icon icon-warning is-size-4 pr-3" aria-hidden="true"></span>
+    <span>
+        {% trans "Could not connect to Redis broker" %}
+    </span>
+</div>
+
+{% endif %}
+
+{% if stats %}
+<section class="block content">
+    <h2>{% trans "Active Tasks" %}</h2>
+    {% for worker in active_tasks.values %}
+        <div class="table-container">
+            <table class="table is-striped is-fullwidth">
+                <tr>
+                    <th>{% trans "ID" %}</th>
+                    <th>{% trans "Task name" %}</th>
+                    <th>{% trans "Run time" %}</th>
+                    <th>{% trans "Priority" %}</th>
+                </tr>
+                {% if not worker %}
+                <tr>
+                    <td colspan="4">
+                        <em>{% trans "No active tasks" %}</em>
+                    </td>
+                </tr>
+                {% endif %}
+                {% for task in worker %}
+                <tr>
+                    <td>{{ task.id }}</td>
+                    <td>{{ task.name|shortname }}</td>
+                    <td>{{ task.time_start|runtime }}</td>
+                    <td>{{ task.delivery_info.routing_key }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    {% endfor %}
+</section>
+
+<section class="block content">
+    <h2>{% trans "Workers" %}</h2>
+
+    {% for worker_name, worker in stats.items %}
+    <div class="notification">
+        <h3>{{ worker_name }}</h3>
+        {% trans "Uptime:" %} {{ worker.uptime|uptime }}
+    </div>
+    {% endfor %}
+</section>
+
+{% else %}
+
+<div class="notification is-danger is-flex is-align-items-start">
+    <span class="icon icon-warning is-size-4 pr-3" aria-hidden="true"></span>
+    <span>
+        {% trans "Could not connect to Celery" %}
+    </span>
+</div>
+{% endif %}
+
+{% if errors %}
+<div class="block content">
+    <h2>{% trans "Errors" %}</h2>
+    {% for error in errors %}
+    <pre>{{ error }}</pre>
+{% endfor %}
+
+</div>
+{% endif %}
+
+{% endblock %}

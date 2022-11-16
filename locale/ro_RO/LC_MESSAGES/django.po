@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-07-29 18:24+0000\n"
-"PO-Revision-Date: 2022-07-31 10:35\n"
+"POT-Creation-Date: 2022-11-07 19:14+0000\n"
+"PO-Revision-Date: 2022-11-07 19:53\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Romanian\n"
 "Language: ro\n"
@@ -17,38 +17,42 @@ msgstr ""
 "X-Crowdin-File: /[bookwyrm-social.bookwyrm] main/locale/en_US/LC_MESSAGES/django.po\n"
 "X-Crowdin-File-ID: 1553\n"
 
-#: bookwyrm/forms/admin.py:41
+#: bookwyrm/forms/admin.py:42
 msgid "One Day"
 msgstr "O zi"
 
-#: bookwyrm/forms/admin.py:42
+#: bookwyrm/forms/admin.py:43
 msgid "One Week"
 msgstr "O săptămână"
 
-#: bookwyrm/forms/admin.py:43
+#: bookwyrm/forms/admin.py:44
 msgid "One Month"
 msgstr "O lună"
 
-#: bookwyrm/forms/admin.py:44
+#: bookwyrm/forms/admin.py:45
 msgid "Does Not Expire"
 msgstr "Nu expiră"
 
-#: bookwyrm/forms/admin.py:48
+#: bookwyrm/forms/admin.py:49
 #, python-brace-format
 msgid "{i} uses"
 msgstr "{i} utilizări"
 
-#: bookwyrm/forms/admin.py:49
+#: bookwyrm/forms/admin.py:50
 msgid "Unlimited"
 msgstr "Nelimitat"
 
-#: bookwyrm/forms/edit_user.py:89
+#: bookwyrm/forms/edit_user.py:88
 msgid "Incorrect password"
 msgstr "Parolă incorectă"
 
-#: bookwyrm/forms/edit_user.py:96 bookwyrm/forms/landing.py:71
+#: bookwyrm/forms/edit_user.py:95 bookwyrm/forms/landing.py:73
 msgid "Password does not match"
 msgstr "Parola nu se potrivește"
+
+#: bookwyrm/forms/edit_user.py:118
+msgid "Incorrect Password"
+msgstr ""
 
 #: bookwyrm/forms/forms.py:54
 msgid "Reading finish date cannot be before start date."
@@ -58,13 +62,25 @@ msgstr "Data de terminare a lecturii nu poate fi înainte de data de început."
 msgid "Reading stopped date cannot be before start date."
 msgstr "Data de sfârșit a lecturii nu poate fi înainte de data de început."
 
-#: bookwyrm/forms/landing.py:38
+#: bookwyrm/forms/forms.py:67
+msgid "Reading stopped date cannot be in the future."
+msgstr ""
+
+#: bookwyrm/forms/forms.py:74
+msgid "Reading finished date cannot be in the future."
+msgstr ""
+
+#: bookwyrm/forms/landing.py:40
 msgid "User with this username already exists"
 msgstr "Un utilizator cu acest nume există deja"
 
-#: bookwyrm/forms/landing.py:47
+#: bookwyrm/forms/landing.py:49
 msgid "A user with this email already exists."
 msgstr "Un utilizator cu această adresă de email există deja."
+
+#: bookwyrm/forms/landing.py:107 bookwyrm/forms/landing.py:115
+msgid "Incorrect code"
+msgstr ""
 
 #: bookwyrm/forms/links.py:36
 msgid "This domain is blocked. Please contact your administrator if you think this is an error."
@@ -100,14 +116,6 @@ msgstr "Crescător"
 msgid "Descending"
 msgstr "Descrescător"
 
-#: bookwyrm/importers/importer.py:145 bookwyrm/importers/importer.py:167
-msgid "Error loading book"
-msgstr "Eroare la încărcarea cărții"
-
-#: bookwyrm/importers/importer.py:154
-msgid "Could not find a match for book"
-msgstr "Nu a putut fi găsită o potrivire pentru carte"
-
 #: bookwyrm/models/announcement.py:11
 msgid "Primary"
 msgstr "Principal"
@@ -129,12 +137,12 @@ msgstr "Avertisment"
 msgid "Danger"
 msgstr "Pericol"
 
-#: bookwyrm/models/antispam.py:101 bookwyrm/models/antispam.py:135
+#: bookwyrm/models/antispam.py:112 bookwyrm/models/antispam.py:146
 msgid "Automatically generated report"
 msgstr "Raport generat automat"
 
-#: bookwyrm/models/base_model.py:18 bookwyrm/models/link.py:72
-#: bookwyrm/templates/import/import_status.html:200
+#: bookwyrm/models/base_model.py:18 bookwyrm/models/import_job.py:47
+#: bookwyrm/models/link.py:72 bookwyrm/templates/import/import_status.html:214
 #: bookwyrm/templates/settings/link_domains/link_domains.html:19
 msgid "Pending"
 msgstr "În așteptare"
@@ -155,23 +163,23 @@ msgstr "Șters de moderator"
 msgid "Domain block"
 msgstr "Blocat de domeniu"
 
-#: bookwyrm/models/book.py:262
+#: bookwyrm/models/book.py:266
 msgid "Audiobook"
 msgstr "Carte audio"
 
-#: bookwyrm/models/book.py:263
+#: bookwyrm/models/book.py:267
 msgid "eBook"
 msgstr "Carte digitală"
 
-#: bookwyrm/models/book.py:264
+#: bookwyrm/models/book.py:268
 msgid "Graphic novel"
 msgstr "Roman grafic"
 
-#: bookwyrm/models/book.py:265
+#: bookwyrm/models/book.py:269
 msgid "Hardcover"
 msgstr "Copertă dură"
 
-#: bookwyrm/models/book.py:266
+#: bookwyrm/models/book.py:270
 msgid "Paperback"
 msgstr "Broșură"
 
@@ -199,7 +207,7 @@ msgstr "%(value)s nu este un remote_id valid"
 msgid "%(value)s is not a valid username"
 msgstr "%(value)s nu este un nume de utilizator valid"
 
-#: bookwyrm/models/fields.py:181 bookwyrm/templates/layout.html:123
+#: bookwyrm/models/fields.py:181 bookwyrm/templates/layout.html:141
 #: bookwyrm/templates/ostatus/error.html:29
 msgid "username"
 msgstr "nume de utilizator"
@@ -239,6 +247,33 @@ msgstr "Urmăritori"
 #: bookwyrm/templates/snippets/privacy_select_no_followers.html:17
 msgid "Private"
 msgstr "Privat"
+
+#: bookwyrm/models/import_job.py:48 bookwyrm/templates/import/import.html:140
+#: bookwyrm/templates/settings/imports/imports.html:19
+#: bookwyrm/templates/settings/users/user_admin.html:81
+#: bookwyrm/templates/settings/users/user_info.html:28
+msgid "Active"
+msgstr "Activ"
+
+#: bookwyrm/models/import_job.py:49 bookwyrm/templates/import/import.html:138
+msgid "Complete"
+msgstr ""
+
+#: bookwyrm/models/import_job.py:50
+msgid "Stopped"
+msgstr ""
+
+#: bookwyrm/models/import_job.py:84 bookwyrm/models/import_job.py:92
+msgid "Import stopped"
+msgstr ""
+
+#: bookwyrm/models/import_job.py:359 bookwyrm/models/import_job.py:384
+msgid "Error loading book"
+msgstr "Eroare la încărcarea cărții"
+
+#: bookwyrm/models/import_job.py:368
+msgid "Could not find a match for book"
+msgstr "Nu a putut fi găsită o potrivire pentru carte"
 
 #: bookwyrm/models/link.py:51
 msgid "Free"
@@ -287,8 +322,8 @@ msgstr "Friză cronologică de cărți"
 
 #: bookwyrm/settings.py:210
 #: bookwyrm/templates/guided_tour/user_profile.html:101
-#: bookwyrm/templates/search/layout.html:21
-#: bookwyrm/templates/search/layout.html:42
+#: bookwyrm/templates/search/layout.html:22
+#: bookwyrm/templates/search/layout.html:43
 #: bookwyrm/templates/user/layout.html:91
 msgid "Books"
 msgstr "Cărți"
@@ -334,26 +369,30 @@ msgid "Norsk (Norwegian)"
 msgstr "Norsk (norvegiană)"
 
 #: bookwyrm/settings.py:292
+msgid "Polski (Polish)"
+msgstr ""
+
+#: bookwyrm/settings.py:293
 msgid "Português do Brasil (Brazilian Portuguese)"
 msgstr "Português do Brasil (portugheză braziliană)"
 
-#: bookwyrm/settings.py:293
+#: bookwyrm/settings.py:294
 msgid "Português Europeu (European Portuguese)"
 msgstr "Português Europeu (portugheză europeană)"
 
-#: bookwyrm/settings.py:294
+#: bookwyrm/settings.py:295
 msgid "Română (Romanian)"
 msgstr "Română (română)"
 
-#: bookwyrm/settings.py:295
+#: bookwyrm/settings.py:296
 msgid "Svenska (Swedish)"
 msgstr "Svenska (suedeză)"
 
-#: bookwyrm/settings.py:296
+#: bookwyrm/settings.py:297
 msgid "简体中文 (Simplified Chinese)"
 msgstr "简体中文 (chineză simplificată)"
 
-#: bookwyrm/settings.py:297
+#: bookwyrm/settings.py:298
 msgid "繁體中文 (Traditional Chinese)"
 msgstr "繁體中文 (chineză tradițională)"
 
@@ -390,46 +429,46 @@ msgstr "Bine ați venit în %(site_name)s!"
 
 #: bookwyrm/templates/about/about.html:24
 #, python-format
-msgid "%(site_name)s is part of <em>BookWyrm</em>, a network of independent, self-directed communities for readers. While you can interact seamlessly with users anywhere in the <a href=\"https://joinbookwyrm.com/instances/\" target=\"_blank\">BookWyrm network</a>, this community is unique."
-msgstr "%(site_name)s este parte din <em>BookWyrm</em>, o rețea de comunități independente, autonome de cititori. Chiar dacă puteți interacționa perfect cu utilizatori de oriunde din <a href=\"https://joinbookwyrm.com/instances/\" target=\"_blank\">rețeaua BookWyrm</a>, această comunitate este unică."
+msgid "%(site_name)s is part of <em>BookWyrm</em>, a network of independent, self-directed communities for readers. While you can interact seamlessly with users anywhere in the <a href=\"https://joinbookwyrm.com/instances/\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">BookWyrm network</a>, this community is unique."
+msgstr ""
 
-#: bookwyrm/templates/about/about.html:42
+#: bookwyrm/templates/about/about.html:44
 #, python-format
 msgid "<a href=\"%(book_path)s\"><em>%(title)s</em></a> is %(site_name)s's most beloved book, with an average rating of %(rating)s out of 5."
 msgstr "<a href=\"%(book_path)s\"><em>%(title)s</em></a> este cartea cea mai iubită a %(site_name)s, cu un rating mediu de %(rating)s din 5."
 
-#: bookwyrm/templates/about/about.html:61
+#: bookwyrm/templates/about/about.html:63
 #, python-format
 msgid "More %(site_name)s users want to read <a href=\"%(book_path)s\"><em>%(title)s</em></a> than any other book."
 msgstr "Utilizatorii %(site_name)s vor să citească <a href=\"%(book_path)s\"><em>%(title)s</em></a> mai mult decât oricare altă carte."
 
-#: bookwyrm/templates/about/about.html:80
+#: bookwyrm/templates/about/about.html:82
 #, python-format
 msgid "<a href=\"%(book_path)s\"><em>%(title)s</em></a> has the most divisive ratings of any book on %(site_name)s."
 msgstr "<a href=\"%(book_path)s\"><em>%(title)s</em></a> are ratingul cel mai divizat față de orice altă carte a %(site_name)s."
 
-#: bookwyrm/templates/about/about.html:91
-msgid "Track your reading, talk about books, write reviews, and discover what to read next. Always ad-free, anti-corporate, and community-oriented, BookWyrm is human-scale software, designed to stay small and personal. If you have feature requests, bug reports, or grand dreams, <a href='https://joinbookwyrm.com/get-involved' target='_blank'>reach out</a> and make yourself heard."
-msgstr "Urmăriți progresul lecturii, vorbiți despre cărți, citiți recenzii și descoperiți ce să citiți în continuare. Mereu fără reclame, anti-corporație și axat pe comunitate, BookWyrm este un program la scară umană, conceput să rămână mic și personal. Dacă aveți cereri de funcționalități, raporturi de buguri sau vise mărețe, <a href='https://joinbookwyrm.com/get-involved' target='_blank'>contactați-ne</a> și făceți-vă auziți."
+#: bookwyrm/templates/about/about.html:93
+msgid "Track your reading, talk about books, write reviews, and discover what to read next. Always ad-free, anti-corporate, and community-oriented, BookWyrm is human-scale software, designed to stay small and personal. If you have feature requests, bug reports, or grand dreams, <a href=\"https://joinbookwyrm.com/get-involved\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">reach out</a> and make yourself heard."
+msgstr ""
 
-#: bookwyrm/templates/about/about.html:98
+#: bookwyrm/templates/about/about.html:103
 msgid "Meet your admins"
 msgstr "Întâlniți-vă adminii"
 
-#: bookwyrm/templates/about/about.html:101
+#: bookwyrm/templates/about/about.html:106
 #, python-format
 msgid "%(site_name)s's moderators and administrators keep the site up and running, enforce the <a href=\"%(coc_path)s\">code of conduct</a>, and respond when users report spam and bad behavior."
 msgstr "Moderatorii și administratorii %(site_name)s mențin site-ul în picioare, impun <a href=\"%(coc_path)s\">codul de conduită</a> și răspund când utilizatorii raportează spam și comportament neadecvat."
 
-#: bookwyrm/templates/about/about.html:115
+#: bookwyrm/templates/about/about.html:120
 msgid "Moderator"
 msgstr "Moderator"
 
-#: bookwyrm/templates/about/about.html:117 bookwyrm/templates/user_menu.html:63
+#: bookwyrm/templates/about/about.html:122 bookwyrm/templates/user_menu.html:63
 msgid "Admin"
 msgstr "Admin"
 
-#: bookwyrm/templates/about/about.html:133
+#: bookwyrm/templates/about/about.html:138
 #: bookwyrm/templates/settings/users/user_moderation_actions.html:14
 #: bookwyrm/templates/snippets/status/status_options.html:35
 #: bookwyrm/templates/snippets/user_options.html:14
@@ -456,7 +495,8 @@ msgid "Software version:"
 msgstr "Versiunea programului:"
 
 #: bookwyrm/templates/about/layout.html:30
-#: bookwyrm/templates/embed-layout.html:34 bookwyrm/templates/layout.html:182
+#: bookwyrm/templates/embed-layout.html:34 bookwyrm/templates/layout.html:200
+#: bookwyrm/templates/snippets/2fa_footer.html:8
 #, python-format
 msgid "About %(site_name)s"
 msgstr "Despre %(site_name)s"
@@ -612,66 +652,66 @@ msgstr "Recenzia sa: <strong>%(rating)s</strong>"
 msgid "All the books %(display_name)s read in %(year)s"
 msgstr "Toate cărțile %(display_name)s citite în %(year)s"
 
-#: bookwyrm/templates/author/author.html:18
 #: bookwyrm/templates/author/author.html:19
+#: bookwyrm/templates/author/author.html:20
 msgid "Edit Author"
 msgstr "Editați autorul"
 
-#: bookwyrm/templates/author/author.html:35
+#: bookwyrm/templates/author/author.html:36
 msgid "Author details"
 msgstr "Detaliile autorului"
 
-#: bookwyrm/templates/author/author.html:39
+#: bookwyrm/templates/author/author.html:40
 #: bookwyrm/templates/author/edit_author.html:42
 msgid "Aliases:"
 msgstr "Aliasuri:"
 
-#: bookwyrm/templates/author/author.html:48
+#: bookwyrm/templates/author/author.html:49
 msgid "Born:"
 msgstr "Născut:"
 
-#: bookwyrm/templates/author/author.html:55
+#: bookwyrm/templates/author/author.html:56
 msgid "Died:"
 msgstr "Mort:"
 
-#: bookwyrm/templates/author/author.html:65
+#: bookwyrm/templates/author/author.html:66
 msgid "External links"
 msgstr "Legături externe"
 
-#: bookwyrm/templates/author/author.html:70
+#: bookwyrm/templates/author/author.html:71
 msgid "Wikipedia"
 msgstr "Wikipedia"
 
-#: bookwyrm/templates/author/author.html:78
+#: bookwyrm/templates/author/author.html:79
 msgid "View ISNI record"
 msgstr "Vizualizați intrarea ISNI"
 
-#: bookwyrm/templates/author/author.html:83
+#: bookwyrm/templates/author/author.html:84
 #: bookwyrm/templates/author/sync_modal.html:5
 #: bookwyrm/templates/book/book.html:131
 #: bookwyrm/templates/book/sync_modal.html:5
 msgid "Load data"
 msgstr "Încărcați date"
 
-#: bookwyrm/templates/author/author.html:87
+#: bookwyrm/templates/author/author.html:88
 #: bookwyrm/templates/book/book.html:135
 msgid "View on OpenLibrary"
 msgstr "Vizualizați în OpenLibrary"
 
-#: bookwyrm/templates/author/author.html:102
+#: bookwyrm/templates/author/author.html:103
 #: bookwyrm/templates/book/book.html:149
 msgid "View on Inventaire"
 msgstr "Vizualizați în Inventaire"
 
-#: bookwyrm/templates/author/author.html:118
+#: bookwyrm/templates/author/author.html:119
 msgid "View on LibraryThing"
 msgstr "Vizualizați în LibraryThing"
 
-#: bookwyrm/templates/author/author.html:126
+#: bookwyrm/templates/author/author.html:127
 msgid "View on Goodreads"
 msgstr "Vizualizați în Goodreads"
 
-#: bookwyrm/templates/author/author.html:141
+#: bookwyrm/templates/author/author.html:142
 #, python-format
 msgid "Books by %(name)s"
 msgstr "Cărți de %(name)s"
@@ -756,7 +796,7 @@ msgstr "ISNI:"
 
 #: bookwyrm/templates/author/edit_author.html:115
 #: bookwyrm/templates/book/book.html:202
-#: bookwyrm/templates/book/edit/edit_book.html:135
+#: bookwyrm/templates/book/edit/edit_book.html:139
 #: bookwyrm/templates/book/file_links/add_link_modal.html:60
 #: bookwyrm/templates/book/file_links/edit_links.html:86
 #: bookwyrm/templates/groups/form.html:32
@@ -779,18 +819,20 @@ msgstr "Salvați"
 #: bookwyrm/templates/author/sync_modal.html:23
 #: bookwyrm/templates/book/book.html:203
 #: bookwyrm/templates/book/cover_add_modal.html:33
-#: bookwyrm/templates/book/edit/edit_book.html:137
-#: bookwyrm/templates/book/edit/edit_book.html:140
+#: bookwyrm/templates/book/edit/edit_book.html:141
+#: bookwyrm/templates/book/edit/edit_book.html:144
 #: bookwyrm/templates/book/file_links/add_link_modal.html:59
 #: bookwyrm/templates/book/file_links/verification_modal.html:25
 #: bookwyrm/templates/book/sync_modal.html:23
 #: bookwyrm/templates/groups/delete_group_modal.html:15
 #: bookwyrm/templates/lists/add_item_modal.html:36
 #: bookwyrm/templates/lists/delete_list_modal.html:16
+#: bookwyrm/templates/preferences/disable-2fa.html:19
 #: bookwyrm/templates/readthrough/delete_readthrough_modal.html:27
 #: bookwyrm/templates/readthrough/readthrough_modal.html:80
 #: bookwyrm/templates/search/barcode_modal.html:45
 #: bookwyrm/templates/settings/federation/instance.html:106
+#: bookwyrm/templates/settings/imports/complete_import_modal.html:16
 #: bookwyrm/templates/settings/link_domains/edit_domain_modal.html:22
 #: bookwyrm/templates/snippets/report_modal.html:52
 msgid "Cancel"
@@ -802,10 +844,12 @@ msgid "Loading data will connect to <strong>%(source_name)s</strong> and check f
 msgstr "Încărcatul de date se va conecta la <strong>%(source_name)s</strong> și verifica orice metadate despre autor care nu sunt prezente aici. Metadatele existente nu vor fi suprascrise."
 
 #: bookwyrm/templates/author/sync_modal.html:24
-#: bookwyrm/templates/book/edit/edit_book.html:122
+#: bookwyrm/templates/book/edit/edit_book.html:126
 #: bookwyrm/templates/book/sync_modal.html:24
 #: bookwyrm/templates/groups/members.html:29
 #: bookwyrm/templates/landing/password_reset.html:52
+#: bookwyrm/templates/preferences/2fa.html:54
+#: bookwyrm/templates/settings/imports/complete_import_modal.html:19
 #: bookwyrm/templates/snippets/remove_from_group_button.html:17
 msgid "Confirm"
 msgstr "Confirmați"
@@ -903,11 +947,11 @@ msgstr "Locuri"
 #: bookwyrm/templates/guided_tour/lists.html:14
 #: bookwyrm/templates/guided_tour/user_books.html:102
 #: bookwyrm/templates/guided_tour/user_profile.html:78
-#: bookwyrm/templates/layout.html:83 bookwyrm/templates/lists/curate.html:8
+#: bookwyrm/templates/layout.html:101 bookwyrm/templates/lists/curate.html:8
 #: bookwyrm/templates/lists/list.html:12 bookwyrm/templates/lists/lists.html:5
 #: bookwyrm/templates/lists/lists.html:12
-#: bookwyrm/templates/search/layout.html:25
-#: bookwyrm/templates/search/layout.html:50
+#: bookwyrm/templates/search/layout.html:26
+#: bookwyrm/templates/search/layout.html:51
 #: bookwyrm/templates/user/layout.html:85
 msgid "Lists"
 msgstr "Liste"
@@ -988,32 +1032,37 @@ msgid "Is \"%(name)s\" one of these authors?"
 msgstr "Este „%(name)s” unul dintre acești autori?"
 
 #: bookwyrm/templates/book/edit/edit_book.html:81
-#: bookwyrm/templates/book/edit/edit_book.html:83
-msgid "Author of "
-msgstr "Autor al "
+#, python-format
+msgid "Author of <em>%(book_title)s</em>"
+msgstr ""
 
-#: bookwyrm/templates/book/edit/edit_book.html:83
+#: bookwyrm/templates/book/edit/edit_book.html:85
+#, python-format
+msgid "Author of <em>%(alt_title)s</em>"
+msgstr ""
+
+#: bookwyrm/templates/book/edit/edit_book.html:87
 msgid "Find more information at isni.org"
 msgstr "Aflați mai multe la isni.org"
 
-#: bookwyrm/templates/book/edit/edit_book.html:93
+#: bookwyrm/templates/book/edit/edit_book.html:97
 msgid "This is a new author"
 msgstr "Acesta este un autor nou"
 
-#: bookwyrm/templates/book/edit/edit_book.html:100
+#: bookwyrm/templates/book/edit/edit_book.html:104
 #, python-format
 msgid "Creating a new author: %(name)s"
 msgstr "Creați un autor nou: %(name)s"
 
-#: bookwyrm/templates/book/edit/edit_book.html:107
+#: bookwyrm/templates/book/edit/edit_book.html:111
 msgid "Is this an edition of an existing work?"
 msgstr "Este această o ediție a unei opere existente?"
 
-#: bookwyrm/templates/book/edit/edit_book.html:115
+#: bookwyrm/templates/book/edit/edit_book.html:119
 msgid "This is a new work"
 msgstr "Aceasta este o operă nouă"
 
-#: bookwyrm/templates/book/edit/edit_book.html:124
+#: bookwyrm/templates/book/edit/edit_book.html:128
 #: bookwyrm/templates/feed/status.html:21
 #: bookwyrm/templates/guided_tour/book.html:44
 #: bookwyrm/templates/guided_tour/book.html:68
@@ -1269,9 +1318,10 @@ msgid "Domain"
 msgstr "Domeniu"
 
 #: bookwyrm/templates/book/file_links/edit_links.html:36
-#: bookwyrm/templates/import/import_status.html:127
+#: bookwyrm/templates/import/import.html:105
+#: bookwyrm/templates/import/import_status.html:134
 #: bookwyrm/templates/settings/announcements/announcements.html:37
-#: bookwyrm/templates/settings/invites/manage_invite_requests.html:47
+#: bookwyrm/templates/settings/invites/manage_invite_requests.html:48
 #: bookwyrm/templates/settings/invites/status_filter.html:5
 #: bookwyrm/templates/settings/users/user_admin.html:56
 #: bookwyrm/templates/settings/users/user_info.html:24
@@ -1281,8 +1331,9 @@ msgstr "Status"
 #: bookwyrm/templates/book/file_links/edit_links.html:37
 #: bookwyrm/templates/settings/announcements/announcements.html:41
 #: bookwyrm/templates/settings/federation/instance.html:112
+#: bookwyrm/templates/settings/imports/imports.html:60
 #: bookwyrm/templates/settings/reports/report_links_table.html:6
-#: bookwyrm/templates/settings/themes.html:100
+#: bookwyrm/templates/settings/themes.html:99
 msgid "Actions"
 msgstr "Acțiuni"
 
@@ -1397,7 +1448,7 @@ msgstr "Cod de confirmare:"
 
 #: bookwyrm/templates/confirm_email/confirm_email.html:25
 #: bookwyrm/templates/landing/layout.html:81
-#: bookwyrm/templates/settings/dashboard/dashboard.html:106
+#: bookwyrm/templates/settings/dashboard/dashboard.html:102
 #: bookwyrm/templates/snippets/report_modal.html:53
 msgid "Submit"
 msgstr "Trimiteți"
@@ -1561,7 +1612,7 @@ msgstr "<a href=\"%(user_path)s\">%(username)s</a> a citat <a href=\"%(book_path
 
 #: bookwyrm/templates/discover/discover.html:4
 #: bookwyrm/templates/discover/discover.html:10
-#: bookwyrm/templates/layout.html:86
+#: bookwyrm/templates/layout.html:104
 msgid "Discover"
 msgstr "Descoperiți"
 
@@ -1685,12 +1736,15 @@ msgid "Reset your %(site_name)s password"
 msgstr "Reinițializați parola dvs. pentru %(site_name)s"
 
 #: bookwyrm/templates/embed-layout.html:21 bookwyrm/templates/layout.html:40
-#: bookwyrm/templates/setup/layout.html:12
+#: bookwyrm/templates/setup/layout.html:15
+#: bookwyrm/templates/two_factor_auth/two_factor_login.html:18
+#: bookwyrm/templates/two_factor_auth/two_factor_prompt.html:18
 #, python-format
 msgid "%(site_name)s home page"
 msgstr "Pagina principală a %(site_name)s"
 
-#: bookwyrm/templates/embed-layout.html:40 bookwyrm/templates/layout.html:186
+#: bookwyrm/templates/embed-layout.html:40 bookwyrm/templates/layout.html:204
+#: bookwyrm/templates/snippets/2fa_footer.html:12
 msgid "Contact site admin"
 msgstr "Contactați adminul site-ului"
 
@@ -1841,8 +1895,8 @@ msgstr "Puteți adăuga cărți când începeți să folosiți %(site_name)s."
 #: bookwyrm/templates/groups/members.html:15
 #: bookwyrm/templates/groups/members.html:16 bookwyrm/templates/layout.html:54
 #: bookwyrm/templates/layout.html:55 bookwyrm/templates/lists/list.html:217
-#: bookwyrm/templates/search/layout.html:4
-#: bookwyrm/templates/search/layout.html:9
+#: bookwyrm/templates/search/layout.html:5
+#: bookwyrm/templates/search/layout.html:10
 msgid "Search"
 msgstr "Căutați"
 
@@ -1955,6 +2009,7 @@ msgstr "Ștergeți acest grup?"
 #: bookwyrm/templates/groups/delete_group_modal.html:7
 #: bookwyrm/templates/lists/delete_list_modal.html:7
 #: bookwyrm/templates/readthrough/delete_readthrough_modal.html:12
+#: bookwyrm/templates/settings/imports/complete_import_modal.html:7
 msgid "This action cannot be un-done"
 msgstr "Această acțiune nu poate fi revocată"
 
@@ -2015,8 +2070,8 @@ msgstr "Părăsiți grupul"
 #: bookwyrm/templates/groups/members.html:54
 #: bookwyrm/templates/groups/suggested_users.html:35
 #: bookwyrm/templates/snippets/suggested_users.html:31
-#: bookwyrm/templates/user/user_preview.html:33
-#: bookwyrm/templates/user/user_preview.html:41
+#: bookwyrm/templates/user/user_preview.html:39
+#: bookwyrm/templates/user/user_preview.html:47
 msgid "Follows you"
 msgstr "Vă urmărește"
 
@@ -2261,11 +2316,13 @@ msgstr "Bine ați venit în Bookwyrm!<br><br>Ați dori să parcurgeți un tur gh
 
 #: bookwyrm/templates/guided_tour/home.html:17
 #: bookwyrm/templates/guided_tour/home.html:39
-#: bookwyrm/templates/layout.html:194
+#: bookwyrm/templates/layout.html:212
+#: bookwyrm/templates/snippets/2fa_footer.html:20
 msgid "Guided Tour"
 msgstr "Tur ghidat"
 
 #: bookwyrm/templates/guided_tour/home.html:25
+#: bookwyrm/templates/two_factor_auth/two_factor_prompt.html:36
 msgid "No thanks"
 msgstr "Nu mulțumesc"
 
@@ -2318,7 +2375,8 @@ msgid "The bell will light up when you have a new notification. When it does, cl
 msgstr "Clopoțelul se va aprinde când aveți o notificare nouă. Când o face, apăsați-l pentru a descoperi ce lucru interesant s-a întâmplat!"
 
 #: bookwyrm/templates/guided_tour/home.html:177
-#: bookwyrm/templates/layout.html:99 bookwyrm/templates/layout.html:100
+#: bookwyrm/templates/layout.html:85 bookwyrm/templates/layout.html:117
+#: bookwyrm/templates/layout.html:118
 #: bookwyrm/templates/notifications/notifications_page.html:5
 #: bookwyrm/templates/notifications/notifications_page.html:10
 msgid "Notifications"
@@ -2423,8 +2481,8 @@ msgid "If you still can't find your book, you can add a record manually."
 msgstr "Dacă încă nu puteți cartea dvs., puteți adăuga o înregistrare manual."
 
 #: bookwyrm/templates/guided_tour/search.html:122
-msgid "Add a record manally"
-msgstr "Adăugați o înregistrare manual"
+msgid "Add a record manually"
+msgstr ""
 
 #: bookwyrm/templates/guided_tour/search.html:147
 msgid "Import, manually add, or view an existing book to continue the tour."
@@ -2569,37 +2627,81 @@ msgstr "Căutați o carte"
 msgid "Import Books"
 msgstr "Importați cărți"
 
-#: bookwyrm/templates/import/import.html:18
+#: bookwyrm/templates/import/import.html:15
+#, python-format
+msgid "On average, recent imports have taken %(hours)s hours."
+msgstr ""
+
+#: bookwyrm/templates/import/import.html:19
+#, python-format
+msgid "On average, recent imports have taken %(minutes)s minutes."
+msgstr ""
+
+#: bookwyrm/templates/import/import.html:34
 msgid "Data source:"
 msgstr "Sursa de date:"
 
-#: bookwyrm/templates/import/import.html:42
-msgid "You can download your Goodreads data from the <a href=\"https://www.goodreads.com/review/import\" target=\"_blank\" rel=\"noopener noreferrer\">Import/Export page</a> of your Goodreads account."
-msgstr "Puteți descărca datele dvs. GoodReads de pe <a href=\"https://www.goodreads.com/review/import\" target=\"_blank\" rel=\"noopener noreferrer\">pagina Import/Export</a> a contului dvs. GoodReads."
+#: bookwyrm/templates/import/import.html:40
+msgid "Goodreads (CSV)"
+msgstr ""
 
-#: bookwyrm/templates/import/import.html:47
+#: bookwyrm/templates/import/import.html:43
+msgid "Storygraph (CSV)"
+msgstr ""
+
+#: bookwyrm/templates/import/import.html:46
+msgid "LibraryThing (TSV)"
+msgstr ""
+
+#: bookwyrm/templates/import/import.html:49
+msgid "OpenLibrary (CSV)"
+msgstr ""
+
+#: bookwyrm/templates/import/import.html:52
+msgid "Calibre (CSV)"
+msgstr ""
+
+#: bookwyrm/templates/import/import.html:58
+msgid "You can download your Goodreads data from the <a href=\"https://www.goodreads.com/review/import\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">Import/Export page</a> of your Goodreads account."
+msgstr ""
+
+#: bookwyrm/templates/import/import.html:67
 msgid "Data file:"
 msgstr "Fișierul de date:"
 
-#: bookwyrm/templates/import/import.html:55
+#: bookwyrm/templates/import/import.html:75
 msgid "Include reviews"
 msgstr "Includeți recenzii"
 
-#: bookwyrm/templates/import/import.html:60
+#: bookwyrm/templates/import/import.html:80
 msgid "Privacy setting for imported reviews:"
 msgstr "Setare de confidențialitate pentru recenziile importate:"
 
-#: bookwyrm/templates/import/import.html:66
-#: bookwyrm/templates/preferences/layout.html:31
-#: bookwyrm/templates/settings/federation/instance_blocklist.html:76
+#: bookwyrm/templates/import/import.html:86
+#: bookwyrm/templates/preferences/layout.html:35
+#: bookwyrm/templates/settings/federation/instance_blocklist.html:78
 msgid "Import"
 msgstr "Importați"
 
-#: bookwyrm/templates/import/import.html:71
+#: bookwyrm/templates/import/import.html:91
 msgid "Recent Imports"
 msgstr "Importuri recente"
 
-#: bookwyrm/templates/import/import.html:73
+#: bookwyrm/templates/import/import.html:96
+#: bookwyrm/templates/settings/imports/imports.html:40
+msgid "Date Created"
+msgstr ""
+
+#: bookwyrm/templates/import/import.html:99
+msgid "Last Updated"
+msgstr ""
+
+#: bookwyrm/templates/import/import.html:102
+#: bookwyrm/templates/settings/imports/imports.html:48
+msgid "Items"
+msgstr ""
+
+#: bookwyrm/templates/import/import.html:111
 msgid "No recent imports"
 msgstr "Niciun import recent"
 
@@ -2615,6 +2717,9 @@ msgid "Retry Status"
 msgstr "Reîncercați stare"
 
 #: bookwyrm/templates/import/import_status.html:22
+#: bookwyrm/templates/settings/imports/imports.html:6
+#: bookwyrm/templates/settings/imports/imports.html:9
+#: bookwyrm/templates/settings/layout.html:82
 msgid "Imports"
 msgstr "Importuri"
 
@@ -2630,7 +2735,12 @@ msgstr "În progres"
 msgid "Refresh"
 msgstr "Reîmprospătați"
 
-#: bookwyrm/templates/import/import_status.html:71
+#: bookwyrm/templates/import/import_status.html:72
+#: bookwyrm/templates/settings/imports/imports.html:80
+msgid "Stop import"
+msgstr ""
+
+#: bookwyrm/templates/import/import_status.html:78
 #, python-format
 msgid "%(display_counter)s item needs manual approval."
 msgid_plural "%(display_counter)s items need manual approval."
@@ -2638,12 +2748,12 @@ msgstr[0] "%(display_counter)s element necesită aprobare manuală."
 msgstr[1] ""
 msgstr[2] "%(display_counter)s elemente necesită aprobare manuală."
 
-#: bookwyrm/templates/import/import_status.html:76
+#: bookwyrm/templates/import/import_status.html:83
 #: bookwyrm/templates/import/manual_review.html:8
 msgid "Review items"
 msgstr "Revizuiți elementele"
 
-#: bookwyrm/templates/import/import_status.html:82
+#: bookwyrm/templates/import/import_status.html:89
 #, python-format
 msgid "%(display_counter)s item failed to import."
 msgid_plural "%(display_counter)s items failed to import."
@@ -2651,74 +2761,78 @@ msgstr[0] "%(display_counter)s import de elemente eșuat."
 msgstr[1] ""
 msgstr[2] "%(display_counter)s importuri de elemente eșuate."
 
-#: bookwyrm/templates/import/import_status.html:88
+#: bookwyrm/templates/import/import_status.html:95
 msgid "View and troubleshoot failed items"
 msgstr "Vizualizați și depanați elementele eșuate"
 
-#: bookwyrm/templates/import/import_status.html:100
+#: bookwyrm/templates/import/import_status.html:107
 msgid "Row"
 msgstr "Linie"
 
-#: bookwyrm/templates/import/import_status.html:103
+#: bookwyrm/templates/import/import_status.html:110
 #: bookwyrm/templates/shelf/shelf.html:148
 #: bookwyrm/templates/shelf/shelf.html:170
 msgid "Title"
 msgstr "Titlu"
 
-#: bookwyrm/templates/import/import_status.html:106
+#: bookwyrm/templates/import/import_status.html:113
 msgid "ISBN"
 msgstr "ISBN"
 
-#: bookwyrm/templates/import/import_status.html:110
+#: bookwyrm/templates/import/import_status.html:117
 msgid "Openlibrary key"
 msgstr "Cheie OpenLibrary"
 
-#: bookwyrm/templates/import/import_status.html:114
+#: bookwyrm/templates/import/import_status.html:121
 #: bookwyrm/templates/shelf/shelf.html:149
 #: bookwyrm/templates/shelf/shelf.html:173
 msgid "Author"
 msgstr "Autor"
 
-#: bookwyrm/templates/import/import_status.html:117
+#: bookwyrm/templates/import/import_status.html:124
 msgid "Shelf"
 msgstr "Raft"
 
-#: bookwyrm/templates/import/import_status.html:120
+#: bookwyrm/templates/import/import_status.html:127
 #: bookwyrm/templates/import/manual_review.html:13
 #: bookwyrm/templates/snippets/create_status.html:16
 msgid "Review"
 msgstr "Recenzie"
 
-#: bookwyrm/templates/import/import_status.html:124
+#: bookwyrm/templates/import/import_status.html:131
 #: bookwyrm/templates/settings/link_domains/link_table.html:9
 msgid "Book"
 msgstr "Carte"
 
-#: bookwyrm/templates/import/import_status.html:135
+#: bookwyrm/templates/import/import_status.html:142
 msgid "Import preview unavailable."
 msgstr "Importul previzualizării indisponibil."
 
-#: bookwyrm/templates/import/import_status.html:172
+#: bookwyrm/templates/import/import_status.html:150
+msgid "No items currently need review"
+msgstr ""
+
+#: bookwyrm/templates/import/import_status.html:186
 msgid "View imported review"
 msgstr "Vizionați recenzia importată"
 
-#: bookwyrm/templates/import/import_status.html:186
+#: bookwyrm/templates/import/import_status.html:200
 msgid "Imported"
 msgstr "Importat"
 
-#: bookwyrm/templates/import/import_status.html:192
+#: bookwyrm/templates/import/import_status.html:206
 msgid "Needs manual review"
 msgstr "Necesită recenzie manuală"
 
-#: bookwyrm/templates/import/import_status.html:205
+#: bookwyrm/templates/import/import_status.html:219
 msgid "Retry"
 msgstr "Încercați din nou"
 
-#: bookwyrm/templates/import/import_status.html:223
+#: bookwyrm/templates/import/import_status.html:237
 msgid "This import is in an old format that is no longer supported. If you would like to troubleshoot missing items from this import, click the button below to update the import format."
 msgstr "Acest import este un format vechi care nu mai este suportat. Dacă doriți să reglați lipsurile din import, clic pe butonul de dedesubt pentru a actualiza formatul de importare."
 
-#: bookwyrm/templates/import/import_status.html:225
+#: bookwyrm/templates/import/import_status.html:239
 msgid "Update import"
 msgstr "Actualizare import"
 
@@ -2742,6 +2856,7 @@ msgid "Reject"
 msgstr "Respingeți"
 
 #: bookwyrm/templates/import/troubleshoot.html:7
+#: bookwyrm/templates/settings/imports/imports.html:57
 msgid "Failed items"
 msgstr "Elemente a căror importare a eșuat"
 
@@ -2826,7 +2941,7 @@ msgid "Login"
 msgstr "Autentificare"
 
 #: bookwyrm/templates/landing/login.html:7
-#: bookwyrm/templates/landing/login.html:36 bookwyrm/templates/layout.html:131
+#: bookwyrm/templates/landing/login.html:36 bookwyrm/templates/layout.html:149
 #: bookwyrm/templates/ostatus/error.html:37
 msgid "Log in"
 msgstr "Autentificați-vă"
@@ -2835,7 +2950,7 @@ msgstr "Autentificați-vă"
 msgid "Success! Email address confirmed."
 msgstr "Succes! Adresa email a fost confirmată."
 
-#: bookwyrm/templates/landing/login.html:21 bookwyrm/templates/layout.html:122
+#: bookwyrm/templates/landing/login.html:21 bookwyrm/templates/layout.html:140
 #: bookwyrm/templates/ostatus/error.html:28
 #: bookwyrm/templates/snippets/register_form.html:4
 msgid "Username:"
@@ -2843,12 +2958,13 @@ msgstr "Nume de utilizator:"
 
 #: bookwyrm/templates/landing/login.html:27
 #: bookwyrm/templates/landing/password_reset.html:26
-#: bookwyrm/templates/layout.html:126 bookwyrm/templates/ostatus/error.html:32
+#: bookwyrm/templates/layout.html:144 bookwyrm/templates/ostatus/error.html:32
+#: bookwyrm/templates/preferences/2fa.html:68
 #: bookwyrm/templates/snippets/register_form.html:45
 msgid "Password:"
 msgstr "Parolă:"
 
-#: bookwyrm/templates/landing/login.html:39 bookwyrm/templates/layout.html:128
+#: bookwyrm/templates/landing/login.html:39 bookwyrm/templates/layout.html:146
 #: bookwyrm/templates/ostatus/error.html:34
 msgid "Forgot your password?"
 msgstr "Parolă uitată?"
@@ -2889,42 +3005,45 @@ msgstr "Căutați o carte, un utilizator sau o listă"
 msgid "Scan Barcode"
 msgstr "Scanați codul de bare"
 
-#: bookwyrm/templates/layout.html:72
+#: bookwyrm/templates/layout.html:76
 msgid "Main navigation menu"
 msgstr "Meniul principal de navigație"
 
-#: bookwyrm/templates/layout.html:80
+#: bookwyrm/templates/layout.html:98
 msgid "Feed"
 msgstr "Fir de actualitate"
 
-#: bookwyrm/templates/layout.html:127 bookwyrm/templates/ostatus/error.html:33
+#: bookwyrm/templates/layout.html:145 bookwyrm/templates/ostatus/error.html:33
 msgid "password"
 msgstr "parolă"
 
-#: bookwyrm/templates/layout.html:139
+#: bookwyrm/templates/layout.html:157
 msgid "Join"
 msgstr "Alăturați-vă"
 
-#: bookwyrm/templates/layout.html:173
+#: bookwyrm/templates/layout.html:191
 msgid "Successfully posted status"
 msgstr "Stare postată cu succes"
 
-#: bookwyrm/templates/layout.html:174
+#: bookwyrm/templates/layout.html:192
 msgid "Error posting status"
 msgstr "Eroare la postarea stării"
 
-#: bookwyrm/templates/layout.html:190
+#: bookwyrm/templates/layout.html:208
+#: bookwyrm/templates/snippets/2fa_footer.html:16
 msgid "Documentation"
 msgstr "Documentație"
 
-#: bookwyrm/templates/layout.html:203
+#: bookwyrm/templates/layout.html:221
+#: bookwyrm/templates/snippets/2fa_footer.html:29
 #, python-format
-msgid "Support %(site_name)s on <a href=\"%(support_link)s\" target=\"_blank\">%(support_title)s</a>"
-msgstr "Susțineți %(site_name)s la <a href=\"%(support_link)s\" target=\"_blank\">%(support_title)s</a>"
+msgid "Support %(site_name)s on <a href=\"%(support_link)s\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">%(support_title)s</a>"
+msgstr ""
 
-#: bookwyrm/templates/layout.html:207
-msgid "BookWyrm's source code is freely available. You can contribute or report issues on <a href=\"https://github.com/mouse-reeve/bookwyrm\">GitHub</a>."
-msgstr "Codul sursă a lui BookWyrm este disponibil gratuit. Puteți contribui sau raporta probleme la <a href=\"https://github.com/mouse-reeve/bookwyrm\">GitHub</a>."
+#: bookwyrm/templates/layout.html:228
+#: bookwyrm/templates/snippets/2fa_footer.html:36
+msgid "BookWyrm's source code is freely available. You can contribute or report issues on <a href=\"https://github.com/bookwyrm-social/bookwyrm\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">GitHub</a>."
+msgstr ""
 
 #: bookwyrm/templates/lists/add_item_modal.html:8
 #, python-format
@@ -3473,19 +3592,19 @@ msgstr "a schimbat numele pentru <a href=\"%(group_path)s\">%(group_name)s</a>"
 msgid "has changed the description of <a href=\"%(group_path)s\">%(group_name)s</a>"
 msgstr "a schimbat descrierea <a href=\"%(group_path)s\">%(group_name)s</a>"
 
-#: bookwyrm/templates/notifications/notifications_page.html:18
+#: bookwyrm/templates/notifications/notifications_page.html:19
 msgid "Delete notifications"
 msgstr "Ștergeți notificările"
 
-#: bookwyrm/templates/notifications/notifications_page.html:29
+#: bookwyrm/templates/notifications/notifications_page.html:31
 msgid "All"
 msgstr "Toate"
 
-#: bookwyrm/templates/notifications/notifications_page.html:33
+#: bookwyrm/templates/notifications/notifications_page.html:35
 msgid "Mentions"
 msgstr "Mențiuni"
 
-#: bookwyrm/templates/notifications/notifications_page.html:45
+#: bookwyrm/templates/notifications/notifications_page.html:47
 msgid "You're all caught up!"
 msgstr "Nicio notificare nouă!"
 
@@ -3561,11 +3680,11 @@ msgstr "Cont cu care să-l urmăriți:"
 msgid "Follow!"
 msgstr "Urmăriți!"
 
-#: bookwyrm/templates/ostatus/remote_follow_button.html:8
+#: bookwyrm/templates/ostatus/remote_follow_button.html:15
 msgid "Follow on Fediverse"
 msgstr "Urmăriți pe Fediverse"
 
-#: bookwyrm/templates/ostatus/remote_follow_button.html:12
+#: bookwyrm/templates/ostatus/remote_follow_button.html:19
 msgid "This link opens in a pop-up window"
 msgstr "Această legătură se deschide într-o fereastră nouă"
 
@@ -3603,9 +3722,66 @@ msgstr "Urmăriți %(username)s"
 msgid "You are now following %(display_name)s!"
 msgstr "Sunteți acum abonat la %(display_name)s!"
 
+#: bookwyrm/templates/preferences/2fa.html:4
+#: bookwyrm/templates/preferences/2fa.html:7
+#: bookwyrm/templates/preferences/layout.html:24
+msgid "Two Factor Authentication"
+msgstr ""
+
+#: bookwyrm/templates/preferences/2fa.html:16
+msgid "Successfully updated 2FA settings"
+msgstr ""
+
+#: bookwyrm/templates/preferences/2fa.html:24
+msgid "Write down or copy and paste these codes somewhere safe."
+msgstr ""
+
+#: bookwyrm/templates/preferences/2fa.html:25
+msgid "You must use them in order, and they will not be displayed again."
+msgstr ""
+
+#: bookwyrm/templates/preferences/2fa.html:35
+msgid "Two Factor Authentication is active on your account."
+msgstr ""
+
+#: bookwyrm/templates/preferences/2fa.html:36
+#: bookwyrm/templates/preferences/disable-2fa.html:4
+#: bookwyrm/templates/preferences/disable-2fa.html:7
+msgid "Disable 2FA"
+msgstr ""
+
+#: bookwyrm/templates/preferences/2fa.html:39
+msgid "You can generate backup codes to use in case you do not have access to your authentication app. If you generate new codes, any backup codes previously generated will no longer work."
+msgstr ""
+
+#: bookwyrm/templates/preferences/2fa.html:40
+msgid "Generate backup codes"
+msgstr ""
+
+#: bookwyrm/templates/preferences/2fa.html:45
+msgid "Scan the QR code with your authentication app and then enter the code from  your app below to confirm your app is set up."
+msgstr ""
+
+#: bookwyrm/templates/preferences/2fa.html:50
+msgid "Enter the code from your app:"
+msgstr ""
+
+#: bookwyrm/templates/preferences/2fa.html:60
+msgid "You can make your account more secure by using Two Factor Authentication (2FA). This will require you to enter a one-time code using a phone app like <em>Authy</em>, <em>Google Authenticator</em> or <em>Microsoft Authenticator</em> each time you log in."
+msgstr ""
+
+#: bookwyrm/templates/preferences/2fa.html:62
+msgid "Confirm your password to begin setting up 2FA."
+msgstr ""
+
+#: bookwyrm/templates/preferences/2fa.html:72
+#: bookwyrm/templates/two_factor_auth/two_factor_prompt.html:37
+msgid "Set up 2FA"
+msgstr ""
+
 #: bookwyrm/templates/preferences/blocks.html:4
 #: bookwyrm/templates/preferences/blocks.html:7
-#: bookwyrm/templates/preferences/layout.html:42
+#: bookwyrm/templates/preferences/layout.html:46
 msgid "Blocked Users"
 msgstr "Utilizatori blocați"
 
@@ -3635,7 +3811,7 @@ msgstr "Parolă nouă:"
 #: bookwyrm/templates/preferences/delete_user.html:4
 #: bookwyrm/templates/preferences/delete_user.html:7
 #: bookwyrm/templates/preferences/delete_user.html:25
-#: bookwyrm/templates/preferences/layout.html:24
+#: bookwyrm/templates/preferences/layout.html:28
 #: bookwyrm/templates/settings/users/delete_user_form.html:22
 msgid "Delete Account"
 msgstr "Ștergeți cont"
@@ -3647,6 +3823,18 @@ msgstr "Ștergeți permanent contul"
 #: bookwyrm/templates/preferences/delete_user.html:14
 msgid "Deleting your account cannot be undone. The username will not be available to register in the future."
 msgstr "Ștersul contului dvs. nu poate fi revocată. Numele de utilizator nu va fi valabil pentru înregistrare mai târziu."
+
+#: bookwyrm/templates/preferences/disable-2fa.html:12
+msgid "Disable Two Factor Authentication"
+msgstr ""
+
+#: bookwyrm/templates/preferences/disable-2fa.html:14
+msgid "Disabling 2FA will allow anyone with your username and password to log in to your account."
+msgstr ""
+
+#: bookwyrm/templates/preferences/disable-2fa.html:20
+msgid "Turn off 2FA"
+msgstr ""
 
 #: bookwyrm/templates/preferences/edit_user.html:4
 #: bookwyrm/templates/preferences/edit_user.html:7
@@ -3728,15 +3916,15 @@ msgstr "Descărcați fișierul"
 msgid "Account"
 msgstr "Cont"
 
-#: bookwyrm/templates/preferences/layout.html:27
+#: bookwyrm/templates/preferences/layout.html:31
 msgid "Data"
 msgstr "Date"
 
-#: bookwyrm/templates/preferences/layout.html:35
+#: bookwyrm/templates/preferences/layout.html:39
 msgid "CSV export"
 msgstr "Export CSV"
 
-#: bookwyrm/templates/preferences/layout.html:38
+#: bookwyrm/templates/preferences/layout.html:42
 msgid "Relationships"
 msgstr "Relații"
 
@@ -3874,36 +4062,36 @@ msgctxt "followed by ISBN"
 msgid "Searching for book:"
 msgstr "Căutați o carte:"
 
-#: bookwyrm/templates/search/book.html:44
+#: bookwyrm/templates/search/book.html:39
 msgid "Results from"
 msgstr "Rezultate de la"
 
-#: bookwyrm/templates/search/book.html:80
+#: bookwyrm/templates/search/book.html:78
 msgid "Import book"
 msgstr "Importați o carte"
 
-#: bookwyrm/templates/search/book.html:106
+#: bookwyrm/templates/search/book.html:102
 msgid "Load results from other catalogues"
 msgstr "Încărcați rezultatele din alte cataloage"
 
-#: bookwyrm/templates/search/book.html:110
+#: bookwyrm/templates/search/book.html:106
 msgid "Manually add book"
 msgstr "Adăugați manual o carte"
 
-#: bookwyrm/templates/search/book.html:115
+#: bookwyrm/templates/search/book.html:111
 msgid "Log in to import or add books."
 msgstr "Autentificați-vă pentru a importa sau adăuga cărți."
 
-#: bookwyrm/templates/search/layout.html:16
+#: bookwyrm/templates/search/layout.html:17
 msgid "Search query"
 msgstr "Conținutul căutării"
 
-#: bookwyrm/templates/search/layout.html:19
+#: bookwyrm/templates/search/layout.html:20
 msgid "Search type"
 msgstr "Tipul căutării"
 
-#: bookwyrm/templates/search/layout.html:23
-#: bookwyrm/templates/search/layout.html:46
+#: bookwyrm/templates/search/layout.html:24
+#: bookwyrm/templates/search/layout.html:47
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:27
 #: bookwyrm/templates/settings/federation/instance_list.html:51
 #: bookwyrm/templates/settings/layout.html:36
@@ -3913,10 +4101,18 @@ msgstr "Tipul căutării"
 msgid "Users"
 msgstr "Utilizatori"
 
-#: bookwyrm/templates/search/layout.html:58
+#: bookwyrm/templates/search/layout.html:59
 #, python-format
 msgid "No results found for \"%(query)s\""
 msgstr "Niciun rezultat găsit pentru „%(query)s”"
+
+#: bookwyrm/templates/search/layout.html:61
+#, python-format
+msgid "%(result_count)s result found"
+msgid_plural "%(result_count)s results found"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
 
 #: bookwyrm/templates/settings/announcements/announcement.html:5
 #: bookwyrm/templates/settings/announcements/announcement.html:8
@@ -3933,7 +4129,7 @@ msgstr "Editați"
 #: bookwyrm/templates/settings/announcements/announcements.html:3
 #: bookwyrm/templates/settings/announcements/announcements.html:5
 #: bookwyrm/templates/settings/announcements/edit_announcement.html:15
-#: bookwyrm/templates/settings/layout.html:82
+#: bookwyrm/templates/settings/layout.html:97
 msgid "Announcements"
 msgstr "Anunțuri"
 
@@ -3951,13 +4147,13 @@ msgstr "Fals"
 
 #: bookwyrm/templates/settings/announcements/announcement.html:57
 #: bookwyrm/templates/settings/announcements/edit_announcement.html:79
-#: bookwyrm/templates/settings/dashboard/dashboard.html:84
+#: bookwyrm/templates/settings/dashboard/dashboard.html:80
 msgid "Start date:"
 msgstr "Data de început:"
 
 #: bookwyrm/templates/settings/announcements/announcement.html:62
 #: bookwyrm/templates/settings/announcements/edit_announcement.html:89
-#: bookwyrm/templates/settings/dashboard/dashboard.html:90
+#: bookwyrm/templates/settings/dashboard/dashboard.html:86
 msgid "End date:"
 msgstr "Data de sfârșit:"
 
@@ -4110,6 +4306,72 @@ msgstr "Afișați regulile"
 msgid "Remove rule"
 msgstr "Eliminați regulă"
 
+#: bookwyrm/templates/settings/celery.html:6
+#: bookwyrm/templates/settings/celery.html:8
+msgid "Celery Status"
+msgstr ""
+
+#: bookwyrm/templates/settings/celery.html:14
+msgid "Queues"
+msgstr ""
+
+#: bookwyrm/templates/settings/celery.html:18
+msgid "Low priority"
+msgstr ""
+
+#: bookwyrm/templates/settings/celery.html:24
+msgid "Medium priority"
+msgstr ""
+
+#: bookwyrm/templates/settings/celery.html:30
+msgid "High priority"
+msgstr ""
+
+#: bookwyrm/templates/settings/celery.html:40
+msgid "Could not connect to Redis broker"
+msgstr ""
+
+#: bookwyrm/templates/settings/celery.html:48
+msgid "Active Tasks"
+msgstr ""
+
+#: bookwyrm/templates/settings/celery.html:53
+#: bookwyrm/templates/settings/imports/imports.html:34
+msgid "ID"
+msgstr ""
+
+#: bookwyrm/templates/settings/celery.html:54
+msgid "Task name"
+msgstr ""
+
+#: bookwyrm/templates/settings/celery.html:55
+msgid "Run time"
+msgstr ""
+
+#: bookwyrm/templates/settings/celery.html:56
+msgid "Priority"
+msgstr ""
+
+#: bookwyrm/templates/settings/celery.html:61
+msgid "No active tasks"
+msgstr ""
+
+#: bookwyrm/templates/settings/celery.html:79
+msgid "Workers"
+msgstr ""
+
+#: bookwyrm/templates/settings/celery.html:84
+msgid "Uptime:"
+msgstr ""
+
+#: bookwyrm/templates/settings/celery.html:94
+msgid "Could not connect to Celery"
+msgstr ""
+
+#: bookwyrm/templates/settings/celery.html:101
+msgid "Errors"
+msgstr ""
+
 #: bookwyrm/templates/settings/dashboard/dashboard.html:6
 #: bookwyrm/templates/settings/dashboard/dashboard.html:8
 #: bookwyrm/templates/settings/layout.html:28
@@ -4117,7 +4379,7 @@ msgid "Dashboard"
 msgstr "Tablou de bord"
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:15
-#: bookwyrm/templates/settings/dashboard/dashboard.html:113
+#: bookwyrm/templates/settings/dashboard/dashboard.html:109
 msgid "Total users"
 msgstr "Număr total de utilizatori"
 
@@ -4135,31 +4397,31 @@ msgstr "Statusuri"
 msgid "Works"
 msgstr "Opere"
 
-#: bookwyrm/templates/settings/dashboard/dashboard.html:78
+#: bookwyrm/templates/settings/dashboard/dashboard.html:74
 msgid "Instance Activity"
 msgstr "Activitatea instanței"
 
-#: bookwyrm/templates/settings/dashboard/dashboard.html:96
+#: bookwyrm/templates/settings/dashboard/dashboard.html:92
 msgid "Interval:"
 msgstr "Interval:"
 
-#: bookwyrm/templates/settings/dashboard/dashboard.html:100
+#: bookwyrm/templates/settings/dashboard/dashboard.html:96
 msgid "Days"
 msgstr "Zile"
 
-#: bookwyrm/templates/settings/dashboard/dashboard.html:101
+#: bookwyrm/templates/settings/dashboard/dashboard.html:97
 msgid "Weeks"
 msgstr "Săptămâni"
 
-#: bookwyrm/templates/settings/dashboard/dashboard.html:119
+#: bookwyrm/templates/settings/dashboard/dashboard.html:115
 msgid "User signup activity"
 msgstr "Activitate de înscriere a utilizatorilor"
 
-#: bookwyrm/templates/settings/dashboard/dashboard.html:125
+#: bookwyrm/templates/settings/dashboard/dashboard.html:121
 msgid "Status activity"
 msgstr "Activitate stare"
 
-#: bookwyrm/templates/settings/dashboard/dashboard.html:131
+#: bookwyrm/templates/settings/dashboard/dashboard.html:127
 msgid "Works created"
 msgstr "Opere create"
 
@@ -4388,6 +4650,10 @@ msgstr "Blocat cu succes:"
 msgid "Failed:"
 msgstr "Eșuat:"
 
+#: bookwyrm/templates/settings/federation/instance_blocklist.html:62
+msgid "Expects a json file in the format provided by <a href=\"https://fediblock.org/\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">FediBlock</a>, with a list of entries that have <code>instance</code> and <code>url</code> fields. For example:"
+msgstr ""
+
 #: bookwyrm/templates/settings/federation/instance_list.html:35
 #: bookwyrm/templates/settings/users/server_filter.html:5
 msgid "Instance name"
@@ -4405,6 +4671,34 @@ msgstr "Program"
 #: bookwyrm/templates/settings/federation/instance_list.html:69
 msgid "No instances found"
 msgstr "N-a fost găsită nicio instanță"
+
+#: bookwyrm/templates/settings/imports/complete_import_modal.html:4
+msgid "Stop import?"
+msgstr ""
+
+#: bookwyrm/templates/settings/imports/imports.html:23
+msgid "Completed"
+msgstr ""
+
+#: bookwyrm/templates/settings/imports/imports.html:37
+msgid "User"
+msgstr ""
+
+#: bookwyrm/templates/settings/imports/imports.html:44
+msgid "Date Updated"
+msgstr ""
+
+#: bookwyrm/templates/settings/imports/imports.html:51
+msgid "Pending items"
+msgstr ""
+
+#: bookwyrm/templates/settings/imports/imports.html:54
+msgid "Successful items"
+msgstr ""
+
+#: bookwyrm/templates/settings/imports/imports.html:89
+msgid "No matching imports found."
+msgstr ""
 
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:4
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:11
@@ -4425,67 +4719,67 @@ msgstr "Invitații"
 msgid "Ignored Invite Requests"
 msgstr "Ignorați cererile de invitație"
 
-#: bookwyrm/templates/settings/invites/manage_invite_requests.html:35
+#: bookwyrm/templates/settings/invites/manage_invite_requests.html:36
 msgid "Date requested"
 msgstr "Dată solicitată"
 
-#: bookwyrm/templates/settings/invites/manage_invite_requests.html:39
+#: bookwyrm/templates/settings/invites/manage_invite_requests.html:40
 msgid "Date accepted"
 msgstr "Dată acceptată"
 
-#: bookwyrm/templates/settings/invites/manage_invite_requests.html:42
+#: bookwyrm/templates/settings/invites/manage_invite_requests.html:43
 #: bookwyrm/templates/settings/users/email_filter.html:5
 msgid "Email"
 msgstr "Email"
 
-#: bookwyrm/templates/settings/invites/manage_invite_requests.html:44
+#: bookwyrm/templates/settings/invites/manage_invite_requests.html:45
 msgid "Answer"
 msgstr "Răspundeți"
 
-#: bookwyrm/templates/settings/invites/manage_invite_requests.html:50
+#: bookwyrm/templates/settings/invites/manage_invite_requests.html:51
 msgid "Action"
 msgstr "Acțiune"
 
-#: bookwyrm/templates/settings/invites/manage_invite_requests.html:53
+#: bookwyrm/templates/settings/invites/manage_invite_requests.html:54
 msgid "No requests"
 msgstr "Nicio cerere"
 
-#: bookwyrm/templates/settings/invites/manage_invite_requests.html:65
+#: bookwyrm/templates/settings/invites/manage_invite_requests.html:66
 #: bookwyrm/templates/settings/invites/status_filter.html:16
 msgid "Accepted"
 msgstr "Acceptată"
 
-#: bookwyrm/templates/settings/invites/manage_invite_requests.html:67
+#: bookwyrm/templates/settings/invites/manage_invite_requests.html:68
 #: bookwyrm/templates/settings/invites/status_filter.html:12
 msgid "Sent"
 msgstr "Trimisă"
 
-#: bookwyrm/templates/settings/invites/manage_invite_requests.html:69
+#: bookwyrm/templates/settings/invites/manage_invite_requests.html:70
 #: bookwyrm/templates/settings/invites/status_filter.html:8
 msgid "Requested"
 msgstr "Solicitată"
 
-#: bookwyrm/templates/settings/invites/manage_invite_requests.html:79
+#: bookwyrm/templates/settings/invites/manage_invite_requests.html:80
 msgid "Send invite"
 msgstr "Trimiteți invitație"
 
-#: bookwyrm/templates/settings/invites/manage_invite_requests.html:81
+#: bookwyrm/templates/settings/invites/manage_invite_requests.html:82
 msgid "Re-send invite"
 msgstr "Retrimiteți invitație"
 
-#: bookwyrm/templates/settings/invites/manage_invite_requests.html:101
+#: bookwyrm/templates/settings/invites/manage_invite_requests.html:102
 msgid "Ignore"
 msgstr "Ignorați"
 
-#: bookwyrm/templates/settings/invites/manage_invite_requests.html:103
+#: bookwyrm/templates/settings/invites/manage_invite_requests.html:104
 msgid "Un-ignore"
 msgstr "Nu mai ignorați"
 
-#: bookwyrm/templates/settings/invites/manage_invite_requests.html:114
+#: bookwyrm/templates/settings/invites/manage_invite_requests.html:116
 msgid "Back to pending requests"
 msgstr "Înapoi la cererile în așteptare"
 
-#: bookwyrm/templates/settings/invites/manage_invite_requests.html:116
+#: bookwyrm/templates/settings/invites/manage_invite_requests.html:118
 msgid "View ignored requests"
 msgstr "Vizualizați cererile ignorate"
 
@@ -4581,16 +4875,24 @@ msgid "Link Domains"
 msgstr "Legături către domenii"
 
 #: bookwyrm/templates/settings/layout.html:78
+msgid "System"
+msgstr ""
+
+#: bookwyrm/templates/settings/layout.html:88
+msgid "Celery status"
+msgstr ""
+
+#: bookwyrm/templates/settings/layout.html:93
 msgid "Instance Settings"
 msgstr "Setările instanței"
 
-#: bookwyrm/templates/settings/layout.html:86
+#: bookwyrm/templates/settings/layout.html:101
 #: bookwyrm/templates/settings/site.html:4
 #: bookwyrm/templates/settings/site.html:6
 msgid "Site Settings"
 msgstr "Setările site-ului"
 
-#: bookwyrm/templates/settings/layout.html:91
+#: bookwyrm/templates/settings/layout.html:106
 #: bookwyrm/templates/settings/site.html:95
 #: bookwyrm/templates/settings/themes.html:4
 #: bookwyrm/templates/settings/themes.html:6
@@ -4870,7 +5172,7 @@ msgid "Add the file name using the form below to make it available in the applic
 msgstr "Adăugați numele fișierului folosind formularul de mai jos pentru a îl face disponibil în interfața aplicației."
 
 #: bookwyrm/templates/settings/themes.html:42
-#: bookwyrm/templates/settings/themes.html:83
+#: bookwyrm/templates/settings/themes.html:82
 msgid "Add theme"
 msgstr "Adăugați temă"
 
@@ -4878,24 +5180,24 @@ msgstr "Adăugați temă"
 msgid "Unable to save theme"
 msgstr "Imposibil de salvat tema"
 
-#: bookwyrm/templates/settings/themes.html:64
-#: bookwyrm/templates/settings/themes.html:94
+#: bookwyrm/templates/settings/themes.html:63
+#: bookwyrm/templates/settings/themes.html:93
 msgid "Theme name"
 msgstr "Numele temei"
 
-#: bookwyrm/templates/settings/themes.html:74
+#: bookwyrm/templates/settings/themes.html:73
 msgid "Theme filename"
 msgstr "Numele fișierului temă"
 
-#: bookwyrm/templates/settings/themes.html:89
+#: bookwyrm/templates/settings/themes.html:88
 msgid "Available Themes"
 msgstr "Teme disponibile"
 
-#: bookwyrm/templates/settings/themes.html:97
+#: bookwyrm/templates/settings/themes.html:96
 msgid "File"
 msgstr "Fișier"
 
-#: bookwyrm/templates/settings/themes.html:112
+#: bookwyrm/templates/settings/themes.html:111
 msgid "Remove theme"
 msgstr "Înlăturați temă"
 
@@ -4938,11 +5240,6 @@ msgstr "Ultima dată activ(ă)"
 #: bookwyrm/templates/settings/users/user_admin.html:61
 msgid "Remote instance"
 msgstr "Instanță la distanță"
-
-#: bookwyrm/templates/settings/users/user_admin.html:81
-#: bookwyrm/templates/settings/users/user_info.html:28
-msgid "Active"
-msgstr "Activ"
 
 #: bookwyrm/templates/settings/users/user_admin.html:86
 msgid "Deleted"
@@ -5143,11 +5440,11 @@ msgstr "Vizualizați instrucțiunile de instalare"
 msgid "Instance Setup"
 msgstr "Setările instanței"
 
-#: bookwyrm/templates/setup/layout.html:15
+#: bookwyrm/templates/setup/layout.html:19
 msgid "Installing BookWyrm"
 msgstr "Instalând BookWyrm"
 
-#: bookwyrm/templates/setup/layout.html:18
+#: bookwyrm/templates/setup/layout.html:22
 msgid "Need help?"
 msgstr "Aveți nevoie de ajutor?"
 
@@ -5651,11 +5948,11 @@ msgstr "(Pagină %(page)s)"
 msgid "(%(percent)s%%)"
 msgstr "(%(percent)s%%)"
 
-#: bookwyrm/templates/snippets/status/content_status.html:126
+#: bookwyrm/templates/snippets/status/content_status.html:127
 msgid "Open image in new window"
 msgstr "Deshideți imaginea într-o fereastră nouă"
 
-#: bookwyrm/templates/snippets/status/content_status.html:145
+#: bookwyrm/templates/snippets/status/content_status.html:146
 msgid "Hide status"
 msgstr "Ascundeți starea"
 
@@ -5788,6 +6085,26 @@ msgstr "Arătați mai multe"
 msgid "Show less"
 msgstr "Arătați mai puțin"
 
+#: bookwyrm/templates/two_factor_auth/two_factor_login.html:29
+msgid "2FA check"
+msgstr ""
+
+#: bookwyrm/templates/two_factor_auth/two_factor_login.html:37
+msgid "Enter the code from your authenticator app:"
+msgstr ""
+
+#: bookwyrm/templates/two_factor_auth/two_factor_login.html:41
+msgid "Confirm and Log In"
+msgstr ""
+
+#: bookwyrm/templates/two_factor_auth/two_factor_prompt.html:29
+msgid "2FA is available"
+msgstr ""
+
+#: bookwyrm/templates/two_factor_auth/two_factor_prompt.html:34
+msgid "You can secure your account by setting up two factor authentication in your user preferences. This will require a one-time code from your phone in addition to your password each time you log in."
+msgstr ""
+
 #: bookwyrm/templates/user/books_header.html:9
 #, python-format
 msgid "%(username)s's books"
@@ -5897,12 +6214,12 @@ msgstr[0] "%(counter)s urmăritor"
 msgstr[1] ""
 msgstr[2] "%(counter)s urmăritori"
 
-#: bookwyrm/templates/user/user_preview.html:27
+#: bookwyrm/templates/user/user_preview.html:31
 #, python-format
 msgid "%(counter)s following"
 msgstr "%(counter)s urmăritori"
 
-#: bookwyrm/templates/user/user_preview.html:39
+#: bookwyrm/templates/user/user_preview.html:45
 #, python-format
 msgid "%(mutuals_display)s follower you follow"
 msgid_plural "%(mutuals_display)s followers you follow"
@@ -5910,7 +6227,7 @@ msgstr[0] "%(mutuals_display)s urmăritor mutual"
 msgstr[1] ""
 msgstr[2] "%(mutuals_display)s urmăritori mutuali"
 
-#: bookwyrm/templates/user/user_preview.html:43
+#: bookwyrm/templates/user/user_preview.html:49
 msgid "No followers you follow"
 msgstr "Niciun urmăritor pe care îl urmărești"
 
@@ -5931,11 +6248,11 @@ msgstr "Fișierul depășește dimensiuneaz maximă: 10Mo"
 msgid "%(title)s: %(subtitle)s"
 msgstr "%(title)s: %(subtitle)s"
 
-#: bookwyrm/views/imports/import_data.py:70
+#: bookwyrm/views/imports/import_data.py:98
 msgid "Not a valid csv file"
 msgstr "Nu este un fișier csv valid"
 
-#: bookwyrm/views/landing/login.py:70
+#: bookwyrm/views/landing/login.py:86
 msgid "Username or password are incorrect"
 msgstr "Numele de utilizator sau parola greșite"
 

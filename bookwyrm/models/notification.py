@@ -214,7 +214,7 @@ def notify_user_on_import_complete(
     update_fields = update_fields or []
     if not instance.complete or "complete" not in update_fields:
         return
-    Notification.objects.create(
+    Notification.objects.get_or_create(
         user=instance.user,
         notification_type=Notification.IMPORT,
         related_import=instance,
@@ -231,10 +231,7 @@ def notify_admins_on_report(sender, instance, created, *args, **kwargs):
         return
 
     # moderators and superusers should be notified
-    admins = User.objects.filter(
-        models.Q(user_permissions__name__in=["moderate_user", "moderate_post"])
-        | models.Q(is_superuser=True)
-    ).all()
+    admins = User.admins()
     for admin in admins:
         notification, _ = Notification.objects.get_or_create(
             user=admin,

@@ -7,6 +7,7 @@ from django.contrib.postgres.search import SearchRank, SearchQuery
 from django.db.models import OuterRef, Subquery, F, Q
 
 from bookwyrm import models
+from bookwyrm import connectors
 from bookwyrm.settings import MEDIA_FULL_URL
 
 
@@ -30,7 +31,9 @@ def isbn_search(query):
     """search your local database"""
     if not query:
         return []
-
+    # Up-case the ISBN string to ensure any 'X' check-digit is correct
+    # If the ISBN has only 9 characters, prepend missing zero
+    query = query.strip().upper().rjust(10, "0")
     filters = [{f: query} for f in ["isbn_10", "isbn_13"]]
     results = models.Edition.objects.filter(
         reduce(operator.or_, (Q(**f) for f in filters))
@@ -72,6 +75,10 @@ def format_search_result(search_result):
 
 def search_identifiers(query, *filters, return_first=False):
     """tries remote_id, isbn; defined as dedupe fields on the model"""
+    if connectors.maybe_isbn(query):
+        # Oh did you think the 'S' in ISBN stood for 'standard'?
+        normalized_isbn = query.strip().upper().rjust(10, "0")
+        query = normalized_isbn
     # pylint: disable=W0212
     or_filters = [
         {f.name: query}

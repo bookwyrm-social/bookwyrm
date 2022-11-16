@@ -20,6 +20,7 @@ from bookwyrm.tests.validate_html import validate_html
 class RegisterViews(TestCase):
     """login and password management"""
 
+    # pylint: disable=invalid-name
     def setUp(self):
         """we need basic test data and mocks"""
         self.factory = RequestFactory()
@@ -382,6 +383,6 @@ class RegisterViews(TestCase):
         """try again"""
         request = self.factory.post("", {"email": "mouse@mouse.com"})
         request.user = self.anonymous_user
-        with patch("bookwyrm.emailing.send_email.delay") as mock:
+        with patch("bookwyrm.emailing.send_email") as mock:
             views.ResendConfirmEmail.as_view()(request)
         self.assertEqual(mock.call_count, 1)
