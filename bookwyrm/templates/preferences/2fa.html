@@ -46,6 +46,9 @@
         <div class="columns">
             <section class="column is-narrow">
                 <figure class="m-4">{{ qrcode | safe }}</figure>
+                <div class="">
+                    {{ code | safe }}
+                </div>
                 <div class="field">
                     <label class="label" for="id_otp">{% trans "Enter the code from your app:" %}</label>
                     {{ form.otp }}
