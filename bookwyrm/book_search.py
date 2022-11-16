@@ -17,6 +17,8 @@ def search(query, min_confidence=0, filters=None, return_first=False):
     filters = filters or []
     if not query:
         return []
+    query = query.strip()
+
     results = None
     # first, try searching unqiue identifiers
     # unique identifiers never have spaces, title/author usually do
