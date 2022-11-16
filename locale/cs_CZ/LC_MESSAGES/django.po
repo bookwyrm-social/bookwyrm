@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-11-10 21:42+0000\n"
-"PO-Revision-Date: 2022-11-16 13:13\n"
+"PO-Revision-Date: 2022-11-16 14:14\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Czech\n"
 "Language: cs\n"
@@ -529,7 +529,7 @@ msgstr "%(year)s <em>v knihách</em>"
 #: bookwyrm/templates/annual_summary/layout.html:47
 #, python-format
 msgid "<em>%(display_name)s’s</em> year of reading"
-msgstr ""
+msgstr "<em>%(display_name)s</em> - rok čtení"
 
 #: bookwyrm/templates/annual_summary/layout.html:53
 msgid "Share this page"
@@ -558,7 +558,7 @@ msgstr "Nastavit stránku jako soukromou"
 
 #: bookwyrm/templates/annual_summary/layout.html:89
 msgid "Sharing status: <strong>private</strong>"
-msgstr ""
+msgstr "Stav sdílení: <strong>soukromý</strong>"
 
 #: bookwyrm/templates/annual_summary/layout.html:90
 msgid "The page is private, only you can see it."
@@ -584,7 +584,7 @@ msgid_plural "In %(year)s, %(display_name)s read %(books_total)s books<br />for 
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
-msgstr[3] ""
+msgstr[3] "V roce %(year)s přečetl %(display_name)s %(books_total)s knih<br /> s celkovým počtem %(pages_total)s stran!"
 
 #: bookwyrm/templates/annual_summary/layout.html:124
 msgid "That’s great!"
@@ -602,11 +602,11 @@ msgid_plural "(%(no_page_number)s books don’t have pages)"
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
-msgstr[3] ""
+msgstr[3] "(kniha %(no_page_number)s nemá stránky)"
 
 #: bookwyrm/templates/annual_summary/layout.html:148
 msgid "Their shortest read this year…"
-msgstr ""
+msgstr "Nejkratší četbou v tomto roce…"
 
 #: bookwyrm/templates/annual_summary/layout.html:155
 #: bookwyrm/templates/annual_summary/layout.html:176
@@ -622,17 +622,17 @@ msgstr "od"
 #: bookwyrm/templates/annual_summary/layout.html:182
 #, python-format
 msgid "<strong>%(pages)s</strong> pages"
-msgstr ""
+msgstr "<strong>%(pages)s</strong> stran"
 
 #: bookwyrm/templates/annual_summary/layout.html:169
 msgid "…and the longest"
-msgstr ""
+msgstr "…a nejdelší"
 
 #: bookwyrm/templates/annual_summary/layout.html:200
 #, python-format
 msgid "%(display_name)s set a goal of reading %(goal)s book in %(year)s,<br /> and achieved %(goal_percent)s%% of that goal"
 msgid_plural "%(display_name)s set a goal of reading %(goal)s books in %(year)s,<br /> and achieved %(goal_percent)s%% of that goal"
-msgstr[0] ""
+msgstr[0] "%(display_name)s si nastavil cíl přečíst %(goal)s knihu v %(year)s<br /> a dosáhl %(goal_percent)s%% tohoto cíle"
 msgstr[1] ""
 msgstr[2] ""
 msgstr[3] ""
@@ -648,7 +648,7 @@ msgid_plural "%(display_name)s left %(ratings_total)s ratings, <br />their avera
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
-msgstr[3] ""
+msgstr[3] "%(display_name)s zanechal %(ratings_total)s hodnocení, <br />jejich průměrné hodnocení je %(rating_average)s"
 
 #: bookwyrm/templates/annual_summary/layout.html:238
 msgid "Their best rated review"
@@ -662,7 +662,7 @@ msgstr "Jejich hodnocení: <strong>%(rating)s</strong>"
 #: bookwyrm/templates/annual_summary/layout.html:268
 #, python-format
 msgid "All the books %(display_name)s read in %(year)s"
-msgstr ""
+msgstr "Všechny knihy %(display_name)s přečtené v %(year)s"
 
 #: bookwyrm/templates/author/author.html:19
 #: bookwyrm/templates/author/author.html:20
@@ -1147,19 +1147,19 @@ msgstr "Jazyky:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:86
 msgid "Subjects:"
-msgstr ""
+msgstr "Témata:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:90
 msgid "Add subject"
-msgstr ""
+msgstr "Přidat téma"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:108
 msgid "Remove subject"
-msgstr ""
+msgstr "Odebrat téma"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:131
 msgid "Add Another Subject"
-msgstr ""
+msgstr "Přidat další téma"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:139
 msgid "Publication"
@@ -1308,7 +1308,7 @@ msgstr "Upravit odkazy"
 #: bookwyrm/templates/book/file_links/edit_links.html:11
 #, python-format
 msgid "Links for \"<em>%(title)s</em>\""
-msgstr ""
+msgstr "Odkazy pro \"<em>%(title)s</em>\""
 
 #: bookwyrm/templates/book/file_links/edit_links.html:32
 #: bookwyrm/templates/settings/link_domains/link_table.html:6
@@ -1349,7 +1349,7 @@ msgstr "Status"
 #: bookwyrm/templates/settings/reports/report_links_table.html:6
 #: bookwyrm/templates/settings/themes.html:99
 msgid "Actions"
-msgstr ""
+msgstr "Akce"
 
 #: bookwyrm/templates/book/file_links/edit_links.html:48
 #: bookwyrm/templates/settings/link_domains/link_table.html:21
@@ -1363,7 +1363,7 @@ msgstr "Nahlásit spam"
 
 #: bookwyrm/templates/book/file_links/edit_links.html:101
 msgid "No links available for this book."
-msgstr ""
+msgstr "Pro tuto knihu nejsou k dispozici žádné odkazy."
 
 #: bookwyrm/templates/book/file_links/edit_links.html:112
 #: bookwyrm/templates/book/file_links/links.html:18
@@ -1372,7 +1372,7 @@ msgstr "Přidat odkaz na soubor"
 
 #: bookwyrm/templates/book/file_links/file_link_page.html:6
 msgid "File Links"
-msgstr ""
+msgstr "Odkazy na soubory"
 
 #: bookwyrm/templates/book/file_links/links.html:9
 msgid "Get a copy"
@@ -1380,7 +1380,7 @@ msgstr "Získat kopii"
 
 #: bookwyrm/templates/book/file_links/links.html:47
 msgid "No links available"
-msgstr ""
+msgstr "Žádné odkazy nejsou k dispozici"
 
 #: bookwyrm/templates/book/file_links/verification_modal.html:5
 msgid "Leaving BookWyrm"
@@ -1389,7 +1389,7 @@ msgstr "Opoštíte BookWyrm"
 #: bookwyrm/templates/book/file_links/verification_modal.html:11
 #, python-format
 msgid "This link is taking you to: <code>%(link_url)s</code>.<br> Is that where you'd like to go?"
-msgstr ""
+msgstr "Tento odkaz vás pošle na: <code>%(link_url)s</code>.<br> Chcete tam pokračovat?"
 
 #: bookwyrm/templates/book/file_links/verification_modal.html:26
 #: bookwyrm/templates/setup/config.html:139
@@ -1399,17 +1399,17 @@ msgstr "Pokračovat"
 #: bookwyrm/templates/book/publisher_info.html:23
 #, python-format
 msgid "%(format)s, %(pages)s pages"
-msgstr ""
+msgstr "%(format)s, %(pages)s stran"
 
 #: bookwyrm/templates/book/publisher_info.html:25
 #, python-format
 msgid "%(pages)s pages"
-msgstr ""
+msgstr "%(pages)s stran"
 
 #: bookwyrm/templates/book/publisher_info.html:38
 #, python-format
 msgid "%(languages)s language"
-msgstr ""
+msgstr "%(languages)s jazyk"
 
 #: bookwyrm/templates/book/publisher_info.html:65
 #, python-format
@@ -1433,7 +1433,7 @@ msgstr "ohodnotil"
 #: bookwyrm/templates/book/sync_modal.html:15
 #, python-format
 msgid "Loading data will connect to <strong>%(source_name)s</strong> and check for any metadata about this book which aren't present here. Existing metadata will not be overwritten."
-msgstr ""
+msgstr "Během načítání dojde k připojení k <strong>%(source_name)s</strong> a ověření, zda o této knize neexistují metadata, která zde nejsou uvedena. Stávající metadata nebudou přepsána."
 
 #: bookwyrm/templates/compose.html:5 bookwyrm/templates/compose.html:8
 msgid "Edit status"
@@ -1449,7 +1449,7 @@ msgstr "Potvrďte svoji e-mailovou adresu"
 
 #: bookwyrm/templates/confirm_email/confirm_email.html:13
 msgid "A confirmation code has been sent to the email address you used to register your account."
-msgstr ""
+msgstr "Potvrzovací kód byl odeslán na e-mailovou adresu, kterou jste použili při registraci vašeho účtu."
 
 #: bookwyrm/templates/confirm_email/confirm_email.html:15
 msgid "Sorry! We couldn't find that code."
@@ -1465,7 +1465,7 @@ msgstr "Potvrzovací kód:"
 #: bookwyrm/templates/settings/dashboard/dashboard.html:102
 #: bookwyrm/templates/snippets/report_modal.html:53
 msgid "Submit"
-msgstr ""
+msgstr "Odeslat"
 
 #: bookwyrm/templates/confirm_email/confirm_email.html:38
 msgid "Can't find your code?"
@@ -1486,7 +1486,7 @@ msgstr "E-mailová adresa:"
 
 #: bookwyrm/templates/confirm_email/resend_modal.html:30
 msgid "Resend link"
-msgstr ""
+msgstr "Poslat odkaz znovu"
 
 #: bookwyrm/templates/directory/community_filter.html:5
 msgid "Community"
@@ -1561,7 +1561,7 @@ msgid_plural "followers you follow"
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
-msgstr[3] ""
+msgstr[3] "sledující, které sledujete"
 
 #: bookwyrm/templates/directory/user_card.html:47
 msgid "book on your shelves"
@@ -1569,7 +1569,7 @@ msgid_plural "books on your shelves"
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
-msgstr[3] ""
+msgstr[3] "knihy ve vaší poličce"
 
 #: bookwyrm/templates/directory/user_card.html:55
 msgid "posts"
@@ -1594,22 +1594,22 @@ msgstr "Všichni známí uživatelé"
 #: bookwyrm/templates/discover/card-header.html:8
 #, python-format
 msgid "<a href=\"%(user_path)s\">%(username)s</a> wants to read <a href=\"%(book_path)s\">%(book_title)s</a>"
-msgstr ""
+msgstr "<a href=\"%(user_path)s\">%(username)s</a> chce přečíst <a href=\"%(book_path)s\">%(book_title)s</a>"
 
 #: bookwyrm/templates/discover/card-header.html:13
 #, python-format
 msgid "<a href=\"%(user_path)s\">%(username)s</a> finished reading <a href=\"%(book_path)s\">%(book_title)s</a>"
-msgstr ""
+msgstr "<a href=\"%(user_path)s\">%(username)s</a> přečetl <a href=\"%(book_path)s\">%(book_title)s</a>"
 
 #: bookwyrm/templates/discover/card-header.html:18
 #, python-format
 msgid "<a href=\"%(user_path)s\">%(username)s</a> started reading <a href=\"%(book_path)s\">%(book_title)s</a>"
-msgstr ""
+msgstr "<a href=\"%(user_path)s\">%(username)s</a> začal číst <a href=\"%(book_path)s\">%(book_title)s</a>"
 
 #: bookwyrm/templates/discover/card-header.html:23
 #, python-format
 msgid "<a href=\"%(user_path)s\">%(username)s</a> rated <a href=\"%(book_path)s\">%(book_title)s</a>"
-msgstr ""
+msgstr "<a href=\"%(user_path)s\">%(username)s</a> ohodnotil <a href=\"%(book_path)s\">%(book_title)s</a>"
 
 #: bookwyrm/templates/discover/card-header.html:27
 #, python-format
@@ -1619,12 +1619,12 @@ msgstr "<a href=\"%(user_path)s\">%(username)s</a> hodnotil/a <a href=\"%(book_p
 #: bookwyrm/templates/discover/card-header.html:31
 #, python-format
 msgid "<a href=\"%(user_path)s\">%(username)s</a> commented on <a href=\"%(book_path)s\">%(book_title)s</a>"
-msgstr ""
+msgstr "<a href=\"%(user_path)s\">%(username)s</a> okomentoval <a href=\"%(book_path)s\">%(book_title)s</a>"
 
 #: bookwyrm/templates/discover/card-header.html:35
 #, python-format
 msgid "<a href=\"%(user_path)s\">%(username)s</a> quoted <a href=\"%(book_path)s\">%(book_title)s</a>"
-msgstr ""
+msgstr "<a href=\"%(user_path)s\">%(username)s</a> citoval <a href=\"%(book_path)s\">%(book_title)s</a>"
 
 #: bookwyrm/templates/discover/discover.html:4
 #: bookwyrm/templates/discover/discover.html:10
@@ -1635,7 +1635,7 @@ msgstr "Objevovat"
 #: bookwyrm/templates/discover/discover.html:12
 #, python-format
 msgid "See what's new in the local %(site_name)s community"
-msgstr ""
+msgstr "Podívejte se, co je nového v místní komunitě %(site_name)s"
 
 #: bookwyrm/templates/discover/large-book.html:52
 #: bookwyrm/templates/discover/small-book.html:36
@@ -1646,7 +1646,7 @@ msgstr "Zobrazit status"
 #: bookwyrm/templates/email/confirm/text_content.html:4
 #, python-format
 msgid "One last step before you join %(site_name)s! Please confirm your email address by clicking the link below:"
-msgstr ""
+msgstr "Ještě jeden krok, než se připojíte k %(site_name)s! Potvrďte, prosím, svou e-mailovou adresu kliknutím na odkaz níže:"
 
 #: bookwyrm/templates/email/confirm/html_content.html:11
 msgid "Confirm Email"
@@ -1655,7 +1655,7 @@ msgstr "Potvrdit e-mail"
 #: bookwyrm/templates/email/confirm/html_content.html:15
 #, python-format
 msgid "Or enter the code \"<code>%(confirmation_code)s</code>\" at login."
-msgstr ""
+msgstr "Nebo zadejte kód \"<code>%(confirmation_code)s</code>\" při přihlášení."
 
 #: bookwyrm/templates/email/confirm/subject.html:2
 msgid "Please confirm your email"
@@ -1664,7 +1664,7 @@ msgstr "Potvrďte prosím svoji e-mailovou adresu"
 #: bookwyrm/templates/email/confirm/text_content.html:10
 #, python-format
 msgid "Or enter the code \"%(confirmation_code)s\" at login."
-msgstr ""
+msgstr "Nebo zadejte kód \"%(confirmation_code)s\" při přihlášení."
 
 #: bookwyrm/templates/email/html_layout.html:15
 #: bookwyrm/templates/email/text_layout.html:2
@@ -1674,11 +1674,11 @@ msgstr "Nazdar,"
 #: bookwyrm/templates/email/html_layout.html:21
 #, python-format
 msgid "BookWyrm hosted on <a style=\"color: #3273dc;\" href=\"https://%(domain)s\">%(site_name)s</a>"
-msgstr ""
+msgstr "BookWyrm hostován na <a style=\"color: #3273dc;\" href=\"https://%(domain)s\">%(site_name)s</a>"
 
 #: bookwyrm/templates/email/html_layout.html:23
 msgid "Email preference"
-msgstr ""
+msgstr "Nastavení e-mailu"
 
 #: bookwyrm/templates/email/invite/html_content.html:6
 #: bookwyrm/templates/email/invite/subject.html:2
@@ -1693,12 +1693,12 @@ msgstr "Přidej se teď"
 #: bookwyrm/templates/email/invite/html_content.html:15
 #, python-format
 msgid "Learn more <a href=\"https://%(domain)s%(about_path)s\">about %(site_name)s</a>."
-msgstr ""
+msgstr "Zjistěte více <a href=\"https://%(domain)s%(about_path)s\">o %(site_name)s</a>."
 
 #: bookwyrm/templates/email/invite/text_content.html:4
 #, python-format
 msgid "You're invited to join %(site_name)s! Click the link below to create an account."
-msgstr ""
+msgstr "Jste pozváni k připojení se k %(site_name)s! Klikněte na odkaz níže pro vytvoření účtu."
 
 #: bookwyrm/templates/email/invite/text_content.html:8
 #, python-format
@@ -1709,7 +1709,7 @@ msgstr "Další informace o %(site_name)s:"
 #: bookwyrm/templates/email/moderation_report/text_content.html:6
 #, python-format
 msgid "@%(reporter)s has flagged a link domain for moderation."
-msgstr ""
+msgstr "@%(reporter)s označil odkazovou doménu k moderaci."
 
 #: bookwyrm/templates/email/moderation_report/html_content.html:14
 #: bookwyrm/templates/email/moderation_report/text_content.html:10
@@ -2122,15 +2122,15 @@ msgstr ""
 
 #: bookwyrm/templates/groups/user_groups.html:15
 msgid "Manager"
-msgstr ""
+msgstr "Správce"
 
 #: bookwyrm/templates/guided_tour/book.html:10
 msgid "This is home page of a book. Let's see what you can do while you're here!"
-msgstr ""
+msgstr "Toto je domovská stránka knihy. Podívejme se, co tu můžete dělat!"
 
 #: bookwyrm/templates/guided_tour/book.html:11
 msgid "Book page"
-msgstr ""
+msgstr "Stránka knihy"
 
 #: bookwyrm/templates/guided_tour/book.html:19
 #: bookwyrm/templates/guided_tour/group.html:19
@@ -2141,7 +2141,7 @@ msgstr ""
 #: bookwyrm/templates/guided_tour/user_groups.html:19
 #: bookwyrm/templates/guided_tour/user_profile.html:19
 msgid "End Tour"
-msgstr ""
+msgstr "Ukončit prohlídku"
 
 #: bookwyrm/templates/guided_tour/book.html:26
 #: bookwyrm/templates/guided_tour/book.html:50
