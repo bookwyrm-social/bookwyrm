@@ -59,9 +59,9 @@ class Edit2FA(View):
         qr_code.add_data(provisioning_url)
         qr_code.make(fit=True)
         img = qr_code.make_image(attrib={"fill": "black"})
-        qrstr = str(img.to_string(), "utf-8") # to_string() returns a byte string
+        qrstr = str(img.to_string(), "utf-8")  # to_string() returns a byte string
         result = [qrstr, otp_secret]
-        return result 
+        return result
 
 
 @method_decorator(login_required, name="dispatch")
