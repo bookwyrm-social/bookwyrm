@@ -17,6 +17,8 @@ def search(query, min_confidence=0, filters=None, return_first=False):
     filters = filters or []
     if not query:
         return []
+    query = query.strip()
+
     results = None
     # first, try searching unqiue identifiers
     # unique identifiers never have spaces, title/author usually do
@@ -96,19 +98,16 @@ def search_title_author(query, min_confidence, *filters, return_first=False):
     )
 
     # when there are multiple editions of the same work, pick the closest
-    editions_of_work = results.values("parent_work__id").values_list("parent_work__id")
+    editions_of_work = results.values_list("parent_work__id", flat=True).distinct()
 
     # filter out multiple editions of the same work
     list_results = []
-    for work_id in set(editions_of_work):
-        editions = results.filter(parent_work=work_id)
-        default = editions.order_by("-edition_rank").first()
-        default_rank = default.rank if default else 0
-        # if mutliple books have the top rank, pick the default edition
-        if default_rank == editions.first().rank:
-            result = default
-        else:
-            result = editions.first()
+    for work_id in set(editions_of_work[:30]):
+        result = (
+            results.filter(parent_work=work_id)
+            .order_by("-rank", "-edition_rank")
+            .first()
+        )
 
         if return_first:
             return result
