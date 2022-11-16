@@ -101,9 +101,11 @@ def search_title_author(query, min_confidence, *filters, return_first=False):
     # filter out multiple editions of the same work
     list_results = []
     for work_id in set(editions_of_work[:30]):
-        result = results.filter(parent_work=work_id).order_by(
-            "-rank", "-edition_rank"
-        ).first()
+        result = (
+            results.filter(parent_work=work_id)
+            .order_by("-rank", "-edition_rank")
+            .first()
+        )
 
         if return_first:
             return result
