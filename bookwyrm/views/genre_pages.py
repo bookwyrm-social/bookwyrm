@@ -3,7 +3,7 @@ from django.contrib.postgres.search import TrigramSimilarity
 
 from django.shortcuts import get_object_or_404, render
 
-from bookwyrm.models.book import Genre, Book
+from bookwyrm.models.book import Genre, Book, Work
 from bookwyrm.forms import GenreForm
 
 from django.urls import reverse_lazy
@@ -43,5 +43,5 @@ class GenreDetailView(DetailView):
     def get_context_data(self, **kwargs):
 
         context = super().get_context_data(**kwargs)
-        context["demo_books"] = Book.objects.filter(genres=self.get_object())[:4]
+        context["demo_books"] = Work.objects.filter(genres=self.get_object())[:4]
         return context

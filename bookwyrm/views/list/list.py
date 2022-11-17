@@ -255,6 +255,8 @@ def genre_suggestion(request):
         suggestion = suggestions.SuggestedGenre.objects.get(name=name)
         suggestion.votes += 1
         suggestion.save()
+        suggestion.autoApprove()
+
 
     else:
         genre_vote = suggestions.SuggestedGenre.objects.create(

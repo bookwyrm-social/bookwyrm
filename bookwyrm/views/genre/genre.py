@@ -18,7 +18,7 @@ class Genres(View):
 
     def get(self, request):
         """display genre list"""
-        genres = models.Genre.objects.all()
+        genres = models.Genre.objects.all().order_by('genre_name')
         paginated = Paginator(genres, 12)
         data = {
             "genres": paginated.get_page(request.GET.get("page")),

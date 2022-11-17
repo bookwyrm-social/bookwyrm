@@ -44,7 +44,9 @@ class SuggestedGenre(models.Model):
 
     def autoApprove(self):
         """If a certain category gets a certain number of votes, it will approve itself and create a new genre."""
-        if self.votes >= MinimumVotesSetting.minimum_genre_votes:
+        minimum_votes = MinimumVotesSetting.objects.get(id=1)
+
+        if self.votes >= minimum_votes.minimum_genre_votes:
             genre = Genre.objects.create_genre(self.name, self.description)
             genre.save()
             self.delete()
