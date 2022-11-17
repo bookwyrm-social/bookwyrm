@@ -55,7 +55,7 @@ class Import(View):
 
     def post(self, request):
         """ingest a goodreads csv"""
-        site = models.Site.objects.get()
+        site = models.SiteSettings.objects.get()
         if not site.imports_enabled:
             raise PermissionDenied()
 
