@@ -63,6 +63,8 @@ function awscommand {
         amazon/aws-cli $2
 }
 
+
+
 CMD=$1
 if [ -n "$CMD" ]; then
     shift
@@ -255,6 +257,9 @@ case "$CMD" in
     runweb)
         runweb "$@"
         ;;
+    remove_2fa)
+        runweb python manage.py remove_2fa "$@"
+        ;;
     *)
         set +x # No need to echo echo
         echo "Unrecognised command. Try:"
@@ -290,5 +295,6 @@ case "$CMD" in
         echo "    sync_media_to_s3"
         echo "    set_cors_to_s3 [cors file]"
         echo "    runweb [command]"
+        echo "    remove_2fa"
         ;;
 esac

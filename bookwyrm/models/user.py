@@ -21,6 +21,7 @@ from bookwyrm.preview_images import generate_user_preview_image_task
 from bookwyrm.settings import (DOMAIN, ENABLE_PREVIEW_IMAGES, LANGUAGES,
                                USE_HTTPS)
 from bookwyrm.signatures import create_key_pair
+
 from bookwyrm.tasks import LOW, app
 from bookwyrm.utils import regex
 

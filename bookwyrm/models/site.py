@@ -181,7 +181,7 @@ class InviteRequest(BookWyrmModel):
     invite = models.ForeignKey(
         SiteInvite, on_delete=models.SET_NULL, null=True, blank=True
     )
-    answer = models.TextField(max_length=50, unique=False, null=True, blank=True)
+    answer = models.TextField(max_length=255, unique=False, null=True, blank=True)
     invite_sent = models.BooleanField(default=False)
     ignored = models.BooleanField(default=False)
 
