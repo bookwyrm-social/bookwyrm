@@ -128,7 +128,7 @@ def moderator_delete_user(request, user_id):
     form.errors["password"] = ["Invalid password"]
 
     data = {"user": user, "group_form": forms.UserGroupForm(), "form": form}
-    return TemplateResponse(request, "user_admin/user.html", data)
+    return TemplateResponse(request, "settings/users/user.html", data)
 
 
 @login_required
