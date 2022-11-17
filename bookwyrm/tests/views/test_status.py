@@ -2,13 +2,67 @@
 import json
 from unittest.mock import patch
 from django.core.exceptions import PermissionDenied
-from django.test import TestCase
+from django.test import TestCase, TransactionTestCase
 from django.test.client import RequestFactory
 
 from bookwyrm import forms, models, views
 from bookwyrm.views.status import find_mentions
 from bookwyrm.settings import DOMAIN
+
 from bookwyrm.tests.validate_html import validate_html
+
+# pylint: disable=invalid-name
+@patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
+class StatusTransactions(TransactionTestCase):
+    """Test full database transactions"""
+
+    def setUp(self):
+        """we need basic test data and mocks"""
+        self.factory = RequestFactory()
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
+            "bookwyrm.activitystreams.populate_stream_task.delay"
+        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
+            self.local_user = models.User.objects.create_user(
+                "mouse@local.com",
+                "mouse@mouse.com",
+                "mouseword",
+                local=True,
+                localname="mouse",
+                remote_id="https://example.com/users/mouse",
+            )
+            self.another_user = models.User.objects.create_user(
+                f"nutria@{DOMAIN}",
+                "nutria@nutria.com",
+                "password",
+                local=True,
+                localname="nutria",
+            )
+
+        work = models.Work.objects.create(title="Test Work")
+        self.book = models.Edition.objects.create(
+            title="Example Edition",
+            remote_id="https://example.com/book/1",
+            parent_work=work,
+        )
+
+    def test_create_status_saves(self, *_):
+        """This view calls save multiple times"""
+        view = views.CreateStatus.as_view()
+        form = forms.CommentForm(
+            {
+                "content": "hi",
+                "user": self.local_user.id,
+                "book": self.book.id,
+                "privacy": "public",
+            }
+        )
+        request = self.factory.post("", form.data)
+        request.user = self.local_user
+
+        with patch("bookwyrm.activitystreams.add_status_task.apply_async") as mock:
+            view(request, "comment")
+
+        self.assertEqual(mock.call_count, 2)
 
 
 @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
@@ -16,7 +70,6 @@ from bookwyrm.tests.validate_html import validate_html
 @patch("bookwyrm.lists_stream.populate_lists_task.delay")
 @patch("bookwyrm.activitystreams.remove_status_task.delay")
 @patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
-# pylint: disable=invalid-name
 # pylint: disable=too-many-public-methods
 class StatusViews(TestCase):
     """viewing and creating statuses"""
