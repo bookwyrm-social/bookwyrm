@@ -2,31 +2,34 @@
 import re
 from urllib.parse import urlparse
 
+import pytz
 from django.apps import apps
 from django.contrib.auth.models import AbstractUser, Group
 from django.contrib.postgres.fields import ArrayField, CICharField
-from django.dispatch import receiver
 from django.db import models, transaction
+from django.dispatch import receiver
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from model_utils import FieldTracker
-import pytz
+from django.core.exceptions import PermissionDenied
 
 from bookwyrm import activitypub
-from bookwyrm.connectors import get_data, ConnectorException
+from bookwyrm.connectors import ConnectorException, get_data
 from bookwyrm.models.shelf import Shelf
 from bookwyrm.models.status import Status
 from bookwyrm.preview_images import generate_user_preview_image_task
-from bookwyrm.settings import DOMAIN, ENABLE_PREVIEW_IMAGES, USE_HTTPS, LANGUAGES
+from bookwyrm.settings import (DOMAIN, ENABLE_PREVIEW_IMAGES, LANGUAGES,
+                               USE_HTTPS)
 from bookwyrm.signatures import create_key_pair
-from bookwyrm.tasks import app, LOW
-from bookwyrm.utils import regex
-from .activitypub_mixin import OrderedCollectionPageMixin, ActivitypubMixin
-from .base_model import BookWyrmModel, DeactivationReason, new_access_code
-from .federated_server import FederatedServer
-from . import fields
-from .book import Genre
 
+from bookwyrm.tasks import LOW, app
+from bookwyrm.utils import regex
+
+from . import fields
+from .activitypub_mixin import ActivitypubMixin, OrderedCollectionPageMixin
+from .base_model import BookWyrmModel, DeactivationReason, new_access_code
+from .book import Genre
+from .federated_server import FederatedServer
 
 FeedFilterChoices = [
     ("review", _("Reviews")),
@@ -430,6 +433,18 @@ class User(OrderedCollectionPageMixin, AbstractUser):
                 user=self,
                 editable=False,
             ).save(broadcast=False)
+    
+    def raise_not_editable(self, viewer):
+        """does this user have permission to edit this object? liable to be overwritten
+        by models that inherit this base model class"""
+        if not hasattr(self, "user"):
+            return
+
+        # generally moderators shouldn't be able to edit other people's stuff
+        if self.user == viewer:
+            return
+
+        raise PermissionDenied()
 
 
 class KeyPair(ActivitypubMixin, BookWyrmModel):
@@ -526,3 +541,5 @@ def preview_image(instance, *args, **kwargs):
 
     if len(changed_fields) > 0:
         generate_user_preview_image_task.delay(instance.id)
+
+
