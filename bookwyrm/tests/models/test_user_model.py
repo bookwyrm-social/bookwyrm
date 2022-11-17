@@ -29,11 +29,11 @@ class User(TestCase):
                 bookwyrm_user=False,
             )
             self.another_user = models.User.objects.create_user(
-                f"rat@{DOMAIN}",
-                "rat@rat.rat",
-                "ratword",
+                f"nutria@{DOMAIN}",
+                "nutria@nutria.nutria",
+                "nutriaword",
                 local=True,
-                localname="rat",
+                localname="nutria",
                 name="hi",
                 bookwyrm_user=False,
             )
