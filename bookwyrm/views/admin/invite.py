@@ -182,10 +182,7 @@ class InviteRequest(View):
 
 
 @require_POST
-@method_decorator(
-    permission_required("bookwyrm.create_invites", raise_exception=True),
-    name="dispatch",
-)
+@permission_required("bookwyrm.create_invites", raise_exception=True)
 def ignore_invite_request(request):
     """hide an invite request"""
     invite_request = get_object_or_404(
