@@ -5,6 +5,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
 from django.views import View
+from django.views.decorators.http import require_POST
 
 from bookwyrm import models
 from bookwyrm.settings import PAGE_LENGTH
@@ -53,3 +54,25 @@ class ImportList(View):
         import_job = get_object_or_404(models.ImportJob, id=import_id)
         import_job.stop_job()
         return redirect("settings-imports")
+
+
+@require_POST
+@permission_required("bookwyrm.edit_instance_settings", raise_exception=True)
+# pylint: disable=unused-argument
+def disable_imports(request):
+    """When you just need people to please stop starting imports"""
+    site = models.SiteSettings.objects.get()
+    site.imports_enabled = False
+    site.save(update_fields=["imports_enabled"])
+    return redirect("settings-imports")
+
+
+@require_POST
+@permission_required("bookwyrm.edit_instance_settings", raise_exception=True)
+# pylint: disable=unused-argument
+def enable_imports(request):
+    """When you just need people to please stop starting imports"""
+    site = models.SiteSettings.objects.get()
+    site.imports_enabled = True
+    site.save(update_fields=["imports_enabled"])
+    return redirect("settings-imports")
