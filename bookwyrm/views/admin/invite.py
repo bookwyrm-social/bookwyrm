@@ -85,6 +85,11 @@ class Invite(View):
     # post handling is in views.register.Register
 
 
+@method_decorator(login_required, name="dispatch")
+@method_decorator(
+    permission_required("bookwyrm.create_invites", raise_exception=True),
+    name="dispatch",
+)
 class ManageInviteRequests(View):
     """grant invites like the benevolent lord you are"""
 
@@ -177,6 +182,7 @@ class InviteRequest(View):
 
 
 @require_POST
+@permission_required("bookwyrm.create_invites", raise_exception=True)
 def ignore_invite_request(request):
     """hide an invite request"""
     invite_request = get_object_or_404(
