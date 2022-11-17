@@ -210,12 +210,12 @@
 <script src="{% static "js/guided_tour.js" %}?v={{ js_cache }}"></script>
 
 
-<script src="{% static "js/jquery-ui.js" %}"></script>
+<script src="{% static "js/jquery-ui.js" %}?v={{ js_cache }}"></script>
 
 
-<script src="{% static "chosen/js/chosen.jquery.min.js" %}"></script>
+<script src="{% static "chosen/js/chosen.jquery.min.js" %}?v={{ js_cache }}"></script>
 <link href="{% static "chosen/css/chosen.min.css" %}" rel="stylesheet"/>
-<link rel="stylesheet" href="{% static "css/jquery-ui.css" %}">
+<link rel="stylesheet" href="{% static "css/jquery-ui.css" %}?v={{ js_cache }}">
 
 {% block scripts %}{% endblock %}
 
