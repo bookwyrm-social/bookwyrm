@@ -64,12 +64,14 @@
 <div>
     <div class="columns is-mobile">
         <h2 class="title column">{% trans "User Activity" %}</h2>
+        {% if user.local %}
         <div class="column is-narrow">
             <a target="_blank" href="{{ user.local_path }}/rss" rel="nofollow noopener noreferrer">
                 <span class="icon icon-rss" aria-hidden="true"></span>
                 <span class="is-hidden-mobile">{% trans "RSS feed" %}</span>
             </a>
         </div>
+        {% endif %}
     </div>
     {% for activity in activities %}
     <div class="block" id="feed_{{ activity.id }}">
