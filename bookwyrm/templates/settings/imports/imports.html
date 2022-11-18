@@ -12,6 +12,54 @@
 {% block panel %}
 
 <div class="block">
+    {% if site.imports_enabled %}
+    <details class="details-panel box">
+        <summary>
+            <span role="heading" aria-level="2" class="title is-6">
+                {% trans "Disable starting new imports" %}
+            </span>
+            <span class="details-close icon icon-x" aria-hidden="true"></span>
+        </summary>
+        <form
+            name="disable-imports"
+            id="disable-imports"
+            method="POST"
+            action="{% url 'settings-imports-disable' %}"
+        >
+            <div class="notification">
+                {% trans "This is only intended to be used when things have gone very wrong with imports and you need to pause the feature while addressing issues." %}
+                {% trans "While imports are disabled, users will not be allowed to start new imports, but existing imports will not be effected." %}
+            </div>
+            {% csrf_token %}
+            <div class="control">
+                <button type="submit" class="button is-danger">
+                    {% trans "Disable imports" %}
+                </button>
+            </div>
+        </form>
+    </details>
+    {% else %}
+    <form
+        name="enable-imports"
+        id="enable-imports"
+        method="POST"
+        action="{% url 'settings-imports-enable' %}"
+        class="box"
+    >
+        <div class="notification is-danger is-light">
+            {% trans "Users are currently unable to start new imports" %}
+        </div>
+        {% csrf_token %}
+        <div class="control">
+            <button type="submit" class="button is-success">
+                {% trans "Enable imports" %}
+            </button>
+        </div>
+    </form>
+    {% endif %}
+</div>
+
+<div class="block">
     <div class="tabs">
         <ul>
             {% url 'settings-imports' as url %}

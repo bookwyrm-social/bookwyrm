@@ -370,6 +370,16 @@ urlpatterns = [
         name="settings-imports-complete",
     ),
     re_path(
+        r"^settings/imports/disable/?$",
+        views.disable_imports,
+        name="settings-imports-disable",
+    ),
+    re_path(
+        r"^settings/imports/enable/?$",
+        views.enable_imports,
+        name="settings-imports-enable",
+    ),
+    re_path(
         r"^settings/celery/?$", views.CeleryStatus.as_view(), name="settings-celery"
     ),
     # landing pages

@@ -86,6 +86,9 @@ class SiteSettings(SiteModel):
     admin_email = models.EmailField(max_length=255, null=True, blank=True)
     footer_item = models.TextField(null=True, blank=True)
 
+    # controls
+    imports_enabled = models.BooleanField(default=True)
+
     field_tracker = FieldTracker(fields=["name", "instance_tagline", "logo"])
 
     @classmethod
