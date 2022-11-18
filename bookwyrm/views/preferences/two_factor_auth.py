@@ -39,7 +39,6 @@ class Edit2FA(View):
         data = {
             "password_confirmed": True,
             "qrcode": self.create_qr_code(request.user),
-            "otp_code": self.get_qr_token(request.user),
             "form": qr_form,
         }
         return TemplateResponse(request, "preferences/2fa.html", data)
@@ -59,14 +58,6 @@ class Edit2FA(View):
         qr_code.make(fit=True)
         img = qr_code.make_image(attrib={"fill": "black"})
         return str(img.to_string(), "utf-8")  # to_string() returns a byte string
-
-    def get_qr_token(self, user):
-        """get the user's secret token chunked into four-character strings"""
-        secret = user.otp_secret
-        chunks = [(secret[i : i + 4]) for i in range(0, len(secret), 4)]
-        token = " ".join(chunks)
-        return token
-
 
 @method_decorator(login_required, name="dispatch")
 class Confirm2FA(View):

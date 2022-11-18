@@ -45,10 +45,7 @@
         <p>{% trans "Scan the QR code with your authentication app and then enter the code from  your app below to confirm your app is set up." %}</p>
         <div class="columns">
             <section class="column is-narrow">
-                <figure class="m-4" id="qrcode">
-                    {{ qrcode | safe }}
-                    <div>{{ otp_code }}</div>
-                </figure>
+                <figure class="m-4" id="qrcode">{{ qrcode | safe }}</figure>
                 <div class="field">
                     <label class="label" for="id_otp">{% trans "Enter the code from your app:" %}</label>
                     {{ form.otp }}
