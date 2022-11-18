@@ -58,8 +58,7 @@ class EditBook(View):
         
         remove_genres = request.POST.getlist("remove_genres")
         for genre_id in remove_genres:
-            genre = models.Genre.objects.get(id=genre_id)
-            book.genres.remove(genre)
+            book.genres.remove(genre_id)
 
         book = form.save(request, commit=False)
 
