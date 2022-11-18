@@ -275,7 +275,7 @@ def resolve_remote_id(
     try:
         data = get_data(remote_id)
     except ConnectorException:
-        logger.exception("Could not connect to host for remote_id: %s", remote_id)
+        logger.info("Could not connect to host for remote_id: %s", remote_id)
         return None
 
     # determine the model implicitly, if not provided

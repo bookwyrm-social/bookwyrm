@@ -270,7 +270,7 @@ def dict_from_mappings(data, mappings):
     return result
 
 
-def get_data(url, params=None, timeout=10):
+def get_data(url, params=None, timeout=settings.QUERY_TIMEOUT):
     """wrapper for request.get"""
     # check if the url is blocked
     raise_not_valid_url(url)

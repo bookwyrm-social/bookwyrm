@@ -4,6 +4,7 @@ import datetime
 
 from django.contrib.auth.decorators import login_required
 from django.db.models import Avg, ExpressionWrapper, F, fields
+from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator
 from django.http import HttpResponseBadRequest
 from django.shortcuts import redirect
@@ -54,6 +55,10 @@ class Import(View):
 
     def post(self, request):
         """ingest a goodreads csv"""
+        site = models.SiteSettings.objects.get()
+        if not site.imports_enabled:
+            raise PermissionDenied()
+
         form = forms.ImportForm(request.POST, request.FILES)
 
         print("Importing this book WOOO!!!")
