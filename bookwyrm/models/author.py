@@ -47,7 +47,7 @@ class Author(BookDataModel):
         # normalize isni format
         if self.isni:
             self.isni = re.sub(r"\s", "", self.isni)
-            """ While we are here we can check if it is an isni"""
+            # While we are here we can check if it is an isni
             length = len(self.isni)
             if length > 16:  # too long
                 self.isni = ""
