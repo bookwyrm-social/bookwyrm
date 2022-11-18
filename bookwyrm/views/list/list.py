@@ -232,14 +232,18 @@ def genre_vote(request):
         suggestion = suggestions.SuggestedBookGenre.objects.get(
             genre=genre, book=book.parent_work
         )
-        suggestion.votes += 1
-        suggestion.save()
-        suggestion.autoApprove()
+        if request.user not in suggestion.users.all():
+            suggestion.votes += 1
+            suggestion.users.add(request.user)
+            suggestion.save()
+            suggestion.autoApprove()
 
     else:
         genre_vote = suggestions.SuggestedBookGenre.objects.create(
             genre=genre, book=book.parent_work
         )
+        genre_vote.users.add(request.user)
+        genre_vote.save()
 
     return redirect("book", book.id)
 
@@ -253,15 +257,19 @@ def genre_suggestion(request):
 
     if suggestions.SuggestedGenre.objects.filter(name=name).exists():
         suggestion = suggestions.SuggestedGenre.objects.get(name=name)
-        suggestion.votes += 1
-        suggestion.save()
-        suggestion.autoApprove()
+        if request.user not in suggestion.users.all():
+            suggestion.votes += 1
+            suggestion.users.add(request.user)
+            suggestion.save()
+            suggestion.autoApprove()
 
 
     else:
         genre_vote = suggestions.SuggestedGenre.objects.create(
             name=name, description=description
         )
+        genre_vote.users.add(request.user)
+        genre_vote.save()
 
     return redirect("genres")
 
