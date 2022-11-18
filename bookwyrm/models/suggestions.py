@@ -21,6 +21,7 @@ from bookwyrm.settings import (
 )
 
 from .book import Genre, Edition
+from .user import User
 from .activitypub_mixin import OrderedCollectionPageMixin, ObjectMixin
 from .base_model import BookWyrmModel
 from . import fields
@@ -38,6 +39,7 @@ class SuggestedGenre(models.Model):
     name = fields.CharField(max_length=40)
     description = fields.CharField(max_length=500)
     votes = fields.IntegerField(default=1)
+    users = models.ManyToManyField(User, blank=False)
 
     def __str__(self):
         return self.name
@@ -59,6 +61,8 @@ class SuggestedBookGenre(models.Model):
     genre = models.ForeignKey("Genre", on_delete=models.CASCADE, null=False)
     votes = fields.IntegerField(default=1)
     book = models.ForeignKey("Work", on_delete=models.CASCADE, null=False)
+    users = models.ManyToManyField(User, blank=False)
+
 
     def autoApprove(self):
         """If a certain category gets a certain number of votes, it will approve itself and create a new genre."""
