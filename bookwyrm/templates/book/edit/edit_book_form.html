@@ -347,6 +347,7 @@
             </div>
         </section>
 
+        {% if perms.bookwyrm.moderate_user %}
         <section class="block">
             <h2 class="title is-4">
                 {% trans "Genres" %}
@@ -369,8 +370,14 @@
                     {% endfor %}
                 </fieldset>
                 {% endif %}
+                {% if not book.genres.exists %}
+                <p>
+                    No genres
+                </p>
+                {% endif %}
             </div>
         </section>
+        {% endif %}
 
     </div>
 </div>
