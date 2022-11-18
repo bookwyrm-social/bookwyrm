@@ -61,10 +61,12 @@ class Edit2FA(View):
         return str(img.to_string(), "utf-8")  # to_string() returns a byte string
 
     def get_qr_token(self, user):
+        """get the user's secret token chunked into four-character strings"""
         secret = user.otp_secret
-        chunks = [(secret[i:i+4]) for i in range(0, len(secret), 4)]
+        chunks = [(secret[i : i + 4]) for i in range(0, len(secret), 4)]
         token = " ".join(chunks)
         return token
+
 
 @method_decorator(login_required, name="dispatch")
 class Confirm2FA(View):
