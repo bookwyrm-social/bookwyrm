@@ -72,6 +72,10 @@
                 {% url 'settings-link-domain' as url %}
                 <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Link Domains" %}</a>
             </li>
+            <li>
+                {% url 'settings-suggestions' as url %}
+                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Genre Suggestions" %}</a>
+            </li>
         </ul>
         {% endif %}
         {% if perms.edit_instance_settings %}
@@ -104,10 +108,6 @@
             <li>
                 {% url 'settings-genres' as url %}
                 <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Genres" %}</a>
-            </li>
-            <li>
-                {% url 'settings-suggestions' as url %}
-                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Genre Suggestions" %}</a>
             </li>
             <li>
                 {% url 'settings-themes' as url %}
