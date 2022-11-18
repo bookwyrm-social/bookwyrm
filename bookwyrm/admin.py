@@ -18,7 +18,6 @@ class EditionAdmin(admin.ModelAdmin):
     filter_horizontal = ("genres",)
 
 
-
 class WorksAdmin(admin.ModelAdmin):
     model = models.Work
     filter_horizontal = ("genres",)
