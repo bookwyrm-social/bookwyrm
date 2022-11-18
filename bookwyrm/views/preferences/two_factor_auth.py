@@ -59,6 +59,7 @@ class Edit2FA(View):
         img = qr_code.make_image(attrib={"fill": "black"})
         return str(img.to_string(), "utf-8")  # to_string() returns a byte string
 
+
 @method_decorator(login_required, name="dispatch")
 class Confirm2FA(View):
     """confirm user's 2FA settings"""
