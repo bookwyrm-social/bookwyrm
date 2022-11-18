@@ -4,10 +4,10 @@ from django.contrib.postgres.indexes import GinIndex
 from django.core.cache import cache
 from django.core.cache.utils import make_template_fragment_key
 from django.db import models
+from stdnum.iso7064 import mod_11_2
 
 from bookwyrm import activitypub
 from bookwyrm.settings import DOMAIN
-from stdnum.iso7064 import mod_11_2
 
 from .book import BookDataModel
 from . import fields
@@ -51,7 +51,7 @@ class Author(BookDataModel):
             length = len(self.isni)
             if length > 16:  # too long
                 self.isni = ""
-            elif length == 16: 
+            elif length == 16:
                 if self.isni[0:4] != "0000":
                     self.isni = ""
                 else:
@@ -61,7 +61,7 @@ class Author(BookDataModel):
                 multi = 16 - length
                 self.isni = ("0" * multi) + self.isni
                 if mod_11_2.checksum(self.isni) != 1:
-                        self.isni = ""
+                    self.isni = ""
             else:
                 self.isni = ""
 
