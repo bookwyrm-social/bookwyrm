@@ -57,8 +57,11 @@ class EditBook(View):
             book.authors.remove(author_id)
         
         remove_genres = request.POST.getlist("remove_genres")
+        work = book.parent_work
         for genre_id in remove_genres:
-            book.genres.remove(genre_id)
+            for edition in work.editions.all():
+                edition.genres.remove(genre_id)
+            work.genres.remove(genre_id)
 
         book = form.save(request, commit=False)
 
