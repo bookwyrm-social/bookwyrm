@@ -55,6 +55,11 @@ class EditBook(View):
         remove_authors = request.POST.getlist("remove_authors")
         for author_id in remove_authors:
             book.authors.remove(author_id)
+        
+        remove_genres = request.POST.getlist("remove_genres")
+        for genre_id in remove_genres:
+            genre = models.Genre.objects.get(id=genre_id)
+            book.genres.remove(genre)
 
         book = form.save(request, commit=False)
 
@@ -237,7 +242,7 @@ class ConfirmEditBook(View):
                 author_ids = findall(r"\d+", request.POST["authors"])
                 authors = models.Author.objects.filter(id__in=author_ids)
                 book.authors.add(*authors)
-
+            
             # get or create author as needed
             for i in range(int(request.POST.get("author-match-count", 0))):
                 match = request.POST.get(f"author_match-{i}")
@@ -282,6 +287,9 @@ class ConfirmEditBook(View):
 
             for author_id in request.POST.getlist("remove_authors"):
                 book.authors.remove(author_id)
+
+            for genre_id in request.POST.getlist("remove_genres"):
+                book.genres.remove(genre_id)
 
             # import cover, if requested
             url = request.POST.get("cover-url")

@@ -346,6 +346,32 @@
                 </div>
             </div>
         </section>
+
+        <section class="block">
+            <h2 class="title is-4">
+                {% trans "Genres" %}
+            </h2>
+            <div class="box">
+                {% if book.genres.exists %}
+                {# preserve genres if the book is unsaved #}
+                <input type="hidden" name="genres" value="{% for genre in book.genres.all %}{{ genre.id }},{% endfor %}">
+                <fieldset>
+                    {% for genre in book.genres.all %}
+                    <div class="is-flex is-justify-content-space-between">
+                        <label class="label mb-2">
+                            <input type="checkbox" name="remove_genres" value="{{ genre.id }}" {% if genre.id|stringformat:"i" in remove_genres %}checked{% endif %} aria-describedby="desc_remove_genre_{{genre.id}}">
+                            {% blocktrans with name=genre.genre_name %}Remove {{ name }}{% endblocktrans %}
+                        </label>
+                        <p class="help" id="desc_remove_genre_{{genre.id}}">
+                            <a href="{{ genre.local_path }}">{% blocktrans with name=genre.genre_name %}Genre page for {{ name }}{% endblocktrans %}</a>
+                        </p>
+                    </div>
+                    {% endfor %}
+                </fieldset>
+                {% endif %}
+            </div>
+        </section>
+
     </div>
 </div>
 
