@@ -48,22 +48,26 @@ class Author(BookDataModel):
         if self.isni:
             self.isni = re.sub(r"\s", "", self.isni)
             # While we are here we can check if it is an isni
-            length = len(self.isni)
-            if length > 16:  # too long
-                self.isni = ""
-            elif length == 16:
-                if self.isni[0:4] != "0000":
+            if self.isni.isdigit() != False:
+                if self.isni[-1] != "x" or "X" or self.isni[:-1].isdigit() != False:
                     self.isni = ""
+            else:
+                length = len(self.isni)
+                if length > 16:  # too long
+                    self.isni = ""
+                elif length == 16:
+                    if self.isni[0:4] != "0000":
+                        self.isni = ""
                 else:
                     if mod_11_2.checksum(self.isni) != 1:
                         self.isni = ""
-            elif length <= 12:
-                multi = 16 - length
-                self.isni = ("0" * multi) + self.isni
-                if mod_11_2.checksum(self.isni) != 1:
-                    self.isni = ""
-            else:
-                self.isni = ""
+                    elif length < 16:
+                        multi = 16 - length
+                        self.isni = ("0" * multi) + self.isni
+                        if mod_11_2.checksum(self.isni) != 1:
+                            self.isni = ""
+                    else:
+                        self.isni = ""
 
         return super().save(*args, **kwargs)
 
