@@ -34,7 +34,7 @@ class ImportsAdminViews(TestCase):
         self.local_user.groups.set([group])
         models.SiteSettings.objects.create()
 
-    def test_celery_status_get(self):
+    def test_import_admin_get(self):
         """there are so many views, this just makes sure it LOADS"""
         view = views.ImportList.as_view()
         request = self.factory.get("")

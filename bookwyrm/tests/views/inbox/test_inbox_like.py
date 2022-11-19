@@ -1,6 +1,9 @@
 """ tests incoming activities"""
+import json
+import pathlib
 from unittest.mock import patch
 
+import responses
 from django.test import TestCase
 
 from bookwyrm import models, views
@@ -10,6 +13,7 @@ from bookwyrm import models, views
 class InboxActivities(TestCase):
     """inbox tests"""
 
+    # pylint: disable=invalid-name
     def setUp(self):
         """basic user and book data"""
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
@@ -71,6 +75,34 @@ class InboxActivities(TestCase):
         self.assertEqual(fav.status, self.status)
         self.assertEqual(fav.remote_id, "https://example.com/fav/1")
         self.assertEqual(fav.user, self.remote_user)
+
+    @responses.activate
+    def test_handle_favorite_ignorable_status(self):
+        """fav a status"""
+        datafile = pathlib.Path(__file__).parent.joinpath(
+            "../../data/ap_note.json"
+        )
+        status_data = json.loads(datafile.read_bytes())
+        status_data["tag"] = []
+        activity = {
+            "@context": "https://www.w3.org/ns/activitystreams",
+            "id": "https://example.com/fav/1",
+            "actor": "https://example.com/users/rat",
+            "type": "Like",
+            "published": "Mon, 25 May 2020 19:31:20 GMT",
+            "object": "https://example.com/user/status",
+        }
+        responses.add(
+            responses.GET,
+            "https://example.com/user/status",
+            json=status_data,
+            status=200,
+        )
+
+        views.inbox.activity_task(activity)
+        self.assertFalse(models.Favorite.objects.exists())
+        self.assertFalse(models.Status.objects.filter(remote_id=status_data["id"]).exists())
+        self.assertTrue(models.Status.objects.count(), 1)
 
     def test_ignore_favorite(self):
         """don't try to save an unknown status"""

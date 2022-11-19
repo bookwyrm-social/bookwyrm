@@ -106,6 +106,24 @@ class InboxCreate(TestCase):
         }
         models.SiteSettings.objects.create()
 
+    def test_create_status_note_ignored(self, *_):
+        """ugh"""
+        datafile = pathlib.Path(__file__).parent.joinpath(
+            "../../data/ap_note.json"
+        )
+        status_data = json.loads(datafile.read_bytes())
+        status_data["tag"] = []
+
+        models.Edition.objects.create(
+            title="Test Book", remote_id="https://example.com/book/1"
+        )
+        activity = self.create_json
+        activity["object"] = status_data
+
+        views.inbox.activity_task(activity)
+        self.assertFalse(models.Status.objects.exists())
+
+
     def test_create_status(self, *_):
         """the "it justs works" mode"""
         datafile = pathlib.Path(__file__).parent.joinpath(
