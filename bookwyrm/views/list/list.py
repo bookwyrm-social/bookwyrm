@@ -71,7 +71,8 @@ class List(View):
             "add_succeeded": add_succeeded,
         }
 
-        if request.user.is_authenticated:
+        # Temporarily disable list suggestions, which seem to be causing 502s
+        if request.user.is_authenticated and False:
             data["suggested_books"] = get_list_suggestions(
                 book_list, request.user, query=query
             )
