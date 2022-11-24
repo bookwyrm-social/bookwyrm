@@ -4,8 +4,6 @@ services:
   nginx:
     image: nginx:latest
     restart: unless-stopped
-    ports:
-      - "1333:80"
     depends_on:
       - web
     networks:
@@ -35,28 +33,26 @@ services:
       - redis_activity
     networks:
       - main
-    ports:
-      - "8000"
   redis_activity:
     image: redis
     command: redis-server --requirepass ${REDIS_ACTIVITY_PASSWORD} --appendonly yes --port ${REDIS_ACTIVITY_PORT}
+    env_file: .env
+    networks:
+      - main
+    restart: on-failure
     volumes:
       - ./redis.conf:/etc/redis/redis.conf
       - redis_activity_data:/data
-    env_file: .env
-    networks:
-      - main
-    restart: on-failure
   redis_broker:
     image: redis
     command: redis-server --requirepass ${REDIS_BROKER_PASSWORD} --appendonly yes --port ${REDIS_BROKER_PORT}
-    volumes:
-      - ./redis.conf:/etc/redis/redis.conf
-      - redis_broker_data:/data
     env_file: .env
     networks:
       - main
     restart: on-failure
+    volumes:
+      - ./redis.conf:/etc/redis/redis.conf
+      - redis_broker_data:/data
   celery_worker:
     env_file: .env
     build: .
@@ -88,8 +84,6 @@ services:
     build: .
     command: celery -A celerywyrm flower --basic_auth=${FLOWER_USER}:${FLOWER_PASSWORD}
     env_file: .env
-    ports:
-      - ${FLOWER_PORT}:${FLOWER_PORT}
     volumes:
       - .:/app
     networks:

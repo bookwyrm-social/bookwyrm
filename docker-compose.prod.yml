@@ -1,0 +1,17 @@
+version: '3'
+
+services:
+  nginx:
+    ports:
+      - "80:80"
+      - "443:443"
+  certbot:
+    command: certonly --webroot --webroot-path=/var/www/certbot --email ${EMAIL} --agree-tos --no-eff-email -d ${DOMAIN} -d www.${DOMAIN}
+    #command: renew --webroot --webroot-path /var/www/certbot
+  web:
+    ports:
+      - "8000"
+    command: gunicorn bookwyrm.wsgi:application --bind 0.0.0.0:8000
+  flower:
+    ports:
+      - "${FLOWER_PORT}:${FLOWER_PORT}"
