@@ -38,7 +38,7 @@ def password_reset_email(reset_code):
     data = email_data()
     data["reset_link"] = reset_code.link
     data["user"] = reset_code.user.display_name
-    send_email.delay(reset_code.user.email, *format_email("password_reset", data))
+    send_email(reset_code.user.email, *format_email("password_reset", data))
 
 
 def moderation_report_email(report):
