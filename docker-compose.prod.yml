@@ -5,8 +5,11 @@ services:
     ports:
       - "80:80"
       - "443:443"
+    volumes:
+      - ./certbot/conf:/etc/nginx/ssl
+      - ./certbot/data:/var/www/certbot
   certbot:
-    command: certonly --webroot --webroot-path=/var/www/certbot --email ${EMAIL} --agree-tos --no-eff-email -d ${DOMAIN} -d www.${DOMAIN}
+    # Uncomment this after the first run to set up renewal
     #command: renew --webroot --webroot-path /var/www/certbot
   web:
     ports:
