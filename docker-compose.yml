@@ -1,5 +1,15 @@
 version: '3'
 
+# Note: Ports are not specified in this file, since they are
+# environment-specific. They should be specified along with
+# any other overrides in docker-compose.override.yml
+#
+# There are two example override files for reference:
+#  - docker-compose.prod.yml
+#  - docker-compose.dev.yml
+# To map ports, copy or symlink the appropriate file to
+# docker-compose.override.yml
+
 services:
   nginx:
     image: nginx:latest
