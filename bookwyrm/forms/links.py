@@ -36,13 +36,16 @@ class FileLinkForm(CustomForm):
                         "This domain is blocked. Please contact your administrator if you think this is an error."
                     ),
                 )
-            elif models.FileLink.objects.filter(
+        if (
+            not self.instance
+            and models.FileLink.objects.filter(
                 url=url, book=book, filetype=filetype
-            ).exists():
-                # pylint: disable=line-too-long
-                self.add_error(
-                    "url",
-                    _(
-                        "This link with file type has already been added for this book. If it is not visible, the domain is still pending."
-                    ),
-                )
+            ).exists()
+        ):
+            # pylint: disable=line-too-long
+            self.add_error(
+                "url",
+                _(
+                    "This link with file type has already been added for this book. If it is not visible, the domain is still pending."
+                ),
+            )
