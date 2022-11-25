@@ -37,7 +37,7 @@ class Importer:
         """check over a csv and creates a database entry for the job"""
         csv_reader = csv.DictReader(csv_file, delimiter=self.delimiter)
         rows = list(csv_reader)
-        if len(rows) <= 1:
+        if len(rows) < 1:
             raise ValueError("CSV file is empty")
         rows = enumerate(rows)
 
