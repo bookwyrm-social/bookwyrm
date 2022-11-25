@@ -56,5 +56,6 @@ jobs:
         EMAIL_USE_TLS: true
         ENABLE_PREVIEW_IMAGES: false
         ENABLE_THUMBNAIL_GENERATION: true
+        HTTP_X_FORWARDED_PROTO: false
       run: |
         pytest -n 3
