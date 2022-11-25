@@ -318,6 +318,7 @@ urlpatterns = [
     re_path(r"^about/?$", views.about, name="about"),
     re_path(r"^privacy/?$", views.privacy, name="privacy"),
     re_path(r"^conduct/?$", views.conduct, name="conduct"),
+    re_path(r"^impressum/?$", views.impressum, name="impressum"),
     path("", views.Home.as_view(), name="landing"),
     re_path(r"^discover/?$", views.Discover.as_view(), name="discover"),
     re_path(r"^notifications/?$", views.Notifications.as_view(), name="notifications"),

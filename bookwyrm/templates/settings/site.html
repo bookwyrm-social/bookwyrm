@@ -68,6 +68,19 @@
                 <label class="label" for="id_privacy_policy">{% trans "Privacy Policy:" %}</label>
                 {{ site_form.privacy_policy }}
             </div>
+
+            <div class="field">
+                <label class="label" for="id_impressum">{% trans "Impressum:" %}</label>
+                {{ site_form.impressum }}
+            </div>
+            <div class="field is-horizontal">
+                <div class="field mr-2">
+                    <label class="label" for="id_show_impressum">{% trans "Include impressum:" %}</label>
+                </div>
+                <div class="control">
+                {{ site_form.show_impressum }}
+                </div>
+            </div>
         </div>
     </section>
 
