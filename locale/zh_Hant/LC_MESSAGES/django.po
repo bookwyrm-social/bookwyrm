@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-11-07 19:14+0000\n"
-"PO-Revision-Date: 2022-11-07 19:53\n"
+"POT-Creation-Date: 2022-11-10 21:42+0000\n"
+"PO-Revision-Date: 2022-11-10 22:53\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Chinese Traditional\n"
 "Language: zh\n"
@@ -46,7 +46,7 @@ msgstr "不受限"
 msgid "Incorrect password"
 msgstr ""
 
-#: bookwyrm/forms/edit_user.py:95 bookwyrm/forms/landing.py:73
+#: bookwyrm/forms/edit_user.py:95 bookwyrm/forms/landing.py:89
 msgid "Password does not match"
 msgstr ""
 
@@ -70,15 +70,19 @@ msgstr ""
 msgid "Reading finished date cannot be in the future."
 msgstr ""
 
-#: bookwyrm/forms/landing.py:40
+#: bookwyrm/forms/landing.py:37
+msgid "Username or password are incorrect"
+msgstr ""
+
+#: bookwyrm/forms/landing.py:56
 msgid "User with this username already exists"
 msgstr ""
 
-#: bookwyrm/forms/landing.py:49
+#: bookwyrm/forms/landing.py:65
 msgid "A user with this email already exists."
 msgstr "已經存在使用該郵箱的使用者。"
 
-#: bookwyrm/forms/landing.py:107 bookwyrm/forms/landing.py:115
+#: bookwyrm/forms/landing.py:123 bookwyrm/forms/landing.py:131
 msgid "Incorrect code"
 msgstr ""
 
@@ -152,14 +156,18 @@ msgid "Self deletion"
 msgstr ""
 
 #: bookwyrm/models/base_model.py:20
-msgid "Moderator suspension"
+msgid "Self deactivation"
 msgstr ""
 
 #: bookwyrm/models/base_model.py:21
-msgid "Moderator deletion"
+msgid "Moderator suspension"
 msgstr ""
 
 #: bookwyrm/models/base_model.py:22
+msgid "Moderator deletion"
+msgstr ""
+
+#: bookwyrm/models/base_model.py:23
 msgid "Domain block"
 msgstr ""
 
@@ -1319,7 +1327,7 @@ msgstr "狀態"
 #: bookwyrm/templates/book/file_links/edit_links.html:37
 #: bookwyrm/templates/settings/announcements/announcements.html:41
 #: bookwyrm/templates/settings/federation/instance.html:112
-#: bookwyrm/templates/settings/imports/imports.html:60
+#: bookwyrm/templates/settings/imports/imports.html:62
 #: bookwyrm/templates/settings/reports/report_links_table.html:6
 #: bookwyrm/templates/settings/themes.html:99
 msgid "Actions"
@@ -2668,7 +2676,7 @@ msgid "Recent Imports"
 msgstr "最近的匯入"
 
 #: bookwyrm/templates/import/import.html:96
-#: bookwyrm/templates/settings/imports/imports.html:40
+#: bookwyrm/templates/settings/imports/imports.html:41
 msgid "Date Created"
 msgstr ""
 
@@ -2677,7 +2685,7 @@ msgid "Last Updated"
 msgstr ""
 
 #: bookwyrm/templates/import/import.html:102
-#: bookwyrm/templates/settings/imports/imports.html:48
+#: bookwyrm/templates/settings/imports/imports.html:50
 msgid "Items"
 msgstr ""
 
@@ -2716,7 +2724,7 @@ msgid "Refresh"
 msgstr ""
 
 #: bookwyrm/templates/import/import_status.html:72
-#: bookwyrm/templates/settings/imports/imports.html:80
+#: bookwyrm/templates/settings/imports/imports.html:82
 msgid "Stop import"
 msgstr ""
 
@@ -2832,7 +2840,7 @@ msgid "Reject"
 msgstr ""
 
 #: bookwyrm/templates/import/troubleshoot.html:7
-#: bookwyrm/templates/settings/imports/imports.html:57
+#: bookwyrm/templates/settings/imports/imports.html:59
 msgid "Failed items"
 msgstr ""
 
@@ -2863,6 +2871,7 @@ msgstr ""
 #: bookwyrm/templates/landing/invite.html:4
 #: bookwyrm/templates/landing/invite.html:8
 #: bookwyrm/templates/landing/login.html:48
+#: bookwyrm/templates/landing/reactivate.html:41
 msgid "Create an Account"
 msgstr "建立帳號"
 
@@ -2926,14 +2935,16 @@ msgstr "登入"
 msgid "Success! Email address confirmed."
 msgstr ""
 
-#: bookwyrm/templates/landing/login.html:21 bookwyrm/templates/layout.html:140
-#: bookwyrm/templates/ostatus/error.html:28
+#: bookwyrm/templates/landing/login.html:21
+#: bookwyrm/templates/landing/reactivate.html:17
+#: bookwyrm/templates/layout.html:140 bookwyrm/templates/ostatus/error.html:28
 #: bookwyrm/templates/snippets/register_form.html:4
 msgid "Username:"
 msgstr "使用者名稱:"
 
 #: bookwyrm/templates/landing/login.html:27
 #: bookwyrm/templates/landing/password_reset.html:26
+#: bookwyrm/templates/landing/reactivate.html:23
 #: bookwyrm/templates/layout.html:144 bookwyrm/templates/ostatus/error.html:32
 #: bookwyrm/templates/preferences/2fa.html:68
 #: bookwyrm/templates/snippets/register_form.html:45
@@ -2946,12 +2957,13 @@ msgid "Forgot your password?"
 msgstr "忘記了密碼？"
 
 #: bookwyrm/templates/landing/login.html:61
+#: bookwyrm/templates/landing/reactivate.html:54
 msgid "More about this site"
 msgstr "關於本網站的更多"
 
 #: bookwyrm/templates/landing/password_reset.html:43
 #: bookwyrm/templates/preferences/change_password.html:33
-#: bookwyrm/templates/preferences/delete_user.html:20
+#: bookwyrm/templates/preferences/delete_user.html:35
 msgid "Confirm password:"
 msgstr "確認密碼:"
 
@@ -2967,6 +2979,15 @@ msgstr "重設你的密碼的連結將會被發送到你的郵箱地址"
 #: bookwyrm/templates/landing/password_reset_request.html:34
 msgid "Reset password"
 msgstr "重設密碼"
+
+#: bookwyrm/templates/landing/reactivate.html:4
+#: bookwyrm/templates/landing/reactivate.html:7
+msgid "Reactivate Account"
+msgstr ""
+
+#: bookwyrm/templates/landing/reactivate.html:32
+msgid "Reactivate account"
+msgstr ""
 
 #: bookwyrm/templates/layout.html:13
 #, python-format
@@ -3780,17 +3801,29 @@ msgstr "新密碼:"
 
 #: bookwyrm/templates/preferences/delete_user.html:4
 #: bookwyrm/templates/preferences/delete_user.html:7
-#: bookwyrm/templates/preferences/delete_user.html:25
+#: bookwyrm/templates/preferences/delete_user.html:40
 #: bookwyrm/templates/preferences/layout.html:28
 #: bookwyrm/templates/settings/users/delete_user_form.html:22
 msgid "Delete Account"
 msgstr ""
 
 #: bookwyrm/templates/preferences/delete_user.html:12
+msgid "Deactivate account"
+msgstr ""
+
+#: bookwyrm/templates/preferences/delete_user.html:15
+msgid "Your account will be hidden. You can log back in at any time to re-activate your account."
+msgstr ""
+
+#: bookwyrm/templates/preferences/delete_user.html:20
+msgid "Deactivate Account"
+msgstr ""
+
+#: bookwyrm/templates/preferences/delete_user.html:26
 msgid "Permanently delete account"
 msgstr ""
 
-#: bookwyrm/templates/preferences/delete_user.html:14
+#: bookwyrm/templates/preferences/delete_user.html:29
 msgid "Deleting your account cannot be undone. The username will not be available to register in the future."
 msgstr ""
 
@@ -4643,19 +4676,19 @@ msgstr ""
 msgid "User"
 msgstr ""
 
-#: bookwyrm/templates/settings/imports/imports.html:44
+#: bookwyrm/templates/settings/imports/imports.html:46
 msgid "Date Updated"
 msgstr ""
 
-#: bookwyrm/templates/settings/imports/imports.html:51
+#: bookwyrm/templates/settings/imports/imports.html:53
 msgid "Pending items"
 msgstr ""
 
-#: bookwyrm/templates/settings/imports/imports.html:54
+#: bookwyrm/templates/settings/imports/imports.html:56
 msgid "Successful items"
 msgstr ""
 
-#: bookwyrm/templates/settings/imports/imports.html:89
+#: bookwyrm/templates/settings/imports/imports.html:91
 msgid "No matching imports found."
 msgstr ""
 
@@ -6188,13 +6221,9 @@ msgstr "檔案超過了最大大小: 10MB"
 msgid "%(title)s: %(subtitle)s"
 msgstr ""
 
-#: bookwyrm/views/imports/import_data.py:98
+#: bookwyrm/views/imports/import_data.py:86
 msgid "Not a valid csv file"
 msgstr "不是有效的 csv 檔案"
-
-#: bookwyrm/views/landing/login.py:86
-msgid "Username or password are incorrect"
-msgstr ""
 
 #: bookwyrm/views/rss_feed.py:34
 #, python-brace-format

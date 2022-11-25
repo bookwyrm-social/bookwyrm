@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-11-07 19:14+0000\n"
-"PO-Revision-Date: 2022-11-07 21:44\n"
+"POT-Creation-Date: 2022-11-10 21:42+0000\n"
+"PO-Revision-Date: 2022-11-21 16:39\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: German\n"
 "Language: de\n"
@@ -46,7 +46,7 @@ msgstr "Unbegrenzt"
 msgid "Incorrect password"
 msgstr "Falsches Passwort"
 
-#: bookwyrm/forms/edit_user.py:95 bookwyrm/forms/landing.py:73
+#: bookwyrm/forms/edit_user.py:95 bookwyrm/forms/landing.py:89
 msgid "Password does not match"
 msgstr "Passwort stimmt nicht überein"
 
@@ -68,19 +68,23 @@ msgstr "Das Datum für Lesen gestoppt kann nicht in der Zukunft sein."
 
 #: bookwyrm/forms/forms.py:74
 msgid "Reading finished date cannot be in the future."
-msgstr ""
+msgstr "Das Datum \"Lesen beendet\" kann nicht in der Zukunft liegen."
 
-#: bookwyrm/forms/landing.py:40
+#: bookwyrm/forms/landing.py:37
+msgid "Username or password are incorrect"
+msgstr "Benutzer*inname oder Passwort falsch"
+
+#: bookwyrm/forms/landing.py:56
 msgid "User with this username already exists"
 msgstr "Ein Benutzer mit diesem Benutzernamen existiert bereits"
 
-#: bookwyrm/forms/landing.py:49
+#: bookwyrm/forms/landing.py:65
 msgid "A user with this email already exists."
 msgstr "Es existiert bereits ein Benutzer*inkonto mit dieser E-Mail-Adresse."
 
-#: bookwyrm/forms/landing.py:107 bookwyrm/forms/landing.py:115
+#: bookwyrm/forms/landing.py:123 bookwyrm/forms/landing.py:131
 msgid "Incorrect code"
-msgstr ""
+msgstr "Falscher Code"
 
 #: bookwyrm/forms/links.py:36
 msgid "This domain is blocked. Please contact your administrator if you think this is an error."
@@ -152,14 +156,18 @@ msgid "Self deletion"
 msgstr "Selbstlöschung"
 
 #: bookwyrm/models/base_model.py:20
+msgid "Self deactivation"
+msgstr "Selbstdeaktivierung"
+
+#: bookwyrm/models/base_model.py:21
 msgid "Moderator suspension"
 msgstr "Moderator*in suspendieren"
 
-#: bookwyrm/models/base_model.py:21
+#: bookwyrm/models/base_model.py:22
 msgid "Moderator deletion"
 msgstr "Moderator*in löschen"
 
-#: bookwyrm/models/base_model.py:22
+#: bookwyrm/models/base_model.py:23
 msgid "Domain block"
 msgstr "Domainsperrung"
 
@@ -430,7 +438,7 @@ msgstr "Willkommen auf %(site_name)s!"
 #: bookwyrm/templates/about/about.html:24
 #, python-format
 msgid "%(site_name)s is part of <em>BookWyrm</em>, a network of independent, self-directed communities for readers. While you can interact seamlessly with users anywhere in the <a href=\"https://joinbookwyrm.com/instances/\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">BookWyrm network</a>, this community is unique."
-msgstr ""
+msgstr "%(site_name)s ist Teil von <em>BookWyrm</em>, einem Netzwerk von unabhängigen, selbst verwalteten Communities von Bücherfreunden. Obwohl du nahtlos mit anderen Nutzern überall im <a href=\"https://joinbookwyrm.com/instances/\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">BookWyrm Netzwerk</a> interagieren kannst, ist die Community hier einzigartig."
 
 #: bookwyrm/templates/about/about.html:44
 #, python-format
@@ -449,7 +457,7 @@ msgstr "<a href=\"%(book_path)s\"><em>%(title)s</em></a> hat die unterschiedlich
 
 #: bookwyrm/templates/about/about.html:93
 msgid "Track your reading, talk about books, write reviews, and discover what to read next. Always ad-free, anti-corporate, and community-oriented, BookWyrm is human-scale software, designed to stay small and personal. If you have feature requests, bug reports, or grand dreams, <a href=\"https://joinbookwyrm.com/get-involved\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">reach out</a> and make yourself heard."
-msgstr ""
+msgstr "Verfolge deine Lektüre, sprich über Bücher, schreibe Rezensionen und entdecke, was Du als Nächstes lesen könntest. BookWyrm ist eine Software die immer übersichtlich, werbefrei und gemeinschaftsorientiert sein wird. Wenn du Feature-Anfragen, Fehlerberichte oder große Träume hast, wende dich <a href=\"https://joinbookwyrm.com/get-involved\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">an</a> und verschaffe dir Gehör."
 
 #: bookwyrm/templates/about/about.html:103
 msgid "Meet your admins"
@@ -1325,7 +1333,7 @@ msgstr "Status"
 #: bookwyrm/templates/book/file_links/edit_links.html:37
 #: bookwyrm/templates/settings/announcements/announcements.html:41
 #: bookwyrm/templates/settings/federation/instance.html:112
-#: bookwyrm/templates/settings/imports/imports.html:60
+#: bookwyrm/templates/settings/imports/imports.html:62
 #: bookwyrm/templates/settings/reports/report_links_table.html:6
 #: bookwyrm/templates/settings/themes.html:99
 msgid "Actions"
@@ -1640,7 +1648,7 @@ msgstr "Bitte bestätige deine E-Mail-Adresse"
 #: bookwyrm/templates/email/confirm/text_content.html:10
 #, python-format
 msgid "Or enter the code \"%(confirmation_code)s\" at login."
-msgstr "Oder gibt den Code „<code>%(confirmation_code)s</code>“ bei der Anmeldung ein."
+msgstr "Oder gibt den Code „%(confirmation_code)s“ bei der Anmeldung ein."
 
 #: bookwyrm/templates/email/html_layout.html:15
 #: bookwyrm/templates/email/text_layout.html:2
@@ -2678,7 +2686,7 @@ msgid "Recent Imports"
 msgstr "Zuletzt importiert"
 
 #: bookwyrm/templates/import/import.html:96
-#: bookwyrm/templates/settings/imports/imports.html:40
+#: bookwyrm/templates/settings/imports/imports.html:41
 msgid "Date Created"
 msgstr "Erstellungsdatum"
 
@@ -2687,9 +2695,9 @@ msgid "Last Updated"
 msgstr "Zuletzt aktualisiert"
 
 #: bookwyrm/templates/import/import.html:102
-#: bookwyrm/templates/settings/imports/imports.html:48
+#: bookwyrm/templates/settings/imports/imports.html:50
 msgid "Items"
-msgstr ""
+msgstr "Einträge"
 
 #: bookwyrm/templates/import/import.html:111
 msgid "No recent imports"
@@ -2726,7 +2734,7 @@ msgid "Refresh"
 msgstr "Aktualisieren"
 
 #: bookwyrm/templates/import/import_status.html:72
-#: bookwyrm/templates/settings/imports/imports.html:80
+#: bookwyrm/templates/settings/imports/imports.html:82
 msgid "Stop import"
 msgstr "Import stoppen"
 
@@ -2844,7 +2852,7 @@ msgid "Reject"
 msgstr "Ablehnen"
 
 #: bookwyrm/templates/import/troubleshoot.html:7
-#: bookwyrm/templates/settings/imports/imports.html:57
+#: bookwyrm/templates/settings/imports/imports.html:59
 msgid "Failed items"
 msgstr "Fehlgeschlagene Elemente"
 
@@ -2875,6 +2883,7 @@ msgstr "Kontaktiere deine*n Administrator*in oder <a href='https://github.com/bo
 #: bookwyrm/templates/landing/invite.html:4
 #: bookwyrm/templates/landing/invite.html:8
 #: bookwyrm/templates/landing/login.html:48
+#: bookwyrm/templates/landing/reactivate.html:41
 msgid "Create an Account"
 msgstr "Erstelle ein Benutzer*inkonto"
 
@@ -2938,14 +2947,16 @@ msgstr "Anmelden"
 msgid "Success! Email address confirmed."
 msgstr "Alles klar! E-Mail-Adresse bestätigt."
 
-#: bookwyrm/templates/landing/login.html:21 bookwyrm/templates/layout.html:140
-#: bookwyrm/templates/ostatus/error.html:28
+#: bookwyrm/templates/landing/login.html:21
+#: bookwyrm/templates/landing/reactivate.html:17
+#: bookwyrm/templates/layout.html:140 bookwyrm/templates/ostatus/error.html:28
 #: bookwyrm/templates/snippets/register_form.html:4
 msgid "Username:"
 msgstr "Benutzer*inname:"
 
 #: bookwyrm/templates/landing/login.html:27
 #: bookwyrm/templates/landing/password_reset.html:26
+#: bookwyrm/templates/landing/reactivate.html:23
 #: bookwyrm/templates/layout.html:144 bookwyrm/templates/ostatus/error.html:32
 #: bookwyrm/templates/preferences/2fa.html:68
 #: bookwyrm/templates/snippets/register_form.html:45
@@ -2958,12 +2969,13 @@ msgid "Forgot your password?"
 msgstr "Passwort vergessen?"
 
 #: bookwyrm/templates/landing/login.html:61
+#: bookwyrm/templates/landing/reactivate.html:54
 msgid "More about this site"
 msgstr "Mehr über diese Seite"
 
 #: bookwyrm/templates/landing/password_reset.html:43
 #: bookwyrm/templates/preferences/change_password.html:33
-#: bookwyrm/templates/preferences/delete_user.html:20
+#: bookwyrm/templates/preferences/delete_user.html:35
 msgid "Confirm password:"
 msgstr "Passwort bestätigen:"
 
@@ -2979,6 +2991,15 @@ msgstr "Ein Link zum Zurücksetzen deines Passworts wird an deine E-Mail-Adresse
 #: bookwyrm/templates/landing/password_reset_request.html:34
 msgid "Reset password"
 msgstr "Passwort zurücksetzen"
+
+#: bookwyrm/templates/landing/reactivate.html:4
+#: bookwyrm/templates/landing/reactivate.html:7
+msgid "Reactivate Account"
+msgstr ""
+
+#: bookwyrm/templates/landing/reactivate.html:32
+msgid "Reactivate account"
+msgstr ""
 
 #: bookwyrm/templates/layout.html:13
 #, python-format
@@ -3026,12 +3047,12 @@ msgstr "Handbuch"
 #: bookwyrm/templates/snippets/2fa_footer.html:29
 #, python-format
 msgid "Support %(site_name)s on <a href=\"%(support_link)s\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">%(support_title)s</a>"
-msgstr ""
+msgstr "Unterstütze %(site_name)s auf <a href=\"%(support_link)s\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">%(support_title)s</a>"
 
 #: bookwyrm/templates/layout.html:228
 #: bookwyrm/templates/snippets/2fa_footer.html:36
 msgid "BookWyrm's source code is freely available. You can contribute or report issues on <a href=\"https://github.com/bookwyrm-social/bookwyrm\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">GitHub</a>."
-msgstr ""
+msgstr "Der Quellcode von BookWyrm ist frei verfügbar. Du kannst zu ihm auf <a href=\"https://github.com/bookwyrm-social/bookwyrm\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">GitHub</a> beisteuern oder Probleme melden."
 
 #: bookwyrm/templates/lists/add_item_modal.html:8
 #, python-format
@@ -3727,7 +3748,7 @@ msgstr ""
 
 #: bookwyrm/templates/preferences/2fa.html:35
 msgid "Two Factor Authentication is active on your account."
-msgstr ""
+msgstr "Zwei Faktor Authentifizierung ist in deinem Konto aktiviert."
 
 #: bookwyrm/templates/preferences/2fa.html:36
 #: bookwyrm/templates/preferences/disable-2fa.html:4
@@ -3795,17 +3816,29 @@ msgstr "Neues Passwort:"
 
 #: bookwyrm/templates/preferences/delete_user.html:4
 #: bookwyrm/templates/preferences/delete_user.html:7
-#: bookwyrm/templates/preferences/delete_user.html:25
+#: bookwyrm/templates/preferences/delete_user.html:40
 #: bookwyrm/templates/preferences/layout.html:28
 #: bookwyrm/templates/settings/users/delete_user_form.html:22
 msgid "Delete Account"
 msgstr "Benutzer*inkonto löschen"
 
 #: bookwyrm/templates/preferences/delete_user.html:12
+msgid "Deactivate account"
+msgstr ""
+
+#: bookwyrm/templates/preferences/delete_user.html:15
+msgid "Your account will be hidden. You can log back in at any time to re-activate your account."
+msgstr ""
+
+#: bookwyrm/templates/preferences/delete_user.html:20
+msgid "Deactivate Account"
+msgstr ""
+
+#: bookwyrm/templates/preferences/delete_user.html:26
 msgid "Permanently delete account"
 msgstr "Benutzer*inkonto dauerhaft löschen"
 
-#: bookwyrm/templates/preferences/delete_user.html:14
+#: bookwyrm/templates/preferences/delete_user.html:29
 msgid "Deleting your account cannot be undone. The username will not be available to register in the future."
 msgstr "Das Löschen des Benutzer*inkonto kann nicht rückgängig gemacht werden. Der Benutzer*inname kann nicht erneut registriert werden."
 
@@ -4665,19 +4698,19 @@ msgstr "Abgeschlossen"
 msgid "User"
 msgstr "Benutzer*in"
 
-#: bookwyrm/templates/settings/imports/imports.html:44
+#: bookwyrm/templates/settings/imports/imports.html:46
 msgid "Date Updated"
 msgstr "Aktualisierungsdatum"
 
-#: bookwyrm/templates/settings/imports/imports.html:51
+#: bookwyrm/templates/settings/imports/imports.html:53
 msgid "Pending items"
 msgstr ""
 
-#: bookwyrm/templates/settings/imports/imports.html:54
+#: bookwyrm/templates/settings/imports/imports.html:56
 msgid "Successful items"
 msgstr "Erfolgreiche Objekte"
 
-#: bookwyrm/templates/settings/imports/imports.html:89
+#: bookwyrm/templates/settings/imports/imports.html:91
 msgid "No matching imports found."
 msgstr "Keine passenden Importe gefunden."
 
@@ -6219,13 +6252,9 @@ msgstr "Datei überschreitet die maximale Größe von 10MB"
 msgid "%(title)s: %(subtitle)s"
 msgstr "%(title)s: %(subtitle)s"
 
-#: bookwyrm/views/imports/import_data.py:98
+#: bookwyrm/views/imports/import_data.py:86
 msgid "Not a valid csv file"
 msgstr "Keine gültige CSV-Datei"
-
-#: bookwyrm/views/landing/login.py:86
-msgid "Username or password are incorrect"
-msgstr "Benutzer*inname oder Passwort falsch"
 
 #: bookwyrm/views/rss_feed.py:34
 #, python-brace-format

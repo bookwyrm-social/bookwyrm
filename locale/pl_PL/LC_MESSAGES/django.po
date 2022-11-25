@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-11-07 19:14+0000\n"
-"PO-Revision-Date: 2022-11-07 21:44\n"
+"POT-Creation-Date: 2022-11-10 21:42+0000\n"
+"PO-Revision-Date: 2022-11-10 22:53\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Polish\n"
 "Language: pl\n"
@@ -46,7 +46,7 @@ msgstr "Nieskończone"
 msgid "Incorrect password"
 msgstr "Niepoprawne hasło"
 
-#: bookwyrm/forms/edit_user.py:95 bookwyrm/forms/landing.py:73
+#: bookwyrm/forms/edit_user.py:95 bookwyrm/forms/landing.py:89
 msgid "Password does not match"
 msgstr "Hasła nie są identyczne"
 
@@ -70,15 +70,19 @@ msgstr "Data wstrzymania czytania nie może być w przyszłości."
 msgid "Reading finished date cannot be in the future."
 msgstr "Data zakończenia czytania nie może być w przyszłości."
 
-#: bookwyrm/forms/landing.py:40
+#: bookwyrm/forms/landing.py:37
+msgid "Username or password are incorrect"
+msgstr "Niepoprawna nazwa użytkownika lub hasło"
+
+#: bookwyrm/forms/landing.py:56
 msgid "User with this username already exists"
 msgstr "Ta nazwa użytkownika jest już używana"
 
-#: bookwyrm/forms/landing.py:49
+#: bookwyrm/forms/landing.py:65
 msgid "A user with this email already exists."
 msgstr "Ten adres e-mail jest już w użyciu."
 
-#: bookwyrm/forms/landing.py:107 bookwyrm/forms/landing.py:115
+#: bookwyrm/forms/landing.py:123 bookwyrm/forms/landing.py:131
 msgid "Incorrect code"
 msgstr "Niepoprawny kod"
 
@@ -152,14 +156,18 @@ msgid "Self deletion"
 msgstr "Usunięte samodzielnie"
 
 #: bookwyrm/models/base_model.py:20
+msgid "Self deactivation"
+msgstr ""
+
+#: bookwyrm/models/base_model.py:21
 msgid "Moderator suspension"
 msgstr "Zawieszone przez moderatora"
 
-#: bookwyrm/models/base_model.py:21
+#: bookwyrm/models/base_model.py:22
 msgid "Moderator deletion"
 msgstr "Usunięte przez moderatora"
 
-#: bookwyrm/models/base_model.py:22
+#: bookwyrm/models/base_model.py:23
 msgid "Domain block"
 msgstr "Blokada domeny"
 
@@ -1337,7 +1345,7 @@ msgstr "Status"
 #: bookwyrm/templates/book/file_links/edit_links.html:37
 #: bookwyrm/templates/settings/announcements/announcements.html:41
 #: bookwyrm/templates/settings/federation/instance.html:112
-#: bookwyrm/templates/settings/imports/imports.html:60
+#: bookwyrm/templates/settings/imports/imports.html:62
 #: bookwyrm/templates/settings/reports/report_links_table.html:6
 #: bookwyrm/templates/settings/themes.html:99
 msgid "Actions"
@@ -2698,7 +2706,7 @@ msgid "Recent Imports"
 msgstr "Najnowsze recenzje"
 
 #: bookwyrm/templates/import/import.html:96
-#: bookwyrm/templates/settings/imports/imports.html:40
+#: bookwyrm/templates/settings/imports/imports.html:41
 msgid "Date Created"
 msgstr ""
 
@@ -2707,7 +2715,7 @@ msgid "Last Updated"
 msgstr "Najnowsza aktualizacja"
 
 #: bookwyrm/templates/import/import.html:102
-#: bookwyrm/templates/settings/imports/imports.html:48
+#: bookwyrm/templates/settings/imports/imports.html:50
 msgid "Items"
 msgstr ""
 
@@ -2746,7 +2754,7 @@ msgid "Refresh"
 msgstr "Odśwież"
 
 #: bookwyrm/templates/import/import_status.html:72
-#: bookwyrm/templates/settings/imports/imports.html:80
+#: bookwyrm/templates/settings/imports/imports.html:82
 msgid "Stop import"
 msgstr "Wstrzymaj import"
 
@@ -2868,7 +2876,7 @@ msgid "Reject"
 msgstr "Odrzuć"
 
 #: bookwyrm/templates/import/troubleshoot.html:7
-#: bookwyrm/templates/settings/imports/imports.html:57
+#: bookwyrm/templates/settings/imports/imports.html:59
 msgid "Failed items"
 msgstr ""
 
@@ -2899,6 +2907,7 @@ msgstr ""
 #: bookwyrm/templates/landing/invite.html:4
 #: bookwyrm/templates/landing/invite.html:8
 #: bookwyrm/templates/landing/login.html:48
+#: bookwyrm/templates/landing/reactivate.html:41
 msgid "Create an Account"
 msgstr "Utwórz konto"
 
@@ -2962,14 +2971,16 @@ msgstr "Zaloguj się"
 msgid "Success! Email address confirmed."
 msgstr "Udało się! Adres e-mail został potwierdzony."
 
-#: bookwyrm/templates/landing/login.html:21 bookwyrm/templates/layout.html:140
-#: bookwyrm/templates/ostatus/error.html:28
+#: bookwyrm/templates/landing/login.html:21
+#: bookwyrm/templates/landing/reactivate.html:17
+#: bookwyrm/templates/layout.html:140 bookwyrm/templates/ostatus/error.html:28
 #: bookwyrm/templates/snippets/register_form.html:4
 msgid "Username:"
 msgstr "Nazwa użytkownika:"
 
 #: bookwyrm/templates/landing/login.html:27
 #: bookwyrm/templates/landing/password_reset.html:26
+#: bookwyrm/templates/landing/reactivate.html:23
 #: bookwyrm/templates/layout.html:144 bookwyrm/templates/ostatus/error.html:32
 #: bookwyrm/templates/preferences/2fa.html:68
 #: bookwyrm/templates/snippets/register_form.html:45
@@ -2982,12 +2993,13 @@ msgid "Forgot your password?"
 msgstr "Zapomniano hasła?"
 
 #: bookwyrm/templates/landing/login.html:61
+#: bookwyrm/templates/landing/reactivate.html:54
 msgid "More about this site"
 msgstr "Więcej o tej stronie"
 
 #: bookwyrm/templates/landing/password_reset.html:43
 #: bookwyrm/templates/preferences/change_password.html:33
-#: bookwyrm/templates/preferences/delete_user.html:20
+#: bookwyrm/templates/preferences/delete_user.html:35
 msgid "Confirm password:"
 msgstr "Potwierdź hasło:"
 
@@ -3003,6 +3015,15 @@ msgstr "Odnośnik do wyzerowania hasła zostanie wysłany na Twój adres e-mail"
 #: bookwyrm/templates/landing/password_reset_request.html:34
 msgid "Reset password"
 msgstr "Wyzeruj hasło"
+
+#: bookwyrm/templates/landing/reactivate.html:4
+#: bookwyrm/templates/landing/reactivate.html:7
+msgid "Reactivate Account"
+msgstr ""
+
+#: bookwyrm/templates/landing/reactivate.html:32
+msgid "Reactivate account"
+msgstr ""
 
 #: bookwyrm/templates/layout.html:13
 #, python-format
@@ -3825,17 +3846,29 @@ msgstr "Nowe hasło:"
 
 #: bookwyrm/templates/preferences/delete_user.html:4
 #: bookwyrm/templates/preferences/delete_user.html:7
-#: bookwyrm/templates/preferences/delete_user.html:25
+#: bookwyrm/templates/preferences/delete_user.html:40
 #: bookwyrm/templates/preferences/layout.html:28
 #: bookwyrm/templates/settings/users/delete_user_form.html:22
 msgid "Delete Account"
 msgstr "Usuń konto"
 
 #: bookwyrm/templates/preferences/delete_user.html:12
+msgid "Deactivate account"
+msgstr ""
+
+#: bookwyrm/templates/preferences/delete_user.html:15
+msgid "Your account will be hidden. You can log back in at any time to re-activate your account."
+msgstr ""
+
+#: bookwyrm/templates/preferences/delete_user.html:20
+msgid "Deactivate Account"
+msgstr ""
+
+#: bookwyrm/templates/preferences/delete_user.html:26
 msgid "Permanently delete account"
 msgstr "Trwale usuń konto"
 
-#: bookwyrm/templates/preferences/delete_user.html:14
+#: bookwyrm/templates/preferences/delete_user.html:29
 msgid "Deleting your account cannot be undone. The username will not be available to register in the future."
 msgstr "Usunięcia konta nie można cofnąć. Nazwy użytkownika nie będzie można użyć w przyszłości."
 
@@ -4705,19 +4738,19 @@ msgstr ""
 msgid "User"
 msgstr ""
 
-#: bookwyrm/templates/settings/imports/imports.html:44
+#: bookwyrm/templates/settings/imports/imports.html:46
 msgid "Date Updated"
 msgstr ""
 
-#: bookwyrm/templates/settings/imports/imports.html:51
+#: bookwyrm/templates/settings/imports/imports.html:53
 msgid "Pending items"
 msgstr ""
 
-#: bookwyrm/templates/settings/imports/imports.html:54
+#: bookwyrm/templates/settings/imports/imports.html:56
 msgid "Successful items"
 msgstr "Zakończone elementy"
 
-#: bookwyrm/templates/settings/imports/imports.html:89
+#: bookwyrm/templates/settings/imports/imports.html:91
 msgid "No matching imports found."
 msgstr "Nie znaleziono pasujących importów."
 
@@ -6277,13 +6310,9 @@ msgstr "Rozmiar pliku przekracza maksymalny rozmiar: 10MB"
 msgid "%(title)s: %(subtitle)s"
 msgstr "%(title)s: %(subtitle)s"
 
-#: bookwyrm/views/imports/import_data.py:98
+#: bookwyrm/views/imports/import_data.py:86
 msgid "Not a valid csv file"
 msgstr "To nie jest prawidłowy plik csv"
-
-#: bookwyrm/views/landing/login.py:86
-msgid "Username or password are incorrect"
-msgstr "Niepoprawna nazwa użytkownika lub hasło"
 
 #: bookwyrm/views/rss_feed.py:34
 #, python-brace-format
