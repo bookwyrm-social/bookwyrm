@@ -11,7 +11,6 @@ from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
-from django.utils.translation import gettext_lazy as _
 from django.views import View
 
 from bookwyrm import forms, models
@@ -30,7 +29,7 @@ from bookwyrm.utils.cache import get_or_set
 class Import(View):
     """import view"""
 
-    def get(self, request):
+    def get(self, request, invalid=False):
         """load import page"""
         jobs = models.ImportJob.objects.filter(user=request.user).order_by(
             "-created_date"
@@ -43,6 +42,7 @@ class Import(View):
             "page_range": paginated.get_elided_page_range(
                 page.number, on_each_side=2, on_ends=1
             ),
+            "invalid": invalid,
         }
 
         seconds = get_or_set("avg-import-time", get_average_import_time, timeout=86400)
@@ -88,7 +88,7 @@ class Import(View):
                 privacy,
             )
         except (UnicodeDecodeError, ValueError, KeyError):
-            return HttpResponseBadRequest(_("Not a valid csv file"))
+            return self.get(request, invalid=True)
 
         job.start_job()
 

@@ -8,6 +8,12 @@
 <div class="block">
     <h1 class="title">{% trans "Import Books" %}</h1>
 
+    {% if invalid %}
+    <div class="notification is-danger">
+        {% trans "Not a valid CSV file" %}
+    </div>
+    {% endif %}
+
     {% if site.imports_enabled %}
         {% if recent_avg_hours or recent_avg_minutes %}
         <div class="notification">

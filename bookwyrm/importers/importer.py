@@ -37,6 +37,9 @@ class Importer:
         """check over a csv and creates a database entry for the job"""
         csv_reader = csv.DictReader(csv_file, delimiter=self.delimiter)
         rows = enumerate(list(csv_reader))
+        if rows:
+            raise ValueError("CSV file is empty")
+
         job = ImportJob.objects.create(
             user=user,
             include_reviews=include_reviews,
