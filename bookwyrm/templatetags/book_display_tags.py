@@ -1,8 +1,15 @@
 """ template filters """
 from django import template
+from bookwyrm import models
 
 
 register = template.Library()
+
+
+@register.filter(name="review_count")
+def get_review_count(book):
+    """how many reviews?"""
+    return models.Review.objects.filter(deleted=False, book=book).count()
 
 
 @register.filter(name="book_description")
