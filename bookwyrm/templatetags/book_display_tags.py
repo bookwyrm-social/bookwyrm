@@ -11,6 +11,7 @@ def get_review_count(book):
     """how many reviews?"""
     return models.Review.objects.filter(deleted=False, book=book).count()
 
+
 @register.filter(name="book_description")
 def get_book_description(book):
     """use the work's text if the book doesn't have it"""
