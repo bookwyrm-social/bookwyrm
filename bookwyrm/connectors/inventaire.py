@@ -166,7 +166,7 @@ class Connector(AbstractConnector):
             except ConnectorException:
                 # who, indeed, knows
                 return
-        super().create_edition_from_data(work, edition_data, instance=instance)
+        return super().create_edition_from_data(work, edition_data, instance=instance)
 
     def get_cover_url(self, cover_blob, *_):
         """format the relative cover url into an absolute one:
