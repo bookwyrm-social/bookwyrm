@@ -165,7 +165,7 @@ class Connector(AbstractConnector):
                 edition_data = self.get_book_data(edition_data)
             except ConnectorException:
                 # who, indeed, knows
-                return
+                return None
         return super().create_edition_from_data(work, edition_data, instance=instance)
 
     def get_cover_url(self, cover_blob, *_):
