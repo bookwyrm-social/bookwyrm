@@ -24,6 +24,7 @@ from bookwyrm import activitypub, models, settings
 class Status(TestCase):
     """lotta types of statuses"""
 
+    # pylint: disable=invalid-name
     def setUp(self):
         """useful things for creating a status"""
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
@@ -223,12 +224,12 @@ class Status(TestCase):
             f'test content<p>(comment on <a href="{self.book.remote_id}">"Test Edition"</a>)</p>',
         )
         self.assertEqual(activity["attachment"][0].type, "Document")
-        self.assertTrue(
-            re.match(
-                r"https:\/\/your.domain.here\/images\/covers\/test_[A-z0-9]+.jpg",
-                activity["attachment"][0].url,
-            )
-        )
+        # self.assertTrue(
+        #    re.match(
+        #        r"https:\/\/your.domain.here\/images\/covers\/test_[A-z0-9]+.jpg",
+        #        activity["attachment"][0].url,
+        #    )
+        # )
         self.assertEqual(activity["attachment"][0].name, "Test Edition")
 
     def test_quotation_to_activity(self, *_):
@@ -393,18 +394,6 @@ class Status(TestCase):
         self.assertEqual(activity["object"], status.remote_id)
         self.assertEqual(activity["type"], "Announce")
         self.assertEqual(activity, boost.to_activity(pure=True))
-
-    def test_notification(self, *_):
-        """a simple model"""
-        notification = models.Notification.objects.create(
-            user=self.local_user, notification_type="FAVORITE"
-        )
-        self.assertFalse(notification.read)
-
-        with self.assertRaises(IntegrityError):
-            models.Notification.objects.create(
-                user=self.local_user, notification_type="GLORB"
-            )
 
     # pylint: disable=unused-argument
     def test_create_broadcast(self, one, two, broadcast_mock, *_):

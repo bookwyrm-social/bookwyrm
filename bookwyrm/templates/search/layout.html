@@ -1,5 +1,6 @@
 {% extends 'layout.html' %}
 {% load i18n %}
+{% load humanize %}
 
 {% block title %}{% trans "Search" %}{% endblock %}
 
@@ -13,7 +14,7 @@
 <form class="block" action="{% url 'search' %}" method="GET">
     <div class="field has-addons">
         <div class="control">
-            <input type="text" class="input" name="q" value="{{ query }}" aria-label="{% trans 'Search query' %}">
+            <input type="text" class="input" name="q" value="{{ query }}" aria-label="{% trans 'Search query' %}" id="tour-search-page-input">
         </div>
         <div class="control">
             <div class="select" aria-label="{% trans 'Search type' %}">
@@ -52,19 +53,32 @@
     </ul>
 </nav>
 
-<section class="block">
-    {% if not results %}
-    <p>
+<section class="block" id="search-results-block">
+    <p class="block">
+        {% if not results %}
         <em>{% blocktrans %}No results found for "{{ query }}"{% endblocktrans %}</em>
+        {% else %}
+        <em>{% blocktrans trimmed count counter=results.paginator.count with result_count=results.paginator.count|intcomma %}
+            {{ result_count }} result found
+            {% plural %}
+            {{ result_count }} results found
+        {% endblocktrans %}</em>
+        {% endif %}
     </p>
-    {% endif %}
     {% block panel %}
     {% endblock %}
 
-    <div>
+    <div class="block">
         {% include 'snippets/pagination.html' with page=results path=request.path %}
     </div>
+    {% block search_footer %}{% endblock %}
 </section>
 {% endif %}
 
+{% endblock %}
+
+{% block scripts %}
+{% if request.user.show_guided_tour %}
+    {% include 'guided_tour/search.html' %}
+{% endif %}
 {% endblock %}

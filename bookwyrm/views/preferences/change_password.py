@@ -1,10 +1,12 @@
 """ class views for password management """
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
 from django.views import View
+from django.views.decorators.debug import sensitive_variables, sensitive_post_parameters
+
+from bookwyrm import forms
 
 
 # pylint: disable= no-self-use
@@ -14,18 +16,24 @@ class ChangePassword(View):
 
     def get(self, request):
         """change password page"""
-        data = {"user": request.user}
+        data = {"form": forms.ChangePasswordForm()}
         return TemplateResponse(request, "preferences/change_password.html", data)
 
+    @method_decorator(sensitive_variables("new_password"))
+    @method_decorator(sensitive_post_parameters("current_password"))
+    @method_decorator(sensitive_post_parameters("password"))
+    @method_decorator(sensitive_post_parameters("confirm_password"))
     def post(self, request):
         """allow a user to change their password"""
-        new_password = request.POST.get("password")
-        confirm_password = request.POST.get("confirm-password")
+        form = forms.ChangePasswordForm(request.POST, instance=request.user)
+        if not form.is_valid():
+            data = {"form": form}
+            return TemplateResponse(request, "preferences/change_password.html", data)
 
-        if new_password != confirm_password:
-            return redirect("prefs-password")
-
+        new_password = form.cleaned_data["password"]
         request.user.set_password(new_password)
         request.user.save(broadcast=False, update_fields=["password"])
+
         login(request, request.user)
-        return redirect("user-feed", request.user.localname)
+        data = {"success": True, "form": forms.ChangePasswordForm()}
+        return TemplateResponse(request, "preferences/change_password.html", data)

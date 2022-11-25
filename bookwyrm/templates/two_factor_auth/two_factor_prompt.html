@@ -1,0 +1,45 @@
+{% load layout %}
+{% load sass_tags %}
+{% load i18n %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="{% get_lang %}">
+<head>
+    <title>{% block title %}BookWyrm{% endblock %} - {{ site.name }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="{% sass_src site_theme %}" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    <nav class="navbar" aria-label="main navigation">
+        <div class="container">
+            <div class="navbar-brand">
+                <a class="navbar-item" href="/">
+                    <img class="image logo" src="{% if site.logo_small %}{% get_media_prefix %}{{ site.logo_small }}{% else %}{% static "images/logo-small.png" %}{% endif %}" alt="{% blocktrans with site_name=site.name %}{{ site_name }} home page{% endblocktrans %}">
+                </a>
+            </div>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="columns is-multiline is-centered hero is-halfheight is-vcentered">
+            <div class="column is-one-third m-4">
+                <header class="block">
+                    {% block header %}
+                    <h1 class="title">
+                        {% trans "2FA is available" %}
+                    </h1>
+                    {% endblock %}
+                </header>
+                <div class="is-centered p-2">
+                    <p class="block">{% trans "You can secure your account by setting up two factor authentication in your user preferences. This will require a one-time code from your phone in addition to your password each time you log in." %}</p>
+                    <div class="block has-text-centered">
+                        <a class="button" href="/">{% trans "No thanks" %}</a>
+                        <a class="button is-primary" href="/preferences/2fa">{% trans "Set up 2FA" %}</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% include 'snippets/footer.html' %}
+</body>
+</html>

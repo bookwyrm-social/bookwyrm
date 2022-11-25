@@ -1,0 +1,148 @@
+{% extends 'settings/layout.html' %}
+{% load i18n %}
+{% load utilities %}
+{% load humanize %}
+
+{% block title %}{% trans "Imports" %}{% endblock %}
+
+{% block header %}
+{% trans "Imports" %}
+{% endblock %}
+
+{% block panel %}
+
+<div class="block">
+    {% if site.imports_enabled %}
+    <details class="details-panel box">
+        <summary>
+            <span role="heading" aria-level="2" class="title is-6">
+                {% trans "Disable starting new imports" %}
+            </span>
+            <span class="details-close icon icon-x" aria-hidden="true"></span>
+        </summary>
+        <form
+            name="disable-imports"
+            id="disable-imports"
+            method="POST"
+            action="{% url 'settings-imports-disable' %}"
+        >
+            <div class="notification">
+                {% trans "This is only intended to be used when things have gone very wrong with imports and you need to pause the feature while addressing issues." %}
+                {% trans "While imports are disabled, users will not be allowed to start new imports, but existing imports will not be effected." %}
+            </div>
+            {% csrf_token %}
+            <div class="control">
+                <button type="submit" class="button is-danger">
+                    {% trans "Disable imports" %}
+                </button>
+            </div>
+        </form>
+    </details>
+    {% else %}
+    <form
+        name="enable-imports"
+        id="enable-imports"
+        method="POST"
+        action="{% url 'settings-imports-enable' %}"
+        class="box"
+    >
+        <div class="notification is-danger is-light">
+            {% trans "Users are currently unable to start new imports" %}
+        </div>
+        {% csrf_token %}
+        <div class="control">
+            <button type="submit" class="button is-success">
+                {% trans "Enable imports" %}
+            </button>
+        </div>
+    </form>
+    {% endif %}
+</div>
+
+<div class="block">
+    <div class="tabs">
+        <ul>
+            {% url 'settings-imports' as url %}
+            <li {% if request.path in url %}class="is-active" aria-current="page"{% endif %}>
+                <a href="{{ url }}">{% trans "Active" %}</a>
+            </li>
+            {% url 'settings-imports' status="complete" as url %}
+            <li {% if url in request.path %}class="is-active" aria-current="page"{% endif %}>
+                <a href="{{ url }}">{% trans "Completed" %}</a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<div class="table-container block content">
+    <table class="table is-striped is-fullwidth">
+        <tr>
+            {% url 'settings-imports' status  as url %}
+            <th>
+                {% trans "ID" %}
+            </th>
+            <th>
+                {% trans "User" as text %}
+                {% include 'snippets/table-sort-header.html' with field="user" sort=sort text=text %}
+            </th>
+            <th>
+                {% trans "Date Created" as text %}
+                {% include 'snippets/table-sort-header.html' with field="created_date" sort=sort text=text %}
+            </th>
+            {% if status != "active" %}
+            <th>
+                {% trans "Date Updated" %}
+            </th>
+            {% endif %}
+            <th>
+                {% trans "Items" %}
+            </th>
+            <th>
+                {% trans "Pending items" %}
+            </th>
+            <th>
+                {% trans "Successful items" %}
+            </th>
+            <th>
+                {% trans "Failed items" %}
+            </th>
+            {% if status == "active" %}
+            <th>{% trans "Actions" %}</th>
+            {% endif %}
+        </tr>
+        {% for import in imports %}
+        <tr>
+            <td>{{ import.id }}</td>
+            <td class="overflow-wrap-anywhere">
+                <a href="{% url 'settings-user' import.user.id %}">{{ import.user|username }}</a>
+            </td>
+            <td>{{ import.created_date }}</td>
+            {% if status != "active" %}
+            <td>{{ import.updated_date }}</td>
+            {% endif %}
+            <td>{{ import.item_count|intcomma }}</td>
+            <td>{{ import.pending_item_count|intcomma }}</td>
+            <td>{{ import.successful_item_count|intcomma }}</td>
+            <td>{{ import.failed_item_count|intcomma }}</td>
+            {% if status == "active" %}
+            <td>
+                {% join "complete" import.id as modal_id %}
+                <button type="button" data-modal-open="{{ modal_id }}" class="button is-danger">{% trans "Stop import" %}</button>
+                {% include "settings/imports/complete_import_modal.html" with id=modal_id %}
+            </td>
+            {% endif %}
+        </tr>
+        {% endfor %}
+        {% if not imports %}
+        <tr>
+            <td colspan="6">
+                <em>{% trans "No matching imports found." %} </em>
+            </td>
+        </tr>
+        {% endif %}
+    </table>
+</div>
+
+{% include 'snippets/pagination.html' with page=imports path=request.path %}
+{% endblock %}
+

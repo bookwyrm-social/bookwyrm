@@ -46,7 +46,7 @@ def get_relationship(context, user_object):
         get_relationship_name,
         user,
         user_object,
-        timeout=259200,
+        timeout=60 * 60,
     )
 
 

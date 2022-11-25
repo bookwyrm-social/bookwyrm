@@ -54,9 +54,9 @@ class ExportViews(TestCase):
             user=self.local_user,
             book=self.book,
         )
-        request = self.factory.get("")
+        request = self.factory.post("")
         request.user = self.local_user
-        export = views.export_user_book_data(request)
+        export = views.Export.as_view()(request)
         self.assertIsInstance(export, StreamingHttpResponse)
         self.assertEqual(export.status_code, 200)
         result = list(export.streaming_content)

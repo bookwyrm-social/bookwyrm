@@ -241,6 +241,10 @@ class Work(OrderedCollectionPageMixin, Book):
         """in case the default edition is not set"""
         return self.editions.order_by("-edition_rank").first()
 
+    def author_edition(self, author):
+        """in case the default edition doesn't have the required author"""
+        return self.editions.filter(authors=author).order_by("-edition_rank").first()
+
     def to_edition_list(self, **kwargs):
         """an ordered collection of editions"""
         return self.to_ordered_collection(

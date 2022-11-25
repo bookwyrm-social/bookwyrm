@@ -24,6 +24,10 @@
             <li {% if request.path in url %}class="is-active" aria-current="page"{% endif %}>
                 <a href="{{ url }}">{% trans "Local users" %}</a>
             </li>
+            {% url 'settings-users' status="deleted" as url %}
+            <li {% if url in request.path %}class="is-active" aria-current="page"{% endif %}>
+                <a href="{{ url }}">{% trans "Deleted users" %}</a>
+            </li>
             {% url 'settings-users' status="federated" as url %}
             <li {% if url in request.path %}class="is-active" aria-current="page"{% endif %}>
                 <a href="{{ url }}">{% trans "Federated community" %}</a>
@@ -36,7 +40,7 @@
     <table class="table is-striped is-fullwidth">
         <tr>
             {% url 'settings-users' as url %}
-            <th>
+            <th colspan="2">
                 {% trans "Username" as text %}
                 {% include 'snippets/table-sort-header.html' with field="username" sort=sort text=text %}
             </th>
@@ -52,7 +56,7 @@
                 {% trans "Status" as text %}
                 {% include 'snippets/table-sort-header.html' with field="is_active" sort=sort text=text %}
             </th>
-            {% if status != "local" %}
+            {% if status == "federated" %}
             <th>
                 {% trans "Remote instance" as text %}
                 {% include 'snippets/table-sort-header.html' with field="federated_server__server_name" sort=sort text=text %}
@@ -61,7 +65,10 @@
         </tr>
         {% for user in users %}
         <tr>
-            <td class="overflow-wrap-anywhere">
+            <td class="pr-0">
+                {% include 'snippets/avatar.html' with user=user %}
+            </td>
+            <td class="overflow-wrap-anywhere pl-1">
                 <a href="{% url 'settings-user' user.id %}">{{ user|username }}</a>
             </td>
             <td>{{ user.created_date }}</td>
@@ -72,6 +79,12 @@
                         <span class="icon icon-check"></span>
                     </span>
                     {% trans "Active" %}
+                {% elif user.deactivation_reason == "moderator_deletion" or user.deactivation_reason == "self_deletion" %}
+                    <span class="tag is-danger" aria-hidden="true">
+                        <span class="icon icon-x"></span>
+                    </span>
+                    {% trans "Deleted" %}
+                    <span class="help">({{ user.get_deactivation_reason_display }})</span>
                 {% else %}
                     <span class="tag is-warning" aria-hidden="true">
                         <span class="icon icon-x"></span>
@@ -80,7 +93,7 @@
                     <span class="help">({{ user.get_deactivation_reason_display }})</span>
                 {% endif %}
             </td>
-            {% if status != "local" %}
+            {% if status == "federated" %}
             <td>
                 {% if user.federated_server %}
                 <a href="{% url 'settings-federated-server' user.federated_server.id %}">{{ user.federated_server.server_name }}</a>

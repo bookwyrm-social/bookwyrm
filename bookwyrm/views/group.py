@@ -1,7 +1,7 @@
 """group views"""
 from django.apps import apps
 from django.contrib.auth.decorators import login_required
-from django.db import IntegrityError
+from django.db import IntegrityError, transaction
 from django.core.paginator import Paginator
 from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect
@@ -52,18 +52,18 @@ class Group(View):
         form = forms.GroupForm(request.POST, instance=user_group)
         if not form.is_valid():
             return redirect("group", user_group.id)
-        user_group = form.save()
+        user_group = form.save(request)
 
         # let the other members know something about the group changed
         memberships = models.GroupMember.objects.filter(group=user_group)
         model = apps.get_model("bookwyrm.Notification", require_ready=True)
         for field in form.changed_data:
             notification_type = (
-                "GROUP_PRIVACY"
+                model.GROUP_PRIVACY
                 if field == "privacy"
-                else "GROUP_NAME"
+                else model.GROUP_NAME
                 if field == "name"
-                else "GROUP_DESCRIPTION"
+                else model.GROUP_DESCRIPTION
                 if field == "description"
                 else None
             )
@@ -71,9 +71,9 @@ class Group(View):
                 for membership in memberships:
                     member = membership.user
                     if member != request.user:
-                        model.objects.create(
-                            user=member,
-                            related_user=request.user,
+                        model.notify(
+                            member,
+                            request.user,
                             related_group=user_group,
                             notification_type=notification_type,
                         )
@@ -112,9 +112,11 @@ class UserGroups(View):
         form = forms.GroupForm(request.POST)
         if not form.is_valid():
             return redirect(request.user.local_path + "/groups")
-        group = form.save()
-        # add the creator as a group member
-        models.GroupMember.objects.create(group=group, user=request.user)
+
+        with transaction.atomic():
+            group = form.save(request)
+            # add the creator as a group member
+            models.GroupMember.objects.create(group=group, user=request.user)
         return redirect("group", group.id)
 
 
@@ -125,9 +127,13 @@ class FindUsers(View):
     # this is mostly borrowed from the Get Started friend finder
 
     def get(self, request, group_id):
-        """basic profile info"""
+        """Search for a user to add the a group, or load suggested users cache"""
         user_query = request.GET.get("user_query")
         group = get_object_or_404(models.Group, id=group_id)
+
+        # only users who can edit can add users
+        group.raise_not_editable(request.user)
+
         lists = (
             models.List.privacy_filter(request.user)
             .filter(group=group)
@@ -183,10 +189,11 @@ def delete_group(request, group_id):
     # only the owner can delete a group
     group.raise_not_deletable(request.user)
 
-    # deal with any group lists
-    models.List.objects.filter(group=group).update(curation="closed", group=None)
+    with transaction.atomic():
+        # deal with any group lists
+        models.List.objects.filter(group=group).update(curation="closed", group=None)
 
-    group.delete()
+        group.delete()
     return redirect(request.user.local_path + "/groups")
 
 
@@ -244,24 +251,22 @@ def remove_member(request):
 
         memberships = models.GroupMember.objects.filter(group=group)
         model = apps.get_model("bookwyrm.Notification", require_ready=True)
-        notification_type = "LEAVE" if user == request.user else "REMOVE"
+        notification_type = model.LEAVE if user == request.user else model.REMOVE
         # let the other members know about it
         for membership in memberships:
             member = membership.user
             if member != request.user:
-                model.objects.create(
-                    user=member,
-                    related_user=user,
+                model.notify(
+                    member,
+                    user,
                     related_group=group,
                     notification_type=notification_type,
                 )
 
         # let the user (now ex-member) know as well, if they were removed
-        if notification_type == "REMOVE":
-            model.objects.create(
-                user=user,
-                related_group=group,
-                notification_type=notification_type,
+        if notification_type == model.REMOVE:
+            model.notify(
+                user, None, related_group=group, notification_type=notification_type
             )
 
     return redirect(group.local_path)

@@ -12,6 +12,7 @@ shell
 dbshell
 restart_celery
 pytest
+pytest_coverage_report
 collectstatic
 makemessages
 compilemessages
@@ -22,7 +23,6 @@ black
 prettier
 stylelint
 formatters
-compilescss
 collectstatic_watch
 populate_streams
 populate_lists_streams

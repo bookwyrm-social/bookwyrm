@@ -52,9 +52,6 @@ class ReadingStatus(View):
             logger.exception("Invalid reading status type: %s", status)
             return HttpResponseBadRequest()
 
-        # invalidate related caches
-        cache.delete(f"active_shelf-{request.user.id}-{book_id}")
-
         desired_shelf = get_object_or_404(
             models.Shelf, identifier=identifier, user=request.user
         )
@@ -63,6 +60,14 @@ class ReadingStatus(View):
             models.Edition.viewer_aware_objects(request.user)
             .prefetch_related("shelfbook_set__shelf")
             .get(id=book_id)
+        )
+
+        # invalidate related caches
+        cache.delete_many(
+            [
+                f"active_shelf-{request.user.id}-{ed}"
+                for ed in book.parent_work.editions.values_list("id", flat=True)
+            ]
         )
 
         # gets the first shelf that indicates a reading status, or None
@@ -74,13 +79,11 @@ class ReadingStatus(View):
         current_status_shelfbook = shelves[0] if shelves else None
 
         # checking the referer prevents redirecting back to the modal page
-        referer = request.headers.get("Referer", "/")
-        referer = "/" if "reading-status" in referer else referer
         if current_status_shelfbook is not None:
             if current_status_shelfbook.shelf.identifier != desired_shelf.identifier:
                 current_status_shelfbook.delete()
             else:  # It already was on the shelf
-                return redirect(referer)
+                return redirect("/")
 
         models.ShelfBook.objects.create(
             book=book, shelf=desired_shelf, user=request.user
@@ -118,7 +121,7 @@ class ReadingStatus(View):
         if is_api_request(request):
             return HttpResponse()
 
-        return redirect(referer)
+        return redirect("/")
 
 
 @method_decorator(login_required, name="dispatch")
@@ -156,7 +159,7 @@ class ReadThrough(View):
                     models.ReadThrough, id=request.POST.get("id")
                 )
             return TemplateResponse(request, "readthrough/readthrough.html", data)
-        form.save()
+        form.save(request)
         return redirect("book", book_id)
 
 
@@ -200,7 +203,7 @@ def delete_readthrough(request):
     readthrough.raise_not_deletable(request.user)
 
     readthrough.delete()
-    return redirect(request.headers.get("Referer", "/"))
+    return redirect("/")
 
 
 @login_required
@@ -211,4 +214,4 @@ def delete_progressupdate(request):
     update.raise_not_deletable(request.user)
 
     update.delete()
-    return redirect(request.headers.get("Referer", "/"))
+    return redirect("/")

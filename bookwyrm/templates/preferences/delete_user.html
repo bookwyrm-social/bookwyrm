@@ -9,21 +9,36 @@
 
 {% block panel %}
 <div class="block">
+    <h2 class="title is-4">{% trans "Deactivate account" %}</h2>
+    <div class="box">
+        <p class="notification is-link is-light">
+            {% trans "Your account will be hidden. You can log back in at any time to re-activate your account." %}
+        </p>
+
+        <form name="deactivate-user" action="{% url 'prefs-deactivate' %}" method="post">
+            {% csrf_token %}
+            <button type="submit" class="button is-link">{% trans "Deactivate Account" %}</button>
+        </form>
+    </div>
+</div>
+
+<div class="block">
     <h2 class="title is-4">{% trans "Permanently delete account" %}</h2>
-    <p class="notification is-danger is-light">
-        {% trans "Deleting your account cannot be undone. The username will not be available to register in the future." %}
-    </p>
+    <div class="box">
+        <p class="notification is-danger is-light">
+            {% trans "Deleting your account cannot be undone. The username will not be available to register in the future." %}
+        </p>
 
-    <form name="delete-user" action="{% url 'prefs-delete' %}" method="post">
-        {% csrf_token %}
-        <div class="field">
-            <label class="label" for="id_password">{% trans "Confirm password:" %}</label>
-            <input class="input {% if form.password.errors %}is-danger{% endif %}" type="password" name="password" id="id_password" required aria-describedby="desc_password">
+        <form name="delete-user" action="{% url 'prefs-delete' %}" method="post">
+            {% csrf_token %}
+            <div class="field">
+                <label class="label" for="id_password">{% trans "Confirm password:" %}</label>
+                <input class="input {% if form.password.errors %}is-danger{% endif %}" type="password" name="password" id="id_password" required aria-describedby="desc_password">
 
-            {% include 'snippets/form_errors.html' with errors_list=form.password.errors id="desc_password" %}    
-        </div>
-        <button type="submit" class="button is-danger">{% trans "Delete Account" %}</button>
-    </form>
+                {% include 'snippets/form_errors.html' with errors_list=form.password.errors id="desc_password" %}
+            </div>
+            <button type="submit" class="button is-danger">{% trans "Delete Account" %}</button>
+        </form>
+    </div>
 </div>
 {% endblock %}
-

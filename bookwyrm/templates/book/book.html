@@ -113,7 +113,7 @@
 
             {% include 'snippets/rate_action.html' with user=request.user book=book %}
 
-            <div class="mb-3">
+            <div class="mb-3" id="tour-shelve-button">
                 {% include 'snippets/shelve_button/shelve_button.html' %}
             </div>
 
@@ -131,7 +131,7 @@
                 {% trans "Load data" as button_text %}
                 {% if book.openlibrary_key %}
                 <p>
-                    <a href="{{ book.openlibrary_link }}" target="_blank" rel="noopener noreferrer">
+                    <a href="{{ book.openlibrary_link }}" target="_blank" rel="nofollow noopener noreferrer">
                         {% trans "View on OpenLibrary" %}
                     </a>
                     {% if request.user.is_authenticated and perms.bookwyrm.edit_book %}
@@ -145,7 +145,7 @@
                 {% endif %}
                 {% if book.inventaire_id %}
                 <p>
-                    <a href="{{ book.inventaire_link }}" target="_blank" rel="noopener noreferrer">
+                    <a href="{{ book.inventaire_link }}" target="_blank" rel="nofollow noopener noreferrer">
                         {% trans "View on Inventaire" %}
                     </a>
 
@@ -210,7 +210,7 @@
 
                 {% with work=book.parent_work %}
                 <p>
-                    <a href="{{ work.local_path }}/editions">
+                    <a href="{{ work.local_path }}/editions" id="tour-other-editions-link">
                         {% blocktrans trimmed count counter=work.editions.count with count=work.editions.count|intcomma %}
                             {{ count }} edition
                             {% plural %}
@@ -254,7 +254,7 @@
                     <h2 class="title is-5">{% trans "Your reading activity" %}</h2>
                     </div>
                     <div class="column is-narrow">
-                        <button class="button is-small" data-modal-open="add-readthrough">
+                        <button class="button is-small" data-modal-open="add-readthrough" id="tour-add-readthrough">
                             <span class="icon icon-plus m-mobile-0" aria-hidden="true"></span>
                             <span class="is-sr-only-mobile">
                                 {% trans "Add read dates" %}
@@ -392,7 +392,7 @@
             </section>
             {% endif %}
 
-            <section class="content block">
+            <section class="content block" id="tour-book-file-links">
                 {% include "book/file_links/links.html" %}
             </section>
         </div>
@@ -405,4 +405,7 @@
 {% block scripts %}
 <script src="{% static "js/tabs.js" %}?v={{ js_cache }}"></script>
 <script src="{% static "js/autocomplete.js" %}?v={{ js_cache }}"></script>
+{% if request.user.show_guided_tour %}
+    {% include 'guided_tour/book.html' %}
+{% endif %}
 {% endblock %}
