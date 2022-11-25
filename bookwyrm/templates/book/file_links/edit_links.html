@@ -86,6 +86,7 @@
                                 <button class="button is-primary" type="submit">{% trans "Save" %}</button>
                             </div>
                         </div>
+                        {% include 'snippets/form_errors.html' with errors_list=link.form.availability.errors id="desc_availability" %}
                     </form>
                 </td>
                 <td>
