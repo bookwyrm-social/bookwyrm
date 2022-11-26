@@ -629,6 +629,7 @@ let BookWyrm = new (class {
 
         function toggleStatus(status) {
             const template = document.querySelector(`#barcode-${status}`);
+
             statusNode.replaceChildren(template ? template.content.cloneNode(true) : null);
         }
 
