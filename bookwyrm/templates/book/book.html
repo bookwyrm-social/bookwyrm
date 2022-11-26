@@ -158,6 +158,20 @@
                     {% endif %}
                 </p>
                 {% endif %}
+                {% if book.audiofic_key %}
+                <p>
+                    <a href="{{ book.audiofic_link }}" target="_blank" rel="nofollow noopener noreferrer">
+                        {% trans "View/Listen on Audiofic Archive" %}
+                    </a>
+                </p>
+                {% endif %}
+                {% if book.ao3_key %}
+                <p>
+                    <a href="{{ book.ao3_link }}" target="_blank" rel="nofollow noopener noreferrer">
+                        {% trans "View on Archive of our Own" %}
+                    </a>
+                </p>
+                {% endif %}
             </section>
         </div>
 

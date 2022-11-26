@@ -49,6 +49,8 @@ class Editions(View):
                 "isbn_13",
                 "oclc_number",
                 "asin",
+                "ao3_key",
+                "audiofic_key",
             ]
             search_filter_entries = [
                 {f"{f}__icontains": query} for f in searchable_fields

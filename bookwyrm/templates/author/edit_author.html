@@ -108,6 +108,20 @@
                 {% include 'snippets/form_errors.html' with errors_list=form.isni.errors id="desc_isni" %}
             </div>
 
+            <div class="field">
+                <label class="label" for="id_audiofic_key">{% trans "Audiofic Archive key:" %}</label>
+                {{ form.audiofic_key }}
+
+                {% include 'snippets/form_errors.html' with errors_list=form.audiofic_key.errors id="desc_audiofic_key" %}
+            </div>
+
+            <div class="field">
+                <label class="label" for="id_ao3_key">{% trans "Archive of Our Own author key:" %}</label>
+                {{ form.ao3_key }}
+
+                {% include 'snippets/form_errors.html' with errors_list=form.ao3_key.errors id="desc_ao3_key" %}
+            </div>
+
         </div>
     </div>
 

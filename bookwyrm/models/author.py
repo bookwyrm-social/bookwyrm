@@ -24,6 +24,13 @@ class Author(BookDataModel):
     gutenberg_id = fields.CharField(
         max_length=255, blank=True, null=True, deduplication_field=True
     )
+    audiofic_key = fields.CharField(
+        max_length=255, blank=True, null=True, deduplication_field=True
+    )
+    ao3_key = fields.CharField(
+        max_length=255, blank=True, null=True, deduplication_field=True
+    )
+
     # idk probably other keys would be useful here?
     born = fields.DateTimeField(blank=True, null=True)
     died = fields.DateTimeField(blank=True, null=True)
@@ -59,6 +66,16 @@ class Author(BookDataModel):
     def openlibrary_link(self):
         """generate the url from the openlibrary id"""
         return f"https://openlibrary.org/authors/{self.openlibrary_key}"
+
+    @property
+    def audiofic_link(self):
+        """generate the url from the audiofiction archive id"""
+        return f"https://audiofic.jinjurly.com/category/author/{self.audiofic_key}"
+
+    @property
+    def ao3_link(self):
+        """generate the url from the ao3 id"""
+        return f"https://archiveofourown.org/users/{self.ao3_key}"
 
     def get_remote_id(self):
         """editions and works both use "book" instead of model_name"""

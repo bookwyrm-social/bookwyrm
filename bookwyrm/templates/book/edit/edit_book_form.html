@@ -344,6 +344,26 @@
 
                     {% include 'snippets/form_errors.html' with errors_list=form.ASIN.errors id="desc_ASIN" %}
                 </div>
+
+                <div class="field">
+                    <label class="label" for="id_audiofic_key">
+                        {% trans "Audiofic ID:" %}
+                    </label>
+                    {{ form.audiofic_key }}
+
+                    {% include 'snippets/form_errors.html' with errors_list=form.ASIN.errors id="desc_audiofic_key" %}
+                </div>
+
+                <div class="field">
+                    <label class="label" for="id_ao3_key">
+                        {% trans "AO3 Work ID:" %}
+                    </label>
+                    {{ form.ao3_key }}
+
+                    {% include 'snippets/form_errors.html' with errors_list=form.ASIN.errors id="desc_ao3_key" %}
+                </div>
+
+
             </div>
         </section>
     </div>

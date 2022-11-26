@@ -55,6 +55,12 @@ class BookDataModel(ObjectMixin, BookWyrmModel):
     asin = fields.CharField(
         max_length=255, blank=True, null=True, deduplication_field=True
     )
+    audiofic_key = fields.CharField(
+        max_length=255, blank=True, null=True, deduplication_field=True
+    )
+    ao3_key = fields.CharField(
+        max_length=255, blank=True, null=True, deduplication_field=True
+    )
     search_vector = SearchVectorField(null=True)
 
     last_edited_by = fields.ForeignKey(
@@ -72,6 +78,16 @@ class BookDataModel(ObjectMixin, BookWyrmModel):
     def inventaire_link(self):
         """generate the url from the inventaire id"""
         return f"https://inventaire.io/entity/{self.inventaire_id}"
+
+    @property
+    def audiofic_link(self):
+        """generate the url from the audiofic id"""
+        return f"https://audiofic.jinjurly.com/{self.audiofic_key}"
+
+    @property
+    def ao3_link(self):
+        """generate the url from the ao3 id"""
+        return f"https://archiveofourown.org/works/{self.ao3_key}"
 
     class Meta:
         """can't initialize this model, that wouldn't make sense"""
@@ -268,6 +284,7 @@ FormatChoices = [
     ("GraphicNovel", _("Graphic novel")),
     ("Hardcover", _("Hardcover")),
     ("Paperback", _("Paperback")),
+    ("EBook", _("Fanfiction")),
 ]
 
 

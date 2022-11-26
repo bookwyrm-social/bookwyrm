@@ -22,6 +22,8 @@ class AuthorForm(CustomForm):
             "librarything_key",
             "goodreads_key",
             "isni",
+            "audiofic_key",
+            "ao3_key",
         ]
         widgets = {
             "name": forms.TextInput(attrs={"aria-describedby": "desc_name"}),
@@ -44,4 +46,8 @@ class AuthorForm(CustomForm):
             "goodreads_key": forms.TextInput(
                 attrs={"aria-describedby": "desc_goodreads_key"}
             ),
+            "audiofic_key": forms.TextInput(
+                attrs={"aria-describedby": "desc_audiofic_key"}
+            ),
+            "ao3_key": forms.TextInput(attrs={"aria-describedby": "desc_ao3_key"}),
         }
