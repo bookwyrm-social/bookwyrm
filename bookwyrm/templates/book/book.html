@@ -194,10 +194,10 @@
                 <div class="box is-hidden" id="add_description_{{ book.id }}">
                     <form name="add-description" method="POST" action="{% url "add-description" book.id %}">
                         {% csrf_token %}
-                        <p class="fields is-grouped">
+                        <div class="field">
                             <label class="label" for="id_description_{{ book.id }}">{% trans "Description:" %}</label>
                             <textarea name="description" cols="None" rows="None" class="textarea" id="id_description_{{ book.id }}"></textarea>
-                        </p>
+                        </div>
                         <div class="field">
                             <button class="button is-primary" type="submit">{% trans "Save" %}</button>
                             {% trans "Cancel" as button_text %}
