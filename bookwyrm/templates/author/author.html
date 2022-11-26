@@ -144,7 +144,7 @@
         {% for book in books %}
         {% with book=book|author_edition:author %}
             <div class="column is-one-fifth-tablet is-half-mobile is-flex is-flex-direction-column">
-                <div class="is-flex-grow-1">
+                <div class="is-flex-grow-1 mb-3">
                     {% include 'landing/small-book.html' with book=book %}
                 </div>
                 {% include 'snippets/shelve_button/shelve_button.html' with book=book %}
