@@ -51,7 +51,7 @@
         {% endif %}
 
         {% if not items.object_list.exists %}
-        <p>{% trans "This list is currently empty" %}</p>
+        <p class="block">{% trans "This list is currently empty." %}</p>
         {% else %}
         <ol start="{{ items.start_index }}" class="ordered-list">
         {% for item in items %}
