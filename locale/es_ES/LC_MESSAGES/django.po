@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-11-25 16:31+0000\n"
-"PO-Revision-Date: 2022-11-29 03:57\n"
+"PO-Revision-Date: 2022-11-29 04:54\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Spanish\n"
 "Language: es\n"
@@ -2684,7 +2684,7 @@ msgstr "Importar"
 
 #: bookwyrm/templates/import/import.html:95
 msgid "Imports are temporarily disabled; thank you for your patience."
-msgstr ""
+msgstr "Las importaciones se han deshabilitado temporalmente, gracias por tu paciencia."
 
 #: bookwyrm/templates/import/import.html:102
 msgid "Recent Imports"
@@ -2702,7 +2702,7 @@ msgstr "Última Actualización"
 #: bookwyrm/templates/import/import.html:113
 #: bookwyrm/templates/settings/imports/imports.html:98
 msgid "Items"
-msgstr ""
+msgstr "Elementos"
 
 #: bookwyrm/templates/import/import.html:122
 msgid "No recent imports"
@@ -2811,7 +2811,7 @@ msgstr "Previsualización de la importación no disponible."
 
 #: bookwyrm/templates/import/import_status.html:150
 msgid "No items currently need review"
-msgstr ""
+msgstr "Ningún elemento requiere reseña actualmente"
 
 #: bookwyrm/templates/import/import_status.html:186
 msgid "View imported review"
@@ -3337,7 +3337,7 @@ msgstr[1] "<a href=\"%(related_user_link)s\">%(related_user)s</a> ha añadido <e
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> suggested adding <em><a href=\"%(book_path)s\">%(book_title)s</a></em>, <em><a href=\"%(second_book_path)s\">%(second_book_title)s</a></em>, and %(display_count)s other book to your list \"<a href=\"%(list_curate_path)s\">%(list_name)s</a>\""
 msgid_plural "<a href=\"%(related_user_link)s\">%(related_user)s</a> suggested adding <em><a href=\"%(book_path)s\">%(book_title)s</a></em>, <em><a href=\"%(second_book_path)s\">%(second_book_title)s</a></em>, and %(display_count)s other books to your list \"<a href=\"%(list_curate_path)s\">%(list_name)s</a>\""
-msgstr[0] ""
+msgstr[0] "<a href=\"%(related_user_link)s\">%(related_user)s</a> sugiere añadir <em><a href=\"%(book_path)s\">%(book_title)s</a></em>, <em><a href=\"%(second_book_path)s\">%(second_book_title)s</a></em>, y %(display_count)s a tu lista \"<a href=\"%(list_curate_path)s\">%(list_name)s</a>\""
 msgstr[1] "<a href=\"%(related_user_link)s\">%(related_user)s</a> ha sugerido añadir <em><a href=\"%(book_path)s\">%(book_title)s</a></em>, <em><a href=\"%(second_book_path)s\">%(second_book_title)s</a></em>, y %(display_count)s libros más a tu lista \"<a href=\"%(list_curate_path)s\">%(list_name)s</a>\""
 
 #: bookwyrm/templates/notifications/items/boost.html:21
@@ -3759,15 +3759,15 @@ msgstr "Escanea el código QR con tu aplicación de autenticación e introduce e
 
 #: bookwyrm/templates/preferences/2fa.html:52
 msgid "Use setup key"
-msgstr ""
+msgstr "Usar clave de configuración"
 
 #: bookwyrm/templates/preferences/2fa.html:58
 msgid "Account name:"
-msgstr ""
+msgstr "Nombre de la cuenta:"
 
 #: bookwyrm/templates/preferences/2fa.html:65
 msgid "Code:"
-msgstr ""
+msgstr "Código:"
 
 #: bookwyrm/templates/preferences/2fa.html:73
 msgid "Enter the code from your app:"
@@ -4328,7 +4328,7 @@ msgstr "Quitar regla"
 #: bookwyrm/templates/settings/celery.html:6
 #: bookwyrm/templates/settings/celery.html:8
 msgid "Celery Status"
-msgstr ""
+msgstr "Estado de Celery"
 
 #: bookwyrm/templates/settings/celery.html:14
 msgid "Queues"
@@ -4348,7 +4348,7 @@ msgstr "Prioridad alta"
 
 #: bookwyrm/templates/settings/celery.html:40
 msgid "Could not connect to Redis broker"
-msgstr ""
+msgstr "No se ha podido conectar al broker de Redis"
 
 #: bookwyrm/templates/settings/celery.html:48
 msgid "Active Tasks"
@@ -4377,15 +4377,15 @@ msgstr "Sin tareas activas"
 
 #: bookwyrm/templates/settings/celery.html:79
 msgid "Workers"
-msgstr ""
+msgstr "Trabajadores"
 
 #: bookwyrm/templates/settings/celery.html:84
 msgid "Uptime:"
-msgstr ""
+msgstr "Tiempo ejecutándose:"
 
 #: bookwyrm/templates/settings/celery.html:94
 msgid "Could not connect to Celery"
-msgstr ""
+msgstr "No se puede conectar a Celery"
 
 #: bookwyrm/templates/settings/celery.html:101
 msgid "Errors"
@@ -4667,7 +4667,7 @@ msgstr "Falló:"
 
 #: bookwyrm/templates/settings/federation/instance_blocklist.html:62
 msgid "Expects a json file in the format provided by FediBlock, with a list of entries that have <code>instance</code> and <code>url</code> fields. For example:"
-msgstr ""
+msgstr "Se espera un archivo json en el formato que provee FediBlock, con una lista de entradas que contenga los campos <code>instance</code> y <code>url</code>, por ejemplo:"
 
 #: bookwyrm/templates/settings/federation/instance_list.html:35
 #: bookwyrm/templates/settings/users/server_filter.html:5
@@ -4693,27 +4693,27 @@ msgstr "¿Parar la importación?"
 
 #: bookwyrm/templates/settings/imports/imports.html:19
 msgid "Disable starting new imports"
-msgstr ""
+msgstr "Deshabilitar el inicio de nuevas importaciones"
 
 #: bookwyrm/templates/settings/imports/imports.html:30
 msgid "This is only intended to be used when things have gone very wrong with imports and you need to pause the feature while addressing issues."
-msgstr ""
+msgstr "Ésto es sólo para usarse en caso de que las cosas vayan realmente mal con las importaciones y necesites pausar esta característica mientras resuelves los problemas."
 
 #: bookwyrm/templates/settings/imports/imports.html:31
 msgid "While imports are disabled, users will not be allowed to start new imports, but existing imports will not be effected."
-msgstr ""
+msgstr "Mientras las importaciones estén deshabilitadas, los usuarios no tendrán permitido iniciar nuevas importaciones, pero las importaciones existentes no serán afectadas."
 
 #: bookwyrm/templates/settings/imports/imports.html:36
 msgid "Disable imports"
-msgstr ""
+msgstr "Deshabilitar importaciones"
 
 #: bookwyrm/templates/settings/imports/imports.html:50
 msgid "Users are currently unable to start new imports"
-msgstr ""
+msgstr "Los usuarios actualmente no pueden iniciar nuevas importaciones"
 
 #: bookwyrm/templates/settings/imports/imports.html:55
 msgid "Enable imports"
-msgstr ""
+msgstr "Habilitar importaciones"
 
 #: bookwyrm/templates/settings/imports/imports.html:71
 msgid "Completed"
@@ -4729,11 +4729,11 @@ msgstr "Fecha Actualizada"
 
 #: bookwyrm/templates/settings/imports/imports.html:101
 msgid "Pending items"
-msgstr ""
+msgstr "Elementos pendientes"
 
 #: bookwyrm/templates/settings/imports/imports.html:104
 msgid "Successful items"
-msgstr ""
+msgstr "Importaciones exitosas"
 
 #: bookwyrm/templates/settings/imports/imports.html:139
 msgid "No matching imports found."
@@ -4919,7 +4919,7 @@ msgstr "Sistema"
 
 #: bookwyrm/templates/settings/layout.html:88
 msgid "Celery status"
-msgstr ""
+msgstr "Estado de Celery"
 
 #: bookwyrm/templates/settings/layout.html:93
 msgid "Instance Settings"
