@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-11-25 16:31+0000\n"
-"PO-Revision-Date: 2022-11-28 14:33\n"
+"PO-Revision-Date: 2022-11-30 08:36\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Basque\n"
 "Language: eu\n"
@@ -599,7 +599,7 @@ msgstr "Liburu bakoitzeko %(pages)s orrialdeko batezbestekoa da."
 #, python-format
 msgid "(%(no_page_number)s book doesn’t have pages)"
 msgid_plural "(%(no_page_number)s books don’t have pages)"
-msgstr[0] ""
+msgstr[0] "(liburu %(no_page_number)sek ez du orrialderik)"
 msgstr[1] "(%(no_page_number)s liburuk ez dute orrialderik)"
 
 #: bookwyrm/templates/annual_summary/layout.html:148
@@ -2747,7 +2747,7 @@ msgstr "Gelditu inportazioa"
 #, python-format
 msgid "%(display_counter)s item needs manual approval."
 msgid_plural "%(display_counter)s items need manual approval."
-msgstr[0] ""
+msgstr[0] "elementu %(display_counter)sek eskuz onartzea behar du."
 msgstr[1] "%(display_counter)s elementuk eskuz onartzea behar dute."
 
 #: bookwyrm/templates/import/import_status.html:83
@@ -2759,7 +2759,7 @@ msgstr "Berrikusi artikuluak"
 #, python-format
 msgid "%(display_counter)s item failed to import."
 msgid_plural "%(display_counter)s items failed to import."
-msgstr[0] ""
+msgstr[0] "Elementu %(display_counter)s inportatzeak huts egin du."
 msgstr[1] "%(display_counter)s elementu inportatzeak huts egin du."
 
 #: bookwyrm/templates/import/import_status.html:95
@@ -3330,14 +3330,14 @@ msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a>(e)k iradoki du <e
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> added <em><a href=\"%(book_path)s\">%(book_title)s</a></em>, <em><a href=\"%(second_book_path)s\">%(second_book_title)s</a></em>, and %(display_count)s other book to your list \"<a href=\"%(list_path)s\">%(list_name)s</a>\""
 msgid_plural "<a href=\"%(related_user_link)s\">%(related_user)s</a> added <em><a href=\"%(book_path)s\">%(book_title)s</a></em>, <em><a href=\"%(second_book_path)s\">%(second_book_title)s</a></em>, and %(display_count)s other books to your list \"<a href=\"%(list_path)s\">%(list_name)s</a>\""
-msgstr[0] ""
+msgstr[0] "<a href=\"%(related_user_link)s\">%(related_user)s</a>(e)k <em><a href=\"%(book_path)s\">%(book_title)s</a></em>, <em><a href=\"%(second_book_path)s\">%(second_book_title)s</a></em> eta beste liburu %(display_count)s gehitu ditu zure \"<a href=\"%(list_path)s\">%(list_name)s</a>\" zerrendara"
 msgstr[1] "<a href=\"%(related_user_link)s\">%(related_user)s</a>(e)k <em><a href=\"%(book_path)s\">%(book_title)s</a></em>, <em><a href=\"%(second_book_path)s\">%(second_book_title)s</a></em> eta beste %(display_count)s liburu gehitu ditu zure \"<a href=\"%(list_path)s\">%(list_name)s</a>\" zerrendara"
 
 #: bookwyrm/templates/notifications/items/add.html:82
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> suggested adding <em><a href=\"%(book_path)s\">%(book_title)s</a></em>, <em><a href=\"%(second_book_path)s\">%(second_book_title)s</a></em>, and %(display_count)s other book to your list \"<a href=\"%(list_curate_path)s\">%(list_name)s</a>\""
 msgid_plural "<a href=\"%(related_user_link)s\">%(related_user)s</a> suggested adding <em><a href=\"%(book_path)s\">%(book_title)s</a></em>, <em><a href=\"%(second_book_path)s\">%(second_book_title)s</a></em>, and %(display_count)s other books to your list \"<a href=\"%(list_curate_path)s\">%(list_name)s</a>\""
-msgstr[0] ""
+msgstr[0] "<a href=\"%(related_user_link)s\">%(related_user)s</a>(e)k iradoki du <em><a href=\"%(book_path)s\">%(book_title)s</a></em>, <em><a href=\"%(second_book_path)s\">%(second_book_title)s</a></em> eta beste liburu %(display_count)s gehitzeko zure \"<a href=\"%(list_curate_path)s\">%(list_name)s</a>\" zerrendara"
 msgstr[1] "<a href=\"%(related_user_link)s\">%(related_user)s</a>(e)k iradoki du <em><a href=\"%(book_path)s\">%(book_title)s</a></em>, <em><a href=\"%(second_book_path)s\">%(second_book_title)s</a></em> eta beste %(display_count)s liburu gehitzeko zure \"<a href=\"%(list_curate_path)s\">%(list_name)s</a>\" zerrendara"
 
 #: bookwyrm/templates/notifications/items/boost.html:21
@@ -3564,8 +3564,8 @@ msgstr ""
 #, python-format
 msgid "A new <a href=\"%(path)s\">report</a> needs moderation"
 msgid_plural "%(display_count)s new <a href=\"%(path)s\">reports</a> need moderation"
-msgstr[0] ""
-msgstr[1] "%(display_count)s <a href=\"%(path)s\">salaketa</a> berrik gainbegiratzea behar dute"
+msgstr[0] "<a href=\"%(path)s\">Salaketa</a> berri batek moderatzea behar du"
+msgstr[1] "%(display_count)s <a href=\"%(path)s\">salaketa</a> berrik moderatzea behar dute"
 
 #: bookwyrm/templates/notifications/items/status_preview.html:4
 #: bookwyrm/templates/snippets/status/content_status.html:73
@@ -4129,7 +4129,7 @@ msgstr "Ez da emaitzarik aurkitu \"%(query)s\"-rako"
 #, python-format
 msgid "%(result_count)s result found"
 msgid_plural "%(result_count)s results found"
-msgstr[0] ""
+msgstr[0] "emaitza %(result_count)s aurkitu da"
 msgstr[1] "%(result_count)s emaitza aurkitu dira"
 
 #: bookwyrm/templates/settings/announcements/announcement.html:5
@@ -4459,7 +4459,7 @@ msgstr "Guztira"
 #, python-format
 msgid "%(display_count)s domain needs review"
 msgid_plural "%(display_count)s domains need review"
-msgstr[0] ""
+msgstr[0] "Domeinu %(display_count)sek gainbegiratzea behar du"
 msgstr[1] "%(display_count)s domeinuk gainbegiratzea behar dute"
 
 #: bookwyrm/templates/settings/dashboard/warnings/email_config.html:8
@@ -4475,7 +4475,7 @@ msgstr "Egiaztatu <code>EMAIL_SENDER_NAME</code> eta <code>EMAIL_SENDER_DOMAIN</
 #, python-format
 msgid "%(display_count)s invite request"
 msgid_plural "%(display_count)s invite requests"
-msgstr[0] ""
+msgstr[0] "gonbidapen eskaera %(display_count)s"
 msgstr[1] "%(display_count)s gonbidapen eskaera"
 
 #: bookwyrm/templates/settings/dashboard/warnings/missing_conduct.html:8
@@ -4490,7 +4490,7 @@ msgstr "Zure instantziak pribatutasun-politika falta du."
 #, python-format
 msgid "%(display_count)s open report"
 msgid_plural "%(display_count)s open reports"
-msgstr[0] ""
+msgstr[0] "salaketa %(display_count)s zabalik"
 msgstr[1] "%(display_count)s salaketa zabalik"
 
 #: bookwyrm/templates/settings/dashboard/warnings/update_version.html:8
@@ -5507,7 +5507,7 @@ msgstr "Liburu guztiak"
 #, python-format
 msgid "%(formatted_count)s book"
 msgid_plural "%(formatted_count)s books"
-msgstr[0] ""
+msgstr[0] "liburu %(formatted_count)s"
 msgstr[1] "%(formatted_count)s liburu"
 
 #: bookwyrm/templates/shelf/shelf.html:104
@@ -5570,7 +5570,7 @@ msgstr "<a href=\"%(user_path)s\">%(username)s</a>(e)k bidalita"
 #, python-format
 msgid "and %(remainder_count_display)s other"
 msgid_plural "and %(remainder_count_display)s others"
-msgstr[0] ""
+msgstr[0] "eta beste %(remainder_count_display)s"
 msgstr[1] "eta beste %(remainder_count_display)s"
 
 #: bookwyrm/templates/snippets/book_cover.html:61
@@ -5758,7 +5758,7 @@ msgstr "Baloraziorik ez"
 #, python-format
 msgid "%(half_rating)s star"
 msgid_plural "%(half_rating)s stars"
-msgstr[0] ""
+msgstr[0] "izar %(half_rating)s"
 msgstr[1] "%(half_rating)s izar"
 
 #: bookwyrm/templates/snippets/form_rate_stars.html:64
@@ -5766,15 +5766,15 @@ msgstr[1] "%(half_rating)s izar"
 #, python-format
 msgid "%(rating)s star"
 msgid_plural "%(rating)s stars"
-msgstr[0] ""
+msgstr[0] "izar %(rating)s"
 msgstr[1] "%(rating)s izar"
 
 #: bookwyrm/templates/snippets/generated_status/goal.html:2
 #, python-format
 msgid "set a goal to read %(counter)s book in %(year)s"
 msgid_plural "set a goal to read %(counter)s books in %(year)s"
-msgstr[0] ""
-msgstr[1] "ezarri %(counter)s liburu irakurtzeko helburua %(year)s(e)an"
+msgstr[0] "(e)k liburu %(counter)s irakurtzeko helburua ezarri du %(year)s(e)an"
+msgstr[1] "(e)k %(counter)s liburu irakurtzeko helburua ezarri du %(year)s(e)an"
 
 #: bookwyrm/templates/snippets/generated_status/rating.html:3
 #, python-format
@@ -6253,7 +6253,7 @@ msgstr "%(date)s(e)an bat eginda"
 #, python-format
 msgid "%(counter)s follower"
 msgid_plural "%(counter)s followers"
-msgstr[0] ""
+msgstr[0] "jarraitzaile %(counter)s"
 msgstr[1] "%(counter)s jarraitzaile"
 
 #: bookwyrm/templates/user/user_preview.html:31
@@ -6265,7 +6265,7 @@ msgstr "%(counter)s jarraitzen"
 #, python-format
 msgid "%(mutuals_display)s follower you follow"
 msgid_plural "%(mutuals_display)s followers you follow"
-msgstr[0] ""
+msgstr[0] "Jarraitzen duzun jarraitzaile %(mutuals_display)s"
 msgstr[1] "Jarraitzen dituzun %(mutuals_display)s jarraitzaile"
 
 #: bookwyrm/templates/user/user_preview.html:49
@@ -6302,6 +6302,6 @@ msgstr "{obj.display_name}-ren egoera eguneratzeak"
 #, python-format
 msgid "Load %(count)d unread status"
 msgid_plural "Load %(count)d unread statuses"
-msgstr[0] ""
+msgstr[0] "Kargatu irakurri gabeko egoera %(count)d"
 msgstr[1] "Kargatu %(count)d irakurri gabeko egoera"
 
