@@ -74,8 +74,6 @@ SECRET_KEY = env("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool("DEBUG", True)
 USE_HTTPS = env.bool("USE_HTTPS", not DEBUG)
-#SESSION_COOKIE_SECURE = True
-#SOCIAL_AUTH_REDIRECT_IS_HTTPS = True
 
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", ["*"])
 
@@ -263,15 +261,6 @@ DATABASES = {
 LOGIN_URL = "/login/"
 AUTH_USER_MODEL = "bookwyrm.User"
 
-
-# Add 'mozilla_django_oidc' authentication backend,
-# but override it to update the bookwrym fields
-AUTHENTICATION_BACKENDS = (
-    'bookwyrm.models.user.OIDCUser',
-    #'mozilla_django_oidc.auth.OIDCAuthenticationBackend',
-    # ... what else should go here?
-)
-
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
 
@@ -296,6 +285,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # If you ever accidentally check them into version control, contact your
 # OpenID Connect provider (OP) as soon as you can, disable that set of
 # client id and secret, and generate a new set.
+OIDC_ENABLED = env.bool('OIDC_ENABLED', False)
 OIDC_RP_CLIENT_ID = env('OIDC_CLIENT_ID', 'bookwyrm')
 OIDC_RP_CLIENT_SECRET = env('OIDC_CLIENT_SECRET', '')
 OIDC_RP_SIGN_ALGO = env('OIDC_SIGN_ALGO', 'RS256')
@@ -310,6 +300,13 @@ OIDC_OP_USER_ENDPOINT = env('OIDC_USERINFO_URL')
 LOGIN_REDIRECT_URL = env('OIDC_REDIRECT_URL')
 LOGOUT_REDIRECT_URL = env('OIDC_LOGOUT_URL')
 #OIDC_AUTHENTICATION_CALLBACK_URL = env('OIDC_AUTHENTICATION_CALLBACK_URL')
+
+# If OIDC is enabled, use the 'mozilla_django_oidc' authentication backend,
+# which is sub-classed to update the bookwrym specific fields
+if OIDC_ENABLED:
+    AUTHENTICATION_BACKENDS = (
+        'bookwyrm.models.user.OIDCUser',
+    )
 
 
 # Internationalization

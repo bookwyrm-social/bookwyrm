@@ -1,9 +1,5 @@
 """ database schema for user data """
 import re
-import traceback
-import pprint
-pp = pprint.PrettyPrinter(indent=4)
-
 from urllib.parse import urlparse
 
 from django.apps import apps
@@ -22,7 +18,7 @@ from bookwyrm.connectors import get_data, ConnectorException
 from bookwyrm.models.shelf import Shelf
 from bookwyrm.models.status import Status
 from bookwyrm.preview_images import generate_user_preview_image_task
-from bookwyrm.settings import DOMAIN, ENABLE_PREVIEW_IMAGES, USE_HTTPS, LANGUAGES
+from bookwyrm.settings import DOMAIN, ENABLE_PREVIEW_IMAGES, USE_HTTPS, LANGUAGES, OIDC_ENABLED, OIDC_RP_CLIENT_ID
 from bookwyrm.signatures import create_key_pair
 from bookwyrm.tasks import app, LOW
 from bookwyrm.utils import regex
@@ -324,9 +320,6 @@ class User(OrderedCollectionPageMixin, AbstractUser):
 
     def save(self, *args, **kwargs):
         """populate fields for new local users"""
-        print("******** saving user", self, self.id, self.is_active, self.local)
-        #traceback.print_stack()
-
         created = not bool(self.id)
         if not self.local and not re.match(regex.FULL_USERNAME, self.username):
             # generate a username that uses the domain (webfinger format)
@@ -538,12 +531,15 @@ def preview_image(instance, *args, **kwargs):
 #
 # Create new accounts based on OIDC provided parameters
 # TODO: what happens if the email changes in keycloak?
-# TODO: implement roles to group mappings
 #
 from mozilla_django_oidc.auth import OIDCAuthenticationBackend
 
 class OIDCUser(OIDCAuthenticationBackend):
     def create_user(self, claims):
+        if not OIDC_ENABLED:
+            # log an error?
+            return None
+
         #user = super(OIDCUser, self).create_user(claims)
         print("creating user", claims)
         #user = super(OIDCUser, self).create_user()
@@ -563,19 +559,32 @@ class OIDCUser(OIDCAuthenticationBackend):
             is_active=True
         )
 
-        # add to the groups
-        # claims.get('resource_access',{}).get('bookwrym',[])
-        # self.groups.add(Group.objects.get(name="editor"))
-
-        return user
+        return self.update_user(user, claims)
 
     def update_user(self, user, claims):
-        print("updating user", user, claims)
+        if not OIDC_ENABLED:
+            # log an error?
+            return None
+        return self.update_user(user, claims)
 
+    def update_user(self, user, claims):
         # replace the user's display name
         user.name = claims.get('name', user.name)
 
-        # TODO: update groups
+        # this is a hack to synchronize the OIDC role claims
+        # with the ones in the bookwyrm database. it should be more general
+        roles = claims.get('resource_access',{}).get(OIDC_RP_CLIENT_ID,{}).get('roles',[])
+        for role in ["admin","moderator"]:
+            try:
+                group = Group.objects.get(name=role)
+                if role in roles:
+                    user.groups.add(group)
+                else:
+                    user.groups.remove(group)
+            except Group.DoesNotExist:
+                print("warning: OIDC claimed role '", role, "' does not exist")
 
         user.save()
+        print(f"{user.email}: '{user.name}' logged in via OIDC roles {roles}")
+
         return user
