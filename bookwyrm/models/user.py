@@ -1,5 +1,9 @@
 """ database schema for user data """
 import re
+import traceback
+import pprint
+pp = pprint.PrettyPrinter(indent=4)
+
 from urllib.parse import urlparse
 
 from django.apps import apps
@@ -320,6 +324,9 @@ class User(OrderedCollectionPageMixin, AbstractUser):
 
     def save(self, *args, **kwargs):
         """populate fields for new local users"""
+        print("******** saving user", self, self.id, self.is_active, self.local)
+        #traceback.print_stack()
+
         created = not bool(self.id)
         if not self.local and not re.match(regex.FULL_USERNAME, self.username):
             # generate a username that uses the domain (webfinger format)
@@ -526,3 +533,49 @@ def preview_image(instance, *args, **kwargs):
 
     if len(changed_fields) > 0:
         generate_user_preview_image_task.delay(instance.id)
+
+
+#
+# Create new accounts based on OIDC provided parameters
+# TODO: what happens if the email changes in keycloak?
+# TODO: implement roles to group mappings
+#
+from mozilla_django_oidc.auth import OIDCAuthenticationBackend
+
+class OIDCUser(OIDCAuthenticationBackend):
+    def create_user(self, claims):
+        #user = super(OIDCUser, self).create_user(claims)
+        print("creating user", claims)
+        #user = super(OIDCUser, self).create_user()
+
+        localname = claims.get('preferred_username')
+        username = f"{localname}@{DOMAIN}"
+        email = claims.get('email', '')
+
+        user = User.objects.create_user(
+            username,
+            email,
+            'passwords-not-supported',
+            name=claims.get('name', localname),
+            localname=localname,
+            local=True,
+            deactivation_reason=None,
+            is_active=True
+        )
+
+        # add to the groups
+        # claims.get('resource_access',{}).get('bookwrym',[])
+        # self.groups.add(Group.objects.get(name="editor"))
+
+        return user
+
+    def update_user(self, user, claims):
+        print("updating user", user, claims)
+
+        # replace the user's display name
+        user.name = claims.get('name', user.name)
+
+        # TODO: update groups
+
+        user.save()
+        return user

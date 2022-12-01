@@ -74,6 +74,8 @@ SECRET_KEY = env("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool("DEBUG", True)
 USE_HTTPS = env.bool("USE_HTTPS", not DEBUG)
+#SESSION_COOKIE_SECURE = True
+#SOCIAL_AUTH_REDIRECT_IS_HTTPS = True
 
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", ["*"])
 
@@ -82,6 +84,7 @@ ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", ["*"])
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
+    'mozilla_django_oidc',  # Load after auth
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
@@ -106,6 +109,7 @@ MIDDLEWARE = [
     "bookwyrm.middleware.IPBlocklistMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    'mozilla_django_oidc.middleware.SessionRefresh',
 ]
 
 ROOT_URLCONF = "bookwyrm.urls"
@@ -259,6 +263,15 @@ DATABASES = {
 LOGIN_URL = "/login/"
 AUTH_USER_MODEL = "bookwyrm.User"
 
+
+# Add 'mozilla_django_oidc' authentication backend,
+# but override it to update the bookwrym fields
+AUTHENTICATION_BACKENDS = (
+    'bookwyrm.models.user.OIDCUser',
+    #'mozilla_django_oidc.auth.OIDCAuthenticationBackend',
+    # ... what else should go here?
+)
+
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
 
@@ -276,6 +289,27 @@ AUTH_PASSWORD_VALIDATORS = [
         "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
 ]
+
+# Warning
+# The OpenID Connect provider (OP) provided client id and secret are secret values.
+# DON’T check them into version control–pull them in from the environment.
+# If you ever accidentally check them into version control, contact your
+# OpenID Connect provider (OP) as soon as you can, disable that set of
+# client id and secret, and generate a new set.
+OIDC_RP_CLIENT_ID = env('OIDC_CLIENT_ID', 'bookwyrm')
+OIDC_RP_CLIENT_SECRET = env('OIDC_CLIENT_SECRET', '')
+OIDC_RP_SIGN_ALGO = env('OIDC_SIGN_ALGO', 'RS256')
+#OIDC_RP_IDP_SIGN_KEY = env('OIDC_SIGN_KEY', '')
+
+# These values are specific to your OpenID Connect provider (OP)–consult
+# their documentation for the appropriate values.
+OIDC_OP_JWKS_ENDPOINT = env('OIDC_OP_JWKS_ENDPOINT', '')
+OIDC_OP_AUTHORIZATION_ENDPOINT = env('OIDC_AUTH_URL')
+OIDC_OP_TOKEN_ENDPOINT = env('OIDC_TOKEN_URL')
+OIDC_OP_USER_ENDPOINT = env('OIDC_USERINFO_URL')
+LOGIN_REDIRECT_URL = env('OIDC_REDIRECT_URL')
+LOGOUT_REDIRECT_URL = env('OIDC_LOGOUT_URL')
+#OIDC_AUTHENTICATION_CALLBACK_URL = env('OIDC_AUTHENTICATION_CALLBACK_URL')
 
 
 # Internationalization

@@ -11,6 +11,15 @@
         <p class="notification is-danger">{{ login_form.non_field_errors }}</p>
         {% endif %}
 
+	{% if user.is_authenticated %}
+  <form action="{% url 'oidc_logout' %}" method="post">
+    {% csrf_token %}
+    <input type="submit" value="logout">
+  </form>
+{% else %}
+  <a href="{% url 'oidc_authentication_init' %}">Login with OIDC (landing)</a>
+{% endif %}
+
         {% if show_confirmed_email %}
         <p class="notification is-success">{% trans "Success! Email address confirmed." %}</p>
         {% endif %}

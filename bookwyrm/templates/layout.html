@@ -128,8 +128,14 @@
                         {% endwith %}
                     </a>
                 </div>
+  <form action="{% url 'oidc_logout' %}" method="post">
+    {% csrf_token %}
+    <input type="submit" value="logout">
+  </form>
                 {% else %}
                 <div class="navbar-item pt-5 pb-0">
+  <a href="{% url 'oidc_authentication_init' %}">Login via OIDC</a>
+
                     {% if request.path != '/login' and request.path != '/login/' %}
                     <div class="columns">
                         <div class="column">

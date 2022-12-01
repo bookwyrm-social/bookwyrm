@@ -55,6 +55,11 @@ class CreateAdmin(View):
         """Create admin user form"""
         # only allow this view when an instance is being configured
         site = models.SiteSettings.objects.get()
+        # OIDC hack: turn off install mod
+        site.install_mode = False
+        site.save()
+        return redirect("settings-site")
+
         if not site.install_mode:
             raise PermissionDenied()
 

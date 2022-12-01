@@ -1,11 +1,12 @@
 """ url routing for the app and api """
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import path, re_path
+from django.urls import path, re_path, include
 from django.views.generic.base import TemplateView
 
 from bookwyrm import settings, views
 from bookwyrm.utils import regex
+import mozilla_django_oidc
 
 USER_PATH = rf"^user/(?P<username>{regex.USERNAME})"
 LOCAL_USER_PATH = rf"^user/(?P<username>{regex.LOCALNAME})"
@@ -62,6 +63,7 @@ urlpatterns = [
     re_path(r"^setup/?$", views.InstanceConfig.as_view(), name="setup"),
     re_path(r"^setup/admin/?$", views.CreateAdmin.as_view(), name="setup-admin"),
     # authentication
+    path('oidc/', include('mozilla_django_oidc.urls')),
     re_path(r"^login/?$", views.Login.as_view(), name="login"),
     re_path(r"^login/(?P<confirmed>confirmed)/?$", views.Login.as_view(), name="login"),
     re_path(r"^register/?$", views.Register.as_view()),
