@@ -279,7 +279,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# Warning
+# Warning:
 # The OpenID Connect provider (OP) provided client id and secret are secret values.
 # DON’T check them into version control–pull them in from the environment.
 # If you ever accidentally check them into version control, contact your
@@ -289,17 +289,17 @@ OIDC_ENABLED = env.bool('OIDC_ENABLED', False)
 OIDC_RP_CLIENT_ID = env('OIDC_CLIENT_ID', 'bookwyrm')
 OIDC_RP_CLIENT_SECRET = env('OIDC_CLIENT_SECRET', '')
 OIDC_RP_SIGN_ALGO = env('OIDC_SIGN_ALGO', 'RS256')
-#OIDC_RP_IDP_SIGN_KEY = env('OIDC_SIGN_KEY', '')
 
 # These values are specific to your OpenID Connect provider (OP)–consult
-# their documentation for the appropriate values.
-OIDC_OP_JWKS_ENDPOINT = env('OIDC_OP_JWKS_ENDPOINT', '')
-OIDC_OP_AUTHORIZATION_ENDPOINT = env('OIDC_AUTH_URL')
-OIDC_OP_TOKEN_ENDPOINT = env('OIDC_TOKEN_URL')
-OIDC_OP_USER_ENDPOINT = env('OIDC_USERINFO_URL')
-LOGIN_REDIRECT_URL = env('OIDC_REDIRECT_URL')
-LOGOUT_REDIRECT_URL = env('OIDC_LOGOUT_URL')
-#OIDC_AUTHENTICATION_CALLBACK_URL = env('OIDC_AUTHENTICATION_CALLBACK_URL')
+# their documentation for the appropriate values.  If you are using Keycloak,
+# it should be enough to set just the base URL which will set the rest of
+# the links for the certs, auth, token, and userinfo URLs
+OIDC_OP_BASE_URL=env('OIDC_OP_BASE_URL', 'http://example.com/auth/realms/example/protocol/openid-connect')
+OIDC_OP_JWKS_ENDPOINT = env('OIDC_OP_JWKS_ENDPOINT', OIDC_OP_BASE_URL + "/certs")
+OIDC_OP_AUTHORIZATION_ENDPOINT = env('OIDC_OP_AUTH_URL', OIDC_OP_BASE_URL + "/auth")
+OIDC_OP_TOKEN_ENDPOINT = env('OIDC_OP_TOKEN_URL', OIDC_OP_BASE_URL + "/token")
+OIDC_OP_USER_ENDPOINT = env('OIDC_OP_USERINFO_URL', OIDC_OP_BASE_URL + "/userinfo")
+LOGIN_REDIRECT_URL = env('OIDC_REDIRECT_URL', '/')
 
 # If OIDC is enabled, use the 'mozilla_django_oidc' authentication backend,
 # which is sub-classed to update the bookwrym specific fields
