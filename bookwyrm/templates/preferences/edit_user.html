@@ -51,14 +51,9 @@
             </div>
             <div class="field">
                 <label class="label" for="id_email">{% trans "Email address:" %}</label>
-                {% if oidc_enabled %}
-                    <!-- email is not editable when OIDC is enabled -->
-                    {{ user.email }}
-                {% else %}
-                    {{ form.email }}
+                {{ form.email }}
 
-                    {% include 'snippets/form_errors.html' with errors_list=form.email.errors id="desc_email" %}
-                {% endif %}
+                {% include 'snippets/form_errors.html' with errors_list=form.email.errors id="desc_email" %}
             </div>
         </div>
     </section>
