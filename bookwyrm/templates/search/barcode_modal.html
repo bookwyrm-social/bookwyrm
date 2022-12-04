@@ -16,29 +16,27 @@
         <select>
         </select>
     </div>
-
-    <div id="barcode-status" class="block">
-        <div class="grant-access is-hidden">
-            <span class="icon icon-lock"></span>
-            <span class="is-size-5">{% trans "Requesting camera..." %}</span><br/>
-            <span>{% trans "Grant access to the camera to scan a book's barcode." %}</span>
-        </div>
-        <div class="access-denied is-hidden">
-            <span class="icon icon-warning"></span>
-            <span class="is-size-5">Access denied</span><br/>
-            <span>{% trans "Could not access camera" %}</span>
-        </div>
-        <div class="scanning is-hidden">
-            <span class="icon icon-barcode"></span>
-            <span class="is-size-5">{% trans "Scanning..." context "barcode scanner" %}</span><br/>
-            <span>{% trans "Align your book's barcode with the camera." %}</span>
-        </div>
-        <div class="found is-hidden">
-            <span class="icon icon-check"></span>
-            <span class="is-size-5">{% trans "ISBN scanned" context "barcode scanner" %}</span><br/>
-            {% trans "Searching for book:" context "followed by ISBN" %} <span class="isbn"></span>...
-        </div>
-    </div>
+    <template id="barcode-grant-access">
+        <span class="icon icon-lock"></span>
+        <span class="is-size-5">{% trans "Requesting camera..." %}</span><br/>
+        <span>{% trans "Grant access to the camera to scan a book's barcode." %}</span>
+    </template>
+    <template id="barcode-access-denied">
+        <span class="icon icon-warning"></span>
+        <span class="is-size-5">Access denied</span><br/>
+        <span>{% trans "Could not access camera" %}</span>
+    </template>
+    <template id="barcode-scanning">
+        <span class="icon icon-barcode"></span>
+        <span class="is-size-5">{% trans "Scanning..." context "barcode scanner" %}</span><br/>
+        <span>{% trans "Align your book's barcode with the camera." %}</span>
+    </template>
+    <template id="barcode-found">
+        <span class="icon icon-check"></span>
+        <span class="is-size-5">{% trans "ISBN scanned" context "barcode scanner" %}</span><br/>
+        {% trans "Searching for book:" context "followed by ISBN" %} <span class="isbn"></span>...
+    </template>
+    <div id="barcode-status" class="block"></div>
 {% endblock %}
 
 {% block modal-footer %}

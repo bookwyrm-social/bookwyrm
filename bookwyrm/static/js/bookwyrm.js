@@ -628,9 +628,9 @@ let BookWyrm = new (class {
         }
 
         function toggleStatus(status) {
-            for (const child of statusNode.children) {
-                BookWyrm.toggleContainer(child, !child.classList.contains(status));
-            }
+            const template = document.querySelector(`#barcode-${status}`);
+
+            statusNode.replaceChildren(template ? template.content.cloneNode(true) : null);
         }
 
         function initBarcodes(cameraId = null) {
