@@ -56,12 +56,15 @@ class CreateAdmin(View):
         # only allow this view when an instance is being configured
         site = models.SiteSettings.objects.get()
 
-        # OIDC hack: turn off install mode and registrations
-        site.install_mode = False
-        site.allow_registrations = False
-        site.allow_invite_requests = False
-        site.save()
-        return redirect("settings-site")
+        # when OIDC is enabled the install mode is skipped
+        # and user registrations / invites are turned off by default
+        # since the only way to create users is with the SSO system
+        if settings.OIDC_ENABLED:
+            site.install_mode = False
+            site.allow_registrations = False
+            site.allow_invite_requests = False
+            site.save()
+            return redirect("settings-site")
 
         if not site.install_mode:
             raise PermissionDenied()
