@@ -1,0 +1,27 @@
+{% extends 'user/layout.html' %}
+{% load i18n %}
+
+{% block title %}{% blocktrans with username=user.display_name %}Statistics for {{ username }}{% endblocktrans %}{% endblock %}
+
+{% block header %}
+<div class="columns is-mobile">
+    <div class="column">
+        <h1 class="title">{% blocktrans with username=user.display_name %}Statistics for {{ username }}{% endblocktrans %}</h1>
+    </div>
+</div>
+{% endblock %}
+ 
+{% block panel %}
+{% if is_self %}
+<div>
+    <div class="is-mobile field is-grouped">
+    This content is subject to change in subsequent Pull Requests.
+    {% for shelf in shelves %}
+        {% for book in shelf.books %}
+            Book was published in {{ book.published_date.year }}
+        {% endfor %}
+    {% endfor %}
+    </div>
+</div>
+{% endif %}
+{% endblock %}

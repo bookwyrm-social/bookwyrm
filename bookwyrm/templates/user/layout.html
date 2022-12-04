@@ -91,6 +91,10 @@
             <a href="{{ url }}">{% trans "Books" %}</a>
         </li>
         {% endif %}
+        {% url 'user-statistics' user|username as url %}
+        <li{% if url in request.path %} class="is-active"{% endif %}>
+            <a href="{{ url }}">{% trans "Statistics" %}</a>
+        </li>
     </ul>
 </nav>
 {% endwith %}
