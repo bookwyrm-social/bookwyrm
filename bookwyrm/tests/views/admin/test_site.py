@@ -14,6 +14,7 @@ from bookwyrm.tests.validate_html import validate_html
 class SiteSettingsViews(TestCase):
     """Edit site settings"""
 
+    # pylint: disable=invalid-name
     def setUp(self):
         """we need basic test data and mocks"""
         self.factory = RequestFactory()
@@ -56,6 +57,8 @@ class SiteSettingsViews(TestCase):
         form.data["invite_request_text"] = "blah"
         form.data["code_of_conduct"] = "blah"
         form.data["privacy_policy"] = "blah"
+        form.data["show_impressum"] = False
+        form.data["impressum"] = "bleh"
         request = self.factory.post("", form.data)
         request.user = self.local_user
 
