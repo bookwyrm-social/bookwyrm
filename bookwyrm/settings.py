@@ -82,7 +82,7 @@ ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", ["*"])
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
-    'mozilla_django_oidc',  # Load after auth
+    "mozilla_django_oidc",  # Load after auth
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
@@ -107,7 +107,7 @@ MIDDLEWARE = [
     "bookwyrm.middleware.IPBlocklistMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    'mozilla_django_oidc.middleware.SessionRefresh',
+    "mozilla_django_oidc.middleware.SessionRefresh",
 ]
 
 ROOT_URLCONF = "bookwyrm.urls"
@@ -285,28 +285,28 @@ AUTH_PASSWORD_VALIDATORS = [
 # If you ever accidentally check them into version control, contact your
 # OpenID Connect provider (OP) as soon as you can, disable that set of
 # client id and secret, and generate a new set.
-OIDC_ENABLED = env.bool('OIDC_ENABLED', False)
-OIDC_RP_CLIENT_ID = env('OIDC_CLIENT_ID', 'bookwyrm')
-OIDC_RP_CLIENT_SECRET = env('OIDC_CLIENT_SECRET', '')
-OIDC_RP_SIGN_ALGO = env('OIDC_SIGN_ALGO', 'RS256')
+OIDC_ENABLED = env.bool("OIDC_ENABLED", False)
+OIDC_RP_CLIENT_ID = env("OIDC_CLIENT_ID", "bookwyrm")
+OIDC_RP_CLIENT_SECRET = env("OIDC_CLIENT_SECRET", "")
+OIDC_RP_SIGN_ALGO = env("OIDC_SIGN_ALGO", "RS256")
 
 # These values are specific to your OpenID Connect provider (OP)–consult
 # their documentation for the appropriate values.  If you are using Keycloak,
 # it should be enough to set just the base URL which will set the rest of
 # the links for the certs, auth, token, and userinfo URLs
-OIDC_OP_BASE_URL=env('OIDC_OP_BASE_URL', 'http://example.com/auth/realms/example/protocol/openid-connect')
-OIDC_OP_JWKS_ENDPOINT = env('OIDC_OP_JWKS_ENDPOINT', OIDC_OP_BASE_URL + "/certs")
-OIDC_OP_AUTHORIZATION_ENDPOINT = env('OIDC_OP_AUTH_URL', OIDC_OP_BASE_URL + "/auth")
-OIDC_OP_TOKEN_ENDPOINT = env('OIDC_OP_TOKEN_URL', OIDC_OP_BASE_URL + "/token")
-OIDC_OP_USER_ENDPOINT = env('OIDC_OP_USERINFO_URL', OIDC_OP_BASE_URL + "/userinfo")
-LOGIN_REDIRECT_URL = env('OIDC_REDIRECT_URL', '/')
+OIDC_OP_BASE_URL = env(
+    "OIDC_OP_BASE_URL", "http://example.com/auth/realms/example/protocol/openid-connect"
+)
+OIDC_OP_JWKS_ENDPOINT = env("OIDC_OP_JWKS_ENDPOINT", OIDC_OP_BASE_URL + "/certs")
+OIDC_OP_AUTHORIZATION_ENDPOINT = env("OIDC_OP_AUTH_URL", OIDC_OP_BASE_URL + "/auth")
+OIDC_OP_TOKEN_ENDPOINT = env("OIDC_OP_TOKEN_URL", OIDC_OP_BASE_URL + "/token")
+OIDC_OP_USER_ENDPOINT = env("OIDC_OP_USERINFO_URL", OIDC_OP_BASE_URL + "/userinfo")
+LOGIN_REDIRECT_URL = env("OIDC_REDIRECT_URL", "/")
 
 # If OIDC is enabled, use the 'mozilla_django_oidc' authentication backend,
 # which is sub-classed to update the bookwrym specific fields
 if OIDC_ENABLED:
-    AUTHENTICATION_BACKENDS = (
-        'bookwyrm.models.user.OIDCUser',
-    )
+    AUTHENTICATION_BACKENDS = ("bookwyrm.models.user.OIDCUser",)
 
 
 # Internationalization

@@ -18,7 +18,14 @@ from bookwyrm.connectors import get_data, ConnectorException
 from bookwyrm.models.shelf import Shelf
 from bookwyrm.models.status import Status
 from bookwyrm.preview_images import generate_user_preview_image_task
-from bookwyrm.settings import DOMAIN, ENABLE_PREVIEW_IMAGES, USE_HTTPS, LANGUAGES, OIDC_ENABLED, OIDC_RP_CLIENT_ID
+from bookwyrm.settings import (
+    DOMAIN,
+    ENABLE_PREVIEW_IMAGES,
+    USE_HTTPS,
+    LANGUAGES,
+    OIDC_ENABLED,
+    OIDC_RP_CLIENT_ID,
+)
 from bookwyrm.signatures import create_key_pair
 from bookwyrm.tasks import app, LOW
 from bookwyrm.utils import regex
@@ -534,29 +541,30 @@ def preview_image(instance, *args, **kwargs):
 #
 from mozilla_django_oidc.auth import OIDCAuthenticationBackend
 
+
 class OIDCUser(OIDCAuthenticationBackend):
     def create_user(self, claims):
         if not OIDC_ENABLED:
             # log an error?
             return None
 
-        #user = super(OIDCUser, self).create_user(claims)
+        # user = super(OIDCUser, self).create_user(claims)
         print("creating user", claims)
-        #user = super(OIDCUser, self).create_user()
+        # user = super(OIDCUser, self).create_user()
 
-        localname = claims.get('preferred_username')
+        localname = claims.get("preferred_username")
         username = f"{localname}@{DOMAIN}"
-        email = claims.get('email', '')
+        email = claims.get("email", "")
 
         user = User.objects.create_user(
             username,
             email,
-            'passwords-not-supported',
-            name=claims.get('name', localname),
+            "passwords-not-supported",
+            name=claims.get("name", localname),
             localname=localname,
             local=True,
             deactivation_reason=None,
-            is_active=True
+            is_active=True,
         )
 
         return self.update_user(user, claims)
@@ -569,12 +577,16 @@ class OIDCUser(OIDCAuthenticationBackend):
 
     def update_user(self, user, claims):
         # replace the user's display name
-        user.name = claims.get('name', user.name)
+        user.name = claims.get("name", user.name)
 
         # this is a hack to synchronize the OIDC role claims
         # with the ones in the bookwyrm database. it should be more general
-        roles = claims.get('resource_access',{}).get(OIDC_RP_CLIENT_ID,{}).get('roles',[])
-        for role in ["admin","moderator"]:
+        roles = (
+            claims.get("resource_access", {})
+            .get(OIDC_RP_CLIENT_ID, {})
+            .get("roles", [])
+        )
+        for role in ["admin", "moderator"]:
             try:
                 group = Group.objects.get(name=role)
                 if role in roles:
