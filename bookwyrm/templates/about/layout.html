@@ -47,6 +47,14 @@
                     {% trans "Privacy Policy" %}
                 </a>
             </li>
+            {% if site.show_impressum %}
+            <li>
+                {% url 'impressum' as path %}
+                <a href="{{ path }}" {% if request.path in path %}class="is-active"{% endif %}>
+                    {% trans "Impressum" %}
+                </a>
+            </li>
+            {% endif %}
         </ul>
     </nav>
 
