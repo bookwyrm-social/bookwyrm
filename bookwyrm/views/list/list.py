@@ -110,8 +110,8 @@ def get_list_suggestions(book_list, user, query=None):
             s.default_edition
             for s in models.Work.objects.filter(
                 ~Q(editions__in=book_list.books.all()),
-            ).order_by("-updated_date")
-        ][: 5 - len(suggestions)]
+            ).order_by("-updated_date")[: 5 - len(suggestions)]
+        ]
     return suggestions
 
 

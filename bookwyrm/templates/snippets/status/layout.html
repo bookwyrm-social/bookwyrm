@@ -32,7 +32,7 @@
 
     <div class="card-footer-item">
         {% trans "Reply" as button_text %}
-        {% include 'snippets/toggle/toggle_button.html' with controls_text="show_comment" controls_uid=status.id text=button_text icon_with_text="comment" class="is-small is-light toggle-button" focus="id_content_reply" %}
+        {% include 'snippets/toggle/toggle_button.html' with controls_text="show_comment" controls_uid=status.id text=button_text icon_with_text="comment" class="is-small is-light is-transparent toggle-button" focus="id_content_reply" %}
     </div>
     <div class="card-footer-item">
         {% include 'snippets/boost_button.html' with status=status %}
@@ -42,7 +42,7 @@
     </div>
     {% if not moderation_mode %}
     <div class="card-footer-item">
-        {% include 'snippets/status/status_options.html' with class="is-small is-light" right=True %}
+        {% include 'snippets/status/status_options.html' with class="is-small is-light is-transparent" right=True %}
     </div>
     {% endif %}
 

@@ -5,7 +5,7 @@ services:
     image: nginx:latest
     restart: unless-stopped
     ports:
-      - 1333:80
+      - "1333:80"
     depends_on:
       - web
     networks:
@@ -36,7 +36,7 @@ services:
     networks:
       - main
     ports:
-      - 8000
+      - "8000"
   redis_activity:
     image: redis
     command: redis-server --requirepass ${REDIS_ACTIVITY_PASSWORD} --appendonly yes --port ${REDIS_ACTIVITY_PORT}

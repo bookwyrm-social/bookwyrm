@@ -15,6 +15,8 @@ $danger: #872538;
 $danger-light: #481922;
 $light: #393939;
 $red: #ffa1b4;
+$black: #000;
+$white-ter:    hsl(0, 0%, 90%);
 
 /* book cover standins */
 $no-cover-color: #002549;
@@ -56,9 +58,12 @@ $link-active: $white-bis;
 $link-light: #0d1c26;
 
 /* bulma overrides */
+$body-background-color: rgb(17, 18, 18);
 $background: $background-secondary;
 $menu-item-active-background-color: $link-background;
 $navbar-dropdown-item-hover-color: $white;
+$info-light: $background-body;
+$info-dark: #72b6ee;
 
 /* These element's colors are hardcoded, probably a bug in bulma? */
 @media screen and (min-width: 769px) {
@@ -74,7 +79,7 @@ $navbar-dropdown-item-hover-color: $white;
 }
 
 /* misc */
-$shadow: 0 0.5em 1em -0.125em rgba($black, 0.2), 0 0px 0 1px rgba($black, 0.02);
+$shadow: 0 0.5em 0.5em -0.125em rgba($black, 0.2), 0 0px 0 1px rgba($black, 0.02);
 $card-header-shadow: 0 0.125em 0.25em rgba($black, 0.1);
 $invisible-overlay-background-color: rgba($black, 0.66);
 $progress-value-background-color: $border-light;
@@ -90,6 +95,11 @@ $family-secondary: $family-sans-serif;
 
 .has-text-more-muted {
     color: $grey-light !important;
+}
+
+
+#qrcode svg {
+    background-color: #a6a6a6;
 }
 
 @import "../bookwyrm.scss";

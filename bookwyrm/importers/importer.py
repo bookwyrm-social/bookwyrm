@@ -16,8 +16,8 @@ class Importer:
         ("id", ["id", "book id"]),
         ("title", ["title"]),
         ("authors", ["author", "authors", "primary author"]),
-        ("isbn_10", ["isbn10", "isbn"]),
-        ("isbn_13", ["isbn13", "isbn", "isbns"]),
+        ("isbn_10", ["isbn10", "isbn", "isbn/uid"]),
+        ("isbn_13", ["isbn13", "isbn", "isbns", "isbn/uid"]),
         ("shelf", ["shelf", "exclusive shelf", "read status", "bookshelf"]),
         ("review_name", ["review name"]),
         ("review_body", ["my review", "review"]),
@@ -36,7 +36,11 @@ class Importer:
     def create_job(self, user, csv_file, include_reviews, privacy):
         """check over a csv and creates a database entry for the job"""
         csv_reader = csv.DictReader(csv_file, delimiter=self.delimiter)
-        rows = enumerate(list(csv_reader))
+        rows = list(csv_reader)
+        if len(rows) < 1:
+            raise ValueError("CSV file is empty")
+        rows = enumerate(rows)
+
         job = ImportJob.objects.create(
             user=user,
             include_reviews=include_reviews,

@@ -60,7 +60,7 @@ from .books.editions import Editions, switch_edition
 from .books.links import BookFileLinks, AddFileLink, delete_link
 
 # landing
-from .landing.about import about, privacy, conduct
+from .landing.about import about, privacy, conduct, impressum
 from .landing.landing import Home, Landing
 from .landing.login import Login, Logout
 from .landing.register import Register
