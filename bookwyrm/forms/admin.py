@@ -55,7 +55,7 @@ class CreateInviteForm(CustomForm):
 class SiteForm(CustomForm):
     class Meta:
         model = models.SiteSettings
-        exclude = ["admin_code", "install_mode"]
+        exclude = ["admin_code", "install_mode", "imports_enabled"]
         widgets = {
             "instance_short_description": forms.TextInput(
                 attrs={"aria-describedby": "desc_instance_short_description"}
