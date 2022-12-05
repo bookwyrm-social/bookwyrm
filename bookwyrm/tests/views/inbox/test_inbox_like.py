@@ -79,9 +79,7 @@ class InboxActivities(TestCase):
     @responses.activate
     def test_handle_favorite_ignorable_status(self):
         """fav a status"""
-        datafile = pathlib.Path(__file__).parent.joinpath(
-            "../../data/ap_note.json"
-        )
+        datafile = pathlib.Path(__file__).parent.joinpath("../../data/ap_note.json")
         status_data = json.loads(datafile.read_bytes())
         status_data["tag"] = []
         activity = {
@@ -101,7 +99,9 @@ class InboxActivities(TestCase):
 
         views.inbox.activity_task(activity)
         self.assertFalse(models.Favorite.objects.exists())
-        self.assertFalse(models.Status.objects.filter(remote_id=status_data["id"]).exists())
+        self.assertFalse(
+            models.Status.objects.filter(remote_id=status_data["id"]).exists()
+        )
         self.assertTrue(models.Status.objects.count(), 1)
 
     def test_ignore_favorite(self):
