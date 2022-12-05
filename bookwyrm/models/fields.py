@@ -501,7 +501,7 @@ class HtmlField(ActivitypubFieldMixin, models.TextField):
         return clean(value)
 
     def field_to_activity(self, value):
-        return markdown(value)
+        return markdown(value) if value else value
 
 
 class ArrayField(ActivitypubFieldMixin, DjangoArrayField):
