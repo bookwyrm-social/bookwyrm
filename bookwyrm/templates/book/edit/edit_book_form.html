@@ -344,6 +344,15 @@
 
                     {% include 'snippets/form_errors.html' with errors_list=form.ASIN.errors id="desc_ASIN" %}
                 </div>
+
+                <div class="field">
+                    <label class="label" for="id_aasin">
+                        {% trans "Audible ASIN:" %}
+                    </label>
+                    {{ form.aasin }}
+
+                    {% include 'snippets/form_errors.html' with errors_list=form.AASIN.errors id="desc_AASIN" %}
+                </div>
             </div>
         </section>
     </div>

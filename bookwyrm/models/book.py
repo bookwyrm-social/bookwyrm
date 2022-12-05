@@ -55,6 +55,9 @@ class BookDataModel(ObjectMixin, BookWyrmModel):
     asin = fields.CharField(
         max_length=255, blank=True, null=True, deduplication_field=True
     )
+    aasin = fields.CharField(
+        max_length=255, blank=True, null=True, deduplication_field=True
+    )
     search_vector = SearchVectorField(null=True)
 
     last_edited_by = fields.ForeignKey(
