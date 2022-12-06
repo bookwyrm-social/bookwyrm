@@ -31,10 +31,8 @@ def create_groups_and_perms(apps, schema_editor):
     )
 
     # Add perms to the group if anything was created
-    if group_created or perm_created or admin_perm_created or True:
+    if group_created or perm_created or admin_perm_created:
         perms = [
-            "manage_registration",
-            "system_administration",
             "edit_instance_settings",
             "set_user_group",
             "control_federation",
