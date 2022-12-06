@@ -110,10 +110,12 @@
                 <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Registration" %}</a>
             {% endif %}
             </li>
+            {% if perms.bookwyrm.system_administration %}
             <li>
                 {% url 'settings-themes' as url %}
                 <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Themes" %}</a>
             </li>
+            {% endif %}
         </ul>
         {% endif %}
     </nav>
