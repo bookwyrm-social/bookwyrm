@@ -15,6 +15,11 @@
     {% endif %}
 
     {% if site.imports_enabled %}
+        <div class="notification">
+            <p>Currently you are allowed to import {{ import_size_limit }} books every {{ import_limit_reset }} days.</p>
+            <p>You have {{ allowed_imports }} left.</p>
+        </div>
+
         {% if recent_avg_hours or recent_avg_minutes %}
         <div class="notification">
             <p>
@@ -90,7 +95,12 @@
                 </div>
             </div>
             </div>
-            <button class="button is-primary" type="submit">{% trans "Import" %}</button>
+            {% if allowed_imports > 0 %}
+                <button class="button is-primary" type="submit">{% trans "Import" %}</button>
+            {% else %}
+                <button class="button is-primary is-disabled" type="submit">{% trans "Import" %}</button>
+                <p>{% trans "You've reached the import limit." %}</p>
+            {% endif%}
         </form>
     {% else %}
     <div class="box notification has-text-centered is-warning m-6 content">

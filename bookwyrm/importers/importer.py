@@ -1,7 +1,8 @@
 """ handle reading a csv from an external service, defaults are from Goodreads """
 import csv
+from datetime import timedelta
 from django.utils import timezone
-from bookwyrm.models import ImportJob, ImportItem
+from bookwyrm.models import ImportJob, ImportItem, SiteSettings
 
 
 class Importer:
@@ -49,7 +50,24 @@ class Importer:
             source=self.service,
         )
 
+        site_settings = SiteSettings.objects.get()
+        import_size_limit = site_settings.import_size_limit
+        import_limit_reset = site_settings.import_limit_reset
+        enforce_limit = import_size_limit and import_limit_reset
+
+        if enforce_limit:
+            time_range = timezone.now() - timedelta(days=import_limit_reset)
+            import_jobs = ImportJob.objects.filter(
+                user=user, created_date__gte=time_range
+            )
+            imported_books = sum([job.successful_item_count for job in import_jobs])
+            allowed_imports = import_size_limit - imported_books
+            if allowed_imports <= 0:
+                job.complete_job()
+                return job
         for index, entry in rows:
+            if enforce_limit and index >= allowed_imports:
+                break
             self.create_item(job, index, entry)
         return job
 

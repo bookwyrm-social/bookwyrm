@@ -312,6 +312,11 @@ urlpatterns = [
         name="settings-imports-enable",
     ),
     re_path(
+        r"^settings/imports/set-limit/?$",
+        views.set_import_size_limit,
+        name="settings-imports-set-limit",
+    ),
+    re_path(
         r"^settings/celery/?$", views.CeleryStatus.as_view(), name="settings-celery"
     ),
     # landing pages

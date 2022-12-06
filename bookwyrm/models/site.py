@@ -88,6 +88,8 @@ class SiteSettings(SiteModel):
 
     # controls
     imports_enabled = models.BooleanField(default=True)
+    import_size_limit = models.IntegerField(default=0)
+    import_limit_reset = models.IntegerField(default=0)
 
     field_tracker = FieldTracker(fields=["name", "instance_tagline", "logo"])
 
