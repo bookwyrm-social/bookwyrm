@@ -98,7 +98,9 @@
                         </label>
                         {% endwith %}
                     </fieldset>
+                    {% if not forloop.last %}
                     <hr aria-hidden="true">
+                    {% endif %}
                     {% endfor %}
                 </div>
                 {% else %}
