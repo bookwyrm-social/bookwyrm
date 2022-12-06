@@ -46,7 +46,8 @@ def create_groups_and_perms(apps, schema_editor):
         )
 
         # also extend these perms to admins
-        admin_group = group_model.objects.using(db_alias).get(name="admin")
+        # This is get or create so the tests don't fail -- it should already exist
+        admin_group, _ = group_model.objects.using(db_alias).get_or_create(name="admin")
         admin_group.permissions.add(reg_perm)
         admin_group.permissions.add(admin_perm)
 
