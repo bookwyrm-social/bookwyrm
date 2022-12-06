@@ -19,12 +19,12 @@ def create_groups_and_perms(apps, schema_editor):
     content_type_model = apps.get_model("contenttypes", "ContentType")
     content_type = content_type_model.objects.get_for_model(user_model)
     perms_model = apps.get_model("auth", "Permission")
-    _, perm_created = perms_model.objects.using(db_alias).get_or_create(
+    reg_perm, perm_created = perms_model.objects.using(db_alias).get_or_create(
         codename="manage_registration",
         name="allow or prevent user registration",
         content_type=content_type,
     )
-    _, admin_perm_created = perms_model.objects.using(db_alias).get_or_create(
+    admin_perm, admin_perm_created = perms_model.objects.using(db_alias).get_or_create(
         codename="system_administration",
         name="technical controls",
         content_type=content_type,
@@ -46,6 +46,11 @@ def create_groups_and_perms(apps, schema_editor):
         owner_group.permissions.set(
             perms_model.objects.using(db_alias).filter(codename__in=perms).all()
         )
+
+        # also extend these perms to admins
+        admin_group = group_model.objects.using(db_alias).get(name="admin")
+        admin_group.permissions.add(reg_perm)
+        admin_group.permissions.add(admin_perm)
 
 
 class Migration(migrations.Migration):
