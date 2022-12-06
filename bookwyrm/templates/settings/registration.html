@@ -52,26 +52,26 @@
             </label>
         </div>
         <div class="field">
+            <label class="label" for="id_invite_request_text">{% trans "Invite request text:" %}</label>
+            {{ form.invite_request_text }}
+
+            {% include 'snippets/form_errors.html' with errors_list=form.invite_request_text.errors id="desc_invite_request_text" %}
+        </div>
+        <div class="field">
             <label class="label" for="id_invite_requests_question">
                 {{ form.invite_request_question }}
                 {% trans "Set a question for invite requests" %}
             </label>
         </div>
-            <div class="field">
-                <label class="label" for="id_invite_question_text">
-                    {% trans "Question:" %}
-                    {{ form.invite_question_text }}
-                </label>
-            </div>
+        <div class="field">
+            <label class="label" for="id_invite_question_text">
+                {% trans "Question:" %}
+                {{ form.invite_question_text }}
+            </label>
+        </div>
         <div class="field">
             <label class="label" for="id_registration_closed_text">{% trans "Registration closed text:" %}</label>
             {{ form.registration_closed_text }}
-        </div>
-        <div class="field">
-            <label class="label" for="id_invite_request_text">{% trans "Invite request text:" %}</label>
-            {{ form.invite_request_text }}
-
-            {% include 'snippets/form_errors.html' with errors_list=form.invite_request_text.errors id="desc_invite_request_text" %}
         </div>
     </section>
 

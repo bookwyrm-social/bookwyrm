@@ -56,6 +56,10 @@
                 {{ form.invite_question_text }}
             </label>
         </div>
+        {% else %}
+        <input type="hidden" name="invite_request_text" value="{{ form.invite_request_text.value }}">
+        <input type="hidden" name="invite_request_question" value="{{ form.invite_request_question.value }}">
+        <input type="hidden" name="invite_question_text" value="{{ form.invite_question_text.value }}">
         {% endif %}
 
         {% if not site.allow_invite_requests and not site.allow_registration %}
@@ -63,6 +67,8 @@
             <label class="label" for="id_registration_closed_text">{% trans "Registration closed text:" %}</label>
             {{ form.registration_closed_text }}
         </div>
+        {% else %}
+        <input type="hidden" name="registration_closed_text" value="{{ form.registration_closed_text.value }}">
         {% endif %}
     </section>
 
