@@ -10,7 +10,7 @@ def init_groups():
     """permission levels"""
     groups = ["admin", "owner", "moderator", "editor"]
     for group in groups:
-        Group.objects.create(name=group)
+        Group.objects.get_or_create(name=group)
 
 
 def init_permissions():
@@ -18,7 +18,7 @@ def init_permissions():
     permissions = [
         {
             "codename": "manage_registration",
-            "name": "allow or prevent user registrations",
+            "name": "allow or prevent user registration",
             "groups": ["admin"],
         },
         {
@@ -65,7 +65,7 @@ def init_permissions():
 
     content_type = ContentType.objects.get_for_model(models.User)
     for permission in permissions:
-        permission_obj = Permission.objects.create(
+        permission_obj, _ = Permission.objects.get_or_create(
             codename=permission["codename"],
             name=permission["name"],
             content_type=content_type,
