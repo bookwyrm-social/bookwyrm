@@ -70,4 +70,10 @@ server {
         add_header X-Cache-Status STATIC;
         access_log off;
     }
+
+    # monitor the celery queues with flower, no caching enabled
+    location /flower/ {
+       proxy_pass http://flower:8888;
+       proxy_cache_bypass 1;
+    }
 }
