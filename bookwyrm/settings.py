@@ -11,7 +11,7 @@ from django.utils.translation import gettext_lazy as _
 env = Env()
 env.read_env()
 DOMAIN = env("DOMAIN")
-VERSION = "0.5.1"
+VERSION = "0.5.2"
 
 RELEASE_API = env(
     "RELEASE_API",
@@ -364,3 +364,7 @@ OTEL_EXPORTER_OTLP_HEADERS = env("OTEL_EXPORTER_OTLP_HEADERS", None)
 OTEL_SERVICE_NAME = env("OTEL_SERVICE_NAME", None)
 
 TWO_FACTOR_LOGIN_MAX_SECONDS = 60
+
+HTTP_X_FORWARDED_PROTO = env.bool("SECURE_PROXY_SSL_HEADER", False)
+if HTTP_X_FORWARDED_PROTO:
+    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")

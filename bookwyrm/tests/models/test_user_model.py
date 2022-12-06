@@ -1,10 +1,12 @@
 """ testing models """
 import json
 from unittest.mock import patch
+from django.contrib.auth.models import Group
 from django.test import TestCase
 import responses
 
 from bookwyrm import models
+from bookwyrm.management.commands import initdb
 from bookwyrm.settings import USE_HTTPS, DOMAIN
 
 # pylint: disable=missing-class-docstring
@@ -12,6 +14,7 @@ from bookwyrm.settings import USE_HTTPS, DOMAIN
 class User(TestCase):
     protocol = "https://" if USE_HTTPS else "http://"
 
+    # pylint: disable=invalid-name
     def setUp(self):
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
@@ -25,6 +28,17 @@ class User(TestCase):
                 name="hi",
                 bookwyrm_user=False,
             )
+            self.another_user = models.User.objects.create_user(
+                f"nutria@{DOMAIN}",
+                "nutria@nutria.nutria",
+                "nutriaword",
+                local=True,
+                localname="nutria",
+                name="hi",
+                bookwyrm_user=False,
+            )
+        initdb.init_groups()
+        initdb.init_permissions()
 
     def test_computed_fields(self):
         """username instead of id here"""
@@ -176,3 +190,41 @@ class User(TestCase):
         self.assertEqual(activity["type"], "Delete")
         self.assertEqual(activity["object"], self.user.remote_id)
         self.assertFalse(self.user.is_active)
+
+    def test_admins_no_admins(self):
+        """list of admins"""
+        result = models.User.admins()
+        self.assertFalse(result.exists())
+
+    def test_admins_superuser(self):
+        """list of admins"""
+        self.user.is_superuser = True
+        self.user.save(broadcast=False, update_fields=["is_superuser"])
+        result = models.User.admins()
+        self.assertEqual(result.count(), 1)
+        self.assertEqual(result.first(), self.user)
+
+    def test_admins_superuser_and_mod(self):
+        """list of admins"""
+        self.user.is_superuser = True
+        self.user.save(broadcast=False, update_fields=["is_superuser"])
+        group = Group.objects.get(name="moderator")
+        self.another_user.groups.set([group])
+
+        results = models.User.admins()
+        self.assertEqual(results.count(), 2)
+        self.assertTrue(results.filter(id=self.user.id).exists())
+        self.assertTrue(results.filter(id=self.another_user.id).exists())
+
+    def test_admins_deleted_mod(self):
+        """list of admins"""
+        self.user.is_superuser = True
+        self.user.save(broadcast=False, update_fields=["is_superuser"])
+        group = Group.objects.get(name="moderator")
+        self.another_user.groups.set([group])
+        self.another_user.is_active = False
+        self.another_user.save(broadcast=False, update_fields=None)
+
+        results = models.User.admins()
+        self.assertEqual(results.count(), 1)
+        self.assertEqual(results.first(), self.user)

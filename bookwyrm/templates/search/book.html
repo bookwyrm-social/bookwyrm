@@ -1,5 +1,7 @@
 {% extends 'search/layout.html' %}
 {% load i18n %}
+{% load humanize %}
+{% load book_display_tags %}
 
 {% block panel %}
 
@@ -19,8 +21,17 @@
                     </strong>
                 </p>
                 <p>
+                    {% with book_review_count=result|review_count %}
+                    {% blocktrans trimmed count counter=book_review_count with formatted_review_count=book_review_count|intcomma %}
+                    {{ formatted_review_count }} review
+                    {% plural %}
+                    {{ formatted_review_count }} reviews
+                    {% endblocktrans %}
+                    {% endwith %}
+
                     {% if result.first_published_date or result.published_date %}
-                        ({% firstof result.first_published_date.year result.published_date.year %})
+                        {% firstof result.first_published_date.year result.published_date.year as pub_year %}
+                        {% blocktrans %}(published {{ pub_year }}){% endblocktrans %}
                     {% endif %}
                 </p>
             </div>
@@ -47,7 +58,7 @@
                 <span class="details-close icon icon-x" aria-hidden="true"></span>
             </summary>
 
-        <div class="mt-5">
+        <div>
             <div class="is-flex is-flex-direction-row-reverse">
                 <ul class="is-flex-grow-1">
                     {% for result in result_set.results %}

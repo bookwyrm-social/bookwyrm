@@ -1,5 +1,5 @@
 # bw-dev auto-completions for fish-shell.
-# copy this to ~./.config/fish/completions/ with the name `bw-dev.fish`
+# copy this to ~/.config/fish/completions/ with the name `bw-dev.fish`
 # this will only work if renamed to `bw-dev.fish`.
 
 set -l commands up \
@@ -61,7 +61,6 @@ __bw_complete "$commands" "black"                   "run Python code formatting 
 __bw_complete "$commands" "prettier"                "run JavaScript code formatting tool"
 __bw_complete "$commands" "stylelint"               "run SCSS linting tool"
 __bw_complete "$commands" "formatters"              "run multiple formatter tools"
-__bw_complete "$commands" "compilescss"             "compile the SCSS layouts to CSS"
 __bw_complete "$commands" "populate_streams"        "populate the main streams"
 __bw_complete "$commands" "populate_lists_streams"  "populate streams for book lists"
 __bw_complete "$commands" "populate_suggestions"    "populate book suggestions"

@@ -302,12 +302,23 @@ urlpatterns = [
         name="settings-imports-complete",
     ),
     re_path(
+        r"^settings/imports/disable/?$",
+        views.disable_imports,
+        name="settings-imports-disable",
+    ),
+    re_path(
+        r"^settings/imports/enable/?$",
+        views.enable_imports,
+        name="settings-imports-enable",
+    ),
+    re_path(
         r"^settings/celery/?$", views.CeleryStatus.as_view(), name="settings-celery"
     ),
     # landing pages
     re_path(r"^about/?$", views.about, name="about"),
     re_path(r"^privacy/?$", views.privacy, name="privacy"),
     re_path(r"^conduct/?$", views.conduct, name="conduct"),
+    re_path(r"^impressum/?$", views.impressum, name="impressum"),
     path("", views.Home.as_view(), name="landing"),
     re_path(r"^discover/?$", views.Discover.as_view(), name="discover"),
     re_path(r"^notifications/?$", views.Notifications.as_view(), name="notifications"),

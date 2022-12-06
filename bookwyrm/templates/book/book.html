@@ -135,7 +135,7 @@
                         {% trans "View on OpenLibrary" %}
                     </a>
                     {% if request.user.is_authenticated and perms.bookwyrm.edit_book %}
-                    <button class="button is-small" type="button" data-modal-open="openlibrary_sync">
+                    <button class="button is-small button-paragraph" type="button" data-modal-open="openlibrary_sync">
                         <span class="icon icon-download" title="{{ button_text }}"></span>
                         <span class="is-sr-only-mobile">{{ button_text }}</span>
                     </button>
@@ -150,7 +150,7 @@
                     </a>
 
                     {% if request.user.is_authenticated and perms.bookwyrm.edit_book %}
-                    <button class="button is-small" type="button" data-modal-open="inventaire_sync">
+                    <button class="button is-small button-paragraph" type="button" data-modal-open="inventaire_sync">
                         <span class="icon icon-download" title="{{ button_text }}"></span>
                         <span class="is-sr-only-mobile">{{ button_text }}</span>
                     </button>
@@ -189,15 +189,15 @@
 
                 {% if user_authenticated and can_edit_book and not book|book_description %}
                 {% trans 'Add Description' as button_text %}
-                {% include 'snippets/toggle/open_button.html' with text=button_text controls_text="add_description" controls_uid=book.id focus="id_description" hide_active=True id="hide_description" %}
+                {% include 'snippets/toggle/open_button.html' with class="mb-2" text=button_text controls_text="add_description" controls_uid=book.id focus="id_description" hide_active=True id="hide_description" %}
 
                 <div class="box is-hidden" id="add_description_{{ book.id }}">
                     <form name="add-description" method="POST" action="{% url "add-description" book.id %}">
                         {% csrf_token %}
-                        <p class="fields is-grouped">
+                        <div class="field">
                             <label class="label" for="id_description_{{ book.id }}">{% trans "Description:" %}</label>
                             <textarea name="description" cols="None" rows="None" class="textarea" id="id_description_{{ book.id }}"></textarea>
-                        </p>
+                        </div>
                         <div class="field">
                             <button class="button is-primary" type="submit">{% trans "Save" %}</button>
                             {% trans "Cancel" as button_text %}
@@ -231,7 +231,7 @@
                 {% for shelf in user_shelfbooks %}
                     <li class="box">
                         <a href="{{ shelf.shelf.local_path }}">{{ shelf.shelf.name }}</a>
-                        <div class="mb-3">
+                        <div class="is-pulled-right">
                             {% include 'snippets/shelf_selector.html' with shelf=shelf.shelf class="is-small" readthrough=readthrough %}
                         </div>
                     </li>

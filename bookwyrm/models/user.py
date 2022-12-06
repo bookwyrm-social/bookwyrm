@@ -244,9 +244,10 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     def admins(cls):
         """Get a queryset of the admins for this instance"""
         return cls.objects.filter(
-            models.Q(user_permissions__name__in=["moderate_user", "moderate_post"])
-            | models.Q(is_superuser=True)
-        )
+            models.Q(groups__name__in=["moderator", "admin"])
+            | models.Q(is_superuser=True),
+            is_active=True,
+        ).distinct()
 
     def update_active_date(self):
         """this user is here! they are doing things!"""
