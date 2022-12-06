@@ -35,6 +35,60 @@ class Site(View):
         return TemplateResponse(request, "settings/site.html", data)
 
 
+@method_decorator(login_required, name="dispatch")
+@method_decorator(
+    permission_required("bookwyrm.edit_instance_settings", raise_exception=True),
+    name="dispatch",
+)
+class RegistrationLimited(View):
+    """Things related to registering that non-admins owners can change"""
+
+    def get(self, request):
+        """edit form"""
+        site = models.SiteSettings.objects.get()
+        data = {"form": forms.RegistrationLimitedForm(instance=site)}
+        return TemplateResponse(request, "settings/registration_limited.html", data)
+
+    def post(self, request):
+        """edit the site settings"""
+        site = models.SiteSettings.objects.get()
+        form = forms.RegistrationLimitedForm(request.POST, request.FILES, instance=site)
+        if not form.is_valid():
+            data = {"form": form}
+            return TemplateResponse(request, "settings/registration_limited.html", data)
+        site = form.save(request)
+
+        data = {"form": forms.RegistrationLimitedForm(instance=site), "success": True}
+        return TemplateResponse(request, "settings/registration_limited.html", data)
+
+
+@method_decorator(login_required, name="dispatch")
+@method_decorator(
+    permission_required("bookwyrm.manage_registration", raise_exception=True),
+    name="dispatch",
+)
+class Registration(View):
+    """Control everything about registration"""
+
+    def get(self, request):
+        """edit form"""
+        site = models.SiteSettings.objects.get()
+        data = {"form": forms.RegistrationForm(instance=site)}
+        return TemplateResponse(request, "settings/registration.html", data)
+
+    def post(self, request):
+        """edit the site settings"""
+        site = models.SiteSettings.objects.get()
+        form = forms.RegistrationForm(request.POST, request.FILES, instance=site)
+        if not form.is_valid():
+            data = {"form": form}
+            return TemplateResponse(request, "settings/registration.html", data)
+        site = form.save(request)
+
+        data = {"form": forms.RegistrationForm(instance=site), "success": True}
+        return TemplateResponse(request, "settings/registration.html", data)
+
+
 @login_required
 @permission_required("bookwyrm.edit_instance_settings", raise_exception=True)
 def email_preview(request):

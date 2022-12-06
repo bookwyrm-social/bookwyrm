@@ -102,6 +102,15 @@
                 {% block site-subtabs %}{% endblock %}
             </li>
             <li>
+            {% if perms.bookwyrm.manage_registration %}
+                {% url 'settings-registration' as url %}
+                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Registration" %}</a>
+            {% else %}
+                {% url 'settings-registration-limited' as url %}
+                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Registration" %}</a>
+            {% endif %}
+            </li>
+            <li>
                 {% url 'settings-themes' as url %}
                 <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Themes" %}</a>
             </li>

@@ -77,9 +77,43 @@ class SiteForm(CustomForm):
             "instance_short_description": forms.TextInput(
                 attrs={"aria-describedby": "desc_instance_short_description"}
             ),
+        }
+
+
+class RegistrationForm(CustomForm):
+    class Meta:
+        model = models.SiteSettings
+        fields = [
+            "allow_registration",
+            "allow_invite_requests",
+            "registration_closed_text",
+            "invite_request_text",
+            "invite_request_question",
+            "invite_question_text",
+            "require_confirm_email",
+        ]
+
+        widgets = {
             "require_confirm_email": forms.CheckboxInput(
                 attrs={"aria-describedby": "desc_require_confirm_email"}
             ),
+            "invite_request_text": forms.Textarea(
+                attrs={"aria-describedby": "desc_invite_request_text"}
+            ),
+        }
+
+
+class RegistrationLimitedForm(CustomForm):
+    class Meta:
+        model = models.SiteSettings
+        fields = [
+            "registration_closed_text",
+            "invite_request_text",
+            "invite_request_question",
+            "invite_question_text",
+        ]
+
+        widgets = {
             "invite_request_text": forms.Textarea(
                 attrs={"aria-describedby": "desc_invite_request_text"}
             ),

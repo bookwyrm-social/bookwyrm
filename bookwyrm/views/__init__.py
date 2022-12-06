@@ -23,7 +23,7 @@ from .admin.reports import (
     unsuspend_user,
     moderator_delete_user,
 )
-from .admin.site import Site
+from .admin.site import Site, Registration, RegistrationLimited
 from .admin.themes import Themes, delete_theme
 from .admin.user_admin import UserAdmin, UserAdminList
 
