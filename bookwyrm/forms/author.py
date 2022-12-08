@@ -21,6 +21,7 @@ class AuthorForm(CustomForm):
             "inventaire_id",
             "librarything_key",
             "goodreads_key",
+            "isfdb",
             "isni",
         ]
         widgets = {

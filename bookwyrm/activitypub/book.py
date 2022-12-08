@@ -20,6 +20,7 @@ class BookData(ActivityObject):
     wikidata: str = None
     asin: str = None
     aasin: str = None
+    isfdb: str = None
     lastEditedBy: str = None
     links: List[str] = field(default_factory=lambda: [])
     fileLinks: List[str] = field(default_factory=lambda: [])
