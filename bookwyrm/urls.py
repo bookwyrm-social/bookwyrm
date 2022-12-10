@@ -410,6 +410,11 @@ urlpatterns = [
         name="user-relationships",
     ),
     re_path(r"^hide-suggestions/?$", views.hide_suggestions, name="hide-suggestions"),
+    re_path(
+        rf"{USER_PATH}/reviews-comments",
+        views.UserReviewsComments.as_view(),
+        name="user-reviews-comments",
+    ),
     # groups
     re_path(rf"{USER_PATH}/groups/?$", views.UserGroups.as_view(), name="user-groups"),
     re_path(
