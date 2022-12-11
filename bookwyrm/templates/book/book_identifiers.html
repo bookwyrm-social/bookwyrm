@@ -37,6 +37,13 @@
             <dd>{{ book.isfdb }}</dd>
         </div>
     {% endif %}
+
+    {% if book.goodreads_key %}
+        <div class="is-flex">
+            <dt class="mr-1">{% trans "Goodreads:" %}</dt>
+            <dd>{{ book.goodreads_key }}</dd>
+        </div>
+    {% endif %}
 </dl>
 {% endif %}
 {% endspaceless %}

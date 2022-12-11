@@ -25,7 +25,7 @@
 <div class="block" itemscope itemtype="https://schema.org/Book">
     <div class="columns is-mobile">
         <div class="column">
-            <h1 class="title" itemprop="name">
+            <h1 class="title" itemprop="name" dir="auto">
                 {{ book.title }}
             </h1>
 
@@ -37,7 +37,7 @@
                             content="{{ book.subtitle | escape }}"
                         >
 
-                        <span class="has-text-weight-bold">
+                        <span class="has-text-weight-bold" dir="auto">
                             {{ book.subtitle }}
                         </span>
                     {% endif %}
@@ -52,7 +52,7 @@
             {% endif %}
 
             {% if book.authors.exists %}
-                <div class="subtitle">
+                <div class="subtitle" dir="auto">
                     {% trans "by" %} {% include 'snippets/authors.html' with book=book %}
                 </div>
             {% endif %}
