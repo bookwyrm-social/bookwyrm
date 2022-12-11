@@ -18,6 +18,12 @@ def email_data():
     }
 
 
+def test_email(user):
+    """Just an admin checking if emails are sending"""
+    data = email_data()
+    send_email(user.email, *format_email("test", data))
+
+
 def email_confirmation_email(user):
     """newly registered users confirm email address"""
     data = email_data()
