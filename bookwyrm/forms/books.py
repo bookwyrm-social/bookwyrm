@@ -89,6 +89,8 @@ class EditionForm(CustomForm):
                 attrs={"aria-describedby": "desc_oclc_number"}
             ),
             "ASIN": forms.TextInput(attrs={"aria-describedby": "desc_ASIN"}),
+            "AASIN": forms.TextInput(attrs={"aria-describedby": "desc_AASIN"}),
+            "isfdb": forms.TextInput(attrs={"aria-describedby": "desc_isfdb"}),
         }
 
 
