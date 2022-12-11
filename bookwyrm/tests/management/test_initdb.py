@@ -12,7 +12,7 @@ class InitDB(TestCase):
     def test_init_groups(self):
         """Create groups"""
         initdb.init_groups()
-        self.assertEqual(Group.objects.count(), 3)
+        self.assertEqual(Group.objects.count(), 4)
         self.assertTrue(Group.objects.filter(name="admin").exists())
         self.assertTrue(Group.objects.filter(name="moderator").exists())
         self.assertTrue(Group.objects.filter(name="editor").exists())
@@ -87,7 +87,7 @@ class InitDB(TestCase):
         command.handle()
 
         # everything should have been called
-        self.assertEqual(Group.objects.count(), 3)
+        self.assertEqual(Group.objects.count(), 4)
         self.assertTrue(Permission.objects.exists())
         self.assertEqual(models.Connector.objects.count(), 3)
         self.assertEqual(models.SiteSettings.objects.count(), 1)
@@ -99,7 +99,7 @@ class InitDB(TestCase):
         command.handle(limit="group")
 
         # everything should have been called
-        self.assertEqual(Group.objects.count(), 3)
+        self.assertEqual(Group.objects.count(), 4)
         self.assertEqual(models.Connector.objects.count(), 0)
         self.assertEqual(models.SiteSettings.objects.count(), 0)
         self.assertEqual(models.LinkDomain.objects.count(), 0)

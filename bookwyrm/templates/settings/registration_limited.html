@@ -1,0 +1,81 @@
+{% extends 'settings/layout.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Registration" %}{% endblock %}
+
+{% block header %}{% trans "Registration" %}{% endblock %}
+
+{% block panel %}
+{% if success %}
+<div class="notification is-success is-light">
+    <span class="icon icon-check" aria-hidden="true"></span>
+    <span>
+        {% trans "Settings saved" %}
+    </span>
+</div>
+{% endif %}
+
+{% if form.errors %}
+<div class="notification is-danger is-light">
+    <span class="icon icon-x" aria-hidden="true"></span>
+    <span>
+        {% trans "Unable to save settings" %}
+    </span>
+</div>
+{% endif %}
+
+{% if site.allow_registration %}
+<div class="notification">
+    {% trans "Registration is enabled on this instance" %}
+</div>
+{% else %}
+<form
+    action="{% url 'settings-registration-limited' %}"
+    method="POST"
+    class="content"
+    enctype="multipart/form-data"
+>
+    {% csrf_token %}
+    <section class="block box" id="registration">
+        {% if site.allow_invite_requests %}
+        <div class="field">
+            <label class="label" for="id_invite_request_text">{% trans "Invite request text:" %}</label>
+            {{ form.invite_request_text }}
+
+            {% include 'snippets/form_errors.html' with errors_list=form.invite_request_text.errors id="desc_invite_request_text" %}
+        </div>
+        <div class="field">
+            <label class="label" for="id_invite_requests_question">
+                {{ form.invite_request_question }}
+                {% trans "Set a question for invite requests" %}
+            </label>
+        </div>
+        <div class="field">
+            <label class="label" for="id_invite_question_text">
+                {% trans "Question:" %}
+                {{ form.invite_question_text }}
+            </label>
+        </div>
+        {% else %}
+        <input type="hidden" name="invite_request_text" value="{{ form.invite_request_text.value }}">
+        <input type="hidden" name="invite_request_question" value="{{ form.invite_request_question.value }}">
+        <input type="hidden" name="invite_question_text" value="{{ form.invite_question_text.value }}">
+        {% endif %}
+
+        {% if not site.allow_invite_requests and not site.allow_registration %}
+        <div class="field">
+            <label class="label" for="id_registration_closed_text">{% trans "Registration closed text:" %}</label>
+            {{ form.registration_closed_text }}
+        </div>
+        {% else %}
+        <input type="hidden" name="registration_closed_text" value="{{ form.registration_closed_text.value }}">
+        {% endif %}
+    </section>
+
+    <footer class="block">
+        <button class="button is-primary" type="submit">{% trans "Save" %}</button>
+    </footer>
+</form>
+{% endif %}
+{% endblock %}
+
