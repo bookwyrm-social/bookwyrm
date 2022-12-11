@@ -328,6 +328,15 @@
                 </div>
 
                 <div class="field">
+                    <label class="label" for="id_goodreads_key">
+                        {% trans "Goodreads key:" %}
+                    </label>
+                    {{ form.goodreads_key }}
+
+                    {% include 'snippets/form_errors.html' with errors_list=form.goodreads_key.errors id="desc_goodreads_key" %}
+                </div>
+
+                <div class="field">
                     <label class="label" for="id_oclc_number">
                         {% trans "OCLC Number:" %}
                     </label>
