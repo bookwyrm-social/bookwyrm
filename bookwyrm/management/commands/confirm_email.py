@@ -3,6 +3,7 @@ from django.core.management.base import BaseCommand
 
 from bookwyrm import models
 
+
 class Command(BaseCommand):
     """command-line options"""
 
@@ -16,6 +17,4 @@ class Command(BaseCommand):
         user = models.User.objects.get(localname=name)
         user.is_active = True
         user.save(broadcast=False, update_fields=["is_active"])
-        self.stdout.write(
-            self.style.SUCCESS("User's email is now confirmed.")
-        )
+        self.stdout.write(self.style.SUCCESS("User's email is now confirmed."))
