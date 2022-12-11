@@ -102,6 +102,13 @@
             </div>
 
             <div class="field">
+                <label class="label" for="id_isfdb">{% trans "ISFDB:" %}</label>
+                {{ form.isfdb }}
+
+                {% include 'snippets/form_errors.html' with errors_list=form.isfdb.errors id="desc_isfdb" %}
+            </div>
+
+            <div class="field">
                 <label class="label" for="id_isni">{% trans "ISNI:" %}</label>
                 {{ form.isni }}
 

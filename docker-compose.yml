@@ -86,10 +86,8 @@ services:
     restart: on-failure
   flower:
     build: .
-    command: celery -A celerywyrm flower --basic_auth=${FLOWER_USER}:${FLOWER_PASSWORD}
+    command: celery -A celerywyrm flower --basic_auth=${FLOWER_USER}:${FLOWER_PASSWORD} --url_prefix=flower
     env_file: .env
-    ports:
-      - ${FLOWER_PORT}:${FLOWER_PORT}
     volumes:
       - .:/app
     networks:

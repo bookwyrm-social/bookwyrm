@@ -55,6 +55,12 @@ class BookDataModel(ObjectMixin, BookWyrmModel):
     asin = fields.CharField(
         max_length=255, blank=True, null=True, deduplication_field=True
     )
+    aasin = fields.CharField(
+        max_length=255, blank=True, null=True, deduplication_field=True
+    )
+    isfdb = fields.CharField(
+        max_length=255, blank=True, null=True, deduplication_field=True
+    )
     search_vector = SearchVectorField(null=True)
 
     last_edited_by = fields.ForeignKey(
@@ -72,6 +78,11 @@ class BookDataModel(ObjectMixin, BookWyrmModel):
     def inventaire_link(self):
         """generate the url from the inventaire id"""
         return f"https://inventaire.io/entity/{self.inventaire_id}"
+
+    @property
+    def isfdb_link(self):
+        """generate the url from the isfdb id"""
+        return f"https://www.isfdb.org/cgi-bin/title.cgi?{self.isfdb}"
 
     class Meta:
         """can't initialize this model, that wouldn't make sense"""
