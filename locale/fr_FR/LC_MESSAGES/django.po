@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-11-30 01:00+0000\n"
-"PO-Revision-Date: 2022-12-04 20:32\n"
+"POT-Creation-Date: 2022-12-05 02:21+0000\n"
+"PO-Revision-Date: 2022-12-05 06:26\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: French\n"
 "Language: fr\n"
@@ -490,11 +490,6 @@ msgstr "Envoyer un message direct"
 msgid "Code of Conduct"
 msgstr "Code de conduite"
 
-#: bookwyrm/templates/about/impressum.html:4
-#: bookwyrm/templates/about/impressum.html:9
-msgid "Impressum"
-msgstr "Mentions légales"
-
 #: bookwyrm/templates/about/layout.html:11
 msgid "Active users:"
 msgstr "Comptes actifs :"
@@ -521,6 +516,11 @@ msgstr "À propos de %(site_name)s"
 #: bookwyrm/templates/snippets/footer.html:30
 msgid "Privacy Policy"
 msgstr "Politique de vie privée"
+
+#: bookwyrm/templates/about/layout.html:54
+#: bookwyrm/templates/snippets/footer.html:34
+msgid "Impressum"
+msgstr "Mentions légales"
 
 #: bookwyrm/templates/annual_summary/layout.html:7
 #: bookwyrm/templates/feed/summary_card.html:8
@@ -819,7 +819,7 @@ msgstr "ISNI :"
 #: bookwyrm/templates/settings/announcements/edit_announcement.html:120
 #: bookwyrm/templates/settings/federation/edit_instance.html:98
 #: bookwyrm/templates/settings/federation/instance.html:105
-#: bookwyrm/templates/settings/site.html:181
+#: bookwyrm/templates/settings/site.html:194
 #: bookwyrm/templates/settings/users/user_moderation_actions.html:69
 #: bookwyrm/templates/shelf/form.html:25
 #: bookwyrm/templates/snippets/reading_modals/layout.html:18
@@ -841,7 +841,7 @@ msgstr "Enregistrer"
 #: bookwyrm/templates/preferences/disable-2fa.html:19
 #: bookwyrm/templates/readthrough/delete_readthrough_modal.html:27
 #: bookwyrm/templates/readthrough/readthrough_modal.html:80
-#: bookwyrm/templates/search/barcode_modal.html:45
+#: bookwyrm/templates/search/barcode_modal.html:43
 #: bookwyrm/templates/settings/federation/instance.html:106
 #: bookwyrm/templates/settings/imports/complete_import_modal.html:16
 #: bookwyrm/templates/settings/link_domains/edit_domain_modal.html:22
@@ -3117,7 +3117,7 @@ msgid "Delete this list?"
 msgstr "Supprimer cette liste ?"
 
 #: bookwyrm/templates/lists/edit_form.html:5
-#: bookwyrm/templates/lists/layout.html:17
+#: bookwyrm/templates/lists/layout.html:18
 msgid "Edit List"
 msgstr "Modifier la liste"
 
@@ -3132,7 +3132,6 @@ msgid "on <a href=\"/\">%(site_name)s</a>"
 msgstr "sur <a href=\"/\">%(site_name)s</a>"
 
 #: bookwyrm/templates/lists/embed-list.html:29
-#: bookwyrm/templates/lists/list.html:54
 msgid "This list is currently empty"
 msgstr "Cette liste est actuellement vide"
 
@@ -3213,6 +3212,10 @@ msgstr "Vous avez suggéré un livre à cette liste !"
 #: bookwyrm/templates/lists/list.html:47
 msgid "You successfully added a book to this list!"
 msgstr "Vous avez ajouté un livre à cette liste !"
+
+#: bookwyrm/templates/lists/list.html:54
+msgid "This list is currently empty."
+msgstr "Cette liste est actuellement vide."
 
 #: bookwyrm/templates/lists/list.html:104
 msgid "Edit notes"
@@ -3885,7 +3888,7 @@ msgstr "Profil"
 #: bookwyrm/templates/preferences/edit_user.html:13
 #: bookwyrm/templates/preferences/edit_user.html:64
 #: bookwyrm/templates/settings/site.html:11
-#: bookwyrm/templates/settings/site.html:77
+#: bookwyrm/templates/settings/site.html:90
 #: bookwyrm/templates/setup/config.html:91
 msgid "Display"
 msgstr "Affichage"
@@ -4065,33 +4068,33 @@ msgstr "\n"
 "        Scanner le code-barres\n"
 "    "
 
-#: bookwyrm/templates/search/barcode_modal.html:23
+#: bookwyrm/templates/search/barcode_modal.html:21
 msgid "Requesting camera..."
 msgstr "En attente de la caméra…"
 
-#: bookwyrm/templates/search/barcode_modal.html:24
+#: bookwyrm/templates/search/barcode_modal.html:22
 msgid "Grant access to the camera to scan a book's barcode."
 msgstr "Autorisez l’accès à la caméra pour scanner le code-barres d’un livre."
 
-#: bookwyrm/templates/search/barcode_modal.html:29
+#: bookwyrm/templates/search/barcode_modal.html:27
 msgid "Could not access camera"
 msgstr "Impossible d’accéder à la caméra"
 
-#: bookwyrm/templates/search/barcode_modal.html:33
+#: bookwyrm/templates/search/barcode_modal.html:31
 msgctxt "barcode scanner"
 msgid "Scanning..."
 msgstr "Scan en cours…"
 
-#: bookwyrm/templates/search/barcode_modal.html:34
+#: bookwyrm/templates/search/barcode_modal.html:32
 msgid "Align your book's barcode with the camera."
 msgstr "Alignez le code-barres de votre livre avec la caméra."
 
-#: bookwyrm/templates/search/barcode_modal.html:38
+#: bookwyrm/templates/search/barcode_modal.html:36
 msgctxt "barcode scanner"
 msgid "ISBN scanned"
 msgstr "ISBN scanné"
 
-#: bookwyrm/templates/search/barcode_modal.html:39
+#: bookwyrm/templates/search/barcode_modal.html:37
 msgctxt "followed by ISBN"
 msgid "Searching for book:"
 msgstr "Recherche du livre :"
@@ -4958,7 +4961,7 @@ msgid "Site Settings"
 msgstr "Paramètres du site"
 
 #: bookwyrm/templates/settings/layout.html:106
-#: bookwyrm/templates/settings/site.html:95
+#: bookwyrm/templates/settings/site.html:108
 #: bookwyrm/templates/settings/themes.html:4
 #: bookwyrm/templates/settings/themes.html:6
 msgid "Themes"
@@ -5099,12 +5102,12 @@ msgid "Instance Info"
 msgstr "Information sur l’instance"
 
 #: bookwyrm/templates/settings/site.html:12
-#: bookwyrm/templates/settings/site.html:110
+#: bookwyrm/templates/settings/site.html:123
 msgid "Footer Content"
 msgstr "Contenu du pied de page"
 
 #: bookwyrm/templates/settings/site.html:13
-#: bookwyrm/templates/settings/site.html:134
+#: bookwyrm/templates/settings/site.html:147
 msgid "Registration"
 msgstr "Inscription"
 
@@ -5144,71 +5147,79 @@ msgstr "Code de conduite :"
 msgid "Privacy Policy:"
 msgstr "Politique de vie privée :"
 
-#: bookwyrm/templates/settings/site.html:79
+#: bookwyrm/templates/settings/site.html:73
+msgid "Impressum:"
+msgstr "Mentions légales :"
+
+#: bookwyrm/templates/settings/site.html:78
+msgid "Include impressum:"
+msgstr "Inclure les mentions légales :"
+
+#: bookwyrm/templates/settings/site.html:92
 msgid "Images"
 msgstr "Images"
 
-#: bookwyrm/templates/settings/site.html:82
+#: bookwyrm/templates/settings/site.html:95
 msgid "Logo:"
 msgstr "Logo :"
 
-#: bookwyrm/templates/settings/site.html:86
+#: bookwyrm/templates/settings/site.html:99
 msgid "Logo small:"
 msgstr "Logo réduit :"
 
-#: bookwyrm/templates/settings/site.html:90
+#: bookwyrm/templates/settings/site.html:103
 msgid "Favicon:"
 msgstr "Favicon :"
 
-#: bookwyrm/templates/settings/site.html:98
+#: bookwyrm/templates/settings/site.html:111
 msgid "Default theme:"
 msgstr "Thème par défaut :"
 
-#: bookwyrm/templates/settings/site.html:113
+#: bookwyrm/templates/settings/site.html:126
 msgid "Support link:"
 msgstr "URL pour soutenir l’instance :"
 
-#: bookwyrm/templates/settings/site.html:117
+#: bookwyrm/templates/settings/site.html:130
 msgid "Support title:"
 msgstr "Titre pour soutenir l’instance :"
 
-#: bookwyrm/templates/settings/site.html:121
+#: bookwyrm/templates/settings/site.html:134
 msgid "Admin email:"
 msgstr "Email de l’administrateur :"
 
-#: bookwyrm/templates/settings/site.html:125
+#: bookwyrm/templates/settings/site.html:138
 msgid "Additional info:"
 msgstr "Infos supplémentaires :"
 
-#: bookwyrm/templates/settings/site.html:139
+#: bookwyrm/templates/settings/site.html:152
 msgid "Allow registration"
 msgstr "Autoriser les inscriptions"
 
-#: bookwyrm/templates/settings/site.html:145
+#: bookwyrm/templates/settings/site.html:158
 msgid "Require users to confirm email address"
 msgstr "Demander aux utilisateurs et utilisatrices de confirmer leur adresse email"
 
-#: bookwyrm/templates/settings/site.html:147
+#: bookwyrm/templates/settings/site.html:160
 msgid "(Recommended if registration is open)"
 msgstr "(Recommandé si les inscriptions sont ouvertes)"
 
-#: bookwyrm/templates/settings/site.html:152
+#: bookwyrm/templates/settings/site.html:165
 msgid "Allow invite requests"
 msgstr "Autoriser les demandes d’invitation"
 
-#: bookwyrm/templates/settings/site.html:158
+#: bookwyrm/templates/settings/site.html:171
 msgid "Set a question for invite requests"
 msgstr "Définir une question pour les demandes d’invitation"
 
-#: bookwyrm/templates/settings/site.html:163
+#: bookwyrm/templates/settings/site.html:176
 msgid "Question:"
 msgstr "Question :"
 
-#: bookwyrm/templates/settings/site.html:168
+#: bookwyrm/templates/settings/site.html:181
 msgid "Registration closed text:"
 msgstr "Texte affiché lorsque les inscriptions sont closes :"
 
-#: bookwyrm/templates/settings/site.html:172
+#: bookwyrm/templates/settings/site.html:185
 msgid "Invite request text:"
 msgstr "Texte de la demande d'invitation :"
 
@@ -5767,12 +5778,12 @@ msgstr "Accepter"
 msgid "Documentation"
 msgstr "Documentation"
 
-#: bookwyrm/templates/snippets/footer.html:37
+#: bookwyrm/templates/snippets/footer.html:42
 #, python-format
 msgid "Support %(site_name)s on <a href=\"%(support_link)s\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">%(support_title)s</a>"
 msgstr "Soutenez %(site_name)s sur <a href=\"%(support_link)s\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">%(support_title)s</a>"
 
-#: bookwyrm/templates/snippets/footer.html:44
+#: bookwyrm/templates/snippets/footer.html:49
 msgid "BookWyrm's source code is freely available. You can contribute or report issues on <a href=\"https://github.com/bookwyrm-social/bookwyrm\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">GitHub</a>."
 msgstr "Le code source de BookWyrm est librement disponible. Vous pouvez contribuer ou rapporter des problèmes sur <a href=\"https://github.com/bookwyrm-social/bookwyrm\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">GitHub</a>."
 

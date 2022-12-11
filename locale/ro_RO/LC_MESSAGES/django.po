@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-11-30 01:00+0000\n"
-"PO-Revision-Date: 2022-12-04 19:32\n"
+"POT-Creation-Date: 2022-12-05 02:21+0000\n"
+"PO-Revision-Date: 2022-12-05 03:56\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Romanian\n"
 "Language: ro\n"
@@ -490,11 +490,6 @@ msgstr "Trimiteți un mesaj direct"
 msgid "Code of Conduct"
 msgstr "Cod de conduită"
 
-#: bookwyrm/templates/about/impressum.html:4
-#: bookwyrm/templates/about/impressum.html:9
-msgid "Impressum"
-msgstr ""
-
 #: bookwyrm/templates/about/layout.html:11
 msgid "Active users:"
 msgstr "Utilizatori activi:"
@@ -521,6 +516,11 @@ msgstr "Despre %(site_name)s"
 #: bookwyrm/templates/snippets/footer.html:30
 msgid "Privacy Policy"
 msgstr "Politica de confidențialitate"
+
+#: bookwyrm/templates/about/layout.html:54
+#: bookwyrm/templates/snippets/footer.html:34
+msgid "Impressum"
+msgstr ""
 
 #: bookwyrm/templates/annual_summary/layout.html:7
 #: bookwyrm/templates/feed/summary_card.html:8
@@ -823,7 +823,7 @@ msgstr "ISNI:"
 #: bookwyrm/templates/settings/announcements/edit_announcement.html:120
 #: bookwyrm/templates/settings/federation/edit_instance.html:98
 #: bookwyrm/templates/settings/federation/instance.html:105
-#: bookwyrm/templates/settings/site.html:181
+#: bookwyrm/templates/settings/site.html:194
 #: bookwyrm/templates/settings/users/user_moderation_actions.html:69
 #: bookwyrm/templates/shelf/form.html:25
 #: bookwyrm/templates/snippets/reading_modals/layout.html:18
@@ -845,7 +845,7 @@ msgstr "Salvați"
 #: bookwyrm/templates/preferences/disable-2fa.html:19
 #: bookwyrm/templates/readthrough/delete_readthrough_modal.html:27
 #: bookwyrm/templates/readthrough/readthrough_modal.html:80
-#: bookwyrm/templates/search/barcode_modal.html:45
+#: bookwyrm/templates/search/barcode_modal.html:43
 #: bookwyrm/templates/settings/federation/instance.html:106
 #: bookwyrm/templates/settings/imports/complete_import_modal.html:16
 #: bookwyrm/templates/settings/link_domains/edit_domain_modal.html:22
@@ -3129,7 +3129,7 @@ msgid "Delete this list?"
 msgstr "Ștergeți această listă?"
 
 #: bookwyrm/templates/lists/edit_form.html:5
-#: bookwyrm/templates/lists/layout.html:17
+#: bookwyrm/templates/lists/layout.html:18
 msgid "Edit List"
 msgstr "Editați listă"
 
@@ -3144,7 +3144,6 @@ msgid "on <a href=\"/\">%(site_name)s</a>"
 msgstr "în <a href=\"/\">%(site_name)s</a>"
 
 #: bookwyrm/templates/lists/embed-list.html:29
-#: bookwyrm/templates/lists/list.html:54
 msgid "This list is currently empty"
 msgstr "Această listă este momentan vidă"
 
@@ -3225,6 +3224,10 @@ msgstr "Ați sugerat cu succes o carte pentru această listă!"
 #: bookwyrm/templates/lists/list.html:47
 msgid "You successfully added a book to this list!"
 msgstr "Ați adăugat cu succes o carte la această listă!"
+
+#: bookwyrm/templates/lists/list.html:54
+msgid "This list is currently empty."
+msgstr ""
 
 #: bookwyrm/templates/lists/list.html:104
 msgid "Edit notes"
@@ -3900,7 +3903,7 @@ msgstr "Profil"
 #: bookwyrm/templates/preferences/edit_user.html:13
 #: bookwyrm/templates/preferences/edit_user.html:64
 #: bookwyrm/templates/settings/site.html:11
-#: bookwyrm/templates/settings/site.html:77
+#: bookwyrm/templates/settings/site.html:90
 #: bookwyrm/templates/setup/config.html:91
 msgid "Display"
 msgstr "Afișați"
@@ -4079,33 +4082,33 @@ msgid "\n"
 msgstr "\n"
 "Scanați codul de bare    "
 
-#: bookwyrm/templates/search/barcode_modal.html:23
+#: bookwyrm/templates/search/barcode_modal.html:21
 msgid "Requesting camera..."
 msgstr "În așteptarea camerei foto..."
 
-#: bookwyrm/templates/search/barcode_modal.html:24
+#: bookwyrm/templates/search/barcode_modal.html:22
 msgid "Grant access to the camera to scan a book's barcode."
 msgstr "Acordați acces camerei foto pentru a scana codul de bare al cărții."
 
-#: bookwyrm/templates/search/barcode_modal.html:29
+#: bookwyrm/templates/search/barcode_modal.html:27
 msgid "Could not access camera"
 msgstr "Camera foto nu a putut fi accesată"
 
-#: bookwyrm/templates/search/barcode_modal.html:33
+#: bookwyrm/templates/search/barcode_modal.html:31
 msgctxt "barcode scanner"
 msgid "Scanning..."
 msgstr "Se scanează..."
 
-#: bookwyrm/templates/search/barcode_modal.html:34
+#: bookwyrm/templates/search/barcode_modal.html:32
 msgid "Align your book's barcode with the camera."
 msgstr "Poziționați codul de bare al cărții în fața camerei foto."
 
-#: bookwyrm/templates/search/barcode_modal.html:38
+#: bookwyrm/templates/search/barcode_modal.html:36
 msgctxt "barcode scanner"
 msgid "ISBN scanned"
 msgstr "Cod ISBN scanat"
 
-#: bookwyrm/templates/search/barcode_modal.html:39
+#: bookwyrm/templates/search/barcode_modal.html:37
 msgctxt "followed by ISBN"
 msgid "Searching for book:"
 msgstr "Căutați o carte:"
@@ -4978,7 +4981,7 @@ msgid "Site Settings"
 msgstr "Setările site-ului"
 
 #: bookwyrm/templates/settings/layout.html:106
-#: bookwyrm/templates/settings/site.html:95
+#: bookwyrm/templates/settings/site.html:108
 #: bookwyrm/templates/settings/themes.html:4
 #: bookwyrm/templates/settings/themes.html:6
 msgid "Themes"
@@ -5119,12 +5122,12 @@ msgid "Instance Info"
 msgstr "Informații despre instanță"
 
 #: bookwyrm/templates/settings/site.html:12
-#: bookwyrm/templates/settings/site.html:110
+#: bookwyrm/templates/settings/site.html:123
 msgid "Footer Content"
 msgstr "Conținutul subsolului"
 
 #: bookwyrm/templates/settings/site.html:13
-#: bookwyrm/templates/settings/site.html:134
+#: bookwyrm/templates/settings/site.html:147
 msgid "Registration"
 msgstr "Înregistrare"
 
@@ -5164,71 +5167,79 @@ msgstr "Cod de conduită:"
 msgid "Privacy Policy:"
 msgstr "Politica de confidențialitate:"
 
-#: bookwyrm/templates/settings/site.html:79
+#: bookwyrm/templates/settings/site.html:73
+msgid "Impressum:"
+msgstr ""
+
+#: bookwyrm/templates/settings/site.html:78
+msgid "Include impressum:"
+msgstr ""
+
+#: bookwyrm/templates/settings/site.html:92
 msgid "Images"
 msgstr "Imagini"
 
-#: bookwyrm/templates/settings/site.html:82
+#: bookwyrm/templates/settings/site.html:95
 msgid "Logo:"
 msgstr "Logo:"
 
-#: bookwyrm/templates/settings/site.html:86
+#: bookwyrm/templates/settings/site.html:99
 msgid "Logo small:"
 msgstr "Logo mic:"
 
-#: bookwyrm/templates/settings/site.html:90
+#: bookwyrm/templates/settings/site.html:103
 msgid "Favicon:"
 msgstr "Favicon:"
 
-#: bookwyrm/templates/settings/site.html:98
+#: bookwyrm/templates/settings/site.html:111
 msgid "Default theme:"
 msgstr "Tema de bază:"
 
-#: bookwyrm/templates/settings/site.html:113
+#: bookwyrm/templates/settings/site.html:126
 msgid "Support link:"
 msgstr "Legătură asistență:"
 
-#: bookwyrm/templates/settings/site.html:117
+#: bookwyrm/templates/settings/site.html:130
 msgid "Support title:"
 msgstr "Titlu asistență:"
 
-#: bookwyrm/templates/settings/site.html:121
+#: bookwyrm/templates/settings/site.html:134
 msgid "Admin email:"
 msgstr "Emailul adminului:"
 
-#: bookwyrm/templates/settings/site.html:125
+#: bookwyrm/templates/settings/site.html:138
 msgid "Additional info:"
 msgstr "Informații adiționale:"
 
-#: bookwyrm/templates/settings/site.html:139
+#: bookwyrm/templates/settings/site.html:152
 msgid "Allow registration"
 msgstr "Permiteți înscrierea"
 
-#: bookwyrm/templates/settings/site.html:145
+#: bookwyrm/templates/settings/site.html:158
 msgid "Require users to confirm email address"
 msgstr "Solicitați utilizatorilor să-și confirme adresa de email"
 
-#: bookwyrm/templates/settings/site.html:147
+#: bookwyrm/templates/settings/site.html:160
 msgid "(Recommended if registration is open)"
 msgstr "(Recomandat dacă înscrierea este deschisă)"
 
-#: bookwyrm/templates/settings/site.html:152
+#: bookwyrm/templates/settings/site.html:165
 msgid "Allow invite requests"
 msgstr "Permiteți cererile de invitație"
 
-#: bookwyrm/templates/settings/site.html:158
+#: bookwyrm/templates/settings/site.html:171
 msgid "Set a question for invite requests"
 msgstr "Stabiliți o întrebare pentru cererile de invitație"
 
-#: bookwyrm/templates/settings/site.html:163
+#: bookwyrm/templates/settings/site.html:176
 msgid "Question:"
 msgstr "Întrebare:"
 
-#: bookwyrm/templates/settings/site.html:168
+#: bookwyrm/templates/settings/site.html:181
 msgid "Registration closed text:"
 msgstr "Text pentru înscrieri închise:"
 
-#: bookwyrm/templates/settings/site.html:172
+#: bookwyrm/templates/settings/site.html:185
 msgid "Invite request text:"
 msgstr "Text pentru cereri de invitație:"
 
@@ -5790,12 +5801,12 @@ msgstr "Acceptați"
 msgid "Documentation"
 msgstr "Documentație"
 
-#: bookwyrm/templates/snippets/footer.html:37
+#: bookwyrm/templates/snippets/footer.html:42
 #, python-format
 msgid "Support %(site_name)s on <a href=\"%(support_link)s\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">%(support_title)s</a>"
 msgstr ""
 
-#: bookwyrm/templates/snippets/footer.html:44
+#: bookwyrm/templates/snippets/footer.html:49
 msgid "BookWyrm's source code is freely available. You can contribute or report issues on <a href=\"https://github.com/bookwyrm-social/bookwyrm\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">GitHub</a>."
 msgstr ""
 
