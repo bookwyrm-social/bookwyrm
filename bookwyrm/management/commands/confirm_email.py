@@ -15,7 +15,5 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         name = options["username"]
         user = models.User.objects.get(localname=name)
-        user.is_active = True
-        user.deactivation_reason = None
-        user.save(broadcast=False, update_fields=["is_active", "deactivation_reason"])
+        user.reactivate()
         self.stdout.write(self.style.SUCCESS("User's email is now confirmed."))
