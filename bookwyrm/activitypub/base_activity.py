@@ -194,6 +194,11 @@ class ActivityObject:
             try:
                 if issubclass(type(v), ActivityObject):
                     data[k] = v.serialize()
+                elif isinstance(v, list):
+                    data[k] = [
+                        e.serialize() if issubclass(type(e), ActivityObject) else e
+                        for e in v
+                    ]
             except TypeError:
                 pass
         data = {k: v for (k, v) in data.items() if v is not None and k not in omit}
@@ -306,7 +311,9 @@ class Link(ActivityObject):
 
     def serialize(self, **kwargs):
         """remove fields"""
-        omit = ("id", "type", "@context")
+        omit = ("id", "@context")
+        if self.type == "Link":
+            omit += ("type",)
         return super().serialize(omit=omit)
 
 
