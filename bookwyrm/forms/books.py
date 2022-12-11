@@ -40,6 +40,8 @@ class EditionForm(CustomForm):
             "goodreads_key",
             "oclc_number",
             "asin",
+            "aasin",
+            "isfdb",
         ]
         widgets = {
             "title": forms.TextInput(attrs={"aria-describedby": "desc_title"}),
