@@ -66,6 +66,10 @@
         <li{% if url == request.path or url == request.path|add:'/' %} class="is-active"{% endif %}>
             <a href="{{ url }}">{% trans "Activity" %}</a>
         </li>
+        {% url 'user-reviews-comments' user|username as url %}
+        <li{% if url == request.path or url == request.path|add:'/' %} class="is-active"{% endif %}>
+            <a href="{{ url }}">{% trans "Reviews and Comments" %}</a>
+        </li>
         {% if is_self or user.goal.exists %}
         {% now 'Y' as year %}
         {% url 'user-goal' user|username year as url %}

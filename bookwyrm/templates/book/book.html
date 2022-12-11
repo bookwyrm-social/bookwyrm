@@ -158,6 +158,13 @@
                     {% endif %}
                 </p>
                 {% endif %}
+                {% if book.isfdb %}
+                <p>
+                    <a href="{{ book.isfdb_link }}" target="_blank" rel="nofollow noopener noreferrer">
+                        {% trans "View on ISFDB" %}
+                    </a>
+                </p>
+                {% endif %}
             </section>
         </div>
 
