@@ -22,6 +22,7 @@ build \
 clean \
 black \
 prettier \
+eslint \
 stylelint \
 formatters \
 collectstatic_watch \
@@ -59,6 +60,7 @@ __bw_complete "$commands" "build"                   "build the containers"
 __bw_complete "$commands" "clean"                   "bring the cluster down and remove all containers"
 __bw_complete "$commands" "black"                   "run Python code formatting tool"
 __bw_complete "$commands" "prettier"                "run JavaScript code formatting tool"
+__bw_complete "$commands" "eslint"                  "run JavaScript linting tool"
 __bw_complete "$commands" "stylelint"               "run SCSS linting tool"
 __bw_complete "$commands" "formatters"              "run multiple formatter tools"
 __bw_complete "$commands" "populate_streams"        "populate the main streams"
