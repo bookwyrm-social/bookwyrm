@@ -233,3 +233,19 @@ class UserViews(TestCase):
         result = views.user_redirect(request, "mouse")
 
         self.assertEqual(result.status_code, 302)
+
+    def test_reviews_comments_page(self):
+        """there are so many views, this just makes sure it LOADS"""
+        view = views.UserReviewsComments.as_view()
+        request = self.factory.get("")
+        request.user = self.local_user
+        result = view(request, "mouse")
+        self.assertIsInstance(result, TemplateResponse)
+        validate_html(result.render())
+        self.assertEqual(result.status_code, 200)
+
+        request.user = self.anonymous_user
+        result = view(request, "mouse")
+        self.assertIsInstance(result, TemplateResponse)
+        validate_html(result.render())
+        self.assertEqual(result.status_code, 200)

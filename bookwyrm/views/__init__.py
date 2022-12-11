@@ -138,7 +138,13 @@ from .setup import InstanceConfig, CreateAdmin
 from .status import CreateStatus, EditStatus, DeleteStatus, update_progress
 from .status import edit_readthrough
 from .updates import get_notification_count, get_unread_status_string
-from .user import User, hide_suggestions, user_redirect, toggle_guided_tour
+from .user import (
+    User,
+    UserReviewsComments,
+    hide_suggestions,
+    user_redirect,
+    toggle_guided_tour,
+)
 from .relationships import Relationships
 from .wellknown import *
 from .annual_summary import (
