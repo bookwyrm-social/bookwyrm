@@ -21,6 +21,7 @@ build
 clean
 black
 prettier
+eslint
 stylelint
 formatters
 collectstatic_watch

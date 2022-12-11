@@ -129,7 +129,7 @@ urlpatterns = [
     ),
     re_path(
         r"^settings/email-preview/?$",
-        views.admin.site.email_preview,
+        views.admin.email_config.email_preview,
         name="settings-email-preview",
     ),
     re_path(
@@ -324,6 +324,11 @@ urlpatterns = [
     re_path(
         r"^settings/celery/?$", views.CeleryStatus.as_view(), name="settings-celery"
     ),
+    re_path(
+        r"^settings/email-config/?$",
+        views.EmailConfig.as_view(),
+        name="settings-email-config",
+    ),
     # landing pages
     re_path(r"^about/?$", views.about, name="about"),
     re_path(r"^privacy/?$", views.privacy, name="privacy"),
@@ -420,6 +425,11 @@ urlpatterns = [
         name="user-relationships",
     ),
     re_path(r"^hide-suggestions/?$", views.hide_suggestions, name="hide-suggestions"),
+    re_path(
+        rf"{USER_PATH}/reviews-comments",
+        views.UserReviewsComments.as_view(),
+        name="user-reviews-comments",
+    ),
     # groups
     re_path(rf"{USER_PATH}/groups/?$", views.UserGroups.as_view(), name="user-groups"),
     re_path(

@@ -13,6 +13,7 @@
     <link rel="search" type="application/opensearchdescription+xml" href="{% url 'opensearch' %}" title="{% blocktrans with site_name=site.name %}{{ site_name }} search{% endblocktrans %}" />
 
     <link rel="shortcut icon" type="image/x-icon" href="{% if site.favicon %}{% get_media_prefix %}{{ site.favicon }}{% else %}{% static "images/favicon.ico" %}{% endif %}">
+    <link rel="apple-touch-icon" href="{% if site.logo %}{{ media_full_url }}{{ site.logo }}{% else %}{% static "images/logo.png" %}{% endif %}">
 
     {% if preview_images_enabled is True %}
     <meta name="twitter:card" content="summary_large_image">
