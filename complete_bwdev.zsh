@@ -34,4 +34,6 @@ copy_media_to_s3
 set_cors_to_s3
 setup
 admin_code
+remove_2fa
+confirm_email
 runweb" -o bashdefault -o default bw-dev

@@ -265,6 +265,9 @@ case "$CMD" in
     remove_2fa)
         runweb python manage.py remove_2fa "$@"
         ;;
+    confirm_email)
+        runweb python manage.py confirm_email "$@"
+        ;;
     *)
         set +x # No need to echo echo
         echo "Unrecognised command. Try:"
@@ -302,5 +305,6 @@ case "$CMD" in
         echo "    set_cors_to_s3 [cors file]"
         echo "    runweb [command]"
         echo "    remove_2fa"
+        echo "    confirm_email"
         ;;
 esac

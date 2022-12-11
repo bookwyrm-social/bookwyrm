@@ -35,6 +35,8 @@ copy_media_to_s3 \
 set_cors_to_s3 \
 setup \
 admin_code \
+remove_2fa \
+confirm_email \
 runweb
 
 function __bw_complete -a cmds cmd desc
@@ -74,6 +76,8 @@ __bw_complete "$commands" "sync_media_to_s3"        "run the `s3 sync` command t
 __bw_complete "$commands" "set_cors_to_s3"          "push a CORS configuration defined in .json to s3"
 __bw_complete "$commands" "setup"                   "perform first-time setup"
 __bw_complete "$commands" "admin_code"              "get the admin code"
+__bw_complete "$commands" "remove_2fa"              "remove 2FA from user"
+__bw_complete "$commands" "confirm_email"           "manually confirm email of user and set active"
 __bw_complete "$commands" "runweb"                  "run a command on the web container"
 
 
