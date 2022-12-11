@@ -105,9 +105,7 @@ class ConfirmEmailCode(View):
                 request, "confirm_email/confirm_email.html", {"valid": False}
             )
         # update the user
-        user.is_active = True
-        user.deactivation_reason = None
-        user.save(broadcast=False, update_fields=["is_active", "deactivation_reason"])
+        user.reactivate()
         # direct the user to log in
         return redirect("login", confirmed="confirmed")
 

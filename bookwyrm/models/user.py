@@ -390,7 +390,10 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         self.is_active = True
         self.deactivation_reason = None
         self.allow_reactivation = False
-        super().save(broadcast=False)
+        super().save(
+            broadcast=False,
+            update_fields=["deactivation_reason", "is_active", "allow_reactivation"],
+        )
 
     @property
     def local_path(self):
