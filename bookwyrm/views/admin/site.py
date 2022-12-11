@@ -4,7 +4,7 @@ from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
 from django.views import View
 
-from bookwyrm import emailing, forms, models
+from bookwyrm import forms, models
 
 
 # pylint: disable= no-self-use
