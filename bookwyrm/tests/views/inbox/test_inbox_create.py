@@ -63,7 +63,7 @@ class TransactionInboxCreate(TransactionTestCase):
 
         with patch("bookwyrm.activitystreams.add_status_task.apply_async") as mock:
             views.inbox.activity_task(activity)
-        self.assertEqual(mock.call_count, 2)
+        self.assertEqual(mock.call_count, 0)
 
 
 @patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")

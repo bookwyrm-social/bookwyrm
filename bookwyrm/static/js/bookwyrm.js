@@ -48,6 +48,12 @@ let BookWyrm = new (class {
         document
             .querySelector("#barcode-scanner-modal")
             .addEventListener("open", this.openBarcodeScanner.bind(this));
+
+        document
+            .querySelectorAll('form[name="register"]')
+            .forEach((form) =>
+                form.addEventListener("submit", (e) => this.setPreferredTimezone(e, form))
+            );
     }
 
     /**
@@ -784,5 +790,17 @@ let BookWyrm = new (class {
         event.target.addEventListener("close", cleanup, { once: true });
 
         initBarcodes();
+    }
+
+    /**
+     * Set preferred timezone in register form.
+     *
+     * @param  {Event} event - `submit` event fired by the register form.
+     * @return {undefined}
+     */
+    setPreferredTimezone(event, form) {
+        const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+        form.querySelector('input[name="preferred_timezone"]').value = tz;
     }
 })();

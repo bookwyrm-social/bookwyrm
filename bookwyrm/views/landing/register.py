@@ -1,4 +1,5 @@
 """ class views for login/register views """
+import pytz
 from django.contrib.auth import login
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404, redirect
@@ -55,6 +56,10 @@ class Register(View):
         localname = form.data["localname"].strip()
         email = form.data["email"]
         password = form.data["password"]
+        try:
+            preferred_timezone = pytz.timezone(form.data.get("preferred_timezone"))
+        except pytz.exceptions.UnknownTimeZoneError:
+            preferred_timezone = pytz.utc
 
         # make sure the email isn't blocked as spam
         email_domain = email.split("@")[-1]
@@ -71,6 +76,7 @@ class Register(View):
             local=True,
             deactivation_reason="pending" if settings.require_confirm_email else None,
             is_active=not settings.require_confirm_email,
+            preferred_timezone=preferred_timezone,
         )
         if invite:
             invite.times_used += 1
