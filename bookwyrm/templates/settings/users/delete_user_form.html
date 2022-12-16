@@ -10,7 +10,7 @@
     {% csrf_token %}
     <p>
         {% blocktrans trimmed with username=user.localname %}
-        Are you sure you want to delete <strong>{{ username}}</strong>'s account? This action cannot be undone. To proceed, please enter your password to confirm deletion.
+        Are you sure you want to delete <strong>{{username}}</strong>'s account? This action cannot be undone. To proceed, please enter your password to confirm deletion.
         {% endblocktrans %}
     </p>
     <div class="field">

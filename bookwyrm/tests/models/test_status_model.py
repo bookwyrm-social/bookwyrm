@@ -132,7 +132,7 @@ class Status(TestCase):
         activity = status.to_activity()
         self.assertEqual(activity["id"], status.remote_id)
         self.assertEqual(activity["type"], "Note")
-        self.assertEqual(activity["content"], "test content")
+        self.assertEqual(activity["content"], "<p>test content</p>")
         self.assertEqual(activity["sensitive"], False)
 
     def test_status_to_activity_tombstone(self, *_):
@@ -156,7 +156,7 @@ class Status(TestCase):
         activity = status.to_activity(pure=True)
         self.assertEqual(activity["id"], status.remote_id)
         self.assertEqual(activity["type"], "Note")
-        self.assertEqual(activity["content"], "test content")
+        self.assertEqual(activity["content"], "<p>test content</p>")
         self.assertEqual(activity["sensitive"], False)
         self.assertEqual(activity["attachment"], [])
 
@@ -170,7 +170,7 @@ class Status(TestCase):
         activity = status.to_activity()
         self.assertEqual(activity["id"], status.remote_id)
         self.assertEqual(activity["type"], "GeneratedNote")
-        self.assertEqual(activity["content"], "test content")
+        self.assertEqual(activity["content"], "<p>test content</p>")
         self.assertEqual(activity["sensitive"], False)
         self.assertEqual(len(activity["tag"]), 2)
 
@@ -191,14 +191,14 @@ class Status(TestCase):
         self.assertEqual(activity["type"], "Note")
         self.assertEqual(activity["sensitive"], False)
         self.assertIsInstance(activity["attachment"], list)
-        self.assertEqual(activity["attachment"][0].type, "Document")
+        self.assertEqual(activity["attachment"][0]["type"], "Document")
         self.assertTrue(
             re.match(
-                r"https:\/\/your.domain.here\/images\/covers\/test_[A-z0-9]+.jpg",
-                activity["attachment"][0].url,
+                r"https:\/\/your.domain.here\/images\/covers\/test(_[A-z0-9]+)?.jpg",
+                activity["attachment"][0]["url"],
             )
         )
-        self.assertEqual(activity["attachment"][0].name, "Test Edition")
+        self.assertEqual(activity["attachment"][0]["name"], "Test Edition")
 
     def test_comment_to_activity(self, *_):
         """subclass of the base model version with a "pure" serializer"""
@@ -208,7 +208,7 @@ class Status(TestCase):
         activity = status.to_activity()
         self.assertEqual(activity["id"], status.remote_id)
         self.assertEqual(activity["type"], "Comment")
-        self.assertEqual(activity["content"], "test content")
+        self.assertEqual(activity["content"], "<p>test content</p>")
         self.assertEqual(activity["inReplyToBook"], self.book.remote_id)
 
     def test_comment_to_pure_activity(self, *_):
@@ -223,14 +223,14 @@ class Status(TestCase):
             activity["content"],
             f'test content<p>(comment on <a href="{self.book.remote_id}">"Test Edition"</a>)</p>',
         )
-        self.assertEqual(activity["attachment"][0].type, "Document")
+        self.assertEqual(activity["attachment"][0]["type"], "Document")
         # self.assertTrue(
         #    re.match(
         #        r"https:\/\/your.domain.here\/images\/covers\/test_[A-z0-9]+.jpg",
         #        activity["attachment"][0].url,
         #    )
         # )
-        self.assertEqual(activity["attachment"][0].name, "Test Edition")
+        self.assertEqual(activity["attachment"][0]["name"], "Test Edition")
 
     def test_quotation_to_activity(self, *_):
         """subclass of the base model version with a "pure" serializer"""
@@ -243,8 +243,8 @@ class Status(TestCase):
         activity = status.to_activity()
         self.assertEqual(activity["id"], status.remote_id)
         self.assertEqual(activity["type"], "Quotation")
-        self.assertEqual(activity["quote"], "a sickening sense")
-        self.assertEqual(activity["content"], "test content")
+        self.assertEqual(activity["quote"], "<p>a sickening sense</p>")
+        self.assertEqual(activity["content"], "<p>test content</p>")
         self.assertEqual(activity["inReplyToBook"], self.book.remote_id)
 
     def test_quotation_to_pure_activity(self, *_):
@@ -262,14 +262,14 @@ class Status(TestCase):
             activity["content"],
             f'a sickening sense <p>-- <a href="{self.book.remote_id}">"Test Edition"</a></p>test content',
         )
-        self.assertEqual(activity["attachment"][0].type, "Document")
+        self.assertEqual(activity["attachment"][0]["type"], "Document")
         self.assertTrue(
             re.match(
                 r"https:\/\/your.domain.here\/images\/covers\/test_[A-z0-9]+.jpg",
-                activity["attachment"][0].url,
+                activity["attachment"][0]["url"],
             )
         )
-        self.assertEqual(activity["attachment"][0].name, "Test Edition")
+        self.assertEqual(activity["attachment"][0]["name"], "Test Edition")
 
     def test_review_to_activity(self, *_):
         """subclass of the base model version with a "pure" serializer"""
@@ -285,7 +285,7 @@ class Status(TestCase):
         self.assertEqual(activity["type"], "Review")
         self.assertEqual(activity["rating"], 3)
         self.assertEqual(activity["name"], "Review name")
-        self.assertEqual(activity["content"], "test content")
+        self.assertEqual(activity["content"], "<p>test content</p>")
         self.assertEqual(activity["inReplyToBook"], self.book.remote_id)
 
     def test_review_to_pure_activity(self, *_):
@@ -305,14 +305,14 @@ class Status(TestCase):
             f'Review of "{self.book.title}" (3 stars): Review\'s name',
         )
         self.assertEqual(activity["content"], "test content")
-        self.assertEqual(activity["attachment"][0].type, "Document")
+        self.assertEqual(activity["attachment"][0]["type"], "Document")
         self.assertTrue(
             re.match(
                 r"https:\/\/your.domain.here\/images\/covers\/test_[A-z0-9]+.jpg",
-                activity["attachment"][0].url,
+                activity["attachment"][0]["url"],
             )
         )
-        self.assertEqual(activity["attachment"][0].name, "Test Edition")
+        self.assertEqual(activity["attachment"][0]["name"], "Test Edition")
 
     def test_review_to_pure_activity_no_rating(self, *_):
         """subclass of the base model version with a "pure" serializer"""
@@ -330,14 +330,14 @@ class Status(TestCase):
             f'Review of "{self.book.title}": Review name',
         )
         self.assertEqual(activity["content"], "test content")
-        self.assertEqual(activity["attachment"][0].type, "Document")
+        self.assertEqual(activity["attachment"][0]["type"], "Document")
         self.assertTrue(
             re.match(
                 r"https:\/\/your.domain.here\/images\/covers\/test_[A-z0-9]+.jpg",
-                activity["attachment"][0].url,
+                activity["attachment"][0]["url"],
             )
         )
-        self.assertEqual(activity["attachment"][0].name, "Test Edition")
+        self.assertEqual(activity["attachment"][0]["name"], "Test Edition")
 
     def test_reviewrating_to_pure_activity(self, *_):
         """subclass of the base model version with a "pure" serializer"""
@@ -353,14 +353,14 @@ class Status(TestCase):
             activity["content"],
             f'rated <em><a href="{self.book.remote_id}">{self.book.title}</a></em>: 3 stars',
         )
-        self.assertEqual(activity["attachment"][0].type, "Document")
+        self.assertEqual(activity["attachment"][0]["type"], "Document")
         self.assertTrue(
             re.match(
                 r"https:\/\/your.domain.here\/images\/covers\/test_[A-z0-9]+.jpg",
-                activity["attachment"][0].url,
+                activity["attachment"][0]["url"],
             )
         )
-        self.assertEqual(activity["attachment"][0].name, "Test Edition")
+        self.assertEqual(activity["attachment"][0]["name"], "Test Edition")
 
     def test_favorite(self, *_):
         """fav a status"""

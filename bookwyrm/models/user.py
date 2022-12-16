@@ -373,6 +373,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         """We don't actually delete the database entry"""
         # pylint: disable=attribute-defined-outside-init
         self.is_active = False
+        self.avatar = ""
         # skip the logic in this class's save()
         super().save(*args, **kwargs)
 
@@ -390,7 +391,10 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         self.is_active = True
         self.deactivation_reason = None
         self.allow_reactivation = False
-        super().save(broadcast=False)
+        super().save(
+            broadcast=False,
+            update_fields=["deactivation_reason", "is_active", "allow_reactivation"],
+        )
 
     @property
     def local_path(self):

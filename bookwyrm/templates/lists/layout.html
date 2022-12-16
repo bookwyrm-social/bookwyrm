@@ -12,12 +12,16 @@
         </p>
     </div>
 
-    <div class="column is-narrow is-flex">
+    <div class="column is-narrow is-flex field is-grouped">
         {% if request.user == list.user %}
+        <div class="control">
             {% trans "Edit List" as button_text %}
             {% include 'snippets/toggle/open_button.html' with text=button_text icon_with_text="pencil" controls_text="edit_list" focus="edit_list_header" %}
+        </div>
         {% endif %}
-        {% include "lists/bookmark_button.html" with list=list %}
+        <div class="control">
+            {% include "lists/bookmark_button.html" with list=list %}
+        </div>
     </div>
 </header>
 

@@ -10,6 +10,7 @@ from .admin.federation import Federation, FederatedServer
 from .admin.federation import AddFederatedServer, ImportServerBlocklist
 from .admin.federation import block_server, unblock_server, refresh_server
 from .admin.email_blocklist import EmailBlocklist
+from .admin.email_config import EmailConfig
 from .admin.imports import (
     ImportList,
     disable_imports,
@@ -28,7 +29,7 @@ from .admin.reports import (
     unsuspend_user,
     moderator_delete_user,
 )
-from .admin.site import Site
+from .admin.site import Site, Registration, RegistrationLimited
 from .admin.themes import Themes, delete_theme
 from .admin.user_admin import UserAdmin, UserAdminList
 
@@ -65,7 +66,7 @@ from .books.editions import Editions, switch_edition
 from .books.links import BookFileLinks, AddFileLink, delete_link
 
 # landing
-from .landing.about import about, privacy, conduct
+from .landing.about import about, privacy, conduct, impressum
 from .landing.landing import Home, Landing
 from .landing.login import Login, Logout
 from .landing.register import Register
@@ -142,7 +143,13 @@ from .setup import InstanceConfig, CreateAdmin
 from .status import CreateStatus, EditStatus, DeleteStatus, update_progress
 from .status import edit_readthrough
 from .updates import get_notification_count, get_unread_status_string
-from .user import User, hide_suggestions, user_redirect, toggle_guided_tour
+from .user import (
+    User,
+    UserReviewsComments,
+    hide_suggestions,
+    user_redirect,
+    toggle_guided_tour,
+)
 from .relationships import Relationships
 from .wellknown import *
 from .annual_summary import (

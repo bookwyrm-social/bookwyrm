@@ -25,7 +25,7 @@
 <div class="block" itemscope itemtype="https://schema.org/Book">
     <div class="columns is-mobile">
         <div class="column">
-            <h1 class="title" itemprop="name">
+            <h1 class="title" itemprop="name" dir="auto">
                 {{ book.title }}
             </h1>
 
@@ -37,7 +37,7 @@
                             content="{{ book.subtitle | escape }}"
                         >
 
-                        <span class="has-text-weight-bold">
+                        <span class="has-text-weight-bold" dir="auto">
                             {{ book.subtitle }}
                         </span>
                     {% endif %}
@@ -52,7 +52,7 @@
             {% endif %}
 
             {% if book.authors.exists %}
-                <div class="subtitle">
+                <div class="subtitle" dir="auto">
                     {% trans "by" %} {% include 'snippets/authors.html' with book=book %}
                 </div>
             {% endif %}
@@ -135,7 +135,7 @@
                         {% trans "View on OpenLibrary" %}
                     </a>
                     {% if request.user.is_authenticated and perms.bookwyrm.edit_book %}
-                    <button class="button is-small" type="button" data-modal-open="openlibrary_sync">
+                    <button class="button is-small button-paragraph" type="button" data-modal-open="openlibrary_sync">
                         <span class="icon icon-download" title="{{ button_text }}"></span>
                         <span class="is-sr-only-mobile">{{ button_text }}</span>
                     </button>
@@ -150,12 +150,19 @@
                     </a>
 
                     {% if request.user.is_authenticated and perms.bookwyrm.edit_book %}
-                    <button class="button is-small" type="button" data-modal-open="inventaire_sync">
+                    <button class="button is-small button-paragraph" type="button" data-modal-open="inventaire_sync">
                         <span class="icon icon-download" title="{{ button_text }}"></span>
                         <span class="is-sr-only-mobile">{{ button_text }}</span>
                     </button>
                     {% include "book/sync_modal.html" with source="inventaire.io" source_name="Inventaire" id="inventaire_sync" %}
                     {% endif %}
+                </p>
+                {% endif %}
+                {% if book.isfdb %}
+                <p>
+                    <a href="{{ book.isfdb_link }}" target="_blank" rel="nofollow noopener noreferrer">
+                        {% trans "View on ISFDB" %}
+                    </a>
                 </p>
                 {% endif %}
             </section>
@@ -189,15 +196,15 @@
 
                 {% if user_authenticated and can_edit_book and not book|book_description %}
                 {% trans 'Add Description' as button_text %}
-                {% include 'snippets/toggle/open_button.html' with text=button_text controls_text="add_description" controls_uid=book.id focus="id_description" hide_active=True id="hide_description" %}
+                {% include 'snippets/toggle/open_button.html' with class="mb-2" text=button_text controls_text="add_description" controls_uid=book.id focus="id_description" hide_active=True id="hide_description" %}
 
                 <div class="box is-hidden" id="add_description_{{ book.id }}">
                     <form name="add-description" method="POST" action="{% url "add-description" book.id %}">
                         {% csrf_token %}
-                        <p class="fields is-grouped">
+                        <div class="field">
                             <label class="label" for="id_description_{{ book.id }}">{% trans "Description:" %}</label>
                             <textarea name="description" cols="None" rows="None" class="textarea" id="id_description_{{ book.id }}"></textarea>
-                        </p>
+                        </div>
                         <div class="field">
                             <button class="button is-primary" type="submit">{% trans "Save" %}</button>
                             {% trans "Cancel" as button_text %}
@@ -231,7 +238,7 @@
                 {% for shelf in user_shelfbooks %}
                     <li class="box">
                         <a href="{{ shelf.shelf.local_path }}">{{ shelf.shelf.name }}</a>
-                        <div class="mb-3">
+                        <div class="is-pulled-right">
                             {% include 'snippets/shelf_selector.html' with shelf=shelf.shelf class="is-small" readthrough=readthrough %}
                         </div>
                     </li>

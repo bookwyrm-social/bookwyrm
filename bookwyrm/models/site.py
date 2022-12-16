@@ -62,6 +62,8 @@ class SiteSettings(SiteModel):
     )
     code_of_conduct = models.TextField(default="Add a code of conduct here.")
     privacy_policy = models.TextField(default="Add a privacy policy here.")
+    impressum = models.TextField(default="Add a impressum here.")
+    show_impressum = models.BooleanField(default=False)
 
     # registration
     allow_registration = models.BooleanField(default=False)

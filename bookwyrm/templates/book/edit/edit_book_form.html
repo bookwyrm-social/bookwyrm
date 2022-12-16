@@ -81,7 +81,7 @@
                     {% include 'snippets/form_errors.html' with errors_list=form.languages.errors id="desc_languages" %}
                 </div>
 
-                <div>
+                <div class="field">
                     <label class="label" for="id_add_subjects">
                         {% trans "Subjects:" %}
                     </label>
@@ -328,6 +328,15 @@
                 </div>
 
                 <div class="field">
+                    <label class="label" for="id_goodreads_key">
+                        {% trans "Goodreads key:" %}
+                    </label>
+                    {{ form.goodreads_key }}
+
+                    {% include 'snippets/form_errors.html' with errors_list=form.goodreads_key.errors id="desc_goodreads_key" %}
+                </div>
+
+                <div class="field">
                     <label class="label" for="id_oclc_number">
                         {% trans "OCLC Number:" %}
                     </label>
@@ -343,6 +352,24 @@
                     {{ form.asin }}
 
                     {% include 'snippets/form_errors.html' with errors_list=form.ASIN.errors id="desc_ASIN" %}
+                </div>
+
+                <div class="field">
+                    <label class="label" for="id_aasin">
+                        {% trans "Audible ASIN:" %}
+                    </label>
+                    {{ form.aasin }}
+
+                    {% include 'snippets/form_errors.html' with errors_list=form.AASIN.errors id="desc_AASIN" %}
+                </div>
+
+                <div class="field">
+                    <label class="label" for="id_isfdb">
+                        {% trans "ISFDB ID:" %}
+                    </label>
+                    {{ form.isfdb }}
+
+                    {% include 'snippets/form_errors.html' with errors_list=form.isfdb.errors id="desc_isfdb" %}
                 </div>
             </div>
         </section>

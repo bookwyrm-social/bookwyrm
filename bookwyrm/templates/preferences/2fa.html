@@ -44,7 +44,7 @@
     {% csrf_token %}
         <p>{% trans "Scan the QR code with your authentication app and then enter the code from  your app below to confirm your app is set up." %}</p>
         <div class="columns">
-            <section class="column is-narrow">
+            <section class="column">
                 <figure class="m-4" id="qrcode">{{ qrcode | safe }}</figure>
                 <details class="details-panel box">
                     <summary>

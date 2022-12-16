@@ -1,0 +1,30 @@
+{% extends 'user/layout.html' %}
+{% load i18n %}
+{% load utilities %}
+
+{% block title %}{{ user.display_name }}{% endblock %}
+
+{% block header %}
+<div class="columns is-mobile">
+    <div class="column">
+        <h1 class="title">{% trans "Reviews and Comments" %}</h1>
+    </div>
+</div>
+{% endblock %}
+
+{% block panel %}
+<div>
+    {% for activity in activities %}
+    <div class="block" id="feed_{{ activity.id }}">
+        {% include 'snippets/status/status.html' with status=activity %}
+    </div>
+    {% endfor %}
+    {% if not activities %}
+    <div class="block">
+        <p>{% trans "No reviews or comments yet!" %}</p>
+    </div>
+    {% endif %}
+
+    {% include 'snippets/pagination.html' with page=activities path=path %}
+</div>
+{% endblock %}

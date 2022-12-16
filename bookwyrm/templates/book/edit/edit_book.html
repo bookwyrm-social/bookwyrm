@@ -65,17 +65,17 @@
                 <input type="hidden" name="author-match-count" value="{{ author_matches|length }}">
                 <div class="column is-half">
                     {% for author in author_matches %}
-                    <fieldset>
+                    <fieldset class="block">
                         <legend class="title is-5 mb-1">
                             {% blocktrans with name=author.name %}Is "{{ name }}" one of these authors?{% endblocktrans %}
                         </legend>
                         {% with forloop.counter0 as counter %}
                         {% for match in author.matches %}
-                        <label class="label">
+                        <label class="label mb-0">
                             <input type="radio" name="author_match-{{ counter }}" value="{{ match.id }}" required>
                             {{ match.name }}
                         </label>
-                        <p class="help ml-5 mb-2">
+                        <p class="help ml-5 mb-0 mt-0">
                             {% with book_title=match.book_set.first.title alt_title=match.bio %}
                             {% if book_title %}
                                 <a href="{{ match.local_path }}" target="_blank" rel="nofollow noopener noreferrer">{% blocktrans trimmed %}
@@ -98,6 +98,9 @@
                         </label>
                         {% endwith %}
                     </fieldset>
+                    {% if not forloop.last %}
+                    <hr aria-hidden="true">
+                    {% endif %}
                     {% endfor %}
                 </div>
                 {% else %}

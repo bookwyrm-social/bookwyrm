@@ -1,5 +1,5 @@
 # bw-dev auto-completions for fish-shell.
-# copy this to ~./.config/fish/completions/ with the name `bw-dev.fish`
+# copy this to ~/.config/fish/completions/ with the name `bw-dev.fish`
 # this will only work if renamed to `bw-dev.fish`.
 
 set -l commands up \
@@ -22,6 +22,7 @@ build \
 clean \
 black \
 prettier \
+eslint \
 stylelint \
 formatters \
 collectstatic_watch \
@@ -34,6 +35,8 @@ copy_media_to_s3 \
 set_cors_to_s3 \
 setup \
 admin_code \
+remove_2fa \
+confirm_email \
 runweb
 
 function __bw_complete -a cmds cmd desc
@@ -59,9 +62,9 @@ __bw_complete "$commands" "build"                   "build the containers"
 __bw_complete "$commands" "clean"                   "bring the cluster down and remove all containers"
 __bw_complete "$commands" "black"                   "run Python code formatting tool"
 __bw_complete "$commands" "prettier"                "run JavaScript code formatting tool"
+__bw_complete "$commands" "eslint"                  "run JavaScript linting tool"
 __bw_complete "$commands" "stylelint"               "run SCSS linting tool"
 __bw_complete "$commands" "formatters"              "run multiple formatter tools"
-__bw_complete "$commands" "compilescss"             "compile the SCSS layouts to CSS"
 __bw_complete "$commands" "populate_streams"        "populate the main streams"
 __bw_complete "$commands" "populate_lists_streams"  "populate streams for book lists"
 __bw_complete "$commands" "populate_suggestions"    "populate book suggestions"
@@ -73,6 +76,8 @@ __bw_complete "$commands" "sync_media_to_s3"        "run the `s3 sync` command t
 __bw_complete "$commands" "set_cors_to_s3"          "push a CORS configuration defined in .json to s3"
 __bw_complete "$commands" "setup"                   "perform first-time setup"
 __bw_complete "$commands" "admin_code"              "get the admin code"
+__bw_complete "$commands" "remove_2fa"              "remove 2FA from user"
+__bw_complete "$commands" "confirm_email"           "manually confirm email of user and set active"
 __bw_complete "$commands" "runweb"                  "run a command on the web container"
 
 
