@@ -74,8 +74,7 @@ class ImportJob(models.Model):
         task = start_import_task.delay(self.id)
         self.task_id = task.id
 
-        self.status = "active"
-        self.save(update_fields=["status", "task_id"])
+        self.save(update_fields=["task_id"])
 
     def complete_job(self):
         """Report that the job has completed"""
@@ -332,6 +331,8 @@ class ImportItem(models.Model):
 def start_import_task(job_id):
     """trigger the child tasks for each row"""
     job = ImportJob.objects.get(id=job_id)
+    job.status = "active"
+    job.save(update_fields=["status"])
     # don't start the job if it was stopped from the UI
     if job.complete:
         return
