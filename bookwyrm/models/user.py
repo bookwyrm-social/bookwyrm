@@ -373,6 +373,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         """We don't actually delete the database entry"""
         # pylint: disable=attribute-defined-outside-init
         self.is_active = False
+        self.avatar = ""
         # skip the logic in this class's save()
         super().save(*args, **kwargs)
 
