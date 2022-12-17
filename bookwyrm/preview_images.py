@@ -291,7 +291,9 @@ def generate_preview_image(
     # Cover
     try:
         inner_img_layer = Image.open(picture)
-        inner_img_layer.thumbnail((inner_img_width, inner_img_height), Image.Resampling.LANCZOS)
+        inner_img_layer.thumbnail(
+            (inner_img_width, inner_img_height), Image.Resampling.LANCZOS
+        )
         color_thief = ColorThief(picture)
         dominant_color = color_thief.get_color(quality=1)
     except:  # pylint: disable=bare-except
