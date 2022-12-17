@@ -71,20 +71,30 @@ def get_wrapped_text(text, font, content_width):
     low = 0
     high = len(text)
 
+    im = Image.new("RGB", (100, 100))
+    draw = ImageDraw.Draw(im)
+
     try:
         # ideal length is determined via binary search
         while low < high:
             mid = math.floor(low + high)
             wrapped_text = textwrap.fill(text, width=mid)
-            width = font.getsize_multiline(wrapped_text)[0]
+
+            left, top, right, bottom = draw.multiline_textbbox(
+                (0, 0), wrapped_text, font=font
+            )
+            width = right - left
+            height = bottom - top
+
             if width < content_width:
                 low = mid
             else:
                 high = mid - 1
     except AttributeError:
         wrapped_text = text
+        height = 26
 
-    return wrapped_text
+    return wrapped_text, height
 
 
 def generate_texts_layer(texts, content_width):
@@ -101,46 +111,52 @@ def generate_texts_layer(texts, content_width):
 
     if "text_zero" in texts and texts["text_zero"]:
         # Text zero (Site preview domain name)
-        text_zero = get_wrapped_text(texts["text_zero"], font_text_zero, content_width)
+        text_zero, text_height = get_wrapped_text(
+            texts["text_zero"], font_text_zero, content_width
+        )
 
         text_layer_draw.multiline_text(
             (0, text_y), text_zero, font=font_text_zero, fill=TEXT_COLOR
         )
 
         try:
-            text_y = text_y + font_text_zero.getsize_multiline(text_zero)[1] + 16
+            text_y = text_y + text_height + 16
         except (AttributeError, IndexError):
             text_y = text_y + 26
 
     if "text_one" in texts and texts["text_one"]:
         # Text one (Book/Site title, User display name)
-        text_one = get_wrapped_text(texts["text_one"], font_text_one, content_width)
+        text_one, text_height = get_wrapped_text(
+            texts["text_one"], font_text_one, content_width
+        )
 
         text_layer_draw.multiline_text(
             (0, text_y), text_one, font=font_text_one, fill=TEXT_COLOR
         )
 
         try:
-            text_y = text_y + font_text_one.getsize_multiline(text_one)[1] + 16
+            text_y = text_y + text_height + 16
         except (AttributeError, IndexError):
             text_y = text_y + 26
 
     if "text_two" in texts and texts["text_two"]:
         # Text two (Book subtitle)
-        text_two = get_wrapped_text(texts["text_two"], font_text_two, content_width)
+        text_two, text_height = get_wrapped_text(
+            texts["text_two"], font_text_two, content_width
+        )
 
         text_layer_draw.multiline_text(
             (0, text_y), text_two, font=font_text_two, fill=TEXT_COLOR
         )
 
         try:
-            text_y = text_y + font_text_one.getsize_multiline(text_two)[1] + 16
+            text_y = text_y + text_height + 16
         except (AttributeError, IndexError):
             text_y = text_y + 26
 
     if "text_three" in texts and texts["text_three"]:
         # Text three (Book authors, Site tagline, User address)
-        text_three = get_wrapped_text(
+        text_three, text_height = get_wrapped_text(
             texts["text_three"], font_text_three, content_width
         )
 
