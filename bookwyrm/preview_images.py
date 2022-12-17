@@ -172,7 +172,7 @@ def generate_instance_layer(content_width):
     instance_text_x = 0
 
     if logo_img:
-        logo_img.thumbnail((50, 50), Image.ANTIALIAS)
+        logo_img.thumbnail((50, 50), Image.Resampling.LANCZOS)
 
         instance_layer.paste(logo_img, (0, 0))
 
@@ -273,7 +273,7 @@ def generate_preview_image(
     # Cover
     try:
         inner_img_layer = Image.open(picture)
-        inner_img_layer.thumbnail((inner_img_width, inner_img_height), Image.ANTIALIAS)
+        inner_img_layer.thumbnail((inner_img_width, inner_img_height), Image.Resampling.LANCZOS)
         color_thief = ColorThief(picture)
         dominant_color = color_thief.get_color(quality=1)
     except:  # pylint: disable=bare-except
