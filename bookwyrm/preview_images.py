@@ -100,7 +100,7 @@ def generate_texts_layer(texts, content_width):
     text_y = 0
 
     if "text_zero" in texts and texts["text_zero"]:
-        # Text one (Book title)
+        # Text zero (Site preview domain name)
         text_zero = get_wrapped_text(texts["text_zero"], font_text_zero, content_width)
 
         text_layer_draw.multiline_text(
@@ -113,7 +113,7 @@ def generate_texts_layer(texts, content_width):
             text_y = text_y + 26
 
     if "text_one" in texts and texts["text_one"]:
-        # Text one (Book title)
+        # Text one (Book/Site title, User display name)
         text_one = get_wrapped_text(texts["text_one"], font_text_one, content_width)
 
         text_layer_draw.multiline_text(
@@ -126,7 +126,7 @@ def generate_texts_layer(texts, content_width):
             text_y = text_y + 26
 
     if "text_two" in texts and texts["text_two"]:
-        # Text one (Book subtitle)
+        # Text two (Book subtitle)
         text_two = get_wrapped_text(texts["text_two"], font_text_two, content_width)
 
         text_layer_draw.multiline_text(
@@ -139,7 +139,7 @@ def generate_texts_layer(texts, content_width):
             text_y = text_y + 26
 
     if "text_three" in texts and texts["text_three"]:
-        # Text three (Book authors)
+        # Text three (Book authors, Site tagline, User address)
         text_three = get_wrapped_text(
             texts["text_three"], font_text_three, content_width
         )
