@@ -389,13 +389,22 @@ class TagField(ManyToManyField):
             if tag_type != self.related_model.activity_serializer.type:
                 # tags can contain multiple types
                 continue
-            items.append(
-                activitypub.resolve_remote_id(
-                    link.href,
-                    model=self.related_model,
-                    allow_external_connections=allow_external_connections,
+
+            if tag_type == "Hashtag":
+                # we already have all data to create hashtags,
+                # no need to fetch from remote
+                item = self.related_model.activity_serializer(**link_json)
+                hashtag = item.to_model(model=self.related_model, save=True)
+                items.append(hashtag)
+            else:
+                # for other tag types we fetch them remotely
+                items.append(
+                    activitypub.resolve_remote_id(
+                        link.href,
+                        model=self.related_model,
+                        allow_external_connections=allow_external_connections,
+                    )
                 )
-            )
         return items
 
 
