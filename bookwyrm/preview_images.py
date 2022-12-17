@@ -453,7 +453,7 @@ def generate_edition_preview_image_task(book_id):
 
 @app.task(queue=LOW)
 def generate_user_preview_image_task(user_id):
-    """generate preview_image for a book"""
+    """generate preview_image for a user"""
     if not settings.ENABLE_PREVIEW_IMAGES:
         return
 
