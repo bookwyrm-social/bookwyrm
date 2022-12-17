@@ -183,7 +183,7 @@ def generate_instance_layer(content_width):
         (instance_text_x, 10), site.name, font=font_instance, fill=TEXT_COLOR
     )
 
-    line_width = 50 + 10 + font_instance.getsize(site.name)[0]
+    line_width = 50 + 10 + round(font_instance.getlength(site.name))
 
     line_layer = Image.new(
         "RGBA", (line_width, 2), color=(*(ImageColor.getrgb(TEXT_COLOR)), 50)
@@ -253,10 +253,12 @@ def generate_default_inner_img():
     default_cover_draw = ImageDraw.Draw(default_cover)
 
     text = "no image :("
-    text_dimensions = font_cover.getsize(text)
+    text_left, text_top, text_right, text_bottom = font_cover.getbbox(text)
+    text_width, text_height = text_right - text_left, text_bottom - text_top
+
     text_coords = (
-        math.floor((inner_img_width - text_dimensions[0]) / 2),
-        math.floor((inner_img_height - text_dimensions[1]) / 2),
+        math.floor((inner_img_width - text_width) / 2),
+        math.floor((inner_img_height - text_height) / 2),
     )
     default_cover_draw.text(text_coords, text, font=font_cover, fill="white")
 
