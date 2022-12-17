@@ -71,8 +71,7 @@ def get_wrapped_text(text, font, content_width):
     low = 0
     high = len(text)
 
-    im = Image.new("RGB", (100, 100))
-    draw = ImageDraw.Draw(im)
+    draw = ImageDraw.Draw(Image.new("RGB", (100, 100)))
 
     try:
         # ideal length is determined via binary search
@@ -156,7 +155,7 @@ def generate_texts_layer(texts, content_width):
 
     if "text_three" in texts and texts["text_three"]:
         # Text three (Book authors, Site tagline, User address)
-        text_three, text_height = get_wrapped_text(
+        text_three, _ = get_wrapped_text(
             texts["text_three"], font_text_three, content_width
         )
 
