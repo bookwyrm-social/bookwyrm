@@ -1,4 +1,4 @@
-""" Generate preview images """
+""" Remove preview images for remote users """
 from django.core.management.base import BaseCommand
 from django.db.models import Q
 
