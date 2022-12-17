@@ -46,6 +46,19 @@ class PreviewImages(TestCase):
                 ),
             )
 
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
+            "bookwyrm.activitystreams.populate_stream_task.delay"
+        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
+            self.remote_user = models.User.objects.create_user(
+                "rat",
+                "rat@rat.com",
+                "ratword",
+                local=False,
+                remote_id="https://example.com/users/rat",
+                inbox="https://example.com/users/rat/inbox",
+                outbox="https://example.com/users/rat/outbox",
+            )
+
         self.work = models.Work.objects.create(title="Test Work")
         self.edition = models.Edition.objects.create(
             title="Example Edition",
@@ -114,13 +127,22 @@ class PreviewImages(TestCase):
         self.local_user.refresh_from_db()
 
         self.assertIsInstance(self.local_user.preview_image, ImageFieldFile)
-        self.assertIsNotNone(self.local_user.preview_image)
+        self.assertTrue(self.local_user.preview_image)
         self.assertEqual(
             self.local_user.preview_image.width, settings.PREVIEW_IMG_WIDTH
         )
         self.assertEqual(
             self.local_user.preview_image.height, settings.PREVIEW_IMG_HEIGHT
         )
+
+    def test_remote_user_preview(self, *args, **kwargs):
+        """a remote user doesn’t get a user preview"""
+        generate_user_preview_image_task(self.remote_user.id)
+
+        self.remote_user.refresh_from_db()
+
+        self.assertFalse(self.remote_user.preview_image)
+
 
     def test_generate_user_preview_images_task(self, *args, **kwargs):
         """test task's external calls"""

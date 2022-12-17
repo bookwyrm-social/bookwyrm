@@ -459,6 +459,9 @@ def generate_user_preview_image_task(user_id):
 
     user = models.User.objects.get(id=user_id)
 
+    if not user.local:
+        return
+
     texts = {
         "text_one": user.display_name,
         "text_three": f"@{user.localname}@{settings.DOMAIN}",
