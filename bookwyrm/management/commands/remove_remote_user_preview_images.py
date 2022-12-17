@@ -22,7 +22,9 @@ class Command(BaseCommand):
         )
         self.stdout.write("   | ✧ Thank you for your patience ✧")
 
-        users = models.User.objects.filter(local=False).exclude(Q(preview_image='')|Q(preview_image=None))
+        users = models.User.objects.filter(local=False).exclude(
+            Q(preview_image="") | Q(preview_image=None)
+        )
 
         if len(users) > 0:
             self.stdout.write(
@@ -33,8 +35,6 @@ class Command(BaseCommand):
                 self.stdout.write(".", ending="")
             self.stdout.write(" OK 🖼")
         else:
-            self.stdout.write(
-                f"   | There was no remote users with preview images."
-            )
+            self.stdout.write(f"   | There was no remote users with preview images.")
 
         self.stdout.write("🧑‍🚒 ⎨ I’m all done! ✧ Enjoy ✧")

@@ -162,7 +162,6 @@ class PreviewImages(TestCase):
 
         self.assertFalse(self.remote_user.preview_image)
 
-
     def test_generate_user_preview_images_task(self, *args, **kwargs):
         """test task's external calls"""
         with patch("bookwyrm.preview_images.generate_preview_image") as generate_mock:
@@ -170,7 +169,6 @@ class PreviewImages(TestCase):
         args = generate_mock.call_args.kwargs
         self.assertEqual(args["texts"]["text_one"], "possum")
         self.assertEqual(args["texts"]["text_three"], f"@possum@{settings.DOMAIN}")
-
 
     def test_remove_user_preview_image_task(self, *args, **kwargs):
         """you can delete the preview image for a (remote) user"""
