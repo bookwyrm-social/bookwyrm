@@ -339,7 +339,7 @@ class StatusViews(TestCase):
         view = views.CreateStatus.as_view()
         form = forms.CommentForm(
             {
-                "content": "this is an #existing hashtag, this is a #new hashtag",
+                "content": "this is an #existing hashtag, this one is #new.",
                 "user": self.local_user.id,
                 "book": self.book.id,
                 "privacy": "public",
@@ -354,7 +354,14 @@ class StatusViews(TestCase):
         hashtags = models.Hashtag.objects.all()
         self.assertEqual(len(hashtags), 2)
         self.assertEqual(list(status.mention_hashtags.all()), list(hashtags))
-        # TODO: assert tag is linked to a page listing all statuses by tag
+
+        hashtag_exising = models.Hashtag.objects.filter(name="#existing").first()
+        hashtag_new = models.Hashtag.objects.filter(name="#new").first()
+        self.assertEqual(
+            status.content,
+            f'<p>this is an <a href="{hashtag_exising.remote_id}">#existing</a> '
+            + f'hashtag, this one is <a href="{hashtag_new.remote_id}">#new</a>.</p>',
+        )
 
     def test_find_hashtags(self, *_):
         """detect and look up #hashtags"""

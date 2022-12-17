@@ -116,12 +116,16 @@ class CreateStatus(View):
             status.mention_users.add(status.reply_parent.user)
 
         # inspect the text for hashtags
-        for (tag, mention_hashtag) in find_hashtags(content).items():
+        for (mention_text, mention_hashtag) in find_hashtags(content).items():
             # add them to status mentions fk
             status.mention_hashtags.add(mention_hashtag)
 
-            # TODO: turn the mention into a link
-            content = content
+            # turn the mention into a link
+            content = re.sub(
+                rf"{mention_text}\b(?!@)",
+                rf'<a href="{mention_hashtag.remote_id}">{mention_text}</a>',
+                content,
+            )
 
         # deduplicate mentions
         status.mention_users.set(set(status.mention_users.all()))
