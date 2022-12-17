@@ -426,3 +426,10 @@ class Mention(Link):
     """a subtype of Link for mentioning an actor"""
 
     type: str = "Mention"
+
+
+@dataclass(init=False)
+class Hashtag(Link):
+    """a subtype of Link for mentioning a hashtag"""
+
+    type: str = "Hashtag"

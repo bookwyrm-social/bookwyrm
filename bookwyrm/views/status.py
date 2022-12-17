@@ -115,6 +115,14 @@ class CreateStatus(View):
         if status.reply_parent:
             status.mention_users.add(status.reply_parent.user)
 
+        # inspect the text for hashtags
+        for (tag, mention_hashtag) in find_hashtags(content).items():
+            # add them to status mentions fk
+            status.mention_hashtags.add(mention_hashtag)
+
+            # TODO: turn the mention into a link
+            content = content
+
         # deduplicate mentions
         status.mention_users.set(set(status.mention_users.all()))
 
@@ -235,6 +243,27 @@ def find_mentions(user, content):
         username_dict[f"@{mention_user.username}"] = mention_user
         username_dict[f"@{mention_user.localname}"] = mention_user
     return username_dict
+
+
+def find_hashtags(content):
+    """detect #hashtags in raw status content"""
+    if not content:
+        return {}
+
+    hashtags = re.findall(regex.HASHTAG, content)
+    if len(hashtags) == 0:
+        return {}
+
+    known_tags = models.Hashtag.objects.filter(Q(name__in=hashtags)).distinct()
+    hashtag_dict = {t.name: t for t in known_tags}
+
+    not_found = set(hashtags) - set(hashtag_dict.keys())
+    for tag_name in not_found:
+        mention_hashtag = models.Hashtag(name=tag_name)
+        mention_hashtag.save()
+        hashtag_dict[mention_hashtag.name] = mention_hashtag
+
+    return hashtag_dict
 
 
 def format_links(content):

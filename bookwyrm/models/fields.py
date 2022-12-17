@@ -7,6 +7,7 @@ from urllib.parse import urljoin
 import dateutil.parser
 from dateutil.parser import ParserError
 from django.contrib.postgres.fields import ArrayField as DjangoArrayField
+from django.contrib.postgres.fields import CICharField as DjangoCICharField
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.forms import ClearableFileInput, ImageField as DjangoImageField
@@ -544,6 +545,10 @@ class ArrayField(ActivitypubFieldMixin, DjangoArrayField):
 
 class CharField(ActivitypubFieldMixin, models.CharField):
     """activitypub-aware char field"""
+
+
+class CICharField(ActivitypubFieldMixin, DjangoCICharField):
+    """activitypub-aware cichar field"""
 
 
 class URLField(ActivitypubFieldMixin, models.URLField):
