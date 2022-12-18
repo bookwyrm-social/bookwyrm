@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-12-16 20:50+0000\n"
-"PO-Revision-Date: 2022-12-18 14:51\n"
+"PO-Revision-Date: 2022-12-18 15:49\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Finnish\n"
 "Language: fi\n"
@@ -157,7 +157,7 @@ msgstr "Itse poistettu"
 
 #: bookwyrm/models/base_model.py:20
 msgid "Self deactivation"
-msgstr "Tilin deaktivointi"
+msgstr "Tilin käytöstäpoisto"
 
 #: bookwyrm/models/base_model.py:21
 msgid "Moderator suspension"
@@ -2803,7 +2803,7 @@ msgstr[1] "%(display_counter)s kohdetta on hyväksyttävä käsin."
 #: bookwyrm/templates/import/import_status.html:83
 #: bookwyrm/templates/import/manual_review.html:8
 msgid "Review items"
-msgstr "Tarkista kohteita"
+msgstr "Tarkista nimikkeitä"
 
 #: bookwyrm/templates/import/import_status.html:89
 #, python-format
@@ -2814,7 +2814,7 @@ msgstr[1] "%(display_counter)s kohteen tuonti epäonnistui."
 
 #: bookwyrm/templates/import/import_status.html:95
 msgid "View and troubleshoot failed items"
-msgstr "Tarkastele epäonnistuneita kohteita ja epäonnistumisten syitä"
+msgstr "Tarkastele epäonnistuneita nimikkeitä ja epäonnistumisten syitä"
 
 #: bookwyrm/templates/import/import_status.html:107
 msgid "Row"
@@ -2861,7 +2861,7 @@ msgstr "Tuonnin esikatselu ei ole saatavilla."
 
 #: bookwyrm/templates/import/import_status.html:150
 msgid "No items currently need review"
-msgstr "Ei tarkastusta odottavia kohteita"
+msgstr "Ei tarkastusta odottavia nimikkeitä"
 
 #: bookwyrm/templates/import/import_status.html:186
 msgid "View imported review"
@@ -2881,7 +2881,7 @@ msgstr "Yritä uudelleen"
 
 #: bookwyrm/templates/import/import_status.html:237
 msgid "This import is in an old format that is no longer supported. If you would like to troubleshoot missing items from this import, click the button below to update the import format."
-msgstr "Tuonti on vanhassa muodossa, jota ei enää tueta. Jos haluat selvittää tuonnista puuttuvia kohteita, päivitä tuonnin muoto painamalla alla olevaa painiketta."
+msgstr "Tuonti on vanhassa muodossa, jota ei enää tueta. Jos haluat selvittää tuonnista puuttuvia nimikkeitä, päivitä tuonnin muoto painamalla alla olevaa painiketta."
 
 #: bookwyrm/templates/import/import_status.html:239
 msgid "Update import"
@@ -2909,7 +2909,7 @@ msgstr "Hylkää"
 #: bookwyrm/templates/import/troubleshoot.html:7
 #: bookwyrm/templates/settings/imports/imports.html:107
 msgid "Failed items"
-msgstr "Epäonnistuneet kohteet"
+msgstr "Epäonnistuneita nimikkeitä"
 
 #: bookwyrm/templates/import/troubleshoot.html:12
 msgid "Troubleshooting"
@@ -2917,7 +2917,7 @@ msgstr "Vianmääritys"
 
 #: bookwyrm/templates/import/troubleshoot.html:20
 msgid "Re-trying an import can fix missing items in cases such as:"
-msgstr "Tuonnin uudelleenyritys saattaa korjata puuttuvia kohteita esimerkiksi seuraavissa tapauksissa:"
+msgstr "Tuonnin uudelleenyritys saattaa löytää puuttuvia nimikkeitä esimerkiksi seuraavissa tapauksissa:"
 
 #: bookwyrm/templates/import/troubleshoot.html:23
 msgid "The book has been added to the instance since this import"
@@ -2933,7 +2933,7 @@ msgstr "BookWyrm on tuonnin jälkeen päivitetty ja päivitys on korjannut täh�
 
 #: bookwyrm/templates/import/troubleshoot.html:28
 msgid "Contact your admin or <a href='https://github.com/bookwyrm-social/bookwyrm/issues'>open an issue</a> if you are seeing unexpected failed items."
-msgstr "Jos kohteiden tuonti epäonnistuu odottamattomalla tavalla, ota yhteyttä ylläpitäjään tai <a href='https://github.com/bookwyrm-social/bookwyrm/issues'>tee vikailmoitus</a>."
+msgstr "Jos nimikkeiden tuonti epäonnistuu odottamattomalla tavalla, ota yhteyttä ylläpitäjään tai <a href='https://github.com/bookwyrm-social/bookwyrm/issues'>tee vikailmoitus</a>."
 
 #: bookwyrm/templates/landing/invite.html:4
 #: bookwyrm/templates/landing/invite.html:8
@@ -3256,7 +3256,7 @@ msgstr "Kirjan lisääminen listaan onnistui."
 
 #: bookwyrm/templates/lists/list.html:54
 msgid "This list is currently empty."
-msgstr ""
+msgstr "Lista on tyhjä."
 
 #: bookwyrm/templates/lists/list.html:104
 msgid "Edit notes"
@@ -3382,7 +3382,7 @@ msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> ehdotti teoksia <
 #: bookwyrm/templates/notifications/items/add.html:66
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> added a book to one of your lists"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> lisäsi kirjan yhteen listoistasi"
 
 #: bookwyrm/templates/notifications/items/add.html:72
 #, python-format
@@ -3817,15 +3817,15 @@ msgstr "Vahvista autentikointisovellus skannaamalla QR-koodi sovelluksella ja sy
 
 #: bookwyrm/templates/preferences/2fa.html:52
 msgid "Use setup key"
-msgstr ""
+msgstr "Käytä asetusavainta"
 
 #: bookwyrm/templates/preferences/2fa.html:58
 msgid "Account name:"
-msgstr ""
+msgstr "Tilin nimi:"
 
 #: bookwyrm/templates/preferences/2fa.html:65
 msgid "Code:"
-msgstr ""
+msgstr "Koodi:"
 
 #: bookwyrm/templates/preferences/2fa.html:73
 msgid "Enter the code from your app:"
@@ -3883,15 +3883,15 @@ msgstr "Poista käyttäjätili"
 
 #: bookwyrm/templates/preferences/delete_user.html:12
 msgid "Deactivate account"
-msgstr ""
+msgstr "Poista tili käytöstä"
 
 #: bookwyrm/templates/preferences/delete_user.html:15
 msgid "Your account will be hidden. You can log back in at any time to re-activate your account."
-msgstr ""
+msgstr "Tilisi piilotetaan. Voit myöhemmin kirjautua sisään ja aktivoida tilisi uudelleen."
 
 #: bookwyrm/templates/preferences/delete_user.html:20
 msgid "Deactivate Account"
-msgstr ""
+msgstr "Poista tili käytöstä"
 
 #: bookwyrm/templates/preferences/delete_user.html:26
 msgid "Permanently delete account"
@@ -4144,13 +4144,13 @@ msgstr "Haetaan kirjaa:"
 #, python-format
 msgid "%(formatted_review_count)s review"
 msgid_plural "%(formatted_review_count)s reviews"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(formatted_review_count)s arvio"
+msgstr[1] "%(formatted_review_count)s arviota"
 
 #: bookwyrm/templates/search/book.html:34
 #, python-format
 msgid "(published %(pub_year)s)"
-msgstr ""
+msgstr "(julkaistu %(pub_year)s)"
 
 #: bookwyrm/templates/search/book.html:50
 msgid "Results from"
@@ -4608,15 +4608,15 @@ msgstr "Ei estettyjä sähköpostiverkkotunnuksia"
 #: bookwyrm/templates/settings/email_config.html:8
 #: bookwyrm/templates/settings/layout.html:90
 msgid "Email Configuration"
-msgstr ""
+msgstr "Sähköpostin määritys"
 
 #: bookwyrm/templates/settings/email_config.html:16
 msgid "Error sending test email:"
-msgstr ""
+msgstr "Virhe lähetettäessä testiviestiä:"
 
 #: bookwyrm/templates/settings/email_config.html:24
 msgid "Successfully sent test email."
-msgstr ""
+msgstr "Testiviestin lähetys onnistui."
 
 #: bookwyrm/templates/settings/email_config.html:32
 #: bookwyrm/templates/setup/config.html:102
@@ -4625,36 +4625,36 @@ msgstr "Sähköpostin lähettäjä:"
 
 #: bookwyrm/templates/settings/email_config.html:39
 msgid "Email backend:"
-msgstr ""
+msgstr "Sähköpostin taustaohjelma:"
 
 #: bookwyrm/templates/settings/email_config.html:46
 msgid "Host:"
-msgstr ""
+msgstr "Palvelin:"
 
 #: bookwyrm/templates/settings/email_config.html:53
 msgid "Host user:"
-msgstr ""
+msgstr "Palvelimen käyttäjä:"
 
 #: bookwyrm/templates/settings/email_config.html:60
 msgid "Port:"
-msgstr ""
+msgstr "Portti:"
 
 #: bookwyrm/templates/settings/email_config.html:67
 msgid "Use TLS:"
-msgstr ""
+msgstr "Käytä TLS:ää:"
 
 #: bookwyrm/templates/settings/email_config.html:74
 msgid "Use SSL:"
-msgstr ""
+msgstr "Käytä SSL:ää:"
 
 #: bookwyrm/templates/settings/email_config.html:83
 #, python-format
 msgid "Send test email to %(email)s"
-msgstr ""
+msgstr "Lähetä testiviesti osoitteeseen %(email)s"
 
 #: bookwyrm/templates/settings/email_config.html:90
 msgid "Send test email"
-msgstr ""
+msgstr "Lähetä testiviesti"
 
 #: bookwyrm/templates/settings/federation/edit_instance.html:3
 #: bookwyrm/templates/settings/federation/edit_instance.html:6
@@ -4789,7 +4789,7 @@ msgstr "Epäonnistuneet:"
 
 #: bookwyrm/templates/settings/federation/instance_blocklist.html:62
 msgid "Expects a json file in the format provided by FediBlock, with a list of entries that have <code>instance</code> and <code>url</code> fields. For example:"
-msgstr ""
+msgstr "Käytä FediBlock-muotoista json-tiedostoa, jonka tietueissa on kentät <code>instanssi</code> ja <code>url</code>. Esimerkki:"
 
 #: bookwyrm/templates/settings/federation/instance_list.html:36
 #: bookwyrm/templates/settings/users/server_filter.html:5
@@ -4811,55 +4811,55 @@ msgstr "Palvelimia ei löytynyt"
 
 #: bookwyrm/templates/settings/imports/complete_import_modal.html:4
 msgid "Stop import?"
-msgstr ""
+msgstr "Keskeytetäänkö tuonti?"
 
 #: bookwyrm/templates/settings/imports/imports.html:19
 msgid "Disable starting new imports"
-msgstr ""
+msgstr "Poista tuontien aloittaminen käytöstä"
 
 #: bookwyrm/templates/settings/imports/imports.html:30
 msgid "This is only intended to be used when things have gone very wrong with imports and you need to pause the feature while addressing issues."
-msgstr ""
+msgstr "Käytä tätä vain, kun tuonnit eivät kertakaikkiaan onnistu ja haluat ratkaista ongelman rauhassa."
 
 #: bookwyrm/templates/settings/imports/imports.html:31
 msgid "While imports are disabled, users will not be allowed to start new imports, but existing imports will not be effected."
-msgstr ""
+msgstr "Kun tuonnit on poistettu käytöstä, käyttäjät eivät voi aloittaa uusia tuonteja, mutta tällä ei ole vaikutusta käynnissä oleviin tuonteihin."
 
 #: bookwyrm/templates/settings/imports/imports.html:36
 msgid "Disable imports"
-msgstr ""
+msgstr "Poista tuonti käytöstä"
 
 #: bookwyrm/templates/settings/imports/imports.html:50
 msgid "Users are currently unable to start new imports"
-msgstr ""
+msgstr "Käyttäjät eivät voi aloittaa uusia tuonteja"
 
 #: bookwyrm/templates/settings/imports/imports.html:55
 msgid "Enable imports"
-msgstr ""
+msgstr "Ota tuonti käyttöön"
 
 #: bookwyrm/templates/settings/imports/imports.html:71
 msgid "Completed"
-msgstr ""
+msgstr "Valmis"
 
 #: bookwyrm/templates/settings/imports/imports.html:85
 msgid "User"
-msgstr ""
+msgstr "Käyttäjä"
 
 #: bookwyrm/templates/settings/imports/imports.html:94
 msgid "Date Updated"
-msgstr ""
+msgstr "Päivitetty"
 
 #: bookwyrm/templates/settings/imports/imports.html:101
 msgid "Pending items"
-msgstr ""
+msgstr "Odottavia nimikkeitä"
 
 #: bookwyrm/templates/settings/imports/imports.html:104
 msgid "Successful items"
-msgstr ""
+msgstr "Onnistuneita nimikkeitä"
 
 #: bookwyrm/templates/settings/imports/imports.html:139
 msgid "No matching imports found."
-msgstr ""
+msgstr "Ei ehtoihin sopivia tuonteja."
 
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:4
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:11
@@ -5152,7 +5152,7 @@ msgstr "Teksti, joka näytetään, kun käyttäjätilin avaaminen ei ole mahdoll
 
 #: bookwyrm/templates/settings/registration_limited.html:29
 msgid "Registration is enabled on this instance"
-msgstr ""
+msgstr "Rekisteröityminen palvelimelle on käytössä"
 
 #: bookwyrm/templates/settings/reports/report.html:12
 msgid "Back to reports"
@@ -5290,11 +5290,11 @@ msgstr "Tietosuojakäytäntö:"
 
 #: bookwyrm/templates/settings/site.html:72
 msgid "Impressum:"
-msgstr ""
+msgstr "Yhteystiedot:"
 
 #: bookwyrm/templates/settings/site.html:77
 msgid "Include impressum:"
-msgstr ""
+msgstr "Näytä yhteystiedot:"
 
 #: bookwyrm/templates/settings/site.html:91
 msgid "Images"
@@ -6336,7 +6336,7 @@ msgstr "Seuraamispyynnöt"
 #: bookwyrm/templates/user/layout.html:71
 #: bookwyrm/templates/user/reviews_comments.html:10
 msgid "Reviews and Comments"
-msgstr ""
+msgstr "Arviot ja kommentit"
 
 #: bookwyrm/templates/user/lists.html:11
 #, python-format
@@ -6364,7 +6364,7 @@ msgstr "%(username)s ei seuraa muita käyttäjiä"
 
 #: bookwyrm/templates/user/reviews_comments.html:24
 msgid "No reviews or comments yet!"
-msgstr ""
+msgstr "Ei arvioita tai kommentteja."
 
 #: bookwyrm/templates/user/user.html:16
 msgid "Edit profile"
