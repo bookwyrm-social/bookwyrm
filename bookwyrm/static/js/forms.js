@@ -46,4 +46,10 @@
     document
         .querySelectorAll("[data-remove]")
         .forEach((node) => node.addEventListener("click", removeInput));
+
+    document.getElementById("id_description").addEventListener("keypress", function (event) {
+        if (event.keyCode == 13) {
+            event.preventDefault();
+        }
+    });
 })();
