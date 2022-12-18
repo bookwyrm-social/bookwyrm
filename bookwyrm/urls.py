@@ -356,6 +356,15 @@ urlpatterns = [
         name="notifications",
     ),
     re_path(r"^directory/?", views.Directory.as_view(), name="directory"),
+    # hashtag
+    re_path(
+        r"^hashtag/(?P<hashtag_id>\d+)/?$", views.Hashtag.as_view(), name="hashtag"
+    ),
+    re_path(
+        rf"^hashtag/(?P<hashtag_id>\d+){regex.SLUG}/?$",
+        views.Hashtag.as_view(),
+        name="hashtag",
+    ),
     # Get started
     re_path(
         r"^get-started/profile/?$",
