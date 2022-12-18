@@ -318,6 +318,10 @@ def add_status_on_create_command(sender, instance, created):
     if instance.published_date < timezone.now() - timedelta(
         days=1
     ) or instance.created_date < instance.published_date - timedelta(days=1):
+        # a backdated status from a local user is an import, don't add it
+        if instance.user.local:
+            return
+        # an out of date remote status is a low priority but should be added
         priority = LOW
 
     add_status_task.apply_async(

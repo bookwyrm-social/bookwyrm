@@ -19,7 +19,7 @@ from bookwyrm.models import (
     Review,
     ReviewRating,
 )
-from bookwyrm.tasks import app, LOW
+from bookwyrm.tasks import app, LOW, IMPORTS
 from .fields import PrivacyLevels
 
 
@@ -74,8 +74,7 @@ class ImportJob(models.Model):
         task = start_import_task.delay(self.id)
         self.task_id = task.id
 
-        self.status = "active"
-        self.save(update_fields=["status", "task_id"])
+        self.save(update_fields=["task_id"])
 
     def complete_job(self):
         """Report that the job has completed"""
@@ -328,10 +327,12 @@ class ImportItem(models.Model):
         )
 
 
-@app.task(queue=LOW)
+@app.task(queue=IMPORTS)
 def start_import_task(job_id):
     """trigger the child tasks for each row"""
     job = ImportJob.objects.get(id=job_id)
+    job.status = "active"
+    job.save(update_fields=["status"])
     # don't start the job if it was stopped from the UI
     if job.complete:
         return
@@ -345,7 +346,7 @@ def start_import_task(job_id):
     job.save()
 
 
-@app.task(queue=LOW)
+@app.task(queue=IMPORTS)
 def import_item_task(item_id):
     """resolve a row into a book"""
     item = ImportItem.objects.get(id=item_id)

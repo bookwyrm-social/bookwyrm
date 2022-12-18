@@ -14,3 +14,5 @@ app = Celery(
 LOW = "low_priority"
 MEDIUM = "medium_priority"
 HIGH = "high_priority"
+# import items get their own queue because they're such a pain in the ass
+IMPORTS = "imports"
