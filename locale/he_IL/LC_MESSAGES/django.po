@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-12-16 20:50+0000\n"
-"PO-Revision-Date: 2022-12-16 22:47\n"
+"PO-Revision-Date: 2022-12-18 22:52\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Hebrew\n"
 "Language: he\n"
@@ -208,7 +208,7 @@ msgstr "חסום"
 #: bookwyrm/models/fields.py:28
 #, python-format
 msgid "%(value)s is not a valid remote_id"
-msgstr ""
+msgstr "%(value)s הוא לא remote_id תקין"
 
 #: bookwyrm/models/fields.py:37 bookwyrm/models/fields.py:46
 #, python-format
@@ -466,7 +466,7 @@ msgstr "הכירי את האדמינים שלך"
 #: bookwyrm/templates/about/about.html:107
 #, python-format
 msgid "%(site_name)s's moderators and administrators keep the site up and running, enforce the <a href=\"%(coc_path)s\">code of conduct</a>, and respond when users report spam and bad behavior."
-msgstr ""
+msgstr "המפקחים והמנהלים של %(site_name)s דואגים שהאתר יהיה פעיל ומתפקד, אוכפים את <a href=\"%(coc_path)s\">כללי ההתנהגות</a> ומגיבים כשמשתמשים מדווחים על ספאם או התנהגות לא ראויה."
 
 #: bookwyrm/templates/about/about.html:121
 msgid "Moderator"
@@ -735,11 +735,11 @@ msgstr "צפייה ב-LibraryThing"
 
 #: bookwyrm/templates/author/author.html:135
 msgid "View on Goodreads"
-msgstr ""
+msgstr "צפייה ב-Goodreads"
 
 #: bookwyrm/templates/author/author.html:143
 msgid "View ISFDB entry"
-msgstr ""
+msgstr "צפייה ברשומת ISFDB"
 
 #: bookwyrm/templates/author/author.html:158
 #, python-format
@@ -823,7 +823,7 @@ msgstr "מפתח Goodreads:"
 
 #: bookwyrm/templates/author/edit_author.html:105
 msgid "ISFDB:"
-msgstr ""
+msgstr "ISFDB:"
 
 #: bookwyrm/templates/author/edit_author.html:112
 msgid "ISNI:"
@@ -928,7 +928,7 @@ msgstr "הוספת תיאור"
 #: bookwyrm/templates/book/edit/edit_book_form.html:42
 #: bookwyrm/templates/lists/form.html:13 bookwyrm/templates/shelf/form.html:17
 msgid "Description:"
-msgstr ""
+msgstr "תיאור:"
 
 #: bookwyrm/templates/book/book.html:221
 #, python-format
@@ -1025,16 +1025,16 @@ msgstr "ASIN:"
 #: bookwyrm/templates/book/book_identifiers.html:29
 #: bookwyrm/templates/book/edit/edit_book_form.html:359
 msgid "Audible ASIN:"
-msgstr ""
+msgstr "Audible ASIN:"
 
 #: bookwyrm/templates/book/book_identifiers.html:36
 #: bookwyrm/templates/book/edit/edit_book_form.html:368
 msgid "ISFDB ID:"
-msgstr ""
+msgstr "ISFDB ID:"
 
 #: bookwyrm/templates/book/book_identifiers.html:43
 msgid "Goodreads:"
-msgstr ""
+msgstr "Goodreads:"
 
 #: bookwyrm/templates/book/cover_add_modal.html:5
 msgid "Add cover"
@@ -1294,7 +1294,7 @@ msgstr "מהדורות של %(book_title)s"
 #: bookwyrm/templates/book/editions/editions.html:8
 #, python-format
 msgid "Editions of <a href=\"%(work_path)s\">\"%(work_title)s\"</a>"
-msgstr ""
+msgstr "מהדורות של <a href=\"%(work_path)s\">%(work_title)s</a>"
 
 #: bookwyrm/templates/book/editions/editions.html:55
 msgid "Can't find the edition you're looking for?"
@@ -1793,11 +1793,11 @@ msgstr "אפס/י את סיסמת ה-%(site_name)s שלך"
 #: bookwyrm/templates/email/test/html_content.html:6
 #: bookwyrm/templates/email/test/text_content.html:4
 msgid "This is a test email."
-msgstr ""
+msgstr "זהו דוא״ל בדיקה."
 
 #: bookwyrm/templates/email/test/subject.html:2
 msgid "Test email"
-msgstr ""
+msgstr "דוא״ל בדיקה"
 
 #: bookwyrm/templates/embed-layout.html:20 bookwyrm/templates/layout.html:41
 #: bookwyrm/templates/setup/layout.html:15
@@ -1852,7 +1852,7 @@ msgstr "יעד הקריאה של %(year)s"
 #: bookwyrm/templates/feed/goal_card.html:18
 #, python-format
 msgid "You can set or change your reading goal any time from your <a href=\"%(path)s\">profile page</a>"
-msgstr ""
+msgstr "ניתן לקבוע או לשנות את יעד הקריאה בכל זמן מ-<a href=\"%(path)s\">>עמוד הפרופיל</a> שלך"
 
 #: bookwyrm/templates/feed/layout.html:4
 msgid "Updates"
@@ -1870,7 +1870,7 @@ msgstr "אין כאן ספרים כרגע! נסו לחפש ספר כדי להת�
 
 #: bookwyrm/templates/feed/suggested_books.html:13
 msgid "Do you have book data from another service like GoodReads?"
-msgstr ""
+msgstr "האם יש לך מידע אודות ספרים משירות אחר כגון GoodReads?"
 
 #: bookwyrm/templates/feed/suggested_books.html:16
 msgid "Import your reading history"
@@ -1901,23 +1901,23 @@ msgstr ""
 #: bookwyrm/templates/get_started/book_preview.html:6
 #, python-format
 msgid "Have you read %(book_title)s?"
-msgstr ""
+msgstr "האם קראת את %(book_title)s?"
 
 #: bookwyrm/templates/get_started/book_preview.html:7
 msgid "Add to your books"
-msgstr ""
+msgstr "הוסף/י לספרים שלך"
 
 #: bookwyrm/templates/get_started/book_preview.html:10
 #: bookwyrm/templates/shelf/shelf.html:86 bookwyrm/templates/user/user.html:33
 #: bookwyrm/templatetags/shelf_tags.py:48
 msgid "To Read"
-msgstr ""
+msgstr "לקריאה"
 
 #: bookwyrm/templates/get_started/book_preview.html:11
 #: bookwyrm/templates/shelf/shelf.html:87 bookwyrm/templates/user/user.html:34
 #: bookwyrm/templatetags/shelf_tags.py:50
 msgid "Currently Reading"
-msgstr ""
+msgstr "קורא/ת עכשיו"
 
 #: bookwyrm/templates/get_started/book_preview.html:12
 #: bookwyrm/templates/shelf/shelf.html:88
@@ -1926,7 +1926,7 @@ msgstr ""
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_options.html:12
 #: bookwyrm/templates/user/user.html:35 bookwyrm/templatetags/shelf_tags.py:52
 msgid "Read"
-msgstr ""
+msgstr "נקרא"
 
 #: bookwyrm/templates/get_started/book_preview.html:13
 #: bookwyrm/templates/shelf/shelf.html:89 bookwyrm/templates/user/user.html:36
@@ -1935,22 +1935,22 @@ msgstr ""
 
 #: bookwyrm/templates/get_started/books.html:6
 msgid "What are you reading?"
-msgstr ""
+msgstr "מה את/ה קורא/ת?"
 
 #: bookwyrm/templates/get_started/books.html:9
 #: bookwyrm/templates/layout.html:49 bookwyrm/templates/lists/list.html:213
 msgid "Search for a book"
-msgstr ""
+msgstr "חפש/י ספר"
 
 #: bookwyrm/templates/get_started/books.html:11
 #, python-format
 msgid "No books found for \"%(query)s\""
-msgstr ""
+msgstr "לא נמצאו ספרים עבור ״%(query)s״"
 
 #: bookwyrm/templates/get_started/books.html:11
 #, python-format
 msgid "You can add books when you start using %(site_name)s."
-msgstr ""
+msgstr "ניתן להוסיף ספרים כשתתחיל/י להשתמש ב-%(site_name)s."
 
 #: bookwyrm/templates/get_started/books.html:16
 #: bookwyrm/templates/get_started/books.html:17
@@ -2246,23 +2246,23 @@ msgstr ""
 
 #: bookwyrm/templates/guided_tour/book.html:32
 msgid "Reading status"
-msgstr ""
+msgstr "סטטוס קריאה"
 
 #: bookwyrm/templates/guided_tour/book.html:55
 msgid "You can also manually add reading dates here. Unlike changing the reading status using the previous method, adding dates manually will not automatically add them to your <strong>Read</strong> or <strong>Reading</strong> shelves."
-msgstr ""
+msgstr "ניתן להוסיף תאריך קריאה ידנית כאן. בניגוד לשינוי סטטוס הקריאה בשיטה הקודמת, הוספה ידנית של תאריכים לא תוסיף אותם אוטומטית למדפי <strong>נקרא</strong> או <strong>בקריאה</strong>."
 
 #: bookwyrm/templates/guided_tour/book.html:55
 msgid "Got a favourite you re-read every year? We've got you covered - you can add multiple read dates for the same book 😀"
-msgstr ""
+msgstr "יש ספר שאתם אוהבים לקרוא מחדש כל שנה? יש פיתרון - ניתן להוסיף תאריכי קריאה מרובים עבור אותו ספר😀"
 
 #: bookwyrm/templates/guided_tour/book.html:79
 msgid "There can be multiple editions of a book, in various formats or languages. You can choose which edition you want to use."
-msgstr ""
+msgstr "לספר אחד יכולות להיות מספר מהדורות בפורמטים שונים או בשפות שונות. ניתן לבחור את המהדורה שתרצו להשתמש בה."
 
 #: bookwyrm/templates/guided_tour/book.html:80
 msgid "Other editions"
-msgstr ""
+msgstr "מהדורות אחרות"
 
 #: bookwyrm/templates/guided_tour/book.html:102
 msgid "You can post a review, comment, or quote here."
@@ -2334,15 +2334,15 @@ msgstr ""
 #: bookwyrm/templates/guided_tour/user_groups.html:116
 #: bookwyrm/templates/guided_tour/user_profile.html:141
 msgid "Ok"
-msgstr ""
+msgstr "אוקיי"
 
 #: bookwyrm/templates/guided_tour/group.html:10
 msgid "Welcome to the page for your group! This is where you can add and remove users, create user-curated lists, and edit the group details."
-msgstr ""
+msgstr "ברוכים הבאים לעמוד הקבוצה שלכם! כאן אפשר להוסיף או להסיר משתמשים, ליצור רשימות שמשתמשים אוצרים ולערוך את פרטי הקבוצה."
 
 #: bookwyrm/templates/guided_tour/group.html:11
 msgid "Your group"
-msgstr ""
+msgstr "הקבוצה שלך"
 
 #: bookwyrm/templates/guided_tour/group.html:31
 msgid "Use this search box to find users to join your group. Currently users must be members of the same Bookwyrm instance and be invited by the group owner."
@@ -2389,11 +2389,11 @@ msgstr ""
 #: bookwyrm/templates/guided_tour/home.html:25
 #: bookwyrm/templates/two_factor_auth/two_factor_prompt.html:36
 msgid "No thanks"
-msgstr ""
+msgstr "לא תודה"
 
 #: bookwyrm/templates/guided_tour/home.html:33
 msgid "Yes please!"
-msgstr ""
+msgstr "כן, בבקשה!"
 
 #: bookwyrm/templates/guided_tour/home.html:38
 msgid "If  you ever change your mind, just click on the Guided Tour link to start your tour"
@@ -2413,7 +2413,7 @@ msgstr ""
 
 #: bookwyrm/templates/guided_tour/home.html:80
 msgid "Barcode reader"
-msgstr ""
+msgstr "קורא ברקודים"
 
 #: bookwyrm/templates/guided_tour/home.html:102
 msgid "Use the <strong>Feed</strong>, <strong>Lists</strong> and <strong>Discover</strong> links to discover the latest news from your feed, lists of books by topic, and the latest happenings on this Bookwyrm server!"
@@ -2421,7 +2421,7 @@ msgstr ""
 
 #: bookwyrm/templates/guided_tour/home.html:103
 msgid "Navigation Bar"
-msgstr ""
+msgstr "סרגל ניווט"
 
 #: bookwyrm/templates/guided_tour/home.html:126
 msgid "Books on your reading status shelves will be shown here."
@@ -2433,11 +2433,11 @@ msgstr ""
 
 #: bookwyrm/templates/guided_tour/home.html:152
 msgid "Timelines"
-msgstr ""
+msgstr "צירי זמן"
 
 #: bookwyrm/templates/guided_tour/home.html:176
 msgid "The bell will light up when you have a new notification. When it does, click on it to find out what exciting thing has happened!"
-msgstr ""
+msgstr "סמל הפעמון יואר כשיש לך התראה חדשה. כשזה קורא, לחץ/י עליו כדי לגלות איזה דבר מרגש קרה!"
 
 #: bookwyrm/templates/guided_tour/home.html:177
 #: bookwyrm/templates/layout.html:86 bookwyrm/templates/layout.html:118
@@ -2445,52 +2445,52 @@ msgstr ""
 #: bookwyrm/templates/notifications/notifications_page.html:5
 #: bookwyrm/templates/notifications/notifications_page.html:10
 msgid "Notifications"
-msgstr ""
+msgstr "התראות"
 
 #: bookwyrm/templates/guided_tour/home.html:200
 msgid "Your profile, books, direct messages, and settings can be accessed by clicking on your name in the menu here."
-msgstr ""
+msgstr "ניתן לגשת לפרופיל, לספרים, להודעות הישירות ולהגדרות שלך ע״י לחיצה על השם שלך בתפריט כאן."
 
 #: bookwyrm/templates/guided_tour/home.html:200
 msgid "Try selecting <strong>Profile</strong> from the drop down menu to continue the tour."
-msgstr ""
+msgstr "נסו לבחור <strong>פרופיל</strong> מהתפריט הנפתח כדי להמשיך בסיור."
 
 #: bookwyrm/templates/guided_tour/home.html:201
 msgid "Profile and settings menu"
-msgstr ""
+msgstr "תפריט פרופיל והגדרות"
 
 #: bookwyrm/templates/guided_tour/lists.html:13
 msgid "This is the lists page where you can discover book lists created by any user. A List is a collection of books, similar to a shelf."
-msgstr ""
+msgstr "זהו עמוד הרשימות בו ניתן לגלות רשימות ספרים שנוצרו על ידי כל משתמש שהוא. רשימה היא אוסף ספרים, בדומה למדף."
 
 #: bookwyrm/templates/guided_tour/lists.html:13
 msgid "Shelves are for organising books for yourself, whereas Lists are generally for sharing with others."
-msgstr ""
+msgstr "מדפים נועדו כדי לסדר ספרים עבור עצמך, בעוד שרשימות נועד לרוב לשיתוף עם אחרים."
 
 #: bookwyrm/templates/guided_tour/lists.html:34
 msgid "Let's see how to create a new list."
-msgstr ""
+msgstr "בואו נראה איך ליצור רשימה חדשה."
 
 #: bookwyrm/templates/guided_tour/lists.html:34
 msgid "Click the <strong>Create List</strong> button, then <strong>Next</strong> to continue the tour"
-msgstr ""
+msgstr "לחצו על <strong>צור רשימה</strong> ואז על <strong>הבא</strong> כדי להמשיך בסיור"
 
 #: bookwyrm/templates/guided_tour/lists.html:35
 #: bookwyrm/templates/guided_tour/lists.html:59
 msgid "Creating a new list"
-msgstr ""
+msgstr "יצירת רשימה חדשה"
 
 #: bookwyrm/templates/guided_tour/lists.html:58
 msgid "You must give your list a name and can optionally give it a description to help other people understand what your list is about."
-msgstr ""
+msgstr "חובה לתת לרשימה שם, וניתן גם להוסיף תיאור כדי לעזור לאחרים להבין על מה הרשימה."
 
 #: bookwyrm/templates/guided_tour/lists.html:81
 msgid "Choose who can see your list here. List privacy options work just like we saw when posting book reviews. This is a common pattern throughout Bookwyrm."
-msgstr ""
+msgstr "בחרו מי יכול לצפות ברשימה שלכם כאן. אפשרויות פרטיות של רשימות עובדות בדיוק כמו שראינו לגבי פרסום ביקורות ספרים. זוהי תבנית חוזרת ב-Bookwyrm."
 
 #: bookwyrm/templates/guided_tour/lists.html:82
 msgid "List privacy"
-msgstr ""
+msgstr "הגדרות הפרטיות של הרשימה"
 
 #: bookwyrm/templates/guided_tour/lists.html:105
 msgid "You can also decide how your list is to be curated - only by you, by anyone, or by a group."
@@ -2600,21 +2600,21 @@ msgstr ""
 
 #: bookwyrm/templates/guided_tour/user_groups.html:10
 msgid "You can create or join a group with other users. Groups can share group-curated book lists, and in future will be able to do other things."
-msgstr ""
+msgstr "ניתן ליצור קבוצה או להצטרף לאחת עם משתמשים אחרים. קבוצות יכולות לשתף רשימות ספרים שהורכבו על ידי הקבוצה ובהמשך יוכלו לעשות דברים נוספים."
 
 #: bookwyrm/templates/guided_tour/user_groups.html:11
 #: bookwyrm/templates/guided_tour/user_profile.html:55
 #: bookwyrm/templates/user/layout.html:83
 msgid "Groups"
-msgstr ""
+msgstr "קבוצות"
 
 #: bookwyrm/templates/guided_tour/user_groups.html:31
 msgid "Let's create a new group!"
-msgstr ""
+msgstr "בואו ניצור קבוצה חדשה!"
 
 #: bookwyrm/templates/guided_tour/user_groups.html:31
 msgid "Click the <strong>Create group</strong> button, then <strong>Next</strong> to continue the tour"
-msgstr ""
+msgstr "לחצו על <strong>צור רשימה</strong> ואז על <strong>הבא</strong> כדי להמשיך בסיור"
 
 #: bookwyrm/templates/guided_tour/user_groups.html:55
 msgid "Give your group a name and describe what it is about. You can make user groups for any purpose - a reading group, a bunch of friends, whatever!"
@@ -2642,7 +2642,7 @@ msgstr ""
 
 #: bookwyrm/templates/guided_tour/user_groups.html:103
 msgid "Save your group"
-msgstr ""
+msgstr "שמירת קבוצה"
 
 #: bookwyrm/templates/guided_tour/user_profile.html:10
 msgid "This is your user profile. All your latest activities will be listed here. Other Bookwyrm users can see parts of this page too - what they can see depends on your privacy settings."
@@ -2651,7 +2651,7 @@ msgstr ""
 #: bookwyrm/templates/guided_tour/user_profile.html:11
 #: bookwyrm/templates/user/layout.html:19 bookwyrm/templates/user/user.html:10
 msgid "User Profile"
-msgstr ""
+msgstr "פרופיל משתמש"
 
 #: bookwyrm/templates/guided_tour/user_profile.html:31
 msgid "This tab shows everything you have read towards your annual reading goal, or allows you to set one. You don't have to set a reading goal if that's not your thing!"
@@ -2660,7 +2660,7 @@ msgstr ""
 #: bookwyrm/templates/guided_tour/user_profile.html:32
 #: bookwyrm/templates/user/layout.html:77
 msgid "Reading Goal"
-msgstr ""
+msgstr "יעד קריאה"
 
 #: bookwyrm/templates/guided_tour/user_profile.html:54
 msgid "Here you can see your groups, or create a new one. A group brings together Bookwyrm users and allows them to curate lists together."
@@ -2924,24 +2924,24 @@ msgstr ""
 #: bookwyrm/templates/lists/curate.html:71
 #: bookwyrm/templates/settings/link_domains/link_domains.html:76
 msgid "Approve"
-msgstr ""
+msgstr "אשר/י"
 
 #: bookwyrm/templates/import/manual_review.html:66
 msgid "Reject"
-msgstr ""
+msgstr "דחה/י"
 
 #: bookwyrm/templates/import/troubleshoot.html:7
 #: bookwyrm/templates/settings/imports/imports.html:107
 msgid "Failed items"
-msgstr ""
+msgstr "פריטים שנכשלו"
 
 #: bookwyrm/templates/import/troubleshoot.html:12
 msgid "Troubleshooting"
-msgstr ""
+msgstr "פתרון תקלות"
 
 #: bookwyrm/templates/import/troubleshoot.html:20
 msgid "Re-trying an import can fix missing items in cases such as:"
-msgstr ""
+msgstr "ניסיון מחודש לייבא יכול לתקן פריטים חסרים במקרים כגון:"
 
 #: bookwyrm/templates/import/troubleshoot.html:23
 msgid "The book has been added to the instance since this import"
@@ -2964,74 +2964,74 @@ msgstr ""
 #: bookwyrm/templates/landing/login.html:48
 #: bookwyrm/templates/landing/reactivate.html:41
 msgid "Create an Account"
-msgstr ""
+msgstr "צרו חשבון"
 
 #: bookwyrm/templates/landing/invite.html:21
 msgid "Permission Denied"
-msgstr ""
+msgstr "ההרשאה נדחתה"
 
 #: bookwyrm/templates/landing/invite.html:22
 msgid "Sorry! This invite code is no longer valid."
-msgstr ""
+msgstr "מצטערים! קוד ההזמנה אינו זמין עוד."
 
 #: bookwyrm/templates/landing/landing.html:9
 msgid "Recent Books"
-msgstr ""
+msgstr "ספרים אחרונים"
 
 #: bookwyrm/templates/landing/layout.html:17
 msgid "Decentralized"
-msgstr ""
+msgstr "מבוזר"
 
 #: bookwyrm/templates/landing/layout.html:23
 msgid "Friendly"
-msgstr ""
+msgstr "ידידותי"
 
 #: bookwyrm/templates/landing/layout.html:29
 msgid "Anti-Corporate"
-msgstr ""
+msgstr "אנטי-תאגידי"
 
 #: bookwyrm/templates/landing/layout.html:46
 #, python-format
 msgid "Join %(name)s"
-msgstr ""
+msgstr "הצטרפו ל-%(name)s"
 
 #: bookwyrm/templates/landing/layout.html:48
 msgid "Request an Invitation"
-msgstr ""
+msgstr "בקשו הזמנה"
 
 #: bookwyrm/templates/landing/layout.html:50
 #, python-format
 msgid "%(name)s registration is closed"
-msgstr ""
+msgstr "ההרשמה ל-%(name)s סגורה"
 
 #: bookwyrm/templates/landing/layout.html:61
 msgid "Thank you! Your request has been received."
-msgstr ""
+msgstr "תודה! בקשתך התקבלה."
 
 #: bookwyrm/templates/landing/layout.html:90
 msgid "Your Account"
-msgstr ""
+msgstr "החשבון שלך"
 
 #: bookwyrm/templates/landing/login.html:4
 msgid "Login"
-msgstr ""
+msgstr "התחברות"
 
 #: bookwyrm/templates/landing/login.html:7
 #: bookwyrm/templates/landing/login.html:36 bookwyrm/templates/layout.html:150
 #: bookwyrm/templates/ostatus/error.html:37
 msgid "Log in"
-msgstr ""
+msgstr "התחברו"
 
 #: bookwyrm/templates/landing/login.html:15
 msgid "Success! Email address confirmed."
-msgstr ""
+msgstr "כתובת הדוא״ל אושרה בהצלחה!"
 
 #: bookwyrm/templates/landing/login.html:21
 #: bookwyrm/templates/landing/reactivate.html:17
 #: bookwyrm/templates/layout.html:141 bookwyrm/templates/ostatus/error.html:28
 #: bookwyrm/templates/snippets/register_form.html:4
 msgid "Username:"
-msgstr ""
+msgstr "שם משתמש/ת:"
 
 #: bookwyrm/templates/landing/login.html:27
 #: bookwyrm/templates/landing/password_reset.html:26
@@ -3040,23 +3040,23 @@ msgstr ""
 #: bookwyrm/templates/preferences/2fa.html:91
 #: bookwyrm/templates/snippets/register_form.html:45
 msgid "Password:"
-msgstr ""
+msgstr "סיסמה:"
 
 #: bookwyrm/templates/landing/login.html:39 bookwyrm/templates/layout.html:147
 #: bookwyrm/templates/ostatus/error.html:34
 msgid "Forgot your password?"
-msgstr ""
+msgstr "שכחת את הסיסמה?"
 
 #: bookwyrm/templates/landing/login.html:61
 #: bookwyrm/templates/landing/reactivate.html:54
 msgid "More about this site"
-msgstr ""
+msgstr "אודות אתר זה"
 
 #: bookwyrm/templates/landing/password_reset.html:43
 #: bookwyrm/templates/preferences/change_password.html:33
 #: bookwyrm/templates/preferences/delete_user.html:35
 msgid "Confirm password:"
-msgstr ""
+msgstr "אשר/י סיסמה:"
 
 #: bookwyrm/templates/landing/password_reset_request.html:14
 #, python-format
@@ -3069,7 +3069,7 @@ msgstr ""
 
 #: bookwyrm/templates/landing/password_reset_request.html:34
 msgid "Reset password"
-msgstr ""
+msgstr "איפוס סיסמה"
 
 #: bookwyrm/templates/landing/reactivate.html:4
 #: bookwyrm/templates/landing/reactivate.html:7
@@ -3083,31 +3083,31 @@ msgstr "הפעלה מחדש של החשבון"
 #: bookwyrm/templates/layout.html:13
 #, python-format
 msgid "%(site_name)s search"
-msgstr ""
+msgstr "חיפוש ב-%(site_name)s"
 
 #: bookwyrm/templates/layout.html:47
 msgid "Search for a book, user, or list"
-msgstr ""
+msgstr "חפש/י ספר, משתמש או רשימה"
 
 #: bookwyrm/templates/layout.html:62 bookwyrm/templates/layout.html:63
 msgid "Scan Barcode"
-msgstr ""
+msgstr "סרוק/י ברקוד"
 
 #: bookwyrm/templates/layout.html:77
 msgid "Main navigation menu"
-msgstr ""
+msgstr "תפריט ניווט ראשי"
 
 #: bookwyrm/templates/layout.html:99
 msgid "Feed"
-msgstr ""
+msgstr "פיד"
 
 #: bookwyrm/templates/layout.html:146 bookwyrm/templates/ostatus/error.html:33
 msgid "password"
-msgstr ""
+msgstr "סיסמה"
 
 #: bookwyrm/templates/layout.html:158
 msgid "Join"
-msgstr ""
+msgstr "הצטרפו"
 
 #: bookwyrm/templates/layout.html:192
 msgid "Successfully posted status"
@@ -3255,12 +3255,12 @@ msgstr ""
 
 #: bookwyrm/templates/lists/form.html:121
 msgid "Delete list"
-msgstr ""
+msgstr "הסרת רשימה"
 
 #: bookwyrm/templates/lists/item_notes_field.html:7
 #: bookwyrm/templates/settings/federation/edit_instance.html:86
 msgid "Notes:"
-msgstr ""
+msgstr "הערות:"
 
 #: bookwyrm/templates/lists/item_notes_field.html:19
 msgid "An optional note that will be displayed with the book."
