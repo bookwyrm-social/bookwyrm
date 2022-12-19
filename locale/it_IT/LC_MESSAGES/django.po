@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-12-16 20:50+0000\n"
-"PO-Revision-Date: 2022-12-16 22:47\n"
+"PO-Revision-Date: 2022-12-19 02:38\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Italian\n"
 "Language: it\n"
@@ -495,7 +495,7 @@ msgstr "Codice di comportamento"
 #: bookwyrm/templates/about/layout.html:54
 #: bookwyrm/templates/snippets/footer.html:34
 msgid "Impressum"
-msgstr ""
+msgstr "Impressum"
 
 #: bookwyrm/templates/about/layout.html:11
 msgid "Active users:"
@@ -606,7 +606,7 @@ msgstr "Questo fa una media di %(pages)s pagine per libro."
 #, python-format
 msgid "(No page data was available for %(no_page_number)s book)"
 msgid_plural "(No page data was available for %(no_page_number)s books)"
-msgstr[0] ""
+msgstr[0] "(Non sono disponibili dati di pagina per %(no_page_number)s libro)"
 msgstr[1] ""
 
 #: bookwyrm/templates/annual_summary/layout.html:150
@@ -702,7 +702,7 @@ msgstr "Visualizza record ISNI"
 #: bookwyrm/templates/author/author.html:87
 #: bookwyrm/templates/book/book.html:164
 msgid "View on ISFDB"
-msgstr ""
+msgstr "Vedi su ISFDB"
 
 #: bookwyrm/templates/author/author.html:92
 #: bookwyrm/templates/author/sync_modal.html:5
@@ -731,7 +731,7 @@ msgstr "Visualizza su Goodreads"
 
 #: bookwyrm/templates/author/author.html:143
 msgid "View ISFDB entry"
-msgstr ""
+msgstr "Vedi voce ISFDB"
 
 #: bookwyrm/templates/author/author.html:158
 #, python-format
@@ -815,7 +815,7 @@ msgstr "Chiave Goodreads:"
 
 #: bookwyrm/templates/author/edit_author.html:105
 msgid "ISFDB:"
-msgstr ""
+msgstr "ISFDB:"
 
 #: bookwyrm/templates/author/edit_author.html:112
 msgid "ISNI:"
@@ -1013,16 +1013,16 @@ msgstr "ASIN:"
 #: bookwyrm/templates/book/book_identifiers.html:29
 #: bookwyrm/templates/book/edit/edit_book_form.html:359
 msgid "Audible ASIN:"
-msgstr ""
+msgstr "Audible ASIN:"
 
 #: bookwyrm/templates/book/book_identifiers.html:36
 #: bookwyrm/templates/book/edit/edit_book_form.html:368
 msgid "ISFDB ID:"
-msgstr ""
+msgstr "ISFDB ID:"
 
 #: bookwyrm/templates/book/book_identifiers.html:43
 msgid "Goodreads:"
-msgstr ""
+msgstr "Goodreads:"
 
 #: bookwyrm/templates/book/cover_add_modal.html:5
 msgid "Add cover"
@@ -1777,11 +1777,11 @@ msgstr "Reimposta la password di %(site_name)s"
 #: bookwyrm/templates/email/test/html_content.html:6
 #: bookwyrm/templates/email/test/text_content.html:4
 msgid "This is a test email."
-msgstr ""
+msgstr "Questa è una email di prova."
 
 #: bookwyrm/templates/email/test/subject.html:2
 msgid "Test email"
-msgstr ""
+msgstr "Email di prova"
 
 #: bookwyrm/templates/embed-layout.html:20 bookwyrm/templates/layout.html:41
 #: bookwyrm/templates/setup/layout.html:15
@@ -2674,7 +2674,7 @@ msgstr "Importa libri"
 
 #: bookwyrm/templates/import/import.html:13
 msgid "Not a valid CSV file"
-msgstr ""
+msgstr "Non è un file di csv valido"
 
 #: bookwyrm/templates/import/import.html:22
 #, python-format
@@ -3256,7 +3256,7 @@ msgstr "Hai consigliato con successo un libro per questa lista!"
 
 #: bookwyrm/templates/lists/list.html:54
 msgid "This list is currently empty."
-msgstr ""
+msgstr "Questa lista è attualmente vuota."
 
 #: bookwyrm/templates/lists/list.html:104
 msgid "Edit notes"
@@ -3382,7 +3382,7 @@ msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> ha suggerito di a
 #: bookwyrm/templates/notifications/items/add.html:66
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> added a book to one of your lists"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> ha aggiunto un libro a una delle tue liste"
 
 #: bookwyrm/templates/notifications/items/add.html:72
 #, python-format
@@ -4144,13 +4144,13 @@ msgstr "Ricerca libro:"
 #, python-format
 msgid "%(formatted_review_count)s review"
 msgid_plural "%(formatted_review_count)s reviews"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "recensione di %(formatted_review_count)s"
+msgstr[1] "recensioni di %(formatted_review_count)s"
 
 #: bookwyrm/templates/search/book.html:34
 #, python-format
 msgid "(published %(pub_year)s)"
-msgstr ""
+msgstr "(pubblicato %(pub_year)s)"
 
 #: bookwyrm/templates/search/book.html:50
 msgid "Results from"
@@ -4608,15 +4608,15 @@ msgstr "Nessun dominio email attualmente bloccato"
 #: bookwyrm/templates/settings/email_config.html:8
 #: bookwyrm/templates/settings/layout.html:90
 msgid "Email Configuration"
-msgstr ""
+msgstr "Configurazione email"
 
 #: bookwyrm/templates/settings/email_config.html:16
 msgid "Error sending test email:"
-msgstr ""
+msgstr "Errore nell'invio dell'email di prova:"
 
 #: bookwyrm/templates/settings/email_config.html:24
 msgid "Successfully sent test email."
-msgstr ""
+msgstr "Email di prova inviata correttamente."
 
 #: bookwyrm/templates/settings/email_config.html:32
 #: bookwyrm/templates/setup/config.html:102
