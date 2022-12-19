@@ -526,6 +526,11 @@ def preview_image(instance, *args, **kwargs):
     """create preview images when user is updated"""
     if not ENABLE_PREVIEW_IMAGES:
         return
+
+    # don't call the task for remote users
+    if not instance.local:
+        return
+
     changed_fields = instance.field_tracker.changed()
 
     if len(changed_fields) > 0:

@@ -472,11 +472,14 @@ def generate_edition_preview_image_task(book_id):
 
 @app.task(queue=LOW)
 def generate_user_preview_image_task(user_id):
-    """generate preview_image for a book"""
+    """generate preview_image for a user"""
     if not settings.ENABLE_PREVIEW_IMAGES:
         return
 
     user = models.User.objects.get(id=user_id)
+
+    if not user.local:
+        return
 
     texts = {
         "text_one": user.display_name,
@@ -491,3 +494,25 @@ def generate_user_preview_image_task(user_id):
     image = generate_preview_image(texts=texts, picture=avatar)
 
     save_and_cleanup(image, instance=user)
+
+
+@app.task(queue=LOW)
+def remove_user_preview_image_task(user_id):
+    """remove preview_image for a user"""
+    if not settings.ENABLE_PREVIEW_IMAGES:
+        return
+
+    user = models.User.objects.get(id=user_id)
+
+    try:
+        file_name = user.preview_image.name
+    except ValueError:
+        file_name = None
+
+    # Delete image in model
+    user.preview_image.delete(save=False)
+    user.save(broadcast=False, update_fields=["preview_image"])
+
+    # Delete image file
+    if file_name and default_storage.exists(file_name):
+        default_storage.delete(file_name)
