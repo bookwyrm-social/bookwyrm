@@ -7,6 +7,7 @@ from django.utils import timezone
 
 from bookwyrm import activitypub
 from bookwyrm.settings import DOMAIN
+from bookwyrm.tasks import LOW
 from .activitypub_mixin import CollectionItemMixin, OrderedCollectionMixin
 from .base_model import BookWyrmModel
 from . import fields
@@ -39,9 +40,9 @@ class Shelf(OrderedCollectionMixin, BookWyrmModel):
 
     activity_serializer = activitypub.Shelf
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, priority=LOW, **kwargs):
         """set the identifier"""
-        super().save(*args, **kwargs)
+        super().save(*args, priority=priority, **kwargs)
         if not self.identifier:
             self.identifier = self.get_identifier()
             super().save(*args, **kwargs, broadcast=False)
@@ -99,7 +100,7 @@ class ShelfBook(CollectionItemMixin, BookWyrmModel):
     activity_serializer = activitypub.ShelfItem
     collection_field = "shelf"
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, priority=LOW, **kwargs):
         if not self.user:
             self.user = self.shelf.user
         if self.id and self.user.local:
@@ -110,7 +111,7 @@ class ShelfBook(CollectionItemMixin, BookWyrmModel):
                     for book in self.book.parent_work.editions.all()
                 ]
             )
-        super().save(*args, **kwargs)
+        super().save(*args, priority=priority, **kwargs)
 
     def delete(self, *args, **kwargs):
         if self.id and self.user.local:
