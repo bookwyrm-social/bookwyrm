@@ -92,6 +92,7 @@ case "$CMD" in
         migrate
         migrate django_celery_beat
         initdb
+        runweb python manage.py compile_themes
         runweb python manage.py collectstatic --no-input
         admin_code
         ;;
@@ -121,6 +122,9 @@ case "$CMD" in
     pytest_coverage_report)
         prod_error
         runweb pytest -n 3 --cov-report term-missing "$@"
+        ;;
+    compile_themes)
+        runweb python manage.py compile_themes
         ;;
     collectstatic)
         runweb python manage.py collectstatic --no-input
@@ -203,6 +207,7 @@ case "$CMD" in
         docker-compose build
         # ./update.sh
         runweb python manage.py migrate
+        runweb python manage.py compile_themes
         runweb python manage.py collectstatic --no-input
         docker-compose up -d
         docker-compose restart web
@@ -259,6 +264,7 @@ case "$CMD" in
         migrate
         migrate django_celery_beat
         initdb
+        runweb python manage.py compile_themes
         runweb python manage.py collectstatic --no-input
         admin_code
         ;;
@@ -286,6 +292,7 @@ case "$CMD" in
         echo "    dbshell"
         echo "    restart_celery"
         echo "    pytest [path]"
+        echo "    compile_themes"
         echo "    collectstatic"
         echo "    makemessages"
         echo "    compilemessages [locale]"
