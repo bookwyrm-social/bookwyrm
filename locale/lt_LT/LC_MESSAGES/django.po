@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-12-16 20:50+0000\n"
-"PO-Revision-Date: 2022-12-19 21:38\n"
+"PO-Revision-Date: 2022-12-19 22:58\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Lithuanian\n"
 "Language: lt\n"
@@ -3529,12 +3529,12 @@ msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> ir <a href=\"%(se
 #: bookwyrm/templates/notifications/items/fav.html:82
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and %(other_user_display_count)s others liked your <a href=\"%(related_path)s\">quote from <em>%(book_title)s</em></a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> ir %(other_user_display_count)s kitų asmenų mėgsta jūsų <a href=\"%(related_path)s\">citatą iš knygos <em>%(book_title)s</em></a>"
 
 #: bookwyrm/templates/notifications/items/fav.html:90
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> liked your <a href=\"%(related_path)s\">status</a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> mėgsta jūsų <a href=\"%(related_path)s\">būseną</a>"
 
 #: bookwyrm/templates/notifications/items/fav.html:96
 #, python-format
@@ -4461,39 +4461,39 @@ msgstr ""
 #: bookwyrm/templates/settings/celery.html:53
 #: bookwyrm/templates/settings/imports/imports.html:82
 msgid "ID"
-msgstr ""
+msgstr "ID"
 
 #: bookwyrm/templates/settings/celery.html:54
 msgid "Task name"
-msgstr ""
+msgstr "Užduoties pavadinimas"
 
 #: bookwyrm/templates/settings/celery.html:55
 msgid "Run time"
-msgstr ""
+msgstr "Rodymo laikas"
 
 #: bookwyrm/templates/settings/celery.html:56
 msgid "Priority"
-msgstr ""
+msgstr "Prioritetas"
 
 #: bookwyrm/templates/settings/celery.html:61
 msgid "No active tasks"
-msgstr ""
+msgstr "Nėra aktyvių užduočių"
 
 #: bookwyrm/templates/settings/celery.html:79
 msgid "Workers"
-msgstr ""
+msgstr "Darbuotojai"
 
 #: bookwyrm/templates/settings/celery.html:84
 msgid "Uptime:"
-msgstr ""
+msgstr "Veikimo laikas:"
 
 #: bookwyrm/templates/settings/celery.html:94
 msgid "Could not connect to Celery"
-msgstr ""
+msgstr "Nepavyko prisijungti prie „Celery“"
 
 #: bookwyrm/templates/settings/celery.html:101
 msgid "Errors"
-msgstr ""
+msgstr "Klaidos"
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:6
 #: bookwyrm/templates/settings/dashboard/dashboard.html:8
@@ -4572,11 +4572,11 @@ msgstr[3] "%(display_count)s domenus reikia peržiūrėti"
 #: bookwyrm/templates/settings/dashboard/warnings/email_config.html:8
 #, python-format
 msgid "Your outgoing email address, <code>%(email_sender)s</code>, may be misconfigured."
-msgstr ""
+msgstr "Siunčiamo el. pašto adresas, <code>%(email_sender)s</code> gali būti netinkamai sukonfigūruotas."
 
 #: bookwyrm/templates/settings/dashboard/warnings/email_config.html:11
 msgid "Check the <code>EMAIL_SENDER_NAME</code> and <code>EMAIL_SENDER_DOMAIN</code> in your <code>.env</code> file."
-msgstr ""
+msgstr "Patikrinkite <code>EMAIL_SENDER_NAME</code> ir <code>EMAIL_SENDER_DOMAIN</code> <code>.env</code> faile."
 
 #: bookwyrm/templates/settings/dashboard/warnings/invites.html:9
 #, python-format
@@ -4589,11 +4589,11 @@ msgstr[3] "%(display_count)s prašymai pakviesti"
 
 #: bookwyrm/templates/settings/dashboard/warnings/missing_conduct.html:8
 msgid "Your instance is missing a code of conduct."
-msgstr ""
+msgstr "Serveryje nėra elgesio kodo."
 
 #: bookwyrm/templates/settings/dashboard/warnings/missing_privacy.html:8
 msgid "Your instance is missing a privacy policy."
-msgstr ""
+msgstr "Serveryje nėra privatumo politikos."
 
 #: bookwyrm/templates/settings/dashboard/warnings/reports.html:9
 #, python-format
@@ -4650,15 +4650,15 @@ msgstr "Šiuo metu neblokuojamas nė vienas el. pašto domenas"
 #: bookwyrm/templates/settings/email_config.html:8
 #: bookwyrm/templates/settings/layout.html:90
 msgid "Email Configuration"
-msgstr ""
+msgstr "El. pašto konfigūracija"
 
 #: bookwyrm/templates/settings/email_config.html:16
 msgid "Error sending test email:"
-msgstr ""
+msgstr "Klaida, siunčiant bandomąjį el. laišką:"
 
 #: bookwyrm/templates/settings/email_config.html:24
 msgid "Successfully sent test email."
-msgstr ""
+msgstr "Bandomasis el. laiškas išsiųstas sėkmingai."
 
 #: bookwyrm/templates/settings/email_config.html:32
 #: bookwyrm/templates/setup/config.html:102
@@ -4667,36 +4667,36 @@ msgstr "El. pašto siuntėjas:"
 
 #: bookwyrm/templates/settings/email_config.html:39
 msgid "Email backend:"
-msgstr ""
+msgstr "El. pašto backent'inė dalis:"
 
 #: bookwyrm/templates/settings/email_config.html:46
 msgid "Host:"
-msgstr ""
+msgstr "Hostas:"
 
 #: bookwyrm/templates/settings/email_config.html:53
 msgid "Host user:"
-msgstr ""
+msgstr "Hosto naudotojas:"
 
 #: bookwyrm/templates/settings/email_config.html:60
 msgid "Port:"
-msgstr ""
+msgstr "Portas:"
 
 #: bookwyrm/templates/settings/email_config.html:67
 msgid "Use TLS:"
-msgstr ""
+msgstr "Naudokite TLS:"
 
 #: bookwyrm/templates/settings/email_config.html:74
 msgid "Use SSL:"
-msgstr ""
+msgstr "Naudokite SSL:"
 
 #: bookwyrm/templates/settings/email_config.html:83
 #, python-format
 msgid "Send test email to %(email)s"
-msgstr ""
+msgstr "Siųsti bandomąjį laišką %(email)s"
 
 #: bookwyrm/templates/settings/email_config.html:90
 msgid "Send test email"
-msgstr ""
+msgstr "Siųsti bandomąjį el. laišką"
 
 #: bookwyrm/templates/settings/federation/edit_instance.html:3
 #: bookwyrm/templates/settings/federation/edit_instance.html:6
@@ -4853,7 +4853,7 @@ msgstr "Serverių nerasta"
 
 #: bookwyrm/templates/settings/imports/complete_import_modal.html:4
 msgid "Stop import?"
-msgstr ""
+msgstr "Sustabdyti importavimą?"
 
 #: bookwyrm/templates/settings/imports/imports.html:19
 msgid "Disable starting new imports"
@@ -4881,27 +4881,27 @@ msgstr "Įjungti importavimus"
 
 #: bookwyrm/templates/settings/imports/imports.html:71
 msgid "Completed"
-msgstr ""
+msgstr "Užbaigta"
 
 #: bookwyrm/templates/settings/imports/imports.html:85
 msgid "User"
-msgstr ""
+msgstr "Vartotojas"
 
 #: bookwyrm/templates/settings/imports/imports.html:94
 msgid "Date Updated"
-msgstr ""
+msgstr "Atnaujinimo data"
 
 #: bookwyrm/templates/settings/imports/imports.html:101
 msgid "Pending items"
-msgstr ""
+msgstr "Laukiami elementai"
 
 #: bookwyrm/templates/settings/imports/imports.html:104
 msgid "Successful items"
-msgstr ""
+msgstr "Sėkmingi elementai"
 
 #: bookwyrm/templates/settings/imports/imports.html:139
 msgid "No matching imports found."
-msgstr ""
+msgstr "Nerasta atitinkančių importų."
 
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:4
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:11
@@ -5079,11 +5079,11 @@ msgstr "Nuorodų puslapiai"
 
 #: bookwyrm/templates/settings/layout.html:78
 msgid "System"
-msgstr ""
+msgstr "Sistema"
 
 #: bookwyrm/templates/settings/layout.html:86
 msgid "Celery status"
-msgstr ""
+msgstr "„Celery“ būsena"
 
 #: bookwyrm/templates/settings/layout.html:95
 msgid "Instance Settings"
@@ -5194,7 +5194,7 @@ msgstr "Užrakintos registracijos tekstas:"
 
 #: bookwyrm/templates/settings/registration_limited.html:29
 msgid "Registration is enabled on this instance"
-msgstr ""
+msgstr "Šiame serveryje įjungta registracija"
 
 #: bookwyrm/templates/settings/reports/report.html:12
 msgid "Back to reports"
@@ -5242,7 +5242,7 @@ msgstr "Pranešimas #%(report_id)s: nuorodą pridėjo @%(username)s"
 #: bookwyrm/templates/settings/reports/report_header.html:17
 #, python-format
 msgid "Report #%(report_id)s: Link domain"
-msgstr ""
+msgstr "Ataskaita #%(report_id)s: nuorodos domenas"
 
 #: bookwyrm/templates/settings/reports/report_header.html:24
 #, python-format
@@ -5332,11 +5332,11 @@ msgstr "Privatumo politika:"
 
 #: bookwyrm/templates/settings/site.html:72
 msgid "Impressum:"
-msgstr ""
+msgstr "Rekvizitai:"
 
 #: bookwyrm/templates/settings/site.html:77
 msgid "Include impressum:"
-msgstr ""
+msgstr "Įtraukti rekvizitus:"
 
 #: bookwyrm/templates/settings/site.html:91
 msgid "Images"
@@ -5449,7 +5449,7 @@ msgstr "Vartotojai: <small>%(instance_name)s</small>"
 
 #: bookwyrm/templates/settings/users/user_admin.html:29
 msgid "Deleted users"
-msgstr ""
+msgstr "Ištrinti naudotojus"
 
 #: bookwyrm/templates/settings/users/user_admin.html:44
 #: bookwyrm/templates/settings/users/username_filter.html:5
@@ -5470,7 +5470,7 @@ msgstr "Nutolęs serveris"
 
 #: bookwyrm/templates/settings/users/user_admin.html:86
 msgid "Deleted"
-msgstr ""
+msgstr "Ištrinta"
 
 #: bookwyrm/templates/settings/users/user_admin.html:92
 #: bookwyrm/templates/settings/users/user_info.html:32
@@ -5728,7 +5728,7 @@ msgstr "Baigta"
 #: bookwyrm/templates/shelf/shelf.html:154
 #: bookwyrm/templates/shelf/shelf.html:184
 msgid "Until"
-msgstr ""
+msgstr "Iki"
 
 #: bookwyrm/templates/shelf/shelf.html:210
 msgid "This shelf is empty."
@@ -5932,11 +5932,11 @@ msgstr "Dokumentacija"
 #: bookwyrm/templates/snippets/footer.html:42
 #, python-format
 msgid "Support %(site_name)s on <a href=\"%(support_link)s\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">%(support_title)s</a>"
-msgstr ""
+msgstr "Paremkite %(site_name)s per <a href=\"%(support_link)s\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">%(support_title)s</a>"
 
 #: bookwyrm/templates/snippets/footer.html:49
 msgid "BookWyrm's source code is freely available. You can contribute or report issues on <a href=\"https://github.com/bookwyrm-social/bookwyrm\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">GitHub</a>."
-msgstr ""
+msgstr "„BookWyrm“ šaltinio kodas yra laisvai prieinamas. Galite prisidėti arba pranešti apie klaidas per <a href=\"https://github.com/bookwyrm-social/bookwyrm\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">GitHub</a>."
 
 #: bookwyrm/templates/snippets/form_rate_stars.html:20
 #: bookwyrm/templates/snippets/stars.html:13
@@ -6088,13 +6088,13 @@ msgstr "Pradėti „<em>%(book_title)s</em>“"
 #: bookwyrm/templates/snippets/reading_modals/stop_reading_modal.html:6
 #, python-format
 msgid "Stop Reading \"<em>%(book_title)s</em>\""
-msgstr ""
+msgstr "Baigti skaityti „<em>%(book_title)s</em>“"
 
 #: bookwyrm/templates/snippets/reading_modals/stop_reading_modal.html:32
 #: bookwyrm/templates/snippets/shelf_selector.html:54
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_options.html:21
 msgid "Stopped reading"
-msgstr ""
+msgstr "Nustota skaityti"
 
 #: bookwyrm/templates/snippets/reading_modals/want_to_read_modal.html:6
 #, python-format
@@ -6170,7 +6170,7 @@ msgstr "Daugiau lentynų"
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_dropdown_options.html:31
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_options.html:48
 msgid "Stop reading"
-msgstr ""
+msgstr "Nustoti skaityti"
 
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_options.html:40
 msgid "Finish reading"
@@ -6266,12 +6266,12 @@ msgstr "apžvelgė <a href=\"%(book_path)s\">%(book)s</a>"
 #: bookwyrm/templates/snippets/status/headers/stopped_reading.html:10
 #, python-format
 msgid "stopped reading <a href=\"%(book_path)s\">%(book)s</a> by <a href=\"%(author_path)s\">%(author_name)s</a>"
-msgstr ""
+msgstr "nustojo skaityti <a href=\"%(author_path)s\">%(author_name)s</a> knygą <a href=\"%(book_path)s\">%(book)s</a>"
 
 #: bookwyrm/templates/snippets/status/headers/stopped_reading.html:17
 #, python-format
 msgid "stopped reading <a href=\"%(book_path)s\">%(book)s</a>"
-msgstr ""
+msgstr "nustojo skaityti <a href=\"%(book_path)s\">%(book)s</a>"
 
 #: bookwyrm/templates/snippets/status/headers/to_read.html:10
 #, python-format
@@ -6329,15 +6329,15 @@ msgstr "Rodyti mažiau"
 
 #: bookwyrm/templates/two_factor_auth/two_factor_login.html:29
 msgid "2FA check"
-msgstr ""
+msgstr "2FA patikra"
 
 #: bookwyrm/templates/two_factor_auth/two_factor_login.html:37
 msgid "Enter the code from your authenticator app:"
-msgstr ""
+msgstr "Įveskite kodą iš autentikacijos programėlės:"
 
 #: bookwyrm/templates/two_factor_auth/two_factor_login.html:41
 msgid "Confirm and Log In"
-msgstr ""
+msgstr "Patvirtinkite ir prisijunkite"
 
 #: bookwyrm/templates/two_factor_auth/two_factor_prompt.html:29
 msgid "2FA is available"
