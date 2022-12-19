@@ -47,14 +47,11 @@
         .querySelectorAll("[data-remove]")
         .forEach((node) => node.addEventListener("click", removeInput));
 
-    document
-        .querySelectorAll("[name='subjects']")
-        .forEach((node) => node.addEventListener("keypress",
-        function (event) {
+    document.querySelectorAll("[name='subjects']").forEach((node) =>
+        node.addEventListener("keypress", function (event) {
             if (event.keyCode == 13) {
                 event.preventDefault();
             }
-        }
-        ))
-
+        })
+    );
 })();
