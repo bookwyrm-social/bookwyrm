@@ -14,6 +14,7 @@ dbshell \
 restart_celery \
 pytest \
 pytest_coverage_report \
+compile_themes \
 collectstatic \
 makemessages \
 compilemessages \
@@ -54,6 +55,7 @@ __bw_complete "$commands" "shell"                   "open the Python shell withi
 __bw_complete "$commands" "dbshell"                 "open the database shell within the web container"
 __bw_complete "$commands" "restart_celery"          "restart the celery container"
 __bw_complete "$commands" "pytest"                  "run unit tests"
+__bw_complete "$commands" "compile_themes"          "compile themes css files"
 __bw_complete "$commands" "collectstatic"           "copy changed static files into the installation"
 __bw_complete "$commands" "makemessages"            "extract all localizable messages from the code"
 __bw_complete "$commands" "compilemessages"         "compile .po localization files to .mo"

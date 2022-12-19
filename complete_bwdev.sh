@@ -11,6 +11,7 @@ dbshell
 restart_celery
 pytest
 pytest_coverage_report
+compile_themes
 collectstatic
 makemessages
 compilemessages
