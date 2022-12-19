@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-12-16 20:50+0000\n"
-"PO-Revision-Date: 2022-12-19 02:38\n"
+"PO-Revision-Date: 2022-12-19 03:35\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Italian\n"
 "Language: it\n"
@@ -607,7 +607,7 @@ msgstr "Questo fa una media di %(pages)s pagine per libro."
 msgid "(No page data was available for %(no_page_number)s book)"
 msgid_plural "(No page data was available for %(no_page_number)s books)"
 msgstr[0] "(Non sono disponibili dati di pagina per %(no_page_number)s libro)"
-msgstr[1] ""
+msgstr[1] "(Nessun dato di pagina disponibile per %(no_page_number)s libri)"
 
 #: bookwyrm/templates/annual_summary/layout.html:150
 msgid "Their shortest read this year…"
@@ -4625,36 +4625,36 @@ msgstr "Mittente email:"
 
 #: bookwyrm/templates/settings/email_config.html:39
 msgid "Email backend:"
-msgstr ""
+msgstr "Backend email:"
 
 #: bookwyrm/templates/settings/email_config.html:46
 msgid "Host:"
-msgstr ""
+msgstr "Host:"
 
 #: bookwyrm/templates/settings/email_config.html:53
 msgid "Host user:"
-msgstr ""
+msgstr "Utente host:"
 
 #: bookwyrm/templates/settings/email_config.html:60
 msgid "Port:"
-msgstr ""
+msgstr "Porta:"
 
 #: bookwyrm/templates/settings/email_config.html:67
 msgid "Use TLS:"
-msgstr ""
+msgstr "Usa TLS:"
 
 #: bookwyrm/templates/settings/email_config.html:74
 msgid "Use SSL:"
-msgstr ""
+msgstr "Usa SSL:"
 
 #: bookwyrm/templates/settings/email_config.html:83
 #, python-format
 msgid "Send test email to %(email)s"
-msgstr ""
+msgstr "Invia email di prova a %(email)s"
 
 #: bookwyrm/templates/settings/email_config.html:90
 msgid "Send test email"
-msgstr ""
+msgstr "Invia e-mail di prova"
 
 #: bookwyrm/templates/settings/federation/edit_instance.html:3
 #: bookwyrm/templates/settings/federation/edit_instance.html:6
@@ -4789,7 +4789,7 @@ msgstr "Non riuscito:"
 
 #: bookwyrm/templates/settings/federation/instance_blocklist.html:62
 msgid "Expects a json file in the format provided by FediBlock, with a list of entries that have <code>instance</code> and <code>url</code> fields. For example:"
-msgstr ""
+msgstr "Aspettiamo un file json nel formato fornito da FediBlock, con un elenco di voci che hanno <code>campi di istanza</code> e <code>url</code>. Per esempio:"
 
 #: bookwyrm/templates/settings/federation/instance_list.html:36
 #: bookwyrm/templates/settings/users/server_filter.html:5
@@ -4811,55 +4811,55 @@ msgstr "Nessun istanza trovata"
 
 #: bookwyrm/templates/settings/imports/complete_import_modal.html:4
 msgid "Stop import?"
-msgstr ""
+msgstr "Interrompere l'importazione?"
 
 #: bookwyrm/templates/settings/imports/imports.html:19
 msgid "Disable starting new imports"
-msgstr ""
+msgstr "Disabilita l'avvio delle nuove importazioni"
 
 #: bookwyrm/templates/settings/imports/imports.html:30
 msgid "This is only intended to be used when things have gone very wrong with imports and you need to pause the feature while addressing issues."
-msgstr ""
+msgstr "Questo è destinato a essere utilizzato solo quando le cose sono andate molto male con le importazioni e si deve mettere in pausa la funzione mentre si affrontano i problemi."
 
 #: bookwyrm/templates/settings/imports/imports.html:31
 msgid "While imports are disabled, users will not be allowed to start new imports, but existing imports will not be effected."
-msgstr ""
+msgstr "Mentre le importazioni sono disabilitate, gli utenti non potranno iniziare nuove importazioni, ma le importazioni esistenti non saranno effettuate."
 
 #: bookwyrm/templates/settings/imports/imports.html:36
 msgid "Disable imports"
-msgstr ""
+msgstr "Disabilita l'importazione"
 
 #: bookwyrm/templates/settings/imports/imports.html:50
 msgid "Users are currently unable to start new imports"
-msgstr ""
+msgstr "Al momento gli utenti non sono in grado di avviare nuove importazioni"
 
 #: bookwyrm/templates/settings/imports/imports.html:55
 msgid "Enable imports"
-msgstr ""
+msgstr "Abilita importazioni"
 
 #: bookwyrm/templates/settings/imports/imports.html:71
 msgid "Completed"
-msgstr ""
+msgstr "Completati"
 
 #: bookwyrm/templates/settings/imports/imports.html:85
 msgid "User"
-msgstr ""
+msgstr "Utente"
 
 #: bookwyrm/templates/settings/imports/imports.html:94
 msgid "Date Updated"
-msgstr ""
+msgstr "Data Aggiornamento"
 
 #: bookwyrm/templates/settings/imports/imports.html:101
 msgid "Pending items"
-msgstr ""
+msgstr "Oggetti in sospeso"
 
 #: bookwyrm/templates/settings/imports/imports.html:104
 msgid "Successful items"
-msgstr ""
+msgstr "Oggetti riusciti"
 
 #: bookwyrm/templates/settings/imports/imports.html:139
 msgid "No matching imports found."
-msgstr ""
+msgstr "Nessuna importazione corrispondente."
 
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:4
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:11
@@ -5152,7 +5152,7 @@ msgstr "Registrazioni chiuse:"
 
 #: bookwyrm/templates/settings/registration_limited.html:29
 msgid "Registration is enabled on this instance"
-msgstr ""
+msgstr "Registrazione abilitata su questa istanza"
 
 #: bookwyrm/templates/settings/reports/report.html:12
 msgid "Back to reports"
@@ -5290,11 +5290,11 @@ msgstr "Informativa sulla privacy:"
 
 #: bookwyrm/templates/settings/site.html:72
 msgid "Impressum:"
-msgstr ""
+msgstr "Impressum:"
 
 #: bookwyrm/templates/settings/site.html:77
 msgid "Include impressum:"
-msgstr ""
+msgstr "Includi impressum:"
 
 #: bookwyrm/templates/settings/site.html:91
 msgid "Images"
@@ -6273,23 +6273,23 @@ msgstr "Mostra meno"
 
 #: bookwyrm/templates/two_factor_auth/two_factor_login.html:29
 msgid "2FA check"
-msgstr ""
+msgstr "Verifica 2FA"
 
 #: bookwyrm/templates/two_factor_auth/two_factor_login.html:37
 msgid "Enter the code from your authenticator app:"
-msgstr ""
+msgstr "Inserisci il codice dall'app di autenticazione:"
 
 #: bookwyrm/templates/two_factor_auth/two_factor_login.html:41
 msgid "Confirm and Log In"
-msgstr ""
+msgstr "Conferma e effettua l'accesso"
 
 #: bookwyrm/templates/two_factor_auth/two_factor_prompt.html:29
 msgid "2FA is available"
-msgstr ""
+msgstr "2FA è disponibile"
 
 #: bookwyrm/templates/two_factor_auth/two_factor_prompt.html:34
 msgid "You can secure your account by setting up two factor authentication in your user preferences. This will require a one-time code from your phone in addition to your password each time you log in."
-msgstr ""
+msgstr "È possibile proteggere il tuo account impostando l'autenticazione a due fattori nelle preferenze utente. Questo richiederà un codice una volta al telefono oltre alla password ogni volta che accedi."
 
 #: bookwyrm/templates/user/books_header.html:9
 #, python-format
@@ -6336,7 +6336,7 @@ msgstr "Richieste di seguirti"
 #: bookwyrm/templates/user/layout.html:71
 #: bookwyrm/templates/user/reviews_comments.html:10
 msgid "Reviews and Comments"
-msgstr ""
+msgstr "Recensioni e Commenti"
 
 #: bookwyrm/templates/user/lists.html:11
 #, python-format
@@ -6364,7 +6364,7 @@ msgstr "%(username)s non sta seguendo nessun utente"
 
 #: bookwyrm/templates/user/reviews_comments.html:24
 msgid "No reviews or comments yet!"
-msgstr ""
+msgstr "Ancora nessuna recensione o commento!"
 
 #: bookwyrm/templates/user/user.html:16
 msgid "Edit profile"
