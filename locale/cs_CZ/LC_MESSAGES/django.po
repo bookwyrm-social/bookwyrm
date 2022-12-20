@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-12-16 20:50+0000\n"
-"PO-Revision-Date: 2022-12-16 22:47\n"
+"PO-Revision-Date: 2022-12-20 07:27\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Czech\n"
 "Language: cs\n"
@@ -157,7 +157,7 @@ msgstr "Sebesmazání"
 
 #: bookwyrm/models/base_model.py:20
 msgid "Self deactivation"
-msgstr ""
+msgstr "Vlastní deaktivace"
 
 #: bookwyrm/models/base_model.py:21
 msgid "Moderator suspension"
@@ -495,7 +495,7 @@ msgstr "Kodex chování"
 #: bookwyrm/templates/about/layout.html:54
 #: bookwyrm/templates/snippets/footer.html:34
 msgid "Impressum"
-msgstr ""
+msgstr "Impresum"
 
 #: bookwyrm/templates/about/layout.html:11
 msgid "Active users:"
@@ -611,7 +611,7 @@ msgid_plural "(No page data was available for %(no_page_number)s books)"
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
-msgstr[3] ""
+msgstr[3] "(Nebyla žádná dostupná data pro %(no_page_number)s knih)"
 
 #: bookwyrm/templates/annual_summary/layout.html:150
 msgid "Their shortest read this year…"
@@ -710,7 +710,7 @@ msgstr "Zobrazit ISNI záznam"
 #: bookwyrm/templates/author/author.html:87
 #: bookwyrm/templates/book/book.html:164
 msgid "View on ISFDB"
-msgstr ""
+msgstr "Prohlédnout na ISFDB"
 
 #: bookwyrm/templates/author/author.html:92
 #: bookwyrm/templates/author/sync_modal.html:5
@@ -739,7 +739,7 @@ msgstr "Zobrazit na Goodreads"
 
 #: bookwyrm/templates/author/author.html:143
 msgid "View ISFDB entry"
-msgstr ""
+msgstr "Prohlédnout si záznam na ISFDB"
 
 #: bookwyrm/templates/author/author.html:158
 #, python-format
@@ -823,7 +823,7 @@ msgstr "Klíč Goodreads:"
 
 #: bookwyrm/templates/author/edit_author.html:105
 msgid "ISFDB:"
-msgstr ""
+msgstr "ISFDB:"
 
 #: bookwyrm/templates/author/edit_author.html:112
 msgid "ISNI:"
@@ -1025,16 +1025,16 @@ msgstr "ASIN:"
 #: bookwyrm/templates/book/book_identifiers.html:29
 #: bookwyrm/templates/book/edit/edit_book_form.html:359
 msgid "Audible ASIN:"
-msgstr ""
+msgstr "Audible ASIN:"
 
 #: bookwyrm/templates/book/book_identifiers.html:36
 #: bookwyrm/templates/book/edit/edit_book_form.html:368
 msgid "ISFDB ID:"
-msgstr ""
+msgstr "ISFDB ID:"
 
 #: bookwyrm/templates/book/book_identifiers.html:43
 msgid "Goodreads:"
-msgstr ""
+msgstr "Goodreads:"
 
 #: bookwyrm/templates/book/cover_add_modal.html:5
 msgid "Add cover"
@@ -1558,7 +1558,7 @@ msgstr ""
 #: bookwyrm/templates/directory/directory.html:24
 #, python-format
 msgid "You can opt-out at any time in your <a href=\"%(path)s\">profile settings.</a>"
-msgstr ""
+msgstr "Můžete se kdykoliv odhlásit v <a href=\"%(path)s\">nastavení profilu.</a>"
 
 #: bookwyrm/templates/directory/directory.html:29
 #: bookwyrm/templates/directory/directory.html:31
@@ -1754,17 +1754,17 @@ msgstr "@%(reporter)s označil odkazovou doménu k moderaci."
 #: bookwyrm/templates/email/moderation_report/text_content.html:10
 #, python-format
 msgid "@%(reporter)s has flagged behavior by @%(reportee)s for moderation."
-msgstr ""
+msgstr "@%(reporter)s označil chování @%(reportee)s pro moderaci."
 
 #: bookwyrm/templates/email/moderation_report/html_content.html:21
 #: bookwyrm/templates/email/moderation_report/text_content.html:15
 msgid "View report"
-msgstr ""
+msgstr "Zobrazit přehled"
 
 #: bookwyrm/templates/email/moderation_report/subject.html:2
 #, python-format
 msgid "New report for %(site_name)s"
-msgstr ""
+msgstr "Nový přehled pro %(site_name)s"
 
 #: bookwyrm/templates/email/password_reset/html_content.html:6
 #: bookwyrm/templates/email/password_reset/text_content.html:4
@@ -1783,7 +1783,7 @@ msgstr "Obnovit heslo"
 #: bookwyrm/templates/email/password_reset/html_content.html:13
 #: bookwyrm/templates/email/password_reset/text_content.html:8
 msgid "If you didn't request to reset your password, you can ignore this email."
-msgstr ""
+msgstr "Pokud jste nepožádali o obnovení hesla, můžete tento email ignorovat."
 
 #: bookwyrm/templates/email/password_reset/subject.html:2
 #, python-format
@@ -1793,11 +1793,11 @@ msgstr "Resetovat Vaše %(site_name)s heslo"
 #: bookwyrm/templates/email/test/html_content.html:6
 #: bookwyrm/templates/email/test/text_content.html:4
 msgid "This is a test email."
-msgstr ""
+msgstr "Toto je testovací email."
 
 #: bookwyrm/templates/email/test/subject.html:2
 msgid "Test email"
-msgstr ""
+msgstr "Testovací email"
 
 #: bookwyrm/templates/embed-layout.html:20 bookwyrm/templates/layout.html:41
 #: bookwyrm/templates/setup/layout.html:15
@@ -1828,7 +1828,7 @@ msgstr "Soukromé zprávy"
 
 #: bookwyrm/templates/feed/direct_messages.html:13
 msgid "All messages"
-msgstr ""
+msgstr "Všechny zprávy"
 
 #: bookwyrm/templates/feed/direct_messages.html:22
 msgid "You have no messages right now."
@@ -1836,11 +1836,11 @@ msgstr "Momentálně nemáte žádné zprávy."
 
 #: bookwyrm/templates/feed/feed.html:55
 msgid "There aren't any activities right now! Try following a user to get started"
-msgstr ""
+msgstr "Momentálně tu nejsou žádné aktivity! Pro začátek zkuste sledovat nějakého uživatele"
 
 #: bookwyrm/templates/feed/feed.html:56
 msgid "Alternatively, you can try enabling more status types"
-msgstr ""
+msgstr "Případně můžete zkusit povolit více typů stavů"
 
 #: bookwyrm/templates/feed/goal_card.html:6
 #: bookwyrm/templates/feed/layout.html:14
@@ -2334,15 +2334,15 @@ msgstr ""
 #: bookwyrm/templates/guided_tour/user_groups.html:116
 #: bookwyrm/templates/guided_tour/user_profile.html:141
 msgid "Ok"
-msgstr ""
+msgstr "Ok"
 
 #: bookwyrm/templates/guided_tour/group.html:10
 msgid "Welcome to the page for your group! This is where you can add and remove users, create user-curated lists, and edit the group details."
-msgstr ""
+msgstr "Vítejte na stránce vaší skupiny! Zde můžete přidávat a odebírat uživatele, vytvářet uživatelsky upravované seznamy a upravovat detaily skupiny."
 
 #: bookwyrm/templates/guided_tour/group.html:11
 msgid "Your group"
-msgstr ""
+msgstr "Vaše skupina"
 
 #: bookwyrm/templates/guided_tour/group.html:31
 msgid "Use this search box to find users to join your group. Currently users must be members of the same Bookwyrm instance and be invited by the group owner."
