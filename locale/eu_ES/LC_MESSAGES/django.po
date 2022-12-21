@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-12-16 20:50+0000\n"
-"PO-Revision-Date: 2022-12-16 22:48\n"
+"PO-Revision-Date: 2022-12-21 09:54\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Basque\n"
 "Language: eu\n"
@@ -92,7 +92,7 @@ msgstr "Domeinu hau blokeatuta dago. Mesedez, hau akatsa badela uste baduzu, jar
 
 #: bookwyrm/forms/links.py:49
 msgid "This link with file type has already been added for this book. If it is not visible, the domain is still pending."
-msgstr ""
+msgstr "Fitxategi-mota horrekiko esteka hori jadanik erantsia izan zaio liburu honi. Agertzen ez bada, domeinua oraindik zintzilik dagoelako da."
 
 #: bookwyrm/forms/lists.py:26
 msgid "List Order"
@@ -157,7 +157,7 @@ msgstr "Norbera ezabatzea"
 
 #: bookwyrm/models/base_model.py:20
 msgid "Self deactivation"
-msgstr ""
+msgstr "Desaktibazio automatikoa"
 
 #: bookwyrm/models/base_model.py:21
 msgid "Moderator suspension"
@@ -495,7 +495,7 @@ msgstr "Jokabide-kodea"
 #: bookwyrm/templates/about/layout.html:54
 #: bookwyrm/templates/snippets/footer.html:34
 msgid "Impressum"
-msgstr ""
+msgstr "Lege oharrak"
 
 #: bookwyrm/templates/about/layout.html:11
 msgid "Active users:"
@@ -606,8 +606,8 @@ msgstr "Liburu bakoitzeko %(pages)s orrialdeko batezbestekoa da."
 #, python-format
 msgid "(No page data was available for %(no_page_number)s book)"
 msgid_plural "(No page data was available for %(no_page_number)s books)"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "(Ez zegoen %(no_page_number)s liburuetarako orrialdeen daturik)"
+msgstr[1] "(Ez zegoen %(no_page_number)s liburuetarako orrialdeen daturik)"
 
 #: bookwyrm/templates/annual_summary/layout.html:150
 msgid "Their shortest read this year…"
@@ -702,7 +702,7 @@ msgstr "Ikusi ISNI erregistroa"
 #: bookwyrm/templates/author/author.html:87
 #: bookwyrm/templates/book/book.html:164
 msgid "View on ISFDB"
-msgstr ""
+msgstr "Ikus ISFDB webgunean"
 
 #: bookwyrm/templates/author/author.html:92
 #: bookwyrm/templates/author/sync_modal.html:5
@@ -731,7 +731,7 @@ msgstr "Goodreads-en ikusi"
 
 #: bookwyrm/templates/author/author.html:143
 msgid "View ISFDB entry"
-msgstr ""
+msgstr "Ikus ISFDB atala"
 
 #: bookwyrm/templates/author/author.html:158
 #, python-format
@@ -815,7 +815,7 @@ msgstr "Goodreads-ren giltza:"
 
 #: bookwyrm/templates/author/edit_author.html:105
 msgid "ISFDB:"
-msgstr ""
+msgstr "ISFDB:"
 
 #: bookwyrm/templates/author/edit_author.html:112
 msgid "ISNI:"
@@ -1013,16 +1013,16 @@ msgstr "ASIN:"
 #: bookwyrm/templates/book/book_identifiers.html:29
 #: bookwyrm/templates/book/edit/edit_book_form.html:359
 msgid "Audible ASIN:"
-msgstr ""
+msgstr "Audible ASIN:"
 
 #: bookwyrm/templates/book/book_identifiers.html:36
 #: bookwyrm/templates/book/edit/edit_book_form.html:368
 msgid "ISFDB ID:"
-msgstr ""
+msgstr "ISFDB ID:"
 
 #: bookwyrm/templates/book/book_identifiers.html:43
 msgid "Goodreads:"
-msgstr ""
+msgstr "Goodreads-en giltza:"
 
 #: bookwyrm/templates/book/cover_add_modal.html:5
 msgid "Add cover"
@@ -1335,7 +1335,7 @@ msgstr "Editatu esteka"
 #: bookwyrm/templates/book/file_links/edit_links.html:11
 #, python-format
 msgid "Links for \"<em>%(title)s</em>\""
-msgstr ""
+msgstr "\"<em>%(title)s</em>\" bilaketarako estekak"
 
 #: bookwyrm/templates/book/file_links/edit_links.html:32
 #: bookwyrm/templates/settings/link_domains/link_table.html:6
