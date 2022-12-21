@@ -46,4 +46,16 @@
     document
         .querySelectorAll("[data-remove]")
         .forEach((node) => node.addEventListener("click", removeInput));
+
+    // Get the element, add a keypress listener...
+    document.getElementById("subjects").addEventListener("keypress", function (e) {
+        // e.target is the element where it listens!
+        // if e.target is input field within the "subjects" div, do stuff
+        if (e.target && e.target.nodeName == "INPUT") {
+            // Item found, prevent default
+            if (event.keyCode == 13) {
+                event.preventDefault();
+            }
+        }
+    });
 })();
