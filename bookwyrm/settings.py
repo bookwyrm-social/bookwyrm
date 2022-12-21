@@ -288,6 +288,7 @@ LANGUAGES = [
     ("ca-es", _("Català (Catalan)")),
     ("de-de", _("Deutsch (German)")),
     ("es-es", _("Español (Spanish)")),
+    ("eu-es", _("Euskara (Basque)")),
     ("gl-es", _("Galego (Galician)")),
     ("it-it", _("Italiano (Italian)")),
     ("fi-fi", _("Suomi (Finnish)")),
