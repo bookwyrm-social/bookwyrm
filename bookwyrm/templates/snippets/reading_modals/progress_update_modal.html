@@ -11,6 +11,7 @@
 {% csrf_token %}
 <input type="hidden" name="id" value="{{ readthrough.id }}">
 <input type="hidden" name="start_date" value="{{ readthrough.start_date|date:'Y-m-d' }}">
+<input type="hidden" name="next" value="{{ request.path }}">
 {% endblock %}
 
 {% block reading-dates %}

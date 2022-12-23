@@ -62,6 +62,7 @@
         <form name="shelve-{{ uuid }}-{{ shelf.identifier }}" action="/shelve/" method="post">
             {% csrf_token %}
             <input type="hidden" name="book" value="{{ active_shelf.book.id }}">
+            <input type="hidden" name="next" value="{{ request.path }}">
             <button
                 class="button {{ class }}"
                 name="shelf"
