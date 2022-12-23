@@ -42,6 +42,7 @@ class ReadingStatus(View):
     @transaction.atomic
     def post(self, request, status, book_id):
         """Change the state of a book by shelving it and adding reading dates"""
+        next_step = request.POST.get("next", "/")
         identifier = {
             "want": models.Shelf.TO_READ,
             "start": models.Shelf.READING,
@@ -83,7 +84,7 @@ class ReadingStatus(View):
             if current_status_shelfbook.shelf.identifier != desired_shelf.identifier:
                 current_status_shelfbook.delete()
             else:  # It already was on the shelf
-                return redirect("/")
+                return redirect(next_step)
 
         models.ShelfBook.objects.create(
             book=book, shelf=desired_shelf, user=request.user
@@ -121,7 +122,7 @@ class ReadingStatus(View):
         if is_api_request(request):
             return HttpResponse()
 
-        return redirect("/")
+        return redirect(next_step)
 
 
 @method_decorator(login_required, name="dispatch")

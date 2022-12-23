@@ -35,6 +35,7 @@ def delete_shelf(request, shelf_id):
 @transaction.atomic
 def shelve(request):
     """put a book on a user's shelf"""
+    next_step = request.POST.get("next", "/")
     book = get_object_or_404(models.Edition, id=request.POST.get("book"))
     desired_shelf = get_object_or_404(
         request.user.shelf_set, identifier=request.POST.get("shelf")
@@ -64,13 +65,14 @@ def shelve(request):
             .first()
         )
         if current_read_status_shelfbook is not None:
+            # If it is not already on the shelf
             if (
                 current_read_status_shelfbook.shelf.identifier
                 != desired_shelf.identifier
             ):
                 current_read_status_shelfbook.delete()
-            else:  # It is already on the shelf
-                return redirect("/")
+            else:
+                return redirect(next_step)
 
         # create the new shelf-book entry
         models.ShelfBook.objects.create(
@@ -86,13 +88,15 @@ def shelve(request):
         # Might be good to alert, or reject the action?
         except IntegrityError:
             pass
-    return redirect("/")
+
+    return redirect(next_step)
 
 
 @login_required
 @require_POST
 def unshelve(request, book_id=False):
     """remove a book from a user's shelf"""
+    next_step = request.POST.get("next", "/")
     identity = book_id if book_id else request.POST.get("book")
     book = get_object_or_404(models.Edition, id=identity)
     shelf_book = get_object_or_404(
@@ -100,4 +104,4 @@ def unshelve(request, book_id=False):
     )
     shelf_book.raise_not_deletable(request.user)
     shelf_book.delete()
-    return redirect("/")
+    return redirect(next_step)
