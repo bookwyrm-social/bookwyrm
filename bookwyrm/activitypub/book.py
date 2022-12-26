@@ -59,6 +59,7 @@ class Edition(Book):
     isbn13: str = ""
     oclcNumber: str = ""
     pages: int = None
+    audiobookPlayTime: str = ""
     physicalFormat: str = ""
     physicalFormatDetail: str = ""
     publishers: List[str] = field(default_factory=lambda: [])
