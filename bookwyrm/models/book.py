@@ -1,6 +1,5 @@
 """ database schema for books and shelves """
 import re
-import datetime
 
 from django.contrib.postgres.search import SearchVectorField
 from django.contrib.postgres.indexes import GinIndex
@@ -12,7 +11,6 @@ from django.utils.translation import gettext_lazy as _
 from model_utils import FieldTracker
 from model_utils.managers import InheritanceManager
 from imagekit.models import ImageSpecField
-import humanize
 
 from bookwyrm import activitypub
 from bookwyrm.preview_images import generate_edition_preview_image_task
@@ -392,24 +390,6 @@ class Edition(Book):
             ),
         )
         return queryset
-
-    # pylint: disable=bare-except
-    @property
-    def localized_audiobook_play_time(self):
-        """Returns a localized version of the play time"""
-        audiobook_values = self.audiobook_play_time
-
-        try:
-            values = [int(i) for i in audiobook_values.split(":")]
-            assert len(values) == 2
-            delta = (values[0] * 60) + values[1]
-        except:
-            return audiobook_values
-
-        duration = datetime.timedelta(minutes=delta)
-        duration = humanize.precisedelta(duration)
-
-        return duration
 
 
 def isbn_10_to_13(isbn_10):

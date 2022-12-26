@@ -1,5 +1,9 @@
 """ template filters """
+import datetime
+
 from django import template
+import humanize
+
 from bookwyrm import models
 
 
@@ -33,3 +37,21 @@ def get_book_file_links(book):
 def get_author_edition(book, author):
     """default edition for a book on the author page"""
     return book.author_edition(author)
+
+
+# pylint: disable=bare-except
+@register.filter(name="localized_duration")
+def get_localized_duration(duration):
+    """Returns a localized version of the play time"""
+
+    try:
+        values = [int(i) for i in duration.split(":")]
+        assert len(values) == 2
+        delta = (values[0] * 60) + values[1]
+    except:
+        return duration
+
+    duration = datetime.timedelta(minutes=delta)
+    duration = humanize.precisedelta(duration)
+
+    return duration
