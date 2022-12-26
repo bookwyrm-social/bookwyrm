@@ -544,7 +544,7 @@ class DecimalField(ActivitypubFieldMixin, models.DecimalField):
 # pylint: disable=bare-except
 class PermissivePlayTime(CharField):
     """The Play Time field can accept total runtime in `minutes`
-       or in `hours:minutes`, but stores it as `hours:minutes`"""
+    or in `hours:minutes`, but stores it as `hours:minutes`"""
 
     def to_python(self, value):
         """Normalizes both kinds of inputs to formatted string"""
