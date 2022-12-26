@@ -33,6 +33,7 @@ class EditionForm(CustomForm):
             "physical_format",
             "physical_format_detail",
             "pages",
+            "audiobook_play_time",
             "isbn_13",
             "isbn_10",
             "openlibrary_key",
@@ -42,7 +43,6 @@ class EditionForm(CustomForm):
             "asin",
             "aasin",
             "isfdb",
-            "audiobook_play_time",
         ]
         widgets = {
             "title": forms.TextInput(attrs={"aria-describedby": "desc_title"}),
@@ -71,12 +71,19 @@ class EditionForm(CustomForm):
                 attrs={"aria-describedby": "desc_cover"}
             ),
             "physical_format": Select(
-                attrs={"aria-describedby": "desc_physical_format"}
+                attrs={
+                    "aria-describedby": "desc_physical_format",
+                    "data-toggle-on-select": "true",
+                    "data-toggle-strategy": '{ "default": "toggle-target-pages", "AudiobookFormat": "toggle-target-audiobook-play-time" }',
+                }
             ),
             "physical_format_detail": forms.TextInput(
                 attrs={"aria-describedby": "desc_physical_format_detail"}
             ),
             "pages": forms.NumberInput(attrs={"aria-describedby": "desc_pages"}),
+            "audiobook_play_time": forms.TextInput(
+                attrs={"aria-describedby": "desc_audiobook_play_time"},
+            ),
             "isbn_13": forms.TextInput(attrs={"aria-describedby": "desc_isbn_13"}),
             "isbn_10": forms.TextInput(attrs={"aria-describedby": "desc_isbn_10"}),
             "openlibrary_key": forms.TextInput(
@@ -94,9 +101,6 @@ class EditionForm(CustomForm):
             "ASIN": forms.TextInput(attrs={"aria-describedby": "desc_ASIN"}),
             "AASIN": forms.TextInput(attrs={"aria-describedby": "desc_AASIN"}),
             "isfdb": forms.TextInput(attrs={"aria-describedby": "desc_isfdb"}),
-            "audiobook_play_time": forms.TextInput(
-                attrs={"aria-describedby": "desc_audiobook_play_time"},
-            ),
         }
 
 

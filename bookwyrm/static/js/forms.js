@@ -2,7 +2,7 @@
     "use strict";
 
     /**
-     * Remoev input field
+     * Remove input field
      *
      * @param {event} the button click event
      */
@@ -58,4 +58,36 @@
             }
         }
     });
+
+    /**
+     * Toggle between two fields depending on select value
+     *
+     * @param {event} the change event on the associated select
+     */
+    function toggleOnSelect(event) {
+        const value = event.target.value;
+
+        const toggleStrategy = JSON.parse(event.target.dataset.toggleStrategy);
+        let selectedTarget = "";
+
+        if (value in toggleStrategy) {
+            selectedTarget = toggleStrategy[value];
+        } else {
+            selectedTarget = toggleStrategy.default;
+        }
+
+        Object.values(toggleStrategy).forEach((toggleItem) => {
+            const toggleElement = document.getElementById(toggleItem);
+
+            if (toggleItem === selectedTarget) {
+                toggleElement.classList.remove("is-hidden");
+            } else {
+                toggleElement.classList.add("is-hidden");
+            }
+        });
+    }
+
+    document
+        .querySelectorAll("[data-toggle-on-select]")
+        .forEach((node) => node.addEventListener("change", toggleOnSelect));
 })();
