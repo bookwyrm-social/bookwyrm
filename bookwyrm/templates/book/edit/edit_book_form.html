@@ -275,7 +275,7 @@
                     </div>
                 </div>
 
-                <div class="field" id="toggle-target-pages">
+                <div class="field{% if form.physical_format.value == 'AudiobookFormat' %} is-hidden{% endif %}" id="toggle-target-pages">
                     <label class="label" for="id_pages">
                         {% trans "Pages:" %}
                     </label>
@@ -284,7 +284,7 @@
                     {% include 'snippets/form_errors.html' with errors_list=form.pages.errors id="desc_pages" %}
                 </div>
 
-                <div class="field is-hidden" id="toggle-target-audiobook-play-time">
+                <div class="field{% if form.physical_format.value != 'AudiobookFormat' %} is-hidden{% endif %}" id="toggle-target-audiobook-play-time">
                     <label class="label" for="id_audiobook_play_time">
                         {% trans "Audiobook play time:" %}
                     </label>
