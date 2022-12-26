@@ -60,3 +60,10 @@ class BookDisplayTags(TestCase):
         links = book_display_tags.get_book_file_links(self.book)
         self.assertTrue(links.exists())
         self.assertEqual(links[0], link)
+
+    def test_get_localized_duration(self, *_):
+        """just a little test of humanization"""
+
+        result = book_display_tags.get_localized_duration("12:34")
+
+        self.assertEqual(result, "12 hours and 34 minutes")
