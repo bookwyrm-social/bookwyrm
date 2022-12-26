@@ -42,6 +42,7 @@ class EditionForm(CustomForm):
             "asin",
             "aasin",
             "isfdb",
+            "audiobook_play_time",
         ]
         widgets = {
             "title": forms.TextInput(attrs={"aria-describedby": "desc_title"}),
@@ -93,6 +94,9 @@ class EditionForm(CustomForm):
             "ASIN": forms.TextInput(attrs={"aria-describedby": "desc_ASIN"}),
             "AASIN": forms.TextInput(attrs={"aria-describedby": "desc_AASIN"}),
             "isfdb": forms.TextInput(attrs={"aria-describedby": "desc_isfdb"}),
+            "audiobook_play_time": forms.TextInput(
+                attrs={"aria-describedby": "desc_audiobook_play_time"},
+            ),
         }
 
 

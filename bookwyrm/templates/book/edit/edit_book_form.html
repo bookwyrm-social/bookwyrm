@@ -273,6 +273,19 @@
                             {% include 'snippets/form_errors.html' with errors_list=form.physical_format_detail.errors id="desc_physical_format_detail" %}
                         </div>
                     </div>
+                    <div class="column if-audiobook">
+                        <div class="field">
+                            <label class="label" for="id_audiobook_play_time">
+                                {% trans "Audiobook play time:" %}
+                            </label>
+                            {{ form.audiobook_play_time }}
+                            <p class="help">
+                                {% trans "Can be input as hours:minutes or as the total run in minutes" %}
+                            </p>
+
+                            {% include 'snippets/form_errors.html' with errors_list=form.audiobook_play_time.errors id="desc_audiobook_play_time" %}
+                        </div>
+                    </div>
                 </div>
 
                 <div class="field">
