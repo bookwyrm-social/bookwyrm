@@ -18,7 +18,13 @@
 
 <p>
     {% if format and not pages %}
-        {{ format }}
+        {% if format_property and format_property == "AudiobookFormat" and book.audiobook_play_time %}
+            {{ format }}<br />
+            {% trans "Play time:" %}
+            {{ book.localized_audiobook_play_time }}
+        {% else %}
+            {{ format }}
+        {% endif %}
     {% elif format and pages %}
         {% blocktrans %}{{ format }}, {{ pages }} pages{% endblocktrans %}
     {% elif pages %}
