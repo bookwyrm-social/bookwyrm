@@ -1,5 +1,6 @@
 """ using django model forms """
 from django import forms
+import json
 
 from bookwyrm import models
 from bookwyrm.models.fields import ClearableFileInputWithWarning
@@ -74,9 +75,12 @@ class EditionForm(CustomForm):
                 attrs={
                     "aria-describedby": "desc_physical_format",
                     "data-toggle-on-select": "true",
-                    "data-toggle-strategy": "{"
-                    '"default": "toggle-target-pages",'
-                    '"AudiobookFormat": "toggle-target-audiobook-play-time"}',
+                    "data-toggle-strategy": json.dumps(
+                        {
+                            "default": "toggle-target-pages",
+                            "AudiobookFormat": "toggle-target-audiobook-play-time",
+                        }
+                    ),
                 }
             ),
             "physical_format_detail": forms.TextInput(
