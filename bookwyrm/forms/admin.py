@@ -91,6 +91,7 @@ class RegistrationForm(CustomForm):
             "invite_request_question",
             "invite_question_text",
             "require_confirm_email",
+            "default_user_auth_group",
         ]
 
         widgets = {
