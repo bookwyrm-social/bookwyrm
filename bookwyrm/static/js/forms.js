@@ -62,12 +62,11 @@
     /**
      * Toggle between two fields depending on select value
      *
-     * @param {event} the change event on the associated select
+     * @param {target} the select that will direct the toggle
      */
-    function toggleOnSelect(event) {
-        const value = event.target.value;
-
-        const toggleStrategy = JSON.parse(event.target.dataset.toggleStrategy);
+    function handleToggleOnSelect(target) {
+        const value = target.value;
+        const toggleStrategy = JSON.parse(target.dataset.toggleStrategy);
         let selectedTarget = "";
 
         if (value in toggleStrategy) {
@@ -89,5 +88,9 @@
 
     document
         .querySelectorAll("[data-toggle-on-select]")
-        .forEach((node) => node.addEventListener("change", toggleOnSelect));
+        .forEach((node) => {
+            handleToggleOnSelect(node);
+
+            node.addEventListener("change", () => handleToggleOnSelect(node));
+        });
 })();
