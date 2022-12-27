@@ -120,6 +120,10 @@
             <section class="is-clipped">
                 {% with book=book %}
                     <div class="content">
+                        {% include 'book/format_info.html' %}
+                    </div>
+
+                    <div class="content my-3">
                         {% include 'book/publisher_info.html' %}
                     </div>
 

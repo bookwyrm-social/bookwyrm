@@ -4,37 +4,6 @@
 {% load humanize %}
 {% load book_display_tags %}
 
-{% firstof book.physical_format_detail book.get_physical_format_display as format %}
-{% firstof book.physical_format book.physical_format_detail as format_property %}
-{% with pages=book.pages %}
-{% if format or pages %}
-
-{% if format_property %}
-<meta itemprop="bookFormat" content="{{ format_property }}">
-{% endif %}
-
-{% if pages %}
-<meta itemprop="numberOfPages" content="{{ pages }}">
-{% endif %}
-
-<p>
-    {% if format and not pages %}
-        {% if format_property and format_property == "AudiobookFormat" and book.audiobook_play_time %}
-            {{ format }}<br />
-            {% trans "Play time:" %}
-            {{ book.audiobook_play_time|localized_duration }}
-        {% else %}
-            {{ format }}
-        {% endif %}
-    {% elif format and pages %}
-        {% blocktrans %}{{ format }}, {{ pages }} pages{% endblocktrans %}
-    {% elif pages %}
-        {% blocktrans %}{{ pages }} pages{% endblocktrans %}
-    {% endif %}
-</p>
-{% endif %}
-{% endwith %}
-
 {% if book.languages %}
     {% for language in book.languages %}
         <meta itemprop="inLanguage" content="{{ language }}">
