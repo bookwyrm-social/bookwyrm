@@ -37,9 +37,22 @@ def get_author_edition(book, author):
     return book.author_edition(author)
 
 
-# pylint: disable=bare-except
 @register.filter(name="localized_duration")
 def get_localized_duration(duration):
     """Returns a localized version of the play time"""
 
     return humanize.precisedelta(duration)
+
+
+@register.filter(name="iso_duration")
+def get_iso_duration(duration):
+    """Returns an ISO8601 version of the play time"""
+    duration = str(duration).split(":")
+
+    iso_string = ["PT"]
+    if int(duration[0]) > 0:
+        iso_string.append(f"{str(duration[0]).zfill(2)}H")
+
+    iso_string.append(f"{str(duration[1]).zfill(2)}M")
+
+    return "".join(iso_string)

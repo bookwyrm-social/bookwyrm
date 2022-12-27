@@ -10,6 +10,9 @@
 
 {% if format_property %}
 <meta itemprop="bookFormat" content="{{ format_property }}">
+{% if book.physical_format == "AudiobookFormat" and book.audiobook_play_time %}
+    <meta itemprop="timeRequired" content="{{ book.audiobook_play_time|iso_duration }}">
+{% endif %}
 {% endif %}
 
 {% if pages %}
