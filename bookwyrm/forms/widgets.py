@@ -17,6 +17,10 @@ class MinutesDurationWidget(forms.TextInput):
 
     def format_value(self, value):
         """Removes seconds from a hh:mm:ss string"""
+
+        if value in [0, None, ""]:
+            return value
+
         if len(value.split(":")) == 3 and value.endswith(":00"):
             value = value[:-3]
 

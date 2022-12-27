@@ -114,6 +114,9 @@ class EditionForm(CustomForm):
         """Converts a raw input in seconds to minutes"""
         data = self.cleaned_data["audiobook_play_time"]
 
+        if data in [0, None, ""]:
+            return data
+
         return data * 60
 
 
