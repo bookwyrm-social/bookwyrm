@@ -86,11 +86,9 @@
         });
     }
 
-    document
-        .querySelectorAll("[data-toggle-on-select]")
-        .forEach((node) => {
-            handleToggleOnSelect(node);
+    document.querySelectorAll("[data-toggle-on-select]").forEach((node) => {
+        handleToggleOnSelect(node);
 
-            node.addEventListener("change", () => handleToggleOnSelect(node));
-        });
+        node.addEventListener("change", () => handleToggleOnSelect(node));
+    });
 })();
