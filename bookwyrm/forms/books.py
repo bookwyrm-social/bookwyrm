@@ -6,7 +6,7 @@ from django import forms
 from bookwyrm import models
 from bookwyrm.models.fields import ClearableFileInputWithWarning
 from .custom_form import CustomForm
-from .widgets import ArrayWidget, SelectDateWidget, Select
+from .widgets import ArrayWidget, SelectDateWidget, Select, MinutesDurationWidget
 
 
 # pylint: disable=missing-class-docstring
@@ -88,7 +88,7 @@ class EditionForm(CustomForm):
                 attrs={"aria-describedby": "desc_physical_format_detail"}
             ),
             "pages": forms.NumberInput(attrs={"aria-describedby": "desc_pages"}),
-            "audiobook_play_time": forms.TextInput(
+            "audiobook_play_time": MinutesDurationWidget(
                 attrs={"aria-describedby": "desc_audiobook_play_time"},
             ),
             "isbn_13": forms.TextInput(attrs={"aria-describedby": "desc_isbn_13"}),
@@ -109,6 +109,12 @@ class EditionForm(CustomForm):
             "AASIN": forms.TextInput(attrs={"aria-describedby": "desc_AASIN"}),
             "isfdb": forms.TextInput(attrs={"aria-describedby": "desc_isfdb"}),
         }
+
+    def clean_audiobook_play_time(self):
+        """Converts a raw input in seconds to minutes"""
+        data = self.cleaned_data["audiobook_play_time"]
+
+        return data * 60
 
 
 class EditionFromWorkForm(CustomForm):

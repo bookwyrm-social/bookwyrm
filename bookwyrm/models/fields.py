@@ -1,7 +1,6 @@
 """ activitypub-aware django model fields """
 from dataclasses import MISSING
 import re
-import math
 from uuid import uuid4
 from urllib.parse import urljoin
 
@@ -539,38 +538,3 @@ class DecimalField(ActivitypubFieldMixin, models.DecimalField):
         if not value:
             return None
         return float(value)
-
-
-# pylint: disable=bare-except
-class PermissivePlayTime(CharField):
-    """The Play Time field can accept total runtime in `minutes`
-    or in `hours:minutes`, but stores it as `hours:minutes`"""
-
-    def to_python(self, value):
-        """Normalizes both kinds of inputs to formatted string"""
-        original_value = value
-        if value in (None, ""):
-            return value
-
-        try:
-            # check if value is in minutes only
-            value = int(value)
-            value = f"{str(math.floor(value / 60)).zfill(2)}:{str(value % 60).zfill(2)}"
-        except:
-            try:
-                # Check that the values can be converted to int
-                value = [int(i) for i in value.split(":")]
-                assert value[0] >= 0
-                assert 0 <= value[1] <= 60
-                # Then transform the values to str for storage
-                value = ":".join([str(i).zfill(2) for i in value])
-            except:
-                raise ValidationError(
-                    _(
-                        "%(value)s is not a valid duration in"
-                        " minutes or in the format hour:minutes"
-                    ),
-                    params={"value": original_value},
-                )
-
-        return value

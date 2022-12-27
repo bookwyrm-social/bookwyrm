@@ -12,6 +12,17 @@ class ArrayWidget(forms.widgets.TextInput):
         return [i for i in data.getlist(name) if i]
 
 
+class MinutesDurationWidget(forms.TextInput):
+    """Custom widget displaying only hh:mm"""
+
+    def format_value(self, value):
+        """Removes seconds from a hh:mm:ss string"""
+        if len(value.split(":")) == 3 and value.endswith(":00"):
+            value = value[:-3]
+
+        return value
+
+
 class Select(forms.Select):
     """custom template for select widget"""
 
