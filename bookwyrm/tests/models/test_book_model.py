@@ -14,6 +14,7 @@ from bookwyrm import models, settings
 from bookwyrm.models.book import isbn_10_to_13, isbn_13_to_10
 from bookwyrm.settings import ENABLE_THUMBNAIL_GENERATION
 
+
 class Book(TestCase):
     """not too much going on in the books model but here we are"""
 
@@ -105,7 +106,7 @@ class Book(TestCase):
 
     @pytest.mark.skipif(
         not ENABLE_THUMBNAIL_GENERATION,
-        reason="Thumbnail generation disabled in settings"
+        reason="Thumbnail generation disabled in settings",
     )
     def test_thumbnail_fields(self):
         """Just hit them"""
