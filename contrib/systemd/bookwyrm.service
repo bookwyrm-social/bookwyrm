@@ -1,6 +1,6 @@
 [Unit]
 Description=BookWyrm
-After=network.target postgresql.service
+After=network.target postgresql.service redis.service
 
 [Service]
 User=bookwyrm
