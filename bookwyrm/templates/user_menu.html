@@ -13,6 +13,10 @@
             <span class="ml-2">{{ request.user.display_name }}</span>
         </span>
         <span class="icon icon-arrow-down is-hidden-mobile" aria-hidden="true"></span>
+        <span class="summary-on-open">
+            <span class="icon icon-arrow-left is-small" aria-hidden="true"></span>
+            {% trans "Back" %}
+        </span>
     </summary>
 
     <div class="dropdown-menu">
