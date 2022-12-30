@@ -12,6 +12,7 @@ from django.views.decorators.http import require_POST
 
 from bookwyrm import forms, models
 from bookwyrm.views.shelf.shelf_actions import unshelve
+from bookwyrm.utils.validate import validate_url_domain
 from .status import CreateStatus
 from .helpers import get_edition, handle_reading_status, is_api_request
 from .helpers import load_date_in_user_tz_as_utc
@@ -43,6 +44,7 @@ class ReadingStatus(View):
     def post(self, request, status, book_id):
         """Change the state of a book by shelving it and adding reading dates"""
         next_step = request.POST.get("next", "/")
+        next_step = validate_url_domain(next_step, "/")
         identifier = {
             "want": models.Shelf.TO_READ,
             "start": models.Shelf.READING,
