@@ -2,8 +2,8 @@ FROM postgres:13.0
 
 # crontab
 RUN mkdir /backups
-COPY ./backup.sh /backups
-COPY ./weed.sh /backups
+COPY ./backup.sh /usr/local/bin/bookwyrm-backup.sh
+COPY ./weed.sh /usr/local/bin/bookwyrm-weed.sh
 COPY ./cronfile /etc/cron.d/cronfile
 RUN apt-get update && apt-get -y --no-install-recommends install cron
 RUN chmod 0644 /etc/cron.d/cronfile
