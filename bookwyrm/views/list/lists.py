@@ -54,9 +54,7 @@ class SavedLists(View):
     def get(self, request):
         """display book lists"""
         # hide lists with no approved books
-        lists = request.user.saved_lists.order_by("-updated_date").filter(
-            suggests_for__isnull=True
-        )
+        lists = request.user.saved_lists.order_by("-updated_date")
 
         paginated = Paginator(lists, 12)
         data = {

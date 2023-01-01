@@ -177,6 +177,7 @@
     </section>
 
     <section class="column is-one-quarter">
+    {% if list.suggests_for == None %}
         <h2 class="title is-5">
             {% trans "Sort List" %}
         </h2>
@@ -199,6 +200,7 @@
                 </button>
             </div>
         </form>
+    {% endif %}
     {% if request.user.is_authenticated and not list.curation == 'closed' or request.user == list.user %}
         <h2 class="title is-5 mt-6">
             {% if list.curation == 'open' or request.user == list.user or list.group|is_member:request.user %}
