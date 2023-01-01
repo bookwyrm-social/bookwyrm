@@ -4,8 +4,8 @@
     {% trans "Suggestions" %}
 </h2>
 
-{% if book.suggestionlist %}
-{% with book.suggestionlist.listitem_set.all as items %}
+{% if book.suggestion_list %}
+{% with book.suggestion_list.listitem_set.all as items %}
 
     {% if items|length == 0 %}
     <section class="section has-background-light is-flex is-flex-direction-column is-align-items-center">
@@ -59,7 +59,7 @@
         <form name="create-list" method="post" action="{% url 'book-create-suggestion-list' book_id=book.id %}#suggestions-section" class="has-text-centered">
             {% csrf_token %}
             <input type="hidden" name="user" value="{{ request.user.id }}">
-            <input type="hidden" name="book" value="{{ book.id }}">
+            <input type="hidden" name="suggests_for" value="{{ book.id }}">
             <button type="submit" class="button is-medium">{% trans "Create suggestion list" %}</button>
         </form>      
     </section>

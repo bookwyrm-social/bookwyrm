@@ -2,7 +2,7 @@
 {% load utilities %}
 
 {% if request.user.is_authenticated %}
-{% with book.suggestionlist as list %}
+{% with book.suggestion_list as list %}
     <h2 class="title is-5">
         {% trans "Add suggestions" %}
     </h2>
