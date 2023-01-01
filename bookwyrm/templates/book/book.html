@@ -367,7 +367,7 @@
             </section>
             {% endif %}
 
-            {% if lists.exists or request.user.list_set.exists %}
+            {% if lists.exists or list_options.exists %}
             <section class="content block is-clipped">
                 <h2 class="title is-5">{% trans "Lists" %}</h2>
                 <ul>

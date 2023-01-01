@@ -76,11 +76,15 @@ class Book(View):
         queryset = queryset.select_related("user").order_by("-published_date")
         paginated = Paginator(queryset, PAGE_LENGTH)
 
-        query = request.GET.get("suggestion_query", "")
-
-        lists = models.List.privacy_filter(request.user,).filter(
-            listitem__approved=True,
-            listitem__book__in=book.parent_work.editions.all(),
+        lists = (
+            models.List.privacy_filter(
+                request.user,
+            )
+            .filter(
+                listitem__approved=True,
+                listitem__book__in=book.parent_work.editions.all(),
+            )
+            .filter(suggests_for__isnull=True)
         )
         data = {
             "book": book,
@@ -94,11 +98,13 @@ class Book(View):
             "rating": reviews.aggregate(Avg("rating"))["rating__avg"],
             "lists": lists,
             "update_error": kwargs.get("update_error", False),
-            "query": query,
+            "query": request.GET.get("suggestion_query", ""),
         }
 
         if request.user.is_authenticated:
-            data["list_options"] = request.user.list_set.exclude(id__in=data["lists"])
+            data["list_options"] = request.user.list_set.filter(
+                suggests_for__isnull=True
+            ).exclude(id__in=data["lists"])
             data["file_link_form"] = forms.FileLinkForm()
             readthroughs = models.ReadThrough.objects.filter(
                 user=request.user,
@@ -131,7 +137,7 @@ class Book(View):
                 data["suggested_books"] = get_list_suggestions(
                     book.suggestion_list,
                     request.user,
-                    query=query,
+                    query=request.GET.get("suggestion_query", ""),
                     ignore_book=book,
                 )
 
