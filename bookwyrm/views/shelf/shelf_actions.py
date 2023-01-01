@@ -36,7 +36,7 @@ def delete_shelf(request, shelf_id):
 @transaction.atomic
 def shelve(request):
     """put a book on a user's shelf"""
-    next_step = request.META.get('HTTP_REFERER')
+    next_step = request.META.get("HTTP_REFERER")
     next_step = validate_url_domain(next_step, "/")
     book = get_object_or_404(models.Edition, id=request.POST.get("book"))
     desired_shelf = get_object_or_404(
@@ -98,7 +98,7 @@ def shelve(request):
 @require_POST
 def unshelve(request, book_id=False):
     """remove a book from a user's shelf"""
-    next_step = request.META.get('HTTP_REFERER')
+    next_step = request.META.get("HTTP_REFERER")
     next_step = validate_url_domain(next_step, "/")
     identity = book_id if book_id else request.POST.get("book")
     book = get_object_or_404(models.Edition, id=identity)
