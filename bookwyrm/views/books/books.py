@@ -3,7 +3,8 @@ from uuid import uuid4
 
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.paginator import Paginator
-from django.db.models import Avg, Q
+from django.db import transaction
+from django.db.models import Avg, Q, Max
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
@@ -16,6 +17,7 @@ from bookwyrm.connectors import connector_manager, ConnectorException
 from bookwyrm.connectors.abstract_connector import get_image
 from bookwyrm.settings import PAGE_LENGTH
 from bookwyrm.views.helpers import is_api_request, maybe_redirect_local_path
+from bookwyrm.views.list.list import get_list_suggestions, increment_order_in_reverse
 
 
 # pylint: disable=no-self-use
@@ -74,6 +76,8 @@ class Book(View):
         queryset = queryset.select_related("user").order_by("-published_date")
         paginated = Paginator(queryset, PAGE_LENGTH)
 
+        query = request.GET.get("suggestion_query", "")
+
         lists = models.List.privacy_filter(request.user,).filter(
             listitem__approved=True,
             listitem__book__in=book.parent_work.editions.all(),
@@ -90,6 +94,7 @@ class Book(View):
             "rating": reviews.aggregate(Avg("rating"))["rating__avg"],
             "lists": lists,
             "update_error": kwargs.get("update_error", False),
+            "query": query,
         }
 
         if request.user.is_authenticated:
@@ -122,6 +127,10 @@ class Book(View):
                 "comment_count": book.comment_set.filter(**filters).count(),
                 "quotation_count": book.quotation_set.filter(**filters).count(),
             }
+            if hasattr(book, "suggestionlist"):
+                data["suggested_books"] = get_list_suggestions(
+                    book.suggestionlist, request.user, query=query, ignore_id=book.id,
+                )
 
         return TemplateResponse(request, "book/book.html", data)
 
@@ -228,3 +237,28 @@ def create_suggestion_list(request, book_id):
 
     return redirect("book", book.id)
 
+
+@login_required
+@require_POST
+@transaction.atomic
+def book_add_suggestion(request, book_id):
+    """put a book on the suggestion list"""
+    book_list = get_object_or_404(models.List, id=request.POST.get("book_list"))
+
+    form = forms.ListItemForm(request.POST)
+    if not form.is_valid():
+        return Book().get(request, book_id, add_failed=True)
+
+    item = form.save(request, commit=False)
+
+    # add the book at the latest order of approved books, before pending books
+    order_max = (
+        book_list.listitem_set.filter(approved=True).aggregate(Max("order"))[
+            "order__max"
+        ]
+    ) or 0
+    increment_order_in_reverse(book_list.id, order_max + 1)
+    item.order = order_max + 1
+    item.save()
+
+    return Book().get(request, book_id, add_succeeded=True)

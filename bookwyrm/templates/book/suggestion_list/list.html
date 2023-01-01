@@ -1,23 +1,17 @@
 {% load i18n %}
 
-<h2 class="title is-5" id="suggestions-section">
+<h2 class="title is-3" id="suggestions-section">
     {% trans "Suggestions" %}
 </h2>
 
 {% if book.suggestionlist %}
 {% with book.suggestionlist.listitem_set.all as items %}
 
-    {% if items.count == 0 %}
-    <section class="section is-medium has-background-light">
-        <p class="has-text-centered">
-            {% trans "There are currently no suggestions." %}
-            <br>
-        </p>
-        <p class="has-text-centered mt-3">
-            <button type="button" class="button">
-                {% trans "Suggest a book" %}
-            </button>
-        </p>
+    {% if items|length == 0 %}
+    <section class="section has-background-light is-flex is-flex-direction-column is-align-items-center">
+        <div class="column is-one-third is-centered">
+           {% include "book/suggestion_list/search.html" %}
+        </div>
     </section>
     {% else %}
     <ol class="columns">
@@ -28,7 +22,7 @@
                     {% with book=item.book %}
                         <div class="is-cover">
                             <a href="{{ item.book.local_path }}" aria-hidden="true">
-                                {% include 'snippets/book_cover.html' with cover_class='is-w-auto is-h-m-mobile im-h-m-tablet is-align-items-flex-start' size='medium' %}
+                                {% include 'snippets/book_cover.html' with cover_class='is-h-m-mobile is-h-m-tablet is-align-items-flex-start' size='medium' %}
                             </a>
                         </div>
 
@@ -54,12 +48,15 @@
             </div>
         </li>
     {% endfor %}
+        <li class="mb-5 column is-one-quarter">
+            {% include "book/suggestion_list/search.html" %}
+        </li>
     </ol>
     {% endif %}
 {% endwith %}
 {% else %}
     <section class="section is-medium has-background-light">
-        <form name="create-list" method="post" action="{% url 'book-create-suggestion-list' book_id=book.id %}" class="has-text-centered">
+        <form name="create-list" method="post" action="{% url 'book-create-suggestion-list' book_id=book.id %}#suggestions-section" class="has-text-centered">
             {% csrf_token %}
             <input type="hidden" name="user" value="{{ request.user.id }}">
             <input type="hidden" name="book" value="{{ book.id }}">

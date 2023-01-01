@@ -19,7 +19,11 @@
 <form
     name="add-book-{{ book.id }}"
     method="POST"
-    action="{% url 'list-add-book' %}{% if query %}?q={{ query }}{% endif %}"
+    {% if is_suggestion %}
+        action="{% url 'book-add-suggestion' book_id=list.book.id %}{% if query %}?suggestion_query={{ query }}#suggestions-section{% endif %}"
+    {% else %}
+        action="{% url 'list-add-book' %}{% if query %}?q={{ query }}{% endif %}"
+    {% endif %}
 >
 {% endblock %}
 
