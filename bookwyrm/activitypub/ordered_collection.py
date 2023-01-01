@@ -40,6 +40,7 @@ class BookList(OrderedCollectionPrivate):
 
     summary: str = None
     curation: str = "closed"
+    book: str
     type: str = "BookList"
 
 
