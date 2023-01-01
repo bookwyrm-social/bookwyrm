@@ -43,7 +43,7 @@ class ReadingStatus(View):
     @transaction.atomic
     def post(self, request, status, book_id):
         """Change the state of a book by shelving it and adding reading dates"""
-        next_step = request.POST.get("next", "/")
+        next_step = request.META.get('HTTP_REFERER')
         next_step = validate_url_domain(next_step, "/")
         identifier = {
             "want": models.Shelf.TO_READ,

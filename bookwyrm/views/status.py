@@ -59,7 +59,7 @@ class CreateStatus(View):
     # pylint: disable=too-many-branches
     def post(self, request, status_type, existing_status_id=None):
         """create status of whatever type"""
-        next_step = request.POST.get("next", "/")
+        next_step = request.META.get('HTTP_REFERER')
         next_step = validate_url_domain(next_step, "/")
         created = not existing_status_id
         existing_status = None
@@ -170,7 +170,7 @@ def update_progress(request, book_id):  # pylint: disable=unused-argument
 def edit_readthrough(request):
     """can't use the form because the dates are too finnicky"""
     # TODO: remove this, it duplicates the code in the ReadThrough view
-    next_step = request.POST.get("next", "/")
+    next_step = request.META.get('HTTP_REFERER')
     next_step = validate_url_domain(next_step, "/")
     readthrough = get_object_or_404(models.ReadThrough, id=request.POST.get("id"))
 

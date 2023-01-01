@@ -14,7 +14,6 @@ Stop Reading "<em>{{ book_title }}</em>"
 <input type="hidden" name="id" value="{{ readthrough.id }}">
 <input type="hidden" name="reading_status" value="stopped-reading">
 <input type="hidden" name="shelf" value="{{ move_from }}">
-<input type="hidden" name="next" value="{{ request.path }}">
 {% endblock %}
 
 {% block reading-dates %}

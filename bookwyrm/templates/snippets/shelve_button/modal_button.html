@@ -1,6 +1,5 @@
 {% load utilities %}
 <form name="fallback_form_{{ 0|uuid }}" method="GET" action="{{ fallback_url }}" autocomplete="off">
-    <input type="hidden" name="next" value="{{ request.path }}">
     <button
         type="submit"
         class="button {{ class }}"
