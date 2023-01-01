@@ -8,19 +8,35 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bookwyrm', '0172_alter_user_preferred_language'),
+        ("bookwyrm", "0172_alter_user_preferred_language"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='SuggestionList',
+            name="SuggestionList",
             fields=[
-                ('list_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, serialize=False, to='bookwyrm.list')),
-                ('book', bookwyrm.models.fields.OneToOneField(on_delete=django.db.models.deletion.PROTECT, to='bookwyrm.edition')),
+                (
+                    "list_ptr",
+                    models.OneToOneField(
+                        auto_created=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        parent_link=True,
+                        primary_key=True,
+                        serialize=False,
+                        to="bookwyrm.list",
+                    ),
+                ),
+                (
+                    "book",
+                    bookwyrm.models.fields.OneToOneField(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        to="bookwyrm.edition",
+                    ),
+                ),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
-            bases=('bookwyrm.list',),
+            bases=("bookwyrm.list",),
         ),
     ]

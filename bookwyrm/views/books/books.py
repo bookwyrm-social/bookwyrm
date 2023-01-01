@@ -129,7 +129,10 @@ class Book(View):
             }
             if hasattr(book, "suggestionlist"):
                 data["suggested_books"] = get_list_suggestions(
-                    book.suggestionlist, request.user, query=query, ignore_id=book.id,
+                    book.suggestionlist,
+                    request.user,
+                    query=query,
+                    ignore_id=book.id,
                 )
 
         return TemplateResponse(request, "book/book.html", data)
@@ -225,7 +228,7 @@ def create_suggestion_list(request, book_id):
     """create a suggestion_list"""
     form = forms.SuggestionListForm(request.POST)
     book = get_object_or_404(models.Edition, id=book_id)
-    
+
     if not form.is_valid():
         return redirect("book", book.id)
     suggestion_list = form.save(request, commit=False)

@@ -106,7 +106,9 @@ def get_list_suggestions(book_list, user, query=None, ignore_id=None):
             ],
         )
     # just suggest whatever books are nearby
-    suggestions = user.shelfbook_set.filter(~Q(book__in=book_list.books.all())).exclude(book__id=ignore_id)
+    suggestions = user.shelfbook_set.filter(~Q(book__in=book_list.books.all())).exclude(
+        book__id=ignore_id
+    )
     suggestions = [s.book for s in suggestions[:5]]
     if len(suggestions) < 5:
         suggestions += [
