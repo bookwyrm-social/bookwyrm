@@ -14,7 +14,8 @@
 
     <link rel="shortcut icon" type="image/x-icon" href="{% if site.favicon %}{% get_media_prefix %}{{ site.favicon }}{% else %}{% static "images/favicon.ico" %}{% endif %}">
     <link rel="apple-touch-icon" href="{% if site.logo %}{{ media_full_url }}{{ site.logo }}{% else %}{% static "images/logo.png" %}{% endif %}">
-
+    <meta name="apple-mobile-web-app-title" content="BookWyrm">
+    <meta name="apple-mobile-web-app-capable" content="yes">
     {% if preview_images_enabled is True %}
     <meta name="twitter:card" content="summary_large_image">
     {% else %}
