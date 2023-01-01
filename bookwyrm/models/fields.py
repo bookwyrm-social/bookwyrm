@@ -280,7 +280,7 @@ class ForeignKey(ActivitypubRelatedFieldMixin, models.ForeignKey):
 
 
 class OneToOneField(ActivitypubRelatedFieldMixin, models.OneToOneField):
-    """activitypub-aware foreign key field"""
+    """activitypub-aware one to one field"""
 
     def field_to_activity(self, value):
         if not value:

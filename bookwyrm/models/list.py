@@ -131,6 +131,14 @@ class List(OrderedCollectionMixin, BookWyrmModel):
         super().save(*args, **kwargs)
 
 
+class SuggestionList(List):
+    """List related to a specific book"""
+
+    book = fields.OneToOneField(
+        "Edition", on_delete=models.PROTECT, activitypub_field="book"
+    )
+
+
 class ListItem(CollectionItemMixin, BookWyrmModel):
     """ok"""
 

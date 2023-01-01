@@ -8,7 +8,7 @@ from .link import Link, FileLink, LinkDomain
 from .connector import Connector
 
 from .shelf import Shelf, ShelfBook
-from .list import List, ListItem
+from .list import List, SuggestionList, ListItem
 
 from .status import Status, GeneratedNote, Comment, Quotation
 from .status import Review, ReviewRating
