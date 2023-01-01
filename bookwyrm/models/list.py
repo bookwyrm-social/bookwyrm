@@ -76,7 +76,9 @@ class List(OrderedCollectionMixin, BookWyrmModel):
     @property
     def get_description(self):
         if self.suggests_for:
-            return _("This is the list of suggestions for <a href='%(url)s'>%(title)s</a>") % {
+            return _(
+                "This is the list of suggestions for <a href='%(url)s'>%(title)s</a>"
+            ) % {
                 "title": self.suggests_for.title,
                 "url": self.suggests_for.local_path,
             }

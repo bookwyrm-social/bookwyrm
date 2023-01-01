@@ -73,7 +73,10 @@ class List(View):
 
         if request.user.is_authenticated:
             data["suggested_books"] = get_list_suggestions(
-                book_list, request.user, query=query, ignore_id=book_list.suggests_for.id
+                book_list,
+                request.user,
+                query=query,
+                ignore_id=book_list.suggests_for.id,
             )
         return TemplateResponse(request, "lists/list.html", data)
 
