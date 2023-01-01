@@ -5,6 +5,7 @@ from django.core.exceptions import PermissionDenied
 from django.db import models
 from django.db.models import Q
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 
 from bookwyrm import activitypub
 from bookwyrm.settings import DOMAIN
@@ -64,6 +65,23 @@ class List(OrderedCollectionMixin, BookWyrmModel):
     def collection_queryset(self):
         """list of books for this shelf, overrides OrderedCollectionMixin"""
         return self.books.filter(listitem__approved=True).order_by("listitem")
+
+    @property
+    def get_name(self):
+        if self.suggests_for:
+            return _("Suggestions for %(title)s") % {"title": self.suggests_for.title}
+
+        return self.name
+
+    @property
+    def get_description(self):
+        if self.suggests_for:
+            return _("This is the list of suggestions for <a href='%(url)s'>%(title)s</a>") % {
+                "title": self.suggests_for.title,
+                "url": self.suggests_for.local_path,
+            }
+
+        return self.description
 
     class Meta:
         """default sorting"""

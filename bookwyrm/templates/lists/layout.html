@@ -1,12 +1,12 @@
 {% extends 'layout.html' %}
 {% load i18n %}
 
-{% block title %}{{ list.name }}{% endblock %}
+{% block title %}{{ list.get_name }}{% endblock %}
 
 {% block content %}
 <header class="columns content is-mobile">
     <div class="column">
-        <h1 class="title">{{ list.name }} <span class="subtitle">{% include 'snippets/privacy-icons.html' with item=list %}</span></h1>
+        <h1 class="title">{{ list.get_name }} <span class="subtitle">{% include 'snippets/privacy-icons.html' with item=list %}</span></h1>
         <p class="subtitle help">
             {% include 'lists/created_text.html' with list=list %}
         </p>
@@ -28,7 +28,7 @@
 {% block breadcrumbs %}{% endblock %}
 
 <div class="block content">
-    {% include 'snippets/trimmed_text.html' with full=list.description %}
+    {% include 'snippets/trimmed_text.html' with full=list.get_description %}
 </div>
 
 <div class="block">
