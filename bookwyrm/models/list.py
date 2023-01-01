@@ -47,6 +47,14 @@ class List(OrderedCollectionMixin, BookWyrmModel):
     )
     embed_key = models.UUIDField(unique=True, null=True, editable=False)
     activity_serializer = activitypub.BookList
+    suggests_for = fields.OneToOneField(
+        "Edition",
+        on_delete=models.PROTECT,
+        activitypub_field="book",
+        related_name="suggestion_list",
+        default=None,
+        null=True,
+    )
 
     def get_remote_id(self):
         """don't want the user to be in there in this case"""
@@ -129,14 +137,6 @@ class List(OrderedCollectionMixin, BookWyrmModel):
         if not self.embed_key:
             self.embed_key = uuid.uuid4()
         super().save(*args, **kwargs)
-
-
-class SuggestionList(List):
-    """List related to a specific book"""
-
-    book = fields.OneToOneField(
-        "Edition", on_delete=models.PROTECT, activitypub_field="book"
-    )
 
 
 class ListItem(CollectionItemMixin, BookWyrmModel):

@@ -127,9 +127,9 @@ class Book(View):
                 "comment_count": book.comment_set.filter(**filters).count(),
                 "quotation_count": book.quotation_set.filter(**filters).count(),
             }
-            if hasattr(book, "suggestionlist"):
+            if hasattr(book, "suggestion_list"):
                 data["suggested_books"] = get_list_suggestions(
-                    book.suggestionlist,
+                    book.suggestion_list,
                     request.user,
                     query=query,
                     ignore_id=book.id,
