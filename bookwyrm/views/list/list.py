@@ -76,7 +76,7 @@ class List(View):
                 book_list,
                 request.user,
                 query=query,
-                ignore_id=book_list.suggests_for.id,
+                ignore_book=book_list.suggests_for,
             )
         return TemplateResponse(request, "lists/list.html", data)
 
@@ -97,7 +97,7 @@ class List(View):
         return redirect(book_list.local_path)
 
 
-def get_list_suggestions(book_list, user, query=None, ignore_id=None):
+def get_list_suggestions(book_list, user, query=None, ignore_book=None):
     """What books might a user want to add to a list"""
     if query:
         # search for books
@@ -105,12 +105,12 @@ def get_list_suggestions(book_list, user, query=None, ignore_id=None):
             query,
             filters=[
                 ~Q(parent_work__editions__in=book_list.books.all()),
-                ~Q(parent_work__editions__in=[ignore_id]),
+                ~Q(parent_work__editions__in=[ignore_book]),
             ],
         )
     # just suggest whatever books are nearby
     suggestions = user.shelfbook_set.filter(~Q(book__in=book_list.books.all())).exclude(
-        book__id=ignore_id
+        book=ignore_book
     )
     suggestions = [s.book for s in suggestions[:5]]
     if len(suggestions) < 5:
@@ -118,7 +118,7 @@ def get_list_suggestions(book_list, user, query=None, ignore_id=None):
             s.default_edition
             for s in models.Work.objects.filter(
                 ~Q(editions__in=book_list.books.all()),
-                ~Q(editions__in=[ignore_id]),
+                ~Q(editions__in=[ignore_book]),
             ).order_by("-updated_date")[: 5 - len(suggestions)]
         ]
     return suggestions

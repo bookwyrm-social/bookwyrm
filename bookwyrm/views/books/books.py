@@ -132,7 +132,7 @@ class Book(View):
                     book.suggestion_list,
                     request.user,
                     query=query,
-                    ignore_id=book.id,
+                    ignore_book=book,
                 )
 
         return TemplateResponse(request, "book/book.html", data)
