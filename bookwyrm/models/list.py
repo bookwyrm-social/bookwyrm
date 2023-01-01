@@ -68,6 +68,7 @@ class List(OrderedCollectionMixin, BookWyrmModel):
 
     @property
     def get_name(self):
+        """The name comes from the book title if it's a suggestion list"""
         if self.suggests_for:
             return _("Suggestions for %(title)s") % {"title": self.suggests_for.title}
 
@@ -75,6 +76,7 @@ class List(OrderedCollectionMixin, BookWyrmModel):
 
     @property
     def get_description(self):
+        """The description comes from the book title if it's a suggestion list"""
         if self.suggests_for:
             return _(
                 "This is the list of suggestions for <a href='%(url)s'>%(title)s</a>"
