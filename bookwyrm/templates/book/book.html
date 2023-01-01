@@ -344,10 +344,6 @@
             </div>
         </div>
         <div class="column is-one-fifth is-clipped">
-            <section class="content block">
-                {% include "book/suggestion_list/list.html" %}
-            </section>
-
             {% if book.subjects %}
                 <section class="content block">
                     <h2 class="title is-5">{% trans "Subjects" %}</h2>
@@ -408,8 +404,11 @@
             </section>
         </div>
     </div>
-
 </div>
+
+<section class="block">
+    {% include "book/suggestion_list/list.html" %}
+</section>
 {% endwith %}
 {% endblock %}
 

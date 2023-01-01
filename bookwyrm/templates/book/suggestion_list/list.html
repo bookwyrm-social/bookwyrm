@@ -1,11 +1,69 @@
 {% load i18n %}
+
+<h2 class="title is-5" id="suggestions-section">
+    {% trans "Suggestions" %}
+</h2>
+
 {% if book.suggestionlist %}
-    <h2 class="title is-5">{% trans "Suggestions" %}</h2>
+{% with book.suggestionlist.listitem_set.all as items %}
+
+    {% if items.count == 0 %}
+    <section class="section is-medium has-background-light">
+        <p class="has-text-centered">
+            {% trans "There are currently no suggestions." %}
+            <br>
+        </p>
+        <p class="has-text-centered mt-3">
+            <button type="button" class="button">
+                {% trans "Suggest a book" %}
+            </button>
+        </p>
+    </section>
+    {% else %}
+    <ol class="columns">
+    {% for item in items %}
+        <li class="mb-5 column is-one-quarter">
+            <div class="card">
+                <div class="card-content pb-3">
+                    {% with book=item.book %}
+                        <div class="is-cover">
+                            <a href="{{ item.book.local_path }}" aria-hidden="true">
+                                {% include 'snippets/book_cover.html' with cover_class='is-w-auto is-h-m-mobile im-h-m-tablet is-align-items-flex-start' size='medium' %}
+                            </a>
+                        </div>
+
+                        <p class="mt-3">
+                            {% include 'snippets/book_titleby.html' %}
+                        </p>
+                    {% endwith %}
+                </div>
+                <div class="card-footer is-stacked-mobile has-background-tertiary is-align-items-stretch">
+                    <div class="card-footer-item">
+                        <p>
+                            {% blocktrans trimmed with username=item.user.display_name user_path=item.user.local_path %}
+                            Added by <a href="{{ user_path }}">{{ username }}</a>
+                            {% endblocktrans %}
+                        </p>
+                    </div>
+                    <div class="card-footer-item">
+                        <p>
+                            TODO :: endorsements
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </li>
+    {% endfor %}
+    </ol>
+    {% endif %}
+{% endwith %}
 {% else %}
-    <form name="create-list" method="post" action="{% url 'book-create-suggestion-list' book_id=book.id %}">
-        {% csrf_token %}
-        <input type="hidden" name="user" value="{{ request.user.id }}">
-        <input type="hidden" name="book" value="{{ book.id }}">
-        <button type="submit" class="button">{% trans "Create suggestion list" %}</button>
-    </form>
+    <section class="section is-medium has-background-light">
+        <form name="create-list" method="post" action="{% url 'book-create-suggestion-list' book_id=book.id %}" class="has-text-centered">
+            {% csrf_token %}
+            <input type="hidden" name="user" value="{{ request.user.id }}">
+            <input type="hidden" name="book" value="{{ book.id }}">
+            <button type="submit" class="button is-medium">{% trans "Create suggestion list" %}</button>
+        </form>      
+    </section>
 {% endif %}
