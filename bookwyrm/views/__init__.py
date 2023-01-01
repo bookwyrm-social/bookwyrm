@@ -49,6 +49,7 @@ from .books.books import (
     upload_cover,
     add_description,
     resolve_book,
+    create_suggestion_list,
 )
 from .books.books import update_book_from_remote
 from .books.edit_book import (

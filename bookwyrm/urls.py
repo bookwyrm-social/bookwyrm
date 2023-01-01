@@ -665,6 +665,11 @@ urlpatterns = [
         name="book-update-remote",
     ),
     re_path(
+        rf"{BOOK_PATH}/create-suggestion-list/?$",
+        views.create_suggestion_list,
+        name="book-create-suggestion-list",
+    ),
+    re_path(
         r"^author/(?P<author_id>\d+)/update/(?P<connector_identifier>[\w\.]+)/?$",
         views.update_author_from_remote,
         name="author-update-remote",

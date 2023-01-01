@@ -208,3 +208,23 @@ def update_book_from_remote(request, book_id, connector_identifier):
         return Book().get(request, book_id, update_error=True)
 
     return redirect("book", book.id)
+
+
+@login_required
+@require_POST
+def create_suggestion_list(request, book_id):
+    """create a suggestion_list"""
+    form = forms.SuggestionListForm(request.POST)
+    book = get_object_or_404(models.Edition, id=book_id)
+    
+    if not form.is_valid():
+        return redirect("book", book.id)
+    suggestion_list = form.save(request, commit=False)
+
+    # default values for the suggestion list
+    suggestion_list.privacy = "public"
+    suggestion_list.curation = "open"
+    suggestion_list.save()
+
+    return redirect("book", book.id)
+
