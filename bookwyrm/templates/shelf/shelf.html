@@ -155,6 +155,9 @@
                         {% endif %}
                     <th>{% trans "Rating" as text %}{% include 'snippets/table-sort-header.html' with field="rating" sort=sort text=text %}</th>
                     {% endif %}
+                    {% if shelves|length > 0 %}
+                    <th>{% trans "Shelves" %}</th>
+                    {% endif %}
                     {% if shelf.user == request.user %}
                     <th aria-hidden="true"></th>
                     {% endif %}
@@ -187,6 +190,19 @@
                         {% endif %}
                     <td data-title="{% trans "Rating" %}">
                         {% include 'snippets/stars.html' with rating=book.rating %}
+                    </td>
+                    {% endif %}
+                    {% if shelves|length > 0 %}
+                    <td data-title="{% trans "Shelves" %}">
+                        {% spaceless %}
+                        {% for shelf in shelves %}
+                        {% if shelf in book.shelves.all %}
+                            <a href="{{ shelf.local_path }}">
+                            {% include "snippets/translated_shelf_name.html" with shelf=shelf %}
+                            </a>{% if not forloop.last %}<br>{% endif %}
+                        {% endif %}
+                        {% endfor %}
+                        {% endspaceless %}
                     </td>
                     {% endif %}
                     {% if shelf.user == request.user %}
