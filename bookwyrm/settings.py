@@ -193,7 +193,8 @@ STATICFILES_FINDERS = [
 ]
 
 SASS_PROCESSOR_INCLUDE_FILE_PATTERN = r"^.+\.[s]{0,1}(?:a|c)ss$"
-SASS_PROCESSOR_ENABLED = True
+# when debug is disabled, make sure to compile themes once with `./bw-dev compile_themes`
+SASS_PROCESSOR_ENABLED = DEBUG
 
 # minify css is production but not dev
 if not DEBUG:
@@ -287,6 +288,7 @@ LANGUAGES = [
     ("ca-es", _("Català (Catalan)")),
     ("de-de", _("Deutsch (German)")),
     ("es-es", _("Español (Spanish)")),
+    ("eu-es", _("Euskara (Basque)")),
     ("gl-es", _("Galego (Galician)")),
     ("it-it", _("Italiano (Italian)")),
     ("fi-fi", _("Suomi (Finnish)")),

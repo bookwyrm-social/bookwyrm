@@ -92,6 +92,7 @@ case "$CMD" in
         migrate
         migrate django_celery_beat
         initdb
+        runweb python manage.py compile_themes
         runweb python manage.py collectstatic --no-input
         admin_code
         ;;
@@ -122,6 +123,9 @@ case "$CMD" in
         prod_error
         runweb pytest -n 3 --cov-report term-missing "$@"
         ;;
+    compile_themes)
+        runweb python manage.py compile_themes
+        ;;
     collectstatic)
         runweb python manage.py collectstatic --no-input
         ;;
@@ -138,6 +142,7 @@ case "$CMD" in
         git checkout l10n_main locale/ca_ES
         git checkout l10n_main locale/de_DE
         git checkout l10n_main locale/es_ES
+        git checkout l10n_main locale/eu_ES
         git checkout l10n_main locale/fi_FI
         git checkout l10n_main locale/fr_FR
         git checkout l10n_main locale/gl_ES
@@ -203,6 +208,7 @@ case "$CMD" in
         docker-compose build
         # ./update.sh
         runweb python manage.py migrate
+        runweb python manage.py compile_themes
         runweb python manage.py collectstatic --no-input
         docker-compose up -d
         docker-compose restart web
@@ -222,6 +228,9 @@ case "$CMD" in
         ;;
     generate_preview_images)
         runweb python manage.py generate_preview_images "$@"
+        ;;
+    remove_remote_user_preview_images)
+        runweb python manage.py remove_remote_user_preview_images
         ;;
     copy_media_to_s3)
         awscommand "bookwyrm_media_volume:/images"\
@@ -256,6 +265,7 @@ case "$CMD" in
         migrate
         migrate django_celery_beat
         initdb
+        runweb python manage.py compile_themes
         runweb python manage.py collectstatic --no-input
         admin_code
         ;;
@@ -283,6 +293,7 @@ case "$CMD" in
         echo "    dbshell"
         echo "    restart_celery"
         echo "    pytest [path]"
+        echo "    compile_themes"
         echo "    collectstatic"
         echo "    makemessages"
         echo "    compilemessages [locale]"
@@ -300,6 +311,7 @@ case "$CMD" in
         echo "    populate_suggestions"
         echo "    generate_thumbnails"
         echo "    generate_preview_images [--all]"
+        echo "    remove_remote_user_preview_images"
         echo "    copy_media_to_s3"
         echo "    sync_media_to_s3"
         echo "    set_cors_to_s3 [cors file]"
