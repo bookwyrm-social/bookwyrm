@@ -1,7 +1,8 @@
 """ bookwyrm settings and configuration """
 import os
-from environs import Env
+from urllib.parse import quote as urlencode
 
+from environs import Env
 import requests
 from django.utils.translation import gettext_lazy as _
 
@@ -232,7 +233,7 @@ else:
     CACHES = {
         "default": {
             "BACKEND": "django_redis.cache.RedisCache",
-            "LOCATION": f"redis://:{REDIS_ACTIVITY_PASSWORD}@{REDIS_ACTIVITY_HOST}:{REDIS_ACTIVITY_PORT}/{REDIS_ACTIVITY_DB_INDEX}",
+            "LOCATION": f"redis://:{urlencode(REDIS_ACTIVITY_PASSWORD)}@{REDIS_ACTIVITY_HOST}:{REDIS_ACTIVITY_PORT}/{REDIS_ACTIVITY_DB_INDEX}",
             "OPTIONS": {
                 "CLIENT_CLASS": "django_redis.client.DefaultClient",
             },
