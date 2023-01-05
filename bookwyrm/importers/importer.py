@@ -34,6 +34,7 @@ class Importer:
         "reading": ["currently-reading", "reading", "currently reading"],
     }
 
+    # pylint: disable=too-many-locals
     def create_job(self, user, csv_file, include_reviews, privacy):
         """check over a csv and creates a database entry for the job"""
         csv_reader = csv.DictReader(csv_file, delimiter=self.delimiter)
@@ -60,6 +61,7 @@ class Importer:
             import_jobs = ImportJob.objects.filter(
                 user=user, created_date__gte=time_range
             )
+            # pylint: disable=consider-using-generator
             imported_books = sum([job.successful_item_count for job in import_jobs])
             allowed_imports = import_size_limit - imported_books
             if allowed_imports <= 0:

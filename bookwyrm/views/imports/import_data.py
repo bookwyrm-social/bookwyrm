@@ -58,6 +58,7 @@ class Import(View):
         import_jobs = models.ImportJob.objects.filter(
             user=request.user, created_date__gte=time_range
         )
+        # pylint: disable=consider-using-generator
         imported_books = sum([job.successful_item_count for job in import_jobs])
         data["import_size_limit"] = site_settings.import_size_limit
         data["import_limit_reset"] = site_settings.import_limit_reset
