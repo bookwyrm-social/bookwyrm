@@ -4,7 +4,7 @@
 {% spaceless %}
 
 {% get_current_language as LANGUAGE_CODE %}
-{# 6 month cache #}
+{# 10 second cache #}
 {% cache 10 titleby LANGUAGE_CODE book.id %}
 
 {% if book.authors.exists %}
