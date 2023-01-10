@@ -58,7 +58,7 @@ class BookDataModel(ObjectMixin, BookWyrmModel):
         max_length=255, blank=True, null=True, deduplication_field=True
     )
     isfdb = fields.CharField(
-        max_length=255, blank=True, null=True, deduplication_field=True
+        max_length=6, blank=True, null=True, deduplication_field=True
     )
     search_vector = SearchVectorField(null=True)
 
