@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-12-20 00:41+0000\n"
-"PO-Revision-Date: 2023-01-11 13:42\n"
+"PO-Revision-Date: 2023-01-11 14:42\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Catalan\n"
 "Language: ca\n"
@@ -607,7 +607,7 @@ msgstr "Això fa una mitjana de %(pages)s pàgines per llibre."
 msgid "(No page data was available for %(no_page_number)s book)"
 msgid_plural "(No page data was available for %(no_page_number)s books)"
 msgstr[0] "(No hi ha dades disponibles per a la pàgina %(no_page_number)s del llibre)"
-msgstr[1] ""
+msgstr[1] "(No hi ha dades disponibles per a les pàgines %(no_page_number)s dels llibres)"
 
 #: bookwyrm/templates/annual_summary/layout.html:150
 msgid "Their shortest read this year…"
@@ -702,7 +702,7 @@ msgstr "Veure el registre ISNI"
 #: bookwyrm/templates/author/author.html:87
 #: bookwyrm/templates/book/book.html:164
 msgid "View on ISFDB"
-msgstr ""
+msgstr "Veure a ISFDB"
 
 #: bookwyrm/templates/author/author.html:92
 #: bookwyrm/templates/author/sync_modal.html:5
@@ -731,7 +731,7 @@ msgstr "Veure a Goodreads"
 
 #: bookwyrm/templates/author/author.html:143
 msgid "View ISFDB entry"
-msgstr ""
+msgstr "Veure entrada a ISFDB"
 
 #: bookwyrm/templates/author/author.html:158
 #, python-format
@@ -815,7 +815,7 @@ msgstr "Identificador a Goodreads:"
 
 #: bookwyrm/templates/author/edit_author.html:105
 msgid "ISFDB:"
-msgstr ""
+msgstr "ISFDB:"
 
 #: bookwyrm/templates/author/edit_author.html:112
 msgid "ISNI:"
@@ -1018,11 +1018,11 @@ msgstr ""
 #: bookwyrm/templates/book/book_identifiers.html:36
 #: bookwyrm/templates/book/edit/edit_book_form.html:368
 msgid "ISFDB ID:"
-msgstr ""
+msgstr "Identificador ISFDB:"
 
 #: bookwyrm/templates/book/book_identifiers.html:43
 msgid "Goodreads:"
-msgstr ""
+msgstr "Goodreads:"
 
 #: bookwyrm/templates/book/cover_add_modal.html:5
 msgid "Add cover"
@@ -1777,11 +1777,11 @@ msgstr "Reinicia el teu password de %(site_name)s "
 #: bookwyrm/templates/email/test/html_content.html:6
 #: bookwyrm/templates/email/test/text_content.html:4
 msgid "This is a test email."
-msgstr ""
+msgstr "Aquest és un correu de prova."
 
 #: bookwyrm/templates/email/test/subject.html:2
 msgid "Test email"
-msgstr ""
+msgstr "Correu de prova"
 
 #: bookwyrm/templates/embed-layout.html:20 bookwyrm/templates/layout.html:41
 #: bookwyrm/templates/setup/layout.html:15
@@ -2674,7 +2674,7 @@ msgstr "Importa Llibres"
 
 #: bookwyrm/templates/import/import.html:13
 msgid "Not a valid CSV file"
-msgstr ""
+msgstr "Fitxer CSV no vàlid"
 
 #: bookwyrm/templates/import/import.html:22
 #, python-format
@@ -2734,7 +2734,7 @@ msgstr "Importa"
 
 #: bookwyrm/templates/import/import.html:101
 msgid "Imports are temporarily disabled; thank you for your patience."
-msgstr ""
+msgstr "Les importacions es troben temporalment deshabilitades; gràcies per la vostra paciència."
 
 #: bookwyrm/templates/import/import.html:108
 msgid "Recent Imports"
@@ -3256,7 +3256,7 @@ msgstr "Has afegit un llibre a aquesta llista amb èxit!"
 
 #: bookwyrm/templates/lists/list.html:54
 msgid "This list is currently empty."
-msgstr ""
+msgstr "Aquesta llista es troba actualment buida."
 
 #: bookwyrm/templates/lists/list.html:104
 msgid "Edit notes"
@@ -3817,15 +3817,15 @@ msgstr "Escaneja el codi QR amb la teva app d'autenticació i entra el codi que 
 
 #: bookwyrm/templates/preferences/2fa.html:52
 msgid "Use setup key"
-msgstr ""
+msgstr "Utilitza la clau de configuració"
 
 #: bookwyrm/templates/preferences/2fa.html:58
 msgid "Account name:"
-msgstr ""
+msgstr "Nom del compte:"
 
 #: bookwyrm/templates/preferences/2fa.html:65
 msgid "Code:"
-msgstr ""
+msgstr "Codi:"
 
 #: bookwyrm/templates/preferences/2fa.html:73
 msgid "Enter the code from your app:"
@@ -4608,11 +4608,11 @@ msgstr "Cap domini de correu a la llista negra"
 #: bookwyrm/templates/settings/email_config.html:8
 #: bookwyrm/templates/settings/layout.html:90
 msgid "Email Configuration"
-msgstr ""
+msgstr "Configuració del correu electrònic"
 
 #: bookwyrm/templates/settings/email_config.html:16
 msgid "Error sending test email:"
-msgstr ""
+msgstr "S'ha produït un error a l'enviar el correu de prova:"
 
 #: bookwyrm/templates/settings/email_config.html:24
 msgid "Successfully sent test email."
@@ -4637,15 +4637,15 @@ msgstr ""
 
 #: bookwyrm/templates/settings/email_config.html:60
 msgid "Port:"
-msgstr ""
+msgstr "Port:"
 
 #: bookwyrm/templates/settings/email_config.html:67
 msgid "Use TLS:"
-msgstr ""
+msgstr "Utilitzar TLS:"
 
 #: bookwyrm/templates/settings/email_config.html:74
 msgid "Use SSL:"
-msgstr ""
+msgstr "Utilitzar SSL:"
 
 #: bookwyrm/templates/settings/email_config.html:83
 #, python-format
