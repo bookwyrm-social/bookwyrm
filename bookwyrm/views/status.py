@@ -18,6 +18,7 @@ from django.views.decorators.http import require_POST
 from markdown import markdown
 from bookwyrm import forms, models
 from bookwyrm.utils import regex, sanitizer
+from bookwyrm.utils.validate import validate_url_domain
 from .helpers import handle_remote_webfinger, is_api_request
 from .helpers import load_date_in_user_tz_as_utc
 
@@ -58,6 +59,8 @@ class CreateStatus(View):
     # pylint: disable=too-many-branches
     def post(self, request, status_type, existing_status_id=None):
         """create status of whatever type"""
+        next_step = request.META.get("HTTP_REFERER")
+        next_step = validate_url_domain(next_step, "/")
         created = not existing_status_id
         existing_status = None
         if existing_status_id:
@@ -80,7 +83,7 @@ class CreateStatus(View):
             if is_api_request(request):
                 logger.exception(form.errors)
                 return HttpResponseBadRequest()
-            return redirect("/")
+            return redirect(next_step)
 
         status = form.save(request, commit=False)
         status.ready = False
@@ -134,7 +137,7 @@ class CreateStatus(View):
 
         if is_api_request(request):
             return HttpResponse()
-        return redirect("/")
+        return redirect(next_step)
 
 
 @method_decorator(login_required, name="dispatch")
@@ -167,6 +170,8 @@ def update_progress(request, book_id):  # pylint: disable=unused-argument
 def edit_readthrough(request):
     """can't use the form because the dates are too finnicky"""
     # TODO: remove this, it duplicates the code in the ReadThrough view
+    next_step = request.META.get("HTTP_REFERER")
+    next_step = validate_url_domain(next_step, "/")
     readthrough = get_object_or_404(models.ReadThrough, id=request.POST.get("id"))
 
     readthrough.start_date = load_date_in_user_tz_as_utc(
@@ -198,7 +203,7 @@ def edit_readthrough(request):
 
     if is_api_request(request):
         return HttpResponse()
-    return redirect("/")
+    return redirect(next_step)
 
 
 def find_mentions(user, content):

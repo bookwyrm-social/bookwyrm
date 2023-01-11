@@ -1,0 +1,14 @@
+[Unit]
+Description=BookWyrm
+After=network.target postgresql.service redis.service
+
+[Service]
+User=bookwyrm
+Group=bookwyrm
+WorkingDirectory=/opt/bookwyrm/
+ExecStart=/opt/bookwyrm/venv/bin/gunicorn bookwyrm.wsgi:application --bind 0.0.0.0:8000
+StandardOutput=journal
+StandardError=inherit
+
+[Install]
+WantedBy=multi-user.target
