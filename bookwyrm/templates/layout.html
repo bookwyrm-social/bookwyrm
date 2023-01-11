@@ -15,20 +15,9 @@
     <link rel="shortcut icon" type="image/x-icon" href="{% if site.favicon %}{% get_media_prefix %}{{ site.favicon }}{% else %}{% static "images/favicon.ico" %}{% endif %}">
     <link rel="apple-touch-icon" href="{% if site.logo %}{{ media_full_url }}{{ site.logo }}{% else %}{% static "images/logo.png" %}{% endif %}">
 
-    {% if preview_images_enabled is True %}
-    <meta name="twitter:card" content="summary_large_image">
-    {% else %}
-    <meta name="twitter:card" content="summary">
-    {% endif %}
-    <meta name="twitter:title" content="{% if title %}{{ title }} - {% endif %}{{ site.name }}">
-    <meta name="og:title" content="{% if title %}{{ title }} - {% endif %}{{ site.name }}">
-    <meta name="twitter:description" content="{{ site.instance_tagline }}">
-    <meta name="og:description" content="{{ site.instance_tagline }}">
-
-    {% block opengraph_images %}
-        {% include 'snippets/opengraph_images.html' %}
+    {% block opengraph %}
+        {% include 'snippets/opengraph.html' %}
     {% endblock %}
-    <meta name="twitter:image:alt" content="BookWyrm Logo">
 
     {% block head_links %}{% endblock %}
 </head>
