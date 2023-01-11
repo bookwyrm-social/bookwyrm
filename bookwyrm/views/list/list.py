@@ -116,7 +116,7 @@ def get_list_suggestions(book_list, user, query=None):
 
 
 def sort_list(request, items):
-    """helper to handle the surprisngly involved sorting"""
+    """helper to handle the surprisingly involved sorting"""
     # sort_by shall be "order" unless a valid alternative is given
     sort_by = request.GET.get("sort_by", "order")
     if sort_by not in ("order", "title", "rating"):

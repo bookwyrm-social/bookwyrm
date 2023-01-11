@@ -7,12 +7,12 @@
 book: the Edition object this status is related to. Required unless the status is a reply
 draft: the content of an existing Status object to be edited (used in delete and redraft)
 uuid: a unique identifier used to make html "id" attributes unique and clarify javascript controls
-type: used for uniquely identifying the html elements when mutliple types of posts are available for a book, and usually the endpoint name that the form posts to
+type: used for uniquely identifying the html elements when multiple types of posts are available for a book, and usually the endpoint name that the form posts to
 reply_parent: the Status object this post will be in reply to, if applicable
 {% endcomment %}
 
 {% block form_open %}
-{# default form tag syntax, can be overriddden #}
+{# default form tag syntax, can be overridden #}
 <form
     class="is-flex-grow-1{% if not no_script %} submit-status{% endif %}"
     name="{{ type }}"
