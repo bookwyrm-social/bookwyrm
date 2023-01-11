@@ -107,7 +107,7 @@
                     <form method="POST" action="{% url 'settings-themes-delete' theme.id %}">
                         {% csrf_token %}
                         <button type="submit" class="button is-danger is-light is-small">
-                            <span class="icon icon-x" aria-hideen="true"></span>
+                            <span class="icon icon-x" aria-hidden="true"></span>
                             <span>{% trans "Remove theme" %}</span>
                         </button>
                     </form>
