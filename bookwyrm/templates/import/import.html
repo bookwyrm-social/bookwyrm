@@ -17,8 +17,8 @@
     {% if site.imports_enabled %}
         {% if import_size_limit and import_limit_reset %}
             <div class="notification">
-                <p>Currently you are allowed to import {{ import_size_limit }} books every {{ import_limit_reset }} days.</p>
-                <p>You have {{ allowed_imports }} left.</p>
+                <p>{% blocktrans %}Currently you are allowed to import {{ import_size_limit }} books every {{ import_limit_reset }} days.{% endblocktrans %}</p>
+                <p>{% blocktrans %}You have {{ allowed_imports }} left.{% endblocktrans %}</p>
             </div>
         {% endif %}
         {% if recent_avg_hours or recent_avg_minutes %}
