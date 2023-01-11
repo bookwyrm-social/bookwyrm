@@ -17,12 +17,15 @@ class Author(BookDataModel):
         max_length=255, blank=True, null=True, deduplication_field=True
     )
     isni = fields.CharField(
-        max_length=255, blank=True, null=True, deduplication_field=True
+        max_length=19, blank=True, null=True, deduplication_field=True
     )
     gutenberg_id = fields.CharField(
         max_length=255, blank=True, null=True, deduplication_field=True
     )
     isfdb = fields.CharField(
+        max_length=6, blank=True, null=True, deduplication_field=True
+    )
+    website = fields.CharField(
         max_length=255, blank=True, null=True, deduplication_field=True
     )
     # idk probably other keys would be useful here?

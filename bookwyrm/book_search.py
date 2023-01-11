@@ -20,7 +20,7 @@ def search(query, min_confidence=0, filters=None, return_first=False):
     query = query.strip()
 
     results = None
-    # first, try searching unqiue identifiers
+    # first, try searching unique identifiers
     # unique identifiers never have spaces, title/author usually do
     if not " " in query:
         results = search_identifiers(query, *filters, return_first=return_first)

@@ -2,6 +2,8 @@
 from io import BytesIO
 import pathlib
 
+import pytest
+
 from dateutil.parser import parse
 from PIL import Image
 from django.core.files.base import ContentFile
@@ -10,6 +12,7 @@ from django.utils import timezone
 
 from bookwyrm import models, settings
 from bookwyrm.models.book import isbn_10_to_13, isbn_13_to_10
+from bookwyrm.settings import ENABLE_THUMBNAIL_GENERATION
 
 
 class Book(TestCase):
@@ -101,6 +104,10 @@ class Book(TestCase):
         self.first_edition.save()
         self.assertEqual(self.first_edition.edition_rank, 1)
 
+    @pytest.mark.skipif(
+        not ENABLE_THUMBNAIL_GENERATION,
+        reason="Thumbnail generation disabled in settings",
+    )
     def test_thumbnail_fields(self):
         """Just hit them"""
         image_file = pathlib.Path(__file__).parent.joinpath(
