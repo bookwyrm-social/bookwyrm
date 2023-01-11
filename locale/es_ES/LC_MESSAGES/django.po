@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-12-20 00:41+0000\n"
-"PO-Revision-Date: 2022-12-21 17:53\n"
+"PO-Revision-Date: 2022-12-26 00:34\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Spanish\n"
 "Language: es\n"
@@ -606,7 +606,7 @@ msgstr "Eso hace un promedio de %(pages)s páginas por libro."
 #, python-format
 msgid "(No page data was available for %(no_page_number)s book)"
 msgid_plural "(No page data was available for %(no_page_number)s books)"
-msgstr[0] ""
+msgstr[0] "(No había datos de página disponibles para el libro %(no_page_number)s)"
 msgstr[1] ""
 
 #: bookwyrm/templates/annual_summary/layout.html:150
@@ -702,7 +702,7 @@ msgstr "Ver registro ISNI"
 #: bookwyrm/templates/author/author.html:87
 #: bookwyrm/templates/book/book.html:164
 msgid "View on ISFDB"
-msgstr ""
+msgstr "Ver en ISFDB"
 
 #: bookwyrm/templates/author/author.html:92
 #: bookwyrm/templates/author/sync_modal.html:5
@@ -731,7 +731,7 @@ msgstr "Ver en Goodreads"
 
 #: bookwyrm/templates/author/author.html:143
 msgid "View ISFDB entry"
-msgstr ""
+msgstr "Ver entrada en ISFDB"
 
 #: bookwyrm/templates/author/author.html:158
 #, python-format
@@ -815,7 +815,7 @@ msgstr "Clave Goodreads:"
 
 #: bookwyrm/templates/author/edit_author.html:105
 msgid "ISFDB:"
-msgstr ""
+msgstr "ISFDB:"
 
 #: bookwyrm/templates/author/edit_author.html:112
 msgid "ISNI:"
@@ -1013,16 +1013,16 @@ msgstr "ASIN:"
 #: bookwyrm/templates/book/book_identifiers.html:29
 #: bookwyrm/templates/book/edit/edit_book_form.html:359
 msgid "Audible ASIN:"
-msgstr ""
+msgstr "ASIN Audible:"
 
 #: bookwyrm/templates/book/book_identifiers.html:36
 #: bookwyrm/templates/book/edit/edit_book_form.html:368
 msgid "ISFDB ID:"
-msgstr ""
+msgstr "ISFDB ID:"
 
 #: bookwyrm/templates/book/book_identifiers.html:43
 msgid "Goodreads:"
-msgstr ""
+msgstr "Goodreads:"
 
 #: bookwyrm/templates/book/cover_add_modal.html:5
 msgid "Add cover"
@@ -1777,11 +1777,11 @@ msgstr "Reestablece tu contraseña de %(site_name)s"
 #: bookwyrm/templates/email/test/html_content.html:6
 #: bookwyrm/templates/email/test/text_content.html:4
 msgid "This is a test email."
-msgstr ""
+msgstr "Este es un correo electrónico de prueba."
 
 #: bookwyrm/templates/email/test/subject.html:2
 msgid "Test email"
-msgstr ""
+msgstr "Correo electrónico de prueba"
 
 #: bookwyrm/templates/embed-layout.html:20 bookwyrm/templates/layout.html:41
 #: bookwyrm/templates/setup/layout.html:15
@@ -2674,7 +2674,7 @@ msgstr "Importar libros"
 
 #: bookwyrm/templates/import/import.html:13
 msgid "Not a valid CSV file"
-msgstr ""
+msgstr "No es un archivo CSV válido"
 
 #: bookwyrm/templates/import/import.html:22
 #, python-format
@@ -3256,7 +3256,7 @@ msgstr "¡Has agregado un libro a esta lista exitosamente!"
 
 #: bookwyrm/templates/lists/list.html:54
 msgid "This list is currently empty."
-msgstr ""
+msgstr "Esta lista está vacía actualmente."
 
 #: bookwyrm/templates/lists/list.html:104
 msgid "Edit notes"
@@ -3382,7 +3382,7 @@ msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> ha sugerido añad
 #: bookwyrm/templates/notifications/items/add.html:66
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> added a book to one of your lists"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> agregó un libro a una de tus listas"
 
 #: bookwyrm/templates/notifications/items/add.html:72
 #, python-format
