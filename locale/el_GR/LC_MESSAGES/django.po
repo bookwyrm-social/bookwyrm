@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-12-20 00:41+0000\n"
-"PO-Revision-Date: 2022-12-21 17:53\n"
+"POT-Creation-Date: 2023-01-11 22:46+0000\n"
+"PO-Revision-Date: 2023-01-12 00:08\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Greek\n"
 "Language: el\n"
@@ -171,23 +171,23 @@ msgstr "Διαγραφή συντονιστή"
 msgid "Domain block"
 msgstr "Aποκλεισμός τομέα"
 
-#: bookwyrm/models/book.py:277
+#: bookwyrm/models/book.py:272
 msgid "Audiobook"
 msgstr "Ηχογραφημένο βιβλίο"
 
-#: bookwyrm/models/book.py:278
+#: bookwyrm/models/book.py:273
 msgid "eBook"
 msgstr "Ηλεκτρονικό βιβλίο"
 
-#: bookwyrm/models/book.py:279
+#: bookwyrm/models/book.py:274
 msgid "Graphic novel"
 msgstr "Γραφικό μυθιστόρημα"
 
-#: bookwyrm/models/book.py:280
+#: bookwyrm/models/book.py:275
 msgid "Hardcover"
 msgstr "Σκληρό εξώφυλλο"
 
-#: bookwyrm/models/book.py:281
+#: bookwyrm/models/book.py:276
 msgid "Paperback"
 msgstr "Χαρτόδετο"
 
@@ -215,7 +215,7 @@ msgstr "%(value)s Δεν είναι ένα έγκυρο remote_id"
 msgid "%(value)s is not a valid username"
 msgstr "%(value)s δεν είναι έγκυρο όνομα χρήστη"
 
-#: bookwyrm/models/fields.py:182 bookwyrm/templates/layout.html:142
+#: bookwyrm/models/fields.py:182 bookwyrm/templates/layout.html:131
 #: bookwyrm/templates/ostatus/error.html:29
 msgid "username"
 msgstr "όνομα χρήστη"
@@ -353,54 +353,58 @@ msgid "Español (Spanish)"
 msgstr "Español (Ισπανικά)"
 
 #: bookwyrm/settings.py:291
-msgid "Galego (Galician)"
+msgid "Euskara (Basque)"
 msgstr ""
 
 #: bookwyrm/settings.py:292
+msgid "Galego (Galician)"
+msgstr ""
+
+#: bookwyrm/settings.py:293
 msgid "Italiano (Italian)"
 msgstr "Italiano (Ιταλικά)"
 
-#: bookwyrm/settings.py:293
+#: bookwyrm/settings.py:294
 msgid "Suomi (Finnish)"
 msgstr "Suomi (Φινλανδικά)"
 
-#: bookwyrm/settings.py:294
+#: bookwyrm/settings.py:295
 msgid "Français (French)"
 msgstr "Français (Γαλλικά)"
 
-#: bookwyrm/settings.py:295
+#: bookwyrm/settings.py:296
 msgid "Lietuvių (Lithuanian)"
 msgstr "Lietuvių (Λιθουανικά)"
 
-#: bookwyrm/settings.py:296
+#: bookwyrm/settings.py:297
 msgid "Norsk (Norwegian)"
 msgstr "Norsk (Νορβηγικά)"
 
-#: bookwyrm/settings.py:297
+#: bookwyrm/settings.py:298
 msgid "Polski (Polish)"
 msgstr "Polski (Πολωνικά)"
 
-#: bookwyrm/settings.py:298
+#: bookwyrm/settings.py:299
 msgid "Português do Brasil (Brazilian Portuguese)"
 msgstr "Português do Brasil (Πορτογαλικά Βραζιλίας)"
 
-#: bookwyrm/settings.py:299
+#: bookwyrm/settings.py:300
 msgid "Português Europeu (European Portuguese)"
 msgstr "Português Europeu (Ευρωπαϊκά Πορτογαλικά)"
 
-#: bookwyrm/settings.py:300
+#: bookwyrm/settings.py:301
 msgid "Română (Romanian)"
 msgstr "Română (Ρουμανικά)"
 
-#: bookwyrm/settings.py:301
+#: bookwyrm/settings.py:302
 msgid "Svenska (Swedish)"
 msgstr "Svenska (Σουηδικά)"
 
-#: bookwyrm/settings.py:302
+#: bookwyrm/settings.py:303
 msgid "简体中文 (Simplified Chinese)"
 msgstr "简体中文 (Απλοποιημένα Κινέζικα)"
 
-#: bookwyrm/settings.py:303
+#: bookwyrm/settings.py:304
 msgid "繁體中文 (Traditional Chinese)"
 msgstr "繁體中文 (Παραδοσιακά Κινέζικα)"
 
@@ -429,54 +433,54 @@ msgstr "Κάτι πήγε στραβά! Λυπούμαστε γι' αυτό."
 msgid "About"
 msgstr "Σχετικά με"
 
-#: bookwyrm/templates/about/about.html:20
+#: bookwyrm/templates/about/about.html:21
 #: bookwyrm/templates/get_started/layout.html:20
 #, python-format
 msgid "Welcome to %(site_name)s!"
 msgstr "Καλώς ήλθατε στο %(site_name)s!"
 
-#: bookwyrm/templates/about/about.html:24
+#: bookwyrm/templates/about/about.html:25
 #, python-format
 msgid "%(site_name)s is part of <em>BookWyrm</em>, a network of independent, self-directed communities for readers. While you can interact seamlessly with users anywhere in the <a href=\"https://joinbookwyrm.com/instances/\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">BookWyrm network</a>, this community is unique."
 msgstr ""
 
-#: bookwyrm/templates/about/about.html:44
+#: bookwyrm/templates/about/about.html:45
 #, python-format
 msgid "<a href=\"%(book_path)s\"><em>%(title)s</em></a> is %(site_name)s's most beloved book, with an average rating of %(rating)s out of 5."
 msgstr ""
 
-#: bookwyrm/templates/about/about.html:63
+#: bookwyrm/templates/about/about.html:64
 #, python-format
 msgid "More %(site_name)s users want to read <a href=\"%(book_path)s\"><em>%(title)s</em></a> than any other book."
 msgstr ""
 
-#: bookwyrm/templates/about/about.html:82
+#: bookwyrm/templates/about/about.html:83
 #, python-format
 msgid "<a href=\"%(book_path)s\"><em>%(title)s</em></a> has the most divisive ratings of any book on %(site_name)s."
 msgstr ""
 
-#: bookwyrm/templates/about/about.html:93
+#: bookwyrm/templates/about/about.html:94
 msgid "Track your reading, talk about books, write reviews, and discover what to read next. Always ad-free, anti-corporate, and community-oriented, BookWyrm is human-scale software, designed to stay small and personal. If you have feature requests, bug reports, or grand dreams, <a href=\"https://joinbookwyrm.com/get-involved\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">reach out</a> and make yourself heard."
 msgstr ""
 
-#: bookwyrm/templates/about/about.html:104
+#: bookwyrm/templates/about/about.html:105
 msgid "Meet your admins"
 msgstr "Γνωρίστε τους διαχειριστές σας"
 
-#: bookwyrm/templates/about/about.html:107
+#: bookwyrm/templates/about/about.html:108
 #, python-format
 msgid "%(site_name)s's moderators and administrators keep the site up and running, enforce the <a href=\"%(coc_path)s\">code of conduct</a>, and respond when users report spam and bad behavior."
 msgstr ""
 
-#: bookwyrm/templates/about/about.html:121
+#: bookwyrm/templates/about/about.html:122
 msgid "Moderator"
 msgstr "Επόπτης"
 
-#: bookwyrm/templates/about/about.html:123 bookwyrm/templates/user_menu.html:63
+#: bookwyrm/templates/about/about.html:124 bookwyrm/templates/user_menu.html:67
 msgid "Admin"
 msgstr "Διαχειριστής"
 
-#: bookwyrm/templates/about/about.html:139
+#: bookwyrm/templates/about/about.html:140
 #: bookwyrm/templates/settings/users/user_moderation_actions.html:14
 #: bookwyrm/templates/snippets/status/status_options.html:35
 #: bookwyrm/templates/snippets/user_options.html:14
@@ -696,44 +700,48 @@ msgid "Wikipedia"
 msgstr "Βικιπαίδεια"
 
 #: bookwyrm/templates/author/author.html:79
+msgid "Website"
+msgstr ""
+
+#: bookwyrm/templates/author/author.html:87
 msgid "View ISNI record"
 msgstr "Προβολή αρχείου ISNI"
 
-#: bookwyrm/templates/author/author.html:87
+#: bookwyrm/templates/author/author.html:95
 #: bookwyrm/templates/book/book.html:164
 msgid "View on ISFDB"
 msgstr ""
 
-#: bookwyrm/templates/author/author.html:92
+#: bookwyrm/templates/author/author.html:100
 #: bookwyrm/templates/author/sync_modal.html:5
 #: bookwyrm/templates/book/book.html:131
 #: bookwyrm/templates/book/sync_modal.html:5
 msgid "Load data"
 msgstr "Φόρτωση δεδομένων"
 
-#: bookwyrm/templates/author/author.html:96
+#: bookwyrm/templates/author/author.html:104
 #: bookwyrm/templates/book/book.html:135
 msgid "View on OpenLibrary"
 msgstr "Προβολή στο OpenLibrary"
 
-#: bookwyrm/templates/author/author.html:111
+#: bookwyrm/templates/author/author.html:119
 #: bookwyrm/templates/book/book.html:149
 msgid "View on Inventaire"
 msgstr "Προβολή στο Inventaire"
 
-#: bookwyrm/templates/author/author.html:127
+#: bookwyrm/templates/author/author.html:135
 msgid "View on LibraryThing"
 msgstr "Προβολή στο LibraryThing"
 
-#: bookwyrm/templates/author/author.html:135
+#: bookwyrm/templates/author/author.html:143
 msgid "View on Goodreads"
 msgstr "Δείτε στο Goodreads"
 
-#: bookwyrm/templates/author/author.html:143
+#: bookwyrm/templates/author/author.html:151
 msgid "View ISFDB entry"
 msgstr ""
 
-#: bookwyrm/templates/author/author.html:158
+#: bookwyrm/templates/author/author.html:166
 #, python-format
 msgid "Books by %(name)s"
 msgstr "Βιβλία από %(name)s"
@@ -783,45 +791,49 @@ msgstr "Σύντομο βιογραφικό:"
 msgid "Wikipedia link:"
 msgstr "Σύνδεσμος Wikipedia:"
 
-#: bookwyrm/templates/author/edit_author.html:61
+#: bookwyrm/templates/author/edit_author.html:60
+msgid "Website:"
+msgstr ""
+
+#: bookwyrm/templates/author/edit_author.html:65
 msgid "Birth date:"
 msgstr "Ημερομηνία γέννησης:"
 
-#: bookwyrm/templates/author/edit_author.html:68
+#: bookwyrm/templates/author/edit_author.html:72
 msgid "Death date:"
 msgstr "Ημερομηνία θανάτου:"
 
-#: bookwyrm/templates/author/edit_author.html:75
+#: bookwyrm/templates/author/edit_author.html:79
 msgid "Author Identifiers"
 msgstr "Αναγνωριστικά Συγγραφέα"
 
-#: bookwyrm/templates/author/edit_author.html:77
+#: bookwyrm/templates/author/edit_author.html:81
 msgid "Openlibrary key:"
 msgstr "Κλειδί Openlibrary:"
 
-#: bookwyrm/templates/author/edit_author.html:84
+#: bookwyrm/templates/author/edit_author.html:88
 #: bookwyrm/templates/book/edit/edit_book_form.html:323
 msgid "Inventaire ID:"
 msgstr "Inventaire ID:"
 
-#: bookwyrm/templates/author/edit_author.html:91
+#: bookwyrm/templates/author/edit_author.html:95
 msgid "Librarything key:"
 msgstr "Κλειδί Librarything:"
 
-#: bookwyrm/templates/author/edit_author.html:98
+#: bookwyrm/templates/author/edit_author.html:102
 #: bookwyrm/templates/book/edit/edit_book_form.html:332
 msgid "Goodreads key:"
 msgstr "Κλειδί Goodreads:"
 
-#: bookwyrm/templates/author/edit_author.html:105
+#: bookwyrm/templates/author/edit_author.html:109
 msgid "ISFDB:"
 msgstr ""
 
-#: bookwyrm/templates/author/edit_author.html:112
+#: bookwyrm/templates/author/edit_author.html:116
 msgid "ISNI:"
 msgstr "ISNI:"
 
-#: bookwyrm/templates/author/edit_author.html:122
+#: bookwyrm/templates/author/edit_author.html:126
 #: bookwyrm/templates/book/book.html:209
 #: bookwyrm/templates/book/edit/edit_book.html:142
 #: bookwyrm/templates/book/file_links/add_link_modal.html:60
@@ -844,7 +856,7 @@ msgstr "ISNI:"
 msgid "Save"
 msgstr "Αποθήκευση"
 
-#: bookwyrm/templates/author/edit_author.html:123
+#: bookwyrm/templates/author/edit_author.html:127
 #: bookwyrm/templates/author/sync_modal.html:23
 #: bookwyrm/templates/book/book.html:210
 #: bookwyrm/templates/book/cover_add_modal.html:33
@@ -974,7 +986,7 @@ msgstr "Τοποθεσίες"
 #: bookwyrm/templates/guided_tour/lists.html:14
 #: bookwyrm/templates/guided_tour/user_books.html:102
 #: bookwyrm/templates/guided_tour/user_profile.html:78
-#: bookwyrm/templates/layout.html:102 bookwyrm/templates/lists/curate.html:8
+#: bookwyrm/templates/layout.html:91 bookwyrm/templates/lists/curate.html:8
 #: bookwyrm/templates/lists/list.html:12 bookwyrm/templates/lists/lists.html:5
 #: bookwyrm/templates/lists/lists.html:12
 #: bookwyrm/templates/search/layout.html:26
@@ -1104,7 +1116,7 @@ msgid "This is a new work"
 msgstr "Αυτό είναι ένα νέο έργο"
 
 #: bookwyrm/templates/book/edit/edit_book.html:131
-#: bookwyrm/templates/feed/status.html:21
+#: bookwyrm/templates/feed/status.html:19
 #: bookwyrm/templates/guided_tour/book.html:44
 #: bookwyrm/templates/guided_tour/book.html:68
 #: bookwyrm/templates/guided_tour/book.html:91
@@ -1148,6 +1160,7 @@ msgstr "Αυτό είναι ένα νέο έργο"
 #: bookwyrm/templates/guided_tour/user_profile.html:89
 #: bookwyrm/templates/guided_tour/user_profile.html:112
 #: bookwyrm/templates/guided_tour/user_profile.html:135
+#: bookwyrm/templates/user_menu.html:18
 msgid "Back"
 msgstr "Προηγούμενο"
 
@@ -1531,7 +1544,7 @@ msgstr "Ομοσπονδιακή κοινότητα"
 
 #: bookwyrm/templates/directory/directory.html:4
 #: bookwyrm/templates/directory/directory.html:9
-#: bookwyrm/templates/user_menu.html:30
+#: bookwyrm/templates/user_menu.html:34
 msgid "Directory"
 msgstr "Κατάλογος"
 
@@ -1651,7 +1664,7 @@ msgstr ""
 
 #: bookwyrm/templates/discover/discover.html:4
 #: bookwyrm/templates/discover/discover.html:10
-#: bookwyrm/templates/layout.html:105
+#: bookwyrm/templates/layout.html:94
 msgid "Discover"
 msgstr "Ανακαλύψτε"
 
@@ -1783,7 +1796,7 @@ msgstr ""
 msgid "Test email"
 msgstr ""
 
-#: bookwyrm/templates/embed-layout.html:20 bookwyrm/templates/layout.html:41
+#: bookwyrm/templates/embed-layout.html:20 bookwyrm/templates/layout.html:30
 #: bookwyrm/templates/setup/layout.html:15
 #: bookwyrm/templates/two_factor_auth/two_factor_login.html:18
 #: bookwyrm/templates/two_factor_auth/two_factor_prompt.html:18
@@ -1806,7 +1819,7 @@ msgid "Direct Messages with <a href=\"%(path)s\">%(username)s</a>"
 msgstr "Άμεσα Μηνύματα με <a href=\"%(path)s\">%(username)s</a>"
 
 #: bookwyrm/templates/feed/direct_messages.html:10
-#: bookwyrm/templates/user_menu.html:40
+#: bookwyrm/templates/user_menu.html:44
 msgid "Direct Messages"
 msgstr "Άμεσο Μήνυμα"
 
@@ -1844,7 +1857,7 @@ msgstr "Ενημερώσεις"
 
 #: bookwyrm/templates/feed/suggested_books.html:6
 #: bookwyrm/templates/guided_tour/home.html:127
-#: bookwyrm/templates/user_menu.html:35
+#: bookwyrm/templates/user_menu.html:39
 msgid "Your Books"
 msgstr "Τα Βιβλία σας"
 
@@ -1905,7 +1918,7 @@ msgstr "Τρέχουσα Ανάγνωση"
 
 #: bookwyrm/templates/get_started/book_preview.html:12
 #: bookwyrm/templates/shelf/shelf.html:88
-#: bookwyrm/templates/snippets/shelf_selector.html:47
+#: bookwyrm/templates/snippets/shelf_selector.html:46
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_dropdown_options.html:24
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_options.html:12
 #: bookwyrm/templates/user/user.html:35 bookwyrm/templatetags/shelf_tags.py:52
@@ -1922,7 +1935,7 @@ msgid "What are you reading?"
 msgstr "Τι διαβάζετε;"
 
 #: bookwyrm/templates/get_started/books.html:9
-#: bookwyrm/templates/layout.html:49 bookwyrm/templates/lists/list.html:213
+#: bookwyrm/templates/layout.html:38 bookwyrm/templates/lists/list.html:213
 msgid "Search for a book"
 msgstr "Αναζητήστε ένα βιβλίο"
 
@@ -1941,8 +1954,8 @@ msgstr "Μπορείτε να προσθέσετε βιβλία όταν αρχ�
 #: bookwyrm/templates/get_started/users.html:18
 #: bookwyrm/templates/get_started/users.html:19
 #: bookwyrm/templates/groups/members.html:15
-#: bookwyrm/templates/groups/members.html:16 bookwyrm/templates/layout.html:55
-#: bookwyrm/templates/layout.html:56 bookwyrm/templates/lists/list.html:217
+#: bookwyrm/templates/groups/members.html:16 bookwyrm/templates/layout.html:44
+#: bookwyrm/templates/layout.html:45 bookwyrm/templates/lists/list.html:217
 #: bookwyrm/templates/search/layout.html:5
 #: bookwyrm/templates/search/layout.html:10
 msgid "Search"
@@ -2420,8 +2433,8 @@ msgid "The bell will light up when you have a new notification. When it does, cl
 msgstr ""
 
 #: bookwyrm/templates/guided_tour/home.html:177
-#: bookwyrm/templates/layout.html:86 bookwyrm/templates/layout.html:118
-#: bookwyrm/templates/layout.html:119
+#: bookwyrm/templates/layout.html:75 bookwyrm/templates/layout.html:107
+#: bookwyrm/templates/layout.html:108
 #: bookwyrm/templates/notifications/notifications_page.html:5
 #: bookwyrm/templates/notifications/notifications_page.html:10
 msgid "Notifications"
@@ -2993,7 +3006,7 @@ msgid "Login"
 msgstr "Σύνδεση"
 
 #: bookwyrm/templates/landing/login.html:7
-#: bookwyrm/templates/landing/login.html:36 bookwyrm/templates/layout.html:150
+#: bookwyrm/templates/landing/login.html:36 bookwyrm/templates/layout.html:139
 #: bookwyrm/templates/ostatus/error.html:37
 msgid "Log in"
 msgstr "Σύνδεση"
@@ -3004,7 +3017,7 @@ msgstr ""
 
 #: bookwyrm/templates/landing/login.html:21
 #: bookwyrm/templates/landing/reactivate.html:17
-#: bookwyrm/templates/layout.html:141 bookwyrm/templates/ostatus/error.html:28
+#: bookwyrm/templates/layout.html:130 bookwyrm/templates/ostatus/error.html:28
 #: bookwyrm/templates/snippets/register_form.html:4
 msgid "Username:"
 msgstr "Όνομα χρήστη:"
@@ -3012,13 +3025,13 @@ msgstr "Όνομα χρήστη:"
 #: bookwyrm/templates/landing/login.html:27
 #: bookwyrm/templates/landing/password_reset.html:26
 #: bookwyrm/templates/landing/reactivate.html:23
-#: bookwyrm/templates/layout.html:145 bookwyrm/templates/ostatus/error.html:32
+#: bookwyrm/templates/layout.html:134 bookwyrm/templates/ostatus/error.html:32
 #: bookwyrm/templates/preferences/2fa.html:91
 #: bookwyrm/templates/snippets/register_form.html:45
 msgid "Password:"
 msgstr "Κωδικός πρόσβασης:"
 
-#: bookwyrm/templates/landing/login.html:39 bookwyrm/templates/layout.html:147
+#: bookwyrm/templates/landing/login.html:39 bookwyrm/templates/layout.html:136
 #: bookwyrm/templates/ostatus/error.html:34
 msgid "Forgot your password?"
 msgstr "Ξεχάσατε τον κωδικό σας;"
@@ -3061,35 +3074,35 @@ msgstr ""
 msgid "%(site_name)s search"
 msgstr ""
 
-#: bookwyrm/templates/layout.html:47
+#: bookwyrm/templates/layout.html:36
 msgid "Search for a book, user, or list"
 msgstr ""
 
-#: bookwyrm/templates/layout.html:62 bookwyrm/templates/layout.html:63
+#: bookwyrm/templates/layout.html:51 bookwyrm/templates/layout.html:52
 msgid "Scan Barcode"
 msgstr ""
 
-#: bookwyrm/templates/layout.html:77
+#: bookwyrm/templates/layout.html:66
 msgid "Main navigation menu"
 msgstr ""
 
-#: bookwyrm/templates/layout.html:99
+#: bookwyrm/templates/layout.html:88
 msgid "Feed"
 msgstr "Ροή"
 
-#: bookwyrm/templates/layout.html:146 bookwyrm/templates/ostatus/error.html:33
+#: bookwyrm/templates/layout.html:135 bookwyrm/templates/ostatus/error.html:33
 msgid "password"
 msgstr "κωδικός"
 
-#: bookwyrm/templates/layout.html:158
+#: bookwyrm/templates/layout.html:147
 msgid "Join"
 msgstr ""
 
-#: bookwyrm/templates/layout.html:192
+#: bookwyrm/templates/layout.html:181
 msgid "Successfully posted status"
 msgstr ""
 
-#: bookwyrm/templates/layout.html:193
+#: bookwyrm/templates/layout.html:182
 msgid "Error posting status"
 msgstr ""
 
@@ -3922,7 +3935,7 @@ msgstr "Επεξεργασία προφίλ"
 #: bookwyrm/templates/preferences/edit_user.html:12
 #: bookwyrm/templates/preferences/edit_user.html:25
 #: bookwyrm/templates/settings/users/user_info.html:7
-#: bookwyrm/templates/user_menu.html:25
+#: bookwyrm/templates/user_menu.html:29
 msgid "Profile"
 msgstr "Προφίλ"
 
@@ -4872,7 +4885,7 @@ msgstr ""
 #: bookwyrm/templates/settings/invites/manage_invites.html:3
 #: bookwyrm/templates/settings/invites/manage_invites.html:15
 #: bookwyrm/templates/settings/layout.html:42
-#: bookwyrm/templates/user_menu.html:56
+#: bookwyrm/templates/user_menu.html:60
 msgid "Invites"
 msgstr ""
 
@@ -5572,7 +5585,7 @@ msgstr "Το domain σας φαίνεται να είναι λανθασμένο
 msgid "You are running BookWyrm in production mode without https. <strong>USE_HTTPS</strong> should be enabled in production."
 msgstr ""
 
-#: bookwyrm/templates/setup/config.html:52 bookwyrm/templates/user_menu.html:45
+#: bookwyrm/templates/setup/config.html:52 bookwyrm/templates/user_menu.html:49
 msgid "Settings"
 msgstr "Ρυθμίσεις"
 
@@ -6035,7 +6048,7 @@ msgid "Stop Reading \"<em>%(book_title)s</em>\""
 msgstr "Σταματήστε να Διαβάζετε το «<em>%(book_title)s</em>»"
 
 #: bookwyrm/templates/snippets/reading_modals/stop_reading_modal.html:32
-#: bookwyrm/templates/snippets/shelf_selector.html:54
+#: bookwyrm/templates/snippets/shelf_selector.html:53
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_options.html:21
 msgid "Stopped reading"
 msgstr ""
@@ -6085,25 +6098,25 @@ msgstr ""
 msgid "Move book"
 msgstr "Μετακίνηση βιβλίου"
 
-#: bookwyrm/templates/snippets/shelf_selector.html:39
+#: bookwyrm/templates/snippets/shelf_selector.html:38
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_dropdown_options.html:17
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_options.html:33
 msgid "Start reading"
 msgstr ""
 
-#: bookwyrm/templates/snippets/shelf_selector.html:61
+#: bookwyrm/templates/snippets/shelf_selector.html:60
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_dropdown_options.html:38
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_options.html:55
 msgid "Want to read"
 msgstr ""
 
-#: bookwyrm/templates/snippets/shelf_selector.html:82
+#: bookwyrm/templates/snippets/shelf_selector.html:81
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_dropdown_options.html:73
 #, python-format
 msgid "Remove from %(name)s"
 msgstr ""
 
-#: bookwyrm/templates/snippets/shelf_selector.html:95
+#: bookwyrm/templates/snippets/shelf_selector.html:94
 msgid "Remove from"
 msgstr ""
 
@@ -6428,7 +6441,7 @@ msgstr ""
 msgid "View profile and more"
 msgstr ""
 
-#: bookwyrm/templates/user_menu.html:78
+#: bookwyrm/templates/user_menu.html:82
 msgid "Log out"
 msgstr "Αποσύνδεση"
 
