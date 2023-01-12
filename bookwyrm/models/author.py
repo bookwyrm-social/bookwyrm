@@ -1,8 +1,6 @@
 """ database schema for info about authors """
 import re
 from django.contrib.postgres.indexes import GinIndex
-from django.core.cache import cache
-from django.core.cache.utils import make_template_fragment_key
 from django.db import models
 
 from bookwyrm import activitypub
@@ -19,12 +17,15 @@ class Author(BookDataModel):
         max_length=255, blank=True, null=True, deduplication_field=True
     )
     isni = fields.CharField(
-        max_length=255, blank=True, null=True, deduplication_field=True
+        max_length=19, blank=True, null=True, deduplication_field=True
     )
     gutenberg_id = fields.CharField(
         max_length=255, blank=True, null=True, deduplication_field=True
     )
     isfdb = fields.CharField(
+        max_length=6, blank=True, null=True, deduplication_field=True
+    )
+    website = fields.CharField(
         max_length=255, blank=True, null=True, deduplication_field=True
     )
     # idk probably other keys would be useful here?
@@ -37,16 +38,7 @@ class Author(BookDataModel):
     bio = fields.HtmlField(null=True, blank=True)
 
     def save(self, *args, **kwargs):
-        """clear related template caches"""
-        # clear template caches
-        if self.id:
-            cache_keys = [
-                make_template_fragment_key("titleby", [book])
-                for book in self.book_set.values_list("id", flat=True)
-            ]
-            cache.delete_many(cache_keys)
-
-        # normalize isni format
+        """normalize isni format"""
         if self.isni:
             self.isni = re.sub(r"\s", "", self.isni)
 

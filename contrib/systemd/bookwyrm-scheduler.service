@@ -1,0 +1,14 @@
+[Unit]
+Description=BookWyrm scheduler
+After=network.target postgresql.service redis.service
+
+[Service]
+User=bookwyrm
+Group=bookwyrm
+WorkingDirectory=/opt/bookwyrm/
+ExecStart=/opt/bookwyrm/venv/bin/celery -A celerywyrm beat -l INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler
+StandardOutput=journal
+StandardError=inherit
+
+[Install]
+WantedBy=multi-user.target

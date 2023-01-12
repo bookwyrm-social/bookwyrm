@@ -4,8 +4,8 @@
 {% spaceless %}
 
 {% get_current_language as LANGUAGE_CODE %}
-{# 6 month cache #}
-{% cache 15552000 titleby LANGUAGE_CODE book.id %}
+{# 10 second cache #}
+{% cache 10 titleby LANGUAGE_CODE book.id %}
 
 {% if book.authors.exists %}
 {% blocktrans trimmed with path=book.local_path title=book|book_title %}

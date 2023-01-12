@@ -83,7 +83,7 @@ class Undo(Verb):
     def action(self):
         """find and remove the activity object"""
         if isinstance(self.object, str):
-            # it may be that sometihng should be done with these, but idk what
+            # it may be that something should be done with these, but idk what
             # this seems just to be coming from pleroma
             return
 
@@ -94,7 +94,7 @@ class Undo(Verb):
             model = apps.get_model("bookwyrm.UserFollows")
             obj = self.object.to_model(model=model, save=False, allow_create=False)
             if not obj:
-                # this could be a folloq request not a follow proper
+                # this could be a follow request not a follow proper
                 model = apps.get_model("bookwyrm.UserFollowRequest")
                 obj = self.object.to_model(model=model, save=False, allow_create=False)
         else:
