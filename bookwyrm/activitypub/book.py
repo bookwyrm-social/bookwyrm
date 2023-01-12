@@ -92,4 +92,3 @@ class Author(BookData):
     bio: str = ""
     wikipediaLink: str = ""
     type: str = "Author"
-    website: str = ""
