@@ -232,7 +232,7 @@ else:
     CACHES = {
         "default": {
             "BACKEND": "django_redis.cache.RedisCache",
-            "LOCATION": REDIS_ACTIVITY_HOST.replace("socket://", "redis+socket://") if REDIS_ACTIVITY_HOST.startswith("socket://") else f"redis://:{REDIS_ACTIVITY_PASSWORD}@{REDIS_ACTIVITY_HOST}:{REDIS_ACTIVITY_PORT}/{REDIS_ACTIVITY_DB_INDEX}",
+            "LOCATION": REDIS_ACTIVITY_HOST.replace("unix://", "redis+socket://") if REDIS_ACTIVITY_HOST.startswith("unix://") else f"redis://:{REDIS_ACTIVITY_PASSWORD}@{REDIS_ACTIVITY_HOST}:{REDIS_ACTIVITY_PORT}/{REDIS_ACTIVITY_DB_INDEX}",
             "OPTIONS": {
                 "CLIENT_CLASS": "django_redis.client.DefaultClient",
             },
