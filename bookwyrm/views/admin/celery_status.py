@@ -8,7 +8,7 @@ import redis
 from celerywyrm import settings
 from bookwyrm.tasks import app as celery
 
-r = redis.from_url(settings.REDIS_BROKER_HOST) if settings.REDIS_BROKER_HOST.startswith("unix://") else redis.Redis(
+r = redis.from_url(settings.REDIS_BROKER_HOST) if settings.REDIS_BROKER_HOST.startswith("socket://") else redis.Redis(
     host=settings.REDIS_BROKER_HOST,
     port=settings.REDIS_BROKER_PORT,
     password=settings.REDIS_BROKER_PASSWORD,
