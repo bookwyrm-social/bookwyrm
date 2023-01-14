@@ -15,7 +15,7 @@ services:
       - static_volume:/app/static
       - media_volume:/app/images
   db:
-    image: postgres
+    image: postgres:13
     env_file: .env
     volumes:
       - pgdata:/var/lib/postgresql/data

@@ -8,8 +8,8 @@
 
 {% block title %}{{ user.display_name }}{% endblock %}
 
-{% block opengraph_images %}
-    {% include 'snippets/opengraph_images.html' with image=user.preview_image %}
+{% block opengraph %}
+    {% include 'snippets/opengraph.html' with image=user.preview_image %}
 {% endblock %}
 
 {% block content %}
