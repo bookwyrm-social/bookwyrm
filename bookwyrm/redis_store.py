@@ -4,11 +4,17 @@ import redis
 
 from bookwyrm import settings
 
-r = redis.from_url(f"{settings.REDIS_ACTIVITY_HOST}?db={settings.REDIS_ACTIVITY_DB_INDEX}") if settings.REDIS_ACTIVITY_HOST.startswith("unix://") else redis.Redis(
-    host=settings.REDIS_ACTIVITY_HOST,
-    port=settings.REDIS_ACTIVITY_PORT,
-    password=settings.REDIS_ACTIVITY_PASSWORD,
-    db=settings.REDIS_ACTIVITY_DB_INDEX,
+r = (
+    redis.from_url(
+        f"{settings.REDIS_ACTIVITY_HOST}?db={settings.REDIS_ACTIVITY_DB_INDEX}"
+    )
+    if settings.REDIS_ACTIVITY_HOST.startswith("unix://")
+    else redis.Redis(
+        host=settings.REDIS_ACTIVITY_HOST,
+        port=settings.REDIS_ACTIVITY_PORT,
+        password=settings.REDIS_ACTIVITY_PASSWORD,
+        db=settings.REDIS_ACTIVITY_DB_INDEX,
+    )
 )
 
 
