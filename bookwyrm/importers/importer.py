@@ -51,22 +51,10 @@ class Importer:
             source=self.service,
         )
 
-        site_settings = SiteSettings.objects.get()
-        import_size_limit = site_settings.import_size_limit
-        import_limit_reset = site_settings.import_limit_reset
-        enforce_limit = import_size_limit and import_limit_reset
-
-        if enforce_limit:
-            time_range = timezone.now() - timedelta(days=import_limit_reset)
-            import_jobs = ImportJob.objects.filter(
-                user=user, created_date__gte=time_range
-            )
-            # pylint: disable=consider-using-generator
-            imported_books = sum([job.successful_item_count for job in import_jobs])
-            allowed_imports = import_size_limit - imported_books
-            if allowed_imports <= 0:
-                job.complete_job()
-                return job
+        enforce_limit, allowed_imports = self.get_import_limit(user)
+        if enforce_limit and allowed_imports <= 0:
+            job.complete_job()
+            return job
         for index, entry in rows:
             if enforce_limit and index >= allowed_imports:
                 break
@@ -119,6 +107,24 @@ class Importer:
         """use the dataclass to create the formatted row of data"""
         return {k: entry.get(v) for k, v in mappings.items()}
 
+    def get_import_limit(self, user):  # pylint: disable=no-self-use
+        """check if import limit is set and return how many imports are left"""
+        site_settings = SiteSettings.objects.get()
+        import_size_limit = site_settings.import_size_limit
+        import_limit_reset = site_settings.import_limit_reset
+        enforce_limit = import_size_limit and import_limit_reset
+        allowed_imports = 0
+
+        if enforce_limit:
+            time_range = timezone.now() - timedelta(days=import_limit_reset)
+            import_jobs = ImportJob.objects.filter(
+                user=user, created_date__gte=time_range
+            )
+            # pylint: disable=consider-using-generator
+            imported_books = sum([job.successful_item_count for job in import_jobs])
+            allowed_imports = import_size_limit - imported_books
+        return enforce_limit, allowed_imports
+
     def create_retry_job(self, user, original_job, items):
         """retry items that didn't import"""
         job = ImportJob.objects.create(
@@ -130,7 +136,13 @@ class Importer:
             mappings=original_job.mappings,
             retry=True,
         )
-        for item in items:
+        enforce_limit, allowed_imports = self.get_import_limit(user)
+        if enforce_limit and allowed_imports <= 0:
+            job.complete_job()
+            return job
+        for index, item in enumerate(items):
+            if enforce_limit and index >= allowed_imports:
+                break
             # this will re-normalize the raw data
             self.create_item(job, item.index, item.data)
         return job

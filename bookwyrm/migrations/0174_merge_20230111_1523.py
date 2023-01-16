@@ -6,7 +6,6 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("bookwyrm", "0173_auto_20221228_1436"),
         ("bookwyrm", "0173_merge_20230102_1444"),
     ]
 
