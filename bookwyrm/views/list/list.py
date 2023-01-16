@@ -94,7 +94,7 @@ class List(View):
         return redirect(book_list.local_path)
 
 
-def get_list_suggestions(book_list, user, query=None):
+def get_list_suggestions(book_list, user, query=None, num_suggestions=5):
     """What books might a user want to add to a list"""
     if query:
         # search for books
@@ -103,20 +103,26 @@ def get_list_suggestions(book_list, user, query=None):
             filters=[~Q(parent_work__editions__in=book_list.books.all())],
         )
     # just suggest whatever books are nearby
-    suggestions = user.shelfbook_set.filter(~Q(book__in=book_list.books.all()))
-    suggestions = [s.book for s in suggestions[:5]]
-    if len(suggestions) < 5:
-        suggestions += [
+    suggestions = user.shelfbook_set.filter(
+        ~Q(book__in=book_list.books.all())
+    ).distinct()[:num_suggestions]
+    suggestions = [s.book for s in suggestions[:num_suggestions]]
+    if len(suggestions) < num_suggestions:
+        others = [
             s.default_edition
             for s in models.Work.objects.filter(
                 ~Q(editions__in=book_list.books.all()),
-            ).order_by("-updated_date")[: 5 - len(suggestions)]
+            )
+            .distinct()
+            .order_by("-updated_date")[:num_suggestions]
         ]
+        # get 'num_suggestions' unique items
+        suggestions = list(set(suggestions + others))[:num_suggestions]
     return suggestions
 
 
 def sort_list(request, items):
-    """helper to handle the surprisngly involved sorting"""
+    """helper to handle the surprisingly involved sorting"""
     # sort_by shall be "order" unless a valid alternative is given
     sort_by = request.GET.get("sort_by", "order")
     if sort_by not in ("order", "title", "rating"):

@@ -82,6 +82,7 @@ class EditBookViews(TestCase):
         form = forms.EditionForm(instance=self.book)
         form.data["title"] = ""
         form.data["last_edited_by"] = self.local_user.id
+        form.data["cover-url"] = "http://local.host/cover.jpg"
         request = self.factory.post("", form.data)
         request.user = self.local_user
 
@@ -91,6 +92,10 @@ class EditBookViews(TestCase):
         # Title is unchanged
         self.book.refresh_from_db()
         self.assertEqual(self.book.title, "Example Edition")
+        # transient field values are set correctly
+        self.assertEqual(
+            result.context_data["cover_url"], "http://local.host/cover.jpg"
+        )
 
     def test_edit_book_add_author(self):
         """lets a user edit a book with new authors"""
@@ -280,9 +285,14 @@ class EditBookViews(TestCase):
         form = forms.EditionForm(instance=self.book)
         form.data["title"] = ""
         form.data["last_edited_by"] = self.local_user.id
+        form.data["cover-url"] = "http://local.host/cover.jpg"
         request = self.factory.post("", form.data)
         request.user = self.local_user
 
         result = view(request)
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
+        # transient field values are set correctly
+        self.assertEqual(
+            result.context_data["cover_url"], "http://local.host/cover.jpg"
+        )
