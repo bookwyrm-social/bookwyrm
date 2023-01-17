@@ -420,6 +420,21 @@ urlpatterns = [
     re_path(rf"^@(?P<username>{regex.USERNAME})$", views.user_redirect),
     re_path(rf"{USER_PATH}/rss/?$", views.rss_feed.RssFeed(), name="user-rss"),
     re_path(
+        rf"{USER_PATH}/rss-reviews/?$",
+        views.rss_feed.RssReviewsOnlyFeed(),
+        name="user-reviews-rss",
+    ),
+    re_path(
+        rf"{USER_PATH}/rss-quotes/?$",
+        views.rss_feed.RssQuotesOnlyFeed(),
+        name="user-quotes-rss",
+    ),
+    re_path(
+        rf"{USER_PATH}/rss-comments/?$",
+        views.rss_feed.RssCommentsOnlyFeed(),
+        name="user-comments-rss",
+    ),
+    re_path(
         rf"{USER_PATH}/(?P<direction>(followers|following))(.json)?/?$",
         views.Relationships.as_view(),
         name="user-relationships",

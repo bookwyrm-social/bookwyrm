@@ -66,11 +66,6 @@
         <h2 class="title column">{% trans "User Activity" %}</h2>
         {% if user.local %}
         <div class="column is-narrow">
-            <!-- <a target="_blank" href="{{ user.local_path }}/rss" rel="nofollow noopener noreferrer">
-                <span class="icon icon-rss" aria-hidden="true"></span>
-                <span class="is-hidden-mobile">{% trans "RSS feed" %}</span>
-
-            </a> -->
             <details class="dropdown" id="navbar-dropdown">
                 <summary
                     class="is-relative pulldown-menu dropdown-trigger"
@@ -95,22 +90,22 @@
                         role="menu"
                     >
                         <li role="menuitem">
-                            <a href="{% url 'user-feed' request.user.localname %}" class="navbar-item">
+                            <a target="_blank" href="{{ user.local_path }}/rss" class="navbar-item" rel="nofollow noopener noreferrer">
                                 {% trans "Complete feed" %}
                             </a>
                         </li>
                         <li role="menuitem">
-                            <a href="{% url 'user-feed' request.user.localname %}" class="navbar-item">
+                            <a target="_blank" href="{{ user.local_path }}/rss-reviews" class="navbar-item" rel="nofollow noopener noreferrer">
                                 {% trans "Reviews only" %}
                             </a>
                         </li>
                         <li role="menuitem">
-                            <a href="{% url 'user-feed' request.user.localname %}" class="navbar-item">
+                            <a target="_blank" href="{{ user.local_path }}/rss-quotes" class="navbar-item" rel="nofollow noopener noreferrer">
                                 {% trans "Quotes only" %}
                             </a>
                         </li>
                         <li role="menuitem">
-                            <a href="{% url 'user-feed' request.user.localname %}" class="navbar-item">
+                            <a target="_blank" href="{{ user.local_path }}/rss-comments" class="navbar-item" rel="nofollow noopener noreferrer">
                                 {% trans "Comments only" %}
                             </a>
                         </li>

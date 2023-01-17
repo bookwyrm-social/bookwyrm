@@ -132,7 +132,12 @@ from .outbox import Outbox
 from .reading import ReadThrough, delete_readthrough, delete_progressupdate
 from .reading import ReadingStatus
 from .report import Report
-from .rss_feed import RssFeed
+from .rss_feed import (
+    RssFeed,
+    RssReviewsOnlyFeed,
+    RssQuotesOnlyFeed,
+    RssCommentsOnlyFeed,
+)
 from .search import Search
 from .setup import InstanceConfig, CreateAdmin
 from .status import CreateStatus, EditStatus, DeleteStatus, update_progress

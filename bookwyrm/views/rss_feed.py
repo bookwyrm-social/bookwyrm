@@ -42,3 +42,114 @@ class RssFeed(Feed):
     def item_link(self, item):
         """link to the status"""
         return item.local_path
+
+
+class RssReviewsOnlyFeed(Feed):
+    """serialize user's reviews in rss feed"""
+
+    description_template = "rss/content.html"
+
+    def item_title(self, item):
+        """render the item title"""
+        if hasattr(item, "pure_name") and item.pure_name:
+            return item.pure_name
+        title_template = get_template("snippets/status/header_content.html")
+        title = title_template.render({"status": item})
+        template = get_template("rss/title.html")
+        return template.render({"user": item.user, "item_title": title}).strip()
+
+    def get_object(self, request, username):  # pylint: disable=arguments-differ
+        """the user who's posts get serialized"""
+        return get_user_from_username(request.user, username)
+
+    def link(self, obj):
+        """link to the user's profile"""
+        return obj.local_path
+
+    def title(self, obj):
+        """title of the rss feed entry"""
+        return _(f"Reviews from {obj.display_name}")
+
+    def items(self, obj):
+        """the user's activity feed"""
+        return obj.status_set.select_subclasses("review").filter(
+            privacy__in=["public", "unlisted"],
+        )[:10]
+
+    def item_link(self, item):
+        """link to the status"""
+        return item.local_path
+
+
+class RssQuotesOnlyFeed(Feed):
+    """serialize user's quotes in rss feed"""
+
+    description_template = "rss/content.html"
+
+    def item_title(self, item):
+        """render the item title"""
+        if hasattr(item, "pure_name") and item.pure_name:
+            return item.pure_name
+        title_template = get_template("snippets/status/header_content.html")
+        title = title_template.render({"status": item})
+        template = get_template("rss/title.html")
+        return template.render({"user": item.user, "item_title": title}).strip()
+
+    def get_object(self, request, username):  # pylint: disable=arguments-differ
+        """the user who's posts get serialized"""
+        return get_user_from_username(request.user, username)
+
+    def link(self, obj):
+        """link to the user's profile"""
+        return obj.local_path
+
+    def title(self, obj):
+        """title of the rss feed entry"""
+        return _(f"Quotes from {obj.display_name}")
+
+    def items(self, obj):
+        """the user's activity feed"""
+        return obj.status_set.select_subclasses("quotation").filter(
+            privacy__in=["public", "unlisted"],
+        )[:10]
+
+    def item_link(self, item):
+        """link to the status"""
+        return item.local_path
+
+
+class RssCommentsOnlyFeed(Feed):
+    """serialize user's quotes in rss feed"""
+
+    description_template = "rss/content.html"
+
+    def item_title(self, item):
+        """render the item title"""
+        if hasattr(item, "pure_name") and item.pure_name:
+            return item.pure_name
+        title_template = get_template("snippets/status/header_content.html")
+        title = title_template.render({"status": item})
+        template = get_template("rss/title.html")
+        return template.render({"user": item.user, "item_title": title}).strip()
+
+    def get_object(self, request, username):  # pylint: disable=arguments-differ
+        """the user who's posts get serialized"""
+        return get_user_from_username(request.user, username)
+
+    def link(self, obj):
+        """link to the user's profile"""
+        return obj.local_path
+
+    def title(self, obj):
+        """title of the rss feed entry"""
+        return _(f"Comments from {obj.display_name}")
+
+    def items(self, obj):
+        """the user's activity feed"""
+        return obj.status_set.select_subclasses("comment").filter(
+            privacy__in=["public", "unlisted"],
+        )[:10]
+
+    def item_link(self, item):
+        """link to the status"""
+        return item.local_path
