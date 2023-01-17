@@ -39,7 +39,7 @@ def view_data():
         "email_backend": settings.EMAIL_BACKEND,
         "email_host": settings.EMAIL_HOST,
         "email_port": settings.EMAIL_PORT,
-        "Email_host_user": settings.EMAIL_HOST_USER,
+        "email_host_user": settings.EMAIL_HOST_USER,
         "email_use_tls": settings.EMAIL_USE_TLS,
         "email_use_ssl": settings.EMAIL_USE_SSL,
         "email_sender": settings.EMAIL_SENDER,
