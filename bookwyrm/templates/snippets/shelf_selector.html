@@ -22,7 +22,6 @@
         <input type="hidden" name="book" value="{{ book.id }}">
         <input type="hidden" name="change-shelf-from" value="{{ current.identifier }}">
         <input type="hidden" name="shelf" value="{{ shelf.identifier }}">
-
         <button class="button is-fullwidth is-small shelf-option is-radiusless has-background-body" type="submit" {% if shelf.identifier == current.identifier %}disabled{% endif %}>
             <span>
                 {% include "snippets/translated_shelf_name.html" with shelf=shelf %}

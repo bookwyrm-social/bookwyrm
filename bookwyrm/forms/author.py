@@ -33,8 +33,8 @@ class AuthorForm(CustomForm):
             ),
             "born": forms.SelectDateWidget(attrs={"aria-describedby": "desc_born"}),
             "died": forms.SelectDateWidget(attrs={"aria-describedby": "desc_died"}),
-            "oepnlibrary_key": forms.TextInput(
-                attrs={"aria-describedby": "desc_oepnlibrary_key"}
+            "openlibrary_key": forms.TextInput(
+                attrs={"aria-describedby": "desc_openlibrary_key"}
             ),
             "inventaire_id": forms.TextInput(
                 attrs={"aria-describedby": "desc_inventaire_id"}
