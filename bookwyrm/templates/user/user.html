@@ -4,6 +4,10 @@
 
 {% block title %}{{ user.display_name }}{% endblock %}
 
+{% block head_links %}
+    <link rel="alternate" type="application/xml+rss" href="{{ user.local_path }}/rss" />
+{% endblock %}
+
 {% block header %}
 <div class="columns is-mobile">
     <div class="column">
