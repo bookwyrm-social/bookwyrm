@@ -5,7 +5,7 @@
 {% block title %}{{ user.display_name }}{% endblock %}
 
 {% block head_links %}
-    <link rel="alternate" type="application/xml+rss" href="{{ user.local_path }}/rss" />
+    <link rel="alternate" type="application/rss+xml" href="{{ user.local_path }}/rss" title="{{ user.display_name }}" />
 {% endblock %}
 
 {% block header %}
