@@ -12,7 +12,7 @@ from bookwyrm import models
 from bookwyrm.connectors import ConnectorException, get_data
 from bookwyrm.signatures import make_signature
 from bookwyrm.settings import DOMAIN 
-from bookwyrm.tasks import app
+from bookwyrm.tasks import app, MEDIUM
 
 logger = logging.getLogger(__name__)
 
@@ -199,6 +199,11 @@ class ActivityObject:
             try:
                 if issubclass(type(v), ActivityObject):
                     data[k] = v.serialize()
+                elif isinstance(v, list):
+                    data[k] = [
+                        e.serialize() if issubclass(type(e), ActivityObject) else e
+                        for e in v
+                    ]
             except TypeError:
                 pass
         data = {k: v for (k, v) in data.items() if v is not None and k not in omit}
@@ -207,7 +212,7 @@ class ActivityObject:
         return data
 
 
-@app.task(queue="medium_priority")
+@app.task(queue=MEDIUM)
 @transaction.atomic
 def set_related_field(
     model_name, origin_model_name, related_field_name, related_remote_id, data
@@ -282,7 +287,7 @@ def resolve_remote_id(
         else:
             raise e
     except ConnectorException:
-        logger.exception("Could not connect to host for remote_id: %s", remote_id)
+        logger.info("Could not connect to host for remote_id: %s", remote_id)
         return None
 
     # determine the model implicitly, if not provided
@@ -356,7 +361,9 @@ class Link(ActivityObject):
 
     def serialize(self, **kwargs):
         """remove fields"""
-        omit = ("id", "type", "@context")
+        omit = ("id", "@context")
+        if self.type == "Link":
+            omit += ("type",)
         return super().serialize(omit=omit)
 
 

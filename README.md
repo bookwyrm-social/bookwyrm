@@ -37,7 +37,7 @@ Keep track of what books you've read, and what books you'd like to read in the f
 Federation allows you to interact with users on other instances and services, and also shares metadata about books and authors, which collaboratively builds a decentralized database of books.
 
 ### Privacy and moderation
-Users and administrators can control who can see thier posts and what other instances to federate with.
+Users and administrators can control who can see their posts and what other instances to federate with.
 
 ## Tech Stack
 Web backend

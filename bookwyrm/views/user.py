@@ -1,8 +1,7 @@
-""" non-interactive pages """
+""" The user profile """
 from django.contrib.auth.decorators import login_required
-from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator
-from django.db.models import Q, Count
+from django.db.models import Q
 from django.http import Http404
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
@@ -102,60 +101,47 @@ class User(View):
         return TemplateResponse(request, "user/user.html", data)
 
 
-class Followers(View):
-    """list of followers view"""
+class UserReviewsComments(View):
+    """user's activity filtered by reviews and comments"""
 
     def get(self, request, username):
-        """list of followers"""
+        """user's activity filtered by reviews and comments"""
         user = get_user_from_username(request.user, username)
+        is_self = request.user.id == user.id
 
-        if is_api_request(request):
-            return ActivitypubResponse(user.to_followers_activity(**request.GET))
+        activities = (
+            models.Status.privacy_filter(
+                request.user,
+            )
+            .filter(
+                Q(review__isnull=False) | Q(comment__isnull=False),
+                user=user,
+            )
+            .exclude(
+                privacy="direct",
+            )
+            .select_related(
+                "user",
+                "reply_parent",
+                "review__book",
+                "comment__book",
+                "quotation__book",
+            )
+            .prefetch_related(
+                "mention_books",
+                "mention_users",
+                "attachments",
+            )
+        )
 
-        if user.hide_follows and user != request.user:
-            raise PermissionDenied()
+        paginated = Paginator(activities, PAGE_LENGTH)
 
-        followers = annotate_if_follows(request.user, user.followers)
-        paginated = Paginator(followers.all(), PAGE_LENGTH)
         data = {
             "user": user,
-            "is_self": request.user.id == user.id,
-            "follow_list": paginated.get_page(request.GET.get("page")),
+            "is_self": is_self,
+            "activities": paginated.get_page(request.GET.get("page", 1)),
         }
-        return TemplateResponse(request, "user/relationships/followers.html", data)
-
-
-class Following(View):
-    """list of following view"""
-
-    def get(self, request, username):
-        """list of followers"""
-        user = get_user_from_username(request.user, username)
-
-        if is_api_request(request):
-            return ActivitypubResponse(user.to_following_activity(**request.GET))
-
-        if user.hide_follows and user != request.user:
-            raise PermissionDenied()
-
-        following = annotate_if_follows(request.user, user.following)
-        paginated = Paginator(following.all(), PAGE_LENGTH)
-        data = {
-            "user": user,
-            "is_self": request.user.id == user.id,
-            "follow_list": paginated.get_page(request.GET.get("page")),
-        }
-        return TemplateResponse(request, "user/relationships/following.html", data)
-
-
-def annotate_if_follows(user, queryset):
-    """Sort a list of users by if you follow them"""
-    if not user.is_authenticated:
-        return queryset.order_by("-created_date")
-
-    return queryset.annotate(
-        request_user_follows=Count("followers", filter=Q(followers=user))
-    ).order_by("-request_user_follows", "-created_date")
+        return TemplateResponse(request, "user/reviews_comments.html", data)
 
 
 @require_POST
@@ -171,3 +157,12 @@ def hide_suggestions(request):
 def user_redirect(request, username):
     """redirect to a user's feed"""
     return redirect("user-feed", username=username)
+
+
+@login_required
+def toggle_guided_tour(request, tour):
+    """most people don't want a tour every time they load a page"""
+
+    request.user.show_guided_tour = tour
+    request.user.save(broadcast=False, update_fields=["show_guided_tour"])
+    return redirect("/")

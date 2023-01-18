@@ -10,7 +10,7 @@ from bookwyrm import forms, models
 from bookwyrm.settings import PAGE_LENGTH
 
 
-# pylint: disable= no-self-use
+# pylint: disable=no-self-use
 @method_decorator(login_required, name="dispatch")
 @method_decorator(
     permission_required("bookwyrm.moderate_user", raise_exception=True),
@@ -55,8 +55,12 @@ class UserAdminList(View):
             users = users.order_by(sort)
 
         paginated = Paginator(users, PAGE_LENGTH)
+        page = paginated.get_page(request.GET.get("page"))
         data = {
-            "users": paginated.get_page(request.GET.get("page")),
+            "users": page,
+            "page_range": paginated.get_elided_page_range(
+                page.number, on_each_side=2, on_ends=1
+            ),
             "sort": sort,
             "server": server,
             "status": status,
@@ -88,6 +92,6 @@ class UserAdmin(View):
         else:
             form = forms.UserGroupForm(request.POST, instance=user)
             if form.is_valid():
-                form.save()
+                form.save(request)
         data = {"user": user, "group_form": form}
         return TemplateResponse(request, "settings/users/user.html", data)

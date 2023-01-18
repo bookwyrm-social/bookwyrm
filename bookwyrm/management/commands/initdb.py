@@ -8,54 +8,64 @@ from bookwyrm import models
 
 def init_groups():
     """permission levels"""
-    groups = ["admin", "moderator", "editor"]
+    groups = ["admin", "owner", "moderator", "editor"]
     for group in groups:
-        Group.objects.create(name=group)
+        Group.objects.get_or_create(name=group)
 
 
 def init_permissions():
     """permission types"""
     permissions = [
         {
+            "codename": "manage_registration",
+            "name": "allow or prevent user registration",
+            "groups": ["admin"],
+        },
+        {
+            "codename": "system_administration",
+            "name": "technical controls",
+            "groups": ["admin"],
+        },
+        {
             "codename": "edit_instance_settings",
             "name": "change the instance info",
-            "groups": ["admin"],
+            "groups": ["admin", "owner"],
         },
         {
             "codename": "set_user_group",
             "name": "change what group a user is in",
-            "groups": ["admin", "moderator"],
+            "groups": ["admin", "owner", "moderator"],
         },
         {
             "codename": "control_federation",
             "name": "control who to federate with",
-            "groups": ["admin", "moderator"],
+            "groups": ["admin", "owner", "moderator"],
         },
         {
             "codename": "create_invites",
             "name": "issue invitations to join",
-            "groups": ["admin", "moderator"],
+            "groups": ["admin", "owner", "moderator"],
         },
         {
             "codename": "moderate_user",
             "name": "deactivate or silence a user",
-            "groups": ["admin", "moderator"],
+            "groups": ["admin", "owner", "moderator"],
         },
         {
             "codename": "moderate_post",
             "name": "delete other users' posts",
-            "groups": ["admin", "moderator"],
+            "groups": ["admin", "owner", "moderator"],
         },
         {
             "codename": "edit_book",
             "name": "edit book info",
-            "groups": ["admin", "moderator", "editor"],
+            "groups": ["admin", "owner", "moderator", "editor"],
         },
     ]
 
     content_type = ContentType.objects.get_for_model(models.User)
     for permission in permissions:
-        permission_obj = Permission.objects.create(
+        permission_obj, _ = Permission.objects.get_or_create(
             codename=permission["codename"],
             name=permission["name"],
             content_type=content_type,

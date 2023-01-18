@@ -12,6 +12,7 @@ from bookwyrm.models import base_model
 from bookwyrm.models.activitypub_mixin import (
     ActivitypubMixin,
     ActivityMixin,
+    broadcast_task,
     ObjectMixin,
     OrderedCollectionMixin,
     to_ordered_collection_page,
@@ -19,7 +20,7 @@ from bookwyrm.models.activitypub_mixin import (
 from bookwyrm.settings import PAGE_LENGTH
 
 
-# pylint: disable=invalid-name
+# pylint: disable=invalid-name,too-many-public-methods
 @patch("bookwyrm.activitystreams.add_status_task.delay")
 @patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
 class ActivitypubMixins(TestCase):
@@ -382,16 +383,16 @@ class ActivitypubMixins(TestCase):
         self.assertEqual(page_1.partOf, "http://fish.com/")
         self.assertEqual(page_1.id, "http://fish.com/?page=1")
         self.assertEqual(page_1.next, "http://fish.com/?page=2")
-        self.assertEqual(page_1.orderedItems[0]["content"], "test status 29")
-        self.assertEqual(page_1.orderedItems[1]["content"], "test status 28")
+        self.assertEqual(page_1.orderedItems[0]["content"], "<p>test status 29</p>")
+        self.assertEqual(page_1.orderedItems[1]["content"], "<p>test status 28</p>")
 
         page_2 = to_ordered_collection_page(
             models.Status.objects.all(), "http://fish.com/", page=2
         )
         self.assertEqual(page_2.partOf, "http://fish.com/")
         self.assertEqual(page_2.id, "http://fish.com/?page=2")
-        self.assertEqual(page_2.orderedItems[0]["content"], "test status 14")
-        self.assertEqual(page_2.orderedItems[-1]["content"], "test status 0")
+        self.assertEqual(page_2.orderedItems[0]["content"], "<p>test status 14</p>")
+        self.assertEqual(page_2.orderedItems[-1]["content"], "<p>test status 0</p>")
 
     def test_to_ordered_collection(self, *_):
         """convert a queryset into an ordered collection object"""
@@ -419,5 +420,16 @@ class ActivitypubMixins(TestCase):
         )
         self.assertEqual(page_2.partOf, "http://fish.com/")
         self.assertEqual(page_2.id, "http://fish.com/?page=2")
-        self.assertEqual(page_2.orderedItems[0]["content"], "test status 14")
-        self.assertEqual(page_2.orderedItems[-1]["content"], "test status 0")
+        self.assertEqual(page_2.orderedItems[0]["content"], "<p>test status 14</p>")
+        self.assertEqual(page_2.orderedItems[-1]["content"], "<p>test status 0</p>")
+
+    def test_broadcast_task(self, *_):
+        """Should be calling asyncio"""
+        recipients = [
+            "https://instance.example/user/inbox",
+            "https://instance.example/okay/inbox",
+        ]
+        with patch("bookwyrm.models.activitypub_mixin.asyncio.run") as mock:
+            broadcast_task(self.local_user.id, {}, recipients)
+        self.assertTrue(mock.called)
+        self.assertEqual(mock.call_count, 1)

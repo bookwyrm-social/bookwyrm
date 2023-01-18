@@ -8,7 +8,7 @@ from django.test import TestCase
 
 from bookwyrm import models
 from bookwyrm.importers import StorygraphImporter
-from bookwyrm.importers.importer import handle_imported_book
+from bookwyrm.models.import_job import handle_imported_book
 
 
 def make_date(*args):
@@ -23,6 +23,7 @@ def make_date(*args):
 class StorygraphImport(TestCase):
     """importing from storygraph csv"""
 
+    # pylint: disable=invalid-name
     def setUp(self):
         """use a test csv"""
         self.importer = StorygraphImporter()
@@ -52,13 +53,19 @@ class StorygraphImport(TestCase):
             models.ImportItem.objects.filter(job=import_job).order_by("index").all()
         )
         self.assertEqual(len(import_items), 2)
-        self.assertEqual(import_items[0].index, 0)
-        self.assertEqual(import_items[0].normalized_data["title"], "Always Coming Home")
-        self.assertEqual(import_items[1].index, 1)
+
+        always_book = import_items[0]
+        self.assertEqual(always_book.index, 0)
+        self.assertEqual(always_book.normalized_data["title"], "Always Coming Home")
+        self.assertEqual(always_book.isbn, "9780520227354")
+
+        subprime_book = import_items[1]
+        self.assertEqual(subprime_book.index, 1)
         self.assertEqual(
-            import_items[1].normalized_data["title"], "Subprime Attention Crisis"
+            subprime_book.normalized_data["title"], "Subprime Attention Crisis"
         )
-        self.assertEqual(import_items[1].normalized_data["rating"], "5.0")
+        self.assertEqual(subprime_book.normalized_data["rating"], "5.0")
+        self.assertEqual(subprime_book.isbn, "0374538654")
 
     def test_handle_imported_book(self, *_):
         """storygraph import added a book, this adds related connections"""

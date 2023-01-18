@@ -4,7 +4,10 @@ from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
+import pyotp
+
 from bookwyrm import models
+from bookwyrm.settings import DOMAIN
 from .custom_form import CustomForm
 
 
@@ -17,6 +20,21 @@ class LoginForm(CustomForm):
         widgets = {
             "password": forms.PasswordInput(),
         }
+
+    def infer_username(self):
+        """Users may enter their localname, username, or email"""
+        localname = self.data.get("localname")
+        if "@" in localname:  # looks like an email address to me
+            try:
+                return models.User.objects.get(email=localname).username
+            except models.User.DoesNotExist:  # maybe it's a full username?
+                return localname
+        return f"{localname}@{DOMAIN}"
+
+    def add_invalid_password_error(self):
+        """We don't want to be too specific about this"""
+        # pylint: disable=attribute-defined-outside-init
+        self.non_field_errors = _("Username or password are incorrect")
 
 
 class RegisterForm(CustomForm):
@@ -74,3 +92,40 @@ class PasswordResetForm(CustomForm):
             validate_password(new_password)
         except ValidationError as err:
             self.add_error("password", err)
+
+
+class Confirm2FAForm(CustomForm):
+    otp = forms.CharField(
+        max_length=6, min_length=6, widget=forms.TextInput(attrs={"autofocus": True})
+    )
+
+    class Meta:
+        model = models.User
+        fields = ["otp_secret", "hotp_count"]
+
+    def clean_otp(self):
+        """Check otp matches"""
+        otp = self.data.get("otp")
+        totp = pyotp.TOTP(self.instance.otp_secret)
+
+        if not totp.verify(otp):
+
+            if self.instance.hotp_secret:
+                # maybe it's a backup code?
+                hotp = pyotp.HOTP(self.instance.hotp_secret)
+                hotp_count = (
+                    self.instance.hotp_count
+                    if self.instance.hotp_count is not None
+                    else 0
+                )
+
+                if not hotp.verify(otp, hotp_count):
+                    self.add_error("otp", _("Incorrect code"))
+
+                # increment the user hotp_count
+                else:
+                    self.instance.hotp_count = hotp_count + 1
+                    self.instance.save(broadcast=False, update_fields=["hotp_count"])
+
+            else:
+                self.add_error("otp", _("Incorrect code"))

@@ -9,13 +9,17 @@
     <div class="container">
         <div class="navbar-brand is-flex-grow-1">
             <span class="navbar-item" href="/">
-                <img class="image logo" src="{% if site.logo_small %}{% get_media_prefix %}{{ site.logo_small }}{% else %}{% static "images/logo-small.png" %}{% endif %}" alt="{% blocktrans with site_name=site.name %}{{ site_name }} home page{% endblocktrans %}">
+                <img
+                    class="image logo"
+                    src="{% if site.logo_small %}{% get_media_prefix %}{{ site.logo_small }}{% else %}{% static "images/logo-small.png" %}{% endif %}"
+                    alt="{% blocktrans with site_name=site.name %}{{ site_name }} home page{% endblocktrans %}"
+                >
             </span>
             <div class="navbar-item is-align-items-start pt-5 is-flex-grow-1">
                 {% trans "Installing BookWyrm" %}
             </div>
             <div class="navbar-item is-align-items-start pt-5">
-                <a href="https://joinbookwyrm.com/get-involved/#dev-chat" target="_blank">{% trans "Need help?" %}</a>
+                <a href="https://joinbookwyrm.com/get-involved/#dev-chat" target="_blank" rel="nofollow noopener noreferrer">{% trans "Need help?" %}</a>
             </div>
         </div>
     </div>

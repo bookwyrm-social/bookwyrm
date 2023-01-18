@@ -2,13 +2,14 @@
 import datetime
 
 from django import forms
+from django.core.exceptions import PermissionDenied
 from django.forms import widgets
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django_celery_beat.models import IntervalSchedule
 
 from bookwyrm import models
-from .custom_form import CustomForm
+from .custom_form import CustomForm, StyledForm
 
 
 # pylint: disable=missing-class-docstring
@@ -54,14 +55,65 @@ class CreateInviteForm(CustomForm):
 class SiteForm(CustomForm):
     class Meta:
         model = models.SiteSettings
-        exclude = ["admin_code", "install_mode"]
+        fields = [
+            "name",
+            "instance_tagline",
+            "instance_description",
+            "instance_short_description",
+            "default_theme",
+            "code_of_conduct",
+            "privacy_policy",
+            "impressum",
+            "show_impressum",
+            "logo",
+            "logo_small",
+            "favicon",
+            "support_link",
+            "support_title",
+            "admin_email",
+            "footer_item",
+        ]
         widgets = {
             "instance_short_description": forms.TextInput(
                 attrs={"aria-describedby": "desc_instance_short_description"}
             ),
+        }
+
+
+class RegistrationForm(CustomForm):
+    class Meta:
+        model = models.SiteSettings
+        fields = [
+            "allow_registration",
+            "allow_invite_requests",
+            "registration_closed_text",
+            "invite_request_text",
+            "invite_request_question",
+            "invite_question_text",
+            "require_confirm_email",
+        ]
+
+        widgets = {
             "require_confirm_email": forms.CheckboxInput(
                 attrs={"aria-describedby": "desc_require_confirm_email"}
             ),
+            "invite_request_text": forms.Textarea(
+                attrs={"aria-describedby": "desc_invite_request_text"}
+            ),
+        }
+
+
+class RegistrationLimitedForm(CustomForm):
+    class Meta:
+        model = models.SiteSettings
+        fields = [
+            "registration_closed_text",
+            "invite_request_text",
+            "invite_request_question",
+            "invite_question_text",
+        ]
+
+        widgets = {
             "invite_request_text": forms.Textarea(
                 attrs={"aria-describedby": "desc_invite_request_text"}
             ),
@@ -130,7 +182,7 @@ class AutoModRuleForm(CustomForm):
         fields = ["string_match", "flag_users", "flag_statuses", "created_by"]
 
 
-class IntervalScheduleForm(CustomForm):
+class IntervalScheduleForm(StyledForm):
     class Meta:
         model = IntervalSchedule
         fields = ["every", "period"]
@@ -139,3 +191,10 @@ class IntervalScheduleForm(CustomForm):
             "every": forms.NumberInput(attrs={"aria-describedby": "desc_every"}),
             "period": forms.Select(attrs={"aria-describedby": "desc_period"}),
         }
+
+    # pylint: disable=arguments-differ
+    def save(self, request, *args, **kwargs):
+        """This is an outside model so the perms check works differently"""
+        if not request.user.has_perm("bookwyrm.moderate_user"):
+            raise PermissionDenied()
+        return super().save(*args, **kwargs)

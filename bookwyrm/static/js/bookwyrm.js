@@ -38,15 +38,22 @@ let BookWyrm = new (class {
             .querySelectorAll("[data-modal-open]")
             .forEach((node) => node.addEventListener("click", this.handleModalButton.bind(this)));
 
-        document
-            .querySelectorAll("details.dropdown")
-            .forEach((node) =>
-                node.addEventListener("toggle", this.handleDetailsDropdown.bind(this))
+        document.querySelectorAll("details.dropdown").forEach((node) => {
+            node.addEventListener("toggle", this.handleDetailsDropdown.bind(this));
+            node.querySelectorAll("[data-modal-open]").forEach((modal_node) =>
+                modal_node.addEventListener("click", () => (node.open = false))
             );
+        });
 
         document
             .querySelector("#barcode-scanner-modal")
             .addEventListener("open", this.openBarcodeScanner.bind(this));
+
+        document
+            .querySelectorAll('form[name="register"]')
+            .forEach((form) =>
+                form.addEventListener("submit", (e) => this.setPreferredTimezone(e, form))
+            );
     }
 
     /**
@@ -627,9 +634,9 @@ let BookWyrm = new (class {
         }
 
         function toggleStatus(status) {
-            for (const child of statusNode.children) {
-                BookWyrm.toggleContainer(child, !child.classList.contains(status));
-            }
+            const template = document.querySelector(`#barcode-${status}`);
+
+            statusNode.replaceChildren(template ? template.content.cloneNode(true) : null);
         }
 
         function initBarcodes(cameraId = null) {
@@ -783,5 +790,17 @@ let BookWyrm = new (class {
         event.target.addEventListener("close", cleanup, { once: true });
 
         initBarcodes();
+    }
+
+    /**
+     * Set preferred timezone in register form.
+     *
+     * @param  {Event} event - `submit` event fired by the register form.
+     * @return {undefined}
+     */
+    setPreferredTimezone(event, form) {
+        const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+        form.querySelector('input[name="preferred_timezone"]').value = tz;
     }
 })();

@@ -3,18 +3,33 @@ from functools import reduce
 import operator
 
 from django.apps import apps
+from django.core.exceptions import PermissionDenied
 from django.db import models, transaction
 from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 
-from bookwyrm.tasks import app
+from bookwyrm.tasks import app, LOW
+from .base_model import BookWyrmModel
 from .user import User
 
 
-class EmailBlocklist(models.Model):
+class AdminModel(BookWyrmModel):
+    """Overrides the permissions methods"""
+
+    class Meta:
+        """this is just here to provide default fields for other models"""
+
+        abstract = True
+
+    def raise_not_editable(self, viewer):
+        if viewer.has_perm("bookwyrm.moderate_user"):
+            return
+        raise PermissionDenied()
+
+
+class EmailBlocklist(AdminModel):
     """blocked email addresses"""
 
-    created_date = models.DateTimeField(auto_now_add=True)
     domain = models.CharField(max_length=255, unique=True)
     is_active = models.BooleanField(default=True)
 
@@ -29,10 +44,9 @@ class EmailBlocklist(models.Model):
         return User.objects.filter(email__endswith=f"@{self.domain}")
 
 
-class IPBlocklist(models.Model):
+class IPBlocklist(AdminModel):
     """blocked ip addresses"""
 
-    created_date = models.DateTimeField(auto_now_add=True)
     address = models.CharField(max_length=255, unique=True)
     is_active = models.BooleanField(default=True)
 
@@ -42,7 +56,7 @@ class IPBlocklist(models.Model):
         ordering = ("-created_date",)
 
 
-class AutoMod(models.Model):
+class AutoMod(AdminModel):
     """rules to automatically flag suspicious activity"""
 
     string_match = models.CharField(max_length=200, unique=True)
@@ -51,7 +65,7 @@ class AutoMod(models.Model):
     created_by = models.ForeignKey("User", on_delete=models.PROTECT)
 
 
-@app.task(queue="low_priority")
+@app.task(queue=LOW)
 def automod_task():
     """Create reports"""
     if not AutoMod.objects.exists():
@@ -61,17 +75,14 @@ def automod_task():
     if not reports:
         return
 
-    admins = User.objects.filter(
-        models.Q(user_permissions__name__in=["moderate_user", "moderate_post"])
-        | models.Q(is_superuser=True)
-    ).all()
+    admins = User.admins()
     notification_model = apps.get_model("bookwyrm", "Notification", require_ready=True)
     with transaction.atomic():
         for admin in admins:
             notification, _ = notification_model.objects.get_or_create(
                 user=admin, notification_type=notification_model.REPORT, read=False
             )
-            notification.related_repors.add(reports)
+            notification.related_reports.set(reports)
 
 
 def automod_users(reporter):

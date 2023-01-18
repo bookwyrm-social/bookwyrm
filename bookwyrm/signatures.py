@@ -17,7 +17,7 @@ def create_key_pair():
     random_generator = Random.new().read
     key = RSA.generate(1024, random_generator)
     private_key = key.export_key().decode("utf8")
-    public_key = key.publickey().export_key().decode("utf8")
+    public_key = key.public_key().export_key().decode("utf8")
 
     return private_key, public_key
 

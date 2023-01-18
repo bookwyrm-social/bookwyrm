@@ -63,6 +63,9 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         activitypub_field="inReplyTo",
     )
     thread_id = models.IntegerField(blank=True, null=True)
+    # statuses get saved a few times, this indicates if they're set
+    ready = models.BooleanField(default=True)
+
     objects = InheritanceManager()
 
     activity_serializer = activitypub.Note
@@ -83,8 +86,7 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
 
         if not self.reply_parent:
             self.thread_id = self.id
-
-        super().save(broadcast=False, update_fields=["thread_id"])
+            super().save(broadcast=False, update_fields=["thread_id"])
 
     def delete(self, *args, **kwargs):  # pylint: disable=unused-argument
         """ "delete" a status"""
@@ -363,7 +365,7 @@ class Review(BookStatus):
         default=None,
         null=True,
         blank=True,
-        validators=[MinValueValidator(1), MaxValueValidator(5)],
+        validators=[MinValueValidator(0.5), MaxValueValidator(5)],
         decimal_places=2,
         max_digits=3,
     )
@@ -399,7 +401,7 @@ class ReviewRating(Review):
     def save(self, *args, **kwargs):
         if not self.rating:
             raise ValueError("ReviewRating object must include a numerical rating")
-        return super().save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
     @property
     def pure_content(self):

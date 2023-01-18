@@ -120,7 +120,7 @@ def personal_annual_summary(request, year):
 @login_required
 @require_POST
 def summary_add_key(request):
-    """add summary key"""
+    """Create a shareable token for this annual review year"""
 
     year = request.POST["year"]
     user = request.user
@@ -134,7 +134,7 @@ def summary_add_key(request):
     else:
         user.summary_keys[year] = new_key
 
-    user.save()
+    user.save(update_fields=["summary_keys"], broadcast=False)
 
     response = redirect("annual-summary", user.localname, year)
     response["Location"] += f"?key={str(new_key)}"
@@ -144,7 +144,7 @@ def summary_add_key(request):
 @login_required
 @require_POST
 def summary_revoke_key(request):
-    """revoke summary key"""
+    """No longer sharing the annual review"""
 
     year = request.POST["year"]
     user = request.user
@@ -152,7 +152,7 @@ def summary_revoke_key(request):
     if user.summary_keys and year in user.summary_keys:
         user.summary_keys.pop(year)
 
-    user.save()
+    user.save(update_fields=["summary_keys"], broadcast=False)
 
     return redirect("annual-summary", user.localname, year)
 

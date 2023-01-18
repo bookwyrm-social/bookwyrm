@@ -63,6 +63,8 @@ function awscommand {
         amazon/aws-cli $2
 }
 
+
+
 CMD=$1
 if [ -n "$CMD" ]; then
     shift
@@ -84,16 +86,15 @@ case "$CMD" in
         ;;
     resetdb)
         prod_error
-        clean
-        # Start just the DB so no one else is using it
-        docker-compose up --build -d db
-        rundb dropdb -U ${POSTGRES_USER} ${POSTGRES_DB}
-        rundb createdb -U ${POSTGRES_USER} ${POSTGRES_DB}
-        # Now start up web so we can run the migrations
-        docker-compose up --build -d web
+        docker-compose rm -svf
+        docker volume rm -f bookwyrm_media_volume bookwyrm_pgdata bookwyrm_redis_activity_data bookwyrm_redis_broker_data bookwyrm_static_volume
+        docker-compose build
         migrate
+        migrate django_celery_beat
         initdb
-        clean
+        runweb python manage.py compile_themes
+        runweb python manage.py collectstatic --no-input
+        admin_code
         ;;
     makemigrations)
         prod_error
@@ -122,6 +123,9 @@ case "$CMD" in
         prod_error
         runweb pytest -n 3 --cov-report term-missing "$@"
         ;;
+    compile_themes)
+        runweb python manage.py compile_themes
+        ;;
     collectstatic)
         runweb python manage.py collectstatic --no-input
         ;;
@@ -138,12 +142,14 @@ case "$CMD" in
         git checkout l10n_main locale/ca_ES
         git checkout l10n_main locale/de_DE
         git checkout l10n_main locale/es_ES
+        git checkout l10n_main locale/eu_ES
         git checkout l10n_main locale/fi_FI
         git checkout l10n_main locale/fr_FR
         git checkout l10n_main locale/gl_ES
         git checkout l10n_main locale/it_IT
         git checkout l10n_main locale/lt_LT
         git checkout l10n_main locale/no_NO
+        git checkout l10n_main locale/pl_PL
         git checkout l10n_main locale/pt_PT
         git checkout l10n_main locale/pt_BR
         git checkout l10n_main locale/ro_RO
@@ -173,6 +179,10 @@ case "$CMD" in
         prod_error
         docker-compose run --rm dev-tools npx prettier --write bookwyrm/static/js/*.js
         ;;
+    eslint)
+        prod_error
+        docker-compose run --rm dev-tools npx eslint bookwyrm/static --ext .js
+        ;;
     stylelint)
         prod_error
         docker-compose run --rm dev-tools npx stylelint \
@@ -184,13 +194,10 @@ case "$CMD" in
         runweb pylint bookwyrm/
         docker-compose run --rm dev-tools black celerywyrm bookwyrm
         docker-compose run --rm dev-tools npx prettier --write bookwyrm/static/js/*.js
+        docker-compose run --rm dev-tools npx eslint bookwyrm/static --ext .js
         docker-compose run --rm dev-tools npx stylelint \
             bookwyrm/static/css/bookwyrm.scss bookwyrm/static/css/bookwyrm/**/*.scss --fix \
             --config dev-tools/.stylelintrc.js
-        ;;
-    compilescss)
-        runweb python manage.py compilescss
-        runweb python manage.py collectstatic --no-input
         ;;
     collectstatic_watch)
         prod_error
@@ -201,6 +208,7 @@ case "$CMD" in
         docker-compose build
         # ./update.sh
         runweb python manage.py migrate
+        runweb python manage.py compile_themes
         runweb python manage.py collectstatic --no-input
         docker-compose up -d
         docker-compose restart web
@@ -220,6 +228,9 @@ case "$CMD" in
         ;;
     generate_preview_images)
         runweb python manage.py generate_preview_images "$@"
+        ;;
+    remove_remote_user_preview_images)
+        runweb python manage.py remove_remote_user_preview_images
         ;;
     copy_media_to_s3)
         awscommand "bookwyrm_media_volume:/images"\
@@ -254,11 +265,18 @@ case "$CMD" in
         migrate
         migrate django_celery_beat
         initdb
+        runweb python manage.py compile_themes
         runweb python manage.py collectstatic --no-input
         admin_code
         ;;
     runweb)
         runweb "$@"
+        ;;
+    remove_2fa)
+        runweb python manage.py remove_2fa "$@"
+        ;;
+    confirm_email)
+        runweb python manage.py confirm_email "$@"
         ;;
     *)
         set +x # No need to echo echo
@@ -275,6 +293,7 @@ case "$CMD" in
         echo "    dbshell"
         echo "    restart_celery"
         echo "    pytest [path]"
+        echo "    compile_themes"
         echo "    collectstatic"
         echo "    makemessages"
         echo "    compilemessages [locale]"
@@ -283,18 +302,21 @@ case "$CMD" in
         echo "    clean"
         echo "    black"
         echo "    prettier"
+        echo "    eslint"
         echo "    stylelint"
         echo "    formatters"
-        echo "    compilescss"
         echo "    collectstatic_watch"
         echo "    populate_streams [--stream=<stream name>]"
         echo "    populate_lists_streams"
         echo "    populate_suggestions"
         echo "    generate_thumbnails"
         echo "    generate_preview_images [--all]"
+        echo "    remove_remote_user_preview_images"
         echo "    copy_media_to_s3"
         echo "    sync_media_to_s3"
         echo "    set_cors_to_s3 [cors file]"
         echo "    runweb [command]"
+        echo "    remove_2fa"
+        echo "    confirm_email"
         ;;
 esac

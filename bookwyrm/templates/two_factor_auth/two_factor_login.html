@@ -1,0 +1,49 @@
+{% load layout %}
+{% load sass_tags %}
+{% load i18n %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="{% get_lang %}">
+<head>
+    <title>{% block title %}BookWyrm{% endblock %} - {{ site.name }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="{% sass_src site_theme %}" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    <nav class="navbar" aria-label="main navigation">
+        <div class="container">
+            <div class="navbar-brand">
+                <a class="navbar-item" href="/">
+                    <img class="image logo" src="{% if site.logo_small %}{% get_media_prefix %}{{ site.logo_small }}{% else %}{% static "images/logo-small.png" %}{% endif %}" alt="{% blocktrans with site_name=site.name %}{{ site_name }} home page{% endblocktrans %}">
+                </a>
+            </div>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="columns is-multiline is-centered">
+            <div class="column">
+                <header class="block">
+                    {% block header %}
+                    <h1 class="title">
+                        {% trans "2FA check" %}
+                    </h1>
+                    {% endblock %}
+                </header>
+                <div class="is-centered">
+                    <form name="confirm-2fa" action="{% url 'login-with-2fa' %}" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="field">
+                            <label class="label" for="id_otp">{% trans "Enter the code from your authenticator app:" %}</label>
+                            {{ form.otp }}
+                            {% include 'snippets/form_errors.html' with errors_list=form.otp.errors id="desc_otp" %}
+                        </div>
+                        <button class="button is-primary" type="submit">{% trans "Confirm and Log In" %}</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% include 'snippets/footer.html' %}
+</body>
+</html>

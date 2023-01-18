@@ -20,6 +20,10 @@
                 <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Change Password" %}</a>
             </li>
             <li>
+                {% url 'prefs-2fa' as url %}
+                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Two Factor Authentication" %}</a>
+            </li>
+            <li>
                 {% url 'prefs-delete' as url %}
                 <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Delete Account" %}</a>
             </li>

@@ -33,7 +33,7 @@ class Report(View):
         if not form.is_valid():
             raise ValueError(form.errors)
 
-        report = form.save()
+        report = form.save(request)
         if report.links.exists():
             # revert the domain to pending
             domain = report.links.first().domain

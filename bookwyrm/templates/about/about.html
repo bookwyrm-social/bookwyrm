@@ -10,8 +10,9 @@
 {% endblock %}
 
 {% block about_content %}
+{% get_current_language as LANGUAGE_CODE %}
 {# seven day cache #}
-{% cache 604800 about_page %}
+{% cache 604800 about_page_superlatives LANGUAGE_CODE %}
 
 {% get_book_superlatives as superlatives %}
 <section class=" pb-4">
@@ -23,7 +24,9 @@
         <p class="subtitle notification has-background-primary-highlight">
             {% blocktrans trimmed with site_name=site.name %}
                 {{ site_name }} is part of <em>BookWyrm</em>, a network of independent, self-directed communities for readers.
-                While you can interact seamlessly with users anywhere in the <a href="https://joinbookwyrm.com/instances/" target="_blank">BookWyrm network</a>, this community is unique.
+                While you can interact seamlessly with users anywhere in the
+                <a href="https://joinbookwyrm.com/instances/" target="_blank" rel="nofollow noopener noreferrer">BookWyrm network</a>,
+                this community is unique.
             {% endblocktrans %}
         </p>
     </div>
@@ -88,10 +91,14 @@
     </div>
 
     <p>
-        {% trans "Track your reading, talk about books, write reviews, and discover what to read next. Always ad-free, anti-corporate, and community-oriented, BookWyrm is human-scale software, designed to stay small and personal. If you have feature requests, bug reports, or grand dreams, <a href='https://joinbookwyrm.com/get-involved' target='_blank'>reach out</a> and make yourself heard." %}
+    {% blocktrans trimmed %}
+    Track your reading, talk about books, write reviews, and discover what to read next. Always ad-free, anti-corporate, and community-oriented, BookWyrm is human-scale software, designed to stay small and personal.
+    If you have feature requests, bug reports, or grand dreams, <a href="https://joinbookwyrm.com/get-involved" target="_blank" rel="nofollow noopener noreferrer">reach out</a> and make yourself heard.
+    {% endblocktrans %}
     </p>
 
 </section>
+{% endcache %}
 
 <section class="block">
     <header class="content">
@@ -140,5 +147,4 @@
     </div>
 </section>
 
-{% endcache %}
 {% endblock %}

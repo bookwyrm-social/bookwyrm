@@ -6,6 +6,7 @@ from urllib.parse import urlparse
 from django.contrib.auth.decorators import login_required
 from django.core.validators import URLValidator
 from django.core.exceptions import ValidationError
+from django.db.models import Q
 from django.http import HttpResponse, HttpResponseBadRequest, Http404
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
@@ -16,8 +17,8 @@ from django.views.decorators.http import require_POST
 
 from markdown import markdown
 from bookwyrm import forms, models
-from bookwyrm.settings import DOMAIN
 from bookwyrm.utils import regex, sanitizer
+from bookwyrm.utils.validate import validate_url_domain
 from .helpers import handle_remote_webfinger, is_api_request
 from .helpers import load_date_in_user_tz_as_utc
 
@@ -34,7 +35,6 @@ class EditStatus(View):
         status = get_object_or_404(
             models.Status.objects.select_subclasses(), id=status_id
         )
-        status.raise_not_editable(request.user)
 
         status_type = "reply" if status.reply_parent else status.status_type.lower()
         data = {
@@ -59,13 +59,14 @@ class CreateStatus(View):
     # pylint: disable=too-many-branches
     def post(self, request, status_type, existing_status_id=None):
         """create status of whatever type"""
+        next_step = request.META.get("HTTP_REFERER")
+        next_step = validate_url_domain(next_step, "/")
         created = not existing_status_id
         existing_status = None
         if existing_status_id:
             existing_status = get_object_or_404(
                 models.Status.objects.select_subclasses(), id=existing_status_id
             )
-            existing_status.raise_not_editable(request.user)
             existing_status.edited_date = timezone.now()
 
         status_type = status_type[0].upper() + status_type[1:]
@@ -82,28 +83,32 @@ class CreateStatus(View):
             if is_api_request(request):
                 logger.exception(form.errors)
                 return HttpResponseBadRequest()
-            return redirect("/")
+            return redirect(next_step)
 
-        status = form.save(commit=False)
-        status.raise_not_editable(request.user)
+        status = form.save(request, commit=False)
+        status.ready = False
         # save the plain, unformatted version of the status for future editing
         status.raw_content = status.content
         if hasattr(status, "quote"):
             status.raw_quote = status.quote
 
         status.sensitive = status.content_warning not in [None, ""]
+        # the status has to be saved now before we can add many to many fields
+        # like mentions
         status.save(broadcast=False)
 
         # inspect the text for user tags
         content = status.content
-        for (mention_text, mention_user) in find_mentions(content):
+        for (mention_text, mention_user) in find_mentions(
+            request.user, content
+        ).items():
             # add them to status mentions fk
             status.mention_users.add(mention_user)
 
             # turn the mention into a link
             content = re.sub(
-                rf"{mention_text}([^@]|$)",
-                rf'<a href="{mention_user.remote_id}">{mention_text}</a>\g<1>',
+                rf"{mention_text}\b(?!@)",
+                rf'<a href="{mention_user.remote_id}">{mention_text}</a>',
                 content,
             )
         # add reply parent to mentions
@@ -120,6 +125,7 @@ class CreateStatus(View):
         if hasattr(status, "quote"):
             status.quote = to_markdown(status.quote)
 
+        status.ready = True
         status.save(created=created)
 
         # update a readthrough, if needed
@@ -131,7 +137,7 @@ class CreateStatus(View):
 
         if is_api_request(request):
             return HttpResponse()
-        return redirect("/")
+        return redirect(next_step)
 
 
 @method_decorator(login_required, name="dispatch")
@@ -164,8 +170,9 @@ def update_progress(request, book_id):  # pylint: disable=unused-argument
 def edit_readthrough(request):
     """can't use the form because the dates are too finnicky"""
     # TODO: remove this, it duplicates the code in the ReadThrough view
+    next_step = request.META.get("HTTP_REFERER")
+    next_step = validate_url_domain(next_step, "/")
     readthrough = get_object_or_404(models.ReadThrough, id=request.POST.get("id"))
-    readthrough.raise_not_editable(request.user)
 
     readthrough.start_date = load_date_in_user_tz_as_utc(
         request.POST.get("start_date"), request.user
@@ -196,25 +203,38 @@ def edit_readthrough(request):
 
     if is_api_request(request):
         return HttpResponse()
-    return redirect("/")
+    return redirect(next_step)
 
 
-def find_mentions(content):
+def find_mentions(user, content):
     """detect @mentions in raw status content"""
     if not content:
-        return
-    for match in re.finditer(regex.STRICT_USERNAME, content):
-        username = match.group().strip().split("@")[1:]
-        if len(username) == 1:
-            # this looks like a local user (@user), fill in the domain
-            username.append(DOMAIN)
-        username = "@".join(username)
+        return {}
+    # The regex has nested match groups, so the 0th entry has the full (outer) match
+    # And beacuse the strict username starts with @, the username is 1st char onward
+    usernames = [m[0][1:] for m in re.findall(regex.STRICT_USERNAME, content)]
 
-        mention_user = handle_remote_webfinger(username)
+    known_users = (
+        models.User.viewer_aware_objects(user)
+        .filter(Q(username__in=usernames) | Q(localname__in=usernames))
+        .distinct()
+    )
+    # Prepare a lookup based on both username and localname
+    username_dict = {
+        **{f"@{u.username}": u for u in known_users},
+        **{f"@{u.localname}": u for u in known_users.filter(local=True)},
+    }
+
+    # Users not captured here could be blocked or not yet loaded on the server
+    not_found = set(usernames) - set(username_dict.keys())
+    for username in not_found:
+        mention_user = handle_remote_webfinger(username, unknown_only=True)
         if not mention_user:
-            # we can ignore users we don't know about
+            # this user is blocked or can't be found
             continue
-        yield (match.group(), mention_user)
+        username_dict[f"@{mention_user.username}"] = mention_user
+        username_dict[f"@{mention_user.localname}"] = mention_user
+    return username_dict
 
 
 def format_links(content):

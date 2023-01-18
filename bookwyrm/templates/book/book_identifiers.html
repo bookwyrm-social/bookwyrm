@@ -1,7 +1,7 @@
 {% spaceless %}
 {% load i18n %}
 
-{% if book.isbn_13 or book.oclc_number or book.asin %}
+{% if book.isbn_13 or book.oclc_number or book.asin or book.aasin or book.isfdb %}
 <dl>
     {% if book.isbn_13 %}
         <div class="is-flex">
@@ -21,6 +21,27 @@
         <div class="is-flex">
             <dt class="mr-1">{% trans "ASIN:" %}</dt>
             <dd>{{ book.asin }}</dd>
+        </div>
+    {% endif %}
+
+    {% if book.aasin %}
+        <div class="is-flex">
+            <dt class="mr-1">{% trans "Audible ASIN:" %}</dt>
+            <dd>{{ book.aasin }}</dd>
+        </div>
+    {% endif %}
+
+    {% if book.isfdb %}
+        <div class="is-flex">
+            <dt class="mr-1">{% trans "ISFDB ID:" %}</dt>
+            <dd>{{ book.isfdb }}</dd>
+        </div>
+    {% endif %}
+
+    {% if book.goodreads_key %}
+        <div class="is-flex">
+            <dt class="mr-1">{% trans "Goodreads:" %}</dt>
+            <dd>{{ book.goodreads_key }}</dd>
         </div>
     {% endif %}
 </dl>
