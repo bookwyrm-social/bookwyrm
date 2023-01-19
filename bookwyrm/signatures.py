@@ -22,14 +22,13 @@ def create_key_pair():
     return private_key, public_key
 
 
-def make_signature(method, sender, destination, date, digest):
+def make_signature(method, sender, destination, date, digest=None):
     """uses a private key to sign an outgoing message"""
     inbox_parts = urlparse(destination)
     signature_headers = [
         f"(request-target): {method} {inbox_parts.path}",
         f"host: {inbox_parts.netloc}",
-        f"date: {date}",
-        f"digest: {digest}",
+        f"date: {date}"
     ]
     headers = "(request-target) host date"
     if digest is not None:
