@@ -53,7 +53,7 @@ class BaseActivity(TestCase):
         image.save(output, format=image.format)
         self.image_data = output.getvalue()
 
-    def test_get_representative_not_existing(self, _):
+    def test_get_representative_not_existing(self, *_):
         representative = get_representative()
         self.assertIsInstance(representative, models.User)
 
