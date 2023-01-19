@@ -57,8 +57,39 @@
         </div>
     </form>
     {% endif %}
+    <details class="details-panel box">
+        <summary>
+            <span role="heading" aria-level="2" class="title is-6">
+                {% trans "Limit the amount of imports" %}
+            </span>
+            <span class="details-close icon icon-x" aria-hidden="true"></span>
+        </summary>
+        <form
+            name="imports-set-limit"
+            id="imports-set-limit"
+            method="POST"
+            action="{% url 'settings-imports-set-limit' %}"
+        >
+            <div class="notification">
+                {% trans "Some users might try to import a large number of books, which you want to limit." %}
+                {% trans "Set the value to 0 to not enforce any limit." %}
+            </div>
+            <div class="align.to-t">
+                <label for="limit">{% trans "Set import limit to" %}</label>
+                <input name="limit" class="input is-w-xs is-h-em" type="text" placeholder="0" value="{{ import_size_limit }}">
+                <label for="reset">{% trans "books every" %}</label>
+                <input name="reset" class="input is-w-xs is-h-em" type="text" placeholder="0" value="{{ import_limit_reset }}">
+                <label>{% trans "days." %}</label>
+                {% csrf_token %}
+                <div class="control">
+                    <button type="submit" class="button is-warning">
+                        {% trans "Set limit" %}
+                    </button>
+                </div>
+            </div>
+        </form>
+    </details>
 </div>
-
 <div class="block">
     <div class="tabs">
         <ul>
