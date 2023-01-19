@@ -1,7 +1,12 @@
 {% extends 'layout.html' %}
 {% load i18n %}
+{% load list_page_tags %}
 
 {% block title %}{{ list.name }}{% endblock %}
+
+{% block opengraph %}
+    {% include 'snippets/opengraph.html' with title=list|opengraph_title description=list|opengraph_description %}
+{% endblock %}
 
 {% block content %}
 <header class="columns content is-mobile">
