@@ -14,7 +14,7 @@ from bookwyrm.activitypub.base_activity import (
     ActivityObject,
     resolve_remote_id,
     set_related_field,
-    get_representative
+    get_representative,
 )
 from bookwyrm.activitypub import ActivitySerializerError
 from bookwyrm import models

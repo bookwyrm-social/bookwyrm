@@ -28,7 +28,7 @@ def make_signature(method, sender, destination, date, digest=None):
     signature_headers = [
         f"(request-target): {method} {inbox_parts.path}",
         f"host: {inbox_parts.netloc}",
-        f"date: {date}"
+        f"date: {date}",
     ]
     headers = "(request-target) host date"
     if digest is not None:
@@ -45,6 +45,7 @@ def make_signature(method, sender, destination, date, digest=None):
         "signature": b64encode(signed_message).decode("utf8"),
     }
     return ",".join(f'{k}="{v}"' for (k, v) in signature.items())
+
 
 def make_digest(data):
     """creates a message digest for signing"""
