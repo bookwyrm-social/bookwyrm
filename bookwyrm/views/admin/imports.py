@@ -38,6 +38,8 @@ class ImportList(View):
 
         paginated = Paginator(imports, PAGE_LENGTH)
         page = paginated.get_page(request.GET.get("page"))
+
+        site_settings = models.SiteSettings.objects.get()
         data = {
             "imports": page,
             "page_range": paginated.get_elided_page_range(
@@ -45,6 +47,8 @@ class ImportList(View):
             ),
             "status": status,
             "sort": sort,
+            "import_size_limit": site_settings.import_size_limit,
+            "import_limit_reset": site_settings.import_limit_reset,
         }
         return TemplateResponse(request, "settings/imports/imports.html", data)
 
@@ -75,4 +79,18 @@ def enable_imports(request):
     site = models.SiteSettings.objects.get()
     site.imports_enabled = True
     site.save(update_fields=["imports_enabled"])
+    return redirect("settings-imports")
+
+
+@require_POST
+@permission_required("bookwyrm.edit_instance_settings", raise_exception=True)
+# pylint: disable=unused-argument
+def set_import_size_limit(request):
+    """Limit the amount of books users can import at once"""
+    site = models.SiteSettings.objects.get()
+    import_size_limit = int(request.POST.get("limit"))
+    import_limit_reset = int(request.POST.get("reset"))
+    site.import_size_limit = import_size_limit
+    site.import_limit_reset = import_limit_reset
+    site.save(update_fields=["import_size_limit", "import_limit_reset"])
     return redirect("settings-imports")
