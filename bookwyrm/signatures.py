@@ -32,7 +32,7 @@ def make_signature(method, sender, destination, date, digest=None):
     ]
     headers = "(request-target) host date"
     if digest is not None:
-        signature_headers.append("digest: %s" % digest)
+        signature_headers.append(f"digest: {digest}")
         headers = "(request-target) host date digest"
 
     message_to_sign = "\n".join(signature_headers)

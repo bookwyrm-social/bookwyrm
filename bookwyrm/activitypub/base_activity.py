@@ -1,8 +1,8 @@
 """ basics for an activitypub serializer """
 from dataclasses import dataclass, fields, MISSING
 from json import JSONEncoder
-import requests
 import logging
+import requests
 
 from django.apps import apps
 from django.db import IntegrityError, transaction
@@ -251,10 +251,10 @@ def set_related_field(
 
 def get_model_from_type(activity_type):
     """given the activity, what type of model"""
-    models = apps.get_models()
+    activity_models = apps.get_models()
     model = [
         m
-        for m in models
+        for m in activity_models
         if hasattr(m, "activity_serializer")
         and hasattr(m.activity_serializer, "type")
         and m.activity_serializer.type == activity_type
@@ -280,9 +280,9 @@ def resolve_remote_id(
     # load the data and create the object
     try:
         data = get_data(remote_id)
-    except requests.HTTPError as e:
+    except ConnectorException as e:
         if (e.response is not None) and e.response.status_code == 401:
-            """This most likely means it's a mastodon with secure fetch enabled."""
+            # This most likely means it's a mastodon with secure fetch enabled.
             data = get_activitypub_data(remote_id)
         else:
             logger.info("Could not connect to host for remote_id: %s", remote_id)
@@ -306,7 +306,8 @@ def resolve_remote_id(
 
 
 def get_representative():
-    username = "%s@%s" % (INSTANCE_ACTOR_USERNAME, DOMAIN)
+    """Get or create an actor representing the entire instance to sign requests to 'secure mastodon' servers"""
+    username = f"{INSTANCE_ACTOR_USERNAME}@{DOMAIN}"
     try:
         user = models.User.objects.get(username=username)
     except models.User.DoesNotExist:

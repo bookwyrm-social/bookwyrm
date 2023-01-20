@@ -54,6 +54,7 @@ class BaseActivity(TestCase):
         self.image_data = output.getvalue()
 
     def test_get_representative_not_existing(self, *_):
+        """test that an instance representative actor is created if it does not exist"""
         representative = get_representative()
         self.assertIsInstance(representative, models.User)
 
