@@ -11,7 +11,7 @@ from django.utils.http import http_date
 from bookwyrm import models
 from bookwyrm.connectors import ConnectorException, get_data
 from bookwyrm.signatures import make_signature
-from bookwyrm.settings import DOMAIN 
+from bookwyrm.settings import DOMAIN, INSTANCE_ACTOR_USERNAME, INSTANCE_ACTOR_EMAIL
 from bookwyrm.tasks import app, MEDIUM
 
 logger = logging.getLogger(__name__)
@@ -281,15 +281,12 @@ def resolve_remote_id(
     try:
         data = get_data(remote_id)
     except requests.HTTPError as e:
-        if e.response.status_code == 401:
-            ''' This most likely means it's a mastodon with secure fetch enabled. Need to be specific '''
+        if (e.response is not None) and e.response.status_code == 401:
+            """This most likely means it's a mastodon with secure fetch enabled."""
             data = get_activitypub_data(remote_id)
         else:
-            raise e
-    except ConnectorException:
-        logger.info("Could not connect to host for remote_id: %s", remote_id)
-        return None
-
+            logger.info("Could not connect to host for remote_id: %s", remote_id)
+            return None
     # determine the model implicitly, if not provided
     # or if it's a model with subclasses like Status, check again
     if not model or hasattr(model.objects, "select_subclasses"):
@@ -309,33 +306,34 @@ def resolve_remote_id(
 
 
 def get_representative():
+    username = "%s@%s" % (INSTANCE_ACTOR_USERNAME, DOMAIN)
     try:
-        models.User.objects.get(id=-99)
+        user = models.User.objects.get(username=username)
     except models.User.DoesNotExist:
-        username = "%s@%s" % (DOMAIN, DOMAIN)
-        email = "representative@%s" % (DOMAIN)
-        models.User.objects.create_user(id=-99, username=username, email=email, local=True, localname=DOMAIN)
+        email = INSTANCE_ACTOR_EMAIL
+        user = models.User.objects.create_user(
+            username=username, email=email, local=True, localname=DOMAIN
+        )
+    return user
 
 
 def get_activitypub_data(url):
-    ''' wrapper for request.get '''
+    """wrapper for request.get"""
     now = http_date()
-
     sender = get_representative()
     if not sender.key_pair.private_key:
         # this shouldn't happen. it would be bad if it happened.
-        raise ValueError('No private key found for sender')
-
+        raise ValueError("No private key found for sender")
     try:
         resp = requests.get(
             url,
             headers={
-                'Accept': 'application/json; charset=utf-8',
-                'Date': now,
-                'Signature': make_signature('get', sender, url, now),
+                "Accept": "application/json; charset=utf-8",
+                "Date": now,
+                "Signature": make_signature("get", sender, url, now),
             },
         )
-    except RequestError:
+    except requests.RequestException:
         raise ConnectorException()
     if not resp.ok:
         resp.raise_for_status()
