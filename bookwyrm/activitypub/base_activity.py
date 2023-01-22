@@ -317,7 +317,10 @@ def get_representative():
         user = models.User.objects.get(username=username)
     except models.User.DoesNotExist:
         user = models.User.objects.create_user(
-            username=username, email=email, local=True, localname=INSTANCE_ACTOR_USERNAME
+            username=username,
+            email=email,
+            local=True,
+            localname=INSTANCE_ACTOR_USERNAME,
         )
     return user
 
