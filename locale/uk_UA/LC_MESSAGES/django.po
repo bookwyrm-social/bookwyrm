@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-01-11 22:46+0000\n"
-"PO-Revision-Date: 2023-01-22 21:23\n"
+"PO-Revision-Date: 2023-01-22 22:20\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Ukrainian\n"
 "Language: uk\n"
@@ -596,7 +596,7 @@ msgid "In %(year)s, %(display_name)s read %(books_total)s book<br />for a total 
 msgid_plural "In %(year)s, %(display_name)s read %(books_total)s books<br />for a total of %(pages_total)s pages!"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
+msgstr[2] "У %(year)s, %(display_name)s прочитав(ла) %(books_total)s книг<br />на загальну суму %(pages_total)s сторінок!"
 msgstr[3] ""
 
 #: bookwyrm/templates/annual_summary/layout.html:124
@@ -606,7 +606,7 @@ msgstr "Чудово!"
 #: bookwyrm/templates/annual_summary/layout.html:128
 #, python-format
 msgid "That makes an average of %(pages)s pages per book."
-msgstr ""
+msgstr "Це становить в середньому %(pages)s сторінок на книгу."
 
 #: bookwyrm/templates/annual_summary/layout.html:134
 #, python-format
@@ -619,7 +619,7 @@ msgstr[3] "(Немає даних сторінки для %(no_page_number)s к�
 
 #: bookwyrm/templates/annual_summary/layout.html:150
 msgid "Their shortest read this year…"
-msgstr ""
+msgstr "Найшвидше прочитана книга цього року…"
 
 #: bookwyrm/templates/annual_summary/layout.html:157
 #: bookwyrm/templates/annual_summary/layout.html:178
@@ -629,13 +629,13 @@ msgstr ""
 #: bookwyrm/templates/landing/large-book.html:26
 #: bookwyrm/templates/landing/small-book.html:18
 msgid "by"
-msgstr ""
+msgstr "від"
 
 #: bookwyrm/templates/annual_summary/layout.html:163
 #: bookwyrm/templates/annual_summary/layout.html:184
 #, python-format
 msgid "<strong>%(pages)s</strong> pages"
-msgstr ""
+msgstr "<strong>%(pages)s</strong> сторінок"
 
 #: bookwyrm/templates/annual_summary/layout.html:171
 msgid "…and the longest"
@@ -647,7 +647,7 @@ msgid "%(display_name)s set a goal of reading %(goal)s book in %(year)s,<br /> a
 msgid_plural "%(display_name)s set a goal of reading %(goal)s books in %(year)s,<br /> and achieved %(goal_percent)s%% of that goal"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
+msgstr[2] "%(display_name)s встановив(-ла) ціль прочитати %(goal)s книг в %(year)s,<br /> і досяг %(goal_percent)s%% від цієї мети"
 msgstr[3] ""
 
 #: bookwyrm/templates/annual_summary/layout.html:211
@@ -658,7 +658,7 @@ msgstr "Так тримати!"
 #, python-format
 msgid "%(display_name)s left %(ratings_total)s rating, <br />their average rating is %(rating_average)s"
 msgid_plural "%(display_name)s left %(ratings_total)s ratings, <br />their average rating is %(rating_average)s"
-msgstr[0] ""
+msgstr[0] "%(display_name)s залишив(-ла) %(ratings_total)s оцінку, <br />їх середній рейтинг %(rating_average)s"
 msgstr[1] ""
 msgstr[2] ""
 msgstr[3] ""
@@ -670,12 +670,12 @@ msgstr "Їх найкращий відгук"
 #: bookwyrm/templates/annual_summary/layout.html:253
 #, python-format
 msgid "Their rating: <strong>%(rating)s</strong>"
-msgstr ""
+msgstr "Їхній рейтинг: <strong>%(rating)s</strong>"
 
 #: bookwyrm/templates/annual_summary/layout.html:270
 #, python-format
 msgid "All the books %(display_name)s read in %(year)s"
-msgstr ""
+msgstr "Всі книжки %(display_name)s прочитані в %(year)s"
 
 #: bookwyrm/templates/author/author.html:19
 #: bookwyrm/templates/author/author.html:20
@@ -709,7 +709,7 @@ msgstr "Вікіпедія"
 
 #: bookwyrm/templates/author/author.html:79
 msgid "Website"
-msgstr ""
+msgstr "Веб-сайт"
 
 #: bookwyrm/templates/author/author.html:87
 msgid "View ISNI record"
@@ -718,7 +718,7 @@ msgstr "Переглянути запис ISNI"
 #: bookwyrm/templates/author/author.html:95
 #: bookwyrm/templates/book/book.html:164
 msgid "View on ISFDB"
-msgstr ""
+msgstr "Переглянути на ISFDB"
 
 #: bookwyrm/templates/author/author.html:100
 #: bookwyrm/templates/author/sync_modal.html:5
@@ -747,12 +747,12 @@ msgstr "Переглянути в Goodreads"
 
 #: bookwyrm/templates/author/author.html:151
 msgid "View ISFDB entry"
-msgstr ""
+msgstr "Переглянути запис ISFDB"
 
 #: bookwyrm/templates/author/author.html:166
 #, python-format
 msgid "Books by %(name)s"
-msgstr ""
+msgstr "Сортувати за %(name)s"
 
 #: bookwyrm/templates/author/edit_author.html:5
 msgid "Edit Author:"
@@ -783,13 +783,13 @@ msgstr "Метадані"
 #: bookwyrm/templates/settings/link_domains/edit_domain_modal.html:14
 #: bookwyrm/templates/shelf/form.html:9
 msgid "Name:"
-msgstr ""
+msgstr "Ім'я:"
 
 #: bookwyrm/templates/author/edit_author.html:44
 #: bookwyrm/templates/book/edit/edit_book_form.html:78
 #: bookwyrm/templates/book/edit/edit_book_form.html:148
 msgid "Separate multiple values with commas."
-msgstr ""
+msgstr "Розділіть комами декілька значень."
 
 #: bookwyrm/templates/author/edit_author.html:50
 msgid "Bio:"
@@ -797,11 +797,11 @@ msgstr "Про себе:"
 
 #: bookwyrm/templates/author/edit_author.html:56
 msgid "Wikipedia link:"
-msgstr ""
+msgstr "Посилання на Вікіпедію:"
 
 #: bookwyrm/templates/author/edit_author.html:60
 msgid "Website:"
-msgstr ""
+msgstr "Веб-сайт:"
 
 #: bookwyrm/templates/author/edit_author.html:65
 msgid "Birth date:"
@@ -813,33 +813,33 @@ msgstr "Дата смерті:"
 
 #: bookwyrm/templates/author/edit_author.html:79
 msgid "Author Identifiers"
-msgstr ""
+msgstr "Ідентифікатори автора"
 
 #: bookwyrm/templates/author/edit_author.html:81
 msgid "Openlibrary key:"
-msgstr ""
+msgstr "Ключ Openlibrary:"
 
 #: bookwyrm/templates/author/edit_author.html:88
 #: bookwyrm/templates/book/edit/edit_book_form.html:323
 msgid "Inventaire ID:"
-msgstr ""
+msgstr "Inventaire ID:"
 
 #: bookwyrm/templates/author/edit_author.html:95
 msgid "Librarything key:"
-msgstr ""
+msgstr "Ключ Librarything:"
 
 #: bookwyrm/templates/author/edit_author.html:102
 #: bookwyrm/templates/book/edit/edit_book_form.html:332
 msgid "Goodreads key:"
-msgstr ""
+msgstr "Ключ Goodreads:"
 
 #: bookwyrm/templates/author/edit_author.html:109
 msgid "ISFDB:"
-msgstr ""
+msgstr "ISFDB:"
 
 #: bookwyrm/templates/author/edit_author.html:116
 msgid "ISNI:"
-msgstr ""
+msgstr "ISNI:"
 
 #: bookwyrm/templates/author/edit_author.html:126
 #: bookwyrm/templates/book/book.html:209
@@ -890,7 +890,7 @@ msgstr "Скасувати"
 #: bookwyrm/templates/author/sync_modal.html:15
 #, python-format
 msgid "Loading data will connect to <strong>%(source_name)s</strong> and check for any metadata about this author which aren't present here. Existing metadata will not be overwritten."
-msgstr ""
+msgstr "Під час завантаження даних буде з'єднано з <strong>%(source_name)s</strong> і перевірено наявність метаданих про цього автора, яких тут немає. Наявні метадані не буде перезаписано."
 
 #: bookwyrm/templates/author/sync_modal.html:24
 #: bookwyrm/templates/book/edit/edit_book.html:129
@@ -905,7 +905,7 @@ msgstr "Підтвердити"
 
 #: bookwyrm/templates/book/book.html:19
 msgid "Unable to connect to remote source."
-msgstr ""
+msgstr "Не вдалося підключитися до віддаленого джерела."
 
 #: bookwyrm/templates/book/book.html:64 bookwyrm/templates/book/book.html:65
 msgid "Edit Book"
@@ -917,11 +917,11 @@ msgstr "Натисніть, щоб додати обкладинку"
 
 #: bookwyrm/templates/book/book.html:97
 msgid "Failed to load cover"
-msgstr ""
+msgstr "Не вдалося завантажити обкладинку"
 
 #: bookwyrm/templates/book/book.html:108
 msgid "Click to enlarge"
-msgstr ""
+msgstr "Натисніть для збільшення"
 
 #: bookwyrm/templates/book/book.html:186
 #, python-format
@@ -929,7 +929,7 @@ msgid "(%(review_count)s review)"
 msgid_plural "(%(review_count)s reviews)"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
+msgstr[2] "(%(review_count)s відгуків)"
 msgstr[3] ""
 
 #: bookwyrm/templates/book/book.html:198
@@ -947,31 +947,31 @@ msgstr "Опис:"
 msgid "%(count)s edition"
 msgid_plural "%(count)s editions"
 msgstr[0] ""
-msgstr[1] ""
+msgstr[1] "%(count)s видання"
 msgstr[2] ""
 msgstr[3] ""
 
 #: bookwyrm/templates/book/book.html:235
 msgid "You have shelved this edition in:"
-msgstr ""
+msgstr "Ви відклали це видання на полицю:"
 
 #: bookwyrm/templates/book/book.html:250
 #, python-format
 msgid "A <a href=\"%(book_path)s\">different edition</a> of this book is on your <a href=\"%(shelf_path)s\">%(shelf_name)s</a> shelf."
-msgstr ""
+msgstr "<a href=\"%(book_path)s\">інша редакція</a> цієї книги знаходиться на вашій <a href=\"%(shelf_path)s\">%(shelf_name)s</a> полиці."
 
 #: bookwyrm/templates/book/book.html:261
 msgid "Your reading activity"
-msgstr ""
+msgstr "Ваша читацька активність"
 
 #: bookwyrm/templates/book/book.html:267
 #: bookwyrm/templates/guided_tour/book.html:56
 msgid "Add read dates"
-msgstr ""
+msgstr "Додати дати прочитаного"
 
 #: bookwyrm/templates/book/book.html:275
 msgid "You don't have any reading activity for this book."
-msgstr ""
+msgstr "Ви не маєте жодної читацької активності для цієї книги."
 
 #: bookwyrm/templates/book/book.html:301
 msgid "Your reviews"
@@ -1037,30 +1037,30 @@ msgstr "ASIN:"
 #: bookwyrm/templates/book/book_identifiers.html:29
 #: bookwyrm/templates/book/edit/edit_book_form.html:359
 msgid "Audible ASIN:"
-msgstr ""
+msgstr "Audible ASIN:"
 
 #: bookwyrm/templates/book/book_identifiers.html:36
 #: bookwyrm/templates/book/edit/edit_book_form.html:368
 msgid "ISFDB ID:"
-msgstr ""
+msgstr "ISFDB ID:"
 
 #: bookwyrm/templates/book/book_identifiers.html:43
 msgid "Goodreads:"
-msgstr ""
+msgstr "Goodreads:"
 
 #: bookwyrm/templates/book/cover_add_modal.html:5
 msgid "Add cover"
-msgstr ""
+msgstr "Додати обкладинку"
 
 #: bookwyrm/templates/book/cover_add_modal.html:17
 #: bookwyrm/templates/book/edit/edit_book_form.html:233
 msgid "Upload cover:"
-msgstr ""
+msgstr "Завантажити обкладинку:"
 
 #: bookwyrm/templates/book/cover_add_modal.html:23
 #: bookwyrm/templates/book/edit/edit_book_form.html:239
 msgid "Load cover from url:"
-msgstr ""
+msgstr "Завантажити обкладинку з посилання:"
 
 #: bookwyrm/templates/book/cover_show_modal.html:6
 msgid "Book cover preview"
@@ -1080,12 +1080,12 @@ msgstr "Закрити"
 #: bookwyrm/templates/book/edit/edit_book.html:18
 #, python-format
 msgid "Edit \"%(book_title)s\""
-msgstr ""
+msgstr "Редагувати \"%(book_title)s\""
 
 #: bookwyrm/templates/book/edit/edit_book.html:10
 #: bookwyrm/templates/book/edit/edit_book.html:20
 msgid "Add Book"
-msgstr ""
+msgstr "Добавити книгу"
 
 #: bookwyrm/templates/book/edit/edit_book.html:62
 msgid "Confirm Book Info"
