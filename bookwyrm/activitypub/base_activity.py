@@ -11,7 +11,7 @@ from django.utils.http import http_date
 from bookwyrm import models
 from bookwyrm.connectors import ConnectorException, get_data
 from bookwyrm.signatures import make_signature
-from bookwyrm.settings import DOMAIN, INSTANCE_ACTOR_USERNAME, INSTANCE_ACTOR_EMAIL
+from bookwyrm.settings import DOMAIN, INSTANCE_ACTOR_USERNAME
 from bookwyrm.tasks import app, MEDIUM
 
 logger = logging.getLogger(__name__)
@@ -280,7 +280,10 @@ def resolve_remote_id(
     # load the data and create the object
     try:
         data = get_data(remote_id)
-    except ConnectorException as e:
+    except ConnectionError:
+        logger.info("Could not connect to host for remote_id: %s", remote_id)
+        return None
+    except requests.HTTPError as e:
         if (e.response is not None) and e.response.status_code == 401:
             # This most likely means it's a mastodon with secure fetch enabled.
             data = get_activitypub_data(remote_id)
@@ -309,12 +312,12 @@ def get_representative():
     """Get or create an actor representing the instance
     to sign requests to 'secure mastodon' servers"""
     username = f"{INSTANCE_ACTOR_USERNAME}@{DOMAIN}"
+    email = "bookwyrm@localhost"
     try:
         user = models.User.objects.get(username=username)
     except models.User.DoesNotExist:
-        email = INSTANCE_ACTOR_EMAIL
         user = models.User.objects.create_user(
-            username=username, email=email, local=True, localname=DOMAIN
+            username=username, email=email, local=True, localname=INSTANCE_ACTOR_USERNAME
         )
     return user
 

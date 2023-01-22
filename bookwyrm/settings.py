@@ -372,6 +372,4 @@ if HTTP_X_FORWARDED_PROTO:
     SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 # AUTHORIZED_FETCH Instance Actor
-# WARNING this must both be unique - not used by any other user
-INSTANCE_ACTOR_USERNAME = DOMAIN
-INSTANCE_ACTOR_EMAIL = f"representative@{DOMAIN}"
+INSTANCE_ACTOR_USERNAME = "bookwyrm.instance.actor"
