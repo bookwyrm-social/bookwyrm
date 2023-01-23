@@ -3,6 +3,7 @@
 from django.contrib.syndication.views import Feed
 from django.template.loader import get_template
 from django.utils.translation import gettext_lazy as _
+from ..models import Review, Quotation, Comment
 
 from .helpers import get_user_from_username
 
@@ -72,7 +73,8 @@ class RssReviewsOnlyFeed(Feed):
 
     def items(self, obj):
         """the user's activity feed"""
-        return obj.status_set.select_subclasses("review").filter(
+        return Review.objects.filter(
+            user=obj,
             privacy__in=["public", "unlisted"],
         )[:10]
 
@@ -109,7 +111,8 @@ class RssQuotesOnlyFeed(Feed):
 
     def items(self, obj):
         """the user's activity feed"""
-        return obj.status_set.select_subclasses("quotation").filter(
+        return Quotation.objects.filter(
+            user=obj,
             privacy__in=["public", "unlisted"],
         )[:10]
 
@@ -146,7 +149,8 @@ class RssCommentsOnlyFeed(Feed):
 
     def items(self, obj):
         """the user's activity feed"""
-        return obj.status_set.select_subclasses("comment").filter(
+        return Comment.objects.filter(
+            user=obj,
             privacy__in=["public", "unlisted"],
         )[:10]
 
