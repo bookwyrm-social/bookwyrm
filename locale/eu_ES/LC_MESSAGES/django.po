@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-01-11 22:46+0000\n"
-"PO-Revision-Date: 2023-01-24 07:52\n"
+"PO-Revision-Date: 2023-01-24 11:23\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Basque\n"
 "Language: eu\n"
@@ -625,7 +625,7 @@ msgstr "Aurtengo irakurketarik laburrena…"
 #: bookwyrm/templates/landing/large-book.html:26
 #: bookwyrm/templates/landing/small-book.html:18
 msgid "by"
-msgstr " "
+msgstr " , "
 
 #: bookwyrm/templates/annual_summary/layout.html:163
 #: bookwyrm/templates/annual_summary/layout.html:184
@@ -744,7 +744,7 @@ msgstr "Ikus ISFDB atala"
 #: bookwyrm/templates/author/author.html:166
 #, python-format
 msgid "Books by %(name)s"
-msgstr "Liburuak %(name)s-ren arabera"
+msgstr "%(name)s(e)k idatzitako liburuak"
 
 #: bookwyrm/templates/author/edit_author.html:5
 msgid "Edit Author:"
@@ -1464,7 +1464,7 @@ msgstr "%(date)s(e)an argitaratua"
 #: bookwyrm/templates/book/publisher_info.html:69
 #, python-format
 msgid "Published by %(publisher)s."
-msgstr "%(publisher)s-ek argitaratua."
+msgstr "%(publisher)s(e)k argitaratua."
 
 #: bookwyrm/templates/book/rating.html:13
 msgid "rated it"
@@ -1655,7 +1655,7 @@ msgstr "<a href=\"%(user_path)s\">%(username)s</a>(e)k <a href=\"%(book_path)s\"
 #: bookwyrm/templates/discover/card-header.html:31
 #, python-format
 msgid "<a href=\"%(user_path)s\">%(username)s</a> commented on <a href=\"%(book_path)s\">%(book_title)s</a>"
-msgstr "<a href=\"%(user_path)s\">%(username)s</a>k <a href=\"%(book_path)s\">%(book_title)s</a> iruzkindu du"
+msgstr "<a href=\"%(user_path)s\">%(username)s</a>(e)k <a href=\"%(book_path)s\">%(book_title)s</a>(r)i buruzko iruzkina egin du"
 
 #: bookwyrm/templates/discover/card-header.html:35
 #, python-format
@@ -5735,7 +5735,7 @@ msgstr "Azalik ez"
 #: bookwyrm/templates/snippets/book_titleby.html:11
 #, python-format
 msgid "<a href=\"%(path)s\">%(title)s</a> by"
-msgstr "<a href=\"%(path)s\">%(title)s</a> egilea:"
+msgstr "<a href=\"%(path)s\">%(title)s</a>, "
 
 #: bookwyrm/templates/snippets/boost_button.html:20
 #: bookwyrm/templates/snippets/boost_button.html:21
@@ -6162,12 +6162,12 @@ msgstr "%(date)s(e)an editatua"
 #: bookwyrm/templates/snippets/status/headers/comment.html:8
 #, python-format
 msgid "commented on <a href=\"%(book_path)s\">%(book)s</a> by <a href=\"%(author_path)s\">%(author_name)s</a>"
-msgstr "iruzkindu zuen <a href=\"%(author_path)s\">%(author_name)s</a>(r)en <a href=\"%(book_path)s\">%(book)s</a>"
+msgstr "(e)k <a href=\"%(author_path)s\">%(author_name)s</a>(r)en <a href=\"%(book_path)s\">%(book)s</a>(r)i buruzko iruzkina egin du"
 
 #: bookwyrm/templates/snippets/status/headers/comment.html:15
 #, python-format
 msgid "commented on <a href=\"%(book_path)s\">%(book)s</a>"
-msgstr "<a href=\"%(book_path)s\">%(book)s</a>(r)i buruzko iruzkina utzi du"
+msgstr "(e)k <a href=\"%(book_path)s\">%(book)s</a>(r)i buruzko iruzkina egin du"
 
 #: bookwyrm/templates/snippets/status/headers/note.html:8
 #, python-format
@@ -6192,12 +6192,12 @@ msgstr "<a href=\"%(book_path)s\">%(book)s</a> puntuatu du:"
 #: bookwyrm/templates/snippets/status/headers/read.html:10
 #, python-format
 msgid "finished reading <a href=\"%(book_path)s\">%(book)s</a> by <a href=\"%(author_path)s\">%(author_name)s</a>"
-msgstr "<a href=\"%(author_path)s\">%(author_name)s</a>(r)en <a href=\"%(book_path)s\">%(book)s</a> irakurtzen bukatu du"
+msgstr "(e)k <a href=\"%(author_path)s\">%(author_name)s</a>(r)en <a href=\"%(book_path)s\">%(book)s</a> irakurtzen bukatu du"
 
 #: bookwyrm/templates/snippets/status/headers/read.html:17
 #, python-format
 msgid "finished reading <a href=\"%(book_path)s\">%(book)s</a>"
-msgstr "<a href=\"%(book_path)s\">%(book)s</a> irakurtzen bukatu du"
+msgstr "(e)k <a href=\"%(book_path)s\">%(book)s</a> irakurtzen bukatu du"
 
 #: bookwyrm/templates/snippets/status/headers/reading.html:10
 #, python-format
@@ -6212,12 +6212,12 @@ msgstr "<a href=\"%(book_path)s\">%(book)s</a> irakurtzen hasi da"
 #: bookwyrm/templates/snippets/status/headers/review.html:8
 #, python-format
 msgid "reviewed <a href=\"%(book_path)s\">%(book)s</a> by <a href=\"%(author_path)s\">%(author_name)s</a>"
-msgstr "kritikatu zuen <a href=\"%(author_path)s\">%(author_name)s</a>(r)en <a href=\"%(book_path)s\">%(book)s</a>"
+msgstr "(e)k <a href=\"%(author_path)s\">%(author_name)s</a>(r)en <a href=\"%(book_path)s\">%(book)s</a> kritikatu du"
 
 #: bookwyrm/templates/snippets/status/headers/review.html:15
 #, python-format
 msgid "reviewed <a href=\"%(book_path)s\">%(book)s</a>"
-msgstr "<a href=\"%(book_path)s\">%(book)s</a>(r)en kritika egin du"
+msgstr "(e)k <a href=\"%(book_path)s\">%(book)s</a>(r)en kritika egin du"
 
 #: bookwyrm/templates/snippets/status/headers/stopped_reading.html:10
 #, python-format
@@ -6232,12 +6232,12 @@ msgstr "<a href=\"%(book_path)s\">%(book)s</a> irakurtzeari utzi dio"
 #: bookwyrm/templates/snippets/status/headers/to_read.html:10
 #, python-format
 msgid "wants to read <a href=\"%(book_path)s\">%(book)s</a> by <a href=\"%(author_path)s\">%(author_name)s</a>"
-msgstr "<a href=\"%(author_path)s\">%(author_name)s</a>(r)en <a href=\"%(book_path)s\">%(book)s</a> irakurri nahi du"
+msgstr "(e)k <a href=\"%(author_path)s\">%(author_name)s</a>(r)en <a href=\"%(book_path)s\">%(book)s</a> irakurri nahi du"
 
 #: bookwyrm/templates/snippets/status/headers/to_read.html:17
 #, python-format
 msgid "wants to read <a href=\"%(book_path)s\">%(book)s</a>"
-msgstr "<a href=\"%(book_path)s\">%(book)s</a> irakurri nahi du"
+msgstr "(e)k <a href=\"%(book_path)s\">%(book)s</a> irakurri nahi du"
 
 #: bookwyrm/templates/snippets/status/layout.html:24
 #: bookwyrm/templates/snippets/status/status_options.html:17
