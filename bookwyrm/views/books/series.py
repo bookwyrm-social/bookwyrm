@@ -10,49 +10,50 @@ from bookwyrm.settings import PAGE_LENGTH
 
 # pylint: disable=no-self-use
 class BookSeriesBy(View):
-	def get(self, request, author_id, **kwargs):
-		"""lists all books in a series"""
-		series_name = request.GET.get("series_name")
+    def get(self, request, author_id, **kwargs):
+        """lists all books in a series"""
+        series_name = request.GET.get("series_name")
 
-		if is_api_request(request):
-			pass
-			
-		author = get_object_or_404(models.Author, id=author_id)
-			
-		results = (
-			models.Edition.objects.filter(authors=author, series=series_name)
-		)
+        if is_api_request(request):
+            pass
 
-		# when there are multiple editions of the same work, pick the closest
-		editions_of_work = results.values_list("parent_work__id", flat=True).distinct()
+        author = get_object_or_404(models.Author, id=author_id)
 
-    # filter out multiple editions of the same work
-		numbered_books = []
-		dated_books = []
-		unsortable_books = []
-		for work_id in set(editions_of_work):
-			result = (
-				results.filter(parent_work=work_id)
-				.order_by("-edition_rank")
-        .first()
-      )
-			if result.series_number:
-				numbered_books.append(result)
-			elif result.first_published_date or result.published_date:
-				dated_books.append(result)
-			else:
-				unsortable_books.append(result)
-		
-		list_results = (
-			sorted(numbered_books, key=lambda book: book.series_number) +
-			sorted(dated_books, key=lambda book: book.first_published_date if book.first_published_date else book.published_date) +
-			sorted(unsortable_books, key=lambda book: book.sort_title)
-		)
+        results = models.Edition.objects.filter(authors=author, series=series_name)
 
-		data = {
-			"series_name": series_name,
-			"author": author,
-			"books": list_results,
-		}
+        # when there are multiple editions of the same work, pick the closest
+        editions_of_work = results.values_list("parent_work__id", flat=True).distinct()
 
-		return TemplateResponse(request, "book/series.html", data)
+        # filter out multiple editions of the same work
+        numbered_books = []
+        dated_books = []
+        unsortable_books = []
+        for work_id in set(editions_of_work):
+            result = (
+                results.filter(parent_work=work_id).order_by("-edition_rank").first()
+            )
+            if result.series_number:
+                numbered_books.append(result)
+            elif result.first_published_date or result.published_date:
+                dated_books.append(result)
+            else:
+                unsortable_books.append(result)
+
+        list_results = (
+            sorted(numbered_books, key=lambda book: book.series_number)
+            + sorted(
+                dated_books,
+                key=lambda book: book.first_published_date
+                if book.first_published_date
+                else book.published_date,
+            )
+            + sorted(unsortable_books, key=lambda book: book.sort_title)
+        )
+
+        data = {
+            "series_name": series_name,
+            "author": author,
+            "books": list_results,
+        }
+
+        return TemplateResponse(request, "book/series.html", data)
