@@ -64,7 +64,7 @@ class Inbox(View):
         high = ["Follow", "Accept", "Reject", "Block", "Unblock", "Undo"]
 
         priority = HIGH if activity_json["type"] in high else MEDIUM
-        activity_task.apply_async(args=(activity_json), queue=priority)
+        activity_task.apply_async(args=(activity_json,), queue=priority)
         return HttpResponse()
 
 
