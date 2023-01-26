@@ -5,12 +5,13 @@ from django.template.response import TemplateResponse
 
 from bookwyrm.views.helpers import is_api_request
 from bookwyrm import models
-from bookwyrm.settings import PAGE_LENGTH
 
 
 # pylint: disable=no-self-use
 class BookSeriesBy(View):
-    def get(self, request, author_id, **kwargs):
+    """book series by author"""
+
+    def get(self, request, author_id):
         """lists all books in a series"""
         series_name = request.GET.get("series_name")
 
