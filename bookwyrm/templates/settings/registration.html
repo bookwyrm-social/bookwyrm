@@ -38,6 +38,23 @@
                 {% trans "Allow registration" %}
             </label>
         </div>
+        <div class="block">
+            <label class="label" for="id_default_user_auth_group">
+                {% trans "Default access level:" %}
+            </label>
+            <div class="select">
+                <select name="default_user_auth_group" id="id_default_user_auth_group" desc_default_user_auth_group="desc_default_user_auth_group">
+                    {% for instance in form.default_user_auth_group.field.queryset %}
+                    <option value="{{ instance.pk }}" {% if instance.pk == form.default_user_auth_group.value %}selected{% endif %}>
+                        {{ instance.name|title }}
+                    </option>
+                    {% endfor %}
+                    <option value="" {% if not form.default_user_auth_group.value %}selected{% endif %}>
+                        User
+                    </option>
+                </select>
+            </div>
+        </div>
         <div class="field">
             <label class="label mb-0" for="id_require_confirm_email">
                 {{ form.require_confirm_email }}
