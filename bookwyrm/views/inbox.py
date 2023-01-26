@@ -14,7 +14,7 @@ from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 
 from bookwyrm import activitypub, models
-from bookwyrm.tasks import app, MEDIUM
+from bookwyrm.tasks import app, MEDIUM, HIGH
 from bookwyrm.signatures import Signature
 from bookwyrm.utils import regex
 
@@ -60,7 +60,11 @@ class Inbox(View):
                 return HttpResponse()
             return HttpResponse(status=401)
 
-        activity_task.delay(activity_json)
+        # Make activities relating to follow/unfollow a high priority
+        high = ["Follow", "Accept", "Reject", "Block", "Unblock", "Undo"]
+
+        priority = HIGH if activity_json["type"] in high else MEDIUM
+        activity_task.apply_async(args=(activity_json,), queue=priority)
         return HttpResponse()
 
 
