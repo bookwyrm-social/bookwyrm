@@ -36,6 +36,7 @@ class CeleryStatus(View):
                 "low_priority": r.llen("low_priority"),
                 "medium_priority": r.llen("medium_priority"),
                 "high_priority": r.llen("high_priority"),
+                "imports": r.llen("imports"),
             }
         # pylint: disable=broad-except
         except Exception as err:
