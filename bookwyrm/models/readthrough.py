@@ -3,6 +3,7 @@ from django.core import validators
 from django.core.cache import cache
 from django.db import models
 from django.db.models import F, Q
+from django.utils.translation import gettext_lazy as _
 
 from .base_model import BookWyrmModel
 
@@ -14,9 +15,26 @@ class ProgressMode(models.TextChoices):
     PERCENT = "PCT", "percent"
 
 
-class ReadThrough(BookWyrmModel):
-    """Store a read through a book in the database."""
+# TODO: this should use the constants in models.Shelf, but they won't stay there so
+# I'm not doing it yet.
+ReadingStatuses = [
+    ("to-read", _("To Read")),
+    ("reading", _("Currently Reading")),
+    ("read", _("Read")),
+    ("stopped-reading", _("Stopped Reading")),
+]
 
+
+class ReadThrough(BookWyrmModel):
+    """Stores a user's reading history"""
+
+    read_status = models.CharField(
+        # TODO: "read" seems like the safest default value for the initial migration,
+        # but its probably not the one we want long term.
+        max_length=20,
+        choices=ReadingStatuses,
+        default="read",
+    )
     user = models.ForeignKey("User", on_delete=models.PROTECT)
     book = models.ForeignKey("Edition", on_delete=models.PROTECT)
     progress = models.IntegerField(
@@ -27,16 +45,11 @@ class ReadThrough(BookWyrmModel):
     )
     start_date = models.DateTimeField(blank=True, null=True)
     finish_date = models.DateTimeField(blank=True, null=True)
-    stopped_date = models.DateTimeField(blank=True, null=True)
-    is_active = models.BooleanField(default=True)
 
     def save(self, *args, **kwargs):
-        """update user active time"""
+        """update user active time and tend to caches"""
         cache.delete(f"latest_read_through-{self.user.id}-{self.book.id}")
         self.user.update_active_date()
-        # an active readthrough must have an unset finish date
-        if self.finish_date or self.stopped_date:
-            self.is_active = False
         super().save(*args, **kwargs)
 
     def create_update(self):
@@ -48,12 +61,20 @@ class ReadThrough(BookWyrmModel):
         return None
 
     class Meta:
-        """Don't let readthroughs end before they start"""
+        """This is an involved one! There are logical limits on this"""
 
         constraints = [
+            # Don't let readthroughs end before they start
             models.CheckConstraint(
                 check=Q(finish_date__gte=F("start_date")), name="chronology"
-            )
+            ),
+            # Can't be actively reading the same book twice
+            # Currently reading status can't have stopped date
+            # models.CheckConstraint(
+            #    check=~Q(read_status="to-read", finish_date__isnull=False),
+            #    name="currently-reading"
+            # ),
+            # Can't want to read and have started or finished dates
         ]
         ordering = ("-start_date",)
 
