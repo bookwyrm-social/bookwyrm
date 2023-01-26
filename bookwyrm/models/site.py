@@ -3,6 +3,7 @@ import datetime
 from urllib.parse import urljoin
 import uuid
 
+import django.contrib.auth.models as auth_models
 from django.core.exceptions import PermissionDenied
 from django.db import models, IntegrityError
 from django.dispatch import receiver
@@ -70,6 +71,9 @@ class SiteSettings(SiteModel):
     allow_invite_requests = models.BooleanField(default=True)
     invite_request_question = models.BooleanField(default=False)
     require_confirm_email = models.BooleanField(default=True)
+    default_user_auth_group = models.ForeignKey(
+        auth_models.Group, null=True, blank=True, on_delete=models.PROTECT
+    )
 
     invite_question_text = models.CharField(
         max_length=255, blank=True, default="What is your favourite book?"
