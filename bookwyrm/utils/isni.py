@@ -86,7 +86,8 @@ def find_authors_by_name(name_string, description=False):
     possible_authors = []
     for element in root.iter("responseRecord"):
 
-        # TODO: we don't seem to do anything with the personal_name variable - is this code block needed?
+        # TODO: we don't seem to do anything with the 
+        # personal_name variable - is this code block needed?
         personal_name = element.find(".//forename/..")
         if not personal_name:
             continue
