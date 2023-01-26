@@ -89,6 +89,7 @@ class Signature(TestCase):
         signature = make_signature(
             "post", signer or sender, self.rat.inbox, now, digest
         )
+        with patch("bookwyrm.views.inbox.activity_task.apply_async"):
             with patch("bookwyrm.models.user.set_remote_server.delay"):
                 return self.send(signature, now, send_data or data, digest)
 
