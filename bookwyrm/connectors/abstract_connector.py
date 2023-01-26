@@ -244,7 +244,11 @@ def get_data(url, params=None, timeout=settings.QUERY_TIMEOUT):
         raise ConnectorException(err)
 
     if not resp.ok:
-        raise ConnectorException()
+        if resp.status_code == 401:
+            # this is probably an AUTHORIZED_FETCH issue
+            resp.raise_for_status()
+        else:
+            raise ConnectorException()
     try:
         data = resp.json()
     except ValueError as err:
