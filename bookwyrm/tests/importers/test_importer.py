@@ -39,7 +39,7 @@ class GenericImporter(TestCase):
             self.local_user = models.User.objects.create_user(
                 "mouse", "mouse@mouse.mouse", "password", local=True
             )
-
+        models.SiteSettings.objects.create()
         work = models.Work.objects.create(title="Test Work")
         self.book = models.Edition.objects.create(
             title="Example Edition",
@@ -360,3 +360,16 @@ class GenericImporter(TestCase):
         self.assertFalse(
             models.Review.objects.filter(book=self.book, user=self.local_user).exists()
         )
+
+    def test_import_limit(self, *_):
+        """checks if import limit works"""
+        site_settings = models.SiteSettings.objects.get()
+        site_settings.import_size_limit = 2
+        site_settings.import_limit_reset = 2
+        site_settings.save()
+
+        import_job = self.importer.create_job(
+            self.local_user, self.csv, False, "public"
+        )
+        import_items = models.ImportItem.objects.filter(job=import_job).all()
+        self.assertEqual(len(import_items), 2)

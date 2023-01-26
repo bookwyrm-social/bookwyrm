@@ -28,7 +28,7 @@
     <meta itemprop="name" content="{{ author.name }}">
 
     {% firstof author.aliases author.born author.died as details %}
-    {% firstof author.wikipedia_link author.openlibrary_key author.inventaire_id author.isni author.isfdb as links %}
+    {% firstof author.wikipedia_link author.website author.openlibrary_key author.inventaire_id author.isni author.isfdb as links %}
     {% if details or links %}
     <div class="column is-3">
         {% if details %}
@@ -70,6 +70,14 @@
                     <a itemprop="sameAs" href="{{ author.wikipedia_link }}" rel="nofollow noopener noreferrer" target="_blank">
                         {% trans "Wikipedia" %}
                     </a>
+                </div>
+                {% endif %}
+
+                {% if author.website %}
+                <div>
+                     <a itemprop="sameAs" href="{{ author.website }}" rel="nofollow noopener noreferrer" target="_blank">
+                         {% trans "Website" %}
+                     </a>
                 </div>
                 {% endif %}
 
