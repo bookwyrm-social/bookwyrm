@@ -96,6 +96,7 @@ class UserAdmin(View):
         data = {"user": user, "group_form": form}
         return TemplateResponse(request, "settings/users/user.html", data)
 
+
 @method_decorator(login_required, name="dispatch")
 @method_decorator(
     permission_required("bookwyrm.moderate_user", raise_exception=True),
