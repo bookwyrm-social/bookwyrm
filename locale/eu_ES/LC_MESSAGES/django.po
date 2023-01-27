@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-01-26 16:43+0000\n"
-"PO-Revision-Date: 2023-01-26 17:08\n"
+"PO-Revision-Date: 2023-01-27 10:27\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Basque\n"
 "Language: eu\n"
@@ -2692,12 +2692,12 @@ msgstr "CSV fitxategia ez da baliozkoa"
 #: bookwyrm/templates/import/import.html:20
 #, python-format
 msgid "Currently you are allowed to import %(import_size_limit)s books every %(import_limit_reset)s days."
-msgstr ""
+msgstr "Momentu honetan %(import_size_limit)s liburu inportatzeko baimena duzu %(import_limit_reset)s egunero."
 
 #: bookwyrm/templates/import/import.html:21
 #, python-format
 msgid "You have %(allowed_imports)s left."
-msgstr ""
+msgstr "Beste %(allowed_imports)s liburu inporta ditzakezu oraindik."
 
 #: bookwyrm/templates/import/import.html:28
 #, python-format
@@ -2758,7 +2758,7 @@ msgstr "Inportatu"
 
 #: bookwyrm/templates/import/import.html:103
 msgid "You've reached the import limit."
-msgstr ""
+msgstr "Inportatu ditzakezun liburuen mugara heldu zara."
 
 #: bookwyrm/templates/import/import.html:112
 msgid "Imports are temporarily disabled; thank you for your patience."
@@ -4867,31 +4867,31 @@ msgstr "Gaitu inportatzea"
 
 #: bookwyrm/templates/settings/imports/imports.html:63
 msgid "Limit the amount of imports"
-msgstr ""
+msgstr "Mugatu inportazio kopurua"
 
 #: bookwyrm/templates/settings/imports/imports.html:74
 msgid "Some users might try to import a large number of books, which you want to limit."
-msgstr ""
+msgstr "Erabiltzaile batzuk liburu kopuru handi bat inportatzen saia daitezke, eta baliteke hau mugatu nahi izatea."
 
 #: bookwyrm/templates/settings/imports/imports.html:75
 msgid "Set the value to 0 to not enforce any limit."
-msgstr ""
+msgstr "Ezarri 0 balioa inolako mugarik jarri nahi ez baduzu."
 
 #: bookwyrm/templates/settings/imports/imports.html:78
 msgid "Set import limit to"
-msgstr ""
+msgstr "Ezarri inportatzeko mugua kopurua"
 
 #: bookwyrm/templates/settings/imports/imports.html:80
 msgid "books every"
-msgstr ""
+msgstr "liburutara, "
 
 #: bookwyrm/templates/settings/imports/imports.html:82
 msgid "days."
-msgstr ""
+msgstr "egunero."
 
 #: bookwyrm/templates/settings/imports/imports.html:86
 msgid "Set limit"
-msgstr ""
+msgstr "Ezarri muga"
 
 #: bookwyrm/templates/settings/imports/imports.html:102
 msgid "Completed"
@@ -5176,7 +5176,7 @@ msgstr "Baimendu izen-ematea"
 
 #: bookwyrm/templates/settings/registration.html:43
 msgid "Default access level:"
-msgstr ""
+msgstr "Lehenetsitako sarbide maila:"
 
 #: bookwyrm/templates/settings/registration.html:61
 msgid "Require users to confirm email address"
@@ -6450,7 +6450,7 @@ msgstr "Erabiltzailearen aktibitatea"
 
 #: bookwyrm/templates/user/user.html:76
 msgid "Show RSS Options"
-msgstr ""
+msgstr "Erakutsi RSS aukerak"
 
 #: bookwyrm/templates/user/user.html:82
 msgid "RSS feed"
@@ -6458,19 +6458,19 @@ msgstr "RSS jarioa"
 
 #: bookwyrm/templates/user/user.html:98
 msgid "Complete feed"
-msgstr ""
+msgstr "Jario osoa"
 
 #: bookwyrm/templates/user/user.html:103
 msgid "Reviews only"
-msgstr ""
+msgstr "Kritikak bakarrik"
 
 #: bookwyrm/templates/user/user.html:108
 msgid "Quotes only"
-msgstr ""
+msgstr "Aipuak bakarrik"
 
 #: bookwyrm/templates/user/user.html:113
 msgid "Comments only"
-msgstr ""
+msgstr "Iruzkinak bakarrik"
 
 #: bookwyrm/templates/user/user.html:129
 msgid "No activities yet!"
@@ -6519,14 +6519,14 @@ msgstr "Fitxategiak gehienezko tamaina gainditzen du: 10 Mb"
 #: bookwyrm/templatetags/list_page_tags.py:14
 #, python-format
 msgid "Book List: %(name)s"
-msgstr ""
+msgstr "Liburu zerrenda: %(name)s"
 
 #: bookwyrm/templatetags/list_page_tags.py:22
 #, python-format
 msgid "%(num)d book - by %(user)s"
 msgid_plural "%(num)d books - by %(user)s"
 msgstr[0] ""
-msgstr[1] ""
+msgstr[1] "%(num)d liburu - %(user)s"
 
 #: bookwyrm/templatetags/utilities.py:39
 #, python-format
@@ -6541,17 +6541,17 @@ msgstr "{obj.display_name}-ren egoera eguneratzeak"
 #: bookwyrm/views/rss_feed.py:72
 #, python-brace-format
 msgid "Reviews from {obj.display_name}"
-msgstr ""
+msgstr "{obj.display_name}(r)en kritikak"
 
 #: bookwyrm/views/rss_feed.py:110
 #, python-brace-format
 msgid "Quotes from {obj.display_name}"
-msgstr ""
+msgstr "{obj.display_name}(r)en aipuak"
 
 #: bookwyrm/views/rss_feed.py:148
 #, python-brace-format
 msgid "Comments from {obj.display_name}"
-msgstr ""
+msgstr "{obj.display_name}(r)en iruzkinak"
 
 #: bookwyrm/views/updates.py:45
 #, python-format
