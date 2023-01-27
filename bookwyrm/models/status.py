@@ -80,7 +80,7 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
     def save(self, *args, **kwargs):
         """save and notify"""
         if self.reply_parent:
-            self.thread_id = self.reply_parent.thread_id or self.reply_parent.id
+            self.thread_id = self.reply_parent.thread_id or self.reply_parent_id
 
         super().save(*args, **kwargs)
 
