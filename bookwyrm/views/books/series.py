@@ -41,7 +41,7 @@ class BookSeriesBy(View):
                 unsortable_books.append(result)
 
         list_results = (
-            sorted(numbered_books, key=lambda book: book.series_number)
+            sorted(numbered_books, key=lambda book: int(book.series_number))
             + sorted(
                 dated_books,
                 key=lambda book: book.first_published_date
