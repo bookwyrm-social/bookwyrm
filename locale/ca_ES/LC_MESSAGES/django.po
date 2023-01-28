@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-01-26 16:43+0000\n"
-"PO-Revision-Date: 2023-01-26 17:08\n"
+"PO-Revision-Date: 2023-01-28 20:49\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Catalan\n"
 "Language: ca\n"
@@ -2692,12 +2692,12 @@ msgstr "Fitxer CSV no vàlid"
 #: bookwyrm/templates/import/import.html:20
 #, python-format
 msgid "Currently you are allowed to import %(import_size_limit)s books every %(import_limit_reset)s days."
-msgstr ""
+msgstr "Actualment es permet la importació de %(import_size_limit)s llibres cada %(import_limit_reset)s dies."
 
 #: bookwyrm/templates/import/import.html:21
 #, python-format
 msgid "You have %(allowed_imports)s left."
-msgstr ""
+msgstr "Et resten %(allowed_imports)s per importar."
 
 #: bookwyrm/templates/import/import.html:28
 #, python-format
@@ -2758,7 +2758,7 @@ msgstr "Importa"
 
 #: bookwyrm/templates/import/import.html:103
 msgid "You've reached the import limit."
-msgstr ""
+msgstr "Has arribat al límit d'importacions."
 
 #: bookwyrm/templates/import/import.html:112
 msgid "Imports are temporarily disabled; thank you for your patience."
@@ -4868,31 +4868,31 @@ msgstr "Habilitar les importacions"
 
 #: bookwyrm/templates/settings/imports/imports.html:63
 msgid "Limit the amount of imports"
-msgstr ""
+msgstr "Limita la quantitat d'importacions"
 
 #: bookwyrm/templates/settings/imports/imports.html:74
 msgid "Some users might try to import a large number of books, which you want to limit."
-msgstr ""
+msgstr "Alguns usuaris poden intentar importar una gran quantitat de llibres, cosa que podries voler limitar."
 
 #: bookwyrm/templates/settings/imports/imports.html:75
 msgid "Set the value to 0 to not enforce any limit."
-msgstr ""
+msgstr "Estableix el valor a 0 per tal de no especificar cap limitació."
 
 #: bookwyrm/templates/settings/imports/imports.html:78
 msgid "Set import limit to"
-msgstr ""
+msgstr "Estableix el límit d'importacions en"
 
 #: bookwyrm/templates/settings/imports/imports.html:80
 msgid "books every"
-msgstr ""
+msgstr "llibres cada"
 
 #: bookwyrm/templates/settings/imports/imports.html:82
 msgid "days."
-msgstr ""
+msgstr "dies."
 
 #: bookwyrm/templates/settings/imports/imports.html:86
 msgid "Set limit"
-msgstr ""
+msgstr "Estableix el límit"
 
 #: bookwyrm/templates/settings/imports/imports.html:102
 msgid "Completed"
@@ -5177,7 +5177,7 @@ msgstr "Permet el registre"
 
 #: bookwyrm/templates/settings/registration.html:43
 msgid "Default access level:"
-msgstr ""
+msgstr "Nivell d'accés per defecte:"
 
 #: bookwyrm/templates/settings/registration.html:61
 msgid "Require users to confirm email address"
@@ -6451,7 +6451,7 @@ msgstr "Activitat d'usuari"
 
 #: bookwyrm/templates/user/user.html:76
 msgid "Show RSS Options"
-msgstr ""
+msgstr "Mostra les Opcions RSS"
 
 #: bookwyrm/templates/user/user.html:82
 msgid "RSS feed"
@@ -6459,19 +6459,19 @@ msgstr "Canal RSS"
 
 #: bookwyrm/templates/user/user.html:98
 msgid "Complete feed"
-msgstr ""
+msgstr "Activitat completa"
 
 #: bookwyrm/templates/user/user.html:103
 msgid "Reviews only"
-msgstr ""
+msgstr "Només ressenyes"
 
 #: bookwyrm/templates/user/user.html:108
 msgid "Quotes only"
-msgstr ""
+msgstr "Només cites"
 
 #: bookwyrm/templates/user/user.html:113
 msgid "Comments only"
-msgstr ""
+msgstr "Només comentaris"
 
 #: bookwyrm/templates/user/user.html:129
 msgid "No activities yet!"
@@ -6520,14 +6520,14 @@ msgstr "El fitxer sobrepassa la mida màxima: 10MB"
 #: bookwyrm/templatetags/list_page_tags.py:14
 #, python-format
 msgid "Book List: %(name)s"
-msgstr ""
+msgstr "Llista de Llibres: %(name)s"
 
 #: bookwyrm/templatetags/list_page_tags.py:22
 #, python-format
 msgid "%(num)d book - by %(user)s"
 msgid_plural "%(num)d books - by %(user)s"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(num)d llibre - per %(user)s"
+msgstr[1] "%(num)d llibres - per %(user)s"
 
 #: bookwyrm/templatetags/utilities.py:39
 #, python-format
@@ -6542,17 +6542,17 @@ msgstr "Actualitzacions d'estat de {obj.display_name}"
 #: bookwyrm/views/rss_feed.py:72
 #, python-brace-format
 msgid "Reviews from {obj.display_name}"
-msgstr ""
+msgstr "Ressenyes de {obj.display_name}"
 
 #: bookwyrm/views/rss_feed.py:110
 #, python-brace-format
 msgid "Quotes from {obj.display_name}"
-msgstr ""
+msgstr "Cites de {obj.display_name}"
 
 #: bookwyrm/views/rss_feed.py:148
 #, python-brace-format
 msgid "Comments from {obj.display_name}"
-msgstr ""
+msgstr "Comentaris de {obj.display_name}"
 
 #: bookwyrm/views/updates.py:45
 #, python-format
