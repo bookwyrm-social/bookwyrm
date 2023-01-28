@@ -17,7 +17,7 @@
     {% if site.imports_enabled %}
         {% if import_size_limit and import_limit_reset %}
             <div class="notification">
-                <p>{% blocktrans %}Currently you are allowed to import {{ import_size_limit }} books every {{ import_limit_reset }} days.{% endblocktrans %}</p>
+                <p>{% blocktrans %}Currently you are allowed to import {{ import_size_limit }} {{book_noun}} every {{ import_limit_reset }} {{day_noun}}.{% endblocktrans %}</p>
                 <p>{% blocktrans %}You have {{ allowed_imports }} left.{% endblocktrans %}</p>
             </div>
         {% endif %}

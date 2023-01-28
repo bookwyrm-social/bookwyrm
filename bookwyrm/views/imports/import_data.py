@@ -64,6 +64,9 @@ class Import(View):
         data["import_limit_reset"] = site_settings.import_limit_reset
         data["allowed_imports"] = site_settings.import_size_limit - imported_books
 
+        data["book_noun"] = "books" if site_settings.import_size_limit > 1 else 'book'
+        data["day_noun"] = "days" if site_settings.import_limit_reset > 1 else 'day'
+
         return TemplateResponse(request, "import/import.html", data)
 
     def post(self, request):
