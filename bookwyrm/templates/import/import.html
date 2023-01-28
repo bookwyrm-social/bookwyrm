@@ -19,10 +19,14 @@
             <div class="notification">
                 <p>
                     {% blocktrans count books=import_size_limit%}
-                        Currently you are allowed to import {{ import_size_limit }} {{books}}
+                        Currently you are allowed to import {{ import_size_limit }} book
+                    {% plural %}
+                        Currently you are allowed to import {{ import_size_limit }} books
                     {% endblocktrans %}
                     {% blocktrans count days=import_limit_reset%}
-                         every {{ import_limit_reset }} {{days}}.
+                         every {{ import_limit_reset }} day.
+                    {% plural %}
+                         every {{ import_limit_reset }} days.
                     {% endblocktrans %}
                 </p>
                 <p>{% blocktrans %}You have {{ allowed_imports }} left.{% endblocktrans %}</p>
