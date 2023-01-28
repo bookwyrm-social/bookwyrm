@@ -105,6 +105,7 @@ class UserAdmin(View):
 class ActivateUserAdmin(View):
     """activate a user manually"""
 
+    # pylint: disable=unused-argument
     def post(self, request, user):
         """activate user"""
         user = get_object_or_404(models.User, id=user)
