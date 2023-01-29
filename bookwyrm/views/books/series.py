@@ -21,17 +21,17 @@ class BookSeriesBy(View):
         author = get_object_or_404(models.Author, id=author_id)
 
         results = models.Edition.objects.filter(authors=author, series=series_name)
-
-        # when there are multiple editions of the same work, pick the closest
-        editions_of_work = results.values_list("parent_work__id", flat=True).distinct()
-
+        
+        # when there are multiple editions of the same work, pick the one with a series number or closest
+        work_ids = results.values_list("parent_work__id", flat=True).distinct()
+        
         # filter out multiple editions of the same work
         numbered_books = []
         dated_books = []
         unsortable_books = []
-        for work_id in set(editions_of_work):
+        for work_id in set(work_ids):
             result = (
-                results.filter(parent_work=work_id).order_by("-edition_rank").first()
+                results.filter(parent_work=work_id).order_by("series_number", "-edition_rank").first()
             )
             if result.series_number:
                 numbered_books.append(result)
@@ -48,7 +48,7 @@ class BookSeriesBy(View):
                 if book.first_published_date
                 else book.published_date,
             )
-            + sorted(unsortable_books, key=lambda book: book.sort_title)
+            + sorted(unsortable_books, key=lambda book: book.sort_title if book.sort_title else book.title)
         )
 
         data = {
