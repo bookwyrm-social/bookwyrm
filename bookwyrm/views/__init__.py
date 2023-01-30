@@ -31,7 +31,7 @@ from .admin.reports import (
 )
 from .admin.site import Site, Registration, RegistrationLimited
 from .admin.themes import Themes, delete_theme
-from .admin.user_admin import UserAdmin, UserAdminList
+from .admin.user_admin import UserAdmin, UserAdminList, ActivateUserAdmin
 
 # user preferences
 from .preferences.change_password import ChangePassword
