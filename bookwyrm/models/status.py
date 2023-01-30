@@ -329,6 +329,9 @@ class Quotation(BookStatus):
     position = models.IntegerField(
         validators=[MinValueValidator(0)], null=True, blank=True
     )
+    endposition = models.IntegerField(
+        validators=[MinValueValidator(0)], null=True, blank=True
+    )
     position_mode = models.CharField(
         max_length=3,
         choices=ProgressMode.choices,
