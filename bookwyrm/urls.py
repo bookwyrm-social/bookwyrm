@@ -330,7 +330,7 @@ urlpatterns = [
         r"^settings/celery/?$", views.CeleryStatus.as_view(), name="settings-celery"
     ),
     re_path(
-        r"^settings/celery/ping?$", views.celery_ping, name="settings-celery-ping"
+        r"^settings/celery/ping/?$", views.celery_ping, name="settings-celery-ping"
     ),
     re_path(
         r"^settings/email-config/?$",
