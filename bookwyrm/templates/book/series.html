@@ -24,7 +24,7 @@
 	{% with book=book %}
 			<div class="column is-one-fifth-tablet is-half-mobile is-flex is-flex-direction-column">
 				<div class="is-flex-grow-1 mb-3">
-					<span class="subtitle">{% if book.series_number %}Book {{ book.series_number }}{% else %}Unsorted Book{% endif %}</span>
+					<span class="subtitle">{% if book.series_number %}{% blocktrans with series_number=book.series_number %}Book {{ series_number }}{% endblocktrans %}{% else %}{% trans 'Unsorted Book' %}{% endif %}</span>
 					{% include 'landing/small-book.html' with book=book %}
 				</div>
 			</div>
