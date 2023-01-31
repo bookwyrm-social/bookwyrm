@@ -146,6 +146,11 @@ urlpatterns = [
         name="settings-user",
     ),
     re_path(
+        r"^settings/users/(?P<user>\d+)/activate/?$",
+        views.ActivateUserAdmin.as_view(),
+        name="settings-activate-user",
+    ),
+    re_path(
         r"^settings/federation/(?P<status>(federated|blocked))?/?$",
         views.Federation.as_view(),
         name="settings-federation",

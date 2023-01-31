@@ -215,10 +215,10 @@
                 {% endif %}
 
 
-                {% with work=book.parent_work %}
+                {% with work=book.parent_work editions_count=book.parent_work.editions.count %}
                 <p>
                     <a href="{{ work.local_path }}/editions" id="tour-other-editions-link">
-                        {% blocktrans trimmed count counter=work.editions.count with count=work.editions.count|intcomma %}
+                        {% blocktrans trimmed count counter=editions_count with count=editions_count|intcomma %}
                             {{ count }} edition
                             {% plural %}
                             {{ count }} editions
