@@ -22,7 +22,8 @@ class BookSeriesBy(View):
 
         results = models.Edition.objects.filter(authors=author, series=series_name)
 
-        # when there are multiple editions of the same work, pick the one with a series number or closest
+        # when there are multiple editions of the same work
+        # pick the one with a series number or closest
         work_ids = results.values_list("parent_work__id", flat=True).distinct()
 
         # filter out multiple editions of the same work
