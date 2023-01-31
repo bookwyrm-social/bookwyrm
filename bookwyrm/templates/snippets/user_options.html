@@ -11,13 +11,13 @@
 {% block dropdown-list %}
 <li role="menuitem">
     <div class="control">
-        <a href="{% url 'direct-messages-user' user|username %}" class="button is-fullwidth is-small">{% trans "Send direct message" %}</a>
+        <a href="{% url 'direct-messages-user' user|username %}" class="button is-fullwidth is-small is-size-6-mobile">{% trans "Send direct message" %}</a>
     </div>
 </li>
 <li role="menuitem">
-    {% include 'snippets/report_button.html' with user=user class="is-fullwidth" %}
+    {% include 'snippets/report_button.html' with user=user class="is-fullwidth is-size-6-mobile" %}
 </li>
 <li role="menuitem">
-    {% include 'snippets/block_button.html' with user=user class="is-fullwidth" blocks=False %}
+    {% include 'snippets/block_button.html' with user=user class="is-fullwidth is-size-6-mobile" blocks=False %}
 </li>
 {% endblock %}

@@ -31,7 +31,7 @@
 </li>
 {% else%}
 {% comparison_bool shelf.identifier active_shelf.shelf.identifier as is_current %}
-{% with button_class="is-fullwidth is-small shelf-option is-radiusless has-background-body" %}
+{% with button_class="is-fullwidth is-small is-size-6-mobile shelf-option is-radiusless has-background-body" %}
 <li role="menuitem" class="dropdown-item p-0">
 {% if shelf.identifier == 'reading' %}
 
@@ -77,7 +77,7 @@
         {% csrf_token %}
         <input type="hidden" name="book" value="{{ book.id }}">
         <input type="hidden" name="shelf" value="{{ user_shelf.id }}">
-        <button class="button is-fullwidth is-small is-radiusless is-danger is-light" type="submit">
+        <button class="button is-fullwidth is-small is-size-6-mobile is-radiusless is-danger is-light" type="submit">
             {% blocktrans with name=user_shelf|translate_shelf_name %}Remove from {{ name }}{% endblocktrans %}
         </button>
     </form>
@@ -91,7 +91,7 @@
         {% csrf_token %}
         <input type="hidden" name="book" value="{{ book.id }}">
         <input type="hidden" name="shelf" value="{{ shelf.id }}">
-        <button class="button is-fullwidth is-small is-radiusless is-danger is-light" type="submit">{% trans "Remove from" %} {{ shelf.name }}</button>
+        <button class="button is-fullwidth is-small is-size-6-mobile is-radiusless is-danger is-light" type="submit">{% trans "Remove from" %} {{ shelf.name }}</button>
     </form>
 </li>
 {% endif %}
