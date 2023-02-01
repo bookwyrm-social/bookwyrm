@@ -101,6 +101,7 @@ MIDDLEWARE = [
     "django.middleware.locale.LocaleMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
+    "csp.middleware.CSPMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "bookwyrm.middleware.TimezoneMiddleware",
     "bookwyrm.middleware.IPBlocklistMiddleware",
@@ -335,6 +336,8 @@ PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 PROTOCOL = "http"
 if USE_HTTPS:
     PROTOCOL = "https"
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
 
 USE_S3 = env.bool("USE_S3", False)
 
@@ -358,11 +361,17 @@ if USE_S3:
     MEDIA_FULL_URL = MEDIA_URL
     STATIC_FULL_URL = STATIC_URL
     DEFAULT_FILE_STORAGE = "bookwyrm.storage_backends.ImagesStorage"
+    CSP_DEFAULT_SRC = ("'self'", AWS_S3_CUSTOM_DOMAIN)
+    CSP_SCRIPT_SRC = ("'self'", AWS_S3_CUSTOM_DOMAIN)
 else:
     STATIC_URL = "/static/"
     MEDIA_URL = "/images/"
     MEDIA_FULL_URL = f"{PROTOCOL}://{DOMAIN}{MEDIA_URL}"
     STATIC_FULL_URL = f"{PROTOCOL}://{DOMAIN}{STATIC_URL}"
+    CSP_DEFAULT_SRC = ("'self'")
+    CSP_SCRIPT_SRC = ("'self'")
+
+CSP_INCLUDE_NONCE_IN=['script-src']
 
 OTEL_EXPORTER_OTLP_ENDPOINT = env("OTEL_EXPORTER_OTLP_ENDPOINT", None)
 OTEL_EXPORTER_OTLP_HEADERS = env("OTEL_EXPORTER_OTLP_HEADERS", None)

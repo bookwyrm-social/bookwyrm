@@ -183,7 +183,7 @@
 {% include 'snippets/footer.html' %}
 {% endblock %}
 
-<script>
+<script nonce="{{request.csp_nonce}}">
     var csrf_token = '{{ csrf_token }}';
 </script>
 
