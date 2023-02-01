@@ -29,7 +29,9 @@ from bookwyrm.utils import regex
 class Dashboard(View):
     """admin overview"""
 
-    @csp_update(SCRIPT_SRC='https://cdn.jsdelivr.net/npm/chart.js@3.5.1/dist/chart.min.js')
+    @csp_update(
+        SCRIPT_SRC="https://cdn.jsdelivr.net/npm/chart.js@3.5.1/dist/chart.min.js"
+    )
     def get(self, request):
         """list of users"""
         data = get_charts_and_stats(request)
