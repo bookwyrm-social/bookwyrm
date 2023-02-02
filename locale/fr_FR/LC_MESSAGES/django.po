@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-01-30 08:21+0000\n"
-"PO-Revision-Date: 2023-01-30 17:35\n"
+"PO-Revision-Date: 2023-02-02 14:57\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: French\n"
 "Language: fr\n"
@@ -610,8 +610,8 @@ msgstr "Ce qui fait en moyenne %(pages)s pages par livre."
 #, python-format
 msgid "(No page data was available for %(no_page_number)s book)"
 msgid_plural "(No page data was available for %(no_page_number)s books)"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "(Le nombre de pages n'était pas renseigné pour %(no_page_number)s livre)"
+msgstr[1] "(Le nombre de pages n'était pas renseigné pour %(no_page_number)s livres)"
 
 #: bookwyrm/templates/annual_summary/layout.html:150
 msgid "Their shortest read this year…"
@@ -5571,7 +5571,7 @@ msgstr "Actions de l'utilisateur"
 
 #: bookwyrm/templates/settings/users/user_moderation_actions.html:21
 msgid "Activate user"
-msgstr ""
+msgstr "Activer le compte"
 
 #: bookwyrm/templates/settings/users/user_moderation_actions.html:27
 msgid "Suspend user"
@@ -6530,7 +6530,7 @@ msgstr "Liste de livres : %(name)s"
 #, python-format
 msgid "%(num)d book - by %(user)s"
 msgid_plural "%(num)d books - by %(user)s"
-msgstr[0] ""
+msgstr[0] "%(num)d livre - par %(user)s"
 msgstr[1] "%(num)d livres - par %(user)s"
 
 #: bookwyrm/templatetags/utilities.py:39
