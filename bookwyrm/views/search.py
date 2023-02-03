@@ -23,7 +23,7 @@ from .helpers import handle_remote_webfinger
 class Search(View):
     """search users or books"""
 
-    @csp_update(IMG_SRC='*')
+    @csp_update(IMG_SRC="*")
     def get(self, request):
         """that search bar up top"""
         if is_api_request(request):
