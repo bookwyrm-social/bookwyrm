@@ -66,4 +66,4 @@ def celery_ping(request):
     except Exception:
         pass
 
-    return HttpResponse(500)
+    return HttpResponse(status=500)
