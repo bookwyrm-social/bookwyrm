@@ -263,7 +263,7 @@ class BookViews(TestCase):
         """make sure the endposition is served as well"""
         view = views.Book.as_view()
 
-        quote = models.Quotation.objects.create(
+        _ = models.Quotation.objects.create(
             user=self.local_user,
             book=self.book,
             content="hi",
