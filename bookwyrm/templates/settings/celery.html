@@ -9,6 +9,14 @@
 
 {% block panel %}
 
+<div class="notification">
+    <p>
+    {% trans "You can set up monitoring to check if Celery is running by querying:" %}
+    {% url "settings-celery-ping" as url %}
+    <a href="{{ url }}" target="_blank" rel="nofollow noopener noreferrer">{{ url }}</a>
+    </p>
+</div>
+
 {% if queues %}
 <section class="block content">
     <h2>{% trans "Queues" %}</h2>

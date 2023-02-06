@@ -1,8 +1,10 @@
 """ celery status """
 from django.contrib.auth.decorators import login_required, permission_required
+from django.http import HttpResponse
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
 from django.views import View
+from django.views.decorators.http import require_GET
 import redis
 
 from celerywyrm import settings
@@ -50,3 +52,18 @@ class CeleryStatus(View):
             "errors": errors,
         }
         return TemplateResponse(request, "settings/celery.html", data)
+
+
+@require_GET
+# pylint: disable=unused-argument
+def celery_ping(request):
+    """Just tells you if Celery is on or not"""
+    try:
+        ping = celery.control.inspect().ping()
+        if ping:
+            return HttpResponse()
+    # pylint: disable=broad-except
+    except Exception:
+        pass
+
+    return HttpResponse(status=500)

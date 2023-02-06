@@ -237,16 +237,24 @@ def feed_page_data(user):
 def get_suggested_books(user, max_books=5):
     """helper to get a user's recent books"""
     book_count = 0
-    preset_shelves = [("reading", max_books), ("read", 2), ("to-read", max_books)]
+    preset_shelves = {"reading": max_books, "read": 2, "to-read": max_books}
     suggested_books = []
-    for (preset, shelf_max) in preset_shelves:
+
+    user_shelves = {
+        shelf.identifier: shelf
+        for shelf in user.shelf_set.filter(
+            identifier__in=preset_shelves.keys()
+        ).exclude(books__isnull=True)
+    }
+
+    for preset, shelf_max in preset_shelves.items():
         limit = (
             shelf_max
             if shelf_max < (max_books - book_count)
             else max_books - book_count
         )
-        shelf = user.shelf_set.get(identifier=preset)
-        if not shelf.books.exists():
+        shelf = user_shelves.get(preset, None)
+        if not shelf:
             continue
 
         shelf_preview = {
