@@ -8,19 +8,28 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('auth', '0012_alter_user_first_name_max_length'),
-        ('bookwyrm', '0173_default_user_auth_group_setting'),
+        ("auth", "0012_alter_user_first_name_max_length"),
+        ("bookwyrm", "0173_default_user_auth_group_setting"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='quotation',
-            name='endposition',
-            field=models.IntegerField(blank=True, null=True, validators=[django.core.validators.MinValueValidator(0)]),
+            model_name="quotation",
+            name="endposition",
+            field=models.IntegerField(
+                blank=True,
+                null=True,
+                validators=[django.core.validators.MinValueValidator(0)],
+            ),
         ),
         migrations.AlterField(
-            model_name='sitesettings',
-            name='default_user_auth_group',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, to='auth.group'),
+            model_name="sitesettings",
+            name="default_user_auth_group",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                to="auth.group",
+            ),
         ),
     ]
