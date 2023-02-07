@@ -1,10 +1,19 @@
 """ books belonging to the same series """
+from sys import float_info
 from django.views import View
 from django.shortcuts import get_object_or_404
 from django.template.response import TemplateResponse
 
 from bookwyrm.views.helpers import is_api_request
 from bookwyrm import models
+
+
+def sort_by_series(book):
+    """sort books using their series number"""
+    try:
+        return float(book.series_number)
+    except ValueError:
+        return float_info.max
 
 
 # pylint: disable=no-self-use
@@ -44,7 +53,7 @@ class BookSeriesBy(View):
                 unsortable_books.append(result)
 
         list_results = (
-            sorted(numbered_books, key=lambda book: float(book.series_number))
+            sorted(numbered_books, key=sort_by_series)
             + sorted(
                 dated_books,
                 key=lambda book: book.first_published_date
