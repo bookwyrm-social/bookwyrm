@@ -55,6 +55,7 @@ from .books.books import (
     add_description,
     resolve_book,
 )
+from .books.series import BookSeriesBy
 from .books.books import update_book_from_remote
 from .books.edit_book import (
     EditBook,
