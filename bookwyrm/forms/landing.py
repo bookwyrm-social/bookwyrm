@@ -108,7 +108,7 @@ class Confirm2FAForm(CustomForm):
         otp = self.data.get("otp")
         totp = pyotp.TOTP(self.instance.otp_secret)
 
-        if not totp.verify(otp):
+        if not totp.verify(otp, valid_window=2):
 
             if self.instance.hotp_secret:
                 # maybe it's a backup code?
