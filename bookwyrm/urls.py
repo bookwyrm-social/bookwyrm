@@ -4,7 +4,7 @@ from django.contrib import admin
 from django.urls import path, re_path
 from django.views.generic.base import TemplateView
 
-from bookwyrm import settings, views
+from bookwyrm import settings, views, oauth
 from bookwyrm.utils import regex
 
 USER_PATH = rf"^user/(?P<username>{regex.USERNAME})"
@@ -81,6 +81,9 @@ urlpatterns = [
     re_path(
         r"^password-reset/(?P<code>[A-Za-z0-9]+)/?$", views.PasswordReset.as_view()
     ),
+    re_path(r"^oauth$",oauth.auth,name="oauth"),
+    re_path(r"^oauth/login$",oauth.request_login, name="oauth-login"),
+    re_path(r"^oauth/register$", views.OAuthRegister.as_view(), name="oauth-register"),
     # admin
     re_path(
         r"^settings/dashboard/?$", views.Dashboard.as_view(), name="settings-dashboard"

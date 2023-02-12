@@ -115,6 +115,12 @@
                         </span>
                     </a>
                 </div>
+		{% elif oauth_active %}
+                <div class="navbar-item pt-5 pb-0">
+	    		<a href="{% url 'oauth-login' %}">
+				<button class="button is-primary" type="submit">{% trans "Log in with " %}{{ oauth_name }}</button>
+			</a>
+		</div>
                 {% else %}
                 <div class="navbar-item pt-5 pb-0">
                     {% if request.path != '/login' and request.path != '/login/' %}

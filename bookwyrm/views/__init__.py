@@ -164,3 +164,4 @@ from .annual_summary import (
     summary_add_key,
     summary_revoke_key,
 )
+from .oauth import OAuthRegister

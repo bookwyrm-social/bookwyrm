@@ -56,6 +56,20 @@ class RegisterForm(CustomForm):
             self.add_error("localname", _("User with this username already exists"))
 
 
+class OAuthRegisterForm(CustomForm):
+    class Meta:
+        model = models.User
+        fields = ["localname", "email"]
+        help_texts = {f: None for f in fields}
+
+    def clean(self):
+        """Check if the username is taken"""
+        cleaned_data = super().clean()
+        localname = cleaned_data.get("localname").strip()
+        if models.User.objects.filter(localname=localname).first():
+            self.add_error("localname", _("User with this username already exists"))
+
+
 class InviteRequestForm(CustomForm):
     def clean(self):
         """make sure the email isn't in use by a registered user"""
