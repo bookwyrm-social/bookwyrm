@@ -29,7 +29,7 @@ class Register(View):
         if settings.install_mode:
             raise PermissionDenied()
 
-        if not settings.allow_registration and 'oauth-newuser' not in request.session:
+        if not settings.allow_registration and "oauth-newuser" not in request.session:
             invite_code = request.POST.get("invite_code")
 
             if not invite_code:
@@ -40,8 +40,8 @@ class Register(View):
                 raise PermissionDenied()
         else:
             invite = None
-    
-        if 'oauth-newuser' in request.session:
+
+        if "oauth-newuser" in request.session:
             newuser = request.POST.get("localname")
             if newuser != request.session["oauth-newuser"]:
                 raise PremissionDenied()
@@ -61,7 +61,7 @@ class Register(View):
 
         localname = form.data["localname"].strip()
         email = form.data["email"]
-        password = None if 'oauth-newuser' in request.session else form.data["password"]
+        password = None if "oauth-newuser" in request.session else form.data["password"]
         try:
             preferred_timezone = pytz.timezone(form.data.get("preferred_timezone"))
         except pytz.exceptions.UnknownTimeZoneError:
@@ -92,7 +92,7 @@ class Register(View):
         if settings.require_confirm_email:
             emailing.email_confirmation_email(user)
             return redirect("confirm-email")
-        
+
         login(request, user)
         return redirect("get-started-profile")
 

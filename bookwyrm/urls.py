@@ -81,8 +81,8 @@ urlpatterns = [
     re_path(
         r"^password-reset/(?P<code>[A-Za-z0-9]+)/?$", views.PasswordReset.as_view()
     ),
-    re_path(r"^oauth$",oauth.auth,name="oauth"),
-    re_path(r"^oauth/login$",oauth.request_login, name="oauth-login"),
+    re_path(r"^oauth$", oauth.auth, name="oauth"),
+    re_path(r"^oauth/login$", oauth.request_login, name="oauth-login"),
     re_path(r"^oauth/register$", views.OAuthRegister.as_view(), name="oauth-register"),
     # admin
     re_path(

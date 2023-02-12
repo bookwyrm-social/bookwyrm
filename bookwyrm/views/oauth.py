@@ -23,11 +23,11 @@ class OAuthRegister(View):
     """use an invite to register"""
 
     def get(self, request):
-        if request.user.is_authenticated or 'oauth-newuser' not in request.session:
+        if request.user.is_authenticated or "oauth-newuser" not in request.session:
             return redirect("/")
         data = {
             "register_form": forms.RegisterForm(),
-            "username": request.session['oauth-newuser'],
+            "username": request.session["oauth-newuser"],
             "valid": True,
         }
         return TemplateResponse(request, "landing/oauth_register.html", data)

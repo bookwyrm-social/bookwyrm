@@ -388,14 +388,14 @@ if HTTP_X_FORWARDED_PROTO:
 # Do not change this setting unless you already have an existing
 # user with the same username - in which case you should change it!
 INSTANCE_ACTOR_USERNAME = "bookwyrm.instance.actor"
-OAUTH_ACTIVE = env("OAUTH_ACTIVE",False)
+OAUTH_ACTIVE = env("OAUTH_ACTIVE", False)
 if OAUTH_ACTIVE:
-    OAUTH_NAME=env("OAUTH_NAME","OAuth2")
+    OAUTH_NAME = env("OAUTH_NAME", "OAuth2")
     AUTHLIB_OAUTH_CLIENTS = {
-        'oauth': {
-            'client_id': env("OAUTH_CLIENT_ID"),
-            'client_secret': env("OAUTH_CLIENT_SECRET"),
-            'authorize_url': env("OAUTH_AUTHORIZE_URL"),
-            'access_token_url': env("OAUTH_ACCESS_TOKEN_URL"),
+        "oauth": {
+            "client_id": env("OAUTH_CLIENT_ID"),
+            "client_secret": env("OAUTH_CLIENT_SECRET"),
+            "authorize_url": env("OAUTH_AUTHORIZE_URL"),
+            "access_token_url": env("OAUTH_ACCESS_TOKEN_URL"),
         }
     }
