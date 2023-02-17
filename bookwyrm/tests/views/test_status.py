@@ -359,8 +359,10 @@ class StatusViews(TestCase):
         hashtag_new = models.Hashtag.objects.filter(name="#new").first()
         self.assertEqual(
             status.content,
-            f'<p>this is an <a href="{hashtag_exising.remote_id}">#existing</a> '
-            + f'hashtag, this one is <a href="{hashtag_new.remote_id}">#new</a>.</p>',
+            "<p>this is an "
+            + f'<a href="{hashtag_exising.remote_id}" data-mention="hashtag">'
+            + "#existing</a> hashtag, this one is "
+            + f'<a href="{hashtag_new.remote_id}" data-mention="hashtag">#new</a>.</p>',
         )
 
     def test_find_hashtags(self, *_):

@@ -33,7 +33,8 @@ class Note(TestCase):
             attributedTo=self.user.remote_id,
             inReplyToBook=self.book.remote_id,
             content="<p>This is interesting "
-            + '<a href="https://test-instance.org/hashtag/2">#BookClub</a></p>',
+            + '<a href="https://test-instance.org/hashtag/2" data-mention="hashtag">'
+            + "#BookClub</a></p>",
             published="2023-02-17T23:12:59.398030+00:00",
             to=[],
             cc=[],
@@ -57,5 +58,7 @@ class Note(TestCase):
         self.assertIsNotNone(hashtag)
         self.assertEqual(
             instance.content,
-            f'<p>This is interesting <a href="{hashtag.remote_id}">#BookClub</a></p>',
+            "<p>This is interesting "
+            + f'<a href="{hashtag.remote_id}" data-mention="hashtag">'
+            + "#BookClub</a></p>",
         )

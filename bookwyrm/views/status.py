@@ -123,7 +123,8 @@ class CreateStatus(View):
             # turn the mention into a link
             content = re.sub(
                 rf"{mention_text}\b(?!@)",
-                rf'<a href="{mention_hashtag.remote_id}">{mention_text}</a>',
+                rf'<a href="{mention_hashtag.remote_id}" data-mention="hashtag">'
+                + rf"{mention_text}</a>",
                 content,
             )
 

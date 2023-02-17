@@ -62,7 +62,7 @@ class Note(ActivityObject):
         changed_content = False
         for hashtag in instance.mention_hashtags.all():
             updated_content = re.sub(
-                rf'(<a href=")[^"]*/hashtag/[^"]*(">{hashtag.name}</a>)',
+                rf'(<a href=")[^"]*(" data-mention="hashtag">{hashtag.name}</a>)',
                 rf"\1{hashtag.remote_id}\2",
                 instance.content,
             )
