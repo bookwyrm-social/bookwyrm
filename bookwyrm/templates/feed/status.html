@@ -30,7 +30,7 @@
         {% endif %}
         {% endfor %}
         <div class="is-main block">
-            {% include 'snippets/status/status.html' with status=status main=True %}
+            {% include 'snippets/status/status.html' with status=status main=True expand=True %}
         </div>
 
         {% for child in children %}
