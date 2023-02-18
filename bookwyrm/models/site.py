@@ -72,7 +72,7 @@ class SiteSettings(SiteModel):
     invite_request_question = models.BooleanField(default=False)
     require_confirm_email = models.BooleanField(default=True)
     default_user_auth_group = models.ForeignKey(
-        auth_models.Group, null=True, blank=True, on_delete=models.PROTECT
+        auth_models.Group, null=True, blank=True, on_delete=models.RESTRICT
     )
 
     invite_question_text = models.CharField(
