@@ -10,6 +10,7 @@ from django.dispatch import receiver
 from django.db import models, transaction
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+from mozilla_django_oidc.auth import OIDCAuthenticationBackend
 from model_utils import FieldTracker
 import pytz
 
@@ -18,7 +19,14 @@ from bookwyrm.connectors import get_data, ConnectorException
 from bookwyrm.models.shelf import Shelf
 from bookwyrm.models.status import Status
 from bookwyrm.preview_images import generate_user_preview_image_task
-from bookwyrm.settings import DOMAIN, ENABLE_PREVIEW_IMAGES, USE_HTTPS, LANGUAGES
+from bookwyrm.settings import (
+    DOMAIN,
+    ENABLE_PREVIEW_IMAGES,
+    USE_HTTPS,
+    LANGUAGES,
+    OIDC_ENABLED,
+    OIDC_RP_CLIENT_ID,
+)
 from bookwyrm.signatures import create_key_pair
 from bookwyrm.tasks import app, LOW
 from bookwyrm.utils import regex
@@ -541,3 +549,64 @@ def preview_image(instance, *args, **kwargs):
 
     if len(changed_fields) > 0:
         generate_user_preview_image_task.delay(instance.id)
+
+
+class OIDCUser(OIDCAuthenticationBackend):
+    """a user defined by an entry in the SSO database"""
+
+    def create_user(self, claims):
+        """called by mozilla_django_oidc.auth on first login"""
+        if not OIDC_ENABLED:
+            return None
+
+        print("creating user", claims)
+        localname = claims.get("preferred_username")
+        username = f"{localname}@{DOMAIN}"
+        email = claims.get("email", "")
+        display_name = claims.get("name", localname)
+
+        user = User.objects.create_user(
+            username,
+            email,
+            "passwords-not-supported",
+            name=display_name,
+            localname=localname,
+            local=True,
+            deactivation_reason=None,
+            is_active=True,
+        )
+
+        return self.update_user(user, claims)
+
+    def update_user(self, user, claims):
+        """called by mozilla_django_oidc.auth for existing user"""
+        # log an error? should not reach here
+        if not OIDC_ENABLED:
+            return None
+
+        # replace the user's display name
+        user.name = claims.get("name", user.name)
+
+        # this is a hack to synchronize the OIDC role claims
+        # with the ones in the bookwyrm database.
+        roles = (
+            claims.get("resource_access", {})
+            .get(OIDC_RP_CLIENT_ID, {})
+            .get("roles", [])
+        )
+
+        # TODO: this should be more general.
+        for role in ["admin", "moderator"]:
+            try:
+                group = Group.objects.get(name=role)
+                if role in roles:
+                    user.groups.add(group)
+                else:
+                    user.groups.remove(group)
+            except Group.DoesNotExist:
+                print("warning: OIDC claimed role '", role, "' does not exist")
+
+        user.save()
+        print(f"{user.email}: '{user.name}' logged in via OIDC roles {roles}")
+
+        return user

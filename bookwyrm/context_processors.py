@@ -28,4 +28,5 @@ def site_settings(request):  # pylint: disable=unused-argument
         "preview_images_enabled": settings.ENABLE_PREVIEW_IMAGES,
         "request_protocol": request_protocol,
         "js_cache": settings.JS_CACHE,
+        "oidc_enabled": settings.OIDC_ENABLED,
     }
