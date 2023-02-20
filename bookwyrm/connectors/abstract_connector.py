@@ -1,5 +1,6 @@
 """ functionality outline for a book data connector """
 from abc import ABC, abstractmethod
+from urllib.parse import quote_plus
 import imghdr
 import logging
 import re
@@ -48,7 +49,7 @@ class AbstractMinimalConnector(ABC):
             return f"{self.isbn_search_url}{normalized_query}"
         # NOTE: previously, we tried searching isbn and if that produces no results,
         # searched as free text. This, instead, only searches isbn if it's isbn-y
-        return f"{self.search_url}{query}"
+        return f"{self.search_url}{quote_plus(query)}"
 
     def process_search_response(self, query, data, min_confidence):
         """Format the search results based on the formt of the query"""
@@ -244,7 +245,11 @@ def get_data(url, params=None, timeout=settings.QUERY_TIMEOUT):
         raise ConnectorException(err)
 
     if not resp.ok:
-        raise ConnectorException()
+        if resp.status_code == 401:
+            # this is probably an AUTHORIZED_FETCH issue
+            resp.raise_for_status()
+        else:
+            raise ConnectorException()
     try:
         data = resp.json()
     except ValueError as err:

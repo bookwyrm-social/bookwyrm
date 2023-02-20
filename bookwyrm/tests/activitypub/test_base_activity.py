@@ -14,6 +14,7 @@ from bookwyrm.activitypub.base_activity import (
     ActivityObject,
     resolve_remote_id,
     set_related_field,
+    get_representative,
 )
 from bookwyrm.activitypub import ActivitySerializerError
 from bookwyrm import models
@@ -51,6 +52,11 @@ class BaseActivity(TestCase):
         output = BytesIO()
         image.save(output, format=image.format)
         self.image_data = output.getvalue()
+
+    def test_get_representative_not_existing(self, *_):
+        """test that an instance representative actor is created if it does not exist"""
+        representative = get_representative()
+        self.assertIsInstance(representative, models.User)
 
     def test_init(self, *_):
         """simple successfuly init"""

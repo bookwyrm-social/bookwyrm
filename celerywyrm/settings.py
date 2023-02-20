@@ -4,7 +4,7 @@
 from bookwyrm.settings import *
 
 # pylint: disable=line-too-long
-REDIS_BROKER_PASSWORD = requests.utils.quote(env("REDIS_BROKER_PASSWORD", None))
+REDIS_BROKER_PASSWORD = requests.utils.quote(env("REDIS_BROKER_PASSWORD", ""))
 REDIS_BROKER_HOST = env("REDIS_BROKER_HOST", "redis_broker")
 REDIS_BROKER_PORT = env("REDIS_BROKER_PORT", 6379)
 REDIS_BROKER_DB_INDEX = env("REDIS_BROKER_DB_INDEX", 0)

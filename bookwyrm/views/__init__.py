@@ -4,7 +4,7 @@ from .admin.announcements import Announcements, Announcement
 from .admin.announcements import EditAnnouncement, delete_announcement
 from .admin.automod import AutoMod, automod_delete, run_automod
 from .admin.automod import schedule_automod_task, unschedule_automod_task
-from .admin.celery_status import CeleryStatus
+from .admin.celery_status import CeleryStatus, celery_ping
 from .admin.dashboard import Dashboard
 from .admin.federation import Federation, FederatedServer
 from .admin.federation import AddFederatedServer, ImportServerBlocklist
@@ -31,7 +31,7 @@ from .admin.reports import (
 )
 from .admin.site import Site, Registration, RegistrationLimited
 from .admin.themes import Themes, delete_theme
-from .admin.user_admin import UserAdmin, UserAdminList
+from .admin.user_admin import UserAdmin, UserAdminList, ActivateUserAdmin
 
 # user preferences
 from .preferences.change_password import ChangePassword
@@ -55,6 +55,7 @@ from .books.books import (
     add_description,
     resolve_book,
 )
+from .books.series import BookSeriesBy
 from .books.books import update_book_from_remote
 from .books.edit_book import (
     EditBook,

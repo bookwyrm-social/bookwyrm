@@ -2,11 +2,16 @@
 from dataclasses import dataclass, fields, MISSING
 from json import JSONEncoder
 import logging
+import requests
 
 from django.apps import apps
 from django.db import IntegrityError, transaction
+from django.utils.http import http_date
 
+from bookwyrm import models
 from bookwyrm.connectors import ConnectorException, get_data
+from bookwyrm.signatures import make_signature
+from bookwyrm.settings import DOMAIN, INSTANCE_ACTOR_USERNAME
 from bookwyrm.tasks import app, MEDIUM
 
 logger = logging.getLogger(__name__)
@@ -246,10 +251,10 @@ def set_related_field(
 
 def get_model_from_type(activity_type):
     """given the activity, what type of model"""
-    models = apps.get_models()
+    activity_models = apps.get_models()
     model = [
         m
-        for m in models
+        for m in activity_models
         if hasattr(m, "activity_serializer")
         and hasattr(m.activity_serializer, "type")
         and m.activity_serializer.type == activity_type
@@ -275,10 +280,16 @@ def resolve_remote_id(
     # load the data and create the object
     try:
         data = get_data(remote_id)
-    except ConnectorException:
+    except ConnectionError:
         logger.info("Could not connect to host for remote_id: %s", remote_id)
         return None
-
+    except requests.HTTPError as e:
+        if (e.response is not None) and e.response.status_code == 401:
+            # This most likely means it's a mastodon with secure fetch enabled.
+            data = get_activitypub_data(remote_id)
+        else:
+            logger.info("Could not connect to host for remote_id: %s", remote_id)
+            return None
     # determine the model implicitly, if not provided
     # or if it's a model with subclasses like Status, check again
     if not model or hasattr(model.objects, "select_subclasses"):
@@ -295,6 +306,51 @@ def resolve_remote_id(
 
     # if we're refreshing, "result" will be set and we'll update it
     return item.to_model(model=model, instance=result, save=save)
+
+
+def get_representative():
+    """Get or create an actor representing the instance
+    to sign requests to 'secure mastodon' servers"""
+    username = f"{INSTANCE_ACTOR_USERNAME}@{DOMAIN}"
+    email = "bookwyrm@localhost"
+    try:
+        user = models.User.objects.get(username=username)
+    except models.User.DoesNotExist:
+        user = models.User.objects.create_user(
+            username=username,
+            email=email,
+            local=True,
+            localname=INSTANCE_ACTOR_USERNAME,
+        )
+    return user
+
+
+def get_activitypub_data(url):
+    """wrapper for request.get"""
+    now = http_date()
+    sender = get_representative()
+    if not sender.key_pair.private_key:
+        # this shouldn't happen. it would be bad if it happened.
+        raise ValueError("No private key found for sender")
+    try:
+        resp = requests.get(
+            url,
+            headers={
+                "Accept": "application/json; charset=utf-8",
+                "Date": now,
+                "Signature": make_signature("get", sender, url, now),
+            },
+        )
+    except requests.RequestException:
+        raise ConnectorException()
+    if not resp.ok:
+        resp.raise_for_status()
+    try:
+        data = resp.json()
+    except ValueError:
+        raise ConnectorException()
+
+    return data
 
 
 @dataclass(init=False)

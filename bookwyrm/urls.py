@@ -146,6 +146,11 @@ urlpatterns = [
         name="settings-user",
     ),
     re_path(
+        r"^settings/users/(?P<user>\d+)/activate/?$",
+        views.ActivateUserAdmin.as_view(),
+        name="settings-activate-user",
+    ),
+    re_path(
         r"^settings/federation/(?P<status>(federated|blocked))?/?$",
         views.Federation.as_view(),
         name="settings-federation",
@@ -328,6 +333,9 @@ urlpatterns = [
     ),
     re_path(
         r"^settings/celery/?$", views.CeleryStatus.as_view(), name="settings-celery"
+    ),
+    re_path(
+        r"^settings/celery/ping/?$", views.celery_ping, name="settings-celery-ping"
     ),
     re_path(
         r"^settings/email-config/?$",
@@ -630,6 +638,11 @@ urlpatterns = [
     # books
     re_path(rf"{BOOK_PATH}(.json)?/?$", views.Book.as_view(), name="book"),
     re_path(rf"{BOOK_PATH}{regex.SLUG}/?$", views.Book.as_view(), name="book"),
+    re_path(
+        r"^series/by/(?P<author_id>\d+)/?$",
+        views.BookSeriesBy.as_view(),
+        name="book-series-by",
+    ),
     re_path(
         rf"{BOOK_PATH}/(?P<user_statuses>review|comment|quote)/?$",
         views.Book.as_view(),

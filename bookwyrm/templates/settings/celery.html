@@ -9,26 +9,40 @@
 
 {% block panel %}
 
+<div class="notification">
+    <p>
+    {% trans "You can set up monitoring to check if Celery is running by querying:" %}
+    {% url "settings-celery-ping" as url %}
+    <a href="{{ url }}" target="_blank" rel="nofollow noopener noreferrer">{{ url }}</a>
+    </p>
+</div>
+
 {% if queues %}
 <section class="block content">
     <h2>{% trans "Queues" %}</h2>
     <div class="columns has-text-centered">
-        <div class="column is-4">
+        <div class="column is-3">
             <div class="notification">
                 <p class="header">{% trans "Low priority" %}</p>
                 <p class="title is-5">{{ queues.low_priority|intcomma }}</p>
             </div>
         </div>
-        <div class="column is-4">
+        <div class="column is-3">
             <div class="notification">
                 <p class="header">{% trans "Medium priority" %}</p>
                 <p class="title is-5">{{ queues.medium_priority|intcomma }}</p>
             </div>
         </div>
-        <div class="column is-4">
+        <div class="column is-3">
             <div class="notification">
                 <p class="header">{% trans "High priority" %}</p>
                 <p class="title is-5">{{ queues.high_priority|intcomma }}</p>
+            </div>
+        </div>
+        <div class="column is-3">
+            <div class="notification">
+                <p class="header">{% trans "Imports" %}</p>
+                <p class="title is-5">{{ queues.imports|intcomma }}</p>
             </div>
         </div>
     </div>

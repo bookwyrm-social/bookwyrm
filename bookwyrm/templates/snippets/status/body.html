@@ -6,9 +6,8 @@
 {% if status_type == 'GeneratedNote' or status_type == 'Rating' %}
     {% include 'snippets/status/generated_status.html' with status=status %}
 {% else %}
-    {% include 'snippets/status/content_status.html' with status=status %}
+    {% include 'snippets/status/content_status.html' with status=status expand=expand %}
 {% endif %}
 
 {% endwith %}
 {% endblock %}
-
