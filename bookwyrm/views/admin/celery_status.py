@@ -8,7 +8,7 @@ from django.views.decorators.http import require_GET
 import redis
 
 from celerywyrm import settings
-from bookwyrm.tasks import app as celery
+from bookwyrm.tasks import app as celery, LOW, MEDIUM, HIGH, IMPORTS, BROADCAST
 
 r = redis.from_url(settings.REDIS_BROKER_URL)
 
@@ -35,10 +35,11 @@ class CeleryStatus(View):
 
         try:
             queues = {
-                "low_priority": r.llen("low_priority"),
-                "medium_priority": r.llen("medium_priority"),
-                "high_priority": r.llen("high_priority"),
-                "imports": r.llen("imports"),
+                LOW: r.llen(LOW),
+                MEDIUM: r.llen(MEDIUM),
+                HIGH: r.llen(HIGH),
+                IMPORTS: r.llen(IMPORTS),
+                BROADCAST: r.llen(BROADCAST),
             }
         # pylint: disable=broad-except
         except Exception as err:
