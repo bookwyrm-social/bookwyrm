@@ -120,6 +120,7 @@ class ActivitypubFieldMixin:
             return {self.activitypub_wrapper: value}
         return value
 
+    # pylint: disable=unused-argument
     def field_from_activity(self, value, allow_external_connections=True):
         """formatter to convert activitypub into a model value"""
         if value and hasattr(self, "activitypub_wrapper"):
@@ -416,7 +417,7 @@ class ImageField(ActivitypubFieldMixin, models.ImageField):
         self.alt_field = alt_field
         super().__init__(*args, **kwargs)
 
-    # pylint: disable=arguments-differ,arguments-renamed
+    # pylint: disable=arguments-differ,arguments-renamed,too-many-arguments
     def set_field_from_activity(
         self, instance, data, save=True, overwrite=True, allow_external_connections=True
     ):
