@@ -6,7 +6,7 @@ from django.test import TestCase, TransactionTestCase
 from django.test.client import RequestFactory
 
 from bookwyrm import forms, models, views
-from bookwyrm.views.status import find_mentions, find_hashtags
+from bookwyrm.views.status import find_mentions, find_or_create_hashtags
 from bookwyrm.settings import DOMAIN
 
 from bookwyrm.tests.validate_html import validate_html
@@ -339,7 +339,8 @@ class StatusViews(TestCase):
         view = views.CreateStatus.as_view()
         form = forms.CommentForm(
             {
-                "content": "this is an #existing hashtag, this one is #new.",
+                "content": "this is an #EXISTING hashtag but all uppercase, "
+                + "this one is #NewTag.",
                 "user": self.local_user.id,
                 "book": self.book.id,
                 "privacy": "public",
@@ -356,44 +357,45 @@ class StatusViews(TestCase):
         self.assertEqual(list(status.mention_hashtags.all()), list(hashtags))
 
         hashtag_exising = models.Hashtag.objects.filter(name="#existing").first()
-        hashtag_new = models.Hashtag.objects.filter(name="#new").first()
+        hashtag_new = models.Hashtag.objects.filter(name="#NewTag").first()
         self.assertEqual(
             status.content,
             "<p>this is an "
             + f'<a href="{hashtag_exising.remote_id}" data-mention="hashtag">'
-            + "#existing</a> hashtag, this one is "
-            + f'<a href="{hashtag_new.remote_id}" data-mention="hashtag">#new</a>.</p>',
+            + "#EXISTING</a> hashtag but all uppercase, this one is "
+            + f'<a href="{hashtag_new.remote_id}" data-mention="hashtag">'
+            + "#NewTag</a>.</p>",
         )
 
-    def test_find_hashtags(self, *_):
+    def test_find_or_create_hashtags(self, *_):
         """detect and look up #hashtags"""
-        result = find_hashtags("no hashtag to be found here")
+        result = find_or_create_hashtags("no hashtag to be found here")
         self.assertEqual(result, {})
 
-        result = find_hashtags("#existing")
+        result = find_or_create_hashtags("#existing")
         self.assertEqual(result["#existing"], self.existing_hashtag)
 
-        result = find_hashtags("leading text #existing")
+        result = find_or_create_hashtags("leading text #existing")
         self.assertEqual(result["#existing"], self.existing_hashtag)
 
-        result = find_hashtags("leading #existing trailing")
+        result = find_or_create_hashtags("leading #existing trailing")
         self.assertEqual(result["#existing"], self.existing_hashtag)
 
         self.assertIsNone(models.Hashtag.objects.filter(name="new").first())
-        result = find_hashtags("leading #new trailing")
+        result = find_or_create_hashtags("leading #new trailing")
         new_hashtag = models.Hashtag.objects.filter(name="#new").first()
         self.assertIsNotNone(new_hashtag)
         self.assertEqual(result["#new"], new_hashtag)
 
-        result = find_hashtags("leading #existing #new trailing")
+        result = find_or_create_hashtags("leading #existing #new trailing")
         self.assertEqual(result["#existing"], self.existing_hashtag)
         self.assertEqual(result["#new"], new_hashtag)
 
-        result = find_hashtags("#Braunbär")
+        result = find_or_create_hashtags("#Braunbär")
         hashtag = models.Hashtag.objects.filter(name="#Braunbär").first()
         self.assertEqual(result["#Braunbär"], hashtag)
 
-        result = find_hashtags("#ひぐま")
+        result = find_or_create_hashtags("#ひぐま")
         hashtag = models.Hashtag.objects.filter(name="#ひぐま").first()
         self.assertEqual(result["#ひぐま"], hashtag)
 

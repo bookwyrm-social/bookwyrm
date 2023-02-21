@@ -65,6 +65,7 @@ class Note(ActivityObject):
                 rf'(<a href=")[^"]*(" data-mention="hashtag">{hashtag.name}</a>)',
                 rf"\1{hashtag.remote_id}\2",
                 instance.content,
+                flags=re.IGNORECASE,
             )
             if instance.content != updated_content:
                 instance.content = updated_content

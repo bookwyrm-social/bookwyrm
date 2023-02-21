@@ -34,7 +34,7 @@ class Note(TestCase):
             inReplyToBook=self.book.remote_id,
             content="<p>This is interesting "
             + '<a href="https://test-instance.org/hashtag/2" data-mention="hashtag">'
-            + "#BookClub</a></p>",
+            + "#bookclub</a></p>",
             published="2023-02-17T23:12:59.398030+00:00",
             to=[],
             cc=[],
@@ -60,5 +60,5 @@ class Note(TestCase):
             instance.content,
             "<p>This is interesting "
             + f'<a href="{hashtag.remote_id}" data-mention="hashtag">'
-            + "#BookClub</a></p>",
+            + "#bookclub</a></p>",
         )
