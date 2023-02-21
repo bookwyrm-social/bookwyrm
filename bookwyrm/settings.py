@@ -330,6 +330,7 @@ IMAGEKIT_DEFAULT_CACHEFILE_STRATEGY = "bookwyrm.thumbnail_generation.Strategy"
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
+CSP_ADDITIONAL_HOSTS = env.list("CSP_ADDITIONAL_HOSTS", [])
 
 # Storage
 
@@ -361,15 +362,15 @@ if USE_S3:
     MEDIA_FULL_URL = MEDIA_URL
     STATIC_FULL_URL = STATIC_URL
     DEFAULT_FILE_STORAGE = "bookwyrm.storage_backends.ImagesStorage"
-    CSP_DEFAULT_SRC = ("'self'", AWS_S3_CUSTOM_DOMAIN)
-    CSP_SCRIPT_SRC = ("'self'", AWS_S3_CUSTOM_DOMAIN)
+    CSP_DEFAULT_SRC = ["'self'", AWS_S3_CUSTOM_DOMAIN] + CSP_ADDITIONAL_HOSTS
+    CSP_SCRIPT_SRC = ["'self'", AWS_S3_CUSTOM_DOMAIN] + CSP_ADDITIONAL_HOSTS
 else:
     STATIC_URL = "/static/"
     MEDIA_URL = "/images/"
     MEDIA_FULL_URL = f"{PROTOCOL}://{DOMAIN}{MEDIA_URL}"
     STATIC_FULL_URL = f"{PROTOCOL}://{DOMAIN}{STATIC_URL}"
-    CSP_DEFAULT_SRC = "'self'"
-    CSP_SCRIPT_SRC = "'self'"
+    CSP_DEFAULT_SRC = ["'self'"] + CSP_ADDITIONAL_HOSTS
+    CSP_SCRIPT_SRC = ["'self'"] + CSP_ADDITIONAL_HOSTS
 
 CSP_INCLUDE_NONCE_IN = ["script-src"]
 
