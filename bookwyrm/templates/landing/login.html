@@ -10,10 +10,15 @@
         {% if login_form.non_field_errors %}
         <p class="notification is-danger">{{ login_form.non_field_errors }}</p>
         {% endif %}
-
+	
         {% if show_confirmed_email %}
         <p class="notification is-success">{% trans "Success! Email address confirmed." %}</p>
         {% endif %}
+	{% if oauth_active %}
+	    <a href="{% url 'oauth-login' %}">
+		    <button class="button is-primary" type="submit">{% trans "Log in with " %}{{oauth_name}}</button>
+	    </a>
+	{% else %}
         <form name="login-confirm" method="post" action="{% url 'login' %}">
             {% csrf_token %}
             {% if show_confirmed_email %}<input type="hidden" name="first_login" value="true">{% endif %}
@@ -40,6 +45,7 @@
                 </div>
             </div>
         </form>
+	{% endif %}
     </div>
 
     {% if site.allow_registration %}
