@@ -21,7 +21,7 @@ from django.utils.http import http_date
 from bookwyrm import activitypub
 from bookwyrm.settings import USER_AGENT, PAGE_LENGTH
 from bookwyrm.signatures import make_signature, make_digest
-from bookwyrm.tasks import app, MEDIUM
+from bookwyrm.tasks import app, MEDIUM, BROADCAST
 from bookwyrm.models.fields import ImageField, ManyToManyField
 
 logger = logging.getLogger(__name__)
@@ -126,7 +126,7 @@ class ActivitypubMixin:
         # there OUGHT to be only one match
         return match.first()
 
-    def broadcast(self, activity, sender, software=None, queue=MEDIUM):
+    def broadcast(self, activity, sender, software=None, queue=BROADCAST):
         """send out an activity"""
         broadcast_task.apply_async(
             args=(
@@ -198,7 +198,7 @@ class ActivitypubMixin:
 class ObjectMixin(ActivitypubMixin):
     """add this mixin for object models that are AP serializable"""
 
-    def save(self, *args, created=None, software=None, priority=MEDIUM, **kwargs):
+    def save(self, *args, created=None, software=None, priority=BROADCAST, **kwargs):
         """broadcast created/updated/deleted objects as appropriate"""
         broadcast = kwargs.get("broadcast", True)
         # this bonus kwarg would cause an error in the base save method
@@ -506,7 +506,7 @@ def unfurl_related_field(related_field, sort_field=None):
     return related_field.remote_id
 
 
-@app.task(queue=MEDIUM)
+@app.task(queue=BROADCAST)
 def broadcast_task(sender_id: int, activity: str, recipients: List[str]):
     """the celery task for broadcast"""
     user_model = apps.get_model("bookwyrm.User", require_ready=True)
