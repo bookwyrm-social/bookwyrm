@@ -1,5 +1,6 @@
 """ using django model forms """
 from django import forms
+from bookwyrm.models import fields
 
 
 class ArrayWidget(forms.widgets.TextInput):
@@ -28,6 +29,8 @@ class SelectDateWidget(forms.SelectDateWidget):
 
     def get_context(self, name, value, attrs):
         """sets individual widgets"""
+        if isinstance(value, fields.LooseDate):
+            value = repr(value)
         context = super().get_context(name, value, attrs)
         date_context = {}
         year_name = self.year_field % name

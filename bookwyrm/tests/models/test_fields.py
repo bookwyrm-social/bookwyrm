@@ -594,6 +594,37 @@ class ModelFields(TestCase):
         self.assertEqual(instance.field_from_activity(now.isoformat()), now)
         self.assertEqual(instance.field_from_activity("bip"), None)
 
+    import pytest
+    @pytest.mark.focus
+    def test_loose_date(self, *_):
+        instance = fields.LooseDate(2023)
+        self.assertEqual(instance.year, 2023)
+        self.assertIsNone(instance.month)
+        self.assertIsNone(instance.day)
+        self.assertEqual(repr(instance), "2023")
+
+        instance = fields.LooseDate(2023, 2)
+        self.assertEqual(instance.year, 2023)
+        self.assertEqual(instance.month, 2)
+        self.assertIsNone(instance.day)
+        self.assertEqual(repr(instance), "2023-02")
+
+        instance = fields.LooseDate(2023, 2, 9)
+        self.assertEqual(instance.year, 2023)
+        self.assertEqual(instance.month, 2)
+        self.assertEqual(instance.day, 9)
+        self.assertEqual(repr(instance), "2023-02-09")
+
+        self.assertRaises(ValueError, fields.LooseDate, year=2023, day=15)
+        self.assertRaises(ValueError, fields.LooseDate, year=2023, month=1, day=40)
+        self.assertRaises(ValueError, fields.LooseDate, year=2023, month=2, day=30)
+        self.assertRaises(ValueError, fields.LooseDate, year=2023, month=6, day=31)
+        self.assertRaises(ValueError, fields.LooseDate, year=2023, month=1, day=0)
+        self.assertRaises(ValueError, fields.LooseDate, year=2023, month=1, day=-1)
+        self.assertRaises(ValueError, fields.LooseDate, year=2023, month=0, day=1)
+        self.assertRaises(ValueError, fields.LooseDate, year=2023, month=-1, day=1)
+        self.assertRaises(ValueError, fields.LooseDate, year=2023, month=13, day=1)
+
     def test_array_field(self, *_):
         """idk why it makes them strings but probably for a good reason"""
         instance = fields.ArrayField(fields.IntegerField)

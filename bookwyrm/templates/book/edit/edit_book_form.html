@@ -160,12 +160,29 @@
                 </div>
 
                 <div class="field">
+                    <label class="label" for="id_first_published_loose_date">
+                        {% trans "First published date (loose):" %}
+                    </label>
+                    {{ form.first_published_loose_date }}
+                    {% include 'snippets/form_errors.html' with errors_list=form.first_published_loose_date.errors id="desc_first_published_loose_date" %}
+                </div>
+
+                <div class="field">
                     <label class="label" for="id_published_date">
                         {% trans "Published date:" %}
                     </label>
                     {{ form.published_date }}
 
                     {% include 'snippets/form_errors.html' with errors_list=form.published_date.errors id="desc_published_date" %}
+                </div>
+
+                <div class="field">
+                    <label class="label" for="id_published_loose_date">
+                        {% trans "Published date (loose):" %}
+                    </label>
+                    {{ form.published_loose_date }}
+
+                    {% include 'snippets/form_errors.html' with errors_list=form.published_loose_date.errors id="desc_published_loose_date" %}
                 </div>
             </div>
         </section>

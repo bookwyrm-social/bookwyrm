@@ -28,7 +28,9 @@ class EditionForm(CustomForm):
             "subjects",
             "publishers",
             "first_published_date",
+            "first_published_loose_date",
             "published_date",
+            "published_loose_date",
             "cover",
             "physical_format",
             "physical_format_detail",
@@ -63,8 +65,14 @@ class EditionForm(CustomForm):
             "first_published_date": SelectDateWidget(
                 attrs={"aria-describedby": "desc_first_published_date"}
             ),
+            "first_published_loose_date": SelectDateWidget(
+                attrs={"aria-describedby": "desc_first_published_loose_date"}
+            ),
             "published_date": SelectDateWidget(
                 attrs={"aria-describedby": "desc_published_date"}
+            ),
+            "published_loose_date": SelectDateWidget(
+                attrs={"aria-describedby": "desc_published_loose_date"}
             ),
             "cover": ClearableFileInputWithWarning(
                 attrs={"aria-describedby": "desc_cover"}

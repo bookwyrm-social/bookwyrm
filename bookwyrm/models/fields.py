@@ -1,5 +1,6 @@
 """ activitypub-aware django model fields """
 from dataclasses import MISSING
+import datetime
 import re
 from uuid import uuid4
 from urllib.parse import urljoin
@@ -490,6 +491,99 @@ class DateTimeField(ActivitypubFieldMixin, models.DateTimeField):
                 return date_value
         except (ParserError, TypeError):
             return None
+
+class LooseDate(object):
+    def __init__(self, year, month=None, day=None):
+        self.year = year
+        self.month = month
+        self.day = day
+
+        self.valid()
+
+    def valid(self):
+        if self.month is None and self.day is not None:
+            raise ValueError("Month cannot be missing when day is specified")
+        m = self.month
+        if m is None:
+            m = 1
+        d = self.day
+        if d is None:
+            d = 1
+
+        # ensure it's a valid date, this raises ValueError if not
+        datetime.date(self.year, m, d)
+
+    def __str__(self):
+        repr = f"{self.year:04d}"
+        if self.month is not None:
+            repr += f"-{self.month:02d}"
+        if self.day is not None:
+            repr += f"-{self.day:02d}"
+        return repr
+
+    def __repr__(self):
+        month = self.month or 0
+        day = self.day or 0
+        return f"{self.year:04d}-{month:02d}-{day:02d}"
+
+    # TODO: __eq__
+    # TODO: __ne__
+    # TODO: __lt__
+
+    def __len__(self):
+        return len(repr(self))
+
+class LooseDateField(ActivitypubFieldMixin, models.CharField):
+
+    def __init__(self, *args, **kwargs):
+        kwargs["max_length"] = 10
+        super(LooseDateField, self).__init__(*args, **kwargs)
+
+    def deconstruct(self):
+        name, path, args, kwargs = super(LooseDateField, self).deconstruct()
+        del kwargs["max_length"]
+        return name, path, args, kwargs
+
+    def to_python(self, value):
+        print("LooseDate.to_python", repr(value))
+        if isinstance(value, LooseDate):
+            print("instance is LooseDate, returning value")
+            return value
+        print("Instance is not LooseDate, returning value after from_db_value")
+        return self.from_db_value(value)
+
+    def from_db_value(self, value, *args, **kwargs):
+        print("LooseDate.from_db_value", repr(value), repr(args), repr(kwargs))
+        if not value:
+            return None
+
+        p = re.compile(r"^(?P<year>\d{4})-(?P<month>\d{1,2})-(?P<day>\d{1,2})$")
+        m = p.search(value)
+        if not m:
+            raise ValidationError(f"invalid loose date: {value}")
+        year = int(m.group("year"))
+        month = int(m.group("month"))
+        if month == 0:
+            month = None
+        day = int(m.group("day"))
+        if day == 0:
+            day = None
+        return LooseDate(year=year, month=month, day=day)
+
+    def get_prep_value(self, value):
+        if not value:
+            return None
+
+        if isinstance(value, LooseDate):
+            return repr(value)
+
+        raise ValidationError(f"wrong type for LooseDateField, got {type(value)}")
+
+    def field_to_activity(self, value):
+        pass
+
+    def field_from_activity(self, value):
+        pass
 
 
 class HtmlField(ActivitypubFieldMixin, models.TextField):
