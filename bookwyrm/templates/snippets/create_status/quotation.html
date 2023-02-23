@@ -65,6 +65,9 @@ uuid: a unique identifier used to make html "id" attributes unique and clarify j
                     {% if not draft %}data-cache-draft="id_position_{{ book.id }}_{{ type }}"{% endif %}
                 >
             </div>
+            <div class="button is-static">
+                {% trans "to" %}
+            </div>
             <div class="control">
                 <input
                     aria-label="{% if draft.position_mode == 'PG' %}Page{% else %}Percent{% endif %}"
