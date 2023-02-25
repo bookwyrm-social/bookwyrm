@@ -132,8 +132,10 @@ class Book(BookDataModel):
         upload_to="previews/covers/", blank=True, null=True
     )
     first_published_date = fields.DateTimeField(blank=True, null=True)
+    first_published_date_precision = fields.CharField(max_length=5, blank=True, null=True)
     first_published_loose_date = fields.LooseDateField(blank=True, null=True)
     published_date = fields.DateTimeField(blank=True, null=True)
+    published_date_precision = fields.CharField(max_length=5, blank=True, null=True)
     published_loose_date = fields.LooseDateField(blank=True, null=True)
 
     objects = InheritanceManager()
