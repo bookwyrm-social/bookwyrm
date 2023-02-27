@@ -15,7 +15,7 @@ MAX_SIGNATURE_AGE = 300
 def create_key_pair():
     """a new public/private key pair, used for creating new users"""
     random_generator = Random.new().read
-    key = RSA.generate(1024, random_generator)
+    key = RSA.generate(2048, random_generator)
     private_key = key.export_key().decode("utf8")
     public_key = key.public_key().export_key().decode("utf8")
 

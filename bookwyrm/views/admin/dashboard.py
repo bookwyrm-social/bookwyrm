@@ -12,6 +12,8 @@ from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views import View
 
+from csp.decorators import csp_update
+
 from bookwyrm import models, settings
 from bookwyrm.connectors.abstract_connector import get_data
 from bookwyrm.connectors.connector_manager import ConnectorException
@@ -27,6 +29,9 @@ from bookwyrm.utils import regex
 class Dashboard(View):
     """admin overview"""
 
+    @csp_update(
+        SCRIPT_SRC="https://cdn.jsdelivr.net/npm/chart.js@3.5.1/dist/chart.min.js"
+    )
     def get(self, request):
         """list of users"""
         data = get_charts_and_stats(request)
