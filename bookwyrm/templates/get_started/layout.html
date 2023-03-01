@@ -15,6 +15,8 @@
                 src="{% if site.logo_small %}{% get_media_prefix %}{{ site.logo_small }}{% else %}{% static "images/logo-small.png" %}{% endif %}"
                 aria-hidden="true"
                 alt="{{ site.name }}"
+                loading="lazy"
+                decoding="async"
             >
             <h1 class="modal-card-title" id="get_started_header">
                 {% blocktrans %}Welcome to {{ site_name }}!{% endblocktrans %}
