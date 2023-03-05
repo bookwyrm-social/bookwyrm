@@ -341,6 +341,7 @@ if USE_HTTPS:
     CSRF_COOKIE_SECURE = True
 
 USE_S3 = env.bool("USE_S3", False)
+USE_AZURE = env.bool("USE_AZURE", False)
 
 if USE_S3:
     # AWS settings
@@ -364,6 +365,23 @@ if USE_S3:
     DEFAULT_FILE_STORAGE = "bookwyrm.storage_backends.ImagesStorage"
     CSP_DEFAULT_SRC = ["'self'", AWS_S3_CUSTOM_DOMAIN] + CSP_ADDITIONAL_HOSTS
     CSP_SCRIPT_SRC = ["'self'", AWS_S3_CUSTOM_DOMAIN] + CSP_ADDITIONAL_HOSTS
+elif USE_AZURE:
+    AZURE_ACCOUNT_NAME = env("AZURE_ACCOUNT_NAME")
+    AZURE_ACCOUNT_KEY = env("AZURE_ACCOUNT_KEY")
+    AZURE_CONTAINER = env("AZURE_CONTAINER")
+    AZURE_CUSTOM_DOMAIN = env("AZURE_CUSTOM_DOMAIN")
+    # Azure Static settings
+    STATIC_LOCATION = "static"
+    STATIC_URL = f"{PROTOCOL}://{AZURE_CUSTOM_DOMAIN}/{AZURE_CONTAINER}/{STATIC_LOCATION}/"
+    STATICFILES_STORAGE = "bookwyrm.storage_backends.AzureStaticStorage"
+    # Azure Media settings
+    MEDIA_LOCATION = "images"
+    MEDIA_URL = f"{PROTOCOL}://{AZURE_CUSTOM_DOMAIN}/{AZURE_CONTAINER}/{MEDIA_LOCATION}/"
+    MEDIA_FULL_URL = MEDIA_URL
+    STATIC_FULL_URL = STATIC_URL
+    DEFAULT_FILE_STORAGE = "bookwyrm.storage_backends.AzureImagesStorage"
+    CSP_DEFAULT_SRC = ["'self'", AZURE_CUSTOM_DOMAIN] + CSP_ADDITIONAL_HOSTS
+    CSP_SCRIPT_SRC = ["'self'", AZURE_CUSTOM_DOMAIN] + CSP_ADDITIONAL_HOSTS
 else:
     STATIC_URL = "/static/"
     MEDIA_URL = "/images/"
