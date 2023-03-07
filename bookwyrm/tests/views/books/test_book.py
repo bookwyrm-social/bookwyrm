@@ -257,6 +257,33 @@ class BookViews(TestCase):
         self.assertEqual(mock.call_args[0][0], "https://openlibrary.org/book/123")
         self.assertEqual(result.status_code, 302)
 
+    @patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
+    @patch("bookwyrm.activitystreams.add_status_task.delay")
+    def test_quotation_endposition(self, *_):
+        """make sure the endposition is served as well"""
+        view = views.Book.as_view()
+
+        _ = models.Quotation.objects.create(
+            user=self.local_user,
+            book=self.book,
+            content="hi",
+            quote="wow",
+            position=12,
+            endposition=13,
+        )
+
+        request = self.factory.get("")
+        request.user = self.local_user
+
+        with patch("bookwyrm.views.books.books.is_api_request") as is_api:
+            is_api.return_value = False
+            result = view(request, self.book.id, user_statuses="quotation")
+        self.assertIsInstance(result, TemplateResponse)
+        validate_html(result.render())
+        print(result.render())
+        self.assertEqual(result.status_code, 200)
+        self.assertEqual(result.context_data["statuses"].object_list[0].endposition, 13)
+
 
 def _setup_cover_url():
     """creates cover url mock"""

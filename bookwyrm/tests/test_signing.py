@@ -95,7 +95,8 @@ class Signature(TestCase):
 
     def test_correct_signature(self):
         """this one should just work"""
-        response = self.send_test_request(sender=self.mouse)
+        with patch("bookwyrm.models.relationship.UserFollowRequest.accept"):
+            response = self.send_test_request(sender=self.mouse)
         self.assertEqual(response.status_code, 200)
 
     def test_wrong_signature(self):
@@ -124,8 +125,12 @@ class Signature(TestCase):
         )
 
         with patch("bookwyrm.models.user.get_remote_reviews.delay"):
-            response = self.send_test_request(sender=self.fake_remote)
+            with patch(
+                "bookwyrm.models.relationship.UserFollowRequest.accept"
+            ) as accept_mock:
+                response = self.send_test_request(sender=self.fake_remote)
             self.assertEqual(response.status_code, 200)
+            self.assertTrue(accept_mock.called)
 
     @responses.activate
     def test_key_needs_refresh(self):
@@ -148,16 +153,28 @@ class Signature(TestCase):
 
         with patch("bookwyrm.models.user.get_remote_reviews.delay"):
             # Key correct:
-            response = self.send_test_request(sender=self.fake_remote)
+            with patch(
+                "bookwyrm.models.relationship.UserFollowRequest.accept"
+            ) as accept_mock:
+                response = self.send_test_request(sender=self.fake_remote)
             self.assertEqual(response.status_code, 200)
+            self.assertTrue(accept_mock.called)
 
             # Old key is cached, so still works:
-            response = self.send_test_request(sender=self.fake_remote)
+            with patch(
+                "bookwyrm.models.relationship.UserFollowRequest.accept"
+            ) as accept_mock:
+                response = self.send_test_request(sender=self.fake_remote)
             self.assertEqual(response.status_code, 200)
+            self.assertTrue(accept_mock.called)
 
             # Try with new key:
-            response = self.send_test_request(sender=new_sender)
+            with patch(
+                "bookwyrm.models.relationship.UserFollowRequest.accept"
+            ) as accept_mock:
+                response = self.send_test_request(sender=new_sender)
             self.assertEqual(response.status_code, 200)
+            self.assertTrue(accept_mock.called)
 
             # Now the old key will fail:
             response = self.send_test_request(sender=self.fake_remote)

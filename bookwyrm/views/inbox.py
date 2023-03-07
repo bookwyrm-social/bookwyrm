@@ -64,7 +64,7 @@ class Inbox(View):
         high = ["Follow", "Accept", "Reject", "Block", "Unblock", "Undo"]
 
         priority = HIGH if activity_json["type"] in high else MEDIUM
-        activity_task.apply_async(args=(activity_json,), queue=priority)
+        sometimes_async_activity_task(activity_json, queue=priority)
         return HttpResponse()
 
 
@@ -100,6 +100,19 @@ def raise_is_blocked_activity(activity_json):
     if models.FederatedServer.is_blocked(actor):
         logger.debug("%s is blocked, denying request based on actor", actor)
         raise PermissionDenied()
+
+
+def sometimes_async_activity_task(activity_json, queue=MEDIUM):
+    """Sometimes we can effectively respond to a request without queuing a new task,
+    and whever that is possible, we should do it."""
+    activity = activitypub.parse(activity_json)
+
+    # try resolving this activity without making any http requests
+    try:
+        activity.action(allow_external_connections=False)
+    except activitypub.ActivitySerializerError:
+        # if that doesn't work, run it asynchronously
+        activity_task.apply_async(args=(activity_json,), queue=queue)
 
 
 @app.task(queue=MEDIUM)
