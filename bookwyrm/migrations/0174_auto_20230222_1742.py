@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("bookwyrm", "0173_default_user_auth_group_setting"),
+        ("bookwyrm", "0174_auto_20230130_1240"),
     ]
 
     operations = [
