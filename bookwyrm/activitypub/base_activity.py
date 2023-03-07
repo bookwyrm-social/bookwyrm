@@ -100,9 +100,27 @@ class ActivityObject:
 
     # pylint: disable=too-many-locals,too-many-branches,too-many-arguments
     def to_model(
-        self, model=None, instance=None, allow_create=True, save=True, overwrite=True
+        self,
+        model=None,
+        instance=None,
+        allow_create=True,
+        save=True,
+        overwrite=True,
+        allow_external_connections=True,
     ):
-        """convert from an activity to a model instance"""
+        """convert from an activity to a model instance. Args:
+        model: the django model that this object is being converted to
+            (will guess if not known)
+        instance: an existing database entry that is going to be updated by
+            this activity
+        allow_create: whether a new object should be created if there is no
+            existing object is provided or found matching the remote_id
+        save: store in the database if true, return an unsaved model obj if false
+        overwrite: replace fields in the database with this activity if true,
+            only update blank fields if false
+        allow_external_connections: look up missing data if true,
+            throw an exception if false and an external connection is needed
+        """
         model = model or get_model_from_type(self.type)
 
         # only reject statuses if we're potentially creating them
@@ -127,7 +145,10 @@ class ActivityObject:
         for field in instance.simple_fields:
             try:
                 changed = field.set_field_from_activity(
-                    instance, self, overwrite=overwrite
+                    instance,
+                    self,
+                    overwrite=overwrite,
+                    allow_external_connections=allow_external_connections,
                 )
                 if changed:
                     update_fields.append(field.name)
@@ -138,7 +159,11 @@ class ActivityObject:
         # too early and jank up users
         for field in instance.image_fields:
             changed = field.set_field_from_activity(
-                instance, self, save=save, overwrite=overwrite
+                instance,
+                self,
+                save=save,
+                overwrite=overwrite,
+                allow_external_connections=allow_external_connections,
             )
             if changed:
                 update_fields.append(field.name)
@@ -162,7 +187,11 @@ class ActivityObject:
             # add many to many fields, which have to be set post-save
             for field in instance.many_to_many_fields:
                 # mention books/users, for example
-                field.set_field_from_activity(instance, self)
+                field.set_field_from_activity(
+                    instance,
+                    self,
+                    allow_external_connections=allow_external_connections,
+                )
 
         # reversed relationships in the models
         for (
@@ -266,16 +295,35 @@ def get_model_from_type(activity_type):
     return model[0]
 
 
+# pylint: disable=too-many-arguments
 def resolve_remote_id(
-    remote_id, model=None, refresh=False, save=True, get_activity=False
+    remote_id,
+    model=None,
+    refresh=False,
+    save=True,
+    get_activity=False,
+    allow_external_connections=True,
 ):
-    """take a remote_id and return an instance, creating if necessary"""
+    """take a remote_id and return an instance, creating if necessary. Args:
+    remote_id: the unique url for looking up the object in the db or by http
+    model: a string or object representing the model that corresponds to the object
+    save: whether to return an unsaved database entry or a saved one
+    get_activity: whether to return the activitypub object or the model object
+    allow_external_connections: whether to make http connections
+    """
     if model:  # a bonus check we can do if we already know the model
         if isinstance(model, str):
             model = apps.get_model(f"bookwyrm.{model}", require_ready=True)
         result = model.find_existing_by_remote_id(remote_id)
         if result and not refresh:
             return result if not get_activity else result.to_activity_dataclass()
+
+    # The above block will return the object if it already exists in the database.
+    # If it doesn't, an external connection would be needed, so check if that's cool
+    if not allow_external_connections:
+        raise ActivitySerializerError(
+            "Unable to serialize object without making external HTTP requests"
+        )
 
     # load the data and create the object
     try:
