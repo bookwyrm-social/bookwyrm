@@ -372,11 +372,15 @@ elif USE_AZURE:
     AZURE_CUSTOM_DOMAIN = env("AZURE_CUSTOM_DOMAIN")
     # Azure Static settings
     STATIC_LOCATION = "static"
-    STATIC_URL = f"{PROTOCOL}://{AZURE_CUSTOM_DOMAIN}/{AZURE_CONTAINER}/{STATIC_LOCATION}/"
+    STATIC_URL = (
+        f"{PROTOCOL}://{AZURE_CUSTOM_DOMAIN}/{AZURE_CONTAINER}/{STATIC_LOCATION}/"
+    )
     STATICFILES_STORAGE = "bookwyrm.storage_backends.AzureStaticStorage"
     # Azure Media settings
     MEDIA_LOCATION = "images"
-    MEDIA_URL = f"{PROTOCOL}://{AZURE_CUSTOM_DOMAIN}/{AZURE_CONTAINER}/{MEDIA_LOCATION}/"
+    MEDIA_URL = (
+        f"{PROTOCOL}://{AZURE_CUSTOM_DOMAIN}/{AZURE_CONTAINER}/{MEDIA_LOCATION}/"
+    )
     MEDIA_FULL_URL = MEDIA_URL
     STATIC_FULL_URL = STATIC_URL
     DEFAULT_FILE_STORAGE = "bookwyrm.storage_backends.AzureImagesStorage"
