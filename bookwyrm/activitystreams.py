@@ -160,14 +160,15 @@ class HomeStream(ActivityStream):
 
     key = "home"
 
-    def _get_audience(self, status):
+    def get_audience(self, status):
         audience = super()._get_audience(status)
         if not audience:
             return []
-        return audience.filter(
-            Q(id=status.user.id)  # if the user is the post's author
-            | Q(following=status.user)  # if the user is following the author
-        ).distinct()
+        # if the user is the post's author
+        ids_self = [user.id for user in audience.filter(Q(id=status.user.id))]
+        # if the user is following the author
+        ids_following = [user.id for user in audience.filter(Q(following=status.user))]
+        return ids_self + ids_following
 
     def get_statuses_for_user(self, user):
         return models.Status.privacy_filter(
