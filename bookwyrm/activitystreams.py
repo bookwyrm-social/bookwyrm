@@ -37,12 +37,12 @@ class ActivityStream(RedisStore):
         pipeline = self.add_object_to_related_stores(status, execute=False)
 
         if increment_unread:
-            for user in self.get_audience(status):
+            for user_id in self.get_audience(status):
                 # add to the unread status count
-                pipeline.incr(self.unread_id(user.id))
+                pipeline.incr(self.unread_id(user_id))
                 # add to the unread status count for status type
                 pipeline.hincrby(
-                    self.unread_by_status_type_id(user.id), get_status_type(status), 1
+                    self.unread_by_status_type_id(user_id), get_status_type(status), 1
                 )
 
         # and go!
@@ -97,7 +97,7 @@ class ActivityStream(RedisStore):
         """go from zero to a timeline"""
         self.populate_store(self.stream_id(user.id))
 
-    def get_audience(self, status):  # pylint: disable=no-self-use
+    def _get_audience(self, status):  # pylint: disable=no-self-use
         """given a status, what users should see it"""
         # direct messages don't appeard in feeds, direct comments/reviews/etc do
         if status.privacy == "direct" and status.status_type == "Note":
@@ -136,8 +136,12 @@ class ActivityStream(RedisStore):
             )
         return audience.distinct()
 
+    def get_audience(self, status):  # pylint: disable=no-self-use
+        """given a status, what users should see it"""
+        return [user.id for user in self._get_audience(status)]
+
     def get_stores_for_object(self, obj):
-        return [self.stream_id(u.id) for u in self.get_audience(obj)]
+        return [self.stream_id(user_id) for user_id in self.get_audience(obj)]
 
     def get_statuses_for_user(self, user):  # pylint: disable=no-self-use
         """given a user, what statuses should they see on this stream"""
@@ -156,8 +160,8 @@ class HomeStream(ActivityStream):
 
     key = "home"
 
-    def get_audience(self, status):
-        audience = super().get_audience(status)
+    def _get_audience(self, status):
+        audience = super()._get_audience(status)
         if not audience:
             return []
         return audience.filter(
@@ -183,11 +187,11 @@ class LocalStream(ActivityStream):
 
     key = "local"
 
-    def get_audience(self, status):
+    def _get_audience(self, status):
         # this stream wants no part in non-public statuses
         if status.privacy != "public" or not status.user.local:
             return []
-        return super().get_audience(status)
+        return super()._get_audience(status)
 
     def get_statuses_for_user(self, user):
         # all public statuses by a local user
@@ -202,7 +206,7 @@ class BooksStream(ActivityStream):
 
     key = "books"
 
-    def get_audience(self, status):
+    def _get_audience(self, status):
         """anyone with the mentioned book on their shelves"""
         # only show public statuses on the books feed,
         # and only statuses that mention books
@@ -217,7 +221,7 @@ class BooksStream(ActivityStream):
             else status.mention_books.first().parent_work
         )
 
-        audience = super().get_audience(status)
+        audience = super()._get_audience(status)
         if not audience:
             return []
         return audience.filter(shelfbook__book__parent_work=work).distinct()
