@@ -64,7 +64,7 @@ class Activitystreams(TestCase):
     def test_unread_by_status_type_id(self, *_):
         """stream for status type"""
         self.assertEqual(
-            self.test_stream.unread_by_status_type_id(self.local_user),
+            self.test_stream.unread_by_status_type_id(self.local_user.id),
             f"{self.local_user.id}-test-unread-by-type",
         )
 
