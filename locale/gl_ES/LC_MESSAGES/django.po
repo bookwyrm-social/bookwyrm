@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-01-30 08:21+0000\n"
-"PO-Revision-Date: 2023-01-31 05:20\n"
+"PO-Revision-Date: 2023-03-09 13:40\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Galician\n"
 "Language: gl\n"
@@ -218,11 +218,11 @@ msgstr "%(value)s non é un nome de usuaria válido"
 #: bookwyrm/models/fields.py:182 bookwyrm/templates/layout.html:131
 #: bookwyrm/templates/ostatus/error.html:29
 msgid "username"
-msgstr "nome de usuaria"
+msgstr "identificador"
 
 #: bookwyrm/models/fields.py:187
 msgid "A user with that username already exists."
-msgstr "Xa existe unha usuaria con ese nome."
+msgstr "Xa existe unha usuaria con ese identificador."
 
 #: bookwyrm/models/fields.py:206
 #: bookwyrm/templates/snippets/privacy-icons.html:3
@@ -3036,7 +3036,7 @@ msgstr "Correcto! Enderezo de email confirmado."
 #: bookwyrm/templates/layout.html:130 bookwyrm/templates/ostatus/error.html:28
 #: bookwyrm/templates/snippets/register_form.html:4
 msgid "Username:"
-msgstr "Nome de usuaria:"
+msgstr "Identificador:"
 
 #: bookwyrm/templates/landing/login.html:27
 #: bookwyrm/templates/landing/password_reset.html:26
@@ -3752,7 +3752,7 @@ msgstr "Seguir a %(username)s no fediverso"
 #: bookwyrm/templates/ostatus/remote_follow.html:33
 #, python-format
 msgid "Follow %(username)s from another Fediverse account like BookWyrm, Mastodon, or Pleroma."
-msgstr "Sigue a %(username)s desde outra conta no Fediverso como BookWyrm, Mastodon ou Pleroma."
+msgstr "Segue a %(username)s desde outra conta no Fediverso como BookWyrm, Mastodon ou Pleroma."
 
 #: bookwyrm/templates/ostatus/remote_follow.html:40
 msgid "User handle to follow from:"
@@ -5473,7 +5473,7 @@ msgstr "Usuarias eliminadas"
 #: bookwyrm/templates/settings/users/user_admin.html:44
 #: bookwyrm/templates/settings/users/username_filter.html:5
 msgid "Username"
-msgstr "Nome de usuaria"
+msgstr "Identificador"
 
 #: bookwyrm/templates/settings/users/user_admin.html:48
 msgid "Date Added"
