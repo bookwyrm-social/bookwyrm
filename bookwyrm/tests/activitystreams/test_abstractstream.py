@@ -57,7 +57,7 @@ class Activitystreams(TestCase):
             f"{self.local_user.id}-test",
         )
         self.assertEqual(
-            self.test_stream.unread_id(self.local_user),
+            self.test_stream.unread_id(self.local_user.id),
             f"{self.local_user.id}-test-unread",
         )
 

@@ -17,9 +17,9 @@ class ActivityStream(RedisStore):
         """the redis key for this user's instance of this stream"""
         return f"{user_id}-{self.key}"
 
-    def unread_id(self, user):
+    def unread_id(self, user_id):
         """the redis key for this user's unread count for this stream"""
-        stream_id = self.stream_id(user.id)
+        stream_id = self.stream_id(user_id)
         return f"{stream_id}-unread"
 
     def unread_by_status_type_id(self, user):
@@ -39,7 +39,7 @@ class ActivityStream(RedisStore):
         if increment_unread:
             for user in self.get_audience(status):
                 # add to the unread status count
-                pipeline.incr(self.unread_id(user))
+                pipeline.incr(self.unread_id(user.id))
                 # add to the unread status count for status type
                 pipeline.hincrby(
                     self.unread_by_status_type_id(user), get_status_type(status), 1
@@ -63,7 +63,7 @@ class ActivityStream(RedisStore):
     def get_activity_stream(self, user):
         """load the statuses to be displayed"""
         # clear unreads for this feed
-        r.set(self.unread_id(user), 0)
+        r.set(self.unread_id(user.id), 0)
         r.delete(self.unread_by_status_type_id(user))
 
         statuses = self.get_store(self.stream_id(user.id))
@@ -83,7 +83,7 @@ class ActivityStream(RedisStore):
 
     def get_unread_count(self, user):
         """get the unread status count for this user's feed"""
-        return int(r.get(self.unread_id(user)) or 0)
+        return int(r.get(self.unread_id(user.id)) or 0)
 
     def get_unread_count_by_status_type(self, user):
         """get the unread status count for this user's feed's status types"""
