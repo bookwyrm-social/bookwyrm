@@ -53,7 +53,7 @@ class Activitystreams(TestCase):
     def test_activitystream_class_ids(self, *_):
         """the abstract base class for stream objects"""
         self.assertEqual(
-            self.test_stream.stream_id(self.local_user),
+            self.test_stream.stream_id(self.local_user.id),
             f"{self.local_user.id}-test",
         )
         self.assertEqual(

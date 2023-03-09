@@ -13,18 +13,18 @@ from bookwyrm.tasks import app, LOW, MEDIUM, HIGH
 class ActivityStream(RedisStore):
     """a category of activity stream (like home, local, books)"""
 
-    def stream_id(self, user):
+    def stream_id(self, user_id):
         """the redis key for this user's instance of this stream"""
-        return f"{user.id}-{self.key}"
+        return f"{user_id}-{self.key}"
 
     def unread_id(self, user):
         """the redis key for this user's unread count for this stream"""
-        stream_id = self.stream_id(user)
+        stream_id = self.stream_id(user.id)
         return f"{stream_id}-unread"
 
     def unread_by_status_type_id(self, user):
         """the redis key for this user's unread count for this stream"""
-        stream_id = self.stream_id(user)
+        stream_id = self.stream_id(user.id)
         return f"{stream_id}-unread-by-type"
 
     def get_rank(self, obj):  # pylint: disable=no-self-use
@@ -52,13 +52,13 @@ class ActivityStream(RedisStore):
         """add a user's statuses to another user's feed"""
         # only add the statuses that the viewer should be able to see (ie, not dms)
         statuses = models.Status.privacy_filter(viewer).filter(user=user)
-        self.bulk_add_objects_to_store(statuses, self.stream_id(viewer))
+        self.bulk_add_objects_to_store(statuses, self.stream_id(viewer.id))
 
     def remove_user_statuses(self, viewer, user):
         """remove a user's status from another user's feed"""
         # remove all so that followers only statuses are removed
         statuses = user.status_set.all()
-        self.bulk_remove_objects_from_store(statuses, self.stream_id(viewer))
+        self.bulk_remove_objects_from_store(statuses, self.stream_id(viewer.id))
 
     def get_activity_stream(self, user):
         """load the statuses to be displayed"""
@@ -66,7 +66,7 @@ class ActivityStream(RedisStore):
         r.set(self.unread_id(user), 0)
         r.delete(self.unread_by_status_type_id(user))
 
-        statuses = self.get_store(self.stream_id(user))
+        statuses = self.get_store(self.stream_id(user.id))
         return (
             models.Status.objects.select_subclasses()
             .filter(id__in=statuses)
@@ -95,7 +95,7 @@ class ActivityStream(RedisStore):
 
     def populate_streams(self, user):
         """go from zero to a timeline"""
-        self.populate_store(self.stream_id(user))
+        self.populate_store(self.stream_id(user.id))
 
     def get_audience(self, status):  # pylint: disable=no-self-use
         """given a status, what users should see it"""
@@ -137,7 +137,7 @@ class ActivityStream(RedisStore):
         return audience.distinct()
 
     def get_stores_for_object(self, obj):
-        return [self.stream_id(u) for u in self.get_audience(obj)]
+        return [self.stream_id(u.id) for u in self.get_audience(obj)]
 
     def get_statuses_for_user(self, user):  # pylint: disable=no-self-use
         """given a user, what statuses should they see on this stream"""
@@ -257,7 +257,7 @@ class BooksStream(ActivityStream):
             )
             .distinct()
         )
-        self.bulk_add_objects_to_store(statuses, self.stream_id(user))
+        self.bulk_add_objects_to_store(statuses, self.stream_id(user.id))
 
     def remove_book_statuses(self, user, book):
         """add statuses about a book to a user's feed"""
@@ -275,7 +275,7 @@ class BooksStream(ActivityStream):
             )
             .distinct()
         )
-        self.bulk_remove_objects_from_store(statuses, self.stream_id(user))
+        self.bulk_remove_objects_from_store(statuses, self.stream_id(user.id))
 
 
 # determine which streams are enabled in settings.py
