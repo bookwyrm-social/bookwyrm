@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-01-30 08:21+0000\n"
-"PO-Revision-Date: 2023-03-10 19:29\n"
+"PO-Revision-Date: 2023-03-10 20:37\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Basque\n"
 "Language: eu\n"
@@ -72,7 +72,7 @@ msgstr "Irakurketaren amaiera-data ezin da etorkizunekoa izan."
 
 #: bookwyrm/forms/landing.py:37
 msgid "Username or password are incorrect"
-msgstr "Erabiltzaile-izena edo pasahitza ez dira zuzenak"
+msgstr "Erabiltzaile-izena edo pasahitza okerra da"
 
 #: bookwyrm/forms/landing.py:56
 msgid "User with this username already exists"
@@ -222,7 +222,7 @@ msgstr "erabiltzaile-izena"
 
 #: bookwyrm/models/fields.py:187
 msgid "A user with that username already exists."
-msgstr "Erabiltzaile-izen hori duen erabiltzailea dagoeneko badago."
+msgstr "Erabiltzaile-izen hori duen erabiltzailea dagoeneko existitzen da."
 
 #: bookwyrm/models/fields.py:206
 #: bookwyrm/templates/snippets/privacy-icons.html:3
@@ -310,7 +310,7 @@ msgstr "Iruzkinak"
 
 #: bookwyrm/models/user.py:34
 msgid "Quotations"
-msgstr "Aipamenak"
+msgstr "Aipuak"
 
 #: bookwyrm/models/user.py:35
 msgid "Everything else"
@@ -478,7 +478,7 @@ msgstr "Moderatzailea"
 
 #: bookwyrm/templates/about/about.html:124 bookwyrm/templates/user_menu.html:67
 msgid "Admin"
-msgstr "Admin"
+msgstr "Administratzailea"
 
 #: bookwyrm/templates/about/about.html:140
 #: bookwyrm/templates/settings/users/user_moderation_actions.html:14
@@ -1477,7 +1477,7 @@ msgstr "Datuak kargatzean <strong>%(source_name)s</strong>(e)ra konektatu eta he
 
 #: bookwyrm/templates/compose.html:5 bookwyrm/templates/compose.html:8
 msgid "Edit status"
-msgstr "Editatu bidalketa"
+msgstr "Editatu egoera"
 
 #: bookwyrm/templates/confirm_email/confirm_email.html:4
 msgid "Confirm email"
@@ -1676,7 +1676,7 @@ msgstr "Ikusi zer dagoen berri tokiko %(site_name)s komunitatean"
 #: bookwyrm/templates/discover/large-book.html:52
 #: bookwyrm/templates/discover/small-book.html:36
 msgid "View status"
-msgstr "Ikusi bidalketa"
+msgstr "Ikusi egoera"
 
 #: bookwyrm/templates/email/confirm/html_content.html:6
 #: bookwyrm/templates/email/confirm/text_content.html:4
@@ -1807,7 +1807,7 @@ msgstr "%(site_name)s hasierako orrialdea"
 #: bookwyrm/templates/embed-layout.html:39
 #: bookwyrm/templates/snippets/footer.html:12
 msgid "Contact site admin"
-msgstr "Webgunearen administratzailearekin harremanetan jarri"
+msgstr "Administratzaileari idatzi"
 
 #: bookwyrm/templates/embed-layout.html:45
 msgid "Join BookWyrm"
@@ -1876,7 +1876,7 @@ msgstr "Inportatu zure irakurketa-historia"
 #: bookwyrm/templates/feed/suggested_users.html:5
 #: bookwyrm/templates/get_started/users.html:6
 msgid "Who to follow"
-msgstr "Nor jarraitu"
+msgstr "Nori jarraitu"
 
 #: bookwyrm/templates/feed/suggested_users.html:9
 msgid "Don't show suggested users"
@@ -2159,7 +2159,7 @@ msgstr[1] "%(shared_books)s liburu zure apaletan"
 #: bookwyrm/templates/groups/suggested_users.html:43
 #, python-format
 msgid "No potential members found for \"%(user_query)s\""
-msgstr "Ez da kide potentzialik aurkitu \"%(user_query)s\"-rako"
+msgstr "Ez da kide potentzialik aurkitu \"%(user_query)s\"-(r)ekin"
 
 #: bookwyrm/templates/groups/user_groups.html:15
 msgid "Manager"
@@ -2989,7 +2989,7 @@ msgstr "Deszentralizatua"
 
 #: bookwyrm/templates/landing/layout.html:23
 msgid "Friendly"
-msgstr "Atsegina"
+msgstr "Lagunkoia"
 
 #: bookwyrm/templates/landing/layout.html:29
 msgid "Anti-Corporate"
@@ -3019,13 +3019,13 @@ msgstr "Zure kontua"
 
 #: bookwyrm/templates/landing/login.html:4
 msgid "Login"
-msgstr "Saioa hasi"
+msgstr "Hasi saioa"
 
 #: bookwyrm/templates/landing/login.html:7
 #: bookwyrm/templates/landing/login.html:36 bookwyrm/templates/layout.html:139
 #: bookwyrm/templates/ostatus/error.html:37
 msgid "Log in"
-msgstr "Saioa hasi"
+msgstr "Hasi saioa"
 
 #: bookwyrm/templates/landing/login.html:15
 msgid "Success! Email address confirmed."
@@ -3036,7 +3036,7 @@ msgstr "Ondo! Helbide elektronikoa baieztatu duzu."
 #: bookwyrm/templates/layout.html:130 bookwyrm/templates/ostatus/error.html:28
 #: bookwyrm/templates/snippets/register_form.html:4
 msgid "Username:"
-msgstr "Erabiltzailea:"
+msgstr "Erabiltzaile-izena:"
 
 #: bookwyrm/templates/landing/login.html:27
 #: bookwyrm/templates/landing/password_reset.html:26
@@ -3055,7 +3055,7 @@ msgstr "Zure pasahitza ahaztu duzu?"
 #: bookwyrm/templates/landing/login.html:61
 #: bookwyrm/templates/landing/reactivate.html:54
 msgid "More about this site"
-msgstr "Gune honi buruz gehiago"
+msgstr "Gune honi buruz gehiago jakin"
 
 #: bookwyrm/templates/landing/password_reset.html:43
 #: bookwyrm/templates/preferences/change_password.html:33
@@ -3070,7 +3070,7 @@ msgstr "Pasahitza berrezartzeko esteka bat bidaliko da <strong>%(email)s</strong
 
 #: bookwyrm/templates/landing/password_reset_request.html:20
 msgid "A link to reset your password will be sent to your email address"
-msgstr "Zure pasahitza berriz ezartzeko argibideak zure helbide elektronikora bidali dira"
+msgstr "Zure pasahitza berriz ezartzeko argibideak zure helbide elektronikora bidaliko dira"
 
 #: bookwyrm/templates/landing/password_reset_request.html:34
 msgid "Reset password"
@@ -3116,11 +3116,11 @@ msgstr "Sartu"
 
 #: bookwyrm/templates/layout.html:181
 msgid "Successfully posted status"
-msgstr "Arrakastaz idatzitako egoera"
+msgstr "Egoera ondo bidali da"
 
 #: bookwyrm/templates/layout.html:182
 msgid "Error posting status"
-msgstr "Errorea egoera idaztean"
+msgstr "Errorea egoera bidaltzean"
 
 #: bookwyrm/templates/lists/add_item_modal.html:8
 #, python-format
@@ -4198,7 +4198,7 @@ msgstr "Eskuz gehitu liburua"
 
 #: bookwyrm/templates/search/book.html:122
 msgid "Log in to import or add books."
-msgstr "Saioa hasi liburuak inportatzeko edo gehitzeko."
+msgstr "Hasi saioa liburuak inportatzeko edo gehitzeko."
 
 #: bookwyrm/templates/search/layout.html:17
 msgid "Search query"
@@ -4426,7 +4426,7 @@ msgstr "Ezabatu araua"
 #: bookwyrm/templates/settings/celery.html:6
 #: bookwyrm/templates/settings/celery.html:8
 msgid "Celery Status"
-msgstr "Celery egoera"
+msgstr "Celery-ren egoera"
 
 #: bookwyrm/templates/settings/celery.html:14
 msgid "Queues"
@@ -5097,7 +5097,7 @@ msgstr "Sistema"
 
 #: bookwyrm/templates/settings/layout.html:86
 msgid "Celery status"
-msgstr "Celery egoera"
+msgstr "Celery-ren egoera"
 
 #: bookwyrm/templates/settings/layout.html:95
 msgid "Instance Settings"
@@ -5245,7 +5245,7 @@ msgstr "Moderatzailearen iruzkinak"
 #: bookwyrm/templates/settings/reports/report.html:86
 #: bookwyrm/templates/snippets/create_status.html:26
 msgid "Comment"
-msgstr "Iruzkindu"
+msgstr "Iruzkina"
 
 #: bookwyrm/templates/settings/reports/report_header.html:6
 #, python-format
@@ -5472,7 +5472,7 @@ msgstr "Ezabatutako erabiltzaileak"
 #: bookwyrm/templates/settings/users/user_admin.html:44
 #: bookwyrm/templates/settings/users/username_filter.html:5
 msgid "Username"
-msgstr "Erabiltzailea"
+msgstr "Erabiltzaile-izena"
 
 #: bookwyrm/templates/settings/users/user_admin.html:48
 msgid "Date Added"
@@ -5801,7 +5801,7 @@ msgstr "Desegin zabaltzea"
 
 #: bookwyrm/templates/snippets/create_status.html:36
 msgid "Quote"
-msgstr "Aipatu"
+msgstr "Aipua"
 
 #: bookwyrm/templates/snippets/create_status/comment.html:15
 msgid "Some thoughts on the book"
@@ -6013,7 +6013,7 @@ msgstr "Irakurketa-helburua:"
 
 #: bookwyrm/templates/snippets/goal_form.html:21
 msgid "books"
-msgstr "liburuak"
+msgstr "liburu"
 
 #: bookwyrm/templates/snippets/goal_form.html:26
 msgid "Goal privacy:"
@@ -6358,7 +6358,7 @@ msgstr "Zure kontua babestu dezakezu zure erabiltzaile-hobespenetan bi faktoreta
 #: bookwyrm/templates/user/books_header.html:9
 #, python-format
 msgid "%(username)s's books"
-msgstr "%(username)s(r)en liburuak"
+msgstr "%(username)s-(r)en liburuak"
 
 #: bookwyrm/templates/user/goal.html:8
 #, python-format
@@ -6514,7 +6514,7 @@ msgstr "Ikusi profila eta gehiago"
 
 #: bookwyrm/templates/user_menu.html:82
 msgid "Log out"
-msgstr "Saioa amaitu"
+msgstr "Itxi saioa"
 
 #: bookwyrm/templates/widgets/clearable_file_input_with_warning.html:28
 msgid "File exceeds maximum size: 10MB"
