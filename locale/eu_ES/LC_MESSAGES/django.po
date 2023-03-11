@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-01-30 08:21+0000\n"
-"PO-Revision-Date: 2023-03-11 17:48\n"
+"PO-Revision-Date: 2023-03-11 19:02\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Basque\n"
 "Language: eu\n"
@@ -414,7 +414,7 @@ msgstr "Ez da aurkitu"
 
 #: bookwyrm/templates/404.html:9
 msgid "The page you requested doesn't seem to exist!"
-msgstr "Badirudi eskatutako orria ez dela existitzen!"
+msgstr "Badirudi eskatu duzun orrialdea ez dela existitzen!"
 
 #: bookwyrm/templates/500.html:4
 msgid "Oops!"
@@ -563,11 +563,11 @@ msgstr "Egoeraren partekatzea: <strong>publikoa klabearekin</strong>"
 
 #: bookwyrm/templates/annual_summary/layout.html:78
 msgid "The page can be seen by anyone with the complete address."
-msgstr "Helbide osoa duen edonork ikus dezake orria."
+msgstr "Helbide osoa duen edonork ikus dezake orrialdea."
 
 #: bookwyrm/templates/annual_summary/layout.html:83
 msgid "Make page private"
-msgstr "Egin orria pribatua"
+msgstr "Pribatua bihurtu orrialdea"
 
 #: bookwyrm/templates/annual_summary/layout.html:89
 msgid "Sharing status: <strong>private</strong>"
@@ -579,11 +579,11 @@ msgstr "Orria pribatua da, zuk bakarrik ikus dezakezu."
 
 #: bookwyrm/templates/annual_summary/layout.html:95
 msgid "Make page public"
-msgstr "Orrialdea publiko egitea"
+msgstr "Publikoa bihurtu orrialdea"
 
 #: bookwyrm/templates/annual_summary/layout.html:99
 msgid "When you make your page private, the old key won’t give access to the page anymore. A new key will be created if the page is once again made public."
-msgstr "Zure orria pribatua egiten duzunean, giltza zaharrak ez du orrialderako sarbiderik emango. Giltza berri bat sortuko da, orria berriro publiko egiten bada."
+msgstr "Zure orrialdea pribatua bihurtzen duzunean, gako zaharrak orrialdera sarbidea emateari utziko dio. Orrialdea berriz publiko bihurtuz gero gako berri bat sortuko da."
 
 #: bookwyrm/templates/annual_summary/layout.html:112
 #, python-format
@@ -1550,7 +1550,7 @@ msgstr "Direktorioa"
 
 #: bookwyrm/templates/directory/directory.html:17
 msgid "Make your profile discoverable to other BookWyrm users."
-msgstr "Egin zure profila ikusgai BookWyrm-eko beste erabiltzaile batzuentzako."
+msgstr "Egin zure profila ikusgai BookWyrm-eko beste erabiltzaileentzat."
 
 #: bookwyrm/templates/directory/directory.html:21
 msgid "Join Directory"
@@ -2167,7 +2167,7 @@ msgstr "Kudeatzailea"
 
 #: bookwyrm/templates/guided_tour/book.html:10
 msgid "This is home page of a book. Let's see what you can do while you're here!"
-msgstr "Liburuaren hasiera orria da hau. Ikus dezagun zer egin dezakezun hemen zauden bitartean!"
+msgstr "Hau liburuaren hasiera orrialdea da. Ikus dezagun zer egin dezakezun hemen zauden bitartean!"
 
 #: bookwyrm/templates/guided_tour/book.html:11
 msgid "Book page"
@@ -2299,7 +2299,7 @@ msgstr "<em>Spoiler</em> alertak"
 
 #: bookwyrm/templates/guided_tour/book.html:224
 msgid "Choose who can see your post here. Post privacy can be <strong>Public</strong> (everyone can see), <strong>Unlisted</strong> (everyone can see, but it doesn't appear in public feeds or discovery pages), <strong>Followers</strong> (only your followers can see), or <strong>Private</strong> (only you can see)"
-msgstr "Hautau nork ikusiko duen hemen bidaltzen duzuna. Bidalketen pribatutasuna <strong>Publikoa</strong> (edonork ikus dezake), <strong>Zerrendatu gabea</strong> (edonork ikus dezake, baina ez da agertzen jario publiko edo aurkikuntza orrietan), <strong>Jarraitzaileak</strong> (zu jarraitzen zaituztenek bakarrik ikus dezakete) ala <strong>Pribatua</strong> (zuk bakarik ikus dezakezu) izan daiteke"
+msgstr "Hautatu nork ikusiko duen hona bidaltzen duzuna. Bidalketen pribatutasuna <strong>Publikoa</strong> (edonork ikus dezake), <strong>Zerrendatu gabea</strong> (edonork ikus dezake, baina ez da agertzen jario publiko ezta Deskubritu orrialdeetan), <strong>Jarraitzaileak</strong> (zu jarraitzen zaituztenek bakarrik ikus dezakete) edo <strong>Pribatua</strong> (zuk bakarik ikus dezakezu) izan daiteke"
 
 #: bookwyrm/templates/guided_tour/book.html:225
 #: bookwyrm/templates/snippets/privacy_select.html:6
@@ -2331,7 +2331,7 @@ msgstr "Ados"
 
 #: bookwyrm/templates/guided_tour/group.html:10
 msgid "Welcome to the page for your group! This is where you can add and remove users, create user-curated lists, and edit the group details."
-msgstr "Ongi etorri zure taldearen orrira! Hemen erabiltzaileak gehitu edo ezabatu ditzakezu, taldean osatutako zerrendako sortu eta baita taldearen xehetasunak moldatu ere."
+msgstr "Ongi etorri zure taldearen orrialdera! Hemen erabiltzaileak gehitu eta ezabatu ditzakezu, taldean osatutako zerrendako sortu eta baita taldearen xehetasunak moldatu ere."
 
 #: bookwyrm/templates/guided_tour/group.html:11
 msgid "Your group"
@@ -2355,7 +2355,7 @@ msgstr "Taldekideak"
 
 #: bookwyrm/templates/guided_tour/group.html:77
 msgid "As well as creating lists from the Lists page, you can create a group-curated list here on the group's homepage. Any member of the group can create a list curated by group members."
-msgstr "Zerrenden orritik zerrendak sortzeaz gain, zerrenda bat sor dezakezu hemen taldearen hasierako orrian. Taldeko edozein kidek sor dezake zerrenda bat. Taldeko kideek kudeatuko dituzte zerrendak."
+msgstr "Zerrendak zerrenden orrialdean sor daitezke, baina baita taldearen hasiera orrialde honetan ere. Taldeko edozein kidek sor dezake kideek osatuko zerrenda bat."
 
 #: bookwyrm/templates/guided_tour/group.html:78
 msgid "Group lists"
@@ -2454,7 +2454,7 @@ msgstr "Profilaren eta ezarpenen menua"
 
 #: bookwyrm/templates/guided_tour/lists.html:13
 msgid "This is the lists page where you can discover book lists created by any user. A List is a collection of books, similar to a shelf."
-msgstr "Hau edozein erabiltzailek sortutako liburu-zerrendak aurkitu ditzakezun zerrenda-orria da. Zerrenda bat liburu bilduma bat da, apalen antzerakoa."
+msgstr "Hau zerrenden orrialdea da. Hemen edozein erabiltzailek sortutako liburuen zerrendak deskubritu ditzakezu. Zerrenda bat liburu bilduma bat da, apalen antzerakoa."
 
 #: bookwyrm/templates/guided_tour/lists.html:13
 msgid "Shelves are for organising books for yourself, whereas Lists are generally for sharing with others."
@@ -2516,7 +2516,7 @@ msgstr "Bilatzen"
 
 #: bookwyrm/templates/guided_tour/search.html:43
 msgid "If the book you are looking for is already on this Bookwyrm instance, you can click on the title to go to the book's page."
-msgstr "Bilatzen ari zaren liburua Bookwyrmeko instantzia honetan baldin badago dagoeneko, izenburuan klik egin dezakezu liburuaren orrira joateko."
+msgstr "Bilatzen ari zaren liburua dagoeneko Bookwyrmeko instantzia honetan badago, izenburuan klik egin dezakezu liburuaren orrialdera joateko."
 
 #: bookwyrm/templates/guided_tour/search.html:71
 msgid "If the book you are looking for is not listed, try loading more records from other sources like Open Library or Inventaire."
@@ -2639,7 +2639,7 @@ msgstr "Gorde zure taldea"
 
 #: bookwyrm/templates/guided_tour/user_profile.html:10
 msgid "This is your user profile. All your latest activities will be listed here. Other Bookwyrm users can see parts of this page too - what they can see depends on your privacy settings."
-msgstr "Hau da zure erabiltzaile-profila. Azken jarduera guztiak hemen zerrendatuko dira. Bookwyrm-en beste erabiltzaile batzuek ere ikus ditzakete orri honen zatiak - ikus dezaketena pribatutasun-konfigurazioaren araberakoa da."
+msgstr "Hau zure erabiltzaile profila da. Zure azken jarduerak hemen zerrendatuko dira. Bookwyrm-en beste erabiltzaile batzuek ere ikus ditzakete orrialde honen zatiak - ikus dezaketena pribatutasun ezarpenen araberakoa da."
 
 #: bookwyrm/templates/guided_tour/user_profile.html:11
 #: bookwyrm/templates/user/layout.html:19 bookwyrm/templates/user/user.html:14
@@ -2669,7 +2669,7 @@ msgstr "Liburuak fitxak zure liburu-apalak erakusten ditu. Bisitaldian aurrerago
 
 #: bookwyrm/templates/guided_tour/user_profile.html:123
 msgid "Now you understand the basics of your profile page, let's add a book to your shelves."
-msgstr "Orain profil-orriaren oinarrizkoenak ulertu dituzula, gehitu dezagun liburu bat zure apaletara."
+msgstr "Orain, zure profilaren orrialdearen oinarriak ulertu dituzula, gehitu dezagun liburu bat zure apaletara."
 
 #: bookwyrm/templates/guided_tour/user_profile.html:123
 msgid "Search for a title or author to continue the tour."
@@ -2735,7 +2735,7 @@ msgstr "Calibre (CSV)"
 
 #: bookwyrm/templates/import/import.html:71
 msgid "You can download your Goodreads data from the <a href=\"https://www.goodreads.com/review/import\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">Import/Export page</a> of your Goodreads account."
-msgstr "Zure Goodreadseko datuak deskargatu ditzakezu zure Goodreads kontuko <a href=\"https://www.goodreads.com/review/import\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">Inportatu/esportatu orritik</a>."
+msgstr "Zure Goodreadseko datuak deskargatu ditzakezu zure Goodreads kontuko <a href=\"https://www.goodreads.com/review/import\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">Inportatu/esportatu orrialdean</a>."
 
 #: bookwyrm/templates/import/import.html:80
 msgid "Data file:"
@@ -3877,7 +3877,7 @@ msgstr "Ezarri 2FA"
 #: bookwyrm/templates/preferences/blocks.html:7
 #: bookwyrm/templates/preferences/layout.html:46
 msgid "Blocked Users"
-msgstr "Blokeatutako Erabiltzaileak"
+msgstr "Blokeatutako erabiltzaileak"
 
 #: bookwyrm/templates/preferences/blocks.html:12
 msgid "No users currently blocked."
@@ -5039,7 +5039,7 @@ msgstr "Gehitu IP helbidea"
 
 #: bookwyrm/templates/settings/ip_blocklist/ip_address_form.html:11
 msgid "Use IP address blocks with caution, and consider using blocks only temporarily, as IP addresses are often shared or change hands. If you block your own IP, you will not be able to access this page."
-msgstr "Tentuz erabili IP heblide bidezko blokeoak, eta aintzat hartu blokeo hauek aldi baterako bakarrik erabiltzea, IP helbideak askotan partekatuak baitira edo sarri aldatzen dira eskuz. Zure IPa blokeatuko bazenu, ezingo duzu orri honetara sartu."
+msgstr "Tentuz erabili IP heblide bidezko blokeoak, eta aintzat hartu blokeo hauek aldi baterako bakarrik erabiltzea, IP helbideak askotan partekatuak baitira edo sarri eskuz aldatzen baitira. Zure IPa blokeatzen baduzu ezingo duzu orrialde hau atzitu."
 
 #: bookwyrm/templates/settings/ip_blocklist/ip_address_form.html:18
 msgid "IP Address:"
