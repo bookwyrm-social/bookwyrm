@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-01-30 08:21+0000\n"
-"PO-Revision-Date: 2023-03-11 16:37\n"
+"PO-Revision-Date: 2023-03-11 17:48\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Basque\n"
 "Language: eu\n"
@@ -1650,7 +1650,7 @@ msgstr "<a href=\"%(user_path)s\">%(username)s</a>k <a href=\"%(book_path)s\">%(
 #: bookwyrm/templates/discover/card-header.html:27
 #, python-format
 msgid "<a href=\"%(user_path)s\">%(username)s</a> reviewed <a href=\"%(book_path)s\">%(book_title)s</a>"
-msgstr "<a href=\"%(user_path)s\">%(username)s</a>(e)k <a href=\"%(book_path)s\">%(book_title)s</a> kritikatu du"
+msgstr "<a href=\"%(user_path)s\">%(username)s</a>(e)k <a href=\"%(book_path)s\">%(book_title)s</a> kritika egin du"
 
 #: bookwyrm/templates/discover/card-header.html:31
 #, python-format
@@ -2607,7 +2607,7 @@ msgstr "Sor dezagun talde berri bat!"
 
 #: bookwyrm/templates/guided_tour/user_groups.html:31
 msgid "Click the <strong>Create group</strong> button, then <strong>Next</strong> to continue the tour"
-msgstr "Egin klik <strong>Sortu taldea</strong> botoian, eta ondotik <strong>Hurrengoa</strong> bisita jarraitzeko"
+msgstr "Egin klik <strong>Sortu taldea</strong> botoian, ondoren <strong>Hurrengoa</strong> bisita jarraitzeko"
 
 #: bookwyrm/templates/guided_tour/user_groups.html:55
 msgid "Give your group a name and describe what it is about. You can make user groups for any purpose - a reading group, a bunch of friends, whatever!"
@@ -3211,7 +3211,7 @@ msgstr "Zerrenda ontzea:"
 
 #: bookwyrm/templates/lists/form.html:31
 msgid "Closed"
-msgstr "Itxita"
+msgstr "Itxia"
 
 #: bookwyrm/templates/lists/form.html:34
 msgid "Only you can add and remove books to this list"
@@ -3228,7 +3228,7 @@ msgstr "Edozeinek proposatu ditzake liburuak, baina zure oniritziarekin"
 #: bookwyrm/templates/lists/form.html:65
 msgctxt "curation type"
 msgid "Open"
-msgstr "Ireki"
+msgstr "Irekia"
 
 #: bookwyrm/templates/lists/form.html:68
 msgid "Anyone can add books to this list"
@@ -3236,7 +3236,7 @@ msgstr "Zerrenda honi liburuak edonork erantsi diezazkioke"
 
 #: bookwyrm/templates/lists/form.html:82
 msgid "Group"
-msgstr "Taldea"
+msgstr "Taldekoa"
 
 #: bookwyrm/templates/lists/form.html:85
 msgid "Group members can add to and remove from this list"
@@ -3595,7 +3595,7 @@ msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> eta <a href=\"%(s
 #: bookwyrm/templates/notifications/items/leave.html:36
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and %(other_user_display_count)s others have left your group \"<a href=\"%(group_path)s\">%(group_name)s</a>\""
-msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> eta beste %(other_user_display_count)s erabiltzailek zure \"<a href=\"%(group_path)s\">%(group_name)s</a>\" taldea utzi zuten"
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> eta beste %(other_user_display_count)s erabiltzailek zure \"<a href=\"%(group_path)s\">%(group_name)s</a>\" taldea utzi dute"
 
 #: bookwyrm/templates/notifications/items/mention.html:20
 #, python-format
@@ -4012,7 +4012,7 @@ msgstr "Esportatu CSVra"
 
 #: bookwyrm/templates/preferences/export.html:13
 msgid "Your export will include all the books on your shelves, books you have reviewed, and books with reading activity."
-msgstr "Zure apaletako liburu guztiak, kritikatu dituzun liburuak eta irakurketa-aktibitateren bat duten liburuak barne hartuko ditu zure esportazioak."
+msgstr "Esportazioak eduki guzti hauek hartuko ditu: zure apaletako liburu guztiak, kritikatu dituzun liburuak eta irakurketa-aktibitateren bat duten liburuak."
 
 #: bookwyrm/templates/preferences/export.html:20
 msgid "Download file"
@@ -5184,7 +5184,7 @@ msgstr "Eskatu erabiltzaileei email helbidea baieztatzeko"
 
 #: bookwyrm/templates/settings/registration.html:63
 msgid "(Recommended if registration is open)"
-msgstr "(Gomendatua, izen-ematea irekia baldin bada)"
+msgstr "(Gomendatua izen-ematea irekita badago)"
 
 #: bookwyrm/templates/settings/registration.html:68
 msgid "Allow invite requests"
@@ -5300,7 +5300,7 @@ msgstr "Salaketak: <small>%(instance_name)s</small>"
 
 #: bookwyrm/templates/settings/reports/reports.html:25
 msgid "Open"
-msgstr "Ireki"
+msgstr "Irekia"
 
 #: bookwyrm/templates/settings/reports/reports.html:28
 msgid "Resolved"
@@ -6264,7 +6264,7 @@ msgstr "<a href=\"%(book_path)s\">%(book)s</a> irakurtzen hasi da"
 #: bookwyrm/templates/snippets/status/headers/review.html:8
 #, python-format
 msgid "reviewed <a href=\"%(book_path)s\">%(book)s</a> by <a href=\"%(author_path)s\">%(author_name)s</a>"
-msgstr "(e)k <a href=\"%(author_path)s\">%(author_name)s</a>(r)en <a href=\"%(book_path)s\">%(book)s</a> kritikatu du"
+msgstr "(e)k <a href=\"%(author_path)s\">%(author_name)s</a>(r)en <a href=\"%(book_path)s\">%(book)s</a> kritika egin du"
 
 #: bookwyrm/templates/snippets/status/headers/review.html:15
 #, python-format
