@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-01-30 08:21+0000\n"
-"PO-Revision-Date: 2023-03-11 19:02\n"
+"PO-Revision-Date: 2023-03-11 20:06\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Basque\n"
 "Language: eu\n"
@@ -36,7 +36,7 @@ msgstr "Ez da iraungitzen"
 #: bookwyrm/forms/admin.py:49
 #, python-brace-format
 msgid "{i} uses"
-msgstr "{i}k erabiltzen du"
+msgstr "{i} erabilera"
 
 #: bookwyrm/forms/admin.py:50
 msgid "Unlimited"
@@ -195,7 +195,7 @@ msgstr "Azal biguna"
 #: bookwyrm/templates/settings/federation/edit_instance.html:55
 #: bookwyrm/templates/settings/federation/instance_list.html:22
 msgid "Federated"
-msgstr "Federatua"
+msgstr "Federatuta"
 
 #: bookwyrm/models/federated_server.py:12 bookwyrm/models/link.py:71
 #: bookwyrm/templates/settings/federation/edit_instance.html:56
@@ -461,7 +461,7 @@ msgstr "<a href=\"%(book_path)s\"><em>%(title)s</em></a> da %(site_name)s(e)n ba
 
 #: bookwyrm/templates/about/about.html:94
 msgid "Track your reading, talk about books, write reviews, and discover what to read next. Always ad-free, anti-corporate, and community-oriented, BookWyrm is human-scale software, designed to stay small and personal. If you have feature requests, bug reports, or grand dreams, <a href=\"https://joinbookwyrm.com/get-involved\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">reach out</a> and make yourself heard."
-msgstr "Jarraitu zure irakurketak, hitz egin liburuei buruz, idatzi iritzi eta balorazioak eta jakin zein izango den irakurriko duzun hurrengo liburua. Publizitaterik gabe, korporazioaren handien aurka eta komunitatera bideratuta, BookWyrm giza mailako softwarea da, txikia eta pertsonala izateko diseinatua. Funtzioen gaineko eskaerak, akatsen txostenak edo amets handiak badituzu, <a href=\"https://joinbookwyrm.com/get-involved\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">jar zaitez harremanetan</a> eta iristarazi zure ikuspegia."
+msgstr "Erakutsi zure irakurketak, hitz egin liburuei buruz, idatzi iritzi eta balorazioak eta deskubritu zer ikurri hurrengo. Publizitaterik gabe, korporazio handien aurka eta komunitatera bideratuta, BookWyrm giza mailako softwarea da, txikia eta pertsonala izateko diseinatua. Funtzionalitateen eskaerak, akatsen txostenak edo amets handiak badituzu, <a href=\"https://joinbookwyrm.com/get-involved\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">jar zaitez gurekin harremanetan</a> eta partekatu gurekin zure ikuspegia."
 
 #: bookwyrm/templates/about/about.html:105
 msgid "Meet your admins"
@@ -1559,7 +1559,7 @@ msgstr "Elkartu direktoriora"
 #: bookwyrm/templates/directory/directory.html:24
 #, python-format
 msgid "You can opt-out at any time in your <a href=\"%(path)s\">profile settings.</a>"
-msgstr "Zure <a href=\"%(path)s\">profilaren ezarpenetan</a> edozein momentutan aukeratu dezakezu."
+msgstr "Edozein unetan ezeztatu dezakezu zure <a href=\"%(path)s\">profilaren ezarpenetan.</a>"
 
 #: bookwyrm/templates/directory/directory.html:29
 #: bookwyrm/templates/directory/directory.html:31
@@ -1609,7 +1609,7 @@ msgstr[1] "liburuak zure apaletan"
 
 #: bookwyrm/templates/directory/user_card.html:55
 msgid "posts"
-msgstr "bidalketak"
+msgstr "bidalketa"
 
 #: bookwyrm/templates/directory/user_card.html:61
 msgid "last active"
@@ -1756,7 +1756,7 @@ msgstr "@%(reporter)s(e)k @%(reportee)s(e)n jokabidea salatu du gainbegiratzeko.
 #: bookwyrm/templates/email/moderation_report/html_content.html:21
 #: bookwyrm/templates/email/moderation_report/text_content.html:15
 msgid "View report"
-msgstr "Ikusi txostena"
+msgstr "Ikusi salaketak"
 
 #: bookwyrm/templates/email/moderation_report/subject.html:2
 #, python-format
@@ -1811,7 +1811,7 @@ msgstr "Administratzaileari idatzi"
 
 #: bookwyrm/templates/embed-layout.html:45
 msgid "Join BookWyrm"
-msgstr "Elkartu BookWyrmera"
+msgstr "Elkartu BookWyrm-era"
 
 #: bookwyrm/templates/feed/direct_messages.html:8
 #, python-format
@@ -2390,7 +2390,7 @@ msgstr "Bai, mesedez!"
 
 #: bookwyrm/templates/guided_tour/home.html:38
 msgid "If  you ever change your mind, just click on the Guided Tour link to start your tour"
-msgstr "Edozein momentutan iritziz aldatuko bazenu, klik egin Bisitaldi Gidatua estekan zure bisitaldia hasteko"
+msgstr "Edozein unetan iritziz aldatuko bazenu, egin klik Bisitaldi Gidatua estekan zure bisitaldia hasteko"
 
 #: bookwyrm/templates/guided_tour/home.html:62
 msgid "Search for books, users, or lists using this search box."
@@ -2593,7 +2593,7 @@ msgstr "Klik egin <strong>Zerrendak</strong> estekan bisitaldiarekin jarraitzeko
 
 #: bookwyrm/templates/guided_tour/user_groups.html:10
 msgid "You can create or join a group with other users. Groups can share group-curated book lists, and in future will be able to do other things."
-msgstr "Talde bat sortu dezakezu edo beste erabiltzaile batzuekin elkartu zaitezke. Taldeek taldekideek kudeatu liburu-zerrendak parteka ditzakete, eta etorkizunean beste gauza batzuk egin ahal izango dituzte."
+msgstr "Talde berri bat sor dezakezu edo existitzen den batean sar zaitezke. Taldeek taldekideek kudeatutako liburuen zerrendak parteka ditzakete, eta etorkizunean beste gauza batzuk egin ahal izango dituzte."
 
 #: bookwyrm/templates/guided_tour/user_groups.html:11
 #: bookwyrm/templates/guided_tour/user_profile.html:55
@@ -2969,7 +2969,7 @@ msgstr "Jar zaitez harremanetan zure administratzailearekin edo <a href='https:/
 #: bookwyrm/templates/landing/login.html:48
 #: bookwyrm/templates/landing/reactivate.html:41
 msgid "Create an Account"
-msgstr "Kontu bat sortu"
+msgstr "Sortu kontu bat"
 
 #: bookwyrm/templates/landing/invite.html:21
 msgid "Permission Denied"
@@ -3916,7 +3916,7 @@ msgstr "Desaktibatu kontua"
 
 #: bookwyrm/templates/preferences/delete_user.html:15
 msgid "Your account will be hidden. You can log back in at any time to re-activate your account."
-msgstr "Zure kontua ezkutatu egingo da. Edozein momentutan sar zaitezke berrir zure kontua berriro aktibatzeko."
+msgstr "Zure kontua ezkutatu egingo da. Edozein unetan hona itzul zaitezke eta zure kontua berriz aktibatu."
 
 #: bookwyrm/templates/preferences/delete_user.html:20
 msgid "Deactivate Account"
@@ -4287,7 +4287,7 @@ msgstr "Sortu iragarpena"
 #: bookwyrm/templates/settings/announcements/announcements.html:21
 #: bookwyrm/templates/settings/federation/instance_list.html:40
 msgid "Date added"
-msgstr "Data gehituta"
+msgstr "Gehitze data"
 
 #: bookwyrm/templates/settings/announcements/announcements.html:25
 msgid "Preview"
@@ -4512,7 +4512,7 @@ msgstr "Egoerak"
 #: bookwyrm/templates/settings/dashboard/dashboard.html:33
 #: bookwyrm/templates/settings/dashboard/works_chart.html:11
 msgid "Works"
-msgstr "Lanak"
+msgstr "Liburuak"
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:74
 msgid "Instance Activity"
@@ -4536,11 +4536,11 @@ msgstr "Erabiltzaileen izen-emate aktibitatea"
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:121
 msgid "Status activity"
-msgstr "Egoera-aktibitatea"
+msgstr "Egoeren aktibitatea"
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:127
 msgid "Works created"
-msgstr "Sortutako lanak"
+msgstr "Sortutako liburuak"
 
 #: bookwyrm/templates/settings/dashboard/registration_chart.html:10
 msgid "Registrations"
@@ -4636,7 +4636,7 @@ msgstr "Ez dago email domeinurik bloketatua une honetan"
 #: bookwyrm/templates/settings/email_config.html:8
 #: bookwyrm/templates/settings/layout.html:90
 msgid "Email Configuration"
-msgstr "Posta elektronikoaren konfigurazioa"
+msgstr "Epostaren konfigurazioa"
 
 #: bookwyrm/templates/settings/email_config.html:16
 msgid "Error sending test email:"
@@ -4756,7 +4756,7 @@ msgstr "Ikusi guztiak"
 #: bookwyrm/templates/settings/federation/instance.html:62
 #: bookwyrm/templates/settings/users/user_info.html:60
 msgid "Reports:"
-msgstr "Txostenak:"
+msgstr "Salaketak:"
 
 #: bookwyrm/templates/settings/federation/instance.html:68
 msgid "Followed by us:"
@@ -4934,7 +4934,7 @@ msgstr "Gonbidapenak"
 
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:23
 msgid "Ignored Invite Requests"
-msgstr "Ezikusi egindako gonbidapen eskaerak"
+msgstr "Ezikusiarena egindako gonbidapen eskaerak"
 
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:36
 msgid "Date requested"
@@ -4982,7 +4982,7 @@ msgstr "Gonbidapena bidali"
 
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:82
 msgid "Re-send invite"
-msgstr "Berriz bidali gonbidapena"
+msgstr "Birbidali gonbidapena"
 
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:102
 msgid "Ignore"
@@ -4998,7 +4998,7 @@ msgstr "Itzuli zain dauden eskaeratara"
 
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:118
 msgid "View ignored requests"
-msgstr "Ikusi ezikusi egindako eskaerak"
+msgstr "Ikusi ezikusiarena egindako eskaerak"
 
 #: bookwyrm/templates/settings/invites/manage_invites.html:21
 msgid "Generate New Invite"
@@ -5014,11 +5014,11 @@ msgstr "Erabilera muga:"
 
 #: bookwyrm/templates/settings/invites/manage_invites.html:40
 msgid "Create Invite"
-msgstr "Gonbidapena sortu"
+msgstr "Sortu gonbidapena"
 
 #: bookwyrm/templates/settings/invites/manage_invites.html:48
 msgid "Expires"
-msgstr "Iraungi"
+msgstr "Iraungitzea"
 
 #: bookwyrm/templates/settings/invites/manage_invites.html:49
 msgid "Max uses"
@@ -5083,7 +5083,7 @@ msgstr "Moderazioa"
 #: bookwyrm/templates/settings/reports/reports.html:8
 #: bookwyrm/templates/settings/reports/reports.html:17
 msgid "Reports"
-msgstr "Txostenak"
+msgstr "Salaketak"
 
 #: bookwyrm/templates/settings/layout.html:73
 #: bookwyrm/templates/settings/link_domains/link_domains.html:5
@@ -5132,7 +5132,7 @@ msgstr "Ezarri bistaratzeko izena %(url)s(e)rako"
 
 #: bookwyrm/templates/settings/link_domains/link_domains.html:11
 msgid "Link domains must be approved before they are shown on book pages. Please make sure that the domains are not hosting spam, malicious code, or deceptive links before approving."
-msgstr "Lotura-domeinuak liburu-orrietan agertu baino lehen onartu behar dira. Ziurtatu domeinuek ez dutela spamik, kode maltzurrik edo esteka engainagarririk onartzen hasi aurretik."
+msgstr "Esteka domeinuak onartu egin behar dira liburuen orrialdeetan agertu aurretik. Mesedez, ziurtatu zaitez domeinuek ez dutela zaborrik, kode maltzurrik, ezta esteka engainagarririk berauek onartu aurretik."
 
 #: bookwyrm/templates/settings/link_domains/link_domains.html:45
 msgid "Set display name"
@@ -5322,7 +5322,7 @@ msgstr "Orri-oinaren edukia"
 
 #: bookwyrm/templates/settings/site.html:46
 msgid "Instance Name:"
-msgstr "Instantziaren Izena:"
+msgstr "Instantziaren izena:"
 
 #: bookwyrm/templates/settings/site.html:50
 msgid "Tagline:"
@@ -5476,7 +5476,7 @@ msgstr "Erabiltzaile-izena"
 
 #: bookwyrm/templates/settings/users/user_admin.html:48
 msgid "Date Added"
-msgstr "Data gehituta"
+msgstr "Gehitze data"
 
 #: bookwyrm/templates/settings/users/user_admin.html:52
 msgid "Last Active"
@@ -6514,7 +6514,7 @@ msgstr "Ikusi profila eta gehiago"
 
 #: bookwyrm/templates/user_menu.html:82
 msgid "Log out"
-msgstr "Itxi saioa"
+msgstr "Amaitu saioa"
 
 #: bookwyrm/templates/widgets/clearable_file_input_with_warning.html:28
 msgid "File exceeds maximum size: 10MB"
