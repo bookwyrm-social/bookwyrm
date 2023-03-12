@@ -186,7 +186,7 @@ class ActivityObject:
 
             # add many to many fields, which have to be set post-save
             for field in instance.many_to_many_fields:
-                # mention books/users, for example
+                # mention books/users/hashtags, for example
                 field.set_field_from_activity(
                     instance,
                     self,
@@ -426,3 +426,10 @@ class Mention(Link):
     """a subtype of Link for mentioning an actor"""
 
     type: str = "Mention"
+
+
+@dataclass(init=False)
+class Hashtag(Link):
+    """a subtype of Link for mentioning a hashtag"""
+
+    type: str = "Hashtag"

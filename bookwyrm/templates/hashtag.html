@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+{% load i18n %}
+
+{% block title %}{{ hashtag }}{% endblock %}
+
+{% block content %}
+<div class="container is-max-desktop">
+    <section class="block">
+        <header class="block content has-text-centered">
+            <h1 class="title">{{ hashtag }}</h1>
+            <p class="subtitle">
+                {% blocktrans trimmed with site_name=site.name %}
+                See tagged statuses in the local {{ site_name }} community
+                {% endblocktrans %}
+            </p>
+        </header>
+
+        {% for activity in activities %}
+        <div class="block">
+            {% include 'snippets/status/status.html' with status=activity %}
+        </div>
+        {% endfor %}
+        {% if not activities %}
+        <div class="block">
+            <p>{% trans "No activities for this hashtag yet!" %}</p>
+        </div>
+        {% endif %}
+
+        {% include 'snippets/pagination.html' with page=activities path=path %}
+    </section>
+</div>
+{% endblock %}
