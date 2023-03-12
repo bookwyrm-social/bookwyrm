@@ -244,38 +244,38 @@ class BooksStream(ActivityStream):
     def add_book_statuses(self, user, book):
         """add statuses about a book to a user's feed"""
         work = book.parent_work
-        statuses = (
-            models.Status.privacy_filter(
-                user,
-                privacy_levels=["public"],
-            )
-            .filter(
-                Q(comment__book__parent_work=work)
-                | Q(quotation__book__parent_work=work)
-                | Q(review__book__parent_work=work)
-                | Q(mention_books__parent_work=work)
-            )
-            .distinct()
+        statuses = models.Status.privacy_filter(
+            user,
+            privacy_levels=["public"],
         )
-        self.bulk_add_objects_to_store(statuses, self.stream_id(user))
+
+        book_comments = statuses.filter(Q(comment__book__parent_work=work))
+        book_quotations = statuses.filter(Q(quotation__book__parent_work=work))
+        book_reviews = statuses.filter(Q(review__book__parent_work=work))
+        book_mentions = statuses.filter(Q(mention_books__parent_work=work))
+
+        self.bulk_add_objects_to_store(book_comments, self.stream_id(user))
+        self.bulk_add_objects_to_store(book_quotations, self.stream_id(user))
+        self.bulk_add_objects_to_store(book_reviews, self.stream_id(user))
+        self.bulk_add_objects_to_store(book_mentions, self.stream_id(user))
 
     def remove_book_statuses(self, user, book):
         """add statuses about a book to a user's feed"""
         work = book.parent_work
-        statuses = (
-            models.Status.privacy_filter(
-                user,
-                privacy_levels=["public"],
-            )
-            .filter(
-                Q(comment__book__parent_work=work)
-                | Q(quotation__book__parent_work=work)
-                | Q(review__book__parent_work=work)
-                | Q(mention_books__parent_work=work)
-            )
-            .distinct()
+        statuses = models.Status.privacy_filter(
+            user,
+            privacy_levels=["public"],
         )
-        self.bulk_remove_objects_from_store(statuses, self.stream_id(user))
+
+        book_comments = statuses.filter(Q(comment__book__parent_work=work))
+        book_quotations = statuses.filter(Q(quotation__book__parent_work=work))
+        book_reviews = statuses.filter(Q(review__book__parent_work=work))
+        book_mentions = statuses.filter(Q(mention_books__parent_work=work))
+
+        self.bulk_remove_objects_from_store(book_comments, self.stream_id(user))
+        self.bulk_remove_objects_from_store(book_quotations, self.stream_id(user))
+        self.bulk_remove_objects_from_store(book_reviews, self.stream_id(user))
+        self.bulk_remove_objects_from_store(book_mentions, self.stream_id(user))
 
 
 # determine which streams are enabled in settings.py
