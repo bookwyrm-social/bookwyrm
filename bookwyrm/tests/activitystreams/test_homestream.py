@@ -44,7 +44,7 @@ class Activitystreams(TestCase):
             user=self.remote_user, content="hi", privacy="public"
         )
         users = activitystreams.HomeStream().get_audience(status)
-        self.assertFalse(users.exists())
+        self.assertEqual(users, [])
 
     def test_homestream_get_audience_with_mentions(self, *_):
         """get a list of users that should see a status"""
@@ -53,8 +53,8 @@ class Activitystreams(TestCase):
         )
         status.mention_users.add(self.local_user)
         users = activitystreams.HomeStream().get_audience(status)
-        self.assertFalse(self.local_user in users)
-        self.assertFalse(self.another_user in users)
+        self.assertFalse(self.local_user.id in users)
+        self.assertFalse(self.another_user.id in users)
 
     def test_homestream_get_audience_with_relationship(self, *_):
         """get a list of users that should see a status"""
@@ -63,5 +63,5 @@ class Activitystreams(TestCase):
             user=self.remote_user, content="hi", privacy="public"
         )
         users = activitystreams.HomeStream().get_audience(status)
-        self.assertTrue(self.local_user in users)
-        self.assertFalse(self.another_user in users)
+        self.assertTrue(self.local_user.id in users)
+        self.assertFalse(self.another_user.id in users)

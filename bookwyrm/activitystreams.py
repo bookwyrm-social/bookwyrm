@@ -13,18 +13,18 @@ from bookwyrm.tasks import app, LOW, MEDIUM, HIGH
 class ActivityStream(RedisStore):
     """a category of activity stream (like home, local, books)"""
 
-    def stream_id(self, user):
+    def stream_id(self, user_id):
         """the redis key for this user's instance of this stream"""
-        return f"{user.id}-{self.key}"
+        return f"{user_id}-{self.key}"
 
-    def unread_id(self, user):
+    def unread_id(self, user_id):
         """the redis key for this user's unread count for this stream"""
-        stream_id = self.stream_id(user)
+        stream_id = self.stream_id(user_id)
         return f"{stream_id}-unread"
 
-    def unread_by_status_type_id(self, user):
+    def unread_by_status_type_id(self, user_id):
         """the redis key for this user's unread count for this stream"""
-        stream_id = self.stream_id(user)
+        stream_id = self.stream_id(user_id)
         return f"{stream_id}-unread-by-type"
 
     def get_rank(self, obj):  # pylint: disable=no-self-use
@@ -37,12 +37,12 @@ class ActivityStream(RedisStore):
         pipeline = self.add_object_to_related_stores(status, execute=False)
 
         if increment_unread:
-            for user in self.get_audience(status):
+            for user_id in self.get_audience(status):
                 # add to the unread status count
-                pipeline.incr(self.unread_id(user))
+                pipeline.incr(self.unread_id(user_id))
                 # add to the unread status count for status type
                 pipeline.hincrby(
-                    self.unread_by_status_type_id(user), get_status_type(status), 1
+                    self.unread_by_status_type_id(user_id), get_status_type(status), 1
                 )
 
         # and go!
@@ -52,21 +52,21 @@ class ActivityStream(RedisStore):
         """add a user's statuses to another user's feed"""
         # only add the statuses that the viewer should be able to see (ie, not dms)
         statuses = models.Status.privacy_filter(viewer).filter(user=user)
-        self.bulk_add_objects_to_store(statuses, self.stream_id(viewer))
+        self.bulk_add_objects_to_store(statuses, self.stream_id(viewer.id))
 
     def remove_user_statuses(self, viewer, user):
         """remove a user's status from another user's feed"""
         # remove all so that followers only statuses are removed
         statuses = user.status_set.all()
-        self.bulk_remove_objects_from_store(statuses, self.stream_id(viewer))
+        self.bulk_remove_objects_from_store(statuses, self.stream_id(viewer.id))
 
     def get_activity_stream(self, user):
         """load the statuses to be displayed"""
         # clear unreads for this feed
-        r.set(self.unread_id(user), 0)
-        r.delete(self.unread_by_status_type_id(user))
+        r.set(self.unread_id(user.id), 0)
+        r.delete(self.unread_by_status_type_id(user.id))
 
-        statuses = self.get_store(self.stream_id(user))
+        statuses = self.get_store(self.stream_id(user.id))
         return (
             models.Status.objects.select_subclasses()
             .filter(id__in=statuses)
@@ -83,11 +83,11 @@ class ActivityStream(RedisStore):
 
     def get_unread_count(self, user):
         """get the unread status count for this user's feed"""
-        return int(r.get(self.unread_id(user)) or 0)
+        return int(r.get(self.unread_id(user.id)) or 0)
 
     def get_unread_count_by_status_type(self, user):
         """get the unread status count for this user's feed's status types"""
-        status_types = r.hgetall(self.unread_by_status_type_id(user))
+        status_types = r.hgetall(self.unread_by_status_type_id(user.id))
         return {
             str(key.decode("utf-8")): int(value) or 0
             for key, value in status_types.items()
@@ -95,9 +95,9 @@ class ActivityStream(RedisStore):
 
     def populate_streams(self, user):
         """go from zero to a timeline"""
-        self.populate_store(self.stream_id(user))
+        self.populate_store(self.stream_id(user.id))
 
-    def get_audience(self, status):  # pylint: disable=no-self-use
+    def _get_audience(self, status):  # pylint: disable=no-self-use
         """given a status, what users should see it"""
         # direct messages don't appeard in feeds, direct comments/reviews/etc do
         if status.privacy == "direct" and status.status_type == "Note":
@@ -136,8 +136,12 @@ class ActivityStream(RedisStore):
             )
         return audience.distinct()
 
+    def get_audience(self, status):  # pylint: disable=no-self-use
+        """given a status, what users should see it"""
+        return [user.id for user in self._get_audience(status)]
+
     def get_stores_for_object(self, obj):
-        return [self.stream_id(u) for u in self.get_audience(obj)]
+        return [self.stream_id(user_id) for user_id in self.get_audience(obj)]
 
     def get_statuses_for_user(self, user):  # pylint: disable=no-self-use
         """given a user, what statuses should they see on this stream"""
@@ -157,13 +161,14 @@ class HomeStream(ActivityStream):
     key = "home"
 
     def get_audience(self, status):
-        audience = super().get_audience(status)
+        audience = super()._get_audience(status)
         if not audience:
             return []
-        return audience.filter(
-            Q(id=status.user.id)  # if the user is the post's author
-            | Q(following=status.user)  # if the user is following the author
-        ).distinct()
+        # if the user is the post's author
+        ids_self = [user.id for user in audience.filter(Q(id=status.user.id))]
+        # if the user is following the author
+        ids_following = [user.id for user in audience.filter(Q(following=status.user))]
+        return ids_self + ids_following
 
     def get_statuses_for_user(self, user):
         return models.Status.privacy_filter(
@@ -183,11 +188,11 @@ class LocalStream(ActivityStream):
 
     key = "local"
 
-    def get_audience(self, status):
+    def _get_audience(self, status):
         # this stream wants no part in non-public statuses
         if status.privacy != "public" or not status.user.local:
             return []
-        return super().get_audience(status)
+        return super()._get_audience(status)
 
     def get_statuses_for_user(self, user):
         # all public statuses by a local user
@@ -202,7 +207,7 @@ class BooksStream(ActivityStream):
 
     key = "books"
 
-    def get_audience(self, status):
+    def _get_audience(self, status):
         """anyone with the mentioned book on their shelves"""
         # only show public statuses on the books feed,
         # and only statuses that mention books
@@ -217,7 +222,7 @@ class BooksStream(ActivityStream):
             else status.mention_books.first().parent_work
         )
 
-        audience = super().get_audience(status)
+        audience = super()._get_audience(status)
         if not audience:
             return []
         return audience.filter(shelfbook__book__parent_work=work).distinct()
@@ -254,10 +259,10 @@ class BooksStream(ActivityStream):
         book_reviews = statuses.filter(Q(review__book__parent_work=work))
         book_mentions = statuses.filter(Q(mention_books__parent_work=work))
 
-        self.bulk_add_objects_to_store(book_comments, self.stream_id(user))
-        self.bulk_add_objects_to_store(book_quotations, self.stream_id(user))
-        self.bulk_add_objects_to_store(book_reviews, self.stream_id(user))
-        self.bulk_add_objects_to_store(book_mentions, self.stream_id(user))
+        self.bulk_add_objects_to_store(book_comments, self.stream_id(user.id))
+        self.bulk_add_objects_to_store(book_quotations, self.stream_id(user.id))
+        self.bulk_add_objects_to_store(book_reviews, self.stream_id(user.id))
+        self.bulk_add_objects_to_store(book_mentions, self.stream_id(user.id))
 
     def remove_book_statuses(self, user, book):
         """add statuses about a book to a user's feed"""
@@ -272,10 +277,10 @@ class BooksStream(ActivityStream):
         book_reviews = statuses.filter(Q(review__book__parent_work=work))
         book_mentions = statuses.filter(Q(mention_books__parent_work=work))
 
-        self.bulk_remove_objects_from_store(book_comments, self.stream_id(user))
-        self.bulk_remove_objects_from_store(book_quotations, self.stream_id(user))
-        self.bulk_remove_objects_from_store(book_reviews, self.stream_id(user))
-        self.bulk_remove_objects_from_store(book_mentions, self.stream_id(user))
+        self.bulk_remove_objects_from_store(book_comments, self.stream_id(user.id))
+        self.bulk_remove_objects_from_store(book_quotations, self.stream_id(user.id))
+        self.bulk_remove_objects_from_store(book_reviews, self.stream_id(user.id))
+        self.bulk_remove_objects_from_store(book_mentions, self.stream_id(user.id))
 
 
 # determine which streams are enabled in settings.py
