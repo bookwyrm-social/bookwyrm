@@ -28,7 +28,7 @@
         {% with notification_count=request.user.unread_notification_count has_unread_mentions=request.user.has_unread_mentions %}
         <div class="navbar-brand">
             <a class="navbar-item" href="/">
-                <img class="image logo" src="{% if site.logo_small %}{% get_media_prefix %}{{ site.logo_small }}{% else %}{% static "images/logo-small.png" %}{% endif %}" alt="{% blocktrans with site_name=site.name %}{{ site_name }} home page{% endblocktrans %}">
+                <img class="image logo" src="{% if site.logo_small %}{% get_media_prefix %}{{ site.logo_small }}{% else %}{% static "images/logo-small.png" %}{% endif %}" alt="{% blocktrans with site_name=site.name %}{{ site_name }} home page{% endblocktrans %}" loading="lazy" decoding="async">
             </a>
             <form class="navbar-item column is-align-items-start pt-5" action="{% url 'search' %}">
                 <div class="field has-addons">
