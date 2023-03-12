@@ -143,7 +143,7 @@ def get_or_create_connector(remote_id):
     return load_connector(connector_info)
 
 
-@app.task(queue=LOW)
+@app.task(queue=LOW, ignore_result=True)
 def load_more_data(connector_id, book_id):
     """background the work of getting all 10,000 editions of LoTR"""
     connector_info = models.Connector.objects.get(id=connector_id)
@@ -152,7 +152,7 @@ def load_more_data(connector_id, book_id):
     connector.expand_book_data(book)
 
 
-@app.task(queue=LOW)
+@app.task(queue=LOW, ignore_result=True)
 def create_edition_task(connector_id, work_id, data):
     """separate task for each of the 10,000 editions of LoTR"""
     connector_info = models.Connector.objects.get(id=connector_id)

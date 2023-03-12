@@ -65,7 +65,7 @@ class AutoMod(AdminModel):
     created_by = models.ForeignKey("User", on_delete=models.PROTECT)
 
 
-@app.task(queue=LOW)
+@app.task(queue=LOW, ignore_result=True)
 def automod_task():
     """Create reports"""
     if not AutoMod.objects.exists():

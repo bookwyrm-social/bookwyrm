@@ -115,7 +115,7 @@ def sometimes_async_activity_task(activity_json, queue=MEDIUM):
         activity_task.apply_async(args=(activity_json,), queue=queue)
 
 
-@app.task(queue=MEDIUM)
+@app.task(queue=MEDIUM, ignore_result=True)
 def activity_task(activity_json):
     """do something with this json we think is legit"""
     # lets see if the activitypub module can make sense of this json
