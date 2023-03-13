@@ -21,6 +21,6 @@ def clean(input_text):
             "ol",
             "li",
         ],
-        attributes=["href", "rel", "src", "alt"],
+        attributes=["href", "rel", "src", "alt", "data-mention"],
         strip=True,
     )

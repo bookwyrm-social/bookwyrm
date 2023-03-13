@@ -1,7 +1,7 @@
 """ test for app action functionality """
 from unittest.mock import patch
 
-from django.http import StreamingHttpResponse
+from django.http import HttpResponse
 from django.test import TestCase
 from django.test.client import RequestFactory
 
@@ -57,13 +57,12 @@ class ExportViews(TestCase):
         request = self.factory.post("")
         request.user = self.local_user
         export = views.Export.as_view()(request)
-        self.assertIsInstance(export, StreamingHttpResponse)
+        self.assertIsInstance(export, HttpResponse)
         self.assertEqual(export.status_code, 200)
-        result = list(export.streaming_content)
         # pylint: disable=line-too-long
         self.assertEqual(
-            result[0],
-            b"title,author_text,remote_id,openlibrary_key,inventaire_id,librarything_key,goodreads_key,bnf_id,viaf,wikidata,asin,aasin,isfdb,isbn_10,isbn_13,oclc_number,rating,review_name,review_cw,review_content\r\n",
+            export.content,
+            b"title,author_text,remote_id,openlibrary_key,inventaire_id,librarything_key,goodreads_key,bnf_id,viaf,wikidata,asin,aasin,isfdb,isbn_10,isbn_13,oclc_number,rating,review_name,review_cw,review_content\r\nTest Book,,"
+            + self.book.remote_id.encode("utf-8")
+            + b",,,,,beep,,,,,,123456789X,9781234567890,,,,,\r\n",
         )
-        expected = f"Test Book,,{self.book.remote_id},,,,,beep,,,,,,123456789X,9781234567890,,,,,\r\n"
-        self.assertEqual(result[1].decode("utf-8"), expected)

@@ -21,7 +21,7 @@
 <nav class="navbar" aria-label="main navigation">
     <div class="container">
         <div class="navbar-brand">
-                <img class="image logo navbar-item" src="{% if site.logo_small %}{% get_media_prefix %}{{ site.logo_small }}{% else %}{% static 'images/logo-small.png' %}{% endif %}" alt="Home page">
+                <img class="image logo navbar-item" src="{% if site.logo_small %}{% get_media_prefix %}{{ site.logo_small }}{% else %}{% static 'images/logo-small.png' %}{% endif %}" alt="Home page" loading="lazy" decoding="async">
             <h2 class="navbar-item subtitle">{% block heading %}{% endblock %}</h2>
         </div>
     </div>

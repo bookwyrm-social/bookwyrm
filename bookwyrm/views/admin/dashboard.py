@@ -16,7 +16,6 @@ from csp.decorators import csp_update
 
 from bookwyrm import models, settings
 from bookwyrm.connectors.abstract_connector import get_data
-from bookwyrm.connectors.connector_manager import ConnectorException
 from bookwyrm.utils import regex
 
 
@@ -61,6 +60,7 @@ class Dashboard(View):
         )
 
         # check version
+
         try:
             release = get_data(settings.RELEASE_API, timeout=3)
             available_version = release.get("tag_name", None)
@@ -69,7 +69,7 @@ class Dashboard(View):
             ):
                 data["current_version"] = settings.VERSION
                 data["available_version"] = available_version
-        except ConnectorException:
+        except:  # pylint: disable= bare-except
             pass
 
         return TemplateResponse(request, "settings/dashboard/dashboard.html", data)

@@ -130,6 +130,7 @@ from .group import (
     accept_membership,
     reject_membership,
 )
+from .hashtag import Hashtag
 from .inbox import Inbox
 from .interaction import Favorite, Unfavorite, Boost, Unboost
 from .isbn import Isbn
@@ -164,3 +165,4 @@ from .annual_summary import (
     summary_add_key,
     summary_revoke_key,
 )
+from .server_error import server_error

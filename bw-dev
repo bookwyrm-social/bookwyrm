@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # exit on errors
 set -e
@@ -32,8 +32,8 @@ function runweb {
     docker-compose run --rm web "$@"
 }
 
-function rundb {
-    docker-compose run --rm db $@
+function execdb {
+    docker-compose exec db $@
 }
 
 function execweb {
@@ -110,7 +110,7 @@ case "$CMD" in
         runweb python manage.py shell
         ;;
     dbshell)
-        rundb psql -U ${POSTGRES_USER} ${POSTGRES_DB}
+        execdb psql -U ${POSTGRES_USER} ${POSTGRES_DB}
         ;;
     restart_celery)
         docker-compose restart celery_worker

@@ -356,6 +356,15 @@ urlpatterns = [
         name="notifications",
     ),
     re_path(r"^directory/?", views.Directory.as_view(), name="directory"),
+    # hashtag
+    re_path(
+        r"^hashtag/(?P<hashtag_id>\d+)/?$", views.Hashtag.as_view(), name="hashtag"
+    ),
+    re_path(
+        rf"^hashtag/(?P<hashtag_id>\d+){regex.SLUG}/?$",
+        views.Hashtag.as_view(),
+        name="hashtag",
+    ),
     # Get started
     re_path(
         r"^get-started/profile/?$",
@@ -764,3 +773,6 @@ urlpatterns = [
     ),
     path("guided-tour/<tour>", views.toggle_guided_tour),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+# pylint: disable=invalid-name
+handler500 = "bookwyrm.views.server_error"

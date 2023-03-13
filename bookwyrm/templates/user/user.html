@@ -87,7 +87,7 @@
                         {% trans "Back" %}
                     </span>
                 </summary>
-            
+
                 <div class="dropdown-menu">
                     <ul
                         class="dropdown-content"
@@ -130,7 +130,7 @@
     </div>
     {% endif %}
 
-    {% include 'snippets/pagination.html' with page=activities path=user.local_path anchor="#feed" %}
+    {% include 'snippets/pagination.html' with page=activities path=user.local_path anchor="#feed" mode="chronological" %}
 </div>
 
 {% endblock %}
