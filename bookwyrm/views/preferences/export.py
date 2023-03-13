@@ -22,16 +22,19 @@ class Export(View):
 
     def post(self, request):
         """Download the csv file of a user's book data"""
-        books = (
-            models.Edition.viewer_aware_objects(request.user)
-            .filter(
-                Q(shelves__user=request.user)
-                | Q(readthrough__user=request.user)
-                | Q(review__user=request.user)
-                | Q(comment__user=request.user)
-                | Q(quotation__user=request.user)
-            )
-            .distinct()
+        books = models.Edition.viewer_aware_objects(request.user)
+        books_shelves = books.filter(Q(shelves__user=request.user)).distinct()
+        books_readthrough = books.filter(Q(readthrough__user=request.user)).distinct()
+        books_review = books.filter(Q(review__user=request.user)).distinct()
+        books_comment = books.filter(Q(comment__user=request.user)).distinct()
+        books_quotation = books.filter(Q(quotation__user=request.user)).distinct()
+
+        books = set(
+            list(books_shelves)
+            + list(books_readthrough)
+            + list(books_review)
+            + list(books_comment)
+            + list(books_quotation)
         )
 
         csv_string = io.StringIO()
