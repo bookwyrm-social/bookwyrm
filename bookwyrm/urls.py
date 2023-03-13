@@ -773,3 +773,6 @@ urlpatterns = [
     ),
     path("guided-tour/<tour>", views.toggle_guided_tour),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+# pylint: disable=invalid-name
+handler500 = "bookwyrm.views.server_error"
