@@ -35,7 +35,7 @@ class BookwyrmConfig(AppConfig):
     # pylint: disable=no-self-use
     def ready(self):
         """set up OTLP and preview image files, if desired"""
-        if settings.OTEL_EXPORTER_OTLP_ENDPOINT:
+        if settings.OTEL_EXPORTER_OTLP_ENDPOINT or settings.OTEL_EXPORTER_CONSOLE:
             # pylint: disable=import-outside-toplevel
             from bookwyrm.telemetry import open_telemetry
 
