@@ -115,6 +115,19 @@ class CreateStatus(View):
         if status.reply_parent:
             status.mention_users.add(status.reply_parent.user)
 
+        # inspect the text for hashtags
+        for (mention_text, mention_hashtag) in find_or_create_hashtags(content).items():
+            # add them to status mentions fk
+            status.mention_hashtags.add(mention_hashtag)
+
+            # turn the mention into a link
+            content = re.sub(
+                rf"{mention_text}\b(?!@)",
+                rf'<a href="{mention_hashtag.remote_id}" data-mention="hashtag">'
+                + rf"{mention_text}</a>",
+                content,
+            )
+
         # deduplicate mentions
         status.mention_users.set(set(status.mention_users.all()))
 
@@ -235,6 +248,38 @@ def find_mentions(user, content):
         username_dict[f"@{mention_user.username}"] = mention_user
         username_dict[f"@{mention_user.localname}"] = mention_user
     return username_dict
+
+
+def find_or_create_hashtags(content):
+    """detect #hashtags in raw status content
+
+    it stores hashtags case-sensitive, but ensures that an existing
+    hashtag with different case are found and re-used. for example,
+    an existing #BookWyrm hashtag will be found and used even if the
+    status content is using #bookwyrm.
+    """
+    if not content:
+        return {}
+
+    found_hashtags = {t.lower(): t for t in re.findall(regex.HASHTAG, content)}
+    if len(found_hashtags) == 0:
+        return {}
+
+    known_hashtags = {
+        t.name.lower(): t
+        for t in models.Hashtag.objects.filter(
+            Q(name__in=found_hashtags.keys())
+        ).distinct()
+    }
+
+    not_found = found_hashtags.keys() - known_hashtags.keys()
+    for lower_name in not_found:
+        tag_name = found_hashtags[lower_name]
+        mention_hashtag = models.Hashtag(name=tag_name)
+        mention_hashtag.save()
+        known_hashtags[lower_name] = mention_hashtag
+
+    return {found_hashtags[k]: v for k, v in known_hashtags.items()}
 
 
 def format_links(content):

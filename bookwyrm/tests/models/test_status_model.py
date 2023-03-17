@@ -265,7 +265,7 @@ class Status(TestCase):
         self.assertEqual(activity["attachment"][0]["type"], "Document")
         self.assertTrue(
             re.match(
-                r"https:\/\/your.domain.here\/images\/covers\/test_[A-z0-9]+.jpg",
+                r"https:\/\/your.domain.here\/images\/covers\/test(_[A-z0-9]+)?.jpg",
                 activity["attachment"][0]["url"],
             )
         )

@@ -34,6 +34,8 @@ from .antispam import EmailBlocklist, IPBlocklist, AutoMod, automod_task
 
 from .notification import Notification
 
+from .hashtag import Hashtag
+
 cls_members = inspect.getmembers(sys.modules[__name__], inspect.isclass)
 activity_models = {
     c[1].activity_serializer.__name__: c[1]

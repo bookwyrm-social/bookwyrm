@@ -17,6 +17,8 @@
     {% include 'notifications/items/add.html' %}
 {% elif notification.notification_type == 'REPORT' %}
     {% include 'notifications/items/report.html' %}
+{% elif notification.notification_type == 'LINK_DOMAIN' %}
+    {% include 'notifications/items/link_domain.html' %}
 {% elif notification.notification_type == 'INVITE' %}
     {% include 'notifications/items/invite.html' %}
 {% elif notification.notification_type == 'ACCEPT' %}
