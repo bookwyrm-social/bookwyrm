@@ -18,7 +18,7 @@ RELEASE_API = env(
     "https://api.github.com/repos/bookwyrm-social/bookwyrm/releases/latest",
 )
 
-PAGE_LENGTH = env("PAGE_LENGTH", 15)
+PAGE_LENGTH = env.int("PAGE_LENGTH", 15)
 DEFAULT_LANGUAGE = env("DEFAULT_LANGUAGE", "English")
 
 JS_CACHE = "a7d4e720"
@@ -26,7 +26,7 @@ JS_CACHE = "a7d4e720"
 # email
 EMAIL_BACKEND = env("EMAIL_BACKEND", "django.core.mail.backends.smtp.EmailBackend")
 EMAIL_HOST = env("EMAIL_HOST")
-EMAIL_PORT = env("EMAIL_PORT", 587)
+EMAIL_PORT = env.int("EMAIL_PORT", 587)
 EMAIL_HOST_USER = env("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
 EMAIL_USE_TLS = env.bool("EMAIL_USE_TLS", True)
@@ -205,14 +205,14 @@ WSGI_APPLICATION = "bookwyrm.wsgi.application"
 
 # redis/activity streams settings
 REDIS_ACTIVITY_HOST = env("REDIS_ACTIVITY_HOST", "localhost")
-REDIS_ACTIVITY_PORT = env("REDIS_ACTIVITY_PORT", 6379)
+REDIS_ACTIVITY_PORT = env.int("REDIS_ACTIVITY_PORT", 6379)
 REDIS_ACTIVITY_PASSWORD = requests.utils.quote(env("REDIS_ACTIVITY_PASSWORD", ""))
-REDIS_ACTIVITY_DB_INDEX = env("REDIS_ACTIVITY_DB_INDEX", 0)
+REDIS_ACTIVITY_DB_INDEX = env.int("REDIS_ACTIVITY_DB_INDEX", 0)
 REDIS_ACTIVITY_URL = env(
     "REDIS_ACTIVITY_URL",
     f"redis://:{REDIS_ACTIVITY_PASSWORD}@{REDIS_ACTIVITY_HOST}:{REDIS_ACTIVITY_PORT}/{REDIS_ACTIVITY_DB_INDEX}",
 )
-MAX_STREAM_LENGTH = int(env("MAX_STREAM_LENGTH", 200))
+MAX_STREAM_LENGTH = env.int("MAX_STREAM_LENGTH", 200)
 
 STREAMS = [
     {"key": "home", "name": _("Home Timeline"), "shortname": _("Home")},
@@ -221,12 +221,12 @@ STREAMS = [
 
 # Search configuration
 # total time in seconds that the instance will spend searching connectors
-SEARCH_TIMEOUT = int(env("SEARCH_TIMEOUT", 8))
+SEARCH_TIMEOUT = env.int("SEARCH_TIMEOUT", 8)
 # timeout for a query to an individual connector
-QUERY_TIMEOUT = int(env("QUERY_TIMEOUT", 5))
+QUERY_TIMEOUT = env.int("QUERY_TIMEOUT", 5)
 
 # Redis cache backend
-if env("USE_DUMMY_CACHE", False):
+if env.bool("USE_DUMMY_CACHE", False):
     CACHES = {
         "default": {
             "BACKEND": "django.core.cache.backends.dummy.DummyCache",
@@ -256,7 +256,7 @@ DATABASES = {
         "USER": env("POSTGRES_USER", "bookwyrm"),
         "PASSWORD": env("POSTGRES_PASSWORD", "bookwyrm"),
         "HOST": env("POSTGRES_HOST", ""),
-        "PORT": env("PGPORT", 5432),
+        "PORT": env.int("PGPORT", 5432),
     },
 }
 
