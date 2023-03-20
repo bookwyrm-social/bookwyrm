@@ -1,10 +1,19 @@
 from opentelemetry import trace
 from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
 from opentelemetry.sdk.trace import TracerProvider
-from opentelemetry.sdk.trace.export import BatchSpanProcessor
+from opentelemetry.sdk.trace.export import BatchSpanProcessor, ConsoleSpanExporter
+
+from bookwyrm import settings
 
 trace.set_tracer_provider(TracerProvider())
-trace.get_tracer_provider().add_span_processor(BatchSpanProcessor(OTLPSpanExporter()))
+if settings.OTEL_EXPORTER_CONSOLE:
+    trace.get_tracer_provider().add_span_processor(
+        BatchSpanProcessor(ConsoleSpanExporter())
+    )
+else:
+    trace.get_tracer_provider().add_span_processor(
+        BatchSpanProcessor(OTLPSpanExporter())
+    )
 
 
 def instrumentDjango():
