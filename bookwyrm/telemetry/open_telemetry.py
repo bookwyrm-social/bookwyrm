@@ -29,3 +29,7 @@ def instrumentCelery():
     @worker_process_init.connect(weak=False)
     def init_celery_tracing(*args, **kwargs):
         CeleryInstrumentor().instrument()
+
+
+def tracer():
+    return trace.get_tracer(__name__)
