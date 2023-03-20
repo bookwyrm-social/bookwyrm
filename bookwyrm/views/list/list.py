@@ -287,7 +287,7 @@ def set_book_position(request, list_item_id):
         list_item.order = int_position
         list_item.save()
 
-    return redirect_to_referer(request, default=book_list.local_path)
+    return redirect_to_referer(request, book_list.local_path)
 
 
 @transaction.atomic
