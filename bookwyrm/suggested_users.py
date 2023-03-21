@@ -237,41 +237,41 @@ def domain_level_update(sender, instance, created, update_fields=None, **kwargs)
 # ------------------- TASKS
 
 
-@app.task(queue=LOW)
+@app.task(queue=LOW, ignore_result=True)
 def rerank_suggestions_task(user_id):
     """do the hard work in celery"""
     suggested_users.rerank_user_suggestions(user_id)
 
 
-@app.task(queue=LOW)
+@app.task(queue=LOW, ignore_result=True)
 def rerank_user_task(user_id, update_only=False):
     """do the hard work in celery"""
     user = models.User.objects.get(id=user_id)
     suggested_users.rerank_obj(user, update_only=update_only)
 
 
-@app.task(queue=LOW)
+@app.task(queue=LOW, ignore_result=True)
 def remove_user_task(user_id):
     """do the hard work in celery"""
     user = models.User.objects.get(id=user_id)
     suggested_users.remove_object_from_related_stores(user)
 
 
-@app.task(queue=MEDIUM)
+@app.task(queue=MEDIUM, ignore_result=True)
 def remove_suggestion_task(user_id, suggested_user_id):
     """remove a specific user from a specific user's suggestions"""
     suggested_user = models.User.objects.get(id=suggested_user_id)
     suggested_users.remove_suggestion(user_id, suggested_user)
 
 
-@app.task(queue=LOW)
+@app.task(queue=LOW, ignore_result=True)
 def bulk_remove_instance_task(instance_id):
     """remove a bunch of users from recs"""
     for user in models.User.objects.filter(federated_server__id=instance_id):
         suggested_users.remove_object_from_related_stores(user)
 
 
-@app.task(queue=LOW)
+@app.task(queue=LOW, ignore_result=True)
 def bulk_add_instance_task(instance_id):
     """remove a bunch of users from recs"""
     for user in models.User.objects.filter(federated_server__id=instance_id):

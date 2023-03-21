@@ -171,7 +171,11 @@ class UserFollowRequest(ActivitypubMixin, UserRelationship):
             return
 
         with transaction.atomic():
-            UserFollows.from_request(self)
+            try:
+                UserFollows.from_request(self)
+            except IntegrityError:
+                # this just means we already saved this relationship
+                pass
             if self.id:
                 self.delete()
 

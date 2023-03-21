@@ -217,14 +217,14 @@ def add_list_on_account_create_command(user_id):
 
 
 # ---- TASKS
-@app.task(queue=MEDIUM)
+@app.task(queue=MEDIUM, ignore_result=True)
 def populate_lists_task(user_id):
     """background task for populating an empty list stream"""
     user = models.User.objects.get(id=user_id)
     ListsStream().populate_lists(user)
 
 
-@app.task(queue=MEDIUM)
+@app.task(queue=MEDIUM, ignore_result=True)
 def remove_list_task(list_id, re_add=False):
     """remove a list from any stream it might be in"""
     stores = models.User.objects.filter(local=True, is_active=True).values_list(
@@ -239,14 +239,14 @@ def remove_list_task(list_id, re_add=False):
         add_list_task.delay(list_id)
 
 
-@app.task(queue=HIGH)
+@app.task(queue=HIGH, ignore_result=True)
 def add_list_task(list_id):
     """add a list to any stream it should be in"""
     book_list = models.List.objects.get(id=list_id)
     ListsStream().add_list(book_list)
 
 
-@app.task(queue=MEDIUM)
+@app.task(queue=MEDIUM, ignore_result=True)
 def remove_user_lists_task(viewer_id, user_id, exclude_privacy=None):
     """remove all lists by a user from a viewer's stream"""
     viewer = models.User.objects.get(id=viewer_id)
@@ -254,7 +254,7 @@ def remove_user_lists_task(viewer_id, user_id, exclude_privacy=None):
     ListsStream().remove_user_lists(viewer, user, exclude_privacy=exclude_privacy)
 
 
-@app.task(queue=MEDIUM)
+@app.task(queue=MEDIUM, ignore_result=True)
 def add_user_lists_task(viewer_id, user_id):
     """add all lists by a user to a viewer's stream"""
     viewer = models.User.objects.get(id=viewer_id)
