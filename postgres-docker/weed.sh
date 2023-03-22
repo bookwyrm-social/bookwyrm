@@ -84,8 +84,8 @@ function weed_directory {
     for date_file in $(
         find "$directory" \
             -maxdepth 1 \
-            -name 'backup__[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]\.sql' \
-        | sed 's/\(^.*backup__\([0-9-]*\)\.sql$\)/\2\1/' \
+            -name 'backup_[a-z]*_[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]\.sql' \
+        | sed 's/\(^.*backup_[a-z]*_\([0-9-]*\)\.sql$\)/\2\1/' \
         | sort --reverse
     ); do
         date="${date_file:0:10}"
