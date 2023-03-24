@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-03-13 14:54+0000\n"
-"PO-Revision-Date: 2023-03-13 16:39\n"
+"PO-Revision-Date: 2023-03-24 16:32\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Ukrainian\n"
 "Language: uk\n"
@@ -1480,11 +1480,11 @@ msgstr "Опубліковано %(date)s"
 #: bookwyrm/templates/book/publisher_info.html:69
 #, python-format
 msgid "Published by %(publisher)s."
-msgstr "Опубліковано від %(publisher)s."
+msgstr "Видано %(publisher)s."
 
 #: bookwyrm/templates/book/rating.html:13
 msgid "rated it"
-msgstr "оцінив його"
+msgstr "оцінив у"
 
 #: bookwyrm/templates/book/series.html:11
 msgid "Series by"
@@ -1502,19 +1502,19 @@ msgstr ""
 #: bookwyrm/templates/book/sync_modal.html:15
 #, python-format
 msgid "Loading data will connect to <strong>%(source_name)s</strong> and check for any metadata about this book which aren't present here. Existing metadata will not be overwritten."
-msgstr "Під час завантаження даних буде з'єднано з <strong>%(source_name)s</strong> і перевірено наявність метаданих про цю книгу, яких тут немає. Наявні метадані не буде перезаписано."
+msgstr "Процес завантаження даних з'єднається з <strong>%(source_name)s</strong> та перевірить наявність метаданих про цю книгу, яких тут немає. Наявні метадані не буде перезаписано."
 
 #: bookwyrm/templates/compose.html:5 bookwyrm/templates/compose.html:8
 msgid "Edit status"
-msgstr "Редагувати пост"
+msgstr "Редагувати статус"
 
 #: bookwyrm/templates/confirm_email/confirm_email.html:4
 msgid "Confirm email"
-msgstr "Підтвердити Email"
+msgstr "Підтвердження email-адреси"
 
 #: bookwyrm/templates/confirm_email/confirm_email.html:7
 msgid "Confirm your email address"
-msgstr "Підтвердіть свою електронну адресу"
+msgstr "Підтвердьте свою email-адресу"
 
 #: bookwyrm/templates/confirm_email/confirm_email.html:13
 msgid "A confirmation code has been sent to the email address you used to register your account."
@@ -1579,16 +1579,16 @@ msgstr "Каталог"
 
 #: bookwyrm/templates/directory/directory.html:17
 msgid "Make your profile discoverable to other BookWyrm users."
-msgstr "Зробити свій профіль видимим для інших користувачів Bookwyrm."
+msgstr "Зробити свій профіль видимим для інших користувачів BookWyrm."
 
 #: bookwyrm/templates/directory/directory.html:21
 msgid "Join Directory"
-msgstr "Приєднатися до каталогу"
+msgstr "Приєднатися до Каталогу"
 
 #: bookwyrm/templates/directory/directory.html:24
 #, python-format
 msgid "You can opt-out at any time in your <a href=\"%(path)s\">profile settings.</a>"
-msgstr "Ви можете будь-коли спробувати в настройках профілю <a href=\"%(path)s\"></a>"
+msgstr "Ви можете від'єднатися будь-коли в настройках профілю <a href=\"%(path)s\"></a>"
 
 #: bookwyrm/templates/directory/directory.html:29
 #: bookwyrm/templates/directory/directory.html:31
@@ -1605,11 +1605,11 @@ msgstr "Сортувати за"
 
 #: bookwyrm/templates/directory/sort_filter.html:9
 msgid "Recently active"
-msgstr "Останні дії"
+msgstr "Нещодавно активні"
 
 #: bookwyrm/templates/directory/sort_filter.html:10
 msgid "Suggested"
-msgstr "Пропоновані"
+msgstr "Рекомендовані"
 
 #: bookwyrm/templates/directory/user_card.html:17
 #: bookwyrm/templates/directory/user_card.html:18
@@ -1658,7 +1658,7 @@ msgstr "Користувачі BookWyrm"
 
 #: bookwyrm/templates/directory/user_type_filter.html:12
 msgid "All known users"
-msgstr "Всі відомі користувачі"
+msgstr "Усі відомі користувачі"
 
 #: bookwyrm/templates/discover/card-header.html:8
 #, python-format
@@ -1704,22 +1704,22 @@ msgstr "Огляд"
 #: bookwyrm/templates/discover/discover.html:12
 #, python-format
 msgid "See what's new in the local %(site_name)s community"
-msgstr "Дивись що нового у місцевій спільноті %(site_name)s"
+msgstr "Що нового коїться у місцевій спільноті %(site_name)s"
 
 #: bookwyrm/templates/discover/large-book.html:52
 #: bookwyrm/templates/discover/small-book.html:36
 msgid "View status"
-msgstr "Переглянути пост"
+msgstr "Переглянути статус"
 
 #: bookwyrm/templates/email/confirm/html_content.html:6
 #: bookwyrm/templates/email/confirm/text_content.html:4
 #, python-format
 msgid "One last step before you join %(site_name)s! Please confirm your email address by clicking the link below:"
-msgstr "Це останне що треба зробити перед приєднанням до %(site_name)s! Будь ласка, підтвердьте вашу адресу електронної пошти, натиснувши на посилання нижче:"
+msgstr "Це останнє що треба зробити перед приєднанням до %(site_name)s! Будь ласка, підтвердьте вашу адресу електронної пошти, натиснувши на посилання нижче:"
 
 #: bookwyrm/templates/email/confirm/html_content.html:11
 msgid "Confirm Email"
-msgstr "Підтвердити Email"
+msgstr "Підтвердження email-адреси"
 
 #: bookwyrm/templates/email/confirm/html_content.html:15
 #, python-format
@@ -1728,7 +1728,7 @@ msgstr "Або введіть код \"<code>%(confirmation_code)s</code>\" пр
 
 #: bookwyrm/templates/email/confirm/subject.html:2
 msgid "Please confirm your email"
-msgstr "Будь ласка, підтвердіть електронну пошту"
+msgstr "Будь ласка, підтвердьте свою email-адресу"
 
 #: bookwyrm/templates/email/confirm/text_content.html:10
 #, python-format
@@ -1747,7 +1747,7 @@ msgstr "BookWyrm розміщений на <a style=\"color: #3273dc;\" href=\"h
 
 #: bookwyrm/templates/email/html_layout.html:23
 msgid "Email preference"
-msgstr "Налаштування E-mail"
+msgstr "Налаштування Email"
 
 #: bookwyrm/templates/email/invite/html_content.html:6
 #: bookwyrm/templates/email/invite/subject.html:2
