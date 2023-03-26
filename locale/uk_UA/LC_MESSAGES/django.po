@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-03-13 14:54+0000\n"
-"PO-Revision-Date: 2023-03-25 18:22\n"
+"PO-Revision-Date: 2023-03-26 12:26\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Ukrainian\n"
 "Language: uk\n"
@@ -157,7 +157,7 @@ msgstr "Самовидалення"
 
 #: bookwyrm/models/base_model.py:20
 msgid "Self deactivation"
-msgstr "Само деактивація"
+msgstr "Самодеактивація"
 
 #: bookwyrm/models/base_model.py:21
 msgid "Moderator suspension"
@@ -165,7 +165,7 @@ msgstr "Призупинення модератором"
 
 #: bookwyrm/models/base_model.py:22
 msgid "Moderator deletion"
-msgstr "Видалення модератора"
+msgstr "Видалення модератором"
 
 #: bookwyrm/models/base_model.py:23
 msgid "Domain block"
@@ -177,7 +177,7 @@ msgstr "Аудіокнига"
 
 #: bookwyrm/models/book.py:273
 msgid "eBook"
-msgstr "електронна книга"
+msgstr "Електронна книга"
 
 #: bookwyrm/models/book.py:274
 msgid "Graphic novel"
@@ -195,7 +195,7 @@ msgstr "М'яка обкладинка"
 #: bookwyrm/templates/settings/federation/edit_instance.html:55
 #: bookwyrm/templates/settings/federation/instance_list.html:22
 msgid "Federated"
-msgstr "Федеративний"
+msgstr "Федеруються"
 
 #: bookwyrm/models/federated_server.py:12 bookwyrm/models/link.py:71
 #: bookwyrm/templates/settings/federation/edit_instance.html:56
@@ -203,7 +203,7 @@ msgstr "Федеративний"
 #: bookwyrm/templates/settings/federation/instance_list.html:26
 #: bookwyrm/templates/settings/link_domains/link_domains.html:27
 msgid "Blocked"
-msgstr "Заблоковано"
+msgstr "Заблоковані"
 
 #: bookwyrm/models/fields.py:29
 #, python-format
@@ -230,7 +230,7 @@ msgstr "Користувач із таким ім'ям вже існує."
 #: bookwyrm/templates/snippets/privacy_select.html:11
 #: bookwyrm/templates/snippets/privacy_select_no_followers.html:11
 msgid "Public"
-msgstr "Публічний"
+msgstr "Бачуть усі"
 
 #: bookwyrm/models/fields.py:217
 #: bookwyrm/templates/snippets/privacy-icons.html:7
@@ -238,14 +238,14 @@ msgstr "Публічний"
 #: bookwyrm/templates/snippets/privacy_select.html:14
 #: bookwyrm/templates/snippets/privacy_select_no_followers.html:14
 msgid "Unlisted"
-msgstr "Немає у переліку"
+msgstr "Тільки по посиланню"
 
 #: bookwyrm/models/fields.py:218
 #: bookwyrm/templates/snippets/privacy_select.html:17
 #: bookwyrm/templates/user/relationships/followers.html:6
 #: bookwyrm/templates/user/relationships/layout.html:11
 msgid "Followers"
-msgstr "Підписники"
+msgstr "Бачать тільки підписники"
 
 #: bookwyrm/models/fields.py:219
 #: bookwyrm/templates/snippets/create_status/post_options_block.html:6
@@ -254,14 +254,14 @@ msgstr "Підписники"
 #: bookwyrm/templates/snippets/privacy_select.html:20
 #: bookwyrm/templates/snippets/privacy_select_no_followers.html:17
 msgid "Private"
-msgstr "Приватний"
+msgstr "Не бачить ніхто"
 
 #: bookwyrm/models/import_job.py:48 bookwyrm/templates/import/import.html:168
 #: bookwyrm/templates/settings/imports/imports.html:98
 #: bookwyrm/templates/settings/users/user_admin.html:81
 #: bookwyrm/templates/settings/users/user_info.html:28
 msgid "Active"
-msgstr "Активний"
+msgstr "В процесі"
 
 #: bookwyrm/models/import_job.py:49 bookwyrm/templates/import/import.html:166
 msgid "Complete"
@@ -281,7 +281,7 @@ msgstr "Помилка при завантаженні книги"
 
 #: bookwyrm/models/import_job.py:369
 msgid "Could not find a match for book"
-msgstr "Не вдалося знайти матч для книги"
+msgstr "Не вдалося знайти відповідну книгу"
 
 #: bookwyrm/models/link.py:51
 msgid "Free"
@@ -298,11 +298,11 @@ msgstr "Доступно для позики"
 #: bookwyrm/models/link.py:70
 #: bookwyrm/templates/settings/link_domains/link_domains.html:23
 msgid "Approved"
-msgstr "Затверджено"
+msgstr "Схвалено"
 
 #: bookwyrm/models/user.py:32 bookwyrm/templates/book/book.html:298
 msgid "Reviews"
-msgstr "Огляди"
+msgstr "Рецензії"
 
 #: bookwyrm/models/user.py:33
 msgid "Comments"
@@ -318,7 +318,7 @@ msgstr "Все інше"
 
 #: bookwyrm/settings.py:218
 msgid "Home Timeline"
-msgstr "Домашня стрічка"
+msgstr "Стрічка Новин"
 
 #: bookwyrm/settings.py:218
 msgid "Home"
@@ -326,7 +326,7 @@ msgstr "Головна"
 
 #: bookwyrm/settings.py:219
 msgid "Books Timeline"
-msgstr "Книжка стрічка"
+msgstr "Книжкова Стрічка"
 
 #: bookwyrm/settings.py:219
 #: bookwyrm/templates/guided_tour/user_profile.html:101
@@ -342,11 +342,11 @@ msgstr "Англійська"
 
 #: bookwyrm/settings.py:292
 msgid "Català (Catalan)"
-msgstr "Каталонська (Catalan)"
+msgstr "Català (Каталонська)"
 
 #: bookwyrm/settings.py:293
 msgid "Deutsch (German)"
-msgstr "Німецька (German)"
+msgstr "Deutsch (Німецька)"
 
 #: bookwyrm/settings.py:294
 msgid "Español (Spanish)"
@@ -362,7 +362,7 @@ msgstr "Galego (Галісійська)"
 
 #: bookwyrm/settings.py:297
 msgid "Italiano (Italian)"
-msgstr "Італійська (Italian)"
+msgstr "Italiano (Італійська)"
 
 #: bookwyrm/settings.py:298
 msgid "Suomi (Finnish)"
@@ -374,7 +374,7 @@ msgstr "Français (Французька)"
 
 #: bookwyrm/settings.py:300
 msgid "Lietuvių (Lithuanian)"
-msgstr "Литовська (Lithuanian)"
+msgstr "Lietuvių (Литовська)"
 
 #: bookwyrm/settings.py:301
 msgid "Norsk (Norwegian)"
@@ -382,11 +382,11 @@ msgstr "Norsk (Норвезька)"
 
 #: bookwyrm/settings.py:302
 msgid "Polski (Polish)"
-msgstr "Польська (Polish)"
+msgstr "Polski (Польська)"
 
 #: bookwyrm/settings.py:303
 msgid "Português do Brasil (Brazilian Portuguese)"
-msgstr "Бразильська португальська (Português Brasil)"
+msgstr "Português do Brasil (Бразильська португальська)"
 
 #: bookwyrm/settings.py:304
 msgid "Português Europeu (European Portuguese)"
@@ -431,7 +431,7 @@ msgstr "Щось пішло не так! Вибачте."
 #: bookwyrm/templates/about/about.html:9
 #: bookwyrm/templates/about/layout.html:35
 msgid "About"
-msgstr "Інформація"
+msgstr "Про ресурс"
 
 #: bookwyrm/templates/about/about.html:21
 #: bookwyrm/templates/get_started/layout.html:22
@@ -6653,20 +6653,20 @@ msgstr ""
 #, python-format
 msgid "%(num)d book - by %(user)s"
 msgid_plural "%(num)d books - by %(user)s"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "%(num)d книга – від %(user)s"
+msgstr[1] "%(num)d книги – від %(user)s"
+msgstr[2] "%(num)d книг – від %(user)s"
+msgstr[3] "%(num)d книг – від %(user)s"
 
 #: bookwyrm/templatetags/utilities.py:39
 #, python-format
 msgid "%(title)s: %(subtitle)s"
-msgstr ""
+msgstr "%(title)s: %(subtitle)s"
 
 #: bookwyrm/views/rss_feed.py:35
 #, python-brace-format
 msgid "Status updates from {obj.display_name}"
-msgstr ""
+msgstr "Оновлення статусу від {obj.display_name}"
 
 #: bookwyrm/views/rss_feed.py:72
 #, python-brace-format
