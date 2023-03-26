@@ -2,4 +2,4 @@
 # If uncommented, this script will weed the backups directory. It will keep the 14
 # most-recent backups, then one backup/week for the next four backups, then one
 # backup/month after that.
-# 0 1 * * * /usr/local/bin/bookwyrm-weed.sh -d 14 -w 4 -m -1 /backups
+# 0 5 * * * /usr/local/bin/bookwyrm-weed.sh -d 14 -w 4 -m -1 /backups
