@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-03-13 14:54+0000\n"
-"PO-Revision-Date: 2023-03-26 12:26\n"
+"PO-Revision-Date: 2023-03-26 13:22\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Ukrainian\n"
 "Language: uk\n"
@@ -19,32 +19,32 @@ msgstr ""
 
 #: bookwyrm/forms/admin.py:42
 msgid "One Day"
-msgstr "Один день"
+msgstr "Один День"
 
 #: bookwyrm/forms/admin.py:43
 msgid "One Week"
-msgstr "Один тиждень"
+msgstr "Один Тиждень"
 
 #: bookwyrm/forms/admin.py:44
 msgid "One Month"
-msgstr "Один місяць"
+msgstr "Один Місяць"
 
 #: bookwyrm/forms/admin.py:45
 msgid "Does Not Expire"
-msgstr "Не закінчується"
+msgstr "Невичерпний"
 
 #: bookwyrm/forms/admin.py:49
 #, python-brace-format
 msgid "{i} uses"
-msgstr "{i} використовує"
+msgstr "{i} використань"
 
 #: bookwyrm/forms/admin.py:50
 msgid "Unlimited"
-msgstr "Необмежений"
+msgstr "Без обмежень"
 
 #: bookwyrm/forms/edit_user.py:88
 msgid "Incorrect password"
-msgstr "Неправильний пароль"
+msgstr "Невірний пароль"
 
 #: bookwyrm/forms/edit_user.py:95 bookwyrm/forms/landing.py:90
 msgid "Password does not match"
@@ -56,7 +56,7 @@ msgstr "Неправильний Пароль"
 
 #: bookwyrm/forms/forms.py:54
 msgid "Reading finish date cannot be before start date."
-msgstr "Дата завершення читання не може бути до дати початку."
+msgstr "Дата прочитання не може бути до дати початку читання."
 
 #: bookwyrm/forms/forms.py:59
 msgid "Reading stopped date cannot be before start date."
@@ -68,11 +68,11 @@ msgstr "Дата зупинки читання не може бути в май�
 
 #: bookwyrm/forms/forms.py:74
 msgid "Reading finished date cannot be in the future."
-msgstr "Дата завершення читання не може бути в майбутньому."
+msgstr "Дата прочитання не може бути в майбутньому."
 
 #: bookwyrm/forms/landing.py:38
 msgid "Username or password are incorrect"
-msgstr "Ім’я користувача або пароль неправильні"
+msgstr "Ім’я користувача або пароль невірні"
 
 #: bookwyrm/forms/landing.py:57
 msgid "User with this username already exists"
@@ -88,25 +88,25 @@ msgstr "Неправильний код"
 
 #: bookwyrm/forms/links.py:36
 msgid "This domain is blocked. Please contact your administrator if you think this is an error."
-msgstr "Цей домен заблоковано. Зверніться до адміністратора, якщо ви вважаєте, що це помилка."
+msgstr "Цей домен заблоковано. Зверніться до адміністратора, якщо ви вважаєте це помилкою."
 
 #: bookwyrm/forms/links.py:49
 msgid "This link with file type has already been added for this book. If it is not visible, the domain is still pending."
-msgstr "Це посилання з типом файлу вже було додано для цієї книги. Якщо воно не видиме, домен все ще очікується."
+msgstr "Це посилання на файл вже було додано для цієї книги. Якщо воно не відображується, домен все ще перевіряється."
 
 #: bookwyrm/forms/lists.py:26
 msgid "List Order"
-msgstr "Сортування списку"
+msgstr "Порядком"
 
 #: bookwyrm/forms/lists.py:27
 msgid "Book Title"
-msgstr "Назва книги"
+msgstr "Назвою книги"
 
 #: bookwyrm/forms/lists.py:28 bookwyrm/templates/shelf/shelf.html:156
 #: bookwyrm/templates/shelf/shelf.html:188
 #: bookwyrm/templates/snippets/create_status/review.html:32
 msgid "Rating"
-msgstr "Рейтинг"
+msgstr "Рейтингом"
 
 #: bookwyrm/forms/lists.py:30 bookwyrm/templates/lists/list.html:185
 msgid "Sort By"
@@ -126,7 +126,7 @@ msgstr "Основний"
 
 #: bookwyrm/models/announcement.py:12
 msgid "Success"
-msgstr "Успішно"
+msgstr "Успіх"
 
 #: bookwyrm/models/announcement.py:13
 #: bookwyrm/templates/settings/invites/manage_invites.html:47
@@ -149,7 +149,7 @@ msgstr "Автоматично згенерований звіт"
 #: bookwyrm/models/link.py:72 bookwyrm/templates/import/import_status.html:214
 #: bookwyrm/templates/settings/link_domains/link_domains.html:19
 msgid "Pending"
-msgstr "В очікуванні"
+msgstr "Перевіряється"
 
 #: bookwyrm/models/base_model.py:19
 msgid "Self deletion"
@@ -594,10 +594,10 @@ msgstr "На жаль, %(display_name)s не прочитав жодної кн�
 #, python-format
 msgid "In %(year)s, %(display_name)s read %(books_total)s book<br />for a total of %(pages_total)s pages!"
 msgid_plural "In %(year)s, %(display_name)s read %(books_total)s books<br />for a total of %(pages_total)s pages!"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] "У %(year)s, %(display_name)s прочитав(ла) %(books_total)s книг<br />на загальну суму %(pages_total)s сторінок!"
-msgstr[3] ""
+msgstr[0] "У %(year)s, користувачем %(display_name)s була прочитана %(books_total)s книга<br />або %(pages_total)s сторінок загалом!"
+msgstr[1] "У %(year)s, користувачем %(display_name)s було прочитано %(books_total)s книги<br />або %(pages_total)s сторінок загалом!"
+msgstr[2] "У %(year)s, користувачем %(display_name)s було прочитано %(books_total)s книг<br />або %(pages_total)s сторінок загалом!"
+msgstr[3] "У %(year)s, користувачем %(display_name)s було прочитано %(books_total)s книг<br />або %(pages_total)s сторінок загалом!"
 
 #: bookwyrm/templates/annual_summary/layout.html:124
 msgid "That’s great!"
@@ -612,10 +612,10 @@ msgstr "Це становить в середньому %(pages)s сторіно
 #, python-format
 msgid "(No page data was available for %(no_page_number)s book)"
 msgid_plural "(No page data was available for %(no_page_number)s books)"
-msgstr[0] "(Немає даних про сторінки для %(no_page_number)s книг)"
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] "(Немає даних сторінки для %(no_page_number)s книг)"
+msgstr[0] "(Дані про кількість сторінок не було знайдено для %(no_page_number)s книги)"
+msgstr[1] "(Дані про кількість сторінок не було знайдено для %(no_page_number)s книг)"
+msgstr[2] "(Дані про кількість сторінок не було знайдено для %(no_page_number)s книг)"
+msgstr[3] "(Дані про кількість сторінок не було знайдено для %(no_page_number)s книг)"
 
 #: bookwyrm/templates/annual_summary/layout.html:150
 msgid "Their shortest read this year…"
@@ -645,10 +645,10 @@ msgstr "…і найдовший"
 #, python-format
 msgid "%(display_name)s set a goal of reading %(goal)s book in %(year)s,<br /> and achieved %(goal_percent)s%% of that goal"
 msgid_plural "%(display_name)s set a goal of reading %(goal)s books in %(year)s,<br /> and achieved %(goal_percent)s%% of that goal"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] "%(display_name)s встановив(-ла) ціль прочитати %(goal)s книг в %(year)s,<br /> і досяг %(goal_percent)s%% від цієї мети"
-msgstr[3] ""
+msgstr[0] "%(display_name)s встановив(-ла) ціль прочитати %(goal)s книгу в %(year)s,<br /> і досяг(-ла) %(goal_percent)s%% від цієї мети"
+msgstr[1] "%(display_name)s встановив(-ла) ціль прочитати %(goal)s книги в %(year)s,<br /> і досяг(-ла) %(goal_percent)s%% від цієї мети"
+msgstr[2] "%(display_name)s встановив(-ла) ціль прочитати %(goal)s книги в %(year)s,<br /> і досяг(-ла) %(goal_percent)s%% від цієї мети"
+msgstr[3] "%(display_name)s встановив(-ла) ціль прочитати %(goal)s книги в %(year)s,<br /> і досяг(-ла) %(goal_percent)s%% від цієї мети"
 
 #: bookwyrm/templates/annual_summary/layout.html:211
 msgid "Way to go!"
@@ -658,10 +658,10 @@ msgstr "Так тримати!"
 #, python-format
 msgid "%(display_name)s left %(ratings_total)s rating, <br />their average rating is %(rating_average)s"
 msgid_plural "%(display_name)s left %(ratings_total)s ratings, <br />their average rating is %(rating_average)s"
-msgstr[0] "%(display_name)s залишив(-ла) %(ratings_total)s оцінку, <br />їх середній рейтинг %(rating_average)s"
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "%(display_name)s залишив(-ла) %(ratings_total)s оцінку, <br />вона дорівнює %(rating_average)s"
+msgstr[1] "%(display_name)s залишив(-ла) %(ratings_total)s оцінок, <br />їх середнє значення - %(rating_average)s"
+msgstr[2] "%(display_name)s залишив(-ла) %(ratings_total)s оцінок, <br />їх середнє значення - %(rating_average)s"
+msgstr[3] "%(display_name)s залишив(-ла) %(ratings_total)s оцінок, <br />їх середнє значення - %(rating_average)s"
 
 #: bookwyrm/templates/annual_summary/layout.html:240
 msgid "Their best rated review"
@@ -927,10 +927,10 @@ msgstr "Натисніть для збільшення"
 #, python-format
 msgid "(%(review_count)s review)"
 msgid_plural "(%(review_count)s reviews)"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] "(%(review_count)s відгуків)"
-msgstr[3] ""
+msgstr[0] "(%(review_count)s рецензія)"
+msgstr[1] "(%(review_count)s рецензії)"
+msgstr[2] "(%(review_count)s рецензій)"
+msgstr[3] "(%(review_count)s рецензій)"
 
 #: bookwyrm/templates/book/book.html:200
 msgid "Add Description"
@@ -946,10 +946,10 @@ msgstr "Опис:"
 #, python-format
 msgid "%(count)s edition"
 msgid_plural "%(count)s editions"
-msgstr[0] ""
+msgstr[0] "%(count)s видання"
 msgstr[1] "%(count)s видання"
-msgstr[2] ""
-msgstr[3] ""
+msgstr[2] "%(count)s видань"
+msgstr[3] "%(count)s видань"
 
 #: bookwyrm/templates/book/book.html:237
 msgid "You have shelved this edition in:"
@@ -1627,18 +1627,18 @@ msgstr "Заблокований обліковий запис"
 #: bookwyrm/templates/directory/user_card.html:40
 msgid "follower you follow"
 msgid_plural "followers you follow"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "підписник, за яким ви стежите"
+msgstr[1] "підписників, за якими ви стежите"
 msgstr[2] "підписників, за якими ви стежите"
-msgstr[3] ""
+msgstr[3] "підписників, за якими ви стежите"
 
 #: bookwyrm/templates/directory/user_card.html:47
 msgid "book on your shelves"
 msgid_plural "books on your shelves"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] "книжок на полиці"
-msgstr[3] ""
+msgstr[0] "книга на ваших полицях"
+msgstr[1] "книги на ваших полицях"
+msgstr[2] "книги на ваших полицях"
+msgstr[3] "книги на ваших полицях"
 
 #: bookwyrm/templates/directory/user_card.html:55
 msgid "posts"
@@ -2178,20 +2178,20 @@ msgstr "Додавайте нових учасників!"
 #, python-format
 msgid "%(mutuals)s follower you follow"
 msgid_plural "%(mutuals)s followers you follow"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(mutuals)s підписник, за яким ви стежите"
+msgstr[1] "%(mutuals)s підписників, за якими ви стежите"
 msgstr[2] "%(mutuals)s підписників, за якими ви стежите"
-msgstr[3] ""
+msgstr[3] "%(mutuals)s підписників, за якими ви стежите"
 
 #: bookwyrm/templates/groups/suggested_users.html:27
 #: bookwyrm/templates/snippets/suggested_users.html:23
 #, python-format
 msgid "%(shared_books)s book on your shelves"
 msgid_plural "%(shared_books)s books on your shelves"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] "%(shared_books)s книг на вашій полиці"
-msgstr[3] ""
+msgstr[0] "%(shared_books)s книга на ваших полицях"
+msgstr[1] "%(shared_books)s книги на ваших полицях"
+msgstr[2] "%(shared_books)s книг на ваших полицях"
+msgstr[3] "%(shared_books)s книг на ваших полицях"
 
 #: bookwyrm/templates/groups/suggested_users.html:43
 #, python-format
@@ -3371,7 +3371,7 @@ msgstr ""
 
 #: bookwyrm/templates/lists/list.html:191
 msgid "Direction"
-msgstr ""
+msgstr "Напрямок сортування"
 
 #: bookwyrm/templates/lists/list.html:205
 msgid "Add Books"
@@ -6671,24 +6671,24 @@ msgstr "Оновлення статусу від {obj.display_name}"
 #: bookwyrm/views/rss_feed.py:72
 #, python-brace-format
 msgid "Reviews from {obj.display_name}"
-msgstr ""
+msgstr "Рецензії від {obj.display_name}"
 
 #: bookwyrm/views/rss_feed.py:110
 #, python-brace-format
 msgid "Quotes from {obj.display_name}"
-msgstr ""
+msgstr "Цитати додані {obj.display_name}"
 
 #: bookwyrm/views/rss_feed.py:148
 #, python-brace-format
 msgid "Comments from {obj.display_name}"
-msgstr ""
+msgstr "Коментарі від {obj.display_name}"
 
 #: bookwyrm/views/updates.py:45
 #, python-format
 msgid "Load %(count)d unread status"
 msgid_plural "Load %(count)d unread statuses"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Завантажено %(count)d непрочитаний статус"
+msgstr[1] "Завантажено %(count)d непрочитаних статусів"
+msgstr[2] "Завантажено %(count)d непрочитаних статусів"
+msgstr[3] "Завантажено %(count)d непрочитаних статусів"
 
