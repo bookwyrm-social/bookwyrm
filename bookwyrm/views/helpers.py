@@ -16,6 +16,7 @@ from bookwyrm import activitypub, models, settings
 from bookwyrm.connectors import ConnectorException, get_data
 from bookwyrm.status import create_generated_note
 from bookwyrm.utils import regex
+from bookwyrm.utils.validate import validate_url_domain
 
 
 # pylint: disable=unnecessary-pass
@@ -219,3 +220,15 @@ def maybe_redirect_local_path(request, model):
         new_path = f"{model.local_path}?{request.GET.urlencode()}"
 
     return redirect(new_path, permanent=True)
+
+
+def redirect_to_referer(request, *args):
+    """Redirect to the referrer, if it's in our domain, with get params"""
+    # make sure the refer is part of this instance
+    validated = validate_url_domain(request.META.get("HTTP_REFERER"))
+
+    if validated:
+        return redirect(validated)
+
+    # if not, use the args passed you'd normally pass to redirect()
+    return redirect(*args or "/")

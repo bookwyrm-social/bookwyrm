@@ -2,12 +2,12 @@
 from bookwyrm.settings import DOMAIN, USE_HTTPS
 
 
-def validate_url_domain(url, default="/"):
+def validate_url_domain(url):
     """Basic check that the URL starts with the instance domain name"""
     if not url:
-        return default
+        return None
 
-    if url in ("/", default):
+    if url == "/":
         return url
 
     protocol = "https://" if USE_HTTPS else "http://"
@@ -16,4 +16,4 @@ def validate_url_domain(url, default="/"):
     if url.startswith(origin):
         return url
 
-    return default
+    return None
