@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-03-13 14:54+0000\n"
-"PO-Revision-Date: 2023-03-14 06:27\n"
+"POT-Creation-Date: 2023-03-29 14:55+0000\n"
+"PO-Revision-Date: 2023-03-29 16:50\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Galician\n"
 "Language: gl\n"
@@ -316,19 +316,19 @@ msgstr "Citas"
 msgid "Everything else"
 msgstr "As outras cousas"
 
-#: bookwyrm/settings.py:218
+#: bookwyrm/settings.py:221
 msgid "Home Timeline"
 msgstr "Cronoloxía de Inicio"
 
-#: bookwyrm/settings.py:218
+#: bookwyrm/settings.py:221
 msgid "Home"
 msgstr "Inicio"
 
-#: bookwyrm/settings.py:219
+#: bookwyrm/settings.py:222
 msgid "Books Timeline"
 msgstr "Cronoloxía de libros"
 
-#: bookwyrm/settings.py:219
+#: bookwyrm/settings.py:222
 #: bookwyrm/templates/guided_tour/user_profile.html:101
 #: bookwyrm/templates/search/layout.html:22
 #: bookwyrm/templates/search/layout.html:43
@@ -336,75 +336,79 @@ msgstr "Cronoloxía de libros"
 msgid "Books"
 msgstr "Libros"
 
-#: bookwyrm/settings.py:291
+#: bookwyrm/settings.py:294
 msgid "English"
 msgstr "English (Inglés)"
 
-#: bookwyrm/settings.py:292
+#: bookwyrm/settings.py:295
 msgid "Català (Catalan)"
 msgstr "Català (Catalan)"
 
-#: bookwyrm/settings.py:293
+#: bookwyrm/settings.py:296
 msgid "Deutsch (German)"
 msgstr "Deutsch (Alemán)"
 
-#: bookwyrm/settings.py:294
+#: bookwyrm/settings.py:297
+msgid "Esperanto (Esperanto)"
+msgstr ""
+
+#: bookwyrm/settings.py:298
 msgid "Español (Spanish)"
 msgstr "Español (Español)"
 
-#: bookwyrm/settings.py:295
+#: bookwyrm/settings.py:299
 msgid "Euskara (Basque)"
 msgstr "Euskara (Éuscaro)"
 
-#: bookwyrm/settings.py:296
+#: bookwyrm/settings.py:300
 msgid "Galego (Galician)"
 msgstr "Galego (Galego)"
 
-#: bookwyrm/settings.py:297
+#: bookwyrm/settings.py:301
 msgid "Italiano (Italian)"
 msgstr "Italiano (Italiano)"
 
-#: bookwyrm/settings.py:298
+#: bookwyrm/settings.py:302
 msgid "Suomi (Finnish)"
 msgstr "Suomi (Finés)"
 
-#: bookwyrm/settings.py:299
+#: bookwyrm/settings.py:303
 msgid "Français (French)"
 msgstr "Français (Francés)"
 
-#: bookwyrm/settings.py:300
+#: bookwyrm/settings.py:304
 msgid "Lietuvių (Lithuanian)"
 msgstr "Lietuvių (Lituano)"
 
-#: bookwyrm/settings.py:301
+#: bookwyrm/settings.py:305
 msgid "Norsk (Norwegian)"
 msgstr "Norsk (Noruegués)"
 
-#: bookwyrm/settings.py:302
+#: bookwyrm/settings.py:306
 msgid "Polski (Polish)"
 msgstr "Polski (Polaco)"
 
-#: bookwyrm/settings.py:303
+#: bookwyrm/settings.py:307
 msgid "Português do Brasil (Brazilian Portuguese)"
 msgstr "Português do Brasil (Portugués brasileiro)"
 
-#: bookwyrm/settings.py:304
+#: bookwyrm/settings.py:308
 msgid "Português Europeu (European Portuguese)"
 msgstr "Português Europeu (Portugués europeo)"
 
-#: bookwyrm/settings.py:305
+#: bookwyrm/settings.py:309
 msgid "Română (Romanian)"
 msgstr "Română (Rumanés)"
 
-#: bookwyrm/settings.py:306
+#: bookwyrm/settings.py:310
 msgid "Svenska (Swedish)"
 msgstr "Svenska (Sueco)"
 
-#: bookwyrm/settings.py:307
+#: bookwyrm/settings.py:311
 msgid "简体中文 (Simplified Chinese)"
 msgstr "简体中文 (Chinés simplificado)"
 
-#: bookwyrm/settings.py:308
+#: bookwyrm/settings.py:312
 msgid "繁體中文 (Traditional Chinese)"
 msgstr "繁體中文 (Chinés tradicional)"
 
@@ -842,7 +846,7 @@ msgstr "ISNI:"
 #: bookwyrm/templates/lists/bookmark_button.html:15
 #: bookwyrm/templates/lists/edit_item_form.html:15
 #: bookwyrm/templates/lists/form.html:130
-#: bookwyrm/templates/preferences/edit_user.html:136
+#: bookwyrm/templates/preferences/edit_user.html:140
 #: bookwyrm/templates/readthrough/readthrough_modal.html:81
 #: bookwyrm/templates/settings/announcements/edit_announcement.html:120
 #: bookwyrm/templates/settings/federation/edit_instance.html:98
@@ -4037,6 +4041,11 @@ msgstr "Agochar relacións de seguimento no perfil"
 #: bookwyrm/templates/preferences/edit_user.html:128
 msgid "Default post privacy:"
 msgstr "Privacidade por defecto:"
+
+#: bookwyrm/templates/preferences/edit_user.html:136
+#, python-format
+msgid "Looking for shelf privacy? You can set a sepearate visibility level for each of your shelves. Go to <a href=\"%(path)s\">Your Books</a>, pick a shelf from the tab bar, and click \"Edit shelf.\""
+msgstr ""
 
 #: bookwyrm/templates/preferences/export.html:4
 #: bookwyrm/templates/preferences/export.html:7
