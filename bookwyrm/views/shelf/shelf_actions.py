@@ -3,9 +3,9 @@ from django.db import IntegrityError, transaction
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect
 from django.views.decorators.http import require_POST
-from bookwyrm.utils.validate import validate_url_domain
 
 from bookwyrm import forms, models
+from bookwyrm.views.helpers import redirect_to_referer
 
 
 @login_required
@@ -36,8 +36,6 @@ def delete_shelf(request, shelf_id):
 @transaction.atomic
 def shelve(request):
     """put a book on a user's shelf"""
-    next_step = request.META.get("HTTP_REFERER")
-    next_step = validate_url_domain(next_step, "/")
     book = get_object_or_404(models.Edition, id=request.POST.get("book"))
     desired_shelf = get_object_or_404(
         request.user.shelf_set, identifier=request.POST.get("shelf")
@@ -74,7 +72,7 @@ def shelve(request):
             ):
                 current_read_status_shelfbook.delete()
             else:
-                return redirect(next_step)
+                return redirect_to_referer(request)
 
         # create the new shelf-book entry
         models.ShelfBook.objects.create(
@@ -91,15 +89,13 @@ def shelve(request):
         except IntegrityError:
             pass
 
-    return redirect(next_step)
+    return redirect_to_referer(request)
 
 
 @login_required
 @require_POST
 def unshelve(request, book_id=False):
     """remove a book from a user's shelf"""
-    next_step = request.META.get("HTTP_REFERER")
-    next_step = validate_url_domain(next_step, "/")
     identity = book_id if book_id else request.POST.get("book")
     book = get_object_or_404(models.Edition, id=identity)
     shelf_book = get_object_or_404(
@@ -107,4 +103,4 @@ def unshelve(request, book_id=False):
     )
     shelf_book.raise_not_deletable(request.user)
     shelf_book.delete()
-    return redirect(next_step)
+    return redirect_to_referer(request)
