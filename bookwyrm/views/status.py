@@ -143,7 +143,7 @@ def format_mentions(content, mentions):
     for (mention_text, mention_user) in mentions.items():
         # turn the mention into a link
         content = re.sub(
-            rf"{mention_text}\b(?!@)",
+            rf"(?<!/)\B{mention_text}\b(?!@)",
             rf'<a href="{mention_user.remote_id}">{mention_text}</a>',
             content,
         )
@@ -155,7 +155,7 @@ def format_hashtags(content, hashtags):
     for (mention_text, mention_hashtag) in hashtags.items():
         # turn the mention into a link
         content = re.sub(
-            rf"{mention_text}\b(?!@)",
+            rf"(?<!/)\B{mention_text}\b(?!@)",
             rf'<a href="{mention_hashtag.remote_id}" data-mention="hashtag">'
             + rf"{mention_text}</a>",
             content,
