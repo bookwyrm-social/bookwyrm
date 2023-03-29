@@ -462,7 +462,7 @@ http://www.fish.com/"""
         mentions = views.status.find_mentions(self.local_user, content)
         self.assertEqual(
             views.status.format_mentions(content, mentions),
-            'a link to https://example.com/user/@mouse',
+            "a link to https://example.com/user/@mouse",
         )
 
     def test_format_hashtag_with_pound_symbol_links(self, *_):
@@ -471,7 +471,7 @@ http://www.fish.com/"""
         hashtags = views.status.find_or_create_hashtags(content)
         self.assertEqual(
             views.status.format_hashtags(content, hashtags),
-            'a link to https://example.com/page#anchor',
+            "a link to https://example.com/page#anchor",
         )
 
     def test_to_markdown(self, *_):
