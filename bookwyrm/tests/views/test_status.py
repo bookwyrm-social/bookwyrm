@@ -460,20 +460,18 @@ http://www.fish.com/"""
         """A link with an @username shouldn't treat the username as a mention"""
         content = "a link to https://example.com/user/@mouse"
         mentions = views.status.find_mentions(self.local_user, content)
-        # pylint: disable=line-too-long
         self.assertEqual(
             views.status.format_mentions(content, mentions),
-            'a link to <a href="https://example.com/user/@mouse">www.example.com/user/@mouse</a>',
+            'a link to https://example.com/user/@mouse',
         )
 
     def test_format_hashtag_with_pound_symbol_links(self, *_):
         """A link with an @username shouldn't treat the username as a mention"""
         content = "a link to https://example.com/page#anchor"
         hashtags = views.status.find_or_create_hashtags(content)
-        # pylint: disable=line-too-long
         self.assertEqual(
             views.status.format_hashtags(content, hashtags),
-            'a link to <a href="https://example.com/page#anchor">example.com/page#anchor</a>',
+            'a link to https://example.com/page#anchor',
         )
 
     def test_to_markdown(self, *_):
