@@ -456,6 +456,16 @@ http://www.fish.com/"""
             views.status.format_links(url), f'<a href="{url}">{url[8:]}</a>'
         )
 
+    def test_format_links_with_at_symbol(self, *_):
+        """A link with an @username shouldn't treat the username as a mention"""
+        content = "a link to https://www.example.com/user/@mouse"
+        mentions = views.status.find_mentions(self.local_user, content)
+        # pylint: disable=line-too-long
+        self.assertEqual(
+            views.status.format_mentions(content, mentions),
+            'a link to <a href="https://www.example.com/user/@mouse">www.example.com/user/@mouse</a>'
+        )
+
     def test_to_markdown(self, *_):
         """this is mostly handled in other places, but nonetheless"""
         text = "_hi_ and http://fish.com is <marquee>rad</marquee>"

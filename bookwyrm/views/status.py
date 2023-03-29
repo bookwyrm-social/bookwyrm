@@ -96,18 +96,12 @@ class CreateStatus(View):
 
         # inspect the text for user tags
         content = status.content
-        for (mention_text, mention_user) in find_mentions(
-            request.user, content
-        ).items():
+        mentions = find_mentions(request.user, content)
+        for (_, mention_user) in mentions:
             # add them to status mentions fk
             status.mention_users.add(mention_user)
+        content = format_mentions(content, mentions)
 
-            # turn the mention into a link
-            content = re.sub(
-                rf"{mention_text}\b(?!@)",
-                rf'<a href="{mention_user.remote_id}">{mention_text}</a>',
-                content,
-            )
         # add reply parent to mentions
         if status.reply_parent:
             status.mention_users.add(status.reply_parent.user)
@@ -148,6 +142,17 @@ class CreateStatus(View):
         if is_api_request(request):
             return HttpResponse()
         return redirect_to_referer(request)
+
+def format_mentions(content, mentions):
+    """Detect @mentions and make them links"""
+    for (mention_text, mention_user) in mentions.items():
+        # turn the mention into a link
+        content = re.sub(
+            rf"{mention_text}\b(?!@)",
+            rf'<a href="{mention_user.remote_id}">{mention_text}</a>',
+            content,
+        )
+    return content
 
 
 @method_decorator(login_required, name="dispatch")
