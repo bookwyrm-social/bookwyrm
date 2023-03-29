@@ -97,7 +97,7 @@ class CreateStatus(View):
         # inspect the text for user tags
         content = status.content
         mentions = find_mentions(request.user, content)
-        for (_, mention_user) in mentions:
+        for (_, mention_user) in mentions.items():
             # add them to status mentions fk
             status.mention_users.add(mention_user)
         content = format_mentions(content, mentions)
