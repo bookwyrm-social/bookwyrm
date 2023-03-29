@@ -294,6 +294,7 @@ LANGUAGES = [
     ("en-us", _("English")),
     ("ca-es", _("Català (Catalan)")),
     ("de-de", _("Deutsch (German)")),
+    ("eo-uy", _("Esperanto (Esperanto)")),
     ("es-es", _("Español (Spanish)")),
     ("eu-es", _("Euskara (Basque)")),
     ("gl-es", _("Galego (Galician)")),
