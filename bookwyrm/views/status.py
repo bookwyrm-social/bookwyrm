@@ -107,17 +107,11 @@ class CreateStatus(View):
             status.mention_users.add(status.reply_parent.user)
 
         # inspect the text for hashtags
-        for (mention_text, mention_hashtag) in find_or_create_hashtags(content).items():
+        hashtags = find_or_create_hashtags(content)
+        for (_, mention_hashtag) in hashtags.items():
             # add them to status mentions fk
             status.mention_hashtags.add(mention_hashtag)
-
-            # turn the mention into a link
-            content = re.sub(
-                rf"{mention_text}\b(?!@)",
-                rf'<a href="{mention_hashtag.remote_id}" data-mention="hashtag">'
-                + rf"{mention_text}</a>",
-                content,
-            )
+        content = format_hashtags(content, hashtags)
 
         # deduplicate mentions
         status.mention_users.set(set(status.mention_users.all()))
@@ -143,6 +137,7 @@ class CreateStatus(View):
             return HttpResponse()
         return redirect_to_referer(request)
 
+
 def format_mentions(content, mentions):
     """Detect @mentions and make them links"""
     for (mention_text, mention_user) in mentions.items():
@@ -150,6 +145,19 @@ def format_mentions(content, mentions):
         content = re.sub(
             rf"{mention_text}\b(?!@)",
             rf'<a href="{mention_user.remote_id}">{mention_text}</a>',
+            content,
+        )
+    return content
+
+
+def format_hashtags(content, hashtags):
+    """Detect #hashtags and make them links"""
+    for (mention_text, mention_hashtag) in hashtags.items():
+        # turn the mention into a link
+        content = re.sub(
+            rf"{mention_text}\b(?!@)",
+            rf'<a href="{mention_hashtag.remote_id}" data-mention="hashtag">'
+            + rf"{mention_text}</a>",
             content,
         )
     return content
