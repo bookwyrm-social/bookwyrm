@@ -34,7 +34,7 @@
     border-bottom-color: $border;
     border-bottom-style: solid;
     border-bottom-width: 1px;
-    color: $link;
+    color: $text;
     display: flex;
     justify-content: center;
     margin-bottom: -1px;
@@ -44,12 +44,12 @@
 
 .bw-tabs a:hover {
     border-bottom-color: transparent;
-    color: $link
+    color: $text
 }
 
 .bw-tabs a.is-active {
     border-bottom-color: transparent;
-    color: $text
+    color: $link 
 }
 
 .bw-tabs.is-left {
