@@ -10,7 +10,7 @@ if settings.OTEL_EXPORTER_CONSOLE:
     trace.get_tracer_provider().add_span_processor(
         BatchSpanProcessor(ConsoleSpanExporter())
     )
-else:
+elif settings.OTEL_EXPORTER_OTLP_ENDPOINT:
     trace.get_tracer_provider().add_span_processor(
         BatchSpanProcessor(OTLPSpanExporter())
     )
@@ -29,3 +29,7 @@ def instrumentCelery():
     @worker_process_init.connect(weak=False)
     def init_celery_tracing(*args, **kwargs):
         CeleryInstrumentor().instrument()
+
+
+def tracer():
+    return trace.get_tracer(__name__)
