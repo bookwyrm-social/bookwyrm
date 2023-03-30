@@ -252,9 +252,12 @@ class ImportItem(models.Model):
     @property
     def rating(self):
         """x/5 star rating for a book"""
-        if self.normalized_data.get("rating"):
+        if not self.normalized_data.get("rating"):
+            return None
+        try:
             return float(self.normalized_data.get("rating"))
-        return None
+        except ValueError:
+            return None
 
     @property
     def date_added(self):
