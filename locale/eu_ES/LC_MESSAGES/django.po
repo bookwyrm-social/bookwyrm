@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-03-29 14:55+0000\n"
-"PO-Revision-Date: 2023-03-30 14:53\n"
+"PO-Revision-Date: 2023-03-30 15:55\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Basque\n"
 "Language: eu\n"
@@ -350,7 +350,7 @@ msgstr "Deutsch (alemana)"
 
 #: bookwyrm/settings.py:297
 msgid "Esperanto (Esperanto)"
-msgstr ""
+msgstr "Esperantoa"
 
 #: bookwyrm/settings.py:298
 msgid "Español (Spanish)"
@@ -1081,7 +1081,7 @@ msgstr "Gehitu liburua"
 
 #: bookwyrm/templates/book/edit/edit_book.html:43
 msgid "Failed to save book, see errors below for more information."
-msgstr ""
+msgstr "Liburua gordetzeak huts egin du, ikus behean agertzen diren erroreak informazio gehiagorako."
 
 #: bookwyrm/templates/book/edit/edit_book.html:70
 msgid "Confirm Book Info"
@@ -1485,11 +1485,11 @@ msgstr ""
 #: bookwyrm/templates/book/series.html:27
 #, python-format
 msgid "Book %(series_number)s"
-msgstr ""
+msgstr "%(series_number)s. liburua"
 
 #: bookwyrm/templates/book/series.html:27
 msgid "Unsorted Book"
-msgstr ""
+msgstr "Sailkatu gabeko liburua"
 
 #: bookwyrm/templates/book/sync_modal.html:15
 #, python-format
@@ -2707,7 +2707,7 @@ msgstr ""
 
 #: bookwyrm/templates/hashtag.html:25
 msgid "No activities for this hashtag yet!"
-msgstr ""
+msgstr "Ez dago aktibitaterik oraindik traola honentzat!"
 
 #: bookwyrm/templates/import/import.html:5
 #: bookwyrm/templates/import/import.html:9
@@ -3460,62 +3460,62 @@ msgstr[1] "<a href=\"%(related_user_link)s\">%(related_user)s</a>(e)k iradoki du
 #: bookwyrm/templates/notifications/items/boost.html:21
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> boosted your <a href=\"%(related_path)s\">review of <em>%(book_title)s</em></a>"
-msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a>(e)k zure <a href=\"%(related_path)s\"><em>%(book_title)s</em>(r)en kritika</a> zabaldu du"
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a>(e)k zure <a href=\"%(related_path)s\"><em>%(book_title)s</em>(r)en kritika</a> bultzatu du"
 
 #: bookwyrm/templates/notifications/items/boost.html:27
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and <a href=\"%(second_user_link)s\">%(second_user)s</a> boosted your <a href=\"%(related_path)s\">review of <em>%(book_title)s</em></a>"
-msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> eta <a href=\"%(second_user_link)s\">%(second_user)s</a>(e)k <em>%(book_title)s</em> liburuari buruzko zure <a href=\"%(related_path)s\">kritika</a> sustatu dute"
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> eta <a href=\"%(second_user_link)s\">%(second_user)s</a>(e)k <em>%(book_title)s</em> liburuari buruzko zure <a href=\"%(related_path)s\">kritika</a> bultzatu dute"
 
 #: bookwyrm/templates/notifications/items/boost.html:36
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and %(other_user_display_count)s others boosted your <a href=\"%(related_path)s\">review of <em>%(book_title)s</em></a>"
-msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> eta beste %(other_user_display_count)s erabiltzailek <em>%(book_title)s</em> liburuari buruzko zure <a href=\"%(related_path)s\">kritika </a> sustatu zuten"
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> eta beste %(other_user_display_count)s erabiltzailek <em>%(book_title)s</em> liburuari buruzko zure <a href=\"%(related_path)s\">kritika </a> bultzatu dute"
 
 #: bookwyrm/templates/notifications/items/boost.html:44
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> boosted your <a href=\"%(related_path)s\">comment on <em>%(book_title)s</em></a>"
-msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a>(e)k zure <a href=\"%(related_path)s\"><em>%(book_title)s</em>(r)i buruzko iruzkina</a> zabaldu du"
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a>(e)k zure <a href=\"%(related_path)s\"><em>%(book_title)s</em>(r)i buruzko iruzkina</a> bultzatu du"
 
 #: bookwyrm/templates/notifications/items/boost.html:50
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and <a href=\"%(second_user_link)s\">%(second_user)s</a> boosted your <a href=\"%(related_path)s\">comment on <em>%(book_title)s</em></a>"
-msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> eta <a href=\"%(second_user_link)s\">%(second_user)s</a> (e)k <em>%(book_title)s</em> liburuari buruzko zure <a href=\"%(related_path)s\">iruzkina </a> sustatu dute"
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> eta <a href=\"%(second_user_link)s\">%(second_user)s</a> (e)k <em>%(book_title)s</em> liburuari buruzko zure <a href=\"%(related_path)s\">iruzkina </a> bultzatu dute"
 
 #: bookwyrm/templates/notifications/items/boost.html:59
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and %(other_user_display_count)s others boosted your <a href=\"%(related_path)s\">comment on <em>%(book_title)s</em></a>"
-msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> eta %(other_user_display_count)s erabiltzailek <em>%(book_title)s</em> liburuari buruzko zure <a href=\"%(related_path)s\">iruzkina </a> sustatu zuten"
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> eta %(other_user_display_count)s erabiltzailek <em>%(book_title)s</em> liburuari buruzko zure <a href=\"%(related_path)s\">iruzkina </a> bultzatu dute"
 
 #: bookwyrm/templates/notifications/items/boost.html:67
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> boosted your <a href=\"%(related_path)s\">quote from <em>%(book_title)s</em></a>"
-msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a>(e)k zure <a href=\"%(related_path)s\"><em>%(book_title)s</em>(e)ko aipua</a> zabaldu du"
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a>(e)k zure <a href=\"%(related_path)s\"><em>%(book_title)s</em>(e)ko aipua</a> bultzatu du"
 
 #: bookwyrm/templates/notifications/items/boost.html:73
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and <a href=\"%(second_user_link)s\">%(second_user)s</a> boosted your <a href=\"%(related_path)s\">quote from <em>%(book_title)s</em></a>"
-msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> eta <a href=\"%(second_user_link)s\">%(second_user)s</a>(e)k <em>%(book_title)s</em> liburuari buruzko zure <a href=\"%(related_path)s\">aipamena</a> sustatu dute"
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> eta <a href=\"%(second_user_link)s\">%(second_user)s</a>(e)k <em>%(book_title)s</em> liburuari buruzko zure <a href=\"%(related_path)s\">aipamena</a> bultzatu dute"
 
 #: bookwyrm/templates/notifications/items/boost.html:82
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and %(other_user_display_count)s others boosted your <a href=\"%(related_path)s\">quote from <em>%(book_title)s</em></a>"
-msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> eta beste %(other_user_display_count)s erabiltzailek <em>%(book_title)s</em> liburuari buruzko zure <a href=\"%(related_path)s\">aipamena </a> sustatu zuten"
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> eta beste %(other_user_display_count)s erabiltzailek <em>%(book_title)s</em> liburuari buruzko zure <a href=\"%(related_path)s\">aipamena </a> bultzatu dute"
 
 #: bookwyrm/templates/notifications/items/boost.html:90
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> boosted your <a href=\"%(related_path)s\">status</a>"
-msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a>(e)k zure <a href=\"%(related_path)s\">egoera</a> zabaldu du"
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a>(e)k zure <a href=\"%(related_path)s\">egoera</a> bultzatu du"
 
 #: bookwyrm/templates/notifications/items/boost.html:96
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and <a href=\"%(second_user_link)s\">%(second_user)s</a> boosted your <a href=\"%(related_path)s\">status</a>"
-msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> eta <a href=\"%(second_user_link)s\">%(second_user)s</a>(e)k zure <a href=\"%(related_path)s\">egoera </a> sustatu dute"
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> eta <a href=\"%(second_user_link)s\">%(second_user)s</a>(e)k zure <a href=\"%(related_path)s\">egoera </a> bultzatu dute"
 
 #: bookwyrm/templates/notifications/items/boost.html:105
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and %(other_user_display_count)s others boosted your <a href=\"%(related_path)s\">status</a>"
-msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> eta %(other_user_display_count)s erabiltzailek zure <a href=\"%(related_path)s\">egoera</a> sustatu zuten"
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> eta %(other_user_display_count)s erabiltzailek zure <a href=\"%(related_path)s\">egoera</a> bultzatu dute"
 
 #: bookwyrm/templates/notifications/items/fav.html:21
 #, python-format
@@ -3555,7 +3555,7 @@ msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a>(e)k atsegin du zu
 #: bookwyrm/templates/notifications/items/fav.html:73
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and <a href=\"%(second_user_link)s\">%(second_user)s</a> liked your <a href=\"%(related_path)s\">quote from <em>%(book_title)s</em></a>"
-msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> eta <a href=\"%(second_user_link)s\">%(second_user)s</a>(e)k <em>%(book_title)s</em> liburuari buruzko zure <a href=\"%(related_path)s\">aipamena</a> maitatu zuten"
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> eta <a href=\"%(second_user_link)s\">%(second_user)s</a>(e)k <em>%(book_title)s</em> liburuari buruzko zure <a href=\"%(related_path)s\">aipamena</a> atsegin dute"
 
 #: bookwyrm/templates/notifications/items/fav.html:82
 #, python-format
@@ -3570,7 +3570,7 @@ msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a>(e)k zure <a href=
 #: bookwyrm/templates/notifications/items/fav.html:96
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and <a href=\"%(second_user_link)s\">%(second_user)s</a> liked your <a href=\"%(related_path)s\">status</a>"
-msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> eta <a href=\"%(second_user_link)s\">%(second_user)s</a> (e)k zure <a href=\"%(related_path)s\">egoera</a> maitatu zuen"
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> eta <a href=\"%(second_user_link)s\">%(second_user)s</a> (e)k zure <a href=\"%(related_path)s\">egoera</a> atsegin dute"
 
 #: bookwyrm/templates/notifications/items/fav.html:105
 #, python-format
@@ -3620,7 +3620,7 @@ msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a>(e)k zure \"<a hre
 #: bookwyrm/templates/notifications/items/leave.html:26
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and <a href=\"%(second_user_link)s\">%(second_user)s</a> have left your group \"<a href=\"%(group_path)s\">%(group_name)s</a>\""
-msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> eta <a href=\"%(second_user_link)s\">%(second_user)s</a> zure \"<a href=\"%(group_path)s\">%(group_name)s</a>\" taldetik atera ziren"
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> eta <a href=\"%(second_user_link)s\">%(second_user)s</a> zure \"<a href=\"%(group_path)s\">%(group_name)s</a>\" taldetik atera dira"
 
 #: bookwyrm/templates/notifications/items/leave.html:36
 #, python-format
@@ -4492,7 +4492,7 @@ msgstr "Lehentasun handia"
 
 #: bookwyrm/templates/settings/celery.html:50
 msgid "Broadcasts"
-msgstr ""
+msgstr "Emanaldiak"
 
 #: bookwyrm/templates/settings/celery.html:60
 msgid "Could not connect to Redis broker"
@@ -5847,7 +5847,7 @@ msgstr "Bultzatu"
 #: bookwyrm/templates/snippets/boost_button.html:33
 #: bookwyrm/templates/snippets/boost_button.html:34
 msgid "Un-boost"
-msgstr "Desegin zabaltzea"
+msgstr "Desegin bultzatzea"
 
 #: bookwyrm/templates/snippets/create_status.html:36
 msgid "Quote"
@@ -6258,7 +6258,7 @@ msgstr ""
 #: bookwyrm/templates/snippets/status/content_status.html:102
 #, python-format
 msgid "%(endpage)s"
-msgstr ""
+msgstr "%(endpage)s"
 
 #: bookwyrm/templates/snippets/status/content_status.html:104
 #, python-format
@@ -6371,7 +6371,7 @@ msgstr "Ezabatu egoera"
 #: bookwyrm/templates/snippets/status/layout.html:57
 #: bookwyrm/templates/snippets/status/layout.html:58
 msgid "Boost status"
-msgstr "Zabaldu egoera"
+msgstr "Bultzatu egoera"
 
 #: bookwyrm/templates/snippets/status/layout.html:61
 #: bookwyrm/templates/snippets/status/layout.html:62
