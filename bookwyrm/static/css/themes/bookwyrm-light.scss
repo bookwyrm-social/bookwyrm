@@ -65,6 +65,22 @@ $family-secondary: $family-sans-serif;
     color: $grey !important;
 }
 
+.tabs li:not(.is-active) a {
+    color: #3273dc !important;
+}
+  .tabs li:not(.is-active) a:hover {
+    border-bottom-color: #3273dc !important;
+} 
+
+.tabs li:not(.is-active) a {
+    color: #3273dc !important;
+}
+.tabs li.is-active a {
+    color: #4a4a4a !important;
+    border-bottom-color: #4a4a4a !important ;
+}
+
+
 @import "../bookwyrm.scss";
 @import "../vendor/icons.css";
 @import "../vendor/shepherd.scss";
