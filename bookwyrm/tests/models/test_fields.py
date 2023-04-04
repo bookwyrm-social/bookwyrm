@@ -29,7 +29,7 @@ from bookwyrm.settings import DOMAIN
 @patch("bookwyrm.activitystreams.populate_stream_task.delay")
 @patch("bookwyrm.lists_stream.populate_lists_task.delay")
 class ModelFields(TestCase):
-    """overwrites standard model feilds to work with activitypub"""
+    """overwrites standard model fields to work with activitypub"""
 
     def test_validate_remote_id(self, *_):
         """should look like a url"""
