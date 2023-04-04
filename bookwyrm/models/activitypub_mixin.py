@@ -91,7 +91,7 @@ class ActivitypubMixin:
 
     @classmethod
     def find_existing(cls, data):
-        """compare data to fields that can be used for deduplation.
+        """compare data to fields that can be used for deduplication.
         This always includes remote_id, but can also be unique identifiers
         like an isbn for an edition"""
         filters = []
