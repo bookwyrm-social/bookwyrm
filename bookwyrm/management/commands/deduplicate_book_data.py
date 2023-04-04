@@ -73,7 +73,7 @@ class Command(BaseCommand):
     help = "merges duplicate book data"
     # pylint: disable=no-self-use,unused-argument
     def handle(self, *args, **options):
-        """run deudplications"""
+        """run deduplications"""
         dedupe_model(models.Edition)
         dedupe_model(models.Work)
         dedupe_model(models.Author)
