@@ -76,7 +76,7 @@ class Dashboard(View):
 
 
 def get_charts_and_stats(request):
-    """Defines the dashbaord charts"""
+    """Defines the dashboard charts"""
     interval = int(request.GET.get("days", 1))
     now = timezone.now()
     start = request.GET.get("start")
