@@ -321,7 +321,7 @@ def infer_physical_format(format_text):
 
 
 def unique_physical_format(format_text):
-    """only store the format if it isn't diretly in the format mappings"""
+    """only store the format if it isn't directly in the format mappings"""
     format_text = format_text.lower()
     if format_text in format_mappings:
         # try a direct match, so saving this would be redundant
