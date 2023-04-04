@@ -292,7 +292,7 @@ class ModelFields(TestCase):
         self.assertEqual(value.name, "MOUSE?? MOUSE!!")
 
     def test_foreign_key_from_activity_dict(self, *_):
-        """test recieving activity json"""
+        """test receiving activity json"""
         instance = fields.ForeignKey(User, on_delete=models.CASCADE)
         datafile = pathlib.Path(__file__).parent.joinpath("../data/ap_user.json")
         userdata = json.loads(datafile.read_bytes())
