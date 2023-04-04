@@ -30,7 +30,7 @@ class PostgresTriggers(TestCase):
             title="The Long Goodbye",
             subtitle="wow cool",
             series="series name",
-            languages=["irrelevent"],
+            languages=["irrelevant"],
         )
         book.authors.add(author)
         book.refresh_from_db()
