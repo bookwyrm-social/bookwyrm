@@ -234,7 +234,7 @@ class ObjectMixin(ActivitypubMixin):
                 activity = self.to_create_activity(user)
                 self.broadcast(activity, user, software=software, queue=priority)
             except AttributeError:
-                # janky as heck, this catches the mutliple inheritence chain
+                # janky as heck, this catches the mutliple inheritance chain
                 # for boosts and ignores this auxiliary broadcast
                 return
             return
