@@ -4,10 +4,15 @@ from django.dispatch import receiver
 from django.db import transaction
 from django.db.models import signals, Q
 from django.utils import timezone
+from opentelemetry import trace
 
 from bookwyrm import models
 from bookwyrm.redis_store import RedisStore, r
 from bookwyrm.tasks import app, LOW, MEDIUM, HIGH
+from bookwyrm.telemetry import open_telemetry
+
+
+tracer = open_telemetry.tracer()
 
 
 class ActivityStream(RedisStore):
@@ -136,8 +141,10 @@ class ActivityStream(RedisStore):
             )
         return audience.distinct()
 
-    def get_audience(self, status):  # pylint: disable=no-self-use
+    @tracer.start_as_current_span("ActivityStream.get_audience")
+    def get_audience(self, status):
         """given a status, what users should see it"""
+        trace.get_current_span().set_attribute("stream_id", self.key)
         return [user.id for user in self._get_audience(status)]
 
     def get_stores_for_object(self, obj):
@@ -160,7 +167,9 @@ class HomeStream(ActivityStream):
 
     key = "home"
 
+    @tracer.start_as_current_span("HomeStream.get_audience")
     def get_audience(self, status):
+        trace.get_current_span().set_attribute("stream_id", self.key)
         audience = super()._get_audience(status)
         if not audience:
             return []

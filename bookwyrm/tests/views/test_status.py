@@ -456,6 +456,24 @@ http://www.fish.com/"""
             views.status.format_links(url), f'<a href="{url}">{url[8:]}</a>'
         )
 
+    def test_format_mentions_with_at_symbol_links(self, *_):
+        """A link with an @username shouldn't treat the username as a mention"""
+        content = "a link to https://example.com/user/@mouse"
+        mentions = views.status.find_mentions(self.local_user, content)
+        self.assertEqual(
+            views.status.format_mentions(content, mentions),
+            "a link to https://example.com/user/@mouse",
+        )
+
+    def test_format_hashtag_with_pound_symbol_links(self, *_):
+        """A link with an @username shouldn't treat the username as a mention"""
+        content = "a link to https://example.com/page#anchor"
+        hashtags = views.status.find_or_create_hashtags(content)
+        self.assertEqual(
+            views.status.format_hashtags(content, hashtags),
+            "a link to https://example.com/page#anchor",
+        )
+
     def test_to_markdown(self, *_):
         """this is mostly handled in other places, but nonetheless"""
         text = "_hi_ and http://fish.com is <marquee>rad</marquee>"

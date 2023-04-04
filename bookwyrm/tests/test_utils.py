@@ -22,8 +22,8 @@ class TestUtils(TestCase):
 
     def test_invalid_url_domain(self):
         """Check with an invalid URL"""
-        self.assertEqual(
-            validate_url_domain("https://up-to-no-good.tld/bad-actor.exe"), "/"
+        self.assertIsNone(
+            validate_url_domain("https://up-to-no-good.tld/bad-actor.exe")
         )
 
     def test_default_url_domain(self):
