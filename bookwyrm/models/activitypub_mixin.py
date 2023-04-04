@@ -565,7 +565,7 @@ async def sign_and_send(
 def to_ordered_collection_page(
     queryset, remote_id, id_only=False, page=1, pure=False, **kwargs
 ):
-    """serialize and pagiante a queryset"""
+    """serialize and paginate a queryset"""
     paginated = Paginator(queryset, PAGE_LENGTH)
 
     activity_page = paginated.get_page(page)
