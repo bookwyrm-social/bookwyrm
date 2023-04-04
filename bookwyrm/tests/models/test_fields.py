@@ -125,7 +125,7 @@ class ModelFields(TestCase):
             instance.run_validators("@example.com")
             instance.run_validators("mouse@examplecom")
             instance.run_validators("one two@fish.aaaa")
-            instance.run_validators("a*&@exampke.com")
+            instance.run_validators("a*&@example.com")
             instance.run_validators("trailingwhite@example.com ")
         self.assertIsNone(instance.run_validators("mouse@example.com"))
         self.assertIsNone(instance.run_validators("mo-2use@ex3ample.com"))
