@@ -339,7 +339,7 @@ class OrderedCollectionPageMixin(ObjectMixin):
             activity["id"] = remote_id
 
         paginated = Paginator(queryset, PAGE_LENGTH)
-        # add computed fields specific to orderd collections
+        # add computed fields specific to ordered collections
         activity["totalItems"] = paginated.count
         activity["first"] = f"{remote_id}?page=1"
         activity["last"] = f"{remote_id}?page={paginated.num_pages}"
