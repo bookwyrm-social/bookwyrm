@@ -12,7 +12,7 @@ from django.core.exceptions import ImproperlyConfigured
 env = Env()
 env.read_env()
 DOMAIN = env("DOMAIN")
-VERSION = "0.6.0"
+VERSION = "0.6.1"
 
 RELEASE_API = env(
     "RELEASE_API",
