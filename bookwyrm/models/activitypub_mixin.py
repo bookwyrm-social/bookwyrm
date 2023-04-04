@@ -25,7 +25,7 @@ from bookwyrm.tasks import app, MEDIUM, BROADCAST
 from bookwyrm.models.fields import ImageField, ManyToManyField
 
 logger = logging.getLogger(__name__)
-# I tried to separate these classes into mutliple files but I kept getting
+# I tried to separate these classes into multiple files but I kept getting
 # circular import errors so I gave up. I'm sure it could be done though!
 
 PropertyField = namedtuple("PropertyField", ("set_activity_from_field"))
@@ -234,7 +234,7 @@ class ObjectMixin(ActivitypubMixin):
                 activity = self.to_create_activity(user)
                 self.broadcast(activity, user, software=software, queue=priority)
             except AttributeError:
-                # janky as heck, this catches the mutliple inheritance chain
+                # janky as heck, this catches the multiple inheritance chain
                 # for boosts and ignores this auxiliary broadcast
                 return
             return
