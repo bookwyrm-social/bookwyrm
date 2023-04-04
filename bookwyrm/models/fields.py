@@ -221,7 +221,7 @@ PrivacyLevels = [
 
 
 class PrivacyField(ActivitypubFieldMixin, models.CharField):
-    """this maps to two differente activitypub fields"""
+    """this maps to two different activitypub fields"""
 
     public = "https://www.w3.org/ns/activitystreams#Public"
 
