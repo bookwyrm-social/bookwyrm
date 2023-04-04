@@ -75,7 +75,7 @@ class ActivitypubFieldMixin:
         try:
             value = getattr(data, self.get_activitypub_field())
         except AttributeError:
-            # masssively hack-y workaround for boosts
+            # massively hack-y workaround for boosts
             if self.get_activitypub_field() != "attributedTo":
                 raise
             value = getattr(data, "actor")
