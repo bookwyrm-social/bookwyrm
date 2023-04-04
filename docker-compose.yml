@@ -1,8 +1,16 @@
 version: '3'
 
+x-logging:
+  &default-logging
+  driver: "json-file"
+  options:
+    max-size: "150m"
+    max-file: "2"
+
 services:
   nginx:
     image: nginx:latest
+    logging: *default-logging
     restart: unless-stopped
     ports:
       - "80:80"
@@ -21,6 +29,7 @@ services:
     image: certbot/certbot:latest
     command: certonly --webroot --webroot-path=/var/www/certbot --email ${EMAIL} --agree-tos --no-eff-email -d ${DOMAIN} -d www.${DOMAIN}
     #command: renew --webroot --webroot-path /var/www/certbot
+    logging: *default-logging
     volumes:
       - ./certbot/conf:/etc/letsencrypt
       - ./certbot/logs:/var/log/letsencrypt
@@ -39,6 +48,7 @@ services:
     build: .
     env_file: .env
     command: gunicorn bookwyrm.wsgi:application --bind 0.0.0.0:8000
+    logging: *default-logging
     volumes:
       - .:/app
       - static_volume:/app/static
@@ -54,6 +64,7 @@ services:
   redis_activity:
     image: redis
     command: redis-server --requirepass ${REDIS_ACTIVITY_PASSWORD} --appendonly yes --port ${REDIS_ACTIVITY_PORT}
+    logging: *default-logging
     volumes:
       - ./redis.conf:/etc/redis/redis.conf
       - redis_activity_data:/data
@@ -64,6 +75,7 @@ services:
   redis_broker:
     image: redis
     command: redis-server --requirepass ${REDIS_BROKER_PASSWORD} --appendonly yes --port ${REDIS_BROKER_PORT}
+    logging: *default-logging
     volumes:
       - ./redis.conf:/etc/redis/redis.conf
       - redis_broker_data:/data
@@ -77,6 +89,7 @@ services:
     networks:
       - main
     command: celery -A celerywyrm worker -l info -Q high_priority,medium_priority,low_priority,imports,broadcast
+    logging: *default-logging
     volumes:
       - .:/app
       - static_volume:/app/static
@@ -91,6 +104,7 @@ services:
     networks:
       - main
     command: celery -A celerywyrm beat -l INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler
+    logging: *default-logging
     volumes:
       - .:/app
       - static_volume:/app/static
@@ -101,6 +115,7 @@ services:
   flower:
     build: .
     command: celery -A celerywyrm flower --basic_auth=${FLOWER_USER}:${FLOWER_PASSWORD} --url_prefix=flower
+    logging: *default-logging
     env_file: .env
     volumes:
       - .:/app
