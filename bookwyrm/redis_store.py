@@ -34,7 +34,7 @@ class RedisStore(ABC):
 
     def remove_object_from_related_stores(self, obj, stores=None):
         """remove an object from all stores"""
-        # if the stoers are provided, the object can just be an id
+        # if the stores are provided, the object can just be an id
         if stores and isinstance(obj, int):
             obj_id = obj
         else:
