@@ -356,12 +356,12 @@ class StatusViews(TestCase):
         self.assertEqual(len(hashtags), 2)
         self.assertEqual(list(status.mention_hashtags.all()), list(hashtags))
 
-        hashtag_exising = models.Hashtag.objects.filter(name="#existing").first()
+        hashtag_existing = models.Hashtag.objects.filter(name="#existing").first()
         hashtag_new = models.Hashtag.objects.filter(name="#NewTag").first()
         self.assertEqual(
             status.content,
             "<p>this is an "
-            + f'<a href="{hashtag_exising.remote_id}" data-mention="hashtag">'
+            + f'<a href="{hashtag_existing.remote_id}" data-mention="hashtag">'
             + "#EXISTING</a> hashtag but all uppercase, this one is "
             + f'<a href="{hashtag_new.remote_id}" data-mention="hashtag">'
             + "#NewTag</a>.</p>",
