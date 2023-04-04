@@ -12,7 +12,7 @@ from django.db.models import signals
 from requests import HTTPError
 
 from bookwyrm import book_search, models
-from bookwyrm.settings import SEARCH_TIMEOUT, USER_AGENT
+from bookwyrm.settings import SEARCH_TIMEOUT
 from bookwyrm.tasks import app, LOW
 
 logger = logging.getLogger(__name__)

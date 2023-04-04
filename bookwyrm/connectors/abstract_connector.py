@@ -4,16 +4,16 @@ from urllib.parse import quote_plus
 import imghdr
 import logging
 import re
-import aiohttp
 import asyncio
+import requests
+from requests.exceptions import RequestException
+import aiohttp
 
 from django.core.files.base import ContentFile
 from django.db import transaction
-import requests
-from requests.exceptions import RequestException
 
 from bookwyrm import activitypub, models, settings
-from bookwyrm.settings import SEARCH_TIMEOUT, USER_AGENT
+from bookwyrm.settings import USER_AGENT
 from .connector_manager import load_more_data, ConnectorException, raise_not_valid_url
 from .format_mappings import format_mappings
 
@@ -75,13 +75,13 @@ class AbstractMinimalConnector(ABC):
                 if not response.ok:
                     logger.info("Unable to connect to %s: %s", url, response.reason)
                     return
-                
+
                 try:
                     raw_data = await response.json()
                 except aiohttp.client_exceptions.ContentTypeError as err:
                     logger.exception(err)
                     return
-                
+
                 return {
                     "connector": self,
                     "results": self.process_search_response(
@@ -93,7 +93,7 @@ class AbstractMinimalConnector(ABC):
         except aiohttp.ClientError as err:
             logger.info(err)
 
-    
+
     @abstractmethod
     def get_or_create_book(self, remote_id):
         """pull up a book record by whatever means possible"""
