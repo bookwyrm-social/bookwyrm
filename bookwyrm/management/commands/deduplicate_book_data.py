@@ -68,7 +68,7 @@ def dedupe_model(model):
 
 
 class Command(BaseCommand):
-    """dedplucate allllll the book data models"""
+    """deduplicate allllll the book data models"""
 
     help = "merges duplicate book data"
     # pylint: disable=no-self-use,unused-argument
