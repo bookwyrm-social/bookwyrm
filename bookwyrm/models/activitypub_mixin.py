@@ -311,7 +311,7 @@ class OrderedCollectionPageMixin(ObjectMixin):
 
     @property
     def collection_remote_id(self):
-        """this can be overriden if there's a special remote id, ie outbox"""
+        """this can be overridden if there's a special remote id, ie outbox"""
         return self.remote_id
 
     def to_ordered_collection(
