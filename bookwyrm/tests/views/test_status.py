@@ -234,7 +234,7 @@ class StatusViews(TestCase):
         )
 
     def test_create_status_reply_with_mentions(self, *_):
-        """reply to a post with an @mention'ed user"""
+        """reply to a post with an @mention'd user"""
         view = views.CreateStatus.as_view()
         user = models.User.objects.create_user(
             "rat", "rat@rat.com", "password", local=True, localname="rat"
