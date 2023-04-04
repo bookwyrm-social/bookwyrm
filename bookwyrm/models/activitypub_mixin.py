@@ -405,7 +405,7 @@ class CollectionItemMixin(ActivitypubMixin):
         # first off, we want to save normally no matter what
         super().save(*args, **kwargs)
 
-        # list items can be updateda, normally you would only broadcast on created
+        # list items can be updated, normally you would only broadcast on created
         if not broadcast or not self.user.local:
             return
 
