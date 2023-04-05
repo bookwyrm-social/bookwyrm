@@ -24,20 +24,20 @@ source .env
 trap - EXIT
 
 function clean {
-    docker-compose stop
-    docker-compose rm -f
+    docker compose stop
+    docker compose rm -f
 }
 
 function runweb {
-    docker-compose run --rm web "$@"
+    docker compose run --rm web "$@"
 }
 
 function execdb {
-    docker-compose exec db $@
+    docker compose exec db $@
 }
 
 function execweb {
-    docker-compose exec web "$@"
+    docker compose exec web "$@"
 }
 
 function initdb {
@@ -75,23 +75,23 @@ set -x
 
 case "$CMD" in
     up)
-        docker-compose up --build "$@"
+        docker compose up --build "$@"
         ;;
     down)
-        docker-compose down
+        docker compose down
         ;;
     service_ports_web)
         prod_error
-        docker-compose run --rm --service-ports web
+        docker compose run --rm --service-ports web
         ;;
     initdb)
         initdb "@"
         ;;
     resetdb)
         prod_error
-        docker-compose rm -svf
+        docker compose rm -svf
         docker volume rm -f bookwyrm_media_volume bookwyrm_pgdata bookwyrm_redis_activity_data bookwyrm_redis_broker_data bookwyrm_static_volume
-        docker-compose build
+        docker compose build
         migrate
         migrate django_celery_beat
         initdb
@@ -116,7 +116,7 @@ case "$CMD" in
         execdb psql -U ${POSTGRES_USER} ${POSTGRES_DB}
         ;;
     restart_celery)
-        docker-compose restart celery_worker
+        docker compose restart celery_worker
         ;;
     pytest)
         prod_error
@@ -164,7 +164,7 @@ case "$CMD" in
         runweb django-admin compilemessages --ignore venv
         ;;
     build)
-        docker-compose build
+        docker compose build
         ;;
     clean)
         prod_error
@@ -172,7 +172,7 @@ case "$CMD" in
         ;;
     black)
         prod_error
-        docker-compose run --rm dev-tools black celerywyrm bookwyrm
+        docker compose run --rm dev-tools black celerywyrm bookwyrm
         ;;
     pylint)
         prod_error
@@ -181,25 +181,25 @@ case "$CMD" in
         ;;
     prettier)
         prod_error
-        docker-compose run --rm dev-tools npx prettier --write bookwyrm/static/js/*.js
+        docker compose run --rm dev-tools npx prettier --write bookwyrm/static/js/*.js
         ;;
     eslint)
         prod_error
-        docker-compose run --rm dev-tools npx eslint bookwyrm/static --ext .js
+        docker compose run --rm dev-tools npx eslint bookwyrm/static --ext .js
         ;;
     stylelint)
         prod_error
-        docker-compose run --rm dev-tools npx stylelint \
+        docker compose run --rm dev-tools npx stylelint \
             bookwyrm/static/css/bookwyrm.scss bookwyrm/static/css/bookwyrm/**/*.scss --fix \
             --config dev-tools/.stylelintrc.js
         ;;
     formatters)
         prod_error
         runweb pylint bookwyrm/
-        docker-compose run --rm dev-tools black celerywyrm bookwyrm
-        docker-compose run --rm dev-tools npx prettier --write bookwyrm/static/js/*.js
-        docker-compose run --rm dev-tools npx eslint bookwyrm/static --ext .js
-        docker-compose run --rm dev-tools npx stylelint \
+        docker compose run --rm dev-tools black celerywyrm bookwyrm
+        docker compose run --rm dev-tools npx prettier --write bookwyrm/static/js/*.js
+        docker compose run --rm dev-tools npx eslint bookwyrm/static --ext .js
+        docker compose run --rm dev-tools npx stylelint \
             bookwyrm/static/css/bookwyrm.scss bookwyrm/static/css/bookwyrm/**/*.scss --fix \
             --config dev-tools/.stylelintrc.js
         ;;
@@ -209,14 +209,14 @@ case "$CMD" in
         ;;
     update)
         git pull
-        docker-compose build
+        docker compose build
         # ./update.sh
         runweb python manage.py migrate
         runweb python manage.py compile_themes
         runweb python manage.py collectstatic --no-input
-        docker-compose up -d
-        docker-compose restart web
-        docker-compose restart celery_worker
+        docker compose up -d
+        docker compose restart web
+        docker compose restart celery_worker
         ;;
     populate_streams)
         runweb python manage.py populate_streams "$@"
