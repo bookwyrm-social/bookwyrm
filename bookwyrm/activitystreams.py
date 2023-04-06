@@ -208,11 +208,11 @@ class LocalStream(ActivityStream):
 
     key = "local"
 
-    def _get_audience(self, status):
+    def get_audience(self, status):
         # this stream wants no part in non-public statuses
         if status.privacy != "public" or not status.user.local:
             return []
-        return super()._get_audience(status)
+        return super().get_audience(status)
 
     def get_statuses_for_user(self, user):
         # all public statuses by a local user
