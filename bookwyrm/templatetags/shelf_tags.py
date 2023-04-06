@@ -14,6 +14,7 @@ SHELF_NAMES = {
     "to-read": _("To Read"),
     "reading": _("Currently Reading"),
     "read": _("Read"),
+    "stopped-reading": _("Stopped Reading"),
 }
 
 
