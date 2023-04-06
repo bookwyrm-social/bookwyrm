@@ -24,8 +24,7 @@ class ListsStream(RedisStore):
 
     def add_list(self, book_list):
         """add a list to users' feeds"""
-        # the pipeline contains all the add-to-stream activities
-        self.add_object_to_related_stores(book_list)
+        self.add_object_to_stores(book_list, self.get_stores_for_object(book_list))
 
     def add_user_lists(self, viewer, user):
         """add a user's lists to another user's feed"""

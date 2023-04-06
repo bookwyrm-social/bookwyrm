@@ -39,7 +39,9 @@ class ActivityStream(RedisStore):
     def add_status(self, status, increment_unread=False):
         """add a status to users' feeds"""
         # the pipeline contains all the add-to-stream activities
-        pipeline = self.add_object_to_related_stores(status, execute=False)
+        pipeline = self.add_object_to_stores(
+            status, self.get_stores_for_object(status), execute=False
+        )
 
         if increment_unread:
             for user_id in self.get_audience(status):

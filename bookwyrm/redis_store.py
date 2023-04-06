@@ -32,10 +32,6 @@ class RedisStore(ABC):
         # and go!
         return pipeline.execute()
 
-    def add_object_to_related_stores(self, obj, execute=True):
-        """add an object to all suitable stores"""
-        return self.add_object_to_stores(obj, self.get_stores_for_object(obj), execute)
-
     def remove_object_from_related_stores(self, obj, stores=None):
         """remove an object from all stores"""
         # if the stoers are provided, the object can just be an id
