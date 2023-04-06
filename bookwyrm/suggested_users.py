@@ -49,6 +49,7 @@ class SuggestedUsers(RedisStore):
         )
 
     def get_stores_for_object(self, obj):
+        """the stores that an object belongs in"""
         return [self.store_id(u) for u in self.get_users_for_object(obj)]
 
     def get_users_for_object(self, obj):  # pylint: disable=no-self-use

@@ -83,9 +83,5 @@ class RedisStore(ABC):
         """a queryset of what should go in a store, used for populating it"""
 
     @abstractmethod
-    def get_stores_for_object(self, obj):
-        """the stores that an object belongs in"""
-
-    @abstractmethod
     def get_rank(self, obj):
         """how to rank an object"""

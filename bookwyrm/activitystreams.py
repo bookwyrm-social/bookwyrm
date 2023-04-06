@@ -150,6 +150,7 @@ class ActivityStream(RedisStore):
         return [user.id for user in self._get_audience(status)]
 
     def get_stores_for_object(self, obj):
+        """the stores that an object belongs in"""
         return [self.stream_id(user_id) for user_id in self.get_audience(obj)]
 
     def get_statuses_for_user(self, user):  # pylint: disable=no-self-use

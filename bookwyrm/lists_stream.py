@@ -97,6 +97,7 @@ class ListsStream(RedisStore):
         return audience.distinct()
 
     def get_stores_for_object(self, obj):
+        """the stores that an object belongs in"""
         return [self.stream_id(u) for u in self.get_audience(obj)]
 
     def get_lists_for_user(self, user):  # pylint: disable=no-self-use
