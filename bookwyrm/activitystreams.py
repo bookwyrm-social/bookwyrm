@@ -516,7 +516,9 @@ def remove_status_task(status_ids):
 
     for stream in streams.values():
         for status in statuses:
-            stream.remove_object_from_related_stores(status)
+            stream.remove_object_from_related_stores(
+                status, stores=stream.get_stores_for_object(status)
+            )
 
 
 @app.task(queue=HIGH, ignore_result=True)
