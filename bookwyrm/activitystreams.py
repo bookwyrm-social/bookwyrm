@@ -38,13 +38,14 @@ class ActivityStream(RedisStore):
 
     def add_status(self, status, increment_unread=False):
         """add a status to users' feeds"""
+        audience = self.get_audience(status)
         # the pipeline contains all the add-to-stream activities
         pipeline = self.add_object_to_stores(
-            status, self.get_stores_for_object(status), execute=False
+            status, self.get_stores_for_users(audience), execute=False
         )
 
         if increment_unread:
-            for user_id in self.get_audience(status):
+            for user_id in audience:
                 # add to the unread status count
                 pipeline.incr(self.unread_id(user_id))
                 # add to the unread status count for status type
@@ -148,6 +149,10 @@ class ActivityStream(RedisStore):
         """given a status, what users should see it"""
         trace.get_current_span().set_attribute("stream_id", self.key)
         return [user.id for user in self._get_audience(status)]
+
+    def get_stores_for_users(self, user_ids):
+        """convert a list of user ids into redis store ids"""
+        return [self.stream_id(user_id) for user_id in user_ids]
 
     def get_stores_for_object(self, obj):
         """the stores that an object belongs in"""
