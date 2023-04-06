@@ -154,10 +154,6 @@ class ActivityStream(RedisStore):
         """convert a list of user ids into redis store ids"""
         return [self.stream_id(user_id) for user_id in user_ids]
 
-    def get_stores_for_object(self, obj):
-        """the stores that an object belongs in"""
-        return [self.stream_id(user_id) for user_id in self.get_audience(obj)]
-
     def get_statuses_for_user(self, user):  # pylint: disable=no-self-use
         """given a user, what statuses should they see on this stream"""
         return models.Status.privacy_filter(
@@ -523,7 +519,7 @@ def remove_status_task(status_ids):
     for stream in streams.values():
         for status in statuses:
             stream.remove_object_from_stores(
-                status, stream.get_stores_for_object(status)
+                status, stream.get_stores_for_users(stream.get_audience(status))
             )
 
 
@@ -573,7 +569,7 @@ def handle_boost_task(boost_id):
 
     for stream in streams.values():
         # people who should see the boost (not people who see the original status)
-        audience = stream.get_stores_for_object(instance)
+        audience = stream.get_stores_for_users(stream.get_audience(instance))
         stream.remove_object_from_stores(boosted, audience)
         for status in old_versions:
             stream.remove_object_from_stores(status, audience)
