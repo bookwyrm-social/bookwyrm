@@ -516,8 +516,8 @@ def remove_status_task(status_ids):
 
     for stream in streams.values():
         for status in statuses:
-            stream.remove_object_from_related_stores(
-                status, stores=stream.get_stores_for_object(status)
+            stream.remove_object_from_stores(
+                status, stream.get_stores_for_object(status)
             )
 
 
@@ -568,9 +568,9 @@ def handle_boost_task(boost_id):
     for stream in streams.values():
         # people who should see the boost (not people who see the original status)
         audience = stream.get_stores_for_object(instance)
-        stream.remove_object_from_related_stores(boosted, stores=audience)
+        stream.remove_object_from_stores(boosted, audience)
         for status in old_versions:
-            stream.remove_object_from_related_stores(status, stores=audience)
+            stream.remove_object_from_stores(status, audience)
 
 
 def get_status_type(status):

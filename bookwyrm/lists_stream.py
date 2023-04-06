@@ -232,7 +232,7 @@ def remove_list_task(list_id, re_add=False):
 
     # delete for every store
     stores = [ListsStream().stream_id(idx) for idx in stores]
-    ListsStream().remove_object_from_related_stores(list_id, stores=stores)
+    ListsStream().remove_object_from_stores(list_id, stores)
 
     if re_add:
         add_list_task.delay(list_id)

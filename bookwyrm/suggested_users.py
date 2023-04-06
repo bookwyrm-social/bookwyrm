@@ -254,8 +254,8 @@ def rerank_user_task(user_id, update_only=False):
 def remove_user_task(user_id):
     """do the hard work in celery"""
     user = models.User.objects.get(id=user_id)
-    suggested_users.remove_object_from_related_stores(
-        user, stores=suggested_users.get_stores_for_object(user)
+    suggested_users.remove_object_from_stores(
+        user, suggested_users.get_stores_for_object(user)
     )
 
 
@@ -270,8 +270,8 @@ def remove_suggestion_task(user_id, suggested_user_id):
 def bulk_remove_instance_task(instance_id):
     """remove a bunch of users from recs"""
     for user in models.User.objects.filter(federated_server__id=instance_id):
-        suggested_users.remove_object_from_related_stores(
-            user, stores=suggested_users.get_stores_for_object(user)
+        suggested_users.remove_object_from_stores(
+            user, suggested_users.get_stores_for_object(user)
         )
 
 
