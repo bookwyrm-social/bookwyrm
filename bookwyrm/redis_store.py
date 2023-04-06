@@ -16,12 +16,12 @@ class RedisStore(ABC):
         """the object and rank"""
         return {obj.id: self.get_rank(obj)}
 
-    def add_object_to_related_stores(self, obj, execute=True):
-        """add an object to all suitable stores"""
+    def add_object_to_stores(self, obj, stores, execute=True):
+        """add an object to a given set of stores"""
         value = self.get_value(obj)
         # we want to do this as a bulk operation, hence "pipeline"
         pipeline = r.pipeline()
-        for store in self.get_stores_for_object(obj):
+        for store in stores:
             # add the status to the feed
             pipeline.zadd(store, value)
             # trim the store
@@ -31,6 +31,10 @@ class RedisStore(ABC):
             return pipeline
         # and go!
         return pipeline.execute()
+
+    def add_object_to_related_stores(self, obj, execute=True):
+        """add an object to all suitable stores"""
+        return self.add_object_to_stores(obj, self.get_stores_for_object(obj), execute)
 
     def remove_object_from_related_stores(self, obj, stores=None):
         """remove an object from all stores"""
