@@ -60,7 +60,7 @@ class CeleryStatus(View):
 def celery_ping(request):
     """Just tells you if Celery is on or not"""
     try:
-        ping = celery.control.inspect().ping()
+        ping = celery.control.inspect().ping(timeout=5)
         if ping:
             return HttpResponse()
     # pylint: disable=broad-except
