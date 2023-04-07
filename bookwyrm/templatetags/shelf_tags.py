@@ -37,7 +37,7 @@ def get_next_shelf(current_shelf):
 
 @register.filter(name="translate_shelf_name")
 def get_translated_shelf_name(shelf):
-    """produced translated shelf nidentifierame"""
+    """produce translated shelf identifiername"""
     if not shelf:
         return ""
     # support obj or dict

@@ -8,7 +8,7 @@ from .base_model import BookWyrmModel
 
 
 class ProgressMode(models.TextChoices):
-    """types of prgress available"""
+    """types of progress available"""
 
     PAGE = "PG", "page"
     PERCENT = "PCT", "percent"

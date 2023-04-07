@@ -107,7 +107,7 @@ class Signature(TestCase):
 
     @responses.activate
     def test_remote_signer(self):
-        """signtures for remote users"""
+        """signatures for remote users"""
         datafile = pathlib.Path(__file__).parent.joinpath("data/ap_user.json")
         data = json.loads(datafile.read_bytes())
         data["id"] = self.fake_remote.remote_id

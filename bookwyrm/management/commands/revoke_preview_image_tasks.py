@@ -9,7 +9,7 @@ class Command(BaseCommand):
 
     # pylint: disable=unused-argument
     def handle(self, *args, **options):
-        """reveoke nonessential low priority tasks"""
+        """revoke nonessential low priority tasks"""
         types = [
             "bookwyrm.preview_images.generate_edition_preview_image_task",
             "bookwyrm.preview_images.generate_user_preview_image_task",

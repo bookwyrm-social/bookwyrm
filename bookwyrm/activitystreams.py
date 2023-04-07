@@ -104,7 +104,7 @@ class ActivityStream(RedisStore):
 
     def _get_audience(self, status):  # pylint: disable=no-self-use
         """given a status, what users should see it"""
-        # direct messages don't appeard in feeds, direct comments/reviews/etc do
+        # direct messages don't appear in feeds, direct comments/reviews/etc do
         if status.privacy == "direct" and status.status_type == "Note":
             return []
 

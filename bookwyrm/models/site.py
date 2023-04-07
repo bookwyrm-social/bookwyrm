@@ -209,7 +209,7 @@ class InviteRequest(BookWyrmModel):
         super().save(*args, **kwargs)
 
 
-def get_passowrd_reset_expiry():
+def get_password_reset_expiry():
     """give people a limited time to use the link"""
     now = timezone.now()
     return now + datetime.timedelta(days=1)
@@ -219,7 +219,7 @@ class PasswordReset(models.Model):
     """gives someone access to create an account on the instance"""
 
     code = models.CharField(max_length=32, default=new_access_code)
-    expiry = models.DateTimeField(default=get_passowrd_reset_expiry)
+    expiry = models.DateTimeField(default=get_password_reset_expiry)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     def valid(self):
