@@ -107,7 +107,7 @@ class ActivityStream(RedisStore):
 
     @tracer.start_as_current_span("ActivityStream._get_audience")
     def _get_audience(self, status):  # pylint: disable=no-self-use
-        """given a status, what users should see it"""
+        """given a status, what users should see it, excluding the author"""
         trace.get_current_span().set_attribute("status_type", status.status_type)
         trace.get_current_span().set_attribute("status_privacy", status.privacy)
         trace.get_current_span().set_attribute(
@@ -129,15 +129,13 @@ class ActivityStream(RedisStore):
         # only visible to the poster and mentioned users
         if status.privacy == "direct":
             audience = audience.filter(
-                Q(id=status.user.id)  # if the user is the post's author
-                | Q(id__in=status.mention_users.all())  # if the user is mentioned
+                Q(id__in=status.mention_users.all())  # if the user is mentioned
             )
 
         # don't show replies to statuses the user can't see
         elif status.reply_parent and status.reply_parent.privacy == "followers":
             audience = audience.filter(
-                Q(id=status.user.id)  # if the user is the post's author
-                | Q(id=status.reply_parent.user.id)  # if the user is the OG author
+                Q(id=status.reply_parent.user.id)  # if the user is the OG author
                 | (
                     Q(following=status.user) & Q(following=status.reply_parent.user)
                 )  # if the user is following both authors
@@ -146,8 +144,7 @@ class ActivityStream(RedisStore):
         # only visible to the poster's followers and tagged users
         elif status.privacy == "followers":
             audience = audience.filter(
-                Q(id=status.user.id)  # if the user is the post's author
-                | Q(following=status.user)  # if the user is following the author
+                Q(following=status.user)  # if the user is following the author
             )
         return audience.distinct()
 
@@ -155,7 +152,11 @@ class ActivityStream(RedisStore):
     def get_audience(self, status):
         """given a status, what users should see it"""
         trace.get_current_span().set_attribute("stream_id", self.key)
-        return [user.id for user in self._get_audience(status)]
+        audience = self._get_audience(status)
+        status_author = models.User.objects.filter(
+            is_active=True, local=True, id=status.user.id
+        )
+        return list({user.id for user in list(audience) + list(status_author)})
 
     def get_stores_for_users(self, user_ids):
         """convert a list of user ids into redis store ids"""
@@ -184,11 +185,13 @@ class HomeStream(ActivityStream):
         audience = super()._get_audience(status)
         if not audience:
             return []
-        # if the user is the post's author
-        ids_self = [user.id for user in audience.filter(Q(id=status.user.id))]
         # if the user is following the author
-        ids_following = [user.id for user in audience.filter(Q(following=status.user))]
-        return ids_self + ids_following
+        audience = audience.filter(following=status.user)
+        # if the user is the post's author
+        status_author = models.User.objects.filter(
+            is_active=True, local=True, id=status.user.id
+        )
+        return list({user.id for user in list(audience) + list(status_author)})
 
     def get_statuses_for_user(self, user):
         return models.Status.privacy_filter(
@@ -208,11 +211,11 @@ class LocalStream(ActivityStream):
 
     key = "local"
 
-    def _get_audience(self, status):
+    def get_audience(self, status):
         # this stream wants no part in non-public statuses
         if status.privacy != "public" or not status.user.local:
             return []
-        return super()._get_audience(status)
+        return super().get_audience(status)
 
     def get_statuses_for_user(self, user):
         # all public statuses by a local user
@@ -229,13 +232,6 @@ class BooksStream(ActivityStream):
 
     def _get_audience(self, status):
         """anyone with the mentioned book on their shelves"""
-        # only show public statuses on the books feed,
-        # and only statuses that mention books
-        if status.privacy != "public" or not (
-            status.mention_books.exists() or hasattr(status, "book")
-        ):
-            return []
-
         work = (
             status.book.parent_work
             if hasattr(status, "book")
@@ -246,6 +242,16 @@ class BooksStream(ActivityStream):
         if not audience:
             return []
         return audience.filter(shelfbook__book__parent_work=work).distinct()
+
+    def get_audience(self, status):
+        # only show public statuses on the books feed,
+        # and only statuses that mention books
+        if status.privacy != "public" or not (
+            status.mention_books.exists() or hasattr(status, "book")
+        ):
+            return []
+
+        return super().get_audience(status)
 
     def get_statuses_for_user(self, user):
         """any public status that mentions the user's books"""
