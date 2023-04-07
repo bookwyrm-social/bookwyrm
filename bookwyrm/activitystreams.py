@@ -105,8 +105,15 @@ class ActivityStream(RedisStore):
         """go from zero to a timeline"""
         self.populate_store(self.stream_id(user.id))
 
+    @tracer.start_as_current_span("ActivityStream._get_audience")
     def _get_audience(self, status):  # pylint: disable=no-self-use
         """given a status, what users should see it"""
+        trace.get_current_span().set_attribute("status_type", status.status_type)
+        trace.get_current_span().set_attribute("status_privacy", status.privacy)
+        trace.get_current_span().set_attribute(
+            "status_reply_parent_privacy",
+            status.reply_parent.privacy if status.reply_parent else None,
+        )
         # direct messages don't appear in feeds, direct comments/reviews/etc do
         if status.privacy == "direct" and status.status_type == "Note":
             return []
