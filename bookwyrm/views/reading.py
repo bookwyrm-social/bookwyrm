@@ -186,7 +186,7 @@ def update_readthrough_on_shelve(
         active_readthrough = models.ReadThrough.objects.create(
             user=user, book=annotated_book
         )
-    # santiize and set dates
+    # sanitize and set dates
     active_readthrough.start_date = load_date_in_user_tz_as_utc(start_date, user)
     # if the stop or finish date is set, the readthrough will be set as inactive
     active_readthrough.finish_date = load_date_in_user_tz_as_utc(finish_date, user)

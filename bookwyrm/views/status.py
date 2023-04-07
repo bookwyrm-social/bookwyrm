@@ -232,7 +232,7 @@ def find_mentions(user, content):
     if not content:
         return {}
     # The regex has nested match groups, so the 0th entry has the full (outer) match
-    # And beacuse the strict username starts with @, the username is 1st char onward
+    # And because the strict username starts with @, the username is 1st char onward
     usernames = [m[0][1:] for m in re.findall(regex.STRICT_USERNAME, content)]
 
     known_users = (

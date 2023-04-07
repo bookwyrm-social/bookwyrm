@@ -59,7 +59,7 @@ class BaseActivity(TestCase):
         self.assertIsInstance(representative, models.User)
 
     def test_init(self, *_):
-        """simple successfuly init"""
+        """simple successfully init"""
         instance = ActivityObject(id="a", type="b")
         self.assertTrue(hasattr(instance, "id"))
         self.assertTrue(hasattr(instance, "type"))

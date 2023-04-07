@@ -52,7 +52,7 @@ class AbstractMinimalConnector(ABC):
         return f"{self.search_url}{quote_plus(query)}"
 
     def process_search_response(self, query, data, min_confidence):
-        """Format the search results based on the formt of the query"""
+        """Format the search results based on the format of the query"""
         if maybe_isbn(query):
             return list(self.parse_isbn_search_data(data))[:10]
         return list(self.parse_search_data(data, min_confidence))[:10]
@@ -321,7 +321,7 @@ def infer_physical_format(format_text):
 
 
 def unique_physical_format(format_text):
-    """only store the format if it isn't diretly in the format mappings"""
+    """only store the format if it isn't directly in the format mappings"""
     format_text = format_text.lower()
     if format_text in format_mappings:
         # try a direct match, so saving this would be redundant

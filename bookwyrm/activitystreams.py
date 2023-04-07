@@ -111,7 +111,7 @@ class ActivityStream(RedisStore):
             "status_reply_parent_privacy",
             status.reply_parent.privacy if status.reply_parent else None,
         )
-        # direct messages don't appeard in feeds, direct comments/reviews/etc do
+        # direct messages don't appear in feeds, direct comments/reviews/etc do
         if status.privacy == "direct" and status.status_type == "Note":
             return []
 

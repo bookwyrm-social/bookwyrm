@@ -73,7 +73,7 @@ async def async_connector_search(query, items, min_confidence):
 
 
 def search(query, min_confidence=0.1, return_first=False):
-    """find books based on arbitary keywords"""
+    """find books based on arbitrary keywords"""
     if not query:
         return []
     results = []

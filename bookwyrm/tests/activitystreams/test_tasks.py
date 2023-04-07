@@ -50,7 +50,7 @@ class Activitystreams(TestCase):
         self.assertEqual(args[1], self.book)
 
     def test_remove_book_statuses_task(self):
-        """remove stauses related to a book"""
+        """remove statuses related to a book"""
         with patch("bookwyrm.activitystreams.BooksStream.remove_book_statuses") as mock:
             activitystreams.remove_book_statuses_task(self.local_user.id, self.book.id)
         self.assertTrue(mock.called)

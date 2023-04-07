@@ -86,14 +86,14 @@ class ListsStream(RedisStore):
             if group:
                 audience = audience.filter(
                     Q(id=book_list.user.id)  # if the user is the list's owner
-                    | Q(following=book_list.user)  # if the user is following the pwmer
+                    | Q(following=book_list.user)  # if the user is following the owner
                     # if a user is in the group
                     | Q(memberships__group__id=book_list.group.id)
                 )
             else:
                 audience = audience.filter(
                     Q(id=book_list.user.id)  # if the user is the list's owner
-                    | Q(following=book_list.user)  # if the user is following the pwmer
+                    | Q(following=book_list.user)  # if the user is following the owner
                 )
         return audience.distinct()
 

@@ -321,7 +321,7 @@ class Edition(Book):
     def get_rank(self):
         """calculate how complete the data is on this edition"""
         rank = 0
-        # big ups for havinga  cover
+        # big ups for having a cover
         rank += int(bool(self.cover)) * 3
         # is it in the instance's preferred language?
         rank += int(bool(DEFAULT_LANGUAGE in self.languages))

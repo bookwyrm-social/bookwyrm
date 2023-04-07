@@ -4,13 +4,16 @@ import logging
 from django.dispatch import receiver
 from django.db import transaction
 from django.db.models import signals, Count, Q, Case, When, IntegerField
+from opentelemetry import trace
 
 from bookwyrm import models
 from bookwyrm.redis_store import RedisStore, r
 from bookwyrm.tasks import app, LOW, MEDIUM
+from bookwyrm.telemetry import open_telemetry
 
 
 logger = logging.getLogger(__name__)
+tracer = open_telemetry.tracer()
 
 
 class SuggestedUsers(RedisStore):
@@ -53,26 +56,29 @@ class SuggestedUsers(RedisStore):
 
     def get_users_for_object(self, obj):  # pylint: disable=no-self-use
         """given a user, who might want to follow them"""
-        return models.User.objects.filter(local=True,).exclude(
+        return models.User.objects.filter(local=True, is_active=True).exclude(
             Q(id=obj.id) | Q(followers=obj) | Q(id__in=obj.blocks.all()) | Q(blocks=obj)
         )
 
+    @tracer.start_as_current_span("SuggestedUsers.rerank_obj")
     def rerank_obj(self, obj, update_only=True):
         """update all the instances of this user with new ranks"""
+        trace.get_current_span().set_attribute("update_only", update_only)
         pipeline = r.pipeline()
         for store_user in self.get_users_for_object(obj):
-            annotated_user = get_annotated_users(
-                store_user,
-                id=obj.id,
-            ).first()
-            if not annotated_user:
-                continue
+            with tracer.start_as_current_span("SuggestedUsers.rerank_obj/user") as _:
+                annotated_user = get_annotated_users(
+                    store_user,
+                    id=obj.id,
+                ).first()
+                if not annotated_user:
+                    continue
 
-            pipeline.zadd(
-                self.store_id(store_user),
-                self.get_value(annotated_user),
-                xx=update_only,
-            )
+                pipeline.zadd(
+                    self.store_id(store_user),
+                    self.get_value(annotated_user),
+                    xx=update_only,
+                )
         pipeline.execute()
 
     def rerank_user_suggestions(self, user):
