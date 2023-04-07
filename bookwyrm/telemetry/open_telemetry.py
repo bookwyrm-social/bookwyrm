@@ -22,6 +22,12 @@ def instrumentDjango():
     DjangoInstrumentor().instrument()
 
 
+def instrumentPostgres():
+    from opentelemetry.instrumentation.psycopg2 import Psycopg2Instrumentor
+
+    Psycopg2Instrumentor().instrument()
+
+
 def instrumentCelery():
     from opentelemetry.instrumentation.celery import CeleryInstrumentor
     from celery.signals import worker_process_init
