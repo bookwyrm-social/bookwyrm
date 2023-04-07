@@ -40,6 +40,7 @@ class BookwyrmConfig(AppConfig):
             from bookwyrm.telemetry import open_telemetry
 
             open_telemetry.instrumentDjango()
+            open_telemetry.instrumentPostgres()
 
         if settings.ENABLE_PREVIEW_IMAGES and settings.FONTS:
             # Download any fonts that we don't have yet
