@@ -24,8 +24,7 @@ class ListsStream(RedisStore):
 
     def add_list(self, book_list):
         """add a list to users' feeds"""
-        # the pipeline contains all the add-to-stream activities
-        self.add_object_to_related_stores(book_list)
+        self.add_object_to_stores(book_list, self.get_stores_for_object(book_list))
 
     def add_user_lists(self, viewer, user):
         """add a user's lists to another user's feed"""
@@ -98,6 +97,7 @@ class ListsStream(RedisStore):
         return audience.distinct()
 
     def get_stores_for_object(self, obj):
+        """the stores that an object belongs in"""
         return [self.stream_id(u) for u in self.get_audience(obj)]
 
     def get_lists_for_user(self, user):  # pylint: disable=no-self-use
@@ -233,7 +233,7 @@ def remove_list_task(list_id, re_add=False):
 
     # delete for every store
     stores = [ListsStream().stream_id(idx) for idx in stores]
-    ListsStream().remove_object_from_related_stores(list_id, stores=stores)
+    ListsStream().remove_object_from_stores(list_id, stores)
 
     if re_add:
         add_list_task.delay(list_id)

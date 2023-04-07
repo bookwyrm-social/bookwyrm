@@ -59,7 +59,7 @@ class Activitystreams(TestCase):
     def test_remove_list_task(self, *_):
         """remove a list from all streams"""
         with patch(
-            "bookwyrm.lists_stream.ListsStream.remove_object_from_related_stores"
+            "bookwyrm.lists_stream.ListsStream.remove_object_from_stores"
         ) as mock:
             lists_stream.remove_list_task(self.list.id)
         self.assertEqual(mock.call_count, 1)
