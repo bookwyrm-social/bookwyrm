@@ -241,7 +241,7 @@ class ActivityObject:
         return data
 
 
-@app.task(queue=MEDIUM, ignore_result=True)
+@app.task(queue=MEDIUM)
 @transaction.atomic
 def set_related_field(
     model_name, origin_model_name, related_field_name, related_remote_id, data
