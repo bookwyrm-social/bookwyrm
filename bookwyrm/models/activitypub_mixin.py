@@ -8,6 +8,7 @@ import operator
 import logging
 from typing import List
 from uuid import uuid4
+import random
 
 import aiohttp
 from Crypto.PublicKey import RSA
@@ -19,7 +20,12 @@ from django.db.models import Q
 from django.utils.http import http_date
 
 from bookwyrm import activitypub
-from bookwyrm.settings import USER_AGENT, PAGE_LENGTH
+from bookwyrm.settings import (
+    BROADCAST_FIRST_BATCH_SIZE,
+    BROADCAST_FIRST_BATCH_DELAY,
+    USER_AGENT,
+    PAGE_LENGTH,
+)
 from bookwyrm.signatures import make_signature, make_digest
 from bookwyrm.tasks import app, MEDIUM, BROADCAST
 from bookwyrm.models.fields import ImageField, ManyToManyField
@@ -524,7 +530,28 @@ async def async_broadcast(recipients: List[str], sender, data: str):
                 asyncio.ensure_future(sign_and_send(session, sender, data, recipient))
             )
 
-        results = await asyncio.gather(*tasks)
+        # If we have a large number of servers to broadcast to, they'll all
+        # make their requests at the same time, rendering our caching
+        # ineffective (since the many of the requests will be received before
+        # any of them are completed to put in the cache). To improve this
+        # situation, we send a small batch first, wait for a moment, then send
+        # the rest of the broadcasts. This is a bit janky, but it means we can
+        # use our standard nginx caching arrangement, without having to mess
+        # with Django-side caching and figuring out exactly what resources a
+        # given object will cause remote servers to hit.
+        #
+        # A downside to this solution is that it might not work in the case
+        # that all the servers in the initial batch already have the (for
+        # instance) user that made a post, but many of the servers in the
+        # remaining don't. However, with good tuning of the initial batch size,
+        # I think it should be possible to avoid that problem in most cases.
+
+        random.shuffle(tasks)
+
+        results = await asyncio.gather(*tasks[:BROADCAST_FIRST_BATCH_SIZE])
+        if len(tasks) > BROADCAST_FIRST_BATCH_SIZE:
+            await asyncio.sleep(BROADCAST_FIRST_BATCH_DELAY)
+            results.append(await asyncio.gather(*tasks[BROADCAST_FIRST_BATCH_SIZE:]))
         return results
 
 
