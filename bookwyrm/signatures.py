@@ -57,7 +57,7 @@ def make_digest(data):
 def verify_digest(request):
     """checks if a digest is syntactically valid and matches the message"""
     algorithm, digest = request.headers["digest"].split("=", 1)
-    if algorithm == "SHA-256" or algorithm == "hs2019":
+    if algorithm in ("SHA-256", "hs2019"):
         hash_function = hashlib.sha256
     elif algorithm == "SHA-512":
         hash_function = hashlib.sha512
