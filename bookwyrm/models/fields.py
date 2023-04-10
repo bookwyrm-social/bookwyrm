@@ -371,7 +371,7 @@ class TagField(ManyToManyField):
             tags.append(
                 activitypub.Link(
                     href=item.remote_id,
-                    name=getattr(item, item.name_field),
+                    name=f"@{getattr(item, item.name_field)}",
                     type=activity_type,
                 )
             )
