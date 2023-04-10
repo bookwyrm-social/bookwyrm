@@ -38,7 +38,6 @@ def make_signature(method, sender, destination, date, digest=None):
     message_to_sign = "\n".join(signature_headers)
     signer = pkcs1_15.new(RSA.import_key(sender.key_pair.private_key))
     signed_message = signer.sign(SHA256.new(message_to_sign.encode("utf8")))
-    # TODO: this should be /#main-key to match our user key ids, even though that was probably a mistake in hindsight.
     signature = {
         "keyId": f"{sender.remote_id}/#main-key",
         "algorithm": "rsa-sha256",
