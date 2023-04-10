@@ -4,7 +4,7 @@ import sys
 
 from .base_activity import ActivityEncoder, Signature, naive_parse
 from .base_activity import Link, Mention, Hashtag
-from .base_activity import ActivitySerializerError, resolve_remote_id, get_activitypub_data
+from .base_activity import ActivitySerializerError, resolve_remote_id
 from .image import Document, Image
 from .note import Note, GeneratedNote, Article, Comment, Quotation
 from .note import Review, Rating

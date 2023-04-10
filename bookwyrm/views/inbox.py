@@ -130,7 +130,9 @@ def has_valid_signature(request, activity):
     """verify incoming signature"""
     try:
         signature = Signature.parse(request)
-        remote_user = activitypub.resolve_remote_id(activity.get("actor"), model=models.User)
+        remote_user = activitypub.resolve_remote_id(
+            activity.get("actor"), model=models.User
+        )
         if not remote_user:
             return False
 
