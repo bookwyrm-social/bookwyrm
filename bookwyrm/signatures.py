@@ -22,7 +22,7 @@ def create_key_pair():
     return private_key, public_key
 
 
-def make_signature(method, sender, destination, date, digest=None):
+def make_signature(method, sender, destination, date, digest=None, use_legacy_key=False):
     """uses a private key to sign an outgoing message"""
     inbox_parts = urlparse(destination)
     signature_headers = [
@@ -38,8 +38,10 @@ def make_signature(method, sender, destination, date, digest=None):
     message_to_sign = "\n".join(signature_headers)
     signer = pkcs1_15.new(RSA.import_key(sender.key_pair.private_key))
     signed_message = signer.sign(SHA256.new(message_to_sign.encode("utf8")))
+    # For legacy reasons we need to use an incorrect keyId for older Bookwyrm versions
+    key_id = f"{sender.remote_id}#main-key" if use_legacy_key else f"{sender.remote_id}/#main-key"
     signature = {
-        "keyId": f"{sender.remote_id}/#main-key",
+        "keyId": key_id,
         "algorithm": "rsa-sha256",
         "headers": headers,
         "signature": b64encode(signed_message).decode("utf8"),
