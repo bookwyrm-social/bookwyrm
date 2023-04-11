@@ -137,6 +137,8 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         if activity.tag == MISSING or activity.tag is None:
             return True
 
+        # BUG: this fixes the TypeError but we still don't get any notifs
+        # and DMs are dropped
         tags = activity.tag if type(activity.tag) == list else [activity.tag]
         user_model = apps.get_model("bookwyrm.User", require_ready=True)
         for tag in tags:
