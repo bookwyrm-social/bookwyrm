@@ -87,7 +87,7 @@ class Signature(TestCase):
         data = json.dumps(get_follow_activity(sender, self.rat))
         digest = digest or make_digest(data)
         signature = make_signature(
-            "post", signer or sender, self.rat.inbox, now, digest
+            "post", signer or sender, self.rat.inbox, now, digest=digest
         )
         with patch("bookwyrm.views.inbox.activity_task.apply_async"):
             with patch("bookwyrm.models.user.set_remote_server.delay"):

@@ -404,7 +404,7 @@ class ModelFields(TestCase):
         self.assertIsInstance(result, list)
         self.assertEqual(len(result), 1)
         self.assertEqual(result[0].href, "https://e.b/c")
-        self.assertEqual(result[0].name, "Name")
+        self.assertEqual(result[0].name, "@Name")
         self.assertEqual(result[0].type, "Serializable")
 
     def test_tag_field_from_activity(self, *_):

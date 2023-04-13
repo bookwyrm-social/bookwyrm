@@ -22,9 +22,7 @@ def create_key_pair():
     return private_key, public_key
 
 
-def make_signature(
-    method, sender, destination, date, **kwargs
-):
+def make_signature(method, sender, destination, date, **kwargs):
     """uses a private key to sign an outgoing message"""
     inbox_parts = urlparse(destination)
     signature_headers = [
