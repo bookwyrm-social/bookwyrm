@@ -138,7 +138,7 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
             return True
         # GoToSocial sends single tags as objects
         # not wrapped in a list
-        tags = activity.tag if isinstance(activity.tag, list) else [ activity.tag ]
+        tags = activity.tag if isinstance(activity.tag, list) else [activity.tag]
         user_model = apps.get_model("bookwyrm.User", require_ready=True)
         for tag in tags:
             if (

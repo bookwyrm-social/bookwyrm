@@ -137,7 +137,9 @@ def has_valid_signature(request, activity):
             return False
 
         if signature.key_id != remote_user.key_pair.remote_id:
-            if signature.key_id != f"{remote_user.remote_id}#main-key": # legacy Bookwyrm
+            if (
+                signature.key_id != f"{remote_user.remote_id}#main-key"
+            ):  # legacy Bookwyrm
                 raise ValueError("Wrong actor created signature.")
 
         try:

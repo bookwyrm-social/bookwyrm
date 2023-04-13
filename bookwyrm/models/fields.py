@@ -383,7 +383,7 @@ class TagField(ManyToManyField):
             # sent as objects, not as an array of objects
             if isinstance(value, dict):
                 value = [value]
-            else: 
+            else:
                 return None
         items = []
         for link_json in value:

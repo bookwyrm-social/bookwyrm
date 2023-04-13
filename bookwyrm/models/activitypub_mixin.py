@@ -540,7 +540,6 @@ async def sign_and_send(
 
     digest = make_digest(data)
 
-
     headers = {
         "Date": now,
         "Digest": digest,
@@ -557,14 +556,20 @@ async def sign_and_send(
                 )
                 logger.info("Trying again with legacy keyId")
                 # try with incorrect keyId to enable communication with legacy Bookwyrm servers
-                legacy_signature = make_signature("post", sender, destination, now, digest, True)
+                legacy_signature = make_signature(
+                    "post", sender, destination, now, digest, True
+                )
                 headers["Signature"] = legacy_signature
-                async with session.post(destination, data=data, headers=headers) as response: 
+                async with session.post(
+                    destination, data=data, headers=headers
+                ) as response:
                     if not response.ok:
                         logger.exception(
-                        "Failed to send broadcast with legacy keyId to %s: %s", destination, response.reason
-                    )
-                
+                            "Failed to send broadcast with legacy keyId to %s: %s",
+                            destination,
+                            response.reason,
+                        )
+
             return response
     except asyncio.TimeoutError:
         logger.info("Connection timed out for url: %s", destination)
