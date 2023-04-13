@@ -3,7 +3,6 @@ import json
 import re
 import logging
 
-from urllib.parse import urldefrag
 import requests
 
 from django.http import HttpResponse, Http404

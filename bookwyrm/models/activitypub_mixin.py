@@ -540,7 +540,7 @@ async def sign_and_send(
 
     digest = make_digest(data)
     signature = make_signature(
-        "post", sender, destination, now, digest, kwargs.get("use_legacy_key")
+        "post", sender, destination, now, digest=digest, use_legacy_key=kwargs.get("use_legacy_key")
     )
 
     headers = {

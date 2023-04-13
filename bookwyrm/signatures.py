@@ -23,7 +23,7 @@ def create_key_pair():
 
 
 def make_signature(
-    method, sender, destination, date, digest=None, use_legacy_key=False
+    method, sender, destination, date, **kwargs
 ):
     """uses a private key to sign an outgoing message"""
     inbox_parts = urlparse(destination)
@@ -33,6 +33,7 @@ def make_signature(
         f"date: {date}",
     ]
     headers = "(request-target) host date"
+    digest = kwargs.get("digest")
     if digest is not None:
         signature_headers.append(f"digest: {digest}")
         headers = "(request-target) host date digest"
@@ -43,7 +44,7 @@ def make_signature(
     # For legacy reasons we need to use an incorrect keyId for older Bookwyrm versions
     key_id = (
         f"{sender.remote_id}#main-key"
-        if use_legacy_key
+        if kwargs.get("use_legacy_key")
         else f"{sender.remote_id}/#main-key"
     )
     signature = {
