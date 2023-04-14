@@ -67,10 +67,14 @@ class ReactivateUser(View):
 
         username = login_form.infer_username()
         password = login_form.data.get("password")
-        user = get_object_or_404(models.User, username=username)
 
+        try: 
+            user = models.User.objects.get(username=username, allow_reactivation=True)
+        except models.User.DoesNotExist:
+            user = None
+    
         # we can't use "authenticate" because that requires an active user
-        if not user.check_password(password):
+        if not user or not user.check_password(password):
             login_form.add_invalid_password_error()
             data = {"login_form": login_form}
             return TemplateResponse(request, "landing/reactivate.html", data)
