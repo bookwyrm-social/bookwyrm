@@ -563,9 +563,7 @@ async def sign_and_send(
                     "Failed to send broadcast to %s: %s", destination, response.reason
                 )
                 if kwargs.get("use_legacy_key") is not True:
-                    # try with incorrect keyId to enable communication with legacy Bookwyrm servers
                     logger.info("Trying again with legacy keyId header value")
-
                     asyncio.ensure_future(
                         sign_and_send(
                             session, sender, data, destination, use_legacy_key=True
