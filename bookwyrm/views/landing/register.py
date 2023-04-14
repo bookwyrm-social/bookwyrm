@@ -75,7 +75,7 @@ class Register(View):
             localname=localname,
             local=True,
             deactivation_reason="pending" if settings.require_confirm_email else None,
-            allow_reactivation=settings.require_confirm_email,
+            allow_reactivation=settings.require_confirm_email,  # needed for email confirmation
             is_active=not settings.require_confirm_email,
             preferred_timezone=preferred_timezone,
         )
