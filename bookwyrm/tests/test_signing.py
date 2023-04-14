@@ -159,7 +159,7 @@ class Signature(TestCase):
                 "bookwyrm.models.relationship.UserFollowRequest.accept"
             ) as accept_mock:
                 response = self.send_test_request(sender=self.fake_remote)
-            self.assertEqual(response.status_code, 200) #BUG this is 401
+            self.assertEqual(response.status_code, 200)  # BUG this is 401
             self.assertTrue(accept_mock.called)
 
             # Old key is cached, so still works:
