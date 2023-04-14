@@ -1467,7 +1467,7 @@ class Migration(migrations.Migration):
                 (
                     "expiry",
                     models.DateTimeField(
-                        default=bookwyrm.models.site.get_passowrd_reset_expiry
+                        default=bookwyrm.models.site.get_password_reset_expiry
                     ),
                 ),
                 (

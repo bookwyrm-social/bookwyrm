@@ -29,7 +29,7 @@ from bookwyrm.settings import DOMAIN
 @patch("bookwyrm.activitystreams.populate_stream_task.delay")
 @patch("bookwyrm.lists_stream.populate_lists_task.delay")
 class ModelFields(TestCase):
-    """overwrites standard model feilds to work with activitypub"""
+    """overwrites standard model fields to work with activitypub"""
 
     def test_validate_remote_id(self, *_):
         """should look like a url"""
@@ -125,7 +125,7 @@ class ModelFields(TestCase):
             instance.run_validators("@example.com")
             instance.run_validators("mouse@examplecom")
             instance.run_validators("one two@fish.aaaa")
-            instance.run_validators("a*&@exampke.com")
+            instance.run_validators("a*&@example.com")
             instance.run_validators("trailingwhite@example.com ")
         self.assertIsNone(instance.run_validators("mouse@example.com"))
         self.assertIsNone(instance.run_validators("mo-2use@ex3ample.com"))
@@ -292,7 +292,7 @@ class ModelFields(TestCase):
         self.assertEqual(value.name, "MOUSE?? MOUSE!!")
 
     def test_foreign_key_from_activity_dict(self, *_):
-        """test recieving activity json"""
+        """test receiving activity json"""
         instance = fields.ForeignKey(User, on_delete=models.CASCADE)
         datafile = pathlib.Path(__file__).parent.joinpath("../data/ap_user.json")
         userdata = json.loads(datafile.read_bytes())

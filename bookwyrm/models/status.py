@@ -116,10 +116,16 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         return list(set(mentions))
 
     @classmethod
-    def ignore_activity(cls, activity):  # pylint: disable=too-many-return-statements
+    def ignore_activity(
+        cls, activity, allow_external_connections=True
+    ):  # pylint: disable=too-many-return-statements
         """keep notes if they are replies to existing statuses"""
         if activity.type == "Announce":
-            boosted = activitypub.resolve_remote_id(activity.object, get_activity=True)
+            boosted = activitypub.resolve_remote_id(
+                activity.object,
+                get_activity=True,
+                allow_external_connections=allow_external_connections,
+            )
             if not boosted:
                 # if we can't load the status, definitely ignore it
                 return True

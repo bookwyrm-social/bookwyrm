@@ -226,7 +226,7 @@ STREAMS = [
 # total time in seconds that the instance will spend searching connectors
 SEARCH_TIMEOUT = env.int("SEARCH_TIMEOUT", 8)
 # timeout for a query to an individual connector
-QUERY_TIMEOUT = env.int("QUERY_TIMEOUT", 5)
+QUERY_TIMEOUT = env.int("INTERACTIVE_QUERY_TIMEOUT", env.int("QUERY_TIMEOUT", 5))
 
 # Redis cache backend
 if env.bool("USE_DUMMY_CACHE", False):

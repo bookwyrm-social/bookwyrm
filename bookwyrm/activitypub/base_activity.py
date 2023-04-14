@@ -127,7 +127,7 @@ class ActivityObject:
         if (
             allow_create
             and hasattr(model, "ignore_activity")
-            and model.ignore_activity(self)
+            and model.ignore_activity(self, allow_external_connections)
         ):
             return None
 

@@ -46,7 +46,13 @@
                         <meta itemprop="isPartOf" content="{{ book.series | escape }}">
                         <meta itemprop="volumeNumber" content="{{ book.series_number }}">
 
-                        (<a href="{% url 'book-series-by' book.authors.first.id %}?series_name={{ book.series }}">{{ book.series }}{% if book.series_number %} #{{ book.series_number }}{% endif %}</a>)
+                        {% if book.authors.exists %}
+                            <a href="{% url 'book-series-by' book.authors.first.id %}?series_name={{ book.series }}">
+                        {% endif %}
+                        {{ book.series }}{% if book.series_number %} #{{ book.series_number }}{% endif %}
+                        {% if book.authors.exists %}
+                            </a>
+                        {% endif %}
                     {% endif %}
                 </p>
             {% endif %}

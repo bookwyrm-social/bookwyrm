@@ -34,7 +34,7 @@ class UserRelationship(BookWyrmModel):
 
     @property
     def recipients(self):
-        """the remote user needs to recieve direct broadcasts"""
+        """the remote user needs to receive direct broadcasts"""
         return [u for u in [self.user_subject, self.user_object] if not u.local]
 
     def save(self, *args, **kwargs):

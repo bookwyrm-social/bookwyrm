@@ -15,7 +15,7 @@ from .custom_form import CustomForm, StyledForm
 # pylint: disable=missing-class-docstring
 class ExpiryWidget(widgets.Select):
     def value_from_datadict(self, data, files, name):
-        """human-readable exiration time buckets"""
+        """human-readable expiration time buckets"""
         selected_string = super().value_from_datadict(data, files, name)
 
         if selected_string == "day":

@@ -38,11 +38,14 @@ class ActivityStream(RedisStore):
 
     def add_status(self, status, increment_unread=False):
         """add a status to users' feeds"""
+        audience = self.get_audience(status)
         # the pipeline contains all the add-to-stream activities
-        pipeline = self.add_object_to_related_stores(status, execute=False)
+        pipeline = self.add_object_to_stores(
+            status, self.get_stores_for_users(audience), execute=False
+        )
 
         if increment_unread:
-            for user_id in self.get_audience(status):
+            for user_id in audience:
                 # add to the unread status count
                 pipeline.incr(self.unread_id(user_id))
                 # add to the unread status count for status type
@@ -102,9 +105,16 @@ class ActivityStream(RedisStore):
         """go from zero to a timeline"""
         self.populate_store(self.stream_id(user.id))
 
+    @tracer.start_as_current_span("ActivityStream._get_audience")
     def _get_audience(self, status):  # pylint: disable=no-self-use
-        """given a status, what users should see it"""
-        # direct messages don't appeard in feeds, direct comments/reviews/etc do
+        """given a status, what users should see it, excluding the author"""
+        trace.get_current_span().set_attribute("status_type", status.status_type)
+        trace.get_current_span().set_attribute("status_privacy", status.privacy)
+        trace.get_current_span().set_attribute(
+            "status_reply_parent_privacy",
+            status.reply_parent.privacy if status.reply_parent else None,
+        )
+        # direct messages don't appear in feeds, direct comments/reviews/etc do
         if status.privacy == "direct" and status.status_type == "Note":
             return []
 
@@ -119,15 +129,13 @@ class ActivityStream(RedisStore):
         # only visible to the poster and mentioned users
         if status.privacy == "direct":
             audience = audience.filter(
-                Q(id=status.user.id)  # if the user is the post's author
-                | Q(id__in=status.mention_users.all())  # if the user is mentioned
+                Q(id__in=status.mention_users.all())  # if the user is mentioned
             )
 
         # don't show replies to statuses the user can't see
         elif status.reply_parent and status.reply_parent.privacy == "followers":
             audience = audience.filter(
-                Q(id=status.user.id)  # if the user is the post's author
-                | Q(id=status.reply_parent.user.id)  # if the user is the OG author
+                Q(id=status.reply_parent.user.id)  # if the user is the OG author
                 | (
                     Q(following=status.user) & Q(following=status.reply_parent.user)
                 )  # if the user is following both authors
@@ -136,8 +144,7 @@ class ActivityStream(RedisStore):
         # only visible to the poster's followers and tagged users
         elif status.privacy == "followers":
             audience = audience.filter(
-                Q(id=status.user.id)  # if the user is the post's author
-                | Q(following=status.user)  # if the user is following the author
+                Q(following=status.user)  # if the user is following the author
             )
         return audience.distinct()
 
@@ -145,10 +152,15 @@ class ActivityStream(RedisStore):
     def get_audience(self, status):
         """given a status, what users should see it"""
         trace.get_current_span().set_attribute("stream_id", self.key)
-        return [user.id for user in self._get_audience(status)]
+        audience = self._get_audience(status)
+        status_author = models.User.objects.filter(
+            is_active=True, local=True, id=status.user.id
+        )
+        return list({user.id for user in list(audience) + list(status_author)})
 
-    def get_stores_for_object(self, obj):
-        return [self.stream_id(user_id) for user_id in self.get_audience(obj)]
+    def get_stores_for_users(self, user_ids):
+        """convert a list of user ids into redis store ids"""
+        return [self.stream_id(user_id) for user_id in user_ids]
 
     def get_statuses_for_user(self, user):  # pylint: disable=no-self-use
         """given a user, what statuses should they see on this stream"""
@@ -173,11 +185,13 @@ class HomeStream(ActivityStream):
         audience = super()._get_audience(status)
         if not audience:
             return []
-        # if the user is the post's author
-        ids_self = [user.id for user in audience.filter(Q(id=status.user.id))]
         # if the user is following the author
-        ids_following = [user.id for user in audience.filter(Q(following=status.user))]
-        return ids_self + ids_following
+        audience = audience.filter(following=status.user)
+        # if the user is the post's author
+        status_author = models.User.objects.filter(
+            is_active=True, local=True, id=status.user.id
+        )
+        return list({user.id for user in list(audience) + list(status_author)})
 
     def get_statuses_for_user(self, user):
         return models.Status.privacy_filter(
@@ -197,11 +211,11 @@ class LocalStream(ActivityStream):
 
     key = "local"
 
-    def _get_audience(self, status):
+    def get_audience(self, status):
         # this stream wants no part in non-public statuses
         if status.privacy != "public" or not status.user.local:
             return []
-        return super()._get_audience(status)
+        return super().get_audience(status)
 
     def get_statuses_for_user(self, user):
         # all public statuses by a local user
@@ -218,13 +232,6 @@ class BooksStream(ActivityStream):
 
     def _get_audience(self, status):
         """anyone with the mentioned book on their shelves"""
-        # only show public statuses on the books feed,
-        # and only statuses that mention books
-        if status.privacy != "public" or not (
-            status.mention_books.exists() or hasattr(status, "book")
-        ):
-            return []
-
         work = (
             status.book.parent_work
             if hasattr(status, "book")
@@ -235,6 +242,16 @@ class BooksStream(ActivityStream):
         if not audience:
             return []
         return audience.filter(shelfbook__book__parent_work=work).distinct()
+
+    def get_audience(self, status):
+        # only show public statuses on the books feed,
+        # and only statuses that mention books
+        if status.privacy != "public" or not (
+            status.mention_books.exists() or hasattr(status, "book")
+        ):
+            return []
+
+        return super().get_audience(status)
 
     def get_statuses_for_user(self, user):
         """any public status that mentions the user's books"""
@@ -514,7 +531,9 @@ def remove_status_task(status_ids):
 
     for stream in streams.values():
         for status in statuses:
-            stream.remove_object_from_related_stores(status)
+            stream.remove_object_from_stores(
+                status, stream.get_stores_for_users(stream.get_audience(status))
+            )
 
 
 @app.task(queue=HIGH, ignore_result=True)
@@ -563,10 +582,10 @@ def handle_boost_task(boost_id):
 
     for stream in streams.values():
         # people who should see the boost (not people who see the original status)
-        audience = stream.get_stores_for_object(instance)
-        stream.remove_object_from_related_stores(boosted, stores=audience)
+        audience = stream.get_stores_for_users(stream.get_audience(instance))
+        stream.remove_object_from_stores(boosted, audience)
         for status in old_versions:
-            stream.remove_object_from_related_stores(status, stores=audience)
+            stream.remove_object_from_stores(status, audience)
 
 
 def get_status_type(status):
