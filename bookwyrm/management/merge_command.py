@@ -27,4 +27,3 @@ class MergeCommand(BaseCommand):
             return
 
         merge_objects(canonical, other)
-    
