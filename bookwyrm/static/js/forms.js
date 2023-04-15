@@ -2,7 +2,7 @@
     "use strict";
 
     /**
-     * Remoev input field
+     * Remove input field
      *
      * @param {event} the button click event
      */

@@ -8,6 +8,7 @@ from django.views import View
 from django.views.decorators.http import require_POST
 
 from bookwyrm import models
+from bookwyrm.views.helpers import redirect_to_referer
 from bookwyrm.settings import PAGE_LENGTH
 
 
@@ -57,7 +58,7 @@ class ImportList(View):
         """Mark an import as complete"""
         import_job = get_object_or_404(models.ImportJob, id=import_id)
         import_job.stop_job()
-        return redirect("settings-imports")
+        return redirect_to_referer(request, "settings-imports")
 
 
 @require_POST

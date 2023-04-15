@@ -104,7 +104,7 @@ def raise_is_blocked_activity(activity_json):
 
 def sometimes_async_activity_task(activity_json, queue=MEDIUM):
     """Sometimes we can effectively respond to a request without queuing a new task,
-    and whever that is possible, we should do it."""
+    and whenever that is possible, we should do it."""
     activity = activitypub.parse(activity_json)
 
     # try resolving this activity without making any http requests

@@ -127,7 +127,7 @@ class ActivityObject:
         if (
             allow_create
             and hasattr(model, "ignore_activity")
-            and model.ignore_activity(self)
+            and model.ignore_activity(self, allow_external_connections)
         ):
             return None
 
@@ -384,7 +384,8 @@ def get_activitypub_data(url):
         resp = requests.get(
             url,
             headers={
-                "Accept": "application/json; charset=utf-8",
+                # pylint: disable=line-too-long
+                "Accept": 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
                 "Date": now,
                 "Signature": make_signature("get", sender, url, now),
             },

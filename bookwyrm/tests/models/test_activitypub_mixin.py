@@ -245,7 +245,7 @@ class ActivitypubMixins(TestCase):
 
     # ObjectMixin
     def test_object_save_create(self, *_):
-        """should save uneventufully when broadcast is disabled"""
+        """should save uneventfully when broadcast is disabled"""
 
         class Success(Exception):
             """this means we got to the right method"""
@@ -276,7 +276,7 @@ class ActivitypubMixins(TestCase):
         ObjectModel(user=None).save()
 
     def test_object_save_update(self, *_):
-        """should save uneventufully when broadcast is disabled"""
+        """should save uneventfully when broadcast is disabled"""
 
         class Success(Exception):
             """this means we got to the right method"""
