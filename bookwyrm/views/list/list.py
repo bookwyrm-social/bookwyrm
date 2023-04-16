@@ -8,7 +8,7 @@ from django.db import transaction
 from django.db.models import Avg, DecimalField, Q, Max
 from django.db.models.functions import Coalesce
 from django.http import HttpResponseBadRequest, HttpResponse
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
 from django.utils.decorators import method_decorator
@@ -183,7 +183,7 @@ def delete_list(request, list_id):
     book_list.raise_not_deletable(request.user)
 
     book_list.delete()
-    return redirect_to_referer(request, "lists")
+    return redirect("/list")
 
 
 @require_POST

@@ -4,6 +4,7 @@
 {% load humanize %}
 {% load utilities %}
 {% load static %}
+{% load shelf_tags %}
 
 {% block title %}{{ book|book_title }}{% endblock %}
 
@@ -46,7 +47,13 @@
                         <meta itemprop="isPartOf" content="{{ book.series | escape }}">
                         <meta itemprop="volumeNumber" content="{{ book.series_number }}">
 
-                        (<a href="{% url 'book-series-by' book.authors.first.id %}?series_name={{ book.series }}">{{ book.series }}{% if book.series_number %} #{{ book.series_number }}{% endif %}</a>)
+                        {% if book.authors.exists %}
+                            <a href="{% url 'book-series-by' book.authors.first.id %}?series_name={{ book.series }}">
+                        {% endif %}
+                        {{ book.series }}{% if book.series_number %} #{{ book.series_number }}{% endif %}
+                        {% if book.authors.exists %}
+                            </a>
+                        {% endif %}
                     {% endif %}
                 </p>
             {% endif %}
@@ -239,7 +246,7 @@
                 <ul>
                 {% for shelf in user_shelfbooks %}
                     <li class="box">
-                        <a href="{{ shelf.shelf.local_path }}">{{ shelf.shelf.name }}</a>
+                        <a href="{{ shelf.shelf.local_path }}">{{ shelf.shelf|translate_shelf_name }}</a>
                         <div class="is-pulled-right">
                             {% include 'snippets/shelf_selector.html' with shelf=shelf.shelf class="is-small" readthrough=readthrough %}
                         </div>
