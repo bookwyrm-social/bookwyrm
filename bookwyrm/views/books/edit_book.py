@@ -102,11 +102,13 @@ class CreateBook(View):
                 "authors": authors,
             }
 
-        ensure_transient_values_persist(request, data)
-
         if not form.is_valid():
+            ensure_transient_values_persist(request, data, form)
             return TemplateResponse(request, "book/edit/edit_book.html", data)
 
+        # we have to call this twice because it requires form.cleaned_data
+        # which only exists after we validate the form
+        ensure_transient_values_persist(request, data, form)
         data = add_authors(request, data)
 
         # check if this is an edition of an existing work
@@ -139,8 +141,11 @@ class CreateBook(View):
         return redirect(f"/book/{book.id}")
 
 
-def ensure_transient_values_persist(request, data):
+def ensure_transient_values_persist(request, data, form):
     """ensure that values of transient form fields persist when re-rendering the form"""
+    data["book"] = data.get("book") or {}
+    data["book"]["subjects"] = form.cleaned_data["subjects"]
+    data["add_author"] = request.POST.getlist("add_author")
     data["cover_url"] = request.POST.get("cover-url")
 
 
