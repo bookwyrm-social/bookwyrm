@@ -143,10 +143,11 @@ class CreateBook(View):
 
 def ensure_transient_values_persist(request, data, **kwargs):
     """ensure that values of transient form fields persist when re-rendering the form"""
-    data["book"] = data.get("book") or {}
-    data["book"]["subjects"] = kwargs["form"].cleaned_data["subjects"]
-    data["add_author"] = request.POST.getlist("add_author")
     data["cover_url"] = request.POST.get("cover-url")
+    if kwargs and kwargs.get("form"):
+        data["book"] = data.get("book") or {}
+        data["book"]["subjects"] = kwargs["form"].cleaned_data["subjects"]
+        data["add_author"] = request.POST.getlist("add_author")
 
 
 def add_authors(request, data):
