@@ -11,6 +11,7 @@ from django.views.decorators.http import require_GET
 from bookwyrm import models
 from bookwyrm.settings import DOMAIN, VERSION, LANGUAGE_CODE
 
+
 @require_GET
 def webfinger(request):
     """allow other servers to ask about a user"""
