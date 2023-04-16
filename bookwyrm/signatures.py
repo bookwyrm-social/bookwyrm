@@ -57,20 +57,14 @@ def make_digest(data):
 def verify_digest(request):
     """checks if a digest is syntactically valid and matches the message"""
     algorithm, digest = request.headers["digest"].split("=", 1)
-    if algorithm in ("SHA-256", "hs2019"):
-        hash_function = hashlib.sha256
-    elif algorithm == "SHA-512":
-        hash_function = hashlib.sha512
-    else:
-        raise ValueError(f"Unsupported hash function: {algorithm}")
-
-    expected = hash_function(request.body).digest()
-    if algorithm == "hs2019" and b64decode(digest) != expected:
-        hash_function = hashlib.sha512
+    # actual algorithm may be stated in the header or may be obscured as "hs2019".
+    # loop over the algorithms we support and see if one of them matches.
+    hash_functions = [hashlib.sha256, hashlib.sha512]
+    for hash_function in hash_functions:
         expected = hash_function(request.body).digest()
-
-    if b64decode(digest) != expected:
-        raise ValueError(f"Invalid HTTP Digest header: {algorithm}")
+        if b64decode(digest) == expected:
+            return
+    raise ValueError(f"Invalid HTTP Digest header: {algorithm}")
 
 
 class Signature:
