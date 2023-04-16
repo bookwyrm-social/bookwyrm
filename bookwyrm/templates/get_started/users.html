@@ -5,7 +5,7 @@
 <div class="block">
     <h2 class="title is-4">{% trans "Who to follow" %}</h2>
 
-    <p class="subtitle is-6">You can follow users on other BookWyrm instances and federated services like Mastodon.</p>
+    <p class="subtitle is-6">{% trans "You can follow users on other BookWyrm instances and federated services like Mastodon." %}</p>
     <form class="field has-addons" method="get" action="{% url 'get-started-users' %}">
         <div class="control">
             <input type="text" name="query" value="{{ request.GET.query }}" class="input" placeholder="{% trans 'Search for a user' %}" aria-label="{% trans 'Search for a user' %}">
