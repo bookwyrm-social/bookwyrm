@@ -93,7 +93,6 @@ class AbstractMinimalConnector(ABC):
         except aiohttp.ClientError as err:
             logger.info(err)
 
-
     @abstractmethod
     def get_or_create_book(self, remote_id):
         """pull up a book record by whatever means possible"""

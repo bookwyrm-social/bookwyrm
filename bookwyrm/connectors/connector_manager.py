@@ -21,6 +21,7 @@ logger = logging.getLogger(__name__)
 class ConnectorException(HTTPError):
     """when the connector can't do what was asked"""
 
+
 async def async_connector_search(query, items, min_confidence):
     """Try a number of requests simultaneously"""
     timeout = aiohttp.ClientTimeout(total=SEARCH_TIMEOUT)
