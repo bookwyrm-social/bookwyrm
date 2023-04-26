@@ -110,7 +110,7 @@ class ClearCeleryForm(forms.Form):
 def celery_ping(request):
     """Just tells you if Celery is on or not"""
     try:
-        ping = celery.control.inspect().ping(timeout=5)
+        ping = celery.control.inspect().ping()
         if ping:
             return HttpResponse()
     # pylint: disable=broad-except
