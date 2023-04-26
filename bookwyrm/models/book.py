@@ -451,11 +451,14 @@ def preview_image(instance, *args, **kwargs):
 
 AuthorTypes = [
     ("author", _("Author")),
-    ("contributor", _("Contributor")),
-    ("translator", _("Translator")),
-    ("illustrator", _("Illustrator")),
     ("editor", _("Editor")),
-    ("Other", _("Other")),
+    ("translator", _("Translator")),
+    ("contributor", _("Contributor")),
+    ("preface", _("Author of Preface")),
+    ("illustrator", _("Illustrator")),
+    ("letterer", _("Letterer")),
+    ("narrator", _("Narrator")),
+    ("other", _("Other")),
 ]
 
 
