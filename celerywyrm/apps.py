@@ -11,3 +11,4 @@ class CelerywyrmConfig(AppConfig):
             from bookwyrm.telemetry import open_telemetry
 
             open_telemetry.instrumentCelery()
+            open_telemetry.instrumentPostgres()

@@ -50,7 +50,7 @@ class Activitystreams(TestCase):
         self.assertEqual(args[1], self.book)
 
     def test_remove_book_statuses_task(self):
-        """remove stauses related to a book"""
+        """remove statuses related to a book"""
         with patch("bookwyrm.activitystreams.BooksStream.remove_book_statuses") as mock:
             activitystreams.remove_book_statuses_task(self.local_user.id, self.book.id)
         self.assertTrue(mock.called)
@@ -75,7 +75,7 @@ class Activitystreams(TestCase):
     def test_remove_status_task(self):
         """remove a status from all streams"""
         with patch(
-            "bookwyrm.activitystreams.ActivityStream.remove_object_from_related_stores"
+            "bookwyrm.activitystreams.ActivityStream.remove_object_from_stores"
         ) as mock:
             activitystreams.remove_status_task(self.status.id)
         self.assertEqual(mock.call_count, 3)
@@ -132,8 +132,8 @@ class Activitystreams(TestCase):
         self.assertEqual(args[0], self.local_user)
         self.assertEqual(args[1], self.another_user)
 
-    @patch("bookwyrm.activitystreams.LocalStream.remove_object_from_related_stores")
-    @patch("bookwyrm.activitystreams.BooksStream.remove_object_from_related_stores")
+    @patch("bookwyrm.activitystreams.LocalStream.remove_object_from_stores")
+    @patch("bookwyrm.activitystreams.BooksStream.remove_object_from_stores")
     @patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
     def test_boost_to_another_timeline(self, *_):
         """boost from a non-follower doesn't remove original status from feed"""
@@ -144,7 +144,7 @@ class Activitystreams(TestCase):
                 user=self.another_user,
             )
         with patch(
-            "bookwyrm.activitystreams.HomeStream.remove_object_from_related_stores"
+            "bookwyrm.activitystreams.HomeStream.remove_object_from_stores"
         ) as mock:
             activitystreams.handle_boost_task(boost.id)
 
@@ -152,10 +152,10 @@ class Activitystreams(TestCase):
         self.assertEqual(mock.call_count, 1)
         call_args = mock.call_args
         self.assertEqual(call_args[0][0], status)
-        self.assertEqual(call_args[1]["stores"], [f"{self.another_user.id}-home"])
+        self.assertEqual(call_args[0][1], [f"{self.another_user.id}-home"])
 
-    @patch("bookwyrm.activitystreams.LocalStream.remove_object_from_related_stores")
-    @patch("bookwyrm.activitystreams.BooksStream.remove_object_from_related_stores")
+    @patch("bookwyrm.activitystreams.LocalStream.remove_object_from_stores")
+    @patch("bookwyrm.activitystreams.BooksStream.remove_object_from_stores")
     @patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
     def test_boost_to_another_timeline_remote(self, *_):
         """boost from a remote non-follower doesn't remove original status from feed"""
@@ -166,7 +166,7 @@ class Activitystreams(TestCase):
                 user=self.remote_user,
             )
         with patch(
-            "bookwyrm.activitystreams.HomeStream.remove_object_from_related_stores"
+            "bookwyrm.activitystreams.HomeStream.remove_object_from_stores"
         ) as mock:
             activitystreams.handle_boost_task(boost.id)
 
@@ -174,10 +174,10 @@ class Activitystreams(TestCase):
         self.assertEqual(mock.call_count, 1)
         call_args = mock.call_args
         self.assertEqual(call_args[0][0], status)
-        self.assertEqual(call_args[1]["stores"], [])
+        self.assertEqual(call_args[0][1], [])
 
-    @patch("bookwyrm.activitystreams.LocalStream.remove_object_from_related_stores")
-    @patch("bookwyrm.activitystreams.BooksStream.remove_object_from_related_stores")
+    @patch("bookwyrm.activitystreams.LocalStream.remove_object_from_stores")
+    @patch("bookwyrm.activitystreams.BooksStream.remove_object_from_stores")
     @patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
     def test_boost_to_following_timeline(self, *_):
         """add a boost and deduplicate the boosted status on the timeline"""
@@ -189,17 +189,17 @@ class Activitystreams(TestCase):
                 user=self.another_user,
             )
         with patch(
-            "bookwyrm.activitystreams.HomeStream.remove_object_from_related_stores"
+            "bookwyrm.activitystreams.HomeStream.remove_object_from_stores"
         ) as mock:
             activitystreams.handle_boost_task(boost.id)
         self.assertTrue(mock.called)
         call_args = mock.call_args
         self.assertEqual(call_args[0][0], status)
-        self.assertTrue(f"{self.another_user.id}-home" in call_args[1]["stores"])
-        self.assertTrue(f"{self.local_user.id}-home" in call_args[1]["stores"])
+        self.assertTrue(f"{self.another_user.id}-home" in call_args[0][1])
+        self.assertTrue(f"{self.local_user.id}-home" in call_args[0][1])
 
-    @patch("bookwyrm.activitystreams.LocalStream.remove_object_from_related_stores")
-    @patch("bookwyrm.activitystreams.BooksStream.remove_object_from_related_stores")
+    @patch("bookwyrm.activitystreams.LocalStream.remove_object_from_stores")
+    @patch("bookwyrm.activitystreams.BooksStream.remove_object_from_stores")
     @patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
     def test_boost_to_same_timeline(self, *_):
         """add a boost and deduplicate the boosted status on the timeline"""
@@ -210,10 +210,10 @@ class Activitystreams(TestCase):
                 user=self.local_user,
             )
         with patch(
-            "bookwyrm.activitystreams.HomeStream.remove_object_from_related_stores"
+            "bookwyrm.activitystreams.HomeStream.remove_object_from_stores"
         ) as mock:
             activitystreams.handle_boost_task(boost.id)
         self.assertTrue(mock.called)
         call_args = mock.call_args
         self.assertEqual(call_args[0][0], status)
-        self.assertEqual(call_args[1]["stores"], [f"{self.local_user.id}-home"])
+        self.assertEqual(call_args[0][1], [f"{self.local_user.id}-home"])

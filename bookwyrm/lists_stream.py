@@ -24,8 +24,7 @@ class ListsStream(RedisStore):
 
     def add_list(self, book_list):
         """add a list to users' feeds"""
-        # the pipeline contains all the add-to-stream activities
-        self.add_object_to_related_stores(book_list)
+        self.add_object_to_stores(book_list, self.get_stores_for_object(book_list))
 
     def add_user_lists(self, viewer, user):
         """add a user's lists to another user's feed"""
@@ -86,18 +85,19 @@ class ListsStream(RedisStore):
             if group:
                 audience = audience.filter(
                     Q(id=book_list.user.id)  # if the user is the list's owner
-                    | Q(following=book_list.user)  # if the user is following the pwmer
+                    | Q(following=book_list.user)  # if the user is following the owner
                     # if a user is in the group
                     | Q(memberships__group__id=book_list.group.id)
                 )
             else:
                 audience = audience.filter(
                     Q(id=book_list.user.id)  # if the user is the list's owner
-                    | Q(following=book_list.user)  # if the user is following the pwmer
+                    | Q(following=book_list.user)  # if the user is following the owner
                 )
         return audience.distinct()
 
     def get_stores_for_object(self, obj):
+        """the stores that an object belongs in"""
         return [self.stream_id(u) for u in self.get_audience(obj)]
 
     def get_lists_for_user(self, user):  # pylint: disable=no-self-use
@@ -217,14 +217,14 @@ def add_list_on_account_create_command(user_id):
 
 
 # ---- TASKS
-@app.task(queue=MEDIUM, ignore_result=True)
+@app.task(queue=MEDIUM)
 def populate_lists_task(user_id):
     """background task for populating an empty list stream"""
     user = models.User.objects.get(id=user_id)
     ListsStream().populate_lists(user)
 
 
-@app.task(queue=MEDIUM, ignore_result=True)
+@app.task(queue=MEDIUM)
 def remove_list_task(list_id, re_add=False):
     """remove a list from any stream it might be in"""
     stores = models.User.objects.filter(local=True, is_active=True).values_list(
@@ -233,20 +233,20 @@ def remove_list_task(list_id, re_add=False):
 
     # delete for every store
     stores = [ListsStream().stream_id(idx) for idx in stores]
-    ListsStream().remove_object_from_related_stores(list_id, stores=stores)
+    ListsStream().remove_object_from_stores(list_id, stores)
 
     if re_add:
         add_list_task.delay(list_id)
 
 
-@app.task(queue=HIGH, ignore_result=True)
+@app.task(queue=HIGH)
 def add_list_task(list_id):
     """add a list to any stream it should be in"""
     book_list = models.List.objects.get(id=list_id)
     ListsStream().add_list(book_list)
 
 
-@app.task(queue=MEDIUM, ignore_result=True)
+@app.task(queue=MEDIUM)
 def remove_user_lists_task(viewer_id, user_id, exclude_privacy=None):
     """remove all lists by a user from a viewer's stream"""
     viewer = models.User.objects.get(id=viewer_id)
@@ -254,7 +254,7 @@ def remove_user_lists_task(viewer_id, user_id, exclude_privacy=None):
     ListsStream().remove_user_lists(viewer, user, exclude_privacy=exclude_privacy)
 
 
-@app.task(queue=MEDIUM, ignore_result=True)
+@app.task(queue=MEDIUM)
 def add_user_lists_task(viewer_id, user_id):
     """add all lists by a user to a viewer's stream"""
     viewer = models.User.objects.get(id=viewer_id)

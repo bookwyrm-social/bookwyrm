@@ -469,7 +469,7 @@ class KeyPair(ActivitypubMixin, BookWyrmModel):
         return super().save(*args, **kwargs)
 
 
-@app.task(queue=LOW, ignore_result=True)
+@app.task(queue=LOW)
 def set_remote_server(user_id):
     """figure out the user's remote server in the background"""
     user = User.objects.get(id=user_id)
@@ -513,7 +513,7 @@ def get_or_create_remote_server(domain, refresh=False):
     return server
 
 
-@app.task(queue=LOW, ignore_result=True)
+@app.task(queue=LOW)
 def get_remote_reviews(outbox):
     """ingest reviews by a new remote bookwyrm user"""
     outbox_page = outbox + "?page=true&type=Review"

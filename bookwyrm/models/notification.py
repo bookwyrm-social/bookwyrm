@@ -284,7 +284,7 @@ def notify_user_on_list_item_add(sender, instance, created, *args, **kwargs):
         return
 
     list_owner = instance.book_list.user
-    # create a notification if somoene ELSE added to a local user's list
+    # create a notification if someone ELSE added to a local user's list
     if list_owner.local and list_owner != instance.user:
         # keep the related_user singular, group the items
         Notification.notify_list_item(list_owner, instance)

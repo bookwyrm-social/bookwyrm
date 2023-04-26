@@ -75,7 +75,7 @@ def format_email(email_name, data):
     return (subject, html_content, text_content)
 
 
-@app.task(queue=HIGH, ignore_result=True)
+@app.task(queue=HIGH)
 def send_email(recipient, subject, html_content, text_content):
     """use a task to send the email"""
     email = EmailMultiAlternatives(

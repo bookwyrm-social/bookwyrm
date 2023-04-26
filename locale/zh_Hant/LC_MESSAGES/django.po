@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-03-13 14:54+0000\n"
-"PO-Revision-Date: 2023-03-13 16:39\n"
+"POT-Creation-Date: 2023-03-29 14:55+0000\n"
+"PO-Revision-Date: 2023-04-07 14:21\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Chinese Traditional\n"
 "Language: zh\n"
@@ -316,19 +316,19 @@ msgstr ""
 msgid "Everything else"
 msgstr ""
 
-#: bookwyrm/settings.py:218
+#: bookwyrm/settings.py:221
 msgid "Home Timeline"
 msgstr "主頁時間線"
 
-#: bookwyrm/settings.py:218
+#: bookwyrm/settings.py:221
 msgid "Home"
 msgstr "主頁"
 
-#: bookwyrm/settings.py:219
+#: bookwyrm/settings.py:222
 msgid "Books Timeline"
 msgstr ""
 
-#: bookwyrm/settings.py:219
+#: bookwyrm/settings.py:222
 #: bookwyrm/templates/guided_tour/user_profile.html:101
 #: bookwyrm/templates/search/layout.html:22
 #: bookwyrm/templates/search/layout.html:43
@@ -336,75 +336,79 @@ msgstr ""
 msgid "Books"
 msgstr "書目"
 
-#: bookwyrm/settings.py:291
+#: bookwyrm/settings.py:294
 msgid "English"
 msgstr "English（英語）"
 
-#: bookwyrm/settings.py:292
+#: bookwyrm/settings.py:295
 msgid "Català (Catalan)"
 msgstr ""
 
-#: bookwyrm/settings.py:293
+#: bookwyrm/settings.py:296
 msgid "Deutsch (German)"
 msgstr "Deutsch（德語）"
 
-#: bookwyrm/settings.py:294
-msgid "Español (Spanish)"
-msgstr "Español（西班牙語）"
-
-#: bookwyrm/settings.py:295
-msgid "Euskara (Basque)"
-msgstr ""
-
-#: bookwyrm/settings.py:296
-msgid "Galego (Galician)"
-msgstr ""
-
 #: bookwyrm/settings.py:297
-msgid "Italiano (Italian)"
+msgid "Esperanto (Esperanto)"
 msgstr ""
 
 #: bookwyrm/settings.py:298
-msgid "Suomi (Finnish)"
-msgstr ""
+msgid "Español (Spanish)"
+msgstr "Español（西班牙語）"
 
 #: bookwyrm/settings.py:299
-msgid "Français (French)"
-msgstr "Français（法語）"
+msgid "Euskara (Basque)"
+msgstr ""
 
 #: bookwyrm/settings.py:300
-msgid "Lietuvių (Lithuanian)"
+msgid "Galego (Galician)"
 msgstr ""
 
 #: bookwyrm/settings.py:301
-msgid "Norsk (Norwegian)"
+msgid "Italiano (Italian)"
 msgstr ""
 
 #: bookwyrm/settings.py:302
-msgid "Polski (Polish)"
+msgid "Suomi (Finnish)"
 msgstr ""
 
 #: bookwyrm/settings.py:303
-msgid "Português do Brasil (Brazilian Portuguese)"
-msgstr ""
+msgid "Français (French)"
+msgstr "Français（法語）"
 
 #: bookwyrm/settings.py:304
-msgid "Português Europeu (European Portuguese)"
+msgid "Lietuvių (Lithuanian)"
 msgstr ""
 
 #: bookwyrm/settings.py:305
-msgid "Română (Romanian)"
+msgid "Norsk (Norwegian)"
 msgstr ""
 
 #: bookwyrm/settings.py:306
-msgid "Svenska (Swedish)"
+msgid "Polski (Polish)"
 msgstr ""
 
 #: bookwyrm/settings.py:307
+msgid "Português do Brasil (Brazilian Portuguese)"
+msgstr ""
+
+#: bookwyrm/settings.py:308
+msgid "Português Europeu (European Portuguese)"
+msgstr ""
+
+#: bookwyrm/settings.py:309
+msgid "Română (Romanian)"
+msgstr ""
+
+#: bookwyrm/settings.py:310
+msgid "Svenska (Swedish)"
+msgstr ""
+
+#: bookwyrm/settings.py:311
 msgid "简体中文 (Simplified Chinese)"
 msgstr "簡體中文"
 
-#: bookwyrm/settings.py:308
+#: bookwyrm/settings.py:312
 msgid "繁體中文 (Traditional Chinese)"
 msgstr "繁體中文"
 
@@ -838,7 +842,7 @@ msgstr ""
 #: bookwyrm/templates/lists/bookmark_button.html:15
 #: bookwyrm/templates/lists/edit_item_form.html:15
 #: bookwyrm/templates/lists/form.html:130
-#: bookwyrm/templates/preferences/edit_user.html:136
+#: bookwyrm/templates/preferences/edit_user.html:140
 #: bookwyrm/templates/readthrough/readthrough_modal.html:81
 #: bookwyrm/templates/settings/announcements/edit_announcement.html:120
 #: bookwyrm/templates/settings/federation/edit_instance.html:98
@@ -4020,6 +4024,11 @@ msgstr ""
 
 #: bookwyrm/templates/preferences/edit_user.html:128
 msgid "Default post privacy:"
+msgstr ""
+
+#: bookwyrm/templates/preferences/edit_user.html:136
+#, python-format
+msgid "Looking for shelf privacy? You can set a separate visibility level for each of your shelves. Go to <a href=\"%(path)s\">Your Books</a>, pick a shelf from the tab bar, and click \"Edit shelf.\""
 msgstr ""
 
 #: bookwyrm/templates/preferences/export.html:4
