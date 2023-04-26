@@ -19,7 +19,7 @@ class LibrarythingImporter(Importer):
         normalized = {k: remove_brackets(entry.get(v)) for k, v in mappings.items()}
         isbn_13 = normalized.get("isbn_13")
         isbn_13 = isbn_13.split(", ") if isbn_13 else []
-        normalized["isbn_13"] = isbn_13[1] if len(isbn_13) > 0 else None
+        normalized["isbn_13"] = isbn_13[1] if len(isbn_13) > 1 else None
         return normalized
 
     def get_shelf(self, normalized_row):

@@ -4,13 +4,16 @@ from urllib.parse import quote_plus
 import imghdr
 import logging
 import re
+import asyncio
+import requests
+from requests.exceptions import RequestException
+import aiohttp
 
 from django.core.files.base import ContentFile
 from django.db import transaction
-import requests
-from requests.exceptions import RequestException
 
 from bookwyrm import activitypub, models, settings
+from bookwyrm.settings import USER_AGENT
 from .connector_manager import load_more_data, ConnectorException, raise_not_valid_url
 from .format_mappings import format_mappings
 
@@ -56,6 +59,39 @@ class AbstractMinimalConnector(ABC):
         if maybe_isbn(query):
             return list(self.parse_isbn_search_data(data))[:10]
         return list(self.parse_search_data(data, min_confidence))[:10]
+
+    async def get_results(self, session, url, min_confidence, query):
+        """try this specific connector"""
+        # pylint: disable=line-too-long
+        headers = {
+            "Accept": (
+                'application/json, application/activity+json, application/ld+json; profile="https://www.w3.org/ns/activitystreams"; charset=utf-8'
+            ),
+            "User-Agent": USER_AGENT,
+        }
+        params = {"min_confidence": min_confidence}
+        try:
+            async with session.get(url, headers=headers, params=params) as response:
+                if not response.ok:
+                    logger.info("Unable to connect to %s: %s", url, response.reason)
+                    return
+
+                try:
+                    raw_data = await response.json()
+                except aiohttp.client_exceptions.ContentTypeError as err:
+                    logger.exception(err)
+                    return
+
+                return {
+                    "connector": self,
+                    "results": self.process_search_response(
+                        query, raw_data, min_confidence
+                    ),
+                }
+        except asyncio.TimeoutError:
+            logger.info("Connection timed out for url: %s", url)
+        except aiohttp.ClientError as err:
+            logger.info(err)
 
     @abstractmethod
     def get_or_create_book(self, remote_id):
