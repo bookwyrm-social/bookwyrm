@@ -18,19 +18,30 @@ class CoverForm(CustomForm):
 class EditionForm(CustomForm):
     class Meta:
         model = models.Edition
-        exclude = [
-            "remote_id",
-            "origin_id",
-            "created_date",
-            "updated_date",
-            "edition_rank",
-            "authors",
-            "parent_work",
-            "shelves",
-            "connector",
-            "search_vector",
-            "links",
-            "file_links",
+        fields = [
+            "title",
+            "subtitle",
+            "description",
+            "series",
+            "series_number",
+            "languages",
+            "subjects",
+            "publishers",
+            "first_published_date",
+            "published_date",
+            "cover",
+            "physical_format",
+            "physical_format_detail",
+            "pages",
+            "isbn_13",
+            "isbn_10",
+            "openlibrary_key",
+            "inventaire_id",
+            "goodreads_key",
+            "oclc_number",
+            "asin",
+            "aasin",
+            "isfdb",
         ]
         widgets = {
             "title": forms.TextInput(attrs={"aria-describedby": "desc_title"}),
@@ -73,10 +84,15 @@ class EditionForm(CustomForm):
             "inventaire_id": forms.TextInput(
                 attrs={"aria-describedby": "desc_inventaire_id"}
             ),
+            "goodreads_key": forms.TextInput(
+                attrs={"aria-describedby": "desc_goodreads_key"}
+            ),
             "oclc_number": forms.TextInput(
                 attrs={"aria-describedby": "desc_oclc_number"}
             ),
             "ASIN": forms.TextInput(attrs={"aria-describedby": "desc_ASIN"}),
+            "AASIN": forms.TextInput(attrs={"aria-describedby": "desc_AASIN"}),
+            "isfdb": forms.TextInput(attrs={"aria-describedby": "desc_isfdb"}),
         }
 
 

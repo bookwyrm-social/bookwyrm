@@ -18,7 +18,11 @@ from django.views.decorators.http import require_POST
 from bookwyrm import book_search, forms, models
 from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.settings import PAGE_LENGTH
-from bookwyrm.views.helpers import is_api_request, maybe_redirect_local_path
+from bookwyrm.views.helpers import (
+    is_api_request,
+    maybe_redirect_local_path,
+    redirect_to_referer,
+)
 
 
 # pylint: disable=no-self-use
@@ -36,11 +40,8 @@ class List(View):
         if is_api_request(request):
             return ActivitypubResponse(book_list.to_activity(**request.GET))
 
-        if r := maybe_redirect_local_path(request, book_list):
-            return r
-
-        query = request.GET.get("q")
-        suggestions = None
+        if redirect_option := maybe_redirect_local_path(request, book_list):
+            return redirect_option
 
         items = book_list.listitem_set.filter(approved=True).prefetch_related(
             "user", "book", "book__authors"
@@ -48,26 +49,6 @@ class List(View):
         items = sort_list(request, items)
 
         paginated = Paginator(items, PAGE_LENGTH)
-
-        if query and request.user.is_authenticated:
-            # search for books
-            suggestions = book_search.search(
-                query,
-                filters=[~Q(parent_work__editions__in=book_list.books.all())],
-            )
-        elif request.user.is_authenticated:
-            # just suggest whatever books are nearby
-            suggestions = request.user.shelfbook_set.filter(
-                ~Q(book__in=book_list.books.all())
-            )
-            suggestions = [s.book for s in suggestions[:5]]
-            if len(suggestions) < 5:
-                suggestions += [
-                    s.default_edition
-                    for s in models.Work.objects.filter(
-                        ~Q(editions__in=book_list.books.all()),
-                    ).order_by("-updated_date")
-                ][: 5 - len(suggestions)]
 
         page = paginated.get_page(request.GET.get("page"))
 
@@ -78,6 +59,7 @@ class List(View):
         if request.GET:
             embed_url = f"{embed_url}?{request.GET.urlencode()}"
 
+        query = request.GET.get("q", "")
         data = {
             "list": book_list,
             "items": page,
@@ -85,36 +67,66 @@ class List(View):
                 page.number, on_each_side=2, on_ends=1
             ),
             "pending_count": book_list.listitem_set.filter(approved=False).count(),
-            "suggested_books": suggestions,
             "list_form": forms.ListForm(instance=book_list),
-            "query": query or "",
+            "query": query,
             "sort_form": forms.SortListForm(request.GET),
             "embed_url": embed_url,
             "add_failed": add_failed,
             "add_succeeded": add_succeeded,
         }
+
+        if request.user.is_authenticated:
+            data["suggested_books"] = get_list_suggestions(
+                book_list, request.user, query=query
+            )
         return TemplateResponse(request, "lists/list.html", data)
 
     @method_decorator(login_required, name="dispatch")
     def post(self, request, list_id):
         """edit a list"""
         book_list = get_object_or_404(models.List, id=list_id)
-        book_list.raise_not_editable(request.user)
 
         form = forms.ListForm(request.POST, instance=book_list)
         if not form.is_valid():
             # this shouldn't happen
             raise Exception(form.errors)
-        book_list = form.save()
+        book_list = form.save(request)
         if not book_list.curation == "group":
             book_list.group = None
             book_list.save(broadcast=False)
 
-        return redirect(book_list.local_path)
+        return redirect_to_referer(request, book_list.local_path)
+
+
+def get_list_suggestions(book_list, user, query=None, num_suggestions=5):
+    """What books might a user want to add to a list"""
+    if query:
+        # search for books
+        return book_search.search(
+            query,
+            filters=[~Q(parent_work__editions__in=book_list.books.all())],
+        )
+    # just suggest whatever books are nearby
+    suggestions = user.shelfbook_set.filter(
+        ~Q(book__in=book_list.books.all())
+    ).distinct()[:num_suggestions]
+    suggestions = [s.book for s in suggestions[:num_suggestions]]
+    if len(suggestions) < num_suggestions:
+        others = [
+            s.default_edition
+            for s in models.Work.objects.filter(
+                ~Q(editions__in=book_list.books.all()),
+            )
+            .distinct()
+            .order_by("-updated_date")[:num_suggestions]
+        ]
+        # get 'num_suggestions' unique items
+        suggestions = list(set(suggestions + others))[:num_suggestions]
+    return suggestions
 
 
 def sort_list(request, items):
-    """helper to handle the surprisngly involved sorting"""
+    """helper to handle the surprisingly involved sorting"""
     # sort_by shall be "order" unless a valid alternative is given
     sort_by = request.GET.get("sort_by", "order")
     if sort_by not in ("order", "title", "rating"):
@@ -149,7 +161,7 @@ def save_list(request, list_id):
     """save a list"""
     book_list = get_object_or_404(models.List, id=list_id)
     request.user.saved_lists.add(book_list)
-    return redirect("list", list_id)
+    return redirect_to_referer(request, "list", list_id)
 
 
 @require_POST
@@ -158,7 +170,7 @@ def unsave_list(request, list_id):
     """unsave a list"""
     book_list = get_object_or_404(models.List, id=list_id)
     request.user.saved_lists.remove(book_list)
-    return redirect("list", list_id)
+    return redirect_to_referer(request, "list", list_id)
 
 
 @require_POST
@@ -171,7 +183,7 @@ def delete_list(request, list_id):
     book_list.raise_not_deletable(request.user)
 
     book_list.delete()
-    return redirect("lists")
+    return redirect("/list")
 
 
 @require_POST
@@ -193,7 +205,7 @@ def add_book(request):
     if not form.is_valid():
         return List().get(request, book_list.id, add_failed=True)
 
-    item = form.save(commit=False)
+    item = form.save(request, commit=False)
 
     if book_list.curation == "curated":
         # make a pending entry at the end of the list
@@ -228,7 +240,7 @@ def remove_book(request, list_id):
         item.delete()
         normalize_book_list_ordering(book_list.id, start=deleted_order)
 
-    return redirect("list", list_id)
+    return redirect_to_referer(request, "list", list_id)
 
 
 @require_POST
@@ -239,7 +251,6 @@ def set_book_position(request, list_item_id):
     special care with the unique ordering per list.
     """
     list_item = get_object_or_404(models.ListItem, id=list_item_id)
-    list_item.book_list.raise_not_editable(request.user)
     try:
         int_position = int(request.POST.get("position"))
     except ValueError:
@@ -276,7 +287,7 @@ def set_book_position(request, list_item_id):
         list_item.order = int_position
         list_item.save()
 
-    return redirect("list", book_list.id)
+    return redirect_to_referer(request, book_list.local_path)
 
 
 @transaction.atomic

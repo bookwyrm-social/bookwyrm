@@ -1,7 +1,7 @@
 """ manage user """
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.paginator import Paginator
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
 from django.views import View
@@ -10,7 +10,7 @@ from bookwyrm import forms, models
 from bookwyrm.settings import PAGE_LENGTH
 
 
-# pylint: disable= no-self-use
+# pylint: disable=no-self-use
 @method_decorator(login_required, name="dispatch")
 @method_decorator(
     permission_required("bookwyrm.moderate_user", raise_exception=True),
@@ -55,8 +55,12 @@ class UserAdminList(View):
             users = users.order_by(sort)
 
         paginated = Paginator(users, PAGE_LENGTH)
+        page = paginated.get_page(request.GET.get("page"))
         data = {
-            "users": paginated.get_page(request.GET.get("page")),
+            "users": page,
+            "page_range": paginated.get_elided_page_range(
+                page.number, on_each_side=2, on_ends=1
+            ),
             "sort": sort,
             "server": server,
             "status": status,
@@ -88,6 +92,22 @@ class UserAdmin(View):
         else:
             form = forms.UserGroupForm(request.POST, instance=user)
             if form.is_valid():
-                form.save()
+                form.save(request)
         data = {"user": user, "group_form": form}
         return TemplateResponse(request, "settings/users/user.html", data)
+
+
+@method_decorator(login_required, name="dispatch")
+@method_decorator(
+    permission_required("bookwyrm.moderate_user", raise_exception=True),
+    name="dispatch",
+)
+class ActivateUserAdmin(View):
+    """activate a user manually"""
+
+    # pylint: disable=unused-argument
+    def post(self, request, user):
+        """activate user"""
+        user = get_object_or_404(models.User, id=user)
+        user.reactivate()
+        return redirect("settings-user", user.id)

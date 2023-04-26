@@ -17,7 +17,8 @@ from .attachment import Image
 from .favorite import Favorite
 from .readthrough import ReadThrough, ProgressUpdate, ProgressMode
 
-from .user import User, KeyPair, AnnualGoal
+from .user import User, KeyPair
+from .annual_goal import AnnualGoal
 from .relationship import UserFollows, UserFollowRequest, UserBlocks
 from .report import Report, ReportComment
 from .federated_server import FederatedServer
@@ -32,6 +33,8 @@ from .announcement import Announcement
 from .antispam import EmailBlocklist, IPBlocklist, AutoMod, automod_task
 
 from .notification import Notification
+
+from .hashtag import Hashtag
 
 cls_members = inspect.getmembers(sys.modules[__name__], inspect.isclass)
 activity_models = {

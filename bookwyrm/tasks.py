@@ -14,3 +14,7 @@ app = Celery(
 LOW = "low_priority"
 MEDIUM = "medium_priority"
 HIGH = "high_priority"
+# import items get their own queue because they're such a pain in the ass
+IMPORTS = "imports"
+# I keep making more queues?? this one broadcasting out
+BROADCAST = "broadcast"

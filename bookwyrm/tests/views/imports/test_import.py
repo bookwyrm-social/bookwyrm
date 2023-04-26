@@ -1,4 +1,5 @@
 """ test for app action functionality """
+import datetime
 import pathlib
 from unittest.mock import patch
 
@@ -14,6 +15,7 @@ from bookwyrm.tests.validate_html import validate_html
 class ImportViews(TestCase):
     """goodreads import views"""
 
+    # pylint: disable=invalid-name
     def setUp(self):
         """we need basic test data and mocks"""
         self.factory = RequestFactory()
@@ -84,7 +86,7 @@ class ImportViews(TestCase):
         request = self.factory.post("", form.data)
         request.user = self.local_user
 
-        with patch("bookwyrm.importers.Importer.start_import"):
+        with patch("bookwyrm.models.import_job.ImportJob.start_job"):
             view(request)
         job = models.ImportJob.objects.get()
         self.assertFalse(job.include_reviews)
@@ -102,6 +104,71 @@ class ImportViews(TestCase):
         )
         request = self.factory.post("")
         request.user = self.local_user
-        with patch("bookwyrm.importers.importer.import_item_task.delay") as mock:
+        with patch("bookwyrm.models.import_job.import_item_task.delay") as mock:
             views.retry_item(request, job.id, item.id)
         self.assertEqual(mock.call_count, 1)
+
+    def test_get_average_import_time_no_imports(self):
+        """Give people a sense of the timing"""
+        result = views.imports.import_data.get_average_import_time()
+        self.assertIsNone(result)
+
+    def test_get_average_import_time_no_imports_this_week(self):
+        """Give people a sense of the timing"""
+        models.ImportJob.objects.create(
+            user=self.local_user,
+            created_date=datetime.datetime(2000, 1, 1),
+            updated_date=datetime.datetime(2001, 1, 1),
+            status="complete",
+            complete=True,
+            mappings={},
+        )
+        result = views.imports.import_data.get_average_import_time()
+        self.assertIsNone(result)
+
+    def test_get_average_import_time_with_data(self):
+        """Now, with data"""
+        now = datetime.datetime.now()
+        two_hours_ago = now - datetime.timedelta(hours=2)
+        four_hours_ago = now - datetime.timedelta(hours=4)
+        models.ImportJob.objects.create(
+            user=self.local_user,
+            created_date=two_hours_ago,
+            updated_date=now,
+            status="complete",
+            complete=True,
+            mappings={},
+        )
+        models.ImportJob.objects.create(
+            user=self.local_user,
+            created_date=four_hours_ago,
+            updated_date=now,
+            status="complete",
+            complete=True,
+            mappings={},
+        )
+        result = views.imports.import_data.get_average_import_time()
+        self.assertEqual(result, 3 * 60 * 60)
+
+    def test_get_average_import_time_ignore_stopped(self):
+        """Don't include stopped, do include no status"""
+        now = datetime.datetime.now()
+        two_hours_ago = now - datetime.timedelta(hours=2)
+        four_hours_ago = now - datetime.timedelta(hours=4)
+        models.ImportJob.objects.create(
+            user=self.local_user,
+            created_date=two_hours_ago,
+            updated_date=now,
+            status="stopped",
+            complete=True,
+            mappings={},
+        )
+        models.ImportJob.objects.create(
+            user=self.local_user,
+            created_date=four_hours_ago,
+            updated_date=now,
+            complete=True,
+            mappings={},
+        )
+        result = views.imports.import_data.get_average_import_time()
+        self.assertEqual(result, 4 * 60 * 60)

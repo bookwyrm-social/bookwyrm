@@ -5,7 +5,7 @@ let BookWyrm = new (class {
     constructor() {
         this.MAX_FILE_SIZE_BYTES = 10 * 1000000;
         this.initOnDOMLoaded();
-        this.initReccuringTasks();
+        this.initRecurringTasks();
         this.initEventListeners();
     }
 
@@ -38,15 +38,22 @@ let BookWyrm = new (class {
             .querySelectorAll("[data-modal-open]")
             .forEach((node) => node.addEventListener("click", this.handleModalButton.bind(this)));
 
-        document
-            .querySelectorAll("details.dropdown")
-            .forEach((node) =>
-                node.addEventListener("toggle", this.handleDetailsDropdown.bind(this))
+        document.querySelectorAll("details.dropdown").forEach((node) => {
+            node.addEventListener("toggle", this.handleDetailsDropdown.bind(this));
+            node.querySelectorAll("[data-modal-open]").forEach((modal_node) =>
+                modal_node.addEventListener("click", () => (node.open = false))
             );
+        });
 
         document
             .querySelector("#barcode-scanner-modal")
             .addEventListener("open", this.openBarcodeScanner.bind(this));
+
+        document
+            .querySelectorAll('form[name="register"]')
+            .forEach((form) =>
+                form.addEventListener("submit", (e) => this.setPreferredTimezone(e, form))
+            );
     }
 
     /**
@@ -70,7 +77,7 @@ let BookWyrm = new (class {
     /**
      * Execute recurring tasks.
      */
-    initReccuringTasks() {
+    initRecurringTasks() {
         // Polling
         document.querySelectorAll("[data-poll]").forEach((liveArea) => this.polling(liveArea));
     }
@@ -88,7 +95,6 @@ let BookWyrm = new (class {
 
     /**
      * Update a counter with recurring requests to the API
-     * The delay is slightly randomized and increased on each cycle.
      *
      * @param  {Object} counter - DOM node
      * @param  {int}    delay   - frequency for polling in ms
@@ -97,16 +103,19 @@ let BookWyrm = new (class {
     polling(counter, delay) {
         const bookwyrm = this;
 
-        delay = delay || 10000;
-        delay += Math.random() * 1000;
+        delay = delay || 5 * 60 * 1000 + (Math.random() - 0.5) * 30 * 1000;
 
         setTimeout(
             function () {
                 fetch("/api/updates/" + counter.dataset.poll)
                     .then((response) => response.json())
-                    .then((data) => bookwyrm.updateCountElement(counter, data));
-
-                bookwyrm.polling(counter, delay * 1.25);
+                    .then((data) => {
+                        bookwyrm.updateCountElement(counter, data);
+                        bookwyrm.polling(counter);
+                    })
+                    .catch(() => {
+                        bookwyrm.polling(counter, delay * 1.1);
+                    });
             },
             delay,
             counter
@@ -627,9 +636,9 @@ let BookWyrm = new (class {
         }
 
         function toggleStatus(status) {
-            for (const child of statusNode.children) {
-                BookWyrm.toggleContainer(child, !child.classList.contains(status));
-            }
+            const template = document.querySelector(`#barcode-${status}`);
+
+            statusNode.replaceChildren(template ? template.content.cloneNode(true) : null);
         }
 
         function initBarcodes(cameraId = null) {
@@ -783,5 +792,17 @@ let BookWyrm = new (class {
         event.target.addEventListener("close", cleanup, { once: true });
 
         initBarcodes();
+    }
+
+    /**
+     * Set preferred timezone in register form.
+     *
+     * @param  {Event} event - `submit` event fired by the register form.
+     * @return {undefined}
+     */
+    setPreferredTimezone(event, form) {
+        const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+        form.querySelector('input[name="preferred_timezone"]').value = tz;
     }
 })();

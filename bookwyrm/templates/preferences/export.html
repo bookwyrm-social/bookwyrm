@@ -13,10 +13,13 @@
         {% trans "Your export will include all the books on your shelves, books you have reviewed, and books with reading activity." %}
     </p>
     <p>
-        <a href="{% url 'prefs-export-file' %}" class="button">
-            <span class="icon icon-download" aria-hidden="true"></span>
-            <span>Download file</span>
-        </a>
+        <form name="export" method="POST" href="{% url 'prefs-export' %}">
+            {% csrf_token %}
+            <button type="submit" class="button">
+                <span class="icon icon-download" aria-hidden="true"></span>
+                <span>{% trans "Download file" %}</span>
+            </button>
+        </form>
     </p>
 </div>
 {% endblock %}

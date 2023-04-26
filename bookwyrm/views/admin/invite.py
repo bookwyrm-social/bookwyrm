@@ -52,9 +52,9 @@ class ManageInvites(View):
         if not form.is_valid():
             return HttpResponseBadRequest(f"ERRORS: {form.errors}")
 
-        invite = form.save(commit=False)
+        invite = form.save(request, commit=False)
         invite.user = request.user
-        invite.save()
+        invite.save(request)
 
         paginated = Paginator(
             models.SiteInvite.objects.filter(user=request.user).order_by(
@@ -85,6 +85,11 @@ class Invite(View):
     # post handling is in views.register.Register
 
 
+@method_decorator(login_required, name="dispatch")
+@method_decorator(
+    permission_required("bookwyrm.create_invites", raise_exception=True),
+    name="dispatch",
+)
 class ManageInviteRequests(View):
     """grant invites like the benevolent lord you are"""
 
@@ -170,13 +175,14 @@ class InviteRequest(View):
         received = False
         if form.is_valid():
             received = True
-            form.save()
+            form.save(request)
 
         data = {"request_form": form, "request_received": received}
         return TemplateResponse(request, "landing/landing.html", data)
 
 
 @require_POST
+@permission_required("bookwyrm.create_invites", raise_exception=True)
 def ignore_invite_request(request):
     """hide an invite request"""
     invite_request = get_object_or_404(

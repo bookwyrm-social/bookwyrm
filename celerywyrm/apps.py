@@ -7,7 +7,8 @@ class CelerywyrmConfig(AppConfig):
     verbose_name = "BookWyrm Celery"
 
     def ready(self):
-        if settings.OTEL_EXPORTER_OTLP_ENDPOINT:
+        if settings.OTEL_EXPORTER_OTLP_ENDPOINT or settings.OTEL_EXPORTER_CONSOLE:
             from bookwyrm.telemetry import open_telemetry
 
             open_telemetry.instrumentCelery()
+            open_telemetry.instrumentPostgres()

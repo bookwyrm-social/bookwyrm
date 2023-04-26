@@ -6,11 +6,11 @@ ol.ordered-list {
     counter-reset: list-counter;
 }
 
-ol.ordered-list li {
+ol.ordered-list > li {
     counter-increment: list-counter;
 }
 
-ol.ordered-list li::before {
+ol.ordered-list > li::before {
     content: counter(list-counter);
     position: absolute;
     left: -20px;

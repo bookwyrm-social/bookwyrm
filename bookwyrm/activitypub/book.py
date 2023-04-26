@@ -19,6 +19,8 @@ class BookData(ActivityObject):
     viaf: str = None
     wikidata: str = None
     asin: str = None
+    aasin: str = None
+    isfdb: str = None
     lastEditedBy: str = None
     links: List[str] = field(default_factory=lambda: [])
     fileLinks: List[str] = field(default_factory=lambda: [])
@@ -90,3 +92,4 @@ class Author(BookData):
     bio: str = ""
     wikipediaLink: str = ""
     type: str = "Author"
+    website: str = ""

@@ -41,7 +41,7 @@
         </dl>
     </div>
 
-    {% if not job.complete %}
+    {% if job.status == "active" and show_progress %}
     <div class="box is-processing">
         <div class="block">
             <span class="icon icon-spinner is-pulled-left" aria-hidden="true"></span>
@@ -64,6 +64,13 @@
             <span>{{ percent }}%</span>
         </div>
     </div>
+    {% endif %}
+
+    {% if not job.complete %}
+    <form name="stop-import" action="{% url 'import-stop' job.id %}" method="POST">
+        {% csrf_token %}
+        <button class="button is-danger" type="submit">{% trans "Stop import" %}</button>
+    </form>
     {% endif %}
 
     {% if manual_review_count and not legacy %}
@@ -94,7 +101,7 @@
 <div class="block">
     {% block actions %}{% endblock %}
     <div class="table-container">
-        <table class="table is-striped">
+        <table class="table is-striped is-fullwidth">
             <tr>
                 <th>
                     {% trans "Row" %}
@@ -137,6 +144,13 @@
                 </td>
             </tr>
             {% else %}
+            {% if not items %}
+            <tr>
+                <td colspan="6">
+                    <em>{% trans "No items currently need review" %}</em>
+                </td>
+            </tr>
+            {% endif %}
             {% for item in items %}
             <tr>
                 {% block index_col %}
@@ -169,7 +183,7 @@
                     <p>{{ item.review|truncatechars:100 }}</p>
                     {% endif %}
                     {% if item.linked_review %}
-                    <a href="{{ item.linked_review.remote_id }}" target="_blank">{% trans "View imported review" %}</a>
+                    <a href="{{ item.linked_review.remote_id }}" target="_blank" rel="nofollow noopener noreferrer">{% trans "View imported review" %}</a>
                     {% endif %}
                 </td>
                 {% block import_cols %}

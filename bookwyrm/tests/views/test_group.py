@@ -2,6 +2,7 @@
 from unittest.mock import patch
 
 from django.contrib.auth.models import AnonymousUser
+from django.core.exceptions import PermissionDenied
 from django.http import Http404
 from django.template.response import TemplateResponse
 from django.test import TestCase
@@ -15,7 +16,7 @@ from bookwyrm.tests.validate_html import validate_html
 class GroupViews(TestCase):
     """view group and edit details"""
 
-    def setUp(self):
+    def setUp(self):  # pylint: disable=invalid-name
         """we need basic test data and mocks"""
         self.factory = RequestFactory()
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
@@ -128,6 +129,23 @@ class GroupViews(TestCase):
                 group=new_group, user=self.local_user
             ).exists()
         )
+
+    def test_group_create_permission_denied(self, _):
+        """create group view"""
+        view = views.UserGroups.as_view()
+        request = self.factory.post(
+            "",
+            {
+                "name": "A group",
+                "description": "wowzers",
+                "privacy": "unlisted",
+                "user": self.local_user.id,
+            },
+        )
+        request.user = self.rat
+
+        with self.assertRaises(PermissionDenied):
+            view(request, "username")
 
     def test_group_edit(self, _):
         """test editing a "group" database entry"""

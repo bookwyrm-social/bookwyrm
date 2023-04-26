@@ -67,7 +67,7 @@ details.dropdown .dropdown-menu a:focus-visible {
         align-items: center;
         justify-content: center;
         pointer-events: none;
-        z-index: 100;
+        z-index: 35;
     }
 
     details .dropdown-menu > * {
@@ -81,16 +81,24 @@ details.dropdown .dropdown-menu a:focus-visible {
 details.details-panel {
     box-shadow: 0 0 0 1px $border;
     transition: box-shadow 0.2s ease;
-    padding: 0.75rem;
+    padding: 0;
+
+    > * {
+        padding: 0.75rem;
+    }
+
+    summary {
+        position: relative;
+
+        .details-close {
+            padding: 0.75rem;
+        }
+    }
 }
 
 details[open].details-panel,
 details.details-panel:hover {
     box-shadow: 0 0 0 1px $border;
-}
-
-details.details-panel summary {
-    position: relative;
 }
 
 details summary .details-close {

@@ -1,15 +1,19 @@
 """ functionality outline for a book data connector """
 from abc import ABC, abstractmethod
+from urllib.parse import quote_plus
 import imghdr
 import logging
 import re
+import asyncio
+import requests
+from requests.exceptions import RequestException
+import aiohttp
 
 from django.core.files.base import ContentFile
 from django.db import transaction
-import requests
-from requests.exceptions import RequestException
 
 from bookwyrm import activitypub, models, settings
+from bookwyrm.settings import USER_AGENT
 from .connector_manager import load_more_data, ConnectorException, raise_not_valid_url
 from .format_mappings import format_mappings
 
@@ -42,17 +46,52 @@ class AbstractMinimalConnector(ABC):
         """format the query url"""
         # Check if the query resembles an ISBN
         if maybe_isbn(query) and self.isbn_search_url and self.isbn_search_url != "":
-            return f"{self.isbn_search_url}{query}"
-
+            # Up-case the ISBN string to ensure any 'X' check-digit is correct
+            # If the ISBN has only 9 characters, prepend missing zero
+            normalized_query = query.strip().upper().rjust(10, "0")
+            return f"{self.isbn_search_url}{normalized_query}"
         # NOTE: previously, we tried searching isbn and if that produces no results,
         # searched as free text. This, instead, only searches isbn if it's isbn-y
-        return f"{self.search_url}{query}"
+        return f"{self.search_url}{quote_plus(query)}"
 
     def process_search_response(self, query, data, min_confidence):
-        """Format the search results based on the formt of the query"""
+        """Format the search results based on the format of the query"""
         if maybe_isbn(query):
             return list(self.parse_isbn_search_data(data))[:10]
         return list(self.parse_search_data(data, min_confidence))[:10]
+
+    async def get_results(self, session, url, min_confidence, query):
+        """try this specific connector"""
+        # pylint: disable=line-too-long
+        headers = {
+            "Accept": (
+                'application/json, application/activity+json, application/ld+json; profile="https://www.w3.org/ns/activitystreams"; charset=utf-8'
+            ),
+            "User-Agent": USER_AGENT,
+        }
+        params = {"min_confidence": min_confidence}
+        try:
+            async with session.get(url, headers=headers, params=params) as response:
+                if not response.ok:
+                    logger.info("Unable to connect to %s: %s", url, response.reason)
+                    return
+
+                try:
+                    raw_data = await response.json()
+                except aiohttp.client_exceptions.ContentTypeError as err:
+                    logger.exception(err)
+                    return
+
+                return {
+                    "connector": self,
+                    "results": self.process_search_response(
+                        query, raw_data, min_confidence
+                    ),
+                }
+        except asyncio.TimeoutError:
+            logger.info("Connection timed out for url: %s", url)
+        except aiohttp.ClientError as err:
+            logger.info(err)
 
     @abstractmethod
     def get_or_create_book(self, remote_id):
@@ -220,7 +259,7 @@ def dict_from_mappings(data, mappings):
     return result
 
 
-def get_data(url, params=None, timeout=10):
+def get_data(url, params=None, timeout=settings.QUERY_TIMEOUT):
     """wrapper for request.get"""
     # check if the url is blocked
     raise_not_valid_url(url)
@@ -242,7 +281,11 @@ def get_data(url, params=None, timeout=10):
         raise ConnectorException(err)
 
     if not resp.ok:
-        raise ConnectorException()
+        if resp.status_code == 401:
+            # this is probably an AUTHORIZED_FETCH issue
+            resp.raise_for_status()
+        else:
+            raise ConnectorException()
     try:
         data = resp.json()
     except ValueError as err:
@@ -314,7 +357,7 @@ def infer_physical_format(format_text):
 
 
 def unique_physical_format(format_text):
-    """only store the format if it isn't diretly in the format mappings"""
+    """only store the format if it isn't directly in the format mappings"""
     format_text = format_text.lower()
     if format_text in format_mappings:
         # try a direct match, so saving this would be redundant
@@ -325,4 +368,11 @@ def unique_physical_format(format_text):
 def maybe_isbn(query):
     """check if a query looks like an isbn"""
     isbn = re.sub(r"[\W_]", "", query)  # removes filler characters
-    return len(isbn) in [10, 13]  # ISBN10 or ISBN13
+    # ISBNs must be numeric except an ISBN10 checkdigit can be 'X'
+    if not isbn.upper().rstrip("X").isnumeric():
+        return False
+    return len(isbn) in [
+        9,
+        10,
+        13,
+    ]  # ISBN10 or ISBN13, or maybe ISBN10 missing a leading zero

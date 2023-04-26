@@ -34,6 +34,7 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
     raw_content = models.TextField(blank=True, null=True)
     mention_users = fields.TagField("User", related_name="mention_user")
     mention_books = fields.TagField("Edition", related_name="mention_book")
+    mention_hashtags = fields.TagField("Hashtag", related_name="mention_hashtag")
     local = models.BooleanField(default=True)
     content_warning = fields.CharField(
         max_length=500, blank=True, null=True, activitypub_field="summary"
@@ -63,6 +64,9 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         activitypub_field="inReplyTo",
     )
     thread_id = models.IntegerField(blank=True, null=True)
+    # statuses get saved a few times, this indicates if they're set
+    ready = models.BooleanField(default=True)
+
     objects = InheritanceManager()
 
     activity_serializer = activitypub.Note
@@ -77,14 +81,13 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
     def save(self, *args, **kwargs):
         """save and notify"""
         if self.reply_parent:
-            self.thread_id = self.reply_parent.thread_id or self.reply_parent.id
+            self.thread_id = self.reply_parent.thread_id or self.reply_parent_id
 
         super().save(*args, **kwargs)
 
         if not self.reply_parent:
             self.thread_id = self.id
-
-        super().save(broadcast=False, update_fields=["thread_id"])
+            super().save(broadcast=False, update_fields=["thread_id"])
 
     def delete(self, *args, **kwargs):  # pylint: disable=unused-argument
         """ "delete" a status"""
@@ -113,10 +116,16 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         return list(set(mentions))
 
     @classmethod
-    def ignore_activity(cls, activity):  # pylint: disable=too-many-return-statements
+    def ignore_activity(
+        cls, activity, allow_external_connections=True
+    ):  # pylint: disable=too-many-return-statements
         """keep notes if they are replies to existing statuses"""
         if activity.type == "Announce":
-            boosted = activitypub.resolve_remote_id(activity.object, get_activity=True)
+            boosted = activitypub.resolve_remote_id(
+                activity.object,
+                get_activity=True,
+                allow_external_connections=allow_external_connections,
+            )
             if not boosted:
                 # if we can't load the status, definitely ignore it
                 return True
@@ -218,7 +227,8 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         """certain types of status aren't editable"""
         # first, the standard raise
         super().raise_not_editable(viewer)
-        if isinstance(self, (GeneratedNote, ReviewRating)):
+        # if it's an edit (not a create) you can only edit content statuses
+        if self.id and isinstance(self, (GeneratedNote, ReviewRating)):
             raise PermissionDenied()
 
     @classmethod
@@ -326,6 +336,9 @@ class Quotation(BookStatus):
     position = models.IntegerField(
         validators=[MinValueValidator(0)], null=True, blank=True
     )
+    endposition = models.IntegerField(
+        validators=[MinValueValidator(0)], null=True, blank=True
+    )
     position_mode = models.CharField(
         max_length=3,
         choices=ProgressMode.choices,
@@ -362,7 +375,7 @@ class Review(BookStatus):
         default=None,
         null=True,
         blank=True,
-        validators=[MinValueValidator(1), MaxValueValidator(5)],
+        validators=[MinValueValidator(0.5), MaxValueValidator(5)],
         decimal_places=2,
         max_digits=3,
     )
@@ -398,7 +411,7 @@ class ReviewRating(Review):
     def save(self, *args, **kwargs):
         if not self.rating:
             raise ValueError("ReviewRating object must include a numerical rating")
-        return super().save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
     @property
     def pure_content(self):

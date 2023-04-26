@@ -1,0 +1,23 @@
+{% extends 'components/modal.html' %}
+{% load i18n %}
+
+{% block modal-title %}{% trans "Stop import?" %}{% endblock %}
+
+{% block modal-body %}
+{% trans "This action cannot be un-done" %}
+{% endblock %}
+
+{% block modal-footer %}
+<form name="complete-import-{{ import.id }}" action="{% url 'settings-imports-complete' import.id %}" method="POST" class="is-flex-grow-1">
+    {% csrf_token %}
+    <input type="hidden" name="id" value="{{ list.id }}">
+    <div class="buttons is-right is-flex-grow-1">
+        <button type="button" class="button" data-modal-close>
+            {% trans "Cancel" %}
+        </button>
+        <button class="button is-danger" type="submit">
+            {% trans "Confirm" %}
+        </button>
+    </div>
+</form>
+{% endblock %}

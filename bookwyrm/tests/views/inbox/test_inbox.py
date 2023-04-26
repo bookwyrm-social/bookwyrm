@@ -15,6 +15,7 @@ from bookwyrm import models, views
 class Inbox(TestCase):
     """readthrough tests"""
 
+    # pylint: disable=invalid-name
     def setUp(self):
         """basic user and book data"""
         self.client = Client()
@@ -119,7 +120,7 @@ class Inbox(TestCase):
         with patch("bookwyrm.views.inbox.has_valid_signature") as mock_valid:
             mock_valid.return_value = True
 
-            with patch("bookwyrm.views.inbox.activity_task.delay"):
+            with patch("bookwyrm.views.inbox.activity_task.apply_async"):
                 result = self.client.post(
                     "/inbox", json.dumps(activity), content_type="application/json"
                 )

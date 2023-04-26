@@ -72,7 +72,7 @@ class PasswordViews(TestCase):
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
-    def test_password_reset_nonexistant_code(self):
+    def test_password_reset_nonexistent_code(self):
         """there are so many views, this just makes sure it LOADS"""
         view = views.PasswordReset.as_view()
         request = self.factory.get("")
@@ -104,7 +104,9 @@ class PasswordViews(TestCase):
         """reset from code"""
         view = views.PasswordReset.as_view()
         code = models.PasswordReset.objects.create(user=self.local_user)
-        request = self.factory.post("", {"password": "hi", "confirm-password": "hi"})
+        request = self.factory.post(
+            "", {"password": "longwordsecure", "confirm_password": "longwordsecure"}
+        )
         with patch("bookwyrm.views.landing.password.login"):
             resp = view(request, code.code)
         self.assertEqual(resp.status_code, 302)
@@ -114,7 +116,9 @@ class PasswordViews(TestCase):
         """reset from code"""
         view = views.PasswordReset.as_view()
         models.PasswordReset.objects.create(user=self.local_user)
-        request = self.factory.post("", {"password": "hi", "confirm-password": "hi"})
+        request = self.factory.post(
+            "", {"password": "longwordsecure", "confirm_password": "longwordsecure"}
+        )
         resp = view(request, "jhgdkfjgdf")
         validate_html(resp.render())
         self.assertTrue(models.PasswordReset.objects.exists())
@@ -123,7 +127,18 @@ class PasswordViews(TestCase):
         """reset from code"""
         view = views.PasswordReset.as_view()
         code = models.PasswordReset.objects.create(user=self.local_user)
-        request = self.factory.post("", {"password": "hi", "confirm-password": "hihi"})
+        request = self.factory.post(
+            "", {"password": "longwordsecure", "confirm_password": "hihi"}
+        )
+        resp = view(request, code.code)
+        validate_html(resp.render())
+        self.assertTrue(models.PasswordReset.objects.exists())
+
+    def test_password_reset_invalid(self):
+        """reset from code"""
+        view = views.PasswordReset.as_view()
+        code = models.PasswordReset.objects.create(user=self.local_user)
+        request = self.factory.post("", {"password": "a", "confirm_password": "a"})
         resp = view(request, code.code)
         validate_html(resp.render())
         self.assertTrue(models.PasswordReset.objects.exists())

@@ -14,7 +14,7 @@ from bookwyrm.views.list.list import normalize_book_list_ordering
 # pylint: disable=no-self-use
 @method_decorator(login_required, name="dispatch")
 class Curate(View):
-    """approve or discard list suggestsions"""
+    """approve or discard list suggestions"""
 
     def get(self, request, list_id):
         """display a pending list"""
@@ -31,7 +31,6 @@ class Curate(View):
     def post(self, request, list_id):
         """edit a book_list"""
         book_list = get_object_or_404(models.List, id=list_id)
-        book_list.raise_not_editable(request.user)
 
         suggestion = get_object_or_404(models.ListItem, id=request.POST.get("item"))
         approved = request.POST.get("approved") == "true"

@@ -14,7 +14,7 @@
         {% if show_confirmed_email %}
         <p class="notification is-success">{% trans "Success! Email address confirmed." %}</p>
         {% endif %}
-        <form name="login-confirm" method="post" action="/login">
+        <form name="login-confirm" method="post" action="{% url 'login' %}">
             {% csrf_token %}
             {% if show_confirmed_email %}<input type="hidden" name="first_login" value="true">{% endif %}
             <div class="field">

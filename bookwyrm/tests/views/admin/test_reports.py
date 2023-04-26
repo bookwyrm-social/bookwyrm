@@ -15,6 +15,7 @@ from bookwyrm.tests.validate_html import validate_html
 class ReportViews(TestCase):
     """every response to a get request, html or json"""
 
+    # pylint: disable=invalid-name
     def setUp(self):
         """we need basic test data and mocks"""
         self.factory = RequestFactory()
@@ -147,3 +148,16 @@ class ReportViews(TestCase):
         self.rat.refresh_from_db()
         self.assertFalse(self.rat.is_active)
         self.assertEqual(self.rat.deactivation_reason, "moderator_deletion")
+
+    def test_delete_user_error(self, *_):
+        """toggle whether a user is able to log in"""
+        self.assertTrue(self.rat.is_active)
+        request = self.factory.post("", {"password": "wrong password"})
+        request.user = self.local_user
+
+        result = views.moderator_delete_user(request, self.rat.id)
+        self.assertIsInstance(result, TemplateResponse)
+        validate_html(result.render())
+
+        self.rat.refresh_from_db()
+        self.assertTrue(self.rat.is_active)

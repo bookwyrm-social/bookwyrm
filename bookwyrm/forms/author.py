@@ -15,12 +15,14 @@ class AuthorForm(CustomForm):
             "aliases",
             "bio",
             "wikipedia_link",
+            "website",
             "born",
             "died",
             "openlibrary_key",
             "inventaire_id",
             "librarything_key",
             "goodreads_key",
+            "isfdb",
             "isni",
         ]
         widgets = {
@@ -30,10 +32,11 @@ class AuthorForm(CustomForm):
             "wikipedia_link": forms.TextInput(
                 attrs={"aria-describedby": "desc_wikipedia_link"}
             ),
+            "website": forms.TextInput(attrs={"aria-describedby": "desc_website"}),
             "born": forms.SelectDateWidget(attrs={"aria-describedby": "desc_born"}),
             "died": forms.SelectDateWidget(attrs={"aria-describedby": "desc_died"}),
-            "oepnlibrary_key": forms.TextInput(
-                attrs={"aria-describedby": "desc_oepnlibrary_key"}
+            "openlibrary_key": forms.TextInput(
+                attrs={"aria-describedby": "desc_openlibrary_key"}
             ),
             "inventaire_id": forms.TextInput(
                 attrs={"aria-describedby": "desc_inventaire_id"}

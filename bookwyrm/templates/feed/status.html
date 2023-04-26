@@ -2,15 +2,13 @@
 {% load feed_page_tags %}
 {% load i18n %}
 
-{% block opengraph_images %}
-
-{% firstof status.book status.mention_books.first as book %}
-{% if book %}
-    {% include 'snippets/opengraph_images.html' with image=preview %}
-{% else %}
-    {% include 'snippets/opengraph_images.html' %}
-{% endif %}
-
+{% block opengraph %}
+    {% firstof status.book status.mention_books.first as book %}
+    {% if book %}
+        {% include 'snippets/opengraph.html' with image=preview %}
+    {% else %}
+        {% include 'snippets/opengraph.html' %}
+    {% endif %}
 {% endblock %}
 
 
@@ -32,7 +30,7 @@
         {% endif %}
         {% endfor %}
         <div class="is-main block">
-            {% include 'snippets/status/status.html' with status=status main=True %}
+            {% include 'snippets/status/status.html' with status=status main=True expand=True %}
         </div>
 
         {% for child in children %}
@@ -44,4 +42,3 @@
 </div>
 
 {% endblock %}
-

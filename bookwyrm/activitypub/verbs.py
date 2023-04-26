@@ -14,12 +14,12 @@ class Verb(ActivityObject):
     actor: str
     object: ActivityObject
 
-    def action(self):
+    def action(self, allow_external_connections=True):
         """usually we just want to update and save"""
         # self.object may return None if the object is invalid in an expected way
         # ie, Question type
         if self.object:
-            self.object.to_model()
+            self.object.to_model(allow_external_connections=allow_external_connections)
 
 
 # pylint: disable=invalid-name
@@ -42,7 +42,7 @@ class Delete(Verb):
     cc: List[str] = field(default_factory=lambda: [])
     type: str = "Delete"
 
-    def action(self):
+    def action(self, allow_external_connections=True):
         """find and delete the activity object"""
         if not self.object:
             return
@@ -52,7 +52,11 @@ class Delete(Verb):
             model = apps.get_model("bookwyrm.User")
             obj = model.find_existing_by_remote_id(self.object)
         else:
-            obj = self.object.to_model(save=False, allow_create=False)
+            obj = self.object.to_model(
+                save=False,
+                allow_create=False,
+                allow_external_connections=allow_external_connections,
+            )
 
         if obj:
             obj.delete()
@@ -67,11 +71,13 @@ class Update(Verb):
     to: List[str]
     type: str = "Update"
 
-    def action(self):
+    def action(self, allow_external_connections=True):
         """update a model instance from the dataclass"""
         if not self.object:
             return
-        self.object.to_model(allow_create=False)
+        self.object.to_model(
+            allow_create=False, allow_external_connections=allow_external_connections
+        )
 
 
 @dataclass(init=False)
@@ -80,10 +86,10 @@ class Undo(Verb):
 
     type: str = "Undo"
 
-    def action(self):
+    def action(self, allow_external_connections=True):
         """find and remove the activity object"""
         if isinstance(self.object, str):
-            # it may be that sometihng should be done with these, but idk what
+            # it may be that something should be done with these, but idk what
             # this seems just to be coming from pleroma
             return
 
@@ -92,13 +98,28 @@ class Undo(Verb):
         model = None
         if self.object.type == "Follow":
             model = apps.get_model("bookwyrm.UserFollows")
-            obj = self.object.to_model(model=model, save=False, allow_create=False)
+            obj = self.object.to_model(
+                model=model,
+                save=False,
+                allow_create=False,
+                allow_external_connections=allow_external_connections,
+            )
             if not obj:
-                # this could be a folloq request not a follow proper
+                # this could be a follow request not a follow proper
                 model = apps.get_model("bookwyrm.UserFollowRequest")
-                obj = self.object.to_model(model=model, save=False, allow_create=False)
+                obj = self.object.to_model(
+                    model=model,
+                    save=False,
+                    allow_create=False,
+                    allow_external_connections=allow_external_connections,
+                )
         else:
-            obj = self.object.to_model(model=model, save=False, allow_create=False)
+            obj = self.object.to_model(
+                model=model,
+                save=False,
+                allow_create=False,
+                allow_external_connections=allow_external_connections,
+            )
         if not obj:
             # if we don't have the object, we can't undo it. happens a lot with boosts
             return
@@ -112,9 +133,9 @@ class Follow(Verb):
     object: str
     type: str = "Follow"
 
-    def action(self):
+    def action(self, allow_external_connections=True):
         """relationship save"""
-        self.to_model()
+        self.to_model(allow_external_connections=allow_external_connections)
 
 
 @dataclass(init=False)
@@ -124,9 +145,9 @@ class Block(Verb):
     object: str
     type: str = "Block"
 
-    def action(self):
+    def action(self, allow_external_connections=True):
         """relationship save"""
-        self.to_model()
+        self.to_model(allow_external_connections=allow_external_connections)
 
 
 @dataclass(init=False)
@@ -136,7 +157,7 @@ class Accept(Verb):
     object: Follow
     type: str = "Accept"
 
-    def action(self):
+    def action(self, allow_external_connections=True):
         """accept a request"""
         obj = self.object.to_model(save=False, allow_create=True)
         obj.accept()
@@ -149,7 +170,7 @@ class Reject(Verb):
     object: Follow
     type: str = "Reject"
 
-    def action(self):
+    def action(self, allow_external_connections=True):
         """reject a follow request"""
         obj = self.object.to_model(save=False, allow_create=False)
         obj.reject()
@@ -163,7 +184,7 @@ class Add(Verb):
     object: CollectionItem
     type: str = "Add"
 
-    def action(self):
+    def action(self, allow_external_connections=True):
         """figure out the target to assign the item to a collection"""
         target = resolve_remote_id(self.target)
         item = self.object.to_model(save=False)
@@ -177,7 +198,7 @@ class Remove(Add):
 
     type: str = "Remove"
 
-    def action(self):
+    def action(self, allow_external_connections=True):
         """find and remove the activity object"""
         obj = self.object.to_model(save=False, allow_create=False)
         if obj:
@@ -191,9 +212,9 @@ class Like(Verb):
     object: str
     type: str = "Like"
 
-    def action(self):
+    def action(self, allow_external_connections=True):
         """like"""
-        self.to_model()
+        self.to_model(allow_external_connections=allow_external_connections)
 
 
 # pylint: disable=invalid-name
@@ -207,6 +228,6 @@ class Announce(Verb):
     object: str
     type: str = "Announce"
 
-    def action(self):
+    def action(self, allow_external_connections=True):
         """boost"""
-        self.to_model()
+        self.to_model(allow_external_connections=allow_external_connections)

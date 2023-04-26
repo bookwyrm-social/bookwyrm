@@ -1,7 +1,18 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # exit on errors
 set -e
+
+# check if we're in DEBUG mode
+DEBUG=$(sed <.env -ne 's/^DEBUG=//p')
+
+# disallow certain commands when debug is false
+function prod_error {
+    if [ "$DEBUG" != "true" ]; then
+        echo "This command is not safe to run in production environments"
+        exit 1
+    fi
+}
 
 # import our ENV variables
 # catch exits and give a friendly error message
@@ -12,21 +23,27 @@ trap showerr EXIT
 source .env
 trap - EXIT
 
+if docker compose &> /dev/null ; then
+	DOCKER_COMPOSE="docker compose"
+else
+	DOCKER_COMPOSE="docker-compose"
+fi
+
 function clean {
-    docker-compose stop
-    docker-compose rm -f
+    $DOCKER_COMPOSE stop
+    $DOCKER_COMPOSE rm -f
 }
 
 function runweb {
-    docker-compose run --rm web "$@"
+    $DOCKER_COMPOSE run --rm web "$@"
 }
 
-function rundb {
-    docker-compose run --rm db $@
+function execdb {
+    $DOCKER_COMPOSE exec db $@
 }
 
 function execweb {
-    docker-compose exec web "$@"
+    $DOCKER_COMPOSE exec web "$@"
 }
 
 function initdb {
@@ -52,6 +69,8 @@ function awscommand {
         amazon/aws-cli $2
 }
 
+
+
 CMD=$1
 if [ -n "$CMD" ]; then
     shift
@@ -62,27 +81,32 @@ set -x
 
 case "$CMD" in
     up)
-        docker-compose up --build "$@"
+        $DOCKER_COMPOSE up --build "$@"
+        ;;
+    down)
+        $DOCKER_COMPOSE down
         ;;
     service_ports_web)
-        docker-compose run --rm --service-ports web
+        prod_error
+        $DOCKER_COMPOSE run --rm --service-ports web
         ;;
     initdb)
         initdb "@"
         ;;
     resetdb)
-        clean
-        # Start just the DB so no one else is using it
-        docker-compose up --build -d db
-        rundb dropdb -U ${POSTGRES_USER} ${POSTGRES_DB}
-        rundb createdb -U ${POSTGRES_USER} ${POSTGRES_DB}
-        # Now start up web so we can run the migrations
-        docker-compose up --build -d web
+        prod_error
+        $DOCKER_COMPOSE rm -svf
+        docker volume rm -f bookwyrm_media_volume bookwyrm_pgdata bookwyrm_redis_activity_data bookwyrm_redis_broker_data bookwyrm_static_volume
+        $DOCKER_COMPOSE build
         migrate
+        migrate django_celery_beat
         initdb
-        clean
+        runweb python manage.py compile_themes
+        runweb python manage.py collectstatic --no-input
+        admin_code
         ;;
     makemigrations)
+        prod_error
         runweb python manage.py makemigrations "$@"
         ;;
     migrate)
@@ -95,36 +119,47 @@ case "$CMD" in
         runweb python manage.py shell
         ;;
     dbshell)
-        rundb psql -U ${POSTGRES_USER} ${POSTGRES_DB}
+        execdb psql -U ${POSTGRES_USER} ${POSTGRES_DB}
         ;;
     restart_celery)
-        docker-compose restart celery_worker
+        $DOCKER_COMPOSE restart celery_worker
         ;;
     pytest)
+        prod_error
         runweb pytest --no-cov-on-fail "$@"
         ;;
     pytest_coverage_report)
+        prod_error
         runweb pytest -n 3 --cov-report term-missing "$@"
+        ;;
+    compile_themes)
+        runweb python manage.py compile_themes
         ;;
     collectstatic)
         runweb python manage.py collectstatic --no-input
         ;;
     makemessages)
+        prod_error
         runweb django-admin makemessages --no-wrap --ignore=venv -l en_US $@
         ;;
     compilemessages)
         runweb django-admin compilemessages --ignore venv $@
         ;;
     update_locales)
+        prod_error
         git fetch origin l10n_main:l10n_main
+        git checkout l10n_main locale/ca_ES
         git checkout l10n_main locale/de_DE
+        git checkout l10n_main locale/eo_UY
         git checkout l10n_main locale/es_ES
+        git checkout l10n_main locale/eu_ES
         git checkout l10n_main locale/fi_FI
         git checkout l10n_main locale/fr_FR
         git checkout l10n_main locale/gl_ES
         git checkout l10n_main locale/it_IT
         git checkout l10n_main locale/lt_LT
         git checkout l10n_main locale/no_NO
+        git checkout l10n_main locale/pl_PL
         git checkout l10n_main locale/pt_PT
         git checkout l10n_main locale/pt_BR
         git checkout l10n_main locale/ro_RO
@@ -135,50 +170,59 @@ case "$CMD" in
         runweb django-admin compilemessages --ignore venv
         ;;
     build)
-        docker-compose build
+        $DOCKER_COMPOSE build
         ;;
     clean)
+        prod_error
         clean
         ;;
     black)
-        docker-compose run --rm dev-tools black celerywyrm bookwyrm
+        prod_error
+        $DOCKER_COMPOSE run --rm dev-tools black celerywyrm bookwyrm
         ;;
     pylint)
+        prod_error
         # pylint depends on having the app dependencies in place, so we run it in the web container
         runweb pylint bookwyrm/
         ;;
     prettier)
-        docker-compose run --rm dev-tools npx prettier --write bookwyrm/static/js/*.js
+        prod_error
+        $DOCKER_COMPOSE run --rm dev-tools npx prettier --write bookwyrm/static/js/*.js
+        ;;
+    eslint)
+        prod_error
+        $DOCKER_COMPOSE run --rm dev-tools npx eslint bookwyrm/static --ext .js
         ;;
     stylelint)
-        docker-compose run --rm dev-tools npx stylelint \
+        prod_error
+        $DOCKER_COMPOSE run --rm dev-tools npx stylelint \
             bookwyrm/static/css/bookwyrm.scss bookwyrm/static/css/bookwyrm/**/*.scss --fix \
             --config dev-tools/.stylelintrc.js
         ;;
     formatters)
+        prod_error
         runweb pylint bookwyrm/
-        docker-compose run --rm dev-tools black celerywyrm bookwyrm
-        docker-compose run --rm dev-tools npx prettier --write bookwyrm/static/js/*.js
-        docker-compose run --rm dev-tools npx stylelint \
+        $DOCKER_COMPOSE run --rm dev-tools black celerywyrm bookwyrm
+        $DOCKER_COMPOSE run --rm dev-tools npx prettier --write bookwyrm/static/js/*.js
+        $DOCKER_COMPOSE run --rm dev-tools npx eslint bookwyrm/static --ext .js
+        $DOCKER_COMPOSE run --rm dev-tools npx stylelint \
             bookwyrm/static/css/bookwyrm.scss bookwyrm/static/css/bookwyrm/**/*.scss --fix \
             --config dev-tools/.stylelintrc.js
         ;;
-    compilescss)
-        runweb python manage.py compilescss
-        runweb python manage.py collectstatic --no-input
-        ;;
     collectstatic_watch)
+        prod_error
         npm run --prefix dev-tools watch:static
         ;;
     update)
         git pull
-        docker-compose build
+        $DOCKER_COMPOSE build
         # ./update.sh
         runweb python manage.py migrate
+        runweb python manage.py compile_themes
         runweb python manage.py collectstatic --no-input
-        docker-compose up -d
-        docker-compose restart web
-        docker-compose restart celery_worker
+        $DOCKER_COMPOSE up -d
+        $DOCKER_COMPOSE restart web
+        $DOCKER_COMPOSE restart celery_worker
         ;;
     populate_streams)
         runweb python manage.py populate_streams "$@"
@@ -194,6 +238,9 @@ case "$CMD" in
         ;;
     generate_preview_images)
         runweb python manage.py generate_preview_images "$@"
+        ;;
+    remove_remote_user_preview_images)
+        runweb python manage.py remove_remote_user_preview_images
         ;;
     copy_media_to_s3)
         awscommand "bookwyrm_media_volume:/images"\
@@ -228,17 +275,25 @@ case "$CMD" in
         migrate
         migrate django_celery_beat
         initdb
+        runweb python manage.py compile_themes
         runweb python manage.py collectstatic --no-input
         admin_code
         ;;
     runweb)
         runweb "$@"
         ;;
+    remove_2fa)
+        runweb python manage.py remove_2fa "$@"
+        ;;
+    confirm_email)
+        runweb python manage.py confirm_email "$@"
+        ;;
     *)
         set +x # No need to echo echo
         echo "Unrecognised command. Try:"
         echo "    setup"
         echo "    up [container]"
+        echo "    down"        
         echo "    service_ports_web"
         echo "    initdb"
         echo "    resetdb"
@@ -249,6 +304,7 @@ case "$CMD" in
         echo "    dbshell"
         echo "    restart_celery"
         echo "    pytest [path]"
+        echo "    compile_themes"
         echo "    collectstatic"
         echo "    makemessages"
         echo "    compilemessages [locale]"
@@ -257,18 +313,21 @@ case "$CMD" in
         echo "    clean"
         echo "    black"
         echo "    prettier"
+        echo "    eslint"
         echo "    stylelint"
         echo "    formatters"
-        echo "    compilescss"
         echo "    collectstatic_watch"
         echo "    populate_streams [--stream=<stream name>]"
         echo "    populate_lists_streams"
         echo "    populate_suggestions"
         echo "    generate_thumbnails"
         echo "    generate_preview_images [--all]"
+        echo "    remove_remote_user_preview_images"
         echo "    copy_media_to_s3"
         echo "    sync_media_to_s3"
         echo "    set_cors_to_s3 [cors file]"
         echo "    runweb [command]"
+        echo "    remove_2fa"
+        echo "    confirm_email"
         ;;
 esac

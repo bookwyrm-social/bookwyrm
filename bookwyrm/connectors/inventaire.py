@@ -97,7 +97,7 @@ class Connector(AbstractConnector):
             )
 
     def parse_isbn_search_data(self, data):
-        """got some daaaata"""
+        """got some data"""
         results = data.get("entities")
         if not results:
             return
@@ -165,8 +165,8 @@ class Connector(AbstractConnector):
                 edition_data = self.get_book_data(edition_data)
             except ConnectorException:
                 # who, indeed, knows
-                return
-        super().create_edition_from_data(work, edition_data, instance=instance)
+                return None
+        return super().create_edition_from_data(work, edition_data, instance=instance)
 
     def get_cover_url(self, cover_blob, *_):
         """format the relative cover url into an absolute one:

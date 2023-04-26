@@ -1,4 +1,5 @@
 """ class views for login/register views """
+import pytz
 from django.contrib.auth import login
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404, redirect
@@ -55,6 +56,10 @@ class Register(View):
         localname = form.data["localname"].strip()
         email = form.data["email"]
         password = form.data["password"]
+        try:
+            preferred_timezone = pytz.timezone(form.data.get("preferred_timezone"))
+        except pytz.exceptions.UnknownTimeZoneError:
+            preferred_timezone = pytz.utc
 
         # make sure the email isn't blocked as spam
         email_domain = email.split("@")[-1]
@@ -71,6 +76,7 @@ class Register(View):
             local=True,
             deactivation_reason="pending" if settings.require_confirm_email else None,
             is_active=not settings.require_confirm_email,
+            preferred_timezone=preferred_timezone,
         )
         if invite:
             invite.times_used += 1
@@ -105,9 +111,7 @@ class ConfirmEmailCode(View):
                 request, "confirm_email/confirm_email.html", {"valid": False}
             )
         # update the user
-        user.is_active = True
-        user.deactivation_reason = None
-        user.save(broadcast=False, update_fields=["is_active", "deactivation_reason"])
+        user.reactivate()
         # direct the user to log in
         return redirect("login", confirmed="confirmed")
 
@@ -134,19 +138,19 @@ class ConfirmEmail(View):
 class ResendConfirmEmail(View):
     """you probably didn't get the email because celery is slow but you can try this"""
 
-    def get(self, request, error=False):
+    def get(self, request):
         """resend link landing page"""
-        return TemplateResponse(request, "confirm_email/resend.html", {"error": error})
+        return TemplateResponse(request, "confirm_email/resend.html")
 
     def post(self, request):
         """resend confirmation link"""
         email = request.POST.get("email")
         try:
             user = models.User.objects.get(email=email)
+            emailing.email_confirmation_email(user)
         except models.User.DoesNotExist:
-            return self.get(request, error=True)
+            pass
 
-        emailing.email_confirmation_email(user)
         return TemplateResponse(
             request, "confirm_email/confirm_email.html", {"valid": True}
         )

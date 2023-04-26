@@ -15,29 +15,33 @@ MAX_SIGNATURE_AGE = 300
 def create_key_pair():
     """a new public/private key pair, used for creating new users"""
     random_generator = Random.new().read
-    key = RSA.generate(1024, random_generator)
+    key = RSA.generate(2048, random_generator)
     private_key = key.export_key().decode("utf8")
-    public_key = key.publickey().export_key().decode("utf8")
+    public_key = key.public_key().export_key().decode("utf8")
 
     return private_key, public_key
 
 
-def make_signature(sender, destination, date, digest):
+def make_signature(method, sender, destination, date, digest=None):
     """uses a private key to sign an outgoing message"""
     inbox_parts = urlparse(destination)
     signature_headers = [
-        f"(request-target): post {inbox_parts.path}",
+        f"(request-target): {method} {inbox_parts.path}",
         f"host: {inbox_parts.netloc}",
         f"date: {date}",
-        f"digest: {digest}",
     ]
+    headers = "(request-target) host date"
+    if digest is not None:
+        signature_headers.append(f"digest: {digest}")
+        headers = "(request-target) host date digest"
+
     message_to_sign = "\n".join(signature_headers)
     signer = pkcs1_15.new(RSA.import_key(sender.key_pair.private_key))
     signed_message = signer.sign(SHA256.new(message_to_sign.encode("utf8")))
     signature = {
         "keyId": f"{sender.remote_id}#main-key",
         "algorithm": "rsa-sha256",
-        "headers": "(request-target) host date digest",
+        "headers": headers,
         "signature": b64encode(signed_message).decode("utf8"),
     }
     return ",".join(f'{k}="{v}"' for (k, v) in signature.items())
