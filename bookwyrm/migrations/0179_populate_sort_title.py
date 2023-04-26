@@ -18,16 +18,10 @@ def populate_sort_title(apps, schema_editor):
         articles = chain(
             *(LANGUAGE_ARTICLES.get(language, ()) for language in edition.languages)
         )
-        if articles:
-            icase_articles = (
-                f"[{a[0].capitalize()}{a[0].lower()}]{a[1:]}" for a in articles
-            )
-            edition.sort_title = re.sub(
-                f'^{" |^".join(icase_articles)} ', "", edition.title
-            )
-        else:
-            edition.sort_title = edition.title
-        edition.save()
+        edition.sort_title = re.sub(
+            f'^{" |^".join(articles)} ', "", str(edition.title).lower()
+        )
+    Edition.objects.bulk_update(editions_wo_sort_title, ["sort_title"])
 
 
 class Migration(migrations.Migration):

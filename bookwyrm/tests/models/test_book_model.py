@@ -140,8 +140,6 @@ class Book(TestCase):
                 title=f"{article} Test Edition", languages=[langauge]
             )
             for langauge, articles in settings.LANGUAGE_ARTICLES.items()
-            for article in article
+            for article in articles
         )
-        self.assertEqual(
-            all([book.sort_title == "Test Edition" for book in books])
-        )
+        self.assertTrue(all(book.sort_title == "Test Edition" for book in books))

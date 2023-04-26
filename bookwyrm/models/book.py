@@ -366,14 +366,14 @@ class Edition(Book):
                 cache.delete(f"author-books-{author_id}")
 
         # Create sort title by removing articles from title
-        if self.sort_title is None:
-            articles = chain(
-                *(LANGUAGE_ARTICLES[language] for language in self.languages)
-            )
-            icase_articles = (
-                f"[{a[0].capitalize()}{a[0].lower()}]{a[1:]}" for a in articles
-            )
-            self.sort_title = re.sub(f'^{" |^".join(icase_articles)} ', "", self.title)
+        if self.sort_title in [None, ""]:
+            if self.sort_title in [None, ""]:
+                articles = chain(
+                    *(LANGUAGE_ARTICLES.get(language, ()) for language in self.languages)
+                )
+                self.sort_title = re.sub(
+                    f'^{" |^".join(articles)} ', "", str(self.title).lower()
+                )
 
         return super().save(*args, **kwargs)
 

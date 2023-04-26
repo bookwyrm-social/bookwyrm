@@ -313,7 +313,7 @@ LANGUAGES = [
 ]
 
 LANGUAGE_ARTICLES = {
-    "English": {"The", "A", "An"},
+    "English": {"the", "a", "an"},
 }
 
 TIME_ZONE = "UTC"
