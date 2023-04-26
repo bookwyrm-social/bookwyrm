@@ -16,7 +16,10 @@ def populate_sort_title(apps, schema_editor):
     )
     for edition in editions_wo_sort_title:
         articles = chain(
-            *(LANGUAGE_ARTICLES.get(language, ()) for language in edition.languages)
+            *(
+                LANGUAGE_ARTICLES.get(language, ())
+                for language in tuple(edition.languages)
+            )
         )
         edition.sort_title = re.sub(
             f'^{" |^".join(articles)} ', "", str(edition.title).lower()
