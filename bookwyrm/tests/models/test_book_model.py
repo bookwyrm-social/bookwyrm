@@ -142,4 +142,4 @@ class Book(TestCase):
             for langauge, articles in settings.LANGUAGE_ARTICLES.items()
             for article in articles
         )
-        self.assertTrue(all(book.sort_title == "Test Edition" for book in books))
+        self.assertTrue(all(book.sort_title == "test edition" for book in books))

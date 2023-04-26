@@ -369,7 +369,10 @@ class Edition(Book):
         if self.sort_title in [None, ""]:
             if self.sort_title in [None, ""]:
                 articles = chain(
-                    *(LANGUAGE_ARTICLES.get(language, ()) for language in self.languages)
+                    *(
+                        LANGUAGE_ARTICLES.get(language, ())
+                        for language in tuple(self.languages)
+                    )
                 )
                 self.sort_title = re.sub(
                     f'^{" |^".join(articles)} ', "", str(self.title).lower()
