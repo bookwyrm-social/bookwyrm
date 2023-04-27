@@ -7,6 +7,16 @@ from django.db.models import Q
 from bookwyrm.settings import LANGUAGE_ARTICLES
 
 
+def set_sort_title(edition):
+    articles = chain(
+        *(LANGUAGE_ARTICLES.get(language, ()) for language in tuple(edition.languages))
+    )
+    edition.sort_title = re.sub(
+        f'^{" |^".join(articles)} ', "", str(edition.title).lower()
+    )
+    return edition
+
+
 @transaction.atomic
 def populate_sort_title(apps, schema_editor):
     Edition = apps.get_model("bookwyrm", "Edition")
@@ -14,17 +24,16 @@ def populate_sort_title(apps, schema_editor):
     editions_wo_sort_title = Edition.objects.using(db_alias).filter(
         Q(sort_title__isnull=True) | Q(sort_title__exact="")
     )
-    for edition in editions_wo_sort_title:
-        articles = chain(
-            *(
-                LANGUAGE_ARTICLES.get(language, ())
-                for language in tuple(edition.languages)
-            )
+    batch_size = 50000
+    start = 0
+    end = batch_size
+    while editions_wo_sort_title[start:end]:
+        Edition.objects.bulk_update(
+            (set_sort_title(edition) for edition in editions_wo_sort_title[start:end]),
+            ["sort_title"],
         )
-        edition.sort_title = re.sub(
-            f'^{" |^".join(articles)} ', "", str(edition.title).lower()
-        )
-    Edition.objects.bulk_update(editions_wo_sort_title, ["sort_title"])
+        start = end
+        end += batch_size
 
 
 class Migration(migrations.Migration):
