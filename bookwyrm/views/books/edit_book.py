@@ -45,6 +45,7 @@ class EditBook(View):
         data = {"book": book, "form": form}
         ensure_transient_values_persist(request, data)
         if not form.is_valid():
+            ensure_transient_values_persist(request, data, add_author=True)
             return TemplateResponse(request, "book/edit/edit_book.html", data)
 
         data = add_authors(request, data)
@@ -147,6 +148,8 @@ def ensure_transient_values_persist(request, data, **kwargs):
     if kwargs and kwargs.get("form"):
         data["book"] = data.get("book") or {}
         data["book"]["subjects"] = kwargs["form"].cleaned_data["subjects"]
+        data["add_author"] = request.POST.getlist("add_author")
+    elif kwargs and kwargs.get("add_author") is True:
         data["add_author"] = request.POST.getlist("add_author")
 
 
