@@ -24,13 +24,15 @@ def populate_sort_title(apps, schema_editor):
     editions_wo_sort_title = Edition.objects.using(db_alias).filter(
         Q(sort_title__isnull=True) | Q(sort_title__exact="")
     )
-    batch_size = 50000
+    batch_size = 20
     start = 0
     end = batch_size
-    while editions_wo_sort_title[start:end]:
+    while True:
+        batch = editions_wo_sort_title[start:end]
+        if not batch.exists():
+            break
         Edition.objects.bulk_update(
-            (set_sort_title(edition) for edition in editions_wo_sort_title[start:end]),
-            ["sort_title"],
+            (set_sort_title(edition) for edition in batch), ["sort_title"]
         )
         start = end
         end += batch_size
