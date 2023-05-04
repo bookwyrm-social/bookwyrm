@@ -4,6 +4,7 @@
 {% load humanize %}
 {% load utilities %}
 {% load static %}
+{% load shelf_tags %}
 
 {% block title %}{{ book|book_title }}{% endblock %}
 
@@ -245,7 +246,7 @@
                 <ul>
                 {% for shelf in user_shelfbooks %}
                     <li class="box">
-                        <a href="{{ shelf.shelf.local_path }}">{{ shelf.shelf.name }}</a>
+                        <a href="{{ shelf.shelf.local_path }}">{{ shelf.shelf|translate_shelf_name }}</a>
                         <div class="is-pulled-right">
                             {% include 'snippets/shelf_selector.html' with shelf=shelf.shelf class="is-small" readthrough=readthrough %}
                         </div>
