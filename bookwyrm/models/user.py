@@ -339,7 +339,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         # this is a new remote user, we need to set their remote server field
         if not self.local:
             super().save(*args, **kwargs)
-            transaction.on_commit(lambda: set_remote_server.delay(self.id))
+            transaction.on_commit(lambda: set_remote_server(self.id))
             return
 
         with transaction.atomic():
@@ -470,17 +470,29 @@ class KeyPair(ActivitypubMixin, BookWyrmModel):
 
 
 @app.task(queue=LOW)
-def set_remote_server(user_id):
+def set_remote_server(user_id, allow_external_connections=False):
     """figure out the user's remote server in the background"""
     user = User.objects.get(id=user_id)
     actor_parts = urlparse(user.remote_id)
-    user.federated_server = get_or_create_remote_server(actor_parts.netloc)
+    federated_server = get_or_create_remote_server(
+        actor_parts.netloc, allow_external_connections=allow_external_connections
+    )
+    # if we were unable to find the server, we need to create a new entry for it
+    if not federated_server:
+        # and to do that, we will call this function asynchronously.
+        if not allow_external_connections:
+            set_remote_server.delay(user_id, allow_external_connections=True)
+        return
+
+    user.federated_server = federated_server
     user.save(broadcast=False, update_fields=["federated_server"])
     if user.bookwyrm_user and user.outbox:
         get_remote_reviews.delay(user.outbox)
 
 
-def get_or_create_remote_server(domain, refresh=False):
+def get_or_create_remote_server(
+    domain, allow_external_connections=False, refresh=False
+):
     """get info on a remote server"""
     server = FederatedServer()
     try:
@@ -489,6 +501,9 @@ def get_or_create_remote_server(domain, refresh=False):
             return server
     except FederatedServer.DoesNotExist:
         pass
+
+    if not allow_external_connections:
+        return None
 
     try:
         data = get_data(f"https://{domain}/.well-known/nodeinfo")
