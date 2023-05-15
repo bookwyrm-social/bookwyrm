@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-03-29 14:55+0000\n"
-"PO-Revision-Date: 2023-04-10 08:55\n"
+"POT-Creation-Date: 2023-04-26 00:20+0000\n"
+"PO-Revision-Date: 2023-04-26 08:05\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Esperanto\n"
 "Language: eo\n"
@@ -275,11 +275,11 @@ msgstr "Haltigita"
 msgid "Import stopped"
 msgstr "Importo haltigita"
 
-#: bookwyrm/models/import_job.py:360 bookwyrm/models/import_job.py:385
+#: bookwyrm/models/import_job.py:363 bookwyrm/models/import_job.py:388
 msgid "Error loading book"
 msgstr "Eraro dum la importo de la libro"
 
-#: bookwyrm/models/import_job.py:369
+#: bookwyrm/models/import_job.py:372
 msgid "Could not find a match for book"
 msgstr "Kongrua libro ne troviĝis"
 
@@ -300,7 +300,7 @@ msgstr "Pruntebla"
 msgid "Approved"
 msgstr "Aprobita"
 
-#: bookwyrm/models/user.py:32 bookwyrm/templates/book/book.html:298
+#: bookwyrm/models/user.py:32 bookwyrm/templates/book/book.html:305
 msgid "Reviews"
 msgstr "Recenzoj"
 
@@ -624,7 +624,7 @@ msgstr "Ria plej mallonga legaĵo ĉi-jare…"
 #: bookwyrm/templates/annual_summary/layout.html:157
 #: bookwyrm/templates/annual_summary/layout.html:178
 #: bookwyrm/templates/annual_summary/layout.html:247
-#: bookwyrm/templates/book/book.html:56
+#: bookwyrm/templates/book/book.html:63
 #: bookwyrm/templates/discover/large-book.html:22
 #: bookwyrm/templates/landing/large-book.html:26
 #: bookwyrm/templates/landing/small-book.html:18
@@ -712,24 +712,24 @@ msgid "View ISNI record"
 msgstr "Vidi la ISNI-registraĵon"
 
 #: bookwyrm/templates/author/author.html:95
-#: bookwyrm/templates/book/book.html:166
+#: bookwyrm/templates/book/book.html:173
 msgid "View on ISFDB"
 msgstr "Vidi ĉe ISFDB"
 
 #: bookwyrm/templates/author/author.html:100
 #: bookwyrm/templates/author/sync_modal.html:5
-#: bookwyrm/templates/book/book.html:133
+#: bookwyrm/templates/book/book.html:140
 #: bookwyrm/templates/book/sync_modal.html:5
 msgid "Load data"
 msgstr "Ŝarĝi per la datumaro"
 
 #: bookwyrm/templates/author/author.html:104
-#: bookwyrm/templates/book/book.html:137
+#: bookwyrm/templates/book/book.html:144
 msgid "View on OpenLibrary"
 msgstr "Vidi ĉe OpenLibrary"
 
 #: bookwyrm/templates/author/author.html:119
-#: bookwyrm/templates/book/book.html:151
+#: bookwyrm/templates/book/book.html:158
 msgid "View on Inventaire"
 msgstr "Vidi ĉe Inventaire"
 
@@ -838,7 +838,7 @@ msgid "ISNI:"
 msgstr "ISNI:"
 
 #: bookwyrm/templates/author/edit_author.html:126
-#: bookwyrm/templates/book/book.html:211
+#: bookwyrm/templates/book/book.html:218
 #: bookwyrm/templates/book/edit/edit_book.html:150
 #: bookwyrm/templates/book/file_links/add_link_modal.html:60
 #: bookwyrm/templates/book/file_links/edit_links.html:86
@@ -862,7 +862,7 @@ msgstr "Konservi"
 
 #: bookwyrm/templates/author/edit_author.html:127
 #: bookwyrm/templates/author/sync_modal.html:23
-#: bookwyrm/templates/book/book.html:212
+#: bookwyrm/templates/book/book.html:219
 #: bookwyrm/templates/book/cover_add_modal.html:33
 #: bookwyrm/templates/book/edit/edit_book.html:152
 #: bookwyrm/templates/book/edit/edit_book.html:155
@@ -899,93 +899,93 @@ msgstr "La ŝarĝado konektos al <strong>%(source_name)s</strong> kaj kontrolos 
 msgid "Confirm"
 msgstr "Konfirmi"
 
-#: bookwyrm/templates/book/book.html:19
+#: bookwyrm/templates/book/book.html:20
 msgid "Unable to connect to remote source."
 msgstr "La konekto al la fora fonto malsukcesis."
 
-#: bookwyrm/templates/book/book.html:64 bookwyrm/templates/book/book.html:65
+#: bookwyrm/templates/book/book.html:71 bookwyrm/templates/book/book.html:72
 msgid "Edit Book"
 msgstr "Modifi libron"
 
-#: bookwyrm/templates/book/book.html:90 bookwyrm/templates/book/book.html:93
+#: bookwyrm/templates/book/book.html:97 bookwyrm/templates/book/book.html:100
 msgid "Click to add cover"
 msgstr "Alklaku por aldoni kovrilon"
 
-#: bookwyrm/templates/book/book.html:99
+#: bookwyrm/templates/book/book.html:106
 msgid "Failed to load cover"
 msgstr "Elŝuto de la kovrilo malsukcesis"
 
-#: bookwyrm/templates/book/book.html:110
+#: bookwyrm/templates/book/book.html:117
 msgid "Click to enlarge"
 msgstr "Alklaku por grandigi"
 
-#: bookwyrm/templates/book/book.html:188
+#: bookwyrm/templates/book/book.html:195
 #, python-format
 msgid "(%(review_count)s review)"
 msgid_plural "(%(review_count)s reviews)"
 msgstr[0] "(%(review_count)s recenzo)"
 msgstr[1] "(%(review_count)s recenzoj)"
 
-#: bookwyrm/templates/book/book.html:200
+#: bookwyrm/templates/book/book.html:207
 msgid "Add Description"
 msgstr "Aldoni priskribon"
 
-#: bookwyrm/templates/book/book.html:207
+#: bookwyrm/templates/book/book.html:214
 #: bookwyrm/templates/book/edit/edit_book_form.html:42
 #: bookwyrm/templates/lists/form.html:13 bookwyrm/templates/shelf/form.html:17
 msgid "Description:"
 msgstr "Priskribo:"
 
-#: bookwyrm/templates/book/book.html:223
+#: bookwyrm/templates/book/book.html:230
 #, python-format
 msgid "%(count)s edition"
 msgid_plural "%(count)s editions"
 msgstr[0] "%(count)s eldono"
 msgstr[1] "%(count)s eldonoj"
 
-#: bookwyrm/templates/book/book.html:237
+#: bookwyrm/templates/book/book.html:244
 msgid "You have shelved this edition in:"
 msgstr "Vi surbretigis ĉi tiun eldonon sur:"
 
-#: bookwyrm/templates/book/book.html:252
+#: bookwyrm/templates/book/book.html:259
 #, python-format
 msgid "A <a href=\"%(book_path)s\">different edition</a> of this book is on your <a href=\"%(shelf_path)s\">%(shelf_name)s</a> shelf."
 msgstr "<a href=\"%(book_path)s\">Alia eldono</a> de ĉi tiu libro estas sur via breto <a href=\"%(shelf_path)s\">%(shelf_name)s</a>."
 
-#: bookwyrm/templates/book/book.html:263
+#: bookwyrm/templates/book/book.html:270
 msgid "Your reading activity"
 msgstr "Via lega agado"
 
-#: bookwyrm/templates/book/book.html:269
+#: bookwyrm/templates/book/book.html:276
 #: bookwyrm/templates/guided_tour/book.html:56
 msgid "Add read dates"
 msgstr "Aldoni legodatojn"
 
-#: bookwyrm/templates/book/book.html:277
+#: bookwyrm/templates/book/book.html:284
 msgid "You don't have any reading activity for this book."
 msgstr "Vi ne havas legan agadon por ĉi tiu libro."
 
-#: bookwyrm/templates/book/book.html:303
+#: bookwyrm/templates/book/book.html:310
 msgid "Your reviews"
 msgstr "Viaj recenzoj"
 
-#: bookwyrm/templates/book/book.html:309
+#: bookwyrm/templates/book/book.html:316
 msgid "Your comments"
 msgstr "Viaj komentoj"
 
-#: bookwyrm/templates/book/book.html:315
+#: bookwyrm/templates/book/book.html:322
 msgid "Your quotes"
 msgstr "Viaj citaĵoj"
 
-#: bookwyrm/templates/book/book.html:351
+#: bookwyrm/templates/book/book.html:358
 msgid "Subjects"
 msgstr "Temoj"
 
-#: bookwyrm/templates/book/book.html:363
+#: bookwyrm/templates/book/book.html:370
 msgid "Places"
 msgstr "Lokoj"
 
-#: bookwyrm/templates/book/book.html:374
+#: bookwyrm/templates/book/book.html:381
 #: bookwyrm/templates/groups/group.html:19
 #: bookwyrm/templates/guided_tour/lists.html:14
 #: bookwyrm/templates/guided_tour/user_books.html:102
@@ -999,11 +999,11 @@ msgstr "Lokoj"
 msgid "Lists"
 msgstr "Listoj"
 
-#: bookwyrm/templates/book/book.html:386
+#: bookwyrm/templates/book/book.html:393
 msgid "Add to list"
 msgstr "Aldoni al la listo"
 
-#: bookwyrm/templates/book/book.html:396
+#: bookwyrm/templates/book/book.html:403
 #: bookwyrm/templates/book/cover_add_modal.html:32
 #: bookwyrm/templates/lists/add_item_modal.html:39
 #: bookwyrm/templates/lists/list.html:255
@@ -1927,13 +1927,13 @@ msgstr "Aldoni al viaj libroj"
 
 #: bookwyrm/templates/get_started/book_preview.html:10
 #: bookwyrm/templates/shelf/shelf.html:86 bookwyrm/templates/user/user.html:37
-#: bookwyrm/templatetags/shelf_tags.py:48
+#: bookwyrm/templatetags/shelf_tags.py:14
 msgid "To Read"
 msgstr "Legota"
 
 #: bookwyrm/templates/get_started/book_preview.html:11
 #: bookwyrm/templates/shelf/shelf.html:87 bookwyrm/templates/user/user.html:38
-#: bookwyrm/templatetags/shelf_tags.py:50
+#: bookwyrm/templatetags/shelf_tags.py:15
 msgid "Currently Reading"
 msgstr "Legata"
 
@@ -1942,12 +1942,13 @@ msgstr "Legata"
 #: bookwyrm/templates/snippets/shelf_selector.html:46
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_dropdown_options.html:24
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_options.html:12
-#: bookwyrm/templates/user/user.html:39 bookwyrm/templatetags/shelf_tags.py:52
+#: bookwyrm/templates/user/user.html:39 bookwyrm/templatetags/shelf_tags.py:16
 msgid "Read"
 msgstr "Legita"
 
 #: bookwyrm/templates/get_started/book_preview.html:13
 #: bookwyrm/templates/shelf/shelf.html:89 bookwyrm/templates/user/user.html:40
+#: bookwyrm/templatetags/shelf_tags.py:17
 msgid "Stopped Reading"
 msgstr "Haltigita legado"
 
@@ -1979,12 +1980,17 @@ msgstr "Vi povos aldoni librojn kiam vi komencos uzi %(site_name)s."
 #: bookwyrm/templates/layout.html:46 bookwyrm/templates/lists/list.html:217
 #: bookwyrm/templates/search/layout.html:5
 #: bookwyrm/templates/search/layout.html:10
+#: bookwyrm/templates/search/layout.html:32
 msgid "Search"
 msgstr "Serĉi"
 
 #: bookwyrm/templates/get_started/books.html:27
 msgid "Suggested Books"
 msgstr "Proponitaj libroj"
+
+#: bookwyrm/templates/get_started/books.html:33
+msgid "Search results"
+msgstr "Serĉrezultoj"
 
 #: bookwyrm/templates/get_started/books.html:46
 #, python-format
@@ -2063,6 +2069,10 @@ msgstr "Montri ĉi tiun konton inter la proponitaj uzantoj:"
 #: bookwyrm/templates/get_started/profile.html:62
 msgid "Your account will show up in the directory, and may be recommended to other BookWyrm users."
 msgstr "Via konto aperos en la adresaro kaj ĝi eble estos rekomendita al aliaj uzantoj de BookWyrm."
+
+#: bookwyrm/templates/get_started/users.html:8
+msgid "You can follow users on other BookWyrm instances and federated services like Mastodon."
+msgstr "Vi povas sekvi uzantojn de aliaj instancoj de BookWyrm kaj frataraj servoj kiel Mastodon."
 
 #: bookwyrm/templates/get_started/users.html:11
 msgid "Search for a user"
@@ -4536,7 +4546,16 @@ msgstr "Daŭro de funkciado:"
 msgid "Could not connect to Celery"
 msgstr "La konekto al Celery malsukcesis"
 
-#: bookwyrm/templates/settings/celery.html:121
+#: bookwyrm/templates/settings/celery.html:120
+#: bookwyrm/templates/settings/celery.html:143
+msgid "Clear Queues"
+msgstr "Malplenigi la vicojn"
+
+#: bookwyrm/templates/settings/celery.html:124
+msgid "Clearing queues can cause serious problems including data loss! Only play with this if you really know what you're doing. You must shut down the Celery worker before you do this."
+msgstr "Malplenigi la vicojn povas kaŭzi gravajn problemojn inkluzive de perdo de datumoj! Faru tion nur se vi scias kion vi faras. Vi nepre devas malŝalti la servon Celery antaŭ ol fari ĝin."
+
+#: bookwyrm/templates/settings/celery.html:150
 msgid "Errors"
 msgstr "Eraroj"
 
@@ -4901,7 +4920,7 @@ msgid "This is only intended to be used when things have gone very wrong with im
 msgstr "Ĉi tio celas esti uzata nur kiam io fuŝiĝas pri importoj ĝenerale kaj vi bezonas haltigi la trajton dum oni solvas la problemojn."
 
 #: bookwyrm/templates/settings/imports/imports.html:31
-msgid "While imports are disabled, users will not be allowed to start new imports, but existing imports will not be effected."
+msgid "While imports are disabled, users will not be allowed to start new imports, but existing imports will not be affected."
 msgstr "Dum importado estas malŝaltita, uzantoj ne povos komenci novajn importojn sed ekzistantaj importoj ne estos tuŝitaj."
 
 #: bookwyrm/templates/settings/imports/imports.html:36
@@ -5757,7 +5776,7 @@ msgid "User profile"
 msgstr "Profilo"
 
 #: bookwyrm/templates/shelf/shelf.html:39
-#: bookwyrm/templatetags/shelf_tags.py:46 bookwyrm/views/shelf/shelf.py:53
+#: bookwyrm/templatetags/shelf_tags.py:13 bookwyrm/views/shelf/shelf.py:53
 msgid "All books"
 msgstr "Ĉiuj libroj"
 
