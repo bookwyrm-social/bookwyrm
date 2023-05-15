@@ -116,7 +116,7 @@ class ActivityStream(RedisStore):
         )
         # direct messages don't appear in feeds, direct comments/reviews/etc do
         if status.privacy == "direct" and status.status_type == "Note":
-            return []
+            return models.User.objects.none()
 
         # everybody who could plausibly see this status
         audience = models.User.objects.filter(
@@ -152,11 +152,11 @@ class ActivityStream(RedisStore):
     def get_audience(self, status):
         """given a status, what users should see it"""
         trace.get_current_span().set_attribute("stream_id", self.key)
-        audience = self._get_audience(status)
+        audience = self._get_audience(status).values_list("id", flat=True)
         status_author = models.User.objects.filter(
             is_active=True, local=True, id=status.user.id
-        )
-        return list({user.id for user in list(audience) + list(status_author)})
+        ).values_list("id", flat=True)
+        return list(set(list(audience) + list(status_author)))
 
     def get_stores_for_users(self, user_ids):
         """convert a list of user ids into redis store ids"""
@@ -186,12 +186,12 @@ class HomeStream(ActivityStream):
         if not audience:
             return []
         # if the user is following the author
-        audience = audience.filter(following=status.user)
+        audience = audience.filter(following=status.user).values_list("id", flat=True)
         # if the user is the post's author
         status_author = models.User.objects.filter(
             is_active=True, local=True, id=status.user.id
-        )
-        return list({user.id for user in list(audience) + list(status_author)})
+        ).values_list("id", flat=True)
+        return list(set(list(audience) + list(status_author)))
 
     def get_statuses_for_user(self, user):
         return models.Status.privacy_filter(
@@ -240,7 +240,7 @@ class BooksStream(ActivityStream):
 
         audience = super()._get_audience(status)
         if not audience:
-            return []
+            return models.User.objects.none()
         return audience.filter(shelfbook__book__parent_work=work).distinct()
 
     def get_audience(self, status):
