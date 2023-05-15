@@ -29,14 +29,20 @@ class ReportsAdmin(View):
         """view current reports"""
         filters = {}
 
-        resolved = request.GET.get("resolved") == "true"
+        # we sometimes want to see all reports, regardless of resolution
+        if request.GET.get("resolved") == "all":
+            resolved = "all"
+        else:
+            resolved = request.GET.get("resolved") == "true"
+
         server = request.GET.get("server")
         if server:
             filters["user__federated_server__server_name"] = server
         username = request.GET.get("username")
         if username:
             filters["user__username__icontains"] = username
-        filters["resolved"] = resolved
+        if resolved != "all":
+            filters["resolved"] = resolved
 
         reports = models.Report.objects.filter(**filters)
         paginated = Paginator(reports, PAGE_LENGTH)
