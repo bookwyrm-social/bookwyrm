@@ -22,12 +22,12 @@
             </form>
             {% endif %}
             {% if user.is_active or user.deactivation_reason == "pending" %}
-            <form name="suspend" method="post" action="{% url 'settings-report-suspend' user.id  %}" class="mr-1">
+            <form name="suspend" method="post" action="{% url 'settings-report-suspend' user.id report.id %}" class="mr-1">
                 {% csrf_token %}
                 <button type="submit" class="button is-danger is-light">{% trans "Suspend user" %}</button>
             </form>
             {% else %}
-            <form name="unsuspend" method="post" action="{% url 'settings-report-unsuspend' user.id  %}" class="mr-1">
+            <form name="unsuspend" method="post" action="{% url 'settings-report-unsuspend' user.id report.id %}" class="mr-1">
                 {% csrf_token %}
                 <button class="button">{% trans "Un-suspend user" %}</button>
             </form>
@@ -49,7 +49,7 @@
 
         {% if user.local %}
         <div>
-            <form name="permission" method="post" action="{% url 'settings-user' user.id %}">
+            <form name="permission" method="post" action="{% url 'settings-user' user.id report.id %}">
                 {% csrf_token %}
                 <label class="label" for="id_user_group">{% trans "Access level:" %}</label>
                 {% if group_form.non_field_errors %}

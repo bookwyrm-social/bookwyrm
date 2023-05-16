@@ -7,6 +7,21 @@ from bookwyrm.settings import DOMAIN
 from .base_model import BookWyrmModel
 
 
+# Report action enums
+COMMENT = "comment"
+RESOLVE = "resolve"
+REOPEN = "reopen"
+MESSAGE_REPORTER = "message_reporter"
+MESSAGE_OFFENDER = "message_offender"
+USER_SUSPENSION = "user_suspension"
+USER_UNSUSPENSION = "user_unsuspension"
+USER_DELETION = "user_deletion"
+USER_PERMS = "user_perms"
+BLOCK_DOMAIN = "block_domain"
+APPROVE_DOMAIN = "approve_domain"
+DELETE_ITEM = "delete_item"
+
+
 class Report(BookWyrmModel):
     """reported status or user"""
 
@@ -33,30 +48,60 @@ class Report(BookWyrmModel):
     def get_remote_id(self):
         return f"https://{DOMAIN}/settings/reports/{self.id}"
 
+    def comment(self, user, note):
+        """comment on a report"""
+        ReportAction.objects.create(
+            action_type=COMMENT, user=user, note=note, report=self
+        )
+
+    def resolve(self, user):
+        """Mark a report as complete"""
+        self.resolved = True
+        self.save()
+        ReportAction.objects.create(action_type=RESOLVE, user=user, report=self)
+
+    def reopen(self, user):
+        """Wait! This report isn't complete after all"""
+        self.resolved = False
+        self.save()
+        ReportAction.objects.create(action_type=REOPEN, user=user, report=self)
+
+    @classmethod
+    def record_action(cls, report_id: int, action: str, user):
+        """Note that someone did something"""
+        if not report_id:
+            return
+        report = cls.objects.get(id=report_id)
+        ReportAction.objects.create(action_type=action, user=user, report=report)
+
     class Meta:
         """set order by default"""
 
         ordering = ("-created_date",)
 
 
-ReportCommentTypes = [
-    ("comment", _("Comment")),
-    ("resolve", _("Resolved report")),
-    ("reopen", _("Re-opened report")),
-    ("message_reporter", _("Messaged reporter")),
-    ("message_offender", _("Messaged reported user")),
-    ("user_suspension", _("Suspended user")),
-    ("user_deletion", _("Deleted user account")),
-    ("block_domain", _("Blocked domain")),
-    ("approve_domain", _("Approved domain")),
-    ("delete_item", _("Deleted item")),
+ReportActionTypes = [
+    (COMMENT, _("Comment")),
+    (RESOLVE, _("Resolved report")),
+    (REOPEN, _("Re-opened report")),
+    (MESSAGE_REPORTER, _("Messaged reporter")),
+    (MESSAGE_OFFENDER, _("Messaged reported user")),
+    (USER_SUSPENSION, _("Suspended user")),
+    (USER_UNSUSPENSION, _("Un-suspended user")),
+    (USER_PERMS, _("Changed user permission level")),
+    (USER_DELETION, _("Deleted user account")),
+    (BLOCK_DOMAIN, _("Blocked domain")),
+    (APPROVE_DOMAIN, _("Approved domain")),
+    (DELETE_ITEM, _("Deleted item")),
 ]
-class ReportComment(BookWyrmModel):
+
+
+class ReportAction(BookWyrmModel):
     """updates on a report"""
 
     user = models.ForeignKey("User", on_delete=models.PROTECT)
-    comment_type = models.CharField(
-        max_length=20, blank=False, default="comment", choices=ReportCommentTypes
+    action_type = models.CharField(
+        max_length=20, blank=False, default="comment", choices=ReportActionTypes
     )
     note = models.TextField()
     report = models.ForeignKey(Report, on_delete=models.PROTECT)
