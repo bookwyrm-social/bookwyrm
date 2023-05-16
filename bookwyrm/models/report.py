@@ -1,6 +1,7 @@
 """ flagged for moderation """
 from django.core.exceptions import PermissionDenied
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 from bookwyrm.settings import DOMAIN
 from .base_model import BookWyrmModel
@@ -38,10 +39,25 @@ class Report(BookWyrmModel):
         ordering = ("-created_date",)
 
 
+ReportCommentTypes = [
+    ("comment", _("Comment")),
+    ("resolve", _("Resolved report")),
+    ("reopen", _("Re-opened report")),
+    ("message_reporter", _("Messaged reporter")),
+    ("message_offender", _("Messaged reported user")),
+    ("user_suspension", _("Suspended user")),
+    ("user_deletion", _("Deleted user account")),
+    ("block_domain", _("Blocked domain")),
+    ("approve_domain", _("Approved domain")),
+    ("delete_item", _("Deleted item")),
+]
 class ReportComment(BookWyrmModel):
     """updates on a report"""
 
     user = models.ForeignKey("User", on_delete=models.PROTECT)
+    comment_type = models.CharField(
+        max_length=20, blank=False, default="comment", choices=ReportCommentTypes
+    )
     note = models.TextField()
     report = models.ForeignKey(Report, on_delete=models.PROTECT)
 
