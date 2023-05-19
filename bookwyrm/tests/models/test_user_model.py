@@ -109,6 +109,36 @@ class User(TestCase):
         self.assertEqual(activity["id"], self.user.outbox)
         self.assertEqual(activity["totalItems"], 0)
 
+    def test_save_auth_group(self):
+        user_attrs = {"local": True}
+        site = models.SiteSettings.get()
+
+        site.default_user_auth_group = Group.objects.get(name="editor")
+        site.save()
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
+            "bookwyrm.activitystreams.populate_stream_task.delay"
+        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
+            user = models.User.objects.create_user(
+                f"test2{DOMAIN}",
+                "test2@bookwyrm.test",
+                localname="test2",
+                **user_attrs,
+            )
+        self.assertEqual(list(user.groups.all()), [Group.objects.get(name="editor")])
+
+        site.default_user_auth_group = None
+        site.save()
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
+            "bookwyrm.activitystreams.populate_stream_task.delay"
+        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
+            user = models.User.objects.create_user(
+                f"test1{DOMAIN}",
+                "test1@bookwyrm.test",
+                localname="test1",
+                **user_attrs,
+            )
+        self.assertEqual(len(user.groups.all()), 0)
+
     def test_set_remote_server(self):
         server = models.FederatedServer.objects.create(
             server_name=DOMAIN, application_type="test type", application_version=3

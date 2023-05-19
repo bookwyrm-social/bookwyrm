@@ -53,18 +53,18 @@ class Activitystreams(TestCase):
     def test_activitystream_class_ids(self, *_):
         """the abstract base class for stream objects"""
         self.assertEqual(
-            self.test_stream.stream_id(self.local_user),
+            self.test_stream.stream_id(self.local_user.id),
             f"{self.local_user.id}-test",
         )
         self.assertEqual(
-            self.test_stream.unread_id(self.local_user),
+            self.test_stream.unread_id(self.local_user.id),
             f"{self.local_user.id}-test-unread",
         )
 
     def test_unread_by_status_type_id(self, *_):
         """stream for status type"""
         self.assertEqual(
-            self.test_stream.unread_by_status_type_id(self.local_user),
+            self.test_stream.unread_by_status_type_id(self.local_user.id),
             f"{self.local_user.id}-test-unread-by-type",
         )
 
@@ -118,9 +118,9 @@ class Activitystreams(TestCase):
         )
         users = self.test_stream.get_audience(status)
         # remote users don't have feeds
-        self.assertFalse(self.remote_user in users)
-        self.assertTrue(self.local_user in users)
-        self.assertTrue(self.another_user in users)
+        self.assertFalse(self.remote_user.id in users)
+        self.assertTrue(self.local_user.id in users)
+        self.assertTrue(self.another_user.id in users)
 
     def test_abstractstream_get_audience_direct(self, *_):
         """get a list of users that should see a status"""
@@ -141,9 +141,9 @@ class Activitystreams(TestCase):
         )
         status.mention_users.add(self.local_user)
         users = self.test_stream.get_audience(status)
-        self.assertTrue(self.local_user in users)
-        self.assertFalse(self.another_user in users)
-        self.assertFalse(self.remote_user in users)
+        self.assertTrue(self.local_user.id in users)
+        self.assertFalse(self.another_user.id in users)
+        self.assertFalse(self.remote_user.id in users)
 
     def test_abstractstream_get_audience_followers_remote_user(self, *_):
         """get a list of users that should see a status"""
@@ -153,7 +153,7 @@ class Activitystreams(TestCase):
             privacy="followers",
         )
         users = self.test_stream.get_audience(status)
-        self.assertFalse(users.exists())
+        self.assertEqual(users, [])
 
     def test_abstractstream_get_audience_followers_self(self, *_):
         """get a list of users that should see a status"""
@@ -164,9 +164,9 @@ class Activitystreams(TestCase):
             book=self.book,
         )
         users = self.test_stream.get_audience(status)
-        self.assertTrue(self.local_user in users)
-        self.assertFalse(self.another_user in users)
-        self.assertFalse(self.remote_user in users)
+        self.assertTrue(self.local_user.id in users)
+        self.assertFalse(self.another_user.id in users)
+        self.assertFalse(self.remote_user.id in users)
 
     def test_abstractstream_get_audience_followers_with_mention(self, *_):
         """get a list of users that should see a status"""
@@ -179,9 +179,9 @@ class Activitystreams(TestCase):
         status.mention_users.add(self.local_user)
 
         users = self.test_stream.get_audience(status)
-        self.assertTrue(self.local_user in users)
-        self.assertFalse(self.another_user in users)
-        self.assertFalse(self.remote_user in users)
+        self.assertTrue(self.local_user.id in users)
+        self.assertFalse(self.another_user.id in users)
+        self.assertFalse(self.remote_user.id in users)
 
     def test_abstractstream_get_audience_followers_with_relationship(self, *_):
         """get a list of users that should see a status"""
@@ -193,6 +193,6 @@ class Activitystreams(TestCase):
             book=self.book,
         )
         users = self.test_stream.get_audience(status)
-        self.assertFalse(self.local_user in users)
-        self.assertFalse(self.another_user in users)
-        self.assertFalse(self.remote_user in users)
+        self.assertFalse(self.local_user.id in users)
+        self.assertFalse(self.another_user.id in users)
+        self.assertFalse(self.remote_user.id in users)

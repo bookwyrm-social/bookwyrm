@@ -46,7 +46,7 @@ class Openlibrary(TestCase):
         data = {"key": "/work/OL1234W"}
         result = self.connector.get_remote_id_from_data(data)
         self.assertEqual(result, "https://openlibrary.org/work/OL1234W")
-        # error handlding
+        # error handling
         with self.assertRaises(ConnectorException):
             self.connector.get_remote_id_from_data({})
 

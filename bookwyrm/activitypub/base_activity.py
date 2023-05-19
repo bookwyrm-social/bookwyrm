@@ -2,11 +2,16 @@
 from dataclasses import dataclass, fields, MISSING
 from json import JSONEncoder
 import logging
+import requests
 
 from django.apps import apps
 from django.db import IntegrityError, transaction
+from django.utils.http import http_date
 
+from bookwyrm import models
 from bookwyrm.connectors import ConnectorException, get_data
+from bookwyrm.signatures import make_signature
+from bookwyrm.settings import DOMAIN, INSTANCE_ACTOR_USERNAME
 from bookwyrm.tasks import app, MEDIUM
 
 logger = logging.getLogger(__name__)
@@ -95,16 +100,34 @@ class ActivityObject:
 
     # pylint: disable=too-many-locals,too-many-branches,too-many-arguments
     def to_model(
-        self, model=None, instance=None, allow_create=True, save=True, overwrite=True
+        self,
+        model=None,
+        instance=None,
+        allow_create=True,
+        save=True,
+        overwrite=True,
+        allow_external_connections=True,
     ):
-        """convert from an activity to a model instance"""
+        """convert from an activity to a model instance. Args:
+        model: the django model that this object is being converted to
+            (will guess if not known)
+        instance: an existing database entry that is going to be updated by
+            this activity
+        allow_create: whether a new object should be created if there is no
+            existing object is provided or found matching the remote_id
+        save: store in the database if true, return an unsaved model obj if false
+        overwrite: replace fields in the database with this activity if true,
+            only update blank fields if false
+        allow_external_connections: look up missing data if true,
+            throw an exception if false and an external connection is needed
+        """
         model = model or get_model_from_type(self.type)
 
         # only reject statuses if we're potentially creating them
         if (
             allow_create
             and hasattr(model, "ignore_activity")
-            and model.ignore_activity(self)
+            and model.ignore_activity(self, allow_external_connections)
         ):
             return None
 
@@ -122,7 +145,10 @@ class ActivityObject:
         for field in instance.simple_fields:
             try:
                 changed = field.set_field_from_activity(
-                    instance, self, overwrite=overwrite
+                    instance,
+                    self,
+                    overwrite=overwrite,
+                    allow_external_connections=allow_external_connections,
                 )
                 if changed:
                     update_fields.append(field.name)
@@ -133,7 +159,11 @@ class ActivityObject:
         # too early and jank up users
         for field in instance.image_fields:
             changed = field.set_field_from_activity(
-                instance, self, save=save, overwrite=overwrite
+                instance,
+                self,
+                save=save,
+                overwrite=overwrite,
+                allow_external_connections=allow_external_connections,
             )
             if changed:
                 update_fields.append(field.name)
@@ -156,8 +186,12 @@ class ActivityObject:
 
             # add many to many fields, which have to be set post-save
             for field in instance.many_to_many_fields:
-                # mention books/users, for example
-                field.set_field_from_activity(instance, self)
+                # mention books/users/hashtags, for example
+                field.set_field_from_activity(
+                    instance,
+                    self,
+                    allow_external_connections=allow_external_connections,
+                )
 
         # reversed relationships in the models
         for (
@@ -246,10 +280,10 @@ def set_related_field(
 
 def get_model_from_type(activity_type):
     """given the activity, what type of model"""
-    models = apps.get_models()
+    activity_models = apps.get_models()
     model = [
         m
-        for m in models
+        for m in activity_models
         if hasattr(m, "activity_serializer")
         and hasattr(m.activity_serializer, "type")
         and m.activity_serializer.type == activity_type
@@ -261,10 +295,22 @@ def get_model_from_type(activity_type):
     return model[0]
 
 
+# pylint: disable=too-many-arguments
 def resolve_remote_id(
-    remote_id, model=None, refresh=False, save=True, get_activity=False
+    remote_id,
+    model=None,
+    refresh=False,
+    save=True,
+    get_activity=False,
+    allow_external_connections=True,
 ):
-    """take a remote_id and return an instance, creating if necessary"""
+    """take a remote_id and return an instance, creating if necessary. Args:
+    remote_id: the unique url for looking up the object in the db or by http
+    model: a string or object representing the model that corresponds to the object
+    save: whether to return an unsaved database entry or a saved one
+    get_activity: whether to return the activitypub object or the model object
+    allow_external_connections: whether to make http connections
+    """
     if model:  # a bonus check we can do if we already know the model
         if isinstance(model, str):
             model = apps.get_model(f"bookwyrm.{model}", require_ready=True)
@@ -272,13 +318,26 @@ def resolve_remote_id(
         if result and not refresh:
             return result if not get_activity else result.to_activity_dataclass()
 
+    # The above block will return the object if it already exists in the database.
+    # If it doesn't, an external connection would be needed, so check if that's cool
+    if not allow_external_connections:
+        raise ActivitySerializerError(
+            "Unable to serialize object without making external HTTP requests"
+        )
+
     # load the data and create the object
     try:
         data = get_data(remote_id)
-    except ConnectorException:
+    except ConnectionError:
         logger.info("Could not connect to host for remote_id: %s", remote_id)
         return None
-
+    except requests.HTTPError as e:
+        if (e.response is not None) and e.response.status_code == 401:
+            # This most likely means it's a mastodon with secure fetch enabled.
+            data = get_activitypub_data(remote_id)
+        else:
+            logger.info("Could not connect to host for remote_id: %s", remote_id)
+            return None
     # determine the model implicitly, if not provided
     # or if it's a model with subclasses like Status, check again
     if not model or hasattr(model.objects, "select_subclasses"):
@@ -295,6 +354,52 @@ def resolve_remote_id(
 
     # if we're refreshing, "result" will be set and we'll update it
     return item.to_model(model=model, instance=result, save=save)
+
+
+def get_representative():
+    """Get or create an actor representing the instance
+    to sign requests to 'secure mastodon' servers"""
+    username = f"{INSTANCE_ACTOR_USERNAME}@{DOMAIN}"
+    email = "bookwyrm@localhost"
+    try:
+        user = models.User.objects.get(username=username)
+    except models.User.DoesNotExist:
+        user = models.User.objects.create_user(
+            username=username,
+            email=email,
+            local=True,
+            localname=INSTANCE_ACTOR_USERNAME,
+        )
+    return user
+
+
+def get_activitypub_data(url):
+    """wrapper for request.get"""
+    now = http_date()
+    sender = get_representative()
+    if not sender.key_pair.private_key:
+        # this shouldn't happen. it would be bad if it happened.
+        raise ValueError("No private key found for sender")
+    try:
+        resp = requests.get(
+            url,
+            headers={
+                # pylint: disable=line-too-long
+                "Accept": 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
+                "Date": now,
+                "Signature": make_signature("get", sender, url, now),
+            },
+        )
+    except requests.RequestException:
+        raise ConnectorException()
+    if not resp.ok:
+        resp.raise_for_status()
+    try:
+        data = resp.json()
+    except ValueError:
+        raise ConnectorException()
+
+    return data
 
 
 @dataclass(init=False)
@@ -322,3 +427,10 @@ class Mention(Link):
     """a subtype of Link for mentioning an actor"""
 
     type: str = "Mention"
+
+
+@dataclass(init=False)
+class Hashtag(Link):
+    """a subtype of Link for mentioning a hashtag"""
+
+    type: str = "Hashtag"

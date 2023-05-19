@@ -5,7 +5,7 @@ let BookWyrm = new (class {
     constructor() {
         this.MAX_FILE_SIZE_BYTES = 10 * 1000000;
         this.initOnDOMLoaded();
-        this.initReccuringTasks();
+        this.initRecurringTasks();
         this.initEventListeners();
     }
 
@@ -77,7 +77,7 @@ let BookWyrm = new (class {
     /**
      * Execute recurring tasks.
      */
-    initReccuringTasks() {
+    initRecurringTasks() {
         // Polling
         document.querySelectorAll("[data-poll]").forEach((liveArea) => this.polling(liveArea));
     }
@@ -95,7 +95,6 @@ let BookWyrm = new (class {
 
     /**
      * Update a counter with recurring requests to the API
-     * The delay is slightly randomized and increased on each cycle.
      *
      * @param  {Object} counter - DOM node
      * @param  {int}    delay   - frequency for polling in ms
@@ -104,16 +103,19 @@ let BookWyrm = new (class {
     polling(counter, delay) {
         const bookwyrm = this;
 
-        delay = delay || 10000;
-        delay += Math.random() * 1000;
+        delay = delay || 5 * 60 * 1000 + (Math.random() - 0.5) * 30 * 1000;
 
         setTimeout(
             function () {
                 fetch("/api/updates/" + counter.dataset.poll)
                     .then((response) => response.json())
-                    .then((data) => bookwyrm.updateCountElement(counter, data));
-
-                bookwyrm.polling(counter, delay * 1.25);
+                    .then((data) => {
+                        bookwyrm.updateCountElement(counter, data);
+                        bookwyrm.polling(counter);
+                    })
+                    .catch(() => {
+                        bookwyrm.polling(counter, delay * 1.1);
+                    });
             },
             delay,
             counter

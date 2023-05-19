@@ -117,10 +117,12 @@ def init_connectors():
 
 def init_settings():
     """info about the instance"""
+    group_editor = Group.objects.filter(name="editor").first()
     models.SiteSettings.objects.create(
         support_link="https://www.patreon.com/bookwyrm",
         support_title="Patreon",
         install_mode=True,
+        default_user_auth_group=group_editor,
     )
 
 

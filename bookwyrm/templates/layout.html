@@ -15,20 +15,9 @@
     <link rel="shortcut icon" type="image/x-icon" href="{% if site.favicon %}{% get_media_prefix %}{{ site.favicon }}{% else %}{% static "images/favicon.ico" %}{% endif %}">
     <link rel="apple-touch-icon" href="{% if site.logo %}{{ media_full_url }}{{ site.logo }}{% else %}{% static "images/logo.png" %}{% endif %}">
 
-    {% if preview_images_enabled is True %}
-    <meta name="twitter:card" content="summary_large_image">
-    {% else %}
-    <meta name="twitter:card" content="summary">
-    {% endif %}
-    <meta name="twitter:title" content="{% if title %}{{ title }} - {% endif %}{{ site.name }}">
-    <meta name="og:title" content="{% if title %}{{ title }} - {% endif %}{{ site.name }}">
-    <meta name="twitter:description" content="{{ site.instance_tagline }}">
-    <meta name="og:description" content="{{ site.instance_tagline }}">
-
-    {% block opengraph_images %}
-        {% include 'snippets/opengraph_images.html' %}
+    {% block opengraph %}
+        {% include 'snippets/opengraph.html' %}
     {% endblock %}
-    <meta name="twitter:image:alt" content="BookWyrm Logo">
 
     {% block head_links %}{% endblock %}
 </head>
@@ -36,9 +25,10 @@
 {% block body %}
 <nav class="navbar" aria-label="main navigation">
     <div class="container">
+        {% with notification_count=request.user.unread_notification_count has_unread_mentions=request.user.has_unread_mentions %}
         <div class="navbar-brand">
             <a class="navbar-item" href="/">
-                <img class="image logo" src="{% if site.logo_small %}{% get_media_prefix %}{{ site.logo_small }}{% else %}{% static "images/logo-small.png" %}{% endif %}" alt="{% blocktrans with site_name=site.name %}{{ site_name }} home page{% endblocktrans %}">
+                <img class="image logo" src="{% if site.logo_small %}{% get_media_prefix %}{{ site.logo_small }}{% else %}{% static "images/logo-small.png" %}{% endif %}" alt="{% blocktrans with site_name=site.name %}{{ site_name }} home page{% endblocktrans %}" loading="lazy" decoding="async">
             </a>
             <form class="navbar-item column is-align-items-start pt-5" action="{% url 'search' %}">
                 <div class="field has-addons">
@@ -78,9 +68,8 @@
             >
                 <i class="icon-dots-three-vertical" aria-hidden="true"></i>
 
-                {% with request.user.unread_notification_count as notification_count %}
                 <strong
-                    class="{% if not notification_count %}is-hidden {% elif request.user.has_unread_mentions %}is-danger {% else %}is-primary {% endif %} tag is-small px-1"
+                    class="{% if not notification_count %}is-hidden {% elif has_unread_mentions %}is-danger {% else %}is-primary {% endif %} tag is-small px-1"
                     data-poll-wrapper
                 >
                     <span class="is-sr-only">{% trans "Notifications" %}</span>
@@ -88,7 +77,6 @@
                         {{ notification_count }}
                     </strong>
                 </strong>
-                {% endwith %}
             </button>
         </div>
 
@@ -119,14 +107,12 @@
                                 <span class="is-sr-only">{% trans "Notifications" %}</span>
                             </span>
                         </span>
-                        {% with request.user.unread_notification_count as notification_count %}
                         <span
-                            class="{% if not notification_count %}is-hidden {% elif request.user.has_unread_mentions %}is-danger {% endif %}tag is-medium transition-x"
+                            class="{% if not notification_count %}is-hidden {% elif has_unread_mentions %}is-danger {% endif %}tag is-medium transition-x"
                             data-poll-wrapper
                         >
                             <span data-poll="notifications">{{ notification_count }}</span>
                         </span>
-                        {% endwith %}
                     </a>
                 </div>
                 {% else %}
@@ -165,6 +151,7 @@
                 {% endif %}
             </div>
         </div>
+        {% endwith %}
     </div>
 </nav>
 
@@ -196,7 +183,7 @@
 {% include 'snippets/footer.html' %}
 {% endblock %}
 
-<script>
+<script nonce="{{request.csp_nonce}}">
     var csrf_token = '{{ csrf_token }}';
 </script>
 

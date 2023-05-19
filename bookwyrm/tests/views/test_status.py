@@ -6,7 +6,7 @@ from django.test import TestCase, TransactionTestCase
 from django.test.client import RequestFactory
 
 from bookwyrm import forms, models, views
-from bookwyrm.views.status import find_mentions
+from bookwyrm.views.status import find_mentions, find_or_create_hashtags
 from bookwyrm.settings import DOMAIN
 
 from bookwyrm.tests.validate_html import validate_html
@@ -95,6 +95,7 @@ class StatusViews(TestCase):
                 local=True,
                 localname="nutria",
             )
+            self.existing_hashtag = models.Hashtag.objects.create(name="#existing")
         with patch("bookwyrm.models.user.set_remote_server"):
             self.remote_user = models.User.objects.create_user(
                 "rat",
@@ -233,7 +234,7 @@ class StatusViews(TestCase):
         )
 
     def test_create_status_reply_with_mentions(self, *_):
-        """reply to a post with an @mention'ed user"""
+        """reply to a post with an @mention'd user"""
         view = views.CreateStatus.as_view()
         user = models.User.objects.create_user(
             "rat", "rat@rat.com", "password", local=True, localname="rat"
@@ -333,6 +334,71 @@ class StatusViews(TestCase):
             result = find_mentions(self.local_user, "@beep@beep.com")
             self.assertEqual(result, {})
 
+    def test_create_status_hashtags(self, *_):
+        """#mention a hashtag in a post"""
+        view = views.CreateStatus.as_view()
+        form = forms.CommentForm(
+            {
+                "content": "this is an #EXISTING hashtag but all uppercase, "
+                + "this one is #NewTag.",
+                "user": self.local_user.id,
+                "book": self.book.id,
+                "privacy": "public",
+            }
+        )
+        request = self.factory.post("", form.data)
+        request.user = self.local_user
+
+        view(request, "comment")
+        status = models.Status.objects.get()
+
+        hashtags = models.Hashtag.objects.all()
+        self.assertEqual(len(hashtags), 2)
+        self.assertEqual(list(status.mention_hashtags.all()), list(hashtags))
+
+        hashtag_existing = models.Hashtag.objects.filter(name="#existing").first()
+        hashtag_new = models.Hashtag.objects.filter(name="#NewTag").first()
+        self.assertEqual(
+            status.content,
+            "<p>this is an "
+            + f'<a href="{hashtag_existing.remote_id}" data-mention="hashtag">'
+            + "#EXISTING</a> hashtag but all uppercase, this one is "
+            + f'<a href="{hashtag_new.remote_id}" data-mention="hashtag">'
+            + "#NewTag</a>.</p>",
+        )
+
+    def test_find_or_create_hashtags(self, *_):
+        """detect and look up #hashtags"""
+        result = find_or_create_hashtags("no hashtag to be found here")
+        self.assertEqual(result, {})
+
+        result = find_or_create_hashtags("#existing")
+        self.assertEqual(result["#existing"], self.existing_hashtag)
+
+        result = find_or_create_hashtags("leading text #existing")
+        self.assertEqual(result["#existing"], self.existing_hashtag)
+
+        result = find_or_create_hashtags("leading #existing trailing")
+        self.assertEqual(result["#existing"], self.existing_hashtag)
+
+        self.assertIsNone(models.Hashtag.objects.filter(name="new").first())
+        result = find_or_create_hashtags("leading #new trailing")
+        new_hashtag = models.Hashtag.objects.filter(name="#new").first()
+        self.assertIsNotNone(new_hashtag)
+        self.assertEqual(result["#new"], new_hashtag)
+
+        result = find_or_create_hashtags("leading #existing #new trailing")
+        self.assertEqual(result["#existing"], self.existing_hashtag)
+        self.assertEqual(result["#new"], new_hashtag)
+
+        result = find_or_create_hashtags("#Braunbär")
+        hashtag = models.Hashtag.objects.filter(name="#Braunbär").first()
+        self.assertEqual(result["#Braunbär"], hashtag)
+
+        result = find_or_create_hashtags("#ひぐま")
+        hashtag = models.Hashtag.objects.filter(name="#ひぐま").first()
+        self.assertEqual(result["#ひぐま"], hashtag)
+
     def test_format_links_simple_url(self, *_):
         """find and format urls into a tags"""
         url = "http://www.fish.com/"
@@ -388,6 +454,24 @@ http://www.fish.com/"""
         url = "https://pkm.one/#/page/The%20Book%20launched%20a%201000%20Note%20apps"
         self.assertEqual(
             views.status.format_links(url), f'<a href="{url}">{url[8:]}</a>'
+        )
+
+    def test_format_mentions_with_at_symbol_links(self, *_):
+        """A link with an @username shouldn't treat the username as a mention"""
+        content = "a link to https://example.com/user/@mouse"
+        mentions = views.status.find_mentions(self.local_user, content)
+        self.assertEqual(
+            views.status.format_mentions(content, mentions),
+            "a link to https://example.com/user/@mouse",
+        )
+
+    def test_format_hashtag_with_pound_symbol_links(self, *_):
+        """A link with an @username shouldn't treat the username as a mention"""
+        content = "a link to https://example.com/page#anchor"
+        hashtags = views.status.find_or_create_hashtags(content)
+        self.assertEqual(
+            views.status.format_hashtags(content, hashtags),
+            "a link to https://example.com/page#anchor",
         )
 
     def test_to_markdown(self, *_):

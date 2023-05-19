@@ -35,7 +35,7 @@ class GoodreadsImport(TestCase):
             self.local_user = models.User.objects.create_user(
                 "mouse", "mouse@mouse.mouse", "password", local=True
             )
-
+        models.SiteSettings.objects.create()
         work = models.Work.objects.create(title="Test Work")
         self.book = models.Edition.objects.create(
             title="Example Edition",

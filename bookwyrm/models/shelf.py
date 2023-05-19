@@ -80,7 +80,7 @@ class Shelf(OrderedCollectionMixin, BookWyrmModel):
             raise PermissionDenied()
 
     class Meta:
-        """user/shelf unqiueness"""
+        """user/shelf uniqueness"""
 
         unique_together = ("user", "identifier")
 
@@ -107,7 +107,7 @@ class ShelfBook(CollectionItemMixin, BookWyrmModel):
             # remove all caches related to all editions of this book
             cache.delete_many(
                 [
-                    f"book-on-shelf-{book.id}-{self.shelf.id}"
+                    f"book-on-shelf-{book.id}-{self.shelf_id}"
                     for book in self.book.parent_work.editions.all()
                 ]
             )
@@ -117,7 +117,7 @@ class ShelfBook(CollectionItemMixin, BookWyrmModel):
         if self.id and self.user.local:
             cache.delete_many(
                 [
-                    f"book-on-shelf-{book}-{self.shelf.id}"
+                    f"book-on-shelf-{book}-{self.shelf_id}"
                     for book in self.book.parent_work.editions.values_list(
                         "id", flat=True
                     )

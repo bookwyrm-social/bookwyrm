@@ -43,6 +43,7 @@ class EditBook(View):
         form = forms.EditionForm(request.POST, request.FILES, instance=book)
 
         data = {"book": book, "form": form}
+        ensure_transient_values_persist(request, data)
         if not form.is_valid():
             return TemplateResponse(request, "book/edit/edit_book.html", data)
 
@@ -101,6 +102,8 @@ class CreateBook(View):
                 "authors": authors,
             }
 
+        ensure_transient_values_persist(request, data)
+
         if not form.is_valid():
             return TemplateResponse(request, "book/edit/edit_book.html", data)
 
@@ -136,6 +139,11 @@ class CreateBook(View):
         return redirect(f"/book/{book.id}")
 
 
+def ensure_transient_values_persist(request, data):
+    """ensure that values of transient form fields persist when re-rendering the form"""
+    data["cover_url"] = request.POST.get("cover-url")
+
+
 def add_authors(request, data):
     """helper for adding authors"""
     add_author = [author for author in request.POST.getlist("add_author") if author]
@@ -146,11 +154,10 @@ def add_authors(request, data):
     data["author_matches"] = []
     data["isni_matches"] = []
 
-    # creting a book or adding an author to a book needs another step
+    # creating a book or adding an author to a book needs another step
     data["confirm_mode"] = True
     # this isn't preserved because it isn't part of the form obj
     data["remove_authors"] = request.POST.getlist("remove_authors")
-    data["cover_url"] = request.POST.get("cover-url")
 
     for author in add_author:
         # filter out empty author fields

@@ -1,7 +1,7 @@
 """ manage user """
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.paginator import Paginator
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
 from django.views import View
@@ -95,3 +95,19 @@ class UserAdmin(View):
                 form.save(request)
         data = {"user": user, "group_form": form}
         return TemplateResponse(request, "settings/users/user.html", data)
+
+
+@method_decorator(login_required, name="dispatch")
+@method_decorator(
+    permission_required("bookwyrm.moderate_user", raise_exception=True),
+    name="dispatch",
+)
+class ActivateUserAdmin(View):
+    """activate a user manually"""
+
+    # pylint: disable=unused-argument
+    def post(self, request, user):
+        """activate user"""
+        user = get_object_or_404(models.User, id=user)
+        user.reactivate()
+        return redirect("settings-user", user.id)

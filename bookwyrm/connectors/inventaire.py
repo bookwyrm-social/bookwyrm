@@ -97,7 +97,7 @@ class Connector(AbstractConnector):
             )
 
     def parse_isbn_search_data(self, data):
-        """got some daaaata"""
+        """got some data"""
         results = data.get("entities")
         if not results:
             return
