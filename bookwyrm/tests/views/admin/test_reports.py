@@ -78,8 +78,8 @@ class ReportViews(TestCase):
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
-    def test_report_comment(self):
-        """comment on a report"""
+    def test_report_action(self):
+        """action on a report"""
         view = views.ReportAdmin.as_view()
         request = self.factory.post("", {"note": "hi"})
         request.user = self.local_user
@@ -87,15 +87,17 @@ class ReportViews(TestCase):
 
         view(request, report.id)
 
-        comment = models.ReportComment.objects.get()
-        self.assertEqual(comment.user, self.local_user)
-        self.assertEqual(comment.note, "hi")
-        self.assertEqual(comment.report, report)
+        action = models.ReportAction.objects.get()
+        self.assertEqual(action.user, self.local_user)
+        self.assertEqual(action.note, "hi")
+        self.assertEqual(action.report, report)
+        self.assertEqual(action.action_type, "comment")
 
     def test_resolve_report(self):
         """toggle report resolution status"""
         report = models.Report.objects.create(reporter=self.local_user, user=self.rat)
         self.assertFalse(report.resolved)
+        self.assertFalse(models.ReportAction.objects.exists())
         request = self.factory.post("")
         request.user = self.local_user
 
@@ -104,10 +106,24 @@ class ReportViews(TestCase):
         report.refresh_from_db()
         self.assertTrue(report.resolved)
 
+        # check that the action was noted
+        self.assertTrue(
+            models.ReportAction.objects.filter(
+                report=report, action_type="resolve", user=self.local_user
+            ).exists()
+        )
+
         # un-resolve
         views.resolve_report(request, report.id)
         report.refresh_from_db()
         self.assertFalse(report.resolved)
+
+        # check that the action was noted
+        self.assertTrue(
+            models.ReportAction.objects.filter(
+                report=report, action_type="reopen", user=self.local_user
+            ).exists()
+        )
 
     @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
     @patch("bookwyrm.activitystreams.populate_stream_task.delay")

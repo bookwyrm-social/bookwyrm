@@ -97,7 +97,7 @@ def suspend_user(request, user_id, report_id=None):
     # this isn't a full deletion, so we don't want to tell the world
     user.save(broadcast=False)
 
-    models.ReportAction.record_action(report_id, USER_SUSPENSION, request.user)
+    models.Report.record_action(report_id, USER_SUSPENSION, request.user)
     return redirect_to_referer(request, "settings-user", user.id)
 
 
@@ -111,7 +111,7 @@ def unsuspend_user(request, user_id, report_id=None):
     # this isn't a full deletion, so we don't want to tell the world
     user.save(broadcast=False)
 
-    models.ReportAction.record_action(report_id, USER_UNSUSPENSION, request.user)
+    models.Report.record_action(report_id, USER_UNSUSPENSION, request.user)
     return redirect_to_referer(request, "settings-user", user.id)
 
 
@@ -134,7 +134,7 @@ def moderator_delete_user(request, user_id, report_id=None):
         user.delete()
 
         # make a note of the fact that we did this
-        models.ReportAction.record_action(report_id, USER_DELETION, request.user)
+        models.Report.record_action(report_id, USER_DELETION, request.user)
         return redirect_to_referer(request, "settings-user", user.id)
 
     form.errors["password"] = ["Invalid password"]
