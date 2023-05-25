@@ -5,7 +5,7 @@ let BookWyrm = new (class {
     constructor() {
         this.MAX_FILE_SIZE_BYTES = 10 * 1000000;
         this.initOnDOMLoaded();
-        this.initReccuringTasks();
+        this.initRecurringTasks();
         this.initEventListeners();
     }
 
@@ -77,7 +77,7 @@ let BookWyrm = new (class {
     /**
      * Execute recurring tasks.
      */
-    initReccuringTasks() {
+    initRecurringTasks() {
         // Polling
         document.querySelectorAll("[data-poll]").forEach((liveArea) => this.polling(liveArea));
     }

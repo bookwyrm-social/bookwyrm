@@ -114,7 +114,7 @@ class LoginViews(TestCase):
         view = views.Login.as_view()
         form = forms.LoginForm()
         form.data["localname"] = "mouse"
-        form.data["password"] = "passsword1"
+        form.data["password"] = "password1"
         request = self.factory.post("", form.data)
         request.user = self.anonymous_user
 

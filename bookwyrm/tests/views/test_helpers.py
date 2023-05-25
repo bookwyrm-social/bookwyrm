@@ -8,7 +8,7 @@ from django.test.client import RequestFactory
 import responses
 
 from bookwyrm import models, views
-from bookwyrm.settings import USER_AGENT
+from bookwyrm.settings import USER_AGENT, DOMAIN
 
 
 @patch("bookwyrm.activitystreams.add_status_task.delay")
@@ -18,6 +18,7 @@ from bookwyrm.settings import USER_AGENT
 class ViewsHelpers(TestCase):
     """viewing and creating statuses"""
 
+    # pylint: disable=invalid-name
     def setUp(self):
         """we need basic test data and mocks"""
         self.factory = RequestFactory()
@@ -260,3 +261,33 @@ class ViewsHelpers(TestCase):
                 self.local_user, self.shelf, self.book, "public"
             )
         self.assertFalse(models.GeneratedNote.objects.exists())
+
+    def test_redirect_to_referer_outside_domain(self, *_):
+        """safely send people on their way"""
+        request = self.factory.get("/path")
+        request.META = {"HTTP_REFERER": "http://outside.domain/name"}
+        result = views.helpers.redirect_to_referer(
+            request, "user-feed", self.local_user.localname
+        )
+        self.assertEqual(result.url, f"/user/{self.local_user.localname}")
+
+    def test_redirect_to_referer_outside_domain_with_fallback(self, *_):
+        """invalid domain with regular params for the redirect function"""
+        request = self.factory.get("/path")
+        request.META = {"HTTP_REFERER": "https://outside.domain/name"}
+        result = views.helpers.redirect_to_referer(request)
+        self.assertEqual(result.url, "/")
+
+    def test_redirect_to_referer_valid_domain(self, *_):
+        """redirect to within the app"""
+        request = self.factory.get("/path")
+        request.META = {"HTTP_REFERER": f"https://{DOMAIN}/and/a/path"}
+        result = views.helpers.redirect_to_referer(request)
+        self.assertEqual(result.url, f"https://{DOMAIN}/and/a/path")
+
+    def test_redirect_to_referer_with_get_args(self, *_):
+        """if the path has get params (like sort) they are preserved"""
+        request = self.factory.get("/path")
+        request.META = {"HTTP_REFERER": f"https://{DOMAIN}/and/a/path?sort=hello"}
+        result = views.helpers.redirect_to_referer(request)
+        self.assertEqual(result.url, f"https://{DOMAIN}/and/a/path?sort=hello")

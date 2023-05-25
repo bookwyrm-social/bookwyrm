@@ -19,7 +19,7 @@ class Author(TestCase):
         )
 
     def test_serialize_model(self):
-        """check presense of author fields"""
+        """check presence of author fields"""
         activity = self.author.to_activity()
         self.assertEqual(activity["id"], self.author.remote_id)
         self.assertIsInstance(activity["aliases"], list)

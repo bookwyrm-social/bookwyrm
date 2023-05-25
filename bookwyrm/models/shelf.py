@@ -80,7 +80,7 @@ class Shelf(OrderedCollectionMixin, BookWyrmModel):
             raise PermissionDenied()
 
     class Meta:
-        """user/shelf unqiueness"""
+        """user/shelf uniqueness"""
 
         unique_together = ("user", "identifier")
 

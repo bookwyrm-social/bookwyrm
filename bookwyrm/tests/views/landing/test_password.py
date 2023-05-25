@@ -72,7 +72,7 @@ class PasswordViews(TestCase):
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
 
-    def test_password_reset_nonexistant_code(self):
+    def test_password_reset_nonexistent_code(self):
         """there are so many views, this just makes sure it LOADS"""
         view = views.PasswordReset.as_view()
         request = self.factory.get("")

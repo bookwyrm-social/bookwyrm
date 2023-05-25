@@ -4,6 +4,7 @@ from environs import Env
 
 import requests
 from django.utils.translation import gettext_lazy as _
+from django.core.exceptions import ImproperlyConfigured
 
 
 # pylint: disable=line-too-long
@@ -11,22 +12,22 @@ from django.utils.translation import gettext_lazy as _
 env = Env()
 env.read_env()
 DOMAIN = env("DOMAIN")
-VERSION = "0.6.0"
+VERSION = "0.6.2"
 
 RELEASE_API = env(
     "RELEASE_API",
     "https://api.github.com/repos/bookwyrm-social/bookwyrm/releases/latest",
 )
 
-PAGE_LENGTH = env("PAGE_LENGTH", 15)
+PAGE_LENGTH = env.int("PAGE_LENGTH", 15)
 DEFAULT_LANGUAGE = env("DEFAULT_LANGUAGE", "English")
 
-JS_CACHE = "a7d4e720"
+JS_CACHE = "ea91d7df"
 
 # email
 EMAIL_BACKEND = env("EMAIL_BACKEND", "django.core.mail.backends.smtp.EmailBackend")
 EMAIL_HOST = env("EMAIL_HOST")
-EMAIL_PORT = env("EMAIL_PORT", 587)
+EMAIL_PORT = env.int("EMAIL_PORT", 587)
 EMAIL_HOST_USER = env("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
 EMAIL_USE_TLS = env.bool("EMAIL_USE_TLS", True)
@@ -68,12 +69,14 @@ FONT_DIR = os.path.join(STATIC_ROOT, "fonts")
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env("SECRET_KEY")
-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool("DEBUG", True)
 USE_HTTPS = env.bool("USE_HTTPS", not DEBUG)
+
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = env("SECRET_KEY")
+if not DEBUG and SECRET_KEY == "7(2w1sedok=aznpq)ta1mc4i%4h=xx@hxwx*o57ctsuml0x%fr":
+    raise ImproperlyConfigured("You must change the SECRET_KEY env variable")
 
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", ["*"])
 
@@ -205,14 +208,14 @@ WSGI_APPLICATION = "bookwyrm.wsgi.application"
 
 # redis/activity streams settings
 REDIS_ACTIVITY_HOST = env("REDIS_ACTIVITY_HOST", "localhost")
-REDIS_ACTIVITY_PORT = env("REDIS_ACTIVITY_PORT", 6379)
+REDIS_ACTIVITY_PORT = env.int("REDIS_ACTIVITY_PORT", 6379)
 REDIS_ACTIVITY_PASSWORD = requests.utils.quote(env("REDIS_ACTIVITY_PASSWORD", ""))
-REDIS_ACTIVITY_DB_INDEX = env("REDIS_ACTIVITY_DB_INDEX", 0)
+REDIS_ACTIVITY_DB_INDEX = env.int("REDIS_ACTIVITY_DB_INDEX", 0)
 REDIS_ACTIVITY_URL = env(
     "REDIS_ACTIVITY_URL",
     f"redis://:{REDIS_ACTIVITY_PASSWORD}@{REDIS_ACTIVITY_HOST}:{REDIS_ACTIVITY_PORT}/{REDIS_ACTIVITY_DB_INDEX}",
 )
-MAX_STREAM_LENGTH = int(env("MAX_STREAM_LENGTH", 200))
+MAX_STREAM_LENGTH = env.int("MAX_STREAM_LENGTH", 200)
 
 STREAMS = [
     {"key": "home", "name": _("Home Timeline"), "shortname": _("Home")},
@@ -221,12 +224,12 @@ STREAMS = [
 
 # Search configuration
 # total time in seconds that the instance will spend searching connectors
-SEARCH_TIMEOUT = int(env("SEARCH_TIMEOUT", 8))
+SEARCH_TIMEOUT = env.int("SEARCH_TIMEOUT", 8)
 # timeout for a query to an individual connector
-QUERY_TIMEOUT = int(env("QUERY_TIMEOUT", 5))
+QUERY_TIMEOUT = env.int("INTERACTIVE_QUERY_TIMEOUT", env.int("QUERY_TIMEOUT", 5))
 
 # Redis cache backend
-if env("USE_DUMMY_CACHE", False):
+if env.bool("USE_DUMMY_CACHE", False):
     CACHES = {
         "default": {
             "BACKEND": "django.core.cache.backends.dummy.DummyCache",
@@ -256,7 +259,7 @@ DATABASES = {
         "USER": env("POSTGRES_USER", "bookwyrm"),
         "PASSWORD": env("POSTGRES_PASSWORD", "bookwyrm"),
         "HOST": env("POSTGRES_HOST", ""),
-        "PORT": env("PGPORT", 5432),
+        "PORT": env.int("PGPORT", 5432),
     },
 }
 
@@ -291,6 +294,7 @@ LANGUAGES = [
     ("en-us", _("English")),
     ("ca-es", _("Català (Catalan)")),
     ("de-de", _("Deutsch (German)")),
+    ("eo-uy", _("Esperanto (Esperanto)")),
     ("es-es", _("Español (Spanish)")),
     ("eu-es", _("Euskara (Basque)")),
     ("gl-es", _("Galego (Galician)")),
@@ -341,6 +345,7 @@ if USE_HTTPS:
     CSRF_COOKIE_SECURE = True
 
 USE_S3 = env.bool("USE_S3", False)
+USE_AZURE = env.bool("USE_AZURE", False)
 
 if USE_S3:
     # AWS settings
@@ -364,6 +369,27 @@ if USE_S3:
     DEFAULT_FILE_STORAGE = "bookwyrm.storage_backends.ImagesStorage"
     CSP_DEFAULT_SRC = ["'self'", AWS_S3_CUSTOM_DOMAIN] + CSP_ADDITIONAL_HOSTS
     CSP_SCRIPT_SRC = ["'self'", AWS_S3_CUSTOM_DOMAIN] + CSP_ADDITIONAL_HOSTS
+elif USE_AZURE:
+    AZURE_ACCOUNT_NAME = env("AZURE_ACCOUNT_NAME")
+    AZURE_ACCOUNT_KEY = env("AZURE_ACCOUNT_KEY")
+    AZURE_CONTAINER = env("AZURE_CONTAINER")
+    AZURE_CUSTOM_DOMAIN = env("AZURE_CUSTOM_DOMAIN")
+    # Azure Static settings
+    STATIC_LOCATION = "static"
+    STATIC_URL = (
+        f"{PROTOCOL}://{AZURE_CUSTOM_DOMAIN}/{AZURE_CONTAINER}/{STATIC_LOCATION}/"
+    )
+    STATICFILES_STORAGE = "bookwyrm.storage_backends.AzureStaticStorage"
+    # Azure Media settings
+    MEDIA_LOCATION = "images"
+    MEDIA_URL = (
+        f"{PROTOCOL}://{AZURE_CUSTOM_DOMAIN}/{AZURE_CONTAINER}/{MEDIA_LOCATION}/"
+    )
+    MEDIA_FULL_URL = MEDIA_URL
+    STATIC_FULL_URL = STATIC_URL
+    DEFAULT_FILE_STORAGE = "bookwyrm.storage_backends.AzureImagesStorage"
+    CSP_DEFAULT_SRC = ["'self'", AZURE_CUSTOM_DOMAIN] + CSP_ADDITIONAL_HOSTS
+    CSP_SCRIPT_SRC = ["'self'", AZURE_CUSTOM_DOMAIN] + CSP_ADDITIONAL_HOSTS
 else:
     STATIC_URL = "/static/"
     MEDIA_URL = "/images/"
@@ -377,6 +403,7 @@ CSP_INCLUDE_NONCE_IN = ["script-src"]
 OTEL_EXPORTER_OTLP_ENDPOINT = env("OTEL_EXPORTER_OTLP_ENDPOINT", None)
 OTEL_EXPORTER_OTLP_HEADERS = env("OTEL_EXPORTER_OTLP_HEADERS", None)
 OTEL_SERVICE_NAME = env("OTEL_SERVICE_NAME", None)
+OTEL_EXPORTER_CONSOLE = env.bool("OTEL_EXPORTER_CONSOLE", False)
 
 TWO_FACTOR_LOGIN_MAX_SECONDS = env.int("TWO_FACTOR_LOGIN_MAX_SECONDS", 60)
 TWO_FACTOR_LOGIN_VALIDITY_WINDOW = env.int("TWO_FACTOR_LOGIN_VALIDITY_WINDOW", 2)

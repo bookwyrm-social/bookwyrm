@@ -18,7 +18,11 @@ from django.views.decorators.http import require_POST
 from bookwyrm import book_search, forms, models
 from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.settings import PAGE_LENGTH
-from bookwyrm.views.helpers import is_api_request, maybe_redirect_local_path
+from bookwyrm.views.helpers import (
+    is_api_request,
+    maybe_redirect_local_path,
+    redirect_to_referer,
+)
 
 
 # pylint: disable=no-self-use
@@ -91,7 +95,7 @@ class List(View):
             book_list.group = None
             book_list.save(broadcast=False)
 
-        return redirect(book_list.local_path)
+        return redirect_to_referer(request, book_list.local_path)
 
 
 def get_list_suggestions(book_list, user, query=None, num_suggestions=5):
@@ -157,7 +161,7 @@ def save_list(request, list_id):
     """save a list"""
     book_list = get_object_or_404(models.List, id=list_id)
     request.user.saved_lists.add(book_list)
-    return redirect("list", list_id)
+    return redirect_to_referer(request, "list", list_id)
 
 
 @require_POST
@@ -166,7 +170,7 @@ def unsave_list(request, list_id):
     """unsave a list"""
     book_list = get_object_or_404(models.List, id=list_id)
     request.user.saved_lists.remove(book_list)
-    return redirect("list", list_id)
+    return redirect_to_referer(request, "list", list_id)
 
 
 @require_POST
@@ -179,7 +183,7 @@ def delete_list(request, list_id):
     book_list.raise_not_deletable(request.user)
 
     book_list.delete()
-    return redirect("lists")
+    return redirect("/list")
 
 
 @require_POST
@@ -236,7 +240,7 @@ def remove_book(request, list_id):
         item.delete()
         normalize_book_list_ordering(book_list.id, start=deleted_order)
 
-    return redirect("list", list_id)
+    return redirect_to_referer(request, "list", list_id)
 
 
 @require_POST
@@ -283,7 +287,7 @@ def set_book_position(request, list_item_id):
         list_item.order = int_position
         list_item.save()
 
-    return redirect("list", book_list.id)
+    return redirect_to_referer(request, book_list.local_path)
 
 
 @transaction.atomic

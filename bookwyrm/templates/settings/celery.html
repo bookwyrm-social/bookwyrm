@@ -116,6 +116,35 @@
 </div>
 {% endif %}
 
+<section class="block">
+    <div class="content"><h2>{% trans "Clear Queues" %}</h2></div>
+
+    <div class="content notification is-warning is-flex is-align-items-start">
+        <span class="icon icon-warning is-size-4 pr-3" aria-hidden="true"></span>
+        {% trans "Clearing queues can cause serious problems including data loss! Only play with this if you really know what you're doing. You must shut down the Celery worker before you do this." %}
+    </div>
+
+    <form action="{% url 'settings-celery' %}" method="post">
+        {% csrf_token %}
+
+        <div class="columns">
+            <div class="column is-3">
+                <div class="content"><h3>{{ form.queues.label_tag }}</h3></div>
+                {{ form.queues }}
+            </div>
+
+            <div class="column is-9">
+                <div class="content"><h3>{{ form.tasks.label_tag }}</h3></div>
+                {{ form.tasks }}
+            </div>
+        </div>
+
+        <div class="buttons is-right">
+            <button type="submit" class="button is-danger">{% trans "Clear Queues" %}</button>
+        </div>
+    </form>
+</section>
+
 {% if errors %}
 <div class="block content">
     <h2>{% trans "Errors" %}</h2>

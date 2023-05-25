@@ -24,7 +24,7 @@ class AnnualGoal(BookWyrmModel):
     )
 
     class Meta:
-        """unqiueness constraint"""
+        """uniqueness constraint"""
 
         unique_together = ("user", "year")
 

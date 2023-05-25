@@ -234,7 +234,7 @@ class StatusViews(TestCase):
         )
 
     def test_create_status_reply_with_mentions(self, *_):
-        """reply to a post with an @mention'ed user"""
+        """reply to a post with an @mention'd user"""
         view = views.CreateStatus.as_view()
         user = models.User.objects.create_user(
             "rat", "rat@rat.com", "password", local=True, localname="rat"
@@ -356,12 +356,12 @@ class StatusViews(TestCase):
         self.assertEqual(len(hashtags), 2)
         self.assertEqual(list(status.mention_hashtags.all()), list(hashtags))
 
-        hashtag_exising = models.Hashtag.objects.filter(name="#existing").first()
+        hashtag_existing = models.Hashtag.objects.filter(name="#existing").first()
         hashtag_new = models.Hashtag.objects.filter(name="#NewTag").first()
         self.assertEqual(
             status.content,
             "<p>this is an "
-            + f'<a href="{hashtag_exising.remote_id}" data-mention="hashtag">'
+            + f'<a href="{hashtag_existing.remote_id}" data-mention="hashtag">'
             + "#EXISTING</a> hashtag but all uppercase, this one is "
             + f'<a href="{hashtag_new.remote_id}" data-mention="hashtag">'
             + "#NewTag</a>.</p>",
@@ -454,6 +454,24 @@ http://www.fish.com/"""
         url = "https://pkm.one/#/page/The%20Book%20launched%20a%201000%20Note%20apps"
         self.assertEqual(
             views.status.format_links(url), f'<a href="{url}">{url[8:]}</a>'
+        )
+
+    def test_format_mentions_with_at_symbol_links(self, *_):
+        """A link with an @username shouldn't treat the username as a mention"""
+        content = "a link to https://example.com/user/@mouse"
+        mentions = views.status.find_mentions(self.local_user, content)
+        self.assertEqual(
+            views.status.format_mentions(content, mentions),
+            "a link to https://example.com/user/@mouse",
+        )
+
+    def test_format_hashtag_with_pound_symbol_links(self, *_):
+        """A link with an @username shouldn't treat the username as a mention"""
+        content = "a link to https://example.com/page#anchor"
+        hashtags = views.status.find_or_create_hashtags(content)
+        self.assertEqual(
+            views.status.format_hashtags(content, hashtags),
+            "a link to https://example.com/page#anchor",
         )
 
     def test_to_markdown(self, *_):

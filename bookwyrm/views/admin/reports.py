@@ -8,6 +8,7 @@ from django.utils.decorators import method_decorator
 from django.views import View
 
 from bookwyrm import forms, models
+from bookwyrm.views.helpers import redirect_to_referer
 from bookwyrm.settings import PAGE_LENGTH
 
 
@@ -28,14 +29,20 @@ class ReportsAdmin(View):
         """view current reports"""
         filters = {}
 
-        resolved = request.GET.get("resolved") == "true"
+        # we sometimes want to see all reports, regardless of resolution
+        if request.GET.get("resolved") == "all":
+            resolved = "all"
+        else:
+            resolved = request.GET.get("resolved") == "true"
+
         server = request.GET.get("server")
         if server:
             filters["user__federated_server__server_name"] = server
         username = request.GET.get("username")
         if username:
             filters["user__username__icontains"] = username
-        filters["resolved"] = resolved
+        if resolved != "all":
+            filters["resolved"] = resolved
 
         reports = models.Report.objects.filter(**filters)
         paginated = Paginator(reports, PAGE_LENGTH)
@@ -84,26 +91,26 @@ class ReportAdmin(View):
 
 @login_required
 @permission_required("bookwyrm.moderate_user")
-def suspend_user(_, user_id):
+def suspend_user(request, user_id):
     """mark an account as inactive"""
     user = get_object_or_404(models.User, id=user_id)
     user.is_active = False
     user.deactivation_reason = "moderator_suspension"
     # this isn't a full deletion, so we don't want to tell the world
     user.save(broadcast=False)
-    return redirect("settings-user", user.id)
+    return redirect_to_referer(request, "settings-user", user.id)
 
 
 @login_required
 @permission_required("bookwyrm.moderate_user")
-def unsuspend_user(_, user_id):
+def unsuspend_user(request, user_id):
     """mark an account as inactive"""
     user = get_object_or_404(models.User, id=user_id)
     user.is_active = True
     user.deactivation_reason = None
     # this isn't a full deletion, so we don't want to tell the world
     user.save(broadcast=False)
-    return redirect("settings-user", user.id)
+    return redirect_to_referer(request, "settings-user", user.id)
 
 
 @login_required
@@ -123,7 +130,7 @@ def moderator_delete_user(request, user_id):
     if form.is_valid() and moderator.check_password(form.cleaned_data["password"]):
         user.deactivation_reason = "moderator_deletion"
         user.delete()
-        return redirect("settings-user", user.id)
+        return redirect_to_referer(request, "settings-user", user.id)
 
     form.errors["password"] = ["Invalid password"]
 
