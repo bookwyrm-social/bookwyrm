@@ -106,7 +106,9 @@ class ConfirmEmailCode(View):
 
         # look up the user associated with this code
         try:
-            user = models.User.objects.get(confirmation_code=code, allow_reactivation=True)
+            user = models.User.objects.get(
+                confirmation_code=code, allow_reactivation=True
+            )
         except models.User.DoesNotExist:
             return TemplateResponse(
                 request, "confirm_email/confirm_email.html", {"valid": False}
