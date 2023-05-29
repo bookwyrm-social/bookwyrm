@@ -36,9 +36,13 @@ class RssFeed(Feed):
 
     def items(self, obj):
         """the user's activity feed"""
-        return obj.status_set.select_subclasses().filter(
-            privacy__in=["public", "unlisted"],
-        ).order_by("-published_date")[:10]
+        return (
+            obj.status_set.select_subclasses()
+            .filter(
+                privacy__in=["public", "unlisted"],
+            )
+            .order_by("-published_date")[:10]
+        )
 
     def item_link(self, item):
         """link to the status"""
