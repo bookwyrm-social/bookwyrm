@@ -44,6 +44,10 @@ class RssFeed(Feed):
         """link to the status"""
         return item.local_path
 
+    def item_pubdate(self, item):
+        """publication date of the item"""
+        return item.published_date
+
 
 class RssReviewsOnlyFeed(Feed):
     """serialize user's reviews in rss feed"""
@@ -81,6 +85,10 @@ class RssReviewsOnlyFeed(Feed):
     def item_link(self, item):
         """link to the status"""
         return item.local_path
+
+    def item_pubdate(self, item):
+        """publication date of the item"""
+        return item.published_date
 
 
 class RssQuotesOnlyFeed(Feed):
@@ -120,6 +128,10 @@ class RssQuotesOnlyFeed(Feed):
         """link to the status"""
         return item.local_path
 
+    def item_pubdate(self, item):
+        """publication date of the item"""
+        return item.published_date
+
 
 class RssCommentsOnlyFeed(Feed):
     """serialize user's quotes in rss feed"""
@@ -157,3 +169,8 @@ class RssCommentsOnlyFeed(Feed):
     def item_link(self, item):
         """link to the status"""
         return item.local_path
+        
+    def item_pubdate(self, item):
+        """publication date of the item"""
+        return item.published_date
+
