@@ -1,19 +1,19 @@
 {% extends 'preferences/layout.html' %}
 {% load i18n %}
 
-{% block title %}{% trans "Books Export" %}{% endblock %}
+{% block title %}{% trans "User Export" %}{% endblock %}
 
 {% block header %}
-{% trans "Books Export" %}
+{% trans "User Export" %}
 {% endblock %}
 
 {% block panel %}
 <div class="block content">
     <p class="notification">
-        {% trans "Your CSV export file will include all the books on your shelves, books you have reviewed, and books with reading activity. <br/>Use this to import into a service like Goodreads." %}
+        {% trans "Your JSON export file will include all user data for import into another Bookwyrm server" %}
     </p>
     <p>
-        <form name="export" method="POST" href="{% url 'prefs-export' %}">
+        <form name="export" method="POST" href="{% url 'prefs-export-json' %}">
             {% csrf_token %}
             <button type="submit" class="button">
                 <span class="icon icon-download" aria-hidden="true"></span>

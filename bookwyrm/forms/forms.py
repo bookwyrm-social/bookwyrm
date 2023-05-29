@@ -24,6 +24,9 @@ class FeedStatusTypesForm(CustomForm):
 class ImportForm(forms.Form):
     csv_file = forms.FileField()
 
+class ImportUserForm(forms.Form):
+    json_file = forms.FileField()
+
 
 class ShelfForm(CustomForm):
     class Meta:

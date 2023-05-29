@@ -127,3 +127,19 @@ def get_average_import_time() -> float:
     if recent_avg:
         return recent_avg.total_seconds()
     return None
+
+
+# TODO: UserImport
+
+
+# pylint: disable= no-self-use
+@method_decorator(login_required, name="dispatch")
+class UserImport(View):
+    """import user view"""
+
+    def get(self, request, invalid=False):
+        """load user import page"""
+
+        data = { "import_form": forms.ImportUserForm(), }
+        
+        return TemplateResponse(request, "import/import_user.html", data)
