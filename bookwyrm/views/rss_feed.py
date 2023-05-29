@@ -169,8 +169,7 @@ class RssCommentsOnlyFeed(Feed):
     def item_link(self, item):
         """link to the status"""
         return item.local_path
-        
+
     def item_pubdate(self, item):
         """publication date of the item"""
         return item.published_date
-
