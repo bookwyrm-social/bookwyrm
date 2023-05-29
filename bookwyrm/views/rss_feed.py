@@ -38,7 +38,7 @@ class RssFeed(Feed):
         """the user's activity feed"""
         return obj.status_set.select_subclasses().filter(
             privacy__in=["public", "unlisted"],
-        )[:10]
+        ).order_by("-published_date")[:10]
 
     def item_link(self, item):
         """link to the status"""
@@ -80,7 +80,7 @@ class RssReviewsOnlyFeed(Feed):
         return Review.objects.filter(
             user=obj,
             privacy__in=["public", "unlisted"],
-        )[:10]
+        ).order_by("-published_date")[:10]
 
     def item_link(self, item):
         """link to the status"""
@@ -122,7 +122,7 @@ class RssQuotesOnlyFeed(Feed):
         return Quotation.objects.filter(
             user=obj,
             privacy__in=["public", "unlisted"],
-        )[:10]
+        ).order_by("-published_date")[:10]
 
     def item_link(self, item):
         """link to the status"""
@@ -164,7 +164,7 @@ class RssCommentsOnlyFeed(Feed):
         return Comment.objects.filter(
             user=obj,
             privacy__in=["public", "unlisted"],
-        )[:10]
+        ).order_by("-published_date")[:10]
 
     def item_link(self, item):
         """link to the status"""
