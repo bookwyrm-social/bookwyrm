@@ -8,7 +8,7 @@ from django.core.validators import URLValidator
 from django.core.exceptions import ValidationError
 from django.db.models import Q
 from django.http import HttpResponse, HttpResponseBadRequest, Http404
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404
 from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
@@ -17,6 +17,7 @@ from django.views.decorators.http import require_POST
 
 from markdown import markdown
 from bookwyrm import forms, models
+from bookwyrm.models.report import DELETE_ITEM
 from bookwyrm.utils import regex, sanitizer
 from .helpers import handle_remote_webfinger, is_api_request
 from .helpers import load_date_in_user_tz_as_utc, redirect_to_referer
@@ -167,7 +168,7 @@ def format_hashtags(content, hashtags):
 class DeleteStatus(View):
     """tombstone that bad boy"""
 
-    def post(self, request, status_id):
+    def post(self, request, status_id, report_id=None):
         """delete and tombstone a status"""
         status = get_object_or_404(models.Status, id=status_id)
 
@@ -176,7 +177,11 @@ class DeleteStatus(View):
 
         # perform deletion
         status.delete()
-        return redirect("/")
+        # record deletion if it's related to a report
+        if report_id:
+            models.Report.record_action(report_id, DELETE_ITEM, request.user)
+
+        return redirect_to_referer(request, "/")
 
 
 @login_required

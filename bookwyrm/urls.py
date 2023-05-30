@@ -141,7 +141,7 @@ urlpatterns = [
         name="settings-users",
     ),
     re_path(
-        r"^settings/users/(?P<user>\d+)/(?P<report_id>\d+)??$",
+        r"^settings/users/(?P<user>\d+)/(?P<report_id>\d+)?$",
         views.UserAdmin.as_view(),
         name="settings-user",
     ),
@@ -633,7 +633,7 @@ urlpatterns = [
         name="create-status",
     ),
     re_path(
-        r"^delete-status/(?P<status_id>\d+)/?$",
+        r"^delete-status/(?P<status_id>\d+)/?(?P<report_id>\d+)?$",
         views.DeleteStatus.as_view(),
         name="delete-status",
     ),
