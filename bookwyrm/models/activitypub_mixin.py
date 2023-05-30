@@ -529,7 +529,7 @@ async def async_broadcast(recipients: List[str], sender, data: str):
 
 
 async def sign_and_send(
-    session: aiohttp.ClientSession, sender, data: str, destination: str
+    session: aiohttp.ClientSession, sender, data: str, destination: str, **kwargs
 ):
     """Sign the messages and send them in an asynchronous bundle"""
     now = http_date()
@@ -539,11 +539,19 @@ async def sign_and_send(
         raise ValueError("No private key found for sender")
 
     digest = make_digest(data)
+    signature = make_signature(
+        "post",
+        sender,
+        destination,
+        now,
+        digest=digest,
+        use_legacy_key=kwargs.get("use_legacy_key"),
+    )
 
     headers = {
         "Date": now,
         "Digest": digest,
-        "Signature": make_signature("post", sender, destination, now, digest),
+        "Signature": signature,
         "Content-Type": "application/activity+json; charset=utf-8",
         "User-Agent": USER_AGENT,
     }
@@ -554,6 +562,14 @@ async def sign_and_send(
                 logger.exception(
                     "Failed to send broadcast to %s: %s", destination, response.reason
                 )
+                if kwargs.get("use_legacy_key") is not True:
+                    logger.info("Trying again with legacy keyId header value")
+                    asyncio.ensure_future(
+                        sign_and_send(
+                            session, sender, data, destination, use_legacy_key=True
+                        )
+                    )
+
             return response
     except asyncio.TimeoutError:
         logger.info("Connection timed out for url: %s", destination)
