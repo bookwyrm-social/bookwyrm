@@ -3,7 +3,6 @@ import json
 import re
 import logging
 
-from urllib.parse import urldefrag
 import requests
 
 from django.http import HttpResponse, Http404
@@ -130,14 +129,17 @@ def has_valid_signature(request, activity):
     """verify incoming signature"""
     try:
         signature = Signature.parse(request)
-
-        key_actor = urldefrag(signature.key_id).url
-        if key_actor != activity.get("actor"):
-            raise ValueError("Wrong actor created signature.")
-
-        remote_user = activitypub.resolve_remote_id(key_actor, model=models.User)
+        remote_user = activitypub.resolve_remote_id(
+            activity.get("actor"), model=models.User
+        )
         if not remote_user:
             return False
+
+        if signature.key_id != remote_user.key_pair.remote_id:
+            if (
+                signature.key_id != f"{remote_user.remote_id}#main-key"
+            ):  # legacy Bookwyrm
+                raise ValueError("Wrong actor created signature.")
 
         try:
             signature.verify(remote_user.key_pair.public_key, request)

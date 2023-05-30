@@ -61,7 +61,7 @@
                 <dd>
                     {{ report_count|intcomma }}
                     {% if report_count > 0 %}
-                    <a href="{% url 'settings-reports' %}?username={{ user.username }}">
+                    <a href="{% url 'settings-reports' %}?username={{ user.username }}&resolved=all">
                         {% trans "(View reports)" %}
                     </a>
                     {% endif %}
