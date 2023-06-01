@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-05-30 17:48+0000\n"
-"PO-Revision-Date: 2023-05-30 18:49\n"
+"PO-Revision-Date: 2023-06-01 21:15\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Hebrew\n"
 "Language: he\n"
@@ -563,7 +563,7 @@ msgstr "הועתק!"
 
 #: bookwyrm/templates/annual_summary/layout.html:77
 msgid "Sharing status: <strong>public with key</strong>"
-msgstr ""
+msgstr "סטטוס שיתוף: <strong>פומבי עם מפתח</strong>"
 
 #: bookwyrm/templates/annual_summary/layout.html:78
 msgid "The page can be seen by anyone with the complete address."
@@ -575,7 +575,7 @@ msgstr "הפיכת דף לפרטי"
 
 #: bookwyrm/templates/annual_summary/layout.html:89
 msgid "Sharing status: <strong>private</strong>"
-msgstr ""
+msgstr "סטטוס שיתוף: <strong>פרטי</strong>"
 
 #: bookwyrm/templates/annual_summary/layout.html:90
 msgid "The page is private, only you can see it."
@@ -618,7 +618,7 @@ msgid "(No page data was available for %(no_page_number)s book)"
 msgid_plural "(No page data was available for %(no_page_number)s books)"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
+msgstr[2] "(לא נמצא מידע אודות עמודים עבור %(no_page_number)s ספרים)"
 msgstr[3] ""
 
 #: bookwyrm/templates/annual_summary/layout.html:150
@@ -665,7 +665,7 @@ msgid_plural "%(display_name)s left %(ratings_total)s ratings, <br />their avera
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
-msgstr[3] ""
+msgstr[3] "%(display_name)s כתב.ה %(ratings_total)s ביקורות, <br />הדירוג הממוצע שלו.ה הוא %(rating_average)s"
 
 #: bookwyrm/templates/annual_summary/layout.html:240
 msgid "Their best rated review"
@@ -674,12 +674,12 @@ msgstr "הביקורת בדירוג הכי גבוה שלו.ה"
 #: bookwyrm/templates/annual_summary/layout.html:253
 #, python-format
 msgid "Their rating: <strong>%(rating)s</strong>"
-msgstr ""
+msgstr "הדירוג שלהם: <strong>%(rating)s</strong>"
 
 #: bookwyrm/templates/annual_summary/layout.html:270
 #, python-format
 msgid "All the books %(display_name)s read in %(year)s"
-msgstr ""
+msgstr "כל הספרים ש-%(display_name)s קרא.ה ב-%(year)s"
 
 #: bookwyrm/templates/author/author.html:19
 #: bookwyrm/templates/author/author.html:20
@@ -1093,7 +1093,7 @@ msgstr "הוספת ספר"
 
 #: bookwyrm/templates/book/edit/edit_book.html:43
 msgid "Failed to save book, see errors below for more information."
-msgstr ""
+msgstr "שמירת ספר נכשלה, ראו את השגיאות מטה למידע נוסף."
 
 #: bookwyrm/templates/book/edit/edit_book.html:70
 msgid "Confirm Book Info"
@@ -1747,7 +1747,7 @@ msgstr "היי לכם"
 #: bookwyrm/templates/email/html_layout.html:21
 #, python-format
 msgid "BookWyrm hosted on <a style=\"color: #3273dc;\" href=\"https://%(domain)s\">%(site_name)s</a>"
-msgstr ""
+msgstr "BookWyrm מאוחסן ב-<a style=\"color: #3273dc;\" href=\"https://%(domain)s\">%(site_name)s</a>"
 
 #: bookwyrm/templates/email/html_layout.html:23
 msgid "Email preference"
@@ -2608,11 +2608,11 @@ msgstr "בעמוד זה מופיעים הספרים שלך מסודרים לפי
 #: bookwyrm/templates/guided_tour/user_books.html:11
 #: bookwyrm/templates/user/books_header.html:4
 msgid "Your books"
-msgstr ""
+msgstr "הספרים שלך"
 
 #: bookwyrm/templates/guided_tour/user_books.html:31
 msgid "<strong>To Read</strong>, <strong>Currently Reading</strong>, <strong>Read</strong>, and <strong>Stopped Reading</strong> are default shelves. When you change the reading status of a book it will automatically be moved to the matching shelf. A book can only be on one default shelf at a time."
-msgstr ""
+msgstr "<strong>לקרוא</strong>, <strong>בקריאה</strong>, <strong>נקראו</strong> ו<strong>קריאה הופסקה</strong> הם מדפי ברירת מחדל. כשמשנים את סטטוס הקריאה של הספר הוא יועבר למדף המתאים באופן אוטומטי. ספר יכול להיות במדף ברירת מחדל אחד בלבד בכל רגע נתון."
 
 #: bookwyrm/templates/guided_tour/user_books.html:32
 msgid "Reading status shelves"
@@ -2624,15 +2624,15 @@ msgstr ""
 
 #: bookwyrm/templates/guided_tour/user_books.html:56
 msgid "Adding custom shelves."
-msgstr ""
+msgstr "מוסיף מדפים בהתאמה אישית."
 
 #: bookwyrm/templates/guided_tour/user_books.html:78
 msgid "If you have an export file from another service like Goodreads or LibraryThing, you can import it here."
-msgstr ""
+msgstr "אם יש לך קובץ ייצוא משירות אחר כמו Goodreads או LibraryThing, ניתן לייבא אותו כאן."
 
 #: bookwyrm/templates/guided_tour/user_books.html:79
 msgid "Import from another service"
-msgstr ""
+msgstr "ייבוא משירות אחר"
 
 #: bookwyrm/templates/guided_tour/user_books.html:101
 msgid "Now that we've explored book shelves, let's take a look at a related concept: book lists!"
@@ -2867,11 +2867,11 @@ msgstr "ייבואים"
 
 #: bookwyrm/templates/import/import_status.html:39
 msgid "Import started:"
-msgstr ""
+msgstr "ייבוא החל:"
 
 #: bookwyrm/templates/import/import_status.html:48
 msgid "In progress"
-msgstr ""
+msgstr "בתהליך"
 
 #: bookwyrm/templates/import/import_status.html:50
 msgid "Refresh"
@@ -2889,7 +2889,7 @@ msgid_plural "%(display_counter)s items need manual approval."
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
-msgstr[3] ""
+msgstr[3] "%(display_counter)s פריטים דורשים אישור ידני."
 
 #: bookwyrm/templates/import/import_status.html:83
 #: bookwyrm/templates/import/manual_review.html:8
@@ -2954,11 +2954,11 @@ msgstr ""
 
 #: bookwyrm/templates/import/import_status.html:150
 msgid "No items currently need review"
-msgstr ""
+msgstr "אין פריטים הממתינים לסקירה"
 
 #: bookwyrm/templates/import/import_status.html:186
 msgid "View imported review"
-msgstr ""
+msgstr "צפו בביקורת מיובאת"
 
 #: bookwyrm/templates/import/import_status.html:200
 msgid "Imported"
@@ -2974,7 +2974,7 @@ msgstr "נסה שנית"
 
 #: bookwyrm/templates/import/import_status.html:237
 msgid "This import is in an old format that is no longer supported. If you would like to troubleshoot missing items from this import, click the button below to update the import format."
-msgstr ""
+msgstr "הייבוא הזה הוא בפורמט ישן שלא נתמך עוד. אם תרצו לתקן פריטים חסרים מייבוא זה, לחצו על הלחצן מטה כדי לעדכן את פורמט הייבוא."
 
 #: bookwyrm/templates/import/import_status.html:239
 msgid "Update import"
@@ -2987,7 +2987,7 @@ msgstr "פתרון בעיות ייבוא"
 
 #: bookwyrm/templates/import/manual_review.html:21
 msgid "Approving a suggestion will permanently add the suggested book to your shelves and associate your reading dates, reviews, and ratings with that book."
-msgstr ""
+msgstr "אישור הצעה יוסיף את הספר המוצע אוטומטית למדפים שלך ויקשר אליו את תאריכי הקריאה, הביקורות והדירוגים שלך."
 
 #: bookwyrm/templates/import/manual_review.html:58
 #: bookwyrm/templates/lists/curate.html:71
@@ -3014,7 +3014,7 @@ msgstr "ניסיון מחודש לייבא יכול לתקן פריטים חסר
 
 #: bookwyrm/templates/import/troubleshoot.html:23
 msgid "The book has been added to the instance since this import"
-msgstr ""
+msgstr "הספר נוסף לשרת זה מאז הייבוא"
 
 #: bookwyrm/templates/import/troubleshoot.html:24
 msgid "A transient error or timeout caused the external data source to be unavailable."
@@ -3755,7 +3755,7 @@ msgstr ""
 
 #: bookwyrm/templates/notifications/notifications_page.html:19
 msgid "Delete notifications"
-msgstr ""
+msgstr "מחיקת התראות"
 
 #: bookwyrm/templates/notifications/notifications_page.html:31
 msgid "All"
@@ -3801,12 +3801,12 @@ msgstr ""
 
 #: bookwyrm/templates/ostatus/error.html:47
 msgid "Check you have the correct username before trying again."
-msgstr ""
+msgstr "ודא.י ששם המשתמש נכון לפני שתנסה.י שוב."
 
 #: bookwyrm/templates/ostatus/error.html:51
 #, python-format
 msgid "You have blocked <strong>%(account)s</strong>"
-msgstr ""
+msgstr "חסמת את <strong>%(account)s</strong>"
 
 #: bookwyrm/templates/ostatus/error.html:55
 #, python-format
@@ -3826,7 +3826,7 @@ msgstr ""
 #: bookwyrm/templates/ostatus/remote_follow.html:6
 #, python-format
 msgid "Follow %(username)s on the fediverse"
-msgstr ""
+msgstr "עקוב אחרי %(username)s בפדיברס"
 
 #: bookwyrm/templates/ostatus/remote_follow.html:33
 #, python-format
@@ -3876,7 +3876,7 @@ msgstr "בואו נתחבר קודם..."
 #: bookwyrm/templates/ostatus/subscribe.html:51
 #, python-format
 msgid "Follow %(username)s"
-msgstr ""
+msgstr "עקוב אחרי @%(username)s"
 
 #: bookwyrm/templates/ostatus/success.html:28
 #, python-format
