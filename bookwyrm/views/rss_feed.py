@@ -36,13 +36,21 @@ class RssFeed(Feed):
 
     def items(self, obj):
         """the user's activity feed"""
-        return obj.status_set.select_subclasses().filter(
-            privacy__in=["public", "unlisted"],
-        )[:10]
+        return (
+            obj.status_set.select_subclasses()
+            .filter(
+                privacy__in=["public", "unlisted"],
+            )
+            .order_by("-published_date")[:10]
+        )
 
     def item_link(self, item):
         """link to the status"""
         return item.local_path
+
+    def item_pubdate(self, item):
+        """publication date of the item"""
+        return item.published_date
 
 
 class RssReviewsOnlyFeed(Feed):
@@ -76,11 +84,15 @@ class RssReviewsOnlyFeed(Feed):
         return Review.objects.filter(
             user=obj,
             privacy__in=["public", "unlisted"],
-        )[:10]
+        ).order_by("-published_date")[:10]
 
     def item_link(self, item):
         """link to the status"""
         return item.local_path
+
+    def item_pubdate(self, item):
+        """publication date of the item"""
+        return item.published_date
 
 
 class RssQuotesOnlyFeed(Feed):
@@ -114,11 +126,15 @@ class RssQuotesOnlyFeed(Feed):
         return Quotation.objects.filter(
             user=obj,
             privacy__in=["public", "unlisted"],
-        )[:10]
+        ).order_by("-published_date")[:10]
 
     def item_link(self, item):
         """link to the status"""
         return item.local_path
+
+    def item_pubdate(self, item):
+        """publication date of the item"""
+        return item.published_date
 
 
 class RssCommentsOnlyFeed(Feed):
@@ -152,8 +168,12 @@ class RssCommentsOnlyFeed(Feed):
         return Comment.objects.filter(
             user=obj,
             privacy__in=["public", "unlisted"],
-        )[:10]
+        ).order_by("-published_date")[:10]
 
     def item_link(self, item):
         """link to the status"""
         return item.local_path
+
+    def item_pubdate(self, item):
+        """publication date of the item"""
+        return item.published_date

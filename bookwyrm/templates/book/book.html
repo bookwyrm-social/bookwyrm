@@ -190,13 +190,15 @@
                     <meta itemprop="bestRating" content="5">
                     <meta itemprop="reviewCount" content="{{ review_count }}">
 
-                    {% include 'snippets/stars.html' with rating=rating %}
+                    <span>
+                        {% include 'snippets/stars.html' with rating=rating %}
 
-                    {% blocktrans count counter=review_count trimmed %}
-                        ({{ review_count }} review)
-                    {% plural %}
-                        ({{ review_count }} reviews)
-                    {% endblocktrans %}
+                        {% blocktrans count counter=review_count trimmed %}
+                            ({{ review_count }} review)
+                        {% plural %}
+                            ({{ review_count }} reviews)
+                        {% endblocktrans %}
+                    </span>
                 </div>
 
                 {% with full=book|book_description itemprop='abstract' %}
@@ -256,7 +258,7 @@
                 {% endif %}
                 {% for shelf in other_edition_shelves %}
                 <p>
-                {% blocktrans with book_path=shelf.book.local_path shelf_path=shelf.shelf.local_path shelf_name=shelf.shelf.name %}A <a href="{{ book_path }}">different edition</a> of this book is on your <a href="{{ shelf_path }}">{{ shelf_name }}</a> shelf.{% endblocktrans %}
+                {% blocktrans with book_path=shelf.book.local_path shelf_path=shelf.shelf.local_path shelf_name=shelf.shelf|translate_shelf_name %}A <a href="{{ book_path }}">different edition</a> of this book is on your <a href="{{ shelf_path }}">{{ shelf_name }}</a> shelf.{% endblocktrans %}
                     {% include 'snippets/switch_edition_button.html' with edition=book %}
                 </p>
                 {% endfor %}
