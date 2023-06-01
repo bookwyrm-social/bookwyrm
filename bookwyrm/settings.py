@@ -417,3 +417,6 @@ if HTTP_X_FORWARDED_PROTO:
 # Do not change this setting unless you already have an existing
 # user with the same username - in which case you should change it!
 INSTANCE_ACTOR_USERNAME = "bookwyrm.instance.actor"
+
+BROADCAST_FIRST_BATCH_SIZE = env.int("BROADCAST_FIRST_BATCH_SIZE", 10)
+BROADCAST_FIRST_BATCH_DELAY = env.int("BROADCAST_FIRST_BATCH_DELAY", 15)
