@@ -190,13 +190,15 @@
                     <meta itemprop="bestRating" content="5">
                     <meta itemprop="reviewCount" content="{{ review_count }}">
 
-                    {% include 'snippets/stars.html' with rating=rating %}
+                    <span>
+                        {% include 'snippets/stars.html' with rating=rating %}
 
-                    {% blocktrans count counter=review_count trimmed %}
-                        ({{ review_count }} review)
-                    {% plural %}
-                        ({{ review_count }} reviews)
-                    {% endblocktrans %}
+                        {% blocktrans count counter=review_count trimmed %}
+                            ({{ review_count }} review)
+                        {% plural %}
+                            ({{ review_count }} reviews)
+                        {% endblocktrans %}
+                    </span>
                 </div>
 
                 {% with full=book|book_description itemprop='abstract' %}

@@ -162,7 +162,9 @@ class User(TestCase):
             json={"software": {"name": "hi", "version": "2"}},
         )
 
-        server = models.user.get_or_create_remote_server(DOMAIN)
+        server = models.user.get_or_create_remote_server(
+            DOMAIN, allow_external_connections=True
+        )
         self.assertEqual(server.server_name, DOMAIN)
         self.assertEqual(server.application_type, "hi")
         self.assertEqual(server.application_version, "2")
@@ -173,7 +175,9 @@ class User(TestCase):
             responses.GET, f"https://{DOMAIN}/.well-known/nodeinfo", status=404
         )
 
-        server = models.user.get_or_create_remote_server(DOMAIN)
+        server = models.user.get_or_create_remote_server(
+            DOMAIN, allow_external_connections=True
+        )
         self.assertEqual(server.server_name, DOMAIN)
         self.assertIsNone(server.application_type)
         self.assertIsNone(server.application_version)
@@ -187,7 +191,9 @@ class User(TestCase):
         )
         responses.add(responses.GET, "http://www.example.com", status=404)
 
-        server = models.user.get_or_create_remote_server(DOMAIN)
+        server = models.user.get_or_create_remote_server(
+            DOMAIN, allow_external_connections=True
+        )
         self.assertEqual(server.server_name, DOMAIN)
         self.assertIsNone(server.application_type)
         self.assertIsNone(server.application_version)
@@ -201,7 +207,9 @@ class User(TestCase):
         )
         responses.add(responses.GET, "http://www.example.com", json={"fish": "salmon"})
 
-        server = models.user.get_or_create_remote_server(DOMAIN)
+        server = models.user.get_or_create_remote_server(
+            DOMAIN, allow_external_connections=True
+        )
         self.assertEqual(server.server_name, DOMAIN)
         self.assertIsNone(server.application_type)
         self.assertIsNone(server.application_version)
