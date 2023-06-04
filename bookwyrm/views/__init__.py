@@ -36,7 +36,7 @@ from .admin.user_admin import UserAdmin, UserAdminList, ActivateUserAdmin
 # user preferences
 from .preferences.change_password import ChangePassword
 from .preferences.edit_user import EditUser
-from .preferences.export import Export, ExportJson
+from .preferences.export import Export, ExportUser
 from .preferences.delete_user import DeleteUser, DeactivateUser, ReactivateUser
 from .preferences.block import Block, unblock
 from .preferences.two_factor_auth import (

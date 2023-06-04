@@ -396,7 +396,7 @@ urlpatterns = [
     re_path(r"^search/?$", views.Search.as_view(), name="search"),
     # imports
     re_path(r"^import/?$", views.Import.as_view(), name="import"),
-    re_path(r"^json-import/?$", views.UserImport.as_view(), name="user-import"),
+    re_path(r"^user-import/?$", views.UserImport.as_view(), name="user-import"),
     re_path(
         r"^import/(?P<job_id>\d+)/?$",
         views.ImportStatus.as_view(),
@@ -594,7 +594,11 @@ urlpatterns = [
         name="prompt-2fa",
     ),
     re_path(r"^preferences/export/?$", views.Export.as_view(), name="prefs-export"),
-    re_path(r"^preferences/json-export/?$", views.ExportJson.as_view(), name="prefs-export-json"),
+    re_path(
+        r"^preferences/user-export/?$",
+        views.ExportUser.as_view(),
+        name="prefs-user-export",
+    ),
     re_path(r"^preferences/delete/?$", views.DeleteUser.as_view(), name="prefs-delete"),
     re_path(
         r"^preferences/deactivate/?$",

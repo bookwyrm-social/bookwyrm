@@ -43,7 +43,7 @@
                 <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Export Books" %}</a>
             </li>
             <li>
-                {% url 'prefs-export-json' as url %}
+                {% url 'prefs-user-export' as url %}
                 <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Export User" %}</a>
             </li>
         </ul>

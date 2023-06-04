@@ -88,9 +88,10 @@ class Export(View):
             },
         )
 
+
 # pylint: disable=no-self-use
 @method_decorator(login_required, name="dispatch")
-class ExportJson(View):
+class ExportUser(View):
     """Let users export user data to import into another Bookwyrm instance"""
 
     def get(self, request):
@@ -103,7 +104,7 @@ class ExportJson(View):
         # user
         s_user = {}
         vals = [
-            "name", 
+            "name",
             "summary",
             "manually_approves_followers",
             "hide_follows",
@@ -123,109 +124,92 @@ class ExportJson(View):
         goals_list = []
         try:
             for goal in reading_goals:
-                goals_list.append({"goal": goal.goal, "year": goal.year, "privacy": goal.privacy})
-        except Exception: 
+                goals_list.append(
+                    {"goal": goal.goal, "year": goal.year, "privacy": goal.privacy}
+                )
+        except Exception:
             pass
         serialized_goals = json.dumps(goals_list)
 
-        # read-throughs
+        # read-throughs TODO!
         try:
-            readthroughs = models.ReadThrough.objects.filter(user=request.user).distinct()
-            s_readthroughs = json.loads(serializers.serialize('json', readthroughs.all()))
+            readthroughs = models.ReadThrough.objects.filter(
+                user=request.user
+            ).distinct()
+            s_readthroughs = json.loads(
+                serializers.serialize("json", readthroughs.all())
+            )
             serialized_readthroughs = json.dumps(s_readthroughs["fields"])
 
         except Exception as e:
             serialized_readthroughs = []
 
         # books
-        books = models.Edition.viewer_aware_objects(request.user)
-        editions_for_export = books.filter(
-            Q(shelves__user=request.user) |
-            Q(readthrough__user=request.user) |
-            Q(review__user=request.user)    
+        all_books = models.Edition.viewer_aware_objects(request.user)
+        editions = all_books.filter(
+            Q(shelves__user=request.user)
+            | Q(readthrough__user=request.user)
+            | Q(review__user=request.user)
         ).distinct()
-        eds = json.loads(serializers.serialize('json', editions_for_export.all()))
-        editions = self.get_fields_for_each(eds)
-        books_for_export = models.Book.objects.filter(id__in=editions_for_export).distinct()
-        bks = json.loads(serializers.serialize('json', books_for_export.all()))
-        books = self.get_fields_for_each(bks)
+        books = models.Book.objects.filter(id__in=editions).distinct()
 
-        final_books =[]
+        final_books = []
 
-        for book in books:
-            # editions
-            for edition in editions:
-                if book["pk"] == edition["pk"]:
-                    book.update(edition)
+        for b in books:
+            # books - TODO: probably should serialize books and editions together
+            book = {"book": serializers.serialize("json", [b])}
+            edition = (e for e in editions if b.id == e.id)
+            book["edition"] = serializers.serialize("json", [next(edition)])
             # authors
-            b_authors = book["authors"]
-            authors = models.Author.objects.filter(id__in=b_authors)
-            serialized_authors = json.loads(serializers.serialize("json", authors.all()))
-            author_fields = []
-            for author in serialized_authors:
-                author_fields.append(author["fields"])
-            book["authors"] = []
-            book["extra"] = {}
-            book["extra"]["authors"] = author_fields
-
-            # shelves 
-            shelf_books = models.ShelfBook.objects.filter(user=request.user, book_id=book["pk"]).distinct()
-            serialized_shelf_books = json.loads(serializers.serialize("json", shelf_books.all()))
+            book["authors"] = serializers.serialize("json", b.authors.all())
+            # readthroughs
+            readthroughs = models.ReadThrough.objects.filter(
+                user=request.user, book=b
+            ).distinct()
+            book["readthroughs"] = serializers.serialize("json", readthroughs.all())
+            # shelves
+            shelf_books = models.ShelfBook.objects.filter(
+                user=request.user, book=b
+            ).distinct()
             shelves_from_books = models.Shelf.objects.filter(shelfbook__in=shelf_books)
-            serialized_shelves_from_books = json.loads(serializers.serialize("json", shelves_from_books.all()))
-            
-            shelf_book_list = []
-            for b in serialized_shelf_books:
-                shelf_book = b["fields"]
-                for s in serialized_shelves_from_books:
-                    if s["pk"] == shelf_book["shelf"]:
-                        shelf_book["shelf"] = s["fields"]
-                
-                shelf_book_list.append(shelf_book)
-            book["extra"]["shelf_books"] = shelf_book_list
-
+            book["shelves"] = serializers.serialize(
+                "json", {*shelves_from_books.all(), *shelf_books.all()}
+            )
             # book lists
-            list_items = models.ListItem.objects.filter(user=request.user, book_id=book["pk"]).distinct()
-            serialized_items = json.loads(serializers.serialize("json", list_items.all()))
+            list_items = models.ListItem.objects.filter(
+                user=request.user, book=b
+            ).distinct()
             book_lists = models.List.objects.filter(id__in=list_items).distinct()
-            serialized_lists = json.loads(serializers.serialize("json", book_lists.all()))
-            booklist_items = []
-            for i in serialized_items:
-                item = i["fields"]
-                for l in serialized_lists:
-                    if item["book_list"] == l["pk"]:
-                        item["book_list"] = l["fields"]
-                booklist_items.append(item)
-            book["extra"]["list_items"] = booklist_items
-
+            book["lists"] = serializers.serialize(
+                "json", {*book_lists.all(), *list_items.all()}
+            )
             # reviews
-            reviews = models.Review.objects.filter(user=request.user, book_id=book["pk"]).distinct()
-            serialized_reviews = json.loads(serializers.serialize("json", reviews.all()))
-            book_reviews = []
-            for r in serialized_reviews:
-                status = models.Status.objects.get(id=r["pk"])
-                serialized_status = json.loads(serializers.serialize("json", [status]))
-                review = r["fields"]
-                detail = serialized_status[0]["fields"]
-                review.update(detail)
-                book_reviews.append(review)
-            book["extra"]["reviews"] = book_reviews
-
+            reviews = models.Review.objects.filter(user=request.user, book=b).distinct()
+            statuses = models.Status.objects.filter(id__in=reviews).distinct()
+            book["reviews"] = serializers.serialize(
+                "json", {*reviews.all(), *statuses.all()}
+            )
             # append everything
             final_books.append(book)
         serialized_books = json.dumps(final_books)
 
         # saved book lists
-        saved_lists = models.List.objects.filter(id__in=request.user.saved_lists.all()).distinct()
+        saved_lists = models.List.objects.filter(
+            id__in=request.user.saved_lists.all()
+        ).distinct()
         serialized_saved_lists = json.dumps([l.remote_id for l in saved_lists])
 
         # follows
-        follows = models.UserFollows.objects.filter(user_subject=request.user).distinct()
-        following = models.User.objects.filter(userfollows_user_object__in=follows).distinct()
+        follows = models.UserFollows.objects.filter(
+            user_subject=request.user
+        ).distinct()
+        following = models.User.objects.filter(
+            userfollows_user_object__in=follows
+        ).distinct()
         serialized_follows = json.dumps([f.remote_id for f in following])
 
         data = f'{{"user": {serialized_user}, "goals": {serialized_goals}, "books": {serialized_books}, "saved_lists": {serialized_saved_lists}, "follows": {serialized_follows} }}'
-        
+
         return HttpResponse(
             data,
             content_type="application/json",

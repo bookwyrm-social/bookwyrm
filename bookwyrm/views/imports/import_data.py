@@ -15,6 +15,7 @@ from django.views import View
 
 from bookwyrm import forms, models
 from bookwyrm.importers import (
+    BookwyrmImporter,
     CalibreImporter,
     LibrarythingImporter,
     GoodreadsImporter,
@@ -129,9 +130,6 @@ def get_average_import_time() -> float:
     return None
 
 
-# TODO: UserImport
-
-
 # pylint: disable= no-self-use
 @method_decorator(login_required, name="dispatch")
 class UserImport(View):
@@ -140,6 +138,26 @@ class UserImport(View):
     def get(self, request, invalid=False):
         """load user import page"""
 
-        data = { "import_form": forms.ImportUserForm(), }
-        
+        # TODO: add import limits etc
+
+        data = {
+            "import_form": forms.ImportUserForm(),
+        }
+
         return TemplateResponse(request, "import/import_user.html", data)
+
+    def post(self, request):
+        """ingest a Bookwyrm json file"""
+
+        importer = BookwyrmImporter()
+
+        form = forms.ImportUserForm(request.POST, request.FILES)
+        if not form.is_valid():
+            return HttpResponseBadRequest()
+
+        importer.process_import(
+            user=request.user,
+            json_file=request.FILES["json_file"],
+            settings=request.POST,
+        )
+        return redirect("user-import")  # TODO fix me

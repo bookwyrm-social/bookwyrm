@@ -13,7 +13,7 @@
         {% trans "Your JSON export file will include all user data for import into another Bookwyrm server" %}
     </p>
     <p>
-        <form name="export" method="POST" href="{% url 'prefs-export-json' %}">
+        <form name="export" method="POST" href="{% url 'prefs-user-export' %}">
             {% csrf_token %}
             <button type="submit" class="button">
                 <span class="icon icon-download" aria-hidden="true"></span>
