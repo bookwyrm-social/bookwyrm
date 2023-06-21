@@ -109,4 +109,4 @@ class ReportAction(BookWyrmModel):
     class Meta:
         """sort comments"""
 
-        ordering = ("-created_date",)
+        ordering = ("created_date",)
