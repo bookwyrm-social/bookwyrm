@@ -18,6 +18,16 @@ User relationship interactions follow the standard ActivityPub spec.
 - `Delete`: deactivates a user
 - `Undo`: reverses a `Follow` or `Block`
 
+### Activities
+- `Create/Status`: saves a new status in the database.
+- `Delete/Status`: Removes a status
+- `Like/Status`: Creates a favorite on the status
+- `Announce/Status`: Boosts the status into the actor's timeline
+- `Undo/*`,: Reverses a `Like` or `Announce`
+
+### Collections
+User's books and lists are represented by [`OrderedCollection`](https://www.w3.org/TR/activitystreams-vocabulary/#dfn-orderedcollection)
+
 ### Statuses
 
 BookWyrm is focused on book reading activities - it is not a general-purpose messaging application. For this reason, BookWyrm only accepts status `Create` activities if they are:
@@ -26,9 +36,9 @@ BookWyrm is focused on book reading activities - it is not a general-purpose mes
 - Related to a book (of a custom status type that includes the field `inReplyToBook`),
 - Replies to existing statuses saved in the database
 
-All other statuses will be received by the instance inbox, but **will not be delivered to user inboxes or displayed to users**.
+All other statuses will be received by the instance inbox, but by design **will not be delivered to user inboxes or displayed to users**.
 
-#### Non-standard Object types
+### Custom Object types
 
 With the exception of `Note`, the following object types are used in Bookwyrm but are not currently provided with a JSON-LD `@context` extension IRI. This is likely to change in future to make them true deserialisable JSON-LD objects.
 
@@ -40,9 +50,70 @@ Within BookWyrm a `Note` is constructed according to [the ActivityStreams vocabu
 
 A `Review` is a status in response to a book (indicated by the `inReplyToBook` field), which has a title, body, and numerical rating between 0 (not rated) and 5.
 
+Example:
+
+```json
+{
+    "id": "https://example.net/user/library_lurker/review/2",
+    "type": "Review",
+    "published": "2023-06-30T21:43:46.013132+00:00",
+    "attributedTo": "https://example.net/user/library_lurker",
+    "content": "<p>This is an enjoyable book with great characters.</p>",
+    "to": ["https://example.net/user/library_lurker/followers"],
+    "cc": [],
+    "replies": {
+        "id": "https://example.net/user/library_lurker/review/2/replies",
+        "type": "OrderedCollection",
+        "totalItems": 0,
+        "first": "https://example.net/user/library_lurker/review/2/replies?page=1",
+        "last": "https://example.net/user/library_lurker/review/2/replies?page=1",
+        "@context": "https://www.w3.org/ns/activitystreams"
+        },
+        "summary": "Spoilers ahead!",
+        "tag": [],
+        "attachment": [],
+        "sensitive": true,
+    "inReplyToBook": "https://example.net/book/1",
+    "name": "What a cracking read",
+    "rating": 4.5,
+    "@context": "https://www.w3.org/ns/activitystreams"
+}
+```
+
 ##### Comment
 
 A `Comment` on a book mentions a book and has a message body.
+
+Example:
+
+```json
+{
+    "id": "https://example.net/user/library_lurker/comment/9",
+    "type": "Comment",
+    "published": "2023-06-30T21:43:46.013132+00:00",
+    "attributedTo": "https://example.net/user/library_lurker",
+    "content": "<p>This is a very enjoyable book so far.</p>",
+    "to": ["https://example.net/user/library_lurker/followers"],
+    "cc": [],
+    "replies": {
+        "id": "https://example.net/user/library_lurker/comment/9/replies",
+        "type": "OrderedCollection",
+        "totalItems": 0,
+        "first": "https://example.net/user/library_lurker/comment/9/replies?page=1",
+        "last": "https://example.net/user/library_lurker/comment/9/replies?page=1",
+        "@context": "https://www.w3.org/ns/activitystreams"
+        },
+        "summary": "Spoilers ahead!",
+        "tag": [],
+        "attachment": [],
+        "sensitive": true,
+    "inReplyToBook": "https://example.net/book/1",
+    "readingStatus": "reading",
+    "progress": 25,
+    "progressMode": "PG",
+    "@context": "https://www.w3.org/ns/activitystreams"
+}
+```
 
 ##### Quotation
 
@@ -52,34 +123,39 @@ Example:
 
 ```json
 {
-    "id": "https://example.com/user/mouse/quotation/13",
-    "url": "https://example.com/user/mouse/quotation/13",
+    "id": "https://example.net/user/mouse/quotation/13",
+    "url": "https://example.net/user/mouse/quotation/13",
     "inReplyTo": null,
     "published": "2020-05-10T02:38:31.150343+00:00",
-    "attributedTo": "https://example.com/user/mouse",
+    "attributedTo": "https://example.net/user/mouse",
     "to": [
         "https://www.w3.org/ns/activitystreams#Public"
         ],
     "cc": [
-        "https://example.com/user/mouse/followers"
+        "https://example.net/user/mouse/followers"
         ],
     "sensitive": false,
-    "content": "commentary",
+    "content": "I really like this quote",
     "type": "Quotation",
     "replies": {
-        "id": "https://example.com/user/mouse/quotation/13/replies",
+        "id": "https://example.net/user/mouse/quotation/13/replies",
         "type": "Collection",
         "first": {
             "type": "CollectionPage",
-            "next": "https://example.com/user/mouse/quotation/13/replies?only_other_accounts=true&page=true",
-            "partOf": "https://example.com/user/mouse/quotation/13/replies",
+            "next": "https://example.net/user/mouse/quotation/13/replies?only_other_accounts=true&page=true",
+            "partOf": "https://example.net/user/mouse/quotation/13/replies",
             "items": []
             }
         },
-    "inReplyToBook": "https://example.com/book/1",
-    "quote": "quote body"
+    "inReplyToBook": "https://example.net/book/1",
+    "quote": "To be or not to be, that is the question.",
+    "position": 50,
+    "positionMode": "PCT",
+    "@context": "https://www.w3.org/ns/activitystreams"
 }
 ```
+
+### Custom Objects
 
 ##### Work
 A particular book, a "work" in the [FRBR](https://en.wikipedia.org/wiki/Functional_Requirements_for_Bibliographic_Records) sense.
@@ -88,7 +164,6 @@ Example:
 
 ```json
 {
-    "@context": "https://www.w3.org/ns/activitystreams",
     "id": "https://bookwyrm.social/book/5988",
     "type": "Work",
     "authors": [
@@ -119,7 +194,8 @@ Example:
     "lccn": null,
     "editions": [
         "https://bookwyrm.social/book/5989"
-    ]
+    ],
+    "@context": "https://www.w3.org/ns/activitystreams"
 }
 ```
 
@@ -130,9 +206,8 @@ Example:
 
 ```json
 {
-    "@context": "https://www.w3.org/ns/activitystreams",
     "id": "https://bookwyrm.social/book/5989",
-    "lastEditedBy": "https://example.com/users/rat",
+    "lastEditedBy": "https://example.net/users/rat",
     "type": "Edition",
     "authors": [
         "https://bookwyrm.social/author/417"
@@ -169,24 +244,62 @@ Example:
     "publishers": [
         "Bloomsbury Publishing Plc"
     ],
-    "work": "https://bookwyrm.social/book/5988"
+    "work": "https://bookwyrm.social/book/5988",
+    "@context": "https://www.w3.org/ns/activitystreams"
 }
 ```
 
-#### Activities
-- `Create/Status`: saves a new status in the database.
-- `Delete/Status`: Removes a status
-- `Like/Status`: Creates a favorite on the status
-- `Announce/Status`: Boosts the status into the actor's timeline
-- `Undo/*`,: Reverses a `Like` or `Announce`
+#### Shelf
 
-### Collections
-User's books and lists are represented by [`OrderedCollection`](https://www.w3.org/TR/activitystreams-vocabulary/#dfn-orderedcollection)
+A user's book collection. By default, every user has a `to-read`, `reading`, and `read` shelf which are used to track reading progress. Users may create an unlimited number of additional shelves with their own ids.
 
-#### Custom Objects
+Example
 
-- `Shelf`: A user's book collection. By default, every user has a `to-read`, `reading`, and `read` shelf which are used to track reading progress. Users may create an unlimited number of additional shelves with their own ids.
-- `List`: A collection of books that may have items contributed by users other than the one who created the list.
+```json
+{
+    "id": "https://example.net/user/avid_reader/books/extraspecialbooks-5",
+    "type": "Shelf",
+    "totalItems": 0,
+    "first": "https://example.net/user/avid_reader/books/extraspecialbooks-5?page=1",
+    "last": "https://example.net/user/avid_reader/books/extraspecialbooks-5?page=1",
+    "name": "Extra special books",
+    "owner": "https://example.net/user/avid_reader",
+    "to": [
+        "https://www.w3.org/ns/activitystreams#Public"
+    ],
+    "cc": [
+        "https://example.net/user/avid_reader/followers"
+    ],
+    "@context": "https://www.w3.org/ns/activitystreams"
+}
+```
+
+#### List
+
+A collection of books that may have items contributed by users other than the one who created the list.
+
+Example:
+
+```json
+{
+    "id": "https://example.net/list/1",
+    "type": "BookList",
+    "totalItems": 0,
+    "first": "https://example.net/list/1?page=1",
+    "last": "https://example.net/list/1?page=1",
+    "name": "My cool list",
+    "owner": "https://example.net/user/avid_reader",
+    "to": [
+        "https://www.w3.org/ns/activitystreams#Public"
+    ],
+    "cc": [
+        "https://example.net/user/avid_reader/followers"
+    ],
+    "summary": "A list of books I like.",
+    "curation": "curated",
+    "@context": "https://www.w3.org/ns/activitystreams"
+}
+```
 
 #### Activities
 
