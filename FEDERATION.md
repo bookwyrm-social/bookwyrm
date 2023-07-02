@@ -1,8 +1,5 @@
 # Federation
 
-TODO: extension object and activity examples
-TODO: show how things are translated into `Notes` or `Articles`
-
 BookWyrm uses the [ActivityPub](http://activitypub.rocks/) protocol to send and receive user activity between other BookWyrm instances and other services that implement ActivityPub. To handle book data, BookWyrm has a handful of extended Activity types which are not part of the standard, but are legible to other BookWyrm instances.
 
 ## Activities and Objects
@@ -40,7 +37,7 @@ All other statuses will be received by the instance inbox, but by design **will 
 
 ### Custom Object types
 
-With the exception of `Note`, the following object types are used in Bookwyrm but are not currently provided with a JSON-LD `@context` extension IRI. This is likely to change in future to make them true deserialisable JSON-LD objects.
+With the exception of `Note`, the following object types are used in Bookwyrm but are not currently provided with a custom JSON-LD `@context` extension IRI. This is likely to change in future to make them true deserialisable JSON-LD objects.
 
 ##### Note
 
@@ -82,7 +79,7 @@ Example:
 
 ##### Comment
 
-A `Comment` on a book mentions a book and has a message body.
+A `Comment` on a book mentions a book and has a message body, reading status, and progress indicator.
 
 Example:
 
@@ -117,7 +114,7 @@ Example:
 
 ##### Quotation
 
-A quotation (aka "quote") has a message body, an excerpt from a book, and mentions a book.
+A quotation (aka "quote") has a message body, an excerpt from a book including position as a page number or percentage indicator, and mentions a book.
 
 Example:
 
@@ -251,7 +248,7 @@ Example:
 
 #### Shelf
 
-A user's book collection. By default, every user has a `to-read`, `reading`, and `read` shelf which are used to track reading progress. Users may create an unlimited number of additional shelves with their own ids.
+A user's book collection. By default, every user has a `to-read`, `reading`, `read`, and `stopped-reading` shelf which are used to track reading progress. Users may create an unlimited number of additional shelves with their own ids.
 
 Example
 
@@ -309,7 +306,7 @@ Example:
 - `Remove`: Removes a book from a shelf or list.
 
 ## Alternative Serialization
-Because BookWyrm uses custom object types (`Review`, `Comment`, `Quotation`) that aren't listed in [the standard ActivityStreams Vocabulary](https://www.w3.org/TR/activitystreams-vocabulary), statuses are transformed into standard types when sent to or viewed by non-BookWyrm services. `Review`s are converted into `Article`s, and `Comment`s and `Quotation`s are converted into `Note`s, with a link to the book and the cover image attached.
+Because BookWyrm uses custom object types that aren't listed in [the standard ActivityStreams Vocabulary](https://www.w3.org/TR/activitystreams-vocabulary), some statuses are transformed into standard types when sent to or viewed by non-BookWyrm services. `Review`s are converted into `Article`s, and `Comment`s and `Quotation`s are converted into `Note`s, with a link to the book and the cover image attached.
 
 In future this may be done with [JSON-LD type arrays](https://www.w3.org/TR/json-ld/#specifying-the-type) instead.
 
