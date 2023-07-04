@@ -13,30 +13,30 @@ services:
     logging: *default-logging
     restart: unless-stopped
     ports:
-      - "80:80"
-      - "443:443"
+#      - "80:80"
+#      - "443:443"
+       - "8001:8001"
     depends_on:
       - web
     networks:
       - main
     volumes:
       - ./nginx:/etc/nginx/conf.d
-      - ./certbot/conf:/etc/nginx/ssl
-      - ./certbot/data:/var/www/certbot
+#     - ./certbot/conf:/etc/nginx/ssl
+#     - ./certbot/data:/var/www/certbot
       - static_volume:/app/static
       - media_volume:/app/images
-  certbot:
-    image: certbot/certbot:latest
-    command: certonly --webroot --webroot-path=/var/www/certbot --email ${EMAIL} --agree-tos --no-eff-email -d ${DOMAIN} -d www.${DOMAIN}
+#  certbot:
+#    image: certbot/certbot:latest
+#    command: certonly --webroot --webroot-path=/var/www/certbot --email ${EMAIL} --agree-tos --no-eff-email -d ${DOMAIN} -d www.${DOMAIN}
     #command: renew --webroot --webroot-path /var/www/certbot
-    logging: *default-logging
-    volumes:
-      - ./certbot/conf:/etc/letsencrypt
-      - ./certbot/logs:/var/log/letsencrypt
-      - ./certbot/data:/var/www/certbot
+#    logging: *default-logging
+#    volumes:
+#      - ./certbot/conf:/etc/letsencrypt
+#      - ./certbot/logs:/var/log/letsencrypt
+#      - ./certbot/data:/var/www/certbot
   db:
     build: postgres-docker
-    env_file: .env
     entrypoint: /bookwyrm-entrypoint.sh
     command: cron postgres
     volumes:
@@ -46,7 +46,6 @@ services:
       - main
   web:
     build: .
-    env_file: .env
     command: gunicorn bookwyrm.wsgi:application --bind 0.0.0.0:8000
     logging: *default-logging
     volumes:
@@ -68,7 +67,6 @@ services:
     volumes:
       - ./redis.conf:/etc/redis/redis.conf
       - redis_activity_data:/data
-    env_file: .env
     networks:
       - main
     restart: on-failure
@@ -79,12 +77,10 @@ services:
     volumes:
       - ./redis.conf:/etc/redis/redis.conf
       - redis_broker_data:/data
-    env_file: .env
     networks:
       - main
     restart: on-failure
   celery_worker:
-    env_file: .env
     build: .
     networks:
       - main
@@ -99,7 +95,6 @@ services:
       - redis_broker
     restart: on-failure
   celery_beat:
-    env_file: .env
     build: .
     networks:
       - main
@@ -116,7 +111,6 @@ services:
     build: .
     command: celery -A celerywyrm flower --basic_auth=${FLOWER_USER}:${FLOWER_PASSWORD} --url_prefix=flower
     logging: *default-logging
-    env_file: .env
     volumes:
       - .:/app
     networks:
@@ -127,7 +121,6 @@ services:
     restart: on-failure
   dev-tools:
     build: dev-tools
-    env_file: .env
     volumes:
       - .:/app
 volumes:
@@ -139,3 +132,4 @@ volumes:
   redis_activity_data:
 networks:
   main:
+
