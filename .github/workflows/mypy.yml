@@ -22,6 +22,8 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
     - name: Analysing the code with mypy
+      env:
+        DOMAIN: your.domain.here
       run: |
         mypy bookwyrm celerywyrm
 
