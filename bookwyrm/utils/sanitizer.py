@@ -2,7 +2,7 @@
 import bleach
 
 
-def clean(input_text):
+def clean(input_text: str) -> str:
     """Run through "bleach" """
     return bleach.clean(
         input_text,

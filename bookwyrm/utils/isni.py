@@ -5,7 +5,7 @@ import requests
 from bookwyrm import activitypub, models
 
 
-def request_isni_data(search_index, search_term, max_records=5):
+def request_isni_data(search_index: str, search_term: str, max_records: int = 5) -> str:
     """Request data from the ISNI API"""
 
     search_string = f'{search_index}="{search_term}"'
@@ -14,7 +14,7 @@ def request_isni_data(search_index, search_term, max_records=5):
         "version": "1.1",
         "operation": "searchRetrieve",
         "recordSchema": "isni-b",
-        "maximumRecords": max_records,
+        "maximumRecords": str(max_records),
         "startRecord": "1",
         "recordPacking": "xml",
         "sortKeys": "RLV,pica,0,,",
@@ -26,7 +26,7 @@ def request_isni_data(search_index, search_term, max_records=5):
     return result.text
 
 
-def make_name_string(element):
+def make_name_string(element: ET.Element) -> str:
     """create a string of form 'personal_name surname'"""
 
     # NOTE: this will often be incorrect, many naming systems
@@ -38,7 +38,7 @@ def make_name_string(element):
     return surname.text
 
 
-def get_other_identifier(element, code):
+def get_other_identifier(element: ET.Element, code: str) -> str:
     """Get other identifiers associated with an author from their ISNI record"""
 
     identifiers = element.findall(".//otherIdentifierOfIdentity")
@@ -60,7 +60,7 @@ def get_other_identifier(element, code):
     return ""
 
 
-def get_external_information_uri(element, match_string):
+def get_external_information_uri(element: ET.Element, match_string: str) -> str:
     """Get URLs associated with an author from their ISNI record"""
 
     sources = element.findall(".//externalInformation")
@@ -76,7 +76,9 @@ def get_external_information_uri(element, match_string):
     return ""
 
 
-def find_authors_by_name(name_string, description=False):
+def find_authors_by_name(
+    name_string: str, description: bool = False
+) -> list[activitypub.Author]:
     """Query the ISNI database for possible author matches by name"""
 
     payload = request_isni_data("pica.na", name_string)
@@ -126,7 +128,7 @@ def find_authors_by_name(name_string, description=False):
     return possible_authors
 
 
-def get_author_from_isni(isni):
+def get_author_from_isni(isni: str) -> activitypub.Author:
     """Find data to populate a new author record from their ISNI"""
 
     payload = request_isni_data("pica.isn", isni)
@@ -172,7 +174,7 @@ def build_author_from_isni(match_value):
     return {}
 
 
-def augment_author_metadata(author, isni):
+def augment_author_metadata(author: models.Author, isni: str) -> None:
     """Update any missing author fields from ISNI data"""
 
     isni_author = get_author_from_isni(isni)

@@ -209,6 +209,10 @@ case "$CMD" in
             bookwyrm/static/css/bookwyrm.scss bookwyrm/static/css/bookwyrm/**/*.scss --fix \
             --config dev-tools/.stylelintrc.js
         ;;
+    mypy)
+        prod_error
+        $DOCKER_COMPOSE run --rm dev-tools mypy celerywyrm bookwyrm
+        ;;
     collectstatic_watch)
         prod_error
         npm run --prefix dev-tools watch:static
@@ -316,6 +320,7 @@ case "$CMD" in
         echo "    eslint"
         echo "    stylelint"
         echo "    formatters"
+        echo "    mypy"
         echo "    collectstatic_watch"
         echo "    populate_streams [--stream=<stream name>]"
         echo "    populate_lists_streams"
