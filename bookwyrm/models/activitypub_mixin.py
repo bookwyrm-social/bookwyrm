@@ -6,7 +6,7 @@ from functools import reduce
 import json
 import operator
 import logging
-from typing import List
+from typing import List, Tuple, Any
 from uuid import uuid4
 
 import aiohttp
@@ -40,12 +40,12 @@ class ActivitypubMixin:
     """add this mixin for models that are AP serializable"""
 
     activity_serializer = lambda: {}
-    reverse_unfurl = False
+    reverse_unfurl: bool = False
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args: Tuple[Any, ...], **kwargs: dict[str, Any]):
         """collect some info on model fields for later use"""
-        self.image_fields = []
-        self.many_to_many_fields = []
+        self.image_fields: list[ImageField] = []
+        self.many_to_many_fields: list[ManyToManyField] = []
         self.simple_fields = []  # "simple"
         # sort model fields by type
         for field in self._meta.get_fields():

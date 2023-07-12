@@ -1,6 +1,6 @@
 """ book and author data """
 from dataclasses import dataclass, field
-from typing import List
+from typing import List, Optional
 
 from .base_activity import ActivityObject
 from .image import Document
@@ -11,17 +11,17 @@ from .image import Document
 class BookData(ActivityObject):
     """shared fields for all book data and authors"""
 
-    openlibraryKey: str = None
-    inventaireId: str = None
-    librarythingKey: str = None
-    goodreadsKey: str = None
-    bnfId: str = None
-    viaf: str = None
-    wikidata: str = None
-    asin: str = None
-    aasin: str = None
-    isfdb: str = None
-    lastEditedBy: str = None
+    openlibraryKey: Optional[str] = None
+    inventaireId: Optional[str] = None
+    librarythingKey: Optional[str] = None
+    goodreadsKey: Optional[str] = None
+    bnfId: Optional[str] = None
+    viaf: Optional[str] = None
+    wikidata: Optional[str] = None
+    asin: Optional[str] = None
+    aasin: Optional[str] = None
+    isfdb: Optional[str] = None
+    lastEditedBy: Optional[str] = None
     links: List[str] = field(default_factory=lambda: [])
     fileLinks: List[str] = field(default_factory=lambda: [])
 
@@ -32,8 +32,8 @@ class Book(BookData):
     """serializes an edition or work, abstract"""
 
     title: str
-    sortTitle: str = None
-    subtitle: str = None
+    sortTitle: Optional[str] = None
+    subtitle: Optional[str] = None
     description: str = ""
     languages: List[str] = field(default_factory=lambda: [])
     series: str = ""
@@ -45,7 +45,7 @@ class Book(BookData):
     firstPublishedDate: str = ""
     publishedDate: str = ""
 
-    cover: Document = None
+    cover: Optional[Document] = None
     type: str = "Book"
 
 
@@ -58,7 +58,7 @@ class Edition(Book):
     isbn10: str = ""
     isbn13: str = ""
     oclcNumber: str = ""
-    pages: int = None
+    pages: Optional[int] = None
     physicalFormat: str = ""
     physicalFormatDetail: str = ""
     publishers: List[str] = field(default_factory=lambda: [])
@@ -83,11 +83,11 @@ class Author(BookData):
     """author of a book"""
 
     name: str
-    isni: str = None
-    viafId: str = None
-    gutenbergId: str = None
-    born: str = None
-    died: str = None
+    isni: Optional[str] = None
+    viafId: Optional[str] = None
+    gutenbergId: Optional[str] = None
+    born: Optional[str] = None
+    died: Optional[str] = None
     aliases: List[str] = field(default_factory=lambda: [])
     bio: str = ""
     wikipediaLink: str = ""

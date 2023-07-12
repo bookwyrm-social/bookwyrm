@@ -211,7 +211,7 @@ case "$CMD" in
         ;;
     mypy)
         prod_error
-        $DOCKER_COMPOSE run --rm dev-tools mypy celerywyrm bookwyrm
+        runweb mypy celerywyrm bookwyrm
         ;;
     collectstatic_watch)
         prod_error

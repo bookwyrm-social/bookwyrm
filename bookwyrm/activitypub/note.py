@@ -1,6 +1,6 @@
 """ note serializer and children thereof """
 from dataclasses import dataclass, field
-from typing import Dict, List
+from typing import Dict, List, Optional
 import re
 
 from django.apps import apps
@@ -33,12 +33,12 @@ class Note(ActivityObject):
     to: List[str] = field(default_factory=lambda: [])
     cc: List[str] = field(default_factory=lambda: [])
     replies: Dict = field(default_factory=lambda: {})
-    inReplyTo: str = None
-    summary: str = None
+    inReplyTo: Optional[str] = None
+    summary: Optional[str] = None
     tag: List[Link] = field(default_factory=lambda: [])
     attachment: List[Document] = field(default_factory=lambda: [])
     sensitive: bool = False
-    updated: str = None
+    updated: Optional[str] = None
     type: str = "Note"
 
     # pylint: disable=too-many-arguments
@@ -104,9 +104,9 @@ class Comment(Note):
     """like a note but with a book"""
 
     inReplyToBook: str
-    readingStatus: str = None
-    progress: int = None
-    progressMode: str = None
+    readingStatus: Optional[str] = None
+    progress: Optional[int] = None
+    progressMode: Optional[str] = None
     type: str = "Comment"
 
 
@@ -115,8 +115,8 @@ class Quotation(Comment):
     """a quote and commentary on a book"""
 
     quote: str
-    position: int = None
-    positionMode: str = None
+    position: Optional[int] = None
+    positionMode: Optional[str] = None
     type: str = "Quotation"
 
 
@@ -124,8 +124,8 @@ class Quotation(Comment):
 class Review(Comment):
     """a full book review"""
 
-    name: str = None
-    rating: int = None
+    name: Optional[str] = None
+    rating: Optional[int] = None
     type: str = "Review"
 
 
@@ -134,6 +134,6 @@ class Rating(Comment):
     """just a star rating"""
 
     rating: int
-    content: str = None
-    name: str = None  # not used, but the model inherits from Review
+    content: Optional[str] = None
+    name: Optional[str] = None  # not used, but the model inherits from Review
     type: str = "Rating"

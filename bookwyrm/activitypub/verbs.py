@@ -1,6 +1,6 @@
 """ activities that do things """
 from dataclasses import dataclass, field
-from typing import List
+from typing import List, Optional
 from django.apps import apps
 
 from .base_activity import ActivityObject, Signature, resolve_remote_id
@@ -14,7 +14,7 @@ class Verb(ActivityObject):
     actor: str
     object: ActivityObject
 
-    def action(self, allow_external_connections=True):
+    def action(self, allow_external_connections: bool = True) -> None:
         """usually we just want to update and save"""
         # self.object may return None if the object is invalid in an expected way
         # ie, Question type
@@ -29,7 +29,7 @@ class Create(Verb):
 
     to: List[str]
     cc: List[str] = field(default_factory=lambda: [])
-    signature: Signature = None
+    signature: Optional[Signature] = None
     type: str = "Create"
 
 
@@ -42,7 +42,7 @@ class Delete(Verb):
     cc: List[str] = field(default_factory=lambda: [])
     type: str = "Delete"
 
-    def action(self, allow_external_connections=True):
+    def action(self, allow_external_connections: bool = True) -> None:
         """find and delete the activity object"""
         if not self.object:
             return
@@ -71,7 +71,7 @@ class Update(Verb):
     to: List[str]
     type: str = "Update"
 
-    def action(self, allow_external_connections=True):
+    def action(self, allow_external_connections: bool = True) -> None:
         """update a model instance from the dataclass"""
         if not self.object:
             return
@@ -86,7 +86,7 @@ class Undo(Verb):
 
     type: str = "Undo"
 
-    def action(self, allow_external_connections=True):
+    def action(self, allow_external_connections: bool = True) -> None:
         """find and remove the activity object"""
         if isinstance(self.object, str):
             # it may be that something should be done with these, but idk what
@@ -133,7 +133,7 @@ class Follow(Verb):
     object: str
     type: str = "Follow"
 
-    def action(self, allow_external_connections=True):
+    def action(self, allow_external_connections: bool = True) -> None:
         """relationship save"""
         self.to_model(allow_external_connections=allow_external_connections)
 
@@ -145,7 +145,7 @@ class Block(Verb):
     object: str
     type: str = "Block"
 
-    def action(self, allow_external_connections=True):
+    def action(self, allow_external_connections: bool = True) -> None:
         """relationship save"""
         self.to_model(allow_external_connections=allow_external_connections)
 
@@ -157,10 +157,11 @@ class Accept(Verb):
     object: Follow
     type: str = "Accept"
 
-    def action(self, allow_external_connections=True):
+    def action(self, allow_external_connections: bool = True) -> None:
         """accept a request"""
         obj = self.object.to_model(save=False, allow_create=True)
-        obj.accept()
+        if obj:
+            obj.accept()
 
 
 @dataclass(init=False)
@@ -170,10 +171,11 @@ class Reject(Verb):
     object: Follow
     type: str = "Reject"
 
-    def action(self, allow_external_connections=True):
+    def action(self, allow_external_connections: bool = True) -> None:
         """reject a follow request"""
         obj = self.object.to_model(save=False, allow_create=False)
-        obj.reject()
+        if obj:
+            obj.reject()
 
 
 @dataclass(init=False)
@@ -184,12 +186,13 @@ class Add(Verb):
     object: CollectionItem
     type: str = "Add"
 
-    def action(self, allow_external_connections=True):
+    def action(self, allow_external_connections: bool = True) -> None:
         """figure out the target to assign the item to a collection"""
         target = resolve_remote_id(self.target)
         item = self.object.to_model(save=False)
-        setattr(item, item.collection_field, target)
-        item.save()
+        if item:
+            setattr(item, item.collection_field, target)
+            item.save()
 
 
 @dataclass(init=False)
@@ -198,7 +201,7 @@ class Remove(Add):
 
     type: str = "Remove"
 
-    def action(self, allow_external_connections=True):
+    def action(self, allow_external_connections: bool = True) -> None:
         """find and remove the activity object"""
         obj = self.object.to_model(save=False, allow_create=False)
         if obj:
@@ -212,7 +215,7 @@ class Like(Verb):
     object: str
     type: str = "Like"
 
-    def action(self, allow_external_connections=True):
+    def action(self, allow_external_connections: bool = True) -> None:
         """like"""
         self.to_model(allow_external_connections=allow_external_connections)
 
@@ -223,11 +226,11 @@ class Announce(Verb):
     """boosting a status"""
 
     published: str
+    object: str
     to: List[str] = field(default_factory=lambda: [])
     cc: List[str] = field(default_factory=lambda: [])
-    object: str
     type: str = "Announce"
 
-    def action(self, allow_external_connections=True):
+    def action(self, allow_external_connections: bool = True) -> None:
         """boost"""
         self.to_model(allow_external_connections=allow_external_connections)

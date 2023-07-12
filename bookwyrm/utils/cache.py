@@ -3,7 +3,7 @@ from typing import Callable, Tuple, Any, Union
 
 from django.core.cache import cache
 
-# TODO Should add the dependencies between function and return value
+# TODO Should add the dependencies between function and args
 def get_or_set(
     cache_key: str,
     function: Callable[..., Any],
