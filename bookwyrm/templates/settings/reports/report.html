@@ -67,6 +67,17 @@
 
     <div class="box">
         <ul class="mt-0">
+            <li class="mb-2">
+                <div class="is-flex">
+                    <p class="mb-0 is-flex-grow-1">
+                        {% blocktrans trimmed with user=report.reporter|username user_link=report.reporter.local_path %}
+                        <a href="{{ user_link }}">{{ user}}</a> opened this report
+                        {% endblocktrans %}
+                    </p>
+                    <span class="tag">{{ report.created_date }}</span>
+                </div>
+            </li>
+
             {% for comment in report.reportaction_set.all %}
             <li class="mb-2">
                 <div class="is-flex">
@@ -92,17 +103,6 @@
                 {% endif %}
             </li>
             {% endfor %}
-
-            <li class="mb-2">
-                <div class="is-flex">
-                    <p class="mb-0 is-flex-grow-1">
-                        {% blocktrans trimmed with user=report.reporter|username user_link=report.reporter.local_path %}
-                        <a href="{{ user_link }}">{{ user}}</a> opened this report
-                        {% endblocktrans %}
-                    </p>
-                    <span class="tag">{{ report.created_date }}</span>
-                </div>
-            </li>
         </ul>
 
         <form class="block" name="report-comment" method="post" action="{% url 'settings-report' report.id %}">
