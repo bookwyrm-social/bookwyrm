@@ -141,12 +141,12 @@ urlpatterns = [
         name="settings-users",
     ),
     re_path(
-        r"^settings/users/(?P<user>\d+)/(?P<report_id>\d+)?$",
+        r"^settings/users/(?P<user_id>\d+)/(?P<report_id>\d+)?$",
         views.UserAdmin.as_view(),
         name="settings-user",
     ),
     re_path(
-        r"^settings/users/(?P<user>\d+)/activate/?$",
+        r"^settings/users/(?P<user_id>\d+)/activate/?$",
         views.ActivateUserAdmin.as_view(),
         name="settings-activate-user",
     ),
