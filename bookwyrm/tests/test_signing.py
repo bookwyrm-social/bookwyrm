@@ -87,7 +87,7 @@ class Signature(TestCase):
         data = json.dumps(get_follow_activity(sender, self.rat))
         digest = digest or make_digest(data)
         signature = make_signature(
-            "post", signer or sender, self.rat.inbox, now, digest
+            "post", signer or sender, self.rat.inbox, now, digest=digest
         )
         with patch("bookwyrm.views.inbox.activity_task.apply_async"):
             with patch("bookwyrm.models.user.set_remote_server.delay"):
@@ -111,6 +111,7 @@ class Signature(TestCase):
         datafile = pathlib.Path(__file__).parent.joinpath("data/ap_user.json")
         data = json.loads(datafile.read_bytes())
         data["id"] = self.fake_remote.remote_id
+        data["publicKey"]["id"] = f"{self.fake_remote.remote_id}/#main-key"
         data["publicKey"]["publicKeyPem"] = self.fake_remote.key_pair.public_key
         del data["icon"]  # Avoid having to return an avatar.
         responses.add(responses.GET, self.fake_remote.remote_id, json=data, status=200)
@@ -138,6 +139,7 @@ class Signature(TestCase):
         datafile = pathlib.Path(__file__).parent.joinpath("data/ap_user.json")
         data = json.loads(datafile.read_bytes())
         data["id"] = self.fake_remote.remote_id
+        data["publicKey"]["id"] = f"{self.fake_remote.remote_id}/#main-key"
         data["publicKey"]["publicKeyPem"] = self.fake_remote.key_pair.public_key
         del data["icon"]  # Avoid having to return an avatar.
         responses.add(responses.GET, self.fake_remote.remote_id, json=data, status=200)
@@ -157,7 +159,7 @@ class Signature(TestCase):
                 "bookwyrm.models.relationship.UserFollowRequest.accept"
             ) as accept_mock:
                 response = self.send_test_request(sender=self.fake_remote)
-            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.status_code, 200)  # BUG this is 401
             self.assertTrue(accept_mock.called)
 
             # Old key is cached, so still works:
