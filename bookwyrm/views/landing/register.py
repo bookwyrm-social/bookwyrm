@@ -74,6 +74,7 @@ class Register(View):
             password,
             localname=localname,
             local=True,
+            allow_reactivation=settings.require_confirm_email,
             deactivation_reason="pending" if settings.require_confirm_email else None,
             is_active=not settings.require_confirm_email,
             preferred_timezone=preferred_timezone,
