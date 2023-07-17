@@ -2,6 +2,7 @@
 from itertools import chain
 import re
 
+from django.apps import apps
 from django.contrib.postgres.search import SearchVectorField
 from django.contrib.postgres.indexes import GinIndex
 from django.core.cache import cache
@@ -379,6 +380,26 @@ class Edition(Book):
                 )
 
         return super().save(*args, **kwargs)
+
+    def repair(self):
+        """If an edition is in a bad state (missing a work), let's fix that"""
+        # made sure it actually NEEDS reapir
+        if self.parent_work:
+            return
+
+        # try to find a duplicate of this edition first
+        model = apps.get_model("bookwyrm.Edition", require_ready=True)
+        data = self.get_dedpulication_field_json()
+        existing_match = model.find_existing(data)
+
+        # assign this edition to the parent of the duplicate edition
+        new_work = existing_match.parent_work
+        # if not, create a new work for it
+        if not new_work:
+            new_work = models.Work.objects.create(title=self.title)
+
+        self.parent_work = new_work
+        self.save(update_fields=["parent_work"], broadcast=False)
 
     @classmethod
     def viewer_aware_objects(cls, viewer):
