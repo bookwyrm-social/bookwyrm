@@ -17,8 +17,14 @@
     {% if site.imports_enabled %}
         {% if import_size_limit and import_limit_reset %}
             <div class="notification">
-                <p>{% blocktrans %}Currently you are allowed to import {{ import_size_limit }} books every {{ import_limit_reset }} days.{% endblocktrans %}</p>
-                <p>{% blocktrans %}You have {{ allowed_imports }} left.{% endblocktrans %}</p>
+                <p>
+                    {% blocktrans count days=import_limit_reset with display_size=import_size_limit|intcomma %}
+                        Currently, you are allowed to import {{ display_size }} books every {{ import_limit_reset }} day.
+                    {% plural %}
+                        Currently, you are allowed to import {{ import_size_limit }} books every {{ import_limit_reset }} days.
+                    {% endblocktrans %}
+                </p>
+                <p>{% blocktrans with display_left=allowed_imports|intcomma %}You have {{ display_left }} left.{% endblocktrans %}</p>
             </div>
         {% endif %}
         {% if recent_avg_hours or recent_avg_minutes %}
