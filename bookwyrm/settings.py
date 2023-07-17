@@ -312,6 +312,9 @@ LANGUAGES = [
     ("zh-hant", _("繁體中文 (Traditional Chinese)")),
 ]
 
+LANGUAGE_ARTICLES = {
+    "English": {"the", "a", "an"},
+}
 
 TIME_ZONE = "UTC"
 

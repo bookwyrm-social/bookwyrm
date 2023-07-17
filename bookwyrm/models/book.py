@@ -1,4 +1,5 @@
 """ database schema for books and shelves """
+from itertools import chain
 import re
 
 from django.contrib.postgres.search import SearchVectorField
@@ -17,6 +18,7 @@ from bookwyrm.preview_images import generate_edition_preview_image_task
 from bookwyrm.settings import (
     DOMAIN,
     DEFAULT_LANGUAGE,
+    LANGUAGE_ARTICLES,
     ENABLE_PREVIEW_IMAGES,
     ENABLE_THUMBNAIL_GENERATION,
 )
@@ -362,6 +364,19 @@ class Edition(Book):
         if self.id:
             for author_id in self.authors.values_list("id", flat=True):
                 cache.delete(f"author-books-{author_id}")
+
+        # Create sort title by removing articles from title
+        if self.sort_title in [None, ""]:
+            if self.sort_title in [None, ""]:
+                articles = chain(
+                    *(
+                        LANGUAGE_ARTICLES.get(language, ())
+                        for language in tuple(self.languages)
+                    )
+                )
+                self.sort_title = re.sub(
+                    f'^{" |^".join(articles)} ', "", str(self.title).lower()
+                )
 
         return super().save(*args, **kwargs)
 
