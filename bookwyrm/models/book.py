@@ -393,10 +393,10 @@ class Edition(Book):
         existing_match = model.find_existing(data)
 
         # assign this edition to the parent of the duplicate edition
-        new_work = existing_match.parent_work
-        # if not, create a new work for it
-        if not new_work:
-            new_work = models.Work.objects.create(title=self.title)
+        if existing_match and existing_match.parent_work:
+            new_work = existing_match.parent_work
+        else:
+            new_work = Work.objects.create(title=self.title)
 
         self.parent_work = new_work
         self.save(update_fields=["parent_work"], broadcast=False)

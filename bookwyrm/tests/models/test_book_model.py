@@ -143,3 +143,13 @@ class Book(TestCase):
             for article in articles
         )
         self.assertTrue(all(book.sort_title == "test edition" for book in books))
+
+    def test_repair_edition(self):
+        """Fix editions with no works"""
+        edition = models.Edition.objects.create(title="test")
+        self.assertIsNone(edition.parent_work)
+
+        edition.repair()
+        edition.refresh_from_db()
+
+        self.assertEqual(edition.parent_work.title, "test")
