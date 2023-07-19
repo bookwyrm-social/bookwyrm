@@ -126,18 +126,6 @@ class ActivitypubMixin:
         # there OUGHT to be only one match
         return match.first()
 
-    def get_dedpulication_field_json(self):
-        """A json blob of deduplication fields (like remote_id, or ISBN)"""
-        data = {}
-        for field in self._meta.get_fields():
-            if (
-                not hasattr(field, "deduplication_field")
-                or not field.deduplication_field
-            ):
-                continue
-            data[field.name] = getattr(self, field.name)
-        return data
-
     def broadcast(self, activity, sender, software=None, queue=BROADCAST):
         """send out an activity"""
         broadcast_task.apply_async(
