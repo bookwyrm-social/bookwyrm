@@ -12,7 +12,7 @@ from bookwyrm import models
 from bookwyrm.connectors import ConnectorException, get_data
 from bookwyrm.signatures import make_signature
 from bookwyrm.settings import DOMAIN, INSTANCE_ACTOR_USERNAME
-from bookwyrm.tasks import app, MEDIUM
+from bookwyrm.tasks import app, MISC
 
 logger = logging.getLogger(__name__)
 
@@ -241,7 +241,7 @@ class ActivityObject:
         return data
 
 
-@app.task(queue=MEDIUM)
+@app.task(queue=MISC)
 @transaction.atomic
 def set_related_field(
     model_name, origin_model_name, related_field_name, related_remote_id, data

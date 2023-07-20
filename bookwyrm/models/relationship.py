@@ -4,7 +4,6 @@ from django.db import models, transaction, IntegrityError
 from django.db.models import Q
 
 from bookwyrm import activitypub
-from bookwyrm.tasks import HIGH
 from .activitypub_mixin import ActivitypubMixin, ActivityMixin
 from .activitypub_mixin import generate_activity
 from .base_model import BookWyrmModel
@@ -142,7 +141,7 @@ class UserFollowRequest(ActivitypubMixin, UserRelationship):
 
         # a local user is following a remote user
         if broadcast and self.user_subject.local and not self.user_object.local:
-            self.broadcast(self.to_activity(), self.user_subject, queue=HIGH)
+            self.broadcast(self.to_activity(), self.user_subject)
 
         if self.user_object.local:
             manually_approves = self.user_object.manually_approves_followers
@@ -166,7 +165,7 @@ class UserFollowRequest(ActivitypubMixin, UserRelationship):
                 actor=self.user_object.remote_id,
                 object=self.to_activity(),
             ).serialize()
-            self.broadcast(activity, user, queue=HIGH)
+            self.broadcast(activity, user)
         if broadcast_only:
             return
 
@@ -187,7 +186,7 @@ class UserFollowRequest(ActivitypubMixin, UserRelationship):
                 actor=self.user_object.remote_id,
                 object=self.to_activity(),
             ).serialize()
-            self.broadcast(activity, self.user_object, queue=HIGH)
+            self.broadcast(activity, self.user_object)
 
         self.delete()
 

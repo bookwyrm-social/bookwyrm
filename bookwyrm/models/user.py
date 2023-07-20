@@ -20,7 +20,7 @@ from bookwyrm.models.status import Status
 from bookwyrm.preview_images import generate_user_preview_image_task
 from bookwyrm.settings import DOMAIN, ENABLE_PREVIEW_IMAGES, USE_HTTPS, LANGUAGES
 from bookwyrm.signatures import create_key_pair
-from bookwyrm.tasks import app, LOW
+from bookwyrm.tasks import app, MISC
 from bookwyrm.utils import regex
 from .activitypub_mixin import OrderedCollectionPageMixin, ActivitypubMixin
 from .base_model import BookWyrmModel, DeactivationReason, new_access_code
@@ -469,7 +469,7 @@ class KeyPair(ActivitypubMixin, BookWyrmModel):
         return super().save(*args, **kwargs)
 
 
-@app.task(queue=LOW)
+@app.task(queue=MISC)
 def set_remote_server(user_id, allow_external_connections=False):
     """figure out the user's remote server in the background"""
     user = User.objects.get(id=user_id)
@@ -528,7 +528,7 @@ def get_or_create_remote_server(
     return server
 
 
-@app.task(queue=LOW)
+@app.task(queue=MISC)
 def get_remote_reviews(outbox):
     """ingest reviews by a new remote bookwyrm user"""
     outbox_page = outbox + "?page=true&type=Review"
