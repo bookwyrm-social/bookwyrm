@@ -13,7 +13,7 @@ from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 
 from bookwyrm import activitypub, models
-from bookwyrm.tasks import app, MEDIUM, HIGH
+from bookwyrm.tasks import app, INBOX
 from bookwyrm.signatures import Signature
 from bookwyrm.utils import regex
 
@@ -59,11 +59,7 @@ class Inbox(View):
                 return HttpResponse()
             return HttpResponse(status=401)
 
-        # Make activities relating to follow/unfollow a high priority
-        high = ["Follow", "Accept", "Reject", "Block", "Unblock", "Undo"]
-
-        priority = HIGH if activity_json["type"] in high else MEDIUM
-        sometimes_async_activity_task(activity_json, queue=priority)
+        sometimes_async_activity_task(activity_json)
         return HttpResponse()
 
 
@@ -101,7 +97,7 @@ def raise_is_blocked_activity(activity_json):
         raise PermissionDenied()
 
 
-def sometimes_async_activity_task(activity_json, queue=MEDIUM):
+def sometimes_async_activity_task(activity_json):
     """Sometimes we can effectively respond to a request without queuing a new task,
     and whenever that is possible, we should do it."""
     activity = activitypub.parse(activity_json)
@@ -111,10 +107,10 @@ def sometimes_async_activity_task(activity_json, queue=MEDIUM):
         activity.action(allow_external_connections=False)
     except activitypub.ActivitySerializerError:
         # if that doesn't work, run it asynchronously
-        activity_task.apply_async(args=(activity_json,), queue=queue)
+        activity_task.apply_async(args=(activity_json,))
 
 
-@app.task(queue=MEDIUM)
+@app.task(queue=INBOX)
 def activity_task(activity_json):
     """do something with this json we think is legit"""
     # lets see if the activitypub module can make sense of this json

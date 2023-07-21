@@ -8,7 +8,7 @@ from django.db import models, transaction
 from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 
-from bookwyrm.tasks import app, LOW
+from bookwyrm.tasks import app, MISC
 from .base_model import BookWyrmModel
 from .user import User
 
@@ -65,7 +65,7 @@ class AutoMod(AdminModel):
     created_by = models.ForeignKey("User", on_delete=models.PROTECT)
 
 
-@app.task(queue=LOW)
+@app.task(queue=MISC)
 def automod_task():
     """Create reports"""
     if not AutoMod.objects.exists():

@@ -74,6 +74,7 @@ class Register(View):
             password,
             localname=localname,
             local=True,
+            allow_reactivation=settings.require_confirm_email,
             deactivation_reason="pending" if settings.require_confirm_email else None,
             is_active=not settings.require_confirm_email,
             preferred_timezone=preferred_timezone,
@@ -105,7 +106,9 @@ class ConfirmEmailCode(View):
 
         # look up the user associated with this code
         try:
-            user = models.User.objects.get(confirmation_code=code)
+            user = models.User.objects.get(
+                confirmation_code=code, deactivation_reason="pending"
+            )
         except models.User.DoesNotExist:
             return TemplateResponse(
                 request, "confirm_email/confirm_email.html", {"valid": False}

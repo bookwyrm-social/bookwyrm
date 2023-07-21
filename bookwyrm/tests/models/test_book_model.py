@@ -132,3 +132,14 @@ class Book(TestCase):
         self.assertIsNotNone(book.cover_bw_book_xlarge_jpg.url)
         self.assertIsNotNone(book.cover_bw_book_xxlarge_webp.url)
         self.assertIsNotNone(book.cover_bw_book_xxlarge_jpg.url)
+
+    def test_populate_sort_title(self):
+        """The sort title should remove the initial article on save"""
+        books = (
+            models.Edition.objects.create(
+                title=f"{article} Test Edition", languages=[langauge]
+            )
+            for langauge, articles in settings.LANGUAGE_ARTICLES.items()
+            for article in articles
+        )
+        self.assertTrue(all(book.sort_title == "test edition" for book in books))

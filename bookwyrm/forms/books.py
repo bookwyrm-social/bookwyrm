@@ -20,6 +20,7 @@ class EditionForm(CustomForm):
         model = models.Edition
         fields = [
             "title",
+            "sort_title",
             "subtitle",
             "description",
             "series",
@@ -45,6 +46,9 @@ class EditionForm(CustomForm):
         ]
         widgets = {
             "title": forms.TextInput(attrs={"aria-describedby": "desc_title"}),
+            "sort_title": forms.TextInput(
+                attrs={"aria-describedby": "desc_sort_title"}
+            ),
             "subtitle": forms.TextInput(attrs={"aria-describedby": "desc_subtitle"}),
             "description": forms.Textarea(
                 attrs={"aria-describedby": "desc_description"}

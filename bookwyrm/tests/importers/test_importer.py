@@ -145,7 +145,7 @@ class GenericImporter(TestCase):
             ) as mock:
                 import_item_task(import_item.id)
                 kwargs = mock.call_args.kwargs
-        self.assertEqual(kwargs["queue"], "low_priority")
+        self.assertEqual(kwargs["queue"], "import_triggered")
         import_item.refresh_from_db()
 
     def test_complete_job(self, *_):
