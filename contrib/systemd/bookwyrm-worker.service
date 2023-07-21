@@ -6,7 +6,7 @@ After=network.target postgresql.service redis.service
 User=bookwyrm
 Group=bookwyrm
 WorkingDirectory=/opt/bookwyrm/
-ExecStart=/opt/bookwyrm/venv/bin/celery -A celerywyrm worker -l info -Q high_priority,medium_priority,low_priority,imports,broadcast
+ExecStart=/opt/bookwyrm/venv/bin/celery -A celerywyrm worker -l info -Q high_priority,medium_priority,low_priority,streams,images,suggested_users,email,connectors,lists,inbox,imports,import_triggered,broadcast,misc
 StandardOutput=journal
 StandardError=inherit
 
