@@ -24,7 +24,7 @@ class Book(TestCase):
             title="Example Work", remote_id="https://example.com/book/1"
         )
         self.first_edition = models.Edition.objects.create(
-            title="Example Edition", parent_work=self.work, isbn_10="1111111111"
+            title="Example Edition", parent_work=self.work
         )
         self.second_edition = models.Edition.objects.create(
             title="Another Example Edition",
