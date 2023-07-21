@@ -394,6 +394,8 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     def reactivate(self):
         """Now you want to come back, huh?"""
         # pylint: disable=attribute-defined-outside-init
+        if not self.allow_reactivation:
+            return
         self.is_active = True
         self.deactivation_reason = None
         self.allow_reactivation = False
