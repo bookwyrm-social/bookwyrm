@@ -6,7 +6,7 @@ from functools import reduce
 import json
 import operator
 import logging
-from typing import List, Tuple, Any
+from typing import List, Tuple, Any, Callable
 from uuid import uuid4
 
 import aiohttp
@@ -17,8 +17,11 @@ from django.apps import apps
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.utils.http import http_date
+from typing import Optional
+from typing_extensions import Self
 
 from bookwyrm import activitypub
+from bookwyrm.activitypub.base_activity import ActivityObject
 from bookwyrm.settings import USER_AGENT, PAGE_LENGTH
 from bookwyrm.signatures import make_signature, make_digest
 from bookwyrm.tasks import app, MEDIUM, BROADCAST
@@ -31,7 +34,9 @@ logger = logging.getLogger(__name__)
 PropertyField = namedtuple("PropertyField", ("set_activity_from_field"))
 
 # pylint: disable=invalid-name
-def set_activity_from_property_field(activity, obj, field):
+def set_activity_from_property_field(
+    activity: dict[str, Any], obj: object, field: list[str]
+) -> None:
     """assign a model property value to the activity json"""
     activity[field[1]] = getattr(obj, field[0])
 
@@ -39,7 +44,7 @@ def set_activity_from_property_field(activity, obj, field):
 class ActivitypubMixin:
     """add this mixin for models that are AP serializable"""
 
-    activity_serializer = lambda: {}
+    activity_serializer: type[ActivityObject] = lambda: {}
     reverse_unfurl: bool = False
 
     def __init__(self, *args: Tuple[Any, ...], **kwargs: dict[str, Any]):
@@ -85,7 +90,7 @@ class ActivitypubMixin:
         super().__init__(*args, **kwargs)
 
     @classmethod
-    def find_existing_by_remote_id(cls, remote_id):
+    def find_existing_by_remote_id(cls, remote_id) -> Optional[Self]:
         """look up a remote id in the db"""
         return cls.find_existing({"id": remote_id})
 

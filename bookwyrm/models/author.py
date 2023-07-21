@@ -1,5 +1,7 @@
 """ database schema for info about authors """
 import re
+from typing import Tuple, Any
+
 from django.contrib.postgres.indexes import GinIndex
 from django.db import models
 
@@ -38,30 +40,30 @@ class Author(BookDataModel):
     )
     bio = fields.HtmlField(null=True, blank=True)
 
-    def save(self, *args, **kwargs):
+    def save(self, *args: Tuple[Any, ...], **kwargs: dict[str, Any]) -> None:
         """normalize isni format"""
         if self.isni:
             self.isni = re.sub(r"\s", "", self.isni)
 
-        return super().save(*args, **kwargs)
+        return super().save(*args, **kwargs)  # TODO Does save ever return anything?
 
     @property
-    def isni_link(self):
+    def isni_link(self) -> str:
         """generate the url from the isni id"""
         clean_isni = re.sub(r"\s", "", self.isni)
         return f"https://isni.org/isni/{clean_isni}"
 
     @property
-    def openlibrary_link(self):
+    def openlibrary_link(self) -> str:
         """generate the url from the openlibrary id"""
         return f"https://openlibrary.org/authors/{self.openlibrary_key}"
 
     @property
-    def isfdb_link(self):
+    def isfdb_link(self) -> str:
         """generate the url from the isni id"""
         return f"https://www.isfdb.org/cgi-bin/ea.cgi?{self.isfdb}"
 
-    def get_remote_id(self):
+    def get_remote_id(self) -> str:
         """editions and works both use "book" instead of model_name"""
         return f"https://{DOMAIN}/author/{self.id}"
 

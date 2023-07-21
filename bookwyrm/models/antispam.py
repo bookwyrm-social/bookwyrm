@@ -1,14 +1,16 @@
 """ Lets try NOT to sell viagra """
 from functools import reduce
 import operator
+from typing import Optional
 
 from django.apps import apps
 from django.core.exceptions import PermissionDenied
 from django.db import models, transaction
-from django.db.models import Q
+from django.db.models import Q, QuerySet
 from django.utils.translation import gettext_lazy as _
 
 from bookwyrm.tasks import app, LOW
+from . import Report, Status
 from .base_model import BookWyrmModel
 from .user import User
 
@@ -21,7 +23,7 @@ class AdminModel(BookWyrmModel):
 
         abstract = True
 
-    def raise_not_editable(self, viewer):
+    def raise_not_editable(self, viewer: User) -> None:
         if viewer.has_perm("bookwyrm.moderate_user"):
             return
         raise PermissionDenied()
@@ -39,7 +41,7 @@ class EmailBlocklist(AdminModel):
         ordering = ("-created_date",)
 
     @property
-    def users(self):
+    def users(self) -> QuerySet[User]:
         """find the users associated with this address"""
         return User.objects.filter(email__endswith=f"@{self.domain}")
 
@@ -66,11 +68,11 @@ class AutoMod(AdminModel):
 
 
 @app.task(queue=LOW)
-def automod_task():
+def automod_task() -> None:
     """Create reports"""
     if not AutoMod.objects.exists():
         return
-    reporter = AutoMod.objects.first().created_by
+    reporter = AutoMod.objects.first().created_by  # TODO What if this return None?
     reports = automod_users(reporter) + automod_statuses(reporter)
     if not reports:
         return
@@ -85,7 +87,7 @@ def automod_task():
             notification.related_reports.set(reports)
 
 
-def automod_users(reporter):
+def automod_users(reporter: User) -> list[Report]:
     """check users for moderation flags"""
     user_rules = AutoMod.objects.filter(flag_users=True).values_list(
         "string_match", flat=True
@@ -105,7 +107,7 @@ def automod_users(reporter):
 
     report_model = apps.get_model("bookwyrm", "Report", require_ready=True)
 
-    return report_model.objects.bulk_create(
+    return report_model.objects.bulk_create(  # TODO What is the return type of bulk_create? I expect a list of reports
         [
             report_model(
                 reporter=reporter,
@@ -117,7 +119,7 @@ def automod_users(reporter):
     )
 
 
-def automod_statuses(reporter):
+def automod_statuses(reporter: User) -> list[Status]:
     """check statues for moderation flags"""
     status_rules = AutoMod.objects.filter(flag_statuses=True).values_list(
         "string_match", flat=True

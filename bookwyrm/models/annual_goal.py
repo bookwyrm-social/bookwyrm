@@ -1,16 +1,22 @@
 """ How many books do you want to read this year """
 from django.core.validators import MinValueValidator
 from django.db import models
+from django.db.models import QuerySet
 from django.utils import timezone
+from typing_extensions import TypedDict
 
-from bookwyrm.models.status import Review
 from .base_model import BookWyrmModel
-from . import fields, Review
+from . import fields, Review, ReadThrough
 
 
-def get_current_year():
+def get_current_year() -> int:
     """sets default year for annual goal to this year"""
     return timezone.now().year
+
+
+class Progress(TypedDict):
+    count: int
+    percent: int
 
 
 class AnnualGoal(BookWyrmModel):
@@ -28,12 +34,12 @@ class AnnualGoal(BookWyrmModel):
 
         unique_together = ("user", "year")
 
-    def get_remote_id(self):
+    def get_remote_id(self) -> str:
         """put the year in the path"""
         return f"{self.user.remote_id}/goal/{self.year}"
 
     @property
-    def books(self):
+    def books(self) -> QuerySet[ReadThrough]:
         """the books you've read this year"""
         return (
             self.user.readthrough_set.filter(
@@ -45,7 +51,7 @@ class AnnualGoal(BookWyrmModel):
         )
 
     @property
-    def ratings(self):
+    def ratings(self) -> dict[int, fields.DecimalField]:
         """ratings for books read this year"""
         book_ids = [r.book.id for r in self.books]
         reviews = Review.objects.filter(
@@ -55,13 +61,13 @@ class AnnualGoal(BookWyrmModel):
         return {r.book_id: r.rating for r in reviews}
 
     @property
-    def progress(self):
+    def progress(self) -> Progress:
         """how many books you've read this year"""
         count = self.user.readthrough_set.filter(
             finish_date__year__gte=self.year,
             finish_date__year__lt=self.year + 1,
         ).count()
-        return {
-            "count": count,
-            "percent": int(float(count / self.goal) * 100),
-        }
+        return Progress(
+            count=count,
+            percent=int(float(count / self.goal) * 100),
+        )

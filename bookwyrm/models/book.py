@@ -1,5 +1,7 @@
 """ database schema for books and shelves """
+from __future__ import annotations
 import re
+from typing import Tuple, Any
 
 from django.contrib.postgres.search import SearchVectorField
 from django.contrib.postgres.indexes import GinIndex
@@ -69,17 +71,17 @@ class BookDataModel(ObjectMixin, BookWyrmModel):
     )
 
     @property
-    def openlibrary_link(self):
+    def openlibrary_link(self) -> str:
         """generate the url from the openlibrary id"""
         return f"https://openlibrary.org/books/{self.openlibrary_key}"
 
     @property
-    def inventaire_link(self):
+    def inventaire_link(self) -> str:
         """generate the url from the inventaire id"""
         return f"https://inventaire.io/entity/{self.inventaire_id}"
 
     @property
-    def isfdb_link(self):
+    def isfdb_link(self) -> str:
         """generate the url from the isfdb id"""
         return f"https://www.isfdb.org/cgi-bin/title.cgi?{self.isfdb}"
 
@@ -88,7 +90,7 @@ class BookDataModel(ObjectMixin, BookWyrmModel):
 
         abstract = True
 
-    def save(self, *args, **kwargs):
+    def save(self, *args: Tuple[Any, ...], **kwargs: dict[str, Any]) -> None:
         """ensure that the remote_id is within this instance"""
         if self.id:
             self.remote_id = self.get_remote_id()
@@ -98,7 +100,9 @@ class BookDataModel(ObjectMixin, BookWyrmModel):
         return super().save(*args, **kwargs)
 
     # pylint: disable=arguments-differ
-    def broadcast(self, activity, sender, software="bookwyrm", **kwargs):
+    def broadcast(
+        self, activity, sender, software: str = "bookwyrm", **kwargs: dict[str, Any]
+    ) -> None:
         """only send book data updates to other bookwyrm instances"""
         super().broadcast(activity, sender, software=software, **kwargs)
 
@@ -172,17 +176,17 @@ class Book(BookDataModel):
         )
 
     @property
-    def author_text(self):
+    def author_text(self) -> str:
         """format a list of authors"""
         return ", ".join(a.name for a in self.authors.all())
 
     @property
-    def latest_readthrough(self):
+    def latest_readthrough(self) -> ReadThrough:
         """most recent readthrough activity"""
         return self.readthrough_set.order_by("-updated_date").first()
 
     @property
-    def edition_info(self):
+    def edition_info(self) -> str:
         """properties of this edition, as a string"""
         items = [
             self.physical_format if hasattr(self, "physical_format") else None,
@@ -195,21 +199,21 @@ class Book(BookDataModel):
         return ", ".join(i for i in items if i)
 
     @property
-    def alt_text(self):
+    def alt_text(self) -> str:
         """image alt test"""
         text = self.title
         if self.edition_info:
             text += f" ({self.edition_info})"
         return text
 
-    def save(self, *args, **kwargs):
+    def save(self, *args: Tuple[Any, ...], **kwargs: dict[str, Any]) -> None:
         """can't be abstract for query reasons, but you shouldn't USE it"""
         if not isinstance(self, Edition) and not isinstance(self, Work):
             raise ValueError("Books should be added as Editions or Works")
 
         return super().save(*args, **kwargs)
 
-    def get_remote_id(self):
+    def get_remote_id(self) -> str:
         """editions and works both use "book" instead of model_name"""
         return f"https://{DOMAIN}/book/{self.id}"
 
@@ -235,7 +239,7 @@ class Work(OrderedCollectionPageMixin, Book):
         max_length=255, blank=True, null=True, deduplication_field=True
     )
 
-    def save(self, *args, **kwargs):
+    def save(self, *args: Tuple[Any, ...], **kwargs: dict[str, Any]) -> None:
         """set some fields on the edition object"""
         # set rank
         for edition in self.editions.all():
@@ -243,11 +247,11 @@ class Work(OrderedCollectionPageMixin, Book):
         return super().save(*args, **kwargs)
 
     @property
-    def default_edition(self):
+    def default_edition(self) -> Edition:
         """in case the default edition is not set"""
         return self.editions.order_by("-edition_rank").first()
 
-    def author_edition(self, author):
+    def author_edition(self, author: Author) -> Edition:
         """in case the default edition doesn't have the required author"""
         return self.editions.filter(authors=author).order_by("-edition_rank").first()
 
@@ -318,7 +322,7 @@ class Edition(Book):
     serialize_reverse_fields = [("file_links", "fileLinks", "-created_date")]
     deserialize_reverse_fields = [("file_links", "fileLinks")]
 
-    def get_rank(self):
+    def get_rank(self) -> int:
         """calculate how complete the data is on this edition"""
         rank = 0
         # big ups for having a cover
@@ -426,9 +430,9 @@ def isbn_13_to_10(isbn_13):
         return None
     checkdigit = checksum % 11
     checkdigit = 11 - checkdigit
-    if checkdigit == 10:
-        checkdigit = "X"
-    return converted + str(checkdigit)
+    checkdigitstr = "X" if checkdigit == 10 else str(checkdigit)
+
+    return converted + checkdigitstr
 
 
 # pylint: disable=unused-argument
@@ -445,3 +449,8 @@ def preview_image(instance, *args, **kwargs):
         transaction.on_commit(
             lambda: generate_edition_preview_image_task.delay(instance.id)
         )
+
+
+# Prevent circular import
+from .author import Author
+from .readthrough import ReadThrough

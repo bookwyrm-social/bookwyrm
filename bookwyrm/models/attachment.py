@@ -1,17 +1,19 @@
 """ media that is posted in the app """
+from typing import Optional
+
 from django.db import models
 
 from bookwyrm import activitypub
 from .activitypub_mixin import ActivitypubMixin
 from .base_model import BookWyrmModel
-from . import fields
+from . import fields, Status
 
 
 class Attachment(ActivitypubMixin, BookWyrmModel):
     """an image (or, in the future, video etc) associated with a status"""
 
     status = models.ForeignKey(
-        "Status", on_delete=models.CASCADE, related_name="attachments", null=True
+        Status, on_delete=models.CASCADE, related_name="attachments", null=True
     )
     reverse_unfurl = True
 
