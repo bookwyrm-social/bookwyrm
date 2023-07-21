@@ -3,6 +3,7 @@ from django.db import models
 from django.db.models import Q
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+from django.db.models.query import QuerySet
 
 from .base_model import BookWyrmModel
 
@@ -31,7 +32,7 @@ class Announcement(BookWyrmModel):
     )
 
     @classmethod
-    def active_announcements(cls):
+    def active_announcements(cls) -> QuerySet["Announcement"]:
         """announcements that should be displayed"""
         now = timezone.now()
         return cls.objects.filter(

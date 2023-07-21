@@ -1,10 +1,13 @@
 """ base model with default fields """
+from __future__ import annotations
 import base64
+from typing import Optional, Tuple, Any
+
 from Crypto import Random
 
 from django.core.exceptions import PermissionDenied
 from django.db import models
-from django.db.models import Q
+from django.db.models import Q, QuerySet
 from django.dispatch import receiver
 from django.http import Http404
 from django.utils.translation import gettext_lazy as _
@@ -24,7 +27,7 @@ DeactivationReason = [
 ]
 
 
-def new_access_code():
+def new_access_code() -> str:
     """the identifier for a user invite"""
     return base64.b32encode(Random.get_random_bytes(5)).decode("ascii")
 
@@ -36,14 +39,14 @@ class BookWyrmModel(models.Model):
     updated_date = models.DateTimeField(auto_now=True)
     remote_id = RemoteIdField(null=True, activitypub_field="id")
 
-    def get_remote_id(self):
+    def get_remote_id(self) -> str:
         """generate the url that resolves to the local object, without a slug"""
         base_path = f"https://{DOMAIN}"
         if hasattr(self, "user"):
             base_path = f"{base_path}{self.user.local_path}"
 
         model_name = type(self).__name__.lower()
-        return f"{base_path}/{model_name}/{self.id}"
+        return f"{base_path}/{model_name}/{self.id}"  # TODO Does BookWyrmModel always have a field id?
 
     class Meta:
         """this is just here to provide default fields for other models"""
@@ -51,7 +54,7 @@ class BookWyrmModel(models.Model):
         abstract = True
 
     @property
-    def local_path(self):
+    def local_path(self) -> str:
         """how to link to this object in the local app, with a slug"""
         local = self.get_remote_id().replace(f"https://{DOMAIN}", "")
 
@@ -67,7 +70,7 @@ class BookWyrmModel(models.Model):
 
         return local
 
-    def raise_visible_to_user(self, viewer):
+    def raise_visible_to_user(self, viewer: User) -> None:
         """is a user authorized to view an object?"""
         # make sure this is an object with privacy owned by a user
         if not hasattr(self, "user") or not hasattr(self, "privacy"):
@@ -114,7 +117,7 @@ class BookWyrmModel(models.Model):
 
         raise Http404()
 
-    def raise_not_editable(self, viewer):
+    def raise_not_editable(self, viewer: User) -> None:
         """does this user have permission to edit this object? liable to be overwritten
         by models that inherit this base model class"""
         if not hasattr(self, "user"):
@@ -126,7 +129,7 @@ class BookWyrmModel(models.Model):
 
         raise PermissionDenied()
 
-    def raise_not_deletable(self, viewer):
+    def raise_not_deletable(self, viewer: User) -> None:
         """does this user have permission to delete this object? liable to be
         overwritten by models that inherit this base model class"""
         if not hasattr(self, "user"):
@@ -139,11 +142,16 @@ class BookWyrmModel(models.Model):
         raise PermissionDenied()
 
     @classmethod
-    def privacy_filter(cls, viewer, privacy_levels=None):
+    def privacy_filter(
+        cls, viewer: User, privacy_levels: Optional[list[str]] = None
+    ) -> QuerySet[BookWyrmModel]:
         """filter objects that have "user" and "privacy" fields"""
-        queryset = cls.objects
-        if hasattr(queryset, "select_subclasses"):
-            queryset = queryset.select_subclasses()
+        if hasattr(cls.objects, "select_subclasses"):
+            queryset = (
+                cls.objects.select_subclasses()
+            )  # TODO Does this return a QuerySet?
+        else:
+            queryset = cls.objects.all()
 
         privacy_levels = privacy_levels or ["public", "unlisted", "followers", "direct"]
         # you can't see followers only or direct messages if you're not logged in
@@ -170,7 +178,9 @@ class BookWyrmModel(models.Model):
         return queryset
 
     @classmethod
-    def followers_filter(cls, queryset, viewer):
+    def followers_filter(
+        cls, queryset: QuerySet[BookWyrmModel], viewer: User
+    ) -> QuerySet[BookWyrmModel]:
         """Override-able filter for "followers" privacy level"""
         return queryset.exclude(
             ~Q(  # user isn't following and it isn't their own status
@@ -180,14 +190,25 @@ class BookWyrmModel(models.Model):
         )
 
     @classmethod
-    def direct_filter(cls, queryset, viewer):
+    def direct_filter(
+        cls, queryset: QuerySet[BookWyrmModel], viewer: User
+    ) -> QuerySet[BookWyrmModel]:
         """Override-able filter for "direct" privacy level"""
         return queryset.exclude(~Q(user=viewer), privacy="direct")
 
 
+from .user import User
+
+# Import at the end to prevent circular import
 @receiver(models.signals.post_save)
 # pylint: disable=unused-argument
-def set_remote_id(sender, instance, created, *args, **kwargs):
+def set_remote_id(
+    sender: Optional[object],
+    instance: BookWyrmModel,
+    created: bool,
+    *args: Tuple[Any, ...],
+    **kwargs: dict[str, Any],
+) -> None:
     """set the remote_id after save (when the id is available)"""
     if not created or not hasattr(instance, "get_remote_id"):
         return

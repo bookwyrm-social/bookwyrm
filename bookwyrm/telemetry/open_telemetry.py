@@ -1,6 +1,6 @@
 from opentelemetry import trace
 from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
-from opentelemetry.sdk.trace import TracerProvider
+from opentelemetry.sdk.trace import TracerProvider, Tracer
 from opentelemetry.sdk.trace.export import BatchSpanProcessor, ConsoleSpanExporter
 
 from bookwyrm import settings
@@ -16,19 +16,19 @@ elif settings.OTEL_EXPORTER_OTLP_ENDPOINT:
     )
 
 
-def instrumentDjango():
+def instrumentDjango() -> None:
     from opentelemetry.instrumentation.django import DjangoInstrumentor
 
     DjangoInstrumentor().instrument()
 
 
-def instrumentPostgres():
+def instrumentPostgres() -> None:
     from opentelemetry.instrumentation.psycopg2 import Psycopg2Instrumentor
 
     Psycopg2Instrumentor().instrument()
 
 
-def instrumentCelery():
+def instrumentCelery() -> None:
     from opentelemetry.instrumentation.celery import CeleryInstrumentor
     from celery.signals import worker_process_init
 
@@ -37,5 +37,5 @@ def instrumentCelery():
         CeleryInstrumentor().instrument()
 
 
-def tracer():
+def tracer() -> Tracer:
     return trace.get_tracer(__name__)

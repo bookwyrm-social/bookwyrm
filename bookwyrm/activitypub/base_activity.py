@@ -2,11 +2,15 @@
 from dataclasses import dataclass, fields, MISSING
 from json import JSONEncoder
 import logging
+from typing import Optional, Type
+
 import requests
 
 from django.apps import apps
 from django.db import IntegrityError, transaction
+from django.db.models import Model
 from django.utils.http import http_date
+from typing_extensions import TypeVar
 
 from bookwyrm import models
 from bookwyrm.connectors import ConnectorException, get_data
@@ -58,6 +62,10 @@ def naive_parse(activity_objects, activity_json, serializer=None):
     return serializer(activity_objects=activity_objects, **activity_json)
 
 
+# TODO This should be more specific, but what should it be?
+TModel = TypeVar("TModel", bound=Model)
+
+
 @dataclass(init=False)
 class ActivityObject:
     """actor activitypub json"""
@@ -101,13 +109,13 @@ class ActivityObject:
     # pylint: disable=too-many-locals,too-many-branches,too-many-arguments
     def to_model(
         self,
-        model=None,
-        instance=None,
-        allow_create=True,
-        save=True,
-        overwrite=True,
-        allow_external_connections=True,
-    ):
+        model: Optional[Type[TModel]] = None,
+        instance: Optional[TModel] = None,
+        allow_create: bool = True,
+        save: bool = True,
+        overwrite: bool = True,
+        allow_external_connections: bool = True,
+    ) -> Optional[TModel]:
         """convert from an activity to a model instance. Args:
         model: the django model that this object is being converted to
             (will guess if not known)
