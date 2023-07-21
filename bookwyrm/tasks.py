@@ -10,11 +10,19 @@ app = Celery(
     "tasks", broker=settings.CELERY_BROKER_URL, backend=settings.CELERY_RESULT_BACKEND
 )
 
-# priorities
+# priorities - for backwards compatibility, will be removed next release
 LOW = "low_priority"
 MEDIUM = "medium_priority"
 HIGH = "high_priority"
-# import items get their own queue because they're such a pain in the ass
+
+STREAMS = "streams"
+IMAGES = "images"
+SUGGESTED_USERS = "suggested_users"
+EMAIL = "email"
+CONNECTORS = "connectors"
+LISTS = "lists"
+INBOX = "inbox"
 IMPORTS = "imports"
-# I keep making more queues?? this one broadcasting out
+IMPORT_TRIGGERED = "import_triggered"
 BROADCAST = "broadcast"
+MISC = "misc"

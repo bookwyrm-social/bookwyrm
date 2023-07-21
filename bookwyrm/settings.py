@@ -12,7 +12,7 @@ from django.core.exceptions import ImproperlyConfigured
 env = Env()
 env.read_env()
 DOMAIN = env("DOMAIN")
-VERSION = "0.6.3"
+VERSION = "0.6.4"
 
 RELEASE_API = env(
     "RELEASE_API",
@@ -22,7 +22,7 @@ RELEASE_API = env(
 PAGE_LENGTH = env.int("PAGE_LENGTH", 15)
 DEFAULT_LANGUAGE = env("DEFAULT_LANGUAGE", "English")
 
-JS_CACHE = "d993847c"
+JS_CACHE = "b972a43c"
 
 # email
 EMAIL_BACKEND = env("EMAIL_BACKEND", "django.core.mail.backends.smtp.EmailBackend")
@@ -312,6 +312,9 @@ LANGUAGES = [
     ("zh-hant", _("繁體中文 (Traditional Chinese)")),
 ]
 
+LANGUAGE_ARTICLES = {
+    "English": {"the", "a", "an"},
+}
 
 TIME_ZONE = "UTC"
 
