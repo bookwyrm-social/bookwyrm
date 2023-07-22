@@ -25,6 +25,7 @@ prettier
 eslint
 stylelint
 formatters
+mypy
 collectstatic_watch
 populate_streams
 populate_lists_streams
