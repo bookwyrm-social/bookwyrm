@@ -14,7 +14,6 @@ from bookwyrm import forms, models
 from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.connectors import connector_manager, ConnectorException
 from bookwyrm.connectors.abstract_connector import get_image
-from bookwyrm.isbn.isbn import hyphenator_singleton as hyphenator
 from bookwyrm.settings import PAGE_LENGTH
 from bookwyrm.views.helpers import is_api_request, maybe_redirect_local_path
 
@@ -91,7 +90,6 @@ class Book(View):
             "rating": reviews.aggregate(Avg("rating"))["rating__avg"],
             "lists": lists,
             "update_error": kwargs.get("update_error", False),
-            "hyphenated_isbn13": hyphenator.hyphenate(book.isbn_13),
         }
 
         if request.user.is_authenticated:

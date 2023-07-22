@@ -534,11 +534,11 @@ let BookWyrm = new (class {
             navigator.clipboard.writeText(text);
             tooltipEl.style.visibility = "visible";
             tooltipEl.style.opacity = 1;
-            setTimeout(function() {
+            setTimeout(function () {
                 tooltipEl.style.visibility = "hidden";
                 tooltipEl.style.opacity = 0;
-            }, 3000)
-        })
+            }, 3000);
+        });
     }
 
     /**
