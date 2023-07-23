@@ -530,6 +530,7 @@ let BookWyrm = new (class {
     copyWithTooltip(copyButtonEl) {
         const text = document.getElementById(copyButtonEl.dataset.contentId).innerHTML;
         const tooltipEl = document.getElementById(copyButtonEl.dataset.tooltipId);
+        
         copyButtonEl.addEventListener("click", () => {
             navigator.clipboard.writeText(text);
             tooltipEl.style.visibility = "visible";
