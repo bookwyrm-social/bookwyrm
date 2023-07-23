@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-05-30 17:48+0000\n"
-"PO-Revision-Date: 2023-07-23 10:13\n"
+"PO-Revision-Date: 2023-07-23 11:09\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Dutch\n"
 "Language: nl\n"
@@ -2176,7 +2176,7 @@ msgstr "Voeg nieuwe leden toe!"
 #, python-format
 msgid "%(mutuals)s follower you follow"
 msgid_plural "%(mutuals)s followers you follow"
-msgstr[0] ""
+msgstr[0] "%(mutuals)s volger die jij volgt"
 msgstr[1] "%(mutuals)s volgers die jij volgt"
 
 #: bookwyrm/templates/groups/suggested_users.html:27
@@ -2184,8 +2184,8 @@ msgstr[1] "%(mutuals)s volgers die jij volgt"
 #, python-format
 msgid "%(shared_books)s book on your shelves"
 msgid_plural "%(shared_books)s books on your shelves"
-msgstr[0] ""
-msgstr[1] "%(shared_books)s boeken op je planken"
+msgstr[0] "%(shared_books)s boek op je boekenplanken"
+msgstr[1] "%(shared_books)s boeken op je boekenplanken"
 
 #: bookwyrm/templates/groups/suggested_users.html:43
 #, python-format
@@ -5135,15 +5135,15 @@ msgstr ""
 
 #: bookwyrm/templates/settings/ip_blocklist/ip_blocklist.html:46
 msgid "No IP addresses currently blocked"
-msgstr ""
+msgstr "Er zijn momenteel geen IP-adressen geblokkeerd"
 
 #: bookwyrm/templates/settings/layout.html:4
 msgid "Administration"
-msgstr ""
+msgstr "Beheer"
 
 #: bookwyrm/templates/settings/layout.html:31
 msgid "Manage Users"
-msgstr ""
+msgstr "Gebruikers beheren"
 
 #: bookwyrm/templates/settings/layout.html:53
 msgid "Moderation"
@@ -5238,7 +5238,7 @@ msgstr "Instellingen opgeslagen"
 #: bookwyrm/templates/settings/registration_limited.html:22
 #: bookwyrm/templates/settings/site.html:30
 msgid "Unable to save settings"
-msgstr ""
+msgstr "Instellingen opslaan mislukt"
 
 #: bookwyrm/templates/settings/registration.html:38
 msgid "Allow registration"
@@ -5254,21 +5254,21 @@ msgstr "Gebruikers moeten hun e-mailadres bevestigen"
 
 #: bookwyrm/templates/settings/registration.html:63
 msgid "(Recommended if registration is open)"
-msgstr ""
+msgstr "(Aanbevolen als registratie publiek is)"
 
 #: bookwyrm/templates/settings/registration.html:68
 msgid "Allow invite requests"
-msgstr ""
+msgstr "Uitnodigingsverzoeken toestaan"
 
 #: bookwyrm/templates/settings/registration.html:72
 #: bookwyrm/templates/settings/registration_limited.html:42
 msgid "Invite request text:"
-msgstr ""
+msgstr "Tekst uitnodigingsverzoek:"
 
 #: bookwyrm/templates/settings/registration.html:80
 #: bookwyrm/templates/settings/registration_limited.html:50
 msgid "Set a question for invite requests"
-msgstr ""
+msgstr "Stel een vraag in voor uitnodigingsverzoeken"
 
 #: bookwyrm/templates/settings/registration.html:85
 #: bookwyrm/templates/settings/registration_limited.html:55
@@ -5278,7 +5278,7 @@ msgstr "Vraag:"
 #: bookwyrm/templates/settings/registration.html:90
 #: bookwyrm/templates/settings/registration_limited.html:67
 msgid "Registration closed text:"
-msgstr ""
+msgstr "Tekst gesloten registratie:"
 
 #: bookwyrm/templates/settings/registration_limited.html:29
 msgid "Registration is enabled on this instance"
@@ -5298,15 +5298,15 @@ msgstr ""
 
 #: bookwyrm/templates/settings/reports/report.html:36
 msgid "Reported status"
-msgstr ""
+msgstr "Gemelde status"
 
 #: bookwyrm/templates/settings/reports/report.html:38
 msgid "Status has been deleted"
-msgstr ""
+msgstr "Status is verwijderd"
 
 #: bookwyrm/templates/settings/reports/report.html:47
 msgid "Reported links"
-msgstr ""
+msgstr "Gemelde links"
 
 #: bookwyrm/templates/settings/reports/report.html:65
 msgid "Moderator Comments"
@@ -5320,22 +5320,22 @@ msgstr "Opmerking"
 #: bookwyrm/templates/settings/reports/report_header.html:6
 #, python-format
 msgid "Report #%(report_id)s: Status posted by @%(username)s"
-msgstr ""
+msgstr "Melding #%(report_id)s: Status geplaatst door @%(username)s"
 
 #: bookwyrm/templates/settings/reports/report_header.html:13
 #, python-format
 msgid "Report #%(report_id)s: Link added by @%(username)s"
-msgstr ""
+msgstr "Melding #%(report_id)s: Link toegevoegd door @%(username)s"
 
 #: bookwyrm/templates/settings/reports/report_header.html:17
 #, python-format
 msgid "Report #%(report_id)s: Link domain"
-msgstr ""
+msgstr "Melding #%(report_id)s: Link domein"
 
 #: bookwyrm/templates/settings/reports/report_header.html:24
 #, python-format
 msgid "Report #%(report_id)s: User @%(username)s"
-msgstr ""
+msgstr "Melding #%(report_id)s: Gebruiker @%(username)s"
 
 #: bookwyrm/templates/settings/reports/report_links_table.html:17
 msgid "Block domain"
@@ -5352,33 +5352,33 @@ msgstr "Gerapporteerd door <a href=\"%(path)s\">@%(username)s</a>"
 
 #: bookwyrm/templates/settings/reports/report_preview.html:34
 msgid "Re-open"
-msgstr ""
+msgstr "Heropenen"
 
 #: bookwyrm/templates/settings/reports/report_preview.html:36
 msgid "Resolve"
-msgstr ""
+msgstr "Oplossen"
 
 #: bookwyrm/templates/settings/reports/reports.html:6
 #, python-format
 msgid "Reports: %(instance_name)s"
-msgstr ""
+msgstr "Meldingen: %(instance_name)s"
 
 #: bookwyrm/templates/settings/reports/reports.html:14
 #, python-format
 msgid "Reports: <small>%(instance_name)s</small>"
-msgstr ""
+msgstr "Meldingen: <small>%(instance_name)s</small>"
 
 #: bookwyrm/templates/settings/reports/reports.html:25
 msgid "Open"
-msgstr ""
+msgstr "Open"
 
 #: bookwyrm/templates/settings/reports/reports.html:28
 msgid "Resolved"
-msgstr ""
+msgstr "Opgelost"
 
 #: bookwyrm/templates/settings/reports/reports.html:37
 msgid "No reports found."
-msgstr ""
+msgstr "Geen meldingen gevonden."
 
 #: bookwyrm/templates/settings/site.html:10
 #: bookwyrm/templates/settings/site.html:43
@@ -5558,17 +5558,17 @@ msgstr ""
 
 #: bookwyrm/templates/settings/users/user_admin.html:86
 msgid "Deleted"
-msgstr ""
+msgstr "Verwijderd"
 
 #: bookwyrm/templates/settings/users/user_admin.html:92
 #: bookwyrm/templates/settings/users/user_info.html:32
 msgid "Inactive"
-msgstr ""
+msgstr "Inactief"
 
 #: bookwyrm/templates/settings/users/user_admin.html:101
 #: bookwyrm/templates/settings/users/user_info.html:127
 msgid "Not set"
-msgstr ""
+msgstr "Niet ingesteld"
 
 #: bookwyrm/templates/settings/users/user_info.html:16
 msgid "View user profile"
@@ -5576,19 +5576,19 @@ msgstr "Gebruikersprofiel bekijken"
 
 #: bookwyrm/templates/settings/users/user_info.html:19
 msgid "Go to user admin"
-msgstr ""
+msgstr "Ga naar gebruikersbeheer"
 
 #: bookwyrm/templates/settings/users/user_info.html:40
 msgid "Local"
-msgstr ""
+msgstr "Lokaal"
 
 #: bookwyrm/templates/settings/users/user_info.html:42
 msgid "Remote"
-msgstr ""
+msgstr "Extern"
 
 #: bookwyrm/templates/settings/users/user_info.html:51
 msgid "User details"
-msgstr ""
+msgstr "Gebruikersdetails"
 
 #: bookwyrm/templates/settings/users/user_info.html:55
 msgid "Email:"
@@ -5600,15 +5600,15 @@ msgstr "(Bekijk meldingen)"
 
 #: bookwyrm/templates/settings/users/user_info.html:71
 msgid "Blocked by count:"
-msgstr ""
+msgstr "Aantal geblokkeerd:"
 
 #: bookwyrm/templates/settings/users/user_info.html:74
 msgid "Date added:"
-msgstr ""
+msgstr "Datum toegevoegd:"
 
 #: bookwyrm/templates/settings/users/user_info.html:77
 msgid "Last active date:"
-msgstr ""
+msgstr "Laatst actieve datum:"
 
 #: bookwyrm/templates/settings/users/user_info.html:80
 msgid "Manually approved followers:"
@@ -5708,7 +5708,7 @@ msgstr ""
 
 #: bookwyrm/templates/setup/config.html:52 bookwyrm/templates/user_menu.html:49
 msgid "Settings"
-msgstr ""
+msgstr "Instellingen"
 
 #: bookwyrm/templates/setup/config.html:56
 msgid "Instance domain:"
@@ -5716,7 +5716,7 @@ msgstr ""
 
 #: bookwyrm/templates/setup/config.html:63
 msgid "Protocol:"
-msgstr ""
+msgstr "Protocol:"
 
 #: bookwyrm/templates/setup/config.html:81
 msgid "Using S3:"
@@ -5748,7 +5748,7 @@ msgstr ""
 
 #: bookwyrm/templates/setup/config.html:148
 msgid "View installation instructions"
-msgstr ""
+msgstr "Bekijk installatie-instructies"
 
 #: bookwyrm/templates/setup/layout.html:5
 msgid "Instance Setup"
@@ -5818,7 +5818,7 @@ msgstr "Uitgelezen"
 #: bookwyrm/templates/shelf/shelf.html:154
 #: bookwyrm/templates/shelf/shelf.html:184
 msgid "Until"
-msgstr ""
+msgstr "Tot"
 
 #: bookwyrm/templates/shelf/shelf.html:210
 msgid "This shelf is empty."
@@ -5840,7 +5840,7 @@ msgstr "Verwijder @%(username)s"
 #: bookwyrm/templates/snippets/announcement.html:28
 #, python-format
 msgid "Posted by <a href=\"%(user_path)s\">%(username)s</a>"
-msgstr ""
+msgstr "Geplaatst door <a href=\"%(user_path)s\">%(username)s</a>"
 
 #: bookwyrm/templates/snippets/authors.html:22
 #: bookwyrm/templates/snippets/trimmed_list.html:14
@@ -5862,16 +5862,16 @@ msgstr ""
 #: bookwyrm/templates/snippets/boost_button.html:20
 #: bookwyrm/templates/snippets/boost_button.html:21
 msgid "Boost"
-msgstr ""
+msgstr "Boost"
 
 #: bookwyrm/templates/snippets/boost_button.html:33
 #: bookwyrm/templates/snippets/boost_button.html:34
 msgid "Un-boost"
-msgstr ""
+msgstr "Ontboost"
 
 #: bookwyrm/templates/snippets/create_status.html:36
 msgid "Quote"
-msgstr ""
+msgstr "Citaat"
 
 #: bookwyrm/templates/snippets/create_status/comment.html:15
 msgid "Some thoughts on the book"
@@ -5906,7 +5906,7 @@ msgstr "Reageren"
 
 #: bookwyrm/templates/snippets/create_status/content_field.html:18
 msgid "Content"
-msgstr ""
+msgstr "Inhoud"
 
 #: bookwyrm/templates/snippets/create_status/content_warning_field.html:9
 msgid "Include spoiler alert"
@@ -5927,7 +5927,7 @@ msgstr "Opmerking:"
 
 #: bookwyrm/templates/snippets/create_status/post_options_block.html:18
 msgid "Post"
-msgstr ""
+msgstr "Plaatsen"
 
 #: bookwyrm/templates/snippets/create_status/quotation.html:16
 msgid "Quote:"
@@ -5936,11 +5936,11 @@ msgstr "Citaat:"
 #: bookwyrm/templates/snippets/create_status/quotation.html:24
 #, python-format
 msgid "An excerpt from '%(book_title)s'"
-msgstr ""
+msgstr "Een uittreksel uit '%(book_title)s'"
 
 #: bookwyrm/templates/snippets/create_status/quotation.html:31
 msgid "Position:"
-msgstr ""
+msgstr "Positie:"
 
 #: bookwyrm/templates/snippets/create_status/quotation.html:44
 msgid "On page:"
@@ -5948,11 +5948,11 @@ msgstr "Op pagina:"
 
 #: bookwyrm/templates/snippets/create_status/quotation.html:50
 msgid "At percent:"
-msgstr ""
+msgstr "Bij percentage:"
 
 #: bookwyrm/templates/snippets/create_status/quotation.html:69
 msgid "to"
-msgstr ""
+msgstr "tot"
 
 #: bookwyrm/templates/snippets/create_status/review.html:24
 #, python-format
@@ -5975,7 +5975,7 @@ msgstr ""
 
 #: bookwyrm/templates/snippets/filters_panel/filters_panel.html:5
 msgid "Filters"
-msgstr ""
+msgstr "Filters"
 
 #: bookwyrm/templates/snippets/filters_panel/filters_panel.html:10
 #: bookwyrm/templates/snippets/filters_panel/filters_panel.html:17
@@ -6001,30 +6001,30 @@ msgstr ""
 
 #: bookwyrm/templates/snippets/follow_button.html:31
 msgid "Undo follow request"
-msgstr ""
+msgstr "Volgverzoek ongedaan maken"
 
 #: bookwyrm/templates/snippets/follow_button.html:36
 #, python-format
 msgid "Unfollow @%(username)s"
-msgstr ""
+msgstr "Ontvolg @%(username)s"
 
 #: bookwyrm/templates/snippets/follow_button.html:38
 msgid "Unfollow"
-msgstr ""
+msgstr "Ontvolgen"
 
 #: bookwyrm/templates/snippets/follow_request_buttons.html:7
 #: bookwyrm/templates/snippets/join_invitation_buttons.html:9
 msgid "Accept"
-msgstr ""
+msgstr "Accepteren"
 
 #: bookwyrm/templates/snippets/footer.html:16
 msgid "Documentation"
-msgstr ""
+msgstr "Documentatie"
 
 #: bookwyrm/templates/snippets/footer.html:42
 #, python-format
 msgid "Support %(site_name)s on <a href=\"%(support_link)s\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">%(support_title)s</a>"
-msgstr ""
+msgstr "Steun %(site_name)s op <a href=\"%(support_link)s\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">%(support_title)s</a>"
 
 #: bookwyrm/templates/snippets/footer.html:49
 msgid "BookWyrm's source code is freely available. You can contribute or report issues on <a href=\"https://github.com/bookwyrm-social/bookwyrm\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">GitHub</a>."
@@ -6115,17 +6115,17 @@ msgstr ""
 #: bookwyrm/templates/snippets/goal_progress.html:12
 #, python-format
 msgid "You've read <a href=\"%(path)s\">%(read_count)s of %(goal_count)s books</a>."
-msgstr ""
+msgstr "Je hebt <a href=\"%(path)s\">%(read_count)s van %(goal_count)s boeken</a> gelezen."
 
 #: bookwyrm/templates/snippets/goal_progress.html:14
 #, python-format
 msgid "%(username)s has read <a href=\"%(path)s\">%(read_count)s of %(goal_count)s books</a>."
-msgstr ""
+msgstr "%(username)s heeft <a href=\"%(path)s\">%(read_count)s van %(goal_count)s boeken</a> gelezen."
 
 #: bookwyrm/templates/snippets/page_text.html:8
 #, python-format
 msgid "page %(page)s of %(total_pages)s"
-msgstr ""
+msgstr "pagina %(page)s van %(total_pages)s"
 
 #: bookwyrm/templates/snippets/page_text.html:14
 #, python-format
@@ -6142,19 +6142,19 @@ msgstr "Vorige"
 
 #: bookwyrm/templates/snippets/pagination.html:28
 msgid "Older"
-msgstr ""
+msgstr "Ouder"
 
 #: bookwyrm/templates/snippets/privacy-icons.html:12
 msgid "Followers-only"
-msgstr ""
+msgstr "Alleen volgers"
 
 #: bookwyrm/templates/snippets/rate_action.html:5
 msgid "Leave a rating"
-msgstr ""
+msgstr "Geef een beoordeling"
 
 #: bookwyrm/templates/snippets/rate_action.html:20
 msgid "Rate"
-msgstr ""
+msgstr "Beoordelen"
 
 #: bookwyrm/templates/snippets/reading_modals/finish_reading_modal.html:6
 #, python-format
@@ -6163,17 +6163,17 @@ msgstr ""
 
 #: bookwyrm/templates/snippets/reading_modals/form.html:9
 msgid "(Optional)"
-msgstr ""
+msgstr "(Optioneel)"
 
 #: bookwyrm/templates/snippets/reading_modals/progress_update_modal.html:6
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_dropdown_options.html:61
 msgid "Update progress"
-msgstr ""
+msgstr "Voortgang bijwerken"
 
 #: bookwyrm/templates/snippets/reading_modals/start_reading_modal.html:6
 #, python-format
 msgid "Start \"<em>%(book_title)s</em>\""
-msgstr ""
+msgstr "Begin met \"<em>%(book_title)s</em>\""
 
 #: bookwyrm/templates/snippets/reading_modals/stop_reading_modal.html:6
 #, python-format
@@ -6184,16 +6184,16 @@ msgstr ""
 #: bookwyrm/templates/snippets/shelf_selector.html:53
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_options.html:21
 msgid "Stopped reading"
-msgstr ""
+msgstr "Gestopt met lezen"
 
 #: bookwyrm/templates/snippets/reading_modals/want_to_read_modal.html:6
 #, python-format
 msgid "Want to Read \"<em>%(book_title)s</em>\""
-msgstr ""
+msgstr "Wil \"<em>%(book_title)s</em>\" lezen"
 
 #: bookwyrm/templates/snippets/register_form.html:18
 msgid "Choose wisely! Your username cannot be changed."
-msgstr ""
+msgstr "Kies bewust! Je gebruikersnaam kan niet worden gewijzigd."
 
 #: bookwyrm/templates/snippets/register_form.html:66
 msgid "Sign Up"
@@ -6285,7 +6285,7 @@ msgstr ""
 #: bookwyrm/templates/snippets/status/content_status.html:104
 #, python-format
 msgid " - %(endpercent)s%%"
-msgstr ""
+msgstr " - %(endpercent)s%%"
 
 #: bookwyrm/templates/snippets/status/content_status.html:127
 msgid "Open image in new window"
@@ -6368,7 +6368,7 @@ msgstr "stopte met het lezen van <a href=\"%(book_path)s\">%(book)s</a> door <a 
 #: bookwyrm/templates/snippets/status/headers/stopped_reading.html:17
 #, python-format
 msgid "stopped reading <a href=\"%(book_path)s\">%(book)s</a>"
-msgstr ""
+msgstr "gestopt met lezen van <a href=\"%(book_path)s\">%(book)s</a>"
 
 #: bookwyrm/templates/snippets/status/headers/to_read.html:10
 #, python-format
@@ -6378,7 +6378,7 @@ msgstr "wil <a href=\"%(book_path)s\">%(book)s</a> door <a href=\"%(author_path)
 #: bookwyrm/templates/snippets/status/headers/to_read.html:17
 #, python-format
 msgid "wants to read <a href=\"%(book_path)s\">%(book)s</a>"
-msgstr ""
+msgstr "wil <a href=\"%(book_path)s\">%(book)s</a> lezen"
 
 #: bookwyrm/templates/snippets/status/layout.html:24
 #: bookwyrm/templates/snippets/status/status_options.html:17
@@ -6388,7 +6388,7 @@ msgstr "Verwijder status"
 #: bookwyrm/templates/snippets/status/layout.html:57
 #: bookwyrm/templates/snippets/status/layout.html:58
 msgid "Boost status"
-msgstr ""
+msgstr "Boost status"
 
 #: bookwyrm/templates/snippets/status/layout.html:61
 #: bookwyrm/templates/snippets/status/layout.html:62
@@ -6456,12 +6456,12 @@ msgstr ""
 
 #: bookwyrm/templates/user/goal.html:12
 msgid "Edit Goal"
-msgstr ""
+msgstr "Doel bewerken"
 
 #: bookwyrm/templates/user/goal.html:28
 #, python-format
 msgid "%(name)s hasn't set a reading goal for %(year)s."
-msgstr ""
+msgstr "%(name)s heeft geen doel ingesteld voor %(year)s."
 
 #: bookwyrm/templates/user/goal.html:40
 #, python-format
@@ -6530,16 +6530,16 @@ msgstr ""
 
 #: bookwyrm/templates/user/user.html:56
 msgid "View all books"
-msgstr ""
+msgstr "Bekijk alle boeken"
 
 #: bookwyrm/templates/user/user.html:63
 #, python-format
 msgid "%(current_year)s Reading Goal"
-msgstr ""
+msgstr "%(current_year)s Leesdoel"
 
 #: bookwyrm/templates/user/user.html:70
 msgid "User Activity"
-msgstr ""
+msgstr "Gebruikersactiviteit"
 
 #: bookwyrm/templates/user/user.html:76
 msgid "Show RSS Options"
@@ -6590,8 +6590,8 @@ msgstr "%(counter)s volgend"
 #, python-format
 msgid "%(mutuals_display)s follower you follow"
 msgid_plural "%(mutuals_display)s followers you follow"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(mutuals_display)s volger die jij volgt"
+msgstr[1] "%(mutuals_display)s volgers die jij volgt"
 
 #: bookwyrm/templates/user/user_preview.html:49
 msgid "No followers you follow"
@@ -6618,38 +6618,38 @@ msgstr "Boekenlijst: %(name)s"
 #, python-format
 msgid "%(num)d book - by %(user)s"
 msgid_plural "%(num)d books - by %(user)s"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(num)d boek - van %(user)s"
+msgstr[1] "%(num)d boeken - van %(user)s"
 
 #: bookwyrm/templatetags/utilities.py:39
 #, python-format
 msgid "%(title)s: %(subtitle)s"
-msgstr ""
+msgstr "%(title)s: %(subtitle)s"
 
 #: bookwyrm/views/rss_feed.py:35
 #, python-brace-format
 msgid "Status updates from {obj.display_name}"
-msgstr ""
+msgstr "Statusupdates van {obj.display_name}"
 
 #: bookwyrm/views/rss_feed.py:80
 #, python-brace-format
 msgid "Reviews from {obj.display_name}"
-msgstr ""
+msgstr "Recensies van {obj.display_name}"
 
 #: bookwyrm/views/rss_feed.py:122
 #, python-brace-format
 msgid "Quotes from {obj.display_name}"
-msgstr ""
+msgstr "Citaten van {obj.display_name}"
 
 #: bookwyrm/views/rss_feed.py:164
 #, python-brace-format
 msgid "Comments from {obj.display_name}"
-msgstr ""
+msgstr "Opmerkingen van {obj.display_name}"
 
 #: bookwyrm/views/updates.py:45
 #, python-format
 msgid "Load %(count)d unread status"
 msgid_plural "Load %(count)d unread statuses"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Laad %(count)d ongelezen status"
+msgstr[1] "Laad %(count)d ongelezen statussen"
 
