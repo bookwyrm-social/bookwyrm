@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-05-30 17:48+0000\n"
-"PO-Revision-Date: 2023-07-23 11:09\n"
+"PO-Revision-Date: 2023-07-23 12:05\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Dutch\n"
 "Language: nl\n"
@@ -2732,12 +2732,12 @@ msgstr "Geen geldig CSV-bestand"
 #: bookwyrm/templates/import/import.html:20
 #, python-format
 msgid "Currently you are allowed to import %(import_size_limit)s books every %(import_limit_reset)s days."
-msgstr ""
+msgstr "Momenteel mag je %(import_size_limit)s boeken importeren elke %(import_limit_reset)s dagen."
 
 #: bookwyrm/templates/import/import.html:21
 #, python-format
 msgid "You have %(allowed_imports)s left."
-msgstr ""
+msgstr "Je hebt %(allowed_imports)s over."
 
 #: bookwyrm/templates/import/import.html:28
 #, python-format
@@ -2824,7 +2824,7 @@ msgstr "Items"
 
 #: bookwyrm/templates/import/import.html:139
 msgid "No recent imports"
-msgstr ""
+msgstr "Geen recente imports"
 
 #: bookwyrm/templates/import/import_status.html:6
 #: bookwyrm/templates/import/import_status.html:15
@@ -2866,8 +2866,8 @@ msgstr "Stop met importeren"
 #, python-format
 msgid "%(display_counter)s item needs manual approval."
 msgid_plural "%(display_counter)s items need manual approval."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(display_counter)s item moet handmatig worden goedgekeurd."
+msgstr[1] "%(display_counter)s items moeten handmatig worden goedgekeurd."
 
 #: bookwyrm/templates/import/import_status.html:83
 #: bookwyrm/templates/import/manual_review.html:8
@@ -2878,12 +2878,12 @@ msgstr "Artikelen recenseren"
 #, python-format
 msgid "%(display_counter)s item failed to import."
 msgid_plural "%(display_counter)s items failed to import."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(display_counter)s item kon niet worden geïmporteerd."
+msgstr[1] "%(display_counter)s items konden niet worden geïmporteerd."
 
 #: bookwyrm/templates/import/import_status.html:95
 msgid "View and troubleshoot failed items"
-msgstr ""
+msgstr "Mislukte items bekijken en verhelpen"
 
 #: bookwyrm/templates/import/import_status.html:107
 msgid "Row"
@@ -2901,7 +2901,7 @@ msgstr "ISBN"
 
 #: bookwyrm/templates/import/import_status.html:117
 msgid "Openlibrary key"
-msgstr ""
+msgstr "Openlibrary sleutel"
 
 #: bookwyrm/templates/import/import_status.html:121
 #: bookwyrm/templates/shelf/shelf.html:149
@@ -2926,7 +2926,7 @@ msgstr "Boek"
 
 #: bookwyrm/templates/import/import_status.html:142
 msgid "Import preview unavailable."
-msgstr ""
+msgstr "Voorbeeldweergave import niet beschikbaar."
 
 #: bookwyrm/templates/import/import_status.html:150
 msgid "No items currently need review"
@@ -2959,11 +2959,11 @@ msgstr "Import bijwerken"
 #: bookwyrm/templates/import/manual_review.html:5
 #: bookwyrm/templates/import/troubleshoot.html:4
 msgid "Import Troubleshooting"
-msgstr ""
+msgstr "Probleemoplossing importeren"
 
 #: bookwyrm/templates/import/manual_review.html:21
 msgid "Approving a suggestion will permanently add the suggested book to your shelves and associate your reading dates, reviews, and ratings with that book."
-msgstr ""
+msgstr "Door een suggestie goed te keuren, wordt het voorgestelde boek permanent aan je boekenplanken toegevoegd en worden je leesdatums, recensies en beoordelingen aan dat boek gekoppeld."
 
 #: bookwyrm/templates/import/manual_review.html:58
 #: bookwyrm/templates/lists/curate.html:71
@@ -5628,7 +5628,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/users/user_info.html:124
 msgid "View instance"
-msgstr ""
+msgstr "Bekijk instance"
 
 #: bookwyrm/templates/settings/users/user_moderation_actions.html:5
 msgid "Permanently deleted"
@@ -5688,15 +5688,15 @@ msgstr ""
 
 #: bookwyrm/templates/setup/config.html:5
 msgid "Instance Configuration"
-msgstr ""
+msgstr "Instance configuratie"
 
 #: bookwyrm/templates/setup/config.html:7
 msgid "Make sure everything looks right before proceeding"
-msgstr ""
+msgstr "Zorg ervoor dat alles er goed uitziet voordat je doorgaat"
 
 #: bookwyrm/templates/setup/config.html:18
 msgid "You are running BookWyrm in <strong>debug</strong> mode. This should <strong>never</strong> be used in a production environment."
-msgstr ""
+msgstr "Je gebruikt BookWyrm in <strong>debug</strong> modus. Dit moet <strong>nooit</strong> gebruikt worden in een productieomgeving."
 
 #: bookwyrm/templates/setup/config.html:30
 msgid "Your domain appears to be misconfigured. It should not include protocol or slashes."
@@ -5712,7 +5712,7 @@ msgstr "Instellingen"
 
 #: bookwyrm/templates/setup/config.html:56
 msgid "Instance domain:"
-msgstr ""
+msgstr "Instance domein:"
 
 #: bookwyrm/templates/setup/config.html:63
 msgid "Protocol:"
@@ -5720,31 +5720,31 @@ msgstr "Protocol:"
 
 #: bookwyrm/templates/setup/config.html:81
 msgid "Using S3:"
-msgstr ""
+msgstr "Gebruik S3:"
 
 #: bookwyrm/templates/setup/config.html:95
 msgid "Default interface language:"
-msgstr ""
+msgstr "Standaard taal interface:"
 
 #: bookwyrm/templates/setup/config.html:109
 msgid "Enable preview images:"
-msgstr ""
+msgstr "Preview afbeeldingen inschakelen:"
 
 #: bookwyrm/templates/setup/config.html:116
 msgid "Enable image thumbnails:"
-msgstr ""
+msgstr "Miniaturen voor afbeeldingen inschakelen:"
 
 #: bookwyrm/templates/setup/config.html:128
 msgid "Does everything look right?"
-msgstr ""
+msgstr "Ziet alles er goed uit?"
 
 #: bookwyrm/templates/setup/config.html:130
 msgid "This is your last chance to set your domain and protocol."
-msgstr ""
+msgstr "Dit is je laatste kans om je domein en protocol in te stellen."
 
 #: bookwyrm/templates/setup/config.html:144
 msgid "You can change your instance settings in the <code>.env</code> file on your server."
-msgstr ""
+msgstr "Je kan jouw instance instellingen wijzigen in het <code>.env</code> bestand op je server."
 
 #: bookwyrm/templates/setup/config.html:148
 msgid "View installation instructions"
@@ -5752,7 +5752,7 @@ msgstr "Bekijk installatie-instructies"
 
 #: bookwyrm/templates/setup/layout.html:5
 msgid "Instance Setup"
-msgstr ""
+msgstr "Instance Setup"
 
 #: bookwyrm/templates/setup/layout.html:21
 msgid "Installing BookWyrm"
@@ -5790,7 +5790,7 @@ msgstr[1] "%(formatted_count)s boeken"
 #: bookwyrm/templates/shelf/shelf.html:104
 #, python-format
 msgid "(showing %(start)s-%(end)s)"
-msgstr ""
+msgstr "(%(start)s-%(end)s getoond)"
 
 #: bookwyrm/templates/shelf/shelf.html:116
 msgid "Edit shelf"
@@ -6402,7 +6402,7 @@ msgstr ""
 #: bookwyrm/templates/snippets/status/status_options.html:7
 #: bookwyrm/templates/snippets/user_options.html:7
 msgid "More options"
-msgstr ""
+msgstr "Meer opties"
 
 #: bookwyrm/templates/snippets/switch_edition_button.html:5
 msgid "Switch to this edition"
@@ -6410,11 +6410,11 @@ msgstr ""
 
 #: bookwyrm/templates/snippets/table-sort-header.html:6
 msgid "Sorted ascending"
-msgstr ""
+msgstr "Oplopend gesorteerd"
 
 #: bookwyrm/templates/snippets/table-sort-header.html:10
 msgid "Sorted descending"
-msgstr ""
+msgstr "Aflopend gesorteerd"
 
 #: bookwyrm/templates/snippets/trimmed_text.html:17
 msgid "Show more"
@@ -6430,7 +6430,7 @@ msgstr "2FA controle"
 
 #: bookwyrm/templates/two_factor_auth/two_factor_login.html:37
 msgid "Enter the code from your authenticator app:"
-msgstr ""
+msgstr "Voer de code van je authenticatie-app in:"
 
 #: bookwyrm/templates/two_factor_auth/two_factor_login.html:41
 msgid "Confirm and Log In"
@@ -6447,12 +6447,12 @@ msgstr "Je kunt je account beveiligen door het instellen van tweestapsverificati
 #: bookwyrm/templates/user/books_header.html:9
 #, python-format
 msgid "%(username)s's books"
-msgstr ""
+msgstr "Boeken van %(username)s"
 
 #: bookwyrm/templates/user/goal.html:8
 #, python-format
 msgid "%(year)s Reading Progress"
-msgstr ""
+msgstr "%(year)s Voortgang Lezen"
 
 #: bookwyrm/templates/user/goal.html:12
 msgid "Edit Goal"
@@ -6471,7 +6471,7 @@ msgstr "Jouw %(year)s boeken"
 #: bookwyrm/templates/user/goal.html:42
 #, python-format
 msgid "%(username)s's %(year)s Books"
-msgstr ""
+msgstr "De boeken van %(username)s in %(year)s"
 
 #: bookwyrm/templates/user/groups.html:9
 msgid "Your Groups"
