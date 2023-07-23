@@ -1,7 +1,10 @@
 """ basics for an activitypub serializer """
+from __future__ import annotations
 from dataclasses import dataclass, fields, MISSING
 from json import JSONEncoder
 import logging
+from typing import Optional, Type, TypeVar
+
 import requests
 
 from django.apps import apps
@@ -10,6 +13,7 @@ from django.utils.http import http_date
 
 from bookwyrm import models
 from bookwyrm.connectors import ConnectorException, get_data
+from bookwyrm.models.base_model import BookWyrmModel
 from bookwyrm.signatures import make_signature
 from bookwyrm.settings import DOMAIN, INSTANCE_ACTOR_USERNAME
 from bookwyrm.tasks import app, MISC
@@ -58,6 +62,9 @@ def naive_parse(activity_objects, activity_json, serializer=None):
     return serializer(activity_objects=activity_objects, **activity_json)
 
 
+TModel = TypeVar("TModel", bound=BookWyrmModel)
+
+
 @dataclass(init=False)
 class ActivityObject:
     """actor activitypub json"""
@@ -101,13 +108,13 @@ class ActivityObject:
     # pylint: disable=too-many-locals,too-many-branches,too-many-arguments
     def to_model(
         self,
-        model=None,
-        instance=None,
-        allow_create=True,
-        save=True,
-        overwrite=True,
-        allow_external_connections=True,
-    ):
+        model: Optional[Type[TModel]] = None,
+        instance: Optional[TModel] = None,
+        allow_create: bool = True,
+        save: bool = True,
+        overwrite: bool = True,
+        allow_external_connections: bool = True,
+    ) -> Optional[TModel]:
         """convert from an activity to a model instance. Args:
         model: the django model that this object is being converted to
             (will guess if not known)
