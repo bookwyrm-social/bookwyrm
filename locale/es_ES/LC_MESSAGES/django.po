@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-05-30 17:48+0000\n"
-"PO-Revision-Date: 2023-05-30 18:49\n"
+"PO-Revision-Date: 2023-07-26 17:49\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Spanish\n"
 "Language: es\n"
@@ -350,7 +350,7 @@ msgstr "Deutsch (Alemán)"
 
 #: bookwyrm/settings.py:297
 msgid "Esperanto (Esperanto)"
-msgstr ""
+msgstr "Esperanto (Esperanto)"
 
 #: bookwyrm/settings.py:298
 msgid "Español (Spanish)"
@@ -1081,7 +1081,7 @@ msgstr "Agregar libro"
 
 #: bookwyrm/templates/book/edit/edit_book.html:43
 msgid "Failed to save book, see errors below for more information."
-msgstr ""
+msgstr "No se pudo guardar el libro, ver los errores a continuación para más información."
 
 #: bookwyrm/templates/book/edit/edit_book.html:70
 msgid "Confirm Book Info"
@@ -1990,7 +1990,7 @@ msgstr "Libros sugeridos"
 
 #: bookwyrm/templates/get_started/books.html:33
 msgid "Search results"
-msgstr ""
+msgstr "Resultados de la búsqueda"
 
 #: bookwyrm/templates/get_started/books.html:46
 #, python-format
@@ -2072,7 +2072,7 @@ msgstr "Tu cuenta se aparecerá en el directorio, y puede ser recomendado a otro
 
 #: bookwyrm/templates/get_started/users.html:8
 msgid "You can follow users on other BookWyrm instances and federated services like Mastodon."
-msgstr ""
+msgstr "Puedes seguir a los usuarios en otras instancias de BookWyrm y servicios federados como Mastodon."
 
 #: bookwyrm/templates/get_started/users.html:11
 msgid "Search for a user"
@@ -2732,12 +2732,12 @@ msgstr "No es un archivo CSV válido"
 #: bookwyrm/templates/import/import.html:20
 #, python-format
 msgid "Currently you are allowed to import %(import_size_limit)s books every %(import_limit_reset)s days."
-msgstr ""
+msgstr "Actualmente puedes importar %(import_size_limit)s libros cada %(import_limit_reset)s días."
 
 #: bookwyrm/templates/import/import.html:21
 #, python-format
 msgid "You have %(allowed_imports)s left."
-msgstr ""
+msgstr "Te quedan %(allowed_imports)s importaciones."
 
 #: bookwyrm/templates/import/import.html:28
 #, python-format
@@ -2798,7 +2798,7 @@ msgstr "Importar"
 
 #: bookwyrm/templates/import/import.html:103
 msgid "You've reached the import limit."
-msgstr ""
+msgstr "Has alcanzado el límite de importaciones."
 
 #: bookwyrm/templates/import/import.html:112
 msgid "Imports are temporarily disabled; thank you for your patience."
@@ -3641,7 +3641,7 @@ msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> y %(other_user_di
 #, python-format
 msgid "A new <a href=\"%(path)s\">link domain</a> needs review"
 msgid_plural "%(display_count)s new <a href=\"%(path)s\">link domains</a> need moderation"
-msgstr[0] ""
+msgstr[0] "Un nuevo <a href=\"%(path)s\">dominio</a> necesita revisión"
 msgstr[1] ""
 
 #: bookwyrm/templates/notifications/items/mention.html:20
@@ -4503,7 +4503,7 @@ msgstr "Prioridad alta"
 
 #: bookwyrm/templates/settings/celery.html:50
 msgid "Broadcasts"
-msgstr ""
+msgstr "Transmisiones"
 
 #: bookwyrm/templates/settings/celery.html:60
 msgid "Could not connect to Redis broker"
@@ -4549,11 +4549,11 @@ msgstr "No se puede conectar a Celery"
 #: bookwyrm/templates/settings/celery.html:120
 #: bookwyrm/templates/settings/celery.html:143
 msgid "Clear Queues"
-msgstr ""
+msgstr "Limpiar colas"
 
 #: bookwyrm/templates/settings/celery.html:124
 msgid "Clearing queues can cause serious problems including data loss! Only play with this if you really know what you're doing. You must shut down the Celery worker before you do this."
-msgstr ""
+msgstr "¡Limpiar las colas puede causar serios problemas incluyendo la pérdida de datos! Úsalo solamente si sabes lo que estás haciendo. Debes apagar los procesos de Celery antes de hacer esto."
 
 #: bookwyrm/templates/settings/celery.html:150
 msgid "Errors"
@@ -4957,7 +4957,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/imports/imports.html:82
 msgid "days."
-msgstr ""
+msgstr "días."
 
 #: bookwyrm/templates/settings/imports/imports.html:86
 msgid "Set limit"
@@ -5640,7 +5640,7 @@ msgstr "Acciones de usuario"
 
 #: bookwyrm/templates/settings/users/user_moderation_actions.html:21
 msgid "Activate user"
-msgstr ""
+msgstr "Activar usuario"
 
 #: bookwyrm/templates/settings/users/user_moderation_actions.html:27
 msgid "Suspend user"
@@ -6134,7 +6134,7 @@ msgstr "página %(page)s"
 
 #: bookwyrm/templates/snippets/pagination.html:13
 msgid "Newer"
-msgstr ""
+msgstr "Mas nuevo"
 
 #: bookwyrm/templates/snippets/pagination.html:15
 msgid "Previous"
@@ -6142,7 +6142,7 @@ msgstr "Anterior"
 
 #: bookwyrm/templates/snippets/pagination.html:28
 msgid "Older"
-msgstr ""
+msgstr "Mas antiguo"
 
 #: bookwyrm/templates/snippets/privacy-icons.html:12
 msgid "Followers-only"
@@ -6543,7 +6543,7 @@ msgstr "Actividad del usuario"
 
 #: bookwyrm/templates/user/user.html:76
 msgid "Show RSS Options"
-msgstr ""
+msgstr "Ver opciones de RSS"
 
 #: bookwyrm/templates/user/user.html:82
 msgid "RSS feed"
@@ -6555,15 +6555,15 @@ msgstr ""
 
 #: bookwyrm/templates/user/user.html:103
 msgid "Reviews only"
-msgstr ""
+msgstr "Solo evaluaciones"
 
 #: bookwyrm/templates/user/user.html:108
 msgid "Quotes only"
-msgstr ""
+msgstr "Solo citas"
 
 #: bookwyrm/templates/user/user.html:113
 msgid "Comments only"
-msgstr ""
+msgstr "Solo comentarios"
 
 #: bookwyrm/templates/user/user.html:129
 msgid "No activities yet!"
@@ -6612,7 +6612,7 @@ msgstr "Archivo excede el tamaño máximo: 10MB"
 #: bookwyrm/templatetags/list_page_tags.py:14
 #, python-format
 msgid "Book List: %(name)s"
-msgstr ""
+msgstr "Lista de libros: %(name)s"
 
 #: bookwyrm/templatetags/list_page_tags.py:22
 #, python-format
@@ -6639,7 +6639,7 @@ msgstr ""
 #: bookwyrm/views/rss_feed.py:122
 #, python-brace-format
 msgid "Quotes from {obj.display_name}"
-msgstr ""
+msgstr "Citas de {obj.display_name}"
 
 #: bookwyrm/views/rss_feed.py:164
 #, python-brace-format
