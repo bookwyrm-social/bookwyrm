@@ -1,6 +1,7 @@
 """ database schema for books and shelves """
 from itertools import chain
 import re
+from typing import Any
 
 from django.contrib.postgres.search import SearchVectorField
 from django.contrib.postgres.indexes import GinIndex
@@ -90,7 +91,7 @@ class BookDataModel(ObjectMixin, BookWyrmModel):
 
         abstract = True
 
-    def save(self, *args, **kwargs):
+    def save(self, *args: Any, **kwargs: Any) -> None:
         """ensure that the remote_id is within this instance"""
         if self.id:
             self.remote_id = self.get_remote_id()
@@ -204,7 +205,7 @@ class Book(BookDataModel):
             text += f" ({self.edition_info})"
         return text
 
-    def save(self, *args, **kwargs):
+    def save(self, *args: Any, **kwargs: Any) -> None:
         """can't be abstract for query reasons, but you shouldn't USE it"""
         if not isinstance(self, Edition) and not isinstance(self, Work):
             raise ValueError("Books should be added as Editions or Works")
@@ -343,7 +344,7 @@ class Edition(Book):
         # max rank is 9
         return rank
 
-    def save(self, *args, **kwargs):
+    def save(self, *args: Any, **kwargs: Any) -> None:
         """set some fields on the edition object"""
         # calculate isbn 10/13
         if self.isbn_13 and self.isbn_13[:3] == "978" and not self.isbn_10:
