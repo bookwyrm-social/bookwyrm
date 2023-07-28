@@ -22,15 +22,14 @@ from ..book_search import SearchResult
 
 logger = logging.getLogger(__name__)
 
+JsonDict = dict[str, Any]
+
 
 class ConnectorResults(TypedDict):
     """TypedDict for results returned by connector"""
 
     connector: AbstractMinimalConnector
-    results: list[Any]
-
-
-Formatter = Callable[[Any], Optional[Union[str, list[str], list[Optional[str]]]]]
+    results: list[SearchResult]
 
 
 class AbstractMinimalConnector(ABC):
@@ -98,12 +97,12 @@ class AbstractMinimalConnector(ABC):
                     logger.exception(err)
                     return None
 
-                return {
-                    "connector": self,
-                    "results": self.process_search_response(
+                return ConnectorResults(
+                    connector=self,
+                    results=self.process_search_response(
                         query, raw_data, min_confidence
                     ),
-                }
+                )
         except asyncio.TimeoutError:
             logger.info("Connection timed out for url: %s", url)
         except aiohttp.ClientError as err:
@@ -188,14 +187,14 @@ class AbstractConnector(AbstractMinimalConnector):
         load_more_data.delay(self.connector.id, work.id)
         return edition
 
-    def get_book_data(self, remote_id: str) -> BookData:  # pylint: disable=no-self-use
+    def get_book_data(self, remote_id: str) -> JsonDict:  # pylint: disable=no-self-use
         """this allows connectors to override the default behavior"""
         return get_data(remote_id)
 
     def create_edition_from_data(
         self,
         work: models.Work,
-        edition_data: Union[str, BookData],
+        edition_data: Union[str, JsonDict],
         instance: Optional[models.Edition] = None,
     ) -> Optional[models.Edition]:
         """if we already have the work, we're ready"""
@@ -272,19 +271,19 @@ class AbstractConnector(AbstractMinimalConnector):
         return self.create_edition_from_data(obj.parent_work, data, instance=obj)
 
     @abstractmethod
-    def is_work_data(self, data: BookData) -> bool:
+    def is_work_data(self, data: JsonDict) -> bool:
         """differentiate works and editions"""
 
     @abstractmethod
-    def get_edition_from_work_data(self, data: BookData) -> Optional[BookData]:
+    def get_edition_from_work_data(self, data: JsonDict) -> JsonDict:
         """every work needs at least one edition"""
 
     @abstractmethod
-    def get_work_from_edition_data(self, data: BookData) -> BookData:
+    def get_work_from_edition_data(self, data: JsonDict) -> JsonDict:
         """every edition needs a work"""
 
     @abstractmethod
-    def get_authors_from_data(self, data: BookData) -> Iterator[models.Author]:
+    def get_authors_from_data(self, data: JsonDict) -> Iterator[models.Author]:
         """load author data"""
 
     @abstractmethod
@@ -292,10 +291,10 @@ class AbstractConnector(AbstractMinimalConnector):
         """get more info on a book"""
 
 
-def dict_from_mappings(data: BookData, mappings: list[Mapping]) -> dict[str, Any]:
+def dict_from_mappings(data: JsonDict, mappings: list[Mapping]) -> JsonDict:
     """create a dict in Activitypub format, using mappings supplies by
     the subclass"""
-    result: dict[str, Any] = {}
+    result: JsonDict = {}
     for mapping in mappings:
         # sometimes there are multiple mappings for one field, don't
         # overwrite earlier writes in that case
@@ -309,7 +308,7 @@ def get_data(
     url: str,
     params: Optional[dict[str, str]] = None,
     timeout: int = settings.QUERY_TIMEOUT,
-) -> BookData:
+) -> JsonDict:
     """wrapper for request.get"""
     # check if the url is blocked
     raise_not_valid_url(url)
@@ -342,8 +341,10 @@ def get_data(
         logger.info(err)
         raise ConnectorException(err)
 
-    # For now assume the returned data is a correctly formatted dict
-    return data  # type: ignore[no-any-return]
+    if not isinstance(data, dict):
+        raise ConnectorException("Unexpected data format")
+
+    return data
 
 
 def get_image(
@@ -382,7 +383,7 @@ class Mapping:
         self,
         local_field: str,
         remote_field: Optional[str] = None,
-        formatter: Optional[Formatter] = None,
+        formatter: Optional[Callable[[Any], Any]] = None,
     ):
         noop = lambda x: x
 
@@ -390,7 +391,7 @@ class Mapping:
         self.remote_field = remote_field or local_field
         self.formatter = formatter or noop
 
-    def get_value(self, data: BookData) -> Optional[Any]:
+    def get_value(self, data: JsonDict) -> Optional[Any]:
         """pull a field from incoming json and return the formatted version"""
         value = data.get(self.remote_field)
         if not value:
@@ -434,6 +435,3 @@ def maybe_isbn(query: str) -> bool:
         10,
         13,
     ]  # ISBN10 or ISBN13, or maybe ISBN10 missing a leading zero
-
-
-BookData = dict[str, Any]
