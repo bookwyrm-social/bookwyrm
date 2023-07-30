@@ -210,7 +210,7 @@
         <form name="search" action="{% url 'list' list_id=list.id slug=list.name|slugify %}" method="GET" class="block">
             <div class="field has-addons">
                 <div class="control">
-                    <input aria-label="{% trans 'Search for a book' %}" class="input" type="text" name="q" placeholder="{% trans 'Search for a book' %}" value="{{ query }}">
+                    <input aria-label="{% trans 'Search for a book' %}" class="input" type="text" name="q" placeholder="{% trans 'Search for a book' %}" value="{{ query }}" spellcheck="false">
                 </div>
                 <div class="control">
                     <button class="button" type="submit">

@@ -14,7 +14,7 @@
 <form class="block" action="{% url 'search' %}" method="GET">
     <div class="field has-addons">
         <div class="control">
-            <input type="text" class="input" name="q" value="{{ query }}" aria-label="{% trans 'Search query' %}" id="tour-search-page-input">
+            <input type="text" class="input" name="q" value="{{ query }}" aria-label="{% trans 'Search query' %}" id="tour-search-page-input" spellcheck="false">
         </div>
         <div class="control">
             <div class="select" aria-label="{% trans 'Search type' %}">
