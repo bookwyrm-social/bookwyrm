@@ -343,6 +343,10 @@ def add_status_on_create(sender, instance, created, *args, **kwargs):
 
 def add_status_on_create_command(sender, instance, created):
     """runs this code only after the database commit completes"""
+    # boosts trigger 'saves" twice, so don't bother duplicating the task
+    if sender == models.Boost and not created:
+        return
+
     priority = STREAMS
     # check if this is an old status, de-prioritize if so
     # (this will happen if federation is very slow, or, more expectedly, on csv import)
