@@ -305,6 +305,11 @@ def format_links(content):
             formatted_content += potential_link[0]
             potential_link = potential_link[1:-1]
 
+        ends_with_punctuation = _ends_with_punctuation(potential_link)
+        if ends_with_punctuation:
+            punctuation_glyph = potential_link[-1]
+            potential_link = potential_link[0:-1]
+
         try:
             # raises an error on anything that's not a valid link
             validator(potential_link)
@@ -324,6 +329,9 @@ def format_links(content):
         if wrapped:
             formatted_content += wrapper_close
 
+        if ends_with_punctuation:
+            formatted_content += punctuation_glyph
+
     return formatted_content
 
 
@@ -332,6 +340,15 @@ def _wrapped(text):
     wrappers = [("(", ")"), ("[", "]"), ("{", "}")]
     for wrapper in wrappers:
         if text[0] == wrapper[0] and text[-1] == wrapper[-1]:
+            return True
+    return False
+
+
+def _ends_with_punctuation(text):
+    """check if a line of text is wrapped"""
+    glyphs = [".", ",", ";", ":", "!", "?", "”", "’", '"', "»"]
+    for glyph in glyphs:
+        if text[-1] == glyph:
             return True
     return False
 
