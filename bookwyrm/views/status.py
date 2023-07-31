@@ -345,7 +345,7 @@ def _wrapped(text):
 
 
 def _ends_with_punctuation(text):
-    """check if a line of text is wrapped"""
+    """check if a line of text ends with a punctuation glyph"""
     glyphs = [".", ",", ";", ":", "!", "?", "”", "’", '"', "»"]
     for glyph in glyphs:
         if text[-1] == glyph:
