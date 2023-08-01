@@ -58,6 +58,7 @@
     <form action="{% url 'create-book-data' %}" method="POST" name="add-edition-form">
         {% csrf_token %}
         {{ work_form.title }}
+        {{ work_form.sort_title }}
         {{ work_form.subtitle }}
         {{ work_form.authors }}
         {{ work_form.description }}
