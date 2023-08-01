@@ -1,6 +1,8 @@
 """ openlibrary data connector """
 import re
 
+from markdown import markdown
+
 from bookwyrm import models
 from bookwyrm.book_search import SearchResult
 from .abstract_connector import AbstractConnector, Mapping
@@ -235,8 +237,11 @@ def ignore_edition(edition_data):
 def get_description(description_blob):
     """descriptions can be a string or a dict"""
     if isinstance(description_blob, dict):
-        return description_blob.get("value")
-    return description_blob
+        description = description_blob.get("value")
+    else:
+        description = description_blob
+    # Strip the surrounding p tag to keep the description a bit cleaner
+    return markdown(description).removeprefix("<p>").removesuffix("</p>").strip()
 
 
 def get_openlibrary_key(key):

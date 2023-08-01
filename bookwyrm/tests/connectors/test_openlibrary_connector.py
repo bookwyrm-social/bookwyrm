@@ -34,11 +34,15 @@ class Openlibrary(TestCase):
 
         work_file = pathlib.Path(__file__).parent.joinpath("../data/ol_work.json")
         edition_file = pathlib.Path(__file__).parent.joinpath("../data/ol_edition.json")
+        edition_md_file = pathlib.Path(__file__).parent.joinpath(
+            "../data/ol_edition_markdown.json"
+        )
         edition_list_file = pathlib.Path(__file__).parent.joinpath(
             "../data/ol_edition_list.json"
         )
         self.work_data = json.loads(work_file.read_bytes())
         self.edition_data = json.loads(edition_file.read_bytes())
+        self.edition_md_data = json.loads(edition_md_file.read_bytes())
         self.edition_list_data = json.loads(edition_list_file.read_bytes())
 
     def test_get_remote_id_from_data(self):
@@ -218,12 +222,43 @@ class Openlibrary(TestCase):
         self.assertEqual(result.parent_work, work)
         self.assertEqual(result.title, "Sabriel")
         self.assertEqual(result.isbn_10, "0060273224")
-        self.assertIsNotNone(result.description)
+        self.assertEqual(result.description, self.edition_data["description"]["value"])
         self.assertEqual(result.languages[0], "English")
         self.assertEqual(result.publishers[0], "Harper Trophy")
         self.assertEqual(result.pages, 491)
         self.assertEqual(result.subjects[0], "Fantasy.")
         self.assertEqual(result.physical_format, "Hardcover")
+
+    @responses.activate
+    def test_create_edition_markdown_from_data(self):
+        """okay but can it actually create an edition with proper metadata"""
+        work = models.Work.objects.create(title="Hello")
+        responses.add(
+            responses.GET,
+            "https://openlibrary.org/authors/OL10183984A",
+            json={"hi": "there"},
+            status=200,
+        )
+        with patch(
+            "bookwyrm.connectors.openlibrary.Connector.get_authors_from_data"
+        ) as mock:
+            mock.return_value = []
+            result = self.connector.create_edition_from_data(work, self.edition_md_data)
+        self.assertEqual(
+            result.description,
+            '<blockquote>\n<p>"She didn\'t choose her garden" opens this chapbook '
+            "exploring Black womanhood, mental and physical health, spirituality, and "
+            "ancestral roots. It is an investigation of how to locate a self amidst "
+            "complex racial history and how to forge an authentic way forward. There's "
+            "internal slippage as the subject weaves between the presence and spirits "
+            "of others, as well as a reckoning with the toll of navigating this world "
+            "as a Black woman. Yet, we also see hopefulness: a refuge in becoming part "
+            "of the collective, beyond individuality. <em>The Stars With You</em> "
+            "gives us a speculative yearning for what is to come and probes what is "
+            "required to reach it.</p>\n</blockquote>\n<ul>\n<li><a "
+            'href="https://store.cooperdillon.com/product/the-stars-with-you-by-'
+            'stefani-cox">publisher</a></li>\n</ul>',
+        )
 
     def test_ignore_edition(self):
         """skip editions with poor metadata"""
