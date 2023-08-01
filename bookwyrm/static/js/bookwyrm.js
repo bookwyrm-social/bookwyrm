@@ -40,9 +40,6 @@ let BookWyrm = new (class {
 
         document.querySelectorAll("details.dropdown").forEach((node) => {
             node.addEventListener("toggle", this.handleDetailsDropdown.bind(this));
-            node.querySelectorAll("[data-modal-open]").forEach((modal_node) =>
-                modal_node.addEventListener("click", () => (node.open = false))
-            );
         });
 
         document

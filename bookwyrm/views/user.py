@@ -23,6 +23,9 @@ class User(View):
         """profile page for a user"""
         user = get_user_from_username(request.user, username)
 
+        if not user.local and not request.user.is_authenticated:
+            return redirect(user.remote_id)
+
         if is_api_request(request):
             # we have a json request
             return ActivitypubResponse(user.to_activity())

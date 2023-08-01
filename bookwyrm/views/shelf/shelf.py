@@ -128,7 +128,7 @@ class Shelf(View):
 def sort_books(books, sort):
     """Books in shelf sorting"""
     sort_fields = [
-        "title",
+        "sort_title",
         "author",
         "shelved_date",
         "start_date",

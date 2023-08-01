@@ -21,7 +21,7 @@ from django.utils.http import http_date
 from bookwyrm import activitypub
 from bookwyrm.settings import USER_AGENT, PAGE_LENGTH
 from bookwyrm.signatures import make_signature, make_digest
-from bookwyrm.tasks import app, MEDIUM, BROADCAST
+from bookwyrm.tasks import app, BROADCAST
 from bookwyrm.models.fields import ImageField, ManyToManyField
 
 logger = logging.getLogger(__name__)
@@ -379,7 +379,7 @@ class CollectionItemMixin(ActivitypubMixin):
 
     activity_serializer = activitypub.CollectionItem
 
-    def broadcast(self, activity, sender, software="bookwyrm", queue=MEDIUM):
+    def broadcast(self, activity, sender, software="bookwyrm", queue=BROADCAST):
         """only send book collection updates to other bookwyrm instances"""
         super().broadcast(activity, sender, software=software, queue=queue)
 
@@ -400,7 +400,7 @@ class CollectionItemMixin(ActivitypubMixin):
             return []
         return [collection_field.user]
 
-    def save(self, *args, broadcast=True, priority=MEDIUM, **kwargs):
+    def save(self, *args, broadcast=True, priority=BROADCAST, **kwargs):
         """broadcast updated"""
         # first off, we want to save normally no matter what
         super().save(*args, **kwargs)
@@ -444,7 +444,7 @@ class CollectionItemMixin(ActivitypubMixin):
 class ActivityMixin(ActivitypubMixin):
     """add this mixin for models that are AP serializable"""
 
-    def save(self, *args, broadcast=True, priority=MEDIUM, **kwargs):
+    def save(self, *args, broadcast=True, priority=BROADCAST, **kwargs):
         """broadcast activity"""
         super().save(*args, **kwargs)
         user = self.user if hasattr(self, "user") else self.user_subject

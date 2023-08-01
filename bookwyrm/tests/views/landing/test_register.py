@@ -347,11 +347,17 @@ class RegisterViews(TestCase):
         self.settings.save()
 
         self.local_user.is_active = False
+        self.local_user.allow_reactivation = True
         self.local_user.deactivation_reason = "pending"
         self.local_user.confirmation_code = "12345"
         self.local_user.save(
             broadcast=False,
-            update_fields=["is_active", "deactivation_reason", "confirmation_code"],
+            update_fields=[
+                "is_active",
+                "allow_reactivation",
+                "deactivation_reason",
+                "confirmation_code",
+            ],
         )
         view = views.ConfirmEmailCode.as_view()
         request = self.factory.get("")
