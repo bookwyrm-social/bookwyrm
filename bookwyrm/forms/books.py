@@ -121,6 +121,8 @@ class EditionForm(CustomForm):
         if data in [0, None, ""]:
             return data
 
+        data = abs(data)
+
         return data * 60
 
 

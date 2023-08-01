@@ -47,6 +47,7 @@ def get_localized_duration(duration):
 @register.filter(name="iso_duration")
 def get_iso_duration(duration):
     """Returns an ISO8601 version of the play time"""
+    duration = abs(duration)
     duration = str(duration).split(":")
 
     iso_string = ["PT"]
