@@ -4,11 +4,11 @@
 {# Three day cache #}
 {% get_current_language as LANGUAGE_CODE %}
 {% cache 259200 generated_note_header LANGUAGE_CODE status.id %}
-{% if status.content == 'wants to read' %}
+{% if status.content == 'wants to read' or status.content == '<p>wants to read</p>' %}
     {% include 'snippets/status/headers/to_read.html' with book=status.mention_books.first %}
-{% elif status.content == 'finished reading' %}
+{% elif status.content == 'finished reading' or status.content == '<p>finished reading</p>' %}
     {% include 'snippets/status/headers/read.html' with book=status.mention_books.first %}
-{% elif status.content == 'started reading' %}
+{% elif status.content == 'started reading' or status.content == '<p>started reading</p>' %}
     {% include 'snippets/status/headers/reading.html' with book=status.mention_books.first %}
 {% else %}
     {{ status.content }}

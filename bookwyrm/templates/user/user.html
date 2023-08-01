@@ -4,6 +4,10 @@
 
 {% block title %}{{ user.display_name }}{% endblock %}
 
+{% block head_links %}
+    <link rel="alternate" type="application/rss+xml" href="{{ user.local_path }}/rss" title="{{ user.display_name }} - {{ site.name }}" />
+{% endblock %}
+
 {% block header %}
 <div class="columns is-mobile">
     <div class="column">
@@ -66,10 +70,52 @@
         <h2 class="title column">{% trans "User Activity" %}</h2>
         {% if user.local %}
         <div class="column is-narrow">
-            <a target="_blank" href="{{ user.local_path }}/rss" rel="nofollow noopener noreferrer">
-                <span class="icon icon-rss" aria-hidden="true"></span>
-                <span class="is-hidden-mobile">{% trans "RSS feed" %}</span>
-            </a>
+            <details class="dropdown">
+                <summary
+                    class="is-relative pulldown-menu dropdown-trigger"
+                    aria-label="{% trans 'Show RSS Options' %}"
+                    role="button"
+                    aria-haspopup="menu"
+                >
+                    <span class="">
+                        <span class="icon icon-rss" aria-hidden="true"></span>
+                        <span class="">{% trans "RSS feed" %}</span>
+                    </span>
+                    <span class="icon icon-arrow-down is-hidden-mobile" aria-hidden="true"></span>
+                    <span class="summary-on-open">
+                        <span class="icon icon-arrow-left is-small" aria-hidden="true"></span>
+                        {% trans "Back" %}
+                    </span>
+                </summary>
+
+                <div class="dropdown-menu">
+                    <ul
+                        class="dropdown-content"
+                        role="menu"
+                    >
+                        <li role="menuitem">
+                            <a target="_blank" href="{{ user.local_path }}/rss" class="navbar-item" rel="nofollow noopener noreferrer">
+                                {% trans "Complete feed" %}
+                            </a>
+                        </li>
+                        <li role="menuitem">
+                            <a target="_blank" href="{{ user.local_path }}/rss-reviews" class="navbar-item" rel="nofollow noopener noreferrer">
+                                {% trans "Reviews only" %}
+                            </a>
+                        </li>
+                        <li role="menuitem">
+                            <a target="_blank" href="{{ user.local_path }}/rss-quotes" class="navbar-item" rel="nofollow noopener noreferrer">
+                                {% trans "Quotes only" %}
+                            </a>
+                        </li>
+                        <li role="menuitem">
+                            <a target="_blank" href="{{ user.local_path }}/rss-comments" class="navbar-item" rel="nofollow noopener noreferrer">
+                                {% trans "Comments only" %}
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </details>
         </div>
         {% endif %}
     </div>
@@ -84,7 +130,7 @@
     </div>
     {% endif %}
 
-    {% include 'snippets/pagination.html' with page=activities path=user.local_path anchor="#feed" %}
+    {% include 'snippets/pagination.html' with page=activities path=user.local_path anchor="#feed" mode="chronological" %}
 </div>
 
 {% endblock %}

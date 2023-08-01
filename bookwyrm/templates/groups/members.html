@@ -8,7 +8,7 @@
 <div class="block">
     <form class="field has-addons" method="get" action="{% url 'group-find-users' group.id %}">
         <div class="control">
-            <input type="text" name="user_query" value="{{ request.GET.user_query }}" class="input" placeholder="{% trans 'Search to add a user' %}" aria-label="{% trans 'Search to add a user' %}">
+            <input type="text" name="user_query" value="{{ request.GET.user_query }}" class="input" placeholder="{% trans 'Search to add a user' %}" aria-label="{% trans 'Search to add a user' %}" spellcheck="false">
         </div>
         <div class="control" id="tour-group-member-search">
             <button class="button" type="submit">

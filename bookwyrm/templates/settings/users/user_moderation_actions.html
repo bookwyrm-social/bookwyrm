@@ -15,6 +15,12 @@
             </p>
             {% endif %}
 
+            {% if not user.is_active and user.deactivation_reason == "pending" %}
+            <form name="activate" method="post" action="{% url 'settings-activate-user' user.id  %}" class="mr-1">
+                {% csrf_token %}
+                <button type="submit" class="button is-success is-light">{% trans "Activate user" %}</button>
+            </form>
+            {% endif %}
             {% if user.is_active or user.deactivation_reason == "pending" %}
             <form name="suspend" method="post" action="{% url 'settings-report-suspend' user.id  %}" class="mr-1">
                 {% csrf_token %}

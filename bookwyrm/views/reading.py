@@ -12,10 +12,9 @@ from django.views.decorators.http import require_POST
 
 from bookwyrm import forms, models
 from bookwyrm.views.shelf.shelf_actions import unshelve
-from bookwyrm.utils.validate import validate_url_domain
 from .status import CreateStatus
 from .helpers import get_edition, handle_reading_status, is_api_request
-from .helpers import load_date_in_user_tz_as_utc
+from .helpers import load_date_in_user_tz_as_utc, redirect_to_referer
 
 logger = logging.getLogger(__name__)
 
@@ -43,8 +42,6 @@ class ReadingStatus(View):
     @transaction.atomic
     def post(self, request, status, book_id):
         """Change the state of a book by shelving it and adding reading dates"""
-        next_step = request.META.get("HTTP_REFERER")
-        next_step = validate_url_domain(next_step, "/")
         identifier = {
             "want": models.Shelf.TO_READ,
             "start": models.Shelf.READING,
@@ -86,7 +83,7 @@ class ReadingStatus(View):
             if current_status_shelfbook.shelf.identifier != desired_shelf.identifier:
                 current_status_shelfbook.delete()
             else:  # It already was on the shelf
-                return redirect(next_step)
+                return redirect_to_referer(request)
 
         models.ShelfBook.objects.create(
             book=book, shelf=desired_shelf, user=request.user
@@ -124,7 +121,7 @@ class ReadingStatus(View):
         if is_api_request(request):
             return HttpResponse()
 
-        return redirect(next_step)
+        return redirect_to_referer(request)
 
 
 @method_decorator(login_required, name="dispatch")
@@ -189,7 +186,7 @@ def update_readthrough_on_shelve(
         active_readthrough = models.ReadThrough.objects.create(
             user=user, book=annotated_book
         )
-    # santiize and set dates
+    # sanitize and set dates
     active_readthrough.start_date = load_date_in_user_tz_as_utc(start_date, user)
     # if the stop or finish date is set, the readthrough will be set as inactive
     active_readthrough.finish_date = load_date_in_user_tz_as_utc(finish_date, user)

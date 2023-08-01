@@ -3,7 +3,7 @@ from django.core.mail import EmailMultiAlternatives
 from django.template.loader import get_template
 
 from bookwyrm import models, settings
-from bookwyrm.tasks import app, HIGH
+from bookwyrm.tasks import app, EMAIL
 from bookwyrm.settings import DOMAIN
 
 
@@ -75,7 +75,7 @@ def format_email(email_name, data):
     return (subject, html_content, text_content)
 
 
-@app.task(queue=HIGH)
+@app.task(queue=EMAIL)
 def send_email(recipient, subject, html_content, text_content):
     """use a task to send the email"""
     email = EmailMultiAlternatives(

@@ -37,6 +37,14 @@
     {% endif %}
 </header>
 
+{% if form.errors %}
+<div class="block">
+    <p class="notification is-danger is-light">
+        {% trans "Failed to save book, see errors below for more information." %}
+    </p>
+</div>
+{% endif %}
+
 <form
     class="block"
     {% if book.id %}

@@ -40,7 +40,7 @@
             }
 
             .navbar-item {
-                // see ../components/_details.scss :: Navbar details
+                /* see ../components/_details.scss :: Navbar details */
                 padding-right: 1.75rem;
                 font-size: 1rem;
             }
@@ -108,4 +108,10 @@
 .clip-text {
     max-height: 35em;
     overflow: hidden;
+}
+
+.dropdown-menu .button {
+    @include mobile {
+        font-size: $size-6;
+    }
 }

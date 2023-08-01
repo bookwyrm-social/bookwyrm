@@ -17,7 +17,7 @@
 
 <header class="section py-3">
     <a href="/" class="is-flex is-align-items-center">
-        <img class="image logo is-flex-shrink-0" style="height: 32px" src="{% if site.logo_small %}{% get_media_prefix %}{{ site.logo_small }}{% else %}{% static "images/logo-small.png" %}{% endif %}" alt="{% blocktrans with site_name=site.name %}{{ site_name }} home page{% endblocktrans %}">
+        <img class="image logo is-flex-shrink-0" style="height: 32px" src="{% if site.logo_small %}{% get_media_prefix %}{{ site.logo_small }}{% else %}{% static "images/logo-small.png" %}{% endif %}" alt="{% blocktrans with site_name=site.name %}{{ site_name }} home page{% endblocktrans %}" loading="lazy" decoding="async">
         <span class="title is-5 ml-2">{{ site.name }}</span>
     </a>
 </header>

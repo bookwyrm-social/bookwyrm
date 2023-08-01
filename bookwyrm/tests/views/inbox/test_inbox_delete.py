@@ -58,7 +58,7 @@ class InboxActivities(TestCase):
         with patch("bookwyrm.activitystreams.remove_status_task.delay") as redis_mock:
             views.inbox.activity_task(activity)
             self.assertTrue(redis_mock.called)
-        # deletion doens't remove the status, it turns it into a tombstone
+        # deletion doesn't remove the status, it turns it into a tombstone
         status = models.Status.objects.get()
         self.assertTrue(status.deleted)
         self.assertIsInstance(status.deleted_date, datetime)
@@ -87,7 +87,7 @@ class InboxActivities(TestCase):
         with patch("bookwyrm.activitystreams.remove_status_task.delay") as redis_mock:
             views.inbox.activity_task(activity)
             self.assertTrue(redis_mock.called)
-        # deletion doens't remove the status, it turns it into a tombstone
+        # deletion doesn't remove the status, it turns it into a tombstone
         status = models.Status.objects.get()
         self.assertTrue(status.deleted)
         self.assertIsInstance(status.deleted_date, datetime)

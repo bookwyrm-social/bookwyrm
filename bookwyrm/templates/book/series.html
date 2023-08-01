@@ -1,0 +1,35 @@
+{% extends 'layout.html' %}
+{% load i18n %}
+{% load book_display_tags %}
+
+{% block title %}{{ series_name }}{% endblock %}
+
+{% block content %}
+<div class="block">
+	<h1 class="title">{{ series_name }}</h1>
+	<div class="subtitle" dir="auto">
+		{% trans "Series by" %} <a
+			href="{{ author.local_path }}"
+			class="author {{ link_class }}"
+			itemprop="author"
+			itemscope
+			itemtype="https://schema.org/Thing"
+			><span
+					itemprop="name"
+					>{{ author.name }}</span></a>
+	</div>
+
+	<div class="columns is-multiline is-mobile">
+	{% for book in books %}
+	{% with book=book %}
+			<div class="column is-one-fifth-tablet is-half-mobile is-flex is-flex-direction-column">
+				<div class="is-flex-grow-1 mb-3">
+					<span class="subtitle">{% if book.series_number %}{% blocktrans with series_number=book.series_number %}Book {{ series_number }}{% endblocktrans %}{% else %}{% trans 'Unsorted Book' %}{% endif %}</span>
+					{% include 'landing/small-book.html' with book=book %}
+				</div>
+			</div>
+	{% endwith %}
+	{% endfor %}
+	</div>
+</div>
+{% endblock %}

@@ -1,6 +1,7 @@
 """ test for app action functionality """
 from unittest.mock import patch
 import responses
+from responses import matchers
 
 from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
@@ -45,6 +46,44 @@ class EditBookViews(TestCase):
             remote_id="https://example.com/book/1",
             parent_work=self.work,
         )
+        # pylint: disable=line-too-long
+        self.authors_body = "<?xml version='1.0' encoding='UTF-8' ?><?xml-stylesheet type='text/xsl' href='http://isni.oclc.org/sru/DB=1.2/?xsl=searchRetrieveResponse' ?><srw:searchRetrieveResponse xmlns:srw='http://www.loc.gov/zing/srw/' xmlns:dc='http://purl.org/dc/elements/1.1/' xmlns:diag='http://www.loc.gov/zing/srw/diagnostic/' xmlns:xcql='http://www.loc.gov/zing/cql/xcql/'><srw:version>1.1</srw:version><srw:records><srw:record><isniUnformatted>0000000084510024</isniUnformatted></srw:record></srw:records></srw:searchRetrieveResponse>"
+
+        # pylint: disable=line-too-long
+        self.author_body = "<?xml version='1.0' encoding='UTF-8' ?><?xml-stylesheet type='text/xsl' href='http://isni.oclc.org/sru/DB=1.2/?xsl=searchRetrieveResponse' ?><srw:searchRetrieveResponse xmlns:srw='http://www.loc.gov/zing/srw/' xmlns:dc='http://purl.org/dc/elements/1.1/' xmlns:diag='http://www.loc.gov/zing/srw/diagnostic/' xmlns:xcql='http://www.loc.gov/zing/cql/xcql/'><srw:records><srw:record><srw:recordData><responseRecord><ISNIAssigned><isniUnformatted>0000000084510024</isniUnformatted><isniURI>https://isni.org/isni/0000000084510024</isniURI><dataConfidence>60</dataConfidence><ISNIMetadata><identity><personOrFiction><personalName><surname>Catherine Amy Dawson Scott</surname><nameTitle>poet and novelist</nameTitle><nameUse>public</nameUse><source>VIAF</source><source>WKP</source><subsourceIdentifier>Q544961</subsourceIdentifier></personalName><personalName><forename>C. A.</forename><surname>Dawson Scott</surname><marcDate>1865-1934</marcDate><nameUse>public</nameUse><source>VIAF</source><source>NLP</source><subsourceIdentifier>a28927850</subsourceIdentifier></personalName><sources><codeOfSource>VIAF</codeOfSource><sourceIdentifier>45886165</sourceIdentifier><reference><class>ALL</class><role>CRE</role><URI>http://viaf.org/viaf/45886165</URI></reference></sources><externalInformation><information>Wikipedia</information><URI>https://en.wikipedia.org/wiki/Catherine_Amy_Dawson_Scott</URI></externalInformation></ISNIMetadata></ISNIAssigned></responseRecord></srw:recordData></srw:record></srw:records></srw:searchRetrieveResponse>"
+
+        responses.get(
+            "http://isni.oclc.org/sru/",
+            content_type="text/xml",
+            match=[
+                matchers.query_param_matcher(
+                    {"query": 'pica.na="Sappho"'}, strict_match=False
+                )
+            ],
+            body=self.authors_body,
+        )
+
+        responses.get(
+            "http://isni.oclc.org/sru/",
+            content_type="text/xml",
+            match=[
+                matchers.query_param_matcher(
+                    {"query": 'pica.na="Some Guy"'}, strict_match=False
+                )
+            ],
+            body=self.authors_body,
+        )
+
+        responses.get(
+            "http://isni.oclc.org/sru/",
+            content_type="text/xml",
+            match=[
+                matchers.query_param_matcher(
+                    {"query": 'pica.isn="0000000084510024"'}, strict_match=False
+                )
+            ],
+            body=self.author_body,
+        )
 
         models.SiteSettings.objects.create()
 
@@ -82,6 +121,7 @@ class EditBookViews(TestCase):
         form = forms.EditionForm(instance=self.book)
         form.data["title"] = ""
         form.data["last_edited_by"] = self.local_user.id
+        form.data["cover-url"] = "http://local.host/cover.jpg"
         request = self.factory.post("", form.data)
         request.user = self.local_user
 
@@ -91,7 +131,12 @@ class EditBookViews(TestCase):
         # Title is unchanged
         self.book.refresh_from_db()
         self.assertEqual(self.book.title, "Example Edition")
+        # transient field values are set correctly
+        self.assertEqual(
+            result.context_data["cover_url"], "http://local.host/cover.jpg"
+        )
 
+    @responses.activate
     def test_edit_book_add_author(self):
         """lets a user edit a book with new authors"""
         view = views.EditBook.as_view()
@@ -222,6 +267,7 @@ class EditBookViews(TestCase):
         self.book.refresh_from_db()
         self.assertTrue(self.book.cover)
 
+    @responses.activate
     def test_add_authors_helper(self):
         """converts form input into author matches"""
         form = forms.EditionForm(instance=self.book)
@@ -280,9 +326,14 @@ class EditBookViews(TestCase):
         form = forms.EditionForm(instance=self.book)
         form.data["title"] = ""
         form.data["last_edited_by"] = self.local_user.id
+        form.data["cover-url"] = "http://local.host/cover.jpg"
         request = self.factory.post("", form.data)
         request.user = self.local_user
 
         result = view(request)
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
+        # transient field values are set correctly
+        self.assertEqual(
+            result.context_data["cover_url"], "http://local.host/cover.jpg"
+        )
