@@ -237,11 +237,19 @@ def ignore_edition(edition_data):
 def get_description(description_blob):
     """descriptions can be a string or a dict"""
     if isinstance(description_blob, dict):
-        description = description_blob.get("value")
+        description = markdown(description_blob.get("value"))
     else:
-        description = description_blob
-    # Strip the surrounding p tag to keep the description a bit cleaner
-    return markdown(description).removeprefix("<p>").removesuffix("</p>").strip()
+        description = markdown(description_blob)
+
+    if (
+        description.startswith("<p>")
+        and description.endswith("</p>")
+        and description.count("<p>") == 1
+    ):
+        # If there is just one <p> tag around the text remove it
+        return description[len("<p>") : -len("</p>")].strip()
+
+    return description
 
 
 def get_openlibrary_key(key):

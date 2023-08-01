@@ -189,6 +189,18 @@ class Openlibrary(TestCase):
         expected = "First in the Old Kingdom/Abhorsen series."
         self.assertEqual(description, expected)
 
+    def test_get_description_markdown_paragraphs(self):
+        """should do some cleanup on the description data"""
+        description = get_description("Paragraph 1\n\nParagraph 2")
+        expected = "<p>Paragraph 1</p>\n<p>Paragraph 2</p>"
+        self.assertEqual(description, expected)
+
+    def test_get_description_markdown_blockquote(self):
+        """should do some cleanup on the description data"""
+        description = get_description("> Quote\n\nParagraph 2")
+        expected = "<blockquote>\n<p>Quote</p>\n</blockquote>\n<p>Paragraph 2</p>"
+        self.assertEqual(description, expected)
+
     def test_get_openlibrary_key(self):
         """extracts the uuid"""
         key = get_openlibrary_key("/books/OL27320736M")
