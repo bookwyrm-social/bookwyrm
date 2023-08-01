@@ -102,8 +102,8 @@ class List(View):
 
 
 def get_list_suggestions(
-  book_list, user, query=None, num_suggestions=5, ignore_book=None
- ):
+    book_list, user, query=None, num_suggestions=5, ignore_book=None
+):
     """What books might a user want to add to a list"""
     if query:
         # search for books
@@ -115,9 +115,11 @@ def get_list_suggestions(
             ],
         )
     # just suggest whatever books are nearby
-    suggestions = user.shelfbook_set.filter(
-        ~Q(book__in=book_list.books.all())
-    ).exclude(book=ignore_book).distinct()[:num_suggestions]
+    suggestions = (
+        user.shelfbook_set.filter(~Q(book__in=book_list.books.all()))
+        .exclude(book=ignore_book)
+        .distinct()[:num_suggestions]
+    )
     suggestions = [s.book for s in suggestions[:num_suggestions]]
     if len(suggestions) < num_suggestions:
         others = [
