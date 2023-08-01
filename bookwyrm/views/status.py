@@ -8,7 +8,7 @@ from django.core.validators import URLValidator
 from django.core.exceptions import ValidationError
 from django.db.models import Q
 from django.http import HttpResponse, HttpResponseBadRequest, Http404
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404
 from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
@@ -176,7 +176,7 @@ class DeleteStatus(View):
 
         # perform deletion
         status.delete()
-        return redirect("/")
+        return redirect_to_referer(request)
 
 
 @login_required
