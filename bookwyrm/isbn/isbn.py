@@ -1,11 +1,14 @@
+""" Use the range message from isbn-international to hyphenate ISBNs """
 import os
+from xml.etree import ElementTree
 import requests
 
-from xml.etree import ElementTree
 from bookwyrm import settings
 
 
 class IsbnHyphenator:
+    """Class to manage the range message xml file and use it to hyphenate ISBNs"""
+
     __range_message_url = "https://www.isbn-international.org/export_rangemessage.xml"
     __range_file_path = os.path.join(
         settings.BASE_DIR, "bookwyrm", "isbn", "RangeMessage.xml"
@@ -13,12 +16,16 @@ class IsbnHyphenator:
     __element_tree = None
 
     def update_range_message(self):
+        """Download the range message xml file and save it locally"""
         response = requests.get(self.__range_message_url)
         with open(self.__range_file_path, "w", encoding="utf-8") as file:
             file.write(response.text)
         self.__element_tree = None
 
     def hyphenate(self, isbn_13):
+        """hyphenate the given ISBN-13 number using the range message"""
+        if isbn_13 is None:
+            return None
         if self.__element_tree is None:
             self.__element_tree = ElementTree.parse(self.__range_file_path)
         gs1_prefix = isbn_13[:3]
@@ -41,11 +48,11 @@ class IsbnHyphenator:
                     length = int(rule_el.find("Length").text)
                     if length == 0:
                         continue
-                    range = [
+                    reg_grp_range = [
                         int(x[:length]) for x in rule_el.find("Range").text.split("-")
                     ]
                     reg_group = isbn_13[len(gs1_prefix) : len(gs1_prefix) + length]
-                    if range[0] <= int(reg_group) <= range[1]:
+                    if reg_grp_range[0] <= int(reg_group) <= reg_grp_range[1]:
                         return reg_group
                 return None
         return None
@@ -58,11 +65,11 @@ class IsbnHyphenator:
                     length = int(rule_el.find("Length").text)
                     if length == 0:
                         continue
-                    range = [
+                    registrant_range = [
                         int(x[:length]) for x in rule_el.find("Range").text.split("-")
                     ]
                     registrant = isbn_13[from_ind : from_ind + length]
-                    if range[0] <= int(registrant) <= range[1]:
+                    if registrant_range[0] <= int(registrant) <= registrant_range[1]:
                         return registrant
                 return None
         return None
