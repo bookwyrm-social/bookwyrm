@@ -34,6 +34,7 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
     raw_content = models.TextField(blank=True, null=True)
     mention_users = fields.TagField("User", related_name="mention_user")
     mention_books = fields.TagField("Edition", related_name="mention_book")
+    mention_hashtags = fields.TagField("Hashtag", related_name="mention_hashtag")
     local = models.BooleanField(default=True)
     content_warning = fields.CharField(
         max_length=500, blank=True, null=True, activitypub_field="summary"
@@ -80,7 +81,7 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
     def save(self, *args, **kwargs):
         """save and notify"""
         if self.reply_parent:
-            self.thread_id = self.reply_parent.thread_id or self.reply_parent.id
+            self.thread_id = self.reply_parent.thread_id or self.reply_parent_id
 
         super().save(*args, **kwargs)
 
@@ -115,10 +116,16 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         return list(set(mentions))
 
     @classmethod
-    def ignore_activity(cls, activity):  # pylint: disable=too-many-return-statements
+    def ignore_activity(
+        cls, activity, allow_external_connections=True
+    ):  # pylint: disable=too-many-return-statements
         """keep notes if they are replies to existing statuses"""
         if activity.type == "Announce":
-            boosted = activitypub.resolve_remote_id(activity.object, get_activity=True)
+            boosted = activitypub.resolve_remote_id(
+                activity.object,
+                get_activity=True,
+                allow_external_connections=allow_external_connections,
+            )
             if not boosted:
                 # if we can't load the status, definitely ignore it
                 return True
@@ -135,10 +142,17 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         # keep notes if they mention local users
         if activity.tag == MISSING or activity.tag is None:
             return True
-        tags = [l["href"] for l in activity.tag if l["type"] == "Mention"]
+        # GoToSocial sends single tags as objects
+        # not wrapped in a list
+        tags = activity.tag if isinstance(activity.tag, list) else [activity.tag]
         user_model = apps.get_model("bookwyrm.User", require_ready=True)
         for tag in tags:
-            if user_model.objects.filter(remote_id=tag, local=True).exists():
+            if (
+                tag["type"] == "Mention"
+                and user_model.objects.filter(
+                    remote_id=tag["href"], local=True
+                ).exists()
+            ):
                 # we found a mention of a known use boost
                 return False
         return True
@@ -327,6 +341,9 @@ class Quotation(BookStatus):
     quote = fields.HtmlField()
     raw_quote = models.TextField(blank=True, null=True)
     position = models.IntegerField(
+        validators=[MinValueValidator(0)], null=True, blank=True
+    )
+    endposition = models.IntegerField(
         validators=[MinValueValidator(0)], null=True, blank=True
     )
     position_mode = models.CharField(

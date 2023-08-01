@@ -1,6 +1,7 @@
 {% load static %}
 
 {% if preview_images_enabled is True %}
+    <meta name="twitter:card" content="summary_large_image">
     {% if image %}
         <meta name="twitter:image" content="{{ media_full_url }}{{ image }}">
         <meta name="og:image" content="{{ media_full_url }}{{ image }}">
@@ -9,6 +10,15 @@
         <meta name="og:image" content="{{ media_full_url }}{{ site.preview_image }}">
     {% endif %}
 {% else %}
+    <meta name="twitter:card" content="summary">
     <meta name="twitter:image" content="{% if site.logo %}{{ media_full_url }}{{ site.logo }}{% else %}{% static "images/logo.png" %}{% endif %}">
     <meta name="og:image" content="{% if site.logo %}{{ media_full_url }}{{ site.logo }}{% else %}{% static "images/logo.png" %}{% endif %}">
 {% endif %}
+
+<meta name="twitter:image:alt" content="BookWyrm Logo">
+
+<meta name="twitter:title" content="{% if title %}{{ title }} - {% endif %}{{ site.name }}">
+<meta name="og:title" content="{% if title %}{{ title }} - {% endif %}{{ site.name }}">
+
+<meta name="twitter:description" content="{% if description %}{{ description }}{% else %}{{ site.instance_tagline }}{% endif %}">
+<meta name="og:description" content="{% if description %}{{ description }}{% else %}{{ site.instance_tagline }}{% endif %}">

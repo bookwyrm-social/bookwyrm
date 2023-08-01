@@ -63,9 +63,19 @@ class InitDB(TestCase):
 
     def test_init_settings(self):
         """Create the settings file"""
+        initdb.init_groups()
+        group_editor = Group.objects.get(name="editor")
+
         initdb.init_settings()
         settings = models.SiteSettings.objects.get()
         self.assertEqual(settings.name, "BookWyrm")
+        self.assertEqual(settings.default_user_auth_group, group_editor)
+
+    def test_init_settings_without_groups(self):
+        """Create the settings, but without groups existing already"""
+        initdb.init_settings()
+        settings = models.SiteSettings.objects.get()
+        self.assertIsNone(settings.default_user_auth_group)
 
     def test_init_link_domains(self):
         """Common trusted domains for links"""

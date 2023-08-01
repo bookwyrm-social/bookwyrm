@@ -1,4 +1,4 @@
-""" quotation activty object serializer class """
+""" quotation activity object serializer class """
 import json
 import pathlib
 from unittest.mock import patch
@@ -30,7 +30,7 @@ class Quotation(TestCase):
         self.status_data = json.loads(datafile.read_bytes())
 
     def test_quotation_activity(self):
-        """create a Quoteation ap object from json"""
+        """create a Quotation ap object from json"""
         quotation = activitypub.Quotation(**self.status_data)
 
         self.assertEqual(quotation.type, "Quotation")

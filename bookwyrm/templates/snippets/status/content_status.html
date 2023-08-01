@@ -99,9 +99,9 @@
                             &mdash; {% include 'snippets/book_titleby.html' with book=status.book %}
                             {% if status.position %}
                                 {% if status.position_mode == 'PG' %}
-                                    {% blocktrans with page=status.position|intcomma %}(Page {{ page }}){% endblocktrans %}
+                                    {% blocktrans with page=status.position|intcomma %}(Page {{ page }}{% endblocktrans%}{% if status.endposition and status.endposition != status.position %} - {% blocktrans with endpage=status.endposition|intcomma %}{{ endpage }}{% endblocktrans %}{% endif%})
                                 {% else %}
-                                    {% blocktrans with percent=status.position %}({{ percent }}%){% endblocktrans %}
+                                    {% blocktrans with percent=status.position %}({{ percent }}%{% endblocktrans %}{% if status.endposition and status.endposition != status.position %}{% blocktrans with endpercent=status.endposition|intcomma %} - {{ endpercent }}%{% endblocktrans %}{% endif %})
                                 {% endif %}
                             {% endif %}
                         </p>
@@ -109,7 +109,7 @@
                 {% endif %}
 
                 {% if status.content and status_type != 'GeneratedNote' and status_type != 'Announce' %}
-                    {% with full=status.content|safe no_trim=status.content_warning itemprop="reviewBody" %}
+                    {% with full=status.content|safe no_trim=status.content_warning|default:expand itemprop="reviewBody" %}
                         {% include 'snippets/trimmed_text.html' %}
                     {% endwith %}
                 {% endif %}
@@ -133,6 +133,8 @@
                                                     alt="{{ attachment.caption }}"
                                                     title="{{ attachment.caption }}"
                                                 {% endif %}
+                                                loading="lazy"
+                                                decoding="async"
                                             >
                                         </a>
                                     </figure>
@@ -155,4 +157,3 @@
 </div>
 
 {% endwith %}
-

@@ -15,7 +15,7 @@ services:
       - static_volume:/app/static
       - media_volume:/app/images
   db:
-    image: postgres
+    image: postgres:13
     env_file: .env
     volumes:
       - pgdata:/var/lib/postgresql/data
@@ -62,7 +62,8 @@ services:
     build: .
     networks:
       - main
-    command: celery -A celerywyrm worker -l info -Q high_priority,medium_priority,low_priority,imports
+    command: celery -A celerywyrm worker -l info -Q high_priority,medium_priority,low_priority,streams,images,suggested_users,email,connectors,lists,inbox,imports,import_triggered,broadcast,misc
+
     volumes:
       - .:/app
       - static_volume:/app/static

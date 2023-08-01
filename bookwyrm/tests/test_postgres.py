@@ -30,7 +30,7 @@ class PostgresTriggers(TestCase):
             title="The Long Goodbye",
             subtitle="wow cool",
             series="series name",
-            languages=["irrelevent"],
+            languages=["irrelevant"],
         )
         book.authors.add(author)
         book.refresh_from_db()
@@ -40,7 +40,7 @@ class PostgresTriggers(TestCase):
             "'cool':5B 'goodby':3A 'long':2A 'name':9 'rays':7C 'seri':8 'the':6C 'wow':4B",
         )
 
-    def test_seach_vector_on_author_update(self, _):
+    def test_search_vector_on_author_update(self, _):
         """update search when an author name changes"""
         author = models.Author.objects.create(name="The Rays")
         book = models.Edition.objects.create(
@@ -53,7 +53,7 @@ class PostgresTriggers(TestCase):
 
         self.assertEqual(book.search_vector, "'goodby':3A 'jeremy':4C 'long':2A")
 
-    def test_seach_vector_on_author_delete(self, _):
+    def test_search_vector_on_author_delete(self, _):
         """update search when an author name changes"""
         author = models.Author.objects.create(name="Jeremy")
         book = models.Edition.objects.create(

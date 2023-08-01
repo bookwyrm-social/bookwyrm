@@ -3,7 +3,7 @@
 <div class="columns">
     <div class="column is-narrow is-hidden-mobile">
         <figure class="block is-w-{% if size %}{{ size }}{% else %}xl{% endif %}">
-            <img src="{% if site.logo %}{% get_media_prefix %}{{ site.logo }}{% else %}{% static "images/logo.png" %}{% endif %}" alt="BookWyrm logo">
+            <img src="{% if site.logo %}{% get_media_prefix %}{{ site.logo }}{% else %}{% static "images/logo.png" %}{% endif %}" alt="BookWyrm logo" loading="lazy" decoding="async">
         </figure>
     </div>
     <div class="content">

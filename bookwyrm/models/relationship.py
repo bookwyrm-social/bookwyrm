@@ -4,7 +4,6 @@ from django.db import models, transaction, IntegrityError
 from django.db.models import Q
 
 from bookwyrm import activitypub
-from bookwyrm.tasks import HIGH
 from .activitypub_mixin import ActivitypubMixin, ActivityMixin
 from .activitypub_mixin import generate_activity
 from .base_model import BookWyrmModel
@@ -34,7 +33,7 @@ class UserRelationship(BookWyrmModel):
 
     @property
     def recipients(self):
-        """the remote user needs to recieve direct broadcasts"""
+        """the remote user needs to receive direct broadcasts"""
         return [u for u in [self.user_subject, self.user_object] if not u.local]
 
     def save(self, *args, **kwargs):
@@ -142,7 +141,7 @@ class UserFollowRequest(ActivitypubMixin, UserRelationship):
 
         # a local user is following a remote user
         if broadcast and self.user_subject.local and not self.user_object.local:
-            self.broadcast(self.to_activity(), self.user_subject, queue=HIGH)
+            self.broadcast(self.to_activity(), self.user_subject)
 
         if self.user_object.local:
             manually_approves = self.user_object.manually_approves_followers
@@ -166,12 +165,16 @@ class UserFollowRequest(ActivitypubMixin, UserRelationship):
                 actor=self.user_object.remote_id,
                 object=self.to_activity(),
             ).serialize()
-            self.broadcast(activity, user, queue=HIGH)
+            self.broadcast(activity, user)
         if broadcast_only:
             return
 
         with transaction.atomic():
-            UserFollows.from_request(self)
+            try:
+                UserFollows.from_request(self)
+            except IntegrityError:
+                # this just means we already saved this relationship
+                pass
             if self.id:
                 self.delete()
 
@@ -183,7 +186,7 @@ class UserFollowRequest(ActivitypubMixin, UserRelationship):
                 actor=self.user_object.remote_id,
                 object=self.to_activity(),
             ).serialize()
-            self.broadcast(activity, self.user_object, queue=HIGH)
+            self.broadcast(activity, self.user_object)
 
         self.delete()
 

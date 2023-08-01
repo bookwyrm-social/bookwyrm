@@ -19,7 +19,7 @@ from markdown import markdown
 from bookwyrm import forms, models
 from bookwyrm.utils import regex, sanitizer
 from .helpers import handle_remote_webfinger, is_api_request
-from .helpers import load_date_in_user_tz_as_utc
+from .helpers import load_date_in_user_tz_as_utc, redirect_to_referer
 
 logger = logging.getLogger(__name__)
 
@@ -80,7 +80,7 @@ class CreateStatus(View):
             if is_api_request(request):
                 logger.exception(form.errors)
                 return HttpResponseBadRequest()
-            return redirect("/")
+            return redirect_to_referer(request)
 
         status = form.save(request, commit=False)
         status.ready = False
@@ -96,21 +96,22 @@ class CreateStatus(View):
 
         # inspect the text for user tags
         content = status.content
-        for (mention_text, mention_user) in find_mentions(
-            request.user, content
-        ).items():
+        mentions = find_mentions(request.user, content)
+        for (_, mention_user) in mentions.items():
             # add them to status mentions fk
             status.mention_users.add(mention_user)
+        content = format_mentions(content, mentions)
 
-            # turn the mention into a link
-            content = re.sub(
-                rf"{mention_text}\b(?!@)",
-                rf'<a href="{mention_user.remote_id}">{mention_text}</a>',
-                content,
-            )
         # add reply parent to mentions
         if status.reply_parent:
             status.mention_users.add(status.reply_parent.user)
+
+        # inspect the text for hashtags
+        hashtags = find_or_create_hashtags(content)
+        for (_, mention_hashtag) in hashtags.items():
+            # add them to status mentions fk
+            status.mention_hashtags.add(mention_hashtag)
+        content = format_hashtags(content, hashtags)
 
         # deduplicate mentions
         status.mention_users.set(set(status.mention_users.all()))
@@ -134,7 +135,32 @@ class CreateStatus(View):
 
         if is_api_request(request):
             return HttpResponse()
-        return redirect("/")
+        return redirect_to_referer(request)
+
+
+def format_mentions(content, mentions):
+    """Detect @mentions and make them links"""
+    for (mention_text, mention_user) in mentions.items():
+        # turn the mention into a link
+        content = re.sub(
+            rf"(?<!/)\B{mention_text}\b(?!@)",
+            rf'<a href="{mention_user.remote_id}">{mention_text}</a>',
+            content,
+        )
+    return content
+
+
+def format_hashtags(content, hashtags):
+    """Detect #hashtags and make them links"""
+    for (mention_text, mention_hashtag) in hashtags.items():
+        # turn the mention into a link
+        content = re.sub(
+            rf"(?<!/)\B{mention_text}\b(?!@)",
+            rf'<a href="{mention_hashtag.remote_id}" data-mention="hashtag">'
+            + rf"{mention_text}</a>",
+            content,
+        )
+    return content
 
 
 @method_decorator(login_required, name="dispatch")
@@ -198,7 +224,7 @@ def edit_readthrough(request):
 
     if is_api_request(request):
         return HttpResponse()
-    return redirect("/")
+    return redirect_to_referer(request)
 
 
 def find_mentions(user, content):
@@ -206,7 +232,7 @@ def find_mentions(user, content):
     if not content:
         return {}
     # The regex has nested match groups, so the 0th entry has the full (outer) match
-    # And beacuse the strict username starts with @, the username is 1st char onward
+    # And because the strict username starts with @, the username is 1st char onward
     usernames = [m[0][1:] for m in re.findall(regex.STRICT_USERNAME, content)]
 
     known_users = (
@@ -232,6 +258,38 @@ def find_mentions(user, content):
     return username_dict
 
 
+def find_or_create_hashtags(content):
+    """detect #hashtags in raw status content
+
+    it stores hashtags case-sensitive, but ensures that an existing
+    hashtag with different case are found and re-used. for example,
+    an existing #BookWyrm hashtag will be found and used even if the
+    status content is using #bookwyrm.
+    """
+    if not content:
+        return {}
+
+    found_hashtags = {t.lower(): t for t in re.findall(regex.HASHTAG, content)}
+    if len(found_hashtags) == 0:
+        return {}
+
+    known_hashtags = {
+        t.name.lower(): t
+        for t in models.Hashtag.objects.filter(
+            Q(name__in=found_hashtags.keys())
+        ).distinct()
+    }
+
+    not_found = found_hashtags.keys() - known_hashtags.keys()
+    for lower_name in not_found:
+        tag_name = found_hashtags[lower_name]
+        mention_hashtag = models.Hashtag(name=tag_name)
+        mention_hashtag.save()
+        known_hashtags[lower_name] = mention_hashtag
+
+    return {found_hashtags[k]: v for k, v in known_hashtags.items()}
+
+
 def format_links(content):
     """detect and format links"""
     validator = URLValidator()
@@ -246,6 +304,11 @@ def format_links(content):
             wrapper_close = potential_link[-1]
             formatted_content += potential_link[0]
             potential_link = potential_link[1:-1]
+
+        ends_with_punctuation = _ends_with_punctuation(potential_link)
+        if ends_with_punctuation:
+            punctuation_glyph = potential_link[-1]
+            potential_link = potential_link[0:-1]
 
         try:
             # raises an error on anything that's not a valid link
@@ -266,6 +329,9 @@ def format_links(content):
         if wrapped:
             formatted_content += wrapper_close
 
+        if ends_with_punctuation:
+            formatted_content += punctuation_glyph
+
     return formatted_content
 
 
@@ -274,6 +340,15 @@ def _wrapped(text):
     wrappers = [("(", ")"), ("[", "]"), ("{", "}")]
     for wrapper in wrappers:
         if text[0] == wrapper[0] and text[-1] == wrapper[-1]:
+            return True
+    return False
+
+
+def _ends_with_punctuation(text):
+    """check if a line of text ends with a punctuation glyph"""
+    glyphs = [".", ",", ";", ":", "!", "?", "”", "’", '"', "»"]
+    for glyph in glyphs:
+        if text[-1] == glyph:
             return True
     return False
 

@@ -146,6 +146,11 @@ urlpatterns = [
         name="settings-user",
     ),
     re_path(
+        r"^settings/users/(?P<user>\d+)/activate/?$",
+        views.ActivateUserAdmin.as_view(),
+        name="settings-activate-user",
+    ),
+    re_path(
         r"^settings/federation/(?P<status>(federated|blocked))?/?$",
         views.Federation.as_view(),
         name="settings-federation",
@@ -322,7 +327,15 @@ urlpatterns = [
         name="settings-imports-enable",
     ),
     re_path(
+        r"^settings/imports/set-limit/?$",
+        views.set_import_size_limit,
+        name="settings-imports-set-limit",
+    ),
+    re_path(
         r"^settings/celery/?$", views.CeleryStatus.as_view(), name="settings-celery"
+    ),
+    re_path(
+        r"^settings/celery/ping/?$", views.celery_ping, name="settings-celery-ping"
     ),
     re_path(
         r"^settings/email-config/?$",
@@ -343,6 +356,15 @@ urlpatterns = [
         name="notifications",
     ),
     re_path(r"^directory/?", views.Directory.as_view(), name="directory"),
+    # hashtag
+    re_path(
+        r"^hashtag/(?P<hashtag_id>\d+)/?$", views.Hashtag.as_view(), name="hashtag"
+    ),
+    re_path(
+        rf"^hashtag/(?P<hashtag_id>\d+){regex.SLUG}/?$",
+        views.Hashtag.as_view(),
+        name="hashtag",
+    ),
     # Get started
     re_path(
         r"^get-started/profile/?$",
@@ -419,6 +441,21 @@ urlpatterns = [
     re_path(rf"{USER_PATH}/?$", views.User.as_view(), name="user-feed"),
     re_path(rf"^@(?P<username>{regex.USERNAME})$", views.user_redirect),
     re_path(rf"{USER_PATH}/rss/?$", views.rss_feed.RssFeed(), name="user-rss"),
+    re_path(
+        rf"{USER_PATH}/rss-reviews/?$",
+        views.rss_feed.RssReviewsOnlyFeed(),
+        name="user-reviews-rss",
+    ),
+    re_path(
+        rf"{USER_PATH}/rss-quotes/?$",
+        views.rss_feed.RssQuotesOnlyFeed(),
+        name="user-quotes-rss",
+    ),
+    re_path(
+        rf"{USER_PATH}/rss-comments/?$",
+        views.rss_feed.RssCommentsOnlyFeed(),
+        name="user-comments-rss",
+    ),
     re_path(
         rf"{USER_PATH}/(?P<direction>(followers|following))(.json)?/?$",
         views.Relationships.as_view(),
@@ -611,6 +648,11 @@ urlpatterns = [
     re_path(rf"{BOOK_PATH}(.json)?/?$", views.Book.as_view(), name="book"),
     re_path(rf"{BOOK_PATH}{regex.SLUG}/?$", views.Book.as_view(), name="book"),
     re_path(
+        r"^series/by/(?P<author_id>\d+)/?$",
+        views.BookSeriesBy.as_view(),
+        name="book-series-by",
+    ),
+    re_path(
         rf"{BOOK_PATH}/(?P<user_statuses>review|comment|quote)/?$",
         views.Book.as_view(),
         name="book-user-statuses",
@@ -731,3 +773,6 @@ urlpatterns = [
     ),
     path("guided-tour/<tour>", views.toggle_guided_tour),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+# pylint: disable=invalid-name
+handler500 = "bookwyrm.views.server_error"

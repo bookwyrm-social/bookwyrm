@@ -9,7 +9,7 @@ from django.utils import timezone
 from django.views.decorators.http import require_GET
 
 from bookwyrm import models
-from bookwyrm.settings import DOMAIN, VERSION
+from bookwyrm.settings import DOMAIN, VERSION, LANGUAGE_CODE
 
 
 @require_GET
@@ -110,7 +110,7 @@ def instance_info(_):
                 "status_count": status_count,
             },
             "thumbnail": logo,
-            "languages": ["en"],
+            "languages": [LANGUAGE_CODE[:2]],
             "registrations": site.allow_registration,
             "approval_required": not site.allow_registration
             and site.allow_invite_requests,

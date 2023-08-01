@@ -1,5 +1,5 @@
 {% load i18n %}
-<script>
+<script nonce="{{request.csp_nonce}}">
 var registerStats = new Chart(
     document.getElementById('register_stats'),
     {
