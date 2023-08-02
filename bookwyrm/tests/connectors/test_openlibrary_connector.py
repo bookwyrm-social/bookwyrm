@@ -14,7 +14,7 @@ from bookwyrm.connectors.openlibrary import get_languages, get_description
 from bookwyrm.connectors.openlibrary import pick_default_edition, get_openlibrary_key
 from bookwyrm.connectors.connector_manager import ConnectorException
 
-
+# pylint: disable=too-many-public-methods
 class Openlibrary(TestCase):
     """test loading data from openlibrary.org"""
 

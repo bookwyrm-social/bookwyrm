@@ -10,6 +10,7 @@ from .abstract_connector import AbstractConnector, Mapping, JsonDict
 from .abstract_connector import get_data, infer_physical_format, unique_physical_format
 from .connector_manager import ConnectorException, create_edition_task
 from .openlibrary_languages import languages
+from ..utils.sanitizer import clean
 
 
 class Connector(AbstractConnector):
@@ -237,10 +238,10 @@ def ignore_edition(edition_data: JsonDict) -> bool:
     return True
 
 
-def get_description(description_blob: Union[JsonDict, str]) -> Optional[str]:
+def get_description(description_blob: Union[JsonDict, str]) -> str:
     """descriptions can be a string or a dict"""
     if isinstance(description_blob, dict):
-        description = markdown(description_blob.get("value"))
+        description = markdown(description_blob.get("value", ""))
     else:
         description = markdown(description_blob)
 
@@ -249,10 +250,10 @@ def get_description(description_blob: Union[JsonDict, str]) -> Optional[str]:
         and description.endswith("</p>")
         and description.count("<p>") == 1
     ):
-        # If there is just one <p> tag around the text remove it
+        # If there is just one <p> tag and it is around the text remove it
         return description[len("<p>") : -len("</p>")].strip()
 
-    return description
+    return clean(description)
 
 
 def get_openlibrary_key(key: str) -> str:
