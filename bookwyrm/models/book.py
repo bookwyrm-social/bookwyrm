@@ -387,7 +387,6 @@ class Edition(Book):
         if self.parent_work:
             return
 
-        # assign this edition to the parent of the duplicate edition
         new_work = Work.objects.create(title=self.title)
         new_work.authors.set(self.authors.all())
 

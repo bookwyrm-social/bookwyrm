@@ -3,7 +3,7 @@ from django.core.management.base import BaseCommand
 from bookwyrm import models
 
 
-class Commmand(BaseCommand):
+class Command(BaseCommand):
     """command-line options"""
 
     help = "Repairs an edition that is in a broken state"
