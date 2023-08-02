@@ -1,22 +1,53 @@
 """ using a bookwyrm instance as a source of book data """
+from __future__ import annotations
 from dataclasses import asdict, dataclass
 from functools import reduce
 import operator
+from typing import Optional, Union, Any, Literal, overload
 
 from django.contrib.postgres.search import SearchRank, SearchQuery
 from django.db.models import F, Q
+from django.db.models.query import QuerySet
 
 from bookwyrm import models
 from bookwyrm import connectors
 from bookwyrm.settings import MEDIA_FULL_URL
 
 
+@overload
+def search(
+    query: str,
+    *,
+    min_confidence: float = 0,
+    filters: Optional[list[Any]] = None,
+    return_first: Literal[False],
+) -> QuerySet[models.Edition]:
+    ...
+
+
+@overload
+def search(
+    query: str,
+    *,
+    min_confidence: float = 0,
+    filters: Optional[list[Any]] = None,
+    return_first: Literal[True],
+) -> Optional[models.Edition]:
+    ...
+
+
 # pylint: disable=arguments-differ
-def search(query, min_confidence=0, filters=None, return_first=False):
+def search(
+    query: str,
+    *,
+    min_confidence: float = 0,
+    filters: Optional[list[Any]] = None,
+    return_first: bool = False,
+) -> Union[Optional[models.Edition], QuerySet[models.Edition]]:
     """search your local database"""
     filters = filters or []
     if not query:
-        return []
+        return None if return_first else []
     query = query.strip()
 
     results = None
@@ -66,7 +97,9 @@ def format_search_result(search_result):
     ).json()
 
 
-def search_identifiers(query, *filters, return_first=False):
+def search_identifiers(
+    query, *filters, return_first=False
+) -> Union[Optional[models.Edition], QuerySet[models.Edition]]:
     """tries remote_id, isbn; defined as dedupe fields on the model"""
     if connectors.maybe_isbn(query):
         # Oh did you think the 'S' in ISBN stood for 'standard'?
@@ -87,7 +120,9 @@ def search_identifiers(query, *filters, return_first=False):
     return results
 
 
-def search_title_author(query, min_confidence, *filters, return_first=False):
+def search_title_author(
+    query, min_confidence, *filters, return_first=False
+) -> QuerySet[models.Edition]:
     """searches for title and author"""
     query = SearchQuery(query, config="simple") | SearchQuery(query, config="english")
     results = (
@@ -122,11 +157,11 @@ class SearchResult:
     title: str
     key: str
     connector: object
-    view_link: str = None
-    author: str = None
-    year: str = None
-    cover: str = None
-    confidence: int = 1
+    view_link: Optional[str] = None
+    author: Optional[str] = None
+    year: Optional[str] = None
+    cover: Optional[str] = None
+    confidence: float = 1.0
 
     def __repr__(self):
         # pylint: disable=consider-using-f-string
