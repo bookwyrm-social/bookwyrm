@@ -1,11 +1,12 @@
 """ openlibrary data connector """
 import re
+from typing import Any, Optional, Union, Iterator, Iterable
 
 from markdown import markdown
 
 from bookwyrm import models
 from bookwyrm.book_search import SearchResult
-from .abstract_connector import AbstractConnector, Mapping
+from .abstract_connector import AbstractConnector, Mapping, JsonDict
 from .abstract_connector import get_data, infer_physical_format, unique_physical_format
 from .connector_manager import ConnectorException, create_edition_task
 from .openlibrary_languages import languages
@@ -16,7 +17,7 @@ class Connector(AbstractConnector):
 
     generated_remote_link_field = "openlibrary_link"
 
-    def __init__(self, identifier):
+    def __init__(self, identifier: str):
         super().__init__(identifier)
 
         get_first = lambda a, *args: a[0]
@@ -96,14 +97,14 @@ class Connector(AbstractConnector):
             Mapping("inventaire_id", remote_field="links", formatter=get_inventaire_id),
         ]
 
-    def get_book_data(self, remote_id):
+    def get_book_data(self, remote_id: str) -> JsonDict:
         data = get_data(remote_id)
         if data.get("type", {}).get("key") == "/type/redirect":
-            remote_id = self.base_url + data.get("location")
+            remote_id = self.base_url + data.get("location", "")
             return get_data(remote_id)
         return data
 
-    def get_remote_id_from_data(self, data):
+    def get_remote_id_from_data(self, data: JsonDict) -> str:
         """format a url from an openlibrary id field"""
         try:
             key = data["key"]
@@ -111,10 +112,10 @@ class Connector(AbstractConnector):
             raise ConnectorException("Invalid book data")
         return f"{self.books_url}{key}"
 
-    def is_work_data(self, data):
+    def is_work_data(self, data: JsonDict) -> bool:
         return bool(re.match(r"^[\/\w]+OL\d+W$", data["key"]))
 
-    def get_edition_from_work_data(self, data):
+    def get_edition_from_work_data(self, data: JsonDict) -> JsonDict:
         try:
             key = data["key"]
         except KeyError:
@@ -126,7 +127,7 @@ class Connector(AbstractConnector):
             raise ConnectorException("No editions for work")
         return edition
 
-    def get_work_from_edition_data(self, data):
+    def get_work_from_edition_data(self, data: JsonDict) -> JsonDict:
         try:
             key = data["works"][0]["key"]
         except (IndexError, KeyError):
@@ -134,7 +135,7 @@ class Connector(AbstractConnector):
         url = f"{self.books_url}{key}"
         return self.get_book_data(url)
 
-    def get_authors_from_data(self, data):
+    def get_authors_from_data(self, data: JsonDict) -> Iterator[models.Author]:
         """parse author json and load or create authors"""
         for author_blob in data.get("authors", []):
             author_blob = author_blob.get("author", author_blob)
@@ -146,7 +147,7 @@ class Connector(AbstractConnector):
                 continue
             yield author
 
-    def get_cover_url(self, cover_blob, size="L"):
+    def get_cover_url(self, cover_blob: list[str], size: str = "L") -> Optional[str]:
         """ask openlibrary for the cover"""
         if not cover_blob:
             return None
@@ -154,8 +155,10 @@ class Connector(AbstractConnector):
         image_name = f"{cover_id}-{size}.jpg"
         return f"{self.covers_url}/b/id/{image_name}"
 
-    def parse_search_data(self, data, min_confidence):
-        for idx, search_result in enumerate(data.get("docs")):
+    def parse_search_data(
+        self, data: JsonDict, min_confidence: float
+    ) -> Iterator[SearchResult]:
+        for idx, search_result in enumerate(data.get("docs", [])):
             # build the remote id from the openlibrary key
             key = self.books_url + search_result["key"]
             author = search_result.get("author_name") or ["Unknown"]
@@ -176,7 +179,7 @@ class Connector(AbstractConnector):
                 confidence=confidence,
             )
 
-    def parse_isbn_search_data(self, data):
+    def parse_isbn_search_data(self, data: JsonDict) -> Iterator[SearchResult]:
         for search_result in list(data.values()):
             # build the remote id from the openlibrary key
             key = self.books_url + search_result["key"]
@@ -190,12 +193,12 @@ class Connector(AbstractConnector):
                 year=search_result.get("publish_date"),
             )
 
-    def load_edition_data(self, olkey):
+    def load_edition_data(self, olkey: str) -> JsonDict:
         """query openlibrary for editions of a work"""
         url = f"{self.books_url}/works/{olkey}/editions"
         return self.get_book_data(url)
 
-    def expand_book_data(self, book):
+    def expand_book_data(self, book: models.Book) -> None:
         work = book
         # go from the edition to the work, if necessary
         if isinstance(book, models.Edition):
@@ -208,14 +211,14 @@ class Connector(AbstractConnector):
             # who knows, man
             return
 
-        for edition_data in edition_options.get("entries"):
+        for edition_data in edition_options.get("entries", []):
             # does this edition have ANY interesting data?
             if ignore_edition(edition_data):
                 continue
             create_edition_task.delay(self.connector.id, work.id, edition_data)
 
 
-def ignore_edition(edition_data):
+def ignore_edition(edition_data: JsonDict) -> bool:
     """don't load a million editions that have no metadata"""
     # an isbn, we love to see it
     if edition_data.get("isbn_13") or edition_data.get("isbn_10"):
@@ -234,7 +237,7 @@ def ignore_edition(edition_data):
     return True
 
 
-def get_description(description_blob):
+def get_description(description_blob: Union[JsonDict, str]) -> Optional[str]:
     """descriptions can be a string or a dict"""
     if isinstance(description_blob, dict):
         description = markdown(description_blob.get("value"))
@@ -252,12 +255,12 @@ def get_description(description_blob):
     return description
 
 
-def get_openlibrary_key(key):
+def get_openlibrary_key(key: str) -> str:
     """convert /books/OL27320736M into OL27320736M"""
     return key.split("/")[-1]
 
 
-def get_languages(language_blob):
+def get_languages(language_blob: Iterable[JsonDict]) -> list[Optional[str]]:
     """/language/eng -> English"""
     langs = []
     for lang in language_blob:
@@ -265,14 +268,14 @@ def get_languages(language_blob):
     return langs
 
 
-def get_dict_field(blob, field_name):
+def get_dict_field(blob: Optional[JsonDict], field_name: str) -> Optional[Any]:
     """extract the isni from the remote id data for the author"""
     if not blob or not isinstance(blob, dict):
         return None
     return blob.get(field_name)
 
 
-def get_wikipedia_link(links):
+def get_wikipedia_link(links: list[Any]) -> Optional[str]:
     """extract wikipedia links"""
     if not isinstance(links, list):
         return None
@@ -285,7 +288,7 @@ def get_wikipedia_link(links):
     return None
 
 
-def get_inventaire_id(links):
+def get_inventaire_id(links: list[Any]) -> Optional[str]:
     """extract and format inventaire ids"""
     if not isinstance(links, list):
         return None
@@ -295,11 +298,13 @@ def get_inventaire_id(links):
             continue
         if link.get("title") == "inventaire.io":
             iv_link = link.get("url")
+            if not isinstance(iv_link, str):
+                return None
             return iv_link.split("/")[-1]
     return None
 
 
-def pick_default_edition(options):
+def pick_default_edition(options: list[JsonDict]) -> Optional[JsonDict]:
     """favor physical copies with covers in english"""
     if not options:
         return None

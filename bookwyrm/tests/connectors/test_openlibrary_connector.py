@@ -280,3 +280,13 @@ class Openlibrary(TestCase):
         self.assertFalse(ignore_edition({"languages": "languages/fr"}))
         self.assertTrue(ignore_edition({"languages": "languages/eng"}))
         self.assertTrue(ignore_edition({"format": "paperback"}))
+
+    def test_remote_id_from_model(self):
+        """figure out a url from an id"""
+        obj = models.Author.objects.create(
+            name="George Elliott", openlibrary_key="OL453734A"
+        )
+        self.assertEqual(
+            self.connector.get_remote_id_from_model(obj),
+            "https://openlibrary.org/authors/OL453734A",
+        )

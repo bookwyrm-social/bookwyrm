@@ -368,10 +368,16 @@ class TagField(ManyToManyField):
             activity_type = item.__class__.__name__
             if activity_type == "User":
                 activity_type = "Mention"
+
+            if activity_type == "Hashtag":
+                name = item.name
+            else:
+                name = f"@{getattr(item, item.name_field)}"
+
             tags.append(
                 activitypub.Link(
                     href=item.remote_id,
-                    name=f"@{getattr(item, item.name_field)}",
+                    name=name,
                     type=activity_type,
                 )
             )

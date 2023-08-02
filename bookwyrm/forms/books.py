@@ -111,6 +111,7 @@ class EditionFromWorkForm(CustomForm):
         model = models.Work
         fields = [
             "title",
+            "sort_title",
             "subtitle",
             "authors",
             "description",

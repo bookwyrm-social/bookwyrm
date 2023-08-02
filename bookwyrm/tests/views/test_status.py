@@ -62,7 +62,7 @@ class StatusTransactions(TransactionTestCase):
         with patch("bookwyrm.activitystreams.add_status_task.apply_async") as mock:
             view(request, "comment")
 
-        self.assertEqual(mock.call_count, 2)
+        self.assertEqual(mock.call_count, 1)
 
 
 @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
@@ -426,6 +426,14 @@ http://www.fish.com/"""
         self.assertEqual(
             views.status.format_links(f"({url})"),
             f'(<a href="{url}">www.fish.com/</a>)',
+        )
+
+    def test_format_links_punctuation(self, *_):
+        """don’t take trailing punctuation into account pls"""
+        url = "http://www.fish.com/"
+        self.assertEqual(
+            views.status.format_links(f"{url}."),
+            f'<a href="{url}">www.fish.com/</a>.',
         )
 
     def test_format_links_special_chars(self, *_):

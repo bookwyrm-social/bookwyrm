@@ -15,7 +15,11 @@
     <div class="control">
         <button class="button is-link" type="submit">
             <span class="icon icon-spinner" aria-hidden="true"></span>
+            {% if draft %}
+            <span>{% trans "Update" %}</span>
+            {% else %}
             <span>{% trans "Post" %}</span>
+            {% endif %}
         </button>
     </div>
 </div>
