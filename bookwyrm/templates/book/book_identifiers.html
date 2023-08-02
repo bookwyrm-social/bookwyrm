@@ -9,7 +9,9 @@
             <dd itemprop="isbn" class="mr-1" id="isbn_content">{{ book.isbn_13 }}</dd>
             <div>
                 <button class="button is-small" data-copywithtooltip data-content-id="isbn_content" data-tooltip-id="isbn_tooltip">
-                    <span class="icon icon-copy" title="{% trans "Copy ISBN" %}"></span>
+                    <span class="icon icon-copy" title="{% trans "Copy ISBN" %}">
+                        <span class="is-sr-only">{% trans "Copy ISBN" %}</span>
+                    </span>
                 </button>
                 <span class="copy-tooltip" id="isbn_tooltip">{% trans "Copied ISBN!" %}</span>
             </div>

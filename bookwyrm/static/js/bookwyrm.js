@@ -49,7 +49,7 @@ let BookWyrm = new (class {
         document
             .querySelectorAll('form[name="register"]')
             .forEach((form) =>
-                form.addEventListener("submit", (e) => this.setPreferredTimezone(e, form)),
+                form.addEventListener("submit", (e) => this.setPreferredTimezone(e, form))
             );
     }
 
@@ -118,7 +118,7 @@ let BookWyrm = new (class {
                     });
             },
             delay,
-            counter,
+            counter
         );
     }
 
@@ -196,8 +196,8 @@ let BookWyrm = new (class {
             .forEach((otherTrigger) =>
                 otherTrigger.setAttribute(
                     "aria-pressed",
-                    otherTrigger.getAttribute("aria-pressed") === "false",
-                ),
+                    otherTrigger.getAttribute("aria-pressed") === "false"
+                )
             );
 
         // @todo Find a better way to handle the exception.
@@ -331,8 +331,8 @@ let BookWyrm = new (class {
             bookwyrm.addRemoveClass(
                 relatedForm,
                 "is-hidden",
-                relatedForm.className.indexOf("is-hidden") == -1,
-            ),
+                relatedForm.className.indexOf("is-hidden") == -1
+            )
         );
 
         this.ajaxPost(form).catch((error) => {
@@ -621,7 +621,7 @@ let BookWyrm = new (class {
                 "select:not([disabled])",
                 "details:not([disabled])",
                 '[tabindex]:not([tabindex="-1"]):not([disabled])',
-            ].join(","),
+            ].join(",")
         );
         const firstFocusableEl = focusableEls[0];
         const lastFocusableEl = focusableEls[focusableEls.length - 1];
@@ -726,7 +726,7 @@ let BookWyrm = new (class {
 
                     toggleStatus("scanning");
                     Quagga.start();
-                },
+                }
             );
         }
 
@@ -749,7 +749,7 @@ let BookWyrm = new (class {
                         0,
                         0,
                         parseInt(drawingCanvas.getAttribute("width")),
-                        parseInt(drawingCanvas.getAttribute("height")),
+                        parseInt(drawingCanvas.getAttribute("height"))
                     );
                     result.boxes
                         .filter((box) => box !== result.box)
