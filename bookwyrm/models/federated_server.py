@@ -61,7 +61,7 @@ class FederatedServer(BookWyrmModel):
             ).update(active=True, deactivation_reason=None)
 
     @classmethod
-    def is_blocked(cls, url):
+    def is_blocked(cls, url: str) -> bool:
         """look up if a domain is blocked"""
         url = urlparse(url)
         domain = url.netloc

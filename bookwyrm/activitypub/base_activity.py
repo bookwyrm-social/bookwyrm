@@ -2,6 +2,8 @@
 from dataclasses import dataclass, fields, MISSING
 from json import JSONEncoder
 import logging
+from typing import Optional, Union, TypeVar, overload, Any
+
 import requests
 
 from django.apps import apps
@@ -10,11 +12,14 @@ from django.utils.http import http_date
 
 from bookwyrm import models
 from bookwyrm.connectors import ConnectorException, get_data
+from bookwyrm.models import base_model
 from bookwyrm.signatures import make_signature
 from bookwyrm.settings import DOMAIN, INSTANCE_ACTOR_USERNAME
 from bookwyrm.tasks import app, MISC
 
 logger = logging.getLogger(__name__)
+
+TBookWyrmModel = TypeVar("TBookWyrmModel", bound=base_model.BookWyrmModel)
 
 
 class ActivitySerializerError(ValueError):
@@ -65,7 +70,11 @@ class ActivityObject:
     id: str
     type: str
 
-    def __init__(self, activity_objects=None, **kwargs):
+    def __init__(
+        self,
+        activity_objects: Optional[list[str, base_model.BookWyrmModel]] = None,
+        **kwargs: dict[str, Any],
+    ):
         """this lets you pass in an object with fields that aren't in the
         dataclass, which it ignores. Any field in the dataclass is required or
         has a default value"""
@@ -101,13 +110,13 @@ class ActivityObject:
     # pylint: disable=too-many-locals,too-many-branches,too-many-arguments
     def to_model(
         self,
-        model=None,
-        instance=None,
-        allow_create=True,
-        save=True,
-        overwrite=True,
-        allow_external_connections=True,
-    ):
+        model: Optional[type[TBookWyrmModel]] = None,
+        instance: Optional[TBookWyrmModel] = None,
+        allow_create: bool = True,
+        save: bool = True,
+        overwrite: bool = True,
+        allow_external_connections: bool = True,
+    ) -> Optional[TBookWyrmModel]:
         """convert from an activity to a model instance. Args:
         model: the django model that this object is being converted to
             (will guess if not known)
@@ -296,14 +305,40 @@ def get_model_from_type(activity_type):
 
 
 # pylint: disable=too-many-arguments
+@overload
 def resolve_remote_id(
-    remote_id,
-    model=None,
-    refresh=False,
-    save=True,
-    get_activity=False,
-    allow_external_connections=True,
-):
+    remote_id: str,
+    model: type[TBookWyrmModel],
+    refresh: bool = False,
+    save: bool = True,
+    get_activity: bool = False,
+    allow_external_connections: bool = True,
+) -> TBookWyrmModel:
+    ...
+
+
+# pylint: disable=too-many-arguments
+@overload
+def resolve_remote_id(
+    remote_id: str,
+    model: Optional[str] = None,
+    refresh: bool = False,
+    save: bool = True,
+    get_activity: bool = False,
+    allow_external_connections: bool = True,
+) -> base_model.BookWyrmModel:
+    ...
+
+
+# pylint: disable=too-many-arguments
+def resolve_remote_id(
+    remote_id: str,
+    model: Optional[Union[str, type[base_model.BookWyrmModel]]] = None,
+    refresh: bool = False,
+    save: bool = True,
+    get_activity: bool = False,
+    allow_external_connections: bool = True,
+) -> base_model.BookWyrmModel:
     """take a remote_id and return an instance, creating if necessary. Args:
     remote_id: the unique url for looking up the object in the db or by http
     model: a string or object representing the model that corresponds to the object

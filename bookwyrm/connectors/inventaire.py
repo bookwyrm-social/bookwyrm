@@ -1,9 +1,10 @@
 """ inventaire data connector """
 import re
+from typing import Any, Union, Optional, Iterator, Iterable
 
 from bookwyrm import models
 from bookwyrm.book_search import SearchResult
-from .abstract_connector import AbstractConnector, Mapping
+from .abstract_connector import AbstractConnector, Mapping, JsonDict
 from .abstract_connector import get_data
 from .connector_manager import ConnectorException, create_edition_task
 
@@ -13,7 +14,7 @@ class Connector(AbstractConnector):
 
     generated_remote_link_field = "inventaire_id"
 
-    def __init__(self, identifier):
+    def __init__(self, identifier: str):
         super().__init__(identifier)
 
         get_first = lambda a: a[0]
@@ -60,13 +61,13 @@ class Connector(AbstractConnector):
             Mapping("died", remote_field="wdt:P570", formatter=get_first),
         ] + shared_mappings
 
-    def get_remote_id(self, value):
+    def get_remote_id(self, value: str) -> str:
         """convert an id/uri into a url"""
         return f"{self.books_url}?action=by-uris&uris={value}"
 
-    def get_book_data(self, remote_id):
+    def get_book_data(self, remote_id: str) -> JsonDict:
         data = get_data(remote_id)
-        extracted = list(data.get("entities").values())
+        extracted = list(data.get("entities", {}).values())
         try:
             data = extracted[0]
         except (KeyError, IndexError):
@@ -74,10 +75,16 @@ class Connector(AbstractConnector):
         # flatten the data so that images, uri, and claims are on the same level
         return {
             **data.get("claims", {}),
-            **{k: data.get(k) for k in ["uri", "image", "labels", "sitelinks", "type"]},
+            **{
+                k: data.get(k)
+                for k in ["uri", "image", "labels", "sitelinks", "type"]
+                if k in data
+            },
         }
 
-    def parse_search_data(self, data, min_confidence):
+    def parse_search_data(
+        self, data: JsonDict, min_confidence: float
+    ) -> Iterator[SearchResult]:
         for search_result in data.get("results", []):
             images = search_result.get("image")
             cover = f"{self.covers_url}/img/entities/{images[0]}" if images else None
@@ -96,7 +103,7 @@ class Connector(AbstractConnector):
                 connector=self,
             )
 
-    def parse_isbn_search_data(self, data):
+    def parse_isbn_search_data(self, data: JsonDict) -> Iterator[SearchResult]:
         """got some data"""
         results = data.get("entities")
         if not results:
@@ -114,35 +121,44 @@ class Connector(AbstractConnector):
                 connector=self,
             )
 
-    def is_work_data(self, data):
+    def is_work_data(self, data: JsonDict) -> bool:
         return data.get("type") == "work"
 
-    def load_edition_data(self, work_uri):
+    def load_edition_data(self, work_uri: str) -> JsonDict:
         """get a list of editions for a work"""
         # pylint: disable=line-too-long
         url = f"{self.books_url}?action=reverse-claims&property=wdt:P629&value={work_uri}&sort=true"
         return get_data(url)
 
-    def get_edition_from_work_data(self, data):
-        data = self.load_edition_data(data.get("uri"))
+    def get_edition_from_work_data(self, data: JsonDict) -> JsonDict:
+        work_uri = data.get("uri")
+        if not work_uri:
+            raise ConnectorException("Invalid URI")
+        data = self.load_edition_data(work_uri)
         try:
             uri = data.get("uris", [])[0]
         except IndexError:
             raise ConnectorException("Invalid book data")
         return self.get_book_data(self.get_remote_id(uri))
 
-    def get_work_from_edition_data(self, data):
-        uri = data.get("wdt:P629", [None])[0]
+    def get_work_from_edition_data(self, data: JsonDict) -> JsonDict:
+        try:
+            uri = data.get("wdt:P629", [])[0]
+        except IndexError:
+            raise ConnectorException("Invalid book data")
+
         if not uri:
             raise ConnectorException("Invalid book data")
         return self.get_book_data(self.get_remote_id(uri))
 
-    def get_authors_from_data(self, data):
+    def get_authors_from_data(self, data: JsonDict) -> Iterator[models.Author]:
         authors = data.get("wdt:P50", [])
         for author in authors:
-            yield self.get_or_create_author(self.get_remote_id(author))
+            model = self.get_or_create_author(self.get_remote_id(author))
+            if model:
+                yield model
 
-    def expand_book_data(self, book):
+    def expand_book_data(self, book: models.Book) -> None:
         work = book
         # go from the edition to the work, if necessary
         if isinstance(book, models.Edition):
@@ -154,11 +170,16 @@ class Connector(AbstractConnector):
             # who knows, man
             return
 
-        for edition_uri in edition_options.get("uris"):
+        for edition_uri in edition_options.get("uris", []):
             remote_id = self.get_remote_id(edition_uri)
             create_edition_task.delay(self.connector.id, work.id, remote_id)
 
-    def create_edition_from_data(self, work, edition_data, instance=None):
+    def create_edition_from_data(
+        self,
+        work: models.Work,
+        edition_data: Union[str, JsonDict],
+        instance: Optional[models.Edition] = None,
+    ) -> Optional[models.Edition]:
         """pass in the url as data and then call the version in abstract connector"""
         if isinstance(edition_data, str):
             try:
@@ -168,22 +189,26 @@ class Connector(AbstractConnector):
                 return None
         return super().create_edition_from_data(work, edition_data, instance=instance)
 
-    def get_cover_url(self, cover_blob, *_):
+    def get_cover_url(
+        self, cover_blob: Union[list[JsonDict], JsonDict], *_: Any
+    ) -> Optional[str]:
         """format the relative cover url into an absolute one:
         {"url": "/img/entities/e794783f01b9d4f897a1ea9820b96e00d346994f"}
         """
         # covers may or may not be a list
-        if isinstance(cover_blob, list) and len(cover_blob) > 0:
+        if isinstance(cover_blob, list):
+            if len(cover_blob) == 0:
+                return None
             cover_blob = cover_blob[0]
         cover_id = cover_blob.get("url")
-        if not cover_id:
+        if not isinstance(cover_id, str):
             return None
         # cover may or may not be an absolute url already
         if re.match(r"^http", cover_id):
             return cover_id
         return f"{self.covers_url}{cover_id}"
 
-    def resolve_keys(self, keys):
+    def resolve_keys(self, keys: Iterable[str]) -> list[str]:
         """cool, it's "wd:Q3156592" now what the heck does that mean"""
         results = []
         for uri in keys:
@@ -191,10 +216,10 @@ class Connector(AbstractConnector):
                 data = self.get_book_data(self.get_remote_id(uri))
             except ConnectorException:
                 continue
-            results.append(get_language_code(data.get("labels")))
+            results.append(get_language_code(data.get("labels", {})))
         return results
 
-    def get_description(self, links):
+    def get_description(self, links: JsonDict) -> str:
         """grab an extracted excerpt from wikipedia"""
         link = links.get("enwiki")
         if not link:
@@ -204,15 +229,15 @@ class Connector(AbstractConnector):
             data = get_data(url)
         except ConnectorException:
             return ""
-        return data.get("extract")
+        return data.get("extract", "")
 
-    def get_remote_id_from_model(self, obj):
+    def get_remote_id_from_model(self, obj: models.BookDataModel) -> str:
         """use get_remote_id to figure out the link from a model obj"""
         remote_id_value = obj.inventaire_id
         return self.get_remote_id(remote_id_value)
 
 
-def get_language_code(options, code="en"):
+def get_language_code(options: JsonDict, code: str = "en") -> Any:
     """when there are a bunch of translation but we need a single field"""
     result = options.get(code)
     if result:
