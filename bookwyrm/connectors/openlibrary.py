@@ -6,11 +6,11 @@ from markdown import markdown
 
 from bookwyrm import models
 from bookwyrm.book_search import SearchResult
+from bookwyrm.utils.sanitizer import clean
 from .abstract_connector import AbstractConnector, Mapping, JsonDict
 from .abstract_connector import get_data, infer_physical_format, unique_physical_format
 from .connector_manager import ConnectorException, create_edition_task
 from .openlibrary_languages import languages
-from ..utils.sanitizer import clean
 
 
 class Connector(AbstractConnector):
