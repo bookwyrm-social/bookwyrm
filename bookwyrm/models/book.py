@@ -381,6 +381,19 @@ class Edition(Book):
 
         return super().save(*args, **kwargs)
 
+    @transaction.atomic
+    def repair(self):
+        """If an edition is in a bad state (missing a work), let's fix that"""
+        # made sure it actually NEEDS reapir
+        if self.parent_work:
+            return
+
+        new_work = Work.objects.create(title=self.title)
+        new_work.authors.set(self.authors.all())
+
+        self.parent_work = new_work
+        self.save(update_fields=["parent_work"], broadcast=False)
+
     @classmethod
     def viewer_aware_objects(cls, viewer):
         """annotate a book query with metadata related to the user"""
