@@ -158,6 +158,7 @@ case "$CMD" in
         git checkout l10n_main locale/gl_ES
         git checkout l10n_main locale/it_IT
         git checkout l10n_main locale/lt_LT
+        git checkout l10n_main locale/nl_NL
         git checkout l10n_main locale/no_NO
         git checkout l10n_main locale/pl_PL
         git checkout l10n_main locale/pt_PT
@@ -208,6 +209,10 @@ case "$CMD" in
         $DOCKER_COMPOSE run --rm dev-tools npx stylelint \
             bookwyrm/static/css/bookwyrm.scss bookwyrm/static/css/bookwyrm/**/*.scss --fix \
             --config dev-tools/.stylelintrc.js
+        ;;
+    mypy)
+        prod_error
+        runweb mypy celerywyrm bookwyrm
         ;;
     collectstatic_watch)
         prod_error
@@ -316,6 +321,7 @@ case "$CMD" in
         echo "    eslint"
         echo "    stylelint"
         echo "    formatters"
+        echo "    mypy"
         echo "    collectstatic_watch"
         echo "    populate_streams [--stream=<stream name>]"
         echo "    populate_lists_streams"

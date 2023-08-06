@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block form %}
-<form name="delete-user" action="{% url 'settings-delete-user' user.id %}" method="post">
+<form name="delete-user" action="{% url 'settings-delete-user' user.id report.id %}" method="post">
     {% csrf_token %}
     <p>
         {% blocktrans trimmed with username=user.localname %}

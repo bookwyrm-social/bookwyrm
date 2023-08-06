@@ -23,6 +23,76 @@
     <div class="columns has-text-centered is-multiline">
         <div class="column is-4">
             <div class="notification">
+                <p class="header">{% trans "Streams" %}</p>
+                <p class="title is-5">{{ queues.streams|intcomma }}</p>
+            </div>
+        </div>
+        <div class="column is-4">
+            <div class="notification">
+                <p class="header">{% trans "Broadcasts" %}</p>
+                <p class="title is-5">{{ queues.broadcast|intcomma }}</p>
+            </div>
+        </div>
+        <div class="column is-4">
+            <div class="notification">
+                <p class="header">{% trans "Inbox" %}</p>
+                <p class="title is-5">{{ queues.inbox|intcomma }}</p>
+            </div>
+        </div>
+
+        <div class="column is-4">
+            <div class="notification">
+                <p class="header">{% trans "Imports" %}</p>
+                <p class="title is-5">{{ queues.imports|intcomma }}</p>
+            </div>
+        </div>
+        <div class="column is-4">
+            <div class="notification">
+                <p class="header">{% trans "Import triggered" %}</p>
+                <p class="title is-5">{{ queues.import_triggered|intcomma }}</p>
+            </div>
+        </div>
+        <div class="column is-4">
+            <div class="notification">
+                <p class="header">{% trans "Connectors" %}</p>
+                <p class="title is-5">{{ queues.connectors|intcomma }}</p>
+            </div>
+        </div>
+
+        <div class="column is-6">
+            <div class="notification">
+                <p class="header">{% trans "Images" %}</p>
+                <p class="title is-5">{{ queues.images|intcomma }}</p>
+            </div>
+        </div>
+        <div class="column is-6">
+            <div class="notification">
+                <p class="header">{% trans "Suggested Users" %}</p>
+                <p class="title is-5">{{ queues.suggested_users|intcomma }}</p>
+            </div>
+        </div>
+
+        <div class="column is-4">
+            <div class="notification">
+                <p class="header">{% trans "Lists" %}</p>
+                <p class="title is-5">{{ queues.lists|intcomma }}</p>
+            </div>
+        </div>
+        <div class="column is-4">
+            <div class="notification">
+                <p class="header">{% trans "Email" %}</p>
+                <p class="title is-5">{{ queues.email|intcomma }}</p>
+            </div>
+        </div>
+        <div class="column is-4">
+            <div class="notification">
+                <p class="header">{% trans "Misc" %}</p>
+                <p class="title is-5">{{ queues.misc|intcomma }}</p>
+            </div>
+        </div>
+
+        <div class="column is-4">
+            <div class="notification">
                 <p class="header">{% trans "Low priority" %}</p>
                 <p class="title is-5">{{ queues.low_priority|intcomma }}</p>
             </div>
@@ -37,18 +107,6 @@
             <div class="notification">
                 <p class="header">{% trans "High priority" %}</p>
                 <p class="title is-5">{{ queues.high_priority|intcomma }}</p>
-            </div>
-        </div>
-        <div class="column is-6">
-            <div class="notification">
-                <p class="header">{% trans "Imports" %}</p>
-                <p class="title is-5">{{ queues.imports|intcomma }}</p>
-            </div>
-        </div>
-        <div class="column is-6">
-            <div class="notification">
-                <p class="header">{% trans "Broadcasts" %}</p>
-                <p class="title is-5">{{ queues.broadcast|intcomma }}</p>
             </div>
         </div>
     </div>

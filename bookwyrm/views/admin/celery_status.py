@@ -11,7 +11,23 @@ from django import forms
 import redis
 
 from celerywyrm import settings
-from bookwyrm.tasks import app as celery, LOW, MEDIUM, HIGH, IMPORTS, BROADCAST
+from bookwyrm.tasks import (
+    app as celery,
+    LOW,
+    MEDIUM,
+    HIGH,
+    STREAMS,
+    IMAGES,
+    SUGGESTED_USERS,
+    EMAIL,
+    CONNECTORS,
+    LISTS,
+    INBOX,
+    IMPORTS,
+    IMPORT_TRIGGERED,
+    BROADCAST,
+    MISC,
+)
 
 r = redis.from_url(settings.REDIS_BROKER_URL)
 
@@ -41,8 +57,17 @@ class CeleryStatus(View):
                 LOW: r.llen(LOW),
                 MEDIUM: r.llen(MEDIUM),
                 HIGH: r.llen(HIGH),
+                STREAMS: r.llen(STREAMS),
+                IMAGES: r.llen(IMAGES),
+                SUGGESTED_USERS: r.llen(SUGGESTED_USERS),
+                EMAIL: r.llen(EMAIL),
+                CONNECTORS: r.llen(CONNECTORS),
+                LISTS: r.llen(LISTS),
+                INBOX: r.llen(INBOX),
                 IMPORTS: r.llen(IMPORTS),
+                IMPORT_TRIGGERED: r.llen(IMPORT_TRIGGERED),
                 BROADCAST: r.llen(BROADCAST),
+                MISC: r.llen(MISC),
             }
         # pylint: disable=broad-except
         except Exception as err:
@@ -88,8 +113,17 @@ class ClearCeleryForm(forms.Form):
             (LOW, "Low prioirty"),
             (MEDIUM, "Medium priority"),
             (HIGH, "High priority"),
+            (STREAMS, "Streams"),
+            (IMAGES, "Images"),
+            (SUGGESTED_USERS, "Suggested users"),
+            (EMAIL, "Email"),
+            (CONNECTORS, "Connectors"),
+            (LISTS, "Lists"),
+            (INBOX, "Inbox"),
             (IMPORTS, "Imports"),
+            (IMPORT_TRIGGERED, "Import triggered"),
             (BROADCAST, "Broadcasts"),
+            (MISC, "Misc"),
         ],
         widget=forms.CheckboxSelectMultiple,
     )
@@ -110,7 +144,7 @@ class ClearCeleryForm(forms.Form):
 def celery_ping(request):
     """Just tells you if Celery is on or not"""
     try:
-        ping = celery.control.inspect().ping(timeout=5)
+        ping = celery.control.inspect().ping()
         if ping:
             return HttpResponse()
     # pylint: disable=broad-except

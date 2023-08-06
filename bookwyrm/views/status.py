@@ -6,9 +6,10 @@ from urllib.parse import urlparse
 from django.contrib.auth.decorators import login_required
 from django.core.validators import URLValidator
 from django.core.exceptions import ValidationError
+from django.db import transaction
 from django.db.models import Q
 from django.http import HttpResponse, HttpResponseBadRequest, Http404
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404
 from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
@@ -17,6 +18,7 @@ from django.views.decorators.http import require_POST
 
 from markdown import markdown
 from bookwyrm import forms, models
+from bookwyrm.models.report import DELETE_ITEM
 from bookwyrm.utils import regex, sanitizer
 from .helpers import handle_remote_webfinger, is_api_request
 from .helpers import load_date_in_user_tz_as_utc, redirect_to_referer
@@ -56,6 +58,7 @@ class CreateStatus(View):
         return TemplateResponse(request, "compose.html", data)
 
     # pylint: disable=too-many-branches
+    @transaction.atomic
     def post(self, request, status_type, existing_status_id=None):
         """create status of whatever type"""
         created = not existing_status_id
@@ -83,7 +86,6 @@ class CreateStatus(View):
             return redirect_to_referer(request)
 
         status = form.save(request, commit=False)
-        status.ready = False
         # save the plain, unformatted version of the status for future editing
         status.raw_content = status.content
         if hasattr(status, "quote"):
@@ -123,7 +125,6 @@ class CreateStatus(View):
         if hasattr(status, "quote"):
             status.quote = to_markdown(status.quote)
 
-        status.ready = True
         status.save(created=created)
 
         # update a readthrough, if needed
@@ -167,7 +168,7 @@ def format_hashtags(content, hashtags):
 class DeleteStatus(View):
     """tombstone that bad boy"""
 
-    def post(self, request, status_id):
+    def post(self, request, status_id, report_id=None):
         """delete and tombstone a status"""
         status = get_object_or_404(models.Status, id=status_id)
 
@@ -176,7 +177,11 @@ class DeleteStatus(View):
 
         # perform deletion
         status.delete()
-        return redirect("/")
+        # record deletion if it's related to a report
+        if report_id:
+            models.Report.record_action(report_id, DELETE_ITEM, request.user)
+
+        return redirect_to_referer(request, "/")
 
 
 @login_required
@@ -305,6 +310,11 @@ def format_links(content):
             formatted_content += potential_link[0]
             potential_link = potential_link[1:-1]
 
+        ends_with_punctuation = _ends_with_punctuation(potential_link)
+        if ends_with_punctuation:
+            punctuation_glyph = potential_link[-1]
+            potential_link = potential_link[0:-1]
+
         try:
             # raises an error on anything that's not a valid link
             validator(potential_link)
@@ -324,6 +334,9 @@ def format_links(content):
         if wrapped:
             formatted_content += wrapper_close
 
+        if ends_with_punctuation:
+            formatted_content += punctuation_glyph
+
     return formatted_content
 
 
@@ -332,6 +345,15 @@ def _wrapped(text):
     wrappers = [("(", ")"), ("[", "]"), ("{", "}")]
     for wrapper in wrappers:
         if text[0] == wrapper[0] and text[-1] == wrapper[-1]:
+            return True
+    return False
+
+
+def _ends_with_punctuation(text):
+    """check if a line of text ends with a punctuation glyph"""
+    glyphs = [".", ",", ";", ":", "!", "?", "”", "’", '"', "»"]
+    for glyph in glyphs:
+        if text[-1] == glyph:
             return True
     return False
 

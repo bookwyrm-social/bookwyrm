@@ -368,10 +368,16 @@ class TagField(ManyToManyField):
             activity_type = item.__class__.__name__
             if activity_type == "User":
                 activity_type = "Mention"
+
+            if activity_type == "Hashtag":
+                name = item.name
+            else:
+                name = f"@{getattr(item, item.name_field)}"
+
             tags.append(
                 activitypub.Link(
                     href=item.remote_id,
-                    name=getattr(item, item.name_field),
+                    name=name,
                     type=activity_type,
                 )
             )
@@ -379,7 +385,12 @@ class TagField(ManyToManyField):
 
     def field_from_activity(self, value, allow_external_connections=True):
         if not isinstance(value, list):
-            return None
+            # GoToSocial DMs and single-user mentions are
+            # sent as objects, not as an array of objects
+            if isinstance(value, dict):
+                value = [value]
+            else:
+                return None
         items = []
         for link_json in value:
             link = activitypub.Link(**link_json)

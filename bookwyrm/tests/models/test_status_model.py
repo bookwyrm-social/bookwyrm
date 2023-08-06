@@ -135,6 +135,41 @@ class Status(TestCase):
         self.assertEqual(activity["content"], "<p>test content</p>")
         self.assertEqual(activity["sensitive"], False)
 
+    def test_status_with_hashtag_to_activity(self, *_):
+        """status with hashtag with a "pure" serializer"""
+        tag = models.Hashtag.objects.create(name="#content")
+        status = models.Status.objects.create(
+            content="test #content", user=self.local_user
+        )
+        status.mention_hashtags.add(tag)
+
+        activity = status.to_activity(pure=True)
+        self.assertEqual(activity["id"], status.remote_id)
+        self.assertEqual(activity["type"], "Note")
+        self.assertEqual(activity["content"], "<p>test #content</p>")
+        self.assertEqual(activity["sensitive"], False)
+        self.assertEqual(activity["tag"][0]["type"], "Hashtag")
+        self.assertEqual(activity["tag"][0]["name"], "#content")
+        self.assertEqual(
+            activity["tag"][0]["href"], f"https://{settings.DOMAIN}/hashtag/{tag.id}"
+        )
+
+    def test_status_with_mention_to_activity(self, *_):
+        """status with mention with a "pure" serializer"""
+        status = models.Status.objects.create(
+            content="test @rat@rat.com", user=self.local_user
+        )
+        status.mention_users.add(self.remote_user)
+
+        activity = status.to_activity(pure=True)
+        self.assertEqual(activity["id"], status.remote_id)
+        self.assertEqual(activity["type"], "Note")
+        self.assertEqual(activity["content"], "<p>test @rat@rat.com</p>")
+        self.assertEqual(activity["sensitive"], False)
+        self.assertEqual(activity["tag"][0]["type"], "Mention")
+        self.assertEqual(activity["tag"][0]["name"], f"@{self.remote_user.username}")
+        self.assertEqual(activity["tag"][0]["href"], self.remote_user.remote_id)
+
     def test_status_to_activity_tombstone(self, *_):
         """subclass of the base model version with a "pure" serializer"""
         status = models.Status.objects.create(

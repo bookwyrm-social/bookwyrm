@@ -38,7 +38,7 @@
                         {% else %}
                             {% trans "Search for a book" as search_placeholder %}
                         {% endif %}
-                        <input aria-label="{{ search_placeholder }}" id="tour-search" class="input" type="text" name="q" placeholder="{{ search_placeholder }}" value="{{ query }}">
+                        <input aria-label="{{ search_placeholder }}" id="tour-search" class="input" type="text" name="q" placeholder="{{ search_placeholder }}" value="{{ query }}" spellcheck="false">
                     </div>
                     <div class="control">
                         <button class="button" type="submit">

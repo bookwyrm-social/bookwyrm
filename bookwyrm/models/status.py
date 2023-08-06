@@ -142,10 +142,17 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         # keep notes if they mention local users
         if activity.tag == MISSING or activity.tag is None:
             return True
-        tags = [l["href"] for l in activity.tag if l["type"] == "Mention"]
+        # GoToSocial sends single tags as objects
+        # not wrapped in a list
+        tags = activity.tag if isinstance(activity.tag, list) else [activity.tag]
         user_model = apps.get_model("bookwyrm.User", require_ready=True)
         for tag in tags:
-            if user_model.objects.filter(remote_id=tag, local=True).exists():
+            if (
+                tag["type"] == "Mention"
+                and user_model.objects.filter(
+                    remote_id=tag["href"], local=True
+                ).exists()
+            ):
                 # we found a mention of a known use boost
                 return False
         return True

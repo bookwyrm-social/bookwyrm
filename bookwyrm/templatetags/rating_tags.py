@@ -12,6 +12,10 @@ register = template.Library()
 @register.filter(name="rating")
 def get_rating(book, user):
     """get the overall rating of a book"""
+    # this shouldn't happen, but it CAN
+    if not book.parent_work:
+        return None
+
     return cache.get_or_set(
         f"book-rating-{book.parent_work.id}",
         lambda u, b: models.Review.objects.filter(

@@ -40,9 +40,6 @@ let BookWyrm = new (class {
 
         document.querySelectorAll("details.dropdown").forEach((node) => {
             node.addEventListener("toggle", this.handleDetailsDropdown.bind(this));
-            node.querySelectorAll("[data-modal-open]").forEach((modal_node) =>
-                modal_node.addEventListener("click", () => (node.open = false))
-            );
         });
 
         document
@@ -68,6 +65,9 @@ let BookWyrm = new (class {
                 .querySelectorAll('input[type="file"]')
                 .forEach(bookwyrm.disableIfTooLarge.bind(bookwyrm));
             document.querySelectorAll("[data-copytext]").forEach(bookwyrm.copyText.bind(bookwyrm));
+            document
+                .querySelectorAll("[data-copywithtooltip]")
+                .forEach(bookwyrm.copyWithTooltip.bind(bookwyrm));
             document
                 .querySelectorAll(".modal.is-active")
                 .forEach(bookwyrm.handleActiveModal.bind(bookwyrm));
@@ -525,6 +525,21 @@ let BookWyrm = new (class {
         });
 
         textareaEl.parentNode.appendChild(copyButtonEl);
+    }
+
+    copyWithTooltip(copyButtonEl) {
+        const text = document.getElementById(copyButtonEl.dataset.contentId).innerHTML;
+        const tooltipEl = document.getElementById(copyButtonEl.dataset.tooltipId);
+
+        copyButtonEl.addEventListener("click", () => {
+            navigator.clipboard.writeText(text);
+            tooltipEl.style.visibility = "visible";
+            tooltipEl.style.opacity = 1;
+            setTimeout(function () {
+                tooltipEl.style.visibility = "hidden";
+                tooltipEl.style.opacity = 0;
+            }, 3000);
+        });
     }
 
     /**
