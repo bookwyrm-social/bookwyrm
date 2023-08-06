@@ -7,6 +7,7 @@ from django.utils.decorators import method_decorator
 from django.views import View
 
 from bookwyrm import forms, models
+from bookwyrm.models.report import USER_PERMS
 from bookwyrm.settings import PAGE_LENGTH
 
 
@@ -76,15 +77,16 @@ class UserAdminList(View):
 class UserAdmin(View):
     """moderate an individual user"""
 
-    def get(self, request, user):
+    # pylint: disable=unused-argument
+    def get(self, request, user_id, report_id=None):
         """user view"""
-        user = get_object_or_404(models.User, id=user)
+        user = get_object_or_404(models.User, id=user_id)
         data = {"user": user, "group_form": forms.UserGroupForm()}
         return TemplateResponse(request, "settings/users/user.html", data)
 
-    def post(self, request, user):
+    def post(self, request, user_id, report_id=None):
         """update user group"""
-        user = get_object_or_404(models.User, id=user)
+        user = get_object_or_404(models.User, id=user_id)
 
         if request.POST.get("groups") == "":
             user.groups.set([])
@@ -93,6 +95,10 @@ class UserAdmin(View):
             form = forms.UserGroupForm(request.POST, instance=user)
             if form.is_valid():
                 form.save(request)
+
+        if report_id:
+            models.Report.record_action(report_id, USER_PERMS, request.user)
+
         data = {"user": user, "group_form": form}
         return TemplateResponse(request, "settings/users/user.html", data)
 
@@ -106,8 +112,8 @@ class ActivateUserAdmin(View):
     """activate a user manually"""
 
     # pylint: disable=unused-argument
-    def post(self, request, user):
+    def post(self, request, user_id):
         """activate user"""
-        user = get_object_or_404(models.User, id=user)
+        user = get_object_or_404(models.User, id=user_id)
         user.reactivate()
         return redirect("settings-user", user.id)

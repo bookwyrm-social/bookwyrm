@@ -8,6 +8,7 @@ from django.utils.decorators import method_decorator
 from django.views import View
 
 from bookwyrm import forms, models
+from bookwyrm.models.report import USER_SUSPENSION, USER_UNSUSPENSION, USER_DELETION
 from bookwyrm.views.helpers import redirect_to_referer
 from bookwyrm.settings import PAGE_LENGTH
 
@@ -81,41 +82,42 @@ class ReportAdmin(View):
     def post(self, request, report_id):
         """comment on a report"""
         report = get_object_or_404(models.Report, id=report_id)
-        models.ReportComment.objects.create(
-            user=request.user,
-            report=report,
-            note=request.POST.get("note"),
-        )
+        note = request.POST.get("note")
+        report.comment(request.user, note)
         return redirect("settings-report", report.id)
 
 
 @login_required
 @permission_required("bookwyrm.moderate_user")
-def suspend_user(request, user_id):
+def suspend_user(request, user_id, report_id=None):
     """mark an account as inactive"""
     user = get_object_or_404(models.User, id=user_id)
     user.is_active = False
     user.deactivation_reason = "moderator_suspension"
     # this isn't a full deletion, so we don't want to tell the world
     user.save(broadcast=False)
+
+    models.Report.record_action(report_id, USER_SUSPENSION, request.user)
     return redirect_to_referer(request, "settings-user", user.id)
 
 
 @login_required
 @permission_required("bookwyrm.moderate_user")
-def unsuspend_user(request, user_id):
+def unsuspend_user(request, user_id, report_id=None):
     """mark an account as inactive"""
     user = get_object_or_404(models.User, id=user_id)
     user.is_active = True
     user.deactivation_reason = None
     # this isn't a full deletion, so we don't want to tell the world
     user.save(broadcast=False)
+
+    models.Report.record_action(report_id, USER_UNSUSPENSION, request.user)
     return redirect_to_referer(request, "settings-user", user.id)
 
 
 @login_required
 @permission_required("bookwyrm.moderate_user")
-def moderator_delete_user(request, user_id):
+def moderator_delete_user(request, user_id, report_id=None):
     """permanently delete a user"""
     user = get_object_or_404(models.User, id=user_id)
 
@@ -130,6 +132,9 @@ def moderator_delete_user(request, user_id):
     if form.is_valid() and moderator.check_password(form.cleaned_data["password"]):
         user.deactivation_reason = "moderator_deletion"
         user.delete()
+
+        # make a note of the fact that we did this
+        models.Report.record_action(report_id, USER_DELETION, request.user)
         return redirect_to_referer(request, "settings-user", user.id)
 
     form.errors["password"] = ["Invalid password"]
@@ -140,11 +145,12 @@ def moderator_delete_user(request, user_id):
 
 @login_required
 @permission_required("bookwyrm.moderate_post")
-def resolve_report(_, report_id):
+def resolve_report(request, report_id):
     """mark a report as (un)resolved"""
     report = get_object_or_404(models.Report, id=report_id)
-    report.resolved = not report.resolved
-    report.save()
-    if not report.resolved:
+    if report.resolved:
+        report.reopen(request.user)
         return redirect("settings-report", report.id)
+
+    report.resolve(request.user)
     return redirect("settings-reports")

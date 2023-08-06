@@ -13,8 +13,18 @@
     </a>
 </td>
 <td>
-    <form>
+    {% if link.domain.status != "approved" %}
+    <form method="POST" action="{% url 'settings-link-domain-status' link.domain.id 'approved' report.id %}">
+        {% csrf_token %}
+        <button type="submit" class="button is-success is-light">{% trans "Approve domain" %}</button>
+    </form>
+    {% endif %}
+
+    {% if link.domain.status != "blocked" %}
+    <form method="POST" action="{% url 'settings-link-domain-status' link.domain.id 'blocked' report.id %}">
+        {% csrf_token %}
         <button type="submit" class="button is-danger is-light">{% trans "Block domain" %}</button>
     </form>
+    {% endif %}
 </td>
 {% endblock %}
