@@ -6,8 +6,9 @@ from functools import reduce
 import json
 import operator
 import logging
-from typing import List
+from typing import Any, Optional
 from uuid import uuid4
+from typing_extensions import Self
 
 import aiohttp
 from Crypto.PublicKey import RSA
@@ -85,7 +86,7 @@ class ActivitypubMixin:
         super().__init__(*args, **kwargs)
 
     @classmethod
-    def find_existing_by_remote_id(cls, remote_id):
+    def find_existing_by_remote_id(cls, remote_id: str) -> Self:
         """look up a remote id in the db"""
         return cls.find_existing({"id": remote_id})
 
@@ -137,7 +138,7 @@ class ActivitypubMixin:
             queue=queue,
         )
 
-    def get_recipients(self, software=None) -> List[str]:
+    def get_recipients(self, software=None) -> list[str]:
         """figure out which inbox urls to post to"""
         # first we have to figure out who should receive this activity
         privacy = self.privacy if hasattr(self, "privacy") else "public"
@@ -198,7 +199,14 @@ class ActivitypubMixin:
 class ObjectMixin(ActivitypubMixin):
     """add this mixin for object models that are AP serializable"""
 
-    def save(self, *args, created=None, software=None, priority=BROADCAST, **kwargs):
+    def save(
+        self,
+        *args: Any,
+        created: Optional[bool] = None,
+        software: Any = None,
+        priority: str = BROADCAST,
+        **kwargs: Any,
+    ) -> None:
         """broadcast created/updated/deleted objects as appropriate"""
         broadcast = kwargs.get("broadcast", True)
         # this bonus kwarg would cause an error in the base save method
@@ -507,14 +515,14 @@ def unfurl_related_field(related_field, sort_field=None):
 
 
 @app.task(queue=BROADCAST)
-def broadcast_task(sender_id: int, activity: str, recipients: List[str]):
+def broadcast_task(sender_id: int, activity: str, recipients: list[str]):
     """the celery task for broadcast"""
     user_model = apps.get_model("bookwyrm.User", require_ready=True)
     sender = user_model.objects.select_related("key_pair").get(id=sender_id)
     asyncio.run(async_broadcast(recipients, sender, activity))
 
 
-async def async_broadcast(recipients: List[str], sender, data: str):
+async def async_broadcast(recipients: list[str], sender, data: str):
     """Send all the broadcasts simultaneously"""
     timeout = aiohttp.ClientTimeout(total=10)
     async with aiohttp.ClientSession(timeout=timeout) as session:

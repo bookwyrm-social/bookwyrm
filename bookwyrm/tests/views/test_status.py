@@ -62,7 +62,7 @@ class StatusTransactions(TransactionTestCase):
         with patch("bookwyrm.activitystreams.add_status_task.apply_async") as mock:
             view(request, "comment")
 
-        self.assertEqual(mock.call_count, 2)
+        self.assertEqual(mock.call_count, 1)
 
 
 @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")

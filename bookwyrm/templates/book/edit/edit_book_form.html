@@ -10,7 +10,9 @@
 {% csrf_token %}
 
 <input type="hidden" name="last_edited_by" value="{{ request.user.id }}">
+{% if form.parent_work %}
 <input type="hidden" name="parent_work" value="{% firstof book.parent_work.id form.parent_work %}">
+{% endif %}
 
 <div class="columns">
     <div class="column is-half">
