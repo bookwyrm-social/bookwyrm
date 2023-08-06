@@ -1,11 +1,30 @@
 {% extends 'user/relationships/layout.html' %}
+{% load utilities %}
 {% load i18n %}
+
+{% block title %}
+    {% trans "Followers" %} - {{ user|username }}
+{% endblock %}
 
 {% block header %}
 <h1 class="title">
     {% trans "Followers" %}
 </h1>
 {% endblock %}
+
+{% block breadcrumbs %}
+<nav class="breadcrumb subtitle" aria-label="breadcrumbs">
+    <ul>
+        <li><a href="{% url 'user-feed' user|username %}">{% trans "User profile" %}</a></li>
+        <li class="is-active">
+            <a href="#" aria-current="page">
+                {% trans "Followers" %}
+            </a>
+        </li>
+    </ul>
+</nav>
+{% endblock %}
+
 
 {% block nullstate %}
 <div>
