@@ -8,7 +8,7 @@
     <p class="subtitle is-6">{% trans "You can follow users on other BookWyrm instances and federated services like Mastodon." %}</p>
     <form class="field has-addons" method="get" action="{% url 'get-started-users' %}">
         <div class="control">
-            <input type="text" name="query" value="{{ request.GET.query }}" class="input" placeholder="{% trans 'Search for a user' %}" aria-label="{% trans 'Search for a user' %}">
+            <input type="text" name="query" value="{{ request.GET.query }}" class="input" placeholder="{% trans 'Search for a user' %}" aria-label="{% trans 'Search for a user' %}" spellcheck="false">
             {% if request.GET.query and no_results %}
             <p class="help">{% blocktrans with query=request.GET.query %}No users found for "{{ query }}"{% endblocktrans %}</p>
             {% endif %}

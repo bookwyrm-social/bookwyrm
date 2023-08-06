@@ -6,7 +6,7 @@ from bookwyrm.settings import *
 QUERY_TIMEOUT = env.int("CELERY_QUERY_TIMEOUT", env.int("QUERY_TIMEOUT", 30))
 
 # pylint: disable=line-too-long
-REDIS_BROKER_PASSWORD = requests.utils.quote(env("REDIS_BROKER_PASSWORD", ""))
+REDIS_BROKER_PASSWORD = requests.compat.quote(env("REDIS_BROKER_PASSWORD", ""))
 REDIS_BROKER_HOST = env("REDIS_BROKER_HOST", "redis_broker")
 REDIS_BROKER_PORT = env.int("REDIS_BROKER_PORT", 6379)
 REDIS_BROKER_DB_INDEX = env.int("REDIS_BROKER_DB_INDEX", 0)

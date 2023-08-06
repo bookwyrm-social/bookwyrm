@@ -129,7 +129,7 @@ def sort_list(request, items):
     """helper to handle the surprisingly involved sorting"""
     # sort_by shall be "order" unless a valid alternative is given
     sort_by = request.GET.get("sort_by", "order")
-    if sort_by not in ("order", "title", "rating"):
+    if sort_by not in ("order", "sort_title", "rating"):
         sort_by = "order"
 
     # direction shall be "ascending" unless a valid alternative is given
@@ -139,7 +139,7 @@ def sort_list(request, items):
 
     directional_sort_by = {
         "order": "order",
-        "title": "book__title",
+        "sort_title": "book__sort_title",
         "rating": "average_rating",
     }[sort_by]
     if direction == "descending":
