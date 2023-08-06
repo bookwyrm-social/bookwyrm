@@ -15,6 +15,7 @@ from model_utils.managers import InheritanceManager
 from imagekit.models import ImageSpecField
 
 from bookwyrm import activitypub
+from bookwyrm.isbn.isbn import hyphenator_singleton as hyphenator
 from bookwyrm.preview_images import generate_edition_preview_image_task
 from bookwyrm.settings import (
     DOMAIN,
@@ -320,6 +321,11 @@ class Edition(Book):
     name_field = "title"
     serialize_reverse_fields = [("file_links", "fileLinks", "-created_date")]
     deserialize_reverse_fields = [("file_links", "fileLinks")]
+
+    @property
+    def hyphenated_isbn13(self):
+        """generate the hyphenated version of the ISBN-13"""
+        return hyphenator.hyphenate(self.isbn_13)
 
     def get_rank(self):
         """calculate how complete the data is on this edition"""
