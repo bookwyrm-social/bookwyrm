@@ -1,5 +1,10 @@
 {% extends 'user/layout.html' %}
+{% load utilities %}
 {% load i18n %}
+
+{% block title %}
+{% trans "Groups" %} - {{ user|username }}
+{% endblock %}
 
 {% block header %}
 <div class="columns is-mobile">
@@ -30,6 +35,10 @@
     </div>
 
     {% include 'groups/user_groups.html' with memberships=memberships %}
+
+    {% if not memberships or not memberships.exists %}
+    <p><em>{% trans "No groups found." %}</em></p>
+    {% endif %}
 </section>
 <div>
     {% include 'snippets/pagination.html' with page=user.memberships path=path %}

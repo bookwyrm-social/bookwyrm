@@ -2,7 +2,9 @@
 {% load i18n %}
 {% load utilities %}
 
-{% block title %}{{ user.display_name }}{% endblock %}
+{% block title %}
+{% trans "Reviews and Comments" %} - {{ user|username }}
+{% endblock %}
 
 {% block header %}
 <div class="columns is-mobile">
@@ -21,7 +23,7 @@
     {% endfor %}
     {% if not activities %}
     <div class="block">
-        <p>{% trans "No reviews or comments yet!" %}</p>
+        <p><em>{% trans "No reviews or comments yet!" %}</em></p>
     </div>
     {% endif %}
 

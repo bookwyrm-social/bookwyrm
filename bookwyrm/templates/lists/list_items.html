@@ -47,4 +47,7 @@
         </div>
     </div>
     {% endfor %}
+    {% if not lists or not lists.exists %}
+    <p class="column"><em>{% trans "No lists found." %}</em></p>
+    {% endif %}
 </div>
