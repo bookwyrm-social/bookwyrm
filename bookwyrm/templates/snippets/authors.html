@@ -10,7 +10,8 @@
 {% with remainder_count=book.authors.count|add:subtraction_value %}
 {% with remainder_count_display=remainder_count|intcomma %}
 
-{% for author in book.authors.all|slice:limit %}
+{% for book_author in book.bookauthor_set.all|slice:limit %}
+    {% with author=book_author.author %}
     <a
         href="{{ author.local_path }}"
         class="author {{ link_class }}"
@@ -19,11 +20,12 @@
         itemtype="https://schema.org/Thing"
     ><span
         itemprop="name"
-        >{{ author.name }}</span></a>{% if not forloop.last %}, {% elif remainder_count > 0 %}, {% blocktrans trimmed count counter=remainder_count %}
+        >{{ author.name }}</span></a>{% if book_author.author_type != "author" %} ({{ book_author.author_type }}){% endif %}{% if not forloop.last %}, {% elif remainder_count > 0 %}, {% blocktrans trimmed count counter=remainder_count %}
 and {{ remainder_count_display }} other
 {% plural %}
 and {{ remainder_count_display }} others
 {% endblocktrans %}{% endif %}
+    {% endwith %}
 {% endfor %}
 
 {% endwith %}
