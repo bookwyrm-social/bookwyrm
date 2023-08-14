@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-05-30 17:48+0000\n"
-"PO-Revision-Date: 2023-08-14 19:53\n"
+"PO-Revision-Date: 2023-08-14 20:52\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Norwegian\n"
 "Language: no\n"
@@ -940,7 +940,7 @@ msgstr "Beskrivelse:"
 #, python-format
 msgid "%(count)s edition"
 msgid_plural "%(count)s editions"
-msgstr[0] ""
+msgstr[0] "%(count)s utgave"
 msgstr[1] "%(count)s utgaver"
 
 #: bookwyrm/templates/book/book.html:246
@@ -4060,7 +4060,7 @@ msgstr ""
 #: bookwyrm/templates/preferences/export.html:4
 #: bookwyrm/templates/preferences/export.html:7
 msgid "CSV Export"
-msgstr ""
+msgstr "CSV-eksport"
 
 #: bookwyrm/templates/preferences/export.html:13
 msgid "Your export will include all the books on your shelves, books you have reviewed, and books with reading activity."
@@ -4068,7 +4068,7 @@ msgstr ""
 
 #: bookwyrm/templates/preferences/export.html:20
 msgid "Download file"
-msgstr ""
+msgstr "Last ned fil"
 
 #: bookwyrm/templates/preferences/layout.html:11
 msgid "Account"
@@ -4076,11 +4076,11 @@ msgstr "Konto"
 
 #: bookwyrm/templates/preferences/layout.html:31
 msgid "Data"
-msgstr ""
+msgstr "Data"
 
 #: bookwyrm/templates/preferences/layout.html:39
 msgid "CSV export"
-msgstr ""
+msgstr "CSV-eksport"
 
 #: bookwyrm/templates/preferences/layout.html:42
 msgid "Relationships"
@@ -4099,7 +4099,7 @@ msgstr "Start \"%(book_title)s"
 #: bookwyrm/templates/reading_progress/stop.html:5
 #, python-format
 msgid "Stop Reading \"%(book_title)s\""
-msgstr ""
+msgstr "Stopp lesing av \"%(book_title)s\""
 
 #: bookwyrm/templates/reading_progress/want.html:5
 #, python-format
@@ -4150,7 +4150,7 @@ msgstr "ferdig"
 
 #: bookwyrm/templates/readthrough/readthrough_list.html:16
 msgid "stopped"
-msgstr ""
+msgstr "stoppet"
 
 #: bookwyrm/templates/readthrough/readthrough_list.html:27
 msgid "Show all updates"
@@ -4186,15 +4186,17 @@ msgstr "Rapport"
 msgid "\n"
 "        Scan Barcode\n"
 "    "
-msgstr ""
+msgstr "\n"
+"        Les strekkode\n"
+"    "
 
 #: bookwyrm/templates/search/barcode_modal.html:21
 msgid "Requesting camera..."
-msgstr ""
+msgstr "Ber om kamera..."
 
 #: bookwyrm/templates/search/barcode_modal.html:22
 msgid "Grant access to the camera to scan a book's barcode."
-msgstr ""
+msgstr "Gi tilgang til kameraet for å lese en strekkode."
 
 #: bookwyrm/templates/search/barcode_modal.html:27
 msgid "Could not access camera"
@@ -4374,7 +4376,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/announcements/edit_announcement.html:57
 msgid "Details:"
-msgstr ""
+msgstr "Detaljer:"
 
 #: bookwyrm/templates/settings/announcements/edit_announcement.html:65
 msgid "Event date:"
@@ -4382,11 +4384,11 @@ msgstr "Dato for hendelsen:"
 
 #: bookwyrm/templates/settings/announcements/edit_announcement.html:73
 msgid "Display settings"
-msgstr ""
+msgstr "Visningsinnstillinger"
 
 #: bookwyrm/templates/settings/announcements/edit_announcement.html:98
 msgid "Color:"
-msgstr ""
+msgstr "Farge:"
 
 #: bookwyrm/templates/settings/automod/rules.html:7
 #: bookwyrm/templates/settings/automod/rules.html:11
@@ -4750,7 +4752,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/email_config.html:90
 msgid "Send test email"
-msgstr ""
+msgstr "Send test-e-post"
 
 #: bookwyrm/templates/settings/federation/edit_instance.html:3
 #: bookwyrm/templates/settings/federation/edit_instance.html:6
@@ -4801,7 +4803,7 @@ msgstr "Versjon:"
 
 #: bookwyrm/templates/settings/federation/instance.html:17
 msgid "Refresh data"
-msgstr ""
+msgstr "Oppdater data"
 
 #: bookwyrm/templates/settings/federation/instance.html:37
 msgid "Details"
@@ -4947,23 +4949,23 @@ msgstr ""
 
 #: bookwyrm/templates/settings/imports/imports.html:78
 msgid "Set import limit to"
-msgstr ""
+msgstr "Sett importgrense til"
 
 #: bookwyrm/templates/settings/imports/imports.html:80
 msgid "books every"
-msgstr ""
+msgstr "bøker hver"
 
 #: bookwyrm/templates/settings/imports/imports.html:82
 msgid "days."
-msgstr ""
+msgstr "dager."
 
 #: bookwyrm/templates/settings/imports/imports.html:86
 msgid "Set limit"
-msgstr ""
+msgstr "Sett grense"
 
 #: bookwyrm/templates/settings/imports/imports.html:102
 msgid "Completed"
-msgstr ""
+msgstr "Fullført"
 
 #: bookwyrm/templates/settings/imports/imports.html:116
 msgid "User"
@@ -5574,7 +5576,7 @@ msgstr "Vis brukerprofil"
 
 #: bookwyrm/templates/settings/users/user_info.html:19
 msgid "Go to user admin"
-msgstr ""
+msgstr "Gå til brukeradministrasjon"
 
 #: bookwyrm/templates/settings/users/user_info.html:40
 msgid "Local"
@@ -5602,7 +5604,7 @@ msgstr "Blokkert av:"
 
 #: bookwyrm/templates/settings/users/user_info.html:74
 msgid "Date added:"
-msgstr ""
+msgstr "Dato lagt til:"
 
 #: bookwyrm/templates/settings/users/user_info.html:77
 msgid "Last active date:"
@@ -5666,7 +5668,7 @@ msgstr ""
 
 #: bookwyrm/templates/setup/admin.html:20
 msgid "Admin key:"
-msgstr ""
+msgstr "Administrasjonsnøkkel:"
 
 #: bookwyrm/templates/setup/admin.html:32
 msgid "An admin key was created when you installed BookWyrm. You can get your admin key by running <code>./bw-dev admin_code</code> from the command line on your server."
@@ -6182,7 +6184,7 @@ msgstr ""
 #: bookwyrm/templates/snippets/shelf_selector.html:53
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_options.html:21
 msgid "Stopped reading"
-msgstr ""
+msgstr "Holdt opp å lese"
 
 #: bookwyrm/templates/snippets/reading_modals/want_to_read_modal.html:6
 #, python-format
@@ -6191,7 +6193,7 @@ msgstr "Har lyst til å lese \"<em>%(book_title)s</em>\""
 
 #: bookwyrm/templates/snippets/register_form.html:18
 msgid "Choose wisely! Your username cannot be changed."
-msgstr ""
+msgstr "Velg med omhu Brukernavnet ditt kan ikke endres."
 
 #: bookwyrm/templates/snippets/register_form.html:66
 msgid "Sign Up"
@@ -6255,7 +6257,7 @@ msgstr "Flere hyller"
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_dropdown_options.html:31
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_options.html:48
 msgid "Stop reading"
-msgstr ""
+msgstr "Slutt å lese"
 
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_options.html:40
 msgid "Finish reading"
@@ -6273,17 +6275,17 @@ msgstr ""
 #: bookwyrm/templates/snippets/status/content_status.html:102
 #, python-format
 msgid "%(endpage)s"
-msgstr ""
+msgstr "%(endpage)s"
 
 #: bookwyrm/templates/snippets/status/content_status.html:104
 #, python-format
 msgid "(%(percent)s%%"
-msgstr ""
+msgstr "(%(percent)s%%"
 
 #: bookwyrm/templates/snippets/status/content_status.html:104
 #, python-format
 msgid " - %(endpercent)s%%"
-msgstr ""
+msgstr " - %(endpercent)s%%"
 
 #: bookwyrm/templates/snippets/status/content_status.html:127
 msgid "Open image in new window"
@@ -6361,12 +6363,12 @@ msgstr "anmeldte <a href=\"%(book_path)s\">%(book)s</a>"
 #: bookwyrm/templates/snippets/status/headers/stopped_reading.html:10
 #, python-format
 msgid "stopped reading <a href=\"%(book_path)s\">%(book)s</a> by <a href=\"%(author_path)s\">%(author_name)s</a>"
-msgstr ""
+msgstr "holdt opp å lese <a href=\"%(book_path)s\">%(book)s</a> av <a href=\"%(author_path)s\">%(author_name)s</a>"
 
 #: bookwyrm/templates/snippets/status/headers/stopped_reading.html:17
 #, python-format
 msgid "stopped reading <a href=\"%(book_path)s\">%(book)s</a>"
-msgstr ""
+msgstr "holdt opp å lese <a href=\"%(book_path)s\">%(book)s</a>"
 
 #: bookwyrm/templates/snippets/status/headers/to_read.html:10
 #, python-format
@@ -6424,23 +6426,23 @@ msgstr "Vis mindre"
 
 #: bookwyrm/templates/two_factor_auth/two_factor_login.html:29
 msgid "2FA check"
-msgstr ""
+msgstr "2FA-kontroll"
 
 #: bookwyrm/templates/two_factor_auth/two_factor_login.html:37
 msgid "Enter the code from your authenticator app:"
-msgstr ""
+msgstr "Skriv inn koden fra autentifikasjonsapplikasjonen din:"
 
 #: bookwyrm/templates/two_factor_auth/two_factor_login.html:41
 msgid "Confirm and Log In"
-msgstr ""
+msgstr "Bekreft og logg inn"
 
 #: bookwyrm/templates/two_factor_auth/two_factor_prompt.html:29
 msgid "2FA is available"
-msgstr ""
+msgstr "2FA er tilgjengelig"
 
 #: bookwyrm/templates/two_factor_auth/two_factor_prompt.html:34
 msgid "You can secure your account by setting up two factor authentication in your user preferences. This will require a one-time code from your phone in addition to your password each time you log in."
-msgstr ""
+msgstr "Du kan sikre kontoen din ved å sette opp tofaktorautentisering i dine brukerinnstillinger. Dette krever en engangskode fra telefonen din, i tillegg til passordet ditt hver gang du logger deg på."
 
 #: bookwyrm/templates/user/books_header.html:9
 #, python-format
@@ -6487,7 +6489,7 @@ msgstr "Følgeforespørsler"
 #: bookwyrm/templates/user/layout.html:71
 #: bookwyrm/templates/user/reviews_comments.html:10
 msgid "Reviews and Comments"
-msgstr ""
+msgstr "Omtaler og kommentarer"
 
 #: bookwyrm/templates/user/lists.html:11
 #, python-format
@@ -6515,7 +6517,7 @@ msgstr "%(username)s følger ingen andre medlemmer"
 
 #: bookwyrm/templates/user/reviews_comments.html:24
 msgid "No reviews or comments yet!"
-msgstr ""
+msgstr "Ingen omtaler eller kommentarer ennå!"
 
 #: bookwyrm/templates/user/user.html:20
 msgid "Edit profile"
@@ -6541,7 +6543,7 @@ msgstr "Brukeraktivitet"
 
 #: bookwyrm/templates/user/user.html:76
 msgid "Show RSS Options"
-msgstr ""
+msgstr "Vis RSS-alternativer"
 
 #: bookwyrm/templates/user/user.html:82
 msgid "RSS feed"
@@ -6549,19 +6551,19 @@ msgstr "RSS strøm"
 
 #: bookwyrm/templates/user/user.html:98
 msgid "Complete feed"
-msgstr ""
+msgstr "Fullstendig strøm"
 
 #: bookwyrm/templates/user/user.html:103
 msgid "Reviews only"
-msgstr ""
+msgstr "Kun omtaler"
 
 #: bookwyrm/templates/user/user.html:108
 msgid "Quotes only"
-msgstr ""
+msgstr "Kun sitater"
 
 #: bookwyrm/templates/user/user.html:113
 msgid "Comments only"
-msgstr ""
+msgstr "Kun kommentarer"
 
 #: bookwyrm/templates/user/user.html:129
 msgid "No activities yet!"
@@ -6597,7 +6599,7 @@ msgstr "Ingen følgere du følger"
 
 #: bookwyrm/templates/user_menu.html:7
 msgid "View profile and more"
-msgstr ""
+msgstr "Vis profil og mer"
 
 #: bookwyrm/templates/user_menu.html:82
 msgid "Log out"
@@ -6610,7 +6612,7 @@ msgstr "Filen overskrider maksimal størrelse: 10MB"
 #: bookwyrm/templatetags/list_page_tags.py:14
 #, python-format
 msgid "Book List: %(name)s"
-msgstr ""
+msgstr "Bokliste: %(name)s"
 
 #: bookwyrm/templatetags/list_page_tags.py:22
 #, python-format
