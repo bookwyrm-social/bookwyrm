@@ -24,8 +24,7 @@ class Book(TestCase):
             title="Example Work", remote_id="https://example.com/book/1"
         )
         self.first_edition = models.Edition.objects.create(
-            title="Example Edition",
-            parent_work=self.work,
+            title="Example Edition", parent_work=self.work
         )
         self.second_edition = models.Edition.objects.create(
             title="Another Example Edition",
@@ -132,3 +131,26 @@ class Book(TestCase):
         self.assertIsNotNone(book.cover_bw_book_xlarge_jpg.url)
         self.assertIsNotNone(book.cover_bw_book_xxlarge_webp.url)
         self.assertIsNotNone(book.cover_bw_book_xxlarge_jpg.url)
+
+    def test_populate_sort_title(self):
+        """The sort title should remove the initial article on save"""
+        books = (
+            models.Edition.objects.create(
+                title=f"{article} Test Edition", languages=[langauge]
+            )
+            for langauge, articles in settings.LANGUAGE_ARTICLES.items()
+            for article in articles
+        )
+        self.assertTrue(all(book.sort_title == "test edition" for book in books))
+
+    def test_repair_edition(self):
+        """Fix editions with no works"""
+        edition = models.Edition.objects.create(title="test")
+        edition.authors.set([models.Author.objects.create(name="Author Name")])
+        self.assertIsNone(edition.parent_work)
+
+        edition.repair()
+        edition.refresh_from_db()
+
+        self.assertEqual(edition.parent_work.title, "test")
+        self.assertEqual(edition.parent_work.authors.count(), 1)

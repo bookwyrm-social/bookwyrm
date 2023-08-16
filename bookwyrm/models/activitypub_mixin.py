@@ -6,8 +6,9 @@ from functools import reduce
 import json
 import operator
 import logging
-from typing import List
+from typing import Any, Optional
 from uuid import uuid4
+from typing_extensions import Self
 
 import aiohttp
 from Crypto.PublicKey import RSA
@@ -21,7 +22,7 @@ from django.utils.http import http_date
 from bookwyrm import activitypub
 from bookwyrm.settings import USER_AGENT, PAGE_LENGTH
 from bookwyrm.signatures import make_signature, make_digest
-from bookwyrm.tasks import app, MEDIUM, BROADCAST
+from bookwyrm.tasks import app, BROADCAST
 from bookwyrm.models.fields import ImageField, ManyToManyField
 
 logger = logging.getLogger(__name__)
@@ -85,7 +86,7 @@ class ActivitypubMixin:
         super().__init__(*args, **kwargs)
 
     @classmethod
-    def find_existing_by_remote_id(cls, remote_id):
+    def find_existing_by_remote_id(cls, remote_id: str) -> Self:
         """look up a remote id in the db"""
         return cls.find_existing({"id": remote_id})
 
@@ -137,7 +138,7 @@ class ActivitypubMixin:
             queue=queue,
         )
 
-    def get_recipients(self, software=None) -> List[str]:
+    def get_recipients(self, software=None) -> list[str]:
         """figure out which inbox urls to post to"""
         # first we have to figure out who should receive this activity
         privacy = self.privacy if hasattr(self, "privacy") else "public"
@@ -198,7 +199,14 @@ class ActivitypubMixin:
 class ObjectMixin(ActivitypubMixin):
     """add this mixin for object models that are AP serializable"""
 
-    def save(self, *args, created=None, software=None, priority=BROADCAST, **kwargs):
+    def save(
+        self,
+        *args: Any,
+        created: Optional[bool] = None,
+        software: Any = None,
+        priority: str = BROADCAST,
+        **kwargs: Any,
+    ) -> None:
         """broadcast created/updated/deleted objects as appropriate"""
         broadcast = kwargs.get("broadcast", True)
         # this bonus kwarg would cause an error in the base save method
@@ -379,7 +387,7 @@ class CollectionItemMixin(ActivitypubMixin):
 
     activity_serializer = activitypub.CollectionItem
 
-    def broadcast(self, activity, sender, software="bookwyrm", queue=MEDIUM):
+    def broadcast(self, activity, sender, software="bookwyrm", queue=BROADCAST):
         """only send book collection updates to other bookwyrm instances"""
         super().broadcast(activity, sender, software=software, queue=queue)
 
@@ -400,7 +408,7 @@ class CollectionItemMixin(ActivitypubMixin):
             return []
         return [collection_field.user]
 
-    def save(self, *args, broadcast=True, priority=MEDIUM, **kwargs):
+    def save(self, *args, broadcast=True, priority=BROADCAST, **kwargs):
         """broadcast updated"""
         # first off, we want to save normally no matter what
         super().save(*args, **kwargs)
@@ -444,7 +452,7 @@ class CollectionItemMixin(ActivitypubMixin):
 class ActivityMixin(ActivitypubMixin):
     """add this mixin for models that are AP serializable"""
 
-    def save(self, *args, broadcast=True, priority=MEDIUM, **kwargs):
+    def save(self, *args, broadcast=True, priority=BROADCAST, **kwargs):
         """broadcast activity"""
         super().save(*args, **kwargs)
         user = self.user if hasattr(self, "user") else self.user_subject
@@ -507,14 +515,14 @@ def unfurl_related_field(related_field, sort_field=None):
 
 
 @app.task(queue=BROADCAST)
-def broadcast_task(sender_id: int, activity: str, recipients: List[str]):
+def broadcast_task(sender_id: int, activity: str, recipients: list[str]):
     """the celery task for broadcast"""
     user_model = apps.get_model("bookwyrm.User", require_ready=True)
     sender = user_model.objects.select_related("key_pair").get(id=sender_id)
     asyncio.run(async_broadcast(recipients, sender, activity))
 
 
-async def async_broadcast(recipients: List[str], sender, data: str):
+async def async_broadcast(recipients: list[str], sender, data: str):
     """Send all the broadcasts simultaneously"""
     timeout = aiohttp.ClientTimeout(total=10)
     async with aiohttp.ClientSession(timeout=timeout) as session:
@@ -529,7 +537,7 @@ async def async_broadcast(recipients: List[str], sender, data: str):
 
 
 async def sign_and_send(
-    session: aiohttp.ClientSession, sender, data: str, destination: str
+    session: aiohttp.ClientSession, sender, data: str, destination: str, **kwargs
 ):
     """Sign the messages and send them in an asynchronous bundle"""
     now = http_date()
@@ -539,11 +547,19 @@ async def sign_and_send(
         raise ValueError("No private key found for sender")
 
     digest = make_digest(data)
+    signature = make_signature(
+        "post",
+        sender,
+        destination,
+        now,
+        digest=digest,
+        use_legacy_key=kwargs.get("use_legacy_key"),
+    )
 
     headers = {
         "Date": now,
         "Digest": digest,
-        "Signature": make_signature("post", sender, destination, now, digest),
+        "Signature": signature,
         "Content-Type": "application/activity+json; charset=utf-8",
         "User-Agent": USER_AGENT,
     }
@@ -554,6 +570,14 @@ async def sign_and_send(
                 logger.exception(
                     "Failed to send broadcast to %s: %s", destination, response.reason
                 )
+                if kwargs.get("use_legacy_key") is not True:
+                    logger.info("Trying again with legacy keyId header value")
+                    asyncio.ensure_future(
+                        sign_and_send(
+                            session, sender, data, destination, use_legacy_key=True
+                        )
+                    )
+
             return response
     except asyncio.TimeoutError:
         logger.info("Connection timed out for url: %s", destination)

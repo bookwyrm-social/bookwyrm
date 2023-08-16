@@ -4,7 +4,7 @@ from unittest.mock import patch
 from django.contrib.auth.models import AnonymousUser
 from django.http.response import Http404
 from django.template.response import TemplateResponse
-from django.test import TestCase
+from django.test import Client, TestCase
 from django.test.client import RequestFactory
 
 from bookwyrm import models, views
@@ -151,6 +151,30 @@ class UserViews(TestCase):
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
+
+    def test_user_page_remote_anonymous(self):
+        """when a anonymous user tries to get a remote user"""
+        with patch("bookwyrm.models.user.set_remote_server"):
+            models.User.objects.create_user(
+                "nutria",
+                "",
+                "nutriaword",
+                local=False,
+                remote_id="https://example.com/users/nutria",
+                inbox="https://example.com/users/nutria/inbox",
+                outbox="https://example.com/users/nutria/outbox",
+            )
+
+        view = views.User.as_view()
+        request = self.factory.get("")
+        request.user = self.anonymous_user
+        with patch("bookwyrm.views.user.is_api_request") as is_api:
+            is_api.return_value = False
+            result = view(request, "nutria@example.com")
+        result.client = Client()
+        self.assertRedirects(
+            result, "https://example.com/users/nutria", fetch_redirect_response=False
+        )
 
     @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
     @patch("bookwyrm.activitystreams.populate_stream_task.delay")

@@ -19,7 +19,7 @@ from bookwyrm.models import (
     Review,
     ReviewRating,
 )
-from bookwyrm.tasks import app, LOW, IMPORTS
+from bookwyrm.tasks import app, IMPORT_TRIGGERED, IMPORTS
 from .fields import PrivacyLevels
 
 
@@ -399,7 +399,7 @@ def handle_imported_book(item):
         shelved_date = item.date_added or timezone.now()
         ShelfBook(
             book=item.book, shelf=desired_shelf, user=user, shelved_date=shelved_date
-        ).save(priority=LOW)
+        ).save(priority=IMPORT_TRIGGERED)
 
     for read in item.reads:
         # check for an existing readthrough with the same dates
@@ -441,7 +441,7 @@ def handle_imported_book(item):
                     published_date=published_date_guess,
                     privacy=job.privacy,
                 )
-                review.save(software="bookwyrm", priority=LOW)
+                review.save(software="bookwyrm", priority=IMPORT_TRIGGERED)
         else:
             # just a rating
             review = ReviewRating.objects.filter(
@@ -458,7 +458,7 @@ def handle_imported_book(item):
                     published_date=published_date_guess,
                     privacy=job.privacy,
                 )
-                review.save(software="bookwyrm", priority=LOW)
+                review.save(software="bookwyrm", priority=IMPORT_TRIGGERED)
 
         # only broadcast this review to other bookwyrm instances
         item.linked_review = review

@@ -64,7 +64,7 @@ class ActivitystreamsSignals(TestCase):
         self.assertEqual(mock.call_count, 1)
         args = mock.call_args[1]
         self.assertEqual(args["args"][0], status.id)
-        self.assertEqual(args["queue"], "high_priority")
+        self.assertEqual(args["queue"], "streams")
 
     def test_add_status_on_create_created_low_priority(self, *_):
         """a new statuses has entered"""
@@ -82,7 +82,7 @@ class ActivitystreamsSignals(TestCase):
         self.assertEqual(mock.call_count, 1)
         args = mock.call_args[1]
         self.assertEqual(args["args"][0], status.id)
-        self.assertEqual(args["queue"], "low_priority")
+        self.assertEqual(args["queue"], "import_triggered")
 
         # published later than yesterday
         status = models.Status.objects.create(
@@ -97,7 +97,7 @@ class ActivitystreamsSignals(TestCase):
         self.assertEqual(mock.call_count, 1)
         args = mock.call_args[1]
         self.assertEqual(args["args"][0], status.id)
-        self.assertEqual(args["queue"], "low_priority")
+        self.assertEqual(args["queue"], "import_triggered")
 
     def test_populate_streams_on_account_create_command(self, *_):
         """create streams for a user"""

@@ -141,12 +141,12 @@ urlpatterns = [
         name="settings-users",
     ),
     re_path(
-        r"^settings/users/(?P<user>\d+)/?$",
+        r"^settings/users/(?P<user_id>\d+)/(?P<report_id>\d+)?$",
         views.UserAdmin.as_view(),
         name="settings-user",
     ),
     re_path(
-        r"^settings/users/(?P<user>\d+)/activate/?$",
+        r"^settings/users/(?P<user_id>\d+)/activate/?$",
         views.ActivateUserAdmin.as_view(),
         name="settings-activate-user",
     ),
@@ -231,7 +231,7 @@ urlpatterns = [
         name="settings-link-domain",
     ),
     re_path(
-        r"^setting/link-domains/(?P<domain_id>\d+)/(?P<status>(pending|approved|blocked))/?$",
+        r"^setting/link-domains/(?P<domain_id>\d+)/(?P<status>(pending|approved|blocked))/(?P<report_id>\d+)?$",
         views.update_domain_status,
         name="settings-link-domain-status",
     ),
@@ -275,17 +275,17 @@ urlpatterns = [
         name="settings-report",
     ),
     re_path(
-        r"^settings/reports/(?P<user_id>\d+)/suspend/?$",
+        r"^settings/reports/(?P<user_id>\d+)/suspend/(?P<report_id>\d+)?$",
         views.suspend_user,
         name="settings-report-suspend",
     ),
     re_path(
-        r"^settings/reports/(?P<user_id>\d+)/unsuspend/?$",
+        r"^settings/reports/(?P<user_id>\d+)/unsuspend/(?P<report_id>\d+)?$",
         views.unsuspend_user,
         name="settings-report-unsuspend",
     ),
     re_path(
-        r"^settings/reports/(?P<user_id>\d+)/delete/?$",
+        r"^settings/reports/(?P<user_id>\d+)/delete/(?P<report_id>\d+)?$",
         views.moderator_delete_user,
         name="settings-delete-user",
     ),
@@ -633,7 +633,7 @@ urlpatterns = [
         name="create-status",
     ),
     re_path(
-        r"^delete-status/(?P<status_id>\d+)/?$",
+        r"^delete-status/(?P<status_id>\d+)/?(?P<report_id>\d+)?$",
         views.DeleteStatus.as_view(),
         name="delete-status",
     ),
