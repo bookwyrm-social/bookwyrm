@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-05-30 17:48+0000\n"
-"PO-Revision-Date: 2023-08-16 08:53\n"
+"PO-Revision-Date: 2023-08-16 20:07\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Norwegian\n"
 "Language: no\n"
@@ -614,8 +614,8 @@ msgstr "Det blir gjennomsnittlig %(pages)s per bok."
 #, python-format
 msgid "(No page data was available for %(no_page_number)s book)"
 msgid_plural "(No page data was available for %(no_page_number)s books)"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "(Ingen sidedata var tilgjengelige for %(no_page_number)s bok)"
+msgstr[1] "(Ingen sidedata var tilgjengelige for %(no_page_number)s bøker)"
 
 #: bookwyrm/templates/annual_summary/layout.html:150
 msgid "Their shortest read this year…"
@@ -2072,7 +2072,7 @@ msgstr "Kontoen din vil vises i katalogen, og kan bli anbefalt til andre BookWyr
 
 #: bookwyrm/templates/get_started/users.html:8
 msgid "You can follow users on other BookWyrm instances and federated services like Mastodon."
-msgstr ""
+msgstr "Du kan følge brukere på andre BookWyrm-instanse og fødererte tjenester som Mastodon."
 
 #: bookwyrm/templates/get_started/users.html:11
 msgid "Search for a user"
@@ -2306,7 +2306,7 @@ msgstr "Publiser anmeldelse"
 
 #: bookwyrm/templates/guided_tour/book.html:151
 msgid "You can share your thoughts on this book generally with a simple comment"
-msgstr ""
+msgstr "Du kan dele dine tanker om denne boken generelt med en enkel kommentar"
 
 #: bookwyrm/templates/guided_tour/book.html:152
 msgid "Post a comment"
@@ -2596,7 +2596,7 @@ msgstr ""
 
 #: bookwyrm/templates/guided_tour/user_books.html:32
 msgid "Reading status shelves"
-msgstr ""
+msgstr "Lesestatushyller"
 
 #: bookwyrm/templates/guided_tour/user_books.html:55
 msgid "You can create additional custom shelves to organise your books. A book on a custom shelf can be on any number of other shelves simultaneously, including one of the default reading status shelves"
@@ -2608,7 +2608,7 @@ msgstr ""
 
 #: bookwyrm/templates/guided_tour/user_books.html:78
 msgid "If you have an export file from another service like Goodreads or LibraryThing, you can import it here."
-msgstr ""
+msgstr "Om du har en eksportfil fra en annen tjeneste som Goodreads eller LibraryThing, kan du importere den her."
 
 #: bookwyrm/templates/guided_tour/user_books.html:79
 msgid "Import from another service"
@@ -2616,7 +2616,7 @@ msgstr "Importer fra en annen tjeneste"
 
 #: bookwyrm/templates/guided_tour/user_books.html:101
 msgid "Now that we've explored book shelves, let's take a look at a related concept: book lists!"
-msgstr ""
+msgstr "Nå som vi har utforsket bokhyller, tar vi en titt på et relatert konsept: boklister!"
 
 #: bookwyrm/templates/guided_tour/user_books.html:101
 msgid "Click on the <strong>Lists</strong> link here to continue the tour."
