@@ -1,21 +1,23 @@
+setuptools>=65.5
 aiohttp==3.8.5
 bleach==5.0.1
-celery==5.2.7
+celery==5.3.1
 colorthief==0.2.1
 Django==3.2.20
-django-celery-beat==2.4.0
-django-compressor==4.3.1
+django-celery-beat==2.5.0
+django-compressor==4.4
 django-imagekit==4.1.0
 django-model-utils==4.3.1
 django-sass-processor==1.2.2
 django-csp==3.7
 environs==9.5.0
 flower==1.2.0
+grpcio==1.57.0
 libsass==0.22.0
 Markdown==3.4.1
 Pillow==9.4.0
-psycopg2==2.9.5
-pycryptodome==3.16.0
+psycopg2==2.9.7
+pycryptodome==3.18.0
 python-dateutil==2.8.2
 redis==4.5.4
 requests==2.31.0
@@ -34,10 +36,11 @@ opentelemetry-sdk==1.16.0
 protobuf==3.20.*
 pyotp==2.8.0
 qrcode==7.3.1
+tornado==6.3.3
 
 # Dev
 pytest-django==4.1.0
-pytest==6.1.2
+pytest==6.2.5
 pytest-cov==2.10.1
 pytest-env==0.6.2
 pytest-xdist==2.3.0
