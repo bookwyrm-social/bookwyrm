@@ -1,6 +1,7 @@
 """ database schema for books and shelves """
 from itertools import chain
 import re
+from typing import Any
 
 from django.contrib.postgres.search import SearchVectorField
 from django.contrib.postgres.indexes import GinIndex
@@ -14,6 +15,7 @@ from model_utils.managers import InheritanceManager
 from imagekit.models import ImageSpecField
 
 from bookwyrm import activitypub
+from bookwyrm.isbn.isbn import hyphenator_singleton as hyphenator
 from bookwyrm.preview_images import generate_edition_preview_image_task
 from bookwyrm.settings import (
     DOMAIN,
@@ -90,7 +92,7 @@ class BookDataModel(ObjectMixin, BookWyrmModel):
 
         abstract = True
 
-    def save(self, *args, **kwargs):
+    def save(self, *args: Any, **kwargs: Any) -> None:
         """ensure that the remote_id is within this instance"""
         if self.id:
             self.remote_id = self.get_remote_id()
@@ -204,7 +206,7 @@ class Book(BookDataModel):
             text += f" ({self.edition_info})"
         return text
 
-    def save(self, *args, **kwargs):
+    def save(self, *args: Any, **kwargs: Any) -> None:
         """can't be abstract for query reasons, but you shouldn't USE it"""
         if not isinstance(self, Edition) and not isinstance(self, Work):
             raise ValueError("Books should be added as Editions or Works")
@@ -320,6 +322,11 @@ class Edition(Book):
     serialize_reverse_fields = [("file_links", "fileLinks", "-created_date")]
     deserialize_reverse_fields = [("file_links", "fileLinks")]
 
+    @property
+    def hyphenated_isbn13(self):
+        """generate the hyphenated version of the ISBN-13"""
+        return hyphenator.hyphenate(self.isbn_13)
+
     def get_rank(self):
         """calculate how complete the data is on this edition"""
         rank = 0
@@ -343,7 +350,7 @@ class Edition(Book):
         # max rank is 9
         return rank
 
-    def save(self, *args, **kwargs):
+    def save(self, *args: Any, **kwargs: Any) -> None:
         """set some fields on the edition object"""
         # calculate isbn 10/13
         if self.isbn_13 and self.isbn_13[:3] == "978" and not self.isbn_10:
@@ -379,6 +386,19 @@ class Edition(Book):
                 )
 
         return super().save(*args, **kwargs)
+
+    @transaction.atomic
+    def repair(self):
+        """If an edition is in a bad state (missing a work), let's fix that"""
+        # made sure it actually NEEDS reapir
+        if self.parent_work:
+            return
+
+        new_work = Work.objects.create(title=self.title)
+        new_work.authors.set(self.authors.all())
+
+        self.parent_work = new_work
+        self.save(update_fields=["parent_work"], broadcast=False)
 
     @classmethod
     def viewer_aware_objects(cls, viewer):

@@ -1,6 +1,6 @@
 """ book and author data """
 from dataclasses import dataclass, field
-from typing import List
+from typing import Optional
 
 from .base_activity import ActivityObject
 from .image import Document
@@ -11,19 +11,19 @@ from .image import Document
 class BookData(ActivityObject):
     """shared fields for all book data and authors"""
 
-    openlibraryKey: str = None
-    inventaireId: str = None
-    librarythingKey: str = None
-    goodreadsKey: str = None
-    bnfId: str = None
-    viaf: str = None
-    wikidata: str = None
-    asin: str = None
-    aasin: str = None
-    isfdb: str = None
-    lastEditedBy: str = None
-    links: List[str] = field(default_factory=lambda: [])
-    fileLinks: List[str] = field(default_factory=lambda: [])
+    openlibraryKey: Optional[str] = None
+    inventaireId: Optional[str] = None
+    librarythingKey: Optional[str] = None
+    goodreadsKey: Optional[str] = None
+    bnfId: Optional[str] = None
+    viaf: Optional[str] = None
+    wikidata: Optional[str] = None
+    asin: Optional[str] = None
+    aasin: Optional[str] = None
+    isfdb: Optional[str] = None
+    lastEditedBy: Optional[str] = None
+    links: list[str] = field(default_factory=list)
+    fileLinks: list[str] = field(default_factory=list)
 
 
 # pylint: disable=invalid-name
@@ -35,17 +35,17 @@ class Book(BookData):
     sortTitle: str = None
     subtitle: str = None
     description: str = ""
-    languages: List[str] = field(default_factory=lambda: [])
+    languages: list[str] = field(default_factory=list)
     series: str = ""
     seriesNumber: str = ""
-    subjects: List[str] = field(default_factory=lambda: [])
-    subjectPlaces: List[str] = field(default_factory=lambda: [])
+    subjects: list[str] = field(default_factory=list)
+    subjectPlaces: list[str] = field(default_factory=list)
 
-    authors: List[str] = field(default_factory=lambda: [])
+    authors: list[str] = field(default_factory=list)
     firstPublishedDate: str = ""
     publishedDate: str = ""
 
-    cover: Document = None
+    cover: Optional[Document] = None
     type: str = "Book"
 
 
@@ -58,10 +58,10 @@ class Edition(Book):
     isbn10: str = ""
     isbn13: str = ""
     oclcNumber: str = ""
-    pages: int = None
+    pages: Optional[int] = None
     physicalFormat: str = ""
     physicalFormatDetail: str = ""
-    publishers: List[str] = field(default_factory=lambda: [])
+    publishers: list[str] = field(default_factory=list)
     editionRank: int = 0
 
     type: str = "Edition"
@@ -73,7 +73,7 @@ class Work(Book):
     """work instance of a book object"""
 
     lccn: str = ""
-    editions: List[str] = field(default_factory=lambda: [])
+    editions: list[str] = field(default_factory=list)
     type: str = "Work"
 
 
@@ -83,12 +83,12 @@ class Author(BookData):
     """author of a book"""
 
     name: str
-    isni: str = None
-    viafId: str = None
-    gutenbergId: str = None
-    born: str = None
-    died: str = None
-    aliases: List[str] = field(default_factory=lambda: [])
+    isni: Optional[str] = None
+    viafId: Optional[str] = None
+    gutenbergId: Optional[str] = None
+    born: Optional[str] = None
+    died: Optional[str] = None
+    aliases: list[str] = field(default_factory=list)
     bio: str = ""
     wikipediaLink: str = ""
     type: str = "Author"

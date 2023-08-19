@@ -157,6 +157,7 @@ def add_authors(request, data):
     """helper for adding authors"""
     add_author = [author for author in request.POST.getlist("add_author") if author]
     if not add_author:
+        data["add_author"] = []
         return data
 
     data["add_author"] = add_author

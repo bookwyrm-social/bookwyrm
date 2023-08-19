@@ -203,7 +203,7 @@ def delete_readthrough(request):
     readthrough.raise_not_deletable(request.user)
 
     readthrough.delete()
-    return redirect("/")
+    return redirect_to_referer(request)
 
 
 @login_required
@@ -214,4 +214,4 @@ def delete_progressupdate(request):
     update.raise_not_deletable(request.user)
 
     update.delete()
-    return redirect("/")
+    return redirect_to_referer(request)

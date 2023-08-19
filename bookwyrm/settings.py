@@ -302,6 +302,7 @@ LANGUAGES = [
     ("fi-fi", _("Suomi (Finnish)")),
     ("fr-fr", _("Français (French)")),
     ("lt-lt", _("Lietuvių (Lithuanian)")),
+    ("nl-nl", _("Nederlands (Dutch)")),
     ("no-no", _("Norsk (Norwegian)")),
     ("pl-pl", _("Polski (Polish)")),
     ("pt-br", _("Português do Brasil (Brazilian Portuguese)")),

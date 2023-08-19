@@ -14,7 +14,7 @@ from bookwyrm.connectors.openlibrary import get_languages, get_description
 from bookwyrm.connectors.openlibrary import pick_default_edition, get_openlibrary_key
 from bookwyrm.connectors.connector_manager import ConnectorException
 
-
+# pylint: disable=too-many-public-methods
 class Openlibrary(TestCase):
     """test loading data from openlibrary.org"""
 
@@ -34,11 +34,15 @@ class Openlibrary(TestCase):
 
         work_file = pathlib.Path(__file__).parent.joinpath("../data/ol_work.json")
         edition_file = pathlib.Path(__file__).parent.joinpath("../data/ol_edition.json")
+        edition_md_file = pathlib.Path(__file__).parent.joinpath(
+            "../data/ol_edition_markdown.json"
+        )
         edition_list_file = pathlib.Path(__file__).parent.joinpath(
             "../data/ol_edition_list.json"
         )
         self.work_data = json.loads(work_file.read_bytes())
         self.edition_data = json.loads(edition_file.read_bytes())
+        self.edition_md_data = json.loads(edition_md_file.read_bytes())
         self.edition_list_data = json.loads(edition_list_file.read_bytes())
 
     def test_get_remote_id_from_data(self):
@@ -185,6 +189,18 @@ class Openlibrary(TestCase):
         expected = "First in the Old Kingdom/Abhorsen series."
         self.assertEqual(description, expected)
 
+    def test_get_description_markdown_paragraphs(self):
+        """should do some cleanup on the description data"""
+        description = get_description("Paragraph 1\n\nParagraph 2")
+        expected = "<p>Paragraph 1</p>\n<p>Paragraph 2</p>"
+        self.assertEqual(description, expected)
+
+    def test_get_description_markdown_blockquote(self):
+        """should do some cleanup on the description data"""
+        description = get_description("> Quote\n\nParagraph 2")
+        expected = "<blockquote>\n<p>Quote</p>\n</blockquote>\n<p>Paragraph 2</p>"
+        self.assertEqual(description, expected)
+
     def test_get_openlibrary_key(self):
         """extracts the uuid"""
         key = get_openlibrary_key("/books/OL27320736M")
@@ -218,12 +234,43 @@ class Openlibrary(TestCase):
         self.assertEqual(result.parent_work, work)
         self.assertEqual(result.title, "Sabriel")
         self.assertEqual(result.isbn_10, "0060273224")
-        self.assertIsNotNone(result.description)
+        self.assertEqual(result.description, self.edition_data["description"]["value"])
         self.assertEqual(result.languages[0], "English")
         self.assertEqual(result.publishers[0], "Harper Trophy")
         self.assertEqual(result.pages, 491)
         self.assertEqual(result.subjects[0], "Fantasy.")
         self.assertEqual(result.physical_format, "Hardcover")
+
+    @responses.activate
+    def test_create_edition_markdown_from_data(self):
+        """okay but can it actually create an edition with proper metadata"""
+        work = models.Work.objects.create(title="Hello")
+        responses.add(
+            responses.GET,
+            "https://openlibrary.org/authors/OL10183984A",
+            json={"hi": "there"},
+            status=200,
+        )
+        with patch(
+            "bookwyrm.connectors.openlibrary.Connector.get_authors_from_data"
+        ) as mock:
+            mock.return_value = []
+            result = self.connector.create_edition_from_data(work, self.edition_md_data)
+        self.assertEqual(
+            result.description,
+            '<blockquote>\n<p>"She didn\'t choose her garden" opens this chapbook '
+            "exploring Black womanhood, mental and physical health, spirituality, and "
+            "ancestral roots. It is an investigation of how to locate a self amidst "
+            "complex racial history and how to forge an authentic way forward. There's "
+            "internal slippage as the subject weaves between the presence and spirits "
+            "of others, as well as a reckoning with the toll of navigating this world "
+            "as a Black woman. Yet, we also see hopefulness: a refuge in becoming part "
+            "of the collective, beyond individuality. <em>The Stars With You</em> "
+            "gives us a speculative yearning for what is to come and probes what is "
+            "required to reach it.</p>\n</blockquote>\n<ul>\n<li><a "
+            'href="https://store.cooperdillon.com/product/the-stars-with-you-by-'
+            'stefani-cox">publisher</a></li>\n</ul>',
+        )
 
     def test_ignore_edition(self):
         """skip editions with poor metadata"""
@@ -233,3 +280,13 @@ class Openlibrary(TestCase):
         self.assertFalse(ignore_edition({"languages": "languages/fr"}))
         self.assertTrue(ignore_edition({"languages": "languages/eng"}))
         self.assertTrue(ignore_edition({"format": "paperback"}))
+
+    def test_remote_id_from_model(self):
+        """figure out a url from an id"""
+        obj = models.Author.objects.create(
+            name="George Elliott", openlibrary_key="OL453734A"
+        )
+        self.assertEqual(
+            self.connector.get_remote_id_from_model(obj),
+            "https://openlibrary.org/authors/OL453734A",
+        )

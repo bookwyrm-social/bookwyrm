@@ -111,11 +111,11 @@
                     {% endif %}
                     {% endfor %}
                 </div>
-                {% else %}
+                {% elif add_author %}
                 <p class="column is-half">{% blocktrans with name=add_author %}Creating a new author: {{ name }}{% endblocktrans %}</p>
                 {% endif %}
 
-                {% if not book %}
+                {% if not book.parent_work %}
                 <div class="column is-half">
                     <fieldset>
                         <legend class="title is-5 mb-1">
