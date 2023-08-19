@@ -23,12 +23,12 @@
         <p>
             {% if request.user.id == user.id or admin_mode %}
 
-                <a href="{% url 'user-relationships' user|username 'followers' %}">{% blocktrans trimmed count counter=user.followers.count %}
-                        {{ counter }} follower
+                <a href="{% url 'user-relationships' user|username 'followers' %}">{% blocktrans trimmed count counter=user.followers.count with display_count=user.followers.count|intcomma %}
+                        {{ display_count }} follower
                     {% plural %}
-                        {{ counter }} followers
+                        {{ display_count }} followers
                 {% endblocktrans %}</a>,
-                <a href="{% url 'user-relationships' user|username 'following' %}">{% blocktrans trimmed with counter=user.following.count %}
+                <a href="{% url 'user-relationships' user|username 'following' %}">{% blocktrans trimmed with counter=user.following.count|intcomma %}
                     {{ counter }} following
                 {% endblocktrans %}</a>
 

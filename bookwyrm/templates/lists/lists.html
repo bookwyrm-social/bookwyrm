@@ -43,7 +43,6 @@
 </nav>
 {% endif %}
 
-{% if lists %}
 <section class="block">
     {% include 'lists/list_items.html' with lists=lists %}
 </section>
@@ -51,7 +50,6 @@
 <div>
     {% include 'snippets/pagination.html' with page=lists path=path %}
 </div>
-{% endif %}
 
 {% endblock %}
 
