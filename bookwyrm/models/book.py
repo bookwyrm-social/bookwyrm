@@ -381,8 +381,7 @@ class Edition(Book):
 
         # Create sort title by removing articles from title
         if self.sort_title in [None, ""]:
-            if self.sort_title in [None, ""]:
-                self.sort_title = self.guess_sort_title()
+            self.sort_title = self.guess_sort_title()
 
         return super().save(*args, **kwargs)
 
