@@ -112,7 +112,7 @@ class ActivityStream(RedisStore):
         trace.get_current_span().set_attribute("status_privacy", status.privacy)
         trace.get_current_span().set_attribute(
             "status_reply_parent_privacy",
-            status.reply_parent.privacy if status.reply_parent else None,
+            status.reply_parent.privacy if status.reply_parent else status.privacy,
         )
         # direct messages don't appear in feeds, direct comments/reviews/etc do
         if status.privacy == "direct" and status.status_type == "Note":
