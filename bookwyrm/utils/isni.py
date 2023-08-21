@@ -213,7 +213,7 @@ def augment_author_metadata(author: models.Author, isni: str) -> None:
 
     isni_author = get_author_from_isni(isni)
     if isni_author is None:
-        return None
+        return
 
     isni_author.to_model(model=models.Author, instance=author, overwrite=False)
 
