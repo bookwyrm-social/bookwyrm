@@ -165,8 +165,6 @@ def get_author_from_isni(isni: str) -> Optional[activitypub.Author]:
     # but let's use the first one just in case
     element = root.find(".//responseRecord")
     if element is None:
-        # TODO What if there is no responseRecord?
-        #  return empty Author or None, or raise Exception?
         return None
 
     name = (
@@ -215,8 +213,7 @@ def augment_author_metadata(author: models.Author, isni: str) -> None:
 
     isni_author = get_author_from_isni(isni)
     if isni_author is None:
-        # TODO Should we just return or raise an exception to indicate a problem?
-        return
+        return None
 
     isni_author.to_model(model=models.Author, instance=author, overwrite=False)
 
