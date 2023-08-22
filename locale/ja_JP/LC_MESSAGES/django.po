@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-05-30 17:48+0000\n"
-"PO-Revision-Date: 2023-05-30 18:49\n"
+"PO-Revision-Date: 2023-08-22 07:03\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Japanese\n"
 "Language: ja\n"
@@ -52,7 +52,7 @@ msgstr "パスワードが一致しません"
 
 #: bookwyrm/forms/edit_user.py:118
 msgid "Incorrect Password"
-msgstr ""
+msgstr "パスワードが正しくありません"
 
 #: bookwyrm/forms/forms.py:54
 msgid "Reading finish date cannot be before start date."
@@ -64,11 +64,11 @@ msgstr "読み止めた日は読み始めた日より前にすることはでき
 
 #: bookwyrm/forms/forms.py:67
 msgid "Reading stopped date cannot be in the future."
-msgstr ""
+msgstr "読書の中断日を未来の日付にすることはできません"
 
 #: bookwyrm/forms/forms.py:74
 msgid "Reading finished date cannot be in the future."
-msgstr ""
+msgstr "読書の完了日を未来の日付にすることはできません"
 
 #: bookwyrm/forms/landing.py:38
 msgid "Username or password are incorrect"
@@ -84,7 +84,7 @@ msgstr "このメールのユーザーはすでに存在します。"
 
 #: bookwyrm/forms/landing.py:124 bookwyrm/forms/landing.py:132
 msgid "Incorrect code"
-msgstr ""
+msgstr "コードが正しくありません"
 
 #: bookwyrm/forms/links.py:36
 msgid "This domain is blocked. Please contact your administrator if you think this is an error."
@@ -265,15 +265,15 @@ msgstr "アクティブ"
 
 #: bookwyrm/models/import_job.py:49 bookwyrm/templates/import/import.html:166
 msgid "Complete"
-msgstr ""
+msgstr "完了"
 
 #: bookwyrm/models/import_job.py:50
 msgid "Stopped"
-msgstr ""
+msgstr "中断"
 
 #: bookwyrm/models/import_job.py:83 bookwyrm/models/import_job.py:91
 msgid "Import stopped"
-msgstr ""
+msgstr "インポートが停止しました"
 
 #: bookwyrm/models/import_job.py:363 bookwyrm/models/import_job.py:388
 msgid "Error loading book"
@@ -701,7 +701,7 @@ msgstr "Wikipedia"
 
 #: bookwyrm/templates/author/author.html:79
 msgid "Website"
-msgstr ""
+msgstr "ウェブサイト"
 
 #: bookwyrm/templates/author/author.html:87
 msgid "View ISNI record"
@@ -710,7 +710,7 @@ msgstr "ISNIレコードを表示"
 #: bookwyrm/templates/author/author.html:95
 #: bookwyrm/templates/book/book.html:173
 msgid "View on ISFDB"
-msgstr ""
+msgstr "ISFDB で表示"
 
 #: bookwyrm/templates/author/author.html:100
 #: bookwyrm/templates/author/sync_modal.html:5
@@ -739,7 +739,7 @@ msgstr "Goodreadsで表示"
 
 #: bookwyrm/templates/author/author.html:151
 msgid "View ISFDB entry"
-msgstr ""
+msgstr "ISFDB のエントリを表示"
 
 #: bookwyrm/templates/author/author.html:166
 #, python-format
@@ -793,7 +793,7 @@ msgstr "Wikipediaリンク:"
 
 #: bookwyrm/templates/author/edit_author.html:60
 msgid "Website:"
-msgstr ""
+msgstr "ウェブサイト:"
 
 #: bookwyrm/templates/author/edit_author.html:65
 msgid "Birth date:"
@@ -827,7 +827,7 @@ msgstr "Goodreadsのキー:"
 
 #: bookwyrm/templates/author/edit_author.html:109
 msgid "ISFDB:"
-msgstr ""
+msgstr "ISFDB:"
 
 #: bookwyrm/templates/author/edit_author.html:116
 msgid "ISNI:"
@@ -1023,16 +1023,16 @@ msgstr "ASIN:"
 #: bookwyrm/templates/book/book_identifiers.html:29
 #: bookwyrm/templates/book/edit/edit_book_form.html:359
 msgid "Audible ASIN:"
-msgstr ""
+msgstr "Audible ASIN:"
 
 #: bookwyrm/templates/book/book_identifiers.html:36
 #: bookwyrm/templates/book/edit/edit_book_form.html:368
 msgid "ISFDB ID:"
-msgstr ""
+msgstr "ISFDB ID:"
 
 #: bookwyrm/templates/book/book_identifiers.html:43
 msgid "Goodreads:"
-msgstr ""
+msgstr "Goodreads:"
 
 #: bookwyrm/templates/book/cover_add_modal.html:5
 msgid "Add cover"
@@ -1075,7 +1075,7 @@ msgstr "本を追加する"
 
 #: bookwyrm/templates/book/edit/edit_book.html:43
 msgid "Failed to save book, see errors below for more information."
-msgstr ""
+msgstr "本の保存に失敗しました。詳細については以下のエラーを参照してください。"
 
 #: bookwyrm/templates/book/edit/edit_book.html:70
 msgid "Confirm Book Info"
@@ -1436,7 +1436,7 @@ msgstr ""
 #: bookwyrm/templates/book/file_links/verification_modal.html:26
 #: bookwyrm/templates/setup/config.html:139
 msgid "Continue"
-msgstr ""
+msgstr "続ける"
 
 #: bookwyrm/templates/book/publisher_info.html:23
 #, python-format
@@ -1718,12 +1718,12 @@ msgstr ""
 #: bookwyrm/templates/email/html_layout.html:15
 #: bookwyrm/templates/email/text_layout.html:2
 msgid "Hi there,"
-msgstr ""
+msgstr "ようこそ"
 
 #: bookwyrm/templates/email/html_layout.html:21
 #, python-format
 msgid "BookWyrm hosted on <a style=\"color: #3273dc;\" href=\"https://%(domain)s\">%(site_name)s</a>"
-msgstr ""
+msgstr "BookWyrm は <a style=\"color: #3273dc;\" href=\"https://%(domain)s\">%(site_name)s</a> でホストされています"
 
 #: bookwyrm/templates/email/html_layout.html:23
 msgid "Email preference"
@@ -1737,12 +1737,12 @@ msgstr "あなたは %(site_name)s! へ招待されています！"
 
 #: bookwyrm/templates/email/invite/html_content.html:9
 msgid "Join Now"
-msgstr ""
+msgstr "登録する"
 
 #: bookwyrm/templates/email/invite/html_content.html:15
 #, python-format
 msgid "Learn more <a href=\"https://%(domain)s%(about_path)s\">about %(site_name)s</a>."
-msgstr ""
+msgstr "詳しい情報は、<a href=\"https://%(domain)s%(about_path)s\">%(site_name)s について</a>で確認できます。"
 
 #: bookwyrm/templates/email/invite/text_content.html:4
 #, python-format
@@ -1803,11 +1803,11 @@ msgstr "%(site_name)s のパスワードをリセットする"
 #: bookwyrm/templates/email/test/html_content.html:6
 #: bookwyrm/templates/email/test/text_content.html:4
 msgid "This is a test email."
-msgstr ""
+msgstr "これはテストメールです。"
 
 #: bookwyrm/templates/email/test/subject.html:2
 msgid "Test email"
-msgstr ""
+msgstr "メールをテスト"
 
 #: bookwyrm/templates/embed-layout.html:20 bookwyrm/templates/layout.html:31
 #: bookwyrm/templates/setup/layout.html:15
@@ -1982,7 +1982,7 @@ msgstr "おすすめの本"
 
 #: bookwyrm/templates/get_started/books.html:33
 msgid "Search results"
-msgstr ""
+msgstr "検索結果"
 
 #: bookwyrm/templates/get_started/books.html:46
 #, python-format
