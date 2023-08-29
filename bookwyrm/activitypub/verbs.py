@@ -231,3 +231,28 @@ class Announce(Verb):
     def action(self, allow_external_connections=True):
         """boost"""
         self.to_model(allow_external_connections=allow_external_connections)
+
+@dataclass(init=False)
+class Move(Verb):
+    """a user moving an object"""
+
+    # note the spec example for target and origin is an object but
+    # Mastodon uses a URI string and TBH this makes more sense
+    # Is there a way we can account for either format?
+
+    object: str
+    type: str = "Move"
+    target: str
+    origin: str
+
+    def action(self, allow_external_connections=True):
+        """move"""
+
+        # we need to work out whether the object is a user or something else.
+
+        object_is_user = True # TODO!
+
+        if object_is_user:
+            self.to_model(object_is_user=True allow_external_connections=allow_external_connections)
+        else:
+            self.to_model(object_is_user=False allow_external_connections=allow_external_connections)

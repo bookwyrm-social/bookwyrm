@@ -40,11 +40,14 @@ class Notification(BookWyrmModel):
     GROUP_NAME = "GROUP_NAME"
     GROUP_DESCRIPTION = "GROUP_DESCRIPTION"
 
+    # Migrations
+    MOVE = "MOVE"
+
     # pylint: disable=line-too-long
     NotificationType = models.TextChoices(
         # there has got be a better way to do this
         "NotificationType",
-        f"{FAVORITE} {REPLY} {MENTION} {TAG} {FOLLOW} {FOLLOW_REQUEST} {BOOST} {IMPORT} {ADD} {REPORT} {LINK_DOMAIN} {INVITE} {ACCEPT} {JOIN} {LEAVE} {REMOVE} {GROUP_PRIVACY} {GROUP_NAME} {GROUP_DESCRIPTION}",
+        f"{FAVORITE} {REPLY} {MENTION} {TAG} {FOLLOW} {FOLLOW_REQUEST} {BOOST} {IMPORT} {ADD} {REPORT} {LINK_DOMAIN} {INVITE} {ACCEPT} {JOIN} {LEAVE} {REMOVE} {GROUP_PRIVACY} {GROUP_NAME} {GROUP_DESCRIPTION} {MOVE}",
     )
 
     user = models.ForeignKey("User", on_delete=models.CASCADE)
@@ -326,3 +329,14 @@ def notify_user_on_follow(sender, instance, created, *args, **kwargs):
             notification_type=Notification.FOLLOW,
             read=False,
         )
+
+@receiver(models.signals.post_save, sender=Move)
+# pylint: disable=unused-argument
+def notify_on_move(sender, instance, *args, **kwargs):
+    """someone moved something"""
+    Notification.notify(
+        instance.status.user,
+        instance.user,
+        related_object=instance.object,
+        notification_type=Notification.MOVE,
+    )
