@@ -217,6 +217,13 @@ class Book(BookDataModel):
         """editions and works both use "book" instead of model_name"""
         return f"https://{DOMAIN}/book/{self.id}"
 
+    def guess_sort_title(self):
+        """Get a best-guess sort title for the current book"""
+        articles = chain(
+            *(LANGUAGE_ARTICLES.get(language, ()) for language in tuple(self.languages))
+        )
+        return re.sub(f'^{" |^".join(articles)} ', "", str(self.title).lower())
+
     def __repr__(self):
         # pylint: disable=consider-using-f-string
         return "<{} key={!r} title={!r}>".format(
@@ -374,16 +381,7 @@ class Edition(Book):
 
         # Create sort title by removing articles from title
         if self.sort_title in [None, ""]:
-            if self.sort_title in [None, ""]:
-                articles = chain(
-                    *(
-                        LANGUAGE_ARTICLES.get(language, ())
-                        for language in tuple(self.languages)
-                    )
-                )
-                self.sort_title = re.sub(
-                    f'^{" |^".join(articles)} ', "", str(self.title).lower()
-                )
+            self.sort_title = self.guess_sort_title()
 
         return super().save(*args, **kwargs)
 
