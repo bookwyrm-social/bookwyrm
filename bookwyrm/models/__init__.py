@@ -26,6 +26,7 @@ from .federated_server import FederatedServer
 from .group import Group, GroupMember, GroupMemberInvitation
 
 from .import_job import ImportJob, ImportItem
+from .bookwyrm_import_job import BookwyrmImportJob
 
 from .site import SiteSettings, Theme, SiteInvite
 from .site import PasswordReset, InviteRequest
