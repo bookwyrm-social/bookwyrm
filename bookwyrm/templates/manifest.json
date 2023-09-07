@@ -1,0 +1,14 @@
+{% load static %}
+{
+  "name": "Bookwyrm",
+  "description": "Social network for tracking your reading",
+  "icons": [
+    {
+      "src": "{% if site.logo %}{{ media_full_url }}{{ site.logo }}{% else %}{% static 'images/logo.png' %}{% endif %}",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+	"start_url": "/",
+  "display": "standalone"
+}

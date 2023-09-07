@@ -14,6 +14,7 @@
 
     <link rel="shortcut icon" type="image/x-icon" href="{% if site.favicon %}{% get_media_prefix %}{{ site.favicon }}{% else %}{% static "images/favicon.ico" %}{% endif %}">
     <link rel="apple-touch-icon" href="{% if site.logo %}{{ media_full_url }}{{ site.logo }}{% else %}{% static "images/logo.png" %}{% endif %}">
+    <link rel="manifest" href="/manifest.json" />
 
     {% block opengraph %}
         {% include 'snippets/opengraph.html' %}
