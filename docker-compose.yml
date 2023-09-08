@@ -2,7 +2,7 @@ version: '3'
 
 services:
   nginx:
-    image: nginx:latest
+    image: nginx:1.25.2
     restart: unless-stopped
     ports:
       - "1333:80"
@@ -38,7 +38,7 @@ services:
     ports:
       - "8000"
   redis_activity:
-    image: redis
+    image: redis:7.2.1
     command: redis-server --requirepass ${REDIS_ACTIVITY_PASSWORD} --appendonly yes --port ${REDIS_ACTIVITY_PORT}
     volumes:
       - ./redis.conf:/etc/redis/redis.conf
@@ -48,7 +48,7 @@ services:
       - main
     restart: on-failure
   redis_broker:
-    image: redis
+    image: redis:7.2.1
     command: redis-server --requirepass ${REDIS_BROKER_PASSWORD} --appendonly yes --port ${REDIS_BROKER_PORT}
     volumes:
       - ./redis.conf:/etc/redis/redis.conf
