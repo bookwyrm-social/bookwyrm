@@ -28,6 +28,7 @@ BOOK_PATH = r"^book/(?P<book_id>\d+)"
 STREAMS = "|".join(s["key"] for s in settings.STREAMS)
 
 urlpatterns = [
+    views.FlowerProxyView.as_url(),
     path("admin/", admin.site.urls),
     path(
         "robots.txt",
