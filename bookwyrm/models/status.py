@@ -270,7 +270,7 @@ class GeneratedNote(Status):
         """indicate the book in question for mastodon (or w/e) users"""
         message = self.content
         books = ", ".join(
-            f'<a href="{book.remote_id}">"{book.title}"</a>'
+            f'<a href="{book.remote_id}"><i>{book.title}</i></a>'
             for book in self.mention_books.all()
         )
         return f"{self.user.display_name} {message} {books}"
@@ -324,7 +324,7 @@ class Comment(BookStatus):
         progress = self.progress or 0
         citation = (
             f'comment on <a href="{self.book.remote_id}">'
-            f'"{self.book.title}"</a>'
+            f"<i>{self.book.title}</i></a>"
         )
         if self.progress_mode == "PG" and progress > 0:
             citation += f", p. {progress}"
@@ -365,7 +365,8 @@ class Quotation(BookStatus):
         """indicate the book in question for mastodon (or w/e) users"""
         quote = re.sub(r"^<p>", '<p>"', self.quote)
         quote = re.sub(r"</p>$", '"</p>', quote)
-        citation = f'-- <a href="{self.book.remote_id}">"{self.book.title}"</a>'
+        title, href = self.book.title, self.book.remote_id
+        citation = f'— <a href="{href}"><i>{title}</i></a>'
         if position := self._format_position():
             citation += f", {position}"
         return f"{quote} <p>{citation}</p>{self.content}"

@@ -212,7 +212,7 @@ class Status(TestCase):
     def test_generated_note_to_pure_activity(self, *_):
         """subclass of the base model version with a "pure" serializer"""
         status = models.GeneratedNote.objects.create(
-            content="test content", user=self.local_user
+            content="reads", user=self.local_user
         )
         status.mention_books.set([self.book])
         status.mention_users.set([self.local_user])
@@ -220,7 +220,7 @@ class Status(TestCase):
         self.assertEqual(activity["id"], status.remote_id)
         self.assertEqual(
             activity["content"],
-            f'mouse test content <a href="{self.book.remote_id}">"Test Edition"</a>',
+            f'mouse reads <a href="{self.book.remote_id}"><i>Test Edition</i></a>',
         )
         self.assertEqual(len(activity["tag"]), 2)
         self.assertEqual(activity["type"], "Note")
@@ -256,7 +256,11 @@ class Status(TestCase):
         self.assertEqual(activity["type"], "Note")
         self.assertEqual(
             activity["content"],
-            f'test content<p>(comment on <a href="{self.book.remote_id}">"Test Edition"</a>, p. 27)</p>',
+            (
+                "test content"
+                f'<p>(comment on <a href="{self.book.remote_id}">'
+                "<i>Test Edition</i></a>, p. 27)</p>"
+            ),
         )
         self.assertEqual(activity["attachment"][0]["type"], "Document")
         # self.assertTrue(
@@ -295,7 +299,11 @@ class Status(TestCase):
         self.assertEqual(activity["type"], "Note")
         self.assertEqual(
             activity["content"],
-            f'a sickening sense <p>-- <a href="{self.book.remote_id}">"Test Edition"</a></p>test content',
+            (
+                "a sickening sense "
+                f'<p>— <a href="{self.book.remote_id}">'
+                "<i>Test Edition</i></a></p>test content"
+            ),
         )
         self.assertEqual(activity["attachment"][0]["type"], "Document")
         self.assertTrue(
@@ -326,7 +334,7 @@ class Status(TestCase):
                 activity = status.to_activity(pure=True)
                 self.assertRegex(
                     activity["content"],
-                    f'^<p>"my quote"</p> <p>-- <a .+</a>, {pages}</p>$',
+                    f'^<p>"my quote"</p> <p>— <a .+</a>, {pages}</p>$',
                 )
 
     def test_review_to_activity(self, *_):
