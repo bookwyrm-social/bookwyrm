@@ -249,14 +249,14 @@ class Status(TestCase):
     def test_comment_to_pure_activity(self, *_):
         """subclass of the base model version with a "pure" serializer"""
         status = models.Comment.objects.create(
-            content="test content", user=self.local_user, book=self.book
+            content="test content", user=self.local_user, book=self.book, progress=27
         )
         activity = status.to_activity(pure=True)
         self.assertEqual(activity["id"], status.remote_id)
         self.assertEqual(activity["type"], "Note")
         self.assertEqual(
             activity["content"],
-            f'test content<p>(comment on <a href="{self.book.remote_id}">"Test Edition"</a>)</p>',
+            f'test content<p>(comment on <a href="{self.book.remote_id}">"Test Edition"</a>, p. 27)</p>',
         )
         self.assertEqual(activity["attachment"][0]["type"], "Document")
         # self.assertTrue(

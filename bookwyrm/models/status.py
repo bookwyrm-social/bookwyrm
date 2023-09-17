@@ -326,7 +326,7 @@ class Comment(BookStatus):
             f'"{self.book.title}"</a>'
         )
         if self.progress_mode == "PG" and progress > 0:
-            citation += f", page {progress}"
+            citation += f", p. {progress}"
         return f"{self.content}<p>({citation})</p>"
 
     activity_serializer = activitypub.Comment
@@ -358,7 +358,7 @@ class Quotation(BookStatus):
         quote = re.sub(r"</p>$", '"</p>', quote)
         citation = f'-- <a href="{self.book.remote_id}">"{self.book.title}"</a>'
         if self.position_mode == "PG" and self.position and (self.position > 0):
-            citation += f", page {self.position}"
+            citation += f", p. {self.position}"
         return f"{quote} <p>{citation}</p>{self.content}"
 
     activity_serializer = activitypub.Quotation
