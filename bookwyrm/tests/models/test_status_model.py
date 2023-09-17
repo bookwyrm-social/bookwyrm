@@ -306,6 +306,29 @@ class Status(TestCase):
         )
         self.assertEqual(activity["attachment"][0]["name"], "Test Edition")
 
+    def test_quotation_page_serialization(self, *_):
+        """serialization of quotation page position"""
+        tests = [
+            ("single pos", 7, None, "p. 7"),
+            ("page range", 7, 10, "pp. 7-10"),
+        ]
+        for desc, beg, end, pages in tests:
+            with self.subTest(desc):
+                status = models.Quotation.objects.create(
+                    quote="<p>my quote</p>",
+                    content="",
+                    user=self.local_user,
+                    book=self.book,
+                    position=beg,
+                    endposition=end,
+                    position_mode="PG",
+                )
+                activity = status.to_activity(pure=True)
+                self.assertRegex(
+                    activity["content"],
+                    f'^<p>"my quote"</p> <p>-- <a .+</a>, {pages}</p>$',
+                )
+
     def test_review_to_activity(self, *_):
         """subclass of the base model version with a "pure" serializer"""
         status = models.Review.objects.create(

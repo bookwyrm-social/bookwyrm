@@ -1,5 +1,6 @@
 """ models for storing different kinds of Activities """
 from dataclasses import MISSING
+from typing import Optional
 import re
 
 from django.apps import apps
@@ -351,14 +352,22 @@ class Quotation(BookStatus):
         blank=True,
     )
 
+    def _format_position(self) -> Optional[str]:
+        """serialize page position"""
+        beg = self.position
+        end = self.endposition or 0
+        if self.position_mode != "PG" or not beg:
+            return None
+        return f"pp. {beg}-{end}" if end > beg else f"p. {beg}"
+
     @property
     def pure_content(self):
         """indicate the book in question for mastodon (or w/e) users"""
         quote = re.sub(r"^<p>", '<p>"', self.quote)
         quote = re.sub(r"</p>$", '"</p>', quote)
         citation = f'-- <a href="{self.book.remote_id}">"{self.book.title}"</a>'
-        if self.position_mode == "PG" and self.position and (self.position > 0):
-            citation += f", p. {self.position}"
+        if position := self._format_position():
+            citation += f", {position}"
         return f"{quote} <p>{citation}</p>{self.content}"
 
     activity_serializer = activitypub.Quotation
