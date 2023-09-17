@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-05-30 17:48+0000\n"
-"PO-Revision-Date: 2023-09-17 17:07\n"
+"PO-Revision-Date: 2023-09-17 18:06\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Lithuanian\n"
 "Language: lt\n"
@@ -358,7 +358,7 @@ msgstr "Español (Ispanų)"
 
 #: bookwyrm/settings.py:299
 msgid "Euskara (Basque)"
-msgstr ""
+msgstr "Euskara (Baskų kalba)"
 
 #: bookwyrm/settings.py:300
 msgid "Galego (Galician)"
@@ -1492,16 +1492,16 @@ msgstr "įvertino"
 
 #: bookwyrm/templates/book/series.html:11
 msgid "Series by"
-msgstr ""
+msgstr "Serijos autorius"
 
 #: bookwyrm/templates/book/series.html:27
 #, python-format
 msgid "Book %(series_number)s"
-msgstr ""
+msgstr "%(series_number)s knyga"
 
 #: bookwyrm/templates/book/series.html:27
 msgid "Unsorted Book"
-msgstr ""
+msgstr "Nesurūšiuota knyga"
 
 #: bookwyrm/templates/book/sync_modal.html:15
 #, python-format
@@ -2088,7 +2088,7 @@ msgstr "Jūsų paskyra atsiras kataloge ir gali būti rekomenduota kitiems „Bo
 
 #: bookwyrm/templates/get_started/users.html:8
 msgid "You can follow users on other BookWyrm instances and federated services like Mastodon."
-msgstr ""
+msgstr "Galite sekti vartotojus iš kitų BookWyrm serverių ar federacijos programų, tokių kaip Mastodon."
 
 #: bookwyrm/templates/get_started/users.html:11
 msgid "Search for a user"
@@ -2733,11 +2733,11 @@ msgstr "Raskite knygą"
 #: bookwyrm/templates/hashtag.html:12
 #, python-format
 msgid "See tagged statuses in the local %(site_name)s community"
-msgstr ""
+msgstr "Peržiūrėti grotžymiuotas būsenas %(site_name)s bendruomenėje"
 
 #: bookwyrm/templates/hashtag.html:25
 msgid "No activities for this hashtag yet!"
-msgstr ""
+msgstr "Šioje grotžymėje nėra aktyvumo!"
 
 #: bookwyrm/templates/import/import.html:5
 #: bookwyrm/templates/import/import.html:9
@@ -2752,12 +2752,12 @@ msgstr "Netinkamas CSV failas"
 #: bookwyrm/templates/import/import.html:20
 #, python-format
 msgid "Currently you are allowed to import %(import_size_limit)s books every %(import_limit_reset)s days."
-msgstr ""
+msgstr "Dabar galite importuoti %(import_size_limit)s knygas kas %(import_limit_reset)s dienų."
 
 #: bookwyrm/templates/import/import.html:21
 #, python-format
 msgid "You have %(allowed_imports)s left."
-msgstr ""
+msgstr "Liko %(allowed_imports)s kartai importuoti."
 
 #: bookwyrm/templates/import/import.html:28
 #, python-format
@@ -3669,10 +3669,10 @@ msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> ir %(other_user_d
 #, python-format
 msgid "A new <a href=\"%(path)s\">link domain</a> needs review"
 msgid_plural "%(display_count)s new <a href=\"%(path)s\">link domains</a> need moderation"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Reikia peržiūrėti naują <a href=\"%(path)s\">nuorodų domeną</a>"
+msgstr[1] "%(display_count)s <a href=\"%(path)s\">nuorodų domenai</a> laukia moderavimo"
+msgstr[2] "%(display_count)s <a href=\"%(path)s\">nuorodų domenai</a> laukia moderavimo"
+msgstr[3] "%(display_count)s <a href=\"%(path)s\">nuorodų domenai</a> laukia moderavimo"
 
 #: bookwyrm/templates/notifications/items/mention.html:20
 #, python-format
@@ -3895,11 +3895,11 @@ msgstr "Sėkmingai atnaujinote 2FA nustatymus"
 
 #: bookwyrm/templates/preferences/2fa.html:24
 msgid "Write down or copy and paste these codes somewhere safe."
-msgstr ""
+msgstr "Užsirašyt ir išsaugot kur nors saugiai šituos kodus."
 
 #: bookwyrm/templates/preferences/2fa.html:25
 msgid "You must use them in order, and they will not be displayed again."
-msgstr ""
+msgstr "Juos reikia naudoti iš eilės ir jie daugiau nebebus parodyti."
 
 #: bookwyrm/templates/preferences/2fa.html:35
 msgid "Two Factor Authentication is active on your account."
@@ -3921,7 +3921,7 @@ msgstr "Generuoti atsarginius kodus"
 
 #: bookwyrm/templates/preferences/2fa.html:45
 msgid "Scan the QR code with your authentication app and then enter the code from  your app below to confirm your app is set up."
-msgstr ""
+msgstr "Norint patvirtinti, kad viskas gerai su 2FA - reikia nuskanuoti QR kodą autentikacijos programėle ir įvesti ten sugeneruotą kodą."
 
 #: bookwyrm/templates/preferences/2fa.html:52
 msgid "Use setup key"
@@ -3941,16 +3941,16 @@ msgstr "Įveskite kodą iš 2FA programėlės:"
 
 #: bookwyrm/templates/preferences/2fa.html:83
 msgid "You can make your account more secure by using Two Factor Authentication (2FA). This will require you to enter a one-time code using a phone app like <em>Authy</em>, <em>Google Authenticator</em> or <em>Microsoft Authenticator</em> each time you log in."
-msgstr ""
+msgstr "Savo paskyrą papildomai galima apsaugoti antro lygio autentikacija (2FA). Tam norint kiekvieną kartą prisijungti - reikia suvesti vienkartinį kodą, naudojant specialią programėlę, tokią kaip <em>Authy</em>, <em>Google Authenticator</em> ar <em>Microsoft Authenticator</em>."
 
 #: bookwyrm/templates/preferences/2fa.html:85
 msgid "Confirm your password to begin setting up 2FA."
-msgstr ""
+msgstr "Prieš tvarkant 2FA reikia patvirinti slaptažodį."
 
 #: bookwyrm/templates/preferences/2fa.html:95
 #: bookwyrm/templates/two_factor_auth/two_factor_prompt.html:37
 msgid "Set up 2FA"
-msgstr ""
+msgstr "Sutvarkyti 2FA"
 
 #: bookwyrm/templates/preferences/blocks.html:4
 #: bookwyrm/templates/preferences/blocks.html:7
@@ -4015,11 +4015,11 @@ msgstr "Išjungti dviejų lygių autentifikavimą"
 
 #: bookwyrm/templates/preferences/disable-2fa.html:14
 msgid "Disabling 2FA will allow anyone with your username and password to log in to your account."
-msgstr ""
+msgstr "Išjungus 2FA bet kas, žinantis vartotojo vardą ir slaptažodį, galės prisijungti prie paskyros."
 
 #: bookwyrm/templates/preferences/disable-2fa.html:20
 msgid "Turn off 2FA"
-msgstr ""
+msgstr "Išjungti 2FA"
 
 #: bookwyrm/templates/preferences/edit_user.html:4
 #: bookwyrm/templates/preferences/edit_user.html:7
@@ -4257,15 +4257,15 @@ msgstr "Ieškoma knygos:"
 #, python-format
 msgid "%(formatted_review_count)s review"
 msgid_plural "%(formatted_review_count)s reviews"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "%(formatted_review_count)s atsiliepimas"
+msgstr[1] "%(formatted_review_count)s atsiliepimai"
+msgstr[2] "%(formatted_review_count)s atsiliepimai"
+msgstr[3] "%(formatted_review_count)s atsiliepimų"
 
 #: bookwyrm/templates/search/book.html:34
 #, python-format
 msgid "(published %(pub_year)s)"
-msgstr ""
+msgstr "(leidmo metai %(pub_year)s)"
 
 #: bookwyrm/templates/search/book.html:50
 msgid "Results from"
@@ -4315,10 +4315,10 @@ msgstr "Pagal paiešką „%(query)s“ nieko nerasta"
 #, python-format
 msgid "%(result_count)s result found"
 msgid_plural "%(result_count)s results found"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Rastas %(result_count)s rezultatas"
+msgstr[1] "Rasti %(result_count)s rezultatai"
+msgstr[2] "Rasti %(result_count)s rezultatai"
+msgstr[3] "Rasta %(result_count)s rezultatų"
 
 #: bookwyrm/templates/settings/announcements/announcement.html:5
 #: bookwyrm/templates/settings/announcements/announcement.html:8
@@ -4515,11 +4515,11 @@ msgstr "Pašalinti taisyklę"
 #: bookwyrm/templates/settings/celery.html:6
 #: bookwyrm/templates/settings/celery.html:8
 msgid "Celery Status"
-msgstr ""
+msgstr "„Celery“ būsena"
 
 #: bookwyrm/templates/settings/celery.html:14
 msgid "You can set up monitoring to check if Celery is running by querying:"
-msgstr ""
+msgstr "Galima patikrinti \"Celery\" būseną užklausiant:"
 
 #: bookwyrm/templates/settings/celery.html:22
 msgid "Queues"
@@ -4531,7 +4531,7 @@ msgstr "Žemas prioritetas"
 
 #: bookwyrm/templates/settings/celery.html:32
 msgid "Medium priority"
-msgstr ""
+msgstr "Vidutinis prioritetas"
 
 #: bookwyrm/templates/settings/celery.html:38
 msgid "High priority"
@@ -4543,11 +4543,11 @@ msgstr "Transliacijos"
 
 #: bookwyrm/templates/settings/celery.html:60
 msgid "Could not connect to Redis broker"
-msgstr ""
+msgstr "Nepavyko prisijungti prie Redis brokerio"
 
 #: bookwyrm/templates/settings/celery.html:68
 msgid "Active Tasks"
-msgstr ""
+msgstr "Aktyvios užduotys"
 
 #: bookwyrm/templates/settings/celery.html:73
 #: bookwyrm/templates/settings/imports/imports.html:113
@@ -4585,11 +4585,11 @@ msgstr "Nepavyko prisijungti prie „Celery“"
 #: bookwyrm/templates/settings/celery.html:120
 #: bookwyrm/templates/settings/celery.html:143
 msgid "Clear Queues"
-msgstr ""
+msgstr "Išvalyti eiles"
 
 #: bookwyrm/templates/settings/celery.html:124
 msgid "Clearing queues can cause serious problems including data loss! Only play with this if you really know what you're doing. You must shut down the Celery worker before you do this."
-msgstr ""
+msgstr "Eilių trynimas gali sukelti nepageidaujamą reakciją - žaisti tik, jei yra supratimas ką darai. Prieš atliekant šią operaciją - \"Celery\" procesas turi būti išjungtas."
 
 #: bookwyrm/templates/settings/celery.html:150
 msgid "Errors"
@@ -4965,7 +4965,7 @@ msgstr "Tai reikėtų naudoti tais atvejais, kai kyla problemų importuojant, to
 
 #: bookwyrm/templates/settings/imports/imports.html:31
 msgid "While imports are disabled, users will not be allowed to start new imports, but existing imports will not be affected."
-msgstr ""
+msgstr "Kai importavimas išjungtas - naujų pradėti negalima, bet seni importai važiuos kaip važiavę."
 
 #: bookwyrm/templates/settings/imports/imports.html:36
 msgid "Disable imports"
@@ -4981,31 +4981,31 @@ msgstr "Įjungti importavimus"
 
 #: bookwyrm/templates/settings/imports/imports.html:63
 msgid "Limit the amount of imports"
-msgstr ""
+msgstr "Apriboti importo skaičių"
 
 #: bookwyrm/templates/settings/imports/imports.html:74
 msgid "Some users might try to import a large number of books, which you want to limit."
-msgstr ""
+msgstr "Kai kurie vartotojai gali pabandyti importuoti daug knygų, ko galbūt nenorima."
 
 #: bookwyrm/templates/settings/imports/imports.html:75
 msgid "Set the value to 0 to not enforce any limit."
-msgstr ""
+msgstr "Įrašius 0 apribojimo nebus."
 
 #: bookwyrm/templates/settings/imports/imports.html:78
 msgid "Set import limit to"
-msgstr ""
+msgstr "Nustatyti importo limitą"
 
 #: bookwyrm/templates/settings/imports/imports.html:80
 msgid "books every"
-msgstr ""
+msgstr "knygas kas"
 
 #: bookwyrm/templates/settings/imports/imports.html:82
 msgid "days."
-msgstr ""
+msgstr "dienų."
 
 #: bookwyrm/templates/settings/imports/imports.html:86
 msgid "Set limit"
-msgstr ""
+msgstr "Nustatyti limitą"
 
 #: bookwyrm/templates/settings/imports/imports.html:102
 msgid "Completed"
@@ -5290,7 +5290,7 @@ msgstr "Leisti registruotis"
 
 #: bookwyrm/templates/settings/registration.html:43
 msgid "Default access level:"
-msgstr ""
+msgstr "Įprastas prieigos lygis:"
 
 #: bookwyrm/templates/settings/registration.html:61
 msgid "Require users to confirm email address"
@@ -5524,7 +5524,7 @@ msgstr "Nukopijuokite fialus į serverio katalogą <code>bookwyrm/static/css/the
 
 #: bookwyrm/templates/settings/themes.html:32
 msgid "Run <code>./bw-dev compile_themes</code> and <code>./bw-dev collectstatic</code>."
-msgstr ""
+msgstr "Paleisti <code>./bw-dev compile_themes</code> ir <code>./bw-dev collectstatic</code>."
 
 #: bookwyrm/templates/settings/themes.html:35
 msgid "Add the file name using the form below to make it available in the application interface."
@@ -6328,22 +6328,22 @@ msgstr "Rodyti būseną"
 #: bookwyrm/templates/snippets/status/content_status.html:102
 #, python-format
 msgid "(Page %(page)s"
-msgstr ""
+msgstr "(Psl. %(page)s"
 
 #: bookwyrm/templates/snippets/status/content_status.html:102
 #, python-format
 msgid "%(endpage)s"
-msgstr ""
+msgstr "%(endpage)s"
 
 #: bookwyrm/templates/snippets/status/content_status.html:104
 #, python-format
 msgid "(%(percent)s%%"
-msgstr ""
+msgstr "(%(percent)s%%"
 
 #: bookwyrm/templates/snippets/status/content_status.html:104
 #, python-format
 msgid " - %(endpercent)s%%"
-msgstr ""
+msgstr " - %(endpercent)s%%"
 
 #: bookwyrm/templates/snippets/status/content_status.html:127
 msgid "Open image in new window"
@@ -6496,11 +6496,11 @@ msgstr "Patvirtinkite ir prisijunkite"
 
 #: bookwyrm/templates/two_factor_auth/two_factor_prompt.html:29
 msgid "2FA is available"
-msgstr ""
+msgstr "Galima naudotis 2FA"
 
 #: bookwyrm/templates/two_factor_auth/two_factor_prompt.html:34
 msgid "You can secure your account by setting up two factor authentication in your user preferences. This will require a one-time code from your phone in addition to your password each time you log in."
-msgstr ""
+msgstr "Savo paskyrą papildomai galima apsaugoti antro lygio autentikacija (2FA). Tam norint kiekvieną kartą prisijungti - reikia suvesti vienkartinį kodą, naudojant specialią programėlę."
 
 #: bookwyrm/templates/user/books_header.html:9
 #, python-format
@@ -6547,7 +6547,7 @@ msgstr "Sekti prašymus"
 #: bookwyrm/templates/user/layout.html:71
 #: bookwyrm/templates/user/reviews_comments.html:10
 msgid "Reviews and Comments"
-msgstr ""
+msgstr "Atsiliepimai ir komentarai"
 
 #: bookwyrm/templates/user/lists.html:11
 #, python-format
@@ -6575,7 +6575,7 @@ msgstr "%(username)s nieko neseka"
 
 #: bookwyrm/templates/user/reviews_comments.html:24
 msgid "No reviews or comments yet!"
-msgstr ""
+msgstr "Kol kas nėra nei komentarų nei atsiliepimų!"
 
 #: bookwyrm/templates/user/user.html:20
 msgid "Edit profile"
@@ -6601,7 +6601,7 @@ msgstr "Naudotojo aktyvumas"
 
 #: bookwyrm/templates/user/user.html:76
 msgid "Show RSS Options"
-msgstr ""
+msgstr "Rodyti RSS pasirinkimus"
 
 #: bookwyrm/templates/user/user.html:82
 msgid "RSS feed"
@@ -6609,19 +6609,19 @@ msgstr "RSS srautas"
 
 #: bookwyrm/templates/user/user.html:98
 msgid "Complete feed"
-msgstr ""
+msgstr "Visa gija"
 
 #: bookwyrm/templates/user/user.html:103
 msgid "Reviews only"
-msgstr ""
+msgstr "Tik atsiliepimai"
 
 #: bookwyrm/templates/user/user.html:108
 msgid "Quotes only"
-msgstr ""
+msgstr "Tik citatos"
 
 #: bookwyrm/templates/user/user.html:113
 msgid "Comments only"
-msgstr ""
+msgstr "Tik komentarai"
 
 #: bookwyrm/templates/user/user.html:129
 msgid "No activities yet!"
@@ -6674,16 +6674,16 @@ msgstr "Failas viršijo maksimalų dydį: 10 MB"
 #: bookwyrm/templatetags/list_page_tags.py:14
 #, python-format
 msgid "Book List: %(name)s"
-msgstr ""
+msgstr "Knygų sąrašas: %(name)s"
 
 #: bookwyrm/templatetags/list_page_tags.py:22
 #, python-format
 msgid "%(num)d book - by %(user)s"
 msgid_plural "%(num)d books - by %(user)s"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "%(num)d knyga %(user)s"
+msgstr[1] "%(num)d knygos %(user)s"
+msgstr[2] "%(num)d knygos %(user)s"
+msgstr[3] "%(num)d knygos %(user)s"
 
 #: bookwyrm/templatetags/utilities.py:39
 #, python-format
@@ -6698,17 +6698,17 @@ msgstr "Būsenos atnaujinimai iš {obj.display_name}"
 #: bookwyrm/views/rss_feed.py:80
 #, python-brace-format
 msgid "Reviews from {obj.display_name}"
-msgstr ""
+msgstr "Atsiliepimai iš {obj.display_name}"
 
 #: bookwyrm/views/rss_feed.py:122
 #, python-brace-format
 msgid "Quotes from {obj.display_name}"
-msgstr ""
+msgstr "Citatos iš {obj.display_name}"
 
 #: bookwyrm/views/rss_feed.py:164
 #, python-brace-format
 msgid "Comments from {obj.display_name}"
-msgstr ""
+msgstr "Komentarai iš {obj.display_name}"
 
 #: bookwyrm/views/updates.py:45
 #, python-format
