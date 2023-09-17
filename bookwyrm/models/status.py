@@ -363,8 +363,8 @@ class Quotation(BookStatus):
     @property
     def pure_content(self):
         """indicate the book in question for mastodon (or w/e) users"""
-        quote = re.sub(r"^<p>", '<p>"', self.quote)
-        quote = re.sub(r"</p>$", '"</p>', quote)
+        quote = re.sub(r"^<p>", "<p>❝", self.quote)
+        quote = re.sub(r"</p>$", "❞</p>", quote)
         title, href = self.book.title, self.book.remote_id
         citation = f'— <a href="{href}"><i>{title}</i></a>'
         if position := self._format_position():
