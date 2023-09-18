@@ -75,6 +75,9 @@ class Update(Verb):
         """update a model instance from the dataclass"""
         if not self.object:
             return
+            # BUG: THIS IS THROWING A DUPLIATE USERNAME ERROR WHEN WE GET AN "UPDATE" AFTER/BEFORE A "MOVE"
+            # FROM MASTODON - BUT ONLY SINCE WE ADDED MOVEUSER
+            # is it something to do with the updated User model?
         self.object.to_model(
             allow_create=False, allow_external_connections=allow_external_connections
         )
@@ -232,27 +235,23 @@ class Announce(Verb):
         """boost"""
         self.to_model(allow_external_connections=allow_external_connections)
 
+
 @dataclass(init=False)
 class Move(Verb):
     """a user moving an object"""
 
-    # note the spec example for target and origin is an object but
-    # Mastodon uses a URI string and TBH this makes more sense
-    # Is there a way we can account for either format?
-
     object: str
     type: str = "Move"
-    target: str
-    origin: str
+    origin: str = None
+    target: str = None
 
     def action(self, allow_external_connections=True):
         """move"""
 
-        # we need to work out whether the object is a user or something else.
-
-        object_is_user = True # TODO!
+        object_is_user = resolve_remote_id(remote_id=self.object, model="User")
 
         if object_is_user:
-            self.to_model(object_is_user=True allow_external_connections=allow_external_connections)
+            model = apps.get_model("bookwyrm.MoveUser")
+            self.to_model(model=model)
         else:
-            self.to_model(object_is_user=False allow_external_connections=allow_external_connections)
+            return

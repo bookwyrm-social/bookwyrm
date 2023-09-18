@@ -75,10 +75,17 @@
             <td>{{ user.last_active_date }}</td>
             <td>
                 {% if user.is_active %}
-                    <span class="tag is-success" aria-hidden="true">
-                        <span class="icon icon-check"></span>
-                    </span>
-                    {% trans "Active" %}
+                    {% if user.moved_to %}
+                        <span class="tag is-info" aria-hidden="true">
+                            <span class="icon icon-x"></span>
+                        </span>
+                        {% trans "Moved" %}
+                    {% else %}
+                        <span class="tag is-success" aria-hidden="true">
+                            <span class="icon icon-check"></span>
+                        </span>
+                        {% trans "Active" %}
+                    {% endif %}
                 {% elif user.deactivation_reason == "moderator_deletion" or user.deactivation_reason == "self_deletion" %}
                     <span class="tag is-danger" aria-hidden="true">
                         <span class="icon icon-x"></span>

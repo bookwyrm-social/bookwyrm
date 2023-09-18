@@ -1,0 +1,20 @@
+{% extends 'notifications/items/layout.html' %}
+
+{% load i18n %}
+{% load utilities %}
+{% load user_page_tags %}
+
+{% block primary_link %}{% spaceless %}
+    {{ notification.related_object.local_path }}
+{% endspaceless %}{% endblock %}
+
+{% block icon %}
+    <span class="icon icon-local"></span>
+{% endblock %}
+
+{% block description %}
+    {{ related_user }} {% trans "has moved to" %} <a href="{{ related_user_moved_to }}">{% id_to_username related_user_moved_to %}</a>
+    <div class="row shrink my-2">
+        {% include 'snippets/move_user_buttons.html' with group=notification.related_group %}
+    </div>
+{% endblock %}

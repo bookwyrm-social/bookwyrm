@@ -2,7 +2,14 @@
 from django.db import models, transaction
 from django.dispatch import receiver
 from .base_model import BookWyrmModel
-from . import Boost, Favorite, GroupMemberInvitation, ImportJob, LinkDomain
+from . import (
+    Boost,
+    Favorite,
+    GroupMemberInvitation,
+    ImportJob,
+    LinkDomain,
+    MoveUserNotification,
+)
 from . import ListItem, Report, Status, User, UserFollowRequest
 
 
@@ -330,13 +337,11 @@ def notify_user_on_follow(sender, instance, created, *args, **kwargs):
             read=False,
         )
 
-@receiver(models.signals.post_save, sender=Move)
+
+@receiver(models.signals.post_save, sender=MoveUserNotification)
 # pylint: disable=unused-argument
 def notify_on_move(sender, instance, *args, **kwargs):
-    """someone moved something"""
+    """someone migrated their account"""
     Notification.notify(
-        instance.status.user,
-        instance.user,
-        related_object=instance.object,
-        notification_type=Notification.MOVE,
+        instance.user, instance.target, notification_type=Notification.MOVE
     )

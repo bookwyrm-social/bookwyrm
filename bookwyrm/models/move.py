@@ -1,4 +1,5 @@
 """ move an object including migrating a user account """
+from django.core.exceptions import PermissionDenied
 from django.db import models
 
 from bookwyrm import activitypub
@@ -6,6 +7,7 @@ from .activitypub_mixin import ActivityMixin
 from .base_model import BookWyrmModel
 from . import fields
 from .status import Status
+from bookwyrm.models import User
 
 
 class Move(ActivityMixin, BookWyrmModel):
@@ -15,20 +17,21 @@ class Move(ActivityMixin, BookWyrmModel):
         "User", on_delete=models.PROTECT, activitypub_field="actor"
     )
 
-    # TODO: can we just use the abstract class here?
-    activitypub_object = fields.ForeignKey(
-        "BookWyrmModel", on_delete=models.PROTECT,
+    object = fields.CharField(
+        max_length=255,
+        blank=False,
+        null=False,
+        deduplication_field=True,
         activitypub_field="object",
-        blank=True,
-        null=True
-    )
-
-    target = fields.CharField(
-        max_length=255, blank=True, null=True, deduplication_field=True
     )
 
     origin = fields.CharField(
-        max_length=255, blank=True, null=True, deduplication_field=True
+        max_length=255,
+        blank=True,
+        null=True,
+        deduplication_field=True,
+        default="",
+        activitypub_field="origin",
     )
 
     activity_serializer = activitypub.Move
@@ -37,14 +40,66 @@ class Move(ActivityMixin, BookWyrmModel):
     @classmethod
     def ignore_activity(cls, activity, allow_external_connections=True):
         """don't bother with incoming moves of unknown objects"""
-        # TODO how do we check this for any conceivable object?
+        # TODO
         pass
 
-    def save(self, *args, **kwargs):
-        """update user active time"""
-        self.user.update_active_date()
-        super().save(*args, **kwargs)
 
-    # Ok what else? We can trigger a notification for followers of a user who sends a `Move` for themselves
-    # What about when a book is merged (i.e. moved from one id into another)? We could use that to send out a message
-    # to other Bookwyrm instances to update their remote_id for the book, but ...how do we trigger any action?
+class MoveUser(Move):
+    """migrating an activitypub user account"""
+
+    target = fields.ForeignKey(
+        "User",
+        on_delete=models.PROTECT,
+        related_name="move_target",
+        activitypub_field="target",
+    )
+
+    # pylint: disable=unused-argument
+    @classmethod
+    def ignore_activity(cls, activity, allow_external_connections=True):
+        """don't bother with incoming moves of unknown users"""
+        return not User.objects.filter(remote_id=activity.origin).exists()
+
+    def save(self, *args, **kwargs):
+        """update user info and broadcast it"""
+
+        notify_followers = False
+        if self.user in self.target.also_known_as.all():
+
+            self.user.also_known_as.add(self.target.id)
+            self.user.update_active_date()
+            self.user.moved_to = self.target.remote_id
+            self.user.save(update_fields=["moved_to"])
+
+            if self.user.local:
+                kwargs[
+                    "broadcast"
+                ] = True  # Only broadcast if we are initiating the Move
+                notify_followers = True
+
+            super().save(*args, **kwargs)
+
+            if notify_followers:
+                for follower in self.user.followers.all():
+                    MoveUserNotification.objects.create(user=follower, target=self.user)
+
+        else:
+            raise PermissionDenied()
+
+
+class MoveUserNotification(models.Model):
+    """notify followers that the user has moved"""
+
+    created_date = models.DateTimeField(auto_now_add=True)
+
+    user = models.ForeignKey(
+        "User", on_delete=models.CASCADE, related_name="moved_user_notifications"
+    )  # user we are notifying
+
+    target = models.ForeignKey(
+        "User", on_delete=models.CASCADE, related_name="moved_user_notification_target"
+    )  # new account of user who moved
+
+    def save(self, *args, **kwargs):
+        """send notification"""
+        super().save(*args, **kwargs)
