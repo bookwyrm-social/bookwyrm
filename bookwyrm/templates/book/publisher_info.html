@@ -58,12 +58,12 @@
     {% endif %}
 
     {% with date=book.published_date|default:book.first_published_date|naturalday publisher=book.publishers|join:', ' %}
-    {% if date and publisher %}
+    {% if book.published_date and publisher %}
         {% blocktrans %}Published {{ date }} by {{ publisher }}.{% endblocktrans %}
-    {% elif date %}
-        {% blocktrans %}Published {{ date }}{% endblocktrans %}
     {% elif publisher %}
         {% blocktrans %}Published by {{ publisher }}.{% endblocktrans %}
+    {% elif date %}
+        {% blocktrans %}Published {{ date }}{% endblocktrans %}
     {% endif %}
     {% endwith %}
 </p>
