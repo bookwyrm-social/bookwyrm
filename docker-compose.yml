@@ -47,7 +47,7 @@ services:
   web:
     build: .
     env_file: .env
-    command: gunicorn bookwyrm.wsgi:application --bind 0.0.0.0:8000
+    command: gunicorn bookwyrm.wsgi:application --threads=8 --bind 0.0.0.0:8000
     logging: *default-logging
     volumes:
       - .:/app

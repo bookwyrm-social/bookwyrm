@@ -6,7 +6,7 @@ After=network.target postgresql.service redis.service
 User=bookwyrm
 Group=bookwyrm
 WorkingDirectory=/opt/bookwyrm/
-ExecStart=/opt/bookwyrm/venv/bin/gunicorn bookwyrm.wsgi:application --bind 0.0.0.0:8000
+ExecStart=/opt/bookwyrm/venv/bin/gunicorn bookwyrm.wsgi:application --threads=8 --bind 0.0.0.0:8000
 StandardOutput=journal
 StandardError=inherit
 
