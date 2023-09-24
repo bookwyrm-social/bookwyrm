@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-05-30 17:48+0000\n"
-"PO-Revision-Date: 2023-09-24 16:39\n"
+"PO-Revision-Date: 2023-09-24 18:04\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Danish\n"
 "Language: da\n"
@@ -68,7 +68,7 @@ msgstr "Datoen, hvor læsningen stoppede, kan ikke være i fremtiden."
 
 #: bookwyrm/forms/forms.py:74
 msgid "Reading finished date cannot be in the future."
-msgstr ""
+msgstr "Datoen, hvor læsningen blev færdiggjort, kan ikke være i fremtiden."
 
 #: bookwyrm/forms/landing.py:38
 msgid "Username or password are incorrect"
@@ -157,7 +157,7 @@ msgstr "Selvsletning"
 
 #: bookwyrm/models/base_model.py:20
 msgid "Self deactivation"
-msgstr ""
+msgstr "Selvdeaktivering"
 
 #: bookwyrm/models/base_model.py:21
 msgid "Moderator suspension"
@@ -265,15 +265,15 @@ msgstr "Aktiv"
 
 #: bookwyrm/models/import_job.py:49 bookwyrm/templates/import/import.html:166
 msgid "Complete"
-msgstr ""
+msgstr "Gennemført"
 
 #: bookwyrm/models/import_job.py:50
 msgid "Stopped"
-msgstr ""
+msgstr "Stoppet"
 
 #: bookwyrm/models/import_job.py:83 bookwyrm/models/import_job.py:91
 msgid "Import stopped"
-msgstr ""
+msgstr "Import stoppet"
 
 #: bookwyrm/models/import_job.py:363 bookwyrm/models/import_job.py:388
 msgid "Error loading book"
@@ -350,7 +350,7 @@ msgstr "Deutsch (tysk)"
 
 #: bookwyrm/settings.py:297
 msgid "Esperanto (Esperanto)"
-msgstr ""
+msgstr "Esperanto (Esperanto)"
 
 #: bookwyrm/settings.py:298
 msgid "Español (Spanish)"
@@ -358,7 +358,7 @@ msgstr "Español (spansk)"
 
 #: bookwyrm/settings.py:299
 msgid "Euskara (Basque)"
-msgstr ""
+msgstr "Euskara (Baskisk)"
 
 #: bookwyrm/settings.py:300
 msgid "Galego (Galician)"
@@ -418,7 +418,7 @@ msgstr "Ikke fundet"
 
 #: bookwyrm/templates/404.html:9
 msgid "The page you requested doesn't seem to exist!"
-msgstr ""
+msgstr "Den ønskede side eksisterer vist ikke!"
 
 #: bookwyrm/templates/500.html:4
 msgid "Oops!"
@@ -430,7 +430,7 @@ msgstr "Serverfejl"
 
 #: bookwyrm/templates/500.html:9
 msgid "Something went wrong! Sorry about that."
-msgstr ""
+msgstr "Beklager! Noget gik galt."
 
 #: bookwyrm/templates/about/about.html:9
 #: bookwyrm/templates/about/layout.html:35
@@ -446,43 +446,43 @@ msgstr "Velkommen til %(site_name)s!"
 #: bookwyrm/templates/about/about.html:25
 #, python-format
 msgid "%(site_name)s is part of <em>BookWyrm</em>, a network of independent, self-directed communities for readers. While you can interact seamlessly with users anywhere in the <a href=\"https://joinbookwyrm.com/instances/\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">BookWyrm network</a>, this community is unique."
-msgstr ""
+msgstr "%(site_name)s er en del af <em>BookWyrm</em> – et netværk af uafhængige, selvstyrende fællesskaber for læsere. Samtidig med, at du kan interagere problemfrit med brugere overalt i <a href=\"https://joinbookwyrm.com/instances/\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">BookWyrm-netværket</a>, er dette fællesskab helt unikt."
 
 #: bookwyrm/templates/about/about.html:45
 #, python-format
 msgid "<a href=\"%(book_path)s\"><em>%(title)s</em></a> is %(site_name)s's most beloved book, with an average rating of %(rating)s out of 5."
-msgstr ""
+msgstr "<a href=\"%(book_path)s\"><em>%(title)s</em></a> er %(site_name)ss mest elskede bog, med en gennemsnitlig bedømmelse på %(rating)s ud af 5."
 
 #: bookwyrm/templates/about/about.html:64
 #, python-format
 msgid "More %(site_name)s users want to read <a href=\"%(book_path)s\"><em>%(title)s</em></a> than any other book."
-msgstr ""
+msgstr "<a href=\"%(book_path)s\"><em>%(title)s</em></a> er den bog, som flest %(site_name)s-brugere ønsker at læse."
 
 #: bookwyrm/templates/about/about.html:83
 #, python-format
 msgid "<a href=\"%(book_path)s\"><em>%(title)s</em></a> has the most divisive ratings of any book on %(site_name)s."
-msgstr ""
+msgstr "<a href=\"%(book_path)s\"><em>%(title)s</em></a> har de mest delte bedømmelser af nogen bog på %(site_name)s."
 
 #: bookwyrm/templates/about/about.html:94
 msgid "Track your reading, talk about books, write reviews, and discover what to read next. Always ad-free, anti-corporate, and community-oriented, BookWyrm is human-scale software, designed to stay small and personal. If you have feature requests, bug reports, or grand dreams, <a href=\"https://joinbookwyrm.com/get-involved\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">reach out</a> and make yourself heard."
-msgstr ""
+msgstr "Hold styr på din læsning, tal om bøger, skriv anmeldelser, og find ud af, hvad du skal læse som det næste. BookWyrm er altid reklamefri, ikkecommerciel og fællesskabsorienteret software i øjenhøjde, som er designet til at forblive et lille og personligt fællesskab. Hvis du har funktionsanmodninger, fejlrapporter, eller store drømme, så <a href=\"https://joinbookwyrm.com/get-involved\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">tag kontakt</a> og lad os høre dine forslag."
 
 #: bookwyrm/templates/about/about.html:105
 msgid "Meet your admins"
-msgstr ""
+msgstr "Mød dine administratorer"
 
 #: bookwyrm/templates/about/about.html:108
 #, python-format
 msgid "%(site_name)s's moderators and administrators keep the site up and running, enforce the <a href=\"%(coc_path)s\">code of conduct</a>, and respond when users report spam and bad behavior."
-msgstr ""
+msgstr "%(site_name)s's moderatorer og administratorer holder siden kørende, håndhæver <a href=\"%(coc_path)s\">ordensreglerne</a>, og reagerer, når brugerne rapporterer spam og dårlig adfærd."
 
 #: bookwyrm/templates/about/about.html:122
 msgid "Moderator"
-msgstr ""
+msgstr "Moderator"
 
 #: bookwyrm/templates/about/about.html:124 bookwyrm/templates/user_menu.html:67
 msgid "Admin"
-msgstr ""
+msgstr "Administrator"
 
 #: bookwyrm/templates/about/about.html:140
 #: bookwyrm/templates/settings/users/user_moderation_actions.html:14
@@ -496,14 +496,14 @@ msgstr "Send direkte besked"
 #: bookwyrm/templates/about/layout.html:41
 #: bookwyrm/templates/snippets/footer.html:27
 msgid "Code of Conduct"
-msgstr ""
+msgstr "Ordensregler"
 
 #: bookwyrm/templates/about/impressum.html:4
 #: bookwyrm/templates/about/impressum.html:9
 #: bookwyrm/templates/about/layout.html:54
 #: bookwyrm/templates/snippets/footer.html:34
 msgid "Impressum"
-msgstr ""
+msgstr "Kolofon"
 
 #: bookwyrm/templates/about/layout.html:11
 msgid "Active users:"
@@ -511,7 +511,7 @@ msgstr "Aktive brugere:"
 
 #: bookwyrm/templates/about/layout.html:15
 msgid "Statuses posted:"
-msgstr ""
+msgstr "Statusser publiceret:"
 
 #: bookwyrm/templates/about/layout.html:19
 #: bookwyrm/templates/setup/config.html:74
@@ -523,30 +523,30 @@ msgstr "Softwareversion:"
 #: bookwyrm/templates/snippets/footer.html:8
 #, python-format
 msgid "About %(site_name)s"
-msgstr ""
+msgstr "Om %(site_name)s"
 
 #: bookwyrm/templates/about/layout.html:47
 #: bookwyrm/templates/about/privacy.html:4
 #: bookwyrm/templates/about/privacy.html:9
 #: bookwyrm/templates/snippets/footer.html:30
 msgid "Privacy Policy"
-msgstr ""
+msgstr "Privatlivspolitik"
 
 #: bookwyrm/templates/annual_summary/layout.html:7
 #: bookwyrm/templates/feed/summary_card.html:8
 #, python-format
 msgid "%(year)s in the books"
-msgstr ""
+msgstr "%(year)s i bøger"
 
 #: bookwyrm/templates/annual_summary/layout.html:43
 #, python-format
 msgid "%(year)s <em>in the books</em>"
-msgstr ""
+msgstr "%(year)s <em>i bøger</em>"
 
 #: bookwyrm/templates/annual_summary/layout.html:47
 #, python-format
 msgid "<em>%(display_name)s’s</em> year of reading"
-msgstr ""
+msgstr "<em>%(display_name)ss</em> læseår"
 
 #: bookwyrm/templates/annual_summary/layout.html:53
 msgid "Share this page"
@@ -563,7 +563,7 @@ msgstr "Kopieret!"
 
 #: bookwyrm/templates/annual_summary/layout.html:77
 msgid "Sharing status: <strong>public with key</strong>"
-msgstr ""
+msgstr "Deler status: <strong>offentlig med nøgle</strong>"
 
 #: bookwyrm/templates/annual_summary/layout.html:78
 msgid "The page can be seen by anyone with the complete address."
@@ -571,44 +571,44 @@ msgstr "Siden kan ses af enhver med den komplette adresse."
 
 #: bookwyrm/templates/annual_summary/layout.html:83
 msgid "Make page private"
-msgstr ""
+msgstr "Gør siden privat"
 
 #: bookwyrm/templates/annual_summary/layout.html:89
 msgid "Sharing status: <strong>private</strong>"
-msgstr ""
+msgstr "Deler status: <strong>privat</strong>"
 
 #: bookwyrm/templates/annual_summary/layout.html:90
 msgid "The page is private, only you can see it."
-msgstr ""
+msgstr "Siden er privat – det er kun dig, der kan se den."
 
 #: bookwyrm/templates/annual_summary/layout.html:95
 msgid "Make page public"
-msgstr ""
+msgstr "Gør siden offentlig"
 
 #: bookwyrm/templates/annual_summary/layout.html:99
 msgid "When you make your page private, the old key won’t give access to the page anymore. A new key will be created if the page is once again made public."
-msgstr ""
+msgstr "Når du gør din side privat, vil den gamle nøgle ikke give adgang til siden længere. En ny nøgle vil blive oprettet, hvis siden igen gøres offentlig."
 
 #: bookwyrm/templates/annual_summary/layout.html:112
 #, python-format
 msgid "Sadly %(display_name)s didn’t finish any books in %(year)s"
-msgstr ""
+msgstr "Desværre færdiggjorde %(display_name)s ikke nogen bøger i %(year)s"
 
 #: bookwyrm/templates/annual_summary/layout.html:118
 #, python-format
 msgid "In %(year)s, %(display_name)s read %(books_total)s book<br />for a total of %(pages_total)s pages!"
 msgid_plural "In %(year)s, %(display_name)s read %(books_total)s books<br />for a total of %(pages_total)s pages!"
-msgstr[0] ""
+msgstr[0] "I %(year)s har %(display_name)s læst %(books_total)s bog,<br />som udgør i alt %(pages_total)s sider!"
 msgstr[1] ""
 
 #: bookwyrm/templates/annual_summary/layout.html:124
 msgid "That’s great!"
-msgstr ""
+msgstr "Det er fantastisk!"
 
 #: bookwyrm/templates/annual_summary/layout.html:128
 #, python-format
 msgid "That makes an average of %(pages)s pages per book."
-msgstr ""
+msgstr "Det giver et gennemsnit på %(pages)s sider pr. bog."
 
 #: bookwyrm/templates/annual_summary/layout.html:134
 #, python-format
