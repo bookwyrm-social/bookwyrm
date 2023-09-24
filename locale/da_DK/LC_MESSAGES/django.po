@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-05-30 17:48+0000\n"
-"PO-Revision-Date: 2023-09-24 18:04\n"
+"PO-Revision-Date: 2023-09-24 18:59\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Danish\n"
 "Language: da\n"
@@ -36,7 +36,7 @@ msgstr "Udløber Ikke"
 #: bookwyrm/forms/admin.py:49
 #, python-brace-format
 msgid "{i} uses"
-msgstr ""
+msgstr "{i} anvendelser"
 
 #: bookwyrm/forms/admin.py:50
 msgid "Unlimited"
@@ -614,12 +614,12 @@ msgstr "Det giver et gennemsnit på %(pages)s sider pr. bog."
 #, python-format
 msgid "(No page data was available for %(no_page_number)s book)"
 msgid_plural "(No page data was available for %(no_page_number)s books)"
-msgstr[0] ""
+msgstr[0] "(Der var ingen tilgængelige sidedata for %(no_page_number)s bog)"
 msgstr[1] ""
 
 #: bookwyrm/templates/annual_summary/layout.html:150
 msgid "Their shortest read this year…"
-msgstr ""
+msgstr "Vedkommendes korteste læsning i år…"
 
 #: bookwyrm/templates/annual_summary/layout.html:157
 #: bookwyrm/templates/annual_summary/layout.html:178
@@ -629,39 +629,39 @@ msgstr ""
 #: bookwyrm/templates/landing/large-book.html:26
 #: bookwyrm/templates/landing/small-book.html:18
 msgid "by"
-msgstr ""
+msgstr "af"
 
 #: bookwyrm/templates/annual_summary/layout.html:163
 #: bookwyrm/templates/annual_summary/layout.html:184
 #, python-format
 msgid "<strong>%(pages)s</strong> pages"
-msgstr ""
+msgstr "<strong>%(pages)s</strong> sider"
 
 #: bookwyrm/templates/annual_summary/layout.html:171
 msgid "…and the longest"
-msgstr ""
+msgstr "…og den længste"
 
 #: bookwyrm/templates/annual_summary/layout.html:202
 #, python-format
 msgid "%(display_name)s set a goal of reading %(goal)s book in %(year)s,<br /> and achieved %(goal_percent)s%% of that goal"
 msgid_plural "%(display_name)s set a goal of reading %(goal)s books in %(year)s,<br /> and achieved %(goal_percent)s%% of that goal"
 msgstr[0] ""
-msgstr[1] ""
+msgstr[1] "%(display_name)s har sat sig som mål at læse %(goal)s bøger i %(year)s,<br /> og fuldførte %(goal_percent)s%% af det mål"
 
 #: bookwyrm/templates/annual_summary/layout.html:211
 msgid "Way to go!"
-msgstr ""
+msgstr "Godt gået!"
 
 #: bookwyrm/templates/annual_summary/layout.html:226
 #, python-format
 msgid "%(display_name)s left %(ratings_total)s rating, <br />their average rating is %(rating_average)s"
 msgid_plural "%(display_name)s left %(ratings_total)s ratings, <br />their average rating is %(rating_average)s"
-msgstr[0] ""
+msgstr[0] "%(display_name)s lavede %(ratings_total)s bedømmelse<br />med en gennemsnitlig bedømmelse på %(rating_average)s"
 msgstr[1] ""
 
 #: bookwyrm/templates/annual_summary/layout.html:240
 msgid "Their best rated review"
-msgstr ""
+msgstr "Vedkommendes bedst bedømte anmeldelse"
 
 #: bookwyrm/templates/annual_summary/layout.html:253
 #, python-format
@@ -680,124 +680,124 @@ msgstr "Rediger forfatter"
 
 #: bookwyrm/templates/author/author.html:36
 msgid "Author details"
-msgstr ""
+msgstr "Forfatteroplysninger"
 
 #: bookwyrm/templates/author/author.html:40
 #: bookwyrm/templates/author/edit_author.html:42
 msgid "Aliases:"
-msgstr ""
+msgstr "Kaldenavne:"
 
 #: bookwyrm/templates/author/author.html:49
 msgid "Born:"
-msgstr ""
+msgstr "Født:"
 
 #: bookwyrm/templates/author/author.html:56
 msgid "Died:"
-msgstr ""
+msgstr "Død:"
 
 #: bookwyrm/templates/author/author.html:66
 msgid "External links"
-msgstr ""
+msgstr "Eksterne links"
 
 #: bookwyrm/templates/author/author.html:71
 msgid "Wikipedia"
-msgstr ""
+msgstr "Wikipedia"
 
 #: bookwyrm/templates/author/author.html:79
 msgid "Website"
-msgstr ""
+msgstr "Hjemmeside"
 
 #: bookwyrm/templates/author/author.html:87
 msgid "View ISNI record"
-msgstr ""
+msgstr "Se ISNI-optegnelse"
 
 #: bookwyrm/templates/author/author.html:95
 #: bookwyrm/templates/book/book.html:173
 msgid "View on ISFDB"
-msgstr ""
+msgstr "Se på ISFDB"
 
 #: bookwyrm/templates/author/author.html:100
 #: bookwyrm/templates/author/sync_modal.html:5
 #: bookwyrm/templates/book/book.html:140
 #: bookwyrm/templates/book/sync_modal.html:5
 msgid "Load data"
-msgstr ""
+msgstr "Indlæs data"
 
 #: bookwyrm/templates/author/author.html:104
 #: bookwyrm/templates/book/book.html:144
 msgid "View on OpenLibrary"
-msgstr ""
+msgstr "Se på OpenLibrary"
 
 #: bookwyrm/templates/author/author.html:119
 #: bookwyrm/templates/book/book.html:158
 msgid "View on Inventaire"
-msgstr ""
+msgstr "Se på Inventaire"
 
 #: bookwyrm/templates/author/author.html:135
 msgid "View on LibraryThing"
-msgstr ""
+msgstr "Se på LibraryThing"
 
 #: bookwyrm/templates/author/author.html:143
 msgid "View on Goodreads"
-msgstr ""
+msgstr "Se på Goodreads"
 
 #: bookwyrm/templates/author/author.html:151
 msgid "View ISFDB entry"
-msgstr ""
+msgstr "Se ISFDB-side"
 
 #: bookwyrm/templates/author/author.html:166
 #, python-format
 msgid "Books by %(name)s"
-msgstr ""
+msgstr "Bøger af %(name)s"
 
 #: bookwyrm/templates/author/edit_author.html:5
 msgid "Edit Author:"
-msgstr ""
+msgstr "Rediger forfatter:"
 
 #: bookwyrm/templates/author/edit_author.html:13
 #: bookwyrm/templates/book/edit/edit_book.html:25
 msgid "Added:"
-msgstr ""
+msgstr "Tilføjet:"
 
 #: bookwyrm/templates/author/edit_author.html:14
 #: bookwyrm/templates/book/edit/edit_book.html:28
 msgid "Updated:"
-msgstr ""
+msgstr "Opdateret:"
 
 #: bookwyrm/templates/author/edit_author.html:16
 #: bookwyrm/templates/book/edit/edit_book.html:32
 msgid "Last edited by:"
-msgstr ""
+msgstr "Senest redigeret af:"
 
 #: bookwyrm/templates/author/edit_author.html:33
 #: bookwyrm/templates/book/edit/edit_book_form.html:19
 msgid "Metadata"
-msgstr ""
+msgstr "Metadata"
 
 #: bookwyrm/templates/author/edit_author.html:35
 #: bookwyrm/templates/lists/form.html:9
 #: bookwyrm/templates/settings/link_domains/edit_domain_modal.html:14
 #: bookwyrm/templates/shelf/form.html:9
 msgid "Name:"
-msgstr ""
+msgstr "Navn:"
 
 #: bookwyrm/templates/author/edit_author.html:44
 #: bookwyrm/templates/book/edit/edit_book_form.html:78
 #: bookwyrm/templates/book/edit/edit_book_form.html:148
 msgid "Separate multiple values with commas."
-msgstr ""
+msgstr "Adskil flere værdier med kommaer."
 
 #: bookwyrm/templates/author/edit_author.html:50
 msgid "Bio:"
-msgstr ""
+msgstr "Biografi:"
 
 #: bookwyrm/templates/author/edit_author.html:56
 msgid "Wikipedia link:"
-msgstr ""
+msgstr "Wikipedia-link:"
 
 #: bookwyrm/templates/author/edit_author.html:60
 msgid "Website:"
-msgstr ""
+msgstr "Hjemmeside:"
 
 #: bookwyrm/templates/author/edit_author.html:65
 msgid "Birth date:"
@@ -805,24 +805,24 @@ msgstr "Fødselsdato:"
 
 #: bookwyrm/templates/author/edit_author.html:72
 msgid "Death date:"
-msgstr ""
+msgstr "Dødsdato:"
 
 #: bookwyrm/templates/author/edit_author.html:79
 msgid "Author Identifiers"
-msgstr ""
+msgstr "Forfatterkendetegn"
 
 #: bookwyrm/templates/author/edit_author.html:81
 msgid "Openlibrary key:"
-msgstr ""
+msgstr "Openlibrary-nøgle:"
 
 #: bookwyrm/templates/author/edit_author.html:88
 #: bookwyrm/templates/book/edit/edit_book_form.html:323
 msgid "Inventaire ID:"
-msgstr ""
+msgstr "Inventaire-ID:"
 
 #: bookwyrm/templates/author/edit_author.html:95
 msgid "Librarything key:"
-msgstr ""
+msgstr "Librarything-nøgle:"
 
 #: bookwyrm/templates/author/edit_author.html:102
 #: bookwyrm/templates/book/edit/edit_book_form.html:332
