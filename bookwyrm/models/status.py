@@ -1,5 +1,6 @@
 """ models for storing different kinds of Activities """
 from dataclasses import MISSING
+from typing import Optional
 import re
 
 from django.apps import apps
@@ -269,7 +270,7 @@ class GeneratedNote(Status):
         """indicate the book in question for mastodon (or w/e) users"""
         message = self.content
         books = ", ".join(
-            f'<a href="{book.remote_id}">"{book.title}"</a>'
+            f'<a href="{book.remote_id}"><i>{book.title}</i></a>'
             for book in self.mention_books.all()
         )
         return f"{self.user.display_name} {message} {books}"
@@ -320,17 +321,14 @@ class Comment(BookStatus):
     @property
     def pure_content(self):
         """indicate the book in question for mastodon (or w/e) users"""
-        if self.progress_mode == "PG" and self.progress and (self.progress > 0):
-            return_value = (
-                f'{self.content}<p>(comment on <a href="{self.book.remote_id}">'
-                f'"{self.book.title}"</a>, page {self.progress})</p>'
-            )
-        else:
-            return_value = (
-                f'{self.content}<p>(comment on <a href="{self.book.remote_id}">'
-                f'"{self.book.title}"</a>)</p>'
-            )
-        return return_value
+        progress = self.progress or 0
+        citation = (
+            f'comment on <a href="{self.book.remote_id}">'
+            f"<i>{self.book.title}</i></a>"
+        )
+        if self.progress_mode == "PG" and progress > 0:
+            citation += f", p. {progress}"
+        return f"{self.content}<p>({citation})</p>"
 
     activity_serializer = activitypub.Comment
 
@@ -354,22 +352,24 @@ class Quotation(BookStatus):
         blank=True,
     )
 
+    def _format_position(self) -> Optional[str]:
+        """serialize page position"""
+        beg = self.position
+        end = self.endposition or 0
+        if self.position_mode != "PG" or not beg:
+            return None
+        return f"pp. {beg}-{end}" if end > beg else f"p. {beg}"
+
     @property
     def pure_content(self):
         """indicate the book in question for mastodon (or w/e) users"""
         quote = re.sub(r"^<p>", '<p>"', self.quote)
         quote = re.sub(r"</p>$", '"</p>', quote)
-        if self.position_mode == "PG" and self.position and (self.position > 0):
-            return_value = (
-                f'{quote} <p>-- <a href="{self.book.remote_id}">'
-                f'"{self.book.title}"</a>, page {self.position}</p>{self.content}'
-            )
-        else:
-            return_value = (
-                f'{quote} <p>-- <a href="{self.book.remote_id}">'
-                f'"{self.book.title}"</a></p>{self.content}'
-            )
-        return return_value
+        title, href = self.book.title, self.book.remote_id
+        citation = f'— <a href="{href}"><i>{title}</i></a>'
+        if position := self._format_position():
+            citation += f", {position}"
+        return f"{quote} <p>{citation}</p>{self.content}"
 
     activity_serializer = activitypub.Quotation
 
