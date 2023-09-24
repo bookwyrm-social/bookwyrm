@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-05-30 17:48+0000\n"
-"PO-Revision-Date: 2023-09-24 18:59\n"
+"PO-Revision-Date: 2023-09-24 20:34\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Danish\n"
 "Language: da\n"
@@ -56,11 +56,11 @@ msgstr "Forkert adgangskode"
 
 #: bookwyrm/forms/forms.py:54
 msgid "Reading finish date cannot be before start date."
-msgstr "Læsning slutdato kan ikke være før startdato."
+msgstr "Datoen, hvor læsningen blev gennemført, kan ikke være før startdatoen."
 
 #: bookwyrm/forms/forms.py:59
 msgid "Reading stopped date cannot be before start date."
-msgstr "Læsning slutdato kan ikke være før startdato."
+msgstr "Datoen, hvor læsningen stoppede, kan ikke være før startdatoen."
 
 #: bookwyrm/forms/forms.py:67
 msgid "Reading stopped date cannot be in the future."
@@ -76,11 +76,11 @@ msgstr "Brugernavn eller adgangskode er forkert"
 
 #: bookwyrm/forms/landing.py:57
 msgid "User with this username already exists"
-msgstr "Der findes allerede en bruger med dette brugernavn"
+msgstr "Der findes allerede en bruger med det brugernavn"
 
 #: bookwyrm/forms/landing.py:66
 msgid "A user with this email already exists."
-msgstr "Der findes allerede en bruger med denne e-mailadresse."
+msgstr "Der findes allerede en bruger med den e-mailadresse."
 
 #: bookwyrm/forms/landing.py:124 bookwyrm/forms/landing.py:132
 msgid "Incorrect code"
@@ -88,11 +88,11 @@ msgstr "Forkert kode"
 
 #: bookwyrm/forms/links.py:36
 msgid "This domain is blocked. Please contact your administrator if you think this is an error."
-msgstr "Dette domæne er blokeret. Kontakt venligst din administrator, hvis du mener, at dette er en fejl."
+msgstr "Dette domæne er blokeret. Kontakt venligst din administrator, hvis du mener, at det er en fejl."
 
 #: bookwyrm/forms/links.py:49
 msgid "This link with file type has already been added for this book. If it is not visible, the domain is still pending."
-msgstr "Dette link med filtype er allerede blevet tilføjet for denne bog. Hvis det ikke er synligt, er domænet stadig ventende."
+msgstr "Dette link med filtype er allerede blevet tilføjet for denne bog. Hvis det ikke er synligt, afventer domænet stadig."
 
 #: bookwyrm/forms/lists.py:26
 msgid "List Order"
@@ -169,7 +169,7 @@ msgstr "Slettet af moderator"
 
 #: bookwyrm/models/base_model.py:23
 msgid "Domain block"
-msgstr "Domæne blokering"
+msgstr "Domæneblokering"
 
 #: bookwyrm/models/book.py:272
 msgid "Audiobook"
@@ -222,7 +222,7 @@ msgstr "brugernavn"
 
 #: bookwyrm/models/fields.py:197
 msgid "A user with that username already exists."
-msgstr "Der findes allerede en bruger med dette brugernavn."
+msgstr "Der findes allerede en bruger med det brugernavn."
 
 #: bookwyrm/models/fields.py:216
 #: bookwyrm/templates/snippets/privacy-icons.html:3
@@ -827,15 +827,15 @@ msgstr "Librarything-nøgle:"
 #: bookwyrm/templates/author/edit_author.html:102
 #: bookwyrm/templates/book/edit/edit_book_form.html:332
 msgid "Goodreads key:"
-msgstr ""
+msgstr "Goodreads-nøgle:"
 
 #: bookwyrm/templates/author/edit_author.html:109
 msgid "ISFDB:"
-msgstr ""
+msgstr "ISFDB:"
 
 #: bookwyrm/templates/author/edit_author.html:116
 msgid "ISNI:"
-msgstr ""
+msgstr "ISNI:"
 
 #: bookwyrm/templates/author/edit_author.html:126
 #: bookwyrm/templates/book/book.html:220
@@ -858,7 +858,7 @@ msgstr ""
 #: bookwyrm/templates/shelf/form.html:25
 #: bookwyrm/templates/snippets/reading_modals/layout.html:18
 msgid "Save"
-msgstr ""
+msgstr "Gem"
 
 #: bookwyrm/templates/author/edit_author.html:127
 #: bookwyrm/templates/author/sync_modal.html:23
@@ -881,7 +881,7 @@ msgstr ""
 #: bookwyrm/templates/settings/link_domains/edit_domain_modal.html:22
 #: bookwyrm/templates/snippets/report_modal.html:52
 msgid "Cancel"
-msgstr ""
+msgstr "Annuller"
 
 #: bookwyrm/templates/author/sync_modal.html:15
 #, python-format
