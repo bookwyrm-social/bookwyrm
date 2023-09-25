@@ -72,9 +72,10 @@
             {% endfor %}
         </div>
         {% endif %}
+    {% endif %}
     </div>
-
     {% block tabs %}
+    {% if not user.moved_to %}
     {% with user|username as username %}
     <nav class="tabs">
         <ul>
@@ -114,9 +115,11 @@
         </ul>
     </nav>
     {% endwith %}
-</div>
+    {% endif %}
     {% endblock %}
+</div>
 
+    {% if not user.moved_to %}
     {% block panel %}{% endblock %}
     {% endif %}
 {% endblock %}
