@@ -201,14 +201,13 @@ class Book(BookDataModel):
     @property
     def alt_text(self):
         """image alt test"""
-        text = self.title
-        if self.edition_info:
-            text += f" ({self.edition_info})"
-        return text
+        author = f"{name}: " if (name := self.author_text) else ""
+        edition = f" ({info})" if (info := self.edition_info) else ""
+        return f"{author}{self.title}{edition}"
 
     def save(self, *args: Any, **kwargs: Any) -> None:
         """can't be abstract for query reasons, but you shouldn't USE it"""
-        if not isinstance(self, Edition) and not isinstance(self, Work):
+        if not isinstance(self, (Edition, Work)):
             raise ValueError("Books should be added as Editions or Works")
 
         return super().save(*args, **kwargs)
