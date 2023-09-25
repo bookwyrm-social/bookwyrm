@@ -117,8 +117,11 @@ def get_isni(existing, author, autoescape=True):
 @register.simple_tag(takes_context=False)
 def id_to_username(user_id):
     """given an arbitrary user id, return the username"""
-    url = urlparse(user_id)
-    domain = url.netloc
-    parts = url.path.split("/")
-    name = parts[-1]
-    return f"{name}@{domain}"
+    if user_id:
+        url = urlparse(user_id)
+        domain = url.netloc
+        parts = url.path.split("/")
+        name = parts[-1]
+        return f"{name}@{domain}"
+    else:
+        return None

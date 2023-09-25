@@ -13,8 +13,12 @@
 {% endblock %}
 
 {% block description %}
-    {{ related_user }} {% trans "has moved to" %} <a href="{{ related_user_moved_to }}">{% id_to_username related_user_moved_to %}</a>
-    <div class="row shrink my-2">
-        {% include 'snippets/move_user_buttons.html' with group=notification.related_group %}
-    </div>
+    {% if related_user_moved_to %}
+        {{ related_user }} {% trans "has moved to" %} <a href="{{ related_user_moved_to }}">{% id_to_username related_user_moved_to %}</a>
+        <div class="row shrink my-2">
+            {% include 'snippets/move_user_buttons.html' with group=notification.related_group %}
+        </div>
+    {% else %}
+        {{ related_user }} {% trans "has undone their move" %}
+    {% endif %}
 {% endblock %}

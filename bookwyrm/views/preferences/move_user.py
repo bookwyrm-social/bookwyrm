@@ -2,7 +2,7 @@
 
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import redirect
+from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
 from django.views import View
@@ -95,4 +95,17 @@ def remove_alias(request):
     """remove an alias from the user profile"""
 
     request.user.also_known_as.remove(request.POST["alias"])
+    return redirect("prefs-alias")
+
+
+@require_POST
+@login_required
+def unmove(request):
+    """undo a user move"""
+    target = get_object_or_404(models.User, remote_id=request.POST["remote_id"])
+    move = get_object_or_404(models.MoveUser, target=target, user=request.user)
+    move.delete()
+
+    request.user.moved_to = None
+    request.user.save(update_fields=["moved_to"], broadcast=True)
     return redirect("prefs-alias")

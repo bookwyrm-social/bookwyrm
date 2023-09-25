@@ -13,7 +13,10 @@
     <div class="box">
         <div class="notification is-info is-light">
             <p>
-                {% trans "Marking another account as an alias is required if you want to move that account to this one. This is a reversable action and will not change this account." %}
+                {% trans "Marking another account as an alias is required if you want to move that account to this one." %}
+            </p>
+            <p>
+                {% trans "This is a reversable action and will not change the functionality of this account." %}
             </p>
         </div>
         <form name="alias-user" action="{% url 'prefs-alias' %}" method="post">

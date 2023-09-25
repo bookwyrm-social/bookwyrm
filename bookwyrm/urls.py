@@ -598,6 +598,7 @@ urlpatterns = [
     re_path(
         r"^preferences/remove-alias/?$", views.remove_alias, name="prefs-remove-alias"
     ),
+    re_path(r"^preferences/unmove/?$", views.unmove, name="prefs-unmove"),
     re_path(r"^preferences/delete/?$", views.DeleteUser.as_view(), name="prefs-delete"),
     re_path(
         r"^preferences/deactivate/?$",
