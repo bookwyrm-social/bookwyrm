@@ -7,6 +7,7 @@ from .activitypub_mixin import ActivityMixin
 from .base_model import BookWyrmModel
 from . import fields
 
+
 class Move(ActivityMixin, BookWyrmModel):
     """migrating an activitypub user account"""
 
@@ -30,6 +31,7 @@ class Move(ActivityMixin, BookWyrmModel):
     )
 
     activity_serializer = activitypub.Move
+
 
 class MoveUser(Move):
     """migrating an activitypub user account"""

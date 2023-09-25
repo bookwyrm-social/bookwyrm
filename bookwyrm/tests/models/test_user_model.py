@@ -88,9 +88,11 @@ class User(TestCase):
                 "https://www.w3.org/ns/activitystreams",
                 "https://w3id.org/security/v1",
                 {
-                    "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
-                    "schema": "http://schema.org#",
                     "PropertyValue": "schema:PropertyValue",
+                    "alsoKnownAs": {"@id": "as:alsoKnownAs", "@type": "@id"},
+                    "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+                    "movedTo": {"@id": "as:movedTo", "@type": "@id"},
+                    "schema": "http://schema.org#",
                     "value": "schema:value",
                 },
             ],

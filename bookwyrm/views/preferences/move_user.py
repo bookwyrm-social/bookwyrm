@@ -43,7 +43,7 @@ class MoveUser(View):
 
             except PermissionDenied:
                 form.errors["target"] = [
-                    "Set this user as an alias on the user you wish to move to before moving"
+                    "Set this user as an alias on the user you are moving to first"
                 ]
                 data = {"form": form, "user": request.user}
                 return TemplateResponse(request, "preferences/move_user.html", data)
