@@ -41,9 +41,9 @@ class MoveUser(View):
 
                 return redirect("user-feed", username=request.user.username)
 
-            except (PermissionDenied):
+            except PermissionDenied:
                 form.errors["target"] = [
-                    "You must set this server's user as an alias on the user you wish to move to before moving"
+                    "Set this user as an alias on the user you wish to move to before moving"
                 ]
                 data = {"form": form, "user": request.user}
                 return TemplateResponse(request, "preferences/move_user.html", data)

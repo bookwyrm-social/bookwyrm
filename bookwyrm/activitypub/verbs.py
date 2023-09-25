@@ -256,4 +256,5 @@ class Move(Verb):
                 allow_external_connections=allow_external_connections,
             )
         else:
-            return None
+            # we might do something with this to move other objects at some point
+            pass

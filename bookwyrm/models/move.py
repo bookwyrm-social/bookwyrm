@@ -6,9 +6,6 @@ from bookwyrm import activitypub
 from .activitypub_mixin import ActivityMixin
 from .base_model import BookWyrmModel
 from . import fields
-from .status import Status
-from bookwyrm.models import User
-
 
 class Move(ActivityMixin, BookWyrmModel):
     """migrating an activitypub user account"""
@@ -33,14 +30,6 @@ class Move(ActivityMixin, BookWyrmModel):
     )
 
     activity_serializer = activitypub.Move
-
-    # pylint: disable=unused-argument
-    @classmethod
-    def ignore_activity(cls, activity, allow_external_connections=True):
-        """don't bother with incoming moves of unknown objects"""
-        # TODO
-        pass
-
 
 class MoveUser(Move):
     """migrating an activitypub user account"""
