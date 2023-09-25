@@ -1,5 +1,7 @@
 """ bookwyrm settings and configuration """
 import os
+from typing import AnyStr
+
 from environs import Env
 
 import requests
@@ -12,7 +14,7 @@ from django.core.exceptions import ImproperlyConfigured
 env = Env()
 env.read_env()
 DOMAIN = env("DOMAIN")
-VERSION = "0.6.4"
+VERSION = "0.6.5"
 
 RELEASE_API = env(
     "RELEASE_API",
@@ -37,7 +39,7 @@ EMAIL_SENDER_DOMAIN = env("EMAIL_SENDER_DOMAIN", DOMAIN)
 EMAIL_SENDER = f"{EMAIL_SENDER_NAME}@{EMAIL_SENDER_DOMAIN}"
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR: AnyStr = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 LOCALE_PATHS = [
     os.path.join(BASE_DIR, "locale"),
 ]
