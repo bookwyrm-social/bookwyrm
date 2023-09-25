@@ -39,7 +39,7 @@ class MoveUser(View):
                     user=request.user, object=request.user.remote_id, target=target
                 )
 
-                return redirect("/")
+                return redirect("user-feed", username=request.user.username)
 
             except (PermissionDenied):
                 form.errors["target"] = [

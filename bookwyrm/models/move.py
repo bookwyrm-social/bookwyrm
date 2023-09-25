@@ -21,7 +21,6 @@ class Move(ActivityMixin, BookWyrmModel):
         max_length=255,
         blank=False,
         null=False,
-        deduplication_field=True,
         activitypub_field="object",
     )
 
@@ -29,7 +28,6 @@ class Move(ActivityMixin, BookWyrmModel):
         max_length=255,
         blank=True,
         null=True,
-        deduplication_field=True,
         default="",
         activitypub_field="origin",
     )
@@ -54,16 +52,10 @@ class MoveUser(Move):
         activitypub_field="target",
     )
 
-    # pylint: disable=unused-argument
-    @classmethod
-    def ignore_activity(cls, activity, allow_external_connections=True):
-        """don't bother with incoming moves of unknown users"""
-        return not User.objects.filter(remote_id=activity.origin).exists()
-
     def save(self, *args, **kwargs):
         """update user info and broadcast it"""
 
-        notify_followers = False
+        # only allow if the source is listed in the target's alsoKnownAs
         if self.user in self.target.also_known_as.all():
 
             self.user.also_known_as.add(self.target.id)
@@ -75,12 +67,11 @@ class MoveUser(Move):
                 kwargs[
                     "broadcast"
                 ] = True  # Only broadcast if we are initiating the Move
-                notify_followers = True
 
             super().save(*args, **kwargs)
 
-            if notify_followers:
-                for follower in self.user.followers.all():
+            for follower in self.user.followers.all():
+                if follower.local:
                     MoveUserNotification.objects.create(user=follower, target=self.user)
 
         else:
@@ -93,11 +84,11 @@ class MoveUserNotification(models.Model):
     created_date = models.DateTimeField(auto_now_add=True)
 
     user = models.ForeignKey(
-        "User", on_delete=models.CASCADE, related_name="moved_user_notifications"
+        "User", on_delete=models.PROTECT, related_name="moved_user_notifications"
     )  # user we are notifying
 
     target = models.ForeignKey(
-        "User", on_delete=models.CASCADE, related_name="moved_user_notification_target"
+        "User", on_delete=models.PROTECT, related_name="moved_user_notification_target"
     )  # new account of user who moved
 
     def save(self, *args, **kwargs):

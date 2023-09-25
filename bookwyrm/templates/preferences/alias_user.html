@@ -19,14 +19,14 @@
         <form name="alias-user" action="{% url 'prefs-alias' %}" method="post">
             {% csrf_token %}
             <div class="field">
-                <label class="label" for="id_password">{% trans "Confirm password:" %}</label>
-                <input class="input {% if form.password.errors %}is-danger{% endif %}" type="password" name="password" id="id_password" required aria-describedby="desc_password">
-                {% include 'snippets/form_errors.html' with errors_list=form.password.errors id="desc_password" %}
-            </div>
-            <div class="field">
                 <label class="label" for="id_target">{% trans "Enter the username for the account you want to add as an alias e.g. <em>user@example.com </em>:" %}</label>
                 <input class="input {% if form.username.errors %}is-danger{% endif %}" type="text" name="username" id="id_username" required aria-describedby="desc_username">
                 {% include 'snippets/form_errors.html' with errors_list=form.username.errors id="desc_username" %}
+            </div>
+            <div class="field">
+                <label class="label" for="id_password">{% trans "Confirm your password:" %}</label>
+                <input class="input {% if form.password.errors %}is-danger{% endif %}" type="password" name="password" id="id_password" required aria-describedby="desc_password">
+                {% include 'snippets/form_errors.html' with errors_list=form.password.errors id="desc_password" %}
             </div>
             <button type="submit" class="button is-success">{% trans "Create Alias" %}</button>
         </form>

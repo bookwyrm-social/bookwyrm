@@ -75,9 +75,6 @@ class Update(Verb):
         """update a model instance from the dataclass"""
         if not self.object:
             return
-            # BUG: THIS IS THROWING A DUPLIATE USERNAME ERROR WHEN WE GET AN "UPDATE" AFTER/BEFORE A "MOVE"
-            # FROM MASTODON - BUT ONLY SINCE WE ADDED MOVEUSER
-            # is it something to do with the updated User model?
         self.object.to_model(
             allow_create=False, allow_external_connections=allow_external_connections
         )
@@ -252,6 +249,11 @@ class Move(Verb):
 
         if object_is_user:
             model = apps.get_model("bookwyrm.MoveUser")
-            self.to_model(model=model)
+
+            self.to_model(
+                model=model,
+                save=True,
+                allow_external_connections=allow_external_connections,
+            )
         else:
-            return
+            return None

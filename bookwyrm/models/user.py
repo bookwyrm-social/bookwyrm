@@ -143,12 +143,14 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     # migration fields
 
     moved_to = fields.RemoteIdField(
-        null=True, unique=False, activitypub_field="movedTo"
+        null=True, unique=False, activitypub_field="movedTo", deduplication_field=False
     )
     also_known_as = fields.ManyToManyField(
         "self",
-        symmetrical=True,
+        symmetrical=False,
+        unique=False,
         activitypub_field="alsoKnownAs",
+        deduplication_field=False,
     )
 
     # options to turn features on and off
