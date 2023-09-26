@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-05-30 17:48+0000\n"
-"PO-Revision-Date: 2023-09-11 07:30\n"
+"PO-Revision-Date: 2023-09-26 06:19\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Korean\n"
 "Language: ko\n"
@@ -273,11 +273,11 @@ msgstr "멈춤"
 
 #: bookwyrm/models/import_job.py:83 bookwyrm/models/import_job.py:91
 msgid "Import stopped"
-msgstr ""
+msgstr "가져오기 멈춤"
 
 #: bookwyrm/models/import_job.py:363 bookwyrm/models/import_job.py:388
 msgid "Error loading book"
-msgstr ""
+msgstr "책 불러오는 중 오류"
 
 #: bookwyrm/models/import_job.py:372
 msgid "Could not find a match for book"
@@ -289,11 +289,11 @@ msgstr "비매품"
 
 #: bookwyrm/models/link.py:52
 msgid "Purchasable"
-msgstr ""
+msgstr "구매 가능"
 
 #: bookwyrm/models/link.py:53
 msgid "Available for loan"
-msgstr ""
+msgstr "대여 가능"
 
 #: bookwyrm/models/link.py:70
 #: bookwyrm/templates/settings/link_domains/link_domains.html:23
@@ -302,7 +302,7 @@ msgstr "승인됨"
 
 #: bookwyrm/models/user.py:32 bookwyrm/templates/book/book.html:307
 msgid "Reviews"
-msgstr ""
+msgstr "후기"
 
 #: bookwyrm/models/user.py:33
 msgid "Comments"
@@ -310,19 +310,19 @@ msgstr "주석"
 
 #: bookwyrm/models/user.py:34
 msgid "Quotations"
-msgstr ""
+msgstr "인용구"
 
 #: bookwyrm/models/user.py:35
 msgid "Everything else"
-msgstr ""
+msgstr "그 밖의 것들"
 
 #: bookwyrm/settings.py:221
 msgid "Home Timeline"
-msgstr ""
+msgstr "홈 타임라인"
 
 #: bookwyrm/settings.py:221
 msgid "Home"
-msgstr ""
+msgstr "홈"
 
 #: bookwyrm/settings.py:222
 msgid "Books Timeline"
@@ -482,14 +482,14 @@ msgstr "중재자"
 
 #: bookwyrm/templates/about/about.html:124 bookwyrm/templates/user_menu.html:67
 msgid "Admin"
-msgstr ""
+msgstr "관리자"
 
 #: bookwyrm/templates/about/about.html:140
 #: bookwyrm/templates/settings/users/user_moderation_actions.html:14
 #: bookwyrm/templates/snippets/status/status_options.html:35
 #: bookwyrm/templates/snippets/user_options.html:14
 msgid "Send direct message"
-msgstr ""
+msgstr "디렉트 메시지 보내기"
 
 #: bookwyrm/templates/about/conduct.html:4
 #: bookwyrm/templates/about/conduct.html:9
@@ -685,15 +685,15 @@ msgstr ""
 
 #: bookwyrm/templates/author/author.html:49
 msgid "Born:"
-msgstr ""
+msgstr "출생:"
 
 #: bookwyrm/templates/author/author.html:56
 msgid "Died:"
-msgstr ""
+msgstr "사망:"
 
 #: bookwyrm/templates/author/author.html:66
 msgid "External links"
-msgstr ""
+msgstr "외부 링크"
 
 #: bookwyrm/templates/author/author.html:71
 msgid "Wikipedia"
@@ -705,7 +705,7 @@ msgstr "웹사이트"
 
 #: bookwyrm/templates/author/author.html:87
 msgid "View ISNI record"
-msgstr ""
+msgstr "ISNI 레코드 보기"
 
 #: bookwyrm/templates/author/author.html:95
 #: bookwyrm/templates/book/book.html:173
@@ -775,7 +775,7 @@ msgstr ""
 #: bookwyrm/templates/settings/link_domains/edit_domain_modal.html:14
 #: bookwyrm/templates/shelf/form.html:9
 msgid "Name:"
-msgstr ""
+msgstr "이름:"
 
 #: bookwyrm/templates/author/edit_author.html:44
 #: bookwyrm/templates/book/edit/edit_book_form.html:78
@@ -1098,7 +1098,7 @@ msgstr ""
 
 #: bookwyrm/templates/book/edit/edit_book.html:95
 msgid "Find more information at isni.org"
-msgstr ""
+msgstr "더 많은 정보룰 isni.org에서 찾기"
 
 #: bookwyrm/templates/book/edit/edit_book.html:105
 msgid "This is a new author"
@@ -2068,7 +2068,7 @@ msgstr ""
 
 #: bookwyrm/templates/get_started/users.html:11
 msgid "Search for a user"
-msgstr ""
+msgstr "이용자 찾기"
 
 #: bookwyrm/templates/get_started/users.html:13
 #, python-format
@@ -4005,7 +4005,7 @@ msgstr ""
 
 #: bookwyrm/templates/preferences/edit_user.html:75
 msgid "Show suggested users"
-msgstr ""
+msgstr "제안된 이용자 보여주기"
 
 #: bookwyrm/templates/preferences/edit_user.html:81
 msgid "Show this account in suggested users"
@@ -4877,11 +4877,11 @@ msgstr ""
 #: bookwyrm/templates/settings/federation/instance_list.html:48
 #: bookwyrm/templates/settings/federation/software_filter.html:5
 msgid "Software"
-msgstr ""
+msgstr "소프트웨어"
 
 #: bookwyrm/templates/settings/federation/instance_list.html:70
 msgid "No instances found"
-msgstr ""
+msgstr "인스턴스를 찾을 수 없음"
 
 #: bookwyrm/templates/settings/imports/complete_import_modal.html:4
 msgid "Stop import?"
@@ -4901,7 +4901,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/imports/imports.html:36
 msgid "Disable imports"
-msgstr ""
+msgstr "가져오기 비활성화"
 
 #: bookwyrm/templates/settings/imports/imports.html:50
 msgid "Users are currently unable to start new imports"
@@ -4909,7 +4909,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/imports/imports.html:55
 msgid "Enable imports"
-msgstr ""
+msgstr "가져오기 활성화"
 
 #: bookwyrm/templates/settings/imports/imports.html:63
 msgid "Limit the amount of imports"
@@ -4937,15 +4937,15 @@ msgstr ""
 
 #: bookwyrm/templates/settings/imports/imports.html:86
 msgid "Set limit"
-msgstr ""
+msgstr "제한 설정"
 
 #: bookwyrm/templates/settings/imports/imports.html:102
 msgid "Completed"
-msgstr ""
+msgstr "완료됨"
 
 #: bookwyrm/templates/settings/imports/imports.html:116
 msgid "User"
-msgstr ""
+msgstr "이용자"
 
 #: bookwyrm/templates/settings/imports/imports.html:125
 msgid "Date Updated"
