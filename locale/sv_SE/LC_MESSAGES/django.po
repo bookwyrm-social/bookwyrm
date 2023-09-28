@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-04-26 00:20+0000\n"
-"PO-Revision-Date: 2023-04-29 03:09\n"
+"POT-Creation-Date: 2023-05-30 17:48+0000\n"
+"PO-Revision-Date: 2023-09-03 09:07\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Swedish\n"
 "Language: sv\n"
@@ -300,7 +300,7 @@ msgstr "Tillgänglig för lån"
 msgid "Approved"
 msgstr "Godkänd"
 
-#: bookwyrm/models/user.py:32 bookwyrm/templates/book/book.html:305
+#: bookwyrm/models/user.py:32 bookwyrm/templates/book/book.html:307
 msgid "Reviews"
 msgstr "Recensioner"
 
@@ -705,7 +705,7 @@ msgstr "Wikipedia"
 
 #: bookwyrm/templates/author/author.html:79
 msgid "Website"
-msgstr "Hemsida"
+msgstr "Webbplats"
 
 #: bookwyrm/templates/author/author.html:87
 msgid "View ISNI record"
@@ -797,7 +797,7 @@ msgstr "Wikipedia-länk:"
 
 #: bookwyrm/templates/author/edit_author.html:60
 msgid "Website:"
-msgstr "Hemsida:"
+msgstr "Webbplats:"
 
 #: bookwyrm/templates/author/edit_author.html:65
 msgid "Birth date:"
@@ -838,7 +838,7 @@ msgid "ISNI:"
 msgstr "ISNI:"
 
 #: bookwyrm/templates/author/edit_author.html:126
-#: bookwyrm/templates/book/book.html:218
+#: bookwyrm/templates/book/book.html:220
 #: bookwyrm/templates/book/edit/edit_book.html:150
 #: bookwyrm/templates/book/file_links/add_link_modal.html:60
 #: bookwyrm/templates/book/file_links/edit_links.html:86
@@ -862,7 +862,7 @@ msgstr "Spara"
 
 #: bookwyrm/templates/author/edit_author.html:127
 #: bookwyrm/templates/author/sync_modal.html:23
-#: bookwyrm/templates/book/book.html:219
+#: bookwyrm/templates/book/book.html:221
 #: bookwyrm/templates/book/cover_add_modal.html:33
 #: bookwyrm/templates/book/edit/edit_book.html:152
 #: bookwyrm/templates/book/edit/edit_book.html:155
@@ -919,73 +919,73 @@ msgstr "Misslyckades med att ladda omslaget"
 msgid "Click to enlarge"
 msgstr "Klicka för att förstora"
 
-#: bookwyrm/templates/book/book.html:195
+#: bookwyrm/templates/book/book.html:196
 #, python-format
 msgid "(%(review_count)s review)"
 msgid_plural "(%(review_count)s reviews)"
 msgstr[0] "(%(review_count)s recension)"
 msgstr[1] "(%(review_count)s recensioner)"
 
-#: bookwyrm/templates/book/book.html:207
+#: bookwyrm/templates/book/book.html:209
 msgid "Add Description"
 msgstr "Lägg till beskrivning"
 
-#: bookwyrm/templates/book/book.html:214
+#: bookwyrm/templates/book/book.html:216
 #: bookwyrm/templates/book/edit/edit_book_form.html:42
 #: bookwyrm/templates/lists/form.html:13 bookwyrm/templates/shelf/form.html:17
 msgid "Description:"
 msgstr "Beskrivning:"
 
-#: bookwyrm/templates/book/book.html:230
+#: bookwyrm/templates/book/book.html:232
 #, python-format
 msgid "%(count)s edition"
 msgid_plural "%(count)s editions"
 msgstr[0] "%(count)s utgåva"
 msgstr[1] "%(count)s utgåvor"
 
-#: bookwyrm/templates/book/book.html:244
+#: bookwyrm/templates/book/book.html:246
 msgid "You have shelved this edition in:"
 msgstr "Du har lagt den här utgåvan i hylla:"
 
-#: bookwyrm/templates/book/book.html:259
+#: bookwyrm/templates/book/book.html:261
 #, python-format
 msgid "A <a href=\"%(book_path)s\">different edition</a> of this book is on your <a href=\"%(shelf_path)s\">%(shelf_name)s</a> shelf."
 msgstr "En <a href=\"%(book_path)s\">annorlunda utgåva</a> av den här boken finns i din <a href=\"%(shelf_path)s\">%(shelf_name)s</a> hylla."
 
-#: bookwyrm/templates/book/book.html:270
+#: bookwyrm/templates/book/book.html:272
 msgid "Your reading activity"
 msgstr "Din läsningsaktivitet"
 
-#: bookwyrm/templates/book/book.html:276
+#: bookwyrm/templates/book/book.html:278
 #: bookwyrm/templates/guided_tour/book.html:56
 msgid "Add read dates"
 msgstr "Lägg till läsdatum"
 
-#: bookwyrm/templates/book/book.html:284
+#: bookwyrm/templates/book/book.html:286
 msgid "You don't have any reading activity for this book."
 msgstr "Du har ingen läsaktivitet för den här boken."
 
-#: bookwyrm/templates/book/book.html:310
+#: bookwyrm/templates/book/book.html:312
 msgid "Your reviews"
 msgstr "Dina recensioner"
 
-#: bookwyrm/templates/book/book.html:316
+#: bookwyrm/templates/book/book.html:318
 msgid "Your comments"
 msgstr "Dina kommentarer"
 
-#: bookwyrm/templates/book/book.html:322
+#: bookwyrm/templates/book/book.html:324
 msgid "Your quotes"
 msgstr "Dina citat"
 
-#: bookwyrm/templates/book/book.html:358
+#: bookwyrm/templates/book/book.html:360
 msgid "Subjects"
 msgstr "Ämnen"
 
-#: bookwyrm/templates/book/book.html:370
+#: bookwyrm/templates/book/book.html:372
 msgid "Places"
 msgstr "Platser"
 
-#: bookwyrm/templates/book/book.html:381
+#: bookwyrm/templates/book/book.html:383
 #: bookwyrm/templates/groups/group.html:19
 #: bookwyrm/templates/guided_tour/lists.html:14
 #: bookwyrm/templates/guided_tour/user_books.html:102
@@ -999,11 +999,11 @@ msgstr "Platser"
 msgid "Lists"
 msgstr "Listor"
 
-#: bookwyrm/templates/book/book.html:393
+#: bookwyrm/templates/book/book.html:395
 msgid "Add to list"
 msgstr "Lägg till i listan"
 
-#: bookwyrm/templates/book/book.html:403
+#: bookwyrm/templates/book/book.html:405
 #: bookwyrm/templates/book/cover_add_modal.html:32
 #: bookwyrm/templates/lists/add_item_modal.html:39
 #: bookwyrm/templates/lists/list.html:255
@@ -1489,7 +1489,7 @@ msgstr "Bok %(series_number)s"
 
 #: bookwyrm/templates/book/series.html:27
 msgid "Unsorted Book"
-msgstr "O-sorterad bok"
+msgstr "Osorterad bok"
 
 #: bookwyrm/templates/book/sync_modal.html:15
 #, python-format
@@ -3979,7 +3979,7 @@ msgstr "Borttagning av ditt konto kan inte ångras. Användarnamnet kommer inte 
 
 #: bookwyrm/templates/preferences/disable-2fa.html:12
 msgid "Disable Two Factor Authentication"
-msgstr "Stäng av Tvåfaktorsautentisering"
+msgstr "Inaktivera Tvåfaktorsautentisering"
 
 #: bookwyrm/templates/preferences/disable-2fa.html:14
 msgid "Disabling 2FA will allow anyone with your username and password to log in to your account."
@@ -4281,8 +4281,8 @@ msgstr "Inga resultat hittades för \"%(query)s\""
 #, python-format
 msgid "%(result_count)s result found"
 msgid_plural "%(result_count)s results found"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(result_count)s resultat hittades"
+msgstr[1] "%(result_count)s resultat hittades"
 
 #: bookwyrm/templates/settings/announcements/announcement.html:5
 #: bookwyrm/templates/settings/announcements/announcement.html:8
@@ -4479,7 +4479,7 @@ msgstr "Ta bort regel"
 #: bookwyrm/templates/settings/celery.html:6
 #: bookwyrm/templates/settings/celery.html:8
 msgid "Celery Status"
-msgstr ""
+msgstr "Lönestatus"
 
 #: bookwyrm/templates/settings/celery.html:14
 msgid "You can set up monitoring to check if Celery is running by querying:"
@@ -6031,7 +6031,7 @@ msgid "BookWyrm's source code is freely available. You can contribute or report 
 msgstr "BookWyrm's källkod är fritt tillgänglig. Du kan bidra eller rapportera fel på <a href=\"https://github.com/bookwyrm-social/bookwyrm\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">GitHub</a>."
 
 #: bookwyrm/templates/snippets/form_rate_stars.html:20
-#: bookwyrm/templates/snippets/stars.html:13
+#: bookwyrm/templates/snippets/stars.html:23
 msgid "No rating"
 msgstr "Inget betyg"
 
@@ -6244,14 +6244,11 @@ msgid "Want to read"
 msgstr "Vill läsa"
 
 #: bookwyrm/templates/snippets/shelf_selector.html:81
+#: bookwyrm/templates/snippets/shelf_selector.html:95
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_dropdown_options.html:73
 #, python-format
 msgid "Remove from %(name)s"
 msgstr "Ta bort från %(name)s"
-
-#: bookwyrm/templates/snippets/shelf_selector.html:94
-msgid "Remove from"
-msgstr "Ta bort från"
 
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_dropdown.html:5
 msgid "More shelves"
@@ -6278,7 +6275,7 @@ msgstr "(Sida %(page)s"
 #: bookwyrm/templates/snippets/status/content_status.html:102
 #, python-format
 msgid "%(endpage)s"
-msgstr ""
+msgstr "%(endpage)s"
 
 #: bookwyrm/templates/snippets/status/content_status.html:104
 #, python-format
@@ -6634,17 +6631,17 @@ msgstr "%(title)s: %(subtitle)s"
 msgid "Status updates from {obj.display_name}"
 msgstr "Status-uppdateringar från {obj.display_name}"
 
-#: bookwyrm/views/rss_feed.py:72
+#: bookwyrm/views/rss_feed.py:80
 #, python-brace-format
 msgid "Reviews from {obj.display_name}"
 msgstr "Recensioner från {obj.display_name}"
 
-#: bookwyrm/views/rss_feed.py:110
+#: bookwyrm/views/rss_feed.py:122
 #, python-brace-format
 msgid "Quotes from {obj.display_name}"
 msgstr "Citat från {obj.display_name}"
 
-#: bookwyrm/views/rss_feed.py:148
+#: bookwyrm/views/rss_feed.py:164
 #, python-brace-format
 msgid "Comments from {obj.display_name}"
 msgstr "Kommentarer från {obj.display_name}"
