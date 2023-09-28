@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-09-27 01:11+0000\n"
-"PO-Revision-Date: 2023-09-28 06:50\n"
+"PO-Revision-Date: 2023-09-28 08:16\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Danish\n"
 "Language: da\n"
@@ -330,15 +330,15 @@ msgstr "Suspenderet bruger"
 
 #: bookwyrm/models/report.py:90
 msgid "Un-suspended user"
-msgstr ""
+msgstr "Ikke-suspenderet bruger"
 
 #: bookwyrm/models/report.py:91
 msgid "Changed user permission level"
-msgstr ""
+msgstr "Brugertilladelsesniveau ændret"
 
 #: bookwyrm/models/report.py:92
 msgid "Deleted user account"
-msgstr ""
+msgstr "Brugerkonto slettet"
 
 #: bookwyrm/models/report.py:93
 msgid "Blocked domain"
@@ -984,13 +984,13 @@ msgstr[1] ""
 
 #: bookwyrm/templates/book/book.html:209
 msgid "Add Description"
-msgstr ""
+msgstr "Tilføj beskrivelse"
 
 #: bookwyrm/templates/book/book.html:216
 #: bookwyrm/templates/book/edit/edit_book_form.html:53
 #: bookwyrm/templates/lists/form.html:13 bookwyrm/templates/shelf/form.html:17
 msgid "Description:"
-msgstr ""
+msgstr "Beskrivelse:"
 
 #: bookwyrm/templates/book/book.html:232
 #, python-format
@@ -2268,7 +2268,7 @@ msgstr ""
 
 #: bookwyrm/templates/groups/user_groups.html:35
 msgid "No groups found."
-msgstr ""
+msgstr "Ingen grupper fundet."
 
 #: bookwyrm/templates/guided_tour/book.html:10
 msgid "This is home page of a book. Let's see what you can do while you're here!"
@@ -2812,12 +2812,14 @@ msgid_plural "\n"
 "                        Currently, you are allowed to import %(import_size_limit)s books every %(import_limit_reset)s days.\n"
 "                    "
 msgstr[0] ""
-msgstr[1] ""
+msgstr[1] "\n"
+"                        I øjeblikket har du lov til at importere %(import_size_limit)s bøger hver %(import_limit_reset)s. dag.\n"
+"                    "
 
 #: bookwyrm/templates/import/import.html:27
 #, python-format
 msgid "You have %(display_left)s left."
-msgstr ""
+msgstr "Du har %(display_left)s tilbage."
 
 #: bookwyrm/templates/import/import.html:34
 #, python-format
@@ -3483,7 +3485,7 @@ msgstr ""
 
 #: bookwyrm/templates/lists/list_items.html:50
 msgid "No lists found."
-msgstr ""
+msgstr "Ingen lister fundet."
 
 #: bookwyrm/templates/lists/lists.html:14 bookwyrm/templates/user/lists.html:14
 msgid "Your Lists"
@@ -4581,7 +4583,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/celery.html:38
 msgid "Inbox"
-msgstr ""
+msgstr "Indbakke"
 
 #: bookwyrm/templates/settings/celery.html:51
 msgid "Import triggered"
