@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-09-27 01:11+0000\n"
-"PO-Revision-Date: 2023-09-28 00:08\n"
+"PO-Revision-Date: 2023-09-28 14:47\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Spanish\n"
 "Language: es\n"
@@ -310,47 +310,47 @@ msgstr "Comentario"
 
 #: bookwyrm/models/report.py:85
 msgid "Resolved report"
-msgstr ""
+msgstr "Reporte resuelto"
 
 #: bookwyrm/models/report.py:86
 msgid "Re-opened report"
-msgstr ""
+msgstr "Reporte reabierto"
 
 #: bookwyrm/models/report.py:87
 msgid "Messaged reporter"
-msgstr ""
+msgstr "Denunciante mensajeado"
 
 #: bookwyrm/models/report.py:88
 msgid "Messaged reported user"
-msgstr ""
+msgstr "Usuario denunciado mensajeado"
 
 #: bookwyrm/models/report.py:89
 msgid "Suspended user"
-msgstr ""
+msgstr "Usuario suspendido"
 
 #: bookwyrm/models/report.py:90
 msgid "Un-suspended user"
-msgstr ""
+msgstr "Usuario no suspendido"
 
 #: bookwyrm/models/report.py:91
 msgid "Changed user permission level"
-msgstr ""
+msgstr "Nivel de permisos de usuario cambiado"
 
 #: bookwyrm/models/report.py:92
 msgid "Deleted user account"
-msgstr ""
+msgstr "Cuenta de usuario eliminada"
 
 #: bookwyrm/models/report.py:93
 msgid "Blocked domain"
-msgstr ""
+msgstr "Dominio bloqueado"
 
 #: bookwyrm/models/report.py:94
 msgid "Approved domain"
-msgstr ""
+msgstr "Dominio aprobado"
 
 #: bookwyrm/models/report.py:95
 msgid "Deleted item"
-msgstr ""
+msgstr "Elemento eliminado"
 
 #: bookwyrm/models/user.py:32 bookwyrm/templates/book/book.html:307
 msgid "Reviews"
@@ -434,7 +434,7 @@ msgstr "Lietuvių (Lituano)"
 
 #: bookwyrm/settings.py:307
 msgid "Nederlands (Dutch)"
-msgstr ""
+msgstr "Países bajos (holandés)"
 
 #: bookwyrm/settings.py:308
 msgid "Norsk (Norwegian)"
@@ -1076,11 +1076,11 @@ msgstr "ISBN:"
 #: bookwyrm/templates/book/book_identifiers.html:12
 #: bookwyrm/templates/book/book_identifiers.html:13
 msgid "Copy ISBN"
-msgstr ""
+msgstr "Copiar ISBN"
 
 #: bookwyrm/templates/book/book_identifiers.html:16
 msgid "Copied ISBN!"
-msgstr ""
+msgstr "¡ISBN copiado!"
 
 #: bookwyrm/templates/book/book_identifiers.html:23
 #: bookwyrm/templates/book/edit/edit_book_form.html:352
@@ -1245,7 +1245,7 @@ msgstr "Título:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:35
 msgid "Sort Title:"
-msgstr ""
+msgstr "Ordenar por título:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:44
 msgid "Subtitle:"
@@ -2268,7 +2268,7 @@ msgstr "Gestor"
 
 #: bookwyrm/templates/groups/user_groups.html:35
 msgid "No groups found."
-msgstr ""
+msgstr "No se encontraron grupos."
 
 #: bookwyrm/templates/guided_tour/book.html:10
 msgid "This is home page of a book. Let's see what you can do while you're here!"
@@ -2811,13 +2811,17 @@ msgid "\n"
 msgid_plural "\n"
 "                        Currently, you are allowed to import %(import_size_limit)s books every %(import_limit_reset)s days.\n"
 "                    "
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "\n"
+"                        Actualmente, puedes importar %(display_size)s libros cada %(import_limit_reset)s días.\n"
+"                    "
+msgstr[1] "\n"
+"                        Actualmente, puedes importar %(import_size_limit)s libros cada %(import_limit_reset)s días.\n"
+"                    "
 
 #: bookwyrm/templates/import/import.html:27
 #, python-format
 msgid "You have %(display_left)s left."
-msgstr ""
+msgstr "Te quedan %(display_left)s."
 
 #: bookwyrm/templates/import/import.html:34
 #, python-format
@@ -3483,7 +3487,7 @@ msgstr "Guardado"
 
 #: bookwyrm/templates/lists/list_items.html:50
 msgid "No lists found."
-msgstr ""
+msgstr "No se encontraron listas."
 
 #: bookwyrm/templates/lists/lists.html:14 bookwyrm/templates/user/lists.html:14
 msgid "Your Lists"
@@ -4575,7 +4579,7 @@ msgstr "Colas"
 
 #: bookwyrm/templates/settings/celery.html:26
 msgid "Streams"
-msgstr ""
+msgstr "Transmisiones"
 
 #: bookwyrm/templates/settings/celery.html:32
 msgid "Broadcasts"
@@ -4583,15 +4587,15 @@ msgstr "Transmisiones"
 
 #: bookwyrm/templates/settings/celery.html:38
 msgid "Inbox"
-msgstr ""
+msgstr "Bandeja de entrada"
 
 #: bookwyrm/templates/settings/celery.html:51
 msgid "Import triggered"
-msgstr ""
+msgstr "Importación activada"
 
 #: bookwyrm/templates/settings/celery.html:57
 msgid "Connectors"
-msgstr ""
+msgstr "Conectores"
 
 #: bookwyrm/templates/settings/celery.html:64
 #: bookwyrm/templates/settings/site.html:91
@@ -4600,7 +4604,7 @@ msgstr "Imagenes"
 
 #: bookwyrm/templates/settings/celery.html:70
 msgid "Suggested Users"
-msgstr ""
+msgstr "Usuarios sugeridos"
 
 #: bookwyrm/templates/settings/celery.html:83
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:43
@@ -4610,7 +4614,7 @@ msgstr "Correo electronico"
 
 #: bookwyrm/templates/settings/celery.html:89
 msgid "Misc"
-msgstr ""
+msgstr "Miscelánea"
 
 #: bookwyrm/templates/settings/celery.html:96
 msgid "Low priority"
@@ -5424,22 +5428,22 @@ msgstr "Enlaces denunciados"
 
 #: bookwyrm/templates/settings/reports/report.html:66
 msgid "Moderation Activity"
-msgstr ""
+msgstr "Actividad de moderación"
 
 #: bookwyrm/templates/settings/reports/report.html:73
 #, python-format
 msgid "<a href=\"%(user_link)s\">%(user)s</a> opened this report"
-msgstr ""
+msgstr "<a href=\"%(user_link)s\">%(user)s</a> abrió este informe"
 
 #: bookwyrm/templates/settings/reports/report.html:86
 #, python-format
 msgid "<a href=\"%(user_link)s\">%(user)s</a> commented on this report:"
-msgstr ""
+msgstr "<a href=\"%(user_link)s\">%(user)s</a> comentó en este informe:"
 
 #: bookwyrm/templates/settings/reports/report.html:90
 #, python-format
 msgid "<a href=\"%(user_link)s\">%(user)s</a> took an action on this report:"
-msgstr ""
+msgstr "<a href=\"%(user_link)s\">%(user)s</a> tomó una acción en este informe:"
 
 #: bookwyrm/templates/settings/reports/report_header.html:6
 #, python-format
@@ -5463,7 +5467,7 @@ msgstr "Reporte #%(report_id)s: Usuario @%(username)s"
 
 #: bookwyrm/templates/settings/reports/report_links_table.html:19
 msgid "Approve domain"
-msgstr ""
+msgstr "Dominio aprobado"
 
 #: bookwyrm/templates/settings/reports/report_links_table.html:26
 msgid "Block domain"
@@ -6053,7 +6057,7 @@ msgstr "Comentario:"
 
 #: bookwyrm/templates/snippets/create_status/post_options_block.html:19
 msgid "Update"
-msgstr ""
+msgstr "Actualizar"
 
 #: bookwyrm/templates/snippets/create_status/post_options_block.html:21
 msgid "Post"
@@ -6711,8 +6715,8 @@ msgstr "Unido %(date)s"
 #, python-format
 msgid "%(display_count)s follower"
 msgid_plural "%(display_count)s followers"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(display_count)s seguidor"
+msgstr[1] "%(display_count)s seguidores"
 
 #: bookwyrm/templates/user/user_preview.html:31
 #, python-format
