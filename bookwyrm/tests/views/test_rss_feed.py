@@ -127,3 +127,26 @@ class RssFeedView(TestCase):
         self.assertEqual(result.status_code, 200)
 
         self.assertIn(b"a sickening sense", result.content)
+
+    def test_rss_shelf(self, *_):
+        """load the rss feed of a shelf"""
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
+            # make the shelf
+            self.shelf = models.Shelf.objects.create(
+                name="Test Shelf", identifier="test-shelf", user=self.local_user
+            )
+            # put the shelf on the book
+            models.ShelfBook.objects.create(
+                book=self.book,
+                shelf=self.shelf,
+                user=self.local_user,
+            )
+        models.SiteSettings.objects.create()
+        view = rss_feed.RssShelfFeed()
+        request = self.factory.get("/user/books/test-shelf/rss")
+        request.user = self.local_user
+        result = view(
+            request, username=self.local_user.username, shelf_identifier="test-shelf"
+        )
+        self.assertEqual(result.status_code, 200)
+        self.assertIn(b"Example Edition", result.content)
