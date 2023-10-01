@@ -132,13 +132,13 @@ class RssFeedView(TestCase):
         """load the rss feed of a shelf"""
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             # make the shelf
-            self.shelf = models.Shelf.objects.create(
+            shelf = models.Shelf.objects.create(
                 name="Test Shelf", identifier="test-shelf", user=self.local_user
             )
             # put the shelf on the book
             models.ShelfBook.objects.create(
                 book=self.book,
-                shelf=self.shelf,
+                shelf=shelf,
                 user=self.local_user,
             )
         models.SiteSettings.objects.create()
