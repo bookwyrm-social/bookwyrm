@@ -228,6 +228,7 @@ class RssShelfFeed(Feed):
         return item.published_date
 
     def description(self, obj):
+        """description of the shelf including the shelf name and user."""
         # if there's a description, lets add it. Not everyone puts a description in.
         desc = ""
         if obj.description:
