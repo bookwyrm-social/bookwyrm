@@ -91,18 +91,15 @@ def book_search(request):
 
 
 def user_search(request):
-    """cool kids members only user search"""
+    """user search: search for a user"""
     viewer = request.user
     query = request.GET.get("q")
     query = query.strip()
     data = {"type": "user", "query": query}
-    # logged out viewers can't search users
-    if not viewer.is_authenticated:
-        return TemplateResponse(request, "search/user.html", data)
 
     # use webfinger for mastodon style account@domain.com username to load the user if
     # they don't exist locally (handle_remote_webfinger will check the db)
-    if re.match(regex.FULL_USERNAME, query):
+    if re.match(regex.FULL_USERNAME, query) and viewer.is_authenticated:
         handle_remote_webfinger(query)
 
     results = (
@@ -118,6 +115,11 @@ def user_search(request):
         )
         .order_by("-similarity")
     )
+
+    # don't expose remote users
+    if not viewer.is_authenticated:
+        results = results.filter(local=True)
+
     paginated = Paginator(results, PAGE_LENGTH)
     page = paginated.get_page(request.GET.get("page"))
     data["results"] = page
