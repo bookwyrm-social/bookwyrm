@@ -156,7 +156,7 @@ class Views(TestCase):
         response = view(request)
 
         validate_html(response.render())
-        self.assertFalse("results" in response.context_data)
+        self.assertTrue("results" in response.context_data)
 
     def test_search_lists(self):
         """searches remote connectors"""
