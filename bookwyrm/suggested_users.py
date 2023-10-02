@@ -254,7 +254,8 @@ def rerank_suggestions_task(user_id):
 def rerank_user_task(user_id, update_only=False):
     """do the hard work in celery"""
     user = models.User.objects.get(id=user_id)
-    suggested_users.rerank_obj(user, update_only=update_only)
+    if user:
+        suggested_users.rerank_obj(user, update_only=update_only)
 
 
 @app.task(queue=SUGGESTED_USERS)

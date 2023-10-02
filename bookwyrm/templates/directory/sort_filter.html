@@ -6,8 +6,8 @@
 <div class="control">
     <div class="select">
         <select name="sort" id="id_sort">
-            <option value="recent" {% if request.GET.sort == "recent" %}selected{% endif %}>{% trans "Recently active" %}</option>
-            <option value="suggested" {% if request.GET.sort == "suggested" %}selected{% endif %}>{% trans "Suggested" %}</option>
+            <option value="recent" {% if sort == "recent" %}selected{% endif %}>{% trans "Recently active" %}</option>
+            <option value="suggested" {% if sort == "suggested" %}selected{% endif %}>{% trans "Suggested" %}</option>
         </select>
     </div>
 </div>

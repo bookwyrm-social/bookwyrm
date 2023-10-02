@@ -1,5 +1,7 @@
 """ bookwyrm settings and configuration """
 import os
+from typing import AnyStr
+
 from environs import Env
 
 import requests
@@ -12,7 +14,7 @@ from django.core.exceptions import ImproperlyConfigured
 env = Env()
 env.read_env()
 DOMAIN = env("DOMAIN")
-VERSION = "0.6.4"
+VERSION = "0.6.6"
 
 RELEASE_API = env(
     "RELEASE_API",
@@ -22,7 +24,7 @@ RELEASE_API = env(
 PAGE_LENGTH = env.int("PAGE_LENGTH", 15)
 DEFAULT_LANGUAGE = env("DEFAULT_LANGUAGE", "English")
 
-JS_CACHE = "b972a43c"
+JS_CACHE = "ac315a3b"
 
 # email
 EMAIL_BACKEND = env("EMAIL_BACKEND", "django.core.mail.backends.smtp.EmailBackend")
@@ -37,7 +39,7 @@ EMAIL_SENDER_DOMAIN = env("EMAIL_SENDER_DOMAIN", DOMAIN)
 EMAIL_SENDER = f"{EMAIL_SENDER_NAME}@{EMAIL_SENDER_DOMAIN}"
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR: AnyStr = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 LOCALE_PATHS = [
     os.path.join(BASE_DIR, "locale"),
 ]
@@ -315,6 +317,7 @@ LANGUAGES = [
 
 LANGUAGE_ARTICLES = {
     "English": {"the", "a", "an"},
+    "Español (Spanish)": {"un", "una", "unos", "unas", "el", "la", "los", "las"},
 }
 
 TIME_ZONE = "UTC"

@@ -54,10 +54,10 @@ ImportStatuses = [
 class ImportJob(models.Model):
     """entry for a specific request for book data import"""
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user: User = models.ForeignKey(User, on_delete=models.CASCADE)
     created_date = models.DateTimeField(default=timezone.now)
     updated_date = models.DateTimeField(default=timezone.now)
-    include_reviews = models.BooleanField(default=True)
+    include_reviews: bool = models.BooleanField(default=True)
     mappings = models.JSONField()
     source = models.CharField(max_length=100)
     privacy = models.CharField(max_length=255, default="public", choices=PrivacyLevels)
@@ -76,7 +76,7 @@ class ImportJob(models.Model):
 
         self.save(update_fields=["task_id"])
 
-    def complete_job(self):
+    def complete_job(self) -> None:
         """Report that the job has completed"""
         self.status = "complete"
         self.complete = True
