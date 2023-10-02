@@ -18,7 +18,7 @@
         {% if import_size_limit and import_limit_reset %}
             <div class="notification">
                 <p>
-                    {% blocktrans count days=import_limit_reset with display_size=import_size_limit|intcomma %}
+                    {% blocktrans trimmed count days=import_limit_reset with display_size=import_size_limit|intcomma %}
                         Currently, you are allowed to import {{ display_size }} books every {{ import_limit_reset }} day.
                     {% plural %}
                         Currently, you are allowed to import {{ import_size_limit }} books every {{ import_limit_reset }} days.
