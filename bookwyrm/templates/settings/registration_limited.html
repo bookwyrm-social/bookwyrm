@@ -45,7 +45,7 @@
             {% include 'snippets/form_errors.html' with errors_list=form.invite_request_text.errors id="desc_invite_request_text" %}
         </div>
         <div class="field">
-            <label class="label" for="id_invite_requests_question">
+            <label class="label">
                 {{ form.invite_request_question }}
                 {% trans "Set a question for invite requests" %}
             </label>
