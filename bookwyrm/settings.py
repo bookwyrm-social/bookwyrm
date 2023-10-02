@@ -317,6 +317,7 @@ LANGUAGES = [
 
 LANGUAGE_ARTICLES = {
     "English": {"the", "a", "an"},
+    "Español (Spanish)": {"un", "una", "unos", "unas", "el", "la", "los", "las"},
 }
 
 TIME_ZONE = "UTC"
