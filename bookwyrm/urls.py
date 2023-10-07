@@ -35,7 +35,9 @@ urlpatterns = [
     ),
     path(
         "manifest.json",
-        TemplateView.as_view(template_name="manifest.json", content_type="application/json"),
+        TemplateView.as_view(
+            template_name="manifest.json", content_type="application/json"
+        ),
     ),
     # federation endpoints
     re_path(r"^inbox/?$", views.Inbox.as_view(), name="inbox"),
