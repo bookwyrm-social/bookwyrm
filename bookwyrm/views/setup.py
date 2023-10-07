@@ -9,6 +9,7 @@ from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.views import View
 
+from bookwyrm.activitypub import get_representative
 from bookwyrm import forms, models
 from bookwyrm import settings
 from bookwyrm.utils import regex
@@ -96,4 +97,5 @@ class CreateAdmin(View):
         login(request, user)
         site.install_mode = False
         site.save()
+        get_representative()  # create the instance user
         return redirect("settings-site")

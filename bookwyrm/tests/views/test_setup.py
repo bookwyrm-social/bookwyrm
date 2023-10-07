@@ -72,7 +72,7 @@ class SetupViews(TestCase):
         self.site.refresh_from_db()
         self.assertFalse(self.site.install_mode)
 
-        user = models.User.objects.get()
+        user = models.User.objects.first()
         self.assertTrue(user.is_active)
         self.assertTrue(user.is_superuser)
         self.assertTrue(user.is_staff)
