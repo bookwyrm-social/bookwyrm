@@ -436,6 +436,15 @@ http://www.fish.com/"""
             f'<a href="{url}">www.fish.com/</a>.',
         )
 
+    def test_format_links_punctuation_parens(self, *_):
+        """ignore trailing punctuation and brackets combined"""
+        # Period at the end, wrapped in brackets.
+        url = "http://www.fish.com"
+        self.assertEqual(
+            views.status.format_links(f"({url})."),
+            f'(<a href="{url}">www.fish.com</a>).',
+        )
+
     def test_format_links_special_chars(self, *_):
         """find and format urls into a tags"""
         url = "https://archive.org/details/dli.granth.72113/page/n25/mode/2up"

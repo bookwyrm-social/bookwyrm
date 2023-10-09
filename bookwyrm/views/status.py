@@ -304,16 +304,18 @@ def format_links(content):
     for potential_link in split_content:
         if not potential_link:
             continue
+
+        # FIXME: allow for multiple punctuation characters, e.g. `...` and `!?`.
+        ends_with_punctuation = _ends_with_punctuation(potential_link)
+        if ends_with_punctuation:
+            punctuation_glyph = potential_link[-1]
+            potential_link = potential_link[0:-1]
+
         wrapped = _wrapped(potential_link)
         if wrapped:
             wrapper_close = potential_link[-1]
             formatted_content += potential_link[0]
             potential_link = potential_link[1:-1]
-
-        ends_with_punctuation = _ends_with_punctuation(potential_link)
-        if ends_with_punctuation:
-            punctuation_glyph = potential_link[-1]
-            potential_link = potential_link[0:-1]
 
         try:
             # raises an error on anything that's not a valid link
