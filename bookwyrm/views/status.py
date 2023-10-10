@@ -344,7 +344,7 @@ def format_links(content):
 
 def _wrapped(text):
     """check if a line of text is wrapped"""
-    wrappers = [("(", ")"), ("[", "]"), ("{", "}")]
+    wrappers = ["()", "[]", "{}"]
     for wrapper in wrappers:
         if text[0] == wrapper[0] and text[-1] == wrapper[-1]:
             return True
