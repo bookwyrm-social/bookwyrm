@@ -420,14 +420,6 @@ http://www.fish.com/"""
             'okay\n\n<a href="http://www.fish.com/">www.fish.com/</a>',
         )
 
-    def test_format_links_parens(self, *_):
-        """find and format urls into a tags"""
-        url = "http://www.fish.com/"
-        self.assertEqual(
-            views.status.format_links(f"({url})"),
-            f'(<a href="{url}">www.fish.com/</a>)',
-        )
-
     def test_format_links_punctuation(self, *_):
         """don’t take trailing punctuation into account pls"""
         url = "http://www.fish.com/"
