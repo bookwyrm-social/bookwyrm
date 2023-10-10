@@ -427,6 +427,10 @@ http://www.fish.com/"""
             views.status.format_links(f"{url}."),
             f'<a href="{url}">www.fish.com/</a>.',
         )
+        self.assertEqual(
+            views.status.format_links(f"{url}!?!"),
+            f'<a href="{url}">www.fish.com/</a>!?!',
+        )
 
     def test_format_links_punctuation_parens(self, *_):
         """ignore trailing punctuation and brackets combined"""
