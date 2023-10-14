@@ -32,7 +32,7 @@ class TabGroup {
             left: 37,
             up: 38,
             right: 39,
-            down: 40,
+            down: 40
         };
     }
 
@@ -42,7 +42,7 @@ class TabGroup {
             37: -1,
             38: -1,
             39: 1,
-            40: 1,
+            40: 1
         };
     }
 

@@ -352,8 +352,8 @@ let BookWyrm = new (class {
             method: "POST",
             body: new FormData(form),
             headers: {
-                Accept: "application/json",
-            },
+                Accept: "application/json"
+            }
         });
     }
 
@@ -620,7 +620,7 @@ let BookWyrm = new (class {
                 'input:not([type="hidden"]):not([disabled])',
                 "select:not([disabled])",
                 "details:not([disabled])",
-                '[tabindex]:not([tabindex="-1"]):not([disabled])',
+                '[tabindex]:not([tabindex="-1"]):not([disabled])'
             ].join(",")
         );
         const firstFocusableEl = focusableEls[0];
@@ -675,8 +675,8 @@ let BookWyrm = new (class {
                         target: scannerNode,
                         constraints: {
                             facingMode: "environment",
-                            deviceId: cameraId,
-                        },
+                            deviceId: cameraId
+                        }
                     },
                     decoder: {
                         readers: [
@@ -684,12 +684,12 @@ let BookWyrm = new (class {
                             {
                                 format: "ean_reader",
                                 config: {
-                                    supplements: ["ean_2_reader", "ean_5_reader"],
-                                },
-                            },
+                                    supplements: ["ean_2_reader", "ean_5_reader"]
+                                }
+                            }
                         ],
-                        multiple: false,
-                    },
+                        multiple: false
+                    }
                 },
                 (err) => {
                     if (err) {
@@ -756,7 +756,7 @@ let BookWyrm = new (class {
                         .forEach((box) => {
                             Quagga.ImageDebug.drawPath(box, { x: 0, y: 1 }, drawingCtx, {
                                 color: "green",
-                                lineWidth: 2,
+                                lineWidth: 2
                             });
                         });
                 }
@@ -764,14 +764,14 @@ let BookWyrm = new (class {
                 if (result.box) {
                     Quagga.ImageDebug.drawPath(result.box, { x: 0, y: 1 }, drawingCtx, {
                         color: "#00F",
-                        lineWidth: 2,
+                        lineWidth: 2
                     });
                 }
 
                 if (result.codeResult && result.codeResult.code) {
                     Quagga.ImageDebug.drawPath(result.line, { x: "x", y: "y" }, drawingCtx, {
                         color: "red",
-                        lineWidth: 3,
+                        lineWidth: 3
                     });
                 }
             }
