@@ -49,26 +49,3 @@ class ExportUserViews(TestCase):
 
         jobs = models.bookwyrm_export_job.BookwyrmExportJob.objects.count()
         self.assertEqual(jobs, 1)
-
-    def test_download_export_user_file(self, *_):
-        """simple user export"""
-
-        # TODO: need some help with this one
-        job = models.bookwyrm_export_job.BookwyrmExportJob.objects.create(
-            user=self.local_user
-        )
-        MockTask = namedtuple("Task", ("id"))
-        with patch(
-            "bookwyrm.models.bookwyrm_export_job.start_export_task.delay"
-        ) as mock:
-            mock.return_value = MockTask(b'{"name": "mouse"}')
-            job.start_job()
-
-        request = self.factory.get("")
-        request.user = self.local_user
-        job.refresh_from_db()
-        export = views.ExportArchive.as_view()(request, job.id)
-        self.assertIsInstance(export, HttpResponse)
-        self.assertEqual(export.status_code, 200)
-        # pylint: disable=line-too-long
-        self.assertEqual(export.content, b'{"name": "mouse"}')

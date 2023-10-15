@@ -153,19 +153,11 @@ def json_export(user):
         comments = models.Comment.objects.filter(user=user, book=book["id"]).distinct()
 
         book["comments"] = list(comments.values())
-        logger.error("FINAL COMMENTS")
-        logger.error(book["comments"])
 
         # quotes
         quotes = models.Quotation.objects.filter(user=user, book=book["id"]).distinct()
-        # quote_statuses = models.Status.objects.filter(
-        #     id__in=quotes, user=kwargs["user"]
-        # ).distinct()
 
         book["quotes"] = list(quotes.values())
-
-        logger.error("FINAL QUOTES")
-        logger.error(book["quotes"])
 
         # append everything
         final_books.append(book)
