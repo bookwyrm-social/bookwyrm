@@ -186,8 +186,6 @@
                     itemtype="https://schema.org/AggregateRating"
                 >
                     <meta itemprop="ratingValue" content="{{ rating|floatformat }}">
-                    {# @todo Is it possible to not hard-code the value? #}
-                    <meta itemprop="bestRating" content="5">
                     <meta itemprop="reviewCount" content="{{ review_count }}">
 
                     <span>
