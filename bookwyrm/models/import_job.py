@@ -1,4 +1,5 @@
 """ track progress of goodreads imports """
+from datetime import datetime
 import math
 import re
 import dateutil.parser
@@ -260,17 +261,14 @@ class ImportItem(models.Model):
             return None
 
     def _parse_datefield(self, field, /):
-        if self.normalized_data.get(field):
-            parsed_date_added = dateutil.parser.parse(
-                self.normalized_data.get(field)
-            )
+        if not (date := self.normalized_data.get(field)):
+            return None
 
-            if timezone.is_aware(parsed_date_added):
-                # Keep timezone if import already had one
-                return parsed_date_added
+        defaults = datetime(1970, 1, 1)  # "2022-10" => "2022-10-01"
+        parsed = dateutil.parser.parse(date, default=defaults)
 
-            return timezone.make_aware(parsed_date_added)
-        return None
+        # Keep timezone if import already had one, else use default.
+        return parsed if timezone.is_aware(parsed) else timezone.make_aware(parsed)
 
     @property
     def date_added(self):
