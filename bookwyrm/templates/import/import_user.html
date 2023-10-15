@@ -1,0 +1,163 @@
+{% extends 'layout.html' %}
+{% load i18n %}
+{% load humanize %}
+
+{% block title %}{% trans "Import User" %}{% endblock %}
+
+{% block content %}
+<div class="block">
+    <h1 class="title">{% trans "Import User" %}</h1>
+
+    {% if invalid %}
+    <div class="notification is-danger">
+        {% trans "Not a valid JSON file" %}
+    </div>
+    {% endif %}
+
+
+        {% if import_size_limit and import_limit_reset %}
+            <div class="notification">
+                <p>{% blocktrans %}Currently you are allowed to import one user every {{ user_import_limit_reset }} days.{% endblocktrans %}</p>
+                <p>{% blocktrans %}You have {{ allowed_imports }} left.{% endblocktrans %}</p>
+            </div>
+        {% endif %}
+        {% if recent_avg_hours or recent_avg_minutes %}
+        <div class="notification">
+            <p>
+            {% if recent_avg_hours %}
+                {% blocktrans trimmed with hours=recent_avg_hours|floatformat:0|intcomma %}
+                    On average, recent imports have taken {{ hours }} hours.
+                {% endblocktrans %}
+            {% else %}
+                {% blocktrans trimmed with minutes=recent_avg_minutes|floatformat:0|intcomma %}
+                    On average, recent imports have taken {{ minutes }} minutes.
+                {% endblocktrans %}
+            {% endif %}
+            </p>
+        </div>
+        {% endif %}
+
+        <form class="box" name="import-user" action="/user-import" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="columns">
+            <div class="column is-half">
+                <div class="field">
+                    <label class="label" for="id_archive_file">{% trans "Data file:" %}</label>
+                    {{ import_form.archive_file }}
+                </div>
+                <div>
+                    <p class="block"> {% trans "Importing this file will overwrite any data you currently have saved." %}</p>
+                    <p class="block">{% trans "Deselect any data you do not wish to include in your import. Books will always be imported" %}</p>
+                </div>
+            </div>
+
+            <div class="column is-half">
+                <div class="field">
+                    <label class="label">
+                        <input type="checkbox" name="include_user_profile" checked> {% trans "Include user profile" %}
+                    </label>
+                    <label class="label">
+                        <input type="checkbox" name="include_user_settings" checked> {% trans "Include user settings" %}
+                    </label>
+                    <label class="label">
+                        <input type="checkbox" name="include_goals" checked> {% trans "Include reading goals" %}
+                    </label>
+                    <label class="label">
+                        <input type="checkbox" name="include_shelves" checked> {% trans "Include shelves" %}
+                    </label>
+                    <label class="label">
+                        <input type="checkbox" name="include_readthroughs" checked> {% trans "Include 'readthroughs'" %}
+                    </label>
+                    <label class="label">
+                        <input type="checkbox" name="include_reviews" checked> {% trans "Include book reviews" %}
+                    </label>
+                    <label class="label">
+                        <input type="checkbox" name="include_quotes" checked> {% trans "Include quotations" %}
+                    </label>
+                    <label class="label">
+                        <input type="checkbox" name="include_comments" checked> {% trans "Include comments about books" %}
+                    </label>
+                    <label class="label">
+                        <input type="checkbox" name="include_lists" checked> {% trans "Include book lists" %}
+                    </label>
+                    <label class="label">
+                        <input type="checkbox" name="include_saved_lists" checked> {% trans "Include saved lists" %}
+                    </label>
+                    <label class="label">
+                        <input type="checkbox" name="include_follows" checked> {% trans "Include follows" %}
+                    </label>
+                    <label class="label">
+                        <input type="checkbox" name="include_blocks" checked> {% trans "Include user blocks" %}
+                    </label>
+                </div>
+            </div>
+            </div>
+            {% if not import_limit_reset and not import_size_limit or allowed_imports > 0 %}
+                <button class="button is-primary" type="submit">{% trans "Import" %}</button>
+            {% else %}
+                <button class="button is-primary is-disabled" type="submit">{% trans "Import" %}</button>
+                <p>{% trans "You've reached the import limit." %}</p>
+            {% endif%}
+        </form>
+
+</div>
+
+<div class="content block">
+    <h2 class="title">{% trans "Recent Imports" %}</h2>
+    <div class="table-container">
+        <table class="table is-striped is-fullwidth">
+            <tr>
+                <th>
+                    {% trans "Date Created" %}
+                </th>
+                <th>
+                    {% trans "Last Updated" %}
+                </th>
+                <th>
+                    {% trans "Status" %}
+                </th>
+            </tr>
+            {% if not jobs %}
+            <tr>
+                <td colspan="4">
+                    <em>{% trans "No recent imports" %}</em>
+                </td>
+            </tr>
+            {% endif %}
+            {% for job in jobs %}
+            <tr>
+                <td>
+                    <p>{{ job.created_date }}</p>
+                </td>
+                <td>{{ job.updated_date }}</td>
+                <td>
+                    <span
+                        {% if job.status == "stopped" %}
+                        class="tag is-danger"
+                        {% elif job.status == "pending" %}
+                        class="tag is-warning"
+                        {% elif job.complete %}
+                        class="tag"
+                        {% else %}
+                        class="tag is-success"
+                        {% endif %}
+                    >
+                        {% if job.status %}
+                        {{ job.status }}
+                            {{ job.status_display }}
+                        {% elif job.complete %}
+                            {% trans "Complete" %}
+                        {% else %}
+                            {% trans "Active" %}
+                        {% endif %}
+                    </span>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    {% include 'snippets/pagination.html' with page=jobs path=request.path %}
+</div>
+{% endblock %}
