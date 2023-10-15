@@ -259,12 +259,10 @@ class ImportItem(models.Model):
         except ValueError:
             return None
 
-    @property
-    def date_added(self):
-        """when the book was added to this dataset"""
-        if self.normalized_data.get("date_added"):
+    def _parse_datefield(self, field, /):
+        if self.normalized_data.get(field):
             parsed_date_added = dateutil.parser.parse(
-                self.normalized_data.get("date_added")
+                self.normalized_data.get(field)
             )
 
             if timezone.is_aware(parsed_date_added):
@@ -275,22 +273,19 @@ class ImportItem(models.Model):
         return None
 
     @property
+    def date_added(self):
+        """when the book was added to this dataset"""
+        return self._parse_datefield("date_added")
+
+    @property
     def date_started(self):
         """when the book was started"""
-        if self.normalized_data.get("date_started"):
-            return timezone.make_aware(
-                dateutil.parser.parse(self.normalized_data.get("date_started"))
-            )
-        return None
+        return self._parse_datefield("date_started")
 
     @property
     def date_read(self):
         """the date a book was completed"""
-        if self.normalized_data.get("date_finished"):
-            return timezone.make_aware(
-                dateutil.parser.parse(self.normalized_data.get("date_finished"))
-            )
-        return None
+        return self._parse_datefield("date_finished")
 
     @property
     def reads(self):
