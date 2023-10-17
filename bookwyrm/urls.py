@@ -34,6 +34,12 @@ urlpatterns = [
         "robots.txt",
         TemplateView.as_view(template_name="robots.txt", content_type="text/plain"),
     ),
+    path(
+        "manifest.json",
+        TemplateView.as_view(
+            template_name="manifest.json", content_type="application/json"
+        ),
+    ),
     # federation endpoints
     re_path(r"^inbox/?$", views.Inbox.as_view(), name="inbox"),
     re_path(rf"{LOCAL_USER_PATH}/inbox/?$", views.Inbox.as_view(), name="user_inbox"),
