@@ -40,16 +40,13 @@
     </p>
 {% endif %}
 
-{% with date=book.published_date|naturalday publisher=book.publishers|join:', ' %}
-{% if date or book.first_published_date or book.publishers %}
-{% if date or book.first_published_date %}
+{% if book.published_date or book.first_published_date %}
     <meta
         itemprop="datePublished"
         content="{{ book.first_published_date|default:book.published_date|date:'Y-m-d' }}"
     >
 {% endif %}
 <p>
-
     {% comment %}
         @todo The publisher property needs to be an Organization or a Person. We’ll be using Thing which is the more generic ancestor.
         @see https://schema.org/Publisher
@@ -60,14 +57,14 @@
         {% endfor %}
     {% endif %}
 
-    {% if date and publisher %}
+    {% with date=book.published_date|default:book.first_published_date|naturalday publisher=book.publishers|join:', ' %}
+    {% if book.published_date and publisher %}
         {% blocktrans %}Published {{ date }} by {{ publisher }}.{% endblocktrans %}
-    {% elif date %}
-        {% blocktrans %}Published {{ date }}{% endblocktrans %}
     {% elif publisher %}
         {% blocktrans %}Published by {{ publisher }}.{% endblocktrans %}
+    {% elif date %}
+        {% blocktrans %}Published {{ date }}{% endblocktrans %}
     {% endif %}
+    {% endwith %}
 </p>
-{% endif %}
-{% endwith %}
 {% endspaceless %}
