@@ -88,64 +88,64 @@ const tries = {
     mimetype: {
         a: {
             a: {
-                c: "AAC",
+                c: "AAC"
             },
             z: {
-                w: "AZW",
-            },
+                w: "AZW"
+            }
         },
         d: {
             a: {
                 i: {
                     s: {
-                        y: "Daisy",
-                    },
-                },
-            },
+                        y: "Daisy"
+                    }
+                }
+            }
         },
         e: {
             p: {
                 u: {
-                    b: "EPUB",
-                },
-            },
+                    b: "EPUB"
+                }
+            }
         },
         f: {
             l: {
                 a: {
-                    c: "FLAC",
-                },
-            },
+                    c: "FLAC"
+                }
+            }
         },
         h: {
             t: {
                 m: {
-                    l: "HTML",
-                },
-            },
+                    l: "HTML"
+                }
+            }
         },
         m: {
             4: {
                 a: "M4A",
-                b: "M4B",
+                b: "M4B"
             },
             o: {
                 b: {
-                    i: "MOBI",
-                },
+                    i: "MOBI"
+                }
             },
             p: {
-                3: "MP3",
-            },
+                3: "MP3"
+            }
         },
         o: {
             g: {
-                g: "OGG",
-            },
+                g: "OGG"
+            }
         },
         p: {
             d: {
-                f: "PDF",
+                f: "PDF"
             },
             l: {
                 a: {
@@ -154,13 +154,13 @@ const tries = {
                             t: {
                                 e: {
                                     x: {
-                                        t: "Plaintext",
-                                    },
-                                },
-                            },
-                        },
-                    },
-                },
+                                        t: "Plaintext"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             },
             r: {
                 i: {
@@ -170,15 +170,15 @@ const tries = {
                                 b: {
                                     o: {
                                         o: {
-                                            k: "Print book",
-                                        },
-                                    },
-                                },
-                            },
-                        },
-                    },
-                },
-            },
-        },
-    },
+                                            k: "Print book"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 };
