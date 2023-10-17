@@ -1,5 +1,6 @@
 """ activitypub-aware django model fields """
 from dataclasses import MISSING
+from datetime import datetime
 import re
 from uuid import uuid4
 from urllib.parse import urljoin
@@ -534,8 +535,10 @@ class DateTimeField(ActivitypubFieldMixin, models.DateTimeField):
         return value.isoformat()
 
     def field_from_activity(self, value, allow_external_connections=True):
+        missing_fields = datetime(1970, 1, 1)  # "2022-10" => "2022-10-01"
         try:
-            date_value = dateutil.parser.parse(value)
+            # TODO(dato): investigate `ignoretz=True` wrt bookwyrm#3028.
+            date_value = dateutil.parser.parse(value, default=missing_fields)
             try:
                 return timezone.make_aware(date_value)
             except ValueError:
