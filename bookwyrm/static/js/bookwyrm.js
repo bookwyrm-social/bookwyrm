@@ -31,6 +31,12 @@ let BookWyrm = new (class {
             .forEach((button) => button.addEventListener("click", this.back));
 
         document
+            .querySelectorAll("[data-password-icon]")
+            .forEach((button) =>
+                button.addEventListener("click", this.togglePasswordVisibility.bind(this))
+            );
+
+        document
             .querySelectorAll('input[type="file"]')
             .forEach((node) => node.addEventListener("change", this.disableIfTooLarge.bind(this)));
 
@@ -819,5 +825,25 @@ let BookWyrm = new (class {
         const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
         form.querySelector('input[name="preferred_timezone"]').value = tz;
+    }
+
+    togglePasswordVisibility(event) {
+        const iconElement = event.currentTarget.getElementsByTagName("button")[0];
+        const passwordElementId = event.currentTarget.dataset.for;
+        const passwordInputElement = document.getElementById(passwordElementId);
+
+        if (!passwordInputElement) return;
+
+        if (passwordInputElement.type === "password") {
+            passwordInputElement.type = "text";
+            this.addRemoveClass(iconElement, "icon-eye-blocked");
+            this.addRemoveClass(iconElement, "icon-eye", true);
+        } else {
+            passwordInputElement.type = "password";
+            this.addRemoveClass(iconElement, "icon-eye");
+            this.addRemoveClass(iconElement, "icon-eye-blocked", true);
+        }
+
+        this.toggleFocus(passwordElementId);
     }
 })();
