@@ -16,7 +16,7 @@ env = Env()
 env.read_env()
 DOMAIN = env("DOMAIN")
 
-with open("VERSION") as f:
+with open("VERSION", encoding="utf-8") as f:
     version = f.read()
 
 VERSION = version
