@@ -32,6 +32,9 @@ class EditBook(View):
     def get(self, request, book_id):
         """info about a book"""
         book = get_edition(book_id)
+        # This doesn't update the sort title, just pre-populates it in the form
+        if book.sort_title in ["", None]:
+            book.sort_title = book.guess_sort_title()
         if not book.description:
             book.description = book.parent_work.description
         data = {"book": book, "form": forms.EditionForm(instance=book)}
@@ -40,10 +43,13 @@ class EditBook(View):
     def post(self, request, book_id):
         """edit a book cool"""
         book = get_object_or_404(models.Edition, id=book_id)
+
         form = forms.EditionForm(request.POST, request.FILES, instance=book)
 
         data = {"book": book, "form": form}
+        ensure_transient_values_persist(request, data)
         if not form.is_valid():
+            ensure_transient_values_persist(request, data, add_author=True)
             return TemplateResponse(request, "book/edit/edit_book.html", data)
 
         data = add_authors(request, data)
@@ -102,8 +108,12 @@ class CreateBook(View):
             }
 
         if not form.is_valid():
+            ensure_transient_values_persist(request, data, form=form)
             return TemplateResponse(request, "book/edit/edit_book.html", data)
 
+        # we have to call this twice because it requires form.cleaned_data
+        # which only exists after we validate the form
+        ensure_transient_values_persist(request, data, form=form)
         data = add_authors(request, data)
 
         # check if this is an edition of an existing work
@@ -136,21 +146,32 @@ class CreateBook(View):
         return redirect(f"/book/{book.id}")
 
 
+def ensure_transient_values_persist(request, data, **kwargs):
+    """ensure that values of transient form fields persist when re-rendering the form"""
+    data["cover_url"] = request.POST.get("cover-url")
+    if kwargs and kwargs.get("form"):
+        data["book"] = data.get("book") or {}
+        data["book"]["subjects"] = kwargs["form"].cleaned_data["subjects"]
+        data["add_author"] = request.POST.getlist("add_author")
+    elif kwargs and kwargs.get("add_author") is True:
+        data["add_author"] = request.POST.getlist("add_author")
+
+
 def add_authors(request, data):
     """helper for adding authors"""
     add_author = [author for author in request.POST.getlist("add_author") if author]
     if not add_author:
+        data["add_author"] = []
         return data
 
     data["add_author"] = add_author
     data["author_matches"] = []
     data["isni_matches"] = []
 
-    # creting a book or adding an author to a book needs another step
+    # creating a book or adding an author to a book needs another step
     data["confirm_mode"] = True
     # this isn't preserved because it isn't part of the form obj
     data["remove_authors"] = request.POST.getlist("remove_authors")
-    data["cover_url"] = request.POST.get("cover-url")
 
     for author in add_author:
         # filter out empty author fields

@@ -35,10 +35,12 @@ class Edit2FA(View):
         if not form.is_valid():
             data = {"form": form}
             return TemplateResponse(request, "preferences/2fa.html", data)
+        data = self.create_qr_code(request.user)
         qr_form = forms.Confirm2FAForm()
         data = {
             "password_confirmed": True,
-            "qrcode": self.create_qr_code(request.user),
+            "qrcode": data[0],
+            "code": data[1],
             "form": qr_form,
         }
         return TemplateResponse(request, "preferences/2fa.html", data)
@@ -57,7 +59,10 @@ class Edit2FA(View):
         qr_code.add_data(provisioning_url)
         qr_code.make(fit=True)
         img = qr_code.make_image(attrib={"fill": "black"})
-        return str(img.to_string(), "utf-8")  # to_string() returns a byte string
+        return [
+            str(img.to_string(), "utf-8"),
+            otp_secret,
+        ]  # to_string() returns a byte string
 
 
 @method_decorator(login_required, name="dispatch")

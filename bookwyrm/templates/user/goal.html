@@ -1,6 +1,10 @@
 {% extends 'user/layout.html' %}
-{% load i18n %}
 {% load utilities %}
+{% load i18n %}
+
+{% block title %}
+{% trans "Reading Goal" %} - {{ user|username }}
+{% endblock %}
 
 {% block header %}
 <div class="columns is-mobile">

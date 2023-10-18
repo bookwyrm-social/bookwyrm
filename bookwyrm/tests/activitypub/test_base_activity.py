@@ -14,6 +14,7 @@ from bookwyrm.activitypub.base_activity import (
     ActivityObject,
     resolve_remote_id,
     set_related_field,
+    get_representative,
 )
 from bookwyrm.activitypub import ActivitySerializerError
 from bookwyrm import models
@@ -52,8 +53,13 @@ class BaseActivity(TestCase):
         image.save(output, format=image.format)
         self.image_data = output.getvalue()
 
+    def test_get_representative_not_existing(self, *_):
+        """test that an instance representative actor is created if it does not exist"""
+        representative = get_representative()
+        self.assertIsInstance(representative, models.User)
+
     def test_init(self, *_):
-        """simple successfuly init"""
+        """simple successfully init"""
         instance = ActivityObject(id="a", type="b")
         self.assertTrue(hasattr(instance, "id"))
         self.assertTrue(hasattr(instance, "type"))
@@ -177,11 +183,20 @@ class BaseActivity(TestCase):
                     "name": "gerald j. books",
                     "href": "http://book.com/book",
                 },
+                {
+                    "type": "Hashtag",
+                    "name": "#BookClub",
+                    "href": "http://example.com/tags/BookClub",
+                },
             ],
         )
         update_data.to_model(model=models.Status, instance=status)
         self.assertEqual(status.mention_users.first(), self.user)
         self.assertEqual(status.mention_books.first(), book)
+
+        hashtag = models.Hashtag.objects.filter(name="#BookClub").first()
+        self.assertIsNotNone(hashtag)
+        self.assertEqual(status.mention_hashtags.first(), hashtag)
 
     @responses.activate
     def test_to_model_one_to_many(self, *_):

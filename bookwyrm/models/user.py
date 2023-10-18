@@ -3,9 +3,9 @@ import re
 from urllib.parse import urlparse
 
 from django.apps import apps
-from django.contrib.auth.models import AbstractUser, Group
+from django.contrib.auth.models import AbstractUser
 from django.contrib.postgres.fields import ArrayField, CICharField
-from django.core.exceptions import PermissionDenied
+from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
 from django.dispatch import receiver
 from django.db import models, transaction
 from django.utils import timezone
@@ -20,7 +20,7 @@ from bookwyrm.models.status import Status
 from bookwyrm.preview_images import generate_user_preview_image_task
 from bookwyrm.settings import DOMAIN, ENABLE_PREVIEW_IMAGES, USE_HTTPS, LANGUAGES
 from bookwyrm.signatures import create_key_pair
-from bookwyrm.tasks import app, LOW
+from bookwyrm.tasks import app, MISC
 from bookwyrm.utils import regex
 from .activitypub_mixin import OrderedCollectionPageMixin, ActivitypubMixin
 from .base_model import BookWyrmModel, DeactivationReason, new_access_code
@@ -244,9 +244,10 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     def admins(cls):
         """Get a queryset of the admins for this instance"""
         return cls.objects.filter(
-            models.Q(user_permissions__name__in=["moderate_user", "moderate_post"])
-            | models.Q(is_superuser=True)
-        )
+            models.Q(groups__name__in=["moderator", "admin"])
+            | models.Q(is_superuser=True),
+            is_active=True,
+        ).distinct()
 
     def update_active_date(self):
         """this user is here! they are doing things!"""
@@ -338,7 +339,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         # this is a new remote user, we need to set their remote server field
         if not self.local:
             super().save(*args, **kwargs)
-            transaction.on_commit(lambda: set_remote_server.delay(self.id))
+            transaction.on_commit(lambda: set_remote_server(self.id))
             return
 
         with transaction.atomic():
@@ -355,8 +356,14 @@ class User(OrderedCollectionPageMixin, AbstractUser):
 
             # make users editors by default
             try:
-                self.groups.add(Group.objects.get(name="editor"))
-            except Group.DoesNotExist:
+                group = (
+                    apps.get_model("bookwyrm.SiteSettings")
+                    .objects.get()
+                    .default_user_auth_group
+                )
+                if group:
+                    self.groups.add(group)
+            except ObjectDoesNotExist:
                 # this should only happen in tests
                 pass
 
@@ -372,6 +379,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         """We don't actually delete the database entry"""
         # pylint: disable=attribute-defined-outside-init
         self.is_active = False
+        self.avatar = ""
         # skip the logic in this class's save()
         super().save(*args, **kwargs)
 
@@ -386,10 +394,15 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     def reactivate(self):
         """Now you want to come back, huh?"""
         # pylint: disable=attribute-defined-outside-init
+        if not self.allow_reactivation:
+            return
         self.is_active = True
         self.deactivation_reason = None
         self.allow_reactivation = False
-        super().save(broadcast=False)
+        super().save(
+            broadcast=False,
+            update_fields=["deactivation_reason", "is_active", "allow_reactivation"],
+        )
 
     @property
     def local_path(self):
@@ -458,18 +471,30 @@ class KeyPair(ActivitypubMixin, BookWyrmModel):
         return super().save(*args, **kwargs)
 
 
-@app.task(queue=LOW)
-def set_remote_server(user_id):
+@app.task(queue=MISC)
+def set_remote_server(user_id, allow_external_connections=False):
     """figure out the user's remote server in the background"""
     user = User.objects.get(id=user_id)
     actor_parts = urlparse(user.remote_id)
-    user.federated_server = get_or_create_remote_server(actor_parts.netloc)
+    federated_server = get_or_create_remote_server(
+        actor_parts.netloc, allow_external_connections=allow_external_connections
+    )
+    # if we were unable to find the server, we need to create a new entry for it
+    if not federated_server:
+        # and to do that, we will call this function asynchronously.
+        if not allow_external_connections:
+            set_remote_server.delay(user_id, allow_external_connections=True)
+        return
+
+    user.federated_server = federated_server
     user.save(broadcast=False, update_fields=["federated_server"])
     if user.bookwyrm_user and user.outbox:
         get_remote_reviews.delay(user.outbox)
 
 
-def get_or_create_remote_server(domain, refresh=False):
+def get_or_create_remote_server(
+    domain, allow_external_connections=False, refresh=False
+):
     """get info on a remote server"""
     server = FederatedServer()
     try:
@@ -478,6 +503,9 @@ def get_or_create_remote_server(domain, refresh=False):
             return server
     except FederatedServer.DoesNotExist:
         pass
+
+    if not allow_external_connections:
+        return None
 
     try:
         data = get_data(f"https://{domain}/.well-known/nodeinfo")
@@ -502,7 +530,7 @@ def get_or_create_remote_server(domain, refresh=False):
     return server
 
 
-@app.task(queue=LOW)
+@app.task(queue=MISC)
 def get_remote_reviews(outbox):
     """ingest reviews by a new remote bookwyrm user"""
     outbox_page = outbox + "?page=true&type=Review"
@@ -521,6 +549,11 @@ def preview_image(instance, *args, **kwargs):
     """create preview images when user is updated"""
     if not ENABLE_PREVIEW_IMAGES:
         return
+
+    # don't call the task for remote users
+    if not instance.local:
+        return
+
     changed_fields = instance.field_tracker.changed()
 
     if len(changed_fields) > 0:

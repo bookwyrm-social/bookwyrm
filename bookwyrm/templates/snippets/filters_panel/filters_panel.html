@@ -25,7 +25,7 @@
         <span class="details-close icon icon-x is-{{ size|default:'normal' }}" aria-hidden="true"></span>
     </summary>
 
-    <div class="mt-3">
+    <div>
         <form id="filters" method="{{ method|default:'get' }}" action="{{ action|default:request.path }}">
             {% if method == 'post' %}
                 {% csrf_token %}
@@ -34,7 +34,7 @@
             {% if sort %}
             <input type="hidden" name="sort" value="{{ sort }}">
             {% endif %}
-            <div class="mt-3 columns filters-fields is-align-items-stretch">
+            <div class="columns filters-fields is-align-items-stretch">
                 {% block filter_fields %}
                 {% endblock %}
             </div>

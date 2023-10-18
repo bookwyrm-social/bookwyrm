@@ -3,8 +3,12 @@ import inspect
 import sys
 
 from .base_activity import ActivityEncoder, Signature, naive_parse
-from .base_activity import Link, Mention
-from .base_activity import ActivitySerializerError, resolve_remote_id
+from .base_activity import Link, Mention, Hashtag
+from .base_activity import (
+    ActivitySerializerError,
+    resolve_remote_id,
+    get_representative,
+)
 from .image import Document, Image
 from .note import Note, GeneratedNote, Article, Comment, Quotation
 from .note import Review, Rating

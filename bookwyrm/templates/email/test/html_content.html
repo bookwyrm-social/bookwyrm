@@ -1,0 +1,12 @@
+{% extends 'email/html_layout.html' %}
+{% load i18n %}
+
+{% block content %}
+<p>
+{% blocktrans trimmed %}
+This is a test email.
+{% endblocktrans %}
+</p>
+
+
+{% endblock %}

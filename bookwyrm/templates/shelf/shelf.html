@@ -8,8 +8,8 @@
 {% include 'user/books_header.html' with shelf=shelf %}
 {% endblock %}
 
-{% block opengraph_images %}
-    {% include 'snippets/opengraph_images.html' with image=user.preview_image %}
+{% block opengraph %}
+    {% include 'snippets/opengraph.html' with image=user.preview_image %}
 {% endblock %}
 
 {% block content %}
@@ -134,7 +134,7 @@
     {% endif %}
 </div>
 
-<div class="block">
+<div class="block mt-2">
     {% include 'shelf/edit_shelf_form.html' with controls_text="edit_shelf_form" %}
 </div>
 
@@ -145,7 +145,7 @@
             <thead>
                 <tr>
                     <th>{% trans "Cover"%}</th>
-                    <th>{% trans "Title"  as text %}{% include 'snippets/table-sort-header.html' with field="title" sort=sort text=text %}</th>
+                    <th>{% trans "Title"  as text %}{% include 'snippets/table-sort-header.html' with field="sort_title" sort=sort text=text %}</th>
                     <th>{% trans "Author"  as text %}{% include 'snippets/table-sort-header.html' with field="author" sort=sort text=text %}</th>
                     {% if request.user.is_authenticated %}
                         {% if is_self %}

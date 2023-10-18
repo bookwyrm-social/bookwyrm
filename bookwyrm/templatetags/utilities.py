@@ -19,7 +19,7 @@ def get_uuid(identifier):
 
 @register.simple_tag(takes_context=False)
 def join(*args):
-    """concatenate an arbitary set of values"""
+    """concatenate an arbitrary set of values"""
     return "_".join(str(a) for a in args)
 
 

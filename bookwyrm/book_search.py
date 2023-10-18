@@ -1,24 +1,62 @@
 """ using a bookwyrm instance as a source of book data """
+from __future__ import annotations
 from dataclasses import asdict, dataclass
 from functools import reduce
 import operator
+from typing import Optional, Union, Any, Literal, overload
 
 from django.contrib.postgres.search import SearchRank, SearchQuery
-from django.db.models import OuterRef, Subquery, F, Q
+from django.db.models import F, Q
+from django.db.models.query import QuerySet
 
 from bookwyrm import models
 from bookwyrm import connectors
 from bookwyrm.settings import MEDIA_FULL_URL
 
 
+@overload
+def search(
+    query: str,
+    *,
+    min_confidence: float = 0,
+    filters: Optional[list[Any]] = None,
+    return_first: Literal[False],
+) -> QuerySet[models.Edition]:
+    ...
+
+
+@overload
+def search(
+    query: str,
+    *,
+    min_confidence: float = 0,
+    filters: Optional[list[Any]] = None,
+    return_first: Literal[True],
+) -> Optional[models.Edition]:
+    ...
+
+
 # pylint: disable=arguments-differ
-def search(query, min_confidence=0, filters=None, return_first=False):
+def search(
+    query: str,
+    *,
+    min_confidence: float = 0,
+    filters: Optional[list[Any]] = None,
+    return_first: bool = False,
+) -> Union[Optional[models.Edition], QuerySet[models.Edition]]:
     """search your local database"""
     filters = filters or []
     if not query:
-        return []
-    # first, try searching unqiue identifiers
-    results = search_identifiers(query, *filters, return_first=return_first)
+        return None if return_first else []
+    query = query.strip()
+
+    results = None
+    # first, try searching unique identifiers
+    # unique identifiers never have spaces, title/author usually do
+    if not " " in query:
+        results = search_identifiers(query, *filters, return_first=return_first)
+
+    # if there were no identifier results...
     if not results:
         # then try searching title/author
         results = search_title_author(
@@ -35,23 +73,9 @@ def isbn_search(query):
     # If the ISBN has only 9 characters, prepend missing zero
     query = query.strip().upper().rjust(10, "0")
     filters = [{f: query} for f in ["isbn_10", "isbn_13"]]
-    results = models.Edition.objects.filter(
+    return models.Edition.objects.filter(
         reduce(operator.or_, (Q(**f) for f in filters))
     ).distinct()
-
-    # when there are multiple editions of the same work, pick the default.
-    # it would be odd for this to happen.
-
-    default_editions = models.Edition.objects.filter(
-        parent_work=OuterRef("parent_work")
-    ).order_by("-edition_rank")
-    results = (
-        results.annotate(default_id=Subquery(default_editions.values("id")[:1])).filter(
-            default_id=F("id")
-        )
-        or results
-    )
-    return results
 
 
 def format_search_result(search_result):
@@ -73,7 +97,9 @@ def format_search_result(search_result):
     ).json()
 
 
-def search_identifiers(query, *filters, return_first=False):
+def search_identifiers(
+    query, *filters, return_first=False
+) -> Union[Optional[models.Edition], QuerySet[models.Edition]]:
     """tries remote_id, isbn; defined as dedupe fields on the model"""
     if connectors.maybe_isbn(query):
         # Oh did you think the 'S' in ISBN stood for 'standard'?
@@ -88,28 +114,15 @@ def search_identifiers(query, *filters, return_first=False):
     results = models.Edition.objects.filter(
         *filters, reduce(operator.or_, (Q(**f) for f in or_filters))
     ).distinct()
-    if results.count() <= 1:
-        if return_first:
-            return results.first()
-        return results
 
-    # when there are multiple editions of the same work, pick the default.
-    # it would be odd for this to happen.
-    default_editions = models.Edition.objects.filter(
-        parent_work=OuterRef("parent_work")
-    ).order_by("-edition_rank")
-    results = (
-        results.annotate(default_id=Subquery(default_editions.values("id")[:1])).filter(
-            default_id=F("id")
-        )
-        or results
-    )
     if return_first:
         return results.first()
     return results
 
 
-def search_title_author(query, min_confidence, *filters, return_first=False):
+def search_title_author(
+    query, min_confidence, *filters, return_first=False
+) -> QuerySet[models.Edition]:
     """searches for title and author"""
     query = SearchQuery(query, config="simple") | SearchQuery(query, config="english")
     results = (
@@ -120,19 +133,16 @@ def search_title_author(query, min_confidence, *filters, return_first=False):
     )
 
     # when there are multiple editions of the same work, pick the closest
-    editions_of_work = results.values("parent_work__id").values_list("parent_work__id")
+    editions_of_work = results.values_list("parent_work__id", flat=True).distinct()
 
     # filter out multiple editions of the same work
     list_results = []
-    for work_id in set(editions_of_work):
-        editions = results.filter(parent_work=work_id)
-        default = editions.order_by("-edition_rank").first()
-        default_rank = default.rank if default else 0
-        # if mutliple books have the top rank, pick the default edition
-        if default_rank == editions.first().rank:
-            result = default
-        else:
-            result = editions.first()
+    for work_id in set(editions_of_work[:30]):
+        result = (
+            results.filter(parent_work=work_id)
+            .order_by("-rank", "-edition_rank")
+            .first()
+        )
 
         if return_first:
             return result
@@ -147,11 +157,11 @@ class SearchResult:
     title: str
     key: str
     connector: object
-    view_link: str = None
-    author: str = None
-    year: str = None
-    cover: str = None
-    confidence: int = 1
+    view_link: Optional[str] = None
+    author: Optional[str] = None
+    year: Optional[str] = None
+    cover: Optional[str] = None
+    confidence: float = 1.0
 
     def __repr__(self):
         # pylint: disable=consider-using-f-string

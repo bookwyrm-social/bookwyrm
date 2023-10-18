@@ -10,8 +10,9 @@
 {% endblock %}
 
 {% block about_content %}
+{% get_current_language as LANGUAGE_CODE %}
 {# seven day cache #}
-{% cache 604800 about_page %}
+{% cache 604800 about_page_superlatives LANGUAGE_CODE %}
 
 {% get_book_superlatives as superlatives %}
 <section class=" pb-4">
@@ -97,6 +98,7 @@
     </p>
 
 </section>
+{% endcache %}
 
 <section class="block">
     <header class="content">
@@ -145,5 +147,4 @@
     </div>
 </section>
 
-{% endcache %}
 {% endblock %}

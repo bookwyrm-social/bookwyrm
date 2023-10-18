@@ -14,6 +14,7 @@ from bookwyrm.preview_images import (
     generate_edition_preview_image_task,
     generate_user_preview_image_task,
     generate_preview_image,
+    remove_user_preview_image_task,
     save_and_cleanup,
 )
 
@@ -39,6 +40,37 @@ class PreviewImages(TestCase):
                 "password",
                 local=True,
                 localname="possum",
+                avatar=SimpleUploadedFile(
+                    avatar_file,
+                    open(avatar_file, "rb").read(),
+                    content_type="image/jpeg",
+                ),
+            )
+
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
+            "bookwyrm.activitystreams.populate_stream_task.delay"
+        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
+            self.remote_user = models.User.objects.create_user(
+                "rat",
+                "rat@rat.com",
+                "ratword",
+                local=False,
+                remote_id="https://example.com/users/rat",
+                inbox="https://example.com/users/rat/inbox",
+                outbox="https://example.com/users/rat/outbox",
+            )
+
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
+            "bookwyrm.activitystreams.populate_stream_task.delay"
+        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
+            self.remote_user_with_preview = models.User.objects.create_user(
+                "badger@your.domain.here",
+                "badger@badger.com",
+                "badgeword",
+                local=False,
+                remote_id="https://example.com/users/badger",
+                inbox="https://example.com/users/badger/inbox",
+                outbox="https://example.com/users/badger/outbox",
                 avatar=SimpleUploadedFile(
                     avatar_file,
                     open(avatar_file, "rb").read(),
@@ -122,6 +154,14 @@ class PreviewImages(TestCase):
             self.local_user.preview_image.height, settings.PREVIEW_IMG_HEIGHT
         )
 
+    def test_remote_user_preview(self, *args, **kwargs):
+        """a remote user doesn’t get a user preview"""
+        generate_user_preview_image_task(self.remote_user.id)
+
+        self.remote_user.refresh_from_db()
+
+        self.assertFalse(self.remote_user.preview_image)
+
     def test_generate_user_preview_images_task(self, *args, **kwargs):
         """test task's external calls"""
         with patch("bookwyrm.preview_images.generate_preview_image") as generate_mock:
@@ -129,3 +169,11 @@ class PreviewImages(TestCase):
         args = generate_mock.call_args.kwargs
         self.assertEqual(args["texts"]["text_one"], "possum")
         self.assertEqual(args["texts"]["text_three"], f"@possum@{settings.DOMAIN}")
+
+    def test_remove_user_preview_image_task(self, *args, **kwargs):
+        """you can delete the preview image for a (remote) user"""
+        remove_user_preview_image_task(self.remote_user_with_preview.id)
+
+        self.remote_user_with_preview.refresh_from_db()
+
+        self.assertFalse(self.remote_user_with_preview.preview_image)

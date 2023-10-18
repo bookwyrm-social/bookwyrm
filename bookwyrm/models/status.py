@@ -1,5 +1,6 @@
 """ models for storing different kinds of Activities """
 from dataclasses import MISSING
+from typing import Optional
 import re
 
 from django.apps import apps
@@ -34,6 +35,7 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
     raw_content = models.TextField(blank=True, null=True)
     mention_users = fields.TagField("User", related_name="mention_user")
     mention_books = fields.TagField("Edition", related_name="mention_book")
+    mention_hashtags = fields.TagField("Hashtag", related_name="mention_hashtag")
     local = models.BooleanField(default=True)
     content_warning = fields.CharField(
         max_length=500, blank=True, null=True, activitypub_field="summary"
@@ -63,6 +65,9 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         activitypub_field="inReplyTo",
     )
     thread_id = models.IntegerField(blank=True, null=True)
+    # statuses get saved a few times, this indicates if they're set
+    ready = models.BooleanField(default=True)
+
     objects = InheritanceManager()
 
     activity_serializer = activitypub.Note
@@ -77,14 +82,13 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
     def save(self, *args, **kwargs):
         """save and notify"""
         if self.reply_parent:
-            self.thread_id = self.reply_parent.thread_id or self.reply_parent.id
+            self.thread_id = self.reply_parent.thread_id or self.reply_parent_id
 
         super().save(*args, **kwargs)
 
         if not self.reply_parent:
             self.thread_id = self.id
-
-        super().save(broadcast=False, update_fields=["thread_id"])
+            super().save(broadcast=False, update_fields=["thread_id"])
 
     def delete(self, *args, **kwargs):  # pylint: disable=unused-argument
         """ "delete" a status"""
@@ -113,10 +117,16 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         return list(set(mentions))
 
     @classmethod
-    def ignore_activity(cls, activity):  # pylint: disable=too-many-return-statements
+    def ignore_activity(
+        cls, activity, allow_external_connections=True
+    ):  # pylint: disable=too-many-return-statements
         """keep notes if they are replies to existing statuses"""
         if activity.type == "Announce":
-            boosted = activitypub.resolve_remote_id(activity.object, get_activity=True)
+            boosted = activitypub.resolve_remote_id(
+                activity.object,
+                get_activity=True,
+                allow_external_connections=allow_external_connections,
+            )
             if not boosted:
                 # if we can't load the status, definitely ignore it
                 return True
@@ -133,10 +143,17 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         # keep notes if they mention local users
         if activity.tag == MISSING or activity.tag is None:
             return True
-        tags = [l["href"] for l in activity.tag if l["type"] == "Mention"]
+        # GoToSocial sends single tags as objects
+        # not wrapped in a list
+        tags = activity.tag if isinstance(activity.tag, list) else [activity.tag]
         user_model = apps.get_model("bookwyrm.User", require_ready=True)
         for tag in tags:
-            if user_model.objects.filter(remote_id=tag, local=True).exists():
+            if (
+                tag["type"] == "Mention"
+                and user_model.objects.filter(
+                    remote_id=tag["href"], local=True
+                ).exists()
+            ):
                 # we found a mention of a known use boost
                 return False
         return True
@@ -253,7 +270,7 @@ class GeneratedNote(Status):
         """indicate the book in question for mastodon (or w/e) users"""
         message = self.content
         books = ", ".join(
-            f'<a href="{book.remote_id}">"{book.title}"</a>'
+            f'<a href="{book.remote_id}"><i>{book.title}</i></a>'
             for book in self.mention_books.all()
         )
         return f"{self.user.display_name} {message} {books}"
@@ -304,17 +321,14 @@ class Comment(BookStatus):
     @property
     def pure_content(self):
         """indicate the book in question for mastodon (or w/e) users"""
-        if self.progress_mode == "PG" and self.progress and (self.progress > 0):
-            return_value = (
-                f'{self.content}<p>(comment on <a href="{self.book.remote_id}">'
-                f'"{self.book.title}"</a>, page {self.progress})</p>'
-            )
-        else:
-            return_value = (
-                f'{self.content}<p>(comment on <a href="{self.book.remote_id}">'
-                f'"{self.book.title}"</a>)</p>'
-            )
-        return return_value
+        progress = self.progress or 0
+        citation = (
+            f'comment on <a href="{self.book.remote_id}">'
+            f"<i>{self.book.title}</i></a>"
+        )
+        if self.progress_mode == "PG" and progress > 0:
+            citation += f", p. {progress}"
+        return f"{self.content}<p>({citation})</p>"
 
     activity_serializer = activitypub.Comment
 
@@ -327,6 +341,9 @@ class Quotation(BookStatus):
     position = models.IntegerField(
         validators=[MinValueValidator(0)], null=True, blank=True
     )
+    endposition = models.IntegerField(
+        validators=[MinValueValidator(0)], null=True, blank=True
+    )
     position_mode = models.CharField(
         max_length=3,
         choices=ProgressMode.choices,
@@ -335,22 +352,24 @@ class Quotation(BookStatus):
         blank=True,
     )
 
+    def _format_position(self) -> Optional[str]:
+        """serialize page position"""
+        beg = self.position
+        end = self.endposition or 0
+        if self.position_mode != "PG" or not beg:
+            return None
+        return f"pp. {beg}-{end}" if end > beg else f"p. {beg}"
+
     @property
     def pure_content(self):
         """indicate the book in question for mastodon (or w/e) users"""
         quote = re.sub(r"^<p>", '<p>"', self.quote)
         quote = re.sub(r"</p>$", '"</p>', quote)
-        if self.position_mode == "PG" and self.position and (self.position > 0):
-            return_value = (
-                f'{quote} <p>-- <a href="{self.book.remote_id}">'
-                f'"{self.book.title}"</a>, page {self.position}</p>{self.content}'
-            )
-        else:
-            return_value = (
-                f'{quote} <p>-- <a href="{self.book.remote_id}">'
-                f'"{self.book.title}"</a></p>{self.content}'
-            )
-        return return_value
+        title, href = self.book.title, self.book.remote_id
+        citation = f'— <a href="{href}"><i>{title}</i></a>'
+        if position := self._format_position():
+            citation += f", {position}"
+        return f"{quote} <p>{citation}</p>{self.content}"
 
     activity_serializer = activitypub.Quotation
 
@@ -399,7 +418,7 @@ class ReviewRating(Review):
     def save(self, *args, **kwargs):
         if not self.rating:
             raise ValueError("ReviewRating object must include a numerical rating")
-        return super().save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
     @property
     def pure_content(self):

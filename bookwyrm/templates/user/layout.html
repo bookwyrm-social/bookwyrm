@@ -8,8 +8,8 @@
 
 {% block title %}{{ user.display_name }}{% endblock %}
 
-{% block opengraph_images %}
-    {% include 'snippets/opengraph_images.html' with image=user.preview_image %}
+{% block opengraph %}
+    {% include 'snippets/opengraph.html' with image=user.preview_image %}
 {% endblock %}
 
 {% block content %}
@@ -20,6 +20,8 @@
     </h1>
     {% endblock %}
 </header>
+
+{% block breadcrumbs %}{% endblock %}
 
 {# user bio #}
 <div class="block">
@@ -65,6 +67,10 @@
         {% url 'user-feed' user|username as url %}
         <li{% if url == request.path or url == request.path|add:'/' %} class="is-active"{% endif %}>
             <a href="{{ url }}">{% trans "Activity" %}</a>
+        </li>
+        {% url 'user-reviews-comments' user|username as url %}
+        <li{% if url == request.path or url == request.path|add:'/' %} class="is-active"{% endif %}>
+            <a href="{{ url }}">{% trans "Reviews and Comments" %}</a>
         </li>
         {% if is_self or user.goal.exists %}
         {% now 'Y' as year %}

@@ -4,13 +4,13 @@ import datetime
 
 from django.contrib.auth.decorators import login_required
 from django.db.models import Avg, ExpressionWrapper, F, fields
+from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator
 from django.http import HttpResponseBadRequest
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
-from django.utils.translation import gettext_lazy as _
 from django.views import View
 
 from bookwyrm import forms, models
@@ -29,7 +29,7 @@ from bookwyrm.utils.cache import get_or_set
 class Import(View):
     """import view"""
 
-    def get(self, request):
+    def get(self, request, invalid=False):
         """load import page"""
         jobs = models.ImportJob.objects.filter(user=request.user).order_by(
             "-created_date"
@@ -42,6 +42,7 @@ class Import(View):
             "page_range": paginated.get_elided_page_range(
                 page.number, on_each_side=2, on_ends=1
             ),
+            "invalid": invalid,
         }
 
         seconds = get_or_set("avg-import-time", get_average_import_time, timeout=86400)
@@ -50,10 +51,27 @@ class Import(View):
         elif seconds:
             data["recent_avg_minutes"] = seconds / 60
 
+        site_settings = models.SiteSettings.objects.get()
+        time_range = timezone.now() - datetime.timedelta(
+            days=site_settings.import_limit_reset
+        )
+        import_jobs = models.ImportJob.objects.filter(
+            user=request.user, created_date__gte=time_range
+        )
+        # pylint: disable=consider-using-generator
+        imported_books = sum([job.successful_item_count for job in import_jobs])
+        data["import_size_limit"] = site_settings.import_size_limit
+        data["import_limit_reset"] = site_settings.import_limit_reset
+        data["allowed_imports"] = site_settings.import_size_limit - imported_books
+
         return TemplateResponse(request, "import/import.html", data)
 
     def post(self, request):
         """ingest a goodreads csv"""
+        site = models.SiteSettings.objects.get()
+        if not site.imports_enabled:
+            raise PermissionDenied()
+
         form = forms.ImportForm(request.POST, request.FILES)
         if not form.is_valid():
             return HttpResponseBadRequest()
@@ -83,7 +101,7 @@ class Import(View):
                 privacy,
             )
         except (UnicodeDecodeError, ValueError, KeyError):
-            return HttpResponseBadRequest(_("Not a valid csv file"))
+            return self.get(request, invalid=True)
 
         job.start_job()
 
