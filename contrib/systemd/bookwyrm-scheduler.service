@@ -5,10 +5,30 @@ After=network.target postgresql.service redis.service
 [Service]
 User=bookwyrm
 Group=bookwyrm
-WorkingDirectory=/opt/bookwyrm/
+WorkingDirectory=/opt/bookwyrm
 ExecStart=/opt/bookwyrm/venv/bin/celery -A celerywyrm beat -l INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler
 StandardOutput=journal
 StandardError=inherit
+ProtectSystem=strict
+ProtectHome=tmpfs
+InaccessiblePaths=-/media -/mnt -/srv
+PrivateTmp=yes
+TemporaryFileSystem=/var /run /opt
+PrivateUsers=true
+PrivateDevices=true
+BindReadOnlyPaths=/opt/bookwyrm
+BindPaths=/opt/bookwyrm/images /opt/bookwyrm/static /var/run/postgresql
+LockPersonality=yes
+MemoryDenyWriteExecute=true
+PrivateMounts=true
+ProtectHostname=true
+ProtectClock=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectKernelLogs=true
+ProtectControlGroups=true
+RestrictRealtime=true
+RestrictNamespaces=net
 
 [Install]
 WantedBy=multi-user.target
