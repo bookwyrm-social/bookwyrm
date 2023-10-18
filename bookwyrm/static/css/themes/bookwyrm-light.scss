@@ -57,7 +57,6 @@ $invisible-overlay-background-color: rgba($scheme-invert, 0.66);
 $family-primary: $family-sans-serif;
 $family-secondary: $family-sans-serif;
 
-
 .has-text-muted {
     color: $grey-dark !important;
 }
@@ -69,18 +68,15 @@ $family-secondary: $family-sans-serif;
 .tabs li:not(.is-active) a {
     color: #3273dc !important;
 }
-  .tabs li:not(.is-active) a:hover {
-    border-bottom-color: #3273dc !important;
-} 
 
-.tabs li:not(.is-active) a {
-    color: #3273dc !important;
+.tabs li:not(.is-active) a:hover {
+    border-bottom-color: #3273dc !important;
 }
+
 .tabs li.is-active a {
     color: #4a4a4a !important;
-    border-bottom-color: #4a4a4a !important ;
+    border-bottom-color: #4a4a4a !important;
 }
-
 
 @import "../bookwyrm";
 @import "../vendor/icons.css";

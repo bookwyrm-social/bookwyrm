@@ -16,7 +16,7 @@ $danger-light: #481922;
 $light: #393939;
 $red: #ffa1b4;
 $black: #000;
-$white-ter:    hsl(0, 0%, 90%);
+$white-ter: hsl(0deg, 0%, 90%);
 
 /* book cover standins */
 $no-cover-color: #002549;
@@ -100,18 +100,15 @@ $family-secondary: $family-sans-serif;
 .tabs li:not(.is-active) a {
     color: #2e7eb9 !important;
 }
-  .tabs li:not(.is-active) a:hover {
-    border-bottom-color: #2e7eb9 !important;
-} 
 
-.tabs li:not(.is-active) a {
-    color: #2e7eb9 !important;
+.tabs li:not(.is-active) a:hover {
+    border-bottom-color: #2e7eb9 !important;
 }
+
 .tabs li.is-active a {
     color: #e6e6e6 !important;
-    border-bottom-color: #e6e6e6 !important ;
+    border-bottom-color: #e6e6e6 !important;
 }
-
 
 #qrcode svg {
     background-color: #a6a6a6;
