@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-10-02 16:40+0000\n"
-"PO-Revision-Date: 2023-10-19 07:58\n"
+"PO-Revision-Date: 2023-10-19 08:54\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Korean\n"
 "Language: ko\n"
@@ -153,19 +153,19 @@ msgstr "보류"
 
 #: bookwyrm/models/base_model.py:19
 msgid "Self deletion"
-msgstr ""
+msgstr "스스로 삭제"
 
 #: bookwyrm/models/base_model.py:20
 msgid "Self deactivation"
-msgstr ""
+msgstr "스스로 비활성"
 
 #: bookwyrm/models/base_model.py:21
 msgid "Moderator suspension"
-msgstr ""
+msgstr "중재재가 정지"
 
 #: bookwyrm/models/base_model.py:22
 msgid "Moderator deletion"
-msgstr ""
+msgstr "중재자가 삭제"
 
 #: bookwyrm/models/base_model.py:23
 msgid "Domain block"
@@ -326,11 +326,11 @@ msgstr ""
 
 #: bookwyrm/models/report.py:89
 msgid "Suspended user"
-msgstr ""
+msgstr "정지된 이용자"
 
 #: bookwyrm/models/report.py:90
 msgid "Un-suspended user"
-msgstr ""
+msgstr "정지 헤제된 이용자"
 
 #: bookwyrm/models/report.py:91
 msgid "Changed user permission level"
@@ -567,7 +567,7 @@ msgstr "활성 이용자"
 
 #: bookwyrm/templates/about/layout.html:15
 msgid "Statuses posted:"
-msgstr ""
+msgstr "게시한 기록:"
 
 #: bookwyrm/templates/about/layout.html:19
 #: bookwyrm/templates/setup/config.html:74
@@ -737,7 +737,7 @@ msgstr "저자 상세"
 #: bookwyrm/templates/author/author.html:40
 #: bookwyrm/templates/author/edit_author.html:42
 msgid "Aliases:"
-msgstr ""
+msgstr "별칭:"
 
 #: bookwyrm/templates/author/author.html:49
 msgid "Born:"
@@ -766,7 +766,7 @@ msgstr "ISNI 레코드 보기"
 #: bookwyrm/templates/author/author.html:95
 #: bookwyrm/templates/book/book.html:173
 msgid "View on ISFDB"
-msgstr ""
+msgstr "ISFDB에서 보기"
 
 #: bookwyrm/templates/author/author.html:100
 #: bookwyrm/templates/author/sync_modal.html:5
@@ -1540,7 +1540,7 @@ msgstr ""
 
 #: bookwyrm/templates/book/rating.html:13
 msgid "rated it"
-msgstr ""
+msgstr "별점"
 
 #: bookwyrm/templates/book/series.html:11
 msgid "Series by"
@@ -1778,7 +1778,7 @@ msgstr ""
 
 #: bookwyrm/templates/email/confirm/subject.html:2
 msgid "Please confirm your email"
-msgstr ""
+msgstr "이메일 주소 확인하기"
 
 #: bookwyrm/templates/email/confirm/text_content.html:10
 #, python-format
@@ -2052,7 +2052,7 @@ msgstr "추천 도서"
 
 #: bookwyrm/templates/get_started/books.html:33
 msgid "Search results"
-msgstr ""
+msgstr "검색 결과"
 
 #: bookwyrm/templates/get_started/books.html:46
 #, python-format
@@ -2089,7 +2089,7 @@ msgstr "도서 추가"
 
 #: bookwyrm/templates/get_started/layout.html:46
 msgid "Find friends"
-msgstr ""
+msgstr "친구 찾기"
 
 #: bookwyrm/templates/get_started/layout.html:52
 msgid "Skip this step"
@@ -2266,7 +2266,7 @@ msgstr ""
 
 #: bookwyrm/templates/guided_tour/book.html:11
 msgid "Book page"
-msgstr ""
+msgstr "책 페이지"
 
 #: bookwyrm/templates/guided_tour/book.html:19
 #: bookwyrm/templates/guided_tour/group.html:19
@@ -2366,7 +2366,7 @@ msgstr ""
 
 #: bookwyrm/templates/guided_tour/book.html:128
 msgid "Post a review"
-msgstr ""
+msgstr "서펑 게시하기"
 
 #: bookwyrm/templates/guided_tour/book.html:151
 msgid "You can share your thoughts on this book generally with a simple comment"
@@ -2382,7 +2382,7 @@ msgstr ""
 
 #: bookwyrm/templates/guided_tour/book.html:176
 msgid "Share a quote"
-msgstr ""
+msgstr "인용 공유하기"
 
 #: bookwyrm/templates/guided_tour/book.html:199
 msgid "If your review or comment might ruin the book for someone who hasn't read it yet, you can hide your post behind a <strong>spoiler alert</strong>"
@@ -2408,7 +2408,7 @@ msgstr ""
 
 #: bookwyrm/templates/guided_tour/book.html:249
 msgid "Download links"
-msgstr ""
+msgstr "내려받기 링크"
 
 #: bookwyrm/templates/guided_tour/book.html:273
 msgid "Continue the tour by selecting <strong>Your books</strong> from the drop down menu."
@@ -2501,7 +2501,7 @@ msgstr ""
 
 #: bookwyrm/templates/guided_tour/home.html:80
 msgid "Barcode reader"
-msgstr ""
+msgstr "바코드 리더"
 
 #: bookwyrm/templates/guided_tour/home.html:102
 msgid "Use the <strong>Feed</strong>, <strong>Lists</strong> and <strong>Discover</strong> links to discover the latest news from your feed, lists of books by topic, and the latest happenings on this Bookwyrm server!"
@@ -2521,7 +2521,7 @@ msgstr ""
 
 #: bookwyrm/templates/guided_tour/home.html:152
 msgid "Timelines"
-msgstr ""
+msgstr "타임라인"
 
 #: bookwyrm/templates/guided_tour/home.html:176
 msgid "The bell will light up when you have a new notification. When it does, click on it to find out what exciting thing has happened!"
@@ -2895,12 +2895,12 @@ msgstr ""
 #: bookwyrm/templates/import/import_status.html:15
 #: bookwyrm/templates/import/import_status.html:29
 msgid "Import Status"
-msgstr ""
+msgstr "기록 가져오기"
 
 #: bookwyrm/templates/import/import_status.html:13
 #: bookwyrm/templates/import/import_status.html:27
 msgid "Retry Status"
-msgstr ""
+msgstr "기록 재시도"
 
 #: bookwyrm/templates/import/import_status.html:22
 #: bookwyrm/templates/settings/celery.html:45
@@ -2956,15 +2956,15 @@ msgstr ""
 #: bookwyrm/templates/shelf/shelf.html:148
 #: bookwyrm/templates/shelf/shelf.html:170
 msgid "Title"
-msgstr ""
+msgstr "책제목"
 
 #: bookwyrm/templates/import/import_status.html:113
 msgid "ISBN"
-msgstr ""
+msgstr "ISBN"
 
 #: bookwyrm/templates/import/import_status.html:117
 msgid "Openlibrary key"
-msgstr ""
+msgstr "OpenLibray 키"
 
 #: bookwyrm/templates/import/import_status.html:121
 #: bookwyrm/templates/shelf/shelf.html:149
@@ -3009,7 +3009,7 @@ msgstr ""
 
 #: bookwyrm/templates/import/import_status.html:219
 msgid "Retry"
-msgstr ""
+msgstr "재시도"
 
 #: bookwyrm/templates/import/import_status.html:237
 msgid "This import is in an old format that is no longer supported. If you would like to troubleshoot missing items from this import, click the button below to update the import format."
@@ -3088,15 +3088,15 @@ msgstr "최근 도서"
 
 #: bookwyrm/templates/landing/layout.html:17
 msgid "Decentralized"
-msgstr ""
+msgstr "탈중앙화한"
 
 #: bookwyrm/templates/landing/layout.html:23
 msgid "Friendly"
-msgstr ""
+msgstr "친화"
 
 #: bookwyrm/templates/landing/layout.html:29
 msgid "Anti-Corporate"
-msgstr ""
+msgstr "반기업"
 
 #: bookwyrm/templates/landing/layout.html:46
 #, python-format
@@ -3118,17 +3118,17 @@ msgstr ""
 
 #: bookwyrm/templates/landing/layout.html:90
 msgid "Your Account"
-msgstr ""
+msgstr "내 계정"
 
 #: bookwyrm/templates/landing/login.html:4
 msgid "Login"
-msgstr ""
+msgstr "로그인"
 
 #: bookwyrm/templates/landing/login.html:7
 #: bookwyrm/templates/landing/login.html:36 bookwyrm/templates/layout.html:136
 #: bookwyrm/templates/ostatus/error.html:37
 msgid "Log in"
-msgstr ""
+msgstr "로그인"
 
 #: bookwyrm/templates/landing/login.html:15
 msgid "Success! Email address confirmed."
@@ -4299,7 +4299,7 @@ msgstr ""
 
 #: bookwyrm/templates/search/book.html:89
 msgid "Import book"
-msgstr ""
+msgstr "책 정보 가져오기"
 
 #: bookwyrm/templates/search/book.html:113
 msgid "Load results from other catalogues"
@@ -4712,7 +4712,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/dashboard/status_chart.html:11
 msgid "Statuses posted"
-msgstr ""
+msgstr "게시한 기록"
 
 #: bookwyrm/templates/settings/dashboard/user_chart.html:11
 msgid "Total"
@@ -6359,7 +6359,7 @@ msgstr ""
 
 #: bookwyrm/templates/snippets/status/content_status.html:80
 msgid "Show status"
-msgstr ""
+msgstr "기록 보기"
 
 #: bookwyrm/templates/snippets/status/content_status.html:102
 #, python-format
@@ -6482,12 +6482,12 @@ msgstr "기록 지우기"
 #: bookwyrm/templates/snippets/status/layout.html:57
 #: bookwyrm/templates/snippets/status/layout.html:58
 msgid "Boost status"
-msgstr ""
+msgstr "기록 부스트"
 
 #: bookwyrm/templates/snippets/status/layout.html:61
 #: bookwyrm/templates/snippets/status/layout.html:62
 msgid "Like status"
-msgstr ""
+msgstr "기록 좋아요"
 
 #: bookwyrm/templates/snippets/status/status.html:10
 msgid "boosted"
