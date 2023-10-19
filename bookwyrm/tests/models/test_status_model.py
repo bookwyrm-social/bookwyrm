@@ -314,6 +314,29 @@ class Status(TestCase):
         )
         self.assertEqual(activity["attachment"][0]["name"], "Test Edition")
 
+    def test_quotation_with_author_to_pure_activity(self, *_):
+        """serialization of quotation of a book with author and edition info"""
+        self.book.authors.set([models.Author.objects.create(name="Author Name")])
+        self.book.physical_format = "worm"
+        self.book.save()
+        status = models.Quotation.objects.create(
+            quote="quote",
+            content="",
+            user=self.local_user,
+            book=self.book,
+        )
+        activity = status.to_activity(pure=True)
+        self.assertEqual(
+            activity["content"],
+            (
+                f'quote <p>— Author Name: <a href="{self.book.remote_id}">'
+                "<i>Test Edition</i></a></p>"
+            ),
+        )
+        self.assertEqual(
+            activity["attachment"][0]["name"], "Author Name: Test Edition (worm)"
+        )
+
     def test_quotation_page_serialization(self, *_):
         """serialization of quotation page position"""
         tests = [

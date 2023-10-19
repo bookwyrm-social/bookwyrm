@@ -92,7 +92,23 @@ class Book(TestCase):
         book.published_date = timezone.make_aware(parse("2020"))
         book.save()
         self.assertEqual(book.edition_info, "worm, Glorbish language, 2020")
-        self.assertEqual(book.alt_text, "Test Edition (worm, Glorbish language, 2020)")
+
+    def test_alt_text(self):
+        """text slug used for cover images"""
+        book = models.Edition.objects.create(title="Test Edition")
+        author = models.Author.objects.create(name="Author Name")
+
+        self.assertEqual(book.alt_text, "Test Edition")
+
+        book.authors.set([author])
+        book.save()
+
+        self.assertEqual(book.alt_text, "Author Name: Test Edition")
+
+        book.physical_format = "worm"
+        book.published_date = timezone.make_aware(parse("2022"))
+
+        self.assertEqual(book.alt_text, "Author Name: Test Edition (worm, 2022)")
 
     def test_get_rank(self):
         """sets the data quality index for the book"""
