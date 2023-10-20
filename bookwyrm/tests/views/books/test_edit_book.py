@@ -1,5 +1,4 @@
 """ test for app action functionality """
-from unittest import expectedFailure
 from unittest.mock import patch
 import responses
 from responses import matchers
@@ -229,8 +228,15 @@ class EditBookViews(TestCase):
             view(request)
 
         book = models.Edition.objects.get(title="New Title")
+        pub_datetime = book.published_date
+        new_timezone = timezone.get_fixed_timezone(-12 * 60)
+        pub_date_west = pub_datetime.astimezone(new_timezone)
+
         self.assertEqual(book.title, "New Title")
-        self.assertEqual(book.published_date.date().isoformat(), "2020-01-01")
+        self.assertEqual(book.edition_info, "2020")
+        self.assertEqual(pub_datetime, pub_date_west)
+        self.assertEqual(pub_datetime.date().isoformat(), "2020-01-01")
+        self.assertEqual(pub_date_west.date().isoformat(), "2020-01-01")
 
     def test_create_book_existing_work(self):
         """create an entirely new book and work"""

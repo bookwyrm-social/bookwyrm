@@ -563,6 +563,7 @@ class StableDateField(DateTimeField):
     """a date in a datetime column, forcibly unaffected by USE_TZ"""
 
     # TODO: extend to PartialStableDate (or SealedDate).
+    # TODO: override field_from_activity(), if necessary?
 
     def formfield(self, **kwargs):
         kwargs.setdefault("form_class", StableDateFormField)
@@ -570,15 +571,13 @@ class StableDateField(DateTimeField):
 
     def to_python(self, value):
         if isinstance(value, date):
-            tz = timezone.get_fixed_timezone(timedelta(hours=-12))
             naive_dt = datetime(value.year, value.month, value.day)
+            westmost_tz = timezone.get_fixed_timezone(timedelta(hours=-12))
             # Convert to midnight in a timezone that has a stable date
             # across the globe. (This is a hotfix while we keep on
             # storing stable dates as DateTimeField.)
-            return timezone.make_aware(naive_dt, tz)
+            return timezone.make_aware(naive_dt, westmost_tz)
         return super().to_python(value)  # XXX Just return value?
-
-    # TODO: override field_from_activity(), if necessary?
 
 
 class HtmlField(ActivitypubFieldMixin, models.TextField):
