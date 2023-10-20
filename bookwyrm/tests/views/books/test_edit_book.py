@@ -211,7 +211,6 @@ class EditBookViews(TestCase):
         book = models.Edition.objects.get(title="New Title")
         self.assertEqual(book.parent_work.title, "New Title")
 
-    @expectedFailure  # bookwyrm#3028
     def test_create_book_published_date(self):
         """create a book and verify its publication date"""
         view = views.ConfirmEditBook.as_view()

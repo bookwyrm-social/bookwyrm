@@ -1,6 +1,6 @@
 """ activitypub-aware django model fields """
 from dataclasses import MISSING
-from datetime import datetime
+from datetime import date, datetime, timedelta
 import re
 from uuid import uuid4
 from urllib.parse import urljoin
@@ -11,7 +11,11 @@ from django.contrib.postgres.fields import ArrayField as DjangoArrayField
 from django.contrib.postgres.fields import CICharField as DjangoCICharField
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.forms import ClearableFileInput, ImageField as DjangoImageField
+from django.forms import (
+    ClearableFileInput,
+    DateField as DjangoDateField,
+    ImageField as DjangoImageField,
+)
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.utils.encoding import filepath_to_uri
@@ -537,7 +541,6 @@ class DateTimeField(ActivitypubFieldMixin, models.DateTimeField):
     def field_from_activity(self, value, allow_external_connections=True):
         missing_fields = datetime(1970, 1, 1)  # "2022-10" => "2022-10-01"
         try:
-            # TODO(dato): investigate `ignoretz=True` wrt bookwyrm#3028.
             date_value = dateutil.parser.parse(value, default=missing_fields)
             try:
                 return timezone.make_aware(date_value)
@@ -545,6 +548,37 @@ class DateTimeField(ActivitypubFieldMixin, models.DateTimeField):
                 return date_value
         except (ParserError, TypeError):
             return None
+
+
+class StableDateFormField(DjangoDateField):  # should be in forms/fields.py
+    """converts datetime to date, purposedly ignoring USE_TZ"""
+
+    def prepare_value(self, value):
+        if isinstance(value, datetime):
+            return value.date()
+        return value
+
+
+class StableDateField(DateTimeField):
+    """a date in a datetime column, forcibly unaffected by USE_TZ"""
+
+    # TODO: extend to PartialStableDate (or SealedDate).
+
+    def formfield(self, **kwargs):
+        kwargs.setdefault("form_class", StableDateFormField)
+        return super().formfield(**kwargs)
+
+    def to_python(self, value):
+        if isinstance(value, date):
+            tz = timezone.get_fixed_timezone(timedelta(hours=-12))
+            naive_dt = datetime(value.year, value.month, value.day)
+            # Convert to midnight in a timezone that has a stable date
+            # across the globe. (This is a hotfix while we keep on
+            # storing stable dates as DateTimeField.)
+            return timezone.make_aware(naive_dt, tz)
+        return super().to_python(value)  # XXX Just return value?
+
+    # TODO: override field_from_activity(), if necessary?
 
 
 class HtmlField(ActivitypubFieldMixin, models.TextField):
