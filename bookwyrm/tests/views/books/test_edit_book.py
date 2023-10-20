@@ -1,4 +1,5 @@
 """ test for app action functionality """
+from unittest import expectedFailure
 from unittest.mock import patch
 import responses
 from responses import matchers
@@ -8,6 +9,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.template.response import TemplateResponse
 from django.test import TestCase
 from django.test.client import RequestFactory
+from django.utils import timezone
 
 from bookwyrm import forms, models, views
 from bookwyrm.views.books.edit_book import add_authors
@@ -208,6 +210,29 @@ class EditBookViews(TestCase):
 
         book = models.Edition.objects.get(title="New Title")
         self.assertEqual(book.parent_work.title, "New Title")
+
+    @expectedFailure  # bookwyrm#3028
+    def test_published_date_timezone(self):
+        """user timezone does not affect publication year"""
+        # https://github.com/bookwyrm-social/bookwyrm/issues/3028
+        self.local_user.groups.add(self.group)
+        create_book = views.CreateBook.as_view()
+        book_data = {
+            "title": "January 1st test",
+            "parent_work": self.work.id,
+            "last_edited_by": self.local_user.id,
+            "published_date_day": "1",
+            "published_date_month": "1",
+            "published_date_year": "2020",
+        }
+        request = self.factory.post("", book_data)
+        request.user = self.local_user
+
+        with timezone.override("Europe/Madrid"):  # Ahead of UTC.
+            create_book(request)
+
+        book = models.Edition.objects.get(title="January 1st test")
+        self.assertEqual(book.edition_info, "2020")
 
     def test_create_book_existing_work(self):
         """create an entirely new book and work"""
