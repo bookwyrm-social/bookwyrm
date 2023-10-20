@@ -1,4 +1,5 @@
 """ test for app action functionality """
+from unittest import expectedFailure
 from unittest.mock import patch
 import responses
 from responses import matchers
@@ -8,6 +9,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.template.response import TemplateResponse
 from django.test import TestCase
 from django.test.client import RequestFactory
+from django.utils import timezone
 
 from bookwyrm import forms, models, views
 from bookwyrm.views.books.edit_book import add_authors
@@ -208,6 +210,28 @@ class EditBookViews(TestCase):
 
         book = models.Edition.objects.get(title="New Title")
         self.assertEqual(book.parent_work.title, "New Title")
+
+    @expectedFailure  # bookwyrm#3028
+    def test_create_book_published_date(self):
+        """create a book and verify its publication date"""
+        view = views.ConfirmEditBook.as_view()
+        self.local_user.groups.add(self.group)
+        form = forms.EditionForm()
+        form.data["title"] = "New Title"
+        form.data["parent_work"] = self.work.id
+        form.data["last_edited_by"] = self.local_user.id
+        form.data["published_date_year"] = "2020"
+        form.data["published_date_month"] = "1"
+        form.data["published_date_day"] = "1"
+        request = self.factory.post("", form.data)
+        request.user = self.local_user
+
+        with timezone.override("Europe/Madrid"):  # Ahead of UTC.
+            view(request)
+
+        book = models.Edition.objects.get(title="New Title")
+        self.assertEqual(book.title, "New Title")
+        self.assertEqual(book.published_date.date().isoformat(), "2020-01-01")
 
     def test_create_book_existing_work(self):
         """create an entirely new book and work"""
