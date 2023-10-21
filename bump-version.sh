@@ -46,7 +46,8 @@ if [ -f VERSION ]; then
 #    echo -e "$ADJUSTMENTS_MSG"
 #    read
     echo -e "$PUSHING_MSG"
-#    git add CHANGELOG.md VERSION
+#    git add CHANGELOG.md
+    git add VERSION
     git commit -m "Bump version to ${INPUT_STRING}."
     git tag -a -m "Tag version ${INPUT_STRING}." "v$INPUT_STRING"
     git push origin --tags
@@ -61,14 +62,15 @@ else
     if [ "$RESPONSE" = "YES" ]; then RESPONSE="y"; fi
     if [ "$RESPONSE" = "y" ]; then
         echo "0.1.0" > VERSION
-        echo "## 0.1.0 ($NOW)" > CHANGELOG.md
+#        echo "## 0.1.0 ($NOW)" > CHANGELOG.md
 #        git log --pretty=format:"  - %s" >> CHANGELOG.md
 #        echo "" >> CHANGELOG.md
 #        echo "" >> CHANGELOG.md
 #        echo -e "$ADJUSTMENTS_MSG"
 #        read
         echo -e "$PUSHING_MSG"
-        git add VERSION CHANGELOG.md
+#       git add CHANGELOG.md
+        git add VERSION 
         git commit -m "Add VERSION and CHANGELOG.md files, Bump version to v0.1.0."
         git tag -a -m "Tag version 0.1.0." "v0.1.0"
         git push origin --tags

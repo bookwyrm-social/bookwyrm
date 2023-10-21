@@ -5,15 +5,15 @@
 {% block title %}{{ series_name }}{% endblock %}
 
 {% block content %}
-<div class="block">
-	<h1 class="title">{{ series_name }}</h1>
+<div class="block" itemscope itemtype="https://schema.org/BookSeries">
+	<h1 class="title" itemprop="name">{{ series_name }}</h1>
 	<div class="subtitle" dir="auto">
 		{% trans "Series by" %} <a
 			href="{{ author.local_path }}"
 			class="author {{ link_class }}"
-			itemprop="author"
+			itemprop="creator"
 			itemscope
-			itemtype="https://schema.org/Thing"
+			itemtype="https://schema.org/Person"
 			><span
 					itemprop="name"
 					>{{ author.name }}</span></a>
@@ -22,6 +22,7 @@
 	<div class="columns is-multiline is-mobile">
 	{% for book in books %}
 	{% with book=book %}
+			{# @todo Set `hasPart` property in some meaningful way #}
 			<div class="column is-one-fifth-tablet is-half-mobile is-flex is-flex-direction-column">
 				<div class="is-flex-grow-1 mb-3">
 					<span class="subtitle">{% if book.series_number %}{% blocktrans with series_number=book.series_number %}Book {{ series_number }}{% endblocktrans %}{% else %}{% trans 'Unsorted Book' %}{% endif %}</span>
