@@ -9,6 +9,13 @@
 
 {% block panel %}
 <div class="block content">
+    {% if next_available %}
+    <p class="notification is-warning">
+        {% blocktrans %}
+        You will be able to create a new export file at {{ next_available }}
+        {% endblocktrans %}
+    </p>
+    {% else %}
     <p class="notification">
         {% trans "Your exported archive file will include all user data for import into another Bookwyrm server" %}
     </p>
@@ -19,6 +26,8 @@
             <span>{% trans "Create user export file" %}</span>
         </button>
     </form>
+    {% endif %}
+
 </div>
 <div class="content block">
     <h2 class="title">{% trans "Recent Exports" %}</h2>

@@ -23,7 +23,7 @@ from bookwyrm.importers import (
     OpenLibraryImporter,
 )
 from bookwyrm.models.bookwyrm_import_job import BookwyrmImportJob
-from bookwyrm.settings import PAGE_LENGTH
+from bookwyrm.settings import PAGE_LENGTH, USER_EXPORT_COOLDOWN_HOURS
 from bookwyrm.utils.cache import get_or_set
 
 # pylint: disable= no-self-use
@@ -142,11 +142,16 @@ class UserImport(View):
         jobs = BookwyrmImportJob.objects.filter(user=request.user).order_by(
             "-created_date"
         )
+        hours = USER_EXPORT_COOLDOWN_HOURS
+        allowed = jobs.first().created_date < timezone.now() - datetime.timedelta(hours=hours)
+        next_available = jobs.first().created_date + datetime.timedelta(hours=hours) if not allowed else False
         paginated = Paginator(jobs, PAGE_LENGTH)
         page = paginated.get_page(request.GET.get("page"))
         data = {
             "import_form": forms.ImportUserForm(),
             "jobs": page,
+            "user_import_hours": hours,
+            "next_available": next_available,
             "page_range": paginated.get_elided_page_range(
                 page.number, on_each_side=2, on_ends=1
             ),

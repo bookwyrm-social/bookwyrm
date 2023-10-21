@@ -15,28 +15,12 @@
     {% endif %}
 
 
-        {% if import_size_limit and import_limit_reset %}
-            <div class="notification">
-                <p>{% blocktrans %}Currently you are allowed to import one user every {{ user_import_limit_reset }} days.{% endblocktrans %}</p>
-                <p>{% blocktrans %}You have {{ allowed_imports }} left.{% endblocktrans %}</p>
+        {% if next_available %}
+            <div class="notification is-warning">
+                <p>{% blocktrans %}Currently you are allowed to import one user every {{ user_import_hours }} hours.{% endblocktrans %}</p>
+                <p>{% blocktrans %}You will next be able to import a user file at {{ next_available }}{% endblocktrans %}</p>
             </div>
-        {% endif %}
-        {% if recent_avg_hours or recent_avg_minutes %}
-        <div class="notification">
-            <p>
-            {% if recent_avg_hours %}
-                {% blocktrans trimmed with hours=recent_avg_hours|floatformat:0|intcomma %}
-                    On average, recent imports have taken {{ hours }} hours.
-                {% endblocktrans %}
-            {% else %}
-                {% blocktrans trimmed with minutes=recent_avg_minutes|floatformat:0|intcomma %}
-                    On average, recent imports have taken {{ minutes }} minutes.
-                {% endblocktrans %}
-            {% endif %}
-            </p>
-        </div>
-        {% endif %}
-
+        {% else %}
         <form class="box" name="import-user" action="/user-import" method="post" enctype="multipart/form-data">
             {% csrf_token %}
 
@@ -100,6 +84,7 @@
                 <p>{% trans "You've reached the import limit." %}</p>
             {% endif%}
         </form>
+        {% endif %}
 
 </div>
 
