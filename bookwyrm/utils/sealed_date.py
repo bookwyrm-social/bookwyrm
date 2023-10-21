@@ -12,7 +12,7 @@ class SealedDate(datetime):  # TODO: migrate from DateTimeField to DateField
     def has_month(self) -> bool:
         return True
 
-    def __str__(self):
+    def partial_isoformat(self) -> str:
         return self.strftime("%Y-%m-%d")
 
     @classmethod
@@ -26,7 +26,7 @@ class MonthSeal(SealedDate):
     def has_day(self) -> bool:
         return False
 
-    def __str__(self):
+    def partial_isoformat(self) -> str:
         return self.strftime("%Y-%m")
 
 
@@ -35,5 +35,5 @@ class YearSeal(SealedDate):
     def has_month(self) -> bool:
         return False
 
-    def __str__(self):
+    def partial_isoformat(self) -> str:
         return self.strftime("%Y")
