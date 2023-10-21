@@ -37,7 +37,7 @@ if [ -f VERSION ]; then
     fi
     echo -e "${NOTICE_FLAG} Will set new version to be ${WHITE}$INPUT_STRING"
     echo $INPUT_STRING > VERSION
-    echo "## $INPUT_STRING ($NOW)" > tmpfile
+#    echo "## $INPUT_STRING ($NOW)" > tmpfile
 #    git log --pretty=format:"  - %s" "v$BASE_STRING"...HEAD >> tmpfile
 #    echo "" >> tmpfile
 #    echo "" >> tmpfile
@@ -45,7 +45,7 @@ if [ -f VERSION ]; then
 #    mv tmpfile CHANGELOG.md
 #    echo -e "$ADJUSTMENTS_MSG"
 #    read
-#    echo -e "$PUSHING_MSG"
+    echo -e "$PUSHING_MSG"
 #    git add CHANGELOG.md VERSION
     git commit -m "Bump version to ${INPUT_STRING}."
     git tag -a -m "Tag version ${INPUT_STRING}." "v$INPUT_STRING"
