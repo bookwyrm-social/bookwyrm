@@ -48,8 +48,8 @@
             {% for job in jobs %}
             <tr>
                 <td>
-                    {% if job.complete %}
-                    <p><a href="/preferences/user-export/{{ job.task_id }}">{{ job.created_date }}</a></p>
+                    {% if job.complete and not job.status == "stopped" and not job.status == "failed" %}
+                    <p><a download="" href="/preferences/user-export/{{ job.task_id }}">{{ job.created_date }}</a></p>
                     {% else %}
                     <p>{{ job.created_date }}</p>
                     {% endif %}
@@ -57,7 +57,7 @@
                 <td>{{ job.updated_date }}</td>
                 <td>
                     <span
-                        {% if job.status == "stopped" %}
+                        {% if job.status == "stopped" or job.status == "failed" %}
                         class="tag is-danger"
                         {% elif job.status == "pending" %}
                         class="tag is-warning"
