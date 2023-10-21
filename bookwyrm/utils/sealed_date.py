@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from datetime import datetime, timedelta
+import re
 from typing import Any, Optional, Type, TypeVar, cast
 
 from django.core.exceptions import ValidationError
@@ -11,6 +12,12 @@ from django.forms.widgets import SelectDateWidget
 from django.utils import timezone
 
 
+__all__ = [
+    "SealedDate",
+    "from_partial_isoformat",
+]
+
+_partial_re = re.compile(r"(\d{4})(?:-(\d\d?))?(?:-(\d\d?))?$")
 _westmost_tz = timezone.get_fixed_timezone(timedelta(hours=-12))
 
 Sealed = TypeVar("Sealed", bound="SealedDate")  # TODO: use Self in Python >= 3.11
@@ -61,6 +68,22 @@ class YearSeal(SealedDate):
 
     def partial_isoformat(self) -> str:
         return self.strftime("%Y")
+
+
+def from_partial_isoformat(value: str) -> SealedDate:
+    match = _partial_re.match(value)
+
+    if not match:
+        raise ValueError
+
+    year, month, day = [val and int(val) for val in match.groups()]
+
+    if month is None:
+        return YearSeal.from_date_parts(year, 1, 1)
+    elif day is None:
+        return MonthSeal.from_date_parts(year, month, 1)
+    else:
+        return SealedDate.from_date_parts(year, month, day)
 
 
 class SealedDateFormField(DateField):

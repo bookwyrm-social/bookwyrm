@@ -18,16 +18,76 @@ class SealedDateTest(unittest.TestCase):
         sealed = sealed_date.SealedDate.from_datetime(self.dt)
         self.assertEqual(self.dt, sealed)
         self.assertEqual("2023-10-20", sealed.partial_isoformat())
+        self.assertTrue(sealed.has_day)
+        self.assertTrue(sealed.has_month)
 
     def test_month_seal(self):
         sealed = sealed_date.MonthSeal.from_datetime(self.dt)
         self.assertEqual(self.dt, sealed)
         self.assertEqual("2023-10", sealed.partial_isoformat())
+        self.assertFalse(sealed.has_day)
+        self.assertTrue(sealed.has_month)
 
     def test_year_seal(self):
         sealed = sealed_date.YearSeal.from_datetime(self.dt)
         self.assertEqual(self.dt, sealed)
         self.assertEqual("2023", sealed.partial_isoformat())
+        self.assertFalse(sealed.has_day)
+        self.assertFalse(sealed.has_month)
+
+    def test_parse_year_seal(self):
+        parsed = sealed_date.from_partial_isoformat("1995")
+        expected = datetime.date(1995, 1, 1)
+        self.assertEqual(expected, parsed.date())
+        self.assertFalse(parsed.has_day)
+        self.assertFalse(parsed.has_month)
+
+    def test_parse_year_errors(self):
+        self.assertRaises(ValueError, sealed_date.from_partial_isoformat, "995")
+        self.assertRaises(ValueError, sealed_date.from_partial_isoformat, "1995x")
+        self.assertRaises(ValueError, sealed_date.from_partial_isoformat, "1995-")
+
+    def test_parse_month_seal(self):
+        expected = datetime.date(1995, 5, 1)
+        test_cases = [
+            ("parse_month", "1995-05"),
+            ("parse_month_lenient", "1995-5"),
+        ]
+        for desc, value in test_cases:
+            with self.subTest(desc):
+                parsed = sealed_date.from_partial_isoformat(value)
+                self.assertEqual(expected, parsed.date())
+                self.assertFalse(parsed.has_day)
+                self.assertTrue(parsed.has_month)
+
+    def test_parse_month_dash_required(self):
+        self.assertRaises(ValueError, sealed_date.from_partial_isoformat, "20056")
+        self.assertRaises(ValueError, sealed_date.from_partial_isoformat, "200506")
+        self.assertRaises(ValueError, sealed_date.from_partial_isoformat, "1995-7-")
+
+    def test_parse_day_seal(self):
+        expected = datetime.date(1995, 5, 6)
+        test_cases = [
+            ("parse_day", "1995-05-06"),
+            ("parse_day_lenient1", "1995-5-6"),
+            ("parse_day_lenient2", "1995-05-6"),
+        ]
+        for desc, value in test_cases:
+            with self.subTest(desc):
+                parsed = sealed_date.from_partial_isoformat(value)
+                self.assertEqual(expected, parsed.date())
+                self.assertTrue(parsed.has_day)
+                self.assertTrue(parsed.has_month)
+
+    def test_partial_isoformat_no_time_allowed(self):
+        self.assertRaises(ValueError, sealed_date.from_partial_isoformat, "2005-06-07 ")
+        self.assertRaises(ValueError, sealed_date.from_partial_isoformat, "2005-06-07T")
+        self.assertRaises(
+            ValueError, sealed_date.from_partial_isoformat, "2005-06-07T00:00:00"
+        )
+        self.assertRaises(
+            ValueError, sealed_date.from_partial_isoformat, "2005-06-07T00:00:00-03"
+        )
 
 
 class SealedDateFormFieldTest(unittest.TestCase):
