@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from datetime import datetime, timedelta
+from typing import Any, Optional, Type, TypeVar, cast
 
 from django.core.exceptions import ValidationError
 from django.forms import DateField
@@ -11,6 +12,8 @@ from django.utils import timezone
 
 
 _westmost_tz = timezone.get_fixed_timezone(timedelta(hours=-12))
+
+Sealed = TypeVar("Sealed", bound="SealedDate")  # TODO: use Self in Python >= 3.11
 
 # TODO: migrate SealedDate to `date`
 
@@ -30,12 +33,12 @@ class SealedDate(datetime):
         return self.strftime("%Y-%m-%d")
 
     @classmethod
-    def from_datetime(cls, dt) -> SealedDate:
+    def from_datetime(cls: Type[Sealed], dt: datetime) -> Sealed:
         # pylint: disable=invalid-name
         return cls.combine(dt.date(), dt.time(), tzinfo=dt.tzinfo)
 
     @classmethod
-    def from_date_parts(cls, year, month, day) -> SealedDate:
+    def from_date_parts(cls: Type[Sealed], year: int, month: int, day: int) -> Sealed:
         # because SealedDate is actually a datetime object, we must create it with a
         # timezone such that its date remains stable no matter the values of USE_TZ,
         # current_timezone and default_timezone.
@@ -63,11 +66,11 @@ class YearSeal(SealedDate):
 class SealedDateFormField(DateField):
     """date form field with support for SealedDate"""
 
-    def prepare_value(self, value):
+    def prepare_value(self, value: Any) -> str:
         # As a convention, Django's `SelectDateWidget` uses "0" for missing
         # parts. We piggy-back into that, to make it work with SealedDate.
         if not isinstance(value, SealedDate):
-            return super().prepare_value(value)
+            return cast(str, super().prepare_value(value))
         elif value.has_day:
             return value.strftime("%Y-%m-%d")
         elif value.has_month:
@@ -75,7 +78,7 @@ class SealedDateFormField(DateField):
         else:
             return value.strftime("%Y-0-0")
 
-    def to_python(self, value) -> SealedDate:
+    def to_python(self, value: Any) -> Optional[SealedDate]:
         try:
             date = super().to_python(value)
         except ValidationError as ex:
