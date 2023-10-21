@@ -51,7 +51,7 @@ class Job(models.Model):
 
         self.__terminate_job()
 
-        if reason and reason is "failed":
+        if reason and reason == "failed":
             self.status = self.Status.FAILED
         else:
             self.status = self.Status.STOPPED

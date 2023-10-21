@@ -1,5 +1,6 @@
 from functools import reduce
 import json
+import logging
 import operator
 
 from django.db.models import FileField, JSONField, CharField
@@ -18,7 +19,8 @@ from bookwyrm.models.job import (
     create_child_job,
 )
 from bookwyrm.utils.tar import BookwyrmTarFile
-import json
+
+logger = logging.getLogger(__name__)
 
 
 class BookwyrmImportJob(ParentJob):
@@ -43,27 +45,33 @@ def start_import_task(**kwargs):
     if job.complete:
         return
 
-    archive_file.open("rb")
-    with BookwyrmTarFile.open(mode="r:gz", fileobj=archive_file) as tar:
-        job.import_data = json.loads(tar.read("archive.json").decode("utf-8"))
+    try:
+        archive_file.open("rb")
+        with BookwyrmTarFile.open(mode="r:gz", fileobj=archive_file) as tar:
+            job.import_data = json.loads(tar.read("archive.json").decode("utf-8"))
 
-        if "include_user_profile" in job.required:
-            update_user_profile(job.user, tar, job.import_data.get("user"))
-        if "include_user_settings" in job.required:
-            update_user_settings(job.user, job.import_data.get("user"))
-        if "include_goals" in job.required:
-            update_goals(job.user, job.import_data.get("goals"))
-        if "include_saved_lists" in job.required:
-            upsert_saved_lists(job.user, job.import_data.get("saved_lists"))
-        if "include_follows" in job.required:
-            upsert_follows(job.user, job.import_data.get("follows"))
-        if "include_blocks" in job.required:
-            upsert_user_blocks(job.user, job.import_data.get("blocked_users"))
+            if "include_user_profile" in job.required:
+                update_user_profile(job.user, tar, job.import_data.get("user"))
+            if "include_user_settings" in job.required:
+                update_user_settings(job.user, job.import_data.get("user"))
+            if "include_goals" in job.required:
+                update_goals(job.user, job.import_data.get("goals"))
+            if "include_saved_lists" in job.required:
+                upsert_saved_lists(job.user, job.import_data.get("saved_lists"))
+            if "include_follows" in job.required:
+                upsert_follows(job.user, job.import_data.get("follows"))
+            if "include_blocks" in job.required:
+                upsert_user_blocks(job.user, job.import_data.get("blocked_users"))
 
-        process_books(job, tar)
+            process_books(job, tar)
 
-        job.save()
-    archive_file.close()
+            job.set_status("complete") # set here to trigger notifications
+            job.save()
+        archive_file.close()
+
+    except Exception as err:  # pylint: disable=broad-except
+        logger.exception("User Import Job %s Failed with error: %s", job.id, err)
+        job.set_status("failed")
 
 
 def process_books(job, tar):

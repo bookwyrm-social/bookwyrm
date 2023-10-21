@@ -1,0 +1,11 @@
+{% extends 'notifications/items/layout.html' %}
+{% load i18n %}
+
+{% block icon %}
+<span class="icon icon-list"></span>
+{% endblock %}
+
+{% block description %}
+    {% url 'prefs-export-file' notification.related_user_export.task_id as url %}
+    {% blocktrans %}Your <a download href="{{ url }}">user export</a> is ready.{% endblocktrans %}
+{% endblock %}

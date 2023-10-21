@@ -133,7 +133,7 @@
                 <td>{{ job.updated_date }}</td>
                 <td>
                     <span
-                        {% if job.status == "stopped" %}
+                        {% if job.status == "stopped" or job.status == "failed" %}
                         class="tag is-danger"
                         {% elif job.status == "pending" %}
                         class="tag is-warning"
