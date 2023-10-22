@@ -124,7 +124,7 @@ def get_or_create_edition(book_data, tar):
         ):
             book[key] = edition[key]
 
-    existing = find_existing(models.Edition, book, None)
+    existing = find_existing(models.Edition, book)
     if existing:
         return existing
 
@@ -233,7 +233,7 @@ def get_or_create_authors(data):
     authors = []
     for author in data:
         clean = clean_values(author)
-        existing = find_existing(models.Author, clean, None)
+        existing = find_existing(models.Author, clean)
         if existing:
             authors.append(existing)
         else:

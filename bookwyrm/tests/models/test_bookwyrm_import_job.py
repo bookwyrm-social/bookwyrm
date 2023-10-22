@@ -306,7 +306,7 @@ class BookwyrmImport(TestCase):
         self.assertEqual(models.Edition.objects.first().openlibrary_key, "OL28216445M")
 
         existing = bookwyrm_import_job.find_existing(
-            models.Edition, {"openlibrary_key": "OL28216445M", "isbn_10": None}, None
+            models.Edition, {"openlibrary_key": "OL28216445M", "isbn_10": None}
         )
         self.assertEqual(existing.title, "Test Book")
 

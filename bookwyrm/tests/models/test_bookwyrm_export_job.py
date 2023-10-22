@@ -1,6 +1,5 @@
 """test bookwyrm user export functions"""
 import datetime
-import time
 import json
 from unittest.mock import patch
 
@@ -227,8 +226,8 @@ class BookwyrmExport(TestCase):
             json_data["books"][0]["quotes"][0]["quote"], "A rose by any other name"
         )
 
-    def test_tar_export(self):  # pylint: disable=unnecessary-pass
+    def test_tar_export(self):
         """test the tar export function"""
 
         # TODO
-        pass
+        pass  # pylint: disable=unnecessary-pass
