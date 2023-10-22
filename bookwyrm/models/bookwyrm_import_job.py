@@ -65,7 +65,7 @@ def start_import_task(**kwargs):
 
             process_books(job, tar)
 
-            job.set_status("complete") # set here to trigger notifications
+            job.set_status("complete")  # set here to trigger notifications
             job.save()
         archive_file.close()
 

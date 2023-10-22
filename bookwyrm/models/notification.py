@@ -2,7 +2,14 @@
 from django.db import models, transaction
 from django.dispatch import receiver
 from .base_model import BookWyrmModel
-from . import Boost, Favorite, GroupMemberInvitation, ImportJob, BookwyrmImportJob, LinkDomain
+from . import (
+    Boost,
+    Favorite,
+    GroupMemberInvitation,
+    ImportJob,
+    BookwyrmImportJob,
+    LinkDomain,
+)
 from bookwyrm.models.bookwyrm_export_job import BookwyrmExportJob
 from . import ListItem, Report, Status, User, UserFollowRequest
 
@@ -64,7 +71,9 @@ class Notification(BookWyrmModel):
     )
     related_status = models.ForeignKey("Status", on_delete=models.CASCADE, null=True)
     related_import = models.ForeignKey("ImportJob", on_delete=models.CASCADE, null=True)
-    related_user_export = models.ForeignKey("BookwyrmExportJob", on_delete=models.CASCADE, null=True)
+    related_user_export = models.ForeignKey(
+        "BookwyrmExportJob", on_delete=models.CASCADE, null=True
+    )
     related_list_items = models.ManyToManyField(
         "ListItem", symmetrical=False, related_name="notifications"
     )
@@ -226,6 +235,7 @@ def notify_user_on_import_complete(
         related_import=instance,
     )
 
+
 @receiver(models.signals.post_save, sender=BookwyrmImportJob)
 # pylint: disable=unused-argument
 def notify_user_on_user_import_complete(
@@ -236,9 +246,9 @@ def notify_user_on_user_import_complete(
     if not instance.complete or "complete" not in update_fields:
         return
     Notification.objects.create(
-        user=instance.user,
-        notification_type=Notification.USER_IMPORT
+        user=instance.user, notification_type=Notification.USER_IMPORT
     )
+
 
 @receiver(models.signals.post_save, sender=BookwyrmExportJob)
 # pylint: disable=unused-argument
@@ -256,6 +266,7 @@ def notify_user_on_user_export_complete(
         notification_type=Notification.USER_EXPORT,
         related_user_export=instance,
     )
+
 
 @receiver(models.signals.post_save, sender=Report)
 @transaction.atomic

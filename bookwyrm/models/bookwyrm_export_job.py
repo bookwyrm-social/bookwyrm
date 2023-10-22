@@ -43,7 +43,9 @@ def start_export_task(**kwargs):
     except Exception as err:  # pylint: disable=broad-except
         logger.exception("User Export Job %s Failed with error: %s", job.id, err)
         job.set_status("failed")
-    job.set_status("complete") # need to explicitly set this here to trigger notifications
+    job.set_status(
+        "complete"
+    )  # need to explicitly set this here to trigger notifications
     job.save(update_fields=["export_data"])
 
 

@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bookwyrm', '0183_auto_20231021_2050'),
+        ("bookwyrm", "0183_auto_20231021_2050"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='sitesettings',
-            name='user_import_time_limit',
+            model_name="sitesettings",
+            name="user_import_time_limit",
             field=models.IntegerField(default=48),
         ),
     ]

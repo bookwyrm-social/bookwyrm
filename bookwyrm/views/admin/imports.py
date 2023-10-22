@@ -40,9 +40,9 @@ class ImportList(View):
         paginated = Paginator(imports, PAGE_LENGTH)
         page = paginated.get_page(request.GET.get("page"))
 
-        user_imports = models.BookwyrmImportJob.objects.filter(complete=complete).order_by(
-            "created_date"
-        )
+        user_imports = models.BookwyrmImportJob.objects.filter(
+            complete=complete
+        ).order_by("created_date")
 
         user_paginated = Paginator(user_imports, PAGE_LENGTH)
         user_page = user_paginated.get_page(request.GET.get("page"))
@@ -104,6 +104,7 @@ def set_import_size_limit(request):
     site.import_limit_reset = import_limit_reset
     site.save(update_fields=["import_size_limit", "import_limit_reset"])
     return redirect("settings-imports")
+
 
 @require_POST
 @login_required
