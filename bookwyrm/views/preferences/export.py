@@ -103,10 +103,10 @@ class ExportUser(View):
         jobs = BookwyrmExportJob.objects.filter(user=request.user).order_by(
             "-created_date"
         )
-        hours = settings.USER_EXPORT_COOLDOWN_HOURS
-        allowed = jobs.first().created_date < timezone.now() - timedelta(hours=hours)
+        site = models.SiteSettings.objects.get()
+        hours = site.user_import_time_limit
+        allowed = jobs.first().created_date < timezone.now() - timedelta(hours=hours) if jobs.first() else True
         next_available = jobs.first().created_date + timedelta(hours=hours) if not allowed else False
-
         paginated = Paginator(jobs, PAGE_LENGTH)
         page = paginated.get_page(request.GET.get("page"))
         data = {

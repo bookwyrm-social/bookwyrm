@@ -423,6 +423,3 @@ if HTTP_X_FORWARDED_PROTO:
 # Do not change this setting unless you already have an existing
 # user with the same username - in which case you should change it!
 INSTANCE_ACTOR_USERNAME = "bookwyrm.instance.actor"
-
-# exports
-USER_EXPORT_COOLDOWN_HOURS = 48

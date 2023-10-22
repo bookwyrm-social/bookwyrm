@@ -10,81 +10,89 @@
 
     {% if invalid %}
     <div class="notification is-danger">
-        {% trans "Not a valid JSON file" %}
+        {% trans "Not a valid import file" %}
     </div>
     {% endif %}
 
+    {% if not site.imports_enabled %}
+    <div class="box notification has-text-centered is-warning m-6 content">
+        <p class="mt-5">
+            <span class="icon icon-warning is-size-2" aria-hidden="true"></span>
+        </p>
+        <p class="mb-5">
+            {% trans "Imports are temporarily disabled; thank you for your patience." %}
+        </p>
+    </div>
+    {% elif next_available %}
+        <div class="notification is-warning">
+            <p>{% blocktrans %}Currently you are allowed to import one user every {{ user_import_hours }} hours.{% endblocktrans %}</p>
+            <p>{% blocktrans %}You will next be able to import a user file at {{ next_available }}{% endblocktrans %}</p>
+        </div>
+    {% else %}
+    <form class="box" name="import-user" action="/user-import" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
 
-        {% if next_available %}
-            <div class="notification is-warning">
-                <p>{% blocktrans %}Currently you are allowed to import one user every {{ user_import_hours }} hours.{% endblocktrans %}</p>
-                <p>{% blocktrans %}You will next be able to import a user file at {{ next_available }}{% endblocktrans %}</p>
+        <div class="columns">
+        <div class="column is-half">
+            <div class="field">
+                <label class="label" for="id_archive_file">{% trans "Data file:" %}</label>
+                {{ import_form.archive_file }}
             </div>
+            <div>
+                <p class="block"> {% trans "Importing this file will overwrite any data you currently have saved." %}</p>
+                <p class="block">{% trans "Deselect any data you do not wish to include in your import. Books will always be imported" %}</p>
+            </div>
+        </div>
+
+        <div class="column is-half">
+            <div class="field">
+                <label class="label">
+                    <input type="checkbox" name="include_user_profile" checked> {% trans "Include user profile" %}
+                </label>
+                <label class="label">
+                    <input type="checkbox" name="include_user_settings" checked> {% trans "Include user settings" %}
+                </label>
+                <label class="label">
+                    <input type="checkbox" name="include_goals" checked> {% trans "Include reading goals" %}
+                </label>
+                <label class="label">
+                    <input type="checkbox" name="include_shelves" checked> {% trans "Include shelves" %}
+                </label>
+                <label class="label">
+                    <input type="checkbox" name="include_readthroughs" checked> {% trans "Include 'readthroughs'" %}
+                </label>
+                <label class="label">
+                    <input type="checkbox" name="include_reviews" checked> {% trans "Include book reviews" %}
+                </label>
+                <label class="label">
+                    <input type="checkbox" name="include_quotes" checked> {% trans "Include quotations" %}
+                </label>
+                <label class="label">
+                    <input type="checkbox" name="include_comments" checked> {% trans "Include comments about books" %}
+                </label>
+                <label class="label">
+                    <input type="checkbox" name="include_lists" checked> {% trans "Include book lists" %}
+                </label>
+                <label class="label">
+                    <input type="checkbox" name="include_saved_lists" checked> {% trans "Include saved lists" %}
+                </label>
+                <label class="label">
+                    <input type="checkbox" name="include_follows" checked> {% trans "Include follows" %}
+                </label>
+                <label class="label">
+                    <input type="checkbox" name="include_blocks" checked> {% trans "Include user blocks" %}
+                </label>
+            </div>
+        </div>
+        </div>
+        {% if not import_limit_reset and not import_size_limit or allowed_imports > 0 %}
+            <button class="button is-primary" type="submit">{% trans "Import" %}</button>
         {% else %}
-        <form class="box" name="import-user" action="/user-import" method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-
-            <div class="columns">
-            <div class="column is-half">
-                <div class="field">
-                    <label class="label" for="id_archive_file">{% trans "Data file:" %}</label>
-                    {{ import_form.archive_file }}
-                </div>
-                <div>
-                    <p class="block"> {% trans "Importing this file will overwrite any data you currently have saved." %}</p>
-                    <p class="block">{% trans "Deselect any data you do not wish to include in your import. Books will always be imported" %}</p>
-                </div>
-            </div>
-
-            <div class="column is-half">
-                <div class="field">
-                    <label class="label">
-                        <input type="checkbox" name="include_user_profile" checked> {% trans "Include user profile" %}
-                    </label>
-                    <label class="label">
-                        <input type="checkbox" name="include_user_settings" checked> {% trans "Include user settings" %}
-                    </label>
-                    <label class="label">
-                        <input type="checkbox" name="include_goals" checked> {% trans "Include reading goals" %}
-                    </label>
-                    <label class="label">
-                        <input type="checkbox" name="include_shelves" checked> {% trans "Include shelves" %}
-                    </label>
-                    <label class="label">
-                        <input type="checkbox" name="include_readthroughs" checked> {% trans "Include 'readthroughs'" %}
-                    </label>
-                    <label class="label">
-                        <input type="checkbox" name="include_reviews" checked> {% trans "Include book reviews" %}
-                    </label>
-                    <label class="label">
-                        <input type="checkbox" name="include_quotes" checked> {% trans "Include quotations" %}
-                    </label>
-                    <label class="label">
-                        <input type="checkbox" name="include_comments" checked> {% trans "Include comments about books" %}
-                    </label>
-                    <label class="label">
-                        <input type="checkbox" name="include_lists" checked> {% trans "Include book lists" %}
-                    </label>
-                    <label class="label">
-                        <input type="checkbox" name="include_saved_lists" checked> {% trans "Include saved lists" %}
-                    </label>
-                    <label class="label">
-                        <input type="checkbox" name="include_follows" checked> {% trans "Include follows" %}
-                    </label>
-                    <label class="label">
-                        <input type="checkbox" name="include_blocks" checked> {% trans "Include user blocks" %}
-                    </label>
-                </div>
-            </div>
-            </div>
-            {% if not import_limit_reset and not import_size_limit or allowed_imports > 0 %}
-                <button class="button is-primary" type="submit">{% trans "Import" %}</button>
-            {% else %}
-                <button class="button is-primary is-disabled" type="submit">{% trans "Import" %}</button>
-                <p>{% trans "You've reached the import limit." %}</p>
-            {% endif%}
-        </form>
-        {% endif %}
+            <button class="button is-primary is-disabled" type="submit">{% trans "Import" %}</button>
+            <p>{% trans "You've reached the import limit." %}</p>
+        {% endif%}
+    </form>
+    {% endif %}
 
 </div>
 

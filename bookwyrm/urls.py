@@ -317,6 +317,11 @@ urlpatterns = [
         name="settings-imports-complete",
     ),
     re_path(
+        r"^settings/user-imports/(?P<import_id>\d+)/complete/?$",
+        views.set_user_import_completed,
+        name="settings-user-import-complete",
+    ),
+    re_path(
         r"^settings/imports/disable/?$",
         views.disable_imports,
         name="settings-imports-disable",
@@ -330,6 +335,11 @@ urlpatterns = [
         r"^settings/imports/set-limit/?$",
         views.set_import_size_limit,
         name="settings-imports-set-limit",
+    ),
+    re_path(
+        r"^settings/user-imports/set-limit/?$",
+        views.set_user_import_limit,
+        name="settings-user-imports-set-limit",
     ),
     re_path(
         r"^settings/celery/?$", views.CeleryStatus.as_view(), name="settings-celery"
