@@ -69,7 +69,7 @@ def tar_export(json_data: str, user, file):
     file.close()
 
 
-def json_export(user):
+def json_export(user):  # pylint: disable=too-many-locals, too-many-statements
     """Generate an export for a user"""
     # user
     exported_user = {}

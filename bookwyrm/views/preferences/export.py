@@ -135,7 +135,7 @@ class ExportUser(View):
 
 
 @method_decorator(login_required, name="dispatch")
-class ExportArchive(View):  # pylint: disable=line-too-long
+class ExportArchive(View):
     """Serve the archive file"""
 
     def get(self, request, archive_id):
@@ -145,6 +145,6 @@ class ExportArchive(View):  # pylint: disable=line-too-long
             export.export_data,
             content_type="application/gzip",
             headers={
-                "Content-Disposition": 'attachment; filename="bookwyrm-account-export.tar.gz"'
+                "Content-Disposition": 'attachment; filename="bookwyrm-account-export.tar.gz"'  # pylint: disable=line-too-long
             },
         )

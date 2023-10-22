@@ -274,16 +274,17 @@
                 {% else %}
                 <td>
                     <span
-                    {% if import.status == "stopped" or import.status == "failed" %}
-                    class="tag is-danger"
-                    {% elif import.status == "pending" %}
-                    class="tag is-warning"
-                    {% elif import.complete %}
-                    class="tag"
-                    {% else %}
-                    class="tag is-success"
-                    {% endif %}
-                    >{{ import.status }}</span></td>
+                        {% if import.status == "stopped" or import.status == "failed" %}
+                        class="tag is-danger"
+                        {% elif import.status == "pending" %}
+                        class="tag is-warning"
+                        {% elif import.complete %}
+                        class="tag"
+                        {% else %}
+                        class="tag is-success"
+                        {% endif %}
+                        >{{ import.status }}
+                    </span>
                 </td>
                 {% endif %}
             </tr>

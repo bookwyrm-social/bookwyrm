@@ -10,7 +10,7 @@ def read_tar():
             yield tar
 
 
-def get_write_tar():
+def write_tar():
     archive_path = "/tmp/test.tar.gz"
     with open(archive_path, "wb") as archive_file:
         with BookwyrmTarFile.open(mode="w:gz", fileobj=archive_file) as tar:
