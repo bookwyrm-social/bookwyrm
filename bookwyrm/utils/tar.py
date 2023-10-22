@@ -1,6 +1,7 @@
 """manage tar files for user exports"""
 import io
 import tarfile
+from typing import Any
 from uuid import uuid4
 from django.core.files import File
 
