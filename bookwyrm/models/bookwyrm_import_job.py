@@ -1,3 +1,5 @@
+"""Import a user from another Bookwyrm instance"""
+
 from functools import reduce
 import json
 import logging
@@ -11,13 +13,7 @@ from django.contrib.postgres.fields import ArrayField as DjangoArrayField
 from bookwyrm import activitypub
 from bookwyrm import models
 from bookwyrm.tasks import app, IMPORTS
-from bookwyrm.models.job import (
-    ParentJob,
-    ParentTask,
-    ChildJob,
-    SubTask,
-    create_child_job,
-)
+from bookwyrm.models.job import ParentJob, ParentTask, SubTask
 from bookwyrm.utils.tar import BookwyrmTarFile
 
 logger = logging.getLogger(__name__)
@@ -161,8 +157,10 @@ def get_or_create_edition(book_data, tar):
     if cover_path:
         tar.write_image_to_file(cover_path, new_book.cover)
 
-    # NOTE: clean_values removes "last_edited_by" because it's a user ID from the old database
-    # if this is required, bookwyrm_export_job will need to bring in the user who edited it.
+    # NOTE: clean_values removes "last_edited_by"
+    # because it's a user ID from the old database
+    # if this is required, bookwyrm_export_job will
+    # need to bring in the user who edited it.
 
     # create parent
     work = models.Work.objects.create(title=book["title"])
@@ -197,7 +195,7 @@ def clean_values(data):
     return new_data
 
 
-def find_existing(cls, data, user):
+def find_existing(cls, data):
     """Given a book or author, find any existing model instances"""
 
     identifiers = [
@@ -248,27 +246,31 @@ def upsert_readthroughs(data, user, book_id):
     """Take a JSON string of readthroughs, find or create the
     instances in the database and return a list of saved instances"""
 
-    for rt in data:
+    for read_thru in data:
         start_date = (
-            parse_datetime(rt["start_date"]) if rt["start_date"] is not None else None
+            parse_datetime(read_thru["start_date"])
+            if read_thru["start_date"] is not None
+            else None
         )
         finish_date = (
-            parse_datetime(rt["finish_date"]) if rt["finish_date"] is not None else None
+            parse_datetime(read_thru["finish_date"])
+            if read_thru["finish_date"] is not None
+            else None
         )
         stopped_date = (
-            parse_datetime(rt["stopped_date"])
-            if rt["stopped_date"] is not None
+            parse_datetime(read_thru["stopped_date"])
+            if read_thru["stopped_date"] is not None
             else None
         )
         readthrough = {
             "user": user,
             "book": models.Edition.objects.get(id=book_id),
-            "progress": rt["progress"],
-            "progress_mode": rt["progress_mode"],
+            "progress": read_thru["progress"],
+            "progress_mode": read_thru["progress_mode"],
             "start_date": start_date,
             "finish_date": finish_date,
             "stopped_date": stopped_date,
-            "is_active": rt["is_active"],
+            "is_active": read_thru["is_active"],
         }
 
         existing = models.ReadThrough.objects.filter(**readthrough).exists()
@@ -311,7 +313,8 @@ def get_or_create_statuses(user, cls, data, book_id):
 
 
 def upsert_lists(user, lists, items, book_id):
-    """Take a list and ListItems as JSON and create DB entries if they don't already exist"""
+    """Take a list and ListItems as JSON and
+    create DB entries if they don't already exist"""
 
     book = models.Edition.objects.get(id=book_id)
 
@@ -408,7 +411,7 @@ def update_user_settings(user, data):
 
 
 @app.task(queue=IMPORTS, base=SubTask)
-def update_user_settings_task(job_id, child_id):
+def update_user_settings_task(job_id):
     """wrapper task for user's settings import"""
     parent_job = BookwyrmImportJob.objects.get(id=job_id)
 
@@ -433,7 +436,7 @@ def update_goals(user, data):
 
 
 @app.task(queue=IMPORTS, base=SubTask)
-def update_goals_task(job_id, child_id):
+def update_goals_task(job_id):
     """wrapper task for user's goals import"""
     parent_job = BookwyrmImportJob.objects.get(id=job_id)
 
@@ -450,7 +453,7 @@ def upsert_saved_lists(user, values):
 
 
 @app.task(queue=IMPORTS, base=SubTask)
-def upsert_saved_lists_task(job_id, child_id):
+def upsert_saved_lists_task(job_id):
     """wrapper task for user's saved lists import"""
     parent_job = BookwyrmImportJob.objects.get(id=job_id)
 
@@ -477,7 +480,7 @@ def upsert_follows(user, values):
 
 
 @app.task(queue=IMPORTS, base=SubTask)
-def upsert_follows_task(job_id, child_id):
+def upsert_follows_task(job_id):
     """wrapper task for user's follows import"""
     parent_job = BookwyrmImportJob.objects.get(id=job_id)
 
@@ -504,7 +507,7 @@ def upsert_user_blocks(user, user_ids):
 
 
 @app.task(queue=IMPORTS, base=SubTask)
-def upsert_user_blocks_task(job_id, child_id):
+def upsert_user_blocks_task(job_id):
     """wrapper task for user's blocks import"""
     parent_job = BookwyrmImportJob.objects.get(id=job_id)
 

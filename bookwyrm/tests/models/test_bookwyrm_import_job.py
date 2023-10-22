@@ -5,14 +5,12 @@ import pathlib
 from unittest.mock import patch
 
 from django.db.models import Q
-from django.utils import timezone
 from django.utils.dateparse import parse_datetime
 from django.test import TestCase
 
 from bookwyrm import models
-from bookwyrm.settings import DOMAIN
 from bookwyrm.utils.tar import BookwyrmTarFile
-import bookwyrm.models.bookwyrm_import_job as bookwyrm_import_job
+from bookwyrm.models import bookwyrm_import_job
 
 
 class BookwyrmImport(TestCase):
@@ -246,7 +244,9 @@ class BookwyrmImport(TestCase):
         self.assertEqual(author.name, "James C. Scott")
 
     def test_get_or_create_edition_existing(self):
-        """Test take a JSON string of books and editions, find or create the editions in the database and return a list of edition instances"""
+        """Test take a JSON string of books and editions,
+        find or create the editions in the database and
+        return a list of edition instances"""
 
         self.assertEqual(models.Edition.objects.count(), 1)
         self.assertEqual(models.Edition.objects.count(), 1)
@@ -258,7 +258,9 @@ class BookwyrmImport(TestCase):
         self.assertEqual(models.Edition.objects.count(), 1)
 
     def test_get_or_create_edition_not_existing(self):
-        """Test take a JSON string of books and editions, find or create the editions in the database and return a list of edition instances"""
+        """Test take a JSON string of books and editions,
+        find or create the editions in the database and
+        return a list of edition instances"""
 
         self.assertEqual(models.Edition.objects.count(), 1)
 
@@ -441,7 +443,8 @@ class BookwyrmImport(TestCase):
         )
 
     def test_upsert_list_existing(self):
-        """Take a list and ListItems as JSON and create DB entries if they don't already exist"""
+        """Take a list and ListItems as JSON and create DB entries
+        if they don't already exist"""
 
         book_data = self.import_data["books"][0]
 
@@ -456,7 +459,7 @@ class BookwyrmImport(TestCase):
                 name="my list of books", user=self.local_user
             )
 
-            list_item = models.ListItem.objects.create(
+            models.ListItem.objects.create(
                 book=self.book, book_list=book_list, user=self.local_user, order=1
             )
 
@@ -489,7 +492,8 @@ class BookwyrmImport(TestCase):
         )
 
     def test_upsert_list_not_existing(self):
-        """Take a list and ListItems as JSON and create DB entries if they don't already exist"""
+        """Take a list and ListItems as JSON and create DB entries
+        if they don't already exist"""
 
         book_data = self.import_data["books"][0]
 
