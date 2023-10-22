@@ -1,4 +1,5 @@
 """ basics for an activitypub serializer """
+from __future__ import annotations
 from dataclasses import dataclass, fields, MISSING
 from json import JSONEncoder
 import logging
@@ -72,8 +73,10 @@ class ActivityObject:
 
     def __init__(
         self,
-        activity_objects: Optional[list[str, base_model.BookWyrmModel]] = None,
-        **kwargs: dict[str, Any],
+        activity_objects: Optional[
+            dict[str, Union[str, list[str], ActivityObject, base_model.BookWyrmModel]]
+        ] = None,
+        **kwargs: Any,
     ):
         """this lets you pass in an object with fields that aren't in the
         dataclass, which it ignores. Any field in the dataclass is required or
