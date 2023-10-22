@@ -44,16 +44,18 @@
                     {% endif %}
 
                     {% if book.series %}
-                        <meta itemprop="isPartOf" content="{{ book.series | escape }}">
-                        <meta itemprop="volumeNumber" content="{{ book.series_number }}">
-
+                        <meta itemprop="position" content="{{ book.series_number }}">
+                        <span itemprop="isPartOf" itemscope itemtype="https://schema.org/BookSeries">
                         {% if book.authors.exists %}
-                            <a href="{% url 'book-series-by' book.authors.first.id %}?series_name={{ book.series }}">
+                            <a href="{% url 'book-series-by' book.authors.first.id %}?series_name={{ book.series | urlencode }}"
+                               itemprop="url">
                         {% endif %}
-                        {{ book.series }}{% if book.series_number %} #{{ book.series_number }}{% endif %}
+                        <span itemprop="name">{{ book.series }}</span>
+                        {% if book.series_number %} #{{ book.series_number }}{% endif %}
                         {% if book.authors.exists %}
                             </a>
                         {% endif %}
+                        </span>
                     {% endif %}
                 </p>
             {% endif %}
@@ -186,8 +188,6 @@
                     itemtype="https://schema.org/AggregateRating"
                 >
                     <meta itemprop="ratingValue" content="{{ rating|floatformat }}">
-                    {# @todo Is it possible to not hard-code the value? #}
-                    <meta itemprop="bestRating" content="5">
                     <meta itemprop="reviewCount" content="{{ review_count }}">
 
                     <span>

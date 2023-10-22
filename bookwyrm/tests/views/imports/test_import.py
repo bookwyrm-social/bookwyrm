@@ -7,6 +7,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.template.response import TemplateResponse
 from django.test import TestCase
 from django.test.client import RequestFactory
+from django.utils import timezone
 
 from bookwyrm import forms, models, views
 from bookwyrm.tests.validate_html import validate_html
@@ -128,7 +129,7 @@ class ImportViews(TestCase):
 
     def test_get_average_import_time_with_data(self):
         """Now, with data"""
-        now = datetime.datetime.now()
+        now = timezone.now()
         two_hours_ago = now - datetime.timedelta(hours=2)
         four_hours_ago = now - datetime.timedelta(hours=4)
         models.ImportJob.objects.create(
@@ -152,7 +153,7 @@ class ImportViews(TestCase):
 
     def test_get_average_import_time_ignore_stopped(self):
         """Don't include stopped, do include no status"""
-        now = datetime.datetime.now()
+        now = timezone.now()
         two_hours_ago = now - datetime.timedelta(hours=2)
         four_hours_ago = now - datetime.timedelta(hours=4)
         models.ImportJob.objects.create(

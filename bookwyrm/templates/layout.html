@@ -14,6 +14,7 @@
 
     <link rel="shortcut icon" type="image/x-icon" href="{% if site.favicon %}{% get_media_prefix %}{{ site.favicon }}{% else %}{% static "images/favicon.ico" %}{% endif %}">
     <link rel="apple-touch-icon" href="{% if site.logo %}{{ media_full_url }}{{ site.logo }}{% else %}{% static "images/logo.png" %}{% endif %}">
+    <link rel="manifest" href="/manifest.json" />
 
     {% block opengraph %}
         {% include 'snippets/opengraph.html' %}
@@ -129,7 +130,12 @@
                                     </div>
                                     <div class="column">
                                         <label class="is-sr-only" for="id_password">{% trans "Password:" %}</label>
-                                        <input type="password" name="password" maxlength="128" class="input" required="" id="id_password" placeholder="{% trans 'password' %}">
+                                        <div class="control has-icons-right">
+                                            <input type="password" name="password" maxlength="128" class="input" required="" id="id_password" placeholder="{% trans 'password' %}">
+                                            <span data-password-icon data-for="id_password" class="icon is-right is-clickable">
+                                                <button type="button" aria-controls="id_password" class="icon-eye-blocked" title="{% trans 'Show/Hide password' %}"></button>
+                                            </span>
+                                        </div>
                                         <p class="help"><a href="{% url 'password-reset' %}">{% trans "Forgot your password?" %}</a></p>
                                     </div>
                                     <div class="column is-narrow">

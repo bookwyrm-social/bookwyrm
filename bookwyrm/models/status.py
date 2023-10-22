@@ -366,7 +366,8 @@ class Quotation(BookStatus):
         quote = re.sub(r"^<p>", '<p>"', self.quote)
         quote = re.sub(r"</p>$", '"</p>', quote)
         title, href = self.book.title, self.book.remote_id
-        citation = f'— <a href="{href}"><i>{title}</i></a>'
+        author = f"{name}: " if (name := self.book.author_text) else ""
+        citation = f'— {author}<a href="{href}"><i>{title}</i></a>'
         if position := self._format_position():
             citation += f", {position}"
         return f"{quote} <p>{citation}</p>{self.content}"

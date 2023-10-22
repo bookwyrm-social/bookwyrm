@@ -188,27 +188,25 @@ case "$CMD" in
         ;;
     prettier)
         prod_error
-        $DOCKER_COMPOSE run --rm dev-tools npx prettier --write bookwyrm/static/js/*.js
+        $DOCKER_COMPOSE run --rm dev-tools prettier --write bookwyrm/static/js/*.js
         ;;
     eslint)
         prod_error
-        $DOCKER_COMPOSE run --rm dev-tools npx eslint bookwyrm/static --ext .js
+        $DOCKER_COMPOSE run --rm dev-tools eslint bookwyrm/static --ext .js
         ;;
     stylelint)
         prod_error
-        $DOCKER_COMPOSE run --rm dev-tools npx stylelint \
-            bookwyrm/static/css/bookwyrm.scss bookwyrm/static/css/bookwyrm/**/*.scss --fix \
-            --config dev-tools/.stylelintrc.js
+        $DOCKER_COMPOSE run --rm dev-tools stylelint --fix bookwyrm/static/css \
+            --config dev-tools/.stylelintrc.js --ignore-path dev-tools/.stylelintignore
         ;;
     formatters)
         prod_error
         runweb pylint bookwyrm/
         $DOCKER_COMPOSE run --rm dev-tools black celerywyrm bookwyrm
-        $DOCKER_COMPOSE run --rm dev-tools npx prettier --write bookwyrm/static/js/*.js
-        $DOCKER_COMPOSE run --rm dev-tools npx eslint bookwyrm/static --ext .js
-        $DOCKER_COMPOSE run --rm dev-tools npx stylelint \
-            bookwyrm/static/css/bookwyrm.scss bookwyrm/static/css/bookwyrm/**/*.scss --fix \
-            --config dev-tools/.stylelintrc.js
+        $DOCKER_COMPOSE run --rm dev-tools prettier --write bookwyrm/static/js/*.js
+        $DOCKER_COMPOSE run --rm dev-tools eslint bookwyrm/static --ext .js
+        $DOCKER_COMPOSE run --rm dev-tools stylelint --fix bookwyrm/static/css \
+            --config dev-tools/.stylelintrc.js --ignore-path dev-tools/.stylelintignore
         ;;
     mypy)
         prod_error
