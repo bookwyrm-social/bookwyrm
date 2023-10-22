@@ -2,7 +2,15 @@
 from django.db import models, transaction
 from django.dispatch import receiver
 from .base_model import BookWyrmModel
-from . import Boost, Favorite, GroupMemberInvitation, ImportJob, LinkDomain
+from . import (
+    Boost,
+    Favorite,
+    GroupMemberInvitation,
+    ImportJob,
+    BookwyrmImportJob,
+    LinkDomain,
+)
+from bookwyrm.models.bookwyrm_export_job import BookwyrmExportJob
 from . import ListItem, Report, Status, User, UserFollowRequest
 
 
@@ -22,6 +30,8 @@ class Notification(BookWyrmModel):
 
     # Imports
     IMPORT = "IMPORT"
+    USER_IMPORT = "USER_IMPORT"
+    USER_EXPORT = "USER_EXPORT"
 
     # List activity
     ADD = "ADD"
@@ -44,7 +54,7 @@ class Notification(BookWyrmModel):
     NotificationType = models.TextChoices(
         # there has got be a better way to do this
         "NotificationType",
-        f"{FAVORITE} {REPLY} {MENTION} {TAG} {FOLLOW} {FOLLOW_REQUEST} {BOOST} {IMPORT} {ADD} {REPORT} {LINK_DOMAIN} {INVITE} {ACCEPT} {JOIN} {LEAVE} {REMOVE} {GROUP_PRIVACY} {GROUP_NAME} {GROUP_DESCRIPTION}",
+        f"{FAVORITE} {REPLY} {MENTION} {TAG} {FOLLOW} {FOLLOW_REQUEST} {BOOST} {IMPORT} {USER_IMPORT} {USER_EXPORT} {ADD} {REPORT} {LINK_DOMAIN} {INVITE} {ACCEPT} {JOIN} {LEAVE} {REMOVE} {GROUP_PRIVACY} {GROUP_NAME} {GROUP_DESCRIPTION}",
     )
 
     user = models.ForeignKey("User", on_delete=models.CASCADE)
@@ -61,6 +71,9 @@ class Notification(BookWyrmModel):
     )
     related_status = models.ForeignKey("Status", on_delete=models.CASCADE, null=True)
     related_import = models.ForeignKey("ImportJob", on_delete=models.CASCADE, null=True)
+    related_user_export = models.ForeignKey(
+        "BookwyrmExportJob", on_delete=models.CASCADE, null=True
+    )
     related_list_items = models.ManyToManyField(
         "ListItem", symmetrical=False, related_name="notifications"
     )
@@ -220,6 +233,38 @@ def notify_user_on_import_complete(
         user=instance.user,
         notification_type=Notification.IMPORT,
         related_import=instance,
+    )
+
+
+@receiver(models.signals.post_save, sender=BookwyrmImportJob)
+# pylint: disable=unused-argument
+def notify_user_on_user_import_complete(
+    sender, instance, *args, update_fields=None, **kwargs
+):
+    """we imported your user details! aren't you proud of us"""
+    update_fields = update_fields or []
+    if not instance.complete or "complete" not in update_fields:
+        return
+    Notification.objects.create(
+        user=instance.user, notification_type=Notification.USER_IMPORT
+    )
+
+
+@receiver(models.signals.post_save, sender=BookwyrmExportJob)
+# pylint: disable=unused-argument
+def notify_user_on_user_export_complete(
+    sender, instance, *args, update_fields=None, **kwargs
+):
+    """we imported your user details! aren't you proud of us"""
+    update_fields = update_fields or []
+    if not instance.complete or "complete" not in update_fields:
+        print("RETURNING", instance.status)
+        return
+    print("NOTIFYING")
+    Notification.objects.create(
+        user=instance.user,
+        notification_type=Notification.USER_EXPORT,
+        related_user_export=instance,
     )
 
 

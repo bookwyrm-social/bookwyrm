@@ -142,11 +142,25 @@ class UserImport(View):
         jobs = BookwyrmImportJob.objects.filter(user=request.user).order_by(
             "-created_date"
         )
+        site = models.SiteSettings.objects.get()
+        hours = site.user_import_time_limit
+        allowed = (
+            jobs.first().created_date < timezone.now() - datetime.timedelta(hours=hours)
+            if jobs.first()
+            else True
+        )
+        next_available = (
+            jobs.first().created_date + datetime.timedelta(hours=hours)
+            if not allowed
+            else False
+        )
         paginated = Paginator(jobs, PAGE_LENGTH)
         page = paginated.get_page(request.GET.get("page"))
         data = {
             "import_form": forms.ImportUserForm(),
             "jobs": page,
+            "user_import_hours": hours,
+            "next_available": next_available,
             "page_range": paginated.get_elided_page_range(
                 page.number, on_each_side=2, on_ends=1
             ),

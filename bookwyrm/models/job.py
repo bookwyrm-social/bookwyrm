@@ -19,6 +19,7 @@ class Job(models.Model):
         ACTIVE = "active", _("Active")
         COMPLETE = "complete", _("Complete")
         STOPPED = "stopped", _("Stopped")
+        FAILED = "failed", _("Failed")
 
     task_id = models.UUIDField(unique=True, null=True, blank=True)
 
@@ -43,14 +44,17 @@ class Job(models.Model):
 
         self.save(update_fields=["status", "complete", "updated_date"])
 
-    def stop_job(self):
+    def stop_job(self, reason=None):
         """Stop the job"""
         if self.complete:
             return
 
         self.__terminate_job()
 
-        self.status = self.Status.STOPPED
+        if reason and reason == "failed":
+            self.status = self.Status.FAILED
+        else:
+            self.status = self.Status.STOPPED
         self.complete = True
         self.updated_date = timezone.now()
 
@@ -70,6 +74,10 @@ class Job(models.Model):
 
         if status == self.Status.STOPPED:
             self.stop_job()
+            return
+
+        if status == self.Status.FAILED:
+            self.stop_job(reason="failed")
             return
 
         self.updated_date = timezone.now()

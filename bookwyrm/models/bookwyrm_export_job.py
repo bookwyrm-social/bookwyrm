@@ -35,13 +35,17 @@ def start_export_task(**kwargs):
     # don't start the job if it was stopped from the UI
     if job.complete:
         return
-
-    # This is where ChildJobs get made
-    job.export_data = ContentFile(b"", str(uuid4()))
-
-    json_data = json_export(job.user)
-    tar_export(json_data, job.user, job.export_data)
-
+    try:
+        # This is where ChildJobs get made
+        job.export_data = ContentFile(b"", str(uuid4()))
+        json_data = json_export(job.user)
+        tar_export(json_data, job.user, job.export_data)
+    except Exception as err:  # pylint: disable=broad-except
+        logger.exception("User Export Job %s Failed with error: %s", job.id, err)
+        job.set_status("failed")
+    job.set_status(
+        "complete"
+    )  # need to explicitly set this here to trigger notifications
     job.save(update_fields=["export_data"])
 
 
@@ -56,7 +60,8 @@ def tar_export(json_data: str, user, f):
 
         editions, books = get_books_for_user(user)
         for book in editions:
-            tar.add_image(book.cover)
+            if getattr(book, "cover", False):
+                tar.add_image(book.cover)
 
     f.close()
 
@@ -153,19 +158,11 @@ def json_export(user):
         comments = models.Comment.objects.filter(user=user, book=book["id"]).distinct()
 
         book["comments"] = list(comments.values())
-        logger.error("FINAL COMMENTS")
-        logger.error(book["comments"])
 
         # quotes
         quotes = models.Quotation.objects.filter(user=user, book=book["id"]).distinct()
-        # quote_statuses = models.Status.objects.filter(
-        #     id__in=quotes, user=kwargs["user"]
-        # ).distinct()
 
         book["quotes"] = list(quotes.values())
-
-        logger.error("FINAL QUOTES")
-        logger.error(book["quotes"])
 
         # append everything
         final_books.append(book)

@@ -70,15 +70,28 @@ class BookwyrmImport(TestCase):
         self.tarfile = BookwyrmTarFile.open(
             mode="r:gz", fileobj=open(archive_file, "rb")
         )
-        self.import_data = json.loads(
-            self.tarfile.read("archive.json").decode("utf-8")
-        )
+        self.import_data = json.loads(self.tarfile.read("archive.json").decode("utf-8"))
 
     def test_update_user_profile(self):
         """Test update the user's profile from import data"""
 
-        # TODO once the tar is set up
-        pass
+        with patch("bookwyrm.suggested_users.remove_user_task.delay"), patch(
+            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+        ):
+
+            models.bookwyrm_import_job.update_user_profile(
+                self.local_user, self.tarfile, self.import_data.get("user")
+            )
+            self.local_user.refresh_from_db()
+
+            self.assertEqual(
+                self.local_user.username, "mouse"
+            )  # username should not change
+            self.assertEqual(self.local_user.name, "Rat")
+            self.assertEqual(
+                self.local_user.summary,
+                "I love to make soup in Paris and eat pizza in New York",
+            )
 
     def test_update_user_settings(self):
         """Test updating the user's settings from import data"""
@@ -543,6 +556,8 @@ class BookwyrmImport(TestCase):
         self.assertEqual(
             models.ShelfBook.objects.filter(user=self.local_user.id).count(), 2
         )
+
+        # check we didn't create an extra shelf
         self.assertEqual(
-            models.Shelf.objects.filter(user=self.local_user.id).count(), 2
+            models.Shelf.objects.filter(user=self.local_user.id).count(), 4
         )
