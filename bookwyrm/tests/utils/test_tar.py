@@ -10,6 +10,7 @@ def read_tar():
             yield tar
 
 
+@pytest.fixture
 def write_tar():
     archive_path = "/tmp/test.tar.gz"
     with open(archive_path, "wb") as archive_file:

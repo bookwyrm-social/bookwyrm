@@ -94,7 +94,8 @@ def json_export(user):  # pylint: disable=too-many-locals, too-many-statements
     # reading goals
     reading_goals = models.AnnualGoal.objects.filter(user=user).distinct()
     goals_list = []
-    # TODO: either error checking should be more sophisticated or maybe we don't need this try/except
+    # TODO: either error checking should be more sophisticated
+    # or maybe we don't need this try/except
     try:
         for goal in reading_goals:
             goals_list.append(

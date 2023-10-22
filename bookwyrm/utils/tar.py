@@ -8,14 +8,14 @@ from django.core.files import File
 class BookwyrmTarFile(tarfile.TarFile):
     """Create tar files for user exports"""
 
-    def write_bytes(self, data: bytes):
+    def write_bytes(self, data: bytes) -> None:
         """Add a file containing bytes to the archive"""
         buffer = io.BytesIO(data)
         info = tarfile.TarInfo("archive.json")
         info.size = len(data)
         self.addfile(info, fileobj=buffer)
 
-    def add_image(self, image, filename=None, directory=""):
+    def add_image(self, image: Any, filename: str = None, directory: Any = "") -> None:
         """
         Add an image to the tar archive
         :param str filename: overrides the file name set by image
@@ -32,12 +32,12 @@ class BookwyrmTarFile(tarfile.TarFile):
 
         self.addfile(info, fileobj=image)
 
-    def read(self, filename):
+    def read(self, filename: str) -> Any:
         """read data from the tar"""
         with self.extractfile(filename) as reader:
             return reader.read()
 
-    def write_image_to_file(self, filename, file_field):
+    def write_image_to_file(self, filename: str, file_field: Any) -> None:
         """add an image to the tar"""
         extension = filename.rsplit(".")[-1]
         with self.extractfile(filename) as reader:
