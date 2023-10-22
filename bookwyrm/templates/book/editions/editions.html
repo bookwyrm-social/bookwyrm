@@ -5,7 +5,7 @@
 
 {% block content %}
 <div class="block">
-    <h1 class="title">{% blocktrans with work_path=work.local_path work_title=work|book_title %}Editions of <a href="{{ work_path }}">"{{ work_title }}"</a>{% endblocktrans %}</h1>
+    <h1 class="title">{% blocktrans with work_path=work.local_path work_title=work|book_title %}Editions of <a href="{{ work_path }}"><i>{{ work_title }}</i></a>{% endblocktrans %}</h1>
 </div>
 
 {% include 'book/editions/edition_filters.html' %}
