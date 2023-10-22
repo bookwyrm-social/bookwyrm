@@ -1,3 +1,4 @@
+"""test bookwyrm user export functions"""
 import datetime
 import time
 import json
@@ -110,7 +111,7 @@ class BookwyrmExport(TestCase):
             )
 
             # add to list
-            item = models.ListItem.objects.create(
+            models.ListItem.objects.create(
                 book_list=self.list,
                 user=self.local_user,
                 book=self.edition,
@@ -226,7 +227,7 @@ class BookwyrmExport(TestCase):
             json_data["books"][0]["quotes"][0]["quote"], "A rose by any other name"
         )
 
-    def test_tar_export(self):
+    def test_tar_export(self):  # pylint: disable=unnecessary-pass
         """test the tar export function"""
 
         # TODO

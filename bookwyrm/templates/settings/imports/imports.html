@@ -141,7 +141,7 @@
     <div class="table-container block content">
         <table class="table is-striped is-fullwidth">
             <tr>
-                {% url 'settings-imports' status  as url %}
+                {% url 'settings-imports' status as url %}
                 <th>
                     {% trans "ID" %}
                 </th>
@@ -231,7 +231,7 @@
     <div class="table-container block content">
         <table class="table is-striped is-fullwidth">
             <tr>
-                {% url 'settings-imports' status  as url %}
+                {% url 'settings-imports' status as url %}
                 <th>
                     {% trans "ID" %}
                 </th>
@@ -299,5 +299,5 @@
     </div>
 
     {% include 'snippets/pagination.html' with page=user_imports path=request.path %}
-    {% endblock %}
 </div>
+{% endblock %}

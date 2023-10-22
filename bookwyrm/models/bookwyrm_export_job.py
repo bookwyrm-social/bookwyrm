@@ -1,4 +1,7 @@
+"""Export user account to tar.gz file for import into another Bookwyrm instance"""
+
 import logging
+from uuid import uuid4
 
 from django.db.models import FileField
 from django.db.models import Q
@@ -6,10 +9,9 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.core.files.base import ContentFile
 
 from bookwyrm import models
+from bookwyrm.models.job import ParentJob, ParentTask
 from bookwyrm.settings import DOMAIN
 from bookwyrm.tasks import app, IMPORTS
-from bookwyrm.models.job import ParentJob, ParentTask, SubTask, create_child_job
-from uuid import uuid4
 from bookwyrm.utils.tar import BookwyrmTarFile
 
 logger = logging.getLogger(__name__)
@@ -49,21 +51,22 @@ def start_export_task(**kwargs):
     job.save(update_fields=["export_data"])
 
 
-def tar_export(json_data: str, user, f):
-    f.open("wb")
-    with BookwyrmTarFile.open(mode="w:gz", fileobj=f) as tar:
+def tar_export(json_data: str, user, file):
+    """wrap the export information in a tar file"""
+    file.open("wb")
+    with BookwyrmTarFile.open(mode="w:gz", fileobj=file) as tar:
         tar.write_bytes(json_data.encode("utf-8"))
 
         # Add avatar image if present
         if getattr(user, "avatar", False):
             tar.add_image(user.avatar, filename="avatar")
 
-        editions, books = get_books_for_user(user)
+        editions = get_books_for_user(user)
         for book in editions:
             if getattr(book, "cover", False):
                 tar.add_image(book.cover)
 
-    f.close()
+    file.close()
 
 
 def json_export(user):
@@ -91,18 +94,19 @@ def json_export(user):
     # reading goals
     reading_goals = models.AnnualGoal.objects.filter(user=user).distinct()
     goals_list = []
+    # TODO: either error checking should be more sophisticated or maybe we don't need this try/except
     try:
         for goal in reading_goals:
             goals_list.append(
                 {"goal": goal.goal, "year": goal.year, "privacy": goal.privacy}
             )
-    except Exception:
+    except Exception:  # pylint: disable=broad-except
         pass
 
     try:
         readthroughs = models.ReadThrough.objects.filter(user=user).distinct().values()
         readthroughs = list(readthroughs)
-    except Exception as e:
+    except Exception:  # pylint: disable=broad-except
         readthroughs = []
 
     # books

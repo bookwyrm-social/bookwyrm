@@ -1,5 +1,4 @@
-""" test for app action functionality """
-from collections import namedtuple
+""" test for user export app functionality """
 from unittest.mock import patch
 
 from django.http import HttpResponse

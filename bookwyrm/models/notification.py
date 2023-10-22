@@ -1,6 +1,7 @@
 """ alert a user to activity """
 from django.db import models, transaction
 from django.dispatch import receiver
+from bookwyrm.models.bookwyrm_export_job import BookwyrmExportJob
 from .base_model import BookWyrmModel
 from . import (
     Boost,
@@ -10,7 +11,6 @@ from . import (
     BookwyrmImportJob,
     LinkDomain,
 )
-from bookwyrm.models.bookwyrm_export_job import BookwyrmExportJob
 from . import ListItem, Report, Status, User, UserFollowRequest
 
 

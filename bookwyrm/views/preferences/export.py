@@ -13,7 +13,7 @@ from django.views import View
 from django.utils.decorators import method_decorator
 from django.shortcuts import redirect
 
-from bookwyrm import models, settings
+from bookwyrm import models
 from bookwyrm.models.bookwyrm_export_job import BookwyrmExportJob
 from bookwyrm.settings import PAGE_LENGTH
 
@@ -135,10 +135,11 @@ class ExportUser(View):
 
 
 @method_decorator(login_required, name="dispatch")
-class ExportArchive(View):
+class ExportArchive(View):  # pylint: disable=line-too-long
     """Serve the archive file"""
 
     def get(self, request, archive_id):
+        """download user export file"""
         export = BookwyrmExportJob.objects.get(task_id=archive_id, user=request.user)
         return HttpResponse(
             export.export_data,

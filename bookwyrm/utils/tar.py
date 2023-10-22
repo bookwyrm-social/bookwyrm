@@ -1,12 +1,15 @@
+"""manage tar files for user exports"""
+import io
+import tarfile
 from uuid import uuid4
 from django.core.files import File
-import tarfile
-import io
 
 
 class BookwyrmTarFile(tarfile.TarFile):
-    def write_bytes(self, data: bytes, filename="archive.json"):
-        """Add a file containing :data: bytestring with name :filename: to the archive"""
+    """Create tar files for user exports"""
+
+    def write_bytes(self, data: bytes):
+        """Add a file containing bytes to the archive"""
         buffer = io.BytesIO(data)
         info = tarfile.TarInfo("archive.json")
         info.size = len(data)
@@ -30,10 +33,12 @@ class BookwyrmTarFile(tarfile.TarFile):
         self.addfile(info, fileobj=image)
 
     def read(self, filename):
+        """read data from the tar"""
         with self.extractfile(filename) as reader:
             return reader.read()
 
     def write_image_to_file(self, filename, file_field):
+        """add an image to the tar"""
         extension = filename.rsplit(".")[-1]
         with self.extractfile(filename) as reader:
             filename = f"{str(uuid4())}.{extension}"
