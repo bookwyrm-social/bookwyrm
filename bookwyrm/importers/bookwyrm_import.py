@@ -1,4 +1,9 @@
 """Import data from Bookwyrm export files"""
+from typing import Any
+
+from django.http import QueryDict
+
+from bookwyrm.models import User
 from bookwyrm.models.bookwyrm_import_job import BookwyrmImportJob
 
 
@@ -8,8 +13,8 @@ class BookwyrmImporter:
     """
 
     def process_import(
-        self, user, archive_file, settings
-    ):  # pylint: disable=no-self-use
+        self, user: User, archive_file: bytes, settings: QueryDict
+    ) -> BookwyrmImportJob:  # pylint: disable=no-self-use
         """import user data from a Bookwyrm export file"""
 
         required = [k for k in settings if settings.get(k) == "on"]
