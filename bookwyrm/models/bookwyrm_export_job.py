@@ -60,7 +60,7 @@ def tar_export(json_data: str, user, file):
         if getattr(user, "avatar", False):
             tar.add_image(user.avatar, filename="avatar")
 
-        editions, books = get_books_for_user(user)  # pylint: disable=unused-argument
+        editions, books = get_books_for_user(user)  # pylint: disable=unused-variable
         for book in editions:
             if getattr(book, "cover", False):
                 tar.add_image(book.cover)

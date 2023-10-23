@@ -39,6 +39,7 @@ class BookwyrmTarFile(tarfile.TarFile):
         """read data from the tar"""
         if reader := self.extractfile(filename):
             return reader.read()
+        return None
 
     def write_image_to_file(self, filename: str, file_field: Any) -> None:
         """add an image to the tar"""
