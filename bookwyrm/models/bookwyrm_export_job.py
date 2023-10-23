@@ -42,13 +42,12 @@ def start_export_task(**kwargs):
         job.export_data = ContentFile(b"", str(uuid4()))
         json_data = json_export(job.user)
         tar_export(json_data, job.user, job.export_data)
+        job.save(update_fields=["export_data"])
     except Exception as err:  # pylint: disable=broad-except
         logger.exception("User Export Job %s Failed with error: %s", job.id, err)
         job.set_status("failed")
-    job.set_status(
-        "complete"
-    )  # need to explicitly set this here to trigger notifications
-    job.save(update_fields=["export_data"])
+
+    job.set_status("complete")
 
 
 def tar_export(json_data: str, user, file):
@@ -61,7 +60,7 @@ def tar_export(json_data: str, user, file):
         if getattr(user, "avatar", False):
             tar.add_image(user.avatar, filename="avatar")
 
-        editions = get_books_for_user(user)
+        editions, books = get_books_for_user(user)  # pylint: disable=unused-argument
         for book in editions:
             if getattr(book, "cover", False):
                 tar.add_image(book.cover)

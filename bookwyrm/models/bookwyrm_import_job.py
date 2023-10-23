@@ -61,8 +61,7 @@ def start_import_task(**kwargs):
 
             process_books(job, tar)
 
-            job.set_status("complete")  # set here to trigger notifications
-            job.save()
+            job.set_status("complete")
         archive_file.close()
 
     except Exception as err:  # pylint: disable=broad-except

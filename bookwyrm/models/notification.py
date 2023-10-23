@@ -255,7 +255,7 @@ def notify_user_on_user_import_complete(
 def notify_user_on_user_export_complete(
     sender, instance, *args, update_fields=None, **kwargs
 ):
-    """we imported your user details! aren't you proud of us"""
+    """we exported your user details! aren't you proud of us"""
     update_fields = update_fields or []
     if not instance.complete or "complete" not in update_fields:
         print("RETURNING", instance.status)
