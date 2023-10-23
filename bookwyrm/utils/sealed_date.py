@@ -7,6 +7,7 @@ import re
 from typing import Any, Optional, Type, TypeVar, cast
 
 from django.core.exceptions import ValidationError
+from django.db import models
 from django.forms import DateField
 from django.forms.widgets import SelectDateWidget
 from django.utils import timezone
@@ -22,11 +23,12 @@ _westmost_tz = timezone.get_fixed_timezone(timedelta(hours=-12))
 
 Sealed = TypeVar("Sealed", bound="SealedDate")  # TODO: use Self in Python >= 3.11
 
-# TODO: migrate SealedDate to `date`
+# TODO: migrate SealedDate: `datetime` => `date`
+# TODO: migrate SealedDateField: `DateTimeField` => `DateField`
 
 
 class SealedDate(datetime):
-    """a date object sealed into a certain precision (day, month, year)"""
+    """a date object sealed into a certain precision (day, month or year)"""
 
     @property
     def has_day(self) -> bool:
@@ -42,6 +44,8 @@ class SealedDate(datetime):
     @classmethod
     def from_datetime(cls: Type[Sealed], dt: datetime) -> Sealed:
         # pylint: disable=invalid-name
+        if timezone.is_naive(dt):
+            raise ValueError("naive datetime not accepted")
         return cls.combine(dt.date(), dt.time(), tzinfo=dt.tzinfo)
 
     @classmethod
@@ -120,3 +124,86 @@ class SealedDateFormField(DateField):
                 year, month, day = date.year, date.month, date.day
 
         return SealedDate.from_date_parts(year, month, day)
+
+
+class SealedDateDescriptor:
+
+    _SEAL_TYPES = {
+        YearSeal: "YEAR",
+        MonthSeal: "MONTH",
+        SealedDate: "DAY",
+    }
+
+    _DATE_CLASSES = {
+        "YEAR": YearSeal,
+        "MONTH": MonthSeal,
+    }
+
+    def __init__(self, field):
+        self.field = field
+
+    @property
+    def precision_field(self):
+        """the name of the accompanying precision field"""
+        return self.make_precision_name(self.field.attname)
+
+    @classmethod
+    def make_precision_name(cls, date_attr_name):
+        # used by SealedDateField to make the name from the outside.
+        # TODO: migrate to an attribute there?
+        return f"{date_attr_name}_precision"
+
+    @property
+    def precision_choices(self):
+        return (("DAY", "Day seal"), ("MONTH", "Month seal"), ("YEAR", "Year seal"))
+
+    def __get__(self, instance, cls=None):
+        if instance is None:
+            return self
+
+        value = instance.__dict__.get(self.field.attname)
+
+        if not value or isinstance(value, SealedDate):
+            return value
+
+        # use precision field to construct SealedDate.
+        seal_type = getattr(instance, self.precision_field, None)
+        date_class = self._DATE_CLASSES.get(seal_type, SealedDate)
+
+        return date_class.from_datetime(value)  # FIXME: drop datetimes.
+
+    def __set__(self, instance, value):
+        """assign value, with precision where available"""
+        try:
+            seal_type = self._SEAL_TYPES[value.__class__]
+        except KeyError:
+            value = self.field.to_python(value)
+        else:
+            setattr(instance, self.precision_field, seal_type)
+
+        instance.__dict__[self.field.attname] = value
+
+
+class SealedDateField(models.DateTimeField):  # FIXME: use DateField.
+
+    descriptor_class = SealedDateDescriptor
+
+    def formfield(self, **kwargs):
+        kwargs.setdefault("form_class", SealedDateFormField)
+        return super().formfield(**kwargs)
+
+    # pylint: disable-next=arguments-renamed
+    def contribute_to_class(self, model, our_name_in_model, **kwargs):
+        # Define precision field.
+        descriptor = self.descriptor_class(self)
+        precision = models.CharField(
+            null=True,
+            blank=True,
+            editable=False,
+            max_length=10,
+            choices=descriptor.precision_choices,
+        )
+        precision_name = descriptor.make_precision_name(our_name_in_model)
+
+        model.add_to_class(precision_name, precision)
+        return super().contribute_to_class(model, our_name_in_model, **kwargs)

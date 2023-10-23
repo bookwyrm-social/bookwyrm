@@ -20,6 +20,11 @@ from markdown import markdown
 from bookwyrm import activitypub
 from bookwyrm.connectors import get_image
 from bookwyrm.utils.sanitizer import clean
+from bookwyrm.utils.sealed_date import (
+    SealedDate,
+    SealedDateField,
+    from_partial_isoformat,
+)
 from bookwyrm.settings import MEDIA_FULL_URL
 
 
@@ -537,7 +542,6 @@ class DateTimeField(ActivitypubFieldMixin, models.DateTimeField):
     def field_from_activity(self, value, allow_external_connections=True):
         missing_fields = datetime(1970, 1, 1)  # "2022-10" => "2022-10-01"
         try:
-            # TODO(dato): investigate `ignoretz=True` wrt bookwyrm#3028.
             date_value = dateutil.parser.parse(value, default=missing_fields)
             try:
                 return timezone.make_aware(date_value)
@@ -545,6 +549,34 @@ class DateTimeField(ActivitypubFieldMixin, models.DateTimeField):
                 return date_value
         except (ParserError, TypeError):
             return None
+
+
+class PartialDateField(ActivitypubFieldMixin, SealedDateField):
+    """activitypub-aware partial date field"""
+
+    def field_to_activity(self, value) -> str:
+        return value.partial_isoformat() if value else None
+
+    def field_from_activity(self, value, allow_external_connections=True):
+        try:
+            return from_partial_isoformat(value)
+        except ValueError:
+            pass
+
+        # fallback to full ISO-8601 parsing
+        try:
+            parsed = dateutil.parser.isoparse(value)
+        except (ValueError, ParserError):
+            return None
+
+        # FIXME #1: add timezone if missing (SealedDate only accepts tz-aware).
+        #
+        # FIXME #2: decide whether to fix timestamps like "2023-09-30T21:00:00-03":
+        # clearly Oct 1st, not Sep 30th (an unwanted side-effect of USE_TZ). It's
+        # basically the remnants of #3028; there is a data migration pending (see …)
+        # but over the wire we might get these for an indeterminate amount of time.
+
+        return SealedDate.from_datetime(parsed)
 
 
 class HtmlField(ActivitypubFieldMixin, models.TextField):

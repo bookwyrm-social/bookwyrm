@@ -35,6 +35,10 @@ class SealedDateTest(unittest.TestCase):
         self.assertFalse(sealed.has_day)
         self.assertFalse(sealed.has_month)
 
+    def test_no_naive_datetime(self):
+        with self.assertRaises(ValueError):
+            sealed_date.SealedDate.from_datetime(datetime.datetime(2000, 1, 1))
+
     def test_parse_year_seal(self):
         parsed = sealed_date.from_partial_isoformat("1995")
         expected = datetime.date(1995, 1, 1)
