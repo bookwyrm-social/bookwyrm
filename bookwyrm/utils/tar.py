@@ -1,7 +1,7 @@
 """manage tar files for user exports"""
 import io
 import tarfile
-from typing import Any
+from typing import Any, Optional
 from uuid import uuid4
 from django.core.files import File
 
@@ -16,7 +16,9 @@ class BookwyrmTarFile(tarfile.TarFile):
         info.size = len(data)
         self.addfile(info, fileobj=buffer)
 
-    def add_image(self, image: Any, filename: str = None, directory: Any = "") -> None:
+    def add_image(
+        self, image: Any, filename: Optional[str] = None, directory: Any = ""
+    ) -> None:
         """
         Add an image to the tar archive
         :param str filename: overrides the file name set by image
@@ -35,12 +37,12 @@ class BookwyrmTarFile(tarfile.TarFile):
 
     def read(self, filename: str) -> Any:
         """read data from the tar"""
-        with self.extractfile(filename) as reader:
+        if reader := self.extractfile(filename):
             return reader.read()
 
     def write_image_to_file(self, filename: str, file_field: Any) -> None:
         """add an image to the tar"""
         extension = filename.rsplit(".")[-1]
-        with self.extractfile(filename) as reader:
+        if buf := self.extractfile(filename):
             filename = f"{str(uuid4())}.{extension}"
-            file_field.save(filename, File(reader))
+            file_field.save(filename, File(buf))
