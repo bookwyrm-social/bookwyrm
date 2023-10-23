@@ -62,13 +62,12 @@ class BookwyrmImport(TestCase):
                 parent_work=self.work,
             )
 
-        archive_file = pathlib.Path(__file__).parent.joinpath(
+        self.archive_file = pathlib.Path(__file__).parent.joinpath(
             "../data/bookwyrm_account_export.tar.gz"
         )
-        self.tarfile = BookwyrmTarFile.open(
-            mode="r:gz", fileobj=open(archive_file, "rb")
-        )
-        self.import_data = json.loads(self.tarfile.read("archive.json").decode("utf-8"))
+        with open(self.archive_file, "rb") as fileobj:
+            tarfile = BookwyrmTarFile.open(mode="r:gz", fileobj=fileobj)
+            self.import_data = json.loads(tarfile.read("archive.json").decode("utf-8"))
 
     def test_update_user_profile(self):
         """Test update the user's profile from import data"""
@@ -77,19 +76,22 @@ class BookwyrmImport(TestCase):
             "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
         ):
 
-            models.bookwyrm_import_job.update_user_profile(
-                self.local_user, self.tarfile, self.import_data.get("user")
-            )
-            self.local_user.refresh_from_db()
+            with open(self.archive_file, "rb") as fileobj:
+                tarfile = BookwyrmTarFile.open(mode="r:gz", fileobj=fileobj)
 
-            self.assertEqual(
-                self.local_user.username, "mouse"
-            )  # username should not change
-            self.assertEqual(self.local_user.name, "Rat")
-            self.assertEqual(
-                self.local_user.summary,
-                "I love to make soup in Paris and eat pizza in New York",
-            )
+                models.bookwyrm_import_job.update_user_profile(
+                    self.local_user, tarfile, self.import_data.get("user")
+                )
+                self.local_user.refresh_from_db()
+
+                self.assertEqual(
+                    self.local_user.username, "mouse"
+                )  # username should not change
+                self.assertEqual(self.local_user.name, "Rat")
+                self.assertEqual(
+                    self.local_user.summary,
+                    "I love to make soup in Paris and eat pizza in New York",
+                )
 
     def test_update_user_settings(self):
         """Test updating the user's settings from import data"""
@@ -249,13 +251,15 @@ class BookwyrmImport(TestCase):
         return a list of edition instances"""
 
         self.assertEqual(models.Edition.objects.count(), 1)
-        self.assertEqual(models.Edition.objects.count(), 1)
 
-        bookwyrm_import_job.get_or_create_edition(
-            self.import_data["books"][1], self.tarfile
-        )  # Sand Talk
+        with open(self.archive_file, "rb") as fileobj:
+            tarfile = BookwyrmTarFile.open(mode="r:gz", fileobj=fileobj)
 
-        self.assertEqual(models.Edition.objects.count(), 1)
+            bookwyrm_import_job.get_or_create_edition(
+                self.import_data["books"][1], tarfile
+            )  # Sand Talk
+
+            self.assertEqual(models.Edition.objects.count(), 1)
 
     def test_get_or_create_edition_not_existing(self):
         """Test take a JSON string of books and editions,
@@ -264,12 +268,16 @@ class BookwyrmImport(TestCase):
 
         self.assertEqual(models.Edition.objects.count(), 1)
 
-        bookwyrm_import_job.get_or_create_edition(
-            self.import_data["books"][0], self.tarfile
-        )  # Seeing like a state
+        with open(self.archive_file, "rb") as fileobj:
+            tarfile = BookwyrmTarFile.open(mode="r:gz", fileobj=fileobj)
+            bookwyrm_import_job.get_or_create_edition(
+                self.import_data["books"][0], tarfile
+            )  # Seeing like a state
 
-        self.assertTrue(models.Edition.objects.filter(isbn_13="9780300070163").exists())
-        self.assertEqual(models.Edition.objects.count(), 2)
+            self.assertTrue(
+                models.Edition.objects.filter(isbn_13="9780300070163").exists()
+            )
+            self.assertEqual(models.Edition.objects.count(), 2)
 
     def test_clean_values(self):
         """test clean values we don't want when creating new instances"""
@@ -373,7 +381,7 @@ class BookwyrmImport(TestCase):
         self.assertEqual(
             models.Review.objects.filter(book=self.book).first().name, "great book"
         )
-        self.assertEqual(
+        self.assertAlmostEqual(
             models.Review.objects.filter(book=self.book).first().rating, 5.00
         )
 

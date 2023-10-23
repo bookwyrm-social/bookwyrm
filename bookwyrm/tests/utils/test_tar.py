@@ -1,5 +1,6 @@
-from bookwyrm.utils.tar import BookwyrmTarFile
+import os
 import pytest
+from bookwyrm.utils.tar import BookwyrmTarFile
 
 
 @pytest.fixture
@@ -15,10 +16,10 @@ def write_tar():
     archive_path = "/tmp/test.tar.gz"
     with open(archive_path, "wb") as archive_file:
         with BookwyrmTarFile.open(mode="w:gz", fileobj=archive_file) as tar:
-            return tar
+            yield tar
 
     os.remove(archive_path)
 
 
 def test_write_bytes(write_tar):
-    write_tar.write_bytes(b"ABCDEF", filename="example.txt")
+    write_tar.write_bytes(b"ABCDEF")
