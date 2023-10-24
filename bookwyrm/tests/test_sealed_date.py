@@ -11,26 +11,30 @@ from bookwyrm.utils import sealed_date
 
 
 class SealedDateTest(unittest.TestCase):
+    """test SealedDate class in isolation"""
+
+    # pylint: disable=missing-function-docstring
+
     def setUp(self):
-        self.dt = datetime.datetime(2023, 10, 20, 17, 33, 10, tzinfo=timezone.utc)
+        self._dt = datetime.datetime(2023, 10, 20, 17, 33, 10, tzinfo=timezone.utc)
 
     def test_day_seal(self):
-        sealed = sealed_date.SealedDate.from_datetime(self.dt)
-        self.assertEqual(self.dt, sealed)
+        sealed = sealed_date.SealedDate.from_datetime(self._dt)
+        self.assertEqual(self._dt, sealed)
         self.assertEqual("2023-10-20", sealed.partial_isoformat())
         self.assertTrue(sealed.has_day)
         self.assertTrue(sealed.has_month)
 
     def test_month_seal(self):
-        sealed = sealed_date.MonthSeal.from_datetime(self.dt)
-        self.assertEqual(self.dt, sealed)
+        sealed = sealed_date.MonthSeal.from_datetime(self._dt)
+        self.assertEqual(self._dt, sealed)
         self.assertEqual("2023-10", sealed.partial_isoformat())
         self.assertFalse(sealed.has_day)
         self.assertTrue(sealed.has_month)
 
     def test_year_seal(self):
-        sealed = sealed_date.YearSeal.from_datetime(self.dt)
-        self.assertEqual(self.dt, sealed)
+        sealed = sealed_date.YearSeal.from_datetime(self._dt)
+        self.assertEqual(self._dt, sealed)
         self.assertEqual("2023", sealed.partial_isoformat())
         self.assertFalse(sealed.has_day)
         self.assertFalse(sealed.has_month)
@@ -95,20 +99,24 @@ class SealedDateTest(unittest.TestCase):
 
 
 class SealedDateFormFieldTest(unittest.TestCase):
+    """test form support for SealedDate objects"""
+
+    # pylint: disable=missing-function-docstring
+
     def setUp(self):
-        self.dt = datetime.datetime(2022, 11, 21, 17, 1, 0, tzinfo=timezone.utc)
+        self._dt = datetime.datetime(2022, 11, 21, 17, 1, 0, tzinfo=timezone.utc)
         self.field = sealed_date.SealedDateFormField()
 
     def test_prepare_value(self):
-        sealed = sealed_date.SealedDate.from_datetime(self.dt)
+        sealed = sealed_date.SealedDate.from_datetime(self._dt)
         self.assertEqual("2022-11-21", self.field.prepare_value(sealed))
 
     def test_prepare_value_month(self):
-        sealed = sealed_date.MonthSeal.from_datetime(self.dt)
+        sealed = sealed_date.MonthSeal.from_datetime(self._dt)
         self.assertEqual("2022-11-0", self.field.prepare_value(sealed))
 
     def test_prepare_value_year(self):
-        sealed = sealed_date.YearSeal.from_datetime(self.dt)
+        sealed = sealed_date.YearSeal.from_datetime(self._dt)
         self.assertEqual("2022-0-0", self.field.prepare_value(sealed))
 
     def test_to_python(self):

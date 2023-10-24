@@ -10,6 +10,7 @@ register = template.Library()
 
 @register.filter(expects_localtime=True, is_safe=False)
 def naturalday_partial(date):
+    """allow templates to easily format SealedDate objects"""
     if not isinstance(date, SealedDate):
         return defaultfilters.date(date)
     if date.has_day:

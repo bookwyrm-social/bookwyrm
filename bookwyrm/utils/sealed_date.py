@@ -12,6 +12,7 @@ from django.forms import DateField
 from django.forms.widgets import SelectDateWidget
 from django.utils import timezone
 
+# pylint: disable=no-else-return
 
 __all__ = [
     "SealedDate",
@@ -32,17 +33,25 @@ class SealedDate(datetime):
 
     @property
     def has_day(self) -> bool:
+        """whether this is a full date"""
         return self.has_month
 
     @property
     def has_month(self) -> bool:
+        """whether this date includes month"""
         return True
 
     def partial_isoformat(self) -> str:
+        """partial ISO-8601 format"""
         return self.strftime("%Y-%m-%d")
 
     @classmethod
     def from_datetime(cls: Type[Sealed], dt: datetime) -> Sealed:
+        """construct a SealedDate object from a timezone-aware datetime
+
+        Use subclasses to specify precision. If `dt` is naive, `ValueError`
+        is raised.
+        """
         # pylint: disable=invalid-name
         if timezone.is_naive(dt):
             raise ValueError("naive datetime not accepted")
@@ -50,6 +59,9 @@ class SealedDate(datetime):
 
     @classmethod
     def from_date_parts(cls: Type[Sealed], year: int, month: int, day: int) -> Sealed:
+        """construct a SealedDate from year, month, day.
+
+        Use sublcasses to specify precision."""
         # because SealedDate is actually a datetime object, we must create it with a
         # timezone such that its date remains stable no matter the values of USE_TZ,
         # current_timezone and default_timezone.
@@ -57,6 +69,8 @@ class SealedDate(datetime):
 
 
 class MonthSeal(SealedDate):
+    """a date sealed into month precision"""
+
     @property
     def has_day(self) -> bool:
         return False
@@ -66,6 +80,8 @@ class MonthSeal(SealedDate):
 
 
 class YearSeal(SealedDate):
+    """a date sealed into year precision"""
+
     @property
     def has_month(self) -> bool:
         return False
@@ -75,6 +91,11 @@ class YearSeal(SealedDate):
 
 
 def from_partial_isoformat(value: str) -> SealedDate:
+    """construct SealedDate from a partial string.
+
+    Accepted formats: YYYY, YYYY-MM, YYYY-MM-DD; otherwise `ValueError`
+    is raised.
+    """
     match = _partial_re.match(value)
 
     if not match:
@@ -127,6 +148,10 @@ class SealedDateFormField(DateField):
 
 
 class SealedDateDescriptor:
+    """descriptor for SealedDateField.
+
+    Encapsulates the "two columns, one field" for SealedDateField.
+    """
 
     _SEAL_TYPES = {
         YearSeal: "YEAR",
@@ -185,6 +210,7 @@ class SealedDateDescriptor:
 
 
 class SealedDateField(models.DateTimeField):  # FIXME: use DateField.
+    """a date field for Django models, using SealedDate as values"""
 
     descriptor_class = SealedDateDescriptor
 
