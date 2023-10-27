@@ -8,7 +8,11 @@
           <div class="media">
             <div class="media-left">
               <figure class="image is-48x48">
-                <img src="{% if request.user.avatar %}{% get_media_prefix %}{{ request.user.avatar }}{% else %}{% static "images/default_avi.jpg" %}{% endif %}">
+                <img src="{% if request.user.avatar %}{% get_media_prefix %}{{ request.user.avatar }}{% else %}{% static "images/default_avi.jpg" %}{% endif %}"
+                {% if ariaHide %}aria-hidden="true"{% endif %}
+                alt="{{ request.user.alt_text }}"
+                loading="lazy"
+                decoding="async">
               </figure>
             </div>
             <div class="media-content">
