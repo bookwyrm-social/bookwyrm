@@ -19,10 +19,10 @@
 
           <div class="notification is-warning">
             <p>
+            {% id_to_username request.user.moved_to  as username %}
             {% blocktrans %}
-            <strong>You have moved your account</strong> to <a href="{{user.moved_to}}">
+            <strong>You have moved your account</strong> to <a href="{{user.moved_to}}">{{ username }}</a>
             {% endblocktrans %}
-            {% id_to_username request.user.moved_to %}</a>
             </p>
             {% blocktrans %}
             <p class="mt-2">You can undo the move to restore full functionality, but some followers may have already unfollowed this account.</p>
