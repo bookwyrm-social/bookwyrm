@@ -6,6 +6,7 @@ from bookwyrm import activitypub
 from .activitypub_mixin import ActivityMixin
 from .base_model import BookWyrmModel
 from . import fields
+from .notification import Notification
 
 
 class Move(ActivityMixin, BookWyrmModel):
@@ -63,25 +64,9 @@ class MoveUser(Move):
 
             for follower in self.user.followers.all():
                 if follower.local:
-                    MoveUserNotification.objects.create(user=follower, target=self.user)
+                    Notification.notify(
+                        follower, self.user, notification_type=Notification.MOVE
+                    )
 
         else:
             raise PermissionDenied()
-
-
-class MoveUserNotification(models.Model):
-    """notify followers that the user has moved"""
-
-    created_date = models.DateTimeField(auto_now_add=True)
-
-    user = models.ForeignKey(
-        "User", on_delete=models.PROTECT, related_name="moved_user_notifications"
-    )  # user we are notifying
-
-    target = models.ForeignKey(
-        "User", on_delete=models.PROTECT, related_name="moved_user_notification_target"
-    )  # new account of user who moved
-
-    def save(self, *args, **kwargs):
-        """send notification"""
-        super().save(*args, **kwargs)

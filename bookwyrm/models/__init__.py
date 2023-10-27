@@ -27,7 +27,7 @@ from .group import Group, GroupMember, GroupMemberInvitation
 
 from .import_job import ImportJob, ImportItem
 
-from .move import MoveUser, MoveUserNotification
+from .move import MoveUser
 
 from .site import SiteSettings, Theme, SiteInvite
 from .site import PasswordReset, InviteRequest

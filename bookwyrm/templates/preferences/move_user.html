@@ -16,7 +16,9 @@
                 {% trans "Moving your account will notify all your followers and direct them to follow the new account." %}
             </p>
             <p>
-                <strong>{{ user.username }}</strong> {% trans "will be marked as moved and will not be discoverable or usable unless you undo the move." %}
+                {% blocktrans %}
+                <strong>{{ user }}</strong> will be marked as moved and will not be discoverable or usable unless you undo the move.
+                {% endblocktrans %}
             </p>
         </div>
         <div class="notification is-info is-light">
