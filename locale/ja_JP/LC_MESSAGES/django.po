@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-10-02 16:40+0000\n"
-"PO-Revision-Date: 2023-10-29 12:41\n"
+"PO-Revision-Date: 2023-10-29 13:58\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Japanese\n"
 "Language: ja\n"
@@ -100,7 +100,7 @@ msgstr "リスト順"
 
 #: bookwyrm/forms/lists.py:27
 msgid "Book Title"
-msgstr "タイトル"
+msgstr "本のタイトル"
 
 #: bookwyrm/forms/lists.py:28 bookwyrm/templates/shelf/shelf.html:156
 #: bookwyrm/templates/shelf/shelf.html:188
@@ -592,7 +592,7 @@ msgstr "プライバシーポリシー"
 #: bookwyrm/templates/feed/summary_card.html:8
 #, python-format
 msgid "%(year)s in the books"
-msgstr "本で見る%(year)s年"
+msgstr "本で見る %(year)s年"
 
 #: bookwyrm/templates/annual_summary/layout.html:43
 #, python-format
@@ -615,7 +615,7 @@ msgstr "アドレスをコピー"
 #: bookwyrm/templates/annual_summary/layout.html:68
 #: bookwyrm/templates/lists/list.html:277
 msgid "Copied!"
-msgstr "コピーしました"
+msgstr "コピーしました！"
 
 #: bookwyrm/templates/annual_summary/layout.html:77
 msgid "Sharing status: <strong>public with key</strong>"
@@ -723,7 +723,7 @@ msgstr "評価: <strong>%(rating)s</strong>"
 #: bookwyrm/templates/annual_summary/layout.html:270
 #, python-format
 msgid "All the books %(display_name)s read in %(year)s"
-msgstr "%(display_name)s が%(year)s年に読んだすべての本"
+msgstr "%(display_name)s が %(year)s 年に読んだすべての本"
 
 #: bookwyrm/templates/author/author.html:19
 #: bookwyrm/templates/author/author.html:20
@@ -766,7 +766,7 @@ msgstr "ISNIレコードを表示"
 #: bookwyrm/templates/author/author.html:95
 #: bookwyrm/templates/book/book.html:173
 msgid "View on ISFDB"
-msgstr "ISFDB で表示"
+msgstr "ISFDBで表示"
 
 #: bookwyrm/templates/author/author.html:100
 #: bookwyrm/templates/author/sync_modal.html:5
@@ -787,7 +787,7 @@ msgstr "Inventaireで表示"
 
 #: bookwyrm/templates/author/author.html:135
 msgid "View on LibraryThing"
-msgstr "LibraryThing で表示"
+msgstr "LibraryThingで表示"
 
 #: bookwyrm/templates/author/author.html:143
 msgid "View on Goodreads"
@@ -795,7 +795,7 @@ msgstr "Goodreadsで表示"
 
 #: bookwyrm/templates/author/author.html:151
 msgid "View ISFDB entry"
-msgstr "ISFDB のエントリを表示"
+msgstr "ISFDBのエントリーを表示"
 
 #: bookwyrm/templates/author/author.html:166
 #, python-format
@@ -938,7 +938,7 @@ msgstr "キャンセル"
 #: bookwyrm/templates/author/sync_modal.html:15
 #, python-format
 msgid "Loading data will connect to <strong>%(source_name)s</strong> and check for any metadata about this author which aren't present here. Existing metadata will not be overwritten."
-msgstr "データのロードでは、 <strong>%(source_name)s</strong> に接続し、この著者に関するここにないメタデータを取得します。 既存のメタデータは上書きされません。"
+msgstr "データのロードでは、 <strong>%(source_name)s</strong> に接続し、この著者に関するここにないメタデータを取得します。既存のメタデータは上書きされません。"
 
 #: bookwyrm/templates/author/sync_modal.html:24
 #: bookwyrm/templates/book/edit/edit_book.html:137
@@ -975,7 +975,7 @@ msgstr "クリックして拡大"
 #, python-format
 msgid "(%(review_count)s review)"
 msgid_plural "(%(review_count)s reviews)"
-msgstr[0] "(%(review_count)s件のレビュー)"
+msgstr[0] "(%(review_count)s 件のレビュー)"
 
 #: bookwyrm/templates/book/book.html:209
 msgid "Add Description"
@@ -991,7 +991,7 @@ msgstr "概要:"
 #, python-format
 msgid "%(count)s edition"
 msgid_plural "%(count)s editions"
-msgstr[0] "%(count)s個の版"
+msgstr[0] "%(count)s 個の版"
 
 #: bookwyrm/templates/book/book.html:246
 msgid "You have shelved this edition in:"
@@ -1137,7 +1137,7 @@ msgstr "\"%(book_title)s\"を編集"
 #: bookwyrm/templates/book/edit/edit_book.html:10
 #: bookwyrm/templates/book/edit/edit_book.html:20
 msgid "Add Book"
-msgstr "本を追加する"
+msgstr "本を追加"
 
 #: bookwyrm/templates/book/edit/edit_book.html:43
 msgid "Failed to save book, see errors below for more information."
@@ -1150,7 +1150,7 @@ msgstr "この本の情報を確認する"
 #: bookwyrm/templates/book/edit/edit_book.html:78
 #, python-format
 msgid "Is \"%(name)s\" one of these authors?"
-msgstr "「%(name)s」は以下の著者のいずれかですか？"
+msgstr "\"%(name)s\"は以下の著者のいずれかですか？"
 
 #: bookwyrm/templates/book/edit/edit_book.html:89
 #, python-format
@@ -1868,7 +1868,7 @@ msgstr "パスワードのリセットをリクエストしていない場合は
 #: bookwyrm/templates/email/password_reset/subject.html:2
 #, python-format
 msgid "Reset your %(site_name)s password"
-msgstr "%(site_name)s のパスワードをリセットする"
+msgstr "%(site_name)s のパスワードをリセット"
 
 #: bookwyrm/templates/email/test/html_content.html:6
 #: bookwyrm/templates/email/test/text_content.html:4
@@ -1890,7 +1890,7 @@ msgstr "%(site_name)s のホームページ"
 #: bookwyrm/templates/embed-layout.html:39
 #: bookwyrm/templates/snippets/footer.html:12
 msgid "Contact site admin"
-msgstr "管理者に連絡する"
+msgstr "管理者へのお問い合わせ"
 
 #: bookwyrm/templates/embed-layout.html:45
 msgid "Join BookWyrm"
@@ -2072,7 +2072,7 @@ msgstr "保存して続ける"
 #: bookwyrm/templates/get_started/layout.html:5
 #: bookwyrm/templates/landing/layout.html:5
 msgid "Welcome"
-msgstr "ようこそ！"
+msgstr "ようこそ"
 
 #: bookwyrm/templates/get_started/layout.html:24
 msgid "These are some first steps to get you started."
@@ -4263,7 +4263,7 @@ msgstr "カメラに対して、本のバーコードをスキャンするため
 
 #: bookwyrm/templates/search/barcode_modal.html:27
 msgid "Could not access camera"
-msgstr "カメラへのアクセスができませんでした"
+msgstr "カメラにアクセスできませんでした"
 
 #: bookwyrm/templates/search/barcode_modal.html:31
 msgctxt "barcode scanner"
@@ -4935,11 +4935,11 @@ msgstr ""
 #: bookwyrm/templates/settings/federation/instance.html:90
 #: bookwyrm/templates/settings/users/user_info.html:117
 msgid "Notes"
-msgstr "ノート"
+msgstr "メモ"
 
 #: bookwyrm/templates/settings/federation/instance.html:97
 msgid "<em>No notes</em>"
-msgstr "<em>ノートはありません。</em>"
+msgstr "<em>メモはありません</em>"
 
 #: bookwyrm/templates/settings/federation/instance.html:116
 #: bookwyrm/templates/settings/link_domains/link_domains.html:87
@@ -5210,7 +5210,7 @@ msgstr "CIDR構文を使用して、IP範囲をブロックすることができ
 #: bookwyrm/templates/settings/ip_blocklist/ip_blocklist.html:7
 #: bookwyrm/templates/settings/layout.html:69
 msgid "IP Address Blocklist"
-msgstr "IPアドレスブロックリスト"
+msgstr "IPアドレスのブロックリスト"
 
 #: bookwyrm/templates/settings/ip_blocklist/ip_blocklist.html:18
 msgid "Any traffic from this IP address will get a 404 response when trying to access any part of the application."
@@ -5621,7 +5621,7 @@ msgstr "ユーザーを完全に削除"
 #: bookwyrm/templates/settings/users/delete_user_form.html:12
 #, python-format
 msgid "Are you sure you want to delete <strong>%(username)s</strong>'s account? This action cannot be undone. To proceed, please enter your password to confirm deletion."
-msgstr "<strong>%(username)s</strong>のアカウントを削除してもよろしいですか？この操作は元に戻せません。 続行するには、パスワードを入力して削除を確認してください。"
+msgstr "<strong>%(username)s</strong>のアカウントを削除してもよろしいですか？この操作は元に戻せません。続行するには、パスワードを入力して削除を確認してください。"
 
 #: bookwyrm/templates/settings/users/delete_user_form.html:17
 msgid "Your password:"
@@ -6506,11 +6506,11 @@ msgstr ""
 
 #: bookwyrm/templates/snippets/table-sort-header.html:6
 msgid "Sorted ascending"
-msgstr "昇順にソート"
+msgstr "昇順で並び替える"
 
 #: bookwyrm/templates/snippets/table-sort-header.html:10
 msgid "Sorted descending"
-msgstr "降順にソート"
+msgstr "降順で並び替える"
 
 #: bookwyrm/templates/snippets/trimmed_text.html:17
 msgid "Show more"
@@ -6548,7 +6548,7 @@ msgstr "%(username)sさんの本"
 #: bookwyrm/templates/user/goal.html:12
 #, python-format
 msgid "%(year)s Reading Progress"
-msgstr "%(year)s の読書の進捗状況"
+msgstr "%(year)s 年の読書の進捗状況"
 
 #: bookwyrm/templates/user/goal.html:16
 msgid "Edit Goal"
@@ -6666,12 +6666,12 @@ msgstr ""
 
 #: bookwyrm/templates/user/user.html:135
 msgid "No activities yet!"
-msgstr "アクティビティはまだありません"
+msgstr "アクティビティはまだありません！"
 
 #: bookwyrm/templates/user/user_preview.html:22
 #, python-format
 msgid "Joined %(date)s"
-msgstr "登録日: %(date)s"
+msgstr "登録日 %(date)s"
 
 #: bookwyrm/templates/user/user_preview.html:26
 #, python-format
