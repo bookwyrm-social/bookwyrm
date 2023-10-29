@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-10-02 16:40+0000\n"
-"PO-Revision-Date: 2023-10-29 11:33\n"
+"PO-Revision-Date: 2023-10-29 12:41\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Japanese\n"
 "Language: ja\n"
@@ -72,11 +72,11 @@ msgstr "読書の完了日を未来の日付にすることはできません"
 
 #: bookwyrm/forms/landing.py:38
 msgid "Username or password are incorrect"
-msgstr "ユーザー名またはパスワードが正しくありません。"
+msgstr "ユーザー名またはパスワードが正しくありません"
 
 #: bookwyrm/forms/landing.py:57
 msgid "User with this username already exists"
-msgstr "このユーザー名のユーザーはすでに存在します。"
+msgstr "このユーザー名のユーザーはすでに存在します"
 
 #: bookwyrm/forms/landing.py:66
 msgid "A user with this email already exists."
@@ -275,7 +275,7 @@ msgstr "中断"
 
 #: bookwyrm/models/import_job.py:83 bookwyrm/models/import_job.py:91
 msgid "Import stopped"
-msgstr "インポートが停止しました"
+msgstr "インポートを停止しました"
 
 #: bookwyrm/models/import_job.py:363 bookwyrm/models/import_job.py:388
 msgid "Error loading book"
@@ -283,7 +283,7 @@ msgstr "本の読み込みエラー"
 
 #: bookwyrm/models/import_job.py:372
 msgid "Could not find a match for book"
-msgstr "該当する本が見付かりませんでした"
+msgstr "該当する本が見つかりませんでした"
 
 #: bookwyrm/models/link.py:51
 msgid "Free"
@@ -474,7 +474,7 @@ msgstr "見つかりませんでした"
 
 #: bookwyrm/templates/404.html:9
 msgid "The page you requested doesn't seem to exist!"
-msgstr "リクエストしたページは存在しません"
+msgstr "リクエストしたページは存在しないようです！"
 
 #: bookwyrm/templates/500.html:4
 msgid "Oops!"
@@ -486,7 +486,7 @@ msgstr "サーバーエラー"
 
 #: bookwyrm/templates/500.html:9
 msgid "Something went wrong! Sorry about that."
-msgstr "何か問題が発生しました！ 申し訳ありません。"
+msgstr "何か問題が発生しました！申し訳ありません。"
 
 #: bookwyrm/templates/about/about.html:9
 #: bookwyrm/templates/about/layout.html:35
@@ -579,7 +579,7 @@ msgstr "ソフトウェアのバージョン:"
 #: bookwyrm/templates/snippets/footer.html:8
 #, python-format
 msgid "About %(site_name)s"
-msgstr "%(site_name)sについて"
+msgstr "%(site_name)s について"
 
 #: bookwyrm/templates/about/layout.html:47
 #: bookwyrm/templates/about/privacy.html:4
@@ -1141,7 +1141,7 @@ msgstr "本を追加する"
 
 #: bookwyrm/templates/book/edit/edit_book.html:43
 msgid "Failed to save book, see errors below for more information."
-msgstr "本の保存に失敗しました。詳細については以下のエラーを参照してください。"
+msgstr "本の保存に失敗しました。詳細については、以下のエラーを確認してください。"
 
 #: bookwyrm/templates/book/edit/edit_book.html:70
 msgid "Confirm Book Info"
@@ -1430,7 +1430,7 @@ msgstr "URL"
 #: bookwyrm/templates/book/file_links/edit_links.html:33
 #: bookwyrm/templates/settings/link_domains/link_table.html:7
 msgid "Added by"
-msgstr ""
+msgstr "追加した人"
 
 #: bookwyrm/templates/book/file_links/edit_links.html:34
 #: bookwyrm/templates/settings/link_domains/link_table.html:8
@@ -1578,7 +1578,7 @@ msgstr "アカウント登録に使用したメールアドレスに確認コー
 
 #: bookwyrm/templates/confirm_email/confirm_email.html:15
 msgid "Sorry! We couldn't find that code."
-msgstr "申し訳ありません。コードが見つかりませんでした。"
+msgstr "申し訳ありません！コードが見つかりませんでした。"
 
 #: bookwyrm/templates/confirm_email/confirm_email.html:19
 #: bookwyrm/templates/settings/users/user_info.html:92
@@ -2730,7 +2730,7 @@ msgstr ""
 
 #: bookwyrm/templates/guided_tour/user_groups.html:103
 msgid "Save your group"
-msgstr "グループを保存する"
+msgstr "グループを保存"
 
 #: bookwyrm/templates/guided_tour/user_profile.html:10
 msgid "This is your user profile. All your latest activities will be listed here. Other Bookwyrm users can see parts of this page too - what they can see depends on your privacy settings."
@@ -3275,7 +3275,7 @@ msgstr ""
 #: bookwyrm/templates/lists/list.html:93
 #, python-format
 msgid "<a href=\"%(user_path)s\">%(username)s</a> says:"
-msgstr ""
+msgstr "<a href=\"%(user_path)s\">%(username)s</a> の発言:"
 
 #: bookwyrm/templates/lists/curate.html:55
 msgid "Suggested by"
@@ -3372,7 +3372,7 @@ msgstr "メモ:"
 
 #: bookwyrm/templates/lists/item_notes_field.html:19
 msgid "An optional note that will be displayed with the book."
-msgstr ""
+msgstr "本とともに表示される任意のメモ。"
 
 #: bookwyrm/templates/lists/list.html:37
 msgid "That book is already on this list."
@@ -4479,11 +4479,11 @@ msgstr ""
 
 #: bookwyrm/templates/settings/automod/rules.html:47
 msgid "Enabled:"
-msgstr ""
+msgstr "有効:"
 
 #: bookwyrm/templates/settings/automod/rules.html:59
 msgid "Delete schedule"
-msgstr ""
+msgstr "スケジュールを削除"
 
 #: bookwyrm/templates/settings/automod/rules.html:63
 msgid "Run now"
@@ -4523,15 +4523,15 @@ msgstr ""
 
 #: bookwyrm/templates/settings/automod/rules.html:140
 msgid "Add rule"
-msgstr ""
+msgstr "ルールを追加"
 
 #: bookwyrm/templates/settings/automod/rules.html:147
 msgid "Current Rules"
-msgstr ""
+msgstr "現在のルール"
 
 #: bookwyrm/templates/settings/automod/rules.html:151
 msgid "Show rules"
-msgstr ""
+msgstr "ルールを表示"
 
 #: bookwyrm/templates/settings/automod/rules.html:188
 msgid "Remove rule"
@@ -4560,7 +4560,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/celery.html:38
 msgid "Inbox"
-msgstr ""
+msgstr "受信箱"
 
 #: bookwyrm/templates/settings/celery.html:51
 msgid "Import triggered"
@@ -4773,7 +4773,7 @@ msgstr "ドメイン:"
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:7
 #: bookwyrm/templates/settings/layout.html:65
 msgid "Email Blocklist"
-msgstr "メールのブロックリスト"
+msgstr "メールアドレスのブロックリスト"
 
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:18
 msgid "When someone tries to register with an email from this domain, no account will be created. The registration process will appear to have worked."
@@ -4798,7 +4798,7 @@ msgstr ""
 #: bookwyrm/templates/settings/email_config.html:8
 #: bookwyrm/templates/settings/layout.html:90
 msgid "Email Configuration"
-msgstr ""
+msgstr "Eメール設定"
 
 #: bookwyrm/templates/settings/email_config.html:16
 msgid "Error sending test email:"
@@ -4819,15 +4819,15 @@ msgstr ""
 
 #: bookwyrm/templates/settings/email_config.html:46
 msgid "Host:"
-msgstr ""
+msgstr "ホスト:"
 
 #: bookwyrm/templates/settings/email_config.html:53
 msgid "Host user:"
-msgstr ""
+msgstr "ホストユーザー:"
 
 #: bookwyrm/templates/settings/email_config.html:60
 msgid "Port:"
-msgstr ""
+msgstr "ポート:"
 
 #: bookwyrm/templates/settings/email_config.html:67
 msgid "Use TLS:"
@@ -4840,11 +4840,11 @@ msgstr ""
 #: bookwyrm/templates/settings/email_config.html:83
 #, python-format
 msgid "Send test email to %(email)s"
-msgstr ""
+msgstr "%(email)s にテストメールを送信"
 
 #: bookwyrm/templates/settings/email_config.html:90
 msgid "Send test email"
-msgstr ""
+msgstr "テストメールを送信"
 
 #: bookwyrm/templates/settings/federation/edit_instance.html:3
 #: bookwyrm/templates/settings/federation/edit_instance.html:6
@@ -4879,7 +4879,7 @@ msgstr "インスタンス:"
 #: bookwyrm/templates/settings/federation/instance.html:46
 #: bookwyrm/templates/settings/users/user_info.html:113
 msgid "Status:"
-msgstr ""
+msgstr "状態:"
 
 #: bookwyrm/templates/settings/federation/edit_instance.html:66
 #: bookwyrm/templates/settings/federation/instance.html:40
@@ -5065,7 +5065,7 @@ msgstr "ユーザー"
 
 #: bookwyrm/templates/settings/imports/imports.html:125
 msgid "Date Updated"
-msgstr ""
+msgstr "更新日"
 
 #: bookwyrm/templates/settings/imports/imports.html:132
 msgid "Pending items"
@@ -5297,7 +5297,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/link_domains/link_domains.html:53
 msgid "View links"
-msgstr ""
+msgstr "リンクを見る"
 
 #: bookwyrm/templates/settings/link_domains/link_domains.html:96
 msgid "No domains currently approved"
@@ -5319,13 +5319,13 @@ msgstr "このドメインへのリンクがありません。"
 #: bookwyrm/templates/settings/registration_limited.html:13
 #: bookwyrm/templates/settings/site.html:21
 msgid "Settings saved"
-msgstr "保存しました"
+msgstr "設定が保存されました"
 
 #: bookwyrm/templates/settings/registration.html:22
 #: bookwyrm/templates/settings/registration_limited.html:22
 #: bookwyrm/templates/settings/site.html:30
 msgid "Unable to save settings"
-msgstr "保存できませんでした"
+msgstr "設定を保存できません"
 
 #: bookwyrm/templates/settings/registration.html:38
 msgid "Allow registration"
@@ -5333,11 +5333,11 @@ msgstr "新規登録を許可する"
 
 #: bookwyrm/templates/settings/registration.html:43
 msgid "Default access level:"
-msgstr ""
+msgstr "デフォルトのアクセスレベル:"
 
 #: bookwyrm/templates/settings/registration.html:61
 msgid "Require users to confirm email address"
-msgstr "電子メールアドレスの確認をユーザーに要求する"
+msgstr "メールアドレスの確認をユーザーに要求する"
 
 #: bookwyrm/templates/settings/registration.html:63
 msgid "(Recommended if registration is open)"
@@ -5397,7 +5397,7 @@ msgstr "通報したリンク"
 
 #: bookwyrm/templates/settings/reports/report.html:66
 msgid "Moderation Activity"
-msgstr ""
+msgstr "モデレーションのアクティビティ"
 
 #: bookwyrm/templates/settings/reports/report.html:73
 #, python-format
@@ -5569,19 +5569,19 @@ msgstr "テーマの追加に成功しました"
 
 #: bookwyrm/templates/settings/themes.html:26
 msgid "How to add a theme"
-msgstr ""
+msgstr "テーマ追加のやり方"
 
 #: bookwyrm/templates/settings/themes.html:29
 msgid "Copy the theme file into the <code>bookwyrm/static/css/themes</code> directory on your server from the command line."
-msgstr ""
+msgstr "コマンドラインであなたのサーバーの <code>bookwyrm/static/css/themes</code> ディレクトリにテーマファイルをコピーします。"
 
 #: bookwyrm/templates/settings/themes.html:32
 msgid "Run <code>./bw-dev compile_themes</code> and <code>./bw-dev collectstatic</code>."
-msgstr ""
+msgstr "<code>./bw-dev compile_themes</code> と <code>./bw-dev collectstatic</code> を実行します。"
 
 #: bookwyrm/templates/settings/themes.html:35
 msgid "Add the file name using the form below to make it available in the application interface."
-msgstr ""
+msgstr "アプリケーションの外観でファイルを利用できるようにするため、以下のフォームを利用してファイル名を追加します。"
 
 #: bookwyrm/templates/settings/themes.html:42
 #: bookwyrm/templates/settings/themes.html:82
@@ -5590,7 +5590,7 @@ msgstr "テーマを加える"
 
 #: bookwyrm/templates/settings/themes.html:48
 msgid "Unable to save theme"
-msgstr "テーマを保存することができません"
+msgstr "テーマを保存できません"
 
 #: bookwyrm/templates/settings/themes.html:63
 #: bookwyrm/templates/settings/themes.html:93
@@ -5643,7 +5643,7 @@ msgstr "ユーザーネーム"
 
 #: bookwyrm/templates/settings/users/user_admin.html:48
 msgid "Date Added"
-msgstr ""
+msgstr "追加日"
 
 #: bookwyrm/templates/settings/users/user_admin.html:52
 msgid "Last Active"
@@ -5681,7 +5681,7 @@ msgstr "ローカル"
 
 #: bookwyrm/templates/settings/users/user_info.html:42
 msgid "Remote"
-msgstr ""
+msgstr "リモート"
 
 #: bookwyrm/templates/settings/users/user_info.html:51
 msgid "User details"
@@ -5701,7 +5701,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/users/user_info.html:74
 msgid "Date added:"
-msgstr ""
+msgstr "追加日:"
 
 #: bookwyrm/templates/settings/users/user_info.html:77
 msgid "Last active date:"
@@ -5853,7 +5853,7 @@ msgstr "インスタンスのセットアップ"
 
 #: bookwyrm/templates/setup/layout.html:21
 msgid "Installing BookWyrm"
-msgstr ""
+msgstr "Bookwyrmのインストール"
 
 #: bookwyrm/templates/setup/layout.html:24
 msgid "Need help?"
@@ -5949,7 +5949,7 @@ msgstr[0] ""
 
 #: bookwyrm/templates/snippets/book_cover.html:63
 msgid "No cover"
-msgstr ""
+msgstr "カバーなし"
 
 #: bookwyrm/templates/snippets/book_titleby.html:11
 #, python-format
@@ -6134,7 +6134,7 @@ msgstr "BookWyrmのソースコードは自由に利用できます。また、<
 #: bookwyrm/templates/snippets/form_rate_stars.html:20
 #: bookwyrm/templates/snippets/stars.html:23
 msgid "No rating"
-msgstr ""
+msgstr "評価なし"
 
 #: bookwyrm/templates/snippets/form_rate_stars.html:28
 #, python-format
@@ -6586,7 +6586,7 @@ msgstr "フォローリクエスト"
 #: bookwyrm/templates/user/reviews_comments.html:6
 #: bookwyrm/templates/user/reviews_comments.html:12
 msgid "Reviews and Comments"
-msgstr ""
+msgstr "レビューとコメント"
 
 #: bookwyrm/templates/user/lists.html:16
 #, python-format
@@ -6616,7 +6616,7 @@ msgstr "%(username)s は他のユーザーをフォローしていません"
 
 #: bookwyrm/templates/user/reviews_comments.html:26
 msgid "No reviews or comments yet!"
-msgstr ""
+msgstr "まだレビューやコメントはありません！"
 
 #: bookwyrm/templates/user/user.html:20
 msgid "Edit profile"
@@ -6642,7 +6642,7 @@ msgstr "ユーザーアクティビティ"
 
 #: bookwyrm/templates/user/user.html:82
 msgid "Show RSS Options"
-msgstr ""
+msgstr "RSSオプションを表示"
 
 #: bookwyrm/templates/user/user.html:88
 msgid "RSS feed"
