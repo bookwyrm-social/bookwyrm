@@ -99,6 +99,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.humanize",
+    "file_resubmit",
     "sass_processor",
     "bookwyrm",
     "celery",
@@ -252,7 +253,11 @@ else:
             "OPTIONS": {
                 "CLIENT_CLASS": "django_redis.client.DefaultClient",
             },
-        }
+        },
+        "file_resubmit": {
+            "BACKEND": "django.core.cache.backends.filebased.FileBasedCache",
+            "LOCATION": "/tmp/file_resubmit/",
+        },
     }
 
     SESSION_ENGINE = "django.contrib.sessions.backends.cache"

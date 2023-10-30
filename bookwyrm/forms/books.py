@@ -3,6 +3,7 @@ from django import forms
 
 from bookwyrm import models
 from bookwyrm.models.fields import ClearableFileInputWithWarning
+from file_resubmit.admin import AdminResubmitImageWidget
 from .custom_form import CustomForm
 from .widgets import ArrayWidget, SelectDateWidget, Select
 
@@ -70,9 +71,7 @@ class EditionForm(CustomForm):
             "published_date": SelectDateWidget(
                 attrs={"aria-describedby": "desc_published_date"}
             ),
-            "cover": ClearableFileInputWithWarning(
-                attrs={"aria-describedby": "desc_cover"}
-            ),
+            "cover": AdminResubmitImageWidget(attrs={"aria-describedby": "desc_cover"}),
             "physical_format": Select(
                 attrs={"aria-describedby": "desc_physical_format"}
             ),
