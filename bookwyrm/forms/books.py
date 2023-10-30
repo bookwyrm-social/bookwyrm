@@ -1,9 +1,9 @@
 """ using django model forms """
 from django import forms
 
-from bookwyrm import models
-from bookwyrm.models.fields import ClearableFileInputWithWarning
 from file_resubmit.admin import AdminResubmitImageWidget
+
+from bookwyrm import models
 from .custom_form import CustomForm
 from .widgets import ArrayWidget, SelectDateWidget, Select
 
