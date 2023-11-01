@@ -304,16 +304,23 @@ def format_links(content):
     for potential_link in split_content:
         if not potential_link:
             continue
-        wrapped = _wrapped(potential_link)
-        if wrapped:
-            wrapper_close = potential_link[-1]
-            formatted_content += potential_link[0]
-            potential_link = potential_link[1:-1]
 
         ends_with_punctuation = _ends_with_punctuation(potential_link)
         if ends_with_punctuation:
             punctuation_glyph = potential_link[-1]
             potential_link = potential_link[0:-1]
+
+        wrapped = _wrapped(potential_link)
+        wrapped_ends_with_punctuation = False
+        if wrapped:
+            wrapper_close = potential_link[-1]
+            formatted_content += potential_link[0]
+            potential_link = potential_link[1:-1]
+
+            wrapped_ends_with_punctuation = _ends_with_punctuation(potential_link)
+            if wrapped_ends_with_punctuation:
+                wrapped_punctuation_glyph = potential_link[-1]
+                potential_link = potential_link[0:-1]
 
         try:
             # raises an error on anything that's not a valid link
@@ -330,6 +337,9 @@ def format_links(content):
             formatted_content += f'<a href="{potential_link}">{link}</a>'
         except (ValidationError, UnicodeError):
             formatted_content += potential_link
+
+        if wrapped_ends_with_punctuation:
+            formatted_content += wrapped_punctuation_glyph
 
         if wrapped:
             formatted_content += wrapper_close
