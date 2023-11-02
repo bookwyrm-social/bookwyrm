@@ -84,14 +84,14 @@
         <div class="navbar-menu" id="main_nav">
             <div class="navbar-start" id="tour-navbar-start">
                 {% if request.user.is_authenticated %}
-                <a href="/#feed" class="navbar-item mt-3 py-0">
-                    {% trans "Feed" %}
-                </a>
                 <a href="{% url 'lists' %}" class="navbar-item mt-3 py-0">
                     {% trans "Lists" %}
                 </a>
                 <a href="{% url 'discover' %}" class="navbar-item mt-3 py-0">
                     {% trans "Discover" %}
+                </a>
+                <a href="{% url 'user-shelves' request.user.localname %}" class="navbar-item mt-3 py-0">
+                    {% trans "Your Books" %}
                 </a>
                 {% endif %}
             </div>
