@@ -40,4 +40,6 @@ class Person(ActivityObject):
     manuallyApprovesFollowers: str = False
     discoverable: str = False
     hideFollows: str = False
+    movedTo: str = None
+    alsoKnownAs: dict[str] = None
     type: str = "Person"

@@ -24,9 +24,15 @@
         <h4 class="title is-4">{% trans "Status" %}</h4>
         <div class="box is-flex-grow-1 has-text-weight-bold">
             {% if user.is_active %}
-            <p class="notification is-success">
-                {% trans "Active" %}
-            </p>
+                {% if user.moved_to %}
+                <p class="notification is-info">
+                    {% trans "Moved" %}
+                </p>
+                {% else %}
+                <p class="notification is-success">
+                    {% trans "Active" %}
+                </p>
+                {% endif %}
             {% else %}
             <p class="notification is-warning">
                 {% trans "Inactive" %}
