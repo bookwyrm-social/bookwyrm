@@ -140,6 +140,19 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     theme = models.ForeignKey("Theme", null=True, blank=True, on_delete=models.SET_NULL)
     hide_follows = fields.BooleanField(default=False)
 
+    # migration fields
+
+    moved_to = fields.RemoteIdField(
+        null=True, unique=False, activitypub_field="movedTo", deduplication_field=False
+    )
+    also_known_as = fields.ManyToManyField(
+        "self",
+        symmetrical=False,
+        unique=False,
+        activitypub_field="alsoKnownAs",
+        deduplication_field=False,
+    )
+
     # options to turn features on and off
     show_goal = models.BooleanField(default=True)
     show_suggested_users = models.BooleanField(default=True)
@@ -314,6 +327,8 @@ class User(OrderedCollectionPageMixin, AbstractUser):
                 "schema": "http://schema.org#",
                 "PropertyValue": "schema:PropertyValue",
                 "value": "schema:value",
+                "alsoKnownAs": {"@id": "as:alsoKnownAs", "@type": "@id"},
+                "movedTo": {"@id": "as:movedTo", "@type": "@id"},
             },
         ]
         return activity_object

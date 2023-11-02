@@ -21,6 +21,7 @@ def webfinger(request):
 
     username = resource.replace("acct:", "")
     user = get_object_or_404(models.User, username__iexact=username)
+    href = user.moved_to if user.moved_to else user.remote_id
 
     return JsonResponse(
         {
@@ -29,7 +30,7 @@ def webfinger(request):
                 {
                     "rel": "self",
                     "type": "application/activity+json",
-                    "href": user.remote_id,
+                    "href": href,
                 },
                 {
                     "rel": "http://ostatus.org/schema/1.0/subscribe",

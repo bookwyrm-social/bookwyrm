@@ -18,7 +18,22 @@
         {% include 'user/books_header.html' %}
     </h1>
 </header>
-
+{% if user.moved_to %}
+<div class="container my-6">
+    <div class="notification is-info has-text-centered">
+        <p>
+            {% trans "You have have moved to" %}
+            <a href="{{user.moved_to}}">{% id_to_username user.moved_to %}</a>
+        </p>
+        <p> {% trans "You can undo this move to restore full functionality, but some followers may have already unfollowed this account." %}</p>
+        <form name="remove-alias" action="{% url 'prefs-unmove' %}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="remote_id" id="remote_id" value="{{user.moved_to}}">
+            <button type="submit" class="button is-small">{% trans "Undo move" %}</button>
+        </form>
+    </div>
+</div>
+{% else %}
 <nav class="breadcrumb subtitle" aria-label="breadcrumbs">
     <ul>
         <li><a href="{% url 'user-feed' user|username %}">{% trans "User profile" %}</a></li>
@@ -215,6 +230,7 @@
 <div>
     {% include 'snippets/pagination.html' with page=books path=request.path %}
 </div>
+{% endif %}
 {% endblock %}
 
 {% block scripts %}
