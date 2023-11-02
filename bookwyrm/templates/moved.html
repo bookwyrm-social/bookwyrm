@@ -23,14 +23,14 @@
 
           <div class="notification is-warning">
             <p>
-            {% id_to_username request.user.moved_to  as username %}
-            {% blocktrans %}
-            <strong>You have moved your account</strong> to <a href="{{user.moved_to}}">{{ username }}</a>
-            {% endblocktrans %}
+                {% id_to_username request.user.moved_to  as username %}
+                {% blocktrans trimmed with moved_to=user.moved_to %}
+                    <strong>You have moved your account</strong> to <a href="{{ moved_to }}">{{ username }}</a>
+                {% endblocktrans %}
             </p>
-            {% blocktrans %}
-            <p class="mt-2">You can undo the move to restore full functionality, but some followers may have already unfollowed this account.</p>
-            {% endblocktrans %}
+            <p class="mt-2">
+                {% trans "You can undo the move to restore full functionality, but some followers may have already unfollowed this account." %}
+            </p>
           </div>
         </div>
         <div class="columns is-justify-content-center">
