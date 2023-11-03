@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-11-02 21:32+0000\n"
-"PO-Revision-Date: 2023-11-02 22:29\n"
+"PO-Revision-Date: 2023-11-03 01:03\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: German\n"
 "Language: de\n"
@@ -1114,7 +1114,7 @@ msgstr "Titelbild hochladen:"
 #: bookwyrm/templates/book/cover_add_modal.html:23
 #: bookwyrm/templates/book/edit/edit_book_form.html:250
 msgid "Load cover from URL:"
-msgstr ""
+msgstr "Titelbild via URL herunterladen:"
 
 #: bookwyrm/templates/book/cover_show_modal.html:6
 msgid "Book cover preview"
@@ -3226,7 +3226,7 @@ msgstr "Passwort"
 
 #: bookwyrm/templates/layout.html:136
 msgid "Show/Hide password"
-msgstr ""
+msgstr "Passwort ein-/ausblenden"
 
 #: bookwyrm/templates/layout.html:150
 msgid "Join"
@@ -3498,15 +3498,15 @@ msgstr "Gespeicherte Listen"
 #: bookwyrm/templates/moved.html:27
 #, python-format
 msgid "<strong>You have moved your account</strong> to <a href=\"%(moved_to)s\">%(username)s</a>"
-msgstr ""
+msgstr "<strong>Sie haben Ihr Konto</strong> auf <a href=\"%(moved_to)s\">%(username)s</a> verschoben"
 
 #: bookwyrm/templates/moved.html:32
 msgid "You can undo the move to restore full functionality, but some followers may have already unfollowed this account."
-msgstr ""
+msgstr "Sie können den Umzug rückgangig machen, aber einige Follower haben dem Konto möglicherweise bereits entfolgt."
 
 #: bookwyrm/templates/moved.html:42 bookwyrm/templates/shelf/shelf.html:32
 msgid "Undo move"
-msgstr ""
+msgstr "Umzug rückgängig machen"
 
 #: bookwyrm/templates/moved.html:46 bookwyrm/templates/user_menu.html:82
 msgid "Log out"
@@ -3766,12 +3766,12 @@ msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> hat dich in einem
 #: bookwyrm/templates/notifications/items/move_user.html:18
 #, python-format
 msgid "%(related_user)s has moved to <a href=\"%(related_user_moved_to)s\">%(username)s</a>"
-msgstr ""
+msgstr "%(related_user)s ist zu <a href=\"%(related_user_moved_to)s\">%(username)s</a> umgezogen"
 
 #: bookwyrm/templates/notifications/items/move_user.html:25
 #, python-format
 msgid "%(related_user)s has undone their move"
-msgstr ""
+msgstr "%(related_user)s hat seinen Umzug rückgangig gemacht"
 
 #: bookwyrm/templates/notifications/items/remove.html:17
 #, python-format
@@ -4034,42 +4034,42 @@ msgstr "2FA einrichten"
 #: bookwyrm/templates/preferences/move_user.html:7
 #: bookwyrm/templates/preferences/move_user.html:39
 msgid "Move Account"
-msgstr ""
+msgstr "Account umziehen"
 
 #: bookwyrm/templates/preferences/alias_user.html:7
 #: bookwyrm/templates/preferences/alias_user.html:34
 msgid "Create Alias"
-msgstr ""
+msgstr "Alias erstellen"
 
 #: bookwyrm/templates/preferences/alias_user.html:12
 msgid "Add another account as an alias"
-msgstr ""
+msgstr "Ein anderes Konto als Alias hinzufügen"
 
 #: bookwyrm/templates/preferences/alias_user.html:16
 msgid "Marking another account as an alias is required if you want to move that account to this one."
-msgstr ""
+msgstr "Ein anderes Konto als Alias zu markieren, ist notwendig, wenn Sie das andere Konto auf diese verschieben möchten."
 
 #: bookwyrm/templates/preferences/alias_user.html:19
 msgid "This is a reversable action and will not change the functionality of this account."
-msgstr ""
+msgstr "Dies ist eine reversible Funktion und wird die Nutzbarkeit dieses Kontos nicht einschränken."
 
 #: bookwyrm/templates/preferences/alias_user.html:25
 msgid "Enter the username for the account you want to add as an alias e.g. <em>user@example.com </em>:"
-msgstr ""
+msgstr "Geben Sie den Benutzernamen für das Konto ein, das Sie als Alias hinzufügen möchten, z.B. <em>user@example.com </em>:"
 
 #: bookwyrm/templates/preferences/alias_user.html:30
 #: bookwyrm/templates/preferences/move_user.html:35
 msgid "Confirm your password:"
-msgstr ""
+msgstr "Bestätigen Sie Ihr Passwort:"
 
 #: bookwyrm/templates/preferences/alias_user.html:39
 #: bookwyrm/templates/preferences/layout.html:28
 msgid "Aliases"
-msgstr ""
+msgstr "Aliase"
 
 #: bookwyrm/templates/preferences/alias_user.html:49
 msgid "Remove alias"
-msgstr ""
+msgstr "Alias entfernen"
 
 #: bookwyrm/templates/preferences/blocks.html:4
 #: bookwyrm/templates/preferences/blocks.html:7
@@ -4227,7 +4227,7 @@ msgstr "Account"
 
 #: bookwyrm/templates/preferences/layout.html:32
 msgid "Move  Account"
-msgstr ""
+msgstr "Account umziehen"
 
 #: bookwyrm/templates/preferences/layout.html:39
 msgid "Data"
@@ -4243,26 +4243,28 @@ msgstr "Beziehungen"
 
 #: bookwyrm/templates/preferences/move_user.html:12
 msgid "Migrate account to another server"
-msgstr ""
+msgstr "Konto auf einen anderen Server umziehen"
 
 #: bookwyrm/templates/preferences/move_user.html:16
 msgid "Moving your account will notify all your followers and direct them to follow the new account."
-msgstr ""
+msgstr "Das Verschieben deines Kontos wird alle deine Follower benachrichtigen und sie anweisen, dem neuen Konto zu folgen."
 
 #: bookwyrm/templates/preferences/move_user.html:19
 #, python-format
 msgid "\n"
 "                <strong>%(user)s</strong> will be marked as moved and will not be discoverable or usable unless you undo the move.\n"
 "                "
-msgstr ""
+msgstr "\n"
+"                <strong>%(user)s</strong> wird als umgezogen markiert und wird nicht gefunden oder verwendbar sein, wenn Sie den Umzug nicht rückgängig machen.\n"
+"                "
 
 #: bookwyrm/templates/preferences/move_user.html:25
 msgid "Remember to add this user as an alias of the target account before you try to move."
-msgstr ""
+msgstr "Denken Sie daran, diesen Benutzernamen als Alias des Zielkontos hinzuzufügen, bevor Sie versuchen das Konto umzuziehen."
 
 #: bookwyrm/templates/preferences/move_user.html:30
 msgid "Enter the username for the account you want to move to e.g. <em>user@example.com </em>:"
-msgstr ""
+msgstr "Geben Sie den Benutzernamen für das Konto ein, zu dem Sie wechseln möchten, z.B. <em>user@example.com </em>:"
 
 #: bookwyrm/templates/reading_progress/finish.html:5
 #, python-format
@@ -4673,7 +4675,7 @@ msgstr "Streams"
 
 #: bookwyrm/templates/settings/celery.html:32
 msgid "Broadcast"
-msgstr ""
+msgstr "Senden"
 
 #: bookwyrm/templates/settings/celery.html:38
 msgid "Inbox"
@@ -5777,7 +5779,7 @@ msgstr "Entfernte Instanz"
 #: bookwyrm/templates/settings/users/user_admin.html:82
 #: bookwyrm/templates/settings/users/user_info.html:29
 msgid "Moved"
-msgstr ""
+msgstr "Umgezogen"
 
 #: bookwyrm/templates/settings/users/user_admin.html:93
 msgid "Deleted"
@@ -5996,11 +5998,11 @@ msgstr "Regal bearbeiten"
 
 #: bookwyrm/templates/shelf/shelf.html:25
 msgid "You have have moved to"
-msgstr ""
+msgstr "Sie sind umgezogen zu"
 
 #: bookwyrm/templates/shelf/shelf.html:28
 msgid "You can undo this move to restore full functionality, but some followers may have already unfollowed this account."
-msgstr ""
+msgstr "Sie können den Umzug rückgangig machen, aber einige Follower sind dem Konto möglicherweise bereits entfolgt."
 
 #: bookwyrm/templates/shelf/shelf.html:39
 #: bookwyrm/templates/user/relationships/followers.html:18
@@ -6361,7 +6363,7 @@ msgstr "%(username)s hat <a href=\"%(path)s\">%(read_count)s von %(goal_count)s 
 
 #: bookwyrm/templates/snippets/move_user_buttons.html:10
 msgid "Follow at new account"
-msgstr ""
+msgstr "Folgen Sie beim neuen Konto"
 
 #: bookwyrm/templates/snippets/page_text.html:8
 #, python-format
@@ -6725,7 +6727,7 @@ msgstr "Gruppen: %(username)s"
 
 #: bookwyrm/templates/user/layout.html:50
 msgid "has moved to"
-msgstr ""
+msgstr "ist umgezogen zu"
 
 #: bookwyrm/templates/user/layout.html:64
 msgid "Follow Requests"
