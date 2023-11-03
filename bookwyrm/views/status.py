@@ -321,7 +321,7 @@ def format_links(content):
 
 def _unwrap(text):
     """split surrounding brackets and trailing punctuation from a string of text"""
-    punct = re.compile(r'([.,;:!?"’”»]+)\Z')
+    punct = re.compile(r'([.,;:!?"’”»]+)$')
     prefix = suffix = ""
 
     if punct.search(text):
