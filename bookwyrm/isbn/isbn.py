@@ -40,7 +40,12 @@ class IsbnHyphenator:
             self.__element_tree = ElementTree.parse(self.__range_file_path)
 
         gs1_prefix = isbn_13[:3]
-        reg_group = self.__find_reg_group(isbn_13, gs1_prefix)
+        try:
+            reg_group = self.__find_reg_group(isbn_13, gs1_prefix)
+        except ValueError:
+            # if the reg groups are invalid, just return the original isbn
+            return isbn_13
+
         if reg_group is None:
             return isbn_13  # failed to hyphenate
 
