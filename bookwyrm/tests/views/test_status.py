@@ -469,6 +469,13 @@ http://www.fish.com/"""
             views.status.format_links(url), f'<a href="{url}">{url[8:]}</a>'
         )
 
+    def test_format_links_ignore_non_urls(self, *_):
+        """formating links should leave plain text untouced"""
+        text_elision = "> “The distinction is significant.” [...]"  # bookwyrm#2993
+        text_quoteparens = "some kind of gene-editing technology (?)"  # bookwyrm#3049
+        self.assertEqual(views.status.format_links(text_elision), text_elision)
+        self.assertEqual(views.status.format_links(text_quoteparens), text_quoteparens)
+
     def test_format_mentions_with_at_symbol_links(self, *_):
         """A link with an @username shouldn't treat the username as a mention"""
         content = "a link to https://example.com/user/@mouse"
