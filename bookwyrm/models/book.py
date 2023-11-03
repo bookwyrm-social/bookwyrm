@@ -368,7 +368,7 @@ class Edition(Book):
         if self.isbn_10:
             self.isbn_10 = normalize_isbn(self.isbn_10)
         if self.isbn_13:
-            self.isbn_10 = normalize_isbn(self.isbn_13)
+            self.isbn_13 = normalize_isbn(self.isbn_13)
 
         # set rank
         self.edition_rank = self.get_rank()
