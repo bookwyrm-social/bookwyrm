@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-11-02 21:32+0000\n"
-"PO-Revision-Date: 2023-11-03 01:03\n"
+"PO-Revision-Date: 2023-11-03 08:21\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: German\n"
 "Language: de\n"
@@ -1241,7 +1241,7 @@ msgstr "Titel:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:35
 msgid "Sort Title:"
-msgstr ""
+msgstr "Sortieren nach Titel:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:44
 msgid "Subtitle:"
@@ -1369,7 +1369,7 @@ msgstr "Ausgaben von  %(book_title)s"
 #: bookwyrm/templates/book/editions/editions.html:8
 #, python-format
 msgid "Editions of <a href=\"%(work_path)s\"><i>%(work_title)s</i></a>"
-msgstr ""
+msgstr "Ausgaben von <a href=\"%(work_path)s\"><i>%(work_title)s</i></a>"
 
 #: bookwyrm/templates/book/editions/editions.html:55
 msgid "Can't find the edition you're looking for?"
@@ -2805,7 +2805,7 @@ msgstr "Keine gültige CSV-Datei"
 #, python-format
 msgid "Currently, you are allowed to import %(display_size)s books every %(import_limit_reset)s day."
 msgid_plural "Currently, you are allowed to import %(display_size)s books every %(import_limit_reset)s days."
-msgstr[0] ""
+msgstr[0] "Aktuell dürfen Sie %(display_size)s Bücher, alle %(import_limit_reset)s Tage importieren."
 msgstr[1] ""
 
 #: bookwyrm/templates/import/import.html:27
@@ -2940,7 +2940,7 @@ msgstr "Import stoppen"
 #, python-format
 msgid "%(display_counter)s item needs manual approval."
 msgid_plural "%(display_counter)s items need manual approval."
-msgstr[0] "%(display_counter)s Element muss manuell geprüft werden."
+msgstr[0] "%(display_counter)s Eintrag muss manuell geprüft werden."
 msgstr[1] "%(display_counter)s Elemente müssen manuell geprüft werden."
 
 #: bookwyrm/templates/import/import_status.html:83
@@ -3502,7 +3502,7 @@ msgstr "<strong>Sie haben Ihr Konto</strong> auf <a href=\"%(moved_to)s\">%(user
 
 #: bookwyrm/templates/moved.html:32
 msgid "You can undo the move to restore full functionality, but some followers may have already unfollowed this account."
-msgstr "Sie können den Umzug rückgangig machen, aber einige Follower haben dem Konto möglicherweise bereits entfolgt."
+msgstr "Sie können den Umzug rückgängig machen, aber einige Follower haben dem Konto möglicherweise bereits entfolgt."
 
 #: bookwyrm/templates/moved.html:42 bookwyrm/templates/shelf/shelf.html:32
 msgid "Undo move"
@@ -3771,7 +3771,7 @@ msgstr "%(related_user)s ist zu <a href=\"%(related_user_moved_to)s\">%(username
 #: bookwyrm/templates/notifications/items/move_user.html:25
 #, python-format
 msgid "%(related_user)s has undone their move"
-msgstr "%(related_user)s hat seinen Umzug rückgangig gemacht"
+msgstr "%(related_user)s hat seinen Umzug rückgängig gemacht"
 
 #: bookwyrm/templates/notifications/items/remove.html:17
 #, python-format
@@ -4051,7 +4051,7 @@ msgstr "Ein anderes Konto als Alias zu markieren, ist notwendig, wenn Sie das an
 
 #: bookwyrm/templates/preferences/alias_user.html:19
 msgid "This is a reversable action and will not change the functionality of this account."
-msgstr "Dies ist eine reversible Funktion und wird die Nutzbarkeit dieses Kontos nicht einschränken."
+msgstr "Dies ist eine umkehrbare Funktion und wird die Nutzbarkeit dieses Kontos nicht einschränken."
 
 #: bookwyrm/templates/preferences/alias_user.html:25
 msgid "Enter the username for the account you want to add as an alias e.g. <em>user@example.com </em>:"
@@ -4247,7 +4247,7 @@ msgstr "Konto auf einen anderen Server umziehen"
 
 #: bookwyrm/templates/preferences/move_user.html:16
 msgid "Moving your account will notify all your followers and direct them to follow the new account."
-msgstr "Das Verschieben deines Kontos wird alle deine Follower benachrichtigen und sie anweisen, dem neuen Konto zu folgen."
+msgstr "Das Verschieben deines Kontos wird alle deine Follower*innen benachrichtigen und sie anweisen, dem neuen Konto zu folgen."
 
 #: bookwyrm/templates/preferences/move_user.html:19
 #, python-format
@@ -6002,7 +6002,7 @@ msgstr "Sie sind umgezogen zu"
 
 #: bookwyrm/templates/shelf/shelf.html:28
 msgid "You can undo this move to restore full functionality, but some followers may have already unfollowed this account."
-msgstr "Sie können den Umzug rückgangig machen, aber einige Follower sind dem Konto möglicherweise bereits entfolgt."
+msgstr "Sie können den Umzug rückgängig machen, aber einige Follower sind dem Konto möglicherweise bereits entfolgt."
 
 #: bookwyrm/templates/shelf/shelf.html:39
 #: bookwyrm/templates/user/relationships/followers.html:18
@@ -6829,8 +6829,8 @@ msgstr "Noch keine Aktivitäten!"
 #, python-format
 msgid "%(display_count)s follower"
 msgid_plural "%(display_count)s followers"
-msgstr[0] ""
-msgstr[1] "%(display_count)s Follower"
+msgstr[0] "%(display_count)s Follower*in"
+msgstr[1] "%(display_count)s Follower*innen"
 
 #: bookwyrm/templates/user/user_preview.html:31
 #, python-format
