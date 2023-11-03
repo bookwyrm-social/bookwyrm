@@ -333,6 +333,12 @@ def _unwrap(text):
             # Split out wrapping chars.
             suffix = text[-1] + suffix
             prefix, text = text[:1], text[1:-1]
+            break  # Nested wrappers not supported atm.
+
+    if punct.search(text):
+        # Move inner punctuation to suffix segment.
+        text, inner_punct, _ = punct.split(text)
+        suffix = inner_punct + suffix
 
     return prefix, text, suffix
 

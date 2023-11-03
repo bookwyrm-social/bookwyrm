@@ -421,25 +421,24 @@ http://www.fish.com/"""
         )
 
     def test_format_links_punctuation(self, *_):
-        """don’t take trailing punctuation into account pls"""
-        url = "http://www.fish.com/"
-        self.assertEqual(
-            views.status.format_links(f"{url}."),
-            f'<a href="{url}">www.fish.com/</a>.',
-        )
-        self.assertEqual(
-            views.status.format_links(f"{url}!?!"),
-            f'<a href="{url}">www.fish.com/</a>!?!',
-        )
-
-    def test_format_links_punctuation_parens(self, *_):
-        """ignore trailing punctuation and brackets combined"""
-        # Period at the end, wrapped in brackets.
-        url = "http://www.fish.com"
-        self.assertEqual(
-            views.status.format_links(f"({url})."),
-            f'(<a href="{url}">www.fish.com</a>).',
-        )
+        """test many combinations of brackets, URLs, and punctuation"""
+        url = "https://bookwyrm.social"
+        html = f'<a href="{url}">bookwyrm.social</a>'
+        test_table = [
+            ("punct", f"text and {url}.", f"text and {html}."),
+            ("multi_punct", f"text, then {url}?...", f"text, then {html}?..."),
+            ("bracket_punct", f"here ({url}).", f"here ({html})."),
+            ("punct_bracket", f"there [{url}?]", f"there [{html}?]"),
+            ("punct_bracket_punct", f"not here? ({url}!).", f"not here? ({html}!)."),
+            (
+                "multi_punct_bracket",
+                f"not there ({url}...);",
+                f"not there ({html}...);",
+            ),
+        ]
+        for desc, text, output in test_table:
+            with self.subTest(desc=desc):
+                self.assertEqual(views.status.format_links(text), output)
 
     def test_format_links_special_chars(self, *_):
         """find and format urls into a tags"""
