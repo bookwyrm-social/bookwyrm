@@ -8,7 +8,10 @@ from django.db.models import Q
 from django.core.serializers.json import DjangoJSONEncoder
 from django.core.files.base import ContentFile
 
-from bookwyrm import models
+from bookwyrm.models import AnnualGoal, ReadThrough, ShelfBook, Shelf, List, ListItem
+from bookwyrm.models import Review, Comment, Quotation
+from bookwyrm.models import Edition, Book
+from bookwyrm.models import UserFollows, User, UserBlocks
 from bookwyrm.models.job import ParentJob, ParentTask
 from bookwyrm.settings import DOMAIN
 from bookwyrm.tasks import app, IMPORTS
