@@ -265,6 +265,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
 
     @classmethod
     def get_permanently_deleted_users(cls):
+        """a list of users who are permanently deleted"""
         return cls.objects.filter(
             is_active=False,
             deactivation_reason__in=["self_deletion", "moderator_deletion"],
