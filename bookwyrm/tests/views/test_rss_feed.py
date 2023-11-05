@@ -143,7 +143,6 @@ class RssFeedView(TestCase):
                 shelf=shelf,
                 user=self.local_user,
             )
-        models.SiteSettings.objects.create()
         view = rss_feed.RssShelfFeed()
         request = self.factory.get("/user/books/test-shelf/rss")
         request.user = self.local_user
