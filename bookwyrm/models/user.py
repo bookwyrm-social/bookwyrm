@@ -411,7 +411,6 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         # skip the logic in this class's save()
         super().save(
             *args,
-            update_fields=["email", "avatar", "preview_image", "summary", "name"],
             **kwargs,
         )
 
