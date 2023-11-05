@@ -1,5 +1,6 @@
 """ testing models """
 import json
+
 from unittest.mock import patch
 from django.contrib.auth.models import Group
 from django.db import IntegrityError
@@ -10,9 +11,11 @@ from bookwyrm import models
 from bookwyrm.management.commands import initdb
 from bookwyrm.settings import USE_HTTPS, DOMAIN
 
+
 # pylint: disable=missing-class-docstring
 # pylint: disable=missing-function-docstring
 class User(TestCase):
+
     protocol = "https://" if USE_HTTPS else "http://"
 
     # pylint: disable=invalid-name
@@ -269,7 +272,7 @@ class User(TestCase):
     @patch("bookwyrm.suggested_users.remove_user_task.delay")
     @patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
     @patch("bookwyrm.activitystreams.add_status_task.delay")
-    def test_delete_user_erase_statuses(self, *_):
+    def test_delete_user_erase_statuses_invalid(self, *_):
         """erase user statuses when user is deleted"""
         status = models.Status.objects.create(user=self.user, content="hello")
         self.assertFalse(status.deleted)
@@ -328,14 +331,14 @@ class User(TestCase):
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
         ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
-            active_user = models.User.objects.create_user(
+            models.User.objects.create_user(
                 f"activeuser@{DOMAIN}",
                 "activeuser@activeuser.activeuser",
                 "activeuserword",
                 local=True,
                 localname="active",
             )
-            deleted_user = models.User.objects.create_user(
+            models.User.objects.create_user(
                 f"deleteduser@{DOMAIN}",
                 "deleteduser@deleteduser.deleteduser",
                 "deleteduserword",
@@ -344,7 +347,7 @@ class User(TestCase):
                 is_active=False,
                 deactivation_reason="self_deletion",
             )
-            inactive_user = models.User.objects.create_user(
+            models.User.objects.create_user(
                 f"inactiveuser@{DOMAIN}",
                 "inactiveuser@inactiveuser.inactiveuser",
                 "inactiveuserword",
