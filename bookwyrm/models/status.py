@@ -102,7 +102,7 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         if hasattr(self, "quotation"):
             self.quotation = None  # pylint: disable=attribute-defined-outside-init
         self.deleted_date = timezone.now()
-        self.save()
+        self.save(*args, **kwargs)
 
     @property
     def recipients(self):
