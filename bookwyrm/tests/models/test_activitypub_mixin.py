@@ -119,6 +119,25 @@ class ActivitypubMixins(TestCase):
         result = models.Edition.find_existing({"openlibraryKey": "OL1234"})
         self.assertEqual(result, book)
 
+    def test_find_existing_with_id(self, *_):
+        """make sure that an "id" field won't produce a match"""
+        book = models.Edition.objects.create(title="Test edition")
+
+        result = models.Edition.find_existing({"id": book.id})
+        self.assertIsNone(result)
+
+    def test_find_existing_with_id_and_match(self, *_):
+        """make sure that an "id" field won't produce a match"""
+        book = models.Edition.objects.create(title="Test edition")
+        matching_book = models.Edition.objects.create(
+            title="Another test edition", openlibrary_key="OL1234"
+        )
+
+        result = models.Edition.find_existing(
+            {"id": book.id, "openlibraryKey": "OL1234"}
+        )
+        self.assertEqual(result, matching_book)
+
     def test_get_recipients_public_object(self, *_):
         """determines the recipients for an object's broadcast"""
         MockSelf = namedtuple("Self", ("privacy"))
