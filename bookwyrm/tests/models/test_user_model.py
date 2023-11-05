@@ -2,6 +2,7 @@
 import json
 from unittest.mock import patch
 from django.contrib.auth.models import Group
+from django.db import IntegrityError
 from django.test import TestCase
 import responses
 
@@ -265,6 +266,25 @@ class User(TestCase):
         self.assertIsNone(status.content)
         self.assertIsNotNone(status.deleted_date)
 
+    @patch("bookwyrm.suggested_users.remove_user_task.delay")
+    @patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
+    @patch("bookwyrm.activitystreams.add_status_task.delay")
+    def test_delete_user_erase_statuses(self, *_):
+        """erase user statuses when user is deleted"""
+        status = models.Status.objects.create(user=self.user, content="hello")
+        self.assertFalse(status.deleted)
+        self.assertIsNotNone(status.content)
+        self.assertIsNone(status.deleted_date)
+
+        self.user.deactivate()
+        with self.assertRaises(IntegrityError):
+            self.user.erase_user_statuses()
+
+        status.refresh_from_db()
+        self.assertFalse(status.deleted)
+        self.assertIsNotNone(status.content)
+        self.assertIsNone(status.deleted_date)
+
     def test_admins_no_admins(self):
         """list of admins"""
         result = models.User.admins()
@@ -302,3 +322,40 @@ class User(TestCase):
         results = models.User.admins()
         self.assertEqual(results.count(), 1)
         self.assertEqual(results.first(), self.user)
+
+    def test_get_permanently_deleted_users(self):
+
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
+            "bookwyrm.activitystreams.populate_stream_task.delay"
+        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
+            active_user = models.User.objects.create_user(
+                f"activeuser@{DOMAIN}",
+                "activeuser@activeuser.activeuser",
+                "activeuserword",
+                local=True,
+                localname="active",
+            )
+            deleted_user = models.User.objects.create_user(
+                f"deleteduser@{DOMAIN}",
+                "deleteduser@deleteduser.deleteduser",
+                "deleteduserword",
+                local=True,
+                localname="deleted",
+                is_active=False,
+                deactivation_reason="self_deletion",
+            )
+            inactive_user = models.User.objects.create_user(
+                f"inactiveuser@{DOMAIN}",
+                "inactiveuser@inactiveuser.inactiveuser",
+                "inactiveuserword",
+                local=True,
+                localname="inactive",
+                is_active=False,
+                deactivation_reason="self_deactivation",
+            )
+
+        deleted_users = models.User.get_permanently_deleted_users()
+
+        self.assertTrue(deleted_users.filter(localname="deleted").exists())
+        self.assertFalse(deleted_users.filter(localname="active").exists())
+        self.assertFalse(deleted_users.filter(localname="inactive").exists())
