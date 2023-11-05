@@ -1,7 +1,7 @@
 """ using django model forms """
 from django import forms
 
-from file_resubmit.admin import AdminResubmitImageWidget
+from file_resubmit.widgets import ResubmitImageWidget
 
 from bookwyrm import models
 from .custom_form import CustomForm
@@ -71,7 +71,7 @@ class EditionForm(CustomForm):
             "published_date": SelectDateWidget(
                 attrs={"aria-describedby": "desc_published_date"}
             ),
-            "cover": AdminResubmitImageWidget(attrs={"aria-describedby": "desc_cover"}),
+            "cover": ResubmitImageWidget(attrs={"aria-describedby": "desc_cover"}),
             "physical_format": Select(
                 attrs={"aria-describedby": "desc_physical_format"}
             ),
