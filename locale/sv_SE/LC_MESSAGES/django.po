@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-27 01:11+0000\n"
-"PO-Revision-Date: 2023-09-28 09:30\n"
+"POT-Creation-Date: 2023-10-02 16:40+0000\n"
+"PO-Revision-Date: 2023-10-02 18:13\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Swedish\n"
 "Language: sv\n"
@@ -1372,8 +1372,8 @@ msgstr "Utgåvor av %(book_title)s"
 
 #: bookwyrm/templates/book/editions/editions.html:8
 #, python-format
-msgid "Editions of <a href=\"%(work_path)s\">\"%(work_title)s\"</a>"
-msgstr "Utgåvor av <a href=\"%(work_path)s\">\"%(work_title)s\"</a>"
+msgid "Editions of <a href=\"%(work_path)s\"><i>%(work_title)s</i></a>"
+msgstr ""
 
 #: bookwyrm/templates/book/editions/editions.html:55
 msgid "Can't find the edition you're looking for?"
@@ -2805,12 +2805,8 @@ msgstr "Inte en giltig CSV-fil"
 
 #: bookwyrm/templates/import/import.html:21
 #, python-format
-msgid "\n"
-"                        Currently, you are allowed to import %(display_size)s books every %(import_limit_reset)s day.\n"
-"                    "
-msgid_plural "\n"
-"                        Currently, you are allowed to import %(import_size_limit)s books every %(import_limit_reset)s days.\n"
-"                    "
+msgid "Currently, you are allowed to import %(display_size)s books every %(import_limit_reset)s day."
+msgid_plural "Currently, you are allowed to import %(import_size_limit)s books every %(import_limit_reset)s days."
 msgstr[0] ""
 msgstr[1] ""
 

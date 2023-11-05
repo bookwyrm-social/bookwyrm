@@ -39,4 +39,6 @@
     {% include 'notifications/items/update.html' %}
 {% elif notification.notification_type == 'GROUP_DESCRIPTION' %}
     {% include 'notifications/items/update.html' %}
+{% elif notification.notification_type == 'MOVE' %}
+    {% include 'notifications/items/move_user.html' %}
 {% endif %}

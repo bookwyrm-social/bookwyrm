@@ -70,6 +70,22 @@ class DeleteUserForm(CustomForm):
         fields = ["password"]
 
 
+class MoveUserForm(CustomForm):
+    target = forms.CharField(widget=forms.TextInput)
+
+    class Meta:
+        model = models.User
+        fields = ["password"]
+
+
+class AliasUserForm(CustomForm):
+    username = forms.CharField(widget=forms.TextInput)
+
+    class Meta:
+        model = models.User
+        fields = ["password"]
+
+
 class ChangePasswordForm(CustomForm):
     current_password = forms.CharField(widget=forms.PasswordInput)
     confirm_password = forms.CharField(widget=forms.PasswordInput)
