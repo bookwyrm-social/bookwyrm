@@ -26,6 +26,7 @@ class User(TestCase):
                 local=True,
                 localname="mouse",
                 name="hi",
+                summary="a summary",
                 bookwyrm_user=False,
             )
             self.another_user = models.User.objects.create_user(
@@ -218,18 +219,51 @@ class User(TestCase):
 
     @patch("bookwyrm.suggested_users.remove_user_task.delay")
     def test_delete_user(self, _):
-        """deactivate a user"""
+        """permanently delete a user"""
         self.assertTrue(self.user.is_active)
+        self.assertEqual(self.user.name, "hi")
+        self.assertEqual(self.user.summary, "a summary")
+        self.assertEqual(self.user.email, "mouse@mouse.mouse")
         with patch(
             "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
-        ) as broadcast_mock:
+        ) as broadcast_mock, patch(
+            "bookwyrm.models.user.User.erase_user_statuses"
+        ) as erase_statuses_mock:
             self.user.delete()
 
+        self.assertEqual(erase_statuses_mock.call_count, 1)
+
+        # make sure the deletion is broadcast
         self.assertEqual(broadcast_mock.call_count, 1)
         activity = json.loads(broadcast_mock.call_args[1]["args"][1])
         self.assertEqual(activity["type"], "Delete")
         self.assertEqual(activity["object"], self.user.remote_id)
+
+        self.user.refresh_from_db()
+
+        # the user's account data should be deleted
+        self.assertIsNone(self.user.name)
+        self.assertIsNone(self.user.summary)
+        self.assertNotEqual(self.user.email, "mouse@mouse.mouse")
         self.assertFalse(self.user.is_active)
+
+    @patch("bookwyrm.suggested_users.remove_user_task.delay")
+    @patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
+    @patch("bookwyrm.activitystreams.add_status_task.delay")
+    @patch("bookwyrm.activitystreams.remove_status_task.delay")
+    def test_delete_user_erase_statuses(self, *_):
+        """erase user statuses when user is deleted"""
+        status = models.Status.objects.create(user=self.user, content="hello")
+        self.assertFalse(status.deleted)
+        self.assertIsNotNone(status.content)
+        self.assertIsNone(status.deleted_date)
+
+        self.user.delete()
+        status.refresh_from_db()
+
+        self.assertTrue(status.deleted)
+        self.assertIsNone(status.content)
+        self.assertIsNotNone(status.deleted_date)
 
     def test_admins_no_admins(self):
         """list of admins"""

@@ -1,6 +1,7 @@
 """ database schema for user data """
 import re
 from urllib.parse import urlparse
+from uuid import uuid4
 
 from django.apps import apps
 from django.contrib.auth.models import AbstractUser
@@ -394,9 +395,30 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         """We don't actually delete the database entry"""
         # pylint: disable=attribute-defined-outside-init
         self.is_active = False
-        self.avatar = ""
+        self.allow_reactivation = False
+
+        self.erase_user_data()
+        self.erase_user_statuses()
+
         # skip the logic in this class's save()
         super().save(*args, **kwargs)
+
+    def erase_user_data(self):
+        """Wipe a user's custom data"""
+        # mangle email address
+        self.email = f"{uuid4()}@deleted.user"
+
+        # erase data fields
+        self.avatar = ""
+        self.preview_image = ""
+        self.summary = None
+        self.name = None
+        self.favorites.set([])
+
+    def erase_user_statuses(self):
+        """Wipe the data on all the user's statuses"""
+        for status in self.status_set.all():
+            status.delete()
 
     def deactivate(self):
         """Disable the user but allow them to reactivate"""
