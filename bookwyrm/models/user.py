@@ -408,10 +408,18 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         self.erase_user_statuses()
 
         # skip the logic in this class's save()
-        super().save(*args, **kwargs)
+        super().save(
+            *args,
+            update_fields=["email", "avatar", "preview_image", "summary", "name"],
+            **kwargs,
+        )
 
     def erase_user_data(self):
         """Wipe a user's custom data"""
+        if not self.is_permanently_deleted:
+            raise IntegrityError(
+                "Attempted to delete user data for improperly deleted user"
+            )
         # mangle email address
         self.email = f"{uuid4()}@deleted.user"
 

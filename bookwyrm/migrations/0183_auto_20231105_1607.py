@@ -8,7 +8,10 @@ def erase_deleted_user_data(apps, schema_editor):
     """Retroactively clear user data"""
     for user in User.get_permanently_deleted_users():
         user.erase_user_data()
-        user.save(broadcast=False)
+        user.save(
+            broadcast=False,
+            update_fields=["email", "avatar", "preview_image", "summary", "name"],
+        )
         user.erase_user_statuses(broadcast=False)
 
 
