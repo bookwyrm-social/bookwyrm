@@ -75,9 +75,9 @@
                             {% trans "Active" %}
                         {% endif %}
                     </span>
-                    {% if job.complete and not job.status == "stopped" and not job.status == "failed" %}
                 </td>
                 <td>
+                    {% if job.complete and not job.status == "stopped" and not job.status == "failed" %}
                     <p>
                         <a download="" href="/preferences/user-export/{{ job.task_id }}">
                             <span class="icon icon-download" aria-hidden="true"></span>
