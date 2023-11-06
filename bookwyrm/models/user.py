@@ -8,7 +8,7 @@ from django.contrib.auth.models import AbstractUser
 from django.contrib.postgres.fields import ArrayField, CICharField
 from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
 from django.dispatch import receiver
-from django.db import models, transaction, IntegrityError
+from django.db import models, transaction
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from model_utils import FieldTracker
@@ -268,7 +268,10 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         """a list of users who are permanently deleted"""
         return cls.objects.filter(
             is_active=False,
-            deactivation_reason__in=["self_deletion", "moderator_deletion"],
+            deactivation_reason__in=[
+                "self_deletion",
+                "moderator_deletion",
+            ],
         ).distinct()
 
     def update_active_date(self):
@@ -416,10 +419,6 @@ class User(OrderedCollectionPageMixin, AbstractUser):
 
     def erase_user_data(self):
         """Wipe a user's custom data"""
-        if not self.is_permanently_deleted:
-            raise IntegrityError(
-                "Attempted to delete user data for improperly deleted user"
-            )
         # mangle email address
         self.email = f"{uuid4()}@deleted.user"
 
@@ -432,12 +431,6 @@ class User(OrderedCollectionPageMixin, AbstractUser):
 
     def erase_user_statuses(self, broadcast=True):
         """Wipe the data on all the user's statuses"""
-        # safety valve: make sure the user is deleted
-        if not self.is_permanently_deleted:
-            raise IntegrityError(
-                "Attempted to delete statuses for improperly deleted user"
-            )
-
         for status in self.status_set.all():
             status.delete(broadcast=broadcast)
 
@@ -447,6 +440,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         return not self.is_active and self.deactivation_reason in [
             "self_deletion",
             "moderator_deletion",
+            "activitypub_deletion",
         ]
 
     def deactivate(self):
