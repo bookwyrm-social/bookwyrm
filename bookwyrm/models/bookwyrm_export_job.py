@@ -123,33 +123,23 @@ def json_export(user):  # pylint: disable=too-many-locals, too-many-statements
         book["authors"] = list(edition.first().authors.all().values())
         # readthroughs
         book_readthroughs = (
-            ReadThrough.objects.filter(user=user, book=book["id"])
-            .distinct()
-            .values()
+            ReadThrough.objects.filter(user=user, book=book["id"]).distinct().values()
         )
         book["readthroughs"] = list(book_readthroughs)
         # shelves
-        shelf_books = ShelfBook.objects.filter(
-            user=user, book=book["id"]
-        ).distinct()
-        shelves_from_books = Shelf.objects.filter(
-            shelfbook__in=shelf_books, user=user
-        )
+        shelf_books = ShelfBook.objects.filter(user=user, book=book["id"]).distinct()
+        shelves_from_books = Shelf.objects.filter(shelfbook__in=shelf_books, user=user)
 
         book["shelves"] = list(shelves_from_books.values())
         book["shelf_books"] = {}
 
         for shelf in shelves_from_books:
-            shelf_contents = ShelfBook.objects.filter(
-                user=user, shelf=shelf
-            ).distinct()
+            shelf_contents = ShelfBook.objects.filter(user=user, shelf=shelf).distinct()
 
             book["shelf_books"][shelf.identifier] = list(shelf_contents.values())
 
         # book lists
-        book_lists = List.objects.filter(
-            books__in=[book["id"]], user=user
-        ).distinct()
+        book_lists = List.objects.filter(books__in=[book["id"]], user=user).distinct()
         book["lists"] = list(book_lists.values())
         book["list_items"] = {}
         for blist in book_lists:
@@ -180,9 +170,7 @@ def json_export(user):  # pylint: disable=too-many-locals, too-many-statements
 
     # follows
     follows = UserFollows.objects.filter(user_subject=user).distinct()
-    following = User.objects.filter(
-        userfollows_user_object__in=follows
-    ).distinct()
+    following = User.objects.filter(userfollows_user_object__in=follows).distinct()
     follows = [f.remote_id for f in following]
 
     # blocks
@@ -207,8 +195,8 @@ def get_books_for_user(user):
     """Get all the books and editions related to a user
     :returns: tuple of editions, books
     """
-    all_books = Edition.viewer_aware_objects(user)
-    editions = all_books.filter(
+
+    editions = Edition.objects.filter(
         Q(shelves__user=user)
         | Q(readthrough__user=user)
         | Q(review__user=user)
