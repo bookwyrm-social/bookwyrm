@@ -94,7 +94,7 @@ def json_export(user):  # pylint: disable=too-many-locals, too-many-statements
         exported_user["avatar"] = f'https://{DOMAIN}{getattr(user, "avatar").url}'
 
     # reading goals
-    reading_goals = models.AnnualGoal.objects.filter(user=user).distinct()
+    reading_goals = AnnualGoal.objects.filter(user=user).distinct()
     goals_list = []
     # TODO: either error checking should be more sophisticated
     # or maybe we don't need this try/except
@@ -107,7 +107,7 @@ def json_export(user):  # pylint: disable=too-many-locals, too-many-statements
         pass
 
     try:
-        readthroughs = models.ReadThrough.objects.filter(user=user).distinct().values()
+        readthroughs = ReadThrough.objects.filter(user=user).distinct().values()
         readthroughs = list(readthroughs)
     except Exception:  # pylint: disable=broad-except
         readthroughs = []
@@ -123,16 +123,16 @@ def json_export(user):  # pylint: disable=too-many-locals, too-many-statements
         book["authors"] = list(edition.first().authors.all().values())
         # readthroughs
         book_readthroughs = (
-            models.ReadThrough.objects.filter(user=user, book=book["id"])
+            ReadThrough.objects.filter(user=user, book=book["id"])
             .distinct()
             .values()
         )
         book["readthroughs"] = list(book_readthroughs)
         # shelves
-        shelf_books = models.ShelfBook.objects.filter(
+        shelf_books = ShelfBook.objects.filter(
             user=user, book=book["id"]
         ).distinct()
-        shelves_from_books = models.Shelf.objects.filter(
+        shelves_from_books = Shelf.objects.filter(
             shelfbook__in=shelf_books, user=user
         )
 
@@ -140,34 +140,34 @@ def json_export(user):  # pylint: disable=too-many-locals, too-many-statements
         book["shelf_books"] = {}
 
         for shelf in shelves_from_books:
-            shelf_contents = models.ShelfBook.objects.filter(
+            shelf_contents = ShelfBook.objects.filter(
                 user=user, shelf=shelf
             ).distinct()
 
             book["shelf_books"][shelf.identifier] = list(shelf_contents.values())
 
         # book lists
-        book_lists = models.List.objects.filter(
+        book_lists = List.objects.filter(
             books__in=[book["id"]], user=user
         ).distinct()
         book["lists"] = list(book_lists.values())
         book["list_items"] = {}
         for blist in book_lists:
-            list_items = models.ListItem.objects.filter(book_list=blist).distinct()
+            list_items = ListItem.objects.filter(book_list=blist).distinct()
             book["list_items"][blist.name] = list(list_items.values())
 
         # reviews
-        reviews = models.Review.objects.filter(user=user, book=book["id"]).distinct()
+        reviews = Review.objects.filter(user=user, book=book["id"]).distinct()
 
         book["reviews"] = list(reviews.values())
 
         # comments
-        comments = models.Comment.objects.filter(user=user, book=book["id"]).distinct()
+        comments = Comment.objects.filter(user=user, book=book["id"]).distinct()
 
         book["comments"] = list(comments.values())
 
         # quotes
-        quotes = models.Quotation.objects.filter(user=user, book=book["id"]).distinct()
+        quotes = Quotation.objects.filter(user=user, book=book["id"]).distinct()
 
         book["quotes"] = list(quotes.values())
 
@@ -175,19 +175,19 @@ def json_export(user):  # pylint: disable=too-many-locals, too-many-statements
         final_books.append(book)
 
     # saved book lists
-    saved_lists = models.List.objects.filter(id__in=user.saved_lists.all()).distinct()
+    saved_lists = List.objects.filter(id__in=user.saved_lists.all()).distinct()
     saved_lists = [l.remote_id for l in saved_lists]
 
     # follows
-    follows = models.UserFollows.objects.filter(user_subject=user).distinct()
-    following = models.User.objects.filter(
+    follows = UserFollows.objects.filter(user_subject=user).distinct()
+    following = User.objects.filter(
         userfollows_user_object__in=follows
     ).distinct()
     follows = [f.remote_id for f in following]
 
     # blocks
-    blocks = models.UserBlocks.objects.filter(user_subject=user).distinct()
-    blocking = models.User.objects.filter(userblocks_user_object__in=blocks).distinct()
+    blocks = UserBlocks.objects.filter(user_subject=user).distinct()
+    blocking = User.objects.filter(userblocks_user_object__in=blocks).distinct()
 
     blocks = [b.remote_id for b in blocking]
 
@@ -207,7 +207,7 @@ def get_books_for_user(user):
     """Get all the books and editions related to a user
     :returns: tuple of editions, books
     """
-    all_books = models.Edition.viewer_aware_objects(user)
+    all_books = Edition.viewer_aware_objects(user)
     editions = all_books.filter(
         Q(shelves__user=user)
         | Q(readthrough__user=user)
@@ -216,5 +216,5 @@ def get_books_for_user(user):
         | Q(comment__user=user)
         | Q(quotation__user=user)
     ).distinct()
-    books = models.Book.objects.filter(id__in=editions).distinct()
+    books = Book.objects.filter(id__in=editions).distinct()
     return editions, books
