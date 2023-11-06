@@ -1,23 +1,20 @@
 """ testing migrations """
-import json
 from unittest.mock import patch
 
-from django.apps import apps
 from django.test import TestCase
 from django.db.migrations.executor import MigrationExecutor
 from django.db import connection
-import responses
 
 from bookwyrm import models
 from bookwyrm.management.commands import initdb
-from bookwyrm.settings import USE_HTTPS, DOMAIN
+from bookwyrm.settings import DOMAIN
 
 # pylint: disable=missing-class-docstring
 # pylint: disable=missing-function-docstring
 class EraseDeletedUserDataMigration(TestCase):
 
-    migrate_from = "0182_auto_20231027_1122"
-    migrate_to = "0183_auto_20231105_1607"
+    migrate_from = "0183_auto_20231105_1607"
+    migrate_to = "0184_auto_20231106_0421"
 
     # pylint: disable=invalid-name
     def setUp(self):
@@ -68,11 +65,6 @@ class EraseDeletedUserDataMigration(TestCase):
         initdb.init_groups()
         initdb.init_permissions()
 
-        assert (
-            self.migrate_from and self.migrate_to
-        ), "TestCase '{}' must define migrate_from and migrate_to properties".format(
-            type(self).__name__
-        )
         self.migrate_from = [("bookwyrm", self.migrate_from)]
         self.migrate_to = [("bookwyrm", self.migrate_to)]
         executor = MigrationExecutor(connection)
@@ -104,12 +96,14 @@ class EraseDeletedUserDataMigration(TestCase):
         self.deleted_status.refresh_from_db()
 
         self.assertTrue(self.active_user.is_active)
+        self.assertFalse(self.active_user.is_deleted)
         self.assertEqual(self.active_user.name, "a name")
         self.assertNotEqual(self.deleted_user.email, "activeuser@activeuser.activeuser")
         self.assertFalse(self.active_status.deleted)
         self.assertEqual(self.active_status.content, "don't delete me")
 
         self.assertFalse(self.inactive_user.is_active)
+        self.assertFalse(self.inactive_user.is_deleted)
         self.assertEqual(self.inactive_user.name, "name name")
         self.assertNotEqual(
             self.deleted_user.email, "inactiveuser@inactiveuser.inactiveuser"
@@ -118,6 +112,7 @@ class EraseDeletedUserDataMigration(TestCase):
         self.assertEqual(self.inactive_status.content, "also don't delete me")
 
         self.assertFalse(self.deleted_user.is_active)
+        self.assertTrue(self.deleted_user.is_deleted)
         self.assertIsNone(self.deleted_user.name)
         self.assertNotEqual(
             self.deleted_user.email, "deleteduser@deleteduser.deleteduser"

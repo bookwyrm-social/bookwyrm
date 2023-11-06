@@ -8,7 +8,7 @@ from django.contrib.auth.models import AbstractUser
 from django.contrib.postgres.fields import ArrayField, CICharField
 from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
 from django.dispatch import receiver
-from django.db import models, transaction
+from django.db import models, transaction, IntegrityError
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from model_utils import FieldTracker
@@ -54,6 +54,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
 
     username = fields.UsernameField()
     email = models.EmailField(unique=True, null=True)
+    is_deleted = models.BooleanField(default=False)
 
     key_pair = fields.OneToOneField(
         "KeyPair",
@@ -263,17 +264,6 @@ class User(OrderedCollectionPageMixin, AbstractUser):
             is_active=True,
         ).distinct()
 
-    @classmethod
-    def get_permanently_deleted_users(cls):
-        """a list of users who are permanently deleted"""
-        return cls.objects.filter(
-            is_active=False,
-            deactivation_reason__in=[
-                "self_deletion",
-                "moderator_deletion",
-            ],
-        ).distinct()
-
     def update_active_date(self):
         """this user is here! they are doing things!"""
         self.last_active_date = timezone.now()
@@ -407,6 +397,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         # pylint: disable=attribute-defined-outside-init
         self.is_active = False
         self.allow_reactivation = False
+        self.is_deleted = True
 
         self.erase_user_data()
         self.erase_user_statuses()
@@ -419,6 +410,11 @@ class User(OrderedCollectionPageMixin, AbstractUser):
 
     def erase_user_data(self):
         """Wipe a user's custom data"""
+        if not self.is_deleted:
+            raise IntegrityError(
+                "Trying to erase user data on user that is not deleted"
+            )
+
         # mangle email address
         self.email = f"{uuid4()}@deleted.user"
 
@@ -431,17 +427,13 @@ class User(OrderedCollectionPageMixin, AbstractUser):
 
     def erase_user_statuses(self, broadcast=True):
         """Wipe the data on all the user's statuses"""
+        if not self.is_deleted:
+            raise IntegrityError(
+                "Trying to erase user data on user that is not deleted"
+            )
+
         for status in self.status_set.all():
             status.delete(broadcast=broadcast)
-
-    @property
-    def is_permanently_deleted(self):
-        """is this user inactive, or really truly deleted?"""
-        return not self.is_active and self.deactivation_reason in [
-            "self_deletion",
-            "moderator_deletion",
-            "activitypub_deletion",
-        ]
 
     def deactivate(self):
         """Disable the user but allow them to reactivate"""

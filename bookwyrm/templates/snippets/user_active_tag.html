@@ -8,7 +8,7 @@
         {% trans "Active" as text %}
         {% include "snippets/user_active_tag_item.html" with icon="check" text=text level="success" %}
     {% endif %}
-{% elif user.is_permanently_deleted %}
+{% elif user.is_deleted %}
     {% trans "Deleted" as text %}
     {% include "snippets/user_active_tag_item.html" with icon="x" text=text level="danger" deactivation_reason=user.get_deactivation_reason_display %}
 {% else %}
