@@ -38,9 +38,32 @@
                 <label class="label" for="id_archive_file">{% trans "Data file:" %}</label>
                 {{ import_form.archive_file }}
             </div>
-            <div>
-                <p class="block"> {% trans "Importing this file will overwrite any data you currently have saved." %}</p>
-                <p class="block">{% trans "Deselect any data you do not wish to include in your import. Books will always be imported" %}</p>
+            <div class="content">
+                {% blocktrans trimmed %}
+                <p class="block">Deselect any checkboxes for data you do not wish to include in your import.</p>
+                <p class="block">Importing this file will not delete any data but <strong>will overwrite the following information</strong>:</p>
+                <ul>
+                    <li>Profile</li>
+                    <ul>
+                        <li>name</li>
+                        <li>summary</li>
+                        <li>avatar</li>
+                    </ul>
+                    <li>Settings</li>
+                    <ul>
+                        <li>whether manual approval is required for other users to follow your account</li>
+                        <li>whether following/followers are shown on your profile</li>
+                        <li>whether your reading goal is shown on your profile</li>
+                        <li>whether you see user follow suggestions</li>
+                        <li>whether your account is suggested to others</li>
+                        <li>your timezone</li>
+                        <li>your default post privacy setting</li>
+                    </ul>
+                    <li>Reading goals for all years listed in the import file</li>
+                </ul>
+                <p class="block">All other imported data will be <strong>added if it does not already exist</strong>. For example, if you have an existing list with the same name as an imported list, the existing list settings will not change, any new list items will be added, and no existing list items will be deleted.</p>
+
+                {% endblocktrans %}
             </div>
         </div>
 

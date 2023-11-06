@@ -9,16 +9,16 @@
 
 {% block panel %}
 <div class="block content">
+    <p class="notification">
+        {% trans "Your exported archive file will include all user data for import into another Bookwyrm server" %}
+    </p>
     {% if next_available %}
     <p class="notification is-warning">
-        {% blocktrans %}
+        {% blocktrans trimmed %}
         You will be able to create a new export file at {{ next_available }}
         {% endblocktrans %}
     </p>
     {% else %}
-    <p class="notification">
-        {% trans "Your exported archive file will include all user data for import into another Bookwyrm server" %}
-    </p>
     <form name="export" method="POST" href="{% url 'prefs-user-export' %}">
         {% csrf_token %}
         <button type="submit" class="button">
