@@ -1,5 +1,6 @@
 {% extends 'preferences/layout.html' %}
 {% load i18n %}
+{% load utilities %}
 
 {% block title %}{% trans "User Export" %}{% endblock %}
 
@@ -38,13 +39,13 @@
         <table class="table is-striped is-fullwidth">
             <tr>
                 <th>
-                    {% trans "Date Created" %}
-                </th>
-                <th>
-                    {% trans "Last Updated" %}
+                    {% trans "Date" %}
                 </th>
                 <th>
                     {% trans "Status" %}
+                </th>
+                <th colspan="2">
+                    {% trans "Size" %}
                 </th>
             </tr>
             {% if not jobs %}
@@ -56,13 +57,6 @@
             {% endif %}
             {% for job in jobs %}
             <tr>
-                <td>
-                    {% if job.complete and not job.status == "stopped" and not job.status == "failed" %}
-                    <p><a download="" href="/preferences/user-export/{{ job.task_id }}">{{ job.created_date }}</a></p>
-                    {% else %}
-                    <p>{{ job.created_date }}</p>
-                    {% endif %}
-                </td>
                 <td>{{ job.updated_date }}</td>
                 <td>
                     <span
@@ -85,6 +79,21 @@
                             {% trans "Active" %}
                         {% endif %}
                     </span>
+                </td>
+                <td>
+                    <span>{{ job.export_data|get_file_size }}</span>
+                </td>
+                <td>
+                    {% if job.complete and not job.status == "stopped" and not job.status == "failed" %}
+                    <p>
+                        <a download="" href="/preferences/user-export/{{ job.task_id }}">
+                            <span class="icon icon-download" aria-hidden="true"></span>
+                            <span class="is-hidden-mobile">
+                                {% trans "Download your export" %}
+                            </span>
+                        </a>
+                    </p>
+                    {% endif %}
                 </td>
             </tr>
             {% endfor %}
