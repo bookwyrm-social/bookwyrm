@@ -10,7 +10,7 @@ from django.core.files.base import ContentFile
 
 from bookwyrm.models import AnnualGoal, ReadThrough, ShelfBook, Shelf, List, ListItem
 from bookwyrm.models import Review, Comment, Quotation
-from bookwyrm.models import Edition, Book
+from bookwyrm.models import Edition
 from bookwyrm.models import UserFollows, User, UserBlocks
 from bookwyrm.models.job import ParentJob, ParentTask
 from bookwyrm.settings import DOMAIN
@@ -63,7 +63,7 @@ def tar_export(json_data: str, user, file):
         if getattr(user, "avatar", False):
             tar.add_image(user.avatar, filename="avatar")
 
-        editions, books = get_books_for_user(user)  # pylint: disable=unused-variable
+        editions = get_books_for_user(user)
         for book in editions:
             if getattr(book, "cover", False):
                 tar.add_image(book.cover)
@@ -113,56 +113,78 @@ def json_export(user):  # pylint: disable=too-many-locals, too-many-statements
         readthroughs = []
 
     # books
-    editions, books = get_books_for_user(user)
+    editions = get_books_for_user(user)
     final_books = []
 
-    for book in books.values():
-        edition = editions.filter(id=book["id"])
-        book["edition"] = edition.values()[0]
+    # editions
+    for edition in editions:
+        book = {}
+        book[
+            "edition"
+        ] = edition.to_activity()  # <== BUG Link field class is unknown here.
+
         # authors
-        book["authors"] = list(edition.first().authors.all().values())
-        # readthroughs
+        book["authors"] = []
+        for author in edition.authors.all():
+            obj = author.to_activity()
+            book["authors"].append(obj)
+
+        # Shelves and shelfbooks
+        book["shelves"] = []
+        user_shelves = Shelf.objects.filter(user=user).all()
+
+        for shelf in user_shelves:
+            obj = {"shelf_books": []}
+            obj["shelf_info"] = shelf.to_activity()
+            shelf_books = ShelfBook.objects.filter(book=edition, shelf=shelf).distinct()
+
+            for shelfbook in shelf_books:
+                obj["shelf_books"].append(shelfbook.to_activity())
+
+            book["shelves"].append(obj)
+
+        # List and ListItem
+        book["lists"] = []
+        user_lists = List.objects.filter(user=user).all()
+
+        for booklist in user_lists:
+            obj = {"list_items": []}
+            obj["list_info"] = booklist.to_activity()
+            list_items = ListItem.objects.filter(book_list=booklist).distinct()
+            for item in list_items:
+                obj["list_items"].append(item.to_activity())
+
+            book["lists"].append(obj)
+
+        # Statuses
+        # Can't use select_subclasses here because
+        # we need to filter on the "book" value,
+        # which is not available on an ordinary Status
+        for x in ["comments", "quotations", "reviews"]:
+            book[x] = []
+
+        comments = Comment.objects.filter(user=user, book=edition).all()
+        for status in comments:
+            book["comments"].append(status.to_activity())
+
+        quotes = Quotation.objects.filter(user=user, book=edition).all()
+        for status in quotes:
+            book["quotations"].append(status.to_activity())
+
+        reviews = Review.objects.filter(user=user, book=edition).all()
+        for status in reviews:
+            book["reviews"].append(status.to_activity())
+
+        # readthroughs can't be serialized to activity
         book_readthroughs = (
-            ReadThrough.objects.filter(user=user, book=book["id"]).distinct().values()
+            ReadThrough.objects.filter(user=user, book=edition).distinct().values()
         )
         book["readthroughs"] = list(book_readthroughs)
-        # shelves
-        shelf_books = ShelfBook.objects.filter(user=user, book=book["id"]).distinct()
-        shelves_from_books = Shelf.objects.filter(shelfbook__in=shelf_books, user=user)
-
-        book["shelves"] = list(shelves_from_books.values())
-        book["shelf_books"] = {}
-
-        for shelf in shelves_from_books:
-            shelf_contents = ShelfBook.objects.filter(user=user, shelf=shelf).distinct()
-
-            book["shelf_books"][shelf.identifier] = list(shelf_contents.values())
-
-        # book lists
-        book_lists = List.objects.filter(books__in=[book["id"]], user=user).distinct()
-        book["lists"] = list(book_lists.values())
-        book["list_items"] = {}
-        for blist in book_lists:
-            list_items = ListItem.objects.filter(book_list=blist).distinct()
-            book["list_items"][blist.name] = list(list_items.values())
-
-        # reviews
-        reviews = Review.objects.filter(user=user, book=book["id"]).distinct()
-
-        book["reviews"] = list(reviews.values())
-
-        # comments
-        comments = Comment.objects.filter(user=user, book=book["id"]).distinct()
-
-        book["comments"] = list(comments.values())
-
-        # quotes
-        quotes = Quotation.objects.filter(user=user, book=book["id"]).distinct()
-
-        book["quotes"] = list(quotes.values())
 
         # append everything
         final_books.append(book)
+
+    logger.info(final_books)
 
     # saved book lists
     saved_lists = List.objects.filter(id__in=user.saved_lists.all()).distinct()
@@ -192,9 +214,7 @@ def json_export(user):  # pylint: disable=too-many-locals, too-many-statements
 
 
 def get_books_for_user(user):
-    """Get all the books and editions related to a user
-    :returns: tuple of editions, books
-    """
+    """Get all the books and editions related to a user"""
 
     editions = Edition.objects.filter(
         Q(shelves__user=user)
@@ -204,5 +224,5 @@ def get_books_for_user(user):
         | Q(comment__user=user)
         | Q(quotation__user=user)
     ).distinct()
-    books = Book.objects.filter(id__in=editions).distinct()
-    return editions, books
+
+    return editions
