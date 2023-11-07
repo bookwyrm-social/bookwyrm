@@ -29,85 +29,124 @@
             <p>{% blocktrans %}You will next be able to import a user file at {{ next_available }}{% endblocktrans %}</p>
         </div>
     {% else %}
-    <form class="box" name="import-user" action="/user-import" method="post" enctype="multipart/form-data">
+    <form class="box content" name="import-user" action="/user-import" method="post" enctype="multipart/form-data">
         {% csrf_token %}
 
-        <div class="columns">
-        <div class="column is-half">
-            <div class="field">
+        <div class="block">
+            <div class="notification">
+                <h2 class="is-size-5">{% trans "Step 1:" %}</h2>
+                <p>
+                    {% blocktrans trimmed %}
+                    Select an export file generated from another BookWyrm account. The file format should be <code>.tar.gz</code>.
+                    {% endblocktrans %}
+                </p>
+            </div>
+            <div class="block m-5">
                 <label class="label" for="id_archive_file">{% trans "Data file:" %}</label>
                 {{ import_form.archive_file }}
             </div>
-            <div class="content">
-                {% blocktrans trimmed %}
-                <p class="block">Deselect any checkboxes for data you do not wish to include in your import.</p>
-                <p class="block">Importing this file will not delete any data but <strong>will overwrite the following information</strong>:</p>
-                <ul>
-                    <li>Profile</li>
-                    <ul>
-                        <li>name</li>
-                        <li>summary</li>
-                        <li>avatar</li>
-                    </ul>
-                    <li>Settings</li>
-                    <ul>
-                        <li>whether manual approval is required for other users to follow your account</li>
-                        <li>whether following/followers are shown on your profile</li>
-                        <li>whether your reading goal is shown on your profile</li>
-                        <li>whether you see user follow suggestions</li>
-                        <li>whether your account is suggested to others</li>
-                        <li>your timezone</li>
-                        <li>your default post privacy setting</li>
-                    </ul>
-                    <li>Reading goals for all years listed in the import file</li>
-                </ul>
-                <p class="block">All other imported data will be <strong>added if it does not already exist</strong>. For example, if you have an existing list with the same name as an imported list, the existing list settings will not change, any new list items will be added, and no existing list items will be deleted.</p>
+        </div>
 
-                {% endblocktrans %}
+        <hr aria-hidden="true">
+
+        <div class="block">
+            <div class="notification">
+                <h2 class="is-size-5">{% trans "Step 2:" %}</h2>
+                <p>
+                    {% blocktrans trimmed %}
+                    Deselect any checkboxes for data you do not wish to include in your import.
+                    {% endblocktrans %}
+                </p>
+                <p class="block">Unless specified below, importing will not delete any data. Imported data will be <strong>added if it does not already exist</strong>. For example, if you have an existing list with the same name as an imported list, the existing list settings will not change, any new list items will be added, and no existing list items will be deleted.</p>
+            </div>
+            <div class="block m-5 columns">
+                <div class="column is-half">
+                    <div class="field">
+                        <label class="label mb-0">
+                            <input type="checkbox" name="include_user_profile" checked aria-describedby="desc_include_user_profile">
+                            {% trans "User profile" %}
+                        </label>
+                        <p id="desc_include_user_profile">
+                        {% trans "Overwrites display name, summary, and avatar" %}
+                        </p>
+                    </div>
+                    <div class="field">
+                        <label class="label mb-0">
+                            <input type="checkbox" name="include_user_settings" checked aria-describedby="desc_include_user_settings">
+                            {% trans "User settings" %}
+                        </label>
+                        <div id="desc_include_user_settings">
+                            {% trans "Overwrites:" %}
+                            <ul class="mt-0">
+                                <li>
+                                    {% trans "Whether manual approval is required for other users to follow your account" %}
+                                </li>
+                                <li>
+                                    {% trans "Whether following/followers are shown on your profile" %}
+                                </li>
+                                <li>
+                                    {% trans "Whether your reading goal is shown on your profile" %}
+                                </li>
+                                <li>
+                                    {% trans "Whether you see user follow suggestions" %}
+                                </li>
+                                <li>
+                                    {% trans "Whether your account is suggested to others" %}
+                                </li>
+                                <li>
+                                    {% trans "Your timezone" %}
+                                </li>
+                                <li>
+                                    {% trans "Your default post privacy setting" %}
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label class="label">
+                            <input type="checkbox" name="include_follows" checked>
+                            {% trans "Followers and following" %}
+                        </label>
+                    </div>
+                    <label class="label">
+                        <input type="checkbox" name="include_blocks" checked> {% trans "User blocks" %}
+                    </label>
+                </div>
+                <div class="column is-half">
+                    <div class="field">
+                        <label class="label mb-0">
+                            <input type="checkbox" name="include_goals" checked aria-describedby="desc_include_goals">
+                            {% trans "Reading goals" %}
+                        </label>
+                        <p id="desc_include_goals">
+                            {% trans "Reading goals for all years listed in the import file" %}
+                        </p>
+                    </div>
+                    <label class="label">
+                        <input type="checkbox" name="include_shelves" checked> {% trans "Shelves" %}
+                    </label>
+                    <label class="label">
+                        <input type="checkbox" name="include_readthroughs" checked> {% trans "Reading history" %}
+                    </label>
+                    <label class="label">
+                        <input type="checkbox" name="include_reviews" checked> {% trans "Book reviews" %}
+                    </label>
+                    <label class="label">
+                        <input type="checkbox" name="include_quotes" checked> {% trans "Quotations" %}
+                    </label>
+                    <label class="label">
+                        <input type="checkbox" name="include_comments" checked> {% trans "Comments about books" %}
+                    </label>
+                    <label class="label">
+                        <input type="checkbox" name="include_lists" checked> {% trans "Book lists" %}
+                    </label>
+                    <label class="label">
+                        <input type="checkbox" name="include_saved_lists" checked> {% trans "Saved lists" %}
+                    </label>
+                </div>
             </div>
         </div>
 
-        <div class="column is-half">
-            <div class="field">
-                <label class="label">
-                    <input type="checkbox" name="include_user_profile" checked> {% trans "Include user profile" %}
-                </label>
-                <label class="label">
-                    <input type="checkbox" name="include_user_settings" checked> {% trans "Include user settings" %}
-                </label>
-                <label class="label">
-                    <input type="checkbox" name="include_goals" checked> {% trans "Include reading goals" %}
-                </label>
-                <label class="label">
-                    <input type="checkbox" name="include_shelves" checked> {% trans "Include shelves" %}
-                </label>
-                <label class="label">
-                    <input type="checkbox" name="include_readthroughs" checked> {% trans "Include reading history" %}
-                </label>
-                <label class="label">
-                    <input type="checkbox" name="include_reviews" checked> {% trans "Include book reviews" %}
-                </label>
-                <label class="label">
-                    <input type="checkbox" name="include_quotes" checked> {% trans "Include quotations" %}
-                </label>
-                <label class="label">
-                    <input type="checkbox" name="include_comments" checked> {% trans "Include comments about books" %}
-                </label>
-                <label class="label">
-                    <input type="checkbox" name="include_lists" checked> {% trans "Include book lists" %}
-                </label>
-                <label class="label">
-                    <input type="checkbox" name="include_saved_lists" checked> {% trans "Include saved lists" %}
-                </label>
-                <label class="label">
-                    <input type="checkbox" name="include_follows" checked> {% trans "Include follows" %}
-                </label>
-                <label class="label">
-                    <input type="checkbox" name="include_blocks" checked> {% trans "Include user blocks" %}
-                </label>
-            </div>
-        </div>
-        </div>
         {% if not import_limit_reset and not import_size_limit or allowed_imports > 0 %}
             <button class="button is-primary" type="submit">{% trans "Import" %}</button>
         {% else %}
