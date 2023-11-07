@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-11-02 21:32+0000\n"
-"PO-Revision-Date: 2023-11-07 11:16\n"
+"PO-Revision-Date: 2023-11-07 13:13\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Esperanto\n"
 "Language: eo\n"
@@ -2811,7 +2811,7 @@ msgstr[1] "Aktuale vi rajtas importi %(import_size_limit)s librojn ĉiujn %(impo
 #: bookwyrm/templates/import/import.html:27
 #, python-format
 msgid "You have %(display_left)s left."
-msgstr ""
+msgstr "Restas al vi %(display_left)s."
 
 #: bookwyrm/templates/import/import.html:34
 #, python-format
@@ -3226,7 +3226,7 @@ msgstr "pasvorto"
 
 #: bookwyrm/templates/layout.html:136
 msgid "Show/Hide password"
-msgstr ""
+msgstr "Kaŝi/malkaŝi la pasvorton"
 
 #: bookwyrm/templates/layout.html:150
 msgid "Join"
@@ -3481,7 +3481,7 @@ msgstr "Konservita"
 
 #: bookwyrm/templates/lists/list_items.html:50
 msgid "No lists found."
-msgstr ""
+msgstr "Neniu listo troviĝis."
 
 #: bookwyrm/templates/lists/lists.html:14 bookwyrm/templates/user/lists.html:14
 msgid "Your Lists"
@@ -3498,15 +3498,15 @@ msgstr "Konservitaj listoj"
 #: bookwyrm/templates/moved.html:27
 #, python-format
 msgid "<strong>You have moved your account</strong> to <a href=\"%(moved_to)s\">%(username)s</a>"
-msgstr ""
+msgstr "<strong>Vi translokis vian konton</strong> al <a href=\"%(moved_to)s\">%(username)s</a>"
 
 #: bookwyrm/templates/moved.html:32
 msgid "You can undo the move to restore full functionality, but some followers may have already unfollowed this account."
-msgstr ""
+msgstr "Vi povas malfari la translokon por restarigi la plenan funkciadon, sed kelkaj sekvantoj eble jam malsekvis la konton."
 
 #: bookwyrm/templates/moved.html:42 bookwyrm/templates/shelf/shelf.html:32
 msgid "Undo move"
-msgstr ""
+msgstr "Malfari translokon"
 
 #: bookwyrm/templates/moved.html:46 bookwyrm/templates/user_menu.html:82
 msgid "Log out"
@@ -3766,12 +3766,12 @@ msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> menciis vin en <a
 #: bookwyrm/templates/notifications/items/move_user.html:18
 #, python-format
 msgid "%(related_user)s has moved to <a href=\"%(related_user_moved_to)s\">%(username)s</a>"
-msgstr ""
+msgstr "%(related_user)s translokis al <a href=\"%(related_user_moved_to)s\">%(username)s</a>"
 
 #: bookwyrm/templates/notifications/items/move_user.html:25
 #, python-format
 msgid "%(related_user)s has undone their move"
-msgstr ""
+msgstr "%(related_user)s malfaris sian translokon"
 
 #: bookwyrm/templates/notifications/items/remove.html:17
 #, python-format
@@ -4034,42 +4034,42 @@ msgstr "Agordi dupaŝan aŭtentigon"
 #: bookwyrm/templates/preferences/move_user.html:7
 #: bookwyrm/templates/preferences/move_user.html:39
 msgid "Move Account"
-msgstr ""
+msgstr "Transloki konton"
 
 #: bookwyrm/templates/preferences/alias_user.html:7
 #: bookwyrm/templates/preferences/alias_user.html:34
 msgid "Create Alias"
-msgstr ""
+msgstr "Krei alinomon"
 
 #: bookwyrm/templates/preferences/alias_user.html:12
 msgid "Add another account as an alias"
-msgstr ""
+msgstr "Aldoni alian konton kiel alinomon"
 
 #: bookwyrm/templates/preferences/alias_user.html:16
 msgid "Marking another account as an alias is required if you want to move that account to this one."
-msgstr ""
+msgstr "Marki alian konton kiel alinomon estas bezonate se vi volas transloki tiun konton al ĉi tiun."
 
 #: bookwyrm/templates/preferences/alias_user.html:19
 msgid "This is a reversable action and will not change the functionality of this account."
-msgstr ""
+msgstr "Ĉi tio estas inversigebla ago kaj ĝi ne ŝanĝos la funkciadon de ĉi tiu konto."
 
 #: bookwyrm/templates/preferences/alias_user.html:25
 msgid "Enter the username for the account you want to add as an alias e.g. <em>user@example.com </em>:"
-msgstr ""
+msgstr "Entajpu la uzantnomon de la konto kiun vi volas aldoni kiel alinomon, ekz.: <em>uzanto@ekzemplo.org</em>:"
 
 #: bookwyrm/templates/preferences/alias_user.html:30
 #: bookwyrm/templates/preferences/move_user.html:35
 msgid "Confirm your password:"
-msgstr ""
+msgstr "Konfirmu vian pasvorton:"
 
 #: bookwyrm/templates/preferences/alias_user.html:39
 #: bookwyrm/templates/preferences/layout.html:28
 msgid "Aliases"
-msgstr ""
+msgstr "Alinomoj"
 
 #: bookwyrm/templates/preferences/alias_user.html:49
 msgid "Remove alias"
-msgstr ""
+msgstr "Forigi alinomon"
 
 #: bookwyrm/templates/preferences/blocks.html:4
 #: bookwyrm/templates/preferences/blocks.html:7
@@ -4227,7 +4227,7 @@ msgstr "Konto"
 
 #: bookwyrm/templates/preferences/layout.html:32
 msgid "Move  Account"
-msgstr ""
+msgstr "Transloki konton"
 
 #: bookwyrm/templates/preferences/layout.html:39
 msgid "Data"
@@ -4243,26 +4243,27 @@ msgstr "Rilatoj"
 
 #: bookwyrm/templates/preferences/move_user.html:12
 msgid "Migrate account to another server"
-msgstr ""
+msgstr "Migrigi la konton al alia servilo"
 
 #: bookwyrm/templates/preferences/move_user.html:16
 msgid "Moving your account will notify all your followers and direct them to follow the new account."
-msgstr ""
+msgstr "La translokado de via konto atentigos ĉiujn viajn sekvantojn kaj instigos ilin sekvi la novan konton."
 
 #: bookwyrm/templates/preferences/move_user.html:19
 #, python-format
 msgid "\n"
 "                <strong>%(user)s</strong> will be marked as moved and will not be discoverable or usable unless you undo the move.\n"
 "                "
-msgstr ""
+msgstr "\n"
+"                <strong>%(user)s</strong> estos markita kiel translokita kaj ne plu estos eltrovebla nek uzebla ĝis via malfaros la translokon.                "
 
 #: bookwyrm/templates/preferences/move_user.html:25
 msgid "Remember to add this user as an alias of the target account before you try to move."
-msgstr ""
+msgstr "Ne forgesu aldoni ĉi tiun uzanton kiel alinomon de la celata konto antaŭ ol provi transloki ĝin."
 
 #: bookwyrm/templates/preferences/move_user.html:30
 msgid "Enter the username for the account you want to move to e.g. <em>user@example.com </em>:"
-msgstr ""
+msgstr "Entajpu la uzantnomon de la konto al kiu vi volas transloki, ekz. <em>uzanto@ekzemplo.org</em>:"
 
 #: bookwyrm/templates/reading_progress/finish.html:5
 #, python-format
@@ -4669,23 +4670,23 @@ msgstr "Atendovicoj"
 
 #: bookwyrm/templates/settings/celery.html:26
 msgid "Streams"
-msgstr ""
+msgstr "Fluoj"
 
 #: bookwyrm/templates/settings/celery.html:32
 msgid "Broadcast"
-msgstr ""
+msgstr "Dissendo"
 
 #: bookwyrm/templates/settings/celery.html:38
 msgid "Inbox"
-msgstr ""
+msgstr "Enirkesto"
 
 #: bookwyrm/templates/settings/celery.html:51
 msgid "Import triggered"
-msgstr ""
+msgstr "Importo lanĉiĝis"
 
 #: bookwyrm/templates/settings/celery.html:57
 msgid "Connectors"
-msgstr ""
+msgstr "Konektiloj"
 
 #: bookwyrm/templates/settings/celery.html:64
 #: bookwyrm/templates/settings/site.html:91
@@ -4694,7 +4695,7 @@ msgstr "Bildoj"
 
 #: bookwyrm/templates/settings/celery.html:70
 msgid "Suggested Users"
-msgstr ""
+msgstr "Proponitaj uzantoj"
 
 #: bookwyrm/templates/settings/celery.html:83
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:43
@@ -4704,7 +4705,7 @@ msgstr "Retadreso"
 
 #: bookwyrm/templates/settings/celery.html:89
 msgid "Misc"
-msgstr ""
+msgstr "Diversaĵoj"
 
 #: bookwyrm/templates/settings/celery.html:96
 msgid "Low priority"
@@ -5518,22 +5519,22 @@ msgstr "Raportitaj ligiloj"
 
 #: bookwyrm/templates/settings/reports/report.html:66
 msgid "Moderation Activity"
-msgstr ""
+msgstr "Moderigaj agoj"
 
 #: bookwyrm/templates/settings/reports/report.html:73
 #, python-format
 msgid "<a href=\"%(user_link)s\">%(user)s</a> opened this report"
-msgstr ""
+msgstr "<a href=\"%(user_link)s\">%(user)s</a> malfermis ĉi tiun raporton"
 
 #: bookwyrm/templates/settings/reports/report.html:86
 #, python-format
 msgid "<a href=\"%(user_link)s\">%(user)s</a> commented on this report:"
-msgstr ""
+msgstr "<a href=\"%(user_link)s\">%(user)s</a> komentis pri ĉi tiu raporto:"
 
 #: bookwyrm/templates/settings/reports/report.html:90
 #, python-format
 msgid "<a href=\"%(user_link)s\">%(user)s</a> took an action on this report:"
-msgstr ""
+msgstr "<a href=\"%(user_link)s\">%(user)s</a> faris agon pri ĉi tiu raporto:"
 
 #: bookwyrm/templates/settings/reports/report_header.html:6
 #, python-format
@@ -5557,7 +5558,7 @@ msgstr "Raporto #%(report_id)s: Uzanto @%(username)s"
 
 #: bookwyrm/templates/settings/reports/report_links_table.html:19
 msgid "Approve domain"
-msgstr ""
+msgstr "Aprobi la domajnon"
 
 #: bookwyrm/templates/settings/reports/report_links_table.html:26
 msgid "Block domain"
@@ -5777,7 +5778,7 @@ msgstr "Fora instanco"
 #: bookwyrm/templates/settings/users/user_admin.html:82
 #: bookwyrm/templates/settings/users/user_info.html:29
 msgid "Moved"
-msgstr ""
+msgstr "Translokita"
 
 #: bookwyrm/templates/settings/users/user_admin.html:93
 msgid "Deleted"
@@ -5996,11 +5997,11 @@ msgstr "Modifi breton"
 
 #: bookwyrm/templates/shelf/shelf.html:25
 msgid "You have have moved to"
-msgstr ""
+msgstr "Vi translokiĝis al"
 
 #: bookwyrm/templates/shelf/shelf.html:28
 msgid "You can undo this move to restore full functionality, but some followers may have already unfollowed this account."
-msgstr ""
+msgstr "Vi povas malfari ĉi tiun translokon por restarigi la plenan funkciadon, sed kelkaj sekvantoj eble jam malsekvis la konton."
 
 #: bookwyrm/templates/shelf/shelf.html:39
 #: bookwyrm/templates/user/relationships/followers.html:18
@@ -6160,7 +6161,7 @@ msgstr "Komento:"
 
 #: bookwyrm/templates/snippets/create_status/post_options_block.html:19
 msgid "Update"
-msgstr ""
+msgstr "Ĝisdatigi"
 
 #: bookwyrm/templates/snippets/create_status/post_options_block.html:21
 msgid "Post"
@@ -6361,7 +6362,7 @@ msgstr "%(username)s legis <a href=\"%(path)s\">%(read_count)s el %(goal_count)s
 
 #: bookwyrm/templates/snippets/move_user_buttons.html:10
 msgid "Follow at new account"
-msgstr ""
+msgstr "Sekvi per la nova konto"
 
 #: bookwyrm/templates/snippets/page_text.html:8
 #, python-format
@@ -6725,7 +6726,7 @@ msgstr "Grupoj: %(username)s"
 
 #: bookwyrm/templates/user/layout.html:50
 msgid "has moved to"
-msgstr ""
+msgstr "translokiĝis al"
 
 #: bookwyrm/templates/user/layout.html:64
 msgid "Follow Requests"
@@ -6827,8 +6828,8 @@ msgstr "Ankoraŭ estas neniu ago!"
 #, python-format
 msgid "%(display_count)s follower"
 msgid_plural "%(display_count)s followers"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(display_count)s sekvanto"
+msgstr[1] "%(display_count)s sekvantoj"
 
 #: bookwyrm/templates/user/user_preview.html:31
 #, python-format
