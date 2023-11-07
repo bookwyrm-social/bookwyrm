@@ -41,7 +41,12 @@
         </div>
         <p class="block">{% trans "In your new BookWyrm account can choose what to import: you will not have to import everything that is exported." %}</p>
     {% if next_available %}
-
+    <p class="notification is-warning">
+        {% blocktrans trimmed %}
+        You will be able to create a new export file at {{ next_available }}
+        {% endblocktrans %}
+    </p>
+    {% else %}
     <form name="export" method="POST" href="{% url 'prefs-user-export' %}">
         {% csrf_token %}
         <button type="submit" class="button">
