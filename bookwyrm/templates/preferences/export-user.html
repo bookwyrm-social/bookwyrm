@@ -1,5 +1,6 @@
 {% extends 'preferences/layout.html' %}
 {% load i18n %}
+{% load utilities %}
 
 {% block title %}{% trans "User Export" %}{% endblock %}
 
@@ -40,8 +41,11 @@
                 <th>
                     {% trans "Date" %}
                 </th>
-                <th colspan="2">
+                <th>
                     {% trans "Status" %}
+                </th>
+                <th colspan="2">
+                    {% trans "Size" %}
                 </th>
             </tr>
             {% if not jobs %}
@@ -75,6 +79,9 @@
                             {% trans "Active" %}
                         {% endif %}
                     </span>
+                </td>
+                <td>
+                    <span>{{ job.export_data|get_file_size }}</span>
                 </td>
                 <td>
                     {% if job.complete and not job.status == "stopped" and not job.status == "failed" %}
