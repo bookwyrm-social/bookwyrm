@@ -6,14 +6,6 @@
 {% load humanize %}
 
 {% with status_type=status.status_type %}
-<div
-    class="block"
-    {% if status_type == "Review" %}
-        itemprop="rating"
-        itemtype="https://schema.org/Rating"
-    {% endif %}
->
-
     <div class="columns is-gapless">
         {% if not hide_book %}
             {% with book=status.book|default:status.mention_books.first %}
@@ -58,9 +50,6 @@
                         {% endif %}
                     >
                         <meta itemprop="ratingValue" content="{{ status.rating|floatformat }}">
-
-                        {# @todo Is it possible to not hard-code the value? #}
-                        <meta itemprop="bestRating" content="5">
                     </span>
                     {% include 'snippets/stars.html' with rating=status.rating %}
                 </h4>
@@ -154,6 +143,5 @@
             </div>
         </article>
     </div>
-</div>
 
 {% endwith %}

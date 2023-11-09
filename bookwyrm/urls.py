@@ -600,6 +600,12 @@ urlpatterns = [
         name="prompt-2fa",
     ),
     re_path(r"^preferences/export/?$", views.Export.as_view(), name="prefs-export"),
+    re_path(r"^preferences/move/?$", views.MoveUser.as_view(), name="prefs-move"),
+    re_path(r"^preferences/alias/?$", views.AliasUser.as_view(), name="prefs-alias"),
+    re_path(
+        r"^preferences/remove-alias/?$", views.remove_alias, name="prefs-remove-alias"
+    ),
+    re_path(r"^preferences/unmove/?$", views.unmove, name="prefs-unmove"),
     re_path(r"^preferences/delete/?$", views.DeleteUser.as_view(), name="prefs-delete"),
     re_path(
         r"^preferences/deactivate/?$",

@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-27 01:11+0000\n"
-"PO-Revision-Date: 2023-09-28 00:08\n"
+"POT-Creation-Date: 2023-10-02 16:40+0000\n"
+"PO-Revision-Date: 2023-10-03 01:28\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Polish\n"
 "Language: pl\n"
@@ -350,7 +350,7 @@ msgstr ""
 
 #: bookwyrm/models/report.py:95
 msgid "Deleted item"
-msgstr ""
+msgstr "Usunięty element"
 
 #: bookwyrm/models/user.py:32 bookwyrm/templates/book/book.html:307
 msgid "Reviews"
@@ -434,7 +434,7 @@ msgstr "Lietuvių (Litewski)"
 
 #: bookwyrm/settings.py:307
 msgid "Nederlands (Dutch)"
-msgstr ""
+msgstr "Holenderski"
 
 #: bookwyrm/settings.py:308
 msgid "Norsk (Norwegian)"
@@ -502,7 +502,7 @@ msgstr "Witaj na %(site_name)s!"
 #: bookwyrm/templates/about/about.html:25
 #, python-format
 msgid "%(site_name)s is part of <em>BookWyrm</em>, a network of independent, self-directed communities for readers. While you can interact seamlessly with users anywhere in the <a href=\"https://joinbookwyrm.com/instances/\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">BookWyrm network</a>, this community is unique."
-msgstr ""
+msgstr "%(site_name)s jest częścią <em>BookWyrm</em>, sieci niezależnych, samostanowiących społeczności czytelników. Możesz beproblemowo wchodzić w interakcje z użytkownikami gdziekolwiek w <a href=\"https://joinbookwyrm.com/instances/\" target=\"_blank\" rel=\"nofollow noopener noreferrer\"> sieci BookWyrm</a>, ta społeczność jest wyjątkowa."
 
 #: bookwyrm/templates/about/about.html:45
 #, python-format
@@ -521,7 +521,7 @@ msgstr "<a href=\"%(book_path)s\"><em>%(title)s</em></a> ma najbardziej podzielo
 
 #: bookwyrm/templates/about/about.html:94
 msgid "Track your reading, talk about books, write reviews, and discover what to read next. Always ad-free, anti-corporate, and community-oriented, BookWyrm is human-scale software, designed to stay small and personal. If you have feature requests, bug reports, or grand dreams, <a href=\"https://joinbookwyrm.com/get-involved\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">reach out</a> and make yourself heard."
-msgstr ""
+msgstr "Śledź swój postęp czytelniczy, rozmawiaj o książkach, pisz opinie i odkrywaj co czytać następne. Na zawsze bez reklam, antykorporacyjne i skierowane w stronę społeczności, BookWyrm jest programem dla ludzi, stworzonym, by pozostać małym i personalnym. Jeśli masz pomysł, zauważył_ś błąd, albo masz wielkie marzenie, <a href=\"https://joinbookwyrm.com/get-involved\" target=\"_blank\" rel=\"nofollow noopener noreferrer\"> złoś się </a> i pozwól się wysłuchać."
 
 #: bookwyrm/templates/about/about.html:105
 msgid "Meet your admins"
@@ -672,7 +672,7 @@ msgstr "Przekłada się to na średnio %(pages)s stron na książkę."
 #, python-format
 msgid "(No page data was available for %(no_page_number)s book)"
 msgid_plural "(No page data was available for %(no_page_number)s books)"
-msgstr[0] ""
+msgstr[0] "(Nie mamy informacji o liczbie stron dla książki %(no_page_number)s)"
 msgstr[1] ""
 msgstr[2] ""
 msgstr[3] ""
@@ -778,7 +778,7 @@ msgstr "Zobacz wpis ISNI"
 #: bookwyrm/templates/author/author.html:95
 #: bookwyrm/templates/book/book.html:173
 msgid "View on ISFDB"
-msgstr ""
+msgstr "Zobacz na ISFDB"
 
 #: bookwyrm/templates/author/author.html:100
 #: bookwyrm/templates/author/sync_modal.html:5
@@ -1116,7 +1116,7 @@ msgstr ""
 
 #: bookwyrm/templates/book/book_identifiers.html:51
 msgid "Goodreads:"
-msgstr ""
+msgstr "Goodreads:"
 
 #: bookwyrm/templates/book/cover_add_modal.html:5
 msgid "Add cover"
@@ -1257,7 +1257,7 @@ msgstr "Tytuł:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:35
 msgid "Sort Title:"
-msgstr ""
+msgstr "Sortuj Według Tytułu:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:44
 msgid "Subtitle:"
@@ -1384,8 +1384,8 @@ msgstr "Edycje %(book_title)s"
 
 #: bookwyrm/templates/book/editions/editions.html:8
 #, python-format
-msgid "Editions of <a href=\"%(work_path)s\">\"%(work_title)s\"</a>"
-msgstr "Edycje <a href=\"%(work_path)s\">\"%(work_title)s\"</a>"
+msgid "Editions of <a href=\"%(work_path)s\"><i>%(work_title)s</i></a>"
+msgstr "Edycje <a href=\"%(work_path)s\"><i>%(work_title)s</i></a>"
 
 #: bookwyrm/templates/book/editions/editions.html:55
 msgid "Can't find the edition you're looking for?"
@@ -1567,7 +1567,7 @@ msgstr ""
 #: bookwyrm/templates/book/series.html:27
 #, python-format
 msgid "Book %(series_number)s"
-msgstr ""
+msgstr "Książka%(series_number)s"
 
 #: bookwyrm/templates/book/series.html:27
 msgid "Unsorted Book"
@@ -2825,12 +2825,8 @@ msgstr "To nie jest prawidłowy plik CSV"
 
 #: bookwyrm/templates/import/import.html:21
 #, python-format
-msgid "\n"
-"                        Currently, you are allowed to import %(display_size)s books every %(import_limit_reset)s day.\n"
-"                    "
-msgid_plural "\n"
-"                        Currently, you are allowed to import %(import_size_limit)s books every %(import_limit_reset)s days.\n"
-"                    "
+msgid "Currently, you are allowed to import %(display_size)s books every %(import_limit_reset)s day."
+msgid_plural "Currently, you are allowed to import %(import_size_limit)s books every %(import_limit_reset)s days."
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""

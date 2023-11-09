@@ -27,6 +27,7 @@
 <nav class="navbar" aria-label="main navigation">
     <div class="container">
         {% with notification_count=request.user.unread_notification_count has_unread_mentions=request.user.has_unread_mentions %}
+        {% if not request.user.moved_to %}
         <div class="navbar-brand">
             <a class="navbar-item" href="/">
                 <img class="image logo" src="{% if site.logo_small %}{% get_media_prefix %}{{ site.logo_small }}{% else %}{% static "images/logo-small.png" %}{% endif %}" alt="{% blocktrans with site_name=site.name %}{{ site_name }} home page{% endblocktrans %}" loading="lazy" decoding="async">
@@ -34,7 +35,7 @@
             <form class="navbar-item column is-align-items-start pt-5" action="{% url 'search' %}">
                 <div class="field has-addons">
                     <div class="control">
-                        {% if user.is_authenticated %}
+                        {% if request.user.is_authenticated %}
                             {% trans "Search for a book, user, or list" as search_placeholder %}
                         {% else %}
                             {% trans "Search for a book" as search_placeholder %}
@@ -80,18 +81,17 @@
                 </strong>
             </button>
         </div>
-
         <div class="navbar-menu" id="main_nav">
             <div class="navbar-start" id="tour-navbar-start">
                 {% if request.user.is_authenticated %}
-                <a href="/#feed" class="navbar-item mt-3 py-0">
-                    {% trans "Feed" %}
-                </a>
                 <a href="{% url 'lists' %}" class="navbar-item mt-3 py-0">
                     {% trans "Lists" %}
                 </a>
                 <a href="{% url 'discover' %}" class="navbar-item mt-3 py-0">
                     {% trans "Discover" %}
+                </a>
+                <a href="{% url 'user-shelves' request.user.localname %}" class="navbar-item mt-3 py-0">
+                    {% trans "Your Books" %}
                 </a>
                 {% endif %}
             </div>
@@ -157,6 +157,13 @@
                 {% endif %}
             </div>
         </div>
+        {% else %}
+        <div class="navbar-brand">
+            <a class="navbar-item" href="/">
+                <img class="image logo" src="{% if site.logo_small %}{% get_media_prefix %}{{ site.logo_small }}{% else %}{% static "images/logo-small.png" %}{% endif %}" alt="{% blocktrans with site_name=site.name %}{{ site_name }} home page{% endblocktrans %}" loading="lazy" decoding="async">
+            </a>
+        </div>
+        {% endif %}
         {% endwith %}
     </div>
 </nav>
@@ -173,11 +180,15 @@
 
 <main class="section is-flex-grow-1">
     <div class="container">
-        {# almost every view needs to know the user shelves #}
-        {% with request.user.shelf_set.all as user_shelves %}
-        {% block content %}
-        {% endblock %}
-        {% endwith %}
+        {% if request.user.moved_to %}
+            {% include "moved.html" %}
+        {% else %}
+            {# almost every view needs to know the user shelves #}
+            {% with request.user.shelf_set.all as user_shelves %}
+            {% block content %}
+            {% endblock %}
+            {% endwith %}
+        {% endif %}
     </div>
 </main>
 

@@ -13,14 +13,15 @@ User relationship interactions follow the standard ActivityPub spec.
 - `Block`: prevent users from seeing one another's statuses, and prevents the blocked user from viewing the actor's profile
 - `Update`: updates a user's profile and settings
 - `Delete`: deactivates a user
-- `Undo`: reverses a `Follow` or `Block`
+- `Undo`: reverses a `Block` or `Follow`
 
 ### Activities
 - `Create/Status`: saves a new status in the database.
 - `Delete/Status`: Removes a status
 - `Like/Status`: Creates a favorite on the status
 - `Announce/Status`: Boosts the status into the actor's timeline
-- `Undo/*`,: Reverses a `Like` or `Announce`
+- `Undo/*`,: Reverses an `Announce`, `Like`, or `Move`
+- `Move/User`: Moves a user from one ActivityPub id to another.
 
 ### Collections
 User's books and lists are represented by [`OrderedCollection`](https://www.w3.org/TR/activitystreams-vocabulary/#dfn-orderedcollection)

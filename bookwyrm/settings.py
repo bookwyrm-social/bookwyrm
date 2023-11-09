@@ -4,6 +4,7 @@ from typing import AnyStr
 
 from environs import Env
 
+
 import requests
 from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ImproperlyConfigured
@@ -14,7 +15,13 @@ from django.core.exceptions import ImproperlyConfigured
 env = Env()
 env.read_env()
 DOMAIN = env("DOMAIN")
-VERSION = "0.6.6"
+
+with open("VERSION", encoding="utf-8") as f:
+    version = f.read()
+    version = version.replace("\n", "")
+f.close()
+
+VERSION = version
 
 RELEASE_API = env(
     "RELEASE_API",
@@ -359,9 +366,9 @@ if USE_S3:
     AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID")
     AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_ACCESS_KEY")
     AWS_STORAGE_BUCKET_NAME = env("AWS_STORAGE_BUCKET_NAME")
-    AWS_S3_CUSTOM_DOMAIN = env("AWS_S3_CUSTOM_DOMAIN")
+    AWS_S3_CUSTOM_DOMAIN = env("AWS_S3_CUSTOM_DOMAIN", None)
     AWS_S3_REGION_NAME = env("AWS_S3_REGION_NAME", "")
-    AWS_S3_ENDPOINT_URL = env("AWS_S3_ENDPOINT_URL")
+    AWS_S3_ENDPOINT_URL = env("AWS_S3_ENDPOINT_URL", None)
     AWS_DEFAULT_ACL = "public-read"
     AWS_S3_OBJECT_PARAMETERS = {"CacheControl": "max-age=86400"}
     # S3 Static settings

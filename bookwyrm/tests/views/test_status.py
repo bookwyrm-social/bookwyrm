@@ -420,21 +420,25 @@ http://www.fish.com/"""
             'okay\n\n<a href="http://www.fish.com/">www.fish.com/</a>',
         )
 
-    def test_format_links_parens(self, *_):
-        """find and format urls into a tags"""
-        url = "http://www.fish.com/"
-        self.assertEqual(
-            views.status.format_links(f"({url})"),
-            f'(<a href="{url}">www.fish.com/</a>)',
-        )
-
     def test_format_links_punctuation(self, *_):
-        """don’t take trailing punctuation into account pls"""
-        url = "http://www.fish.com/"
-        self.assertEqual(
-            views.status.format_links(f"{url}."),
-            f'<a href="{url}">www.fish.com/</a>.',
-        )
+        """test many combinations of brackets, URLs, and punctuation"""
+        url = "https://bookwyrm.social"
+        html = f'<a href="{url}">bookwyrm.social</a>'
+        test_table = [
+            ("punct", f"text and {url}.", f"text and {html}."),
+            ("multi_punct", f"text, then {url}?...", f"text, then {html}?..."),
+            ("bracket_punct", f"here ({url}).", f"here ({html})."),
+            ("punct_bracket", f"there [{url}?]", f"there [{html}?]"),
+            ("punct_bracket_punct", f"not here? ({url}!).", f"not here? ({html}!)."),
+            (
+                "multi_punct_bracket",
+                f"not there ({url}...);",
+                f"not there ({html}...);",
+            ),
+        ]
+        for desc, text, output in test_table:
+            with self.subTest(desc=desc):
+                self.assertEqual(views.status.format_links(text), output)
 
     def test_format_links_special_chars(self, *_):
         """find and format urls into a tags"""
@@ -463,6 +467,13 @@ http://www.fish.com/"""
         self.assertEqual(
             views.status.format_links(url), f'<a href="{url}">{url[8:]}</a>'
         )
+
+    def test_format_links_ignore_non_urls(self, *_):
+        """formating links should leave plain text untouced"""
+        text_elision = "> “The distinction is significant.” [...]"  # bookwyrm#2993
+        text_quoteparens = "some kind of gene-editing technology (?)"  # bookwyrm#3049
+        self.assertEqual(views.status.format_links(text_elision), text_elision)
+        self.assertEqual(views.status.format_links(text_quoteparens), text_quoteparens)
 
     def test_format_mentions_with_at_symbol_links(self, *_):
         """A link with an @username shouldn't treat the username as a mention"""

@@ -74,24 +74,7 @@
             <td>{{ user.created_date }}</td>
             <td>{{ user.last_active_date }}</td>
             <td>
-                {% if user.is_active %}
-                    <span class="tag is-success" aria-hidden="true">
-                        <span class="icon icon-check"></span>
-                    </span>
-                    {% trans "Active" %}
-                {% elif user.deactivation_reason == "moderator_deletion" or user.deactivation_reason == "self_deletion" %}
-                    <span class="tag is-danger" aria-hidden="true">
-                        <span class="icon icon-x"></span>
-                    </span>
-                    {% trans "Deleted" %}
-                    <span class="help">({{ user.get_deactivation_reason_display }})</span>
-                {% else %}
-                    <span class="tag is-warning" aria-hidden="true">
-                        <span class="icon icon-x"></span>
-                    </span>
-                    {% trans "Inactive" %}
-                    <span class="help">({{ user.get_deactivation_reason_display }})</span>
-                {% endif %}
+                {% include "snippets/user_active_tag.html" with user=user %}
             </td>
             {% if status == "federated" %}
             <td>

@@ -22,8 +22,6 @@ class BookData(ActivityObject):
     aasin: Optional[str] = None
     isfdb: Optional[str] = None
     lastEditedBy: Optional[str] = None
-    links: list[str] = field(default_factory=list)
-    fileLinks: list[str] = field(default_factory=list)
 
 
 # pylint: disable=invalid-name
@@ -44,6 +42,8 @@ class Book(BookData):
     authors: list[str] = field(default_factory=list)
     firstPublishedDate: str = ""
     publishedDate: str = ""
+
+    fileLinks: list[str] = field(default_factory=list)
 
     cover: Optional[Document] = None
     type: str = "Book"

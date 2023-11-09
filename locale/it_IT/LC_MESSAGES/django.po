@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-27 01:11+0000\n"
-"PO-Revision-Date: 2023-09-28 09:30\n"
+"POT-Creation-Date: 2023-10-02 16:40+0000\n"
+"PO-Revision-Date: 2023-10-02 19:32\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Italian\n"
 "Language: it\n"
@@ -310,15 +310,15 @@ msgstr "Commenta"
 
 #: bookwyrm/models/report.py:85
 msgid "Resolved report"
-msgstr ""
+msgstr "Segnalazione risolta"
 
 #: bookwyrm/models/report.py:86
 msgid "Re-opened report"
-msgstr ""
+msgstr "Segnalazione riaperta"
 
 #: bookwyrm/models/report.py:87
 msgid "Messaged reporter"
-msgstr ""
+msgstr "Messaggio inviato al segnalatore"
 
 #: bookwyrm/models/report.py:88
 msgid "Messaged reported user"
@@ -326,11 +326,11 @@ msgstr ""
 
 #: bookwyrm/models/report.py:89
 msgid "Suspended user"
-msgstr ""
+msgstr "Utente sospeso"
 
 #: bookwyrm/models/report.py:90
 msgid "Un-suspended user"
-msgstr ""
+msgstr "Utente riattivato"
 
 #: bookwyrm/models/report.py:91
 msgid "Changed user permission level"
@@ -1372,8 +1372,8 @@ msgstr "Edizioni di %(book_title)s"
 
 #: bookwyrm/templates/book/editions/editions.html:8
 #, python-format
-msgid "Editions of <a href=\"%(work_path)s\">\"%(work_title)s\"</a>"
-msgstr "Edizioni di <a href=\"%(work_path)s\">\"%(work_title)s\"</a>"
+msgid "Editions of <a href=\"%(work_path)s\"><i>%(work_title)s</i></a>"
+msgstr "Edizioni di <a href=\"%(work_path)s\"><i>%(work_title)s</i></a>"
 
 #: bookwyrm/templates/book/editions/editions.html:55
 msgid "Can't find the edition you're looking for?"
@@ -2805,14 +2805,10 @@ msgstr "Non è un file di csv valido"
 
 #: bookwyrm/templates/import/import.html:21
 #, python-format
-msgid "\n"
-"                        Currently, you are allowed to import %(display_size)s books every %(import_limit_reset)s day.\n"
-"                    "
-msgid_plural "\n"
-"                        Currently, you are allowed to import %(import_size_limit)s books every %(import_limit_reset)s days.\n"
-"                    "
+msgid "Currently, you are allowed to import %(display_size)s books every %(import_limit_reset)s day."
+msgid_plural "Currently, you are allowed to import %(import_size_limit)s books every %(import_limit_reset)s days."
 msgstr[0] ""
-msgstr[1] ""
+msgstr[1] "Al momento puoi importare %(import_size_limit)s libri ogni %(import_limit_reset)s giorni."
 
 #: bookwyrm/templates/import/import.html:27
 #, python-format

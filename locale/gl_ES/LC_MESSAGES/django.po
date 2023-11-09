@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-27 01:11+0000\n"
-"PO-Revision-Date: 2023-09-28 04:25\n"
+"POT-Creation-Date: 2023-10-02 16:40+0000\n"
+"PO-Revision-Date: 2023-10-20 13:05\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Galician\n"
 "Language: gl\n"
@@ -497,7 +497,7 @@ msgstr "Acerca de"
 #: bookwyrm/templates/get_started/layout.html:22
 #, python-format
 msgid "Welcome to %(site_name)s!"
-msgstr "Sexas ben vida a %(site_name)s!"
+msgstr "Recibe a benvida a %(site_name)s!"
 
 #: bookwyrm/templates/about/about.html:25
 #, python-format
@@ -1372,8 +1372,8 @@ msgstr "Edicións de %(book_title)s"
 
 #: bookwyrm/templates/book/editions/editions.html:8
 #, python-format
-msgid "Editions of <a href=\"%(work_path)s\">\"%(work_title)s\"</a>"
-msgstr "Edicións de <a href=\"%(work_path)s\">%(work_title)s</a>"
+msgid "Editions of <a href=\"%(work_path)s\"><i>%(work_title)s</i></a>"
+msgstr "Edicións de <a href=\"%(work_path)s\"><i>%(work_title)s</i></a>"
 
 #: bookwyrm/templates/book/editions/editions.html:55
 msgid "Can't find the edition you're looking for?"
@@ -2805,18 +2805,10 @@ msgstr "Non é un ficheiro CSV válido"
 
 #: bookwyrm/templates/import/import.html:21
 #, python-format
-msgid "\n"
-"                        Currently, you are allowed to import %(display_size)s books every %(import_limit_reset)s day.\n"
-"                    "
-msgid_plural "\n"
-"                        Currently, you are allowed to import %(import_size_limit)s books every %(import_limit_reset)s days.\n"
-"                    "
-msgstr[0] "\n"
-"                        Actualmente, tes permiso para importar %(display_size)s libros cada %(import_limit_reset)s día.\n"
-"                    "
-msgstr[1] "\n"
-"                        Actualmente, tes permiso para importar %(import_size_limit)s libros cada %(import_limit_reset)s días.\n"
-"                    "
+msgid "Currently, you are allowed to import %(display_size)s books every %(import_limit_reset)s day."
+msgid_plural "Currently, you are allowed to import %(import_size_limit)s books every %(import_limit_reset)s days."
+msgstr[0] "Actualmente podes importar %(display_size)s libros cada %(import_limit_reset)s día."
+msgstr[1] "Actualmente podes importar %(import_size_limit)s libros cada %(import_limit_reset)s días."
 
 #: bookwyrm/templates/import/import.html:27
 #, python-format
