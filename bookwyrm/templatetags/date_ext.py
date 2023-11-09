@@ -1,4 +1,4 @@
-""" formatting of SealedDate instances """
+""" additional formatting of dates """
 from django import template
 from django.template import defaultfilters
 from django.contrib.humanize.templatetags.humanize import naturalday

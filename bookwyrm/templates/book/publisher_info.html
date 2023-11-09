@@ -1,7 +1,7 @@
 {% spaceless %}
 
 {% load i18n %}
-{% load sealed_dates %}
+{% load date_ext %}
 
 {% firstof book.physical_format_detail book.get_physical_format_display as format %}
 {% firstof book.physical_format book.physical_format_detail as format_property %}
