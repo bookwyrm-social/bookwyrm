@@ -22,7 +22,7 @@ from bookwyrm.connectors import get_image
 from bookwyrm.utils.sanitizer import clean
 from bookwyrm.utils.sealed_date import (
     SealedDate,
-    SealedDateField,
+    PartialDateModel,
     from_partial_isoformat,
 )
 from bookwyrm.settings import MEDIA_FULL_URL
@@ -553,7 +553,7 @@ class DateTimeField(ActivitypubFieldMixin, models.DateTimeField):
             return None
 
 
-class PartialDateField(ActivitypubFieldMixin, SealedDateField):
+class PartialDateField(ActivitypubFieldMixin, PartialDateModel):
     """activitypub-aware partial date field"""
 
     def field_to_activity(self, value) -> str:

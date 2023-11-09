@@ -16,6 +16,7 @@ from django.utils import timezone
 
 __all__ = [
     "SealedDate",
+    "PartialDateModel",
     "from_partial_isoformat",
 ]
 
@@ -25,7 +26,7 @@ _westmost_tz = timezone.get_fixed_timezone(timedelta(hours=-12))
 Sealed = TypeVar("Sealed", bound="SealedDate")  # TODO: use Self in Python >= 3.11
 
 # TODO: migrate SealedDate: `datetime` => `date`
-# TODO: migrate SealedDateField: `DateTimeField` => `DateField`
+# TODO: migrate PartialDateModel: `DateTimeField` => `DateField`
 
 
 class SealedDate(datetime):
@@ -111,7 +112,7 @@ def from_partial_isoformat(value: str) -> SealedDate:
         return SealedDate.from_date_parts(year, month, day)
 
 
-class SealedDateFormField(DateField):
+class PartialDateFormField(DateField):
     """date form field with support for SealedDate"""
 
     def prepare_value(self, value: Any) -> str:
@@ -152,10 +153,10 @@ _SetType = datetime
 _GetType = Optional[SealedDate]
 
 
-class SealedDateDescriptor:
-    """descriptor for SealedDateField.
+class PartialDateDescriptor:
+    """descriptor for PartialDateModel.
 
-    Encapsulates the "two columns, one field" for SealedDateField.
+    Encapsulates the "two columns, one field" for PartialDateModel.
     """
 
     _SEAL_TYPES: dict[Type[_SetType], str] = {
@@ -214,13 +215,13 @@ class SealedDateDescriptor:
         return [("DAY", "Day seal"), ("MONTH", "Month seal"), ("YEAR", "Year seal")]
 
 
-class SealedDateField(models.DateTimeField):  # type: ignore
+class PartialDateModel(models.DateTimeField):  # type: ignore
     """a date field for Django models, using SealedDate as values"""
 
-    descriptor_class = SealedDateDescriptor
+    descriptor_class = PartialDateDescriptor
 
     def formfield(self, **kwargs):  # type: ignore
-        kwargs.setdefault("form_class", SealedDateFormField)
+        kwargs.setdefault("form_class", PartialDateFormField)
         return super().formfield(**kwargs)
 
     # pylint: disable-next=arguments-renamed

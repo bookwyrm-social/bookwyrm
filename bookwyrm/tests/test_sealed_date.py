@@ -98,14 +98,14 @@ class SealedDateTest(unittest.TestCase):
         )
 
 
-class SealedDateFormFieldTest(unittest.TestCase):
+class PartialDateFormFieldTest(unittest.TestCase):
     """test form support for SealedDate objects"""
 
     # pylint: disable=missing-function-docstring
 
     def setUp(self):
         self._dt = datetime.datetime(2022, 11, 21, 17, 1, 0, tzinfo=timezone.utc)
-        self.field = sealed_date.SealedDateFormField()
+        self.field = sealed_date.PartialDateFormField()
 
     def test_prepare_value(self):
         sealed = sealed_date.SealedDate.from_datetime(self._dt)
