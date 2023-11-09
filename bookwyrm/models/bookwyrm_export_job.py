@@ -1,5 +1,6 @@
 """Export user account to tar.gz file for import into another Bookwyrm instance"""
 
+import dataclasses
 import logging
 from uuid import uuid4
 
@@ -13,7 +14,6 @@ from bookwyrm.models import Review, Comment, Quotation
 from bookwyrm.models import Edition
 from bookwyrm.models import UserFollows, User, UserBlocks
 from bookwyrm.models.job import ParentJob, ParentTask
-from bookwyrm.settings import DOMAIN
 from bookwyrm.tasks import app, IMPORTS
 from bookwyrm.utils.tar import BookwyrmTarFile
 
@@ -71,57 +71,57 @@ def tar_export(json_data: str, user, file):
     file.close()
 
 
-def json_export(user):  # pylint: disable=too-many-locals, too-many-statements
+def json_export(
+    user,
+):  # pylint: disable=too-many-locals, too-many-statements, too-many-branches
     """Generate an export for a user"""
-    # user
+
     exported_user = {}
+
+    # User as AP object
+    exported_user = user.to_activity()
+    # I don't love this but it prevents a JSON encoding error
+    # when there is no user image
+    if isinstance(exported_user["icon"], dataclasses._MISSING_TYPE):
+        exported_user["icon"] = {}
+    else:
+        # change the URL to be relative to the JSON file
+        file_type = exported_user["icon"]["url"].rsplit(".", maxsplit=1)[-1]
+        filename = f"avatar.{file_type}"
+        exported_user["icon"]["url"] = filename
+
+    # Additional settings
+    # can't be serialized as AP
     vals = [
-        "username",
-        "name",
-        "summary",
-        "manually_approves_followers",
-        "hide_follows",
         "show_goal",
-        "show_suggested_users",
-        "discoverable",
         "preferred_timezone",
         "default_post_privacy",
+        "show_suggested_users",
     ]
+    exported_user["settings"] = {}
     for k in vals:
-        exported_user[k] = getattr(user, k)
+        exported_user["settings"][k] = getattr(user, k)
 
-    if getattr(user, "avatar", False):
-        exported_user["avatar"] = f'https://{DOMAIN}{getattr(user, "avatar").url}'
-
-    # reading goals
+    # Reading goals
+    # can't be serialized as AP
     reading_goals = AnnualGoal.objects.filter(user=user).distinct()
-    goals_list = []
-    # TODO: either error checking should be more sophisticated
-    # or maybe we don't need this try/except
-    try:
-        for goal in reading_goals:
-            goals_list.append(
-                {"goal": goal.goal, "year": goal.year, "privacy": goal.privacy}
-            )
-    except Exception:  # pylint: disable=broad-except
-        pass
+    exported_user["goals"] = []
+    for goal in reading_goals:
+        exported_user["goals"].append(
+            {"goal": goal.goal, "year": goal.year, "privacy": goal.privacy}
+        )
 
-    try:
-        readthroughs = ReadThrough.objects.filter(user=user).distinct().values()
-        readthroughs = list(readthroughs)
-    except Exception:  # pylint: disable=broad-except
-        readthroughs = []
+    # Reading history
+    # can't be serialized as AP
+    readthroughs = ReadThrough.objects.filter(user=user).distinct().values()
+    readthroughs = list(readthroughs)
 
-    # books
+    # Books
     editions = get_books_for_user(user)
-    final_books = []
-
-    # editions
+    exported_user["books"] = []
     for edition in editions:
         book = {}
-        book[
-            "edition"
-        ] = edition.to_activity()  # <== BUG Link field class is unknown here.
+        book["edition"] = edition.to_activity()
 
         # authors
         book["authors"] = []
@@ -129,27 +129,35 @@ def json_export(user):  # pylint: disable=too-many-locals, too-many-statements
             obj = author.to_activity()
             book["authors"].append(obj)
 
-        # Shelves and shelfbooks
+        # Shelves this book is on
+        # All we want is the shelf identifier and name
+        # Every ShelfItem is this book so there's no point
+        # serialising to_activity()
+        # can be serialized as AP but can't use to_model on import
         book["shelves"] = []
-        user_shelves = Shelf.objects.filter(user=user).all()
+        shelf_books = ShelfBook.objects.filter(book=edition).distinct()
+        user_shelves = Shelf.objects.filter(id__in=shelf_books)
 
         for shelf in user_shelves:
-            obj = {"shelf_books": []}
-            obj["shelf_info"] = shelf.to_activity()
-            shelf_books = ShelfBook.objects.filter(book=edition, shelf=shelf).distinct()
-
-            for shelfbook in shelf_books:
-                obj["shelf_books"].append(shelfbook.to_activity())
-
+            obj = {
+                "identifier": shelf.identifier,
+                "name": shelf.name,
+                "description": shelf.description,
+                "editable": shelf.editable,
+                "privacy": shelf.privacy,
+            }
             book["shelves"].append(obj)
 
-        # List and ListItem
+        # Lists and ListItems
+        # ListItems include "notes" and "approved" so we need them
+        # even though we know it's this book
         book["lists"] = []
         user_lists = List.objects.filter(user=user).all()
 
         for booklist in user_lists:
             obj = {"list_items": []}
             obj["list_info"] = booklist.to_activity()
+            obj["list_info"]["privacy"] = booklist.privacy
             list_items = ListItem.objects.filter(book_list=booklist).distinct()
             for item in list_items:
                 obj["list_items"].append(item.to_activity())
@@ -160,8 +168,8 @@ def json_export(user):  # pylint: disable=too-many-locals, too-many-statements
         # Can't use select_subclasses here because
         # we need to filter on the "book" value,
         # which is not available on an ordinary Status
-        for x in ["comments", "quotations", "reviews"]:
-            book[x] = []
+        for status in ["comments", "quotations", "reviews"]:
+            book[status] = []
 
         comments = Comment.objects.filter(user=user, book=edition).all()
         for status in comments:
@@ -176,41 +184,31 @@ def json_export(user):  # pylint: disable=too-many-locals, too-many-statements
             book["reviews"].append(status.to_activity())
 
         # readthroughs can't be serialized to activity
+        # so we use values()
         book_readthroughs = (
             ReadThrough.objects.filter(user=user, book=edition).distinct().values()
         )
         book["readthroughs"] = list(book_readthroughs)
 
         # append everything
-        final_books.append(book)
+        exported_user["books"].append(book)
 
-    logger.info(final_books)
-
-    # saved book lists
+    # saved book lists - just the remote id
     saved_lists = List.objects.filter(id__in=user.saved_lists.all()).distinct()
-    saved_lists = [l.remote_id for l in saved_lists]
+    exported_user["saved_lists"] = [l.remote_id for l in saved_lists]
 
-    # follows
+    # follows - just the remote id
     follows = UserFollows.objects.filter(user_subject=user).distinct()
     following = User.objects.filter(userfollows_user_object__in=follows).distinct()
-    follows = [f.remote_id for f in following]
+    exported_user["follows"] = [f.remote_id for f in following]
 
-    # blocks
+    # blocks - just the remote id
     blocks = UserBlocks.objects.filter(user_subject=user).distinct()
     blocking = User.objects.filter(userblocks_user_object__in=blocks).distinct()
 
-    blocks = [b.remote_id for b in blocking]
+    exported_user["blocks"] = [b.remote_id for b in blocking]
 
-    data = {
-        "user": exported_user,
-        "goals": goals_list,
-        "books": final_books,
-        "saved_lists": saved_lists,
-        "follows": follows,
-        "blocked_users": blocks,
-    }
-
-    return DjangoJSONEncoder().encode(data)
+    return DjangoJSONEncoder().encode(exported_user)
 
 
 def get_books_for_user(user):

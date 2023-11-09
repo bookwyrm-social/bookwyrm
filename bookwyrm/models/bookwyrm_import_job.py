@@ -45,11 +45,12 @@ def start_import_task(**kwargs):
         archive_file.open("rb")
         with BookwyrmTarFile.open(mode="r:gz", fileobj=archive_file) as tar:
             job.import_data = json.loads(tar.read("archive.json").decode("utf-8"))
+            # TODO: option to import "user.json" instead
 
             if "include_user_profile" in job.required:
-                update_user_profile(job.user, tar, job.import_data.get("user"))
+                update_user_profile(job.user, tar, job.import_data)
             if "include_user_settings" in job.required:
-                update_user_settings(job.user, job.import_data.get("user"))
+                update_user_settings(job.user, job.import_data)
             if "include_goals" in job.required:
                 update_goals(job.user, job.import_data.get("goals"))
             if "include_saved_lists" in job.required:
@@ -57,7 +58,7 @@ def start_import_task(**kwargs):
             if "include_follows" in job.required:
                 upsert_follows(job.user, job.import_data.get("follows"))
             if "include_blocks" in job.required:
-                upsert_user_blocks(job.user, job.import_data.get("blocked_users"))
+                upsert_user_blocks(job.user, job.import_data.get("blocks"))
 
             process_books(job, tar)
 
@@ -72,8 +73,6 @@ def start_import_task(**kwargs):
 def process_books(job, tar):
     """process user import data related to books"""
 
-    # create the books. We need to merge Book and Edition instances
-    # and also check whether these books already exist in the DB
     books = job.import_data.get("books")
 
     for data in books:
@@ -85,22 +84,22 @@ def process_books(job, tar):
         if "include_readthroughs" in job.required:
             upsert_readthroughs(data.get("readthroughs"), job.user, book.id)
 
-        if "include_reviews" in job.required:
-            get_or_create_statuses(
-                job.user, models.Review, data.get("reviews"), book.id
-            )
-
         if "include_comments" in job.required:
-            get_or_create_statuses(
-                job.user, models.Comment, data.get("comments"), book.id
+            upsert_statuses(
+                job.user, models.Comment, data.get("comments"), book.remote_id
+            )
+        if "include_quotations" in job.required:
+            upsert_statuses(
+                job.user, models.Quotation, data.get("quotations"), book.remote_id
             )
 
-        if "include_quotes" in job.required:
-            get_or_create_statuses(
-                job.user, models.Quotation, data.get("quotes"), book.id
+        if "include_reviews" in job.required:
+            upsert_statuses(
+                job.user, models.Review, data.get("reviews"), book.remote_id
             )
+
         if "include_lists" in job.required:
-            upsert_lists(job.user, data.get("lists"), data.get("list_items"), book.id)
+            upsert_lists(job.user, data.get("lists"), book.id)
 
 
 def get_or_create_edition(book_data, tar):
@@ -108,251 +107,115 @@ def get_or_create_edition(book_data, tar):
     find or create the edition in the database and
     return an edition instance"""
 
-    cover_path = book_data.get(
-        "cover", None
-    )  # we use this further down but need to assign a var before cleaning
-
-    clean_book = clean_values(book_data)
-    book = clean_book.copy()  # don't mutate the original book data
-
-    # prefer edition values only if they are not null
-    edition = clean_values(book["edition"])
-    for key in edition.keys():
-        if key not in book.keys() or (
-            key in book.keys() and (edition[key] not in [None, ""])
-        ):
-            book[key] = edition[key]
-
-    existing = find_existing(models.Edition, book)
+    book = book_data.get("edition")
+    cover = book.get("cover")
+    cover_path = cover.get("url", None)
+    existing = models.Edition.find_existing(book)
     if existing:
         return existing
 
     # the book is not in the local database, so we have to do this the hard way
-    local_authors = get_or_create_authors(book["authors"])
 
-    # get rid of everything that's not strictly in a Book
-    # or is many-to-many so can't be set directly
-    associated_values = [
-        "edition",
-        "authors",
-        "readthroughs",
-        "shelves",
-        "shelf_books",
-        "lists",
-        "list_items",
-        "reviews",
-        "comments",
-        "quotes",
-    ]
-
-    for val in associated_values:
-        del book[val]
-
-    # now we can save the book as an Edition
-    new_book = models.Edition.objects.create(**book)
-    new_book.authors.set(local_authors)  # now we can add authors with set()
-
-    # get cover from original book_data because we lost it in clean_values
-    if cover_path:
-        tar.write_image_to_file(cover_path, new_book.cover)
-
-    # NOTE: clean_values removes "last_edited_by"
-    # because it's a user ID from the old database
-    # if this is required, bookwyrm_export_job will
-    # need to bring in the user who edited it.
-
-    # create parent
-    work = models.Work.objects.create(title=book["title"])
-    work.authors.set(local_authors)
-    new_book.parent_work = work
-
-    new_book.save(broadcast=False)
-    return new_book
-
-
-def clean_values(data):
-    """clean values we don't want when creating new instances"""
-
-    values = [
-        "id",
-        "pk",
-        "remote_id",
-        "cover",
-        "preview_image",
-        "last_edited_by",
-        "last_edited_by_id",
-        "user",
-        "book_list",
-        "shelf_book",
-        "parent_work_id",
-    ]
-
-    common = data.keys() & values
-    new_data = data
-    for val in common:
-        del new_data[val]
-    return new_data
-
-
-def find_existing(cls, data):
-    """Given a book or author, find any existing model instances"""
-
-    identifiers = [
-        "openlibrary_key",
-        "inventaire_id",
-        "librarything_key",
-        "goodreads_key",
-        "asin",
-        "isfdb",
-        "isbn_10",
-        "isbn_13",
-        "oclc_number",
-        "origin_id",
-        "viaf",
-        "wikipedia_link",
-        "isni",
-        "gutenberg_id",
-    ]
-
-    match_fields = []
-    for i in identifiers:
-        if data.get(i) not in [None, ""]:
-            match_fields.append({i: data.get(i)})
-
-    if len(match_fields) > 0:
-        match = cls.objects.filter(reduce(operator.or_, (Q(**f) for f in match_fields)))
-        return match.first()
-    return None
-
-
-def get_or_create_authors(data):
-    """Take a JSON string of authors find or create the authors
-    in the database and return a list of author instances"""
-
+    # make sure we have the authors in the local DB
     authors = []
-    for author in data:
-        clean = clean_values(author)
-        existing = find_existing(models.Author, clean)
+    for author in book_data.get("authors"):
+        existing = models.Author.find_existing(author)
         if existing:
             authors.append(existing)
         else:
-            new = models.Author.objects.create(**clean)
+            new = author.to_model(model=models.Author, save=True)
             authors.append(new)
-    return authors
+
+    # don't save the authors from the old server
+    book["authors"] = []
+    # use the cover image from the tar
+    if cover_path:
+        tar.write_image_to_file(cover_path, new_book.cover)
+    new_book = book.to_model(model=models.Edition, save=True)
+    new_book.authors.set(authors)
+
+    return new_book
 
 
 def upsert_readthroughs(data, user, book_id):
     """Take a JSON string of readthroughs, find or create the
     instances in the database and return a list of saved instances"""
 
-    for read_thru in data:
-        start_date = (
-            parse_datetime(read_thru["start_date"])
-            if read_thru["start_date"] is not None
-            else None
-        )
-        finish_date = (
-            parse_datetime(read_thru["finish_date"])
-            if read_thru["finish_date"] is not None
-            else None
-        )
-        stopped_date = (
-            parse_datetime(read_thru["stopped_date"])
-            if read_thru["stopped_date"] is not None
-            else None
-        )
-        readthrough = {
-            "user": user,
-            "book": models.Edition.objects.get(id=book_id),
-            "progress": read_thru["progress"],
-            "progress_mode": read_thru["progress_mode"],
-            "start_date": start_date,
-            "finish_date": finish_date,
-            "stopped_date": stopped_date,
-            "is_active": read_thru["is_active"],
-        }
+    for read_through in data:
+        del read_through["id"]
+        del read_through["remote_id"]
+        read_through["user_id"] = user.id
+        read_through["book_id"] = book_id
 
-        existing = models.ReadThrough.objects.filter(**readthrough).exists()
+        existing = models.ReadThrough.objects.filter(**read_through).first()
         if not existing:
-            models.ReadThrough.objects.create(**readthrough)
+            models.ReadThrough.objects.create(**read_through)
 
 
-def get_or_create_statuses(user, cls, data, book_id):
+def upsert_statuses(user, cls, data, book_id):
     """Take a JSON string of a status and
     find or create the instances in the database"""
 
-    for book_status in data:
+    for status in data:
 
-        keys = [
-            "content",
-            "raw_content",
-            "content_warning",
-            "privacy",
-            "sensitive",
-            "published_date",
-            "reading_status",
-            "name",
-            "rating",
-            "quote",
-            "raw_quote",
-            "progress",
-            "progress_mode",
-            "position",
-            "position_mode",
-        ]
-        common = book_status.keys() & keys
-        status = {k: book_status[k] for k in common}
-        status["published_date"] = parse_datetime(book_status["published_date"])
-        if "rating" in common:
-            status["rating"] = float(book_status["rating"])
-        book = models.Edition.objects.get(id=book_id)
-        exists = cls.objects.filter(**status, book=book, user=user).exists()
-        if not exists:
-            cls.objects.create(**status, book=book, user=user)
+        # change user and remove replies
+        status["attributedTo"] = user.remote_id
+        status["to"] = []
+        status["replies"] = {}
+        status["inReplyToBook"] = book_id
+        existing = cls.find_existing(status)
+        if existing:
+            existing.save(broadcast=False)
+        else:
+            status.to_model(model=cls, save=True)
 
 
-def upsert_lists(user, lists, items, book_id):
+def upsert_lists(user, lists, book_id):
     """Take a list and ListItems as JSON and
     create DB entries if they don't already exist"""
 
     book = models.Edition.objects.get(id=book_id)
 
-    for lst in lists:
-        book_list = models.List.objects.filter(name=lst["name"], user=user).first()
-        if not book_list:
-            book_list = models.List.objects.create(
+    for book_list in lists:
+        blist = book_list["list_info"]
+        booklist = models.List.find_existing(blist)
+        if not booklist:
+            booklist = models.List.objects.create(
+                name=blist["list_info"]["name"],
                 user=user,
-                name=lst["name"],
-                description=lst["description"],
-                curation=lst["curation"],
-                privacy=lst["privacy"],
+                description=blist["list_info"]["summary"],
+                curation=blist["list_info"]["curation"],
+                privacy=blist["list_info"]["privacy"],
             )
 
-        # If the list exists but the ListItem doesn't don't try to add it
-        # with the same order as an existing item
-        count = models.ListItem.objects.filter(book_list=book_list).count()
+        # If the list exists but the ListItem doesn't
+        # we need to re-order the item
+        count = models.ListItem.objects.filter(book_list=booklist).count()
 
-        for i in items[lst["name"]]:
+        for item in book_list["list_items"]:
             if not models.ListItem.objects.filter(
-                book=book, book_list=book_list, user=user
+                book=book, book_list=booklist, user=user
             ).exists():
                 models.ListItem.objects.create(
                     book=book,
-                    book_list=book_list,
+                    book_list=booklist,
                     user=user,
-                    notes=i["notes"],
-                    order=i["order"] + count,
+                    approved=item["approved"],
+                    notes=item["notes"],
+                    order=item["order"] + count,
                 )
 
 
 def upsert_shelves(book, user, book_data):
-    """Take shelf and ShelfBooks JSON objects and create
+    """Take shelf JSON objects and create
     DB entries if they don't already exist"""
 
     shelves = book_data["shelves"]
 
     for shelf in shelves:
-        book_shelf = models.Shelf.objects.filter(name=shelf["name"], user=user).first()
+        book_shelf = models.Shelf.objects.filter(
+            identifier=shelf["identifier"], user=user
+        ).first()
         if not book_shelf:
             book_shelf = models.Shelf.objects.create(
                 name=shelf["name"],
@@ -363,27 +226,24 @@ def upsert_shelves(book, user, book_data):
                 privacy=shelf["privacy"],
             )
 
-        for shelfbook in book_data["shelf_books"][book_shelf.identifier]:
-
-            shelved_date = parse_datetime(shelfbook["shelved_date"])
-
-            if not models.ShelfBook.objects.filter(
-                book=book, shelf=book_shelf, user=user
-            ).exists():
-                models.ShelfBook.objects.create(
-                    book=book,
-                    shelf=book_shelf,
-                    user=user,
-                    shelved_date=shelved_date,
-                )
+        # add the book as a ShelfBook
+        if not models.ShelfBook.objects.filter(
+            book=book, shelf=book_shelf, user=user
+        ).exists():
+            models.ShelfBook.objects.create(
+                book=book,
+                shelf=book_shelf,
+                user=user,
+                shelved_date=shelved_date,
+            )
 
 
 def update_user_profile(user, tar, data):
     """update the user's profile from import data"""
-    name = data.get("name")
-    username = data.get("username").split("@")[0]
+    name = data.get("name", None)
+    username = data.get("preferredUsername")
     user.name = name if name else username
-    user.summary = data.get("summary")
+    user.summary = data.get("summary", None)
     user.save(update_fields=["name", "summary"])
 
     if data.get("avatar") is not None:
@@ -394,18 +254,29 @@ def update_user_profile(user, tar, data):
 def update_user_settings(user, data):
     """update the user's settings from import data"""
 
-    update_fields = [
-        "manually_approves_followers",
-        "hide_follows",
-        "show_goal",
-        "show_suggested_users",
-        "discoverable",
-        "preferred_timezone",
-        "default_post_privacy",
+    update_fields = ["manually_approves_followers", "hide_follows", "discoverable"]
+
+    ap_fields = [
+        ("manuallyApprovesFollowers", "manually_approves_followers"),
+        ("hideFollows", "hide_follows"),
+        ("discoverable", "discoverable"),
     ]
 
-    for field in update_fields:
-        setattr(user, field, data[field])
+    for (ap_field, bw_field) in ap_fields:
+        setattr(user, bw_field, data[ap_field])
+
+    bw_fields = [
+        "show_goal",
+        "show_suggested_users",
+        "default_post_privacy",
+        "preferred_timezone",
+    ]
+
+    for field in bw_fields:
+        if data["settings"].get(field, False):
+            update_fields.append(field)
+            setattr(user, field, data["settings"][field])
+
     user.save(update_fields=update_fields)
 
 
