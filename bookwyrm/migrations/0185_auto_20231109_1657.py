@@ -17,9 +17,9 @@ class Migration(migrations.Migration):
             field=models.CharField(
                 blank=True,
                 choices=[
-                    ("DAY", "Day seal"),
-                    ("MONTH", "Month seal"),
-                    ("YEAR", "Year seal"),
+                    ("DAY", "Day prec."),
+                    ("MONTH", "Month prec."),
+                    ("YEAR", "Year prec."),
                 ],
                 editable=False,
                 max_length=10,
@@ -32,9 +32,9 @@ class Migration(migrations.Migration):
             field=models.CharField(
                 blank=True,
                 choices=[
-                    ("DAY", "Day seal"),
-                    ("MONTH", "Month seal"),
-                    ("YEAR", "Year seal"),
+                    ("DAY", "Day prec."),
+                    ("MONTH", "Month prec."),
+                    ("YEAR", "Year prec."),
                 ],
                 editable=False,
                 max_length=10,

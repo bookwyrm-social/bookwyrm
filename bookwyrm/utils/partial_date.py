@@ -159,13 +159,13 @@ class PartialDateDescriptor:
     Encapsulates the "two columns, one field" for PartialDateModel.
     """
 
-    _SEAL_TYPES: dict[Type[_SetType], str] = {
+    _PRECISION_NAMES: dict[Type[_SetType], str] = {
         YearParts: "YEAR",
         MonthParts: "MONTH",
         PartialDate: "DAY",
     }
 
-    _DATE_CLASSES: dict[Any, Type[PartialDate]] = {
+    _PARTIAL_CLASSES: dict[Any, Type[PartialDate]] = {
         "YEAR": YearParts,
         "MONTH": MonthParts,
     }
@@ -183,19 +183,19 @@ class PartialDateDescriptor:
             return value
 
         # use precision field to construct PartialDate.
-        seal_type = getattr(instance, self.precision_field, None)
-        date_class = self._DATE_CLASSES.get(seal_type, PartialDate)
+        precision = getattr(instance, self.precision_field, None)
+        date_class = self._PARTIAL_CLASSES.get(precision, PartialDate)
 
         return date_class.from_datetime(value)  # FIXME: drop datetimes.
 
     def __set__(self, instance: models.Model, value: _SetType) -> None:
         """assign value, with precision where available"""
         try:
-            seal_type = self._SEAL_TYPES[value.__class__]
+            precision = self._PRECISION_NAMES[value.__class__]
         except KeyError:
             value = self.field.to_python(value)
         else:
-            setattr(instance, self.precision_field, seal_type)
+            setattr(instance, self.precision_field, precision)
 
         instance.__dict__[self.field.attname] = value
 
@@ -212,7 +212,7 @@ class PartialDateDescriptor:
     @property
     def precision_choices(self) -> list[tuple[str, str]]:
         """valid options for precision database field"""
-        return [("DAY", "Day seal"), ("MONTH", "Month seal"), ("YEAR", "Year seal")]
+        return [("DAY", "Day prec."), ("MONTH", "Month prec."), ("YEAR", "Year prec.")]
 
 
 class PartialDateModel(models.DateTimeField):  # type: ignore
