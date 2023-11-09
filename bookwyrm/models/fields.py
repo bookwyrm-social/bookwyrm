@@ -569,14 +569,16 @@ class PartialDateField(ActivitypubFieldMixin, SealedDateField):
         except (ValueError, ParserError):
             return None
 
-        # FIXME #1: add timezone if missing (SealedDate only accepts tz-aware).
-        #
-        # FIXME #2: decide whether to fix timestamps like "2023-09-30T21:00:00-03":
+        if timezone.is_aware(parsed):
+            return SealedDate.from_datetime(parsed)
+        else:
+            # Should not happen on the wire, but truncate down to date parts.
+            return SealedDate.from_date_parts(parsed.year, parsed.month, parsed.day)
+
+        # FIXME: decide whether to fix timestamps like "2023-09-30T21:00:00-03":
         # clearly Oct 1st, not Sep 30th (an unwanted side-effect of USE_TZ). It's
         # basically the remnants of #3028; there is a data migration pending (see …)
         # but over the wire we might get these for an indeterminate amount of time.
-
-        return SealedDate.from_datetime(parsed)
 
 
 class HtmlField(ActivitypubFieldMixin, models.TextField):

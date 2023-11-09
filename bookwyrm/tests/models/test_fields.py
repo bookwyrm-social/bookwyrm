@@ -601,9 +601,8 @@ class ModelFields(TestCase):
         instance = fields.PartialDateField()
         expected = datetime.date(2023, 10, 20)
         test_cases = [
-            # XXX: must fix before merging.
-            # ("no_tz", "2023-10-20T00:00:00"),
-            # ("no_tz_eod", "2023-10-20T23:59:59.999999"),
+            ("no_tz", "2023-10-20T00:00:00"),
+            ("no_tz_eod", "2023-10-20T23:59:59.999999"),
             ("utc_offset_midday", "2023-10-20T12:00:00+0000"),
             ("utc_offset_midnight", "2023-10-20T00:00:00+00"),
             ("eastern_tz_parsed", "2023-10-20T15:20:30+04:30"),
