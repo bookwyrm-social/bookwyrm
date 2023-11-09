@@ -3,15 +3,15 @@ from django import template
 from django.template import defaultfilters
 from django.contrib.humanize.templatetags.humanize import naturalday
 
-from bookwyrm.utils.sealed_date import SealedDate
+from bookwyrm.utils.sealed_date import PartialDate
 
 register = template.Library()
 
 
 @register.filter(expects_localtime=True, is_safe=False)
 def naturalday_partial(date):
-    """allow templates to easily format SealedDate objects"""
-    if not isinstance(date, SealedDate):
+    """allow templates to easily format PartialDate objects"""
+    if not isinstance(date, PartialDate):
         return defaultfilters.date(date)
     if date.has_day:
         fmt = "DATE_FORMAT"

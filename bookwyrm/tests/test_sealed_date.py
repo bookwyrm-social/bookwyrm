@@ -10,8 +10,8 @@ from django.utils import translation
 from bookwyrm.utils import sealed_date
 
 
-class SealedDateTest(unittest.TestCase):
-    """test SealedDate class in isolation"""
+class PartialDateTest(unittest.TestCase):
+    """test PartialDate class in isolation"""
 
     # pylint: disable=missing-function-docstring
 
@@ -19,21 +19,21 @@ class SealedDateTest(unittest.TestCase):
         self._dt = datetime.datetime(2023, 10, 20, 17, 33, 10, tzinfo=timezone.utc)
 
     def test_day_seal(self):
-        sealed = sealed_date.SealedDate.from_datetime(self._dt)
+        sealed = sealed_date.PartialDate.from_datetime(self._dt)
         self.assertEqual(self._dt, sealed)
         self.assertEqual("2023-10-20", sealed.partial_isoformat())
         self.assertTrue(sealed.has_day)
         self.assertTrue(sealed.has_month)
 
     def test_month_seal(self):
-        sealed = sealed_date.MonthSeal.from_datetime(self._dt)
+        sealed = sealed_date.MonthParts.from_datetime(self._dt)
         self.assertEqual(self._dt, sealed)
         self.assertEqual("2023-10", sealed.partial_isoformat())
         self.assertFalse(sealed.has_day)
         self.assertTrue(sealed.has_month)
 
     def test_year_seal(self):
-        sealed = sealed_date.YearSeal.from_datetime(self._dt)
+        sealed = sealed_date.YearParts.from_datetime(self._dt)
         self.assertEqual(self._dt, sealed)
         self.assertEqual("2023", sealed.partial_isoformat())
         self.assertFalse(sealed.has_day)
@@ -41,7 +41,7 @@ class SealedDateTest(unittest.TestCase):
 
     def test_no_naive_datetime(self):
         with self.assertRaises(ValueError):
-            sealed_date.SealedDate.from_datetime(datetime.datetime(2000, 1, 1))
+            sealed_date.PartialDate.from_datetime(datetime.datetime(2000, 1, 1))
 
     def test_parse_year_seal(self):
         parsed = sealed_date.from_partial_isoformat("1995")
@@ -99,7 +99,7 @@ class SealedDateTest(unittest.TestCase):
 
 
 class PartialDateFormFieldTest(unittest.TestCase):
-    """test form support for SealedDate objects"""
+    """test form support for PartialDate objects"""
 
     # pylint: disable=missing-function-docstring
 
@@ -108,32 +108,32 @@ class PartialDateFormFieldTest(unittest.TestCase):
         self.field = sealed_date.PartialDateFormField()
 
     def test_prepare_value(self):
-        sealed = sealed_date.SealedDate.from_datetime(self._dt)
+        sealed = sealed_date.PartialDate.from_datetime(self._dt)
         self.assertEqual("2022-11-21", self.field.prepare_value(sealed))
 
     def test_prepare_value_month(self):
-        sealed = sealed_date.MonthSeal.from_datetime(self._dt)
+        sealed = sealed_date.MonthParts.from_datetime(self._dt)
         self.assertEqual("2022-11-0", self.field.prepare_value(sealed))
 
     def test_prepare_value_year(self):
-        sealed = sealed_date.YearSeal.from_datetime(self._dt)
+        sealed = sealed_date.YearParts.from_datetime(self._dt)
         self.assertEqual("2022-0-0", self.field.prepare_value(sealed))
 
     def test_to_python(self):
         date = self.field.to_python("2022-11-21")
-        self.assertIsInstance(date, sealed_date.SealedDate)
+        self.assertIsInstance(date, sealed_date.PartialDate)
         self.assertEqual("2022-11-21", date.partial_isoformat())
 
     def test_to_python_month(self):
         date = self.field.to_python("2022-11-0")
-        self.assertIsInstance(date, sealed_date.SealedDate)
+        self.assertIsInstance(date, sealed_date.PartialDate)
         self.assertEqual("2022-11", date.partial_isoformat())
         with self.assertRaises(ValidationError):
             self.field.to_python("2022-0-25")
 
     def test_to_python_year(self):
         date = self.field.to_python("2022-0-0")
-        self.assertIsInstance(date, sealed_date.SealedDate)
+        self.assertIsInstance(date, sealed_date.PartialDate)
         self.assertEqual("2022", date.partial_isoformat())
         with self.assertRaises(ValidationError):
             self.field.to_python("0-05-25")
@@ -142,5 +142,5 @@ class PartialDateFormFieldTest(unittest.TestCase):
         with translation.override("es"):
             # check super() is called
             date = self.field.to_python("5/6/97")
-            self.assertIsInstance(date, sealed_date.SealedDate)
+            self.assertIsInstance(date, sealed_date.PartialDate)
             self.assertEqual("1997-06-05", date.partial_isoformat())

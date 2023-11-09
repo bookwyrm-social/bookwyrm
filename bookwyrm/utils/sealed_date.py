@@ -1,4 +1,4 @@
-"""Implementation of the SealedDate class."""
+"""Implementation of the PartialDate class."""
 
 from __future__ import annotations
 
@@ -15,7 +15,7 @@ from django.utils import timezone
 # pylint: disable=no-else-return
 
 __all__ = [
-    "SealedDate",
+    "PartialDate",
     "PartialDateModel",
     "from_partial_isoformat",
 ]
@@ -23,14 +23,14 @@ __all__ = [
 _partial_re = re.compile(r"(\d{4})(?:-(\d\d?))?(?:-(\d\d?))?$")
 _westmost_tz = timezone.get_fixed_timezone(timedelta(hours=-12))
 
-Sealed = TypeVar("Sealed", bound="SealedDate")  # TODO: use Self in Python >= 3.11
+Partial = TypeVar("Partial", bound="PartialDate")  # TODO: use Self in Python >= 3.11
 
-# TODO: migrate SealedDate: `datetime` => `date`
+# TODO: migrate PartialDate: `datetime` => `date`
 # TODO: migrate PartialDateModel: `DateTimeField` => `DateField`
 
 
-class SealedDate(datetime):
-    """a date object sealed into a certain precision (day, month or year)"""
+class PartialDate(datetime):
+    """a date object bound into a certain precision (day, month or year)"""
 
     @property
     def has_day(self) -> bool:
@@ -47,8 +47,8 @@ class SealedDate(datetime):
         return self.strftime("%Y-%m-%d")
 
     @classmethod
-    def from_datetime(cls: Type[Sealed], dt: datetime) -> Sealed:
-        """construct a SealedDate object from a timezone-aware datetime
+    def from_datetime(cls: Type[Partial], dt: datetime) -> Partial:
+        """construct a PartialDate object from a timezone-aware datetime
 
         Use subclasses to specify precision. If `dt` is naive, `ValueError`
         is raised.
@@ -59,18 +59,18 @@ class SealedDate(datetime):
         return cls.combine(dt.date(), dt.time(), tzinfo=dt.tzinfo)
 
     @classmethod
-    def from_date_parts(cls: Type[Sealed], year: int, month: int, day: int) -> Sealed:
-        """construct a SealedDate from year, month, day.
+    def from_date_parts(cls: Type[Partial], year: int, month: int, day: int) -> Partial:
+        """construct a PartialDate from year, month, day.
 
         Use sublcasses to specify precision."""
-        # because SealedDate is actually a datetime object, we must create it with a
+        # because PartialDate is actually a datetime object, we must create it with a
         # timezone such that its date remains stable no matter the values of USE_TZ,
         # current_timezone and default_timezone.
         return cls.from_datetime(datetime(year, month, day, tzinfo=_westmost_tz))
 
 
-class MonthSeal(SealedDate):
-    """a date sealed into month precision"""
+class MonthParts(PartialDate):
+    """a date bound into month precision"""
 
     @property
     def has_day(self) -> bool:
@@ -80,8 +80,8 @@ class MonthSeal(SealedDate):
         return self.strftime("%Y-%m")
 
 
-class YearSeal(SealedDate):
-    """a date sealed into year precision"""
+class YearParts(PartialDate):
+    """a date bound into year precision"""
 
     @property
     def has_month(self) -> bool:
@@ -91,8 +91,8 @@ class YearSeal(SealedDate):
         return self.strftime("%Y")
 
 
-def from_partial_isoformat(value: str) -> SealedDate:
-    """construct SealedDate from a partial string.
+def from_partial_isoformat(value: str) -> PartialDate:
+    """construct PartialDate from a partial string.
 
     Accepted formats: YYYY, YYYY-MM, YYYY-MM-DD; otherwise `ValueError`
     is raised.
@@ -105,20 +105,20 @@ def from_partial_isoformat(value: str) -> SealedDate:
     year, month, day = [int(val) if val else -1 for val in match.groups()]
 
     if month < 0:
-        return YearSeal.from_date_parts(year, 1, 1)
+        return YearParts.from_date_parts(year, 1, 1)
     elif day < 0:
-        return MonthSeal.from_date_parts(year, month, 1)
+        return MonthParts.from_date_parts(year, month, 1)
     else:
-        return SealedDate.from_date_parts(year, month, day)
+        return PartialDate.from_date_parts(year, month, day)
 
 
 class PartialDateFormField(DateField):
-    """date form field with support for SealedDate"""
+    """date form field with support for PartialDate"""
 
     def prepare_value(self, value: Any) -> str:
         # As a convention, Django's `SelectDateWidget` uses "0" for missing
-        # parts. We piggy-back into that, to make it work with SealedDate.
-        if not isinstance(value, SealedDate):
+        # parts. We piggy-back into that, to make it work with PartialDate.
+        if not isinstance(value, PartialDate):
             return cast(str, super().prepare_value(value))
         elif value.has_day:
             return value.strftime("%Y-%m-%d")
@@ -127,7 +127,7 @@ class PartialDateFormField(DateField):
         else:
             return value.strftime("%Y-0-0")
 
-    def to_python(self, value: Any) -> Optional[SealedDate]:
+    def to_python(self, value: Any) -> Optional[PartialDate]:
         try:
             date = super().to_python(value)
         except ValidationError as ex:
@@ -136,21 +136,21 @@ class PartialDateFormField(DateField):
             if not match or (day and not month) or not year:
                 raise ex from None
             if not month:
-                return YearSeal.from_date_parts(year, 1, 1)
+                return YearParts.from_date_parts(year, 1, 1)
             elif not day:
-                return MonthSeal.from_date_parts(year, month, 1)
+                return MonthParts.from_date_parts(year, month, 1)
         else:
             if date is None:
                 return None
             else:
                 year, month, day = date.year, date.month, date.day
 
-        return SealedDate.from_date_parts(year, month, day)
+        return PartialDate.from_date_parts(year, month, day)
 
 
 # For typing field and descriptor, below.
 _SetType = datetime
-_GetType = Optional[SealedDate]
+_GetType = Optional[PartialDate]
 
 
 class PartialDateDescriptor:
@@ -160,14 +160,14 @@ class PartialDateDescriptor:
     """
 
     _SEAL_TYPES: dict[Type[_SetType], str] = {
-        YearSeal: "YEAR",
-        MonthSeal: "MONTH",
-        SealedDate: "DAY",
+        YearParts: "YEAR",
+        MonthParts: "MONTH",
+        PartialDate: "DAY",
     }
 
-    _DATE_CLASSES: dict[Any, Type[SealedDate]] = {
-        "YEAR": YearSeal,
-        "MONTH": MonthSeal,
+    _DATE_CLASSES: dict[Any, Type[PartialDate]] = {
+        "YEAR": YearParts,
+        "MONTH": MonthParts,
     }
 
     def __init__(self, field: models.Field[_SetType, _GetType]):
@@ -179,12 +179,12 @@ class PartialDateDescriptor:
 
         value = instance.__dict__.get(self.field.attname)
 
-        if not value or isinstance(value, SealedDate):
+        if not value or isinstance(value, PartialDate):
             return value
 
-        # use precision field to construct SealedDate.
+        # use precision field to construct PartialDate.
         seal_type = getattr(instance, self.precision_field, None)
-        date_class = self._DATE_CLASSES.get(seal_type, SealedDate)
+        date_class = self._DATE_CLASSES.get(seal_type, PartialDate)
 
         return date_class.from_datetime(value)  # FIXME: drop datetimes.
 
@@ -216,7 +216,7 @@ class PartialDateDescriptor:
 
 
 class PartialDateModel(models.DateTimeField):  # type: ignore
-    """a date field for Django models, using SealedDate as values"""
+    """a date field for Django models, using PartialDate as values"""
 
     descriptor_class = PartialDateDescriptor
 

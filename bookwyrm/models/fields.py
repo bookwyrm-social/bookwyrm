@@ -21,7 +21,7 @@ from bookwyrm import activitypub
 from bookwyrm.connectors import get_image
 from bookwyrm.utils.sanitizer import clean
 from bookwyrm.utils.sealed_date import (
-    SealedDate,
+    PartialDate,
     PartialDateModel,
     from_partial_isoformat,
 )
@@ -560,6 +560,7 @@ class PartialDateField(ActivitypubFieldMixin, PartialDateModel):
         return value.partial_isoformat() if value else None
 
     def field_from_activity(self, value, allow_external_connections=True):
+        # pylint: disable=no-else-return
         try:
             return from_partial_isoformat(value)
         except ValueError:
@@ -572,10 +573,10 @@ class PartialDateField(ActivitypubFieldMixin, PartialDateModel):
             return None
 
         if timezone.is_aware(parsed):
-            return SealedDate.from_datetime(parsed)
+            return PartialDate.from_datetime(parsed)
         else:
             # Should not happen on the wire, but truncate down to date parts.
-            return SealedDate.from_date_parts(parsed.year, parsed.month, parsed.day)
+            return PartialDate.from_date_parts(parsed.year, parsed.month, parsed.day)
 
         # FIXME: decide whether to fix timestamps like "2023-09-30T21:00:00-03":
         # clearly Oct 1st, not Sep 30th (an unwanted side-effect of USE_TZ). It's
