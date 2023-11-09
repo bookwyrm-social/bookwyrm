@@ -1,5 +1,5 @@
 """ actor serializer """
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Dict
 
 from .base_activity import ActivityObject
