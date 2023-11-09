@@ -3,7 +3,7 @@ from django import template
 from django.template import defaultfilters
 from django.contrib.humanize.templatetags.humanize import naturalday
 
-from bookwyrm.utils.sealed_date import PartialDate
+from bookwyrm.utils.partial_date import PartialDate
 
 register = template.Library()
 

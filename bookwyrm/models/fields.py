@@ -20,7 +20,7 @@ from markdown import markdown
 from bookwyrm import activitypub
 from bookwyrm.connectors import get_image
 from bookwyrm.utils.sanitizer import clean
-from bookwyrm.utils.sealed_date import (
+from bookwyrm.utils.partial_date import (
     PartialDate,
     PartialDateModel,
     from_partial_isoformat,
