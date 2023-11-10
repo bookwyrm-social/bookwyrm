@@ -13,8 +13,10 @@ from django.contrib.postgres.search import TrigramSimilarity
 from django.db.models.functions import Greatest
 
 from bookwyrm import forms, models
+from bookwyrm.models import NotificationType
 from bookwyrm.suggested_users import suggested_users
 from .helpers import get_user_from_username, maybe_redirect_local_path
+
 
 # pylint: disable=no-self-use
 class Group(View):
@@ -59,11 +61,11 @@ class Group(View):
         model = apps.get_model("bookwyrm.Notification", require_ready=True)
         for field in form.changed_data:
             notification_type = (
-                model.GROUP_PRIVACY
+                NotificationType.GROUP_PRIVACY
                 if field == "privacy"
-                else model.GROUP_NAME
+                else NotificationType.GROUP_NAME
                 if field == "name"
-                else model.GROUP_DESCRIPTION
+                else NotificationType.GROUP_DESCRIPTION
                 if field == "description"
                 else None
             )
@@ -251,7 +253,9 @@ def remove_member(request):
 
         memberships = models.GroupMember.objects.filter(group=group)
         model = apps.get_model("bookwyrm.Notification", require_ready=True)
-        notification_type = model.LEAVE if user == request.user else model.REMOVE
+        notification_type = (
+            NotificationType.LEAVE if user == request.user else NotificationType.REMOVE
+        )
         # let the other members know about it
         for membership in memberships:
             member = membership.user
@@ -264,7 +268,7 @@ def remove_member(request):
                 )
 
         # let the user (now ex-member) know as well, if they were removed
-        if notification_type == model.REMOVE:
+        if notification_type == NotificationType.REMOVE:
             model.notify(
                 user, None, related_group=group, notification_type=notification_type
             )

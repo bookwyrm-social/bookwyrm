@@ -10,6 +10,7 @@ from django.utils.translation import gettext_lazy as _
 
 from bookwyrm.tasks import app, MISC
 from .base_model import BookWyrmModel
+from .notification import NotificationType
 from .user import User
 
 
@@ -80,7 +81,7 @@ def automod_task():
     with transaction.atomic():
         for admin in admins:
             notification, _ = notification_model.objects.get_or_create(
-                user=admin, notification_type=notification_model.REPORT, read=False
+                user=admin, notification_type=NotificationType.REPORT, read=False
             )
             notification.related_reports.set(reports)
 
