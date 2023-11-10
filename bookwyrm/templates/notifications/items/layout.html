@@ -39,11 +39,15 @@
 
                 {% with related_user=related_users.0.display_name %}
                 {% with related_user_link=related_users.0.local_path %}
+                {% with related_user_moved_to=related_users.0.moved_to %}
+                {% with related_user_username=related_users.0.username %}
                 {% with second_user=related_users.1.display_name %}
                 {% with second_user_link=related_users.1.local_path %}
                 {% with other_user_count=related_user_count|add:"-1" %}
                 {% with other_user_display_count=other_user_count|intcomma %}
                     {% block description %}{% endblock %}
+                {% endwith %}
+                {% endwith %}
                 {% endwith %}
                 {% endwith %}
                 {% endwith %}

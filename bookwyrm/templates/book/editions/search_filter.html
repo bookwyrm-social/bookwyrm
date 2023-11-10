@@ -4,7 +4,7 @@
 {% block filter %}
 <div class="control">
     <label class="label" for="id_search">{% trans "Search editions" %}</label>
-    <input type="text" class="input" name="q" value="{{ request.GET.q|default:'' }}" id="id_search">
+    <input type="text" class="input" name="q" value="{{ request.GET.q|default:'' }}" id="id_search" spellcheck="false">
 </div>
 {% endblock %}
 

@@ -4,11 +4,12 @@
 {% load humanize %}
 {% load utilities %}
 {% load static %}
+{% load shelf_tags %}
 
 {% block title %}{{ book|book_title }}{% endblock %}
 
-{% block opengraph_images %}
-    {% include 'snippets/opengraph_images.html' with image=book.preview_image %}
+{% block opengraph %}
+    {% include 'snippets/opengraph.html' with title=book.title description=book|book_description image=book.preview_image %}
 {% endblock %}
 
 {% block content %}
@@ -25,7 +26,7 @@
 <div class="block" itemscope itemtype="https://schema.org/Book">
     <div class="columns is-mobile">
         <div class="column">
-            <h1 class="title" itemprop="name">
+            <h1 class="title" itemprop="name" dir="auto">
                 {{ book.title }}
             </h1>
 
@@ -37,22 +38,30 @@
                             content="{{ book.subtitle | escape }}"
                         >
 
-                        <span class="has-text-weight-bold">
+                        <span class="has-text-weight-bold" dir="auto">
                             {{ book.subtitle }}
                         </span>
                     {% endif %}
 
                     {% if book.series %}
-                        <meta itemprop="isPartOf" content="{{ book.series | escape }}">
-                        <meta itemprop="volumeNumber" content="{{ book.series_number }}">
-
-                        ({{ book.series }}{% if book.series_number %} #{{ book.series_number }}{% endif %})
+                        <meta itemprop="position" content="{{ book.series_number }}">
+                        <span itemprop="isPartOf" itemscope itemtype="https://schema.org/BookSeries">
+                        {% if book.authors.exists %}
+                            <a href="{% url 'book-series-by' book.authors.first.id %}?series_name={{ book.series | urlencode }}"
+                               itemprop="url">
+                        {% endif %}
+                        <span itemprop="name">{{ book.series }}</span>
+                        {% if book.series_number %} #{{ book.series_number }}{% endif %}
+                        {% if book.authors.exists %}
+                            </a>
+                        {% endif %}
+                        </span>
                     {% endif %}
                 </p>
             {% endif %}
 
             {% if book.authors.exists %}
-                <div class="subtitle">
+                <div class="subtitle" dir="auto">
                     {% trans "by" %} {% include 'snippets/authors.html' with book=book %}
                 </div>
             {% endif %}
@@ -82,6 +91,8 @@
                             src="{% static "images/no_cover.jpg" %}"
                             alt=""
                             aria-hidden="true"
+                            loading="lazy"
+                            decoding="async"
                         >
                         <span class="cover-caption">
                             <span>{{ book.alt_text }}</span>
@@ -158,6 +169,13 @@
                     {% endif %}
                 </p>
                 {% endif %}
+                {% if book.isfdb %}
+                <p>
+                    <a href="{{ book.isfdb_link }}" target="_blank" rel="nofollow noopener noreferrer">
+                        {% trans "View on ISFDB" %}
+                    </a>
+                </p>
+                {% endif %}
             </section>
         </div>
 
@@ -170,17 +188,17 @@
                     itemtype="https://schema.org/AggregateRating"
                 >
                     <meta itemprop="ratingValue" content="{{ rating|floatformat }}">
-                    {# @todo Is it possible to not hard-code the value? #}
-                    <meta itemprop="bestRating" content="5">
                     <meta itemprop="reviewCount" content="{{ review_count }}">
 
-                    {% include 'snippets/stars.html' with rating=rating %}
+                    <span>
+                        {% include 'snippets/stars.html' with rating=rating %}
 
-                    {% blocktrans count counter=review_count trimmed %}
-                        ({{ review_count }} review)
-                    {% plural %}
-                        ({{ review_count }} reviews)
-                    {% endblocktrans %}
+                        {% blocktrans count counter=review_count trimmed %}
+                            ({{ review_count }} review)
+                        {% plural %}
+                            ({{ review_count }} reviews)
+                        {% endblocktrans %}
+                    </span>
                 </div>
 
                 {% with full=book|book_description itemprop='abstract' %}
@@ -208,10 +226,10 @@
                 {% endif %}
 
 
-                {% with work=book.parent_work %}
+                {% with work=book.parent_work editions_count=book.parent_work.editions.count %}
                 <p>
                     <a href="{{ work.local_path }}/editions" id="tour-other-editions-link">
-                        {% blocktrans trimmed count counter=work.editions.count with count=work.editions.count|intcomma %}
+                        {% blocktrans trimmed count counter=editions_count with count=editions_count|intcomma %}
                             {{ count }} edition
                             {% plural %}
                             {{ count }} editions
@@ -230,7 +248,7 @@
                 <ul>
                 {% for shelf in user_shelfbooks %}
                     <li class="box">
-                        <a href="{{ shelf.shelf.local_path }}">{{ shelf.shelf.name }}</a>
+                        <a href="{{ shelf.shelf.local_path }}">{{ shelf.shelf|translate_shelf_name }}</a>
                         <div class="is-pulled-right">
                             {% include 'snippets/shelf_selector.html' with shelf=shelf.shelf class="is-small" readthrough=readthrough %}
                         </div>
@@ -240,7 +258,7 @@
                 {% endif %}
                 {% for shelf in other_edition_shelves %}
                 <p>
-                {% blocktrans with book_path=shelf.book.local_path shelf_path=shelf.shelf.local_path shelf_name=shelf.shelf.name %}A <a href="{{ book_path }}">different edition</a> of this book is on your <a href="{{ shelf_path }}">{{ shelf_name }}</a> shelf.{% endblocktrans %}
+                {% blocktrans with book_path=shelf.book.local_path shelf_path=shelf.shelf.local_path shelf_name=shelf.shelf|translate_shelf_name %}A <a href="{{ book_path }}">different edition</a> of this book is on your <a href="{{ shelf_path }}">{{ shelf_name }}</a> shelf.{% endblocktrans %}
                     {% include 'snippets/switch_edition_button.html' with edition=book %}
                 </p>
                 {% endfor %}

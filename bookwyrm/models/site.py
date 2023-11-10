@@ -3,6 +3,7 @@ import datetime
 from urllib.parse import urljoin
 import uuid
 
+import django.contrib.auth.models as auth_models
 from django.core.exceptions import PermissionDenied
 from django.db import models, IntegrityError
 from django.dispatch import receiver
@@ -62,12 +63,17 @@ class SiteSettings(SiteModel):
     )
     code_of_conduct = models.TextField(default="Add a code of conduct here.")
     privacy_policy = models.TextField(default="Add a privacy policy here.")
+    impressum = models.TextField(default="Add a impressum here.")
+    show_impressum = models.BooleanField(default=False)
 
     # registration
     allow_registration = models.BooleanField(default=False)
     allow_invite_requests = models.BooleanField(default=True)
     invite_request_question = models.BooleanField(default=False)
     require_confirm_email = models.BooleanField(default=True)
+    default_user_auth_group = models.ForeignKey(
+        auth_models.Group, null=True, blank=True, on_delete=models.RESTRICT
+    )
 
     invite_question_text = models.CharField(
         max_length=255, blank=True, default="What is your favourite book?"
@@ -88,6 +94,8 @@ class SiteSettings(SiteModel):
 
     # controls
     imports_enabled = models.BooleanField(default=True)
+    import_size_limit = models.IntegerField(default=0)
+    import_limit_reset = models.IntegerField(default=0)
 
     field_tracker = FieldTracker(fields=["name", "instance_tagline", "logo"])
 
@@ -201,7 +209,7 @@ class InviteRequest(BookWyrmModel):
         super().save(*args, **kwargs)
 
 
-def get_passowrd_reset_expiry():
+def get_password_reset_expiry():
     """give people a limited time to use the link"""
     now = timezone.now()
     return now + datetime.timedelta(days=1)
@@ -211,7 +219,7 @@ class PasswordReset(models.Model):
     """gives someone access to create an account on the instance"""
 
     code = models.CharField(max_length=32, default=new_access_code)
-    expiry = models.DateTimeField(default=get_passowrd_reset_expiry)
+    expiry = models.DateTimeField(default=get_password_reset_expiry)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     def valid(self):

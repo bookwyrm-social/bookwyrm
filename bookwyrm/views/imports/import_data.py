@@ -51,6 +51,19 @@ class Import(View):
         elif seconds:
             data["recent_avg_minutes"] = seconds / 60
 
+        site_settings = models.SiteSettings.objects.get()
+        time_range = timezone.now() - datetime.timedelta(
+            days=site_settings.import_limit_reset
+        )
+        import_jobs = models.ImportJob.objects.filter(
+            user=request.user, created_date__gte=time_range
+        )
+        # pylint: disable=consider-using-generator
+        imported_books = sum([job.successful_item_count for job in import_jobs])
+        data["import_size_limit"] = site_settings.import_size_limit
+        data["import_limit_reset"] = site_settings.import_limit_reset
+        data["allowed_imports"] = site_settings.import_size_limit - imported_books
+
         return TemplateResponse(request, "import/import.html", data)
 
     def post(self, request):

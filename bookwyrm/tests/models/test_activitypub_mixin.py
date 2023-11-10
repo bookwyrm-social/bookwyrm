@@ -119,6 +119,25 @@ class ActivitypubMixins(TestCase):
         result = models.Edition.find_existing({"openlibraryKey": "OL1234"})
         self.assertEqual(result, book)
 
+    def test_find_existing_with_id(self, *_):
+        """make sure that an "id" field won't produce a match"""
+        book = models.Edition.objects.create(title="Test edition")
+
+        result = models.Edition.find_existing({"id": book.id})
+        self.assertIsNone(result)
+
+    def test_find_existing_with_id_and_match(self, *_):
+        """make sure that an "id" field won't produce a match"""
+        book = models.Edition.objects.create(title="Test edition")
+        matching_book = models.Edition.objects.create(
+            title="Another test edition", openlibrary_key="OL1234"
+        )
+
+        result = models.Edition.find_existing(
+            {"id": book.id, "openlibraryKey": "OL1234"}
+        )
+        self.assertEqual(result, matching_book)
+
     def test_get_recipients_public_object(self, *_):
         """determines the recipients for an object's broadcast"""
         MockSelf = namedtuple("Self", ("privacy"))
@@ -245,7 +264,7 @@ class ActivitypubMixins(TestCase):
 
     # ObjectMixin
     def test_object_save_create(self, *_):
-        """should save uneventufully when broadcast is disabled"""
+        """should save uneventfully when broadcast is disabled"""
 
         class Success(Exception):
             """this means we got to the right method"""
@@ -276,7 +295,7 @@ class ActivitypubMixins(TestCase):
         ObjectModel(user=None).save()
 
     def test_object_save_update(self, *_):
-        """should save uneventufully when broadcast is disabled"""
+        """should save uneventfully when broadcast is disabled"""
 
         class Success(Exception):
             """this means we got to the right method"""
@@ -383,16 +402,16 @@ class ActivitypubMixins(TestCase):
         self.assertEqual(page_1.partOf, "http://fish.com/")
         self.assertEqual(page_1.id, "http://fish.com/?page=1")
         self.assertEqual(page_1.next, "http://fish.com/?page=2")
-        self.assertEqual(page_1.orderedItems[0]["content"], "test status 29")
-        self.assertEqual(page_1.orderedItems[1]["content"], "test status 28")
+        self.assertEqual(page_1.orderedItems[0]["content"], "<p>test status 29</p>")
+        self.assertEqual(page_1.orderedItems[1]["content"], "<p>test status 28</p>")
 
         page_2 = to_ordered_collection_page(
             models.Status.objects.all(), "http://fish.com/", page=2
         )
         self.assertEqual(page_2.partOf, "http://fish.com/")
         self.assertEqual(page_2.id, "http://fish.com/?page=2")
-        self.assertEqual(page_2.orderedItems[0]["content"], "test status 14")
-        self.assertEqual(page_2.orderedItems[-1]["content"], "test status 0")
+        self.assertEqual(page_2.orderedItems[0]["content"], "<p>test status 14</p>")
+        self.assertEqual(page_2.orderedItems[-1]["content"], "<p>test status 0</p>")
 
     def test_to_ordered_collection(self, *_):
         """convert a queryset into an ordered collection object"""
@@ -420,8 +439,8 @@ class ActivitypubMixins(TestCase):
         )
         self.assertEqual(page_2.partOf, "http://fish.com/")
         self.assertEqual(page_2.id, "http://fish.com/?page=2")
-        self.assertEqual(page_2.orderedItems[0]["content"], "test status 14")
-        self.assertEqual(page_2.orderedItems[-1]["content"], "test status 0")
+        self.assertEqual(page_2.orderedItems[0]["content"], "<p>test status 14</p>")
+        self.assertEqual(page_2.orderedItems[-1]["content"], "<p>test status 0</p>")
 
     def test_broadcast_task(self, *_):
         """Should be calling asyncio"""

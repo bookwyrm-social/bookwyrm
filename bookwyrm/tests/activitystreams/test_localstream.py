@@ -54,8 +54,8 @@ class Activitystreams(TestCase):
             user=self.local_user, content="hi", privacy="public"
         )
         users = activitystreams.LocalStream().get_audience(status)
-        self.assertTrue(self.local_user in users)
-        self.assertTrue(self.another_user in users)
+        self.assertTrue(self.local_user.id in users)
+        self.assertTrue(self.another_user.id in users)
 
     def test_localstream_get_audience_unlisted(self, *_):
         """get a list of users that should see a status"""
@@ -88,7 +88,7 @@ class Activitystreams(TestCase):
         )
         # yes book, yes audience
         audience = activitystreams.BooksStream().get_audience(status)
-        self.assertTrue(self.local_user in audience)
+        self.assertTrue(self.local_user.id in audience)
 
     def test_localstream_get_audience_books_book_field(self, *_):
         """get a list of users that should see a status"""
@@ -102,7 +102,7 @@ class Activitystreams(TestCase):
         )
         # yes book, yes audience
         audience = activitystreams.BooksStream().get_audience(status)
-        self.assertTrue(self.local_user in audience)
+        self.assertTrue(self.local_user.id in audience)
 
     def test_localstream_get_audience_books_alternate_edition(self, *_):
         """get a list of users that should see a status"""
@@ -119,7 +119,7 @@ class Activitystreams(TestCase):
         )
         # yes book, yes audience
         audience = activitystreams.BooksStream().get_audience(status)
-        self.assertTrue(self.local_user in audience)
+        self.assertTrue(self.local_user.id in audience)
 
     def test_localstream_get_audience_books_non_public(self, *_):
         """get a list of users that should see a status"""

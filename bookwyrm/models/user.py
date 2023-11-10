@@ -1,13 +1,14 @@
 """ database schema for user data """
 import re
 from urllib.parse import urlparse
+from uuid import uuid4
 
 from django.apps import apps
-from django.contrib.auth.models import AbstractUser, Group
+from django.contrib.auth.models import AbstractUser
 from django.contrib.postgres.fields import ArrayField, CICharField
-from django.core.exceptions import PermissionDenied
+from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
 from django.dispatch import receiver
-from django.db import models, transaction
+from django.db import models, transaction, IntegrityError
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from model_utils import FieldTracker
@@ -20,7 +21,7 @@ from bookwyrm.models.status import Status
 from bookwyrm.preview_images import generate_user_preview_image_task
 from bookwyrm.settings import DOMAIN, ENABLE_PREVIEW_IMAGES, USE_HTTPS, LANGUAGES
 from bookwyrm.signatures import create_key_pair
-from bookwyrm.tasks import app, LOW
+from bookwyrm.tasks import app, MISC
 from bookwyrm.utils import regex
 from .activitypub_mixin import OrderedCollectionPageMixin, ActivitypubMixin
 from .base_model import BookWyrmModel, DeactivationReason, new_access_code
@@ -53,6 +54,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
 
     username = fields.UsernameField()
     email = models.EmailField(unique=True, null=True)
+    is_deleted = models.BooleanField(default=False)
 
     key_pair = fields.OneToOneField(
         "KeyPair",
@@ -139,6 +141,19 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     manually_approves_followers = fields.BooleanField(default=False)
     theme = models.ForeignKey("Theme", null=True, blank=True, on_delete=models.SET_NULL)
     hide_follows = fields.BooleanField(default=False)
+
+    # migration fields
+
+    moved_to = fields.RemoteIdField(
+        null=True, unique=False, activitypub_field="movedTo", deduplication_field=False
+    )
+    also_known_as = fields.ManyToManyField(
+        "self",
+        symmetrical=False,
+        unique=False,
+        activitypub_field="alsoKnownAs",
+        deduplication_field=False,
+    )
 
     # options to turn features on and off
     show_goal = models.BooleanField(default=True)
@@ -314,6 +329,8 @@ class User(OrderedCollectionPageMixin, AbstractUser):
                 "schema": "http://schema.org#",
                 "PropertyValue": "schema:PropertyValue",
                 "value": "schema:value",
+                "alsoKnownAs": {"@id": "as:alsoKnownAs", "@type": "@id"},
+                "movedTo": {"@id": "as:movedTo", "@type": "@id"},
             },
         ]
         return activity_object
@@ -339,7 +356,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         # this is a new remote user, we need to set their remote server field
         if not self.local:
             super().save(*args, **kwargs)
-            transaction.on_commit(lambda: set_remote_server.delay(self.id))
+            transaction.on_commit(lambda: set_remote_server(self.id))
             return
 
         with transaction.atomic():
@@ -356,8 +373,14 @@ class User(OrderedCollectionPageMixin, AbstractUser):
 
             # make users editors by default
             try:
-                self.groups.add(Group.objects.get(name="editor"))
-            except Group.DoesNotExist:
+                group = (
+                    apps.get_model("bookwyrm.SiteSettings")
+                    .objects.get()
+                    .default_user_auth_group
+                )
+                if group:
+                    self.groups.add(group)
+            except ObjectDoesNotExist:
                 # this should only happen in tests
                 pass
 
@@ -373,8 +396,44 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         """We don't actually delete the database entry"""
         # pylint: disable=attribute-defined-outside-init
         self.is_active = False
+        self.allow_reactivation = False
+        self.is_deleted = True
+
+        self.erase_user_data()
+        self.erase_user_statuses()
+
         # skip the logic in this class's save()
-        super().save(*args, **kwargs)
+        super().save(
+            *args,
+            **kwargs,
+        )
+
+    def erase_user_data(self):
+        """Wipe a user's custom data"""
+        if not self.is_deleted:
+            raise IntegrityError(
+                "Trying to erase user data on user that is not deleted"
+            )
+
+        # mangle email address
+        self.email = f"{uuid4()}@deleted.user"
+
+        # erase data fields
+        self.avatar = ""
+        self.preview_image = ""
+        self.summary = None
+        self.name = None
+        self.favorites.set([])
+
+    def erase_user_statuses(self, broadcast=True):
+        """Wipe the data on all the user's statuses"""
+        if not self.is_deleted:
+            raise IntegrityError(
+                "Trying to erase user data on user that is not deleted"
+            )
+
+        for status in self.status_set.all():
+            status.delete(broadcast=broadcast)
 
     def deactivate(self):
         """Disable the user but allow them to reactivate"""
@@ -387,10 +446,15 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     def reactivate(self):
         """Now you want to come back, huh?"""
         # pylint: disable=attribute-defined-outside-init
+        if not self.allow_reactivation:
+            return
         self.is_active = True
         self.deactivation_reason = None
         self.allow_reactivation = False
-        super().save(broadcast=False)
+        super().save(
+            broadcast=False,
+            update_fields=["deactivation_reason", "is_active", "allow_reactivation"],
+        )
 
     @property
     def local_path(self):
@@ -459,18 +523,30 @@ class KeyPair(ActivitypubMixin, BookWyrmModel):
         return super().save(*args, **kwargs)
 
 
-@app.task(queue=LOW)
-def set_remote_server(user_id):
+@app.task(queue=MISC)
+def set_remote_server(user_id, allow_external_connections=False):
     """figure out the user's remote server in the background"""
     user = User.objects.get(id=user_id)
     actor_parts = urlparse(user.remote_id)
-    user.federated_server = get_or_create_remote_server(actor_parts.netloc)
+    federated_server = get_or_create_remote_server(
+        actor_parts.netloc, allow_external_connections=allow_external_connections
+    )
+    # if we were unable to find the server, we need to create a new entry for it
+    if not federated_server:
+        # and to do that, we will call this function asynchronously.
+        if not allow_external_connections:
+            set_remote_server.delay(user_id, allow_external_connections=True)
+        return
+
+    user.federated_server = federated_server
     user.save(broadcast=False, update_fields=["federated_server"])
     if user.bookwyrm_user and user.outbox:
         get_remote_reviews.delay(user.outbox)
 
 
-def get_or_create_remote_server(domain, refresh=False):
+def get_or_create_remote_server(
+    domain, allow_external_connections=False, refresh=False
+):
     """get info on a remote server"""
     server = FederatedServer()
     try:
@@ -479,6 +555,9 @@ def get_or_create_remote_server(domain, refresh=False):
             return server
     except FederatedServer.DoesNotExist:
         pass
+
+    if not allow_external_connections:
+        return None
 
     try:
         data = get_data(f"https://{domain}/.well-known/nodeinfo")
@@ -503,7 +582,7 @@ def get_or_create_remote_server(domain, refresh=False):
     return server
 
 
-@app.task(queue=LOW)
+@app.task(queue=MISC)
 def get_remote_reviews(outbox):
     """ingest reviews by a new remote bookwyrm user"""
     outbox_page = outbox + "?page=true&type=Review"
@@ -522,6 +601,11 @@ def preview_image(instance, *args, **kwargs):
     """create preview images when user is updated"""
     if not ENABLE_PREVIEW_IMAGES:
         return
+
+    # don't call the task for remote users
+    if not instance.local:
+        return
+
     changed_fields = instance.field_tracker.changed()
 
     if len(changed_fields) > 0:

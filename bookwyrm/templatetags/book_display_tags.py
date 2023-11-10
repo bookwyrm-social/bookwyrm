@@ -18,7 +18,7 @@ def get_book_description(book):
     if book.description:
         return book.description
     if book.parent_work:
-        # this shoud always be true
+        # this should always be true
         return book.parent_work.description
     return None
 

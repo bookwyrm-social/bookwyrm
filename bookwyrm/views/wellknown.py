@@ -9,7 +9,7 @@ from django.utils import timezone
 from django.views.decorators.http import require_GET
 
 from bookwyrm import models
-from bookwyrm.settings import DOMAIN, VERSION
+from bookwyrm.settings import DOMAIN, VERSION, LANGUAGE_CODE
 
 
 @require_GET
@@ -21,6 +21,7 @@ def webfinger(request):
 
     username = resource.replace("acct:", "")
     user = get_object_or_404(models.User, username__iexact=username)
+    href = user.moved_to if user.moved_to else user.remote_id
 
     return JsonResponse(
         {
@@ -29,7 +30,7 @@ def webfinger(request):
                 {
                     "rel": "self",
                     "type": "application/activity+json",
-                    "href": user.remote_id,
+                    "href": href,
                 },
                 {
                     "rel": "http://ostatus.org/schema/1.0/subscribe",
@@ -110,7 +111,7 @@ def instance_info(_):
                 "status_count": status_count,
             },
             "thumbnail": logo,
-            "languages": ["en"],
+            "languages": [LANGUAGE_CODE[:2]],
             "registrations": site.allow_registration,
             "approval_required": not site.allow_registration
             and site.allow_invite_requests,

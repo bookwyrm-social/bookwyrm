@@ -23,18 +23,7 @@
     <div class="column is-flex is-flex-direction-column is-4">
         <h4 class="title is-4">{% trans "Status" %}</h4>
         <div class="box is-flex-grow-1 has-text-weight-bold">
-            {% if user.is_active %}
-            <p class="notification is-success">
-                {% trans "Active" %}
-            </p>
-            {% else %}
-            <p class="notification is-warning">
-                {% trans "Inactive" %}
-                {% if user.deactivation_reason %}
-                <span class="help">({% trans user.get_deactivation_reason_display %})</span>
-                {% endif %}
-            </p>
-            {% endif %}
+            {% include "snippets/user_active_tag.html" with large=True %}
             <p class="notification">
                 {% if user.local %}
                 {% trans "Local" %}
@@ -61,7 +50,7 @@
                 <dd>
                     {{ report_count|intcomma }}
                     {% if report_count > 0 %}
-                    <a href="{% url 'settings-reports' %}?username={{ user.username }}">
+                    <a href="{% url 'settings-reports' %}?username={{ user.username }}&resolved=all">
                         {% trans "(View reports)" %}
                     </a>
                     {% endif %}

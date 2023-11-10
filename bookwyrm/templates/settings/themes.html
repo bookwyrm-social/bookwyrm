@@ -29,7 +29,7 @@
                 {% trans "Copy the theme file into the <code>bookwyrm/static/css/themes</code> directory on your server from the command line." %}
             </li>
             <li>
-                {% trans "Run <code>./bw-dev collectstatic</code>." %}
+                {% trans "Run <code>./bw-dev compile_themes</code> and <code>./bw-dev collectstatic</code>." %}
             </li>
             <li>
                 {% trans "Add the file name using the form below to make it available in the application interface." %}
@@ -107,7 +107,7 @@
                     <form method="POST" action="{% url 'settings-themes-delete' theme.id %}">
                         {% csrf_token %}
                         <button type="submit" class="button is-danger is-light is-small">
-                            <span class="icon icon-x" aria-hideen="true"></span>
+                            <span class="icon icon-x" aria-hidden="true"></span>
                             <span>{% trans "Remove theme" %}</span>
                         </button>
                     </form>

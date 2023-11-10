@@ -1,8 +1,8 @@
 """ database schema for info about authors """
 import re
+from typing import Tuple, Any
+
 from django.contrib.postgres.indexes import GinIndex
-from django.core.cache import cache
-from django.core.cache.utils import make_template_fragment_key
 from django.db import models
 
 from bookwyrm import activitypub
@@ -24,6 +24,13 @@ class Author(BookDataModel):
     gutenberg_id = fields.CharField(
         max_length=255, blank=True, null=True, deduplication_field=True
     )
+    isfdb = fields.CharField(
+        max_length=255, blank=True, null=True, deduplication_field=True
+    )
+
+    website = fields.CharField(
+        max_length=255, blank=True, null=True, deduplication_field=True
+    )
     # idk probably other keys would be useful here?
     born = fields.DateTimeField(blank=True, null=True)
     died = fields.DateTimeField(blank=True, null=True)
@@ -33,17 +40,8 @@ class Author(BookDataModel):
     )
     bio = fields.HtmlField(null=True, blank=True)
 
-    def save(self, *args, **kwargs):
-        """clear related template caches"""
-        # clear template caches
-        if self.id:
-            cache_keys = [
-                make_template_fragment_key("titleby", [book])
-                for book in self.book_set.values_list("id", flat=True)
-            ]
-            cache.delete_many(cache_keys)
-
-        # normalize isni format
+    def save(self, *args: Tuple[Any, ...], **kwargs: dict[str, Any]) -> None:
+        """normalize isni format"""
         if self.isni:
             self.isni = re.sub(r"\s", "", self.isni)
 
@@ -59,6 +57,11 @@ class Author(BookDataModel):
     def openlibrary_link(self):
         """generate the url from the openlibrary id"""
         return f"https://openlibrary.org/authors/{self.openlibrary_key}"
+
+    @property
+    def isfdb_link(self):
+        """generate the url from the isni id"""
+        return f"https://www.isfdb.org/cgi-bin/ea.cgi?{self.isfdb}"
 
     def get_remote_id(self):
         """editions and works both use "book" instead of model_name"""
