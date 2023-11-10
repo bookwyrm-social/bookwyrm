@@ -2,11 +2,13 @@
 import os
 import re
 from uuid import uuid4
+from urllib.parse import urlparse
 from django import template
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 from django.templatetags.static import static
 
+from bookwyrm.models import User
 
 register = template.Library()
 
@@ -19,7 +21,7 @@ def get_uuid(identifier):
 
 @register.simple_tag(takes_context=False)
 def join(*args):
-    """concatenate an arbitary set of values"""
+    """concatenate an arbitrary set of values"""
     return "_".join(str(a) for a in args)
 
 
@@ -27,6 +29,13 @@ def join(*args):
 def get_user_identifier(user):
     """use localname for local users, username for remote"""
     return user.localname if user.localname else user.username
+
+
+@register.filter(name="user_from_remote_id")
+def get_user_identifier_from_remote_id(remote_id):
+    """get the local user id from their remote id"""
+    user = User.objects.get(remote_id=remote_id)
+    return user if user else None
 
 
 @register.filter(name="book_title")
@@ -103,3 +112,16 @@ def get_isni(existing, author, autoescape=True):
                 f'<input type="text" name="isni-for-{author.id}" value="{isni}" hidden>'
             )
     return ""
+
+
+@register.simple_tag(takes_context=False)
+def id_to_username(user_id):
+    """given an arbitrary remote id, return the username"""
+    if user_id:
+        url = urlparse(user_id)
+        domain = url.netloc
+        parts = url.path.split("/")
+        name = parts[-1]
+        value = f"{name}@{domain}"
+
+    return value

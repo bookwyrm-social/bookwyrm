@@ -74,18 +74,20 @@
             </li>
         </ul>
         {% endif %}
-        {% if perms.edit_instance_settings %}
+        {% if perms.bookwyrm.edit_instance_settings %}
         <h2 class="menu-label">{% trans "System" %}</h2>
         <ul class="menu-list">
             <li>
                 {% url 'settings-imports' as url %}
                 <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Imports" %}</a>
             </li>
-        </ul>
-        <ul class="menu-list">
             <li>
                 {% url 'settings-celery' as url %}
                 <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Celery status" %}</a>
+            </li>
+            <li>
+                {% url 'settings-email-config' as url %}
+                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Email Configuration" %}</a>
             </li>
         </ul>
         {% endif %}
@@ -102,9 +104,20 @@
                 {% block site-subtabs %}{% endblock %}
             </li>
             <li>
+            {% if perms.bookwyrm.manage_registration %}
+                {% url 'settings-registration' as url %}
+                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Registration" %}</a>
+            {% else %}
+                {% url 'settings-registration-limited' as url %}
+                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Registration" %}</a>
+            {% endif %}
+            </li>
+            {% if perms.bookwyrm.system_administration %}
+            <li>
                 {% url 'settings-themes' as url %}
                 <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Themes" %}</a>
             </li>
+            {% endif %}
         </ul>
         {% endif %}
     </nav>

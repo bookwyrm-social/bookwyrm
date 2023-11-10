@@ -1,4 +1,5 @@
 """ track progress of goodreads imports """
+from datetime import datetime
 import math
 import re
 import dateutil.parser
@@ -19,7 +20,7 @@ from bookwyrm.models import (
     Review,
     ReviewRating,
 )
-from bookwyrm.tasks import app, LOW
+from bookwyrm.tasks import app, IMPORT_TRIGGERED, IMPORTS
 from .fields import PrivacyLevels
 
 
@@ -54,10 +55,10 @@ ImportStatuses = [
 class ImportJob(models.Model):
     """entry for a specific request for book data import"""
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user: User = models.ForeignKey(User, on_delete=models.CASCADE)
     created_date = models.DateTimeField(default=timezone.now)
     updated_date = models.DateTimeField(default=timezone.now)
-    include_reviews = models.BooleanField(default=True)
+    include_reviews: bool = models.BooleanField(default=True)
     mappings = models.JSONField()
     source = models.CharField(max_length=100)
     privacy = models.CharField(max_length=255, default="public", choices=PrivacyLevels)
@@ -74,10 +75,9 @@ class ImportJob(models.Model):
         task = start_import_task.delay(self.id)
         self.task_id = task.id
 
-        self.status = "active"
-        self.save(update_fields=["status", "task_id"])
+        self.save(update_fields=["task_id"])
 
-    def complete_job(self):
+    def complete_job(self) -> None:
         """Report that the job has completed"""
         self.status = "complete"
         self.complete = True
@@ -253,42 +253,37 @@ class ImportItem(models.Model):
     @property
     def rating(self):
         """x/5 star rating for a book"""
-        if self.normalized_data.get("rating"):
+        if not self.normalized_data.get("rating"):
+            return None
+        try:
             return float(self.normalized_data.get("rating"))
-        return None
+        except ValueError:
+            return None
+
+    def _parse_datefield(self, field, /):
+        if not (date := self.normalized_data.get(field)):
+            return None
+
+        defaults = datetime(1970, 1, 1)  # "2022-10" => "2022-10-01"
+        parsed = dateutil.parser.parse(date, default=defaults)
+
+        # Keep timezone if import already had one, else use default.
+        return parsed if timezone.is_aware(parsed) else timezone.make_aware(parsed)
 
     @property
     def date_added(self):
         """when the book was added to this dataset"""
-        if self.normalized_data.get("date_added"):
-            parsed_date_added = dateutil.parser.parse(
-                self.normalized_data.get("date_added")
-            )
-
-            if timezone.is_aware(parsed_date_added):
-                # Keep timezone if import already had one
-                return parsed_date_added
-
-            return timezone.make_aware(parsed_date_added)
-        return None
+        return self._parse_datefield("date_added")
 
     @property
     def date_started(self):
         """when the book was started"""
-        if self.normalized_data.get("date_started"):
-            return timezone.make_aware(
-                dateutil.parser.parse(self.normalized_data.get("date_started"))
-            )
-        return None
+        return self._parse_datefield("date_started")
 
     @property
     def date_read(self):
         """the date a book was completed"""
-        if self.normalized_data.get("date_finished"):
-            return timezone.make_aware(
-                dateutil.parser.parse(self.normalized_data.get("date_finished"))
-            )
-        return None
+        return self._parse_datefield("date_finished")
 
     @property
     def reads(self):
@@ -328,10 +323,12 @@ class ImportItem(models.Model):
         )
 
 
-@app.task(queue=LOW)
+@app.task(queue=IMPORTS)
 def start_import_task(job_id):
     """trigger the child tasks for each row"""
     job = ImportJob.objects.get(id=job_id)
+    job.status = "active"
+    job.save(update_fields=["status"])
     # don't start the job if it was stopped from the UI
     if job.complete:
         return
@@ -345,7 +342,7 @@ def start_import_task(job_id):
     job.save()
 
 
-@app.task(queue=LOW)
+@app.task(queue=IMPORTS)
 def import_item_task(item_id):
     """resolve a row into a book"""
     item = ImportItem.objects.get(id=item_id)
@@ -395,7 +392,7 @@ def handle_imported_book(item):
         shelved_date = item.date_added or timezone.now()
         ShelfBook(
             book=item.book, shelf=desired_shelf, user=user, shelved_date=shelved_date
-        ).save(priority=LOW)
+        ).save(priority=IMPORT_TRIGGERED)
 
     for read in item.reads:
         # check for an existing readthrough with the same dates
@@ -437,7 +434,7 @@ def handle_imported_book(item):
                     published_date=published_date_guess,
                     privacy=job.privacy,
                 )
-                review.save(software="bookwyrm", priority=LOW)
+                review.save(software="bookwyrm", priority=IMPORT_TRIGGERED)
         else:
             # just a rating
             review = ReviewRating.objects.filter(
@@ -454,7 +451,7 @@ def handle_imported_book(item):
                     published_date=published_date_guess,
                     privacy=job.privacy,
                 )
-                review.save(software="bookwyrm", priority=LOW)
+                review.save(software="bookwyrm", priority=IMPORT_TRIGGERED)
 
         # only broadcast this review to other bookwyrm instances
         item.linked_review = review

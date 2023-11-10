@@ -1,4 +1,6 @@
 """ testing activitystreams """
+import itertools
+
 from unittest.mock import patch
 from django.test import TestCase
 from bookwyrm import activitystreams, models
@@ -69,12 +71,29 @@ class Activitystreams(TestCase):
             shelf=self.local_user.shelf_set.first(),
             book=self.book,
         )
+
+        class RedisMockCounter:
+            """keep track of calls to mock redis store"""
+
+            calls = []
+
+            def bulk_add_objects_to_store(self, objs, store):
+                """keep track of bulk_add_objects_to_store calls"""
+                self.calls.append((objs, store))
+
+        redis_mock_counter = RedisMockCounter()
         with patch(
             "bookwyrm.activitystreams.BooksStream.bulk_add_objects_to_store"
         ) as redis_mock:
+            redis_mock.side_effect = redis_mock_counter.bulk_add_objects_to_store
             activitystreams.BooksStream().add_book_statuses(self.local_user, self.book)
-        args = redis_mock.call_args[0]
-        queryset = args[0]
-        self.assertEqual(queryset.count(), 1)
-        self.assertTrue(status in queryset)
-        self.assertEqual(args[1], f"{self.local_user.id}-books")
+
+        self.assertEqual(sum(map(lambda x: x[0].count(), redis_mock_counter.calls)), 1)
+        self.assertTrue(
+            status
+            in itertools.chain.from_iterable(
+                map(lambda x: x[0], redis_mock_counter.calls)
+            )
+        )
+        for call in redis_mock_counter.calls:
+            self.assertEqual(call[1], f"{self.local_user.id}-books")

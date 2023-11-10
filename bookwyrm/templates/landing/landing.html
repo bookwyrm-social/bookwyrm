@@ -10,7 +10,8 @@
 </div>
 
 {% get_current_language as LANGUAGE_CODE %}
-{% cache 60 * 60 LANGUAGE_CODE %}
+{# 1 hour cache #}
+{% cache 3600 landing LANGUAGE_CODE %}
 {% get_landing_books as books %}
 <section class="tile is-ancestor">
     <div class="tile is-vertical is-6">

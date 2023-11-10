@@ -13,21 +13,12 @@
     <link rel="search" type="application/opensearchdescription+xml" href="{% url 'opensearch' %}" title="{% blocktrans with site_name=site.name %}{{ site_name }} search{% endblocktrans %}" />
 
     <link rel="shortcut icon" type="image/x-icon" href="{% if site.favicon %}{% get_media_prefix %}{{ site.favicon }}{% else %}{% static "images/favicon.ico" %}{% endif %}">
+    <link rel="apple-touch-icon" href="{% if site.logo %}{{ media_full_url }}{{ site.logo }}{% else %}{% static "images/logo.png" %}{% endif %}">
+    <link rel="manifest" href="/manifest.json" />
 
-    {% if preview_images_enabled is True %}
-    <meta name="twitter:card" content="summary_large_image">
-    {% else %}
-    <meta name="twitter:card" content="summary">
-    {% endif %}
-    <meta name="twitter:title" content="{% if title %}{{ title }} - {% endif %}{{ site.name }}">
-    <meta name="og:title" content="{% if title %}{{ title }} - {% endif %}{{ site.name }}">
-    <meta name="twitter:description" content="{{ site.instance_tagline }}">
-    <meta name="og:description" content="{{ site.instance_tagline }}">
-
-    {% block opengraph_images %}
-        {% include 'snippets/opengraph_images.html' %}
+    {% block opengraph %}
+        {% include 'snippets/opengraph.html' %}
     {% endblock %}
-    <meta name="twitter:image:alt" content="BookWyrm Logo">
 
     {% block head_links %}{% endblock %}
 </head>
@@ -35,19 +26,21 @@
 {% block body %}
 <nav class="navbar" aria-label="main navigation">
     <div class="container">
+        {% with notification_count=request.user.unread_notification_count has_unread_mentions=request.user.has_unread_mentions %}
+        {% if not request.user.moved_to %}
         <div class="navbar-brand">
             <a class="navbar-item" href="/">
-                <img class="image logo" src="{% if site.logo_small %}{% get_media_prefix %}{{ site.logo_small }}{% else %}{% static "images/logo-small.png" %}{% endif %}" alt="{% blocktrans with site_name=site.name %}{{ site_name }} home page{% endblocktrans %}">
+                <img class="image logo" src="{% if site.logo_small %}{% get_media_prefix %}{{ site.logo_small }}{% else %}{% static "images/logo-small.png" %}{% endif %}" alt="{% blocktrans with site_name=site.name %}{{ site_name }} home page{% endblocktrans %}" loading="lazy" decoding="async">
             </a>
             <form class="navbar-item column is-align-items-start pt-5" action="{% url 'search' %}">
                 <div class="field has-addons">
                     <div class="control">
-                        {% if user.is_authenticated %}
+                        {% if request.user.is_authenticated %}
                             {% trans "Search for a book, user, or list" as search_placeholder %}
                         {% else %}
                             {% trans "Search for a book" as search_placeholder %}
                         {% endif %}
-                        <input aria-label="{{ search_placeholder }}" id="tour-search" class="input" type="text" name="q" placeholder="{{ search_placeholder }}" value="{{ query }}">
+                        <input aria-label="{{ search_placeholder }}" id="tour-search" class="input" type="text" name="q" placeholder="{{ search_placeholder }}" value="{{ query }}" spellcheck="false">
                     </div>
                     <div class="control">
                         <button class="button" type="submit">
@@ -77,9 +70,8 @@
             >
                 <i class="icon-dots-three-vertical" aria-hidden="true"></i>
 
-                {% with request.user.unread_notification_count as notification_count %}
                 <strong
-                    class="{% if not notification_count %}is-hidden {% elif request.user.has_unread_mentions %}is-danger {% else %}is-primary {% endif %} tag is-small px-1"
+                    class="{% if not notification_count %}is-hidden {% elif has_unread_mentions %}is-danger {% else %}is-primary {% endif %} tag is-small px-1"
                     data-poll-wrapper
                 >
                     <span class="is-sr-only">{% trans "Notifications" %}</span>
@@ -87,21 +79,19 @@
                         {{ notification_count }}
                     </strong>
                 </strong>
-                {% endwith %}
             </button>
         </div>
-
         <div class="navbar-menu" id="main_nav">
             <div class="navbar-start" id="tour-navbar-start">
                 {% if request.user.is_authenticated %}
-                <a href="/#feed" class="navbar-item mt-3 py-0">
-                    {% trans "Feed" %}
-                </a>
                 <a href="{% url 'lists' %}" class="navbar-item mt-3 py-0">
                     {% trans "Lists" %}
                 </a>
                 <a href="{% url 'discover' %}" class="navbar-item mt-3 py-0">
                     {% trans "Discover" %}
+                </a>
+                <a href="{% url 'user-shelves' request.user.localname %}" class="navbar-item mt-3 py-0">
+                    {% trans "Your Books" %}
                 </a>
                 {% endif %}
             </div>
@@ -118,14 +108,12 @@
                                 <span class="is-sr-only">{% trans "Notifications" %}</span>
                             </span>
                         </span>
-                        {% with request.user.unread_notification_count as notification_count %}
                         <span
-                            class="{% if not notification_count %}is-hidden {% elif request.user.has_unread_mentions %}is-danger {% endif %}tag is-medium transition-x"
+                            class="{% if not notification_count %}is-hidden {% elif has_unread_mentions %}is-danger {% endif %}tag is-medium transition-x"
                             data-poll-wrapper
                         >
                             <span data-poll="notifications">{{ notification_count }}</span>
                         </span>
-                        {% endwith %}
                     </a>
                 </div>
                 {% else %}
@@ -142,7 +130,12 @@
                                     </div>
                                     <div class="column">
                                         <label class="is-sr-only" for="id_password">{% trans "Password:" %}</label>
-                                        <input type="password" name="password" maxlength="128" class="input" required="" id="id_password" placeholder="{% trans 'password' %}">
+                                        <div class="control has-icons-right">
+                                            <input type="password" name="password" maxlength="128" class="input" required="" id="id_password" placeholder="{% trans 'password' %}">
+                                            <span data-password-icon data-for="id_password" class="icon is-right is-clickable">
+                                                <button type="button" aria-controls="id_password" class="icon-eye-blocked" title="{% trans 'Show/Hide password' %}"></button>
+                                            </span>
+                                        </div>
                                         <p class="help"><a href="{% url 'password-reset' %}">{% trans "Forgot your password?" %}</a></p>
                                     </div>
                                     <div class="column is-narrow">
@@ -164,6 +157,14 @@
                 {% endif %}
             </div>
         </div>
+        {% else %}
+        <div class="navbar-brand">
+            <a class="navbar-item" href="/">
+                <img class="image logo" src="{% if site.logo_small %}{% get_media_prefix %}{{ site.logo_small }}{% else %}{% static "images/logo-small.png" %}{% endif %}" alt="{% blocktrans with site_name=site.name %}{{ site_name }} home page{% endblocktrans %}" loading="lazy" decoding="async">
+            </a>
+        </div>
+        {% endif %}
+        {% endwith %}
     </div>
 </nav>
 
@@ -179,11 +180,15 @@
 
 <main class="section is-flex-grow-1">
     <div class="container">
-        {# almost every view needs to know the user shelves #}
-        {% with request.user.shelf_set.all as user_shelves %}
-        {% block content %}
-        {% endblock %}
-        {% endwith %}
+        {% if request.user.moved_to %}
+            {% include "moved.html" %}
+        {% else %}
+            {# almost every view needs to know the user shelves #}
+            {% with request.user.shelf_set.all as user_shelves %}
+            {% block content %}
+            {% endblock %}
+            {% endwith %}
+        {% endif %}
     </div>
 </main>
 
@@ -195,7 +200,7 @@
 {% include 'snippets/footer.html' %}
 {% endblock %}
 
-<script>
+<script nonce="{{request.csp_nonce}}">
     var csrf_token = '{{ csrf_token }}';
 </script>
 

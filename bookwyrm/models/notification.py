@@ -2,8 +2,8 @@
 from django.db import models, transaction
 from django.dispatch import receiver
 from .base_model import BookWyrmModel
-from . import Boost, Favorite, GroupMemberInvitation, ImportJob, ListItem, Report
-from . import Status, User, UserFollowRequest
+from . import Boost, Favorite, GroupMemberInvitation, ImportJob, LinkDomain
+from . import ListItem, Report, Status, User, UserFollowRequest
 
 
 class Notification(BookWyrmModel):
@@ -28,6 +28,7 @@ class Notification(BookWyrmModel):
 
     # Admin
     REPORT = "REPORT"
+    LINK_DOMAIN = "LINK_DOMAIN"
 
     # Groups
     INVITE = "INVITE"
@@ -39,11 +40,14 @@ class Notification(BookWyrmModel):
     GROUP_NAME = "GROUP_NAME"
     GROUP_DESCRIPTION = "GROUP_DESCRIPTION"
 
+    # Migrations
+    MOVE = "MOVE"
+
     # pylint: disable=line-too-long
     NotificationType = models.TextChoices(
         # there has got be a better way to do this
         "NotificationType",
-        f"{FAVORITE} {REPLY} {MENTION} {TAG} {FOLLOW} {FOLLOW_REQUEST} {BOOST} {IMPORT} {ADD} {REPORT} {INVITE} {ACCEPT} {JOIN} {LEAVE} {REMOVE} {GROUP_PRIVACY} {GROUP_NAME} {GROUP_DESCRIPTION}",
+        f"{FAVORITE} {REPLY} {MENTION} {TAG} {FOLLOW} {FOLLOW_REQUEST} {BOOST} {IMPORT} {ADD} {REPORT} {LINK_DOMAIN} {INVITE} {ACCEPT} {JOIN} {LEAVE} {REMOVE} {GROUP_PRIVACY} {GROUP_NAME} {GROUP_DESCRIPTION} {MOVE}",
     )
 
     user = models.ForeignKey("User", on_delete=models.CASCADE)
@@ -64,6 +68,7 @@ class Notification(BookWyrmModel):
         "ListItem", symmetrical=False, related_name="notifications"
     )
     related_reports = models.ManyToManyField("Report", symmetrical=False)
+    related_link_domains = models.ManyToManyField("LinkDomain", symmetrical=False)
 
     @classmethod
     @transaction.atomic
@@ -241,6 +246,26 @@ def notify_admins_on_report(sender, instance, created, *args, **kwargs):
         notification.related_reports.add(instance)
 
 
+@receiver(models.signals.post_save, sender=LinkDomain)
+@transaction.atomic
+# pylint: disable=unused-argument
+def notify_admins_on_link_domain(sender, instance, created, *args, **kwargs):
+    """a new link domain needs to be verified"""
+    if not created:
+        # otherwise you'll get a notification when you approve a domain
+        return
+
+    # moderators and superusers should be notified
+    admins = User.admins()
+    for admin in admins:
+        notification, _ = Notification.objects.get_or_create(
+            user=admin,
+            notification_type=Notification.LINK_DOMAIN,
+            read=False,
+        )
+        notification.related_link_domains.add(instance)
+
+
 @receiver(models.signals.post_save, sender=GroupMemberInvitation)
 # pylint: disable=unused-argument
 def notify_user_on_group_invite(sender, instance, *args, **kwargs):
@@ -262,7 +287,7 @@ def notify_user_on_list_item_add(sender, instance, created, *args, **kwargs):
         return
 
     list_owner = instance.book_list.user
-    # create a notification if somoene ELSE added to a local user's list
+    # create a notification if someone ELSE added to a local user's list
     if list_owner.local and list_owner != instance.user:
         # keep the related_user singular, group the items
         Notification.notify_list_item(list_owner, instance)

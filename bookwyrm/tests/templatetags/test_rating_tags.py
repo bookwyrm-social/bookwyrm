@@ -41,7 +41,7 @@ class RatingTags(TestCase):
     @patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
     def test_get_rating(self, *_):
         """privacy filtered rating. Commented versions are how it ought to work with
-        subjective ratings, which are currenly not used for performance reasons."""
+        subjective ratings, which are currently not used for performance reasons."""
         # follows-only: not included
         models.ReviewRating.objects.create(
             user=self.remote_user,
@@ -70,6 +70,12 @@ class RatingTags(TestCase):
             privacy="public",
         )
         self.assertEqual(rating_tags.get_rating(self.book, self.local_user), 5)
+
+    def test_get_rating_broken_edition(self, *_):
+        """Don't have a server error if an edition is missing a work"""
+        broken_book = models.Edition.objects.create(title="Test")
+        broken_book.parent_work = None
+        self.assertIsNone(rating_tags.get_rating(broken_book, self.local_user))
 
     def test_get_user_rating(self, *_):
         """get a user's most recent rating of a book"""

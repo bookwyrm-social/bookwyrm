@@ -1,2 +1,22 @@
 client_max_body_size 10m;
 limit_req_zone $binary_remote_addr zone=loginlimit:10m rate=1r/s;
+
+# include the cache status in the log message
+log_format cache_log '$upstream_cache_status - '
+    '$remote_addr [$time_local] '
+    '"$request" $status $body_bytes_sent '
+    '"$http_referer" "$http_user_agent" '
+    '$upstream_response_time $request_time';
+
+# Create a cache for responses from the web app
+proxy_cache_path
+    /var/cache/nginx/bookwyrm_cache
+    keys_zone=bookwyrm_cache:20m
+    loader_threshold=400
+    loader_files=400
+    max_size=400m;
+
+# use the accept header as part of the cache key
+# since activitypub endpoints have both HTML and JSON
+# on the same URI.
+proxy_cache_key $scheme$proxy_host$uri$is_args$args$http_accept;

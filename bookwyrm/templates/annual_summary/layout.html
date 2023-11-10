@@ -123,16 +123,18 @@
             </h2>
             <p class="subtitle is-5">{% trans "That’s great!" %}</p>
 
-            <p class="title is-4 is-serif">
-                {% blocktrans with pages=pages_average|intcomma %}That makes an average of {{ pages }} pages per book.{% endblocktrans %}
-            </p>
+            {% if pages > 0 %} 
+                <p class="title is-4 is-serif">
+                    {% blocktrans with pages=pages_average|intcomma %}That makes an average of {{ pages }} pages per book.{% endblocktrans %}
+                </p>
+            {% endif %}
 
             {% if no_page_number %}
                 <p class="subtitle is-6">
                     {% blocktrans trimmed count counter=no_page_number %}
-                    ({{ no_page_number }} book doesn’t have pages)
+                    (No page data was available for {{ no_page_number }} book)
                     {% plural %}
-                    ({{ no_page_number }} books don’t have pages)
+                    (No page data was available for {{ no_page_number }} books)
                     {% endblocktrans %}
                 </p>
             {% endif %}

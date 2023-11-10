@@ -1,5 +1,6 @@
 """ activitypub-aware django model fields """
 from dataclasses import MISSING
+from datetime import datetime
 import re
 from uuid import uuid4
 from urllib.parse import urljoin
@@ -7,12 +8,14 @@ from urllib.parse import urljoin
 import dateutil.parser
 from dateutil.parser import ParserError
 from django.contrib.postgres.fields import ArrayField as DjangoArrayField
+from django.contrib.postgres.fields import CICharField as DjangoCICharField
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.forms import ClearableFileInput, ImageField as DjangoImageField
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.utils.encoding import filepath_to_uri
+from markdown import markdown
 
 from bookwyrm import activitypub
 from bookwyrm.connectors import get_image
@@ -66,16 +69,20 @@ class ActivitypubFieldMixin:
             self.activitypub_field = activitypub_field
         super().__init__(*args, **kwargs)
 
-    def set_field_from_activity(self, instance, data, overwrite=True):
-        """helper function for assinging a value to the field. Returns if changed"""
+    def set_field_from_activity(
+        self, instance, data, overwrite=True, allow_external_connections=True
+    ):
+        """helper function for assigning a value to the field. Returns if changed"""
         try:
             value = getattr(data, self.get_activitypub_field())
         except AttributeError:
-            # masssively hack-y workaround for boosts
+            # massively hack-y workaround for boosts
             if self.get_activitypub_field() != "attributedTo":
                 raise
             value = getattr(data, "actor")
-        formatted = self.field_from_activity(value)
+        formatted = self.field_from_activity(
+            value, allow_external_connections=allow_external_connections
+        )
         if formatted is None or formatted is MISSING or formatted == {}:
             return False
 
@@ -115,7 +122,8 @@ class ActivitypubFieldMixin:
             return {self.activitypub_wrapper: value}
         return value
 
-    def field_from_activity(self, value):
+    # pylint: disable=unused-argument
+    def field_from_activity(self, value, allow_external_connections=True):
         """formatter to convert activitypub into a model value"""
         if value and hasattr(self, "activitypub_wrapper"):
             value = value.get(self.activitypub_wrapper)
@@ -137,7 +145,7 @@ class ActivitypubRelatedFieldMixin(ActivitypubFieldMixin):
         self.load_remote = load_remote
         super().__init__(*args, **kwargs)
 
-    def field_from_activity(self, value):
+    def field_from_activity(self, value, allow_external_connections=True):
         if not value:
             return None
 
@@ -158,7 +166,11 @@ class ActivitypubRelatedFieldMixin(ActivitypubFieldMixin):
         if not self.load_remote:
             # only look in the local database
             return related_model.find_existing_by_remote_id(value)
-        return activitypub.resolve_remote_id(value, model=related_model)
+        return activitypub.resolve_remote_id(
+            value,
+            model=related_model,
+            allow_external_connections=allow_external_connections,
+        )
 
 
 class RemoteIdField(ActivitypubFieldMixin, models.CharField):
@@ -210,7 +222,7 @@ PrivacyLevels = [
 
 
 class PrivacyField(ActivitypubFieldMixin, models.CharField):
-    """this maps to two differente activitypub fields"""
+    """this maps to two different activitypub fields"""
 
     public = "https://www.w3.org/ns/activitystreams#Public"
 
@@ -218,7 +230,9 @@ class PrivacyField(ActivitypubFieldMixin, models.CharField):
         super().__init__(*args, max_length=255, choices=PrivacyLevels, default="public")
 
     # pylint: disable=invalid-name
-    def set_field_from_activity(self, instance, data, overwrite=True):
+    def set_field_from_activity(
+        self, instance, data, overwrite=True, allow_external_connections=True
+    ):
         if not overwrite:
             return False
 
@@ -233,7 +247,11 @@ class PrivacyField(ActivitypubFieldMixin, models.CharField):
                 break
         if not user_field:
             raise ValidationError("No user field found for privacy", data)
-        user = activitypub.resolve_remote_id(getattr(data, user_field), model="User")
+        user = activitypub.resolve_remote_id(
+            getattr(data, user_field),
+            model="User",
+            allow_external_connections=allow_external_connections,
+        )
 
         if to == [self.public]:
             setattr(instance, self.name, "public")
@@ -294,13 +312,17 @@ class ManyToManyField(ActivitypubFieldMixin, models.ManyToManyField):
         self.link_only = link_only
         super().__init__(*args, **kwargs)
 
-    def set_field_from_activity(self, instance, data, overwrite=True):
+    def set_field_from_activity(
+        self, instance, data, overwrite=True, allow_external_connections=True
+    ):
         """helper function for assigning a value to the field"""
         if not overwrite and getattr(instance, self.name).exists():
             return False
 
         value = getattr(data, self.get_activitypub_field())
-        formatted = self.field_from_activity(value)
+        formatted = self.field_from_activity(
+            value, allow_external_connections=allow_external_connections
+        )
         if formatted is None or formatted is MISSING:
             return False
         getattr(instance, self.name).set(formatted)
@@ -312,7 +334,7 @@ class ManyToManyField(ActivitypubFieldMixin, models.ManyToManyField):
             return f"{value.instance.remote_id}/{self.name}"
         return [i.remote_id for i in value.all()]
 
-    def field_from_activity(self, value):
+    def field_from_activity(self, value, allow_external_connections=True):
         if value is None or value is MISSING:
             return None
         if not isinstance(value, list):
@@ -325,7 +347,11 @@ class ManyToManyField(ActivitypubFieldMixin, models.ManyToManyField):
             except ValidationError:
                 continue
             items.append(
-                activitypub.resolve_remote_id(remote_id, model=self.related_model)
+                activitypub.resolve_remote_id(
+                    remote_id,
+                    model=self.related_model,
+                    allow_external_connections=allow_external_connections,
+                )
             )
         return items
 
@@ -343,18 +369,29 @@ class TagField(ManyToManyField):
             activity_type = item.__class__.__name__
             if activity_type == "User":
                 activity_type = "Mention"
+
+            if activity_type == "Hashtag":
+                name = item.name
+            else:
+                name = f"@{getattr(item, item.name_field)}"
+
             tags.append(
                 activitypub.Link(
                     href=item.remote_id,
-                    name=getattr(item, item.name_field),
+                    name=name,
                     type=activity_type,
                 )
             )
         return tags
 
-    def field_from_activity(self, value):
+    def field_from_activity(self, value, allow_external_connections=True):
         if not isinstance(value, list):
-            return None
+            # GoToSocial DMs and single-user mentions are
+            # sent as objects, not as an array of objects
+            if isinstance(value, dict):
+                value = [value]
+            else:
+                return None
         items = []
         for link_json in value:
             link = activitypub.Link(**link_json)
@@ -364,9 +401,22 @@ class TagField(ManyToManyField):
             if tag_type != self.related_model.activity_serializer.type:
                 # tags can contain multiple types
                 continue
-            items.append(
-                activitypub.resolve_remote_id(link.href, model=self.related_model)
-            )
+
+            if tag_type == "Hashtag":
+                # we already have all data to create hashtags,
+                # no need to fetch from remote
+                item = self.related_model.activity_serializer(**link_json)
+                hashtag = item.to_model(model=self.related_model, save=True)
+                items.append(hashtag)
+            else:
+                # for other tag types we fetch them remotely
+                items.append(
+                    activitypub.resolve_remote_id(
+                        link.href,
+                        model=self.related_model,
+                        allow_external_connections=allow_external_connections,
+                    )
+                )
         return items
 
 
@@ -389,11 +439,15 @@ class ImageField(ActivitypubFieldMixin, models.ImageField):
         self.alt_field = alt_field
         super().__init__(*args, **kwargs)
 
-    # pylint: disable=arguments-differ,arguments-renamed
-    def set_field_from_activity(self, instance, data, save=True, overwrite=True):
-        """helper function for assinging a value to the field"""
+    # pylint: disable=arguments-differ,arguments-renamed,too-many-arguments
+    def set_field_from_activity(
+        self, instance, data, save=True, overwrite=True, allow_external_connections=True
+    ):
+        """helper function for assigning a value to the field"""
         value = getattr(data, self.get_activitypub_field())
-        formatted = self.field_from_activity(value)
+        formatted = self.field_from_activity(
+            value, allow_external_connections=allow_external_connections
+        )
         if formatted is None or formatted is MISSING:
             return False
 
@@ -425,14 +479,16 @@ class ImageField(ActivitypubFieldMixin, models.ImageField):
 
         return activitypub.Document(url=url, name=alt)
 
-    def field_from_activity(self, value):
+    def field_from_activity(self, value, allow_external_connections=True):
         image_slug = value
         # when it's an inline image (User avatar/icon, Book cover), it's a json
         # blob, but when it's an attached image, it's just a url
-        if hasattr(image_slug, "url"):
-            url = image_slug.url
-        elif isinstance(image_slug, str):
+        if isinstance(image_slug, str):
             url = image_slug
+        elif isinstance(image_slug, dict):
+            url = image_slug.get("url")
+        elif hasattr(image_slug, "url"):  # Serialized to Image/Document object?
+            url = image_slug.url
         else:
             return None
 
@@ -480,9 +536,11 @@ class DateTimeField(ActivitypubFieldMixin, models.DateTimeField):
             return None
         return value.isoformat()
 
-    def field_from_activity(self, value):
+    def field_from_activity(self, value, allow_external_connections=True):
+        missing_fields = datetime(1970, 1, 1)  # "2022-10" => "2022-10-01"
         try:
-            date_value = dateutil.parser.parse(value)
+            # TODO(dato): investigate `ignoretz=True` wrt bookwyrm#3028.
+            date_value = dateutil.parser.parse(value, default=missing_fields)
             try:
                 return timezone.make_aware(date_value)
             except ValueError:
@@ -494,10 +552,13 @@ class DateTimeField(ActivitypubFieldMixin, models.DateTimeField):
 class HtmlField(ActivitypubFieldMixin, models.TextField):
     """a text field for storing html"""
 
-    def field_from_activity(self, value):
+    def field_from_activity(self, value, allow_external_connections=True):
         if not value or value == MISSING:
             return None
         return clean(value)
+
+    def field_to_activity(self, value):
+        return markdown(value) if value else value
 
 
 class ArrayField(ActivitypubFieldMixin, DjangoArrayField):
@@ -509,6 +570,10 @@ class ArrayField(ActivitypubFieldMixin, DjangoArrayField):
 
 class CharField(ActivitypubFieldMixin, models.CharField):
     """activitypub-aware char field"""
+
+
+class CICharField(ActivitypubFieldMixin, DjangoCICharField):
+    """activitypub-aware cichar field"""
 
 
 class URLField(ActivitypubFieldMixin, models.URLField):

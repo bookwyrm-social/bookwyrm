@@ -41,7 +41,7 @@
         </dl>
     </div>
 
-    {% if not job.complete and show_progress %}
+    {% if job.status == "active" and show_progress %}
     <div class="box is-processing">
         <div class="block">
             <span class="icon icon-spinner is-pulled-left" aria-hidden="true"></span>

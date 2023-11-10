@@ -16,9 +16,7 @@
 @import "components/status";
 @import "components/tabs";
 @import "components/toggle";
-
 @import "overrides/bulma_overrides";
-
 @import "utilities/a11y";
 @import "utilities/alignments";
 @import "utilities/colors";
@@ -40,10 +38,12 @@ body {
     width: 12px;
     height: 12px;
 }
+
 ::-webkit-scrollbar-thumb {
     background: $scrollbar-thumb;
     border-radius: 0.5em;
 }
+
 ::-webkit-scrollbar-track {
     background: $scrollbar-track;
 }
@@ -88,7 +88,6 @@ button::-moz-focus-inner {
 
 /** Utilities not covered by Bulma
  ******************************************************************************/
-
 
 .tag.is-small {
     height: auto;
@@ -144,7 +143,6 @@ button.button-paragraph {
     vertical-align: middle;
 }
 
-
 /** States
  ******************************************************************************/
 
@@ -158,7 +156,6 @@ button.button-paragraph {
     opacity: 0.5;
     cursor: not-allowed;
 }
-
 
 /* Notifications page
  ******************************************************************************/

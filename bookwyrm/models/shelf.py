@@ -7,6 +7,7 @@ from django.utils import timezone
 
 from bookwyrm import activitypub
 from bookwyrm.settings import DOMAIN
+from bookwyrm.tasks import BROADCAST
 from .activitypub_mixin import CollectionItemMixin, OrderedCollectionMixin
 from .base_model import BookWyrmModel
 from . import fields
@@ -39,9 +40,9 @@ class Shelf(OrderedCollectionMixin, BookWyrmModel):
 
     activity_serializer = activitypub.Shelf
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, priority=BROADCAST, **kwargs):
         """set the identifier"""
-        super().save(*args, **kwargs)
+        super().save(*args, priority=priority, **kwargs)
         if not self.identifier:
             self.identifier = self.get_identifier()
             super().save(*args, **kwargs, broadcast=False)
@@ -79,7 +80,7 @@ class Shelf(OrderedCollectionMixin, BookWyrmModel):
             raise PermissionDenied()
 
     class Meta:
-        """user/shelf unqiueness"""
+        """user/shelf uniqueness"""
 
         unique_together = ("user", "identifier")
 
@@ -99,24 +100,24 @@ class ShelfBook(CollectionItemMixin, BookWyrmModel):
     activity_serializer = activitypub.ShelfItem
     collection_field = "shelf"
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, priority=BROADCAST, **kwargs):
         if not self.user:
             self.user = self.shelf.user
         if self.id and self.user.local:
             # remove all caches related to all editions of this book
             cache.delete_many(
                 [
-                    f"book-on-shelf-{book.id}-{self.shelf.id}"
+                    f"book-on-shelf-{book.id}-{self.shelf_id}"
                     for book in self.book.parent_work.editions.all()
                 ]
             )
-        super().save(*args, **kwargs)
+        super().save(*args, priority=priority, **kwargs)
 
     def delete(self, *args, **kwargs):
         if self.id and self.user.local:
             cache.delete_many(
                 [
-                    f"book-on-shelf-{book}-{self.shelf.id}"
+                    f"book-on-shelf-{book}-{self.shelf_id}"
                     for book in self.book.parent_work.editions.values_list(
                         "id", flat=True
                     )

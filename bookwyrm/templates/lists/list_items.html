@@ -46,5 +46,7 @@
             </div>
         </div>
     </div>
+    {% empty %}
+    <p class="column"><em>{% trans "No lists found." %}</em></p>
     {% endfor %}
 </div>
