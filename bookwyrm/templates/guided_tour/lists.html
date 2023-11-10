@@ -2,7 +2,7 @@
 {% load utilities %}
 {% load user_page_tags %}
 
-<script>
+<script nonce="{{request.csp_nonce}}">
 
     const tour = new Shepherd.Tour({
         exitOnEsc: true,
@@ -10,7 +10,7 @@
 
     tour.addSteps([
         {
-            text: "{% trans 'This is the lists page where you can discover book lists created by any user. A List is a collection of books, similar to a shelf.<br><br>Shelves are for organising books for yourself, whereas Lists are generally for sharing with others.' %}",
+            text: "{% trans 'This is the lists page where you can discover book lists created by any user. A List is a collection of books, similar to a shelf.' %}<br><br>{% trans 'Shelves are for organising books for yourself, whereas Lists are generally for sharing with others.' %}",
             title: "{% trans 'Lists' %}",
             buttons: [
                 {
@@ -31,7 +31,7 @@
             ],
         },
         {
-            text: "{% trans 'Let\'s see how to create a new list.<p class=\'notification is-warning is-light mt-3\'>Click the <strong>Create List</strong> button, then <strong>Next</strong> to continue the tour</p>' %}",
+            text: `{% trans "Let's see how to create a new list." %}<p class="notification is-warning is-light mt-3">{% trans "Click the <strong>Create List</strong> button, then <strong>Next</strong> to continue the tour" %}</p>`,
             title: "{% trans 'Creating a new list' %}",
             attachTo: {
                 element: "#tour-create-list",

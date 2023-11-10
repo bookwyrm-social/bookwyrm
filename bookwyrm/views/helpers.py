@@ -16,6 +16,7 @@ from bookwyrm import activitypub, models, settings
 from bookwyrm.connectors import ConnectorException, get_data
 from bookwyrm.status import create_generated_note
 from bookwyrm.utils import regex
+from bookwyrm.utils.validate import validate_url_domain
 
 
 # pylint: disable=unnecessary-pass
@@ -59,7 +60,7 @@ def is_bookwyrm_request(request):
     return True
 
 
-def handle_remote_webfinger(query):
+def handle_remote_webfinger(query, unknown_only=False):
     """webfingerin' other servers"""
     user = None
 
@@ -75,6 +76,11 @@ def handle_remote_webfinger(query):
 
     try:
         user = models.User.objects.get(username__iexact=query)
+
+        if unknown_only:
+            # In this case, we only want to know about previously undiscovered users
+            # So the fact that we found a match in the database means no results
+            return None
     except models.User.DoesNotExist:
         url = f"https://{domain}/.well-known/webfinger?resource=acct:{query}"
         try:
@@ -214,3 +220,15 @@ def maybe_redirect_local_path(request, model):
         new_path = f"{model.local_path}?{request.GET.urlencode()}"
 
     return redirect(new_path, permanent=True)
+
+
+def redirect_to_referer(request, *args, **kwargs):
+    """Redirect to the referrer, if it's in our domain, with get params"""
+    # make sure the refer is part of this instance
+    validated = validate_url_domain(request.META.get("HTTP_REFERER"))
+
+    if validated:
+        return redirect(validated)
+
+    # if not, use the args passed you'd normally pass to redirect()
+    return redirect(*args or "/", **kwargs)

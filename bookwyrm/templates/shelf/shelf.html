@@ -8,8 +8,8 @@
 {% include 'user/books_header.html' with shelf=shelf %}
 {% endblock %}
 
-{% block opengraph_images %}
-    {% include 'snippets/opengraph_images.html' with image=user.preview_image %}
+{% block opengraph %}
+    {% include 'snippets/opengraph.html' with image=user.preview_image %}
 {% endblock %}
 
 {% block content %}
@@ -18,7 +18,22 @@
         {% include 'user/books_header.html' %}
     </h1>
 </header>
-
+{% if user.moved_to %}
+<div class="container my-6">
+    <div class="notification is-info has-text-centered">
+        <p>
+            {% trans "You have have moved to" %}
+            <a href="{{user.moved_to}}">{% id_to_username user.moved_to %}</a>
+        </p>
+        <p> {% trans "You can undo this move to restore full functionality, but some followers may have already unfollowed this account." %}</p>
+        <form name="remove-alias" action="{% url 'prefs-unmove' %}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="remote_id" id="remote_id" value="{{user.moved_to}}">
+            <button type="submit" class="button is-small">{% trans "Undo move" %}</button>
+        </form>
+    </div>
+</div>
+{% else %}
 <nav class="breadcrumb subtitle" aria-label="breadcrumbs">
     <ul>
         <li><a href="{% url 'user-feed' user|username %}">{% trans "User profile" %}</a></li>
@@ -134,7 +149,7 @@
     {% endif %}
 </div>
 
-<div class="block">
+<div class="block mt-2">
     {% include 'shelf/edit_shelf_form.html' with controls_text="edit_shelf_form" %}
 </div>
 
@@ -145,7 +160,7 @@
             <thead>
                 <tr>
                     <th>{% trans "Cover"%}</th>
-                    <th>{% trans "Title"  as text %}{% include 'snippets/table-sort-header.html' with field="title" sort=sort text=text %}</th>
+                    <th>{% trans "Title"  as text %}{% include 'snippets/table-sort-header.html' with field="sort_title" sort=sort text=text %}</th>
                     <th>{% trans "Author"  as text %}{% include 'snippets/table-sort-header.html' with field="author" sort=sort text=text %}</th>
                     {% if request.user.is_authenticated %}
                         {% if is_self %}
@@ -215,6 +230,7 @@
 <div>
     {% include 'snippets/pagination.html' with page=books path=request.path %}
 </div>
+{% endif %}
 {% endblock %}
 
 {% block scripts %}

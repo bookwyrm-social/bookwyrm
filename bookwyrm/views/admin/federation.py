@@ -86,7 +86,7 @@ class AddFederatedServer(View):
             return TemplateResponse(
                 request, "settings/federation/edit_instance.html", data
             )
-        server = form.save()
+        server = form.save(request)
         return redirect("settings-federated-server", server.id)
 
 
@@ -156,7 +156,7 @@ class FederatedServer(View):
         """update note"""
         server = get_object_or_404(models.FederatedServer, id=server)
         server.notes = request.POST.get("notes")
-        server.save()
+        server.save(request)
         return redirect("settings-federated-server", server.id)
 
 

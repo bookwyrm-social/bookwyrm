@@ -68,7 +68,7 @@ class AnnualSummary(View):
         book_list_by_pages = read_books_in_year.filter(pages__gte=0).order_by("pages")
 
         # books with no pages
-        no_page_list = len(read_books_in_year.filter(pages__exact=None))
+        no_page_list = read_books_in_year.filter(pages__exact=None).count()
 
         # rating stats queries
         ratings = (
@@ -95,13 +95,13 @@ class AnnualSummary(View):
             "book_pages_lowest": book_list_by_pages.first(),
             "book_pages_highest": book_list_by_pages.last(),
             "no_page_number": no_page_list,
-            "ratings_total": len(ratings),
+            "ratings_total": ratings.count(),
             "rating_average": round(
                 ratings_stats["rating__avg"] if ratings_stats["rating__avg"] else 0, 2
             ),
             "book_rating_highest": ratings.order_by("-rating").first(),
             "best_ratings_books_ids": [
-                review.book.id for review in ratings.filter(rating=5)
+                review.book_id for review in ratings.filter(rating=5)
             ],
             "paginated_years": paginated_years,
             "goal_status": goal_status,
@@ -120,7 +120,7 @@ def personal_annual_summary(request, year):
 @login_required
 @require_POST
 def summary_add_key(request):
-    """add summary key"""
+    """Create a shareable token for this annual review year"""
 
     year = request.POST["year"]
     user = request.user
@@ -134,7 +134,7 @@ def summary_add_key(request):
     else:
         user.summary_keys[year] = new_key
 
-    user.save()
+    user.save(update_fields=["summary_keys"], broadcast=False)
 
     response = redirect("annual-summary", user.localname, year)
     response["Location"] += f"?key={str(new_key)}"
@@ -144,7 +144,7 @@ def summary_add_key(request):
 @login_required
 @require_POST
 def summary_revoke_key(request):
-    """revoke summary key"""
+    """No longer sharing the annual review"""
 
     year = request.POST["year"]
     user = request.user
@@ -152,7 +152,7 @@ def summary_revoke_key(request):
     if user.summary_keys and year in user.summary_keys:
         user.summary_keys.pop(year)
 
-    user.save()
+    user.save(update_fields=["summary_keys"], broadcast=False)
 
     return redirect("annual-summary", user.localname, year)
 

@@ -1,0 +1,101 @@
+{% extends 'preferences/layout.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Two Factor Authentication" %}{% endblock %}
+
+{% block header %}
+{% trans "Two Factor Authentication" %}
+{% endblock %}
+
+{% block panel %}
+<div class="block">
+    {% if success %}
+    <div class="notification is-success is-light">
+        <span class="icon icon-check" aria-hidden="true"></span>
+        <span>
+            {% trans "Successfully updated 2FA settings" %}
+        </span>
+    </div>
+    {% endif %}
+    {% if backup_codes %}
+    <div class="block">
+        <h3>Backup codes</h3>
+        <div class="block">
+            <p>{% trans "Write down or copy and paste these codes somewhere safe." %}</p>
+            <p>{% trans "You must use them in order, and they will not be displayed again." %}</p>
+        </div>
+        <ul class="content" style="list-style: none;">
+            {% for code in backup_codes %}
+            <li>{{ code }}</li>
+            {% endfor%}
+        </ul>
+    </div>
+    {% elif request.user.two_factor_auth %}
+    <div class="block">
+        <p>{% trans "Two Factor Authentication is active on your account." %}</p>
+        <a class="button is-danger" href="{% url 'disable-2fa' %}">{% trans "Disable 2FA" %}</a>
+    </div>
+    <div class="block">
+        <p>{% trans "You can generate backup codes to use in case you do not have access to your authentication app. If you generate new codes, any backup codes previously generated will no longer work." %}</p>
+        <a class="button" href="{% url 'generate-2fa-backup-codes' %}">{% trans "Generate backup codes" %}</a>
+    </div>
+    {% elif password_confirmed %}
+    <form name="confirm-2fa" action="{% url 'conf-2fa' %}" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+        <p>{% trans "Scan the QR code with your authentication app and then enter the code from  your app below to confirm your app is set up." %}</p>
+        <div class="columns">
+            <section class="column">
+                <figure class="m-4" id="qrcode">{{ qrcode | safe }}</figure>
+                <details class="details-panel box">
+                    <summary>
+                        <span role="heading" aria-level="3" class="title is-6">
+                            {% trans "Use setup key" %}
+                            <span class="details-close icon icon-x" aria-hidden="true"></span>
+                        </span>
+                    </summary>
+                    <dl class="block">
+                        <dt class="has-text-weight-bold mr-5 is-pulled-left">
+                            {% trans "Account name:" %}
+                        </dt>
+                        <dd>
+                            <code>{{ user.username }}</code>
+                        </dd>
+
+                        <dt class="has-text-weight-bold mr-5 is-pulled-left">
+                            {% trans "Code:" %}
+                        </dt>
+                        <dd>
+                            <code>{{ code | safe }}</code>
+                        </dd>
+                    </dl>
+                </details>
+                <div class="field">
+                    <label class="label" for="id_otp">{% trans "Enter the code from your app:" %}</label>
+                    {{ form.otp }}
+                    {% include 'snippets/form_errors.html' with errors_list=form.otp.errors id="desc_otp" %}
+                </div>
+                <button class="button is-primary" type="submit">{% trans "Confirm" %}</button>
+            </section>
+        </div>
+    </form>
+    {% else %}
+    <p>
+        {% trans "You can make your account more secure by using Two Factor Authentication (2FA). This will require you to enter a one-time code using a phone app like <em>Authy</em>, <em>Google Authenticator</em> or <em>Microsoft Authenticator</em> each time you log in." %}
+    </p>
+    <p> {% trans "Confirm your password to begin setting up 2FA." %}</p>
+    <div class="columns">
+        <div class="column is-one-third">
+            <form name="confirm-password" action="{% url 'prefs-2fa' %}" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+            <div class="field">
+                <label class="label" for="id_password">{% trans "Password:" %}</label>
+                {{ form.password }}
+                {% include 'snippets/form_errors.html' with errors_list=form.password.errors id="desc_password" %}
+            </div>
+            <button class="button is-primary" type="submit">{% trans "Set up 2FA" %}</button>
+        </form>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

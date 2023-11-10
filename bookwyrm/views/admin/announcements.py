@@ -5,6 +5,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
 from django.views import View
+from django.views.decorators.http import require_POST
 
 from bookwyrm import forms, models
 from bookwyrm.settings import PAGE_LENGTH
@@ -102,12 +103,13 @@ class EditAnnouncement(View):
             return TemplateResponse(
                 request, "settings/announcements/edit_announcement.html", data
             )
-        announcement = form.save()
+        announcement = form.save(request)
         return redirect("settings-announcements", announcement.id)
 
 
 @login_required
 @permission_required("bookwyrm.edit_instance_settings", raise_exception=True)
+@require_POST
 def delete_announcement(_, announcement_id):
     """delete announcement"""
     announcement = get_object_or_404(models.Announcement, id=announcement_id)

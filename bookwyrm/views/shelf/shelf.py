@@ -113,7 +113,6 @@ class Shelf(View):
         """edit a shelf"""
         user = get_user_from_username(request.user, username)
         shelf = get_object_or_404(user.shelf_set, identifier=shelf_identifier)
-        shelf.raise_not_editable(request.user)
 
         # you can't change the name of the default shelves
         if not shelf.editable and request.POST.get("name") != shelf.name:
@@ -122,14 +121,14 @@ class Shelf(View):
         form = forms.ShelfForm(request.POST, instance=shelf)
         if not form.is_valid():
             return redirect(shelf.local_path)
-        shelf = form.save()
+        shelf = form.save(request)
         return redirect(shelf.local_path)
 
 
 def sort_books(books, sort):
     """Books in shelf sorting"""
     sort_fields = [
-        "title",
+        "sort_title",
         "author",
         "shelved_date",
         "start_date",

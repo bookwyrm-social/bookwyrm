@@ -8,7 +8,6 @@ from bookwyrm import models
 from bookwyrm.models.fields import ClearableFileInputWithWarning
 from .custom_form import CustomForm
 
-
 # pylint: disable=missing-class-docstring
 class EditUserForm(CustomForm):
     class Meta:
@@ -71,6 +70,22 @@ class DeleteUserForm(CustomForm):
         fields = ["password"]
 
 
+class MoveUserForm(CustomForm):
+    target = forms.CharField(widget=forms.TextInput)
+
+    class Meta:
+        model = models.User
+        fields = ["password"]
+
+
+class AliasUserForm(CustomForm):
+    username = forms.CharField(widget=forms.TextInput)
+
+    class Meta:
+        model = models.User
+        fields = ["password"]
+
+
 class ChangePasswordForm(CustomForm):
     current_password = forms.CharField(widget=forms.PasswordInput)
     confirm_password = forms.CharField(widget=forms.PasswordInput)
@@ -99,3 +114,21 @@ class ChangePasswordForm(CustomForm):
             validate_password(new_password)
         except ValidationError as err:
             self.add_error("password", err)
+
+
+class ConfirmPasswordForm(CustomForm):
+    password = forms.CharField(widget=forms.PasswordInput)
+
+    class Meta:
+        model = models.User
+        fields = ["password"]
+        widgets = {
+            "password": forms.PasswordInput(),
+        }
+
+    def clean(self):
+        """Make sure password is correct"""
+        password = self.data.get("password")
+
+        if not self.instance.check_password(password):
+            self.add_error("password", _("Incorrect Password"))

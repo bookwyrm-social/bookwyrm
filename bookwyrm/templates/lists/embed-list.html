@@ -5,7 +5,9 @@
 {% load group_tags %}
 {% load markdown %}
 
-{% block title %}{% blocktrans with list_name=list.name owner=list.user.display_name %}{{ list_name }}, a list by {{owner}}{% endblocktrans %}{% endblock title %}
+{% block title %}{% blocktrans trimmed with list_name=list.name owner=list.user.display_name %}
+{{ list_name }}, a list by {{owner}}
+{% endblocktrans %}{% endblock title %}
 
 {% block content %}
 <div class="mt-3">

@@ -12,7 +12,7 @@ from bookwyrm import forms, models
 # pylint: disable= no-self-use
 @method_decorator(login_required, name="dispatch")
 @method_decorator(
-    permission_required("bookwyrm.edit_instance_settings", raise_exception=True),
+    permission_required("bookwyrm.system_administration", raise_exception=True),
     name="dispatch",
 )
 class Themes(View):
@@ -24,9 +24,9 @@ class Themes(View):
 
     def post(self, request):
         """edit the site settings"""
-        form = forms.ThemeForm(request.POST, request.FILES)
+        form = forms.ThemeForm(request.POST)
         if form.is_valid():
-            form.save()
+            form.save(request)
 
         data = get_view_data()
 
@@ -46,7 +46,7 @@ def get_view_data():
 
 
 @require_POST
-@permission_required("bookwyrm.edit_instance_settings", raise_exception=True)
+@permission_required("bookwyrm.system_administration", raise_exception=True)
 # pylint: disable=unused-argument
 def delete_theme(request, theme_id):
     """Remove a theme"""

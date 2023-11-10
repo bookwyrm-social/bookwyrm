@@ -36,8 +36,7 @@ class Lists(View):
         form = forms.ListForm(request.POST)
         if not form.is_valid():
             return redirect("lists")
-        book_list = form.save(commit=False)
-        book_list.raise_not_editable(request.user)
+        book_list = form.save(request, commit=False)
 
         # list should not have a group if it is not group curated
         if not book_list.curation == "group":

@@ -131,6 +131,10 @@
                     {{ form.default_post_privacy }}
                 </div>
             </div>
+            {% url 'user-shelves' request.user.localname as path %}
+            <p class="notification is-light">
+                {% blocktrans %}Looking for shelf privacy? You can set a separate visibility level for each of your shelves. Go to <a href="{{ path }}">Your Books</a>, pick a shelf from the tab bar, and click "Edit shelf."{% endblocktrans %}
+            </p>
         </div>
     </section>
     <div class="field"><button class="button is-primary" type="submit">{% trans "Save" %}</button></div>

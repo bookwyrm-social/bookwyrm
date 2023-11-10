@@ -1,6 +1,7 @@
 """ test for app action functionality """
 from unittest.mock import patch
 from django.contrib.auth.models import AnonymousUser
+from django.http import Http404
 from django.template.response import TemplateResponse
 from django.test import TestCase
 from django.test.client import RequestFactory
@@ -13,7 +14,7 @@ from bookwyrm.tests.validate_html import validate_html
 class LandingViews(TestCase):
     """pages you land on without really trying"""
 
-    def setUp(self):
+    def setUp(self):  # pylint: disable=invalid-name
         """we need basic test data and mocks"""
         self.factory = RequestFactory()
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
@@ -70,6 +71,28 @@ class LandingViews(TestCase):
     def test_privacy_page(self):
         """there are so many views, this just makes sure it LOADS"""
         view = views.privacy
+        request = self.factory.get("")
+        request.user = self.local_user
+        result = view(request)
+        self.assertIsInstance(result, TemplateResponse)
+        validate_html(result.render())
+        self.assertEqual(result.status_code, 200)
+
+    def test_impressum_page_off(self):
+        """there are so many views, this just makes sure it LOADS"""
+        view = views.impressum
+        request = self.factory.get("")
+        request.user = self.local_user
+        with self.assertRaises(Http404):
+            view(request)
+
+    def test_impressum_page_on(self):
+        """there are so many views, this just makes sure it LOADS"""
+        site = models.SiteSettings.objects.get()
+        site.show_impressum = True
+        site.save()
+
+        view = views.impressum
         request = self.factory.get("")
         request.user = self.local_user
         result = view(request)

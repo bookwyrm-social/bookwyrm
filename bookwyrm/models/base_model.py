@@ -17,6 +17,7 @@ from .fields import RemoteIdField
 DeactivationReason = [
     ("pending", _("Pending")),
     ("self_deletion", _("Self deletion")),
+    ("self_deactivation", _("Self deactivation")),
     ("moderator_suspension", _("Moderator suspension")),
     ("moderator_deletion", _("Moderator deletion")),
     ("domain_block", _("Domain block")),

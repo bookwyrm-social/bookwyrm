@@ -33,10 +33,10 @@ def remove_editions():
 
 
 class Command(BaseCommand):
-    """dedplucate allllll the book data models"""
+    """deduplicate allllll the book data models"""
 
     help = "merges duplicate book data"
     # pylint: disable=no-self-use,unused-argument
     def handle(self, *args, **options):
-        """run deudplications"""
+        """run deduplications"""
         remove_editions()

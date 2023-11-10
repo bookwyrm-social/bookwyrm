@@ -1,14 +1,16 @@
 """ activitypub model functionality """
+import asyncio
 from base64 import b64encode
 from collections import namedtuple
 from functools import reduce
 import json
 import operator
 import logging
+from typing import Any, Optional
 from uuid import uuid4
-import requests
-from requests.exceptions import RequestException
+from typing_extensions import Self
 
+import aiohttp
 from Crypto.PublicKey import RSA
 from Crypto.Signature import pkcs1_15
 from Crypto.Hash import SHA256
@@ -20,11 +22,11 @@ from django.utils.http import http_date
 from bookwyrm import activitypub
 from bookwyrm.settings import USER_AGENT, PAGE_LENGTH
 from bookwyrm.signatures import make_signature, make_digest
-from bookwyrm.tasks import app, MEDIUM
+from bookwyrm.tasks import app, BROADCAST
 from bookwyrm.models.fields import ImageField, ManyToManyField
 
 logger = logging.getLogger(__name__)
-# I tried to separate these classes into mutliple files but I kept getting
+# I tried to separate these classes into multiple files but I kept getting
 # circular import errors so I gave up. I'm sure it could be done though!
 
 PropertyField = namedtuple("PropertyField", ("set_activity_from_field"))
@@ -84,13 +86,13 @@ class ActivitypubMixin:
         super().__init__(*args, **kwargs)
 
     @classmethod
-    def find_existing_by_remote_id(cls, remote_id):
+    def find_existing_by_remote_id(cls, remote_id: str) -> Self:
         """look up a remote id in the db"""
         return cls.find_existing({"id": remote_id})
 
     @classmethod
     def find_existing(cls, data):
-        """compare data to fields that can be used for deduplation.
+        """compare data to fields that can be used for deduplication.
         This always includes remote_id, but can also be unique identifiers
         like an isbn for an edition"""
         filters = []
@@ -125,7 +127,7 @@ class ActivitypubMixin:
         # there OUGHT to be only one match
         return match.first()
 
-    def broadcast(self, activity, sender, software=None, queue=MEDIUM):
+    def broadcast(self, activity, sender, software=None, queue=BROADCAST):
         """send out an activity"""
         broadcast_task.apply_async(
             args=(
@@ -136,7 +138,7 @@ class ActivitypubMixin:
             queue=queue,
         )
 
-    def get_recipients(self, software=None):
+    def get_recipients(self, software=None) -> list[str]:
         """figure out which inbox urls to post to"""
         # first we have to figure out who should receive this activity
         privacy = self.privacy if hasattr(self, "privacy") else "public"
@@ -197,7 +199,14 @@ class ActivitypubMixin:
 class ObjectMixin(ActivitypubMixin):
     """add this mixin for object models that are AP serializable"""
 
-    def save(self, *args, created=None, software=None, priority=MEDIUM, **kwargs):
+    def save(
+        self,
+        *args: Any,
+        created: Optional[bool] = None,
+        software: Any = None,
+        priority: str = BROADCAST,
+        **kwargs: Any,
+    ) -> None:
         """broadcast created/updated/deleted objects as appropriate"""
         broadcast = kwargs.get("broadcast", True)
         # this bonus kwarg would cause an error in the base save method
@@ -233,8 +242,8 @@ class ObjectMixin(ActivitypubMixin):
                 activity = self.to_create_activity(user)
                 self.broadcast(activity, user, software=software, queue=priority)
             except AttributeError:
-                # janky as heck, this catches the mutliple inheritence chain
-                # for boosts and ignores this auxilliary broadcast
+                # janky as heck, this catches the multiple inheritance chain
+                # for boosts and ignores this auxiliary broadcast
                 return
             return
 
@@ -310,7 +319,7 @@ class OrderedCollectionPageMixin(ObjectMixin):
 
     @property
     def collection_remote_id(self):
-        """this can be overriden if there's a special remote id, ie outbox"""
+        """this can be overridden if there's a special remote id, ie outbox"""
         return self.remote_id
 
     def to_ordered_collection(
@@ -338,7 +347,7 @@ class OrderedCollectionPageMixin(ObjectMixin):
             activity["id"] = remote_id
 
         paginated = Paginator(queryset, PAGE_LENGTH)
-        # add computed fields specific to orderd collections
+        # add computed fields specific to ordered collections
         activity["totalItems"] = paginated.count
         activity["first"] = f"{remote_id}?page=1"
         activity["last"] = f"{remote_id}?page={paginated.num_pages}"
@@ -378,7 +387,7 @@ class CollectionItemMixin(ActivitypubMixin):
 
     activity_serializer = activitypub.CollectionItem
 
-    def broadcast(self, activity, sender, software="bookwyrm", queue=MEDIUM):
+    def broadcast(self, activity, sender, software="bookwyrm", queue=BROADCAST):
         """only send book collection updates to other bookwyrm instances"""
         super().broadcast(activity, sender, software=software, queue=queue)
 
@@ -399,12 +408,12 @@ class CollectionItemMixin(ActivitypubMixin):
             return []
         return [collection_field.user]
 
-    def save(self, *args, broadcast=True, priority=MEDIUM, **kwargs):
+    def save(self, *args, broadcast=True, priority=BROADCAST, **kwargs):
         """broadcast updated"""
         # first off, we want to save normally no matter what
         super().save(*args, **kwargs)
 
-        # list items can be updateda, normally you would only broadcast on created
+        # list items can be updated, normally you would only broadcast on created
         if not broadcast or not self.user.local:
             return
 
@@ -443,7 +452,7 @@ class CollectionItemMixin(ActivitypubMixin):
 class ActivityMixin(ActivitypubMixin):
     """add this mixin for models that are AP serializable"""
 
-    def save(self, *args, broadcast=True, priority=MEDIUM, **kwargs):
+    def save(self, *args, broadcast=True, priority=BROADCAST, **kwargs):
         """broadcast activity"""
         super().save(*args, **kwargs)
         user = self.user if hasattr(self, "user") else self.user_subject
@@ -505,20 +514,32 @@ def unfurl_related_field(related_field, sort_field=None):
     return related_field.remote_id
 
 
-@app.task(queue=MEDIUM)
-def broadcast_task(sender_id, activity, recipients):
+@app.task(queue=BROADCAST)
+def broadcast_task(sender_id: int, activity: str, recipients: list[str]):
     """the celery task for broadcast"""
     user_model = apps.get_model("bookwyrm.User", require_ready=True)
-    sender = user_model.objects.get(id=sender_id)
-    for recipient in recipients:
-        try:
-            sign_and_send(sender, activity, recipient)
-        except RequestException:
-            pass
+    sender = user_model.objects.select_related("key_pair").get(id=sender_id)
+    asyncio.run(async_broadcast(recipients, sender, activity))
 
 
-def sign_and_send(sender, data, destination):
-    """crpyto whatever and http junk"""
+async def async_broadcast(recipients: list[str], sender, data: str):
+    """Send all the broadcasts simultaneously"""
+    timeout = aiohttp.ClientTimeout(total=10)
+    async with aiohttp.ClientSession(timeout=timeout) as session:
+        tasks = []
+        for recipient in recipients:
+            tasks.append(
+                asyncio.ensure_future(sign_and_send(session, sender, data, recipient))
+            )
+
+        results = await asyncio.gather(*tasks)
+        return results
+
+
+async def sign_and_send(
+    session: aiohttp.ClientSession, sender, data: str, destination: str, **kwargs
+):
+    """Sign the messages and send them in an asynchronous bundle"""
     now = http_date()
 
     if not sender.key_pair.private_key:
@@ -526,28 +547,49 @@ def sign_and_send(sender, data, destination):
         raise ValueError("No private key found for sender")
 
     digest = make_digest(data)
-
-    response = requests.post(
+    signature = make_signature(
+        "post",
+        sender,
         destination,
-        data=data,
-        headers={
-            "Date": now,
-            "Digest": digest,
-            "Signature": make_signature(sender, destination, now, digest),
-            "Content-Type": "application/activity+json; charset=utf-8",
-            "User-Agent": USER_AGENT,
-        },
+        now,
+        digest=digest,
+        use_legacy_key=kwargs.get("use_legacy_key"),
     )
-    if not response.ok:
-        response.raise_for_status()
-    return response
+
+    headers = {
+        "Date": now,
+        "Digest": digest,
+        "Signature": signature,
+        "Content-Type": "application/activity+json; charset=utf-8",
+        "User-Agent": USER_AGENT,
+    }
+
+    try:
+        async with session.post(destination, data=data, headers=headers) as response:
+            if not response.ok:
+                logger.exception(
+                    "Failed to send broadcast to %s: %s", destination, response.reason
+                )
+                if kwargs.get("use_legacy_key") is not True:
+                    logger.info("Trying again with legacy keyId header value")
+                    asyncio.ensure_future(
+                        sign_and_send(
+                            session, sender, data, destination, use_legacy_key=True
+                        )
+                    )
+
+            return response
+    except asyncio.TimeoutError:
+        logger.info("Connection timed out for url: %s", destination)
+    except aiohttp.ClientError as err:
+        logger.exception(err)
 
 
 # pylint: disable=unused-argument
 def to_ordered_collection_page(
     queryset, remote_id, id_only=False, page=1, pure=False, **kwargs
 ):
-    """serialize and pagiante a queryset"""
+    """serialize and paginate a queryset"""
     paginated = Paginator(queryset, PAGE_LENGTH)
 
     activity_page = paginated.get_page(page)

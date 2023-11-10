@@ -16,10 +16,9 @@ class ListItem(View):
     def post(self, request, list_id, list_item):
         """Edit a list item's notes"""
         list_item = get_object_or_404(models.ListItem, id=list_item, book_list=list_id)
-        list_item.raise_not_editable(request.user)
         form = forms.ListItemForm(request.POST, instance=list_item)
         if form.is_valid():
-            item = form.save(commit=False)
+            item = form.save(request, commit=False)
             item.notes = to_markdown(item.notes)
             item.save()
         else:

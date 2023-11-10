@@ -1,6 +1,6 @@
 {% load i18n %}
 
-<script>
+<script nonce="{{request.csp_nonce}}">
     const tour = new Shepherd.Tour({
         exitOnEsc: true,
     });
@@ -98,7 +98,7 @@
             ],
         },
         {
-            text: "{% trans 'Now that we\'ve explored book shelves, let\'s take a look at a related concept: book lists!<p class=\'notification is-warning is-light mt-3\'>Click on the <strong>Lists</strong> link here to continue the tour.' %}",
+            text: `{% trans "Now that we've explored book shelves, let's take a look at a related concept: book lists!" %}<p class="notification is-warning is-light mt-3">{% trans "Click on the <strong>Lists</strong> link here to continue the tour." %}`,
             title: "{% trans 'Lists' %}",
             attachTo: {
                 element: () => {

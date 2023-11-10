@@ -15,6 +15,7 @@ from bookwyrm.tests.validate_html import validate_html
 class LinkViews(TestCase):
     """books books books"""
 
+    # pylint: disable=invalid-name
     def setUp(self):
         """we need basic test data and mocks"""
         self.factory = RequestFactory()

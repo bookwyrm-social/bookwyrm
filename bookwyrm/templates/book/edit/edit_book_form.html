@@ -10,7 +10,9 @@
 {% csrf_token %}
 
 <input type="hidden" name="last_edited_by" value="{{ request.user.id }}">
+{% if book.parent_work.id or form.parent_work %}
 <input type="hidden" name="parent_work" value="{% firstof book.parent_work.id form.parent_work %}">
+{% endif %}
 
 <div class="columns">
     <div class="column is-half">
@@ -26,6 +28,15 @@
                     <input type="text" name="title" value="{{ form.title.value|default:'' }}" maxlength="255" class="input" required="" id="id_title" aria-describedby="desc_title">
 
                     {% include 'snippets/form_errors.html' with errors_list=form.title.errors id="desc_title" %}
+                </div>
+
+                <div class="field">
+                    <label class="label" for="id_sort_title">
+                        {% trans "Sort Title:" %}
+                    </label>
+                    <input type="text" name="sort_title" value="{{ form.sort_title.value|default:'' }}" maxlength="255" class="input" required="" id="id_sort_title" aria-describedby="desc_sort_title">
+
+                    {% include 'snippets/form_errors.html' with errors_list=form.sort_title.errors id="desc_sort_title" %}
                 </div>
 
                 <div class="field">
@@ -81,7 +92,7 @@
                     {% include 'snippets/form_errors.html' with errors_list=form.languages.errors id="desc_languages" %}
                 </div>
 
-                <div>
+                <div class="field" id="subjects">
                     <label class="label" for="id_add_subjects">
                         {% trans "Subjects:" %}
                     </label>
@@ -236,7 +247,7 @@
                         </div>
                         <div class="field">
                             <label class="label" for="id_cover_url">
-                                {% trans "Load cover from url:" %}
+                                {% trans "Load cover from URL:" %}
                             </label>
                             <input class="input" name="cover-url" id="id_cover_url" type="url" value="{{ cover_url|default:'' }}" aria-describedby="desc_cover">
                         </div>
@@ -328,6 +339,15 @@
                 </div>
 
                 <div class="field">
+                    <label class="label" for="id_goodreads_key">
+                        {% trans "Goodreads key:" %}
+                    </label>
+                    {{ form.goodreads_key }}
+
+                    {% include 'snippets/form_errors.html' with errors_list=form.goodreads_key.errors id="desc_goodreads_key" %}
+                </div>
+
+                <div class="field">
                     <label class="label" for="id_oclc_number">
                         {% trans "OCLC Number:" %}
                     </label>
@@ -343,6 +363,24 @@
                     {{ form.asin }}
 
                     {% include 'snippets/form_errors.html' with errors_list=form.ASIN.errors id="desc_ASIN" %}
+                </div>
+
+                <div class="field">
+                    <label class="label" for="id_aasin">
+                        {% trans "Audible ASIN:" %}
+                    </label>
+                    {{ form.aasin }}
+
+                    {% include 'snippets/form_errors.html' with errors_list=form.AASIN.errors id="desc_AASIN" %}
+                </div>
+
+                <div class="field">
+                    <label class="label" for="id_isfdb">
+                        {% trans "ISFDB ID:" %}
+                    </label>
+                    {{ form.isfdb }}
+
+                    {% include 'snippets/form_errors.html' with errors_list=form.isfdb.errors id="desc_isfdb" %}
                 </div>
             </div>
         </section>

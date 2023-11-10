@@ -11,6 +11,7 @@ from bookwyrm import models, views
 class InboxActivities(TestCase):
     """inbox tests"""
 
+    # pylint: disable=invalid-name
     def setUp(self):
         """basic user and book data"""
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
@@ -58,7 +59,7 @@ class InboxActivities(TestCase):
         with patch("bookwyrm.activitystreams.remove_status_task.delay") as redis_mock:
             views.inbox.activity_task(activity)
             self.assertTrue(redis_mock.called)
-        # deletion doens't remove the status, it turns it into a tombstone
+        # deletion doesn't remove the status, it turns it into a tombstone
         status = models.Status.objects.get()
         self.assertTrue(status.deleted)
         self.assertIsInstance(status.deleted_date, datetime)
@@ -87,7 +88,7 @@ class InboxActivities(TestCase):
         with patch("bookwyrm.activitystreams.remove_status_task.delay") as redis_mock:
             views.inbox.activity_task(activity)
             self.assertTrue(redis_mock.called)
-        # deletion doens't remove the status, it turns it into a tombstone
+        # deletion doesn't remove the status, it turns it into a tombstone
         status = models.Status.objects.get()
         self.assertTrue(status.deleted)
         self.assertIsInstance(status.deleted_date, datetime)
@@ -97,7 +98,8 @@ class InboxActivities(TestCase):
         self.assertEqual(models.Notification.objects.get(), notif)
 
     @patch("bookwyrm.suggested_users.remove_user_task.delay")
-    def test_delete_user(self, _):
+    @patch("bookwyrm.activitystreams.remove_status_task.delay")
+    def test_delete_user(self, *_):
         """delete a user"""
         self.assertTrue(models.User.objects.get(username="rat@example.com").is_active)
         activity = {

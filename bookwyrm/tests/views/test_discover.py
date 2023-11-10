@@ -11,6 +11,7 @@ from bookwyrm.tests.validate_html import validate_html
 class DiscoverViews(TestCase):
     """pages you land on without really trying"""
 
+    # pylint: disable=invalid-name
     def setUp(self):
         """we need basic test data and mocks"""
         self.factory = RequestFactory()
@@ -43,7 +44,7 @@ class DiscoverViews(TestCase):
 
     @patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
     @patch("bookwyrm.activitystreams.add_status_task.delay")
-    def test_discover_page(self, *_):
+    def test_discover_page_with_posts(self, *_):
         """there are so many views, this just makes sure it LOADS"""
         view = views.Discover.as_view()
         request = self.factory.get("")
@@ -53,9 +54,26 @@ class DiscoverViews(TestCase):
             title="hi", parent_work=models.Work.objects.create(title="work")
         )
 
+        models.ReviewRating.objects.create(
+            book=book,
+            user=self.local_user,
+            rating=4,
+        )
+        models.Review.objects.create(
+            book=book,
+            user=self.local_user,
+            content="hello",
+            rating=4,
+        )
         models.Comment.objects.create(
             book=book,
             user=self.local_user,
+            content="hello",
+        )
+        models.Quotation.objects.create(
+            book=book,
+            user=self.local_user,
+            quote="beep",
             content="hello",
         )
         models.Status.objects.create(user=self.local_user, content="beep")
@@ -63,7 +81,7 @@ class DiscoverViews(TestCase):
         with patch(
             "bookwyrm.activitystreams.ActivityStream.get_activity_stream"
         ) as mock:
-            mock.return_value = models.Status.objects.all()
+            mock.return_value = models.Status.objects.select_subclasses().all()
             result = view(request)
         self.assertEqual(mock.call_count, 1)
         self.assertEqual(result.status_code, 200)

@@ -51,7 +51,7 @@ class BaseModel(TestCase):
 
     def test_set_remote_id(self):
         """this function sets remote ids after creation"""
-        # using Work because it BookWrymModel is abstract and this requires save
+        # using Work because it BookWyrmModel is abstract and this requires save
         # Work is a relatively not-fancy model.
         instance = models.Work.objects.create(title="work title")
         instance.remote_id = None
