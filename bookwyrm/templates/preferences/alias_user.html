@@ -1,0 +1,59 @@
+{% extends 'preferences/layout.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Move Account" %}{% endblock %}
+
+{% block header %}
+{% trans "Create Alias" %}
+{% endblock %}
+
+{% block panel %}
+<div class="block">
+    <h2 class="title is-4">{% trans "Add another account as an alias" %}</h2>
+    <div class="box">
+        <div class="notification is-info is-light">
+            <p>
+                {% trans "Marking another account as an alias is required if you want to move that account to this one." %}
+            </p>
+            <p>
+                {% trans "This is a reversable action and will not change the functionality of this account." %}
+            </p>
+        </div>
+        <form name="alias-user" action="{% url 'prefs-alias' %}" method="post">
+            {% csrf_token %}
+            <div class="field">
+                <label class="label" for="id_target">{% trans "Enter the username for the account you want to add as an alias e.g. <em>user@example.com </em>:" %}</label>
+                <input class="input {% if form.username.errors %}is-danger{% endif %}" type="text" name="username" id="id_username" required aria-describedby="desc_username">
+                {% include 'snippets/form_errors.html' with errors_list=form.username.errors id="desc_username" %}
+            </div>
+            <div class="field">
+                <label class="label" for="id_password">{% trans "Confirm your password:" %}</label>
+                <input class="input {% if form.password.errors %}is-danger{% endif %}" type="password" name="password" id="id_password" required aria-describedby="desc_password">
+                {% include 'snippets/form_errors.html' with errors_list=form.password.errors id="desc_password" %}
+            </div>
+            <button type="submit" class="button is-success">{% trans "Create Alias" %}</button>
+        </form>
+    </div>
+    {% if user.also_known_as.all.0 %}
+    <div class="box">
+        <h2 class="title is-4">{% trans "Aliases" %}</h2>
+        <div class="table-container block">
+            <table class="table is-striped is-fullwidth">
+                {% for alias in user.also_known_as.all %}
+                <tr>
+                    <td>{{ alias.username }}</td>
+                    <td>
+                        <form name="remove-alias" action="{% url 'prefs-remove-alias' %}" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="alias" id="alias" value="{{ alias.id }}">
+                            <button type="submit" class="button is-info">{% trans "Remove alias" %}</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

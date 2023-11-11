@@ -29,3 +29,10 @@ class TestISBN(TestCase):
         self.assertEqual(hyphenator.hyphenate("9786769533251"), "9786769533251")
         # 979-8 (United States) 2300000-3499999 (unassigned)
         self.assertEqual(hyphenator.hyphenate("9798311111111"), "9798311111111")
+
+    def test_isbn_hyphenation_invalid_data(self):
+        """Make sure not to throw an error when a bad ISBN is found"""
+        # no action taken
+        self.assertEqual(hyphenator.hyphenate("978-0-4633461-1-2"), "978-0-4633461-1-2")
+        self.assertEqual(hyphenator.hyphenate("9-0-4633461-1-2"), "9-0-4633461-1-2")
+        self.assertEqual(hyphenator.hyphenate("90463346112"), "90463346112")

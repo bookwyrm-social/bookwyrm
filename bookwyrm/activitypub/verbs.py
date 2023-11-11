@@ -231,3 +231,30 @@ class Announce(Verb):
     def action(self, allow_external_connections=True):
         """boost"""
         self.to_model(allow_external_connections=allow_external_connections)
+
+
+@dataclass(init=False)
+class Move(Verb):
+    """a user moving an object"""
+
+    object: str
+    type: str = "Move"
+    origin: str = None
+    target: str = None
+
+    def action(self, allow_external_connections=True):
+        """move"""
+
+        object_is_user = resolve_remote_id(remote_id=self.object, model="User")
+
+        if object_is_user:
+            model = apps.get_model("bookwyrm.MoveUser")
+
+            self.to_model(
+                model=model,
+                save=True,
+                allow_external_connections=allow_external_connections,
+            )
+        else:
+            # we might do something with this to move other objects at some point
+            pass

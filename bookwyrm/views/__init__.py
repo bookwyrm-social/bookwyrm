@@ -37,6 +37,7 @@ from .admin.user_admin import UserAdmin, UserAdminList, ActivateUserAdmin
 from .preferences.change_password import ChangePassword
 from .preferences.edit_user import EditUser
 from .preferences.export import Export
+from .preferences.move_user import MoveUser, AliasUser, remove_alias, unmove
 from .preferences.delete_user import DeleteUser, DeactivateUser, ReactivateUser
 from .preferences.block import Block, unblock
 from .preferences.two_factor_auth import (
