@@ -1,18 +1,17 @@
 """Import a user from another Bookwyrm instance"""
 
-from functools import reduce
 import json
 import logging
-import operator
 
 from django.db.models import FileField, JSONField, CharField
-from django.db.models import Q
-from django.utils.dateparse import parse_datetime
+from django.utils import timezone
+from django.utils.html import strip_tags
 from django.contrib.postgres.fields import ArrayField as DjangoArrayField
 
 from bookwyrm import activitypub
 from bookwyrm import models
 from bookwyrm.tasks import app, IMPORTS
+from bookwyrm.models.fields import HtmlField
 from bookwyrm.models.job import ParentJob, ParentTask, SubTask
 from bookwyrm.utils.tar import BookwyrmTarFile
 
@@ -115,7 +114,6 @@ def get_or_create_edition(book_data, tar):
         return existing
 
     # the book is not in the local database, so we have to do this the hard way
-
     # make sure we have the authors in the local DB
     authors = []
     for author in book_data.get("authors"):
@@ -123,16 +121,19 @@ def get_or_create_edition(book_data, tar):
         if existing:
             authors.append(existing)
         else:
-            new = author.to_model(model=models.Author, save=True)
-            authors.append(new)
+            ap_author = activitypub.base_activity.ActivityObject(**author)
+            instance = ap_author.to_model(model=models.Author, save=True)
+            authors.append(instance)
 
     # don't save the authors from the old server
     book["authors"] = []
+    ap_book = activitypub.base_activity.ActivityObject(**book)
+    new_book = ap_book.to_model(model=models.Edition, save=True)
+    # now set the local authors
+    new_book.authors.set(authors)
     # use the cover image from the tar
     if cover_path:
         tar.write_image_to_file(cover_path, new_book.cover)
-    new_book = book.to_model(model=models.Edition, save=True)
-    new_book.authors.set(authors)
 
     return new_book
 
@@ -142,8 +143,11 @@ def upsert_readthroughs(data, user, book_id):
     instances in the database and return a list of saved instances"""
 
     for read_through in data:
+        # don't match to fields that will never match
         del read_through["id"]
         del read_through["remote_id"]
+        del read_through["updated_date"]
+        # update ids
         read_through["user_id"] = user.id
         read_through["book_id"] = book_id
 
@@ -178,14 +182,18 @@ def upsert_lists(user, lists, book_id):
 
     for book_list in lists:
         blist = book_list["list_info"]
-        booklist = models.List.find_existing(blist)
+        booklist = models.List.objects.filter(
+            user=user,
+            name=blist["name"]
+        ).first()
+
         if not booklist:
             booklist = models.List.objects.create(
-                name=blist["list_info"]["name"],
+                name=blist["name"],
                 user=user,
-                description=blist["list_info"]["summary"],
-                curation=blist["list_info"]["curation"],
-                privacy=blist["list_info"]["privacy"],
+                description=blist["summary"],
+                curation=blist["curation"],
+                privacy=blist["privacy"],
             )
 
         # If the list exists but the ListItem doesn't
@@ -234,7 +242,7 @@ def upsert_shelves(book, user, book_data):
                 book=book,
                 shelf=book_shelf,
                 user=user,
-                shelved_date=shelved_date,
+                shelved_date=timezone.now()
             )
 
 
@@ -243,10 +251,11 @@ def update_user_profile(user, tar, data):
     name = data.get("name", None)
     username = data.get("preferredUsername")
     user.name = name if name else username
-    user.summary = data.get("summary", None)
+    user.summary =  strip_tags(data.get("summary", None))
+    logger.info(f"USER SUMMARY ==> {user.summary}")
     user.save(update_fields=["name", "summary"])
 
-    if data.get("avatar") is not None:
+    if data.get("icon") is not None:
         avatar_filename = next(filter(lambda n: n.startswith("avatar"), tar.getnames()))
         tar.write_image_to_file(avatar_filename, user.avatar)
 
@@ -292,7 +301,7 @@ def update_goals(user, data):
     """update the user's goals from import data"""
 
     for goal in data:
-        # edit the existing goal if there is one instead of making a new one
+        # edit the existing goal if there is one
         existing = models.AnnualGoal.objects.filter(
             year=goal["year"], user=user
         ).first()

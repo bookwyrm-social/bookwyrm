@@ -76,13 +76,11 @@ def json_export(
 ):  # pylint: disable=too-many-locals, too-many-statements, too-many-branches
     """Generate an export for a user"""
 
-    exported_user = {}
-
     # User as AP object
     exported_user = user.to_activity()
     # I don't love this but it prevents a JSON encoding error
     # when there is no user image
-    if isinstance(exported_user["icon"], dataclasses._MISSING_TYPE):
+    if isinstance(exported_user["icon"], dataclasses._MISSING_TYPE): # pylint: disable=protected-access
         exported_user["icon"] = {}
     else:
         # change the URL to be relative to the JSON file
@@ -126,25 +124,22 @@ def json_export(
         # authors
         book["authors"] = []
         for author in edition.authors.all():
-            obj = author.to_activity()
+            obj = author.to_activity() # <== this doesn't include blank optional fields
+
             book["authors"].append(obj)
 
         # Shelves this book is on
-        # All we want is the shelf identifier and name
-        # Every ShelfItem is this book so there's no point
-        # serialising to_activity()
-        # can be serialized as AP but can't use to_model on import
+        # Every ShelfItem is this book so there's no point serialising
+        # Shelves can be serialized as AP but can't use to_model on import
         book["shelves"] = []
-        shelf_books = ShelfBook.objects.filter(book=edition).distinct()
-        user_shelves = Shelf.objects.filter(id__in=shelf_books)
-
-        for shelf in user_shelves:
+        shelf_books = ShelfBook.objects.filter(user=user, book=edition).distinct()
+        for shelfbook in shelf_books:
             obj = {
-                "identifier": shelf.identifier,
-                "name": shelf.name,
-                "description": shelf.description,
-                "editable": shelf.editable,
-                "privacy": shelf.privacy,
+                "identifier": shelfbook.shelf.identifier,
+                "name": shelfbook.shelf.name,
+                "description": shelfbook.shelf.description,
+                "editable": shelfbook.shelf.editable,
+                "privacy": shelfbook.shelf.privacy,
             }
             book["shelves"].append(obj)
 
@@ -152,15 +147,15 @@ def json_export(
         # ListItems include "notes" and "approved" so we need them
         # even though we know it's this book
         book["lists"] = []
-        user_lists = List.objects.filter(user=user).all()
+        list_items = ListItem.objects.filter(book=edition, user=user).distinct()
 
-        for booklist in user_lists:
+        for item in list_items:
             obj = {"list_items": []}
-            obj["list_info"] = booklist.to_activity()
-            obj["list_info"]["privacy"] = booklist.privacy
-            list_items = ListItem.objects.filter(book_list=booklist).distinct()
-            for item in list_items:
-                obj["list_items"].append(item.to_activity())
+            obj["list_items"].append(item.to_activity())
+
+            list_info = item.book_list.to_activity()
+            list_info["privacy"] = item.book_list.privacy
+            obj["list_info"] = list_info
 
             book["lists"].append(obj)
 
@@ -184,7 +179,6 @@ def json_export(
             book["reviews"].append(status.to_activity())
 
         # readthroughs can't be serialized to activity
-        # so we use values()
         book_readthroughs = (
             ReadThrough.objects.filter(user=user, book=edition).distinct().values()
         )
