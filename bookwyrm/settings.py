@@ -243,7 +243,11 @@ if env.bool("USE_DUMMY_CACHE", False):
     CACHES = {
         "default": {
             "BACKEND": "django.core.cache.backends.dummy.DummyCache",
-        }
+        },
+        "file_resubmit": {
+            "BACKEND": "django.core.cache.backends.dummy.DummyCache",
+            "LOCATION": "/tmp/file_resubmit_tests/",
+        },
     }
 else:
     CACHES = {
