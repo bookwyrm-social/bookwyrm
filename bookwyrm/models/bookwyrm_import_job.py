@@ -11,7 +11,6 @@ from django.contrib.postgres.fields import ArrayField as DjangoArrayField
 from bookwyrm import activitypub
 from bookwyrm import models
 from bookwyrm.tasks import app, IMPORTS
-from bookwyrm.models.fields import HtmlField
 from bookwyrm.models.job import ParentJob, ParentTask, SubTask
 from bookwyrm.utils.tar import BookwyrmTarFile
 
@@ -44,7 +43,7 @@ def start_import_task(**kwargs):
         archive_file.open("rb")
         with BookwyrmTarFile.open(mode="r:gz", fileobj=archive_file) as tar:
             job.import_data = json.loads(tar.read("archive.json").decode("utf-8"))
-            # TODO: option to import "user.json" instead
+            # TODO: option to import "user.json" in unzipped tar (i.e. Mastodon) instead
 
             if "include_user_profile" in job.required:
                 update_user_profile(job.user, tar, job.import_data)
@@ -70,7 +69,11 @@ def start_import_task(**kwargs):
 
 
 def process_books(job, tar):
-    """process user import data related to books"""
+    """
+    Process user import data related to books
+    We always import the books even if not assigning
+    them to shelves, lists etc
+    """
 
     books = job.import_data.get("books")
 
@@ -102,116 +105,126 @@ def process_books(job, tar):
 
 
 def get_or_create_edition(book_data, tar):
-    """Take a JSON string of book and edition data,
-    find or create the edition in the database and
+    """Take a JSON string of work and edition data,
+    find or create the edition and work in the database and
     return an edition instance"""
 
-    book = book_data.get("edition")
-    cover = book.get("cover")
-    cover_path = cover.get("url", None)
-    existing = models.Edition.find_existing(book)
+    edition = book_data.get("edition")
+    existing = models.Edition.find_existing(edition)
     if existing:
         return existing
 
-    # the book is not in the local database, so we have to do this the hard way
     # make sure we have the authors in the local DB
-    authors = []
+    # replace the old author ids in the edition JSON
+    edition["authors"] = []
     for author in book_data.get("authors"):
-        existing = models.Author.find_existing(author)
-        if existing:
-            authors.append(existing)
-        else:
-            ap_author = activitypub.base_activity.ActivityObject(**author)
-            instance = ap_author.to_model(model=models.Author, save=True)
-            authors.append(instance)
+        parsed_author = activitypub.parse(author)
+        instance = parsed_author.to_model(
+            model=models.Author, save=True, overwrite=False
+        )
 
-    # don't save the authors from the old server
-    book["authors"] = []
-    ap_book = activitypub.base_activity.ActivityObject(**book)
-    new_book = ap_book.to_model(model=models.Edition, save=True)
-    # now set the local authors
-    new_book.authors.set(authors)
-    # use the cover image from the tar
+        edition["authors"].append(instance.remote_id)
+
+    # we will add the cover later from the tar
+    # don't try to load it from the old server
+    cover = edition.get("cover", {})
+    cover_path = cover.get("url", None)
+    edition["cover"] = {}
+
+    # first we need the parent work to exist
+    work = book_data.get("work")
+    work["editions"] = []
+    parsed_work = activitypub.parse(work)
+    work_instance = parsed_work.to_model(model=models.Work, save=True, overwrite=False)
+
+    # now we have a work we can add it to the edition
+    # and create the edition model instance
+    edition["work"] = work_instance.remote_id
+    parsed_edition = activitypub.parse(edition)
+    book = parsed_edition.to_model(model=models.Edition, save=True, overwrite=False)
+
+    # set the cover image from the tar
     if cover_path:
-        tar.write_image_to_file(cover_path, new_book.cover)
+        tar.write_image_to_file(cover_path, book.cover)
 
-    return new_book
+    return book
 
 
 def upsert_readthroughs(data, user, book_id):
-    """Take a JSON string of readthroughs, find or create the
-    instances in the database and return a list of saved instances"""
+    """Take a JSON string of readthroughs and
+    find or create the instances in the database"""
 
     for read_through in data:
-        # don't match to fields that will never match
-        del read_through["id"]
-        del read_through["remote_id"]
-        del read_through["updated_date"]
-        # update ids
-        read_through["user_id"] = user.id
-        read_through["book_id"] = book_id
 
-        existing = models.ReadThrough.objects.filter(**read_through).first()
+        obj = {}
+        keys = [
+            "progress_mode",
+            "start_date",
+            "finish_date",
+            "stopped_date",
+            "is_active",
+        ]
+        for key in keys:
+            obj[key] = read_through[key]
+        obj["user_id"] = user.id
+        obj["book_id"] = book_id
+
+        existing = models.ReadThrough.objects.filter(**obj).first()
         if not existing:
-            models.ReadThrough.objects.create(**read_through)
+            models.ReadThrough.objects.create(**obj)
 
 
-def upsert_statuses(user, cls, data, book_id):
+def upsert_statuses(user, cls, data, book_remote_id):
     """Take a JSON string of a status and
     find or create the instances in the database"""
 
     for status in data:
 
-        # change user and remove replies
+        # change ids and remove replies
         status["attributedTo"] = user.remote_id
         status["to"] = []
         status["replies"] = {}
-        status["inReplyToBook"] = book_id
-        existing = cls.find_existing(status)
-        if existing:
-            existing.save(broadcast=False)
-        else:
-            status.to_model(model=cls, save=True)
+        status["inReplyToBook"] = book_remote_id
+
+        # save new status or do nothing if it already exists
+        parsed = activitypub.parse(status)
+        parsed.to_model(model=cls, save=True, overwrite=False)
 
 
 def upsert_lists(user, lists, book_id):
-    """Take a list and ListItems as JSON and
-    create DB entries if they don't already exist"""
+    """Take a list of objects each containing
+    a list and list item as AP objects
+
+    Because we are creating new IDs we can't assume the id
+    will exist or be accurate, so we only use to_model for
+    adding new items after checking whether they exist  .
+
+    """
 
     book = models.Edition.objects.get(id=book_id)
 
-    for book_list in lists:
-        blist = book_list["list_info"]
-        booklist = models.List.objects.filter(
-            user=user,
-            name=blist["name"]
-        ).first()
-
+    for blist in lists:
+        booklist = models.List.objects.filter(name=blist["name"], user=user).first()
         if not booklist:
-            booklist = models.List.objects.create(
-                name=blist["name"],
+
+            blist["owner"] = user.remote_id
+            parsed = activitypub.parse(blist)
+            booklist = parsed.to_model(model=models.List, save=True, overwrite=False)
+
+            booklist.privacy = blist["privacy"]
+            booklist.save()
+
+        item = models.ListItem.objects.filter(book=book, book_list=booklist).exists()
+        if not item:
+            count = booklist.books.count()
+            models.ListItem.objects.create(
+                book=book,
+                book_list=booklist,
                 user=user,
-                description=blist["summary"],
-                curation=blist["curation"],
-                privacy=blist["privacy"],
+                notes=blist["list_item"]["notes"],
+                approved=blist["list_item"]["approved"],
+                order=count + 1,
             )
-
-        # If the list exists but the ListItem doesn't
-        # we need to re-order the item
-        count = models.ListItem.objects.filter(book_list=booklist).count()
-
-        for item in book_list["list_items"]:
-            if not models.ListItem.objects.filter(
-                book=book, book_list=booklist, user=user
-            ).exists():
-                models.ListItem.objects.create(
-                    book=book,
-                    book_list=booklist,
-                    user=user,
-                    approved=item["approved"],
-                    notes=item["notes"],
-                    order=item["order"] + count,
-                )
 
 
 def upsert_shelves(book, user, book_data):
@@ -219,30 +232,19 @@ def upsert_shelves(book, user, book_data):
     DB entries if they don't already exist"""
 
     shelves = book_data["shelves"]
-
     for shelf in shelves:
-        book_shelf = models.Shelf.objects.filter(
-            identifier=shelf["identifier"], user=user
-        ).first()
-        if not book_shelf:
-            book_shelf = models.Shelf.objects.create(
-                name=shelf["name"],
-                user=user,
-                identifier=shelf["identifier"],
-                description=shelf["description"],
-                editable=shelf["editable"],
-                privacy=shelf["privacy"],
-            )
 
-        # add the book as a ShelfBook
+        book_shelf = models.Shelf.objects.filter(name=shelf["name"], user=user).first()
+
+        if not book_shelf:
+            book_shelf = models.Shelf.objects.create(name=shelf["name"], user=user)
+
+        # add the book as a ShelfBook if needed
         if not models.ShelfBook.objects.filter(
             book=book, shelf=book_shelf, user=user
         ).exists():
             models.ShelfBook.objects.create(
-                book=book,
-                shelf=book_shelf,
-                user=user,
-                shelved_date=timezone.now()
+                book=book, shelf=book_shelf, user=user, shelved_date=timezone.now()
             )
 
 
@@ -251,11 +253,9 @@ def update_user_profile(user, tar, data):
     name = data.get("name", None)
     username = data.get("preferredUsername")
     user.name = name if name else username
-    user.summary =  strip_tags(data.get("summary", None))
-    logger.info(f"USER SUMMARY ==> {user.summary}")
+    user.summary = strip_tags(data.get("summary", None))
     user.save(update_fields=["name", "summary"])
-
-    if data.get("icon") is not None:
+    if data["icon"].get("url"):
         avatar_filename = next(filter(lambda n: n.startswith("avatar"), tar.getnames()))
         tar.write_image_to_file(avatar_filename, user.avatar)
 

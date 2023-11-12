@@ -9,7 +9,7 @@ from django.db.models import Q
 from django.core.serializers.json import DjangoJSONEncoder
 from django.core.files.base import ContentFile
 
-from bookwyrm.models import AnnualGoal, ReadThrough, ShelfBook, Shelf, List, ListItem
+from bookwyrm.models import AnnualGoal, ReadThrough, ShelfBook, List, ListItem
 from bookwyrm.models import Review, Comment, Quotation
 from bookwyrm.models import Edition
 from bookwyrm.models import UserFollows, User, UserBlocks
@@ -80,7 +80,10 @@ def json_export(
     exported_user = user.to_activity()
     # I don't love this but it prevents a JSON encoding error
     # when there is no user image
-    if isinstance(exported_user["icon"], dataclasses._MISSING_TYPE): # pylint: disable=protected-access
+    if isinstance(
+        exported_user["icon"],
+        dataclasses._MISSING_TYPE,  # pylint: disable=protected-access
+    ):
         exported_user["icon"] = {}
     else:
         # change the URL to be relative to the JSON file
@@ -88,8 +91,7 @@ def json_export(
         filename = f"avatar.{file_type}"
         exported_user["icon"]["url"] = filename
 
-    # Additional settings
-    # can't be serialized as AP
+    # Additional settings - can't be serialized as AP
     vals = [
         "show_goal",
         "preferred_timezone",
@@ -100,8 +102,7 @@ def json_export(
     for k in vals:
         exported_user["settings"][k] = getattr(user, k)
 
-    # Reading goals
-    # can't be serialized as AP
+    # Reading goals - can't be serialized as AP
     reading_goals = AnnualGoal.objects.filter(user=user).distinct()
     exported_user["goals"] = []
     for goal in reading_goals:
@@ -109,39 +110,40 @@ def json_export(
             {"goal": goal.goal, "year": goal.year, "privacy": goal.privacy}
         )
 
-    # Reading history
-    # can't be serialized as AP
+    # Reading history - can't be serialized as AP
     readthroughs = ReadThrough.objects.filter(user=user).distinct().values()
     readthroughs = list(readthroughs)
 
     # Books
     editions = get_books_for_user(user)
     exported_user["books"] = []
+
     for edition in editions:
         book = {}
+        book["work"] = edition.parent_work.to_activity()
         book["edition"] = edition.to_activity()
+
+        if book["edition"].get("cover"):
+            # change the URL to be relative to the JSON file
+            filename = book["edition"]["cover"]["url"].rsplit("/", maxsplit=1)[-1]
+            book["edition"]["cover"]["url"] = f"covers/{filename}"
 
         # authors
         book["authors"] = []
         for author in edition.authors.all():
-            obj = author.to_activity() # <== this doesn't include blank optional fields
-
-            book["authors"].append(obj)
+            book["authors"].append(author.to_activity())
 
         # Shelves this book is on
-        # Every ShelfItem is this book so there's no point serialising
-        # Shelves can be serialized as AP but can't use to_model on import
+        # Every ShelfItem is this book so we don't other serializing
         book["shelves"] = []
-        shelf_books = ShelfBook.objects.filter(user=user, book=edition).distinct()
+        shelf_books = (
+            ShelfBook.objects.select_related("shelf")
+            .filter(user=user, book=edition)
+            .distinct()
+        )
+
         for shelfbook in shelf_books:
-            obj = {
-                "identifier": shelfbook.shelf.identifier,
-                "name": shelfbook.shelf.name,
-                "description": shelfbook.shelf.description,
-                "editable": shelfbook.shelf.editable,
-                "privacy": shelfbook.shelf.privacy,
-            }
-            book["shelves"].append(obj)
+            book["shelves"].append(shelfbook.shelf.to_activity())
 
         # Lists and ListItems
         # ListItems include "notes" and "approved" so we need them
@@ -150,14 +152,12 @@ def json_export(
         list_items = ListItem.objects.filter(book=edition, user=user).distinct()
 
         for item in list_items:
-            obj = {"list_items": []}
-            obj["list_items"].append(item.to_activity())
-
             list_info = item.book_list.to_activity()
-            list_info["privacy"] = item.book_list.privacy
-            obj["list_info"] = list_info
-
-            book["lists"].append(obj)
+            list_info[
+                "privacy"
+            ] = item.book_list.privacy  # this isn't serialized so we add it
+            list_info["list_item"] = item.to_activity()
+            book["lists"].append(list_info)
 
         # Statuses
         # Can't use select_subclasses here because
@@ -208,13 +208,17 @@ def json_export(
 def get_books_for_user(user):
     """Get all the books and editions related to a user"""
 
-    editions = Edition.objects.filter(
-        Q(shelves__user=user)
-        | Q(readthrough__user=user)
-        | Q(review__user=user)
-        | Q(list__user=user)
-        | Q(comment__user=user)
-        | Q(quotation__user=user)
-    ).distinct()
+    editions = (
+        Edition.objects.select_related("parent_work")
+        .filter(
+            Q(shelves__user=user)
+            | Q(readthrough__user=user)
+            | Q(review__user=user)
+            | Q(list__user=user)
+            | Q(comment__user=user)
+            | Q(quotation__user=user)
+        )
+        .distinct()
+    )
 
     return editions
