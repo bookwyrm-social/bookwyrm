@@ -6,7 +6,7 @@ from . import Boost, Favorite, GroupMemberInvitation, ImportJob, LinkDomain
 from . import ListItem, Report, Status, User, UserFollowRequest
 
 
-class Notification(BookWyrmModel):
+class NotificationType(models.TextChoices):
     """you've been tagged, liked, followed, etc"""
 
     # Status interactions
@@ -43,12 +43,9 @@ class Notification(BookWyrmModel):
     # Migrations
     MOVE = "MOVE"
 
-    # pylint: disable=line-too-long
-    NotificationType = models.TextChoices(
-        # there has got be a better way to do this
-        "NotificationType",
-        f"{FAVORITE} {REPLY} {MENTION} {TAG} {FOLLOW} {FOLLOW_REQUEST} {BOOST} {IMPORT} {ADD} {REPORT} {LINK_DOMAIN} {INVITE} {ACCEPT} {JOIN} {LEAVE} {REMOVE} {GROUP_PRIVACY} {GROUP_NAME} {GROUP_DESCRIPTION} {MOVE}",
-    )
+
+class Notification(BookWyrmModel):
+    """a notification object"""
 
     user = models.ForeignKey("User", on_delete=models.CASCADE)
     read = models.BooleanField(default=False)
@@ -93,11 +90,11 @@ class Notification(BookWyrmModel):
             user=user,
             related_users=related_user,
             related_list_items__book_list=list_item.book_list,
-            notification_type=Notification.ADD,
+            notification_type=NotificationType.ADD,
         ).first()
         if not notification:
             notification = cls.objects.create(
-                user=user, notification_type=Notification.ADD
+                user=user, notification_type=NotificationType.ADD
             )
             notification.related_users.add(related_user)
         notification.related_list_items.add(list_item)
@@ -124,7 +121,7 @@ def notify_on_fav(sender, instance, *args, **kwargs):
         instance.status.user,
         instance.user,
         related_status=instance.status,
-        notification_type=Notification.FAVORITE,
+        notification_type=NotificationType.FAVORITE,
     )
 
 
@@ -138,7 +135,7 @@ def notify_on_unfav(sender, instance, *args, **kwargs):
         instance.status.user,
         instance.user,
         related_status=instance.status,
-        notification_type=Notification.FAVORITE,
+        notification_type=NotificationType.FAVORITE,
     )
 
 
@@ -163,7 +160,7 @@ def notify_user_on_mention(sender, instance, *args, **kwargs):
             instance.reply_parent.user,
             instance.user,
             related_status=instance,
-            notification_type=Notification.REPLY,
+            notification_type=NotificationType.REPLY,
         )
 
     for mention_user in instance.mention_users.all():
@@ -175,7 +172,7 @@ def notify_user_on_mention(sender, instance, *args, **kwargs):
         Notification.notify(
             mention_user,
             instance.user,
-            notification_type=Notification.MENTION,
+            notification_type=NotificationType.MENTION,
             related_status=instance,
         )
 
@@ -194,7 +191,7 @@ def notify_user_on_boost(sender, instance, *args, **kwargs):
         instance.boosted_status.user,
         instance.user,
         related_status=instance.boosted_status,
-        notification_type=Notification.BOOST,
+        notification_type=NotificationType.BOOST,
     )
 
 
@@ -206,7 +203,7 @@ def notify_user_on_unboost(sender, instance, *args, **kwargs):
         instance.boosted_status.user,
         instance.user,
         related_status=instance.boosted_status,
-        notification_type=Notification.BOOST,
+        notification_type=NotificationType.BOOST,
     )
 
 
@@ -221,7 +218,7 @@ def notify_user_on_import_complete(
         return
     Notification.objects.get_or_create(
         user=instance.user,
-        notification_type=Notification.IMPORT,
+        notification_type=NotificationType.IMPORT,
         related_import=instance,
     )
 
@@ -240,7 +237,7 @@ def notify_admins_on_report(sender, instance, created, *args, **kwargs):
     for admin in admins:
         notification, _ = Notification.objects.get_or_create(
             user=admin,
-            notification_type=Notification.REPORT,
+            notification_type=NotificationType.REPORT,
             read=False,
         )
         notification.related_reports.add(instance)
@@ -260,7 +257,7 @@ def notify_admins_on_link_domain(sender, instance, created, *args, **kwargs):
     for admin in admins:
         notification, _ = Notification.objects.get_or_create(
             user=admin,
-            notification_type=Notification.LINK_DOMAIN,
+            notification_type=NotificationType.LINK_DOMAIN,
             read=False,
         )
         notification.related_link_domains.add(instance)
@@ -274,7 +271,7 @@ def notify_user_on_group_invite(sender, instance, *args, **kwargs):
         instance.user,
         instance.group.user,
         related_group=instance.group,
-        notification_type=Notification.INVITE,
+        notification_type=NotificationType.INVITE,
     )
 
 
@@ -312,11 +309,12 @@ def notify_user_on_follow(sender, instance, created, *args, **kwargs):
         notification = Notification.objects.filter(
             user=instance.user_object,
             related_users=instance.user_subject,
-            notification_type=Notification.FOLLOW_REQUEST,
+            notification_type=NotificationType.FOLLOW_REQUEST,
         ).first()
         if not notification:
             notification = Notification.objects.create(
-                user=instance.user_object, notification_type=Notification.FOLLOW_REQUEST
+                user=instance.user_object,
+                notification_type=NotificationType.FOLLOW_REQUEST,
             )
         notification.related_users.set([instance.user_subject])
         notification.read = False
@@ -326,6 +324,6 @@ def notify_user_on_follow(sender, instance, created, *args, **kwargs):
         Notification.notify(
             instance.user_object,
             instance.user_subject,
-            notification_type=Notification.FOLLOW,
+            notification_type=NotificationType.FOLLOW,
             read=False,
         )
