@@ -181,6 +181,9 @@
 
         <div class="column is-three-fifths">
             <div class="block">
+                {% if not review_count %}
+                <div class="field is-grouped">
+                {% else %}
                 <div
                     class="field is-grouped"
                     itemprop="aggregateRating"
@@ -189,6 +192,7 @@
                 >
                     <meta itemprop="ratingValue" content="{{ rating|floatformat }}">
                     <meta itemprop="reviewCount" content="{{ review_count }}">
+                {% endif %}
 
                     <span>
                         {% include 'snippets/stars.html' with rating=rating %}
