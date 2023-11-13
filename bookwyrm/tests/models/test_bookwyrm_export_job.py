@@ -144,17 +144,19 @@ class BookwyrmExport(TestCase):
     def test_json_export_user_settings(self):
         """Test the json export function for basic user info"""
         data = export_job.json_export(self.local_user)
-        user_data = json.loads(data)["user"]
-        self.assertEqual(user_data["username"], "mouse")
+        user_data = json.loads(data)
+        self.assertEqual(user_data["preferredUsername"], "mouse")
         self.assertEqual(user_data["name"], "Mouse")
-        self.assertEqual(user_data["summary"], "I'm a real bookmouse")
-        self.assertEqual(user_data["manually_approves_followers"], False)
-        self.assertEqual(user_data["hide_follows"], False)
-        self.assertEqual(user_data["show_goal"], False)
-        self.assertEqual(user_data["show_suggested_users"], False)
+        self.assertEqual(user_data["summary"], "<p>I'm a real bookmouse</p>")
+        self.assertEqual(user_data["manuallyApprovesFollowers"], False)
+        self.assertEqual(user_data["hideFollows"], False)
         self.assertEqual(user_data["discoverable"], True)
-        self.assertEqual(user_data["preferred_timezone"], "America/Los Angeles")
-        self.assertEqual(user_data["default_post_privacy"], "followers")
+        self.assertEqual(user_data["settings"]["show_goal"], False)
+        self.assertEqual(user_data["settings"]["show_suggested_users"], False)
+        self.assertEqual(
+            user_data["settings"]["preferred_timezone"], "America/Los Angeles"
+        )
+        self.assertEqual(user_data["settings"]["default_post_privacy"], "followers")
 
     def test_json_export_extended_user_data(self):
         """Test the json export function for other non-book user info"""
@@ -175,10 +177,8 @@ class BookwyrmExport(TestCase):
         self.assertEqual(len(json_data["follows"]), 1)
         self.assertEqual(json_data["follows"][0], "https://your.domain.here/user/rat")
         # blocked users
-        self.assertEqual(len(json_data["blocked_users"]), 1)
-        self.assertEqual(
-            json_data["blocked_users"][0], "https://your.domain.here/user/badger"
-        )
+        self.assertEqual(len(json_data["blocks"]), 1)
+        self.assertEqual(json_data["blocks"][0], "https://your.domain.here/user/badger")
 
     def test_json_export_books(self):
         """Test the json export function for extended user info"""
@@ -188,42 +188,46 @@ class BookwyrmExport(TestCase):
         start_date = json_data["books"][0]["readthroughs"][0]["start_date"]
 
         self.assertEqual(len(json_data["books"]), 1)
-        self.assertEqual(json_data["books"][0]["title"], "Example Edition")
+        self.assertEqual(json_data["books"][0]["edition"]["title"], "Example Edition")
         self.assertEqual(len(json_data["books"][0]["authors"]), 1)
         self.assertEqual(json_data["books"][0]["authors"][0]["name"], "Sam Zhu")
+
         self.assertEqual(
             f'"{start_date}"', DjangoJSONEncoder().encode(self.readthrough_start)
         )
-        self.assertEqual(json_data["books"][0]["shelves"][0]["identifier"], "read")
-        self.assertEqual(
-            json_data["books"][0]["shelf_books"]["read"][0]["book_id"], self.edition.id
-        )
+
+        self.assertEqual(json_data["books"][0]["shelves"][0]["name"], "Read")
 
         self.assertEqual(len(json_data["books"][0]["lists"]), 1)
         self.assertEqual(json_data["books"][0]["lists"][0]["name"], "My excellent list")
-        self.assertEqual(len(json_data["books"][0]["list_items"]), 1)
         self.assertEqual(
-            json_data["books"][0]["list_items"]["My excellent list"][0]["book_id"],
+            json_data["books"][0]["lists"][0]["list_item"]["book"],
+            self.edition.remote_id,
             self.edition.id,
         )
 
         self.assertEqual(len(json_data["books"][0]["reviews"]), 1)
         self.assertEqual(len(json_data["books"][0]["comments"]), 1)
-        self.assertEqual(len(json_data["books"][0]["quotes"]), 1)
+        self.assertEqual(len(json_data["books"][0]["quotations"]), 1)
 
         self.assertEqual(json_data["books"][0]["reviews"][0]["name"], "my review")
-        self.assertEqual(json_data["books"][0]["reviews"][0]["content"], "awesome")
-        self.assertEqual(json_data["books"][0]["reviews"][0]["rating"], "5.00")
+        self.assertEqual(
+            json_data["books"][0]["reviews"][0]["content"], "<p>awesome</p>"
+        )
+        self.assertEqual(json_data["books"][0]["reviews"][0]["rating"], 5.0)
 
-        self.assertEqual(json_data["books"][0]["comments"][0]["content"], "ok so far")
+        self.assertEqual(
+            json_data["books"][0]["comments"][0]["content"], "<p>ok so far</p>"
+        )
         self.assertEqual(json_data["books"][0]["comments"][0]["progress"], 15)
         self.assertEqual(json_data["books"][0]["comments"][0]["progress_mode"], "PG")
 
         self.assertEqual(
-            json_data["books"][0]["quotes"][0]["content"], "check this out"
+            json_data["books"][0]["quotations"][0]["content"], "<p>check this out</p>"
         )
         self.assertEqual(
-            json_data["books"][0]["quotes"][0]["quote"], "A rose by any other name"
+            json_data["books"][0]["quotations"][0]["quote"],
+            "<p>A rose by any other name</p>",
         )
 
     def test_tar_export(self):

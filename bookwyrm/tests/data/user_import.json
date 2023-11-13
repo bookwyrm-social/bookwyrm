@@ -1,0 +1,399 @@
+{
+    "id": "https://www.example.com/user/rat",
+    "type": "Person",
+    "preferredUsername": "rat",
+    "inbox": "https://www.example.com/user/rat/inbox",
+    "publicKey": {
+        "id": "https://www.example.com/user/rat/#main-key",
+        "owner": "https://www.example.com/user/rat",
+        "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nzzzz\n-----END PUBLIC KEY-----"
+    },
+    "followers": "https://www.example.com/user/rat/followers",
+    "following": "https://www.example.com/user/rat/following",
+    "outbox": "https://www.example.com/user/rat/outbox",
+    "endpoints": {
+        "sharedInbox": "https://www.example.com/inbox"
+    },
+    "name": "Rat",
+    "summary": "<p>I love to make soup in Paris and eat pizza in New York</p>",
+    "icon": {
+        "type": "Document",
+        "url": "avatar.png",
+        "name": "avatar for rat",
+        "@context": "https://www.w3.org/ns/activitystreams"
+    },
+    "bookwyrmUser": true,
+    "manuallyApprovesFollowers": true,
+    "discoverable": false,
+    "hideFollows": true,
+    "alsoKnownAs": [],
+    "@context": [
+        "https://www.w3.org/ns/activitystreams",
+        "https://w3id.org/security/v1",
+        {
+            "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+            "schema": "http://schema.org#",
+            "PropertyValue": "schema:PropertyValue",
+            "value": "schema:value",
+            "alsoKnownAs": {
+                "@id": "as:alsoKnownAs",
+                "@type": "@id"
+            },
+            "movedTo": {
+                "@id": "as:movedTo",
+                "@type": "@id"
+            }
+        }
+    ],
+    "settings": {
+        "show_goal": false,
+        "preferred_timezone": "Australia/Adelaide",
+        "default_post_privacy": "followers",
+        "show_suggested_users": false
+    },
+    "goals": [
+        {
+            "goal": 12,
+            "year": 2023,
+            "privacy": "followers"
+        }
+    ],
+    "books": [
+        {
+            "work": {
+                "id": "https://www.example.com/book/1",
+                "type": "Work",
+                "title": "Seeing Like a State",
+                "description": "<p>Examines how (sometimes quasi-) authoritarian high-modernist planning  fails to deliver the goods, be they increased resources for the state or a better life for the people.</p>",
+                "languages": [ "English" ],
+                "series": "",
+                "seriesNumber": "",
+                "subjects": [],
+                "subjectPlaces": [],
+                "authors": [
+                    "https://www.example.com/author/1"
+                ],
+                "firstPublishedDate": "",
+                "publishedDate": "1998-03-30T00:00:00Z",
+                "fileLinks": [],
+                "lccn": "",
+                "editions": [
+                    "https://www.example.com/book/2"
+                ],
+                "@context": "https://www.w3.org/ns/activitystreams"
+            },
+            "edition": {
+                "id": "https://www.example.com/book/2",
+                "type": "Edition",
+                "openlibraryKey": "OL680025M",
+                "title": "Seeking Like A State",
+                "sortTitle": "seeing like a state",
+                "subtitle": "",
+                "description": "<p>Examines how (sometimes quasi-) authoritarian high-modernist planning  fails to deliver the goods, be they increased resources for the state or a better life for the people.</p>",
+                "languages": ["English"],
+                "series": "",
+                "seriesNumber": "",
+                "subjects": [],
+                "subjectPlaces": [],
+                "authors": [
+                    "https://www.example.com/author/1"
+                ],
+                "firstPublishedDate": "",
+                "publishedDate": "",
+                "fileLinks": [],
+                "cover": {
+                    "type": "Document",
+                    "url": "covers/d273d638-191d-4ebf-b213-3c60dbf010fe.jpeg",
+                    "name": "James C. Scott: Seeing like a state",
+                    "@context": "https://www.w3.org/ns/activitystreams"
+                },
+                "work": "https://www.example.com/book/1",
+                "isbn10": "",
+                "isbn13": "9780300070163",
+                "oclcNumber": "",
+                "physicalFormat": "",
+                "physicalFormatDetail": "",
+                "publishers": [],
+                "editionRank": 4,
+                "@context": "https://www.w3.org/ns/activitystreams"
+            },
+            "authors": [
+                {
+                    "id": "https://www.example.com/author/1",
+                    "type": "Author",
+                    "name": "James C. Scott",
+                    "aliases": [
+                        "James Campbell Scott",
+                        "\u30b8\u30a7\u30fc\u30e0\u30ba\u30fbC. \u30b9\u30b3\u30c3\u30c8",
+                        "\u30b8\u30a7\u30fc\u30e0\u30ba\u30fbC\u30fb\u30b9\u30b3\u30c3\u30c8",
+                        "\u062c\u06cc\u0645\u0632 \u0633\u06cc. \u0627\u0633\u06a9\u0627\u062a",
+                        "Jim Scott",
+                        "\u062c\u064a\u0645\u0633 \u0633\u0643\u0648\u062a",
+                        "James C. Scott",
+                        "\u0414\u0436\u0435\u0439\u043c\u0441 \u0421\u043a\u043e\u0442\u0442",
+                        "\u30b8\u30a7\u30fc\u30e0\u30b9\u30fbC \u30b9\u30b3\u30c3\u30c8",
+                        "James Cameron Scott"
+                    ],
+                    "bio": "<p>American political scientist and anthropologist</p>",
+                    "wikipediaLink": "https://en.wikipedia.org/wiki/James_C._Scott",
+                    "website": "",
+                    "@context": "https://www.w3.org/ns/activitystreams"
+                }
+            ],
+            "shelves": [
+                {
+                    "id": "https://www.example.com/user/rat/books/read",
+                    "type": "Shelf",
+                    "totalItems": 1,
+                    "first": "https://www.example.com/user/rat/books/read?page=1",
+                    "last": "https://www.example.com/user/rat/books/read?page=1",
+                    "name": "Read",
+                    "owner": "https://www.example.com/user/rat",
+                    "to": [
+                        "https://www.w3.org/ns/activitystreams#Public"
+                    ],
+                    "cc": [
+                        "https://www.example.com/user/rat/followers"
+                    ],
+                    "@context": "https://www.w3.org/ns/activitystreams"
+                },
+                {
+                    "id": "https://www.example.com/user/rat/books/to-read",
+                    "type": "Shelf",
+                    "totalItems": 1,
+                    "first": "https://www.example.com/user/rat/books/to-read?page=1",
+                    "last": "https://www.example.com/user/rat/books/to-read?page=1",
+                    "name": "To Read",
+                    "owner": "https://www.example.com/user/rat",
+                    "to": [
+                        "https://www.w3.org/ns/activitystreams#Public"
+                    ],
+                    "cc": [
+                        "https://www.example.com/user/rat/followers"
+                    ],
+                    "@context": "https://www.w3.org/ns/activitystreams"
+                }
+            ],
+            "lists": [
+                {
+                    "id": "https://www.example.com/list/2",
+                    "type": "BookList",
+                    "totalItems": 1,
+                    "first": "https://www.example.com/list/2?page=1",
+                    "last": "https://www.example.com/list/2?page=1",
+                    "name": "my list of books",
+                    "owner": "https://www.example.com/user/rat",
+                    "to": [
+                        "https://www.example.com/user/rat/followers"
+                    ],
+                    "cc": [],
+                    "summary": "Here is a description of my list",
+                    "curation": "closed",
+                    "@context": "https://www.w3.org/ns/activitystreams",
+                    "privacy": "followers",
+                    "list_item": {
+                        "id": "https://www.example.com/user/rat/listitem/3",
+                        "type": "ListItem",
+                        "actor": "https://www.example.com/user/rat",
+                        "book": "https://www.example.com/book/2",
+                        "notes": "<p>It's fun.</p>",
+                        "approved": true,
+                        "order": 1,
+                        "@context": "https://www.w3.org/ns/activitystreams"
+                    }
+                }
+            ],
+            "comments": [],
+            "quotations": [],
+            "reviews": [
+                {
+                    "id": "https://www.example.com/user/rat/review/7",
+                    "type": "Review",
+                    "published": "2023-08-14T04:09:18.343+00:00",
+                    "attributedTo": "https://www.example.com//user/rat",
+                    "content": "<p>I like it</p>",
+                    "to": [
+                        "https://your.domain.here/user/rat/followers"
+                    ],
+                    "cc": [],
+                    "replies": {
+                        "id": "https://www.example.com/user/rat/review/7/replies",
+                        "type": "OrderedCollection",
+                        "totalItems": 0,
+                        "first": "https://www.example.com/user/rat/review/7/replies?page=1",
+                        "last": "https://www.example.com/user/rat/review/7/replies?page=1",
+                        "@context": "https://www.w3.org/ns/activitystreams"
+                    },
+                    "summary": "Here's a spoiler alert",
+                    "tag": [],
+                    "attachment": [],
+                    "sensitive": true,
+                    "inReplyToBook": "https://www.example.com/book/6",
+                    "name": "great book",
+                    "rating": 5.0,
+                    "@context": "https://www.w3.org/ns/activitystreams",
+                    "progress": 23,
+                    "progress_mode": "PG"
+                }
+            ],
+            "readthroughs": [
+                {
+                    "id": 1,
+                    "created_date": "2023-08-14T04:00:27.544Z",
+                    "updated_date": "2023-08-14T04:00:27.546Z",
+                    "remote_id": "https://www.example.com/user/rat/readthrough/1",
+                    "user_id": 1,
+                    "book_id": 4880,
+                    "progress": null,
+                    "progress_mode": "PG",
+                    "start_date": "2018-01-01T00:00:00Z",
+                    "finish_date": "2023-08-13T00:00:00Z",
+                    "stopped_date": null,
+                    "is_active": false
+                }
+            ]
+        },
+        {
+            "work": {
+                "id": "https://www.example.com/book/3",
+                "type": "Work",
+                "title": "Sand Talk: How Indigenous Thinking Can Save the World",
+                "description": "",
+                "languages": [],
+                "series": "",
+                "seriesNumber": "",
+                "subjects": [],
+                "subjectPlaces": [],
+                "authors": [
+                    "https://www.example.com/author/2"
+                ],
+                "firstPublishedDate": "",
+                "publishedDate": "",
+                "fileLinks": [],
+                "lccn": "",
+                "openlibraryKey": "OL28216445M",
+                "editions": [
+                    "https://www.example.com/book/4"
+                ],
+                "@context": "https://www.w3.org/ns/activitystreams"
+            },
+            "edition": {
+                "id": "https://www.example.com/book/4",
+                "type": "Edition",
+                "title": "Sand Talk",
+                "sortTitle": "sand talk",
+                "subtitle": "How Indigenous Thinking Can Save the World",
+                "description": "",
+                "languages": [],
+                "series": "",
+                "seriesNumber": "",
+                "subjects": [],
+                "subjectPlaces": [],
+                "authors": [
+                    "https://www.example.com/author/2"
+                ],
+                "firstPublishedDate": "",
+                "publishedDate": "",
+                "fileLinks": [],
+                "cover": {
+                    "type": "Document",
+                    "url": "covers/6a553a08-2641-42a1-baa4-960df9edbbfc.jpeg",
+                    "name": "Tyson Yunkaporta - Sand Talk",
+                    "@context": "https://www.w3.org/ns/activitystreams"
+                },
+                "work": "https://www.example.com/book/3",
+                "isbn10": "",
+                "isbn13": "9780062975645",
+                "oclcNumber": "",
+                "inventaireId": "isbn:9780062975645",
+                "physicalFormat": "paperback",
+                "physicalFormatDetail": "",
+                "publishers": [],
+                "editionRank": 5,
+                "@context": "https://www.w3.org/ns/activitystreams"
+            },
+            "authors": [
+                {
+                    "id": "https://www.example.com/author/2",
+                    "type": "Author",
+                    "name": "Tyson Yunkaporta",
+                    "aliases": [],
+                    "bio": "",
+                    "wikipediaLink": "",
+                    "website": "",
+                    "@context": "https://www.w3.org/ns/activitystreams"
+                }
+            ],
+            "shelves": [],
+            "lists": [],
+            "comments": [
+                {
+                    "id": "https://www.example.com/user/rat/comment/4",
+                    "type": "Comment",
+                    "published": "2023-08-14T04:48:18.746+00:00",
+                    "attributedTo": "https://www.example.com/user/rat",
+                    "content": "<p>this is a comment about an amazing book</p>",
+                    "to": [
+                        "https://www.w3.org/ns/activitystreams#Public"
+                    ],
+                    "cc": [
+                        "https://www.example.com/user/rat/followers"
+                    ],
+                    "replies": {
+                        "id": "https://www.example.com/user/rat/comment/4/replies",
+                        "type": "OrderedCollection",
+                        "totalItems": 0,
+                        "first": "https://www.example.com/user/rat/comment/4/replies?page=1",
+                        "last": "https://www.example.com/user/rat/comment/4/replies?page=1",
+                        "@context": "https://www.w3.org/ns/activitystreams"
+                    },
+                    "tag": [],
+                    "attachment": [],
+                    "sensitive": false,
+                    "inReplyToBook": "https://www.example.com/book/4",
+                    "readingStatus": null,
+                    "@context": "https://www.w3.org/ns/activitystreams"
+                }
+            ],
+            "quotations": [
+                {
+                    "id": "https://www.example.com/user/rat/quotation/2",
+                    "type": "Quotation",
+                    "published": "2023-11-12T04:29:38.370305+00:00",
+                    "attributedTo": "https://www.example.com/user/rat",
+                    "content": "<p>not actually from this book lol</p>",
+                    "to": [
+                        "https://www.w3.org/ns/activitystreams#Public"
+                    ],
+                    "cc": [
+                        "https://www.example.com/user/rat/followers"
+                    ],
+                    "replies": {
+                        "id": "https://www.example.com/user/rat/quotation/2/replies",
+                        "type": "OrderedCollection",
+                        "totalItems": 0,
+                        "first": "https://www.example.com/user/rat/quotation/2/replies?page=1",
+                        "last": "https://www.example.com/user/rat/quotation/2/replies?page=1",
+                        "@context": "https://www.w3.org/ns/activitystreams"
+                    },
+                    "tag": [],
+                    "attachment": [],
+                    "sensitive": false,
+                    "summary": "spoiler ahead!",
+                    "inReplyToBook": "https://www.example.com/book/2",
+                    "quote": "<p>To be or not to be</p>",
+                    "@context": "https://www.w3.org/ns/activitystreams"
+                }
+            ],
+            "reviews": [],
+            "readthroughs": []
+        }
+    ],
+    "saved_lists": [
+        "https://local.lists/9999"
+    ],
+    "follows": [
+        "https://your.domain.here/user/rat"
+    ],
+    "blocks": ["https://your.domain.here/user/badger"]
+}

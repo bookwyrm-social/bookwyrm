@@ -166,17 +166,26 @@ def json_export(
         for status in ["comments", "quotations", "reviews"]:
             book[status] = []
 
+        # TODO: add privacy!
         comments = Comment.objects.filter(user=user, book=edition).all()
         for status in comments:
-            book["comments"].append(status.to_activity())
+            obj = status.to_activity()
+            obj["progress"] = status.progress
+            obj["progress_mode"] = status.progress_mode
+            book["comments"].append(obj)
 
         quotes = Quotation.objects.filter(user=user, book=edition).all()
         for status in quotes:
-            book["quotations"].append(status.to_activity())
+            obj = status.to_activity()
+            obj["position"] = status.position
+            obj["endposition"] = status.endposition
+            obj["position_mode"] = status.position_mode
+            book["quotations"].append(obj)
 
         reviews = Review.objects.filter(user=user, book=edition).all()
         for status in reviews:
-            book["reviews"].append(status.to_activity())
+            obj = status.to_activity()
+            book["reviews"].append(obj)
 
         # readthroughs can't be serialized to activity
         book_readthroughs = (

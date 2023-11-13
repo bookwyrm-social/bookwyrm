@@ -120,7 +120,7 @@ def get_or_create_edition(book_data, tar):
     for author in book_data.get("authors"):
         parsed_author = activitypub.parse(author)
         instance = parsed_author.to_model(
-            model=models.Author, save=True, overwrite=False
+            model=models.Author, save=True, overwrite=True
         )
 
         edition["authors"].append(instance.remote_id)
@@ -135,13 +135,13 @@ def get_or_create_edition(book_data, tar):
     work = book_data.get("work")
     work["editions"] = []
     parsed_work = activitypub.parse(work)
-    work_instance = parsed_work.to_model(model=models.Work, save=True, overwrite=False)
+    work_instance = parsed_work.to_model(model=models.Work, save=True, overwrite=True)
 
     # now we have a work we can add it to the edition
     # and create the edition model instance
     edition["work"] = work_instance.remote_id
     parsed_edition = activitypub.parse(edition)
-    book = parsed_edition.to_model(model=models.Edition, save=True, overwrite=False)
+    book = parsed_edition.to_model(model=models.Edition, save=True, overwrite=True)
 
     # set the cover image from the tar
     if cover_path:
@@ -180,15 +180,32 @@ def upsert_statuses(user, cls, data, book_remote_id):
 
     for status in data:
 
-        # change ids and remove replies
+        # update ids and remove replies
         status["attributedTo"] = user.remote_id
-        status["to"] = []
-        status["replies"] = {}
+        status["to"] = update_followers_address(user, status["to"])
+        status["cc"] = update_followers_address(user, status["cc"])
+        status[
+            "replies"
+        ] = {}  # this parses incorrectly but we can't set it without knowing the new id
         status["inReplyToBook"] = book_remote_id
 
-        # save new status or do nothing if it already exists
+        # save new status or do update it if it already exists
         parsed = activitypub.parse(status)
-        parsed.to_model(model=cls, save=True, overwrite=False)
+        instance = parsed.to_model(model=cls, save=True, overwrite=True)
+
+        print(instance.id, instance.privacy)
+
+        for val in [
+            "progress",
+            "progress_mode",
+            "position",
+            "endposition",
+            "position_mode",
+        ]:
+            if status.get(val):
+                print(val, status[val])
+                instance.val = status[val]
+        instance.save()
 
 
 def upsert_lists(user, lists, book_id):
@@ -209,7 +226,7 @@ def upsert_lists(user, lists, book_id):
 
             blist["owner"] = user.remote_id
             parsed = activitypub.parse(blist)
-            booklist = parsed.to_model(model=models.List, save=True, overwrite=False)
+            booklist = parsed.to_model(model=models.List, save=True, overwrite=True)
 
             booklist.privacy = blist["privacy"]
             booklist.save()
@@ -282,9 +299,8 @@ def update_user_settings(user, data):
     ]
 
     for field in bw_fields:
-        if data["settings"].get(field, False):
-            update_fields.append(field)
-            setattr(user, field, data["settings"][field])
+        update_fields.append(field)
+        setattr(user, field, data["settings"][field])
 
     user.save(update_fields=update_fields)
 
@@ -393,3 +409,14 @@ def upsert_user_blocks_task(job_id):
     return upsert_user_blocks(
         parent_job.user, parent_job.import_data.get("blocked_users")
     )
+
+
+def update_followers_address(user, field):
+    """statuses to or cc followers need to have the followers
+    address updated to the new local user"""
+
+    for i, audience in enumerate(field):
+        if audience.rsplit("/")[-1] == "followers":
+            field[i] = user.followers_url
+
+    return field
