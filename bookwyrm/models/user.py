@@ -1,13 +1,14 @@
 """ database schema for user data """
 import re
 from urllib.parse import urlparse
+from uuid import uuid4
 
 from django.apps import apps
 from django.contrib.auth.models import AbstractUser
 from django.contrib.postgres.fields import ArrayField, CICharField
 from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
 from django.dispatch import receiver
-from django.db import models, transaction
+from django.db import models, transaction, IntegrityError
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from model_utils import FieldTracker
@@ -53,6 +54,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
 
     username = fields.UsernameField()
     email = models.EmailField(unique=True, null=True)
+    is_deleted = models.BooleanField(default=False)
 
     key_pair = fields.OneToOneField(
         "KeyPair",
@@ -394,9 +396,44 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         """We don't actually delete the database entry"""
         # pylint: disable=attribute-defined-outside-init
         self.is_active = False
-        self.avatar = ""
+        self.allow_reactivation = False
+        self.is_deleted = True
+
+        self.erase_user_data()
+        self.erase_user_statuses()
+
         # skip the logic in this class's save()
-        super().save(*args, **kwargs)
+        super().save(
+            *args,
+            **kwargs,
+        )
+
+    def erase_user_data(self):
+        """Wipe a user's custom data"""
+        if not self.is_deleted:
+            raise IntegrityError(
+                "Trying to erase user data on user that is not deleted"
+            )
+
+        # mangle email address
+        self.email = f"{uuid4()}@deleted.user"
+
+        # erase data fields
+        self.avatar = ""
+        self.preview_image = ""
+        self.summary = None
+        self.name = None
+        self.favorites.set([])
+
+    def erase_user_statuses(self, broadcast=True):
+        """Wipe the data on all the user's statuses"""
+        if not self.is_deleted:
+            raise IntegrityError(
+                "Trying to erase user data on user that is not deleted"
+            )
+
+        for status in self.status_set.all():
+            status.delete(broadcast=broadcast)
 
     def deactivate(self):
         """Disable the user but allow them to reactivate"""

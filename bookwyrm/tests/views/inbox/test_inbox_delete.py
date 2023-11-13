@@ -11,6 +11,7 @@ from bookwyrm import models, views
 class InboxActivities(TestCase):
     """inbox tests"""
 
+    # pylint: disable=invalid-name
     def setUp(self):
         """basic user and book data"""
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
@@ -97,7 +98,8 @@ class InboxActivities(TestCase):
         self.assertEqual(models.Notification.objects.get(), notif)
 
     @patch("bookwyrm.suggested_users.remove_user_task.delay")
-    def test_delete_user(self, _):
+    @patch("bookwyrm.activitystreams.remove_status_task.delay")
+    def test_delete_user(self, *_):
         """delete a user"""
         self.assertTrue(models.User.objects.get(username="rat@example.com").is_active)
         activity = {
