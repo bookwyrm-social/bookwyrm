@@ -53,57 +53,62 @@ class BookwyrmImport(TestCase):  # pylint: disable=too-many-public-methods
                 localname="badger",
             )
 
-            self.work = models.Work.objects.create(title="Test Book")
+            self.work = models.Work.objects.create(title="Sand Talk")
 
             self.book = models.Edition.objects.create(
-                title="Test Book",
+                title="Sand Talk",
                 remote_id="https://example.com/book/1234",
                 openlibrary_key="OL28216445M",
+                inventaire_id="isbn:9780062975645",
+                isbn_13="9780062975645",
                 parent_work=self.work,
             )
+
+        self.json_file = pathlib.Path(__file__).parent.joinpath(
+            "../data/user_import.json"
+        )
+
+        with open(self.json_file, "r", encoding="utf-8") as jsonfile:
+            self.json_data = json.loads(jsonfile.read())
 
         self.archive_file = pathlib.Path(__file__).parent.joinpath(
             "../data/bookwyrm_account_export.tar.gz"
         )
-        with open(self.archive_file, "rb") as fileobj:
-            with BookwyrmTarFile.open(mode="r:gz", fileobj=fileobj) as tarfile:
-                self.import_data = json.loads(
-                    tarfile.read("archive.json").decode("utf-8")
-                )
 
     def test_update_user_profile(self):
         """Test update the user's profile from import data"""
 
         with patch("bookwyrm.suggested_users.remove_user_task.delay"), patch(
             "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
-        ):
+        ), patch("bookwyrm.suggested_users.rerank_user_task.delay"):
 
             with open(self.archive_file, "rb") as fileobj:
                 with BookwyrmTarFile.open(mode="r:gz", fileobj=fileobj) as tarfile:
 
                     models.bookwyrm_import_job.update_user_profile(
-                        self.local_user, tarfile, self.import_data.get("user")
+                        self.local_user, tarfile, self.json_data
                     )
-                    self.local_user.refresh_from_db()
 
-                    self.assertEqual(
-                        self.local_user.username, "mouse"
-                    )  # username should not change
-                    self.assertEqual(self.local_user.name, "Rat")
-                    self.assertEqual(
-                        self.local_user.summary,
-                        "I love to make soup in Paris and eat pizza in New York",
-                    )
+            self.local_user.refresh_from_db()
+
+            self.assertEqual(
+                self.local_user.username, "mouse"
+            )  # username should not change
+            self.assertEqual(self.local_user.name, "Rat")
+            self.assertEqual(
+                self.local_user.summary,
+                "I love to make soup in Paris and eat pizza in New York",
+            )
 
     def test_update_user_settings(self):
         """Test updating the user's settings from import data"""
 
         with patch("bookwyrm.suggested_users.remove_user_task.delay"), patch(
             "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
-        ):
+        ), patch("bookwyrm.suggested_users.rerank_user_task.delay"):
 
             models.bookwyrm_import_job.update_user_settings(
-                self.local_user, self.import_data.get("user")
+                self.local_user, self.json_data
             )
             self.local_user.refresh_from_db()
 
@@ -125,11 +130,11 @@ class BookwyrmImport(TestCase):  # pylint: disable=too-many-public-methods
             privacy="public",
         )
 
+        goals = [{"goal": 12, "year": 2023, "privacy": "followers"}]
+
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
 
-            models.bookwyrm_import_job.update_goals(
-                self.local_user, self.import_data.get("goals")
-            )
+            models.bookwyrm_import_job.update_goals(self.local_user, goals)
 
         self.local_user.refresh_from_db()
         goal = models.AnnualGoal.objects.get()
@@ -198,7 +203,7 @@ class BookwyrmImport(TestCase):  # pylint: disable=too-many-public-methods
             "bookwyrm.lists_stream.add_user_lists_task.delay"
         ), patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             models.bookwyrm_import_job.upsert_follows(
-                self.local_user, self.import_data.get("follows")
+                self.local_user, self.json_data.get("follows")
             )
 
         after_follow = models.UserFollows.objects.filter(
@@ -223,7 +228,7 @@ class BookwyrmImport(TestCase):  # pylint: disable=too-many-public-methods
             "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
         ):
             models.bookwyrm_import_job.upsert_user_blocks(
-                self.local_user, self.import_data.get("blocked_users")
+                self.local_user, self.json_data.get("blocks")
             )
 
         blocked_after = models.UserBlocks.objects.filter(
@@ -233,19 +238,6 @@ class BookwyrmImport(TestCase):  # pylint: disable=too-many-public-methods
             )
         ).exists()
         self.assertTrue(blocked_after)
-
-    def test_get_or_create_authors(self):
-        """Test taking a JSON string of authors find or create the authors
-        in the database and returning a list of author instances"""
-
-        author_exists = models.Author.objects.filter(isni="0000000108973024").exists()
-        self.assertFalse(author_exists)
-
-        authors = self.import_data.get("books")[0]["authors"]
-        bookwyrm_import_job.get_or_create_authors(authors)
-
-        author = models.Author.objects.get(isni="0000000108973024")
-        self.assertEqual(author.name, "James C. Scott")
 
     def test_get_or_create_edition_existing(self):
         """Test take a JSON string of books and editions,
@@ -258,7 +250,7 @@ class BookwyrmImport(TestCase):  # pylint: disable=too-many-public-methods
             with BookwyrmTarFile.open(mode="r:gz", fileobj=fileobj) as tarfile:
 
                 bookwyrm_import_job.get_or_create_edition(
-                    self.import_data["books"][1], tarfile
+                    self.json_data["books"][1], tarfile
                 )  # Sand Talk
 
                 self.assertEqual(models.Edition.objects.count(), 1)
@@ -272,53 +264,13 @@ class BookwyrmImport(TestCase):  # pylint: disable=too-many-public-methods
 
         with open(self.archive_file, "rb") as fileobj:
             with BookwyrmTarFile.open(mode="r:gz", fileobj=fileobj) as tarfile:
+
                 bookwyrm_import_job.get_or_create_edition(
-                    self.import_data["books"][0], tarfile
+                    self.json_data["books"][0], tarfile
                 )  # Seeing like a state
 
-                self.assertTrue(
-                    models.Edition.objects.filter(isbn_13="9780300070163").exists()
-                )
-                self.assertEqual(models.Edition.objects.count(), 2)
-
-    def test_clean_values(self):
-        """test clean values we don't want when creating new instances"""
-
-        author = self.import_data.get("books")[0]["authors"][0]
-        edition = self.import_data.get("books")[0]["edition"]
-
-        cleaned_author = bookwyrm_import_job.clean_values(author)
-        cleaned_edition = bookwyrm_import_job.clean_values(edition)
-
-        self.assertEqual(cleaned_author["name"], "James C. Scott")
-        self.assertEqual(cleaned_author.get("id"), None)
-        self.assertEqual(cleaned_author.get("remote_id"), None)
-        self.assertEqual(cleaned_author.get("last_edited_by"), None)
-        self.assertEqual(cleaned_author.get("last_edited_by_id"), None)
-
-        self.assertEqual(cleaned_edition.get("title"), "Seeing Like a State")
-        self.assertEqual(cleaned_edition.get("id"), None)
-        self.assertEqual(cleaned_edition.get("remote_id"), None)
-        self.assertEqual(cleaned_edition.get("last_edited_by"), None)
-        self.assertEqual(cleaned_edition.get("last_edited_by_id"), None)
-        self.assertEqual(cleaned_edition.get("cover"), None)
-        self.assertEqual(cleaned_edition.get("preview_image "), None)
-        self.assertEqual(cleaned_edition.get("user"), None)
-        self.assertEqual(cleaned_edition.get("book_list"), None)
-        self.assertEqual(cleaned_edition.get("shelf_book"), None)
-
-    def test_find_existing(self):
-        """Given a book or author, find any existing model instances"""
-
-        self.assertEqual(models.Book.objects.count(), 2)  # includes Work
-        self.assertEqual(models.Edition.objects.count(), 1)
-        self.assertEqual(models.Edition.objects.first().title, "Test Book")
-        self.assertEqual(models.Edition.objects.first().openlibrary_key, "OL28216445M")
-
-        existing = bookwyrm_import_job.find_existing(
-            models.Edition, {"openlibrary_key": "OL28216445M", "isbn_10": None}
-        )
-        self.assertEqual(existing.title, "Test Book")
+        self.assertTrue(models.Edition.objects.filter(isbn_13="9780300070163").exists())
+        self.assertEqual(models.Edition.objects.count(), 2)
 
     def test_upsert_readthroughs(self):
         """Test take a JSON string of readthroughs, find or create the
@@ -332,7 +284,7 @@ class BookwyrmImport(TestCase):  # pylint: disable=too-many-public-methods
                 "remote_id": "https://example.com/mouse/readthrough/1",
                 "user_id": 1,
                 "book_id": 1234,
-                "progress": None,
+                "progress": 23,
                 "progress_mode": "PG",
                 "start_date": "2022-12-31T13:30:00Z",
                 "finish_date": "2023-08-23T14:30:00Z",
@@ -355,19 +307,20 @@ class BookwyrmImport(TestCase):  # pylint: disable=too-many-public-methods
         self.assertEqual(models.ReadThrough.objects.first().book_id, self.book.id)
         self.assertEqual(models.ReadThrough.objects.first().user, self.local_user)
 
-    def test_get_or_create_review_status(self):
+    def test_get_or_create_review(self):
         """Test get_or_create_review_status with a review"""
 
         self.assertEqual(models.Review.objects.filter(user=self.local_user).count(), 0)
-        reviews = self.import_data["books"][0]["reviews"]
+        reviews = self.json_data["books"][0]["reviews"]
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
-            bookwyrm_import_job.get_or_create_statuses(
-                self.local_user, models.Review, reviews, self.book.id
+            bookwyrm_import_job.upsert_statuses(
+                self.local_user, models.Review, reviews, self.book.remote_id
             )
+
         self.assertEqual(models.Review.objects.filter(user=self.local_user).count(), 1)
         self.assertEqual(
-            models.Review.objects.filter(book=self.book).first().raw_content,
-            "I like it",
+            models.Review.objects.filter(book=self.book).first().content,
+            "<p>I like it</p>",
         )
         self.assertEqual(
             models.Review.objects.filter(book=self.book).first().content_warning,
@@ -377,29 +330,29 @@ class BookwyrmImport(TestCase):  # pylint: disable=too-many-public-methods
             models.Review.objects.filter(book=self.book).first().sensitive, True
         )
         self.assertEqual(
-            models.Review.objects.filter(book=self.book).first().published_date,
-            parse_datetime("2023-08-14T04:09:18.343Z"),
-        )
-        self.assertEqual(
             models.Review.objects.filter(book=self.book).first().name, "great book"
         )
         self.assertAlmostEqual(
             models.Review.objects.filter(book=self.book).first().rating, 5.00
         )
 
-    def test_get_or_create_comment_status(self):
+        self.assertEqual(
+            models.Review.objects.filter(book=self.book).first().privacy, "followers"
+        )
+
+    def test_get_or_create_comment(self):
         """Test get_or_create_review_status with a comment"""
 
         self.assertEqual(models.Comment.objects.filter(user=self.local_user).count(), 0)
-        comments = self.import_data["books"][1]["comments"]
+        comments = self.json_data["books"][1]["comments"]
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
-            bookwyrm_import_job.get_or_create_statuses(
-                self.local_user, models.Comment, comments, self.book.id
+            bookwyrm_import_job.upsert_statuses(
+                self.local_user, models.Comment, comments, self.book.remote_id
             )
         self.assertEqual(models.Comment.objects.filter(user=self.local_user).count(), 1)
         self.assertEqual(
-            models.Comment.objects.filter(book=self.book).first().raw_content,
-            "this is a comment about an amazing book",
+            models.Comment.objects.filter(book=self.book).first().content,
+            "<p>this is a comment about an amazing book</p>",
         )
         self.assertEqual(
             models.Comment.objects.filter(book=self.book).first().content_warning, None
@@ -408,55 +361,44 @@ class BookwyrmImport(TestCase):  # pylint: disable=too-many-public-methods
             models.Comment.objects.filter(book=self.book).first().sensitive, False
         )
         self.assertEqual(
-            models.Comment.objects.filter(book=self.book).first().published_date,
-            parse_datetime("2023-08-14T04:48:18.746Z"),
-        )
-        self.assertEqual(
             models.Comment.objects.filter(book=self.book).first().progress_mode, "PG"
         )
 
-    def test_get_or_create_comment_quote(self):
+    def test_get_or_create_quote(self):
         """Test get_or_create_review_status with a quote"""
 
         self.assertEqual(
             models.Quotation.objects.filter(user=self.local_user).count(), 0
         )
-        quotes = self.import_data["books"][1]["quotes"]
+        quotes = self.json_data["books"][1]["quotations"]
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
-            bookwyrm_import_job.get_or_create_statuses(
-                self.local_user, models.Quotation, quotes, self.book.id
+            bookwyrm_import_job.upsert_statuses(
+                self.local_user, models.Quotation, quotes, self.book.remote_id
             )
         self.assertEqual(
             models.Quotation.objects.filter(user=self.local_user).count(), 1
         )
         self.assertEqual(
-            models.Quotation.objects.filter(book=self.book).first().raw_content,
-            "not actually from this book lol",
+            models.Quotation.objects.filter(book=self.book).first().content,
+            "<p>not actually from this book lol</p>",
         )
         self.assertEqual(
             models.Quotation.objects.filter(book=self.book).first().content_warning,
             "spoiler ahead!",
         )
         self.assertEqual(
-            models.Quotation.objects.filter(book=self.book).first().raw_quote,
-            "To be or not to be",
-        )
-        self.assertEqual(
-            models.Quotation.objects.filter(book=self.book).first().published_date,
-            parse_datetime("2023-08-14T04:48:50.207Z"),
+            models.Quotation.objects.filter(book=self.book).first().quote,
+            "<p>To be or not to be</p>",
         )
         self.assertEqual(
             models.Quotation.objects.filter(book=self.book).first().position_mode, "PG"
-        )
-        self.assertEqual(
-            models.Quotation.objects.filter(book=self.book).first().position, 1
         )
 
     def test_upsert_list_existing(self):
         """Take a list and ListItems as JSON and create DB entries
         if they don't already exist"""
 
-        book_data = self.import_data["books"][0]
+        book_data = self.json_data["books"][0]
 
         other_book = models.Edition.objects.create(
             title="Another Book", remote_id="https://example.com/book/9876"
@@ -488,7 +430,6 @@ class BookwyrmImport(TestCase):  # pylint: disable=too-many-public-methods
             bookwyrm_import_job.upsert_lists(
                 self.local_user,
                 book_data["lists"],
-                book_data["list_items"],
                 other_book.id,
             )
 
@@ -505,7 +446,7 @@ class BookwyrmImport(TestCase):  # pylint: disable=too-many-public-methods
         """Take a list and ListItems as JSON and create DB entries
         if they don't already exist"""
 
-        book_data = self.import_data["books"][0]
+        book_data = self.json_data["books"][0]
 
         self.assertEqual(models.List.objects.filter(user=self.local_user).count(), 0)
         self.assertFalse(models.ListItem.objects.filter(book=self.book.id).exists())
@@ -516,7 +457,6 @@ class BookwyrmImport(TestCase):  # pylint: disable=too-many-public-methods
             bookwyrm_import_job.upsert_lists(
                 self.local_user,
                 book_data["lists"],
-                book_data["list_items"],
                 self.book.id,
             )
 
@@ -542,7 +482,7 @@ class BookwyrmImport(TestCase):  # pylint: disable=too-many-public-methods
                 book=self.book, shelf=shelf, user=self.local_user
             )
 
-        book_data = self.import_data["books"][0]
+        book_data = self.json_data["books"][0]
         with patch("bookwyrm.activitystreams.add_book_statuses_task.delay"), patch(
             "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
         ):
@@ -560,7 +500,7 @@ class BookwyrmImport(TestCase):  # pylint: disable=too-many-public-methods
             models.ShelfBook.objects.filter(user=self.local_user.id).count(), 0
         )
 
-        book_data = self.import_data["books"][0]
+        book_data = self.json_data["books"][0]
 
         with patch("bookwyrm.activitystreams.add_book_statuses_task.delay"), patch(
             "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
