@@ -43,7 +43,6 @@ def start_import_task(**kwargs):
         archive_file.open("rb")
         with BookwyrmTarFile.open(mode="r:gz", fileobj=archive_file) as tar:
             job.import_data = json.loads(tar.read("archive.json").decode("utf-8"))
-            # TODO: option to import "user.json" in unzipped tar (i.e. Mastodon) instead
 
             if "include_user_profile" in job.required:
                 update_user_profile(job.user, tar, job.import_data)
