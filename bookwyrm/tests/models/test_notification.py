@@ -43,7 +43,7 @@ class Notification(TestCase):
     def test_notification(self):
         """New notifications are unread"""
         notification = models.Notification.objects.create(
-            user=self.local_user, notification_type=models.Notification.FAVORITE
+            user=self.local_user, notification_type=models.NotificationType.FAVORITE
         )
         self.assertFalse(notification.read)
 
@@ -52,7 +52,7 @@ class Notification(TestCase):
         models.Notification.notify(
             self.local_user,
             self.remote_user,
-            notification_type=models.Notification.FAVORITE,
+            notification_type=models.NotificationType.FAVORITE,
         )
         self.assertTrue(models.Notification.objects.exists())
 
@@ -61,7 +61,7 @@ class Notification(TestCase):
         models.Notification.notify(
             self.local_user,
             self.remote_user,
-            notification_type=models.Notification.FAVORITE,
+            notification_type=models.NotificationType.FAVORITE,
         )
         self.assertEqual(models.Notification.objects.count(), 1)
         notification = models.Notification.objects.get()
@@ -70,7 +70,7 @@ class Notification(TestCase):
         models.Notification.notify(
             self.local_user,
             self.another_user,
-            notification_type=models.Notification.FAVORITE,
+            notification_type=models.NotificationType.FAVORITE,
         )
         self.assertEqual(models.Notification.objects.count(), 1)
         notification.refresh_from_db()
@@ -92,7 +92,7 @@ class Notification(TestCase):
         models.Notification.notify(
             self.remote_user,
             self.local_user,
-            notification_type=models.Notification.FAVORITE,
+            notification_type=models.NotificationType.FAVORITE,
         )
         self.assertFalse(models.Notification.objects.exists())
 
@@ -101,7 +101,7 @@ class Notification(TestCase):
         models.Notification.notify(
             self.local_user,
             self.local_user,
-            notification_type=models.Notification.FAVORITE,
+            notification_type=models.NotificationType.FAVORITE,
         )
         self.assertFalse(models.Notification.objects.exists())
 
@@ -154,14 +154,14 @@ class Notification(TestCase):
         models.Notification.notify(
             self.local_user,
             self.remote_user,
-            notification_type=models.Notification.FAVORITE,
+            notification_type=models.NotificationType.FAVORITE,
         )
         self.assertTrue(models.Notification.objects.exists())
 
         models.Notification.unnotify(
             self.local_user,
             self.remote_user,
-            notification_type=models.Notification.FAVORITE,
+            notification_type=models.NotificationType.FAVORITE,
         )
         self.assertFalse(models.Notification.objects.exists())
 
@@ -170,25 +170,25 @@ class Notification(TestCase):
         models.Notification.notify(
             self.local_user,
             self.remote_user,
-            notification_type=models.Notification.FAVORITE,
+            notification_type=models.NotificationType.FAVORITE,
         )
         models.Notification.notify(
             self.local_user,
             self.another_user,
-            notification_type=models.Notification.FAVORITE,
+            notification_type=models.NotificationType.FAVORITE,
         )
         self.assertTrue(models.Notification.objects.exists())
 
         models.Notification.unnotify(
             self.local_user,
             self.remote_user,
-            notification_type=models.Notification.FAVORITE,
+            notification_type=models.NotificationType.FAVORITE,
         )
         self.assertTrue(models.Notification.objects.exists())
 
         models.Notification.unnotify(
             self.local_user,
             self.another_user,
-            notification_type=models.Notification.FAVORITE,
+            notification_type=models.NotificationType.FAVORITE,
         )
         self.assertFalse(models.Notification.objects.exists())

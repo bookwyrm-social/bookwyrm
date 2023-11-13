@@ -11,7 +11,7 @@ from django.test import TestCase
 from django.utils import timezone
 
 from bookwyrm import models, settings
-from bookwyrm.models.book import isbn_10_to_13, isbn_13_to_10
+from bookwyrm.models.book import isbn_10_to_13, isbn_13_to_10, normalize_isbn
 from bookwyrm.settings import ENABLE_THUMBNAIL_GENERATION
 
 
@@ -71,6 +71,10 @@ class Book(TestCase):
         isbn_13 = "978-1788-16167-1"
         isbn_10 = isbn_13_to_10(isbn_13)
         self.assertEqual(isbn_10, "178816167X")
+
+    def test_normalize_isbn(self):
+        """Remove misc characters from ISBNs"""
+        self.assertEqual(normalize_isbn("978-0-4633461-1-2"), "9780463346112")
 
     def test_get_edition_info(self):
         """text slug about an edition"""

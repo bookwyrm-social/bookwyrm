@@ -6,7 +6,7 @@ from bookwyrm import activitypub
 from .activitypub_mixin import ActivityMixin
 from .base_model import BookWyrmModel
 from . import fields
-from .notification import Notification
+from .notification import Notification, NotificationType
 
 
 class Move(ActivityMixin, BookWyrmModel):
@@ -49,7 +49,6 @@ class MoveUser(Move):
 
         # only allow if the source is listed in the target's alsoKnownAs
         if self.user in self.target.also_known_as.all():
-
             self.user.also_known_as.add(self.target.id)
             self.user.update_active_date()
             self.user.moved_to = self.target.remote_id
@@ -65,7 +64,7 @@ class MoveUser(Move):
             for follower in self.user.followers.all():
                 if follower.local:
                     Notification.notify(
-                        follower, self.user, notification_type=Notification.MOVE
+                        follower, self.user, notification_type=NotificationType.MOVE
                     )
 
         else:
