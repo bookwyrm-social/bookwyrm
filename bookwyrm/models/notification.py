@@ -261,9 +261,7 @@ def notify_user_on_user_export_complete(
     """we exported your user details! aren't you proud of us"""
     update_fields = update_fields or []
     if not instance.complete or "complete" not in update_fields:
-        print("RETURNING", instance.status)
         return
-    print("NOTIFYING")
     Notification.objects.create(
         user=instance.user,
         notification_type=Notification.USER_EXPORT,

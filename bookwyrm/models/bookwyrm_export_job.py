@@ -1,5 +1,6 @@
 """Export user account to tar.gz file for import into another Bookwyrm instance"""
 
+import dataclasses
 import logging
 from uuid import uuid4
 
@@ -8,12 +9,11 @@ from django.db.models import Q
 from django.core.serializers.json import DjangoJSONEncoder
 from django.core.files.base import ContentFile
 
-from bookwyrm.models import AnnualGoal, ReadThrough, ShelfBook, Shelf, List, ListItem
+from bookwyrm.models import AnnualGoal, ReadThrough, ShelfBook, List, ListItem
 from bookwyrm.models import Review, Comment, Quotation
-from bookwyrm.models import Edition, Book
+from bookwyrm.models import Edition
 from bookwyrm.models import UserFollows, User, UserBlocks
 from bookwyrm.models.job import ParentJob, ParentTask
-from bookwyrm.settings import DOMAIN
 from bookwyrm.tasks import app, IMPORTS
 from bookwyrm.utils.tar import BookwyrmTarFile
 
@@ -63,7 +63,7 @@ def tar_export(json_data: str, user, file):
         if getattr(user, "avatar", False):
             tar.add_image(user.avatar, filename="avatar")
 
-        editions, books = get_books_for_user(user)  # pylint: disable=unused-variable
+        editions = get_books_for_user(user)
         for book in editions:
             if getattr(book, "cover", False):
                 tar.add_image(book.cover)
@@ -71,138 +71,162 @@ def tar_export(json_data: str, user, file):
     file.close()
 
 
-def json_export(user):  # pylint: disable=too-many-locals, too-many-statements
+def json_export(
+    user,
+):  # pylint: disable=too-many-locals, too-many-statements, too-many-branches
     """Generate an export for a user"""
-    # user
-    exported_user = {}
+
+    # User as AP object
+    exported_user = user.to_activity()
+    # I don't love this but it prevents a JSON encoding error
+    # when there is no user image
+    if isinstance(
+        exported_user["icon"],
+        dataclasses._MISSING_TYPE,  # pylint: disable=protected-access
+    ):
+        exported_user["icon"] = {}
+    else:
+        # change the URL to be relative to the JSON file
+        file_type = exported_user["icon"]["url"].rsplit(".", maxsplit=1)[-1]
+        filename = f"avatar.{file_type}"
+        exported_user["icon"]["url"] = filename
+
+    # Additional settings - can't be serialized as AP
     vals = [
-        "username",
-        "name",
-        "summary",
-        "manually_approves_followers",
-        "hide_follows",
         "show_goal",
-        "show_suggested_users",
-        "discoverable",
         "preferred_timezone",
         "default_post_privacy",
+        "show_suggested_users",
     ]
+    exported_user["settings"] = {}
     for k in vals:
-        exported_user[k] = getattr(user, k)
+        exported_user["settings"][k] = getattr(user, k)
 
-    if getattr(user, "avatar", False):
-        exported_user["avatar"] = f'https://{DOMAIN}{getattr(user, "avatar").url}'
-
-    # reading goals
+    # Reading goals - can't be serialized as AP
     reading_goals = AnnualGoal.objects.filter(user=user).distinct()
-    goals_list = []
-    # TODO: either error checking should be more sophisticated
-    # or maybe we don't need this try/except
-    try:
-        for goal in reading_goals:
-            goals_list.append(
-                {"goal": goal.goal, "year": goal.year, "privacy": goal.privacy}
-            )
-    except Exception:  # pylint: disable=broad-except
-        pass
+    exported_user["goals"] = []
+    for goal in reading_goals:
+        exported_user["goals"].append(
+            {"goal": goal.goal, "year": goal.year, "privacy": goal.privacy}
+        )
 
-    try:
-        readthroughs = ReadThrough.objects.filter(user=user).distinct().values()
-        readthroughs = list(readthroughs)
-    except Exception:  # pylint: disable=broad-except
-        readthroughs = []
+    # Reading history - can't be serialized as AP
+    readthroughs = ReadThrough.objects.filter(user=user).distinct().values()
+    readthroughs = list(readthroughs)
 
-    # books
-    editions, books = get_books_for_user(user)
-    final_books = []
+    # Books
+    editions = get_books_for_user(user)
+    exported_user["books"] = []
 
-    for book in books.values():
-        edition = editions.filter(id=book["id"])
-        book["edition"] = edition.values()[0]
+    for edition in editions:
+        book = {}
+        book["work"] = edition.parent_work.to_activity()
+        book["edition"] = edition.to_activity()
+
+        if book["edition"].get("cover"):
+            # change the URL to be relative to the JSON file
+            filename = book["edition"]["cover"]["url"].rsplit("/", maxsplit=1)[-1]
+            book["edition"]["cover"]["url"] = f"covers/{filename}"
+
         # authors
-        book["authors"] = list(edition.first().authors.all().values())
-        # readthroughs
+        book["authors"] = []
+        for author in edition.authors.all():
+            book["authors"].append(author.to_activity())
+
+        # Shelves this book is on
+        # Every ShelfItem is this book so we don't other serializing
+        book["shelves"] = []
+        shelf_books = (
+            ShelfBook.objects.select_related("shelf")
+            .filter(user=user, book=edition)
+            .distinct()
+        )
+
+        for shelfbook in shelf_books:
+            book["shelves"].append(shelfbook.shelf.to_activity())
+
+        # Lists and ListItems
+        # ListItems include "notes" and "approved" so we need them
+        # even though we know it's this book
+        book["lists"] = []
+        list_items = ListItem.objects.filter(book=edition, user=user).distinct()
+
+        for item in list_items:
+            list_info = item.book_list.to_activity()
+            list_info[
+                "privacy"
+            ] = item.book_list.privacy  # this isn't serialized so we add it
+            list_info["list_item"] = item.to_activity()
+            book["lists"].append(list_info)
+
+        # Statuses
+        # Can't use select_subclasses here because
+        # we need to filter on the "book" value,
+        # which is not available on an ordinary Status
+        for status in ["comments", "quotations", "reviews"]:
+            book[status] = []
+
+        comments = Comment.objects.filter(user=user, book=edition).all()
+        for status in comments:
+            obj = status.to_activity()
+            obj["progress"] = status.progress
+            obj["progress_mode"] = status.progress_mode
+            book["comments"].append(obj)
+
+        quotes = Quotation.objects.filter(user=user, book=edition).all()
+        for status in quotes:
+            obj = status.to_activity()
+            obj["position"] = status.position
+            obj["endposition"] = status.endposition
+            obj["position_mode"] = status.position_mode
+            book["quotations"].append(obj)
+
+        reviews = Review.objects.filter(user=user, book=edition).all()
+        for status in reviews:
+            obj = status.to_activity()
+            book["reviews"].append(obj)
+
+        # readthroughs can't be serialized to activity
         book_readthroughs = (
-            ReadThrough.objects.filter(user=user, book=book["id"]).distinct().values()
+            ReadThrough.objects.filter(user=user, book=edition).distinct().values()
         )
         book["readthroughs"] = list(book_readthroughs)
-        # shelves
-        shelf_books = ShelfBook.objects.filter(user=user, book=book["id"]).distinct()
-        shelves_from_books = Shelf.objects.filter(shelfbook__in=shelf_books, user=user)
-
-        book["shelves"] = list(shelves_from_books.values())
-        book["shelf_books"] = {}
-
-        for shelf in shelves_from_books:
-            shelf_contents = ShelfBook.objects.filter(user=user, shelf=shelf).distinct()
-
-            book["shelf_books"][shelf.identifier] = list(shelf_contents.values())
-
-        # book lists
-        book_lists = List.objects.filter(books__in=[book["id"]], user=user).distinct()
-        book["lists"] = list(book_lists.values())
-        book["list_items"] = {}
-        for blist in book_lists:
-            list_items = ListItem.objects.filter(book_list=blist).distinct()
-            book["list_items"][blist.name] = list(list_items.values())
-
-        # reviews
-        reviews = Review.objects.filter(user=user, book=book["id"]).distinct()
-
-        book["reviews"] = list(reviews.values())
-
-        # comments
-        comments = Comment.objects.filter(user=user, book=book["id"]).distinct()
-
-        book["comments"] = list(comments.values())
-
-        # quotes
-        quotes = Quotation.objects.filter(user=user, book=book["id"]).distinct()
-
-        book["quotes"] = list(quotes.values())
 
         # append everything
-        final_books.append(book)
+        exported_user["books"].append(book)
 
-    # saved book lists
+    # saved book lists - just the remote id
     saved_lists = List.objects.filter(id__in=user.saved_lists.all()).distinct()
-    saved_lists = [l.remote_id for l in saved_lists]
+    exported_user["saved_lists"] = [l.remote_id for l in saved_lists]
 
-    # follows
+    # follows - just the remote id
     follows = UserFollows.objects.filter(user_subject=user).distinct()
     following = User.objects.filter(userfollows_user_object__in=follows).distinct()
-    follows = [f.remote_id for f in following]
+    exported_user["follows"] = [f.remote_id for f in following]
 
-    # blocks
+    # blocks - just the remote id
     blocks = UserBlocks.objects.filter(user_subject=user).distinct()
     blocking = User.objects.filter(userblocks_user_object__in=blocks).distinct()
 
-    blocks = [b.remote_id for b in blocking]
+    exported_user["blocks"] = [b.remote_id for b in blocking]
 
-    data = {
-        "user": exported_user,
-        "goals": goals_list,
-        "books": final_books,
-        "saved_lists": saved_lists,
-        "follows": follows,
-        "blocked_users": blocks,
-    }
-
-    return DjangoJSONEncoder().encode(data)
+    return DjangoJSONEncoder().encode(exported_user)
 
 
 def get_books_for_user(user):
-    """Get all the books and editions related to a user
-    :returns: tuple of editions, books
-    """
+    """Get all the books and editions related to a user"""
 
-    editions = Edition.objects.filter(
-        Q(shelves__user=user)
-        | Q(readthrough__user=user)
-        | Q(review__user=user)
-        | Q(list__user=user)
-        | Q(comment__user=user)
-        | Q(quotation__user=user)
-    ).distinct()
-    books = Book.objects.filter(id__in=editions).distinct()
-    return editions, books
+    editions = (
+        Edition.objects.select_related("parent_work")
+        .filter(
+            Q(shelves__user=user)
+            | Q(readthrough__user=user)
+            | Q(review__user=user)
+            | Q(list__user=user)
+            | Q(comment__user=user)
+            | Q(quotation__user=user)
+        )
+        .distinct()
+    )
+
+    return editions
