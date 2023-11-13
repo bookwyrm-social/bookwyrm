@@ -57,7 +57,6 @@ class NotificationType(models.TextChoices):
 class Notification(BookWyrmModel):
     """a notification object"""
 
-
     user = models.ForeignKey("User", on_delete=models.CASCADE)
     read = models.BooleanField(default=False)
     notification_type = models.CharField(
