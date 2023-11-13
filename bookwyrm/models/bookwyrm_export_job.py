@@ -166,7 +166,6 @@ def json_export(
         for status in ["comments", "quotations", "reviews"]:
             book[status] = []
 
-        # TODO: add privacy!
         comments = Comment.objects.filter(user=user, book=edition).all()
         for status in comments:
             obj = status.to_activity()

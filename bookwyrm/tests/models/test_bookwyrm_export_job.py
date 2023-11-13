@@ -229,9 +229,3 @@ class BookwyrmExport(TestCase):
             json_data["books"][0]["quotations"][0]["quote"],
             "<p>A rose by any other name</p>",
         )
-
-    def test_tar_export(self):
-        """test the tar export function"""
-
-        # TODO
-        pass  # pylint: disable=unnecessary-pass
