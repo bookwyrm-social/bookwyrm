@@ -785,6 +785,7 @@ urlpatterns = [
         r"^summary_revoke_key/?$", views.summary_revoke_key, name="summary-revoke-key"
     ),
     path("guided-tour/<tour>", views.toggle_guided_tour),
+    re_path(r'^o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # Serves /static when DEBUG is true.
