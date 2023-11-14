@@ -29,3 +29,34 @@ class PartialDateTags(TestCase):
         self.assertEqual("2023", date_ext.naturalday_partial(self._partial_year))
         self.assertEqual("June 2023", date_ext.naturalday_partial(self._partial_month))
         self.assertEqual("30 Jun 2023", date_ext.naturalday_partial(self._partial_day))
+
+    def test_format_arg_is_used(self):
+        """the provided format should be used by default"""
+        self.assertEqual("Dec.31", date_ext.naturalday_partial(self._dt, "M.j"))
+        self.assertEqual("Dec.31", date_ext.naturalday_partial(self._date, "M.j"))
+        self.assertEqual("June", date_ext.naturalday_partial(self._partial_day, "F"))
+
+    def test_month_precision_downcast(self):
+        """precision is adjusted for well-known date formats"""
+        self.assertEqual(
+            "June 2023", date_ext.naturalday_partial(self._partial_month, "DATE_FORMAT")
+        )
+
+    def test_year_precision_downcast(self):
+        """precision is adjusted for well-known date formats"""
+        for fmt in "DATE_FORMAT", "SHORT_DATE_FORMAT", "YEAR_MONTH_FORMAT":
+            with self.subTest(desc=fmt):
+                self.assertEqual(
+                    "2023", date_ext.naturalday_partial(self._partial_year, fmt)
+                )
+
+    def test_nonstandard_formats_passthru(self):
+        """garbage-in, garbage-out: we don't mess with unknown date formats"""
+        # Expected because there is no SHORT_YEAR_MONTH_FORMAT in Django that we can use
+        self.assertEqual(
+            "30/06/2023",
+            date_ext.naturalday_partial(self._partial_month, "SHORT_DATE_FORMAT"),
+        )
+        self.assertEqual(
+            "December.31", date_ext.naturalday_partial(self._partial_year, "F.j")
+        )
