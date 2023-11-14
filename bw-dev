@@ -23,10 +23,16 @@ trap showerr EXIT
 source .env
 trap - EXIT
 
-if docker compose &> /dev/null ; then
-	DOCKER_COMPOSE="docker compose"
+if which podman > /dev/null ; then
+    CONTAINER_COMMAND="podman"
 else
-	DOCKER_COMPOSE="docker-compose"
+    CONTAINER_COMMAND="docker"
+fi
+
+if $CONTAINER_COMMAND compose &> /dev/null ; then
+    DOCKER_COMPOSE="$CONTAINER_COMMAND compose"
+else
+	DOCKER_COMPOSE="$CONTAINER_COMMAND-compose"
 fi
 
 function clean {
@@ -64,7 +70,7 @@ function awscommand {
     export AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
     export AWS_DEFAULT_REGION=${AWS_S3_REGION_NAME}
     # first arg is mountpoint, second is the whole aws command
-    docker run --rm -it -v $1\
+    $CONTAINER_COMMAND run --rm -it -v $1\
         -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY -e AWS_DEFAULT_REGION\
         amazon/aws-cli $2
 }
@@ -96,7 +102,7 @@ case "$CMD" in
     resetdb)
         prod_error
         $DOCKER_COMPOSE rm -svf
-        docker volume rm -f bookwyrm_media_volume bookwyrm_pgdata bookwyrm_redis_activity_data bookwyrm_redis_broker_data bookwyrm_static_volume
+        $CONTAINER_COMMAND volume rm -f bookwyrm_media_volume bookwyrm_pgdata bookwyrm_redis_activity_data bookwyrm_redis_broker_data bookwyrm_static_volume
         $DOCKER_COMPOSE build
         migrate
         migrate django_celery_beat
