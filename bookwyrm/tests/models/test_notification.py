@@ -192,3 +192,90 @@ class Notification(TestCase):
             notification_type=models.NotificationType.FAVORITE,
         )
         self.assertFalse(models.Notification.objects.exists())
+
+
+class NotifyInviteRequest(TestCase):
+    """let admins know of invite requests"""
+
+    def setUp(self):
+        """ensure there is one admin"""
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
+            "bookwyrm.activitystreams.populate_stream_task.delay"
+        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
+            self.local_user = models.User.objects.create_user(
+                "mouse@local.com",
+                "mouse@mouse.mouse",
+                "password",
+                local=True,
+                localname="mouse",
+                is_superuser=True,
+            )
+
+    def test_invite_request_triggers_notification(self):
+        """requesting an invite notifies the admin"""
+        admin = models.User.objects.filter(is_superuser=True).first()
+        request = models.InviteRequest.objects.create(email="user@example.com")
+
+        self.assertEqual(models.Notification.objects.count(), 1)
+
+        notification = models.Notification.objects.first()
+        self.assertEqual(notification.user, admin)
+        self.assertEqual(
+            notification.notification_type, models.NotificationType.INVITE_REQUEST
+        )
+        self.assertEqual(notification.related_invite_requests.count(), 1)
+        self.assertEqual(notification.related_invite_requests.first(), request)
+
+    def test_notify_only_created(self):
+        """updating an invite request does not trigger a notification"""
+        request = models.InviteRequest.objects.create(email="user@example.com")
+        notification = models.Notification.objects.first()
+
+        notification.delete()
+        self.assertEqual(models.Notification.objects.count(), 0)
+
+        request.ignored = True
+        request.save()
+        self.assertEqual(models.Notification.objects.count(), 0)
+
+    def test_notify_grouping(self):
+        """invites group into the same notification, until read"""
+        requests = [
+            models.InviteRequest.objects.create(email="user1@example.com"),
+            models.InviteRequest.objects.create(email="user2@example.com"),
+        ]
+        self.assertEqual(models.Notification.objects.count(), 1)
+
+        notification = models.Notification.objects.first()
+        self.assertEqual(notification.related_invite_requests.count(), 2)
+        self.assertCountEqual(notification.related_invite_requests.all(), requests)
+
+        notification.read = True
+        notification.save()
+
+        request = models.InviteRequest.objects.create(email="user3@example.com")
+        _, notification = models.Notification.objects.all()
+
+        self.assertEqual(models.Notification.objects.count(), 2)
+        self.assertEqual(notification.related_invite_requests.count(), 1)
+        self.assertEqual(notification.related_invite_requests.first(), request)
+
+    def test_notify_multiple_admins(self):
+        """all admins are notified"""
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
+            "bookwyrm.activitystreams.populate_stream_task.delay"
+        ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
+            self.local_user = models.User.objects.create_user(
+                "admin@local.com",
+                "admin@example.com",
+                "password",
+                local=True,
+                localname="root",
+                is_superuser=True,
+            )
+            models.InviteRequest.objects.create(email="user@example.com")
+            admins = models.User.objects.filter(is_superuser=True).all()
+            notifications = models.Notification.objects.all()
+
+            self.assertEqual(len(notifications), 2)
+            self.assertCountEqual([notif.user for notif in notifications], admins)
