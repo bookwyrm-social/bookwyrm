@@ -103,17 +103,12 @@ def switch_edition(request):
         readthrough.book = new_edition
         readthrough.save()
 
-    ratings = models.ReviewRating.objects.filter(
-        book__parent_work=new_edition.parent_work, user=request.user
-    )
-    for rating in ratings.all():
-        rating.book = new_edition
-        rating.save()
-
     reviews = models.Review.objects.filter(
         book__parent_work=new_edition.parent_work, user=request.user
     )
     for review in reviews.all():
+        # because ratings are a subclass of reviews, 
+        # this will pick up both ratings and reviews
         review.book = new_edition
         review.save()    
 
