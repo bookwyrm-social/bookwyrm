@@ -157,3 +157,33 @@ class BookViews(TestCase):
         self.assertIsInstance(models.ReviewRating.objects.get(user=self.local_user, book=edition2), models.ReviewRating)
         with self.assertRaises(models.ReviewRating.DoesNotExist):
             models.ReviewRating.objects.get(user=self.local_user, book=edition1)
+
+    @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
+    @patch("bookwyrm.activitystreams.populate_stream_task.delay")
+    @patch("bookwyrm.activitystreams.add_book_statuses_task.delay")
+    @patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
+    def test_move_reviews_on_switch_edition(self, *_):
+        """updates user's review on a book to new edition"""
+        work = models.Work.objects.create(title="test work")
+        edition1 = models.Edition.objects.create(title="first ed", parent_work=work)
+        edition2 = models.Edition.objects.create(title="second ed", parent_work=work)
+        
+        models.Review.objects.create(
+            book=edition1,
+            user=self.local_user,
+            name="blah",
+            rating=3,
+            content="not bad"
+        )
+
+        self.assertIsInstance(models.Review.objects.get(user=self.local_user, book=edition1), models.Review)
+        with self.assertRaises(models.Review.DoesNotExist):
+            models.Review.objects.get(user=self.local_user, book=edition2)
+
+        request = self.factory.post("", {"edition": edition2.id})
+        request.user = self.local_user
+        views.switch_edition(request)
+
+        self.assertIsInstance(models.Review.objects.get(user=self.local_user, book=edition2), models.Review)
+        with self.assertRaises(models.Review.DoesNotExist):
+            models.Review.objects.get(user=self.local_user, book=edition1)

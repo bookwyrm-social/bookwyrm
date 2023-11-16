@@ -110,4 +110,11 @@ def switch_edition(request):
         rating.book = new_edition
         rating.save()
 
+    reviews = models.Review.objects.filter(
+        book__parent_work=new_edition.parent_work, user=request.user
+    )
+    for review in reviews.all():
+        review.book = new_edition
+        review.save()    
+
     return redirect(f"/book/{new_edition.id}")
