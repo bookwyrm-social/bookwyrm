@@ -57,4 +57,37 @@
             }
         }
     });
+
+    /**
+     * Toggle between two fields depending on select value
+     *
+     * @param {target} the select that will direct the toggle
+     */
+    function handleToggleOnSelect(target) {
+        const value = target.value;
+        const toggleStrategy = JSON.parse(target.dataset.toggleStrategy);
+        let selectedTarget = "";
+
+        if (value in toggleStrategy) {
+            selectedTarget = toggleStrategy[value];
+        } else {
+            selectedTarget = toggleStrategy.default;
+        }
+
+        Object.values(toggleStrategy).forEach((toggleItem) => {
+            const toggleElement = document.getElementById(toggleItem);
+
+            if (toggleItem === selectedTarget) {
+                toggleElement.classList.remove("is-hidden");
+            } else {
+                toggleElement.classList.add("is-hidden");
+            }
+        });
+    }
+
+    document.querySelectorAll("[data-toggle-on-select]").forEach((node) => {
+        handleToggleOnSelect(node);
+
+        node.addEventListener("change", () => handleToggleOnSelect(node));
+    });
 })();

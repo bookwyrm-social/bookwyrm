@@ -305,6 +305,10 @@ class Edition(Book):
         max_length=255, choices=FormatChoices, null=True, blank=True
     )
     physical_format_detail = fields.CharField(max_length=255, blank=True, null=True)
+    audiobook_play_time = models.DurationField(
+        blank=True,
+        null=True,
+    )
     publishers = fields.ArrayField(
         models.CharField(max_length=255), blank=True, default=list
     )

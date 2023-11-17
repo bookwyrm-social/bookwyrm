@@ -1,10 +1,12 @@
 """ using django model forms """
+import json
+
 from django import forms
 
 from bookwyrm import models
 from bookwyrm.models.fields import ClearableFileInputWithWarning
 from .custom_form import CustomForm
-from .widgets import ArrayWidget, SelectDateWidget, Select
+from .widgets import ArrayWidget, SelectDateWidget, Select, MinutesDurationWidget
 
 
 # pylint: disable=missing-class-docstring
@@ -34,6 +36,7 @@ class EditionForm(CustomForm):
             "physical_format",
             "physical_format_detail",
             "pages",
+            "audiobook_play_time",
             "isbn_13",
             "isbn_10",
             "openlibrary_key",
@@ -74,12 +77,24 @@ class EditionForm(CustomForm):
                 attrs={"aria-describedby": "desc_cover"}
             ),
             "physical_format": Select(
-                attrs={"aria-describedby": "desc_physical_format"}
+                attrs={
+                    "aria-describedby": "desc_physical_format",
+                    "data-toggle-on-select": "true",
+                    "data-toggle-strategy": json.dumps(
+                        {
+                            "default": "toggle-target-pages",
+                            "AudiobookFormat": "toggle-target-audiobook-play-time",
+                        }
+                    ),
+                }
             ),
             "physical_format_detail": forms.TextInput(
                 attrs={"aria-describedby": "desc_physical_format_detail"}
             ),
             "pages": forms.NumberInput(attrs={"aria-describedby": "desc_pages"}),
+            "audiobook_play_time": MinutesDurationWidget(
+                attrs={"aria-describedby": "desc_audiobook_play_time"},
+            ),
             "isbn_13": forms.TextInput(attrs={"aria-describedby": "desc_isbn_13"}),
             "isbn_10": forms.TextInput(attrs={"aria-describedby": "desc_isbn_10"}),
             "openlibrary_key": forms.TextInput(
@@ -98,6 +113,17 @@ class EditionForm(CustomForm):
             "AASIN": forms.TextInput(attrs={"aria-describedby": "desc_AASIN"}),
             "isfdb": forms.TextInput(attrs={"aria-describedby": "desc_isfdb"}),
         }
+
+    def clean_audiobook_play_time(self):
+        """Converts a raw input in seconds to minutes"""
+        data = self.cleaned_data["audiobook_play_time"]
+
+        if data in [0, None, ""]:
+            return data
+
+        data = abs(data)
+
+        return data * 60
 
 
 class EditionFromWorkForm(CustomForm):

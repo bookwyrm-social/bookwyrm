@@ -2,31 +2,7 @@
 
 {% load i18n %}
 {% load humanize %}
-
-{% firstof book.physical_format_detail book.get_physical_format_display as format %}
-{% firstof book.physical_format book.physical_format_detail as format_property %}
-{% with pages=book.pages %}
-{% if format or pages %}
-
-{% if format_property %}
-<meta itemprop="bookFormat" content="{{ format_property }}">
-{% endif %}
-
-{% if pages %}
-<meta itemprop="numberOfPages" content="{{ pages }}">
-{% endif %}
-
-<p>
-    {% if format and not pages %}
-        {{ format }}
-    {% elif format and pages %}
-        {% blocktrans %}{{ format }}, {{ pages }} pages{% endblocktrans %}
-    {% elif pages %}
-        {% blocktrans %}{{ pages }} pages{% endblocktrans %}
-    {% endif %}
-</p>
-{% endif %}
-{% endwith %}
+{% load book_display_tags %}
 
 {% if book.languages %}
     {% for language in book.languages %}

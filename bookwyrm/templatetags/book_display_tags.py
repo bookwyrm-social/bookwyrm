@@ -1,5 +1,7 @@
 """ template filters """
 from django import template
+import humanize
+
 from bookwyrm import models
 
 
@@ -33,3 +35,25 @@ def get_book_file_links(book):
 def get_author_edition(book, author):
     """default edition for a book on the author page"""
     return book.author_edition(author)
+
+
+@register.filter(name="localized_duration")
+def get_localized_duration(duration):
+    """Returns a localized version of the play time"""
+
+    return humanize.precisedelta(duration)
+
+
+@register.filter(name="iso_duration")
+def get_iso_duration(duration):
+    """Returns an ISO8601 version of the play time"""
+    duration = abs(duration)
+    duration = str(duration).split(":")
+
+    iso_string = ["PT"]
+    if int(duration[0]) > 0:
+        iso_string.append(f"{str(duration[0]).zfill(2)}H")
+
+    iso_string.append(f"{str(duration[1]).zfill(2)}M")
+
+    return "".join(iso_string)
