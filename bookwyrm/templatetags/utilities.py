@@ -131,4 +131,4 @@ def id_to_username(user_id):
 def get_user_permission(user):
     """given a user, return their permission level"""
 
-    return user.groups.first() if user.groups.first() else "User"
+    return user.groups.first() or "User"
