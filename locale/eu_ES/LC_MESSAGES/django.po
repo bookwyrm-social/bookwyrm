@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-11-02 21:32+0000\n"
-"PO-Revision-Date: 2023-11-18 13:10\n"
+"PO-Revision-Date: 2023-11-18 14:14\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Basque\n"
 "Language: eu\n"
@@ -3766,12 +3766,12 @@ msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a>(e)k aipatu egin z
 #: bookwyrm/templates/notifications/items/move_user.html:18
 #, python-format
 msgid "%(related_user)s has moved to <a href=\"%(related_user_moved_to)s\">%(username)s</a>"
-msgstr ""
+msgstr "%(related_user)s hona mugitu da: <a href=\"%(related_user_moved_to)s\">%(username)s</a>"
 
 #: bookwyrm/templates/notifications/items/move_user.html:25
 #, python-format
 msgid "%(related_user)s has undone their move"
-msgstr ""
+msgstr "%(related_user)s erabiltzaileak mugimena desegin du"
 
 #: bookwyrm/templates/notifications/items/remove.html:17
 #, python-format
@@ -4034,7 +4034,7 @@ msgstr "Ezarri 2FA"
 #: bookwyrm/templates/preferences/move_user.html:7
 #: bookwyrm/templates/preferences/move_user.html:39
 msgid "Move Account"
-msgstr ""
+msgstr "Mugitu kontua"
 
 #: bookwyrm/templates/preferences/alias_user.html:7
 #: bookwyrm/templates/preferences/alias_user.html:34
@@ -4043,19 +4043,19 @@ msgstr "Sortu ezizena"
 
 #: bookwyrm/templates/preferences/alias_user.html:12
 msgid "Add another account as an alias"
-msgstr ""
+msgstr "Gehitu beste kontu bat ezizen gisa"
 
 #: bookwyrm/templates/preferences/alias_user.html:16
 msgid "Marking another account as an alias is required if you want to move that account to this one."
-msgstr ""
+msgstr "Beste kontu bat ezizen gisa markatzea beharrezkoa da kontu hori honetara mugitu nahi baduzu."
 
 #: bookwyrm/templates/preferences/alias_user.html:19
 msgid "This is a reversable action and will not change the functionality of this account."
-msgstr ""
+msgstr "Ekintza atzeraezina da hau eta ez du aldatuko kontu honen funtzionaltasuna."
 
 #: bookwyrm/templates/preferences/alias_user.html:25
 msgid "Enter the username for the account you want to add as an alias e.g. <em>user@example.com </em>:"
-msgstr ""
+msgstr "Sartu ezizena gehitu nahi diozun kontuaren erabiltzaile-izena, adibidez <em>erabiltzailea@adibidea.eus</em>:"
 
 #: bookwyrm/templates/preferences/alias_user.html:30
 #: bookwyrm/templates/preferences/move_user.html:35
@@ -4069,7 +4069,7 @@ msgstr "Ezizenak"
 
 #: bookwyrm/templates/preferences/alias_user.html:49
 msgid "Remove alias"
-msgstr ""
+msgstr "Kendu ezizena"
 
 #: bookwyrm/templates/preferences/blocks.html:4
 #: bookwyrm/templates/preferences/blocks.html:7
@@ -4227,7 +4227,7 @@ msgstr "Kontua"
 
 #: bookwyrm/templates/preferences/layout.html:32
 msgid "Move  Account"
-msgstr ""
+msgstr "Mugitu kontua"
 
 #: bookwyrm/templates/preferences/layout.html:39
 msgid "Data"
@@ -4243,11 +4243,11 @@ msgstr "Harremanak"
 
 #: bookwyrm/templates/preferences/move_user.html:12
 msgid "Migrate account to another server"
-msgstr ""
+msgstr "Migratu kontua beste zerbitzari batera"
 
 #: bookwyrm/templates/preferences/move_user.html:16
 msgid "Moving your account will notify all your followers and direct them to follow the new account."
-msgstr ""
+msgstr "Kontua mugitzean, zure jarraitzaile guztiei jakinaraziko zaie eta kontu berrira bideratuko dira jarrai dezaten."
 
 #: bookwyrm/templates/preferences/move_user.html:19
 #, python-format
