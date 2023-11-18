@@ -1,0 +1,16 @@
+{% extends 'layout.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "File too large" %}{% endblock %}
+
+{% block content %}
+<div class="block">
+    <h1 class="title">{% trans "File too large" %}</h1>
+    <p class="content">{% trans "The file you are uploading is too large." %}</p>
+    <p class="content">
+        {% blocktrans %}
+        You you can try using a smaller file, or ask your BookWyrm server administrator to increase the <code>DATA_UPLOAD_MAX_MEMORY_SIZE</code> setting.
+        {% endblocktrans %}
+    </p>
+</div>
+{% endblock %}

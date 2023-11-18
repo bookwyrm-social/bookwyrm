@@ -119,6 +119,7 @@ MIDDLEWARE = [
     "bookwyrm.middleware.IPBlocklistMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "bookwyrm.middleware.FileTooBig",
 ]
 
 ROOT_URLCONF = "bookwyrm.urls"
