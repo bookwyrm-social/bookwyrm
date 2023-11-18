@@ -794,4 +794,4 @@ urlpatterns.extend(staticfiles_urlpatterns())
 handler500 = "bookwyrm.views.server_error"
 
 # pylint: disable=invalid-name
-handler403 = "bookwyrm.views.permission_required"
+handler403 = "bookwyrm.views.permission_denied"

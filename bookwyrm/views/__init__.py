@@ -167,4 +167,4 @@ from .annual_summary import (
     summary_revoke_key,
 )
 from .server_error import server_error
-from .permission_required import permission_required
+from .permission_denied import permission_denied
