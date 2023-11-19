@@ -330,18 +330,30 @@ let BookWyrm = new (class {
 
         const bookwyrm = this;
         const form = event.currentTarget;
+        const formAction = event.submitter.getAttribute("formaction") || form.action;
         const relatedforms = document.querySelectorAll(`.${form.dataset.id}`);
 
         // Toggle class on all related forms.
-        relatedforms.forEach((relatedForm) =>
-            bookwyrm.addRemoveClass(
-                relatedForm,
-                "is-hidden",
-                relatedForm.className.indexOf("is-hidden") == -1
-            )
-        );
+        if (formAction == "/remove-follow") {
+            // Remove ALL follow/unfollow/remote buttons
+            relatedforms.forEach((relatedForm) => relatedForm.classList.add("is-hidden"));
 
-        this.ajaxPost(form).catch((error) => {
+            // Remove orphaned user-options dropdown
+            const parent = form.parentElement;
+            const next = parent.nextElementSibling;
+
+            next.classList.add("is-hidden");
+        } else {
+            relatedforms.forEach((relatedForm) =>
+                bookwyrm.addRemoveClass(
+                    relatedForm,
+                    "is-hidden",
+                    relatedForm.className.indexOf("is-hidden") == -1
+                )
+            );
+        }
+
+        this.ajaxPost(formAction, form).catch((error) => {
             // @todo Display a notification in the UI instead.
             console.warn("Request failed:", error);
         });
@@ -353,8 +365,8 @@ let BookWyrm = new (class {
      * @param  {object} form - Form to be submitted
      * @return {Promise}
      */
-    ajaxPost(form) {
-        return fetch(form.action, {
+    ajaxPost(target, form) {
+        return fetch(target, {
             method: "POST",
             body: new FormData(form),
             headers: {

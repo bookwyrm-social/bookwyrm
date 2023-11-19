@@ -71,6 +71,34 @@ def unfollow(request):
 
 @login_required
 @require_POST
+def remove_follow(request):
+    """remove a previously approved follower without blocking them"""
+
+    username = request.POST["user"]
+    to_remove = get_user_from_username(request.user, username)
+
+    try:
+        models.UserFollows.objects.get(
+            user_subject=to_remove, user_object=request.user
+        ).reject()
+    except models.UserFollows.DoesNotExist:
+        clear_cache(to_remove, request.user)
+
+    try:
+        models.UserFollowRequest.objects.get(
+            user_subject=to_remove, user_object=request.user
+        ).reject()
+    except models.UserFollowRequest.DoesNotExist:
+        clear_cache(to_remove, request.user)
+
+    if is_api_request(request):
+        return HttpResponse()
+    # this is handled with ajax so it shouldn't really matter
+    return redirect("/")
+
+
+@login_required
+@require_POST
 def accept_follow_request(request):
     """a user accepts a follow request"""
     username = request.POST["user"]

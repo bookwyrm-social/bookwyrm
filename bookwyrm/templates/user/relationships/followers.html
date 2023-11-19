@@ -25,6 +25,11 @@
 </nav>
 {% endblock %}
 
+{% block panel %}
+    {% with followers_page=True %}
+    {{ block.super }}
+    {% endwith %}
+{% endblock %}
 
 {% block nullstate %}
 <div>
