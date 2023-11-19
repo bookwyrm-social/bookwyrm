@@ -34,7 +34,7 @@ from .site import PasswordReset, InviteRequest
 from .announcement import Announcement
 from .antispam import EmailBlocklist, IPBlocklist, AutoMod, automod_task
 
-from .notification import Notification
+from .notification import Notification, NotificationType
 
 from .hashtag import Hashtag
 

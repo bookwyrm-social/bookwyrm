@@ -91,7 +91,7 @@ case "$CMD" in
         $DOCKER_COMPOSE run --rm --service-ports web
         ;;
     initdb)
-        initdb "@"
+        initdb "$@"
         ;;
     resetdb)
         prod_error

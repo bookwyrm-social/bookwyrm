@@ -7,7 +7,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("bookwyrm", "0184_auto_20231106_0421"),
+        ("bookwyrm", "0186_invite_request_notification"),
     ]
 
     operations = [
