@@ -4,7 +4,8 @@ from __future__ import annotations
 
 from datetime import datetime, timedelta
 import re
-from typing import Any, Optional, Type, TypeVar, cast
+from typing import Any, Optional, Type, cast
+from typing_extensions import Self
 
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -22,8 +23,6 @@ __all__ = [
 
 _partial_re = re.compile(r"(\d{4})(?:-(\d\d?))?(?:-(\d\d?))?$")
 _westmost_tz = timezone.get_fixed_timezone(timedelta(hours=-12))
-
-Partial = TypeVar("Partial", bound="PartialDate")  # TODO: use Self in Python >= 3.11
 
 # TODO: migrate PartialDate: `datetime` => `date`
 # TODO: migrate PartialDateModel: `DateTimeField` => `DateField`
@@ -47,7 +46,7 @@ class PartialDate(datetime):
         return self.strftime("%Y-%m-%d")
 
     @classmethod
-    def from_datetime(cls: Type[Partial], dt: datetime) -> Partial:
+    def from_datetime(cls, dt: datetime) -> Self:
         """construct a PartialDate object from a timezone-aware datetime
 
         Use subclasses to specify precision. If `dt` is naive, `ValueError`
@@ -59,7 +58,7 @@ class PartialDate(datetime):
         return cls.combine(dt.date(), dt.time(), tzinfo=dt.tzinfo)
 
     @classmethod
-    def from_date_parts(cls: Type[Partial], year: int, month: int, day: int) -> Partial:
+    def from_date_parts(cls, year: int, month: int, day: int) -> Self:
         """construct a PartialDate from year, month, day.
 
         Use sublcasses to specify precision."""
