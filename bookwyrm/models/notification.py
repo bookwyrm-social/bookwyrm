@@ -12,6 +12,7 @@ from . import (
     LinkDomain,
 )
 from . import ListItem, Report, Status, User, UserFollowRequest
+from .site import InviteRequest
 
 
 class NotificationType(models.TextChoices):
@@ -39,6 +40,7 @@ class NotificationType(models.TextChoices):
     # Admin
     REPORT = "REPORT"
     LINK_DOMAIN = "LINK_DOMAIN"
+    INVITE_REQUEST = "INVITE_REQUEST"
 
     # Groups
     INVITE = "INVITE"
@@ -77,8 +79,9 @@ class Notification(BookWyrmModel):
     related_list_items = models.ManyToManyField(
         "ListItem", symmetrical=False, related_name="notifications"
     )
-    related_reports = models.ManyToManyField("Report", symmetrical=False)
-    related_link_domains = models.ManyToManyField("LinkDomain", symmetrical=False)
+    related_reports = models.ManyToManyField("Report")
+    related_link_domains = models.ManyToManyField("LinkDomain")
+    related_invite_requests = models.ManyToManyField("InviteRequest")
 
     @classmethod
     @transaction.atomic
@@ -276,8 +279,7 @@ def notify_admins_on_report(sender, instance, created, *args, **kwargs):
         return
 
     # moderators and superusers should be notified
-    admins = User.admins()
-    for admin in admins:
+    for admin in User.admins():
         notification, _ = Notification.objects.get_or_create(
             user=admin,
             notification_type=NotificationType.REPORT,
@@ -296,14 +298,31 @@ def notify_admins_on_link_domain(sender, instance, created, *args, **kwargs):
         return
 
     # moderators and superusers should be notified
-    admins = User.admins()
-    for admin in admins:
+    for admin in User.admins():
         notification, _ = Notification.objects.get_or_create(
             user=admin,
             notification_type=NotificationType.LINK_DOMAIN,
             read=False,
         )
         notification.related_link_domains.add(instance)
+
+
+@receiver(models.signals.post_save, sender=InviteRequest)
+@transaction.atomic
+# pylint: disable=unused-argument
+def notify_admins_on_invite_request(sender, instance, created, *args, **kwargs):
+    """need to handle a new invite request"""
+    if not created:
+        return
+
+    # moderators and superusers should be notified
+    for admin in User.admins():
+        notification, _ = Notification.objects.get_or_create(
+            user=admin,
+            notification_type=NotificationType.INVITE_REQUEST,
+            read=False,
+        )
+        notification.related_invite_requests.add(instance)
 
 
 @receiver(models.signals.post_save, sender=GroupMemberInvitation)

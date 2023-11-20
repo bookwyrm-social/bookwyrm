@@ -9,6 +9,7 @@ from django.utils.translation import gettext_lazy as _
 from django.templatetags.static import static
 
 from bookwyrm.models import User
+from bookwyrm.settings import INSTANCE_ACTOR_USERNAME
 
 register = template.Library()
 
@@ -126,7 +127,7 @@ def id_to_username(user_id):
 
     return value
 
-
+  
 @register.filter(name="get_file_size")
 def get_file_size(file):
     """display the size of a file in human readable terms"""
@@ -142,3 +143,9 @@ def get_file_size(file):
         return f"{raw_size/1024**3:.2f} GB"
     except Exception:  # pylint: disable=broad-except
         return ""
+
+      
+@register.filter(name="is_instance_admin")
+def is_instance_admin(localname):
+    """Returns a boolean indicating whether the user is the instance admin account"""
+    return localname == INSTANCE_ACTOR_USERNAME
