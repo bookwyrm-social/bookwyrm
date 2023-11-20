@@ -110,6 +110,11 @@ urlpatterns = [
         name="settings-themes-delete",
     ),
     re_path(
+        r"^settings/themes/(?P<theme_id>\d+)/test/?$",
+        views.test_theme,
+        name="settings-themes-test",
+    ),
+    re_path(
         r"^settings/announcements/?$",
         views.Announcements.as_view(),
         name="settings-announcements",
