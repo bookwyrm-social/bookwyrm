@@ -107,4 +107,4 @@ class AdminThemesViews(TestCase):
 
         views.test_theme(request, theme.id)
         theme.refresh_from_db()
-        self.assertFalse(theme.loads)
+        self.assertIs(False, theme.loads)
