@@ -9,6 +9,7 @@ from django.utils.translation import gettext_lazy as _
 from django.templatetags.static import static
 
 from bookwyrm.models import User
+from bookwyrm.settings import INSTANCE_ACTOR_USERNAME
 
 register = template.Library()
 
@@ -125,3 +126,9 @@ def id_to_username(user_id):
         value = f"{name}@{domain}"
 
     return value
+
+
+@register.filter(name="is_instance_admin")
+def is_instance_admin(localname):
+    """Returns a boolean indicating whether the user is the instance admin account"""
+    return localname == INSTANCE_ACTOR_USERNAME

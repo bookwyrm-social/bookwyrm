@@ -1,4 +1,5 @@
 {% load i18n %}
+{% load utilities %}
 <div class="block content">
     {% if not user.is_active and user.deactivation_reason == "self_deletion" or user.deactivation_reason == "moderator_deletion" %}
     <div class="notification is-danger">
@@ -7,77 +8,90 @@
     {% else %}
     <h3>{% trans "User Actions" %}</h3>
 
-    <div class="box">
-        <div class="is-flex">
-            {% if user.is_active %}
-            <p class="mr-1">
-                <a class="button" href="{% url 'direct-messages-user' user.username %}">{% trans "Send direct message" %}</a>
-            </p>
-            {% endif %}
+        {% if user.localname|is_instance_admin %}
+        <div class="box">
+            <div class="message is-warning">
+                <div class="message-header">
+                    <p>{% trans "This is the instance admin actor" %}</p>
+                </div>
+                <div class="message-body">
+                    <p>{% trans "You must not delete or disable this account as it is critical to the functioning of your server. This actor signs outgoing GET requests to smooth interaction with secure ActivityPub servers." %}</p>
+                    <p>{% trans "This account is not discoverable by ordinary users and does not have a profile page." %}</p>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="box">
+            <div class="is-flex">
+                {% if user.is_active %}
+                <p class="mr-1">
+                    <a class="button" href="{% url 'direct-messages-user' user.username %}">{% trans "Send direct message" %}</a>
+                </p>
+                {% endif %}
 
-            {% if not user.is_active and user.deactivation_reason == "pending" %}
-            <form name="activate" method="post" action="{% url 'settings-activate-user' user.id  %}" class="mr-1">
-                {% csrf_token %}
-                <button type="submit" class="button is-success is-light">{% trans "Activate user" %}</button>
-            </form>
-            {% endif %}
-            {% if user.is_active or user.deactivation_reason == "pending" %}
-            <form name="suspend" method="post" action="{% url 'settings-report-suspend' user.id report.id %}" class="mr-1">
-                {% csrf_token %}
-                <button type="submit" class="button is-danger is-light">{% trans "Suspend user" %}</button>
-            </form>
-            {% else %}
-            <form name="unsuspend" method="post" action="{% url 'settings-report-unsuspend' user.id report.id %}" class="mr-1">
-                {% csrf_token %}
-                <button class="button">{% trans "Un-suspend user" %}</button>
-            </form>
+                {% if not user.is_active and user.deactivation_reason == "pending" %}
+                <form name="activate" method="post" action="{% url 'settings-activate-user' user.id  %}" class="mr-1">
+                    {% csrf_token %}
+                    <button type="submit" class="button is-success is-light">{% trans "Activate user" %}</button>
+                </form>
+                {% endif %}
+                {% if user.is_active or user.deactivation_reason == "pending" %}
+                <form name="suspend" method="post" action="{% url 'settings-report-suspend' user.id report.id %}" class="mr-1">
+                    {% csrf_token %}
+                    <button type="submit" class="button is-danger is-light">{% trans "Suspend user" %}</button>
+                </form>
+                {% else %}
+                <form name="unsuspend" method="post" action="{% url 'settings-report-unsuspend' user.id report.id %}" class="mr-1">
+                    {% csrf_token %}
+                    <button class="button">{% trans "Un-suspend user" %}</button>
+                </form>
+                {% endif %}
+
+                {% if user.local %}
+                <div>
+                    {% trans "Permanently delete user" as button_text %}
+                    {% include "snippets/toggle/open_button.html" with controls_text="delete_user" text=button_text class="is-danger is-light" %}
+                </div>
+                {% endif %}
+            </div>
+
+            {% if user.local %}
+            <div>
+                {% include "settings/users/delete_user_form.html" with controls_text="delete_user" class="mt-2 mb-2" %}
+            </div>
             {% endif %}
 
             {% if user.local %}
             <div>
-                {% trans "Permanently delete user" as button_text %}
-                {% include "snippets/toggle/open_button.html" with controls_text="delete_user" text=button_text class="is-danger is-light" %}
+                <form name="permission" method="post" action="{% url 'settings-user' user.id report.id %}">
+                    {% csrf_token %}
+                    <label class="label" for="id_user_group">{% trans "Access level:" %}</label>
+                    {% if group_form.non_field_errors %}
+                    {{ group_form.non_field_errors }}
+                    {% endif %}
+                    {% with group=user.groups.first %}
+                    <div class="select">
+                        <select name="groups" id="id_user_group" aria-describedby="desc_user_group">
+                            {% for value, name in group_form.fields.groups.choices %}
+                            <option value="{{ value }}" {% if name == group.name %}selected{% endif %}>
+                                {{ name|title }}
+                            </option>
+                            {% endfor %}
+                            <option value="" {% if not group %}selected{% endif %}>
+                                User
+                            </option>
+                        </select>
+                    </div>
+
+                    {% include 'snippets/form_errors.html' with errors_list=group_form.groups.errors id="desc_user_group" %}
+                    {% endwith %}
+                    <button class="button">
+                        {% trans "Save" %}
+                    </button>
+                </form>
             </div>
             {% endif %}
         </div>
-
-        {% if user.local %}
-        <div>
-            {% include "settings/users/delete_user_form.html" with controls_text="delete_user" class="mt-2 mb-2" %}
-        </div>
         {% endif %}
-
-        {% if user.local %}
-        <div>
-            <form name="permission" method="post" action="{% url 'settings-user' user.id report.id %}">
-                {% csrf_token %}
-                <label class="label" for="id_user_group">{% trans "Access level:" %}</label>
-                {% if group_form.non_field_errors %}
-                {{ group_form.non_field_errors }}
-                {% endif %}
-                {% with group=user.groups.first %}
-                <div class="select">
-                    <select name="groups" id="id_user_group" aria-describedby="desc_user_group">
-                        {% for value, name in group_form.fields.groups.choices %}
-                        <option value="{{ value }}" {% if name == group.name %}selected{% endif %}>
-                            {{ name|title }}
-                        </option>
-                        {% endfor %}
-                        <option value="" {% if not group %}selected{% endif %}>
-                            User
-                        </option>
-                    </select>
-                </div>
-
-                {% include 'snippets/form_errors.html' with errors_list=group_form.groups.errors id="desc_user_group" %}
-                {% endwith %}
-                <button class="button">
-                    {% trans "Save" %}
-                </button>
-            </form>
-        </div>
-        {% endif %}
-    </div>
-
     {% endif %}
 </div>
