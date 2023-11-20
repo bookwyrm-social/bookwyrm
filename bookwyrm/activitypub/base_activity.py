@@ -396,7 +396,7 @@ def resolve_remote_id(
 
 def get_representative():
     """Get or create an actor representing the instance
-    to sign requests to 'secure mastodon' servers"""
+    to sign outgoing HTTP GET requests"""
     username = f"{INSTANCE_ACTOR_USERNAME}@{DOMAIN}"
     email = "bookwyrm@localhost"
     try:
