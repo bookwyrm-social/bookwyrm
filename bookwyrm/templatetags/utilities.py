@@ -128,6 +128,13 @@ def id_to_username(user_id):
     return value
 
 
+@register.filter(name="get_user_permission")
+def get_user_permission(user):
+    """given a user, return their permission level"""
+
+    return user.groups.first() or "User"
+
+
 @register.filter(name="is_instance_admin")
 def is_instance_admin(localname):
     """Returns a boolean indicating whether the user is the instance admin account"""
