@@ -332,6 +332,7 @@ let BookWyrm = new (class {
         const form = event.currentTarget;
         const relatedforms = document.querySelectorAll(`.${form.dataset.id}`);
 
+        // Toggle class on all related forms.
         relatedforms.forEach((relatedForm) =>
             bookwyrm.addRemoveClass(
                 relatedForm,
