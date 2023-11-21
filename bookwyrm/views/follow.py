@@ -71,11 +71,10 @@ def unfollow(request):
 
 @login_required
 @require_POST
-def remove_follow(request):
+def remove_follow(request, user_id):
     """remove a previously approved follower without blocking them"""
 
-    username = request.POST["user"]
-    to_remove = get_user_from_username(request.user, username)
+    to_remove = get_object_or_404(models.User, id=user_id)
 
     try:
         models.UserFollows.objects.get(
@@ -93,8 +92,8 @@ def remove_follow(request):
 
     if is_api_request(request):
         return HttpResponse()
-    # this is handled with ajax so it shouldn't really matter
-    return redirect("/")
+
+    return redirect(f"{request.user.local_path}/followers")
 
 
 @login_required
@@ -128,7 +127,7 @@ def delete_follow_request(request):
     )
     follow_request.raise_not_deletable(request.user)
 
-    follow_request.delete()
+    follow_request.reject()
     return redirect(f"/user/{request.user.localname}")
 
 

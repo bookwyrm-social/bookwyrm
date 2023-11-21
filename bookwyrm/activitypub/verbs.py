@@ -173,35 +173,17 @@ class Reject(Verb):
     def action(self, allow_external_connections=True):
         """reject a follow or follow request"""
 
-        if self.object.type == "Follow":
-            model = apps.get_model("bookwyrm.UserFollowRequest")
-            obj = self.object.to_model(
+        for model_name in ["UserFollowRequest", "UserFollows", None]:
+            model = apps.get_model(f"bookwyrm.{model_name}") if model_name else None
+            if obj := self.object.to_model(
                 model=model,
                 save=False,
                 allow_create=False,
                 allow_external_connections=allow_external_connections,
-            )
-            if not obj:
-                # This is a deletion (soft-block) of an accepted follow
-                model = apps.get_model("bookwyrm.UserFollows")
-                obj = self.object.to_model(
-                    model=model,
-                    save=False,
-                    allow_create=False,
-                    allow_external_connections=allow_external_connections,
-                )
-        else:
-            # it's something else
-            obj = self.object.to_model(
-                model=model,
-                save=False,
-                allow_create=False,
-                allow_external_connections=allow_external_connections,
-            )
-        if not obj:
-            # if we don't have the object, we can't reject it.
-            return
-        obj.reject()
+            ):
+                # Reject the first model that can be built.
+                obj.reject()
+                break
 
 
 @dataclass(init=False)

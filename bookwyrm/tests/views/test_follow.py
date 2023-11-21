@@ -180,6 +180,18 @@ class FollowViews(TestCase):
         # follow relationship should not exist
         self.assertEqual(models.UserFollows.objects.filter(id=rel.id).count(), 0)
 
+    def test_handle_reject_existing(self, *_):
+        """reject a follow previously approved"""
+        request = self.factory.post("", {"user": self.remote_user.username})
+        request.user = self.local_user
+        rel = models.UserFollows.objects.create(
+            user_subject=self.remote_user, user_object=self.local_user
+        )
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
+            views.remove_follow(request, self.remote_user.id)
+        # follow relationship should not exist
+        self.assertEqual(models.UserFollows.objects.filter(id=rel.id).count(), 0)
+
     def test_ostatus_follow_request(self, *_):
         """check ostatus subscribe template loads"""
         request = self.factory.get(

@@ -12,7 +12,6 @@
 
 <div class="field{% if not minimal %} has-addons{% else %} mb-0{% endif %}">
     <div class="control">
-        {% if not followers_page %}
         <form action="{% url 'follow' %}" method="POST" class="interaction follow_{{ user.id }} {% if relationship.is_following or relationship.is_follow_pending %}is-hidden{%endif %}" data-id="follow_{{ user.id }}">
             {% csrf_token %}
             <input type="hidden" name="user" value="{{ user.username }}">
@@ -24,21 +23,12 @@
                 {% endif %}
             </button>
         </form>
-        {% endif %}
-        <form action="{% url 'unfollow' %}" method="POST" class="interaction follow_{{ user.id }}" data-id="follow_{{ user.id }}">
+        <form action="{% url 'unfollow' %}" method="POST" class="interaction follow_{{ user.id }} {% if not relationship.is_following and not relationship.is_follow_pending %}is-hidden{%endif %}" data-id="follow_{{ user.id }}">
             {% csrf_token %}
             <input type="hidden" name="user" value="{{ user.username }}">
             {% if relationship.is_follow_pending %}
             <button class="button is-small is-danger is-light" type="submit">
                 {% trans "Undo follow request" %}
-            </button>
-            {% elif followers_page %}
-            <button class="button is-small is-danger is-light" type="submit" formaction="{% url 'remove-follow' %}">
-                {% if show_username %}
-                {% blocktrans with username=user.localname %}Remove @{{ username }}{% endblocktrans %}
-                {% else %}
-                {% trans "Remove" %}
-                {% endif %}
             </button>
             {% else %}
             <button class="button is-small is-danger is-light" type="submit">
@@ -53,7 +43,7 @@
     </div>
     {% if not minimal %}
     <div class="control">
-        {% include 'snippets/user_options.html' with user=user class="is-small" %}
+        {% include 'snippets/user_options.html' with user=user followers_page=followers_page class="is-small" %}
     </div>
     {% endif %}
 </div>
