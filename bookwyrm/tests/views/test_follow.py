@@ -173,8 +173,15 @@ class FollowViews(TestCase):
             user_subject=self.remote_user, user_object=self.local_user
         )
 
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
+        with patch(
+            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+        ) as broadcast_mock:
             views.delete_follow_request(request)
+            # did we send the reject activity?
+            activity = json.loads(broadcast_mock.call_args[1]["args"][1])
+            self.assertEqual(activity["actor"], self.local_user.remote_id)
+            self.assertEqual(activity["object"]["object"], rel.user_object.remote_id)
+            self.assertEqual(activity["type"], "Reject")
         # request should be deleted
         self.assertEqual(models.UserFollowRequest.objects.filter(id=rel.id).count(), 0)
         # follow relationship should not exist
@@ -187,8 +194,15 @@ class FollowViews(TestCase):
         rel = models.UserFollows.objects.create(
             user_subject=self.remote_user, user_object=self.local_user
         )
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
+        with patch(
+            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+        ) as broadcast_mock:
             views.remove_follow(request, self.remote_user.id)
+            # did we send the reject activity?
+            activity = json.loads(broadcast_mock.call_args[1]["args"][1])
+            self.assertEqual(activity["actor"], self.local_user.remote_id)
+            self.assertEqual(activity["object"]["object"], rel.user_object.remote_id)
+            self.assertEqual(activity["type"], "Reject")
         # follow relationship should not exist
         self.assertEqual(models.UserFollows.objects.filter(id=rel.id).count(), 0)
 
