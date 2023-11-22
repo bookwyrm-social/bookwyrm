@@ -150,6 +150,7 @@ class Theme(SiteModel):
     created_date = models.DateTimeField(auto_now_add=True)
     name = models.CharField(max_length=50, unique=True)
     path = models.CharField(max_length=50, unique=True)
+    loads = models.BooleanField(null=True, blank=True)
 
     def __str__(self):
         # pylint: disable=invalid-str-returned
