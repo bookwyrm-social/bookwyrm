@@ -8,6 +8,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.template.response import TemplateResponse
 from django.test import TestCase
 from django.test.client import RequestFactory
+from django.utils import timezone
 
 from bookwyrm import forms, models, views
 from bookwyrm.views.books.edit_book import add_authors
@@ -208,6 +209,97 @@ class EditBookViews(TestCase):
 
         book = models.Edition.objects.get(title="New Title")
         self.assertEqual(book.parent_work.title, "New Title")
+
+    def test_published_date_timezone(self):
+        """user timezone does not affect publication year"""
+        # https://github.com/bookwyrm-social/bookwyrm/issues/3028
+        self.local_user.groups.add(self.group)
+        create_book = views.CreateBook.as_view()
+        book_data = {
+            "title": "January 1st test",
+            "parent_work": self.work.id,
+            "last_edited_by": self.local_user.id,
+            "published_date_day": "1",
+            "published_date_month": "1",
+            "published_date_year": "2020",
+        }
+        request = self.factory.post("", book_data)
+        request.user = self.local_user
+
+        with timezone.override("Europe/Madrid"):  # Ahead of UTC.
+            create_book(request)
+
+        book = models.Edition.objects.get(title="January 1st test")
+        self.assertEqual(book.edition_info, "2020")
+
+    def test_partial_published_dates(self):
+        """create a book with partial publication dates, then update them"""
+        self.local_user.groups.add(self.group)
+        book_data = {
+            "title": "An Edition With Dates",
+            "parent_work": self.work.id,
+            "last_edited_by": self.local_user.id,
+        }
+        initial_pub_dates = {
+            # published_date: 2023-01-01
+            "published_date_day": "1",
+            "published_date_month": "01",
+            "published_date_year": "2023",
+            # first_published_date: 1995
+            "first_published_date_day": "",
+            "first_published_date_month": "",
+            "first_published_date_year": "1995",
+        }
+        updated_pub_dates = {
+            # published_date: full -> year-only
+            "published_date_day": "",
+            "published_date_month": "",
+            "published_date_year": "2023",
+            # first_published_date: add month
+            "first_published_date_day": "",
+            "first_published_date_month": "03",
+            "first_published_date_year": "1995",
+        }
+
+        # create book
+        create_book = views.CreateBook.as_view()
+        request = self.factory.post("", book_data | initial_pub_dates)
+        request.user = self.local_user
+
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
+            create_book(request)
+
+        book = models.Edition.objects.get(title="An Edition With Dates")
+
+        self.assertEqual("2023-01-01", book.published_date.partial_isoformat())
+        self.assertEqual("1995", book.first_published_date.partial_isoformat())
+
+        self.assertTrue(book.published_date.has_day)
+        self.assertTrue(book.published_date.has_month)
+
+        self.assertFalse(book.first_published_date.has_day)
+        self.assertFalse(book.first_published_date.has_month)
+
+        # now edit publication dates
+        edit_book = views.ConfirmEditBook.as_view()
+        request = self.factory.post("", book_data | updated_pub_dates)
+        request.user = self.local_user
+
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
+            result = edit_book(request, book.id)
+
+        self.assertEqual(result.status_code, 302)
+
+        book.refresh_from_db()
+
+        self.assertEqual("2023", book.published_date.partial_isoformat())
+        self.assertEqual("1995-03", book.first_published_date.partial_isoformat())
+
+        self.assertFalse(book.published_date.has_day)
+        self.assertFalse(book.published_date.has_month)
+
+        self.assertFalse(book.first_published_date.has_day)
+        self.assertTrue(book.first_published_date.has_month)
 
     def test_create_book_existing_work(self):
         """create an entirely new book and work"""

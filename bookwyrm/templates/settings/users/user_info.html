@@ -1,6 +1,7 @@
 {% load i18n %}
 {% load markdown %}
 {% load humanize %}
+{% load utilities %}
 
 <div class="block columns">
     <div class="column is-flex is-flex-direction-column">
@@ -13,7 +14,17 @@
             </div>
             {% endif %}
 
+            {% if user.localname|is_instance_admin %}
+            <div class="message is-warning">
+                <div class="message-body">
+                    {% trans "This account is the instance actor for signing HTTP requests." %}
+                </div>
+            </div>
+            {% else %}
             <p class="mt-2"><a href="{{ user.local_path }}">{% trans "View user profile" %}</a></p>
+            {% endif %}
+
+
             {% url 'settings-user' user.id as url %}
             {% if not request.path == url %}
             <p class="mt-2"><a href="{{ url }}">{% trans "Go to user admin" %}</a></p>

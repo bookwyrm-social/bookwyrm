@@ -13,7 +13,7 @@ from csp.decorators import csp_update
 from bookwyrm import models
 from bookwyrm.connectors import connector_manager
 from bookwyrm.book_search import search, format_search_result
-from bookwyrm.settings import PAGE_LENGTH
+from bookwyrm.settings import PAGE_LENGTH, INSTANCE_ACTOR_USERNAME
 from bookwyrm.utils import regex
 from .helpers import is_api_request
 from .helpers import handle_remote_webfinger
@@ -113,6 +113,7 @@ def user_search(request):
         .filter(
             similarity__gt=0.5,
         )
+        .exclude(localname=INSTANCE_ACTOR_USERNAME)
         .order_by("-similarity")
     )
 

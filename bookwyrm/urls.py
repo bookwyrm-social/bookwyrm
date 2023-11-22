@@ -110,6 +110,11 @@ urlpatterns = [
         name="settings-themes-delete",
     ),
     re_path(
+        r"^settings/themes/(?P<theme_id>\d+)/test/?$",
+        views.test_theme,
+        name="settings-themes-test",
+    ),
+    re_path(
         r"^settings/announcements/?$",
         views.Announcements.as_view(),
         name="settings-announcements",
@@ -795,3 +800,6 @@ urlpatterns.extend(staticfiles_urlpatterns())
 
 # pylint: disable=invalid-name
 handler500 = "bookwyrm.views.server_error"
+
+# pylint: disable=invalid-name
+handler403 = "bookwyrm.views.permission_denied"

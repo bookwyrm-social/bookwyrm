@@ -59,7 +59,7 @@ class SavedLists(View):
         data = {
             "lists": paginated.get_page(request.GET.get("page")),
             "list_form": forms.ListForm(),
-            "path": "/list",
+            "path": "/list/saved",
         }
         return TemplateResponse(request, "lists/lists.html", data)
 
