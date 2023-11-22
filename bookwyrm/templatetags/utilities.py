@@ -127,11 +127,10 @@ def id_to_username(user_id):
 
     return value
 
-  
+
 @register.filter(name="get_file_size")
 def get_file_size(file):
     """display the size of a file in human readable terms"""
-
 
     try:
         raw_size = os.stat(file.path).st_size
