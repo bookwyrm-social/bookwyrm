@@ -137,6 +137,69 @@ class BookSearch(TestCase):
         self.assertEqual(result.title, "Title")
 
 
+class SearchVectorTest(TestCase):
+    """check search_vector is computed correctly"""
+
+    def test_search_vector_simple(self):
+        """simplest search vector"""
+        book = self._create_book("Book", "Mary")
+        self.assertEqual(book.search_vector, "'book':1A 'mary':2C")  # A > C (priority)
+
+    def test_search_vector_all_parts(self):
+        """search vector with subtitle and series"""
+        # for a book like this we call `to_tsvector("Book Long Mary Bunch")`, hence the
+        # indexes in the search vector. (priority "D" is the default, and never shown.)
+        book = self._create_book("Book", "Mary", subtitle="Long", series="Bunch")
+        self.assertEqual(book.search_vector, "'book':1A 'bunch':4 'long':2B 'mary':3C")
+
+    def test_search_vector_parse_book(self):
+        """book parts are parsed in english"""
+        # FIXME: at some point this should stop being the default.
+        book = self._create_book(
+            "Edition", "Editor", series="Castle", subtitle="Writing"
+        )
+        self.assertEqual(
+            book.search_vector, "'castl':4 'edit':1A 'editor':3C 'write':2B"
+        )
+
+    def test_search_vector_parse_author(self):
+        """author name is not stem'd or affected by stop words"""
+        book = self._create_book("Writing", "Writes")
+        self.assertEqual(book.search_vector, "'write':1A 'writes':2C")
+
+        book = self._create_book("She Is Writing", "She Writes")
+        self.assertEqual(book.search_vector, "'she':4C 'write':3A 'writes':5C")
+
+    def test_search_vector_parse_title_empty(self):
+        """empty parse in English retried as simple title"""
+        book = self._create_book("Here We", "John")
+        self.assertEqual(book.search_vector, "'here':1A 'john':3C 'we':2A")
+
+        book = self._create_book("Hear We Come", "John")
+        self.assertEqual(book.search_vector, "'come':3A 'hear':1A 'john':4C")
+
+    @staticmethod
+    def _create_book(
+        title, author_name, /, *, subtitle="", series="", author_alias=None
+    ):
+        """quickly create a book"""
+        work = models.Work.objects.create(title="work")
+        author = models.Author.objects.create(
+            name=author_name, aliases=author_alias or []
+        )
+        edition = models.Edition.objects.create(
+            title=title,
+            series=series or None,
+            subtitle=subtitle or None,
+            isbn_10="0000000000",
+            parent_work=work,
+        )
+        edition.authors.add(author)
+        edition.save(broadcast=False)
+        edition.refresh_from_db()
+        return edition
+
+
 class SearchVectorTriggers(TestCase):
     """look for books as they change"""
 
@@ -222,8 +285,8 @@ class SearchVectorTriggers(TestCase):
         """wrapper around search_title_author"""
         return self._search(query, return_first=True)
 
-    # pylint: disable-next=no-self-use
-    def _search(self, query, *, return_first=False):
+    @staticmethod
+    def _search(query, *, return_first=False):
         """wrapper around search_title_author"""
         return book_search.search_title_author(
             query, min_confidence=0, return_first=return_first
