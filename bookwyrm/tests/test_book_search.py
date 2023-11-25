@@ -1,6 +1,5 @@
 """ test searching for books """
 import datetime
-from unittest import expectedFailure
 from django.db import connection
 from django.test import TestCase
 from django.utils import timezone
@@ -207,7 +206,6 @@ class SearchVectorTriggers(TestCase):
         self.assertEqual(self.edition, self._search_first("Mozilla"))
         self.assertEqual(self.edition, self._search_first("Name"))
 
-    @expectedFailure
     def test_search_after_updated_author_name(self):
         """book found under new author name"""
         self.assertEqual(self.edition, self._search_first("Name"))

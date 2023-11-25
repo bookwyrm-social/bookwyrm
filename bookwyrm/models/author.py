@@ -81,9 +81,10 @@ class Author(BookDataModel):
                           SELECT bookwyrm_book.id AS row_id
                           FROM bookwyrm_author
                           LEFT OUTER JOIN bookwyrm_book_authors
-                            ON bookwyrm_book_authors.id = new.id
+                            ON bookwyrm_book_authors.author_id = bookwyrm_author.id
                           LEFT OUTER JOIN bookwyrm_book
                             ON bookwyrm_book.id = bookwyrm_book_authors.book_id
+                          WHERE bookwyrm_author.id = new.id
                     )
                     UPDATE bookwyrm_book
                     SET search_vector = ''
