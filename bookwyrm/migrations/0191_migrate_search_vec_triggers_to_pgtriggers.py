@@ -46,8 +46,8 @@ class Migration(migrations.Migration):
             trigger=pgtrigger.compiler.Trigger(
                 name="reset_search_vector_on_author_edit",
                 sql=pgtrigger.compiler.UpsertTriggerSql(
-                    func="WITH book AS (SELECT bookwyrm_book.id AS row_id FROM bookwyrm_author LEFT OUTER JOIN bookwyrm_book_authors ON bookwyrm_book_authors.author_id = bookwyrm_author.id LEFT OUTER JOIN bookwyrm_book ON bookwyrm_book.id = bookwyrm_book_authors.book_id WHERE bookwyrm_author.id = new.id ) UPDATE bookwyrm_book SET search_vector = '' FROM book WHERE id = book.row_id;RETURN NEW;",
-                    hash="abc8ea76fa1bf02a0f56aaae390c1b970bef1278",
+                    func="WITH updated_books AS (SELECT book_id FROM bookwyrm_book_authors WHERE author_id = new.id ) UPDATE bookwyrm_book SET search_vector = '' FROM updated_books WHERE id = updated_books.book_id;RETURN NEW;",
+                    hash="e7bbf08711ff3724c58f4d92fb7a082ffb3d7826",
                     operation='UPDATE OF "name"',
                     pgid="pgtrigger_reset_search_vector_on_author_edit_a447c",
                     table="bookwyrm_author",

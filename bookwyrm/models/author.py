@@ -77,19 +77,15 @@ class Author(BookDataModel):
                 when=pgtrigger.After,
                 operation=pgtrigger.UpdateOf("name"),
                 func=format_trigger(
-                    """WITH book AS (
-                          SELECT bookwyrm_book.id AS row_id
-                          FROM bookwyrm_author
-                          LEFT OUTER JOIN bookwyrm_book_authors
-                            ON bookwyrm_book_authors.author_id = bookwyrm_author.id
-                          LEFT OUTER JOIN bookwyrm_book
-                            ON bookwyrm_book.id = bookwyrm_book_authors.book_id
-                          WHERE bookwyrm_author.id = new.id
+                    """WITH updated_books AS (
+                         SELECT book_id
+                         FROM bookwyrm_book_authors
+                         WHERE author_id = new.id
                     )
                     UPDATE bookwyrm_book
                     SET search_vector = ''
-                    FROM book
-                    WHERE id = book.row_id;
+                    FROM updated_books
+                    WHERE id = updated_books.book_id;
                     RETURN new;
                 """
                 ),
