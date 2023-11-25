@@ -15,6 +15,7 @@ from django.views import View
 
 from bookwyrm import forms, models
 from bookwyrm.importers import (
+    BookwyrmBooksImporter,
     CalibreImporter,
     LibrarythingImporter,
     GoodreadsImporter,
@@ -67,7 +68,7 @@ class Import(View):
         return TemplateResponse(request, "import/import.html", data)
 
     def post(self, request):
-        """ingest a goodreads csv"""
+        """ingest a book data csv"""
         site = models.SiteSettings.objects.get()
         if not site.imports_enabled:
             raise PermissionDenied()
@@ -77,11 +78,16 @@ class Import(View):
             return HttpResponseBadRequest()
 
         include_reviews = request.POST.get("include_reviews") == "on"
+        create_shelves = request.POST.get("create_shelves") == "on"
         privacy = request.POST.get("privacy")
         source = request.POST.get("source")
 
         importer = None
-        if source == "LibraryThing":
+
+        if source == "BookWyrm":
+            importer = BookwyrmBooksImporter()
+            print("BookwyrmBooksImporter")
+        elif source == "LibraryThing":
             importer = LibrarythingImporter()
         elif source == "Storygraph":
             importer = StorygraphImporter()
@@ -98,6 +104,7 @@ class Import(View):
                 request.user,
                 TextIOWrapper(request.FILES["csv_file"], encoding=importer.encoding),
                 include_reviews,
+                create_shelves,
                 privacy,
             )
         except (UnicodeDecodeError, ValueError, KeyError):

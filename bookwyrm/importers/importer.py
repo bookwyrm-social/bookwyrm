@@ -18,14 +18,14 @@ class Importer:
     row_mappings_guesses = [
         ("id", ["id", "book id"]),
         ("title", ["title"]),
-        ("authors", ["author", "authors", "primary author"]),
+        ("authors", ["author_text", "author", "authors", "primary author"]),
         ("isbn_10", ["isbn10", "isbn", "isbn/uid"]),
         ("isbn_13", ["isbn13", "isbn", "isbns", "isbn/uid"]),
         ("shelf", ["shelf", "exclusive shelf", "read status", "bookshelf"]),
-        ("review_name", ["review name"]),
-        ("review_body", ["my review", "review"]),
+        ("review_name", ["review_name", "review name"]),
+        ("review_body", ["review_content", "my review", "review"]),
         ("rating", ["my rating", "rating", "star rating"]),
-        ("date_added", ["date added", "entry date", "added"]),
+        ("date_added", ["date_added", "date added", "entry date", "added"]),
         ("date_started", ["date started", "started"]),
         ("date_finished", ["date finished", "last date read", "date read", "finished"]),
     ]
@@ -38,7 +38,12 @@ class Importer:
 
     # pylint: disable=too-many-locals
     def create_job(
-        self, user: User, csv_file: Iterable[str], include_reviews: bool, privacy: str
+        self,
+        user: User,
+        csv_file: Iterable[str],
+        include_reviews: bool,
+        create_shelves: bool,
+        privacy: str,
     ) -> ImportJob:
         """check over a csv and creates a database entry for the job"""
         csv_reader = csv.DictReader(csv_file, delimiter=self.delimiter)
@@ -55,6 +60,7 @@ class Importer:
         job = ImportJob.objects.create(
             user=user,
             include_reviews=include_reviews,
+            create_shelves=create_shelves,
             privacy=privacy,
             mappings=mappings,
             source=self.service,
@@ -114,7 +120,7 @@ class Importer:
         shelf = [
             s for (s, gs) in self.shelf_mapping_guesses.items() if shelf_name in gs
         ]
-        return shelf[0] if shelf else None
+        return shelf[0] if shelf else normalized_row.get("shelf") or None
 
     # pylint: disable=no-self-use
     def normalize_row(
@@ -149,6 +155,7 @@ class Importer:
         job = ImportJob.objects.create(
             user=user,
             include_reviews=original_job.include_reviews,
+            create_shelves=original_job.create_shelves,
             privacy=original_job.privacy,
             source=original_job.source,
             # TODO: allow users to adjust mappings

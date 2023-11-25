@@ -48,7 +48,16 @@ class Export(View):
         fields = (
             ["title", "author_text"]
             + deduplication_fields
-            + ["rating", "review_name", "review_cw", "review_content"]
+            + [
+                "rating",
+                "review_published",
+                "review_name",
+                "review_cw",
+                "review_content",
+                "shelf",
+                "shelf_name",
+                "date_added",
+            ]
         )
         writer.writerow(fields)
 
@@ -72,9 +81,23 @@ class Export(View):
                 .first()
             )
             if review:
+                book.review_published = review.published_date
                 book.review_name = review.name
                 book.review_cw = review.content_warning
-                book.review_content = review.raw_content
+                book.review_content = (
+                    review.raw_content
+                )  # do imported reviews not have raw content?
+
+            shelfbook = (
+                models.ShelfBook.objects.filter(book=book, user=request.user)
+                .order_by("shelved_date")
+                .last()
+            )
+            if shelfbook:
+                book.shelf = shelfbook.shelf.identifier
+                book.shelf_name = shelfbook.shelf.name
+                book.date_added = shelfbook.shelved_date
+
             writer.writerow([getattr(book, field, "") or "" for field in fields])
 
         return HttpResponse(
