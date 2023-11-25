@@ -213,7 +213,6 @@ class SearchVectorTriggers(TestCase):
 
         self.author.name = "Identifier"
         self.author.save(broadcast=False)
-        self.edition.refresh_from_db()
 
         self.assertFalse(self._search("Name"))
         self.assertEqual(self.edition, self._search_first("Identifier"))

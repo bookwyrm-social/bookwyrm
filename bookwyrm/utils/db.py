@@ -16,6 +16,7 @@ def format_trigger(sql: str) -> str:
             sql,
             strip_comments=True,
             strip_whitespace=True,
+            use_space_around_operators=True,
             keyword_case="upper",
             identifier_case="lower",
         ),
