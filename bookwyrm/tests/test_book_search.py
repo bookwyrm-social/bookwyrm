@@ -1,5 +1,7 @@
 """ test searching for books """
 import datetime
+from unittest import expectedFailure
+from django.db import connection
 from django.test import TestCase
 from django.utils import timezone
 
@@ -153,6 +155,17 @@ class SearchVectorTriggers(TestCase):
         self.edition.authors.add(self.author)
         self.edition.save(broadcast=False)
 
+    @classmethod
+    def setUpTestData(cls):
+        """create conditions that trigger known old bugs"""
+        with connection.cursor() as cursor:
+            cursor.execute(
+                """
+                ALTER SEQUENCE bookwyrm_author_id_seq       RESTART WITH 20;
+                ALTER SEQUENCE bookwyrm_book_authors_id_seq RESTART WITH 300;
+                """
+            )
+
     def test_search_after_changed_metadata(self):
         """book found after updating metadata"""
         self.assertEqual(self.edition, self._search_first("First"))  # title
@@ -194,6 +207,7 @@ class SearchVectorTriggers(TestCase):
         self.assertEqual(self.edition, self._search_first("Mozilla"))
         self.assertEqual(self.edition, self._search_first("Name"))
 
+    @expectedFailure
     def test_search_after_updated_author_name(self):
         """book found under new author name"""
         self.assertEqual(self.edition, self._search_first("Name"))
