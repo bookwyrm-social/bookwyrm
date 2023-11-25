@@ -134,3 +134,86 @@ class BookSearch(TestCase):
         # there's really not much to test here, it's just a dataclass
         self.assertEqual(result.confidence, 1)
         self.assertEqual(result.title, "Title")
+
+
+class SearchVectorTriggers(TestCase):
+    """look for books as they change"""
+
+    def setUp(self):
+        """we need basic test data and mocks"""
+        self.work = models.Work.objects.create(title="This Work")
+        self.author = models.Author.objects.create(name="Name")
+        self.edition = models.Edition.objects.create(
+            title="First Edition of Work",
+            subtitle="Some Extra Words Are Good",
+            series="A Fabulous Sequence of Items",
+            parent_work=self.work,
+            isbn_10="0000000000",
+        )
+        self.edition.authors.add(self.author)
+        self.edition.save(broadcast=False)
+
+    def test_search_after_changed_metadata(self):
+        """book found after updating metadata"""
+        self.assertEqual(self.edition, self._search_first("First"))  # title
+        self.assertEqual(self.edition, self._search_first("Good"))  # subtitle
+        self.assertEqual(self.edition, self._search_first("Sequence"))  # series
+
+        self.edition.title = "Second Title of Work"
+        self.edition.subtitle = "Fewer Words Is Better"
+        self.edition.series = "A Wondrous Bunch"
+        self.edition.save(broadcast=False)
+
+        self.assertEqual(self.edition, self._search_first("Second"))  # title new
+        self.assertEqual(self.edition, self._search_first("Fewer"))  # subtitle new
+        self.assertEqual(self.edition, self._search_first("Wondrous"))  # series new
+
+        self.assertFalse(self._search_first("First"))  # title old
+        self.assertFalse(self._search_first("Good"))  # subtitle old
+        self.assertFalse(self._search_first("Sequence"))  # series old
+
+    def test_search_after_author_remove(self):
+        """book not found via removed author"""
+        self.assertEqual(self.edition, self._search_first("Name"))
+
+        self.edition.authors.set([])
+        self.edition.save(broadcast=False)
+
+        self.assertFalse(self._search("Name"))
+        self.assertEqual(self.edition, self._search_first("Edition"))
+
+    def test_search_after_author_add(self):
+        """book found by newly-added author"""
+        new_author = models.Author.objects.create(name="Mozilla")
+
+        self.assertFalse(self._search("Mozilla"))
+
+        self.edition.authors.add(new_author)
+        self.edition.save(broadcast=False)
+
+        self.assertEqual(self.edition, self._search_first("Mozilla"))
+        self.assertEqual(self.edition, self._search_first("Name"))
+
+    def test_search_after_updated_author_name(self):
+        """book found under new author name"""
+        self.assertEqual(self.edition, self._search_first("Name"))
+        self.assertFalse(self._search("Identifier"))
+
+        self.author.name = "Identifier"
+        self.author.save(broadcast=False)
+        self.edition.refresh_from_db()
+
+        self.assertFalse(self._search("Name"))
+        self.assertEqual(self.edition, self._search_first("Identifier"))
+        self.assertEqual(self.edition, self._search_first("Work"))
+
+    def _search_first(self, query):
+        """wrapper around search_title_author"""
+        return self._search(query, return_first=True)
+
+    # pylint: disable-next=no-self-use
+    def _search(self, query, *, return_first=False):
+        """wrapper around search_title_author"""
+        return book_search.search_title_author(
+            query, min_confidence=0, return_first=return_first
+        )
