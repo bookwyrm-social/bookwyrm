@@ -3,9 +3,11 @@ import re
 from typing import Tuple, Any
 
 from django.db import models
+import pgtrigger
 
 from bookwyrm import activitypub
 from bookwyrm.settings import DOMAIN
+from bookwyrm.utils.db import format_trigger
 
 from .book import BookDataModel
 from . import fields
@@ -65,5 +67,32 @@ class Author(BookDataModel):
     def get_remote_id(self):
         """editions and works both use "book" instead of model_name"""
         return f"https://{DOMAIN}/author/{self.id}"
+
+    class Meta:
+        """sets up indexes and triggers"""
+
+        triggers = [
+            pgtrigger.Trigger(
+                name="reset_search_vector_on_author_edit",
+                when=pgtrigger.After,
+                operation=pgtrigger.UpdateOf("name"),
+                func=format_trigger(
+                    """WITH book AS (
+                          SELECT bookwyrm_book.id AS row_id
+                          FROM bookwyrm_author
+                          LEFT OUTER JOIN bookwyrm_book_authors
+                            ON bookwyrm_book_authors.id = new.id
+                          LEFT OUTER JOIN bookwyrm_book
+                            ON bookwyrm_book.id = bookwyrm_book_authors.book_id
+                    )
+                    UPDATE bookwyrm_book
+                    SET search_vector = ''
+                    FROM book
+                    WHERE id = book.row_id;
+                    RETURN new;
+                """
+                ),
+            )
+        ]
 
     activity_serializer = activitypub.Author
