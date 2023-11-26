@@ -275,6 +275,29 @@ class SearchVectorTriggers(TestCase):
         self.assertEqual(self.edition, self._search_first("Mozilla"))
         self.assertEqual(self.edition, self._search_first("Name"))
 
+    def test_search_after_author_add_remove_sql(self):
+        """add/remove author through SQL to ensure execution of book_authors trigger"""
+        # Tests calling edition.save(), above, pass even if the trigger in
+        # bookwyrm_book_authors is removed (probably because they trigger the one
+        # in bookwyrm_book directly). Here we make sure to exercise the former.
+        new_author = models.Author.objects.create(name="Mozilla")
+
+        with connection.cursor() as cursor:
+            cursor.execute(
+                "DELETE FROM bookwyrm_book_authors WHERE book_id = %s",
+                [self.edition.id],
+            )
+        self.assertFalse(self._search("Name"))
+        self.assertFalse(self._search("Mozilla"))
+
+        with connection.cursor() as cursor:
+            cursor.execute(
+                "INSERT INTO bookwyrm_book_authors (book_id,author_id) VALUES (%s,%s)",
+                [self.edition.id, new_author.id],
+            )
+        self.assertFalse(self._search("Name"))
+        self.assertEqual(self.edition, self._search_first("Mozilla"))
+
     def test_search_after_updated_author_name(self):
         """book found under new author name"""
         self.assertEqual(self.edition, self._search_first("Name"))
