@@ -32,8 +32,8 @@ class Migration(migrations.Migration):
             trigger=pgtrigger.compiler.Trigger(
                 name="update_search_vector_on_book_edit",
                 sql=pgtrigger.compiler.UpsertTriggerSql(
-                    func="new.search_vector := coalesce(nullif(setweight(to_tsvector('english', coalesce(new.title, '')), 'A'), ''), setweight(to_tsvector('simple', coalesce(new.title, '')), 'A')) || setweight(to_tsvector('english', coalesce(new.subtitle, '')), 'B') || (SELECT setweight(to_tsvector('simple', coalesce(array_to_string(array_agg(bookwyrm_author.name), ' '), '')), 'C') FROM bookwyrm_book LEFT OUTER JOIN bookwyrm_book_authors ON bookwyrm_book.id = bookwyrm_book_authors.book_id LEFT OUTER JOIN bookwyrm_author ON bookwyrm_book_authors.author_id = bookwyrm_author.id WHERE bookwyrm_book.id = new.id ) || setweight(to_tsvector('english', coalesce(new.series, '')), 'D');RETURN NEW;",
-                    hash="9c898d46dfb7492ecd18f6c692bbecfa548f0e85",
+                    func="new.search_vector := setweight(coalesce(nullif(to_tsvector('english', new.title), ''), to_tsvector('simple', new.title)), 'A') || setweight(to_tsvector('english', coalesce(new.subtitle, '')), 'B') || (SELECT setweight(to_tsvector('simple', coalesce(array_to_string(array_agg(bookwyrm_author.name), ' '), '')), 'C') FROM bookwyrm_author LEFT JOIN bookwyrm_book_authors ON bookwyrm_author.id = bookwyrm_book_authors.author_id WHERE bookwyrm_book_authors.book_id = new.id ) || setweight(to_tsvector('english', coalesce(new.series, '')), 'D');RETURN NEW;",
+                    hash="77d6399497c0a89b0bf09d296e33c396da63705c",
                     operation='INSERT OR UPDATE OF "title", "subtitle", "series", "search_vector"',
                     pgid="pgtrigger_update_search_vector_on_book_edit_bec58",
                     table="bookwyrm_book",

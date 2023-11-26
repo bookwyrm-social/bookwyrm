@@ -178,15 +178,17 @@ class SearchVectorTest(TestCase):
         book = self._create_book("Hear We Come", "John")
         self.assertEqual(book.search_vector, "'come':3A 'hear':1A 'john':4C")
 
+    def test_search_vector_no_author(self):
+        """book with no authors gets processed normally"""
+        book = self._create_book("Book", None, series="Bunch")
+        self.assertEqual(book.search_vector, "'book':1A 'bunch':2")
+
     @staticmethod
     def _create_book(
         title, author_name, /, *, subtitle="", series="", author_alias=None
     ):
         """quickly create a book"""
         work = models.Work.objects.create(title="work")
-        author = models.Author.objects.create(
-            name=author_name, aliases=author_alias or []
-        )
         edition = models.Edition.objects.create(
             title=title,
             series=series or None,
@@ -194,8 +196,12 @@ class SearchVectorTest(TestCase):
             isbn_10="0000000000",
             parent_work=work,
         )
-        edition.authors.add(author)
-        edition.save(broadcast=False)
+        if author_name is not None:
+            author = models.Author.objects.create(
+                name=author_name, aliases=author_alias or []
+            )
+            edition.authors.add(author)
+            edition.save(broadcast=False)
         edition.refresh_from_db()
         return edition
 
