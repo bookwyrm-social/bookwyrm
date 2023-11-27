@@ -140,7 +140,7 @@ TEMPLATES = [
     },
 ]
 
-LOG_LEVEL = env("LOG_LEVEL", "INFO").upper()
+LOG_LEVEL = env("LOG_LEVEL", "DEBUG").upper()
 # Override aspects of the default handler to our taste
 # See https://docs.djangoproject.com/en/3.2/topics/logging/#default-logging-configuration
 # for a reference to the defaults we're overriding

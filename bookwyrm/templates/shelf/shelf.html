@@ -123,6 +123,7 @@
                 </span>
                 {% endif %}
                 {% endwith %}
+                {% include 'shelf/search_my_books_form.html' with user=user query=query %}
             </h2>
         </div>
         {% if is_self and shelf.id %}

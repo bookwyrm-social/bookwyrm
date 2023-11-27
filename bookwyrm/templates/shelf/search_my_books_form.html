@@ -1,0 +1,25 @@
+{% load i18n %}
+{% load utilities %}
+
+<form class="navbar-item column is-align-items-start pt-5" action="{% url 'user-shelves' user|username %}">
+    <div class="field has-addons">
+        <div class="control">
+            {% trans "Search for a book" as my_shelves_search_placeholder %}
+            <input aria-label="{{ my_shelves_search_placeholder }}" id="my-books-search" class="input" type="text" name="shelves_q" placeholder="{{ my_shelves_search_placeholder }}" value="{{ my_shelves_query }}" spellcheck="false">
+        </div>
+        <div class="control">
+            <button class="button" type="submit">
+                <span class="icon icon-search" title="{% trans 'Search' %}">
+                    <span class="is-sr-only">{% trans "Search" %}</span>
+                </span>
+            </button>
+        </div>
+        <div class="control">
+            <button class="button" type="button" data-modal-open="barcode-scanner-modal">
+                <span class="icon icon-barcode" title="{% trans 'Scan Barcode' %}" id="tour-barcode">
+                    <span class="is-sr-only">{% trans "Scan Barcode" %}</span>
+                </span>
+            </button>
+        </div>
+    </div>
+</form>

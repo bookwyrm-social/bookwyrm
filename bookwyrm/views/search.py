@@ -51,7 +51,7 @@ class Search(View):
 def api_book_search(request):
     """Return books via API response"""
     query = request.GET.get("q")
-    query = isbn_check(query)
+    query = isbn_check_and_format(query)
     min_confidence = request.GET.get("min_confidence", 0)
     # only return local book results via json so we don't cascade
     book_results = search(query, min_confidence=min_confidence)
@@ -64,7 +64,7 @@ def book_search(request):
     """the real business is elsewhere"""
     query = request.GET.get("q")
     # check if query is isbn
-    query = isbn_check(query)
+    query = isbn_check_and_format(query)
     min_confidence = request.GET.get("min_confidence", 0)
     search_remote = request.GET.get("remote", False) and request.user.is_authenticated
 
@@ -159,7 +159,7 @@ def list_search(request):
     return TemplateResponse(request, "search/list.html", data)
 
 
-def isbn_check(query):
+def isbn_check_and_format(query):
     """isbn10 or isbn13 check, if so remove separators"""
     if query:
         su_num = re.sub(r"(?<=\d)\D(?=\d|[xX])", "", query)

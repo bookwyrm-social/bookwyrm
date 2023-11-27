@@ -1,7 +1,7 @@
 """ shelf views """
 from collections import namedtuple
 
-from django.db.models import OuterRef, Subquery, F, Max
+from django.db.models import OuterRef, Subquery, F, Max, QuerySet
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.http import HttpResponseBadRequest
@@ -15,6 +15,10 @@ from bookwyrm import forms, models
 from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.settings import PAGE_LENGTH
 from bookwyrm.views.helpers import is_api_request, get_user_from_username
+from bookwyrm.book_search import search
+
+import logging
+logger = logging.getLogger(__name__)
 
 
 # pylint: disable=no-self-use
@@ -32,6 +36,8 @@ class Shelf(View):
         else:
             shelves = models.Shelf.privacy_filter(request.user).filter(user=user).all()
 
+        shelves_search_query = request.GET.get("shelves_q")
+
         # get the shelf and make sure the logged in user should be able to see it
         if shelf_identifier:
             shelf = get_object_or_404(user.shelf_set, identifier=shelf_identifier)
@@ -42,14 +48,17 @@ class Shelf(View):
             FakeShelf = namedtuple(
                 "Shelf", ("identifier", "name", "user", "books", "privacy")
             )
-            books = (
-                models.Edition.viewer_aware_objects(request.user)
-                .filter(
-                    # privacy is ensured because the shelves are already filtered above
-                    shelfbook__shelf__in=shelves
-                )
-                .distinct()
-            )
+            if shelves_search_query:
+                logger.debug("AAAAAAAAAAAA")
+                all_books = models.Edition.viewer_aware_objects(request.user).filter(
+                # privacy is ensured because the shelves are already filtered above
+                shelfbook__shelf__in=shelves
+                ).distinct()
+                books = search(shelves_search_query, books=all_books)
+            else:
+                logger.debug("BBBBBBBBB")
+                books = shelf.books
+
             shelf = FakeShelf("all", _("All books"), user, books, "public")
 
         if is_api_request(request) and shelf_identifier:
@@ -103,6 +112,8 @@ class Shelf(View):
             "page_range": paginated.get_elided_page_range(
                 page.number, on_each_side=2, on_ends=1
             ),
+            "has_shelves_query": bool(shelves_search_query),
+            "shelves_search_query": shelves_search_query
         }
 
         return TemplateResponse(request, "shelf/shelf.html", data)
