@@ -137,7 +137,7 @@ def search_title_author(
 
     # filter out multiple editions of the same work
     list_results = []
-    for work_id in set(editions_of_work[:30]):
+    for work_id in editions_of_work[:30]:
         result = (
             results.filter(parent_work=work_id)
             .order_by("-rank", "-edition_rank")
