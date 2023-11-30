@@ -11,8 +11,9 @@ from bookwyrm.connectors.bookwyrm_connector import Connector
 class BookWyrmConnector(TestCase):
     """this connector doesn't do much, just search"""
 
-    def setUp(self):
-        """create the connector"""
+    @classmethod
+    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
+        """create bookwrym_connector in the database"""
         models.Connector.objects.create(
             identifier="example.com",
             connector_file="bookwyrm_connector",
@@ -21,6 +22,9 @@ class BookWyrmConnector(TestCase):
             covers_url="https://example.com/images/covers",
             search_url="https://example.com/search?q=",
         )
+
+    def setUp(self):
+        """test data"""
         self.connector = Connector("example.com")
 
     def test_get_or_create_book_existing(self):

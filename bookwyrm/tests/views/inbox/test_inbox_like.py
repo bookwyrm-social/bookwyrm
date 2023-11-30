@@ -10,7 +10,8 @@ from bookwyrm import models, views
 class InboxActivities(TestCase):
     """inbox tests"""
 
-    def setUp(self):
+    @classmethod
+    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
         """basic user and book data"""
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
@@ -43,6 +44,10 @@ class InboxActivities(TestCase):
                     remote_id="https://example.com/status/1",
                 )
 
+        models.SiteSettings.objects.create()
+
+    def setUp(self):
+        """individual test setup"""
         self.create_json = {
             "id": "hi",
             "type": "Create",
@@ -51,8 +56,6 @@ class InboxActivities(TestCase):
             "cc": ["https://example.com/user/mouse/followers"],
             "object": {},
         }
-
-        models.SiteSettings.objects.create()
 
     def test_handle_favorite(self):
         """fav a status"""

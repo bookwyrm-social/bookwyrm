@@ -14,8 +14,9 @@ from bookwyrm.connectors.connector_manager import ConnectorException
 class Inventaire(TestCase):
     """test loading data from inventaire.io"""
 
-    def setUp(self):
-        """creates the connector we'll use"""
+    @classmethod
+    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
+        """creates the connector in the database"""
         models.Connector.objects.create(
             identifier="inventaire.io",
             name="Inventaire",
@@ -26,6 +27,9 @@ class Inventaire(TestCase):
             search_url="https://inventaire.io/search?q=",
             isbn_search_url="https://inventaire.io/isbn",
         )
+
+    def setUp(self):
+        """connector instance"""
         self.connector = Connector("inventaire.io")
 
     @responses.activate

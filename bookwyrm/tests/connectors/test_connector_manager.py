@@ -10,7 +10,8 @@ from bookwyrm.connectors.bookwyrm_connector import Connector as BookWyrmConnecto
 class ConnectorManager(TestCase):
     """interface between the app and various connectors"""
 
-    def setUp(self):
+    @classmethod
+    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
         """we'll need some books and a connector info entry"""
         self.work = models.Work.objects.create(title="Example Work")
 

@@ -15,7 +15,8 @@ from bookwyrm import models, settings
 class Shelf(TestCase):
     """some activitypub oddness ahead"""
 
-    def setUp(self):
+    @classmethod
+    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
         """look, a shelf"""
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"

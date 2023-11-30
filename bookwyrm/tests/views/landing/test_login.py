@@ -17,10 +17,9 @@ from bookwyrm.tests.validate_html import validate_html
 class LoginViews(TestCase):
     """login and password management"""
 
-    # pylint: disable=invalid-name
-    def setUp(self):
+    @classmethod
+    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
         """we need basic test data and mocks"""
-        self.factory = RequestFactory()
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
         ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
@@ -47,9 +46,13 @@ class LoginViews(TestCase):
                 localname="badger",
                 two_factor_auth=True,
             )
+        models.SiteSettings.objects.create(id=1, require_confirm_email=False)
+
+    def setUp(self):
+        """individual test setup"""
+        self.factory = RequestFactory()
         self.anonymous_user = AnonymousUser
         self.anonymous_user.is_authenticated = False
-        models.SiteSettings.objects.create(id=1, require_confirm_email=False)
 
     def test_login_get(self, *_):
         """there are so many views, this just makes sure it LOADS"""

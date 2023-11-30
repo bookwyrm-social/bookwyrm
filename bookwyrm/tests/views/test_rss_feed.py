@@ -12,7 +12,8 @@ from bookwyrm.views import rss_feed
 class RssFeedView(TestCase):
     """rss feed behaves as expected"""
 
-    def setUp(self):
+    @classmethod
+    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
         ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
@@ -25,9 +26,11 @@ class RssFeedView(TestCase):
             remote_id="https://example.com/book/1",
             parent_work=work,
         )
-        self.factory = RequestFactory()
-
         models.SiteSettings.objects.create()
+
+    def setUp(self):
+        """individual test setup"""
+        self.factory = RequestFactory()
 
     def test_rss_empty(self, *_):
         """load an rss feed"""

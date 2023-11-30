@@ -12,9 +12,9 @@ from bookwyrm.tests.validate_html import validate_html
 class GetStartedViews(TestCase):
     """helping new users get oriented"""
 
-    def setUp(self):
+    @classmethod
+    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
         """we need basic test data and mocks"""
-        self.factory = RequestFactory()
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
         ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
@@ -38,6 +38,10 @@ class GetStartedViews(TestCase):
             remote_id="https://example.com/book/1",
         )
         models.SiteSettings.objects.create()
+
+    def setUp(self):
+        """individual test setup"""
+        self.factory = RequestFactory()
 
     def test_profile_view(self, *_):
         """there are so many views, this just makes sure it LOADS"""

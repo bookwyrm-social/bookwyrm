@@ -15,10 +15,9 @@ from bookwyrm import models
 class ReadThrough(TestCase):
     """readthrough tests"""
 
-    def setUp(self):
+    @classmethod
+    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
         """basic user and book data"""
-        self.client = Client()
-
         self.work = models.Work.objects.create(title="Example Work")
 
         self.edition = models.Edition.objects.create(
@@ -32,6 +31,9 @@ class ReadThrough(TestCase):
                 "cinco", "cinco@example.com", "seissiete", local=True, localname="cinco"
             )
 
+    def setUp(self):
+        """individual test setup"""
+        self.client = Client()
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
             self.client.force_login(self.user)
 

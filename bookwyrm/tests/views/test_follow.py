@@ -17,10 +17,10 @@ from bookwyrm.tests.validate_html import validate_html
 class FollowViews(TestCase):
     """follows"""
 
-    def setUp(self):
+    @classmethod
+    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
         """we need basic test data and mocks"""
         models.SiteSettings.objects.create()
-        self.factory = RequestFactory()
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
         ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
@@ -56,6 +56,10 @@ class FollowViews(TestCase):
             remote_id="https://example.com/book/1",
             parent_work=self.work,
         )
+
+    def setUp(self):
+        """individual test setup"""
+        self.factory = RequestFactory()
 
     def test_handle_follow_remote(self, *_):
         """send a follow request"""

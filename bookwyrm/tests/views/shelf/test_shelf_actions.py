@@ -18,9 +18,9 @@ from bookwyrm import forms, models, views
 class ShelfActionViews(TestCase):
     """tag views"""
 
-    def setUp(self):
+    @classmethod
+    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
         """we need basic test data and mocks"""
-        self.factory = RequestFactory()
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
         ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
@@ -51,6 +51,10 @@ class ShelfActionViews(TestCase):
                 name="Test Shelf", identifier="test-shelf", user=self.local_user
             )
         models.SiteSettings.objects.create()
+
+    def setUp(self):
+        """individual test setup"""
+        self.factory = RequestFactory()
 
     def test_shelve(self, *_):
         """shelve a book"""

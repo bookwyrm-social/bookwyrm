@@ -26,7 +26,8 @@ from bookwyrm.settings import PAGE_LENGTH
 class ActivitypubMixins(TestCase):
     """functionality shared across models"""
 
-    def setUp(self):
+    @classmethod
+    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
         """shared data"""
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
@@ -47,6 +48,8 @@ class ActivitypubMixins(TestCase):
                 outbox="https://example.com/users/rat/outbox",
             )
 
+    def setUp(self):
+        """test data"""
         self.object_mock = {
             "to": "to field",
             "cc": "cc field",
