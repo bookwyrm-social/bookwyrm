@@ -107,9 +107,9 @@ def switch_edition(request):
         book__parent_work=new_edition.parent_work, user=request.user
     )
     for review in reviews.all():
-        # because ratings are a subclass of reviews, 
+        # because ratings are a subclass of reviews,
         # this will pick up both ratings and reviews
         review.book = new_edition
-        review.save()    
+        review.save()
 
     return redirect(f"/book/{new_edition.id}")

@@ -139,14 +139,17 @@ class BookViews(TestCase):
         work = models.Work.objects.create(title="test work")
         edition1 = models.Edition.objects.create(title="first ed", parent_work=work)
         edition2 = models.Edition.objects.create(title="second ed", parent_work=work)
-        
+
         models.ReviewRating.objects.create(
             book=edition1,
             user=self.local_user,
             rating=3,
         )
 
-        self.assertIsInstance(models.ReviewRating.objects.get(user=self.local_user, book=edition1), models.ReviewRating)
+        self.assertIsInstance(
+            models.ReviewRating.objects.get(user=self.local_user, book=edition1),
+            models.ReviewRating,
+        )
         with self.assertRaises(models.ReviewRating.DoesNotExist):
             models.ReviewRating.objects.get(user=self.local_user, book=edition2)
 
@@ -154,7 +157,10 @@ class BookViews(TestCase):
         request.user = self.local_user
         views.switch_edition(request)
 
-        self.assertIsInstance(models.ReviewRating.objects.get(user=self.local_user, book=edition2), models.ReviewRating)
+        self.assertIsInstance(
+            models.ReviewRating.objects.get(user=self.local_user, book=edition2),
+            models.ReviewRating,
+        )
         with self.assertRaises(models.ReviewRating.DoesNotExist):
             models.ReviewRating.objects.get(user=self.local_user, book=edition1)
 
@@ -167,16 +173,19 @@ class BookViews(TestCase):
         work = models.Work.objects.create(title="test work")
         edition1 = models.Edition.objects.create(title="first ed", parent_work=work)
         edition2 = models.Edition.objects.create(title="second ed", parent_work=work)
-        
+
         models.Review.objects.create(
             book=edition1,
             user=self.local_user,
             name="blah",
             rating=3,
-            content="not bad"
+            content="not bad",
         )
 
-        self.assertIsInstance(models.Review.objects.get(user=self.local_user, book=edition1), models.Review)
+        self.assertIsInstance(
+            models.Review.objects.get(user=self.local_user, book=edition1),
+            models.Review,
+        )
         with self.assertRaises(models.Review.DoesNotExist):
             models.Review.objects.get(user=self.local_user, book=edition2)
 
@@ -184,6 +193,9 @@ class BookViews(TestCase):
         request.user = self.local_user
         views.switch_edition(request)
 
-        self.assertIsInstance(models.Review.objects.get(user=self.local_user, book=edition2), models.Review)
+        self.assertIsInstance(
+            models.Review.objects.get(user=self.local_user, book=edition2),
+            models.Review,
+        )
         with self.assertRaises(models.Review.DoesNotExist):
             models.Review.objects.get(user=self.local_user, book=edition1)
