@@ -11,6 +11,7 @@ from django.utils.decorators import method_decorator
 from django.views import View
 
 from bookwyrm import book_search, forms, models
+from bookwyrm.settings import INSTANCE_ACTOR_USERNAME
 from bookwyrm.suggested_users import suggested_users
 from .preferences.edit_user import save_user_form
 
@@ -108,6 +109,7 @@ class GetStartedUsers(View):
             .exclude(
                 id=request.user.id,
             )
+            .exclude(localname=INSTANCE_ACTOR_USERNAME)
             .order_by("-similarity")[:5]
         )
         data = {"no_results": not user_results}
