@@ -602,7 +602,7 @@ def to_ordered_collection_page(
     if activity_page.has_next():
         next_page = f"{remote_id}?page={activity_page.next_page_number()}"
     if activity_page.has_previous():
-        prev_page = f"{remote_id}?page=%d{activity_page.previous_page_number()}"
+        prev_page = f"{remote_id}?page={activity_page.previous_page_number()}"
     return activitypub.OrderedCollectionPage(
         id=f"{remote_id}?page={page}",
         partOf=remote_id,
