@@ -121,11 +121,8 @@
                         {% endblocktrans %}
                     {% endif %}
                 </span>
-
                 {% endif %}
-
                 {% endwith %}
-
             </h2>
             {% if books|length > 0 %}
                 {% include 'shelf/search_filters.html' with user=user query=query %}

@@ -9,7 +9,7 @@ from django.test import TestCase
 from django.test.client import RequestFactory
 
 from bookwyrm import models, views
-from bookwyrm.book_search import SearchResult, search
+from bookwyrm.book_search import SearchResult
 from bookwyrm.settings import DOMAIN
 from bookwyrm.tests.validate_html import validate_html
 

@@ -17,10 +17,6 @@ from bookwyrm.settings import PAGE_LENGTH
 from bookwyrm.views.helpers import is_api_request, get_user_from_username
 from bookwyrm.book_search import search
 
-import logging
-logger = logging.getLogger(__name__)
-
-
 # pylint: disable=no-self-use
 class Shelf(View):
     """shelf page"""
