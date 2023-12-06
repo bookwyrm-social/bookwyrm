@@ -127,7 +127,10 @@
                 {% endwith %}
 
             </h2>
-            {% include 'shelf/search_filters.html' with user=user query=query %}
+            {% if books|length > 0 %}
+                {% include 'shelf/search_filters.html' with user=user query=query %}
+            {% endif %}
+
         </div>
         {% if is_self and shelf.id %}
         <div class="column is-narrow">
