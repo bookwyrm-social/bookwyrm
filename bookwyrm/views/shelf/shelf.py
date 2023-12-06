@@ -43,21 +43,23 @@ class Shelf(View):
             shelf = get_object_or_404(user.shelf_set, identifier=shelf_identifier)
             shelf.raise_visible_to_user(request.user)
             books = shelf.books
+            if shelves_search_query:
+                books = search(shelves_search_query, books=books)
         else:
             # this is a constructed "all books" view, with a fake "shelf" obj
             FakeShelf = namedtuple(
                 "Shelf", ("identifier", "name", "user", "books", "privacy")
             )
-            if shelves_search_query:
-                logger.debug("AAAAAAAAAAAA")
-                all_books = models.Edition.viewer_aware_objects(request.user).filter(
+
+            books = models.Edition.viewer_aware_objects(request.user).filter(
                 # privacy is ensured because the shelves are already filtered above
                 shelfbook__shelf__in=shelves
                 ).distinct()
-                books = search(shelves_search_query, books=all_books)
-            else:
-                logger.debug("BBBBBBBBB")
-                books = shelf.books
+
+            # TODO: [COMMENT]
+            if shelves_search_query:
+                books = search(shelves_search_query, books=books)
+                books = models.Edition.objects.filter(pk__in=books)
 
             shelf = FakeShelf("all", _("All books"), user, books, "public")
 
@@ -80,6 +82,8 @@ class Shelf(View):
         reading = reading.filter(user=user, book__id=OuterRef("id")).order_by(
             "start_date"
         )
+
+        # import pdb; pdb.set_trace()
 
         books = books.annotate(shelved_date=Max("shelfbook__shelved_date"))
         books = books.annotate(

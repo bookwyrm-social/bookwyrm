@@ -194,7 +194,7 @@ LOGGING = {
         # Add a bookwyrm-specific logger
         "bookwyrm": {
             "handlers": ["console"],
-            "level": LOG_LEVEL,
+            "level": DEBUG,
         },
     },
 }

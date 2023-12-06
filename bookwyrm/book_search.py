@@ -14,6 +14,7 @@ from bookwyrm import connectors
 from bookwyrm.settings import MEDIA_FULL_URL
 
 
+
 @overload
 def search(
     query: str,
@@ -43,7 +44,7 @@ def search(
     min_confidence: float = 0,
     filters: Optional[list[Any]] = None,
     return_first: bool = False,
-    books = None
+    books: Optional[QuerySet[models.Edition]] = None
 ) -> Union[Optional[models.Edition], QuerySet[models.Edition]]:
     """search your local database"""
     filters = filters or []
@@ -59,6 +60,7 @@ def search(
 
     # if there were no identifier results...
     if not results:
+        print('SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS')
         # then try searching title/author
         results = search_title_author(
             query, min_confidence, *filters, return_first=return_first, books=books
@@ -100,7 +102,7 @@ def format_search_result(search_result):
 def search_identifiers(
     query, *filters, return_first=False, books=None,
 ) -> Union[Optional[models.Edition], QuerySet[models.Edition]]:
-    books = books or models.Edition
+    books = books or models.Edition.objects
     """tries remote_id, isbn; defined as dedupe fields on the model"""
     if connectors.maybe_isbn(query):
         # Oh did you think the 'S' in ISBN stood for 'standard'?
