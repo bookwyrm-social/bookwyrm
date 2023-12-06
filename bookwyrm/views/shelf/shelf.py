@@ -1,7 +1,7 @@
 """ shelf views """
 from collections import namedtuple
 
-from django.db.models import OuterRef, Subquery, F, Max, QuerySet
+from django.db.models import OuterRef, Subquery, F, Max
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.http import HttpResponseBadRequest
@@ -17,10 +17,12 @@ from bookwyrm.settings import PAGE_LENGTH
 from bookwyrm.views.helpers import is_api_request, get_user_from_username
 from bookwyrm.book_search import search
 
+
 # pylint: disable=no-self-use
 class Shelf(View):
     """shelf page"""
 
+    # pylint: disable=R0914
     def get(self, request, username, shelf_identifier=None):
         """display a shelf"""
         user = get_user_from_username(request.user, username)
@@ -45,10 +47,14 @@ class Shelf(View):
                 "Shelf", ("identifier", "name", "user", "books", "privacy")
             )
 
-            books = models.Edition.viewer_aware_objects(request.user).filter(
-                # privacy is ensured because the shelves are already filtered above
-                shelfbook__shelf__in=shelves
-                ).distinct()
+            books = (
+                models.Edition.viewer_aware_objects(request.user)
+                .filter(
+                    # privacy is ensured because the shelves are already filtered above
+                    shelfbook__shelf__in=shelves
+                )
+                .distinct()
+            )
 
             shelf = FakeShelf("all", _("All books"), user, books, "public")
 
@@ -106,7 +112,7 @@ class Shelf(View):
             "page_range": paginated.get_elided_page_range(
                 page.number, on_each_side=2, on_ends=1
             ),
-            "shelves_search_query": shelves_search_query
+            "shelves_search_query": shelves_search_query,
         }
 
         return TemplateResponse(request, "shelf/shelf.html", data)

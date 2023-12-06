@@ -14,7 +14,6 @@ from bookwyrm import connectors
 from bookwyrm.settings import MEDIA_FULL_URL
 
 
-
 @overload
 def search(
     query: str,
@@ -44,7 +43,7 @@ def search(
     min_confidence: float = 0,
     filters: Optional[list[Any]] = None,
     return_first: bool = False,
-    books: Optional[QuerySet[models.Edition]] = None
+    books: Optional[QuerySet[models.Edition]] = None,
 ) -> Union[Optional[models.Edition], QuerySet[models.Edition]]:
     """search your local database"""
     filters = filters or []
@@ -56,7 +55,9 @@ def search(
     # first, try searching unique identifiers
     # unique identifiers never have spaces, title/author usually do
     if not " " in query:
-        results = search_identifiers(query, *filters, return_first=return_first, books=books)
+        results = search_identifiers(
+            query, *filters, return_first=return_first, books=books
+        )
 
     # if there were no identifier results...
     if not results:
@@ -65,6 +66,7 @@ def search(
             query, min_confidence, *filters, return_first=return_first, books=books
         )
     return results
+
 
 def isbn_search(query):
     """search your local database"""
@@ -99,10 +101,17 @@ def format_search_result(search_result):
 
 
 def search_identifiers(
-    query, *filters, return_first=False, books=None,
+    query,
+    *filters,
+    return_first=False,
+    books=None,
 ) -> Union[Optional[models.Edition], QuerySet[models.Edition]]:
+    """search Editions by deduplication fields
+
+    Best for cases when we can assume someone is searching for an exact match on
+    commonly unique data identifiers like isbn or specific library ids.
+    """
     books = books or models.Edition.objects
-    """tries remote_id, isbn; defined as dedupe fields on the model"""
     if connectors.maybe_isbn(query):
         # Oh did you think the 'S' in ISBN stood for 'standard'?
         normalized_isbn = query.strip().upper().rjust(10, "0")
