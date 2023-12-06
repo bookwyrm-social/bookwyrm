@@ -60,7 +60,6 @@ def search(
 
     # if there were no identifier results...
     if not results:
-        print('SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS')
         # then try searching title/author
         results = search_title_author(
             query, min_confidence, *filters, return_first=return_first, books=books

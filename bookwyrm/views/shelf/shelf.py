@@ -43,8 +43,6 @@ class Shelf(View):
             shelf = get_object_or_404(user.shelf_set, identifier=shelf_identifier)
             shelf.raise_visible_to_user(request.user)
             books = shelf.books
-            if shelves_search_query:
-                books = search(shelves_search_query, books=books)
         else:
             # this is a constructed "all books" view, with a fake "shelf" obj
             FakeShelf = namedtuple(
@@ -55,11 +53,6 @@ class Shelf(View):
                 # privacy is ensured because the shelves are already filtered above
                 shelfbook__shelf__in=shelves
                 ).distinct()
-
-            # TODO: [COMMENT]
-            if shelves_search_query:
-                books = search(shelves_search_query, books=books)
-                books = models.Edition.objects.filter(pk__in=books)
 
             shelf = FakeShelf("all", _("All books"), user, books, "public")
 
@@ -83,8 +76,6 @@ class Shelf(View):
             "start_date"
         )
 
-        # import pdb; pdb.set_trace()
-
         books = books.annotate(shelved_date=Max("shelfbook__shelved_date"))
         books = books.annotate(
             rating=Subquery(reviews.values("rating")[:1]),
@@ -98,6 +89,9 @@ class Shelf(View):
         ).prefetch_related("authors")
 
         books = sort_books(books, request.GET.get("sort"))
+
+        if shelves_search_query:
+            books = search(shelves_search_query, books=books)
 
         paginated = Paginator(
             books,
@@ -116,7 +110,6 @@ class Shelf(View):
             "page_range": paginated.get_elided_page_range(
                 page.number, on_each_side=2, on_ends=1
             ),
-            "has_shelves_query": bool(shelves_search_query),
             "shelves_search_query": shelves_search_query
         }
 

@@ -121,10 +121,13 @@
                         {% endblocktrans %}
                     {% endif %}
                 </span>
+
                 {% endif %}
+
                 {% endwith %}
-                {% include 'shelf/search_my_books_form.html' with user=user query=query %}
+
             </h2>
+            {% include 'shelf/search_filters.html' with user=user query=query %}
         </div>
         {% if is_self and shelf.id %}
         <div class="column is-narrow">

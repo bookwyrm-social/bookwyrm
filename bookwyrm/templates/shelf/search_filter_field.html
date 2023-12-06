@@ -1,0 +1,9 @@
+{% extends 'snippets/filters_panel/filter_field.html' %}
+{% load i18n %}
+
+{% block filter %}
+  <div class="control">
+    <label class="label" for="search_query">{% trans 'Search by keyword' %}</label>
+    <input aria-label="Search by keyword" id="my-books-search" class="input" type="text" name="shelves_q" placeholder="Enter text here" value="{{ shelves_search_query }}" spellcheck="false" />
+  </div>
+{% endblock %}
