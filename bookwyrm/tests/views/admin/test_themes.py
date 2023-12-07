@@ -86,3 +86,25 @@ class AdminThemesViews(TestCase):
 
         with self.assertRaises(PermissionDenied):
             view(request)
+
+    def test_test_theme(self):
+        """Testing testing testing test"""
+        theme = models.Theme.objects.first()
+        self.assertIsNone(theme.loads)
+        request = self.factory.post("")
+        request.user = self.local_user
+
+        views.test_theme(request, theme.id)
+        theme.refresh_from_db()
+        self.assertTrue(theme.loads)
+
+    def test_test_theme_broken(self):
+        """Testing test for testing when it's a bad theme"""
+        theme = models.Theme.objects.create(name="bad theme", path="dsf/sdf/sdf.sdf")
+        self.assertIsNone(theme.loads)
+        request = self.factory.post("")
+        request.user = self.local_user
+
+        views.test_theme(request, theme.id)
+        theme.refresh_from_db()
+        self.assertIs(False, theme.loads)

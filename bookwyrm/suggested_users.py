@@ -8,6 +8,7 @@ from opentelemetry import trace
 
 from bookwyrm import models
 from bookwyrm.redis_store import RedisStore, r
+from bookwyrm.settings import INSTANCE_ACTOR_USERNAME
 from bookwyrm.tasks import app, SUGGESTED_USERS
 from bookwyrm.telemetry import open_telemetry
 
@@ -98,9 +99,15 @@ class SuggestedUsers(RedisStore):
             for (pk, score) in values
         ]
         # annotate users with mutuals and shared book counts
-        users = models.User.objects.filter(
-            is_active=True, bookwyrm_user=True, id__in=[pk for (pk, _) in values]
-        ).annotate(mutuals=Case(*annotations, output_field=IntegerField(), default=0))
+        users = (
+            models.User.objects.filter(
+                is_active=True, bookwyrm_user=True, id__in=[pk for (pk, _) in values]
+            )
+            .annotate(
+                mutuals=Case(*annotations, output_field=IntegerField(), default=0)
+            )
+            .exclude(localname=INSTANCE_ACTOR_USERNAME)
+        )
         if local:
             users = users.filter(local=True)
         return users.order_by("-mutuals")[:5]

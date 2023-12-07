@@ -2,10 +2,12 @@
 from io import BytesIO
 from collections import namedtuple
 from dataclasses import dataclass
+import datetime
 import json
 import pathlib
 import re
 from typing import List
+from unittest import expectedFailure
 from unittest.mock import patch
 
 from PIL import Image
@@ -593,6 +595,36 @@ class ModelFields(TestCase):
         self.assertEqual(instance.field_to_activity(now), now.isoformat())
         self.assertEqual(instance.field_from_activity(now.isoformat()), now)
         self.assertEqual(instance.field_from_activity("bip"), None)
+
+    def test_partial_date_legacy_formats(self, *_):
+        """test support for full isoformat in partial dates"""
+        instance = fields.PartialDateField()
+        expected = datetime.date(2023, 10, 20)
+        test_cases = [
+            ("no_tz", "2023-10-20T00:00:00"),
+            ("no_tz_eod", "2023-10-20T23:59:59.999999"),
+            ("utc_offset_midday", "2023-10-20T12:00:00+0000"),
+            ("utc_offset_midnight", "2023-10-20T00:00:00+00"),
+            ("eastern_tz_parsed", "2023-10-20T15:20:30+04:30"),
+            ("western_tz_midnight", "2023-10-20:00:00-03"),
+        ]
+        for desc, value in test_cases:
+            with self.subTest(desc):
+                parsed = instance.field_from_activity(value)
+                self.assertIsNotNone(parsed)
+                self.assertEqual(expected, parsed.date())
+                self.assertTrue(parsed.has_day)
+                self.assertTrue(parsed.has_month)
+
+    @expectedFailure
+    def test_partial_date_timezone_fix(self, *_):
+        """deserialization compensates for unwanted effects of USE_TZ"""
+        instance = fields.PartialDateField()
+        expected = datetime.date(2023, 10, 1)
+        parsed = instance.field_from_activity("2023-09-30T21:00:00-03")
+        self.assertEqual(expected, parsed.date())
+        self.assertTrue(parsed.has_day)
+        self.assertTrue(parsed.has_month)
 
     def test_array_field(self, *_):
         """idk why it makes them strings but probably for a good reason"""

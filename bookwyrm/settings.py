@@ -100,6 +100,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django.contrib.humanize",
     "oauth2_provider",
+    "file_resubmit",
     "sass_processor",
     "bookwyrm",
     "celery",
@@ -243,7 +244,11 @@ if env.bool("USE_DUMMY_CACHE", False):
     CACHES = {
         "default": {
             "BACKEND": "django.core.cache.backends.dummy.DummyCache",
-        }
+        },
+        "file_resubmit": {
+            "BACKEND": "django.core.cache.backends.dummy.DummyCache",
+            "LOCATION": "/tmp/file_resubmit_tests/",
+        },
     }
 else:
     CACHES = {
@@ -253,7 +258,11 @@ else:
             "OPTIONS": {
                 "CLIENT_CLASS": "django_redis.client.DefaultClient",
             },
-        }
+        },
+        "file_resubmit": {
+            "BACKEND": "django.core.cache.backends.filebased.FileBasedCache",
+            "LOCATION": "/tmp/file_resubmit/",
+        },
     }
 
     SESSION_ENGINE = "django.contrib.sessions.backends.cache"

@@ -30,7 +30,7 @@ from .admin.reports import (
     moderator_delete_user,
 )
 from .admin.site import Site, Registration, RegistrationLimited
-from .admin.themes import Themes, delete_theme
+from .admin.themes import Themes, delete_theme, test_theme
 from .admin.user_admin import UserAdmin, UserAdminList, ActivateUserAdmin
 
 # user preferences
@@ -167,3 +167,4 @@ from .annual_summary import (
     summary_revoke_key,
 )
 from .server_error import server_error
+from .permission_denied import permission_denied
