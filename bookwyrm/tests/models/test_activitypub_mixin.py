@@ -391,11 +391,13 @@ class ActivitypubMixins(TestCase):
     def test_to_ordered_collection_page(self, *_):
         """make sure the paged results of an ordered collection work"""
         self.assertEqual(PAGE_LENGTH, 15)
-        for number in range(0, 2 * PAGE_LENGTH):
-            models.Status.objects.create(
+        models.Status.objects.bulk_create(
+            models.Status(
                 user=self.local_user,
                 content=f"test status {number}",
             )
+            for number in range(2 * PAGE_LENGTH)
+        )
         page_1 = to_ordered_collection_page(
             models.Status.objects.all(), "http://fish.com/", page=1
         )
@@ -416,13 +418,13 @@ class ActivitypubMixins(TestCase):
     def test_to_ordered_collection(self, *_):
         """convert a queryset into an ordered collection object"""
         self.assertEqual(PAGE_LENGTH, 15)
-
-        for number in range(0, 2 * PAGE_LENGTH):
-            models.Status.objects.create(
+        models.Status.objects.bulk_create(
+            models.Status(
                 user=self.local_user,
                 content=f"test status {number}",
             )
-
+            for number in range(2 * PAGE_LENGTH)
+        )
         MockSelf = namedtuple("Self", ("remote_id"))
         mock_self = MockSelf("")
 
