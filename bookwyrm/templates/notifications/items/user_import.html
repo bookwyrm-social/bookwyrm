@@ -10,5 +10,7 @@
 {% endblock %}
 
 {% block description %}
-    {% blocktrans %}Your user import is complete.{% endblocktrans %}
+{% url 'user-import' as import_url %}
+{% blocktrans %}Your <a href="{{ import_url }}">user import</a> is complete.{% endblocktrans %}
+
 {% endblock %}

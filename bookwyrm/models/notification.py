@@ -249,7 +249,7 @@ def notify_user_on_user_import_complete(
     if not instance.complete or "complete" not in update_fields:
         return
     Notification.objects.create(
-        user=instance.user, notification_type=Notification.USER_IMPORT
+        user=instance.user, notification_type=NotificationType.USER_IMPORT
     )
 
 
@@ -264,7 +264,7 @@ def notify_user_on_user_export_complete(
         return
     Notification.objects.create(
         user=instance.user,
-        notification_type=Notification.USER_EXPORT,
+        notification_type=NotificationType.USER_EXPORT,
         related_user_export=instance,
     )
 
