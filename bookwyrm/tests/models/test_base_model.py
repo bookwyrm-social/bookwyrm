@@ -12,7 +12,8 @@ from bookwyrm.settings import DOMAIN
 class BaseModel(TestCase):
     """functionality shared across models"""
 
-    def setUp(self):
+    @classmethod
+    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
         """shared data"""
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
@@ -31,6 +32,7 @@ class BaseModel(TestCase):
                 outbox="https://example.com/users/rat/outbox",
             )
 
+    def setUp(self):
         class BookWyrmTestModel(base_model.BookWyrmModel):
             """just making it not abstract"""
 

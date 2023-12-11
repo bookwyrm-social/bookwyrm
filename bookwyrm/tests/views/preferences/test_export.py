@@ -17,9 +17,9 @@ from bookwyrm.tests.validate_html import validate_html
 class ExportViews(TestCase):
     """viewing and creating statuses"""
 
-    def setUp(self):
+    @classmethod
+    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
         """we need basic test data and mocks"""
-        self.factory = RequestFactory()
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
         ):
@@ -39,6 +39,10 @@ class ExportViews(TestCase):
             isbn_13="9781234567890",
             bnf_id="beep",
         )
+
+    def setUp(self):
+        """individual test setup"""
+        self.factory = RequestFactory()
 
     def tst_export_get(self, *_):
         """request export"""

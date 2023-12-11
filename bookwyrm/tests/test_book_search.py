@@ -10,7 +10,8 @@ from bookwyrm.connectors.abstract_connector import AbstractMinimalConnector
 class BookSearch(TestCase):
     """look for some books"""
 
-    def setUp(self):
+    @classmethod
+    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
         """we need basic test data and mocks"""
         self.work = models.Work.objects.create(title="Example Work")
 

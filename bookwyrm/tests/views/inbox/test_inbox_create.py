@@ -9,7 +9,7 @@ from bookwyrm import models, views
 from bookwyrm.activitypub import ActivitySerializerError
 
 
-# pylint: disable=too-many-public-methods, invalid-name
+# pylint: disable=too-many-public-methods
 class TransactionInboxCreate(TransactionTestCase):
     """readthrough tests"""
 
@@ -71,7 +71,8 @@ class TransactionInboxCreate(TransactionTestCase):
 class InboxCreate(TestCase):
     """readthrough tests"""
 
-    def setUp(self):
+    @classmethod
+    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
         """basic user and book data"""
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
@@ -96,6 +97,10 @@ class InboxCreate(TestCase):
                 outbox="https://example.com/users/rat/outbox",
             )
 
+        models.SiteSettings.objects.create()
+
+    def setUp(self):
+        """individual test setup"""
         self.create_json = {
             "id": "hi",
             "type": "Create",
@@ -104,7 +109,6 @@ class InboxCreate(TestCase):
             "cc": ["https://example.com/user/mouse/followers"],
             "object": {},
         }
-        models.SiteSettings.objects.create()
 
     def test_create_status(self, *_):
         """the "it justs works" mode"""

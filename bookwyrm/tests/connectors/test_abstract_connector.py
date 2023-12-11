@@ -12,9 +12,10 @@ from bookwyrm.settings import DOMAIN
 class AbstractConnector(TestCase):
     """generic code for connecting to outside data sources"""
 
-    def setUp(self):
-        """we need an example connector"""
-        self.connector_info = models.Connector.objects.create(
+    @classmethod
+    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
+        """we need an example connector in the database"""
+        models.Connector.objects.create(
             identifier="example.com",
             connector_file="openlibrary",
             base_url="https://example.com",
@@ -22,19 +23,27 @@ class AbstractConnector(TestCase):
             covers_url="https://example.com/covers",
             search_url="https://example.com/search?q=",
         )
+        self.book = models.Edition.objects.create(
+            title="Test Book",
+            remote_id="https://example.com/book/1234",
+            openlibrary_key="OL1234M",
+        )
+
+    def setUp(self):
+        """test data"""
         work_data = {
             "id": "abc1",
             "title": "Test work",
             "type": "work",
             "openlibraryKey": "OL1234W",
         }
-        self.work_data = work_data
         edition_data = {
             "id": "abc2",
             "title": "Test edition",
             "type": "edition",
             "openlibraryKey": "OL1234M",
         }
+        self.work_data = work_data
         self.edition_data = edition_data
 
         class TestConnector(abstract_connector.AbstractConnector):
@@ -69,12 +78,6 @@ class AbstractConnector(TestCase):
             Mapping("title"),
             Mapping("openlibraryKey"),
         ]
-
-        self.book = models.Edition.objects.create(
-            title="Test Book",
-            remote_id="https://example.com/book/1234",
-            openlibrary_key="OL1234M",
-        )
 
     def test_abstract_connector_init(self):
         """barebones connector for search with defaults"""

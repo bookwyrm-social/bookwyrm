@@ -14,7 +14,8 @@ from bookwyrm import models
 class Relationship(TestCase):
     """following, blocking, stuff like that"""
 
-    def setUp(self):
+    @classmethod
+    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
         """we need some users for this"""
         with patch("bookwyrm.models.user.set_remote_server.delay"):
             self.remote_user = models.User.objects.create_user(

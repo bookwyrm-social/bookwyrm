@@ -15,9 +15,9 @@ from bookwyrm.templatetags import shelf_tags
 class ShelfTags(TestCase):
     """lotta different things here"""
 
-    def setUp(self):
+    @classmethod
+    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
         """create some filler objects"""
-        self.factory = RequestFactory()
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
         ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
@@ -40,6 +40,10 @@ class ShelfTags(TestCase):
             title="Test Book",
             parent_work=models.Work.objects.create(title="Test work"),
         )
+
+    def setUp(self):
+        """test data"""
+        self.factory = RequestFactory()
 
     def test_get_is_book_on_shelf(self, *_):
         """check if a book is on a shelf"""

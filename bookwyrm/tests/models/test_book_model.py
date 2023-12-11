@@ -18,7 +18,8 @@ from bookwyrm.settings import ENABLE_THUMBNAIL_GENERATION
 class Book(TestCase):
     """not too much going on in the books model but here we are"""
 
-    def setUp(self):
+    @classmethod
+    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
         """we'll need some books"""
         self.work = models.Work.objects.create(
             title="Example Work", remote_id="https://example.com/book/1"
