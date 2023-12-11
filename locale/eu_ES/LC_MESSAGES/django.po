@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-11-02 21:32+0000\n"
-"PO-Revision-Date: 2023-11-18 14:14\n"
+"PO-Revision-Date: 2023-12-11 13:10\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Basque\n"
 "Language: eu\n"
@@ -4254,15 +4254,17 @@ msgstr "Kontua mugitzean, zure jarraitzaile guztiei jakinaraziko zaie eta kontu 
 msgid "\n"
 "                <strong>%(user)s</strong> will be marked as moved and will not be discoverable or usable unless you undo the move.\n"
 "                "
-msgstr ""
+msgstr "\n"
+"                <strong>%(user)s</strong> mugitutako gisa markatuko da eta ezingo da aurkitu edo erabili mugimendua desegin arte.\n"
+"                "
 
 #: bookwyrm/templates/preferences/move_user.html:25
 msgid "Remember to add this user as an alias of the target account before you try to move."
-msgstr ""
+msgstr "Gogoratu erabiltzaile hau helburuko kontuaren alias gisa gehitzea mugitu aurretik."
 
 #: bookwyrm/templates/preferences/move_user.html:30
 msgid "Enter the username for the account you want to move to e.g. <em>user@example.com </em>:"
-msgstr ""
+msgstr "Sartu mugitu nahi duzun kontuaren erabiltzaile-izena, adib. <em>erabiltzailea@adibidea.eus</em>:"
 
 #: bookwyrm/templates/reading_progress/finish.html:5
 #, python-format
@@ -4660,7 +4662,7 @@ msgstr "Celery-ren egoera"
 
 #: bookwyrm/templates/settings/celery.html:14
 msgid "You can set up monitoring to check if Celery is running by querying:"
-msgstr ""
+msgstr "Monitorizazioa konfigura dezakezu Celery kontsulta bidez exekutatzen ari bada:"
 
 #: bookwyrm/templates/settings/celery.html:22
 msgid "Queues"
@@ -4668,7 +4670,7 @@ msgstr "Ilarak"
 
 #: bookwyrm/templates/settings/celery.html:26
 msgid "Streams"
-msgstr ""
+msgstr "Igorpenak"
 
 #: bookwyrm/templates/settings/celery.html:32
 msgid "Broadcast"
@@ -4680,11 +4682,11 @@ msgstr "Sarrera ontzia"
 
 #: bookwyrm/templates/settings/celery.html:51
 msgid "Import triggered"
-msgstr ""
+msgstr "Inportazioa abiarazi da"
 
 #: bookwyrm/templates/settings/celery.html:57
 msgid "Connectors"
-msgstr ""
+msgstr "Konektoreak"
 
 #: bookwyrm/templates/settings/celery.html:64
 #: bookwyrm/templates/settings/site.html:91
@@ -4693,7 +4695,7 @@ msgstr "Irudiak"
 
 #: bookwyrm/templates/settings/celery.html:70
 msgid "Suggested Users"
-msgstr ""
+msgstr "Iradokitako erabiltzaileak"
 
 #: bookwyrm/templates/settings/celery.html:83
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:43
@@ -4703,7 +4705,7 @@ msgstr "Eposta"
 
 #: bookwyrm/templates/settings/celery.html:89
 msgid "Misc"
-msgstr ""
+msgstr "Askotarikoa"
 
 #: bookwyrm/templates/settings/celery.html:96
 msgid "Low priority"
@@ -4761,11 +4763,11 @@ msgstr "Ezin izan da Celeryra konektatu"
 #: bookwyrm/templates/settings/celery.html:178
 #: bookwyrm/templates/settings/celery.html:201
 msgid "Clear Queues"
-msgstr ""
+msgstr "Garbitu kontsultak"
 
 #: bookwyrm/templates/settings/celery.html:182
 msgid "Clearing queues can cause serious problems including data loss! Only play with this if you really know what you're doing. You must shut down the Celery worker before you do this."
-msgstr ""
+msgstr "Kontsultak garbitzean, arazo larriak ekar ditzake, hala nola, datuen galera. Aldatu ezarpen hauek soilik zer egiten ari zaren baldin badakizu. Celery-ren prozesuak itzali behar dituzu lehenik hau egin baino lehen."
 
 #: bookwyrm/templates/settings/celery.html:208
 msgid "Errors"
@@ -5133,7 +5135,7 @@ msgstr "Erabiltzen da hori inportazioekin gauzak benetan gaizki doazenean eta ar
 
 #: bookwyrm/templates/settings/imports/imports.html:31
 msgid "While imports are disabled, users will not be allowed to start new imports, but existing imports will not be affected."
-msgstr ""
+msgstr "Inportazioak desgaituta dauden bitartean, erabiltzaileek ezingo dituzte inportazio berriak hasi, baina dauden inportazioei ez die eragingo."
 
 #: bookwyrm/templates/settings/imports/imports.html:36
 msgid "Disable imports"
@@ -5517,17 +5519,17 @@ msgstr "Salatutako estekak"
 
 #: bookwyrm/templates/settings/reports/report.html:66
 msgid "Moderation Activity"
-msgstr ""
+msgstr "Moderazioaren jarduera"
 
 #: bookwyrm/templates/settings/reports/report.html:73
 #, python-format
 msgid "<a href=\"%(user_link)s\">%(user)s</a> opened this report"
-msgstr ""
+msgstr "<a href=\"%(user_link)s\">%(user)s</a> erabiltzaileak txosten hau ireki du"
 
 #: bookwyrm/templates/settings/reports/report.html:86
 #, python-format
 msgid "<a href=\"%(user_link)s\">%(user)s</a> commented on this report:"
-msgstr ""
+msgstr "<a href=\"%(user_link)s\">%(user)s</a> erabiltzaileak txosten honetan iruzkindu du:"
 
 #: bookwyrm/templates/settings/reports/report.html:90
 #, python-format
