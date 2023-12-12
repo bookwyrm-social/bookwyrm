@@ -1,0 +1,5 @@
+{% load i18n %}
+<form name="remove" method="post" action="/remove-follow/{{ user.id }}">
+    {% csrf_token %}
+    <button class="button is-danger is-light is-small {{ class }}" type="submit">{% trans "Remove" %}</button>
+</form>
