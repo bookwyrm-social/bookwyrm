@@ -45,12 +45,7 @@
     </div>
     <div>
     {% if user.moved_to %}
-        <div class="container my-6">
-            <div class="notification is-info has-text-centered">
-                <p><em>{{ user.localname }}</em> {% trans "has moved to" %} <a href="{{user.moved_to}}">{% id_to_username user.moved_to %}</a></p>
-            </div>
-        </div>
-
+        {% include "snippets/moved_user_notice.html" with user=user %}
     {% else %}
         {% if not is_self and request.user.is_authenticated %}
         {% include 'snippets/follow_button.html' with user=user %}
