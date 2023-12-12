@@ -328,6 +328,7 @@ LANGUAGES = [
     ("pt-pt", _("Português Europeu (European Portuguese)")),
     ("ro-ro", _("Română (Romanian)")),
     ("sv-se", _("Svenska (Swedish)")),
+    ("uk-ua", _("Українська (Ukranian)")),
     ("zh-hans", _("简体中文 (Simplified Chinese)")),
     ("zh-hant", _("繁體中文 (Traditional Chinese)")),
 ]
