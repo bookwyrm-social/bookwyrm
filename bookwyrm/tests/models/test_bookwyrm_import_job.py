@@ -312,7 +312,10 @@ class BookwyrmImport(TestCase):  # pylint: disable=too-many-public-methods
 
         self.assertEqual(models.Review.objects.filter(user=self.local_user).count(), 0)
         reviews = self.json_data["books"][0]["reviews"]
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
+        with patch(
+            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+        ), patch("bookwyrm.models.bookwyrm_import_job.is_alias", return_value=True):
+
             bookwyrm_import_job.upsert_statuses(
                 self.local_user, models.Review, reviews, self.book.remote_id
             )
@@ -345,7 +348,11 @@ class BookwyrmImport(TestCase):  # pylint: disable=too-many-public-methods
 
         self.assertEqual(models.Comment.objects.filter(user=self.local_user).count(), 0)
         comments = self.json_data["books"][1]["comments"]
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
+
+        with patch(
+            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+        ), patch("bookwyrm.models.bookwyrm_import_job.is_alias", return_value=True):
+
             bookwyrm_import_job.upsert_statuses(
                 self.local_user, models.Comment, comments, self.book.remote_id
             )
@@ -371,7 +378,10 @@ class BookwyrmImport(TestCase):  # pylint: disable=too-many-public-methods
             models.Quotation.objects.filter(user=self.local_user).count(), 0
         )
         quotes = self.json_data["books"][1]["quotations"]
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
+        with patch(
+            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+        ), patch("bookwyrm.models.bookwyrm_import_job.is_alias", return_value=True):
+
             bookwyrm_import_job.upsert_statuses(
                 self.local_user, models.Quotation, quotes, self.book.remote_id
             )
@@ -392,6 +402,24 @@ class BookwyrmImport(TestCase):  # pylint: disable=too-many-public-methods
         )
         self.assertEqual(
             models.Quotation.objects.filter(book=self.book).first().position_mode, "PG"
+        )
+
+    def test_get_or_create_quote_unauthorized(self):
+        """Test get_or_create_review_status with a quote but not authorized"""
+
+        self.assertEqual(
+            models.Quotation.objects.filter(user=self.local_user).count(), 0
+        )
+        quotes = self.json_data["books"][1]["quotations"]
+        with patch(
+            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+        ), patch("bookwyrm.models.bookwyrm_import_job.is_alias", return_value=False):
+
+            bookwyrm_import_job.upsert_statuses(
+                self.local_user, models.Quotation, quotes, self.book.remote_id
+            )
+        self.assertEqual(
+            models.Quotation.objects.filter(user=self.local_user).count(), 0
         )
 
     def test_upsert_list_existing(self):

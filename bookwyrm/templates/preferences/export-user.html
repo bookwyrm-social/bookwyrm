@@ -41,6 +41,11 @@
             {% endblocktrans %}
         </div>
         <p class="block">{% trans "In your new BookWyrm account can choose what to import: you will not have to import everything that is exported." %}</p>
+        <p class="notification is-warning">
+            {% spaceless %}
+            {% trans "If you wish to migrate any statuses (comments, reviews, or quotes) you must either set the account you are moving to as an <strong>alias</strong> of this one, or <strong>move</strong> this account to the new account, before you import your user data." %}
+            {% endspaceless %}
+        </p>
     {% if next_available %}
     <p class="notification is-warning">
         {% blocktrans trimmed %}
