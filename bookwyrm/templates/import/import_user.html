@@ -13,7 +13,11 @@
         {% trans "Not a valid import file" %}
     </div>
     {% endif %}
-
+    <p class="notification is-warning">
+        {% spaceless %}
+        {% trans "If you wish to migrate any statuses (comments, reviews, or quotes) you must either set this account as an <strong>alias</strong> of the one you are migrating from, or <strong>move</strong> that account to this one, before you import your user data." %}
+        {% endspaceless %}
+    </p>
     {% if not site.imports_enabled %}
     <div class="box notification has-text-centered is-warning m-6 content">
         <p class="mt-5">

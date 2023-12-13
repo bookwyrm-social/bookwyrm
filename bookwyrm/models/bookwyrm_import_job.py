@@ -178,33 +178,41 @@ def upsert_statuses(user, cls, data, book_remote_id):
     find or create the instances in the database"""
 
     for status in data:
+        if is_alias(
+            user, status["attributedTo"]
+        ):  # don't let l33t hax0rs steal other people's posts
+            # update ids and remove replies
+            status["attributedTo"] = user.remote_id
+            status["to"] = update_followers_address(user, status["to"])
+            status["cc"] = update_followers_address(user, status["cc"])
+            status[
+                "replies"
+            ] = (
+                {}
+            )  # this parses incorrectly but we can't set it without knowing the new id
+            status["inReplyToBook"] = book_remote_id
+            parsed = activitypub.parse(status)
+            if not status_already_exists(
+                user, parsed
+            ):  # don't duplicate posts on multiple import
 
-        # update ids and remove replies
-        status["attributedTo"] = user.remote_id
-        status["to"] = update_followers_address(user, status["to"])
-        status["cc"] = update_followers_address(user, status["cc"])
-        status[
-            "replies"
-        ] = {}  # this parses incorrectly but we can't set it without knowing the new id
-        status["inReplyToBook"] = book_remote_id
+                instance = parsed.to_model(model=cls, save=True, overwrite=True)
 
-        # save new status or do update it if it already exists
-        parsed = activitypub.parse(status)
-        instance = parsed.to_model(model=cls, save=True, overwrite=True)
+                for val in [
+                    "progress",
+                    "progress_mode",
+                    "position",
+                    "endposition",
+                    "position_mode",
+                ]:
+                    if status.get(val):
+                        instance.val = status[val]
 
-        print(instance.id, instance.privacy)
+                instance.remote_id = instance.get_remote_id()  # update the remote_id
+                instance.save()  # save and broadcast
 
-        for val in [
-            "progress",
-            "progress_mode",
-            "position",
-            "endposition",
-            "position_mode",
-        ]:
-            if status.get(val):
-                print(val, status[val])
-                instance.val = status[val]
-        instance.save()
+        else:
+            logger.info("User does not have permission to import statuses")
 
 
 def upsert_lists(user, lists, book_id):
@@ -369,7 +377,7 @@ def upsert_follows(user, values):
 
             if not created:
                 # this request probably failed to connect with the remote
-                # that means we should save to trigger a re-broadcast
+                # and should save to trigger a re-broadcast
                 follow_request.save()
 
 
@@ -419,3 +427,33 @@ def update_followers_address(user, field):
             field[i] = user.followers_url
 
     return field
+
+
+def is_alias(user, remote_id):
+    """check that the user is listed as movedTo or also_known_as
+    in the remote user's profile"""
+
+    remote_user = activitypub.resolve_remote_id(
+        remote_id=remote_id, model=models.User, save=False
+    )
+
+    if remote_user:
+
+        if remote_user.moved_to:
+            return user.remote_id == remote_user.moved_to
+
+        if remote_user.also_known_as:
+            return user in remote_user.also_known_as.all()
+
+    return False
+
+
+def status_already_exists(user, status):
+    """check whether this status has already been published
+    by this user. We can't rely on to_model() because it
+    only matches on remote_id, which we have to change
+    *after* saving because it needs the primary key (id)"""
+
+    return models.Status.objects.filter(
+        user=user, content=status.content, published_date=status.published
+    ).exists()
