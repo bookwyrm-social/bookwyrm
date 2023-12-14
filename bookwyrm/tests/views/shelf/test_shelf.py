@@ -222,14 +222,19 @@ class ShelfViews(TestCase):
 
     def test_filter_shelf_found(self, *_):
         """display books that match a filter keyword"""
-        shelf_book = models.ShelfBook.objects.create(
+        models.ShelfBook.objects.create(
             book=self.book,
             shelf=self.shelf,
             user=self.local_user,
         )
+        shelf_book = models.ShelfBook.objects.create(
+            book=self.book,
+            shelf=self.local_user.shelf_set.first(),
+            user=self.local_user,
+        )
         view = views.Shelf.as_view()
         print(shelf_book.book)
-        request = self.factory.get("", {"filter": shelf_book})
+        request = self.factory.get("", {"filter": shelf_book.book.title})
         request.user = self.local_user
         with patch("bookwyrm.views.shelf.shelf.is_api_request") as is_api:
             is_api.return_value = False
