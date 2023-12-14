@@ -15,7 +15,8 @@ from bookwyrm import activitystreams, models
 class Activitystreams(TestCase):
     """using redis to build activity streams"""
 
-    def setUp(self):
+    @classmethod
+    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
         """use a test csv"""
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
@@ -42,6 +43,9 @@ class Activitystreams(TestCase):
             )
         work = models.Work.objects.create(title="test work")
         self.book = models.Edition.objects.create(title="test book", parent_work=work)
+
+    def setUp(self):
+        """per-test setUp"""
 
         class TestStream(activitystreams.ActivityStream):
             """test stream, don't have to do anything here"""

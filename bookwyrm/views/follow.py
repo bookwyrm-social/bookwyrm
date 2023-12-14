@@ -71,6 +71,33 @@ def unfollow(request):
 
 @login_required
 @require_POST
+def remove_follow(request, user_id):
+    """remove a previously approved follower without blocking them"""
+
+    to_remove = get_object_or_404(models.User, id=user_id)
+
+    try:
+        models.UserFollows.objects.get(
+            user_subject=to_remove, user_object=request.user
+        ).reject()
+    except models.UserFollows.DoesNotExist:
+        clear_cache(to_remove, request.user)
+
+    try:
+        models.UserFollowRequest.objects.get(
+            user_subject=to_remove, user_object=request.user
+        ).reject()
+    except models.UserFollowRequest.DoesNotExist:
+        clear_cache(to_remove, request.user)
+
+    if is_api_request(request):
+        return HttpResponse()
+
+    return redirect(f"{request.user.local_path}/followers")
+
+
+@login_required
+@require_POST
 def accept_follow_request(request):
     """a user accepts a follow request"""
     username = request.POST["user"]
@@ -100,7 +127,7 @@ def delete_follow_request(request):
     )
     follow_request.raise_not_deletable(request.user)
 
-    follow_request.delete()
+    follow_request.reject()
     return redirect(f"/user/{request.user.localname}")
 
 

@@ -7,7 +7,8 @@ from bookwyrm import models
 class Notification(TestCase):
     """let people know things"""
 
-    def setUp(self):  # pylint: disable=invalid-name
+    @classmethod
+    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
         """useful things for creating a notification"""
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
@@ -197,7 +198,8 @@ class Notification(TestCase):
 class NotifyInviteRequest(TestCase):
     """let admins know of invite requests"""
 
-    def setUp(self):
+    @classmethod
+    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
         """ensure there is one admin"""
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"

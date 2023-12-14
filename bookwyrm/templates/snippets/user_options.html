@@ -20,4 +20,9 @@
 <li role="menuitem">
     {% include 'snippets/block_button.html' with user=user class="is-fullwidth" blocks=False %}
 </li>
+{% if followers_page %}
+<li role="menuitem">
+    {% include 'snippets/remove_follower_button.html' with user=user class="is-fullwidth" %}
+</li>
+{% endif %}
 {% endblock %}

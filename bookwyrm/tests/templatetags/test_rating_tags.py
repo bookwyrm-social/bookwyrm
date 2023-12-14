@@ -12,7 +12,8 @@ from bookwyrm.templatetags import rating_tags
 class RatingTags(TestCase):
     """lotta different things here"""
 
-    def setUp(self):
+    @classmethod
+    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
         """create some filler objects"""
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"

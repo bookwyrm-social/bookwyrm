@@ -768,6 +768,9 @@ urlpatterns = [
     # following
     re_path(r"^follow/?$", views.follow, name="follow"),
     re_path(r"^unfollow/?$", views.unfollow, name="unfollow"),
+    re_path(
+        r"^remove-follow/(?P<user_id>\d+)/?$", views.remove_follow, name="remove-follow"
+    ),
     re_path(r"^accept-follow-request/?$", views.accept_follow_request),
     re_path(r"^delete-follow-request/?$", views.delete_follow_request),
     re_path(r"^ostatus_follow/?$", views.remote_follow, name="remote-follow"),

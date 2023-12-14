@@ -11,7 +11,7 @@ from bookwyrm.settings import DOMAIN
 
 from bookwyrm.tests.validate_html import validate_html
 
-# pylint: disable=invalid-name
+
 @patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
 class StatusTransactions(TransactionTestCase):
     """Test full database transactions"""
@@ -74,9 +74,9 @@ class StatusTransactions(TransactionTestCase):
 class StatusViews(TestCase):
     """viewing and creating statuses"""
 
-    def setUp(self):
+    @classmethod
+    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
         """we need basic test data and mocks"""
-        self.factory = RequestFactory()
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
         ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
@@ -106,7 +106,6 @@ class StatusViews(TestCase):
                 inbox="https://example.com/users/rat/inbox",
                 outbox="https://example.com/users/rat/outbox",
             )
-
         work = models.Work.objects.create(title="Test Work")
         self.book = models.Edition.objects.create(
             title="Example Edition",
@@ -114,6 +113,10 @@ class StatusViews(TestCase):
             parent_work=work,
         )
         models.SiteSettings.objects.create()
+
+    def setUp(self):
+        """individual test setup"""
+        self.factory = RequestFactory()
 
     def test_create_status_comment(self, *_):
         """create a status"""
@@ -323,14 +326,14 @@ class StatusViews(TestCase):
 
     def test_find_mentions_unknown_remote(self, *_):
         """mention a user that isn't in the database"""
-        with patch("bookwyrm.views.status.handle_remote_webfinger") as rw:
-            rw.return_value = self.another_user
+        with patch("bookwyrm.views.status.handle_remote_webfinger") as rwf:
+            rwf.return_value = self.another_user
             result = find_mentions(self.local_user, "@beep@beep.com")
             self.assertEqual(result["@nutria"], self.another_user)
             self.assertEqual(result[f"@nutria@{DOMAIN}"], self.another_user)
 
-        with patch("bookwyrm.views.status.handle_remote_webfinger") as rw:
-            rw.return_value = None
+        with patch("bookwyrm.views.status.handle_remote_webfinger") as rwf:
+            rwf.return_value = None
             result = find_mentions(self.local_user, "@beep@beep.com")
             self.assertEqual(result, {})
 

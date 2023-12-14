@@ -17,10 +17,10 @@ from bookwyrm.tests.validate_html import validate_html
 class FollowViews(TestCase):
     """follows"""
 
-    def setUp(self):
+    @classmethod
+    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
         """we need basic test data and mocks"""
         models.SiteSettings.objects.create()
-        self.factory = RequestFactory()
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
         ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
@@ -56,6 +56,10 @@ class FollowViews(TestCase):
             remote_id="https://example.com/book/1",
             parent_work=self.work,
         )
+
+    def setUp(self):
+        """individual test setup"""
+        self.factory = RequestFactory()
 
     def test_handle_follow_remote(self, *_):
         """send a follow request"""
@@ -173,10 +177,36 @@ class FollowViews(TestCase):
             user_subject=self.remote_user, user_object=self.local_user
         )
 
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
+        with patch(
+            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+        ) as broadcast_mock:
             views.delete_follow_request(request)
+            # did we send the reject activity?
+            activity = json.loads(broadcast_mock.call_args[1]["args"][1])
+            self.assertEqual(activity["actor"], self.local_user.remote_id)
+            self.assertEqual(activity["object"]["object"], rel.user_object.remote_id)
+            self.assertEqual(activity["type"], "Reject")
         # request should be deleted
         self.assertEqual(models.UserFollowRequest.objects.filter(id=rel.id).count(), 0)
+        # follow relationship should not exist
+        self.assertEqual(models.UserFollows.objects.filter(id=rel.id).count(), 0)
+
+    def test_handle_reject_existing(self, *_):
+        """reject a follow previously approved"""
+        request = self.factory.post("", {"user": self.remote_user.username})
+        request.user = self.local_user
+        rel = models.UserFollows.objects.create(
+            user_subject=self.remote_user, user_object=self.local_user
+        )
+        with patch(
+            "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
+        ) as broadcast_mock:
+            views.remove_follow(request, self.remote_user.id)
+            # did we send the reject activity?
+            activity = json.loads(broadcast_mock.call_args[1]["args"][1])
+            self.assertEqual(activity["actor"], self.local_user.remote_id)
+            self.assertEqual(activity["object"]["object"], rel.user_object.remote_id)
+            self.assertEqual(activity["type"], "Reject")
         # follow relationship should not exist
         self.assertEqual(models.UserFollows.objects.filter(id=rel.id).count(), 0)
 

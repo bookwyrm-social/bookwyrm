@@ -35,8 +35,8 @@ Sender = namedtuple("Sender", ("remote_id", "key_pair"))
 class Signature(TestCase):
     """signature test"""
 
-    # pylint: disable=invalid-name
-    def setUp(self):
+    @classmethod
+    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
         """create users and test data"""
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
@@ -54,14 +54,14 @@ class Signature(TestCase):
             self.cat = models.User.objects.create_user(
                 f"cat@{DOMAIN}", "cat@example.com", "", local=True, localname="cat"
             )
+        models.SiteSettings.objects.create()
 
+    def setUp(self):
+        """test data"""
         private_key, public_key = create_key_pair()
-
         self.fake_remote = Sender(
             "http://localhost/user/remote", KeyPair(private_key, public_key)
         )
-
-        models.SiteSettings.objects.create()
 
     def send(self, signature, now, data, digest):
         """test request"""
