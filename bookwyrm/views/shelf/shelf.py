@@ -34,7 +34,8 @@ class Shelf(View):
         else:
             shelves = models.Shelf.privacy_filter(request.user).filter(user=user).all()
 
-        shelves_search_query = request.GET.get("shelves_q")
+        shelves_filter_query = request.GET.get("filter")
+        shelves_filter_msg = ""
 
         # get the shelf and make sure the logged in user should be able to see it
         if shelf_identifier:
@@ -92,8 +93,9 @@ class Shelf(View):
 
         books = sort_books(books, request.GET.get("sort"))
 
-        if shelves_search_query:
-            books = search(shelves_search_query, books=books)
+        if shelves_filter_query:
+            books = search(shelves_filter_query, books=books) or books
+            shelves_filter_msg = "We couldn't find any books that matched"
 
         paginated = Paginator(
             books,
@@ -112,7 +114,8 @@ class Shelf(View):
             "page_range": paginated.get_elided_page_range(
                 page.number, on_each_side=2, on_ends=1
             ),
-            "shelves_search_query": shelves_search_query,
+            "shelves_filter_query": shelves_filter_query,
+            "shelves_filter_msg": shelves_filter_msg,
         }
 
         return TemplateResponse(request, "shelf/shelf.html", data)

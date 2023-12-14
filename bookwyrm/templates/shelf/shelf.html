@@ -101,18 +101,20 @@
                     {% plural %}
                         {{ formatted_count }} books
                     {% endblocktrans %}
-
                     {% if books.has_other_pages %}
                         {% blocktrans trimmed with start=books.start_index end=books.end_index %}
                         (showing {{ start }}-{{ end }})
                         {% endblocktrans %}
+                    {% endif %}
+                    {% if shelves_filter_msg %}
+                        - {{ shelves_filter_msg }} "{{ shelves_filter_query }}"
                     {% endif %}
                 </span>
                 {% endif %}
                 {% endwith %}
             </h2>
             {% if books|length > 0 %}
-                {% include 'shelf/search_filters.html' with user=user query=query %}
+                {% include 'shelf/shelves_filters.html' with user=user query=query %}
             {% endif %}
 
         </div>
