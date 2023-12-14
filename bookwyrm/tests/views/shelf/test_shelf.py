@@ -219,3 +219,39 @@ class ShelfViews(TestCase):
             view(request, request.user.username, shelf.identifier)
 
         self.assertEqual(shelf.name, "To Read")
+
+    def test_filter_shelf_found(self, *_):
+        """display books that match a filter keyword"""
+        book = models.ShelfBook.objects.create(
+            book=self.book,
+            shelf=self.shelf,
+            user=self.local_user,
+        )
+        view = views.Shelf.as_view()
+        request = self.factory.get("", {"filter": book.title})
+        request.user = self.local_user
+        with patch("bookwyrm.views.shelf.shelf.is_api_request") as is_api:
+            is_api.return_value = False
+            result = view(request, self.local_user.username)
+        self.assertIsInstance(result, TemplateResponse)
+        validate_html(result.render())
+        self.assertEqual(result.status_code, 200)
+        self.assertEqual(result.context_data["books"].object_list.count(), 1)
+
+    def test_filter_shelf_none(self, *_):
+        """display a message when no books match a filter keyword"""
+        models.ShelfBook.objects.create(
+            book=self.book,
+            shelf=self.shelf,
+            user=self.local_user,
+        )
+        view = views.Shelf.as_view()
+        request = self.factory.get("", {"filter": "NOPE"})
+        request.user = self.local_user
+        with patch("bookwyrm.views.shelf.shelf.is_api_request") as is_api:
+            is_api.return_value = False
+            result = view(request, self.local_user.username)
+        self.assertIsInstance(result, TemplateResponse)
+        validate_html(result.render())
+        self.assertEqual(result.status_code, 200)
+        self.assertTrue(result.context_data["show_shelves_filter_msg"])
