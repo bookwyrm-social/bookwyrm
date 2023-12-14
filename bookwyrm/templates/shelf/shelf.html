@@ -106,16 +106,11 @@
                         (showing {{ start }}-{{ end }})
                         {% endblocktrans %}
                     {% endif %}
-                    {% if show_shelves_filter_msg %}
-                        - {% trans "We couldn't find any books that matched" %} "{{ shelves_filter_query }}"
-                    {% endif %}
                 </span>
                 {% endif %}
                 {% endwith %}
             </h2>
-            {% if books|length > 0 %}
-                {% include 'shelf/shelves_filters.html' with user=user query=query %}
-            {% endif %}
+            {% include 'shelf/shelves_filters.html' with user=user query=query %}
 
         </div>
         {% if is_self and shelf.id %}
@@ -215,7 +210,12 @@
             </tbody>
         </table>
         {% else %}
-        <p><em>{% trans "This shelf is empty." %}</em></p>
+        <p><em>{% if shelves_filter_query %}
+                    {% trans "We couldn't find any books that matched" %} "{{ shelves_filter_query }}"
+            {% else %}
+            {% trans "This shelf is empty." %}
+            {% endif %}
+        </em></p>
         {% endif %}
 
     </div>

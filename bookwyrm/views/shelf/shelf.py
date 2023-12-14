@@ -94,8 +94,7 @@ class Shelf(View):
         books = sort_books(books, request.GET.get("sort"))
 
         if shelves_filter_query:
-            books = search(shelves_filter_query, books=books) or books
-            show_shelves_filter_msg = True
+            books = search(shelves_filter_query, books=books)
 
         paginated = Paginator(
             books,
@@ -115,7 +114,6 @@ class Shelf(View):
                 page.number, on_each_side=2, on_ends=1
             ),
             "shelves_filter_query": shelves_filter_query,
-            "show_shelves_filter_msg": show_shelves_filter_msg,
         }
 
         return TemplateResponse(request, "shelf/shelf.html", data)
