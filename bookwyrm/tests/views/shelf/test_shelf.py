@@ -222,13 +222,14 @@ class ShelfViews(TestCase):
 
     def test_filter_shelf_found(self, *_):
         """display books that match a filter keyword"""
-        book = models.ShelfBook.objects.create(
+        shelf_book = models.ShelfBook.objects.create(
             book=self.book,
             shelf=self.shelf,
             user=self.local_user,
         )
         view = views.Shelf.as_view()
-        request = self.factory.get("", {"filter": book.title})
+        print(shelf_book.book)
+        request = self.factory.get("", {"filter": shelf_book})
         request.user = self.local_user
         with patch("bookwyrm.views.shelf.shelf.is_api_request") as is_api:
             is_api.return_value = False
@@ -236,8 +237,11 @@ class ShelfViews(TestCase):
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
-        self.assertEqual(result.context_data["books"].object_list.count(), 1)
-        self.assertEqual(result.context_data["books"].first().title, book.title)
+        self.assertEqual(len(result.context_data["books"].object_list), 1)
+        self.assertEqual(
+            result.context_data["books"].object_list.first().title,
+            shelf_book.book.title,
+        )
 
     def test_filter_shelf_none(self, *_):
         """display a message when no books match a filter keyword"""
