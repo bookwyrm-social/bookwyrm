@@ -106,8 +106,8 @@
                         (showing {{ start }}-{{ end }})
                         {% endblocktrans %}
                     {% endif %}
-                    {% if shelves_filter_msg %}
-                        - {{ shelves_filter_msg }} "{{ shelves_filter_query }}"
+                    {% if show_shelves_filter_msg %}
+                        - {% trans "We couldn't find any books that matched" %} "{{ shelves_filter_query }}"
                     {% endif %}
                 </span>
                 {% endif %}
