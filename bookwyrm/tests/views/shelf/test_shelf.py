@@ -237,6 +237,7 @@ class ShelfViews(TestCase):
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
         self.assertEqual(result.context_data["books"].object_list.count(), 1)
+        self.assertEqual(result.context_data["books"].first().title, book.title)
 
     def test_filter_shelf_none(self, *_):
         """display a message when no books match a filter keyword"""
