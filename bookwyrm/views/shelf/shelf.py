@@ -35,7 +35,6 @@ class Shelf(View):
             shelves = models.Shelf.privacy_filter(request.user).filter(user=user).all()
 
         shelves_filter_query = request.GET.get("filter")
-        show_shelves_filter_msg = False
 
         # get the shelf and make sure the logged in user should be able to see it
         if shelf_identifier:
