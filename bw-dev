@@ -150,7 +150,6 @@ case "$CMD" in
         git fetch origin l10n_main:l10n_main
         git checkout l10n_main locale/ca_ES
         git checkout l10n_main locale/de_DE
-        git checkout l10n_main locale/en_UK
         git checkout l10n_main locale/eo_UY
         git checkout l10n_main locale/es_ES
         git checkout l10n_main locale/eu_ES
@@ -166,6 +165,7 @@ case "$CMD" in
         git checkout l10n_main locale/pt_BR
         git checkout l10n_main locale/ro_RO
         git checkout l10n_main locale/sv_SE
+        git checkout l10n_main locale/uk_UA
         git checkout l10n_main locale/zh_Hans
         git checkout l10n_main locale/zh_Hant
         runweb django-admin makemessages --no-wrap --ignore=venv -l en_US $@
