@@ -34,7 +34,7 @@ class Migration(migrations.Migration):
                     ("pt-pt", "Português Europeu (European Portuguese)"),
                     ("ro-ro", "Română (Romanian)"),
                     ("sv-se", "Svenska (Swedish)"),
-                    ("uk-ua", "Українська (Ukranian)"),
+                    ("uk-ua", "Українська (Ukrainian)"),
                     ("zh-hans", "简体中文 (Simplified Chinese)"),
                     ("zh-hant", "繁體中文 (Traditional Chinese)"),
                 ],
