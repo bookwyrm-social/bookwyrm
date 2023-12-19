@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-11-02 21:32+0000\n"
-"PO-Revision-Date: 2023-12-19 06:56\n"
+"PO-Revision-Date: 2023-12-19 08:28\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Korean\n"
 "Language: ko\n"
@@ -602,7 +602,7 @@ msgstr "%(year)s년의 <em>책들</em>"
 #: bookwyrm/templates/annual_summary/layout.html:47
 #, python-format
 msgid "<em>%(display_name)s’s</em> year of reading"
-msgstr ""
+msgstr "<em>%(display_name)s</em>의 올 해 독서"
 
 #: bookwyrm/templates/annual_summary/layout.html:53
 msgid "Share this page"
@@ -654,11 +654,11 @@ msgstr ""
 #, python-format
 msgid "In %(year)s, %(display_name)s read %(books_total)s book<br />for a total of %(pages_total)s pages!"
 msgid_plural "In %(year)s, %(display_name)s read %(books_total)s books<br />for a total of %(pages_total)s pages!"
-msgstr[0] ""
+msgstr[0] "%(year)s년 한 해 동안, %(display_name)s 독자는 %(books_total)s권을 읽었고 <br />이는 총 %(pages_total)s쪽에 달합니다!"
 
 #: bookwyrm/templates/annual_summary/layout.html:124
 msgid "That’s great!"
-msgstr "최고예요!"
+msgstr "대단하네요!"
 
 #: bookwyrm/templates/annual_summary/layout.html:128
 #, python-format
@@ -669,7 +669,7 @@ msgstr ""
 #, python-format
 msgid "(No page data was available for %(no_page_number)s book)"
 msgid_plural "(No page data was available for %(no_page_number)s books)"
-msgstr[0] ""
+msgstr[0] "(%(no_page_number)s권의 책은 쪽 자료가 없음)"
 
 #: bookwyrm/templates/annual_summary/layout.html:150
 msgid "Their shortest read this year…"
@@ -1968,7 +1968,7 @@ msgstr "디렉터리 보기"
 
 #: bookwyrm/templates/feed/summary_card.html:21
 msgid "The end of the year is the best moment to take stock of all the books read during the last 12 months. How many pages have you read? Which book is your best-rated of the year? We compiled these stats, and more!"
-msgstr ""
+msgstr "연말은 지난 12개월 동안 읽은 모든 책을 점검하기에 가장 좋은 시기입니다. 몇 쪽이나 읽었나요? 올해 가장 높은 평점을 준 책은 무엇인가요? 이러한 통계 등을 정리해 보았습니다!"
 
 #: bookwyrm/templates/feed/summary_card.html:26
 #, python-format
