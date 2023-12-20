@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-11-02 21:32+0000\n"
-"PO-Revision-Date: 2023-12-20 01:50\n"
+"PO-Revision-Date: 2023-12-20 03:08\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Korean\n"
 "Language: ko\n"
@@ -306,7 +306,7 @@ msgstr "승인됨"
 #: bookwyrm/templates/settings/reports/report.html:115
 #: bookwyrm/templates/snippets/create_status.html:26
 msgid "Comment"
-msgstr "해설"
+msgstr "의견"
 
 #: bookwyrm/models/report.py:85
 msgid "Resolved report"
@@ -358,7 +358,7 @@ msgstr "서평"
 
 #: bookwyrm/models/user.py:33
 msgid "Comments"
-msgstr "해설"
+msgstr "의견"
 
 #: bookwyrm/models/user.py:34
 msgid "Quotations"
@@ -1017,7 +1017,7 @@ msgstr "내 후기"
 
 #: bookwyrm/templates/book/book.html:318
 msgid "Your comments"
-msgstr "내 해설"
+msgstr "내 의견"
 
 #: bookwyrm/templates/book/book.html:324
 msgid "Your quotes"
@@ -1735,12 +1735,12 @@ msgstr ""
 #: bookwyrm/templates/discover/card-header.html:31
 #, python-format
 msgid "<a href=\"%(user_path)s\">%(username)s</a> commented on <a href=\"%(book_path)s\">%(book_title)s</a>"
-msgstr ""
+msgstr "<a href=\"%(user_path)s\">%(username)s</a>  님의  <a href=\"%(book_path)s\">%(book_title)s</a> 의견"
 
 #: bookwyrm/templates/discover/card-header.html:35
 #, python-format
 msgid "<a href=\"%(user_path)s\">%(username)s</a> quoted <a href=\"%(book_path)s\">%(book_title)s</a>"
-msgstr ""
+msgstr "<a href=\"%(user_path)s\">%(username)s</a> 님의 <a href=\"%(book_path)s\">%(book_title)s</a> 인용"
 
 #: bookwyrm/templates/discover/discover.html:4
 #: bookwyrm/templates/discover/discover.html:10
@@ -2371,7 +2371,7 @@ msgstr ""
 
 #: bookwyrm/templates/guided_tour/book.html:152
 msgid "Post a comment"
-msgstr "해설 게시"
+msgstr "의견 게시하기"
 
 #: bookwyrm/templates/guided_tour/book.html:175
 msgid "Just read some perfect prose? Let the world know by sharing a quote!"
@@ -2991,7 +2991,7 @@ msgstr ""
 
 #: bookwyrm/templates/import/import_status.html:150
 msgid "No items currently need review"
-msgstr ""
+msgstr "검토해야 할 항목이 없습니다."
 
 #: bookwyrm/templates/import/import_status.html:186
 msgid "View imported review"
@@ -3003,7 +3003,7 @@ msgstr "가져오기 마침"
 
 #: bookwyrm/templates/import/import_status.html:206
 msgid "Needs manual review"
-msgstr ""
+msgstr "직접 검토해야 할 것들"
 
 #: bookwyrm/templates/import/import_status.html:219
 msgid "Retry"
@@ -3725,7 +3725,7 @@ msgstr ""
 #, python-format
 msgid "A new <a href=\"%(path)s\">link domain</a> needs review"
 msgid_plural "%(display_count)s new <a href=\"%(path)s\">link domains</a> need moderation"
-msgstr[0] ""
+msgstr[0] "검토해야 할 새로운 <a href=\"%(path)s\">link domain</a>이 있습니다."
 
 #: bookwyrm/templates/notifications/items/mention.html:20
 #, python-format
@@ -3823,11 +3823,11 @@ msgstr "모두"
 
 #: bookwyrm/templates/notifications/notifications_page.html:35
 msgid "Mentions"
-msgstr ""
+msgstr "멘션"
 
 #: bookwyrm/templates/notifications/notifications_page.html:47
 msgid "You're all caught up!"
-msgstr ""
+msgstr "모두 따라잡았습니다!"
 
 #: bookwyrm/templates/ostatus/error.html:7
 #, python-format
@@ -3895,15 +3895,15 @@ msgstr ""
 
 #: bookwyrm/templates/ostatus/remote_follow.html:40
 msgid "User handle to follow from:"
-msgstr ""
+msgstr "팔로우하려는 이용자의 핸들:"
 
 #: bookwyrm/templates/ostatus/remote_follow.html:42
 msgid "Follow!"
-msgstr ""
+msgstr "팔로우!"
 
 #: bookwyrm/templates/ostatus/remote_follow_button.html:15
 msgid "Follow on Fediverse"
-msgstr ""
+msgstr "페디버스에서 팔로우하기"
 
 #: bookwyrm/templates/ostatus/remote_follow_button.html:19
 msgid "This link opens in a pop-up window"
@@ -3927,7 +3927,7 @@ msgstr ""
 
 #: bookwyrm/templates/ostatus/subscribe.html:18
 msgid "Uh oh..."
-msgstr ""
+msgstr "어랏…"
 
 #: bookwyrm/templates/ostatus/subscribe.html:20
 msgid "Let's log in first..."
@@ -4017,12 +4017,12 @@ msgstr "2FA 설정하기"
 #: bookwyrm/templates/preferences/move_user.html:7
 #: bookwyrm/templates/preferences/move_user.html:39
 msgid "Move Account"
-msgstr ""
+msgstr "계정 이동하기"
 
 #: bookwyrm/templates/preferences/alias_user.html:7
 #: bookwyrm/templates/preferences/alias_user.html:34
 msgid "Create Alias"
-msgstr ""
+msgstr "별칭 만들기"
 
 #: bookwyrm/templates/preferences/alias_user.html:12
 msgid "Add another account as an alias"
@@ -4048,7 +4048,7 @@ msgstr ""
 #: bookwyrm/templates/preferences/alias_user.html:39
 #: bookwyrm/templates/preferences/layout.html:28
 msgid "Aliases"
-msgstr ""
+msgstr "별칭"
 
 #: bookwyrm/templates/preferences/alias_user.html:49
 msgid "Remove alias"
@@ -4293,7 +4293,7 @@ msgstr ""
 #: bookwyrm/templates/readthrough/readthrough_form.html:18
 #: bookwyrm/templates/readthrough/readthrough_modal.html:56
 msgid "Progress"
-msgstr ""
+msgstr "진행 상황"
 
 #: bookwyrm/templates/readthrough/readthrough_form.html:25
 #: bookwyrm/templates/readthrough/readthrough_modal.html:63
@@ -4303,19 +4303,19 @@ msgstr "님이 읽기를 마친"
 
 #: bookwyrm/templates/readthrough/readthrough_list.html:9
 msgid "Progress Updates:"
-msgstr ""
+msgstr "진행 상황 업데이트:"
 
 #: bookwyrm/templates/readthrough/readthrough_list.html:14
 msgid "finished"
-msgstr ""
+msgstr "끝냄"
 
 #: bookwyrm/templates/readthrough/readthrough_list.html:16
 msgid "stopped"
-msgstr ""
+msgstr "멈춤"
 
 #: bookwyrm/templates/readthrough/readthrough_list.html:27
 msgid "Show all updates"
-msgstr ""
+msgstr "모든 업데이트 보이기"
 
 #: bookwyrm/templates/readthrough/readthrough_list.html:43
 msgid "Delete this progress update"
@@ -4323,7 +4323,7 @@ msgstr ""
 
 #: bookwyrm/templates/readthrough/readthrough_list.html:55
 msgid "started"
-msgstr ""
+msgstr "시작일"
 
 #: bookwyrm/templates/readthrough/readthrough_list.html:62
 msgid "Edit read dates"
@@ -4351,7 +4351,7 @@ msgstr "배코드 스캔"
 
 #: bookwyrm/templates/search/barcode_modal.html:21
 msgid "Requesting camera..."
-msgstr ""
+msgstr "카메로 요청하는 중…"
 
 #: bookwyrm/templates/search/barcode_modal.html:22
 msgid "Grant access to the camera to scan a book's barcode."
@@ -4373,7 +4373,7 @@ msgstr ""
 #: bookwyrm/templates/search/barcode_modal.html:36
 msgctxt "barcode scanner"
 msgid "ISBN scanned"
-msgstr ""
+msgstr "ISBN 스캠 마침"
 
 #: bookwyrm/templates/search/barcode_modal.html:37
 msgctxt "followed by ISBN"
@@ -4450,7 +4450,7 @@ msgstr ""
 #: bookwyrm/templates/settings/federation/instance.html:93
 #: bookwyrm/templates/snippets/status/status_options.html:25
 msgid "Edit"
-msgstr ""
+msgstr "편집"
 
 #: bookwyrm/templates/settings/announcements/announcement.html:32
 #: bookwyrm/templates/settings/announcements/announcements.html:3
@@ -4458,7 +4458,7 @@ msgstr ""
 #: bookwyrm/templates/settings/announcements/edit_announcement.html:15
 #: bookwyrm/templates/settings/layout.html:99
 msgid "Announcements"
-msgstr ""
+msgstr "공지사항"
 
 #: bookwyrm/templates/settings/announcements/announcement.html:45
 msgid "Visible:"
@@ -4466,28 +4466,28 @@ msgstr ""
 
 #: bookwyrm/templates/settings/announcements/announcement.html:49
 msgid "True"
-msgstr ""
+msgstr "참"
 
 #: bookwyrm/templates/settings/announcements/announcement.html:51
 msgid "False"
-msgstr ""
+msgstr "거짓"
 
 #: bookwyrm/templates/settings/announcements/announcement.html:57
 #: bookwyrm/templates/settings/announcements/edit_announcement.html:79
 #: bookwyrm/templates/settings/dashboard/dashboard.html:80
 msgid "Start date:"
-msgstr ""
+msgstr "시작일:"
 
 #: bookwyrm/templates/settings/announcements/announcement.html:62
 #: bookwyrm/templates/settings/announcements/edit_announcement.html:89
 #: bookwyrm/templates/settings/dashboard/dashboard.html:86
 msgid "End date:"
-msgstr ""
+msgstr "종료일:"
 
 #: bookwyrm/templates/settings/announcements/announcement.html:66
 #: bookwyrm/templates/settings/announcements/edit_announcement.html:109
 msgid "Active:"
-msgstr ""
+msgstr "활성 상황:"
 
 #: bookwyrm/templates/settings/announcements/announcements.html:9
 #: bookwyrm/templates/settings/announcements/edit_announcement.html:8
@@ -4551,11 +4551,11 @@ msgstr ""
 #: bookwyrm/templates/settings/automod/rules.html:11
 #: bookwyrm/templates/settings/layout.html:61
 msgid "Auto-moderation rules"
-msgstr ""
+msgstr "자동 중재 규칙"
 
 #: bookwyrm/templates/settings/automod/rules.html:18
 msgid "Auto-moderation rules will create reports for any local user or status with fields matching the provided string."
-msgstr ""
+msgstr "자동 중재 규칙은 제공된 문자열과 일치하는 필드가 있는 모든 로컬 이용자 또는 기록에 대한 제보를 생성합니다. 이미 제보된 이용자나 기록은 (제보가 해결되었는지 여부와 관계없이) 플래그 하지 않습니다."
 
 #: bookwyrm/templates/settings/automod/rules.html:19
 msgid "Users or statuses that have already been reported (regardless of whether the report was resolved) will not be flagged."
@@ -4592,7 +4592,7 @@ msgstr ""
 #: bookwyrm/templates/settings/automod/rules.html:69
 #: bookwyrm/templates/settings/automod/rules.html:92
 msgid "Schedule scan"
-msgstr ""
+msgstr "예약된 검사"
 
 #: bookwyrm/templates/settings/automod/rules.html:101
 msgid "Successfully added rule"
@@ -4600,34 +4600,34 @@ msgstr ""
 
 #: bookwyrm/templates/settings/automod/rules.html:107
 msgid "Add Rule"
-msgstr ""
+msgstr "규칙 추가하기"
 
 #: bookwyrm/templates/settings/automod/rules.html:116
 #: bookwyrm/templates/settings/automod/rules.html:160
 msgid "String match"
-msgstr ""
+msgstr "일치하는 문자열"
 
 #: bookwyrm/templates/settings/automod/rules.html:126
 #: bookwyrm/templates/settings/automod/rules.html:163
 msgid "Flag users"
-msgstr ""
+msgstr "이용자 플래그"
 
 #: bookwyrm/templates/settings/automod/rules.html:133
 #: bookwyrm/templates/settings/automod/rules.html:166
 msgid "Flag statuses"
-msgstr ""
+msgstr "기록 플래그"
 
 #: bookwyrm/templates/settings/automod/rules.html:140
 msgid "Add rule"
-msgstr ""
+msgstr "규칙 추가하기"
 
 #: bookwyrm/templates/settings/automod/rules.html:147
 msgid "Current Rules"
-msgstr ""
+msgstr "현재 규칙"
 
 #: bookwyrm/templates/settings/automod/rules.html:151
 msgid "Show rules"
-msgstr ""
+msgstr "규칙 보기"
 
 #: bookwyrm/templates/settings/automod/rules.html:188
 msgid "Remove rule"
@@ -4644,7 +4644,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/celery.html:22
 msgid "Queues"
-msgstr ""
+msgstr "큐"
 
 #: bookwyrm/templates/settings/celery.html:26
 msgid "Streams"
@@ -4669,7 +4669,7 @@ msgstr ""
 #: bookwyrm/templates/settings/celery.html:64
 #: bookwyrm/templates/settings/site.html:91
 msgid "Images"
-msgstr ""
+msgstr "이미지"
 
 #: bookwyrm/templates/settings/celery.html:70
 msgid "Suggested Users"
@@ -4683,19 +4683,19 @@ msgstr "이메일"
 
 #: bookwyrm/templates/settings/celery.html:89
 msgid "Misc"
-msgstr ""
+msgstr "기타"
 
 #: bookwyrm/templates/settings/celery.html:96
 msgid "Low priority"
-msgstr ""
+msgstr "낮은 우선도"
 
 #: bookwyrm/templates/settings/celery.html:102
 msgid "Medium priority"
-msgstr ""
+msgstr "보통 우선도"
 
 #: bookwyrm/templates/settings/celery.html:108
 msgid "High priority"
-msgstr ""
+msgstr "높은 우선도"
 
 #: bookwyrm/templates/settings/celery.html:118
 msgid "Could not connect to Redis broker"
@@ -4708,19 +4708,19 @@ msgstr ""
 #: bookwyrm/templates/settings/celery.html:131
 #: bookwyrm/templates/settings/imports/imports.html:113
 msgid "ID"
-msgstr ""
+msgstr "ID"
 
 #: bookwyrm/templates/settings/celery.html:132
 msgid "Task name"
-msgstr ""
+msgstr "작업 이름"
 
 #: bookwyrm/templates/settings/celery.html:133
 msgid "Run time"
-msgstr ""
+msgstr "실행 시간"
 
 #: bookwyrm/templates/settings/celery.html:134
 msgid "Priority"
-msgstr ""
+msgstr "우선도"
 
 #: bookwyrm/templates/settings/celery.html:139
 msgid "No active tasks"
@@ -4765,16 +4765,16 @@ msgstr "전체 이용자"
 #: bookwyrm/templates/settings/dashboard/dashboard.html:21
 #: bookwyrm/templates/settings/dashboard/user_chart.html:16
 msgid "Active this month"
-msgstr ""
+msgstr "이번 달 활동 수"
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:27
 msgid "Statuses"
-msgstr ""
+msgstr "기록 수"
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:33
 #: bookwyrm/templates/settings/dashboard/works_chart.html:11
 msgid "Works"
-msgstr ""
+msgstr "작품 수"
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:74
 msgid "Instance Activity"
@@ -4782,7 +4782,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:92
 msgid "Interval:"
-msgstr ""
+msgstr "간격:"
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:96
 msgid "Days"
@@ -4794,15 +4794,15 @@ msgstr ""
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:115
 msgid "User signup activity"
-msgstr ""
+msgstr "이용자 가입 활동"
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:121
 msgid "Status activity"
-msgstr ""
+msgstr "기록 활동"
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:127
 msgid "Works created"
-msgstr ""
+msgstr "등록된 작품"
 
 #: bookwyrm/templates/settings/dashboard/registration_chart.html:10
 msgid "Registrations"
@@ -4820,7 +4820,7 @@ msgstr "전체"
 #, python-format
 msgid "%(display_count)s domain needs review"
 msgid_plural "%(display_count)s domains need review"
-msgstr[0] ""
+msgstr[0] "검토해야 할 도메인이 %(display_count)s개 있습니다."
 
 #: bookwyrm/templates/settings/dashboard/warnings/email_config.html:8
 #, python-format
@@ -4991,11 +4991,11 @@ msgstr "버전:"
 
 #: bookwyrm/templates/settings/federation/instance.html:17
 msgid "Refresh data"
-msgstr ""
+msgstr "데이터 새로고침"
 
 #: bookwyrm/templates/settings/federation/instance.html:37
 msgid "Details"
-msgstr ""
+msgstr "세부 사항"
 
 #: bookwyrm/templates/settings/federation/instance.html:53
 #: bookwyrm/templates/user/layout.html:84
@@ -5041,7 +5041,7 @@ msgstr ""
 #: bookwyrm/templates/settings/link_domains/link_domains.html:87
 #: bookwyrm/templates/snippets/block_button.html:5
 msgid "Block"
-msgstr ""
+msgstr "차단하기"
 
 #: bookwyrm/templates/settings/federation/instance.html:117
 msgid "All users from this instance will be deactivated."
@@ -5050,7 +5050,7 @@ msgstr ""
 #: bookwyrm/templates/settings/federation/instance.html:122
 #: bookwyrm/templates/snippets/block_button.html:10
 msgid "Un-block"
-msgstr ""
+msgstr "차단 해제하기"
 
 #: bookwyrm/templates/settings/federation/instance.html:123
 msgid "All users from this instance will be re-activated."
@@ -5059,11 +5059,11 @@ msgstr ""
 #: bookwyrm/templates/settings/federation/instance_blocklist.html:6
 #: bookwyrm/templates/settings/federation/instance_blocklist.html:15
 msgid "Import Blocklist"
-msgstr ""
+msgstr "차단목록 가져오기"
 
 #: bookwyrm/templates/settings/federation/instance_blocklist.html:38
 msgid "Success!"
-msgstr ""
+msgstr "성공!"
 
 #: bookwyrm/templates/settings/federation/instance_blocklist.html:42
 msgid "Successfully blocked:"
@@ -5071,7 +5071,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/federation/instance_blocklist.html:44
 msgid "Failed:"
-msgstr ""
+msgstr "실패:"
 
 #: bookwyrm/templates/settings/federation/instance_blocklist.html:62
 msgid "Expects a json file in the format provided by FediBlock, with a list of entries that have <code>instance</code> and <code>url</code> fields. For example:"
@@ -5255,7 +5255,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/invites/manage_invites.html:21
 msgid "Generate New Invite"
-msgstr ""
+msgstr "새 초대장 생성하기"
 
 #: bookwyrm/templates/settings/invites/manage_invites.html:27
 msgid "Expiry:"
@@ -5267,15 +5267,15 @@ msgstr ""
 
 #: bookwyrm/templates/settings/invites/manage_invites.html:40
 msgid "Create Invite"
-msgstr ""
+msgstr "초대장 만들기"
 
 #: bookwyrm/templates/settings/invites/manage_invites.html:48
 msgid "Expires"
-msgstr ""
+msgstr "만료"
 
 #: bookwyrm/templates/settings/invites/manage_invites.html:49
 msgid "Max uses"
-msgstr ""
+msgstr "최대 이용"
 
 #: bookwyrm/templates/settings/invites/manage_invites.html:50
 msgid "Times used"
@@ -5376,7 +5376,7 @@ msgstr "등록"
 #: bookwyrm/templates/settings/themes.html:4
 #: bookwyrm/templates/settings/themes.html:6
 msgid "Themes"
-msgstr ""
+msgstr "테마"
 
 #: bookwyrm/templates/settings/link_domains/edit_domain_modal.html:5
 #, python-format
@@ -5481,7 +5481,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/reports/report.html:37
 msgid "Reported status"
-msgstr ""
+msgstr "제보된 기록"
 
 #: bookwyrm/templates/settings/reports/report.html:39
 msgid "Status has been deleted"
@@ -5605,7 +5605,7 @@ msgstr "짧은 설명:"
 
 #: bookwyrm/templates/settings/site.html:59
 msgid "Used when the instance is previewed on joinbookwyrm.com. Does not support HTML or Markdown."
-msgstr ""
+msgstr "서버를 joinbookwyrm.com에서 미리 볼 때 사용됩니다. HTML 또는 마크다운은 지원하지 않습니다."
 
 #: bookwyrm/templates/settings/site.html:63
 msgid "Code of conduct:"
@@ -5641,11 +5641,11 @@ msgstr "기본 테마"
 
 #: bookwyrm/templates/settings/site.html:125
 msgid "Support link:"
-msgstr "지원 링크:"
+msgstr "후원 링크:"
 
 #: bookwyrm/templates/settings/site.html:129
 msgid "Support title:"
-msgstr "지원 제목:"
+msgstr "후원 제목:"
 
 #: bookwyrm/templates/settings/site.html:133
 msgid "Admin email:"
@@ -6081,12 +6081,12 @@ msgstr "인용"
 
 #: bookwyrm/templates/snippets/create_status/comment.html:15
 msgid "Some thoughts on the book"
-msgstr ""
+msgstr "책에 대한 몇 가지 생각"
 
 #: bookwyrm/templates/snippets/create_status/comment.html:27
 #: bookwyrm/templates/snippets/reading_modals/progress_update_modal.html:18
 msgid "Progress:"
-msgstr "진도:"
+msgstr "진행 상황:"
 
 #: bookwyrm/templates/snippets/create_status/comment.html:53
 #: bookwyrm/templates/snippets/progress_field.html:18
@@ -6108,7 +6108,7 @@ msgstr ""
 #: bookwyrm/templates/snippets/status/layout.html:53
 #: bookwyrm/templates/snippets/status/layout.html:54
 msgid "Reply"
-msgstr ""
+msgstr "답장하기"
 
 #: bookwyrm/templates/snippets/create_status/content_field.html:18
 msgid "Content"
@@ -6129,7 +6129,7 @@ msgstr "스포일러 있음!"
 #: bookwyrm/templates/snippets/create_status/layout.html:45
 #: bookwyrm/templates/snippets/reading_modals/form.html:7
 msgid "Comment:"
-msgstr "해설:"
+msgstr "의견:"
 
 #: bookwyrm/templates/snippets/create_status/post_options_block.html:19
 msgid "Update"
@@ -6158,7 +6158,7 @@ msgstr ""
 
 #: bookwyrm/templates/snippets/create_status/quotation.html:50
 msgid "At percent:"
-msgstr ""
+msgstr "퍼센트:"
 
 #: bookwyrm/templates/snippets/create_status/quotation.html:69
 msgid "to"
@@ -6181,7 +6181,7 @@ msgstr "좋아요"
 #: bookwyrm/templates/snippets/fav_button.html:30
 #: bookwyrm/templates/snippets/fav_button.html:31
 msgid "Un-like"
-msgstr ""
+msgstr "좋아요 해제"
 
 #: bookwyrm/templates/snippets/filters_panel/filters_panel.html:5
 msgid "Filters"
@@ -6288,11 +6288,11 @@ msgstr ""
 
 #: bookwyrm/templates/snippets/goal_form.html:16
 msgid "Reading goal:"
-msgstr ""
+msgstr "읽기 목표:"
 
 #: bookwyrm/templates/snippets/goal_form.html:21
 msgid "books"
-msgstr ""
+msgstr "책"
 
 #: bookwyrm/templates/snippets/goal_form.html:26
 msgid "Goal privacy:"
@@ -6359,11 +6359,11 @@ msgstr "팔로워만"
 
 #: bookwyrm/templates/snippets/rate_action.html:5
 msgid "Leave a rating"
-msgstr ""
+msgstr "별점 남기기"
 
 #: bookwyrm/templates/snippets/rate_action.html:20
 msgid "Rate"
-msgstr ""
+msgstr "별점"
 
 #: bookwyrm/templates/snippets/reading_modals/finish_reading_modal.html:6
 #, python-format
@@ -6785,7 +6785,7 @@ msgstr "인용만"
 
 #: bookwyrm/templates/user/user.html:119
 msgid "Comments only"
-msgstr "해설만"
+msgstr "의견만"
 
 #: bookwyrm/templates/user/user.html:135
 msgid "No activities yet!"
