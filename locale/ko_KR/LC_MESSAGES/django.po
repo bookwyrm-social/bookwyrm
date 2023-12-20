@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-11-02 21:32+0000\n"
-"PO-Revision-Date: 2023-12-19 08:28\n"
+"PO-Revision-Date: 2023-12-20 00:49\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Korean\n"
 "Language: ko\n"
@@ -654,7 +654,7 @@ msgstr ""
 #, python-format
 msgid "In %(year)s, %(display_name)s read %(books_total)s book<br />for a total of %(pages_total)s pages!"
 msgid_plural "In %(year)s, %(display_name)s read %(books_total)s books<br />for a total of %(pages_total)s pages!"
-msgstr[0] "%(year)s년 한 해 동안, %(display_name)s 독자는 %(books_total)s권을 읽었고 <br />이는 총 %(pages_total)s쪽에 달합니다!"
+msgstr[0] "%(year)s년 한 해 동안, %(display_name)s 님은 %(books_total)s권을 읽었고 <br />이는 총 %(pages_total)s쪽에 달합니다!"
 
 #: bookwyrm/templates/annual_summary/layout.html:124
 msgid "That’s great!"
@@ -709,7 +709,7 @@ msgstr "잘하고 있습니다!"
 #, python-format
 msgid "%(display_name)s left %(ratings_total)s rating, <br />their average rating is %(rating_average)s"
 msgid_plural "%(display_name)s left %(ratings_total)s ratings, <br />their average rating is %(rating_average)s"
-msgstr[0] ""
+msgstr[0] "%(display_name)s 님은 %(ratings_total)s권에 별점을 매겼고,<br />평균 별점은 %(rating_average)s점 입니다."
 
 #: bookwyrm/templates/annual_summary/layout.html:240
 msgid "Their best rated review"
@@ -723,7 +723,7 @@ msgstr ""
 #: bookwyrm/templates/annual_summary/layout.html:270
 #, python-format
 msgid "All the books %(display_name)s read in %(year)s"
-msgstr ""
+msgstr "%(year)s년 한 해 동안 %(display_name)s 님이 읽은 책들"
 
 #: bookwyrm/templates/author/author.html:19
 #: bookwyrm/templates/author/author.html:20
@@ -2983,7 +2983,7 @@ msgstr "서평"
 #: bookwyrm/templates/import/import_status.html:131
 #: bookwyrm/templates/settings/link_domains/link_table.html:9
 msgid "Book"
-msgstr ""
+msgstr "책"
 
 #: bookwyrm/templates/import/import_status.html:142
 msgid "Import preview unavailable."
@@ -2999,7 +2999,7 @@ msgstr ""
 
 #: bookwyrm/templates/import/import_status.html:200
 msgid "Imported"
-msgstr ""
+msgstr "가져오기 마침"
 
 #: bookwyrm/templates/import/import_status.html:206
 msgid "Needs manual review"
@@ -3043,7 +3043,7 @@ msgstr ""
 
 #: bookwyrm/templates/import/troubleshoot.html:12
 msgid "Troubleshooting"
-msgstr ""
+msgstr "문제해결"
 
 #: bookwyrm/templates/import/troubleshoot.html:20
 msgid "Re-trying an import can fix missing items in cases such as:"
@@ -3070,11 +3070,11 @@ msgstr ""
 #: bookwyrm/templates/landing/login.html:48
 #: bookwyrm/templates/landing/reactivate.html:41
 msgid "Create an Account"
-msgstr ""
+msgstr "계정 만들기"
 
 #: bookwyrm/templates/landing/invite.html:21
 msgid "Permission Denied"
-msgstr ""
+msgstr "권한 없음"
 
 #: bookwyrm/templates/landing/invite.html:22
 msgid "Sorry! This invite code is no longer valid."
@@ -3103,7 +3103,7 @@ msgstr "%(name)s 가입함"
 
 #: bookwyrm/templates/landing/layout.html:48
 msgid "Request an Invitation"
-msgstr ""
+msgstr "초대장 요청하기"
 
 #: bookwyrm/templates/landing/layout.html:50
 #, python-format
@@ -3180,11 +3180,11 @@ msgstr "암호 재설정"
 #: bookwyrm/templates/landing/reactivate.html:4
 #: bookwyrm/templates/landing/reactivate.html:7
 msgid "Reactivate Account"
-msgstr ""
+msgstr "계정 휴면 해제하기"
 
 #: bookwyrm/templates/landing/reactivate.html:32
 msgid "Reactivate account"
-msgstr ""
+msgstr "계정 휴면 해제하기"
 
 #: bookwyrm/templates/layout.html:13
 #, python-format
@@ -3205,7 +3205,7 @@ msgstr ""
 
 #: bookwyrm/templates/layout.html:88
 msgid "Feed"
-msgstr ""
+msgstr "피드"
 
 #: bookwyrm/templates/layout.html:134 bookwyrm/templates/ostatus/error.html:33
 msgid "password"
@@ -3213,11 +3213,11 @@ msgstr "암호"
 
 #: bookwyrm/templates/layout.html:136
 msgid "Show/Hide password"
-msgstr ""
+msgstr "암호 보이기/숨기기"
 
 #: bookwyrm/templates/layout.html:150
 msgid "Join"
-msgstr ""
+msgstr "가입하기"
 
 #: bookwyrm/templates/layout.html:196
 msgid "Successfully posted status"
@@ -3240,7 +3240,7 @@ msgstr ""
 #: bookwyrm/templates/lists/add_item_modal.html:41
 #: bookwyrm/templates/lists/list.html:257
 msgid "Suggest"
-msgstr ""
+msgstr "제안사항"
 
 #: bookwyrm/templates/lists/bookmark_button.html:30
 msgid "Un-save"
@@ -6238,7 +6238,7 @@ msgstr ""
 
 #: bookwyrm/templates/snippets/footer.html:49
 msgid "BookWyrm's source code is freely available. You can contribute or report issues on <a href=\"https://github.com/bookwyrm-social/bookwyrm\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">GitHub</a>."
-msgstr ""
+msgstr "BookWyrm의 소스 코드는 자유롭게 사용할 수 있습니다. <a href=\"https://github.com/bookwyrm-social/bookwyrm\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">GitHub</a>에서 기여하거나 이슈를 제보할 수 있습니다."
 
 #: bookwyrm/templates/snippets/form_rate_stars.html:20
 #: bookwyrm/templates/snippets/stars.html:23
