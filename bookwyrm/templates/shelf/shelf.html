@@ -210,12 +210,17 @@
             </tbody>
         </table>
         {% else %}
-        <p><em>{% if shelves_filter_query %}
-                    {% trans "We couldn't find any books that matched" %} "{{ shelves_filter_query }}"
-            {% else %}
-            {% trans "This shelf is empty." %}
-            {% endif %}
-        </em></p>
+        <p>
+            <em>
+                {% if shelves_filter_query %}
+                    {% blocktrans trimmed %}
+                        We couldn't find any books that matched {{ shelves_filter_query }}
+                    {% endblocktrans %}
+                {% else %}
+                    {% trans "This shelf is empty." %}
+                {% endif %}
+            </em>
+        </p>
         {% endif %}
 
     </div>

@@ -113,6 +113,7 @@ class Shelf(View):
                 page.number, on_each_side=2, on_ends=1
             ),
             "shelves_filter_query": shelves_filter_query,
+            "size": "small",
         }
 
         return TemplateResponse(request, "shelf/shelf.html", data)
