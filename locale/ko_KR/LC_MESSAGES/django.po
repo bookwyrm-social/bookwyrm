@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-11-02 21:32+0000\n"
-"PO-Revision-Date: 2023-12-20 05:13\n"
+"PO-Revision-Date: 2023-12-20 06:49\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Korean\n"
 "Language: ko\n"
@@ -1005,7 +1005,7 @@ msgstr "내 읽기 활동"
 #: bookwyrm/templates/book/book.html:278
 #: bookwyrm/templates/guided_tour/book.html:56
 msgid "Add read dates"
-msgstr ""
+msgstr "읽은 날짜 추가"
 
 #: bookwyrm/templates/book/book.html:286
 msgid "You don't have any reading activity for this book."
@@ -1512,7 +1512,7 @@ msgstr ""
 #: bookwyrm/templates/book/publisher_info.html:25
 #, python-format
 msgid "%(pages)s pages"
-msgstr ""
+msgstr "%(pages)s쪽"
 
 #: bookwyrm/templates/book/publisher_info.html:38
 #, python-format
@@ -1527,7 +1527,7 @@ msgstr ""
 #: bookwyrm/templates/book/publisher_info.html:65
 #, python-format
 msgid "Published by %(publisher)s."
-msgstr ""
+msgstr "%(publisher)s에서 발행함."
 
 #: bookwyrm/templates/book/publisher_info.html:67
 #, python-format
@@ -1988,7 +1988,7 @@ msgstr "내 도서 추가"
 #: bookwyrm/templates/shelf/shelf.html:101 bookwyrm/templates/user/user.html:37
 #: bookwyrm/templatetags/shelf_tags.py:14
 msgid "To Read"
-msgstr ""
+msgstr "읽을 것"
 
 #: bookwyrm/templates/get_started/book_preview.html:11
 #: bookwyrm/templates/shelf/shelf.html:102 bookwyrm/templates/user/user.html:38
@@ -2716,7 +2716,7 @@ msgstr ""
 
 #: bookwyrm/templates/guided_tour/user_groups.html:79
 msgid "Group visibility"
-msgstr ""
+msgstr "그룹 공개 범위"
 
 #: bookwyrm/templates/guided_tour/user_groups.html:102
 msgid "Once you're happy with how everything is set up, click the <strong>Save</strong> button to create your new group."
@@ -2754,7 +2754,7 @@ msgstr ""
 
 #: bookwyrm/templates/guided_tour/user_profile.html:77
 msgid "You can see your lists, or create a new one, here. A list is a collection of books that have something in common."
-msgstr ""
+msgstr "여기에서 목록을 보거나 새 목록을 만들 수 있습니다. 목록은 공통점을 가진 책의 모음입니다."
 
 #: bookwyrm/templates/guided_tour/user_profile.html:100
 msgid "The Books tab shows your book shelves. We'll explore this later in the tour."
@@ -2805,12 +2805,12 @@ msgstr ""
 #: bookwyrm/templates/import/import.html:34
 #, python-format
 msgid "On average, recent imports have taken %(hours)s hours."
-msgstr ""
+msgstr "최근 가져오기에 걸린 시간은 평균 %(hours)s시간입니다."
 
 #: bookwyrm/templates/import/import.html:38
 #, python-format
 msgid "On average, recent imports have taken %(minutes)s minutes."
-msgstr ""
+msgstr "최근 가져오기에 걸린 시간은 평균 %(minutes)s분입니다."
 
 #: bookwyrm/templates/import/import.html:53
 msgid "Data source:"
@@ -2818,23 +2818,23 @@ msgstr "데이터 출처:"
 
 #: bookwyrm/templates/import/import.html:59
 msgid "Goodreads (CSV)"
-msgstr ""
+msgstr "Goodreads (CSV)"
 
 #: bookwyrm/templates/import/import.html:62
 msgid "Storygraph (CSV)"
-msgstr ""
+msgstr "Storygraph (CSV)"
 
 #: bookwyrm/templates/import/import.html:65
 msgid "LibraryThing (TSV)"
-msgstr ""
+msgstr "LibraryThing (TSV)"
 
 #: bookwyrm/templates/import/import.html:68
 msgid "OpenLibrary (CSV)"
-msgstr ""
+msgstr "OpenLibrary (CSV)"
 
 #: bookwyrm/templates/import/import.html:71
 msgid "Calibre (CSV)"
-msgstr ""
+msgstr "Calibre (CSV)"
 
 #: bookwyrm/templates/import/import.html:77
 msgid "You can download your Goodreads data from the <a href=\"https://www.goodreads.com/review/import\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">Import/Export page</a> of your Goodreads account."
@@ -2940,15 +2940,15 @@ msgstr "항목 검토"
 #, python-format
 msgid "%(display_counter)s item failed to import."
 msgid_plural "%(display_counter)s items failed to import."
-msgstr[0] ""
+msgstr[0] "%(display_counter)s개 항목을 가져오지 못했습니다."
 
 #: bookwyrm/templates/import/import_status.html:95
 msgid "View and troubleshoot failed items"
-msgstr ""
+msgstr "실패한 항목을 살피고 문제해결하기"
 
 #: bookwyrm/templates/import/import_status.html:107
 msgid "Row"
-msgstr ""
+msgstr "열"
 
 #: bookwyrm/templates/import/import_status.html:110
 #: bookwyrm/templates/shelf/shelf.html:163
@@ -3039,7 +3039,7 @@ msgstr "거절"
 #: bookwyrm/templates/import/troubleshoot.html:7
 #: bookwyrm/templates/settings/imports/imports.html:138
 msgid "Failed items"
-msgstr ""
+msgstr "실패한 항목"
 
 #: bookwyrm/templates/import/troubleshoot.html:12
 msgid "Troubleshooting"
@@ -3047,23 +3047,23 @@ msgstr "문제해결"
 
 #: bookwyrm/templates/import/troubleshoot.html:20
 msgid "Re-trying an import can fix missing items in cases such as:"
-msgstr ""
+msgstr "가져오기를 다시 시도하면 다음의 경우에 누락된 항목이 수정될 수 있습니다."
 
 #: bookwyrm/templates/import/troubleshoot.html:23
 msgid "The book has been added to the instance since this import"
-msgstr ""
+msgstr "이 가져오기 이후 책이 서버에 추가된 경우."
 
 #: bookwyrm/templates/import/troubleshoot.html:24
 msgid "A transient error or timeout caused the external data source to be unavailable."
-msgstr ""
+msgstr "일시적인 오류 또는 시간 초과로 인해 외부 데이터 소스를 사용할 수 없었던 경우."
 
 #: bookwyrm/templates/import/troubleshoot.html:25
 msgid "BookWyrm has been updated since this import with a bug fix"
-msgstr ""
+msgstr "이 가져오기 이후 BookWyrm이 버그 수정과 함께 업데이트된 경우."
 
 #: bookwyrm/templates/import/troubleshoot.html:28
 msgid "Contact your admin or <a href='https://github.com/bookwyrm-social/bookwyrm/issues'>open an issue</a> if you are seeing unexpected failed items."
-msgstr ""
+msgstr "예상치 못한 실패 항목이 표시되는 경우에는 관리자에게 문의하거나 <a href='https://github.com/bookwyrm-social/bookwyrm/issues'>이슈를 열어주세요.</a>"
 
 #: bookwyrm/templates/landing/invite.html:4
 #: bookwyrm/templates/landing/invite.html:8
@@ -3130,7 +3130,7 @@ msgstr "로그인"
 
 #: bookwyrm/templates/landing/login.html:15
 msgid "Success! Email address confirmed."
-msgstr ""
+msgstr "성공! 이메일 주소 확인을 마쳤습니다."
 
 #: bookwyrm/templates/landing/login.html:21
 #: bookwyrm/templates/landing/reactivate.html:17
@@ -3156,7 +3156,7 @@ msgstr "암호를 잊었나요?"
 #: bookwyrm/templates/landing/login.html:61
 #: bookwyrm/templates/landing/reactivate.html:54
 msgid "More about this site"
-msgstr ""
+msgstr "이 사이트 더 알아보기"
 
 #: bookwyrm/templates/landing/password_reset.html:43
 #: bookwyrm/templates/preferences/change_password.html:33
@@ -3197,7 +3197,7 @@ msgstr ""
 
 #: bookwyrm/templates/layout.html:54 bookwyrm/templates/layout.html:55
 msgid "Scan Barcode"
-msgstr ""
+msgstr "바코드 스캔하기"
 
 #: bookwyrm/templates/layout.html:69
 msgid "Main navigation menu"
@@ -4043,7 +4043,7 @@ msgstr ""
 #: bookwyrm/templates/preferences/alias_user.html:30
 #: bookwyrm/templates/preferences/move_user.html:35
 msgid "Confirm your password:"
-msgstr ""
+msgstr "암호 확인:"
 
 #: bookwyrm/templates/preferences/alias_user.html:39
 #: bookwyrm/templates/preferences/layout.html:28
@@ -4052,7 +4052,7 @@ msgstr "별칭"
 
 #: bookwyrm/templates/preferences/alias_user.html:49
 msgid "Remove alias"
-msgstr ""
+msgstr "별칭 제거하기"
 
 #: bookwyrm/templates/preferences/blocks.html:4
 #: bookwyrm/templates/preferences/blocks.html:7
@@ -4198,23 +4198,23 @@ msgstr "CSV 내보내기"
 
 #: bookwyrm/templates/preferences/export.html:13
 msgid "Your export will include all the books on your shelves, books you have reviewed, and books with reading activity."
-msgstr ""
+msgstr "내보내기는 읽기 활동과 평가를 비롯한 책꽂이의 모든 책을 포함합니다."
 
 #: bookwyrm/templates/preferences/export.html:20
 msgid "Download file"
-msgstr ""
+msgstr "파일 다운로드"
 
 #: bookwyrm/templates/preferences/layout.html:11
 msgid "Account"
-msgstr ""
+msgstr "계정"
 
 #: bookwyrm/templates/preferences/layout.html:32
 msgid "Move  Account"
-msgstr ""
+msgstr "계정 이동하기"
 
 #: bookwyrm/templates/preferences/layout.html:39
 msgid "Data"
-msgstr ""
+msgstr "데이터"
 
 #: bookwyrm/templates/preferences/layout.html:47
 msgid "CSV export"
@@ -4222,7 +4222,7 @@ msgstr "CSV 내보내기"
 
 #: bookwyrm/templates/preferences/layout.html:50
 msgid "Relationships"
-msgstr ""
+msgstr "관계"
 
 #: bookwyrm/templates/preferences/move_user.html:12
 msgid "Migrate account to another server"
@@ -4269,7 +4269,7 @@ msgstr ""
 
 #: bookwyrm/templates/readthrough/delete_readthrough_modal.html:4
 msgid "Delete these read dates?"
-msgstr ""
+msgstr "이 읽은 날짜를 지울까요?"
 
 #: bookwyrm/templates/readthrough/delete_readthrough_modal.html:8
 #, python-format
@@ -4288,7 +4288,7 @@ msgstr ""
 #: bookwyrm/templates/snippets/reading_modals/start_reading_modal.html:21
 #: bookwyrm/templates/snippets/reading_modals/stop_reading_modal.html:24
 msgid "Started reading"
-msgstr ""
+msgstr "읽기 시작함"
 
 #: bookwyrm/templates/readthrough/readthrough_form.html:18
 #: bookwyrm/templates/readthrough/readthrough_modal.html:56
@@ -4327,11 +4327,11 @@ msgstr "시작일"
 
 #: bookwyrm/templates/readthrough/readthrough_list.html:62
 msgid "Edit read dates"
-msgstr ""
+msgstr "읽은 날짜 편집"
 
 #: bookwyrm/templates/readthrough/readthrough_list.html:70
 msgid "Delete these read dates"
-msgstr ""
+msgstr "이 읽은 날짜 지우기"
 
 #: bookwyrm/templates/readthrough/readthrough_modal.html:12
 #, python-format
@@ -4505,7 +4505,7 @@ msgstr "미리보기"
 
 #: bookwyrm/templates/settings/announcements/announcements.html:29
 msgid "Start date"
-msgstr ""
+msgstr "시작 날짜"
 
 #: bookwyrm/templates/settings/announcements/announcements.html:33
 msgid "End date"
@@ -4545,7 +4545,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/announcements/edit_announcement.html:98
 msgid "Color:"
-msgstr ""
+msgstr "색깔:"
 
 #: bookwyrm/templates/settings/automod/rules.html:7
 #: bookwyrm/templates/settings/automod/rules.html:11
@@ -4563,7 +4563,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/automod/rules.html:26
 msgid "Schedule:"
-msgstr ""
+msgstr "예정:"
 
 #: bookwyrm/templates/settings/automod/rules.html:33
 msgid "Last run:"
@@ -4656,15 +4656,15 @@ msgstr ""
 
 #: bookwyrm/templates/settings/celery.html:38
 msgid "Inbox"
-msgstr ""
+msgstr "사서함"
 
 #: bookwyrm/templates/settings/celery.html:51
 msgid "Import triggered"
-msgstr ""
+msgstr "가져오기 트리거함"
 
 #: bookwyrm/templates/settings/celery.html:57
 msgid "Connectors"
-msgstr ""
+msgstr "커넥터"
 
 #: bookwyrm/templates/settings/celery.html:64
 #: bookwyrm/templates/settings/site.html:91
@@ -4728,7 +4728,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/celery.html:157
 msgid "Workers"
-msgstr ""
+msgstr "워커"
 
 #: bookwyrm/templates/settings/celery.html:162
 msgid "Uptime:"
@@ -4806,7 +4806,7 @@ msgstr "등록된 작품"
 
 #: bookwyrm/templates/settings/dashboard/registration_chart.html:10
 msgid "Registrations"
-msgstr ""
+msgstr "등록"
 
 #: bookwyrm/templates/settings/dashboard/status_chart.html:11
 msgid "Statuses posted"
@@ -4859,17 +4859,17 @@ msgstr ""
 #: bookwyrm/templates/settings/email_blocklist/domain_form.html:5
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:10
 msgid "Add domain"
-msgstr ""
+msgstr "도메인 추가"
 
 #: bookwyrm/templates/settings/email_blocklist/domain_form.html:11
 msgid "Domain:"
-msgstr ""
+msgstr "도메인:"
 
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:5
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:7
 #: bookwyrm/templates/settings/layout.html:65
 msgid "Email Blocklist"
-msgstr ""
+msgstr "이메일 차단록"
 
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:18
 msgid "When someone tries to register with an email from this domain, no account will be created. The registration process will appear to have worked."
@@ -4878,7 +4878,7 @@ msgstr ""
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:29
 #: bookwyrm/templates/settings/ip_blocklist/ip_blocklist.html:27
 msgid "Options"
-msgstr ""
+msgstr "선택 사항"
 
 #: bookwyrm/templates/settings/email_blocklist/email_blocklist.html:38
 #, python-format
@@ -5009,7 +5009,7 @@ msgstr "이용자:"
 #: bookwyrm/templates/settings/federation/instance.html:59
 #: bookwyrm/templates/settings/federation/instance.html:65
 msgid "View all"
-msgstr ""
+msgstr "모두 보기"
 
 #: bookwyrm/templates/settings/federation/instance.html:62
 #: bookwyrm/templates/settings/users/user_info.html:66
@@ -6296,7 +6296,7 @@ msgstr "책"
 
 #: bookwyrm/templates/snippets/goal_form.html:26
 msgid "Goal privacy:"
-msgstr ""
+msgstr "목표 프라이버시:"
 
 #: bookwyrm/templates/snippets/goal_form.html:33
 #: bookwyrm/templates/snippets/reading_modals/layout.html:13
@@ -6748,7 +6748,7 @@ msgstr "프로필 수정"
 #: bookwyrm/templates/user/user.html:42
 #, python-format
 msgid "View all %(size)s"
-msgstr ""
+msgstr "%(size)s권 모두 보기"
 
 #: bookwyrm/templates/user/user.html:61
 msgid "View all books"
