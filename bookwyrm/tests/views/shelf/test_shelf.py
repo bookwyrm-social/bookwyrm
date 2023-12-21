@@ -243,7 +243,7 @@ class ShelfViews(TestCase):
         self.assertEqual(result.status_code, 200)
         self.assertEqual(len(result.context_data["books"].object_list), 1)
         self.assertEqual(
-            result.context_data["books"].object_list.first().title,
+            result.context_data["books"].object_list[0].title,
             shelf_book.book.title,
         )
 

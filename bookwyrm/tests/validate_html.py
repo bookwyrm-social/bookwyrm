@@ -13,12 +13,15 @@ def validate_html(html):
             "warn-proprietary-attributes": False,
         },
     )
-    # Tidy's parser is strict when validating unescaped/encoded ampersands found within the html document that are not
-    # part # of a character or entity reference (eg: `&amp;` or `&#38`). Even when used as query param keys in URLs,
-    # despite the fact the HTML5 spec no longer recommends escaping ampersands in URLs. Unfortunately, there is no way
-    # currently to configure tidy to ignore ampersands in urls.
+    # Tidy's parser is strict when validating unescaped/encoded ampersands found within
+    # the html document that are notpart of a character or entity reference
+    # (eg: `&amp;` or `&#38`). Despite the fact the HTML5 spec no longer recommends
+    # escaping ampersands in URLs, Tidy will still complain if they are used as query
+    # param keys. Unfortunately, there is no way currently to configure tidy to ignore
+    # this so we must explictly redlist related strings that will appear in Tidy's
+    # errors output.
     #
-    # See https://github.com/htacg/tidy-html5/issues/1017
+    # See further discussion: https://github.com/htacg/tidy-html5/issues/1017
     excluded = [
         "&book",
         "&type",
