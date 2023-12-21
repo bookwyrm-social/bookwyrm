@@ -263,4 +263,4 @@ class ShelfViews(TestCase):
         self.assertIsInstance(result, TemplateResponse)
         validate_html(result.render())
         self.assertEqual(result.status_code, 200)
-        self.assertTrue(result.context_data["show_shelves_filter_msg"])
+        self.assertEqual(len(result.context_data["books"].object_list), 0)
