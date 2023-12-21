@@ -233,7 +233,6 @@ class ShelfViews(TestCase):
             user=self.local_user,
         )
         view = views.Shelf.as_view()
-        print("DEBUG_QUERY" + shelf_book.book.title)
         request = self.factory.get("", {"filter": shelf_book.book.title})
         request.user = self.local_user
         with patch("bookwyrm.views.shelf.shelf.is_api_request") as is_api:
