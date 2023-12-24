@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-11-02 21:32+0000\n"
-"PO-Revision-Date: 2023-12-24 08:01\n"
+"PO-Revision-Date: 2023-12-24 09:07\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Ukrainian\n"
 "Language: uk\n"
@@ -3833,21 +3833,21 @@ msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> <a href=\"%(relat
 #: bookwyrm/templates/notifications/items/reply.html:39
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> <a href=\"%(related_path)s\">replied</a> to your <a href=\"%(parent_path)s\">status</a>"
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> <a href=\"%(related_path)s\">відповів(-ла)</a> на ваш <a href=\"%(parent_path)s\">статус</a>"
 
 #: bookwyrm/templates/notifications/items/report.html:15
 #, python-format
 msgid "A new <a href=\"%(path)s\">report</a> needs moderation"
 msgid_plural "%(display_count)s new <a href=\"%(path)s\">reports</a> need moderation"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Нова <a href=\"%(path)s\">скарга</a> потребує модерації"
+msgstr[1] "%(display_count)s нові <a href=\"%(path)s\">скарги</a> потребують модерації"
+msgstr[2] "%(display_count)s нових <a href=\"%(path)s\">скарг</a> потребують модерації"
+msgstr[3] "%(display_count)s нових <a href=\"%(path)s\">скарг</a> потребують модерації"
 
 #: bookwyrm/templates/notifications/items/status_preview.html:4
 #: bookwyrm/templates/snippets/status/content_status.html:62
 msgid "Content warning"
-msgstr ""
+msgstr "Попередження про вміст"
 
 #: bookwyrm/templates/notifications/items/update.html:16
 #, python-format
@@ -4178,14 +4178,14 @@ msgstr ""
 #: bookwyrm/templates/preferences/edit_user.html:7
 #: bookwyrm/templates/preferences/layout.html:15
 msgid "Edit Profile"
-msgstr ""
+msgstr "Редагувати Профіль"
 
 #: bookwyrm/templates/preferences/edit_user.html:12
 #: bookwyrm/templates/preferences/edit_user.html:25
 #: bookwyrm/templates/settings/users/user_info.html:7
 #: bookwyrm/templates/user_menu.html:29
 msgid "Profile"
-msgstr ""
+msgstr "Профіль"
 
 #: bookwyrm/templates/preferences/edit_user.html:13
 #: bookwyrm/templates/preferences/edit_user.html:64
@@ -4231,7 +4231,7 @@ msgstr ""
 
 #: bookwyrm/templates/preferences/edit_user.html:123
 msgid "Hide followers and following on profile"
-msgstr ""
+msgstr "Приховати підписників і підписки в профілі"
 
 #: bookwyrm/templates/preferences/edit_user.html:128
 msgid "Default post privacy:"
@@ -4245,7 +4245,7 @@ msgstr ""
 #: bookwyrm/templates/preferences/export.html:4
 #: bookwyrm/templates/preferences/export.html:7
 msgid "CSV Export"
-msgstr ""
+msgstr "Експорт CSV"
 
 #: bookwyrm/templates/preferences/export.html:13
 msgid "Your export will include all the books on your shelves, books you have reviewed, and books with reading activity."
@@ -4301,26 +4301,26 @@ msgstr ""
 #: bookwyrm/templates/reading_progress/finish.html:5
 #, python-format
 msgid "Finish \"%(book_title)s\""
-msgstr ""
+msgstr "Завершити Читати \"%(book_title)s\""
 
 #: bookwyrm/templates/reading_progress/start.html:5
 #, python-format
 msgid "Start \"%(book_title)s\""
-msgstr ""
+msgstr "Почати Читати \"%(book_title)s\""
 
 #: bookwyrm/templates/reading_progress/stop.html:5
 #, python-format
 msgid "Stop Reading \"%(book_title)s\""
-msgstr ""
+msgstr "Припинити Читати \"%(book_title)s\""
 
 #: bookwyrm/templates/reading_progress/want.html:5
 #, python-format
 msgid "Want to Read \"%(book_title)s\""
-msgstr ""
+msgstr "Хочу Прочитати \"%(book_title)s\""
 
 #: bookwyrm/templates/readthrough/delete_readthrough_modal.html:4
 msgid "Delete these read dates?"
-msgstr ""
+msgstr "Видалити ці дати читання?"
 
 #: bookwyrm/templates/readthrough/delete_readthrough_modal.html:8
 #, python-format
@@ -4398,11 +4398,13 @@ msgstr ""
 msgid "\n"
 "        Scan Barcode\n"
 "    "
-msgstr ""
+msgstr "\n"
+"        Сканувати Штрих-код\n"
+"    "
 
 #: bookwyrm/templates/search/barcode_modal.html:21
 msgid "Requesting camera..."
-msgstr ""
+msgstr "Запитуємо камеру..."
 
 #: bookwyrm/templates/search/barcode_modal.html:22
 msgid "Grant access to the camera to scan a book's barcode."
@@ -4415,7 +4417,7 @@ msgstr ""
 #: bookwyrm/templates/search/barcode_modal.html:31
 msgctxt "barcode scanner"
 msgid "Scanning..."
-msgstr ""
+msgstr "Сканування..."
 
 #: bookwyrm/templates/search/barcode_modal.html:32
 msgid "Align your book's barcode with the camera."
@@ -4424,7 +4426,7 @@ msgstr ""
 #: bookwyrm/templates/search/barcode_modal.html:36
 msgctxt "barcode scanner"
 msgid "ISBN scanned"
-msgstr ""
+msgstr "ISBN відскановано"
 
 #: bookwyrm/templates/search/barcode_modal.html:37
 msgctxt "followed by ISBN"
@@ -4459,7 +4461,7 @@ msgstr ""
 
 #: bookwyrm/templates/search/book.html:117
 msgid "Manually add book"
-msgstr ""
+msgstr "Додати книгу вручну"
 
 #: bookwyrm/templates/search/book.html:122
 msgid "Log in to import or add books."
@@ -4507,7 +4509,7 @@ msgstr ""
 #: bookwyrm/templates/settings/federation/instance.html:93
 #: bookwyrm/templates/snippets/status/status_options.html:25
 msgid "Edit"
-msgstr ""
+msgstr "Редагувати"
 
 #: bookwyrm/templates/settings/announcements/announcement.html:32
 #: bookwyrm/templates/settings/announcements/announcements.html:3
@@ -4602,7 +4604,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/announcements/edit_announcement.html:98
 msgid "Color:"
-msgstr ""
+msgstr "Колір:"
 
 #: bookwyrm/templates/settings/automod/rules.html:7
 #: bookwyrm/templates/settings/automod/rules.html:11
@@ -4632,7 +4634,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/automod/rules.html:47
 msgid "Enabled:"
-msgstr ""
+msgstr "Увімкнено:"
 
 #: bookwyrm/templates/settings/automod/rules.html:59
 msgid "Delete schedule"
@@ -4676,15 +4678,15 @@ msgstr ""
 
 #: bookwyrm/templates/settings/automod/rules.html:140
 msgid "Add rule"
-msgstr ""
+msgstr "Додати правило"
 
 #: bookwyrm/templates/settings/automod/rules.html:147
 msgid "Current Rules"
-msgstr ""
+msgstr "Поточні Правила"
 
 #: bookwyrm/templates/settings/automod/rules.html:151
 msgid "Show rules"
-msgstr ""
+msgstr "Показати правила"
 
 #: bookwyrm/templates/settings/automod/rules.html:188
 msgid "Remove rule"
