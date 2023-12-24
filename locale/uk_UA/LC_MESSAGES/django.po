@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-11-02 21:32+0000\n"
-"PO-Revision-Date: 2023-12-24 05:07\n"
+"PO-Revision-Date: 2023-12-24 06:45\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Ukrainian\n"
 "Language: uk\n"
@@ -338,7 +338,7 @@ msgstr "Рівень доступу користувача змінено"
 
 #: bookwyrm/models/report.py:92
 msgid "Deleted user account"
-msgstr "Обліковий запис користувача видалено"
+msgstr "Акаунт користувача видалено"
 
 #: bookwyrm/models/report.py:93
 msgid "Blocked domain"
@@ -434,7 +434,7 @@ msgstr "Lietuvių (Литовська)"
 
 #: bookwyrm/settings.py:314
 msgid "Nederlands (Dutch)"
-msgstr ""
+msgstr "Nederlands (Нідерландська)"
 
 #: bookwyrm/settings.py:315
 msgid "Norsk (Norwegian)"
@@ -1084,11 +1084,11 @@ msgstr "ISBN:"
 #: bookwyrm/templates/book/book_identifiers.html:12
 #: bookwyrm/templates/book/book_identifiers.html:13
 msgid "Copy ISBN"
-msgstr ""
+msgstr "Скопіювати ISBN"
 
 #: bookwyrm/templates/book/book_identifiers.html:16
 msgid "Copied ISBN!"
-msgstr ""
+msgstr "ISBN скопійовано!"
 
 #: bookwyrm/templates/book/book_identifiers.html:23
 #: bookwyrm/templates/book/edit/edit_book_form.html:352
@@ -1253,7 +1253,7 @@ msgstr "Назва:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:35
 msgid "Sort Title:"
-msgstr ""
+msgstr "Назва Для Сортування:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:44
 msgid "Subtitle:"
@@ -1381,7 +1381,7 @@ msgstr "Видання %(book_title)s"
 #: bookwyrm/templates/book/editions/editions.html:8
 #, python-format
 msgid "Editions of <a href=\"%(work_path)s\"><i>%(work_title)s</i></a>"
-msgstr ""
+msgstr "Видання <a href=\"%(work_path)s\"><i>%(work_title)s</i></a>"
 
 #: bookwyrm/templates/book/editions/editions.html:55
 msgid "Can't find the edition you're looking for?"
@@ -1693,7 +1693,7 @@ msgstr "Рекомендовані"
 #: bookwyrm/templates/user/user_preview.html:16
 #: bookwyrm/templates/user/user_preview.html:17
 msgid "Locked account"
-msgstr "Заблокований обліковий запис"
+msgstr "Акаунт заблоковано"
 
 #: bookwyrm/templates/directory/user_card.html:40
 msgid "follower you follow"
@@ -1838,7 +1838,7 @@ msgstr "Дізнайтеся більше <a href=\"https://%(domain)s%(about_pa
 #: bookwyrm/templates/email/invite/text_content.html:4
 #, python-format
 msgid "You're invited to join %(site_name)s! Click the link below to create an account."
-msgstr "Вас запросили приєднатися до %(site_name)s! Перейдіть за посиланням нижче, щоб створити обліковий запис."
+msgstr "Вас запросили приєднатися до %(site_name)s! Перейдіть за посиланням нижче, щоб акаунт."
 
 #: bookwyrm/templates/email/invite/text_content.html:8
 #, python-format
@@ -2147,11 +2147,11 @@ msgstr "Підтверджувати підписників вручну:"
 
 #: bookwyrm/templates/get_started/profile.html:58
 msgid "Show this account in suggested users:"
-msgstr "Показувати цей обліковий запис в запропонованих користувачах:"
+msgstr "Показувати цей акаунт в запропонованих користувачах:"
 
 #: bookwyrm/templates/get_started/profile.html:62
 msgid "Your account will show up in the directory, and may be recommended to other BookWyrm users."
-msgstr "Ваш обліковий запис буде показуватися в каталозі, та може бути рекомендований іншим користувачам BookWyrm."
+msgstr "Ваш акаунт буде показуватися в каталозі, та може бути рекомендований іншим користувачам BookWyrm."
 
 #: bookwyrm/templates/get_started/users.html:8
 msgid "You can follow users on other BookWyrm instances and federated services like Mastodon."
@@ -2285,7 +2285,7 @@ msgstr "Керівник"
 
 #: bookwyrm/templates/groups/user_groups.html:35
 msgid "No groups found."
-msgstr ""
+msgstr "Жодної групи не знайдено."
 
 #: bookwyrm/templates/guided_tour/book.html:10
 msgid "This is home page of a book. Let's see what you can do while you're here!"
@@ -2825,15 +2825,15 @@ msgstr "Некоректний CSV-файл"
 #, python-format
 msgid "Currently, you are allowed to import %(display_size)s books every %(import_limit_reset)s day."
 msgid_plural "Currently, you are allowed to import %(display_size)s books every %(import_limit_reset)s days."
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Наразі ви можете імпортувати тільки %(display_size)s книгу впродовж кожних %(import_limit_reset)s днів."
+msgstr[1] "Наразі ви можете імпортувати тільки %(display_size)s книги впродовж кожних %(import_limit_reset)s днів."
+msgstr[2] "Наразі ви можете імпортувати тільки %(display_size)s книг впродовж кожних %(import_limit_reset)s днів."
+msgstr[3] "Наразі ви можете імпортувати тільки %(display_size)s книг впродовж кожних %(import_limit_reset)s днів."
 
 #: bookwyrm/templates/import/import.html:27
 #, python-format
 msgid "You have %(display_left)s left."
-msgstr ""
+msgstr "Залишилось %(display_left)s."
 
 #: bookwyrm/templates/import/import.html:34
 #, python-format
@@ -3090,93 +3090,93 @@ msgstr "Повторна спроба імпорту може виправити
 
 #: bookwyrm/templates/import/troubleshoot.html:23
 msgid "The book has been added to the instance since this import"
-msgstr ""
+msgstr "Книга була додана до інстансу з моменту імпорту"
 
 #: bookwyrm/templates/import/troubleshoot.html:24
 msgid "A transient error or timeout caused the external data source to be unavailable."
-msgstr ""
+msgstr "Непостійна помилка або тайм-аут призвела до недоступності зовнішнього джерела даних."
 
 #: bookwyrm/templates/import/troubleshoot.html:25
 msgid "BookWyrm has been updated since this import with a bug fix"
-msgstr ""
+msgstr "З моменту цього імпорту, BookWyrm було оновлено з виправленням помилок"
 
 #: bookwyrm/templates/import/troubleshoot.html:28
 msgid "Contact your admin or <a href='https://github.com/bookwyrm-social/bookwyrm/issues'>open an issue</a> if you are seeing unexpected failed items."
-msgstr ""
+msgstr "Зв'яжіться з вашим адміністратором або <a href='https://github.com/bookwyrm-social/bookwyrm/issues'>сповістіть про проблему</a>, якщо ви бачите неочікувані помилки."
 
 #: bookwyrm/templates/landing/invite.html:4
 #: bookwyrm/templates/landing/invite.html:8
 #: bookwyrm/templates/landing/login.html:48
 #: bookwyrm/templates/landing/reactivate.html:41
 msgid "Create an Account"
-msgstr ""
+msgstr "Зареєструватися"
 
 #: bookwyrm/templates/landing/invite.html:21
 msgid "Permission Denied"
-msgstr ""
+msgstr "Немає Дозволу"
 
 #: bookwyrm/templates/landing/invite.html:22
 msgid "Sorry! This invite code is no longer valid."
-msgstr ""
+msgstr "Вибачте! Цей код запрошення більше не дійсний."
 
 #: bookwyrm/templates/landing/landing.html:9
 msgid "Recent Books"
-msgstr ""
+msgstr "Недавні Книги"
 
 #: bookwyrm/templates/landing/layout.html:17
 msgid "Decentralized"
-msgstr ""
+msgstr "Децентралізовано"
 
 #: bookwyrm/templates/landing/layout.html:23
 msgid "Friendly"
-msgstr ""
+msgstr "Дружньо"
 
 #: bookwyrm/templates/landing/layout.html:29
 msgid "Anti-Corporate"
-msgstr ""
+msgstr "Антикорпоративно"
 
 #: bookwyrm/templates/landing/layout.html:46
 #, python-format
 msgid "Join %(name)s"
-msgstr ""
+msgstr "Приєднуйся до %(name)s"
 
 #: bookwyrm/templates/landing/layout.html:48
 msgid "Request an Invitation"
-msgstr ""
+msgstr "Подати Заявку на Запрошення"
 
 #: bookwyrm/templates/landing/layout.html:50
 #, python-format
 msgid "%(name)s registration is closed"
-msgstr ""
+msgstr "реєстрація на %(name)s закрита"
 
 #: bookwyrm/templates/landing/layout.html:61
 msgid "Thank you! Your request has been received."
-msgstr ""
+msgstr "Дякуємо, ваш запит отримано."
 
 #: bookwyrm/templates/landing/layout.html:90
 msgid "Your Account"
-msgstr ""
+msgstr "Ваш Акаунт"
 
 #: bookwyrm/templates/landing/login.html:4
 msgid "Login"
-msgstr ""
+msgstr "Авторизація"
 
 #: bookwyrm/templates/landing/login.html:7
 #: bookwyrm/templates/landing/login.html:36 bookwyrm/templates/layout.html:142
 #: bookwyrm/templates/ostatus/error.html:37
 msgid "Log in"
-msgstr ""
+msgstr "Увійти"
 
 #: bookwyrm/templates/landing/login.html:15
 msgid "Success! Email address confirmed."
-msgstr ""
+msgstr "Адресу електронної пошти успішно підтверджено."
 
 #: bookwyrm/templates/landing/login.html:21
 #: bookwyrm/templates/landing/reactivate.html:17
 #: bookwyrm/templates/layout.html:128 bookwyrm/templates/ostatus/error.html:28
 #: bookwyrm/templates/snippets/register_form.html:4
 msgid "Username:"
-msgstr ""
+msgstr "Ім'я користувача (username):"
 
 #: bookwyrm/templates/landing/login.html:27
 #: bookwyrm/templates/landing/password_reset.html:26
@@ -3185,12 +3185,12 @@ msgstr ""
 #: bookwyrm/templates/preferences/2fa.html:91
 #: bookwyrm/templates/snippets/register_form.html:45
 msgid "Password:"
-msgstr ""
+msgstr "Пароль:"
 
 #: bookwyrm/templates/landing/login.html:39 bookwyrm/templates/layout.html:139
 #: bookwyrm/templates/ostatus/error.html:34
 msgid "Forgot your password?"
-msgstr ""
+msgstr "Забули пароль?"
 
 #: bookwyrm/templates/landing/login.html:61
 #: bookwyrm/templates/landing/reactivate.html:54
@@ -3201,54 +3201,54 @@ msgstr "Докладніше про цей сайт"
 #: bookwyrm/templates/preferences/change_password.html:33
 #: bookwyrm/templates/preferences/delete_user.html:35
 msgid "Confirm password:"
-msgstr ""
+msgstr "Підтвердження паролю:"
 
 #: bookwyrm/templates/landing/password_reset_request.html:14
 #, python-format
 msgid "A password reset link will be sent to <strong>%(email)s</strong> if there is an account using that email address."
-msgstr ""
+msgstr "Посилання для відновлення паролю буде надіслано на <strong>%(email)s</strong> якщо існує обліковий запас з цим email."
 
 #: bookwyrm/templates/landing/password_reset_request.html:20
 msgid "A link to reset your password will be sent to your email address"
-msgstr ""
+msgstr "Посилання для відновлення пароля було надіслано на вашу електронну адресу"
 
 #: bookwyrm/templates/landing/password_reset_request.html:34
 msgid "Reset password"
-msgstr ""
+msgstr "Скинути пароль"
 
 #: bookwyrm/templates/landing/reactivate.html:4
 #: bookwyrm/templates/landing/reactivate.html:7
 msgid "Reactivate Account"
-msgstr ""
+msgstr "Повторна Активація Облікового Запису"
 
 #: bookwyrm/templates/landing/reactivate.html:32
 msgid "Reactivate account"
-msgstr ""
+msgstr "Реактивувати акаунт"
 
 #: bookwyrm/templates/layout.html:13
 #, python-format
 msgid "%(site_name)s search"
-msgstr ""
+msgstr "Пошук по %(site_name)s"
 
 #: bookwyrm/templates/layout.html:39
 msgid "Search for a book, user, or list"
-msgstr ""
+msgstr "Шукати книгу, користувача або список"
 
 #: bookwyrm/templates/layout.html:54 bookwyrm/templates/layout.html:55
 msgid "Scan Barcode"
-msgstr ""
+msgstr "Сканувати Штрих-код"
 
 #: bookwyrm/templates/layout.html:69
 msgid "Main navigation menu"
-msgstr ""
+msgstr "Головне меню навігації"
 
 #: bookwyrm/templates/layout.html:88
 msgid "Feed"
-msgstr ""
+msgstr "Стрічка подій"
 
 #: bookwyrm/templates/layout.html:134 bookwyrm/templates/ostatus/error.html:33
 msgid "password"
-msgstr ""
+msgstr "пароль"
 
 #: bookwyrm/templates/layout.html:136
 msgid "Show/Hide password"
@@ -3256,89 +3256,89 @@ msgstr "Показати/Приховати пароль"
 
 #: bookwyrm/templates/layout.html:150
 msgid "Join"
-msgstr ""
+msgstr "Приєднатися"
 
 #: bookwyrm/templates/layout.html:196
 msgid "Successfully posted status"
-msgstr ""
+msgstr "Статус успішно опубліковано"
 
 #: bookwyrm/templates/layout.html:197
 msgid "Error posting status"
-msgstr ""
+msgstr "Помилка публікації статусу"
 
 #: bookwyrm/templates/lists/add_item_modal.html:8
 #, python-format
 msgid "Add \"<em>%(title)s</em>\" to this list"
-msgstr ""
+msgstr "Додати \"<em>%(title)s</em>\" до цього списку"
 
 #: bookwyrm/templates/lists/add_item_modal.html:12
 #, python-format
 msgid "Suggest \"<em>%(title)s</em>\" for this list"
-msgstr ""
+msgstr "Запропонувати додати \"<em>%(title)s</em>\" у цей список"
 
 #: bookwyrm/templates/lists/add_item_modal.html:41
 #: bookwyrm/templates/lists/list.html:257
 msgid "Suggest"
-msgstr ""
+msgstr "Запропонувати"
 
 #: bookwyrm/templates/lists/bookmark_button.html:30
 msgid "Un-save"
-msgstr ""
+msgstr "Видалити"
 
 #: bookwyrm/templates/lists/created_text.html:5
 #, python-format
 msgid "Created by <a href=\"%(userpath)s\">%(username)s</a> and managed by <a href=\"%(grouppath)s\">%(groupname)s</a>"
-msgstr ""
+msgstr "Створено <a href=\"%(userpath)s\">%(username)s</a> і керується <a href=\"%(grouppath)s\">%(groupname)s</a>"
 
 #: bookwyrm/templates/lists/created_text.html:7
 #, python-format
 msgid "Created and curated by <a href=\"%(path)s\">%(username)s</a>"
-msgstr ""
+msgstr "Створено та курується <a href=\"%(path)s\">%(username)s</a>"
 
 #: bookwyrm/templates/lists/created_text.html:9
 #, python-format
 msgid "Created by <a href=\"%(path)s\">%(username)s</a>"
-msgstr ""
+msgstr "Створено <a href=\"%(path)s\">%(username)s</a>"
 
 #: bookwyrm/templates/lists/curate.html:12
 msgid "Curate"
-msgstr ""
+msgstr "Курувати"
 
 #: bookwyrm/templates/lists/curate.html:21
 msgid "Pending Books"
-msgstr ""
+msgstr "Книги в Очікуванні"
 
 #: bookwyrm/templates/lists/curate.html:24
 msgid "You're all set!"
-msgstr ""
+msgstr "Все готово!"
 
 #: bookwyrm/templates/lists/curate.html:45
 #: bookwyrm/templates/lists/list.html:93
 #, python-format
 msgid "<a href=\"%(user_path)s\">%(username)s</a> says:"
-msgstr ""
+msgstr "<a href=\"%(user_path)s\">%(username)s</a> пише:"
 
 #: bookwyrm/templates/lists/curate.html:55
 msgid "Suggested by"
-msgstr ""
+msgstr "Запропоновано"
 
 #: bookwyrm/templates/lists/curate.html:77
 msgid "Discard"
-msgstr ""
+msgstr "Скасувати"
 
 #: bookwyrm/templates/lists/delete_list_modal.html:4
 msgid "Delete this list?"
-msgstr ""
+msgstr "Видалити цей список?"
 
 #: bookwyrm/templates/lists/edit_form.html:5
 #: bookwyrm/templates/lists/layout.html:23
 msgid "Edit List"
-msgstr ""
+msgstr "Редагувати Список"
 
 #: bookwyrm/templates/lists/embed-list.html:8
 #, python-format
 msgid "%(list_name)s, a list by %(owner)s"
-msgstr ""
+msgstr "%(list_name)s, список від %(owner)s"
 
 #: bookwyrm/templates/lists/embed-list.html:20
 #, python-format
@@ -3524,7 +3524,7 @@ msgstr ""
 #: bookwyrm/templates/moved.html:27
 #, python-format
 msgid "<strong>You have moved your account</strong> to <a href=\"%(moved_to)s\">%(username)s</a>"
-msgstr "<strong>Ви перемістили свій обліковий запис</strong> на <a href=\"%(moved_to)s\">%(username)s</a>"
+msgstr "<strong>Ви перемістили свій акаунт</strong> на <a href=\"%(moved_to)s\">%(username)s</a>"
 
 #: bookwyrm/templates/moved.html:32
 msgid "You can undo the move to restore full functionality, but some followers may have already unfollowed this account."
