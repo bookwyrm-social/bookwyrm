@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-11-02 21:32+0000\n"
-"PO-Revision-Date: 2023-11-02 22:29\n"
+"PO-Revision-Date: 2023-12-30 22:25\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Catalan\n"
 "Language: ca\n"
@@ -72,7 +72,7 @@ msgstr "La data de finalització de la lectura no pot ser en el futur."
 
 #: bookwyrm/forms/landing.py:38
 msgid "Username or password are incorrect"
-msgstr "Nom d'usuari o contrasenya incorrectes"
+msgstr "El nom d'usuari o la contrasenya són incorrectes"
 
 #: bookwyrm/forms/landing.py:57
 msgid "User with this username already exists"
@@ -84,7 +84,7 @@ msgstr "Ja existeix un usuari amb aquesta adreça electrònica."
 
 #: bookwyrm/forms/landing.py:124 bookwyrm/forms/landing.py:132
 msgid "Incorrect code"
-msgstr "Codi incorrecte"
+msgstr "El codi no és correcte"
 
 #: bookwyrm/forms/links.py:36
 msgid "This domain is blocked. Please contact your administrator if you think this is an error."
@@ -701,8 +701,8 @@ msgstr "… i la més llarga"
 #, python-format
 msgid "%(display_name)s set a goal of reading %(goal)s book in %(year)s,<br /> and achieved %(goal_percent)s%% of that goal"
 msgid_plural "%(display_name)s set a goal of reading %(goal)s books in %(year)s,<br /> and achieved %(goal_percent)s%% of that goal"
-msgstr[0] "%(display_name)s havia fixat com a objectiu llegir %(goal)s llibre l'any %(year)s,<br /> i ha assolit llegir %(goal_percent)s%% d'aquell objectiu"
-msgstr[1] "%(display_name)s havia fixat com a objectiu llegir %(goal)s llibres l'any %(year)s,<br /> i ha assolit llegir %(goal_percent)s d'aquell objectiu"
+msgstr[0] "%(display_name)s havia fixat com a objectiu llegir %(goal)s llibres l'any %(year)s,<br /> i ha assolit llegir %(goal_percent)s%% d'aquell objectiu"
+msgstr[1] "%(display_name)s s'havia fixat com a objectiu llegir %(goal)s llibres l'any %(year)s,<br /> i ha assolit llegir un %(goal_percent)s%% d'aquell objectiu"
 
 #: bookwyrm/templates/annual_summary/layout.html:211
 msgid "Way to go!"
@@ -1114,7 +1114,7 @@ msgstr "Carregueu una portada:"
 #: bookwyrm/templates/book/cover_add_modal.html:23
 #: bookwyrm/templates/book/edit/edit_book_form.html:250
 msgid "Load cover from URL:"
-msgstr ""
+msgstr "Carregueu portada desde una url:"
 
 #: bookwyrm/templates/book/cover_show_modal.html:6
 msgid "Book cover preview"
@@ -1490,7 +1490,7 @@ msgstr "Enllaços a fitxers"
 
 #: bookwyrm/templates/book/file_links/links.html:9
 msgid "Get a copy"
-msgstr "Obtingeu una còpia"
+msgstr "Obtingueu-ne una còpia"
 
 #: bookwyrm/templates/book/file_links/links.html:47
 msgid "No links available"
@@ -2805,8 +2805,8 @@ msgstr "Fitxer CSV no vàlid"
 #, python-format
 msgid "Currently, you are allowed to import %(display_size)s books every %(import_limit_reset)s day."
 msgid_plural "Currently, you are allowed to import %(display_size)s books every %(import_limit_reset)s days."
-msgstr[0] ""
-msgstr[1] "Actualment, se't permet la importació de %(import_size_limit)s llibres cada %(import_limit_reset)s dies."
+msgstr[0] "Actualment se us permet la importació de %(display_size)s llibres cada %(import_limit_reset)s dia."
+msgstr[1] "Actualment se us permet la importació de %(display_size)s llibres cada %(import_limit_reset)s dies."
 
 #: bookwyrm/templates/import/import.html:27
 #, python-format
@@ -3226,7 +3226,7 @@ msgstr "contrasenya"
 
 #: bookwyrm/templates/layout.html:136
 msgid "Show/Hide password"
-msgstr ""
+msgstr "Mostra/Oculta la contrasenya"
 
 #: bookwyrm/templates/layout.html:150
 msgid "Join"
@@ -3498,15 +3498,15 @@ msgstr "Llistes desades"
 #: bookwyrm/templates/moved.html:27
 #, python-format
 msgid "<strong>You have moved your account</strong> to <a href=\"%(moved_to)s\">%(username)s</a>"
-msgstr ""
+msgstr "<strong>Has mogut el teu compte</strong> a <a href=\"%(moved_to)s\">%(username)s</a>"
 
 #: bookwyrm/templates/moved.html:32
 msgid "You can undo the move to restore full functionality, but some followers may have already unfollowed this account."
-msgstr ""
+msgstr "Pots desfer el trasllat per restaurar totes les funcionalitats, però alguns seguidors potser ja han deixat de seguir aquest compte."
 
 #: bookwyrm/templates/moved.html:42 bookwyrm/templates/shelf/shelf.html:32
 msgid "Undo move"
-msgstr ""
+msgstr "Desfés el trasllat"
 
 #: bookwyrm/templates/moved.html:46 bookwyrm/templates/user_menu.html:82
 msgid "Log out"
@@ -3766,12 +3766,12 @@ msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> us ha mencionat e
 #: bookwyrm/templates/notifications/items/move_user.html:18
 #, python-format
 msgid "%(related_user)s has moved to <a href=\"%(related_user_moved_to)s\">%(username)s</a>"
-msgstr ""
+msgstr "%(related_user)s s'ha mogut a <a href=\"%(related_user_moved_to)s\">%(username)s</a>"
 
 #: bookwyrm/templates/notifications/items/move_user.html:25
 #, python-format
 msgid "%(related_user)s has undone their move"
-msgstr ""
+msgstr "%(related_user)s ha desfet el seu canvi"
 
 #: bookwyrm/templates/notifications/items/remove.html:17
 #, python-format
@@ -4034,42 +4034,42 @@ msgstr "Configura 2FA"
 #: bookwyrm/templates/preferences/move_user.html:7
 #: bookwyrm/templates/preferences/move_user.html:39
 msgid "Move Account"
-msgstr ""
+msgstr "Moure al compte"
 
 #: bookwyrm/templates/preferences/alias_user.html:7
 #: bookwyrm/templates/preferences/alias_user.html:34
 msgid "Create Alias"
-msgstr ""
+msgstr "Crea un àlies"
 
 #: bookwyrm/templates/preferences/alias_user.html:12
 msgid "Add another account as an alias"
-msgstr ""
+msgstr "Afegeix un altre compte com a àlies"
 
 #: bookwyrm/templates/preferences/alias_user.html:16
 msgid "Marking another account as an alias is required if you want to move that account to this one."
-msgstr ""
+msgstr "Per a moure un altre compte sobre aquest, heu de marcar abans el primer com a àlies."
 
 #: bookwyrm/templates/preferences/alias_user.html:19
 msgid "This is a reversable action and will not change the functionality of this account."
-msgstr ""
+msgstr "Aquesta acció és reversible i no alterarà la funcionalitat d'aquest compte."
 
 #: bookwyrm/templates/preferences/alias_user.html:25
 msgid "Enter the username for the account you want to add as an alias e.g. <em>user@example.com </em>:"
-msgstr ""
+msgstr "Entreu el nom d'usuari del compte que voleu afegir com a àlies. Per exemple, <em>usuari@exemple.com</em>:"
 
 #: bookwyrm/templates/preferences/alias_user.html:30
 #: bookwyrm/templates/preferences/move_user.html:35
 msgid "Confirm your password:"
-msgstr ""
+msgstr "Confirmeu contrasenya:"
 
 #: bookwyrm/templates/preferences/alias_user.html:39
 #: bookwyrm/templates/preferences/layout.html:28
 msgid "Aliases"
-msgstr ""
+msgstr "Àlies"
 
 #: bookwyrm/templates/preferences/alias_user.html:49
 msgid "Remove alias"
-msgstr ""
+msgstr "Esborra l'àlies"
 
 #: bookwyrm/templates/preferences/blocks.html:4
 #: bookwyrm/templates/preferences/blocks.html:7
@@ -4227,7 +4227,7 @@ msgstr "Compte"
 
 #: bookwyrm/templates/preferences/layout.html:32
 msgid "Move  Account"
-msgstr ""
+msgstr "Moure al compte"
 
 #: bookwyrm/templates/preferences/layout.html:39
 msgid "Data"
@@ -4243,26 +4243,28 @@ msgstr "Relacions"
 
 #: bookwyrm/templates/preferences/move_user.html:12
 msgid "Migrate account to another server"
-msgstr ""
+msgstr "Trasllada el compte a un altre servidor"
 
 #: bookwyrm/templates/preferences/move_user.html:16
 msgid "Moving your account will notify all your followers and direct them to follow the new account."
-msgstr ""
+msgstr "El trasllat del compte es notificarà a tots els vostres seguidors i els convidarà a seguir-vos al compte nou."
 
 #: bookwyrm/templates/preferences/move_user.html:19
 #, python-format
 msgid "\n"
 "                <strong>%(user)s</strong> will be marked as moved and will not be discoverable or usable unless you undo the move.\n"
 "                "
-msgstr ""
+msgstr "\n"
+"                <strong>%(user)s</strong> es marcarà com a traslladat i no es podrà localitzar o utilitzar si no en desfeu el trasllat.\n"
+"                "
 
 #: bookwyrm/templates/preferences/move_user.html:25
 msgid "Remember to add this user as an alias of the target account before you try to move."
-msgstr ""
+msgstr "Recordeu afegir aquest usuari com a àlies del compte destí abans de fer el trasllat."
 
 #: bookwyrm/templates/preferences/move_user.html:30
 msgid "Enter the username for the account you want to move to e.g. <em>user@example.com </em>:"
-msgstr ""
+msgstr "Entreu el nom d'usuari del compte que voleu afegir com a àlies. Per exemple, <em>usuari@exemple.com</em>:"
 
 #: bookwyrm/templates/reading_progress/finish.html:5
 #, python-format
@@ -4661,7 +4663,7 @@ msgstr "Estat del Celery"
 
 #: bookwyrm/templates/settings/celery.html:14
 msgid "You can set up monitoring to check if Celery is running by querying:"
-msgstr ""
+msgstr "Podeu configurar la supervisió per revisar si el Celery s'està executant:"
 
 #: bookwyrm/templates/settings/celery.html:22
 msgid "Queues"
@@ -4673,7 +4675,7 @@ msgstr "Reproduccions"
 
 #: bookwyrm/templates/settings/celery.html:32
 msgid "Broadcast"
-msgstr ""
+msgstr "Difondre"
 
 #: bookwyrm/templates/settings/celery.html:38
 msgid "Inbox"
@@ -5777,7 +5779,7 @@ msgstr "Instància remota"
 #: bookwyrm/templates/settings/users/user_admin.html:82
 #: bookwyrm/templates/settings/users/user_info.html:29
 msgid "Moved"
-msgstr ""
+msgstr "Mogut"
 
 #: bookwyrm/templates/settings/users/user_admin.html:93
 msgid "Deleted"
@@ -5996,11 +5998,11 @@ msgstr "Edita el prestatge"
 
 #: bookwyrm/templates/shelf/shelf.html:25
 msgid "You have have moved to"
-msgstr ""
+msgstr "Us heu traslladat a"
 
 #: bookwyrm/templates/shelf/shelf.html:28
 msgid "You can undo this move to restore full functionality, but some followers may have already unfollowed this account."
-msgstr ""
+msgstr "Podeu desfer aquest trasllat per recuperar totes les funcionalitats, però alguns seguidors poden haver deixat de seguir aquest compte."
 
 #: bookwyrm/templates/shelf/shelf.html:39
 #: bookwyrm/templates/user/relationships/followers.html:18
@@ -6361,7 +6363,7 @@ msgstr "%(username)s ha llegit <a href=\"%(path)s\">%(read_count)s de %(goal_cou
 
 #: bookwyrm/templates/snippets/move_user_buttons.html:10
 msgid "Follow at new account"
-msgstr ""
+msgstr "Seguiu al compte nou"
 
 #: bookwyrm/templates/snippets/page_text.html:8
 #, python-format
@@ -6725,7 +6727,7 @@ msgstr "Grups: %(username)s"
 
 #: bookwyrm/templates/user/layout.html:50
 msgid "has moved to"
-msgstr ""
+msgstr "s'ha traslladat a"
 
 #: bookwyrm/templates/user/layout.html:64
 msgid "Follow Requests"
@@ -6828,7 +6830,7 @@ msgstr "Encara no hi ha activitats."
 msgid "%(display_count)s follower"
 msgid_plural "%(display_count)s followers"
 msgstr[0] "%(display_count)s seguidor"
-msgstr[1] ""
+msgstr[1] "%(display_count)s seguidors"
 
 #: bookwyrm/templates/user/user_preview.html:31
 #, python-format
