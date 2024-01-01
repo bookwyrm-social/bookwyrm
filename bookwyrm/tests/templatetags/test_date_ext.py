@@ -77,3 +77,9 @@ class PartialDateTags(TestCase):
         self.assertEqual("today", date_ext.naturalday_partial(today))
         self.assertEqual("today", date_ext.naturalday_partial(today_date))
         self.assertEqual("today", date_ext.naturalday_partial(today_exact))
+
+        # dates with missing parts can't
+        today_year = YearParts.from_datetime(today)
+        today_month = MonthParts.from_datetime(today)
+        self.assertEqual(str(today.year), date_ext.naturalday_partial(today_year))
+        self.assertEqual(str(today.year), date_ext.naturalday_partial(today_month, "Y"))
