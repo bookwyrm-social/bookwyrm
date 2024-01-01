@@ -17,7 +17,7 @@ def naturalday_partial(date, arg=None):
     """
     django_formats = ("DATE_FORMAT", "SHORT_DATE_FORMAT", "YEAR_MONTH_FORMAT")
     if not isinstance(date, PartialDate):
-        return defaultfilters.date(date, arg)
+        return naturalday(date, arg)
     if arg is None:
         arg = "DATE_FORMAT"
     if date.has_day:
