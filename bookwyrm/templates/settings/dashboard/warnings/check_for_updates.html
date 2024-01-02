@@ -8,14 +8,14 @@
 
     <p class="pr-2">
         {% blocktrans trimmed with current=current_version available=available_version %}
-            Check for available version updates? (Recommended)
+            Would you like to automatically check for new BookWyrm releases? (recommended)
         {% endblocktrans %}
     </p>
 
     {{ schedule_form.every.as_hidden }}
     {{ schedule_form.period.as_hidden }}
 
-    <button class="button is-small" type="submit">{% trans "Confirm" %}</button>
+    <button class="button is-small" type="submit">{% trans "Schedule checks" %}</button>
 </form>
 
 {% endblock %}

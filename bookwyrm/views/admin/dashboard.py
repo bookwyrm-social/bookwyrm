@@ -77,6 +77,8 @@ class Dashboard(View):
     def post(self, request):
         """Create a schedule task to check for updates"""
         schedule_form = forms.IntervalScheduleForm(request.POST)
+        if not schedule_form.is_valid():
+            raise schedule_form.ValidationError(schedule_form.errors)
 
         with transaction.atomic():
             schedule, _ = IntervalSchedule.objects.get_or_create(
