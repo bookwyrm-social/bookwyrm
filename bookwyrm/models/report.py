@@ -52,6 +52,15 @@ class Report(ActivityMixin, BookWyrmModel):
     )
     links = fields.ManyToManyField("Link", blank=True)
     resolved = models.BooleanField(default=False)
+    allow_broadcast = models.BooleanField(default=False)
+
+    def broadcast(self, activity, sender, *args, **kwargs):
+        """only need to send an activity for remote offenders"""
+        # don't try to broadcast if the reporter doesn't want you to,
+        # or if the reported user is local
+        if self.reported_user.local or not self.allow_broadcast:
+            return
+        super().broadcast(activity, sender, *args, **kwargs)
 
     def get_recipients(self, software=None):
         """Send this to the public inbox of the offending instance"""

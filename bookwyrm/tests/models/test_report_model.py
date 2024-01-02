@@ -40,7 +40,8 @@ class Relationship(TestCase):
             note="oh no bad",
             reported_user=self.another_local_user,
         )
+
         activity = report.to_activity()
-        self.assertEqual(activity.type, "Flag")
-        self.assertEqual(activity.actor, self.local_user)
-        self.assertEqual(activity.to, self.another_local_user.remote_id)
+        self.assertEqual(activity["type"], "Flag")
+        self.assertEqual(activity["actor"], self.local_user.remote_id)
+        self.assertEqual(activity["to"], self.another_local_user.remote_id)
