@@ -1,6 +1,8 @@
 {% extends 'settings/dashboard/warnings/layout.html' %}
 {% load i18n %}
 
+{% block warning_link %}#{% endblock %}
+
 {% block warning_text %}
 
 <form name="check-version" method="POST" action="{% url 'settings-dashboard' %}" class="is-flex is-align-items-center">
