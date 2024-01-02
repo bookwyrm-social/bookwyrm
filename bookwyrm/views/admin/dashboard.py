@@ -13,7 +13,7 @@ from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views import View
-from django_celery_beat.models import PeriodicTask
+from django_celery_beat.models import PeriodicTask, IntervalSchedule
 
 from csp.decorators import csp_update
 
@@ -79,7 +79,9 @@ class Dashboard(View):
         schedule_form = forms.IntervalScheduleForm(request.POST)
 
         with transaction.atomic():
-            schedule = schedule_form.save(request)
+            schedule, _ = IntervalSchedule.objects.get_or_create(
+                **schedule_form.cleaned_data
+            )
             PeriodicTask.objects.get_or_create(
                 interval=schedule,
                 name="check-for-updates",
