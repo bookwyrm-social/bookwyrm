@@ -128,6 +128,23 @@ def id_to_username(user_id):
     return value
 
 
+@register.filter(name="get_file_size")
+def get_file_size(file):
+    """display the size of a file in human readable terms"""
+
+    try:
+        raw_size = os.stat(file.path).st_size
+        if raw_size < 1024:
+            return f"{raw_size} bytes"
+        if raw_size < 1024**2:
+            return f"{raw_size/1024:.2f} KB"
+        if raw_size < 1024**3:
+            return f"{raw_size/1024**2:.2f} MB"
+        return f"{raw_size/1024**3:.2f} GB"
+    except Exception:  # pylint: disable=broad-except
+        return ""
+
+
 @register.filter(name="get_user_permission")
 def get_user_permission(user):
     """given a user, return their permission level"""

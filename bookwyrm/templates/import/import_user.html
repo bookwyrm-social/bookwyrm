@@ -1,0 +1,222 @@
+{% extends 'preferences/layout.html' %}
+{% load i18n %}
+{% load humanize %}
+
+{% block title %}{% trans "Import BookWyrm Account" %}{% endblock %}
+{% block header %}{% trans "Import BookWyrm Account" %}{% endblock %}
+
+{% block panel %}
+<div class="block">
+
+    {% if invalid %}
+    <div class="notification is-danger">
+        {% trans "Not a valid import file" %}
+    </div>
+    {% endif %}
+    <p class="notification is-warning">
+        {% spaceless %}
+        {% trans "If you wish to migrate any statuses (comments, reviews, or quotes) you must either set this account as an <strong>alias</strong> of the one you are migrating from, or <strong>move</strong> that account to this one, before you import your user data." %}
+        {% endspaceless %}
+    </p>
+    {% if not site.imports_enabled %}
+    <div class="box notification has-text-centered is-warning m-6 content">
+        <p class="mt-5">
+            <span class="icon icon-warning is-size-2" aria-hidden="true"></span>
+        </p>
+        <p class="mb-5">
+            {% trans "Imports are temporarily disabled; thank you for your patience." %}
+        </p>
+    </div>
+    {% elif next_available %}
+        <div class="notification is-warning">
+            <p>{% blocktrans %}Currently you are allowed to import one user every {{ user_import_hours }} hours.{% endblocktrans %}</p>
+            <p>{% blocktrans %}You will next be able to import a user file at {{ next_available }}{% endblocktrans %}</p>
+        </div>
+    {% else %}
+    <form class="box content" name="import-user" action="/user-import" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class="block">
+            <div class="notification">
+                <h2 class="is-size-5">{% trans "Step 1:" %}</h2>
+                <p>
+                    {% blocktrans trimmed %}
+                    Select an export file generated from another BookWyrm account. The file format should be <code>.tar.gz</code>.
+                    {% endblocktrans %}
+                </p>
+            </div>
+            <div class="block m-5">
+                <label class="label" for="id_archive_file">{% trans "Data file:" %}</label>
+                {{ import_form.archive_file }}
+            </div>
+        </div>
+
+        <hr aria-hidden="true">
+
+        <div class="block">
+            <div class="notification">
+                <h2 class="is-size-5">{% trans "Step 2:" %}</h2>
+                <p>
+                    {% blocktrans trimmed %}
+                    Deselect any checkboxes for data you do not wish to include in your import.
+                    {% endblocktrans %}
+                </p>
+                <p class="block">Unless specified below, importing will not delete any data. Imported data will be <strong>added if it does not already exist</strong>. For example, if you have an existing list with the same name as an imported list, the existing list settings will not change, any new list items will be added, and no existing list items will be deleted.</p>
+            </div>
+            <div class="block m-5 columns">
+                <div class="column is-half">
+                    <div class="field">
+                        <label class="label mb-0">
+                            <input type="checkbox" name="include_user_profile" checked aria-describedby="desc_include_user_profile">
+                            {% trans "User profile" %}
+                        </label>
+                        <p id="desc_include_user_profile">
+                        {% trans "Overwrites display name, summary, and avatar" %}
+                        </p>
+                    </div>
+                    <div class="field">
+                        <label class="label mb-0">
+                            <input type="checkbox" name="include_user_settings" checked aria-describedby="desc_include_user_settings">
+                            {% trans "User settings" %}
+                        </label>
+                        <div id="desc_include_user_settings">
+                            {% trans "Overwrites:" %}
+                            <ul class="mt-0">
+                                <li>
+                                    {% trans "Whether manual approval is required for other users to follow your account" %}
+                                </li>
+                                <li>
+                                    {% trans "Whether following/followers are shown on your profile" %}
+                                </li>
+                                <li>
+                                    {% trans "Whether your reading goal is shown on your profile" %}
+                                </li>
+                                <li>
+                                    {% trans "Whether you see user follow suggestions" %}
+                                </li>
+                                <li>
+                                    {% trans "Whether your account is suggested to others" %}
+                                </li>
+                                <li>
+                                    {% trans "Your timezone" %}
+                                </li>
+                                <li>
+                                    {% trans "Your default post privacy setting" %}
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label class="label">
+                            <input type="checkbox" name="include_follows" checked>
+                            {% trans "Followers and following" %}
+                        </label>
+                    </div>
+                    <label class="label">
+                        <input type="checkbox" name="include_blocks" checked> {% trans "User blocks" %}
+                    </label>
+                </div>
+                <div class="column is-half">
+                    <div class="field">
+                        <label class="label mb-0">
+                            <input type="checkbox" name="include_goals" checked aria-describedby="desc_include_goals">
+                            {% trans "Reading goals" %}
+                        </label>
+                        <p id="desc_include_goals">
+                            {% trans "Overwrites reading goals for all years listed in the import file" %}
+                        </p>
+                    </div>
+                    <label class="label">
+                        <input type="checkbox" name="include_shelves" checked> {% trans "Shelves" %}
+                    </label>
+                    <label class="label">
+                        <input type="checkbox" name="include_readthroughs" checked> {% trans "Reading history" %}
+                    </label>
+                    <label class="label">
+                        <input type="checkbox" name="include_reviews" checked> {% trans "Book reviews" %}
+                    </label>
+                    <label class="label">
+                        <input type="checkbox" name="include_quotations" checked> {% trans "Quotations" %}
+                    </label>
+                    <label class="label">
+                        <input type="checkbox" name="include_comments" checked> {% trans "Comments about books" %}
+                    </label>
+                    <label class="label">
+                        <input type="checkbox" name="include_lists" checked> {% trans "Book lists" %}
+                    </label>
+                    <label class="label">
+                        <input type="checkbox" name="include_saved_lists" checked> {% trans "Saved lists" %}
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        {% if not import_limit_reset and not import_size_limit or allowed_imports > 0 %}
+            <button class="button is-primary" type="submit">{% trans "Import" %}</button>
+        {% else %}
+            <button class="button is-primary is-disabled" type="submit">{% trans "Import" %}</button>
+            <p>{% trans "You've reached the import limit." %}</p>
+        {% endif%}
+    </form>
+    {% endif %}
+
+</div>
+
+<div class="content block">
+    <h2 class="title">{% trans "Recent Imports" %}</h2>
+    <div class="table-container">
+        <table class="table is-striped is-fullwidth">
+            <tr>
+                <th>
+                    {% trans "Date Created" %}
+                </th>
+                <th>
+                    {% trans "Last Updated" %}
+                </th>
+                <th>
+                    {% trans "Status" %}
+                </th>
+            </tr>
+            {% if not jobs %}
+            <tr>
+                <td colspan="4">
+                    <em>{% trans "No recent imports" %}</em>
+                </td>
+            </tr>
+            {% endif %}
+            {% for job in jobs %}
+            <tr>
+                <td>
+                    <p>{{ job.created_date }}</p>
+                </td>
+                <td>{{ job.updated_date }}</td>
+                <td>
+                    <span
+                        {% if job.status == "stopped" or job.status == "failed" %}
+                        class="tag is-danger"
+                        {% elif job.status == "pending" %}
+                        class="tag is-warning"
+                        {% elif job.complete %}
+                        class="tag"
+                        {% else %}
+                        class="tag is-success"
+                        {% endif %}
+                    >
+                        {% if job.status %}
+                        {{ job.status }}
+                            {{ job.status_display }}
+                        {% elif job.complete %}
+                            {% trans "Complete" %}
+                        {% else %}
+                            {% trans "Active" %}
+                        {% endif %}
+                    </span>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    {% include 'snippets/pagination.html' with page=jobs path=request.path %}
+</div>
+{% endblock %}

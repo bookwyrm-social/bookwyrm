@@ -1,0 +1,138 @@
+{% extends 'preferences/layout.html' %}
+{% load i18n %}
+{% load utilities %}
+
+{% block title %}{% trans "Export BookWyrm Account" %}{% endblock %}
+
+{% block header %}
+{% trans "Export BookWyrm Account" %}
+{% endblock %}
+
+{% block panel %}
+<div class="block content">
+    <div class="block content">
+        <p> {% trans "You can create an export file here. This will allow you to migrate your data to another BookWyrm account." %}</p>
+    </div>
+        <div class="block mx-5 columns">
+            {% blocktrans trimmed %}
+            <div class="column is-half">
+                <h2 class="is-size-5">Your file will include:</h2>
+                <ul>
+                    <li>User profile</li>
+                    <li>Most user settings</li>
+                    <li>Reading goals</li>
+                    <li>Shelves</li>
+                    <li>Reading history</li>
+                    <li>Book reviews</li>
+                    <li>Statuses</li>
+                    <li>Your own lists and saved lists</li>
+                    <li>Which users you follow and block</li>
+                </ul>
+            </div>
+            <div class="column is-half">
+                <h2 class="is-size-5">Your file will not include:</h2>
+                <ul>
+                    <li>Direct messages</li>
+                    <li>Replies to your statuses</li>
+                    <li>Groups</li>
+                    <li>Favorites</li>
+                </ul>
+            </div>
+            {% endblocktrans %}
+        </div>
+        <p class="block">{% trans "In your new BookWyrm account can choose what to import: you will not have to import everything that is exported." %}</p>
+        <p class="notification is-warning">
+            {% spaceless %}
+            {% trans "If you wish to migrate any statuses (comments, reviews, or quotes) you must either set the account you are moving to as an <strong>alias</strong> of this one, or <strong>move</strong> this account to the new account, before you import your user data." %}
+            {% endspaceless %}
+        </p>
+    {% if next_available %}
+    <p class="notification is-warning">
+        {% blocktrans trimmed %}
+        You will be able to create a new export file at {{ next_available }}
+        {% endblocktrans %}
+    </p>
+    {% else %}
+    <form name="export" method="POST" href="{% url 'prefs-user-export' %}">
+        {% csrf_token %}
+        <button type="submit" class="button">
+            <span class="icon icon-download" aria-hidden="true"></span>
+            <span>{% trans "Create user export file" %}</span>
+        </button>
+    </form>
+    {% endif %}
+
+</div>
+<div class="content block">
+    <h2 class="title">{% trans "Recent Exports" %}</h2>
+    <p class="content">
+    {% trans "User export files will show 'complete' once ready. This may take a little while. Click the link to download your file." %}
+    </p>
+    <div class="table-container">
+        <table class="table is-striped is-fullwidth">
+            <tr>
+                <th>
+                    {% trans "Date" %}
+                </th>
+                <th>
+                    {% trans "Status" %}
+                </th>
+                <th colspan="2">
+                    {% trans "Size" %}
+                </th>
+            </tr>
+            {% if not jobs %}
+            <tr>
+                <td colspan="4">
+                    <em>{% trans "No recent imports" %}</em>
+                </td>
+            </tr>
+            {% endif %}
+            {% for job in jobs %}
+            <tr>
+                <td>{{ job.updated_date }}</td>
+                <td>
+                    <span
+                        {% if job.status == "stopped" or job.status == "failed" %}
+                        class="tag is-danger"
+                        {% elif job.status == "pending" %}
+                        class="tag is-warning"
+                        {% elif job.complete %}
+                        class="tag"
+                        {% else %}
+                        class="tag is-success"
+                        {% endif %}
+                    >
+                        {% if job.status %}
+                        {{ job.status }}
+                            {{ job.status_display }}
+                        {% elif job.complete %}
+                            {% trans "Complete" %}
+                        {% else %}
+                            {% trans "Active" %}
+                        {% endif %}
+                    </span>
+                </td>
+                <td>
+                    <span>{{ job.export_data|get_file_size }}</span>
+                </td>
+                <td>
+                    {% if job.complete and not job.status == "stopped" and not job.status == "failed" %}
+                    <p>
+                        <a download="" href="/preferences/user-export/{{ job.task_id }}">
+                            <span class="icon icon-download" aria-hidden="true"></span>
+                            <span class="is-hidden-mobile">
+                                {% trans "Download your export" %}
+                            </span>
+                        </a>
+                    </p>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    {% include 'snippets/pagination.html' with page=jobs path=request.path %}
+</div>
+{% endblock %}

@@ -329,6 +329,11 @@ urlpatterns = [
         name="settings-imports-complete",
     ),
     re_path(
+        r"^settings/user-imports/(?P<import_id>\d+)/complete/?$",
+        views.set_user_import_completed,
+        name="settings-user-import-complete",
+    ),
+    re_path(
         r"^settings/imports/disable/?$",
         views.disable_imports,
         name="settings-imports-disable",
@@ -342,6 +347,11 @@ urlpatterns = [
         r"^settings/imports/set-limit/?$",
         views.set_import_size_limit,
         name="settings-imports-set-limit",
+    ),
+    re_path(
+        r"^settings/user-imports/set-limit/?$",
+        views.set_user_import_limit,
+        name="settings-user-imports-set-limit",
     ),
     re_path(
         r"^settings/celery/?$", views.CeleryStatus.as_view(), name="settings-celery"
@@ -408,6 +418,7 @@ urlpatterns = [
     re_path(r"^search/?$", views.Search.as_view(), name="search"),
     # imports
     re_path(r"^import/?$", views.Import.as_view(), name="import"),
+    re_path(r"^user-import/?$", views.UserImport.as_view(), name="user-import"),
     re_path(
         r"^import/(?P<job_id>\d+)/?$",
         views.ImportStatus.as_view(),
@@ -605,6 +616,16 @@ urlpatterns = [
         name="prompt-2fa",
     ),
     re_path(r"^preferences/export/?$", views.Export.as_view(), name="prefs-export"),
+    re_path(
+        r"^preferences/user-export/?$",
+        views.ExportUser.as_view(),
+        name="prefs-user-export",
+    ),
+    path(
+        "preferences/user-export/<archive_id>",
+        views.ExportArchive.as_view(),
+        name="prefs-export-file",
+    ),
     re_path(r"^preferences/move/?$", views.MoveUser.as_view(), name="prefs-move"),
     re_path(r"^preferences/alias/?$", views.AliasUser.as_view(), name="prefs-alias"),
     re_path(
