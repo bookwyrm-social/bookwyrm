@@ -1,5 +1,4 @@
 """ flagged for moderation """
-from django.core.exceptions import PermissionDenied
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -30,15 +29,19 @@ class Report(ActivityMixin, BookWyrmModel):
 
     activity_serializer = activitypub.Flag
 
-    reporter = fields.ForeignKey(
+    user = fields.ForeignKey(
         "User",
-        related_name="reporter",
         on_delete=models.PROTECT,
         activitypub_field="actor",
     )
     note = fields.TextField(null=True, blank=True, activitypub_field="content")
-    user = fields.ForeignKey(
-        "User", on_delete=models.PROTECT, null=True, blank=True, activitypub_field="to"
+    reported_user = fields.ForeignKey(
+        "User",
+        related_name="reported_user",
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        activitypub_field="to",
     )
     status = fields.ForeignKey(
         "Status",
@@ -50,11 +53,11 @@ class Report(ActivityMixin, BookWyrmModel):
     links = fields.ManyToManyField("Link", blank=True)
     resolved = models.BooleanField(default=False)
 
-    def raise_not_editable(self, viewer):
-        """instead of user being the owner field, it's reporter"""
-        if self.reporter == viewer or viewer.has_perm("bookwyrm.moderate_user"):
-            return
-        raise PermissionDenied()
+    def get_recipients(self, software=None):
+        """Send this to the public inbox of the offending instance"""
+        if self.user.local:
+            return None
+        return [self.user.shared_inbox or self.user.inbox]
 
     def get_remote_id(self):
         return f"https://{DOMAIN}/settings/reports/{self.id}"

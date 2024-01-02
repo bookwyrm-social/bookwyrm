@@ -27,7 +27,7 @@
         </summary>
         <div class="box">
             {% trans "Update on your report:" as dm_template %}
-            {% include 'snippets/create_status/status.html' with type="direct" uuid=1 mention=report.reporter prepared_content=dm_template no_script=True %}
+            {% include 'snippets/create_status/status.html' with type="direct" uuid=1 mention=report.user prepared_content=dm_template no_script=True %}
         </div>
     </details>
 </div>
@@ -56,10 +56,10 @@
 </div>
 {% endif %}
 
-{% if report.user %}
-{% include 'settings/users/user_info.html' with user=report.user %}
+{% if report.reported_user %}
+{% include 'settings/users/user_info.html' with reported_user=report.reported_user %}
 
-{% include 'settings/users/user_moderation_actions.html' with user=report.user %}
+{% include 'settings/users/user_moderation_actions.html' with reported_user=report.reported_user %}
 {% endif %}
 
 <div class="block content">
@@ -70,8 +70,8 @@
             <li class="mb-2">
                 <div class="is-flex">
                     <p class="mb-0 is-flex-grow-1">
-                        {% blocktrans trimmed with user=report.reporter|username user_link=report.reporter.local_path %}
-                        <a href="{{ user_link }}">{{ user}}</a> opened this report
+                        {% blocktrans trimmed with reported_user=report.user|username user_link=report.user.local_path %}
+                        <a href="{{ user_link }}">{{ reported_user}}</a> opened this report
                         {% endblocktrans %}
                     </p>
                     <span class="tag">{{ report.created_date }}</span>
@@ -83,12 +83,12 @@
                 <div class="is-flex">
                     <p class="mb-0 is-flex-grow-1">
                         {% if comment.action_type == "comment" %}
-                            {% blocktrans trimmed with user=comment.user|username user_link=comment.user.local_path %}
-                            <a href="{{ user_link }}">{{ user}}</a> commented on this report:
+                            {% blocktrans trimmed with reported_user=comment.reported_user|username user_link=comment.reported_user.local_path %}
+                            <a href="{{ user_link }}">{{ reported_user}}</a> commented on this report:
                             {% endblocktrans %}
                         {% else %}
-                            {% blocktrans trimmed with user=comment.user|username user_link=comment.user.local_path %}
-                            <a href="{{ user_link }}">{{ user}}</a> took an action on this report:
+                            {% blocktrans trimmed with reported_user=comment.reported_user|username user_link=comment.reported_user.local_path %}
+                            <a href="{{ user_link }}">{{ reported_user}}</a> took an action on this report:
                             {% endblocktrans %}
                             <span class="has-text-weight-bold">
                                 {{ comment.get_action_type_display }}

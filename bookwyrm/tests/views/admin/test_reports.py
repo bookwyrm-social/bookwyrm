@@ -61,7 +61,7 @@ class ReportViews(TestCase):
         view = views.ReportsAdmin.as_view()
         request = self.factory.get("")
         request.user = self.local_user
-        models.Report.objects.create(reporter=self.local_user, user=self.rat)
+        models.Report.objects.create(user=self.local_user, reported_user=self.rat)
 
         result = view(request)
         self.assertIsInstance(result, TemplateResponse)
@@ -73,7 +73,9 @@ class ReportViews(TestCase):
         view = views.ReportAdmin.as_view()
         request = self.factory.get("")
         request.user = self.local_user
-        report = models.Report.objects.create(reporter=self.local_user, user=self.rat)
+        report = models.Report.objects.create(
+            user=self.local_user, reported_user=self.rat
+        )
 
         result = view(request, report.id)
 
@@ -86,7 +88,9 @@ class ReportViews(TestCase):
         view = views.ReportAdmin.as_view()
         request = self.factory.post("", {"note": "hi"})
         request.user = self.local_user
-        report = models.Report.objects.create(reporter=self.local_user, user=self.rat)
+        report = models.Report.objects.create(
+            user=self.local_user, reported_user=self.rat
+        )
 
         view(request, report.id)
 
@@ -98,7 +102,9 @@ class ReportViews(TestCase):
 
     def test_resolve_report(self):
         """toggle report resolution status"""
-        report = models.Report.objects.create(reporter=self.local_user, user=self.rat)
+        report = models.Report.objects.create(
+            user=self.local_user, reported_user=self.rat
+        )
         self.assertFalse(report.resolved)
         self.assertFalse(models.ReportAction.objects.exists())
         request = self.factory.post("")
@@ -112,7 +118,7 @@ class ReportViews(TestCase):
         # check that the action was noted
         self.assertTrue(
             models.ReportAction.objects.filter(
-                report=report, action_type="resolve", user=self.local_user
+                report=report, action_type="resolve", reported_user=self.local_user
             ).exists()
         )
 
@@ -124,7 +130,7 @@ class ReportViews(TestCase):
         # check that the action was noted
         self.assertTrue(
             models.ReportAction.objects.filter(
-                report=report, action_type="reopen", user=self.local_user
+                report=report, action_type="reopen", reported_user=self.local_user
             ).exists()
         )
 
