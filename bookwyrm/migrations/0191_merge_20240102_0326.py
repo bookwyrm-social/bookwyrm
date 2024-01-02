@@ -6,9 +6,8 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bookwyrm', '0189_alter_user_preferred_language'),
-        ('bookwyrm', '0190_alter_notification_notification_type'),
+        ("bookwyrm", "0189_alter_user_preferred_language"),
+        ("bookwyrm", "0190_alter_notification_notification_type"),
     ]
 
-    operations = [
-    ]
+    operations = []
