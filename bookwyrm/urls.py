@@ -360,6 +360,11 @@ urlpatterns = [
         r"^settings/celery/ping/?$", views.celery_ping, name="settings-celery-ping"
     ),
     re_path(
+        r"^settings/schedules/?$",
+        views.ScheduledTasks.as_view(),
+        name="settings-schedules",
+    ),
+    re_path(
         r"^settings/email-config/?$",
         views.EmailConfig.as_view(),
         name="settings-email-config",

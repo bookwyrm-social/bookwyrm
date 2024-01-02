@@ -61,19 +61,21 @@ class Dashboard(View):
             == site._meta.get_field("privacy_policy").get_default()
         )
 
-        if site.available_version and version.parse(site.available_version) > version.parse(
-            settings.VERSION
-        ):
+        if site.available_version and version.parse(
+            site.available_version
+        ) > version.parse(settings.VERSION):
             data["current_version"] = settings.VERSION
             data["available_version"] = site.available_version
 
         if not PeriodicTask.objects.filter(name="check-for-updates").exists():
-            data["schedule_form"] = forms.IntervalScheduleForm({"every": 1, "period": "days"})
+            data["schedule_form"] = forms.IntervalScheduleForm(
+                {"every": 1, "period": "days"}
+            )
 
         return TemplateResponse(request, "settings/dashboard/dashboard.html", data)
 
     def post(self, request):
-        """ Create a schedule task to check for updates """
+        """Create a schedule task to check for updates"""
         schedule_form = forms.IntervalScheduleForm(request.POST)
 
         with transaction.atomic():
@@ -81,7 +83,7 @@ class Dashboard(View):
             PeriodicTask.objects.get_or_create(
                 interval=schedule,
                 name="check-for-updates",
-                task="bookwyrm.models.site.check_for_updates_task"
+                task="bookwyrm.models.site.check_for_updates_task",
             )
         return redirect("settings-dashboard")
 
