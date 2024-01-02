@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-11-02 21:32+0000\n"
-"PO-Revision-Date: 2023-12-24 09:07\n"
+"POT-Creation-Date: 2023-12-30 23:52+0000\n"
+"PO-Revision-Date: 2024-01-02 03:11\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Ukrainian\n"
 "Language: uk\n"
@@ -102,8 +102,8 @@ msgstr "Порядком"
 msgid "Book Title"
 msgstr "Назвою книги"
 
-#: bookwyrm/forms/lists.py:28 bookwyrm/templates/shelf/shelf.html:171
-#: bookwyrm/templates/shelf/shelf.html:203
+#: bookwyrm/forms/lists.py:28 bookwyrm/templates/shelf/shelf.html:158
+#: bookwyrm/templates/shelf/shelf.html:190
 #: bookwyrm/templates/snippets/create_status/review.html:32
 msgid "Rating"
 msgstr "Рейтингом"
@@ -141,7 +141,7 @@ msgstr "Увага"
 msgid "Danger"
 msgstr "Небезпека"
 
-#: bookwyrm/models/antispam.py:112 bookwyrm/models/antispam.py:146
+#: bookwyrm/models/antispam.py:113 bookwyrm/models/antispam.py:147
 msgid "Automatically generated report"
 msgstr "Автоматично згенерований звіт"
 
@@ -205,26 +205,26 @@ msgstr "Федеруються"
 msgid "Blocked"
 msgstr "Заблоковані"
 
-#: bookwyrm/models/fields.py:30
+#: bookwyrm/models/fields.py:35
 #, python-format
 msgid "%(value)s is not a valid remote_id"
 msgstr "%(value)s не є дійсним remote_id"
 
-#: bookwyrm/models/fields.py:39 bookwyrm/models/fields.py:48
+#: bookwyrm/models/fields.py:44 bookwyrm/models/fields.py:53
 #, python-format
 msgid "%(value)s is not a valid username"
 msgstr "%(value)s не є дійсним іменем користувача"
 
-#: bookwyrm/models/fields.py:193 bookwyrm/templates/layout.html:129
+#: bookwyrm/models/fields.py:198 bookwyrm/templates/layout.html:129
 #: bookwyrm/templates/ostatus/error.html:29
 msgid "username"
 msgstr "ім'я користувача"
 
-#: bookwyrm/models/fields.py:198
+#: bookwyrm/models/fields.py:203
 msgid "A user with that username already exists."
 msgstr "Користувач із таким ім'ям вже існує."
 
-#: bookwyrm/models/fields.py:217
+#: bookwyrm/models/fields.py:222
 #: bookwyrm/templates/snippets/privacy-icons.html:3
 #: bookwyrm/templates/snippets/privacy-icons.html:4
 #: bookwyrm/templates/snippets/privacy_select.html:11
@@ -232,7 +232,7 @@ msgstr "Користувач із таким ім'ям вже існує."
 msgid "Public"
 msgstr "Бачуть усі"
 
-#: bookwyrm/models/fields.py:218
+#: bookwyrm/models/fields.py:223
 #: bookwyrm/templates/snippets/privacy-icons.html:7
 #: bookwyrm/templates/snippets/privacy-icons.html:8
 #: bookwyrm/templates/snippets/privacy_select.html:14
@@ -240,7 +240,7 @@ msgstr "Бачуть усі"
 msgid "Unlisted"
 msgstr "Тільки по посиланню"
 
-#: bookwyrm/models/fields.py:219
+#: bookwyrm/models/fields.py:224
 #: bookwyrm/templates/snippets/privacy_select.html:17
 #: bookwyrm/templates/user/relationships/followers.html:6
 #: bookwyrm/templates/user/relationships/followers.html:11
@@ -249,7 +249,7 @@ msgstr "Тільки по посиланню"
 msgid "Followers"
 msgstr "Бачать тільки підписники"
 
-#: bookwyrm/models/fields.py:220
+#: bookwyrm/models/fields.py:225
 #: bookwyrm/templates/snippets/create_status/post_options_block.html:6
 #: bookwyrm/templates/snippets/privacy-icons.html:15
 #: bookwyrm/templates/snippets/privacy-icons.html:16
@@ -260,8 +260,7 @@ msgstr "Не бачить ніхто"
 
 #: bookwyrm/models/import_job.py:49 bookwyrm/templates/import/import.html:174
 #: bookwyrm/templates/settings/imports/imports.html:98
-#: bookwyrm/templates/settings/users/user_admin.html:87
-#: bookwyrm/templates/settings/users/user_info.html:33
+#: bookwyrm/templates/snippets/user_active_tag.html:8
 msgid "Active"
 msgstr "В процесі"
 
@@ -352,121 +351,142 @@ msgstr "Домен підтверджено"
 msgid "Deleted item"
 msgstr "Запис видалено"
 
-#: bookwyrm/models/user.py:32 bookwyrm/templates/book/book.html:307
+#: bookwyrm/models/user.py:33 bookwyrm/templates/book/book.html:307
 msgid "Reviews"
 msgstr "Рецензії"
 
-#: bookwyrm/models/user.py:33
+#: bookwyrm/models/user.py:34
 msgid "Comments"
 msgstr "Коментарі"
 
-#: bookwyrm/models/user.py:34
+#: bookwyrm/models/user.py:35
 msgid "Quotations"
 msgstr "Цитати"
 
-#: bookwyrm/models/user.py:35
+#: bookwyrm/models/user.py:36
 msgid "Everything else"
 msgstr "Все інше"
 
-#: bookwyrm/settings.py:230
+#: bookwyrm/settings.py:232
 msgid "Home Timeline"
 msgstr "Головна Стрічка"
 
-#: bookwyrm/settings.py:230
+#: bookwyrm/settings.py:232
 msgid "Home"
 msgstr "Головна"
 
-#: bookwyrm/settings.py:231
+#: bookwyrm/settings.py:233
 msgid "Books Timeline"
 msgstr "Книжкова Стрічка"
 
-#: bookwyrm/settings.py:231
+#: bookwyrm/settings.py:233
 #: bookwyrm/templates/guided_tour/user_profile.html:101
 #: bookwyrm/templates/search/layout.html:22
 #: bookwyrm/templates/search/layout.html:43
-#: bookwyrm/templates/user/layout.html:112
+#: bookwyrm/templates/user/layout.html:107
 msgid "Books"
 msgstr "Книги"
 
-#: bookwyrm/settings.py:303
+#: bookwyrm/settings.py:313
 msgid "English"
 msgstr "Англійська"
 
-#: bookwyrm/settings.py:304
+#: bookwyrm/settings.py:314
 msgid "Català (Catalan)"
 msgstr "Català (Каталонська)"
 
-#: bookwyrm/settings.py:305
+#: bookwyrm/settings.py:315
 msgid "Deutsch (German)"
 msgstr "Deutsch (Німецька)"
 
-#: bookwyrm/settings.py:306
+#: bookwyrm/settings.py:316
 msgid "Esperanto (Esperanto)"
 msgstr "Esperanto (Есперанто)"
 
-#: bookwyrm/settings.py:307
+#: bookwyrm/settings.py:317
 msgid "Español (Spanish)"
 msgstr "Español (Іспанська)"
 
-#: bookwyrm/settings.py:308
+#: bookwyrm/settings.py:318
 msgid "Euskara (Basque)"
 msgstr "Euskara (Баскська)"
 
-#: bookwyrm/settings.py:309
+#: bookwyrm/settings.py:319
 msgid "Galego (Galician)"
 msgstr "Galego (Галісійська)"
 
-#: bookwyrm/settings.py:310
+#: bookwyrm/settings.py:320
 msgid "Italiano (Italian)"
 msgstr "Italiano (Італійська)"
 
-#: bookwyrm/settings.py:311
+#: bookwyrm/settings.py:321
 msgid "Suomi (Finnish)"
 msgstr "Suomi (Фінська)"
 
-#: bookwyrm/settings.py:312
+#: bookwyrm/settings.py:322
 msgid "Français (French)"
 msgstr "Français (Французька)"
 
-#: bookwyrm/settings.py:313
+#: bookwyrm/settings.py:323
 msgid "Lietuvių (Lithuanian)"
 msgstr "Lietuvių (Литовська)"
 
-#: bookwyrm/settings.py:314
+#: bookwyrm/settings.py:324
 msgid "Nederlands (Dutch)"
 msgstr "Nederlands (Нідерландська)"
 
-#: bookwyrm/settings.py:315
+#: bookwyrm/settings.py:325
 msgid "Norsk (Norwegian)"
 msgstr "Norsk (Норвезька)"
 
-#: bookwyrm/settings.py:316
+#: bookwyrm/settings.py:326
 msgid "Polski (Polish)"
 msgstr "Polski (Польська)"
 
-#: bookwyrm/settings.py:317
+#: bookwyrm/settings.py:327
 msgid "Português do Brasil (Brazilian Portuguese)"
 msgstr "Português do Brasil (Бразильська португальська)"
 
-#: bookwyrm/settings.py:318
+#: bookwyrm/settings.py:328
 msgid "Português Europeu (European Portuguese)"
 msgstr "Português Europeu (Європейська португальська)"
 
-#: bookwyrm/settings.py:319
+#: bookwyrm/settings.py:329
 msgid "Română (Romanian)"
 msgstr "Română (Румунська)"
 
-#: bookwyrm/settings.py:320
+#: bookwyrm/settings.py:330
 msgid "Svenska (Swedish)"
 msgstr "Svenska (Шведська)"
 
-#: bookwyrm/settings.py:321
+#: bookwyrm/settings.py:331
+msgid "Українська (Ukrainian)"
+msgstr ""
+
+#: bookwyrm/settings.py:332
 msgid "简体中文 (Simplified Chinese)"
 msgstr "简体中文 (Спрощена китайська)"
 
-#: bookwyrm/settings.py:322
+#: bookwyrm/settings.py:333
 msgid "繁體中文 (Traditional Chinese)"
 msgstr "繁體中文 (Традиційна китайська)"
+
+#: bookwyrm/templates/403.html:5
+msgid "Oh no!"
+msgstr ""
+
+#: bookwyrm/templates/403.html:9 bookwyrm/templates/landing/invite.html:21
+msgid "Permission Denied"
+msgstr "Немає Дозволу"
+
+#: bookwyrm/templates/403.html:11
+#, python-format
+msgid "You do not have permission to view this page or perform this action. Your user permission level is <code>%(level)s</code>."
+msgstr ""
+
+#: bookwyrm/templates/403.html:15
+msgid "If you think you should have access, please speak to your BookWyrm server administrator."
+msgstr ""
 
 #: bookwyrm/templates/404.html:4 bookwyrm/templates/404.html:8
 msgid "Not Found"
@@ -475,6 +495,20 @@ msgstr "Не Знайдено"
 #: bookwyrm/templates/404.html:9
 msgid "The page you requested doesn't seem to exist!"
 msgstr "Вказана сторінка не існує!"
+
+#: bookwyrm/templates/413.html:4 bookwyrm/templates/413.html:8
+msgid "File too large"
+msgstr ""
+
+#: bookwyrm/templates/413.html:9
+msgid "The file you are uploading is too large."
+msgstr ""
+
+#: bookwyrm/templates/413.html:11
+msgid "\n"
+"        You you can try using a smaller file, or ask your BookWyrm server administrator to increase the <code>DATA_UPLOAD_MAX_MEMORY_SIZE</code> setting.\n"
+"        "
+msgstr ""
 
 #: bookwyrm/templates/500.html:4
 msgid "Oops!"
@@ -536,12 +570,12 @@ msgstr "Модератори та адміністратори %(site_name)s п�
 msgid "Moderator"
 msgstr "Модератор"
 
-#: bookwyrm/templates/about/about.html:124 bookwyrm/templates/user_menu.html:67
+#: bookwyrm/templates/about/about.html:124 bookwyrm/templates/user_menu.html:62
 msgid "Admin"
 msgstr "Адміністратор"
 
 #: bookwyrm/templates/about/about.html:140
-#: bookwyrm/templates/settings/users/user_moderation_actions.html:14
+#: bookwyrm/templates/settings/users/user_moderation_actions.html:28
 #: bookwyrm/templates/snippets/status/status_options.html:35
 #: bookwyrm/templates/snippets/user_options.html:14
 msgid "Send direct message"
@@ -914,7 +948,7 @@ msgstr "ISNI:"
 #: bookwyrm/templates/settings/registration.html:96
 #: bookwyrm/templates/settings/registration_limited.html:76
 #: bookwyrm/templates/settings/site.html:144
-#: bookwyrm/templates/settings/users/user_moderation_actions.html:75
+#: bookwyrm/templates/settings/users/user_moderation_actions.html:89
 #: bookwyrm/templates/shelf/form.html:25
 #: bookwyrm/templates/snippets/reading_modals/layout.html:18
 msgid "Save"
@@ -1054,13 +1088,13 @@ msgstr "Місця"
 #: bookwyrm/templates/guided_tour/lists.html:14
 #: bookwyrm/templates/guided_tour/user_books.html:102
 #: bookwyrm/templates/guided_tour/user_profile.html:78
-#: bookwyrm/templates/layout.html:91 bookwyrm/templates/lists/curate.html:8
+#: bookwyrm/templates/layout.html:88 bookwyrm/templates/lists/curate.html:8
 #: bookwyrm/templates/lists/list.html:12 bookwyrm/templates/lists/lists.html:5
 #: bookwyrm/templates/lists/lists.html:12
 #: bookwyrm/templates/search/layout.html:26
 #: bookwyrm/templates/search/layout.html:51
 #: bookwyrm/templates/settings/celery.html:77
-#: bookwyrm/templates/user/layout.html:106 bookwyrm/templates/user/lists.html:6
+#: bookwyrm/templates/user/layout.html:101 bookwyrm/templates/user/lists.html:6
 msgid "Lists"
 msgstr "Списки"
 
@@ -1336,7 +1370,7 @@ msgid "Add Another Author"
 msgstr "Додати іншого автора"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:231
-#: bookwyrm/templates/shelf/shelf.html:162
+#: bookwyrm/templates/shelf/shelf.html:149
 msgid "Cover"
 msgstr "Обкладинка"
 
@@ -1463,8 +1497,9 @@ msgstr "Домен"
 #: bookwyrm/templates/settings/announcements/announcements.html:37
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:48
 #: bookwyrm/templates/settings/invites/status_filter.html:5
+#: bookwyrm/templates/settings/themes.html:111
 #: bookwyrm/templates/settings/users/user_admin.html:56
-#: bookwyrm/templates/settings/users/user_info.html:24
+#: bookwyrm/templates/settings/users/user_info.html:35
 msgid "Status"
 msgstr "Статус"
 
@@ -1473,7 +1508,7 @@ msgstr "Статус"
 #: bookwyrm/templates/settings/federation/instance.html:112
 #: bookwyrm/templates/settings/imports/imports.html:141
 #: bookwyrm/templates/settings/reports/report_links_table.html:6
-#: bookwyrm/templates/settings/themes.html:99
+#: bookwyrm/templates/settings/themes.html:108
 msgid "Actions"
 msgstr "Дії"
 
@@ -1595,7 +1630,7 @@ msgid "Sorry! We couldn't find that code."
 msgstr "Вибачте! Ми не змогли знайти цей код."
 
 #: bookwyrm/templates/confirm_email/confirm_email.html:19
-#: bookwyrm/templates/settings/users/user_info.html:98
+#: bookwyrm/templates/settings/users/user_info.html:92
 msgid "Confirmation code:"
 msgstr "Код підтвердження:"
 
@@ -1768,7 +1803,7 @@ msgstr "<a href=\"%(user_path)s\">%(username)s</a> процитував(-ла) <
 
 #: bookwyrm/templates/discover/discover.html:4
 #: bookwyrm/templates/discover/discover.html:10
-#: bookwyrm/templates/layout.html:94
+#: bookwyrm/templates/layout.html:91
 msgid "Discover"
 msgstr "Огляд"
 
@@ -1923,7 +1958,7 @@ msgid "Direct Messages with <a href=\"%(path)s\">%(username)s</a>"
 msgstr "Особисті Повідомлення з <a href=\"%(path)s\">%(username)s</a>"
 
 #: bookwyrm/templates/feed/direct_messages.html:10
-#: bookwyrm/templates/user_menu.html:44
+#: bookwyrm/templates/user_menu.html:39
 msgid "Direct Messages"
 msgstr "Особисті Повідомлення"
 
@@ -1961,7 +1996,7 @@ msgstr "Оновлення"
 
 #: bookwyrm/templates/feed/suggested_books.html:6
 #: bookwyrm/templates/guided_tour/home.html:127
-#: bookwyrm/templates/user_menu.html:39
+#: bookwyrm/templates/layout.html:94
 msgid "Your Books"
 msgstr "Ваші книги"
 
@@ -2009,19 +2044,19 @@ msgid "Add to your books"
 msgstr "Додати до ваших книг"
 
 #: bookwyrm/templates/get_started/book_preview.html:10
-#: bookwyrm/templates/shelf/shelf.html:101 bookwyrm/templates/user/user.html:37
+#: bookwyrm/templates/shelf/shelf.html:88 bookwyrm/templates/user/user.html:37
 #: bookwyrm/templatetags/shelf_tags.py:14
 msgid "To Read"
 msgstr "В \"Прочитати\""
 
 #: bookwyrm/templates/get_started/book_preview.html:11
-#: bookwyrm/templates/shelf/shelf.html:102 bookwyrm/templates/user/user.html:38
+#: bookwyrm/templates/shelf/shelf.html:89 bookwyrm/templates/user/user.html:38
 #: bookwyrm/templatetags/shelf_tags.py:15
 msgid "Currently Reading"
 msgstr "Зараз Читаю"
 
 #: bookwyrm/templates/get_started/book_preview.html:12
-#: bookwyrm/templates/shelf/shelf.html:103
+#: bookwyrm/templates/shelf/shelf.html:90
 #: bookwyrm/templates/snippets/shelf_selector.html:46
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_dropdown_options.html:24
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_options.html:12
@@ -2030,7 +2065,7 @@ msgid "Read"
 msgstr "Прочитано"
 
 #: bookwyrm/templates/get_started/book_preview.html:13
-#: bookwyrm/templates/shelf/shelf.html:104 bookwyrm/templates/user/user.html:40
+#: bookwyrm/templates/shelf/shelf.html:91 bookwyrm/templates/user/user.html:40
 #: bookwyrm/templatetags/shelf_tags.py:17
 msgid "Stopped Reading"
 msgstr "Читання Зупинено"
@@ -2531,8 +2566,8 @@ msgid "Barcode reader"
 msgstr "Сканер штрих-кодів"
 
 #: bookwyrm/templates/guided_tour/home.html:102
-msgid "Use the <strong>Feed</strong>, <strong>Lists</strong> and <strong>Discover</strong> links to discover the latest news from your feed, lists of books by topic, and the latest happenings on this Bookwyrm server!"
-msgstr "Використовуйте посилання на <strong>Стрічку</strong>, <strong>Списки</strong> та <strong>Огляд</strong>, щоб побачити останні новини з вашої стрічки, тематичні списки книг та останні події на цьому інстансі BookWyrm!"
+msgid "Use the <strong>Lists</strong>, <strong>Discover</strong>, and <strong>Your Books</strong> links to discover reading suggestions and the latest happenings on this server, or to see your catalogued books!"
+msgstr ""
 
 #: bookwyrm/templates/guided_tour/home.html:103
 msgid "Navigation Bar"
@@ -2563,8 +2598,8 @@ msgid "Notifications"
 msgstr "Сповіщення"
 
 #: bookwyrm/templates/guided_tour/home.html:200
-msgid "Your profile, books, direct messages, and settings can be accessed by clicking on your name in the menu here."
-msgstr "Ваш профіль, книги, особисті повідомлення та налаштування можна подивитись натиснувши на ваше ім'я в цьому меню."
+msgid "Your profile, user directory, direct messages, and settings can be accessed by clicking on your name in the menu here."
+msgstr ""
 
 #: bookwyrm/templates/guided_tour/home.html:200
 msgid "Try selecting <strong>Profile</strong> from the drop down menu to continue the tour."
@@ -2719,8 +2754,7 @@ msgstr "Ви можете створити або приєднатися до г
 
 #: bookwyrm/templates/guided_tour/user_groups.html:11
 #: bookwyrm/templates/guided_tour/user_profile.html:55
-#: bookwyrm/templates/user/groups.html:6
-#: bookwyrm/templates/user/layout.html:100
+#: bookwyrm/templates/user/groups.html:6 bookwyrm/templates/user/layout.html:95
 msgid "Groups"
 msgstr "Групи"
 
@@ -2774,7 +2808,7 @@ msgid "This tab shows everything you have read towards your annual reading goal,
 msgstr "Ця вкладка показує все, що ви прочитали у рамках річної мети читання, або дозволяє її встановити. Це не обов'язково. Тільки якщо вам таке подобається."
 
 #: bookwyrm/templates/guided_tour/user_profile.html:32
-#: bookwyrm/templates/user/goal.html:6 bookwyrm/templates/user/layout.html:94
+#: bookwyrm/templates/user/goal.html:6 bookwyrm/templates/user/layout.html:89
 msgid "Reading Goal"
 msgstr "Мета Читання"
 
@@ -2813,7 +2847,7 @@ msgstr "Поки що ніхто не використовував цей хеш
 
 #: bookwyrm/templates/import/import.html:5
 #: bookwyrm/templates/import/import.html:9
-#: bookwyrm/templates/shelf/shelf.html:79
+#: bookwyrm/templates/shelf/shelf.html:66
 msgid "Import Books"
 msgstr "Імпортувати Книги"
 
@@ -2990,8 +3024,8 @@ msgid "Row"
 msgstr "Рядок"
 
 #: bookwyrm/templates/import/import_status.html:110
-#: bookwyrm/templates/shelf/shelf.html:163
-#: bookwyrm/templates/shelf/shelf.html:185
+#: bookwyrm/templates/shelf/shelf.html:150
+#: bookwyrm/templates/shelf/shelf.html:172
 msgid "Title"
 msgstr "Назва"
 
@@ -3004,8 +3038,8 @@ msgid "Openlibrary key"
 msgstr "Ключ Openlibrary"
 
 #: bookwyrm/templates/import/import_status.html:121
-#: bookwyrm/templates/shelf/shelf.html:164
-#: bookwyrm/templates/shelf/shelf.html:188
+#: bookwyrm/templates/shelf/shelf.html:151
+#: bookwyrm/templates/shelf/shelf.html:175
 msgid "Author"
 msgstr "Автор"
 
@@ -3110,10 +3144,6 @@ msgstr "Зв'яжіться з вашим адміністратором або 
 #: bookwyrm/templates/landing/reactivate.html:41
 msgid "Create an Account"
 msgstr "Зареєструватися"
-
-#: bookwyrm/templates/landing/invite.html:21
-msgid "Permission Denied"
-msgstr "Немає Дозволу"
 
 #: bookwyrm/templates/landing/invite.html:22
 msgid "Sorry! This invite code is no longer valid."
@@ -3241,10 +3271,6 @@ msgstr "Сканувати Штрих-код"
 #: bookwyrm/templates/layout.html:69
 msgid "Main navigation menu"
 msgstr "Головне меню навігації"
-
-#: bookwyrm/templates/layout.html:88
-msgid "Feed"
-msgstr "Стрічка подій"
 
 #: bookwyrm/templates/layout.html:134 bookwyrm/templates/ostatus/error.html:33
 msgid "password"
@@ -3454,6 +3480,7 @@ msgid "Set"
 msgstr "Встановити"
 
 #: bookwyrm/templates/lists/list.html:167
+#: bookwyrm/templates/snippets/remove_follower_button.html:4
 #: bookwyrm/templates/snippets/remove_from_group_button.html:20
 msgid "Remove"
 msgstr "Видалити"
@@ -3530,11 +3557,11 @@ msgstr "<strong>Ви перемістили свій акаунт</strong> на 
 msgid "You can undo the move to restore full functionality, but some followers may have already unfollowed this account."
 msgstr "Ви можете скасувати цей крок, щоб відновити всі функції, але деякі підписані на цей обліковий запис вже відписалися."
 
-#: bookwyrm/templates/moved.html:42 bookwyrm/templates/shelf/shelf.html:32
+#: bookwyrm/templates/moved.html:42
 msgid "Undo move"
 msgstr "Скасувати переміщення"
 
-#: bookwyrm/templates/moved.html:46 bookwyrm/templates/user_menu.html:82
+#: bookwyrm/templates/moved.html:46 bookwyrm/templates/user_menu.html:77
 msgid "Log out"
 msgstr "Вийти"
 
@@ -3745,6 +3772,15 @@ msgstr "Ваш <a href=\"%(url)s\">імпорт</a> завершено."
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> invited you to join the group \"<a href=\"%(group_path)s\">%(group_name)s</a>\""
 msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> запрошує вас приєднатися до групи \"<a href=\"%(group_path)s\">%(group_name)s</a>\""
+
+#: bookwyrm/templates/notifications/items/invite_request.html:15
+#, python-format
+msgid "New <a href=\"%(path)s\">invite request</a> awaiting response"
+msgid_plural "%(display_count)s new <a href=\"%(path)s\">invite requests</a> awaiting response"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: bookwyrm/templates/notifications/items/join.html:16
 #, python-format
@@ -4182,7 +4218,7 @@ msgstr "Редагувати Профіль"
 
 #: bookwyrm/templates/preferences/edit_user.html:12
 #: bookwyrm/templates/preferences/edit_user.html:25
-#: bookwyrm/templates/settings/users/user_info.html:7
+#: bookwyrm/templates/settings/users/user_info.html:8
 #: bookwyrm/templates/user_menu.html:29
 msgid "Profile"
 msgstr "Профіль"
@@ -5044,19 +5080,19 @@ msgstr "Інстанс:"
 
 #: bookwyrm/templates/settings/federation/edit_instance.html:52
 #: bookwyrm/templates/settings/federation/instance.html:46
-#: bookwyrm/templates/settings/users/user_info.html:119
+#: bookwyrm/templates/settings/users/user_info.html:113
 msgid "Status:"
 msgstr "Статус:"
 
 #: bookwyrm/templates/settings/federation/edit_instance.html:66
 #: bookwyrm/templates/settings/federation/instance.html:40
-#: bookwyrm/templates/settings/users/user_info.html:113
+#: bookwyrm/templates/settings/users/user_info.html:107
 msgid "Software:"
 msgstr "ПО:"
 
 #: bookwyrm/templates/settings/federation/edit_instance.html:76
 #: bookwyrm/templates/settings/federation/instance.html:43
-#: bookwyrm/templates/settings/users/user_info.html:116
+#: bookwyrm/templates/settings/users/user_info.html:110
 msgid "Version:"
 msgstr "Версія:"
 
@@ -5069,7 +5105,7 @@ msgid "Details"
 msgstr "Подробиці"
 
 #: bookwyrm/templates/settings/federation/instance.html:53
-#: bookwyrm/templates/user/layout.html:84
+#: bookwyrm/templates/user/layout.html:79
 msgid "Activity"
 msgstr "Активність"
 
@@ -5083,7 +5119,7 @@ msgid "View all"
 msgstr "Переглянути всіх"
 
 #: bookwyrm/templates/settings/federation/instance.html:62
-#: bookwyrm/templates/settings/users/user_info.html:66
+#: bookwyrm/templates/settings/users/user_info.html:60
 msgid "Reports:"
 msgstr "Скарг:"
 
@@ -5100,7 +5136,7 @@ msgid "Blocked by us:"
 msgstr "Заблокованих нами:"
 
 #: bookwyrm/templates/settings/federation/instance.html:90
-#: bookwyrm/templates/settings/users/user_info.html:123
+#: bookwyrm/templates/settings/users/user_info.html:117
 msgid "Notes"
 msgstr "Нотатки"
 
@@ -5257,7 +5293,7 @@ msgstr "Запити На Запрошення"
 #: bookwyrm/templates/settings/invites/manage_invites.html:3
 #: bookwyrm/templates/settings/invites/manage_invites.html:15
 #: bookwyrm/templates/settings/layout.html:42
-#: bookwyrm/templates/user_menu.html:60
+#: bookwyrm/templates/user_menu.html:55
 msgid "Invites"
 msgstr "Запрошення"
 
@@ -5731,57 +5767,73 @@ msgid "Set instance default theme"
 msgstr "Встановити стандартну тему інстансу"
 
 #: bookwyrm/templates/settings/themes.html:19
+msgid "One of your themes appears to be broken. Selecting this theme will make the application unusable."
+msgstr ""
+
+#: bookwyrm/templates/settings/themes.html:28
 msgid "Successfully added theme"
 msgstr "Тему успішно додано"
 
-#: bookwyrm/templates/settings/themes.html:26
+#: bookwyrm/templates/settings/themes.html:35
 msgid "How to add a theme"
 msgstr "Як додати тему"
 
-#: bookwyrm/templates/settings/themes.html:29
+#: bookwyrm/templates/settings/themes.html:38
 msgid "Copy the theme file into the <code>bookwyrm/static/css/themes</code> directory on your server from the command line."
 msgstr "Скопіюйте файл теми в директорію <code>bookwyrm/static/css/themes</code> на вашому сервері з командного рядка."
 
-#: bookwyrm/templates/settings/themes.html:32
+#: bookwyrm/templates/settings/themes.html:41
 msgid "Run <code>./bw-dev compile_themes</code> and <code>./bw-dev collectstatic</code>."
 msgstr "Запустіть <code>./bw-dev compile_themes</code> та <code>./bw-dev collectstatic</code>."
 
-#: bookwyrm/templates/settings/themes.html:35
+#: bookwyrm/templates/settings/themes.html:44
 msgid "Add the file name using the form below to make it available in the application interface."
 msgstr "Додайте назву файлу використовуючи форму нижче, щоб зробити її доступною в інтерфейсі BookWyrm."
 
-#: bookwyrm/templates/settings/themes.html:42
-#: bookwyrm/templates/settings/themes.html:82
+#: bookwyrm/templates/settings/themes.html:51
+#: bookwyrm/templates/settings/themes.html:91
 msgid "Add theme"
 msgstr "Додати тему"
 
-#: bookwyrm/templates/settings/themes.html:48
+#: bookwyrm/templates/settings/themes.html:57
 msgid "Unable to save theme"
 msgstr "Не вдалося зберегти тему"
 
-#: bookwyrm/templates/settings/themes.html:63
-#: bookwyrm/templates/settings/themes.html:93
+#: bookwyrm/templates/settings/themes.html:72
+#: bookwyrm/templates/settings/themes.html:102
 msgid "Theme name"
 msgstr "Назва теми"
 
-#: bookwyrm/templates/settings/themes.html:73
+#: bookwyrm/templates/settings/themes.html:82
 msgid "Theme filename"
 msgstr "Ім'я файлу теми"
 
-#: bookwyrm/templates/settings/themes.html:88
+#: bookwyrm/templates/settings/themes.html:97
 msgid "Available Themes"
 msgstr "Доступні теми"
 
-#: bookwyrm/templates/settings/themes.html:96
+#: bookwyrm/templates/settings/themes.html:105
 msgid "File"
 msgstr "Файл"
 
-#: bookwyrm/templates/settings/themes.html:111
+#: bookwyrm/templates/settings/themes.html:123
 msgid "Remove theme"
 msgstr "Видалити тему"
 
+#: bookwyrm/templates/settings/themes.html:134
+msgid "Test theme"
+msgstr ""
+
+#: bookwyrm/templates/settings/themes.html:143
+msgid "Broken theme"
+msgstr ""
+
+#: bookwyrm/templates/settings/themes.html:152
+msgid "Loaded successfully"
+msgstr ""
+
 #: bookwyrm/templates/settings/users/delete_user_form.html:5
-#: bookwyrm/templates/settings/users/user_moderation_actions.html:38
+#: bookwyrm/templates/settings/users/user_moderation_actions.html:52
 msgid "Permanently delete user"
 msgstr "Видалити користувача назавжди"
 
@@ -5820,106 +5872,108 @@ msgstr "Остання активність"
 msgid "Remote instance"
 msgstr "Інший інстанс"
 
-#: bookwyrm/templates/settings/users/user_admin.html:82
-#: bookwyrm/templates/settings/users/user_info.html:29
-msgid "Moved"
-msgstr "Переміщено"
-
-#: bookwyrm/templates/settings/users/user_admin.html:93
-msgid "Deleted"
-msgstr "Видалено"
-
-#: bookwyrm/templates/settings/users/user_admin.html:99
-#: bookwyrm/templates/settings/users/user_info.html:38
-msgid "Inactive"
-msgstr "Неактивний"
-
-#: bookwyrm/templates/settings/users/user_admin.html:108
-#: bookwyrm/templates/settings/users/user_info.html:133
+#: bookwyrm/templates/settings/users/user_admin.html:84
+#: bookwyrm/templates/settings/users/user_info.html:127
 msgid "Not set"
 msgstr "Не встановлено"
 
-#: bookwyrm/templates/settings/users/user_info.html:16
+#: bookwyrm/templates/settings/users/user_info.html:20
+msgid "This account is the instance actor for signing HTTP requests."
+msgstr ""
+
+#: bookwyrm/templates/settings/users/user_info.html:24
 msgid "View user profile"
 msgstr "Переглянути профіль користувача"
 
-#: bookwyrm/templates/settings/users/user_info.html:19
+#: bookwyrm/templates/settings/users/user_info.html:30
 msgid "Go to user admin"
 msgstr "Перейти до адміністрування користувача"
 
-#: bookwyrm/templates/settings/users/user_info.html:46
+#: bookwyrm/templates/settings/users/user_info.html:40
 msgid "Local"
 msgstr "Місцевий"
 
-#: bookwyrm/templates/settings/users/user_info.html:48
+#: bookwyrm/templates/settings/users/user_info.html:42
 msgid "Remote"
 msgstr "З іншого сервера"
 
-#: bookwyrm/templates/settings/users/user_info.html:57
+#: bookwyrm/templates/settings/users/user_info.html:51
 msgid "User details"
 msgstr "Подробиці користувача"
 
-#: bookwyrm/templates/settings/users/user_info.html:61
+#: bookwyrm/templates/settings/users/user_info.html:55
 msgid "Email:"
 msgstr "Електронна пошта:"
 
-#: bookwyrm/templates/settings/users/user_info.html:71
+#: bookwyrm/templates/settings/users/user_info.html:65
 msgid "(View reports)"
 msgstr "(Переглянути скарги)"
 
-#: bookwyrm/templates/settings/users/user_info.html:77
+#: bookwyrm/templates/settings/users/user_info.html:71
 msgid "Blocked by count:"
 msgstr "Заблокували цього користувача:"
 
-#: bookwyrm/templates/settings/users/user_info.html:80
+#: bookwyrm/templates/settings/users/user_info.html:74
 msgid "Date added:"
 msgstr "Зареєструвався або було додано:"
 
-#: bookwyrm/templates/settings/users/user_info.html:83
+#: bookwyrm/templates/settings/users/user_info.html:77
 msgid "Last active date:"
 msgstr "Остання активність:"
 
-#: bookwyrm/templates/settings/users/user_info.html:86
+#: bookwyrm/templates/settings/users/user_info.html:80
 msgid "Manually approved followers:"
 msgstr "Підтверджує підписників вручну:"
 
-#: bookwyrm/templates/settings/users/user_info.html:89
+#: bookwyrm/templates/settings/users/user_info.html:83
 msgid "Discoverable:"
 msgstr "Видимий:"
 
-#: bookwyrm/templates/settings/users/user_info.html:93
+#: bookwyrm/templates/settings/users/user_info.html:87
 msgid "Deactivation reason:"
 msgstr "Причина деактивації:"
 
-#: bookwyrm/templates/settings/users/user_info.html:108
+#: bookwyrm/templates/settings/users/user_info.html:102
 msgid "Instance details"
 msgstr "Подробиці інстансу"
 
-#: bookwyrm/templates/settings/users/user_info.html:130
+#: bookwyrm/templates/settings/users/user_info.html:124
 msgid "View instance"
 msgstr "Переглянути інстанс"
 
-#: bookwyrm/templates/settings/users/user_moderation_actions.html:5
+#: bookwyrm/templates/settings/users/user_moderation_actions.html:6
 msgid "Permanently deleted"
 msgstr "Видалено остаточно"
 
-#: bookwyrm/templates/settings/users/user_moderation_actions.html:8
+#: bookwyrm/templates/settings/users/user_moderation_actions.html:9
 msgid "User Actions"
 msgstr "Керування користувачем"
 
-#: bookwyrm/templates/settings/users/user_moderation_actions.html:21
+#: bookwyrm/templates/settings/users/user_moderation_actions.html:15
+msgid "This is the instance admin actor"
+msgstr ""
+
+#: bookwyrm/templates/settings/users/user_moderation_actions.html:18
+msgid "You must not delete or disable this account as it is critical to the functioning of your server. This actor signs outgoing GET requests to smooth interaction with secure ActivityPub servers."
+msgstr ""
+
+#: bookwyrm/templates/settings/users/user_moderation_actions.html:19
+msgid "This account is not discoverable by ordinary users and does not have a profile page."
+msgstr ""
+
+#: bookwyrm/templates/settings/users/user_moderation_actions.html:35
 msgid "Activate user"
 msgstr "Активувати користувача"
 
-#: bookwyrm/templates/settings/users/user_moderation_actions.html:27
+#: bookwyrm/templates/settings/users/user_moderation_actions.html:41
 msgid "Suspend user"
 msgstr "Заблокувати користувача"
 
-#: bookwyrm/templates/settings/users/user_moderation_actions.html:32
+#: bookwyrm/templates/settings/users/user_moderation_actions.html:46
 msgid "Un-suspend user"
 msgstr "Розблокувати користувача"
 
-#: bookwyrm/templates/settings/users/user_moderation_actions.html:54
+#: bookwyrm/templates/settings/users/user_moderation_actions.html:68
 msgid "Access level:"
 msgstr "Рівень доступу:"
 
@@ -5975,7 +6029,7 @@ msgstr "Ваш домен, здається, налаштований непра
 msgid "You are running BookWyrm in production mode without https. <strong>USE_HTTPS</strong> should be enabled in production."
 msgstr "Ваш інстанс BookWyrm працює в режимі продакшену без https. Вам слід увімкнути <strong>USE_HTTPS</strong>."
 
-#: bookwyrm/templates/setup/config.html:52 bookwyrm/templates/user_menu.html:49
+#: bookwyrm/templates/setup/config.html:52 bookwyrm/templates/user_menu.html:44
 msgid "Settings"
 msgstr "Налаштування"
 
@@ -6032,7 +6086,7 @@ msgid "Need help?"
 msgstr "Потрібна допомога?"
 
 #: bookwyrm/templates/shelf/create_shelf_form.html:5
-#: bookwyrm/templates/shelf/shelf.html:87
+#: bookwyrm/templates/shelf/shelf.html:74
 msgid "Create shelf"
 msgstr "Створити полицю"
 
@@ -6040,26 +6094,18 @@ msgstr "Створити полицю"
 msgid "Edit Shelf"
 msgstr "Редагувати полицю"
 
-#: bookwyrm/templates/shelf/shelf.html:25
-msgid "You have have moved to"
-msgstr "Ви переїхали до"
-
-#: bookwyrm/templates/shelf/shelf.html:28
-msgid "You can undo this move to restore full functionality, but some followers may have already unfollowed this account."
-msgstr "Ви можете скасувати цей крок, щоб відновити всі функції, але деякі підписники вже могли відписатися."
-
-#: bookwyrm/templates/shelf/shelf.html:39
+#: bookwyrm/templates/shelf/shelf.html:26
 #: bookwyrm/templates/user/relationships/followers.html:18
 #: bookwyrm/templates/user/relationships/following.html:18
 msgid "User profile"
 msgstr "Профіль користувача"
 
-#: bookwyrm/templates/shelf/shelf.html:54
+#: bookwyrm/templates/shelf/shelf.html:41
 #: bookwyrm/templatetags/shelf_tags.py:13 bookwyrm/views/shelf/shelf.py:53
 msgid "All books"
 msgstr "Усі книги"
 
-#: bookwyrm/templates/shelf/shelf.html:112
+#: bookwyrm/templates/shelf/shelf.html:99
 #, python-format
 msgid "%(formatted_count)s book"
 msgid_plural "%(formatted_count)s books"
@@ -6068,40 +6114,40 @@ msgstr[1] "%(formatted_count)s книги"
 msgstr[2] "%(formatted_count)s книг"
 msgstr[3] "%(formatted_count)s книг"
 
-#: bookwyrm/templates/shelf/shelf.html:119
+#: bookwyrm/templates/shelf/shelf.html:106
 #, python-format
 msgid "(showing %(start)s-%(end)s)"
 msgstr "(показуються %(start)s-%(end)s)"
 
-#: bookwyrm/templates/shelf/shelf.html:131
+#: bookwyrm/templates/shelf/shelf.html:118
 msgid "Edit shelf"
 msgstr "Редагувати полицю"
 
-#: bookwyrm/templates/shelf/shelf.html:139
+#: bookwyrm/templates/shelf/shelf.html:126
 msgid "Delete shelf"
 msgstr "Видалити полицю"
 
-#: bookwyrm/templates/shelf/shelf.html:167
-#: bookwyrm/templates/shelf/shelf.html:193
+#: bookwyrm/templates/shelf/shelf.html:154
+#: bookwyrm/templates/shelf/shelf.html:180
 msgid "Shelved"
 msgstr "Додано до полиці"
 
-#: bookwyrm/templates/shelf/shelf.html:168
-#: bookwyrm/templates/shelf/shelf.html:196
+#: bookwyrm/templates/shelf/shelf.html:155
+#: bookwyrm/templates/shelf/shelf.html:183
 msgid "Started"
 msgstr "Почато"
 
-#: bookwyrm/templates/shelf/shelf.html:169
-#: bookwyrm/templates/shelf/shelf.html:199
+#: bookwyrm/templates/shelf/shelf.html:156
+#: bookwyrm/templates/shelf/shelf.html:186
 msgid "Finished"
 msgstr "Прочитано"
 
-#: bookwyrm/templates/shelf/shelf.html:169
-#: bookwyrm/templates/shelf/shelf.html:199
+#: bookwyrm/templates/shelf/shelf.html:156
+#: bookwyrm/templates/shelf/shelf.html:186
 msgid "Until"
 msgstr "До"
 
-#: bookwyrm/templates/shelf/shelf.html:225
+#: bookwyrm/templates/shelf/shelf.html:212
 msgid "This shelf is empty."
 msgstr "Ця полиця порожня."
 
@@ -6423,6 +6469,11 @@ msgstr "%(username)s прочитав(-ла) <a href=\"%(path)s\">%(read_count)s
 msgid "Follow at new account"
 msgstr "Підписатися на новий акаунт"
 
+#: bookwyrm/templates/snippets/moved_user_notice.html:7
+#, python-format
+msgid "<em>%(user)s</em> has moved to <a href=\"%(moved_to_link)s\">%(moved_to_name)s</a>"
+msgstr ""
+
 #: bookwyrm/templates/snippets/page_text.html:8
 #, python-format
 msgid "page %(page)s of %(total_pages)s"
@@ -6725,6 +6776,18 @@ msgstr "Розгорнути"
 msgid "Show less"
 msgstr "Згорнути"
 
+#: bookwyrm/templates/snippets/user_active_tag.html:5
+msgid "Moved"
+msgstr "Переміщено"
+
+#: bookwyrm/templates/snippets/user_active_tag.html:12
+msgid "Deleted"
+msgstr "Видалено"
+
+#: bookwyrm/templates/snippets/user_active_tag.html:15
+msgid "Inactive"
+msgstr "Неактивний"
+
 #: bookwyrm/templates/two_factor_auth/two_factor_login.html:29
 msgid "2FA check"
 msgstr "Двофакторна аутентифікація"
@@ -6783,15 +6846,11 @@ msgstr "Ваші Групи"
 msgid "Groups: %(username)s"
 msgstr "Групи: %(username)s"
 
-#: bookwyrm/templates/user/layout.html:50
-msgid "has moved to"
-msgstr "переїхав(-ла) до"
-
-#: bookwyrm/templates/user/layout.html:64
+#: bookwyrm/templates/user/layout.html:59
 msgid "Follow Requests"
 msgstr "Запити на підписку"
 
-#: bookwyrm/templates/user/layout.html:88
+#: bookwyrm/templates/user/layout.html:83
 #: bookwyrm/templates/user/reviews_comments.html:6
 #: bookwyrm/templates/user/reviews_comments.html:12
 msgid "Reviews and Comments"
@@ -6812,7 +6871,7 @@ msgstr "Створити список"
 msgid "Joined %(date)s"
 msgstr "Приєднався %(date)s"
 
-#: bookwyrm/templates/user/relationships/followers.html:31
+#: bookwyrm/templates/user/relationships/followers.html:36
 #, python-format
 msgid "%(username)s has no followers"
 msgstr "%(username)s не має підписників"
@@ -6932,7 +6991,7 @@ msgstr[1] "%(num)d книги – від %(user)s"
 msgstr[2] "%(num)d книг – від %(user)s"
 msgstr[3] "%(num)d книг – від %(user)s"
 
-#: bookwyrm/templatetags/utilities.py:48
+#: bookwyrm/templatetags/utilities.py:49
 #, python-format
 msgid "%(title)s: %(subtitle)s"
 msgstr "%(title)s: %(subtitle)s"
