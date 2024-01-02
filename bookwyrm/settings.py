@@ -31,7 +31,7 @@ RELEASE_API = env(
 PAGE_LENGTH = env.int("PAGE_LENGTH", 15)
 DEFAULT_LANGUAGE = env("DEFAULT_LANGUAGE", "English")
 
-JS_CACHE = "ac315a3b"
+JS_CACHE = "8a89cad7"
 
 # email
 EMAIL_BACKEND = env("EMAIL_BACKEND", "django.core.mail.backends.smtp.EmailBackend")
