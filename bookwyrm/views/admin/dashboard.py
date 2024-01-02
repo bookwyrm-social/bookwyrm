@@ -6,15 +6,18 @@ from dateutil.parser import parse
 from packaging import version
 
 from django.contrib.auth.decorators import login_required, permission_required
+from django.db import transaction
 from django.db.models import Q
+from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views import View
+from django_celery_beat.models import PeriodicTask
 
 from csp.decorators import csp_update
 
-from bookwyrm import models, settings
+from bookwyrm import forms, models, settings
 from bookwyrm.utils import regex
 
 
@@ -64,7 +67,23 @@ class Dashboard(View):
             data["current_version"] = settings.VERSION
             data["available_version"] = site.available_version
 
+        if not PeriodicTask.objects.filter(name="check-for-updates").exists():
+            data["schedule_form"] = forms.IntervalScheduleForm({"every": 1, "period": "days"})
+
         return TemplateResponse(request, "settings/dashboard/dashboard.html", data)
+
+    def post(self, request):
+        """ Create a schedule task to check for updates """
+        schedule_form = forms.IntervalScheduleForm(request.POST)
+
+        with transaction.atomic():
+            schedule = schedule_form.save(request)
+            PeriodicTask.objects.get_or_create(
+                interval=schedule,
+                name="check-for-updates",
+                task="bookwyrm.models.site.check_for_updates_task"
+            )
+        return redirect("settings-dashboard")
 
 
 def get_charts_and_stats(request):
