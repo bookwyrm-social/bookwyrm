@@ -15,7 +15,6 @@ from django.views import View
 from csp.decorators import csp_update
 
 from bookwyrm import models, settings
-from bookwyrm.connectors.abstract_connector import get_data
 from bookwyrm.utils import regex
 
 
@@ -59,18 +58,11 @@ class Dashboard(View):
             == site._meta.get_field("privacy_policy").get_default()
         )
 
-        # check version
-
-        try:
-            release = get_data(settings.RELEASE_API, timeout=3)
-            available_version = release.get("tag_name", None)
-            if available_version and version.parse(available_version) > version.parse(
-                settings.VERSION
-            ):
-                data["current_version"] = settings.VERSION
-                data["available_version"] = available_version
-        except:  # pylint: disable= bare-except
-            pass
+        if site.available_version and version.parse(site.available_version) > version.parse(
+            settings.VERSION
+        ):
+            data["current_version"] = settings.VERSION
+            data["available_version"] = site.available_version
 
         return TemplateResponse(request, "settings/dashboard/dashboard.html", data)
 
