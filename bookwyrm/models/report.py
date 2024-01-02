@@ -3,8 +3,11 @@ from django.core.exceptions import PermissionDenied
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
+from bookwyrm import activitypub
 from bookwyrm.settings import DOMAIN
+from .activitypub_mixin import ActivityMixin
 from .base_model import BookWyrmModel
+from . import fields
 
 
 # Report action enums
@@ -22,21 +25,29 @@ APPROVE_DOMAIN = "approve_domain"
 DELETE_ITEM = "delete_item"
 
 
-class Report(BookWyrmModel):
+class Report(ActivityMixin, BookWyrmModel):
     """reported status or user"""
 
-    reporter = models.ForeignKey(
-        "User", related_name="reporter", on_delete=models.PROTECT
+    activity_serializer = activitypub.Flag
+
+    reporter = fields.ForeignKey(
+        "User",
+        related_name="reporter",
+        on_delete=models.PROTECT,
+        activitypub_field="actor",
     )
-    note = models.TextField(null=True, blank=True)
-    user = models.ForeignKey("User", on_delete=models.PROTECT, null=True, blank=True)
-    status = models.ForeignKey(
+    note = fields.TextField(null=True, blank=True, activitypub_field="content")
+    user = fields.ForeignKey(
+        "User", on_delete=models.PROTECT, null=True, blank=True, activitypub_field="to"
+    )
+    status = fields.ForeignKey(
         "Status",
         null=True,
         blank=True,
         on_delete=models.PROTECT,
+        activitypub_field="object",
     )
-    links = models.ManyToManyField("Link", blank=True)
+    links = fields.ManyToManyField("Link", blank=True)
     resolved = models.BooleanField(default=False)
 
     def raise_not_editable(self, viewer):
