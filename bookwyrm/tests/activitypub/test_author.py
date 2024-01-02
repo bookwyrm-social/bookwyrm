@@ -6,7 +6,8 @@ from bookwyrm import models
 class Author(TestCase):
     """serialize author tests"""
 
-    def setUp(self):
+    @classmethod
+    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
         """initial data"""
         self.book = models.Edition.objects.create(
             title="Example Edition",

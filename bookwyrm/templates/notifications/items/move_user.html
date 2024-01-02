@@ -1,0 +1,29 @@
+{% extends 'notifications/items/layout.html' %}
+
+{% load i18n %}
+{% load utilities %}
+{% load user_page_tags %}
+
+{% block primary_link %}{% spaceless %}
+    {{ notification.related_object.local_path }}
+{% endspaceless %}{% endblock %}
+
+{% block icon %}
+    <span class="icon icon-local"></span>
+{% endblock %}
+
+{% block description %}
+    {% if related_user_moved_to %}
+        {% id_to_username request.user.moved_to  as username %}
+        {% blocktrans trimmed %}
+        {{ related_user }} has moved to <a href="{{ related_user_moved_to }}">{{ username }}</a>
+        {% endblocktrans %}
+        <div class="row shrink my-2">
+            {% include 'snippets/move_user_buttons.html' with group=notification.related_group %}
+        </div>
+    {% else %}
+        {% blocktrans trimmed %}
+        {{ related_user }} has undone their move
+        {% endblocktrans %}
+    {% endif %}
+{% endblock %}

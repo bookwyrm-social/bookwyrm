@@ -1,5 +1,4 @@
 """ do book related things with other users """
-from django.apps import apps
 from django.db import models, IntegrityError, transaction
 from django.db.models import Q
 from bookwyrm.settings import DOMAIN
@@ -143,26 +142,28 @@ class GroupMemberInvitation(models.Model):
     @transaction.atomic
     def accept(self):
         """turn this request into the real deal"""
+        # pylint: disable-next=import-outside-toplevel
+        from .notification import Notification, NotificationType  # circular dependency
+
         GroupMember.from_request(self)
 
-        model = apps.get_model("bookwyrm.Notification", require_ready=True)
         # tell the group owner
-        model.notify(
+        Notification.notify(
             self.group.user,
             self.user,
             related_group=self.group,
-            notification_type=model.ACCEPT,
+            notification_type=NotificationType.ACCEPT,
         )
 
         # let the other members know about it
         for membership in self.group.memberships.all():
             member = membership.user
             if member not in (self.user, self.group.user):
-                model.notify(
+                Notification.notify(
                     member,
                     self.user,
                     related_group=self.group,
-                    notification_type=model.JOIN,
+                    notification_type=NotificationType.JOIN,
                 )
 
     def reject(self):

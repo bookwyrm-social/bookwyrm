@@ -99,7 +99,7 @@ homeTour.addSteps([
         ],
     },
     {
-        text: "{% trans 'Use the <strong>Feed</strong>, <strong>Lists</strong> and <strong>Discover</strong> links to discover the latest news from your feed, lists of books by topic, and the latest happenings on this Bookwyrm server!' %}",
+        text: "{% trans 'Use the <strong>Lists</strong>, <strong>Discover</strong>, and <strong>Your Books</strong> links to discover reading suggestions and the latest happenings on this server, or to see your catalogued books!' %}",
         title: "{% trans 'Navigation Bar' %}",
         attachTo: {
             element: checkResponsiveState('#tour-navbar-start'),
@@ -197,7 +197,7 @@ homeTour.addSteps([
         ],
     },
     {
-        text: `{% trans "Your profile, books, direct messages, and settings can be accessed by clicking on your name in the menu here." %} <p class="notification is-warning is-light mt-3">{% trans "Try selecting <strong>Profile</strong> from the drop down menu to continue the tour." %}</p>`,
+        text: `{% trans "Your profile, user directory, direct messages, and settings can be accessed by clicking on your name in the menu here." %} <p class="notification is-warning is-light mt-3">{% trans "Try selecting <strong>Profile</strong> from the drop down menu to continue the tour." %}</p>`,
         title: "{% trans 'Profile and settings menu' %}",
         attachTo: {
             element: checkResponsiveState('#navbar-dropdown'),

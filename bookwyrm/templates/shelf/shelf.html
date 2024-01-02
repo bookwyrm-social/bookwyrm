@@ -18,7 +18,9 @@
         {% include 'user/books_header.html' %}
     </h1>
 </header>
-
+{% if user.moved_to %}
+    {% include "snippets/moved_user_notice.html" with user=user %}
+{% else %}
 <nav class="breadcrumb subtitle" aria-label="breadcrumbs">
     <ul>
         <li><a href="{% url 'user-feed' user|username %}">{% trans "User profile" %}</a></li>
@@ -215,6 +217,7 @@
 <div>
     {% include 'snippets/pagination.html' with page=books path=request.path %}
 </div>
+{% endif %}
 {% endblock %}
 
 {% block scripts %}

@@ -29,6 +29,7 @@
             <div class="notification">
                 {% trans "This is only intended to be used when things have gone very wrong with imports and you need to pause the feature while addressing issues." %}
                 {% trans "While imports are disabled, users will not be allowed to start new imports, but existing imports will not be affected." %}
+                {% trans "This setting prevents both book imports and user imports." %}
             </div>
             {% csrf_token %}
             <div class="control">
@@ -89,91 +90,215 @@
             </div>
         </form>
     </details>
+    <details class="details-panel box">
+        <summary>
+            <span role="heading" aria-level="2" class="title is-6">
+                {% trans "Limit how often users can import and export" %}
+            </span>
+            <span class="details-close icon icon-x" aria-hidden="true"></span>
+        </summary>
+        <form
+            name="user-imports-set-limit"
+            id="user-imports-set-limit"
+            method="POST"
+            action="{% url 'settings-user-imports-set-limit' %}"
+        >
+            <div class="notification">
+                {% trans "Some users might try to run user imports or exports very frequently, which you want to limit." %}
+                {% trans "Set the value to 0 to not enforce any limit." %}
+            </div>
+            <div class="align.to-t">
+                <label for="limit">{% trans "Restrict user imports and exports to once every " %}</label>
+                <input name="limit" class="input is-w-xs is-h-em" type="text" placeholder="0" value="{{ user_import_time_limit }}">
+                <label>{% trans "hours" %}</label>
+                {% csrf_token %}
+                <div class="control">
+                    <button type="submit" class="button is-warning">
+                        {% trans "Change limit" %}
+                    </button>
+                </div>
+            </div>
+        </form>
+    </details>
 </div>
 <div class="block">
-    <div class="tabs">
-        <ul>
-            {% url 'settings-imports' as url %}
-            <li {% if request.path in url %}class="is-active" aria-current="page"{% endif %}>
-                <a href="{{ url }}">{% trans "Active" %}</a>
-            </li>
-            {% url 'settings-imports' status="complete" as url %}
-            <li {% if url in request.path %}class="is-active" aria-current="page"{% endif %}>
-                <a href="{{ url }}">{% trans "Completed" %}</a>
-            </li>
-        </ul>
+    <h4 class="title is-4">{% trans "Book Imports" %}</h4>
+    <div class="block">
+        <div class="tabs">
+            <ul>
+                {% url 'settings-imports' as url %}
+                <li {% if request.path in url %}class="is-active" aria-current="page"{% endif %}>
+                    <a href="{{ url }}">{% trans "Active" %}</a>
+                </li>
+                {% url 'settings-imports' status="complete" as url %}
+                <li {% if url in request.path %}class="is-active" aria-current="page"{% endif %}>
+                    <a href="{{ url }}">{% trans "Completed" %}</a>
+                </li>
+            </ul>
+        </div>
     </div>
+
+    <div class="table-container block content">
+        <table class="table is-striped is-fullwidth">
+            <tr>
+                {% url 'settings-imports' status as url %}
+                <th>
+                    {% trans "ID" %}
+                </th>
+                <th>
+                    {% trans "User" as text %}
+                    {% include 'snippets/table-sort-header.html' with field="user" sort=sort text=text %}
+                </th>
+                <th>
+                    {% trans "Date Created" as text %}
+                    {% include 'snippets/table-sort-header.html' with field="created_date" sort=sort text=text %}
+                </th>
+                {% if status != "active" %}
+                <th>
+                    {% trans "Date Updated" %}
+                </th>
+                {% endif %}
+                <th>
+                    {% trans "Items" %}
+                </th>
+                <th>
+                    {% trans "Pending items" %}
+                </th>
+                <th>
+                    {% trans "Successful items" %}
+                </th>
+                <th>
+                    {% trans "Failed items" %}
+                </th>
+                {% if status == "active" %}
+                <th>{% trans "Actions" %}</th>
+                {% endif %}
+            </tr>
+            {% for import in imports %}
+            <tr>
+                <td>{{ import.id }}</td>
+                <td class="overflow-wrap-anywhere">
+                    <a href="{% url 'settings-user' import.user.id %}">{{ import.user|username }}</a>
+                </td>
+                <td>{{ import.created_date }}</td>
+                {% if status != "active" %}
+                <td>{{ import.updated_date }}</td>
+                {% endif %}
+                <td>{{ import.item_count|intcomma }}</td>
+                <td>{{ import.pending_item_count|intcomma }}</td>
+                <td>{{ import.successful_item_count|intcomma }}</td>
+                <td>{{ import.failed_item_count|intcomma }}</td>
+                {% if status == "active" %}
+                <td>
+                    {% join "complete" import.id as modal_id %}
+                    <button type="button" data-modal-open="{{ modal_id }}" class="button is-danger">{% trans "Stop import" %}</button>
+                    {% include "settings/imports/complete_import_modal.html" with id=modal_id %}
+                </td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+            {% if not imports %}
+            <tr>
+                <td colspan="6">
+                    <em>{% trans "No matching imports found." %} </em>
+                </td>
+            </tr>
+            {% endif %}
+        </table>
+    </div>
+
+    {% include 'snippets/pagination.html' with page=imports path=request.path %}
+
 </div>
 
-<div class="table-container block content">
-    <table class="table is-striped is-fullwidth">
-        <tr>
-            {% url 'settings-imports' status  as url %}
-            <th>
-                {% trans "ID" %}
-            </th>
-            <th>
-                {% trans "User" as text %}
-                {% include 'snippets/table-sort-header.html' with field="user" sort=sort text=text %}
-            </th>
-            <th>
-                {% trans "Date Created" as text %}
-                {% include 'snippets/table-sort-header.html' with field="created_date" sort=sort text=text %}
-            </th>
-            {% if status != "active" %}
-            <th>
-                {% trans "Date Updated" %}
-            </th>
-            {% endif %}
-            <th>
-                {% trans "Items" %}
-            </th>
-            <th>
-                {% trans "Pending items" %}
-            </th>
-            <th>
-                {% trans "Successful items" %}
-            </th>
-            <th>
-                {% trans "Failed items" %}
-            </th>
-            {% if status == "active" %}
-            <th>{% trans "Actions" %}</th>
-            {% endif %}
-        </tr>
-        {% for import in imports %}
-        <tr>
-            <td>{{ import.id }}</td>
-            <td class="overflow-wrap-anywhere">
-                <a href="{% url 'settings-user' import.user.id %}">{{ import.user|username }}</a>
-            </td>
-            <td>{{ import.created_date }}</td>
-            {% if status != "active" %}
-            <td>{{ import.updated_date }}</td>
-            {% endif %}
-            <td>{{ import.item_count|intcomma }}</td>
-            <td>{{ import.pending_item_count|intcomma }}</td>
-            <td>{{ import.successful_item_count|intcomma }}</td>
-            <td>{{ import.failed_item_count|intcomma }}</td>
-            {% if status == "active" %}
-            <td>
-                {% join "complete" import.id as modal_id %}
-                <button type="button" data-modal-open="{{ modal_id }}" class="button is-danger">{% trans "Stop import" %}</button>
-                {% include "settings/imports/complete_import_modal.html" with id=modal_id %}
-            </td>
-            {% endif %}
-        </tr>
-        {% endfor %}
-        {% if not imports %}
-        <tr>
-            <td colspan="6">
-                <em>{% trans "No matching imports found." %} </em>
-            </td>
-        </tr>
-        {% endif %}
-    </table>
-</div>
+<div class="block">
+    <h4 class="title is-4">{% trans "User Imports" %}</h4>
+    <div class="block">
+        <div class="tabs">
+            <ul>
+                {% url 'settings-imports' as url %}
+                <li {% if request.path in url %}class="is-active" aria-current="page"{% endif %}>
+                    <a href="{{ url }}">{% trans "Active" %}</a>
+                </li>
+                {% url 'settings-imports' status="complete" as url %}
+                <li {% if url in request.path %}class="is-active" aria-current="page"{% endif %}>
+                    <a href="{{ url }}">{% trans "Completed" %}</a>
+                </li>
+            </ul>
+        </div>
+    </div>
 
-{% include 'snippets/pagination.html' with page=imports path=request.path %}
+    <div class="table-container block content">
+        <table class="table is-striped is-fullwidth">
+            <tr>
+                {% url 'settings-imports' status as url %}
+                <th>
+                    {% trans "ID" %}
+                </th>
+                <th>
+                    {% trans "User" as text %}
+                    {% include 'snippets/table-sort-header.html' with field="user" sort=sort text=text %}
+                </th>
+                <th>
+                    {% trans "Date Created" as text %}
+                    {% include 'snippets/table-sort-header.html' with field="created_date" sort=sort text=text %}
+                </th>
+                {% if status != "active" %}
+                <th>
+                    {% trans "Date Updated" %}
+                </th>
+                {% endif %}
+
+                {% if status == "active" %}
+                <th>{% trans "Actions" %}</th>
+                {% else %}
+                <th>{% trans "Status" %}</th>
+                {% endif %}
+            </tr>
+            {% for import in user_imports %}
+            <tr>
+                <td>{{ import.id }}</td>
+                <td class="overflow-wrap-anywhere">
+                    <a href="{% url 'settings-user' import.user.id %}">{{ import.user|username }}</a>
+                </td>
+                <td>{{ import.created_date }}</td>
+                {% if status != "active" %}
+                <td>{{ import.updated_date }}</td>
+                {% endif %}
+                {% if status == "active" %}
+                <td>
+                    {% join "complete" import.id as modal_id %}
+                    <button type="button" data-modal-open="{{ modal_id }}" class="button is-danger">{% trans "Stop import" %}</button>
+                    {% include "settings/imports/complete_user_import_modal.html" with id=modal_id %}
+                </td>
+                {% else %}
+                <td>
+                    <span
+                        {% if import.status == "stopped" or import.status == "failed" %}
+                        class="tag is-danger"
+                        {% elif import.status == "pending" %}
+                        class="tag is-warning"
+                        {% elif import.complete %}
+                        class="tag"
+                        {% else %}
+                        class="tag is-success"
+                        {% endif %}
+                        >{{ import.status }}
+                    </span>
+                </td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+            {% if not user_imports %}
+            <tr>
+                <td colspan="6">
+                    <em>{% trans "No matching imports found." %} </em>
+                </td>
+            </tr>
+            {% endif %}
+        </table>
+    </div>
+
+    {% include 'snippets/pagination.html' with page=user_imports path=request.path %}
+</div>
 {% endblock %}
-

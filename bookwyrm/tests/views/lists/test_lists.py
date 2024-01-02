@@ -15,10 +15,9 @@ from bookwyrm.tests.validate_html import validate_html
 class ListViews(TestCase):
     """lists of lists"""
 
-    # pylint: disable=invalid-name
-    def setUp(self):
+    @classmethod
+    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
         """we need basic test data and mocks"""
-        self.factory = RequestFactory()
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
         ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
@@ -33,10 +32,14 @@ class ListViews(TestCase):
             self.another_user = models.User.objects.create_user(
                 "rat@local.com", "rat@rat.com", "ratword", local=True, localname="rat"
             )
-        self.anonymous_user = AnonymousUser
-        self.anonymous_user.is_authenticated = False
 
         models.SiteSettings.objects.create()
+
+    def setUp(self):
+        """individual test setup"""
+        self.factory = RequestFactory()
+        self.anonymous_user = AnonymousUser
+        self.anonymous_user.is_authenticated = False
 
     @patch("bookwyrm.lists_stream.ListsStream.get_list_stream")
     def test_lists_page(self, _):

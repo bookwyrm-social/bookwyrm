@@ -1,16 +1,16 @@
 {% extends 'preferences/layout.html' %}
 {% load i18n %}
 
-{% block title %}{% trans "CSV Export" %}{% endblock %}
+{% block title %}{% trans "Export Book List" %}{% endblock %}
 
 {% block header %}
-{% trans "CSV Export" %}
+{% trans "Export Book List" %}
 {% endblock %}
 
 {% block panel %}
 <div class="block content">
     <p class="notification">
-        {% trans "Your export will include all the books on your shelves, books you have reviewed, and books with reading activity." %}
+        {% trans "Your CSV export file will include all the books on your shelves, books you have reviewed, and books with reading activity. <br/>Use this to import into a service like Goodreads." %}
     </p>
     <p>
         <form name="export" method="POST" href="{% url 'prefs-export' %}">

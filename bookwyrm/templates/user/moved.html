@@ -1,0 +1,27 @@
+{% load i18n %}
+{% load humanize %}
+{% load utilities %}
+{% load markdown %}
+{% load layout %}
+{% load group_tags %}
+
+
+<div class="media block">
+    <div class="media-left">
+        <a href="{{ user.local_path }}">
+        {% include 'snippets/avatar.html' with user=user large=True %}
+        </a>
+    </div>
+    <div class="media-content">
+        <p>
+            {% if user.name %}{{ user.name }}{% else %}{{ user.localname }}{% endif %}
+            {% if user.manually_approves_followers %}
+            <span class="icon icon-lock is-size-7" title="{% trans 'Locked account' %}">
+                <span class="is-sr-only">{% trans "Locked account" %}</span>
+            </span>
+            {% endif %}
+        </p>
+        <p>{{ user.username }}</p>
+        <p>{% blocktrans with date=user.created_date|naturaltime %}Joined {{ date }}{% endblocktrans %}</p>
+    </div>
+</div>

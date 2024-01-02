@@ -96,6 +96,7 @@ class SiteSettings(SiteModel):
     imports_enabled = models.BooleanField(default=True)
     import_size_limit = models.IntegerField(default=0)
     import_limit_reset = models.IntegerField(default=0)
+    user_import_time_limit = models.IntegerField(default=48)
 
     field_tracker = FieldTracker(fields=["name", "instance_tagline", "logo"])
 
@@ -149,6 +150,7 @@ class Theme(SiteModel):
     created_date = models.DateTimeField(auto_now_add=True)
     name = models.CharField(max_length=50, unique=True)
     path = models.CharField(max_length=50, unique=True)
+    loads = models.BooleanField(null=True, blank=True)
 
     def __str__(self):
         # pylint: disable=invalid-str-returned

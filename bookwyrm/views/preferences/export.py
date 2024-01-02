@@ -1,15 +1,21 @@
 """ Let users export their book data """
+from datetime import timedelta
 import csv
 import io
 
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 from django.db.models import Q
 from django.http import HttpResponse
 from django.template.response import TemplateResponse
+from django.utils import timezone
 from django.views import View
 from django.utils.decorators import method_decorator
+from django.shortcuts import redirect
 
 from bookwyrm import models
+from bookwyrm.models.bookwyrm_export_job import BookwyrmExportJob
+from bookwyrm.settings import PAGE_LENGTH
 
 # pylint: disable=no-self-use
 @method_decorator(login_required, name="dispatch")
@@ -82,5 +88,63 @@ class Export(View):
             content_type="text/csv",
             headers={
                 "Content-Disposition": 'attachment; filename="bookwyrm-export.csv"'
+            },
+        )
+
+
+# pylint: disable=no-self-use
+@method_decorator(login_required, name="dispatch")
+class ExportUser(View):
+    """Let users export user data to import into another Bookwyrm instance"""
+
+    def get(self, request):
+        """Request tar file"""
+
+        jobs = BookwyrmExportJob.objects.filter(user=request.user).order_by(
+            "-created_date"
+        )
+        site = models.SiteSettings.objects.get()
+        hours = site.user_import_time_limit
+        allowed = (
+            jobs.first().created_date < timezone.now() - timedelta(hours=hours)
+            if jobs.first()
+            else True
+        )
+        next_available = (
+            jobs.first().created_date + timedelta(hours=hours) if not allowed else False
+        )
+        paginated = Paginator(jobs, PAGE_LENGTH)
+        page = paginated.get_page(request.GET.get("page"))
+        data = {
+            "jobs": page,
+            "next_available": next_available,
+            "page_range": paginated.get_elided_page_range(
+                page.number, on_each_side=2, on_ends=1
+            ),
+        }
+
+        return TemplateResponse(request, "preferences/export-user.html", data)
+
+    def post(self, request):
+        """Download the json file of a user's data"""
+
+        job = BookwyrmExportJob.objects.create(user=request.user)
+        job.start_job()
+
+        return redirect("prefs-user-export")
+
+
+@method_decorator(login_required, name="dispatch")
+class ExportArchive(View):
+    """Serve the archive file"""
+
+    def get(self, request, archive_id):
+        """download user export file"""
+        export = BookwyrmExportJob.objects.get(task_id=archive_id, user=request.user)
+        return HttpResponse(
+            export.export_data,
+            content_type="application/gzip",
+            headers={
+                "Content-Disposition": 'attachment; filename="bookwyrm-account-export.tar.gz"'  # pylint: disable=line-too-long
             },
         )

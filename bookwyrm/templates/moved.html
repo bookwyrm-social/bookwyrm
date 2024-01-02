@@ -1,0 +1,52 @@
+{% load i18n %}
+{% load static %}
+{% load utilities %}
+
+<div class="container my-6">
+    <div class="card">
+        <div class="card-content">
+          <div class="media">
+            <div class="media-left">
+              <figure class="image is-48x48">
+                <img src="{% if request.user.avatar %}{% get_media_prefix %}{{ request.user.avatar }}{% else %}{% static "images/default_avi.jpg" %}{% endif %}"
+                {% if ariaHide %}aria-hidden="true"{% endif %}
+                alt="{{ request.user.alt_text }}"
+                loading="lazy"
+                decoding="async">
+              </figure>
+            </div>
+            <div class="media-content">
+              <p class="title is-4">{{ request.user.display_name }}</p>
+              <p class="subtitle is-6"><s>{{request.user.username}}</s></p>
+            </div>
+          </div>
+
+          <div class="notification is-warning">
+            <p>
+                {% id_to_username request.user.moved_to  as username %}
+                {% blocktrans trimmed with moved_to=user.moved_to %}
+                    <strong>You have moved your account</strong> to <a href="{{ moved_to }}">{{ username }}</a>
+                {% endblocktrans %}
+            </p>
+            <p class="mt-2">
+                {% trans "You can undo the move to restore full functionality, but some followers may have already unfollowed this account." %}
+            </p>
+          </div>
+        </div>
+        <div class="columns is-justify-content-center">
+            <div class="column is-one-quarter">
+                <div class="level">
+                    <form class="level-left" name="remove-alias" action="{% url 'prefs-unmove' %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="remote_id" id="remote_id" value="{{user.moved_to}}">
+                        <button type="submit" class="button is-medium is-danger">{% trans "Undo move" %}</button>
+                    </form>
+                    <form class="level-right" name="logout" action="{% url 'logout' %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="button is-medium is-primary">{% trans 'Log out' %}</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+      </div>
+</div>

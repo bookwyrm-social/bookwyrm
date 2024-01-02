@@ -1,7 +1,9 @@
 """ testing models """
 import json
+
 from unittest.mock import patch
 from django.contrib.auth.models import Group
+from django.db import IntegrityError
 from django.test import TestCase
 import responses
 
@@ -9,13 +11,15 @@ from bookwyrm import models
 from bookwyrm.management.commands import initdb
 from bookwyrm.settings import USE_HTTPS, DOMAIN
 
+
 # pylint: disable=missing-class-docstring
 # pylint: disable=missing-function-docstring
 class User(TestCase):
+
     protocol = "https://" if USE_HTTPS else "http://"
 
-    # pylint: disable=invalid-name
-    def setUp(self):
+    @classmethod
+    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
         ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
@@ -26,6 +30,7 @@ class User(TestCase):
                 local=True,
                 localname="mouse",
                 name="hi",
+                summary="a summary",
                 bookwyrm_user=False,
             )
             self.another_user = models.User.objects.create_user(
@@ -88,9 +93,11 @@ class User(TestCase):
                 "https://www.w3.org/ns/activitystreams",
                 "https://w3id.org/security/v1",
                 {
-                    "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
-                    "schema": "http://schema.org#",
                     "PropertyValue": "schema:PropertyValue",
+                    "alsoKnownAs": {"@id": "as:alsoKnownAs", "@type": "@id"},
+                    "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+                    "movedTo": {"@id": "as:movedTo", "@type": "@id"},
+                    "schema": "http://schema.org#",
                     "value": "schema:value",
                 },
             ],
@@ -216,18 +223,70 @@ class User(TestCase):
 
     @patch("bookwyrm.suggested_users.remove_user_task.delay")
     def test_delete_user(self, _):
-        """deactivate a user"""
+        """permanently delete a user"""
         self.assertTrue(self.user.is_active)
+        self.assertEqual(self.user.name, "hi")
+        self.assertEqual(self.user.summary, "a summary")
+        self.assertEqual(self.user.email, "mouse@mouse.mouse")
         with patch(
             "bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"
-        ) as broadcast_mock:
+        ) as broadcast_mock, patch(
+            "bookwyrm.models.user.User.erase_user_statuses"
+        ) as erase_statuses_mock:
             self.user.delete()
 
+        self.assertEqual(erase_statuses_mock.call_count, 1)
+
+        # make sure the deletion is broadcast
         self.assertEqual(broadcast_mock.call_count, 1)
         activity = json.loads(broadcast_mock.call_args[1]["args"][1])
         self.assertEqual(activity["type"], "Delete")
         self.assertEqual(activity["object"], self.user.remote_id)
+
+        self.user.refresh_from_db()
+
+        # the user's account data should be deleted
+        self.assertIsNone(self.user.name)
+        self.assertIsNone(self.user.summary)
+        self.assertNotEqual(self.user.email, "mouse@mouse.mouse")
         self.assertFalse(self.user.is_active)
+
+    @patch("bookwyrm.suggested_users.remove_user_task.delay")
+    @patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
+    @patch("bookwyrm.activitystreams.add_status_task.delay")
+    @patch("bookwyrm.activitystreams.remove_status_task.delay")
+    def test_delete_user_erase_statuses(self, *_):
+        """erase user statuses when user is deleted"""
+        status = models.Status.objects.create(user=self.user, content="hello")
+        self.assertFalse(status.deleted)
+        self.assertIsNotNone(status.content)
+        self.assertIsNone(status.deleted_date)
+
+        self.user.delete()
+        status.refresh_from_db()
+
+        self.assertTrue(status.deleted)
+        self.assertIsNone(status.content)
+        self.assertIsNotNone(status.deleted_date)
+
+    @patch("bookwyrm.suggested_users.remove_user_task.delay")
+    @patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
+    @patch("bookwyrm.activitystreams.add_status_task.delay")
+    def test_delete_user_erase_statuses_invalid(self, *_):
+        """erase user statuses when user is deleted"""
+        status = models.Status.objects.create(user=self.user, content="hello")
+        self.assertFalse(status.deleted)
+        self.assertIsNotNone(status.content)
+        self.assertIsNone(status.deleted_date)
+
+        self.user.deactivate()
+        with self.assertRaises(IntegrityError):
+            self.user.erase_user_statuses()
+
+        status.refresh_from_db()
+        self.assertFalse(status.deleted)
+        self.assertIsNotNone(status.content)
+        self.assertIsNone(status.deleted_date)
 
     def test_admins_no_admins(self):
         """list of admins"""

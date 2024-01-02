@@ -8,8 +8,9 @@ from bookwyrm import lists_stream, models
 class ListsStreamSignals(TestCase):
     """using redis to build activity streams"""
 
-    def setUp(self):
-        """use a test csv"""
+    @classmethod
+    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
+        """database setup"""
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
         ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):

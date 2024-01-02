@@ -15,9 +15,9 @@ from bookwyrm.settings import USER_AGENT
 class OutboxView(TestCase):
     """sends out activities"""
 
-    def setUp(self):
+    @classmethod
+    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
         """we'll need some data"""
-        self.factory = RequestFactory()
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
         ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
@@ -35,6 +35,10 @@ class OutboxView(TestCase):
             remote_id="https://example.com/book/1",
             parent_work=work,
         )
+
+    def setUp(self):
+        """individual test setup"""
+        self.factory = RequestFactory()
 
     def test_outbox(self, _):
         """returns user's statuses"""

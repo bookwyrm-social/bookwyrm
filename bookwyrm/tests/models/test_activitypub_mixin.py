@@ -26,7 +26,8 @@ from bookwyrm.settings import PAGE_LENGTH
 class ActivitypubMixins(TestCase):
     """functionality shared across models"""
 
-    def setUp(self):
+    @classmethod
+    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
         """shared data"""
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
@@ -47,6 +48,8 @@ class ActivitypubMixins(TestCase):
                 outbox="https://example.com/users/rat/outbox",
             )
 
+    def setUp(self):
+        """test data"""
         self.object_mock = {
             "to": "to field",
             "cc": "cc field",
@@ -118,6 +121,25 @@ class ActivitypubMixins(TestCase):
 
         result = models.Edition.find_existing({"openlibraryKey": "OL1234"})
         self.assertEqual(result, book)
+
+    def test_find_existing_with_id(self, *_):
+        """make sure that an "id" field won't produce a match"""
+        book = models.Edition.objects.create(title="Test edition")
+
+        result = models.Edition.find_existing({"id": book.id})
+        self.assertIsNone(result)
+
+    def test_find_existing_with_id_and_match(self, *_):
+        """make sure that an "id" field won't produce a match"""
+        book = models.Edition.objects.create(title="Test edition")
+        matching_book = models.Edition.objects.create(
+            title="Another test edition", openlibrary_key="OL1234"
+        )
+
+        result = models.Edition.find_existing(
+            {"id": book.id, "openlibraryKey": "OL1234"}
+        )
+        self.assertEqual(result, matching_book)
 
     def test_get_recipients_public_object(self, *_):
         """determines the recipients for an object's broadcast"""
@@ -372,11 +394,13 @@ class ActivitypubMixins(TestCase):
     def test_to_ordered_collection_page(self, *_):
         """make sure the paged results of an ordered collection work"""
         self.assertEqual(PAGE_LENGTH, 15)
-        for number in range(0, 2 * PAGE_LENGTH):
-            models.Status.objects.create(
+        models.Status.objects.bulk_create(
+            models.Status(
                 user=self.local_user,
                 content=f"test status {number}",
             )
+            for number in range(2 * PAGE_LENGTH)
+        )
         page_1 = to_ordered_collection_page(
             models.Status.objects.all(), "http://fish.com/", page=1
         )
@@ -397,13 +421,13 @@ class ActivitypubMixins(TestCase):
     def test_to_ordered_collection(self, *_):
         """convert a queryset into an ordered collection object"""
         self.assertEqual(PAGE_LENGTH, 15)
-
-        for number in range(0, 2 * PAGE_LENGTH):
-            models.Status.objects.create(
+        models.Status.objects.bulk_create(
+            models.Status(
                 user=self.local_user,
                 content=f"test status {number}",
             )
-
+            for number in range(2 * PAGE_LENGTH)
+        )
         MockSelf = namedtuple("Self", ("remote_id"))
         mock_self = MockSelf("")
 

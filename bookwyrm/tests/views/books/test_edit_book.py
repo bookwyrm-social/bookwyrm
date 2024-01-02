@@ -8,6 +8,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.template.response import TemplateResponse
 from django.test import TestCase
 from django.test.client import RequestFactory
+from django.utils import timezone
 
 from bookwyrm import forms, models, views
 from bookwyrm.views.books.edit_book import add_authors
@@ -18,9 +19,9 @@ from bookwyrm.tests.views.books.test_book import _setup_cover_url
 class EditBookViews(TestCase):
     """books books books"""
 
-    def setUp(self):
+    @classmethod
+    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
         """we need basic test data and mocks"""
-        self.factory = RequestFactory()
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
         ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
@@ -46,10 +47,13 @@ class EditBookViews(TestCase):
             remote_id="https://example.com/book/1",
             parent_work=self.work,
         )
+        models.SiteSettings.objects.create()
+
+    def setUp(self):
+        """individual test setup"""
+        self.factory = RequestFactory()
         # pylint: disable=line-too-long
         self.authors_body = "<?xml version='1.0' encoding='UTF-8' ?><?xml-stylesheet type='text/xsl' href='http://isni.oclc.org/sru/DB=1.2/?xsl=searchRetrieveResponse' ?><srw:searchRetrieveResponse xmlns:srw='http://www.loc.gov/zing/srw/' xmlns:dc='http://purl.org/dc/elements/1.1/' xmlns:diag='http://www.loc.gov/zing/srw/diagnostic/' xmlns:xcql='http://www.loc.gov/zing/cql/xcql/'><srw:version>1.1</srw:version><srw:records><srw:record><isniUnformatted>0000000084510024</isniUnformatted></srw:record></srw:records></srw:searchRetrieveResponse>"
-
-        # pylint: disable=line-too-long
         self.author_body = "<?xml version='1.0' encoding='UTF-8' ?><?xml-stylesheet type='text/xsl' href='http://isni.oclc.org/sru/DB=1.2/?xsl=searchRetrieveResponse' ?><srw:searchRetrieveResponse xmlns:srw='http://www.loc.gov/zing/srw/' xmlns:dc='http://purl.org/dc/elements/1.1/' xmlns:diag='http://www.loc.gov/zing/srw/diagnostic/' xmlns:xcql='http://www.loc.gov/zing/cql/xcql/'><srw:records><srw:record><srw:recordData><responseRecord><ISNIAssigned><isniUnformatted>0000000084510024</isniUnformatted><isniURI>https://isni.org/isni/0000000084510024</isniURI><dataConfidence>60</dataConfidence><ISNIMetadata><identity><personOrFiction><personalName><surname>Catherine Amy Dawson Scott</surname><nameTitle>poet and novelist</nameTitle><nameUse>public</nameUse><source>VIAF</source><source>WKP</source><subsourceIdentifier>Q544961</subsourceIdentifier></personalName><personalName><forename>C. A.</forename><surname>Dawson Scott</surname><marcDate>1865-1934</marcDate><nameUse>public</nameUse><source>VIAF</source><source>NLP</source><subsourceIdentifier>a28927850</subsourceIdentifier></personalName><sources><codeOfSource>VIAF</codeOfSource><sourceIdentifier>45886165</sourceIdentifier><reference><class>ALL</class><role>CRE</role><URI>http://viaf.org/viaf/45886165</URI></reference></sources><externalInformation><information>Wikipedia</information><URI>https://en.wikipedia.org/wiki/Catherine_Amy_Dawson_Scott</URI></externalInformation></ISNIMetadata></ISNIAssigned></responseRecord></srw:recordData></srw:record></srw:records></srw:searchRetrieveResponse>"
 
         responses.get(
@@ -84,8 +88,6 @@ class EditBookViews(TestCase):
             ],
             body=self.author_body,
         )
-
-        models.SiteSettings.objects.create()
 
     def test_edit_book_get(self):
         """there are so many views, this just makes sure it LOADS"""
@@ -208,6 +210,97 @@ class EditBookViews(TestCase):
 
         book = models.Edition.objects.get(title="New Title")
         self.assertEqual(book.parent_work.title, "New Title")
+
+    def test_published_date_timezone(self):
+        """user timezone does not affect publication year"""
+        # https://github.com/bookwyrm-social/bookwyrm/issues/3028
+        self.local_user.groups.add(self.group)
+        create_book = views.CreateBook.as_view()
+        book_data = {
+            "title": "January 1st test",
+            "parent_work": self.work.id,
+            "last_edited_by": self.local_user.id,
+            "published_date_day": "1",
+            "published_date_month": "1",
+            "published_date_year": "2020",
+        }
+        request = self.factory.post("", book_data)
+        request.user = self.local_user
+
+        with timezone.override("Europe/Madrid"):  # Ahead of UTC.
+            create_book(request)
+
+        book = models.Edition.objects.get(title="January 1st test")
+        self.assertEqual(book.edition_info, "2020")
+
+    def test_partial_published_dates(self):
+        """create a book with partial publication dates, then update them"""
+        self.local_user.groups.add(self.group)
+        book_data = {
+            "title": "An Edition With Dates",
+            "parent_work": self.work.id,
+            "last_edited_by": self.local_user.id,
+        }
+        initial_pub_dates = {
+            # published_date: 2023-01-01
+            "published_date_day": "1",
+            "published_date_month": "01",
+            "published_date_year": "2023",
+            # first_published_date: 1995
+            "first_published_date_day": "",
+            "first_published_date_month": "",
+            "first_published_date_year": "1995",
+        }
+        updated_pub_dates = {
+            # published_date: full -> year-only
+            "published_date_day": "",
+            "published_date_month": "",
+            "published_date_year": "2023",
+            # first_published_date: add month
+            "first_published_date_day": "",
+            "first_published_date_month": "03",
+            "first_published_date_year": "1995",
+        }
+
+        # create book
+        create_book = views.CreateBook.as_view()
+        request = self.factory.post("", book_data | initial_pub_dates)
+        request.user = self.local_user
+
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
+            create_book(request)
+
+        book = models.Edition.objects.get(title="An Edition With Dates")
+
+        self.assertEqual("2023-01-01", book.published_date.partial_isoformat())
+        self.assertEqual("1995", book.first_published_date.partial_isoformat())
+
+        self.assertTrue(book.published_date.has_day)
+        self.assertTrue(book.published_date.has_month)
+
+        self.assertFalse(book.first_published_date.has_day)
+        self.assertFalse(book.first_published_date.has_month)
+
+        # now edit publication dates
+        edit_book = views.ConfirmEditBook.as_view()
+        request = self.factory.post("", book_data | updated_pub_dates)
+        request.user = self.local_user
+
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async"):
+            result = edit_book(request, book.id)
+
+        self.assertEqual(result.status_code, 302)
+
+        book.refresh_from_db()
+
+        self.assertEqual("2023", book.published_date.partial_isoformat())
+        self.assertEqual("1995-03", book.first_published_date.partial_isoformat())
+
+        self.assertFalse(book.published_date.has_day)
+        self.assertFalse(book.published_date.has_month)
+
+        self.assertFalse(book.first_published_date.has_day)
+        self.assertTrue(book.first_published_date.has_month)
 
     def test_create_book_existing_work(self):
         """create an entirely new book and work"""

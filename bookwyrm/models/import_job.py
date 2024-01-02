@@ -1,4 +1,5 @@
 """ track progress of goodreads imports """
+from datetime import datetime
 import math
 import re
 import dateutil.parser
@@ -259,38 +260,30 @@ class ImportItem(models.Model):
         except ValueError:
             return None
 
+    def _parse_datefield(self, field, /):
+        if not (date := self.normalized_data.get(field)):
+            return None
+
+        defaults = datetime(1970, 1, 1)  # "2022-10" => "2022-10-01"
+        parsed = dateutil.parser.parse(date, default=defaults)
+
+        # Keep timezone if import already had one, else use default.
+        return parsed if timezone.is_aware(parsed) else timezone.make_aware(parsed)
+
     @property
     def date_added(self):
         """when the book was added to this dataset"""
-        if self.normalized_data.get("date_added"):
-            parsed_date_added = dateutil.parser.parse(
-                self.normalized_data.get("date_added")
-            )
-
-            if timezone.is_aware(parsed_date_added):
-                # Keep timezone if import already had one
-                return parsed_date_added
-
-            return timezone.make_aware(parsed_date_added)
-        return None
+        return self._parse_datefield("date_added")
 
     @property
     def date_started(self):
         """when the book was started"""
-        if self.normalized_data.get("date_started"):
-            return timezone.make_aware(
-                dateutil.parser.parse(self.normalized_data.get("date_started"))
-            )
-        return None
+        return self._parse_datefield("date_started")
 
     @property
     def date_read(self):
         """the date a book was completed"""
-        if self.normalized_data.get("date_finished"):
-            return timezone.make_aware(
-                dateutil.parser.parse(self.normalized_data.get("date_finished"))
-            )
-        return None
+        return self._parse_datefield("date_finished")
 
     @property
     def reads(self):

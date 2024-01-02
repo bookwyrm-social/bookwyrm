@@ -2,11 +2,14 @@
 import os
 import re
 from uuid import uuid4
+from urllib.parse import urlparse
 from django import template
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 from django.templatetags.static import static
 
+from bookwyrm.models import User
+from bookwyrm.settings import INSTANCE_ACTOR_USERNAME
 
 register = template.Library()
 
@@ -27,6 +30,13 @@ def join(*args):
 def get_user_identifier(user):
     """use localname for local users, username for remote"""
     return user.localname if user.localname else user.username
+
+
+@register.filter(name="user_from_remote_id")
+def get_user_identifier_from_remote_id(remote_id):
+    """get the local user id from their remote id"""
+    user = User.objects.get(remote_id=remote_id)
+    return user if user else None
 
 
 @register.filter(name="book_title")
@@ -103,3 +113,46 @@ def get_isni(existing, author, autoescape=True):
                 f'<input type="text" name="isni-for-{author.id}" value="{isni}" hidden>'
             )
     return ""
+
+
+@register.simple_tag(takes_context=False)
+def id_to_username(user_id):
+    """given an arbitrary remote id, return the username"""
+    if user_id:
+        url = urlparse(user_id)
+        domain = url.netloc
+        parts = url.path.split("/")
+        name = parts[-1]
+        value = f"{name}@{domain}"
+
+    return value
+
+
+@register.filter(name="get_file_size")
+def get_file_size(file):
+    """display the size of a file in human readable terms"""
+
+    try:
+        raw_size = os.stat(file.path).st_size
+        if raw_size < 1024:
+            return f"{raw_size} bytes"
+        if raw_size < 1024**2:
+            return f"{raw_size/1024:.2f} KB"
+        if raw_size < 1024**3:
+            return f"{raw_size/1024**2:.2f} MB"
+        return f"{raw_size/1024**3:.2f} GB"
+    except Exception:  # pylint: disable=broad-except
+        return ""
+
+
+@register.filter(name="get_user_permission")
+def get_user_permission(user):
+    """given a user, return their permission level"""
+
+    return user.groups.first() or "User"
+
+
+@register.filter(name="is_instance_admin")
+def is_instance_admin(localname):
+    """Returns a boolean indicating whether the user is the instance admin account"""
+    return localname == INSTANCE_ACTOR_USERNAME

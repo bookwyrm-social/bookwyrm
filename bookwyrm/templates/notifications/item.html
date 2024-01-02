@@ -10,15 +10,23 @@
 {% elif notification.notification_type == 'FOLLOW' %}
     {% include 'notifications/items/follow.html' %}
 {% elif notification.notification_type == 'FOLLOW_REQUEST' %}
-    {% include 'notifications/items/follow_request.html' %}
+    {% if notification.related_users.0.is_active %}
+        {% include 'notifications/items/follow_request.html' %}
+    {% endif %}
 {% elif notification.notification_type == 'IMPORT' %}
     {% include 'notifications/items/import.html' %}
+{% elif notification.notification_type == 'USER_IMPORT' %}
+    {% include 'notifications/items/user_import.html' %}
+{% elif notification.notification_type == 'USER_EXPORT' %}
+    {% include 'notifications/items/user_export.html' %}
 {% elif notification.notification_type == 'ADD' %}
     {% include 'notifications/items/add.html' %}
 {% elif notification.notification_type == 'REPORT' %}
     {% include 'notifications/items/report.html' %}
 {% elif notification.notification_type == 'LINK_DOMAIN' %}
     {% include 'notifications/items/link_domain.html' %}
+{% elif notification.notification_type == 'INVITE_REQUEST' %}
+    {% include 'notifications/items/invite_request.html' %}
 {% elif notification.notification_type == 'INVITE' %}
     {% include 'notifications/items/invite.html' %}
 {% elif notification.notification_type == 'ACCEPT' %}
@@ -35,4 +43,6 @@
     {% include 'notifications/items/update.html' %}
 {% elif notification.notification_type == 'GROUP_DESCRIPTION' %}
     {% include 'notifications/items/update.html' %}
+{% elif notification.notification_type == 'MOVE' %}
+    {% include 'notifications/items/move_user.html' %}
 {% endif %}
