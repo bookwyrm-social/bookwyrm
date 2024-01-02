@@ -524,6 +524,20 @@ class KeyPair(ActivitypubMixin, BookWyrmModel):
 
 
 @app.task(queue=MISC)
+def erase_user_data(user_id):
+    """Erase any custom data about this user asynchronously
+    This is for deleted historical user data that pre-dates data
+    being cleared automatically"""
+    user = User.objects.get(id=user_id)
+    user.erase_user_data()
+    user.save(
+        broadcast=False,
+        update_fields=["email", "avatar", "preview_image", "summary", "name"],
+    )
+    user.erase_user_statuses(broadcast=False)
+
+
+@app.task(queue=MISC)
 def set_remote_server(user_id, allow_external_connections=False):
     """figure out the user's remote server in the background"""
     user = User.objects.get(id=user_id)
