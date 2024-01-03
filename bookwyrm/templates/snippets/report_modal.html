@@ -36,6 +36,15 @@
             {% trans "Links from this domain will be removed until your report has been reviewed." %}
         {% endif %}
     </p>
+    {% if not reported_user.local %}
+    <label class="checkbox label">
+        <input class="checkbox" id="id_allow_broadcast" type="checkbox" name="allow_broadcast" checked>
+        {% trans "Also send this report to the user's instance admins" %}
+    </label>
+    {% else %}
+        <input type="hidden" name="allow_broadcast">
+    {% endif %}
+    </p>
     <div class="control">
         <label class="label" for="id_{{ controls_uid }}_report_note">
             {% trans "More info about this report:" %}
