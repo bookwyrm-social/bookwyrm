@@ -38,3 +38,6 @@ class Command(BaseCommand):
         for user_id in deleted_users.values_list("id", flat=True):
             erase_user_data.delay(user_id)
             self.stdout.write(".", ending="")
+
+        self.stdout.write("")
+        self.stdout.write("Tasks created successfully")
