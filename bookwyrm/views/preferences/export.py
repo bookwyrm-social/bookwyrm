@@ -54,6 +54,7 @@ class Export(View):
         fields = (
             ["title", "author_text"]
             + deduplication_fields
+            + ["start_date", "finish_date", "stopped_date"]
             + ["rating", "review_name", "review_cw", "review_content"]
         )
         writer.writerow(fields)
@@ -69,6 +70,18 @@ class Export(View):
             )
 
             book.rating = review_rating.rating if review_rating else None
+
+            readthrough = (
+                models.ReadThrough.objects.filter(
+                    user=request.user, book=book
+                )
+                .order_by("-finish_date")
+                .first()
+            )
+            if readthrough:
+                book.start_date = readthrough.start_date
+                book.finish_date = readthrough.finish_date
+                book.stopped_date = readthrough.stopped_date
 
             review = (
                 models.Review.objects.filter(
