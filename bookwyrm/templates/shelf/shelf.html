@@ -101,7 +101,6 @@
                     {% plural %}
                         {{ formatted_count }} books
                     {% endblocktrans %}
-
                     {% if books.has_other_pages %}
                         {% blocktrans trimmed with start=books.start_index end=books.end_index %}
                         (showing {{ start }}-{{ end }})
@@ -111,6 +110,8 @@
                 {% endif %}
                 {% endwith %}
             </h2>
+            {% include 'shelf/shelves_filters.html' with user=user query=query %}
+
         </div>
         {% if is_self and shelf.id %}
         <div class="column is-narrow">
@@ -209,7 +210,17 @@
             </tbody>
         </table>
         {% else %}
-        <p><em>{% trans "This shelf is empty." %}</em></p>
+        <p>
+            <em>
+                {% if shelves_filter_query %}
+                    {% blocktrans trimmed %}
+                        We couldn't find any books that matched {{ shelves_filter_query }}
+                    {% endblocktrans %}
+                {% else %}
+                    {% trans "This shelf is empty." %}
+                {% endif %}
+            </em>
+        </p>
         {% endif %}
 
     </div>

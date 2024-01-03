@@ -15,12 +15,14 @@ from bookwyrm import forms, models
 from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.settings import PAGE_LENGTH
 from bookwyrm.views.helpers import is_api_request, get_user_from_username
+from bookwyrm.book_search import search
 
 
 # pylint: disable=no-self-use
 class Shelf(View):
     """shelf page"""
 
+    # pylint: disable=R0914
     def get(self, request, username, shelf_identifier=None):
         """display a shelf"""
         user = get_user_from_username(request.user, username)
@@ -32,6 +34,8 @@ class Shelf(View):
         else:
             shelves = models.Shelf.privacy_filter(request.user).filter(user=user).all()
 
+        shelves_filter_query = request.GET.get("filter")
+
         # get the shelf and make sure the logged in user should be able to see it
         if shelf_identifier:
             shelf = get_object_or_404(user.shelf_set, identifier=shelf_identifier)
@@ -42,6 +46,7 @@ class Shelf(View):
             FakeShelf = namedtuple(
                 "Shelf", ("identifier", "name", "user", "books", "privacy")
             )
+
             books = (
                 models.Edition.viewer_aware_objects(request.user)
                 .filter(
@@ -50,6 +55,7 @@ class Shelf(View):
                 )
                 .distinct()
             )
+
             shelf = FakeShelf("all", _("All books"), user, books, "public")
 
         if is_api_request(request) and shelf_identifier:
@@ -86,6 +92,9 @@ class Shelf(View):
 
         books = sort_books(books, request.GET.get("sort"))
 
+        if shelves_filter_query:
+            books = search(shelves_filter_query, books=books)
+
         paginated = Paginator(
             books,
             PAGE_LENGTH,
@@ -103,6 +112,8 @@ class Shelf(View):
             "page_range": paginated.get_elided_page_range(
                 page.number, on_each_side=2, on_ends=1
             ),
+            "shelves_filter_query": shelves_filter_query,
+            "size": "small",
         }
 
         return TemplateResponse(request, "shelf/shelf.html", data)
