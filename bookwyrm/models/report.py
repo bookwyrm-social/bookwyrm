@@ -64,9 +64,9 @@ class Report(ActivityMixin, BookWyrmModel):
 
     def get_recipients(self, software=None):
         """Send this to the public inbox of the offending instance"""
-        if self.user.local:
-            return None
-        return [self.user.shared_inbox or self.user.inbox]
+        if self.reported_user.local:
+            return []
+        return [self.reported_user.shared_inbox or self.reported_user.inbox]
 
     def get_remote_id(self):
         return f"https://{DOMAIN}/settings/reports/{self.id}"

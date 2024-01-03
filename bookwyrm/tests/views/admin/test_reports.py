@@ -118,7 +118,7 @@ class ReportViews(TestCase):
         # check that the action was noted
         self.assertTrue(
             models.ReportAction.objects.filter(
-                report=report, action_type="resolve", reported_user=self.local_user
+                report=report, action_type="resolve", user=self.local_user
             ).exists()
         )
 
@@ -130,7 +130,7 @@ class ReportViews(TestCase):
         # check that the action was noted
         self.assertTrue(
             models.ReportAction.objects.filter(
-                report=report, action_type="reopen", reported_user=self.local_user
+                report=report, action_type="reopen", user=self.local_user
             ).exists()
         )
 
