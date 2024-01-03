@@ -22,17 +22,6 @@ def update_deleted_users(apps, schema_editor):
     ).update(is_deleted=True)
 
 
-def erase_deleted_user_data(apps, schema_editor):
-    """Retroactively clear user data"""
-    for user in User.objects.filter(is_deleted=True):
-        user.erase_user_data()
-        user.save(
-            broadcast=False,
-            update_fields=["email", "avatar", "preview_image", "summary", "name"],
-        )
-        user.erase_user_statuses(broadcast=False)
-
-
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -42,8 +31,5 @@ class Migration(migrations.Migration):
     operations = [
         migrations.RunPython(
             update_deleted_users, reverse_code=migrations.RunPython.noop
-        ),
-        migrations.RunPython(
-            erase_deleted_user_data, reverse_code=migrations.RunPython.noop
         ),
     ]

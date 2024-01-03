@@ -15,12 +15,14 @@ from django.views import View
 
 from bookwyrm import forms, models
 from bookwyrm.importers import (
+    BookwyrmImporter,
     CalibreImporter,
     LibrarythingImporter,
     GoodreadsImporter,
     StorygraphImporter,
     OpenLibraryImporter,
 )
+from bookwyrm.models.bookwyrm_import_job import BookwyrmImportJob
 from bookwyrm.settings import PAGE_LENGTH
 from bookwyrm.utils.cache import get_or_set
 
@@ -127,3 +129,61 @@ def get_average_import_time() -> float:
     if recent_avg:
         return recent_avg.total_seconds()
     return None
+
+
+# pylint: disable= no-self-use
+@method_decorator(login_required, name="dispatch")
+class UserImport(View):
+    """import user view"""
+
+    def get(self, request, invalid=False):
+        """load user import page"""
+
+        jobs = BookwyrmImportJob.objects.filter(user=request.user).order_by(
+            "-created_date"
+        )
+        site = models.SiteSettings.objects.get()
+        hours = site.user_import_time_limit
+        allowed = (
+            jobs.first().created_date < timezone.now() - datetime.timedelta(hours=hours)
+            if jobs.first()
+            else True
+        )
+        next_available = (
+            jobs.first().created_date + datetime.timedelta(hours=hours)
+            if not allowed
+            else False
+        )
+        paginated = Paginator(jobs, PAGE_LENGTH)
+        page = paginated.get_page(request.GET.get("page"))
+        data = {
+            "import_form": forms.ImportUserForm(),
+            "jobs": page,
+            "user_import_hours": hours,
+            "next_available": next_available,
+            "page_range": paginated.get_elided_page_range(
+                page.number, on_each_side=2, on_ends=1
+            ),
+            "invalid": invalid,
+        }
+
+        return TemplateResponse(request, "import/import_user.html", data)
+
+    def post(self, request):
+        """ingest a Bookwyrm json file"""
+
+        importer = BookwyrmImporter()
+
+        form = forms.ImportUserForm(request.POST, request.FILES)
+        if not form.is_valid():
+            return HttpResponseBadRequest()
+
+        job = importer.process_import(
+            user=request.user,
+            archive_file=request.FILES["archive_file"],
+            settings=request.POST,
+        )
+
+        job.start_job()
+
+        return redirect("user-import")
