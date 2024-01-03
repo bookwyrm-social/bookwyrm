@@ -72,9 +72,7 @@ class Export(View):
             book.rating = review_rating.rating if review_rating else None
 
             readthrough = (
-                models.ReadThrough.objects.filter(
-                    user=request.user, book=book
-                )
+                models.ReadThrough.objects.filter(user=request.user, book=book)
                 .order_by("-finish_date")
                 .first()
             )
