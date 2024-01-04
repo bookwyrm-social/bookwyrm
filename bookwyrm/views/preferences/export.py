@@ -77,9 +77,9 @@ class Export(View):
                 .first()
             )
             if readthrough:
-                book.start_date = readthrough.start_date.date() if readthrough.start_date else ""
-                book.finish_date = readthrough.finish_date.date() if readthrough.finish_date else ""
-                book.stopped_date = readthrough.stopped_date.date() if readthrough.stopped_date else ""
+                book.start_date = readthrough.start_date.date() if readthrough.start_date else None
+                book.finish_date = readthrough.finish_date.date() if readthrough.finish_date else None
+                book.stopped_date = readthrough.stopped_date.date() if readthrough.stopped_date else None
 
             review = (
                 models.Review.objects.filter(
