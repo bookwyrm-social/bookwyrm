@@ -73,7 +73,7 @@ class Export(View):
 
             readthrough = (
                 models.ReadThrough.objects.filter(user=request.user, book=book)
-                .order_by("-finish_date")
+                .order_by("-start_date","-finish_date")
                 .first()
             )
             if readthrough:
