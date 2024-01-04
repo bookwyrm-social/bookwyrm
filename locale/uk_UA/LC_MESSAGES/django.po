@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-01-02 03:27+0000\n"
-"PO-Revision-Date: 2024-01-04 13:34\n"
+"PO-Revision-Date: 2024-01-04 15:51\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Ukrainian\n"
 "Language: uk\n"
@@ -498,7 +498,7 @@ msgstr "У Вас немає дозволу на перегляд цієї ст�
 
 #: bookwyrm/templates/403.html:15
 msgid "If you think you should have access, please speak to your BookWyrm server administrator."
-msgstr ""
+msgstr "Якщо ви вважаєте, що вам слід отримати доступ, будь ласка, зверніться до адміністратора вашого сервера Bookrm."
 
 #: bookwyrm/templates/404.html:4 bookwyrm/templates/404.html:8
 msgid "Not Found"
@@ -510,17 +510,18 @@ msgstr "Вказана сторінка не існує!"
 
 #: bookwyrm/templates/413.html:4 bookwyrm/templates/413.html:8
 msgid "File too large"
-msgstr ""
+msgstr "Файл завеликий"
 
 #: bookwyrm/templates/413.html:9
 msgid "The file you are uploading is too large."
-msgstr ""
+msgstr "Файл, який ви завантажуєте, завеликий."
 
 #: bookwyrm/templates/413.html:11
 msgid "\n"
 "        You you can try using a smaller file, or ask your BookWyrm server administrator to increase the <code>DATA_UPLOAD_MAX_MEMORY_SIZE</code> setting.\n"
 "        "
-msgstr ""
+msgstr "\n"
+"Ви можете спробувати використати менший файл або попросити адміністратора сервера BookWyrm збільшити параметр <code>DATA_UPLOAD_MAX_MEMORY_SIZE</code>.        "
 
 #: bookwyrm/templates/500.html:4
 msgid "Oops!"
@@ -2585,7 +2586,7 @@ msgstr "Сканер штрих-кодів"
 
 #: bookwyrm/templates/guided_tour/home.html:102
 msgid "Use the <strong>Lists</strong>, <strong>Discover</strong>, and <strong>Your Books</strong> links to discover reading suggestions and the latest happenings on this server, or to see your catalogued books!"
-msgstr ""
+msgstr "Використовуйте <strong>Списки</strong>, <strong>Відкрий для себе</strong> і <strong>Ваші книги</strong> посилання для пошуку пропозицій щодо читання і останніх подій на цьому сервері, або перегляду ваших каталожних книг!"
 
 #: bookwyrm/templates/guided_tour/home.html:103
 msgid "Navigation Bar"
@@ -2617,7 +2618,7 @@ msgstr "Сповіщення"
 
 #: bookwyrm/templates/guided_tour/home.html:200
 msgid "Your profile, user directory, direct messages, and settings can be accessed by clicking on your name in the menu here."
-msgstr ""
+msgstr "Щоб отримати доступ до свого профілю, каталогу користувачів, прямих повідомлень і налаштувань, клацніть своє ім’я в меню тут."
 
 #: bookwyrm/templates/guided_tour/home.html:200
 msgid "Try selecting <strong>Profile</strong> from the drop down menu to continue the tour."
@@ -3935,8 +3936,8 @@ msgid "New <a href=\"%(path)s\">invite request</a> awaiting response"
 msgid_plural "%(display_count)s new <a href=\"%(path)s\">invite requests</a> awaiting response"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[2] "%(display_count)s нових <a href=\"%(path)s\">запрошень</a> очікують на відповідь"
+msgstr[3] "%(display_count)s нових <a href=\"%(path)s\">запрошень</a> очікують на відповідь"
 
 #: bookwyrm/templates/notifications/items/join.html:16
 #, python-format
@@ -6025,7 +6026,7 @@ msgstr "Встановити стандартну тему інстансу"
 
 #: bookwyrm/templates/settings/themes.html:19
 msgid "One of your themes appears to be broken. Selecting this theme will make the application unusable."
-msgstr ""
+msgstr "Одна з ваших тем, здається, пошкоджена. Вибір цієї теми зробить програму непридатною для використання."
 
 #: bookwyrm/templates/settings/themes.html:28
 msgid "Successfully added theme"
@@ -6079,15 +6080,15 @@ msgstr "Видалити тему"
 
 #: bookwyrm/templates/settings/themes.html:134
 msgid "Test theme"
-msgstr ""
+msgstr "Тестування теми"
 
 #: bookwyrm/templates/settings/themes.html:143
 msgid "Broken theme"
-msgstr ""
+msgstr "Поламана тема"
 
 #: bookwyrm/templates/settings/themes.html:152
 msgid "Loaded successfully"
-msgstr ""
+msgstr "Завантажено успішно"
 
 #: bookwyrm/templates/settings/users/delete_user_form.html:5
 #: bookwyrm/templates/settings/users/user_moderation_actions.html:52
@@ -6212,11 +6213,11 @@ msgstr ""
 
 #: bookwyrm/templates/settings/users/user_moderation_actions.html:18
 msgid "You must not delete or disable this account as it is critical to the functioning of your server. This actor signs outgoing GET requests to smooth interaction with secure ActivityPub servers."
-msgstr ""
+msgstr "Ви повинні не видаляти або відключати цей обліковий запис, оскільки він є критичним для функціонування Вашого сервера. Цей персонаж підписує вихідні GET запити на безпроблемну взаємодію з безпечними ActivityPub серверами."
 
 #: bookwyrm/templates/settings/users/user_moderation_actions.html:19
 msgid "This account is not discoverable by ordinary users and does not have a profile page."
-msgstr ""
+msgstr "Цей обліковий запис не можна знайти звичайними користувачами і у нього немає сторінки профілю."
 
 #: bookwyrm/templates/settings/users/user_moderation_actions.html:35
 msgid "Activate user"
