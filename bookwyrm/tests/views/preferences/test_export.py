@@ -38,6 +38,8 @@ class ExportViews(TestCase):
             parent_work=self.work,
             isbn_13="9781234567890",
             bnf_id="beep",
+            start_date="2023-01-04",
+            finish_date="2024-01-04"
         )
 
     def setUp(self):
@@ -68,5 +70,5 @@ class ExportViews(TestCase):
             export.content,
             b"title,author_text,remote_id,openlibrary_key,inventaire_id,librarything_key,goodreads_key,bnf_id,viaf,wikidata,asin,aasin,isfdb,isbn_10,isbn_13,oclc_number,start_date,finish_date,stopped_date,rating,review_name,review_cw,review_content\r\nTest Book,,"
             + self.book.remote_id.encode("utf-8")
-            + b",,,,,beep,,,,,,123456789X,9781234567890,,,,,,,,\r\n",
+            + b",,,,,beep,,,,,,123456789X,9781234567890,,,2023-01-04,2024-01-04,,,,\r\n",
         )

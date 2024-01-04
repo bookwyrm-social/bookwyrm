@@ -103,7 +103,7 @@ class Export(View):
         )
 
 
-# pylint: disable=no-self-use
+# pylint: disable=no-self-use,too-many-locals
 @method_decorator(login_required, name="dispatch")
 class ExportUser(View):
     """Let users export user data to import into another Bookwyrm instance"""
