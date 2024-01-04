@@ -66,7 +66,7 @@ class ExportViews(TestCase):
         # pylint: disable=line-too-long
         self.assertEqual(
             export.content,
-            b"title,author_text,remote_id,openlibrary_key,inventaire_id,librarything_key,goodreads_key,bnf_id,viaf,wikidata,asin,aasin,isfdb,isbn_10,isbn_13,oclc_number,rating,review_name,review_cw,review_content\r\nTest Book,,"
+            b"title,author_text,remote_id,openlibrary_key,inventaire_id,librarything_key,goodreads_key,bnf_id,viaf,wikidata,asin,aasin,isfdb,isbn_10,isbn_13,oclc_number,start_date,finish_date,stopped_date,rating,review_name,review_cw,review_content\r\nTest Book,,"
             + self.book.remote_id.encode("utf-8")
-            + b",,,,,beep,,,,,,123456789X,9781234567890,,,,,\r\n",
+            + b",,,,,beep,,,,,,123456789X,9781234567890,,,,,,,,\r\n",
         )
