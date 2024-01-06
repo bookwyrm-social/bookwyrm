@@ -17,7 +17,7 @@ from bookwyrm import models
 from bookwyrm.models.bookwyrm_export_job import BookwyrmExportJob
 from bookwyrm.settings import PAGE_LENGTH
 
-# pylint: disable=no-self-use
+# pylint: disable=no-self-use,too-many-locals
 @method_decorator(login_required, name="dispatch")
 class Export(View):
     """Let users export data"""
@@ -73,13 +73,21 @@ class Export(View):
 
             readthrough = (
                 models.ReadThrough.objects.filter(user=request.user, book=book)
-                .order_by("-start_date","-finish_date")
+                .order_by("-start_date", "-finish_date")
                 .first()
             )
             if readthrough:
-                book.start_date = readthrough.start_date.date() if readthrough.start_date else None
-                book.finish_date = readthrough.finish_date.date() if readthrough.finish_date else None
-                book.stopped_date = readthrough.stopped_date.date() if readthrough.stopped_date else None
+                book.start_date = (
+                    readthrough.start_date.date() if readthrough.start_date else None
+                )
+                book.finish_date = (
+                    readthrough.finish_date.date() if readthrough.finish_date else None
+                )
+                book.stopped_date = (
+                    readthrough.stopped_date.date()
+                    if readthrough.stopped_date
+                    else None
+                )
 
             review = (
                 models.Review.objects.filter(
@@ -103,7 +111,7 @@ class Export(View):
         )
 
 
-# pylint: disable=no-self-use,too-many-locals
+# pylint: disable=no-self-use
 @method_decorator(login_required, name="dispatch")
 class ExportUser(View):
     """Let users export user data to import into another Bookwyrm instance"""
