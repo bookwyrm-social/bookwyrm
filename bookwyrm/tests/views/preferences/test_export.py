@@ -37,7 +37,7 @@ class ExportViews(TestCase):
             remote_id="https://example.com/book/1",
             parent_work=self.work,
             isbn_13="9781234567890",
-            bnf_id="beep"
+            bnf_id="beep",
         )
 
     def setUp(self):
