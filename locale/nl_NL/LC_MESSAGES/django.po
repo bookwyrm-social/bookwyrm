@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-01-02 03:27+0000\n"
-"PO-Revision-Date: 2024-01-02 21:25\n"
+"PO-Revision-Date: 2024-01-08 06:19\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Dutch\n"
 "Language: nl\n"
@@ -494,11 +494,11 @@ msgstr "Toestemming geweigerd"
 #: bookwyrm/templates/403.html:11
 #, python-format
 msgid "You do not have permission to view this page or perform this action. Your user permission level is <code>%(level)s</code>."
-msgstr ""
+msgstr "Je hebt geen toestemming om deze pagina te bekijken of deze actie uit te voeren. Je gebruikersrechtenniveau is <code>%(level)s</code>."
 
 #: bookwyrm/templates/403.html:15
 msgid "If you think you should have access, please speak to your BookWyrm server administrator."
-msgstr ""
+msgstr "Als u denkt dat u toegang zou moeten hebben, neem dan contact op met uw BookWyrm serverbeheerder."
 
 #: bookwyrm/templates/404.html:4 bookwyrm/templates/404.html:8
 msgid "Not Found"
@@ -514,13 +514,15 @@ msgstr "Bestand te groot"
 
 #: bookwyrm/templates/413.html:9
 msgid "The file you are uploading is too large."
-msgstr ""
+msgstr "Het bestand dat u wilt uploaden is te groot."
 
 #: bookwyrm/templates/413.html:11
 msgid "\n"
 "        You you can try using a smaller file, or ask your BookWyrm server administrator to increase the <code>DATA_UPLOAD_MAX_MEMORY_SIZE</code> setting.\n"
 "        "
-msgstr ""
+msgstr "\n"
+"        U kunt een kleiner bestand proberen te gebruiken of uw BookWyrm serverbeheerder vragen om de <code>DATA_UPLOAD_MAX_MEMORY_SIZE</code> instelling te verhogen.\n"
+"        "
 
 #: bookwyrm/templates/500.html:4
 msgid "Oops!"
@@ -2565,7 +2567,7 @@ msgstr "Streepjescodelezer"
 
 #: bookwyrm/templates/guided_tour/home.html:102
 msgid "Use the <strong>Lists</strong>, <strong>Discover</strong>, and <strong>Your Books</strong> links to discover reading suggestions and the latest happenings on this server, or to see your catalogued books!"
-msgstr ""
+msgstr "Gebruik de <strong>Lijsten</strong>, <strong>Ontdek</strong>, en <strong>Jouw boeken</strong> links om te ontdekken hoe je suggesties kunt lezen en wat er gebeurt op deze server, of om jouw catalogisboeken te zien!"
 
 #: bookwyrm/templates/guided_tour/home.html:103
 msgid "Navigation Bar"
@@ -2847,7 +2849,7 @@ msgstr "Er zijn nog geen activiteiten voor deze hashtag!"
 #: bookwyrm/templates/import/import.html:6
 #: bookwyrm/templates/preferences/layout.html:43
 msgid "Import Book List"
-msgstr ""
+msgstr "Importeer boekenlijst"
 
 #: bookwyrm/templates/import/import.html:12
 msgid "Not a valid CSV file"
@@ -3097,7 +3099,7 @@ msgstr "Import bijwerken"
 #: bookwyrm/templates/import/import_user.html:6
 #: bookwyrm/templates/preferences/layout.html:51
 msgid "Import BookWyrm Account"
-msgstr ""
+msgstr "Importeer BookWyrm Account"
 
 #: bookwyrm/templates/import/import_user.html:13
 msgid "Not a valid import file"
@@ -3186,7 +3188,7 @@ msgstr "Volgers en volgen"
 
 #: bookwyrm/templates/import/import_user.html:116
 msgid "User blocks"
-msgstr ""
+msgstr "Geblokkeerde gebruikers"
 
 #: bookwyrm/templates/import/import_user.html:123
 msgid "Reading goals"
@@ -3214,7 +3216,7 @@ msgstr "Opmerkingen over boeken"
 
 #: bookwyrm/templates/import/import_user.html:145
 msgid "Book lists"
-msgstr ""
+msgstr "Boekenlijst"
 
 #: bookwyrm/templates/import/import_user.html:148
 msgid "Saved lists"
@@ -4412,7 +4414,7 @@ msgstr "Op zoek naar privacy voor boekenplanken? Je kan een apart zichtbaarheids
 #: bookwyrm/templates/preferences/export-user.html:8
 #: bookwyrm/templates/preferences/layout.html:55
 msgid "Export BookWyrm Account"
-msgstr ""
+msgstr "Exporteer BookWyrm Account"
 
 #: bookwyrm/templates/preferences/export-user.html:14
 msgid "You can create an export file here. This will allow you to migrate your data to another BookWyrm account."
@@ -5447,19 +5449,19 @@ msgstr ""
 
 #: bookwyrm/templates/settings/imports/imports.html:111
 msgid "Restrict user imports and exports to once every "
-msgstr ""
+msgstr "Beperk de import en export van gebruikers tot eenmaal elke "
 
 #: bookwyrm/templates/settings/imports/imports.html:113
 msgid "hours"
-msgstr ""
+msgstr "uren"
 
 #: bookwyrm/templates/settings/imports/imports.html:117
 msgid "Change limit"
-msgstr ""
+msgstr "Wijzig limiet"
 
 #: bookwyrm/templates/settings/imports/imports.html:125
 msgid "Book Imports"
-msgstr ""
+msgstr "Geïmporteerde boeken"
 
 #: bookwyrm/templates/settings/imports/imports.html:135
 #: bookwyrm/templates/settings/imports/imports.html:225
@@ -5491,7 +5493,7 @@ msgstr "Geen overeenkomende importen gevonden."
 
 #: bookwyrm/templates/settings/imports/imports.html:215
 msgid "User Imports"
-msgstr ""
+msgstr "Geïmporteerde gebruikers"
 
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:4
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:11
@@ -6037,7 +6039,7 @@ msgstr "Test thema"
 
 #: bookwyrm/templates/settings/themes.html:143
 msgid "Broken theme"
-msgstr ""
+msgstr "Gebroken thema"
 
 #: bookwyrm/templates/settings/themes.html:152
 msgid "Loaded successfully"
@@ -6162,7 +6164,7 @@ msgstr "Gebruikersacties"
 
 #: bookwyrm/templates/settings/users/user_moderation_actions.html:15
 msgid "This is the instance admin actor"
-msgstr ""
+msgstr "Dit is de beheerder van de server"
 
 #: bookwyrm/templates/settings/users/user_moderation_actions.html:18
 msgid "You must not delete or disable this account as it is critical to the functioning of your server. This actor signs outgoing GET requests to smooth interaction with secure ActivityPub servers."
@@ -6170,7 +6172,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/users/user_moderation_actions.html:19
 msgid "This account is not discoverable by ordinary users and does not have a profile page."
-msgstr ""
+msgstr "Dit account kan niet ontdekt worden door gewone gebruikers en heeft geen profielpagina."
 
 #: bookwyrm/templates/settings/users/user_moderation_actions.html:35
 msgid "Activate user"
