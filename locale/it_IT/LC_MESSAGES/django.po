@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-01-02 03:27+0000\n"
-"PO-Revision-Date: 2024-01-02 04:10\n"
+"PO-Revision-Date: 2024-01-09 17:21\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Italian\n"
 "Language: it\n"
@@ -294,7 +294,7 @@ msgstr "Impossibile trovare una corrispondenza per il libro"
 
 #: bookwyrm/models/job.py:22
 msgid "Failed"
-msgstr ""
+msgstr "Non Riuscita"
 
 #: bookwyrm/models/link.py:51
 msgid "Free"
@@ -333,7 +333,7 @@ msgstr "Messaggio inviato al segnalatore"
 
 #: bookwyrm/models/report.py:88
 msgid "Messaged reported user"
-msgstr ""
+msgstr "Utente segnalato contattato"
 
 #: bookwyrm/models/report.py:89
 msgid "Suspended user"
@@ -345,11 +345,11 @@ msgstr "Utente riattivato"
 
 #: bookwyrm/models/report.py:91
 msgid "Changed user permission level"
-msgstr ""
+msgstr "Livello di autorizzazione dell'utente modificato"
 
 #: bookwyrm/models/report.py:92
 msgid "Deleted user account"
-msgstr ""
+msgstr "Account utente eliminato"
 
 #: bookwyrm/models/report.py:93
 msgid "Blocked domain"
@@ -357,11 +357,11 @@ msgstr "Dominio bloccato"
 
 #: bookwyrm/models/report.py:94
 msgid "Approved domain"
-msgstr ""
+msgstr "Dominio autorizzato"
 
 #: bookwyrm/models/report.py:95
 msgid "Deleted item"
-msgstr ""
+msgstr "Elemento rimosso"
 
 #: bookwyrm/models/user.py:33 bookwyrm/templates/book/book.html:307
 msgid "Reviews"
@@ -445,7 +445,7 @@ msgstr "Lietuvių (Lituano)"
 
 #: bookwyrm/settings.py:324
 msgid "Nederlands (Dutch)"
-msgstr ""
+msgstr "Nederlands (Olandese)"
 
 #: bookwyrm/settings.py:325
 msgid "Norsk (Norwegian)"
@@ -473,7 +473,7 @@ msgstr "Svenska (Svedese)"
 
 #: bookwyrm/settings.py:331
 msgid "Українська (Ukrainian)"
-msgstr ""
+msgstr "Українська (ucraino)"
 
 #: bookwyrm/settings.py:332
 msgid "简体中文 (Simplified Chinese)"
@@ -485,7 +485,7 @@ msgstr "繁體中文 (Cinese Tradizionale)"
 
 #: bookwyrm/templates/403.html:5
 msgid "Oh no!"
-msgstr ""
+msgstr "Oh no!"
 
 #: bookwyrm/templates/403.html:9 bookwyrm/templates/landing/invite.html:21
 msgid "Permission Denied"
@@ -494,11 +494,11 @@ msgstr "Permesso negato"
 #: bookwyrm/templates/403.html:11
 #, python-format
 msgid "You do not have permission to view this page or perform this action. Your user permission level is <code>%(level)s</code>."
-msgstr ""
+msgstr "Non hai i permessi per visualizzare questa pagina o eseguire questa azione. Il tuo livello di autorizzazione utente è <code>%(level)s</code>."
 
 #: bookwyrm/templates/403.html:15
 msgid "If you think you should have access, please speak to your BookWyrm server administrator."
-msgstr ""
+msgstr "Se pensi di avere accesso, parla con il tuo amministratore del server BookWyrm."
 
 #: bookwyrm/templates/404.html:4 bookwyrm/templates/404.html:8
 msgid "Not Found"
@@ -510,17 +510,19 @@ msgstr "La pagina richiesta non esiste!"
 
 #: bookwyrm/templates/413.html:4 bookwyrm/templates/413.html:8
 msgid "File too large"
-msgstr ""
+msgstr "File troppo grande"
 
 #: bookwyrm/templates/413.html:9
 msgid "The file you are uploading is too large."
-msgstr ""
+msgstr "Il file che stai caricando è troppo grande."
 
 #: bookwyrm/templates/413.html:11
 msgid "\n"
 "        You you can try using a smaller file, or ask your BookWyrm server administrator to increase the <code>DATA_UPLOAD_MAX_MEMORY_SIZE</code> setting.\n"
 "        "
-msgstr ""
+msgstr "\n"
+"        Puoi provare a usare un file più piccolo, o chiedere al tuo amministratore del server BookWyrm di aumentare l'impostazione <code>DATA_UPLOAD_MAX_MEMORY_SIZE</code>.\n"
+"        "
 
 #: bookwyrm/templates/500.html:4
 msgid "Oops!"
@@ -1289,7 +1291,7 @@ msgstr "Titolo:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:35
 msgid "Sort Title:"
-msgstr ""
+msgstr "Ordina per titolo:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:44
 msgid "Subtitle:"
@@ -2318,7 +2320,7 @@ msgstr "Gestisci"
 
 #: bookwyrm/templates/groups/user_groups.html:35
 msgid "No groups found."
-msgstr ""
+msgstr "Nessun gruppo trovato."
 
 #: bookwyrm/templates/guided_tour/book.html:10
 msgid "This is home page of a book. Let's see what you can do while you're here!"
@@ -2565,7 +2567,7 @@ msgstr "Lettore di codici a barre"
 
 #: bookwyrm/templates/guided_tour/home.html:102
 msgid "Use the <strong>Lists</strong>, <strong>Discover</strong>, and <strong>Your Books</strong> links to discover reading suggestions and the latest happenings on this server, or to see your catalogued books!"
-msgstr ""
+msgstr "Usa le liste <strong></strong>, <strong>Discover</strong>, e <strong>I tuoi Libri</strong> link per scoprire i suggerimenti di lettura e gli ultimi eventi su questo server, o per vedere i tuoi libri catalogati!"
 
 #: bookwyrm/templates/guided_tour/home.html:103
 msgid "Navigation Bar"
@@ -2597,7 +2599,7 @@ msgstr "Notifiche"
 
 #: bookwyrm/templates/guided_tour/home.html:200
 msgid "Your profile, user directory, direct messages, and settings can be accessed by clicking on your name in the menu here."
-msgstr ""
+msgstr "Il tuo profilo, la directory utente, i messaggi diretti e le impostazioni possono essere accessibili facendo clic sul tuo nome nel menu qui."
 
 #: bookwyrm/templates/guided_tour/home.html:200
 msgid "Try selecting <strong>Profile</strong> from the drop down menu to continue the tour."
@@ -2847,7 +2849,7 @@ msgstr "Non c'è ancora nessuna attività per questo hashtag!"
 #: bookwyrm/templates/import/import.html:6
 #: bookwyrm/templates/preferences/layout.html:43
 msgid "Import Book List"
-msgstr ""
+msgstr "Importa Elenco Libri"
 
 #: bookwyrm/templates/import/import.html:12
 msgid "Not a valid CSV file"
@@ -2857,13 +2859,13 @@ msgstr "Non è un file di csv valido"
 #, python-format
 msgid "Currently, you are allowed to import %(display_size)s books every %(import_limit_reset)s day."
 msgid_plural "Currently, you are allowed to import %(display_size)s books every %(import_limit_reset)s days."
-msgstr[0] ""
+msgstr[0] "Attualmente, puoi importare libri %(display_size)s ogni giorno %(import_limit_reset)s."
 msgstr[1] "Al momento puoi importare %(import_size_limit)s libri ogni %(import_limit_reset)s giorni."
 
 #: bookwyrm/templates/import/import.html:26
 #, python-format
 msgid "You have %(display_left)s left."
-msgstr ""
+msgstr "Ti rimane %(display_left)s."
 
 #: bookwyrm/templates/import/import.html:33
 #, python-format
@@ -3097,41 +3099,41 @@ msgstr "Aggiorna l'importazione"
 #: bookwyrm/templates/import/import_user.html:6
 #: bookwyrm/templates/preferences/layout.html:51
 msgid "Import BookWyrm Account"
-msgstr ""
+msgstr "Importa Account BookWyrm"
 
 #: bookwyrm/templates/import/import_user.html:13
 msgid "Not a valid import file"
-msgstr ""
+msgstr "Questo non è un file valido per l'importazione"
 
 #: bookwyrm/templates/import/import_user.html:18
 msgid "If you wish to migrate any statuses (comments, reviews, or quotes) you must either set this account as an <strong>alias</strong> of the one you are migrating from, or <strong>move</strong> that account to this one, before you import your user data."
-msgstr ""
+msgstr "Se si desidera migrare qualsiasi stato (commenti, recensioni, o preventivi) devi impostare questo account come un alias <strong></strong> di quello da cui stai migrando, o <strong>sposta</strong> quell'account su questo, prima di importare i tuoi dati utente."
 
 #: bookwyrm/templates/import/import_user.html:32
 #, python-format
 msgid "Currently you are allowed to import one user every %(user_import_hours)s hours."
-msgstr ""
+msgstr "Attualmente ti è consentito importare un utente ogni %(user_import_hours)s ore."
 
 #: bookwyrm/templates/import/import_user.html:33
 #, python-format
 msgid "You will next be able to import a user file at %(next_available)s"
-msgstr ""
+msgstr "Sarai in grado di importare un file utente su %(next_available)s"
 
 #: bookwyrm/templates/import/import_user.html:41
 msgid "Step 1:"
-msgstr ""
+msgstr "Fase 1:"
 
 #: bookwyrm/templates/import/import_user.html:43
 msgid "Select an export file generated from another BookWyrm account. The file format should be <code>.tar.gz</code>."
-msgstr ""
+msgstr "Selezionare un file di esportazione generato da un altro account BookWyrm. Il formato del file dovrebbe essere <code>.tar.gz</code>."
 
 #: bookwyrm/templates/import/import_user.html:58
 msgid "Step 2:"
-msgstr ""
+msgstr "Fase 2:"
 
 #: bookwyrm/templates/import/import_user.html:60
 msgid "Deselect any checkboxes for data you do not wish to include in your import."
-msgstr ""
+msgstr "Deseleziona le caselle di controllo per i dati che non desideri includere nella tua importazione."
 
 #: bookwyrm/templates/import/import_user.html:71
 #: bookwyrm/templates/shelf/shelf.html:26
@@ -3142,83 +3144,83 @@ msgstr "Profilo utente"
 
 #: bookwyrm/templates/import/import_user.html:74
 msgid "Overwrites display name, summary, and avatar"
-msgstr ""
+msgstr "Sovrascrivi il nome, il riepilogo e l'avatar"
 
 #: bookwyrm/templates/import/import_user.html:80
 msgid "User settings"
-msgstr ""
+msgstr "Impostazioni utente"
 
 #: bookwyrm/templates/import/import_user.html:83
 msgid "Overwrites:"
-msgstr ""
+msgstr "Sovrascrivi:"
 
 #: bookwyrm/templates/import/import_user.html:86
 msgid "Whether manual approval is required for other users to follow your account"
-msgstr ""
+msgstr "Indica se è richiesta l'approvazione manuale per gli altri utenti per seguire il proprio account"
 
 #: bookwyrm/templates/import/import_user.html:89
 msgid "Whether following/followers are shown on your profile"
-msgstr ""
+msgstr "Se seguenti/seguaci sono mostrati sul tuo profilo"
 
 #: bookwyrm/templates/import/import_user.html:92
 msgid "Whether your reading goal is shown on your profile"
-msgstr ""
+msgstr "Se il tuo obiettivo di lettura è mostrato sul tuo profilo"
 
 #: bookwyrm/templates/import/import_user.html:95
 msgid "Whether you see user follow suggestions"
-msgstr ""
+msgstr "Se si vede l'utente seguire suggerimenti"
 
 #: bookwyrm/templates/import/import_user.html:98
 msgid "Whether your account is suggested to others"
-msgstr ""
+msgstr "Indica se il tuo account è suggerito agli altri"
 
 #: bookwyrm/templates/import/import_user.html:101
 msgid "Your timezone"
-msgstr ""
+msgstr "Il tuo fuso orario"
 
 #: bookwyrm/templates/import/import_user.html:104
 msgid "Your default post privacy setting"
-msgstr ""
+msgstr "La tua impostazione predefinita privacy post"
 
 #: bookwyrm/templates/import/import_user.html:112
 msgid "Followers and following"
-msgstr ""
+msgstr "Followers e seguiti"
 
 #: bookwyrm/templates/import/import_user.html:116
 msgid "User blocks"
-msgstr ""
+msgstr "Blocchi utente"
 
 #: bookwyrm/templates/import/import_user.html:123
 msgid "Reading goals"
-msgstr ""
+msgstr "Obiettivi lettura"
 
 #: bookwyrm/templates/import/import_user.html:126
 msgid "Overwrites reading goals for all years listed in the import file"
-msgstr ""
+msgstr "Sovrascrivi gli obiettivi di lettura per tutti gli anni elencati nel file di importazione"
 
 #: bookwyrm/templates/import/import_user.html:130
 msgid "Shelves"
-msgstr ""
+msgstr "Scaffali"
 
 #: bookwyrm/templates/import/import_user.html:133
 msgid "Reading history"
-msgstr ""
+msgstr "Cronologia lettura"
 
 #: bookwyrm/templates/import/import_user.html:136
 msgid "Book reviews"
-msgstr ""
+msgstr "Recensioni dei libri"
 
 #: bookwyrm/templates/import/import_user.html:142
 msgid "Comments about books"
-msgstr ""
+msgstr "Commenti sui libri"
 
 #: bookwyrm/templates/import/import_user.html:145
 msgid "Book lists"
-msgstr ""
+msgstr "Liste di libri"
 
 #: bookwyrm/templates/import/import_user.html:148
 msgid "Saved lists"
-msgstr ""
+msgstr "Liste salvate"
 
 #: bookwyrm/templates/import/manual_review.html:5
 #: bookwyrm/templates/import/troubleshoot.html:4
@@ -3903,8 +3905,8 @@ msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> ti ha invitato a 
 #, python-format
 msgid "New <a href=\"%(path)s\">invite request</a> awaiting response"
 msgid_plural "%(display_count)s new <a href=\"%(path)s\">invite requests</a> awaiting response"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Nuova <a href=\"%(path)s\">richiesta di invito</a> in attesa di risposta"
+msgstr[1] "%(display_count)s nuove richieste di invito <a href=\"%(path)s\"></a> in attesa di risposta"
 
 #: bookwyrm/templates/notifications/items/join.html:16
 #, python-format
@@ -4023,12 +4025,12 @@ msgstr "ha modificato la descrizione di <a href=\"%(group_path)s\">%(group_name)
 #: bookwyrm/templates/notifications/items/user_export.html:14
 #, python-format
 msgid "Your <a href=\"%(url)s\">user export</a> is ready."
-msgstr ""
+msgstr "L'esportazione <a href=\"%(url)s\">dell'utente</a> è pronta."
 
 #: bookwyrm/templates/notifications/items/user_import.html:14
 #, python-format
 msgid "Your <a href=\"%(import_url)s\">user import</a> is complete."
-msgstr ""
+msgstr "L'importazione <a href=\"%(import_url)s\">dell'utente</a> è completa."
 
 #: bookwyrm/templates/notifications/notifications_page.html:19
 msgid "Delete notifications"
@@ -4412,62 +4414,62 @@ msgstr "Stai cercando la privacy degli scaffali? Puoi impostare un livello di vi
 #: bookwyrm/templates/preferences/export-user.html:8
 #: bookwyrm/templates/preferences/layout.html:55
 msgid "Export BookWyrm Account"
-msgstr ""
+msgstr "Esporta Account BookWyrm"
 
 #: bookwyrm/templates/preferences/export-user.html:14
 msgid "You can create an export file here. This will allow you to migrate your data to another BookWyrm account."
-msgstr ""
+msgstr "Puoi creare un file di esportazione qui. Questo ti permetterà di migrare i tuoi dati in un altro account BookWyrm."
 
 #: bookwyrm/templates/preferences/export-user.html:17
 msgid "<div class=\"column is-half\"> <h2 class=\"is-size-5\">Your file will include:</h2> <ul> <li>User profile</li> <li>Most user settings</li> <li>Reading goals</li> <li>Shelves</li> <li>Reading history</li> <li>Book reviews</li> <li>Statuses</li> <li>Your own lists and saved lists</li> <li>Which users you follow and block</li> </ul> </div> <div class=\"column is-half\"> <h2 class=\"is-size-5\">Your file will not include:</h2> <ul> <li>Direct messages</li> <li>Replies to your statuses</li> <li>Groups</li> <li>Favorites</li> </ul> </div>"
-msgstr ""
+msgstr "<div class=\"column is-half\"> <h2 class=\"is-size-5\">Il tuo file includerà:</h2> <ul> <li>Profilo utente</li> <li>La maggior parte delle impostazioni utente</li> <li>Obiettivi di lettura</li> <li>Scaffali</li> <li>Cronologia lettura</li> <li>Recensioni libro</li> <li>Stato</li> <li>Le tue liste e salvate</li> <li>Quali utenti segui e blocca</li> </ul> </div> <div class=\"column is-half\"> <h2 class=\"is-size-5\">Il tuo file non includerà:</h2> <ul> <li>Messaggi diretti</li> <li>Risposte al tuo stato</li> <li>Gruppi</li> <li>Preferiti</li> </ul> </div>"
 
 #: bookwyrm/templates/preferences/export-user.html:43
 msgid "In your new BookWyrm account can choose what to import: you will not have to import everything that is exported."
-msgstr ""
+msgstr "Nel tuo nuovo account BookWyrm puoi scegliere cosa importare: non dovrai importare tutto ciò che viene esportato."
 
 #: bookwyrm/templates/preferences/export-user.html:46
 msgid "If you wish to migrate any statuses (comments, reviews, or quotes) you must either set the account you are moving to as an <strong>alias</strong> of this one, or <strong>move</strong> this account to the new account, before you import your user data."
-msgstr ""
+msgstr "Se si desidera migrare qualsiasi stato (commenti, recensioni, o preventivi) devi impostare l'account su cui ti stai spostando come alias <strong></strong> di questo, o <strong>sposta</strong> questo account nel nuovo account, prima di importare i tuoi dati utente."
 
 #: bookwyrm/templates/preferences/export-user.html:51
 #, python-format
 msgid "You will be able to create a new export file at %(next_available)s"
-msgstr ""
+msgstr "Potrai creare un nuovo file di esportazione su %(next_available)s"
 
 #: bookwyrm/templates/preferences/export-user.html:60
 msgid "Create user export file"
-msgstr ""
+msgstr "Crea file di esportazione utente"
 
 #: bookwyrm/templates/preferences/export-user.html:67
 msgid "Recent Exports"
-msgstr ""
+msgstr "Esportazioni Recenti"
 
 #: bookwyrm/templates/preferences/export-user.html:69
 msgid "User export files will show 'complete' once ready. This may take a little while. Click the link to download your file."
-msgstr ""
+msgstr "I file di esportazione dell'utente mostreranno 'completo' una volta pronti. Questo potrebbe richiedere un po' di tempo. Clicca sul link per scaricare il file."
 
 #: bookwyrm/templates/preferences/export-user.html:75
 msgid "Date"
-msgstr ""
+msgstr "Data"
 
 #: bookwyrm/templates/preferences/export-user.html:81
 msgid "Size"
-msgstr ""
+msgstr "Dimensione"
 
 #: bookwyrm/templates/preferences/export-user.html:125
 msgid "Download your export"
-msgstr ""
+msgstr "Scarica la tua esportazione"
 
 #: bookwyrm/templates/preferences/export.html:4
 #: bookwyrm/templates/preferences/export.html:7
 #: bookwyrm/templates/preferences/layout.html:47
 msgid "Export Book List"
-msgstr ""
+msgstr "Esporta Elenco Libri"
 
 #: bookwyrm/templates/preferences/export.html:13
 msgid "Your CSV export file will include all the books on your shelves, books you have reviewed, and books with reading activity. <br/>Use this to import into a service like Goodreads."
-msgstr ""
+msgstr "Il tuo file di esportazione CSV includerà tutti i libri sugli scaffali, libri che hai recensito e libri con attività di lettura. <br/>Usalo per importare in un servizio come Goodreads."
 
 #: bookwyrm/templates/preferences/export.html:20
 msgid "Download file"
@@ -4919,7 +4921,7 @@ msgstr "Code"
 
 #: bookwyrm/templates/settings/celery.html:26
 msgid "Streams"
-msgstr ""
+msgstr "Flussi"
 
 #: bookwyrm/templates/settings/celery.html:32
 msgid "Broadcast"
@@ -4927,15 +4929,15 @@ msgstr "Trasmissione"
 
 #: bookwyrm/templates/settings/celery.html:38
 msgid "Inbox"
-msgstr ""
+msgstr "Posta in arrivo"
 
 #: bookwyrm/templates/settings/celery.html:51
 msgid "Import triggered"
-msgstr ""
+msgstr "Importazione attivata"
 
 #: bookwyrm/templates/settings/celery.html:57
 msgid "Connectors"
-msgstr ""
+msgstr "Connettori"
 
 #: bookwyrm/templates/settings/celery.html:64
 #: bookwyrm/templates/settings/site.html:91
@@ -4944,7 +4946,7 @@ msgstr "Immagini"
 
 #: bookwyrm/templates/settings/celery.html:70
 msgid "Suggested Users"
-msgstr ""
+msgstr "Utenti consigliati"
 
 #: bookwyrm/templates/settings/celery.html:83
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:43
@@ -4954,7 +4956,7 @@ msgstr "Email"
 
 #: bookwyrm/templates/settings/celery.html:89
 msgid "Misc"
-msgstr ""
+msgstr "Varie"
 
 #: bookwyrm/templates/settings/celery.html:96
 msgid "Low priority"
@@ -5378,7 +5380,7 @@ msgstr "Interrompere l'importazione?"
 
 #: bookwyrm/templates/settings/imports/complete_user_import_modal.html:7
 msgid "This action will stop the user import before it is complete and cannot be un-done"
-msgstr ""
+msgstr "Questa azione interromperà l'importazione dell'utente prima che sia completata e non può essere annullata"
 
 #: bookwyrm/templates/settings/imports/imports.html:19
 msgid "Disable starting new imports"
@@ -5394,7 +5396,7 @@ msgstr "Quando le importazioni sono disabilitate, gli utenti non potranno inizia
 
 #: bookwyrm/templates/settings/imports/imports.html:32
 msgid "This setting prevents both book imports and user imports."
-msgstr ""
+msgstr "Questa impostazione impedisce sia le importazioni di libri che quelle degli utenti."
 
 #: bookwyrm/templates/settings/imports/imports.html:37
 msgid "Disable imports"
@@ -5439,27 +5441,27 @@ msgstr "Imposta limite"
 
 #: bookwyrm/templates/settings/imports/imports.html:96
 msgid "Limit how often users can import and export"
-msgstr ""
+msgstr "Limita la frequenza con cui gli utenti possono importare ed esportare"
 
 #: bookwyrm/templates/settings/imports/imports.html:107
 msgid "Some users might try to run user imports or exports very frequently, which you want to limit."
-msgstr ""
+msgstr "Alcuni utenti potrebbero provare ad eseguire le importazioni o le esportazioni degli utenti molto frequentemente, che si desidera limitare."
 
 #: bookwyrm/templates/settings/imports/imports.html:111
 msgid "Restrict user imports and exports to once every "
-msgstr ""
+msgstr "Limita le importazioni e le esportazioni degli utenti a una volta ogni "
 
 #: bookwyrm/templates/settings/imports/imports.html:113
 msgid "hours"
-msgstr ""
+msgstr "ore"
 
 #: bookwyrm/templates/settings/imports/imports.html:117
 msgid "Change limit"
-msgstr ""
+msgstr "Cambia limite"
 
 #: bookwyrm/templates/settings/imports/imports.html:125
 msgid "Book Imports"
-msgstr ""
+msgstr "Importazioni Del Libro"
 
 #: bookwyrm/templates/settings/imports/imports.html:135
 #: bookwyrm/templates/settings/imports/imports.html:225
@@ -5491,7 +5493,7 @@ msgstr "Nessuna importazione corrispondente."
 
 #: bookwyrm/templates/settings/imports/imports.html:215
 msgid "User Imports"
-msgstr ""
+msgstr "Importazioni utente"
 
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:4
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:11
@@ -5811,22 +5813,22 @@ msgstr "Collegamenti segnalati"
 
 #: bookwyrm/templates/settings/reports/report.html:66
 msgid "Moderation Activity"
-msgstr ""
+msgstr "Attività Moderazione"
 
 #: bookwyrm/templates/settings/reports/report.html:73
 #, python-format
 msgid "<a href=\"%(user_link)s\">%(user)s</a> opened this report"
-msgstr ""
+msgstr "<a href=\"%(user_link)s\">%(user)s</a> ha aperto questo report"
 
 #: bookwyrm/templates/settings/reports/report.html:86
 #, python-format
 msgid "<a href=\"%(user_link)s\">%(user)s</a> commented on this report:"
-msgstr ""
+msgstr "<a href=\"%(user_link)s\">%(user)s</a> ha commentato questo rapporto:"
 
 #: bookwyrm/templates/settings/reports/report.html:90
 #, python-format
 msgid "<a href=\"%(user_link)s\">%(user)s</a> took an action on this report:"
-msgstr ""
+msgstr "<a href=\"%(user_link)s\">%(user)s</a> ha intrapreso un'azione su questo rapporto:"
 
 #: bookwyrm/templates/settings/reports/report_header.html:6
 #, python-format
@@ -5850,7 +5852,7 @@ msgstr "Report #%(report_id)s: %(username)s"
 
 #: bookwyrm/templates/settings/reports/report_links_table.html:19
 msgid "Approve domain"
-msgstr ""
+msgstr "Approva dominio"
 
 #: bookwyrm/templates/settings/reports/report_links_table.html:26
 msgid "Block domain"
@@ -5979,7 +5981,7 @@ msgstr "Imposta il tema predefinito dell'istanza"
 
 #: bookwyrm/templates/settings/themes.html:19
 msgid "One of your themes appears to be broken. Selecting this theme will make the application unusable."
-msgstr ""
+msgstr "Uno dei tuoi temi sembra essere rotto. Selezionando questo tema, l'applicazione sarà inutilizzabile."
 
 #: bookwyrm/templates/settings/themes.html:28
 msgid "Successfully added theme"
@@ -6033,15 +6035,15 @@ msgstr "Rimuovi tema"
 
 #: bookwyrm/templates/settings/themes.html:134
 msgid "Test theme"
-msgstr ""
+msgstr "Prova tema"
 
 #: bookwyrm/templates/settings/themes.html:143
 msgid "Broken theme"
-msgstr ""
+msgstr "Tema rotto"
 
 #: bookwyrm/templates/settings/themes.html:152
 msgid "Loaded successfully"
-msgstr ""
+msgstr "Caricato correttamente"
 
 #: bookwyrm/templates/settings/users/delete_user_form.html:5
 #: bookwyrm/templates/settings/users/user_moderation_actions.html:52
@@ -6090,7 +6092,7 @@ msgstr "Non impostato"
 
 #: bookwyrm/templates/settings/users/user_info.html:20
 msgid "This account is the instance actor for signing HTTP requests."
-msgstr ""
+msgstr "Questo account è l'attore di istanza per la firma delle richieste HTTP."
 
 #: bookwyrm/templates/settings/users/user_info.html:24
 msgid "View user profile"
@@ -6162,15 +6164,15 @@ msgstr "Azioni dell'utente"
 
 #: bookwyrm/templates/settings/users/user_moderation_actions.html:15
 msgid "This is the instance admin actor"
-msgstr ""
+msgstr "Questo è l'amministratore dell'istanza"
 
 #: bookwyrm/templates/settings/users/user_moderation_actions.html:18
 msgid "You must not delete or disable this account as it is critical to the functioning of your server. This actor signs outgoing GET requests to smooth interaction with secure ActivityPub servers."
-msgstr ""
+msgstr "Non è necessario eliminare o disabilitare questo account in quanto è fondamentale per il funzionamento del server. Questo attore firma le richieste GET in uscita per facilitare l'interazione con i server ActivityPub sicuri."
 
 #: bookwyrm/templates/settings/users/user_moderation_actions.html:19
 msgid "This account is not discoverable by ordinary users and does not have a profile page."
-msgstr ""
+msgstr "Questo account non è individuabile dagli utenti ordinari e non ha una pagina del profilo."
 
 #: bookwyrm/templates/settings/users/user_moderation_actions.html:35
 msgid "Activate user"
@@ -6461,7 +6463,7 @@ msgstr "Commenta:"
 
 #: bookwyrm/templates/snippets/create_status/post_options_block.html:19
 msgid "Update"
-msgstr ""
+msgstr "Aggiorna"
 
 #: bookwyrm/templates/snippets/create_status/post_options_block.html:21
 msgid "Post"
@@ -6667,7 +6669,7 @@ msgstr "Segui sul nuovo account"
 #: bookwyrm/templates/snippets/moved_user_notice.html:7
 #, python-format
 msgid "<em>%(user)s</em> has moved to <a href=\"%(moved_to_link)s\">%(moved_to_name)s</a>"
-msgstr ""
+msgstr "<em>%(user)s</em> si è spostato in <a href=\"%(moved_to_link)s\">%(moved_to_name)s</a>"
 
 #: bookwyrm/templates/snippets/page_text.html:8
 #, python-format
@@ -7141,8 +7143,8 @@ msgstr "Ancora nessuna attività!"
 #, python-format
 msgid "%(display_count)s follower"
 msgid_plural "%(display_count)s followers"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(display_count)s follower"
+msgstr[1] "%(display_count)s followers"
 
 #: bookwyrm/templates/user/user_preview.html:31
 #, python-format
@@ -7177,7 +7179,7 @@ msgstr "Lista libri: %(name)s"
 #, python-format
 msgid "%(num)d book - by %(user)s"
 msgid_plural "%(num)d books - by %(user)s"
-msgstr[0] ""
+msgstr[0] "%(num)d libro - di %(user)s"
 msgstr[1] "%(num)d libri - di %(user)s"
 
 #: bookwyrm/templatetags/utilities.py:49
