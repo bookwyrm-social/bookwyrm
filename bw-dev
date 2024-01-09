@@ -246,6 +246,9 @@ case "$CMD" in
     remove_remote_user_preview_images)
         runweb python manage.py remove_remote_user_preview_images
         ;;
+    erase_deleted_user_data)
+        runweb python manage.py erase_deleted_user_data "$@"
+        ;;
     copy_media_to_s3)
         awscommand "bookwyrm_media_volume:/images"\
             "s3 cp /images s3://${AWS_STORAGE_BUCKET_NAME}/images\
@@ -297,7 +300,7 @@ case "$CMD" in
         echo "Unrecognised command. Try:"
         echo "    setup"
         echo "    up [container]"
-        echo "    down"        
+        echo "    down"
         echo "    service_ports_web"
         echo "    initdb"
         echo "    resetdb"
