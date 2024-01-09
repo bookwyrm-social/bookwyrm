@@ -52,6 +52,8 @@ class Feed(View):
 
         suggestions = suggested_users.get_suggestions(request.user)
 
+        readthroughs = models.ReadThrough.objects.filter(user=request.user)
+
         data = {
             **feed_page_data(request.user),
             **{
@@ -66,6 +68,7 @@ class Feed(View):
                 "path": f"/{tab['key']}",
                 "annual_summary_year": get_annual_summary_year(),
                 "has_tour": True,
+                "has_read_throughs": True if len(readthroughs) else False,
             },
         }
         return TemplateResponse(request, "feed/feed.html", data)

@@ -33,7 +33,7 @@
     <span data-poll="stream/{{ tab.key }}"></span>
 </a>
 
-    {% if request.user.show_goal and not goal and tab.key == 'home' %}
+    {% if request.user.show_goal and not goal and tab.key == 'home' and has_read_throughs %}
     {% now 'Y' as year %}
     <section class="block">
         {% include 'feed/goal_card.html' with year=year %}
