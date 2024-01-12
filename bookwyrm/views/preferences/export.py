@@ -17,7 +17,7 @@ from bookwyrm import models
 from bookwyrm.models.bookwyrm_export_job import BookwyrmExportJob
 from bookwyrm.settings import PAGE_LENGTH
 
-# pylint: disable=no-self-use
+# pylint: disable=no-self-use,too-many-locals
 @method_decorator(login_required, name="dispatch")
 class Export(View):
     """Let users export data"""
@@ -54,6 +54,7 @@ class Export(View):
         fields = (
             ["title", "author_text"]
             + deduplication_fields
+            + ["start_date", "finish_date", "stopped_date"]
             + ["rating", "review_name", "review_cw", "review_content"]
         )
         writer.writerow(fields)
@@ -69,6 +70,24 @@ class Export(View):
             )
 
             book.rating = review_rating.rating if review_rating else None
+
+            readthrough = (
+                models.ReadThrough.objects.filter(user=request.user, book=book)
+                .order_by("-start_date", "-finish_date")
+                .first()
+            )
+            if readthrough:
+                book.start_date = (
+                    readthrough.start_date.date() if readthrough.start_date else None
+                )
+                book.finish_date = (
+                    readthrough.finish_date.date() if readthrough.finish_date else None
+                )
+                book.stopped_date = (
+                    readthrough.stopped_date.date()
+                    if readthrough.stopped_date
+                    else None
+                )
 
             review = (
                 models.Review.objects.filter(
