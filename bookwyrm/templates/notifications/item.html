@@ -10,9 +10,7 @@
 {% elif notification.notification_type == 'FOLLOW' %}
     {% include 'notifications/items/follow.html' %}
 {% elif notification.notification_type == 'FOLLOW_REQUEST' %}
-    {% if notification.related_users.0.is_active %}
-        {% include 'notifications/items/follow_request.html' %}
-    {% endif %}
+    {% include 'notifications/items/follow_request.html' %}
 {% elif notification.notification_type == 'IMPORT' %}
     {% include 'notifications/items/import.html' %}
 {% elif notification.notification_type == 'USER_IMPORT' %}
