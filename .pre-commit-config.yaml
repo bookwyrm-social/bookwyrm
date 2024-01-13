@@ -29,6 +29,11 @@ repos:
     hooks:
       - id: stylelint
         types: [css]
+  - repo: https://github.com/pre-commit/mirrors-eslint
+    rev: v9.0.0-alpha.1
+    hooks:
+      - id: eslint
+        types: [javascript]
   - repo: local
     hooks:
       - id: pytest
