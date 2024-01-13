@@ -19,6 +19,11 @@ repos:
     hooks:
       - id: pylint
         types: [python]
+  - repo: https://github.com/thibaudcolas/curlylint
+    rev: v0.13.1
+    hooks:
+      - id: curlylint
+        types: [html]
   - repo: local
     hooks:
       - id: pytest
