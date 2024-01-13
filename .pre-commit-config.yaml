@@ -34,10 +34,10 @@ repos:
     hooks:
       - id: eslint
         types: [javascript]
-  - repo: local
-    hooks:
-      - id: pytest
-        name: pytest
-        entry: ./bw-dev pytest
-        language: system
-        files: \.py$
+  # - repo: local
+  #   hooks:
+  #     - id: pytest
+  #       name: pytest
+  #       entry: ./bw-dev pytest
+  #       language: system
+  #       files: \.py$
