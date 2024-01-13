@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.3.0
+    rev: v4.5.0
     hooks:
       - id: trailing-whitespace
         types: [file, text]
@@ -10,18 +10,15 @@ repos:
       - id: check-case-conflict
       - id: check-yaml
   - repo: https://github.com/psf/black
-    rev: 22.12.0
+    rev: 23.12.1
     hooks:
       - id: black
         types: [python]
-  - repo: local
+  - repo: https://github.com/PyCQA/pylint
+    rev: v3.0.3
     hooks:
       - id: pylint
-        args: ["--rcfile=.pylintrc"]
-        name: Pylint
-        entry: python -m pylint
-        language: system
-        files: \.py$
+        types: [python]
   - repo: local
     hooks:
       - id: pytest
