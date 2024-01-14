@@ -24,6 +24,7 @@ from bookwyrm.utils.tar import BookwyrmTarFile
 
 logger = logging.getLogger(__name__)
 
+
 class BookwyrmExportJob(ParentJob):
     """entry for a specific request to export a bookwyrm user"""
 
@@ -32,10 +33,11 @@ class BookwyrmExportJob(ParentJob):
     else:
         storage = storage_backends.ExportsFileStorage
 
-    export_data = FileField(null=True, storage=storage) # use custom storage backend here
+    export_data = FileField(
+        null=True, storage=storage
+    )  # use custom storage backend here
     export_json = JSONField(null=True, encoder=DjangoJSONEncoder)
     json_completed = BooleanField(default=False)
-
 
     def start_job(self):
         """Start the job"""
@@ -43,7 +45,6 @@ class BookwyrmExportJob(ParentJob):
         task = start_export_task.delay(job_id=self.id, no_children=False)
         self.task_id = task.id
         self.save(update_fields=["task_id"])
-
 
     def notify_child_job_complete(self):
         """let the job know when the items get work done"""
@@ -63,9 +64,8 @@ class BookwyrmExportJob(ParentJob):
 
                     # add json file to tarfile
                     tar_job = AddFileToTar.objects.create(
-                        parent_job=self,
-                        parent_export_job=self
-                        )
+                        parent_job=self, parent_export_job=self
+                    )
                     tar_job.start_job()
 
                 except Exception as err:  # pylint: disable=broad-except
@@ -116,7 +116,9 @@ class AddBookToUserExportJob(ChildJob):
             # ListItems include "notes" and "approved" so we need them
             # even though we know it's this book
             book["lists"] = []
-            list_items = ListItem.objects.filter(book=self.edition, user=self.parent_job.user).distinct()
+            list_items = ListItem.objects.filter(
+                book=self.edition, user=self.parent_job.user
+            ).distinct()
 
             for item in list_items:
                 list_info = item.book_list.to_activity()
@@ -133,16 +135,18 @@ class AddBookToUserExportJob(ChildJob):
             for status in ["comments", "quotations", "reviews"]:
                 book[status] = []
 
-
-            comments = Comment.objects.filter(user=self.parent_job.user, book=self.edition).all()
+            comments = Comment.objects.filter(
+                user=self.parent_job.user, book=self.edition
+            ).all()
             for status in comments:
                 obj = status.to_activity()
                 obj["progress"] = status.progress
                 obj["progress_mode"] = status.progress_mode
                 book["comments"].append(obj)
 
-
-            quotes = Quotation.objects.filter(user=self.parent_job.user, book=self.edition).all()
+            quotes = Quotation.objects.filter(
+                user=self.parent_job.user, book=self.edition
+            ).all()
             for status in quotes:
                 obj = status.to_activity()
                 obj["position"] = status.position
@@ -150,15 +154,18 @@ class AddBookToUserExportJob(ChildJob):
                 obj["position_mode"] = status.position_mode
                 book["quotations"].append(obj)
 
-
-            reviews = Review.objects.filter(user=self.parent_job.user, book=self.edition).all()
+            reviews = Review.objects.filter(
+                user=self.parent_job.user, book=self.edition
+            ).all()
             for status in reviews:
                 obj = status.to_activity()
                 book["reviews"].append(obj)
 
             # readthroughs can't be serialized to activity
             book_readthroughs = (
-                ReadThrough.objects.filter(user=self.parent_job.user, book=self.edition).distinct().values()
+                ReadThrough.objects.filter(user=self.parent_job.user, book=self.edition)
+                .distinct()
+                .values()
             )
             book["readthroughs"] = list(book_readthroughs)
 
@@ -167,7 +174,9 @@ class AddBookToUserExportJob(ChildJob):
             self.complete_job()
 
         except Exception as err:  # pylint: disable=broad-except
-            logger.exception("AddBookToUserExportJob %s Failed with error: %s", self.id, err)
+            logger.exception(
+                "AddBookToUserExportJob %s Failed with error: %s", self.id, err
+            )
             self.set_status("failed")
 
 
@@ -176,8 +185,7 @@ class AddFileToTar(ChildJob):
 
     parent_export_job = ForeignKey(
         BookwyrmExportJob, on_delete=CASCADE, related_name="child_edition_export_jobs"
-    ) # TODO: do we actually need this? Does self.parent_job.export_data work?
-
+    )  # TODO: do we actually need this? Does self.parent_job.export_data work?
 
     def start_job(self):
         """Start the job"""
@@ -188,7 +196,7 @@ class AddFileToTar(ChildJob):
         # but Hugh couldn't make that work
 
         try:
-            task_id=self.parent_export_job.task_id
+            task_id = self.parent_export_job.task_id
             export_data = self.parent_export_job.export_data
             export_json = self.parent_export_job.export_json
             json_data = DjangoJSONEncoder().encode(export_json)
@@ -198,27 +206,19 @@ class AddFileToTar(ChildJob):
             if settings.USE_S3:
                 s3_job = S3Tar(
                     settings.AWS_STORAGE_BUCKET_NAME,
-                    f"exports/{str(self.parent_export_job.task_id)}.tar.gz"
+                    f"exports/{str(self.parent_export_job.task_id)}.tar.gz",
                 )
 
                 # TODO: either encrypt the file or we will need to get it to the user
                 # from this secure part of the bucket
                 export_data.save("archive.json", ContentFile(json_data.encode("utf-8")))
 
-                s3_job.add_file(
-                    f"exports/{export_data.name}"
-                )
-                s3_job.add_file(
-                    f"images/{user.avatar.name}",
-                    folder="avatar"
-                )
+                s3_job.add_file(f"exports/{export_data.name}")
+                s3_job.add_file(f"images/{user.avatar.name}", folder="avatar")
                 for book in editions:
                     if getattr(book, "cover", False):
                         cover_name = f"images/{book.cover.name}"
-                        s3_job.add_file(
-                            cover_name,
-                            folder="covers"
-                        )
+                        s3_job.add_file(cover_name, folder="covers")
 
                 s3_job.tar()
                 # delete export json as soon as it's tarred
@@ -228,7 +228,7 @@ class AddFileToTar(ChildJob):
 
             else:
                 # TODO: is the export_data file open to the world?
-                logger.info( "export file URL: %s",export_data.url)
+                logger.info("export file URL: %s", export_data.url)
 
                 export_data.open("wb")
                 with BookwyrmTarFile.open(mode="w:gz", fileobj=export_data) as tar:
@@ -237,14 +237,15 @@ class AddFileToTar(ChildJob):
 
                     # Add avatar image if present
                     if getattr(user, "avatar", False):
-                        tar.add_image(user.avatar, filename="avatar", directory=f"avatar/") # TODO: does this work?
+                        tar.add_image(
+                            user.avatar, filename="avatar", directory=f"avatar/"
+                        )  # TODO: does this work?
 
                     for book in editions:
                         if getattr(book, "cover", False):
                             tar.add_image(book.cover)
 
                 export_data.close()
-
 
             self.complete_job()
 
@@ -276,6 +277,7 @@ def start_export_task(**kwargs):
     except Exception as err:  # pylint: disable=broad-except
         logger.exception("User Export Job %s Failed with error: %s", job.id, err)
         job.set_status("failed")
+
 
 @app.task(queue=IMPORTS, base=ParentTask)
 def export_saved_lists_task(**kwargs):
@@ -381,15 +383,22 @@ def trigger_books_jobs(**kwargs):
 
         for edition in editions:
             try:
-                edition_job = AddBookToUserExportJob.objects.create(edition=edition, parent_job=job)
+                edition_job = AddBookToUserExportJob.objects.create(
+                    edition=edition, parent_job=job
+                )
                 edition_job.start_job()
             except Exception as err:  # pylint: disable=broad-except
-                logger.exception("AddBookToUserExportJob %s Failed with error: %s", edition_job.id, err)
+                logger.exception(
+                    "AddBookToUserExportJob %s Failed with error: %s",
+                    edition_job.id,
+                    err,
+                )
                 edition_job.set_status("failed")
 
     except Exception as err:  # pylint: disable=broad-except
         logger.exception("trigger_books_jobs %s Failed with error: %s", job.id, err)
         job.set_status("failed")
+
 
 def get_books_for_user(user):
     """Get all the books and editions related to a user"""

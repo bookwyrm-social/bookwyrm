@@ -9,45 +9,84 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bookwyrm', '0191_merge_20240102_0326'),
+        ("bookwyrm", "0191_merge_20240102_0326"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='bookwyrmexportjob',
-            name='export_json',
-            field=models.JSONField(encoder=django.core.serializers.json.DjangoJSONEncoder, null=True),
+            model_name="bookwyrmexportjob",
+            name="export_json",
+            field=models.JSONField(
+                encoder=django.core.serializers.json.DjangoJSONEncoder, null=True
+            ),
         ),
         migrations.AddField(
-            model_name='bookwyrmexportjob',
-            name='json_completed',
+            model_name="bookwyrmexportjob",
+            name="json_completed",
             field=models.BooleanField(default=False),
         ),
         migrations.AlterField(
-            model_name='bookwyrmexportjob',
-            name='export_data',
-            field=models.FileField(null=True, storage=bookwyrm.storage_backends.ExportsFileStorage, upload_to=''),
+            model_name="bookwyrmexportjob",
+            name="export_data",
+            field=models.FileField(
+                null=True,
+                storage=bookwyrm.storage_backends.ExportsFileStorage,
+                upload_to="",
+            ),
         ),
         migrations.CreateModel(
-            name='AddFileToTar',
+            name="AddFileToTar",
             fields=[
-                ('childjob_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, serialize=False, to='bookwyrm.childjob')),
-                ('parent_export_job', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='child_edition_export_jobs', to='bookwyrm.bookwyrmexportjob')),
+                (
+                    "childjob_ptr",
+                    models.OneToOneField(
+                        auto_created=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        parent_link=True,
+                        primary_key=True,
+                        serialize=False,
+                        to="bookwyrm.childjob",
+                    ),
+                ),
+                (
+                    "parent_export_job",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="child_edition_export_jobs",
+                        to="bookwyrm.bookwyrmexportjob",
+                    ),
+                ),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
-            bases=('bookwyrm.childjob',),
+            bases=("bookwyrm.childjob",),
         ),
         migrations.CreateModel(
-            name='AddBookToUserExportJob',
+            name="AddBookToUserExportJob",
             fields=[
-                ('childjob_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, serialize=False, to='bookwyrm.childjob')),
-                ('edition', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='bookwyrm.edition')),
+                (
+                    "childjob_ptr",
+                    models.OneToOneField(
+                        auto_created=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        parent_link=True,
+                        primary_key=True,
+                        serialize=False,
+                        to="bookwyrm.childjob",
+                    ),
+                ),
+                (
+                    "edition",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="bookwyrm.edition",
+                    ),
+                ),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
-            bases=('bookwyrm.childjob',),
+            bases=("bookwyrm.childjob",),
         ),
     ]

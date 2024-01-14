@@ -63,11 +63,13 @@ class AzureImagesStorage(AzureStorage):  # pylint: disable=abstract-method
     location = "images"
     overwrite_files = False
 
+
 class ExportsFileStorage(FileSystemStorage):  # pylint: disable=abstract-method
     """Storage class for exports contents with local files"""
 
     location = "exports"
     overwrite_files = False
+
 
 class ExportsS3Storage(S3Boto3Storage):  # pylint: disable=abstract-method
     """Storage class for exports contents with S3"""
