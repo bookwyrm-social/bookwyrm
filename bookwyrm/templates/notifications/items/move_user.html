@@ -14,7 +14,7 @@
 
 {% block description %}
     {% if related_user_moved_to %}
-        {% id_to_username request.user.moved_to  as username %}
+        {% id_to_username related_user_moved_to as username %}
         {% blocktrans trimmed %}
         {{ related_user }} has moved to <a href="{{ related_user_moved_to }}">{{ username }}</a>
         {% endblocktrans %}
