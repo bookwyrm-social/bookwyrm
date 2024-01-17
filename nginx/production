@@ -96,11 +96,16 @@ server {
 #     # directly serve images and static files from the
 #     # bookwyrm filesystem using sendfile.
 #     # make the logs quieter by not reporting these requests
-#     location ~ ^/(images|static)/ {
+#     location ~ \.(bmp|ico|jpg|jpeg|png|tif|tiff|webp|css|js)$ {
 #         root /app;
 #         try_files $uri =404;
 #         add_header X-Cache-Status STATIC;
 #         access_log off;
+#     }
+
+#     # block access to any non-image files from images or static
+#     location ~ ^/images/ {
+#          return 403;
 #     }
 #
 #     # monitor the celery queues with flower, no caching enabled
