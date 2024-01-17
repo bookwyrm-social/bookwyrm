@@ -17,7 +17,8 @@ from bookwyrm import models
 from bookwyrm.models.bookwyrm_export_job import BookwyrmExportJob
 from bookwyrm.settings import PAGE_LENGTH
 
-# pylint: disable=no-self-use
+
+# pylint: disable=no-self-use,too-many-locals
 @method_decorator(login_required, name="dispatch")
 class Export(View):
     """Let users export data"""
@@ -54,7 +55,19 @@ class Export(View):
         fields = (
             ["title", "author_text"]
             + deduplication_fields
-            + ["rating", "review_name", "review_cw", "review_content"]
+            + [
+                "start_date",
+                "finish_date",
+                "stopped_date",
+                "rating",
+                "review_name",
+                "review_cw",
+                "review_content",
+                "review_published",
+                "shelf",
+                "shelf_name",
+                "shelf_date",
+            ]
         )
         writer.writerow(fields)
 
@@ -70,6 +83,24 @@ class Export(View):
 
             book.rating = review_rating.rating if review_rating else None
 
+            readthrough = (
+                models.ReadThrough.objects.filter(user=request.user, book=book)
+                .order_by("-start_date", "-finish_date")
+                .first()
+            )
+            if readthrough:
+                book.start_date = (
+                    readthrough.start_date.date() if readthrough.start_date else None
+                )
+                book.finish_date = (
+                    readthrough.finish_date.date() if readthrough.finish_date else None
+                )
+                book.stopped_date = (
+                    readthrough.stopped_date.date()
+                    if readthrough.stopped_date
+                    else None
+                )
+
             review = (
                 models.Review.objects.filter(
                     user=request.user, book=book, content__isnull=False
@@ -78,9 +109,27 @@ class Export(View):
                 .first()
             )
             if review:
+                book.review_published = (
+                    review.published_date.date() if review.published_date else None
+                )
                 book.review_name = review.name
                 book.review_cw = review.content_warning
-                book.review_content = review.raw_content
+                book.review_content = (
+                    review.raw_content if review.raw_content else review.content
+                )  # GoodReads imported reviews do not have raw_content, but content.
+
+            shelfbook = (
+                models.ShelfBook.objects.filter(user=request.user, book=book)
+                .order_by("-shelved_date", "-created_date", "-updated_date")
+                .last()
+            )
+            if shelfbook:
+                book.shelf = shelfbook.shelf.identifier
+                book.shelf_name = shelfbook.shelf.name
+                book.shelf_date = (
+                    shelfbook.shelved_date.date() if shelfbook.shelved_date else None
+                )
+
             writer.writerow([getattr(book, field, "") or "" for field in fields])
 
         return HttpResponse(
