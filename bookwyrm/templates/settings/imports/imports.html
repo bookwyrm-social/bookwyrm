@@ -90,6 +90,33 @@
             </div>
         </form>
     </details>
+
+    {% if site.user_exports_enabled %}
+    <details class="details-panel box">
+        <summary>
+            <span role="heading" aria-level="2" class="title is-6">
+                {% trans "Disable starting new user exports" %}
+            </span>
+            <span class="details-close icon icon-x" aria-hidden="true"></span>
+        </summary>
+        <form
+            name="disable-user-exports"
+            id="disable-user-exports"
+            method="POST"
+            action="{% url 'settings-user-exports-disable' %}"
+        >
+            <div class="notification">
+                {% trans "This is only intended to be used when things have gone very wrong with exports and you need to pause the feature while addressing issues." %}
+                {% trans "While exports are disabled, users will not be allowed to start new user exports, but existing exports will not be affected." %}
+            </div>
+            {% csrf_token %}
+            <div class="control">
+                <button type="submit" class="button is-danger">
+                    {% trans "Disable user exports" %}
+                </button>
+            </div>
+        </form>
+    </details>
     <details class="details-panel box">
         <summary>
             <span role="heading" aria-level="2" class="title is-6">
@@ -108,7 +135,7 @@
                 {% trans "Set the value to 0 to not enforce any limit." %}
             </div>
             <div class="align.to-t">
-                <label for="limit">{% trans "Restrict user imports and exports to once every " %}</label>
+                <label for="limit">{% trans "Limit how often users can import and export user data" %}</label>
                 <input name="limit" class="input is-w-xs is-h-em" type="text" placeholder="0" value="{{ user_import_time_limit }}">
                 <label>{% trans "hours" %}</label>
                 {% csrf_token %}
@@ -120,6 +147,28 @@
             </div>
         </form>
     </details>
+    {% else %}
+    <form
+        name="enable-user-imports"
+        id="enable-user-imports"
+        method="POST"
+        action="{% url 'settings-user-exports-enable' %}"
+        class="box"
+    >
+        <div class="notification is-danger is-light">
+            <p class="my-2">{% trans "Users are currently unable to start new user exports. This is the default setting." %}</p>
+            {% if use_s3 %}
+            <p>{% trans "It is not currently possible to provide user exports when using s3 storage. The BookWyrm development team are working on a fix for this." %}</p>
+            {% endif %}
+        </div>
+        {% csrf_token %}
+        <div class="control">
+            <button type="submit" class="button is-success" {% if use_s3 %}disabled{% endif %}>
+                {% trans "Enable user exports" %}
+            </button>
+        </div>
+    </form>
+    {% endif %}
 </div>
 <div class="block">
     <h4 class="title is-4">{% trans "Book Imports" %}</h4>
