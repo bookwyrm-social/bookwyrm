@@ -96,7 +96,7 @@ server {
 #     # directly serve images and static files from the
 #     # bookwyrm filesystem using sendfile.
 #     # make the logs quieter by not reporting these requests
-#     location ~ \.(bmp|ico|jpg|jpeg|png|tif|tiff|ttf|webp|css|js)$ {
+#     location ~ \.(bmp|ico|jpg|jpeg|png|svg|tif|tiff|ttf|webp|css|js)$ {
 #         root /app;
 #         try_files $uri =404;
 #         add_header X-Cache-Status STATIC;
