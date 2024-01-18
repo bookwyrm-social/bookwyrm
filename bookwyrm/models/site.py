@@ -96,6 +96,7 @@ class SiteSettings(SiteModel):
     imports_enabled = models.BooleanField(default=True)
     import_size_limit = models.IntegerField(default=0)
     import_limit_reset = models.IntegerField(default=0)
+    user_exports_enabled = models.BooleanField(default=False)
     user_import_time_limit = models.IntegerField(default=48)
 
     field_tracker = FieldTracker(fields=["name", "instance_tagline", "logo"])
