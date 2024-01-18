@@ -148,8 +148,8 @@ def get_file_size(file):
 
         return ""
 
-    except Exception as e:  # pylint: disable=broad-except
-        print(e)
+    except Exception as error:  # pylint: disable=broad-except
+        print(error)
         return ""
 
 

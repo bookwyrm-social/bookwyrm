@@ -2,14 +2,14 @@
 
 import dataclasses
 import logging
-import boto3
-from s3_tar import S3Tar
 from uuid import uuid4
+
+from s3_tar import S3Tar
 
 from django.db.models import CASCADE, BooleanField, FileField, ForeignKey, JSONField
 from django.db.models import Q
 from django.core.serializers.json import DjangoJSONEncoder
-from django.core.files.base import ContentFile, File
+from django.core.files.base import ContentFile
 from django.utils import timezone
 
 from bookwyrm import settings, storage_backends
@@ -18,7 +18,7 @@ from bookwyrm.models import AnnualGoal, ReadThrough, ShelfBook, List, ListItem
 from bookwyrm.models import Review, Comment, Quotation
 from bookwyrm.models import Edition
 from bookwyrm.models import UserFollows, User, UserBlocks
-from bookwyrm.models.job import ParentJob, ChildJob, ParentTask, SubTask
+from bookwyrm.models.job import ParentJob, ChildJob, ParentTask
 from bookwyrm.tasks import app, IMPORTS
 from bookwyrm.utils.tar import BookwyrmTarFile
 
@@ -82,6 +82,7 @@ class AddBookToUserExportJob(ChildJob):
 
     edition = ForeignKey(Edition, on_delete=CASCADE)
 
+    # pylint: disable=too-many-locals
     def start_job(self):
         """Start the job"""
         try:
@@ -185,7 +186,7 @@ class AddFileToTar(ChildJob):
 
     parent_export_job = ForeignKey(
         BookwyrmExportJob, on_delete=CASCADE, related_name="child_edition_export_jobs"
-    )  # TODO: do we actually need this? Does self.parent_job.export_data work?
+    )
 
     def start_job(self):
         """Start the job"""
@@ -196,7 +197,6 @@ class AddFileToTar(ChildJob):
         # but Hugh couldn't make that work
 
         try:
-            task_id = self.parent_export_job.task_id
             export_data = self.parent_export_job.export_data
             export_json = self.parent_export_job.export_json
             json_data = DjangoJSONEncoder().encode(export_json)
@@ -209,9 +209,12 @@ class AddFileToTar(ChildJob):
                     f"exports/{str(self.parent_export_job.task_id)}.tar.gz",
                 )
 
-                # TODO: either encrypt the file or we will need to get it to the user
+                # TODO: will need to get it to the user
                 # from this secure part of the bucket
-                export_data.save("archive.json", ContentFile(json_data.encode("utf-8")))
+                export_data.save(
+                    "archive.json",
+                    ContentFile(json_data.encode("utf-8"))
+                )
 
                 s3_job.add_file(f"exports/{export_data.name}")
                 s3_job.add_file(f"images/{user.avatar.name}", folder="avatar")
@@ -222,14 +225,12 @@ class AddFileToTar(ChildJob):
 
                 s3_job.tar()
                 # delete export json as soon as it's tarred
-                # there is probably a better way to do this
-                # Currently this merely makes the file empty
+                # TODO: there is probably a better way to do this
+                # Currently this merely makes the file empty even though
+                # we're using save=False
                 export_data.delete(save=False)
 
             else:
-                # TODO: is the export_data file open to the world?
-                logger.info("export file URL: %s", export_data.url)
-
                 export_data.open("wb")
                 with BookwyrmTarFile.open(mode="w:gz", fileobj=export_data) as tar:
 
@@ -238,8 +239,8 @@ class AddFileToTar(ChildJob):
                     # Add avatar image if present
                     if getattr(user, "avatar", False):
                         tar.add_image(
-                            user.avatar, filename="avatar", directory=f"avatar/"
-                        )  # TODO: does this work?
+                            user.avatar, filename="avatar", directory="avatar/"
+                        )
 
                     for book in editions:
                         if getattr(book, "cover", False):
@@ -319,7 +320,7 @@ def export_reading_goals_task(**kwargs):
     reading_goals = AnnualGoal.objects.filter(user=job.user).distinct()
     job.export_json["goals"] = []
     for goal in reading_goals:
-        exported_user["goals"].append(
+        job.export_json["goals"].append(
             {"goal": goal.goal, "year": goal.year, "privacy": goal.privacy}
         )
     job.save(update_fields=["export_json"])

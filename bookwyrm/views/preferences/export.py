@@ -187,6 +187,7 @@ class ExportUser(View):
 class ExportArchive(View):
     """Serve the archive file"""
 
+    # TODO: how do we serve s3 files?
     def get(self, request, archive_id):
         """download user export file"""
         export = BookwyrmExportJob.objects.get(task_id=archive_id, user=request.user)
