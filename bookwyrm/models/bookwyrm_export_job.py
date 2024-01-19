@@ -211,10 +211,7 @@ class AddFileToTar(ChildJob):
 
                 # TODO: will need to get it to the user
                 # from this secure part of the bucket
-                export_data.save(
-                    "archive.json",
-                    ContentFile(json_data.encode("utf-8"))
-                )
+                export_data.save("archive.json", ContentFile(json_data.encode("utf-8")))
 
                 s3_job.add_file(f"exports/{export_data.name}")
                 s3_job.add_file(f"images/{user.avatar.name}", folder="avatar")

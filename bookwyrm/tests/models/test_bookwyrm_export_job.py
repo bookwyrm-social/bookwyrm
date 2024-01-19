@@ -141,7 +141,6 @@ class BookwyrmExport(TestCase):
                 book=self.edition,
             )
 
-
     # pylint: disable=E1121
     def test_json_export_user_settings(self):
         """Test the json export function for basic user info"""
@@ -159,7 +158,6 @@ class BookwyrmExport(TestCase):
             user_data["settings"]["preferred_timezone"], "America/Los Angeles"
         )
         self.assertEqual(user_data["settings"]["default_post_privacy"], "followers")
-
 
     # pylint: disable=E1121
     def test_json_export_extended_user_data(self):
@@ -183,7 +181,6 @@ class BookwyrmExport(TestCase):
         # blocked users
         self.assertEqual(len(json_data["blocks"]), 1)
         self.assertEqual(json_data["blocks"][0], "https://your.domain.here/user/badger")
-
 
     # pylint: disable=E1121
     def test_json_export_books(self):
