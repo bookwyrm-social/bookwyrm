@@ -12,6 +12,8 @@ from django.db.models import Q
 from django.dispatch import receiver
 from django.template.loader import get_template
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
+from django.utils.translation import ngettext_lazy
 from model_utils import FieldTracker
 from model_utils.managers import InheritanceManager
 
@@ -178,6 +180,16 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         """you can't boost dms"""
         return self.privacy in ["unlisted", "public"]
 
+    @property
+    def page_title(self):
+        """title of the page when only this status is shown"""
+        return _("%(display_name)s's status") % {"display_name": self.user.display_name}
+
+    @property
+    def page_description(self):
+        """description of the page in meta tags when only this status is shown"""
+        return None
+
     def to_replies(self, **kwargs):
         """helper function for loading AP serialized replies to a status"""
         return self.to_ordered_collection(
@@ -332,6 +344,13 @@ class Comment(BookStatus):
 
     activity_serializer = activitypub.Comment
 
+    @property
+    def page_title(self):
+        return _("%(display_name)s's comment on %(book_title)s") % {
+            "display_name": self.user.display_name,
+            "book_title": self.book.title,
+        }
+
 
 class Quotation(BookStatus):
     """like a review but without a rating and transient"""
@@ -374,6 +393,13 @@ class Quotation(BookStatus):
 
     activity_serializer = activitypub.Quotation
 
+    @property
+    def page_title(self):
+        return _("%(display_name)s's quote from %(book_title)s") % {
+            "display_name": self.user.display_name,
+            "book_title": self.book.title,
+        }
+
 
 class Review(BookStatus):
     """a book review"""
@@ -403,6 +429,13 @@ class Review(BookStatus):
         """indicate the book in question for mastodon (or w/e) users"""
         return self.content
 
+    @property
+    def page_title(self):
+        return _("%(display_name)s's review of %(book_title)s") % {
+            "display_name": self.user.display_name,
+            "book_title": self.book.title,
+        }
+
     activity_serializer = activitypub.Review
     pure_type = "Article"
 
@@ -425,6 +458,18 @@ class ReviewRating(Review):
     def pure_content(self):
         template = get_template("snippets/generated_status/rating.html")
         return template.render({"book": self.book, "rating": self.rating}).strip()
+
+    @property
+    def page_description(self):
+        return ngettext_lazy(
+            "%(display_name)s rated %(book_title)s: %(display_rating).1f star",
+            "%(display_name)s rated %(book_title)s: %(display_rating).1f stars",
+            "display_rating",
+        ) % {
+            "display_name": self.user.display_name,
+            "book_title": self.book.title,
+            "display_rating": self.rating,
+        }
 
     activity_serializer = activitypub.Rating
     pure_type = "Note"

@@ -197,6 +197,8 @@ class Status(View):
                 "status": status,
                 "children": children,
                 "ancestors": ancestors,
+                "title": status.page_title,
+                "description": status.page_description,
                 "preview": preview,
             },
         }
