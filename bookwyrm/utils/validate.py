@@ -1,8 +1,10 @@
 """Validations"""
+from typing import Optional
+
 from bookwyrm.settings import DOMAIN, USE_HTTPS
 
 
-def validate_url_domain(url):
+def validate_url_domain(url: str) -> Optional[str]:
     """Basic check that the URL starts with the instance domain name"""
     if not url:
         return None

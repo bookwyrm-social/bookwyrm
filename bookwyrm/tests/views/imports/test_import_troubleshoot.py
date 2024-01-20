@@ -12,10 +12,9 @@ from bookwyrm import models, views
 class ImportTroubleshootViews(TestCase):
     """goodreads import views"""
 
-    # pylint: disable=invalid-name
-    def setUp(self):
+    @classmethod
+    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
         """we need basic test data and mocks"""
-        self.factory = RequestFactory()
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
         ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
@@ -27,6 +26,10 @@ class ImportTroubleshootViews(TestCase):
                 localname="mouse",
             )
         models.SiteSettings.objects.create()
+
+    def setUp(self):
+        """individual test setup"""
+        self.factory = RequestFactory()
 
     def test_import_troubleshoot_get(self):
         """there are so many views, this just makes sure it LOADS"""

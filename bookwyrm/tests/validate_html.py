@@ -8,6 +8,7 @@ def validate_html(html):
     _, errors = tidy_document(
         html.content,
         options={
+            "doctype": "html5",
             "drop-empty-elements": False,
             "warn-proprietary-attributes": False,
         },

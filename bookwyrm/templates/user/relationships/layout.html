@@ -31,7 +31,7 @@
             ({{ follow.username }})
         </div>
         <div class="column is-narrow">
-            {% include 'snippets/follow_button.html' with user=follow %}
+            {% include 'snippets/follow_button.html' with user=follow followers_page=followers_page %}
         </div>
     </div>
     {% endfor %}

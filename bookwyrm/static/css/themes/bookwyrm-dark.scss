@@ -1,4 +1,4 @@
-@import "../vendor/bulma/sass/utilities/initial-variables.sass";
+@import "../vendor/bulma/sass/utilities/initial-variables";
 
 /* Colors
  ******************************************************************************/
@@ -16,7 +16,7 @@ $danger-light: #481922;
 $light: #393939;
 $red: #ffa1b4;
 $black: #000;
-$white-ter:    hsl(0, 0%, 90%);
+$white-ter: hsl(0deg, 0%, 90%);
 
 /* book cover standins */
 $no-cover-color: #002549;
@@ -79,7 +79,7 @@ $info-dark: #72b6ee;
 }
 
 /* misc */
-$shadow: 0 0.5em 0.5em -0.125em rgba($black, 0.2), 0 0px 0 1px rgba($black, 0.02);
+$shadow: 0 0.5em 0.5em -0.125em rgba($black, 0.2), 0 0 0 1px rgba($black, 0.02);
 $card-header-shadow: 0 0.125em 0.25em rgba($black, 0.1);
 $invisible-overlay-background-color: rgba($black, 0.66);
 $progress-value-background-color: $border-light;
@@ -97,27 +97,23 @@ $family-secondary: $family-sans-serif;
     color: $grey-light !important;
 }
 
-
 .tabs li:not(.is-active) a {
     color: #2e7eb9 !important;
 }
-  .tabs li:not(.is-active) a:hover {
+
+.tabs li:not(.is-active) a:hover {
     border-bottom-color: #2e7eb9 !important;
-} 
-
-.tabs li:not(.is-active) a {
-    color: #2e7eb9 !important;
 }
+
 .tabs li.is-active a {
     color: #e6e6e6 !important;
-    border-bottom-color: #e6e6e6 !important ;
+    border-bottom-color: #e6e6e6 !important;
 }
-
 
 #qrcode svg {
     background-color: #a6a6a6;
 }
 
-@import "../bookwyrm.scss";
+@import "../bookwyrm";
 @import "../vendor/icons.css";
-@import "../vendor/shepherd.scss";
+@import "../vendor/shepherd";

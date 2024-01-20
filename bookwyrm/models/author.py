@@ -1,5 +1,7 @@
 """ database schema for info about authors """
 import re
+from typing import Tuple, Any
+
 from django.contrib.postgres.indexes import GinIndex
 from django.db import models
 
@@ -38,7 +40,7 @@ class Author(BookDataModel):
     )
     bio = fields.HtmlField(null=True, blank=True)
 
-    def save(self, *args, **kwargs):
+    def save(self, *args: Tuple[Any, ...], **kwargs: dict[str, Any]) -> None:
         """normalize isni format"""
         if self.isni:
             self.isni = re.sub(r"\s", "", self.isni)

@@ -13,7 +13,7 @@ from csp.decorators import csp_update
 from bookwyrm import models
 from bookwyrm.connectors import connector_manager
 from bookwyrm.book_search import search, format_search_result
-from bookwyrm.settings import PAGE_LENGTH
+from bookwyrm.settings import PAGE_LENGTH, INSTANCE_ACTOR_USERNAME
 from bookwyrm.utils import regex
 from .helpers import is_api_request
 from .helpers import handle_remote_webfinger
@@ -51,7 +51,7 @@ class Search(View):
 def api_book_search(request):
     """Return books via API response"""
     query = request.GET.get("q")
-    query = isbn_check(query)
+    query = isbn_check_and_format(query)
     min_confidence = request.GET.get("min_confidence", 0)
     # only return local book results via json so we don't cascade
     book_results = search(query, min_confidence=min_confidence)
@@ -64,7 +64,7 @@ def book_search(request):
     """the real business is elsewhere"""
     query = request.GET.get("q")
     # check if query is isbn
-    query = isbn_check(query)
+    query = isbn_check_and_format(query)
     min_confidence = request.GET.get("min_confidence", 0)
     search_remote = request.GET.get("remote", False) and request.user.is_authenticated
 
@@ -91,18 +91,15 @@ def book_search(request):
 
 
 def user_search(request):
-    """cool kids members only user search"""
+    """user search: search for a user"""
     viewer = request.user
     query = request.GET.get("q")
     query = query.strip()
     data = {"type": "user", "query": query}
-    # logged out viewers can't search users
-    if not viewer.is_authenticated:
-        return TemplateResponse(request, "search/user.html", data)
 
     # use webfinger for mastodon style account@domain.com username to load the user if
     # they don't exist locally (handle_remote_webfinger will check the db)
-    if re.match(regex.FULL_USERNAME, query):
+    if re.match(regex.FULL_USERNAME, query) and viewer.is_authenticated:
         handle_remote_webfinger(query)
 
     results = (
@@ -116,8 +113,14 @@ def user_search(request):
         .filter(
             similarity__gt=0.5,
         )
+        .exclude(localname=INSTANCE_ACTOR_USERNAME)
         .order_by("-similarity")
     )
+
+    # don't expose remote users
+    if not viewer.is_authenticated:
+        results = results.filter(local=True)
+
     paginated = Paginator(results, PAGE_LENGTH)
     page = paginated.get_page(request.GET.get("page"))
     data["results"] = page
@@ -156,7 +159,7 @@ def list_search(request):
     return TemplateResponse(request, "search/list.html", data)
 
 
-def isbn_check(query):
+def isbn_check_and_format(query):
     """isbn10 or isbn13 check, if so remove separators"""
     if query:
         su_num = re.sub(r"(?<=\d)\D(?=\d|[xX])", "", query)

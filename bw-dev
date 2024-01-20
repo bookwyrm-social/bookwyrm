@@ -91,7 +91,7 @@ case "$CMD" in
         $DOCKER_COMPOSE run --rm --service-ports web
         ;;
     initdb)
-        initdb "@"
+        initdb "$@"
         ;;
     resetdb)
         prod_error
@@ -165,6 +165,7 @@ case "$CMD" in
         git checkout l10n_main locale/pt_BR
         git checkout l10n_main locale/ro_RO
         git checkout l10n_main locale/sv_SE
+        git checkout l10n_main locale/uk_UA
         git checkout l10n_main locale/zh_Hans
         git checkout l10n_main locale/zh_Hant
         runweb django-admin makemessages --no-wrap --ignore=venv -l en_US $@
@@ -188,27 +189,25 @@ case "$CMD" in
         ;;
     prettier)
         prod_error
-        $DOCKER_COMPOSE run --rm dev-tools npx prettier --write bookwyrm/static/js/*.js
+        $DOCKER_COMPOSE run --rm dev-tools prettier --write bookwyrm/static/js/*.js
         ;;
     eslint)
         prod_error
-        $DOCKER_COMPOSE run --rm dev-tools npx eslint bookwyrm/static --ext .js
+        $DOCKER_COMPOSE run --rm dev-tools eslint bookwyrm/static --ext .js
         ;;
     stylelint)
         prod_error
-        $DOCKER_COMPOSE run --rm dev-tools npx stylelint \
-            bookwyrm/static/css/bookwyrm.scss bookwyrm/static/css/bookwyrm/**/*.scss --fix \
-            --config dev-tools/.stylelintrc.js
+        $DOCKER_COMPOSE run --rm dev-tools stylelint --fix bookwyrm/static/css \
+            --config dev-tools/.stylelintrc.js --ignore-path dev-tools/.stylelintignore
         ;;
     formatters)
         prod_error
         runweb pylint bookwyrm/
         $DOCKER_COMPOSE run --rm dev-tools black celerywyrm bookwyrm
-        $DOCKER_COMPOSE run --rm dev-tools npx prettier --write bookwyrm/static/js/*.js
-        $DOCKER_COMPOSE run --rm dev-tools npx eslint bookwyrm/static --ext .js
-        $DOCKER_COMPOSE run --rm dev-tools npx stylelint \
-            bookwyrm/static/css/bookwyrm.scss bookwyrm/static/css/bookwyrm/**/*.scss --fix \
-            --config dev-tools/.stylelintrc.js
+        $DOCKER_COMPOSE run --rm dev-tools prettier --write bookwyrm/static/js/*.js
+        $DOCKER_COMPOSE run --rm dev-tools eslint bookwyrm/static --ext .js
+        $DOCKER_COMPOSE run --rm dev-tools stylelint --fix bookwyrm/static/css \
+            --config dev-tools/.stylelintrc.js --ignore-path dev-tools/.stylelintignore
         ;;
     mypy)
         prod_error
@@ -246,6 +245,9 @@ case "$CMD" in
         ;;
     remove_remote_user_preview_images)
         runweb python manage.py remove_remote_user_preview_images
+        ;;
+    erase_deleted_user_data)
+        runweb python manage.py erase_deleted_user_data "$@"
         ;;
     copy_media_to_s3)
         awscommand "bookwyrm_media_volume:/images"\
@@ -298,7 +300,7 @@ case "$CMD" in
         echo "Unrecognised command. Try:"
         echo "    setup"
         echo "    up [container]"
-        echo "    down"        
+        echo "    down"
         echo "    service_ports_web"
         echo "    initdb"
         echo "    resetdb"

@@ -1,7 +1,6 @@
 """ what are we here for if not for posting """
 import re
 import logging
-from urllib.parse import urlparse
 
 from django.contrib.auth.decorators import login_required
 from django.core.validators import URLValidator
@@ -297,65 +296,51 @@ def find_or_create_hashtags(content):
 
 def format_links(content):
     """detect and format links"""
-    validator = URLValidator()
-    formatted_content = ""
+    validator = URLValidator(["http", "https"])
+    schema_re = re.compile(r"\bhttps?://")
     split_content = re.split(r"(\s+)", content)
 
-    for potential_link in split_content:
-        if not potential_link:
+    for i, potential_link in enumerate(split_content):
+        if not schema_re.search(potential_link):
             continue
-        wrapped = _wrapped(potential_link)
-        if wrapped:
-            wrapper_close = potential_link[-1]
-            formatted_content += potential_link[0]
-            potential_link = potential_link[1:-1]
 
-        ends_with_punctuation = _ends_with_punctuation(potential_link)
-        if ends_with_punctuation:
-            punctuation_glyph = potential_link[-1]
-            potential_link = potential_link[0:-1]
-
+        # Strip surrounding brackets and trailing punctuation.
+        prefix, potential_link, suffix = _unwrap(potential_link)
         try:
             # raises an error on anything that's not a valid link
             validator(potential_link)
 
             # use everything but the scheme in the presentation of the link
-            url = urlparse(potential_link)
-            link = url.netloc + url.path + url.params
-            if url.query != "":
-                link += "?" + url.query
-            if url.fragment != "":
-                link += "#" + url.fragment
-
-            formatted_content += f'<a href="{potential_link}">{link}</a>'
+            link = schema_re.sub("", potential_link)
+            split_content[i] = f'{prefix}<a href="{potential_link}">{link}</a>{suffix}'
         except (ValidationError, UnicodeError):
-            formatted_content += potential_link
+            pass
 
-        if wrapped:
-            formatted_content += wrapper_close
-
-        if ends_with_punctuation:
-            formatted_content += punctuation_glyph
-
-    return formatted_content
+    return "".join(split_content)
 
 
-def _wrapped(text):
-    """check if a line of text is wrapped"""
-    wrappers = [("(", ")"), ("[", "]"), ("{", "}")]
-    for wrapper in wrappers:
+def _unwrap(text):
+    """split surrounding brackets and trailing punctuation from a string of text"""
+    punct = re.compile(r'([.,;:!?"’”»]+)$')
+    prefix = suffix = ""
+
+    if punct.search(text):
+        # Move punctuation to suffix segment.
+        text, suffix, _ = punct.split(text)
+
+    for wrapper in ("()", "[]", "{}"):
         if text[0] == wrapper[0] and text[-1] == wrapper[-1]:
-            return True
-    return False
+            # Split out wrapping chars.
+            suffix = text[-1] + suffix
+            prefix, text = text[:1], text[1:-1]
+            break  # Nested wrappers not supported atm.
 
+    if punct.search(text):
+        # Move inner punctuation to suffix segment.
+        text, inner_punct, _ = punct.split(text)
+        suffix = inner_punct + suffix
 
-def _ends_with_punctuation(text):
-    """check if a line of text ends with a punctuation glyph"""
-    glyphs = [".", ",", ";", ":", "!", "?", "”", "’", '"', "»"]
-    for glyph in glyphs:
-        if text[-1] == glyph:
-            return True
-    return False
+    return prefix, text, suffix
 
 
 def to_markdown(content):

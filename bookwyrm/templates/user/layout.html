@@ -5,6 +5,7 @@
 {% load markdown %}
 {% load layout %}
 {% load group_tags %}
+{% load user_page_tags %}
 
 {% block title %}{{ user.display_name }}{% endblock %}
 
@@ -27,7 +28,11 @@
 <div class="block">
     <div class="columns">
         <div class="column is-two-fifths">
-            {% include 'user/user_preview.html' with user=user %}
+            {% if user.moved_to %}
+                {% include 'user/moved.html' with user=user %}
+            {% else %}
+                {% include 'user/user_preview.html' with user=user %}
+            {% endif %}
         </div>
 
         {% if user.summary %}
@@ -38,70 +43,78 @@
         {% endspaceless %}
         {% endif %}
     </div>
-    {% if not is_self and request.user.is_authenticated %}
-    {% include 'snippets/follow_button.html' with user=user %}
-    {% endif %}
-    {% if not is_self %}
-    {% include 'ostatus/remote_follow_button.html' with user=user %}
-    {% endif %}
+    <div>
+    {% if user.moved_to %}
+        {% include "snippets/moved_user_notice.html" with user=user %}
+    {% else %}
+        {% if not is_self and request.user.is_authenticated %}
+        {% include 'snippets/follow_button.html' with user=user %}
+        {% endif %}
+        {% if not is_self %}
+        {% include 'ostatus/remote_follow_button.html' with user=user %}
+        {% endif %}
 
-    {% if is_self and user.active_follower_requests.all %}
-    <div class="follow-requests">
-        <h2>{% trans "Follow Requests" %}</h2>
-        {% for requester in user.follower_requests.all %}
-            <div class="row shrink">
-                <p>
-                    <a href="{{ requester.local_path }}">{{ requester.display_name }}</a> ({{ requester.username }})
-                </p>
-                {% include 'snippets/follow_request_buttons.html' with user=requester %}
-            </div>
-        {% endfor %}
-    </div>
+        {% if is_self and user.active_follower_requests.all %}
+        <div class="follow-requests">
+            <h2>{% trans "Follow Requests" %}</h2>
+            {% for requester in user.follower_requests.all %}
+                <div class="row shrink">
+                    <p>
+                        <a href="{{ requester.local_path }}">{{ requester.display_name }}</a> ({{ requester.username }})
+                    </p>
+                    {% include 'snippets/follow_request_buttons.html' with user=requester %}
+                </div>
+            {% endfor %}
+        </div>
+        {% endif %}
     {% endif %}
+    </div>
+    {% block tabs %}
+    {% if not user.moved_to %}
+    {% with user|username as username %}
+    <nav class="tabs">
+        <ul>
+            {% url 'user-feed' user|username as url %}
+            <li{% if url == request.path or url == request.path|add:'/' %} class="is-active"{% endif %}>
+                <a href="{{ url }}">{% trans "Activity" %}</a>
+            </li>
+            {% url 'user-reviews-comments' user|username as url %}
+            <li{% if url == request.path or url == request.path|add:'/' %} class="is-active"{% endif %}>
+                <a href="{{ url }}">{% trans "Reviews and Comments" %}</a>
+            </li>
+            {% if is_self or user.goal.exists %}
+            {% now 'Y' as year %}
+            {% url 'user-goal' user|username year as url %}
+            <li{% if url in request.path %} class="is-active"{% endif %} id="tour-reading-goal">
+                <a href="{{ url }}">{% trans "Reading Goal" %}</a>
+            </li>
+            {% endif %}
+            {% if is_self or user|has_groups %}
+            {% url 'user-groups' user|username as url %}
+            <li{% if url in request.path %} class="is-active"{% endif %} id="tour-groups-tab">
+                <a href="{{ url }}">{% trans "Groups" %}</a>
+            </li>
+            {% endif %}
+            {% if is_self or user.list_set.exists %}
+            {% url 'user-lists' user|username as url %}
+            <li{% if url in request.path %} class="is-active"{% endif %} id="tour-lists-tab">
+                <a href="{{ url }}">{% trans "Lists" %}</a>
+            </li>
+            {% endif %}
+            {% if user.shelf_set.exists %}
+            {% url 'user-shelves' user|username as url %}
+            <li{% if url in request.path %} class="is-active"{% endif %} id="tour-shelves-tab">
+                <a href="{{ url }}">{% trans "Books" %}</a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endwith %}
+    {% endif %}
+    {% endblock %}
 </div>
 
-{% block tabs %}
-{% with user|username as username %}
-<nav class="tabs">
-    <ul>
-        {% url 'user-feed' user|username as url %}
-        <li{% if url == request.path or url == request.path|add:'/' %} class="is-active"{% endif %}>
-            <a href="{{ url }}">{% trans "Activity" %}</a>
-        </li>
-        {% url 'user-reviews-comments' user|username as url %}
-        <li{% if url == request.path or url == request.path|add:'/' %} class="is-active"{% endif %}>
-            <a href="{{ url }}">{% trans "Reviews and Comments" %}</a>
-        </li>
-        {% if is_self or user.goal.exists %}
-        {% now 'Y' as year %}
-        {% url 'user-goal' user|username year as url %}
-        <li{% if url in request.path %} class="is-active"{% endif %} id="tour-reading-goal">
-            <a href="{{ url }}">{% trans "Reading Goal" %}</a>
-        </li>
-        {% endif %}
-        {% if is_self or user|has_groups %}
-        {% url 'user-groups' user|username as url %}
-        <li{% if url in request.path %} class="is-active"{% endif %} id="tour-groups-tab">
-            <a href="{{ url }}">{% trans "Groups" %}</a>
-        </li>
-        {% endif %}
-        {% if is_self or user.list_set.exists %}
-        {% url 'user-lists' user|username as url %}
-        <li{% if url in request.path %} class="is-active"{% endif %} id="tour-lists-tab">
-            <a href="{{ url }}">{% trans "Lists" %}</a>
-        </li>
-        {% endif %}
-        {% if user.shelf_set.exists %}
-        {% url 'user-shelves' user|username as url %}
-        <li{% if url in request.path %} class="is-active"{% endif %} id="tour-shelves-tab">
-            <a href="{{ url }}">{% trans "Books" %}</a>
-        </li>
-        {% endif %}
-    </ul>
-</nav>
-{% endwith %}
-{% endblock %}
-
-{% block panel %}{% endblock %}
-
+    {% if not user.moved_to %}
+    {% block panel %}{% endblock %}
+    {% endif %}
 {% endblock %}

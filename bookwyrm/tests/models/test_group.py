@@ -9,7 +9,8 @@ from bookwyrm import models
 class Group(TestCase):
     """some activitypub oddness ahead"""
 
-    def setUp(self):
+    @classmethod
+    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
         """Set up for tests"""
 
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
