@@ -347,8 +347,7 @@ USE_L10N = True
 USE_TZ = True
 
 
-agent = requests.utils.default_user_agent()
-USER_AGENT = f"{agent} (BookWyrm/{VERSION}; +https://{DOMAIN}/)"
+USER_AGENT = f"BookWyrm (BookWyrm/{VERSION}; +https://{DOMAIN}/)"
 
 # Imagekit generated thumbnails
 ENABLE_THUMBNAIL_GENERATION = env.bool("ENABLE_THUMBNAIL_GENERATION", False)
