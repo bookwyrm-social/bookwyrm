@@ -190,6 +190,15 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         """description of the page in meta tags when only this status is shown"""
         return None
 
+    @property
+    def page_image(self):
+        """image to use as preview in meta tags when only this status is shown"""
+        if self.mention_books.exists():
+            book = self.mention_books.first()
+            return book.preview_image
+        else:
+            return self.user.preview_image
+
     def to_replies(self, **kwargs):
         """helper function for loading AP serialized replies to a status"""
         return self.to_ordered_collection(
@@ -312,6 +321,10 @@ class BookStatus(Status):
         """not a real model, sorry"""
 
         abstract = True
+
+    @property
+    def page_image(self):
+        return self.book.preview_image or super().page_image
 
 
 class Comment(BookStatus):
