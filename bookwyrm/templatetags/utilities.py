@@ -126,7 +126,7 @@ def id_to_username(user_id):
         value = f"{name}@{domain}"
 
         return value
-    return "a new user account"
+    return _("a new user account")
 
 
 @register.filter(name="get_file_size")

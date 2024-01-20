@@ -49,6 +49,13 @@
     {% if not site.user_exports_enabled %}
     <p class="notification is-danger">
         {% trans "New user exports are currently disabled." %}
+        {% if perms.bookwyrm.edit_instance_settings %}
+        {% spaceless %}
+        {% blocktrans%}
+            <br/>User exports settings can be changed from <a href="/settings/imports">the Imports page</a> in the Admin dashboard.
+        {% endblocktrans %}
+        {% endspaceless %}
+    {% endif%}
     </p>
     {% elif next_available %}
     <p class="notification is-warning">
