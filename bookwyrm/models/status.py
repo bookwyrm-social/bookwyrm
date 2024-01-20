@@ -195,7 +195,7 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         """image to use as preview in meta tags when only this status is shown"""
         if self.mention_books.exists():
             book = self.mention_books.first()
-            return book.preview_image
+            return book.preview_image or book.cover
         else:
             return self.user.preview_image
 
@@ -324,7 +324,7 @@ class BookStatus(Status):
 
     @property
     def page_image(self):
-        return self.book.preview_image or super().page_image
+        return self.book.preview_image or self.book.cover or super().page_image
 
 
 class Comment(BookStatus):
