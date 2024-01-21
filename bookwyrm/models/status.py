@@ -196,8 +196,7 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         if self.mention_books.exists():
             book = self.mention_books.first()
             return book.preview_image or book.cover
-        else:
-            return self.user.preview_image
+        return self.user.preview_image
 
     def to_replies(self, **kwargs):
         """helper function for loading AP serialized replies to a status"""
