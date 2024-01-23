@@ -28,5 +28,6 @@ jobs:
         ./bw-dev update_locales
         git add -A
         git commit -a -m "[GitHub Action] Update locales"
+        git push
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
