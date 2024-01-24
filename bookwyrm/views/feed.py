@@ -52,9 +52,18 @@ class Feed(View):
         paginated = Paginator(filtered_activities, PAGE_LENGTH)
 
         suggestions = suggested_users.get_suggestions(request.user)
-        cutoff = date(get_annual_summary_year(), 12, 31)
-        readthroughs = models.ReadThrough.objects.filter(
-            user=request.user, finish_date__lte=cutoff
+
+        cutoff = (
+            date(get_annual_summary_year(), 12, 31)
+            if get_annual_summary_year()
+            else None
+        )
+        readthroughs = (
+            models.ReadThrough.objects.filter(
+                user=request.user, finish_date__lte=cutoff
+            )
+            if get_annual_summary_year()
+            else []
         )
 
         data = {
