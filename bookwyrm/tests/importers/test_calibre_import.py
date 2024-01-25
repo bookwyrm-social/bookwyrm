@@ -16,12 +16,15 @@ from bookwyrm.models.import_job import handle_imported_book
 class CalibreImport(TestCase):
     """importing from Calibre csv"""
 
-    # pylint: disable=invalid-name
     def setUp(self):
         """use a test csv"""
         self.importer = CalibreImporter()
         datafile = pathlib.Path(__file__).parent.joinpath("../data/calibre.csv")
         self.csv = open(datafile, "r", encoding=self.importer.encoding)
+
+    @classmethod
+    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
+        """populate database"""
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
         ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):

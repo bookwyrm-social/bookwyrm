@@ -20,6 +20,11 @@ from markdown import markdown
 from bookwyrm import activitypub
 from bookwyrm.connectors import get_image
 from bookwyrm.utils.sanitizer import clean
+from bookwyrm.utils.partial_date import (
+    PartialDate,
+    PartialDateModel,
+    from_partial_isoformat,
+)
 from bookwyrm.settings import MEDIA_FULL_URL
 
 
@@ -483,10 +488,12 @@ class ImageField(ActivitypubFieldMixin, models.ImageField):
         image_slug = value
         # when it's an inline image (User avatar/icon, Book cover), it's a json
         # blob, but when it's an attached image, it's just a url
-        if hasattr(image_slug, "url"):
-            url = image_slug.url
-        elif isinstance(image_slug, str):
+        if isinstance(image_slug, str):
             url = image_slug
+        elif isinstance(image_slug, dict):
+            url = image_slug.get("url")
+        elif hasattr(image_slug, "url"):  # Serialized to Image/Document object?
+            url = image_slug.url
         else:
             return None
 
@@ -537,7 +544,6 @@ class DateTimeField(ActivitypubFieldMixin, models.DateTimeField):
     def field_from_activity(self, value, allow_external_connections=True):
         missing_fields = datetime(1970, 1, 1)  # "2022-10" => "2022-10-01"
         try:
-            # TODO(dato): investigate `ignoretz=True` wrt bookwyrm#3028.
             date_value = dateutil.parser.parse(value, default=missing_fields)
             try:
                 return timezone.make_aware(date_value)
@@ -545,6 +551,37 @@ class DateTimeField(ActivitypubFieldMixin, models.DateTimeField):
                 return date_value
         except (ParserError, TypeError):
             return None
+
+
+class PartialDateField(ActivitypubFieldMixin, PartialDateModel):
+    """activitypub-aware partial date field"""
+
+    def field_to_activity(self, value) -> str:
+        return value.partial_isoformat() if value else None
+
+    def field_from_activity(self, value, allow_external_connections=True):
+        # pylint: disable=no-else-return
+        try:
+            return from_partial_isoformat(value)
+        except ValueError:
+            pass
+
+        # fallback to full ISO-8601 parsing
+        try:
+            parsed = dateutil.parser.isoparse(value)
+        except (ValueError, ParserError):
+            return None
+
+        if timezone.is_aware(parsed):
+            return PartialDate.from_datetime(parsed)
+        else:
+            # Should not happen on the wire, but truncate down to date parts.
+            return PartialDate.from_date_parts(parsed.year, parsed.month, parsed.day)
+
+        # FIXME: decide whether to fix timestamps like "2023-09-30T21:00:00-03":
+        # clearly Oct 1st, not Sep 30th (an unwanted side-effect of USE_TZ). It's
+        # basically the remnants of #3028; there is a data migration pending (see …)
+        # but over the wire we might get these for an indeterminate amount of time.
 
 
 class HtmlField(ActivitypubFieldMixin, models.TextField):

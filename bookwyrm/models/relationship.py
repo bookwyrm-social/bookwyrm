@@ -65,6 +65,13 @@ class UserRelationship(BookWyrmModel):
         base_path = self.user_subject.remote_id
         return f"{base_path}#follows/{self.id}"
 
+    def get_accept_reject_id(self, status):
+        """get id for sending an accept or reject of a local user"""
+
+        base_path = self.user_object.remote_id
+        status_id = self.id or 0
+        return f"{base_path}#{status}/{status_id}"
+
 
 class UserFollows(ActivityMixin, UserRelationship):
     """Following a user"""
@@ -104,6 +111,20 @@ class UserFollows(ActivityMixin, UserRelationship):
             remote_id=follow_request.remote_id,
         )
         return obj
+
+    def reject(self):
+        """generate a Reject for this follow. This would normally happen
+        when a user deletes a follow they previously accepted"""
+
+        if self.user_object.local:
+            activity = activitypub.Reject(
+                id=self.get_accept_reject_id(status="rejects"),
+                actor=self.user_object.remote_id,
+                object=self.to_activity(),
+            ).serialize()
+            self.broadcast(activity, self.user_object)
+
+        self.delete()
 
 
 class UserFollowRequest(ActivitypubMixin, UserRelationship):
@@ -147,13 +168,6 @@ class UserFollowRequest(ActivitypubMixin, UserRelationship):
             manually_approves = self.user_object.manually_approves_followers
             if not manually_approves:
                 self.accept()
-
-    def get_accept_reject_id(self, status):
-        """get id for sending an accept or reject of a local user"""
-
-        base_path = self.user_object.remote_id
-        status_id = self.id or 0
-        return f"{base_path}#{status}/{status_id}"
 
     def accept(self, broadcast_only=False):
         """turn this request into the real deal"""

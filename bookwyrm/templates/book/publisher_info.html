@@ -1,7 +1,7 @@
 {% spaceless %}
 
 {% load i18n %}
-{% load humanize %}
+{% load date_ext %}
 
 {% firstof book.physical_format_detail book.get_physical_format_display as format %}
 {% firstof book.physical_format book.physical_format_detail as format_property %}
@@ -57,7 +57,7 @@
         {% endfor %}
     {% endif %}
 
-    {% with date=book.published_date|default:book.first_published_date|naturalday publisher=book.publishers|join:', ' %}
+    {% with date=book.published_date|default:book.first_published_date|naturalday_partial publisher=book.publishers|join:', ' %}
     {% if book.published_date and publisher %}
         {% blocktrans %}Published {{ date }} by {{ publisher }}.{% endblocktrans %}
     {% elif publisher %}

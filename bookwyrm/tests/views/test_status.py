@@ -11,7 +11,7 @@ from bookwyrm.settings import DOMAIN
 
 from bookwyrm.tests.validate_html import validate_html
 
-# pylint: disable=invalid-name
+
 @patch("bookwyrm.models.activitypub_mixin.broadcast_task.apply_async")
 class StatusTransactions(TransactionTestCase):
     """Test full database transactions"""
@@ -74,9 +74,9 @@ class StatusTransactions(TransactionTestCase):
 class StatusViews(TestCase):
     """viewing and creating statuses"""
 
-    def setUp(self):
+    @classmethod
+    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
         """we need basic test data and mocks"""
-        self.factory = RequestFactory()
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
         ), patch("bookwyrm.lists_stream.populate_lists_task.delay"):
@@ -106,7 +106,6 @@ class StatusViews(TestCase):
                 inbox="https://example.com/users/rat/inbox",
                 outbox="https://example.com/users/rat/outbox",
             )
-
         work = models.Work.objects.create(title="Test Work")
         self.book = models.Edition.objects.create(
             title="Example Edition",
@@ -114,6 +113,10 @@ class StatusViews(TestCase):
             parent_work=work,
         )
         models.SiteSettings.objects.create()
+
+    def setUp(self):
+        """individual test setup"""
+        self.factory = RequestFactory()
 
     def test_create_status_comment(self, *_):
         """create a status"""
@@ -323,14 +326,14 @@ class StatusViews(TestCase):
 
     def test_find_mentions_unknown_remote(self, *_):
         """mention a user that isn't in the database"""
-        with patch("bookwyrm.views.status.handle_remote_webfinger") as rw:
-            rw.return_value = self.another_user
+        with patch("bookwyrm.views.status.handle_remote_webfinger") as rwf:
+            rwf.return_value = self.another_user
             result = find_mentions(self.local_user, "@beep@beep.com")
             self.assertEqual(result["@nutria"], self.another_user)
             self.assertEqual(result[f"@nutria@{DOMAIN}"], self.another_user)
 
-        with patch("bookwyrm.views.status.handle_remote_webfinger") as rw:
-            rw.return_value = None
+        with patch("bookwyrm.views.status.handle_remote_webfinger") as rwf:
+            rwf.return_value = None
             result = find_mentions(self.local_user, "@beep@beep.com")
             self.assertEqual(result, {})
 
@@ -420,21 +423,25 @@ http://www.fish.com/"""
             'okay\n\n<a href="http://www.fish.com/">www.fish.com/</a>',
         )
 
-    def test_format_links_parens(self, *_):
-        """find and format urls into a tags"""
-        url = "http://www.fish.com/"
-        self.assertEqual(
-            views.status.format_links(f"({url})"),
-            f'(<a href="{url}">www.fish.com/</a>)',
-        )
-
     def test_format_links_punctuation(self, *_):
-        """don’t take trailing punctuation into account pls"""
-        url = "http://www.fish.com/"
-        self.assertEqual(
-            views.status.format_links(f"{url}."),
-            f'<a href="{url}">www.fish.com/</a>.',
-        )
+        """test many combinations of brackets, URLs, and punctuation"""
+        url = "https://bookwyrm.social"
+        html = f'<a href="{url}">bookwyrm.social</a>'
+        test_table = [
+            ("punct", f"text and {url}.", f"text and {html}."),
+            ("multi_punct", f"text, then {url}?...", f"text, then {html}?..."),
+            ("bracket_punct", f"here ({url}).", f"here ({html})."),
+            ("punct_bracket", f"there [{url}?]", f"there [{html}?]"),
+            ("punct_bracket_punct", f"not here? ({url}!).", f"not here? ({html}!)."),
+            (
+                "multi_punct_bracket",
+                f"not there ({url}...);",
+                f"not there ({html}...);",
+            ),
+        ]
+        for desc, text, output in test_table:
+            with self.subTest(desc=desc):
+                self.assertEqual(views.status.format_links(text), output)
 
     def test_format_links_special_chars(self, *_):
         """find and format urls into a tags"""
@@ -463,6 +470,13 @@ http://www.fish.com/"""
         self.assertEqual(
             views.status.format_links(url), f'<a href="{url}">{url[8:]}</a>'
         )
+
+    def test_format_links_ignore_non_urls(self, *_):
+        """formating links should leave plain text untouced"""
+        text_elision = "> “The distinction is significant.” [...]"  # bookwyrm#2993
+        text_quoteparens = "some kind of gene-editing technology (?)"  # bookwyrm#3049
+        self.assertEqual(views.status.format_links(text_elision), text_elision)
+        self.assertEqual(views.status.format_links(text_quoteparens), text_quoteparens)
 
     def test_format_mentions_with_at_symbol_links(self, *_):
         """A link with an @username shouldn't treat the username as a mention"""

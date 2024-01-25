@@ -1,13 +1,12 @@
-{% extends 'layout.html' %}
+{% extends 'preferences/layout.html' %}
 {% load i18n %}
 {% load humanize %}
 
-{% block title %}{% trans "Import Books" %}{% endblock %}
+{% block title %}{% trans "Import Book List" %}{% endblock %}
+{% block header %}{% trans "Import Book List" %}{% endblock %}
 
-{% block content %}
+{% block panel %}
 <div class="block">
-    <h1 class="title">{% trans "Import Books" %}</h1>
-
     {% if invalid %}
     <div class="notification is-danger">
         {% trans "Not a valid CSV file" %}
@@ -21,7 +20,7 @@
                     {% blocktrans trimmed count days=import_limit_reset with display_size=import_size_limit|intcomma %}
                         Currently, you are allowed to import {{ display_size }} books every {{ import_limit_reset }} day.
                     {% plural %}
-                        Currently, you are allowed to import {{ import_size_limit }} books every {{ import_limit_reset }} days.
+                        Currently, you are allowed to import {{ display_size }} books every {{ import_limit_reset }} days.
                     {% endblocktrans %}
                 </p>
                 <p>{% blocktrans with display_left=allowed_imports|intcomma %}You have {{ display_left }} left.{% endblocktrans %}</p>

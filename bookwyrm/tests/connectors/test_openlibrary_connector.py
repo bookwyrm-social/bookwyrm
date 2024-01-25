@@ -18,8 +18,9 @@ from bookwyrm.connectors.connector_manager import ConnectorException
 class Openlibrary(TestCase):
     """test loading data from openlibrary.org"""
 
-    def setUp(self):
-        """creates the connector we'll use"""
+    @classmethod
+    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
+        """creates the connector in the database"""
         models.Connector.objects.create(
             identifier="openlibrary.org",
             name="OpenLibrary",
@@ -30,6 +31,9 @@ class Openlibrary(TestCase):
             search_url="https://openlibrary.org/search?q=",
             isbn_search_url="https://openlibrary.org/isbn",
         )
+
+    def setUp(self):
+        """connector instance and other test data"""
         self.connector = Connector("openlibrary.org")
 
         work_file = pathlib.Path(__file__).parent.joinpath("../data/ol_work.json")

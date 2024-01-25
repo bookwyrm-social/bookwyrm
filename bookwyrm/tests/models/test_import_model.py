@@ -16,7 +16,8 @@ from bookwyrm.connectors import connector_manager
 class ImportJob(TestCase):
     """this is a fancy one!!!"""
 
-    def setUp(self):
+    @classmethod
+    def setUpTestData(self):  # pylint: disable=bad-classmethod-argument
         """data is from a goodreads export of The Raven Tower"""
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"), patch(
             "bookwyrm.activitystreams.populate_stream_task.delay"
@@ -24,6 +25,8 @@ class ImportJob(TestCase):
             self.local_user = models.User.objects.create_user(
                 "mouse", "mouse@mouse.mouse", "password", local=True
             )
+
+    def setUp(self):
         self.job = models.ImportJob.objects.create(user=self.local_user, mappings={})
 
     def test_isbn(self):

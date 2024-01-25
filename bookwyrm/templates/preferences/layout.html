@@ -24,6 +24,14 @@
                 <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Two Factor Authentication" %}</a>
             </li>
             <li>
+                {% url 'prefs-alias' as url %}
+                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Aliases" %}</a>
+            </li>
+            <li>
+                {% url 'prefs-move' as url %}
+                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Move  Account" %}</a>
+            </li>
+            <li>
                 {% url 'prefs-delete' as url %}
                 <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Delete Account" %}</a>
             </li>
@@ -32,11 +40,19 @@
         <ul class="menu-list">
             <li>
                 {% url 'import' as url %}
-                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Import" %}</a>
+                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Import Book List" %}</a>
             </li>
             <li>
                 {% url 'prefs-export' as url %}
-                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "CSV export" %}</a>
+                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Export Book List" %}</a>
+            </li>
+            <li>
+                {% url 'user-import' as url %}
+                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Import BookWyrm Account" %}</a>
+            </li>
+            <li>
+                {% url 'prefs-user-export' as url %}
+                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Export BookWyrm Account" %}</a>
             </li>
         </ul>
         <h2 class="menu-label">{% trans "Relationships" %}</h2>

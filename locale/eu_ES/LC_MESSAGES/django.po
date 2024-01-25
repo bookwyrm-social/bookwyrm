@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-27 01:11+0000\n"
-"PO-Revision-Date: 2023-09-28 00:08\n"
+"POT-Creation-Date: 2023-12-30 23:52+0000\n"
+"PO-Revision-Date: 2024-01-02 03:12\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Basque\n"
 "Language: eu\n"
@@ -42,15 +42,15 @@ msgstr "{i} erabilera"
 msgid "Unlimited"
 msgstr "Mugagabea"
 
-#: bookwyrm/forms/edit_user.py:88
+#: bookwyrm/forms/edit_user.py:104
 msgid "Incorrect password"
 msgstr "Pasahitz okerra"
 
-#: bookwyrm/forms/edit_user.py:95 bookwyrm/forms/landing.py:90
+#: bookwyrm/forms/edit_user.py:111 bookwyrm/forms/landing.py:90
 msgid "Password does not match"
 msgstr "Pasahitzak ez datoz bat"
 
-#: bookwyrm/forms/edit_user.py:118
+#: bookwyrm/forms/edit_user.py:134
 msgid "Incorrect Password"
 msgstr "Pasahitz okerra"
 
@@ -102,8 +102,8 @@ msgstr "Zerrendaren ordena"
 msgid "Book Title"
 msgstr "Liburuaren izenburua"
 
-#: bookwyrm/forms/lists.py:28 bookwyrm/templates/shelf/shelf.html:156
-#: bookwyrm/templates/shelf/shelf.html:188
+#: bookwyrm/forms/lists.py:28 bookwyrm/templates/shelf/shelf.html:158
+#: bookwyrm/templates/shelf/shelf.html:190
 #: bookwyrm/templates/snippets/create_status/review.html:32
 msgid "Rating"
 msgstr "Balorazioa"
@@ -141,11 +141,11 @@ msgstr "Kontuz"
 msgid "Danger"
 msgstr "Arriskua"
 
-#: bookwyrm/models/antispam.py:112 bookwyrm/models/antispam.py:146
+#: bookwyrm/models/antispam.py:113 bookwyrm/models/antispam.py:147
 msgid "Automatically generated report"
 msgstr "Automatikoki sortutako txostena"
 
-#: bookwyrm/models/base_model.py:18 bookwyrm/models/import_job.py:47
+#: bookwyrm/models/base_model.py:18 bookwyrm/models/import_job.py:48
 #: bookwyrm/models/link.py:72 bookwyrm/templates/import/import_status.html:214
 #: bookwyrm/templates/settings/link_domains/link_domains.html:19
 msgid "Pending"
@@ -171,23 +171,23 @@ msgstr "Moderatzaile ezabatzea"
 msgid "Domain block"
 msgstr "Domeinu blokeoa"
 
-#: bookwyrm/models/book.py:283
+#: bookwyrm/models/book.py:282
 msgid "Audiobook"
 msgstr "Audio-liburua"
 
-#: bookwyrm/models/book.py:284
+#: bookwyrm/models/book.py:283
 msgid "eBook"
 msgstr "eBook"
 
-#: bookwyrm/models/book.py:285
+#: bookwyrm/models/book.py:284
 msgid "Graphic novel"
 msgstr "Eleberri grafikoa"
 
-#: bookwyrm/models/book.py:286
+#: bookwyrm/models/book.py:285
 msgid "Hardcover"
 msgstr "Azal gogorra"
 
-#: bookwyrm/models/book.py:287
+#: bookwyrm/models/book.py:286
 msgid "Paperback"
 msgstr "Azal biguna"
 
@@ -205,26 +205,26 @@ msgstr "Federatuta"
 msgid "Blocked"
 msgstr "Blokeatuta"
 
-#: bookwyrm/models/fields.py:29
+#: bookwyrm/models/fields.py:35
 #, python-format
 msgid "%(value)s is not a valid remote_id"
 msgstr "%(value)s ez da baliozko remote_id"
 
-#: bookwyrm/models/fields.py:38 bookwyrm/models/fields.py:47
+#: bookwyrm/models/fields.py:44 bookwyrm/models/fields.py:53
 #, python-format
 msgid "%(value)s is not a valid username"
 msgstr "%(value)s ez da baliozko erabiltzaile-izena"
 
-#: bookwyrm/models/fields.py:192 bookwyrm/templates/layout.html:128
+#: bookwyrm/models/fields.py:198 bookwyrm/templates/layout.html:129
 #: bookwyrm/templates/ostatus/error.html:29
 msgid "username"
 msgstr "erabiltzaile-izena"
 
-#: bookwyrm/models/fields.py:197
+#: bookwyrm/models/fields.py:203
 msgid "A user with that username already exists."
 msgstr "Erabiltzaile-izen hori duen erabiltzailea dagoeneko existitzen da."
 
-#: bookwyrm/models/fields.py:216
+#: bookwyrm/models/fields.py:222
 #: bookwyrm/templates/snippets/privacy-icons.html:3
 #: bookwyrm/templates/snippets/privacy-icons.html:4
 #: bookwyrm/templates/snippets/privacy_select.html:11
@@ -232,7 +232,7 @@ msgstr "Erabiltzaile-izen hori duen erabiltzailea dagoeneko existitzen da."
 msgid "Public"
 msgstr "Publikoa"
 
-#: bookwyrm/models/fields.py:217
+#: bookwyrm/models/fields.py:223
 #: bookwyrm/templates/snippets/privacy-icons.html:7
 #: bookwyrm/templates/snippets/privacy-icons.html:8
 #: bookwyrm/templates/snippets/privacy_select.html:14
@@ -240,7 +240,7 @@ msgstr "Publikoa"
 msgid "Unlisted"
 msgstr "Zerrendatu gabea"
 
-#: bookwyrm/models/fields.py:218
+#: bookwyrm/models/fields.py:224
 #: bookwyrm/templates/snippets/privacy_select.html:17
 #: bookwyrm/templates/user/relationships/followers.html:6
 #: bookwyrm/templates/user/relationships/followers.html:11
@@ -249,7 +249,7 @@ msgstr "Zerrendatu gabea"
 msgid "Followers"
 msgstr "Jarraitzaileak"
 
-#: bookwyrm/models/fields.py:219
+#: bookwyrm/models/fields.py:225
 #: bookwyrm/templates/snippets/create_status/post_options_block.html:6
 #: bookwyrm/templates/snippets/privacy-icons.html:15
 #: bookwyrm/templates/snippets/privacy-icons.html:16
@@ -258,30 +258,29 @@ msgstr "Jarraitzaileak"
 msgid "Private"
 msgstr "Pribatua"
 
-#: bookwyrm/models/import_job.py:48 bookwyrm/templates/import/import.html:174
+#: bookwyrm/models/import_job.py:49 bookwyrm/templates/import/import.html:174
 #: bookwyrm/templates/settings/imports/imports.html:98
-#: bookwyrm/templates/settings/users/user_admin.html:81
-#: bookwyrm/templates/settings/users/user_info.html:28
+#: bookwyrm/templates/snippets/user_active_tag.html:8
 msgid "Active"
 msgstr "Aktiboa"
 
-#: bookwyrm/models/import_job.py:49 bookwyrm/templates/import/import.html:172
+#: bookwyrm/models/import_job.py:50 bookwyrm/templates/import/import.html:172
 msgid "Complete"
 msgstr "Osatuta"
 
-#: bookwyrm/models/import_job.py:50
+#: bookwyrm/models/import_job.py:51
 msgid "Stopped"
 msgstr "Geldituta"
 
-#: bookwyrm/models/import_job.py:83 bookwyrm/models/import_job.py:91
+#: bookwyrm/models/import_job.py:84 bookwyrm/models/import_job.py:92
 msgid "Import stopped"
 msgstr "Inportazioa gelditu da"
 
-#: bookwyrm/models/import_job.py:363 bookwyrm/models/import_job.py:388
+#: bookwyrm/models/import_job.py:356 bookwyrm/models/import_job.py:381
 msgid "Error loading book"
 msgstr "Errorea liburua kargatzean"
 
-#: bookwyrm/models/import_job.py:372
+#: bookwyrm/models/import_job.py:365
 msgid "Could not find a match for book"
 msgstr "Ezin izan da libururako parekorik aurkitu"
 
@@ -310,163 +309,184 @@ msgstr "Iruzkina"
 
 #: bookwyrm/models/report.py:85
 msgid "Resolved report"
-msgstr ""
+msgstr "Ebatzitako txostena"
 
 #: bookwyrm/models/report.py:86
 msgid "Re-opened report"
-msgstr ""
+msgstr "Berrirekitako txostena"
 
 #: bookwyrm/models/report.py:87
 msgid "Messaged reporter"
-msgstr ""
+msgstr "Salatzaileari mezua bidali zaio"
 
 #: bookwyrm/models/report.py:88
 msgid "Messaged reported user"
-msgstr ""
+msgstr "Salatutako erabiltzaileari mezua bidali zaio"
 
 #: bookwyrm/models/report.py:89
 msgid "Suspended user"
-msgstr ""
+msgstr "Erabiltzailea debekatu da"
 
 #: bookwyrm/models/report.py:90
 msgid "Un-suspended user"
-msgstr ""
+msgstr "Erabiltzaileari debekua kendu zaio"
 
 #: bookwyrm/models/report.py:91
 msgid "Changed user permission level"
-msgstr ""
+msgstr "Erabiltzailearen baimen-maila aldatu da"
 
 #: bookwyrm/models/report.py:92
 msgid "Deleted user account"
-msgstr ""
+msgstr "Erabiltzaile-kontua ezabatu da"
 
 #: bookwyrm/models/report.py:93
 msgid "Blocked domain"
-msgstr ""
+msgstr "Domeinua blokeatu da"
 
 #: bookwyrm/models/report.py:94
 msgid "Approved domain"
-msgstr ""
+msgstr "Domeinua onartu da"
 
 #: bookwyrm/models/report.py:95
 msgid "Deleted item"
-msgstr ""
+msgstr "Elementua ezabatu da"
 
-#: bookwyrm/models/user.py:32 bookwyrm/templates/book/book.html:307
+#: bookwyrm/models/user.py:33 bookwyrm/templates/book/book.html:307
 msgid "Reviews"
 msgstr "Kritikak"
 
-#: bookwyrm/models/user.py:33
+#: bookwyrm/models/user.py:34
 msgid "Comments"
 msgstr "Iruzkinak"
 
-#: bookwyrm/models/user.py:34
+#: bookwyrm/models/user.py:35
 msgid "Quotations"
 msgstr "Aipuak"
 
-#: bookwyrm/models/user.py:35
+#: bookwyrm/models/user.py:36
 msgid "Everything else"
 msgstr "Gainerako guztia"
 
-#: bookwyrm/settings.py:223
+#: bookwyrm/settings.py:232
 msgid "Home Timeline"
 msgstr "Hasierako denbora-lerroa"
 
-#: bookwyrm/settings.py:223
+#: bookwyrm/settings.py:232
 msgid "Home"
 msgstr "Hasiera"
 
-#: bookwyrm/settings.py:224
+#: bookwyrm/settings.py:233
 msgid "Books Timeline"
 msgstr "Liburuen denbora-lerroa"
 
-#: bookwyrm/settings.py:224
+#: bookwyrm/settings.py:233
 #: bookwyrm/templates/guided_tour/user_profile.html:101
 #: bookwyrm/templates/search/layout.html:22
 #: bookwyrm/templates/search/layout.html:43
-#: bookwyrm/templates/user/layout.html:97
+#: bookwyrm/templates/user/layout.html:107
 msgid "Books"
 msgstr "Liburuak"
 
-#: bookwyrm/settings.py:296
+#: bookwyrm/settings.py:313
 msgid "English"
 msgstr "English (Ingelesa)"
 
-#: bookwyrm/settings.py:297
+#: bookwyrm/settings.py:314
 msgid "Català (Catalan)"
 msgstr "Català (katalana)"
 
-#: bookwyrm/settings.py:298
+#: bookwyrm/settings.py:315
 msgid "Deutsch (German)"
 msgstr "Deutsch (alemana)"
 
-#: bookwyrm/settings.py:299
+#: bookwyrm/settings.py:316
 msgid "Esperanto (Esperanto)"
 msgstr "Esperantoa"
 
-#: bookwyrm/settings.py:300
+#: bookwyrm/settings.py:317
 msgid "Español (Spanish)"
 msgstr "Español (espainiera)"
 
-#: bookwyrm/settings.py:301
+#: bookwyrm/settings.py:318
 msgid "Euskara (Basque)"
 msgstr "Euskara"
 
-#: bookwyrm/settings.py:302
+#: bookwyrm/settings.py:319
 msgid "Galego (Galician)"
 msgstr "Galego (Galiziera)"
 
-#: bookwyrm/settings.py:303
+#: bookwyrm/settings.py:320
 msgid "Italiano (Italian)"
 msgstr "Italiano (Italiera)"
 
-#: bookwyrm/settings.py:304
+#: bookwyrm/settings.py:321
 msgid "Suomi (Finnish)"
 msgstr "Suomi (finlandiera)"
 
-#: bookwyrm/settings.py:305
+#: bookwyrm/settings.py:322
 msgid "Français (French)"
 msgstr "Français (frantses)"
 
-#: bookwyrm/settings.py:306
+#: bookwyrm/settings.py:323
 msgid "Lietuvių (Lithuanian)"
 msgstr "Lituano (lituaniera)"
 
-#: bookwyrm/settings.py:307
+#: bookwyrm/settings.py:324
 msgid "Nederlands (Dutch)"
-msgstr ""
+msgstr "Herbehereak (nederlandera)"
 
-#: bookwyrm/settings.py:308
+#: bookwyrm/settings.py:325
 msgid "Norsk (Norwegian)"
 msgstr "Norsk (Norvegiera)"
 
-#: bookwyrm/settings.py:309
+#: bookwyrm/settings.py:326
 msgid "Polski (Polish)"
 msgstr "Polski (poloniera)"
 
-#: bookwyrm/settings.py:310
+#: bookwyrm/settings.py:327
 msgid "Português do Brasil (Brazilian Portuguese)"
 msgstr "Português do Brasil (Brasilgo Portugesa)"
 
-#: bookwyrm/settings.py:311
+#: bookwyrm/settings.py:328
 msgid "Português Europeu (European Portuguese)"
 msgstr "Português Europeu (Europako Portugesa)"
 
-#: bookwyrm/settings.py:312
+#: bookwyrm/settings.py:329
 msgid "Română (Romanian)"
 msgstr "Română (errumaniera)"
 
-#: bookwyrm/settings.py:313
+#: bookwyrm/settings.py:330
 msgid "Svenska (Swedish)"
 msgstr "Svenska (suediera)"
 
-#: bookwyrm/settings.py:314
+#: bookwyrm/settings.py:331
+msgid "Українська (Ukrainian)"
+msgstr ""
+
+#: bookwyrm/settings.py:332
 msgid "简体中文 (Simplified Chinese)"
 msgstr "简体中文 (Txinera soildua)"
 
-#: bookwyrm/settings.py:315
+#: bookwyrm/settings.py:333
 msgid "繁體中文 (Traditional Chinese)"
 msgstr "繁體中文 (Txinera tradizionala)"
+
+#: bookwyrm/templates/403.html:5
+msgid "Oh no!"
+msgstr ""
+
+#: bookwyrm/templates/403.html:9 bookwyrm/templates/landing/invite.html:21
+msgid "Permission Denied"
+msgstr "Baimena ukatu da"
+
+#: bookwyrm/templates/403.html:11
+#, python-format
+msgid "You do not have permission to view this page or perform this action. Your user permission level is <code>%(level)s</code>."
+msgstr ""
+
+#: bookwyrm/templates/403.html:15
+msgid "If you think you should have access, please speak to your BookWyrm server administrator."
+msgstr ""
 
 #: bookwyrm/templates/404.html:4 bookwyrm/templates/404.html:8
 msgid "Not Found"
@@ -475,6 +495,20 @@ msgstr "Ez da aurkitu"
 #: bookwyrm/templates/404.html:9
 msgid "The page you requested doesn't seem to exist!"
 msgstr "Badirudi eskatu duzun orrialdea ez dela existitzen!"
+
+#: bookwyrm/templates/413.html:4 bookwyrm/templates/413.html:8
+msgid "File too large"
+msgstr ""
+
+#: bookwyrm/templates/413.html:9
+msgid "The file you are uploading is too large."
+msgstr ""
+
+#: bookwyrm/templates/413.html:11
+msgid "\n"
+"        You you can try using a smaller file, or ask your BookWyrm server administrator to increase the <code>DATA_UPLOAD_MAX_MEMORY_SIZE</code> setting.\n"
+"        "
+msgstr ""
 
 #: bookwyrm/templates/500.html:4
 msgid "Oops!"
@@ -536,12 +570,12 @@ msgstr "%(site_name)s(e)ko moderatzaileek eta administratzaileek webgunea martxa
 msgid "Moderator"
 msgstr "Moderatzailea"
 
-#: bookwyrm/templates/about/about.html:124 bookwyrm/templates/user_menu.html:67
+#: bookwyrm/templates/about/about.html:124 bookwyrm/templates/user_menu.html:62
 msgid "Admin"
 msgstr "Administratzailea"
 
 #: bookwyrm/templates/about/about.html:140
-#: bookwyrm/templates/settings/users/user_moderation_actions.html:14
+#: bookwyrm/templates/settings/users/user_moderation_actions.html:28
 #: bookwyrm/templates/snippets/status/status_options.html:35
 #: bookwyrm/templates/snippets/user_options.html:14
 msgid "Send direct message"
@@ -575,7 +609,7 @@ msgid "Software version:"
 msgstr "Softwarearen bertsioa:"
 
 #: bookwyrm/templates/about/layout.html:30
-#: bookwyrm/templates/embed-layout.html:33
+#: bookwyrm/templates/embed-layout.html:34
 #: bookwyrm/templates/snippets/footer.html:8
 #, python-format
 msgid "About %(site_name)s"
@@ -602,7 +636,7 @@ msgstr "%(year)s <em>liburuetan</em>"
 #: bookwyrm/templates/annual_summary/layout.html:47
 #, python-format
 msgid "<em>%(display_name)s’s</em> year of reading"
-msgstr "<em>%(display_name)s(r)en</em> irakurketa-urtea"
+msgstr "<em>%(display_name)s</em> erabiltzailearen irakurketa-urtea"
 
 #: bookwyrm/templates/annual_summary/layout.html:53
 msgid "Share this page"
@@ -619,7 +653,7 @@ msgstr "Kopiatuta!"
 
 #: bookwyrm/templates/annual_summary/layout.html:77
 msgid "Sharing status: <strong>public with key</strong>"
-msgstr "Egoeraren partekatzea: <strong>publikoa klabearekin</strong>"
+msgstr "Egoeraren partekatzea: <strong>publikoa gakoarekin</strong>"
 
 #: bookwyrm/templates/annual_summary/layout.html:78
 msgid "The page can be seen by anyone with the complete address."
@@ -680,7 +714,7 @@ msgstr "Aurtengo irakurketarik laburrena…"
 #: bookwyrm/templates/annual_summary/layout.html:157
 #: bookwyrm/templates/annual_summary/layout.html:178
 #: bookwyrm/templates/annual_summary/layout.html:247
-#: bookwyrm/templates/book/book.html:63
+#: bookwyrm/templates/book/book.html:65
 #: bookwyrm/templates/discover/large-book.html:22
 #: bookwyrm/templates/landing/large-book.html:26
 #: bookwyrm/templates/landing/small-book.html:18
@@ -768,24 +802,24 @@ msgid "View ISNI record"
 msgstr "Ikusi ISNI erregistroa"
 
 #: bookwyrm/templates/author/author.html:95
-#: bookwyrm/templates/book/book.html:173
+#: bookwyrm/templates/book/book.html:175
 msgid "View on ISFDB"
 msgstr "Ikus ISFDB webgunean"
 
 #: bookwyrm/templates/author/author.html:100
 #: bookwyrm/templates/author/sync_modal.html:5
-#: bookwyrm/templates/book/book.html:140
+#: bookwyrm/templates/book/book.html:142
 #: bookwyrm/templates/book/sync_modal.html:5
 msgid "Load data"
 msgstr "Kargatu datuak"
 
 #: bookwyrm/templates/author/author.html:104
-#: bookwyrm/templates/book/book.html:144
+#: bookwyrm/templates/book/book.html:146
 msgid "View on OpenLibrary"
 msgstr "OpenLibraryn ikusi"
 
 #: bookwyrm/templates/author/author.html:119
-#: bookwyrm/templates/book/book.html:158
+#: bookwyrm/templates/book/book.html:160
 msgid "View on Inventaire"
 msgstr "Inventairen ikusi"
 
@@ -797,11 +831,7 @@ msgstr "LibraryThing-en ikusi"
 msgid "View on Goodreads"
 msgstr "Goodreads-en ikusi"
 
-#: bookwyrm/templates/author/author.html:151
-msgid "View ISFDB entry"
-msgstr "Ikus ISFDB atala"
-
-#: bookwyrm/templates/author/author.html:166
+#: bookwyrm/templates/author/author.html:158
 #, python-format
 msgid "Books by %(name)s"
 msgstr "%(name)s(e)k idatzitako liburuak"
@@ -910,7 +940,7 @@ msgstr "ISNI:"
 #: bookwyrm/templates/settings/registration.html:96
 #: bookwyrm/templates/settings/registration_limited.html:76
 #: bookwyrm/templates/settings/site.html:144
-#: bookwyrm/templates/settings/users/user_moderation_actions.html:75
+#: bookwyrm/templates/settings/users/user_moderation_actions.html:89
 #: bookwyrm/templates/shelf/form.html:25
 #: bookwyrm/templates/snippets/reading_modals/layout.html:18
 msgid "Save"
@@ -959,19 +989,19 @@ msgstr "Berretsi"
 msgid "Unable to connect to remote source."
 msgstr "Ezin izan da urruneko edukira konektatu."
 
-#: bookwyrm/templates/book/book.html:71 bookwyrm/templates/book/book.html:72
+#: bookwyrm/templates/book/book.html:73 bookwyrm/templates/book/book.html:74
 msgid "Edit Book"
 msgstr "Editatu liburua"
 
-#: bookwyrm/templates/book/book.html:97 bookwyrm/templates/book/book.html:100
+#: bookwyrm/templates/book/book.html:99 bookwyrm/templates/book/book.html:102
 msgid "Click to add cover"
 msgstr "Egin klik azala gehitzeko"
 
-#: bookwyrm/templates/book/book.html:106
+#: bookwyrm/templates/book/book.html:108
 msgid "Failed to load cover"
 msgstr "Ezin izan da azala kargatu"
 
-#: bookwyrm/templates/book/book.html:117
+#: bookwyrm/templates/book/book.html:119
 msgid "Click to enlarge"
 msgstr "Egin click handitzeko"
 
@@ -1046,13 +1076,13 @@ msgstr "Lekuak"
 #: bookwyrm/templates/guided_tour/lists.html:14
 #: bookwyrm/templates/guided_tour/user_books.html:102
 #: bookwyrm/templates/guided_tour/user_profile.html:78
-#: bookwyrm/templates/layout.html:90 bookwyrm/templates/lists/curate.html:8
+#: bookwyrm/templates/layout.html:88 bookwyrm/templates/lists/curate.html:8
 #: bookwyrm/templates/lists/list.html:12 bookwyrm/templates/lists/lists.html:5
 #: bookwyrm/templates/lists/lists.html:12
 #: bookwyrm/templates/search/layout.html:26
 #: bookwyrm/templates/search/layout.html:51
 #: bookwyrm/templates/settings/celery.html:77
-#: bookwyrm/templates/user/layout.html:91 bookwyrm/templates/user/lists.html:6
+#: bookwyrm/templates/user/layout.html:101 bookwyrm/templates/user/lists.html:6
 msgid "Lists"
 msgstr "Zerrendak"
 
@@ -1076,11 +1106,11 @@ msgstr "ISBN:"
 #: bookwyrm/templates/book/book_identifiers.html:12
 #: bookwyrm/templates/book/book_identifiers.html:13
 msgid "Copy ISBN"
-msgstr ""
+msgstr "ISBN-a kopiatu"
 
 #: bookwyrm/templates/book/book_identifiers.html:16
 msgid "Copied ISBN!"
-msgstr ""
+msgstr "ISBN-a kopiatu!"
 
 #: bookwyrm/templates/book/book_identifiers.html:23
 #: bookwyrm/templates/book/edit/edit_book_form.html:352
@@ -1117,7 +1147,7 @@ msgstr "Kargatu azala:"
 
 #: bookwyrm/templates/book/cover_add_modal.html:23
 #: bookwyrm/templates/book/edit/edit_book_form.html:250
-msgid "Load cover from url:"
+msgid "Load cover from URL:"
 msgstr "Kargatu azala URLtik:"
 
 #: bookwyrm/templates/book/cover_show_modal.html:6
@@ -1245,7 +1275,7 @@ msgstr "Izenburua:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:35
 msgid "Sort Title:"
-msgstr ""
+msgstr "Izenburuaren arabera ordenatu:"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:44
 msgid "Subtitle:"
@@ -1328,7 +1358,7 @@ msgid "Add Another Author"
 msgstr "Gehitu beste egile bat"
 
 #: bookwyrm/templates/book/edit/edit_book_form.html:231
-#: bookwyrm/templates/shelf/shelf.html:147
+#: bookwyrm/templates/shelf/shelf.html:149
 msgid "Cover"
 msgstr "Azala"
 
@@ -1372,8 +1402,8 @@ msgstr "%(book_title)s(r)en edizioak"
 
 #: bookwyrm/templates/book/editions/editions.html:8
 #, python-format
-msgid "Editions of <a href=\"%(work_path)s\">\"%(work_title)s\"</a>"
-msgstr "<a href=\"%(work_path)s\">\"%(work_title)s\"</a>-ren edizioak"
+msgid "Editions of <a href=\"%(work_path)s\"><i>%(work_title)s</i></a>"
+msgstr "<a href=\"%(work_path)s\"><i>%(work_title)s</i></a> lanaren edizioak"
 
 #: bookwyrm/templates/book/editions/editions.html:55
 msgid "Can't find the edition you're looking for?"
@@ -1455,8 +1485,9 @@ msgstr "Domeinua"
 #: bookwyrm/templates/settings/announcements/announcements.html:37
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:48
 #: bookwyrm/templates/settings/invites/status_filter.html:5
+#: bookwyrm/templates/settings/themes.html:111
 #: bookwyrm/templates/settings/users/user_admin.html:56
-#: bookwyrm/templates/settings/users/user_info.html:24
+#: bookwyrm/templates/settings/users/user_info.html:35
 msgid "Status"
 msgstr "Egoera"
 
@@ -1465,7 +1496,7 @@ msgstr "Egoera"
 #: bookwyrm/templates/settings/federation/instance.html:112
 #: bookwyrm/templates/settings/imports/imports.html:141
 #: bookwyrm/templates/settings/reports/report_links_table.html:6
-#: bookwyrm/templates/settings/themes.html:99
+#: bookwyrm/templates/settings/themes.html:108
 msgid "Actions"
 msgstr "Ekintzak"
 
@@ -1529,22 +1560,22 @@ msgstr "%(pages)s orrialde"
 msgid "%(languages)s language"
 msgstr "%(languages)s hizkuntza"
 
-#: bookwyrm/templates/book/publisher_info.html:65
+#: bookwyrm/templates/book/publisher_info.html:63
 #, python-format
 msgid "Published %(date)s by %(publisher)s."
 msgstr "%(date)s(e)an %(publisher)s(e)n argitaratua."
+
+#: bookwyrm/templates/book/publisher_info.html:65
+#, python-format
+msgid "Published by %(publisher)s."
+msgstr "%(publisher)s(e)k argitaratua."
 
 #: bookwyrm/templates/book/publisher_info.html:67
 #, python-format
 msgid "Published %(date)s"
 msgstr "%(date)s(e)an argitaratua"
 
-#: bookwyrm/templates/book/publisher_info.html:69
-#, python-format
-msgid "Published by %(publisher)s."
-msgstr "%(publisher)s(e)k argitaratua."
-
-#: bookwyrm/templates/book/rating.html:13
+#: bookwyrm/templates/book/rating.html:19
 msgid "rated it"
 msgstr "baloratu du"
 
@@ -1552,12 +1583,12 @@ msgstr "baloratu du"
 msgid "Series by"
 msgstr "Seriearen sortzailea: "
 
-#: bookwyrm/templates/book/series.html:27
+#: bookwyrm/templates/book/series.html:28
 #, python-format
 msgid "Book %(series_number)s"
 msgstr "%(series_number)s. liburua"
 
-#: bookwyrm/templates/book/series.html:27
+#: bookwyrm/templates/book/series.html:28
 msgid "Unsorted Book"
 msgstr "Sailkatu gabeko liburua"
 
@@ -1681,6 +1712,7 @@ msgstr "Iradokizunak"
 #: bookwyrm/templates/ostatus/subscribe.html:42
 #: bookwyrm/templates/ostatus/success.html:17
 #: bookwyrm/templates/ostatus/success.html:18
+#: bookwyrm/templates/user/moved.html:19 bookwyrm/templates/user/moved.html:20
 #: bookwyrm/templates/user/user_preview.html:16
 #: bookwyrm/templates/user/user_preview.html:17
 msgid "Locked account"
@@ -1726,7 +1758,7 @@ msgstr "<a href=\"%(user_path)s\">%(username)s</a>(e)k <a href=\"%(book_path)s\"
 #: bookwyrm/templates/discover/card-header.html:13
 #, python-format
 msgid "<a href=\"%(user_path)s\">%(username)s</a> finished reading <a href=\"%(book_path)s\">%(book_title)s</a>"
-msgstr "<a href=\"%(user_path)s\">%(username)s</a>(e)k <a href=\"%(book_path)s\">%(book_title)s</a> irakurtzen bukatu du"
+msgstr "<a href=\"%(user_path)s\">%(username)s</a> erabiltzaileak <a href=\"%(book_path)s\">%(book_title)s</a> irakurtzen bukatu du"
 
 #: bookwyrm/templates/discover/card-header.html:18
 #, python-format
@@ -1755,7 +1787,7 @@ msgstr "<a href=\"%(user_path)s\">%(username)s</a>(e)k <a href=\"%(book_path)s\"
 
 #: bookwyrm/templates/discover/discover.html:4
 #: bookwyrm/templates/discover/discover.html:10
-#: bookwyrm/templates/layout.html:93
+#: bookwyrm/templates/layout.html:91
 msgid "Discover"
 msgstr "Deskubritu"
 
@@ -1887,20 +1919,20 @@ msgstr "Hau, proba mezu bat da."
 msgid "Test email"
 msgstr "Proba mezua"
 
-#: bookwyrm/templates/embed-layout.html:20 bookwyrm/templates/layout.html:31
-#: bookwyrm/templates/setup/layout.html:15
+#: bookwyrm/templates/embed-layout.html:21 bookwyrm/templates/layout.html:33
+#: bookwyrm/templates/layout.html:163 bookwyrm/templates/setup/layout.html:15
 #: bookwyrm/templates/two_factor_auth/two_factor_login.html:18
 #: bookwyrm/templates/two_factor_auth/two_factor_prompt.html:18
 #, python-format
 msgid "%(site_name)s home page"
 msgstr "%(site_name)s hasierako orrialdea"
 
-#: bookwyrm/templates/embed-layout.html:39
+#: bookwyrm/templates/embed-layout.html:40
 #: bookwyrm/templates/snippets/footer.html:12
 msgid "Contact site admin"
 msgstr "Administratzaileari idatzi"
 
-#: bookwyrm/templates/embed-layout.html:45
+#: bookwyrm/templates/embed-layout.html:46
 msgid "Join BookWyrm"
 msgstr "Elkartu BookWyrm-era"
 
@@ -1910,7 +1942,7 @@ msgid "Direct Messages with <a href=\"%(path)s\">%(username)s</a>"
 msgstr "<a href=\"%(path)s\">%(username)s</a>-rekin mezu zuzenak"
 
 #: bookwyrm/templates/feed/direct_messages.html:10
-#: bookwyrm/templates/user_menu.html:44
+#: bookwyrm/templates/user_menu.html:39
 msgid "Direct Messages"
 msgstr "Mezu zuzenak"
 
@@ -1948,7 +1980,7 @@ msgstr "Eguneratzeak"
 
 #: bookwyrm/templates/feed/suggested_books.html:6
 #: bookwyrm/templates/guided_tour/home.html:127
-#: bookwyrm/templates/user_menu.html:39
+#: bookwyrm/templates/layout.html:94
 msgid "Your Books"
 msgstr "Zure liburuak"
 
@@ -1996,19 +2028,19 @@ msgid "Add to your books"
 msgstr "Gehitu zure liburuetara"
 
 #: bookwyrm/templates/get_started/book_preview.html:10
-#: bookwyrm/templates/shelf/shelf.html:86 bookwyrm/templates/user/user.html:37
+#: bookwyrm/templates/shelf/shelf.html:88 bookwyrm/templates/user/user.html:37
 #: bookwyrm/templatetags/shelf_tags.py:14
 msgid "To Read"
 msgstr "Irakurtzeko"
 
 #: bookwyrm/templates/get_started/book_preview.html:11
-#: bookwyrm/templates/shelf/shelf.html:87 bookwyrm/templates/user/user.html:38
+#: bookwyrm/templates/shelf/shelf.html:89 bookwyrm/templates/user/user.html:38
 #: bookwyrm/templatetags/shelf_tags.py:15
 msgid "Currently Reading"
 msgstr "Orain irakurtzen"
 
 #: bookwyrm/templates/get_started/book_preview.html:12
-#: bookwyrm/templates/shelf/shelf.html:88
+#: bookwyrm/templates/shelf/shelf.html:90
 #: bookwyrm/templates/snippets/shelf_selector.html:46
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_dropdown_options.html:24
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_options.html:12
@@ -2017,7 +2049,7 @@ msgid "Read"
 msgstr "Irakurrita"
 
 #: bookwyrm/templates/get_started/book_preview.html:13
-#: bookwyrm/templates/shelf/shelf.html:89 bookwyrm/templates/user/user.html:40
+#: bookwyrm/templates/shelf/shelf.html:91 bookwyrm/templates/user/user.html:40
 #: bookwyrm/templatetags/shelf_tags.py:17
 msgid "Stopped Reading"
 msgstr "Irakurtzeari utzita"
@@ -2027,7 +2059,7 @@ msgid "What are you reading?"
 msgstr "Zer ari zara irakurtzen?"
 
 #: bookwyrm/templates/get_started/books.html:9
-#: bookwyrm/templates/layout.html:39 bookwyrm/templates/lists/list.html:213
+#: bookwyrm/templates/layout.html:41 bookwyrm/templates/lists/list.html:213
 msgid "Search for a book"
 msgstr "Bilatu liburu bat"
 
@@ -2046,8 +2078,8 @@ msgstr "Liburuak gehitu ditzakezu %(site_name)s erabiltzen hasten zarenean."
 #: bookwyrm/templates/get_started/users.html:18
 #: bookwyrm/templates/get_started/users.html:19
 #: bookwyrm/templates/groups/members.html:15
-#: bookwyrm/templates/groups/members.html:16 bookwyrm/templates/layout.html:45
-#: bookwyrm/templates/layout.html:46 bookwyrm/templates/lists/list.html:217
+#: bookwyrm/templates/groups/members.html:16 bookwyrm/templates/layout.html:47
+#: bookwyrm/templates/layout.html:48 bookwyrm/templates/lists/list.html:217
 #: bookwyrm/templates/search/layout.html:5
 #: bookwyrm/templates/search/layout.html:10
 #: bookwyrm/templates/search/layout.html:32
@@ -2060,7 +2092,7 @@ msgstr "Gomendatutako liburuak"
 
 #: bookwyrm/templates/get_started/books.html:33
 msgid "Search results"
-msgstr ""
+msgstr "Bilaketa-emaitzak"
 
 #: bookwyrm/templates/get_started/books.html:46
 #, python-format
@@ -2142,7 +2174,7 @@ msgstr "Zure kontua direktorioan agertuko da eta BookWyrmeko beste erabiltzaile 
 
 #: bookwyrm/templates/get_started/users.html:8
 msgid "You can follow users on other BookWyrm instances and federated services like Mastodon."
-msgstr ""
+msgstr "Beste BookWyrm-en instantzietako eta Mastodon bezalako federatutako zerbitzuetako erabiltzaileak jarrai ditzakezu."
 
 #: bookwyrm/templates/get_started/users.html:11
 msgid "Search for a user"
@@ -2268,7 +2300,7 @@ msgstr "Kudeatzailea"
 
 #: bookwyrm/templates/groups/user_groups.html:35
 msgid "No groups found."
-msgstr ""
+msgstr "Ez da talderik aurkitu."
 
 #: bookwyrm/templates/guided_tour/book.html:10
 msgid "This is home page of a book. Let's see what you can do while you're here!"
@@ -2514,8 +2546,8 @@ msgid "Barcode reader"
 msgstr "Bara-kode irakurgailua"
 
 #: bookwyrm/templates/guided_tour/home.html:102
-msgid "Use the <strong>Feed</strong>, <strong>Lists</strong> and <strong>Discover</strong> links to discover the latest news from your feed, lists of books by topic, and the latest happenings on this Bookwyrm server!"
-msgstr "Erabili <strong>Jarioa</strong>, <strong>Zerrendak</strong> eta <strong>Deskubritu</strong> atalak zure jarioko azken berriak, gaikako liburu zerrendak eta Bookwyrm zerbitzari honetako azken jarduerak ezagutzeko!"
+msgid "Use the <strong>Lists</strong>, <strong>Discover</strong>, and <strong>Your Books</strong> links to discover reading suggestions and the latest happenings on this server, or to see your catalogued books!"
+msgstr ""
 
 #: bookwyrm/templates/guided_tour/home.html:103
 msgid "Navigation Bar"
@@ -2538,16 +2570,16 @@ msgid "The bell will light up when you have a new notification. When it does, cl
 msgstr "Kanpaia piztu egingo da jakinarazpen berriren bat duzunean. Hala egiten duenean, klikatu ezazu zer gauza zirraragarri gertatu den jakiteko!"
 
 #: bookwyrm/templates/guided_tour/home.html:177
-#: bookwyrm/templates/layout.html:75 bookwyrm/templates/layout.html:106
-#: bookwyrm/templates/layout.html:107
+#: bookwyrm/templates/layout.html:77 bookwyrm/templates/layout.html:107
+#: bookwyrm/templates/layout.html:108
 #: bookwyrm/templates/notifications/notifications_page.html:5
 #: bookwyrm/templates/notifications/notifications_page.html:10
 msgid "Notifications"
 msgstr "Jakinarazpenak"
 
 #: bookwyrm/templates/guided_tour/home.html:200
-msgid "Your profile, books, direct messages, and settings can be accessed by clicking on your name in the menu here."
-msgstr "Zure profila, liburuak, mezu zuzenak eta ezarpenak hemengo menuan zure izenean klik eginda dituzu eskuragarri."
+msgid "Your profile, user directory, direct messages, and settings can be accessed by clicking on your name in the menu here."
+msgstr ""
 
 #: bookwyrm/templates/guided_tour/home.html:200
 msgid "Try selecting <strong>Profile</strong> from the drop down menu to continue the tour."
@@ -2666,7 +2698,7 @@ msgstr "Zure liburuak"
 
 #: bookwyrm/templates/guided_tour/user_books.html:31
 msgid "<strong>To Read</strong>, <strong>Currently Reading</strong>, <strong>Read</strong>, and <strong>Stopped Reading</strong> are default shelves. When you change the reading status of a book it will automatically be moved to the matching shelf. A book can only be on one default shelf at a time."
-msgstr "<strong>Irakurtzeko</strong>, <strong>Irakurtzen</strong>, <strong>Irakurrita</strong> eta <strong>Irakurtzeari utzita</strong> lehenetsitako apalak dira. Liburu baten irakurketa-egoera aldatzen duzunean automatikoki aldatuko da dagokion apalera. Liburu bat lehentsitako apal bakarrean egon daiteke aldiko."
+msgstr "<strong>Irakurtzekoak</strong>, <strong>Orain irakurtzen</strong>, <strong>Irakurritakoak</strong> eta <strong>Irakurtzeari utzita</strong> lehenetsitako apalak dira. Liburu baten irakurketa-egoera aldatzen duzunean automatikoki aldatuko da dagokion apalera. Liburu bat lehentsitako apal bakarrean egon daiteke aldiko."
 
 #: bookwyrm/templates/guided_tour/user_books.html:32
 msgid "Reading status shelves"
@@ -2702,7 +2734,7 @@ msgstr "Talde berri bat sor dezakezu edo existitzen den batean sar zaitezke. Tal
 
 #: bookwyrm/templates/guided_tour/user_groups.html:11
 #: bookwyrm/templates/guided_tour/user_profile.html:55
-#: bookwyrm/templates/user/groups.html:6 bookwyrm/templates/user/layout.html:85
+#: bookwyrm/templates/user/groups.html:6 bookwyrm/templates/user/layout.html:95
 msgid "Groups"
 msgstr "Taldeak"
 
@@ -2747,7 +2779,7 @@ msgid "This is your user profile. All your latest activities will be listed here
 msgstr "Hau zure erabiltzaile profila da. Zure azken jarduerak hemen zerrendatuko dira. Bookwyrm-en beste erabiltzaile batzuek ere ikus ditzakete orrialde honen zatiak - ikus dezaketena pribatutasun ezarpenen araberakoa da."
 
 #: bookwyrm/templates/guided_tour/user_profile.html:11
-#: bookwyrm/templates/user/layout.html:19 bookwyrm/templates/user/user.html:14
+#: bookwyrm/templates/user/layout.html:20 bookwyrm/templates/user/user.html:14
 msgid "User Profile"
 msgstr "Erabiltzailearen profila"
 
@@ -2756,7 +2788,7 @@ msgid "This tab shows everything you have read towards your annual reading goal,
 msgstr "Fitxa honetan erakusten da irakurri duzun guztia urteko irakurketa-helburuari begira, edo irakurketa-helburu bat ezartzeko aukera ematen dizu. Ez duzu irakurketa-helbururik ezarri behar hori ez bada zure asmoetan!"
 
 #: bookwyrm/templates/guided_tour/user_profile.html:32
-#: bookwyrm/templates/user/goal.html:6 bookwyrm/templates/user/layout.html:79
+#: bookwyrm/templates/user/goal.html:6 bookwyrm/templates/user/layout.html:89
 msgid "Reading Goal"
 msgstr "Irakurketa-helburua"
 
@@ -2795,7 +2827,7 @@ msgstr "Ez dago aktibitaterik oraindik traola honentzat!"
 
 #: bookwyrm/templates/import/import.html:5
 #: bookwyrm/templates/import/import.html:9
-#: bookwyrm/templates/shelf/shelf.html:64
+#: bookwyrm/templates/shelf/shelf.html:66
 msgid "Import Books"
 msgstr "Inportatu liburuak"
 
@@ -2805,19 +2837,15 @@ msgstr "CSV fitxategia ez da baliozkoa"
 
 #: bookwyrm/templates/import/import.html:21
 #, python-format
-msgid "\n"
-"                        Currently, you are allowed to import %(display_size)s books every %(import_limit_reset)s day.\n"
-"                    "
-msgid_plural "\n"
-"                        Currently, you are allowed to import %(import_size_limit)s books every %(import_limit_reset)s days.\n"
-"                    "
-msgstr[0] ""
-msgstr[1] ""
+msgid "Currently, you are allowed to import %(display_size)s books every %(import_limit_reset)s day."
+msgid_plural "Currently, you are allowed to import %(display_size)s books every %(import_limit_reset)s days."
+msgstr[0] "Une honetan, %(display_size)s liburu inporta ditzakezu %(import_limit_reset)s egun bakoitzeko."
+msgstr[1] "Une honetan, %(display_size)s liburu inporta ditzakezu %(import_limit_reset)s egunero."
 
 #: bookwyrm/templates/import/import.html:27
 #, python-format
 msgid "You have %(display_left)s left."
-msgstr ""
+msgstr "%(display_left)s geratzen zaizkizu."
 
 #: bookwyrm/templates/import/import.html:34
 #, python-format
@@ -2871,7 +2899,7 @@ msgstr "Inportatutako berrikuspenen pribatutasun ezarpena:"
 
 #: bookwyrm/templates/import/import.html:106
 #: bookwyrm/templates/import/import.html:108
-#: bookwyrm/templates/preferences/layout.html:35
+#: bookwyrm/templates/preferences/layout.html:43
 #: bookwyrm/templates/settings/federation/instance_blocklist.html:78
 msgid "Import"
 msgstr "Inportatu"
@@ -2970,8 +2998,8 @@ msgid "Row"
 msgstr "Errenkada"
 
 #: bookwyrm/templates/import/import_status.html:110
-#: bookwyrm/templates/shelf/shelf.html:148
-#: bookwyrm/templates/shelf/shelf.html:170
+#: bookwyrm/templates/shelf/shelf.html:150
+#: bookwyrm/templates/shelf/shelf.html:172
 msgid "Title"
 msgstr "Izenburua"
 
@@ -2984,8 +3012,8 @@ msgid "Openlibrary key"
 msgstr "Openlibrary-ren giltza"
 
 #: bookwyrm/templates/import/import_status.html:121
-#: bookwyrm/templates/shelf/shelf.html:149
-#: bookwyrm/templates/shelf/shelf.html:173
+#: bookwyrm/templates/shelf/shelf.html:151
+#: bookwyrm/templates/shelf/shelf.html:175
 msgid "Author"
 msgstr "Egilea"
 
@@ -3091,10 +3119,6 @@ msgstr "Jar zaitez harremanetan zure administratzailearekin edo <a href='https:/
 msgid "Create an Account"
 msgstr "Sortu kontu bat"
 
-#: bookwyrm/templates/landing/invite.html:21
-msgid "Permission Denied"
-msgstr "Baimena ukatu da"
-
 #: bookwyrm/templates/landing/invite.html:22
 msgid "Sorry! This invite code is no longer valid."
 msgstr "Barkatu! Gonbidapen-kode honek jada ez du balio."
@@ -3142,7 +3166,7 @@ msgid "Login"
 msgstr "Hasi saioa"
 
 #: bookwyrm/templates/landing/login.html:7
-#: bookwyrm/templates/landing/login.html:36 bookwyrm/templates/layout.html:136
+#: bookwyrm/templates/landing/login.html:36 bookwyrm/templates/layout.html:142
 #: bookwyrm/templates/ostatus/error.html:37
 msgid "Log in"
 msgstr "Hasi saioa"
@@ -3153,7 +3177,7 @@ msgstr "Ondo! Helbide elektronikoa baieztatu duzu."
 
 #: bookwyrm/templates/landing/login.html:21
 #: bookwyrm/templates/landing/reactivate.html:17
-#: bookwyrm/templates/layout.html:127 bookwyrm/templates/ostatus/error.html:28
+#: bookwyrm/templates/layout.html:128 bookwyrm/templates/ostatus/error.html:28
 #: bookwyrm/templates/snippets/register_form.html:4
 msgid "Username:"
 msgstr "Erabiltzaile-izena:"
@@ -3161,13 +3185,13 @@ msgstr "Erabiltzaile-izena:"
 #: bookwyrm/templates/landing/login.html:27
 #: bookwyrm/templates/landing/password_reset.html:26
 #: bookwyrm/templates/landing/reactivate.html:23
-#: bookwyrm/templates/layout.html:131 bookwyrm/templates/ostatus/error.html:32
+#: bookwyrm/templates/layout.html:132 bookwyrm/templates/ostatus/error.html:32
 #: bookwyrm/templates/preferences/2fa.html:91
 #: bookwyrm/templates/snippets/register_form.html:45
 msgid "Password:"
 msgstr "Pasahitza:"
 
-#: bookwyrm/templates/landing/login.html:39 bookwyrm/templates/layout.html:133
+#: bookwyrm/templates/landing/login.html:39 bookwyrm/templates/layout.html:139
 #: bookwyrm/templates/ostatus/error.html:34
 msgid "Forgot your password?"
 msgstr "Zure pasahitza ahaztu duzu?"
@@ -3210,35 +3234,35 @@ msgstr "Berriz aktibatu kontua"
 msgid "%(site_name)s search"
 msgstr "%(site_name)s bilaketa"
 
-#: bookwyrm/templates/layout.html:37
+#: bookwyrm/templates/layout.html:39
 msgid "Search for a book, user, or list"
 msgstr "Bilatu liburu, erabiltzaile edo zerrenda bat"
 
-#: bookwyrm/templates/layout.html:52 bookwyrm/templates/layout.html:53
+#: bookwyrm/templates/layout.html:54 bookwyrm/templates/layout.html:55
 msgid "Scan Barcode"
 msgstr "Eskaneatu barra-kodea"
 
-#: bookwyrm/templates/layout.html:67
+#: bookwyrm/templates/layout.html:69
 msgid "Main navigation menu"
 msgstr "Nabigazio-menu nagusia"
 
-#: bookwyrm/templates/layout.html:87
-msgid "Feed"
-msgstr "Jarioa"
-
-#: bookwyrm/templates/layout.html:132 bookwyrm/templates/ostatus/error.html:33
+#: bookwyrm/templates/layout.html:134 bookwyrm/templates/ostatus/error.html:33
 msgid "password"
 msgstr "pasahitza"
 
-#: bookwyrm/templates/layout.html:144
+#: bookwyrm/templates/layout.html:136
+msgid "Show/Hide password"
+msgstr "Erakutsi/Ezkutatu pasahitza"
+
+#: bookwyrm/templates/layout.html:150
 msgid "Join"
 msgstr "Sartu"
 
-#: bookwyrm/templates/layout.html:179
+#: bookwyrm/templates/layout.html:196
 msgid "Successfully posted status"
 msgstr "Egoera ondo bidali da"
 
-#: bookwyrm/templates/layout.html:180
+#: bookwyrm/templates/layout.html:197
 msgid "Error posting status"
 msgstr "Errorea egoera bidaltzean"
 
@@ -3430,6 +3454,7 @@ msgid "Set"
 msgstr "Ezarri"
 
 #: bookwyrm/templates/lists/list.html:167
+#: bookwyrm/templates/snippets/remove_follower_button.html:4
 #: bookwyrm/templates/snippets/remove_from_group_button.html:20
 msgid "Remove"
 msgstr "Kendu"
@@ -3483,7 +3508,7 @@ msgstr "Gordeta"
 
 #: bookwyrm/templates/lists/list_items.html:50
 msgid "No lists found."
-msgstr ""
+msgstr "Ez da listarik aurkitu."
 
 #: bookwyrm/templates/lists/lists.html:14 bookwyrm/templates/user/lists.html:14
 msgid "Your Lists"
@@ -3496,6 +3521,23 @@ msgstr "Zerrenda guztiak"
 #: bookwyrm/templates/lists/lists.html:40
 msgid "Saved Lists"
 msgstr "Gordetako zerrendak"
+
+#: bookwyrm/templates/moved.html:27
+#, python-format
+msgid "<strong>You have moved your account</strong> to <a href=\"%(moved_to)s\">%(username)s</a>"
+msgstr "<strong>Kontua hona mugitu duzu</strong>: <a href=\"%(moved_to)s\">%(username)s</a>"
+
+#: bookwyrm/templates/moved.html:32
+msgid "You can undo the move to restore full functionality, but some followers may have already unfollowed this account."
+msgstr "Ezin duzu desegin mugimena funtzionaltasun osoa berrezartzeko, baina baliteke jarraitzaile batzuek kontu honi jarraitzeari utzi izana."
+
+#: bookwyrm/templates/moved.html:42
+msgid "Undo move"
+msgstr "Desegin mugimena"
+
+#: bookwyrm/templates/moved.html:46 bookwyrm/templates/user_menu.html:77
+msgid "Log out"
+msgstr "Amaitu saioa"
 
 #: bookwyrm/templates/notifications/items/accept.html:18
 #, python-format
@@ -3599,12 +3641,12 @@ msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> eta beste %(other
 #: bookwyrm/templates/notifications/items/boost.html:90
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> boosted your <a href=\"%(related_path)s\">status</a>"
-msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a>(e)k zure <a href=\"%(related_path)s\">egoera</a> bultzatu du"
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> erabiltzaileak zure <a href=\"%(related_path)s\">egoera</a> bultzatu du"
 
 #: bookwyrm/templates/notifications/items/boost.html:96
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and <a href=\"%(second_user_link)s\">%(second_user)s</a> boosted your <a href=\"%(related_path)s\">status</a>"
-msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> eta <a href=\"%(second_user_link)s\">%(second_user)s</a>(e)k zure <a href=\"%(related_path)s\">egoera </a> bultzatu dute"
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> eta <a href=\"%(second_user_link)s\">%(second_user)s</a> erabiltzaileek zure <a href=\"%(related_path)s\">egoera </a> bultzatu dute"
 
 #: bookwyrm/templates/notifications/items/boost.html:105
 #, python-format
@@ -3659,17 +3701,17 @@ msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> eta beste %(other
 #: bookwyrm/templates/notifications/items/fav.html:90
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> liked your <a href=\"%(related_path)s\">status</a>"
-msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a>(e)k zure <a href=\"%(related_path)s\">egoera</a> maitatu zuen"
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> erabiltzaileak zure <a href=\"%(related_path)s\">egoera</a> atsegin du"
 
 #: bookwyrm/templates/notifications/items/fav.html:96
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and <a href=\"%(second_user_link)s\">%(second_user)s</a> liked your <a href=\"%(related_path)s\">status</a>"
-msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> eta <a href=\"%(second_user_link)s\">%(second_user)s</a> (e)k zure <a href=\"%(related_path)s\">egoera</a> atsegin dute"
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> eta <a href=\"%(second_user_link)s\">%(second_user)s</a> erabiltzaileek zure <a href=\"%(related_path)s\">egoera</a> atsegin dute"
 
 #: bookwyrm/templates/notifications/items/fav.html:105
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> and %(other_user_display_count)s others liked your <a href=\"%(related_path)s\">status</a>"
-msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> eta %(other_user_display_count)s erabiltzailek zure <a href=\"%(related_path)s\">egoera</a> maitatu zuten"
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> eta %(other_user_display_count)s erabiltzailek zure <a href=\"%(related_path)s\">egoera</a> atsegin dute"
 
 #: bookwyrm/templates/notifications/items/follow.html:16
 #, python-format
@@ -3701,6 +3743,13 @@ msgstr "Zure <a href=\"%(url)s\">importazioa</a> osatu da."
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> invited you to join the group \"<a href=\"%(group_path)s\">%(group_name)s</a>\""
 msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a>(e)k \"<a href=\"%(group_path)s\">%(group_name)s</a>\" taldera batzera gonbidatu zaitu"
 
+#: bookwyrm/templates/notifications/items/invite_request.html:15
+#, python-format
+msgid "New <a href=\"%(path)s\">invite request</a> awaiting response"
+msgid_plural "%(display_count)s new <a href=\"%(path)s\">invite requests</a> awaiting response"
+msgstr[0] ""
+msgstr[1] ""
+
 #: bookwyrm/templates/notifications/items/join.html:16
 #, python-format
 msgid "has joined your group \"<a href=\"%(group_path)s\">%(group_name)s</a>\""
@@ -3725,8 +3774,8 @@ msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> eta beste %(other
 #, python-format
 msgid "A new <a href=\"%(path)s\">link domain</a> needs review"
 msgid_plural "%(display_count)s new <a href=\"%(path)s\">link domains</a> need moderation"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "<a href=\"%(path)s\">Esteken domeinu</a> berri batek moderazioa behar du"
+msgstr[1] "%(display_count)s <a href=\"%(path)s\">esteken domeinuek</a> moderazioa behar dute"
 
 #: bookwyrm/templates/notifications/items/mention.html:20
 #, python-format
@@ -3746,7 +3795,17 @@ msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> erabiltzaileak <a
 #: bookwyrm/templates/notifications/items/mention.html:38
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> mentioned you in a <a href=\"%(related_path)s\">status</a>"
-msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a>(e)k aipatu egin zaitu <a href=\"%(related_path)s\">egoera</a> batean"
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> erabiltzaileak aipatu zaitu <a href=\"%(related_path)s\">egoera</a> batean"
+
+#: bookwyrm/templates/notifications/items/move_user.html:18
+#, python-format
+msgid "%(related_user)s has moved to <a href=\"%(related_user_moved_to)s\">%(username)s</a>"
+msgstr "%(related_user)s hona mugitu da: <a href=\"%(related_user_moved_to)s\">%(username)s</a>"
+
+#: bookwyrm/templates/notifications/items/move_user.html:25
+#, python-format
+msgid "%(related_user)s has undone their move"
+msgstr "%(related_user)s erabiltzaileak mugimena desegin du"
 
 #: bookwyrm/templates/notifications/items/remove.html:17
 #, python-format
@@ -3776,7 +3835,7 @@ msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a>(e)k <em>%(book_ti
 #: bookwyrm/templates/notifications/items/reply.html:39
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> <a href=\"%(related_path)s\">replied</a> to your <a href=\"%(parent_path)s\">status</a>"
-msgstr "<a href=\"%(related_user_link)s\">%(related_user)s(e)k </a> zure <a href=\"%(parent_path)s\">egoerari </a><a href=\"%(related_path)s\">erantzun zion</a>"
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s erabiltzaileak </a> zure <a href=\"%(parent_path)s\">egoerari </a><a href=\"%(related_path)s\">erantzun dio</a>"
 
 #: bookwyrm/templates/notifications/items/report.html:15
 #, python-format
@@ -3786,7 +3845,7 @@ msgstr[0] "<a href=\"%(path)s\">Salaketa</a> berri batek moderatzea behar du"
 msgstr[1] "%(display_count)s <a href=\"%(path)s\">salaketa</a> berrik moderatzea behar dute"
 
 #: bookwyrm/templates/notifications/items/status_preview.html:4
-#: bookwyrm/templates/snippets/status/content_status.html:73
+#: bookwyrm/templates/snippets/status/content_status.html:62
 msgid "Content warning"
 msgstr "Edukiari buruzko abisua"
 
@@ -4004,9 +4063,51 @@ msgstr "Baieztatu zure pasahitza 2FA ezartzen hasteko."
 msgid "Set up 2FA"
 msgstr "Ezarri 2FA"
 
+#: bookwyrm/templates/preferences/alias_user.html:4
+#: bookwyrm/templates/preferences/move_user.html:4
+#: bookwyrm/templates/preferences/move_user.html:7
+#: bookwyrm/templates/preferences/move_user.html:39
+msgid "Move Account"
+msgstr "Mugitu kontua"
+
+#: bookwyrm/templates/preferences/alias_user.html:7
+#: bookwyrm/templates/preferences/alias_user.html:34
+msgid "Create Alias"
+msgstr "Sortu ezizena"
+
+#: bookwyrm/templates/preferences/alias_user.html:12
+msgid "Add another account as an alias"
+msgstr "Gehitu beste kontu bat ezizen gisa"
+
+#: bookwyrm/templates/preferences/alias_user.html:16
+msgid "Marking another account as an alias is required if you want to move that account to this one."
+msgstr "Beste kontu bat ezizen gisa markatzea beharrezkoa da kontu hori honetara mugitu nahi baduzu."
+
+#: bookwyrm/templates/preferences/alias_user.html:19
+msgid "This is a reversable action and will not change the functionality of this account."
+msgstr "Ekintza atzeraezina da hau eta ez du aldatuko kontu honen funtzionaltasuna."
+
+#: bookwyrm/templates/preferences/alias_user.html:25
+msgid "Enter the username for the account you want to add as an alias e.g. <em>user@example.com </em>:"
+msgstr "Sartu ezizena gehitu nahi diozun kontuaren erabiltzaile-izena, adibidez <em>erabiltzailea@adibidea.eus</em>:"
+
+#: bookwyrm/templates/preferences/alias_user.html:30
+#: bookwyrm/templates/preferences/move_user.html:35
+msgid "Confirm your password:"
+msgstr "Berretsi ezazu zure pasahitza:"
+
+#: bookwyrm/templates/preferences/alias_user.html:39
+#: bookwyrm/templates/preferences/layout.html:28
+msgid "Aliases"
+msgstr "Ezizenak"
+
+#: bookwyrm/templates/preferences/alias_user.html:49
+msgid "Remove alias"
+msgstr "Kendu ezizena"
+
 #: bookwyrm/templates/preferences/blocks.html:4
 #: bookwyrm/templates/preferences/blocks.html:7
-#: bookwyrm/templates/preferences/layout.html:46
+#: bookwyrm/templates/preferences/layout.html:54
 msgid "Blocked Users"
 msgstr "Blokeatutako erabiltzaileak"
 
@@ -4036,7 +4137,7 @@ msgstr "Pasahitz Berria:"
 #: bookwyrm/templates/preferences/delete_user.html:4
 #: bookwyrm/templates/preferences/delete_user.html:7
 #: bookwyrm/templates/preferences/delete_user.html:40
-#: bookwyrm/templates/preferences/layout.html:28
+#: bookwyrm/templates/preferences/layout.html:36
 #: bookwyrm/templates/settings/users/delete_user_form.html:22
 msgid "Delete Account"
 msgstr "Ezabatu kontua"
@@ -4081,7 +4182,7 @@ msgstr "Editatu profila"
 
 #: bookwyrm/templates/preferences/edit_user.html:12
 #: bookwyrm/templates/preferences/edit_user.html:25
-#: bookwyrm/templates/settings/users/user_info.html:7
+#: bookwyrm/templates/settings/users/user_info.html:8
 #: bookwyrm/templates/user_menu.html:29
 msgid "Profile"
 msgstr "Profila"
@@ -4158,17 +4259,46 @@ msgstr "Deskargatu fitxategia"
 msgid "Account"
 msgstr "Kontua"
 
-#: bookwyrm/templates/preferences/layout.html:31
+#: bookwyrm/templates/preferences/layout.html:32
+msgid "Move  Account"
+msgstr "Mugitu kontua"
+
+#: bookwyrm/templates/preferences/layout.html:39
 msgid "Data"
 msgstr "Datuak"
 
-#: bookwyrm/templates/preferences/layout.html:39
+#: bookwyrm/templates/preferences/layout.html:47
 msgid "CSV export"
 msgstr "Esportatu CSVra"
 
-#: bookwyrm/templates/preferences/layout.html:42
+#: bookwyrm/templates/preferences/layout.html:50
 msgid "Relationships"
 msgstr "Harremanak"
+
+#: bookwyrm/templates/preferences/move_user.html:12
+msgid "Migrate account to another server"
+msgstr "Migratu kontua beste zerbitzari batera"
+
+#: bookwyrm/templates/preferences/move_user.html:16
+msgid "Moving your account will notify all your followers and direct them to follow the new account."
+msgstr "Kontua mugitzean, zure jarraitzaile guztiei jakinaraziko zaie eta kontu berrira bideratuko dira jarrai dezaten."
+
+#: bookwyrm/templates/preferences/move_user.html:19
+#, python-format
+msgid "\n"
+"                <strong>%(user)s</strong> will be marked as moved and will not be discoverable or usable unless you undo the move.\n"
+"                "
+msgstr "\n"
+"                <strong>%(user)s</strong> mugitutako gisa markatuko da eta ezingo da aurkitu edo erabili mugimendua desegin arte.\n"
+"                "
+
+#: bookwyrm/templates/preferences/move_user.html:25
+msgid "Remember to add this user as an alias of the target account before you try to move."
+msgstr "Gogoratu erabiltzaile hau helburuko kontuaren alias gisa gehitzea mugitu aurretik."
+
+#: bookwyrm/templates/preferences/move_user.html:30
+msgid "Enter the username for the account you want to move to e.g. <em>user@example.com </em>:"
+msgstr "Sartu mugitu nahi duzun kontuaren erabiltzaile-izena, adib. <em>erabiltzailea@adibidea.eus</em>:"
 
 #: bookwyrm/templates/reading_progress/finish.html:5
 #, python-format
@@ -4566,7 +4696,7 @@ msgstr "Celery-ren egoera"
 
 #: bookwyrm/templates/settings/celery.html:14
 msgid "You can set up monitoring to check if Celery is running by querying:"
-msgstr ""
+msgstr "Monitorizazioa konfigura dezakezu Celery kontsulta bidez exekutatzen ari bada:"
 
 #: bookwyrm/templates/settings/celery.html:22
 msgid "Queues"
@@ -4574,23 +4704,23 @@ msgstr "Ilarak"
 
 #: bookwyrm/templates/settings/celery.html:26
 msgid "Streams"
-msgstr ""
+msgstr "Igorpenak"
 
 #: bookwyrm/templates/settings/celery.html:32
-msgid "Broadcasts"
-msgstr "Emanaldiak"
+msgid "Broadcast"
+msgstr "Emisioa"
 
 #: bookwyrm/templates/settings/celery.html:38
 msgid "Inbox"
-msgstr ""
+msgstr "Sarrera ontzia"
 
 #: bookwyrm/templates/settings/celery.html:51
 msgid "Import triggered"
-msgstr ""
+msgstr "Inportazioa abiarazi da"
 
 #: bookwyrm/templates/settings/celery.html:57
 msgid "Connectors"
-msgstr ""
+msgstr "Konektoreak"
 
 #: bookwyrm/templates/settings/celery.html:64
 #: bookwyrm/templates/settings/site.html:91
@@ -4599,7 +4729,7 @@ msgstr "Irudiak"
 
 #: bookwyrm/templates/settings/celery.html:70
 msgid "Suggested Users"
-msgstr ""
+msgstr "Iradokitako erabiltzaileak"
 
 #: bookwyrm/templates/settings/celery.html:83
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:43
@@ -4609,7 +4739,7 @@ msgstr "Eposta"
 
 #: bookwyrm/templates/settings/celery.html:89
 msgid "Misc"
-msgstr ""
+msgstr "Askotarikoa"
 
 #: bookwyrm/templates/settings/celery.html:96
 msgid "Low priority"
@@ -4667,11 +4797,11 @@ msgstr "Ezin izan da Celeryra konektatu"
 #: bookwyrm/templates/settings/celery.html:178
 #: bookwyrm/templates/settings/celery.html:201
 msgid "Clear Queues"
-msgstr ""
+msgstr "Garbitu kontsultak"
 
 #: bookwyrm/templates/settings/celery.html:182
 msgid "Clearing queues can cause serious problems including data loss! Only play with this if you really know what you're doing. You must shut down the Celery worker before you do this."
-msgstr ""
+msgstr "Kontsultak garbitzean, arazo larriak ekar ditzake, hala nola, datuen galera. Aldatu ezarpen hauek soilik zer egiten ari zaren baldin badakizu. Celery-ren prozesuak itzali behar dituzu lehenik hau egin baino lehen."
 
 #: bookwyrm/templates/settings/celery.html:208
 msgid "Errors"
@@ -4928,7 +5058,7 @@ msgid "Details"
 msgstr "Xehetasunak"
 
 #: bookwyrm/templates/settings/federation/instance.html:53
-#: bookwyrm/templates/user/layout.html:69
+#: bookwyrm/templates/user/layout.html:79
 msgid "Activity"
 msgstr "Jarduera"
 
@@ -5039,7 +5169,7 @@ msgstr "Erabiltzen da hori inportazioekin gauzak benetan gaizki doazenean eta ar
 
 #: bookwyrm/templates/settings/imports/imports.html:31
 msgid "While imports are disabled, users will not be allowed to start new imports, but existing imports will not be affected."
-msgstr ""
+msgstr "Inportazioak desgaituta dauden bitartean, erabiltzaileek ezingo dituzte inportazio berriak hasi, baina dauden inportazioei ez die eragingo."
 
 #: bookwyrm/templates/settings/imports/imports.html:36
 msgid "Disable imports"
@@ -5116,7 +5246,7 @@ msgstr "Gonbidapen eskaerak"
 #: bookwyrm/templates/settings/invites/manage_invites.html:3
 #: bookwyrm/templates/settings/invites/manage_invites.html:15
 #: bookwyrm/templates/settings/layout.html:42
-#: bookwyrm/templates/user_menu.html:60
+#: bookwyrm/templates/user_menu.html:55
 msgid "Invites"
 msgstr "Gonbidapenak"
 
@@ -5423,22 +5553,22 @@ msgstr "Salatutako estekak"
 
 #: bookwyrm/templates/settings/reports/report.html:66
 msgid "Moderation Activity"
-msgstr ""
+msgstr "Moderazioaren jarduera"
 
 #: bookwyrm/templates/settings/reports/report.html:73
 #, python-format
 msgid "<a href=\"%(user_link)s\">%(user)s</a> opened this report"
-msgstr ""
+msgstr "<a href=\"%(user_link)s\">%(user)s</a> erabiltzaileak txosten hau ireki du"
 
 #: bookwyrm/templates/settings/reports/report.html:86
 #, python-format
 msgid "<a href=\"%(user_link)s\">%(user)s</a> commented on this report:"
-msgstr ""
+msgstr "<a href=\"%(user_link)s\">%(user)s</a> erabiltzaileak txosten honetan iruzkindu du:"
 
 #: bookwyrm/templates/settings/reports/report.html:90
 #, python-format
 msgid "<a href=\"%(user_link)s\">%(user)s</a> took an action on this report:"
-msgstr ""
+msgstr "<a href=\"%(user_link)s\">%(user)s</a> erabiltzaileak neurriak hartu ditu txosten honetan:"
 
 #: bookwyrm/templates/settings/reports/report_header.html:6
 #, python-format
@@ -5462,7 +5592,7 @@ msgstr "#%(report_id)s salaketa: @%(username)s erabiltzailea"
 
 #: bookwyrm/templates/settings/reports/report_links_table.html:19
 msgid "Approve domain"
-msgstr ""
+msgstr "Onartu domeinua"
 
 #: bookwyrm/templates/settings/reports/report_links_table.html:26
 msgid "Block domain"
@@ -5590,57 +5720,73 @@ msgid "Set instance default theme"
 msgstr "Ezarri instantziaren lehenetsitako azala"
 
 #: bookwyrm/templates/settings/themes.html:19
+msgid "One of your themes appears to be broken. Selecting this theme will make the application unusable."
+msgstr ""
+
+#: bookwyrm/templates/settings/themes.html:28
 msgid "Successfully added theme"
 msgstr "Azala behar bezala gehitu da"
 
-#: bookwyrm/templates/settings/themes.html:26
+#: bookwyrm/templates/settings/themes.html:35
 msgid "How to add a theme"
 msgstr "Azal bat nola gehitu"
 
-#: bookwyrm/templates/settings/themes.html:29
+#: bookwyrm/templates/settings/themes.html:38
 msgid "Copy the theme file into the <code>bookwyrm/static/css/themes</code> directory on your server from the command line."
 msgstr "Kopiatu azalaren fitxategia zure zerbitzarik <code>bookwyrm/static/css/themes</code> direktoriora komando-lerrotik."
 
-#: bookwyrm/templates/settings/themes.html:32
+#: bookwyrm/templates/settings/themes.html:41
 msgid "Run <code>./bw-dev compile_themes</code> and <code>./bw-dev collectstatic</code>."
 msgstr "Exekutatu <code>./bw-dev compile_themes</code> eta <code>./bw-dev collectstatic</code>."
 
-#: bookwyrm/templates/settings/themes.html:35
+#: bookwyrm/templates/settings/themes.html:44
 msgid "Add the file name using the form below to make it available in the application interface."
 msgstr "Gehitu fitxategiaren izena honako inprimakiaren bitartez aplikazioaren interfazean erabilgarri egon dadin."
 
-#: bookwyrm/templates/settings/themes.html:42
-#: bookwyrm/templates/settings/themes.html:82
+#: bookwyrm/templates/settings/themes.html:51
+#: bookwyrm/templates/settings/themes.html:91
 msgid "Add theme"
 msgstr "Gehitu azala"
 
-#: bookwyrm/templates/settings/themes.html:48
+#: bookwyrm/templates/settings/themes.html:57
 msgid "Unable to save theme"
 msgstr "Ezin izan da azala gorde"
 
-#: bookwyrm/templates/settings/themes.html:63
-#: bookwyrm/templates/settings/themes.html:93
+#: bookwyrm/templates/settings/themes.html:72
+#: bookwyrm/templates/settings/themes.html:102
 msgid "Theme name"
 msgstr "Azalaren izena"
 
-#: bookwyrm/templates/settings/themes.html:73
+#: bookwyrm/templates/settings/themes.html:82
 msgid "Theme filename"
 msgstr "Azalaren fitxategi-izena"
 
-#: bookwyrm/templates/settings/themes.html:88
+#: bookwyrm/templates/settings/themes.html:97
 msgid "Available Themes"
 msgstr "Azal erabilgarriak"
 
-#: bookwyrm/templates/settings/themes.html:96
+#: bookwyrm/templates/settings/themes.html:105
 msgid "File"
 msgstr "Fitxategia"
 
-#: bookwyrm/templates/settings/themes.html:111
+#: bookwyrm/templates/settings/themes.html:123
 msgid "Remove theme"
 msgstr "Ezabatu azala"
 
+#: bookwyrm/templates/settings/themes.html:134
+msgid "Test theme"
+msgstr ""
+
+#: bookwyrm/templates/settings/themes.html:143
+msgid "Broken theme"
+msgstr ""
+
+#: bookwyrm/templates/settings/themes.html:152
+msgid "Loaded successfully"
+msgstr ""
+
 #: bookwyrm/templates/settings/users/delete_user_form.html:5
-#: bookwyrm/templates/settings/users/user_moderation_actions.html:38
+#: bookwyrm/templates/settings/users/user_moderation_actions.html:52
 msgid "Permanently delete user"
 msgstr "Behin-betirako ezabatu erabiltzailea"
 
@@ -5679,25 +5825,20 @@ msgstr "Azken jarduera"
 msgid "Remote instance"
 msgstr "Urruneko instantzia"
 
-#: bookwyrm/templates/settings/users/user_admin.html:86
-msgid "Deleted"
-msgstr "Ezabatuta"
-
-#: bookwyrm/templates/settings/users/user_admin.html:92
-#: bookwyrm/templates/settings/users/user_info.html:32
-msgid "Inactive"
-msgstr "Inaktiboa"
-
-#: bookwyrm/templates/settings/users/user_admin.html:101
+#: bookwyrm/templates/settings/users/user_admin.html:84
 #: bookwyrm/templates/settings/users/user_info.html:127
 msgid "Not set"
 msgstr "Ezarri gabe"
 
-#: bookwyrm/templates/settings/users/user_info.html:16
+#: bookwyrm/templates/settings/users/user_info.html:20
+msgid "This account is the instance actor for signing HTTP requests."
+msgstr ""
+
+#: bookwyrm/templates/settings/users/user_info.html:24
 msgid "View user profile"
 msgstr "Ikusi erablitzailearen profila"
 
-#: bookwyrm/templates/settings/users/user_info.html:19
+#: bookwyrm/templates/settings/users/user_info.html:30
 msgid "Go to user admin"
 msgstr "Joan erabiltzaileen administraziora"
 
@@ -5753,27 +5894,39 @@ msgstr "Instantziaren xehetasunak"
 msgid "View instance"
 msgstr "Ikusi instantzia"
 
-#: bookwyrm/templates/settings/users/user_moderation_actions.html:5
+#: bookwyrm/templates/settings/users/user_moderation_actions.html:6
 msgid "Permanently deleted"
 msgstr "Behin-betirako ezabatuta"
 
-#: bookwyrm/templates/settings/users/user_moderation_actions.html:8
+#: bookwyrm/templates/settings/users/user_moderation_actions.html:9
 msgid "User Actions"
 msgstr "Erabiltzailearen ekintzak"
 
-#: bookwyrm/templates/settings/users/user_moderation_actions.html:21
+#: bookwyrm/templates/settings/users/user_moderation_actions.html:15
+msgid "This is the instance admin actor"
+msgstr ""
+
+#: bookwyrm/templates/settings/users/user_moderation_actions.html:18
+msgid "You must not delete or disable this account as it is critical to the functioning of your server. This actor signs outgoing GET requests to smooth interaction with secure ActivityPub servers."
+msgstr ""
+
+#: bookwyrm/templates/settings/users/user_moderation_actions.html:19
+msgid "This account is not discoverable by ordinary users and does not have a profile page."
+msgstr ""
+
+#: bookwyrm/templates/settings/users/user_moderation_actions.html:35
 msgid "Activate user"
 msgstr "Aktibatu erabiltzailea"
 
-#: bookwyrm/templates/settings/users/user_moderation_actions.html:27
+#: bookwyrm/templates/settings/users/user_moderation_actions.html:41
 msgid "Suspend user"
 msgstr "Bertan behera utzi erabiltzailea"
 
-#: bookwyrm/templates/settings/users/user_moderation_actions.html:32
+#: bookwyrm/templates/settings/users/user_moderation_actions.html:46
 msgid "Un-suspend user"
 msgstr "Desegin erabiltzailea bertan behera uztea"
 
-#: bookwyrm/templates/settings/users/user_moderation_actions.html:54
+#: bookwyrm/templates/settings/users/user_moderation_actions.html:68
 msgid "Access level:"
 msgstr "Sarbide-maila:"
 
@@ -5829,7 +5982,7 @@ msgstr "Zure domeinua gaizki ezarria dagoela dirudi. Ez luke protokoloa edo barr
 msgid "You are running BookWyrm in production mode without https. <strong>USE_HTTPS</strong> should be enabled in production."
 msgstr "https gabe exekutatzen ari zara BookWyrm produkzio moduan. <strong>USE_HTTPS</strong> gaituta egon beharko litzateke produkzio testuinguruetan."
 
-#: bookwyrm/templates/setup/config.html:52 bookwyrm/templates/user_menu.html:49
+#: bookwyrm/templates/setup/config.html:52 bookwyrm/templates/user_menu.html:44
 msgid "Settings"
 msgstr "Ezarpenak"
 
@@ -5886,7 +6039,7 @@ msgid "Need help?"
 msgstr "Laguntzarik behar?"
 
 #: bookwyrm/templates/shelf/create_shelf_form.html:5
-#: bookwyrm/templates/shelf/shelf.html:72
+#: bookwyrm/templates/shelf/shelf.html:74
 msgid "Create shelf"
 msgstr "Sortu apala"
 
@@ -5894,58 +6047,58 @@ msgstr "Sortu apala"
 msgid "Edit Shelf"
 msgstr "Editatu apala"
 
-#: bookwyrm/templates/shelf/shelf.html:24
+#: bookwyrm/templates/shelf/shelf.html:26
 #: bookwyrm/templates/user/relationships/followers.html:18
 #: bookwyrm/templates/user/relationships/following.html:18
 msgid "User profile"
 msgstr "Erabiltzailearen profila"
 
-#: bookwyrm/templates/shelf/shelf.html:39
+#: bookwyrm/templates/shelf/shelf.html:41
 #: bookwyrm/templatetags/shelf_tags.py:13 bookwyrm/views/shelf/shelf.py:53
 msgid "All books"
 msgstr "Liburu guztiak"
 
-#: bookwyrm/templates/shelf/shelf.html:97
+#: bookwyrm/templates/shelf/shelf.html:99
 #, python-format
 msgid "%(formatted_count)s book"
 msgid_plural "%(formatted_count)s books"
 msgstr[0] "liburu %(formatted_count)s"
 msgstr[1] "%(formatted_count)s liburu"
 
-#: bookwyrm/templates/shelf/shelf.html:104
+#: bookwyrm/templates/shelf/shelf.html:106
 #, python-format
 msgid "(showing %(start)s-%(end)s)"
 msgstr "(%(start)s-%(end)s tartea bistaratzen)"
 
-#: bookwyrm/templates/shelf/shelf.html:116
+#: bookwyrm/templates/shelf/shelf.html:118
 msgid "Edit shelf"
 msgstr "Editatu apala"
 
-#: bookwyrm/templates/shelf/shelf.html:124
+#: bookwyrm/templates/shelf/shelf.html:126
 msgid "Delete shelf"
 msgstr "Ezabatu apala"
 
-#: bookwyrm/templates/shelf/shelf.html:152
-#: bookwyrm/templates/shelf/shelf.html:178
+#: bookwyrm/templates/shelf/shelf.html:154
+#: bookwyrm/templates/shelf/shelf.html:180
 msgid "Shelved"
 msgstr "Apalean jarrita"
 
-#: bookwyrm/templates/shelf/shelf.html:153
-#: bookwyrm/templates/shelf/shelf.html:181
+#: bookwyrm/templates/shelf/shelf.html:155
+#: bookwyrm/templates/shelf/shelf.html:183
 msgid "Started"
 msgstr "Noiz hasia"
 
-#: bookwyrm/templates/shelf/shelf.html:154
-#: bookwyrm/templates/shelf/shelf.html:184
+#: bookwyrm/templates/shelf/shelf.html:156
+#: bookwyrm/templates/shelf/shelf.html:186
 msgid "Finished"
 msgstr "Amaituta"
 
-#: bookwyrm/templates/shelf/shelf.html:154
-#: bookwyrm/templates/shelf/shelf.html:184
+#: bookwyrm/templates/shelf/shelf.html:156
+#: bookwyrm/templates/shelf/shelf.html:186
 msgid "Until"
 msgstr "Noiz arte"
 
-#: bookwyrm/templates/shelf/shelf.html:210
+#: bookwyrm/templates/shelf/shelf.html:212
 msgid "This shelf is empty."
 msgstr "Apal hau hutsik dago."
 
@@ -6052,7 +6205,7 @@ msgstr "Iruzkina:"
 
 #: bookwyrm/templates/snippets/create_status/post_options_block.html:19
 msgid "Update"
-msgstr ""
+msgstr "Eguneratu"
 
 #: bookwyrm/templates/snippets/create_status/post_options_block.html:21
 msgid "Post"
@@ -6081,7 +6234,7 @@ msgstr "Ehunekotan:"
 
 #: bookwyrm/templates/snippets/create_status/quotation.html:69
 msgid "to"
-msgstr ""
+msgstr "hona:"
 
 #: bookwyrm/templates/snippets/create_status/review.html:24
 #, python-format
@@ -6251,6 +6404,15 @@ msgstr "<a href=\"%(path)s\">%(goal_count)s liburutik %(read_count)s</a> irakurr
 msgid "%(username)s has read <a href=\"%(path)s\">%(read_count)s of %(goal_count)s books</a>."
 msgstr "%(username)s(e)k <a href=\"%(path)s\">%(goal_count)s liburutik %(read_count)s</a> irakurri ditu."
 
+#: bookwyrm/templates/snippets/move_user_buttons.html:10
+msgid "Follow at new account"
+msgstr "Jarraitu kontu berrian"
+
+#: bookwyrm/templates/snippets/moved_user_notice.html:7
+#, python-format
+msgid "<em>%(user)s</em> has moved to <a href=\"%(moved_to_link)s\">%(moved_to_name)s</a>"
+msgstr ""
+
 #: bookwyrm/templates/snippets/page_text.html:8
 #, python-format
 msgid "page %(page)s of %(total_pages)s"
@@ -6331,7 +6493,7 @@ msgstr "Izena eman"
 #: bookwyrm/templates/snippets/report_modal.html:8
 #, python-format
 msgid "Report @%(username)s's status"
-msgstr "Salatu @%(username)s(r)en egoera"
+msgstr "Salatu @%(username)s erabiltzailearen egoera"
 
 #: bookwyrm/templates/snippets/report_modal.html:10
 #, python-format
@@ -6392,35 +6554,35 @@ msgstr "Utzi irakurtzeari"
 msgid "Finish reading"
 msgstr "Bukatu irakurtzen"
 
-#: bookwyrm/templates/snippets/status/content_status.html:80
+#: bookwyrm/templates/snippets/status/content_status.html:69
 msgid "Show status"
 msgstr "Erakutsi egoera"
 
-#: bookwyrm/templates/snippets/status/content_status.html:102
+#: bookwyrm/templates/snippets/status/content_status.html:91
 #, python-format
 msgid "(Page %(page)s"
-msgstr ""
+msgstr "(%(page)s. orria"
 
-#: bookwyrm/templates/snippets/status/content_status.html:102
+#: bookwyrm/templates/snippets/status/content_status.html:91
 #, python-format
 msgid "%(endpage)s"
 msgstr "%(endpage)s"
 
-#: bookwyrm/templates/snippets/status/content_status.html:104
+#: bookwyrm/templates/snippets/status/content_status.html:93
 #, python-format
 msgid "(%(percent)s%%"
 msgstr "(%%%(percent)s"
 
-#: bookwyrm/templates/snippets/status/content_status.html:104
+#: bookwyrm/templates/snippets/status/content_status.html:93
 #, python-format
 msgid " - %(endpercent)s%%"
 msgstr " - %%%(endpercent)s"
 
-#: bookwyrm/templates/snippets/status/content_status.html:127
+#: bookwyrm/templates/snippets/status/content_status.html:116
 msgid "Open image in new window"
 msgstr "Ireki irudia leiho berrian"
 
-#: bookwyrm/templates/snippets/status/content_status.html:148
+#: bookwyrm/templates/snippets/status/content_status.html:137
 msgid "Hide status"
 msgstr "Ezkutatu egoera"
 
@@ -6442,7 +6604,7 @@ msgstr "(e)k <a href=\"%(book_path)s\">%(book)s</a>(r)i buruzko iruzkina egin du
 #: bookwyrm/templates/snippets/status/headers/note.html:8
 #, python-format
 msgid "replied to <a href=\"%(user_path)s\">%(username)s</a>'s <a href=\"%(status_path)s\">status</a>"
-msgstr "<a href=\"%(user_path)s\">%(username)s</a>(r)en <a href=\"%(status_path)s\">egoera</a>ri erantzun dio"
+msgstr "<a href=\"%(user_path)s\">%(username)s</a> erabiltzailearen <a href=\"%(status_path)s\">egoerari</a> erantzun diot"
 
 #: bookwyrm/templates/snippets/status/headers/quotation.html:8
 #, python-format
@@ -6457,17 +6619,17 @@ msgstr "<a href=\"%(book_path)s\">%(book)s</a> aipatu du"
 #: bookwyrm/templates/snippets/status/headers/rating.html:3
 #, python-format
 msgid "rated <a href=\"%(book_path)s\">%(book)s</a>:"
-msgstr "<a href=\"%(book_path)s\">%(book)s</a> puntuatu du:"
+msgstr "(e)k <a href=\"%(book_path)s\">%(book)s</a> puntuatu du:"
 
 #: bookwyrm/templates/snippets/status/headers/read.html:10
 #, python-format
 msgid "finished reading <a href=\"%(book_path)s\">%(book)s</a> by <a href=\"%(author_path)s\">%(author_name)s</a>"
-msgstr "(e)k <a href=\"%(author_path)s\">%(author_name)s</a>(r)en <a href=\"%(book_path)s\">%(book)s</a> irakurtzen bukatu du"
+msgstr "<a href=\"%(author_path)s\">%(author_name)s</a> egilearen <a href=\"%(book_path)s\">%(book)s</a> irakurtzen amaitu dut"
 
 #: bookwyrm/templates/snippets/status/headers/read.html:17
 #, python-format
 msgid "finished reading <a href=\"%(book_path)s\">%(book)s</a>"
-msgstr "(e)k <a href=\"%(book_path)s\">%(book)s</a> irakurtzen bukatu du"
+msgstr "<a href=\"%(book_path)s\">%(book)s</a> irakurtzen amaitu dut"
 
 #: bookwyrm/templates/snippets/status/headers/reading.html:10
 #, python-format
@@ -6482,7 +6644,7 @@ msgstr ", <a href=\"%(book_path)s\">%(book)s</a> irakurtzen hasi da"
 #: bookwyrm/templates/snippets/status/headers/review.html:8
 #, python-format
 msgid "reviewed <a href=\"%(book_path)s\">%(book)s</a> by <a href=\"%(author_path)s\">%(author_name)s</a>"
-msgstr "(e)k <a href=\"%(author_path)s\">%(author_name)s</a>(r)en <a href=\"%(book_path)s\">%(book)s</a> kritika egin du"
+msgstr "(e)k <a href=\"%(author_path)s\">%(author_name)s</a>(r)en <a href=\"%(book_path)s\">%(book)s</a> liburuaren kritika egin du"
 
 #: bookwyrm/templates/snippets/status/headers/review.html:15
 #, python-format
@@ -6492,12 +6654,12 @@ msgstr "(e)k <a href=\"%(book_path)s\">%(book)s</a>(r)en kritika egin du"
 #: bookwyrm/templates/snippets/status/headers/stopped_reading.html:10
 #, python-format
 msgid "stopped reading <a href=\"%(book_path)s\">%(book)s</a> by <a href=\"%(author_path)s\">%(author_name)s</a>"
-msgstr "<a href=\"%(author_path)s\">%(author_name)s</a>(r)en <a href=\"%(book_path)s\">%(book)s</a> irakurtzeari utzi dio"
+msgstr "<a href=\"%(author_path)s\">%(author_name)s</a> egilearen <a href=\"%(book_path)s\">%(book)s</a> irakurtzeari utzi diot"
 
 #: bookwyrm/templates/snippets/status/headers/stopped_reading.html:17
 #, python-format
 msgid "stopped reading <a href=\"%(book_path)s\">%(book)s</a>"
-msgstr "<a href=\"%(book_path)s\">%(book)s</a> irakurtzeari utzi dio"
+msgstr "<a href=\"%(book_path)s\">%(book)s</a> irakurtzeari utzi diot"
 
 #: bookwyrm/templates/snippets/status/headers/to_read.html:10
 #, python-format
@@ -6553,6 +6715,18 @@ msgstr "Erakutsi gehiago"
 msgid "Show less"
 msgstr "Erakutsi gutxiago"
 
+#: bookwyrm/templates/snippets/user_active_tag.html:5
+msgid "Moved"
+msgstr "Mugituta"
+
+#: bookwyrm/templates/snippets/user_active_tag.html:12
+msgid "Deleted"
+msgstr "Ezabatuta"
+
+#: bookwyrm/templates/snippets/user_active_tag.html:15
+msgid "Inactive"
+msgstr "Inaktiboa"
+
 #: bookwyrm/templates/two_factor_auth/two_factor_login.html:29
 msgid "2FA check"
 msgstr "2FA egiaztatzea"
@@ -6581,7 +6755,7 @@ msgstr "%(username)s(r)en liburuak"
 #: bookwyrm/templates/user/goal.html:12
 #, python-format
 msgid "%(year)s Reading Progress"
-msgstr "%(year)s(e)ko irakurketa-aurerapena"
+msgstr "%(year)s urteko irakurketa-aurrerapena"
 
 #: bookwyrm/templates/user/goal.html:16
 msgid "Edit Goal"
@@ -6590,7 +6764,7 @@ msgstr "Editatu helburua"
 #: bookwyrm/templates/user/goal.html:32
 #, python-format
 msgid "%(name)s hasn't set a reading goal for %(year)s."
-msgstr "%(name)s(e)k ez du irakurketa-helburu bat ezarri %(year)s(e)rako."
+msgstr "%(name)s erabiltzaileak ez du irakurketa-helburu bat ezarri %(year)s urtera begira."
 
 #: bookwyrm/templates/user/goal.html:44
 #, python-format
@@ -6611,11 +6785,11 @@ msgstr "Zure taldeak"
 msgid "Groups: %(username)s"
 msgstr "Taldeak: %(username)s"
 
-#: bookwyrm/templates/user/layout.html:50
+#: bookwyrm/templates/user/layout.html:59
 msgid "Follow Requests"
 msgstr "Jarraitzeko eskaerak"
 
-#: bookwyrm/templates/user/layout.html:73
+#: bookwyrm/templates/user/layout.html:83
 #: bookwyrm/templates/user/reviews_comments.html:6
 #: bookwyrm/templates/user/reviews_comments.html:12
 msgid "Reviews and Comments"
@@ -6630,7 +6804,13 @@ msgstr "Zerrendak: %(username)s"
 msgid "Create list"
 msgstr "Sortu zerrenda"
 
-#: bookwyrm/templates/user/relationships/followers.html:31
+#: bookwyrm/templates/user/moved.html:25
+#: bookwyrm/templates/user/user_preview.html:22
+#, python-format
+msgid "Joined %(date)s"
+msgstr "%(date)s(e)an batu zen"
+
+#: bookwyrm/templates/user/relationships/followers.html:36
 #, python-format
 msgid "%(username)s has no followers"
 msgstr "%(username)s erabiltzaileak ez du jarraitzailerik"
@@ -6667,7 +6847,7 @@ msgstr "Ikusi liburu guztiak"
 #: bookwyrm/templates/user/user.html:69
 #, python-format
 msgid "%(current_year)s Reading Goal"
-msgstr "%(current_year)s Irakurketa xedea"
+msgstr "%(current_year)s urteko irakurketa-helburua"
 
 #: bookwyrm/templates/user/user.html:76
 msgid "User Activity"
@@ -6701,17 +6881,12 @@ msgstr "Iruzkinak bakarrik"
 msgid "No activities yet!"
 msgstr "Ez dago aktibitaterik oraindik!"
 
-#: bookwyrm/templates/user/user_preview.html:22
-#, python-format
-msgid "Joined %(date)s"
-msgstr "%(date)s(e)an batu zen"
-
 #: bookwyrm/templates/user/user_preview.html:26
 #, python-format
 msgid "%(display_count)s follower"
 msgid_plural "%(display_count)s followers"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "jarraitzaile %(display_count)s"
+msgstr[1] "%(display_count)s jarraitzaile"
 
 #: bookwyrm/templates/user/user_preview.html:31
 #, python-format
@@ -6733,10 +6908,6 @@ msgstr "Ez dago jarraitzen duzun jarraitzailerik"
 msgid "View profile and more"
 msgstr "Ikusi profila eta gehiago"
 
-#: bookwyrm/templates/user_menu.html:82
-msgid "Log out"
-msgstr "Amaitu saioa"
-
 #: bookwyrm/templates/widgets/clearable_file_input_with_warning.html:28
 msgid "File exceeds maximum size: 10MB"
 msgstr "Fitxategiak gehienezko tamaina gainditzen du: 10 Mb"
@@ -6753,7 +6924,7 @@ msgid_plural "%(num)d books - by %(user)s"
 msgstr[0] "liburu %(num)d - %(user)s"
 msgstr[1] "%(num)d liburu - %(user)s"
 
-#: bookwyrm/templatetags/utilities.py:39
+#: bookwyrm/templatetags/utilities.py:49
 #, python-format
 msgid "%(title)s: %(subtitle)s"
 msgstr "%(title)s: %(subtitle)s"
@@ -6761,7 +6932,7 @@ msgstr "%(title)s: %(subtitle)s"
 #: bookwyrm/views/rss_feed.py:35
 #, python-brace-format
 msgid "Status updates from {obj.display_name}"
-msgstr "{obj.display_name}-ren egoera eguneratzeak"
+msgstr "{obj.display_name} erabiltzailearen egoera-eguneratzeak"
 
 #: bookwyrm/views/rss_feed.py:80
 #, python-brace-format

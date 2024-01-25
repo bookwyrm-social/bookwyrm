@@ -135,8 +135,8 @@ class Book(BookDataModel):
     preview_image = models.ImageField(
         upload_to="previews/covers/", blank=True, null=True
     )
-    first_published_date = fields.DateTimeField(blank=True, null=True)
-    published_date = fields.DateTimeField(blank=True, null=True)
+    first_published_date = fields.PartialDateField(blank=True, null=True)
+    published_date = fields.PartialDateField(blank=True, null=True)
 
     objects = InheritanceManager()
     field_tracker = FieldTracker(fields=["authors", "title", "subtitle", "cover"])
@@ -366,9 +366,9 @@ class Edition(Book):
 
         # normalize isbn format
         if self.isbn_10:
-            self.isbn_10 = re.sub(r"[^0-9X]", "", self.isbn_10)
+            self.isbn_10 = normalize_isbn(self.isbn_10)
         if self.isbn_13:
-            self.isbn_13 = re.sub(r"[^0-9X]", "", self.isbn_13)
+            self.isbn_13 = normalize_isbn(self.isbn_13)
 
         # set rank
         self.edition_rank = self.get_rank()
@@ -461,6 +461,11 @@ def isbn_13_to_10(isbn_13):
     if checkdigit == 10:
         checkdigit = "X"
     return converted + str(checkdigit)
+
+
+def normalize_isbn(isbn):
+    """Remove unexpected characters from ISBN 10 or 13"""
+    return re.sub(r"[^0-9X]", "", isbn)
 
 
 # pylint: disable=unused-argument

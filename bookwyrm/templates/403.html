@@ -1,0 +1,20 @@
+{% extends 'layout.html' %}
+{% load i18n %}
+{% load utilities %}
+
+{% block title %}{% trans "Oh no!" %}{% endblock %}
+
+{% block content %}
+<div class="block">
+    <h1 class="title">{% trans "Permission Denied" %}</h1>
+    <p class="content">
+        {% blocktrans trimmed with level=request.user|get_user_permission %}
+        You do not have permission to view this page or perform this action. Your user permission level is <code>{{ level }}</code>.
+        {% endblocktrans %}
+    </p>
+    <p class="content">{% trans "If you think you should have access, please speak to your BookWyrm server administrator." %}
+    </p>
+
+</div>
+{% endblock %}
+

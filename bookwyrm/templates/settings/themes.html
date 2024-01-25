@@ -12,6 +12,15 @@
 {% endblock %}
 
 {% block panel %}
+{% if broken_theme %}
+<div class="notification is-danger">
+    <span class="icon icon-warning" aria-hidden="true"></span>
+    <span>
+        {% trans "One of your themes appears to be broken. Selecting this theme will make the application unusable." %}
+    </span>
+</div>
+{% endif %}
+
 {% if success %}
 <div class="notification is-success is-light">
     <span class="icon icon-check" aria-hidden="true"></span>
@@ -98,6 +107,9 @@
                 <th>
                     {% trans "Actions" %}
                 </th>
+                <th>
+                    {% trans "Status" %}
+                </th>
             </tr>
             {% for theme in themes %}
             <tr>
@@ -111,6 +123,37 @@
                             <span>{% trans "Remove theme" %}</span>
                         </button>
                     </form>
+                </td>
+                <td>
+                {% if theme.loads is None %}
+
+                    <form method="POST" action="{% url 'settings-themes-test' theme.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="button is-small">
+                            <span class="icon icon-question-circle" aria-hidden="true"></span>
+                            <span>{% trans "Test theme" %}</span>
+                        </button>
+                    </form>
+
+                {% elif not theme.loads %}
+
+                    <span class="tag is-danger">
+                        <span class="icon icon-warning" aria-hidden="true"></span>
+                        <span>
+                            {% trans "Broken theme" %}
+                        </span>
+                    </span>
+
+                {% else %}
+
+                    <span class="tag is-success">
+                        <span class="icon icon-check" aria-hidden="true"></span>
+                        <span>
+                            {% trans "Loaded successfully" %}
+                        </span>
+                    </span>
+
+                {% endif %}
                 </td>
             </tr>
             {% endfor %}
