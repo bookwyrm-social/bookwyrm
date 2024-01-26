@@ -153,7 +153,7 @@ class ActivitypubMixin:
         mentions = self.recipients if hasattr(self, "recipients") else []
 
         # we always send activities to explicitly mentioned users' inboxes
-        recipients = [u.inbox for u in mentions or [] if not u.local]
+        recipients = [u.shared_inbox or u.inbox for u in mentions if not u.local]
 
         # unless it's a dm, all the followers should receive the activity
         if privacy != "direct":
