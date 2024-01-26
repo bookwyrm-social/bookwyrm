@@ -107,14 +107,14 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
     @property
     def recipients(self):
         """tagged users who definitely need to get this status in broadcast"""
-        mentions = [u for u in self.mention_users.all() if not u.local]
+        mentions = {u for u in self.mention_users.all() if not u.local}
         if (
             hasattr(self, "reply_parent")
             and self.reply_parent
             and not self.reply_parent.user.local
         ):
-            mentions.append(self.reply_parent.user)
-        return list(set(mentions))
+            mentions.add(self.reply_parent.user)
+        return list(mentions)
 
     @classmethod
     def ignore_activity(
