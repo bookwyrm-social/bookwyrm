@@ -12,10 +12,6 @@ started reading <a href="{{ book_path }}">{{ book }}</a> by <a href="{{ author_p
 {% endblocktrans %}
 {% endwith %}
 
-{% if book.series %}
-({{book.series}} {%if book.series_number %}#{{book.series_number}}) {% endif %}
-{% endif %}
-
 {% else %}
 
 {% blocktrans trimmed with book_path=book.local_path book=book|book_title %}
@@ -23,4 +19,9 @@ started reading <a href="{{ book_path }}">{{ book }}</a>
 {% endblocktrans %}
 
 {% endif %}
+
+{% if book.series %}
+({{book.series}} {%if book.series_number %}#{{book.series_number}}) {% endif %}
+{% endif %}
+
 {% endspaceless %}
