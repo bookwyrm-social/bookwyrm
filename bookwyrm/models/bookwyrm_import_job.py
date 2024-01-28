@@ -215,7 +215,7 @@ def upsert_statuses(user, cls, data, book_remote_id):
                 instance.save()  # save and broadcast
 
         else:
-            logger.info("User does not have permission to import statuses")
+            logger.warning("User does not have permission to import statuses")
 
 
 def upsert_lists(user, lists, book_id):

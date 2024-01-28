@@ -246,9 +246,7 @@ class AddFileToTar(ChildJob):
 
                     # Add avatar image if present
                     if getattr(user, "avatar", False):
-                        tar.add_image(
-                            user.avatar, filename="avatar", directory="avatar/"
-                        )
+                        tar.add_image(user.avatar, filename="avatar")
 
                     for book in editions:
                         if getattr(book, "cover", False):
@@ -284,7 +282,6 @@ def start_export_task(**kwargs):
             job.user.save()
 
         job.export_json = job.user.to_activity()
-        logger.info(job.export_json)
         job.save(update_fields=["export_data", "export_json"])
 
         # let's go
@@ -345,45 +342,48 @@ def export_reading_goals_task(**kwargs):
 def json_export(**kwargs):
     """Generate an export for a user"""
 
-    job = BookwyrmExportJob.objects.get(id=kwargs["job_id"])
-    job.set_status("active")
-    job_id = kwargs["job_id"]
+    try:
+        job = BookwyrmExportJob.objects.get(id=kwargs["job_id"])
+        job.set_status("active")
+        job_id = kwargs["job_id"]
 
-    # I don't love this but it prevents a JSON encoding error
-    # when there is no user image
-    if isinstance(
-        job.export_json["icon"],
-        dataclasses._MISSING_TYPE,  # pylint: disable=protected-access
-    ):
-        job.export_json["icon"] = {}
-    else:
-        # change the URL to be relative to the JSON file
-        file_type = job.export_json["icon"]["url"].rsplit(".", maxsplit=1)[-1]
-        filename = f"avatar.{file_type}"
-        job.export_json["icon"]["url"] = filename
+        if not job.export_json.get("icon"):
+            job.export_json["icon"] = {}
+        else:
+            # change the URL to be relative to the JSON file
+            file_type = job.export_json["icon"]["url"].rsplit(".", maxsplit=1)[-1]
+            filename = f"avatar.{file_type}"
+            job.export_json["icon"]["url"] = filename
 
-    # Additional settings - can't be serialized as AP
-    vals = [
-        "show_goal",
-        "preferred_timezone",
-        "default_post_privacy",
-        "show_suggested_users",
-    ]
-    job.export_json["settings"] = {}
-    for k in vals:
-        job.export_json["settings"][k] = getattr(job.user, k)
+        # Additional settings - can't be serialized as AP
+        vals = [
+            "show_goal",
+            "preferred_timezone",
+            "default_post_privacy",
+            "show_suggested_users",
+        ]
+        job.export_json["settings"] = {}
+        for k in vals:
+            job.export_json["settings"][k] = getattr(job.user, k)
 
-    job.export_json["books"] = []
+        job.export_json["books"] = []
 
-    # save settings we just updated
-    job.save(update_fields=["export_json"])
+        # save settings we just updated
+        job.save(update_fields=["export_json"])
 
-    # trigger subtasks
-    export_saved_lists_task.delay(job_id=job_id, no_children=False)
-    export_follows_task.delay(job_id=job_id, no_children=False)
-    export_blocks_task.delay(job_id=job_id, no_children=False)
-    trigger_books_jobs.delay(job_id=job_id, no_children=False)
+        # trigger subtasks
+        export_saved_lists_task.delay(job_id=job_id, no_children=False)
+        export_follows_task.delay(job_id=job_id, no_children=False)
+        export_blocks_task.delay(job_id=job_id, no_children=False)
+        trigger_books_jobs.delay(job_id=job_id, no_children=False)
 
+    except Exception as err:  # pylint: disable=broad-except
+        logger.exception(
+            "json_export task in job %s Failed with error: %s",
+            job.id,
+            err,
+        )
+        job.set_status("failed")
 
 @app.task(queue=IMPORTS, base=ParentTask)
 def trigger_books_jobs(**kwargs):
