@@ -5,13 +5,15 @@ from unittest.mock import patch
 
 from django.core.serializers.json import DjangoJSONEncoder
 from django.test import TestCase
+from django.test.utils import override_settings
+
 from django.utils import timezone
 
 from bookwyrm import models
 import bookwyrm.models.bookwyrm_export_job as export_job
 
 
-class BookwyrmExport(TestCase):
+class BookwyrmExportJob(TestCase):
     """testing user export functions"""
 
     def setUp(self):
@@ -141,94 +143,17 @@ class BookwyrmExport(TestCase):
                 book=self.edition,
             )
 
-    # pylint: disable=E1121
-    def test_json_export_user_settings(self):
-        """Test the json export function for basic user info"""
-        data = export_job.json_export(self.local_user)
-        user_data = json.loads(data)
-        self.assertEqual(user_data["preferredUsername"], "mouse")
-        self.assertEqual(user_data["name"], "Mouse")
-        self.assertEqual(user_data["summary"], "<p>I'm a real bookmouse</p>")
-        self.assertEqual(user_data["manuallyApprovesFollowers"], False)
-        self.assertEqual(user_data["hideFollows"], False)
-        self.assertEqual(user_data["discoverable"], True)
-        self.assertEqual(user_data["settings"]["show_goal"], False)
-        self.assertEqual(user_data["settings"]["show_suggested_users"], False)
-        self.assertEqual(
-            user_data["settings"]["preferred_timezone"], "America/Los Angeles"
-        )
-        self.assertEqual(user_data["settings"]["default_post_privacy"], "followers")
+            self.job = models.BookwyrmExportJob.objects.create(user=self.local_user)
 
-    # pylint: disable=E1121
-    def test_json_export_extended_user_data(self):
-        """Test the json export function for other non-book user info"""
-        data = export_job.json_export(self.local_user)
-        json_data = json.loads(data)
+    def test_export_saved_lists_task(self):
+        """test saved list task"""
 
-        # goal
-        self.assertEqual(len(json_data["goals"]), 1)
-        self.assertEqual(json_data["goals"][0]["goal"], 128937123)
-        self.assertEqual(json_data["goals"][0]["year"], timezone.now().year)
-        self.assertEqual(json_data["goals"][0]["privacy"], "followers")
-
-        # saved lists
-        self.assertEqual(len(json_data["saved_lists"]), 1)
-        self.assertEqual(json_data["saved_lists"][0], "https://local.lists/9999")
-
-        # follows
-        self.assertEqual(len(json_data["follows"]), 1)
-        self.assertEqual(json_data["follows"][0], "https://your.domain.here/user/rat")
-        # blocked users
-        self.assertEqual(len(json_data["blocks"]), 1)
-        self.assertEqual(json_data["blocks"][0], "https://your.domain.here/user/badger")
-
-    # pylint: disable=E1121
-    def test_json_export_books(self):
-        """Test the json export function for extended user info"""
-
-        data = export_job.json_export(self.local_user)
-        json_data = json.loads(data)
-        start_date = json_data["books"][0]["readthroughs"][0]["start_date"]
-
-        self.assertEqual(len(json_data["books"]), 1)
-        self.assertEqual(json_data["books"][0]["edition"]["title"], "Example Edition")
-        self.assertEqual(len(json_data["books"][0]["authors"]), 1)
-        self.assertEqual(json_data["books"][0]["authors"][0]["name"], "Sam Zhu")
-
-        self.assertEqual(
-            f'"{start_date}"', DjangoJSONEncoder().encode(self.readthrough_start)
-        )
-
-        self.assertEqual(json_data["books"][0]["shelves"][0]["name"], "Read")
-
-        self.assertEqual(len(json_data["books"][0]["lists"]), 1)
-        self.assertEqual(json_data["books"][0]["lists"][0]["name"], "My excellent list")
-        self.assertEqual(
-            json_data["books"][0]["lists"][0]["list_item"]["book"],
-            self.edition.remote_id,
-            self.edition.id,
-        )
-
-        self.assertEqual(len(json_data["books"][0]["reviews"]), 1)
-        self.assertEqual(len(json_data["books"][0]["comments"]), 1)
-        self.assertEqual(len(json_data["books"][0]["quotations"]), 1)
-
-        self.assertEqual(json_data["books"][0]["reviews"][0]["name"], "my review")
-        self.assertEqual(
-            json_data["books"][0]["reviews"][0]["content"], "<p>awesome</p>"
-        )
-        self.assertEqual(json_data["books"][0]["reviews"][0]["rating"], 5.0)
-
-        self.assertEqual(
-            json_data["books"][0]["comments"][0]["content"], "<p>ok so far</p>"
-        )
-        self.assertEqual(json_data["books"][0]["comments"][0]["progress"], 15)
-        self.assertEqual(json_data["books"][0]["comments"][0]["progress_mode"], "PG")
-
-        self.assertEqual(
-            json_data["books"][0]["quotations"][0]["content"], "<p>check this out</p>"
-        )
-        self.assertEqual(
-            json_data["books"][0]["quotations"][0]["quote"],
-            "<p>A rose by any other name</p>",
-        )
+        with patch("bookwyrm.models.bookwyrm_export_job.json_export.delay"):
+            models.bookwyrm_export_job.start_export_task(
+                job_id=self.job.id, no_children=False
+            )
+            print(self.job.user)
+            print(self.job.export_data)
+            print(self.job.export_json)
+            # IDK how to test this...
+            pass

@@ -9,7 +9,7 @@ from django.utils.translation import gettext_lazy as _
 from django.templatetags.static import static
 
 from bookwyrm.models import User
-from bookwyrm.settings import INSTANCE_ACTOR_USERNAME, USE_S3
+from bookwyrm.settings import INSTANCE_ACTOR_USERNAME
 
 register = template.Library()
 

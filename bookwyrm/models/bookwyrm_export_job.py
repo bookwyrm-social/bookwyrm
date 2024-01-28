@@ -1,6 +1,5 @@
 """Export user account to tar.gz file for import into another Bookwyrm instance"""
 
-import dataclasses
 import logging
 from uuid import uuid4
 
@@ -191,9 +190,11 @@ class AddFileToTar(ChildJob):
     def start_job(self):
         """Start the job"""
 
-        # NOTE we are doing this all in one big job, which has the potential to block a thread
-        # This is because we need to refer to the same s3_job or BookwyrmTarFile whilst writing
-        # Using a series of jobs in a loop would be better if possible
+        # NOTE we are doing this all in one big job,
+        # which has the potential to block a thread
+        # This is because we need to refer to the same s3_job
+        # or BookwyrmTarFile whilst writing
+        # Using a series of jobs in a loop would be better
 
         try:
             export_data = self.parent_export_job.export_data
@@ -275,12 +276,6 @@ def start_export_task(**kwargs):
 
         # prepare the initial file and base json
         job.export_data = ContentFile(b"", str(uuid4()))
-        # BUG: this throws a MISSING class error if there is no avatar
-        # #3096 may fix it
-        if not job.user.avatar:
-            job.user.avatar = ""
-            job.user.save()
-
         job.export_json = job.user.to_activity()
         job.save(update_fields=["export_data", "export_json"])
 
@@ -384,6 +379,7 @@ def json_export(**kwargs):
             err,
         )
         job.set_status("failed")
+
 
 @app.task(queue=IMPORTS, base=ParentTask)
 def trigger_books_jobs(**kwargs):

@@ -160,7 +160,8 @@ class ExportUser(View):
             export = {"job": job}
 
             if settings.USE_S3:
-                # make custom_domain None so we can sign the url (https://github.com/jschneier/django-storages/issues/944)
+                # make custom_domain None so we can sign the url
+                # see https://github.com/jschneier/django-storages/issues/944
                 storage = S3Boto3Storage(querystring_auth=True, custom_domain=None)
 
                 # for s3 we download directly from s3, so we need a signed url
@@ -168,12 +169,13 @@ class ExportUser(View):
                     storage, f"/exports/{job.task_id}.tar.gz", expire=900
                 )  # temporarily downloadable file, expires after 5 minutes
 
-                # for s3 we create a new tar file in s3, so we need to check the size of _that_ file
+                # for s3 we create a new tar file in s3,
+                # so we need to check the size of _that_ file
                 try:
                     export["size"] = S3Boto3Storage.size(
                         storage, f"exports/{job.task_id}.tar.gz"
                     )
-                except Exception:
+                except Exception:  # pylint: disable=broad-except
                     export["size"] = 0
 
             else:
