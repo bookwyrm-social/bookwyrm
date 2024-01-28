@@ -5,6 +5,7 @@ import logging
 from uuid import uuid4
 
 from s3_tar import S3Tar
+from storages.backends.s3boto3 import S3Boto3Storage
 
 from django.db.models import CASCADE, BooleanField, FileField, ForeignKey, JSONField
 from django.db.models import Q
@@ -57,7 +58,6 @@ class BookwyrmExportJob(ParentJob):
 
         if not self.complete and self.has_completed:
             if not self.json_completed:
-
                 try:
                     self.json_completed = True
                     self.save(update_fields=["json_completed"])
@@ -193,8 +193,7 @@ class AddFileToTar(ChildJob):
 
         # NOTE we are doing this all in one big job, which has the potential to block a thread
         # This is because we need to refer to the same s3_job or BookwyrmTarFile whilst writing
-        # Alternatives using a series of jobs in a loop would be beter
-        # but Hugh couldn't make that work
+        # Using a series of jobs in a loop would be better if possible
 
         try:
             export_data = self.parent_export_job.export_data
@@ -203,29 +202,41 @@ class AddFileToTar(ChildJob):
             user = self.parent_export_job.user
             editions = get_books_for_user(user)
 
+            # filenames for later
+            export_data_original = str(export_data)
+            filename = str(self.parent_export_job.task_id)
+
             if settings.USE_S3:
                 s3_job = S3Tar(
                     settings.AWS_STORAGE_BUCKET_NAME,
-                    f"exports/{str(self.parent_export_job.task_id)}.tar.gz",
+                    f"exports/{filename}.tar.gz",
                 )
 
-                # TODO: will need to get it to the user
-                # from this secure part of the bucket
-                export_data.save("archive.json", ContentFile(json_data.encode("utf-8")))
-
+                # save json file
+                export_data.save(
+                    f"archive_{filename}.json", ContentFile(json_data.encode("utf-8"))
+                )
                 s3_job.add_file(f"exports/{export_data.name}")
-                s3_job.add_file(f"images/{user.avatar.name}", folder="avatar")
+
+                # save image file
+                file_type = user.avatar.name.rsplit(".", maxsplit=1)[-1]
+                export_data.save(f"avatar_{filename}.{file_type}", user.avatar)
+                s3_job.add_file(f"exports/{export_data.name}")
+
                 for book in editions:
                     if getattr(book, "cover", False):
                         cover_name = f"images/{book.cover.name}"
                         s3_job.add_file(cover_name, folder="covers")
 
                 s3_job.tar()
-                # delete export json as soon as it's tarred
-                # TODO: there is probably a better way to do this
-                # Currently this merely makes the file empty even though
-                # we're using save=False
-                export_data.delete(save=False)
+
+                # delete child files - we don't need them any more
+                s3_storage = S3Boto3Storage(querystring_auth=True, custom_domain=None)
+                S3Boto3Storage.delete(s3_storage, f"exports/{export_data_original}")
+                S3Boto3Storage.delete(s3_storage, f"exports/archive_{filename}.json")
+                S3Boto3Storage.delete(
+                    s3_storage, f"exports/avatar_{filename}.{file_type}"
+                )
 
             else:
                 export_data.open("wb")
@@ -266,7 +277,14 @@ def start_export_task(**kwargs):
 
         # prepare the initial file and base json
         job.export_data = ContentFile(b"", str(uuid4()))
+        # BUG: this throws a MISSING class error if there is no avatar
+        # #3096 may fix it
+        if not job.user.avatar:
+            job.user.avatar = ""
+            job.user.save()
+
         job.export_json = job.user.to_activity()
+        logger.info(job.export_json)
         job.save(update_fields=["export_data", "export_json"])
 
         # let's go

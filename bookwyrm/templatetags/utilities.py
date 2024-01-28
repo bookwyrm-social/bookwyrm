@@ -130,23 +130,17 @@ def id_to_username(user_id):
 
 
 @register.filter(name="get_file_size")
-def get_file_size(file):
+def get_file_size(raw_size):
     """display the size of a file in human readable terms"""
 
     try:
-        # TODO: this obviously isn't a proper solution
-        # boto storages do not implement 'path'
-        if not USE_S3:
-            raw_size = os.stat(file.path).st_size
-            if raw_size < 1024:
-                return f"{raw_size} bytes"
-            if raw_size < 1024**2:
-                return f"{raw_size/1024:.2f} KB"
-            if raw_size < 1024**3:
-                return f"{raw_size/1024**2:.2f} MB"
-            return f"{raw_size/1024**3:.2f} GB"
-
-        return ""
+        if raw_size < 1024:
+            return f"{raw_size} bytes"
+        if raw_size < 1024**2:
+            return f"{raw_size/1024:.2f} KB"
+        if raw_size < 1024**3:
+            return f"{raw_size/1024**2:.2f} MB"
+        return f"{raw_size/1024**3:.2f} GB"
 
     except Exception as error:  # pylint: disable=broad-except
         print(error)

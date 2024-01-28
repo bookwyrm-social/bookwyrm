@@ -13,9 +13,11 @@ from django.views import View
 from django.utils.decorators import method_decorator
 from django.shortcuts import redirect
 
+from storages.backends.s3boto3 import S3Boto3Storage
+
 from bookwyrm import models
 from bookwyrm.models.bookwyrm_export_job import BookwyrmExportJob
-from bookwyrm.settings import PAGE_LENGTH
+from bookwyrm import settings
 
 
 # pylint: disable=no-self-use,too-many-locals
@@ -152,6 +154,34 @@ class ExportUser(View):
         jobs = BookwyrmExportJob.objects.filter(user=request.user).order_by(
             "-created_date"
         )
+
+        exports = []
+        for job in jobs:
+            export = {"job": job}
+
+            if settings.USE_S3:
+                # make custom_domain None so we can sign the url (https://github.com/jschneier/django-storages/issues/944)
+                storage = S3Boto3Storage(querystring_auth=True, custom_domain=None)
+
+                # for s3 we download directly from s3, so we need a signed url
+                export["url"] = S3Boto3Storage.url(
+                    storage, f"/exports/{job.task_id}.tar.gz", expire=900
+                )  # temporarily downloadable file, expires after 5 minutes
+
+                # for s3 we create a new tar file in s3, so we need to check the size of _that_ file
+                try:
+                    export["size"] = S3Boto3Storage.size(
+                        storage, f"exports/{job.task_id}.tar.gz"
+                    )
+                except Exception:
+                    export["size"] = 0
+
+            else:
+                # for local storage export_data is the tar file
+                export["size"] = job.export_data.size if job.export_data else 0
+
+            exports.append(export)
+
         site = models.SiteSettings.objects.get()
         hours = site.user_import_time_limit
         allowed = (
@@ -162,7 +192,7 @@ class ExportUser(View):
         next_available = (
             jobs.first().created_date + timedelta(hours=hours) if not allowed else False
         )
-        paginated = Paginator(jobs, PAGE_LENGTH)
+        paginated = Paginator(exports, settings.PAGE_LENGTH)
         page = paginated.get_page(request.GET.get("page"))
         data = {
             "jobs": page,
