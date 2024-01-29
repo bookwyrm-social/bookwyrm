@@ -442,4 +442,5 @@ if HTTP_X_FORWARDED_PROTO:
 # Do not change this setting unless you already have an existing
 # user with the same username - in which case you should change it!
 INSTANCE_ACTOR_USERNAME = "bookwyrm.instance.actor"
+
 DATA_UPLOAD_MAX_MEMORY_SIZE = env.int("DATA_UPLOAD_MAX_MEMORY_SIZE", (1024**2 * 100))
