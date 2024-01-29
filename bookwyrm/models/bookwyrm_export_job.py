@@ -29,9 +29,9 @@ logger = logging.getLogger(__name__)
 class BookwyrmAwsSession(BotoSession):
     """a boto session that always uses settings.AWS_S3_ENDPOINT_URL"""
 
-    def client(service_name, **kwargs):
+    def client(self, *args, **kwargs):  # pylint: disable=arguments-differ
         kwargs["endpoint_url"] = settings.AWS_S3_ENDPOINT_URL
-        return super().client(service_name, **kwargs)
+        return super().client("s3", *args, **kwargs)
 
 
 class BookwyrmExportJob(ParentJob):
@@ -42,9 +42,7 @@ class BookwyrmExportJob(ParentJob):
     else:
         storage = storage_backends.ExportsFileStorage
 
-    export_data = FileField(
-        null=True, storage=storage
-    )  # use custom storage backend here
+    export_data = FileField(null=True, storage=storage)
     export_json = JSONField(null=True, encoder=DjangoJSONEncoder)
     json_completed = BooleanField(default=False)
 
@@ -70,7 +68,6 @@ class BookwyrmExportJob(ParentJob):
                     self.json_completed = True
                     self.save(update_fields=["json_completed"])
 
-                    # add json file to tarfile
                     tar_job = AddFileToTar.objects.create(
                         parent_job=self, parent_export_job=self
                     )
