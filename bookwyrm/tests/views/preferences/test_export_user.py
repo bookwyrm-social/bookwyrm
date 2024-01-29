@@ -41,7 +41,8 @@ class ExportUserViews(TestCase):
 
         request = self.factory.post("")
         request.user = self.local_user
-        export = views.ExportUser.as_view()(request)
+        with patch("bookwyrm.models.bookwyrm_export_job.BookwyrmExportJob.start_job"):
+            export = views.ExportUser.as_view()(request)
         self.assertIsInstance(export, HttpResponse)
         self.assertEqual(export.status_code, 302)
 
