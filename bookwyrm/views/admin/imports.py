@@ -9,7 +9,7 @@ from django.views.decorators.http import require_POST
 
 from bookwyrm import models
 from bookwyrm.views.helpers import redirect_to_referer
-from bookwyrm.settings import PAGE_LENGTH, USE_S3
+from bookwyrm.settings import PAGE_LENGTH, USE_AZURE
 
 
 # pylint: disable=no-self-use
@@ -59,7 +59,7 @@ class ImportList(View):
             "import_size_limit": site_settings.import_size_limit,
             "import_limit_reset": site_settings.import_limit_reset,
             "user_import_time_limit": site_settings.user_import_time_limit,
-            "use_s3": USE_S3,
+            "use_azure": USE_AZURE,
         }
         return TemplateResponse(request, "settings/imports/imports.html", data)
 
