@@ -3,6 +3,7 @@
 import logging
 from uuid import uuid4
 
+from boto3.session import Session as BotoSession
 from s3_tar import S3Tar
 from storages.backends.s3boto3 import S3Boto3Storage
 
@@ -23,6 +24,14 @@ from bookwyrm.tasks import app, IMPORTS
 from bookwyrm.utils.tar import BookwyrmTarFile
 
 logger = logging.getLogger(__name__)
+
+
+class BookwyrmAwsSession(BotoSession):
+    """a boto session that always uses settings.AWS_S3_ENDPOINT_URL"""
+
+    def client(service_name, **kwargs):
+        kwargs["endpoint_url"] = settings.AWS_S3_ENDPOINT_URL
+        return super().client(service_name, **kwargs)
 
 
 class BookwyrmExportJob(ParentJob):
@@ -211,6 +220,7 @@ class AddFileToTar(ChildJob):
                 s3_job = S3Tar(
                     settings.AWS_STORAGE_BUCKET_NAME,
                     f"exports/{filename}.tar.gz",
+                    session=BookwyrmAwsSession(),
                 )
 
                 # save json file
