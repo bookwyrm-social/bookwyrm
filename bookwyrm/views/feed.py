@@ -1,4 +1,5 @@
 """ non-interactive pages """
+from datetime import date
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db.models import Q
@@ -52,6 +53,19 @@ class Feed(View):
 
         suggestions = suggested_users.get_suggestions(request.user)
 
+        cutoff = (
+            date(get_annual_summary_year(), 12, 31)
+            if get_annual_summary_year()
+            else None
+        )
+        readthroughs = (
+            models.ReadThrough.objects.filter(
+                user=request.user, finish_date__lte=cutoff
+            )
+            if get_annual_summary_year()
+            else []
+        )
+
         data = {
             **feed_page_data(request.user),
             **{
@@ -66,6 +80,7 @@ class Feed(View):
                 "path": f"/{tab['key']}",
                 "annual_summary_year": get_annual_summary_year(),
                 "has_tour": True,
+                "has_summary_read_throughs": len(readthroughs),
             },
         }
         return TemplateResponse(request, "feed/feed.html", data)
