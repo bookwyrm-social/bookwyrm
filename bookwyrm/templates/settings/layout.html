@@ -86,6 +86,9 @@
                 <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Celery status" %}</a>
             </li>
             <li>
+                <a href="/flower/"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Flower" %}</a>
+            </li>
+            <li>
                 {% url 'settings-email-config' as url %}
                 <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Email Configuration" %}</a>
             </li>
