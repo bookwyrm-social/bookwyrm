@@ -5,6 +5,7 @@ from django.core.exceptions import PermissionDenied
 from django.db import models
 from django.db.models import Q
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 
 from bookwyrm import activitypub
 from bookwyrm.settings import DOMAIN
@@ -47,6 +48,14 @@ class List(OrderedCollectionMixin, BookWyrmModel):
     )
     embed_key = models.UUIDField(unique=True, null=True, editable=False)
     activity_serializer = activitypub.BookList
+    suggests_for = fields.OneToOneField(
+        "Edition",
+        on_delete=models.PROTECT,
+        activitypub_field="book",
+        related_name="suggestion_list",
+        default=None,
+        null=True,
+    )
 
     def get_remote_id(self):
         """don't want the user to be in there in this case"""
@@ -56,6 +65,27 @@ class List(OrderedCollectionMixin, BookWyrmModel):
     def collection_queryset(self):
         """list of books for this shelf, overrides OrderedCollectionMixin"""
         return self.books.filter(listitem__approved=True).order_by("listitem")
+
+    @property
+    def get_name(self):
+        """The name comes from the book title if it's a suggestion list"""
+        if self.suggests_for:
+            return _("Suggestions for %(title)s") % {"title": self.suggests_for.title}
+
+        return self.name
+
+    @property
+    def get_description(self):
+        """The description comes from the book title if it's a suggestion list"""
+        if self.suggests_for:
+            return _(
+                "This is the list of suggestions for <a href='%(url)s'>%(title)s</a>"
+            ) % {
+                "title": self.suggests_for.title,
+                "url": self.suggests_for.local_path,
+            }
+
+        return self.description
 
     class Meta:
         """default sorting"""

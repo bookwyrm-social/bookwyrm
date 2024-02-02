@@ -77,7 +77,10 @@ class List(View):
 
         if request.user.is_authenticated:
             data["suggested_books"] = get_list_suggestions(
-                book_list, request.user, query=query
+                book_list,
+                request.user,
+                query=query,
+                ignore_book=book_list.suggests_for,
             )
         return TemplateResponse(request, "lists/list.html", data)
 
@@ -98,24 +101,32 @@ class List(View):
         return redirect_to_referer(request, book_list.local_path)
 
 
-def get_list_suggestions(book_list, user, query=None, num_suggestions=5):
+def get_list_suggestions(
+    book_list, user, query=None, num_suggestions=5, ignore_book=None
+):
     """What books might a user want to add to a list"""
     if query:
         # search for books
         return book_search.search(
             query,
-            filters=[~Q(parent_work__editions__in=book_list.books.all())],
+            filters=[
+                ~Q(parent_work__editions__in=book_list.books.all()),
+                ~Q(parent_work__editions__in=[ignore_book]),
+            ],
         )
     # just suggest whatever books are nearby
-    suggestions = user.shelfbook_set.filter(
-        ~Q(book__in=book_list.books.all())
-    ).distinct()[:num_suggestions]
+    suggestions = (
+        user.shelfbook_set.filter(~Q(book__in=book_list.books.all()))
+        .exclude(book=ignore_book)
+        .distinct()[:num_suggestions]
+    )
     suggestions = [s.book for s in suggestions[:num_suggestions]]
     if len(suggestions) < num_suggestions:
         others = [
             s.default_edition
             for s in models.Work.objects.filter(
                 ~Q(editions__in=book_list.books.all()),
+                ~Q(editions__in=[ignore_book]),
             )
             .distinct()
             .order_by("-updated_date")[:num_suggestions]
