@@ -61,7 +61,18 @@
                     {{ task.interval.id }}
                 </td>
                 <td>
+                    <span class="tag">
+                        {% if task.enabled %}
+                        <span class="icon icon-check" aria-hidden="true"></span>
+                        {% endif %}
                     {{ task.enabled|yesno }}
+                    </span>
+                    {% if task.name != "celery.backend_cleanup" %}
+                    <form name="unschedule-{{ task.id }}" method="POST" action="{% url 'settings-schedules' task.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="button is-danger is-small">{% trans "Un-schedule" %}</button>
+                    </form>
+                    {% endif %}
                 </td>
             </tr>
             {% empty %}

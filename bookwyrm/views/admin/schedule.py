@@ -1,5 +1,6 @@
 """ Scheduled celery tasks """
 from django.contrib.auth.decorators import login_required, permission_required
+from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
 from django.views import View
@@ -21,3 +22,10 @@ class ScheduledTasks(View):
         data["tasks"] = PeriodicTask.objects.all()
         data["schedules"] = IntervalSchedule.objects.all()
         return TemplateResponse(request, "settings/schedules.html", data)
+
+    # pylint: disable=unused-argument
+    def post(self, request, task_id):
+        """un-schedule a task"""
+        task = PeriodicTask.objects.get(id=task_id)
+        task.delete()
+        return redirect("settings-schedules")
