@@ -46,7 +46,11 @@
             {% trans "If you wish to migrate any statuses (comments, reviews, or quotes) you must either set the account you are moving to as an <strong>alias</strong> of this one, or <strong>move</strong> this account to the new account, before you import your user data." %}
             {% endspaceless %}
         </p>
-    {% if next_available %}
+    {% if not site.user_exports_enabled %}
+    <p class="notification is-danger">
+        {% trans "New user exports are currently disabled." %}
+    </p>
+    {% elif next_available %}
     <p class="notification is-warning">
         {% blocktrans trimmed %}
         You will be able to create a new export file at {{ next_available }}

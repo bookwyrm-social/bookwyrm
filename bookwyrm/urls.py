@@ -339,6 +339,16 @@ urlpatterns = [
         name="settings-imports-disable",
     ),
     re_path(
+        r"^settings/user-exports/enable/?$",
+        views.enable_user_exports,
+        name="settings-user-exports-enable",
+    ),
+    re_path(
+        r"^settings/user-exports/disable/?$",
+        views.disable_user_exports,
+        name="settings-user-exports-disable",
+    ),
+    re_path(
         r"^settings/imports/enable/?$",
         views.enable_imports,
         name="settings-imports-enable",
