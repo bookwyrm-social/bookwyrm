@@ -227,14 +227,18 @@ class ActivitypubMixins(TestCase):
                 shared_inbox="http://example.com/inbox",
                 outbox="https://example.com/users/nutria/outbox",
             )
-        MockSelf = namedtuple("Self", ("privacy", "user"))
-        mock_self = MockSelf("public", self.local_user)
+        MockSelf = namedtuple("Self", ("privacy", "user", "recipients"))
         self.local_user.followers.add(self.remote_user)
         self.local_user.followers.add(another_remote_user)
 
+        mock_self = MockSelf("public", self.local_user, [])
         recipients = ActivitypubMixin.get_recipients(mock_self)
-        self.assertEqual(len(recipients), 1)
-        self.assertEqual(recipients[0], "http://example.com/inbox")
+        self.assertCountEqual(recipients, ["http://example.com/inbox"])
+
+        # should also work with recipient that is a follower
+        mock_self.recipients.append(another_remote_user)
+        recipients = ActivitypubMixin.get_recipients(mock_self)
+        self.assertCountEqual(recipients, ["http://example.com/inbox"])
 
     def test_get_recipients_software(self, *_):
         """should differentiate between bookwyrm and other remote users"""
