@@ -369,11 +369,13 @@ class Quotation(BookStatus):
 
     quote = fields.HtmlField()
     raw_quote = models.TextField(blank=True, null=True)
-    position = models.IntegerField(
-        validators=[MinValueValidator(0)], null=True, blank=True
+    position = models.TextField(
+        null=True,
+        blank=True,
     )
-    endposition = models.IntegerField(
-        validators=[MinValueValidator(0)], null=True, blank=True
+    endposition = models.TextField(
+        null=True,
+        blank=True,
     )
     position_mode = models.CharField(
         max_length=3,
