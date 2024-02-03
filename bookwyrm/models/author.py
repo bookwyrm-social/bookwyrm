@@ -18,6 +18,9 @@ class Author(BookDataModel):
     wikipedia_link = fields.CharField(
         max_length=255, blank=True, null=True, deduplication_field=True
     )
+    wikidata = fields.CharField(
+        max_length=255, blank=True, null=True, deduplication_field=True
+    )
     isni = fields.CharField(
         max_length=255, blank=True, null=True, deduplication_field=True
     )
