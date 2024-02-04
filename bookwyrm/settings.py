@@ -30,6 +30,9 @@ RELEASE_API = env(
 
 PAGE_LENGTH = env.int("PAGE_LENGTH", 15)
 DEFAULT_LANGUAGE = env("DEFAULT_LANGUAGE", "English")
+# TODO: extend maximum age to 1 year once termination of active sessions
+# is implemented (see bookwyrm-social#2278, bookwyrm-social#3082).
+SESSION_COOKIE_AGE = env.int("SESSION_COOKIE_AGE", 3600 * 24 * 30)  # 1 month
 
 JS_CACHE = "8a89cad7"
 
@@ -347,8 +350,7 @@ USE_L10N = True
 USE_TZ = True
 
 
-agent = requests.utils.default_user_agent()
-USER_AGENT = f"{agent} (BookWyrm/{VERSION}; +https://{DOMAIN}/)"
+USER_AGENT = f"BookWyrm (BookWyrm/{VERSION}; +https://{DOMAIN}/)"
 
 # Imagekit generated thumbnails
 ENABLE_THUMBNAIL_GENERATION = env.bool("ENABLE_THUMBNAIL_GENERATION", False)
@@ -442,3 +444,5 @@ if HTTP_X_FORWARDED_PROTO:
 # Do not change this setting unless you already have an existing
 # user with the same username - in which case you should change it!
 INSTANCE_ACTOR_USERNAME = "bookwyrm.instance.actor"
+
+DATA_UPLOAD_MAX_MEMORY_SIZE = env.int("DATA_UPLOAD_MAX_MEMORY_SIZE", (1024**2 * 100))

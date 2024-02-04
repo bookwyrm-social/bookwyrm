@@ -45,6 +45,10 @@
     {% include 'settings/dashboard/warnings/update_version.html' with warning_level="warning" fullwidth=True %}
     {% endif %}
 
+    {% if schedule_form %}
+    {% include 'settings/dashboard/warnings/check_for_updates.html' with warning_level="success" fullwidth=True %}
+    {% endif %}
+
     {% if missing_privacy or missing_conduct %}
     <div class="column is-12 columns m-0 p-0">
         {% if missing_privacy %}
