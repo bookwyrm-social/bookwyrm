@@ -1,4 +1,5 @@
 """ bring all the models into the app namespace """
+
 import inspect
 import sys
 
@@ -6,6 +7,8 @@ from .book import Book, Work, Edition, BookDataModel
 from .author import Author
 from .link import Link, FileLink, LinkDomain
 from .connector import Connector
+
+from .series import Series, SeriesBook
 
 from .shelf import Shelf, ShelfBook
 from .list import List, ListItem

@@ -31,7 +31,7 @@
                 {{ book.title }}
             </h1>
 
-            {% if book.subtitle or book.series %}
+            {% if book.subtitle or book.series.exists %}
                 <p class="subtitle title is-5">
                     {% if book.subtitle %}
                         <meta
@@ -44,24 +44,19 @@
                         </span>
                     {% endif %}
 
-                    {% if book.series %}
+                    {% for book_series in book.series.all %}
                         {% spaceless %}
                         <span itemprop="isPartOf" itemscope itemtype="https://schema.org/BookSeries">
-                        {% if book.authors.exists %}
-                            <a href="{% url 'book-series-by' book.authors.first.id %}?series_name={{ book.series | urlencode }}"
-                               itemprop="url">
-                        {% endif %}
-                        <span itemprop="name">{{ book.series }}</span>
-                        {% if book.authors.exists %}
+                            <a href="{{ book_series.local_path }}" itemprop="url">
+                                <span itemprop="name">{{ book_series.series.name }}</span>
                             </a>
-                        {% endif %}
+                            {% if book_series.number %}
+                                <span>, #</span>
+                                <span itemprop="position">{{ book.series_number }}</span>
+                            {% endif %}
                         </span>
-                        {% if book.series_number %}
-                            <span>, #</span>
-                            <span itemprop="position">{{ book.series_number }}</span>
-                        {% endif %}
                         {% endspaceless %}
-                    {% endif %}
+                    {% endfor %}
                 </p>
             {% endif %}
 

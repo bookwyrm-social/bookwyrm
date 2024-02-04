@@ -229,8 +229,11 @@ class Book(BookDataModel):
     languages = fields.ArrayField(
         models.CharField(max_length=255), blank=True, default=list
     )
-    series = fields.TextField(max_length=255, blank=True, null=True)
-    series_number = fields.CharField(max_length=255, blank=True, null=True)
+    series = models.ManyToManyField(
+        "Series",
+        through="SeriesBook",
+        through_fields=("book", "series"),
+    )
     subjects = fields.ArrayField(
         models.CharField(max_length=255), blank=True, null=True, default=list
     )
