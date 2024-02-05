@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-01-02 03:27+0000\n"
-"PO-Revision-Date: 2024-02-05 10:56\n"
+"PO-Revision-Date: 2024-02-05 11:55\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Korean\n"
 "Language: ko\n"
@@ -106,7 +106,7 @@ msgstr "책제목"
 #: bookwyrm/templates/shelf/shelf.html:190
 #: bookwyrm/templates/snippets/create_status/review.html:32
 msgid "Rating"
-msgstr "평점"
+msgstr "별점"
 
 #: bookwyrm/forms/lists.py:30 bookwyrm/templates/lists/list.html:185
 msgid "Sort By"
@@ -2004,7 +2004,7 @@ msgstr ""
 
 #: bookwyrm/templates/feed/suggested_books.html:16
 msgid "Import your reading history"
-msgstr "내 읽기 내역 가져오기"
+msgstr "내가 읽은 내역 가져오기"
 
 #: bookwyrm/templates/feed/suggested_users.html:5
 #: bookwyrm/templates/get_started/users.html:6
@@ -3177,7 +3177,7 @@ msgstr ""
 
 #: bookwyrm/templates/import/import_user.html:123
 msgid "Reading goals"
-msgstr ""
+msgstr "읽기 목표"
 
 #: bookwyrm/templates/import/import_user.html:126
 msgid "Overwrites reading goals for all years listed in the import file"
@@ -3185,15 +3185,15 @@ msgstr ""
 
 #: bookwyrm/templates/import/import_user.html:130
 msgid "Shelves"
-msgstr ""
+msgstr "책꽂이"
 
 #: bookwyrm/templates/import/import_user.html:133
 msgid "Reading history"
-msgstr ""
+msgstr "읽은 내역"
 
 #: bookwyrm/templates/import/import_user.html:136
 msgid "Book reviews"
-msgstr ""
+msgstr "책 평가"
 
 #: bookwyrm/templates/import/import_user.html:142
 msgid "Comments about books"
@@ -4402,7 +4402,7 @@ msgstr "이곳에서는 내보낼 파일을 만들 수 있습니다. 그러면 �
 
 #: bookwyrm/templates/preferences/export-user.html:17
 msgid "<div class=\"column is-half\"> <h2 class=\"is-size-5\">Your file will include:</h2> <ul> <li>User profile</li> <li>Most user settings</li> <li>Reading goals</li> <li>Shelves</li> <li>Reading history</li> <li>Book reviews</li> <li>Statuses</li> <li>Your own lists and saved lists</li> <li>Which users you follow and block</li> </ul> </div> <div class=\"column is-half\"> <h2 class=\"is-size-5\">Your file will not include:</h2> <ul> <li>Direct messages</li> <li>Replies to your statuses</li> <li>Groups</li> <li>Favorites</li> </ul> </div>"
-msgstr ""
+msgstr "<div class=\"column is-half\"> <h2 class=\"is-size-5\">파일에 포함:</h2> <ul> <li>이용자 프로필</li> <li>대부분의 이용자 설정</li> <li>읽기 목표</li> <li>책꽂이</li> <li>읽은 내역</li> <li>책 평가</li> <li>기록</li> <li>소유한 목록과 저장한 목록</li> <li>팔로우 및 차단 이용자</li> </ul> </div> <div class=\"column is-half\"> <h2 class=\"is-size-5\">파일에 미포함:</h2> <ul> <li>디렉트 메시지</li> <li>기록의 댓글</li> <li>그룹</li> <li>좋아요</li> </ul> </div>"
 
 #: bookwyrm/templates/preferences/export-user.html:43
 msgid "In your new BookWyrm account can choose what to import: you will not have to import everything that is exported."
@@ -4570,7 +4570,7 @@ msgstr ""
 
 #: bookwyrm/templates/readthrough/readthrough_list.html:55
 msgid "started"
-msgstr "시작일"
+msgstr "시작한 날"
 
 #: bookwyrm/templates/readthrough/readthrough_list.html:62
 msgid "Edit read dates"
@@ -6295,7 +6295,7 @@ msgstr[0] ""
 #: bookwyrm/templates/shelf/shelf.html:106
 #, python-format
 msgid "(showing %(start)s-%(end)s)"
-msgstr ""
+msgstr "(%(start)s-%(end)s 보임)"
 
 #: bookwyrm/templates/shelf/shelf.html:118
 msgid "Edit shelf"
@@ -6308,12 +6308,12 @@ msgstr "책꽂이 지우기"
 #: bookwyrm/templates/shelf/shelf.html:154
 #: bookwyrm/templates/shelf/shelf.html:180
 msgid "Shelved"
-msgstr ""
+msgstr "책 가져온 날"
 
 #: bookwyrm/templates/shelf/shelf.html:155
 #: bookwyrm/templates/shelf/shelf.html:183
 msgid "Started"
-msgstr "시작함"
+msgstr "시작한 날"
 
 #: bookwyrm/templates/shelf/shelf.html:156
 #: bookwyrm/templates/shelf/shelf.html:186
@@ -6323,7 +6323,7 @@ msgstr "완료함"
 #: bookwyrm/templates/shelf/shelf.html:156
 #: bookwyrm/templates/shelf/shelf.html:186
 msgid "Until"
-msgstr "까지"
+msgstr "끝낸 날"
 
 #: bookwyrm/templates/shelf/shelf.html:212
 msgid "This shelf is empty."
@@ -6905,7 +6905,7 @@ msgstr "기록 부스트"
 #: bookwyrm/templates/snippets/status/layout.html:61
 #: bookwyrm/templates/snippets/status/layout.html:62
 msgid "Like status"
-msgstr "기록 좋아요"
+msgstr ""
 
 #: bookwyrm/templates/snippets/status/status.html:10
 msgid "boosted"
