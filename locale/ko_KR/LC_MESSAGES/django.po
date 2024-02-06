@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-01-02 03:27+0000\n"
-"PO-Revision-Date: 2024-02-06 08:51\n"
+"PO-Revision-Date: 2024-02-06 13:48\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Korean\n"
 "Language: ko\n"
@@ -150,7 +150,7 @@ msgstr "자동 생성된 보고서"
 #: bookwyrm/templates/import/import_status.html:214
 #: bookwyrm/templates/settings/link_domains/link_domains.html:19
 msgid "Pending"
-msgstr "보류"
+msgstr "보류 중"
 
 #: bookwyrm/models/base_model.py:19
 msgid "Self deletion"
@@ -571,7 +571,7 @@ msgstr ""
 
 #: bookwyrm/templates/about/about.html:105
 msgid "Meet your admins"
-msgstr "내 관리자 만나기"
+msgstr "여기 관리자 만나기"
 
 #: bookwyrm/templates/about/about.html:108
 #, python-format
@@ -584,7 +584,7 @@ msgstr "중재자"
 
 #: bookwyrm/templates/about/about.html:124 bookwyrm/templates/user_menu.html:62
 msgid "Admin"
-msgstr "관리자"
+msgstr "관리"
 
 #: bookwyrm/templates/about/about.html:140
 #: bookwyrm/templates/settings/users/user_moderation_actions.html:28
@@ -3084,7 +3084,7 @@ msgstr ""
 #: bookwyrm/templates/import/import_user.html:6
 #: bookwyrm/templates/preferences/layout.html:51
 msgid "Import BookWyrm Account"
-msgstr "BookWYrm 계정 가져오기"
+msgstr "BookWyrm 계정 가져오기"
 
 #: bookwyrm/templates/import/import_user.html:13
 msgid "Not a valid import file"
@@ -4394,7 +4394,7 @@ msgstr "개인정보 보호되는 책꽂이를 찾나요? 각 책꽂이 별로 �
 #: bookwyrm/templates/preferences/export-user.html:8
 #: bookwyrm/templates/preferences/layout.html:55
 msgid "Export BookWyrm Account"
-msgstr "BookWYrm 계정 내보내기"
+msgstr "BookWyrm 계정 내보내기"
 
 #: bookwyrm/templates/preferences/export-user.html:14
 msgid "You can create an export file here. This will allow you to migrate your data to another BookWyrm account."
@@ -4594,7 +4594,9 @@ msgstr "제보"
 msgid "\n"
 "        Scan Barcode\n"
 "    "
-msgstr "배코드 스캔"
+msgstr "\n"
+"        바코드 스캔\n"
+"    "
 
 #: bookwyrm/templates/search/barcode_modal.html:21
 msgid "Requesting camera..."
@@ -4606,7 +4608,7 @@ msgstr ""
 
 #: bookwyrm/templates/search/barcode_modal.html:27
 msgid "Could not access camera"
-msgstr ""
+msgstr "카메라에 접근할 수 없음"
 
 #: bookwyrm/templates/search/barcode_modal.html:31
 msgctxt "barcode scanner"
@@ -6174,7 +6176,7 @@ msgstr "내 계정 만들기"
 
 #: bookwyrm/templates/setup/admin.html:20
 msgid "Admin key:"
-msgstr "관리자 키:"
+msgstr "관리 키:"
 
 #: bookwyrm/templates/setup/admin.html:32
 msgid "An admin key was created when you installed BookWyrm. You can get your admin key by running <code>./bw-dev admin_code</code> from the command line on your server."
@@ -6406,7 +6408,7 @@ msgstr ""
 #: bookwyrm/templates/snippets/status/layout.html:53
 #: bookwyrm/templates/snippets/status/layout.html:54
 msgid "Reply"
-msgstr "답장하기"
+msgstr "답하기"
 
 #: bookwyrm/templates/snippets/create_status/content_field.html:18
 msgid "Content"
@@ -6769,7 +6771,7 @@ msgstr "더 많은 책꽂이"
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_dropdown_options.html:31
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_options.html:48
 msgid "Stop reading"
-msgstr ""
+msgstr "읽기 멈춤"
 
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_options.html:40
 msgid "Finish reading"
