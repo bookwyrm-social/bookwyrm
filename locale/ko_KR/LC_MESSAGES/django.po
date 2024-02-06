@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-01-02 03:27+0000\n"
-"PO-Revision-Date: 2024-02-06 13:48\n"
+"PO-Revision-Date: 2024-02-06 16:05\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Korean\n"
 "Language: ko\n"
@@ -150,7 +150,7 @@ msgstr "자동 생성된 보고서"
 #: bookwyrm/templates/import/import_status.html:214
 #: bookwyrm/templates/settings/link_domains/link_domains.html:19
 msgid "Pending"
-msgstr "보류 중"
+msgstr "계류"
 
 #: bookwyrm/models/base_model.py:19
 msgid "Self deletion"
@@ -204,7 +204,7 @@ msgstr "연합"
 #: bookwyrm/templates/settings/federation/instance_list.html:26
 #: bookwyrm/templates/settings/link_domains/link_domains.html:27
 msgid "Blocked"
-msgstr "차단함"
+msgstr "차단"
 
 #: bookwyrm/models/fields.py:35
 #, python-format
@@ -311,13 +311,13 @@ msgstr "대여할 수 있음"
 #: bookwyrm/models/link.py:70
 #: bookwyrm/templates/settings/link_domains/link_domains.html:23
 msgid "Approved"
-msgstr "승인됨"
+msgstr "승인"
 
 #: bookwyrm/models/report.py:84
 #: bookwyrm/templates/settings/reports/report.html:115
 #: bookwyrm/templates/snippets/create_status.html:26
 msgid "Comment"
-msgstr "해설"
+msgstr "코멘트"
 
 #: bookwyrm/models/report.py:85
 msgid "Resolved report"
@@ -369,7 +369,7 @@ msgstr "서평"
 
 #: bookwyrm/models/user.py:34
 msgid "Comments"
-msgstr "해설"
+msgstr "코멘트"
 
 #: bookwyrm/models/user.py:35 bookwyrm/templates/import/import_user.html:139
 msgid "Quotations"
@@ -1065,7 +1065,7 @@ msgstr "내 서평"
 
 #: bookwyrm/templates/book/book.html:318
 msgid "Your comments"
-msgstr "내 해설"
+msgstr "내 코멘트"
 
 #: bookwyrm/templates/book/book.html:324
 msgid "Your quotes"
@@ -1788,7 +1788,7 @@ msgstr ""
 #: bookwyrm/templates/discover/card-header.html:31
 #, python-format
 msgid "<a href=\"%(user_path)s\">%(username)s</a> commented on <a href=\"%(book_path)s\">%(book_title)s</a>"
-msgstr "<a href=\"%(user_path)s\">%(username)s</a>  님의  <a href=\"%(book_path)s\">%(book_title)s</a> 해설"
+msgstr "<a href=\"%(user_path)s\">%(username)s</a> 님의 <a href=\"%(book_path)s\">%(book_title)s</a> 코멘트"
 
 #: bookwyrm/templates/discover/card-header.html:35
 #, python-format
@@ -2424,7 +2424,7 @@ msgstr ""
 
 #: bookwyrm/templates/guided_tour/book.html:152
 msgid "Post a comment"
-msgstr "해설 게시하기"
+msgstr "코멘트 발행하기"
 
 #: bookwyrm/templates/guided_tour/book.html:175
 msgid "Just read some perfect prose? Let the world know by sharing a quote!"
@@ -3220,7 +3220,7 @@ msgstr ""
 #: bookwyrm/templates/lists/curate.html:71
 #: bookwyrm/templates/settings/link_domains/link_domains.html:76
 msgid "Approve"
-msgstr "승낙"
+msgstr "승인하기"
 
 #: bookwyrm/templates/import/manual_review.html:66
 msgid "Reject"
@@ -4885,7 +4885,7 @@ msgstr "규칙 제거"
 #: bookwyrm/templates/settings/celery.html:6
 #: bookwyrm/templates/settings/celery.html:8
 msgid "Celery Status"
-msgstr ""
+msgstr "Celery 상태"
 
 #: bookwyrm/templates/settings/celery.html:14
 msgid "You can set up monitoring to check if Celery is running by querying:"
@@ -4897,11 +4897,11 @@ msgstr "큐"
 
 #: bookwyrm/templates/settings/celery.html:26
 msgid "Streams"
-msgstr ""
+msgstr "스트림"
 
 #: bookwyrm/templates/settings/celery.html:32
 msgid "Broadcast"
-msgstr ""
+msgstr "브로드캐스트"
 
 #: bookwyrm/templates/settings/celery.html:38
 msgid "Inbox"
@@ -4952,7 +4952,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/celery.html:126
 msgid "Active Tasks"
-msgstr ""
+msgstr "활성 작업"
 
 #: bookwyrm/templates/settings/celery.html:131
 #: bookwyrm/templates/settings/imports/imports.html:146
@@ -4974,7 +4974,7 @@ msgstr "우선도"
 
 #: bookwyrm/templates/settings/celery.html:139
 msgid "No active tasks"
-msgstr ""
+msgstr "활성 작업 없음"
 
 #: bookwyrm/templates/settings/celery.html:157
 msgid "Workers"
@@ -4982,7 +4982,7 @@ msgstr "워커"
 
 #: bookwyrm/templates/settings/celery.html:162
 msgid "Uptime:"
-msgstr ""
+msgstr "가동 시간:"
 
 #: bookwyrm/templates/settings/celery.html:172
 msgid "Could not connect to Celery"
@@ -5005,7 +5005,7 @@ msgstr ""
 #: bookwyrm/templates/settings/dashboard/dashboard.html:8
 #: bookwyrm/templates/settings/layout.html:28
 msgid "Dashboard"
-msgstr ""
+msgstr "대시보드"
 
 #: bookwyrm/templates/settings/dashboard/dashboard.html:15
 #: bookwyrm/templates/settings/dashboard/dashboard.html:109
@@ -5144,7 +5144,7 @@ msgstr ""
 #: bookwyrm/templates/settings/email_config.html:8
 #: bookwyrm/templates/settings/layout.html:90
 msgid "Email Configuration"
-msgstr ""
+msgstr "이메일 구성"
 
 #: bookwyrm/templates/settings/email_config.html:16
 msgid "Error sending test email:"
@@ -5210,7 +5210,7 @@ msgstr ""
 #: bookwyrm/templates/settings/federation/instance_list.html:5
 #: bookwyrm/templates/settings/layout.html:47
 msgid "Federated Instances"
-msgstr ""
+msgstr "연합한 인스턴스"
 
 #: bookwyrm/templates/settings/federation/edit_instance.html:28
 #: bookwyrm/templates/settings/federation/instance_blocklist.html:28
@@ -5598,7 +5598,7 @@ msgstr ""
 #: bookwyrm/templates/settings/ip_blocklist/ip_blocklist.html:7
 #: bookwyrm/templates/settings/layout.html:69
 msgid "IP Address Blocklist"
-msgstr ""
+msgstr "IP 주소 차단목록"
 
 #: bookwyrm/templates/settings/ip_blocklist/ip_blocklist.html:18
 msgid "Any traffic from this IP address will get a 404 response when trying to access any part of the application."
@@ -5693,7 +5693,7 @@ msgstr "승인한 도메인이 없습니다."
 
 #: bookwyrm/templates/settings/link_domains/link_domains.html:98
 msgid "No domains currently pending"
-msgstr "보류 중인 도메인이 없습니다."
+msgstr "계류 중인 도메인은 없습니다."
 
 #: bookwyrm/templates/settings/link_domains/link_domains.html:100
 msgid "No domains currently blocked"
@@ -5859,7 +5859,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/reports/reports.html:25
 msgid "Open"
-msgstr "열기"
+msgstr "열림"
 
 #: bookwyrm/templates/settings/reports/reports.html:28
 msgid "Resolved"
@@ -5867,7 +5867,7 @@ msgstr "해결"
 
 #: bookwyrm/templates/settings/reports/reports.html:37
 msgid "No reports found."
-msgstr ""
+msgstr "제보가 없습니다."
 
 #: bookwyrm/templates/settings/site.html:10
 #: bookwyrm/templates/settings/site.html:43
@@ -6429,7 +6429,7 @@ msgstr "스포일러 있음!"
 #: bookwyrm/templates/snippets/create_status/layout.html:45
 #: bookwyrm/templates/snippets/reading_modals/form.html:7
 msgid "Comment:"
-msgstr "해설:"
+msgstr "코멘트:"
 
 #: bookwyrm/templates/snippets/create_status/post_options_block.html:19
 msgid "Update"
@@ -7016,7 +7016,7 @@ msgstr ""
 #: bookwyrm/templates/user/reviews_comments.html:6
 #: bookwyrm/templates/user/reviews_comments.html:12
 msgid "Reviews and Comments"
-msgstr "서평과 해설"
+msgstr "서평과 코멘트"
 
 #: bookwyrm/templates/user/lists.html:16
 #, python-format
@@ -7052,7 +7052,7 @@ msgstr ""
 
 #: bookwyrm/templates/user/reviews_comments.html:26
 msgid "No reviews or comments yet!"
-msgstr "아직 서평 혹은 해설이 없어요!"
+msgstr "아직 서평 혹은 코멘트가 없어요!"
 
 #: bookwyrm/templates/user/user.html:20
 msgid "Edit profile"
@@ -7098,7 +7098,7 @@ msgstr "인용만"
 
 #: bookwyrm/templates/user/user.html:119
 msgid "Comments only"
-msgstr "해설만"
+msgstr "코멘트만"
 
 #: bookwyrm/templates/user/user.html:135
 msgid "No activities yet!"
