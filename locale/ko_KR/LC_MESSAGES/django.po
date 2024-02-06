@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-01-02 03:27+0000\n"
-"PO-Revision-Date: 2024-02-06 05:49\n"
+"PO-Revision-Date: 2024-02-06 08:32\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Korean\n"
 "Language: ko\n"
@@ -317,7 +317,7 @@ msgstr "승인됨"
 #: bookwyrm/templates/settings/reports/report.html:115
 #: bookwyrm/templates/snippets/create_status.html:26
 msgid "Comment"
-msgstr "의견"
+msgstr "해설"
 
 #: bookwyrm/models/report.py:85
 msgid "Resolved report"
@@ -365,11 +365,11 @@ msgstr "삭제한 항목"
 
 #: bookwyrm/models/user.py:33 bookwyrm/templates/book/book.html:307
 msgid "Reviews"
-msgstr "평가"
+msgstr "서평"
 
 #: bookwyrm/models/user.py:34
 msgid "Comments"
-msgstr "의견"
+msgstr "해설"
 
 #: bookwyrm/models/user.py:35 bookwyrm/templates/import/import_user.html:139
 msgid "Quotations"
@@ -1061,11 +1061,11 @@ msgstr ""
 
 #: bookwyrm/templates/book/book.html:312
 msgid "Your reviews"
-msgstr "내 평가"
+msgstr "내 서평"
 
 #: bookwyrm/templates/book/book.html:318
 msgid "Your comments"
-msgstr "내 의견"
+msgstr "내 해설"
 
 #: bookwyrm/templates/book/book.html:324
 msgid "Your quotes"
@@ -1788,7 +1788,7 @@ msgstr ""
 #: bookwyrm/templates/discover/card-header.html:31
 #, python-format
 msgid "<a href=\"%(user_path)s\">%(username)s</a> commented on <a href=\"%(book_path)s\">%(book_title)s</a>"
-msgstr "<a href=\"%(user_path)s\">%(username)s</a>  님의  <a href=\"%(book_path)s\">%(book_title)s</a> 의견"
+msgstr "<a href=\"%(user_path)s\">%(username)s</a>  님의  <a href=\"%(book_path)s\">%(book_title)s</a> 해설"
 
 #: bookwyrm/templates/discover/card-header.html:35
 #, python-format
@@ -2013,7 +2013,7 @@ msgstr "팔로우할 만한 이"
 
 #: bookwyrm/templates/feed/suggested_users.html:9
 msgid "Don't show suggested users"
-msgstr "이용자 제안 보이지 않기"
+msgstr "추천 이용자 보지 않음"
 
 #: bookwyrm/templates/feed/suggested_users.html:14
 msgid "View directory"
@@ -2176,7 +2176,7 @@ msgstr "수동으로 팔로워 승인:"
 
 #: bookwyrm/templates/get_started/profile.html:58
 msgid "Show this account in suggested users:"
-msgstr ""
+msgstr "이 계정을 추천 이용자에 보이기:"
 
 #: bookwyrm/templates/get_started/profile.html:62
 msgid "Your account will show up in the directory, and may be recommended to other BookWyrm users."
@@ -2404,7 +2404,7 @@ msgstr "그  밖의 판"
 
 #: bookwyrm/templates/guided_tour/book.html:102
 msgid "You can post a review, comment, or quote here."
-msgstr "이곳에서 평가, 의견, 인용을 게시할 수 있습니다."
+msgstr "이곳에서 서평, 해설, 인용을 게시할 수 있어요."
 
 #: bookwyrm/templates/guided_tour/book.html:103
 msgid "Share your thoughts"
@@ -2416,7 +2416,7 @@ msgstr ""
 
 #: bookwyrm/templates/guided_tour/book.html:128
 msgid "Post a review"
-msgstr "평가 게시하기"
+msgstr "서펑 게시하기"
 
 #: bookwyrm/templates/guided_tour/book.html:151
 msgid "You can share your thoughts on this book generally with a simple comment"
@@ -2424,7 +2424,7 @@ msgstr ""
 
 #: bookwyrm/templates/guided_tour/book.html:152
 msgid "Post a comment"
-msgstr "의견 게시하기"
+msgstr "해설 게시하기"
 
 #: bookwyrm/templates/guided_tour/book.html:175
 msgid "Just read some perfect prose? Let the world know by sharing a quote!"
@@ -2636,7 +2636,7 @@ msgstr ""
 
 #: bookwyrm/templates/guided_tour/lists.html:106
 msgid "List curation"
-msgstr "리스트 큐레이션"
+msgstr "목록 큐레이션"
 
 #: bookwyrm/templates/guided_tour/lists.html:128
 msgid "Next in our tour we will explore Groups!"
@@ -2890,7 +2890,7 @@ msgstr "Calibre (CSV)"
 
 #: bookwyrm/templates/import/import.html:76
 msgid "You can download your Goodreads data from the <a href=\"https://www.goodreads.com/review/import\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">Import/Export page</a> of your Goodreads account."
-msgstr "Goodreads 데이터는 계정의 <a href=\"https://www.goodreads.com/review/import\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">Import/Export</a>페이지에서 내려받을 수 있습니다."
+msgstr "Goodreads 데이터는 계정의 <a href=\"https://www.goodreads.com/review/import\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">가져오기/내보내기t</a>페이지에서 내려받을 수 있습니다."
 
 #: bookwyrm/templates/import/import.html:85
 #: bookwyrm/templates/import/import_user.html:49
@@ -2899,11 +2899,11 @@ msgstr "데이터 파일:"
 
 #: bookwyrm/templates/import/import.html:93
 msgid "Include reviews"
-msgstr "평가 포함"
+msgstr "서평 포함"
 
 #: bookwyrm/templates/import/import.html:98
 msgid "Privacy setting for imported reviews:"
-msgstr "가져온 평가의 개인정보처리 설정"
+msgstr "가져온 서평의 개인정보처리 설정"
 
 #: bookwyrm/templates/import/import.html:105
 #: bookwyrm/templates/import/import.html:107
@@ -2911,7 +2911,7 @@ msgstr "가져온 평가의 개인정보처리 설정"
 #: bookwyrm/templates/import/import_user.html:157
 #: bookwyrm/templates/settings/federation/instance_blocklist.html:78
 msgid "Import"
-msgstr ""
+msgstr "가져오기"
 
 #: bookwyrm/templates/import/import.html:108
 #: bookwyrm/templates/import/import_user.html:158
@@ -3041,7 +3041,7 @@ msgstr "책꽂이"
 #: bookwyrm/templates/import/manual_review.html:13
 #: bookwyrm/templates/snippets/create_status.html:16
 msgid "Review"
-msgstr "검토하기"
+msgstr "서평"
 
 #: bookwyrm/templates/import/import_status.html:131
 #: bookwyrm/templates/settings/link_domains/link_table.html:9
@@ -3161,7 +3161,7 @@ msgstr ""
 
 #: bookwyrm/templates/import/import_user.html:101
 msgid "Your timezone"
-msgstr ""
+msgstr "내 시간대"
 
 #: bookwyrm/templates/import/import_user.html:104
 msgid "Your default post privacy setting"
@@ -3201,7 +3201,7 @@ msgstr ""
 
 #: bookwyrm/templates/import/import_user.html:145
 msgid "Book lists"
-msgstr ""
+msgstr "책 목록"
 
 #: bookwyrm/templates/import/import_user.html:148
 msgid "Saved lists"
@@ -3272,11 +3272,11 @@ msgstr "최근 도서"
 
 #: bookwyrm/templates/landing/layout.html:17
 msgid "Decentralized"
-msgstr "탈중앙화한"
+msgstr "탈중앙화"
 
 #: bookwyrm/templates/landing/layout.html:23
 msgid "Friendly"
-msgstr "친화"
+msgstr "친근함"
 
 #: bookwyrm/templates/landing/layout.html:29
 msgid "Anti-Corporate"
@@ -3285,7 +3285,7 @@ msgstr "반기업"
 #: bookwyrm/templates/landing/layout.html:46
 #, python-format
 msgid "Join %(name)s"
-msgstr "%(name)s 님이 참여함"
+msgstr "%(name)s 서버에서 참여하기"
 
 #: bookwyrm/templates/landing/layout.html:48
 msgid "Request an Invitation"
@@ -3494,7 +3494,7 @@ msgstr ""
 
 #: bookwyrm/templates/lists/form.html:19
 msgid "List curation:"
-msgstr "리스트 큐레이션:"
+msgstr "목록 큐레이션:"
 
 #: bookwyrm/templates/lists/form.html:31
 msgid "Closed"
@@ -4354,11 +4354,11 @@ msgstr ""
 
 #: bookwyrm/templates/preferences/edit_user.html:75
 msgid "Show suggested users"
-msgstr "제안된 이용자 보여주기"
+msgstr "추천 이용자 보기"
 
 #: bookwyrm/templates/preferences/edit_user.html:81
 msgid "Show this account in suggested users"
-msgstr ""
+msgstr "이 계정을 추천 이용자에 보이기"
 
 #: bookwyrm/templates/preferences/edit_user.html:85
 #, python-format
@@ -6379,12 +6379,12 @@ msgstr "인용"
 
 #: bookwyrm/templates/snippets/create_status/comment.html:15
 msgid "Some thoughts on the book"
-msgstr "책에 대한 몇 가지 생각"
+msgstr "책에 대한 몇몇 생각"
 
 #: bookwyrm/templates/snippets/create_status/comment.html:27
 #: bookwyrm/templates/snippets/reading_modals/progress_update_modal.html:18
 msgid "Progress:"
-msgstr "진행 상황:"
+msgstr "진도:"
 
 #: bookwyrm/templates/snippets/create_status/comment.html:53
 #: bookwyrm/templates/snippets/progress_field.html:18
@@ -6427,7 +6427,7 @@ msgstr "스포일러 있음!"
 #: bookwyrm/templates/snippets/create_status/layout.html:45
 #: bookwyrm/templates/snippets/reading_modals/form.html:7
 msgid "Comment:"
-msgstr "의견:"
+msgstr "해설:"
 
 #: bookwyrm/templates/snippets/create_status/post_options_block.html:19
 msgid "Update"
@@ -6469,7 +6469,7 @@ msgstr ""
 
 #: bookwyrm/templates/snippets/create_status/review.html:39
 msgid "Review:"
-msgstr "평가:"
+msgstr "서평:"
 
 #: bookwyrm/templates/snippets/fav_button.html:16
 #: bookwyrm/templates/snippets/fav_button.html:17
@@ -6705,7 +6705,7 @@ msgstr ""
 
 #: bookwyrm/templates/snippets/register_form.html:18
 msgid "Choose wisely! Your username cannot be changed."
-msgstr ""
+msgstr "신중히 고르세요! 이용자명은 바꿀 수 없어요."
 
 #: bookwyrm/templates/snippets/register_form.html:66
 msgid "Sign Up"
@@ -7014,7 +7014,7 @@ msgstr ""
 #: bookwyrm/templates/user/reviews_comments.html:6
 #: bookwyrm/templates/user/reviews_comments.html:12
 msgid "Reviews and Comments"
-msgstr "평가와 의견"
+msgstr "서평과 해설"
 
 #: bookwyrm/templates/user/lists.html:16
 #, python-format
@@ -7050,7 +7050,7 @@ msgstr ""
 
 #: bookwyrm/templates/user/reviews_comments.html:26
 msgid "No reviews or comments yet!"
-msgstr "아직 평가 혹은 의견이 없습니다!"
+msgstr "아직 서평 혹은 해설이 없어요!"
 
 #: bookwyrm/templates/user/user.html:20
 msgid "Edit profile"
@@ -7096,7 +7096,7 @@ msgstr "인용만"
 
 #: bookwyrm/templates/user/user.html:119
 msgid "Comments only"
-msgstr "의견만"
+msgstr "해설만"
 
 #: bookwyrm/templates/user/user.html:135
 msgid "No activities yet!"
