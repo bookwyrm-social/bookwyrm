@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-01-02 03:27+0000\n"
-"PO-Revision-Date: 2024-02-10 09:30\n"
+"PO-Revision-Date: 2024-02-10 16:53\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Danish\n"
 "Language: da\n"
@@ -1597,7 +1597,7 @@ msgstr "Udgivet %(date)s"
 
 #: bookwyrm/templates/book/rating.html:19
 msgid "rated it"
-msgstr ""
+msgstr "gav den"
 
 #: bookwyrm/templates/book/series.html:11
 msgid "Series by"
@@ -1788,7 +1788,7 @@ msgstr ""
 #: bookwyrm/templates/discover/card-header.html:23
 #, python-format
 msgid "<a href=\"%(user_path)s\">%(username)s</a> rated <a href=\"%(book_path)s\">%(book_title)s</a>"
-msgstr ""
+msgstr "<a href=\"%(user_path)s\">%(username)s</a> bedømte <a href=\"%(book_path)s\">%(book_title)s</a>"
 
 #: bookwyrm/templates/discover/card-header.html:27
 #, python-format
@@ -2194,7 +2194,7 @@ msgstr ""
 
 #: bookwyrm/templates/get_started/users.html:8
 msgid "You can follow users on other BookWyrm instances and federated services like Mastodon."
-msgstr ""
+msgstr "Du kan følge brugere på andre BookWyrm servere og fødererede tjenester som fx Mastodon."
 
 #: bookwyrm/templates/get_started/users.html:11
 msgid "Search for a user"
@@ -2257,7 +2257,7 @@ msgstr ""
 
 #: bookwyrm/templates/groups/group.html:21
 msgid "Members of this group can create group-curated lists."
-msgstr ""
+msgstr "Medlemmer af denne gruppe kan oprette gruppe-kuraterede lister."
 
 #: bookwyrm/templates/groups/group.html:26
 #: bookwyrm/templates/lists/create_form.html:5
@@ -2488,7 +2488,7 @@ msgstr ""
 
 #: bookwyrm/templates/guided_tour/group.html:10
 msgid "Welcome to the page for your group! This is where you can add and remove users, create user-curated lists, and edit the group details."
-msgstr ""
+msgstr "Velkommen til siden for din gruppe! Her kan du tilføje og fjerne brugere, oprette bruger-kuraterede lister, og redigere gruppedetaljerne."
 
 #: bookwyrm/templates/guided_tour/group.html:11
 msgid "Your group"
@@ -2512,7 +2512,7 @@ msgstr ""
 
 #: bookwyrm/templates/guided_tour/group.html:77
 msgid "As well as creating lists from the Lists page, you can create a group-curated list here on the group's homepage. Any member of the group can create a list curated by group members."
-msgstr ""
+msgstr "Ud over at oprette lister fra Lister siden, kan du oprette en gruppe-kurateret liste her på gruppens hjemmeside. Ethvert medlem af gruppen kan oprette en liste kurateret af gruppemedlemmer."
 
 #: bookwyrm/templates/guided_tour/group.html:78
 msgid "Group lists"
@@ -2644,7 +2644,7 @@ msgstr ""
 
 #: bookwyrm/templates/guided_tour/lists.html:105
 msgid "You can also decide how your list is to be curated - only by you, by anyone, or by a group."
-msgstr ""
+msgstr "Du kan også bestemme, hvordan din liste skal kurateres - kun af dig, af hvem som helst eller af en gruppe."
 
 #: bookwyrm/templates/guided_tour/lists.html:106
 msgid "List curation"
@@ -2750,7 +2750,7 @@ msgstr ""
 
 #: bookwyrm/templates/guided_tour/user_groups.html:10
 msgid "You can create or join a group with other users. Groups can share group-curated book lists, and in future will be able to do other things."
-msgstr ""
+msgstr "Du kan oprette eller deltage i en gruppe med andre brugere. Grupper kan dele gruppe-kuraterede boglister, og vil i fremtiden kunne gøre andre ting."
 
 #: bookwyrm/templates/guided_tour/user_groups.html:11
 #: bookwyrm/templates/guided_tour/user_profile.html:55
@@ -2814,7 +2814,7 @@ msgstr ""
 
 #: bookwyrm/templates/guided_tour/user_profile.html:54
 msgid "Here you can see your groups, or create a new one. A group brings together Bookwyrm users and allows them to curate lists together."
-msgstr ""
+msgstr "Her kan du se dine grupper, eller oprette en ny. En gruppe samler Bookwyrm-brugere og tillader dem at kuratere lister sammen."
 
 #: bookwyrm/templates/guided_tour/user_profile.html:77
 msgid "You can see your lists, or create a new one, here. A list is a collection of books that have something in common."
@@ -3107,7 +3107,7 @@ msgstr ""
 
 #: bookwyrm/templates/import/import_user.html:18
 msgid "If you wish to migrate any statuses (comments, reviews, or quotes) you must either set this account as an <strong>alias</strong> of the one you are migrating from, or <strong>move</strong> that account to this one, before you import your user data."
-msgstr ""
+msgstr "Hvis du ønsker at migrere statusser (kommentarer, anmeldelser eller citater) skal du enten angive denne konto som et <strong>alias</strong> for den, du migrerer fra, eller <strong>flytte</strong> den konto til denne, før du importerer dine brugerdata."
 
 #: bookwyrm/templates/import/import_user.html:32
 #, python-format
@@ -3125,7 +3125,7 @@ msgstr ""
 
 #: bookwyrm/templates/import/import_user.html:43
 msgid "Select an export file generated from another BookWyrm account. The file format should be <code>.tar.gz</code>."
-msgstr ""
+msgstr "Vælg en eksportfil genereret fra en anden BookWyrm-konto. Filformatet skal være <code>.tar.gz</code>."
 
 #: bookwyrm/templates/import/import_user.html:58
 msgid "Step 2:"
@@ -3451,7 +3451,7 @@ msgstr ""
 #: bookwyrm/templates/lists/created_text.html:7
 #, python-format
 msgid "Created and curated by <a href=\"%(path)s\">%(username)s</a>"
-msgstr ""
+msgstr "Oprettet og kurateret af <a href=\"%(path)s\">%(username)s</a>"
 
 #: bookwyrm/templates/lists/created_text.html:9
 #, python-format
@@ -3521,7 +3521,7 @@ msgstr ""
 
 #: bookwyrm/templates/lists/form.html:48
 msgid "Curated"
-msgstr ""
+msgstr "Kurateret"
 
 #: bookwyrm/templates/lists/form.html:51
 msgid "Anyone can suggest books, subject to your approval"
@@ -3720,7 +3720,7 @@ msgstr ""
 #: bookwyrm/templates/notifications/items/add.html:39
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> suggested adding <em><a href=\"%(book_path)s\">%(book_title)s</a></em> to your list \"<a href=\"%(list_curate_path)s\">%(list_name)s</a>\""
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> foreslog at tilføje <em><a href=\"%(book_path)s\">%(book_title)s</a></em> til din liste \"<a href=\"%(list_curate_path)s\">%(list_name)s</a>\""
 
 #: bookwyrm/templates/notifications/items/add.html:47
 #, python-format
@@ -3730,7 +3730,7 @@ msgstr ""
 #: bookwyrm/templates/notifications/items/add.html:54
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> suggested adding <em><a href=\"%(book_path)s\">%(book_title)s</a></em> and <em><a href=\"%(second_book_path)s\">%(second_book_title)s</a></em> to your list \"<a href=\"%(list_curate_path)s\">%(list_name)s</a>\""
-msgstr ""
+msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a> foreslog at tilføje <em><a href=\"%(book_path)s\">%(book_title)s</a></em> og <em><a href=\"%(second_book_path)s\">%(second_book_title)s</a></em> til din liste \"<a href=\"%(list_curate_path)s\">%(list_name)s</a>\""
 
 #: bookwyrm/templates/notifications/items/add.html:66
 #, python-format
@@ -3748,8 +3748,8 @@ msgstr[1] ""
 #, python-format
 msgid "<a href=\"%(related_user_link)s\">%(related_user)s</a> suggested adding <em><a href=\"%(book_path)s\">%(book_title)s</a></em>, <em><a href=\"%(second_book_path)s\">%(second_book_title)s</a></em>, and %(display_count)s other book to your list \"<a href=\"%(list_curate_path)s\">%(list_name)s</a>\""
 msgid_plural "<a href=\"%(related_user_link)s\">%(related_user)s</a> suggested adding <em><a href=\"%(book_path)s\">%(book_title)s</a></em>, <em><a href=\"%(second_book_path)s\">%(second_book_title)s</a></em>, and %(display_count)s other books to your list \"<a href=\"%(list_curate_path)s\">%(list_name)s</a>\""
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "<a href=\"%(related_user_link)s\">%(related_user)s</a> foreslog at tilføje <em><a href=\"%(book_path)s\">%(book_title)s</a></em>, <em><a href=\"%(second_book_path)s\">%(second_book_title)s</a></em>, og %(display_count)s anden bog til din liste \"<a href=\"%(list_curate_path)s\">%(list_name)s</a>\""
+msgstr[1] "<a href=\"%(related_user_link)s\">%(related_user)s</a> foreslog at tilføje <em><a href=\"%(book_path)s\">%(book_title)s</a></em>, <em><a href=\"%(second_book_path)s\">%(second_book_title)s</a></em>, og %(display_count)s andre bøger til din liste \"<a href=\"%(list_curate_path)s\">%(list_name)s</a>\""
 
 #: bookwyrm/templates/notifications/items/boost.html:21
 #, python-format
@@ -4192,11 +4192,11 @@ msgstr ""
 
 #: bookwyrm/templates/preferences/2fa.html:39
 msgid "You can generate backup codes to use in case you do not have access to your authentication app. If you generate new codes, any backup codes previously generated will no longer work."
-msgstr ""
+msgstr "Du kan generere sikkerhedskoder til brug, hvis du ikke har adgang til din godkendelsesapp. Hvis du genererer nye koder, vil eventuelle tidligere genererede sikkerhedskoder ikke længere virke."
 
 #: bookwyrm/templates/preferences/2fa.html:40
 msgid "Generate backup codes"
-msgstr ""
+msgstr "Generer sikkerhedskoder"
 
 #: bookwyrm/templates/preferences/2fa.html:45
 msgid "Scan the QR code with your authentication app and then enter the code from  your app below to confirm your app is set up."
@@ -4408,7 +4408,7 @@ msgstr ""
 #: bookwyrm/templates/preferences/edit_user.html:136
 #, python-format
 msgid "Looking for shelf privacy? You can set a separate visibility level for each of your shelves. Go to <a href=\"%(path)s\">Your Books</a>, pick a shelf from the tab bar, and click \"Edit shelf.\""
-msgstr ""
+msgstr "Ønsker du at indstille hvem der kan se dine hylder? Du kan indstille synligheden for hver af dine hylder. Gå til <a href=\"%(path)s\">Dine bøger</a>, vælg en hylde fra fanebjælken, og klik på \"Rediger hylde.\""
 
 #: bookwyrm/templates/preferences/export-user.html:5
 #: bookwyrm/templates/preferences/export-user.html:8
@@ -4418,7 +4418,7 @@ msgstr ""
 
 #: bookwyrm/templates/preferences/export-user.html:14
 msgid "You can create an export file here. This will allow you to migrate your data to another BookWyrm account."
-msgstr ""
+msgstr "Du kan oprette en eksportfil her. Dette giver dig mulighed for at overføre dine data til en anden BookWyrm-konto."
 
 #: bookwyrm/templates/preferences/export-user.html:17
 msgid "<div class=\"column is-half\"> <h2 class=\"is-size-5\">Your file will include:</h2> <ul> <li>User profile</li> <li>Most user settings</li> <li>Reading goals</li> <li>Shelves</li> <li>Reading history</li> <li>Book reviews</li> <li>Statuses</li> <li>Your own lists and saved lists</li> <li>Which users you follow and block</li> </ul> </div> <div class=\"column is-half\"> <h2 class=\"is-size-5\">Your file will not include:</h2> <ul> <li>Direct messages</li> <li>Replies to your statuses</li> <li>Groups</li> <li>Favorites</li> </ul> </div>"
@@ -4430,7 +4430,7 @@ msgstr ""
 
 #: bookwyrm/templates/preferences/export-user.html:46
 msgid "If you wish to migrate any statuses (comments, reviews, or quotes) you must either set the account you are moving to as an <strong>alias</strong> of this one, or <strong>move</strong> this account to the new account, before you import your user data."
-msgstr ""
+msgstr "Hvis du ønsker at migrere statusser (kommentarer, anmeldelser eller citater) skal du enten angive kontoen du vil flytte til som et <strong>alias</strong> for den, du migrerer fra, eller <strong>flytte</strong> den konto til denne, før du importerer dine brugerdata."
 
 #: bookwyrm/templates/preferences/export-user.html:51
 #, python-format
@@ -4493,7 +4493,7 @@ msgstr ""
 
 #: bookwyrm/templates/preferences/move_user.html:12
 msgid "Migrate account to another server"
-msgstr ""
+msgstr "Overflyt konto til en anden server"
 
 #: bookwyrm/templates/preferences/move_user.html:16
 msgid "Moving your account will notify all your followers and direct them to follow the new account."
@@ -5234,7 +5234,7 @@ msgstr ""
 #: bookwyrm/templates/settings/federation/instance_list.html:5
 #: bookwyrm/templates/settings/layout.html:47
 msgid "Federated Instances"
-msgstr ""
+msgstr "Fødererede servere"
 
 #: bookwyrm/templates/settings/federation/edit_instance.html:28
 #: bookwyrm/templates/settings/federation/instance_blocklist.html:28
@@ -5571,7 +5571,7 @@ msgstr ""
 
 #: bookwyrm/templates/settings/invites/manage_invites.html:21
 msgid "Generate New Invite"
-msgstr ""
+msgstr "Generer Ny Invitation"
 
 #: bookwyrm/templates/settings/invites/manage_invites.html:27
 msgid "Expiry:"
@@ -6699,7 +6699,7 @@ msgstr ""
 
 #: bookwyrm/templates/snippets/rate_action.html:20
 msgid "Rate"
-msgstr ""
+msgstr "Bedøm"
 
 #: bookwyrm/templates/snippets/reading_modals/finish_reading_modal.html:6
 #, python-format
