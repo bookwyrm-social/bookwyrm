@@ -77,15 +77,15 @@ class ReportViews(TestCase):
     def test_make_report(self):
         """a user reports another user"""
         form = forms.ReportForm()
-        form.data["reporter"] = self.local_user.id
-        form.data["user"] = self.rat.id
+        form.data["user"] = self.local_user.id
+        form.data["reported_user"] = self.rat.id
         request = self.factory.post("", form.data)
         request.user = self.local_user
 
         views.Report.as_view()(request)
 
         report = models.Report.objects.get()
-        self.assertEqual(report.reporter, self.local_user)
+        self.assertEqual(report.user, self.local_user)
         self.assertEqual(report.user, self.rat)
 
     def test_report_link(self):
@@ -99,8 +99,8 @@ class ReportViews(TestCase):
         domain.save()
 
         form = forms.ReportForm()
-        form.data["reporter"] = self.local_user.id
-        form.data["user"] = self.rat.id
+        form.data["user"] = self.local_user.id
+        form.data["reported_user"] = self.rat.id
         form.data["links"] = link.id
         request = self.factory.post("", form.data)
         request.user = self.local_user
