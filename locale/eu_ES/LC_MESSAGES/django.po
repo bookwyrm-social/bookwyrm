@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-01-02 03:27+0000\n"
-"PO-Revision-Date: 2024-02-11 14:49\n"
+"PO-Revision-Date: 2024-02-11 15:47\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Basque\n"
 "Language: eu\n"
@@ -3905,7 +3905,7 @@ msgstr "<a href=\"%(related_user_link)s\">%(related_user)s</a>(e)k \"<a href=\"%
 #, python-format
 msgid "New <a href=\"%(path)s\">invite request</a> awaiting response"
 msgid_plural "%(display_count)s new <a href=\"%(path)s\">invite requests</a> awaiting response"
-msgstr[0] ""
+msgstr[0] "<a href=\"%(path)s\">Gonbidapen-eskaera</a> berria erantzunaren zain"
 msgstr[1] "%(display_count)s <a href=\"%(path)s\">gonbidapen-eskaera</a> berri erantzunaren zain"
 
 #: bookwyrm/templates/notifications/items/join.html:16
@@ -4422,54 +4422,54 @@ msgstr "Esportazio-fitxategi bat sor dezakezu hemen. Honek zure datuak beste Boo
 
 #: bookwyrm/templates/preferences/export-user.html:17
 msgid "<div class=\"column is-half\"> <h2 class=\"is-size-5\">Your file will include:</h2> <ul> <li>User profile</li> <li>Most user settings</li> <li>Reading goals</li> <li>Shelves</li> <li>Reading history</li> <li>Book reviews</li> <li>Statuses</li> <li>Your own lists and saved lists</li> <li>Which users you follow and block</li> </ul> </div> <div class=\"column is-half\"> <h2 class=\"is-size-5\">Your file will not include:</h2> <ul> <li>Direct messages</li> <li>Replies to your statuses</li> <li>Groups</li> <li>Favorites</li> </ul> </div>"
-msgstr ""
+msgstr "<div class=\"column is-half\"> <h2 class=\"is-size-5\">Zure fitxategiak honakoak izango ditu:</h2> <ul> <li>Erabiltzaile profila</li><li>Erabiltzaile ezarpen gehienak</li><li>Irakurketa-helburuak</li><li>Apalal</li><li>Irakurketa-historia</li><li>Liburuen kritikak</li><li>Egoerak</li><li>Zure zerrendak eta gordetako zerrendak</li><li>Jarraitzen dituzun eta blokeatu dituzun erabiltzaileak</li></ul></div><div class=\"column is-half\"><h2 class=\"is-size-5\">Zure fitxategiak ez ditu izango:</h2><ul><li>Mezu zuzenak</li><li>Zure egoerei erantzunak</li><li>Taldeak</li><li>Gogokoenak</li></ul></div>"
 
 #: bookwyrm/templates/preferences/export-user.html:43
 msgid "In your new BookWyrm account can choose what to import: you will not have to import everything that is exported."
-msgstr ""
+msgstr "Zure BookWyrm kontu berrian hautatu ahal izango duzu zer inportatu: ez duzu esportatutako guztia inportatu beharko."
 
 #: bookwyrm/templates/preferences/export-user.html:46
 msgid "If you wish to migrate any statuses (comments, reviews, or quotes) you must either set the account you are moving to as an <strong>alias</strong> of this one, or <strong>move</strong> this account to the new account, before you import your user data."
-msgstr ""
+msgstr "Edozein egoera migratu nahi baduzu (iruzkinak, kritikak edo aipuak) mugitzen ari zaren helburuko kontua honako honen <strong>alias</strong> gisa ezarri behar duzu, ala kontu hau kontu berrira <strong>mugitu</strong>, zure erabiltzaile datuak inportatu aurretik."
 
 #: bookwyrm/templates/preferences/export-user.html:51
 #, python-format
 msgid "You will be able to create a new export file at %(next_available)s"
-msgstr ""
+msgstr "Esportazio fitxategi berdi bat sortu ahalko duzu %(next_available)s(e)tan"
 
 #: bookwyrm/templates/preferences/export-user.html:60
 msgid "Create user export file"
-msgstr ""
+msgstr "Sortu erabiltzaile esportazio fitxategia"
 
 #: bookwyrm/templates/preferences/export-user.html:67
 msgid "Recent Exports"
-msgstr ""
+msgstr "Azken esportazioak"
 
 #: bookwyrm/templates/preferences/export-user.html:69
 msgid "User export files will show 'complete' once ready. This may take a little while. Click the link to download your file."
-msgstr ""
+msgstr "Erabiltzaile-esportazio fitxategiek 'osatuta' adieraziko dute prest daudenean. Baliteke honek tartetxo bat hartzea. Klik egin estekan fitxategia deskargatzeko."
 
 #: bookwyrm/templates/preferences/export-user.html:75
 msgid "Date"
-msgstr ""
+msgstr "Data"
 
 #: bookwyrm/templates/preferences/export-user.html:81
 msgid "Size"
-msgstr ""
+msgstr "Tamaina"
 
 #: bookwyrm/templates/preferences/export-user.html:125
 msgid "Download your export"
-msgstr ""
+msgstr "Deskargatu zure esportazioa"
 
 #: bookwyrm/templates/preferences/export.html:4
 #: bookwyrm/templates/preferences/export.html:7
 #: bookwyrm/templates/preferences/layout.html:47
 msgid "Export Book List"
-msgstr ""
+msgstr "Esportatu liburu zerrenda"
 
 #: bookwyrm/templates/preferences/export.html:13
 msgid "Your CSV export file will include all the books on your shelves, books you have reviewed, and books with reading activity. <br/>Use this to import into a service like Goodreads."
-msgstr ""
+msgstr "Zure CSV esportazio-fitxategiak zure apaletako liburu guztiak, kritikatu dituzun liburuak, eta irakurketa-aktibitatea duten liburuak izango ditu. <br/>Erabili hau Goodreads bezalako zerbitzuetara inportatzeko."
 
 #: bookwyrm/templates/preferences/export.html:20
 msgid "Download file"
@@ -5379,7 +5379,7 @@ msgstr "Gelditu inportazioa?"
 
 #: bookwyrm/templates/settings/imports/complete_user_import_modal.html:7
 msgid "This action will stop the user import before it is complete and cannot be un-done"
-msgstr ""
+msgstr "Ekintza honek erabiltzaile-inportazioa etengo du osatu aurretik eta ezin da desegin"
 
 #: bookwyrm/templates/settings/imports/imports.html:19
 msgid "Disable starting new imports"
@@ -5395,7 +5395,7 @@ msgstr "Inportazioak desgaituta dauden bitartean, erabiltzaileek ezingo dituzte 
 
 #: bookwyrm/templates/settings/imports/imports.html:32
 msgid "This setting prevents both book imports and user imports."
-msgstr ""
+msgstr "Ezarpen honek liburu zein erabiltzaile inportazioak eragozten ditu."
 
 #: bookwyrm/templates/settings/imports/imports.html:37
 msgid "Disable imports"
@@ -5440,27 +5440,27 @@ msgstr "Ezarri muga"
 
 #: bookwyrm/templates/settings/imports/imports.html:96
 msgid "Limit how often users can import and export"
-msgstr ""
+msgstr "Mugatu erabiltzaileek zein maiztasunekin inportatu eta esportatu dezaketen"
 
 #: bookwyrm/templates/settings/imports/imports.html:107
 msgid "Some users might try to run user imports or exports very frequently, which you want to limit."
-msgstr ""
+msgstr "Erabiltzaile batzuk erabiltzaile inportazioak edo esportazioak oso sarri egiten saia daitezke; agian mugaren bat ezarri nahi duzu."
 
 #: bookwyrm/templates/settings/imports/imports.html:111
 msgid "Restrict user imports and exports to once every "
-msgstr ""
+msgstr "Mugatu erabiltzaile inportazioak eta esportazioak: "
 
 #: bookwyrm/templates/settings/imports/imports.html:113
 msgid "hours"
-msgstr ""
+msgstr "ordutik behin"
 
 #: bookwyrm/templates/settings/imports/imports.html:117
 msgid "Change limit"
-msgstr ""
+msgstr "Muga aldatu"
 
 #: bookwyrm/templates/settings/imports/imports.html:125
 msgid "Book Imports"
-msgstr ""
+msgstr "Liburu inportazioak"
 
 #: bookwyrm/templates/settings/imports/imports.html:135
 #: bookwyrm/templates/settings/imports/imports.html:225
@@ -5492,7 +5492,7 @@ msgstr "Ez da aurkitu bat datorren inportaziorik."
 
 #: bookwyrm/templates/settings/imports/imports.html:215
 msgid "User Imports"
-msgstr ""
+msgstr "Erabiltzaile inportazioak"
 
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:4
 #: bookwyrm/templates/settings/invites/manage_invite_requests.html:11
@@ -6091,7 +6091,7 @@ msgstr "Ezarri gabe"
 
 #: bookwyrm/templates/settings/users/user_info.html:20
 msgid "This account is the instance actor for signing HTTP requests."
-msgstr ""
+msgstr "Kontu hau HTTP eskaerak sinatzeko instantzia-aktorea da."
 
 #: bookwyrm/templates/settings/users/user_info.html:24
 msgid "View user profile"
@@ -6163,15 +6163,15 @@ msgstr "Erabiltzailearen ekintzak"
 
 #: bookwyrm/templates/settings/users/user_moderation_actions.html:15
 msgid "This is the instance admin actor"
-msgstr ""
+msgstr "Instantziako admin aktorea da hau"
 
 #: bookwyrm/templates/settings/users/user_moderation_actions.html:18
 msgid "You must not delete or disable this account as it is critical to the functioning of your server. This actor signs outgoing GET requests to smooth interaction with secure ActivityPub servers."
-msgstr ""
+msgstr "Ez zenuke kontu hau ezabatu edo desgaitu behar zerbitzaria behar bezala ibiltzeko kritikoa delako. Aktore honek kanpora alderako GET eskaerak sinatzen ditu ActivityPub zerbitzari seguruekin interakzioa errazteko."
 
 #: bookwyrm/templates/settings/users/user_moderation_actions.html:19
 msgid "This account is not discoverable by ordinary users and does not have a profile page."
-msgstr ""
+msgstr "Kontu hau ezin dute erabiltzaile arruntek aurkitu eta ez dauka profil-orririk."
 
 #: bookwyrm/templates/settings/users/user_moderation_actions.html:35
 msgid "Activate user"
@@ -6668,7 +6668,7 @@ msgstr "Jarraitu kontu berrian"
 #: bookwyrm/templates/snippets/moved_user_notice.html:7
 #, python-format
 msgid "<em>%(user)s</em> has moved to <a href=\"%(moved_to_link)s\">%(moved_to_name)s</a>"
-msgstr ""
+msgstr "<em>%(user)s</em> mugitu egin da <a href=\"%(moved_to_link)s\">%(moved_to_name)s</a>(e)ra"
 
 #: bookwyrm/templates/snippets/page_text.html:8
 #, python-format
