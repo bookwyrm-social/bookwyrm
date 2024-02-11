@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-01-02 03:27+0000\n"
-"PO-Revision-Date: 2024-02-11 10:03\n"
+"PO-Revision-Date: 2024-02-11 14:49\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Basque\n"
 "Language: eu\n"
@@ -1783,7 +1783,7 @@ msgstr "<a href=\"%(user_path)s\">%(username)s</a> erabiltzaileak <a href=\"%(bo
 #: bookwyrm/templates/discover/card-header.html:18
 #, python-format
 msgid "<a href=\"%(user_path)s\">%(username)s</a> started reading <a href=\"%(book_path)s\">%(book_title)s</a>"
-msgstr ", <a href=\"%(user_path)s\">%(username)s</a> orain <a href=\"%(book_path)s\">%(book_title)s</a> irakurtzen hasi da"
+msgstr "<a href=\"%(user_path)s\">%(username)s</a> erabiltzailea <a href=\"%(book_path)s\">%(book_title)s</a> irakurtzen hasi da"
 
 #: bookwyrm/templates/discover/card-header.html:23
 #, python-format
@@ -3168,59 +3168,59 @@ msgstr "Zure irakurketa helburua zure profilean ikusgarri egongo den ala ez"
 
 #: bookwyrm/templates/import/import_user.html:95
 msgid "Whether you see user follow suggestions"
-msgstr ""
+msgstr "Jarraitzeko erabiltzaile gomendioak ikusten dituzun ala ez"
 
 #: bookwyrm/templates/import/import_user.html:98
 msgid "Whether your account is suggested to others"
-msgstr ""
+msgstr "Zure kontua besteei gomendatuko zaien ala ez"
 
 #: bookwyrm/templates/import/import_user.html:101
 msgid "Your timezone"
-msgstr ""
+msgstr "Zure ordu-eremua"
 
 #: bookwyrm/templates/import/import_user.html:104
 msgid "Your default post privacy setting"
-msgstr ""
+msgstr "Zure bidalketen pribatutasun-ezarpen lehenetsia"
 
 #: bookwyrm/templates/import/import_user.html:112
 msgid "Followers and following"
-msgstr ""
+msgstr "Jarraitzaileak eta jarraituak"
 
 #: bookwyrm/templates/import/import_user.html:116
 msgid "User blocks"
-msgstr ""
+msgstr "Erabiltzaile blokeoak"
 
 #: bookwyrm/templates/import/import_user.html:123
 msgid "Reading goals"
-msgstr ""
+msgstr "Irakurketa-helburuak"
 
 #: bookwyrm/templates/import/import_user.html:126
 msgid "Overwrites reading goals for all years listed in the import file"
-msgstr ""
+msgstr "Irakurketa-helburuak gainidazten ditu inportazio-fitxategian zerrendatutako urte guztietarako"
 
 #: bookwyrm/templates/import/import_user.html:130
 msgid "Shelves"
-msgstr ""
+msgstr "Apalak"
 
 #: bookwyrm/templates/import/import_user.html:133
 msgid "Reading history"
-msgstr ""
+msgstr "Irakurketa-historia"
 
 #: bookwyrm/templates/import/import_user.html:136
 msgid "Book reviews"
-msgstr ""
+msgstr "Liburuen kritikak"
 
 #: bookwyrm/templates/import/import_user.html:142
 msgid "Comments about books"
-msgstr ""
+msgstr "Liburuei buruzko iruzkinak"
 
 #: bookwyrm/templates/import/import_user.html:145
 msgid "Book lists"
-msgstr ""
+msgstr "Liburu-zerrendak"
 
 #: bookwyrm/templates/import/import_user.html:148
 msgid "Saved lists"
-msgstr ""
+msgstr "Gordetako zerrendak"
 
 #: bookwyrm/templates/import/manual_review.html:5
 #: bookwyrm/templates/import/troubleshoot.html:4
@@ -4025,12 +4025,12 @@ msgstr "<a href=\"%(group_path)s\">%(group_name)s</a>(r)en deskribapena aldatu d
 #: bookwyrm/templates/notifications/items/user_export.html:14
 #, python-format
 msgid "Your <a href=\"%(url)s\">user export</a> is ready."
-msgstr ""
+msgstr "Zure <a href=\"%(url)s\">erabiltzaile-esportazioa</a> prest dago."
 
 #: bookwyrm/templates/notifications/items/user_import.html:14
 #, python-format
 msgid "Your <a href=\"%(import_url)s\">user import</a> is complete."
-msgstr ""
+msgstr "Zure <a href=\"%(import_url)s\">erabiltzaile-inportazioa</a> osatu da."
 
 #: bookwyrm/templates/notifications/notifications_page.html:19
 msgid "Delete notifications"
@@ -4414,11 +4414,11 @@ msgstr "Apalen pribatutasunaren bila zabiltza? Zure apal bakoitzarentzat beraria
 #: bookwyrm/templates/preferences/export-user.html:8
 #: bookwyrm/templates/preferences/layout.html:55
 msgid "Export BookWyrm Account"
-msgstr ""
+msgstr "Esportatu BookWyrm kontua"
 
 #: bookwyrm/templates/preferences/export-user.html:14
 msgid "You can create an export file here. This will allow you to migrate your data to another BookWyrm account."
-msgstr ""
+msgstr "Esportazio-fitxategi bat sor dezakezu hemen. Honek zure datuak beste BookWyrm kontu batera migratzeko aukera emango dizu."
 
 #: bookwyrm/templates/preferences/export-user.html:17
 msgid "<div class=\"column is-half\"> <h2 class=\"is-size-5\">Your file will include:</h2> <ul> <li>User profile</li> <li>Most user settings</li> <li>Reading goals</li> <li>Shelves</li> <li>Reading history</li> <li>Book reviews</li> <li>Statuses</li> <li>Your own lists and saved lists</li> <li>Which users you follow and block</li> </ul> </div> <div class=\"column is-half\"> <h2 class=\"is-size-5\">Your file will not include:</h2> <ul> <li>Direct messages</li> <li>Replies to your statuses</li> <li>Groups</li> <li>Favorites</li> </ul> </div>"
@@ -6891,12 +6891,12 @@ msgstr "(e)k <a href=\"%(book_path)s\">%(book)s</a> irakurtzen amaitu du"
 #: bookwyrm/templates/snippets/status/headers/reading.html:10
 #, python-format
 msgid "started reading <a href=\"%(book_path)s\">%(book)s</a> by <a href=\"%(author_path)s\">%(author_name)s</a>"
-msgstr ", <a href=\"%(author_path)s\">%(author_name)s</a>(r)en <a href=\"%(book_path)s\">%(book)s</a> irakurtzen hasi da"
+msgstr "erabiltzailea <a href=\"%(author_path)s\">%(author_name)s</a>(r)en <a href=\"%(book_path)s\">%(book)s</a> irakurtzen hasi da"
 
 #: bookwyrm/templates/snippets/status/headers/reading.html:17
 #, python-format
 msgid "started reading <a href=\"%(book_path)s\">%(book)s</a>"
-msgstr ", <a href=\"%(book_path)s\">%(book)s</a> irakurtzen hasi da"
+msgstr "erabiltzailea <a href=\"%(book_path)s\">%(book)s</a> irakurtzen hasi da"
 
 #: bookwyrm/templates/snippets/status/headers/review.html:8
 #, python-format
