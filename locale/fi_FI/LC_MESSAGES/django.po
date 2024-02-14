@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: bookwyrm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-01-02 03:27+0000\n"
-"PO-Revision-Date: 2024-01-02 04:10\n"
+"PO-Revision-Date: 2024-02-14 22:33\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Finnish\n"
 "Language: fi\n"
@@ -294,7 +294,7 @@ msgstr "Kirjaa ei löytynyt tietokannoista"
 
 #: bookwyrm/models/job.py:22
 msgid "Failed"
-msgstr ""
+msgstr "Ei onnistunut"
 
 #: bookwyrm/models/link.py:51
 msgid "Free"
@@ -473,7 +473,7 @@ msgstr "Svenska (ruotsi)"
 
 #: bookwyrm/settings.py:331
 msgid "Українська (Ukrainian)"
-msgstr ""
+msgstr "Українська (ukraina)"
 
 #: bookwyrm/settings.py:332
 msgid "简体中文 (Simplified Chinese)"
@@ -485,7 +485,7 @@ msgstr "繁體中文 (perinteinen kiina)"
 
 #: bookwyrm/templates/403.html:5
 msgid "Oh no!"
-msgstr ""
+msgstr "Voi ei!"
 
 #: bookwyrm/templates/403.html:9 bookwyrm/templates/landing/invite.html:21
 msgid "Permission Denied"
@@ -494,11 +494,11 @@ msgstr "Pääsy kielletty"
 #: bookwyrm/templates/403.html:11
 #, python-format
 msgid "You do not have permission to view this page or perform this action. Your user permission level is <code>%(level)s</code>."
-msgstr ""
+msgstr "Sinulla ei ole oikeutta nähdä tätä sivua tai suorittaa toimintoa. Käyttöoikeustasosi on <code>%(level)s</code>."
 
 #: bookwyrm/templates/403.html:15
 msgid "If you think you should have access, please speak to your BookWyrm server administrator."
-msgstr ""
+msgstr "Jos sinulla mielestäsi pitäisi olla oikeus tähän, ota yhteyttä palvelimen ylläpitäjään."
 
 #: bookwyrm/templates/404.html:4 bookwyrm/templates/404.html:8
 msgid "Not Found"
@@ -510,17 +510,18 @@ msgstr "Pyytämääsi sivua ei ole olemassa."
 
 #: bookwyrm/templates/413.html:4 bookwyrm/templates/413.html:8
 msgid "File too large"
-msgstr ""
+msgstr "Liian suuri tiedosto"
 
 #: bookwyrm/templates/413.html:9
 msgid "The file you are uploading is too large."
-msgstr ""
+msgstr "Lähettämäsi tiedosto on liian suuri."
 
 #: bookwyrm/templates/413.html:11
 msgid "\n"
 "        You you can try using a smaller file, or ask your BookWyrm server administrator to increase the <code>DATA_UPLOAD_MAX_MEMORY_SIZE</code> setting.\n"
 "        "
-msgstr ""
+msgstr "\n"
+"Voit yrittää pienemmällä tiedostolla tai pyytää palvelimen ylläpitäjää kasvattamaan <code>DATA_UPLOAD_MAX_MEMORY_SIZE</code>-aetusta.        "
 
 #: bookwyrm/templates/500.html:4
 msgid "Oops!"
@@ -1417,7 +1418,7 @@ msgstr "Kirjan %(book_title)s laitokset"
 #: bookwyrm/templates/book/editions/editions.html:8
 #, python-format
 msgid "Editions of <a href=\"%(work_path)s\"><i>%(work_title)s</i></a>"
-msgstr ""
+msgstr "Teoksen <a href=\"%(work_path)s\"><i>%(work_title)s</i></a> laitokset"
 
 #: bookwyrm/templates/book/editions/editions.html:55
 msgid "Can't find the edition you're looking for?"
